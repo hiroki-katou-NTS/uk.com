@@ -26,10 +26,6 @@
   width: 150px;
 }
 
-#KAL013_10.combo-box {
-  margin-left: 24px;
-}
-
 .category-name {
   flex: 2;
 }
@@ -39,14 +35,18 @@ table td.text-center {
   text-align: center;
 }
 
-.pull-left-right .ui-tabs .ui-tabs-panel {
-  padding: 0.5rem;
-}
-
 .pull-left-right .buttons {
   margin-bottom: 10px;
 }
 
 .pull-left-right .buttons button {
   margin-right: 15px;
+}
+
+#fixedTable .nts-input {
+  width: 222px;
+}
+
+#fixedTableCCDT .nts-input {
+  width: 122px;
 }

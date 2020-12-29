@@ -51,6 +51,7 @@ module nts.uk.at.view.kal013.a {
         checkConditions: KnockoutObservable<tab.CheckCondition>;
 
         isNewMode: KnockoutObservable<boolean> = ko.observable(true);
+        isCodeChangedFromScreenD: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor(params: any) {
             super();
@@ -120,13 +121,26 @@ module nts.uk.at.view.kal013.a {
         switchNewMode() {
             const vm = this;
 
-            vm.$errors("clear");
             vm.isNewMode(true);
             vm.currentCode(null);
             vm.currentName(null);
             vm.selectedAlarmCode(null);
             vm.actualFixedItems(vm.fixedItems());
             vm.actualFixedItems.valueHasMutated();
+        }
+
+        openDialogD() {
+            const vm = this;
+
+            vm.$window.modal('/view/kal/013/d/index.xhtml', vm.selectedCategoryCode())
+                .then((result: any) => {
+                    if (result) {
+                        vm.$errors("clear");
+                        vm.isCodeChangedFromScreenD(true);
+                        vm.selectedCategoryCode(result.shareParam);
+                    }
+                });
+
         }
 
         copyAlarm() {
@@ -156,7 +170,7 @@ module nts.uk.at.view.kal013.a {
                     });
                     let fixedItems = _.map(res.fixedItems, function (i: any) {
                         return new common.AlarmDto(
-                            true,
+                            false,
                             i.no,
                             i.classification,
                             i.name,
@@ -167,14 +181,21 @@ module nts.uk.at.view.kal013.a {
                     vm.fixedItems(fixedItems);
 
                     if (categoryItem.length) {
-                        vm.isNewMode(false);
                         vm.alarmListItems(categoryItem);
-                        vm.selectedAlarmCode("");
-                        vm.selectedAlarmCode(categoryItem[0].code);
+                        if (vm.isCodeChangedFromScreenD()) {
+                            vm.switchNewMode();
+                            vm.isCodeChangedFromScreenD(false);
+                        } else {
+                            vm.isNewMode(false);
+                            vm.selectedAlarmCode("");
+                            vm.selectedAlarmCode(categoryItem[0].code);
+                        }
                     } else {
-                        vm.isNewMode(true);
-                        vm.alarmListItems([]);
                         vm.actualFixedItems(fixedItems);
+                        vm.alarmListItems([]);
+                        if (!vm.isNewMode()) {
+                            vm.switchNewMode();
+                        }
                     }
 
                 }
@@ -234,9 +255,9 @@ module nts.uk.at.view.kal013.a {
                                     i.checkMonthlyItemsType,
                                     i.useAtr ? 0 : 1,
                                     i.monExtracConName,
-                                    null,
-                                    null,
-                                    null,
+                                    i.minValue,
+                                    i.maxValue,
+                                    i.operator,
                                     i.messageDisp,
                                     null,
                                     null
@@ -256,9 +277,9 @@ module nts.uk.at.view.kal013.a {
                                     i.checkDayItemsType,
                                     i.useAtr ? 0 : 1,
                                     i.daiExtracConName,
-                                    null,
-                                    null,
-                                    null,
+                                    i.minValue,
+                                    i.maxValue,
+                                    i.operator,
                                     i.messageDisp,
                                     null,
                                     null

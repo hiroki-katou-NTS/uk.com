@@ -5,9 +5,9 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.schedule.ExtractionScheduleCon;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.schedule.ExtractionScheduleConRepository;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlistworkplace.schedule.KrcmtWkpSchedaiExCon;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlCompareRange;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlCompareSingle;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlSingleFixed;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.*;
+import nts.uk.ctx.at.shared.dom.workrecord.alarm.attendanceitemconditions.CompareRange;
+import nts.uk.ctx.at.shared.dom.workrecord.alarm.attendanceitemconditions.CompareSingleValue;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -73,27 +73,86 @@ public class JpaExtractionScheduleConRepository extends JpaRepository implements
             .getList(x -> x.toDomain(krcstErAlCompareSingle, krcstErAlCompareRange, krcstErAlSingleFixed));
     }
 
+    private static final String SELECT_COMPARE_SINGLE_BY_ID =
+            " SELECT a FROM KrcstErAlCompareSingle a " +
+                    " JOIN KrcmtWkpSchedaiExCon b ON a.krcstEralCompareSinglePK.conditionGroupId = b.errorAlarmCheckID " +
+                    " WHERE a.krcstEralCompareSinglePK.atdItemConNo = 0 AND a.conditionType = 0 AND b.errorAlarmWorkplaceId IN :ids";
+
+    private static final String SELECT_COMPARE_RANGE_BY_ID =
+            " SELECT a FROM KrcstErAlCompareRange a " +
+                    " JOIN KrcmtWkpSchedaiExCon b ON a.krcstEralCompareRangePK.conditionGroupId = b.errorAlarmCheckID " +
+                    " WHERE a.krcstEralCompareRangePK.atdItemConNo = 0 AND b.errorAlarmWorkplaceId IN :ids";
+
+    private static final String SELECT_SINGLE_FIXED_BY_ID =
+            " SELECT a FROM KrcstErAlSingleFixed a " +
+                    " JOIN KrcmtWkpSchedaiExCon b ON a.krcstEralSingleFixedPK.conditionGroupId = b.errorAlarmCheckID " +
+                    " WHERE a.krcstEralSingleFixedPK.atdItemConNo = 0 AND b.errorAlarmWorkplaceId IN :ids";
+
     @Override
     public List<ExtractionScheduleCon> getByIds(List<String> ids) {
         if (CollectionUtil.isEmpty(ids)) return new ArrayList<>();
 
-        Optional<KrcstErAlCompareSingle> krcstErAlCompareSingle = this.queryProxy().query(SELECT_COMPARE_SINGLE, KrcstErAlCompareSingle.class).getSingle();
-        Optional<KrcstErAlCompareRange> krcstErAlCompareRange = this.queryProxy().query(SELECT_COMPARE_RANGE, KrcstErAlCompareRange.class).getSingle();
-        Optional<KrcstErAlSingleFixed> krcstErAlSingleFixed = this.queryProxy().query(SELECT_SINGLE_FIXED, KrcstErAlSingleFixed.class).getSingle();
+        List<KrcstErAlCompareSingle> krcstErAlCompareSingle = this.queryProxy().query(SELECT_COMPARE_SINGLE_BY_ID, KrcstErAlCompareSingle.class).setParameter("ids", ids).getList();
+        List<KrcstErAlCompareRange> krcstErAlCompareRange = this.queryProxy().query(SELECT_COMPARE_RANGE_BY_ID, KrcstErAlCompareRange.class).setParameter("ids", ids).getList();
+        List<KrcstErAlSingleFixed> krcstErAlSingleFixed = this.queryProxy().query(SELECT_SINGLE_FIXED_BY_ID, KrcstErAlSingleFixed.class).setParameter("ids", ids).getList();
 
-        return this.queryProxy().query(GET_BY_IDS, KrcmtWkpSchedaiExCon.class)
+        List<KrcmtWkpSchedaiExCon> domains = this.queryProxy().query(GET_BY_IDS, KrcmtWkpSchedaiExCon.class)
                 .setParameter("ids", ids)
-                .getList(x -> x.toDomain(krcstErAlCompareSingle, krcstErAlCompareRange, krcstErAlSingleFixed));
+                .getList();
+        return domains.stream().map(i -> i.toDomain(
+                krcstErAlCompareSingle.stream().filter(x -> x.krcstEralCompareSinglePK.conditionGroupId.equals(i.errorAlarmCheckID)).findFirst(),
+                krcstErAlCompareRange.stream().filter(x -> x.krcstEralCompareRangePK.conditionGroupId.equals(i.errorAlarmCheckID)).findFirst(),
+                krcstErAlSingleFixed.stream().filter(x -> x.krcstEralSingleFixedPK.conditionGroupId.equals(i.errorAlarmCheckID)).findFirst()
+        )).collect(Collectors.toList());
     }
 
     @Override
     public void register(List<ExtractionScheduleCon> domain) {
         List<KrcmtWkpSchedaiExCon> entities = domain.stream().map(KrcmtWkpSchedaiExCon::fromDomain).collect(Collectors.toList());
+        List<KrcstErAlCompareSingle> compareSingles = new ArrayList<>();
+        List<KrcstErAlSingleFixed> singleFixeds = new ArrayList<>();
+        List<KrcstErAlCompareRange> compareRanges = new ArrayList<>();
+
+        domain.forEach(i -> {
+            if (i.getCheckConditions().isSingleValue()) {
+                KrcstErAlCompareSingle single = new KrcstErAlCompareSingle(
+                        new KrcstErAlCompareSinglePK(i.getErrorAlarmCheckID(), 0),
+                        ((CompareSingleValue) i.getCheckConditions()).getCompareOpertor().value,
+                        ((CompareSingleValue) i.getCheckConditions()).getConditionType().value
+                );
+                KrcstErAlSingleFixed singleFixed = new KrcstErAlSingleFixed(
+                        new KrcstErAlSingleFixedPK(i.getErrorAlarmCheckID(), 0),
+                        Double.valueOf((Integer)((CompareSingleValue) i.getCheckConditions()).getValue())
+                );
+                compareSingles.add(single);
+                singleFixeds.add(singleFixed);
+            } else {
+                KrcstErAlCompareRange range = new KrcstErAlCompareRange(
+                        new KrcstErAlCompareRangePK(i.getErrorAlarmCheckID(), 0),
+                        ((CompareRange) i.getCheckConditions()).getCompareOperator().value,
+                        (double) ((CompareRange) i.getCheckConditions()).getStartValue(),
+                        (double) ((CompareRange) i.getCheckConditions()).getEndValue()
+                );
+                compareRanges.add(range);
+            }
+        });
+        if (!CollectionUtil.isEmpty(compareSingles) && !CollectionUtil.isEmpty(singleFixeds)) {
+            this.commandProxy().insertAll(compareSingles);
+            this.commandProxy().insertAll(singleFixeds);
+        }
+        if (!CollectionUtil.isEmpty(compareRanges)) {
+            this.commandProxy().insertAll(compareRanges);
+        }
         this.commandProxy().insertAll(entities);
     }
 
     @Override
     public void delete(List<String> ids) {
+        List<ExtractionScheduleCon> domains = this.getByIds(ids);
+        List<String> compareIds = domains.stream().map(ExtractionScheduleCon::getErrorAlarmCheckID).collect(Collectors.toList());
+        this.commandProxy().removeAll(KrcstErAlCompareSingle.class, compareIds.stream().map(i -> new KrcstErAlCompareSinglePK(i, 0)).collect(Collectors.toList()));
+        this.commandProxy().removeAll(KrcstErAlSingleFixed.class, compareIds.stream().map(i -> new KrcstErAlSingleFixedPK(i, 0)).collect(Collectors.toList()));
+        this.commandProxy().removeAll(KrcstErAlCompareRange.class, compareIds.stream().map(i -> new KrcstErAlCompareRangePK(i, 0)).collect(Collectors.toList()));
         this.commandProxy().removeAll(KrcmtWkpSchedaiExCon.class, ids);
     }
 

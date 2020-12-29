@@ -30,6 +30,12 @@ public class CompareRange<V> implements CheckConditions<V> {
         this.compareOperator = EnumAdaptor.valueOf(compareOperator, RangeCompareType.class);
     }
 
+    public CompareRange(V startValue, V endValue, int compareOperator) {
+        this.compareOperator = EnumAdaptor.valueOf(compareOperator, RangeCompareType.class);
+        this.startValue = startValue;
+        this.endValue = endValue;
+    }
+
     public void setValue(V startValue, V endValue) {
         this.startValue = startValue;
         this.endValue = endValue;

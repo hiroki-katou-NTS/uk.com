@@ -33,7 +33,7 @@
             <button
                     tabindex="2"
                     id="a11"
-                    data-bind="text: $i18n('KAL003_5'), click: switchNewMode"
+                    data-bind="text: $i18n('KAL003_5'), click: openDialogD"
             />
             <button
                     tabindex="3"
@@ -50,15 +50,14 @@
             <button tabindex="6" id="a16" data-bind="text: $i18n('KAL003_7'), click: copyAlarm"/>
         </div>
         <div id="contents-area" class="cf">
-            <div class="pull-left">
-                <div class="bg-green caret-right caret-background grid-list">
+            <div class="pull-left" style="padding-left: 25px">
+                <div data-bind="ntsPanel:{width: '290px', height: '400px', direction: 'right', showIcon: false, visible: true}">
                     <div class="d-fix">
-                        <label data-bind="text: $i18n('KAL003_48')"></label>
-                        <div
-                                tabindex="7"
-                                id="KAL013_10"
-                                class="combo-box"
-                                data-bind="ntsComboBox: {
+                        <label style="padding: 5px 5px 5px 0" data-bind="text: $i18n('KAL003_48')"></label>
+                        <div tabindex="7"
+                             id="KAL013_10"
+                             class="combo-box"
+                             data-bind="ntsComboBox: {
 										name: 'KAL003_9',
 										options: categoryList,
 										optionsValue: 'code',
@@ -71,10 +70,9 @@
                         ></div>
                     </div>
                     <div class="tableList">
-                        <table
-                                id="alarm-list"
-                                tabindex="8"
-                                data-bind="ntsGridList: {
+                        <table id="alarm-list"
+                               tabindex="8"
+                               data-bind="ntsGridList: {
 									height: 350,
 									dataSource: alarmListItems,
 									primaryKey: 'code',

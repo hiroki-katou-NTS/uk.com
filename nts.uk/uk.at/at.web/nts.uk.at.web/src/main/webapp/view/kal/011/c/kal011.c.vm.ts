@@ -2,7 +2,7 @@ module nts.uk.at.kal011.c {
 
     const PATH_API = {
         //TODO wrote api path
-        sendEmail: "at/function/alarm/alarm-list/send-email",
+        sendEmail: "at/function/alarm-workplace/alarm-list/send-email",
         getWorkPlace: "",
     }
 

@@ -34,7 +34,7 @@ module nts.uk.at.view.kal013.d {
         if (errors.hasError() === true) {
             return;
         }
-        let shareParam: number = vm.selectedCategory();
+        let shareParam: number = vm.selectedCategoryCode();
         vm.$window.close({
             shareParam
         });

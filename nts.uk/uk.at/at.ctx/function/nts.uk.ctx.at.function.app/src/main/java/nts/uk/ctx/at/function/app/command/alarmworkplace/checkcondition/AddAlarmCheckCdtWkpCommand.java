@@ -34,21 +34,19 @@ public class AddAlarmCheckCdtWkpCommand {
         if (!this.opItems.isEmpty()) {
 
             result = this.opItems.stream().map(i -> {
-                CheckConditions con = null;
+                CheckConditions<Integer> con;
                 if (i.getMaxValue() == null) {
-                    val compareSingleValue = new CompareSingleValue(i.getOperator(), 1);
-                    compareSingleValue.setValue(i.getMinValue());
+                    val compareSingleValue = new CompareSingleValue<Integer>(i.getOperator(), 0);
+                    compareSingleValue.setValue(Integer.valueOf(i.getMinValue()));
                     con = compareSingleValue;
                 } else {
-                    val compareRange = new CompareRange(1);
-                    compareRange.setValue(i.getMinValue(), i.getMaxValue());
-                    con = compareRange;
+                    con = new CompareRange<>(Integer.valueOf(i.getMinValue()), Integer.valueOf(i.getMaxValue()), i.getOperator());
                 }
                 return ExtractionMonthlyCon.create(
                         IdentifierUtil.randomUniqueId(),
                         i.getCheckItem(),
                         i.getNo(),
-                        i.getUseAtr() == 0 ? true : false,
+                        i.getUseAtr() == 0,
                         IdentifierUtil.randomUniqueId(),
                         con,
                         (i.getCheckItem() == CheckMonthlyItemsType.AVERAGE_TIME.value
@@ -74,21 +72,19 @@ public class AddAlarmCheckCdtWkpCommand {
         if (!this.opItems.isEmpty()) {
 
             result = this.opItems.stream().map(i -> {
-                CheckConditions con = null;
+                CheckConditions<Integer> con;
                 if (i.getMaxValue() == null) {
-                    val compareSingleValue = new CompareSingleValue(i.getOperator(), 1);
-                    compareSingleValue.setValue(i.getMinValue());
+                    val compareSingleValue = new CompareSingleValue<Integer>(i.getOperator(), 0);
+                    compareSingleValue.setValue(Integer.valueOf(i.getMinValue()));
                     con = compareSingleValue;
                 } else {
-                    val compareRange = new CompareRange(1);
-                    compareRange.setValue(i.getMinValue(), i.getMaxValue());
-                    con = compareRange;
+                    con = new CompareRange<>(Integer.valueOf(i.getMinValue()), Integer.valueOf(i.getMaxValue()), i.getOperator());
                 }
                 return ExtractionScheduleCon.create(
                         IdentifierUtil.randomUniqueId(),
                         i.getNo(),
                         i.getCheckItem(),
-                        i.getUseAtr() == 0 ? true : false,
+                        i.getUseAtr() == 0,
                         IdentifierUtil.randomUniqueId(),
                         con,
                         i.getCheckItem() != CheckDayItemsType.CONTRAST.value ? i.getCheckCond() : null,
@@ -101,6 +97,28 @@ public class AddAlarmCheckCdtWkpCommand {
 
         return result;
     }
+
+    private <V> CheckConditions<V> convertCondition(int checkItem, String maxValue, String minValue, int operator, boolean isSingleValue) {
+        CheckConditions result = null;
+        CheckMonthlyItemsType check = EnumAdaptor.valueOf(checkItem, CheckMonthlyItemsType.class);
+        switch (check) {
+            case AVERAGE_TIME: {
+
+                break;
+            }
+            case AVERAGE_NUMBER_DAY: {
+                break;
+            }
+            case AVERAGE_NUMBER_TIME: {
+                break;
+            }
+            case AVERAGE_RATIO: {
+                break;
+            }
+
+        }
+        return result;
+    };
 
 
 }

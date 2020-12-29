@@ -33,6 +33,10 @@ public class CompareSingleValue<V> implements CheckConditions<V> {
         this.conditionType = EnumAdaptor.valueOf(conditionType, ConditionType.class);
     }
 
+    public void setValue(V value) {
+        this.value = value;
+    }
+
     @Override
     public boolean check(Double targetV, Function<V, Double> value) {
         return checkWithFixedValue(targetV, value.apply(this.value));
