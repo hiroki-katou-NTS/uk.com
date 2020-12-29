@@ -1,16 +1,17 @@
 package nts.uk.ctx.at.function.infra.repository.indexreconstruction;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.indexreconstruction.ProcExecIndex;
 import nts.uk.ctx.at.function.dom.indexreconstruction.ProcExecIndexResult;
 import nts.uk.ctx.at.function.dom.indexreconstruction.repository.ProcExecIndexRepository;
-import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfndtProcExecIndex;
-
-import javax.ejb.Stateless;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaProcExecIndexRepository extends JpaRepository implements ProcExecIndexRepository {
@@ -38,7 +39,7 @@ public class JpaProcExecIndexRepository extends JpaRepository implements ProcExe
 		return listEntity.isEmpty() 
 				? Optional.empty() 
 				: Optional.of(ProcExecIndex.builder()
-						.executionId(new ExecutionCode(execId))
+						.executionId(execId)
 						.indexReconstructionResult(listResult)
 						.build());
 	}
@@ -64,11 +65,15 @@ public class JpaProcExecIndexRepository extends JpaRepository implements ProcExe
 	}
 	
 	private static List<KfndtProcExecIndex> toEntity(ProcExecIndex domain) {
+		String contractCd = AppContexts.user().contractCode();
+		String cid = AppContexts.user().companyId();
 		List<KfndtProcExecIndex> listEntity = domain.getIndexReconstructionResult().stream()
 				.map(item -> {
 					KfndtProcExecIndex entity = new KfndtProcExecIndex();
 					item.setMemento(entity);
-					entity.pk.execId = domain.getExecutionId().v();
+					entity.pk.execId = domain.getExecutionId();
+					entity.companyId = cid;
+					entity.contractCode = contractCd;
 					return entity;
 				})
 				.collect(Collectors.toList());
@@ -77,16 +82,13 @@ public class JpaProcExecIndexRepository extends JpaRepository implements ProcExe
 
 	@Override
 	public Optional<ProcExecIndex> findByExecId(String execId) {
-		List<KfndtProcExecIndex> listEntity = this.queryProxy().query(QUERY_SELECT_BY_EXEC_ID, KfndtProcExecIndex.class)
+		List<ProcExecIndexResult> listResult = this.queryProxy().query(QUERY_SELECT_BY_EXEC_ID, KfndtProcExecIndex.class)
 				.setParameter("execId", execId)
-				.getList();
-		List<ProcExecIndexResult> listResult = listEntity.stream()
-				.map(ProcExecIndexResult::createFromMemento)
-				.collect(Collectors.toList());
-		return listEntity.isEmpty()
+				.getList(ProcExecIndexResult::createFromMemento);
+		return listResult.isEmpty()
 				? Optional.empty()
 				: Optional.of(ProcExecIndex.builder()
-				.executionId(new ExecutionCode(execId))
+				.executionId(execId)
 				.indexReconstructionResult(listResult)
 				.build());
 	}

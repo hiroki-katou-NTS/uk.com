@@ -14,6 +14,9 @@ public class ProcessExecutionTaskLogDto {
 	
 	private static final String HAVE_ERROR = "あり";
 	private static final String NOT_HAVE_ERROR = "なし";
+	
+	/* 実行ID */
+	public String execId;
 
     /* 更新処理 */
     private Integer taskId;
@@ -53,6 +56,7 @@ public class ProcessExecutionTaskLogDto {
             rangeDateTime = CalTimeRangeDateTimeToString.calTimeExec(domain.getLastExecDateTime().get(), domain.getLastEndExecDateTime().get());
         }
         return ProcessExecutionTaskLogDto.builder()
+        		.execId(domain.getExecId())
                 .taskId(domain.getProcExecTask().value)
                 .taskName(EnumAdaptor.valueOf(domain.getProcExecTask().value, ProcessExecutionTask.class).name)
                 .statusCd(domain.getStatus().map(e -> e.value).orElse(null))

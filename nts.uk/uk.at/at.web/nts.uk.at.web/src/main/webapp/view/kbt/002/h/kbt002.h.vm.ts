@@ -185,8 +185,8 @@ module nts.uk.at.view.kbt002.h {
         reflectApprovalResultEnd: executionLog.reflectApprovalResultEnd,
         execId: executionLog.execId,
         execItemCd: executionLog.execItemCd,
-        overallError: executionLog.overallErrorText,
-        overallStatus: executionLog.overallStatusText,
+        overallError: executionLog.overallError,
+        overallStatus: executionLog.overallStatus,
         taskLogList: executionLog.taskLogList
       };
       vm.$window.modal("/view/kbt/002/g/index.xhtml", param);

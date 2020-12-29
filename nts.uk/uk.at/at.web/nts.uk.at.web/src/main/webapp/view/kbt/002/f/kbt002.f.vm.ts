@@ -69,10 +69,13 @@ module nts.uk.at.view.kbt002.f {
           vm.dataSource(response);
           const dataSourceModel = _.map(response, (item) => new ExecutionItemInfomationModel(vm, item));
           vm.dataSourceModel(dataSourceModel);
+        })
+        .fail(err => vm.$dialog.error({ messageId: err.messageId }))
+        .always(() => {
+          vm.$blockui("clear");
           // Render grid list
           vm.initGridList();
-        })
-        .always(() => vm.$blockui('clear'));
+        });
     }
 
     private getExecItemInfo(execItemCd: string): JQueryPromise<any> {
@@ -115,9 +118,9 @@ module nts.uk.at.view.kbt002.f {
               width: 30,
               formatter: (value: number, record: ExecutionItemInfomationModel) => {
                 if (value === 0) {
-                  return `<div class="cell-center"><i class="img-icon icon-warning" title="${vm.$i18n("KBT002_314")}"></i></div>`;
+                  return `<div class="cell-center"><i class="img-icon icon-warning" title="${vm.$i18n("KBT002_314")}" tabindex="4"></i></div>`;
                 } else if (value === 1) {
-                  return `<div class="cell-center"><i class="img-icon icon-warning" title="${vm.$i18n("KBT002_315")}"></i></div>`;
+                  return `<div class="cell-center"><i class="img-icon icon-warning" title="${vm.$i18n("KBT002_315")}" tabindex="4"></i></div>`;
                 } else {
                   return '';
                 }
@@ -149,7 +152,7 @@ module nts.uk.at.view.kbt002.f {
               width: 70,
               formatter: (value: number, record: ExecutionItemInfomationModel) => {
                 const enabled: boolean = (record.execStatus === 1 || record.execStatus === 2);
-                const $button = $("<button>", { "class": "btn-center setting small button-process-start", "tabindex": -1, "disabled": !enabled });
+                const $button = $("<button>", { "class": "btn-center setting small button-process-start", "tabindex": 5, "disabled": !enabled });
                 $button.attr(DOM_DATA_VALUE, record["execItemCd"]);
                 $button.append(`<i class="img-icon icon-start"></i>${vm.$i18n('KBT002_262')}`);
                 return $button[0].outerHTML;
@@ -161,7 +164,7 @@ module nts.uk.at.view.kbt002.f {
               width: 70,
               formatter: (value: number, record: ExecutionItemInfomationModel) => {
                 const enabled: boolean = (record.execStatus === 0);
-                const $button = $("<button>", { "class": "btn-center setting small button-process-stop", "tabindex": -1, "disabled": !enabled });
+                const $button = $("<button>", { "class": "btn-center setting small button-process-stop", "tabindex": 6, "disabled": !enabled });
                 $button.attr(DOM_DATA_VALUE, record["execItemCd"]);
                 $button.append(`<i class="img-icon icon-stop"></i>${vm.$i18n('KBT002_133')}`);
                 return $button[0].outerHTML;
@@ -203,7 +206,7 @@ module nts.uk.at.view.kbt002.f {
               width: 50,
               formatter: (value: any, record: ExecutionItemInfomationModel) => {
                 const enabled = (record.execStatus === 1 || record.execStatus === 2) && (record.overallStatus !== 0 && record.overallStatus !== 3);
-                const $button = $("<button>", { "class": "setting small button-open-g", "tabindex": -1, "disabled": !enabled, "text": vm.$i18n("KBT002_144") });
+                const $button = $("<button>", { "class": "setting small button-open-g", "tabindex": 8, "disabled": !enabled, "text": vm.$i18n("KBT002_144") });
                 $button.attr(DOM_DATA_VALUE, record["execItemCd"]);
                 return $button[0].outerHTML;
               }
@@ -214,7 +217,7 @@ module nts.uk.at.view.kbt002.f {
               width: 70,
               formatter: (value: any, record: ExecutionItemInfomationModel) => {
                 const enabled = !!(record.lastStartDateTime);
-                const $button = $("<button>", { "class": "setting small button-open-h", "tabindex": -1, "disabled": !enabled, "text": vm.$i18n("KBT002_147") });
+                const $button = $("<button>", { "class": "setting small button-open-h", "tabindex": 9, "disabled": !enabled, "text": vm.$i18n("KBT002_147") });
                 $button.attr(DOM_DATA_VALUE, record["execItemCd"]);
                 return $button[0].outerHTML;
               }
@@ -245,14 +248,18 @@ module nts.uk.at.view.kbt002.f {
           virtualizationMode: 'continuous',
         });
 
-        // Disable F3_7
-        $("#F2_1").ready(function () {
+        vm.$grid.ready(function () {
           _.forEach(vm.dataSource(), item => {
+            const $switch = $(`.nts-grid-control-isTaskExecution-${nts.uk.text.padLeft(item.execItemCd, '0', 2)}`);
+            // Add tabindex for switch
+            $switch.attr("tabindex", "7");
+            // Disable F3_7
             if (!item.executionTaskSetting) {
-              $(`.nts-grid-control-isTaskExecution-${nts.uk.text.padLeft(item.execItemCd, '0', 2)} button`).attr("disabled", "disabled");
+              $switch.find("button").attr("disabled", "disabled");
+              $switch.attr("tabindex", "-1");
             }
           });
-          $("#F2_1").igGrid("virtualScrollTo", index);
+          vm.$grid.igGrid("virtualScrollTo", index);
         });
       });
     }
@@ -364,8 +371,10 @@ module nts.uk.at.view.kbt002.f {
       const selectedDto = _.find(vm.dataSource(), (o) => o.execItemCd === execItemCd);
       if (selectedDto) {
         const params = {
-          taskLogList: selectedDto.updateProcessAutoExecLog ? selectedDto.updateProcessAutoExecLog.taskLogList : [], // 各処理の終了状態
-          overallStatus: selectedDto.updateProcessAutoExecManage ? selectedDto.updateProcessAutoExecManage.overallError : null, // 全体の終了状態
+          taskLogList: selectedDto.updateProcessAutoExecLog         // 各処理の終了状態
+            ? _.filter(selectedDto.updateProcessAutoExecLog.taskLogList, (item: any) => item.execId === selectedDto.updateProcessAutoExecLog.execId)
+            : [], 
+          overallStatus: selectedDto.updateProcessAutoExecManage ? selectedDto.updateProcessAutoExecManage.overallStatus : null, // 全体の終了状態
           overallError: selectedDto.updateProcessAutoExecManage ? selectedDto.updateProcessAutoExecManage.overallError : null, // 全体のエラー詳細
           execId: selectedDto.updateProcessAutoExecLog ? selectedDto.updateProcessAutoExecLog.execId : null, // 実行ID
           execItemCd: selectedDto.execItemCd, // 更新処理自動実行項目コード
@@ -473,6 +482,7 @@ module nts.uk.at.view.kbt002.f {
       data.nextExecDate = dataToReplace.executionTaskSetting.nextExecDateTime ? 
                           moment.utc(dataToReplace.executionTaskSetting.nextExecDateTime).format(DATETIME_FORMAT) : 
                           vm.$i18n('KBT002_165');
+      data.execStatus = data.isTaskExecution ? 1 : 2;
       vm.initGridList(index);
     }
   }

@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.function.dom.indexreconstruction.repository;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
@@ -50,8 +52,10 @@ public interface IndexReorgTableRepository {
 	 *
 	 * @param tablePhysName the table phys name
 	 * @return the list
+	 * @throws IOException 
+	 * @throws FileNotFoundException 
 	 */
-	List<CaculateFragRate> calculateFragRate(String tablePhysName);
+	List<CalculateFragRate> calculateFragRate(String tablePhysName);
 	
 	/**
 	 * Reconfigures index.

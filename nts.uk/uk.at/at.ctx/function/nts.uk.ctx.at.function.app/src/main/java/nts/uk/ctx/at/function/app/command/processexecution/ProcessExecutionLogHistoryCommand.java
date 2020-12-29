@@ -1,17 +1,20 @@
 package nts.uk.ctx.at.function.app.command.processexecution;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import lombok.Builder;
 import lombok.Data;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionTaskLogDto;
-import nts.uk.ctx.at.function.dom.processexecution.executionlog.*;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.EachProcessPeriod;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.ExecutionTaskLog;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogHistory;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionTask;
 
 /**
  * command UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.更新処理自動実行.更新処理自動実行ログ.更新処理自動実行ログ履歴

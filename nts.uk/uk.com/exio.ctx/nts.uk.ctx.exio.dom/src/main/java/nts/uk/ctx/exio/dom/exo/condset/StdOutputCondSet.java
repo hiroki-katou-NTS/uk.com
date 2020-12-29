@@ -1,5 +1,8 @@
 package nts.uk.ctx.exio.dom.exo.condset;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
@@ -12,6 +15,8 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  * @author nws-minhnb
  */
 @Getter
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class StdOutputCondSet extends AggregateRoot {
 
 	/**

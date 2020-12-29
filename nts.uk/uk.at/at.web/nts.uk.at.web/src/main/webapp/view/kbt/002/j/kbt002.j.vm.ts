@@ -38,11 +38,12 @@ module nts.uk.at.view.kbt002.j {
       vm.selectedAggrFrameCd.subscribe(selectedCode => {
         // set update mode
         const selectedItem: AggrPeriodDto = _.find(vm.aggrPeriodList(), { aggrFrameCode: selectedCode });
-        if (selectedItem) {
+        if (selectedItem && vm.aggrPeriodList().length > 0) {
           vm.bindingData(selectedItem);
           vm.isNewMode(false);
         } else {
           vm.isNewMode(true);
+          vm.aggrFrameCode(null);
         }
         vm.$nextTick(() => vm.focusInput(vm.isNewMode()));
       });
@@ -77,21 +78,19 @@ module nts.uk.at.view.kbt002.j {
      */
     private processPostDelete(aggrFrameCode: string) {
       const vm = this;
-      const index = vm.aggrPeriodList().indexOf(_.find(vm.aggrPeriodList(), { aggrFrameCode: aggrFrameCode }));
+      const index = _.findIndex(vm.aggrPeriodList(), { aggrFrameCode: aggrFrameCode });
       // 一覧から選択した項目を削除する
       vm.processFindAll()
         .then(() => {
-          if (index) {
-            // 一覧の件数＝０件
-            if (vm.aggrPeriodList().length === 0) {
-              vm.initProcExec();
-            } else if (vm.aggrPeriodList().length === index) {
-              // 最下行を削除した場合
-              vm.selectedAggrFrameCd(vm.aggrPeriodList()[index - 1].aggrFrameCode);
-            } else {
-              // 最下行でない項目を削除した場合
-              vm.selectedAggrFrameCd(vm.aggrPeriodList()[index].aggrFrameCode);
-            }
+          // 一覧の件数＝０件
+          if (vm.aggrPeriodList().length === 0) {
+            vm.initProcExec();
+          } else if (vm.aggrPeriodList().length === index) {
+            // 最下行を削除した場合
+            vm.selectedAggrFrameCd(vm.aggrPeriodList()[index - 1].aggrFrameCode);
+          } else {
+            // 最下行でない項目を削除した場合
+            vm.selectedAggrFrameCd(vm.aggrPeriodList()[index].aggrFrameCode);
           }
         });
     }
@@ -118,6 +117,8 @@ module nts.uk.at.view.kbt002.j {
         .then(() => {
           if (vm.aggrPeriodList().length > 0) {
             vm.selectedAggrFrameCd(aggrFrameCode || vm.aggrPeriodList()[0].aggrFrameCode);
+          } else {
+            vm.selectedAggrFrameCd(null);
           }
         })
         .always(() => vm.$blockui('clear'));

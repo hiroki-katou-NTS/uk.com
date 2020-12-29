@@ -1,9 +1,7 @@
 package nts.uk.ctx.at.function.app.command.processexecution;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -15,10 +13,9 @@ import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.function.dom.adapter.stopbycompany.StopByCompanyAdapter;
 import nts.uk.ctx.at.function.dom.adapter.stopbycompany.UsageStopOutputImport;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.CurrentExecutionStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
-import nts.uk.ctx.at.function.dom.processexecution.executionlog.ExecutionTaskLog;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.OverallErrorDetail;
-import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLog;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogHistory;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ExecutionTaskSettingRepository;
@@ -102,7 +99,7 @@ public class SortingProcessCommandHandler extends CommandHandler<ScheduleExecute
             // Step ドメインモデル「更新処理自動実行管理.現在の実行状態」をチェックする
             // 「実行中」
             if (processExecutionLogManage.getCurrentStatus().isPresent()
-            		&& processExecutionLogManage.getCurrentStatus().get().value == 0) {
+            		&& processExecutionLogManage.getCurrentStatus().get() == CurrentExecutionStatus.RUNNING) {
                 // ドメインモデル「更新処理自動実行管理．前回実行日時」から5時間を経っているかチェックする
                 boolean checkLastTime = checkLastDateTimeLessthanNow5h(processExecutionLogManage.getLastExecDateTime().get());
                 if (checkLastTime) {
@@ -115,7 +112,7 @@ public class SortingProcessCommandHandler extends CommandHandler<ScheduleExecute
             }
             // 「待機中」
             else if (processExecutionLogManage.getCurrentStatus().isPresent()
-            		&& processExecutionLogManage.getCurrentStatus().get().value == 1) {
+            		&& processExecutionLogManage.getCurrentStatus().get() == CurrentExecutionStatus.WAITING) {
                 // Step 実行処理
                 this.executeHandler(companyId, execItemCd, execItemId, nextDate);
             }
@@ -149,20 +146,7 @@ public class SortingProcessCommandHandler extends CommandHandler<ScheduleExecute
         ProcessExecutionLogManage processExecutionLogManage = this.processExecLogManaRepo.getLogByCIdAndExecCd(companyId, execItemCd).get();
         processExecutionLogManage.setLastExecDateTimeEx(GeneralDateTime.now());
         processExecLogManaRepo.update(processExecutionLogManage);
-        // Step ドメインモデル「更新処理自動実行ログ履歴」を新規登録する
-        List<ExecutionTaskLog> taskLogList = ProcessExecutionLog.processInitTaskLog();
 
-        List<ProcessExecutionTaskLogCommand> taskLogListCommand = taskLogList.stream()
-                .map(item -> ProcessExecutionTaskLogCommand.builder()
-                        .taskId(item.getProcExecTask().value)
-                        .status(item.getStatus().map(e -> e.value).orElse(null))
-                        .lastExecDateTime(item.getLastExecDateTime().orElse(null))
-                        .lastEndExecDateTime(item.getLastEndExecDateTime().orElse(null))
-                        .errorSystem(item.getErrorSystem().orElse(null))
-                        .errorBusiness(item.getErrorBusiness().orElse(null))
-                        .systemErrorDetails(item.getSystemErrorDetails().orElse(null))
-                        .build())
-                .collect(Collectors.toList());
         ProcessExecutionLogHistoryCommand processExecutionLogHistoryCommand = ProcessExecutionLogHistoryCommand.builder()
                 .execItemCd(execItemCd)
                 .companyId(companyId)

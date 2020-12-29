@@ -33,6 +33,7 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ExecutionTaskLog;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.OverallErrorDetail;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogHistory;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionTask;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogHistRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionRepository;
 import nts.uk.ctx.at.function.dom.processexecution.storage.ResultState;
@@ -43,6 +44,8 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.Err
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogRepository;
 import nts.uk.ctx.at.shared.dom.person.PersonAdaptor;
 import nts.uk.ctx.at.shared.dom.person.PersonImport;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.query.app.exi.ExacErrorLogQueryDto;
 import nts.uk.query.app.exi.ExacErrorLogQueryFinder;
 import nts.uk.query.app.exo.ExternalOutLogQueryDto;
@@ -80,7 +83,7 @@ public class GetDataToOutputService extends ExportService<Object> {
 	private static final String FILE_NAME_CSV2 = "KBT002_実行項目の詳細状況";
 	private static final String FILE_NAME_CSV3 = "KBT002_実行項目のエラー詳細";
 	private static final String FILE_NAME_CSV4 = "KBT002_実行項目のエラー詳細（外部受入）";
-	private static final String FILE_NAME_CSV5 = "KBT002_実行項目のエラー詳細（外部出力";
+	private static final String FILE_NAME_CSV5 = "KBT002_実行項目のエラー詳細（外部出力）";
 
 	@Inject
 	private ProcessExecutionLogHistRepository updateProAutoExeRepo;
@@ -220,14 +223,20 @@ public class GetDataToOutputService extends ExportService<Object> {
 						case MONTHLY_AGGR:
 						case RFL_APR_RESULT:
 							List<ErrMessageInfoDto> errMessageInfoDtos = this.errMessageInfoRepo
-									.getAllErrMessageInfoByEmpID(execIdByLogHistory).stream()
-									.map(item -> ErrMessageInfoDto.builder().employeeID(item.getEmployeeID())
-											.empCalAndSumExecLogID(item.getEmpCalAndSumExecLogID())
-											.resourceID(item.getResourceID().v())
-											.executionContent(item.getExecutionContent().value)
-											.disposalDay(item.getDisposalDay()).messageError(item.getMessageError().v())
-											.build())
-									.collect(Collectors.toList());
+									.getAllErrMessageInfoByEmpID(execIdByLogHistory).stream().map(item -> {
+										boolean validContent = this.checkExecutionContent(taskLog.getProcExecTask(),
+												item);
+										ErrMessageInfoDto.ErrMessageInfoDtoBuilder builder = ErrMessageInfoDto
+												.builder().employeeID(item.getEmployeeID())
+												.empCalAndSumExecLogID(item.getEmpCalAndSumExecLogID())
+												.resourceID(item.getResourceID().v())
+												.executionContent(item.getExecutionContent().value);
+										if (validContent) {
+											builder.disposalDay(item.getDisposalDay())
+													.messageError(item.getMessageError().v());
+										}
+										return builder.build();
+									}).collect(Collectors.toList());
 							// 更新処理自動実行データ．実行ログ詳細．日次・月次処理エラー．社員ID
 							empIds.addAll(errMessageInfoDtos.stream().map(ErrMessageInfoDto::getEmployeeID)
 									.collect(Collectors.toList()));
@@ -319,6 +328,21 @@ public class GetDataToOutputService extends ExportService<Object> {
 		return updateProAutoRunData;
 	}
 
+	private boolean checkExecutionContent(ProcessExecutionTask procExecTask, ErrMessageInfo errMessage) {
+		switch (procExecTask) {
+		case DAILY_CALCULATION: 
+			return errMessage.getExecutionContent().equals(ExecutionContent.DAILY_CALCULATION);
+		case DAILY_CREATION:
+			return errMessage.getExecutionContent().equals(ExecutionContent.DAILY_CREATION);
+		case MONTHLY_AGGR:
+			return errMessage.getExecutionContent().equals(ExecutionContent.MONTHLY_AGGREGATION);
+		case RFL_APR_RESULT:
+			return errMessage.getExecutionContent().equals(ExecutionContent.REFLRCT_APPROVAL_RESULT);
+		default:
+			return false;
+		}
+	}
+
 	private List<ProcessExecutionLogHistory> updateProcessAutomaticExecutionLogHistory(
 			GetDataToOutputCommand commandHandlerContext) {
 		String companyId = AppContexts.user().companyId();
@@ -403,8 +427,8 @@ public class GetDataToOutputService extends ExportService<Object> {
 		return check ? TextResource.localize("KBT002_290") : TextResource.localize("KBT002_291");
 	}
 
-	private <T> T getEnumResource(int value, Class<T> c) {
-		return EnumAdaptor.valueOf(value, c);
+	private <T> Optional<T> getEnumResource(Integer value, Class<T> c) {
+		return Optional.ofNullable(value).map(data -> EnumAdaptor.valueOf(data, c));
 	}
 
 	private void generalFileCSV1(FileGeneratorContext generatorContext, UpdateProcessAutoRunDataDto updateProAutoRuns) {
@@ -430,13 +454,16 @@ public class GetDataToOutputService extends ExportService<Object> {
 
 			rowCSV1.put(headerCSV1.get(5), this.getHourByGetLastExecDateTimeAndGetLastEndExecDateTime(
 					proHis.getLastExecDateTime(), proHis.getLastEndExecDateTime()));
-			rowCSV1.put(headerCSV1.get(6), this.getEnumResource(proHis.getOverallStatus(), EndStatus.class).name);
+			rowCSV1.put(headerCSV1.get(6), this.getEnumResource(proHis.getOverallStatus(), EndStatus.class)
+					.map(data -> data.name).orElse(null));
 			rowCSV1.put(headerCSV1.get(7),
 					proHis.getErrorSystem() == null ? null : getTextResource(proHis.getErrorSystem()));
 			rowCSV1.put(headerCSV1.get(8),
 					proHis.getErrorBusiness() == null ? null : getTextResource(proHis.getErrorBusiness()));
-			rowCSV1.put(headerCSV1.get(9), proHis.getOverallError() == null ? null
-					: this.getEnumResource(proHis.getOverallError(), OverallErrorDetail.class).name);
+			rowCSV1.put(headerCSV1.get(9),
+					proHis.getOverallError() == null ? null
+							: this.getEnumResource(proHis.getOverallError(), OverallErrorDetail.class)
+									.map(data -> data.name).orElse(null));
 			csv.writeALine(rowCSV1);
 		}
 		csv.destroy();
@@ -465,13 +492,14 @@ public class GetDataToOutputService extends ExportService<Object> {
 				rowCSV2.put(headerCSV2.get(5), lastEndExecDateTime);
 				rowCSV2.put(headerCSV2.get(6), this.getHourByGetLastExecDateTimeAndGetLastEndExecDateTime(
 						taskLog.getLastExecDateTime().orElse(null), taskLog.getLastEndExecDateTime().orElse(null)));
-				rowCSV2.put(headerCSV2.get(7), proHis.getOverallStatus() == null ? null
-						: this.getEnumResource(proHis.getOverallStatus(), EndStatus.class).name);
-				rowCSV2.put(headerCSV2.get(8),
-						proHis.getErrorSystem() == null ? null : getTextResource(proHis.getErrorSystem()));
+				rowCSV2.put(headerCSV2.get(7),
+						this.getEnumResource(taskLog.getStatus().map(data -> data.value).orElse(null), EndStatus.class)
+								.map(data -> data.name).orElse(null));
+				rowCSV2.put(headerCSV2.get(8), taskLog.getErrorSystem() == null ? null
+						: taskLog.getErrorSystem().map(this::getTextResource).orElse(null));
 				rowCSV2.put(headerCSV2.get(9), taskLog.getSystemErrorDetails().orElse(null));
-				rowCSV2.put(headerCSV2.get(10),
-						proHis.getErrorBusiness() == null ? null : getTextResource(proHis.getErrorBusiness()));
+				rowCSV2.put(headerCSV2.get(10), taskLog.getErrorBusiness() == null ? null
+						: taskLog.getErrorBusiness().map(this::getTextResource).orElse(null));
 				csv.writeALine(rowCSV2);
 			}
 		}
@@ -482,8 +510,8 @@ public class GetDataToOutputService extends ExportService<Object> {
 		boolean checkEmptyTaskLogList = updateProAutoRuns.getLstExecLogDetail().stream()
 				.filter(item -> !item.getProcessExecLogHistory().getTaskLogList().isEmpty()).findAny().isPresent();
 
+		List<String> headerCSV3 = this.getTextHeaderCsv3(updateProAutoRuns.isExportEmpName());
 		if (checkEmptyTaskLogList) {
-			List<String> headerCSV3 = this.getTextHeaderCsv3(updateProAutoRuns.isExportEmpName());
 			CsvReportWriter csv = this.generator.generate(generatorContext, FILE_NAME_CSV3 + CSV_EXTENSION, headerCSV3,
 					"SHIFT-JIS");
 			for (ExecutionLogDetailDto logDetail : updateProAutoRuns.getLstExecLogDetail()) {
@@ -557,8 +585,8 @@ public class GetDataToOutputService extends ExportService<Object> {
 		boolean checkListExacErrorLogEmpty = updateProAutoRuns.getLstExecLogDetail().stream()
 				.filter(item -> !item.getExacErrorLogImports().isEmpty()).findAny().isPresent();
 
+		List<String> headerCSV4 = this.getTextHeaderCsv4();
 		if (checkListExacErrorLogEmpty) {
-			List<String> headerCSV4 = this.getTextHeaderCsv4();
 			CsvReportWriter csv = this.generator.generate(generatorContext, FILE_NAME_CSV4 + CSV_EXTENSION, headerCSV4,
 					"SHIFT-JIS");
 			for (ExecutionLogDetailDto logDetail : updateProAutoRuns.getLstExecLogDetail()) {
@@ -587,8 +615,9 @@ public class GetDataToOutputService extends ExportService<Object> {
 	private void generalFileCSV5(FileGeneratorContext generatorContext, UpdateProcessAutoRunDataDto updateProAutoRuns) {
 		boolean checkExternalErrLogEmpty = updateProAutoRuns.getLstExecLogDetail().stream()
 				.filter(item -> !item.getExternalOutLogImports().isEmpty()).findAny().isPresent();
+
+		List<String> headerCSV5 = this.getTextHeaderCsv5(updateProAutoRuns.isExportEmpName());
 		if (checkExternalErrLogEmpty) {
-			List<String> headerCSV5 = this.getTextHeaderCsv5(updateProAutoRuns.isExportEmpName());
 			CsvReportWriter csv = this.generator.generate(generatorContext, FILE_NAME_CSV5 + CSV_EXTENSION, headerCSV5,
 					"SHIFT-JIS");
 			for (ExecutionLogDetailDto logDetail : updateProAutoRuns.getLstExecLogDetail()) {

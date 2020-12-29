@@ -27,7 +27,6 @@ import nts.uk.ctx.at.function.app.command.processexecution.SaveUpdateProcessAuto
 import nts.uk.ctx.at.function.app.command.processexecution.TerminateProcessExecutionCommand;
 import nts.uk.ctx.at.function.app.command.processexecution.TerminateProcessExecutionCommandHandler;
 import nts.uk.ctx.at.function.app.find.processexecution.ExecutionTaskSettingFinder;
-import nts.uk.ctx.at.function.app.find.processexecution.ProcessExecutionFinder;
 import nts.uk.ctx.at.function.app.find.processexecution.ProcessExecutionLogFinder;
 import nts.uk.ctx.at.function.app.find.processexecution.ProcessExecutionLogHistoryFinder;
 import nts.uk.ctx.at.function.app.find.processexecution.UpdateProcessAutoExecutionFinder;
@@ -38,7 +37,6 @@ import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionDate
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ProcessExecutionLogHistoryDto;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.SelectedProcessExecutionDto;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.UpdateProcessAutoExecutionDto;
-import nts.uk.ctx.at.function.app.find.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodImportFinder;
 import nts.uk.ctx.at.function.ws.processexecution.batchserver.BatchTaskResult;
 import nts.uk.shr.com.communicate.PathToWebApi;
 import nts.uk.shr.com.communicate.batch.BatchServer;
@@ -51,9 +49,6 @@ public class ProcessExecutionWebService extends WebService {
 
 	/* Finder */
 	@Inject
-	private ProcessExecutionFinder procExecFinder;
-
-	@Inject
 	private ProcessExecutionLogFinder execLogFinder;
 
 	@Inject
@@ -61,9 +56,6 @@ public class ProcessExecutionWebService extends WebService {
 
 	@Inject
 	private ProcessExecutionLogHistoryFinder logHistFinder;
-
-	@Inject
-	private OptionalAggrPeriodImportFinder aggrPeriodImportFinder;
 	
 	@Inject
 	private UpdateProcessAutoExecutionFinder updateProcessAutoExecutionFinder;

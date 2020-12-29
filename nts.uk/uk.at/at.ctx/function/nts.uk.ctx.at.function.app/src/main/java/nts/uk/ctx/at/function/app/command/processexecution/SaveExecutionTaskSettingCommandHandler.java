@@ -133,6 +133,7 @@ public class SaveExecutionTaskSettingCommandHandler
 				options = UkJobScheduleOptions.builder(SortingProcessScheduleJob.class, scheduleIdDef, cron)
 						.userData(scheduletimeData).startDate(startDate).endDate(endDate2)
 						.startClock(new StartTime(command.getStartTime())).endClock(new EndTime(command.getEndTime()))
+						.cleanupJobClass(SortingProcessEndScheduleJob.class)
 						.build();
 //				if (lstcron.size() >= 2) {
 //				//	options2 = 
@@ -152,11 +153,12 @@ public class SaveExecutionTaskSettingCommandHandler
 //				}
 
 				optionsEnd = UkJobScheduleOptions
-						.builder(SortingProcessEndScheduleJob.class, scheduleIdEnd,
+						.builder(SortingProcessScheduleJob.class, scheduleIdEnd,
 								new CronSchedule(Arrays.asList("0 " + (command.getEndTime() % 60) + " "
 										+ (command.getEndTime() / 60) + " * * ? ")))
 						.userData(scheduletimeData).startDate(startDate).endDate(endDate2)
 						.startClock(new StartTime(command.getEndTime())).endClock(new EndTime(command.getEndTime() + 1))
+						.cleanupJobClass(SortingProcessEndScheduleJob.class)
 						.build();
 			} else if (command.getEndTimeCls() == 1 && command.getEndDateCls() != 1) {
 				if (command.getOneDayRepCls() == 1) {
@@ -164,7 +166,8 @@ public class SaveExecutionTaskSettingCommandHandler
 							.builder(SortingProcessScheduleJob.class, command.getExecItemCd(), cron)
 							.userData(scheduletimeData)
 							.startDate(GeneralDate.ymd(startDate.year(), startDate.month(), startDate.day()))
-							.startClock(new StartTime(command.getStartTime())).build();
+							.startClock(new StartTime(command.getStartTime()))
+							.cleanupJobClass(SortingProcessEndScheduleJob.class).build();
 //					if (lstcron.size() >= 2) {
 //					//	options2 = 
 //								UkJobScheduleOptions
@@ -185,19 +188,22 @@ public class SaveExecutionTaskSettingCommandHandler
 				} else {
 					options = UkJobScheduleOptions.builder(SortingProcessScheduleJob.class, scheduleIdDef, cron)
 							.userData(scheduletimeData).startDate(startDate)
-							.startClock(new StartTime(command.getStartTime())).build();
+							.startClock(new StartTime(command.getStartTime()))
+							.cleanupJobClass(SortingProcessEndScheduleJob.class).build();
 				}
 			} else if (command.getEndTimeCls() != 1 && command.getEndDateCls() == 1) {
 				options = UkJobScheduleOptions.builder(SortingProcessScheduleJob.class, scheduleIdDef, cron)
 						.userData(scheduletimeData).startDate(startDate).endDate(endDate2)
-						.startClock(new StartTime(command.getStartTime())).endClock(new EndTime(1439)).build();
+						.startClock(new StartTime(command.getStartTime())).endClock(new EndTime(1439))
+						.cleanupJobClass(SortingProcessEndScheduleJob.class).build();
 				// loop minute
 				if (command.getOneDayRepCls() == 1) {
 					optionsEnd = UkJobScheduleOptions
-							.builder(SortingProcessEndScheduleJob.class, scheduleIdEnd,
+							.builder(SortingProcessScheduleJob.class, scheduleIdEnd,
 									new CronSchedule(Arrays.asList("0 0 0 * * ? ")))
 							.userData(scheduletimeData).startDate(endDate2.addDays(1)).endDate(endDate2.addDays(1))
-							.startClock(new StartTime(0)).endClock(new EndTime(1)).build();
+							.startClock(new StartTime(0)).endClock(new EndTime(1))
+							.cleanupJobClass(SortingProcessEndScheduleJob.class).build();
 				} else {
 					int minuteEnd = command.getStartTime() % 60 + 10;
 					int hourEnd = command.getStartTime() / 60;
@@ -212,20 +218,22 @@ public class SaveExecutionTaskSettingCommandHandler
 					}
 					if (inCreaseDay) {
 						optionsEnd = UkJobScheduleOptions
-								.builder(SortingProcessEndScheduleJob.class, scheduleIdEnd,
+								.builder(SortingProcessScheduleJob.class, scheduleIdEnd,
 										new CronSchedule(
 												Arrays.asList("0 " + (minuteEnd) + " " + (hourEnd) + " * * ? ")))
 								.userData(scheduletimeData).startDate(endDate2.addDays(1)).endDate(endDate2.addDays(1))
 								.startClock(new StartTime(command.getStartTime() + 10 - 1440))
-								.endClock(new EndTime(command.getStartTime() + 10 - 1440 + 1)).build();
+								.endClock(new EndTime(command.getStartTime() + 10 - 1440 + 1))
+								.cleanupJobClass(SortingProcessEndScheduleJob.class).build();
 					} else {
 						optionsEnd = UkJobScheduleOptions
-								.builder(SortingProcessEndScheduleJob.class, scheduleIdEnd,
+								.builder(SortingProcessScheduleJob.class, scheduleIdEnd,
 										new CronSchedule(
 												Arrays.asList("0 " + (minuteEnd) + " " + (hourEnd) + " * * ? ")))
 								.userData(scheduletimeData).startDate(endDate2).endDate(endDate2)
 								.startClock(new StartTime(command.getStartTime() + 10))
-								.endClock(new EndTime(command.getStartTime() + 11)).build();
+								.endClock(new EndTime(command.getStartTime() + 11))
+								.cleanupJobClass(SortingProcessEndScheduleJob.class).build();
 					}
 
 				}
@@ -233,16 +241,17 @@ public class SaveExecutionTaskSettingCommandHandler
 			} else {
 				options = UkJobScheduleOptions.builder(SortingProcessScheduleJob.class, scheduleIdDef, cron)
 						.userData(scheduletimeData).startDate(startDate)
-						.startClock(new StartTime(command.getStartTime())).build();
+						.startClock(new StartTime(command.getStartTime()))
+						.cleanupJobClass(SortingProcessEndScheduleJob.class).build();
 			}
 
 		} else {
 			// not repeat day, week month
-			if (command.getEndTimeCls() == 1) {
-				options = UkJobScheduleOptions.builder(SortingProcessScheduleJob.class, scheduleIdDef, cron)
-						.userData(scheduletimeData).startDate(startDate).endDate(startDate)
-						.startClock(new StartTime(command.getStartTime())).endClock(new EndTime(command.getEndTime()))
-						.build();
+//			if (command.getEndTimeCls() == 1) {
+//				options = UkJobScheduleOptions.builder(SortingProcessScheduleJob.class, scheduleIdDef, cron)
+//						.userData(scheduletimeData).startDate(startDate).endDate(startDate)
+//						.startClock(new StartTime(command.getStartTime())).endClock(new EndTime(command.getEndTime()))
+//						.build();
 //				if (lstcron.size() >= 2) {
 //					//options2 = 
 //							UkJobScheduleOptions
@@ -260,14 +269,14 @@ public class SaveExecutionTaskSettingCommandHandler
 //							.endClock(new EndTime(command.getEndTime())).build();
 //				}
 
-				optionsEnd = UkJobScheduleOptions
-						.builder(SortingProcessEndScheduleJob.class, scheduleIdEnd,
-								new CronSchedule(Arrays.asList("0 " + (command.getEndTime() % 60) + " "
-										+ (command.getEndTime() / 60) + " * * ? ")))
-						.userData(scheduletimeData).startDate(startDate).endDate(startDate)
-						.startClock(new StartTime(command.getEndTime())).endClock(new EndTime(command.getEndTime() + 1))
-						.build();
-			} else {
+//				optionsEnd = UkJobScheduleOptions
+//						.builder(SortingProcessScheduleJob.class, scheduleIdEnd,
+//								new CronSchedule(Arrays.asList("0 " + (command.getEndTime() % 60) + " "
+//										+ (command.getEndTime() / 60) + " * * ? ")))
+//						.userData(scheduletimeData).startDate(startDate).endDate(startDate)
+//						.startClock(new StartTime(command.getEndTime())).endClock(new EndTime(command.getEndTime() + 1))
+//						.build();
+//			} else {
 				GeneralDate endate = null;
 				if (this.isLastDayOfMonth(startDate.year(), startDate.month(), startDate.day())) {
 					if (startDate.month() == 12) {
@@ -280,7 +289,8 @@ public class SaveExecutionTaskSettingCommandHandler
 				}
 				options = UkJobScheduleOptions.builder(SortingProcessScheduleJob.class, scheduleIdDef, cron)
 						.userData(scheduletimeData).startDate(startDate).endDate(endate)
-						.startClock(new StartTime(command.getStartTime())).build();
+						.startClock(new StartTime(command.getStartTime()))
+						.cleanupJobClass(SortingProcessEndScheduleJob.class).build();
 
 				// loop minute
 //				if (command.getOneDayRepCls() == 1) {
@@ -318,7 +328,7 @@ public class SaveExecutionTaskSettingCommandHandler
 //								.endClock(new EndTime(command.getStartTime() + 11)).build();
 //					}
 //				}
-			}
+//			}
 		}
 
 		if (!command.isNewMode()) {
@@ -350,6 +360,12 @@ public class SaveExecutionTaskSettingCommandHandler
 
 		try {
 			self.saveTaskSetting(command, taskSetting, companyId, days, scheduleId, endScheduleId);
+			if (taskSetting.isEnabledSetting()) {
+				logManage.setCurrentStatus(CurrentExecutionStatus.WAITING);
+			} else {
+				logManage.setCurrentStatus(CurrentExecutionStatus.INVALID);
+			}
+			this.processExecutionLogManageRepository.update(logManage);
 		} catch (Exception e) {
 			throw new BusinessException("Msg_1110");
 		}
@@ -366,7 +382,7 @@ public class SaveExecutionTaskSettingCommandHandler
 				this.execTaskSettingRepo.insert(taskSetting);
 				this.repMonthDayRepo.insert(companyId, command.getExecItemCd(), days);
 			} catch (Exception e) {	
-				this.scheduler.unscheduleOnCurrentCompany(SortingProcessScheduleJob.class, scheduleId);
+				this.scheduler.unscheduleOnCurrentCompany(SortingProcessEndScheduleJob.class, scheduleId);
 
 				if (endScheduleId != null) {
 					this.scheduler.unscheduleOnCurrentCompany(SortingProcessEndScheduleJob.class, endScheduleId);
@@ -383,7 +399,7 @@ public class SaveExecutionTaskSettingCommandHandler
 				this.repMonthDayRepo.insert(companyId, command.getExecItemCd(), days);
 				// this.execTaskSettingRepo.update(taskSetting);
 			} catch (Exception e) {
-				this.scheduler.unscheduleOnCurrentCompany(SortingProcessScheduleJob.class, scheduleId);
+				this.scheduler.unscheduleOnCurrentCompany(SortingProcessEndScheduleJob.class, scheduleId);
 
 				if (endScheduleId != null) {
 					this.scheduler.unscheduleOnCurrentCompany(SortingProcessEndScheduleJob.class, endScheduleId);

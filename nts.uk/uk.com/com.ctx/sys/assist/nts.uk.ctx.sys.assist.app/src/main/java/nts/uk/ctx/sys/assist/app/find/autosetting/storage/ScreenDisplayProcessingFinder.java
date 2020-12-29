@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.assist.app.find.autosetting.storage;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,6 +10,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.sys.assist.dom.datarestoration.LoginPersonInCharge;
 import nts.uk.ctx.sys.assist.dom.datarestoration.LoginPersonInChargeService;
@@ -43,6 +45,9 @@ public class ScreenDisplayProcessingFinder {
 
 		// List<システム種類>に「システム種類」を追加する。
 		List<SystemType> systemTypes = picService.getSystemTypes(pic);
+		
+		//TODO: FAKE-DATA
+		systemTypes = Arrays.asList(SystemType.values());
 
 		// 取得したList＜パターン設定>をチェックする。
 		if (!patterns.isEmpty()) {

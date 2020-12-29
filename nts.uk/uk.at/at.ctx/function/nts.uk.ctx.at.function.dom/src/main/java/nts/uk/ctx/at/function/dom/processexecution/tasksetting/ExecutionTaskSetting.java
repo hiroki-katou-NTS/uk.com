@@ -99,7 +99,8 @@ public class ExecutionTaskSetting extends AggregateRoot {
 		// 「実行タスク設定．終了時刻設定．指定区分 = あり」の場合、
 		// 「実行タスク設定．開始時刻」 > 「実行タスク設定．終了時刻設定．終了時刻」を登録することはできない。
 		// #Msg_849
-		if (this.getEndTime().getEndTimeCls().equals(EndTimeClassification.YES)
+		if (this.getOneDayRepInr().getOneDayRepCls().equals(OneDayRepeatClassification.YES)
+				&& this.getEndTime().getEndTimeCls().equals(EndTimeClassification.YES)
 				&& this.getEndTime().getEndTime().isPresent()
 				&& this.getStartTime().greaterThan(this.getEndTime().getEndTime().get())) {
 			throw new BusinessException("Msg_849");
@@ -140,7 +141,8 @@ public class ExecutionTaskSetting extends AggregateRoot {
 			List<Integer> days = this.getDetailSetting().getMonthly().get().getDays().stream().map(item -> item.value)
 					.collect(Collectors.toList());
 			List<Integer> months = this.getDetailSetting().getMonthly().get().getMonth().getMonthsAfterEqualsStartMonth(1);
-			if (this.getEndDate().getEndDate().isPresent()) {
+			if (this.getEndDate().getEndDateCls().equals(EndDateClassification.DATE)
+					&& this.getEndDate().getEndDate().isPresent()) {
 				DatePeriod range = new DatePeriod(this.getStartDate(), this.getEndDate().getEndDate().get());
 				int currentYear = GeneralDateTime.now().year();
 				boolean isValid = true;

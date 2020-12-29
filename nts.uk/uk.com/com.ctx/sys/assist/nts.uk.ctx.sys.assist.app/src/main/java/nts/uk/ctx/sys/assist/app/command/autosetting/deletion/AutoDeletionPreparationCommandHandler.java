@@ -48,7 +48,7 @@ public class AutoDeletionPreparationCommandHandler extends CommandHandlerWithRes
 			int delType = StorageClassification.AUTO.value;
 			String delId = IdentifierUtil.randomUniqueId();
 			String delName = patternSetting.getPatternName().v();
-			boolean saveBeforeDelete = false;
+			boolean saveBeforeDelete = true;
 			boolean passwordAvailability = patternSetting.getWithoutPassword().equals(NotUseAtr.USE);
 			String password = patternSetting.getPatternCompressionPwd().map(FileCompressionPassword::v).orElse(null);
 			GeneralDate refDate = GeneralDate.today();

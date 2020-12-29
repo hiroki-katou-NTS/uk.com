@@ -2,7 +2,6 @@ package nts.uk.ctx.at.function.dom.processexecution.updatelogafterprocess;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -11,11 +10,9 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.function.dom.adapter.employeemanage.EmployeeManageAdapter;
 import nts.uk.ctx.at.function.dom.adapter.executionlog.ScheduleErrorLogAdapter;
 import nts.uk.ctx.at.function.dom.adapter.executionlog.ScheduleErrorLogImport;
 import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.AlarmCategoryFn;
-import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.ExecutionLogAdapterFn;
 import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.ExecutionLogErrorDetailFn;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.actualsituation.createperapprovaldaily.AppDataInfoDailyImport;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.actualsituation.createperapprovaldaily.CreateperApprovalDailyAdapter;
@@ -41,10 +38,6 @@ import nts.uk.shr.com.i18n.TextResource;
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class UpdateLogAfterProcess {
-	
-	/** The employee manage adapter. */
-	@Inject
-	private EmployeeManageAdapter employeeManageAdapter;
 
 	/** The err message info adapter. */
 	@Inject
@@ -65,10 +58,6 @@ public class UpdateLogAfterProcess {
 	/** The proc exec log repo. */
 	@Inject
 	private ProcessExecutionLogRepository procExecLogRepo;
-
-	/** The execution log adapter fn. */
-	@Inject
-	private ExecutionLogAdapterFn executionLogAdapterFn;
 	
 	@Inject
 	private AggrPeriodInforAdapter aggrPeriodInforAdapter;
@@ -124,7 +113,7 @@ public class UpdateLogAfterProcess {
 		case AL_EXTRACTION:
 			// case アラーム抽出
 			// INPUT「エラーメッセージ」をチェックする
-				isHasErrorBusiness = false;
+			isHasErrorBusiness = errorMessage.equals("Msg_1552") || errorMessage.equals("Msg_1339");
 			break;
 		case AGGREGATION_OF_ARBITRARY_PERIOD:
 			// case 任意項目の集計
@@ -139,7 +128,9 @@ public class UpdateLogAfterProcess {
 		case EXTERNAL_ACCEPTANCE:
 		case EXTERNAL_OUTPUT:
 			// INPUT「エラーメッセージ」を取得する (input get message error)
-			isHasErrorBusiness = true;
+			isHasErrorBusiness = errorMessage != null;
+			break;
+		case INDEX_RECUNSTRUCTION:
 			break;
 		default: // DAILY_CREATION DAILY_CALCULATION RFL_APR_RESULT MONTHLY_AGGR
 			// ドメインモデル「エラーメッセージ情報」を取得する
@@ -234,6 +225,8 @@ public class UpdateLogAfterProcess {
 				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SAVE_DATA, EndStatus.NOT_IMPLEMENT);
 				// Step 各処理の終了状態　＝　[データ削除、未実施]
 				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DELETE_DATA, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[インデックス再構成、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.INDEX_RECUNSTRUCTION, EndStatus.NOT_IMPLEMENT);
 			}
 			// ◆実行項目 = 「日別作成」
 			else if (processExecutionTask == ProcessExecutionTask.DAILY_CREATION) {
@@ -259,6 +252,8 @@ public class UpdateLogAfterProcess {
 				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DELETE_DATA, EndStatus.NOT_IMPLEMENT);
 				// Step 各処理の終了状態　＝　[外部受入、未実施]
 				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.EXTERNAL_ACCEPTANCE, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[インデックス再構成、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.INDEX_RECUNSTRUCTION, EndStatus.NOT_IMPLEMENT);
 			}
 			// ◆実行項目 = 「日別計算」
 			else if (processExecutionTask == ProcessExecutionTask.DAILY_CALCULATION) {
@@ -282,6 +277,8 @@ public class UpdateLogAfterProcess {
 				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SAVE_DATA, EndStatus.NOT_IMPLEMENT);
 				// Step 各処理の終了状態　＝　[データ削除、未実施]
 				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DELETE_DATA, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[インデックス再構成、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.INDEX_RECUNSTRUCTION, EndStatus.NOT_IMPLEMENT);
 			}
 			//◆実行項目 = 「承認結果の反映」
 			else if (processExecutionTask == ProcessExecutionTask.RFL_APR_RESULT) {
@@ -303,6 +300,8 @@ public class UpdateLogAfterProcess {
 				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SAVE_DATA, EndStatus.NOT_IMPLEMENT);
 				// Step 各処理の終了状態　＝　[データ削除、未実施]
 				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DELETE_DATA, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[インデックス再構成、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.INDEX_RECUNSTRUCTION, EndStatus.NOT_IMPLEMENT);
 			}
 			//◆実行項目 = 「月別実績の集計」
 			else if (processExecutionTask == ProcessExecutionTask.MONTHLY_AGGR) {
@@ -322,6 +321,8 @@ public class UpdateLogAfterProcess {
 				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SAVE_DATA, EndStatus.NOT_IMPLEMENT);
 				// Step 各処理の終了状態　＝　[データ削除、未実施]
 				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DELETE_DATA, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[インデックス再構成、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.INDEX_RECUNSTRUCTION, EndStatus.NOT_IMPLEMENT);
 			}
 			// ◆実行項目 = 「アラーム抽出」
 			else if (processExecutionTask == ProcessExecutionTask.AL_EXTRACTION) {
@@ -337,6 +338,8 @@ public class UpdateLogAfterProcess {
 				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.EXTERNAL_OUTPUT, EndStatus.NOT_IMPLEMENT);
 				// Step 各処理の終了状態　＝　[外部受入、未実施]
 				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.EXTERNAL_ACCEPTANCE, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[インデックス再構成、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.INDEX_RECUNSTRUCTION, EndStatus.NOT_IMPLEMENT);
 			}
 			// ◆実行項目 = 「承認ルート更新（日次）」
 			else if (processExecutionTask == ProcessExecutionTask.APP_ROUTE_U_DAI) {
@@ -352,6 +355,8 @@ public class UpdateLogAfterProcess {
 				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.EXTERNAL_OUTPUT, EndStatus.NOT_IMPLEMENT);
 				// Step 各処理の終了状態　＝　[外部受入、未実施]
 				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.EXTERNAL_ACCEPTANCE, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[インデックス再構成、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.INDEX_RECUNSTRUCTION, EndStatus.NOT_IMPLEMENT);
 			}
 			// ◆実行項目 = 「承認ルート更新（月次）」
 			else if (processExecutionTask == ProcessExecutionTask.APP_ROUTE_U_MON) {
@@ -365,6 +370,8 @@ public class UpdateLogAfterProcess {
 				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.EXTERNAL_OUTPUT, EndStatus.NOT_IMPLEMENT);
 				// Step 各処理の終了状態　＝　[外部受入、未実施]
 				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.EXTERNAL_ACCEPTANCE, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[インデックス再構成、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.INDEX_RECUNSTRUCTION, EndStatus.NOT_IMPLEMENT);
 			}
 			// ◆実行項目 = 「外部出力」
 			else if (processExecutionTask == ProcessExecutionTask.EXTERNAL_OUTPUT) {
@@ -380,6 +387,8 @@ public class UpdateLogAfterProcess {
 				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DELETE_DATA, EndStatus.NOT_IMPLEMENT);
 				// Step 各処理の終了状態　＝　[外部受入、未実施]
 				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.EXTERNAL_ACCEPTANCE, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[インデックス再構成、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.INDEX_RECUNSTRUCTION, EndStatus.NOT_IMPLEMENT);
 			}
 			// ◆実行項目 = 「外部受入」
 			else if (processExecutionTask == ProcessExecutionTask.EXTERNAL_ACCEPTANCE) {
@@ -407,11 +416,24 @@ public class UpdateLogAfterProcess {
 				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SAVE_DATA, EndStatus.NOT_IMPLEMENT);
 				// Step 各処理の終了状態　＝　[データ削除、未実施]
 				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DELETE_DATA, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[インデックス再構成、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.INDEX_RECUNSTRUCTION, EndStatus.NOT_IMPLEMENT);
 			}
 			// ◆実行項目 = 「データ保存」
 			else if (processExecutionTask == ProcessExecutionTask.SAVE_DATA) {
 				// Step 各処理の終了状態　＝　[データ削除、未実施]
 				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DELETE_DATA, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[インデックス再構成、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.INDEX_RECUNSTRUCTION, EndStatus.NOT_IMPLEMENT);
+			}
+			// ◆実行項目 = 「データ削除」
+			else if (processExecutionTask == ProcessExecutionTask.DELETE_DATA) {
+				// Step 各処理の終了状態　＝　[インデックス再構成、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.INDEX_RECUNSTRUCTION, EndStatus.NOT_IMPLEMENT);
+			}
+			// ◆実行項目 = 「ンデックス再構成」
+			else if (processExecutionTask == ProcessExecutionTask.INDEX_RECUNSTRUCTION) {
+				
 			}
 
 			// ドメインモデル「更新処理自動実行ログ」を更新する

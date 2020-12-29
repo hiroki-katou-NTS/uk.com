@@ -116,6 +116,7 @@ public class KfnmtExecutionTaskLog extends UkJpaEntity implements Serializable {
 
 	public ExecutionTaskLog toDomain() {
 		return ExecutionTaskLog.builder()
+				.execId(this.kfnmtExecTaskLogPK.execId)
 				.procExecTask(EnumAdaptor.valueOf(kfnmtExecTaskLogPK.taskId, ProcessExecutionTask.class))
 				.status(Optional.ofNullable(status).map(endStatus -> EnumAdaptor.valueOf(endStatus, EndStatus.class)))
 				.lastExecDateTime(Optional.ofNullable(lastExecDateTime))

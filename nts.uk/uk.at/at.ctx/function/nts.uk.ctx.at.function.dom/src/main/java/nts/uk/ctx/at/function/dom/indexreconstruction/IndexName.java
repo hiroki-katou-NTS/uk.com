@@ -7,7 +7,7 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.OutItemsWoSc
 /**
  *	 インデックス名
  */
-@StringMaxLength(20)
+@StringMaxLength(64)
 public class IndexName extends StringPrimitiveValue<OutItemsWoScName> {
 	
 	/** The Constant serialVersionUID. */

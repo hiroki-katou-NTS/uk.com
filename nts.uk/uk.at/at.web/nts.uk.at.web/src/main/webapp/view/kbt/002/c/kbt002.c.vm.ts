@@ -10,7 +10,7 @@ module nts.uk.at.view.kbt002.c {
   export class KBT002CViewModel extends ko.ViewModel {
     execItemCd: KnockoutObservable<string> = ko.observable('');
     execItemName: KnockoutObservable<string> = ko.observable('');
-    curExecSetting: KnockoutObservable<ExecutionSettingModel> = ko.observable(new ExecutionSettingModel(null));
+    curExecSetting: KnockoutObservable<ExecutionSettingModel> = ko.observable(null);
     monthDays: KnockoutObservable<string> = ko.observable('');
     executionTypes: KnockoutObservableArray<any> = ko.observableArray([]);
     currentDate: string;
@@ -97,6 +97,7 @@ module nts.uk.at.view.kbt002.c {
             vm.isNewMode = false;
           } else {
             vm.isNewMode = true;
+            vm.curExecSetting(new ExecutionSettingModel(new ExecutionSettingDto(), vm.currentDate, vm.currentTime));
           }
         })
         .always(() => {
@@ -110,7 +111,13 @@ module nts.uk.at.view.kbt002.c {
         // Validate special editors
         vm.$validate(['#endTime', '#endDate']).then((textEditorValid: boolean) => {
           if (allValid && textEditorValid) {
-            vm.processSaveExecSetting();
+            if (!vm.isNewMode) {
+              vm.$dialog.info({ messageId: "Msg_855" }).then(() => {
+                vm.processSaveExecSetting();
+              });
+            } else {
+              vm.processSaveExecSetting();
+            }
           }
         });
       });
@@ -131,10 +138,10 @@ module nts.uk.at.view.kbt002.c {
       if (vm.selectExec() !== 0) {
         params.oneDayRepCls = vm.selectTimeRepeat(); //1日の繰り返し
         params.oneDayRepInterval = vm.curExecSetting().oneDayRepInterval(); //時刻指定
-        params.endTimeCls = vm.selectTimeRepeat() === 1 ? vm.selectEndTime() : 0; //終了時刻
+        params.endTimeCls = vm.selectEndTime(); //終了時刻
         params.endDateCls = vm.selectEndDate(); //終了日
-        params.endDate = vm.selectEndDate() === 1 ? moment.utc(vm.curExecSetting().endDate(), "YYYY/MM/DD") : null;
-        params.endTime = vm.selectEndTime() === 1 ? vm.curExecSetting().endTime() : null;
+        params.endDate = moment.utc(vm.curExecSetting().endDate(), "YYYY/MM/DD");
+        params.endTime = vm.curExecSetting().endTime();
 
         if (vm.selectExec() === 2) {
           params.monday = vm.curExecSetting().monday();
@@ -167,8 +174,6 @@ module nts.uk.at.view.kbt002.c {
           if (res) {
             vm.$dialog.info({ messageId: "Msg_15" })
             .then(() => {
-              res.startDate = moment.utc(res.startDate).format("YYYY/MM/DD");
-              res.endDate = moment.utc(res.endDate).format("YYYY/MM/DD");
               vm.$window.close(res);
             });
           }

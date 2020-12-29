@@ -27,8 +27,8 @@ public class ServerExternalOutputAdapterImpl implements ServerExternalOutputAdap
 	}
 
 	@Override
-	public void processAutoExecution(String conditionCd, DatePeriod period, GeneralDate baseDate, Integer categoryId) {
-		this.pub.processAutoExecution(conditionCd, period, baseDate, categoryId);
+	public void processAutoExecution(String conditionCd, DatePeriod period, GeneralDate baseDate, String execId) {
+		this.pub.processAutoExecution(conditionCd, period, baseDate, null, execId);
 	}
 
 }

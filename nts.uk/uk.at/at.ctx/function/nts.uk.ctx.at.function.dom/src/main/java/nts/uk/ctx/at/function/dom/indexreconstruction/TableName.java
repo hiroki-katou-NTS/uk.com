@@ -8,7 +8,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * @author ngatt-nws
  *
  */
-@StringMaxLength(30)
+@StringMaxLength(60)
 public class TableName extends StringPrimitiveValue<TableName> {
 
 	private static final long serialVersionUID = 1L;

@@ -106,13 +106,14 @@ public class PersonalScheduleCreationPeriod extends DomainObject {
 	 * @return the month day
 	 * @throws RuntimeException the runtime exception
 	 */
-	private MonthDay convertIntegerToMonthDay(Integer intValue) throws RuntimeException {
-		if (intValue == null) {
+	private MonthDay convertIntegerToMonthDay(Integer intValue) {
+		try {
+			MonthDay monthDay = new MonthDay(intValue / 100, intValue % 100);
+			monthDay.validate();
+			return monthDay;
+		} catch (Exception e) {
 			return null;
 		}
-		MonthDay monthDay = new MonthDay(intValue / 100, intValue % 100);
-		monthDay.validate();
-		return monthDay;
 	}
 
 	/**
@@ -122,12 +123,13 @@ public class PersonalScheduleCreationPeriod extends DomainObject {
 	 * @return the <code>Integer</code> value
 	 * @throws RuntimeException the runtime exception
 	 */
-	private Integer convertMonthDayToInteger(MonthDay monthDay) throws RuntimeException {
-		if (monthDay == null) {
+	private Integer convertMonthDayToInteger(MonthDay monthDay) {
+		try {
+			monthDay.validate();
+			return (monthDay.getMonth() * 100) + monthDay.getDay();
+		} catch (Exception e) {
 			return null;
 		}
-		monthDay.validate();
-		return (monthDay.getMonth() * 100) + monthDay.getDay();
 	}
 
 }

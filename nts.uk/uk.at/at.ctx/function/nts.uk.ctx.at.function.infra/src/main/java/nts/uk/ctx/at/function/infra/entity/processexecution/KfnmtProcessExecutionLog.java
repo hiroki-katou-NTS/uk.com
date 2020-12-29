@@ -12,7 +12,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -89,7 +88,7 @@ public class KfnmtProcessExecutionLog extends UkJpaEntity implements Serializabl
 	@Column(name = "RFL_APPR_END")
 	public GeneralDate reflectApprovalResultEnd;
 
-	@OneToMany(mappedBy = "procExecLogItem", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	@OneToMany(mappedBy = "procExecLogItem", cascade = CascadeType.PERSIST)
 	@JoinTable(name = "KFNMT_EXEC_TASK_LOG")
 	public List<KfnmtExecutionTaskLog> taskLogList;
 

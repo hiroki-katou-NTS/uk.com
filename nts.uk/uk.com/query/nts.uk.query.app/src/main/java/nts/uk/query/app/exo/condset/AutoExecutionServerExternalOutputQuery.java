@@ -9,7 +9,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.exio.dom.exo.execlog.ExecutionForm;
 import nts.uk.ctx.exio.dom.exo.exoutsummaryservice.CreateExOutTextService;
 import nts.uk.ctx.exio.dom.exo.exoutsummaryservice.ExOutSetting;
 import nts.uk.shr.com.context.AppContexts;
@@ -25,11 +25,12 @@ public class AutoExecutionServerExternalOutputQuery {
 	private CreateExOutTextService createExOutTextService;
 
 	public void processAutoExecution(String conditionCd, DatePeriod period, GeneralDate baseDate,
-			Integer categoryId) {
+			Integer categoryId, String execId) {
 		// 外部出力処理IDを採番する
-		String processingId = IdentifierUtil.randomUniqueId();
+		String processingId = execId;
 		ExOutSetting exOutSetting = new ExOutSetting(conditionCd, AppContexts.user().userId(), categoryId,
 				period.start(), period.end(), baseDate, processingId, true, Collections.emptyList());
+		exOutSetting.setExecuteForm(ExecutionForm.AUTOMATIC_EXECUTION);
 		createExOutTextService.start(exOutSetting);
 	}
 }

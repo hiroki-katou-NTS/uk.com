@@ -50,7 +50,7 @@ public class ChangeExecutionTaskSettingCommandHandler
 
 	@Inject
 	private ProcessExecutionService processExecutionService;
-	
+
 	@Override
 	protected ExecutionTaskSettingDto handle(CommandHandlerContext<ChangeExecutionTaskSettingCommand> context) {
 		ChangeExecutionTaskSettingCommand command = context.getCommand();
@@ -69,7 +69,7 @@ public class ChangeExecutionTaskSettingCommandHandler
 				// 「実行中」以外の場合
 				executionTaskSetting[0] = command.toDomain();
 				// バッチのスケジュールを削除する
-				this.scheduler.unscheduleOnCurrentCompany(SortingProcessScheduleJob.class, command.getScheduleId());
+				this.scheduler.unscheduleOnCurrentCompany(SortingProcessEndScheduleJob.class, command.getScheduleId());
 				if (command.getEndScheduleId() != null) {
 					this.scheduler.unscheduleOnCurrentCompany(SortingProcessEndScheduleJob.class,
 							command.getEndScheduleId());
@@ -86,7 +86,11 @@ public class ChangeExecutionTaskSettingCommandHandler
 				// sheet 補足資料⑤
 				// compare system date and system time
 				GeneralDate startDate = command.getStartDate();
-				GeneralDate endDate = command.getRepeatContent() == 0 ? null : command.getEndDate();
+				GeneralDate endDate = command.getEndDateCls() == 1 ? command.getEndDate() : null;
+				StartTime startTime = new StartTime(command.getStartTime());
+				EndTime endTime = command.getOneDayRepClassification() == 1 && command.getEndTimeCls() == 1
+						? new EndTime(command.getEndTime())
+						: null;
 				Integer timeSystem = GeneralDateTime.now().minutes() + GeneralDateTime.now().hours() * 60;
 				if (startDate.before(GeneralDate.today())) {
 					if (command.getStartTime() < timeSystem) {
@@ -97,12 +101,12 @@ public class ChangeExecutionTaskSettingCommandHandler
 				}
 				UkJobScheduleOptions options = UkJobScheduleOptions
 						.builder(SortingProcessScheduleJob.class, scheduleIdDef, cron).userData(scheduletimeData)
-						.startDate(startDate).endDate(endDate).startClock(new StartTime(command.getStartTime()))
-						.endClock(command.getEndTime() != null ? new EndTime(command.getEndTime()) : null).build();
+						.startDate(startDate).endDate(endDate).startClock(startTime).endClock(endTime)
+						.cleanupJobClass(SortingProcessEndScheduleJob.class).build();
 				UkJobScheduleOptions optionsEnd = UkJobScheduleOptions
-						.builder(SortingProcessEndScheduleJob.class, scheduleIdEnd, cron).userData(scheduletimeData)
-						.startDate(startDate).endDate(endDate).startClock(new StartTime(command.getStartTime()))
-						.endClock(command.getEndTime() != null ? new EndTime(command.getEndTime()) : null).build();
+						.builder(SortingProcessScheduleJob.class, scheduleIdEnd, cron).userData(scheduletimeData)
+						.startDate(startDate).endDate(endDate).startClock(startTime).endClock(endTime)
+						.cleanupJobClass(SortingProcessEndScheduleJob.class).build();
 				String scheduleId = this.schedule(options);
 				String endScheduleId = this.schedule(optionsEnd);
 				executionTaskSetting[0].setScheduleId(scheduleId);
@@ -110,8 +114,8 @@ public class ChangeExecutionTaskSettingCommandHandler
 				// INPUT「実行タスク設定．更新処理有効設定」を確認する
 				if (executionTaskSetting[0].isEnabledSetting()) {
 					// アルゴリズム「次回実行日時作成処理」を実行する
-					Optional<GeneralDateTime> nextExecDateTime = Optional.ofNullable(this.processExecutionService
-							.processNextExecDateTimeCreation(executionTaskSetting[0]));
+					Optional<GeneralDateTime> nextExecDateTime = Optional.ofNullable(
+							this.processExecutionService.processNextExecDateTimeCreation(executionTaskSetting[0]));
 					executionTaskSetting[0].setNextExecDateTime(nextExecDateTime);
 				} else {
 					// 次回実行日時をNULLとする
@@ -125,6 +129,10 @@ public class ChangeExecutionTaskSettingCommandHandler
 					throw new BusinessException("Msg_1110");
 				}
 			});
+			// ドメインモデル「更新処理自動実行管理」を更新する
+			logManage.setCurrentStatus(executionTaskSetting[0].isEnabledSetting() ? CurrentExecutionStatus.WAITING
+					: CurrentExecutionStatus.INVALID);
+			this.processExecutionLogManageRepository.update(logManage);
 		});
 		if (executionTaskSetting[0] != null) {
 			// 更新後の「実行タスク設定」を返す

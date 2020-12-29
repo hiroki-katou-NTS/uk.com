@@ -9,7 +9,6 @@ import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScope;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionSetting;
 import nts.uk.ctx.at.function.dom.processexecution.ReExecutionCondition;
 import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The class Update process auto execution dto.<br>

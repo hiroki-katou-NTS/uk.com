@@ -27,9 +27,6 @@ module nts.uk.at.view.kbt002.l {
       if (params) {
         vm.execId(params.executionId);
         vm.getProExecIndex(vm.execId());
-      } else {
-        // FAKE DATA
-        vm.getProExecIndex('ad686761-6807-467b-b9ab-9836a2047f07');
       }
     }
 

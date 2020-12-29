@@ -6,13 +6,11 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogHistory;
-import nts.uk.ctx.at.function.dom.processexecution.repository.ExecutionTaskLogRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogHistRepository;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtExecutionTaskLog;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionLogHistory;
@@ -198,6 +196,7 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository implemen
 
 	@Override
 	public List<ProcessExecutionLogHistory> getByCompanyIdAndDateAndEmployeeName(String companyId, GeneralDateTime startDateTime, GeneralDateTime endDateTime) {
+		endDateTime = endDateTime.addDays(1).addSeconds(-1);
 		return this.queryProxy().query(SELECT_ALL_BY_CID_START_DATE_END_DATE, KfnmtProcessExecutionLogHistory.class)
 				.setParameter("companyId", companyId)
 				.setParameter("startDate", startDateTime)

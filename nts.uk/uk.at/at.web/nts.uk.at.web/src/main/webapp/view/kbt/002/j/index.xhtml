@@ -23,13 +23,12 @@
 
     <ui:define name="content">
       <div id="functions-area">
-        <!-- B1_1 -->
-        <button class="add" data-bind="click: initProcExec, disable: isNewMode" tabindex="1">#{i18n.getText('KBT002_2')}</button>
-        <button class="proceed" data-bind="click: save, enable: isNewMode"
+        <button id="J1_1" class="add" data-bind="click: initProcExec, disable: isNewMode" tabindex="1">#{i18n.getText('KBT002_2')}</button>
+        <button id="J1_2" class="proceed" data-bind="click: save, enable: isNewMode"
           tabindex="2">#{i18n.getText('KBT002_3')}</button>
-        <button class="danger" data-bind="click: remove, disable: isNewMode"
+        <button id="J1_3" class="danger" data-bind="click: remove, disable: isNewMode"
           tabindex="3">#{i18n.getText('KBT002_4')}</button>
-        <button class="add" data-bind="click: closeDialog, enable: true"
+        <button id="J1_4" class="add" data-bind="click: closeDialog, enable: true"
           tabindex="4">#{i18n.getText('KBT002_134')}</button>
       </div>
       <div id="contents-area">

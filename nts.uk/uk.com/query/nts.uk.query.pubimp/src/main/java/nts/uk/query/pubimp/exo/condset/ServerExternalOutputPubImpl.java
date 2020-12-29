@@ -19,7 +19,7 @@ public class ServerExternalOutputPubImpl implements ServerExternalOutputPub {
 
 	@Inject
 	private OutputPeriodSettingQuery outputPeriodSettingQuery;
-	
+
 	@Inject
 	private AutoExecutionServerExternalOutputQuery autoExecutionServerExternalOutputQuery;
 
@@ -34,8 +34,9 @@ public class ServerExternalOutputPubImpl implements ServerExternalOutputPub {
 	}
 
 	@Override
-	public void processAutoExecution(String conditionCd, DatePeriod period, GeneralDate baseDate,
-			Integer categoryId) {
-		this.autoExecutionServerExternalOutputQuery.processAutoExecution(conditionCd, period, baseDate, categoryId);
+	public void processAutoExecution(String conditionCd, DatePeriod period, GeneralDate baseDate, Integer categoryId,
+			String execId) {
+		this.autoExecutionServerExternalOutputQuery.processAutoExecution(conditionCd, period, baseDate, categoryId,
+				execId);
 	}
 }

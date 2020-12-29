@@ -65,7 +65,7 @@ import nts.uk.ctx.at.function.dom.indexreconstruction.IndexReorgTable;
 import nts.uk.ctx.at.function.dom.indexreconstruction.ProcExecIndex;
 import nts.uk.ctx.at.function.dom.indexreconstruction.ProcExecIndexResult;
 import nts.uk.ctx.at.function.dom.indexreconstruction.TableName;
-import nts.uk.ctx.at.function.dom.indexreconstruction.repository.CaculateFragRate;
+import nts.uk.ctx.at.function.dom.indexreconstruction.repository.CalculateFragRate;
 import nts.uk.ctx.at.function.dom.indexreconstruction.repository.IndexReorgTableRepository;
 import nts.uk.ctx.at.function.dom.indexreconstruction.repository.ProcExecIndexRepository;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
@@ -417,6 +417,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
         GeneralDateTime dateTimeOutput = this.preExecutionRegistrationProcessing(companyId, execItemCd, execId,
                 processExecutionLogManage, execType);
         ProcessExecutionLog procExecLog = procExecLogRepo.getLogByCIdAndExecCd(companyId, execItemCd, execId).get();
+        procExecLog.setTaskLogList(procExecLog.getTaskLogList().stream()
+        		.filter(log -> log.getExecId().equals(execId))
+        		.collect(Collectors.toList()));
         /*
          * /* ドメインモデル「更新処理自動実行ログ」を更新する 現在の実行状態 ＝ 実行 全体の終了状態 ＝ NULL
          *
@@ -572,17 +575,6 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
             }
 
             // ドメインモデル「更新処理自動実行ログ履歴」を新規登録する
-            List<ProcessExecutionTaskLogCommand> taskLogListCommand = procExecLog.getTaskLogList().stream()
-                    .map(item -> ProcessExecutionTaskLogCommand.builder()
-                            .taskId(item.getProcExecTask().value)
-                            .status(item.getStatus().map(e -> e.value).orElse(null))
-                            .lastExecDateTime(item.getLastExecDateTime().orElse(null))
-                            .lastEndExecDateTime(item.getLastEndExecDateTime().orElse(null))
-                            .errorSystem(item.getErrorSystem().orElse(null))
-                            .errorBusiness(item.getErrorBusiness().orElse(null))
-                            .systemErrorDetails(item.getSystemErrorDetails().orElse(null))
-                            .build())
-                    .collect(Collectors.toList());
             Optional<DatePeriod> scheduleCreationPeriod = procExecLog.getEachProcPeriod().map(EachProcessPeriod::getScheduleCreationPeriod).orElse(null);
             Optional<DatePeriod> dailyCreationPeriod = procExecLog.getEachProcPeriod().map(EachProcessPeriod::getDailyCreationPeriod).orElse(null);
             Optional<DatePeriod> dailyCalcPeriod = procExecLog.getEachProcPeriod().map(EachProcessPeriod::getDailyCalcPeriod).orElse(null);
@@ -912,12 +904,10 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
             this.execTaskLogRepo.updateAll(companyId, execItemCd, execId, procExecLog.getTaskLogList());
         }
         this.procExecLogRepo.update(procExecLog);
-        AsyncTaskInfo handle = null;
         DataToAsyn dataToAsyn = new DataToAsyn();
 
         // 就業担当者の社員ID（List）を取得する : RQ526
 //		List<String> listManagementId = employeeManageAdapter.getListEmpID(companyId, GeneralDate.today());
-        boolean runSchedule = false;
         boolean checkStopExec = false;
         try {
             // 個人スケジュール作成区分の判定
@@ -1000,7 +990,6 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                     if (checkStop(execId)) {
                         checkStopExec = true;
                     }
-                    runSchedule = true;
                 } catch (Exception e) {
                     // 再実行の場合にExceptionが発生したかどうかを確認する。
 					if (procExec.getExecutionType() == ProcessExecType.RE_CREATE) {
@@ -1117,7 +1106,6 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                                 if (checkStop(execId)) {
                                     checkStopExec = true;
                                 }
-                                runSchedule = true;
                             }
                         } catch (Exception e) {
                             // 再実行の場合にExceptionが発生したかどうかを確認する。
@@ -1193,7 +1181,6 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                                 if (checkStop(execId)) {
                                     checkStopExec = true;
                                 }
-                                runSchedule = true;
                             } catch (Exception e) {
                                 // 再実行の場合にExceptionが発生したかどうかを確認する。
 								if (procExec.getExecutionType() == ProcessExecType.RE_CREATE) {
@@ -2289,7 +2276,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	private boolean reflectApprovalResult(String execId, UpdateProcessAutoExecution processExecution,
                                           ProcessExecutionLog ProcessExecutionLog, String companyId, List<ApprovalPeriodByEmp> lstApprovalPeriod) {
         // ドメインモデル「更新処理自動実行ログ」を更新する
-        List<ExecutionTaskLog> taskLogLists = ProcessExecutionLog.getTaskLogList();
+        List<ExecutionTaskLog> taskLogLists = ProcessExecutionLog.getTaskLogList().stream()
+        		.filter(item -> item.getExecId().equals(execId))
+        		.collect(Collectors.toList());
         int size = taskLogLists.size();
         boolean existExecutionTaskLog = false;
 //		boolean checkError1552 = false;
@@ -2599,7 +2588,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                                        CommandHandlerContext<ExecuteProcessExecutionCommand> context) {
         context.asAsync().getDataSetter().updateData("taskId", context.asAsync().getTaskId());
         // ドメインモデル「更新処理自動実行ログ」を更新する
-        List<ExecutionTaskLog> taskLogLists = ProcessExecutionLog.getTaskLogList();
+        List<ExecutionTaskLog> taskLogLists = ProcessExecutionLog.getTaskLogList().stream()
+        		.filter(item -> item.getExecId().equals(execId))
+        		.collect(Collectors.toList());
         int size = taskLogLists.size();
         boolean existExecutionTaskLog = false;
 //		boolean checkError1552 = false;
@@ -2870,7 +2861,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 
         context.asAsync().getDataSetter().updateData("taskId", context.asAsync().getTaskId());
         // ドメインモデル「更新処理自動実行ログ」を更新する
-        List<ExecutionTaskLog> taskLogLists = ProcessExecutionLog.getTaskLogList();
+        List<ExecutionTaskLog> taskLogLists = ProcessExecutionLog.getTaskLogList().stream()
+        		.filter(item -> item.getExecId().equals(execId))
+        		.collect(Collectors.toList());
         int size = taskLogLists.size();
         boolean existExecutionTaskLog = false;
         String execItemCd = context.getCommand().getExecItemCd();
@@ -2883,7 +2876,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
         try {
             for (int i = 0; i < size; i++) {
                 ExecutionTaskLog executionTaskLog = taskLogLists.get(i);
-                if (executionTaskLog.getProcExecTask().value == ProcessExecutionTask.AL_EXTRACTION.value) {
+                if (executionTaskLog.getProcExecTask() == ProcessExecutionTask.AL_EXTRACTION) {
                     executionTaskLog.setStatus(null);
                     executionTaskLog.setLastExecDateTime(GeneralDateTime.now());
                     existExecutionTaskLog = true;
@@ -2911,7 +2904,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                 // ドメインモデル「更新処理自動実行ログ」を更新する
                 for (int i = 0; i < size; i++) {
                     ExecutionTaskLog executionTaskLog = taskLogLists.get(i);
-                    if (executionTaskLog.getProcExecTask().value == ProcessExecutionTask.AL_EXTRACTION.value) {
+                    if (executionTaskLog.getProcExecTask() == ProcessExecutionTask.AL_EXTRACTION) {
                         executionTaskLog.setStatus(EndStatus.NOT_IMPLEMENT);
                         executionTaskLog.setLastExecDateTime(null);
                     }
@@ -3173,7 +3166,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 //                    .status(Optional.ofNullable(EnumAdaptor.valueOf(EndStatus.NOT_IMPLEMENT.value, EndStatus.class)))
 //                    .build()
 //            );
-            List<ExecutionTaskLog> taskLogList = ProcessExecutionLog.processInitTaskLog();
+            List<ExecutionTaskLog> taskLogList = ProcessExecutionLog.processInitTaskLog(execId);
             procExecLog = new ProcessExecutionLog(new ExecutionCode(execItemCd), companyId, null, taskLogList, execId);
             this.procExecLogRepo.insert(procExecLog);
         }
@@ -3432,7 +3425,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		String errorMessage = "";
 		boolean isHasException = false;
 		// Step 1: ドメインモデル「更新処理自動実行ログ」を更新する - Update the domain model 更新処理自動実行ログ
-		List<ExecutionTaskLog> taskLogLists = procExecLog.getTaskLogList();
+		List<ExecutionTaskLog> taskLogLists = procExecLog.getTaskLogList().stream()
+        		.filter(item -> item.getExecId().equals(execId))
+        		.collect(Collectors.toList());
 		for (int i = 0; i < taskLogLists.size(); i++) {
 			// Check 各処理の終了状態.更新処理 ＝ インデックス再構成
 			if (taskLogLists.get(i).getProcExecTask() == ProcessExecutionTask.INDEX_RECUNSTRUCTION) {
@@ -3472,7 +3467,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			List<IndexReorgTable> listIndexReorgTable = this.indexReorgTableRepository
 					.findAllByCategoryIds(categoryList);
 			// Step 4: 「インデックス再構成結果履歴」を作成する
-			ProcExecIndex proExecIndex = new ProcExecIndex(new ExecutionCode(execId), Collections.emptyList());
+			ProcExecIndex proExecIndex = new ProcExecIndex(execId, Collections.emptyList());
 			// 「インデックス再構成テーブル」を取得できるか確認する - Check if you can get the "index reconstruction
 			// table"
 			if (!listIndexReorgTable.isEmpty()) {
@@ -3498,13 +3493,16 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 						this.indexReorgTableRepository.updateStatis(indexReorgTable.getTablePhysName().v());
 					}
 					// Step 9 インデックス再構成後の断片化率を計算する
-					List<CaculateFragRate> resultCaculateFragRatesAfter = this.indexReorgTableRepository
+					List<CalculateFragRate> resultCaculateFragRatesAfter = this.indexReorgTableRepository
 							.calculateFragRate(indexReorgTable.getTablePhysName().v());
-					resultCaculateFragRatesAfter.removeIf(item -> item.getIndexId() > 0);
-					for (int j = 0; j < resultCaculateFragRatesAfter.size(); j++) {
-						resultCaculateFragRates.get(j).setFragmentationRateAfterProcessing(
-								new FragmentationRate(resultCaculateFragRatesAfter.get(j).getFragmentationRate()));
-					}
+					resultCaculateFragRates.forEach(indexResult -> {
+						resultCaculateFragRatesAfter.stream()
+								.filter(item -> item.getTablePhysicalName().equals(indexResult.getTablePhysicalName().v())
+										&& (item.getIndexName() != null && item.getIndexName().equals(indexResult.getIndexName().v())))
+								.findFirst()
+								.ifPresent(fragRate -> indexResult.setFragmentationRateAfterProcessing(
+										new FragmentationRate(fragRate.getFragmentationRate())));
+					});
 					indexReconstructionResult.addAll(resultCaculateFragRates);
 				});
 				// Step 10: 「インデックス再構成結果」を更新して「インデックス再構成結果履歴」に追加する
@@ -3513,6 +3511,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			// Step 11: 作成した「インデックス再構成結果履歴」を登録する
 			this.proExecIndexRepository.update(proExecIndex);
 		} catch (Exception e) {
+			e.printStackTrace();
 			isHasException = true;
 			errorMessage = "Msg_1339";
 		}
@@ -3535,7 +3534,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	private boolean aggregationOfArbitraryPeriod(String execId, String companyId, UpdateProcessAutoExecution procExec,
 			ProcessExecutionLog procExecLog, CommandHandlerContext<ExecuteProcessExecutionCommand> context) {
 		// Step ドメインモデル「更新処理自動実行ログ」を更新する
-		List<ExecutionTaskLog> taskLogLists = procExecLog.getTaskLogList();
+		List<ExecutionTaskLog> taskLogLists = procExecLog.getTaskLogList().stream()
+        		.filter(item -> item.getExecId().equals(execId))
+        		.collect(Collectors.toList());
 		int size = taskLogLists.size();
 		boolean existExecutionTaskLog = false;
 		boolean checkStopExec = false;
@@ -3675,7 +3676,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	 */
 	private boolean externalOutput(String execId, String companyId, UpdateProcessAutoExecution procExec,
 			ProcessExecutionLog procExecLog) {
-		List<ExecutionTaskLog> taskLogLists = procExecLog.getTaskLogList();
+		List<ExecutionTaskLog> taskLogLists = procExecLog.getTaskLogList().stream()
+        		.filter(item -> item.getExecId().equals(execId))
+        		.collect(Collectors.toList());
 		boolean hasError = false;
 		boolean hasException = false;
 		boolean hasOutputError = false;
@@ -3704,7 +3707,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				if (output != null && output.isExecutionResult()) {
 					// アルゴリズム「サーバ外部出力自動実行」を実行する
 					this.serverExternalOutputAdapter.processAutoExecution(conditionCd.v(), output.getPeriod(),
-							output.getBaseDate(), null);
+							output.getBaseDate(), execId);
 				} else {
 					hasError = true;
 					hasOutputError = true;
@@ -3743,7 +3746,10 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	 */
 	private boolean dataStorage(String execId, String companyId, UpdateProcessAutoExecution procExec,
 			ProcessExecutionLog procExecLog) {
-		List<ExecutionTaskLog> taskLogLists = procExecLog.getTaskLogList();
+		List<ExecutionTaskLog> taskLogLists = procExecLog.getTaskLogList().stream()
+        		.filter(item -> item.getExecId().equals(execId))
+        		.collect(Collectors.toList());
+		boolean hasError = false;
 		String errorMessage = "";
 		// Step ドメインモデル「更新処理自動実行ログ」を更新する
 		this.updateLog(execId, ProcessExecutionTask.SAVE_DATA, procExec, procExecLog);
@@ -3758,10 +3764,25 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		}
 
 		// アルゴリズム「自動削除準備」を実行する
-		this.autoExecutionPreparationAdapter.autoStoragePrepare(procExec);
+		try {
+			this.autoExecutionPreparationAdapter.autoStoragePrepare(procExec);
+		} catch (Exception e) {
+			errorMessage = e.getLocalizedMessage();
+			hasError = true;
+		}
 		// ドメインモデル「更新処理自動実行ログ」を取得しチェックする（中断されている場合は更新されているため、最新の情報を取得する）
+		ProcessExecutionLog log = this.procExecLogRepo
+				.getLogByCIdAndExecCd(companyId, procExec.getExecItemCode().v(), execId).get();
+		EndStatus status = log.getTaskLogList()
+				.stream()
+				.filter(task -> task.getProcExecTask().equals(ProcessExecutionTask.SAVE_DATA))
+				.findFirst()
+				.get()
+				.getStatus()
+				.orElse(null);
+		// 各処理の後のログ更新処理
 		this.updateLogAfterProcess.updateLogAfterProcess(ProcessExecutionTask.SAVE_DATA, companyId,
-				execId, procExec, procExecLog, false, false, errorMessage);
+				execId, procExec, procExecLog, hasError, EndStatus.FORCE_END.equals(status), errorMessage);
 		return false;
 	}
 
@@ -3776,7 +3797,10 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	 */
 	private boolean dataDeletion(String execId, String companyId, UpdateProcessAutoExecution procExec,
 			ProcessExecutionLog procExecLog) {
-		List<ExecutionTaskLog> taskLogLists = procExecLog.getTaskLogList();
+		List<ExecutionTaskLog> taskLogLists = procExecLog.getTaskLogList().stream()
+        		.filter(item -> item.getExecId().equals(execId))
+        		.collect(Collectors.toList());
+		boolean hasError = false;
 		String errorMessage = "";
 		// Step ドメインモデル「更新処理自動実行ログ」を更新する
 		this.updateLog(execId, ProcessExecutionTask.DELETE_DATA, procExec, procExecLog);
@@ -3791,10 +3815,25 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		}
 
 		// アルゴリズム「自動削除準備」を実行する
-		this.autoExecutionPreparationAdapter.autoDeletionPrepare(procExec);
+		try {
+			this.autoExecutionPreparationAdapter.autoDeletionPrepare(procExec);
+		} catch (Exception e) {
+			errorMessage = e.getLocalizedMessage();
+			hasError = true;
+		}
 		// ドメインモデル「更新処理自動実行ログ」を取得しチェックする（中断されている場合は更新されているため、最新の情報を取得する）
+		ProcessExecutionLog log = this.procExecLogRepo
+				.getLogByCIdAndExecCd(companyId, procExec.getExecItemCode().v(), execId).get();
+		EndStatus status = log.getTaskLogList()
+				.stream()
+				.filter(task -> task.getProcExecTask().equals(ProcessExecutionTask.DELETE_DATA))
+				.findFirst()
+				.get()
+				.getStatus()
+				.orElse(null);
+		// 各処理の後のログ更新処理
 		this.updateLogAfterProcess.updateLogAfterProcess(ProcessExecutionTask.DELETE_DATA, companyId,
-				execId, procExec, procExecLog, false, false, errorMessage);
+				execId, procExec, procExecLog, hasError, EndStatus.FORCE_END.equals(status), errorMessage);
 		return false;
 	}
 

@@ -19,7 +19,6 @@ import nts.uk.shr.com.communicate.PathToWebApi;
 import nts.uk.shr.com.communicate.batch.BatchServer;
 //import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.uk.shr.com.task.schedule.ExecutionContext;
-import nts.uk.shr.com.task.schedule.UkJobScheduler;
 import nts.uk.shr.com.task.schedule.UkScheduledJob;
 
 @Stateless
@@ -32,9 +31,6 @@ public class SortingProcessScheduleJob extends UkScheduledJob {
 
 	@Inject
 	private ExecutionTaskSettingRepository execSettingRepo;
-	
-	@Inject
-	private UkJobScheduler scheduler;
 
 	@Inject
 	private BatchServer batchServer;

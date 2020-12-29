@@ -12,6 +12,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.AsyncTaskService;
+import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.app.command.processexecution.appupdatesuspension.AppUpdateSuspension;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.CurrentExecutionStatus;
@@ -69,21 +70,26 @@ public class TerminateProcessExecutionCommandHandler extends AsyncCommandHandler
         if (!processExecLogManOpt.isPresent()) {
            return;
         }
+        
+        ProcessExecutionLogManage processExecLogMan = processExecLogManOpt.get();
+
+        //「待機中」 or 「無効」の場合
+        if (processExecLogMan.getCurrentStatus().isPresent()
+        		&& !processExecLogMan.getCurrentStatus().get().equals(CurrentExecutionStatus.RUNNING)) {
+        	TaskDataSetter dataSetter = context.asAsync().getDataSetter();
+        	if (dataSetter != null) {
+        		dataSetter.setData("currentStatusIsOneOrTwo", "Msg_1102");
+        		throw new BusinessException("Msg_1102");
+        	}
+        	return;
+        }
+        
         // ドメインモデル「更新処理自動実行管理」．全体の終了状態 をチェックする
         if (processExecLogManOpt.get().getOverallStatus().isPresent()) {
             if (processExecLogManOpt.get().getOverallStatus().get() == EndStatus.SUCCESS
                     || processExecLogManOpt.get().getOverallStatus().get() == EndStatus.FORCE_END) {
                 return;
             }
-        }
-
-        ProcessExecutionLogManage processExecLogMan = processExecLogManOpt.get();
-
-        //「待機中」 or 「無効」の場合
-        if (processExecLogMan.getCurrentStatus().isPresent()
-        		&& !processExecLogMan.getCurrentStatus().get().equals(CurrentExecutionStatus.RUNNING)) {
-//			dataSetter.setData("currentStatusIsOneOrTwo", "Msg_1102");
-            throw new BusinessException("Msg_1102");
         }
 
         // ドメインモデル「更新処理自動実行ログ」を取得する

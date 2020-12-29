@@ -129,6 +129,7 @@ public class ProcessExecutionLogHistoryDto implements ProcessExecutionLogHistory
                         .lastEndExecDateTime(item.getLastEndExecDateTime().orElse(null))
                         .errorSystem(item.getErrorSystem().orElse(null))
                         .errorBusiness(item.getErrorBusiness().orElse(null))
+                        .errorSystemText(item.getSystemErrorDetails().orElse(null))
                         .build())
                 .collect(Collectors.toList());
     }

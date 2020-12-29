@@ -20,7 +20,7 @@ import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 public class ProcExecIndex extends AggregateRoot {
 
 	/** 実行ID*/
-	private ExecutionCode executionId;
+	private String executionId;
 	
 	/** 結果詳細*/
 	private List<ProcExecIndexResult> indexReconstructionResult;
@@ -34,12 +34,12 @@ public class ProcExecIndex extends AggregateRoot {
 	}
 
 	public void getMemento(MementoGetter memento) {
-		this.executionId = new ExecutionCode(memento.getExecutionId());
+		this.executionId = memento.getExecutionId();
 		this.indexReconstructionResult = memento.getIndexReconstructionResult();
 	}
 
 	public void setMemento(MementoSetter memento) {
-		memento.setExecutionId(this.executionId.v());
+		memento.setExecutionId(this.executionId);
 		memento.setIndexReconstructionResult(this.indexReconstructionResult);
 	}
 

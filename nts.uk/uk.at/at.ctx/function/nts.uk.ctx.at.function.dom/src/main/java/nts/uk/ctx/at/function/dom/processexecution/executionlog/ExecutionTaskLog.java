@@ -12,6 +12,11 @@ import nts.arc.time.GeneralDateTime;
 @Builder
 @Data
 public class ExecutionTaskLog {
+	
+	/**
+	 * 実行ID
+	 */
+	private String execId;
 
     /**
      * 更新処理

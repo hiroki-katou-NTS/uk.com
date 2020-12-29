@@ -1,23 +1,30 @@
 package nts.uk.ctx.at.function.app.command.processexecution;
 
+import java.util.Collections;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.AsyncTaskService;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.function.dom.processexecution.executionlog.*;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.CurrentExecutionStatus;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.EachProcessPeriod;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.ExecutionTaskLog;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.OverallErrorDetail;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLog;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogHistory;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionTask;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogHistRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogManageRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExeStateOfCalAndSum;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Stateless
 public class TerminateProcessExecutionAutoCommandHandler extends AsyncCommandHandler<TerminateProcessExecutionCommand> {
@@ -112,17 +119,6 @@ public class TerminateProcessExecutionAutoCommandHandler extends AsyncCommandHan
 		・各処理の期間　＝　「更新処理自動実行ログ」.各処理の期間
 		*/
         procExecLog.getTaskLogList().stream().sorted((x, y) -> x.getProcExecTask().value - y.getProcExecTask().value).collect(Collectors.toList());
-        List<ProcessExecutionTaskLogCommand> taskLogListCommand = procExecLog.getTaskLogList().stream()
-                .map(item -> ProcessExecutionTaskLogCommand.builder()
-                        .taskId(item.getProcExecTask().value)
-                        .status(item.getStatus().map(e -> e.value).orElse(null))
-                        .lastExecDateTime(item.getLastExecDateTime().orElse(null))
-                        .lastEndExecDateTime(item.getLastEndExecDateTime().orElse(null))
-                        .errorSystem(item.getErrorSystem().orElse(null))
-                        .errorBusiness(item.getErrorBusiness().orElse(null))
-                        .systemErrorDetails(item.getSystemErrorDetails().orElse(null))
-                        .build())
-                .collect(Collectors.toList());
         Optional<DatePeriod> scheduleCreationPeriod = procExecLog.getEachProcPeriod().map(EachProcessPeriod::getScheduleCreationPeriod).orElse(null);
         Optional<DatePeriod> dailyCreationPeriod = procExecLog.getEachProcPeriod().map(EachProcessPeriod::getDailyCreationPeriod).orElse(null);
         Optional<DatePeriod> dailyCalcPeriod = procExecLog.getEachProcPeriod().map(EachProcessPeriod::getDailyCalcPeriod).orElse(null);

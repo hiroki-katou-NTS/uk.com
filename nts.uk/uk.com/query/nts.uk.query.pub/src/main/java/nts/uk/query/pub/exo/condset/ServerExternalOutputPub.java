@@ -14,5 +14,5 @@ public interface ServerExternalOutputPub {
 	ServerExternalOutputExport findExternalOutput(String cid, String conditionCd);
 
 	void processAutoExecution(String conditionCd, DatePeriod period, GeneralDate baseDate,
-			Integer categoryId);
+			Integer categoryId, String execId);
 }

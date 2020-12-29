@@ -13,6 +13,5 @@ public interface ServerExternalOutputAdapter {
 
 	ServerExternalOutputImport findExternalOutput(String cid, String conditionCd) throws Exception;
 	
-	void processAutoExecution(String conditionCd, DatePeriod period, GeneralDate baseDate,
-			Integer categoryId);
+	void processAutoExecution(String conditionCd, DatePeriod period, GeneralDate baseDate, String execId);
 }

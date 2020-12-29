@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.assist.app.find.autosetting.deletion;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,6 +44,9 @@ public class ScreenDelDisplayProcessingFinder {
 
 		// List<システム種類>に「システム種類」を追加する。
 		List<SystemType> systemTypes = picService.getSystemTypes(pic);
+		
+		//TODO: FAKE-DATA
+		systemTypes = Arrays.asList(SystemType.values());
 
 		// 取得したList＜パターン設定>をチェックする。
 		if (!patterns.isEmpty()) {

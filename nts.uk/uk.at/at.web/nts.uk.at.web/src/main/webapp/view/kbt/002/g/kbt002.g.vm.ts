@@ -9,27 +9,26 @@ module nts.uk.at.view.kbt002.g {
     modalLink = '';
     execItemCd = '';
     taskLogExecId = '';
-    overallError = '';
-    overallStatus = '';
-    taskLogList: any[] = [];
+    overallError: KnockoutObservable<string> = ko.observable('');
+    overallStatus: KnockoutObservable<string> = ko.observable('');
+    taskLogList: KnockoutObservableArray<any> = ko.observableArray([]);
     eachProcessPeriod: EachProcessPeriod = new EachProcessPeriod();
 
     // Start page
     created(params: any) {
       let self = this;
       var sharedData = params;
-      console.log(sharedData);
       if (sharedData) {
         sharedData.taskLogList = _.sortBy(sharedData.taskLogList, ["taskId"]);
         self.taskLogExecId = sharedData.execId;
         self.execItemCd = sharedData.execItemCd;
-        self.overallStatus = sharedData.overallStatus;
-        self.overallError = sharedData.overallError;
-        self.taskLogList = _.map(sharedData.taskLogList, (item: any) => {
+        self.overallStatus(self.getStatus(sharedData.overallStatus));
+        self.overallError(self.getError(sharedData.overallError));
+        self.taskLogList(_.map(sharedData.taskLogList, (item: any) => {
           item.lastExecDateTime = item.lastExecDateTime ? moment.utc(item.lastExecDateTime).format("YYYY/MM/DD hh:mm:ss") : null;
           item.lastEndExecDateTime = item.lastEndExecDateTime ? moment.utc(item.lastEndExecDateTime).format("YYYY/MM/DD hh:mm:ss") : null;
           return item;
-        });
+        }));
         self.eachProcessPeriod = new EachProcessPeriod({
           schCreateStart: sharedData.schCreateStart,
           schCreateEnd: sharedData.schCreateEnd,
@@ -60,6 +59,26 @@ module nts.uk.at.view.kbt002.g {
         }
       });
 
+    }
+    
+    private getStatus(value: number): string {
+      switch (value) {
+        case 0: return "未実施";
+        case 1: return "完了";
+        case 2: return "強制終了";
+        case 3: return "終了中";
+        default: return "";
+      }
+    }
+
+    private getError(value: number): string {
+      switch (value) {
+        case 0: return "更新処理の途中で終了時刻を超過したため中断しました。";
+        case 1: return "前回の更新処理が完了していなかったため実行されませんでした。";
+        case 2: return "画面から強制終了しました。";
+        case 3: return "システム利用停止中のため実行されませんでした。";
+        default: return "";
+      }
     }
 
     private createLinkAndSharedObject(taskId: any, logHistory: any) {
@@ -198,11 +217,10 @@ module nts.uk.at.view.kbt002.g {
         case 12: // データの削除
           break;
         case 13: // インデックス再構成
-          const params = {
+          self.sharedObj = {
             executionId: logHistory.execId,
           };
-          nts.uk.ui.windows.setShared('inputDialogL', self.sharedObj);
-          self.$window.modal('/view/kbt/002/l/index.xhtml');
+          self.modalLink = '/view/kbt/002/l/index.xhtml';
           self.webApp = 'at';
           break;
         default:

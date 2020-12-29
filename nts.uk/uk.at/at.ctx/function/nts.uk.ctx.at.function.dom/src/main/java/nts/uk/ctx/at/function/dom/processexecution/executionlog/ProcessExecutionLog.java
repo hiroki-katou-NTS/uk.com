@@ -58,16 +58,16 @@ public class ProcessExecutionLog extends AggregateRoot {
 	}
 
 	public void initTaskLogList() {
-		this.taskLogList = processInitTaskLog();
+		this.taskLogList = processInitTaskLog(this.execId);
 	}
 	
-	public static List<ExecutionTaskLog> processInitTaskLog() {
+	public static List<ExecutionTaskLog> processInitTaskLog(String execId) {
 		return Arrays.stream(TASK_SETTINGS)
-				.map(item -> ProcessExecutionLog.processInitTaskLog(item, EndStatus.NOT_IMPLEMENT))
+				.map(item -> ProcessExecutionLog.processInitTaskLog(item, EndStatus.NOT_IMPLEMENT, execId))
 				.collect(Collectors.toList());
 	}
 	
-	private static ExecutionTaskLog processInitTaskLog(ProcessExecutionTask task, EndStatus endStatus) {
+	private static ExecutionTaskLog processInitTaskLog(ProcessExecutionTask task, EndStatus endStatus, String execId) {
 		return ExecutionTaskLog.builder()
 			.procExecTask(EnumAdaptor.valueOf(task.value, ProcessExecutionTask.class))
 			.status(Optional.ofNullable(EnumAdaptor.valueOf(endStatus.value, EndStatus.class)))
