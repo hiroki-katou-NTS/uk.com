@@ -28,7 +28,7 @@ input, textarea {
 
 .caret-background {
 	width: 240px; 
-	height: 315px;
+	height: 325px;
 	margin-left: 10px;
 	margin-top: 10px;
 	padding: 15px;
@@ -192,9 +192,13 @@ input, textarea {
 	width: calc(100% - 20px);
 }
 .three-columns .cell {
-	width: initial;
+	width: auto;
 	vertical-align: top;
 	padding-right: 15px;
+}
+.three-columns .cell.column1 {
+	width: 29%;
+	max-width: 174px;
 }
 .three-columns .column3 {
 	width: 37%;

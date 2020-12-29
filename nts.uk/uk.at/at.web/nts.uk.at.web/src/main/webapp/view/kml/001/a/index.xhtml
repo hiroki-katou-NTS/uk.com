@@ -27,7 +27,7 @@
             <button
               class="proceed short-button"
               tabindex="1"
-              data-bind="click: saveData,  enable: $root.errors.isEmpty"
+              data-bind="click: registerUpdateData,  enable: $root.errors.isEmpty"
             >
               #{i18n.getText('KML001_2')}
             </button>
@@ -68,7 +68,7 @@
                   tabindex="7"
                   data-bind="ntsGridList: {
 										name: '#[KML001_6]', 
-										height: 290,
+										height: 300,
 										options: gridPersonCostList,
 										optionsValue: 'dateRange',
 										columns: ko.observableArray([
@@ -78,23 +78,7 @@
               </div>
             </div>
           </div>
-          <div class="fixed-flex-layout-right">
-            <!-- <div class="table">
-								<div class="cell column1">
-									<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KML001_9')}</div>
-								</div>
-								<div class="cell valign-center">
-									<div>
-										<div id="startDateInput" data-bind="ntsDatePicker: {
-											name: '#[KML001_9]',
-											value: newStartDate,
-											dateFormat: 'YYYY/MM/DD',
-											valueFormat: 'YYYY/MM/DD',
-											required: true,
-											enable: isInsert }" />
-									</div>
-								</div>
-							</div> -->
+          <div class="fixed-flex-layout-right">          
             <div class="table">
               <div class="cell">
                 <!--A3_8-->
@@ -125,12 +109,12 @@
                   <div class="cell column2">
                     <!--A4_10-->
                     <div
-                      tabindex="9"
+                      tabindex="9" class="field-required"
                       data-bind="ntsRadioBoxGroup: {
 											name: '#[KML001_72]',
 											options: [
-												{id:1,name:'#{i18n.getText('KML001_73')}'},
-												{id:2,name:'#{i18n.getText('KML001_74')}'},
+												{id: 0,name:'#{i18n.getText('KML001_73')}'},
+												{id: 1,name:'#{i18n.getText('KML001_74')}'},
 											],
 											optionsValue: 'id',
 											optionsText: 'name',
@@ -153,7 +137,7 @@
                       <!--A4_14-->
                       <div
                         id="combo-box"
-                        tabindex="10"
+                        tabindex="10" class="field-required"
                         data-bind="ntsComboBox: {
 													name: '#[KML001_75]',
 													options: $parent.unitPriceOpt(),
@@ -162,8 +146,9 @@
 													optionsText: 'name',
 													dropDownAttachedToBody:true,
 													selectFirstIfNull: true,
-													visibleItemsCount: 5,
-													enable: calculationSetting() === 1
+                          visibleItemsCount: 5,
+                          required: true,
+													enable: calculationSetting() === 0
 												 }"
                       ></div>
                     </div>
@@ -187,14 +172,14 @@
                           <!--A4_17-->
                           <div
                             id="comboBoxA4_17"
-                            class="combo-box"
+                            class="combo-box field-required"
                             tabindex="11"
                             data-bind="ntsComboBox: {
 															name: '#[KML001_77]',
 															options: [
 																{ code: 0, name: '#{i18n.getText('Enum_UnitPriceRounding_roundUp')}' },
 																{ code: 1, name: '#{i18n.getText('Enum_UnitPriceRounding_truncation')}' },
-																{ code: 2, name: '#{i18n.getText('Enum_UnitPriceRounding_down4Up5')}' }
+																{ code: 2, name: '#{i18n.getText('Enum_UnitPriceRounding_down4Up5')}' },
 															],
 															optionsValue: 'code',
 															value: roundingUnitPrice,
@@ -202,7 +187,7 @@
 															dropDownAttachedToBody:true,
 															selectFirstIfNull: true,
 															visibleItemsCount: 3,
-															enable: calculationSetting() === 1,
+															enable: calculationSetting() === 0,
 															required: true }"
                           ></div>
                         </div>
@@ -217,7 +202,7 @@
                           <div
                             id="comboBoxA4_19"
                             tabindex="12"
-                            class="combo-box"
+                            class="combo-box field-required"
                             data-bind="ntsComboBox: {
 															name: '#[KML001_79]',
 															options: [															
@@ -227,7 +212,7 @@
 																{ code: 1000, name: '#{i18n.getText('Enum_AmountUnit_oneThousandYen')}' }
 															],
 															optionsValue: 'code',
-															value: roundingAmount,
+															value: unit,
 															optionsText: 'name',
 															dropDownAttachedToBody:true,
 															selectFirstIfNull: true,
@@ -244,14 +229,21 @@
                           <!--A4_21-->
                           <div
                             id="comboBoxA4_21"
-                            class="combo-box1"
+                            class="combo-box1 field-required"
                             tabindex="13"
                             data-bind="ntsComboBox: {
 															name: '#[KML001_81]',
 															options: [
-																{ code: 0, name: '#{i18n.getText('Enum_Rounding_Down')}' },
-																{ code: 1, name: '#{i18n.getText('Enum_Rounding_Up')}' },
-																{ code: 2, name: '#{i18n.getText('Enum_Rounding_Down_Over')}' }
+																{ code: 0, name: '#{i18n.getText('ENUM_ROUNDING_TRUNCATION')}' },
+																{ code: 1, name: '#{i18n.getText('ENUM_ROUNDING_ROUND_UP')}' },
+                                { code: 2, name: '#{i18n.getText('ENUM_ROUNDING_DOWN_1_UP_2')}' },
+                                { code: 3, name: '#{i18n.getText('ENUM_ROUNDING_DOWN_2_UP_3')}' },
+																{ code: 4, name: '#{i18n.getText('ENUM_ROUNDING_DOWN_3_UP_4')}' },
+                                { code: 5, name: '#{i18n.getText('ENUM_ROUNDING_DOWN_4_UP_5')}' },
+                                { code: 6, name: '#{i18n.getText('ENUM_ROUNDING_DOWN_5_UP_6')}' },
+																{ code: 7, name: '#{i18n.getText('ENUM_ROUNDING_DOWN_6_UP_7')}' },
+                                { code: 8, name: '#{i18n.getText('ENUM_ROUNDING_DOWN_7_UP_8')}' },
+                                { code: 9, name: '#{i18n.getText('ENUM_ROUNDING_DOWN_8_UP_9')}' }
 															],
 															optionsValue: 'code',
 															value: inUnits,
@@ -302,14 +294,14 @@
                   </tr>
                 </thead>
                 <tbody data-bind="foreach: currentPersonCost().premiumSets">    
-									<com:ko-if bind="$index() === 0 &amp;&amp; $vm.currentPersonCost().calculationSetting() === 2">             
+									<com:ko-if bind="$index() === 0 &amp;&amp; $vm.currentPersonCost().calculationSetting() === 1">             
 									<tr>
                     <td data-bind="text: '#{i18n.getText('KML001_83')}'"></td>
                     <td class="valign-right" data-bind="text: '#{i18n.getText('KML001_84')}'">100%</td>
                     <td>                      
                       <div
                         id="comboBoxA5_13"
-                        class="combo-box-a5-10"
+                        class="combo-box-a5-10 field-required"
                         tabindex="15"
                         data-bind="ntsComboBox: {
 														name: '#[KML001_85]',
@@ -320,7 +312,7 @@
 														dropDownAttachedToBody:true,
 														selectFirstIfNull: true,
 														visibleItemsCount: 5,
-														enable: $vm.currentPersonCost().calculationSetting() === 2,
+														enable: $vm.currentPersonCost().calculationSetting() === 1,
 														required: true }"
                       ></div>
                     </td>
@@ -336,7 +328,7 @@
                       <span>
                         <input
                           tabindex="16"
-                          class="premiumInput premiumPercent"
+                          class="premiumInput premiumPercent field-required"
                           data-bind="ntsNumberEditor: {
 															name: '#[KML001_13]',
 															value: rate,
@@ -347,7 +339,7 @@
 																unitID: 'PERCENT' 
 															},
 															required: true, 
-															enable: $vm.currentPersonCost().calculationSetting() === 1
+															enable: $vm.currentPersonCost().calculationSetting() === 0
 													 }"
                         />
                       </span>
@@ -355,7 +347,7 @@
                     <td>
                       <div
                         id="comboBoxA5_10"
-                        class="combo-box-a5-10"
+                        class="combo-box-a5-10 field-required"
                         tabindex="16"
                         data-bind="ntsComboBox: {
 															name: '#[KML001_82]',
@@ -372,7 +364,7 @@
 															dropDownAttachedToBody:true,
 															selectFirstIfNull: true,
 															visibleItemsCount: 5,
-															enable: $vm.currentPersonCost().calculationSetting() === 2,
+															enable: $vm.currentPersonCost().calculationSetting() === 1,
 															required: true }"
                       ></div>
                     </td>
@@ -388,7 +380,7 @@
                       </div>
                       <div class="cell">
                         <input
-                          class="premiumInput premiumItems"
+                          class="premiumInput premiumItems field-required"
                           data-bind="ntsTextEditor: {
 													name: '#[KML001_14]',
 													value: $parent.viewAttendanceItems()[$index()],

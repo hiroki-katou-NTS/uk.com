@@ -1,50 +1,124 @@
 module nts.uk.at.view.kml001.c {
-    export module viewmodel {
-        import servicebase = kml001.shr.servicebase;
-        import vmbase = kml001.shr.vmbase;
-        export class ScreenModel extends ko.ViewModel {
-            copyDataFlag: KnockoutObservable<boolean>;
-            lastStartDate: KnockoutObservable<string>;
-            beginStartDate: KnockoutObservable<string>;
-            newStartDate: KnockoutObservable<string>;
-            size: KnockoutObservable<number>;
-            textKML001_47: KnockoutObservable<string>;
-            constructor() {
-                super();
-                var self = this;
-                self.copyDataFlag = ko.observable(true);
-                self.lastStartDate = ko.observable(nts.uk.ui.windows.getShared('lastestStartDate'));
-                self.beginStartDate = ko.observable(vmbase.ProcessHandler.getOneDayAfter(self.lastStartDate()));
-                self.newStartDate = ko.observable(null);
-                self.size = ko.observable(nts.uk.ui.windows.getShared('size'));
-                self.textKML001_47 = ko.observable(nts.uk.resource.getText('KML001_47',[self.lastStartDate()]));
-            }
-            
-            /**
-             * process parameter and close dialog 
-             */
-            submitAndCloseDialog(): void {
-                var self = this;
-                if(!vmbase.ProcessHandler.validateDateInput(self.newStartDate(),self.beginStartDate())){
-                    $("#startDateInput").ntsError('set', {messageId:"Msg_102"});
-                } else {
-                    //call to save
-                    self.$dialog.info({ messageId: 'Msg_15'}).then(() => {
-                        nts.uk.ui.windows.setShared('newStartDate', self.newStartDate());
-                        nts.uk.ui.windows.setShared('copyDataFlag', self.copyDataFlag());
-                        nts.uk.ui.windows.close(); 
-                    });
-                    
-                }
-            }
-            
-            /**
-             * close dialog and do nothing
-             */
-            closeDialog(): void {
-                $("#startDateInput").ntsError('clear');
-                nts.uk.ui.windows.close();   
-            }
+  export module viewmodel {
+    import servicebase = kml001.shr.servicebase;
+    import vmbase = kml001.shr.vmbase;
+    export class ScreenModel extends ko.ViewModel {
+      copyDataFlag: KnockoutObservable<boolean>;
+      lastStartDate: KnockoutObservable<string>;
+      beginStartDate: KnockoutObservable<string>;
+      newStartDate: KnockoutObservable<string>;
+      size: KnockoutObservable<number>;
+      textKML001_47: KnockoutObservable<string>;
+      latestHistory: KnockoutObservable<any> = ko.observable(null);
+      currentPersonCost: KnockoutObservable<any> = ko.observable(null);
+
+      constructor() {
+        super();
+        const self = this;
+        self.latestHistory(nts.uk.ui.windows.getShared('PERSONAL_HISTORY'));
+        console.log(self.latestHistory());
+        self.copyDataFlag = ko.observable(true);
+        self.lastStartDate = ko.observable(self.latestHistory().latestHistory.startDate);        
+        self.newStartDate = ko.observable(null);
+        self.beginStartDate = ko.observable(vmbase.ProcessHandler.getOneDayAfter(self.lastStartDate()));        
+        self.size = ko.observable(self.latestHistory().size);        
+        self.textKML001_47 = ko.observable(nts.uk.resource.getText('KML001_47', [self.lastStartDate()]));
+                
+      }
+
+      /**
+       * process parameter and close dialog 
+       */
+      submitAndCloseDialog(): void {
+        const self = this;
+        /* if (!vmbase.ProcessHandler.validateDateInput(self.newStartDate(), self.beginStartDate())) {
+          $("#startDateInput").ntsError('set', { messageId: "Msg_102" });
+        } else {
+          //call to save
+          self.$dialog.info({ messageId: 'Msg_15' }).then(() => {
+            nts.uk.ui.windows.setShared('newStartDate', self.newStartDate());
+            nts.uk.ui.windows.setShared('copyDataFlag', self.copyDataFlag());
+            nts.uk.ui.windows.close();
+          });
+        } */        
+
+        self.createClonePersonalCost();
+      }
+
+      /**
+       * close dialog and do nothing
+       */
+      closeDialog(): void {
+        const self = this;
+        $("#startDateInput").ntsError('clear');
+        nts.uk.ui.windows.setShared('PERSONAL_CLONED', null);
+        self.$blockui('hide');
+        nts.uk.ui.windows.close();
+      }
+
+      createClonePersonalCost() {
+        const self = this;
+
+        //check error Msg_102
+        
+        $("#startDateInput").trigger('validate');
+        
+        if( !moment(self.newStartDate()).isSameOrAfter(moment(self.beginStartDate()))) {
+          $("#startDateInput").ntsError('set', { messageId: "Msg_102" });         
         }
+
+        if(nts.uk.ui.errors.hasError()) return;
+        
+        self.currentPersonCost(self.latestHistory().personalCost);
+        let premiumSettingList: Array<any> = [];
+        _.forEach(self.currentPersonCost().premiumSets, (item) => {
+
+          let attendanceItems = [];
+          _.forEach(item.attendanceItems, (x) => {
+            attendanceItems.push(x.shortAttendanceID);
+          });
+
+          premiumSettingList.push({
+            iD: item.displayNumber,
+            name: item.name,
+            rate: item.rate,
+            unitPrice: item.unitPrice,
+            useAtr: item.useAtr,
+            attendanceItems: attendanceItems
+          });
+        });
+
+        let personCostRoundingSetting: any = {
+          unitPriceRounding: self.copyDataFlag() ? self.currentPersonCost().roundingUnitPrice : 0,
+          unit: self.copyDataFlag() ? self.currentPersonCost().unit : 0,
+          rounding: self.copyDataFlag() ? self.currentPersonCost().inUnits : 0
+        };
+
+        let startDate = moment.utc(self.newStartDate(), 'YYYY-MM-DD').toISOString(); 
+        let params: any = {
+          startDate: startDate,
+          historyID: null,
+          unitPrice: self.copyDataFlag() ? self.currentPersonCost().unitPrice : 0,
+          howToSetUnitPrice: self.copyDataFlag() ? self.currentPersonCost().calculationSetting : 0,
+          workingHoursUnitPrice: self.copyDataFlag() ? self.currentPersonCost().workingHour : 0,
+          remarks: self.copyDataFlag() ? self.currentPersonCost().memo : null,
+          personCostRoundingSetting: personCostRoundingSetting,
+          premiumSettingList: self.copyDataFlag() ? premiumSettingList : []
+        };
+
+        self.$blockui('show');
+        servicebase.personCostCalculationInsert(params)
+        .done(() => {
+          self.$dialog.info({ messageId: 'Msg_15'}).then( () => {            
+            self.$blockui('hide');
+            nts.uk.ui.windows.setShared('PERSONAL_CLONED', true);            
+            nts.uk.ui.windows.close();            
+          });          
+        })
+        .fail((error) => {
+          self.$blockui('hide');
+        });
+      }
     }
+  }
 }
