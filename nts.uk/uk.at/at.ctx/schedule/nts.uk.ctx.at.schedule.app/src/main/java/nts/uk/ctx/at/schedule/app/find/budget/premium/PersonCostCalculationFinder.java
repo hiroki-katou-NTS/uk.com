@@ -224,7 +224,7 @@ public class PersonCostCalculationFinder {
                         domain.getRemark().v(),
                         new PerCostRoundSettingDto(
                                 domain.getRoundingSetting().getRoundingOfPremium().getPriceRounding().value,
-                                domain.getRoundingSetting().getAmountRoundingSetting().getUnit().value,
+                                (domain.getRoundingSetting().getAmountRoundingSetting().getUnit().value),
                                 domain.getRoundingSetting().getAmountRoundingSetting().getRounding().value),
                         domain.getPremiumSettings().stream().map(e -> new PremiumSettingDto(
                                 e.getID().value,
@@ -245,6 +245,7 @@ public class PersonCostCalculationFinder {
         );
     }
 
+
     public PersonCostCalculationDto getHistPersonCostByHistId(String histId) {
         val cid = AppContexts.user().companyId();
         val listItemName = premiumItemRepository.findByCompanyID(cid);
@@ -263,7 +264,7 @@ public class PersonCostCalculationFinder {
                     domain.getRemark().v(),
                     new PerCostRoundSettingDto(
                             domain.getRoundingSetting().getRoundingOfPremium().getPriceRounding().value,
-                            domain.getRoundingSetting().getAmountRoundingSetting().getUnit().value,
+                            (domain.getRoundingSetting().getAmountRoundingSetting().getUnit().value),
                             domain.getRoundingSetting().getAmountRoundingSetting().getRounding().value),
 
                     domain.getPremiumSettings().stream().map(e -> new PremiumSettingDto(

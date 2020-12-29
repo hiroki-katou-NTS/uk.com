@@ -145,7 +145,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 
         val roundingOfPremium = new UnitPriceRoundingSetting(EnumAdaptor.valueOf(kscmtPerCostCal.costRounding, UnitPriceRounding.class));
         val amountRoundingSetting = new AmountRoundingSetting(
-                AmountUnit.valueOf(kscmtPerCostCal.getCostUnit()),
+                AmountUnit.valueOf(converAmountRounding(kscmtPerCostCal.getCostUnit())),
                 AmountRounding.valueOf(kscmtPerCostCal.costRounding)
         );
 
@@ -170,7 +170,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
     private PersonCostCalculation toDomainPersonCostCalculation(KscmtPerCostCal kscmtPerCostCal) {
         val roundingOfPremium = new UnitPriceRoundingSetting(EnumAdaptor.valueOf(kscmtPerCostCal.costRounding, UnitPriceRounding.class));
         val amountRoundingSetting = new AmountRoundingSetting(
-                AmountUnit.valueOf(kscmtPerCostCal.getCostUnit()),
+                AmountUnit.valueOf(converAmountRounding(kscmtPerCostCal.getCostUnit())),
                 AmountRounding.valueOf(kscmtPerCostCal.costRounding)
         );
         val cid = kscmtPerCostCal.pk.companyID;
@@ -315,7 +315,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
             val entity = listEntityPerCostCal.get();
             val roundingOfPremium = new UnitPriceRoundingSetting(EnumAdaptor.valueOf(entity.costRounding, UnitPriceRounding.class));
             val amountRoundingSetting = new AmountRoundingSetting(
-                    AmountUnit.valueOf(entity.getCostUnit()),
+                    AmountUnit.valueOf(converAmountRounding(entity.getCostUnit())),
                     AmountRounding.valueOf(entity.costRounding)
             );
             val per = new PersonCostCalculation(
@@ -335,7 +335,20 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
         }
         return Optional.empty();
     }
-
+    private int converAmountRounding(int unit) {
+        switch (unit) {
+            case 0:
+                return 1;
+            case 1:
+                return 10;
+            case 2:
+                return 100;
+            case 3:
+                return 1000;
+            default:
+                throw new RuntimeException("invalid value");
+        }
+    }
     @Override
     public void createHistPersonCl(PersonCostCalculation domain, GeneralDate startDate, GeneralDate endDate, String histId) {
         val entityPerCostCal = KscmtPerCostCal.toEntity(domain, startDate, endDate, histId);

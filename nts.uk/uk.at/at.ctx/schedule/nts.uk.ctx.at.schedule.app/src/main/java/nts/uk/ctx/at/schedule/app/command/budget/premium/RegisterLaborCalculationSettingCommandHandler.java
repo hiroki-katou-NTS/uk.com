@@ -32,7 +32,7 @@ public class RegisterLaborCalculationSettingCommandHandler extends CommandHandle
         val roundingOfPremium = new UnitPriceRoundingSetting(EnumAdaptor.valueOf(priceRounding, UnitPriceRounding.class));
         val unit = command.getPersonCostRoundingSetting().getUnit();
         val rounding = command.getPersonCostRoundingSetting().getRounding();
-        val amountRoundingSetting = new AmountRoundingSetting(AmountUnit.valueOf(unit), AmountRounding.valueOf(rounding));
+        val amountRoundingSetting = new AmountRoundingSetting(EnumAdaptor.valueOf(unit,AmountUnit.class),EnumAdaptor.valueOf(rounding,AmountRounding.class));
         val roundingSetting = new PersonCostRoundingSetting(roundingOfPremium, amountRoundingSetting);
         val cid = AppContexts.user().companyId();
         val unitPrice = EnumAdaptor.valueOf(command.getUnitPrice(), UnitPrice.class);

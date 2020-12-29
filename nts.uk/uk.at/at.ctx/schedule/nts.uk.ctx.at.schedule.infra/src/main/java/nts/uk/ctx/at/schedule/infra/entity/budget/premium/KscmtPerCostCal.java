@@ -77,7 +77,7 @@ public class KscmtPerCostCal extends UkJpaEntity implements Serializable {
                 unitPrice.isPresent() ? unitPrice.get().value : null,
                 domain.getRemark().v(),
                 domain.getRoundingSetting().getRoundingOfPremium().getPriceRounding().value,
-                domain.getRoundingSetting().getAmountRoundingSetting().getUnit().value,
+                domain.getRoundingSetting().getAmountRoundingSetting().getUnit().asAmountEnum(),
                 domain.getRoundingSetting().getAmountRoundingSetting().getRounding().value,
                 domain.getHowToSetUnitPrice().value,
                 domain.getWorkingHoursUnitPrice().v()
