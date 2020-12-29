@@ -8,19 +8,19 @@ import java.util.Optional;
  * @author NWS-Hieutt
  *
  */
-public interface ToppageNewRepository {
+public interface ToppageRepository {
 	
 	/**
 	 * 
 	 * @param domain
 	 */
-	void insert(ToppageNew domain);
+	void insert(Toppage domain);
 	
 	/**
 	 * 
 	 * @param domain
 	 */
-	void update(ToppageNew domain);
+	void update(Toppage domain);
 	
 	/**
 	 * 
@@ -34,7 +34,7 @@ public interface ToppageNewRepository {
 	 * @param companyId
 	 * @return
 	 */
-	List<ToppageNew> getByCid(String companyId);
+	List<Toppage> getByCid(String companyId);
 	
 	/**
 	 * ドメインモデル「トップページ」を取得する
@@ -43,5 +43,5 @@ public interface ToppageNewRepository {
 	 * @param topPageCode トップページコード
 	 * @return
 	 */
-	Optional<ToppageNew> getByCidAndCode(String companyId, String topPageCode);
+	Optional<Toppage> getByCidAndCode(String companyId, String topPageCode);
 }

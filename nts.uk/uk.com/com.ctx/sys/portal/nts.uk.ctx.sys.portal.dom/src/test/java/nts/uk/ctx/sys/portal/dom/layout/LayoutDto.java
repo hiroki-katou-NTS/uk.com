@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class LayoutDto implements LayoutNew.MementoSetter, LayoutNew.MementoGetter{
+public class LayoutDto implements Layout.MementoSetter, Layout.MementoGetter{
 	/** ウィジェット設定 */
 	private List<WidgetSetting> widgetSettings;
 	/** トップページコード */

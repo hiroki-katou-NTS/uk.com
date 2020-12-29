@@ -4,11 +4,11 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.sys.portal.dom.toppage.ToppageNew;
+import nts.uk.ctx.sys.portal.dom.toppage.Toppage;
 
 @Getter
 @Setter
-public class TopPageBaseCommand implements ToppageNew.MementoSetter, ToppageNew.MementoGetter {
+public class TopPageBaseCommand implements Toppage.MementoSetter, Toppage.MementoGetter {
 	
 	/** コード */
 	private String topPageCode;

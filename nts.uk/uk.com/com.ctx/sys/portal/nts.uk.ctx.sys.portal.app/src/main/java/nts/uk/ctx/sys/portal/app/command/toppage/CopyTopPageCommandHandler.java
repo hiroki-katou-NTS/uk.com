@@ -9,7 +9,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.sys.portal.dom.toppage.ToppageNew;
+import nts.uk.ctx.sys.portal.dom.toppage.Toppage;
 import nts.uk.ctx.sys.portal.dom.toppage.service.TopPageService;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -30,7 +30,7 @@ public class CopyTopPageCommandHandler extends CommandHandler<CopyTopPageCommand
 		String companyId = AppContexts.user().companyId();
 		boolean isCheckOverWrite = command.isCheckOverwrite;
 		String copyCode = command.getCopyCode();
-		ToppageNew tp = ToppageNew.createFromMemento(command);
+		Toppage tp = Toppage.createFromMemento(command);
 		topPageService.copyTopPage(tp, companyId, isCheckOverWrite, copyCode);
 	}
 

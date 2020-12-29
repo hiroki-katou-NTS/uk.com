@@ -8,13 +8,13 @@ import java.util.stream.Collectors;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.sys.portal.app.find.toppage.WidgetSettingDto;
-import nts.uk.ctx.sys.portal.dom.layout.LayoutNew;
+import nts.uk.ctx.sys.portal.dom.layout.Layout;
 import nts.uk.ctx.sys.portal.dom.layout.WidgetSetting;
 import nts.uk.ctx.sys.portal.dom.layout.WidgetType;
 
 @Data
 @NoArgsConstructor
-public class SaveLayoutCommand implements LayoutNew.MementoGetter {
+public class SaveLayoutCommand implements Layout.MementoGetter {
 	/** ウィジェット設定 */
 	private List<WidgetSettingDto> widgetSettings;
 	/** トップページコード */

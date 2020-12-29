@@ -11,7 +11,7 @@ import nts.arc.layer.dom.AggregateRoot;
  *
  */
 @Getter
-public class ToppageNew extends AggregateRoot {
+public class Toppage extends AggregateRoot {
 	/** コード */
 	private TopPageCode topPageCode;
 	/** レイアウトの表示種類 */
@@ -21,10 +21,10 @@ public class ToppageNew extends AggregateRoot {
 	/** 名称 */
 	private TopPageName topPageName;
 
-	public ToppageNew() {}
+	public Toppage() {}
 
-	public static ToppageNew createFromMemento(MementoGetter memento) {
-		ToppageNew domain = new ToppageNew();
+	public static Toppage createFromMemento(MementoGetter memento) {
+		Toppage domain = new Toppage();
 		domain.getMemento(memento);
 		return domain;
 	}
