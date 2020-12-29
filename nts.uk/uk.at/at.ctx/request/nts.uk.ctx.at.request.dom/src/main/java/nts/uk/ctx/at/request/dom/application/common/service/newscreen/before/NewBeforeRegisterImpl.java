@@ -292,6 +292,7 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 			case "Msg_1508": newMsg = "Msg_2019"; break;
 			case "Msg_2056": newMsg = "Msg_2057"; break;
 			default:
+				newMsg = e.getMessageId();
 				break;
 			}
 			I18NText.Builder builder = I18NText.main(newMsg);
