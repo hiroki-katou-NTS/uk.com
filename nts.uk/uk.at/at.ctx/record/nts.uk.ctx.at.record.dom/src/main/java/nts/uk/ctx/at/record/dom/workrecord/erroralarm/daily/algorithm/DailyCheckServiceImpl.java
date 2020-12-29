@@ -351,14 +351,14 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 			// 勤務種類をチェックする
 			WorkCheckResult checkResult = errorAlarm.getWorkTypeCondition().checkWorkType(new WorkInfoOfDailyPerformance(integra.getEmployeeId(), integra.getYmd(), integra.getWorkInformation()), 
 															Optional.ofNullable(SnapShot.of(integra.getWorkInformation().getRecordInfo(), new AttendanceTime(0))));
-			if(checkResult.value != 1) {
-				checkErr = errorAlarm.getAtdItemCondition().check(item->{
-					if (item.isEmpty()) {
-						return new ArrayList<>();
-					}
-					return errorAlarm.getAtdItemCondition().check(getValueFromItemIds);
-				}) == WorkCheckResult.ERROR;
-			}
+//			if(checkResult.value != 1) {
+//				checkErr = errorAlarm.getAtdItemCondition().check(item->{
+//					if (item.isEmpty()) {
+//						return new ArrayList<>();
+//					}
+//					return errorAlarm.getAtdItemCondition().check(getValueFromItemIds);
+//				}) == WorkCheckResult.ERROR;
+//			}
 			
 			if(checkErr == true) {
 				
