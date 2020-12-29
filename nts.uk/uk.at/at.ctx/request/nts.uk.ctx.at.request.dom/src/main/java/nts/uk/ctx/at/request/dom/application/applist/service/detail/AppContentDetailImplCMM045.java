@@ -1129,26 +1129,26 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 		// ドメインモデル「休日出勤申請」を取得してデータを作成
 		AppOverTime appOverTime = appOverTimeRepository.find(companyID, application.getAppID()).get();
 		// ドメインモデル「申請」．事前事後区分をチェック
-		OvertimeHolidayWorkActual overtimeHolidayWorkActual = null;
-		if(application.getPrePostAtr()==PrePostAtr.POSTERIOR && applicationListAtr==ApplicationListAtr.APPROVER) {
-			overtimeHolidayWorkActual = appContentService.getOvertimeHolidayWorkActual(
-					companyID, 
-					appOverTime,
-					appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode()).orElse(null), 
-					appOverTime.getWorkInfoOp().map(x -> x.getWorkTimeCodeNotNull().orElse(null)).orElse(null));
-		}
-		// 　申請内容　＝　残業申請の申請内容
-		String appContent = appContentService.getOvertimeHolidayWorkContent(
-				null, 
-				null,
-				application.getAppType(), 
-				application.getPrePostAtr(), 
-				applicationListAtr, 
-				application.getOpAppReason().orElse(null), 
-				approvalListDisplaySetting.getAppReasonDisAtr(), 
-				ScreenAtr.CMM045,
-				overtimeHolidayWorkActual.isActualStatusCheckResult(),
-				application);
+//		OvertimeHolidayWorkActual overtimeHolidayWorkActual = null;
+//		if(application.getPrePostAtr()==PrePostAtr.POSTERIOR && applicationListAtr==ApplicationListAtr.APPROVER) {
+//			overtimeHolidayWorkActual = appContentService.getOvertimeHolidayWorkActual(
+//					companyID, 
+//					appOverTime,
+//					appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode()).orElse(null), 
+//					appOverTime.getWorkInfoOp().map(x -> x.getWorkTimeCodeNotNull().orElse(null)).orElse(null));
+//		}
+//		// 　申請内容　＝　残業申請の申請内容
+//		String appContent = appContentService.getOvertimeHolidayWorkContent(
+//				null, 
+//				null,
+//				application.getAppType(), 
+//				application.getPrePostAtr(), 
+//				applicationListAtr, 
+//				application.getOpAppReason().orElse(null), 
+//				approvalListDisplaySetting.getAppReasonDisAtr(), 
+//				ScreenAtr.CMM045,
+//				overtimeHolidayWorkActual.isActualStatusCheckResult(),
+//				application);
 		Optional<ApplicationTypeDisplay> opAppTypeDisplay = Optional.empty();
 		switch (appOverTime.getOverTimeClf()) {
 		case EARLY_OVERTIME:
@@ -1163,7 +1163,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 		default:
 			break;
 		}
-		return new AppOvertimeDataOutput(appContent, opAppTypeDisplay);
+		return new AppOvertimeDataOutput("", opAppTypeDisplay);
 	}
 
 	@Override
