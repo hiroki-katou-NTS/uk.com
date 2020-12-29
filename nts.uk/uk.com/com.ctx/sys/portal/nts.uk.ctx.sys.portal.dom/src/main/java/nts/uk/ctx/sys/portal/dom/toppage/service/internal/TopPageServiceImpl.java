@@ -14,12 +14,12 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
 import nts.uk.ctx.sys.portal.dom.enums.System;
-import nts.uk.ctx.sys.portal.dom.layout.LayoutNew;
-import nts.uk.ctx.sys.portal.dom.layout.LayoutNewRepository;
+import nts.uk.ctx.sys.portal.dom.layout.Layout;
+import nts.uk.ctx.sys.portal.dom.layout.LayoutRepository;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
-import nts.uk.ctx.sys.portal.dom.toppage.ToppageNew;
-import nts.uk.ctx.sys.portal.dom.toppage.ToppageNewRepository;
+import nts.uk.ctx.sys.portal.dom.toppage.Toppage;
+import nts.uk.ctx.sys.portal.dom.toppage.ToppageRepository;
 import nts.uk.ctx.sys.portal.dom.toppage.service.TopPageService;
 
 /**
@@ -30,10 +30,10 @@ public class TopPageServiceImpl implements TopPageService {
 
 	/** The top page repository. */
 	@Inject
-	private ToppageNewRepository topPageRepository;
+	private ToppageRepository topPageRepository;
 	
 	@Inject
-	private LayoutNewRepository layoutNewRepository;
+	private LayoutRepository layoutNewRepository;
 
 	@Inject
 	private StandardMenuRepository standardMenuRepo;
@@ -47,11 +47,11 @@ public class TopPageServiceImpl implements TopPageService {
 	 * Update Ver11 by NWS_HuyCV
 	 */
 	@Override
-	public void copyTopPage(ToppageNew topPage, String companyId, boolean isCheckOverWrite, String copyCode) {
+	public void copyTopPage(Toppage topPage, String companyId, boolean isCheckOverWrite, String copyCode) {
 		// コピー先「トップページ」を取得する
-		Optional<ToppageNew> findTopPageNew = topPageRepository.getByCidAndCode(companyId, topPage.getTopPageCode().v());
-		Optional<ToppageNew> findOldTopPage = topPageRepository.getByCidAndCode(companyId, copyCode);
-		List<LayoutNew> lsLayoutsOld = layoutNewRepository.getByCidAndCode(companyId, copyCode);
+		Optional<Toppage> findTopPageNew = topPageRepository.getByCidAndCode(companyId, topPage.getTopPageCode().v());
+		Optional<Toppage> findOldTopPage = topPageRepository.getByCidAndCode(companyId, copyCode);
+		List<Layout> lsLayoutsOld = layoutNewRepository.getByCidAndCode(companyId, copyCode);
 		Optional<StandardMenu> findSandardMenu = 
 				standardMenuRepo.findByCIDSystemMenuClassificationCode(companyId, System.COMMON.value, MenuClassification.TopPage.value, copyCode);
 		
@@ -78,7 +78,7 @@ public class TopPageServiceImpl implements TopPageService {
 		if (findOldTopPage.isPresent()) {
 			// コピー元レイアウトが登録済みの場合
 			if (!lsLayoutsOld.isEmpty()) {
-				for(LayoutNew layout: lsLayoutsOld) {
+				for(Layout layout: lsLayoutsOld) {
 					layout.setTopPageCode(topPage.getTopPageCode().toString());
 					// コピー元「レイアウト」を元に「レイアウト」を新規登録する
 					layoutNewRepository.insert(layout);

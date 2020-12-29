@@ -15,13 +15,11 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenuRepository;
-import nts.uk.ctx.sys.portal.dom.layout.LayoutNew;
-import nts.uk.ctx.sys.portal.dom.layout.LayoutNewRepository;
+import nts.uk.ctx.sys.portal.dom.layout.Layout;
+import nts.uk.ctx.sys.portal.dom.layout.LayoutRepository;
 import nts.uk.ctx.sys.portal.dom.layout.LayoutType;
-import nts.uk.ctx.sys.portal.dom.toppage.TopPage;
-import nts.uk.ctx.sys.portal.dom.toppage.TopPageRepository;
-import nts.uk.ctx.sys.portal.dom.toppage.ToppageNew;
-import nts.uk.ctx.sys.portal.dom.toppage.ToppageNewRepository;
+import nts.uk.ctx.sys.portal.dom.toppage.Toppage;
+import nts.uk.ctx.sys.portal.dom.toppage.ToppageRepository;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.CreateFlowMenuRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -31,19 +29,17 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class TopPageFinder {
 	@Inject
-	private TopPageRepository topPageRepository;
-	@Inject
-	private ToppageNewRepository toppageNewRepository;
+	private ToppageRepository toppageNewRepository;
 	@Inject
 	private FlowMenuRepository flowMenuRepository;
 	@Inject
 	private CreateFlowMenuRepository CFlowMenuRepo;
 	@Inject
-	private LayoutNewRepository layoutNewRepository;
+	private LayoutRepository layoutNewRepository;
 
 	public List<TopPageItemDto> findAll(String companyId) {
 		// 会社の「トップページ」を全て取得する
-		List<ToppageNew> listTopPage = toppageNewRepository.getByCid(companyId);
+		List<Toppage> listTopPage = toppageNewRepository.getByCid(companyId);
 		// convert from domain to dto
 		List<TopPageItemDto> lstTopPageItemDto = listTopPage.stream()
 				.map(item -> new TopPageItemDto(item.getTopPageCode().v(), item.getTopPageName().v()))
@@ -51,19 +47,10 @@ public class TopPageFinder {
 		return lstTopPageItemDto;
 	}
 
-	public TopPageDto findByCode(String companyId, String topPageCode, String languageType) {
-		Optional<TopPage> topPage = topPageRepository.findByCode(companyId, topPageCode);
-		if (topPage.isPresent()) {
-			TopPage tp = topPage.get();
-			return TopPageDto.fromDomain(tp);
-		}
-		return null;
-	}
-
 	public TopPageNewDto findByCode(String companyId, String topPageCode) {
-		Optional<ToppageNew> topPage = toppageNewRepository.getByCidAndCode(companyId, topPageCode);
+		Optional<Toppage> topPage = toppageNewRepository.getByCidAndCode(companyId, topPageCode);
 		if (topPage.isPresent()) {
-			ToppageNew tp = topPage.get();
+			Toppage tp = topPage.get();
 			return TopPageNewDto.fromDomain(tp);
 		}
 		return null;
@@ -72,7 +59,7 @@ public class TopPageFinder {
 	public LayoutNewDto getLayout(String topPageCd, int layoutNo) {
 		String companyId = AppContexts.user().companyId();
 		// ドメインモデル「レイアウト」を取得する
-		Optional<LayoutNew> layout1 = layoutNewRepository.getByCidAndCode(companyId, topPageCd,
+		Optional<Layout> layout1 = layoutNewRepository.getByCidAndCode(companyId, topPageCd,
 				BigDecimal.valueOf(layoutNo));
 		if (layout1.isPresent()) {
 			LayoutNewDto layoutDto = toDto(layout1.get());
@@ -110,7 +97,7 @@ public class TopPageFinder {
 		return listFlow;
 	}
 
-	private LayoutNewDto toDto(LayoutNew domain) {
+	private LayoutNewDto toDto(Layout domain) {
 		LayoutNewDto dto = new LayoutNewDto();
 		domain.setMemento(dto);
 		return dto;

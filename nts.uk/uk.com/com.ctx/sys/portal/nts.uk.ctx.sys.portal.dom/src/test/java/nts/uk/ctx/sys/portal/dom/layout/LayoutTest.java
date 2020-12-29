@@ -25,7 +25,7 @@ public class LayoutTest {
 	@Test
 	public void createFromMementoAndGetMemento() {
 		//When
-		LayoutNew domain = LayoutNew.createFromMemento(mockDto);
+		Layout domain = Layout.createFromMemento(mockDto);
 		//Then
 		assertThat(domain.getCid()).isEqualTo(mockDto.getCid());
 		assertThat(domain.getWidgetSettings()).isEqualTo(mockDto.getWidgetSettings());
@@ -44,7 +44,7 @@ public class LayoutTest {
 	public void testSetMemeto() {
 		//Given
 		LayoutDto dto = LayoutDto.builder().build();
-		LayoutNew domain = LayoutNew.createFromMemento(mockDto);
+		Layout domain = Layout.createFromMemento(mockDto);
 		
 		//When
 		domain.setMemento(dto);
@@ -66,7 +66,7 @@ public class LayoutTest {
 	@Test
 	public void getters() {
 		//When
-		LayoutNew domain = LayoutNew.createFromMemento(mockDto);
+		Layout domain = Layout.createFromMemento(mockDto);
 		// then
 		NtsAssert.invokeGetters(domain);
 	}
@@ -76,7 +76,7 @@ public class LayoutTest {
 		//given
 		LayoutDto mockDtoNull = LayoutDto.builder().build();
 		//when
-		LayoutNew domain =  new LayoutNew();
+		Layout domain =  new Layout();
 		domain.getMemento(mockDtoNull);
 		//then
 		NtsAssert.invokeGetters(domain);

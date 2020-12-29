@@ -3,13 +3,13 @@ package nts.uk.ctx.sys.portal.app.find.toppage;
 import java.math.BigDecimal;
 
 import lombok.Data;
-import nts.uk.ctx.sys.portal.dom.toppage.ToppageNew;
+import nts.uk.ctx.sys.portal.dom.toppage.Toppage;
 
 /**
  * The Class TopPageNewDto.
  */
 @Data
-public class TopPageNewDto implements ToppageNew.MementoSetter, ToppageNew.MementoGetter {
+public class TopPageNewDto implements Toppage.MementoSetter, Toppage.MementoGetter {
 	
 	private String cid;
 	
@@ -30,7 +30,7 @@ public class TopPageNewDto implements ToppageNew.MementoSetter, ToppageNew.Memen
 	 * @param lstTopPagePart the lst top page part
 	 * @return the top page dto
 	 */
-	public static TopPageNewDto fromDomain(ToppageNew topPage) {
+	public static TopPageNewDto fromDomain(Toppage topPage) {
 		TopPageNewDto topPageDto = new TopPageNewDto();
 		topPageDto.topPageCode = topPage.getTopPageCode().v();
 		topPageDto.topPageName = topPage.getTopPageName().v();
