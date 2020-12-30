@@ -24,13 +24,14 @@ public class AttItemDto {
     private String attributeName;
 
     public AttItemDto(int attendanceItemId, String attendanceItemName, int attendanceItemDisplayNumber,
-                      Integer typeOfAttendanceItem, Integer attributes) {
+                      Integer typeOfAttendanceItem, Integer attributes, Integer masterType) {
         this.attendanceItemId = attendanceItemId;
         this.attendanceItemName = attendanceItemName;
         this.attendanceItemDisplayNumber = attendanceItemDisplayNumber;
         this.typeOfAttendanceItem = typeOfAttendanceItem;
         this.attributes = attributes;
         this.attributeName = attributes != null ? EnumAdaptor.valueOf(attributes, CommonAttributesOfForms.class).name() : null;
+        this.masterType = masterType;
     }
 
 }
