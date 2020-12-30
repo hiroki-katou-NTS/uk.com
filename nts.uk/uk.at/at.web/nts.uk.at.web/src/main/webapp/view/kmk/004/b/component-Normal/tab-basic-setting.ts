@@ -139,10 +139,10 @@ module nts.uk.at.view.kmk004.b {
 					vm.reloadData();
 				});
 
-			vm.change
-				.subscribe(() => {
-					vm.reloadData();
-				});
+			// vm.change
+			// 	.subscribe(() => {
+			// 		vm.reloadData();
+			// 	});
 		}
 
 		mounted() {

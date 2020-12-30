@@ -68,17 +68,18 @@ module nts.uk.at.view.kmk004.b {
 
         reloadData(selectedIndex: number = 0) {
             const vm = this;
-            vm.itemList([]);
+            // vm.itemList([]);
             switch (vm.type) {
                 case 'Com_Company':
                     vm.$ajax(API.GET_YEARS_COM)
                         .then((data: any) => {
                             data = _.orderBy(data, ['year'], ['desc']);
-
+                            const years: IYear[] = [];
                             _.forEach(data, ((value: any) => {
                                 const y: IYear = new IYear(value.year);
-                                vm.itemList.push(y);
+                                years.push(y);
                             }));
+                            vm.itemList(years);
                         })
                         .then(() => {
                             if (ko.unwrap(vm.itemList) != []) {
@@ -93,10 +94,12 @@ module nts.uk.at.view.kmk004.b {
                         vm.$ajax(API.GET_YEARS_WORKPLACE + '/' + ko.unwrap(vm.selectId))
                             .then((data: any) => {
                                 data = _.orderBy(data, ['year'], ['desc']);
+                                const years: IYear[] = [];
                                 _.forEach(data, ((value: any) => {
                                     const y: IYear = new IYear(value.year);
-                                    vm.itemList.push(y);
+                                    years.push(y);
                                 }));
+                                vm.itemList(years);
                             })
                             .then(() => {
                                 if (ko.unwrap(vm.itemList) != []) {
@@ -116,10 +119,12 @@ module nts.uk.at.view.kmk004.b {
                         vm.$ajax(API.GET_YEARS_EMPLOYMENT + '/' + ko.unwrap(vm.selectId))
                             .then((data: any) => {
                                 data = _.orderBy(data, ['year'], ['desc']);
+                                const years: IYear[] = [];
                                 _.forEach(data, ((value: any) => {
                                     const y: IYear = new IYear(value.year);
-                                    vm.itemList.push(y);
+                                    years.push(y);
                                 }));
+                                vm.itemList(years);
                             })
                             .then(() => {
                                 if (ko.unwrap(vm.itemList) != []) {
@@ -135,10 +140,12 @@ module nts.uk.at.view.kmk004.b {
                         vm.$ajax(API.GET_YEARS_EMPLOYEE + '/' + ko.unwrap(vm.selectId))
                             .then((data: any) => {
                                 data = _.orderBy(data, ['year'], ['desc']);
+                                const years: IYear[] = [];
                                 _.forEach(data, ((value: any) => {
                                     const y: IYear = new IYear(value.year);
-                                    vm.itemList.push(y);
+                                    years.push(y);
                                 }));
+                                vm.itemList(years);
                             })
                             .then(() => {
 

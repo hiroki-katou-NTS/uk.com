@@ -92,10 +92,10 @@ module nts.uk.at.view.kmk004.f {
                 $('.input-forcus').focus();
             });
 
-            vm.init();
-            vm.model.deforWorkSurchargeWeekMonth.valueHasMutated();
-            vm.model.outsideSurchargeWeekMonth.valueHasMutated();
-            vm.reloadData();
+            // vm.init();
+            // vm.model.deforWorkSurchargeWeekMonth.valueHasMutated();
+            // vm.model.outsideSurchargeWeekMonth.valueHasMutated();
+            // vm.reloadData();
         }
 
         closeDialog() {
