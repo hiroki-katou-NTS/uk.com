@@ -7,7 +7,6 @@ package nts.uk.ctx.sys.env.dom.mailnoticeset.dto;
 import java.util.List;
 
 import lombok.Getter;
-import nts.uk.ctx.sys.env.dom.mailnoticeset.company.OtherContact;
 
 /**
  * The Class PersonContactImport.
@@ -41,7 +40,7 @@ public class PersonContactImport {
 	private String emergencyNumber2;
 	
 	// 他の連絡先
-	private List<OtherContact> otherContacts;
+	private List<OtherContactDTO> otherContacts;
 
 	/**
 	 * Instantiates a new person contact import.

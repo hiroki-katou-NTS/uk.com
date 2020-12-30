@@ -1,5 +1,8 @@
 package nts.uk.ctx.bs.person.pub.contact;
 
+
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,5 +37,7 @@ public class PersonContactObject {
 	private String contactName2;
 	
 	private String phoneNumber2;
+	
+	
 
 }

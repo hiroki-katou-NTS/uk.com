@@ -43,6 +43,8 @@ public class PersonContactPubImpl implements PersonContactPub {
 		pcObject.setMemo2(emerContact2.map(item -> item.getRemark().v()).orElse(null));
 		pcObject.setContactName2(emerContact2.map(item -> item.getContactName().v()).orElse(null));
 		pcObject.setPhoneNumber2(emerContact2.map(item -> item.getPhoneNumber().v()).orElse(null));
+		
+//		pcObject.setOtherContacts(p.getOtherContacts().stream().map(i -> i).collect(Collectors.toList()));
 		return pcObject;
 	}
 
