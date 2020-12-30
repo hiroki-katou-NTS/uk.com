@@ -106,12 +106,15 @@ public class AsposeAppOverTime {
 		
 		// ドメインモデル「申請の印刷内容．残業申請の印刷内容．残業申請．申請．事前事後区分」= 事後　AND　
 		// 「申請の印刷内容．残業申請の印刷内容．残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．残業申請．事後．休憩・外出を申請反映する」= する
-		Boolean c3_1 = (appOverTime.getApplication().getPrePostAtr() == PrePostAtr.PREDICT 
-						&& displayInfoOverTime.getInfoNoBaseDate().getOverTimeReflect().getOvertimeWorkAppReflect().getBefore().getBreakLeaveApplication().getBreakReflectAtr() == NotUseAtr.USE
-						)
-				|| ( appOverTime.getApplication().getPrePostAtr() == PrePostAtr.POSTERIOR
-						&& displayInfoOverTime.getInfoNoBaseDate().getOverTimeReflect().getOvertimeWorkAppReflect().getAfter().getBreakLeaveApplication().getBreakReflectAtr() == NotUseAtr.USE
-						);
+		Boolean c3_1 = false;
+		if (displayInfoOverTime.getAppDispInfoStartup().getAppDetailScreenInfo().isPresent()) {
+			c3_1 = (displayInfoOverTime.getAppDispInfoStartup().getAppDetailScreenInfo().get().getApplication().getPrePostAtr() == PrePostAtr.PREDICT 
+					&& displayInfoOverTime.getInfoNoBaseDate().getOverTimeReflect().getOvertimeWorkAppReflect().getBefore().getBreakLeaveApplication().getBreakReflectAtr() == NotUseAtr.USE
+					)
+					|| ( displayInfoOverTime.getAppDispInfoStartup().getAppDetailScreenInfo().get().getApplication().getPrePostAtr() == PrePostAtr.POSTERIOR
+					&& displayInfoOverTime.getInfoNoBaseDate().getOverTimeReflect().getOvertimeWorkAppReflect().getAfter().getBreakLeaveApplication().getBreakReflectAtr() == NotUseAtr.USE
+							);			
+		}
 		// ※1 = ○　OR　※3-1 = ○
 		Boolean c3 = c1 || c3_1;
 		
