@@ -1920,7 +1920,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									lineNo: i,
 									start: start2 - dispStart,
 									end: end2 - dispStart,
-									limitStartMin: limitTime.limitStartMin - dispStart,
+									limitStartMin: end1 - dispStart,
 									limitStartMax: start2 - dispStart,
 									limitEndMin: end2 - dispStart,
 									limitEndMax: limitTime.limitEndMax - dispStart
@@ -1993,7 +1993,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									lineNo: i,
 									start: start2 - dispStart,
 									end: end2 - dispStart,
-									limitStartMin: limitTime.limitStartMin - dispStart,
+									limitStartMin: end1 - dispStart,
 									limitStartMax: limitTime.limitStartMax - dispStart,
 									limitEndMin: limitTime.limitEndMin - dispStart,
 									limitEndMax: limitTime.limitEndMax - dispStart,
@@ -2387,28 +2387,32 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					lstHoliday = _.map(_.filter(lstGcShow, (x: any) => {return x.type === "HOLIDAY"}), (y: any) => {return y.position})
 				
 				let timeMinus = duration.create(param[0] * 5 + self.dispStart * 5).asMinutes - self.dataScreen003A().employeeInfo[index].workScheduleDto.startTime1;
+				let checkUpdate : any = [];
 				if(self.dataScreen003A().employeeInfo[index].workScheduleDto.listBreakTimeZoneDto.length > 0){
-					let checkUpdate : any = [];
 					_.forEach(self.dataScreen003A().employeeInfo[index].workScheduleDto.listBreakTimeZoneDto, (brk: any, idx) => {
-						let lstHide = _.filter(lstBrk, (x : any) => {return x != idx});
+						let lstHide = _.filter(lstBrk, (x : any) => {return x == idx});
 						if(lstHide.length > 0){
 							checkUpdate.add(idx);
 						}
 					});
 					
 					_.forEach(checkUpdate, (br: any, indx) => {
-							self.dataScreen003A().employeeInfo[index].workScheduleDto.listBreakTimeZoneDto[br]; 
+							self.dataScreen003A().employeeInfo[index].workScheduleDto.listBreakTimeZoneDto[br].start += timeMinus;
+							self.dataScreen003A().employeeInfo[index].workScheduleDto.listBreakTimeZoneDto[br].end += timeMinus;  
 						})
 				}
 				
+				checkUpdate = [];
 				if(self.dataScreen003A().employeeInfo[index].fixedWorkInforDto.overtimeHours.length > 0){
 					
 				}
 				
+				checkUpdate = [];
 				if(self.dataScreen003A().employeeInfo[index].workInfoDto.shortTime.length > 0){
 					
 				}
 				
+				checkUpdate = [];
 				if(self.dataScreen003A().employeeInfo[index].workInfoDto.listTimeVacationAndType.length > 0){
 					
 				}
