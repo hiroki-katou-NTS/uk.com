@@ -7,10 +7,10 @@
 	<body>
 		<ui:composition template="../../../../master/dialog.xhtml">
 			<ui:define name="htmlHead">
-				<script>var dialogSize = { width: 300, height: 200 };</script>
 				<com:ValidatorScript>
-					nts.uk.shr.com.primitive.PersonId
+					nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.EventName
 				</com:ValidatorScript>
+				<com:scriptfile set="IGNITE" />
 				<com:stylefile  path="kdl049.a.main.css" />
 				<com:scriptfile path="kdl049.a.service.js" />
 				<com:scriptfile path="kdl049.a.vm.js" />
@@ -21,26 +21,57 @@
 			<ui:define name="content">
 			
 				<div id="contents-area">
-				<div class="valign-center control-group">
-				<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL049_2')}</div>
-				<span>22/10/2020</span>
-				</div>
-				<div class="valign-center control-group">
-				<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL049_3')}</div>
-				<span>A2_2</span>
-				</div>
-				<div class="valign-center control-group">
-				<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL049_4')}</div>
-				<span>A3_2</span>
-				</div>
-				<div class="valign-center control-group">
-				<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL049_5')}</div>
-				<span>A4_2</span>
-				</div>
+					<table id="table">
+						<tr>
+							<td>
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL049_2')}</div>
+							</td>
+							<td>
+								<span data-bind="text: targetDate"></span>
+							</td>
+						</tr>
+						<!-- A2_1, A2_2  -->
+						<tr data-bind="visible: !isSuperior()">
+							<td>
+								<div data-bind="ntsFormLabel: {constraint: 'EventName'}">#{i18n.getText('KDL049_3')}</div>
+							</td>
+							<td>
+								<input tabindex="1" data-bind="ntsTextEditor: {constraint: 'EventName', value: comEventName}" />
+							</td>
+						</tr>
+						<!-- end A2_1, A2_2  -->
+						
+						<!-- A5_1, A5_2  -->
+						<tr data-bind="visible: isSuperior()">
+							<td>
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL049_3')}</div>
+							</td>
+							<td>
+								<span data-bind="text: comEventName"></span>
+							</td>
+						</tr>
+						<!-- end A5_1, A5_2  -->
+						<tr data-bind="visible: targetWorkplace().length > 0">
+							<td>
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL049_4')}</div>
+							</td>
+							<td>
+								<span data-bind="text: targetWorkplace"></span>
+							</td>
+						</tr>
+						<tr data-bind="visible: targetWorkplace().length > 0">
+							<td>
+								<div data-bind="ntsFormLabel: {constraint: 'EventName'}">#{i18n.getText('KDL049_5')}</div>
+							</td>
+							<td>
+								<input tabindex="1" data-bind="ntsTextEditor: {constraint: 'EventName', value: wplEventName}" />
+							</td>
+						</tr>
+					</table>
 				</div>
 				<div id= "functions-area-bottom">
 				<button class="proceed x-large" id="save" >#{i18n.getText('KDL049_6')}</button>
-				<button id="cancel" >#{i18n.getText('KDL049_7')}</button>
+				<button id="cancel" data-bind="click: closeDialog">#{i18n.getText('KDL049_7')}</button>
 			</div>
 			</ui:define>
 		</ui:composition>
