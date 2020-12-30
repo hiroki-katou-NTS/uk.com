@@ -442,7 +442,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 				return;
 			}
 			
-			if(vm.mode() != MODE.MULTiPLE_AGENT){
+			if(vm.mode() == MODE.NORMAL){
 				vm.registerSingle();
 			} else {
 				vm.registerMulti();
@@ -531,7 +531,28 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			|| failData.messageId == "Msg_1535"
 			|| failData.messageId == "Msg_1536"
 			|| failData.messageId == "Msg_1537"
-			|| failData.messageId == "Msg_1538") {
+			|| failData.messageId == "Msg_1538"
+			|| failData.messageId == "Msg_1995"
+			|| failData.messageId == "Msg_1996"
+			|| failData.messageId == "Msg_1997"
+			|| failData.messageId == "Msg_1998"
+			|| failData.messageId == "Msg_1999"
+			|| failData.messageId == "Msg_2000"
+			|| failData.messageId == "Msg_2001"
+			|| failData.messageId == "Msg_2002"
+			|| failData.messageId == "Msg_2003"
+			|| failData.messageId == "Msg_2004"
+			|| failData.messageId == "Msg_2005"
+			|| failData.messageId == "Msg_2008"
+			|| failData.messageId == "Msg_2009"
+			|| failData.messageId == "Msg_2010"
+			|| failData.messageId == "Msg_2011"
+			|| failData.messageId == "Msg_2012"
+			|| failData.messageId == "Msg_2013"
+			|| failData.messageId == "Msg_2014"
+			|| failData.messageId == "Msg_2015"
+			|| failData.messageId == "Msg_2019"
+			|| failData.messageId == "Msg_2057") {
 				return vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
 				.then(() => {
 					return $.Deferred().resolve(false);	
