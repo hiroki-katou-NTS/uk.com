@@ -21,7 +21,11 @@ module nts.uk.at.view.kal013.b {
         switchPatternA: KnockoutObservable<boolean> = ko.observable(true);
         timeControl: KnockoutObservable<boolean> = ko.observable(true);
         constraint : KnockoutObservable<string> = ko.observable("");
-        numberEditorOption: KnockoutObservable<NumberEditorOption> = ko.observable(null);
+        numberEditorOption: KnockoutObservable<NumberEditorOption> = ko.observable(new NumberEditorOption({
+            grouplength: 0,
+            decimallength: 0,
+            placeholder: ''
+        }));
         listZeroDecimalNum: Array<string> = ["NumberOfPeople","Amount","RatioComparison","AverageNumberTimes","AverageRatio"];
         listOneDecimalNum: Array<string> = ["AverageNumberDays"];
         monthlyTimeControl: Array<number> = [1,5];
@@ -56,7 +60,7 @@ module nts.uk.at.view.kal013.b {
 
                 // Clear error
                 nts.uk.ui.errors.clearAll();
-                vm.pattern().clearCheckCod();
+                //vm.pattern().clearCheckCod();
 
                 // Kind of control
                 // 月次 - 平均時間 ||  スケジュール／日次 - 時間対比
@@ -68,7 +72,7 @@ module nts.uk.at.view.kal013.b {
                 }
                 // Contraint
                 if (vm.category() == WorkplaceCategory.SCHEDULE_DAILY){
-                    vm.constraint(vm.dailyContraint.get(value));
+                    vm.constraint(_.isNil(vm.dailyContraint.get(value))? vm.dailyContraint.get(1) : vm.dailyContraint.get(value));
                 } else{
                     vm.constraint(vm.monthlyContraint.get(value));
                 }
@@ -105,7 +109,7 @@ module nts.uk.at.view.kal013.b {
                     return;
                 }
                 nts.uk.ui.errors.clearAll();
-                vm.pattern().clearCheckCod();
+                //vm.pattern().clearCheckCod();
                 vm.timeControl(false);
                 if (_.indexOf([2, 5, 8], value) != -1) {
                     vm.timeControl(true);
@@ -144,9 +148,12 @@ module nts.uk.at.view.kal013.b {
 
         created(params: IParentParams) {
             const vm = this;
-
+            if (_.isNil(params.condition.checkItem)){
+                params = vm.initParam(params);
+            }
             vm.getEnum().done(()=>{
                 vm.pattern().update(params.condition);
+                vm.pattern().checkItem.valueHasMutated();
             });
 
             vm.pattern().checkCond.subscribe((value)=>{
@@ -172,6 +179,39 @@ module nts.uk.at.view.kal013.b {
             });
         }
 
+        initParam(params: IParentParams): IParentParams{
+            const vm = this;
+
+            if (params.category == WorkplaceCategory.MONTHLY) {
+                params = {
+                    category: params.category, condition: {
+                        checkItem: 1,
+                        checkCond: null,
+                        checkCondB: null,
+                        operator: 0,
+                        minValue: null,
+                        maxValue: null,
+                        displayMessage: null
+                    }
+                };
+                vm.switchPatternA(true);
+            } else {
+                params = {
+                    category: params.category, condition: {
+                        checkItem: 0,
+                        checkCond: null,
+                        checkCondB: 1,
+                        operator: 0,
+                        minValue: null,
+                        maxValue: null,
+                        displayMessage: null
+                    }
+                };
+                vm.contrastTypeList(__viewContext.enums.ContrastType);
+                vm.switchPatternA(false);
+            }
+            return params;
+        }
         mounted() {
             const vm = this;
             $('#cbxTypeCheckWorkRecordcategory5').focus();
@@ -284,10 +324,10 @@ module nts.uk.at.view.kal013.b {
         constructor(){}
 
         update(params: IPattern){
-            this.checkItem(params.checkItem);
+            this.checkItem(_.isNil(params.checkItem) ? 0: params.checkItem);
             this.checkCond(params.checkCond);
             this.checkCondDis(params.checkCond);
-            this.checkCondB(params.checkCondB);
+            this.checkCondB(_.isNil(params.checkCondB) ? 1: params.checkCondB);
             this.operator(params.operator);
             this.minValue(params.minValue);
             this.maxValue(params.maxValue);
