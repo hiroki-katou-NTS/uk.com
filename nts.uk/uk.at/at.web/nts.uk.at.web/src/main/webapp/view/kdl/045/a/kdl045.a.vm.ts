@@ -610,7 +610,9 @@ module nts.uk.at.view.kdl045.a {
                                     }
                                 }
                             });
-                        }
+                        }else{
+							self.workStyle(null);
+						}
                     }
                 });
             }
