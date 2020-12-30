@@ -79,7 +79,7 @@ public class ClsCodeCfmService {
                         new AlarmValueDate(period.start().toString("yyyyMMdd"),
                                 Optional.of(period.end().toString("yyyyMMdd"))),
                         name.v(),
-                        Optional.ofNullable(TextResource.localize("KAL020_12", clsHist.getClassificationCode())), //TODO Q&A 38571
+                        Optional.ofNullable(TextResource.localize("KAL020_12", clsHist.getClassificationCode())),
                         Optional.of(new MessageDisplay(displayMessage.v())),
                         empInfosByWp.getKey()
                 );

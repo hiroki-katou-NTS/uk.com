@@ -82,7 +82,7 @@ public class EmpCodeCfmService {
                             new AlarmValueDate(period.start().toString("yyyyMMdd"),
                                     Optional.of(period.end().toString("yyyyMMdd"))),
                             name.v(),
-                            Optional.ofNullable(TextResource.localize("KAL020_11", affEmp.getEmploymentCode())), //TODO Q&A 38571
+                            Optional.ofNullable(TextResource.localize("KAL020_11", affEmp.getEmploymentCode())),
                             Optional.of(new MessageDisplay(displayMessage.v())),
                             empInfosByWp.getKey()
                     );

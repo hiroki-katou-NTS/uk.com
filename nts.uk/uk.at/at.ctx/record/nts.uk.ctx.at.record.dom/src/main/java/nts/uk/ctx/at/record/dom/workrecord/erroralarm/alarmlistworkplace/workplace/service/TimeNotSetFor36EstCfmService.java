@@ -45,12 +45,17 @@ public class TimeNotSetFor36EstCfmService {
         // 空欄のリスト「アラーム抽出結果（職場別）」を作成する。
         List<ExtractResultDto> results = new ArrayList<>();
 
-        for (String workplaceId : workplaceIds) {
-            // ドメインモデル「職場３６協定時間」を取得する。
-            Optional<AgreementTimeOfWorkPlace> agreeGeneralOpt = workplace36AgreedHoursRepo.getByWorkplaceId(workplaceId, LaborSystemtAtr.GENERAL_LABOR_SYSTEM);
+        // ドメインモデル「職場３６協定時間」を取得する。
+        List<AgreementTimeOfWorkPlace> agreeWpAll = workplace36AgreedHoursRepo.getByListWorkplaceId(workplaceIds);
 
-            // ドメインモデル「職場３６協定時間」を取得する。
-            Optional<AgreementTimeOfWorkPlace> agreeSystemOpt = workplace36AgreedHoursRepo.getByWorkplaceId(workplaceId, LaborSystemtAtr.DEFORMATION_WORKING_TIME_SYSTEM);
+        for (String workplaceId : workplaceIds) {
+            // 担当のー般労働制の「職場３６協定時間」を絞り込む
+            Optional<AgreementTimeOfWorkPlace> agreeGeneralOpt = agreeWpAll.stream().filter(x -> x.getWorkplaceId().equals(workplaceId)
+                    && LaborSystemtAtr.GENERAL_LABOR_SYSTEM.equals(x.getLaborSystemAtr())).findFirst();
+
+            // 担当の変形労働時間制の「職場３６協定時間」を絞り込む
+            Optional<AgreementTimeOfWorkPlace> agreeDefOpt = agreeWpAll.stream().filter(x -> x.getWorkplaceId().equals(workplaceId)
+                    && LaborSystemtAtr.DEFORMATION_WORKING_TIME_SYSTEM.equals(x.getLaborSystemAtr())).findFirst();
 
             // 取得したList＜職場３６協定時間＞をチェックする。
             if (!agreeGeneralOpt.isPresent()) {
@@ -70,7 +75,7 @@ public class TimeNotSetFor36EstCfmService {
                 results.add(result);
             }
 
-            if (!agreeSystemOpt.isPresent()) {
+            if (!agreeDefOpt.isPresent()) {
                 // 「アラーム値メッセージ」を作成します。
                 String message = TextResource.localize("KAL020_209");
 

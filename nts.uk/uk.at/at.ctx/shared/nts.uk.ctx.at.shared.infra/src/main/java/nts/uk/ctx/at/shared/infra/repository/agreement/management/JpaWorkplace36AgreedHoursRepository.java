@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.infra.repository.agreement.management;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfWorkPlace;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.Workplace36AgreedHoursRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
@@ -10,6 +11,7 @@ import nts.uk.ctx.at.shared.infra.entity.agreement.management.Ksrmt36AgrMgtWkpPk
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -78,6 +80,7 @@ public class JpaWorkplace36AgreedHoursRepository extends JpaRepository implement
 
     @Override
     public List<AgreementTimeOfWorkPlace> getByListWorkplaceId(List<String> listWorkplaceId) {
+        if (CollectionUtil.isEmpty(listWorkplaceId)) return new ArrayList<>();
         return this.queryProxy().query(FIND_BY_LIST_WKP, Ksrmt36AgrMgtWkp.class)
                 .setParameter("listWorkplaceId", listWorkplaceId)
                 .getList(Ksrmt36AgrMgtWkp::toDomain);

@@ -33,6 +33,8 @@ public interface MonthlyWorkTimeSetRepo {
 	public List<MonthlyWorkTimeSetEmp> findEmployment(String cid, String empCD, LaborWorkTypeAttr laborAttr);
 	
 	public List<MonthlyWorkTimeSetWkp> findWorkplace(String cid, String wkpId, LaborWorkTypeAttr laborAttr);
+
+	public List<MonthlyWorkTimeSetWkp> findWorkplace(String cid, List<String> workplaceIds);
 	
 	public void add(MonthlyWorkTimeSetCom domain);
 	

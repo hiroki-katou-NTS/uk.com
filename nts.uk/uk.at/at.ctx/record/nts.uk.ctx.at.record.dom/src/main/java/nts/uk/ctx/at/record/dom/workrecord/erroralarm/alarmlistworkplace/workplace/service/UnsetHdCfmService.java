@@ -48,6 +48,9 @@ public class UnsetHdCfmService {
         // 空欄のリスト「抽出結果」を作成する
         List<ExtractResultDto> results = new ArrayList<>();
 
+        // ドメインモデル「職場月間日数設定」を取得する。
+        List<WorkplaceMonthDaySetting> wpMonthDaySetAll = workplaceMonthDaySettingRepo.findByWorkplaceIds(new CompanyId(cid), workplaceIds);
+
         // Input．List＜職場情報＞をループする
         for (String workplaceId : workplaceIds) {
             // 「Input．期間．開始日．年」から「Input．期間．終了日．年」までループする
@@ -56,7 +59,8 @@ public class UnsetHdCfmService {
             while (startYear <= endYear) {
 
                 // ドメインモデル「職場月間日数設定」を取得する。
-                Optional<WorkplaceMonthDaySetting> wpMonthDaySetOpt = workplaceMonthDaySettingRepo.findByYear(new CompanyId(cid), workplaceId, new Year(startYear));
+                int year = startYear;
+                Optional<WorkplaceMonthDaySetting> wpMonthDaySetOpt = wpMonthDaySetAll.stream().filter(x -> x.getManagementYear().v() == year).findFirst();
 
                 if (!wpMonthDaySetOpt.isPresent()) {
                     // 「アラーム値メッセージ」を作成します。

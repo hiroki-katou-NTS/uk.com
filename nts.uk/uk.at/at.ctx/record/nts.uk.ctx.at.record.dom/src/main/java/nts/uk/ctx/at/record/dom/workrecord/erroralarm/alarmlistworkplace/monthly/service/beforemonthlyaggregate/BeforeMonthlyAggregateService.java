@@ -4,12 +4,12 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.workplace.EmployeeInfoImported;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.ExtractionMonthlyCon;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.FixedExtractionMonthlyCon;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.service.EmployeeInfoByWorkplaceService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthlyRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureResultDto;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.WorkClosureService;
 
 import javax.ejb.Stateless;
@@ -31,6 +31,8 @@ public class BeforeMonthlyAggregateService {
     private WorkClosureService workClosureService;
     @Inject
     private AttendanceTimeOfMonthlyRepository attendanceTimeOfMonthlyRepo;
+    @Inject
+    private ClosureRepository closureRepo;
 
     /**
      * 月次の集計する前のデータを準備
@@ -56,8 +58,8 @@ public class BeforeMonthlyAggregateService {
             attendanceTimeOfMonthlies = attendanceTimeOfMonthlyRepo.findBySidsAndYearMonths(employeeIds, Collections.singletonList(ym));
         }
 
-        // 会社の締めを取得する
-        List<ClosureResultDto> closures = workClosureService.findClosureByReferenceDate(GeneralDate.today());
+        // 全締めの当月と期間を取得する
+        List<ClosureInfo> closures = ClosureService.getAllClosureInfo(ClosureService.createRequireM2(closureRepo));
 
         return new MonthlyCheckDataDto(empInfosByWpMap, closures, attendanceTimeOfMonthlies);
     }

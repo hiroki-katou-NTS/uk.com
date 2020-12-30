@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.EmployeeInfoImported;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureResultDto;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class MonthlyCheckDataDto {
     /**
      * List＜締め＞
      */
-    private List<ClosureResultDto> closures;
+    private List<ClosureInfo> closures;
 
     /**
      * List＜月別実績の勤怠時間＞

@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service.fixedextractcond;
 
 import nts.arc.time.YearMonth;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.adapter.workplace.EmployeeInfoImported;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.extractresult.AlarmListExtractionInfoWorkplaceDto;
@@ -11,7 +10,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.FixedExtractionMonthlyItemsRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.enums.FixedCheckMonthlyItemName;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service.fixedextractcond.monthlyundecided.MonthlyUndecidedCheckService;
-import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureResultDto;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -45,7 +44,7 @@ public class FixedExtractCondCheckService {
      */
     public List<AlarmListExtractionInfoWorkplaceDto> check(String cid, Map<String, List<EmployeeInfoImported>> empInfosByWpMap,
                                                            List<FixedExtractionMonthlyCon> fixExtractMonthlyCons,
-                                                           YearMonth ym, List<ClosureResultDto> closures) {
+                                                           YearMonth ym, List<ClosureInfo> closures) {
         List<AlarmListExtractionInfoWorkplaceDto> alarmListResults = new ArrayList<>();
         List<FixedCheckMonthlyItemName> nos = fixExtractMonthlyCons.stream().map(FixedExtractionMonthlyCon::getNo)
                 .collect(Collectors.toList());

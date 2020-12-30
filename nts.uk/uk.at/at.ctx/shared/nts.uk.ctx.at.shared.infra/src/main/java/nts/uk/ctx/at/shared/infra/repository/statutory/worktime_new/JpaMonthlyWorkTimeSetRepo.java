@@ -4,12 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
 import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetCom;
@@ -17,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTi
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetRepo;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetSha;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetWkp;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshmtLegalTimeMCom;
@@ -258,6 +261,17 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 				.setParameter("type", laborAttr.value)
 				.setParameter("sid", wkpId)
 				.getList(c -> MonthlyWorkTimeSetWkp.of(cid, wkpId, laborAttr, new YearMonth(c.pk.ym), c.domain()));
+	}
+
+	@Override
+	public List<MonthlyWorkTimeSetWkp> findWorkplace(String cid, List<String> workplaceIds) {
+		if (CollectionUtil.isEmpty(workplaceIds)) return new ArrayList<>();
+		return this.queryProxy().query("SELECT x FROM KshmtLegalTimeMWkp x "
+				+ "WHERE x.pk.cid = :cid AND x.pk.wkpId IN :wkpIds", KshmtLegalTimeMWkp.class)
+				.setParameter("cid", cid)
+				.setParameter("wkpIds", workplaceIds)
+				.getList(c -> MonthlyWorkTimeSetWkp.of(c.pk.cid, c.pk.wkpId,
+						EnumAdaptor.valueOf(c.pk.type, LaborWorkTypeAttr.class) , new YearMonth(c.pk.ym), c.domain()));
 	}
 
 	@Override
