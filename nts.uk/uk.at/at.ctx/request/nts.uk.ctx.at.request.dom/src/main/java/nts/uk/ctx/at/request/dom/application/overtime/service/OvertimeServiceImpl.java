@@ -1245,31 +1245,37 @@ public class OvertimeServiceImpl implements OvertimeService {
 			Integer prePost = appOverTime.getApplication().getPrePostAtr().value;
 				WorkContent workContent = new WorkContent();
 				if (appOverTime.getWorkInfoOp().isPresent()) {
-					workContent.setWorkTypeCode(appOverTime.getWorkInfoOp().get().getWorkTypeCode() == null ? Optional.empty() : Optional.of(appOverTime.getWorkInfoOp().get().getWorkTypeCode().v()));
-					workContent.setWorkTimeCode(appOverTime.getWorkInfoOp().get().getWorkTimeCode() == null ? Optional.empty() : Optional.of(appOverTime.getWorkInfoOp().get().getWorkTimeCode().v()));
+					workContent.setWorkTypeCode(appOverTime.getWorkInfoOp()
+							.flatMap(x -> Optional.ofNullable(x.getWorkTypeCode()))
+							.flatMap(x -> Optional.ofNullable(x.v())));
+
+					workContent.setWorkTimeCode(appOverTime.getWorkInfoOp()
+							.flatMap(x -> x.getWorkTimeCodeNotNull())
+							.flatMap(x -> Optional.ofNullable(x.v())));
 				}
 				List<TimeZone> timeZones = new ArrayList<TimeZone>();
 				List<BreakTimeSheet> breakTimes = new ArrayList<BreakTimeSheet>();
 				if (appOverTime.getWorkHoursOp().isPresent()) {
-					appOverTime.getWorkHoursOp().get()
-												.stream()
-												.forEach(x -> {
-													TimeWithDayAttr start = x.getTimeZone().getStartTime();
-													TimeWithDayAttr end = x.getTimeZone().getEndTime();
-													timeZones.add(new TimeZone(start, end));
-												});
+					appOverTime.getWorkHoursOp()
+							   .get()
+							   .stream()
+							   .forEach(x -> {
+									TimeWithDayAttr start = x.getTimeZone().getStartTime();
+									TimeWithDayAttr end = x.getTimeZone().getEndTime();
+									timeZones.add(new TimeZone(start, end));
+							    });
 				}
 				if (appOverTime.getBreakTimeOp().isPresent()) {
 					appOverTime.getBreakTimeOp().get()
-							.stream()
-							.forEach(x -> {
-								TimeWithDayAttr start = x.getTimeZone().getStartTime();
-								TimeWithDayAttr end = x.getTimeZone().getEndTime();
-								breakTimes.add(new BreakTimeSheet(
-										new BreakFrameNo(x.getWorkNo().v()),
-										start,
-										end));
-							});
+							   .stream()
+							   .forEach(x -> {
+									TimeWithDayAttr start = x.getTimeZone().getStartTime();
+									TimeWithDayAttr end = x.getTimeZone().getEndTime();
+									breakTimes.add(new BreakTimeSheet(
+											new BreakFrameNo(x.getWorkNo().v()),
+											start,
+											end));
+							   });
 				}
 				
 				
@@ -1284,12 +1290,12 @@ public class OvertimeServiceImpl implements OvertimeService {
 					EnumAdaptor.valueOf(prePost, PrePostInitAtr.class),
 					displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet().getOvertimeLeaveAppCommonSet(),
 					displayInfoOverTime.getAppDispInfoStartup()
-					.getAppDispInfoWithDateOutput()
-					.getOpPreAppContentDisplayLst()
-					.flatMap(x -> CollectionUtil.isEmpty(x) ? Optional.empty() : Optional.of(x.get(0)))
-					.flatMap(y -> y.getApOptional())
-					.map(z -> z.getApplicationTime())
-					.orElse(null),
+									.getAppDispInfoWithDateOutput()
+									.getOpPreAppContentDisplayLst()
+									.flatMap(x -> CollectionUtil.isEmpty(x) ? Optional.empty() : Optional.of(x.get(0)))
+									.flatMap(y -> y.getApOptional())
+									.map(z -> z.getApplicationTime())
+									.orElse(null),
 					displayInfoOverTime.getInfoWithDateApplicationOp()
 						.map(x -> x.getApplicationTime().orElse(null))
 						.orElse(null),
