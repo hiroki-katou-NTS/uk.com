@@ -1677,6 +1677,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 				return $.Deferred().resolve(true);
 			}
 			let msg = listMes[0];
+			msg.paramLst.unshift(keys[0]); //add empName to top of array;
 
 			return vm.$dialog.confirm({ messageId: msg.msgID, messageParams: msg.paramLst })
 				.then((value) => {
