@@ -218,6 +218,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                     vm.printContentOfEachAppDto().opPrintContentOfHolidayWork = vm.mapPrintContentOfHolidayWork(res);
 					vm.appHolidayWork = res.appHolidayWork;
 					vm.dataSource = res.appHdWorkDispInfoOutput;
+					vm.setMode();
 					// vm.visibleModel = vm.createVisibleModel(vm.dataSource);
 					vm.itemControlHandler();
 					vm.bindOverTimeWorks(vm.dataSource);
@@ -227,6 +228,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					vm.bindOverTime(vm.dataSource, 0);
 					vm.setComboDivergenceReason(vm.dataSource);
 					// vm.bindMessageInfo(vm.dataSource);
+					
 					if (vm.isStart) {
 						vm.isStart = false;
 					}
@@ -272,6 +274,17 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					}
 				});
             }).always(() => vm.$blockui('hide'));
+		}
+
+		setMode() {
+			const self = this;
+			if(self.dataSource.appDispInfoStartupOutput.appDetailScreenInfo.outputMode == 1){
+				self.mode(MODE.EDIT);
+			}
+			if(self.dataSource.appDispInfoStartupOutput.appDetailScreenInfo.outputMode == 0){
+				self.mode(MODE.VIEW);
+			}
+			console.log(self.mode());
 		}
 
 		reload(){
@@ -345,16 +358,14 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 				.done(result => {
 					
 				})
-				.fail(err => {
-					let messageId, messageParams;
-					if(err.errors) {
-						let errors = err.errors;
-						messageId = errors[0].messageId;
-					} else {
-						messageId = err.messageId;
-						messageParams = [err.parameterIds.join('、')];
-					}
-					vm.$dialog.error({ messageId: messageId, messageParams: messageParams });
+				.fail((failData: any) => {
+					// xử lý lỗi nghiệp vụ riêng
+					vm.handleErrorCustom(failData).then((result: any) => {
+						if (result) {
+							// xử lý lỗi nghiệp vụ chung
+							vm.handleErrorCommon(failData);
+						}
+					});
 				})
 				.always(() => vm.$blockui("hide"));
 		}
@@ -465,7 +476,41 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 
 		handleErrorCustom(failData: any): any {
 			const vm = this;
-			if(failData.messageId == "Msg_26") {
+			if(failData.messageId == "Msg_750"
+			|| failData.messageId == "Msg_1654"
+			|| failData.messageId == "Msg_1508"
+			|| failData.messageId == "Msg_424"
+			|| failData.messageId == "Msg_1746"
+			|| failData.messageId == "Msg_1745"
+			|| failData.messageId == "Msg_1748"
+			|| failData.messageId == "Msg_1747"
+			|| failData.messageId == "Msg_1748"
+			|| failData.messageId == "Msg_1656"
+			|| failData.messageId == "Msg_1535"
+			|| failData.messageId == "Msg_1536"
+			|| failData.messageId == "Msg_1537"
+			|| failData.messageId == "Msg_1538"
+			|| failData.messageId == "Msg_1995"
+			|| failData.messageId == "Msg_1996"
+			|| failData.messageId == "Msg_1997"
+			|| failData.messageId == "Msg_1998"
+			|| failData.messageId == "Msg_1999"
+			|| failData.messageId == "Msg_2000"
+			|| failData.messageId == "Msg_2001"
+			|| failData.messageId == "Msg_2002"
+			|| failData.messageId == "Msg_2003"
+			|| failData.messageId == "Msg_2004"
+			|| failData.messageId == "Msg_2005"
+			|| failData.messageId == "Msg_2008"
+			|| failData.messageId == "Msg_2009"
+			|| failData.messageId == "Msg_2010"
+			|| failData.messageId == "Msg_2011"
+			|| failData.messageId == "Msg_2012"
+			|| failData.messageId == "Msg_2013"
+			|| failData.messageId == "Msg_2014"
+			|| failData.messageId == "Msg_2015"
+			|| failData.messageId == "Msg_2019"
+			|| failData.messageId == "Msg_2057") {
 				return vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
 				.then(() => {
 					return $.Deferred().resolve(false);	
@@ -2160,6 +2205,9 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		comboBoxText: string;
 	}
 	enum MODE {
+		NORMAL,
+		SINGLE_AGENT,
+		MULTiPLE_AGENT,
 		VIEW,
 		EDIT
 	}
