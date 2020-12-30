@@ -29,6 +29,10 @@ public class GetWorkType {
 	@Inject
 	private TimeRecordReqSettingRepository timeRecordReqSettingRepository;
 	
+	/**
+	 * @param empInforTerCode
+	 * @return
+	 */
 	public GetWorkTypeDto getWorkTypes(String empInforTerCode) {
 		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
 		String companyId = AppContexts.user().companyId();

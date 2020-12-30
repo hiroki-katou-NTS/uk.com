@@ -23,6 +23,21 @@ public class DeterminingTransferContents {
 	@Inject
 	EmpTerminalRegisterInRequestCommandHandler empTerminalRegisterInRequestCommandHandler;
 
+	/**
+	 * @param empInfoTerCode
+	 * @param sendEmployeeId
+	 * @param sendWorkType
+	 * @param sendWorkTime
+	 * @param overTimeHoliday
+	 * @param applicationReason
+	 * @param sendBentoMenu
+	 * @param timeSetting
+	 * @param reboot
+	 * @param stampReceive
+	 * @param applicationReceive
+	 * @param reservationReceive
+	 * @return
+	 */
 	public DeterminingTransferContentsDto determine(String empInfoTerCode,
 													 boolean sendEmployeeId, 
 													 boolean sendWorkType, 
@@ -36,9 +51,6 @@ public class DeterminingTransferContents {
 													 boolean applicationReceive,
 													 boolean reservationReceive){
 		
-		//	1.	送信するマスタにデータが選択されているか確認 ??? Old Data ==> is necessary???
-		ConfirmTransmissionMasterDto comfirmination = this.confirmTransmissionMaster
-														  .getTimeRecordReqSetting(empInfoTerCode);
 		DeterminingTransferContentsDto dto  = new DeterminingTransferContentsDto();
 		//	2. 就業情報端末のリクエスト一覧に登録する(契約コード、就業情報端末コード、就業情報端末のリクエスト一覧)
 		this.empTerminalRegisterInRequestCommandHandler

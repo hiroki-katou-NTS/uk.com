@@ -154,7 +154,6 @@ module knr002.g {
                     if(isCancel !== undefined && isCancel === false){
                         self.selectableEmployees(selectable !== undefined? selectable : []);
                         if(self.selectableEmployees().length <= 0){
-                            console.log("choosed nothing");
                             dialog.error({ messageId: "Msg_2023" }).then(() => {
                                 //  do something
                             });
@@ -240,10 +239,10 @@ module knr002.g {
                         setShared('kml001selectAbleCodeList', self.posibleWorkTimes());
                         setShared('kml001selectedCodeList', self.workTimeCodes());
                         nts.uk.ui.windows.sub.modal("/view/kdl/001/a/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
-                            let selectable = getShared("kml001selectedCodeList");
+                            let selectable : Array<any> = getShared("kml001selectedCodeList");
                             let isCancel = getShared("KDL001_IsCancel");
                             if(isCancel !== undefined && isCancel === false){
-                                self.selectableWorkTimes(selectable !== undefined? selectable : []);
+                                self.selectableWorkTimes(selectable !== undefined? selectable.filter(e => e != '') : []);
                                 if(self.selectableWorkTimes().length <= 0 ){
                                     dialog.error({ messageId: "Msg_2025" }).then(() => {
                                         // do something

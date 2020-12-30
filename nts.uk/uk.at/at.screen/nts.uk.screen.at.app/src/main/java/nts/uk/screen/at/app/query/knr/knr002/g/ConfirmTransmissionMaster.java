@@ -27,6 +27,10 @@ public class ConfirmTransmissionMaster {
 	TimeRecordReqSettingRepository timeRecordReqSettingRepository;
 
 	// 1. get*(契約コード、就業情報端末コード): 就業情報端末のリクエスト一覧
+	/**
+	 * @param terminalCode
+	 * @return
+	 */
 	public ConfirmTransmissionMasterDto getTimeRecordReqSetting(String terminalCode) {
 		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
 		EmpInfoTerminalCode empInforTerCode = new EmpInfoTerminalCode(terminalCode);

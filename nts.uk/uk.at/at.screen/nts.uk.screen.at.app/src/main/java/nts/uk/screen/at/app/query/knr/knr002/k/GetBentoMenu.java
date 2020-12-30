@@ -36,6 +36,10 @@ public class GetBentoMenu {
     @Inject
     private  BentoMenuRepository bentoMenuRepository;
 	
+	/**
+	 * @param empInforTerCode
+	 * @return
+	 */
 	public GetBentoMenuDto getBentoMenu(String empInforTerCode) {
 		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
 		String companyId = AppContexts.user().companyId();

@@ -31,6 +31,10 @@ public class ExtractRecoveryTargetTerminal {
 	@Inject
 	private TimeRecordSetFormatListRepository timeRecordSetFormatListRepository;
 
+	/**
+	 * @param modelEmpInfoTer
+	 * @return
+	 */
 	public List<ExtractRecoveryTargetTerminalDto> getRecoveryTargetList(int modelEmpInfoTer) {
 		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
 		//	1. get*(契約コード、機種): 就業情報端末<List>
