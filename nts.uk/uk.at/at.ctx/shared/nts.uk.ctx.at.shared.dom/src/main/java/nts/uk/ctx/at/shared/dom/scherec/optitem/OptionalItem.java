@@ -154,7 +154,6 @@ public class OptionalItem extends AggregateRoot {
 		this.optionalItemName = memento.getOptionalItemName();
 		this.optionalItemAtr = memento.getOptionalItemAtr();
 		this.usageAtr = memento.getOptionalItemUsageAtr();
-		this.calcAtr = memento.getCalcAtr();
 		this.empConditionAtr = memento.getEmpConditionAtr();
 		this.performanceAtr = memento.getPerformanceAtr();
 		this.calcResultRange = memento.getCalculationResultRange();
@@ -253,12 +252,12 @@ public class OptionalItem extends AggregateRoot {
 		// 利用区分の確認
 		if (this.usageAtr == OptionalItemUsageAtr.NOT_USE) return TermsOfUseForOptItem.NOT_USE;
 		
-		// 実績区分の確認
-		if (this.performanceAtr == PerformanceAtr.DAILY_PERFORMANCE) return TermsOfUseForOptItem.DAILY_VTOTAL;
-		
 		// 計算条件の判定
 		if (!this.checkTermsOfCalc(empCondition, bsEmploymentHistOpt)) return TermsOfUseForOptItem.NOT_USE;
-		
+			
+		// 実績区分の確認
+		if (this.performanceAtr == PerformanceAtr.DAILY_PERFORMANCE) return TermsOfUseForOptItem.DAILY_VTOTAL;
+
 		// 「利用する」を返す
 		return TermsOfUseForOptItem.USE;
 	}
@@ -271,7 +270,7 @@ public class OptionalItem extends AggregateRoot {
 	 */
 	public boolean checkTermsOfCalc(Optional<EmpCondition> empCondition,Optional<BsEmploymentHistoryImport> bsEmploymentHistOpt) {
 		// 計算区分を確認
-		if(this.calcAtr.isNotCalc()) {
+		if(this.calcAtr == CalculationClassification.NOT_CALC) {
 			return false;
 		}
 		// 雇用条件区分を確認
@@ -354,7 +353,7 @@ public class OptionalItem extends AggregateRoot {
 //        }
         
         //上限下限チェック
-        result = this.calcResultRange.checkRange(result, this.optionalItemAtr);
+        result = this.calcResultRange.checkRange(result, this);
         
         return result;
     }

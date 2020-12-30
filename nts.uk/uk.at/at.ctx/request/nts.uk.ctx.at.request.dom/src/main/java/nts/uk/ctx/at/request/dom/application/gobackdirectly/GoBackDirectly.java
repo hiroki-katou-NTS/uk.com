@@ -28,7 +28,10 @@ public class GoBackDirectly extends Application {
 	private Optional<WorkInformation> dataWork = Optional.empty();
 
 	public GoBackDirectly() {
-		
+		super();
+	};
+	public GoBackDirectly(Application application) {
+		super(application);
 	}
 
 	// 申請内容

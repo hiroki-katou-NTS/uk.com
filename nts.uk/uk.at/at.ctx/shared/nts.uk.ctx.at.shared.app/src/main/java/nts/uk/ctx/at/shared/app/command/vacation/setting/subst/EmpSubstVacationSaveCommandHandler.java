@@ -55,8 +55,8 @@ public class EmpSubstVacationSaveCommandHandler extends CommandHandler<EmpSubstV
 		if (optEmpSubstVacation.isPresent()) {
 			EmpSubstVacation empSubstVacationDb = optEmpSubstVacation.get();
 			if (command.getIsManage() == ManageDistinct.NO.value) {
-				command.setExpirationDate(empSubstVacationDb.getSetting().getExpirationDate().value);
-				command.setAllowPrepaidLeave(empSubstVacationDb.getSetting().getAllowPrepaidLeave().value);
+				/*command.setExpirationDate(empSubstVacationDb.getSetting().getExpirationDate().value);
+				command.setAllowPrepaidLeave(empSubstVacationDb.getSetting().getAllowPrepaidLeave().value);*/
 			}
 		} else {
 			if (command.getIsManage() == ManageDistinct.NO.value) {

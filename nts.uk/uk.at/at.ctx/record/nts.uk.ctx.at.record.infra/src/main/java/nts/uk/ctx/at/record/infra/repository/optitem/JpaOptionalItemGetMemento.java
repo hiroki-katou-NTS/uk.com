@@ -109,7 +109,6 @@ public class JpaOptionalItemGetMemento implements OptionalItemGetMemento {
 	public OptionalItemUsageAtr getOptionalItemUsageAtr() {
 		return EnumAdaptor.valueOf(this.typeValue.getUsageAtr(), OptionalItemUsageAtr.class);
 	}
-
 	/*
 	 * (non-Javadoc)
 	 * 

@@ -18,6 +18,8 @@ module nts.uk.pr.view.kmf001.l {
             
             nursingLeaveSpecialHolidayList: KnockoutObservableArray<ItemModel>;
             nursingLeaveWorkAbsenceList: KnockoutObservableArray<ItemModel>;
+            //L4_4
+            digestionList: KnockoutObservableArray<ItemModel>;
             
             constructor() {
                 let self = this;
@@ -36,6 +38,13 @@ module nts.uk.pr.view.kmf001.l {
                 
                 self.nursingLeaveSpecialHolidayList = ko.observableArray([]);
                 self.nursingLeaveWorkAbsenceList = ko.observableArray([]);
+                self.digestionList =  ko.observableArray([
+                        new ItemModel('0', '1分'),
+                        new ItemModel('1', '15分'),
+                        new ItemModel('2', '30分'),
+                        new ItemModel('3', '1時間'),
+                        new ItemModel('4', '2時間')
+                    ]);
                 
                 self.nursingSetting().selectedManageNursing.subscribe(function(v) {
                     if(v == 0){
@@ -291,23 +300,32 @@ module nts.uk.pr.view.kmf001.l {
                 let object: any = {};
                 
                 object.manageType = ob().selectedManageNursing();
+                //L4_2 and L5_2
+                object.manageDistinct = ob().selectedtimeManagement();
                 object.nursingCategory = nursingCategory;
                 object.startMonthDay = ob().monthDay();
                 object.nursingNumberLeaveDay = ob().nursingNumberLeaveDay();
                 object.nursingNumberPerson = ob().nursingNumberPerson();
                 object.specialHolidayFrame = ob().nursingLeaveSpecialHoliday();
                 object.absenceWork = ob().nursingLeaveWorkAbsence();
+                //L4_4 and L5_4
+                object.timeDigestiveUnit = ob().timeDigestiveUnit();
                 
                 return object;
             }
             
             private convertModel(ob : KnockoutObservable<NursingSettingModel>, object: any) {
                 ob().selectedManageNursing(object.manageType);
+                //L4_2 and L5_2
+                ob().selectedtimeManagement(1);
                 ob().monthDay(object.startMonthDay);
                 ob().nursingNumberLeaveDay(object.nursingNumberLeaveDay);
-                ob().nursingNumberPerson(object.nursingNumberPerson);
+                ob().nursingNumberPerson(object.nursingNumberLeaveDay2);
                 ob().nursingLeaveSpecialHoliday(object.specialHolidayFrame);
                 ob().nursingLeaveWorkAbsence(object.absenceWorkDay);
+                //L4_4 and L5_4
+                ob().timeDigestiveUnit(object.timeDigestiveUnit);
+                ob().selectedtimeManagement(object.manageDistinct);
             }
             
         }
@@ -315,6 +333,8 @@ module nts.uk.pr.view.kmf001.l {
         export class NursingSettingModel {
             
             selectedManageNursing: KnockoutObservable<number>;
+            //L4_2 and L5_2
+            selectedtimeManagement: KnockoutObservable<number>;
             enableNursing: KnockoutObservable<boolean>;
             monthDay: KnockoutObservable<number>;
             nursingNumberLeaveDay: KnockoutObservable<number>;
@@ -322,21 +342,28 @@ module nts.uk.pr.view.kmf001.l {
             
             nursingLeaveSpecialHoliday: KnockoutObservable<number>;
             nursingLeaveWorkAbsence: KnockoutObservable<number>;
-            
+            //L4_4 and L5_4
+            timeDigestiveUnit: KnockoutObservable<number>;
             parent: ScreenModel;
+            enableNursingAndTimeMan: KnockoutObservable<boolean>;
             
             constructor(parent: ScreenModel) {
                 let self = this;
                 self.parent = parent;
                 self.selectedManageNursing = ko.observable(1);
+                self.selectedtimeManagement= ko.observable(1);
                 self.enableNursing = ko.computed(function() {
                     return self.selectedManageNursing() == 1;
+                }, self);
+                self.enableNursingAndTimeMan = ko.computed(function() {
+                    return self.enableNursing() && self.selectedtimeManagement() == 1;
                 }, self);
                 self.monthDay = ko.observable(101);
                 self.nursingNumberLeaveDay = ko.observable(0);
                 self.nursingNumberPerson = ko.observable(0);
                 self.nursingLeaveSpecialHoliday = ko.observable(0);
                 self.nursingLeaveWorkAbsence = ko.observable(0);
+                self.timeDigestiveUnit = ko.observable(0);
             }
         }
         

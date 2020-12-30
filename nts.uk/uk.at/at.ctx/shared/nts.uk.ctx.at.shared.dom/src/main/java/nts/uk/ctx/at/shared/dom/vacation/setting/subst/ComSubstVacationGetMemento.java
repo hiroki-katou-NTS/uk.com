@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.subst;
 
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+
 /**
  * The Interface ComSubstVacationGetMemento.
  */
@@ -22,5 +24,9 @@ public interface ComSubstVacationGetMemento {
 	 * @return the setting
 	 */
 	SubstVacationSetting getSetting();
-
+	//管理区分 
+	ManageDistinct getManageDistinct();
+	
+	//紐付け管理区分
+	ManageDistinct getLinkingManagementATR();
 }

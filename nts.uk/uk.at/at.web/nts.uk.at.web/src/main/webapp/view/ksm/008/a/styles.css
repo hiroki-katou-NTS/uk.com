@@ -29,3 +29,11 @@ tr:hover > td {
     margin-top: 10px;
     min-width: 60px;
 }
+
+.nts-fixed-table table.fixed-table > tbody > tr > td, .nts-fixed-table table.fixed-table > tbody > tr > th {
+    overflow: unset; !important;
+}
+
+.ui-iggrid table td, .ui-iggrid table th {
+    overflow: unset; !important;
+}

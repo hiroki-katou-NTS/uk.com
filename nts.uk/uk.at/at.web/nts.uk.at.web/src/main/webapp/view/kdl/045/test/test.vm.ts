@@ -366,6 +366,11 @@ module nts.uk.at.view.test.vm {
                         timeRange2ScreenModel.startTime(childData.second.start != null ? childData.second.start : 0);
                         timeRange2ScreenModel.endTime(childData.second.end != null ? childData.second.end : 0);
                     }
+                    if(childData.second.start == null && childData.second.end == null)
+                    self.timeRange2Value({
+                        startTime: 0,
+                        endTime: 0
+                    });
                     setTimeout(function() {
                             nts.uk.ui.errors.clearAll();
                         }, 100);
@@ -637,9 +642,9 @@ module nts.uk.at.view.test.vm {
                 startTime1Status: shareModelData.EditStateSetting.HAND_CORRECTION_MYSELF,
                 endTime1: self.timeRange1Value().endTime,//ok
                 endTime1Status: shareModelData.EditStateSetting.HAND_CORRECTION_OTHER,
-                startTime2: self.timeRange2Value().startTime,//ok
+                startTime2: self.timeRange2Value().startTime == 0?'':self.timeRange2Value().startTime,//ok
                 startTime2Status: shareModelData.EditStateSetting.REFLECT_APPLICATION,
-                endTime2: self.timeRange2Value().endTime,//ok
+                endTime2: self.timeRange2Value().endTime==0?'':self.timeRange2Value().endTime,//ok
                 endTime2Status: shareModelData.EditStateSetting.IMPRINT,
                 listBreakTimeZoneDto: breakTimeOfDailyAttdDto,//ok
                 workTypeCode: self.workType(), //ok

@@ -6,10 +6,8 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.flowset;
 
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSetGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.ScheduleBreakCalculation;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.StampBreakCalculation;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRestSet;
-import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaScheduleBreakCalculationGetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaStampBreakCalculationGetMemento;
 
 /**
@@ -40,18 +38,6 @@ public class JpaFlowFixedRestSetGetMemento implements FlowFixedRestSetGetMemento
 	@Override
 	public FlowFixedRestCalcMethod getCalculateMethod() {
 		return FlowFixedRestCalcMethod.valueOf(this.entity.getFixedRestCalcMethod());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSetGetMemento#
-	 * getCalculateFromSchedule()
-	 */
-	@Override
-	public ScheduleBreakCalculation getCalculateFromSchedule() {
-		return new ScheduleBreakCalculation(new JpaScheduleBreakCalculationGetMemento<KshmtFlowRestSet>(this.entity));
 	}
 
 	/*

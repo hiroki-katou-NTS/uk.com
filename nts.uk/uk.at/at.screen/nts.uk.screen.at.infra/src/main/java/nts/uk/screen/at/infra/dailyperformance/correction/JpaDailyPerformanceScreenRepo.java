@@ -793,7 +793,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 					.setParameter("lstDate", dateRange.toListDate()).setParameter("lstEmployee", subList).getList(e -> {
 						return new WorkInfoOfDailyPerformanceDto(e.krcdtDaiPerWorkInfoPK.employeeId, e.calculationState,
 								e.krcdtDaiPerWorkInfoPK.ymd, e.recordWorkWorktypeCode, e.recordWorkWorktimeCode,
-								e.scheduleWorkWorktypeCode, e.scheduleWorkWorktimeCode,
+//								e.scheduleWorkWorktypeCode, e.scheduleWorkWorktimeCode,
 								e.scheduleTimes == null ? false : true,
 								e.version);
 					}));
@@ -1322,7 +1322,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 					.setParameter("lstDate", dateRange.toListDate()).setParameter("lstEmployee", subList)
 					.getList(c -> new WorkInfoOfDailyPerformanceDetailDto(c.krcdtDaiPerWorkInfoPK.employeeId,
 							new WorkInformationDto(c.recordWorkWorktimeCode, c.recordWorkWorktypeCode),
-							new WorkInformationDto(c.scheduleWorkWorktimeCode, c.recordWorkWorktypeCode),
+//							new WorkInformationDto(c.scheduleWorkWorktimeCode, c.recordWorkWorktypeCode),
 							EnumAdaptor.valueOf(c.calculationState, CalculationStateDto.class),
 							EnumAdaptor.valueOf(c.goStraightAttribute, NotUseAttributeDto.class),
 							EnumAdaptor.valueOf(c.backStraightAttribute, NotUseAttributeDto.class),
