@@ -16,7 +16,7 @@ const template = `
 								
 					</div>
 					<div style="height: calc(100vh - 143px);
-								overflow: hidden scroll;">
+								overflow-y: scroll;">
 						<div id="right-layout" style="margin: 10px 20px;">
 							<label id="flex-title" data-bind="i18n:'KMK004_268'"></label>
 						<hr style=" text-align: left;

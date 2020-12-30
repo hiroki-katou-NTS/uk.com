@@ -17,7 +17,7 @@ const template = `
 					<div style="margin: 10px 0px 0px 75px; 
 								display:flex;
 								height: calc(100vh - 153px);
-    							overflow: hidden scroll;">
+    							overflow-y: scroll;">
 					
 						<div style="display:inline-block"> 
 								<div id="employee-list"></div>
