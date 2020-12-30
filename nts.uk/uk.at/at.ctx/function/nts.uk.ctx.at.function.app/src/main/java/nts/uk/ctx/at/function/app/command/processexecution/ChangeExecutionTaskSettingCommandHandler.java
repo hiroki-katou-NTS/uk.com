@@ -69,9 +69,9 @@ public class ChangeExecutionTaskSettingCommandHandler
 				// 「実行中」以外の場合
 				executionTaskSetting[0] = command.toDomain();
 				// バッチのスケジュールを削除する
-				this.scheduler.unscheduleOnCurrentCompany(SortingProcessEndScheduleJob.class, command.getScheduleId());
+				this.scheduler.unscheduleOnCurrentCompany(SortingProcessScheduleJob.class, command.getScheduleId());
 				if (command.getEndScheduleId() != null) {
-					this.scheduler.unscheduleOnCurrentCompany(SortingProcessEndScheduleJob.class,
+					this.scheduler.unscheduleOnCurrentCompany(SortingProcessScheduleJob.class,
 							command.getEndScheduleId());
 				}
 				// 次回実行日時作成処理（実行タスク設定）
@@ -102,11 +102,11 @@ public class ChangeExecutionTaskSettingCommandHandler
 				UkJobScheduleOptions options = UkJobScheduleOptions
 						.builder(SortingProcessScheduleJob.class, scheduleIdDef, cron).userData(scheduletimeData)
 						.startDate(startDate).endDate(endDate).startClock(startTime).endClock(endTime)
-						.cleanupJobClass(SortingProcessEndScheduleJob.class).build();
+						.cleanupJobClass(SortingProcessScheduleJob.class).build();
 				UkJobScheduleOptions optionsEnd = UkJobScheduleOptions
 						.builder(SortingProcessScheduleJob.class, scheduleIdEnd, cron).userData(scheduletimeData)
 						.startDate(startDate).endDate(endDate).startClock(startTime).endClock(endTime)
-						.cleanupJobClass(SortingProcessEndScheduleJob.class).build();
+						.cleanupJobClass(SortingProcessScheduleJob.class).build();
 				String scheduleId = this.schedule(options);
 				String endScheduleId = this.schedule(optionsEnd);
 				executionTaskSetting[0].setScheduleId(scheduleId);
