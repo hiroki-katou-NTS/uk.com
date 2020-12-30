@@ -62,8 +62,6 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdwo
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.HolidayWorkAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.workrecord.dailyrecordprocess.dailycreationwork.BreakTimeZoneSetting;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.EarchInterimRemainCheck;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainCheckInputParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngCheckRegister;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
@@ -212,7 +210,7 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 		ApplicationTime applicationTime = preActualColorCheck.checkStatus(companyId, employeeId, date.orElse(null), ApplicationType.HOLIDAY_WORK_APPLICATION, 
 				initWork.getInitWorkTypeCd().orElse(null), initWork.getInitWorkTimeCd().orElse(null), holidayWorkSetting.getOvertimeLeaveAppCommonSet().getOverrideSet(), 
 				Optional.of(holidayWorkSetting.getCalcStampMiss()), hdWorkBreakTimeSetOutput.getDeductionTimeLst(), 
-				!actualContentDisplayList.isEmpty() ? Optional.of(actualContentDisplayList.get(0)): Optional.empty()).applicationTime;
+				!actualContentDisplayList.isEmpty() ? Optional.of(actualContentDisplayList.get(0)): Optional.empty());
 		hdWorkDispInfoWithDateOutput.setActualApplicationTime(Optional.ofNullable(applicationTime));
 		
 		//10-2.代休の設定を取得する
@@ -378,7 +376,7 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 					Optional.of(empAppHdWorkDispInfoOutput.getHolidayWorkAppSet().getCalcStampMiss()), 
 					empAppHdWorkDispInfoOutput.getHdWorkDispInfoWithDateOutput().getBreakTimeZoneSettingList().isPresent() ? 
 							empAppHdWorkDispInfoOutput.getHdWorkDispInfoWithDateOutput().getBreakTimeZoneSettingList().get().getTimeZones() : Collections.emptyList(), 
-					Optional.ofNullable(!actualContentDisplayLst.isEmpty() ? actualContentDisplayLst.get(0) : null)).applicationTime;
+					Optional.ofNullable(!actualContentDisplayLst.isEmpty() ? actualContentDisplayLst.get(0) : null));
 			
 			//	ループする社員の休日出勤申請起動時の表示情報 = INPUT．休日出勤申請起動時の表示情報
 			empAppHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().setOpPreAppContentDisplayLst(Optional.of(preAppContentDisplayLst));

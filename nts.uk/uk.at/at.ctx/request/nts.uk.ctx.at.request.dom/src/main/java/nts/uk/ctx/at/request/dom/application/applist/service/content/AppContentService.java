@@ -183,9 +183,9 @@ public interface AppContentService {
 	 * @param application
 	 * @return
 	 */
-	public String getOvertimeHolidayWorkContent(AppHolidayWork appHolidayWork, AppOverTime appOverTime, 
-			OvertimeHolidayWorkActual overtimeHolidayWorkActual, ApplicationType appType, PrePostAtr prePostAtr, 
-			ApplicationListAtr applicationListAtr, AppReason appReason, DisplayAtr appReasonDisAtr, ScreenAtr screenAtr, Application application);
+	public String getOvertimeHolidayWorkContent(AppOverTimeData appOverTimeData, AppHolidayWorkData appHolidayWorkData,
+			ApplicationType appType, PrePostAtr prePostAtr, ApplicationListAtr applicationListAtr, AppReason appReason, 
+			DisplayAtr appReasonDisAtr, ScreenAtr screenAtr, boolean actualStatus, Application application);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面ver4.アルゴリズム.申請一覧リスト取得実績.申請一覧リスト取得実績

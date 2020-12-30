@@ -18,4 +18,5 @@ public class ApprSttConfirmEmp {
 	private String empName;
 	private Boolean monthConfirm;
 	private Integer monthApproval;
+	private String empID;
 }

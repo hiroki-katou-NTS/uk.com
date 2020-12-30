@@ -7,23 +7,26 @@
         v-bind:params="$appContext.kaf000_A_Params"
       />
     </div>
-    <div
-      v-if="!$appContext.$valid || !$appContext.isValidateAll"
-      class="card bg-danger top-alert uk-text-danger topError"
-    >
-      <button class="btn btn-link uk-text-danger">
-        <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
-        {{ "KAFS07_1" | i18n }}
-      </button>
-    </div>
 
-    <!-- OverTime -->
-    <div v-if="true" class="card card-label">
+    <!-- A2_B1 -->
+    <div class="card card-label">
+      <!--A2_B1_1-->
       <div class="card-header uk-bg-accordion mt-2">
         <span>{{ "KAFS05_70" | i18n }}</span>
         <span class="badge badge-warning">必須</span>
       </div>
-      <div v-show="overTimes.length != 0 " v-for="(item, index) in overTimes" v-bind:key="index" :value="index">
+      <!--A2_B1_5-->
+      <div
+       v-if="$appContext.isMsg_1562" 
+      class="card bg-danger top-alert uk-text-danger topError"
+      >
+        <button class="btn btn-link uk-text-danger">
+          <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+          {{ "Msg_1562" | i18n }}
+        </button>
+      </div>
+      <!--A2_B1_2-->
+      <div v-for="(item, index) in overTimes" v-bind:key="index" :value="index">
         <div v-show="item.visible" class="card-body">
           <div class="row mt-3">
             <div class="col-4">{{ item.title }}</div>
@@ -44,8 +47,6 @@
             <nts-time-editor
               v-model="item.applicationTime"
               name=""
-              v-bind:require="false"
-              v-bind:showTitle="true"
               v-bind:disabled="!$appContext.c3"
               time-input-type="time-duration"
             />
@@ -54,9 +55,10 @@
       </div>
     </div>
 
-    <!-- HolidayTime -->
+    <!-- A2_B2 -->
 
-    <div v-if="true" class="card card-label">
+    <div v-if="$appContext.c16" class="card card-label">
+      <!-- A2_B2_1 -->
       <div class="card-header uk-bg-accordion mt-2">
         <span>{{ "KAFS05_73" | i18n }}</span>
         <span class="badge badge-warning">必須</span>
@@ -86,8 +88,6 @@
             <nts-time-editor
               v-model="item.applicationTime"
               name=""
-              v-bind:require="false"
-              v-bind:showTitle="true"
               v-bind:disabled="!$appContext.c3"
               time-input-type="time-duration"
             />
@@ -141,16 +141,16 @@
     </div>
 
 
-
+    <!--A2_B6-->
     <div class="card card-label" v-if="$appContext.c19">
-        <!--A2_B5_1-->
+        <!--A2_B6_1-->
         <div class="card-header uk-bg-accordion" style="align-items: center">
             <v-label class="border-0 pl-0 my-n1">
                 {{'KAFS05_78' | i18n(reason2.title)}}</v-label>
             <span class="badge badge-info">任意</span>
         </div>
         <div class="card-body">
-            <!--A2_B5_2-->
+            <!--A2_B6_2-->
             <div v-if="$appContext.c20">
                   <div class="mb-1">
                         <span class="small-header">{{'KAFS05_79' | i18n(reason2.title)}}</span>
@@ -163,7 +163,7 @@
                         </nts-dropdown>
                   </div>
             </div>
-            <!--A2_B5_1-->
+            <!--A2_B6_1-->
             <div v-if="$appContext.c21">
                   <div class="mb-1">
                         <span class="small-header">{{'KAFS05_80' | i18n(reason2.title)}}</span>
@@ -175,23 +175,20 @@
         </div>
     </div>
 
-    <!--A2_B6-->
-
+    <!--A3_C1-->
     <div class="card card-label">
       <!-- A2_C1_1 -->
       <button
         type="button"
         class="btn btn-block btn-primary btn-lg"
         v-on:click="$appContext.register"
-        v-if="true"
       >
-        {{ nameInsert }}
+        {{($appContext.modeNew ? 'KAFS05_11' : 'KAFS05_18') | i18n}}
       </button>
       <!-- A2_C1_2 -->
       <button
         type="button"
         class="btn btn-block btn-secondary"
-        v-if="true"
         v-on:click="backStep1"
       >
         {{ "KAFS05_12" | i18n }}

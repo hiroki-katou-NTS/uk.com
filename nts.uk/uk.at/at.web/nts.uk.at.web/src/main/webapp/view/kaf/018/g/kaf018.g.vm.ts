@@ -68,7 +68,7 @@ module nts.uk.at.view.kaf018.g.viewmodel {
 				vm.columnIggridDayFixed.push({ columnKey: 'apprStt', isFixed: true });
 			}
 			vm.columnIggridMonth = _.concat(vm.columnIggridMonth, [
-				{ headerText: vm.$i18n('KAF018_425'), key: 'approvalStatus', width: 150 },
+				{ headerText: vm.$i18n('KAF018_425'), key: 'approvalStatus', width: 150, formatter: vm.createApprovalStatus },
 				{ headerText: vm.$i18n('KAF018_426'), key: 'phase1', width: 250 },
 				{ headerText: vm.$i18n('KAF018_427'), key: 'phase2', width: 250 },
 				{ headerText: vm.$i18n('KAF018_428'), key: 'phase3', width: 250 },
@@ -76,7 +76,7 @@ module nts.uk.at.view.kaf018.g.viewmodel {
 				{ headerText: vm.$i18n('KAF018_430'), key: 'phase5', width: 267 }	
 			]);
 			vm.columnIggridDay = _.concat(vm.columnIggridDay, [
-				{ headerText: vm.$i18n('KAF018_434'), key: 'approvalStatus', width: 150 },
+				{ headerText: vm.$i18n('KAF018_434'), key: 'approvalStatus', width: 150, formatter: vm.createApprovalStatus },
 				{ headerText: vm.$i18n('KAF018_435'), key: 'phase1', width: 250 },
 				{ headerText: vm.$i18n('KAF018_436'), key: 'phase2', width: 250 },
 				{ headerText: vm.$i18n('KAF018_437'), key: 'phase3', width: 250 },
@@ -88,6 +88,10 @@ module nts.uk.at.view.kaf018.g.viewmodel {
 			vm.refreshDataSource().then(() => {
 				$("#kaf018-e-cancel-btn").focus();	
 			});
+		}
+		
+		createApprovalStatus(value: any) {
+			return value.replace(/ /g, '&nbsp;');
 		}
 		
 		createIggridMonth() {
@@ -235,7 +239,7 @@ module nts.uk.at.view.kaf018.g.viewmodel {
 						return;
 					}
 					if(!_.isNull(dailyConfirmItem.personConfirm)) {
-						empDateConfirmContent.confirmStt = dailyConfirmItem.personConfirm ? vm.$i18n('KAF018_534') : vm.$i18n('KAF018_533');	
+						empDateConfirmContent.confirmStt = dailyConfirmItem.personConfirm ? vm.$i18n('KAF018_534') : vm.$i18n('KAF018_533');
 					}
 					if(!_.isNull(dailyConfirmItem.bossConfirm)) {
 						empDateConfirmContent.apprStt = dailyConfirmItem.bossConfirm == 0 ? vm.$i18n('KAF018_535') :
