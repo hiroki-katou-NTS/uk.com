@@ -55,8 +55,8 @@ module nts.uk.at.view.kwr005.c {
     }
 
     cancel() {
-      const vm = this; 
-      const setShare:any =  vm.isDeleted() ? { code: null, name: null } : null;
+      const vm = this;
+      const setShare: any = vm.isDeleted() ? { code: null, name: null } : null;
       vm.$window.close(setShare);
     }
 
@@ -80,11 +80,12 @@ module nts.uk.at.view.kwr005.c {
         })
         .fail((error) => {
           let ctrlId = (error.messageId === 'Msg_1927') ? '#KWR005_C23' : '#closeDialog';
-          if( error.messageId === 'Msg_1928' ) vm.isDeleted(true);
-          $(ctrlId).ntsError('set', { messageId: error.messageId });
-          vm.$blockui('hide');
-        })
-        .always(() => vm.$blockui('hide'));
+          vm.isDeleted(error.messageId === 'Msg_1928');
+          vm.$dialog.error({ messageId: error.messageId }).then(() => {
+            $(ctrlId).focus();
+            vm.$blockui('hide');
+          });
+        });
     }
   }
 }
