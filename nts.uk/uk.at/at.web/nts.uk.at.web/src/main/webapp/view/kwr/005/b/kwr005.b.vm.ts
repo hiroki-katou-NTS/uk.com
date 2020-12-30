@@ -96,7 +96,7 @@ module nts.uk.at.view.kwr005.b {
 
       nts.uk.ui.errors.clearAll();
       vm.currentCodeList(null);
-      vm.currentCodeListSwap.removeAll();      
+      vm.currentCodeListSwap.removeAll();
       vm.clearSelection();
       vm.resetListItemsSwap();
       vm.printPropertyCode.valueHasMutated();
@@ -443,9 +443,14 @@ module nts.uk.at.view.kwr005.b {
 
     filterListMonthly(value: number) {
       const vm = this;
-      vm.resetListItemsSwap();      
+      vm.resetListItemsSwap();
       if (value !== -1) {
-        let newListSwap: Array<AttendanceDto> = _.filter(vm.listItemsSwap(), (x) => x.attributes === value);
+        let newListSwap: Array<AttendanceDto> = [];
+        let printAttributes = [4, 5, 6, 7];
+        if (value !== -2)
+          newListSwap = _.filter(vm.listItemsSwap(), (x) => x.attributes === value);
+        else
+          newListSwap = _.filter(vm.listItemsSwap(), (x) => !_.includes(printAttributes, x.attributes));
         vm.listItemsSwap(newListSwap);
       }
     }
