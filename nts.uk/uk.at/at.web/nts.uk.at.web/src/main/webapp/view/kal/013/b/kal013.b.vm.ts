@@ -45,21 +45,12 @@ module nts.uk.at.view.kal013.b {
         constructor(params: IParentParams) {
             super();
             const vm = this;
-            // vm.numberEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
-            //     grouplength: 0,
-            //     decimallength: 2,
-            //     placeholder: ''
-            // }));
-
+            vm.category(params.category);
             if (params.category == WorkplaceCategory.MONTHLY) {
                 vm.listTypeCheck(__viewContext.enums.CheckMonthlyItemsType);
             } else {
                 vm.listTypeCheck(__viewContext.enums.CheckDayItemsType);
             }
-
-            vm.getEnum().done(()=>{
-
-            });
 
             vm.pattern().checkItem.subscribe((value)=>{
 
@@ -148,13 +139,15 @@ module nts.uk.at.view.kal013.b {
                 }
 
             });
+
         }
 
         created(params: IParentParams) {
             const vm = this;
 
-            vm.category(params.category);
-            vm.pattern().update(params.condition);
+            vm.getEnum().done(()=>{
+                vm.pattern().update(params.condition);
+            });
 
             vm.pattern().checkCond.subscribe((value)=>{
                 if (vm.switchPatternA()){
@@ -193,7 +186,8 @@ module nts.uk.at.view.kal013.b {
             setShared('KDL007_PARAM', param, true);
             nts.uk.ui.windows.sub.modal('/view/kdl/007/a/index.xhtml').onClosed(() => {
                 let listResult = getShared('KDL007_VALUES');
-                vm.pattern().updateCheckCond(listResult.selecteds);
+
+                vm.pattern().updateCheckCond(listResult.selecteds[0].length > 0 ? listResult.selecteds: "");
             });
         }
 
@@ -284,16 +278,7 @@ module nts.uk.at.view.kal013.b {
         minValue: KnockoutObservable<number> = ko.observable(0);
         maxValue: KnockoutObservable<number> = ko.observable(0);
         displayMessage: KnockoutObservable<string> = ko.observable("");
-        constructor(){
-            this.checkItem(null);
-            this.checkCond(null);
-            this.checkCondDis(null);
-            this.checkCondB(null);
-            this.operator(null);
-            this.minValue(null);
-            this.maxValue(null);
-            this.displayMessage(null);
-        }
+        constructor(){}
 
         update(params: IPattern){
             this.checkItem(params.checkItem);
@@ -339,7 +324,7 @@ module nts.uk.at.view.kal013.b {
         localizedName: string;
         constructor(param: IEnumModel) {
             let self = this;
-            self.value = ko.observable(param.value || -1);
+            self.value = ko.observable(param.value);
             self.fieldName = param.fieldName || '';
             self.localizedName = param.localizedName || '';
         }
