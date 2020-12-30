@@ -16,6 +16,7 @@ module nts.uk.at.view.kal013.a {
     @bean()
     class ViewModel extends ko.ViewModel {
 
+        backButon: string = "/view/kal/012/a/index.xhtml";
         //categories
         categoryList: KnockoutObservableArray<common.Category> = ko.observableArray(common.workplaceCategory());
         selectedCategoryCode: KnockoutObservable<number> = ko.observable(common.WorkplaceCategory.MASTER_CHECK_BASIC);

@@ -28,7 +28,7 @@
             <a tabindex="1"
                     id="a14"
                     class="goback"
-                    data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }, text: $i18n('KAL003_91')"></a
+                    data-bind="ntsLinkButton: { jump: backButon }, text: $i18n('KAL004_3')"></a
             >
             <button
                     tabindex="2"
@@ -39,7 +39,7 @@
                     tabindex="3"
                     id="a12"
                     class="proceed"
-                    data-bind="text: $i18n('KAL003_6'), click: registerAlarmListByWorkplace"
+                    data-bind="text: $i18n('KAL003_6'), click: registerAlarmListByWorkplace, enable: $root.errors.isEmpty"
             />
             <button
                     tabindex="4"
