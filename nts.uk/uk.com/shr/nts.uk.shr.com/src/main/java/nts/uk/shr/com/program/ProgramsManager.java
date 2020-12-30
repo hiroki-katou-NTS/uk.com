@@ -3490,6 +3490,10 @@ public class ProgramsManager {
             ProgramIdConsts.KTG026A,
             "KTG026_1",
             "/view/ktg/026/a/superior.xhtml");
+    
+    /** CDL010 */
+    public static final Program CDL010A = new Program(WebAppId.COM, ProgramIdConsts.CDL010A, "CDL010_1",
+    		"/view/cdl/010/a/index.xhtml");
 
     /**
      * All programs map.
