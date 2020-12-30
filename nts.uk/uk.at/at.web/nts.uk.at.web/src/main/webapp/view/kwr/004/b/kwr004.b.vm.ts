@@ -434,8 +434,8 @@ module nts.uk.at.view.kwr004.b {
 
       _.forEach(outputItems, (x, index: number) => {
         independentCalc = (!_.isNil(x.independentCalcClassic)) ? x.independentCalcClassic : 2;
+        independentCalc = (maxItems === 2 && independentCalc === 2) ? 3 : independentCalc;        
         dailyAttributes = vm.dailyOrMonthlyAttributes(independentCalc);
-
         selectedListItems = []; //clear
         _.forEach(x.selectedListItems, (o) => {
           selectedListItems.push({
@@ -479,7 +479,10 @@ module nts.uk.at.view.kwr004.b {
 
     dailyOrMonthlyAttributes(type: number) {
       const vm = this;
-      return type === 1 ? vm.dailyAloneAttributes() : vm.monthlyAttributes();
+      if( type === 1) return vm.dailyAloneAttributes()
+      else if( type === 2) return vm.monthlyAttributes();
+      else return vm.dailyCalcAttributes();
+      //return type === 1 ? vm.dailyAloneAttributes() : vm.monthlyAttributes();
     }
 
     deleteSetting() {
