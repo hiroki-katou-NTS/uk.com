@@ -54,7 +54,8 @@ public class GetAttendanceItemInfo {
                     e.getName(),
                     e.getDisplayNumber(),
                     null,
-                    convertDailyToAttForms(e.getAttribute(), e.getMasterType())))
+                    convertDailyToAttForms(e.getAttribute(), e.getMasterType()),
+                    e.getMasterType()))
                     .collect(Collectors.toCollection(ArrayList::new)));
             return rs;
         }
@@ -71,7 +72,8 @@ public class GetAttendanceItemInfo {
                     e.getAttendanceItemName(),
                     e.getAttendanceItemDisplayNumber(),
                     e.getTypeOfAttendanceItem(),
-                    convertMonthlyToAttForms(e.getTypeOfAttendanceItem())))
+                    convertMonthlyToAttForms(e.getTypeOfAttendanceItem()),
+                    null))
                     .collect(Collectors.toCollection(ArrayList::new)));
             return rs;
         }
