@@ -66,14 +66,18 @@ module nts.uk.at.view.kwr004.c {
       vm.params().settingName = vm.newName();
 
       vm.$ajax(PATH.cloneSettingClassification, vm.params()).done((result) => {
-        vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {                  
+        vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
           vm.$window.close({ code: vm.newCode(), name: vm.newName() });
           vm.$blockui('hide');
         });
-      }).fail((err) => {
-        vm.showError(err.messageId);
-        vm.$blockui('hide');
-      }).always(() => vm.$blockui('hide'));
+      }).fail((error) => {
+        let ctrlId = (error.messageId === 'Msg_1859') ? '#KWR004_C23' : '#btnClose';
+        vm.isDeleted(error.messageId === 'Msg_1898');
+        vm.$dialog.error({ messageId: error.messageId }).then(() => {
+          $(ctrlId).focus();
+          vm.$blockui('hide');
+        });
+      });
     }
 
     showError(messageId: string) {
@@ -94,10 +98,10 @@ module nts.uk.at.view.kwr004.c {
     }
 
     cancel() {
-      const vm = this; 
+      const vm = this;
       let setShare = vm.isDeleted() ? { code: null, name: null } : null;
       vm.$window.close(setShare);
-    }    
+    }
 
     checkErrors() {
       const vm = this;
