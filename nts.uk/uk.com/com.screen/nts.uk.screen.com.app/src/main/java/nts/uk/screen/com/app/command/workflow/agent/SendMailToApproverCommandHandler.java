@@ -36,9 +36,15 @@ public class SendMailToApproverCommandHandler extends CommandHandler<SendEmailCo
             throw new BusinessException("Msg_791");
         }
         //代行承認者へ代行依頼メールを送信する
-        lstApplicantMail.getOutGoingMails().forEach(email -> {
-            mailSender.sendFromAdmin(email,
-                    new MailContents(TextResource.localize("CMM044_41"), commandHandlerContext.getCommand().getEmailContent()));
-        });
+        try {
+            lstApplicantMail.getOutGoingMails().forEach(email -> {
+                mailSender.sendFromAdmin(email,
+                        new MailContents(TextResource.localize("CMM044_41"), commandHandlerContext.getCommand().getEmailContent()));
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BusinessException("Msg_1057");
+        }
+
     }
 }

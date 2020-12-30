@@ -364,14 +364,17 @@ module nts.uk.at.view {
             listUsageTimeAndType: Array<UsageTimeAndType>;//Map<時間休暇種類, 合計使用時間>
             showYourDesire: number;//希望を表示するか、 (1:true,0:false)
             workAvaiOfOneDayDto: WorkAvailabilityOfOneDayDto;//一日分の勤務希望の表示情報
+            workStyle : number;//Optional<出勤休日区分>
             constructor(workTimezoneCommonSet: commonKmk003.WorkTimezoneCommonSetDto,
                 listUsageTimeAndType: Array<UsageTimeAndType>,
                 showYourDesire: number,
-                workAvaiOfOneDayDto: WorkAvailabilityOfOneDayDto) {
+                workAvaiOfOneDayDto: WorkAvailabilityOfOneDayDto,
+                workStyle : number) {
                 this.workTimezoneCommonSet = workTimezoneCommonSet;
                 this.listUsageTimeAndType = listUsageTimeAndType;
                 this.showYourDesire = showYourDesire;
                 this.workAvaiOfOneDayDto = workAvaiOfOneDayDto;
+                this.workStyle = workStyle;
             }
         }
 
@@ -431,10 +434,12 @@ module nts.uk.at.view {
         export class BreakTimeKdl045Dto {
             fixBreakTime: boolean; //休憩時間帯を固定にする
             timeZoneList: Array<TimeSpanForCalcDto>; // 休憩時間帯
+            workStyle : number;//Optional<出勤休日区分>
             constructor(fixBreakTime: boolean,
-            timeZoneList: Array<TimeSpanForCalcDto>) {
+            timeZoneList: Array<TimeSpanForCalcDto>,workStyle : number) {
                 this.fixBreakTime = fixBreakTime;
                 this.timeZoneList = timeZoneList;
+                this.workStyle = workStyle;
             }
         }
 

@@ -80,13 +80,13 @@ public class GetAttendanceItemInfo {
         return rs;
     }
 
-    private Integer convertDailyToAttForms(Integer typeOfAttendanceItem, int masterType) {
+    private Integer convertDailyToAttForms(Integer typeOfAttendanceItem, Integer masterType) {
         if (typeOfAttendanceItem.equals(DailyAttendanceAtr.Code.value)
-                && masterType == TypesMasterRelatedDailyAttendanceItem.WORK_TYPE.value
+                && masterType.equals(TypesMasterRelatedDailyAttendanceItem.WORK_TYPE.value)
                 ) {
             return CommonAttributesOfForms.WORK_TYPE.value;
         } else if (typeOfAttendanceItem.equals(DailyAttendanceAtr.Code.value)
-                && masterType == TypesMasterRelatedDailyAttendanceItem.WORKING_HOURS.value
+                && masterType.equals(TypesMasterRelatedDailyAttendanceItem.WORKING_HOURS.value)
                 ) {
             return CommonAttributesOfForms.WORKING_HOURS.value;
         } else if (typeOfAttendanceItem.equals(DailyAttendanceAtr.NumberOfTime.value)) {

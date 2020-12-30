@@ -395,7 +395,7 @@ public class WorkInformation {
 		 * になっています。
 		 * このメソッドとは引数の順番が違うため、implementsして実装する際には十分気をつけてください。
 		 */
-		PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo);
+		//PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo);
 
 	}
 

@@ -7,6 +7,9 @@ import nts.uk.ctx.at.request.app.command.application.common.CreateApplicationCom
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.BusinessTripDto;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.BusinessTripInfoOutputDto;
+import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.ScreenWorkNameDetailDto;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -21,5 +24,7 @@ public class UpdateBusinessTripCommand {
 
     // 申請
     private CreateApplicationCommand application;
+
+    private List<ScreenWorkNameDetailDto> screenContent;
 
 }

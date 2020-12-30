@@ -70,7 +70,7 @@ public class DeclareAttdLeave {
 			// 勤務NO=1の出退勤を取得
 			Optional<TimeLeavingWork> attdLeaveOpt = timeLeaving.getAttendanceLeavingWork(new WorkNo(1));
 			if (attdLeaveOpt.isPresent()){
-				Optional<TimeWithDayAttr> attdTime = attdLeaveOpt.get().getAttendanceStampTimeWithDay();
+				Optional<TimeWithDayAttr> attdTime = attdLeaveOpt.get().getAttendanceTime();
 				if (attdTime.isPresent()){
 					// 出勤　←　出退勤．出勤．打刻．時刻
 					domain.attendance = Optional.of(new TimeWithDayAttr(attdTime.get().valueAsMinutes()));
@@ -95,7 +95,7 @@ public class DeclareAttdLeave {
 		// 勤務NO=退勤勤務NOの出退勤を取得
 		Optional<TimeLeavingWork> attdLeaveOpt = timeLeaving.getAttendanceLeavingWork(domain.leaveWorkNo);
 		if (attdLeaveOpt.isPresent()){
-			Optional<TimeWithDayAttr> leaveTime = attdLeaveOpt.get().getleaveStampTimeWithDay();
+			Optional<TimeWithDayAttr> leaveTime = attdLeaveOpt.get().getLeaveTime();
 			if (leaveTime.isPresent()){
 				// 退勤　←　出退勤．退勤．打刻．時刻
 				domain.leave = Optional.of(new TimeWithDayAttr(leaveTime.get().valueAsMinutes()));
@@ -129,7 +129,7 @@ public class DeclareAttdLeave {
 			if (attdLeave.getAttendanceStamp().isPresent()){
 				TimeActualStamp actualStamp = attdLeave.getAttendanceStamp().get();
 				if (attdLeave.getWorkNo().v() == 1){
-					Optional<TimeWithDayAttr> timeWithDay = attdLeave.getAttendanceStampTimeWithDay();
+					Optional<TimeWithDayAttr> timeWithDay = attdLeave.getAttendanceTime();
 					if (timeWithDay.isPresent() && this.attendance.isPresent()){
 						// 出勤．打刻　←　申告出退勤．出勤
 						actualStamp.getStamp().get().getTimeDay().setTimeWithDay(this.attendance);
@@ -149,7 +149,7 @@ public class DeclareAttdLeave {
 			if (attdLeave.getLeaveStamp().isPresent()){
 				TimeActualStamp actualStamp = attdLeave.getLeaveStamp().get();
 				if (attdLeave.getWorkNo().v() == this.leaveWorkNo.v()){
-					Optional<TimeWithDayAttr> timeWithDay = attdLeave.getleaveStampTimeWithDay();
+					Optional<TimeWithDayAttr> timeWithDay = attdLeave.getLeaveTime();
 					if (timeWithDay.isPresent() && this.leave.isPresent()){
 						// 退勤．打刻　←　申告出退勤．退勤
 						actualStamp.getStamp().get().getTimeDay().setTimeWithDay(this.leave);

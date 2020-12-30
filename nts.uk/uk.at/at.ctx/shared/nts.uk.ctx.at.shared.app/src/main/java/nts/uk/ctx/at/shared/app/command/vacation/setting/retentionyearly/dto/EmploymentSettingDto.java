@@ -81,15 +81,6 @@ public class EmploymentSettingDto {
 			return dto.employmentCode;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
-		 * EmptYearlyRetentionGetMemento#getUpperLimitSetting()
-		 */
-		@Override
-		public UpperLimitSetting getUpperLimitSetting() {
-			return dto.upperLimitSetting.toDomain();
-		}
 		
 		/*
 		 * (non-Javadoc)

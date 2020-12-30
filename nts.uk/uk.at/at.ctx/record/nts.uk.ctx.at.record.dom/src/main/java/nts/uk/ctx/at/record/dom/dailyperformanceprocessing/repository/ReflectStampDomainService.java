@@ -11,6 +11,7 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.repository.RecreateFlag;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 
 /**
  * 
@@ -60,5 +61,5 @@ public interface ReflectStampDomainService {
 	 */
 	public OutputAcquireReflectEmbossingNew acquireReflectEmbossingNew(String companyID, String employeeID,
 			GeneralDate processingDate,ExecutionTypeDaily executionType,EmbossingExecutionFlag flag,
-			IntegrationOfDaily integrationOfDaily);
+			IntegrationOfDaily integrationOfDaily, ChangeDailyAttendance changeDailyAtt);
 }

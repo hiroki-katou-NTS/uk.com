@@ -38,6 +38,8 @@ import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.RCCreateDai
 import nts.uk.ctx.at.shared.dom.application.stamp.AppRecordImageShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.AppStampShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.EngraveShareAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.shr.com.time.AttendanceClock;
 
@@ -80,7 +82,7 @@ public class ReflectApplicationWorkRecordTest {
 
 				// 「 打刻申請（NRモード）を反映する」のテスト呼び出す
 				TimeStampApplicationNRMode.process(require, (GeneralDate) any, (AppRecordImageShare) any,
-						(DailyRecordOfApplication) any, (Optional<Stamp>) any);
+						(DailyRecordOfApplication) any, (Optional<Stamp>) any, (ChangeDailyAttendance) any);
 				times = 1;
 
 				// 「レコーダイメージ申請の対象日を取得する」のテスト呼び出す
@@ -92,8 +94,8 @@ public class ReflectApplicationWorkRecordTest {
 
 		};
 
-		val actualResult = ReflectApplicationWorkRecord.process(require, appImg, GeneralDate.ymd(2020, 01, 01),
-				reflectStatus);
+		val actualResult = ReflectApplicationWorkRecord.process(require, ExecutionType.NORMAL_EXECUTION, appImg,
+				GeneralDate.ymd(2020, 01, 01), reflectStatus);
 
 		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(ReflectedStateShare.REFLECTED);
 
@@ -135,8 +137,8 @@ public class ReflectApplicationWorkRecordTest {
 
 		};
 
-		val actualResult = ReflectApplicationWorkRecord.process(require, appImg, GeneralDate.ymd(2020, 01, 01),
-				reflectStatus);
+		val actualResult = ReflectApplicationWorkRecord.process(require, ExecutionType.NORMAL_EXECUTION, appImg,
+				GeneralDate.ymd(2020, 01, 01), reflectStatus);
 
 		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(ReflectedStateShare.REFLECTED);
 

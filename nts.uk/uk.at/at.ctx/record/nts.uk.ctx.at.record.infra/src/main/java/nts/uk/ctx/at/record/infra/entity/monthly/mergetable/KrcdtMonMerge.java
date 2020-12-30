@@ -60,6 +60,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworking
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.excessoutside.ExcessOutSideWorkEachBreakdown;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.excessoutside.ExcessOutsideWork;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.excessoutside.SuperHD60HConTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.ouen.OuenTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.totalcount.TotalCountByPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.VerticalTotalOfMonthly;
@@ -825,13 +826,23 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 
 	/* KRCDT_MON_EXCESS_OUTSIDE  */
 	@Column(name = "EXCESS_WEEK_TOTAL_PREM_TIME")
-	public int totalWeeklyPremiumTime1;
+	public int totalWeeklyPremiumTime;
 
 	@Column(name = "EXCESS_MON_TOTAL_PREM_TIME")
-	public int totalMonthlyPremiumTime1;
+	public int totalMonthlyPremiumTime;
 
 	@Column(name = "EXCESS_MULTI_MON_IRGMDL_TIME")
 	public int multiMonIrgmdlTime;
+
+	/** 時間外超過 */
+	@Column(name = "V60_GRANT_TIME")
+	public int superHD60GrantTime;
+
+	@Column(name = "V60_PAYOFF_TIME")
+	public int superHD60PayoffTime;
+
+	@Column(name = "V60_CONVERSION_TIME")
+	public int superHD60ConversionTime;
 
 	/* KRCDT_MON_EXCOUT_TIME 50*/
 	/** 月別実績の勤怠時間．時間外超過．時間 - 超過時間 - 超過時間 - EXCESS_TIME_1_1*/
@@ -1993,9 +2004,13 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 
 	/* KRCDT_MON_EXCESS_OUTSIDE*/
 	private void toEntityExcessOutsideWorkOfMonthly(ExcessOutsideWorkOfMonthly domain) {
-		this.totalWeeklyPremiumTime1 = domain == null ? 0 : domain.getWeeklyTotalPremiumTime().v();
-		this.totalMonthlyPremiumTime1 = domain == null ? 0 : domain.getMonthlyTotalPremiumTime().v();
+		this.totalWeeklyPremiumTime = domain == null ? 0 : domain.getWeeklyTotalPremiumTime().v();
+		this.totalMonthlyPremiumTime = domain == null ? 0 : domain.getMonthlyTotalPremiumTime().v();
 		this.multiMonIrgmdlTime = domain == null ? 0 : domain.getDeformationCarryforwardTime().v();
+		
+		this.superHD60PayoffTime = domain == null ? 0 : domain.getSuperHD60Time().getPayoffTime().valueAsMinutes();
+		this.superHD60GrantTime = domain == null ? 0 : domain.getSuperHD60Time().getGrantTime().valueAsMinutes();
+		this.superHD60ConversionTime = domain == null ? 0 : domain.getSuperHD60Time().getConversionTime().valueAsMinutes();
 	}	
 	
 	/* KRCDT_MON_EXCOUT_TIME 50 */
@@ -2660,8 +2675,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		// 月別実績の時間外超過
 		ExcessOutsideWorkOfMonthly excessOutsideWork = toDomainExcessOutsideWorkOfMonthly();
 		
-		// TODO:LamVT-HERE ----------------------------()()()()()()()()()()-----------
-		
 		// 期間別の回数集計
 		TotalCountByPeriod totalCount = toDomainTotalCountByPeriod(this.getTotalCounts());
 		
@@ -2911,10 +2924,13 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	private ExcessOutsideWorkOfMonthly toDomainExcessOutsideWorkOfMonthly(){
 		List<ExcessOutsideWork> excessOutsideWork = this.getExcessOutsideWorkLst();		
 		return ExcessOutsideWorkOfMonthly.of(
-				new AttendanceTimeMonth(this.totalWeeklyPremiumTime1),
-				new AttendanceTimeMonth(this.totalMonthlyPremiumTime1),
+				new AttendanceTimeMonth(this.totalWeeklyPremiumTime),
+				new AttendanceTimeMonth(this.totalMonthlyPremiumTime),
 				new AttendanceTimeMonthWithMinus(this.multiMonIrgmdlTime),
-				excessOutsideWork);
+				excessOutsideWork,
+				SuperHD60HConTime.of(new AttendanceTimeMonth(this.superHD60GrantTime),
+									new AttendanceTimeMonth(this.superHD60PayoffTime), 
+									new AttendanceTimeMonth(this.superHD60ConversionTime)));
 	}
 
 	/** KRCDT_MON_EXCOUT_TIME **/
@@ -2925,36 +2941,6 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	private ExcessOutsideWork toDomainExcessOutsideWorkXX(int excessNo, int breakdownNo, int excessTime) {
 		return ExcessOutsideWork.of(breakdownNo, excessNo, new AttendanceTimeMonth(excessTime));
 	}
-	
-	/** KRCDT_MON_AGREEMENT_TIME **/
-	/**
-	 * ドメインに変換
-	 * @return 月別実績の36協定時間
-	 */
-//	private AgreementTimeOfMonthly toDomainAgreementTimeOfMonthly(){
-//		
-//		return AgreementTimeOfMonthly.of(
-//				new AttendanceTimeMonth(this.agreementTime),
-//				new LimitOneMonth(this.limitErrorTime),
-//				new LimitOneMonth(this.limitAlarmTime),
-//		(this.exceptionLimitErrorTime == null ?
-//						Optional.empty() : Optional.of(new LimitOneMonth(this.exceptionLimitErrorTime))),
-//		(this.exceptionLimitAlarmTime == null ?
-//						Optional.empty() : Optional.of(new LimitOneMonth(this.exceptionLimitAlarmTime))),
-//				EnumAdaptor.valueOf(this.status, AgreementTimeStatusOfMonthly.class));
-//	}
-	
-	/**
-	 * ドメインに変換
-	 * @return 月別実績の36協定上限時間
-	 */
-//	private AgreMaxTimeOfMonthly toDomainAgreMaxTimeOfMonthly() {
-//		
-//		return AgreMaxTimeOfMonthly.of(
-//				new AttendanceTimeMonth(this.agreementRegTime),
-//				new LimitOneMonth(0),
-//				AgreMaxTimeStatusOfMonthly.NORMAL);
-//	}
 	
 	/** KRCDT_MON_AFFILIATION **/
 	/**

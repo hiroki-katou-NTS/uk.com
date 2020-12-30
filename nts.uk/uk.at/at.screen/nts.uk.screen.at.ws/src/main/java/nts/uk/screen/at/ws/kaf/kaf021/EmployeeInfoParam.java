@@ -2,6 +2,7 @@ package nts.uk.screen.at.ws.kaf.kaf021;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.time.YearMonth;
 import nts.uk.screen.at.app.kaf021.query.a.EmployeeBasicInfoDto;
 
 import java.util.List;
@@ -10,4 +11,5 @@ import java.util.List;
 @Getter
 public class EmployeeInfoParam {
     private List<EmployeeBasicInfoDto> employees;
+    private int currentYm;
 }

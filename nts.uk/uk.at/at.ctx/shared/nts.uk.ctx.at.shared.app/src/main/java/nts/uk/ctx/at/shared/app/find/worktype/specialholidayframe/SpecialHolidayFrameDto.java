@@ -24,6 +24,8 @@ public class SpecialHolidayFrameDto {
 	private int deprecateSpecialHd;
 
 	private String itemType;
+	
+	private int timeMngAtr;
 
 	/**
 	 * From domain method
@@ -31,11 +33,11 @@ public class SpecialHolidayFrameDto {
 	 */
 	public static SpecialHolidayFrameDto fromDomain(SpecialHolidayFrame domain) {
 		return new SpecialHolidayFrameDto(domain.getCompanyId(), domain.getSpecialHdFrameNo(),
-				domain.getSpecialHdFrameName().v(), domain.getDeprecateSpecialHd().value, "a");
+				domain.getSpecialHdFrameName().v(), domain.getDeprecateSpecialHd().value, "a" , domain.getTimeMngAtr().value);
 	}
 
 	public static SpecialHolidayFrameDto fromAbsenDto(AbsenceFrameDto domain) {
 		return new SpecialHolidayFrameDto(domain.getCompanyId(), domain.getAbsenceFrameNo(),
-				domain.getAbsenceFrameName(), domain.getDeprecateAbsence(), "b");
+				domain.getAbsenceFrameName(), domain.getDeprecateAbsence(), "b" , 0);
 	}
 }
