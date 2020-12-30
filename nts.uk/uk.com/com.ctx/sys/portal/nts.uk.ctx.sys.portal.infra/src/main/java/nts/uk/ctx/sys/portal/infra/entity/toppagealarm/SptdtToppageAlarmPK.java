@@ -25,18 +25,30 @@ public class SptdtToppageAlarmPK implements Serializable {
 	@Column(name = "CID")
 	public String cId;
 
+	/**
+	 * アラーム分類
+	 */
 	@NonNull
 	@Column(name = "ALARM_CLS")
 	public String alarmCls;
 
+	/**
+	 * 識別キー
+	 */
 	@NonNull
 	@Column(name = "IDEN_KEY")
 	public String idenKey;
 
+	/**
+	 * 表示社員ID
+	 */
 	@NonNull
 	@Column(name = "DISP_SID")
 	public String dispSid;
 
+	/**
+	 * 表示社員区分
+	 */
 	@NonNull
 	@Column(name = "DISP_ATR")
 	public String dispAtr;
