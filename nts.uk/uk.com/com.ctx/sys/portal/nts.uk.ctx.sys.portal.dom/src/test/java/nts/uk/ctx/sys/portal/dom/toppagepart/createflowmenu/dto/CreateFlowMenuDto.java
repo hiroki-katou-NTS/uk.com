@@ -133,7 +133,7 @@ public class CreateFlowMenuDto implements CreateFlowMenu.MementoSetter, CreateFl
 	public void setFileAttachmentSettings(List<FileAttachmentSetting> fileAttachmentSettings, String contractCode) {
 		this.fileAttachmentSettings = fileAttachmentSettings.stream()
 				.map(domain -> FileAttachmentSettingDto.builder()
-						.bold(domain.getFontSetting().getSizeAndColor().isBold()? 1 : 0)
+						.bold(domain.getFontSetting().getSizeAndColor().isBold() ? 1 : 0)
 						.column(domain.getSizeAndPosition().getColumn().v())
 						.fileId(domain.getFileId())
 						.fontSize(domain.getFontSetting().getSizeAndColor().getFontSize().v())

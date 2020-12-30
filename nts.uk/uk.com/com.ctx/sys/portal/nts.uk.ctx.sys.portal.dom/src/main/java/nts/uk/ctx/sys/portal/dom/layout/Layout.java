@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.sys.portal.dom.toppage.TopPageCode;
 import nts.uk.shr.com.context.AppContexts;
@@ -17,6 +18,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class Layout extends AggregateRoot {
 	/** ウィジェット設定 */
 	private List<WidgetSetting> widgetSettings;
@@ -34,8 +36,6 @@ public class Layout extends AggregateRoot {
 	private Optional<FlowMenuUpCode> flowMenuUpCd;
 	/** 外部URL */
 	private Optional<String> url;
-
-	public Layout() {}
 
 	public static Layout createFromMemento(MementoGetter memento) {
 		Layout domain = new Layout();
