@@ -49,9 +49,9 @@ module nts.uk.at.view.knr002.a {
 
             private removeBorder () {
                 let vm = this;
-                $('#grid_table_headers th:nth-child(8)').addClass('br-0');
-                $('#grid_table_headers th:nth-child(9)').addClass('br-0 bl-0');
-                $('#grid_table_headers th:nth-child(10)').addClass('bl-0');
+                $('#grid_headers th:nth-child(8)').addClass('br-0');
+                $('#grid_headers th:nth-child(9)').addClass('br-0 bl-0');
+                $('#grid_headers th:nth-child(10)').addClass('bl-0');
             }
 
             public loadData() {
@@ -94,10 +94,10 @@ module nts.uk.at.view.knr002.a {
     
                         vm.gridData(res.listEmpInfoTerminalDto);
                         vm.loadGrid();
-                        vm.removeBorder();
                         vm.setGridSize();
                         $(window).on('resize', () => {
                             vm.setGridSize();
+                            vm.removeBorder();
                         });
                     }
                 })
@@ -172,13 +172,13 @@ module nts.uk.at.view.knr002.a {
                     virtualizationMode: 'continuous',
                     autoFitWindow: true,
                     columns: [
-                            { headerText: getText("KNR002_40"), key: 'empInfoTerCode', dataType: 'string', width: '107px'},
+                            { headerText: getText("KNR002_40"), key: 'empInfoTerCode', dataType: 'string', width: '90px'},
                             { headerText: 'CurrentState', key: 'terminalCurrentState', dataType: 'number', width: '0px',  hidden: true },
-                            { headerText: getText("KNR002_41"), key: 'empInfoTerName', dataType: 'string', width: '235px'},
+                            { headerText: getText("KNR002_41"), key: 'empInfoTerName', dataType: 'string', width: '220px'},
                             { headerText: getText("KNR002_42"), key: 'displayModelEmpInfoTer', dataType: 'string', width: '127px' },
-                            { headerText: getText("KNR002_43"), key: 'workLocationName', dataType: 'string', width: '170px' },
+                            { headerText: getText("KNR002_43"), key: 'workLocationName', dataType: 'string', width: '160px' },
                             { headerText: getText("KNR002_44"), key: 'signalLastTime', dataType: 'string', width: '180px' },
-                            { headerText: getText("KNR002_45"), key: 'displayCurrentState', dataType: 'string', width: '120px' },
+                            { headerText: getText("KNR002_45"), key: 'displayCurrentState', dataType: 'string', width: '100px' },
                             { headerText: getText("KNR002_46"), key: 'open', dataType: 'string', width: '76px', unbound: true, ntsControl: 'Button7' },
                             { headerText: getText("KNR002_47"), key: 'open1', dataType: 'string', width: '84px', unbound: true, ntsControl: 'Button8' },
                             { headerText: '', key: 'open2', dataType: 'string', width: '89px', unbound: true, ntsControl: 'Button9' },
@@ -206,6 +206,7 @@ module nts.uk.at.view.knr002.a {
                 });
 
                 vm.filterHandle(vm.selectedFilter());
+                vm.removeBorder();
             }
         }
 

@@ -20,6 +20,10 @@
 	width: 55%;
 }
 
+.right {
+	margin-left: 5px;
+}
+
 .first-line {
 	margin-top: 5px;
 	margin-bottom: 5px;
@@ -34,7 +38,7 @@
 }
 
 .detail {
-	margin-right: 10px;
+	margin-right: 5px;
 	width: 282px;
 }
 

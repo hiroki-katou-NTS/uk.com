@@ -169,6 +169,17 @@ module nts.uk.at.view.knr002.c {
                 return dfd.promise();
             }
 
+            public registerAndSubmit() {
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_2028" })
+                    .ifYes(() => {
+                        console.log('yes');
+                    })
+                    .ifNo(() => {
+                        console.log('no');
+                    })
+
+            }
+
             public addToSetting() {
                 const vm = this;
                 switch(vm.inputMode()) {
@@ -187,7 +198,6 @@ module nts.uk.at.view.knr002.c {
                         
                         break;
                     case INPUT_TYPE.CHECK:
-                        // console.log(vm.updateValueList(), 'check mode');
                         vm.updateValueList().forEach(item => {
                             if (item.checked()) {
                                 let newRow = new SettingValue(vm.settingData.length, vm.rowData().majorClassification, vm.rowData().smallClassification, 'yes', '☑' + item.name);
@@ -211,7 +221,7 @@ module nts.uk.at.view.knr002.c {
                 let vm = this;
 
                 $("#grid").ntsGrid({
-                    width: '580px', 
+                    width: '545px', 
                     height: '412px',
                     dataSource: vm.settingData,
                     primaryKey: 'id',
@@ -220,10 +230,10 @@ module nts.uk.at.view.knr002.c {
                     autoFitWindow: true,
                     columns: [
                         { headerText: getText("KNR002_95"), key: 'id', dataType: 'num', width: '0'},
-                        { headerText: getText("KNR002_95"), key: 'majorName', dataType: 'num', width: '120px'},
+                        { headerText: getText("KNR002_95"), key: 'majorName', dataType: 'num', width: '115px'},
                         { headerText: getText("KNR002_96"), key: 'smallName', dataType: 'string', width: '130px'},
                         { headerText: getText("KNR002_97"), key: 'updateValue', dataType: 'string', width: '80px'},
-                        { headerText: getText("KNR002_98"), key: 'inputRange', dataType: 'string', width: '250px'}
+                        { headerText: getText("KNR002_98"), key: 'inputRange', dataType: 'string', width: '220px'}
                     ],
                     features: [
                         {
