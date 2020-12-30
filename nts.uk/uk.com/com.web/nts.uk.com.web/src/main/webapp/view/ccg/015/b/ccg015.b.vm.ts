@@ -70,12 +70,12 @@ module nts.uk.com.view.ccg015.b {
           vm.text2('');
           vm.text3(text470px);
         }
-        if(value === LayoutType.LAYOUT_TYPE_1){
+        if (value === LayoutType.LAYOUT_TYPE_1) {
           vm.text1('');
           vm.text2(text470px);
           vm.text3('');
         }
-        if(value === LayoutType.LAYOUT_TYPE_2) {
+        if (value === LayoutType.LAYOUT_TYPE_2) {
           vm.text1(text470px);
           vm.text2('');
           vm.text3('');

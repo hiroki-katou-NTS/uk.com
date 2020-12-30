@@ -73,11 +73,12 @@ module nts.uk.com.view.ccg015.d {
         const flowMenuChoose = _.findIndex(vm.listFlowMenu(), (item: FlowMenuItem) => { return item.flowCode === data });
         vm.flowMenuSelectedCode(vm.listFlowMenu()[flowMenuChoose].flowCode);
         const fileIdChoose: string = vm.listFlowMenu()[flowMenuChoose].fileId;
+        vm.$blockui('grayout');
         vm.$ajax('sys/portal/createflowmenu/extract/' + fileIdChoose).then((item: any) => {
           if (!_.isEmpty(item)) {
             vm.renderHTML(item.htmlContent, 'frame1');
           }
-        });
+        }).always(() => vm.$blockui('clear'));
       })
 
       vm.toppageSelectedCode.subscribe(data => {

@@ -4,7 +4,7 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
- * UKDesign.データベース.ER図.基幹.個人.個人のインフォメーション.個人のインフォメーション.個人の顔写真
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.基幹.個人.個人のインフォメーション.個人のアバター
  */
 @Getter
 public class UserAvatar extends AggregateRoot {

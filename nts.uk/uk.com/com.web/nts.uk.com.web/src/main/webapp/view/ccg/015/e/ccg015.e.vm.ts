@@ -4,7 +4,6 @@ module nts.uk.com.view.ccg015.e {
 
   const MENU_CREATION_LAYOUT_ID = 'menu-creation-layout';
   const CSS_CLASS_MENU_CREATION_ITEM_CONTAINER = 'menu-creation-item-container';
-  const CSS_CLASS_MENU_CREATION_ITEM = 'menu-creation-item';
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
@@ -66,12 +65,10 @@ module nts.uk.com.view.ccg015.e {
           const menuPosition = _.findIndex(vm.$menuCreationLayout.children(), (item) => item.classList.contains('menu-creation-option'));
           // Remove drag item
           ui.helper.remove();
-          // vm.$blockui('grayout');
           setTimeout(() => {
             if (vm.isMouseInsideLayout()) {
               vm.createItem(itemType, menuPosition);
             }
-            // vm.$blockui('clear');
           }, 300);
         },
       });
