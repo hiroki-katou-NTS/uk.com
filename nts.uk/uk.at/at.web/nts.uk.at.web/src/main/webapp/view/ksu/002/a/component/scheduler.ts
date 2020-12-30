@@ -1004,12 +1004,6 @@ module nts.uk.ui.at.ksu002.a {
 
                 $input
                     .on('keydown', (evt) => {
-                        $container
-                            .attr('data-key', evt.key)
-                            .attr('data-shift', evt.shiftKey + '')
-                            .attr('data-key-code', evt.keyCode);
-                    })
-                    .on('keyup', (evt) => {
                         if (evt.keyCode === 13) {
                             $.Deferred()
                                 .resolve()
@@ -1018,7 +1012,8 @@ module nts.uk.ui.at.ksu002.a {
                                         .trigger('blur');
                                 })
                                 .then(() => {
-                                    const $focusables = $container
+                                    $container.focus();
+                                    /*const $focusables = $container
                                         .closest('.calendar-container')
                                         .find('.work-time div.join[tabindex], .work-time div.leave[tabindex]');
 
@@ -1047,15 +1042,16 @@ module nts.uk.ui.at.ksu002.a {
                                                 $container.focus();
                                             }
                                         }
-                                    }
-                                })
-                                .then(() => {
-                                    $container
-                                        .removeAttr('data-key')
-                                        .removeAttr('data-shift')
-                                        .removeAttr('data-key-code');
+                                    }*/
                                 });
+
+                            return;
                         }
+
+                        $container
+                            .attr('data-key', evt.key)
+                            .attr('data-shift', evt.shiftKey + '')
+                            .attr('data-key-code', evt.keyCode);
                     })
                     .on('blur', () => {
                         $input
