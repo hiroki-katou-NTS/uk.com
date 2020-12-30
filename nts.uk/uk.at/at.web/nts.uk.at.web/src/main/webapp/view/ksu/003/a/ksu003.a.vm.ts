@@ -2409,75 +2409,37 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		
 		checkChartHide(lstGcShow : any, index : any, param : any, type : string){
 			let self = this;
-			let lstBrk = _.map(_.filter(lstGcShow, (x: any) => {return x.type === "BREAK"}), (y: any) => {return y.position}),
-					lstOT = _.map(_.filter(lstGcShow, (x: any) => {return x.type === "OT"}), (y: any) => {return y.position}),
-					lstShort = _.map(_.filter(lstGcShow, (x: any) => {return x.type === "SHORT"}), (y: any) => {return y.position}),
-					lstHoliday = _.map(_.filter(lstGcShow, (x: any) => {return x.type === "HOLIDAY"}), (y: any) => {return y.position});
 			let timeMinus = duration.create(param[0] * 5 + self.dispStart * 5).asMinutes - self.dataScreen003A().employeeInfo[index].workScheduleDto.startTime1;
-			let checkUpdate : any = [];
-			
 				if(self.dataScreen003A().employeeInfo[index].workScheduleDto.listBreakTimeZoneDto.length > 0){
 					_.forEach(self.dataScreen003A().employeeInfo[index].workScheduleDto.listBreakTimeZoneDto, (brk: any, idx) => {
-						let lstHide = _.filter(lstBrk, (x : any) => {return x == idx});
-						if(lstHide.length > 0){
-							checkUpdate.add(idx);
-						}
+						self.dataScreen003A().employeeInfo[index].workScheduleDto.listBreakTimeZoneDto[idx].start += timeMinus;
+						self.dataScreen003A().employeeInfo[index].workScheduleDto.listBreakTimeZoneDto[idx].end += timeMinus;
 					});
-					
-					_.forEach(checkUpdate, (br: any, indx) => {
-							self.dataScreen003A().employeeInfo[index].workScheduleDto.listBreakTimeZoneDto[br].start += timeMinus;
-							self.dataScreen003A().employeeInfo[index].workScheduleDto.listBreakTimeZoneDto[br].end += timeMinus;  
-					})
 				}
 				
-				checkUpdate = [];
 				if(self.dataScreen003A().employeeInfo[index].fixedWorkInforDto.overtimeHours.length > 0){
 					_.forEach(self.dataScreen003A().employeeInfo[index].fixedWorkInforDto.overtimeHours, (brk: any, idx) => {
-						let lstHide = _.filter(lstOT, (x : any) => {return x == idx});
-						if(lstHide.length > 0){
-							checkUpdate.add(idx);
-						}
+						self.dataScreen003A().employeeInfo[index].fixedWorkInforDto.overtimeHours[idx].startTime += timeMinus;
+						self.dataScreen003A().employeeInfo[index].fixedWorkInforDto.overtimeHours[idx].endTime += timeMinus;  
 					});
-					
-					_.forEach(checkUpdate, (br: any, indx) => {
-							self.dataScreen003A().employeeInfo[index].fixedWorkInforDto.overtimeHours[br].startTime += timeMinus;
-							self.dataScreen003A().employeeInfo[index].fixedWorkInforDto.overtimeHours[br].endTime += timeMinus;  
-					})
 				}
 				
-				checkUpdate = [];
 				if(self.dataScreen003A().employeeInfo[index].workInfoDto.shortTime.length > 0){
 					if(self.dataScreen003A().employeeInfo[index].workInfoDto.shortTime.length > 0){
 					_.forEach(self.dataScreen003A().employeeInfo[index].workInfoDto.shortTime, (brk: any, idx) => {
-						let lstHide = _.filter(lstShort, (x : any) => {return x == idx});
-						if(lstHide.length > 0){
-							checkUpdate.add(idx);
-						}
+						self.dataScreen003A().employeeInfo[index].workInfoDto.shortTime[idx].startTime.time += timeMinus;
+						self.dataScreen003A().employeeInfo[index].workInfoDto.shortTime[idx].endTime.time += timeMinus;  
 					});
-					
-					_.forEach(checkUpdate, (br: any, indx) => {
-							self.dataScreen003A().employeeInfo[index].workInfoDto.shortTime[br].startTime.time += timeMinus;
-							self.dataScreen003A().employeeInfo[index].workInfoDto.shortTime[br].endTime.time += timeMinus;  
-					})
 				}
 				}
 				
-				checkUpdate = [];
 				if(self.dataScreen003A().employeeInfo[index].workInfoDto.listTimeVacationAndType.length > 0){
 					_.forEach(self.dataScreen003A().employeeInfo[index].workInfoDto.listTimeVacationAndType, (brks: any, idxs) => {
 						_.forEach(self.dataScreen003A().employeeInfo[index].workInfoDto.listTimeVacationAndType[idxs].timeVacation.timeZone, (brk: any, idx) => {
-							let lstHide = _.filter(lstHoliday, (x : any) => {return x == idx});
-							if(lstHide.length > 0){
-								checkUpdate.add(idx);
-							}
+							self.dataScreen003A().employeeInfo[index].workInfoDto.listTimeVacationAndType[idxs].timeVacation.timeZone[idx].startTime.time += timeMinus;
+							self.dataScreen003A().employeeInfo[index].workInfoDto.listTimeVacationAndType[idxs].timeVacation.timeZone[idx].endTime.time += timeMinus; 
 						})
-						
-						_.forEach(checkUpdate, (br: any, indx) => {
-							self.dataScreen003A().employeeInfo[index].workInfoDto.listTimeVacationAndType[idxs].timeVacation.timeZone[br].startTime.time += timeMinus;
-							self.dataScreen003A().employeeInfo[index].workInfoDto.listTimeVacationAndType[idxs].timeVacation.timeZone[br].endTime.time += timeMinus;  
 					})
-					})
-					
 				}
 		}
 
