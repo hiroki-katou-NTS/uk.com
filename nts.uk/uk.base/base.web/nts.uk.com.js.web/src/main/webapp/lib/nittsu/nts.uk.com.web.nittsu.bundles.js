@@ -10634,6 +10634,7 @@ var nts;
                                 }
                                 return { updateTarget: updateTarget, value: oldVal };
                             }
+                            exTable[f].dataSource[ui.rowIndex][ui.columnKey] = ui.value;
                             return null;
                         }
                         var field;
