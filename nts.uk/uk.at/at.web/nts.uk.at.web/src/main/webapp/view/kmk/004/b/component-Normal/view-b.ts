@@ -37,7 +37,7 @@ module nts.uk.at.view.kmk004.b {
 					name: 'box-year',
 					params:{
 						selectedYear: selectedYear,
-						param: ko.observable(''),
+						param: selectId,
 						type: type,
 						years: years
 					}
@@ -48,7 +48,7 @@ module nts.uk.at.view.kmk004.b {
 						selectedYear: selectedYear,
 						years: years,
 						type: type,
-						selectId: ko.observable(''),
+						selectId: selectId,
 						workTimes: workTimes,
 						yearDelete: yearDelete
 					}
@@ -82,6 +82,7 @@ module nts.uk.at.view.kmk004.b {
 		public change: KnockoutObservable<string> = ko.observable('');
 		public checkDelete: KnockoutObservable<boolean> = ko.observable(false);
 		public yearDelete: KnockoutObservable<number | null> = ko.observable(null);
+		public selectId: KnockoutObservable<string> = ko.observable('');
 
 		created() {
 			const vm = this;

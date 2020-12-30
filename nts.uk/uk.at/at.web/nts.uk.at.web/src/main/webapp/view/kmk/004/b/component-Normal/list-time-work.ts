@@ -177,7 +177,7 @@ module nts.uk.at.view.kmk004.b {
             vm.selectId
                 .subscribe(() => {
                     vm.workTimeSaves([]);
-                    vm.reloadData();
+                    // vm.reloadData();
                 });
 
             vm.years

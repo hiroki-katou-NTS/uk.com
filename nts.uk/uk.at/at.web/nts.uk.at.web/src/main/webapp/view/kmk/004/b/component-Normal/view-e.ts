@@ -215,7 +215,7 @@ module nts.uk.at.view.kmk004.b {
 								_.remove(ko.unwrap(vm.years), ((value) => {
 									return value.year == ko.unwrap(vm.selectedYear) as number;
 								}));
-								vm.years.push(new IYear(ko.unwrap(vm.selectedYear) as number, true));
+								vm.years.push(new IYear(ko.unwrap(vm.selectedYear) as number, false));
 								vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
 							})
 							.then(() => {
@@ -224,6 +224,7 @@ module nts.uk.at.view.kmk004.b {
 								});
 							}).then(() => {
 								vm.selectedYear.valueHasMutated();
+								vm.change.valueHasMutated();
 							})
 							.then(() => {
 								vm.$errors('clear');
@@ -285,7 +286,10 @@ module nts.uk.at.view.kmk004.b {
 								return value.year == ko.unwrap(vm.selectedYear);
 							}));
 							vm.years(ko.unwrap(vm.years));
-							vm.selectedYear(ko.unwrap(vm.years)[old_index].year);
+							if (ko.unwrap(vm.years).length > 0) {
+								vm.selectedYear(ko.unwrap(vm.years)[old_index].year);
+							}
+							vm.change.valueHasMutated();
 						})
 						.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
 						.then(() => {
@@ -329,10 +333,7 @@ module nts.uk.at.view.kmk004.b {
 			const vm = this;
 			vm.$ajax(API.GET_EMPLOYEEIDS)
 				.then((data: any) => {
-					console.log(data);
 					const exist = _.find(data, (m: any) => m.employeeId === ko.unwrap(vm.model.id));
-					console.log(exist);
-				
 					if (exist) {
 						vm.model.updateStatus(true);
 					} else {

@@ -17,10 +17,6 @@ public class GetThePeriodOfTheYear {
 		
 		Optional<Company> company = require.getComanyInfoByCid(cid);
 		
-		if (!company.isPresent()) {
-			return null;
-		}
-		
 		YearMonthPeriod result = company.get().getPeriodTheYear(year);
 		
 		return result;
