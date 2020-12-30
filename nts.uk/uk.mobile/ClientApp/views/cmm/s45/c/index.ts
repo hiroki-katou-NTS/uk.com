@@ -15,7 +15,8 @@ import {
     CmmS45ShrComponentsApp7Component,
     CmmS45ShrComponentsApp15Component,
     CmmS45ShrComponentsAppsampleComponent,
-    CmmS45ShrComponentsApp0Component
+    CmmS45ShrComponentsApp0Component,
+    Reason
 } from 'views/cmm/s45/shr/components';
 
 @component({
@@ -64,6 +65,7 @@ export class CmmS45CComponent extends Vue {
     // 差し戻し理由
     public reversionReason: string = '';
     public isLoadingComplete = false;
+    public reasons: Array<Reason> = null;
     public created() {
         let self = this;
         self.listAppMeta = self.params.listAppMeta;
@@ -256,8 +258,9 @@ export class CmmS45CComponent extends Vue {
             self.$goto('cmms45a', { 'CMMS45_FromMenu': true });
         }
     }
-    public loadingComplete() {
+    public loadingComplete(reasons?: any) {
         const self = this;
+        self.reasons = reasons;
         self.$nextTick(() => {
             self.$mask('hide');
             self.isLoadingComplete = true;

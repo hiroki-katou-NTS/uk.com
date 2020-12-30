@@ -557,8 +557,8 @@ export class KafS05Step2Component extends Vue {
         {
             let item = {} as ReasonDivergence;
             item.diviationTime = 2;
-            item.reasonCode = self.reason1.selectedValue;
-            item.reason = self.reason1.reason;
+            item.reasonCode = self.reason2.selectedValue;
+            item.reason = self.reason2.reason;
             list.push(item);
         }
 
