@@ -442,7 +442,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 				return;
 			}
 			
-			if(vm.mode() == MODE.NORMAL){
+			if(vm.mode() != MODE.MULTiPLE_AGENT){
 				vm.registerSingle();
 			} else {
 				vm.registerMulti();
