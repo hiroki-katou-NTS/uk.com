@@ -260,7 +260,6 @@ public class AlarmCheckCdtWkpFinder {
                     )).collect(Collectors.toList());
                     // ドメインモデル「アラームリスト（職場）月次の抽出条件」を取得する。
                     List<ExtractionMonthlyCon> opItems = extractionMonthlyConRepo.getByIds(opIds);
-                    opItems.forEach(System.out::println);
                     opMonCons = opItems.stream().map(ExtractionMonConDto::fromDomain).collect(Collectors.toList());
                     break;
                 }

@@ -25,6 +25,6 @@ public class ExtractionOptionalItemsCmd {
 
     private String checkCond;
 
-    private int checkCondB;
+    private Integer checkCondB;
 
 }

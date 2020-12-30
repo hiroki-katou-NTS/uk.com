@@ -38,19 +38,23 @@ public class ExtractionMonConDto {
         if (domain.getCheckConditions() != null) {
             if (domain.getCheckConditions().isSingleValue()) {
                 switch (domain.getCheckMonthlyItemsType()) {
-                    case AVERAGE_TIME: {
+                    case AVERAGE_TIME:
+                    case TIME_FREEDOM: {
                         minValue = ((AverageTime) ((CompareSingleValue) domain.getCheckConditions()).getValue()).v().toString();
                         break;
                     }
-                    case AVERAGE_NUMBER_DAY: {
+                    case AVERAGE_NUMBER_DAY:
+                    case AVERAGE_DAY_FREE: {
                         minValue = ((AverageNumberDays) ((CompareSingleValue) domain.getCheckConditions()).getValue()).v().toString();
                         break;
                     }
-                    case AVERAGE_NUMBER_TIME: {
+                    case AVERAGE_NUMBER_TIME:
+                    case AVERAGE_TIME_FREE: {
                         minValue = ((AverageNumberTimes) ((CompareSingleValue) domain.getCheckConditions()).getValue()).v().toString();
                         break;
                     }
-                    case AVERAGE_RATIO: {
+                    case AVERAGE_RATIO:
+                    case AVERAGE_RATIO_FREE: {
                         minValue = ((AverageRatio) ((CompareSingleValue) domain.getCheckConditions()).getValue()).v().toString();
                         break;
                     }

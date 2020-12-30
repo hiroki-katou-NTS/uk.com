@@ -40,14 +40,15 @@ public class UpdateAlarmCheckCdtWkpCommand {
             result = this.opItems.stream().map(i -> {
                 return ExtractionMonthlyCon.create(
                         IdentifierUtil.randomUniqueId(),
-                        i.getCheckItem(),
                         i.getNo(),
+                        i.getCheckItem(),
                         i.getUseAtr() == 0,
                         IdentifierUtil.randomUniqueId(),
                         this.convertConditionMon(i.getCheckItem(), i.getMinValue(), i.getMaxValue(), i.getOperator()),
                         (i.getCheckItem() == CheckMonthlyItemsType.AVERAGE_TIME.value
                                 || i.getCheckItem() == CheckMonthlyItemsType.AVERAGE_NUMBER_DAY.value
-                                || i.getCheckItem() == CheckMonthlyItemsType.AVERAGE_NUMBER_TIME.value) ?
+                                || i.getCheckItem() == CheckMonthlyItemsType.AVERAGE_NUMBER_TIME.value
+                                || i.getCheckItem() == CheckMonthlyItemsType.AVERAGE_RATIO.value) ?
                                 i.getCheckCond() : null,
                         i.getCheckItem() == CheckMonthlyItemsType.AVERAGE_DAY_FREE.value ? i.getCheckCondB() : null,
                         i.getCheckItem() == CheckMonthlyItemsType.AVERAGE_TIME_FREE.value ? i.getCheckCondB() : null,

@@ -103,8 +103,6 @@ public class JpaExtractionMonthlyConRepository extends JpaRepository implements 
         List<KrcstErAlCompareSingle> krcstErAlCompareSingle = this.queryProxy().query(SELECT_COMPARE_SINGLE_BY_ID, KrcstErAlCompareSingle.class).setParameter("ids", ids).getList();
         List<KrcstErAlCompareRange> krcstErAlCompareRange = this.queryProxy().query(SELECT_COMPARE_RANGE_BY_ID, KrcstErAlCompareRange.class).setParameter("ids", ids).getList();
         List<KrcstErAlSingleFixed> krcstErAlSingleFixed = this.queryProxy().query(SELECT_SINGLE_FIXED_BY_ID, KrcstErAlSingleFixed.class).setParameter("ids", ids).getList();
-        ids.forEach(System.out::println);
-        System.out.println("Compare range length: " + krcstErAlCompareRange.size());
         List<KrcmtWkpMonExtracCon> domains = this.queryProxy().query(GET_BY_IDS, KrcmtWkpMonExtracCon.class)
                 .setParameter("ids", ids)
                 .getList();
@@ -171,8 +169,8 @@ public class JpaExtractionMonthlyConRepository extends JpaRepository implements 
                     }
                     case AVERAGE_NUMBER_DAY:
                     case AVERAGE_DAY_FREE: {
-                        minValue = ((AverageTime) ((CompareRange) i.getCheckConditions()).getStartValue()).v().doubleValue();
-                        maxValue = ((AverageTime) ((CompareRange) i.getCheckConditions()).getEndValue()).v().doubleValue();
+                        minValue = ((AverageNumberDays) ((CompareRange) i.getCheckConditions()).getStartValue()).v().doubleValue();
+                        maxValue = ((AverageNumberDays) ((CompareRange) i.getCheckConditions()).getEndValue()).v().doubleValue();
                         break;
                     }
                     case AVERAGE_NUMBER_TIME:

@@ -22,40 +22,34 @@ module nts.uk.at.view.kal013.a.tab {
                 vm.category = category;
             }
 
-            vm.selectedAll.subscribe((newValue) => {
-                if (newValue === null) return;
-                _.forEach(vm.checkConditionsList(), (item) => {
-                    item.isChecked(newValue);
-                });
+            vm.selectedAll = ko.pureComputed({
+                read: function () {
+                    let l = vm.checkConditionsList().length;
+                    if (vm.checkConditionsList().filter((x) => {return x.isCheck()}).length == l && l > 0) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                },
+                write: function (value) {
+                    for (var i = 0; i < vm.checkConditionsList().length; i++) {
+                        vm.checkConditionsList()[i].isCheck(value);
+                    }
+                },
+                owner: self
             });
 
-            vm.checkConditionsList.subscribe((newList) => {
-                if (!newList || newList.length <= 0) {
-                    vm.selectedAll(false);
-                    return;
-                }
-
-                let isSelectedAll = _.every(vm.checkConditionsList(), (x) => x.isCheck() === true);
-                if (isSelectedAll === false) isSelectedAll = null;
-                vm.selectedAll(isSelectedAll);
-
-                let checkSelected = _.some(vm.checkConditionsList(), (x) => x.isCheck() === true);
-                vm.isEnableRemove(checkSelected);
+            vm.isEnableRemove = ko.pureComputed({
+                read: function() {
+                    if (vm.checkConditionsList().filter((x) => { return x.isCheck() }).length > 0) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                },
+                owner: self
             });
 
-            vm.getCheckConditionsListByCategory();
-        }
-
-        getCheckConditionsListByCategory() {
-            const vm = this;
-
-            //vm.$blockui('show');
-
-            let params = {};
-
-            /* vm.$ajax(PATH.getAlarmList, params).done((data: any) => {
-              vm.$blockui('hide');
-            }).always(() => vm.$blockui('hide') ); */
         }
 
         /**
@@ -82,13 +76,13 @@ module nts.uk.at.view.kal013.a.tab {
             let newCheckCondition = new common.CheckConditionDto(
                 false,
                 null,
-                index + 1,
-                null,
+                index,
+                vm.category == common.WorkplaceCategory.MONTHLY ? 1 : 0,
                 0,
                 null,
+                "0",
                 null,
-                null,
-                null,
+                0,
                 null,
                 null,
                 null
@@ -98,8 +92,14 @@ module nts.uk.at.view.kal013.a.tab {
 
         removeCheckCondition() {
             const vm = this;
-            let checkConditionsList = _.filter(vm.checkConditionsList(), (x) => x.isCheck() === false);
-            vm.checkConditionsList(checkConditionsList);
+            let currentList = _.clone(vm.checkConditionsList());
+            // Remove Item
+            let afterRemoveLst = _.filter(currentList, (x: any) => x.isCheck() === false);
+            afterRemoveLst = _.sortBy(afterRemoveLst, i => i.no());
+            _.forEach(afterRemoveLst, function (i: any, index) {
+                i.no(index);
+            });
+            vm.checkConditionsList(afterRemoveLst);
             vm.isEnableRemove(false);
         }
 
