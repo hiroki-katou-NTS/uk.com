@@ -90,7 +90,7 @@ public class CreateFlowMenuTest {
 				.containsExactly(tuple("fileName", 0, 0, 0, 0));
 		assertThat(domain.getFlowMenuLayout().get().getFileAttachmentSettings())
 				.extracting(x -> x.getFileId(),
-						x -> x.getLinkContent().get(),
+						x -> x.getLinkContent().get().v(),
 						x -> x.getFontSetting().getPosition().getHorizontalPosition().value,
 						x -> x.getFontSetting().getPosition().getVerticalPosition().value,
 						x -> x.getFontSetting().getSizeAndColor().getBackgroundColor(),
@@ -129,7 +129,7 @@ public class CreateFlowMenuTest {
 				.as("testFull label")
 				.containsExactly(tuple("content", 0, 0, "bgColor", "textColor", 0, false, 0, 0, 0, 0));
 		assertThat(domain.getFlowMenuLayout().get().getLinkSettings())
-				.extracting(x -> x.getLinkContent().get(),
+				.extracting(x -> x.getLinkContent().get().v(),
 						x -> x.getUrl().v(),
 						x -> x.getFontSetting().getPosition().getHorizontalPosition().value,
 						x -> x.getFontSetting().getPosition().getVerticalPosition().value,
