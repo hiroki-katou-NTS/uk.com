@@ -222,25 +222,21 @@ public class GetDataToOutputService extends ExportService<Object> {
 						case DAILY_CALCULATION:
 						case MONTHLY_AGGR:
 						case RFL_APR_RESULT:
-							List<ErrMessageInfoDto> errMessageInfoDtos = this.errMessageInfoRepo
-									.getAllErrMessageInfoByEmpID(execIdByLogHistory).stream().map(item -> {
-										boolean validContent = this.checkExecutionContent(taskLog.getProcExecTask(),
-												item);
-										ErrMessageInfoDto.ErrMessageInfoDtoBuilder builder = ErrMessageInfoDto
-												.builder().employeeID(item.getEmployeeID())
+							if (execLogDetail.getErrMessageInfo().isEmpty()) {
+								List<ErrMessageInfoDto> errMessageInfoDtos = this.errMessageInfoRepo
+										.getAllErrMessageInfoByEmpID(execIdByLogHistory).stream()
+										.map(item -> ErrMessageInfoDto.builder().employeeID(item.getEmployeeID())
 												.empCalAndSumExecLogID(item.getEmpCalAndSumExecLogID())
 												.resourceID(item.getResourceID().v())
-												.executionContent(item.getExecutionContent().value);
-										if (validContent) {
-											builder.disposalDay(item.getDisposalDay())
-													.messageError(item.getMessageError().v());
-										}
-										return builder.build();
-									}).collect(Collectors.toList());
-							// 更新処理自動実行データ．実行ログ詳細．日次・月次処理エラー．社員ID
-							empIds.addAll(errMessageInfoDtos.stream().map(ErrMessageInfoDto::getEmployeeID)
-									.collect(Collectors.toList()));
-							execLogDetail.setErrMessageInfo(errMessageInfoDtos);
+												.executionContent(item.getExecutionContent().value)
+												.disposalDay(item.getDisposalDay()).messageError(item.getMessageError().v())
+												.build())
+										.collect(Collectors.toList());
+								// 更新処理自動実行データ．実行ログ詳細．日次・月次処理エラー．社員ID
+								empIds.addAll(errMessageInfoDtos.stream().map(ErrMessageInfoDto::getEmployeeID)
+										.collect(Collectors.toList()));
+								execLogDetail.setErrMessageInfo(errMessageInfoDtos);
+							}
 							break;
 						// Case 3 ドメインモデル「任意期間集計エラーメッセージ情報」を取得する
 						case AGGREGATION_OF_ARBITRARY_PERIOD:
@@ -328,16 +324,16 @@ public class GetDataToOutputService extends ExportService<Object> {
 		return updateProAutoRunData;
 	}
 
-	private boolean checkExecutionContent(ProcessExecutionTask procExecTask, ErrMessageInfo errMessage) {
+	private boolean checkExecutionContent(ProcessExecutionTask procExecTask, ErrMessageInfoDto errMessage) {
 		switch (procExecTask) {
 		case DAILY_CALCULATION: 
-			return errMessage.getExecutionContent().equals(ExecutionContent.DAILY_CALCULATION);
+			return errMessage.getExecutionContent().equals(ExecutionContent.DAILY_CALCULATION.value);
 		case DAILY_CREATION:
-			return errMessage.getExecutionContent().equals(ExecutionContent.DAILY_CREATION);
+			return errMessage.getExecutionContent().equals(ExecutionContent.DAILY_CREATION.value);
 		case MONTHLY_AGGR:
-			return errMessage.getExecutionContent().equals(ExecutionContent.MONTHLY_AGGREGATION);
+			return errMessage.getExecutionContent().equals(ExecutionContent.MONTHLY_AGGREGATION.value);
 		case RFL_APR_RESULT:
-			return errMessage.getExecutionContent().equals(ExecutionContent.REFLRCT_APPROVAL_RESULT);
+			return errMessage.getExecutionContent().equals(ExecutionContent.REFLRCT_APPROVAL_RESULT.value);
 		default:
 			return false;
 		}
@@ -538,9 +534,10 @@ public class GetDataToOutputService extends ExportService<Object> {
 						for (ErrMessageInfoDto log : logDetail.getErrMessageInfo()) {
 							Map<String, Object> rowCSV3 = this.saveHeaderCSV3(updateProAutoRuns, procExec, proHis,
 									taskLog, headerCSV3, log.getEmployeeID());
-							rowCSV3.put(headerCSV3.get(headerCSV3.size() - 2),
-									log.getDisposalDay().toString("yyyy-MM-dd"));
-							rowCSV3.put(headerCSV3.get(headerCSV3.size() - 1), log.getMessageError());
+							if (this.checkExecutionContent(taskLog.getProcExecTask(), log)) {
+								rowCSV3.put(headerCSV3.get(headerCSV3.size() - 2), log.getDisposalDay().toString("yyyy-MM-dd"));
+								rowCSV3.put(headerCSV3.get(headerCSV3.size() - 1), log.getMessageError());
+							}
 							csv.writeALine(rowCSV3);
 						}
 						break;

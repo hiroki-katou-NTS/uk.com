@@ -300,19 +300,16 @@ module nts.uk.at.view.kbt002.f {
               if (message101 === "Msg_1101" && vm.isOnceMessage101()) {
                 vm.isOnceMessage101(false);
                 vm.$dialog.alert({ messageId: message101 });
-                // vm.getExecItemInfoList();
               }
               //TerminateProcessExecutionCommandHandler
               const currentStatusIsOneOrTwo = vm.getAsyncData(res.taskDatas, "currentStatusIsOneOrTwo").valueAsString;
               if (currentStatusIsOneOrTwo === "Msg_1102" && vm.isOnceCurrentStatus()) {
                 vm.isOnceCurrentStatus(false);
                 vm.$dialog.alert({ messageId: currentStatusIsOneOrTwo });
-                // vm.getExecItemInfoList();
               }
               const interupt = vm.getAsyncData(res.taskDatas, "interupt").valueAsString;
               if (interupt === "true" && vm.isOnceInterupt()) {
                 vm.isOnceInterupt(false);
-                // vm.getExecItemInfoList();
               }
               const createSchedule = vm.getAsyncData(res.taskDatas, "createSchedule").valueAsString;
               if (createSchedule === "done" && vm.isCreateSchedule()) {

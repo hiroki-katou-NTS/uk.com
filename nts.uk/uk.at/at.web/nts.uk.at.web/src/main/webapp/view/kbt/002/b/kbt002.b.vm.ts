@@ -624,7 +624,7 @@ module nts.uk.at.view.kbt002.b {
         command.reExecCondition.recreateLeave = 0; //B15_4
         command.execSetting.perSchedule.createNewEmpSched = vm.currentExecItem().createEmployee();
         command.execSetting.dailyPerf.dailyPerfCls = vm.currentExecItem().dailyPerfClsNormal(); //B8_1
-        command.execSetting.dailyPerf.dailyPerfItem = vm.currentExecItem().dailyPerfItem();
+        command.execSetting.dailyPerf.dailyPerfItem = Number(vm.currentExecItem().dailyPerfItem()) - 1;
         command.execSetting.dailyPerf.createNewEmpDailyPerf = vm.currentExecItem().midJoinEmployee() ? 1 : 0;
         command.execSetting.reflectResultCls = vm.currentExecItem().reflectResultCls();
         command.execSetting.monthlyAggCls = vm.currentExecItem().monthlyAggCls();
@@ -678,16 +678,16 @@ module nts.uk.at.view.kbt002.b {
       command.execSetting.aggrAnyPeriod.aggrFrameCode = vm.currentExecItem().aggrFrameCode();
       command.cloudCreationFlag = vm.currentExecItem().cloudCreFlag();
       command.execSetting.externalOutput.extOutputCls = vm.currentExecItem().stdOutputCls() ? 1 : 0;
-      command.execSetting.externalOutput.extOutCondCodeList = vm.currentExecItem().stdOutputCls() ? _.map(vm.currentStdOutputList(), item => item.conditionSetCode) : [];
+      command.execSetting.externalOutput.extOutCondCodeList = _.map(vm.currentStdOutputList(), item => item.conditionSetCode);
       command.execSetting.externalAcceptance.extAcceptCls = vm.currentExecItem().stdAcceptCls() ? 1 : 0;
-      command.execSetting.externalAcceptance.extAcceptCondCodeList = vm.currentExecItem().stdAcceptCls() ? _.map(vm.currentStdAcceptList(), item => item.conditionSetCode) : [];
+      command.execSetting.externalAcceptance.extAcceptCondCodeList = _.map(vm.currentStdAcceptList(), item => item.conditionSetCode);
       command.execSetting.saveData.saveDataCls = vm.currentExecItem().storageCls() ? 1 : 0;
-      command.execSetting.saveData.patternCode = vm.currentExecItem().storageCls() ? vm.currentExecItem().storagePattern() : null;
+      command.execSetting.saveData.patternCode = vm.currentExecItem().storagePattern();
       command.execSetting.deleteData.dataDelCls = vm.currentExecItem().deletionCls() ? 1 : 0;
-      command.execSetting.deleteData.patternCode = vm.currentExecItem().deletionCls() ? vm.currentExecItem().deletionPattern() : null;
+      command.execSetting.deleteData.patternCode = vm.currentExecItem().deletionPattern();
       command.execSetting.indexReconstruction.indexReorgAttr = vm.currentExecItem().indexReconCls() ? 1 : 0;
-      command.execSetting.indexReconstruction.categoryList = vm.currentExecItem().indexReconCls() ? _.map(vm.currentIndexReconList(), item => item.categoryNo) : [];
-      command.execSetting.indexReconstruction.updateStatistics = vm.currentExecItem().indexReconCls() ? vm.currentExecItem().indexReconUpdateStats() : null;
+      command.execSetting.indexReconstruction.categoryList =  _.map(vm.currentIndexReconList(), item => item.categoryNo);
+      command.execSetting.indexReconstruction.updateStatistics = vm.currentExecItem().indexReconUpdateStats() ? 1 : 0;
 
       command.enabledSetting = vm.selectedTaskEnableSetting() === 1;
       return command;
@@ -763,14 +763,49 @@ module nts.uk.at.view.kbt002.b {
 
     private reCalculateLists(res: any) {
       const vm = this;
-      vm.checkDeletedItem(vm.targetDailyPerfItemList(), nts.uk.text.padLeft(String(res.processExecution.execSetting.dailyPerf.dailyPerfItem), '0', 2));
       vm.checkDeletedItem(vm.aggrPeriodList(), res.processExecution.execSetting.aggrAnyPeriod.aggrFrameCode);
       vm.checkDeletedItem(vm.alarmByUserList(), res.processExecution.execSetting.alarmExtraction.alarmCode);
-      res.processExecution.execSetting.externalOutput.extOutCondCodeList.forEach((item: string) => vm.checkDeletedItem(vm.stdOutputList(), item));
-      res.processExecution.execSetting.externalAcceptance.extAcceptCondCodeList.forEach((item: string) => vm.checkDeletedItem(vm.stdAcceptList(), item));
+      res.processExecution.execSetting.externalOutput.extOutCondCodeList.forEach((item: string) => {
+        if (_.filter(vm.defaultMasterData.stdOutputList, { conditionSetCode: item }).length === 0) {
+          vm.defaultMasterData.stdOutputList.push({ 
+            autoExecution: null,
+            categoryId: null,
+            companyId: null,
+            conditionOutputName: null,
+            conditionSetCode: item,
+            conditionSetName: vm.$i18n("KBT002_193"),
+            delimiter: null,
+            itemOutputName: null,
+            stringFormat: null
+           });
+        }
+      });
+      res.processExecution.execSetting.externalAcceptance.extAcceptCondCodeList.forEach((item: string) => {
+        if (_.filter(vm.defaultMasterData.stdAcceptList, { conditionSetCode: item }).length === 0) {
+          vm.defaultMasterData.stdAcceptList.push({ 
+            acceptMode: null,
+            categoryId: null,
+            characterCode: null,
+            conditionSetCode: item,
+            conditionSetName: vm.$i18n("KBT002_193"),
+            csvDataItemLineNumber: null,
+            csvDataStartLine: null,
+            deleteExistData: null,
+            deleteExistDataMethod: null,
+            systemType: null
+           });
+        }
+      });
       vm.checkDeletedItem(vm.storagePatternList(), res.processExecution.execSetting.saveData.patternCode);
-      vm.checkDeletedItem(vm.deletionPatternList(), res.processExecution.execSetting.saveData.patternCode);
-      res.processExecution.execSetting.indexReconstruction.categoryList.forEach((item: number) => vm.checkDeletedItem(vm.indexReconList(), String(item)));
+      vm.checkDeletedItem(vm.deletionPatternList(), res.processExecution.execSetting.deleteData.patternCode);
+      res.processExecution.execSetting.indexReconstruction.categoryList.forEach((item: number) => {
+        if (_.filter(vm.defaultMasterData.indexReconList, { categoryNo: item }).length === 0) {
+          vm.defaultMasterData.indexReconList.push({ 
+            categoryName: vm.$i18n("KBT002_193"),
+            categoryNo: item
+           });
+        }
+      });
     }
   }
 
@@ -875,7 +910,7 @@ module nts.uk.at.view.kbt002.b {
 
       vm.dailyPerfCls(processExecution.execSetting.dailyPerf.dailyPerfCls || false);
       vm.dailyPerfClsNormal(vm.dailyPerfCls() || false); // B8_1
-      vm.dailyPerfItem(processExecution.execSetting.dailyPerf.dailyPerfItem); // B8_3
+      vm.dailyPerfItem(processExecution.execSetting.dailyPerf.dailyPerfItem + 1); // B8_3
       vm.midJoinEmployee(processExecution.execSetting.dailyPerf.createNewEmpDailyPerf || false); // B8_5
 
       vm.reflectResultCls(processExecution.execSetting.reflectResultCls || false); // B9_1

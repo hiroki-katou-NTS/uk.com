@@ -418,10 +418,10 @@ public class SaveExecutionTaskSettingCommandHandler
 
 		Optional<String> oldEndScheduleIdOpt = executionTaskSetting.getEndScheduleId();
 		if (oldEndScheduleIdOpt.isPresent()) {
-			this.scheduler.unscheduleOnCurrentCompany(SortingProcessScheduleJob.class, oldEndScheduleIdOpt.get());
+			this.scheduler.unscheduleOnCurrentCompany(SortingProcessEndScheduleJob.class, oldEndScheduleIdOpt.get());
 		}
 
-		this.scheduler.unscheduleOnCurrentCompany(SortingProcessScheduleJob.class, oldScheduleId);
+		this.scheduler.unscheduleOnCurrentCompany(SortingProcessEndScheduleJob.class, oldScheduleId);
 	}
 
 	@Transactional(value = TxType.REQUIRED, rollbackOn = Exception.class)
