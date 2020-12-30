@@ -1100,12 +1100,12 @@ module nts.uk.ui.at.ksu002.a {
                                     }
                                 }
                             }
-
-                            $container
-                                .removeAttr('data-key')
-                                .removeAttr('data-shift')
-                                .removeAttr('data-key-code');
                         }
+
+                        $container
+                            .removeAttr('data-key')
+                            .removeAttr('data-shift')
+                            .removeAttr('data-key-code');
                     })
                     .on('click', (evt) => {
                         evt.stopPropagation();
