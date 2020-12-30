@@ -23,7 +23,6 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KFNMT_RPT_WK_REC_DISP_CONT")
 @NoArgsConstructor
 @AllArgsConstructor
-@NoArgsConstructor
 public class KfnmtRptWkRecDispCont extends UkJpaEntity implements Serializable {
     public static long serialVersionUID = 1L;
     @EmbeddedId
