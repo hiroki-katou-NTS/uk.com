@@ -106,10 +106,10 @@ public class AsposeAppOverTime {
 		
 		// ドメインモデル「申請の印刷内容．残業申請の印刷内容．残業申請．申請．事前事後区分」= 事後　AND　
 		// 「申請の印刷内容．残業申請の印刷内容．残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．残業申請．事後．休憩・外出を申請反映する」= する
-		Boolean c3_1 = (appOverTime.getApplication().getPrePostAtr() == PrePostAtr.POSTERIOR 
+		Boolean c3_1 = (appOverTime.getApplication().getPrePostAtr() == PrePostAtr.PREDICT 
 						&& displayInfoOverTime.getInfoNoBaseDate().getOverTimeReflect().getOvertimeWorkAppReflect().getBefore().getBreakLeaveApplication().getBreakReflectAtr() == NotUseAtr.USE
 						)
-				|| ( appOverTime.getApplication().getPrePostAtr() == PrePostAtr.PREDICT
+				|| ( appOverTime.getApplication().getPrePostAtr() == PrePostAtr.POSTERIOR
 						&& displayInfoOverTime.getInfoNoBaseDate().getOverTimeReflect().getOvertimeWorkAppReflect().getAfter().getBreakLeaveApplication().getBreakReflectAtr() == NotUseAtr.USE
 						);
 		// ※1 = ○　OR　※3-1 = ○
@@ -200,7 +200,7 @@ public class AsposeAppOverTime {
 				.filter(x -> x.getWorkTypeCode().v().equals(workType))
 				.findFirst().map(x -> x.getName().v()).orElse(null);
 			StringBuilder workBuilder = new StringBuilder("");
-			workBuilder.append(StringUtils.isBlank(nameWorktype) ? I18NText.getText("KAF005_345") : nameWorktype);
+			workBuilder.append(StringUtils.isBlank(nameWorktype) ? workType + HALF_SIZE_SPACE + I18NText.getText("KAF005_345") : nameWorktype);
 			cellD8.setValue(workBuilder);
 			
 			
@@ -217,7 +217,7 @@ public class AsposeAppOverTime {
 					.map(x -> x.getWorkTimeDisplayName().getWorkTimeName().v())
 					.orElse(null);
 			StringBuilder workBuilder = new StringBuilder("");
-			workBuilder.append(StringUtils.isBlank(nameWorktime) ? I18NText.getText("KAF005_345") : nameWorktime);
+			workBuilder.append(StringUtils.isBlank(nameWorktime) ? workTime + HALF_SIZE_SPACE + I18NText.getText("KAF005_345") : nameWorktime);
 			cellD9.setValue(workBuilder);
 			
 			
