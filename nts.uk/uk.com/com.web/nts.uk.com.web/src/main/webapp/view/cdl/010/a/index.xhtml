@@ -9,7 +9,7 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
       <script>
-        var dialogSize = { width: 460, height: 600 };
+        var dialogSize = { width: 460, height: 650 };
 			</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cdl010.a.css" />
@@ -18,148 +18,150 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-        <table>
-          <thead>
-            <tr>
-              <!-- A1_1 氏名 -->
-              <td class="bolder w-175">#{i18n.getText('CDL010_2')}</td>
-              <!-- A1_2 -->
-              <td class="bolder" data-bind="text: detailData().businessName"></td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <!-- A13_1 雇用名 -->
-              <td>#{i18n.getText('CDL010_15')}</td>
-              <!-- A13_2 -->
-              <td data-bind="text: detailData().employmentName"></td>
-            </tr>
-
-            <tr>
-              <!-- A14_1 職場名 -->
-              <td>#{i18n.getText('CDL010_16')}</td>
-              <!-- A14_2 -->
-              <td data-bind="text: detailData().workplaceName"></td>
-            </tr>
-
-            <tr>
-              <!-- A15_1 分類名 -->
-              <td>#{i18n.getText('CDL010_17')}</td>
-              <!-- A15_2 -->
-              <td data-bind="text: detailData().categoryName"></td>
-            </tr>
-
-            <tr>
-              <!-- A16_1 職位名 -->
-              <td>#{i18n.getText('CDL010_18')}</td>
-              <!-- A16_2 -->
-              <td data-bind="text: detailData().positionName"></td>
-            </tr>
-
-            <!-- 項目制御 ※1 -->
-            <com:ko-if bind="!_.isEmpty(detailData().contactInformation.companyPhone)">
+        <div id="content-cdl010">
+          <table>
+            <thead>
               <tr>
-                <!-- A2_1 携帯電話（会社用）-->
-                <td>#{i18n.getText('CDL010_12')}</td>
-                <!-- A2_2 -->
-                <td data-bind="text: detailData().contactInformation.companyPhone"></td>
+                <!-- A1_1 氏名 -->
+                <td class="bolder w-175">#{i18n.getText('CDL010_2')}</td>
+                <!-- A1_2 -->
+                <td class="bolder" data-bind="text: detailData().businessName"></td>
               </tr>
-            </com:ko-if>
-
-            <!-- 項目制御 ※2 -->
-            <com:ko-if bind="!_.isEmpty(detailData().contactInformation.personPhone)">
+            </thead>
+            <tbody>
               <tr>
-                <!-- A3_1 携帯電話（個人用） -->
-                <td>#{i18n.getText('CDL010_3')}</td>
-                <!-- A3_2 -->
-                <td data-bind="text: detailData().contactInformation.personPhone"></td>
+                <!-- A13_1 雇用名 -->
+                <td>#{i18n.getText('CDL010_15')}</td>
+                <!-- A13_2 -->
+                <td data-bind="text: detailData().employmentName"></td>
               </tr>
-            </com:ko-if>
 
-            <!-- 項目制御 ※3 -->
-            <com:ko-if bind="!_.isEmpty(detailData().contactInformation.contact1)">
               <tr>
-                <!-- A4_1 緊急電話番号1 -->
-                <td>#{i18n.getText('CDL010_4')}</td>
-                <!-- A4_2 -->
-                <td data-bind="text: detailData().contactInformation.contact1"></td>
+                <!-- A14_1 職場名 -->
+                <td>#{i18n.getText('CDL010_16')}</td>
+                <!-- A14_2 -->
+                <td data-bind="text: detailData().workplaceName"></td>
               </tr>
-            </com:ko-if>
 
-            <!-- 項目制御 ※4 -->
-            <com:ko-if bind="!_.isEmpty(detailData().contactInformation.contact2)">
               <tr>
-                <!-- A5_1 緊急電話番号2 -->
-                <td>#{i18n.getText('CDL010_5')}</td>
-                <!-- A5_2 -->
-                <td data-bind="text: detailData().contactInformation.contact2"></td>
+                <!-- A15_1 分類名 -->
+                <td>#{i18n.getText('CDL010_17')}</td>
+                <!-- A15_2 -->
+                <td data-bind="text: detailData().categoryName"></td>
               </tr>
-            </com:ko-if>
 
-            <!-- 項目制御 ※5 -->
-            <com:ko-if bind="!_.isEmpty(detailData().contactInformation.seatDial)">
               <tr>
-                <!-- A6_1 ダイヤルイン番 -->
-                <td>#{i18n.getText('CDL010_6')}</td>
-                <!-- A6_2 -->
-                <td data-bind="text: detailData().contactInformation.seatDial"></td>
+                <!-- A16_1 職位名 -->
+                <td>#{i18n.getText('CDL010_18')}</td>
+                <!-- A16_2 -->
+                <td data-bind="text: detailData().positionName"></td>
               </tr>
-            </com:ko-if>
 
-            <!-- 項目制御 ※6 -->
-            <com:ko-if bind="!_.isEmpty(detailData().contactInformation.seatNo)">
+              <!-- 項目制御 ※1 -->
+              <com:ko-if bind="!_.isEmpty(detailData().contactInformation.companyPhone)">
+                <tr>
+                  <!-- A2_1 携帯電話（会社用）-->
+                  <td>#{i18n.getText('CDL010_12')}</td>
+                  <!-- A2_2 -->
+                  <td data-bind="text: detailData().contactInformation.companyPhone"></td>
+                </tr>
+              </com:ko-if>
+
+              <!-- 項目制御 ※2 -->
+              <com:ko-if bind="!_.isEmpty(detailData().contactInformation.personPhone)">
+                <tr>
+                  <!-- A3_1 携帯電話（個人用） -->
+                  <td>#{i18n.getText('CDL010_3')}</td>
+                  <!-- A3_2 -->
+                  <td data-bind="text: detailData().contactInformation.personPhone"></td>
+                </tr>
+              </com:ko-if>
+
+              <!-- 項目制御 ※3 -->
+              <com:ko-if bind="!_.isEmpty(detailData().contactInformation.contact1)">
+                <tr>
+                  <!-- A4_1 緊急電話番号1 -->
+                  <td>#{i18n.getText('CDL010_4')}</td>
+                  <!-- A4_2 -->
+                  <td data-bind="text: detailData().contactInformation.contact1"></td>
+                </tr>
+              </com:ko-if>
+
+              <!-- 項目制御 ※4 -->
+              <com:ko-if bind="!_.isEmpty(detailData().contactInformation.contact2)">
+                <tr>
+                  <!-- A5_1 緊急電話番号2 -->
+                  <td>#{i18n.getText('CDL010_5')}</td>
+                  <!-- A5_2 -->
+                  <td data-bind="text: detailData().contactInformation.contact2"></td>
+                </tr>
+              </com:ko-if>
+
+              <!-- 項目制御 ※5 -->
+              <com:ko-if bind="!_.isEmpty(detailData().contactInformation.seatDial)">
+                <tr>
+                  <!-- A6_1 ダイヤルイン番 -->
+                  <td>#{i18n.getText('CDL010_6')}</td>
+                  <!-- A6_2 -->
+                  <td data-bind="text: detailData().contactInformation.seatDial"></td>
+                </tr>
+              </com:ko-if>
+
+              <!-- 項目制御 ※6 -->
+              <com:ko-if bind="!_.isEmpty(detailData().contactInformation.seatNo)">
+                <tr>
+                  <!-- A7_1 内線番号 -->
+                  <td>#{i18n.getText('CDL010_7')}</td>
+                  <!-- A7_2 -->
+                  <td data-bind="text: detailData().contactInformation.seatNo"></td>
+                </tr>
+              </com:ko-if>
+
+              <!-- 項目制御 ※7 -->
+              <com:ko-if bind="!_.isEmpty(detailData().contactInformation.cEmail)">
+                <tr>
+                  <!-- A8_1 会社メールアドレス -->
+                  <td>#{i18n.getText('CDL010_8')}</td>
+                  <!-- A8_2 -->
+                  <td data-bind="html: detailData().contactInformation.cEmail"></td>
+                </tr>
+              </com:ko-if>
+
+              <!-- 項目制御 ※8 -->
+              <com:ko-if bind="!_.isEmpty(detailData().contactInformation.cMobileEmail)">
+                <tr>
+                  <!-- A9_1 会社携帯メールアドレ -->
+                  <td>#{i18n.getText('CDL010_9')}</td>
+                  <!-- A9_2 -->
+                  <td data-bind="html: detailData().contactInformation.cMobileEmail"></td>
+                </tr>
+              </com:ko-if>
+
               <tr>
-                <!-- A7_1 内線番号 -->
-                <td>#{i18n.getText('CDL010_7')}</td>
-                <!-- A7_2 -->
-                <td data-bind="text: detailData().contactInformation.seatNo"></td>
+                <!-- A10_1 個人メールアドレス -->
+                <td>#{i18n.getText('CDL010_10')}</td>
+                <!-- A10_2 -->
+                <td data-bind="html: detailData().contactInformation.pEmail"></td>
               </tr>
-            </com:ko-if>
 
-            <!-- 項目制御 ※7 -->
-            <com:ko-if bind="!_.isEmpty(detailData().contactInformation.cEmail)">
               <tr>
-                <!-- A8_1 会社メールアドレス -->
-                <td>#{i18n.getText('CDL010_8')}</td>
-                <!-- A8_2 -->
-                <td data-bind="html: detailData().contactInformation.cEmail"></td>
+                <!-- A11_1 個人携帯メールアド -->
+                <td>#{i18n.getText('CDL010_11')}</td>
+                <!-- A11_2 -->
+                <td data-bind="html: detailData().contactInformation.pMobileEmail"></td>
               </tr>
-            </com:ko-if>
-
-            <!-- 項目制御 ※8 -->
-            <com:ko-if bind="!_.isEmpty(detailData().contactInformation.cMobileEmail)">
+            </tbody>
+          </table>
+          <!-- A12 -->
+          <table>
+            <tbody data-bind="foreach: otherContact">
               <tr>
-                <!-- A9_1 会社携帯メールアドレ -->
-                <td>#{i18n.getText('CDL010_9')}</td>
-                <!-- A9_2 -->
-                <td data-bind="html: detailData().contactInformation.cMobileEmail"></td>
+                <td class="w-175" data-bind="text: $vm.$i18n('CDL010_14', [contactName])">Skypeのアドレ</td>
+                <td data-bind="text: contactAddress"></td>
               </tr>
-            </com:ko-if>
-
-            <tr>
-              <!-- A10_1 個人メールアドレス -->
-              <td>#{i18n.getText('CDL010_10')}</td>
-              <!-- A10_2 -->
-              <td data-bind="html: detailData().contactInformation.pEmail"></td>
-            </tr>
-
-            <tr>
-              <!-- A11_1 個人携帯メールアド -->
-              <td>#{i18n.getText('CDL010_11')}</td>
-              <!-- A11_2 -->
-              <td data-bind="html: detailData().contactInformation.pMobileEmail"></td>
-            </tr>
-          </tbody>
-        </table>
-        <!-- A12 -->
-        <table>
-          <tbody data-bind="foreach: otherContact">
-            <tr>
-              <td class="w-175" data-bind="text: $vm.$i18n('CDL010_14', [contactName])">Skypeのアドレ</td>
-              <td data-bind="text: contactAddress"></td>
-            </tr>
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+        </div>
 			</div>
 
 			<div id="functions-area-bottom">

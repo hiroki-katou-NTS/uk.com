@@ -5,3 +5,9 @@
 .w-175 {
   width: 175px;
 }
+#functions-area-bottom {
+  height: 40px !important;
+}
+table tbody td {
+  padding-top: 5px;
+}
