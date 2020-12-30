@@ -2376,7 +2376,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				self.checkDragDrog = true;
 				let index = e.currentTarget.id.split("-")[0], lstGcShow = _.filter(self.lstAllChildShow, (x : any) => {return x.index === parseInt(index)});
 				
-				self.checkChartHide(lstGcShow, index, param);
+				self.checkChartHide(lstGcShow, index, param, "lgc");
 				
 				if (param) {
 					$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "startTime1", startMinute);
@@ -2395,7 +2395,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				self.checkDragDrog = true;
 				let index = e.currentTarget.id.split("-")[0], lstGcShow = _.filter(self.lstAllChildShow, (x : any) => {return x.index === parseInt(index)});
 				
-				self.checkChartHide(lstGcShow, index, param);
+				self.checkChartHide(lstGcShow, index, param, "rgc");
 				
 				if (param) {
 					$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "startTime2", startMinute);
@@ -2407,15 +2407,15 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			self.allGcShow = fixedGc;
 		}
 		
-		checkChartHide(lstGcShow : any, index : any, param : any){
+		checkChartHide(lstGcShow : any, index : any, param : any, type : string){
 			let self = this;
 			let lstBrk = _.map(_.filter(lstGcShow, (x: any) => {return x.type === "BREAK"}), (y: any) => {return y.position}),
 					lstOT = _.map(_.filter(lstGcShow, (x: any) => {return x.type === "OT"}), (y: any) => {return y.position}),
 					lstShort = _.map(_.filter(lstGcShow, (x: any) => {return x.type === "SHORT"}), (y: any) => {return y.position}),
-					lstHoliday = _.map(_.filter(lstGcShow, (x: any) => {return x.type === "HOLIDAY"}), (y: any) => {return y.position})
-				
-				let timeMinus = duration.create(param[0] * 5 + self.dispStart * 5).asMinutes - self.dataScreen003A().employeeInfo[index].workScheduleDto.startTime1;
-				let checkUpdate : any = [];
+					lstHoliday = _.map(_.filter(lstGcShow, (x: any) => {return x.type === "HOLIDAY"}), (y: any) => {return y.position});
+			let timeMinus = duration.create(param[0] * 5 + self.dispStart * 5).asMinutes - self.dataScreen003A().employeeInfo[index].workScheduleDto.startTime1;
+			let checkUpdate : any = [];
+			
 				if(self.dataScreen003A().employeeInfo[index].workScheduleDto.listBreakTimeZoneDto.length > 0){
 					_.forEach(self.dataScreen003A().employeeInfo[index].workScheduleDto.listBreakTimeZoneDto, (brk: any, idx) => {
 						let lstHide = _.filter(lstBrk, (x : any) => {return x == idx});
@@ -3496,11 +3496,14 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					return;
 				}
 
+			dfd.resolve();
 			}).fail(function(res: any) {
 				errorDialog({ messageId: res.messageId, messageParams: res.parameterIds });
 				return;
 			}).always(function() {
 			});
+			} else {
+				dfd.resolve();
 			}
 			return dfd.promise();
 		}
