@@ -4,10 +4,14 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.ExtractionMonthlyCon;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.ExtractionMonthlyConRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareSingleValue;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.primitivevalue.AverageNumberDays;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.primitivevalue.AverageNumberTimes;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.primitivevalue.AverageRatio;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.primitivevalue.AverageTime;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlistworkplace.monthly.KrcmtWkpMonExtracCon;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.*;
 import nts.uk.ctx.at.shared.dom.workrecord.alarm.attendanceitemconditions.CompareRange;
+import nts.uk.ctx.at.shared.dom.workrecord.alarm.attendanceitemconditions.CompareSingleValue;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -117,7 +121,27 @@ public class JpaExtractionMonthlyConRepository extends JpaRepository implements 
         List<KrcstErAlCompareRange> compareRanges = new ArrayList<>();
 
         domains.forEach(i -> {
+            Double minValue = null;
+            Double maxValue = null;
             if (i.getCheckConditions().isSingleValue()) {
+                switch (i.getCheckMonthlyItemsType()) {
+                    case AVERAGE_TIME: {
+                        minValue = Double.valueOf(((AverageTime) ((CompareSingleValue) i.getCheckConditions()).getValue()).v());
+                        break;
+                    }
+                    case AVERAGE_NUMBER_DAY: {
+                        minValue = ((AverageNumberDays) ((CompareSingleValue) i.getCheckConditions()).getValue()).v().doubleValue();
+                        break;
+                    }
+                    case AVERAGE_NUMBER_TIME: {
+                        minValue = Double.valueOf(((AverageNumberTimes) ((CompareSingleValue) i.getCheckConditions()).getValue()).v());
+                        break;
+                    }
+                    case AVERAGE_RATIO: {
+                        minValue = Double.valueOf(((AverageRatio) ((CompareSingleValue) i.getCheckConditions()).getValue()).v());
+                        break;
+                    }
+                }
                 KrcstErAlCompareSingle single = new KrcstErAlCompareSingle(
                         new KrcstErAlCompareSinglePK(i.getErrorAlarmCheckID(), 0),
                         ((CompareSingleValue) i.getCheckConditions()).getCompareOpertor().value,
@@ -125,16 +149,38 @@ public class JpaExtractionMonthlyConRepository extends JpaRepository implements 
                 );
                 KrcstErAlSingleFixed singleFixed = new KrcstErAlSingleFixed(
                         new KrcstErAlSingleFixedPK(i.getErrorAlarmCheckID(), 0),
-                        (double) ((CompareSingleValue) i.getCheckConditions()).getValue()
+                        minValue
                 );
                 compareSingles.add(single);
                 singleFixeds.add(singleFixed);
             } else {
+                switch (i.getCheckMonthlyItemsType()) {
+                    case AVERAGE_TIME: {
+                        minValue = Double.valueOf(((AverageTime) ((CompareRange) i.getCheckConditions()).getStartValue()).v());
+                        maxValue = Double.valueOf(((AverageTime) ((CompareRange) i.getCheckConditions()).getEndValue()).v());
+                        break;
+                    }
+                    case AVERAGE_NUMBER_DAY: {
+                        minValue = ((AverageTime) ((CompareRange) i.getCheckConditions()).getStartValue()).v().doubleValue();
+                        maxValue = ((AverageTime) ((CompareRange) i.getCheckConditions()).getEndValue()).v().doubleValue();
+                        break;
+                    }
+                    case AVERAGE_NUMBER_TIME: {
+                        minValue = Double.valueOf(((AverageNumberTimes) ((CompareRange) i.getCheckConditions()).getStartValue()).v());
+                        maxValue = Double.valueOf(((AverageNumberTimes) ((CompareRange) i.getCheckConditions()).getEndValue()).v());
+                        break;
+                    }
+                    case AVERAGE_RATIO: {
+                        minValue = Double.valueOf(((AverageRatio) ((CompareRange) i.getCheckConditions()).getStartValue()).v());
+                        maxValue = Double.valueOf(((AverageRatio) ((CompareRange) i.getCheckConditions()).getEndValue()).v());
+                        break;
+                    }
+                }
                 KrcstErAlCompareRange range = new KrcstErAlCompareRange(
                         new KrcstErAlCompareRangePK(i.getErrorAlarmCheckID(), 0),
                         ((CompareRange) i.getCheckConditions()).getCompareOperator().value,
-                        (double) ((CompareRange) i.getCheckConditions()).getStartValue(),
-                        (double) ((CompareRange) i.getCheckConditions()).getEndValue()
+                        minValue,
+                        maxValue
                 );
                 compareRanges.add(range);
             }

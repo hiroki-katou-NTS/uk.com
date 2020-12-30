@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.app.find.alarmworkplace.checkcondition;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.schedule.ExtractionScheduleCon;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.schedule.primitivevalue.*;
 import nts.uk.ctx.at.shared.dom.workrecord.alarm.attendanceitemconditions.CompareRange;
 import nts.uk.ctx.at.shared.dom.workrecord.alarm.attendanceitemconditions.CompareSingleValue;
 
@@ -19,22 +20,68 @@ public class ExtractionSchelConDto {
     private Integer contrastType;
     private String daiExtracConName;
     private String messageDisp;
-    private Integer minValue;
-    private Integer maxValue;
+    private String minValue;
+    private String maxValue;
     private Integer operator;
 
     public static ExtractionSchelConDto fromDomain(ExtractionScheduleCon domain) {
-        Integer minValue = null;
-        Integer maxValue = null;
+        String minValue = null;
+        String maxValue = null;
         Integer operator = null;
         if (domain.getCheckConditions() != null) {
             if (domain.getCheckConditions().isSingleValue()) {
-                minValue = (Integer) ((CompareSingleValue)domain.getCheckConditions()).getValue();
-                operator = ((CompareSingleValue)domain.getCheckConditions()).getCompareOpertor().value;
+                switch (domain.getCheckDayItemsType()) {
+                    case CONTRAST: {
+                        minValue = ((Comparison) ((CompareSingleValue) domain.getCheckConditions()).getValue()).v().toString();
+                        break;
+                    }
+                    case NUMBER_PEOPLE_COMPARISON: {
+                        minValue = ((NumberOfPeople) ((CompareSingleValue) domain.getCheckConditions()).getValue()).v().toString();
+                        break;
+                    }
+                    case TIME_COMPARISON: {
+                        minValue = ((Time) ((CompareSingleValue) domain.getCheckConditions()).getValue()).v().toString();
+                        break;
+                    }
+                    case AMOUNT_COMPARISON: {
+                        minValue = ((Amount) ((CompareSingleValue) domain.getCheckConditions()).getValue()).v().toString();
+                        break;
+                    }
+                    case RATIO_COMPARISON: {
+                        minValue = ((RatioComparison) ((CompareSingleValue) domain.getCheckConditions()).getValue()).v().toString();
+                        break;
+                    }
+                }
+                operator = ((CompareSingleValue) domain.getCheckConditions()).getCompareOpertor().value;
             } else {
-                minValue = (Integer) ((CompareRange)domain.getCheckConditions()).getStartValue();
-                maxValue = (Integer) ((CompareRange)domain.getCheckConditions()).getStartValue();
-                operator = ((CompareRange)domain.getCheckConditions()).getCompareOperator().value;
+                switch (domain.getCheckDayItemsType()) {
+                    case CONTRAST: {
+                        minValue = ((Comparison) ((CompareRange) domain.getCheckConditions()).getStartValue()).v().toString();
+                        maxValue = ((Comparison) ((CompareRange) domain.getCheckConditions()).getEndValue()).v().toString();
+                        break;
+                    }
+                    case NUMBER_PEOPLE_COMPARISON: {
+                        minValue = ((NumberOfPeople) ((CompareRange) domain.getCheckConditions()).getStartValue()).v().toString();
+                        maxValue = ((NumberOfPeople) ((CompareRange) domain.getCheckConditions()).getEndValue()).v().toString();
+                        break;
+                    }
+                    case TIME_COMPARISON: {
+                        minValue = ((Time) ((CompareRange) domain.getCheckConditions()).getStartValue()).v().toString();
+                        maxValue = ((Time) ((CompareRange) domain.getCheckConditions()).getEndValue()).v().toString();
+                        break;
+                    }
+                    case AMOUNT_COMPARISON: {
+                        minValue = ((Amount) ((CompareRange) domain.getCheckConditions()).getStartValue()).v().toString();
+                        maxValue = ((Amount) ((CompareRange) domain.getCheckConditions()).getEndValue()).v().toString();
+                        break;
+                    }
+                    case RATIO_COMPARISON: {
+                        minValue = ((RatioComparison) ((CompareRange) domain.getCheckConditions()).getStartValue()).v().toString();
+                        maxValue = ((RatioComparison) ((CompareRange) domain.getCheckConditions()).getEndValue()).v().toString();
+                        break;
+                    }
+                }
+                operator = ((CompareRange) domain.getCheckConditions()).getCompareOperator().value;
             }
         }
         return new ExtractionSchelConDto(

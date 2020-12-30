@@ -4,6 +4,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.schedule.ExtractionScheduleCon;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.schedule.ExtractionScheduleConRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.schedule.primitivevalue.*;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlistworkplace.schedule.KrcmtWkpSchedaiExCon;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.*;
 import nts.uk.ctx.at.shared.dom.workrecord.alarm.attendanceitemconditions.CompareRange;
@@ -114,7 +115,31 @@ public class JpaExtractionScheduleConRepository extends JpaRepository implements
         List<KrcstErAlCompareRange> compareRanges = new ArrayList<>();
 
         domain.forEach(i -> {
+            Double minValue = null;
+            Double maxValue = null;
             if (i.getCheckConditions().isSingleValue()) {
+                switch (i.getCheckDayItemsType()) {
+                    case CONTRAST: {
+                        minValue = Double.valueOf(((Comparison) ((CompareSingleValue) i.getCheckConditions()).getValue()).v());
+                        break;
+                    }
+                    case NUMBER_PEOPLE_COMPARISON: {
+                        minValue = Double.valueOf(((NumberOfPeople) ((CompareSingleValue) i.getCheckConditions()).getValue()).v());
+                        break;
+                    }
+                    case TIME_COMPARISON: {
+                        minValue = Double.valueOf(((Time) ((CompareSingleValue) i.getCheckConditions()).getValue()).v());
+                        break;
+                    }
+                    case AMOUNT_COMPARISON: {
+                        minValue = Double.valueOf(((Amount) ((CompareSingleValue) i.getCheckConditions()).getValue()).v());
+                        break;
+                    }
+                    case RATIO_COMPARISON: {
+                        minValue = Double.valueOf(((RatioComparison) ((CompareSingleValue) i.getCheckConditions()).getValue()).v());
+                        break;
+                    }
+                }
                 KrcstErAlCompareSingle single = new KrcstErAlCompareSingle(
                         new KrcstErAlCompareSinglePK(i.getErrorAlarmCheckID(), 0),
                         ((CompareSingleValue) i.getCheckConditions()).getCompareOpertor().value,
@@ -122,16 +147,43 @@ public class JpaExtractionScheduleConRepository extends JpaRepository implements
                 );
                 KrcstErAlSingleFixed singleFixed = new KrcstErAlSingleFixed(
                         new KrcstErAlSingleFixedPK(i.getErrorAlarmCheckID(), 0),
-                        Double.valueOf((Integer)((CompareSingleValue) i.getCheckConditions()).getValue())
+                        minValue
                 );
                 compareSingles.add(single);
                 singleFixeds.add(singleFixed);
             } else {
+                switch (i.getCheckDayItemsType()) {
+                    case CONTRAST: {
+                        minValue = Double.valueOf(((Comparison) ((CompareRange) i.getCheckConditions()).getStartValue()).v());
+                        maxValue = Double.valueOf(((Comparison) ((CompareRange) i.getCheckConditions()).getEndValue()).v());
+                        break;
+                    }
+                    case NUMBER_PEOPLE_COMPARISON: {
+                        minValue = Double.valueOf(((NumberOfPeople) ((CompareRange) i.getCheckConditions()).getStartValue()).v());
+                        maxValue = Double.valueOf(((NumberOfPeople) ((CompareRange) i.getCheckConditions()).getEndValue()).v());
+                        break;
+                    }
+                    case TIME_COMPARISON: {
+                        minValue = Double.valueOf(((Time) ((CompareRange) i.getCheckConditions()).getStartValue()).v());
+                        maxValue = Double.valueOf(((Time) ((CompareRange) i.getCheckConditions()).getEndValue()).v());
+                        break;
+                    }
+                    case AMOUNT_COMPARISON: {
+                        minValue = Double.valueOf(((Amount) ((CompareRange) i.getCheckConditions()).getStartValue()).v());
+                        maxValue = Double.valueOf(((Amount) ((CompareRange) i.getCheckConditions()).getEndValue()).v());
+                        break;
+                    }
+                    case RATIO_COMPARISON: {
+                        minValue = Double.valueOf(((RatioComparison) ((CompareRange) i.getCheckConditions()).getStartValue()).v());
+                        maxValue = Double.valueOf(((RatioComparison) ((CompareRange) i.getCheckConditions()).getEndValue()).v());
+                        break;
+                    }
+                }
                 KrcstErAlCompareRange range = new KrcstErAlCompareRange(
                         new KrcstErAlCompareRangePK(i.getErrorAlarmCheckID(), 0),
                         ((CompareRange) i.getCheckConditions()).getCompareOperator().value,
-                        (double) ((CompareRange) i.getCheckConditions()).getStartValue(),
-                        (double) ((CompareRange) i.getCheckConditions()).getEndValue()
+                        minValue,
+                        maxValue
                 );
                 compareRanges.add(range);
             }
