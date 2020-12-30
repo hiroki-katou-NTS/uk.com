@@ -42,6 +42,30 @@
         startDate: string = '';
         endDate: string = '';
 
+        // Update ver48
+        remainingData: KnockoutObservableArray<any> = ko.observableArray([]);
+
+        residualNumber: KnockoutComputed<number> = ko.computed(() => {
+            let total = 0;
+            _.map(this.remainingData(), item => {
+                total += item.dayLetf;
+            });
+            return total;
+        });
+
+        displayResidualNumber: KnockoutComputed<string> = ko.computed(() => getText('KDM001_38', [this.residualNumber()]));
+
+        expiredNumber: KnockoutComputed<number> = ko.computed(() => {
+            let total = 0;
+            _.map(this.remainingData(), item => {
+                total += item.usedDay;
+            });
+            return total;
+        });
+
+        displayExpiredNumber: KnockoutComputed<string> = ko.computed(() => getText('KDM001_39', [this.expiredNumber()]));
+        // End update ver48
+
         constructor() {
             let self = this;
             self.initSubstituteDataList();
@@ -101,7 +125,6 @@
             }
             /** A4_3  凡例 */ 
             self.legendOptions = {											
-                // name: '#[KDM001_153]',
                 items: [
                     { labelText: nts.uk.resource.getText("KDM001_154") },
                     { labelText: nts.uk.resource.getText("KDM001_155") },
@@ -117,21 +140,14 @@
                     } else {
                         self.unknowEmployeeInfo = false;
                     }
-                    self.getSubstituteDataList(self.getSearchCondition());
+                    self.getSubstituteDataList(self.getSearchCondition(), true);
                 }
                 self.isOnStartUp = false;
             });
             self.selectedPeriodItem.subscribe(x => {
-                if (x == 0){
-                    self.startPage()
-                    block.clear();
-                    nts.uk.ui.errors.clearAll();
-                }
-                else if (x == 1){
-                    self.getSubstituteDataList(self.getSearchCondition());
-                    block.clear();
-                    nts.uk.ui.errors.clearAll();
-                }    
+                self.getSubstituteDataList(self.getSearchCondition(), true);
+                block.clear();
+                nts.uk.ui.errors.clearAll();
             });
         }
 
@@ -151,7 +167,7 @@
 
         openNewSubstituteData() {
             let self = this;
-            setShared('KDM001_I_PARAMS', { selectedEmployee: self.selectedEmployee, closure: self.closureEmploy });
+            setShared('KDM001_I_PARAMS', { selectedEmployee: self.selectedEmployee, closure: self.closureEmploy, residualNumber: self.residualNumber() });
             modal("/view/kdm/001/i/index.xhtml").onClosed(function() {
                 let resParam = getShared("KDM001_I_PARAMS_RES");
                 if (resParam) {
@@ -177,26 +193,26 @@
             }
         }
 
-        getSubstituteDataList(searchCondition: any, isShowMsg?: boolean) {
+        getSubstituteDataList(searchCondition: any, isShowMsg?: boolean): JQueryPromise<void> {
             let self = this;
+            const dfd = $.Deferred()
             if (self.selectedPeriodItem() == 1){
                 $("#daterangepicker .ntsDatepicker").trigger("validate");
             }
             if (!nts.uk.ui.errors.hasError()) {
                 service.getExtraHolidayData(searchCondition).done(function(result) {
-                    
-                    if (self.unknowEmployeeInfo){ 
-                        if (result.wkHistory){
-                            self.selectedEmployee.workplaceId = result.wkHistory.workplaceId;
-                            self.selectedEmployee.workplaceCode = result.wkHistory.workplaceCode;
-                            self.selectedEmployee.workplaceName = result.wkHistory.workplaceName;
-                            self.selectedEmployee.employeeCode = result.employeeCode;
-                            self.selectedEmployee.employeeName = result.employeeName;
-                        }
+
+                    if (result.wkHistory) {
+                        self.selectedEmployee.workplaceId = result.wkHistory.workplaceId;
+                        self.selectedEmployee.workplaceCode = result.wkHistory.workplaceCode;
+                        self.selectedEmployee.workplaceName = result.wkHistory.workplaceName;
+                        self.selectedEmployee.employeeCode = result.employeeCode;
+                        self.selectedEmployee.employeeName = result.employeeName;
                     }
                     if (result.closureEmploy && result.sempHistoryImport){
                         self.closureEmploy = result.closureEmploy;
                         self.listExtractData = result.remainingData;
+                        self.remainingData(result.remainingData);
                         self.startDate = result.startDate;
                         self.endDate = result.endDate;
                         self.convertToDisplayList(isShowMsg);
@@ -218,41 +234,29 @@
                     }
                     self.subData = [];
                     self.updateSubstituteDataList();
-                    dialog.alertError({ messageId: result.messageId, messageParams: result.parameterIds })
+                    dialog.alertError({ messageId: result.messageId, messageParams: result.parameterIds });
+                    dfd.reject();
                 });
             }
+
+            return dfd.promise();
         }
 
         getSearchCondition() {
             let self = this;
             let searchCondition = null;
             if (self.selectedPeriodItem() == 1) {
-                searchCondition = { searchMode: 1, employeeId: self.selectedEmployee.employeeId, startDate: null, endDate: null };
+                searchCondition = { searchMode: 1, employeeId: self.selectedEmployee.employeeId };
             } else {
-                searchCondition = { searchMode: 0, employeeId: self.selectedEmployee.employeeId, startDate: null, endDate: null };
+                searchCondition = { searchMode: 0, employeeId: self.selectedEmployee.employeeId };
             }
             return searchCondition;
         }
 
         convertToDisplayList(isShowMsg?: boolean) {
             let self = this;
-            let totalRemain = 0, dayOffDate, remain, expired, listData = [];
+            const listData: any[] = [];
             _.forEach(self.listExtractData, data => {
-                dayOffDate = data.dayOffDate;
-                remain = data.remain;
-                expired = data.expired;
-                if (data.type ==1 ){
-                    remain = remain * -1;
-                    expired = expired * -1;
-                }
-                totalRemain += remain + expired;
-
-                if (data.unknownDate == 1) {
-                    if (!dayOffDate){
-                        dayOffDate = '';
-                    } else dayOffDate += '';
-                   
-                }
 
                 let substituedexpiredDate = '';
                 if (data.deadLine === '') {
@@ -393,7 +397,7 @@
                         pageSizeList : [15, 50, 100]
                     },
                 ],
-                ntsControls: [                
+                ntsControls: [
                     { name: 'ButtonCorrection', text: getText('KDM001_100'), click: (value: any) => { self.deleteHolidaySetting(value) }, controlType: 'Button' }
                 ]
                 
@@ -456,6 +460,7 @@
                             self.employeeInputList.push(new EmployeeKcp009(loginerInfo.sid,
                                 loginerInfo.employeeCode, loginerInfo.employeeName, wkHistory.workplaceName, wkHistory.wkpDisplayName));
                         self.listExtractData = result.remainingData;
+                        self.remainingData(result.remainingData);
                         self.totalRemainingNumber = result.totalRemainingNumber;
                         self.startDate = result.startDate;
                         self.endDate = result.endDate;
@@ -569,26 +574,23 @@
         deleteHolidaySetting(value: any): void {
             block.invisible();
             //確認メッセージ（Msg_18）を表示する
-            dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                let self = this, rowDataInfo
-                if (value.dataType == 0) {
-                    rowDataInfo = _.find(self.listExtractData, x => {
-                        return x.id === value.id;
-                    });
-                } else {
-                    rowDataInfo = _.find(self.listExtractData, x => {
-                        return x.comDayOffID === value.id;
-                    });
-                }
-                let command = {
-                        leaveId: value.occurrenceId,
-                        comDayOffID: value.digestionId
+            dialog.confirm({ messageId: 'Msg_18' }).ifYes(() => {
+                const vm = this;
+                const mergeCell = value.mergeCell;
+                const listItem: SubstitutedData[] = _.filter(vm.subData,
+                    item => _.toNumber(item.mergeCell) === _.toNumber(mergeCell));
+                const leaveId = _.map(listItem, item => item.occurrenceId);
+                const comDayOffID = _.map(listItem, item => item.digestionId);
+                const command = {
+                    leaveId: leaveId,
+                    comDayOffID: comDayOffID
                 };
                 service.deleteHolidaySetting(command)
-                    .then(() => dialog.info({ messageId: "Msg_16" }).then(() => self.getSubstituteDataList(self.getSearchCondition(), true)))
+                    .then(() => dialog.info({ messageId: 'Msg_16' })
+                        .then(() => vm.getSubstituteDataList(vm.getSearchCondition(), true)))
                     .fail(error => {
                         dialog.alertError(error);
-                        self.getSubstituteDataList(self.getSearchCondition(), true);
+                        vm.getSubstituteDataList(vm.getSearchCondition(), true);
                     })
                     .always(() => block.clear());
             })
