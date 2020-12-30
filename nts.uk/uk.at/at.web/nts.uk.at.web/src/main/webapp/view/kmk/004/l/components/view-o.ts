@@ -144,7 +144,6 @@ module nts.uk.at.view.kmk004.l {
 		btn_text: KnockoutObservable<string> = ko.observable('KMK004_342');
 		public workTimes: KnockoutObservableArray<WorkTimeL> = ko.observableArray([]);
 		public checkEmployee: KnockoutObservable<boolean> = ko.observable(true);
-		isLoadInitData: KnockoutObservable<boolean> = ko.observable(false);
 		initBtnEnable: KnockoutObservable<boolean> = ko.observable(false);
 		public yearDelete: KnockoutObservable<number | null> = ko.observable(null);
 		public checkDelete: KnockoutObservable<boolean> = ko.observable(false);
@@ -218,16 +217,7 @@ module nts.uk.at.view.kmk004.l {
 			vm.disableSelection = ko.observable(false);
 			vm.currentItemName = ko.observable('');
 
-			vm.$ajax(KMK004O_API.GET_EMPLOYEE_ID)
-				.done((data: any) => {
-					let settings: UnitAlreadySettingModel[] = [];
-					_.forEach(data, ((value) => {
-						let s: UnitAlreadySettingModel = { code: value.employeeId, isAlreadySetting: true };
-						settings.push(s);
-
-					}));
-					vm.alreadySettingList(settings);
-				})
+			vm.getEmployeeIds();
 
 			vm.listComponentOption = {
 				isShowAlreadySet: vm.isShowAlreadySet(),
@@ -251,6 +241,20 @@ module nts.uk.at.view.kmk004.l {
 					}
 				});
 
+		}
+		
+		getEmployeeIds() {
+			const vm = this;
+			vm.$ajax(KMK004O_API.GET_EMPLOYEE_ID)
+				.done((data: any) => {
+					let settings: UnitAlreadySettingModel[] = [];
+					_.forEach(data, ((value) => {
+						let s: UnitAlreadySettingModel = { code: value.employeeId, isAlreadySetting: true };
+						settings.push(s);
+
+					}));
+					vm.alreadySettingList(settings);
+				})
 		}
 
 		mounted() {
@@ -297,6 +301,7 @@ module nts.uk.at.view.kmk004.l {
 					}));
 					vm.years.push(new IYear(ko.unwrap(vm.selectedYear) as number, false));
 					vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
+					vm.getEmployeeIds();
 				}).then(() => {
 					$(document).ready(function() {
 						$('#box-year').focus();
@@ -331,6 +336,7 @@ module nts.uk.at.view.kmk004.l {
 							if (ko.unwrap(vm.years).length > 0) {
 								vm.selectedYear(ko.unwrap(vm.years)[old_index].year);
 							}
+							vm.getEmployeeIds();
 						})
 						.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
 						.then(() => {
@@ -346,15 +352,11 @@ module nts.uk.at.view.kmk004.l {
 				})
 		}
 
-		close() {
-			const vm = this;
-			vm.$window.close();
-		}
-
 		openViewP() {
 			let vm = this;
 			vm.$window.modal('at', '/view/kmk/004/p/index.xhtml', ko.toJS(vm.params)).then(() => {
 				vm.isLoadData(true);
+				vm.getEmployeeIds();
 			});
 		}
 

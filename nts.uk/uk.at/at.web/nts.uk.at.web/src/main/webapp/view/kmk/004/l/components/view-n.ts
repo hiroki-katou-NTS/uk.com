@@ -4,7 +4,6 @@ module nts.uk.at.view.kmk004.l {
 	import IParam = nts.uk.at.view.kmk004.p.IParam;
 	import SIDEBAR_TYPE = nts.uk.at.view.kmk004.p.SIDEBAR_TYPE;
 	import IYear = nts.uk.at.view.kmk004.components.transform.IYear;
-	import IResponse = nts.uk.at.view.kmk004.p.IResponse;
 
 	const KMK004N_API = {
 		REGISTER_WORK_TIME: 'screen/at/kmk004/viewN/monthlyWorkTimeSet/update',
@@ -271,7 +270,7 @@ module nts.uk.at.view.kmk004.l {
 					}));
 					vm.years.push(new IYear(ko.unwrap(vm.selectedYear) as number, false));
 					vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
-					//vm.isLoadInitData(true);
+					vm.reloadInitData();
 				}).then(() => {
 					$(document).ready(function() {
 						$('#box-year').focus();
@@ -306,6 +305,7 @@ module nts.uk.at.view.kmk004.l {
 							if (ko.unwrap(vm.years).length > 0) {
 								vm.selectedYear(ko.unwrap(vm.years)[old_index].year);
 							}
+							vm.reloadInitData();
 						})
 						.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
 						.then(() => {
@@ -331,6 +331,7 @@ module nts.uk.at.view.kmk004.l {
 			let vm = this;
 			vm.$window.modal('at', '/view/kmk/004/p/index.xhtml', ko.toJS(vm.params)).then(() => {
 				vm.isLoadData(true);
+				vm.reloadInitData();
 			});
 		}
 

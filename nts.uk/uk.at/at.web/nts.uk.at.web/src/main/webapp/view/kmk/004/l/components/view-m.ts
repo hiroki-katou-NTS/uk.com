@@ -138,15 +138,7 @@ module nts.uk.at.view.kmk004.l {
 		created() {
 			const vm = this;
 
-			vm.$ajax(KMK004_API.WKP_INIT_SCREEN)
-				.done((data: any) => {
-					let settings: UnitAlreadySettingModel[] = [];
-					_.forEach(data.wkpIds, ((value) => {
-						let s: UnitAlreadySettingModel = { workplaceId: value.workplaceId, isAlreadySetting: true };
-						settings.push(s);
-					}));
-					vm.alreadySettingList(settings);
-				})
+			vm.getwkpIdList();
 
 			vm.baseDate = ko.observable(new Date());
 			vm.treeGrid = {
@@ -222,6 +214,19 @@ module nts.uk.at.view.kmk004.l {
 			});
 		}
 
+		getwkpIdList() {
+			const vm = this;
+
+			vm.$ajax(KMK004_API.WKP_INIT_SCREEN)
+				.done((data: any) => {
+					let settings: UnitAlreadySettingModel[] = [];
+					_.forEach(data.wkpIds, ((value) => {
+						let s: UnitAlreadySettingModel = { workplaceId: value.workplaceId, isAlreadySetting: true };
+						settings.push(s);
+					}));
+					vm.alreadySettingList(settings);
+				})
+		}
 		mounted() {
 			$(document).ready(function() {
 				$('.listbox').focus();
@@ -250,6 +255,7 @@ module nts.uk.at.view.kmk004.l {
 					}));
 					vm.years.push(new IYear(ko.unwrap(vm.selectedYear) as number, false));
 					vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
+					vm.getwkpIdList();
 				}).then(() => {
 					$(document).ready(function() {
 						$('#box-year').focus();
@@ -283,6 +289,7 @@ module nts.uk.at.view.kmk004.l {
 							if (ko.unwrap(vm.years).length > 0) {
 								vm.selectedYear(ko.unwrap(vm.years)[old_index].year);
 							}
+							vm.getwkpIdList();
 						})
 						.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
 						.then(() => {
@@ -307,6 +314,7 @@ module nts.uk.at.view.kmk004.l {
 			let vm = this;
 			vm.$window.modal('at', '/view/kmk/004/p/index.xhtml', ko.toJS(vm.params)).then(() => {
 				vm.isLoadData(true);
+				vm.getwkpIdList();
 			});
 		}
 
