@@ -157,7 +157,7 @@ public class AsposeAppHolidayWork {
 			Optional<OvertimeApplicationSetting> applicationTimeOp = workdayoffApplicationTimeListFinal.stream()
 								.filter(applicationTime -> applicationTime.getFrameNo().v() == workdayoffFrame.getWorkdayoffFrNo().v().intValue())
 								.findFirst();
-			if(applicationTimeOp.isPresent()) {
+			if(applicationTimeOp.isPresent() && applicationTimeOp.get().getApplicationTime().v() != 0) {
 				cells.get(workdayoffCountRow.get(), workdayoffCountColumn.getAndIncrement()).setValue(workdayoffFrame.getWorkdayoffFrName().v());
 				workdayoffCountColumn.getAndIncrement();
 				cells.get(workdayoffCountRow.get(), workdayoffCountColumn.getAndIncrement()).setValue(applicationTimeOp.get().getApplicationTime().getInDayTimeWithFormat());
@@ -189,7 +189,7 @@ public class AsposeAppHolidayWork {
 			Optional<Integer> withinPrescribedHolidayWorkTime = overTimeShiftNight.isPresent() ? overTimeShiftNight.get().getMidNightHolidayTimes().stream()
 						.filter(midNightHolidayTime -> midNightHolidayTime.getLegalClf().equals(StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork))
 						.map(midNightHolidayTime -> midNightHolidayTime.getAttendanceTime().v()).findFirst() : Optional.empty();
-			String withinPrescribedHolidayWorkTimeText = withinPrescribedHolidayWorkTime.isPresent() ? 
+			String withinPrescribedHolidayWorkTimeText = withinPrescribedHolidayWorkTime.isPresent() && (new TimeWithDayAttr(withinPrescribedHolidayWorkTime.get())).v() != 0 ? 
 					(new TimeWithDayAttr(withinPrescribedHolidayWorkTime.get())).getInDayTimeWithFormat() : "";
 			cellF18.setValue(withinPrescribedHolidayWorkTimeText);
 			
@@ -197,7 +197,7 @@ public class AsposeAppHolidayWork {
 			Optional<Integer> excessOfStatutoryHolidayWorkTime = overTimeShiftNight.isPresent() ? overTimeShiftNight.get().getMidNightHolidayTimes().stream()
 					.filter(midNightHolidayTime -> midNightHolidayTime.getLegalClf().equals(StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork))
 					.map(midNightHolidayTime -> midNightHolidayTime.getAttendanceTime().v()).findFirst() : Optional.empty();
-			String excessOfStatutoryHolidayWorkTimeText = excessOfStatutoryHolidayWorkTime.isPresent() ? 
+			String excessOfStatutoryHolidayWorkTimeText = excessOfStatutoryHolidayWorkTime.isPresent() && (new TimeWithDayAttr(excessOfStatutoryHolidayWorkTime.get())).v() != 0 ? 
 					(new TimeWithDayAttr(excessOfStatutoryHolidayWorkTime.get())).getInDayTimeWithFormat() : "";
 			cellF19.setValue(excessOfStatutoryHolidayWorkTimeText);
 			
@@ -205,7 +205,7 @@ public class AsposeAppHolidayWork {
 			Optional<Integer> publicHolidayWorkTime = overTimeShiftNight.isPresent() ? overTimeShiftNight.get().getMidNightHolidayTimes().stream()
 					.filter(midNightHolidayTime -> midNightHolidayTime.getLegalClf().equals(StaturoryAtrOfHolidayWork.PublicHolidayWork))
 					.map(midNightHolidayTime -> midNightHolidayTime.getAttendanceTime().v()).findFirst() : Optional.empty();
-			String publicHolidayWorkTimeText = publicHolidayWorkTime.isPresent() ? 
+			String publicHolidayWorkTimeText = publicHolidayWorkTime.isPresent() && (new TimeWithDayAttr(publicHolidayWorkTime.get())).v() != 0? 
 					(new TimeWithDayAttr(publicHolidayWorkTime.get())).getInDayTimeWithFormat() : "";
 			cellJ18.setValue(publicHolidayWorkTimeText);
 		} else {
@@ -230,7 +230,7 @@ public class AsposeAppHolidayWork {
 				Optional<OvertimeApplicationSetting> applicationTimeOp = overtimeWorkApplicationTimeListFinal.stream()
 									.filter(applicationTime -> applicationTime.getFrameNo().v() == overtimeFrame.getOvertimeWorkFrNo().v().intValue())
 									.findFirst();
-				if(applicationTimeOp.isPresent()) {
+				if(applicationTimeOp.isPresent() && applicationTimeOp.get().getApplicationTime().v() != 0) {
 					cells.get(overtimeWorkCountRow.get(), overtimeWorkCountColumn.getAndIncrement()).setValue(overtimeFrame.getOvertimeWorkFrName().v());
 					overtimeWorkCountColumn.getAndIncrement();
 					cells.get(overtimeWorkCountRow.get(), overtimeWorkCountColumn.getAndIncrement()).setValue(applicationTimeOp.get().getApplicationTime().getInDayTimeWithFormat());
@@ -260,7 +260,7 @@ public class AsposeAppHolidayWork {
 			if(overTimeShiftNight.isPresent()) {
 				Integer overTimeMidNightTime = overTimeShiftNight.get().getOverTimeMidNight() != null ? 
 						overTimeShiftNight.get().getOverTimeMidNight().v() : null;
-				String overTimeMidNightText = overTimeMidNightTime != null ? (new TimeWithDayAttr(overTimeMidNightTime)).getInDayTimeWithFormat() : "";
+				String overTimeMidNightText = overTimeMidNightTime != null && overTimeMidNightTime != 0 ? (new TimeWithDayAttr(overTimeMidNightTime)).getInDayTimeWithFormat() : "";
 				cellF24.setValue(overTimeMidNightText);
 			}
 		} else {
@@ -295,8 +295,22 @@ public class AsposeAppHolidayWork {
 			deleteRows += deleteOvertimeNight;
 		}
 		if(deleteOvertime > 0) {
-			cells.deleteRows(24 - deleteOvertime, deleteOvertime);
-			deleteRows += deleteOvertime;
+			if(deleteOvertime < 5) {
+				cells.deleteRows(24 - deleteOvertime, deleteOvertime);
+				deleteRows += deleteOvertime;
+			} else {
+				if(deleteOvertimeNight > 0) {
+					cells.deleteRows(24 - deleteOvertime + 1, deleteOvertime - 1);
+					deleteRows += deleteOvertime -1;
+				} else {
+					cells.deleteRows(24 - deleteOvertime + 1, deleteOvertime - 1);
+					deleteRows += deleteOvertime -1;
+					cells.get("B21").copy(cells.get("B20"));
+					cells.get("C21").copy(cells.get("C20"));
+					cells.deleteRow(19);
+					deleteRows += 1;
+				}
+			}
 		}
 		if(deleteWorkdayoffNight > 0) {
 			cells.deleteRows(17, deleteWorkdayoffNight);
