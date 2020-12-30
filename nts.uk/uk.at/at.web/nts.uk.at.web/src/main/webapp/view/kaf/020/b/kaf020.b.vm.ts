@@ -22,6 +22,9 @@ module nts.uk.at.view.kaf020.b {
             name: "",
             appDispInfoStartupOutput: ko.observable(null)
         });
+        empLst: Array<string> = [];
+        dateLst: Array<string> = [];
+        baseDate: string;
 
         created(params: any) {
             const vm = this;
@@ -37,11 +40,11 @@ module nts.uk.at.view.kaf020.b {
                     }
                 })
             }
-            let empLst = [], dateLst = [];
-            if (params && params.empLst) empLst = params.empLst;
-            if (params && params.dateLst) dateLst = params.dateLst;
+            if (params && params.empLst) vm.empLst = params.empLst;
+            if (params && params.dateLst) vm.dateLst = params.dateLst;
+            if (params && params.baseDate) vm.baseDate = params.baseDate;
             vm.$blockui("show");
-            vm.loadData(empLst, dateLst, vm.appType()).then((loadFlag) => {
+            vm.loadData(vm.empLst, vm.dateLst, vm.appType()).then((loadFlag) => {
                 if (loadFlag) {
                     if (params != undefined && params.optionalItem) {
                         return vm.fetchData(params.optionalItem);
@@ -108,7 +111,12 @@ module nts.uk.at.view.kaf020.b {
 
         goBack() {
             const vm = this;
-            vm.$jump('../a/index.xhtml', {fromB: true, isAgentMode: vm.isAgentMode()});
+            vm.$jump('../a/index.xhtml', {
+                fromB: true,
+                employeeIds: vm.empLst,
+                baseDate: vm.baseDate,
+                isAgentMode: vm.isAgentMode()
+            });
         }
 
         register() {

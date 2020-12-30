@@ -11,7 +11,9 @@ module nts.uk.at.view.kaf020.a {
         optionalItemAppSet: KnockoutObservableArray<OptionalItemAppSet> = ko.observableArray([]);
         empLst: Array<string> = [];
         dateLst: Array<string> = [];
+        baseDate: string;
         isAgentMode: KnockoutObservable<boolean> = ko.observable(false);
+
 
         created(params: AppInitParam) {
             const vm = this;
@@ -21,6 +23,7 @@ module nts.uk.at.view.kaf020.a {
                     vm.empLst = params.employeeIds;
                 }
                 if (!_.isEmpty(params.baseDate)) {
+                    vm.baseDate = params.baseDate;
                     let paramDate = moment(params.baseDate).format('YYYY/MM/DD');
                     vm.dateLst = [paramDate];
                 }
@@ -55,7 +58,8 @@ module nts.uk.at.view.kaf020.a {
                 optionalItem: optionalItem,
                 empLst: vm.empLst,
                 dateLst: vm.dateLst,
-                isAgentMode: vm.isAgentMode()
+                isAgentMode: vm.isAgentMode(),
+                baseDate: vm.baseDate
             });
         }
 
