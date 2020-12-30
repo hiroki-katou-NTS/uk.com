@@ -54,7 +54,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 				{ 
 					headerText: vm.$i18n('KAF018_373'),
 					key: 'empID',
-					width: '300px',
+					width: '400px',
 					headerCssClass: 'kaf018-d-header-empName',
 					formatter: (key: string) => vm.getDispEmpName(key)
 				}

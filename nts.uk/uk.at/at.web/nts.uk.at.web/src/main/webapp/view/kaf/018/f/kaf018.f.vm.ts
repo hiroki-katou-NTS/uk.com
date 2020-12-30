@@ -58,7 +58,7 @@ module nts.uk.at.view.kaf018.f.viewmodel {
 			vm.apprSttComfirmSet = params.apprSttComfirmSet;
 			vm.apprSttExeDtoLst = params.apprSttExeDtoLst;
 			vm.currentApprSttExeDto(_.find(params.apprSttExeDtoLst, o => o.wkpID == params.currentWkpID));
-			let empNameColumnWidth = window.innerWidth - 1000 < 300 ? 300 : window.innerWidth - 1000;
+			let empNameColumnWidth = window.innerWidth - 1000 < 400 ? 400 : window.innerWidth - 1000;
 			vm.columns.push(
 				{ 
 					headerText: '', 
