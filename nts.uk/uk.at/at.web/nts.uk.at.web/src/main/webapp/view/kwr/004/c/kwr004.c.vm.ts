@@ -21,6 +21,7 @@ module nts.uk.at.view.kwr004.c {
     newName: KnockoutObservable<string> = ko.observable();
 
     params: KnockoutObservable<any> = ko.observable({});
+    isDeleted: KnockoutObservable<boolean> = ko.observable(false);
 
     constructor(params: any) {
       super();
@@ -80,6 +81,7 @@ module nts.uk.at.view.kwr004.c {
       switch (messageId) {
         case 'Msg_1898':
           vm.$dialog.error({ messageId: messageId }).then(() => {
+            vm.isDeleted(true);
             $('#btnClose').focus();
           });
           break;
@@ -93,7 +95,8 @@ module nts.uk.at.view.kwr004.c {
 
     cancel() {
       const vm = this; 
-      vm.$window.close(null);
+      let setShare = vm.isDeleted() ? { code: null, name: null } : null;
+      vm.$window.close(setShare);
     }    
 
     checkErrors() {
