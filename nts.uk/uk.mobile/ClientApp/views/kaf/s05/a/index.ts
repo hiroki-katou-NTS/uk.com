@@ -3,7 +3,7 @@ import { OverTimeShiftNight, BreakTime, TimeZoneNew, TimeZoneWithWorkNo, AppOver
 import { component, Prop } from '@app/core/component';
 import { StepwizardComponent } from '@app/components';
 import { KafS05Step1Component } from '../step1';
-import { KafS05Step2Component } from '../step2';
+import { HolidayTime, KafS05Step2Component } from '../step2';
 import { KafS05Step3Component } from '../step3';
 import { KDL002Component } from '../../../kdl/002';
 import { Kdl001Component } from '../../../kdl/001';
@@ -113,8 +113,14 @@ export class KafS05Component extends KafS00ShrComponent {
 
     public get c4_1() {
         const self = this;
+        let prePost;
+        if (self.modeNew) {
+            prePost = self.application.prePostAtr;
+        } else {
+            prePost = self.model.displayInfoOverTime.appDispInfoStartup.appDetailScreenInfo.application.prePostAtr;
+        }
 
-        return self.application.prePostAtr == 1;
+        return prePost == 1;
     }
     // 「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．時間外深夜時間を反映する」= する
     public get c5() {
@@ -486,6 +492,7 @@ export class KafS05Component extends KafS00ShrComponent {
         let step2 = self.$refs.step2 as KafS05Step2Component;
 
         let overTimes = step2.overTimes as Array<OverTime>;
+        let holidayTimes = step2.holidayTimes as Array<HolidayTime>;
         let applicationTime = appOverTime.applicationTime = {} as ApplicationTime;
         let applicationTimes = applicationTime.applicationTime = [] as Array<OvertimeApplicationSetting>;
         _.forEach(overTimes, (item: OverTime) => {
@@ -508,7 +515,7 @@ export class KafS05Component extends KafS00ShrComponent {
             }
 
         });
-        _.forEach(overTimes, (item: OverTime) => {
+        _.forEach(holidayTimes, (item: HolidayTime) => {
             // AttendanceType.BREAKTIME
             if (item.type == AttendanceType.BREAKTIME && item.applicationTime > 0) {
                 let overtimeApplicationSetting = {} as OvertimeApplicationSetting;
@@ -519,6 +526,10 @@ export class KafS05Component extends KafS00ShrComponent {
             }
             if (item.type == AttendanceType.MIDDLE_BREAK_TIME && item.applicationTime > 0) {
                 self.toHolidayMidNightTime(item, applicationTime);
+            } else if (item.type == AttendanceType.MIDDLE_EXORBITANT_HOLIDAY && item.applicationTime > 0) {
+                self.toHolidayMidNightTime(item, applicationTime);
+            } else if (item.type == AttendanceType.MIDDLE_HOLIDAY_HOLIDAY && item.applicationTime > 0) {
+                self.toHolidayMidNightTime(item, applicationTime);
             }
 
         });
@@ -527,7 +538,7 @@ export class KafS05Component extends KafS00ShrComponent {
         // assign value to overtime and holidaytime
         return appOverTime;
     }
-    public toHolidayMidNightTime(overTime: OverTime, applicationTime: ApplicationTime) {
+    public toHolidayMidNightTime(overTime: HolidayTime, applicationTime: ApplicationTime) {
         if (_.isNil(applicationTime.overTimeShiftNight)) {
             applicationTime.overTimeShiftNight = {} as OverTimeShiftNight;
         }
@@ -544,7 +555,7 @@ export class KafS05Component extends KafS00ShrComponent {
         }
         holidayMidNightTime.attendanceTime = overTime.applicationTime;
 
-        return holidayMidNightTime;
+        return applicationTime.overTimeShiftNight.midNightHolidayTimes.push(holidayMidNightTime);
     }
 
     public toStep(value: number) {
@@ -641,7 +652,7 @@ export class KafS05Component extends KafS00ShrComponent {
         let step2 = vm.$refs.step2 as KafS05Step2Component;
         vm.isValidateAll = vm.customValidate(step2);
         vm.$validate();
-        if (!vm.$valid || !vm.isValidateAll && vm.numb == 1) {
+        if (!vm.$valid || !vm.isValidateAll) {
             window.scrollTo(500, 0);
             vm.$nextTick(() => vm.$mask('hide'));
 
