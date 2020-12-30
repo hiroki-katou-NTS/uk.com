@@ -84,17 +84,14 @@ module nts.uk.at.view.kwr003.c {
           });
         })
         .fail((error) => {
-          //データが先に削除された - 1903    
-          //コードの重複 - Msg_1753
-          if(error.messageId === 'Msg_1903') {            
-            vm.$dialog.error({ messageId: error.messageId }).then(() => {
-              vm.isDeleted(true);
-              $('#btnClose').focus();
-            });
-          } else 
-            $('#KWR003_C23').ntsError('set', { messageId: error.messageId });          
-        })
-        .always(() => vm.$blockui('hide'));
+          //データが先に削除された - 1903, コードの重複 - Msg_1753
+          let ctrlId = (error.messageId === 'Msg_1753') ? '#KWR003_C23' : '#closeDialog';
+          vm.isDeleted(error.messageId === 'Msg_1903');
+          vm.$dialog.error({ messageId: error.messageId }).then(() => {            
+            $(ctrlId).focus();
+            vm.$blockui('hide');
+          });               
+        });
     }
   }
 }
