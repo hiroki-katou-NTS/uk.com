@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.env.app.find.mailnoticeset.setting.UserInformationUseMethodDto;
@@ -27,14 +28,10 @@ public class UserInformationUseMethodSaveCommandHandler extends CommandHandler<U
 		String cId = userInformationUseMethodDto.getCompanyId();
 		Optional<UserInformationUseMethod> userInformationUseMethod = userInfoUseMethodRepository.findByCId(cId);
 		if (userInformationUseMethod.isPresent()) {
-			/**
-			 * ユーザ情報の使用方法を変更する
-			 */
+			// ユーザ情報の使用方法を変更する
 			this.userInfoUseMethodRepository.update(UserInformationUseMethod.createFromMemento(userInformationUseMethodDto));
 		} else {
-			/**
-			 * ユーザ情報の使用方法を追加する
-			 */
+			//	 ユーザ情報の使用方法を追加する
 			this.userInfoUseMethodRepository.insert(UserInformationUseMethod.createFromMemento(userInformationUseMethodDto));
 		}
 	}
