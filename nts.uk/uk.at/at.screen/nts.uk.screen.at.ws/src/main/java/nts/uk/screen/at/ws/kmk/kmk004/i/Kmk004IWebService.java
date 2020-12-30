@@ -22,7 +22,6 @@ import nts.uk.screen.at.app.kmk004.i.SelectEmploymentFlex;
 import nts.uk.screen.at.app.kmk004.i.SelectEmploymentFlexDto;
 import nts.uk.screen.at.app.kmk004.i.SelectFlexYearByEmployment;
 import nts.uk.screen.at.app.query.kmk004.common.DisplayMonthlyWorkingDto;
-import nts.uk.screen.at.app.query.kmk004.common.EmploymentCodeDto;
 
 @Path("screen/at/kmk004/i")
 @Produces("application/json")

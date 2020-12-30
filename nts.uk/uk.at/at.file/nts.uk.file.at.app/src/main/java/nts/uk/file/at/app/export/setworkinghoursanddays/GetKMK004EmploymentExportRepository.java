@@ -11,5 +11,5 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
  */
 public interface GetKMK004EmploymentExportRepository {
 
-	List<MasterData> getEmploymentExportData(int startDate, int endDate);
+	List<MasterData> getEmploymentExportData(int startDate, int endDate) ;
 }

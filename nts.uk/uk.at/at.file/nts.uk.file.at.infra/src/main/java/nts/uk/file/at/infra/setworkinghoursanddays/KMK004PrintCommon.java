@@ -13,12 +13,16 @@ import nts.uk.shr.com.i18n.TextResource;
  */
 public class KMK004PrintCommon {
 	
-	public static String convertTime(int pTime) {
-		String time =  String.format("%d:%02d", pTime / 60, pTime % 60);
+	public static String convertTime(Integer pTime) {
+		if (pTime == null) {
+			return null;
+		}
+		String time = String.format("%d:%02d", pTime / 60, pTime % 60);
 		return time;
 	}
 	
-	public static String getExtraType(int value){
+	public static String getExtraType(Integer value){
+		if(value== null) return null;
     	switch (value){
     	case 0:
     		return TextResource.localize("KMK004_404");
@@ -57,7 +61,8 @@ public class KMK004PrintCommon {
 	
 	
 	
-	public static String getLegalType(int value){
+	public static String getLegalType(Integer value){
+		if(value== null) return null;
     	switch (value){
     	case 0:
     		return TextResource.localize("KMK004_406");
@@ -68,7 +73,8 @@ public class KMK004PrintCommon {
     	}
     }
 	
-	public static String getFlexType(int value){
+	public static String getFlexType(Integer value){
+		if(value== null) return null;
     	switch (value){
     	case 0:
     		return TextResource.localize("KMK004_408");
@@ -79,7 +85,8 @@ public class KMK004PrintCommon {
     	}
     }
 	
-	public static String getAggType(int value){
+	public static String getAggType(Integer value){
+		if(value== null) return null;
     	switch (value){
     	case 0:
     		return TextResource.localize("KMK004_181");
@@ -90,6 +97,7 @@ public class KMK004PrintCommon {
     	}
     }
 	
+
 	public static String getAggTypeEmployee(int value){
     	switch (value){
     	case 0:
@@ -101,7 +109,8 @@ public class KMK004PrintCommon {
     	}
     }
 	
-	public static String getInclude(int value){
+	public static String getInclude(Integer value){
+		if(value== null) return null;
     	switch (value){
     	case 0:
     		return TextResource.localize("KMK004_406");
@@ -112,7 +121,8 @@ public class KMK004PrintCommon {
     	}
     }
 	
-	public static String getLegal(int value) {
+	public static String getLegal(Integer value) {
+		if(value== null) return null;
 		switch (value) {
 		case 0:
 			return TextResource.localize("KMK004_412");
@@ -123,7 +133,8 @@ public class KMK004PrintCommon {
 		}
 	}
 	
-	public static String getShortageTime(int value){
+	public static String getShortageTime(Integer value){
+		if(value== null) return null;
     	switch (value){
     	case 0:
     		return TextResource.localize("KMK004_76");
@@ -134,7 +145,8 @@ public class KMK004PrintCommon {
     	}
     }
 	
-	public static String getSettle(int value) {
+	public static String getSettle(Integer value) {
+		if(value== null) return null;
 		switch (value){
     	case 0:
     		return TextResource.localize("KMK004_272");
@@ -145,7 +157,8 @@ public class KMK004PrintCommon {
     	}
 	}
 	
-	public static String getWeeklySurcharge(int value){
+	public static String getWeeklySurcharge(Integer value){
+		if(value== null) return null;
     	switch (value){
     	case 0:
     		return TextResource.localize("KMK004_404");
