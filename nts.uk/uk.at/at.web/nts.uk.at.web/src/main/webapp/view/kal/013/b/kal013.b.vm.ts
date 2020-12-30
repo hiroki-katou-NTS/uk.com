@@ -167,6 +167,9 @@ module nts.uk.at.view.kal013.b {
                     vm.pattern().clearMaxValue();
                 }
             });
+            vm.pattern().minValue.subscribe(()=>{
+                vm.$errors("clear",".endValue");
+            });
         }
 
         mounted() {
@@ -238,9 +241,9 @@ module nts.uk.at.view.kal013.b {
                 return true;
             }
 
-            if  ((( _.indexOf([RangeCompareType.BETWEEN_RANGE_OPEN, RangeCompareType.OUTSIDE_RANGE_OPEN],vm.pattern().operator()) == -1
+            if  ((( _.indexOf([RangeCompareType.BETWEEN_RANGE_OPEN, RangeCompareType.OUTSIDE_RANGE_OPEN],vm.pattern().operator()) != -1
                     && vm.pattern().minValue() >= vm.pattern().maxValue() ))
-                || ( _.indexOf([RangeCompareType.BETWEEN_RANGE_OPEN, RangeCompareType.OUTSIDE_RANGE_OPEN],vm.pattern().operator()) != -1
+                || ( _.indexOf([RangeCompareType.BETWEEN_RANGE_OPEN, RangeCompareType.OUTSIDE_RANGE_OPEN],vm.pattern().operator()) == -1
                     && vm.pattern().minValue() > vm.pattern().maxValue() ))
             {
                 return false;
