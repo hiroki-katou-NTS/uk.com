@@ -202,7 +202,7 @@ module nts.uk.at.view.kwr003.b {
       if (nts.uk.ui.errors.hasError()) return;
 
       vm.saveOrUpdateSetting().done(() => {
-        vm.getSettingListItemsDetails();
+        //vm.getSettingListItemsDetails();
       });
     }
 
@@ -258,7 +258,8 @@ module nts.uk.at.view.kwr003.b {
       vm.$blockui('show');
       vm.$ajax(url, params).done(() => {
         vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
-          if (vm.isNewMode()) vm.loadSettingList(reloadParams);
+          //if (vm.isNewMode()) vm.loadSettingList(reloadParams);
+          vm.loadSettingList(reloadParams);
           vm.settingAttendance();
           vm.isNewMode(false);
           vm.$blockui('hide');
@@ -285,7 +286,7 @@ module nts.uk.at.view.kwr003.b {
         }
         vm.$blockui('hide');
         dfd.reject();
-      }).always(() => vm.$blockui('hide'));
+      });
 
       return dfd.promise();
     }
@@ -536,7 +537,7 @@ module nts.uk.at.view.kwr003.b {
 
         vm.$blockui('hide');
 
-      }).fail(() => vm.$blockui('hide')).always(() => vm.$blockui('hide'));
+      }).fail(() => vm.$blockui('hide'));
     }
 
     /**

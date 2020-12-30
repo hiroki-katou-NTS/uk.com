@@ -16,6 +16,7 @@ module nts.uk.at.view.kwr003.c {
     newName: KnockoutObservable<string> = ko.observable(null);
 
     params: KnockoutObservable<any> = ko.observable({});
+    isDeleted: KnockoutObservable<boolean> = ko.observable(false);
 
     constructor(params: any) {
       super();
@@ -57,7 +58,8 @@ module nts.uk.at.view.kwr003.c {
 
     cancel() {
       const vm = this;
-      vm.$window.close(null);
+      let setShare = vm.isDeleted() ? { code: null, name: null } : null;
+      vm.$window.close(setShare);
     }
 
     /**
@@ -84,7 +86,13 @@ module nts.uk.at.view.kwr003.c {
         .fail((error) => {
           //データが先に削除された - 1903    
           //コードの重複 - Msg_1753
-          $('#KWR003_C23').ntsError('set', { messageId: error.messageId });
+          if(error.messageId === 'Msg_1903') {            
+            vm.$dialog.error({ messageId: error.messageId }).then(() => {
+              vm.isDeleted(true);
+              $('#btnClose').focus();
+            });
+          } else 
+            $('#KWR003_C23').ntsError('set', { messageId: error.messageId });          
         })
         .always(() => vm.$blockui('hide'));
     }
