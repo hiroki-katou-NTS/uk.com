@@ -137,7 +137,7 @@ module nts.uk.at.view.kmk004.components {
 
 					if (ko.unwrap(vm.years).length > 0) {
 						if (ko.unwrap(vm.mode) === 'Update') {
-							if (!ko.unwrap(vm.years)[index].isNew) {
+							if (!ko.unwrap(vm.years)[index]) {
 								_.remove(ko.unwrap(vm.years), ((value) => {
 									return value.year == ko.unwrap(vm.selectedYear);
 								}));
@@ -347,7 +347,7 @@ module nts.uk.at.view.kmk004.components {
 
 		updateListSave() {
 			const vm = this;
-			const exist = _.find(ko.unwrap(vm.workTimeSaves), (m: WorkTimeSave) => m.year as number == ko.unwrap(vm.selectedYear) as number);
+			const exist = _.find(ko.unwrap(vm.workTimeSaves), (m: WorkTimeSaveL) => m.year as number == ko.unwrap(vm.selectedYear) as number);
 
 			if (exist) {
 				_.remove(ko.unwrap(vm.workTimeSaves), ((value) => {

@@ -9,16 +9,16 @@ module nts.uk.at.view.kmk004.components.transform {
 		selectedYear: KnockoutObservable<number | null>;
 		type: SIDEBAR_TYPE;
 		selectedId?: KnockoutObservable<string>;
-		isLoadInitData: KnockoutObservable<boolean>;
+		years: KnockoutObservableArray<IYear>;
 	}
 
 	const template = `
 		<button id = "btn_year" data-bind="enable: initBtnEnable, click: openQDialog, i18n: 'KMK004_233'"></button>
         <div tabindex="6" class="listbox">
             <div id="list-box" data-bind="ntsListBox: {
-                options: years,
+                options: itemList,
                 optionsValue: 'year',
-                optionsText: 'year',
+                optionsText: 'yearName',
                 multiple: false,
                 value: selectedYear,
                 rows: 5,
@@ -37,35 +37,18 @@ module nts.uk.at.view.kmk004.components.transform {
 
 	class BoxYear extends ko.ViewModel {
 
-		public years: KnockoutObservableArray<IYear> = ko.observableArray([]);
+		public itemList: KnockoutObservableArray<IYear> = ko.observableArray([]);
 		public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
 		public type: SIDEBAR_TYPE;
 		public selectedId: KnockoutObservable<string> = ko.observable('');
-		isLoadInitData: KnockoutObservable<boolean>;
 		initBtnEnable: KnockoutObservable<boolean> = ko.observable(false);
-
-		constructor(private params: Params) {
-			super();
-			const vm = this;
-			
-			vm.isLoadInitData = vm.params.isLoadInitData;
-			vm.isLoadInitData.subscribe((value: boolean) => {
-				if (value) {
-					if (vm.type == 'Com_Company') {
-						vm.initData();
-					} else {
-						vm.loadData();
-					}
-					vm.isLoadInitData(false);
-				}
-			});
-		}
 
 		created(params: Params) {
 			const vm = this;
 			vm.selectedYear = params.selectedYear;
 			vm.type = params.type;
 			vm.selectedId = params.selectedId;
+			vm.itemList = params.years;
 
 			if (vm.type != 'Com_Person') {
 				vm.initBtnEnable(true);
@@ -78,7 +61,7 @@ module nts.uk.at.view.kmk004.components.transform {
 			vm.selectedId
 				.subscribe(() => {
 					vm.loadData(0);
-					if (vm.params.type == 'Com_Person' && vm.selectedId() != '') {
+					if (vm.type == 'Com_Person' && vm.selectedId() != '') {
 						vm.initBtnEnable(true);
 					}
 
@@ -90,7 +73,7 @@ module nts.uk.at.view.kmk004.components.transform {
 		initData(selectedIndex: number = 0) {
 
 			const vm = this;
-			vm.years([]);
+			vm.itemList([]);
 			switch (vm.type) {
 				case 'Com_Company':
 					vm.$ajax(KMK004_API.COM_INIT_SCREEN)
@@ -99,12 +82,12 @@ module nts.uk.at.view.kmk004.components.transform {
 
 							_.forEach(data, ((value: any) => {
 								const y: IYear = new IYear(value.year);
-								vm.years.push(y);
+								vm.itemList.push(y);
 							}));
 						})
 						.then(() => {
-							if (ko.unwrap(vm.years) != []) {
-								vm.selectedYear(ko.unwrap(vm.years)[selectedIndex].year);
+							if (ko.unwrap(vm.itemList) != []) {
+								vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
 							} else {
 								vm.selectedYear(null);
 							}
@@ -119,12 +102,12 @@ module nts.uk.at.view.kmk004.components.transform {
 
 								_.forEach(data, ((value: any) => {
 									const y: IYear = new IYear(value.year);
-									vm.years.push(y);
+									vm.itemList.push(y);
 								}));
 							})
 							.then(() => {
-								if (ko.unwrap(vm.years) != []) {
-									vm.selectedYear(ko.unwrap(vm.years)[selectedIndex].year);
+								if (ko.unwrap(vm.itemList) != []) {
+									vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
 								} else {
 									vm.selectedYear(null);
 								}
@@ -139,12 +122,12 @@ module nts.uk.at.view.kmk004.components.transform {
 								data = _.orderBy(data.years, ['year'], ['desc']);
 								_.forEach(data, ((value: any) => {
 									const y: IYear = new IYear(value.year);
-									vm.years.push(y);
+									vm.itemList.push(y);
 								}));
 							})
 							.then(() => {
-								if (ko.unwrap(vm.years) != []) {
-									vm.selectedYear(ko.unwrap(vm.years)[selectedIndex].year);
+								if (ko.unwrap(vm.itemList) != []) {
+									vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
 								} else {
 									vm.selectedYear(null);
 								}
@@ -161,7 +144,7 @@ module nts.uk.at.view.kmk004.components.transform {
 		loadData(selectedIndex: number = 0) {
 
 			const vm = this;
-			vm.years([]);
+			vm.itemList([]);
 			switch (vm.type) {
 				case 'Com_Company':
 					break;
@@ -173,12 +156,12 @@ module nts.uk.at.view.kmk004.components.transform {
 								data = _.orderBy(data.years, ['year'], ['desc']);
 								_.forEach(data, ((value: any) => {
 									const y: IYear = new IYear(value.year);
-									vm.years.push(y);
+									vm.itemList.push(y);
 								}));
 							})
 							.then(() => {
-								if (ko.unwrap(vm.years) != []) {
-									vm.selectedYear(ko.unwrap(vm.years)[selectedIndex].year);
+								if (ko.unwrap(vm.itemList) != []) {
+									vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
 								} else {
 									vm.selectedYear(null);
 								}
@@ -193,12 +176,12 @@ module nts.uk.at.view.kmk004.components.transform {
 								data = _.orderBy(data.years, ['year'], ['desc']);
 								_.forEach(data, ((value: any) => {
 									const y: IYear = new IYear(value.year);
-									vm.years.push(y);
+									vm.itemList.push(y);
 								}));
 							})
 							.then(() => {
-								if (ko.unwrap(vm.years) != []) {
-									vm.selectedYear(ko.unwrap(vm.years)[selectedIndex].year);
+								if (ko.unwrap(vm.itemList) != []) {
+									vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
 								} else {
 									vm.selectedYear(null);
 								}
@@ -211,16 +194,16 @@ module nts.uk.at.view.kmk004.components.transform {
 						vm.$ajax(KMK004_API.SHA_SELECT + '/' + ko.unwrap(vm.selectedId))
 							.then((data: any) => {
 								data = _.orderBy(data.years, ['year'], ['desc']);
-								vm.years([]);
+								vm.itemList([]);
 								_.forEach(data, ((value: any) => {
 									const y: IYear = new IYear(value.year);
-									vm.years.push(y);
+									vm.itemList.push(y);
 								}));
 							})
 							.then(() => {
 
-								if (ko.unwrap(vm.years) != []) {
-									vm.selectedYear(ko.unwrap(vm.years)[selectedIndex].year);
+								if (ko.unwrap(vm.itemList) != []) {
+									vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
 								} else {
 									vm.selectedYear(null);
 								}
@@ -233,12 +216,13 @@ module nts.uk.at.view.kmk004.components.transform {
 
 		openQDialog() {
 			const vm = this;
-			const param = { years: ko.unwrap(vm.years).map((m: IYear) => m.year) };
+			const param = { years: ko.unwrap(vm.itemList).map((m: IYear) => m.year) };
 			vm.$window.modal('/view/kmk/004/q/index.xhtml', param).then((result) => {
 				if (result) {
-					vm.years.push(new IYear(parseInt(result.year), true));
-					vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
-					vm.selectedYear(ko.unwrap(vm.years)[0].year);
+					vm.itemList.push(new IYear(parseInt(result.year), true));
+					vm.itemList(_.orderBy(ko.unwrap(vm.itemList), ['year'], ['desc']));
+					vm.selectedYear(ko.unwrap(vm.itemList)[0].year);
+					vm.selectedYear.valueHasMutated();
 				}
 			});
 		}

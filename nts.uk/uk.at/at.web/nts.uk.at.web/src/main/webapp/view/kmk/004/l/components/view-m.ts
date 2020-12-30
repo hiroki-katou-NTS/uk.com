@@ -18,8 +18,8 @@ module nts.uk.at.view.kmk004.l {
 		<div class="title" data-bind="i18n: 'Com_Workplace'"></div>
 		<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmk/004/a/index.xhtml' },i18n: 'KMK004_224'"></a>
 		<button class="proceed" data-bind="enable: existYear, click: register, i18n: 'KMK004_225'"></button>
-		<button data-bind="visible: true, click: openViewR, i18n: 'KMK004_226'"></button>
-		<button class="danger" data-bind="enable: existYear, click: remove, i18n: 'KMK004_227'"></button>
+		<button data-bind="visible: true, enable: checkDelete, click: openViewR, i18n: 'KMK004_226'"></button>
+		<button class="danger" data-bind="enable: checkDelete, click: remove, i18n: 'KMK004_227'"></button>
 	</div>
 	
 	<div>
@@ -46,7 +46,7 @@ module nts.uk.at.view.kmk004.l {
 							<div class="header_content">
 								<div data-bind="component: {
 									name: 'view-l-basic-setting',
-									params: paramL
+									params: params
 								}"></div>
 							</div>
 							<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_232'"></div>
@@ -59,7 +59,7 @@ module nts.uk.at.view.kmk004.l {
 											selectedYear: selectedYear,
 											type: type,
 											selectedId: selectedIdParam,
-											isLoadInitData: isLoadInitData
+											years: years
 										}
 									}"></div>
 									
@@ -70,7 +70,7 @@ module nts.uk.at.view.kmk004.l {
 										years: years,
 										workTimes: workTimes,
 										type: type,
-										selectId: paramL.wkpId(),
+										selectId: params.wkpId(),
 										yearDelete: yearDelete
 									}
 								}"></div>
@@ -125,14 +125,13 @@ module nts.uk.at.view.kmk004.l {
 		public existYear: KnockoutObservable<boolean> = ko.observable(false);
 		public type: SIDEBAR_TYPE = 'Com_Workplace';
 		public selectedIdParam: KnockoutObservable<string> = ko.observable('');
-		paramL: IParam;
 		isLoadData: KnockoutObservable<boolean> = ko.observable(false);
 		btn_text: KnockoutObservable<string> = ko.observable('');
 		public workTimes: KnockoutObservableArray<WorkTimeL> = ko.observableArray([]);
-		isLoadInitData: KnockoutObservable<boolean> = ko.observable(false);
 		public yearDelete: KnockoutObservable<number | null> = ko.observable(null);
+		public checkDelete: KnockoutObservable<boolean> = ko.observable(false);
 
-		constructor(public params: IParam) {
+		constructor(private params: IParam) {
 			super();
 		}
 
@@ -165,14 +164,37 @@ module nts.uk.at.view.kmk004.l {
 				tabindex: 1,
 				systemType: 2
 			};
-			vm.paramL = { isLoadInitData: vm.isLoadInitData, isLoadData: vm.isLoadData, sidebarType: "Com_Workplace", wkpId: ko.observable(''), empCode: ko.observable(''), empId: ko.observable(''), titleName: '', deforLaborTimeComDto: null, settingDto: null }
-			vm.selectedYear
+			vm.params = {isLoadData: vm.isLoadData, sidebarType: "Com_Workplace", wkpId: ko.observable(''), empCode: ko.observable(''), empId: ko.observable(''), titleName: '', deforLaborTimeComDto: null, settingDto: null }
+
+			vm.years
 				.subscribe(() => {
-					vm.$errors('clear');
-					if (vm.selectedYear != null) {
+					if (ko.unwrap(vm.years).length > 0) {
 						vm.existYear(true);
+					} else {
+						vm.existYear(false);
+						vm.checkDelete(false);
 					}
 				});
+
+			vm.selectedYear
+				.subscribe(() => {
+					const exist = _.find(ko.unwrap(vm.years), (m: IYear) => m.year as number == ko.unwrap(vm.selectedYear) as number);
+
+					if (exist) {
+						if (ko.unwrap(vm.existYear)) {
+							if (exist.isNew) {
+								vm.checkDelete(false);
+							} else {
+								vm.checkDelete(true);
+							}
+						} else {
+							vm.checkDelete(true);
+						}
+					} else {
+						vm.checkDelete(false);
+					}
+				});
+
 
 			$('#workplace-list').ntsTreeComponent(vm.treeGrid).done(() => {
 				vm.workplaces = $('#workplace-list').getDataList();
@@ -184,11 +206,11 @@ module nts.uk.at.view.kmk004.l {
 				vm.selectedId.subscribe((data) => {
 					let selectedItem: UnitModel = _.find(flatMapItems, ['id', data]);
 					vm.selectedItemText(selectedItem ? selectedItem.name : '');
-					vm.paramL.wkpId(data);
-					vm.paramL.titleName = vm.selectedItemText();
+					vm.params.wkpId(data);
+					vm.params.titleName = vm.selectedItemText();
 					vm.selectedIdParam(data);
 
-					vm.$ajax(KMK004M_API.WKP_GET_BASIC_SETTING + "/" + vm.paramL.wkpId()).done((data: any) => {
+					vm.$ajax(KMK004M_API.WKP_GET_BASIC_SETTING + "/" + vm.params.wkpId()).done((data: any) => {
 						if (data.deforLaborTimeWkpDto != null && data.wkpDeforLaborMonthActCalSetDto != null) {
 							vm.btn_text('KMK004_339');
 						} else vm.btn_text('KMK004_338');
@@ -212,7 +234,7 @@ module nts.uk.at.view.kmk004.l {
 			let param: IWorkTimeSetCom[] = [];
 
 			_.forEach(ko.unwrap(vm.workTimes), ((value) => {
-				const t: IWorkTimeSetCom = { workplaceId: vm.paramL.wkpId(), laborAttr: 1, yearMonth: value.yearMonth(), laborTime: { legalLaborTime: value.laborTime(), withinLaborTime: null, weekAvgTime: null } };
+				const t: IWorkTimeSetCom = { workplaceId: vm.params.wkpId(), laborAttr: 1, yearMonth: value.yearMonth(), laborTime: { legalLaborTime: value.laborTime(), withinLaborTime: null, weekAvgTime: null } };
 				param.push(t);
 			}));
 
@@ -222,48 +244,25 @@ module nts.uk.at.view.kmk004.l {
 				}
 
 				vm.$ajax(KMK004M_API.REGISTER_WORK_TIME, ko.toJS({ workTimeSetWkps: param })).done(() => {
-					vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-						vm.close();
-						vm.isLoadInitData(true);
+					vm.$dialog.info({ messageId: "Msg_15" })
+					_.remove(ko.unwrap(vm.years), ((value) => {
+						return value.year == ko.unwrap(vm.selectedYear) as number;
+					}));
+					vm.years.push(new IYear(ko.unwrap(vm.selectedYear) as number, false));
+					vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
+				}).then(() => {
+					$(document).ready(function() {
 						$('#box-year').focus();
 					})
-
-				}).fail((error) => {
-					vm.$dialog.error(error);
 				}).always(() => {
-					vm.$blockui("clear");
+					vm.$errors('clear');
+				}).then(() => {
+					vm.selectedYear.valueHasMutated();
 				});
 			});
 		}
 
-
-		/*remove() {
-			const vm = this;
-			vm.$dialog.confirm({ messageId: "Msg_18" }).then((result: 'no' | 'yes' | 'cancel') => {
-				if (result === 'yes') {
-					vm.$blockui("invisible");
-					vm.$ajax(KMK004M_API.DELETE_WORK_TIME, ko.toJS({ year: vm.selectedYear(), workplaceId: vm.paramL.wkpId() })).done(() => {
-						vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
-							vm.close();
-							vm.isLoadInitData(true);
-							$('#box-year').focus();
-						})
-
-					}).fail((error) => {
-						vm.$dialog.error(error);
-					}).always(() => {
-						vm.$blockui("clear");
-
-					});
-
-				} else {
-					$('#box-year').focus();
-				}
-			});
-
-		}*/
-		
-		remove(){
+		remove() {
 			const vm = this;
 			const index = _.map(ko.unwrap(vm.years), m => m.year.toString()).indexOf(ko.unwrap(vm.selectedYear).toString());
 			const old_index = index === ko.unwrap(vm.years).length - 1 ? index - 1 : index;
@@ -272,7 +271,7 @@ module nts.uk.at.view.kmk004.l {
 				.confirm({ messageId: "Msg_18" })
 				.ifYes(() => {
 					vm.$blockui("invisible")
-						.then(() => vm.$ajax(KMK004M_API.DELETE_WORK_TIME, ko.toJS({ year: vm.selectedYear(), workplaceId: vm.paramL.wkpId() })))
+						.then(() => vm.$ajax(KMK004M_API.DELETE_WORK_TIME, ko.toJS({ year: vm.selectedYear(), workplaceId: vm.params.wkpId() })))
 						.done(() => {
 							vm.yearDelete(ko.unwrap(vm.selectedYear));
 						})
@@ -287,7 +286,7 @@ module nts.uk.at.view.kmk004.l {
 						})
 						.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
 						.then(() => {
-							$(document).ready(function () {
+							$(document).ready(function() {
 								$('#box-year').focus();
 							});
 						}).then(() => {
@@ -306,22 +305,23 @@ module nts.uk.at.view.kmk004.l {
 
 		openViewP() {
 			let vm = this;
-			vm.$window.modal('at', '/view/kmk/004/p/index.xhtml', ko.toJS(vm.paramL)).then(() => {
+			vm.$window.modal('at', '/view/kmk/004/p/index.xhtml', ko.toJS(vm.params)).then(() => {
 				vm.isLoadData(true);
 			});
 		}
 
 		openViewR() {
 			const vm = this;
-			
+
 			vm.$window.modal('at', '/view/kmk/004/r/index.xhtml', {
-			screenMode: vm.type,
-			selected: vm.selectedId(),
-			year: vm.selectedYear(),
-			laborAttr: 1}).then(() => {
-			vm.$ajax(KMK004M_API.COPY_SETTING).done((data) => {
+				screenMode: vm.type,
+				selected: vm.selectedId(),
+				year: vm.selectedYear(),
+				laborAttr: 1
+			}).then(() => {
+				vm.$ajax(KMK004M_API.COPY_SETTING).done((data) => {
 					vm.alreadySettingList(_.map(data, (item: string) => { return { workplaceId: item, isAlreadySetting: true } }));
-				}).always(() => { vm.$blockui("clear"); });	
+				}).always(() => { vm.$blockui("clear"); });
 			});
 		}
 	}
