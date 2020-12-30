@@ -1,11 +1,15 @@
-.body-container,
+/* .body-container,
 .first-line,
 .third-line {
     display: flex;
-}
+} */
 
 .top-container {
 	padding-left: 5px;
+}
+
+.top-container > button {
+	width: 160px !important;
 }
 
 .ct-text {
@@ -13,7 +17,7 @@
 }
 
 .left {
-	width: 50%;
+	width: 55%;
 }
 
 .first-line {
@@ -30,8 +34,8 @@
 }
 
 .detail {
-	margin-right: 20px;
-	flex-grow: 1;
+	margin-right: 10px;
+	width: 282px;
 }
 
 .pnl-top {
@@ -43,9 +47,135 @@
 .pnl-body {
 	border: 1px solid black;
 	border-top: 0;
-	padding: 30px 0 0 5px;
+	padding: 30px 10px 5px 5px;
 }
 
-th.ui-iggrid-header{
+.pnl-container {
+	width: 265px;
+	min-height: 276px;
+}
+
+.left th.ui-iggrid-header{
 	text-align: center !important;
 }
+
+.d-flex {
+	display: flex;
+}
+
+.letter-pnl {
+	padding: 5px;
+	height: 100px;
+	border: 1px solid #999999;
+}
+
+.letter-mode,
+.time-mode,
+.ip-mode {
+	margin-top: 35px;
+}
+
+.change-value {
+	margin-top: 25px;
+}
+
+.letter-pnl {
+	margin: 25px 0 10px 20px;
+}
+
+.letter-pnl > div > span:nth-child(1) {
+	width: 90px;
+}
+
+.w-60 {
+	width: 60px;
+}
+
+.letter-mode .current-value {
+	padding-left: 5px;
+	padding-bottom: 5px;
+    width: 184px;
+    border-bottom: 1px solid blue;
+}
+
+.time-mode .current-value {
+	padding-left: 5px;
+	padding-bottom: 5px;
+    width: 40px;
+    border-bottom: 1px solid blue;
+}
+
+.ip-mode .current-value {
+	padding-left: 5px;
+	padding-bottom: 5px;
+    width: 184px;
+    border-bottom: 1px solid blue;
+}
+
+.dot {
+	position: relative;
+}
+
+.dot span { 
+	position: absolute;
+	bottom: 0;
+	left: -3px;
+}
+
+.selection-container,
+.check-container {
+	padding-top: 55px;
+	padding-left: 30px;
+}
+
+.selection-left,
+.check-left {
+	margin-right: 15px;
+	width: 50px;
+}
+
+.selection-left > p,
+.selection-right > p,
+.check-left > p,
+.check-right > p {
+	margin-bottom: 10px;
+}
+
+.radio-left {
+	flex-direction: column;
+	align-items: center;
+}
+
+.current-check {
+	align-items: center;
+}
+
+.radio-right,
+.current-check,
+.update-check {
+	flex-direction: column;
+}
+
+.ntsRadioBox {
+	margin-bottom: 5px !important;
+}
+
+.arrow-container {
+	padding-top: 90px;
+	width: 60px;
+	flex-direction: column;
+	align-items: center;
+}
+
+.arrow-container button {
+	width: 45px !important;
+	height: 70px !important;
+}
+
+
+
+ 
+
+
+
+

@@ -1,0 +1,15 @@
+.nts-switch-button {
+    width: 190px !important;
+}
+
+.content {
+    width: 60%;
+}
+
+.left-top > button {
+	margin-right: 30px;
+}
+
+.caret-background.caret-right:after {
+	left: 0 !important;
+}

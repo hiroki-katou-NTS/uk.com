@@ -48,7 +48,7 @@ public class RemoteSettingsDto {
 													.map(e -> new RemoteSettingsDto(e.getMajorNo().v(),
 																e.getMajorClassification().v(), e.getSmallNo().v(), e.getSmallClassification().v(),
 																e.getVariableName().v(), e.getType().value, e.getNumberOfDigits().v(),
-																e.getInputRange().v(), e.getSettingValue().v(),
+																e.getInputRange().v(), e.getCurrentValue().v(),
 																getUpdateValueByName(e.getVariableName().v(), lstTRecordSetUpdate),
 																timeRecordSetFormatList.getEmpInfoTerName().v(),
 																timeRecordSetFormatList.getRomVersion().v(),

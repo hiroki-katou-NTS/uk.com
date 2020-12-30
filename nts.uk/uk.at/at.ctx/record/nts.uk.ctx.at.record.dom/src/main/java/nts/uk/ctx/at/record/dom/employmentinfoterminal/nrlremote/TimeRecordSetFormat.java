@@ -34,13 +34,13 @@ public class TimeRecordSetFormat {
 	// 設定値
 	private final SettingValue settingValue;
 
-	// 入力範囲
+	// 	入力範囲
 	private final NrlRemoteInputRange inputRange;
 
 	// 再起動フラグ
 	private final boolean rebootFlg;
 
-	// 現在の値
+	// 	現在の値
 	private final SettingValue currentValue;
 
 	public TimeRecordSetFormat(TimeRecordSetFormatBuilder builder) {

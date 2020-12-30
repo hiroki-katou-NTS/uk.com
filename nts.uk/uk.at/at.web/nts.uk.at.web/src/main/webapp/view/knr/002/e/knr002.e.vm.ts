@@ -10,17 +10,17 @@ module nts.uk.at.view.knr002.e {
         export class ScreenModel {
             displayText: String = "hoi cham";
 
-            roundingRules: KnockoutObservableArray<any>;
-            selectedRuleCode: any;
+            mode: KnockoutObservableArray<any>;
+            selectedMode: any;
     
             constructor() {
                 const vm = this;   
 
-                vm.roundingRules = ko.observableArray([
-                    { code: '1', name: '     バックアップ     ' },
-                    { code: '2', name: '         復旧         ' },
+                vm.mode = ko.observableArray([
+                    { code: '1', name: getText("KNR002_116") },
+                    { code: '2', name: getText("KNR002_117") },
                 ]);
-                vm.selectedRuleCode = ko.observable(1);
+                vm.selectedMode = ko.observable(1);
             }
 
             public startPage(): JQueryPromise<void> {
