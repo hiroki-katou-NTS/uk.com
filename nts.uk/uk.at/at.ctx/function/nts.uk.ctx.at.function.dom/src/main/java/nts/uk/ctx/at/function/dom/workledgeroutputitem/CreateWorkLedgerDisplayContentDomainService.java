@@ -95,8 +95,14 @@ public class CreateWorkLedgerDisplayContentDomainService {
                 //5    ⑤ Cal 月別実績取得の為に年月日から適切な年月に変換する
                 val yearMonthPeriod = GetSuitableDateByClosureDateUtility.convertPeriod(date, closureDay);
                 //5.1  ⑥ Call [No.495]勤怠項目IDを指定して月別実績の値を取得（複数レコードは合算）
-                val actualMultipleMonths = require.getActualMultipleMonth(Collections.singletonList(e.getEmployeeId()),
-                        yearMonthPeriod, listAttIds);
+                Map<String, List<MonthlyRecordValueImport>> actualMultipleMonths = null;
+                try {
+                    actualMultipleMonths = require.getActualMultipleMonth(Collections.singletonList(e.getEmployeeId()),
+                            yearMonthPeriod, listAttIds);
+                } catch (Exception e1) {
+                    continue;
+                }
+
                 if (actualMultipleMonths == null || actualMultipleMonths.get(e.getEmployeeId()) == null) continue;
                 listAttendances.addAll(actualMultipleMonths.get(e.getEmployeeId()));
             }
