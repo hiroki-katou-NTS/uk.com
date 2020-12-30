@@ -443,6 +443,17 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             service.getDataStartScreen(param).done((data: IDataStartScreen) => {
                 console.log(data.dataBasicDto);
+                // ẩn hiển A1_7 ※1
+                if (data.dataBasicDto.useWorkAvailabilityAtr == false) {
+                    $('#A1_7').css('visibility','hidden');
+                    $('#A1_7_1').css('display','none');
+                }
+                
+                // ẩn hiện A1_5 ※27
+                if (data.dataBasicDto.usePublicAtr == false) {
+                    $('#A1_5').css('visibility','hidden');
+                }
+                
                 self.scheduleModifyStartDate = data.dataBasicDto.scheduleModifyStartDate;
                 self.saveDataGrid(data);
 
@@ -1837,8 +1848,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 if (col.visible === false) return;
                 let item = uk.localStorage.getItem(self.KEY);
                 let userInfor: IUserInfor = JSON.parse(item.get());
-
-
                 col.headerHandler = (ui: any) => {
                     let detailContentData: any = [];
                     for (let i = 0; i < detailContentDs.length; i++) {
@@ -1855,7 +1864,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         daySelect: moment(ui.columnKey.slice(1)).format('YYYY/MM/DD'),
                         startDate: self.dateTimePrev(),
                         endDate: self.dateTimeAfter(),
-                        dayEdit: moment(self.scheduleModifyStartDate).format('YYYY/MM/DD') // đang để tạm là 3 đối ứng sau
+                        dayEdit: moment(self.scheduleModifyStartDate).format('YYYY/MM/DD') 
                     }
                     setShared("dataFromA", param);
                     setShared("dataTooltip", self.tooltipShare);
@@ -3580,7 +3589,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         workplaceId: string,
         workplaceGroupId: string,
         code: string,
-        scheduleModifyStartDate: string
+        scheduleModifyStartDate: string,
+        usePublicAtr: boolean,
+        useWorkAvailabilityAtr: boolean
     }
 
     interface IDisplayControlPersonalCond {
