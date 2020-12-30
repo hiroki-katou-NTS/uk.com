@@ -54,7 +54,8 @@ module nts.uk.at.view.kmk004.l {
 										selectedYear: selectedYear,
 										years: years,
 										workTimes: workTimes,
-										type: type
+										type: type,
+										yearDelete: yearDelete
 									}
 								}"></div>
 					</div>
@@ -88,6 +89,7 @@ module nts.uk.at.view.kmk004.l {
 		public type: SIDEBAR_TYPE = 'Com_Company';
 		isLoadData: KnockoutObservable<boolean> = ko.observable(false);
 		isLoadInitData: KnockoutObservable<boolean> = ko.observable(false);
+		public yearDelete: KnockoutObservable<number | null> = ko.observable(null);
 
 		constructor(private params: IParam) {
 			super();
@@ -146,29 +148,39 @@ module nts.uk.at.view.kmk004.l {
 
 		remove() {
 			const vm = this;
-			vm.$dialog.confirm({ messageId: "Msg_18" }).then((result: 'no' | 'yes' | 'cancel') => {
-				if (result === 'yes') {
+			const index = _.map(ko.unwrap(vm.years), m => m.year.toString()).indexOf(ko.unwrap(vm.selectedYear).toString());
+			const old_index = index === ko.unwrap(vm.years).length - 1 ? index - 1 : index;
+
+			nts.uk.ui.dialog
+				.confirm({ messageId: "Msg_18" })
+				.ifYes(() => {
 					vm.$blockui("invisible");
 					vm.$ajax(KMK004L_API.DELETE_WORK_TIME, ko.toJS({ year: vm.selectedYear() })).done(() => {
-						vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
-							vm.close();
-							vm.isLoadInitData(true);
-							$('#box-year').focus();
+						vm.yearDelete(ko.unwrap(vm.selectedYear));
+					})
+						.then(() => {
+							_.remove(ko.unwrap(vm.years), ((value) => {
+								return value.year == ko.unwrap(vm.selectedYear);
+							}));
+							vm.years(ko.unwrap(vm.years));
+							vm.selectedYear(ko.unwrap(vm.years)[old_index].year);
 						})
+						.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
+						.then(() => {
+							$(document).ready(function() {
+								$('#box-year').focus();
+							});
+						}).then(() => {
+							vm.$errors('clear');
+						})
+						.then(() => {
+							vm.selectedYear.valueHasMutated();
+						})
+						.always(() => vm.$blockui("clear"));
 
-					}).fail((error) => {
-						vm.$dialog.error(error);
-					}).always(() => {
-						vm.$blockui("clear");
-
-					});
-
-				} else {
-					$('#box-year').focus();
-				}
-			});
-
-		}
+				});
+			}
+		
 
 		close() {
 			const vm = this;
