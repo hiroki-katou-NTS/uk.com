@@ -234,15 +234,37 @@ module nts.uk.at.view.kmk004.l {
 				disableSelection: vm.disableSelection()
 			};
 			vm.params = { isLoadData: vm.isLoadData, sidebarType: "Com_Person", wkpId: ko.observable(''), empCode: ko.observable(''), empId: ko.observable(''), titleName: '', deforLaborTimeComDto: null, settingDto: null };
+			vm.years
+				.subscribe(() => {
+					if (ko.unwrap(vm.years).length > 0) {
+						vm.existYear(true);
+					} else {
+						vm.existYear(false);
+						vm.checkDelete(false);
+					}
+				});
+
 			vm.selectedYear
 				.subscribe(() => {
-					if (vm.selectedYear != null) {
-						vm.existYear(true);
+					const exist = _.find(ko.unwrap(vm.years), (m: IYear) => m.year as number == ko.unwrap(vm.selectedYear) as number);
+
+					if (exist) {
+						if (ko.unwrap(vm.existYear)) {
+							if (exist.isNew) {
+								vm.checkDelete(false);
+							} else {
+								vm.checkDelete(true);
+							}
+						} else {
+							vm.checkDelete(true);
+						}
+					} else {
+						vm.checkDelete(false);
 					}
 				});
 
 		}
-		
+
 		getEmployeeIds() {
 			const vm = this;
 			vm.$ajax(KMK004O_API.GET_EMPLOYEE_ID)
@@ -311,11 +333,11 @@ module nts.uk.at.view.kmk004.l {
 				}).then(() => {
 					vm.selectedYear.valueHasMutated();
 				});
-				
+
 			});
 		}
 
-		remove(){
+		remove() {
 			const vm = this;
 			const index = _.map(ko.unwrap(vm.years), m => m.year.toString()).indexOf(ko.unwrap(vm.selectedYear).toString());
 			const old_index = index === ko.unwrap(vm.years).length - 1 ? index - 1 : index;
@@ -340,7 +362,7 @@ module nts.uk.at.view.kmk004.l {
 						})
 						.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
 						.then(() => {
-							$(document).ready(function () {
+							$(document).ready(function() {
 								$('#box-year').focus();
 							});
 						}).then(() => {
@@ -375,7 +397,7 @@ module nts.uk.at.view.kmk004.l {
 				}).always(() => { vm.$blockui("clear"); });
 			});
 		}
-		
+
 	}
 
 

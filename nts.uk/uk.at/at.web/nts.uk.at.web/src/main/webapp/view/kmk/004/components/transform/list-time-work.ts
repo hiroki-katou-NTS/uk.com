@@ -170,7 +170,6 @@ module nts.uk.at.view.kmk004.components {
 			vm.selectId
 				.subscribe(() => {
 					vm.workTimeSaves([]);
-					//vm.reloadData();
 				});
 
 			vm.years
@@ -187,8 +186,6 @@ module nts.uk.at.view.kmk004.components {
 						}
 					}
 				});
-
-
 		}
 
 		reloadData() {
@@ -206,8 +203,8 @@ module nts.uk.at.view.kmk004.components {
 				vm.checkNullYear(true);
 			}
 
-			//const exist = _.find(ko.unwrap(vm.years), (emp: IYear) => emp.year as number == ko.unwrap(vm.selectedYear) as number);
-
+			const exist = _.find(ko.unwrap(vm.years), (emp: IYear) => emp.year as number == ko.unwrap(vm.selectedYear) as number);
+			if (exist) {
 				switch (vm.type) {
 					case 'Com_Company':
 						const exist = _.find(ko.unwrap(vm.workTimeSaves), (m: WorkTimeSaveL) => m.year as number == ko.unwrap(vm.selectedYear) as number);
@@ -318,6 +315,10 @@ module nts.uk.at.view.kmk004.components {
 
 						break;
 				}
+			} else {
+				vm.initList();
+			}
+
 		}
 
 		initList() {

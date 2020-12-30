@@ -73,7 +73,6 @@ module nts.uk.at.view.kmk004.components.transform {
 		initData(selectedIndex: number = 0) {
 
 			const vm = this;
-			vm.itemList([]);
 			switch (vm.type) {
 				case 'Com_Company':
 					vm.$ajax(KMK004_API.COM_INIT_SCREEN)
@@ -144,7 +143,7 @@ module nts.uk.at.view.kmk004.components.transform {
 		loadData(selectedIndex: number = 0) {
 
 			const vm = this;
-			vm.itemList([]);
+			//vm.itemList([]);
 			switch (vm.type) {
 				case 'Com_Company':
 					break;
