@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,9 +10,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.OverTimeWorkHoursOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
-import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.DivergenceReasonSelect;
+import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.DivergenceReasonInputMethod;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.HolidayWorkAppSet;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
@@ -32,15 +34,20 @@ public class AppHdWorkDispInfoOutput {
 	 */
 	private NotUseAtr dispFlexTime;
 	
-	/**
-	 * 乖離理由の入力を利用する
-	 */
-	private boolean useInputDivergenceReason;
+//	/**
+//	 * 乖離理由の入力を利用する
+//	 */
+//	private boolean useInputDivergenceReason;
+//	
+//	/**
+//	 * 乖離理由の選択肢を利用する
+//	 */
+//	private boolean useComboDivergenceReason;
 	
 	/**
-	 * 乖離理由の選択肢を利用する
+	 * 乖離時間枠
 	 */
-	private boolean useComboDivergenceReason;
+	private List<DivergenceTimeRoot> divergenceTimeRoots = Collections.emptyList();
 	
 	/**
 	 * 休出時間枠
@@ -72,10 +79,15 @@ public class AppHdWorkDispInfoOutput {
 	 */
 	private AppDispInfoStartupOutput appDispInfoStartupOutput;
 	
+//	/**
+//	 * 乖離理由の選択肢
+//	 */
+//	private Optional<List<DivergenceReasonSelect>> comboDivergenceReason = Optional.empty();
+	
 	/**
-	 * 乖離理由の選択肢
+	 * 利用する乖離理由
 	 */
-	private Optional<List<DivergenceReasonSelect>> comboDivergenceReason = Optional.empty();
+	private List<DivergenceReasonInputMethod> divergenceReasonInputMethod = Collections.emptyList();
 	
 	/**
 	 * 申請用時間外労働時間

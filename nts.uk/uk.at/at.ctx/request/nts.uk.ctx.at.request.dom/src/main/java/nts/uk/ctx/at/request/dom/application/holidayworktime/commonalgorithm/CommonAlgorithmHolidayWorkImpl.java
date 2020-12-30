@@ -386,7 +386,7 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 			//	事前申請・実績超過チェック
 			List<ConfirmMsgOutput> confirmMsgOutputs = this.checkExcess(empAppHdWorkDispInfoOutput, empAppHolidayWork);
 			if(employeeInfo.isPresent()) {
-				confirmMsgOutputMap.put(employeeInfo.get().getBussinessName(), confirmMsgOutputs);
+				confirmMsgOutputMap.put(employeeInfo.get().getBussinessName(), this.toMultiMessage(confirmMsgOutputs));
 			}
 			
 			//	申請時の乖離時間をチェックする
@@ -444,6 +444,39 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 	        
 		});
 		return confirmMsgOutputMap;
+	}
+	
+	private List<ConfirmMsgOutput> toMultiMessage(List<ConfirmMsgOutput> confirmMsgOutputs){
+		List<ConfirmMsgOutput> confirmMsgOutputsMulti = confirmMsgOutputs.stream().map(confirmMsg -> {
+				switch(confirmMsg.getMsgID()) {
+					case "Msg_235": confirmMsg.setMsgID("Msg_1995"); break;
+					case "Msg_391": confirmMsg.setMsgID("Msg_1996"); break;
+					case "Msg_323": confirmMsg.setMsgID("Msg_1997"); break;
+					case "Msg_1134": confirmMsg.setMsgID("Msg_1998"); break;
+					case "Msg_1518": confirmMsg.setMsgID("Msg_1999"); break;
+					case "Msg_236": confirmMsg.setMsgID("Msg_2000"); break;
+					case "Msg_327": confirmMsg.setMsgID("Msg_2001"); break;
+					case "Msg_448": confirmMsg.setMsgID("Msg_2002"); break;
+					case "Msg_449": confirmMsg.setMsgID("Msg_2003"); break;
+					case "Msg_450": confirmMsg.setMsgID("Msg_2004"); break;
+					case "Msg_451": confirmMsg.setMsgID("Msg_2005"); break;
+					case "Msg_324": confirmMsg.setMsgID("Msg_2008"); break;
+					case "Msg_237": confirmMsg.setMsgID("Msg_2009"); break;
+					case "Msg_238": confirmMsg.setMsgID("Msg_2010"); break;
+					case "Msg_1409": confirmMsg.setMsgID("Msg_2011"); break;
+					case "Msg_1535": confirmMsg.setMsgID("Msg_2012"); break;
+					case "Msg_1536": confirmMsg.setMsgID("Msg_2013"); break;
+					case "Msg_1537": confirmMsg.setMsgID("Msg_2014"); break;
+					case "Msg_1538": confirmMsg.setMsgID("Msg_2015"); break;
+					case "Msg_1508": confirmMsg.setMsgID("Msg_2019"); break;
+					case "Msg_2056": confirmMsg.setMsgID("Msg_2057"); break;
+					default:
+						confirmMsg.setMsgID(confirmMsg.getMsgID());
+						break;
+				}
+				return confirmMsg;
+			}).collect(Collectors.toList());
+		return confirmMsgOutputsMulti;
 	}
 	
 	@Override
