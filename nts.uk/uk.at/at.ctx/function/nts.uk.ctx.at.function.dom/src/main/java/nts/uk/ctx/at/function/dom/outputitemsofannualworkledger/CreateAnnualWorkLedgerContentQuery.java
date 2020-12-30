@@ -124,7 +124,13 @@ public class CreateAnnualWorkLedgerContentQuery {
                 .distinct().collect(Collectors.toCollection(ArrayList::new));
         List<AttendanceResultDto> listAttendance = new ArrayList<>();
         for (val date : emp.getListPeriod()) {
-            val listValue = require.getValueOf(Collections.singletonList(emp.getEmployeeId()), date, listIds);
+            List<AttendanceResultDto> listValue = null;
+            try {
+                listValue = require.getValueOf(Collections.singletonList(emp.getEmployeeId()), date, listIds);
+            } catch (Exception e) {
+                continue;
+            }
+
             if (listValue == null) continue;
             listAttendance.addAll(listValue);
         }
@@ -140,39 +146,39 @@ public class CreateAnnualWorkLedgerContentQuery {
                 break;
             }
             if (allValue == null) continue;
-                val itemValue = new ArrayList<DailyValue>();
-                allValue.forEach((key, value1) -> {
-                    val listAtId = item.getSelectedAttendanceItemList();
-                    StringBuilder character = new StringBuilder();
-                    Double actualValue = 0D;
-                    if (item.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ||
-                            item.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS) {
-                        for (val d : listAtId) {
-                            val sub = value1.getOrDefault(d.getAttendanceItemId(), null);
-                            if (sub == null || sub.getValue() == null) continue;
-                            character.append(sub.getValue());
-                        }
-                        itemValue.add(
-                                new DailyValue(actualValue, character.toString(), key));
-                    } else {
-                        for (val d : listAtId) {
-                            val sub = value1.getOrDefault(d.getAttendanceItemId(), null);
-                            if (sub == null || sub.getValue() == null) continue;
-                            actualValue = actualValue + ((d.getOperator() == OperatorsCommonToForms.ADDITION ? 1 : -1) * Double.parseDouble(sub.getValue()));
-                        }
-                        itemValue.add(new DailyValue(actualValue, character.toString(), key));
+            val itemValue = new ArrayList<DailyValue>();
+            allValue.forEach((key, value1) -> {
+                val listAtId = item.getSelectedAttendanceItemList();
+                StringBuilder character = new StringBuilder();
+                Double actualValue = 0D;
+                if (item.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ||
+                        item.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS) {
+                    for (val d : listAtId) {
+                        val sub = value1.getOrDefault(d.getAttendanceItemId(), null);
+                        if (sub == null || sub.getValue() == null) continue;
+                        character.append(sub.getValue());
                     }
-
-                });
-                if (rank == 1) {
-                    leftColumnName = item.getName().v();
-                    leftAttribute = item.getItemDetailAttributes();
-                    lstLeftValue.addAll(itemValue);
+                    itemValue.add(
+                            new DailyValue(actualValue, character.toString(), key));
                 } else {
-                    lstRightValue.addAll(itemValue);
-                    rightColumnName = item.getName().v();
-                    rightAttribute = item.getItemDetailAttributes();
+                    for (val d : listAtId) {
+                        val sub = value1.getOrDefault(d.getAttendanceItemId(), null);
+                        if (sub == null || sub.getValue() == null) continue;
+                        actualValue = actualValue + ((d.getOperator() == OperatorsCommonToForms.ADDITION ? 1 : -1) * Double.parseDouble(sub.getValue()));
+                    }
+                    itemValue.add(new DailyValue(actualValue, character.toString(), key));
                 }
+
+            });
+            if (rank == 1) {
+                leftColumnName = item.getName().v();
+                leftAttribute = item.getItemDetailAttributes();
+                lstLeftValue.addAll(itemValue);
+            } else {
+                lstRightValue.addAll(itemValue);
+                rightColumnName = item.getName().v();
+                rightAttribute = item.getItemDetailAttributes();
+            }
 
 
         }
@@ -200,9 +206,14 @@ public class CreateAnnualWorkLedgerContentQuery {
         List<MonthlyRecordValueImport> listAttendants = new ArrayList<>();
         for (val period : emp.getListPeriod()) {
             val yearMonthPeriod = GetSuitableDateByClosureDateUtility.convertPeriod(period, closureDay);
-            val monthlyRecordValues = (require.getActualMultipleMonth(
-                    Collections.singletonList(emp.getEmployeeId())
-                    , yearMonthPeriod, listIds)).get(emp.getEmployeeId());
+            List<MonthlyRecordValueImport> monthlyRecordValues = null;
+            try {
+                monthlyRecordValues = (require.getActualMultipleMonth(
+                        Collections.singletonList(emp.getEmployeeId())
+                        , yearMonthPeriod, listIds)).get(emp.getEmployeeId());
+            } catch (Exception e) {
+                continue;
+            }
             if (monthlyRecordValues == null) continue;
             listAttendants.addAll(monthlyRecordValues);
         }
