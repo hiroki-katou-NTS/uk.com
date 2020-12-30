@@ -97,7 +97,7 @@ export class KafS05Component extends KafS00ShrComponent {
         let model = self.model as Model;
         let value = _.get(model, 'displayInfoOverTime.appDispInfoStartup.appDispInfoNoDateOutput.managementMultipleWorkCycles');
 
-        return value;
+        return value && self.c3;
     }
 
 
@@ -448,38 +448,54 @@ export class KafS05Component extends KafS00ShrComponent {
             } else {
                 appOverTimeInsert.application = self.model.displayInfoOverTime.appDispInfoStartup.appDetailScreenInfo.application;
             }
-            if (step1.getWorkType()) {
+            if (step1.getWorkType() && self.c3) {
                 appOverTimeInsert.workInfoOp = {} as WorkInformation;
                 appOverTimeInsert.workInfoOp.workType = step1.getWorkType();
                 appOverTimeInsert.workInfoOp.workTime = step1.getWorkTime();
             }
             appOverTimeInsert.workHoursOp = [] as Array<TimeZoneWithWorkNo>;
-            {
-                let start1 = _.get(step1.getWorkHours1(), 'start');
-                let end1 = _.get(step1.getWorkHours1(), 'end');
-                if (_.isNumber(start1) && _.isNumber(end1)) {
-                    let timeZone = {} as TimeZoneWithWorkNo;
-                    timeZone.workNo = 1;
-                    timeZone.timeZone = {} as TimeZoneNew;
-                    timeZone.timeZone.startTime = start1;
-                    timeZone.timeZone.endTime = end1;
-                    appOverTimeInsert.workHoursOp.push(timeZone);
+            {   
+                if (self.c3) {
+                    let start = _.get(step1.getWorkHours1(), 'start');
+                    let end = _.get(step1.getWorkHours1(), 'end');
+                    if (_.isNumber(start) && _.isNumber(end)) {
+                        let timeZone = {} as TimeZoneWithWorkNo;
+                        timeZone.workNo = 1;
+                        timeZone.timeZone = {} as TimeZoneNew;
+                        timeZone.timeZone.startTime = start;
+                        timeZone.timeZone.endTime = end;
+                        appOverTimeInsert.workHoursOp.push(timeZone);
+                    }
+                }
+                if (self.c3_2) {
+                    let start = _.get(step1.getWorkHours2(), 'start');
+                    let end = _.get(step1.getWorkHours2(), 'end');
+                    if (_.isNumber(start) && _.isNumber(end)) {
+                        let timeZone = {} as TimeZoneWithWorkNo;
+                        timeZone.workNo = 2;
+                        timeZone.timeZone = {} as TimeZoneNew;
+                        timeZone.timeZone.startTime = start;
+                        timeZone.timeZone.endTime = end;
+                        appOverTimeInsert.workHoursOp.push(timeZone);
+                    }
                 }
             }
-            appOverTimeInsert.breakTimeOp = [] as Array<TimeZoneWithWorkNo>;
-            let breakTimes = step1.getBreakTimes() as Array<BreakTime>;
-            _.forEach(breakTimes, (item: BreakTime, index: number) => {
-                let start = _.get(item, 'valueHours.start');
-                let end = _.get(item, 'valueHours.end');
-                if (_.isNumber(start) && _.isNumber(end)) {
-                    let timeZone = {} as TimeZoneWithWorkNo;
-                    timeZone.workNo = index + 1;
-                    timeZone.timeZone = {} as TimeZoneNew;
-                    timeZone.timeZone.startTime = start;
-                    timeZone.timeZone.endTime = end;
-                    appOverTimeInsert.breakTimeOp.push(timeZone);
-                }
-            });
+            if (self.c3_1) {
+                appOverTimeInsert.breakTimeOp = [] as Array<TimeZoneWithWorkNo>;
+                let breakTimes = step1.getBreakTimes() as Array<BreakTime>;
+                _.forEach(breakTimes, (item: BreakTime, index: number) => {
+                    let start = _.get(item, 'valueHours.start');
+                    let end = _.get(item, 'valueHours.end');
+                    if (_.isNumber(start) && _.isNumber(end)) {
+                        let timeZone = {} as TimeZoneWithWorkNo;
+                        timeZone.workNo = index + 1;
+                        timeZone.timeZone = {} as TimeZoneNew;
+                        timeZone.timeZone.startTime = start;
+                        timeZone.timeZone.endTime = end;
+                        appOverTimeInsert.breakTimeOp.push(timeZone);
+                    }
+                });
+            }
 
         }
 

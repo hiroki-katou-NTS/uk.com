@@ -47,7 +47,7 @@
             <nts-time-editor
               v-model="item.applicationTime"
               name=""
-              v-bind:disabled="!$appContext.c3"
+              v-bind:enable="$appContext.c3"
               time-input-type="time-duration"
             />
           </div>
@@ -88,7 +88,7 @@
             <nts-time-editor
               v-model="item.applicationTime"
               name=""
-              v-bind:disabled="!$appContext.c3"
+              v-bind:enable="$appContext.c3"
               time-input-type="time-duration"
             />
           </div>

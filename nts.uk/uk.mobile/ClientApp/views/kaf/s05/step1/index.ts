@@ -13,8 +13,8 @@ import { KafS05Component} from '../a/index';
     resource: require('./resources.json'),
     validations: {
         workHours1: {
-            required: true,
-            timeRange: true
+            required: false,
+            timeRange: false
         },
         workHours2: {
             required: false,
@@ -54,6 +54,12 @@ export class KafS05Step1Component extends Vue {
     @Watch('workHours1', {deep: true})
     public changeWorkHours1(data: ValueTime) {
         const self = this;
+        if (self.$appContext.c3) {
+            self.$updateValidator('workHours1', {
+                required: true,
+                timeRange: true
+            });
+        }
         if (_.isNil(_.get(data,'start')) || _.isNil(_.get(data, 'end')) || self.isFirstModeUpdate) {
             self.isFirstModeUpdate = false;
 
@@ -192,6 +198,7 @@ export class KafS05Step1Component extends Vue {
     }
     public createBreakTime(timeZone?: any) {
         const self = this;
+        let numberDisplay = 0;
         if (_.isEmpty(self.breakTimes)) {
             self.createBreakTimeModel();
         }
@@ -204,10 +211,15 @@ export class KafS05Step1Component extends Vue {
                 resultBreakTime.valueHours = {} as ValueTime;
                 resultBreakTime.valueHours.start = item.start;
                 resultBreakTime.valueHours.end = item.end;
+                numberDisplay++;
             } else {
                 self.breakTimes[index].valueHours = null as ValueTime;
             }
         });
+        if (numberDisplay == 0) {
+            numberDisplay++;
+        }
+        self.displayNumberBreakTime = numberDisplay;
     }
 
     public createWorkHours(mode: boolean) {
