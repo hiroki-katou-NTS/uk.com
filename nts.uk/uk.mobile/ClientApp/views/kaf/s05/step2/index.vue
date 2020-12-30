@@ -9,7 +9,7 @@
     </div>
 
     <!-- A2_B1 -->
-    <div v-if="$appContext.isMsg_1562" class="card card-label">
+    <div class="card card-label">
       <!--A2_B1_1-->
       <div class="card-header uk-bg-accordion mt-2">
         <span>{{ "KAFS05_70" | i18n }}</span>
@@ -17,7 +17,7 @@
       </div>
       <!--A2_B1_5-->
       <div
-      v-if="false"
+       v-if="$appContext.isMsg_1562" 
       class="card bg-danger top-alert uk-text-danger topError"
       >
         <button class="btn btn-link uk-text-danger">
@@ -26,7 +26,7 @@
         </button>
       </div>
       <!--A2_B1_2-->
-      <div v-show="overTimes.length != 0 " v-for="(item, index) in overTimes" v-bind:key="index" :value="index">
+      <div v-for="(item, index) in overTimes" v-bind:key="index" :value="index">
         <div v-show="item.visible" class="card-body">
           <div class="row mt-3">
             <div class="col-4">{{ item.title }}</div>
