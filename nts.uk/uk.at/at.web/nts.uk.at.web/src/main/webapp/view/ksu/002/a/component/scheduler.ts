@@ -231,6 +231,7 @@ module nts.uk.ui.at.ksu002.a {
                     color: #fff;
                     box-shadow: 0px 0px 0px 2px #000 !important;
                     background-color: #007fff !important;
+                    z-index: 3;
                 }
                 .scheduler .ntsControl input:focus {
                     z-index: 3;
@@ -243,10 +244,15 @@ module nts.uk.ui.at.ksu002.a {
                     box-shadow: 0px 0px 0px 2px #ff6666 !important;
                     background-color: transparent !important;
                 }
-                .scheduler .ntsControl.error input:focus {
+                .scheduler .ntsControl.error input:focus,
+                .scheduler .join:focus .ntsControl.error input,
+                .scheduler .leave:focus .ntsControl.error input,
+                .scheduler .join[data-click="1"] .ntsControl.error input,
+                .scheduler .leave[data-click="1"] .ntsControl.error input {
+                    z-index: 3;
                     color: #000;
                     box-shadow: 0px 0px 0px 2px #ff6666 !important;
-                    background-color: rgba(255, 102, 102, 0.1) !important;                    
+                    background-color: #007fff !important;                    
                 }
                 .scheduler .calendar {
                     float: left;
