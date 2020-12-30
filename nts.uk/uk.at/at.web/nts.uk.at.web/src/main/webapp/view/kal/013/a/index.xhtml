@@ -92,13 +92,14 @@
                             <div data-bind="ntsFormLabel: { required: true }, text: $vm.$i18n('KAL003_11')"></div>
                         </div>
                         <div>
-                            <input tabindex="9"
+                            <input id="code" tabindex="9"
                                     size="5"
                                     data-bind="ntsTextEditor: {
 										value: currentCode,
 										required: true,
                                         name: $vm.$i18n('KAL003_11'),
-                                        constraint: 'AlarmCheckConditionCode'
+                                        constraint: 'AlarmCheckConditionCode',
+                                        enable: isNewMode
                                         }"
                             />
                         </div>
@@ -106,7 +107,7 @@
                             <div data-bind="ntsFormLabel: { required: true }, text: $vm.$i18n('KAL003_12')"></div>
                         </div>
                         <div>
-                            <input tabindex="10"
+                            <input id="name" tabindex="10"
                                     size="15"
                                     data-bind="ntsTextEditor: {
 										value: currentName,

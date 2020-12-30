@@ -24,7 +24,9 @@ public enum CheckMonthlyItemsType {
     /* 平均日数自由 */
     AVERAGE_DAY_FREE(6, "平均日数自由"),
     /* 平均回数自由 */
-    AVERAGE_TIME_FREE(7, "平均回数自由");
+    AVERAGE_TIME_FREE(7, "平均回数自由"),
+    /*平均比率自由 */
+    AVERAGE_RATIO_FREE(8, "平均比率自由");
 
     public final int value;
     public final String nameId;

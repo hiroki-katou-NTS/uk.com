@@ -58,22 +58,26 @@ public class ExtractionMonConDto {
                 operator = ((CompareSingleValue) domain.getCheckConditions()).getCompareOpertor().value;
             } else {
                 switch (domain.getCheckMonthlyItemsType()) {
-                    case AVERAGE_TIME: {
+                    case AVERAGE_TIME:
+                    case TIME_FREEDOM:{
                         minValue = ((AverageTime) ((CompareRange) domain.getCheckConditions()).getStartValue()).v().toString();
                         maxValue = ((AverageTime) ((CompareRange) domain.getCheckConditions()).getEndValue()).v().toString();
                         break;
                     }
-                    case AVERAGE_NUMBER_DAY: {
+                    case AVERAGE_NUMBER_DAY:
+                    case AVERAGE_DAY_FREE:{
                         minValue = ((AverageNumberDays) ((CompareRange) domain.getCheckConditions()).getStartValue()).v().toString();
                         maxValue = ((AverageNumberDays) ((CompareRange) domain.getCheckConditions()).getEndValue()).v().toString();
                         break;
                     }
-                    case AVERAGE_NUMBER_TIME: {
+                    case AVERAGE_NUMBER_TIME:
+                    case AVERAGE_TIME_FREE:{
                         minValue = ((AverageNumberTimes) ((CompareRange) domain.getCheckConditions()).getStartValue()).v().toString();
                         maxValue = ((AverageNumberTimes) ((CompareRange) domain.getCheckConditions()).getEndValue()).v().toString();
                         break;
                     }
-                    case AVERAGE_RATIO: {
+                    case AVERAGE_RATIO:
+                    case AVERAGE_RATIO_FREE: {
                         minValue = ((AverageRatio) ((CompareRange) domain.getCheckConditions()).getStartValue()).v().toString();
                         maxValue = ((AverageRatio) ((CompareRange) domain.getCheckConditions()).getEndValue()).v().toString();
                         break;
@@ -84,7 +88,7 @@ public class ExtractionMonConDto {
         }
         return new ExtractionMonConDto(
                 domain.getErrorAlarmWorkplaceId(),
-                domain.getNo().value,
+                domain.getNo(),
                 domain.getCheckMonthlyItemsType().value,
                 domain.isUseAtr(),
                 domain.getErrorAlarmCheckID(),

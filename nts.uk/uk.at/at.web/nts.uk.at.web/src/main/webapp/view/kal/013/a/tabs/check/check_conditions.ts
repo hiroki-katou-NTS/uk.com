@@ -125,8 +125,8 @@ module nts.uk.at.view.kal013.a.tab {
                     if (result && result.shareParam) {
                         console.log(result);
                         data.checkItem(result.shareParam.checkItem);
-                        data.minValue(result.shareParam.minValue);
-                        data.maxValue(result.shareParam.maxValue);
+                        data.minValue(result.shareParam.minValue ? result.shareParam.minValue + "" : null);
+                        data.maxValue(result.shareParam.maxValue ? result.shareParam.maxValue + "" : null);
                         data.message(result.shareParam.displayMessage);
                         data.checkCond(result.shareParam.checkCondDis);
                         data.operator(result.shareParam.operator);

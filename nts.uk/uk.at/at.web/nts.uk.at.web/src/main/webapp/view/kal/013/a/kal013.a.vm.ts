@@ -127,6 +127,7 @@ module nts.uk.at.view.kal013.a {
             vm.selectedAlarmCode(null);
             vm.actualFixedItems(vm.fixedItems());
             vm.actualFixedItems.valueHasMutated();
+            $('#code').focus();
         }
 
         openDialogD() {
@@ -150,6 +151,7 @@ module nts.uk.at.view.kal013.a {
             vm.currentCode(null);
             vm.currentName(null);
             vm.selectedAlarmCode(null);
+            vm.isNewMode(true);
         }
 
         findItemSelected(code: any, seachArr: Array<any>): any {
@@ -195,6 +197,8 @@ module nts.uk.at.view.kal013.a {
                         vm.alarmListItems([]);
                         if (!vm.isNewMode()) {
                             vm.switchNewMode();
+                        } else {
+                            $('#code').focus();
                         }
                     }
 
@@ -294,7 +298,10 @@ module nts.uk.at.view.kal013.a {
 
             }).fail((err) => {
                 vm.$dialog.error(err);
-            }).always(() => vm.$blockui("clear"));
+            }).always(() => {
+                vm.$blockui("clear");
+                $('#name').focus();
+            });
 
         }
 
@@ -325,7 +332,11 @@ module nts.uk.at.view.kal013.a {
                };
             });
 
-            let opItems = ko.toJS(vm.checkConditions().checkConditionsList());
+            let opItems = [];
+
+            if (_.includes([common.WorkplaceCategory.MONTHLY, common.WorkplaceCategory.SCHEDULE_DAILY], vm.selectedCategoryCode())) {
+                opItems = ko.toJS(vm.checkConditions().checkConditionsList());
+            };
 
             let param = {
                 alarmCheck,

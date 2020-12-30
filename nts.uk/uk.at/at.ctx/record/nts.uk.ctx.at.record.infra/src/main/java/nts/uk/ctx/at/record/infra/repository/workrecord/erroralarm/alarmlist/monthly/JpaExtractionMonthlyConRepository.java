@@ -82,17 +82,17 @@ public class JpaExtractionMonthlyConRepository extends JpaRepository implements 
     private static final String SELECT_COMPARE_SINGLE_BY_ID =
             " SELECT a FROM KrcstErAlCompareSingle a " +
                     " JOIN KrcmtWkpMonExtracCon b ON a.krcstEralCompareSinglePK.conditionGroupId = b.errorAlarmCheckID " +
-                    " WHERE a.krcstEralCompareSinglePK.atdItemConNo = 0 AND a.conditionType = 0 AND b.errorAlarmCheckID IN :ids ";
+                    " WHERE a.krcstEralCompareSinglePK.atdItemConNo = 0 AND a.conditionType = 0 AND b.errorAlarmWorkplaceId IN :ids ";
 
     private static final String SELECT_COMPARE_RANGE_BY_ID =
             " SELECT a FROM KrcstErAlCompareRange a " +
                     " JOIN KrcmtWkpMonExtracCon b ON a.krcstEralCompareRangePK.conditionGroupId = b.errorAlarmCheckID " +
-                    " WHERE a.krcstEralCompareRangePK.atdItemConNo = 0 AND b.errorAlarmCheckID IN :ids ";
+                    " WHERE a.krcstEralCompareRangePK.atdItemConNo = 0 AND b.errorAlarmWorkplaceId IN :ids ";
 
     private static final String SELECT_SINGLE_FIXED_BY_ID =
             " SELECT a FROM KrcstErAlSingleFixed a " +
                     " JOIN KrcmtWkpMonExtracCon b ON a.krcstEralSingleFixedPK.conditionGroupId = b.errorAlarmCheckID " +
-                    " WHERE a.krcstEralSingleFixedPK.atdItemConNo = 0 AND b.errorAlarmCheckID IN :ids ";
+                    " WHERE a.krcstEralSingleFixedPK.atdItemConNo = 0 AND b.errorAlarmWorkplaceId IN :ids ";
 
     @Override
     public List<ExtractionMonthlyCon> getByIds(List<String> ids) {
@@ -103,6 +103,8 @@ public class JpaExtractionMonthlyConRepository extends JpaRepository implements 
         List<KrcstErAlCompareSingle> krcstErAlCompareSingle = this.queryProxy().query(SELECT_COMPARE_SINGLE_BY_ID, KrcstErAlCompareSingle.class).setParameter("ids", ids).getList();
         List<KrcstErAlCompareRange> krcstErAlCompareRange = this.queryProxy().query(SELECT_COMPARE_RANGE_BY_ID, KrcstErAlCompareRange.class).setParameter("ids", ids).getList();
         List<KrcstErAlSingleFixed> krcstErAlSingleFixed = this.queryProxy().query(SELECT_SINGLE_FIXED_BY_ID, KrcstErAlSingleFixed.class).setParameter("ids", ids).getList();
+        ids.forEach(System.out::println);
+        System.out.println("Compare range length: " + krcstErAlCompareRange.size());
         List<KrcmtWkpMonExtracCon> domains = this.queryProxy().query(GET_BY_IDS, KrcmtWkpMonExtracCon.class)
                 .setParameter("ids", ids)
                 .getList();
@@ -120,24 +122,30 @@ public class JpaExtractionMonthlyConRepository extends JpaRepository implements 
         List<KrcstErAlSingleFixed> singleFixeds = new ArrayList<>();
         List<KrcstErAlCompareRange> compareRanges = new ArrayList<>();
 
+        System.out.println(domains);
+
         domains.forEach(i -> {
             Double minValue = null;
             Double maxValue = null;
             if (i.getCheckConditions().isSingleValue()) {
                 switch (i.getCheckMonthlyItemsType()) {
-                    case AVERAGE_TIME: {
+                    case AVERAGE_TIME:
+                    case TIME_FREEDOM:{
                         minValue = Double.valueOf(((AverageTime) ((CompareSingleValue) i.getCheckConditions()).getValue()).v());
                         break;
                     }
-                    case AVERAGE_NUMBER_DAY: {
+                    case AVERAGE_NUMBER_DAY:
+                    case AVERAGE_DAY_FREE: {
                         minValue = ((AverageNumberDays) ((CompareSingleValue) i.getCheckConditions()).getValue()).v().doubleValue();
                         break;
                     }
-                    case AVERAGE_NUMBER_TIME: {
+                    case AVERAGE_NUMBER_TIME:
+                    case AVERAGE_TIME_FREE: {
                         minValue = Double.valueOf(((AverageNumberTimes) ((CompareSingleValue) i.getCheckConditions()).getValue()).v());
                         break;
                     }
-                    case AVERAGE_RATIO: {
+                    case AVERAGE_RATIO:
+                    case AVERAGE_RATIO_FREE: {
                         minValue = Double.valueOf(((AverageRatio) ((CompareSingleValue) i.getCheckConditions()).getValue()).v());
                         break;
                     }
@@ -155,22 +163,26 @@ public class JpaExtractionMonthlyConRepository extends JpaRepository implements 
                 singleFixeds.add(singleFixed);
             } else {
                 switch (i.getCheckMonthlyItemsType()) {
-                    case AVERAGE_TIME: {
+                    case AVERAGE_TIME:
+                    case TIME_FREEDOM:{
                         minValue = Double.valueOf(((AverageTime) ((CompareRange) i.getCheckConditions()).getStartValue()).v());
                         maxValue = Double.valueOf(((AverageTime) ((CompareRange) i.getCheckConditions()).getEndValue()).v());
                         break;
                     }
-                    case AVERAGE_NUMBER_DAY: {
+                    case AVERAGE_NUMBER_DAY:
+                    case AVERAGE_DAY_FREE: {
                         minValue = ((AverageTime) ((CompareRange) i.getCheckConditions()).getStartValue()).v().doubleValue();
                         maxValue = ((AverageTime) ((CompareRange) i.getCheckConditions()).getEndValue()).v().doubleValue();
                         break;
                     }
-                    case AVERAGE_NUMBER_TIME: {
+                    case AVERAGE_NUMBER_TIME:
+                    case AVERAGE_TIME_FREE:{
                         minValue = Double.valueOf(((AverageNumberTimes) ((CompareRange) i.getCheckConditions()).getStartValue()).v());
                         maxValue = Double.valueOf(((AverageNumberTimes) ((CompareRange) i.getCheckConditions()).getEndValue()).v());
                         break;
                     }
-                    case AVERAGE_RATIO: {
+                    case AVERAGE_RATIO:
+                    case AVERAGE_RATIO_FREE:{
                         minValue = Double.valueOf(((AverageRatio) ((CompareRange) i.getCheckConditions()).getStartValue()).v());
                         maxValue = Double.valueOf(((AverageRatio) ((CompareRange) i.getCheckConditions()).getEndValue()).v());
                         break;

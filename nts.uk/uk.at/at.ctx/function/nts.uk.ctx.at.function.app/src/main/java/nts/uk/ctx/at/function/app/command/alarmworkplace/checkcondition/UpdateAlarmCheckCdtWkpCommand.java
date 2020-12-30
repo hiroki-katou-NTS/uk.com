@@ -138,7 +138,8 @@ public class UpdateAlarmCheckCdtWkpCommand {
         CheckConditions result = null;
         CheckMonthlyItemsType check = EnumAdaptor.valueOf(checkItem, CheckMonthlyItemsType.class);
         switch (check) {
-            case AVERAGE_TIME: {
+            case AVERAGE_TIME:
+            case TIME_FREEDOM: {
                 if (maxValue == null) {
                     result = setCompareSingleValue((V) new AverageTime(Integer.valueOf(minValue)), operator, 0);
                 } else {
@@ -146,7 +147,8 @@ public class UpdateAlarmCheckCdtWkpCommand {
                 }
                 break;
             }
-            case AVERAGE_NUMBER_DAY: {
+            case AVERAGE_NUMBER_DAY:
+            case AVERAGE_DAY_FREE: {
                 if (maxValue == null) {
                     result = setCompareSingleValue((V) new AverageNumberDays(new BigDecimal(minValue)), operator, 0);
                 } else {
@@ -154,7 +156,8 @@ public class UpdateAlarmCheckCdtWkpCommand {
                 }
                 break;
             }
-            case AVERAGE_NUMBER_TIME: {
+            case AVERAGE_NUMBER_TIME:
+            case AVERAGE_TIME_FREE: {
                 if (maxValue == null) {
                     result = setCompareSingleValue((V) new AverageNumberTimes(Integer.valueOf(minValue)), operator, 0);
                 } else {
@@ -162,7 +165,8 @@ public class UpdateAlarmCheckCdtWkpCommand {
                 }
                 break;
             }
-            case AVERAGE_RATIO: {
+            case AVERAGE_RATIO:
+            case AVERAGE_RATIO_FREE: {
                 if (maxValue == null) {
                     result = setCompareSingleValue((V) new AverageRatio(Integer.valueOf(minValue)), operator, 0);
                 } else {

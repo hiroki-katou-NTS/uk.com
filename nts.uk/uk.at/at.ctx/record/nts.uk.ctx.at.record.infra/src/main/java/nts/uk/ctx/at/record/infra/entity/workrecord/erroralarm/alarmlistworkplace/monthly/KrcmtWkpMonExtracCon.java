@@ -88,7 +88,7 @@ public class KrcmtWkpMonExtracCon extends UkJpaEntity implements Serializable {
         KrcmtWkpMonExtracCon entity = new KrcmtWkpMonExtracCon();
 
         entity.errorAlarmWorkplaceId = domain.getErrorAlarmWorkplaceId();
-        entity.no = domain.getNo().value;
+        entity.no = domain.getNo();
         entity.monExtracConName = domain.getMonExtracConName().v();
         entity.useAtr = domain.isUseAtr();
         entity.checkMonthlyItemsType = domain.getCheckMonthlyItemsType().value;

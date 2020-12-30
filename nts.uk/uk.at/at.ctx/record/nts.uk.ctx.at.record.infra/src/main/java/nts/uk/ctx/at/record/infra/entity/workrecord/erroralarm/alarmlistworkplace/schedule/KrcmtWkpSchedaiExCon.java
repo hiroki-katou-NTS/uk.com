@@ -74,7 +74,7 @@ public class KrcmtWkpSchedaiExCon extends UkJpaEntity implements Serializable {
         KrcmtWkpSchedaiExCon entity = new KrcmtWkpSchedaiExCon();
 
         entity.errorAlarmWorkplaceId = domain.getErrorAlarmWorkplaceId();
-        entity.orderNumber = domain.getOrderNumber().value;
+        entity.orderNumber = domain.getOrderNumber();
         entity.daiExtracConName = domain.getDaiExtracConName().v();
         entity.useAtr = domain.isUseAtr();
         entity.checkDayItemsType = domain.getCheckDayItemsType().value;
