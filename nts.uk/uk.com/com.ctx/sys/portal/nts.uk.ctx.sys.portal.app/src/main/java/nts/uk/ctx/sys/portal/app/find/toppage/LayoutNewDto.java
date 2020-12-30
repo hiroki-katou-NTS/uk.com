@@ -31,7 +31,7 @@ public class LayoutNewDto implements Layout.MementoSetter {
 	private String url;
 
 	@Override
-	public void setWidgetSettings(String contractCode, List<WidgetSetting> widgetSettings) {
+	public void setWidgetSettings(List<WidgetSetting> widgetSettings) {
 		if (widgetSettings == null) {
 			return;
 		}

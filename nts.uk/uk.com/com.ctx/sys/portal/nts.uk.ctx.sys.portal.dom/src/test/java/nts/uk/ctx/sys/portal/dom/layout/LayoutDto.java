@@ -97,7 +97,7 @@ public class LayoutDto implements Layout.MementoSetter, Layout.MementoGetter{
 	}
 
 	@Override
-	public void setWidgetSettings(String contractCode, List<WidgetSetting> widgetSettings) {
+	public void setWidgetSettings(List<WidgetSetting> widgetSettings) {
 		this.widgetSettings = widgetSettings;
 	}
 }
