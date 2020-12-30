@@ -6,7 +6,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.sys.env.dom.mailnoticeset.company.OtherContact;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.company.ContactName;
 
 /**
  * 連絡先情報DTO
@@ -31,13 +31,13 @@ public class ContactInformationDTO {
 	private Optional<String> companyEmailAddress;
 	
 	/** 他の連絡先 */
-	private List<OtherContact> otherContacts;
+	private List<OtherContactInfomation> otherContactsInfomation;
 	
 	/** 座席ダイヤルイン */
-	private String seatDialIn;
+	private ContactName seatDialIn;
 	
 	/** 座席内線番号 */
-	private String seatExtensionNumber;
+	private ContactName seatExtensionNumber;
 	
 	/** 緊急連絡先1 */
 	private String emergencyNumber1;
