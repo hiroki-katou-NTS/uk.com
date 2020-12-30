@@ -155,6 +155,8 @@ public class WorkMonthlySetting extends AggregateRoot {
 				throw new BusinessException("Msg_435");
 			case WORKTIME_ARE_SET_WHEN_UNNECESSARY:
 				throw new BusinessException("Msg_434");
+			default:
+				return;
 		}
 	}
 	

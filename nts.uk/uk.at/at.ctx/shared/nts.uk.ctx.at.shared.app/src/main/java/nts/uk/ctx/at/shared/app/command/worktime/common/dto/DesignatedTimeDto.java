@@ -4,8 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.common.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.worktime.common.DesignatedTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.DesignatedTimeGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
 
@@ -14,13 +16,14 @@ import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
  */
 @Getter
 @Setter
-public class DesignatedTimeDto implements DesignatedTimeGetMemento {
+@AllArgsConstructor
+public class DesignatedTimeDto implements DesignatedTimeGetMemento  {
 
 	/** The one day time. */
-	private Integer oneDayTime;
+	private int oneDayTime;
 
 	/** The half day time. */
-	private Integer halfDayTime;
+	private int halfDayTime;
 
 	/**
 	 * Gets the one day time.
@@ -30,6 +33,10 @@ public class DesignatedTimeDto implements DesignatedTimeGetMemento {
 	@Override
 	public OneDayTime getOneDayTime() {
 		return new OneDayTime(this.oneDayTime);
+	}
+	
+	public int getOneDayTimeValue() {
+		return this.oneDayTime;
 	}
 
 	/**
@@ -42,6 +49,17 @@ public class DesignatedTimeDto implements DesignatedTimeGetMemento {
 		return new OneDayTime(this.halfDayTime);
 	}
 	
-
+	public int getHalfDayTimeValue() {
+		return this.halfDayTime;
+	}
+	
+	public DesignatedTime toDomain() {
+		return new DesignatedTime(new OneDayTime(this.oneDayTime), new OneDayTime(this.halfDayTime));
+	}
+	
+	public static DesignatedTimeDto toDto(DesignatedTime domain) {
+		return new DesignatedTimeDto(domain.getOneDayTime().v(), domain.getHalfDayTime().v());
+		
+	}
 
 }
