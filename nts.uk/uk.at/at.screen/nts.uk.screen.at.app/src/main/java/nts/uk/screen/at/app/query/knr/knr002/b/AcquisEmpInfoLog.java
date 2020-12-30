@@ -27,7 +27,13 @@ public class AcquisEmpInfoLog {
 	@Inject
 	EmpInfoTerComAbPeriodRepository empInfoTerComAbPeriodRepo;
 
-	//	期間で取得する
+	/**
+	 * 期間で取得する
+	 * @param empInfoTerCode
+	 * @param sTime
+	 * @param eTime
+	 * @return
+	 */
 	public List<AcquisEmpInfoLogDto> getInPeriod(String empInfoTerCode, String sTime, String eTime) {
 
 		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
@@ -38,12 +44,9 @@ public class AcquisEmpInfoLog {
 		if (getInPeriod.size() <= 0) {
 			return null;
 		}
-		return getInPeriod.stream().map(e -> {
-			AcquisEmpInfoLogDto dto = new AcquisEmpInfoLogDto();
-			dto.setEmpInfoTerCode(empInfoTerCode);
-			dto.setPreTimeSuccDate(e.getLastComSuccess().toString());
-			dto.setLastestTimeSuccDate(e.getLastestComSuccess().toString());
-			return dto;
-		}).collect(Collectors.toList());
+		return getInPeriod.stream().map(e -> 
+					new AcquisEmpInfoLogDto(empInfoTerCode, e.getLastComSuccess().toString(), 
+											e.getLastestComSuccess().toString()))
+				.collect(Collectors.toList());
 	}
 }

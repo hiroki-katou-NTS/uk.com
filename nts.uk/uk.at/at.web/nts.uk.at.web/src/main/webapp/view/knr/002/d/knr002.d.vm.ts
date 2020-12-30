@@ -1,7 +1,6 @@
 module knr002.d {
     import blockUI = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog;
-    import alertError = nts.uk.ui.alertError;
     import getText = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
@@ -38,33 +37,8 @@ module knr002.d {
                     self.destinationCopyList([]);
                     self.selectableCodeList = [];
                 } else {
-                    // get Shared from A
-                    //let empInfoTerList = getShared('KNR002D_empInfoTerList');
-                    // if(empInfoTerList){                   
-                    //     let desCopyTempList = [];
-                    //     for(let e of empInfoTerList){
-                    //         if(e.empInfoTerCode != self.empInfoTerCode())
-                    //             desCopyTempList.push(new EmpInfoTerminal(e.empInfoTerCode, e.empInfoTerName, e.modelEmpInfoTerName, e.workLocationName));
-                    //     };
-                    //     self.destinationCopyList(desCopyTempList); 
-                    // } else {
-                    //     service.getDestinationCopyList(self.empInfoTerCode()).done(data => {
-                    //         if(!data || data.length <= 0){
-                    //             //do something
-                    //             self.destinationCopyList([]);
-                    //             self.selectableCodeList = [];
-                    //         } else {
-                    //             let desCopyTempList = [];
-                    //             for(let item of data){
-                    //                 let desCopyTemp = new EmpInfoTerminal(item.empInfoTerCode, item.empInfoTerName, item.modelEmpInfoTer, item.workLocationName);
-                    //                 desCopyTempList.push(desCopyTemp);
-                    //             }   
-                    //             self.destinationCopyList(desCopyTempList);
-                    //         }                       
-                    //     });
-                    // }
-                        service.getDestinationCopyList(self.empInfoTerCode()).done(data => {
-                        if(!data || data.length <= 0){
+                        service.getDestinationCopyList(self.empInfoTerCode()).done((data: Array<any>) => {
+                        if(!data){
                             self.destinationCopyList([]);
                             self.selectableCodeList = [];
                             self.bindDestinationCopyList();
@@ -150,8 +124,7 @@ module knr002.d {
                         self.call_C_Api(self.command);
                     }).fail((err)=>{
                         dialog.confirm({messageId: err.messageId, messageParams: err.parameterIds})
-                        .ifYes(() => {     
-                            console.log("call C Api");              
+                        .ifYes(() => {                   
                             self.call_C_Api(self.command);
                         }).ifNo(() => {
                                 // do nothing
@@ -159,10 +132,9 @@ module knr002.d {
                             blockUI.clear(); 
                         });
                     });
+                    setShared('KNR002D_selectableCodeList', self.selectableCodeList);
+                    nts.uk.ui.windows.close();
                 }          
-
-                setShared('KNR002D_selectableCodeList', self.selectableCodeList);
-                nts.uk.ui.windows.close();
             }
             /**
              * D5_2
@@ -172,7 +144,7 @@ module knr002.d {
                 nts.uk.ui.windows.close();
             }
             /**
-             * fill blank record to Grid
+             * fill blank record on Grid
              */
             private fillBlankRecord(arr: Array<any>, maxLen: number): any{
                 let recordTotal = arr.length;

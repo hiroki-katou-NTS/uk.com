@@ -37,7 +37,8 @@ module knr002.k {
                     service.getBentoMenu(self.empInfoTerCode).done((data)=>{
                         if(!data){
                             //do something
-                        }else{
+                        }else if(data.bentoMenuList){
+                            console.log("data: ", data);
                             let bentoMenuTemp = [];
                             for(let item of data.bentoMenuList){
                                 let bentoTemp = new BentoMenuItem(item.bentoMenuFrameNumber, item.bentoMenuName);
@@ -71,10 +72,11 @@ module knr002.k {
                     dialog.error({ messageId: "Msg_2026" }).then(() => {
                         blockUI.clear();
                     });
-                }else
+                }else {
                     setShared('KNR002K_selectedList', self.selectedList());
+                    nts.uk.ui.windows.close();
+                }
                 setShared('KNR002K_isCancel', self.isCancel);
-                nts.uk.ui.windows.close();
             }
             /**
              * cancel_Dialog

@@ -30,6 +30,12 @@ public class GetDestinationCopy {
 	private WorkLocationRepository workPlaceRepository;
 
 
+	
+	/**
+	 * 端末コードの含まないリスト取得する 
+	 * @param empInforTerCode
+	 * @return
+	 */
 	public List<GetDestinationCopyDto> getEmpInfoTerDestinalList(String empInforTerCode) {
 		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
 		String companyID = AppContexts.user().companyId();
@@ -39,8 +45,9 @@ public class GetDestinationCopy {
 //		if (!empInfoTer.isPresent())
 //			return null;
 		List<EmpInfoTerminal> empInfoTerList = this.empInfoTerRepo.getEmpInfoTerminalNotIncludeCode(contractCode, new EmpInfoTerminalCode(empInforTerCode));
-		if(empInfoTerList.size() == 0)
+		if (empInfoTerList.isEmpty())
 			return null;
+		
 		return empInfoTerList.stream().map(e -> {
 			GetDestinationCopyDto dto = new GetDestinationCopyDto();
 			String workLocationCD = e.getCreateStampInfo().getWorkLocationCd().isPresent()?

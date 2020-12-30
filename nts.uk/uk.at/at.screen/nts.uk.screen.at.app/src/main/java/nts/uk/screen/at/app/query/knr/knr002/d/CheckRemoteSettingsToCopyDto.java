@@ -11,6 +11,5 @@ import lombok.NoArgsConstructor;
 @Data
 public class CheckRemoteSettingsToCopyDto {
 	//	エラーの有無を返す
-	private boolean hasError;
 	private List<String> listEmpCode;
 }

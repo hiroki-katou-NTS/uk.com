@@ -26,19 +26,20 @@ public class CheckRemoteSettingsToCopy {
 	@Inject
 	private TimeRecordSetUpdateListRepository timeRecordSetUpdateListRepository;
 	
-	public CheckRemoteSettingsToCopyDto checkRemoteSettingsToCopy (List<String> listEmpInfoTerCode) {
-		CheckRemoteSettingsToCopyDto dto = new CheckRemoteSettingsToCopyDto();
+	/**
+	 * 取得する
+	 * @param listEmpInfoTerCode
+	 * @return
+	 */
+	public void checkRemoteSettingsToCopy (List<String> listEmpInfoTerCode) {
 		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
 		//	1. get*(契約コード、就業情報端末コード<List>): タイムレコード設定更新リスト<List>
 		List<TimeRecordSetUpdateList> getTimeRecordSetUpdateList = this.timeRecordSetUpdateListRepository
 																	   .get(contractCode, listEmpInfoTerCode.stream().map(e -> new EmpInfoTerminalCode(e)).collect(Collectors.toList()));
 		
-		if(getTimeRecordSetUpdateList.size() > 0) {
-			dto.setHasError(true);
-			StringBuilder parameterIds = new StringBuilder();
-			getTimeRecordSetUpdateList.stream().forEach(e -> parameterIds.append("「" + e.getEmpInfoTerCode().v() + "」"));
-			throw new BusinessException("Msg_1986", parameterIds.toString());
+		if (getTimeRecordSetUpdateList.size() > 0) {
+			String result = getTimeRecordSetUpdateList.stream().map(e -> "「" + e.getEmpInfoTerCode().v() + "」").collect(Collectors.joining());
+			throw new BusinessException("Msg_1986", result);
 		}
-		return dto;
 	}
 }

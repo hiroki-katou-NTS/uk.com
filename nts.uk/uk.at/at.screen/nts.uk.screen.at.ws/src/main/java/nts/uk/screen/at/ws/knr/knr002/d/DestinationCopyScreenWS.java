@@ -23,13 +23,6 @@ public class DestinationCopyScreenWS {
 	@Inject
 	private GetDestinationCopy getDestinationCopy;
 
-//	@POST
-//	@Path("getdestinationcopylist/{empInfoTerCode}")
-//	public List<EmpInfoTerminal> getDestinationCopyList(@PathParam("empInfoTerCode") String empInforTerCode) {
-//		List<EmpInfoTerminal> result = this.getDestinationCopy.getEmpInfoTerDestinalList(empInforTerCode);
-//		return result;
-//	}
-
 	@POST
 	@Path("getDestinationCopyList/{empInfoTerCode}")
 	public List<GetDestinationCopyDto> getDestinationCopyList(@PathParam("empInfoTerCode") String empInforTerCode) {

@@ -23,8 +23,8 @@ public class CheckRemoteSettingsToCopyScreenWS {
 	
 	@POST
 	@Path("check")
-	public CheckRemoteSettingsToCopyDto checkRemoteSettingsToCopy(CheckRemoteSettingsToCopyDto dto) {		
-		return this.checkRemoteSettingsToCopy.checkRemoteSettingsToCopy(dto.getListEmpCode());
+	public void checkRemoteSettingsToCopy(CheckRemoteSettingsToCopyDto dto) {		
+		this.checkRemoteSettingsToCopy.checkRemoteSettingsToCopy(dto.getListEmpCode());
 	}
 
 }

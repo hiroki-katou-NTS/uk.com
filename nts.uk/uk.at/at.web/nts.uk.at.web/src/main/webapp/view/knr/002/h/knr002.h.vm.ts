@@ -146,11 +146,13 @@ module knr002.h {
                 if(!self.employeesListVal() || self.employeesListVal().length <= 0){
                     dialog.error({ messageId: "Msg_2023" }).then(() => {
                         // do something
+                        blockUI.clear();
                     });
-                }else
+                }else {
                     setShared('KNR002H_selectedList', self.employeesListVal().map(e => e.employeeId));
-                setShared('KNR002H_isCancel', self.isCancel);
-                nts.uk.ui.windows.close();
+                    nts.uk.ui.windows.close();
+                }
+                setShared('KNR002H_isCancel', self.isCancel);  
             }
 
             /**

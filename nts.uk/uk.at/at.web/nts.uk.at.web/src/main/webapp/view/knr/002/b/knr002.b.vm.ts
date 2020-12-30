@@ -44,7 +44,7 @@ module knr002.b {
                 self.workLocationName = ko.observable('');
                 self.lastSuccessDate = ko.observable('');
                 self.status = ko.observable('');
-                setTimeout(()=>{$(".column-2 #multi-list_sDate").attr('colspan',5);}, 1); 
+                setTimeout(() => { $(".column-2 #multi-list_sDate").attr('colspan',5); }, 1); 
                 self.colorText = (value: any, obj: any) => {
                     setTimeout(() => {
                         let cell1 = $("#multi-list").igGrid("cellById", obj.id, 'sDate');
@@ -54,14 +54,14 @@ module knr002.b {
                         let cell5 = $("#multi-list").igGrid("cellById", obj.id, 'eTime');
                         let checkWeekDayIsSta = `${obj.id}`.lastIndexOf('a');
                         let checkWeekDayIsSun = `${obj.id}`.lastIndexOf('n');
-                        if(checkWeekDayIsSta > -1){
+                        if (checkWeekDayIsSta > -1) {
                             cell1.css("color", "#0086EA");
                             cell2.css("color", "#0086EA");
                             cell3.css("color", "#0086EA");
                             cell4.css("color", "#0086EA");
                             cell5.css("color", "#0086EA");
                         }
-                        if(checkWeekDayIsSun > -1){
+                        if (checkWeekDayIsSun > -1) {
                             cell1.css("color", "#FF2D2D");
                             cell2.css("color", "#FF2D2D");
                             cell3.css("color", "#FF2D2D");
@@ -123,11 +123,11 @@ module knr002.b {
              * load Data
              */
             private loadLogInPeriod(empInfoTerCode: string, sTime: string, eTime: string): void{
-                var self = this;
-                if(empInfoTerCode === undefined || empInfoTerCode === '' || empInfoTerCode.length <= 0){
+                var self = this; 
+                if(empInfoTerCode === undefined || empInfoTerCode === ''){
                     self.displayLogList([]);
                 }else{
-                    service.getInPeriod(empInfoTerCode, sTime, eTime).done((data) => {
+                    service.getInPeriod(empInfoTerCode, sTime, eTime).done((data: Array<any>) => {
                         if(!data){
                             //do something                 
                             self.displayLogList([]);
@@ -167,12 +167,8 @@ module knr002.b {
                 self.clearErrors();
                 //period time
                 $('#B4_2').ntsEditor("validate");
-                if ($('.nts-input').ntsError('hasError')) {
-                    return true;
-                }
-                return false;
+                return $('.nts-input').ntsError('hasError');
             }
-
             /**
              * clear Errors
              */
@@ -213,7 +209,7 @@ module knr002.b {
              * fill '0' character to datetime
              */
             private fillZero(str: string): string{
-                return str.length == 2? str : `0${str}`;
+                return str.length == 2 ? str : `0${str}`;
             }
             /**
              * to Date
