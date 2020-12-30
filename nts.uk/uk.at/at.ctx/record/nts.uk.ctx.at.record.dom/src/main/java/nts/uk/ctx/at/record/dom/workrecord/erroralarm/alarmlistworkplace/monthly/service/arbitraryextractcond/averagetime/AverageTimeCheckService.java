@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service.arbitraryextractcond.averagetime;
 
 import nts.arc.time.YearMonth;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.adapter.workplace.EmployeeInfoImported;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.extractresult.ExtractResultDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.ExtractionMonthlyCon;
@@ -43,6 +44,8 @@ public class AverageTimeCheckService {
                                   List<AttendanceTimeOfMonthly> times,
                                   List<EmployeeInfoImported> empInfos,
                                   YearMonth ym) {
+        if (CollectionUtil.isEmpty(empInfos)) return null;
+
         // 合計値　＝　０
         Double total = 0.0;
 

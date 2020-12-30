@@ -61,7 +61,7 @@ public class FixedExtractionCondCheckService {
 
             for (Map.Entry<String, List<EmployeeInfoImport>> empsByWp : empsByWpMap.entrySet()) {
                 ExtractResultDto extractResult = null;
-                switch (condition.getCheckItemAppapv()) {
+                switch (item.getCheckItemAppapv()) {
                     case UNAPPROVED_1:
                         // 未承認１
                         // 承認フェーズ番号　＝　１
@@ -109,7 +109,7 @@ public class FixedExtractionCondCheckService {
                 // 抽出結果の値を補足する
                 if (extractResult == null) continue;
                 extractResult.setAlarmItemName(item.getAppapvCheckName());
-                extractResult.setComment(Optional.of(new MessageDisplay(item.getFirstMessageDisp().v())));
+                extractResult.setComment(Optional.of(new MessageDisplay(condition.getMessageDisp().v())));
                 extractResult.setWorkplaceId(empsByWp.getKey());
                 extractResults.add(extractResult);
             }

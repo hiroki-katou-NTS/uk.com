@@ -10,6 +10,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.FixedExtractionMonthlyItemsRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.enums.FixedCheckMonthlyItemName;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service.fixedextractcond.monthlyundecided.MonthlyUndecidedCheckService;
+import nts.uk.ctx.at.shared.dom.scherec.alarm.alarmlistactractionresult.MessageDisplay;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
 
 import javax.ejb.Stateless;
@@ -17,6 +18,7 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -54,8 +56,12 @@ public class FixedExtractCondCheckService {
         // Input．List＜アラームリスト（職場）月次の固定抽出条件＞をループする
         for (FixedExtractionMonthlyCon fixCond : fixExtractMonthlyCons) {
             List<ExtractResultDto> extractResults = new ArrayList<>();
+            Optional<FixedExtractionMonthlyItems> itemOpt = items.stream().filter(x -> x.getNo().equals(fixCond.getNo())).findFirst();
+            if (!itemOpt.isPresent()) continue;
+            FixedExtractionMonthlyItems item = itemOpt.get();
+
             // Noをチェック
-            switch (fixCond.getNo()) {
+            switch (item.getNo()) {
                 case MONTHLY_UNDECIDED:
                     // 月次データ未確定をチェックする
                     extractResults = monthlyUndecidedCheckService.check(cid, empInfosByWpMap, closures, ym);
@@ -64,6 +70,11 @@ public class FixedExtractCondCheckService {
 
             // 取得した「List＜アラーム抽出結果（職場別）＞」をチェック
             if (CollectionUtil.isEmpty(extractResults)) continue;
+
+            extractResults.forEach(x -> {
+                x.setAlarmItemName(item.getMonthlyCheckName());
+                x.setComment(Optional.of(new MessageDisplay(fixCond.getMessageDisp().v())));
+            });
 
             // 「アラームリスト抽出情報（職場）」の値をセット
             List<AlarmListExtractionInfoWorkplaceDto> results = extractResults.stream().map(x ->

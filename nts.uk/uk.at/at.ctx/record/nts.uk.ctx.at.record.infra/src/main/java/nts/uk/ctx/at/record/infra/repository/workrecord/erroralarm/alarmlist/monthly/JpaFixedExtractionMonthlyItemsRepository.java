@@ -13,6 +13,7 @@ import javax.ejb.TransactionAttributeType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -37,8 +38,9 @@ public class JpaFixedExtractionMonthlyItemsRepository extends JpaRepository impl
     @Override
     public List<FixedExtractionMonthlyItems> getBy(List<FixedCheckMonthlyItemName> nos) {
         if (CollectionUtil.isEmpty(nos)) return new ArrayList<>();
+        List<Integer> noList = nos.stream().map(x -> x.value).collect(Collectors.toList());
         return this.queryProxy().query(FIND_BY_NOS, KrcmtWkpMonFxexItm.class)
-            .setParameter("nos", nos)
+            .setParameter("nos", noList)
             .getList(KrcmtWkpMonFxexItm::toDomain);
     }
 

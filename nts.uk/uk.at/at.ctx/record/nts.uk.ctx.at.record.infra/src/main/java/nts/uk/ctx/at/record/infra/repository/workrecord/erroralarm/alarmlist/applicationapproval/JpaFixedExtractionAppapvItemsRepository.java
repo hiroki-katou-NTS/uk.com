@@ -12,6 +12,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -40,8 +41,9 @@ public class JpaFixedExtractionAppapvItemsRepository extends JpaRepository imple
     @Override
     public List<FixedExtractionAppapvItems> getBy(List<CheckItemAppapv> nos) {
         if (CollectionUtil.isEmpty(nos)) return new ArrayList<>();
+        List<Integer> sidList = nos.stream().map(x -> x.value).collect(Collectors.toList());
         return this.queryProxy().query(FIND_BY_NOS, KrcmtWkpfxexAppapvItm.class)
-            .setParameter("nos", nos)
+            .setParameter("nos", sidList)
             .getList(KrcmtWkpfxexAppapvItm::toDomain);
     }
 }
