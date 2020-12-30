@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:stylefile path="ktg026.test.style.css" />
+			<com:stylefile path="/view/ccg/common/common.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="ktg026.test.vm.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="contents-area">
+				<div class="content-left">
+					<div data-bind="ntsFormLabel: {}">OPEN SCREEN AS DIALOG</div>
+					<button id="A1_7" 
+					
+					tabindex="2" data-bind="click: openKtg026">OPEN_KTG026</button>
+				</div>
+				<div class="content-right">
+					<div class="placement-wraper">
+						<div class="widget-container" data-bind="foreach: placementsTopPage">
+							<div style="width: 525px; height: 500px;" class="widget-panel preview" data-bind="attr: {id: 'toppage_' + placementID + '_' + $index()}">
+								<div class="panel-header">
+									<span class="title" data-bind="text: name"></span>
+								</div>
+								<div class="panel-content placeholder" data-bind="html: html"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
