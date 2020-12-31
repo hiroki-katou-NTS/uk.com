@@ -12,11 +12,11 @@ import nts.uk.ctx.sys.env.dom.mailnoticeset.company.service.ContactInformationDT
  */
 @Builder
 @Data
-public class GetContactInformationDto {
+public class ReferContactInformationDto {
 	/**
 	 * 職位名
 	 */
-	private String positionName;
+	private String jobTitleName;
 	/**
 	 * 職場名
 	 */
@@ -24,7 +24,7 @@ public class GetContactInformationDto {
 	/**
 	 * 分類名
 	 */
-	private String categoryName;
+	private String classificationName;
 	/**
 	 * 雇用名
 	 */
