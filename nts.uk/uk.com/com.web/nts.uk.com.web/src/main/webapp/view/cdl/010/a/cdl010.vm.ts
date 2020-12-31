@@ -46,6 +46,15 @@ module nts.uk.at.view.cdl010.a.screenModel {
       vm.detailData(mockData);
     }
 
+    mounted() {
+      const contentAreaHeight = $('#contents-area').height();
+      const contentHeight = $('#content-cdl010').height();
+      if (contentAreaHeight > contentHeight) {
+        const subHeight = contentAreaHeight - contentHeight;
+        nts.uk.ui.windows.getSelf().setHeight(650 - subHeight);
+      }
+    }
+
     closeDialog() {
       const vm = this;
       vm.$window.close();
