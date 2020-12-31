@@ -28,6 +28,7 @@ import nts.uk.ctx.at.request.dom.application.applist.extractcondition.Applicatio
 import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationTypeDisplay;
 import nts.uk.ctx.at.request.dom.application.applist.service.datacreate.StampAppOutputTmp;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppContentDetailCMM045;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppHolidayWorkDataOutput;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppOvertimeDataOutput;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppStampDataOutput;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.ScreenAtr;
@@ -404,20 +405,20 @@ public class AppContentServiceImpl implements AppContentService {
 						appListExtractCondition.getAppListAtr(), 
 						approvalListDisplaySetting, 
 						companyID);
-				// listOfApp.setAppContent(appOvertimeDataOutput.getAppContent());
+				listOfApp.setAppContent(appOvertimeDataOutput.getAppContent());
 				listOfApp.setOpAppTypeDisplay(appOvertimeDataOutput.getOpAppTypeDisplay());
 				break;
 			case HOLIDAY_WORK_APPLICATION:
 				// 休出時間申請データを作成
-//				AppHolidayWorkDataOutput appHolidayWorkDataOutput = appContentDetailCMM045.createHolidayWorkContent(
-//						application, 
-//						lstWkType, 
-//						lstWkTime, 
-//						attendanceItemLst, 
-//						appListExtractCondition.getAppListAtr(), 
-//						approvalListDisplaySetting, 
-//						companyID);
-				// listOfApp.setAppContent(appHolidayWorkDataOutput.getAppContent());
+				AppHolidayWorkDataOutput appHolidayWorkDataOutput = appContentDetailCMM045.createHolidayWorkContent(
+						application, 
+						lstWkType, 
+						lstWkTime, 
+						attendanceItemLst, 
+						appListExtractCondition.getAppListAtr(), 
+						approvalListDisplaySetting, 
+						companyID);
+				listOfApp.setAppContent(appHolidayWorkDataOutput.getAppContent());
 				break;
 			case BUSINESS_TRIP_APPLICATION:
 				// 出張申請データを作成(Tạo data của 出張申請 )
