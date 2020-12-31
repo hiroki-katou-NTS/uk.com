@@ -41,12 +41,17 @@ public class EmployeeContactPubImpl implements EmployeeContactPub {
 		return new EmployeeContactObject(
 				item.getEmployeeId(),
 				item.getMailAddress().map(m -> m.v()).orElse(null),
+				item.getIsMailAddressDisplay(),
 				item.getSeatDialIn().map(m -> m.v()).orElse(null),
+				item.getIsSeatDialInDisplay(),
 				item.getSeatExtensionNumber().map(m -> m.v()).orElse(null),
+				item.getIsSeatExtensionNumberDisplay(),
 				item.getMobileMailAddress().map(m -> m.v()).orElse(null),
+				item.getIsMobileMailAddressDisplay(),
 				item.getCellPhoneNumber().map(m -> m.v()).orElse(null),
+				item.getIsCellPhoneNumberDisplay(),
 				item.getSeatExtensionNumber().map(m -> m.v()).orElse(null)
-				);
+			);
 	}
 
 	@Override

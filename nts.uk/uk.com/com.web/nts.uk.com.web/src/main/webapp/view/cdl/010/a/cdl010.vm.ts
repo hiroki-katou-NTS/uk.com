@@ -7,24 +7,24 @@ module nts.uk.at.view.cdl010.a.screenModel {
     detailData: KnockoutObservable<ContactInformationRefer> = ko.observable(new ContactInformationRefer());
     otherContact: KnockoutObservableArray<OtherContact> = ko.observableArray([]);
 
-    created(param?: ObjectParam) {
+    created(param: ObjectParam) {
       const vm = this;
       // Call API to get ContactInformationRefer
-      const mockData: ContactInformationRefer = ({
+      const detailData: ContactInformationRefer = ({
         businessName: 'ハタケ　カカシ',
         categoryName: '分類１',
         contactInformation: new ContactInformation({
-          companyPhone: '080-1234-5678',
-          personPhone: '090-1234-xxx8',
-          contact1: '080-xxx1-5678',
-          contact2: '080-1234-5678',
-          seatDial: '123',
-          seatNo: '3010',
-          cEmail: 'kakashi_hatake@nittsusysutem.co.jp',
-          cMobileEmail: 'hatake_kakashi@docomo.ne.jp',
-          pEmail: 'hatake_kakashi@gmail.com',
-          pMobileEmail: 'hatake_kakashi@docomo.ne.jp',
-          otherContact: [
+          companyMobilePhoneNumber: '080-1234-5678',
+          personalMobilePhoneNumber: '090-1234-xxx8',
+          emergencyNumber1: '080-xxx1-5678',
+          emergencyNumber2: '080-1234-5678',
+          seatDialIn: '123',
+          seatExtensionNumber: '3010',
+          companyEmailAddress: 'kakashi_hatake@nittsusysutem.co.jp',
+          companyMobileEmailAddress: 'hatake_kakashi@docomo.ne.jp',
+          personalEmailAddress: 'hatake_kakashi@gmail.com',
+          personalMobileEmailAddress: 'hatake_kakashi@docomo.ne.jp',
+          otherContactsInfomation: [
             new OtherContact({ contactName: 'Skype', contactAddress: 'hatake_kakashi' }),
             new OtherContact({ contactName: 'Zoom', contactAddress: 'htk_kakashi' }),
             new OtherContact({ contactName: 'Twitter', contactAddress: 'kakashi_twitter' }),
@@ -36,14 +36,18 @@ module nts.uk.at.view.cdl010.a.screenModel {
         positionName: '一般職位',
         workplaceName: '第一開発部'
       });
-      if (mockData.contactInformation) {
-        mockData.contactInformation.cEmail = `<a href="mailto:${mockData.contactInformation.cEmail}">${mockData.contactInformation.cEmail}</a>`;
-        mockData.contactInformation.cMobileEmail = `<a href="mailto:${mockData.contactInformation.cMobileEmail}">${mockData.contactInformation.cMobileEmail}</a>`;
-        mockData.contactInformation.pEmail = `<a href="mailto:${mockData.contactInformation.pEmail}">${mockData.contactInformation.pEmail}</a>`;
-        mockData.contactInformation.pMobileEmail = `<a href="mailto:${mockData.contactInformation.pMobileEmail}">${mockData.contactInformation.pMobileEmail}</a>`;
-        vm.otherContact(mockData.contactInformation.otherContact);
+      if (detailData.contactInformation) {
+        const companyEmailAddress = detailData.contactInformation.companyEmailAddress;
+        const companyMobileEmailAddress = detailData.contactInformation.companyMobileEmailAddress;
+        const personalEmailAddress = detailData.contactInformation.personalEmailAddress;
+        const personalMobileEmailAddress = detailData.contactInformation.personalMobileEmailAddress;
+        detailData.contactInformation.companyEmailAddress = `<a href="mailto:${companyEmailAddress}">${companyEmailAddress}</a>`;
+        detailData.contactInformation.companyMobileEmailAddress = `<a href="mailto:${companyMobileEmailAddress}">${companyMobileEmailAddress}</a>`;
+        detailData.contactInformation.personalEmailAddress = `<a href="mailto:${personalEmailAddress}">${personalEmailAddress}</a>`;
+        detailData.contactInformation.personalMobileEmailAddress = `<a href="mailto:${personalMobileEmailAddress}">${personalMobileEmailAddress}</a>`;
+        vm.otherContact(detailData.contactInformation.otherContactsInfomation);
       }
-      vm.detailData(mockData);
+      vm.detailData(detailData);
     }
 
     mounted() {
@@ -89,27 +93,27 @@ module nts.uk.at.view.cdl010.a.screenModel {
 
   class ContactInformation {
     /** 会社の携帯電話番号 */
-    companyPhone: string = '';
+    companyMobilePhoneNumber: string = '';
     /** 個人の携帯電話番号 */
-    personPhone: string = '';
+    personalMobilePhoneNumber: string = '';
     /** 緊急連絡先１ */
-    contact1: string = '';
+    emergencyNumber1: string = '';
     /** 緊急連絡先２ */
-    contact2: string = '';
+    emergencyNumber2: string = '';
     /** 座席ダイヤルイン */
-    seatDial: string = '';
+    seatDialIn: string = '';
     /** 座席内線番号 */
-    seatNo: string = '';
+    seatExtensionNumber: string = '';
     /** 会社のメールアドレス */
-    cEmail: string = '';
+    companyEmailAddress: string = '';
     /** 会社の携帯メールアドレス */
-    cMobileEmail: string = '';
+    companyMobileEmailAddress: string = '';
     /** 個人のメールアドレス */
-    pEmail: string = '';
+    personalEmailAddress: string = '';
     /** 個人の携帯メールアドレス */
-    pMobileEmail: string = '';
+    personalMobileEmailAddress: string = '';
     /** 連絡先名 + 連絡先アドレス */
-    otherContact: OtherContact[] = [];
+    otherContactsInfomation: OtherContact[] = [];
 
     constructor(init?: Partial<ContactInformation>) {
       $.extend(this, init);

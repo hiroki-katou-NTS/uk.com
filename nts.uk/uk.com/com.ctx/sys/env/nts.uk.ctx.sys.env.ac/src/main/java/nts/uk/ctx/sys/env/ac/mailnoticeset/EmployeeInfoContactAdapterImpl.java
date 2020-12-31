@@ -35,8 +35,20 @@ public class EmployeeInfoContactAdapterImpl implements EmployeeInfoContactAdapte
 	@Override
 	public List<EmployeeInfoContactImport> getListContact(List<String> employeeIds) {
 		List<EmployeeContactObject> listContact = this.employeeContactPub.getList(employeeIds);
-		return listContact.stream().map(item -> new EmployeeInfoContactImport(item.getSid(), item.getMailAddress(),
-				item.getPhoneMailAddress(), item.getCellPhoneNo(), item.getSeatDialIn(), item.getSeatExtensionNumber())).collect(Collectors.toList());
+		return listContact.stream()
+				.map(item -> 
+					new EmployeeInfoContactImport(item.getSid(),
+							item.getMailAddress(),
+							item.getPhoneMailAddress(),
+							item.getCellPhoneNo(),
+							item.getSeatDialIn(),
+							item.getSeatExtensionNumber(),
+							item.getIsMailAddressDisplay(),
+							item.getIsMobileMailAddressDisplay(),
+							item.getIsCellPhoneNumberDisplay(),
+							item.getIsSeatDialInDisplay(),
+							item.getIsSeatExtensionNumberDisplay())
+					).collect(Collectors.toList());
 	}
 
 	/*

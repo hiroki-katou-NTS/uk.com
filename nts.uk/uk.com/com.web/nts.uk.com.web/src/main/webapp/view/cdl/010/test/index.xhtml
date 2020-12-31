@@ -8,14 +8,24 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 300, height: 200 };</script>
+			<com:stylefile path="../../catalog/catalog.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="test.js" />
+			<com:scriptfile path="../../catalog/catalog.js" />
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="functions-area"></div>
 			<div id="contents-area">
-				<button data-bind="click: openDialog">Open CDL010</button>
+				<div id="side-menu" class="cf"></div>
+				<div id="content" class="cf">
+					<input id="employeeId" data-bind="ntsTextEditor: {
+						value: employeeId,
+						required: true
+					}"/>
+					<button data-bind="click: openDialog">Open CDL010</button>
+				</div>
 			</div>
 		</ui:define>
 

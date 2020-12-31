@@ -58,82 +58,82 @@
               </tr>
 
               <!-- 項目制御 ※1 -->
-              <com:ko-if bind="!_.isEmpty(detailData().contactInformation.companyPhone)">
+              <com:ko-if bind="!_.isEmpty(detailData().contactInformation.companyMobilePhoneNumber)">
                 <tr>
                   <!-- A2_1 携帯電話（会社用）-->
                   <td>#{i18n.getText('CDL010_12')}</td>
                   <!-- A2_2 -->
-                  <td data-bind="text: detailData().contactInformation.companyPhone"></td>
+                  <td data-bind="text: detailData().contactInformation.companyMobilePhoneNumber"></td>
                 </tr>
               </com:ko-if>
 
               <!-- 項目制御 ※2 -->
-              <com:ko-if bind="!_.isEmpty(detailData().contactInformation.personPhone)">
+              <com:ko-if bind="!_.isEmpty(detailData().contactInformation.personalMobilePhoneNumber)">
                 <tr>
                   <!-- A3_1 携帯電話（個人用） -->
                   <td>#{i18n.getText('CDL010_3')}</td>
                   <!-- A3_2 -->
-                  <td data-bind="text: detailData().contactInformation.personPhone"></td>
+                  <td data-bind="text: detailData().contactInformation.personalMobilePhoneNumber"></td>
                 </tr>
               </com:ko-if>
 
               <!-- 項目制御 ※3 -->
-              <com:ko-if bind="!_.isEmpty(detailData().contactInformation.contact1)">
+              <com:ko-if bind="!_.isEmpty(detailData().contactInformation.emergencyNumber1)">
                 <tr>
                   <!-- A4_1 緊急電話番号1 -->
                   <td>#{i18n.getText('CDL010_4')}</td>
                   <!-- A4_2 -->
-                  <td data-bind="text: detailData().contactInformation.contact1"></td>
+                  <td data-bind="text: detailData().contactInformation.emergencyNumber1"></td>
                 </tr>
               </com:ko-if>
 
               <!-- 項目制御 ※4 -->
-              <com:ko-if bind="!_.isEmpty(detailData().contactInformation.contact2)">
+              <com:ko-if bind="!_.isEmpty(detailData().contactInformation.emergencyNumber2)">
                 <tr>
                   <!-- A5_1 緊急電話番号2 -->
                   <td>#{i18n.getText('CDL010_5')}</td>
                   <!-- A5_2 -->
-                  <td data-bind="text: detailData().contactInformation.contact2"></td>
+                  <td data-bind="text: detailData().contactInformation.emergencyNumber2"></td>
                 </tr>
               </com:ko-if>
 
               <!-- 項目制御 ※5 -->
-              <com:ko-if bind="!_.isEmpty(detailData().contactInformation.seatDial)">
+              <com:ko-if bind="!_.isEmpty(detailData().contactInformation.seatDialIn)">
                 <tr>
                   <!-- A6_1 ダイヤルイン番 -->
                   <td>#{i18n.getText('CDL010_6')}</td>
                   <!-- A6_2 -->
-                  <td data-bind="text: detailData().contactInformation.seatDial"></td>
+                  <td data-bind="text: detailData().contactInformation.seatDialIn"></td>
                 </tr>
               </com:ko-if>
 
               <!-- 項目制御 ※6 -->
-              <com:ko-if bind="!_.isEmpty(detailData().contactInformation.seatNo)">
+              <com:ko-if bind="!_.isEmpty(detailData().contactInformation.seatExtensionNumber)">
                 <tr>
                   <!-- A7_1 内線番号 -->
                   <td>#{i18n.getText('CDL010_7')}</td>
                   <!-- A7_2 -->
-                  <td data-bind="text: detailData().contactInformation.seatNo"></td>
+                  <td data-bind="text: detailData().contactInformation.seatExtensionNumber"></td>
                 </tr>
               </com:ko-if>
 
               <!-- 項目制御 ※7 -->
-              <com:ko-if bind="!_.isEmpty(detailData().contactInformation.cEmail)">
+              <com:ko-if bind="!_.isEmpty(detailData().contactInformation.companyEmailAddress)">
                 <tr>
                   <!-- A8_1 会社メールアドレス -->
                   <td>#{i18n.getText('CDL010_8')}</td>
                   <!-- A8_2 -->
-                  <td data-bind="html: detailData().contactInformation.cEmail"></td>
+                  <td data-bind="html: detailData().contactInformation.companyEmailAddress"></td>
                 </tr>
               </com:ko-if>
 
               <!-- 項目制御 ※8 -->
-              <com:ko-if bind="!_.isEmpty(detailData().contactInformation.cMobileEmail)">
+              <com:ko-if bind="!_.isEmpty(detailData().contactInformation.companyMobileEmailAddress)">
                 <tr>
                   <!-- A9_1 会社携帯メールアドレ -->
                   <td>#{i18n.getText('CDL010_9')}</td>
                   <!-- A9_2 -->
-                  <td data-bind="html: detailData().contactInformation.cMobileEmail"></td>
+                  <td data-bind="html: detailData().contactInformation.companyMobileEmailAddress"></td>
                 </tr>
               </com:ko-if>
 
@@ -141,14 +141,14 @@
                 <!-- A10_1 個人メールアドレス -->
                 <td>#{i18n.getText('CDL010_10')}</td>
                 <!-- A10_2 -->
-                <td data-bind="html: detailData().contactInformation.pEmail"></td>
+                <td data-bind="html: detailData().contactInformation.personalEmailAddress"></td>
               </tr>
 
               <tr>
                 <!-- A11_1 個人携帯メールアド -->
                 <td>#{i18n.getText('CDL010_11')}</td>
                 <!-- A11_2 -->
-                <td data-bind="html: detailData().contactInformation.pMobileEmail"></td>
+                <td data-bind="html: detailData().contactInformation.personalMobileEmailAddress"></td>
               </tr>
             </tbody>
           </table>

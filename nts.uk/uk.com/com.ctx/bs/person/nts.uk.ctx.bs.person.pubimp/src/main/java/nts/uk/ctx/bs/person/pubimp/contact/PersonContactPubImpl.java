@@ -11,6 +11,7 @@ import command.person.personal.contact.PersonalContactDto;
 import nts.uk.ctx.bs.person.dom.person.personal.contact.EmergencyContact;
 import nts.uk.ctx.bs.person.dom.person.personal.contact.PersonalContact;
 import nts.uk.ctx.bs.person.dom.person.personal.contact.PersonalContactRepository;
+import nts.uk.ctx.bs.person.pub.contact.OtherContact;
 import nts.uk.ctx.bs.person.pub.contact.PersonContactObject;
 import nts.uk.ctx.bs.person.pub.contact.PersonContactPub;
 
@@ -44,7 +45,21 @@ public class PersonContactPubImpl implements PersonContactPub {
 		pcObject.setContactName2(emerContact2.map(item -> item.getContactName().v()).orElse(null));
 		pcObject.setPhoneNumber2(emerContact2.map(item -> item.getPhoneNumber().v()).orElse(null));
 		
-//		pcObject.setOtherContacts(p.getOtherContacts().stream().map(i -> i).collect(Collectors.toList()));
+		pcObject.setIsPhoneNumberDisplay(p.getIsPhoneNumberDisplay());
+		pcObject.setIsMailAddressDisplay(p.getIsMailAddressDisplay());
+		pcObject.setIsMobileEmailAddressDisplay(p.getIsMobileEmailAddressDisplay());
+		pcObject.setIsPhoneNumberDisplay(p.getIsPhoneNumberDisplay());
+		pcObject.setIsEmergencyContact1Display(p.getIsEmergencyContact1Display());
+		pcObject.setIsEmergencyContact2Display(p.getIsEmergencyContact2Display());
+		
+		List<OtherContact> otherContacts = p.getOtherContacts().stream()
+				.map(x -> OtherContact.builder()
+					.isDisplay(x.getIsDisplay())
+					.no(x.getOtherContactNo())
+					.contactName(x.getAddress().v())
+					.build())
+				.collect(Collectors.toList());
+		pcObject.setOtherContacts(otherContacts);
 		return pcObject;
 	}
 
