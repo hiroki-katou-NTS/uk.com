@@ -94,8 +94,8 @@ public class ReferContactInformationScreenQuery {
 				.personalEmailAddress(contactInfo.getPersonalEmailAddress() != null ? contactInfo.getPersonalEmailAddress().orElse("") : "")
 				.companyEmailAddress(contactInfo.getCompanyEmailAddress() != null ? contactInfo.getCompanyEmailAddress().orElse("") : "")
 				.otherContactsInfomation(contactInfo.getOtherContactsInfomation())
-				.seatDialIn(contactInfo.getSeatDialIn().v())
-				.seatExtensionNumber(contactInfo.getSeatExtensionNumber().v())
+				.seatDialIn(contactInfo.getSeatDialIn() != null ? contactInfo.getSeatDialIn().v() : "")
+				.seatExtensionNumber(contactInfo.getSeatExtensionNumber() != null ? contactInfo.getSeatExtensionNumber().v() : "")
 				.emergencyNumber1(contactInfo.getEmergencyNumber1())
 				.emergencyNumber2(contactInfo.getEmergencyNumber2())
 				.personalMobilePhoneNumber(contactInfo.getPersonalMobilePhoneNumber())
@@ -140,9 +140,9 @@ public class ReferContactInformationScreenQuery {
 				.builder()
 				.businessName(empBasicInfo.getBusinessName())
 				.employmentName(employment.get().getEmploymentName().v())
-				.workplaceName(workplaceInfo.get(0).getWorkplaceName().v())
-				.jobTitleName(jobTitleInfo.get().getJobTitleName().v())
-				.classificationName(classification.get().getClassificationName().v())
+				.workplaceName(workplaceInfo.get(0).getWorkplaceName() != null ? workplaceInfo.get(0).getWorkplaceName().v() : "")
+				.jobTitleName(jobTitleInfo.get().getJobTitleName() != null ? jobTitleInfo.get().getJobTitleName().v() : "")
+				.classificationName(classification.get().getClassificationName() != null ? classification.get().getClassificationName().v() : "")
 				.contactInformation(contactInformation)
 				.build();
 	}
