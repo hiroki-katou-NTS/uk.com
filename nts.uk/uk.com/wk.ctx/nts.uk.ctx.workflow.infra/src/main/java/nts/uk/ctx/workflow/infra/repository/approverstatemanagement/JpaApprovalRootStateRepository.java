@@ -76,6 +76,8 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 
 	private static final String SELECT_CF_DAY_BY_EMP_DATE_SP;
 
+	private static final String SELECT_DAY_BY_LIST_EMP_DATE;
+	private static final String SELECT_MONTH_BY_LIST_EMP_DATE;
 	private static final String SELECT_BY_LIST_EMP_DATE;
 
 	private static final String SELECT_APPS_BY_EMP_AND_DATES;
@@ -172,10 +174,25 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
+		builderString.append(" FROM WwfdtApprovalRootDay e");
+		builderString.append(" WHERE e.recordDate >= :startDate");
+		builderString.append(" AND e.recordDate <= :endDate");
+		builderString.append(" AND e.employeeID IN :employeeID");
+		SELECT_DAY_BY_LIST_EMP_DATE = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM WwfdtApprovalRootMonth e");
+		builderString.append(" WHERE e.recordDate >= :startDate");
+		builderString.append(" AND e.recordDate <= :endDate");
+		builderString.append(" AND e.employeeID IN :employeeID");
+		SELECT_MONTH_BY_LIST_EMP_DATE = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
 		builderString.append(" FROM WwfdtApprovalRootState e");
 		builderString.append(" WHERE e.recordDate >= :startDate");
 		builderString.append(" AND e.recordDate <= :endDate");
-		builderString.append(" AND e.rootType = :rootType");
 		builderString.append(" AND e.employeeID IN :employeeID");
 		SELECT_BY_LIST_EMP_DATE = builderString.toString();
 
@@ -491,9 +508,20 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	@Override
 	public List<ApprovalRootState> findAppByListEmployeeIDRecordDate(GeneralDate startDate, GeneralDate endDate,
 			List<String> employeeIDs, Integer rootType) {
-		return this.queryProxy().query(SELECT_BY_LIST_EMP_DATE, WwfdtApprovalRootState.class)
-				.setParameter("startDate", startDate).setParameter("endDate", endDate)
-				.setParameter("rootType", rootType).setParameter("employeeID", employeeIDs).getList(x -> x.toDomain());
+		switch (rootType) {
+			case 1:
+				return this.queryProxy().query(SELECT_DAY_BY_LIST_EMP_DATE, WwfdtApprovalRootState.class)
+						.setParameter("startDate", startDate).setParameter("endDate", endDate)
+						.setParameter("employeeID", employeeIDs).getList(x -> x.toDomain());
+			case 2:
+				return this.queryProxy().query(SELECT_MONTH_BY_LIST_EMP_DATE, WwfdtApprovalRootState.class)
+						.setParameter("startDate", startDate).setParameter("endDate", endDate)
+						.setParameter("employeeID", employeeIDs).getList(x -> x.toDomain());
+			default:
+				return this.queryProxy().query(SELECT_BY_LIST_EMP_DATE, WwfdtApprovalRootState.class)
+						.setParameter("startDate", startDate).setParameter("endDate", endDate)
+						.setParameter("employeeID", employeeIDs).getList(x -> x.toDomain());
+		}
 	}
 
 	@Override
