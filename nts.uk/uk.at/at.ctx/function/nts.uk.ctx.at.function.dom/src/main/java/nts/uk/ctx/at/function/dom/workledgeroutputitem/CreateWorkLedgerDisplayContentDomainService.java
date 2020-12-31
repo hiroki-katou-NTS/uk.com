@@ -96,12 +96,8 @@ public class CreateWorkLedgerDisplayContentDomainService {
                 val yearMonthPeriod = GetSuitableDateByClosureDateUtility.convertPeriod(date, closureDay);
                 //5.1  ⑥ Call [No.495]勤怠項目IDを指定して月別実績の値を取得（複数レコードは合算）
                 Map<String, List<MonthlyRecordValueImport>> actualMultipleMonths = null;
-                try {
-                    actualMultipleMonths = require.getActualMultipleMonth(Collections.singletonList(e.getEmployeeId()),
-                            yearMonthPeriod, listAttIds);
-                } catch (Exception e1) {
-                    continue;
-                }
+                actualMultipleMonths = require.getActualMultipleMonth(Collections.singletonList(e.getEmployeeId()),
+                        yearMonthPeriod, listAttIds);
 
                 if (actualMultipleMonths == null || actualMultipleMonths.get(e.getEmployeeId()) == null) continue;
                 listAttendances.addAll(actualMultipleMonths.get(e.getEmployeeId()));
@@ -116,6 +112,7 @@ public class CreateWorkLedgerDisplayContentDomainService {
                 val value = attName.getOrDefault(att.getAttendanceId(), null);
                 if (value == null || value.getTypeOfAttendanceItem() == null) continue;
                 val attribute = convertMonthlyToAttForms(value.getTypeOfAttendanceItem());
+                if (attribute == null) continue;
                 allValue.forEach((key, values) -> {
                     val valueSub = values.getOrDefault(att.getAttendanceId(), null);
                     boolean isCharacter = attribute == CommonAttributesOfForms.WORK_TYPE || attribute == CommonAttributesOfForms.WORKING_HOURS;
@@ -139,9 +136,12 @@ public class CreateWorkLedgerDisplayContentDomainService {
                                 attribute));
 
             }
-            item.setMonthlyDataList(iemOneLine);
-            rs.add(item);
-
+            if (iemOneLine.size() != 0) {
+                item.setMonthlyDataList(iemOneLine);
+                if (!item.getMonthlyDataList().isEmpty() || item.getMonthlyDataList().size() != 0) {
+                    rs.add(item);
+                }
+            }
         });
         if (rs.isEmpty()) {
             throw new BusinessException("Msg_1926");
