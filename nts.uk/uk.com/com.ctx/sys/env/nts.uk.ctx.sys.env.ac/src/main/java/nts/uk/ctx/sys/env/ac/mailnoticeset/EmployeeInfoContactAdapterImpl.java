@@ -5,6 +5,7 @@
 package nts.uk.ctx.sys.env.ac.mailnoticeset;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -63,6 +64,26 @@ public class EmployeeInfoContactAdapterImpl implements EmployeeInfoContactAdapte
 	public void register(EmployeeInfoContactImport employee) {
 		this.employeeContactPub.register(employee.getEmployeeId(), employee.getMailAddress(),
 				employee.getMobileMailAddress(), employee.getCellPhoneNo());
+	}
+	
+	@Override
+	public Optional<EmployeeInfoContactImport> get(String employeeId) {
+		EmployeeContactObject item = this.employeeContactPub.get(employeeId);
+		EmployeeInfoContactImport employeeInfoContactImport = null;
+		if (item != null) {
+			employeeInfoContactImport = new EmployeeInfoContactImport(item.getSid(),
+					item.getMailAddress(),
+					item.getPhoneMailAddress(),
+					item.getCellPhoneNo(),
+					item.getSeatDialIn(),
+					item.getSeatExtensionNumber(),
+					item.getIsMailAddressDisplay(),
+					item.getIsMobileMailAddressDisplay(),
+					item.getIsCellPhoneNumberDisplay(),
+					item.getIsSeatDialInDisplay(),
+					item.getIsSeatExtensionNumberDisplay());
+		}
+		return Optional.ofNullable(employeeInfoContactImport);
 	}
 
 }

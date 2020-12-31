@@ -113,5 +113,15 @@ public class EmployeeContactPubImpl implements EmployeeContactPub {
 		return pcObject;
 
 	}
+	
+	@Override
+	public EmployeeContactObject get(String employeeId) {
+		Optional<EmployeeContact> employeeContactOpt = this.empContactRepo.getByEmployeeId(employeeId);
+		EmployeeContactObject employeeContactObject = null;
+		if (employeeContactOpt.isPresent()) {
+			employeeContactObject = this.convert(employeeContactOpt.get());
+		}
+		return employeeContactObject;
+	}
 
 }

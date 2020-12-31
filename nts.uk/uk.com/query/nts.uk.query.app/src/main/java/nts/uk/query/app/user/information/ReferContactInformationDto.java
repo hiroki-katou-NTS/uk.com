@@ -2,7 +2,6 @@ package nts.uk.query.app.user.information;
 
 import lombok.Builder;
 import lombok.Data;
-import nts.uk.ctx.sys.env.dom.mailnoticeset.company.service.ContactInformationDTO;
 
 /**
  * UKDesign.UniversalK.共通.CDL_共通ダイアログ.CDL010_連絡先の参照.メニュー別OCD.連絡先情報の参照
@@ -36,6 +35,6 @@ public class ReferContactInformationDto {
 	/**
 	 * 連絡先情報DTO
 	 */
-	private ContactInformationDTO contactInformationDTO;
+	private ContactInformationDTO contactInformation;
 
 }

@@ -5,6 +5,7 @@
 package nts.uk.ctx.sys.env.ac.mailnoticeset;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -60,6 +61,27 @@ public class PersonContactAdapterImpl implements PersonContactAdapter {
 	public void register(PersonContactImport person) {
 		this.personContactPub.register(person.getPersonId(), person.getCellPhoneNo(),
 				person.getMailAddress(), person.getMobileMailAddress());
+	}
+	
+	@Override
+	public Optional<PersonContactImport> getPersonalContact(String personId) {
+		PersonContactObject item = personContactPub.getPersonalContact(personId);
+		PersonContactImport personContactImport = null;
+		if (item != null) {
+			personContactImport = new PersonContactImport(
+					item.getPersonId(),
+					item.getMailAdress(),
+					item.getMobileMailAdress(),
+					item.getCellPhoneNumber(),
+					item.getMemo1(),
+					item.getMemo2(),
+					item.getIsMailAddressDisplay(),
+					item.getIsMobileEmailAddressDisplay(),
+					item.getIsPhoneNumberDisplay(),
+					item.getIsEmergencyContact1Display(),
+					item.getIsEmergencyContact2Display());
+		}
+		return Optional.ofNullable(personContactImport);
 	}
 
 }

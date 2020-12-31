@@ -22,9 +22,11 @@ import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
 import nts.uk.ctx.bs.employee.pub.generalinfo.EmployeeGeneralInfoDto;
 import nts.uk.ctx.bs.employee.pub.generalinfo.EmployeeGeneralInfoPub;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.adapter.EmployeeInfoContactAdapter;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.adapter.PersonContactAdapter;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInformationUseMethod;
-import nts.uk.ctx.sys.env.dom.mailnoticeset.company.service.ContactInformationDTO;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInformationUseMethodRepository;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.company.service.ContactInformation;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.service.UserInformationUseMethodService;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.EmployeeInfoContactImport;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PersonContactImport;
@@ -34,9 +36,6 @@ import nts.uk.shr.com.context.AppContexts;
 public class ReferContactInformationScreenQuery {
 	@Inject
 	private SearchEmployeeService employeeService;
-
-	@Inject
-	private UserInformationUseMethodService userInfomationUseMethodService;
 
 	@Inject
 	private EmployeeGeneralInfoPub employeeGeneralInfoPub;
@@ -55,10 +54,23 @@ public class ReferContactInformationScreenQuery {
 	
 	@Inject
 	private PersonContactAdapter personContactAdapter;
+	
+	@Inject
+	private EmployeeInfoContactAdapter employeeInfoContactAdapter;
+	
+	@Inject
+	private UserInformationUseMethodRepository userInformationUseMethodRepository;
 
-	public ReferContactInformationDto getContactInfomation(String employeeId, GeneralDate referenceDate) {
+	/**
+	 * 
+	 * @param employeeId
+	 * @param referenceDate
+	 * @return ReferContactInformationDto
+	 */
+	public ReferContactInformationDto getContactInfomation(String employeeId) {
 		String cid = AppContexts.user().companyId();
 		String sid = AppContexts.user().employeeId();
+		GeneralDate baseDate = GeneralDate.today();
 		String personalId = AppContexts.user().personId();
 		String employmentCode = "";
 		String classificationCode = "";
@@ -74,13 +86,25 @@ public class ReferContactInformationScreenQuery {
 		}
 
 		// step 2 : 連絡先情報を取得(Require, 会社ID, 社員ID, 個人ID)
-		UserInformationUseMethodServiceImpl require = new UserInformationUseMethodServiceImpl(personContactAdapter);
-		ContactInformationDTO contactInfomation = this.userInfomationUseMethodService.get(require, sid, personalId);
+		RequireImpl require = new RequireImpl(personContactAdapter, employeeInfoContactAdapter, userInformationUseMethodRepository);
+		ContactInformation contactInfo = UserInformationUseMethodService.get(require, sid, personalId);
+		ContactInformationDTO contactInformation = ContactInformationDTO.builder()
+				.companyMobileEmailAddress(contactInfo.getCompanyEmailAddress() != null ? contactInfo.getCompanyEmailAddress().orElse("") : "")
+				.personalMobileEmailAddress(contactInfo.getPersonalMobileEmailAddress() != null ? contactInfo.getPersonalMobileEmailAddress().orElse("") : "")
+				.personalEmailAddress(contactInfo.getPersonalEmailAddress() != null ? contactInfo.getPersonalEmailAddress().orElse("") : "")
+				.companyEmailAddress(contactInfo.getCompanyEmailAddress() != null ? contactInfo.getCompanyEmailAddress().orElse("") : "")
+				.otherContactsInfomation(contactInfo.getOtherContactsInfomation())
+				.seatDialIn(contactInfo.getSeatDialIn().v())
+				.seatExtensionNumber(contactInfo.getSeatExtensionNumber().v())
+				.emergencyNumber1(contactInfo.getEmergencyNumber1())
+				.emergencyNumber2(contactInfo.getEmergencyNumber2())
+				.personalMobilePhoneNumber(contactInfo.getPersonalMobilePhoneNumber())
+				.companyMobilePhoneNumber(contactInfo.getCompanyMobilePhoneNumber())
+				.build();
 
 		// step 3 : <call> 社員ID（List）と期間から個人情報を取得する
-
 		EmployeeGeneralInfoDto employeeGeneralInfoImport = employeeGeneralInfoPub.getPerEmpInfo(Arrays.asList(sid),
-				DatePeriod.oneDay(referenceDate), true, true, true, true, false);
+				DatePeriod.oneDay(baseDate), true, true, true, true, false);
 
 		// step 4 : get*(ログイン会社ID、雇用コード) - get domain 雇用
 		if (!employeeGeneralInfoImport.getEmploymentDto().isEmpty()
@@ -119,31 +143,36 @@ public class ReferContactInformationScreenQuery {
 				.workplaceName(workplaceInfo.get(0).getWorkplaceName().v())
 				.jobTitleName(jobTitleInfo.get().getJobTitleName().v())
 				.classificationName(classification.get().getClassificationName().v())
-				.contactInformationDTO(contactInfomation)
+				.contactInformation(contactInformation)
 				.build();
 	}
 	
 
 	@AllArgsConstructor
-    private static class UserInformationUseMethodServiceImpl implements UserInformationUseMethodService.Require {
+    private static class RequireImpl implements UserInformationUseMethodService.Require {
 		
 		@Inject
-		PersonContactAdapter personContactAdapter;
+		private PersonContactAdapter personContactAdapter;
 		
+		@Inject
+		private EmployeeInfoContactAdapter employeeInfoContactAdapter;
+		
+		@Inject
+		private UserInformationUseMethodRepository userInformationUseMethodRepository;
 		
 		@Override
 		public Optional<UserInformationUseMethod> getUserInfoByCid(String cid) {
-			return null;
+			return this.userInformationUseMethodRepository.findByCId(cid);
 		}
 
 		@Override
 		public Optional<PersonContactImport> getByPersonalId(String personalId) {
-			return Optional.of(this.personContactAdapter.getListContact(Arrays.asList(personalId)).get(0));
+			return this.personContactAdapter.getPersonalContact(personalId);
 		}
 
 		@Override
 		public Optional<EmployeeInfoContactImport> getByContactInformation(String employeeId) {
-			return null;
+			return this.employeeInfoContactAdapter.get(employeeId);
 		}
 		
 	}

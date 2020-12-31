@@ -1,6 +1,10 @@
 /// <reference path='../../../../lib/nittsu/viewcontext.d.ts' />
 module nts.uk.at.view.cdl010.a.screenModel {
 
+  const API = {
+    getContactInfomation: 'query/refercontactinfor/get'
+  };
+
   @bean()
   export class ViewModel extends ko.ViewModel {
 
@@ -9,6 +13,7 @@ module nts.uk.at.view.cdl010.a.screenModel {
 
     created(param: ObjectParam) {
       const vm = this;
+      vm.$ajax('com', API.getContactInfomation, param.employeeId)
       // Call API to get ContactInformationRefer
       const detailData: ContactInformationRefer = ({
         businessName: 'ハタケ　カカシ',

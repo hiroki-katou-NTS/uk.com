@@ -79,5 +79,14 @@ public class PersonContactPubImpl implements PersonContactPub {
 			personalContactRepository.insert(domain);
 		}
 	}
+	
+	@Override
+	public PersonContactObject getPersonalContact(String personId) {
+		Optional<PersonalContact> personContactOpt = personalContactRepository.getByPersonalId(personId);
+		if (personContactOpt.isPresent()) {
+			return this.convertToDto(personContactOpt.get());
+		}
+		return null;
+	}
 
 }
