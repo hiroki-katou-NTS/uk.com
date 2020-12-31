@@ -24,7 +24,7 @@ public class ExtractionMonConCmd {
     public static ExtractionMonConCmd fromDomain(ExtractionMonthlyCon domain) {
         return new ExtractionMonConCmd(
                 domain.getErrorAlarmWorkplaceId(),
-                domain.getNo().value,
+                domain.getNo(),
                 domain.getCheckMonthlyItemsType().value,
                 domain.isUseAtr(),
                 domain.getErrorAlarmCheckID(),

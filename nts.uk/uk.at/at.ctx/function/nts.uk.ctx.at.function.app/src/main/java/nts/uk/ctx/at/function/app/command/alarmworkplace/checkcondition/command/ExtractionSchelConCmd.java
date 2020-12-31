@@ -21,7 +21,7 @@ public class ExtractionSchelConCmd {
     public static ExtractionSchelConCmd fromDomain(ExtractionScheduleCon domain) {
         return new ExtractionSchelConCmd(
                 domain.getErrorAlarmWorkplaceId(),
-                domain.getOrderNumber().value,
+                domain.getOrderNumber(),
                 domain.getCheckDayItemsType().value,
                 domain.isUseAtr(),
                 domain.getErrorAlarmCheckID(),

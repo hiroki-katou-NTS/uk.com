@@ -16,6 +16,7 @@ module nts.uk.at.view.kal013.a {
     @bean()
     class ViewModel extends ko.ViewModel {
 
+        backButon: string = "/view/kal/012/a/index.xhtml";
         //categories
         categoryList: KnockoutObservableArray<common.Category> = ko.observableArray(common.workplaceCategory());
         selectedCategoryCode: KnockoutObservable<number> = ko.observable(common.WorkplaceCategory.MASTER_CHECK_BASIC);
@@ -63,14 +64,6 @@ module nts.uk.at.view.kal013.a {
 
             vm.tabSelections();
 
-            vm.selectedCategoryCode.subscribe((newCode: any) => {
-                vm.getSelectedCategory(newCode);
-
-                //reload with new category
-                vm.getAlarmChecklist(newCode);
-                vm.showHiddenTabByCategory(newCode);
-            });
-
             vm.selectedTab.subscribe((newTab) => {
                 const vm = this;
                 let category: any = vm.selectedCategoryCode();
@@ -102,7 +95,11 @@ module nts.uk.at.view.kal013.a {
             vm.changeCategory();
 
             vm.selectedCategoryCode.subscribe(value => {
-                vm.changeCategory();
+                if (value != null) {
+                    vm.changeCategory();
+                    vm.getAlarmChecklist(value);
+                    vm.showHiddenTabByCategory(value);
+                }
             });
 
             vm.selectedAlarmCode.subscribe(value => {
@@ -127,6 +124,7 @@ module nts.uk.at.view.kal013.a {
             vm.selectedAlarmCode(null);
             vm.actualFixedItems(vm.fixedItems());
             vm.actualFixedItems.valueHasMutated();
+            $('#code').focus();
         }
 
         openDialogD() {
@@ -137,6 +135,7 @@ module nts.uk.at.view.kal013.a {
                     if (result) {
                         vm.$errors("clear");
                         vm.isCodeChangedFromScreenD(true);
+                        vm.selectedCategoryCode(null);
                         vm.selectedCategoryCode(result.shareParam);
                     }
                 });
@@ -150,6 +149,8 @@ module nts.uk.at.view.kal013.a {
             vm.currentCode(null);
             vm.currentName(null);
             vm.selectedAlarmCode(null);
+            vm.isNewMode(true);
+            $('#code').focus();
         }
 
         findItemSelected(code: any, seachArr: Array<any>): any {
@@ -161,6 +162,8 @@ module nts.uk.at.view.kal013.a {
 
         changeCategory() {
             const vm = this;
+
+            vm.$errors("clear");
 
             vm.$blockui("grayout");
             return vm.$ajax(PATH_API.changeCategory + "/" + vm.selectedCategoryCode()).done((res: any) => {
@@ -181,7 +184,7 @@ module nts.uk.at.view.kal013.a {
                     vm.fixedItems(fixedItems);
 
                     if (categoryItem.length) {
-                        vm.alarmListItems(categoryItem);
+                        vm.alarmListItems(_.sortBy(categoryItem, i => i.code));
                         if (vm.isCodeChangedFromScreenD()) {
                             vm.switchNewMode();
                             vm.isCodeChangedFromScreenD(false);
@@ -195,6 +198,8 @@ module nts.uk.at.view.kal013.a {
                         vm.alarmListItems([]);
                         if (!vm.isNewMode()) {
                             vm.switchNewMode();
+                        } else {
+                            $('#code').focus();
                         }
                     }
 
@@ -207,6 +212,8 @@ module nts.uk.at.view.kal013.a {
 
         changeAlarmCode() {
             const vm = this;
+
+            vm.$errors("clear");
 
             vm.isNewMode(false);
             let params = {
@@ -224,6 +231,7 @@ module nts.uk.at.view.kal013.a {
             vm.$ajax(PATH_API.changeAlarmCode, params).done((res: any) => {
                 if (res) {
                     let fixed = ko.toJS(vm.fixedItems());
+                    let lstOpItems: any = [];
                     let actual = _.map(fixed, function (i: any) {
                         if (res.conditions && res.conditions.length) {
                             let con = res.conditions;
@@ -247,7 +255,7 @@ module nts.uk.at.view.kal013.a {
 
                     if (vm.selectedCategoryCode() == common.WorkplaceCategory.MONTHLY) {
                         if (res.opMonCons && res.opMonCons.length) {
-                            let opItems = _.map(res.opMonCons, function (i: ExtractionMonConDto) {
+                            lstOpItems = _.map(res.opMonCons, function (i: ExtractionMonConDto) {
                                 return new common.CheckConditionDto(
                                     false,
                                     i.errorAlarmWorkplaceId,
@@ -259,17 +267,17 @@ module nts.uk.at.view.kal013.a {
                                     i.maxValue,
                                     i.operator,
                                     i.messageDisp,
-                                    null,
-                                    null
+                                    i.checkTarget,
+                                    i.averageRatio || i.averageNumberOfDays || i.averageNumberOfTimes || i.averageTime
                                 );
                             });
-                            vm.checkConditions().checkConditionsList(opItems);
+
                         }
                     }
 
                     if (vm.selectedCategoryCode() == common.WorkplaceCategory.SCHEDULE_DAILY) {
                         if (res.opSchelCons && res.opSchelCons.length) {
-                            let opItems = _.map(res.opSchelCons, function (i: ExtractionSchelCon) {
+                            lstOpItems = _.map(res.opSchelCons, function (i: ExtractionSchelCon) {
                                 return new common.CheckConditionDto(
                                     false,
                                     i.errorAlarmWorkplaceId,
@@ -281,20 +289,24 @@ module nts.uk.at.view.kal013.a {
                                     i.maxValue,
                                     i.operator,
                                     i.messageDisp,
-                                    null,
-                                    null
+                                    i.checkTarget,
+                                    i.contrastType
                                 );
                             });
-                            vm.checkConditions().checkConditionsList(opItems);
                         }
                     }
-
+                    if (vm.checkConditions()) {
+                        vm.checkConditions().checkConditionsList(_.sortBy(lstOpItems, i => i.no()));
+                    }
                 }
 
 
             }).fail((err) => {
                 vm.$dialog.error(err);
-            }).always(() => vm.$blockui("clear"));
+            }).always(() => {
+                vm.$blockui("clear");
+                $('#name').focus();
+            });
 
         }
 
@@ -325,7 +337,11 @@ module nts.uk.at.view.kal013.a {
                };
             });
 
-            let opItems = ko.toJS(vm.checkConditions().checkConditionsList());
+            let opItems = [];
+
+            if (_.includes([common.WorkplaceCategory.MONTHLY, common.WorkplaceCategory.SCHEDULE_DAILY], vm.selectedCategoryCode())) {
+                opItems = ko.toJS(vm.checkConditions().checkConditionsList());
+            };
 
             let param = {
                 alarmCheck,
@@ -334,17 +350,20 @@ module nts.uk.at.view.kal013.a {
             };
 
             const apiString = vm.isNewMode() ? PATH_API.register : PATH_API.update;
-
-            vm.$blockui("grayout");
-            vm.$ajax(apiString, param).done((res) => {
-                vm.$dialog.info({messageId: "Msg_15"}).then(() => {
-                    vm.changeCategory().then(() => {
-                        vm.selectedAlarmCode(alarmCheck.code);
-                    });
-                });
-            }).fail((err) => {
-                vm.$dialog.error(err);
-            }).always(() => vm.$blockui("clear"));
+            vm.$validate(".nts-input").then((valid) => {
+                if (valid) {
+                    vm.$blockui("grayout");
+                    vm.$ajax(apiString, param).done((res) => {
+                        vm.$dialog.info({messageId: "Msg_15"}).then(() => {
+                            vm.changeCategory().then(() => {
+                                vm.selectedAlarmCode(alarmCheck.code);
+                            });
+                        });
+                    }).fail((err) => {
+                        vm.$dialog.error(err);
+                    }).always(() => vm.$blockui("clear"));
+                }
+            });
         }
 
         /**
@@ -359,12 +378,19 @@ module nts.uk.at.view.kal013.a {
             };
             let alarmList = ko.toJS(vm.alarmListItems());
             let index = _.findIndex(alarmList, (i: any) => i.code == vm.selectedAlarmCode());
-
+            const lastIndex = _.findLastIndex(alarmList);
 
             vm.$blockui("grayout");
             vm.$ajax(PATH_API.delete, param).done((res: any) => {
                 vm.$dialog.info({messageId: "Msg_15"}).then(() => {
-                    vm.changeCategory();
+                    vm.changeCategory().then(() => {
+                        if (vm.alarmListItems().length) {
+                            let newIndex = index == lastIndex ? lastIndex - 1 : index;
+                            vm.selectedAlarmCode(vm.alarmListItems()[newIndex].code);
+                        } else {
+                            vm.switchNewMode();
+                        }
+                    });
                 });
             }).fail((err) => {
                 vm.$dialog.error(err);

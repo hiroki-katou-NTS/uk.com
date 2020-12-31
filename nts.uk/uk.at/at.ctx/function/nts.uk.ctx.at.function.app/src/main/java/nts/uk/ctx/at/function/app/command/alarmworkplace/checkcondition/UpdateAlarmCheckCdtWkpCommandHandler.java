@@ -156,11 +156,11 @@ public class UpdateAlarmCheckCdtWkpCommandHandler extends CommandHandler<UpdateA
                             ))
                             .collect(Collectors.toList());
                     List<ExtractionScheduleCon> opItems = command.toDomainSchedule();
-                    condition = new AlarmScheduleCheckCdt(
-                            conItems.stream().map(FixedExtractionScheduleCon::getErrorAlarmWorkplaceId).collect(Collectors.toList()),
-                            Collections.emptyList());
                     List<String> fixedIds = ((AlarmScheduleCheckCdt) domain.get().getCondition()).getAlarmCheckWkpID();
                     List<String> opIds = ((AlarmScheduleCheckCdt) domain.get().getCondition()).getListOptionalIDs();
+                    condition = new AlarmScheduleCheckCdt(
+                            conItems.stream().map(FixedExtractionScheduleCon::getErrorAlarmWorkplaceId).collect(Collectors.toList()),
+                            opItems.stream().map(ExtractionScheduleCon::getErrorAlarmWorkplaceId).collect(Collectors.toList()));
                     fixedExtractionScheduleConRepo.delete(fixedIds);
                     extractionScheduleConRepo.delete(opIds);
                     fixedExtractionScheduleConRepo.register(conItems);
@@ -179,13 +179,13 @@ public class UpdateAlarmCheckCdtWkpCommandHandler extends CommandHandler<UpdateA
                                     i.getMessage()
                             ))
                             .collect(Collectors.toList());
-                    condition = new AlarmMonthlyCheckCdt(
-                            conItems.stream().map(FixedExtractionMonthlyCon::getErrorAlarmWorkplaceId).collect(Collectors.toList()),
-                            Collections.emptyList()
-                    );
                     List<ExtractionMonthlyCon> opItems = command.toDomainMon();
                     List<String> fixedIds = ((AlarmMonthlyCheckCdt) domain.get().getCondition()).getAlarmCheckWkpID();
                     List<String> opIds = ((AlarmMonthlyCheckCdt) domain.get().getCondition()).getListOptionalIDs();
+                    condition = new AlarmMonthlyCheckCdt(
+                            conItems.stream().map(FixedExtractionMonthlyCon::getErrorAlarmWorkplaceId).collect(Collectors.toList()),
+                            opItems.stream().map(ExtractionMonthlyCon::getErrorAlarmWorkplaceId).collect(Collectors.toList())
+                    );
                     fixedExtractionMonthlyConRepo.delete(fixedIds);
                     extractionMonthlyConRepo.delete(opIds);
                     fixedExtractionMonthlyConRepo.register(conItems);

@@ -86,7 +86,7 @@ public class ExtractionSchelConDto {
         }
         return new ExtractionSchelConDto(
                 domain.getErrorAlarmWorkplaceId(),
-                domain.getOrderNumber().value,
+                domain.getOrderNumber(),
                 domain.getCheckDayItemsType().value,
                 domain.isUseAtr(),
                 domain.getErrorAlarmCheckID(),

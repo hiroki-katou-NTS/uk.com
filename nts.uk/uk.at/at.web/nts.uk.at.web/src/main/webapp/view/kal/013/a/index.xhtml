@@ -28,7 +28,7 @@
             <a tabindex="1"
                     id="a14"
                     class="goback"
-                    data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }, text: $i18n('KAL003_91')"></a
+                    data-bind="ntsLinkButton: { jump: backButon }, text: $i18n('KAL004_3')"></a
             >
             <button
                     tabindex="2"
@@ -39,7 +39,7 @@
                     tabindex="3"
                     id="a12"
                     class="proceed"
-                    data-bind="text: $i18n('KAL003_6'), click: registerAlarmListByWorkplace"
+                    data-bind="text: $i18n('KAL003_6'), click: registerAlarmListByWorkplace, enable: $root.errors.isEmpty"
             />
             <button
                     tabindex="4"
@@ -92,13 +92,14 @@
                             <div data-bind="ntsFormLabel: { required: true }, text: $vm.$i18n('KAL003_11')"></div>
                         </div>
                         <div>
-                            <input tabindex="9"
+                            <input id="code" tabindex="9"
                                     size="5"
                                     data-bind="ntsTextEditor: {
 										value: currentCode,
 										required: true,
                                         name: $vm.$i18n('KAL003_11'),
-                                        constraint: 'AlarmCheckConditionCode'
+                                        constraint: 'AlarmCheckConditionCode',
+                                        enable: isNewMode
                                         }"
                             />
                         </div>
@@ -106,7 +107,7 @@
                             <div data-bind="ntsFormLabel: { required: true }, text: $vm.$i18n('KAL003_12')"></div>
                         </div>
                         <div>
-                            <input tabindex="10"
+                            <input id="name" tabindex="10"
                                     size="15"
                                     data-bind="ntsTextEditor: {
 										value: currentName,
