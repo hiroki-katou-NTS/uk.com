@@ -219,9 +219,9 @@ module nts.uk.at.view.kbt002.h {
       this.execItemCd = param.execItemCd;
       this.overallStatus = param.overallStatus;
       this.overallError = param.overallError;
-      this.lastExecDateTime = moment.utc(param.lastExecDateTime).format("YYYY/MM/DD hh:mm:ss");
+      this.lastExecDateTime = moment.utc(param.lastExecDateTime).format("YYYY/MM/DD HH:mm:ss");
       this.execId = param.execId;
-      this.lastEndExecDateTime = param.lastEndExecDateTime ? moment.utc(param.lastEndExecDateTime).format("YYYY/MM/DD hh:mm:ss") : null;
+      this.lastEndExecDateTime = param.lastEndExecDateTime ? moment.utc(param.lastEndExecDateTime).format("YYYY/MM/DD HH:mm:ss") : null;
       this.rangeDateTime = param.rangeDateTime;
       this.errorSystem = param.errorSystem;
       this.errorBusiness = param.errorBusiness;

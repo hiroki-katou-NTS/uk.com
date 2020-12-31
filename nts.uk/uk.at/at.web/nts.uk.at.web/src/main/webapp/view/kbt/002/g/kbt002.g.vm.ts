@@ -25,8 +25,8 @@ module nts.uk.at.view.kbt002.g {
         self.overallStatus(self.getStatus(sharedData.overallStatus));
         self.overallError(self.getError(sharedData.overallError));
         self.taskLogList(_.map(sharedData.taskLogList, (item: any) => {
-          item.lastExecDateTime = item.lastExecDateTime ? moment.utc(item.lastExecDateTime).format("YYYY/MM/DD hh:mm:ss") : null;
-          item.lastEndExecDateTime = item.lastEndExecDateTime ? moment.utc(item.lastEndExecDateTime).format("YYYY/MM/DD hh:mm:ss") : null;
+          item.lastExecDateTime = item.lastExecDateTime ? moment.utc(item.lastExecDateTime).format("YYYY/MM/DD HH:mm:ss") : null;
+          item.lastEndExecDateTime = item.lastEndExecDateTime ? moment.utc(item.lastEndExecDateTime).format("YYYY/MM/DD HH:mm:ss") : null;
           return item;
         }));
         self.eachProcessPeriod = new EachProcessPeriod({

@@ -500,14 +500,15 @@
                                 name: '#[KBT002_40]',
                                 width: '400px',
                                 options: $parent.alarmByUserList,
-                                optionsValue: 'alarmCode',
+                                optionsValue: 'code',
                                 visibleItemsCount: 5,
                                 value: alarmCode,
-                                optionsText: 'alarmName',
+                                optionsText: 'name',
                                 editable: false,
                                 enable: alarmAtr(),
                                 columns: [
-                                  { prop: 'alarmName', length: 10 }
+                                  { prop: 'code', length: 4 },
+                                  { prop: 'name', length: 20 }
                                 ]
                               }">
                             </div>

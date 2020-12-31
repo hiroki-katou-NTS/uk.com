@@ -43,7 +43,7 @@ module nts.uk.at.view.kbt002.b {
     aggrPeriodList: KnockoutObservableArray<any> = ko.observableArray([]);
 
     // List get alarm by user
-    alarmByUserList: KnockoutObservableArray<any> = ko.observableArray([]);
+    alarmByUserList: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
 
     // B5_2 タスク有効設定
     taskEnableSettingList: KnockoutObservableArray<any> = ko.observableArray([
@@ -92,6 +92,7 @@ module nts.uk.at.view.kbt002.b {
       vm.$ajax(API.getMasterInfo)
         .then((response: any) => {
           vm.aggrPeriodList(_.map(response.aggrPeriodList, (item: any) => new ItemModel({ code: item.aggrFrameCode, name: item.optionalAggrName })));
+          vm.alarmByUserList(_.map(response.alarmPatternSettingList, (item: any) => new ItemModel({ code: item.alarmPatternCD, name: item.alarmPatternName })));
           vm.stdAcceptList(response.stdAcceptCondSetList);
           vm.stdOutputList(response.stdOutputCondSetList);
           vm.indexReconList(response.indexReorgCateList);
@@ -110,7 +111,7 @@ module nts.uk.at.view.kbt002.b {
     mounted() {
       const vm = this;
       vm.$blockui('grayout');
-      $.when(vm.getEnumDataList(), vm.getAlarmByUser())
+      $.when(vm.getEnumDataList())
         .always(() => vm.$blockui('clear'));
       vm.taskSetting.subscribe(data => {
         vm.executionTaskWarning(vm.buildExecutionTaskWarningStr(data));
