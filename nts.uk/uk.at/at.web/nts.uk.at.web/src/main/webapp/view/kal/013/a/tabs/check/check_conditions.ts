@@ -100,7 +100,7 @@ module nts.uk.at.view.kal013.a.tab {
                 i.no(index);
             });
             vm.checkConditionsList(afterRemoveLst);
-            vm.isEnableRemove(false);
+            // vm.isEnableRemove(false);
         }
 
 

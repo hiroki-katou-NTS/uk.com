@@ -135,8 +135,11 @@ module nts.uk.at.view.kal013.a {
                     if (result) {
                         vm.$errors("clear");
                         vm.isCodeChangedFromScreenD(true);
-                        vm.selectedCategoryCode(null);
-                        vm.selectedCategoryCode(result.shareParam);
+                        if (result.shareParam == vm.selectedCategoryCode()) {
+                            vm.selectedCategoryCode.valueHasMutated();
+                        } else {
+                            vm.selectedCategoryCode(result.shareParam);
+                        }
                     }
                 });
 
@@ -372,31 +375,37 @@ module nts.uk.at.view.kal013.a {
         deleteAlarmListByWorkplace() {
             const vm = this;
 
-            let param = {
-                category: vm.selectedCategoryCode(),
-                code: vm.selectedAlarmCode()
-            };
-            let alarmList = ko.toJS(vm.alarmListItems());
-            let index = _.findIndex(alarmList, (i: any) => i.code == vm.selectedAlarmCode());
-            const lastIndex = _.findLastIndex(alarmList);
+            vm.$dialog.confirm({ messageId: "Msg_18" }).then((result: 'no' | 'yes' | 'cancel') => {
+                if (result === 'yes') {
+                    vm.$errors("clear");
 
-            vm.$blockui("grayout");
-            vm.$ajax(PATH_API.delete, param).done((res: any) => {
-                vm.$dialog.info({messageId: "Msg_15"}).then(() => {
-                    vm.changeCategory().then(() => {
-                        if (vm.alarmListItems().length) {
-                            let newIndex = index == lastIndex ? lastIndex - 1 : index;
-                            vm.selectedAlarmCode(vm.alarmListItems()[newIndex].code);
-                        } else {
-                            vm.switchNewMode();
-                        }
-                    });
-                });
-            }).fail((err) => {
-                vm.$dialog.error(err);
-            }).always(() => vm.$blockui("clear"));
+                    let alarmList = ko.toJS(vm.alarmListItems());
+                    let index = _.findIndex(alarmList, (i: any) => i.code == vm.selectedAlarmCode());
+                    const lastIndex = _.findLastIndex(alarmList);
+                    let param = {
+                        category: vm.selectedCategoryCode(),
+                        code: vm.selectedAlarmCode()
+                    };
 
-
+                    vm.$blockui("grayout");
+                    vm.$ajax(PATH_API.delete, param).done((res: any) => {
+                        vm.$dialog.info({messageId: "Msg_16"}).then(() => {
+                            vm.changeCategory().then(() => {
+                                if (vm.alarmListItems().length) {
+                                    let newIndex = index == lastIndex ? lastIndex - 1 : index;
+                                    vm.selectedAlarmCode(vm.alarmListItems()[newIndex].code);
+                                } else {
+                                    vm.switchNewMode();
+                                }
+                            });
+                        });
+                    }).fail((err) => {
+                        vm.$dialog.error(err);
+                    }).always(() => vm.$blockui("clear"));
+                } else {
+                    return;
+                }
+            });
         }
 
         /**
