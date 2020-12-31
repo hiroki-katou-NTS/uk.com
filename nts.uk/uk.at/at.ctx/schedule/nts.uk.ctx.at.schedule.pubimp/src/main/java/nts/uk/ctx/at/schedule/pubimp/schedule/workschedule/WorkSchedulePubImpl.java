@@ -17,6 +17,7 @@ import nts.uk.ctx.at.schedule.pub.schedule.workschedule.ReasonTimeChangeExport;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.TimeActualStampExport;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.TimeLeavingOfDailyAttdExport;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.TimeLeavingWorkExport;
+import nts.uk.ctx.at.schedule.pub.schedule.workschedule.WorkScheduleBasicInforExport;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.WorkScheduleExport;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.WorkSchedulePub;
 import nts.uk.ctx.at.schedule.pub.schedule.workschedule.WorkStampExport;
@@ -103,5 +104,18 @@ public class WorkSchedulePubImpl implements WorkSchedulePub {
 				domain.getTimeDay().getTimeWithDay().isPresent() ? domain.getTimeDay().getTimeWithDay().get().v()
 						: null),
 				domain.getLocationCode().isPresent() ? domain.getLocationCode().get().v() : null);
+	}
+
+	@Override
+	public List<WorkScheduleBasicInforExport> get(List<String> lstSid, DatePeriod ymdPeriod) {
+		List<WorkSchedule> getList = workScheduleRepository.getList(lstSid, ymdPeriod);
+		List<WorkScheduleBasicInforExport> lstResult = getList.stream()
+				.map(x -> new WorkScheduleBasicInforExport(x.getEmployeeID(),
+						x.getYmd(),
+						x.getWorkInfo().getRecordInfo().getWorkTypeCode().v(),
+						x.getWorkInfo().getRecordInfo().getWorkTimeCodeNotNull().isPresent() ? 
+								Optional.ofNullable(x.getWorkInfo().getRecordInfo().getWorkTimeCodeNotNull().get().v()): Optional.empty()))
+				.collect(Collectors.toList());
+		return lstResult;
 	}
 }

@@ -286,7 +286,7 @@ module nts.uk.at.view.kal001.a.model {
             this.categoryName = dto.categoryName;
             this.period36Agreement = dto.period36Agreement;
             
-            if(dto.category==2 || dto.category==5){
+            if(dto.category==2 || dto.category==5 || dto.category==8){
                 this.dateValue= ko.observable(new DateValue(dto.startDate, dto.endDate) );
                 this.typeInput = "fullDate"; 
                 this.isMultiMonthAverage = ko.observable(false);
@@ -336,6 +336,9 @@ module nts.uk.at.view.kal001.a.model {
                 }
                 this.isHoliday = ko.observable(false);
             } else if(dto.category = CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS){
+                this.isHoliday = ko.observable(true);
+                this.isMultiMonthAverage = ko.observable(false);
+            }else if(dto.category = CATEGORY.MASTER_CHECK){
                 this.isHoliday = ko.observable(true);
                 this.isMultiMonthAverage = ko.observable(false);
             }
@@ -497,7 +500,8 @@ module nts.uk.at.view.kal001.a.model {
         ANY_PERIOD = 10,
         ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS = 11,
         _36_AGREEMENT = 12,
-        MAN_HOUR_CHECK = 13
+        MAN_HOUR_CHECK = 13,
+        MASTER_CHECK = 14,
     }
      export class PeriodByCategoryTemp {
         category : number;
@@ -515,7 +519,8 @@ module nts.uk.at.view.kal001.a.model {
             let self = this;
             this.category = dto.category;
             this.categoryName = dto.categoryName; 
-            if(dto.category != CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS){   
+            if(dto.category != CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS
+                && dto.category != CATEGORY.MASTER_CHECK){   
                 this.startDate = dto.dateValue().startDate;    
                 this.endDate = dto.dateValue().endDate;    
             }

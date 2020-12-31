@@ -5,18 +5,20 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition;
  *
  */
 public enum SysFixedMonPerEral {
-	
-	MON_UNCONFIRMED(1,"Enum_SysFixedMonPerEral_MON_UNCONFIRMED"),
-	
-	WITH_MON_CORRECTION(2,"Enum_SysFixedMonPerEral_WITH_MON_CORRECTION"),
-	
-	NO_DAILY_ONE_MONTH(3,"Enum_SysFixedMonPerEral_NO_DAILY_ONE_MONTH"),
-	
-	PRIORITY_DIGESTION_VACATION(4,"Enum_SysFixedMonPerEral_PRIORITY_DIGESTION_VACATION"),
-	
-	_36_CHECK_AGREEMENT(5,"Enum_SysFixedMonPerEral_36_CHECK_AGREEMENT"),
-	
-	CHECK_DEADLINE_HOLIDAY(6,"Enum_SysFixedMonPerEral_CHECK_DEADLINE_HOLIDAY");
+	/**1 本人未確認	 */
+	MYSELF_UNCONFIRMED(1," 本人未確認"),
+	/**2 管理者未確認	 */
+	ADMIN_UNCONFIRMED(2,"管理者未確認"),
+	/**3 1ヶ月分の日次データがない	 */
+	NO_DAILY_ONE_MONTH(3,"1ヶ月分の日次データがない"),
+	/**4 休暇の消化優先	 */
+	PRIORITY_DIGESTION_VACATION(4,"休暇の消化優先"),
+	/**5 月次訂正あり	 */
+	MONTHLY_CORRECTION(5,"月次訂正あり"),
+	/**6 代休の消化期限チェック	 */
+	CHECK_DEADLINE_HOLIDAY(6,"月次訂正あり"),
+	/**手入力	 */
+	MANUAL_INPUT(7, "手入力");
 	
 	public int value;
 	

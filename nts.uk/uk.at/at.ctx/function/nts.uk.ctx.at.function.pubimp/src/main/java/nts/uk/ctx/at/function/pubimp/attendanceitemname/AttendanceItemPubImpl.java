@@ -49,4 +49,10 @@ public class AttendanceItemPubImpl implements AttendanceItemPub{
 		}).collect(Collectors.toList());
 	}
 
+	public List<AttendanceItemExport> getAttendanceItem(int typeOfAttendanceItem) {
+		return this.attendanceItemNameDomainService.getNameOfAttendanceItem(EnumAdaptor.valueOf(typeOfAttendanceItem, TypeOfItem.class))
+				.stream()
+				.map(x -> new AttendanceItemExport(x.getAttendanceItemId(), x.getAttendanceItemName(), x.getAttendanceItemDisplayNumber()))
+				.collect(Collectors.toList());
+	}
 }

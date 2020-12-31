@@ -4,32 +4,34 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.vacation.setting.annualpaidleave;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AcquisitionSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualLeaveGrantDay;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualNumberDay;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPriority;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.DisplayDivision;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.DisplaySetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ContractTimeRound;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.DayTimeAnnualLeave;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.HalfDayManage;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ManageAnnualSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ManageAnnualSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxDayReference;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxRemainingDay;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxTimeDay;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RemainingNumberSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RetentionYear;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RoundProcessingClassification;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualLeaveTimeDay;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualMaxDay;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.YearLyOfNumberDays;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualMaxDay;
+import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 
 /**
  * The Class AnnualPaidLeaveSaveCommand.
@@ -52,9 +54,6 @@ public class AnnualPaidLeaveSaveCommand {
 
     /** The max number company. */
     private Integer maxNumberCompany;
-
-    /** The max grant day. */
-    private Double maxGrantDay;
 
     /** The max remaining day. */
     private Double maxRemainingDay;
@@ -94,6 +93,12 @@ public class AnnualPaidLeaveSaveCommand {
     
     /** The round processing classification. */
     private Integer roundProcessCla;
+    
+    private int timeOfDayReference;
+    
+    private Integer uniformTime;
+    
+    private Integer contractTimeRound;
 
     /**
      * To domain.
@@ -219,23 +224,6 @@ public class AnnualPaidLeaveSaveCommand {
             return this.companyId;
         }
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
-         * ManageAnnualSettingGetMemento#getMaxGrantDay()
-         */
-        @Override
-        public AnnualLeaveGrantDay getMaxGrantDay() {
-            return this.command.maxGrantDay == null ? null : new AnnualLeaveGrantDay(this.command.maxGrantDay);
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
-         * ManageAnnualSettingGetMemento#getHalfDayManage()
-         */
         @Override
         public HalfDayManage getHalfDayManage() {
             HalfDayManage halfDay = HalfDayManage.builder()
@@ -268,26 +256,10 @@ public class AnnualPaidLeaveSaveCommand {
         public RemainingNumberSetting getRemainingNumberSetting() {
             RemainingNumberSetting remain = RemainingNumberSetting.builder()
                     .retentionYear(new RetentionYear(this.command.numberYearRetain))
-                    .remainingDayMaxNumber(this.command.maxRemainingDay != null ? new MaxRemainingDay(
-                            this.command.maxRemainingDay) : null)
                     .build();
             return remain;
         }
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
-         * ManageAnnualSettingGetMemento#getDisplaySetting()
-         */
-        @Override
-        public DisplaySetting getDisplaySetting() {
-            DisplaySetting display = DisplaySetting.builder()
-                    .nextGrantDayDisplay(DisplayDivision.valueOf(this.command.nextGrantDayDisplay))
-                    .remainingNumberDisplay(DisplayDivision.valueOf(this.command.remainingNumberDisplay))
-                    .build();
-            return display;
-        }
 
 		@Override
 		public YearLyOfNumberDays getYearLyOfDays() {
@@ -382,9 +354,15 @@ public class AnnualPaidLeaveSaveCommand {
          * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
          * TimeVacationSettingGetMemento#isEnoughTimeOneDay()
          */
-        @Override
-        public boolean isEnoughTimeOneDay() {
-            return false;
-        }		
+
+		@Override
+		public TimeAnnualLeaveTimeDay getTimeAnnualLeaveTimeDay() {
+			TimeAnnualLeaveTimeDay data = new TimeAnnualLeaveTimeDay(
+					DayTimeAnnualLeave.valueOf( this.command.timeOfDayReference),
+					Optional.ofNullable(this.command.uniformTime == null ? null : new LaborContractTime(this.command.uniformTime)),
+					Optional.ofNullable(this.command.contractTimeRound == null ? null : ContractTimeRound.valueOf(this.command.contractTimeRound)   ));
+			
+			return data;
+		}		
     }
 }

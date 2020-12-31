@@ -11,7 +11,6 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSetting;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSettingRepository;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPermissionSetting;
@@ -21,6 +20,7 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.ExtractionRangeBase;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.ExtractionPeriodMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.mutilmonth.AverageMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.year.AYear;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -88,7 +88,8 @@ public class UpdateAlarmPatternSettingCommandHandler extends CommandHandler<AddA
 		String companyId = AppContexts.user().companyId();
 		List<ExtractionRangeBase> extractionList = new ArrayList<>();
 		if (command.getAlarmCategory() == AlarmCategory.DAILY.value
-				|| command.getAlarmCategory() == AlarmCategory.MAN_HOUR_CHECK.value) {
+				|| command.getAlarmCategory() == AlarmCategory.MAN_HOUR_CHECK.value
+				|| command.getAlarmCategory() == AlarmCategory.APPLICATION_APPROVAL.value) {
 
 			extractionList.add(command.getExtractionPeriodDaily().toDomain());
 

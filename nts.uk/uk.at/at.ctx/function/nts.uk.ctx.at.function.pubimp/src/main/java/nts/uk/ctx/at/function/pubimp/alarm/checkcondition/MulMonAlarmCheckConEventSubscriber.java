@@ -39,13 +39,12 @@ public class MulMonAlarmCheckConEventSubscriber implements DomainEventSubscriber
 	}
 	
 	private MulMonCheckCondDomainEventPubDto convertToMulMonCheckCondDomainEventDto(MulMonCheckCondDomainEventDto export) {
-		return new MulMonCheckCondDomainEventPubDto(
+		return new MulMonCheckCondDomainEventPubDto(export.getCid(),
 				export.getErrorAlarmCheckID(),
+				export.getCondNo(),
 				export.getNameAlarmMulMon(),
 				export.isUseAtr(),
 				export.getTypeCheckItem(),
-				export.isMessageBold(),
-				export.getMessageColor(),
 				export.getDisplayMessage(),
 				export.getErAlAtdItem() == null?null: convertToErAlAtdItemCon(export.getErAlAtdItem()),
 				export.getContinuousMonths(),

@@ -18,4 +18,6 @@ public interface WorkSchedulePub {
 	 * 社員ID(List)、期間を設定して勤務予定を取得する
 	 */
 	public List<WorkScheduleExport> getList(List<String> sids, DatePeriod period);
+	
+	public List<WorkScheduleBasicInforExport> get(List<String> lstSid , DatePeriod ymdPeriod);
 }

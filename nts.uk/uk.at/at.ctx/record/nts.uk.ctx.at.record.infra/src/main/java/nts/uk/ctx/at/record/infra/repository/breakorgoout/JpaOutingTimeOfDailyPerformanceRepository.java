@@ -384,17 +384,22 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 		query.append("AND a.krcdtDaiOutingTimePK.ymd <= :end AND a.krcdtDaiOutingTimePK.ymd >= :start");
 		TypedQueryWrapper<KrcdtDaiOutingTime> tQuery = queryProxy().query(query.toString(), KrcdtDaiOutingTime.class);
 		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
-			result.addAll(tQuery.setParameter("employeeId", empIds).setParameter("start", ymd.start())
-					.setParameter("end", ymd.end()).getList().stream()
-					.collect(Collectors
-							.groupingBy(c -> c.krcdtDaiOutingTimePK.employeeId + c.krcdtDaiOutingTimePK.ymd.toString()))
-					.entrySet().stream()
-					.map(c -> new OutingTimeOfDailyPerformance(c.getValue().get(0).krcdtDaiOutingTimePK.employeeId,
-							c.getValue().get(0).krcdtDaiOutingTimePK.ymd,
-							c.getValue().stream().map(x -> toDtomain(x)).collect(Collectors.toList())))
-					.collect(Collectors.toList()));
+			a(ymd, result, tQuery, empIds);
 		});
 		return result;
+	}
+
+	private void a(DatePeriod ymd, List<OutingTimeOfDailyPerformance> result,
+			TypedQueryWrapper<KrcdtDaiOutingTime> tQuery, List<String> empIds) {
+		result.addAll(tQuery.setParameter("employeeId", empIds).setParameter("start", ymd.start())
+				.setParameter("end", ymd.end()).getList().stream()
+				.collect(Collectors
+						.groupingBy(c -> c.krcdtDaiOutingTimePK.employeeId + c.krcdtDaiOutingTimePK.ymd.toString()))
+				.entrySet().stream()
+				.map(c -> new OutingTimeOfDailyPerformance(c.getValue().get(0).krcdtDaiOutingTimePK.employeeId,
+						c.getValue().get(0).krcdtDaiOutingTimePK.ymd,
+						c.getValue().stream().map(x -> toDtomain(x)).collect(Collectors.toList())))
+				.collect(Collectors.toList()));
 	}
 
 	private OutingTimeSheet toDtomain(KrcdtDaiOutingTime x) {
@@ -437,18 +442,23 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 		query.append("AND a.krcdtDaiOutingTimePK.ymd IN :date");
 		TypedQueryWrapper<KrcdtDaiOutingTime> tQuery = queryProxy().query(query.toString(), KrcdtDaiOutingTime.class);
 		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
-			result.addAll(tQuery.setParameter("employeeId", p.keySet())
-					.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
-					.getList().stream()
-					.filter(c -> p.get(c.krcdtDaiOutingTimePK.employeeId).contains(c.krcdtDaiOutingTimePK.ymd))
-					.collect(Collectors
-							.groupingBy(c -> c.krcdtDaiOutingTimePK.employeeId + c.krcdtDaiOutingTimePK.ymd.toString()))
-					.entrySet().stream()
-					.map(c -> new OutingTimeOfDailyPerformance(c.getValue().get(0).krcdtDaiOutingTimePK.employeeId,
-							c.getValue().get(0).krcdtDaiOutingTimePK.ymd,
-							c.getValue().stream().map(x -> toDtomain(x)).collect(Collectors.toList())))
-					.collect(Collectors.toList()));
+			l(result, tQuery, p);
 		});
 		return result;
+	}
+
+	private void l(List<OutingTimeOfDailyPerformance> result, TypedQueryWrapper<KrcdtDaiOutingTime> tQuery,
+			Map<String, List<GeneralDate>> p) {
+		result.addAll(tQuery.setParameter("employeeId", p.keySet())
+				.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
+				.getList().stream()
+				.filter(c -> p.get(c.krcdtDaiOutingTimePK.employeeId).contains(c.krcdtDaiOutingTimePK.ymd))
+				.collect(Collectors
+						.groupingBy(c -> c.krcdtDaiOutingTimePK.employeeId + c.krcdtDaiOutingTimePK.ymd.toString()))
+				.entrySet().stream()
+				.map(c -> new OutingTimeOfDailyPerformance(c.getValue().get(0).krcdtDaiOutingTimePK.employeeId,
+						c.getValue().get(0).krcdtDaiOutingTimePK.ymd,
+						c.getValue().stream().map(x -> toDtomain(x)).collect(Collectors.toList())))
+				.collect(Collectors.toList()));
 	}
 }

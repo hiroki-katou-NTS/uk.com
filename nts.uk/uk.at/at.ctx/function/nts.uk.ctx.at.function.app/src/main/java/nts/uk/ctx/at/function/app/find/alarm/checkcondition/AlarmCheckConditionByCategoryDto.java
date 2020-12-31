@@ -30,6 +30,8 @@ public class AlarmCheckConditionByCategoryDto {
 	private int schedule4WeekCondition;
 
 	private DailyAlarmCheckConditionDto dailyAlarmCheckCondition;
+	
+	private ApprovalAlarmCheckConDto approvalAlarmCheckConDto;
 
 	private MonAlarmCheckConDto monAlarmCheckConDto;
 	
@@ -38,4 +40,6 @@ public class AlarmCheckConditionByCategoryDto {
 	private MulMonAlarmCheckConDto mulMonAlarmCheckConDto;
 	
 	private AnnualHolidayAlarmConditionDto annualHolidayAlConDto;
+	
+	private MasterCheckAlarmCheckConditionDto masterCheckAlarmCheckConDto;
 }

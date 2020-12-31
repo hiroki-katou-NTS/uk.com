@@ -4,12 +4,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeCondOt;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.MessageDisp;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.Number;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.OverTime;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

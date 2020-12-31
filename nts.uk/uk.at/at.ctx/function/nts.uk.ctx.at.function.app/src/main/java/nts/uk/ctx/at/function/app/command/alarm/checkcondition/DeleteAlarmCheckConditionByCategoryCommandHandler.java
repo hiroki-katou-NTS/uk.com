@@ -14,14 +14,16 @@ import nts.uk.ctx.at.function.app.find.alarm.checkcondition.AlarmCheckConditionB
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunAdapter;
-import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeCondOtRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeConditionErrorRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.IAlarmCheckConAgrRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.IAlarmCheckSubConAgrRepository;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.AppApprovalFixedExtractConditionRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckConEvent;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCondEvent;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedExtractConditionRepository;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -35,6 +37,9 @@ public class DeleteAlarmCheckConditionByCategoryCommandHandler extends CommandHa
 
 	@Inject
 	private AlarmCheckConditionByCategoryRepository conditionRepo;
+	
+	@Inject 
+	private AppApprovalFixedExtractConditionRepository appApprovalFixedExtractConditionRepository;
 	
 	@Inject
 	private WorkRecordExtraConAdapter workRecordExtraConRepo;
@@ -62,6 +67,8 @@ public class DeleteAlarmCheckConditionByCategoryCommandHandler extends CommandHa
 	@Inject
 	private IAlarmCheckConAgrRepository alarmCheckConAgrRepository;
 	
+	@Inject
+	private MasterCheckFixedExtractConditionRepository fixedMasterCheckConditionRepo;
 	
 	@Override
 	protected void handle(CommandHandlerContext<AlarmCheckConditionByCategoryCommand> context) {
@@ -76,6 +83,11 @@ public class DeleteAlarmCheckConditionByCategoryCommandHandler extends CommandHa
 			// delete List Fixed Work Record Extract Condition by list Error Alarm Code
 			String dailyAlarmConID =  command.getDailyAlarmCheckCondition().getListFixedExtractConditionWorkRecord().get(0).getDailyAlarmConID();
 			this.fixedConWorkRecordRepo.deleteFixedConWorkRecordPub(dailyAlarmConID);
+		}
+		
+		if (command.getCategory() == AlarmCategory.APPLICATION_APPROVAL.value) {
+			String appAlarmConId = command.getApprovalAlarmCheckConDto().getListFixedExtractConditionWorkRecord().get(0).getAppAlarmConId();
+			this.appApprovalFixedExtractConditionRepository.delete(appAlarmConId);
 		}
 		
 		if (command.getCategory() == AlarmCategory.MONTHLY.value) {
@@ -126,6 +138,12 @@ public class DeleteAlarmCheckConditionByCategoryCommandHandler extends CommandHa
 			alarmCheckSubConAgrRepository.delete(companyId, command.getCategory(), command.getCode());
 			alarmCheckConAgrRepository.delete(companyId, command.getCategory(), command.getCode());
 		}
+		
+		if (command.getCategory() == AlarmCategory.MASTER_CHECK.value) {
+			String errorAlarmCheckId =  command.getMasterCheckAlarmCheckCondition().getListFixedMasterCheckCondition().get(0).getErrorAlarmCheckId();
+			this.fixedMasterCheckConditionRepo.deleteMasterCheckFixedCondition(errorAlarmCheckId);
+		}
+		
 		conditionRepo.delete(companyId, command.getCategory(), command.getCode());
 	}
 

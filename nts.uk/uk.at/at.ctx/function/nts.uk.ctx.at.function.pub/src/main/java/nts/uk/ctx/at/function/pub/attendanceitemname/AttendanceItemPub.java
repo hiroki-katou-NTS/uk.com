@@ -21,4 +21,6 @@ public interface AttendanceItemPub {
 	 */
 	List<AttendanceItemExport> getAttendanceItemName(String cid, int typeOfAttendanceItem);
 
+	
+	List<AttendanceItemExport> getAttendanceItem(int typeOfAttendanceItem);
 }

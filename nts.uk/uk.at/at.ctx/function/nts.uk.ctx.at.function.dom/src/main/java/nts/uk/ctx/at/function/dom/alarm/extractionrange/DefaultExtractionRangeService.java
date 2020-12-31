@@ -69,7 +69,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 		List<CheckCondition> checkConList = alarmRepo.getCheckCondition(companyId, alarmCode);
 
 		checkConList.forEach(c -> {
-			if (c.isDaily()) {
+			if (c.isDaily() || c.isApplication()) {
 				CheckConditionTimeDto daily = this.getDailyTime(c, closureId, new YearMonth(processingYm));
 				result.add(daily);
 				
@@ -83,7 +83,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				
 			} else if(c.isAgrrement()) {
 				result.addAll(this.getAgreementTime(c, closureId, new YearMonth(processingYm)));
-			} else if(c.isAttHoliday()) {
+			} else if(c.isAttHoliday() || c.isMasterChk()) {
 				CheckConditionTimeDto attHoliday = new CheckConditionTimeDto(c.getAlarmCategory().value, c.getAlarmCategory().nameId, 0);
 				attHoliday.setTabOrder(7);
 				result.add(attHoliday);

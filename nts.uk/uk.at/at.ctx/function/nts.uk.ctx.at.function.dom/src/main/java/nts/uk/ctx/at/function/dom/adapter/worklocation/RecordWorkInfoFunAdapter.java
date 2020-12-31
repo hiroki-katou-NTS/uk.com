@@ -9,6 +9,8 @@ import nts.arc.time.calendar.period.DatePeriod;
 public interface RecordWorkInfoFunAdapter {
 	public Optional<RecordWorkInfoFunAdapterDto>  getInfoCheckNotRegister(String employeeId, GeneralDate ymd);
 	
+	public List<RecordWorkInfoFunAdapterDto> findByEmpAndPeriod(String employeeId, DatePeriod datePeriod);
+	
 	public List<WorkInfoOfDailyPerFnImport> findByPeriodOrderByYmd(String employeeId);
 	/**
 	 * 日別実績の勤務情報を取得する
@@ -17,6 +19,7 @@ public interface RecordWorkInfoFunAdapter {
 	 * @return
 	 */
 	public List<RecordWorkInfoFunAdapterDto>  findByPeriodOrderByYmdAndEmps(List<String> employeeIds, DatePeriod datePeriod);
+	
 	
 	public Optional<String> getWorkTypeCode(String employeeId, GeneralDate ymd);
 }

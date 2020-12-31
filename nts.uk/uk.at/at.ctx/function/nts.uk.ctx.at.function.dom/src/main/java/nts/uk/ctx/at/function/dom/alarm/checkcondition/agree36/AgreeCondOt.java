@@ -6,8 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 /**
  * 36協定時間超過回数のチェック条件, 36協定時間超過回数抽出条件
  * @author yennth

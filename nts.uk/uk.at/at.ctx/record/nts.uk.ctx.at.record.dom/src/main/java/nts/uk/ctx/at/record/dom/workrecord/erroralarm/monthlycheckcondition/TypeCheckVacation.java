@@ -8,26 +8,17 @@ import nts.arc.i18n.I18NText;
  *
  */
 public enum TypeCheckVacation {
-	
-//	ANNUAL_PAID_LEAVE(0,"Enum_TypeCheckVacation_ANNUAL_PAID_LEAVE"),
+	/**年次有給休暇	 */
 	ANNUAL_PAID_LEAVE(0, I18NText.getText("KAL003_112")),
 	
-//	SUB_HOLIDAY(1,"Enum_TypeCheckVacation_SUB_HOLIDAY"),
+	/**代休	 */
 	SUB_HOLIDAY(1, I18NText.getText("KAL003_113")),
 	
-//	PAUSE(2,"Enum_TypeCheckVacation_PAUSE"),
+	/**振休	 */
 	PAUSE(2, I18NText.getText("KAL003_114")),
-	
-//	YEARLY_RESERVED(3,"Enum_TypeCheckVacation_YEARLY_RESERVED"),
+	/**積立年休	 */
 	YEARLY_RESERVED(3, I18NText.getText("KAL003_115")),
-	
-//	_64H_SUPER_HOLIDAY(4,"Enum_TypeCheckVacation_64H_SUPER_HOLIDAY"),
-//	_64H_SUPER_HOLIDAY(4, I18NText.getText("KAL003_116")),
-	
-//	PUBLIC_HOLIDAY(5,"Enum_TypeCheckVacation_PUBLIC_HOLIDAY"),
-//	PUBLIC_HOLIDAY(5, I18NText.getText("KAL003_117")),
-	
-//	SPECIAL_HOLIDAY(6,"Enum_TypeCheckVacation_SPECIAL_HOLIDAY"),
+	/**特休	 */
 	SPECIAL_HOLIDAY(6, I18NText.getText("KAL003_118"));
 	
 //	NURSING_CARE_LEAVE(7,"Enum_TypeCheckVacation_NURSING_CARE_LEAVE");

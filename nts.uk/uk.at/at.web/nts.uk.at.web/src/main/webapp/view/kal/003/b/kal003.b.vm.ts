@@ -104,14 +104,14 @@ module nts.uk.at.view.kal003.b.viewmodel {
                             if (self.comparisonRange().comparisonOperator() == 7 || self.comparisonRange().comparisonOperator() == 9) {
                                 setTimeout(() => {
                                     if (parseInt(self.comparisonRange().minValue()) > parseInt(self.comparisonRange().maxValue())) {
-                                        $('#endValue').ntsError('set', { messageId: "Msg_927" });
+                                        $('#endValue').ntsError('set', { messageId: "Msg_836" });
                                     }
                                 }, 25);
                             }
                             if (self.comparisonRange().comparisonOperator() == 6 || self.comparisonRange().comparisonOperator() == 8) {
                                 setTimeout(() => {
                                     if (parseInt(self.comparisonRange().minValue()) >= parseInt(self.comparisonRange().maxValue())) {
-                                        $('#endValue').ntsError('set', { messageId: "Msg_927" });
+                                        $('#endValue').ntsError('set', { messageId: "Msg_836" });
                                     }
                                 }, 25);
                             }
@@ -195,7 +195,6 @@ module nts.uk.at.view.kal003.b.viewmodel {
 
         //initial screen
         start(): JQueryPromise<any> {
-
             let self = this,
                 dfd = $.Deferred();
 
@@ -406,9 +405,9 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     self.listRangeCompareTypes(self.getLocalizedNameForEnum(lstRangeCompareType));
                     self.listTypeCheckWorkRecords(self.getLocalizedNameForEnum(listTypeCheckWorkRecord));
                     //remove 3 enum : 4 5 6 as required ( ohashi)
-                    _.remove(self.listTypeCheckWorkRecords(), function(n) {
-                        return (n.value == 5 || n.value == 6 || n.value == 4);
-                    });
+                    // _.remove(self.listTypeCheckWorkRecords(), function(n) {
+                    //     return (n.value == 5 || n.value == 6 || n.value == 4);
+                    // });
                     let listTargetRangeWithName = self.getLocalizedNameForEnum(listTargetSelectionRange);
                     self.itemListTargetSelectionRange_BA1_5(listTargetRangeWithName);
                     self.itemListTargetServiceType_BA1_2(self.getLocalizedNameForEnum(listTargetServiceType));
@@ -982,8 +981,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 service.getAttendanceItemByAtrNew(DAILYATTENDANCEITEMATR.NumberOfTime, mode).done((lstAtdItem) => {
                     dfd.resolve(lstAtdItem);
                 });
-            } else if (typeCheck == 0) {
-                //With type 時間 - Time
+            } else if (typeCheck == 0 || typeCheck == 4) {
+                //With type 時間 - Time , 連続期間 - ContinuousTime
                 service.getAttendanceItemByAtrNew(DAILYATTENDANCEITEMATR.Time, mode).done((lstAtdItem) => {
                     dfd.resolve(lstAtdItem);
                 });
@@ -1787,29 +1786,33 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     }
 
                     if (mnValue != undefined && mxValue != undefined) {
+                        if(typeof mnValue === "string" || typeof mxValue === "string"){
+                            nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_836');
+                            nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_836');
+                            return;
+                        }
                         isValid = self.compareValid(self.comparisonOperator(), mnValue, mxValue);
                     }
                 }
                 if (!isValid) {
-
                     if (textBoxFocus === 1) {
                         //max
                         setTimeout(() => {
-                            nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_927');
-                            nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
-                            $('#endValue').ntsError('set', { messageId: "Msg_927" });
+                            nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_836');
+                            nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_836');
+                            $('#endValue').ntsError('set', { messageId: "Msg_836" });
 
                         }, 25);
                     } else {
                         setTimeout(() => {
-                            nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_927');
-                            nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
-                            $('#startValue').ntsError('set', { messageId: "Msg_927" });
+                            nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_836');
+                            nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_836');
+                            $('#startValue').ntsError('set', { messageId: "Msg_836" });
                         }, 25);
                     }
                 } else {
-                    nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_927');
-                    nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
+                    nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_836');
+                    nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_836');
                 }
                 return isValid;
             }
@@ -1846,6 +1849,11 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     }
 
                     if (mnValue != undefined && mxValue != undefined) {
+                        if(typeof mnValue === "string" || typeof mxValue === "string"){
+                            nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_836');
+                            nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_836');
+                            return;
+                        }
                         isValid = self.compareValid(self.comparisonOperator(), mnValue, mxValue);
                     }
                 }
@@ -1853,21 +1861,21 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     if (textBoxFocus === 1) {
                         //max
                         setTimeout(() => {
-                            nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_927');
-                            nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
-                            $('#endValue').ntsError('set', { messageId: "Msg_927" });
+                            nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_836');
+                            nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_836');
+                            $('#endValue').ntsError('set', { messageId: "Msg_836" });
 
                         }, 25);
                     } else {
                         setTimeout(() => {
-                            nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_927');
-                            nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
-                            $('#startValue').ntsError('set', { messageId: "Msg_927" });
+                            nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_836');
+                            nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_836');
+                            $('#startValue').ntsError('set', { messageId: "Msg_836" });
                         }, 25);
                     }
                 } else {
-                    nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_927');
-                    nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
+                    nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_836');
+                    nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_836');
                 }
                 return isValid;
             }

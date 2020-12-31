@@ -13,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 /**
  * The Class TimeVacationSetting.
  */
+/** 時間年休管理設定 **/
 @Getter
 public class TimeAnnualSetting extends DomainObject {
 
@@ -34,6 +35,10 @@ public class TimeAnnualSetting extends DomainObject {
     
     //端数処理区分
     private TimeAnnualRoundProcesCla roundProcessClassific;
+    // 時間年休一日の時間
+    private TimeAnnualLeaveTimeDay timeAnnualLeaveTimeDay; 
+    
+    
     /**
      * Instantiates a new time vacation setting.
      *
@@ -43,8 +48,8 @@ public class TimeAnnualSetting extends DomainObject {
         this.timeManageType = memento.getTimeManageType();
         this.timeUnit = memento.getTimeUnit();
         this.maxYearDayLeave = memento.getMaxYearDayLeave();
-        this.isEnoughTimeOneDay = memento.isEnoughTimeOneDay();
         this.roundProcessClassific = memento.GetRoundProcessClassific();
+        this.timeAnnualLeaveTimeDay = memento.getTimeAnnualLeaveTimeDay();
     }
     
     /**
@@ -56,7 +61,7 @@ public class TimeAnnualSetting extends DomainObject {
         memento.setTimeManageType(this.timeManageType);
         memento.setTimeUnit(this.timeUnit);
         memento.setMaxYearDayLeave(this.maxYearDayLeave);
-        memento.setEnoughTimeOneDay(this.isEnoughTimeOneDay);
         memento.setRoundProcessClassific(this.roundProcessClassific);
+        memento.setTimeAnnualLeaveTimeDay(this.timeAnnualLeaveTimeDay);
     }
 }

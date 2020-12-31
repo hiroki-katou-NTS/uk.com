@@ -58,7 +58,9 @@ public class ErAlWorkRecordCheckAcAdapter implements ErAlWorkRecordCheckAdapter 
 				.filterByClassification(condition.isFilterByClassification()).filterByEmployment(condition.isFilterByEmployment()).filterByJobTitle(condition.isFilterByJobTitle())
 				.lstBusinessTypeCode(condition.getLstBusinessTypeCode()).lstClassificationCode(condition.getLstClassificationCode()).lstEmploymentCode(condition.getLstEmploymentCode())
 				.lstJobTitleId(condition.getLstJobTitleId()).build();
-		return erAlWorkRecordCheckServicePub.filterEmployees(workingDate, employeeIds, filterCondition).stream().map(c -> buildImport(c)).collect(Collectors.toList());
+		List<RegulationInfoEmployeeResult> result = erAlWorkRecordCheckServicePub.filterEmployees(workingDate, employeeIds, filterCondition).stream()
+				.map(c -> buildImport(c)).collect(Collectors.toList());
+		return result;
 	}
 
 	@Override
@@ -69,6 +71,24 @@ public class ErAlWorkRecordCheckAcAdapter implements ErAlWorkRecordCheckAdapter 
 
 		List<ErrorRecordExport> listErrorExport = erAlWorkRecordCheckServicePub.check(EACheckIDs, workingDate,
 				employeeIds);
+		if (listErrorExport.isEmpty())
+			return result;
+		else {
+			result = listErrorExport.stream()
+					.map(e -> new ErrorRecordImport(e.getDate(), e.getEmployeeId(), e.getErAlId(), e.isError(),e.getCheckedValue()))
+					.collect(Collectors.toList());
+			return result;
+		}
+	}
+	
+	@Override
+	public List<ErrorRecordImport> checkV2(List<String> EACheckIDs, DatePeriod workingDate,
+			Collection<String> employeeIds, Map<String, Integer> mapCheckItem) {
+
+		List<ErrorRecordImport> result = new ArrayList<ErrorRecordImport>();
+
+		List<ErrorRecordExport> listErrorExport = erAlWorkRecordCheckServicePub.checkV2(EACheckIDs, workingDate,
+				employeeIds, mapCheckItem);
 		if (listErrorExport.isEmpty())
 			return result;
 		else {

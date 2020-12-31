@@ -17,5 +17,7 @@ public interface WorkScheduleWorkInforAdapter {
 	/**
 	 * 社員ID(List)、期間を設定して勤務予定を取得する
 	 */
-	public List<WorkScheduleWorkInforImport> getList(List<String> sids, DatePeriod period);
+	public List<WorkScheduleWorkInforImport> getBy(List<String> sids, DatePeriod period);
+	
+	public List<WorkScheduleBasicInforRecordImport> getList(List<String> sid, DatePeriod dPeriod);
 }

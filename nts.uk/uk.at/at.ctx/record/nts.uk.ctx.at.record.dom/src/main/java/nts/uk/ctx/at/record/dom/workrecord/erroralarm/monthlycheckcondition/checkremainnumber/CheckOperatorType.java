@@ -12,8 +12,13 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 public enum CheckOperatorType {
-
+	/**
+	 * 0 単一
+	 */
 	SINGLE_VALUE(0, "single"),
+	/**
+	 * 範囲
+	 */
 	RANGE_VALUE(1, "range");	
 
 	public final int value;

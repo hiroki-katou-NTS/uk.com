@@ -16,7 +16,6 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.function.dom.alarm.AlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckTargetCondition;
@@ -31,22 +30,27 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.OverTime;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.Period;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.UseClassification;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.AnnualHolidayAlarmCondition;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.AppApprovalAlarmCheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmCheckCondition4W4D;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.master.MasterCheckAlarmCheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckCon;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCond;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.agree36.Kfnmt36AgreeCondErr;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.agree36.Kfnmt36AgreeCondOt;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.annualholiday.KfnmtAlCheckConAg;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.annualholiday.KfnmtAlCheckSubConAg;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.appapproval.KrqmtAppApprovalCondition;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily.KrcmtDailyAlarmCondition;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.fourweekfourdayoff.KfnmtAlarmCheck4W4D;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.mastercheck.KrcmtMasterCheckAlarmCheckCondition;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.monthly.KfnmtMonAlarmCheckCon;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.multimonth.KfnmtMulMonAlarmCond;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * 
+ * カテゴリ別アラームチェック条件
  * @author HungTT
  *
  */
@@ -83,6 +87,9 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 	public KrcmtDailyAlarmCondition dailyAlarmCondition;
 
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
+	public KrqmtAppApprovalCondition appApprovalCondition;
+
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
 	public KfnmtAlarmCheck4W4D schedule4W4DAlarmCondition;
 
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
@@ -93,15 +100,18 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
 	public List<Kfnmt36AgreeCondOt> listCondOt;
-	
+
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
 	public KfnmtMulMonAlarmCond mulMonAlarmCond;
-	
+
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
 	public KfnmtAlCheckConAg alCheckConAg;
-	
+
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
 	public KfnmtAlCheckSubConAg alCheckSubConAg;
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
+	public KrcmtMasterCheckAlarmCheckCondition masterCheckAlarmCheckCon;
 
 	@Override
 	protected Object getKey() {
@@ -111,8 +121,10 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 	public KfnmtAlarmCheckConditionCategory(String companyId, int category, String code, String name,
 			KfnmtAlarmCheckTargetCondition targetCondition,
 			List<KfnmtAlarmCheckConditionCategoryRole> listAvailableRole, KrcmtDailyAlarmCondition dailyAlarmCondition,
-			KfnmtAlarmCheck4W4D schedule4W4DAlarmCondition, KfnmtMonAlarmCheckCon kfnmtMonAlarmCheckCon,
-			List<Kfnmt36AgreeCondErr> listCondErr, List<Kfnmt36AgreeCondOt> listCondOt, KfnmtMulMonAlarmCond mulMonAlarmCond, KfnmtAlCheckConAg alCheckConAg, KfnmtAlCheckSubConAg alCheckSubConAg) {
+			KrqmtAppApprovalCondition appApprovalCondition, KfnmtAlarmCheck4W4D schedule4W4DAlarmCondition,
+			KfnmtMonAlarmCheckCon kfnmtMonAlarmCheckCon, List<Kfnmt36AgreeCondErr> listCondErr,
+			List<Kfnmt36AgreeCondOt> listCondOt, KfnmtMulMonAlarmCond mulMonAlarmCond, KfnmtAlCheckConAg alCheckConAg,
+			KfnmtAlCheckSubConAg alCheckSubConAg, KrcmtMasterCheckAlarmCheckCondition masterCheckAlarmCheckCon) {
 		super();
 		this.pk = new KfnmtAlarmCheckConditionCategoryPk(companyId, category, code);
 		this.name = name;
@@ -120,6 +132,7 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 		this.targetCondition = targetCondition;
 		this.listAvailableRole = listAvailableRole;
 		this.dailyAlarmCondition = dailyAlarmCondition;
+		this.appApprovalCondition = appApprovalCondition;
 		this.schedule4W4DAlarmCondition = schedule4W4DAlarmCondition;
 		this.kfnmtMonAlarmCheckCon = kfnmtMonAlarmCheckCon;
 		this.listCondErr = listCondErr;
@@ -127,32 +140,31 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 		this.mulMonAlarmCond = mulMonAlarmCond;
 		this.alCheckConAg = alCheckConAg;
 		this.alCheckSubConAg = alCheckSubConAg;
+		this.masterCheckAlarmCheckCon = masterCheckAlarmCheckCon;
 	}
+
 	/**
-	 * convert from entity to domain 
+	 * convert from entity to domain
+	 * 
 	 * @param entity
 	 * @return
 	 */
 	public static AgreeConditionError toDomainEr(Kfnmt36AgreeCondErr entity) {
-		return new AgreeConditionError(entity.kfnmt36AgreeCondErrPK.id, 
-											entity.kfnmt36AgreeCondErrPK.companyId, 
-											EnumAdaptor.valueOf(entity.kfnmt36AgreeCondErrPK.category, AlarmCategory.class), 
-											new AlarmCheckConditionCode(entity.kfnmt36AgreeCondErrPK.code), 
-											EnumAdaptor.valueOf(entity.useAtr, UseClassification.class), 
-											EnumAdaptor.valueOf(entity.period, Period.class), 
-											EnumAdaptor.valueOf(entity.errorAlarm, ErrorAlarm.class), 
-											entity.messageDisp == null ? null : new MessageDisp(entity.messageDisp));
+		return new AgreeConditionError(entity.kfnmt36AgreeCondErrPK.id, entity.kfnmt36AgreeCondErrPK.companyId,
+				EnumAdaptor.valueOf(entity.kfnmt36AgreeCondErrPK.category, AlarmCategory.class),
+				new AlarmCheckConditionCode(entity.kfnmt36AgreeCondErrPK.code),
+				EnumAdaptor.valueOf(entity.useAtr, UseClassification.class),
+				EnumAdaptor.valueOf(entity.period, Period.class),
+				EnumAdaptor.valueOf(entity.errorAlarm, ErrorAlarm.class),
+				entity.messageDisp == null ? null : new MessageDisp(entity.messageDisp));
 	}
-	
-	public static AgreeCondOt toDomainOt(Kfnmt36AgreeCondOt ent){
-		return new AgreeCondOt(ent.kfnmt36AgreeCondOtPK.id, 
-									ent.kfnmt36AgreeCondOtPK.companyId, 
-									EnumAdaptor.valueOf(ent.kfnmt36AgreeCondOtPK.category, AlarmCategory.class), 
-									new AlarmCheckConditionCode(ent.kfnmt36AgreeCondOtPK.code), 
-									ent.kfnmt36AgreeCondOtPK.no, 
-									new OverTime(ent.ot36), 
-									new Number(ent.excessNum), 
-									ent.messageDisp == null ? null : new MessageDisp(ent.messageDisp));
+
+	public static AgreeCondOt toDomainOt(Kfnmt36AgreeCondOt ent) {
+		return new AgreeCondOt(ent.kfnmt36AgreeCondOtPK.id, ent.kfnmt36AgreeCondOtPK.companyId,
+				EnumAdaptor.valueOf(ent.kfnmt36AgreeCondOtPK.category, AlarmCategory.class),
+				new AlarmCheckConditionCode(ent.kfnmt36AgreeCondOtPK.code), ent.kfnmt36AgreeCondOtPK.no,
+				new OverTime(ent.ot36), new Number(ent.excessNum),
+				ent.messageDisp == null ? null : new MessageDisp(ent.messageDisp));
 	}
 
 	public static AlarmCheckConditionByCategory toDomain(KfnmtAlarmCheckConditionCategory entity) {
@@ -161,6 +173,9 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 		switch (category) {
 		case DAILY:
 			extractionCondition = entity.dailyAlarmCondition == null ? null : entity.dailyAlarmCondition.toDomain();
+			break;
+		case APPLICATION_APPROVAL:
+			extractionCondition = entity.appApprovalCondition == null ? null : entity.appApprovalCondition.toDomain();
 			break;
 		case SCHEDULE_4WEEK:
 			extractionCondition = entity.schedule4W4DAlarmCondition == null ? null
@@ -177,6 +192,9 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 					: new AnnualHolidayAlarmCondition(
 							entity.alCheckConAg == null ? null : entity.alCheckConAg.toDomain(),
 							entity.alCheckSubConAg == null ? null : entity.alCheckSubConAg.toDomain());
+			break;
+		case MASTER_CHECK:
+			extractionCondition = entity.masterCheckAlarmCheckCon == null ? null : entity.masterCheckAlarmCheckCon.toDomain();
 			break;
 		default:
 			break;
@@ -196,8 +214,10 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 						entity.targetCondition.listClassification.stream().map(item -> item.pk.classificationCode)
 								.collect(Collectors.toList())),
 				entity.listAvailableRole.stream().map(item -> item.pk.roleId).collect(Collectors.toList()),
-				extractionCondition, new AlarmChkCondAgree36(entity.listCondErr.stream().map(c -> toDomainEr(c)).collect(Collectors.toList()),
-																entity.listCondOt.stream().map(x -> toDomainOt(x)).collect(Collectors.toList())));
+				extractionCondition,
+				new AlarmChkCondAgree36(
+						entity.listCondErr.stream().map(c -> toDomainEr(c)).collect(Collectors.toList()),
+						entity.listCondOt.stream().map(x -> toDomainOt(x)).collect(Collectors.toList())));
 	}
 
 	public static KfnmtAlarmCheckConditionCategory fromDomain(AlarmCheckConditionByCategory domain) {
@@ -227,11 +247,13 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 				domain.getListRoleId().stream()
 						.map(item -> new KfnmtAlarmCheckConditionCategoryRole(domain.getCompanyId(),
 								domain.getCategory().value, domain.getCode().v(), item))
-						.collect(
-								Collectors.toList()),
-				domain.getCategory() == AlarmCategory.DAILY
-						? KrcmtDailyAlarmCondition.toEntity(domain.getCompanyId(), domain.getCode(),
-								domain.getCategory(), (DailyAlarmCondition) domain.getExtractionCondition())
+						.collect(Collectors.toList()),
+				domain.getCategory() == AlarmCategory.DAILY ? KrcmtDailyAlarmCondition.toEntity(domain.getCompanyId(),
+						domain.getCode(), domain.getCategory(), (DailyAlarmCondition) domain.getExtractionCondition())
+						: null,
+				domain.getCategory() == AlarmCategory.APPLICATION_APPROVAL
+						? KrqmtAppApprovalCondition.toEntity(domain.getCompanyId(), domain.getCode(),
+								domain.getCategory(), (AppApprovalAlarmCheckCondition) domain.getExtractionCondition())
 						: null,
 				domain.getCategory() == AlarmCategory.SCHEDULE_4WEEK
 						? KfnmtAlarmCheck4W4D.toEntity((AlarmCheckCondition4W4D) domain.getExtractionCondition(),
@@ -242,28 +264,36 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 								domain.getCategory().value, (MonAlarmCheckCon) domain.getExtractionCondition())
 						: null,
 				domain.getCategory() == AlarmCategory.AGREEMENT
-						? (domain.getAlarmChkCondAgree36().getListCondError() == null ? null : domain.getAlarmChkCondAgree36().getListCondError().stream()
-								.map(c -> Kfnmt36AgreeCondErr.toEntity(c)).collect(Collectors.toList())): null,
-								
+						? (domain.getAlarmChkCondAgree36().getListCondError() == null ? null
+								: domain.getAlarmChkCondAgree36().getListCondError().stream()
+										.map(c -> Kfnmt36AgreeCondErr.toEntity(c)).collect(Collectors.toList()))
+						: null,
+
 				domain.getCategory() == AlarmCategory.AGREEMENT
-						? (domain.getAlarmChkCondAgree36().getListCondOt() == null ? null : domain.getAlarmChkCondAgree36().getListCondOt().stream()
-								.map(a -> Kfnmt36AgreeCondOt.toEnity(a)).collect(Collectors.toList())) : null,
+						? (domain.getAlarmChkCondAgree36().getListCondOt() == null ? null
+								: domain.getAlarmChkCondAgree36().getListCondOt().stream()
+										.map(a -> Kfnmt36AgreeCondOt.toEnity(a)).collect(Collectors.toList()))
+						: null,
 				domain.getCategory() == AlarmCategory.MULTIPLE_MONTH
-								? KfnmtMulMonAlarmCond.toEntity(domain.getCompanyId(), domain.getCode().v(),
-										domain.getCategory().value, (MulMonAlarmCond) domain.getExtractionCondition())
+						? KfnmtMulMonAlarmCond.toEntity(domain.getCompanyId(), domain.getCode().v(),
+								domain.getCategory().value, (MulMonAlarmCond) domain.getExtractionCondition())
+						: null,
+				domain.getCategory() == AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY
+						&& (AnnualHolidayAlarmCondition) domain.getExtractionCondition() != null
+						&& ((AnnualHolidayAlarmCondition) domain.getExtractionCondition()).getAlarmCheckConAgr() != null
+								? KfnmtAlCheckConAg.toEntity(domain.getCompanyId(), domain.getCode().v(),
+										domain.getCategory().value,
+										((AnnualHolidayAlarmCondition) domain.getExtractionCondition())
+												.getAlarmCheckConAgr())
 								: null,
-				domain.getCategory() == AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY  
-				&& (AnnualHolidayAlarmCondition) domain.getExtractionCondition() != null
-				&& ((AnnualHolidayAlarmCondition) domain.getExtractionCondition()).getAlarmCheckConAgr() != null
-				? KfnmtAlCheckConAg.toEntity(domain.getCompanyId(), domain.getCode().v(),
-						domain.getCategory().value, ((AnnualHolidayAlarmCondition) domain.getExtractionCondition()).getAlarmCheckConAgr())
-				: null,
 				domain.getCategory() == AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY 
 			    && (AnnualHolidayAlarmCondition) domain.getExtractionCondition() != null
 			    && ((AnnualHolidayAlarmCondition) domain.getExtractionCondition()).getAlarmCheckSubConAgr() != null
 				? KfnmtAlCheckSubConAg.toEntity(domain.getCompanyId(), domain.getCode().v(),
 						domain.getCategory().value, ((AnnualHolidayAlarmCondition) domain.getExtractionCondition()).getAlarmCheckSubConAgr())
-				: null
+				: null,
+				domain.getCategory() == AlarmCategory.MASTER_CHECK ? KrcmtMasterCheckAlarmCheckCondition.toEntity(domain.getCompanyId(), domain.getCode(),
+								domain.getCategory(), (MasterCheckAlarmCheckCondition) domain.getExtractionCondition()) : null
 		);
 	}
 

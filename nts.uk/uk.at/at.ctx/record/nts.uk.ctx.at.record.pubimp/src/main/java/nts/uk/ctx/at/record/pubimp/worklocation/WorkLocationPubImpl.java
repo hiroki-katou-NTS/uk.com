@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.record.pubimp.worklocation;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -29,5 +32,14 @@ public class WorkLocationPubImpl implements WorkLocationPub {
 		return new WorkLocationPubExport(workLocation.getCompanyID(), workLocation.getWorkLocationCD().v(),
 				workLocation.getWorkLocationName().v(), workLocation.getHoriDistance(), workLocation.getVertiDistance(),
 				workLocation.getLatitude().v(), workLocation.getLongitude().v());
+	}
+
+	@Override
+	public List<WorkLocationPubExport> findAll(String companyId) {
+		return workRepository.findAll(companyId).stream().map(w -> 
+					WorkLocationPubExport.createSimpleFromJavaType(w.getCompanyID(), w.getWorkLocationCD().v(), 
+						w.getWorkLocationName().v(), w.getHoriDistance(), w.getVertiDistance(), 
+						w.getLatitude().v(), w.getLongitude().v()))
+				.collect(Collectors.toList());
 	}
 }

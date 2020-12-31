@@ -69,7 +69,7 @@ public class AggregateProcessScheduleService {
         attendanceItemNameAdapter.getAttendanceItemNameAsMapName(cid, 1); // TODO Q&A 38756
 
         // 社員ID(List)、期間を設定して勤務予定を取得する
-        List<WorkScheduleWorkInforImport> workScheduleWorkInfos = workScheduleWorkInforAdapter.getList(employeeIds, period);
+        List<WorkScheduleWorkInforImport> workScheduleWorkInfos = workScheduleWorkInforAdapter.getBy(employeeIds, period);
 
         // ドメインモデル「アラームリスト（職場別）スケジュール／日次の抽出条件」を取得する
         List<ExtractionScheduleCon> extractScheduleCons = extractionScheduleConRepo.getBy(extractCondIds, true);

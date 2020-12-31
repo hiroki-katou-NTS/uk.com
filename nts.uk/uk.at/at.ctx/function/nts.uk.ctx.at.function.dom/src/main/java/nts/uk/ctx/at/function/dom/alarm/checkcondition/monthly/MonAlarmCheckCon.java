@@ -13,10 +13,10 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.ExtractionCondition;
  */
 @Getter
 public class MonAlarmCheckCon extends ExtractionCondition {
-	/**ID*/
+	/**固定抽出条件ID*/
 	private String monAlarmCheckConID;
-	/**固定抽出条件*/
-	private List<Integer> listFixExtraMon = new ArrayList<>();
+	/***/
+	//private List<Integer> listFixExtraMon = new ArrayList<>();
 	/**任意抽出条件*/
 	List<String> arbExtraCon = new ArrayList<>();
 	public MonAlarmCheckCon(String monAlarmCheckConID, List<String> arbExtraCon) {

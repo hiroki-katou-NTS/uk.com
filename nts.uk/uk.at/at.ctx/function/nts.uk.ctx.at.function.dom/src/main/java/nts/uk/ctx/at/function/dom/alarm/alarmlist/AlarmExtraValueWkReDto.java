@@ -3,12 +3,16 @@ package nts.uk.ctx.at.function.dom.alarm.alarmlist;
 import java.util.Arrays;
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.gul.text.IdentifierUtil;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor		
 public class AlarmExtraValueWkReDto {
 	
 	private String guid;
@@ -32,7 +36,7 @@ public class AlarmExtraValueWkReDto {
 	private String alarmValueDate;
 
 	/**カテゴリ*/
-	private int category;
+	private Integer category;
 	
 	private String categoryName;
 	

@@ -26,6 +26,8 @@ public interface WorkplaceManagerRepository {
 	List<WorkplaceManager> findListWkpManagerByEmpIdAndBaseDate(String employeeId, GeneralDate baseDate);
 	
 	List<WorkplaceManager> findByWkpDateAndManager(String wkpID, GeneralDate baseDate, List<String> wkpManagerIDLst);
+	
+	List<WorkplaceManager> findListWkpManagerByWkpIdsAndBaseDate(List<String> wkpIDLst, GeneralDate baseDate);
 
 	//Export Data
 	List<WorkPlaceSelectionExportData> findAllWorkPlaceSelection(String companyId, List<WorkPlaceFunction> functionNo);

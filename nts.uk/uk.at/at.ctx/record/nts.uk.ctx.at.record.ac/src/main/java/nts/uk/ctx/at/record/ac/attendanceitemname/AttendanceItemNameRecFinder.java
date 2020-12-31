@@ -44,4 +44,13 @@ public class AttendanceItemNameRecFinder implements AttendanceItemNameAdapter{
 				.collect(Collectors.toList());
 		return data;
 	}
+	
+	@Override
+	public List<MonthlyAttendanceItemNameDto> getMonthlyAttendanceItem(int typeOfAttendanceItem) {
+		List<MonthlyAttendanceItemNameDto> data = attendanceItemPub.getAttendanceItem(typeOfAttendanceItem)
+				.stream()
+				.map(x -> new MonthlyAttendanceItemNameDto(x.getAttendanceItemId(), x.getAttendanceItemName(), x.getAttendanceItemDisplayNumber()))
+				.collect(Collectors.toList());
+		return data;
+	}
 }

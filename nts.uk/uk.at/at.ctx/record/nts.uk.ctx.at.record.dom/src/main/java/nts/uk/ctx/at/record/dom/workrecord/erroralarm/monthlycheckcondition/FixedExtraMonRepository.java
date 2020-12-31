@@ -12,4 +12,6 @@ public interface FixedExtraMonRepository {
 	
 	void deleteFixedExtraMon(String monAlarmCheckID);
 	
+	List<FixedExtraMon> getFixedItem(String anyId, boolean useAtr);
+	
 }

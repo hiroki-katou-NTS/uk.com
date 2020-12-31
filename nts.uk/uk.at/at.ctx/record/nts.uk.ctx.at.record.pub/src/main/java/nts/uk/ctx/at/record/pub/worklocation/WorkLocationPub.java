@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.pub.worklocation;
 
+import java.util.List;
+
 public interface WorkLocationPub {
 	/**
 	 * get workLocation Name
@@ -8,4 +10,6 @@ public interface WorkLocationPub {
 	 * @return
 	 */
 	WorkLocationPubExport getLocationName(String companyID, String workLocationCd);
+	
+	List<WorkLocationPubExport> findAll(String companyId);
 }

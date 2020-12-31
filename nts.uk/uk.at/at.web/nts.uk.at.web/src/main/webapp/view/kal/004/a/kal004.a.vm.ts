@@ -162,16 +162,16 @@ module nts.uk.at.view.kal004.a.model {
                         let daily = categoryInputed.extractionDaily == null ? null : new share.ExtractionPeriodDailyCommand(categoryInputed.extractionDaily);
                         let unit = categoryInputed.extractionUnit == null ? null : new share.PeriodUnitCommand(categoryInputed.extractionUnit);
                         let listMonthly = [];
-                        if(categoryInputed.alarmCategory == 11){
+                        if(categoryInputed.alarmCategory == 11 || categoryInputed.alarmCategory == 14){
                             listMonthly== null;
                         }else{
                             listMonthly = categoryInputed.listExtractionMonthly == [] ? [] : _.map(categoryInputed.listExtractionMonthly, (item)=>{ return new share.ExtractionPeriodMonthlyCommand(item)});
                         }
-                        let yearly = categoryInputed.extractionYear ==null ? null : new share.ExtractionRangeYearCommand(categoryInputed.extractionYear);
-                        let averMonth = categoryInputed.extractionAverMonth ==null ? null : new share.ExtractionAverageMonthCommand(categoryInputed.extractionAverMonth);
+                        let yearly = categoryInputed.extractionYear == null ? null : new share.ExtractionRangeYearCommand(categoryInputed.extractionYear);
+                        let averMonth = categoryInputed.extractionAverMonth == null ? null : new share.ExtractionAverageMonthCommand(categoryInputed.extractionAverMonth);
                         shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, daily, unit, listMonthly, yearly, averMonth));
                     } else {
-                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, null, null, [], null));
+                        shareTab2.push(new share.CheckConditionCommand(category, checkConditionCodes, null, null, [], null, null));
                     }
 
                 });

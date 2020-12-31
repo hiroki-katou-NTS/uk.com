@@ -287,7 +287,7 @@ module nts.uk.at.view.kal003.share {
                         compareRangeExValue = null;
                     }
                     let  listItemID = [];
-                    listItemID.push(con.listItemID()[0] != undefined?con.listItemID()[0]:con.listItemID());
+                    listItemID.push(con.listItemID() != null && con.listItemID()[0] != undefined?con.listItemID()[0]:vmodel.errorAlarmCheckID());
                     convertExtraResultMonthly["specHolidayCheckCon"] = null;
                     convertExtraResultMonthly["agreementCheckCon36"] = null;
                     convertExtraResultMonthly["checkConMonthly"] = null;

@@ -341,10 +341,10 @@ module nts.uk.at.view.kal003.c1.viewmodel {
                 if (parseInt(caic.compareStartValue) > parseInt(caic.compareEndValue)) {
                     isValid = false;
                     setTimeout(() => {
-                        nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_927');
-                        nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
+                        nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_836');
+                        nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_836');
                         //                        $('#startValue').ntsError('set', { messageId: "Msg_927" });
-                        $('#endValue').ntsError('set', { messageId: "Msg_927" });
+                        $('#endValue').ntsError('set', { messageId: "Msg_836" });
 
                     }, 25);
                 }
@@ -352,10 +352,10 @@ module nts.uk.at.view.kal003.c1.viewmodel {
                 if (parseInt(caic.compareStartValue) >= parseInt(caic.compareEndValue)) {
                     isValid = false;
                     setTimeout(() => {
-                        nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_927');
-                        nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_927');
+                        nts.uk.ui.errors.removeByCode($('#startValue'), 'Msg_836');
+                        nts.uk.ui.errors.removeByCode($('#endValue'), 'Msg_836');
                         //                        $('#startValue').ntsError('set', { messageId: "Msg_927" });
-                        $('#endValue').ntsError('set', { messageId: "Msg_927" });
+                        $('#endValue').ntsError('set', { messageId: "Msg_836" });
                     }, 25);
                 }
             }
