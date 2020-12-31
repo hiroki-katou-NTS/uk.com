@@ -90,17 +90,17 @@ public class FixedExtractionCondCheckService {
                     case UNAPPROVED:
                         // 未承認（反映条件未達）
                         // 反映状態　＝　未反映
-                        extractResult = reflectionStatusCheckService.check(empsByWp.getValue(), period, 1);
+                        extractResult = reflectionStatusCheckService.check(empsByWp.getValue(), period, 0);
                         break;
                     case DENIAL:
                         // 否認
                         // 反映状態　＝　否認
-                        extractResult = reflectionStatusCheckService.check(empsByWp.getValue(), period, 2);
+                        extractResult = reflectionStatusCheckService.check(empsByWp.getValue(), period, 5);
                         break;
                     case NOT_REFLECTED:
                         // 未反映（反映条件達成）
                         // 反映状態　＝　反映待ち
-                        extractResult = reflectionStatusCheckService.check(empsByWp.getValue(), period, 3);
+                        extractResult = reflectionStatusCheckService.check(empsByWp.getValue(), period, 1);
                         break;
                     case PROXY_APPROVAL:
                         break;

@@ -51,6 +51,7 @@ public class KrcmtWkpfxexAppapvCon extends UkJpaEntity implements Serializable {
         entity.errorAlarmWorkplaceId = domain.getErrorAlarmWorkplaceId();
         entity.checkItemAppapv = domain.getCheckItemAppapv().value;
         entity.messageDisp = domain.getMessageDisp().v();
+        entity.useAtr = domain.isUseAtr();
         return entity;
     }
 

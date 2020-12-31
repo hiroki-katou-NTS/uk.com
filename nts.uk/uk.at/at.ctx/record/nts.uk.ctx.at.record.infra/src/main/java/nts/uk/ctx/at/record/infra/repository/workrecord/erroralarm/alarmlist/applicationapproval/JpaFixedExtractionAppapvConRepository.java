@@ -22,7 +22,8 @@ public class JpaFixedExtractionAppapvConRepository extends JpaRepository impleme
     private static final String SELECT_ALL_FXEX_APPAPV_CON_BY_ID = SELECT_ALL_FXEX_APPAPV_CON
             + " WHERE a.errorAlarmWorkplaceId = :chkId ";
 
-    private static final String SELECT_BY_IDS = " where  a.errorAlarmWorkplaceId in :ids";
+    private static final String SELECT_BY_IDS = SELECT_ALL_FXEX_APPAPV_CON
+            + " WHERE  a.errorAlarmWorkplaceId IN :ids";
 
     private static final String SELECT_BY_IDS_AND_USEATR = SELECT_ALL_FXEX_APPAPV_CON
         + " WHERE a.errorAlarmWorkplaceId in :ids AND a.useAtr = :useAtr ";
