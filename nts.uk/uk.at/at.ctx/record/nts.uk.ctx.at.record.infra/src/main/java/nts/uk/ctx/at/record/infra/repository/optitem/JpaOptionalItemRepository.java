@@ -174,7 +174,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Add where condition
-		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.cid),
+		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.krcmtAnyvPK).get(KrcstOptionalItemPK_.cid),
 				companyId));
 		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.optionalItemAtr), atr));
 		cq.multiselect(root, joinRoot);
@@ -297,7 +297,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Add where condition
-		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.cid),
+		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.krcmtAnyvPK).get(KrcstOptionalItemPK_.cid),
 				companyId));
 		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.optionalItemAtr), atr.value));
 		cq.multiselect(root, joinRoot);
@@ -346,7 +346,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Add where condition
-		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.cid),
+		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.krcmtAnyvPK).get(KrcstOptionalItemPK_.cid),
 				companyId));
 		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.performanceAtr), atr.value));
 		cq.multiselect(root, joinRoot);
@@ -395,7 +395,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Add where condition
-		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.cid),
+		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.krcmtAnyvPK).get(KrcstOptionalItemPK_.cid),
 				companyId));
 		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.performanceAtr), atr.value));
 		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.usageAtr), OptionalItemUsageAtr.USE.value));
@@ -429,13 +429,13 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Add where condition
-		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.cid),
+		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.krcmtAnyvPK).get(KrcstOptionalItemPK_.cid),
 				companyId));
 		predicateList.add(builder.equal(root.get(KrcstOptionalItem_.performanceAtr), atr.value));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
 		// Get NO and optional attr only
-		cq.multiselect(root.get(KrcstOptionalItem_.krcstOptionalItemPK).get(KrcstOptionalItemPK_.optionalItemNo),
+		cq.multiselect(root.get(KrcstOptionalItem_.krcmtAnyvPK).get(KrcstOptionalItemPK_.optionalItemNo),
 				root.get(KrcstOptionalItem_.optionalItemAtr));
 
 		// Get results

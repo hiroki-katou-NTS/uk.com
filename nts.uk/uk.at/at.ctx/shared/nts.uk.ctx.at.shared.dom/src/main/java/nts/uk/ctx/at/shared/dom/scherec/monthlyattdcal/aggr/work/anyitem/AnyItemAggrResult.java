@@ -29,17 +29,17 @@ public class AnyItemAggrResult {
 	/** 任意項目NO */
 	private int optionalItemNo;
 	/** 時間 */
-	private AnyTimeMonth anyTime;
+	private Optional<AnyTimeMonth> anyTime;
 	/** 回数 */
-	private AnyTimesMonth anyTimes;
+	private Optional<AnyTimesMonth> anyTimes;
 	/** 金額 */
-	private AnyAmountMonth anyAmount;
+	private Optional<AnyAmountMonth> anyAmount;
 	
 	private AnyItemAggrResult(){
 		this.optionalItemNo = 0;
-		this.anyTime = null;
-		this.anyTimes = null;
-		this.anyAmount = null;
+		this.anyTime = Optional.empty();
+		this.anyTimes = Optional.empty();
+		this.anyAmount = Optional.empty();
 	}
 
 	/**
@@ -52,9 +52,9 @@ public class AnyItemAggrResult {
 	 */
 	public static AnyItemAggrResult of(
 			int optionalItemNo,
-			AnyTimeMonth anyTime,
-			AnyTimesMonth anyTimes,
-			AnyAmountMonth anyAmount){
+			Optional<AnyTimeMonth> anyTime,
+			Optional<AnyTimesMonth> anyTimes,
+			Optional<AnyAmountMonth> anyAmount){
 
 		AnyItemAggrResult domain = new AnyItemAggrResult();
 		domain.optionalItemNo = optionalItemNo;
@@ -78,24 +78,18 @@ public class AnyItemAggrResult {
 		domain.optionalItemNo = optionalItemNo;
 		
 		// 属性に応じて初期化
-		AnyTimeMonth anyTime = null;
-		AnyTimesMonth anyTimes = null;
-		AnyAmountMonth anyAmount = null;
 		switch (optionalItem.getOptionalItemAtr()){
 		case TIME:
-			anyTime = new AnyTimeMonth(0);
+			domain.anyTime = Optional.of(new AnyTimeMonth(0));
 			break;
 		case NUMBER:
-			anyTimes = new AnyTimesMonth(0.0);
+			domain.anyTimes = Optional.of(new AnyTimesMonth(0.0));
 			break;
 		case AMOUNT:
-			anyAmount = new AnyAmountMonth(0);
+			domain.anyAmount = Optional.of(new AnyAmountMonth(0));
 			break;
 		}
 		
-		domain.anyTime = anyTime;
-		domain.anyTimes = anyTimes;
-		domain.anyAmount = anyAmount;
 		return domain;
 	}
 	
@@ -104,8 +98,7 @@ public class AnyItemAggrResult {
 	 * @param minutes 分
 	 */
 	public void addTime(int minutes){
-		if (this.anyTime == null) this.anyTime = new AnyTimeMonth(0);
-		this.anyTime = this.anyTime.addMinutes(minutes);
+		this.anyTime = Optional.of(this.anyTime.map(c -> c.addMinutes(minutes)).orElse(new AnyTimeMonth(minutes)));
 	}
 	
 	/**
@@ -113,8 +106,7 @@ public class AnyItemAggrResult {
 	 * @param times 回数
 	 */
 	public void addTimes(double times){
-		if (this.anyTimes == null) this.anyTimes = new AnyTimesMonth(0.0);
-		this.anyTimes = this.anyTimes.addTimes(times);
+		this.anyTimes = Optional.of(this.anyTimes.map(c -> c.addTimes(times)).orElse(new AnyTimesMonth(times)));
 	}
 	
 	/**
@@ -122,8 +114,7 @@ public class AnyItemAggrResult {
 	 * @param amount 金額
 	 */
 	public void addAmount(int amount){
-		if (this.anyAmount == null) this.anyAmount = new AnyAmountMonth(0);
-		this.anyAmount = this.anyAmount.addAmount(amount);
+		this.anyAmount = Optional.of(this.anyAmount.map(c -> c.addAmount(amount)).orElse(new AnyAmountMonth(amount)));
 	}
 	
 	/**

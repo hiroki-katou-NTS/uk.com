@@ -16,6 +16,7 @@ public class GetInformationStartupCmd {
 	private String baseDate;
 	private List<TimeVacationAndType> listTimeVacationAndType; 
 	private String workTimeCode;
+	private String workTypeCode;
 	private TargetOrgIdenInforDto targetOrgIdenInforDto;
 
 }

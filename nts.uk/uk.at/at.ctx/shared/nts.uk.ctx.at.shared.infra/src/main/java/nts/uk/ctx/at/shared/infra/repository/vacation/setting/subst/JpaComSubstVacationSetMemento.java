@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.subst;
 
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSetting;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstComSubstVacation;
@@ -48,7 +49,19 @@ public class JpaComSubstVacationSetMemento implements ComSubstVacationSetMemento
 	@Override
 	public void setSetting(SubstVacationSetting setting) {
 		setting.saveToMemento(
-				new JpaSubstVacationSettingSetMemento<KsvstSubstVacationSetting>(this.typeValue));
+				new JpaSubstVacationSettingSetMemento<KsvstComSubstVacation>(this.typeValue));
+	}
+
+	@Override
+	public void setManageDistinct(ManageDistinct manageDistinct) {
+		this.typeValue.setManageAtr(manageDistinct.value);
+		
+	}
+
+	@Override
+	public void setLinkingManagementATR(ManageDistinct linkingManagementATR) {
+		this.typeValue.setLinkMngAtr(linkingManagementATR.value);
+		
 	}
 
 }

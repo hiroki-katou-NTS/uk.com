@@ -19,8 +19,8 @@ import nts.uk.ctx.at.shared.dom.application.gobackdirectly.GoBackDirectlyShare;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.gobackdirectly.ApplicationStatusShare;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.gobackdirectly.ReflectGoBackDirectly;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.ApplicationStatus;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
@@ -50,7 +50,7 @@ public class SCRCReflectGoBackDirectlyAppTest {
 
 		// case [勤務情報を反映する]が「2：申請時に決める」
 
-		ReflectGoBackDirectly reflect = new ReflectGoBackDirectly("", ApplicationStatusShare.DO_NOT_REFLECT_1);
+		GoBackReflect reflect = new GoBackReflect("", ApplicationStatus.DO_NOT_REFLECT_1);
 		new Expectations() {
 			{
 				require.findByPK(anyString, anyString);
@@ -65,10 +65,10 @@ public class SCRCReflectGoBackDirectlyAppTest {
 
 		actualResult.addAll(SCRCReflectGoBackDirectlyApp.reflect(require, "", appGoback, dailyApp, reflect));
 
-		assertThat(actualResult).isEqualTo(Arrays.asList(1, 2, 1292, 1293));
+		assertThat(actualResult).isEqualTo(Arrays.asList(28, 1292, 1293, 29));
 
 		// case [勤務情報を反映する]が「1:反映する」
-		ReflectGoBackDirectly reflect2 = new ReflectGoBackDirectly("", ApplicationStatusShare.DO_REFLECT);
+		GoBackReflect reflect2 = new GoBackReflect("", ApplicationStatus.DO_REFLECT);
 		new Expectations() {
 			{
 				require.findByPK(anyString, anyString);
@@ -83,7 +83,7 @@ public class SCRCReflectGoBackDirectlyAppTest {
 
 		actualResult2.addAll(SCRCReflectGoBackDirectlyApp.reflect(require, "", appGoback2, dailyApp2, reflect2));
 
-		assertThat(actualResult2).isEqualTo(Arrays.asList(1, 2, 1292, 1293));
+		assertThat(actualResult2).isEqualTo(Arrays.asList(28, 1292, 1293, 29));
 	}
 
 	/*
@@ -102,7 +102,7 @@ public class SCRCReflectGoBackDirectlyAppTest {
 	public void testNoReflectWorkType() {
 
 		// case [勤務情報を反映する]が「反映しない」
-		ReflectGoBackDirectly reflect = new ReflectGoBackDirectly("", ApplicationStatusShare.DO_NOT_REFLECT);
+		GoBackReflect reflect = new GoBackReflect("", ApplicationStatus.DO_NOT_REFLECT);
 
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createDailyRecord(ScheduleRecordClassifi.RECORD);// 日別勤怠(申請反映用Work)
 		GoBackDirectlyShare appGoback = createGoBackApp(NotUseAtr.USE);// 勤務を変更する
@@ -114,7 +114,7 @@ public class SCRCReflectGoBackDirectlyAppTest {
 		assertThat(actualResult).isEmpty();
 
 		// case [勤務情報を反映する]が「1:反映する」と 「勤務種類コード = 休日出勤 or =振出」
-		ReflectGoBackDirectly reflect2 = new ReflectGoBackDirectly("", ApplicationStatusShare.DO_REFLECT);
+		GoBackReflect reflect2 = new GoBackReflect("", ApplicationStatus.DO_REFLECT);
 		new Expectations() {
 			{
 				require.findByPK(anyString, anyString);
@@ -132,7 +132,7 @@ public class SCRCReflectGoBackDirectlyAppTest {
 		assertThat(actualResult2).isEmpty();
 
 		// case [勤務情報を反映する]が「申請時に決めると 「勤務種類コード = 休日出勤 or =振出」
-		ReflectGoBackDirectly reflect3 = new ReflectGoBackDirectly("", ApplicationStatusShare.DO_NOT_REFLECT_1);
+		GoBackReflect reflect3 = new GoBackReflect("", ApplicationStatus.DO_NOT_REFLECT_1);
 
 		DailyRecordOfApplication dailyApp3 = ReflectApplicationHelper.createDailyRecord(ScheduleRecordClassifi.RECORD);// 日別勤怠(申請反映用Work)
 		GoBackDirectlyShare appGoback3 = createGoBackApp(NotUseAtr.NOT_USE);// 勤務を変更する

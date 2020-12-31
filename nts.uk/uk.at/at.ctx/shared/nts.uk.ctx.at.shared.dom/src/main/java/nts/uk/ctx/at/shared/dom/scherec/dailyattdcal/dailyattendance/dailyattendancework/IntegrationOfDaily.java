@@ -27,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalite
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.remarks.RemarksOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
@@ -86,7 +87,7 @@ public class IntegrationOfDaily {
 //	private List<BreakTimeOfDailyPerformance> breakTime;
 	//休憩時間帯: 日別勤怠の休憩時間帯
 	@Setter
-	private List<BreakTimeOfDailyAttd> breakTime;
+	private Optional<BreakTimeOfDailyAttd> breakTime;
 	
 	//日別実績の外出時間帯 (old)
 //	private Optional<OutingTimeOfDailyPerformance> outingTime;
@@ -173,6 +174,12 @@ public class IntegrationOfDaily {
 	@Setter
 	private Optional<DeclareCalcRange> declareCalcRange = Optional.empty();
 	
+	private Optional<SnapShot> snapshot;
+	
+	public void setSnapshot(SnapShot snapshot) {
+		this.snapshot = Optional.ofNullable(snapshot);
+	}
+	
 	/**
 	 * Constructor
 	 * @param workInformation 日別実績の勤務情報
@@ -198,7 +205,7 @@ public class IntegrationOfDaily {
 			Optional<PCLogOnInfoOfDailyAttd> pcLogOnInfo,
 			List<EmployeeDailyPerError> employeeError,
 			Optional<OutingTimeOfDailyAttd> outingTime,
-			List<BreakTimeOfDailyAttd> breakTime,
+			Optional<BreakTimeOfDailyAttd> breakTime,
 			Optional<AttendanceTimeOfDailyAttendance> attendanceTimeOfDailyPerformance,
 			Optional<TimeLeavingOfDailyAttd> attendanceLeave, 
 			Optional<ShortTimeOfDailyAttd> shortTime,
@@ -207,7 +214,8 @@ public class IntegrationOfDaily {
 			Optional<AnyItemValueOfDailyAttd> anyItemValue,
 			List<EditStateOfDailyAttd> editState, 
 			Optional<TemporaryTimeOfDailyAttd> tempTime,
-			List<RemarksOfDailyAttd> remarks) {
+			List<RemarksOfDailyAttd> remarks,
+			Optional<SnapShot> snapshot) {
 		super();
 		this.workInformation = workInformation;
 		this.calAttr = calAttr;
@@ -230,6 +238,7 @@ public class IntegrationOfDaily {
 		this.editState = editState;
 		this.tempTime = tempTime;
 		this.remarks = remarks;
+		this.snapshot = snapshot;
 	}
 
 	/**
@@ -399,7 +408,7 @@ public class IntegrationOfDaily {
 			Optional<PCLogOnInfoOfDailyAttd> pcLogOnInfo,
 			List<EmployeeDailyPerError> employeeError,
 			Optional<OutingTimeOfDailyAttd> outingTime,
-			List<BreakTimeOfDailyAttd> breakTime,
+			Optional<BreakTimeOfDailyAttd> breakTime,
 			Optional<AttendanceTimeOfDailyAttendance> attendanceTimeOfDailyPerformance,
 			Optional<TimeLeavingOfDailyAttd> attendanceLeave, 
 			Optional<ShortTimeOfDailyAttd> shortTime,
@@ -408,7 +417,8 @@ public class IntegrationOfDaily {
 			Optional<AnyItemValueOfDailyAttd> anyItemValue,
 			List<EditStateOfDailyAttd> editState, 
 			Optional<TemporaryTimeOfDailyAttd> tempTime,
-			List<RemarksOfDailyAttd> remarks) {
+			List<RemarksOfDailyAttd> remarks,
+			Optional<SnapShot> snapshot) {
 		super();
 		this.employeeId = employeeId;
 		this.ymd = ymd;
@@ -433,6 +443,7 @@ public class IntegrationOfDaily {
 		this.editState = editState;
 		this.tempTime = tempTime;
 		this.remarks = remarks;
+		this.snapshot = snapshot;
 	}
 
 	public IntegrationOfDaily(IntegrationOfDaily daily) {
@@ -460,6 +471,7 @@ public class IntegrationOfDaily {
 		this.remarks = daily.getRemarks();
 		this.ouenTimeSheet = daily.getOuenTimeSheet();
 		this.ouenTime = daily.getOuenTime();
+		this.snapshot = daily.getSnapshot();
 	}
 	
 	public IntegrationOfDaily getDomain() {
@@ -489,5 +501,6 @@ public class IntegrationOfDaily {
 		this.editState = daily.getEditState();
 		this.tempTime = daily.getTempTime();
 		this.remarks = daily.getRemarks();
+		this.snapshot = daily.getSnapshot();
 	}
 }

@@ -11,6 +11,8 @@ import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
+import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalOvertimeSetting;
@@ -23,6 +25,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime.OverTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.BonusPayTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
@@ -96,6 +99,7 @@ public class OverTimeSheet {
 	 * @param statutoryFrameNoList 法定内残業枠(List)
 	 * @param declareResult 申告時間帯作成結果
 	 * @param upperControl 事前申請上限制御
+	 * @param overtimeFrameList 残業枠リスト
 	 * @return 残業枠時間(List)
 	 */
 	public List<OverTimeFrameTime> collectOverTimeWorkTime(
@@ -106,7 +110,8 @@ public class OverTimeSheet {
 			IntegrationOfDaily integrationOfDaily,
 			List<OverTimeFrameNo> statutoryFrameNoList,
 			DeclareTimezoneResult declareResult,
-			boolean upperControl) {
+			boolean upperControl,
+			List<OvertimeWorkFrame> overtimeFrameList) {
 		
 		Map<Integer,OverTimeFrameTime> overTimeFrameList = new HashMap<Integer, OverTimeFrameTime>();
 		List<OverTimeFrameNo> numberOrder = new ArrayList<>();
@@ -163,7 +168,8 @@ public class OverTimeSheet {
 			afterCalcUpperTimeList = afterUpperControl(calcOverTimeWorkTimeList,autoCalcSet,statutoryFrameNoList);
 		}
 		//振替処理
-		List<OverTimeFrameTime> aftertransTimeList = transProcess(workType, afterCalcUpperTimeList, eachWorkTimeSet, eachCompanyTimeSet);
+		List<OverTimeFrameTime> aftertransTimeList = transProcess(
+				workType, afterCalcUpperTimeList, eachWorkTimeSet, eachCompanyTimeSet, overtimeFrameList);
 		if (declareResult.getCalcRangeOfOneDay().isPresent()){
 			//ループ処理
 			CalculationRangeOfOneDay declareCalcRange = declareResult.getCalcRangeOfOneDay().get();
@@ -178,24 +184,17 @@ public class OverTimeSheet {
 						integrationOfDaily,
 						statutoryFrameNoList,
 						new DeclareTimezoneResult(),
-						false);
+						false,
+						overtimeFrameList);
 				//申告残業反映後リストの取得
 				OverTimeSheet.getListAfterReflectDeclare(aftertransTimeList, declareFrameTimeList, declareResult);
 			}
 		}
-		//大塚モードの確認
-		if (true){
-			//マイナスの乖離時間を0にする
-			for (val aftertransTime : aftertransTimeList){
-				aftertransTime.getOverTimeWork().divergenceMinusValueToZero();
-				aftertransTime.getTransferTime().divergenceMinusValueToZero();
-			}
-		}
+		//マイナスの乖離時間を0にする
+		OverTimeOfDaily.divergenceMinusValueToZero(aftertransTimeList);
+		
 		return aftertransTimeList;
 	}
-	
-
-
 
 	private List<OverTimeFrameTimeSheetForCalc> sortFrameTime(List<OverTimeFrameTimeSheetForCalc> frameTimeSheets, WorkType workType, Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet, Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
 		val useSetting = decisionUseSetting(workType, eachWorkTimeSet, eachCompanyTimeSet);
@@ -419,14 +418,16 @@ public class OverTimeSheet {
 	/**
 	 * 代休の振替処理(残業用)
 	 * アルゴリズム：振替処理
-	 * @param workType　当日の勤務種類
+	 * @param workType 当日の勤務種類
+	 * @param afterCalcUpperTimeList 残業時間枠リスト
 	 * @param eachWorkTimeSet 就業時間帯別代休時間設定
 	 * @param eachCompanyTimeSet 会社別代休時間設定
-	 * 
+	 * @param overtimeFrameList 残業枠リスト
 	 */
 	public List<OverTimeFrameTime> transProcess(WorkType workType, List<OverTimeFrameTime> afterCalcUpperTimeList,
 												Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-												Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
+												Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
+												List<OvertimeWorkFrame> overtimeFrameList) {
 		
 		val useSettingAtr = decisionUseSetting(workType, eachWorkTimeSet, eachCompanyTimeSet);
 		
@@ -436,12 +437,14 @@ public class OverTimeSheet {
 		switch(useSettingAtr.get().getSubHolTransferSetAtr()) {
 			//一定時間を超えたら代休とする
 			case CERTAIN_TIME_EXC_SUB_HOL:
-				return periodOfTimeTransfer(useSettingAtr.get().getCertainTime(),afterCalcUpperTimeList);
+				return periodOfTimeTransfer(useSettingAtr.get().getCertainTime(),afterCalcUpperTimeList,
+						overtimeFrameList);
 			//指定した時間を代休とする
 			case SPECIFIED_TIME_SUB_HOL:
 				return transAllTime(useSettingAtr.get().getDesignatedTime().getOneDayTime(),
 								    useSettingAtr.get().getDesignatedTime().getHalfDayTime(),
-									afterCalcUpperTimeList);
+									afterCalcUpperTimeList,
+									overtimeFrameList);
 			default:
 				throw new RuntimeException("unknown daikyuSet:");
 		}
@@ -492,15 +495,21 @@ public class OverTimeSheet {
 
 	/**
 	 * 一定時間の振替処理
-	 * @param 一定時間
+	 * @param periodTime 一定時間
+	 * @param afterCalcUpperTimeList 残業時間枠リスト
+	 * @param overtimeFrameList 残業枠リスト
 	 */
-	public List<OverTimeFrameTime> periodOfTimeTransfer(OneDayTime periodTime,List<OverTimeFrameTime> afterCalcUpperTimeList) {
+	public List<OverTimeFrameTime> periodOfTimeTransfer(
+			OneDayTime periodTime,
+			List<OverTimeFrameTime> afterCalcUpperTimeList,
+			List<OvertimeWorkFrame> overtimeFrameList) {
+		
 		/*振替可能時間の計算*/
 		AttendanceTime transAbleTime = calcTransferTimeOfPeriodTime(new AttendanceTime(periodTime.v()),afterCalcUpperTimeList,UseTimeAtr.TIME);
 		AttendanceTime transAbleCalcTime = calcTransferTimeOfPeriodTime(new AttendanceTime(periodTime.v()),afterCalcUpperTimeList,UseTimeAtr.CALCTIME);
 		/*振り替える*/
-		val afterTransOverTime = trans(transAbleTime ,afterCalcUpperTimeList ,UseTimeAtr.TIME);
-		val afterTransOverCalcTime = trans(transAbleCalcTime ,afterTransOverTime ,UseTimeAtr.CALCTIME);
+		val afterTransOverTime = trans(transAbleTime ,afterCalcUpperTimeList ,UseTimeAtr.TIME,overtimeFrameList);
+		val afterTransOverCalcTime = trans(transAbleCalcTime ,afterTransOverTime ,UseTimeAtr.CALCTIME,overtimeFrameList);
 		return afterTransOverCalcTime;
 	}
 	
@@ -524,14 +533,31 @@ public class OverTimeSheet {
 	}
 
 	
-	public List<OverTimeFrameTime> trans(AttendanceTime restTransAbleTime, List<OverTimeFrameTime> afterCalcUpperTimeList,UseTimeAtr useTimeAtr) {
+	public List<OverTimeFrameTime> trans(
+			AttendanceTime restTransAbleTime,
+			List<OverTimeFrameTime> afterCalcUpperTimeList,
+			UseTimeAtr useTimeAtr,
+			List<OvertimeWorkFrame> overtimeFrameList) {
+		
 		List<OverTimeFrameTime> returnList = new ArrayList<>();
 		//振替時間
 		AttendanceTime transAbleTime = restTransAbleTime;
 		//振替残時間
 		AttendanceTime transRestAbleTime = restTransAbleTime;
 		for(OverTimeFrameTime overTimeFrameTime : afterCalcUpperTimeList) {
-
+			
+			// 代休振替対象＝「しない」の時、振り替えないようにする
+			Optional<OvertimeWorkFrame> frame = overtimeFrameList.stream()
+					.filter(c -> c.getOvertimeWorkFrNo().v().intValue() == overTimeFrameTime.getOverWorkFrameNo().v())
+					.findFirst();
+			if (!frame.isPresent()){
+				returnList.add(overTimeFrameTime);
+				continue;
+			}
+			if (frame.get().getTransferAtr() == NotUseAtr.NOT_USE){
+				returnList.add(overTimeFrameTime);
+				continue;
+			}
 			
 			transAbleTime = calcTransferTime(useTimeAtr, overTimeFrameTime, transRestAbleTime);
 			//振替
@@ -590,14 +616,22 @@ public class OverTimeSheet {
 	
 	/**
 	 * 指定時間の振替処理
-	 * @param prioritySet 優先設定
+	 * @param oneDay 指定時間1日
+	 * @param halfDay 指定時間半日
+	 * @param afterCalcUpperTimeList 残業時間枠リスト
+	 * @param overtimeFrameList 残業枠リスト
 	 */
-	public List<OverTimeFrameTime> transAllTime(OneDayTime oneDay,OneDayTime halfDay,List<OverTimeFrameTime> afterCalcUpperTimeList) {
+	public List<OverTimeFrameTime> transAllTime(
+			OneDayTime oneDay,
+			OneDayTime halfDay,
+			List<OverTimeFrameTime> afterCalcUpperTimeList,
+			List<OvertimeWorkFrame> overtimeFrameList) {
+		
 		AttendanceTime transAbleTime = calsTransAllTime(oneDay,halfDay,afterCalcUpperTimeList,UseTimeAtr.TIME);
 		AttendanceTime transAbleCalcTime = calsTransAllTime(oneDay,halfDay,afterCalcUpperTimeList,UseTimeAtr.CALCTIME);
 		/*振り替える*/
-		val afterTransOverTime = trans(transAbleTime ,afterCalcUpperTimeList ,UseTimeAtr.TIME);
-		val afterTransOverCalcTime = trans(transAbleCalcTime ,afterTransOverTime ,UseTimeAtr.CALCTIME);
+		val afterTransOverTime = trans(transAbleTime ,afterCalcUpperTimeList ,UseTimeAtr.TIME,overtimeFrameList);
+		val afterTransOverCalcTime = trans(transAbleCalcTime ,afterTransOverTime ,UseTimeAtr.CALCTIME,overtimeFrameList);
 		return afterTransOverCalcTime;
 	}
 	
