@@ -14,6 +14,7 @@ import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.EmployeeInfor
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.StatusOfEmployee;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.WorkPlaceInfo;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
@@ -67,9 +68,15 @@ public class CreateWorkLedgerDisplayContentDomainService {
         }
         // ③ 取得する(会社ID)
         val attIds = require.getAggregableMonthlyAttId(cid);
+
         val listAttIds = monthlyOutputItems.parallelStream().map(AttendanceItemToPrint::getAttendanceId)
                 .distinct().collect(Collectors.toCollection(ArrayList::new));
-        // ④ Call 会社の月次項目を取得する
+
+        // 4 月次の勤怠項目を取得する
+        val attendanceItemList = require.findByAttendanceItemId(cid, listAttIds)
+                .stream()
+                .collect(Collectors.toMap(MonthlyAttendanceItem::getAttendanceItemId, q -> q));
+        // ④.1 Call 会社の月次項目を取得する
         val attName = require.getMonthlyItems(cid, Optional.empty(), listAttIds, null).stream()
                 .collect(Collectors.toMap(AttItemName::getAttendanceItemId, q -> q));
         List<WorkLedgerDisplayContent> rs = new ArrayList<>();
@@ -111,29 +118,32 @@ public class CreateWorkLedgerDisplayContentDomainService {
                 val monthlyValues = new ArrayList<MonthlyValue>();
                 val value = attName.getOrDefault(att.getAttendanceId(), null);
                 if (value == null || value.getTypeOfAttendanceItem() == null) continue;
-                val attribute = convertMonthlyToAttForms(value.getTypeOfAttendanceItem());
-                if (attribute == null) continue;
-                allValue.forEach((key, values) -> {
-                    val valueSub = values.getOrDefault(att.getAttendanceId(), null);
-                    boolean isCharacter = attribute == CommonAttributesOfForms.WORK_TYPE || attribute == CommonAttributesOfForms.WORKING_HOURS;
-                    if (valueSub != null) {
-                        monthlyValues.add(new MonthlyValue(
-                                valueSub.itemId(),
-                                !isCharacter ? valueSub.doubleOrDefault() : null,
-                                key,
-                                isCharacter ? valueSub.stringOrDefault() : null
-                        ));
-                    }
-                });
-                double total = monthlyValues.stream().filter(x -> x.getActualValue() != null && checkAttId(attIds, x.getAttId()))
-                        .mapToDouble(MonthlyValue::getActualValue).sum();
-                iemOneLine.add(
-                        new MonthlyOutputLine(
-                                monthlyValues,
-                                value.getAttendanceItemName(),
-                                att.getRanking(),
-                                total,
-                                attribute));
+                val attributeMonthly = attendanceItemList.getOrDefault(att.getAttendanceId(), null);
+                if (attributeMonthly != null) {
+                    val attribute = convertMonthlyToAttForms(attributeMonthly.getMonthlyAttendanceAtr().value);
+                    if (attribute == null) continue;
+                    allValue.forEach((key, values) -> {
+                        val valueSub = values.getOrDefault(att.getAttendanceId(), null);
+                        boolean isCharacter = attribute == CommonAttributesOfForms.WORK_TYPE || attribute == CommonAttributesOfForms.WORKING_HOURS;
+                        if (valueSub != null) {
+                            monthlyValues.add(new MonthlyValue(
+                                    valueSub.itemId(),
+                                    !isCharacter ? valueSub.doubleOrDefault() : null,
+                                    key,
+                                    isCharacter ? valueSub.stringOrDefault() : null
+                            ));
+                        }
+                    });
+                    double total = monthlyValues.stream().filter(x -> x.getActualValue() != null && checkAttId(attIds, x.getAttId()))
+                            .mapToDouble(MonthlyValue::getActualValue).sum();
+                    iemOneLine.add(
+                            new MonthlyOutputLine(
+                                    monthlyValues,
+                                    value.getAttendanceItemName(),
+                                    att.getRanking(),
+                                    total,
+                                    attribute));
+                }
 
             }
             if (iemOneLine.size() != 0) {
@@ -162,6 +172,9 @@ public class CreateWorkLedgerDisplayContentDomainService {
 
         //
         List<Integer> getAggregableMonthlyAttId(String cid);
+
+        // 月次の勤怠項目を取得する
+        List<MonthlyAttendanceItem> findByAttendanceItemId(String companyId, List<Integer> attendanceItemIds);
     }
 
     private static CommonAttributesOfForms convertMonthlyToAttForms(Integer typeOfAttendanceItem) {
@@ -178,8 +191,7 @@ public class CreateWorkLedgerDisplayContentDomainService {
     }
 
     private static boolean checkAttId(List<Integer> attIds, int attId) {
-        //return attIds.stream().anyMatch(e -> e == attId); TODO QA
-        return true;
+        return attIds.stream().anyMatch(e -> e == attId);
     }
 
 }
