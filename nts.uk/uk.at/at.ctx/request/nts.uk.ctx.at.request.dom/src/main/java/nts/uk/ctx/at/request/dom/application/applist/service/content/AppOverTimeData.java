@@ -77,7 +77,7 @@ public class AppOverTimeData {
 	/**
 	 * 背景色
 	 */
-	private Optional<Integer> opBackgroundColor;
+	private Optional<String> opBackgroundColor;
 	
 	/**
 	 * 残業申請時間
