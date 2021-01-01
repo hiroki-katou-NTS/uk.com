@@ -28,7 +28,10 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceConfigInfoAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceInfor;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.aggregate.MonthlyAttItemCanAggregateRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.service.CompanyMonthlyItemService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -87,6 +90,12 @@ public class WorkLedgerOutputItemService extends ExportService<WorkLedgerOutputI
     @Inject
     private WorkLedgerOutputItemGenerator workLedgerGenerator;
 
+    @Inject
+    private MonthlyAttItemCanAggregateRepository monthlyAttItemCanAggregateRepo;
+
+    @Inject
+    private MonthlyAttendanceItemRepository monthlyAttendanceItemRepository;
+
 
     @Override
     protected void handle(ExportServiceContext<WorkLedgerOutputItemFileQuery> context) {
@@ -135,7 +144,8 @@ public class WorkLedgerOutputItemService extends ExportService<WorkLedgerOutputI
         WorkLedgerOutputItem workLedgerDetail = detailWorkLedger.getDetail(query.getSettingId());
 
 
-        RequireImpl require = new RequireImpl(monthlyItemService, actualMultipleMonthAdapter, shareEmploymentAdapter, closureRepository, closureEmploymentRepository, affComHistAdapter);
+        RequireImpl require = new RequireImpl(monthlyItemService, actualMultipleMonthAdapter, shareEmploymentAdapter, closureRepository,
+                closureEmploymentRepository, affComHistAdapter,monthlyAttItemCanAggregateRepo,monthlyAttendanceItemRepository);
         List<WorkLedgerDisplayContent> listData = CreateWorkLedgerDisplayContentDomainService.createWorkLedgerDisplayContent(require, datePeriod, employeeInfoList, workLedgerDetail, placeInfoList);
         Comparator<WorkLedgerDisplayContent> compare = Comparator
                 .comparing(WorkLedgerDisplayContent::getWorkplaceCode)
@@ -162,6 +172,8 @@ public class WorkLedgerOutputItemService extends ExportService<WorkLedgerOutputI
         private ClosureRepository closureRepository;
         private ClosureEmploymentRepository closureEmploymentRepository;
         private AffComHistAdapter affComHistAdapter;
+        private MonthlyAttItemCanAggregateRepository monthlyAttItemCanAggregateRepo;
+        private MonthlyAttendanceItemRepository monthlyAttendanceItemRepository;
 
         @Override
         public List<StatusOfEmployee> getAffiliateEmpListDuringPeriod(DatePeriod datePeriod, List<String> empIdList) {
@@ -181,7 +193,14 @@ public class WorkLedgerOutputItemService extends ExportService<WorkLedgerOutputI
 
         @Override
         public List<Integer> getAggregableMonthlyAttId(String cid) {
-            return null;
+            return this.monthlyAttItemCanAggregateRepo.getMonthlyAtdItemCanAggregate(cid).stream()
+                    .map(t -> t.v().intValue())
+                    .collect(Collectors.toList());
+        }
+
+        @Override
+        public List<MonthlyAttendanceItem> findByAttendanceItemId(String companyId, List<Integer> attendanceItemIds) {
+            return monthlyAttendanceItemRepository.findByAttendanceItemId(companyId,attendanceItemIds);
         }
 
         public Map<String, BsEmploymentHistoryImport> getEmploymentInfor(List<String> listSid, GeneralDate baseDate) {

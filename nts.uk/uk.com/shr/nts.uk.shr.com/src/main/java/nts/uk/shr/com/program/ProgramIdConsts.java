@@ -1484,7 +1484,7 @@ public class ProgramIdConsts {
 	public static final String KWR005C = "KWR005C";
 
 
-	public static final String KDL047 = "KDL047";
+
 	/** CCG003B */
 	public static final String CCG003B = "CCG003B";
 	/** CCG003C */
