@@ -22,3 +22,13 @@
 .button-a423 {
   margin: 10px 0;
 }
+
+.remove-wkh2 table th:nth-child(5),
+.remove-wkh2 table td:nth-child(5) {
+  display: none;
+}
+
+.remove-wkh2 table th:nth-child(6),
+.remove-wkh2 table td:nth-child(6) {
+  width: 310px !important;
+}

@@ -24,13 +24,13 @@
             id="A12"
             tabindex="1"
             class="proceed"
-            data-bind="click: registerWorkingTime, text: $vm.$i18n('KMK017_2')"
+            data-bind="click: registerWorkingTime, text: $vm.$i18n('KMK017_2'), enable: isEnableRegister"
           />
           <button
             id="A13"
             tabindex="2"
             class="danger"
-            data-bind="click: deleteWorkingTime, text: $vm.$i18n('KMK017_3'), enable: workplaceWorkingTimeList().length &gt; 0"
+            data-bind="click: deleteWorkingTime, text: $vm.$i18n('KMK017_3'), enable: !isNewMode()"
           />
         </div>
         <div id="contents-area" class="cf">
@@ -71,7 +71,13 @@
                         height: isIE() ? 317 : 312,
                         options: workplaceWorkingTimeList,
                         optionsValue: 'code',
-                        columns: gridListHeader,
+                        columns:  ko.observableArray([
+                          { headerText: $i18n('KMK017_7'), key: 'code', width: 70, formatter: _.escape  },
+                          { headerText: $i18n('KMK017_8'), key: 'name', width: 120, formatter: _.escape  },
+                          { headerText: $i18n('KMK017_9'), key: 'workingTime1', width: 120, formatter: _.escape  },
+                          { headerText: $i18n('KMK017_10'), key: 'workingTime2', width: 120, formatter: _.escape  },
+                          { headerText: $i18n('KMK017_11'), key: 'remarks', width: usageClassification() ? 310 : 190, formatter: _.escape  },
+                        ]),
                         multiple: true,
                         value: workplaceSelectedCode
                       }"

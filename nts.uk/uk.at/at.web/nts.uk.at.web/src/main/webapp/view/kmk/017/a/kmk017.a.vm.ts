@@ -31,7 +31,7 @@ module nts.uk.at.view.kmk017.a {
     workplaceSelectedCode: KnockoutObservableArray<any> = ko.observableArray(null);
     workplaceDataSource: KnockoutObservableArray<any> = ko.observableArray(null);
     isNewMode: KnockoutObservable<boolean> = ko.observable(true);
-
+    isEnableRegister: KnockoutObservable<boolean> = ko.observable(false);
     //kdl001>
     kml001selectedCodeList: KnockoutObservableArray<string> = ko.observableArray([]);
     workplaceTimeSetting: KnockoutObservableArray<string> = ko.observableArray([]);
@@ -41,26 +41,32 @@ module nts.uk.at.view.kmk017.a {
 
     constructor(params: any) {
       super();
-      const vm = this;
-      
+      const vm = this;      
+      vm.getUseAtr();
       vm.KCP001Init();
       vm.getWorkTimeSetting();
     }
 
     created(params: any) {
       const vm = this;
-        const userAgent = window.navigator.userAgent;
-        let msie = userAgent.match(/Trident.*rv\:11\./);
-        if (!_.isNil(msie) && msie.index > -1) {
-            vm.isIE(true);
-        }
-
+      const userAgent = window.navigator.userAgent;
+      let msie = userAgent.match(/Trident.*rv\:11\./);
+      if (!_.isNil(msie) && msie.index > -1) {
+        vm.isIE(true);
+      }      
+      /* vm.gridListHeader = ko.observableArray([
+        { headerText: vm.$i18n('KMK017_7'), key: 'code', width: 70 },
+        { headerText: vm.$i18n('KMK017_8'), key: 'name', width: 120 },
+        { headerText: vm.$i18n('KMK017_9'), key: 'workingTime1', width: 120 },
+        { headerText: vm.$i18n('KMK017_10'), key: 'workingTime2', width: 120 },
+        { headerText: vm.$i18n('KMK017_11'), key: 'remarks', width: 190 },
+      ]); */
     }
 
     //after render is ok
     mounted() {
       const vm = this;
-      $('#kcp004').focusTreeGridComponent();
+      $('#kcp004').focusTreeGridComponent();     
     }
 
     getWorkTimeSetting() {
@@ -97,21 +103,12 @@ module nts.uk.at.view.kmk017.a {
         restrictionOfReferenceRange: true,
         height: 500,
         //width: 380,
-      };        
-     
-      vm.getUseAtr();
-      vm.gridListHeader = ko.observableArray([
-        { headerText: vm.$i18n('KMK017_7'), key: 'code', width: 70 },
-        { headerText: vm.$i18n('KMK017_8'), key: 'name', width: 120 },
-        { headerText: vm.$i18n('KMK017_9'), key: 'workingTime1', width: 120 },
-        { headerText: vm.$i18n('KMK017_10'), key: 'workingTime2', width: 120, hidden: vm.usageClassification() },
-        { headerText: vm.$i18n('KMK017_11'), key: 'remarks', width: 190 },
-      ]);      
-     
+      };     
+
       $.when($('#kcp004').ntsTreeComponent(vm.kcp004Grid)).then(() => {
-        
+
         vm.workplaceDataSource($('#kcp004').getDataList());
-        vm.multiSelectedId.subscribe((newWorkplaceId) => { 
+        vm.multiSelectedId.subscribe((newWorkplaceId) => {
           vm.getWorkingHoursDetails(newWorkplaceId);
         });
 
@@ -120,13 +117,13 @@ module nts.uk.at.view.kmk017.a {
         if (wp.length > 0 && wp[0].id !== '') {
           vm.getWorkingHoursDetails(wp[0].id);
         }
-      }); 
+      });
     }
     //A4_2
     openDialogKDL001() {
       const vm = this;
-      let newSelectedCodeList:Array<string> = [];
-      let selectedCodeList:Array<string> = [];
+      let newSelectedCodeList: Array<string> = [];
+      let selectedCodeList: Array<string> = [];
 
       _.forEach(vm.workplaceWorkingTimeList(), (x) => {
         selectedCodeList.push(x.code);
@@ -148,6 +145,9 @@ module nts.uk.at.view.kmk017.a {
           const KDL001_IsCancel = nts.uk.ui.windows.getShared("KDL001_IsCancel");
 
           if (!_.isNil(kml001selectedTimes) && kml001selectedTimes.length > 0) {
+            
+            nts.uk.ui.errors.clearAll();
+
             vm.$blockui('show');
             let tempList: Array<any> = [], workplaceListItems = vm.workplaceWorkingTimeList();
             //remove duplicate
@@ -173,6 +173,7 @@ module nts.uk.at.view.kmk017.a {
             vm.workplaceWorkingTimeList([]);
             vm.workplaceWorkingTimeList(workplaceListItems);
             vm.$blockui('hide');
+            vm.isEnableRegister(vm.workplaceWorkingTimeList().length > 0);
           }
         });
     }
@@ -192,6 +193,13 @@ module nts.uk.at.view.kmk017.a {
     //A4_3
     deleteWorkingTimeRow() {
       const vm = this;
+      if (vm.workplaceSelectedCode().length <= 0) {
+        vm.$dialog.error({ messageId: 'Msg_2060' }).then(() => {
+          $('.grid-list').focus();
+        });
+        return;
+      }
+
       let workplaceWorkingTimeList = vm.workplaceWorkingTimeList();
       workplaceWorkingTimeList = workplaceWorkingTimeList.filter((x) => !_.includes(vm.workplaceSelectedCode(), x.code));
       vm.workplaceWorkingTimeList([]);
@@ -202,8 +210,8 @@ module nts.uk.at.view.kmk017.a {
       const vm = this;
 
       const workPlace = $('#kcp004').getRowSelected();
-      if (vm.workplaceWorkingTimeList().length === 0) { 
-        vm.$errors("#grid-list", "Msg_1911").then((valid: boolean) => {         
+      if (vm.workplaceWorkingTimeList().length === 0) {
+        vm.$errors("#grid-list", "Msg_1911").then((valid: boolean) => {
           $('.grid-list').focus();
         });
         return;
@@ -223,8 +231,8 @@ module nts.uk.at.view.kmk017.a {
             vm.$blockui('hide');
           });
         })
-        .fail((error) => { console.log(error); })
-        .always(() => vm.$blockui('hide'));
+          .fail((error) => { console.log(error); })
+          .always(() => vm.$blockui('hide'));
       }
     }
 
@@ -244,8 +252,8 @@ module nts.uk.at.view.kmk017.a {
               vm.$blockui('hide');
             });
           })
-          .fail((error) => { console.log(error); })
-          .always(() => vm.$blockui('hide'));
+            .fail((error) => { console.log(error); })
+            .always(() => vm.$blockui('hide'));
         }
       });
     }
@@ -255,25 +263,32 @@ module nts.uk.at.view.kmk017.a {
       vm.$blockui('show');
 
       vm.findElement(vm.workplaceDataSource(), workplaceId);
-
+      vm.workplaceWorkingTimeList([]);
+      vm.alreadySettingList([]);
       vm.$ajax(API_PATH.getWorkingHoursDetails, { workplaceId: workplaceId }).done((data) => {
-        if (!_.isNil(data)) {
-          let wpTimeDetails: Array<any> = _.orderBy(data, 'workTimeCode', 'asc');
-
-          vm.workplaceWorkingTimeList([]);
+        if (!_.isNil(data) && data.length > 0) {
+          const wpTimeDetails: Array<any> = _.orderBy(data, 'workTimeCode', 'asc');
+          let wpTimeItems: Array<ItemModel> = [];
+          
           _.forEach(wpTimeDetails, (x) => {
-            vm.workplaceWorkingTimeList.push({
+            wpTimeItems.push({
               code: x.workTimeCode,
               name: x.workTimeName,
               workingTime1: vm.workingTimeFormat(x.timezone1.startTime, x.timezone1.endTime),
               workingTime2: null, //vm.workingTimeFormat(x.timezone2.startTime, x.timezone2.endTime)
               remarks: x.note,
             });
-          })
+          });
 
+          vm.workplaceWorkingTimeList(wpTimeItems);
           vm.isNewMode(false); //edit
-        } else
+          vm.isEnableRegister(true);
+          vm.alreadySettingList.push({ workplaceId: workplaceId, isAlreadySetting: true});
+        } else {
           vm.isNewMode(true);
+          vm.isEnableRegister(false);
+        }
+
         vm.$blockui('hide');
       }).fail((error) => { console.log(error); }).always(() => vm.$blockui('hide'));
 
@@ -284,30 +299,28 @@ module nts.uk.at.view.kmk017.a {
     }
 
 
-    findElement(listItems:Array<any>, wpId: string) {
-      const vm = this;      
+    findElement(listItems: Array<any>, wpId: string) {
+      const vm = this;
       _.forEach(listItems, (x) => {
         if (wpId === x.id) {
           vm.workplaceName(x.name);
-        } else if(x.children.length > 0) {
+        } else if (x.children.length > 0) {
           vm.findElement(x.children, wpId);
         }
       });
     }
 
-    getUseAtr(){ // : JQueryPromise<any> 
-      const vm = this;
-      //const dfd = $.Deferred<any>();
-      
+    getUseAtr() {
+      const vm = this;      
       vm.$ajax(API_PATH.getMultipleWork).done((data) => {
         if (data) {
-          vm.usageClassification(data.useATR ? false : true);                       
-        }     
-        
-        //dfd.resolve();
+          vm.usageClassification(data.useATR === 0);
+          if( vm.usageClassification() ) {
+            $('.grid-list').addClass('remove-wkh2');
+            $('#grid-list').css('max-width', '100%');
+          }
+        }
       });
-
-      //return dfd.promise();
     }
   }
 
@@ -328,7 +341,7 @@ module nts.uk.at.view.kmk017.a {
   }
 
   export interface UnitAlreadySettingModel {
-    id: string;
+    workplaceId: string;
     isAlreadySetting: boolean;
   }
 
