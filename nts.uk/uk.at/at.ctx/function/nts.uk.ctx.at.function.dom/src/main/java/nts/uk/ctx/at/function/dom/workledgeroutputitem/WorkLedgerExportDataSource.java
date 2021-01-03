@@ -18,4 +18,5 @@ public class WorkLedgerExportDataSource {
     private ClosureDate closureDate;
     private boolean isZeroDisplay;
     private List<WorkLedgerDisplayContent> listContent;
+    private boolean code;
 }

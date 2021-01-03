@@ -158,7 +158,8 @@ public class WorkLedgerOutputItemService extends ExportService<WorkLedgerOutputI
                 yearMonthPeriod,
                 closureDate,
                 query.isZeroDisplay(),
-                lsSorted
+                lsSorted,
+                query.isCode()
         );
         workLedgerGenerator.generate(context.getGeneratorContext(), result);
 

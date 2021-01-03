@@ -8,6 +8,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;
 import nts.uk.ctx.at.function.dom.workledgeroutputitem.WorkLedgerDisplayContent;
 import nts.uk.ctx.at.function.dom.workledgeroutputitem.WorkLedgerExportDataSource;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.PrimitiveValueOfAttendanceItem;
 import nts.uk.file.at.app.export.workledgeroutputitem.WorkLedgerOutputItemGenerator;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
@@ -19,6 +20,7 @@ import javax.ejb.TransactionAttributeType;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -83,16 +85,16 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
                 cells.copyRow(cells, 0, count);
                 cells.copyRow(cells, 1, count + 1);
                 cells.copyRow(cells, 2, count + 2);
-                cells.clearContents(count,0,cells.getMaxRow(),15);
+                cells.clearContents(count, 0, cells.getMaxRow(), 15);
             }
             cells.get(count, 0).setValue(TextResource.localize("KWR005_301") + "　" + content.getWorkplaceCode() + "　" + content.getWorkplaceName());
             cells.get(count, 7).setValue(TextResource.localize(TextResource.localize("KWR005_303")) +
-                    this.toYearMonthString(dataSource.getYearMonthPeriod().start())+   TextResource.localize("KWR005_305")+
+                    this.toYearMonthString(dataSource.getYearMonthPeriod().start()) + TextResource.localize("KWR005_305") +
                     this.toYearMonthString(dataSource.getYearMonthPeriod().end()));
             cells.get(count + 1, 0).setValue(TextResource.localize("KWR005_302") + "　" + content.getEmployeeCode() + "　" + content.getEmployeeName());
             // print date
-            printDate(worksheet, count +2, yearMonths);
-            count +=3;
+            printDate(worksheet, count + 2, yearMonths);
+            count += 3;
             val data = content.getMonthlyDataList();
             for (int j = 0; j < data.size(); j++) {
                 val oneLine = data.get(j);
@@ -102,16 +104,16 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
                     cells.copyRow(cells, 0, count);
                     cells.copyRow(cells, 1, count + 1);
                     cells.copyRow(cells, 2, count + 2);
-                    cells.clearContents(count,0,cells.getMaxRow(),15);
+                    cells.clearContents(count, 0, cells.getMaxRow(), 15);
                     cells.get(count, 6).setValue(TextResource.localize("KWR005_303") +
-                       this.toYearMonthString(dataSource.getYearMonthPeriod().start())+   TextResource.localize("KWR005_305")+
+                            this.toYearMonthString(dataSource.getYearMonthPeriod().start()) + TextResource.localize("KWR005_305") +
                             this.toYearMonthString(dataSource.getYearMonthPeriod().end()));
 
                     cells.get(count, 0).setValue("");
                     cells.get(count + 1, 0).setValue("");
 
-                    printDate(worksheet, count +2, yearMonths);
-                    count +=3;
+                    printDate(worksheet, count + 2, yearMonths);
+                    count += 3;
 
                 }
                 if (j % 2 == 0) {
@@ -119,15 +121,16 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
                 } else {
                     cells.copyRow(cells, 4, count);
                 }
-                cells.clearContents(count,0,cells.getMaxRow(),15);
+                cells.clearContents(count, 0, cells.getMaxRow(), 15);
                 cells.merge(count, 0, 1, 2, true, true);
-                cells.get(count, 0 ).getStyle()
+                cells.get(count, 0).getStyle()
                         .setVerticalAlignment(TextAlignmentType.LEFT);
-                cells.get(count, 0).setValue(oneLine.getAttendanceItemName());
+                cells.get(count, 0).setValue(checkCode(dataSource.isCode(),
+                        oneLine.getPrimitiveValue()) ? oneLine.getCode() : oneLine.getAttendanceItemName());
                 cells.get(count, 14).getStyle()
                         .setVerticalAlignment(TextAlignmentType.RIGHT);
                 cells.get(count, 14).setValue(oneLine.getTotal());
-                cells.get(count, 14).setValue(formatValue(oneLine.getTotal(),null,
+                cells.get(count, 14).setValue(formatValue(oneLine.getTotal(), null,
                         oneLine.getAttribute(), dataSource.isZeroDisplay()));
                 cells.setColumnWidth(0, 5);
                 cells.setColumnWidth(1, 5);
@@ -151,7 +154,7 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
         for (int mi = 0; mi < yearMonths.size(); mi++) {
             cells.setColumnWidth(mi + 2, 7);
             val yearMonth = yearMonths.get(mi);
-            String yearMonthString = String.valueOf(yearMonth.month()) +   TextResource.localize("KWR005_306");
+            String yearMonthString = String.valueOf(yearMonth.month()) + TextResource.localize("KWR005_306");
             cells.merge(rowCount, 0, 1, 2, true, true);
             cells.get(rowCount, 2 + mi).setValue(yearMonthString);
         }
@@ -163,14 +166,6 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
      */
     private String toYearMonthString(YearMonth yearMonth) {
         return String.format("%04d/%02d", yearMonth.year(), yearMonth.month());
-    }
-
-    /**
-     * Remove page template
-     */
-    private void removeTemplate(Worksheet worksheet) {
-        Cells cells = worksheet.getCells();
-        cells.deleteRows(0, NUMBER_ROW_OF_PAGE);
     }
 
     /**
@@ -224,5 +219,16 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
         int hours = minuteAbs / 60;
         int minutes = minuteAbs % 60;
         return (minute < 0 ? "-" : "") + String.format("%d:%02d", hours, minutes);
+    }
+
+    private boolean checkCode(boolean isCode, Integer primitive) {
+        val listAtt = Arrays.asList(
+                PrimitiveValueOfAttendanceItem.WORKPLACE_CD,
+                PrimitiveValueOfAttendanceItem.POSITION_CD,
+                PrimitiveValueOfAttendanceItem.CLASSIFICATION_CD,
+                PrimitiveValueOfAttendanceItem.EMP_CTG_CD,
+                PrimitiveValueOfAttendanceItem.WORK_TYPE_DIFFERENT_CD);
+
+        return primitive != null && isCode && listAtt.stream().anyMatch(x -> x.value == primitive);
     }
 }

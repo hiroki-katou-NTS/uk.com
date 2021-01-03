@@ -142,7 +142,10 @@ public class CreateWorkLedgerDisplayContentDomainService {
                                     value.getAttendanceItemName(),
                                     att.getRanking(),
                                     total,
-                                    attribute));
+                                    attribute,
+                                    attributeMonthly.getPrimitiveValue().isPresent()? attributeMonthly.getPrimitiveValue().get().value:null,
+                                    attributeMonthly.getDisplayNumber()
+                                    ));
                 }
 
             }
