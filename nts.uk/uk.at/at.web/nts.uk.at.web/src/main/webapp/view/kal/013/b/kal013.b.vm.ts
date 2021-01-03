@@ -30,6 +30,7 @@ module nts.uk.at.view.kal013.b {
         listOneDecimalNum: Array<string> = ["AverageNumberDays"];
         monthlyTimeControl: Array<number> = [1,5];
         dailyTimeControl: Array<number> = [2];
+        dailyTimeControlB : Array<number> = [2, 5, 8];
         dailyContraint: Map<number,string> =new Map([
             [1, "NumberOfPeople"],
             [2, "Time"],
@@ -65,7 +66,9 @@ module nts.uk.at.view.kal013.b {
                 // Kind of control
                 // 月次 - 平均時間 ||  スケジュール／日次 - 時間対比
                 if ((vm.category() == WorkplaceCategory.MONTHLY && _.indexOf(vm.monthlyTimeControl,value) != -1)
-                    || (vm.category() == WorkplaceCategory.SCHEDULE_DAILY && _.indexOf(vm.dailyTimeControl,value) != -1) ){
+                    || (vm.category() == WorkplaceCategory.SCHEDULE_DAILY
+                            && (_.indexOf(vm.dailyTimeControl,value) != -1
+                                    || _.indexOf(vm.dailyTimeControlB, vm.pattern().checkCondB()) != -1))){
                     vm.timeControl(true);
                 } else{
                     vm.timeControl(false);
@@ -79,29 +82,7 @@ module nts.uk.at.view.kal013.b {
 
                 // Change pattern
                 vm.switchPatternA(true)
-                // 対比の場合 - スケジュール／日次
-                if (vm.category() == WorkplaceCategory.SCHEDULE_DAILY && value == 0) {
-                    vm.switchPatternA(false);
-                    vm.contrastTypeList(__viewContext.enums.ContrastType);
-                } else if (vm.category() == WorkplaceCategory.MONTHLY
-                    && _.indexOf([CheckMonthlyItemsType.TIME_FREEDOM, CheckMonthlyItemsType.AVERAGE_DAY_FREE,
-                        CheckMonthlyItemsType.AVERAGE_TIME_FREE],value) != -1 ){
-                    vm.switchPatternA(false);
-                    switch (value){
-                        case CheckMonthlyItemsType.TIME_FREEDOM:
-                            vm.contrastTypeList(__viewContext.enums.AverageTime);
-                            break;
-                        case CheckMonthlyItemsType.AVERAGE_DAY_FREE:
-                            vm.contrastTypeList(__viewContext.enums.AverageNumberOfDays);
-                            break;
-                        case CheckMonthlyItemsType.AVERAGE_TIME_FREE:
-                            vm.contrastTypeList(__viewContext.enums.AverageNumberOfTimes);
-                            break;
-                        default:
-                            vm.contrastTypeList([]);
-                            break;
-                    }
-                }
+                vm.createcontrastList(vm.category(), value);
             });
 
             vm.pattern().checkCondB.subscribe((value)=>{
@@ -111,13 +92,13 @@ module nts.uk.at.view.kal013.b {
                 nts.uk.ui.errors.clearAll();
                 //vm.pattern().clearCheckCod();
                 vm.timeControl(false);
-                if (_.indexOf([2, 5, 8], value) != -1) {
+                if (_.indexOf(vm.dailyTimeControlB, value) != -1) {
                     vm.timeControl(true);
                 }
 
                 if (_.indexOf([1, 4, 7], value) != -1) {
                     vm.constraint(vm.dailyContraint.get(1));
-                } else if (_.indexOf([2, 5, 8], value) != -1) {
+                } else if (_.indexOf(vm.dailyTimeControlB, value) != -1) {
                     vm.constraint(vm.dailyContraint.get(2));
                 } else if (_.indexOf([3, 6, 9], value) != -1) {
                     vm.constraint(vm.dailyContraint.get(3));
@@ -152,8 +133,10 @@ module nts.uk.at.view.kal013.b {
                 params = vm.initParam(params);
             }
             vm.getEnum().done(()=>{
+                vm.createcontrastList(params.category, params.condition.checkItem);
                 vm.pattern().update(params.condition);
                 vm.pattern().checkItem.valueHasMutated();
+                vm.pattern().checkCondB.valueHasMutated();
             });
 
             vm.pattern().checkCond.subscribe((value)=>{
@@ -212,6 +195,34 @@ module nts.uk.at.view.kal013.b {
             }
             return params;
         }
+
+        createcontrastList(category: number, value: number):void {
+            const vm = this;
+            // 対比の場合 - スケジュール／日次
+            if (category == WorkplaceCategory.SCHEDULE_DAILY && value == 0) {
+                vm.switchPatternA(false);
+                vm.contrastTypeList(__viewContext.enums.ContrastType);
+            } else if (category == WorkplaceCategory.MONTHLY
+                && _.indexOf([CheckMonthlyItemsType.TIME_FREEDOM, CheckMonthlyItemsType.AVERAGE_DAY_FREE,
+                    CheckMonthlyItemsType.AVERAGE_TIME_FREE],value) != -1 ){
+                vm.switchPatternA(false);
+                switch (value){
+                    case CheckMonthlyItemsType.TIME_FREEDOM:
+                        vm.contrastTypeList(__viewContext.enums.AverageTime);
+                        break;
+                    case CheckMonthlyItemsType.AVERAGE_DAY_FREE:
+                        vm.contrastTypeList(__viewContext.enums.AverageNumberOfDays);
+                        break;
+                    case CheckMonthlyItemsType.AVERAGE_TIME_FREE:
+                        vm.contrastTypeList(__viewContext.enums.AverageNumberOfTimes);
+                        break;
+                    default:
+                        vm.contrastTypeList([]);
+                        break;
+                }
+            }
+        }
+
         mounted() {
             const vm = this;
             $('#cbxTypeCheckWorkRecordcategory5').focus();
@@ -281,8 +292,8 @@ module nts.uk.at.view.kal013.b {
                 return true;
             }
 
-            if  ((( _.indexOf([RangeCompareType.BETWEEN_RANGE_OPEN, RangeCompareType.OUTSIDE_RANGE_OPEN],vm.pattern().operator()) != -1
-                    && vm.pattern().minValue() >= vm.pattern().maxValue() ))
+            if  (( _.indexOf([RangeCompareType.BETWEEN_RANGE_OPEN, RangeCompareType.OUTSIDE_RANGE_OPEN],vm.pattern().operator()) != -1
+                    && vm.pattern().minValue() >= vm.pattern().maxValue() )
                 || ( _.indexOf([RangeCompareType.BETWEEN_RANGE_OPEN, RangeCompareType.OUTSIDE_RANGE_OPEN],vm.pattern().operator()) == -1
                     && vm.pattern().minValue() > vm.pattern().maxValue() ))
             {
