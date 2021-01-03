@@ -2,10 +2,10 @@ package nts.uk.ctx.at.request.dom.application.timeleaveapplication.service;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplication;
-import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.LeaveRemainingInfo;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.TimeLeaveApplicationOutput;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.TimeVacationManagementOutput;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.TimeVacationRemainingOutput;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
-import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
 
 import java.util.Optional;
 
@@ -18,13 +18,31 @@ public interface TimeLeaveApplicationService {
     TimeLeaveApplicationReflect getTimeLeaveAppReflectSetting(String companyId);
 
     /**
-     * 休暇残数情報を取得する
+     * 時間休暇の管理区分を取得する
      * @param companyId
      * @param employeeId
      * @param baseDate
      * @return
      */
-    LeaveRemainingInfo getLeaveRemainingInfo(String companyId, String employeeId, GeneralDate baseDate);
+    TimeVacationManagementOutput getTimeLeaveManagement(String companyId, String employeeId, GeneralDate baseDate);
+
+    /**
+     * 各時間休暇の残数を取得する
+     * @param companyId
+     * @param employeeId
+     * @param baseDate
+     * @param timeLeaveManagement
+     * @return
+     */
+    TimeVacationRemainingOutput getTimeLeaveRemaining(String companyId, String employeeId, GeneralDate baseDate, TimeVacationManagementOutput timeLeaveManagement);
+
+    /**
+     * 特別休暇残数情報を取得する
+     * @param companyId
+     * @param specialFrameNo
+     * @return
+     */
+    TimeLeaveApplicationOutput getSpecialLeaveRemainingInfo(String companyId, Optional<Integer> specialFrameNo, TimeLeaveApplicationOutput timeLeaveAppOutput);
 
     /**
      * 時間休暇申請登録前チェック
@@ -39,5 +57,5 @@ public interface TimeLeaveApplicationService {
     /**
      * 特別休暇枠を選択する
      */
-    TimeLeaveApplicationOutput GetSpecialVacation(Optional<Integer> specialHdFrameNo, TimeLeaveApplicationOutput timeLeaveApplicationOutput);
+    TimeLeaveApplicationOutput getSpecialVacation(Optional<Integer> specialHdFrameNo, TimeLeaveApplicationOutput timeLeaveApplicationOutput);
 }

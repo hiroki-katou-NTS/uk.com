@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.app.command.application.timeleaveapplication;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.TimeLeaveAppDisplayInfo;
+import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.TimeLeaveAppDisplayInfoDto;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -48,7 +48,7 @@ public class RegisterTimeLeaveApplicationCommandHandler extends CommandHandlerWi
 
         RegisterTimeLeaveApplicationCommand command = context.getCommand();
         Application application = command.getApplication().toDomain();
-        TimeLeaveApplicationOutput timeLeaveApplicationOutput = TimeLeaveAppDisplayInfo.mappingData(command.getTimeLeaveAppDisplayInfo());
+        TimeLeaveApplicationOutput timeLeaveApplicationOutput = TimeLeaveAppDisplayInfoDto.mappingData(command.getTimeLeaveAppDisplayInfo());
 
         // ドメインモデル「申請」の新規登録をする
         this.appRepository.insertApp(

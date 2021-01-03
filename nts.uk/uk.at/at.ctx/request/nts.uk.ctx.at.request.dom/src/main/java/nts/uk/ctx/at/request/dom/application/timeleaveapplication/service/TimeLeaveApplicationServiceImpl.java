@@ -17,12 +17,25 @@ import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeDigestAppT
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplication;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplicationDetail;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.*;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.*;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngParam;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfoRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ComplileInPeriodOfSpecialLeaveParam;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeave;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTblRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.SettingDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRule;
@@ -99,6 +112,30 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
     @Inject
     private DetailBeforeUpdate detailBeforeProcessRegisterService;
 
+    @Inject
+    private SpecialLeaveGrantRepository specialLeaveGrantRepo;
+
+    @Inject
+    private ShareEmploymentAdapter shareEmploymentAdapter;
+
+    @Inject
+    private EmpEmployeeAdapter empEmployeeAdapter;
+
+    @Inject
+    private GrantDateTblRepository grantDateTblRepo;
+
+    @Inject
+    private AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepo;
+
+    @Inject
+    private InterimSpecialHolidayMngRepository interimSpecialHolidayMngRepo;
+
+    @Inject
+    private InterimRemainRepository interimRemainRepo;
+
+    @Inject
+    private SpecialLeaveBasicInfoRepository specialLeaveBasicInfoRepo;
+
     @Override
     public TimeLeaveApplicationReflect getTimeLeaveAppReflectSetting(String companyId) {
         TimeLeaveApplicationReflect reflectSetting = timeLeaveAppReflectRepo.findByCompany(companyId).orElse(null);
@@ -115,79 +152,106 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
         return reflectSetting;
     }
 
+    /**
+     * 時間休暇の管理区分を取得する
+     * @param companyId
+     * @param employeeId
+     * @param baseDate
+     * @return
+     */
     @Override
-    public LeaveRemainingInfo getLeaveRemainingInfo(String companyId, String employeeId, GeneralDate baseDate) {
-        // 時間休暇の管理区分を取得する
-        // 10-1.年休の設定を取得する
+    public TimeVacationManagementOutput getTimeLeaveManagement(String companyId, String employeeId, GeneralDate baseDate) {
         RemainNumberTempRequireService.Require require = requireService.createRequire();
+        CacheCarrier cache = new CacheCarrier();
+
+        // 10-1.年休の設定を取得する
         AnnualHolidaySetOutput annualHolidaySetOutput = AbsenceTenProcess.getSettingForAnnualHoliday(require, companyId);
-        TimeAnnualLeaveMng timeAnnualLeaveMng = new TimeAnnualLeaveMng(annualHolidaySetOutput.getTimeYearRest(), annualHolidaySetOutput.isSuspensionTimeYearFlg());
+        TimeAnnualLeaveManagement timeAnnualLeaveMng = new TimeAnnualLeaveManagement(
+                EnumAdaptor.valueOf(annualHolidaySetOutput.getTimeYearRest(), TimeDigestiveUnit.class),
+                annualHolidaySetOutput.isSuspensionTimeYearFlg()
+        );
 
         // 10-2.代休の設定を取得する
-        CacheCarrier cache = new CacheCarrier();
         SubstitutionHolidayOutput substituationHoliday =  AbsenceTenProcess.getSettingForSubstituteHoliday(require, cache, companyId, employeeId, baseDate);
-        TimeSubstituteLeaveMng timeSubstituteLeaveMng = new TimeSubstituteLeaveMng(substituationHoliday.getDigestiveUnit(), substituationHoliday.isTimeOfPeriodFlg());
+        TimeAllowanceManagement timeSubstituteLeaveMng = new TimeAllowanceManagement(
+                EnumAdaptor.valueOf(substituationHoliday.getDigestiveUnit(), TimeDigestiveUnit.class),
+                substituationHoliday.isTimeOfPeriodFlg()
+        );
 
         // ドメインモデル「60H超休管理設定」を取得する
         Com60HourVacation com60HourVacation = com60HourVacationRepo.findById(companyId).orElse(null);
-        Super60HLeaveMng super60HLeaveMng = new Super60HLeaveMng(
-                com60HourVacation == null ? null : com60HourVacation.getSetting().getDigestiveUnit().value,
-                com60HourVacation == null ? null : com60HourVacation.isManaged()
+        SupHolidayManagement super60HLeaveMng = new SupHolidayManagement(
+                com60HourVacation == null ? null : com60HourVacation.getSetting().getDigestiveUnit(),
+                com60HourVacation != null && com60HourVacation.isManaged()
         );
 
         // ドメインモデル「介護看護休暇設定」を取得する
         List<NursingLeaveSetting> nursingLeaveSettingList = nursingLeaveSettingRepo.findByCompanyId(companyId);
         NursingLeaveSetting careNursingLeaveSetting = nursingLeaveSettingList.stream().filter(i -> i.getNursingCategory() == NursingCategory.Nursing).findFirst().orElse(null);
         NursingLeaveSetting childCareNursingLeaveSetting = nursingLeaveSettingList.stream().filter(i -> i.getNursingCategory() == NursingCategory.ChildNursing).findFirst().orElse(null);
-        NursingLeaveMng nursingLeaveMng = new NursingLeaveMng(
-                null,
-                careNursingLeaveSetting == null ? null : careNursingLeaveSetting.isManaged(),
-                null,
-                childCareNursingLeaveSetting == null ? null : childCareNursingLeaveSetting.isManaged()
+        ChildNursingManagement nursingLeaveMng = new ChildNursingManagement(
+                careNursingLeaveSetting == null ? null : careNursingLeaveSetting.getTimeCareNursingSetting().getTimeDigestiveUnit(),
+                careNursingLeaveSetting != null && careNursingLeaveSetting.isManaged() && careNursingLeaveSetting.getTimeCareNursingSetting().getManageDistinct() == ManageDistinct.YES,
+                childCareNursingLeaveSetting == null ? null : childCareNursingLeaveSetting.getTimeCareNursingSetting().getTimeDigestiveUnit(),
+                childCareNursingLeaveSetting != null && childCareNursingLeaveSetting.isManaged() && childCareNursingLeaveSetting.getTimeCareNursingSetting().getManageDistinct() == ManageDistinct.YES
         );
 
         // ドメインモデル「時間特別休暇の管理設定」を取得する
         TimeSpecialLeaveManagementSetting timeSpecialLeaveManagementSetting = timeSpecialLeaveMngSetRepo.findByCompany(companyId).orElse(null);
-        TimeSpecialLeaveMng timeSpecialLeaveMng = new TimeSpecialLeaveMng(
-                timeSpecialLeaveManagementSetting == null ? null : timeSpecialLeaveManagementSetting.getTimeDigestiveUnit().value,
-                timeSpecialLeaveManagementSetting == null ? null : timeSpecialLeaveManagementSetting.getManageType() == ManageDistinct.YES,
+        TimeSpecialLeaveManagement timeSpecialLeaveMng = new TimeSpecialLeaveManagement(
+                timeSpecialLeaveManagementSetting == null ? null : timeSpecialLeaveManagementSetting.getTimeDigestiveUnit(),
+                timeSpecialLeaveManagementSetting != null && timeSpecialLeaveManagementSetting.getManageType() == ManageDistinct.YES,
                 new ArrayList<>()
         );
-        if (timeSpecialLeaveMng.getTimeSpecialLeaveMngAtr() == Boolean.TRUE) {
+        if (timeSpecialLeaveMng.isTimeSpecialLeaveManagement()) {
             // ドメインモデル「特別休暇枠」を取得する
             List<SpecialHolidayFrame> listSpecialFrame = specialHolidayFrameRepo.findAll(companyId).stream().filter(i -> i.getDeprecateSpecialHd() != DeprecateClassification.NotDeprecated).collect(Collectors.toList());
             timeSpecialLeaveMng.getListSpecialFrame().addAll(listSpecialFrame);
         }
 
-        TimeLeaveManagement timeLeaveManagement =  new TimeLeaveManagement(
-                timeAnnualLeaveMng,
-                timeSubstituteLeaveMng,
+        return  new TimeVacationManagementOutput(
                 super60HLeaveMng,
                 nursingLeaveMng,
+                timeSubstituteLeaveMng,
+                timeAnnualLeaveMng,
                 timeSpecialLeaveMng
         );
+    }
+
+    /**
+     * 各時間休暇の残数を取得する
+     * @param companyId
+     * @param employeeId
+     * @param baseDate
+     * @param timeLeaveManagement
+     * @return
+     */
+    @Override
+    public TimeVacationRemainingOutput getTimeLeaveRemaining(String companyId, String employeeId, GeneralDate baseDate, TimeVacationManagementOutput timeLeaveManagement) {
+        RemainNumberTempRequireService.Require require = requireService.createRequire();
+        CacheCarrier cache = new CacheCarrier();
 
         // 各時間休暇の残数を取得する
-        TimeLeaveRemaining timeLeaveRemaining = new TimeLeaveRemaining();
-        if (timeLeaveManagement.getTimeAnnualLeaveMng().getTimeAnnualLeaveMngAtr() != Boolean.TRUE
-                && timeLeaveManagement.getTimeSubstituteLeaveMng().getTimeSubstituteLeaveMngAtr() != Boolean.TRUE
-                && timeLeaveManagement.getSuper60HLeaveMng().getSuper60HLeaveMngAtr() != Boolean.TRUE
-                && timeLeaveManagement.getNursingLeaveMng().getTimeCareLeaveMngAtr() != Boolean.TRUE
-                && timeLeaveManagement.getNursingLeaveMng().getTimeChildCareLeaveMngAtr() != Boolean.TRUE) {
-            return new LeaveRemainingInfo(timeLeaveManagement, timeLeaveRemaining);
+        TimeVacationRemainingOutput timeLeaveRemaining = new TimeVacationRemainingOutput();
+        if (!timeLeaveManagement.getTimeAnnualLeaveManagement().isTimeAnnualManagement()
+                && !timeLeaveManagement.getTimeAllowanceManagement().isTimeBaseManagementClass()
+                && !timeLeaveManagement.getSupHolidayManagement().isOverrest60HManagement()
+                && !timeLeaveManagement.getChildNursingManagement().isTimeChildManagementClass()
+                && !timeLeaveManagement.getChildNursingManagement().isTimeManagementClass()) {
+            return timeLeaveRemaining;
         }
 
         // 社員に対応する締め期間を取得する
         DatePeriod closingPeriod = ClosureService.findClosurePeriod(require, cache, employeeId, baseDate);
 
-        if (timeLeaveManagement.getTimeAnnualLeaveMng().getTimeAnnualLeaveMngAtr() == Boolean.TRUE) {
+        if (timeLeaveManagement.getTimeAnnualLeaveManagement().isTimeAnnualManagement()) {
             // 基準日時点の年休残数を取得する
             ReNumAnnLeaReferenceDateImport reNumAnnLeave = leaveAdapter.getReferDateAnnualLeaveRemainNumber(employeeId, baseDate);
             timeLeaveRemaining.setAnnualTimeLeaveRemainingDays(reNumAnnLeave.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantDay());
             timeLeaveRemaining.setAnnualTimeLeaveRemainingTime(reNumAnnLeave.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantTime());
         }
 
-        if (timeLeaveManagement.getTimeSubstituteLeaveMng().getTimeSubstituteLeaveMngAtr() == Boolean.TRUE) {
+        if (timeLeaveManagement.getTimeAllowanceManagement().isTimeBaseManagementClass()) {
             // 期間内の休出代休残数を取得する
             BreakDayOffRemainMngParam remainParam = new BreakDayOffRemainMngParam(
                     companyId,
@@ -206,27 +270,85 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
             timeLeaveRemaining.setSubTimeLeaveRemainingTime(dataCheck.getRemainTimes());
         }
 
-        if (timeLeaveManagement.getSuper60HLeaveMng().getSuper60HLeaveMngAtr() == Boolean.TRUE) {
+        if (timeLeaveManagement.getSupHolidayManagement().isOverrest60HManagement()) {
             // [RQ677]期間中の60H超休残数を取得する
 //            GetHolidayOver60hRemNumWithinPeriod.RequireM1 require60h = new GetHolidayOver60hRemNumWithinPeriodImpl.GetHolidayOver60hRemNumWithinPeriodRequireM1();
-//            CacheCarrier cacheCarrier1 = new CacheCarrier();
 //            AggrResultOfHolidayOver60h aggrResultOfHolidayOver60h = this.getHolidayOver60hRemNumWithinPeriod.algorithm(require60h
-//                    , cacheCarrier1
+//                    , cache
 //                    , companyId
 //                    , employeeId
-//                    , this.getDatePeroid(closingPeriod.start())
+//                    , new DatePeriod(closingPeriod.start(), closingPeriod.end().addYears(1).addDays(-1))
 //                    , InterimRemainMngMode.MONTHLY
-//                    , inputDate
+//                    , baseDate
 //                    , Optional.empty()
 //                    , Optional.empty()
 //                    , Optional.empty());
         }
 
-        // TODO: chưa xong
+        if (timeLeaveManagement.getChildNursingManagement().isTimeChildManagementClass()) {
+            // [NO.206]期間中の子の看護休暇残数を取得
+//            AggrResultOfChildCareNurse resultOfChildCareNurse = this.getRemainingNumberChildCareSevice.getChildCareRemNumWithinPeriod(
+//                    employeeId,
+//                    new DatePeriod(closingPeriod.start(), closingPeriod.end().addYears(1).addDays(-1)),
+//                    InterimRemainMngMode.OTHER,
+//                    baseDate,
+//                    Optional.empty(),
+//                    Optional.empty(),
+//                    Optional.empty(),
+//                    Optional.empty(),
+//                    Optional.empty()
+//            );
+        }
+
+        if (timeLeaveManagement.getChildNursingManagement().isTimeManagementClass()) {
+            // [NO.207]期間中の介護休暇残数を取得
+        }
 
         timeLeaveRemaining.setRemainingPeriod(new DatePeriod(closingPeriod.start(), closingPeriod.end().addYears(1).addDays(-1)));
+        return timeLeaveRemaining;
+    }
 
-        return new LeaveRemainingInfo(timeLeaveManagement, timeLeaveRemaining);
+    /**
+     * 特別休暇残数情報を取得する
+     * @param companyId
+     * @param specialFrameNo
+     * @param timeLeaveAppOutput
+     * @return
+     */
+    @Override
+    public TimeLeaveApplicationOutput getSpecialLeaveRemainingInfo(String companyId, Optional<Integer> specialFrameNo, TimeLeaveApplicationOutput timeLeaveAppOutput) {
+        if (specialFrameNo.isPresent()) {
+            // ドメインモデル「特別休暇」を取得する
+            List<SpecialHoliday> specialHolidayList = specialHolidayRepository.findByCompanyId(companyId);
+            // TODO: don't know get one or many
+            Optional<SpecialHoliday> specialHoliday = specialHolidayList.stream().filter(i -> i.getTargetItem().getFrameNo().contains(specialFrameNo.get())).findFirst();
+            if (!specialHoliday.isPresent())
+                return timeLeaveAppOutput;
+
+            // [NO.273]期間中の特別休暇残数を取得
+            ComplileInPeriodOfSpecialLeaveParam param = new ComplileInPeriodOfSpecialLeaveParam(
+                    companyId,
+                    timeLeaveAppOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(),
+                    timeLeaveAppOutput.getTimeVacationRemaining().getRemainingPeriod(),
+                    false,
+                    timeLeaveAppOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getBaseDate(),
+                    specialHoliday.get().getSpecialHolidayCode().v(),
+                    false,
+                    false,
+                    new ArrayList<>(),
+                    new ArrayList<>(),
+                    Optional.empty()
+            );
+            InPeriodOfSpecialLeave specialLeave = SpecialLeaveManagementService
+                    .complileInPeriodOfSpecialLeave(
+                            SpecialLeaveManagementService.createRequireM5(specialLeaveGrantRepo, shareEmploymentAdapter,
+                                    empEmployeeAdapter, grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepository,
+                                    interimSpecialHolidayMngRepo, interimRemainRepo, specialLeaveBasicInfoRepo),
+                            new CacheCarrier(), param)
+                    .getAggSpecialLeaveResult();
+            // TODO: cannot map with design
+        }
+        return timeLeaveAppOutput;
     }
 
     /**
@@ -253,7 +375,7 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
         Optional<TimeDigestiveUnit> timeAnnualLeaveUnit = Optional.of(output.getTimeVacationManagement().getTimeAnnualLeaveManagement().getTimeAnnualLeaveUnit());
         Optional<TimeDigestiveUnit> timeChildNursing = Optional.of(output.getTimeVacationManagement().getChildNursingManagement().getTimeChildDigestiveUnit());
         Optional<TimeDigestiveUnit> timeNursing = Optional.of(output.getTimeVacationManagement().getChildNursingManagement().getTimeDigestiveUnit());
-        Optional<TimeDigestiveUnit> pendingUnit = Optional.of(EnumAdaptor.valueOf(output.getTimeVacationManagement().getTimeSpecialLeaveMng().getTimeSpecialLeaveUnit(), TimeDigestiveUnit.class));
+        Optional<TimeDigestiveUnit> pendingUnit = Optional.of(output.getTimeVacationManagement().getTimeSpecialLeaveMng().getTimeSpecialLeaveUnit());
         timeLeaveApplication.getLeaveApplicationDetails().forEach(x -> {
             commonAlgorithm.vacationDigestionUnitCheck(x.getTimeDigestApplication(),
                 super60HDigestion,
@@ -295,7 +417,7 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
     }
 
     @Override
-    public TimeLeaveApplicationOutput GetSpecialVacation(Optional<Integer> specialHdFrameNo, TimeLeaveApplicationOutput timeLeaveApplicationOutput) {
+    public TimeLeaveApplicationOutput getSpecialVacation(Optional<Integer> specialHdFrameNo, TimeLeaveApplicationOutput timeLeaveApplicationOutput) {
 
         if (specialHdFrameNo.isPresent()) {
             //ドメインモデル「特別休暇」を取得する

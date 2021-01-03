@@ -2,8 +2,7 @@ package nts.uk.ctx.at.request.app.find.application.timeleaveapplication;
 
 import lombok.Data;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
-import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.TimeLeaveAppDisplayInfo;
-import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.TimeLeaveApplicationOutput;
+import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.TimeLeaveAppDisplayInfoDto;
 
 @Data
 public class RequestParam {
@@ -18,7 +17,7 @@ public class RequestParam {
     private ApplicationDto application;
 
     //時間休暇申請の表示情報
-    private TimeLeaveAppDisplayInfo timeLeaveAppDisplayInfo;
+    private TimeLeaveAppDisplayInfoDto timeLeaveAppDisplayInfo;
 
     //代休申請区分
 

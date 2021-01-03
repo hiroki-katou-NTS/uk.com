@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.app.command.application.timeleaveapplication;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.TimeLeaveAppDisplayInfo;
+import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.TimeLeaveAppDisplayInfoDto;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
@@ -49,7 +49,7 @@ public class UpdateTimeLeaveApplicationCommandHandler extends CommandHandlerWith
             .getTimeLeaveAppDisplayInfo().getAppDispInfoStartupOutput().getAppDetailScreenInfo().getApplication());
 
         TimeLeaveApplication timeLeaveApplication = TimeLeaveApplicationCommand.toDomain(command.getTimeLeaveApplicationCommand(), application);
-        TimeLeaveApplicationOutput timeLeaveApplicationOutput = TimeLeaveAppDisplayInfo.mappingData(command.getTimeLeaveAppDisplayInfo());
+        TimeLeaveApplicationOutput timeLeaveApplicationOutput = TimeLeaveAppDisplayInfoDto.mappingData(command.getTimeLeaveAppDisplayInfo());
 
         timeLeaveApplicationService.checkBeforeUpdate(command.getTimeLeaveApplicationCommand().getTimeDigestAppType(),
             timeLeaveApplication, timeLeaveApplicationOutput);

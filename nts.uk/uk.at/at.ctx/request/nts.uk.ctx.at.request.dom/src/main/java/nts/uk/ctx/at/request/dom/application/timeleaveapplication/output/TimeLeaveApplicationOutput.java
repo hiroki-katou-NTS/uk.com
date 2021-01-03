@@ -11,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
  * output: 時間休暇申請の表示情報
  */
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class TimeLeaveApplicationOutput {
 

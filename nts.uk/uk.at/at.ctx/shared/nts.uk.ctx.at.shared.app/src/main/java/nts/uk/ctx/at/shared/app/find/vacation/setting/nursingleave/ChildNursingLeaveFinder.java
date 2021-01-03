@@ -110,13 +110,13 @@ public class ChildNursingLeaveFinder {
 				.absenceWork(nursingLeave.getWorkAbsence().orElse(0))
 				.build();
 		// アルゴリズム「次回起算日を求める」を呼び出す。
-		String nextStartDate = nursingLeave.getNextStartMonthDay(baseDate).toString();
+		GeneralDate nextStartDate = nursingLeave.getNextStartMonthDay(baseDate);
 		
 		// 取得したデータを返す。
 		ManagementClassificationLstEmployeeDto resultDto =  ManagementClassificationLstEmployeeDto.builder()
 				.managementClassification(data)
 				.lstEmployee(lstEmpRs)
-				.nextStartDate(nextStartDate)
+				.nextStartDate(nextStartDate == null ? null : nextStartDate.toString())
 				.build();
 					
 		return resultDto;
