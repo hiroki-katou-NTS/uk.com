@@ -30,14 +30,6 @@ public class GetThePeriodOfTheYearTest {
 	}
 	
 	@Test
-	public void getDataWhenCNull() {
-		
-		YearMonthPeriod ym = GetThePeriodOfTheYear.getPeriodOfTheYear(require, CID, 2020);
-
-		assertThat(ym).isNull();
-	}
-	
-	@Test
 	public void getData() {
 		new Expectations() {
 			{
