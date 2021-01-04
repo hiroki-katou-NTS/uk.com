@@ -114,9 +114,8 @@ module nts.uk.at.view.kal013.b {
                 params = vm.initParam(params);
             }
             vm.getEnum().done(()=>{
-                vm.createcontrastList(params.category, params.condition.checkItem);
-                vm.pattern().update(params.condition);
                 vm.initScreen(params.condition.checkItem,params.condition.checkCondB,vm.switchPatternA());
+                vm.pattern().update(params.condition);
             });
 
             vm.pattern().checkCond.subscribe((value)=>{
@@ -179,15 +178,12 @@ module nts.uk.at.view.kal013.b {
         initScreen(value: number, valueCheck?: number, isPatternA: boolean = false){
             const vm = this;
             vm.checkKindOfConrol(value);
-
             // Constraint
             vm.createConstraint(value);
-
             // Change pattern
             vm.createcontrastList(vm.category(), value);
 
             if (!isPatternA){
-                //vm.pattern().clearCheckCod();
                 vm.checkKindOfConrol(valueCheck,false);
                 // Constraint
                 vm.createConstraint(valueCheck,false);
@@ -238,13 +234,10 @@ module nts.uk.at.view.kal013.b {
                 } else{
                     vm.timeControl(false);
                 }
-            } else
-            {
-                if (vm.category() == WorkplaceCategory.SCHEDULE_DAILY ) {
-                    vm.timeControl(false);
-                    if (_.indexOf(vm.dailyTimeControlB, value) != -1) {
-                        vm.timeControl(true);
-                    }
+            } else if (vm.category() == WorkplaceCategory.SCHEDULE_DAILY ) {
+                vm.timeControl(false);
+                if (_.indexOf(vm.dailyTimeControlB, value) != -1) {
+                    vm.timeControl(true);
                 }
             }
         }
@@ -430,10 +423,9 @@ module nts.uk.at.view.kal013.b {
         fieldName: string;
         localizedName: string;
         constructor(param: IEnumModel) {
-            let self = this;
-            self.value = ko.observable(param.value);
-            self.fieldName = param.fieldName || '';
-            self.localizedName = param.localizedName || '';
+            this.value = ko.observable(param.value);
+            this.fieldName = param.fieldName || '';
+            this.localizedName = param.localizedName || '';
         }
     }
     export class ItemModel {
