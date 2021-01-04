@@ -10,6 +10,10 @@
     cursor: pointer;
 }
 
+.header-image-no-event:hover {
+    cursor: pointer;
+}
+
 .header-image-event {
     background-size: contain;
     width: 16px;
