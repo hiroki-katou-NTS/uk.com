@@ -171,7 +171,7 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
     /**
      * Format value
      */
-    private String formatValue(double valueDouble, String valueString, CommonAttributesOfForms attributes, Boolean isZeroDisplay) {
+    private String formatValue(Double valueDouble, String valueString, CommonAttributesOfForms attributes, Boolean isZeroDisplay) {
         String rs = "";
         switch (attributes) {
             case WORK_TYPE:
@@ -181,7 +181,10 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
                 rs = valueString;
                 break;
             case TIME_OF_DAY:
-                rs = convertToTime((int) valueDouble);
+                if(valueDouble!=null){
+                    rs = convertToTime((int) valueDouble.intValue());
+                }
+
                 break;
             case DAYS:
                 if (valueDouble != 0 || isZeroDisplay) {
@@ -190,16 +193,18 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
                 }
                 break;
             case TIME:
-                val minute = (int) valueDouble;
+                if(valueDouble!=null){
+                val minute = (int) valueDouble.intValue();
                 if (minute != 0 || isZeroDisplay) {
                     rs = convertToTime(minute);
-                }
+                }}
                 break;
             case AMOUNT_OF_MONEY:
+                if(valueDouble!=null){
                 if (valueDouble != 0 || isZeroDisplay) {
                     DecimalFormat formatter3 = new DecimalFormat("#,###");
-                    rs = formatter3.format((int) valueDouble) + TextResource.localize("KWR_3");
-                }
+                    rs = formatter3.format((int) valueDouble.intValue()) + TextResource.localize("KWR_3");
+                }}
                 break;
             case NUMBER_OF_TIMES:
                 if (valueDouble != 0 || isZeroDisplay) {

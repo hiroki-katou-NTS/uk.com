@@ -338,7 +338,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
     }
 
 
-    private String formatValue(double valueDouble, String valueString, CommonAttributesOfForms attributes,
+    private String formatValue(Double valueDouble, String valueString, CommonAttributesOfForms attributes,
                                Boolean isZeroDisplay) {
         String rs = "";
         switch (attributes) {
@@ -349,12 +349,16 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
                 rs = valueString;
                 break;
             case TIME_OF_DAY:
-                rs = convertToTime((int) valueDouble);
+                if(valueDouble!=null){
+                    rs = convertToTime((int) valueDouble.intValue());
+                }
                 break;
             case TIME:
-                val minute = (int) valueDouble;
-                if (minute != 0 || isZeroDisplay) {
-                    rs = convertToTime(minute);
+                if(valueDouble!=null){
+                    val minute = (int) valueDouble.intValue();
+                    if (minute != 0 || isZeroDisplay) {
+                        rs = convertToTime(minute);
+                    }
                 }
                 break;
             case NUMBER_OF_TIMES:
@@ -370,10 +374,13 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
                 }
                 break;
             case AMOUNT_OF_MONEY:
-                if (valueDouble != 0 || isZeroDisplay) {
-                    DecimalFormat formatter3 = new DecimalFormat("#,###");
-                    rs = formatter3.format((int) valueDouble) + TextResource.localize("KWR_3");
+                if(valueDouble!=null){
+                    if (valueDouble != 0 || isZeroDisplay) {
+                        DecimalFormat formatter3 = new DecimalFormat("#,###");
+                        rs = formatter3.format((int) valueDouble.intValue()) + TextResource.localize("KWR_3");
+                    }
                 }
+
                 break;
         }
         return rs;

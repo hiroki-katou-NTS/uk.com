@@ -85,6 +85,7 @@ public class CreateDisplayContentWorkStatusQuery {
                     val listAtId = j.getSelectedAttendanceItemList();
                     StringBuilder character = new StringBuilder();
                     Double actualValue = 0D;
+                    boolean alwayNull = true;
                     if (j.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ||
                             j.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS) {
                         for (val d : listAtId) {
@@ -94,7 +95,7 @@ public class CreateDisplayContentWorkStatusQuery {
                         }
                         itemValue.add(
                                 new DailyValue(
-                                        actualValue,
+                                        null,
                                         j.getItemDetailAttributes(),
                                         character.toString(),
                                         key
@@ -103,11 +104,12 @@ public class CreateDisplayContentWorkStatusQuery {
                         for (val d : listAtId) {
                             val sub = value1.getOrDefault(d.getAttendanceItemId(), null);
                             if (sub == null || sub.getValue() == null) continue;
+                             alwayNull = false;
                             actualValue = actualValue + ((d.getOperator() == OperatorsCommonToForms.ADDITION ? 1 : -1) *
                                     Double.parseDouble(sub.getValue()));
                         }
                         itemValue.add(new DailyValue(
-                                actualValue,
+                                alwayNull?null: actualValue,
                                 j.getItemDetailAttributes(),
                                 character.toString(),
                                 key
