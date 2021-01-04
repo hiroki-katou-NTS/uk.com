@@ -1,79 +1,143 @@
-module nts.uk.at.view.ktg031.b.viewmodel {
-    import getText = nts.uk.resource.getText;
-    export class ScreenModel {
-        listDetail: KnockoutObservableArray<TopPageAlarmDetailDto> = ko.observableArray([]);
-        columns: KnockoutObservableArray<any>;
-        currentCode: KnockoutObservable<number> = ko.observable();
-        constructor() {
-            var self = this;
-            self.columns = ko.observableArray([
-                { headerText: '', key: 'serialNo', width: 50 },
-                { headerText: getText('KTG031_10'), key: 'employeeCode', width: 100 },
-                { headerText: getText('KTG031_11'), key: 'employeeName', width: 110 },
-                { headerText: getText('KTG031_12'), key: 'processingName', width: 150 },
-                { headerText: getText('KTG031_13'), key: 'errorMessage', width: 190 },
-            ]);
-        }   
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
-        startPage(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
-            let ParamKtg031 = nts.uk.ui.windows.getShared("ktg031A");
-            service.getDetail(ParamKtg031).done((listOutput: Array<ITopPageAlarmDetailDto>) => {
-                console.log(listOutput);
-                self.listDetail(_.map(listOutput, acc => {
-                    return new TopPageAlarmDetailDto(acc);
-                }));
-                dfd.resolve();
+module nts.uk.com.view.ktg031.b {
+
+  // URL API backend
+  const API = {
+    findProcessExecution: "at/function/processexec/getProcExecList",
+    findAlarmSetting: "at/function/alarm/pattern/setting",
+  };
+
+  @bean()
+  export class ScreenModel extends ko.ViewModel {
+    columns: KnockoutObservableArray<any> = ko.observableArray([]);
+    listSetting: KnockoutObservableArray<AlarmDisplaySettingDto> = ko.observableArray([]);
+    currentRow: KnockoutObservable<any> = ko.observable(null);
+    mapAlarmCodeName: any = {};
+
+    created(params: any) {
+      const vm = this;
+      vm.columns([
+        { key: 'rowNumber', hidden: true },
+        { headerText: vm.$i18n('KTG031_21'), key: 'classification', width: 150 },
+        { headerText: vm.$i18n('KTG031_22'), key: 'alarmProcessing', width: 280 },
+        { headerText: vm.$i18n('KTG031_23'), key: 'isDisplay', width: 120 },
+      ]);
+      vm.getProcessExecution();
+    }
+
+    private getProcessExecution() {
+      const vm = this;
+      vm.$blockui('grayout');
+      vm.$ajax("at", API.findAlarmSetting)
+        .then((res: AlarmPatternSettingDto[]) => {
+          for (const alarm of res) {
+            vm.mapAlarmCodeName[alarm.alarmPatternCD] = alarm.alarmPatternName;
+          }
+          return vm.$ajax("at", API.findProcessExecution);
+        })
+        .then((res: ProcessExecutionDto[]) => {
+          const listAlarmSetting: AlarmDisplaySettingDto[] = _.map(res, (item, index) => {
+            // トップページに表示（本人） and トップページに表示（管理者）
+            let isDisplayMessage = '';
+            if (item.mailPrincipal && item.mailAdministrator) {
+              isDisplayMessage = vm.$i18n('KTG031_29');
+            } else if (item.mailPrincipal) {
+              isDisplayMessage = vm.$i18n('KTG031_30');
+            } else if (item.mailAdministrator) {
+              isDisplayMessage = vm.$i18n('KTG031_31');
+            } else {
+              isDisplayMessage = vm.$i18n('KTG031_32');
+            }
+            return new AlarmDisplaySettingDto({
+              rowNumber: index,
+              classification: vm.$i18n('KTG031_25'),
+              alarmProcessing: `${item.execItemName}（${vm.mapAlarmCodeName[item.alarmCode]}）`,
+              isDisplay: isDisplayMessage,
             });
-            return dfd.promise();
-        }
-        
-        closeDialog(){
-            nts.uk.ui.windows.close();
-        }
+          });
+          const lastIndex = listAlarmSetting.length;
+          listAlarmSetting.push(new AlarmDisplaySettingDto({
+            rowNumber: lastIndex + 1,
+            classification: vm.$i18n('KTG031_26'),
+            alarmProcessing: vm.$i18n('KTG031_33'),
+            isDisplay: vm.$i18n('KTG031_28'),
+          }));
+          listAlarmSetting.push(new AlarmDisplaySettingDto({
+            rowNumber: lastIndex + 2,
+            classification: vm.$i18n('KTG031_26'),
+            alarmProcessing: vm.$i18n('KTG031_34'),
+            isDisplay: vm.$i18n('KTG031_28'),
+          }));
+          listAlarmSetting.push(new AlarmDisplaySettingDto({
+            rowNumber: lastIndex + 3,
+            classification: vm.$i18n('KTG031_27'),
+            alarmProcessing: vm.$i18n('KTG031_35'),
+            isDisplay: vm.$i18n('KTG031_32'),
+          }));
+          console.log(listAlarmSetting);
+          vm.listSetting(listAlarmSetting);
+        })
+        .always(() => vm.$blockui('clear'));
     }
 
-    export interface ITopPageAlarmDetailDto {
-        /** 社員コード */
-        employeeCode: string;
-
-        /** 連番 */
-        serialNo: number;
-
-        /** 社員名 */
-        employeeName: string;
-
-        /** エラーメッセージ */
-        errorMessage: string;
-
-        /** 処理名 */
-        processingName: string;
+    public closeDialog() {
+      const vm = this;
+      vm.$window.close();
     }
+  }
 
-    export class TopPageAlarmDetailDto {
-        /** 社員コード */
-        employeeCode: string;
+  class AlarmDisplaySettingDto {
+    rowNumber: number;
+    classification: string;
+    alarmProcessing: string;
+    isDisplay: string;
 
-        /** 連番 */
-        serialNo: number;
-
-        /** 社員名 */
-        employeeName: string;
-
-        /** エラーメッセージ */
-        errorMessage: string;
-
-        /** 処理名 */
-        processingName: string;
-        constructor(param: ITopPageAlarmDetailDto) {
-            let self = this;
-            self.employeeCode = param.employeeCode;
-            self.serialNo = param.serialNo;
-            self.employeeName = param.employeeName;
-            self.errorMessage = param.errorMessage;
-            self.processingName = param.processingName;
-        }
+    constructor(init?: Partial<AlarmDisplaySettingDto>) {
+      $.extend(this, init);
     }
+  }
 
+  interface AlarmPatternSettingDto {
+    alarmPatternCD: string;
+    alarmPatternName: string;
+    alarmPerSet: any;
+    checkConList: any[];
+  }
+
+  interface ProcessExecutionDto {
+    companyId: string;
+    execItemCd: string;
+    execItemName: string;
+    perScheduleCls: boolean;
+    targetMonth: number;
+    targetDate: number;
+    creationPeriod: number;
+    creationTarget: number;
+    recreateWorkType: boolean;
+    manualCorrection: boolean;
+    createEmployee: boolean;
+    recreateTransfer: boolean;
+    dailyPerfCls: boolean;
+    dailyPerfItem: number;
+    midJoinEmployee: boolean;
+    reflectResultCls: boolean;
+    monthlyAggCls: boolean;
+    execScopeCls: number;
+    refDate: string;
+    recreateTypeChangePerson: boolean;
+    recreateTransfers: boolean;
+    appRouteUpdateAtr: boolean;
+    createNewEmp: boolean;
+    appRouteUpdateMonthly: boolean;
+    processExecType: number;
+    alarmAtr: boolean;
+    alarmCode: string;
+    mailPrincipal: boolean;
+    mailAdministrator: boolean;
+    designatedYear: number;
+    startMonthDay: number;
+    endMonthDay: number;
+    workplaceList: string[];
+  }
 }

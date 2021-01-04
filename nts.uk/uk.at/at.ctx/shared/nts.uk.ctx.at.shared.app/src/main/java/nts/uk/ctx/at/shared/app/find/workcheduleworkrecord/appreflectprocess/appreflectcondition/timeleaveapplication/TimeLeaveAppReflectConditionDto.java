@@ -38,11 +38,7 @@ public class TimeLeaveAppReflectConditionDto {
      */
     private int specialVacationTime;
 
-<<<<<<< Updated upstream
     public int checkTypeCombination(){
-=======
-    public int checkUse(){
->>>>>>> Stashed changes
         return (this.superHoliday60H + this.nursing + this.childNursing + this.substituteLeaveTime + this.annualVacationTime + this.specialVacationTime);
     }
 }

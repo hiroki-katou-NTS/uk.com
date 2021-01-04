@@ -481,7 +481,7 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 //	    	日別実績の勤怠時間．時間．勤務時間．総労働時間．所定外時間．残業時間
 	    	Optional<OverTimeOfDaily> overTimeWork = totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork();
 	    	if (overTimeWork.isPresent()) {
-	    		record.setCalculateFlex(overTimeWork.get().getFlexTime().getFlexTime().getTime());
+	    		record.setCalculateFlex(overTimeWork.get().getFlexTime().getFlexTime().getCalcTime());
 //	    		日別実績の勤怠時間．時間．勤務時間．総労働時間．所定外時間．残業時間．残業枠時間
 	    		List<OverTimeFrameTime> overTimeWorkFrameTime = overTimeWork.get().getOverTimeWorkFrameTime();
 	    		Map<Integer, AttendanceTime> overTimeLstSet = overTimeWorkFrameTime.stream()

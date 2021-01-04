@@ -2,7 +2,7 @@ module nts.uk.at.view.kaf010.shr.footer.viewmodel {
     const template = `
 	<div id="kaf000-a-component5">
 	<div class="table" style="margin-bottom: 5px;" data-bind="visible: $parent.selectReflectDivergenceCheck()">
-		<div class="cell col-1">
+		<div class="cell" style="width: 120px;">
 			<div class="cell valign-center" data-bind="ntsFormLabel: { text: $i18n('KAF010_90') }"></div>
 		</div>
 		<div class="cell valign-center">
@@ -13,13 +13,13 @@ module nts.uk.at.view.kaf010.shr.footer.viewmodel {
 								optionsValue: 'divergenceReasonCode',
 								optionsText: 'reason',
 								value: $parent.selectedDivergenceReasonCode,
-								columns: [{ prop: 'reason', length: 20 }],
+								columns: [{ prop: 'comboBoxText', length: 20 }],
 								required: $parent.comboDivergenceReason()[0] && $parent.comboDivergenceReason()[0].reasonRequired == 0 }">
 			</div>
 		</div>
 	</div>
-	<div class="table" style="margin-top: 5px;" data-bind="visible: $parent.selectReflectDivergenceCheck()">
-		<div class="cell col-1">
+	<div class="table" style="margin-top: 5px;" data-bind="visible: $parent.inputReflectDivergenceCheck()">
+		<div class="cell" style="width: 120px;">
 			<div class="cell valign-center" data-bind="ntsFormLabel: { 
 													text: $i18n('KAF010_92'),
 													constraint: 'DivergenceReasonContent',

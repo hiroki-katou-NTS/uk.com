@@ -16,6 +16,7 @@ public class ApprSttConfirmEmp {
 	private List<DailyConfirmOutput> listDailyConfirm;
 	private String empCD;
 	private String empName;
-	private boolean monthConfirm;
-	private boolean monthApproval;
+	private Boolean monthConfirm;
+	private Integer monthApproval;
+	private String empID;
 }

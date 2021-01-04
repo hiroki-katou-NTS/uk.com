@@ -31,6 +31,7 @@
 			<com:scriptfile path="/view/kaf/000/a/component6/kaf000.a.component6.js" />
 			<com:scriptfile path="/view/kaf/000/a/component7/kaf000.a.component7.js" />
 			<com:scriptfile path="/view/kaf/000/a/component8/kaf000.a.component8.js" />
+			<com:scriptfile path="/view/kaf/000/a/component9/kaf000.a.component9.js" />
 			<com:scriptfile path="/view/kaf/000/a/kaf000.a.vm.js" />
 			<com:scriptfile path="/view/kaf/010/shr/header/kaf010.shr.header.vm.js" />
 			<com:scriptfile path="/view/kaf/010/shr/work_info/kaf010.shr.work_info.vm.js" />
@@ -45,6 +46,7 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
+				<div style="display: inline-block;" data-bind="component: { name: 'kaf000-a-component9', params: isFromOther }"></div>
 				<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty" tabindex="1">#{i18n.getText('KAF010_10')}</button>
 				<button data-bind="click: openDialogKdl005, visible: referenceButton()">#{i18n.getText('KAF010_340')}</button>
 				<div data-bind="component: { name: 'kaf000-a-component7',
@@ -52,7 +54,7 @@
 												appType: appType,
 												checkBoxValue: isSendMail,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
-											} }" style="display: inline-block; margin-left: 15px"></div>
+											} }, visible:  mode() != 2" style="display: inline-block; margin-left: 15px"></div>
 			</div>
 			<div id="contents-area">
 				<div data-bind="component: { name: 'kaf000-a-component1',

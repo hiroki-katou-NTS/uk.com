@@ -478,7 +478,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 						case ApprovalStatusMailType.MONTHLY_UNCONFIRM_BY_CONFIRMER:
 							return o.countUnApprMonth;
 						case ApprovalStatusMailType.WORK_CONFIRMATION:
-							return o.displayConfirm;
+							return o.countEmp > 0 && !o.displayConfirm;
 						default:
 							return false;
 					}

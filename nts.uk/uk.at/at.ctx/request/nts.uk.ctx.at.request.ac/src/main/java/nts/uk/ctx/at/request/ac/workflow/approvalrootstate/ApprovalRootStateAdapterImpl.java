@@ -461,8 +461,13 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 	}
 
 	@Override
-	public ApprovalRootStateImport_New getAppRootInstanceMonthByEmpPeriod(String employeeID, DatePeriod period) {
-		ApprovalRootStateExport approvalRootStateExport = intermediateDataPub.getAppRootInstanceMonthByEmpPeriod(employeeID, period);
+	public ApprovalRootStateImport_New getAppRootInstanceMonthByEmpPeriod(String employeeID, DatePeriod period, YearMonth yearMonth, Integer closureID,
+			ClosureDate closureDate, GeneralDate baseDate) {
+		ApprovalRootStateExport approvalRootStateExport = intermediateDataPub.getAppRootInstanceMonthByEmpPeriod(employeeID, period, yearMonth, closureID,
+				closureDate, baseDate);
+		if(approvalRootStateExport==null) {
+			return null;
+		}
 		return new ApprovalRootStateImport_New(
 				approvalRootStateExport.getRootStateID(),
 				fromExport(approvalRootStateExport.getListApprovalPhaseState(), Optional.empty()), 

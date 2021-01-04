@@ -93,19 +93,18 @@ public class OverTimeRegisterServiceImpl implements OverTimeRegisterService {
 		// INPUT．「画面モード」をチェックする
 		
 		if (mode) {
-			this.register(
+			return this.register(
 					companyId,
 					appOverTime,
 					appDispInfoStartupOutput,
 					isMailServer,
 					appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings().get(0));
 		} else {
-			this.update(
+			return this.update(
 					companyId,
 					appOverTime,
 					appDispInfoStartupOutput);
 		}
-		return null;
 	}
 	
 

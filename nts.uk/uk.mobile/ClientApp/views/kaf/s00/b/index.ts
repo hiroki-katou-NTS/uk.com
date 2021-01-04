@@ -13,7 +13,7 @@ import { AppType } from 'views/kaf/s00';
             selectCheck: {
                 test(value: any) {
                     const vm = this;
-                    if (!vm.params.newModeContent.initSelectMultiDay) {
+                    if (!_.get(vm.params, 'newModeContent.initSelectMultiDay')) {
                         if (vm.params.isChangeDateError) {
                             return false;
                         }
@@ -29,7 +29,7 @@ import { AppType } from 'views/kaf/s00';
             selectCheck: {
                 test(value: any) {
                     const vm = this;
-                    if (vm.params.newModeContent.initSelectMultiDay) {
+                    if (_.get(vm.params, 'newModeContent.initSelectMultiDay')) {
                         if (vm.params.isChangeDateError) {
                             return false;
                         }

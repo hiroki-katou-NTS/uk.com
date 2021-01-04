@@ -3,7 +3,6 @@ package nts.uk.ctx.at.request.app.find.application.timeleaveapplication;
 import lombok.Data;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.TimeLeaveAppDisplayInfoDto;
-import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.TimeLeaveAppDisplayInfo;
 import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.TimeLeaveApplicationDto;
 
 @Data

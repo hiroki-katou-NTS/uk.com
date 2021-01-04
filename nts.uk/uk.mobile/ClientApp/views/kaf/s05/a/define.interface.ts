@@ -21,6 +21,7 @@ export interface DisplayInfoOverTime {
     isProxy: Boolean;
     calculationResultOp?: CalculationResult;
     infoWithDateApplicationOp?: InfoWithDateApplication;
+    calculatedFlag: CalculatedFlag;
 }
 export interface WorkdayoffFrame {
     workdayoffFrNo: number;
@@ -82,6 +83,9 @@ export interface InfoWithDateApplication {
 }
 export interface BreakTimeZoneSetting {
     timeZones?: Array<TimeZone>;
+}
+export interface BreakTimeOp {
+    timeZone?: Array<TimeZone>;
 }
 export interface TimeZone {
     frameNo: number;
@@ -207,17 +211,27 @@ export enum OvertimeAppAtr {
 }
 export enum AttendanceType {
 
-    NORMALOVERTIME,
-    BREAKTIME,
-    BONUSPAYTIME,
-    BONUSSPECIALDAYTIME,
+    NORMALOVERTIME, // 残業時間
+
+    BREAKTIME, // 休出時間
+
+    BONUSPAYTIME, // 加給時間
+
+    BONUSSPECIALDAYTIME, // 特定日加給時間
+
     MIDNIGHT,
+
     SHIFTNIGHT,
-    MIDDLE_BREAK_TIME,
-    MIDDLE_EXORBITANT_HOLIDAY,
-    MIDDLE_HOLIDAY_HOLIDAY,
-    FLEX_OVERTIME,
-    MIDNIGHT_OUTSIDE
+
+    MIDDLE_BREAK_TIME, // 法定内休出
+
+    MIDDLE_EXORBITANT_HOLIDAY, // 法定外休出
+
+    MIDDLE_HOLIDAY_HOLIDAY, // 祝日休出
+
+    FLEX_OVERTIME, // フレックス超過時間
+
+    MIDNIGHT_OUTSIDE // 残業深夜時間
     
     
     
@@ -284,7 +298,7 @@ export interface AnyItemValue {
 }
 export interface ReasonDivergence {
 
-    reason: DivergenceReason;
+    reason: any;
     reasonCode: string;
     diviationTime: number;
 }
@@ -457,4 +471,10 @@ export interface BreakTime {
     valueHours: any;
     title: string;
     frameNo: number;
+}
+export enum CalculatedFlag {
+    // 計算済
+    CALCULATED, 	
+    // 未計算
+    UNCALCULATED 
 }

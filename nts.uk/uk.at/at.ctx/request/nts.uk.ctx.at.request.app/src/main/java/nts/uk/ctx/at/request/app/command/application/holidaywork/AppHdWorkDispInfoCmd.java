@@ -76,7 +76,7 @@ public class AppHdWorkDispInfoCmd {
 	/**
 	 * 乖離理由の選択肢
 	 */
-	private DivergenceReasonSelectCommand comboDivergenceReason;
+	private List<DivergenceReasonSelectCommand> comboDivergenceReason;
 	
 	/**
 	 * 申請用時間外労働時間
@@ -99,7 +99,8 @@ public class AppHdWorkDispInfoCmd {
 				this.hdWorkOvertimeReflect.toDomain(), 
 				this.overtimeFrameList.stream().map(overtimeFrame -> overtimeFrame.toDomain()).collect(Collectors.toList()), 
 				this.appDispInfoStartupOutput.toDomain(), 
-				Optional.ofNullable(this.comboDivergenceReason != null ? this.comboDivergenceReason.toDomain() : null), 
+				this.comboDivergenceReason != null && !this.comboDivergenceReason.isEmpty()? 
+						Optional.of(this.comboDivergenceReason.stream().map(reason -> reason.toDomain()).collect(Collectors.toList())) : Optional.empty(), 
 				Optional.ofNullable(this.otWorkHoursForApplication != null ? this.otWorkHoursForApplication.toDomain() : null), 
 				Optional.ofNullable(this.calculationResult != null ? this.calculationResult.toDomain() : null));
 	}

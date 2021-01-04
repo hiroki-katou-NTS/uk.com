@@ -71,12 +71,12 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 					{ headerText: vm.$i18n('KAF018_384'), key: 'prePostAtr', width: 70 },
 					{ headerText: vm.$i18n('KAF018_386'), key: 'content', width: 600 },
 					{ headerText: vm.$i18n('KAF018_387'), key: 'reflectedState', dataType: 'number', width: 150, formatter: (value: number) => vm.getReflectedStateText(value) },
-					{ headerText: vm.$i18n('KAF018_388'), key: 'approvalStatus', width: 150 },
-					{ headerText: vm.$i18n('KAF018_389'), key: 'phase1', width: 250 },
-					{ headerText: vm.$i18n('KAF018_390'), key: 'phase2', width: 250 },
-					{ headerText: vm.$i18n('KAF018_391'), key: 'phase3', width: 250 },
-					{ headerText: vm.$i18n('KAF018_392'), key: 'phase4', width: 250 },
-					{ headerText: vm.$i18n('KAF018_393'), key: 'phase5', width: 267 }
+					{ headerText: vm.$i18n('KAF018_388'), key: 'approvalStatus', width: 150, formatter: vm.createApprovalStatus },
+					{ headerText: vm.$i18n('KAF018_389'), key: 'phase1', width: 400 },
+					{ headerText: vm.$i18n('KAF018_390'), key: 'phase2', width: 400 },
+					{ headerText: vm.$i18n('KAF018_391'), key: 'phase3', width: 400 },
+					{ headerText: vm.$i18n('KAF018_392'), key: 'phase4', width: 400 },
+					{ headerText: vm.$i18n('KAF018_393'), key: 'phase5', width: 417 }
 				],
 				features: [
 					{
@@ -91,6 +91,13 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 					}
 				]
 			});
+		}
+		
+		createApprovalStatus(value: any) {
+			if(value) {
+				return value.replace(/ /g, '&nbsp;');	
+			}
+			return "";
 		}
 		
 		getReflectedStateText(value: number) {
@@ -449,6 +456,6 @@ module nts.uk.at.view.kaf018.e.viewmodel {
     }
 
 	const API = {
-		getApprSttStartByEmpDate: "at/screen/application/approvalstatus/getApprSttStartByEmpDate",
+		getApprSttStartByEmpDate: "at/request/application/approvalstatus/getApprSttStartByEmpDate",
 	}
 }

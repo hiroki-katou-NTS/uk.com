@@ -75,7 +75,7 @@ public class AppHdWorkDispInfoOutput {
 	/**
 	 * 乖離理由の選択肢
 	 */
-	private Optional<DivergenceReasonSelect> comboDivergenceReason = Optional.empty();
+	private Optional<List<DivergenceReasonSelect>> comboDivergenceReason = Optional.empty();
 	
 	/**
 	 * 申請用時間外労働時間

@@ -73,8 +73,10 @@ import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 
 @Stateless
 public class HolidayServiceImpl implements HolidayService {
@@ -120,6 +122,12 @@ public class HolidayServiceImpl implements HolidayService {
 	
 	@Inject
 	private BrkOffSupChangeMngRepository brkOffSupChangeMngRepository;
+	
+	@Inject
+	private WorkTypeRepository workTypeRepository;
+	
+	@Inject
+	private WorkTimeSettingRepository workTimeSettingRepository;
 
 	@Override
 	public AppHdWorkDispInfoOutput startA(String companyId, Optional<List<String>> empList,
@@ -175,7 +183,7 @@ public class HolidayServiceImpl implements HolidayService {
 			appHdWorkDispInfoOutput.setUseInputDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonInputed());
 			appHdWorkDispInfoOutput.setUseComboDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonSelected());
 			if(!reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons().isEmpty()) {
-				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.of(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons().get(0)));
+				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.of(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons()));
 			} else {
 				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.empty());
 			}
@@ -361,6 +369,23 @@ public class HolidayServiceImpl implements HolidayService {
 		//	申請表示情報(基準日関係あり)．事前事後区分=取得した「申請」．事前事後区分
 		appDispInfoStartupOutput.getAppDispInfoWithDateOutput().setPrePostAtr(EnumAdaptor.valueOf(application.getPrePostAtr().value, PrePostInitAtr.class));
 		
+		HdWorkDispInfoWithDateOutput hdWorkDispInfoWithDateOutput = new HdWorkDispInfoWithDateOutput();
+		
+		//	#113397
+		//	休日出勤申請起動時の表示情報(申請対象日関係あり)．初期選択勤務種類、初期選択就業時間帯＝取得した「休日出勤申請」．勤務情報．勤務種類コード、就業時間帯コード
+		hdWorkDispInfoWithDateOutput.setInitWorkType(Optional.ofNullable(appHolidayWork.getWorkInformation().getWorkTypeCode()));
+		hdWorkDispInfoWithDateOutput.setInitWorkTime(Optional.ofNullable(appHolidayWork.getWorkInformation().getWorkTimeCode()));
+		
+		//	#113397
+		//	ドメインモデル「勤務種類」を取得 
+		Optional<WorkType> workType = workTypeRepository.findNoAbolishByPK(companyId, appHolidayWork.getWorkInformation().getWorkTypeCode().v());
+		hdWorkDispInfoWithDateOutput.setInitWorkTypeName(workType.isPresent() ? Optional.of(workType.get().getName()) : Optional.empty());
+		
+		//	#113397
+		//	ドメインモデル「就業時間帯」を取得
+		Optional<WorkTimeSetting> workTime = workTimeSettingRepository.findByCode(companyId, appHolidayWork.getWorkInformation().getWorkTimeCode().v());
+		hdWorkDispInfoWithDateOutput.setInitWorkTimeName(workTime.isPresent() ? Optional.of(workTime.get().getWorkTimeDisplayName().getWorkTimeName()) : Optional.empty());
+		
 		//	01-03_休出時間枠を取得
 		List<WorkdayoffFrame> workdayoffFrameList = workdayoffFrameRepository.getAllWorkdayoffFrame(companyId);
 		appHdWorkDispInfoOutput.setWorkdayoffFrameList(workdayoffFrameList);
@@ -381,13 +406,11 @@ public class HolidayServiceImpl implements HolidayService {
 			appHdWorkDispInfoOutput.setUseInputDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonInputed());
 			appHdWorkDispInfoOutput.setUseComboDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonSelected());
 			if(!reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons().isEmpty()) {
-				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.of(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons().get(0)));
+				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.of(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons()));
 			} else {
 				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.empty());
 			}
 		}
-		
-		HdWorkDispInfoWithDateOutput hdWorkDispInfoWithDateOutput = new HdWorkDispInfoWithDateOutput();
 		
 		//1-2.起動時勤務種類リストを取得する
 		List<WorkType> workTypeList = commonHolidayWorkAlgorithm.getWorkTypeList(companyId, appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpEmploymentSet().orElse(null));
@@ -446,11 +469,12 @@ public class HolidayServiceImpl implements HolidayService {
 			if(appHdWorkDispInfoOutput.getCalculationResult().isPresent()) {  
 				appHdWorkDispInfoOutput.getCalculationResult().get().setActualOvertimeStatus(overStateOutput);
 				appHdWorkDispInfoOutput.getCalculationResult().get().setCalculatedFlag(CalculatedFlag.CALCULATED);
+			} else {
+				HolidayWorkCalculationResult calculationResult = new HolidayWorkCalculationResult();
+				calculationResult.setActualOvertimeStatus(overStateOutput);
+				calculationResult.setCalculatedFlag(CalculatedFlag.CALCULATED);
+				appHdWorkDispInfoOutput.setCalculationResult(Optional.of(calculationResult));
 			}
-//			else {
-//				HolidayWorkCalculationResult calculationResult = new HolidayWorkCalculationResult(overStateOutput, null, CalculatedFlag.CALCULATED);
-//				appHdWorkDispInfoOutput.setCalculationResult(Optional.of(calculationResult));
-//			}
 		}
 		appHdWorkDispInfoOutput.setHdWorkDispInfoWithDateOutput(hdWorkDispInfoWithDateOutput);
 		

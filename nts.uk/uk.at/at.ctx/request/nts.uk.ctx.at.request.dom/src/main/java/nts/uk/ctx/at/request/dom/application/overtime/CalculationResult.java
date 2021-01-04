@@ -18,10 +18,6 @@ import lombok.NoArgsConstructor;
 @Data
 // 計算結果
 public class CalculationResult {
-	// 計算フラグ
-	private Integer flag;
-	// 残業時間帯修正フラグ
-	private Integer overTimeZoneFlag;
 	// 事前申請・実績の超過状態
 	private OverStateOutput overStateOutput;
 	// 申請時間

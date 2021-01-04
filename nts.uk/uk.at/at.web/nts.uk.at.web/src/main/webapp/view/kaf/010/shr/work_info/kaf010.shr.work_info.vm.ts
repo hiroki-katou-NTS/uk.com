@@ -15,7 +15,7 @@ module nts.uk.at.view.kaf010.shr.work_info.viewmodel {
 			<div class="cell valign-top" data-bind="if: true" style="width: 25px;">
 				<!--A4_7 選択ボタン-->
 				<button tabindex="7" style="margin-left: 18px" class="workSelect"
-				data-bind="enable: true, click : openDialogKdl003, text: $i18n('KAF010_36')"></button>
+				data-bind="enable: mode() != 3, click : openDialogKdl003, text: $i18n('KAF010_36')"></button>
 			</div>
 			<div class="cell valign-center">
 				<div class="valign-center control-group">
@@ -49,7 +49,7 @@ module nts.uk.at.view.kaf010.shr.work_info.viewmodel {
 								name: '#[KAF010_333]',
 								constraint:'TimeWithDayAttr',
 								value: workInfo().workHours1.start,
-								enable: true,
+								enable: mode() != 3,
 								readonly: false,
 								required: true }" />
 						<!--A4_10 ~1-->
@@ -62,7 +62,7 @@ module nts.uk.at.view.kaf010.shr.work_info.viewmodel {
 						<input tabindex="9" id="inpEndTime1" class="right-content inputTime-kaf005" data-bind="ntsTimeWithDayEditor: {name: '#[KAF010_334]',						
 						constraint:'TimeWithDayAttr',
 						value: workInfo().workHours1.end,
-						enable: true,
+						enable: mode() != 3,
 							 readonly: false,
 							 required: true}" />
 					</div>
@@ -82,12 +82,12 @@ module nts.uk.at.view.kaf010.shr.work_info.viewmodel {
 								name: '#[KAF010_335]',
 								constraint:'TimeWithDayAttr',
 								value: workInfo().workHours2.start,
-								enable: true,
+								enable: mode() != 3,
 								readonly: false,
 								required: false }" />
 						<label class="valign-center link-label-kaf005" data-bind=", text: $i18n('KAF010_39')"></label>
 					</div>
-					<div style="width: 133px; margin-top: 11px; margin-left: 5px" data-bind="ntsCheckBox: { checked: isGoWorkAtr, text: $i18n('KAF010_3')}, visible: workTimeCheckBoxVisible()"></div>
+					<div style="width: 133px; margin-top: 11px; margin-left: 5px; margin-bottom: 11px" data-bind="ntsCheckBox: { checked: isGoWorkAtr, text: $i18n('KAF010_3')}, visible: workTimeCheckBoxVisible()"></div>
 				</div>
 				<div class="cell valign-center">
 					<div class="row-cell-margin" data-bind="visible: managementMultipleWorkCyclescheck()">
@@ -95,11 +95,11 @@ module nts.uk.at.view.kaf010.shr.work_info.viewmodel {
 						<input tabindex="11" id="inpEndTime2" class="right-content inputTime-kaf005" data-bind="ntsTimeWithDayEditor: {name: '#[KAF010_336]',
 							constraint:'TimeWithDayAttr',
 							value: workInfo().workHours2.end,
-							enable: true,
+							enable: mode() != 3,
 							readonly: false,
 							required: false}" />
 					</div>
-					<div style="margin-top: 11px; margin-left: 5px" data-bind="ntsCheckBox: { checked: isBackHomeAtr, text: $i18n('KAF010_4')}, visible: workTimeCheckBoxVisible()"></div>
+					<div style="margin-top: 11px; margin-left: 5px; margin-bottom: 11px" data-bind="ntsCheckBox: { checked: isBackHomeAtr, text: $i18n('KAF010_4')}, visible: workTimeCheckBoxVisible()"></div>
 				</div>
 			</div>
 		</div>

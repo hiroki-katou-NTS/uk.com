@@ -23,109 +23,103 @@
         v-on:kaf000BChangePrePost="$appContext.kaf000BChangePrePost"
       />
     </div>
-    <!-- Work type and work time -->
+    <!-- A1_B3 -->
     <div v-if="$appContext.c3" class="card card-label">
-      <!-- A4 -->
+      <!--A1_B3_1-->
       <div class="card-header uk-bg-accordion">
         <span>{{ "KAFS05_63" | i18n }}</span>
         <span class="badge badge-warning">必須</span>
       </div>
+
       <div class="card-body">
-        <!-- A4_1 -->
+        <!--A1_B3_2-->
         <span class="textSize uk-text-dark-gray">{{ "KAFS05_64" | i18n }}</span>
         <button
-          v-bind:disabled="false"
+          v-bind:enable="$appContext.c2"
           v-on:click="$appContext.openKDL002('worktype')"
           type="button"
           class="btn btn-selection mt-2 mb-2"
         >
-          <!-- A4_2_1 -->
           <span class="badge badge-secondary">{{
             workInfo.workType.code
           }}</span>
           <span>{{ workInfo.workType.name }}</span>
         </button>
-
-        <!-- A4_3 -->
+        <!--A1_B3_4-->
         <span class="textSize uk-text-dark-gray">{{ "KAFS05_65" | i18n }}</span>
         <button
           type="button"
           v-on:click="$appContext.openKDL002('worktime')"
-          v-bind:enable="true"
+          v-bind:enable="$appContext.c2"
           class="btn btn-selection mt-2 mb-2"
         >
-          <!-- A4_3_1 -->
           <span class="badge badge-secondary">{{
             workInfo.workTime.code
           }}</span>
           <span>{{ workInfo.workTime.name }}</span>
-          <!-- A4_3_2 -->
+
           <span class="d-block mt-1">{{ workInfo.workTime.time }}</span>
         </button>
       </div>
     </div>
-    <!-- Work hours -->
-    <div class="card card-label">
-      <!-- A7_1 -->
-      <div v-if="true" class="card-header uk-bg-accordion">
+    <!-- Work hours A1_B4-->
+    <div v-if="$appContext.c3" class="card card-label">
+      <!-- A1_B4_1 -->
+      <div class="card-header uk-bg-accordion">
         <span>{{ "KAFS05_66" | i18n }}</span>
         <span class="badge badge-warning">任意</span>
       </div>
-      <!-- A7_2 -->
-      <div v-if="true" class="card-body">
+      <!-- A1_B4_2 -->
+      <div class="card-body">
         <nts-time-range-input v-model="workHours1" />
       </div>
     </div>
-
-    <div class="card card-label">
-      <!-- A7_1 -->
-      <div v-if="$appContext.c3_2" class="card-header uk-bg-accordion">
+    <!--A1_B5-->
+    <div v-if="$appContext.c3_2" class="card card-label">
+      <!--A1_B5_1-->
+      <div class="card-header uk-bg-accordion">
         <span>{{ "KAFS05_67" | i18n }}</span>
         <span class="badge badge-info">任意</span>
       </div>
-      <!-- A7_2 -->
-      <div v-if="$appContext.c3_2" class="card-body">
+      <!--A1_B5_2-->
+      <div class="card-body">
         <nts-time-range-input v-model="workHours2" />
       </div>
     </div>
 
-    <!-- Break -->
+    <!-- Break A1_B6-->
     <div v-if="$appContext.c3_1" class="card card-label">
+      <!--A1_B6_1-->
       <div class="card-header uk-bg-accordion mt-2 mb-n2">
         <span>{{ "KAFS05_68" | i18n }}</span>
         <span class="badge badge-info">任意</span>
       </div>
 
-      <!-- Break Hour -->
+      <!-- A1_B6_2 -->
       <div
         v-for="(item, index) in breakTimes.slice(0, displayNumberBreakTime)"
         v-bind:key="index"
         :value="index"
-      >
+      > 
+        <!--A1_B6_2_N1-->      
         <div class="card-body">
           <div class="row mt-3">
             <div class="col-6">{{item.title}}</div>
-            <!-- <kafs00subp1 
-                  v-bind:params="kafS00P1Params1"
-                  /> -->
           </div>
           <div class="card-body">
             <nts-time-range-input
-              v-bind:disabled="true"
               class="mb-1"
               v-model="item.valueHours"
             />
           </div>
         </div>
       </div>
-      <!-- Add more frame zone -->
+      <!-- A1_B6_3 -->
       <div v-if="isAddFrameBreakTime">
         <div class="text-center position-relative" style="height: 35px">
-          <!-- A5_7 -->
           <div class="position-absolute w-100">
             <hr />
           </div>
-          <!-- A5_6 -->
           <div class="position-absolute w-100 mt-1">
             <span
               v-on:click="addBreakHour"
@@ -143,10 +137,9 @@
         <button
           type="button"
           class="btn btn-block btn-success btn-lg text-center"
-          v-if="true"
           v-on:click="$appContext.toStep(2)"
         >
-          {{ "KAFS02_17" | i18n }}
+          {{ ($appContext.modeNew ? 'KAFS05_16' : 'KAFS05_17') | i18n}}
         </button>
       </div> 
 

@@ -10,6 +10,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.Con
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeApplicationSetting;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayInfoOverTime;
@@ -181,7 +182,7 @@ public interface ICommonAlgorithmOverTime {
 	 * @param applicationTime
 	 * @return
 	 */
-	public Boolean checkOverTime(List<OvertimeApplicationSetting> applicationTime);
+	public void checkOverTime(ApplicationTime applicationTime);
 	
 	/**
 	 * Refactor5 事前申請・実績超過チェック
