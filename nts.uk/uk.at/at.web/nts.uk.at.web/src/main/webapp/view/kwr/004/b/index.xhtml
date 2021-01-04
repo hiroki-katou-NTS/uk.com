@@ -75,7 +75,7 @@
                 data-bind="ntsPanel:{direction: 'right', showIcon: true, visible: true}"
               >
                 <div
-                  tabindex="-1"
+                  tabindex="6"
                   data-bind="ntsSearchBox: {
                   searchMode: 'highlight',
                   targetKey: 'code',
@@ -88,7 +88,7 @@
                 />
                 <table
                   id="multiList"
-                  tabindex="6"
+                  tabindex="7"
                   data-bind="ntsGridList: {
                     height: 301,
                     options: settingListItems,
@@ -115,7 +115,7 @@
                 <div class="textEditor">
                   <input
                     class="code attendance-code-name"
-                    tabindex="7"
+                    tabindex="8"
                     id="KWR004_B32"
                     data-bind="ntsTextEditor: {
                       value: attendanceCode, 
@@ -127,7 +127,7 @@
                   />
                   <input
                     class="name attendance-code-name"
-                    tabindex="8"
+                    tabindex="9"
                     id="KWR004_B33"
                     data-bind="ntsTextEditor: {
                       value: attendanceName,
@@ -144,7 +144,7 @@
                 ></div>
               </div>
               <div class="row">
-                <div class="ui-iggrid" tabindex="9">
+                <div class="ui-iggrid" tabindex="10">
                   <table id="multiGridList" width="100%" tabindex="-1">
                     <colgroup>
                       <col width="35px" />
@@ -192,7 +192,7 @@
                         </td>
                         <td>
                           <input
-                            tabindex="-1"
+                            tabindex="11"
                             size="10"
                             class="nts-editor"
                             data-bind="attr: { id: 'textName' + id }, 
@@ -209,7 +209,7 @@
                             <com:ko-if bind="$index() &lt; 2">
                               <div
                                 class="cf"
-                                tabindex="10"
+                                tabindex="11"
                                 data-bind="ntsSwitchButton: {
                                   options: $vm.enumIndependentCalculation,
                                   optionsValue: 'code',
@@ -220,7 +220,7 @@
                               ></div>
                             </com:ko-if>
                             <button
-                              tabindex="10"
+                              tabindex="11"
                               class="btn-B4331"
                               data-bind="attr: { id: 'btnRow-' + id },
                               text: $vm.$i18n('KWR004_67'), 
@@ -229,7 +229,7 @@
                             />
                             <div
                               id="combo-box"
-                              tabindex="10"
+                              tabindex="11"
                               class="attribute-selection"
                               data-bind="ntsComboBox: {
                                 name: $vm.$i18n('KWR004_216'),
