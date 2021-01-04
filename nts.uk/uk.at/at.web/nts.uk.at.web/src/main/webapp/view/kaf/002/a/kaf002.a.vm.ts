@@ -66,6 +66,8 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     
         isCondition9: boolean = true;
         data : any;
+		isFromOther: boolean = false;
+
     bindComment(data: any) {
         const self = this;
         _.forEach(self.data.appStampSetting.settingForEachTypeLst, i => {
@@ -79,6 +81,10 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     }    
     created(params: AppInitParam) {
         const self = this;
+		if(!_.isNil(__viewContext.transferred.value)) {
+			self.isFromOther = true;
+		}
+		sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
 		let empLst: Array<string> = [],
 			dateLst: Array<string> = [];
         self.application = ko.observable(new Application(self.appType()));

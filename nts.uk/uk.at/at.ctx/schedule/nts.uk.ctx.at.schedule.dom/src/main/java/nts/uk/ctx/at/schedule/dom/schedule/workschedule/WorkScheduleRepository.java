@@ -45,6 +45,9 @@ public interface WorkScheduleRepository {
 	 * @param sid
 	 * @param datePeriod
 	 */
+	
+	void update(WorkSchedule workSchedule);
+	
 	void delete(String sid, DatePeriod datePeriod);
 	
 	/** Delete (勤務予定) **/

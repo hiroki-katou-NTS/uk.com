@@ -17,7 +17,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.TargetSelectionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.TypeOffsetJudgment;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.AddSubHdManagementService;
-import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ItemDays;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
@@ -26,7 +25,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class PayoutManagementDataService {
-	
+
 	@Inject
 	private ClosureRepository closureRepo;
 	
@@ -41,10 +40,10 @@ public class PayoutManagementDataService {
 
 	@Inject
 	private AddSubHdManagementService addSubHdManagementService;
-	
+
 	@Inject
 	private PayoutManagementDataRepository confirmRecMngRepo;
-	
+
 	@Inject
 	private SysEmpAdapter syEmployeeAdapter;
 	
@@ -93,35 +92,52 @@ public class PayoutManagementDataService {
 			}
 		}
 	}
-	
-	private List<String> checkHolidate(Boolean pickUp, Boolean pause,Boolean checkedSplit, Double requiredDays,Double subDays, Double occurredDays){
-		List<String> errors = new ArrayList<String>();
-		if (pause) {
-			if (checkedSplit) {
-				if (!ItemDays.HALF_DAY.value.equals(subDays)) {
-					errors.add("Msg_1256_SubDays");
-					return errors;
-				} else if (!ItemDays.HALF_DAY.value.equals(requiredDays)){
-					errors.add("Msg_1256_RequiredDays");
-					return errors;
-				}
-			}
+
+	private void checkHolidate(Boolean pickUp, Boolean pause, Boolean checkedSplit, Double remainDays, Double occurredDays, Double linkingDate, Double subDay, Double requiredDays) {
+		if (!pickUp) {
+			occurredDays = 0.0;
+		} else {
+			linkingDate = 0.0;
 		}
-		if (pickUp) {
-			if (checkedSplit) {
-				if (!ItemDays.ONE_DAY.value.equals(occurredDays)) {
-					errors.add("Msg_1256_OccurredDays");
-					return errors;
-				}
-			} else if (pause && !occurredDays.equals(subDays)){
-					errors.add("Msg_1257_OccurredDays");
-					return errors;
-			}
+		if (!pause) {
+			subDay = 0.0;
 		}
-		
-		return errors;
-}
-	
+		if (!checkedSplit) {
+			requiredDays = 0.0;
+		}
+		// 振休残数をチェック
+		if (remainDays < 0) {// 振休残数＜0の場合
+			// エラーメッセージ「Msg_2029」を表示する
+			throw new BusinessException("Msg_2029");
+		}
+
+		// 振出チェックボックスをチェックする
+		if (pickUp) {// チェックするの場合
+			// 振休残数　＝　振休日数（D6_3）+　紐付け日数（D16_4）-　振休日数（D11_3）-　振休日数（D12_4）
+			remainDays = occurredDays + linkingDate - subDay - requiredDays;
+			if (pause && remainDays < 0) {
+				throw new BusinessException("Msg_2030");
+			}
+			return;
+		}
+		// 分割消化チェックボックスをチェック
+		if (checkedSplit) {// チェックする
+			// エラーメッセージ「Msg_1256」を表示する
+			throw new BusinessException("Msg_1256");
+		}
+		// 振休残数　＝　紐付け日数（D16_4）-　振休日数（D11_3）
+		if (linkingDate != 0) {
+			remainDays = linkingDate - subDay;
+		} else {
+			remainDays = subDay;
+		}
+		// 振休日数をチェック
+		if (remainDays < 0) {// 振休残数　＜0
+			// エラーメッセージ「Msg_2030」
+			throw new BusinessException("Msg_2030");
+		}
+	}
+
 	private boolean checkInfoPayMana(String cId, String sId, GeneralDate date) {
 		Optional<PayoutManagementData> payout = payoutManagementDataRepository.find(cId, sId,date);
 		if (payout.isPresent()) {
@@ -137,9 +153,9 @@ public class PayoutManagementDataService {
 		}
 		return false;
 	}
-	
+
 	public List<String> addPayoutManagement(String sid, Boolean pickUp, Boolean pause,Boolean checkedSplit, PayoutManagementData payMana,SubstitutionOfHDManagementData subMana,
-				SubstitutionOfHDManagementData splitMana,  Double requiredDays,  int closureId, List<String> linkingDates) {
+				SubstitutionOfHDManagementData splitMana,  Double requiredDays,  int closureId, List<String> linkingDates, Double remainDays, Double linkingDate) {
 		List<String> errors = new ArrayList<String>();
 		YearMonth processYearMonth = GeneralDate.today().yearMonth();
 		Optional<GeneralDate> closureDate = this.getClosureDate(closureId, processYearMonth);
@@ -171,7 +187,7 @@ public class PayoutManagementDataService {
 				}
 			}
 		}
-		errors.addAll(checkHolidate(pickUp, pause, checkedSplit, splitMana.getRequiredDays().v(),subMana.getRequiredDays().v(), payMana.getOccurredDays().v() ));
+		this.checkHolidate(pickUp, pause, checkedSplit, remainDays, payMana.getOccurredDays().v(), linkingDate, subMana.getRequiredDays().v(), requiredDays);
 		this.checkHistoryOfCompany(sid
 				, payMana.getPayoutDate().getDayoffDate().orElse(null)
 				, subMana.getHolidayDate().getDayoffDate().orElse(null)
@@ -233,13 +249,13 @@ public class PayoutManagementDataService {
 	
 	private List<String> checkOffHolidate(GeneralDate restDate,GeneralDate workDate,GeneralDate splitDate, Optional<GeneralDate> closureDate, int closureId,Boolean split, Boolean pickUp) {
 		List<String> errors = new ArrayList<String>();
-		if(checkDateClosing(restDate, closureDate, closureId)) {
+		if (checkDateClosing(restDate, closureDate, closureId)) {
 			errors.add("Msg_1436");
 		}
-		if(pickUp && restDate.equals(workDate)) {
+		if (pickUp && restDate.equals(workDate)) {
 			errors.add("Msg_729_SubMana");
 		}
-		if(split) {
+		if (split) {
 			if(restDate.equals(splitDate)) {
 				errors.add("Msg_1437");
 			}
@@ -404,18 +420,15 @@ public class PayoutManagementDataService {
 		for (SubstitutionOfHDManagementData substitutionOfHDManagementData : substitutionOfHDManagementDatas) {
 			// 取得したList＜振出管理データ＞をループする
 			for (PayoutManagementData x : lstRecconfirm) {
+				Double oldUnUseDay = x.getUnUsedDays().v();
+				Double requiredDay = substitutionOfHDManagementData.getRequiredDays().v();
 				// 未使用日数を計算 Tính toán số ngày chưa sử dụng
-				if ((x.getOccurredDays().v() - substitutionOfHDManagementData.getRequiredDays().v()) > 0) {
-					unUseDay = x.getOccurredDays().v() - substitutionOfHDManagementData.getRequiredDays().v();
-				}
-				if ((x.getOccurredDays().v() - substitutionOfHDManagementData.getRequiredDays().v()) <= 0 || unUseDay > 0) {
-					unUseDay = 0;
-				}
+				unUseDay = oldUnUseDay - requiredDay >= 0 ? oldUnUseDay - requiredDay : 0d;
 
-				// ・未使用日数　＝　計算した振休管理データ
-				x.setRemainNumber(unUseDay);
 				// ・振休消化区分　＝　消化済み
 				x.setStateAtr(DigestionAtr.USED.value);
+				// ・未使用日数　＝　計算した振休管理データ
+				x.setRemainNumber(unUseDay);
 
 				// ループ中ドメインモデル「振出管理データ」を更新する Update domain model 「振出管理データ」 trong vòng lặp
 				this.confirmRecMngRepo.update(x);
@@ -424,9 +437,11 @@ public class PayoutManagementDataService {
 				PayoutSubofHDManagement payoutSubofHDManagement = new PayoutSubofHDManagement(employeeId //	社員ID　＝　Input．社員ID
 						, x.getPayoutDate().getDayoffDate().orElse(null)								 //	 紐付け情報．発生日　＝　ループ中の振出管理データ．振出日
 						, substitutionOfHDManagementData.getHolidayDate().getDayoffDate().orElse(null)	 //	紐付け情報．使用日　＝　ループ中の振休管理データ．振休日
-						, substitutionOfHDManagementData.getRequiredDays().v()							 //	紐付け情報．使用日数　＝　ループ中の振休管理データ．必要日数
+						, oldUnUseDay >= requiredDay													 // 紐付け情報．使用日数　＝　
+							? substitutionOfHDManagementData.getRequiredDays().v() 						 // ループ中の振出管理データ．未使用日数　＞＝　ループ中の振休管理データ．必要日数　－＞　ループ中の振休管理データ．必要日数
+							: oldUnUseDay														 		 //	Else　－＞　ループ中の振出管理データ．未使用日数
 						, TargetSelectionAtr.MANUAL.value);												 //	紐付け情報．対象選択区分　＝　手動
-				
+
 				// 	ドメインモデル「振出振休紐付け管理」を追加 Thêm domain model 「振出振休紐付け管理」
 				boolean insertState = this.addPayoutSub(payoutSubofHDManagement);
 				if (insertState) {

@@ -25,8 +25,10 @@ import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabi
 import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabilityOfOneDayRepository;
 import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.TargetOrgIdenInforDto;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.WorkTimezoneCommonSetDto;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
@@ -49,6 +51,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSe
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.screen.at.app.kdl045.query.GetMoreInformation.WorkInformationImpl;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -102,7 +105,7 @@ public class GetInformationStartup {
 	private PredetemineTimeSettingRepository predetemineTimeSettingRepository;
 
 	public GetInformationStartupOutput getInformationStartup(String employeeId, GeneralDate baseDate,
-			List<TimeVacationAndType> listTimeVacationAndType, String workTimeCode,
+			List<TimeVacationAndType> listTimeVacationAndType, String workTimeCode,String workTypeCode,
 			TargetOrgIdenInforDto targetOrgIdenInforDto) {
 		GetInformationStartupOutput data = new GetInformationStartupOutput();
 		String companyId = AppContexts.user().companyId();
@@ -130,8 +133,17 @@ public class GetInformationStartup {
 			listUsageTimeAndType.add(new UsageTimeAndType(timeVacationAndType.getTypeVacation(), total));
 		}
 		data.setListUsageTimeAndType(listUsageTimeAndType);
+		if(workTypeCode ==null || workTypeCode.equals("")) {
+			data.setWorkStyle(null);
+		}else {
+			WorkInformation wi = new WorkInformation(workTypeCode, workTimeCode);
+			WorkInformation.Require requireWorkInfo = new WorkInformationImpl(workTypeRepo, workTimeSettingRepository,
+					workTimeSettingService, basicScheduleService,fixedWorkSettingRepository,flowWorkSettingRepository,flexWorkSettingRepository,predetemineTimeSettingRepository);
+			Optional<WorkStyle> workStyle =  wi.getWorkStyle(requireWorkInfo);
+			data.setWorkStyle(workStyle.isPresent()?workStyle.get().value:null);
+		}
 
-		// 3:取得する(Require, 対象組織識別情報)
+		// 4:取得する(Require, 対象組織識別情報)
 		GetShiftTableRuleForOrganizationService.Require requireGetShiftTableRule = new RequireImpl(
 				shiftTableRuleForOrganizationRepo, shiftTableRuleForCompanyRepo);
 		Optional<ShiftTableRule> otpShiftTableRule = GetShiftTableRuleForOrganizationService
@@ -140,7 +152,7 @@ public class GetInformationStartup {
 		if (otpShiftTableRule.isPresent() && otpShiftTableRule.get().getUseWorkAvailabilityAtr() == NotUseAtr.USE) {
 			data.setShowYourDesire(1);
 		}
-		// 4:
+		// 5:
 		Optional<WorkAvailabilityOfOneDay> workAvailabilityOfOneDayOpt = workAvailabilityOfOneDayRepo.get(employeeId,
 				baseDate);
 		if (workAvailabilityOfOneDayOpt.isPresent()) {
@@ -227,11 +239,12 @@ public class GetInformationStartup {
 			return basicScheduleService.checkNeededOfWorkTimeSetting(workTypeCode);
 		}
 
-		@Override
-		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd, String workTypeCd,
-				Integer workNo) {
-			return workTimeSettingService.getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
-		}
+// fix bug 113211
+//		@Override
+//		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd, String workTypeCd,
+//				Integer workNo) {
+//			return workTimeSettingService.getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
+//		}
 
 		@Override
 		public Optional<ShiftMaster> getShiftMasterByWorkInformation(WorkTypeCode workTypeCode,

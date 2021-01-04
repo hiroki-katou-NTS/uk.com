@@ -178,11 +178,12 @@ public class Ksu001gScreenQuerry {
 			return basicService.checkNeededOfWorkTimeSetting(workTypeCode);
 		}
 
-		@Override
-		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo) {
-			return workTimeService.getPredeterminedTimezone(AppContexts.user().companyId(), workTimeCd, workTypeCd,
-					workNo);
-		}
+		// fix bug 113211
+//		@Override
+//		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo) {
+//			return workTimeService.getPredeterminedTimezone(AppContexts.user().companyId(), workTimeCd, workTypeCd,
+//					workNo);
+//		}
 
 		@Override
 		public Optional<ShiftMaster> getShiftMasterByWorkInformation(WorkTypeCode workTypeCode,
