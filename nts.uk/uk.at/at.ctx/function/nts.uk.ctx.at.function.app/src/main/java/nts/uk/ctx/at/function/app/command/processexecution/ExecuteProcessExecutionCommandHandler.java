@@ -645,6 +645,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
     private boolean doProcesses(CommandHandlerContext<ExecuteProcessExecutionCommand> context,
 			EmpCalAndSumExeLog empCalAndSumExeLog, String execId, UpdateProcessAutoExecution procExec,
                                 ProcessExecutionLog procExecLog, String companyId) {
+    	procExecLog.setTaskLogList(procExecLog.getTaskLogList().stream()
+				.filter(item -> item.getExecId().equals(execId))
+				.collect(Collectors.toList()));
         // Initialize status [未実施] for each task
         initAllTaskStatus(procExecLog, EndStatus.NOT_IMPLEMENT);
         /*
@@ -2276,9 +2279,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	private boolean reflectApprovalResult(String execId, UpdateProcessAutoExecution processExecution,
                                           ProcessExecutionLog ProcessExecutionLog, String companyId, List<ApprovalPeriodByEmp> lstApprovalPeriod) {
         // ドメインモデル「更新処理自動実行ログ」を更新する
-        List<ExecutionTaskLog> taskLogLists = ProcessExecutionLog.getTaskLogList().stream()
-        		.filter(item -> item.getExecId().equals(execId))
-        		.collect(Collectors.toList());
+        List<ExecutionTaskLog> taskLogLists = ProcessExecutionLog.getTaskLogList();
         int size = taskLogLists.size();
         boolean existExecutionTaskLog = false;
 //		boolean checkError1552 = false;
@@ -2588,9 +2589,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                                        CommandHandlerContext<ExecuteProcessExecutionCommand> context) {
         context.asAsync().getDataSetter().updateData("taskId", context.asAsync().getTaskId());
         // ドメインモデル「更新処理自動実行ログ」を更新する
-        List<ExecutionTaskLog> taskLogLists = ProcessExecutionLog.getTaskLogList().stream()
-        		.filter(item -> item.getExecId().equals(execId))
-        		.collect(Collectors.toList());
+        List<ExecutionTaskLog> taskLogLists = ProcessExecutionLog.getTaskLogList();
         int size = taskLogLists.size();
         boolean existExecutionTaskLog = false;
 //		boolean checkError1552 = false;
@@ -2876,7 +2875,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
         try {
             for (int i = 0; i < size; i++) {
                 ExecutionTaskLog executionTaskLog = taskLogLists.get(i);
-                if (executionTaskLog.getProcExecTask() == ProcessExecutionTask.AL_EXTRACTION) {
+                if (executionTaskLog.getProcExecTask().value == ProcessExecutionTask.AL_EXTRACTION.value) {
                     executionTaskLog.setStatus(null);
                     executionTaskLog.setLastExecDateTime(GeneralDateTime.now());
                     existExecutionTaskLog = true;
@@ -2904,7 +2903,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
                 // ドメインモデル「更新処理自動実行ログ」を更新する
                 for (int i = 0; i < size; i++) {
                     ExecutionTaskLog executionTaskLog = taskLogLists.get(i);
-                    if (executionTaskLog.getProcExecTask() == ProcessExecutionTask.AL_EXTRACTION) {
+                    if (executionTaskLog.getProcExecTask().value == ProcessExecutionTask.AL_EXTRACTION.value) {
                         executionTaskLog.setStatus(EndStatus.NOT_IMPLEMENT);
                         executionTaskLog.setLastExecDateTime(null);
                     }
@@ -3076,33 +3075,34 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
             // ドメインモデル「更新処理自動実行ログ」を削除する
             this.procExecLogRepo.remove(companyId, execItemCd, procExecLogOpt.get().getExecId());
 
-            // [更新処理：スケジュールの作成、終了状態 ＝ 未実施]
-            this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.NOT_IMPLEMENT);
-            // [更新処理：日別作成、終了状態 ＝ 未実施]
-            this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.DAILY_CREATION, EndStatus.NOT_IMPLEMENT);
-            // [更新処理：日別計算、終了状態 ＝ 未実施]
-            this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.DAILY_CALCULATION, EndStatus.NOT_IMPLEMENT);
-            // [更新処理：承認結果反映、終了状態 ＝ 未実施]
-            this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.RFL_APR_RESULT, EndStatus.NOT_IMPLEMENT);
-            // [更新処理：月別集計、終了状態 ＝ 未実施]
-            this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.MONTHLY_AGGR, EndStatus.NOT_IMPLEMENT);
-
-            // [更新処理：アラーム抽出、終了状態 ＝ 未実施]
-            this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.AL_EXTRACTION, EndStatus.NOT_IMPLEMENT);
-            // [更新処理：承認ルート更新（日次、終了状態 ＝ 未実施]
-            this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.APP_ROUTE_U_DAI, EndStatus.NOT_IMPLEMENT);
-            // [更新処理：承認ルート更新（月次）、終了状態 ＝ 未実施]
-            this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
-			this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.AGGREGATION_OF_ARBITRARY_PERIOD,
-					EndStatus.NOT_IMPLEMENT);
-			this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.DELETE_DATA, EndStatus.NOT_IMPLEMENT);
-			this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.EXTERNAL_ACCEPTANCE,
-					EndStatus.NOT_IMPLEMENT);
-			this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.EXTERNAL_OUTPUT,
-					EndStatus.NOT_IMPLEMENT);
-			this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.INDEX_RECUNSTRUCTION,
-					EndStatus.NOT_IMPLEMENT);
-			this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.SAVE_DATA, EndStatus.NOT_IMPLEMENT);
+//            // [更新処理：スケジュールの作成、終了状態 ＝ 未実施]
+//            this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.NOT_IMPLEMENT);
+//            // [更新処理：日別作成、終了状態 ＝ 未実施]
+//            this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.DAILY_CREATION, EndStatus.NOT_IMPLEMENT);
+//            // [更新処理：日別計算、終了状態 ＝ 未実施]
+//            this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.DAILY_CALCULATION, EndStatus.NOT_IMPLEMENT);
+//            // [更新処理：承認結果反映、終了状態 ＝ 未実施]
+//            this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.RFL_APR_RESULT, EndStatus.NOT_IMPLEMENT);
+//            // [更新処理：月別集計、終了状態 ＝ 未実施]
+//            this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.MONTHLY_AGGR, EndStatus.NOT_IMPLEMENT);
+//
+//            // [更新処理：アラーム抽出、終了状態 ＝ 未実施]
+//            this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.AL_EXTRACTION, EndStatus.NOT_IMPLEMENT);
+//            // [更新処理：承認ルート更新（日次、終了状態 ＝ 未実施]
+//            this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.APP_ROUTE_U_DAI, EndStatus.NOT_IMPLEMENT);
+//            // [更新処理：承認ルート更新（月次）、終了状態 ＝ 未実施]
+//            this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
+//			this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.AGGREGATION_OF_ARBITRARY_PERIOD,
+//					EndStatus.NOT_IMPLEMENT);
+//			this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.DELETE_DATA, EndStatus.NOT_IMPLEMENT);
+//			this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.EXTERNAL_ACCEPTANCE,
+//					EndStatus.NOT_IMPLEMENT);
+//			this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.EXTERNAL_OUTPUT,
+//					EndStatus.NOT_IMPLEMENT);
+//			this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.INDEX_RECUNSTRUCTION,
+//					EndStatus.NOT_IMPLEMENT);
+//			this.updateStatusAndStartDateNull(procExecLog, ProcessExecutionTask.SAVE_DATA, EndStatus.NOT_IMPLEMENT);
+            procExecLog.initTaskLogList();
             procExecLog.setExecId(execId);
 
             this.procExecLogRepo.insert(procExecLog);

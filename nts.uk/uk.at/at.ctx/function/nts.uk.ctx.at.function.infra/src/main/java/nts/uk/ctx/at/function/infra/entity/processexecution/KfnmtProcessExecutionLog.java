@@ -88,7 +88,7 @@ public class KfnmtProcessExecutionLog extends UkJpaEntity implements Serializabl
 	@Column(name = "RFL_APPR_END")
 	public GeneralDate reflectApprovalResultEnd;
 
-	@OneToMany(mappedBy = "procExecLogItem", cascade = CascadeType.PERSIST)
+	@OneToMany(mappedBy = "procExecLogItem", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinTable(name = "KFNMT_EXEC_TASK_LOG")
 	public List<KfnmtExecutionTaskLog> taskLogList;
 

@@ -56,6 +56,7 @@ public class JpaExecutionTaskLogRepository extends JpaRepository implements Exec
 				.setParameter("execItemCd", execItemCd)
 				.setParameter("execId", execId)
 				.getList(entity -> ExecutionTaskLog.builder()
+						.execId(execId)
 						.errorBusiness(Optional.ofNullable(entity.errorBusiness).map(data -> data == 1))
 						.errorSystem(Optional.ofNullable(entity.errorSystem).map(data -> data == 1))
 						.lastEndExecDateTime(Optional.ofNullable(entity.lastEndExecDateTime))

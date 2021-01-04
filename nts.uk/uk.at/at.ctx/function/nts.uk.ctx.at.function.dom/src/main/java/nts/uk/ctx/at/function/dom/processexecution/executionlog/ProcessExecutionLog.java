@@ -20,17 +20,6 @@ import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProcessExecutionLog extends AggregateRoot {
-	
-	protected static final ProcessExecutionTask[] TASK_SETTINGS = {
-			ProcessExecutionTask.SCH_CREATION,
-			ProcessExecutionTask.DAILY_CREATION,
-			ProcessExecutionTask.DAILY_CALCULATION,
-			ProcessExecutionTask.RFL_APR_RESULT,
-			ProcessExecutionTask.MONTHLY_AGGR,
-			ProcessExecutionTask.AL_EXTRACTION,
-			ProcessExecutionTask.APP_ROUTE_U_DAI,
-			ProcessExecutionTask.APP_ROUTE_U_MON
-	};
 
 	/* コード */
 	private ExecutionCode execItemCd;
@@ -62,13 +51,14 @@ public class ProcessExecutionLog extends AggregateRoot {
 	}
 	
 	public static List<ExecutionTaskLog> processInitTaskLog(String execId) {
-		return Arrays.stream(TASK_SETTINGS)
+		return Arrays.stream(ProcessExecutionTask.values())
 				.map(item -> ProcessExecutionLog.processInitTaskLog(item, EndStatus.NOT_IMPLEMENT, execId))
 				.collect(Collectors.toList());
 	}
 	
 	private static ExecutionTaskLog processInitTaskLog(ProcessExecutionTask task, EndStatus endStatus, String execId) {
 		return ExecutionTaskLog.builder()
+			.execId(execId)
 			.procExecTask(EnumAdaptor.valueOf(task.value, ProcessExecutionTask.class))
 			.status(Optional.ofNullable(EnumAdaptor.valueOf(endStatus.value, EndStatus.class)))
 			.build();
