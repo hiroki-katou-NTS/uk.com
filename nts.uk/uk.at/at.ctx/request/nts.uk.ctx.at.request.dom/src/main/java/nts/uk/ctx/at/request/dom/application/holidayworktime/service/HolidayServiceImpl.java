@@ -179,15 +179,19 @@ public class HolidayServiceImpl implements HolidayService {
 		//	乖離理由の表示区分を取得する
 		ReasonDissociationOutput reasonDissociationOutput = commonOverTimeAlgorithm.getInfoNoBaseDate(companyId, ApplicationType.HOLIDAY_WORK_APPLICATION, 
 				null, holidayWorkSetting.getOvertimeLeaveAppCommonSet());
-		if(!reasonDissociationOutput.getDivergenceReasonInputMethod().isEmpty()) {
-			appHdWorkDispInfoOutput.setUseInputDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonInputed());
-			appHdWorkDispInfoOutput.setUseComboDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonSelected());
-			if(!reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons().isEmpty()) {
-				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.of(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons()));
-			} else {
-				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.empty());
-			}
-		}	
+		if(reasonDissociationOutput != null) {
+			appHdWorkDispInfoOutput.setDivergenceTimeRoots(reasonDissociationOutput.getDivergenceTimeRoots());
+			appHdWorkDispInfoOutput.setDivergenceReasonInputMethod(reasonDissociationOutput.getDivergenceReasonInputMethod());
+		}
+//		if(!reasonDissociationOutput.getDivergenceReasonInputMethod().isEmpty()) {
+//			appHdWorkDispInfoOutput.setUseInputDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonInputed());
+//			appHdWorkDispInfoOutput.setUseComboDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonSelected());
+//			if(!reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons().isEmpty()) {
+//				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.of(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons()));
+//			} else {
+//				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.empty());
+//			}
+//		}	
 		
 		return appHdWorkDispInfoOutput;
 	}
@@ -402,15 +406,19 @@ public class HolidayServiceImpl implements HolidayService {
 //		乖離理由の表示区分を取得する
 		ReasonDissociationOutput reasonDissociationOutput = commonOverTimeAlgorithm.getInfoNoBaseDate(companyId, ApplicationType.HOLIDAY_WORK_APPLICATION, 
 				null, appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet());
-		if(!reasonDissociationOutput.getDivergenceReasonInputMethod().isEmpty()) {
-			appHdWorkDispInfoOutput.setUseInputDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonInputed());
-			appHdWorkDispInfoOutput.setUseComboDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonSelected());
-			if(!reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons().isEmpty()) {
-				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.of(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons()));
-			} else {
-				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.empty());
-			}
+		if(reasonDissociationOutput != null) {
+			appHdWorkDispInfoOutput.setDivergenceTimeRoots(reasonDissociationOutput.getDivergenceTimeRoots());
+			appHdWorkDispInfoOutput.setDivergenceReasonInputMethod(reasonDissociationOutput.getDivergenceReasonInputMethod());
 		}
+//		if(!reasonDissociationOutput.getDivergenceReasonInputMethod().isEmpty()) {
+//			appHdWorkDispInfoOutput.setUseInputDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonInputed());
+//			appHdWorkDispInfoOutput.setUseComboDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonSelected());
+//			if(!reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons().isEmpty()) {
+//				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.of(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons()));
+//			} else {
+//				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.empty());
+//			}
+//		}
 		
 		//1-2.起動時勤務種類リストを取得する
 		List<WorkType> workTypeList = commonHolidayWorkAlgorithm.getWorkTypeList(companyId, appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpEmploymentSet().orElse(null));

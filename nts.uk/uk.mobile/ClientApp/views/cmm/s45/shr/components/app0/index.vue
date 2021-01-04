@@ -13,10 +13,10 @@
         </div>
         <!-- B1_3 -->
         <div class="row mt-1 mb-1">
-            <div class="col-2 pl-3">
+            <div class="col-1.5 pr-2 pl-3">
                 {{workInfo.workType.code}}
             </div>
-            <div class="col-10 pl-0">
+            <div class="col pl-0">
                 {{workInfo.workType.name}}
             </div>
         </div>
@@ -27,10 +27,10 @@
         </div>
         <!-- B1_5 -->
         <div class="row mt-1 mb-1">
-            <div class="col-2 pl-3">
+            <div class="col-1.5 pr-2 pl-3">
                 {{workInfo.workTime.code}}
             </div>
-            <div class="col-10 pl-0">
+            <div class="col pl-0">
                 {{workInfo.workTime.name}}
             </div>
         </div>
@@ -121,7 +121,7 @@
     v-for="(item, index) in overTimes"
     v-bind:key="index"
     :value="index"
-    >
+    >   
         <div v-if="c4" class="row mt-1 mb-1">
             <!-- B5_2_1 -->
             <div class="col pl-4">
@@ -147,6 +147,7 @@
                 </div>  
             </div>
         </div>
+        <hr v-if="index + 1 != overTimes.length" class="row my-0">
     </div>
 
 
@@ -189,6 +190,7 @@
                 </div>  
             </div>
         </div>
+        <hr v-if="index + 1 != holidayTimes.length" class="row my-0">
        </div> 
     </div>
 

@@ -501,6 +501,47 @@ export class KafS05Step2Component extends Vue {
         let reason1 = self.bindReason(divergenceTimeRoot1, divergenceReasonInputMethod1);
         let reason2 = self.bindReason(divergenceTimeRoot2, divergenceReasonInputMethod2);
 
+        if (!self.$appContext.modeNew) {
+            let findResult1 = _.findLast(self.$appContext.model.appOverTime.applicationTime.reasonDissociation, (item: any) => item.diviationTime == 1);
+            let findResult2 = _.findLast(self.$appContext.model.appOverTime.applicationTime.reasonDissociation, (item: any) => item.diviationTime == 2);
+            if (findResult1) {
+                reason1.reason = findResult1.reason;
+                let code = findResult1.reasonCode;
+                let isFindCode = _.findLast(reason1.dropdownList, (item: any) => item.code == code);
+                if (isFindCode) {
+                    reason1.selectedValue = isFindCode.code;
+                } else {
+                    reason1.dropdownList.shift();
+                    reason1.dropdownList.unshift({
+                        code,
+                        text: self.$i18n('KAFS05_55')
+                    });
+                    reason1.dropdownList.unshift({
+                        code: null,
+                        text: self.$i18n('KAFS05_54')
+                    });
+                }
+            }
+            if (findResult2) {
+                reason2.reason = findResult2.reason;
+                let code = findResult2.reasonCode;
+                let isFindCode = _.findLast(reason2.dropdownList, (item: any) => item.code == code);
+                if (isFindCode) {
+                    reason2.selectedValue = isFindCode.code;
+                } else {
+                    reason2.dropdownList.shift();
+                    reason2.dropdownList.unshift({
+                        code,
+                        text: self.$i18n('KAFS05_55')
+                    });
+                    reason2.dropdownList.unshift({
+                        code: null,
+                        text: self.$i18n('KAFS05_54')
+                    });
+                }
+            }
+        }
+
         self.reason1 = reason1;
         self.reason2 = reason2;
 
@@ -557,8 +598,8 @@ export class KafS05Step2Component extends Vue {
         {
             let item = {} as ReasonDivergence;
             item.diviationTime = 2;
-            item.reasonCode = self.reason1.selectedValue;
-            item.reason = self.reason1.reason;
+            item.reasonCode = self.reason2.selectedValue;
+            item.reason = self.reason2.reason;
             list.push(item);
         }
 

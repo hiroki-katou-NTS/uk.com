@@ -67,5 +67,5 @@ public class AppHolidayWorkData {
 	/**
 	 * 背景色
 	 */
-	private Optional<Integer> opBackgroundColor;
+	private Optional<String> opBackgroundColor;
 }

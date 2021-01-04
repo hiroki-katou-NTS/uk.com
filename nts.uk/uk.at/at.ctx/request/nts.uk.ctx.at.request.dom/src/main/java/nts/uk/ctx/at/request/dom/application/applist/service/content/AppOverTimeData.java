@@ -17,7 +17,7 @@ public class AppOverTimeData {
 	/**
 	 * 開始時刻
 	 */
-	private int startTime;
+	private Integer startTime;
 	
 	/**
 	 * 残業区分
@@ -27,7 +27,7 @@ public class AppOverTimeData {
 	/**
 	 * 終了時刻
 	 */
-	private int endTime;
+	private Integer endTime;
 	
 	/**
 	 * 申請ID
@@ -77,7 +77,7 @@ public class AppOverTimeData {
 	/**
 	 * 背景色
 	 */
-	private Optional<Integer> opBackgroundColor;
+	private Optional<String> opBackgroundColor;
 	
 	/**
 	 * 残業申請時間
