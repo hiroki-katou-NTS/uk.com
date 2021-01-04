@@ -113,7 +113,7 @@ module nts.uk.at.view.kmk004.components {
 			vm.years = params.years;
 			vm.checkEmployee = params.checkEmployee;
 			vm.workTimes = params.workTimes;
-				vm.selectedId(params.selectedId);
+			vm.selectedId(params.selectedId);
 			vm.type = params.type;
 			vm.yearDelete = params.yearDelete;
 
