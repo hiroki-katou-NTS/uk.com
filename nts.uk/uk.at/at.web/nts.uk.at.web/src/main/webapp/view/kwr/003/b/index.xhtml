@@ -82,6 +82,7 @@
                 />            
                 <table
                   id="multiList"
+                  tabindex="7"
                   data-bind="ntsGridList: {
                     height: 301,
                     options: settingListItems,
@@ -109,7 +110,7 @@
                 <div class="textEditor">
                   <input
                     class="code attendance-input"
-                    tabindex="7"
+                    tabindex="8"
                     id="KWR003_B42"
                     data-bind="ntsTextEditor: {
                       value: attendanceCode, 
@@ -122,7 +123,7 @@
                   <input
                     class="name attendance-input"
                     id="KWR003_B43"
-                    tabindex="8"
+                    tabindex="9"
                     data-bind="ntsTextEditor: {
                       value: attendanceName,
                       required: true,
@@ -177,8 +178,8 @@
                         </td>
                         <td class="text-center">
                           <input
-                            tabindex="-1"
-                            size="14"
+                            tabindex="10"
+                            size="10"
                             class="nts-editor"
                             data-bind="attr: { id: 'textName' + id }, 
                                   ntsTextEditor: { 
@@ -192,7 +193,7 @@
                         <td class="text-center">
                           <div
                             class="cf"                            
-                            tabindex="9"
+                            tabindex="10"
                             data-bind="ntsSwitchButton: {
                               options: $vm.settingRules,
                               optionsValue: 'code',
@@ -200,7 +201,7 @@
                               value: setting
                             }"
                           ></div>
-                          <button 
+                          <button tabindex="10"
                             data-bind="attr: { id: 'btnRow-' + id }, 
                             text: $vm.$i18n('KWR003_216'), 
                             click: function(data) { $vm.openDialogKDL(data) }"
