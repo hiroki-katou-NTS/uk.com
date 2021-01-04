@@ -55,6 +55,7 @@ module nts.uk.at.view.kmk004.l {
 										years: years,
 										workTimes: workTimes,
 										type: type,
+										selectedId: ko.observable(''),
 										yearDelete: yearDelete
 									}
 								}"></div>

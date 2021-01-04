@@ -113,7 +113,7 @@ module nts.uk.at.view.kmk004.components {
 			vm.years = params.years;
 			vm.checkEmployee = params.checkEmployee;
 			vm.workTimes = params.workTimes;
-			vm.selectedId(params.selectedId);
+			vm.selectedId = params.selectedId;
 			vm.type = params.type;
 			vm.yearDelete = params.yearDelete;
 
@@ -168,7 +168,10 @@ module nts.uk.at.view.kmk004.components {
 			vm.selectedId
 				.subscribe(() => {
 					vm.workTimeSaves([]);
-					vm.selectedYear.valueHasMutated();
+					// Do list years chưa load ra ngay khi selectID thay đổi nên em đã set TimeOut anh tìm giải pháp tối hơn cho em vs nhé :)
+					setTimeout(() => {
+						vm.selectedYear.valueHasMutated();
+					}, 100);
 				});
 
 			vm.years

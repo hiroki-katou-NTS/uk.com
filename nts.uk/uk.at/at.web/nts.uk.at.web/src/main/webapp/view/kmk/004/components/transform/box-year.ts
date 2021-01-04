@@ -212,7 +212,6 @@ module nts.uk.at.view.kmk004.components.transform {
 							.then(() => {
 
 								if (ko.unwrap(vm.itemList) != []) {
-									console.log('CHungn');
 									vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
 								} else {
 									vm.selectedYear(null);
