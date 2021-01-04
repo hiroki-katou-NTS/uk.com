@@ -37,7 +37,7 @@ module nts.uk.at.view.kaf022.q.viewmodel {
             self.appReasonDispAtr = ko.observable(1);
             self.preExcessAtr = ko.observable(1);
             self.atdExcessAtr = ko.observable(1);
-            self.warningDays = ko.observable(1);
+            self.warningDays = ko.observable(0);
             self.dispWorkplaceNameAtr = ko.observable(1);
 
             $("#fixed-table-q1").ntsFixedTable({});

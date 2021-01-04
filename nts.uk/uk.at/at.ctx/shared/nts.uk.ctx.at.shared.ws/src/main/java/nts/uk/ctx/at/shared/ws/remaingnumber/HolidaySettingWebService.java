@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.shared.app.command.remainingnumber.subhdmana.DeleteLeaveManagementDataCommand;
 import nts.uk.ctx.at.shared.app.command.remainingnumber.subhdmana.DeleteLeaveManagementDataCommandHandler;
 import nts.uk.ctx.at.shared.app.command.remainingnumber.subhdmana.LeaveManagementDataCommand;
 import nts.uk.ctx.at.shared.app.command.remainingnumber.subhdmana.UpdateLeaveManagementDataCommandHandler;
@@ -46,7 +47,7 @@ public class HolidaySettingWebService extends WebService {
 
 	@POST
 	@Path("delete")
-	public void deleteComDayOffMana(LeaveManagementDataCommand command) {
+	public void deleteComDayOffMana(DeleteLeaveManagementDataCommand command) {
 		this.deleteLeaveManaHandler.handle(command);
 	}
 }

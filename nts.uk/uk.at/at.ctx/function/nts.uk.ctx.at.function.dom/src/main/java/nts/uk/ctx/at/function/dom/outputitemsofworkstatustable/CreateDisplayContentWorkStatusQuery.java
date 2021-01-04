@@ -65,7 +65,12 @@ public class CreateDisplayContentWorkStatusQuery {
 
             List<AttendanceResultDto> listAttendants = new ArrayList<>();
             for (val date : e.getListPeriod()) {
-                val listValue = require.getValueOf(Collections.singletonList(e.getEmployeeId()), date, listIds);
+                List<AttendanceResultDto> listValue = null;
+                try {
+                    listValue = require.getValueOf(Collections.singletonList(e.getEmployeeId()), date, listIds);
+                } catch (Exception e1) {
+                    continue;
+                }
                 if (listValue == null) continue;
                 listAttendants.addAll(listValue);
             }

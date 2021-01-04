@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -18,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.
 @Stateless
 public class BreakTimeStampLeakageChecking {
 
-	public EmployeeDailyPerError breakTimeStampLeakageChecking(String companyID, String employeeID,
+	public Optional<EmployeeDailyPerError> breakTimeStampLeakageChecking(String companyID, String employeeID,
 			GeneralDate processingDate, BreakTimeOfDailyPerformance breakTimeOfDailyPerformance) {
 
 		EmployeeDailyPerError employeeDailyPerError = null;
@@ -99,7 +100,7 @@ public class BreakTimeStampLeakageChecking {
 						new ErrorAlarmWorkRecordCode("S001"), attendanceItemIDList);
 			}
 		}
-		return employeeDailyPerError;
+		return Optional.ofNullable(employeeDailyPerError);
 	}
 
 }

@@ -12,10 +12,9 @@
 .kwr-005b .d-flex {
   display: flex;
   align-items: center;
-  margin-bottom: 5px;
 }
 .kwr-005b .d-flex:first-child {
-  margin-bottom: 24px;
+  margin-bottom: 15px;
 }
 .kwr-005b .d-flex .form-label {
   margin-right: 32px;
@@ -25,9 +24,11 @@
 }
 
 .kwr-005b .pull-left .panel.ntsPanel {
-  height: 450px;
+  height: 400px;
 }
-
+.kwr-005b.ie .pull-left .panel.ntsPanel {
+  height: 415px;
+}
 .kwr-005b .nts-editor-wrapped .nts-editor.code {
   max-width: 30px;
   text-align: center;
@@ -37,7 +38,12 @@
 .kwr-005b td.text-center {
   text-align: center;
 }
-
+.kwr-005b .ui-iggrid .ui-iggrid-tablebody td {
+  height: 22px;
+}
+.kwr-005b.ie .ui-iggrid .ui-iggrid-tablebody td {
+  height: 23px;
+}
 .ntsSwapComponent.ntsMoveDataArea {
   padding-left: 10px;
   padding-right: 10px;
@@ -55,7 +61,7 @@
   width: 80px;
 }
 .swap-list-colum {
-  width: 285px;
+  width: 302px;
 }
 .swap-list-colum:first-child {
   margin-right: 95px;
@@ -64,7 +70,7 @@
   margin: 0;
 }
 .swap-list-colum:first-child .form-label {
-  margin-right: 50px;
+  margin-right: 65px;
 }
 .swap-list-colum:first-child .form-label + div {
   margin-right: 15px;

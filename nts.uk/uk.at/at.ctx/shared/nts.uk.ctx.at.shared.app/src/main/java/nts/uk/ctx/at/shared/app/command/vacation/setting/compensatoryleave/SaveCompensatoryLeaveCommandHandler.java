@@ -58,80 +58,80 @@ public class SaveCompensatoryLeaveCommandHandler
 		this.validate(compensManage, command);
 		
 		CompensatoryLeaveComSetting findClsc = compensLeaveComSetRepository.find(companyId);
-		if (findClsc != null) {
-			CompensatoryOccurrenceSetting overTime = null;
-			CompensatoryOccurrenceSetting workTime = null;
-			// get Occurrence from find domain
-			if (findClsc.getCompensatoryOccurrenceSetting().get(0)
-					.getOccurrenceType().value == CompensatoryOccurrenceDivision.FromOverTime.value) {
-				overTime = findClsc.getCompensatoryOccurrenceSetting().get(0);
-				workTime = findClsc.getCompensatoryOccurrenceSetting().get(1);
-			} else {
-				workTime = findClsc.getCompensatoryOccurrenceSetting().get(0);
-				overTime = findClsc.getCompensatoryOccurrenceSetting().get(1);
-			}
-			// DigestiveTimeUnit
-			if (compensManage || (command.getCompensatoryDigestiveTimeUnit()
-					.getIsManageByTime() != ManageDistinct.YES.value)) {
-				CompensatoryDigestiveTimeUnitDto digest = command
-						.getCompensatoryDigestiveTimeUnit();
-				digest.setDigestiveUnit(
-						findClsc.getCompensatoryDigestiveTimeUnit().getDigestiveUnit().value);
-			}
-
-			if (compensManage) {
-				// ExpirationTime
-				CompensatoryAcquisitionUseDto acqui = command.getCompensatoryAcquisitionUse();
-				acqui.setExpirationTime(
-						findClsc.getCompensatoryAcquisitionUse().getExpirationTime().value);
-				// PreemptionPermit
-				command.getCompensatoryAcquisitionUse().setPreemptionPermit(
-						findClsc.getCompensatoryAcquisitionUse().getPreemptionPermit().value);
-				// ManageByTime
-				command.getCompensatoryDigestiveTimeUnit().setIsManageByTime(
-						findClsc.getCompensatoryDigestiveTimeUnit().getIsManageByTime().value);
-			}
-
-			if (!command.getCompensatoryOccurrenceSetting().isEmpty()) {
-				for (CompensatoryOccurrenceSettingDto item : command
-						.getCompensatoryOccurrenceSetting()) {
-					// Over time
-					if (item.getOccurrenceType() == CompensatoryOccurrenceDivision.FromOverTime.value) {
-						this.controllOccurrence(compensManage, item, overTime);
-					}
-					// Work time
-					if (item.getOccurrenceType() == CompensatoryOccurrenceDivision.WorkDayOffTime.value) {
-						this.controllOccurrence(compensManage, item, workTime);
-					}
-				}
-			}
-		}
-		CompensatoryLeaveComSetting clcs = command.toDomain(companyId);
+//		if (findClsc != null) {
+//			CompensatoryOccurrenceSetting overTime = null;
+//			CompensatoryOccurrenceSetting workTime = null;
+//			// get Occurrence from find domain
+//			if (findClsc.getCompensatoryOccurrenceSetting().get(0)
+//					.getOccurrenceType().value == CompensatoryOccurrenceDivision.FromOverTime.value) {
+//				overTime = findClsc.getCompensatoryOccurrenceSetting().get(0);
+//				workTime = findClsc.getCompensatoryOccurrenceSetting().get(1);
+//			} else {
+//				workTime = findClsc.getCompensatoryOccurrenceSetting().get(0);
+//				overTime = findClsc.getCompensatoryOccurrenceSetting().get(1);
+//			}
+//			// DigestiveTimeUnit
+//			if (compensManage || (command.getCompensatoryDigestiveTimeUnit()
+//					.getIsManageByTime() != ManageDistinct.YES.value)) {
+//				CompensatoryDigestiveTimeUnitDto digest = command
+//						.getCompensatoryDigestiveTimeUnit();
+//				digest.setDigestiveUnit(
+//						findClsc.getCompensatoryDigestiveTimeUnit().getDigestiveUnit().value);
+//			}
+//
+//			if (compensManage) {
+//				// ExpirationTime
+//				CompensatoryAcquisitionUseDto acqui = command.getCompensatoryAcquisitionUse();
+//				acqui.setExpirationTime(
+//						findClsc.getCompensatoryAcquisitionUse().getExpirationTime().value);
+//				// PreemptionPermit
+//				command.getCompensatoryAcquisitionUse().setPreemptionPermit(
+//						findClsc.getCompensatoryAcquisitionUse().getPreemptionPermit().value);
+//				// ManageByTime
+//				command.getCompensatoryDigestiveTimeUnit().setIsManageByTime(
+//						findClsc.getCompensatoryDigestiveTimeUnit().getIsManageByTime().value);
+//			}
+//
+//			if (!command.getCompensatoryOccurrenceSetting().isEmpty()) {
+//				for (CompensatoryOccurrenceSettingDto item : command
+//						.getCompensatoryOccurrenceSetting()) {
+//					// Over time
+//					if (item.getOccurrenceType() == CompensatoryOccurrenceDivision.FromOverTime.value) {
+//						this.controllOccurrence(compensManage, item, overTime);
+//					}
+//					// Work time
+//					if (item.getOccurrenceType() == CompensatoryOccurrenceDivision.WorkDayOffTime.value) {
+//						this.controllOccurrence(compensManage, item, workTime);
+//					}
+//				}
+//			}
+//		}
+//		CompensatoryLeaveComSetting clcs = command.toDomain(companyId);
 		if (findClsc == null) {
-			compensLeaveComSetRepository.insert(clcs);
+			compensLeaveComSetRepository.insert(command.toDomain());
 		} else {
-			compensLeaveComSetRepository.update(clcs);
+			compensLeaveComSetRepository.update(command.toDomain());
 		}
 		
-		//get ManagementCategory from DB
-		int isManagedyDB = findClsc != null ? findClsc.getIsManaged().value : -1;
-		//check managementCategory change
-		boolean isManagedy = command.getIsManaged() != isManagedyDB;
-		if (isManagedy) {
-			boolean manage = command.getIsManaged() == ManageDistinct.YES.value;
-			val compensatoryLeaveComSettingEvent = new CompensatoryLeaveComSettingDomainEvent(manage);
-			compensatoryLeaveComSettingEvent.toBePublished();
-		}
-		
-		//get isManageByTime from DB
-		int isManageByTimeDB = findClsc != null ? findClsc.getCompensatoryDigestiveTimeUnit().getIsManageByTime().value : -1;
-		//check managementCategory change
-		boolean isManageByTime = command.getCompensatoryDigestiveTimeUnit().getIsManageByTime() != isManageByTimeDB;
-		if (isManageByTime && (command.getIsManaged() == ManageDistinct.YES.value)) {
-			boolean manage = command.getIsManaged() == ManageDistinct.YES.value;
-			val compensatoryDigestiveTimeUnitEvent = new CompensatoryDigestiveTimeUnitDomainEvent(manage);
-			compensatoryDigestiveTimeUnitEvent.toBePublished();
-		}
+//		//get ManagementCategory from DB
+//		int isManagedyDB = findClsc != null ? findClsc.getIsManaged().value : -1;
+//		//check managementCategory change
+//		boolean isManagedy = command.getIsManaged() != isManagedyDB;
+//		if (isManagedy) {
+//			boolean manage = command.getIsManaged() == ManageDistinct.YES.value;
+//			val compensatoryLeaveComSettingEvent = new CompensatoryLeaveComSettingDomainEvent(manage);
+//			compensatoryLeaveComSettingEvent.toBePublished();
+//		}
+//		
+//		//get isManageByTime from DB
+//		int isManageByTimeDB = findClsc != null ? findClsc.getCompensatoryDigestiveTimeUnit().getIsManageByTime().value : -1;
+//		//check managementCategory change
+//		boolean isManageByTime = command.getCompensatoryDigestiveTimeUnit().getIsManageByTime() != isManageByTimeDB;
+//		if (isManageByTime && (command.getIsManaged() == ManageDistinct.YES.value)) {
+//			boolean manage = command.getIsManaged() == ManageDistinct.YES.value;
+//			val compensatoryDigestiveTimeUnitEvent = new CompensatoryDigestiveTimeUnitDomainEvent(manage);
+//			compensatoryDigestiveTimeUnitEvent.toBePublished();
+//		}
 	}
 
 	public void controllOccurrence(boolean compensManage,
