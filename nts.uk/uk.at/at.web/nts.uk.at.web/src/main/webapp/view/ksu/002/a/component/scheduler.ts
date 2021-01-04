@@ -860,6 +860,8 @@ module nts.uk.ui.at.ksu002.a {
                             if (evt.keyCode === 37 || (evt.shiftKey && evt.keyCode === 13)) {
                                 if (current > 0) {
                                     $($focusables.get(current - 1)).focus();
+                                } else {
+                                    $focusables.last().focus();
                                 }
 
                                 return;
@@ -867,6 +869,8 @@ module nts.uk.ui.at.ksu002.a {
 
                             if (current < $focusables.length - 1) {
                                 $($focusables.get(current + 1)).focus();
+                            } else {
+                                $focusables.first().focus();
                             }
 
                             return;
@@ -1089,6 +1093,8 @@ module nts.uk.ui.at.ksu002.a {
 
                                     if (prev) {
                                         $(prev).focus();
+                                    } else {
+                                        $focusables.last().focus();
                                     }
                                 }
                             } else {
@@ -1097,6 +1103,8 @@ module nts.uk.ui.at.ksu002.a {
 
                                     if (next) {
                                         $(next).focus();
+                                    } else {
+                                        $focusables.first().focus();
                                     }
                                 }
                             }
