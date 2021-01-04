@@ -63,7 +63,7 @@
                       data-bind="click: deleteWorkingTimeRow, text: $i18n('KMK017_6'), enable: workplaceWorkingTimeList().length &gt; 0"
                     />
                   </div>
-                  <div class="grid-list" tabindex="6">
+                  <div class="grid-list" tabindex="6" data-bind="if: !!ko.unwrap(gridListHeader).length">
                     <!-- A5_1-->
                     <table
                       id="grid-list"                      
@@ -71,13 +71,7 @@
                         height: isIE() ? 317 : 312,
                         options: workplaceWorkingTimeList,
                         optionsValue: 'code',
-                        columns:  ko.observableArray([
-                          { headerText: $i18n('KMK017_7'), key: 'code', width: 70, formatter: _.escape  },
-                          { headerText: $i18n('KMK017_8'), key: 'name', width: 120, formatter: _.escape  },
-                          { headerText: $i18n('KMK017_9'), key: 'workingTime1', width: 120, formatter: _.escape  },
-                          { headerText: $i18n('KMK017_10'), key: 'workingTime2', width: 120, formatter: _.escape  },
-                          { headerText: $i18n('KMK017_11'), key: 'remarks', width: usageClassification() ? 310 : 190, formatter: _.escape  },
-                        ]),
+                        columns: gridListHeader,
                         multiple: true,
                         value: workplaceSelectedCode
                       }"
