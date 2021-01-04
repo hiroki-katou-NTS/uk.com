@@ -94,7 +94,7 @@ public class JpaGetKMK004WorkPlaceExportData extends JpaRepository implements Ge
 	     exportSQL.append("              LEFT JOIN KSHST_WKP_TRANS_LAB_TIME ON BSYMT_WKP_INFO.CID = KSHST_WKP_TRANS_LAB_TIME.CID   ");
 	     exportSQL.append("              AND BSYMT_WKP_INFO.WKP_ID = KSHST_WKP_TRANS_LAB_TIME.WKP_ID   ");
 	     exportSQL.append("             WHERE BSYMT_WKP_INFO.CID = ?  ");
-	     exportSQL.append("              AND BSYMT_WKP_INFO.WKP_ID IN (SELECT WKP_ID FROM KSRMT_LEGAL_TIME_M_WKP CID = ? AND KSRMT_LEGAL_TIME_M_WKP.YM >= ? AND KSRMT_LEGAL_TIME_M_WKP.YM <= ? )   ");
+	     exportSQL.append("              AND BSYMT_WKP_INFO.WKP_ID IN (SELECT WKP_ID FROM KSRMT_LEGAL_TIME_M_WKP WHERE CID = ? AND KSRMT_LEGAL_TIME_M_WKP.YM >= ? AND KSRMT_LEGAL_TIME_M_WKP.YM <= ? )   ");
 	     exportSQL.append("            ) TBL  ");
 	     exportSQL.append("             ORDER BY TBL.HIERARCHY_CD ASC");
 
@@ -132,7 +132,7 @@ public class JpaGetKMK004WorkPlaceExportData extends JpaRepository implements Ge
 			int month = this.month();
 			
 			int startYM = startDate * 100 + month;
-			int endYM = startDate * 100 + ((month + 11) / 12)*100 + (month + 11) % 12;
+			int endYM = startDate * 100 + ((month + 11) / 12) * 100 + (month + 11) % 12;
 
 			val legalTimes = this.queryProxy().query(LEGAL_TIME_WKP, KshmtLegalTimeMWkp.class)
 				.setParameter("cid", cid)
@@ -234,9 +234,9 @@ public class JpaGetKMK004WorkPlaceExportData extends JpaRepository implements Ge
 						//R12_28
 						KMK004PrintCommon.convertTime(defor.isPresent() ? defor.get().legalTime : null),
 						//R12_29
-						KMK004PrintCommon.convertTime(r.getInt(("LAR_DAILY_TIME"))), 
+						KMK004PrintCommon.convertTime(r.getInt(("LAB_DAILY_TIME"))), 
 						//R12_30
-						KMK004PrintCommon.convertTime(r.getInt(("LAR_WEEKLY_TIME"))),
+						KMK004PrintCommon.convertTime(r.getInt(("LAB_WEEKLY_TIME"))),
 						//R12_31
 						r.getInt("STR_MONTH")== null ?null: r.getInt("STR_MONTH") + I18NText.getText("KMK004_402"),
 						//R12_32

@@ -108,11 +108,9 @@ public class JpaGetKMK004EmploymentExportData extends JpaRepository implements G
 				.getList();
 			
 		try (PreparedStatement stmt = this.connection().prepareStatement(GET_EMPLOYMENT.toString())) {
-//			stmt.setInt(1, startDate);
-//			stmt.setInt(2, endDate);
 			stmt.setString(1, cid);
 			stmt.setString(2, cid);
-			stmt.setInt(3,startYM);
+			stmt.setInt(3, startYM);
 			stmt.setInt(4, endYM);
 			NtsResultSet result = new NtsResultSet(stmt.executeQuery());
 			
