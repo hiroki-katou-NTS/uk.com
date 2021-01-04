@@ -23,7 +23,6 @@ public class ConfirmStatusMonthlyPubImpl implements ConfirmStatusMonthlyPub {
 	public Optional<StatusConfirmMonthEx> getConfirmStatusMonthly(String companyId, List<String> listEmployeeId,
 			YearMonth yearmonthInput, Integer clsId, Optional<MonthlyPerformaceLockStatus> lockData) {
 		Optional<StatusConfirmMonthDto> data = confirmStatusMonthly.getConfirmStatusMonthly(companyId, listEmployeeId, yearmonthInput, clsId, lockData);
-
 		if(!data.isPresent()) {
 			return Optional.empty();
 		}

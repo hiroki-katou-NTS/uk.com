@@ -52,7 +52,8 @@ module nts.uk.at.view.kmf001.m {
                         self.description(data.screenQuery);
                     }
                     else {
-                        self.description(getText('KMF001_293'));
+                         //self.startingDay(getText(('KMF001_292'),[data.hdDay]));
+                        self.description(getText('KMF001_337'));
                     }
                     dfd.resolve();
                 });
@@ -87,6 +88,7 @@ module nts.uk.at.view.kmf001.m {
                 if (self.holidaySetting().selectedCategory() == 0
                     && self.holidaySetting().startingDay() == getText('KMF001_336')) {
                     alertError({ messageId: "Msg_2048" });
+                    nts.uk.ui.block.clear();
                     return;
                 }
 
@@ -189,7 +191,7 @@ module nts.uk.at.view.kmf001.m {
                 width: ''
             });
             //M8_2
-            startingDay: KnockoutObservable<string> = ko.observable('');
+            startingDay: KnockoutObservable<string> = ko.observable(nts.uk.resource.getText('KMF001_336'));
             //M8_3
 //            description: KnockoutObservable<string> = ko.observable('');
             is4weeksAndMonthDay: KnockoutObservable<boolean> = ko.observable(false);
@@ -216,7 +218,33 @@ module nts.uk.at.view.kmf001.m {
                         self.is1week(true);
                     }
                 });
-                self.selectedCategory(data.holidayCheckUnit);
+                if(data != null) {
+                    self.selectedCategory(data.holidayCheckUnit);
+                    
+                    if (data.selectedClassification !== null)
+                        self.selectedClassification(data.selectedClassification)
+                    if (data.standardDate !== null)
+                        self.standardDate(data.standardDate)
+                    if (data.addHolidayValue !== null)
+                        self.addHolidayValue(data.addHolidayValue)
+                    if (data.monthDay !== null)
+                        self.monthDay(data.monthDay)
+                    if (data.hdDay !== null)
+                        self.startingDay(getText(('KMF001_292'),[data.hdDay]));
+                    // KMF001_292 {０}から７日間 : {０} = 起算曜日
+                    // 休日の設定情報.起算曜日がEmpty場合：KMF001_336を表示する       
+                    // self.startingDay( data.startDay == null ? getText( 'KMF001_336' ) : getText( 'KMF001_292', [data.startDay] ) );
+                    //＃KMF001_293　｛0｝：　休日の設定情報.計算設定画面名
+                    
+                  //  self.description(getText('KMF001_293', [data.description]));
+    
+                    //// Tab 2
+                    if (data.holidayValue !== null)
+                        self.holidayValue(data.holidayValue);
+                    if (data.nonStatutory !== null)
+                        self.nonStatutory(data.nonStatutory == 1 ? true : false);
+                    self.selectedCategory.valueHasMutated();
+                 }
                 
 
                 //// Tab 1
@@ -230,29 +258,6 @@ module nts.uk.at.view.kmf001.m {
                         self.is4weeksAndMonthDay(true);
                     }
                 });
-                if (data.selectedClassification !== null)
-                    self.selectedClassification(data.selectedClassification)
-                if (data.standardDate !== null)
-                    self.standardDate(data.standardDate)
-                if (data.addHolidayValue !== null)
-                    self.addHolidayValue(data.addHolidayValue)
-                if (data.monthDay !== null)
-                    self.monthDay(data.monthDay)
-                if (data.hdDay !== null)
-                    self.startingDay(nts.uk.text.replaceAll(getText('KMF001_292'), '{０}', data.hdDay));
-                // KMF001_292 {０}から７日間 : {０} = 起算曜日
-                // 休日の設定情報.起算曜日がEmpty場合：KMF001_336を表示する       
-                // self.startingDay( data.startDay == null ? getText( 'KMF001_336' ) : getText( 'KMF001_292', [data.startDay] ) );
-                //＃KMF001_293　｛0｝：　休日の設定情報.計算設定画面名
-                
-              //  self.description(getText('KMF001_293', [data.description]));
-
-                //// Tab 2
-                if (data.holidayValue !== null)
-                    self.holidayValue(data.holidayValue);
-                if (data.nonStatutory !== null)
-                    self.nonStatutory(data.nonStatutory == 1 ? true : false);
-                self.selectedCategory.valueHasMutated();
             }
         }
     }

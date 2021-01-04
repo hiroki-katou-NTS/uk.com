@@ -34,5 +34,5 @@ public class DailyConfirmOutput {
 	/**
 	 * 上司確認
 	 */
-	private Boolean bossConfirm;
+	private Integer bossConfirm;
 }

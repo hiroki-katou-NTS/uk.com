@@ -79,16 +79,16 @@ module nts.uk.pr.view.kmf001.f {
             inputOverAll: any;
             inputWorkAll: any;
             manageDeadline: KnockoutObservable<number> = ko.observable( 0 );
-            managementClassification: KnockoutObservable<number> = ko.observable( 0 );
+            managementClassification: KnockoutObservable<number> = ko.observable( 1 );
             
             deleteEnable: KnockoutObservable<boolean>;
-            
+            enableF2_18: KnockoutObservable<boolean>;
             constructor() {
                 let self = this;
                 self.compenManage = ko.observable(1);
                 self.compenPreApply = ko.observable(1);
                 self.compenTimeManage = ko.observable(1);
-                self.compenDeadlCheckMonth = ko.observable(1);
+                self.compenDeadlCheckMonth = ko.observable(0);
                 self.expirationDateCode = ko.observable(0);
                 self.timeUnitCode = ko.observable(0);
                 self.checkWorkTime = ko.observable(true);
@@ -157,6 +157,10 @@ module nts.uk.pr.view.kmf001.f {
 
                 self.enableDesignOver = ko.computed(function() {
                     return self.enableOverArea() && self.selectedOfOverTime() == UseDivision.NotUse;
+                });
+                
+                self.enableF2_18 =  ko.computed(function() {
+                    return self.compenTimeManage() == 1;
                 });
                 
                 self.checkWorkTime.subscribe(function(flag) {
@@ -490,6 +494,8 @@ module nts.uk.pr.view.kmf001.f {
             private loadToScreen(data: any) {
                 let self = this;
                 self.compenManage(data.isManaged);
+                self.managementClassification(data.linkingManagementATR);
+                self.manageDeadline(data.compensatoryAcquisitionUse.termManagement);
 
                 self.expirationDateCode(data.compensatoryAcquisitionUse.expirationTime);
                 self.compenPreApply(data.compensatoryAcquisitionUse.preemptionPermit);
@@ -536,7 +542,10 @@ module nts.uk.pr.view.kmf001.f {
             private saveData() {
                 let self = this;
                 let dfd = $.Deferred<void>();
-                
+                  if(self.managementClassification() == 1 && self.compenTimeManage() == 1 ){
+                   nts.uk.ui.dialog.alertError({ messageId: "Msg_1942", messageParams: [] });
+                      return;
+                    }
                 self.reCallValidate().done(function() {
                     if (!$('.check_error').ntsError('hasError')){
                         
@@ -631,37 +640,39 @@ module nts.uk.pr.view.kmf001.f {
                 var self = this;
                 return {
                     companyId: "",
-                    isManaged: self.compenManage(),
+                    isManaged: 0,
                     compensatoryAcquisitionUse: {
-                        expirationTime: self.expirationDateCode(),
-                        preemptionPermit: self.compenPreApply()
+                        expirationTime: 0,
+                        preemptionPermit: 0
                     },
                     compensatoryDigestiveTimeUnit: {
-                        isManageByTime: self.compenTimeManage(),
-                        digestiveUnit: self.timeUnitCode()
+                        isManageByTime: 0,
+                        digestiveUnit: 0
                     },
-                    compensatoryOccurrenceSetting: [
-                        {
-                            occurrenceType: OccurrenceDivision.OverTime,
-                            transferSetting: {
-                                certainTime: self.overAll(),
-                                useDivision: self.checkOverTime(),
-                                oneDayTime: self.overOneDay(),
-                                halfDayTime: self.overHalfDay(),
-                                transferDivision: self.selectedOfOverTime()
-                            }
+                    substituteHolidaySetting: {
+                        holidayWorkHourRequired: {
+                            timeSetting: {
+                                certainPeriodofTime: 0,
+                                designatedTime: {
+                                    halfDayTimeValue: 0,
+                                    oneDayTimeValue: 0
+                                },
+                                enumTimeDivision: 0
+                            },
+                            useAtr : true
                         },
-                        {
-                            occurrenceType: OccurrenceDivision.DayOffTime,
-                            transferSetting: {
-                                certainTime: self.workAll(),
-                                useDivision: self.checkWorkTime(),
-                                oneDayTime: self.workOneDay(),
-                                halfDayTime: self.workHalfDay(),
-                                transferDivision: self.selectedOfWorkTime()
-                            }
-                        }
-                    ]
+                      overtimeHourRequired :{
+                            timeSetting: {
+                                certainPeriodofTime: 0,
+                                designatedTime: {
+                                    halfDayTimeValue: 0,
+                                    oneDayTimeValue: 0
+                                },
+                                enumTimeDivision: 0
+                            },
+                            useAtr : true
+                          }  
+                    }
                 };
             }
 
@@ -681,8 +692,11 @@ module nts.uk.pr.view.kmf001.f {
                     compensatoryAcquisitionUse: {
                         expirationTime: self.isManageCompen() ? self.expirationDateCode() : data.compensatoryAcquisitionUse.expirationTime,
                         preemptionPermit: self.isManageCompen() ? self.compenPreApply() : data.compensatoryAcquisitionUse.preemptionPermit,
-                        deadlCheckMonth: self.isManageCompen() ? self.compenDeadlCheckMonth() : data.compensatoryAcquisitionUse.deadlCheckMonth
-                    },
+                        deadlCheckMonth: self.isManageCompen() ? self.compenDeadlCheckMonth() : data.compensatoryAcquisitionUse.deadlCheckMonth,       
+                        termManagement : self.manageDeadline ()                  
+                        
+                        },
+                    linkingManagementATR : self.managementClassification(),
                     compensatoryDigestiveTimeUnit: {
                         isManageByTime: self.isManageCompen() ? self.compenTimeManage() : data.compensatoryDigestiveTimeUnit.isManageByTime,
                         digestiveUnit: self.isManageTime() ? self.timeUnitCode() : data.compensatoryDigestiveTimeUnit.digestiveUnit

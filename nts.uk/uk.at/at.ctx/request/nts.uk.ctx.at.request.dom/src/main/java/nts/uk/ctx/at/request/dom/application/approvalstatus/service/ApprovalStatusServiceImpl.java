@@ -2192,11 +2192,13 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 				Optional<StatusConfirmMonthImport> opStatusConfirmMonthImport = recordWorkInfoAdapter.getConfirmStatusMonthly(
 						companyID, Arrays.asList(empPeriod.getEmpID()), yearMonth, closureId.value);
 				if(opStatusConfirmMonthImport.isPresent()) {
-					monthConfirm = true;
+					if(!CollectionUtil.isEmpty(opStatusConfirmMonthImport.get().getListConfirmStatus())) {
+						monthConfirm = opStatusConfirmMonthImport.get().getListConfirmStatus().get(0).isConfirmStatus();
+					}
 				}
 			}
 			// 月別確認を利用する
-			boolean monthApproval = false;
+			Integer monthApproval = null;
 			if(apprSttComfirmSet.isMonthlyConfirm()) {
 				// imported（ワークフロー）「承認ルート状況」を取得する
 				Request533Import request533Import = approvalStateAdapter.getAppRootStatusByEmpsMonth(Arrays.asList(new EmpPerformMonthParamAt(
@@ -2206,14 +2208,18 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 								paramPeriod.end(), 
 								empPeriod.getEmpID())));
 				if(!CollectionUtil.isEmpty(request533Import.getAppRootSttMonthImportLst())) {
-					if(request533Import.getAppRootSttMonthImportLst().get(0).getDailyConfirmAtr()==2) {
-						monthApproval = true;
-					}
+					monthApproval = request533Import.getAppRootSttMonthImportLst().get(0).getDailyConfirmAtr();
 				}
 			}
 			// アルゴリズム「承認状況取得日別確認状況」を実行する
 			List<DailyConfirmOutput> dailyConfirmOutputLst = this.createConfirmApprSttByDate(wkpID, empPeriod.getEmpID(), period, apprSttComfirmSet);
-			apprSttConfirmEmpLst.add(new ApprSttConfirmEmp(dailyConfirmOutputLst, employeeBasicInfoImport.getEmployeeCode(), employeeBasicInfoImport.getPName(), monthConfirm, monthApproval));
+			apprSttConfirmEmpLst.add(new ApprSttConfirmEmp(
+					dailyConfirmOutputLst, 
+					employeeBasicInfoImport.getEmployeeCode(), 
+					employeeBasicInfoImport.getPName(), 
+					monthConfirm, 
+					monthApproval,
+					employeeBasicInfoImport.getEmployeeId()));
 		}
 		return apprSttConfirmEmpLst.stream().sorted(Comparator.comparing(ApprSttConfirmEmp::getEmpCD)).collect(Collectors.toList());
 	}
@@ -2259,13 +2265,13 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 				dailyConfirm = confirm.get();
 			} else {
 				// 日別確認（リスト）に追加する
-				dailyConfirm = new DailyConfirmOutput(wkpId, sId, approval.getAppDate(), false, false);
+				dailyConfirm = new DailyConfirmOutput(wkpId, sId, approval.getAppDate(), false, null);
 				listDailyConfirm.add(dailyConfirm);
 			}
+			// 上司確認 ＝確認
+			dailyConfirm.setBossConfirm(approval.getApprovalStatus().value);
 			// 承認ルート状況.承認状況
 			if (ApprovalStatusForEmployeeImport.APPROVED.equals(approval.getApprovalStatus())) {
-				// 上司確認 ＝確認
-				dailyConfirm.setBossConfirm(true);
 				// 上司確認件数 ＝＋１
 				sumCount.bossConfirm++;
 			} else {
@@ -2294,7 +2300,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 				confirm.get().setPersonConfirm(true);
 			} else {
 				// 日別確認（リスト）に追加
-				DailyConfirmOutput newConfirm = new DailyConfirmOutput(wkpId, sId, date, true, false);
+				DailyConfirmOutput newConfirm = new DailyConfirmOutput(wkpId, sId, date, true, null);
 				listDailyConfirm.add(newConfirm);
 			}
 			// 本人確認件数 ＝＋１
@@ -2314,7 +2320,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		// 本人未確認件数 ＝日別確認(リスト)で上司確認＝未確認、本人確認＝未確認の件数
 		sumCount.personUnconfirm = (int) listDailyConfirm.stream()
 				.filter(x -> x.getBossConfirm()!=null && x.getPersonConfirm()!=null)
-				.filter(x -> !x.getBossConfirm() && !x.getPersonConfirm()).count();
+				.filter(x -> x.getBossConfirm()==0 && !x.getPersonConfirm()).count();
 	}
 
 	@Override
@@ -2326,7 +2332,8 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		// アルゴリズム「月別上長承認進捗状況を取得する」を実行する
 		Integer monthApproval = this.getMonthApprovalTopStatus(employeeID, period, apprSttComfirmSet, yearMonth, closureId, closureDate);
 		// アルゴリズム「月別承認の進捗過程を取得する」を実行する
-		ApprovalRootStateImport_New approvalRootStateMonth = this.getMonthApprovalStatus(employeeID, period, apprSttComfirmSet).orElse(null);
+		ApprovalRootStateImport_New approvalRootStateMonth = this.getMonthApprovalStatus(employeeID, period, yearMonth, closureId.value, 
+				closureDate, period.end(), apprSttComfirmSet).orElse(null);
 		// アルゴリズム「月別の承認者を取得する」を実行する
 		List<PhaseApproverStt> monthApprovalLst = this.getMonthApproval(apprSttComfirmSet, employeeID, period);
 		// アルゴリズム「日別本人確認と上長承認を取得する」を実行する
@@ -2355,7 +2362,9 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			Optional<StatusConfirmMonthImport> opStatusConfirmMonthImport = recordWorkInfoAdapter.getConfirmStatusMonthly(
 					companyID, Arrays.asList(employeeID), yearMonth, closureId.value);
 			if(opStatusConfirmMonthImport.isPresent()) {
-				return true;
+				if(!CollectionUtil.isEmpty(opStatusConfirmMonthImport.get().getListConfirmStatus())) {
+					return opStatusConfirmMonthImport.get().getListConfirmStatus().get(0).isConfirmStatus();
+				}
 			}
 		}
 		return false;
@@ -2382,11 +2391,13 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	@Override
-	public Optional<ApprovalRootStateImport_New> getMonthApprovalStatus(String employeeID, DatePeriod period, ApprSttComfirmSet apprSttComfirmSet) {
+	public Optional<ApprovalRootStateImport_New> getMonthApprovalStatus(String employeeID, DatePeriod period, YearMonth yearMonth, Integer closureID,
+			ClosureDate closureDate, GeneralDate baseDate, ApprSttComfirmSet apprSttComfirmSet) {
 		// 「月別実績の上長承認の状況を表示する」を判別する
 		if(apprSttComfirmSet.isMonthlyConfirm()) {
 			// 社員の月別実績の進捗過程を得る。　　　　　　　リクエストリストNo.673
-			return Optional.of(approvalStateAdapter.getAppRootInstanceMonthByEmpPeriod(employeeID, period));
+			return Optional.ofNullable(approvalStateAdapter.getAppRootInstanceMonthByEmpPeriod(employeeID, period, yearMonth, closureID,
+					closureDate, baseDate));
 		}
 		return Optional.empty();
 	}

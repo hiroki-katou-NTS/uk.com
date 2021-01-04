@@ -16,10 +16,10 @@ import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 public class TimeAnnualLeaveTimeDay {
 	
 	/* 一日の時間年休時間参照場所 */
-	private DayTimeAnnualLeave dayTimeAnnualLeave;
+	private DayTimeAnnualLeave timeOfDayReference;
 	
 	/* 全社一律の時間 : 労働契約時間 */
-	private Optional<LaborContractTime>  laborContractTime;
+	private Optional<LaborContractTime>  uniformTime;
 	
 	/* 契約時間丸め */
 	private Optional<ContractTimeRound> contractTimeRound;

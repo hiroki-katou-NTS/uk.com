@@ -5,12 +5,13 @@ table#table tr td {
 	min-width: 85px;
 }
 
-#textM6_5 {
-	margin-left: 45px;
-}
 .ntsMonthDays_Container {
 	top: 3px !important;
 }
 .classM4_3 {
 	vertical-align: super;
+}
+
+#numberEditor-YMD, #numberEditor1-MD, #numberEditor2-MD, #numberEditor-1week {
+	width: 75px;
 }

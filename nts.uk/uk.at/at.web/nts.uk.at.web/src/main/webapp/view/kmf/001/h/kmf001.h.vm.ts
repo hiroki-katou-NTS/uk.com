@@ -76,7 +76,7 @@ module nts.uk.pr.view.kmf001.h {
                         expirationDate: 0,
                         allowPrepaidLeave: 1,
                         manageDeadline: 0,
-                        linkingManagementATR : 0
+                        linkingManagementATR : 1
                         
                     }));
                 self.empSettingModel = ko.observable(

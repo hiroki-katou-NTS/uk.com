@@ -37,4 +37,6 @@ public interface TimeAnnualSettingSetMemento {
     void setMaxYearDayLeave(TimeAnnualMaxDay maxYearDayLeave);
 
     void setRoundProcessClassific(TimeAnnualRoundProcesCla timeAnnualRoundProcesCla);
+    
+    void setTimeAnnualLeaveTimeDay(TimeAnnualLeaveTimeDay timeAnnualLeaveTimeDay);
 }

@@ -14,4 +14,6 @@ public interface AppHolidayWorkRepository {
 	public void add(AppHolidayWork appHolidayWork);
 
 	public void update(AppHolidayWork appHolidayWork);
+
+	public void delete(String companyId, String applicationId);
 }

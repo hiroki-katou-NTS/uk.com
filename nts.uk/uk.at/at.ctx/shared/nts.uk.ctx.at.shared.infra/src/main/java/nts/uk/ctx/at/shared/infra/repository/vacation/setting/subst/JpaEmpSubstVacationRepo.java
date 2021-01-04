@@ -62,11 +62,11 @@ public class JpaEmpSubstVacationRepo extends JpaRepository implements EmpSubstVa
 				.find(new KsvstEmpSubstVacationPK(setting.getCompanyId(),
 						setting.getEmpContractTypeCode()), KsvstEmpSubstVacation.class);
 
-		KsvstEmpSubstVacation entity = optEntity.get();
+		//KsvstEmpSubstVacation entity = optEntity.get();
 
-		setting.saveToMemento(new JpaEmpSubstVacationSetMemento(entity));
+		setting.saveToMemento(new JpaEmpSubstVacationSetMemento(optEntity.get()));
 
-		this.commandProxy().update(entity);
+		this.commandProxy().update(optEntity.get());
 	}
 	
 	/*

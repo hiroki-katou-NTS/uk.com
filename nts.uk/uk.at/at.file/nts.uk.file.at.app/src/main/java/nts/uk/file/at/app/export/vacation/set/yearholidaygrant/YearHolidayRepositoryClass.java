@@ -63,7 +63,7 @@ public class YearHolidayRepositoryClass {
 		
 		CheckAnnualKMF003ExportDto checkDto= findByCom();
 		
-		if(CollectionUtil.isEmpty(listFindAll)) {
+		if(CollectionUtil.isEmpty(listFindAll) || checkDto == null) {
 			return  null;
 		}else{
 			listFindAll.stream().forEach(c->{

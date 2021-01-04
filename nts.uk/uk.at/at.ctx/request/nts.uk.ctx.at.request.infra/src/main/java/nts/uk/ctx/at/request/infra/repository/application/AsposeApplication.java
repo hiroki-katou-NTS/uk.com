@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.infra.repository.application;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -145,9 +147,9 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			AsposeAppOverTime.CalRange result = asposeAppOverTime.printAppOverTimeContent(worksheet, printContentOfApp);
 			int startReasonCommon = result.getStartReasonCommon();
 			int startReasonLabel = result.getStartReasonLabel();
-			reasonLabel = worksheet.getCells().get("B" + (26 - startReasonCommon));
-			remarkLabel = worksheet.getCells().get("B" + (26 - startReasonCommon + 11 - startReasonLabel));
-			reasonContent = worksheet.getCells().get("D" + (28 - startReasonCommon));
+			reasonLabel = worksheet.getCells().get("B" + (27 - startReasonCommon));
+			remarkLabel = worksheet.getCells().get("B" + (27 - startReasonCommon + 9 - startReasonLabel));
+			reasonContent = worksheet.getCells().get("D" + (27 - startReasonCommon));
 			printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
 			break;
 		case ABSENCE_APPLICATION:
@@ -174,10 +176,10 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
             printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
 			break;
 		case HOLIDAY_WORK_APPLICATION:
-			asposeAppHolidayWork.printAppHolidayWorkContent(worksheet, printContentOfApp);
-			reasonLabel = worksheet.getCells().get("B27");
-			remarkLabel = worksheet.getCells().get("B33");
-			reasonContent = worksheet.getCells().get("D27");
+			List<Integer> deleteRowsList = asposeAppHolidayWork.printAppHolidayWorkContent(worksheet, printContentOfApp);
+			reasonLabel = worksheet.getCells().get("B" + (27 - deleteRowsList.get(0)));
+			reasonContent = worksheet.getCells().get("D" + (27 - deleteRowsList.get(0)));
+			remarkLabel = worksheet.getCells().get("B" + (33 - deleteRowsList.get(0) - deleteRowsList.get(1)));
 			printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
 			break;
 		case STAMP_APPLICATION:

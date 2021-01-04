@@ -319,10 +319,10 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 				continue;
 			}
 			approvalPhaseState.getListApprovalFrame().forEach(frameState -> {
-//				if(frameState.getApprovalAtr()!=ApprovalBehaviorAtr.UNAPPROVED){
-//					return;
-//				}
-//				approverIDLst.addAll(frameState.getListApproverState().stream().map(x -> x.getApproverID()).collect(Collectors.toList()));
+				if(frameState.isApproved(approvalPhaseState.getApprovalForm())){
+					return;
+				}
+				approverIDLst.addAll(frameState.getLstApproverInfo().stream().map(x -> x.getApproverID()).collect(Collectors.toList()));
 			});
 		}
 		// アルゴリズム「指定した社員が指定した承認者リストの代行承認者かの判断」を実行する

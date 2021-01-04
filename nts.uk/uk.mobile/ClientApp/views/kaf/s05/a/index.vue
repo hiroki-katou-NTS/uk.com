@@ -8,8 +8,8 @@
             <div v-show="step == 'step_2'">
                 <kafS05Step2Component ref="step2"></kafS05Step2Component>
             </div> 
-            <div v-show="step == 'step_3'">
-                <kafS05Step3Component></kafS05Step3Component>
+            <div v-if="step == 'step_3'">
+                <kafS05Step3Component @backToStep1="backToStep1"></kafS05Step3Component>
             </div>   
         </div>    
     </div>

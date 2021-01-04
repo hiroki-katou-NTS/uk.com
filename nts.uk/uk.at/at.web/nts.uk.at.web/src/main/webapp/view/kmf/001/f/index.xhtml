@@ -99,7 +99,7 @@
 										optionsValue: 'value',
 										optionsText: 'localizedName',
 										value: compenPreApply,
-										enable: true }">
+										enable: isManageCompen }">
 							</span></td>
 						</tr>
 						
@@ -115,7 +115,7 @@
 										visibleItemsCount: 6,
 										optionsText: 'localizedName',
 										editable: false,
-										enable: true,
+										enable: isManageCompen,
 										columns: [
 											{ prop: 'localizedName', length: 10 },
 										]}"></div>
@@ -132,6 +132,7 @@
                                             { code: 1, name: '#{i18n.getText('KMF001_329')}' }],
                                     optionsValue: 'code',
                                     optionsText: 'name',
+                                    enable: isManageCompen,
                                     value: manageDeadline }" />
 							</td>
 						</tr>
@@ -143,13 +144,13 @@
 								data-bind="ntsSwitchButton: {
 												name: '#[KMF001_330]',
 												options: ko.observableArray([
-					                				{ code: 0, name: '#{i18n.getText('KMF001_331')}' },
-					                				{ code: 1, name: '#{i18n.getText('KMF001_332')}' }
+					                				{ code: 1, name: '#{i18n.getText('KMF001_331')}' },
+					                				{ code: 0, name: '#{i18n.getText('KMF001_332')}' }
 					            				]),
 												optionsValue: 'code',
 												optionsText: 'name',
 												value: managementClassification,
-												enable: true }"/>
+												enable: isManageCompen }"/>
 								<label>#{i18n.getText('KMF001_333')}</label>
 							</td>
 						</tr>
@@ -171,7 +172,7 @@
 										optionsValue: 'value',
 										optionsText: 'localizedName',
 										value: compenTimeManage,
-										enable: true }">
+										enable: isManageCompen }">
 							</span>
 								<div class="hr_width">
 									<hr />
@@ -200,7 +201,7 @@
 										value: timeUnitCode,
 										optionsText: 'localizedName',
 										editable: false,
-										enable: true,
+										enable: isManageTime,
 										columns: [
 											{ prop: 'localizedName', length: 4 },
 										]}"></div>
@@ -261,7 +262,7 @@
 							<td class="pad_left_30"><!-- <div tabindex="15"
 									data-bind="ntsCheckBox: { checked: checkOverTime, enable: isManageCompen}">#{i18n.getText('KMF001_84')}</div> -->
 									<div tabindex="15"
-									data-bind="ntsCheckBox: { checked: checkOverTime, enable: true}">#{i18n.getText('KMF001_84')}</div>
+									data-bind="ntsCheckBox: { checked: checkOverTime, enable: isManageCompen}">#{i18n.getText('KMF001_84')}</div>
 									</td>
 						</tr>
 						<tr>

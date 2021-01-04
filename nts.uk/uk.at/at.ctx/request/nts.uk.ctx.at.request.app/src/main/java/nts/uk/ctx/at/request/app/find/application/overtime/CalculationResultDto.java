@@ -10,10 +10,6 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CalculationResultDto {
-	// 計算フラグ
-	public Integer flag;
-	// 残業時間帯修正フラグ
-	public Integer overTimeZoneFlag;
 	// 事前申請・実績の超過状態
 	public OverStateOutputDto overStateOutput;
 	// 申請時間
@@ -23,8 +19,6 @@ public class CalculationResultDto {
 		
 		if (calculationResult == null) return null;
 		return new CalculationResultDto(
-				calculationResult.getFlag(),
-				calculationResult.getOverTimeZoneFlag(),
 				calculationResult.getOverStateOutput() == null ? null : OverStateOutputDto.fromDomain(calculationResult.getOverStateOutput()),
 				calculationResult.getApplicationTimes()
 					.stream()
