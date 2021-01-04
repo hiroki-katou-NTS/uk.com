@@ -3,16 +3,14 @@ package nts.uk.ctx.at.request.app.command.application.timeleaveapplication;
 import lombok.Data;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.timeleaveapplication.*;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplication;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplicationDetail;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
-import nts.uk.ctx.at.request.dom.application.appabsence.apptimedigest.TimeDigestApplication;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Data
@@ -21,72 +19,79 @@ public class TimeLeaveApplicationCommand {
     //A3_2
     private int timeDigestAppType;
 
-    // A5_2
-    private Integer specialHdFrameNo;
+    private List<TimeLeaveAppDetailCommand> details;
 
-    private List<TimeDigestApplicationCommand> digestApplications;
+    private List<TimeDigestApplicationCommand> digestApps;
 
     public static TimeLeaveApplication toDomain(TimeLeaveApplicationCommand command, Application app) {
         return new TimeLeaveApplication(
             app,
-            command.setDetail(command.digestApplications)
+            command.setDetail(command.details, command.digestApps)
         );
     }
 
-    private List<TimeLeaveApplicationDetail> setDetail(List<TimeDigestApplicationCommand> commands) {
+    private List<TimeLeaveApplicationDetail> setDetail(List<TimeLeaveAppDetailCommand> commands, List<TimeDigestApplicationCommand> digestApps) {
 
         List<TimeLeaveApplicationDetail> result = new ArrayList<>();
 
         commands.forEach(x -> {
-            if (x.getAppTimeType() != AppTimeType.PRIVATE.value && x.getAppTimeType()== AppTimeType.UNION.value ){
+            if (x.getAppTimeType() != AppTimeType.PRIVATE.value && x.getAppTimeType() == AppTimeType.UNION.value) {
+                TimeDigestApplicationCommand timeDigestAppCommand = digestApps.stream().filter(i -> i.getAppTimeType() == x.getAppTimeType()).findFirst().orElse(null);
                 result.add(new TimeLeaveApplicationDetail(
                     EnumAdaptor.valueOf(x.getAppTimeType(), AppTimeType.class),
-                    Arrays.asList(new TimeZoneWithWorkNo(x.getWorkNo(),x.getStartTime(),x.getEndTime())),
-                    setTimeDigest(this.timeDigestAppType,this.specialHdFrameNo,x.getApplicationTime())
+                    Arrays.asList(new TimeZoneWithWorkNo(x.getWorkNo(), x.getStartTime(), x.getEndTime())),
+                    timeDigestAppCommand.getTimeDigestApplication().toDomain()
                 ));
             }
         });
 
-        List<TimeDigestApplicationCommand> typePrivate = commands.stream().filter(x -> x.getAppTimeType() == AppTimeType.PRIVATE.value).collect(Collectors.toList());
+        List<TimeLeaveAppDetailCommand> typePrivate = commands.stream().filter(x -> x.getAppTimeType() == AppTimeType.PRIVATE.value).collect(Collectors.toList());
         if (typePrivate.size() > 0) {
-            List<TimeZoneWithWorkNo> timeZoneWithWorkNoLst = typePrivate.stream().map(x -> new TimeZoneWithWorkNo(x.getWorkNo(),x.getStartTime(),x.getEndTime())).collect(Collectors.toList());
+            TimeDigestApplicationCommand timeDigestAppCommand = digestApps.stream().filter(i -> i.getAppTimeType() == AppTimeType.PRIVATE.value).findFirst().orElse(null);
+            List<TimeZoneWithWorkNo> timeZoneWithWorkNoLst = typePrivate.stream().map(x -> new TimeZoneWithWorkNo(x.getWorkNo(), x.getStartTime(), x.getEndTime())).collect(Collectors.toList());
             result.add(new TimeLeaveApplicationDetail(
                 EnumAdaptor.valueOf(typePrivate.get(0).getAppTimeType(), AppTimeType.class),
                 timeZoneWithWorkNoLst,
-                setTimeDigest(this.timeDigestAppType,this.specialHdFrameNo,typePrivate.get(0).getApplicationTime())
+                timeDigestAppCommand.getTimeDigestApplication().toDomain()
             ));
         }
 
-        List<TimeDigestApplicationCommand> typeUnion = commands.stream().filter(x -> x.getAppTimeType() == AppTimeType.UNION.value).collect(Collectors.toList());
+        List<TimeLeaveAppDetailCommand> typeUnion = commands.stream().filter(x -> x.getAppTimeType() == AppTimeType.UNION.value).collect(Collectors.toList());
         if (typeUnion.size() > 0) {
-            List<TimeZoneWithWorkNo> timeZoneWithWorkNoLst = typePrivate.stream().map(x -> new TimeZoneWithWorkNo(x.getWorkNo(),x.getStartTime(),x.getEndTime())).collect(Collectors.toList());
+            TimeDigestApplicationCommand timeDigestAppCommand = digestApps.stream().filter(i -> i.getAppTimeType() == AppTimeType.PRIVATE.value).findFirst().orElse(null);
+            List<TimeZoneWithWorkNo> timeZoneWithWorkNoLst = typeUnion.stream().map(x -> new TimeZoneWithWorkNo(x.getWorkNo(), x.getStartTime(), x.getEndTime())).collect(Collectors.toList());
             result.add(new TimeLeaveApplicationDetail(
                 EnumAdaptor.valueOf(typeUnion.get(0).getAppTimeType(), AppTimeType.class),
                 timeZoneWithWorkNoLst,
-                setTimeDigest(this.timeDigestAppType,this.specialHdFrameNo,typeUnion.get(0).getApplicationTime())
+                timeDigestAppCommand.getTimeDigestApplication().toDomain()
             ));
         }
         return result;
     }
 
-    public static TimeDigestApplication setTimeDigest(int timeDigestAppType, Integer specialHdFrameNo, int applicationTime) {
-        TimeDigestApplication result = new TimeDigestApplication();
-        if (timeDigestAppType == TimeDigestAppType.TIME_OFF.value) {
-            result.setTimeOff(new AttendanceTime(applicationTime));
-        } else if (timeDigestAppType == TimeDigestAppType.TIME_ANNUAL_LEAVE.value) {
-            result.setTimeAnualLeave(new AttendanceTime(applicationTime));
-        } else if (timeDigestAppType == TimeDigestAppType.CHILD_NURSING_TIME.value) {
-            result.setChildTime(new AttendanceTime(applicationTime));
-        } else if (timeDigestAppType == TimeDigestAppType.NURSING_TIME.value) {
-            result.setNursingTime(new AttendanceTime(applicationTime));
-        } else if (timeDigestAppType == TimeDigestAppType.SIXTY_H_OVERTIME.value) {
-            result.setOvertime60H(new AttendanceTime(applicationTime));
-        } else if (timeDigestAppType == TimeDigestAppType.TIME_SPECIAL_VACATION.value) {
-            result.setTimeSpecialVacation(new AttendanceTime(applicationTime));
-            result.setSpecialVacationFrameNO(Optional.of(specialHdFrameNo));
-        } else {
-            //TODO
-        }
-        return result;
-    }
+//    public static TimeDigestApplication setTimeDigest(int timeDigestAppType, Integer specialHdFrameNo, TimeDigestApplicationCommand digestApp) {
+//        TimeDigestApplication result = new TimeDigestApplication();
+//        if (timeDigestAppType == TimeDigestAppType.USE_COMBINATION.value) {
+//            result.setOvertime60H(new AttendanceTime(digestApp.getTimeDigestApplication().getOvertime60H()));
+//            result.setNursingTime(new AttendanceTime(applicationTime));
+//            result.setChildTime(new AttendanceTime(applicationTime));
+//            result.setTimeOff(new AttendanceTime(applicationTime));
+//            result.setTimeSpecialVacation(new AttendanceTime(applicationTime));
+//            result.setTimeAnualLeave(new AttendanceTime(applicationTime));
+//        } else if (timeDigestAppType == TimeDigestAppType.TIME_OFF.value) {
+//            result.setTimeAnualLeave(new AttendanceTime(applicationTime));
+//        } else if (timeDigestAppType == TimeDigestAppType.TIME_ANNUAL_LEAVE.value) {
+//            result.setTimeAnualLeave(new AttendanceTime(applicationTime));
+//        } else if (timeDigestAppType == TimeDigestAppType.CHILD_NURSING_TIME.value) {
+//            result.setChildTime(new AttendanceTime(applicationTime));
+//        } else if (timeDigestAppType == TimeDigestAppType.NURSING_TIME.value) {
+//            result.setNursingTime(new AttendanceTime(applicationTime));
+//        } else if (timeDigestAppType == TimeDigestAppType.SIXTY_H_OVERTIME.value) {
+//            result.setOvertime60H(new AttendanceTime(applicationTime));
+//        } else if (timeDigestAppType == TimeDigestAppType.TIME_SPECIAL_VACATION.value) {
+//            result.setTimeSpecialVacation(new AttendanceTime(applicationTime));
+//            result.setSpecialVacationFrameNO(Optional.of(specialHdFrameNo));
+//        }
+//        return result;
+//    }
 }

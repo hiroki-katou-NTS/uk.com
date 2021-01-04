@@ -1,13 +1,16 @@
 package nts.uk.ctx.at.request.ws.application.timeleaveapplication;
 
-
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.timeleaveapplication.RegisterTimeLeaveApplicationCommand;
 import nts.uk.ctx.at.request.app.command.application.timeleaveapplication.RegisterTimeLeaveApplicationCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.timeleaveapplication.UpdateTimeLeaveApplicationCommand;
+import nts.uk.ctx.at.request.app.command.application.timeleaveapplication.UpdateTimeLeaveApplicationCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.ChangeAppDateParams;
 import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.RequestParam;
+import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.StartProcessTimeLeaveParam;
 import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.TimeLeaveApplicationFinder;
+import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.StartProcessTimeLeaveAppDto;
 import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.TimeLeaveAppDisplayInfoDto;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
@@ -26,7 +29,10 @@ public class TimeLeaveApplicationWebservice extends WebService {
     private TimeLeaveApplicationFinder finder;
 
     @Inject
-    private RegisterTimeLeaveApplicationCommandHandler commandHandler;
+    private RegisterTimeLeaveApplicationCommandHandler register;
+
+    @Inject
+    private UpdateTimeLeaveApplicationCommandHandler update;
 
 
     @POST
@@ -55,8 +61,26 @@ public class TimeLeaveApplicationWebservice extends WebService {
      */
     @POST
     @Path("register")
-    public ProcessResult register(RegisterTimeLeaveApplicationCommand param) {
-        return this.commandHandler.handle(param);
+    public ProcessResult register(RegisterTimeLeaveApplicationCommand command) {
+        return this.register.handle(command);
+    }
+
+    /**
+     * 時間休暇申請を更新する
+     */
+    @POST
+    @Path("update")
+    public ProcessResult update(UpdateTimeLeaveApplicationCommand command) {
+        return this.update.handle(command);
+    }
+
+    /**
+     * 起動する
+     */
+    @POST
+    @Path("startProcess")
+    public StartProcessTimeLeaveAppDto startProcessTimeLeaveApp(StartProcessTimeLeaveParam param) {
+        return this.finder.initUpdateTimeLeaveApp(param);
     }
 
 }
