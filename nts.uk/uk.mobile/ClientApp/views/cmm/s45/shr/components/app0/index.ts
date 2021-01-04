@@ -123,13 +123,13 @@ export class CmmS45ShrComponentsApp0Component extends Vue {
         }
     ];
 
-    // !「残業申請の表示情報．基準日に関係しない情報．残業申請設定．申請詳細設定．時刻計算利用区分」＝する
+    // 「残業申請の表示情報．基準日に関係しない情報．残業申請設定．申請詳細設定．時刻計算利用区分」＝する
     public get c3() {
         const self = this;
 
         let c3 = _.get(self.dataOutput, 'displayInfoOverTime.infoNoBaseDate.overTimeAppSet.applicationDetailSetting.timeCalUse');
 
-        return c3 != NotUseAtr.USE;
+        return c3 == NotUseAtr.USE;
     }
     // ※表3 = ○　OR　※表3-1-1 = ○
     public get c3_1() {
