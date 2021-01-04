@@ -40,6 +40,7 @@ export class KafS05Step2Component extends Vue {
             text: this.$i18n('KAFS05_54')
         }]
     } as Reason;
+    
 
     public reason2: Reason = {
         title: '',
@@ -56,7 +57,8 @@ export class KafS05Step2Component extends Vue {
         const self = this;
     }
     public mounted() {
-
+        const self = this;
+        console.log('mounted');
     }
 
     public bindOverTime() {
@@ -507,38 +509,37 @@ export class KafS05Step2Component extends Vue {
             if (findResult1) {
                 reason1.reason = findResult1.reason;
                 let code = findResult1.reasonCode;
-                let isFindCode = _.findLast(reason1.dropdownList, (item: any) => item.code == code);
-                if (isFindCode) {
-                    reason1.selectedValue = isFindCode.code;
-                } else {
+                if (code) {
                     reason1.dropdownList.shift();
                     reason1.dropdownList.unshift({
                         code,
-                        text: self.$i18n('KAFS05_55')
+                        text: code + self.SPACE_STRING + self.$i18n('KAFS05_55')
                     });
                     reason1.dropdownList.unshift({
                         code: null,
-                        text: self.$i18n('KAFS05_54')
+                        text: self.$i18n('KAFS05_54'),
                     });
+                    reason1.selectedValue = code;
                 }
             }
             if (findResult2) {
                 reason2.reason = findResult2.reason;
                 let code = findResult2.reasonCode;
                 let isFindCode = _.findLast(reason2.dropdownList, (item: any) => item.code == code);
-                if (isFindCode) {
+                if (code) {
                     reason2.selectedValue = isFindCode.code;
-                } else {
                     reason2.dropdownList.shift();
                     reason2.dropdownList.unshift({
                         code,
-                        text: self.$i18n('KAFS05_55')
+                        text: code + self.SPACE_STRING + self.$i18n('KAFS05_55')
                     });
                     reason2.dropdownList.unshift({
                         code: null,
                         text: self.$i18n('KAFS05_54')
                     });
+                    reason2.selectedValue = code;
                 }
+                
             }
         }
 
@@ -559,7 +560,8 @@ export class KafS05Step2Component extends Vue {
         reason.dropdownList = [] as Array<Object>;
         reason.dropdownList.push({
             code: null,
-            text: self.$i18n('KAFS05_54')
+            text: self.$i18n('KAFS05_54'),
+            defaultValue: false
         });
         if (!_.isNil(divergenceReasonInputMethod)) {
             _.forEach(divergenceReasonInputMethod.reasons, (item: DivergenceReasonSelect) => {
@@ -567,7 +569,8 @@ export class KafS05Step2Component extends Vue {
                 let text = item.divergenceReasonCode + ' ' + item.reason;
                 reason.dropdownList.push({
                     code,
-                    text
+                    text,
+                    defaultValue: false
                 });
 
             });

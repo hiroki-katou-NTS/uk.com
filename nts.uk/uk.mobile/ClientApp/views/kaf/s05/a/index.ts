@@ -618,6 +618,7 @@ export class KafS05Component extends KafS00ShrComponent {
                     step2.loadAllData();
                     vm.$nextTick(() => {
                         vm.$mask('hide');
+                        step2.$forceUpdate();
                     });
                 })
                 .catch((res: any) => {
