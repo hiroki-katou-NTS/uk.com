@@ -11,6 +11,7 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -43,6 +44,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
+import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSetRepository;
@@ -105,6 +107,9 @@ public class AppContentServiceImpl implements AppContentService {
 	
 	@Inject
 	private AppHolidayWorkRepository appHolidayWorkRepository;
+	
+	@Inject
+	private AppOverTimeRepository appOverTimeRepo;
 
 	@Override
 	public String getArrivedLateLeaveEarlyContent(AppReason appReason, DisplayAtr appReasonDisAtr, ScreenAtr screenAtr, List<ArrivedLateLeaveEarlyItemContent> itemContentLst,
@@ -457,11 +462,15 @@ public class AppContentServiceImpl implements AppContentService {
 				listOfApp.setAppContent("-1");
 				break;
 			}
+		} else { // アルゴリズム「各申請データを作成（スマホ）」を実行する
+			Optional<ApplicationTypeDisplay> opAppDisplay = this.getAppDisplayByMobile(application, listOfApp);
+			listOfApp.setOpAppTypeDisplay(opAppDisplay);
 		}
 		// 承認フェーズList　＝　Input．Map＜ルートインスタンスID、承認フェーズList＞を取得(ApprovalPhaseList= Input．Map＜get RootInstanceID, ApprovalPhaseList>)
 		listOfApp.setOpApprovalPhaseLst(Optional.of(mapApproval.get(application.getAppID())));
 		// 申請一覧．承認状況照会　＝　承認状況照会内容(AppList.ApproveStatusRefer =ApproveStatusReferContents )
 		listOfApp.setOpApprovalStatusInquiry(Optional.of(this.getApprovalStatusInquiryContent(listOfApp.getOpApprovalPhaseLst().get())));
+		
 		// アルゴリズム「反映状態を取得する」を実行する(Thực hiện thuật toán [lấy trạng thái phản ánh])
 		ReflectedState reflectedState = application.getAppReflectedState();
 		String reflectedStateString = reflectedState.name;
@@ -920,6 +929,31 @@ public class AppContentServiceImpl implements AppContentService {
 			}
 		}
 		return overtimeHolidayWorkActual;
+	}
+
+	@Override
+	public Optional<ApplicationTypeDisplay> getAppDisplayByMobile(Application application, ListOfApplication listOfApplication) {
+		Optional<ApplicationTypeDisplay> result = Optional.empty();	
+		String companyId = AppContexts.user().companyId();
+		// 申請.申請種類
+		if (application.getAppType() == ApplicationType.OVER_TIME_APPLICATION) { // 残業申請の場合
+			// ドメインモデル「残業申請」を取得する
+			Optional<AppOverTime> apOptional = appOverTimeRepo.find(companyId, application.getAppID());
+			if (apOptional.isPresent()) {
+				// 申請種類表示＝残業申請.残業区分
+				 return result = Optional.of(EnumAdaptor.valueOf(apOptional.get().getOverTimeClf().value, ApplicationTypeDisplay.class));				
+			}
+		} else if (application.getAppType() == ApplicationType.STAMP_APPLICATION) {
+			// 申請.打刻申請モードをチェック
+			if (application.getOpStampRequestMode().isPresent()) {
+				if (application.getOpStampRequestMode().get() == StampRequestMode.STAMP_ADDITIONAL) {
+					return result = Optional.of(ApplicationTypeDisplay.STAMP_ADDITIONAL);
+				} else {
+					return result = Optional.of(ApplicationTypeDisplay.STAMP_ONLINE_RECORD);
+				}
+			}
+		}
+		return result;
 	}
 
 }
