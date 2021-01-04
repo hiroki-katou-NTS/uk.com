@@ -4409,17 +4409,17 @@ var nts;
                         var systemName = __viewContext.env.systemName;
                         var kiban = new KibanViewModel(dialogOptions);
                         var isEmpty = ko.computed(function () { return !kiban.errorDialogViewModel.occurs(); });
-                        // update title of name
-                        kiban.systemName(systemName);
-                        // update mode of view
-                        kiban.mode(!uk.util.isInFrame() ? 'view' : 'modal');
-                        // update header 
-                        kiban.header(!__viewContext.noHeader);
-                        // update notification
-                        kiban.notification(__viewContext.program.operationSetting.message);
                         // mock ready function
+                        _.extend(nts.uk.ui, { _viewModel: { kiban: kiban, content: content, errors: { isEmpty: isEmpty } } });
                         $(function () {
-                            _.extend(nts.uk.ui, { _viewModel: { kiban: kiban, content: content, errors: { isEmpty: isEmpty } } });
+                            // update title of name
+                            kiban.systemName(systemName);
+                            // update mode of view
+                            kiban.mode(!uk.util.isInFrame() ? 'view' : 'modal');
+                            // update header 
+                            kiban.header(!__viewContext.noHeader);
+                            // update notification
+                            kiban.notification(__viewContext.program.operationSetting.message);
                             ui.viewModelBuilt.fire(ui._viewModel);
                             // bind viewmodel to document body
                             ko.applyBindings(ui._viewModel, document.body);
@@ -37086,25 +37086,27 @@ function bean(dialogOption) {
                 if ($created && _.isFunction($created)) {
                     $created.apply($viewModel, [$params]);
                 }
-                // hook to mounted function
-                $viewModel.$nextTick(function () {
-                    var $mounted = $viewModel['mounted'];
-                    var kvm = nts.uk.ui._viewModel.kiban;
-                    _.extend($viewModel, { $el: document.querySelector('#master-wrapper') });
-                    if (kvm) {
-                        ko.computed({
-                            read: function () {
-                                $viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
-                            },
-                            owner: $viewModel,
-                            disposeWhenNodeIsRemoved: $viewModel.$el
-                        });
-                    }
-                    if ($mounted && _.isFunction($mounted)) {
-                        $mounted.apply($viewModel, []);
-                    }
-                });
                 __viewContext.bind($viewModel, dialogOption);
+                $(function () {
+                    // hook to mounted function
+                    $viewModel.$nextTick(function () {
+                        var $mounted = $viewModel['mounted'];
+                        var kvm = nts.uk.ui._viewModel.kiban;
+                        _.extend($viewModel, { $el: document.querySelector('#master-wrapper') });
+                        if (kvm) {
+                            ko.computed({
+                                read: function () {
+                                    $viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
+                                },
+                                owner: $viewModel,
+                                disposeWhenNodeIsRemoved: $viewModel.$el
+                            });
+                        }
+                        if ($mounted && _.isFunction($mounted)) {
+                            $mounted.apply($viewModel, []);
+                        }
+                    });
+                });
             });
         });
     };
