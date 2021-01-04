@@ -15,6 +15,7 @@ module nts.uk.at.kal011.a {
         closureEndDate: number;
         alarmPatterns: KnockoutObservableArray<AlarmPattern> = ko.observableArray([]);
         alarmPatternCode: KnockoutObservable<string> = ko.observable(null);
+        alarmPatternName: string;
         conditions: KnockoutObservableArray<CheckCondition> = ko.observableArray([]);
 
         isCheckAll: KnockoutObservable<boolean> = ko.observable(false);
@@ -56,6 +57,11 @@ module nts.uk.at.kal011.a {
                 vm.alarmPatternCode.subscribe((code) => {
                     if (!code) return;
                     vm.$blockui("invisible");
+
+                    // get alarmPatternName
+                    let pattern = _.find(vm.alarmPatterns(), (item: AlarmPattern) => item.code == code);
+                    vm.alarmPatternName = pattern?.name;
+
                     vm.getCheckCondition().done(() => {
                         // reset check all
                         vm.isCheckAll_Temp = false;
@@ -119,7 +125,6 @@ module nts.uk.at.kal011.a {
                 closureEndDate: moment.utc(vm.closureEndDate).toISOString()
             };
             vm.$ajax(API.GET_CHECK_CONDITION, param).done((conditions: Array<ICheckCondition>) => {
-                console.log(conditions)
                 let conds: Array<CheckCondition> = [];
                 if (conditions) {
                     let index = 1;
@@ -202,10 +207,6 @@ module nts.uk.at.kal011.a {
                                 endDate: condition.dateRange().endDate.toISOString()
                             }
                         case PeriodType.PERIOD_YM:
-                            // let start = condition.dateRangeYm().startDate.toString();
-                            // let startDate = new Date(Number(start.substr(0, 4)), Number(start.substr(4, 6)) - 1, 1);
-                            // let end = condition.dateRangeYm().endDate.toString();
-                            // let endDate = new Date(Number(end.substr(0, 4)), Number(end.substr(4, 6)), 0);
                             return {
                                 category: condition.category,
                                 startYm: condition.dateRangeYm().startDate,
@@ -233,17 +234,15 @@ module nts.uk.at.kal011.a {
             })
         }
 
-        /*
-         * This function is responsible to open Kal011B
-         *
-         * @return void
-         * */
         openKal011BMOdal() {
             const vm = this;
+            vm.$blockui("invisible");
             vm.$window.storage('KAL011DModalData').done((data) => {
                 if (!data.isClose) {
                     let dataStored = { 
-                        processId: data.processId 
+                        processId: data.processId,
+                        alarmPatternCode: vm.alarmPatternCode(),
+                        alarmPatternName: vm.alarmPatternName
                     }
                     vm.$window.storage('KAL011BModalData', dataStored).done(() => {
                         vm.$window.modal('/view/kal/011/b/index.xhtml')

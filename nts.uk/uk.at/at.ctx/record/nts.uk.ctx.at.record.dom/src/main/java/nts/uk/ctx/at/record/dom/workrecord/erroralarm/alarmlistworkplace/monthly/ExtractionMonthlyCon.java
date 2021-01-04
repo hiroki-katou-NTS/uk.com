@@ -2,11 +2,13 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthl
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.ToString;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.enums.CheckMonthlyItemsType;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.enums.FixedCheckMonthlyItemName;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.primitivevalue.AverageNumberDays;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.primitivevalue.AverageNumberTimes;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.primitivevalue.AverageRatio;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.primitivevalue.AverageTime;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.NameAlarmExtractionCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
 import nts.uk.ctx.at.shared.dom.workrecord.alarm.attendanceitemconditions.CheckConditions;
@@ -18,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.workrecord.alarm.attendanceitemconditions.CheckC
  */
 @Getter
 @AllArgsConstructor
-public class ExtractionMonthlyCon extends AggregateRoot {
+public class ExtractionMonthlyCon<V> extends AggregateRoot {
     /**
      * 月次抽出条件ID
      */
@@ -104,5 +106,28 @@ public class ExtractionMonthlyCon extends AggregateRoot {
                 AverageValueItem.create(checkTarget, averageNumberOfDays, averageNumberOfTimes, averageTime, averageRatio),
                 new NameAlarmExtractionCondition(monExtracConName),
                 new DisplayMessage(messageDisp));
+    }
+
+    public boolean checkTarget(Double target) {
+        return this.getCheckConditions().check(target, x -> getVValue((V) x));
+    }
+
+    private Double getVValue(V target) {
+        switch (this.checkMonthlyItemsType) {
+            case AVERAGE_TIME:
+            case TIME_FREEDOM:
+                return ((AverageTime) target).v().doubleValue();
+            case AVERAGE_NUMBER_DAY:
+            case AVERAGE_DAY_FREE:
+                return ((AverageNumberDays) target).v().doubleValue();
+            case AVERAGE_NUMBER_TIME:
+            case AVERAGE_TIME_FREE:
+                return Double.valueOf(((AverageNumberTimes) target).v());
+            case AVERAGE_RATIO:
+            case AVERAGE_RATIO_FREE:
+                return Double.valueOf(((AverageRatio) target).v());
+            default:
+                throw new RuntimeException("Invalid チェック項目: " + this.checkMonthlyItemsType);
+        }
     }
 }

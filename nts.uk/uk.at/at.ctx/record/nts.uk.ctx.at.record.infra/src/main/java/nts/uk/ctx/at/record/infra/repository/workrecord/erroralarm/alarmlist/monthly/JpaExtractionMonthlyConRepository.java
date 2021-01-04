@@ -26,34 +26,24 @@ import java.util.stream.Collectors;
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class JpaExtractionMonthlyConRepository extends JpaRepository implements ExtractionMonthlyConRepository {
 
-    private static final String SELECT;
-
+    private static final String SELECT = "SELECT a FROM KrcmtWkpMonExtracCon a ";
     private static final String FIND_BY_IDS_AND_USEATR;
-
     private static final String GET_BY_IDS;
 
-    private static final String SELECT_COMPARE_SINGLE =
-        " SELECT a FROM KrcstErAlCompareSingle a " +
-            " JOIN KrcmtWkpMonExtracCon b ON a.krcstEralCompareSinglePK.conditionGroupId = b.errorAlarmCheckID " +
-            " WHERE a.krcstEralCompareSinglePK.atdItemConNo = 0 AND a.conditionType = 0 ";
+    private static final String SELECT_COMPARE_SINGLE = " SELECT a FROM KrcstErAlCompareSingle a " +
+            " JOIN KrcmtWkpMonExtracCon b ON a.krcstEralCompareSinglePK.conditionGroupId = b.errorAlarmCheckID ";
+    private static final String SELECT_COMPARE_SINGLE_BY_ID;
 
-    private static final String SELECT_COMPARE_RANGE =
-        " SELECT a FROM KrcstErAlCompareRange a " +
-            " JOIN KrcmtWkpMonExtracCon b ON a.krcstEralCompareRangePK.conditionGroupId = b.errorAlarmCheckID " +
-            " WHERE a.krcstEralCompareRangePK.atdItemConNo = 0 ";
+    private static final String SELECT_COMPARE_RANGE = " SELECT a FROM KrcstErAlCompareRange a " +
+            " JOIN KrcmtWkpMonExtracCon b ON a.krcstEralCompareRangePK.conditionGroupId = b.errorAlarmCheckID ";
+    private static final String SELECT_COMPARE_RANGE_BY_ID;
 
-    private static final String SELECT_SINGLE_FIXED =
-        " SELECT a FROM KrcstErAlSingleFixed a " +
-            " JOIN KrcmtWkpMonExtracCon b ON a.krcstEralSingleFixedPK.conditionGroupId = b.errorAlarmCheckID " +
-            " WHERE a.krcstEralSingleFixedPK.atdItemConNo = 0 ";
-
+    private static final String SELECT_SINGLE_FIXED = " SELECT a FROM KrcstErAlSingleFixed a " +
+            " JOIN KrcmtWkpMonExtracCon b ON a.krcstEralSingleFixedPK.conditionGroupId = b.errorAlarmCheckID ";
+    private static final String SELECT_SINGLE_FIXED_BY_ID;
 
     static {
         StringBuilder builderString = new StringBuilder();
-        builderString.append(" SELECT a FROM KrcmtWkpMonExtracCon a ");
-        SELECT = builderString.toString();
-
-        builderString = new StringBuilder();
         builderString.append(SELECT);
         builderString.append(" WHERE a.errorAlarmWorkplaceId in :ids AND a.useAtr = :useAtr ");
         FIND_BY_IDS_AND_USEATR = builderString.toString();
@@ -63,36 +53,43 @@ public class JpaExtractionMonthlyConRepository extends JpaRepository implements 
         builderString.append(" WHERE a.errorAlarmWorkplaceId in :ids ");
         GET_BY_IDS = builderString.toString();
 
+        builderString = new StringBuilder();
+        builderString.append(SELECT_COMPARE_SINGLE);
+        builderString.append(" WHERE a.krcstEralCompareSinglePK.atdItemConNo = 0 AND a.conditionType = 0 ");
+        builderString.append(" AND b.errorAlarmWorkplaceId IN :ids ");
+        SELECT_COMPARE_SINGLE_BY_ID = builderString.toString();
+
+        builderString = new StringBuilder();
+        builderString.append(SELECT_COMPARE_RANGE);
+        builderString.append(" WHERE a.krcstEralCompareRangePK.atdItemConNo = 0 ");
+        builderString.append(" AND b.errorAlarmWorkplaceId IN :ids ");
+        SELECT_COMPARE_RANGE_BY_ID = builderString.toString();
+
+        builderString = new StringBuilder();
+        builderString.append(SELECT_SINGLE_FIXED);
+        builderString.append(" WHERE a.krcstEralSingleFixedPK.atdItemConNo = 0 ");
+        builderString.append(" AND b.errorAlarmWorkplaceId IN :ids ");
+        SELECT_SINGLE_FIXED_BY_ID = builderString.toString();
     }
 
     @Override
     public List<ExtractionMonthlyCon> getBy(List<String> ids, boolean useAtr) {
         if (CollectionUtil.isEmpty(ids)) return new ArrayList<>();
 
-        Optional<KrcstErAlCompareSingle> krcstErAlCompareSingle = this.queryProxy().query(SELECT_COMPARE_SINGLE, KrcstErAlCompareSingle.class).getSingle();
-        Optional<KrcstErAlCompareRange> krcstErAlCompareRange = this.queryProxy().query(SELECT_COMPARE_RANGE, KrcstErAlCompareRange.class).getSingle();
-        Optional<KrcstErAlSingleFixed> krcstErAlSingleFixed = this.queryProxy().query(SELECT_SINGLE_FIXED, KrcstErAlSingleFixed.class).getSingle();
-
-        return this.queryProxy().query(FIND_BY_IDS_AND_USEATR, KrcmtWkpMonExtracCon.class)
-            .setParameter("ids", ids)
-            .setParameter("useAtr", useAtr)
-            .getList(x -> x.toDomain(krcstErAlCompareSingle, krcstErAlCompareRange, krcstErAlSingleFixed));
+        List<KrcstErAlCompareSingle> krcstErAlCompareSingle = this.queryProxy().query(SELECT_COMPARE_SINGLE_BY_ID, KrcstErAlCompareSingle.class).setParameter("ids", ids).getList();
+        List<KrcstErAlCompareRange> krcstErAlCompareRange = this.queryProxy().query(SELECT_COMPARE_RANGE_BY_ID, KrcstErAlCompareRange.class).setParameter("ids", ids).getList();
+        List<KrcstErAlSingleFixed> krcstErAlSingleFixed = this.queryProxy().query(SELECT_SINGLE_FIXED_BY_ID, KrcstErAlSingleFixed.class).setParameter("ids", ids).getList();
+        List<KrcmtWkpMonExtracCon> domains = this.queryProxy().query(FIND_BY_IDS_AND_USEATR, KrcmtWkpMonExtracCon.class)
+                .setParameter("ids", ids)
+                .setParameter("useAtr", useAtr)
+                .getList();
+        return domains.stream().map(i -> i.toDomain(
+                krcstErAlCompareSingle.stream().filter(x -> x.krcstEralCompareSinglePK.conditionGroupId.equals(i.errorAlarmCheckID)).findFirst(),
+                krcstErAlCompareRange.stream().filter(x -> x.krcstEralCompareRangePK.conditionGroupId.equals(i.errorAlarmCheckID)).findFirst(),
+                krcstErAlSingleFixed.stream().filter(x -> x.krcstEralSingleFixedPK.conditionGroupId.equals(i.errorAlarmCheckID)).findFirst()
+        )).collect(Collectors.toList());
     }
 
-    private static final String SELECT_COMPARE_SINGLE_BY_ID =
-            " SELECT a FROM KrcstErAlCompareSingle a " +
-                    " JOIN KrcmtWkpMonExtracCon b ON a.krcstEralCompareSinglePK.conditionGroupId = b.errorAlarmCheckID " +
-                    " WHERE a.krcstEralCompareSinglePK.atdItemConNo = 0 AND a.conditionType = 0 AND b.errorAlarmWorkplaceId IN :ids ";
-
-    private static final String SELECT_COMPARE_RANGE_BY_ID =
-            " SELECT a FROM KrcstErAlCompareRange a " +
-                    " JOIN KrcmtWkpMonExtracCon b ON a.krcstEralCompareRangePK.conditionGroupId = b.errorAlarmCheckID " +
-                    " WHERE a.krcstEralCompareRangePK.atdItemConNo = 0 AND b.errorAlarmWorkplaceId IN :ids ";
-
-    private static final String SELECT_SINGLE_FIXED_BY_ID =
-            " SELECT a FROM KrcstErAlSingleFixed a " +
-                    " JOIN KrcmtWkpMonExtracCon b ON a.krcstEralSingleFixedPK.conditionGroupId = b.errorAlarmCheckID " +
-                    " WHERE a.krcstEralSingleFixedPK.atdItemConNo = 0 AND b.errorAlarmWorkplaceId IN :ids ";
 
     @Override
     public List<ExtractionMonthlyCon> getByIds(List<String> ids) {
@@ -128,7 +125,7 @@ public class JpaExtractionMonthlyConRepository extends JpaRepository implements 
             if (i.getCheckConditions().isSingleValue()) {
                 switch (i.getCheckMonthlyItemsType()) {
                     case AVERAGE_TIME:
-                    case TIME_FREEDOM:{
+                    case TIME_FREEDOM: {
                         minValue = Double.valueOf(((AverageTime) ((CompareSingleValue) i.getCheckConditions()).getValue()).v());
                         break;
                     }
@@ -162,7 +159,7 @@ public class JpaExtractionMonthlyConRepository extends JpaRepository implements 
             } else {
                 switch (i.getCheckMonthlyItemsType()) {
                     case AVERAGE_TIME:
-                    case TIME_FREEDOM:{
+                    case TIME_FREEDOM: {
                         minValue = Double.valueOf(((AverageTime) ((CompareRange) i.getCheckConditions()).getStartValue()).v());
                         maxValue = Double.valueOf(((AverageTime) ((CompareRange) i.getCheckConditions()).getEndValue()).v());
                         break;
@@ -174,13 +171,13 @@ public class JpaExtractionMonthlyConRepository extends JpaRepository implements 
                         break;
                     }
                     case AVERAGE_NUMBER_TIME:
-                    case AVERAGE_TIME_FREE:{
+                    case AVERAGE_TIME_FREE: {
                         minValue = Double.valueOf(((AverageNumberTimes) ((CompareRange) i.getCheckConditions()).getStartValue()).v());
                         maxValue = Double.valueOf(((AverageNumberTimes) ((CompareRange) i.getCheckConditions()).getEndValue()).v());
                         break;
                     }
                     case AVERAGE_RATIO:
-                    case AVERAGE_RATIO_FREE:{
+                    case AVERAGE_RATIO_FREE: {
                         minValue = Double.valueOf(((AverageRatio) ((CompareRange) i.getCheckConditions()).getStartValue()).v());
                         maxValue = Double.valueOf(((AverageRatio) ((CompareRange) i.getCheckConditions()).getEndValue()).v());
                         break;

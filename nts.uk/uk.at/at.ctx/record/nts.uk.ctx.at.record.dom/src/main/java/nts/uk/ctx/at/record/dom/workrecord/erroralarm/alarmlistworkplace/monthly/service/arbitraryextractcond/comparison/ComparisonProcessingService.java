@@ -39,7 +39,7 @@ public class ComparisonProcessingService {
     public ExtractResultDto compare(String workplaceId, ExtractionMonthlyCon condition,
                                     Double avgTime, String averageTimeName, YearMonth ym) {
         // 「Input．比較値」とチェック条件を比較
-        boolean check = condition.getCheckConditions().check(avgTime, c -> avgTime);
+        boolean check = condition.checkTarget(avgTime);
         CheckConditions checkConditions = condition.getCheckConditions();
 
         String message;
