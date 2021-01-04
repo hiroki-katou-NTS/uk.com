@@ -471,6 +471,12 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 				vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds });
 				return;
 			}	
+			if(failData.messageId == "Msg_197") {
+				vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds }).then(() => {
+					location.reload();
+				});		
+				return;
+			}	
 			vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds });
 		}
 
