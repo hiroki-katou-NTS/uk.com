@@ -150,22 +150,25 @@ public class CreateAnnualWorkLedgerContentQuery {
                 val listAtId = item.getSelectedAttendanceItemList();
                 StringBuilder character = new StringBuilder();
                 Double actualValue = 0D;
+                boolean alwayNull = true;
                 if (item.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ||
                         item.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS) {
                     for (val d : listAtId) {
                         val sub = value1.getOrDefault(d.getAttendanceItemId(), null);
                         if (sub == null || sub.getValue() == null) continue;
                         character.append(sub.getValue());
+
                     }
                     itemValue.add(
-                            new DailyValue(actualValue, character.toString(), key));
+                            new DailyValue(null, character.toString(), key));
                 } else {
                     for (val d : listAtId) {
                         val sub = value1.getOrDefault(d.getAttendanceItemId(), null);
                         if (sub == null || sub.getValue() == null) continue;
+                        alwayNull = false;
                         actualValue = actualValue + ((d.getOperator() == OperatorsCommonToForms.ADDITION ? 1 : -1) * Double.parseDouble(sub.getValue()));
                     }
-                    itemValue.add(new DailyValue(actualValue, character.toString(), key));
+                    itemValue.add(new DailyValue( alwayNull? null:actualValue, character.toString(), key));
                 }
 
             });

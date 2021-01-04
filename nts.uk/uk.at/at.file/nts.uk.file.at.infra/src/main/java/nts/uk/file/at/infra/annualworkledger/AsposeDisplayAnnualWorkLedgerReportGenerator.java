@@ -1,3 +1,6 @@
+
+
+
 package nts.uk.file.at.infra.annualworkledger;
 
 import com.aspose.cells.*;
@@ -44,7 +47,7 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
             if (!dataSource.getLstAnnualWorkLedgerContent().isEmpty()) {
                 settingPage(worksheet, dataSource);
                 printContents(worksheet, dataSource);
-               // removeTemplate(worksheet);
+                // removeTemplate(worksheet);
             }
 
             worksheets.setActiveSheetIndex(0);
@@ -199,7 +202,7 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
     /**
      * Format value
      */
-    private String formatValue(double valueDouble, String valueString, CommonAttributesOfForms attributes, Boolean isZeroDisplay) {
+    private String formatValue(Double valueDouble, String valueString, CommonAttributesOfForms attributes, Boolean isZeroDisplay) {
         String rs = "";
         switch (attributes) {
             case WORK_TYPE:
@@ -209,12 +212,16 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
                 rs = valueString;
                 break;
             case TIME_OF_DAY:
-                rs = convertToTime((int) valueDouble);
+                if(valueDouble!=null){
+                    rs = convertToTime((int) valueDouble.intValue());
+                }
                 break;
             case TIME:
-                val minute = (int) valueDouble;
-                if (minute != 0 || isZeroDisplay) {
-                    rs = convertToTime(minute);
+                if(valueDouble!=null){
+                    val minute = (int) valueDouble.intValue();
+                    if (minute != 0 || isZeroDisplay) {
+                        rs = convertToTime(minute);
+                    }
                 }
                 break;
             case DAYS:
@@ -224,9 +231,11 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
                 }
                 break;
             case AMOUNT_OF_MONEY:
-                if (valueDouble != 0 || isZeroDisplay) {
-                    DecimalFormat formatter3 = new DecimalFormat("#,###");
-                    rs = formatter3.format((int) valueDouble) +  TextResource.localize("KWR_3");
+                if(valueDouble!=null){
+                    if (valueDouble != 0 || isZeroDisplay) {
+                        DecimalFormat formatter3 = new DecimalFormat("#,###");
+                        rs = formatter3.format((int) valueDouble.intValue()) +  TextResource.localize("KWR_3");
+                    }
                 }
                 break;
             case NUMBER_OF_TIMES:
