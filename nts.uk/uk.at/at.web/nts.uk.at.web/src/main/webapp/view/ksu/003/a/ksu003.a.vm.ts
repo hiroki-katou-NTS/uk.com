@@ -2209,8 +2209,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 											}
 										}
 										
-										self.dataScreen003A().employeeInfo[i].workScheduleDto.listBreakTimeZoneDto[indexBrk].start = b * 5;
-										self.dataScreen003A().employeeInfo[i].workScheduleDto.listBreakTimeZoneDto[indexBrk].end = e * 5;
+										self.dataScreen003A().employeeInfo[i].workScheduleDto.listBreakTimeZoneDto[indexBrk].start = b * 5 + self.dispStart * 5;
+										self.dataScreen003A().employeeInfo[i].workScheduleDto.listBreakTimeZoneDto[indexBrk].end = e * 5 + self.dispStart * 5;
 										if (checkChange == 0) {
 											$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "breaktime", dataMidBrk.breaktime == null ? "" : dataMidBrk.breaktime + " "); // + " " để phân biệt khi thay đổi vị trí nhưng không thay đổi giá trị
 										} else {
@@ -3184,8 +3184,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								let duplicateTime2 = self.calcTimeDuplicate(startCalc2, endCalc2, timeChart2.startTime, timeChart2.endTime, 2);
 								startCalc2 = duplicateTime2.startTime, endCalc2 = duplicateTime2.endTime;
 								self.lstAllChildShow.push({
-									start: startCalc,
-									end: endCalc,
+									start: startCalc2,
+									end: endCalc2,
 									type: type,
 									index : index,
 									position: o
@@ -3236,7 +3236,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 											x.end = endCalc2;
 									}
 									// xs > tcs & xe > tce
-									else if (x.start >= startCalc2 && x.end >= endCalc && _.inRange(endCalc2, x.start, x.end)) {
+									else if (x.start >= startCalc2 && x.end >= endCalc2
+									
+									
+									
+									 && _.inRange(endCalc2, x.start, x.end)) {
 											x.start = startCalc2;
 									}
 									else if (!_.inRange(x.start, startCalc2, timeChartBrk.endTime) && !_.inRange(x.end, startCalc2, endCalc2)) {
