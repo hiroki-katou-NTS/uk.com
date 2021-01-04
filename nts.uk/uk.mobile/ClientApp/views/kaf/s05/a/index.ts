@@ -166,21 +166,45 @@ export class KafS05Component extends KafS00ShrComponent {
     // （「事前事後区分」が表示する　AND　「事前事後区分」が「事後」を選択している）　OR
     // （「事前事後区分」が表示しない　AND 「残業申請の表示情報．申請表示情報．申請表示情報(基準日関係あり)．事前事後区分」= 「事後」）
     public get c15() {
+        const self = this;
+        let model = self.model as Model;
+        let c15 = false;
+        if (!self.modeNew) {
 
+            return self.model.displayInfoOverTime.appDispInfoStartup.appDetailScreenInfo.application.prePostAtr == 1;
+        }
+        if (model.displayInfoOverTime.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr == 0) {				
+            let prePost = model.displayInfoOverTime.appDispInfoStartup.appDispInfoWithDateOutput.prePostAtr;
+            if (prePost == 1) {
+                c15 = true;					
+            } else {
+                c15 = false;
+            }
+            
+            return c15;
+        } else {
+            let prePost = self.application.prePostAtr;
+            if (prePost == 1) {
+                c15 = true;					
+            } else {
+                c15 = false;
+            }
 
-        return true;
+            return c15;
+        }
     }
     // ※表16-1 = ○　OR　※表16-2 = ○　OR　※表16-3 = ○　OR　※表16-4 = ○
     public get c16() {
+        const self = this;
 
-        return true;
+        return self.c16_1 || self.c16_2 || self.c16_3 || self.c16_4;
     }
     // 「残業申請の表示情報．計算結果．申請時間．申請時間．type」= 休出時間 があるの場合
     public get c16_1() {
         const self = this;
-        let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
-        if (!_.isNil(displayOverTime.calculationResultOp)) {
-            _.forEach(displayOverTime.calculationResultOp.applicationTimes, (i: ApplicationTime) => {
+        let model = self.model as Model;
+        if (!_.isNil(model.displayInfoOverTime.calculationResultOp)) {
+            _.forEach(model.displayInfoOverTime.calculationResultOp.applicationTimes, (i: ApplicationTime) => {
                 _.forEach(i.applicationTime, (item: OvertimeApplicationSetting) => {
                     if (item.attendanceType == AttendanceType.BREAKTIME) {
 
@@ -202,8 +226,8 @@ export class KafS05Component extends KafS00ShrComponent {
     // ※表5 = ○ AND「残業申請の表示情報．計算結果．申請時間．就業時間外深夜時間．休出深夜時間．法定区分」= 法定内休出 があるの場合
     public get c16_2() {
         const self = this;
-        let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
-        let midNightHolidayTimes = _.get(displayOverTime, 'calculationResultOp.applicationTimes[0].overTimeShiftNight.midNightHolidayTimes');
+        let model = self.model as Model;
+        let midNightHolidayTimes = _.get(model.displayInfoOverTime, 'calculationResultOp.applicationTimes[0].overTimeShiftNight.midNightHolidayTimes');
         _.forEach(midNightHolidayTimes, (item: HolidayMidNightTime) => {
             if (item.legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork && item.attendanceTime > 0) {
 
@@ -222,8 +246,8 @@ export class KafS05Component extends KafS00ShrComponent {
     // ※表5 = ○ AND「残業申請の表示情報．計算結果．申請時間．就業時間外深夜時間．休出深夜時間．法定区分」= 法定外休出 があるの場合
     public get c16_3() {
         const self = this;
-        let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
-        let midNightHolidayTimes = _.get(displayOverTime, 'calculationResultOp.applicationTimes[0].overTimeShiftNight.midNightHolidayTimes');
+        let model = self.model as Model;
+        let midNightHolidayTimes = _.get(model.displayInfoOverTime, 'calculationResultOp.applicationTimes[0].overTimeShiftNight.midNightHolidayTimes');
         _.forEach(midNightHolidayTimes, (item: HolidayMidNightTime) => {
             if (item.legalClf == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork && item.attendanceTime > 0) {
 
@@ -243,8 +267,8 @@ export class KafS05Component extends KafS00ShrComponent {
     // ※表5 = ○ AND「残業申請の表示情報．計算結果．申請時間．就業時間外深夜時間．休出深夜時間．法定区分」= 祝日休出 があるの場合
     public get c16_4() {
         const self = this;
-        let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
-        let midNightHolidayTimes = _.get(displayOverTime, 'calculationResultOp.applicationTimes[0].overTimeShiftNight.midNightHolidayTimes');
+        let model = self.model as Model;
+        let midNightHolidayTimes = _.get(model.displayInfoOverTime, 'calculationResultOp.applicationTimes[0].overTimeShiftNight.midNightHolidayTimes');
         _.forEach(midNightHolidayTimes, (item: HolidayMidNightTime) => {
             if (item.legalClf == StaturoryAtrOfHolidayWork.PublicHolidayWork && item.attendanceTime > 0) {
 

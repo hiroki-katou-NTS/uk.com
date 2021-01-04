@@ -68,7 +68,7 @@
         v-bind:key="index"
         :value="index"
       >
-        <div class="card-body">
+        <div v-show="item.visible" class="card-body">
           <div class="row mt-3">
             <div class="col-4">{{ item.title }}</div>
             <div class="col-8.5">
