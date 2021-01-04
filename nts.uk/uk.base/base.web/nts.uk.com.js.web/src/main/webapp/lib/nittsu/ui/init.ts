@@ -93,21 +93,21 @@ module nts.uk.ui {
                 const kiban = new KibanViewModel(dialogOptions);
                 const isEmpty = ko.computed(() => !kiban.errorDialogViewModel.occurs());
 
-                // update title of name
-                kiban.systemName(systemName);
-
-                // update mode of view
-                kiban.mode(!util.isInFrame() ? 'view' : 'modal');
-
-                // update header 
-                kiban.header(!__viewContext.noHeader);
-
-                // update notification
-                kiban.notification(__viewContext.program.operationSetting.message);
-
                 // mock ready function
+                _.extend(nts.uk.ui, { _viewModel: { kiban, content, errors: { isEmpty } } });
+
                 $(() => {
-                    _.extend(nts.uk.ui, { _viewModel: { kiban, content, errors: { isEmpty } } });
+                    // update title of name
+                    kiban.systemName(systemName);
+    
+                    // update mode of view
+                    kiban.mode(!util.isInFrame() ? 'view' : 'modal');
+    
+                    // update header 
+                    kiban.header(!__viewContext.noHeader);
+    
+                    // update notification
+                    kiban.notification(__viewContext.program.operationSetting.message);
 
                     viewModelBuilt.fire(_viewModel);
 

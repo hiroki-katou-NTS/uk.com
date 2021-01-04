@@ -1,11 +1,5 @@
 /// <reference path="./viewcontext.d.ts" />
 
-type KibanViewModel = {
-	errorDialogViewModel: {
-		errors: KnockoutObservableArray<string>;
-	}
-};
-
 /** Create new ViewModel and automatic binding to __viewContext */
 function bean(dialogOption?: JQueryUI.DialogOptions): any {
 	return function (ctor: any): any {
@@ -21,29 +15,31 @@ function bean(dialogOption?: JQueryUI.DialogOptions): any {
 					$created.apply($viewModel, [$params]);
 				}
 
-				// hook to mounted function
-				$viewModel.$nextTick(() => {
-					const $mounted = $viewModel['mounted'];
-					const kvm: KibanViewModel = nts.uk.ui._viewModel.kiban;
-
-					_.extend($viewModel, { $el: document.querySelector('#master-wrapper') });
-
-					if (kvm) {
-						ko.computed({
-							read: () => {
-								$viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
-							},
-							owner: $viewModel,
-							disposeWhenNodeIsRemoved: $viewModel.$el
-						});
-					}
-
-					if ($mounted && _.isFunction($mounted)) {
-						$mounted.apply($viewModel, []);
-					}
-				});
-
 				__viewContext.bind($viewModel, dialogOption);
+
+				$(() => {
+					// hook to mounted function
+					$viewModel.$nextTick(() => {
+						const $mounted = $viewModel['mounted'];
+						const kvm = nts.uk.ui._viewModel.kiban;
+
+						_.extend($viewModel, { $el: document.querySelector('#master-wrapper') });
+
+						if (kvm) {
+							ko.computed({
+								read: () => {
+									$viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
+								},
+								owner: $viewModel,
+								disposeWhenNodeIsRemoved: $viewModel.$el
+							});
+						}
+
+						if ($mounted && _.isFunction($mounted)) {
+							$mounted.apply($viewModel, []);
+						}
+					});
+				});
 			});
 		});
 	};
