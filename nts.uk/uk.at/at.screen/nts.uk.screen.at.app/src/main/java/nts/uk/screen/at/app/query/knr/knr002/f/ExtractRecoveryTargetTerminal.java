@@ -40,7 +40,7 @@ public class ExtractRecoveryTargetTerminal {
 		//	1. get*(契約コード、機種): 就業情報端末<List>
 		List<EmpInfoTerminal> empInfoTerList = this.empInfoTerRepo.get(contractCode,
 												ModelEmpInfoTer.valueOf(modelEmpInfoTer));
-		if (empInfoTerList.size() == 0)
+		if (empInfoTerList.isEmpty())
 			return null;
 		//	2. get*(契約コード、コード（List）): <機種名、ROMバージョン、機種区分>(List)
 		
