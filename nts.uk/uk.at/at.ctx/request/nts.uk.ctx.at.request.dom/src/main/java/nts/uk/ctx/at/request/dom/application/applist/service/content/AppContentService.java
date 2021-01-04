@@ -12,6 +12,8 @@ import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
+import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationTypeDisplay;
+import nts.uk.ctx.at.request.dom.application.applist.service.ListApplicantOutput;
 import nts.uk.ctx.at.request.dom.application.applist.service.datacreate.StampAppOutputTmp;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.ScreenAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
@@ -192,4 +194,13 @@ public interface AppContentService {
 	 * @return
 	 */
 	public OvertimeHolidayWorkActual getOvertimeHolidayWorkActual(String companyID, Application application, WorkTypeCode workType, WorkTimeCode workTime);
+	
+	/**
+	 * Refactor4  各申請データを作成（スマホ）
+	 * UKDesign.UniversalK.就業.KAF_申請.CMMS45_申請一覧・承認一覧（スマホ）.A：申請一覧.アルゴリズム.各申請データを作成（スマホ）
+	 * @param application
+	 * @param listOfApplication
+	 * @return
+	 */
+	public Optional<ApplicationTypeDisplay> getAppDisplayByMobile(Application application, ListOfApplication listOfApplication);
 }
