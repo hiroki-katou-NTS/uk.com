@@ -10,7 +10,7 @@ module nts.uk.at.view.kmk004.components {
 		checkEmployee?: KnockoutObservable<boolean>
 		years: KnockoutObservableArray<IYear>;
 		workTimes: KnockoutObservableArray<WorkTimeL>;
-		selectId: string;
+		selectedId: string;
 		type: SIDEBAR_TYPE;
 		yearDelete: KnockoutObservable<number | null>;
 	}
@@ -103,7 +103,7 @@ module nts.uk.at.view.kmk004.components {
 		public years: KnockoutObservableArray<IYear>;
 		public type: SIDEBAR_TYPE;
 		public mode: KnockoutObservable<'New' | 'Update'> = ko.observable('New');
-		public selectId: KnockoutObservable<string> = ko.observable('');
+		public selectedId: KnockoutObservable<string> = ko.observable('');
 		public workTimeSaves: KnockoutObservableArray<WorkTimeSaveL> = ko.observableArray([]);
 		public yearDelete: KnockoutObservable<number | null> = ko.observable(null);
 
@@ -113,8 +113,8 @@ module nts.uk.at.view.kmk004.components {
 			vm.years = params.years;
 			vm.checkEmployee = params.checkEmployee;
 			vm.workTimes = params.workTimes;
-			if (params.selectId) {
-				vm.selectId(params.selectId);
+			if (params.selectedId) {
+				vm.selectedId(params.selectedId);
 			}
 			vm.type = params.type;
 			vm.yearDelete = params.yearDelete;
@@ -167,7 +167,7 @@ module nts.uk.at.view.kmk004.components {
 					vm.reloadData();
 				});
 
-			vm.selectId
+			vm.selectedId
 				.subscribe(() => {
 					vm.workTimeSaves([]);
 				});
@@ -176,7 +176,6 @@ module nts.uk.at.view.kmk004.components {
 				.subscribe(() => {
 					if (ko.unwrap(vm.years).length == 0) {
 						vm.workTimeSaves([]);
-						vm.initList();
 
 					} else {
 						if (ko.unwrap(vm.workTimeSaves).length > ko.unwrap(vm.years).length) {
@@ -191,11 +190,11 @@ module nts.uk.at.view.kmk004.components {
 		reloadData() {
 			const vm = this;
 			const comInput = { workType: DEFOR_TYPE, year: vm.selectedYear() };
-			const wkpInput = { workplaceId: vm.selectId(), workType: DEFOR_TYPE, year: vm.selectedYear() };
-			const empInput = { employmentCode: vm.selectId(), workType: DEFOR_TYPE, year: vm.selectedYear() };
-			const shaInput = { sId: vm.selectId(), workType: DEFOR_TYPE, year: vm.selectedYear() };
+			const wkpInput = { workplaceId: vm.selectedId(), workType: DEFOR_TYPE, year: vm.selectedYear() };
+			const empInput = { employmentCode: vm.selectedId(), workType: DEFOR_TYPE, year: vm.selectedYear() };
+			const shaInput = { sId: vm.selectedId(), workType: DEFOR_TYPE, year: vm.selectedYear() };
 
-			if (!vm.selectId) {
+			if (!vm.selectedId) {
 				return;
 			}
 
@@ -233,13 +232,13 @@ module nts.uk.at.view.kmk004.components {
 						break;
 
 					case 'Com_Workplace':
-						if (ko.unwrap(vm.selectId) !== '') {
+						if (ko.unwrap(vm.selectedId) !== '') {
 							const exist = _.find(ko.unwrap(vm.workTimeSaves), (m: WorkTimeSaveL) => m.year as number == ko.unwrap(vm.selectedYear) as number);
 							if (exist) {
 								vm.workTimes(exist.worktimes.map(m => new WorkTimeL({ ...m, parent: vm.workTimes })));
 								vm.mode('Update');
 							} else {
-								vm.$ajax(API.GET_WORK_TIME_BY_WKP, wkpInput)
+								vm.$ajax(API.GET_WORK_TIME_BY_WKP, ko.toJS(wkpInput))
 									.then((data: IWorkTimeL[]) => {
 										if (data.length > 0) {
 											const workTime: IWorkTimeL[] = [];
@@ -260,15 +259,14 @@ module nts.uk.at.view.kmk004.components {
 						break;
 
 					case 'Com_Employment':
-
-						if (ko.unwrap(vm.selectId) !== '') {
+						if (ko.unwrap(vm.selectedId) !== '') {
 							const exist = _.find(ko.unwrap(vm.workTimeSaves), (m: WorkTimeSaveL) => m.year as number == ko.unwrap(vm.selectedYear) as number);
 
 							if (exist) {
 								vm.workTimes(exist.worktimes.map(m => new WorkTimeL({ ...m, parent: vm.workTimes })));
 								vm.mode('Update');
 							} else {
-								vm.$ajax(API.GET_WORK_TIME_BY_EMP, empInput)
+								vm.$ajax(API.GET_WORK_TIME_BY_EMP, ko.toJS(empInput))
 									.then((data: IWorkTimeL[]) => {
 										if (data.length > 0) {
 											const workTime: IWorkTimeL[] = [];
@@ -287,14 +285,14 @@ module nts.uk.at.view.kmk004.components {
 						break;
 
 					case 'Com_Person':
-						if (ko.unwrap(vm.selectId) !== '') {
+						if (ko.unwrap(vm.selectedId) !== '') {
 							const exist = _.find(ko.unwrap(vm.workTimeSaves), (m: WorkTimeSaveL) => m.year as number == ko.unwrap(vm.selectedYear) as number);
 
 							if (exist) {
 								vm.workTimes(exist.worktimes.map(m => new WorkTimeL({ ...m, parent: vm.workTimes })));
 								vm.mode('Update');
 							} else {
-								vm.$ajax(API.GET_WORK_TIME_BY_SHA, shaInput)
+								vm.$ajax(API.GET_WORK_TIME_BY_SHA, ko.toJS(shaInput))
 									.then((data: IWorkTimeL[]) => {
 										if (data.length > 0) {
 											const workTime: IWorkTimeL[] = [];

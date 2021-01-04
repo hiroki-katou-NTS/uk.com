@@ -70,7 +70,7 @@ module nts.uk.at.view.kmk004.l {
 										years: years,
 										workTimes: workTimes,
 										type: type,
-										selectId: params.wkpId(),
+										selectedId: selectedIdParam,
 										yearDelete: yearDelete
 									}
 								}"></div>
@@ -202,7 +202,7 @@ module nts.uk.at.view.kmk004.l {
 					vm.params.titleName = vm.selectedItemText();
 					vm.selectedIdParam(data);
 
-					vm.$ajax(KMK004M_API.WKP_GET_BASIC_SETTING + "/" + vm.params.wkpId()).done((data: any) => {
+					vm.$ajax(KMK004M_API.WKP_GET_BASIC_SETTING + "/" + vm.selectedIdParam()).done((data: any) => {
 						if (data.deforLaborTimeWkpDto != null && data.wkpDeforLaborMonthActCalSetDto != null) {
 							vm.btn_text('KMK004_339');
 						} else vm.btn_text('KMK004_338');
@@ -239,7 +239,7 @@ module nts.uk.at.view.kmk004.l {
 			let param: IWorkTimeSetCom[] = [];
 
 			_.forEach(ko.unwrap(vm.workTimes), ((value) => {
-				const t: IWorkTimeSetCom = { workplaceId: vm.params.wkpId(), laborAttr: 1, yearMonth: value.yearMonth(), laborTime: { legalLaborTime: value.laborTime(), withinLaborTime: null, weekAvgTime: null } };
+				const t: IWorkTimeSetCom = { workplaceId: vm.selectedIdParam(), laborAttr: 1, yearMonth: value.yearMonth(), laborTime: { legalLaborTime: value.laborTime(), withinLaborTime: null, weekAvgTime: null } };
 				param.push(t);
 			}));
 
@@ -277,7 +277,7 @@ module nts.uk.at.view.kmk004.l {
 				.confirm({ messageId: "Msg_18" })
 				.ifYes(() => {
 					vm.$blockui("invisible")
-						.then(() => vm.$ajax(KMK004M_API.DELETE_WORK_TIME, ko.toJS({ year: vm.selectedYear(), workplaceId: vm.params.wkpId() })))
+						.then(() => vm.$ajax(KMK004M_API.DELETE_WORK_TIME, ko.toJS({ year: vm.selectedYear(), workplaceId: vm.selectedIdParam() })))
 						.done(() => {
 							vm.yearDelete(ko.unwrap(vm.selectedYear));
 						})
