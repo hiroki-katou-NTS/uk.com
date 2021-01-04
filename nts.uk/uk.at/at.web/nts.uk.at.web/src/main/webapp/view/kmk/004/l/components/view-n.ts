@@ -127,7 +127,7 @@ module nts.uk.at.view.kmk004.l {
 	export class ViewNComponent extends ko.ViewModel {
 		listComponentOption: any;
 		selectedCode: KnockoutObservable<string>;
-		selectedId: KnockoutObservable<string> = ko.observable('');;
+		selectedId: KnockoutObservable<string> = ko.observable('');
 		multiSelectedCode: KnockoutObservableArray<string>;
 		isShowAlreadySet: KnockoutObservable<boolean>;
 		alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
@@ -149,7 +149,6 @@ module nts.uk.at.view.kmk004.l {
 		isLoadData: KnockoutObservable<boolean> = ko.observable(false);
 		btn_text: KnockoutObservable<string> = ko.observable('');
 		public workTimes: KnockoutObservableArray<WorkTimeL> = ko.observableArray([]);
-		isLoadInitData: KnockoutObservable<boolean> = ko.observable(false);
 		public yearDelete: KnockoutObservable<number | null> = ko.observable(null);
 		public checkDelete: KnockoutObservable<boolean> = ko.observable(false);
 		
@@ -241,7 +240,6 @@ module nts.uk.at.view.kmk004.l {
 
 			$('#empt-list-setting').ntsListComponent(vm.listComponentOption).done(() => {
 				vm.employeeList($('#empt-list-setting').getDataList());
-				vm.selectedCode(vm.employeeList()[0].code);
 			});
 		}
 

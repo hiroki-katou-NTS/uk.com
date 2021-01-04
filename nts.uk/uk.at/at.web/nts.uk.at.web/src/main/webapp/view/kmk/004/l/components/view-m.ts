@@ -305,11 +305,6 @@ module nts.uk.at.view.kmk004.l {
 				})
 		}
 
-		close() {
-			const vm = this;
-			vm.$window.close();
-		}
-
 		openViewP() {
 			let vm = this;
 			vm.$window.modal('at', '/view/kmk/004/p/index.xhtml', ko.toJS(vm.params)).then(() => {

@@ -7,10 +7,10 @@ module nts.uk.at.view.kmk004.components {
 
 	interface Params {
 		selectedYear: KnockoutObservable<number | null>;
-		checkEmployee?: KnockoutObservable<boolean>
+		checkEmployee?: KnockoutObservable<boolean>;
 		years: KnockoutObservableArray<IYear>;
 		workTimes: KnockoutObservableArray<WorkTimeL>;
-		selectedId: string;
+		selectedId: KnockoutObservable<string>;
 		type: SIDEBAR_TYPE;
 		yearDelete: KnockoutObservable<number | null>;
 	}
@@ -63,7 +63,7 @@ module nts.uk.at.view.kmk004.components {
                                 <input class="lable-input" 
                                     data-bind="ntsTimeEditor: {
                                         value: $data.laborTime,
-                                        enable: $parent.checkNullYear, 
+                                        enable: $data.check, 
                                         inputFormat: 'time',
                                         option: {
                                             width: '60px',
@@ -113,9 +113,7 @@ module nts.uk.at.view.kmk004.components {
 			vm.years = params.years;
 			vm.checkEmployee = params.checkEmployee;
 			vm.workTimes = params.workTimes;
-			if (params.selectedId) {
 				vm.selectedId(params.selectedId);
-			}
 			vm.type = params.type;
 			vm.yearDelete = params.yearDelete;
 
@@ -170,12 +168,14 @@ module nts.uk.at.view.kmk004.components {
 			vm.selectedId
 				.subscribe(() => {
 					vm.workTimeSaves([]);
+					vm.selectedYear.valueHasMutated();
 				});
 
 			vm.years
 				.subscribe(() => {
 					if (ko.unwrap(vm.years).length == 0) {
 						vm.workTimeSaves([]);
+						vm.initList();
 
 					} else {
 						if (ko.unwrap(vm.workTimeSaves).length > ko.unwrap(vm.years).length) {
@@ -296,10 +296,9 @@ module nts.uk.at.view.kmk004.components {
 									.then((data: IWorkTimeL[]) => {
 										if (data.length > 0) {
 											const workTime: IWorkTimeL[] = [];
-											var check: boolean = true;
 
 											data.map(m => {
-												const s: IWorkTimeL = { check: check, yearMonth: m.yearMonth, laborTime: m.laborTime };
+												const s: IWorkTimeL = { check: true, yearMonth: m.yearMonth, laborTime: m.laborTime };
 												workTime.push(s);
 											});
 
