@@ -31,7 +31,20 @@ public class FavoriteSpecify extends AggregateRoot {
 
 	private FavoriteSpecify() {
 	}
-
+	
+	//TODO [1] 対象情報名を渡す
+//	public List<String> PassingTargetInfoName( Require require) {
+//		if(this.targetSelection == TargetSelection.AFFILIATION_WORKPLACE) {
+//			return empty;
+//		}
+//		if(this.targetSelection == TargetSelection.???) {
+//			return require.getBussinessName(this.listEmployee);
+//		}
+//		if(this.targetSelection == TargetSelection.WORKPLACE) {
+//			return require.getWorkplaceDisplayName(this.workplaceId);;
+//		}
+//	}
+	
 	public static FavoriteSpecify createFromMemento(MementoGetter memento) {
 		FavoriteSpecify domain = new FavoriteSpecify();
 		domain.getMemento(memento);
