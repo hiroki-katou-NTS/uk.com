@@ -280,7 +280,7 @@ module nts.uk.at.view.kal013.b {
             nts.uk.ui.windows.sub.modal('/view/kdl/007/a/index.xhtml').onClosed(() => {
                 let listResult = getShared('KDL007_VALUES');
 
-                vm.pattern().updateCheckCond(listResult.selecteds[0].length > 0 ? listResult.selecteds: "");
+                vm.pattern().updateCheckCond(listResult.selecteds[0].length > 0 ? listResult.selecteds[0]: "");
             });
         }
 
@@ -368,8 +368,8 @@ module nts.uk.at.view.kal013.b {
         checkCondDis: KnockoutObservable<string> = ko.observable("");
         checkCondB: KnockoutObservable<number> = ko.observable(0);
         operator: KnockoutObservable<number> = ko.observable(0);
-        minValue: KnockoutObservable<number> = ko.observable(0);
-        maxValue: KnockoutObservable<number> = ko.observable(0);
+        minValue: KnockoutObservable<number> = ko.observable(null);
+        maxValue: KnockoutObservable<number> = ko.observable(null);
         displayMessage: KnockoutObservable<string> = ko.observable("");
         constructor(){}
 
@@ -412,8 +412,8 @@ module nts.uk.at.view.kal013.b {
         checkCond: string;
         checkCondB: number;
         operator: number;
-        minValue: number;
-        maxValue: number;
+        minValue?: number;
+        maxValue?: number;
         displayMessage: string;
     }
 
