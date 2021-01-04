@@ -1,0 +1,39 @@
+package nts.uk.ctx.sys.assist.infra.entity.favorite;
+
+import java.io.Serializable;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.validation.constraints.NotNull;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.sys.assist.infra.entity.comment.EmployeeCommentInformationEntityPK;
+
+@Data
+@Embeddable
+@AllArgsConstructor
+@NoArgsConstructor
+public class FavoriteSpecifyEntityDetailPK implements Serializable {
+	/**
+	* 
+	*/
+	private static final long serialVersionUID = 1L;
+
+	// column 作成者ID
+	@NotNull
+	@Column(name = "SID")
+	private String creatorId;
+
+	// column 入力日
+	@NotNull
+	@Column(name = "INPUT_DATE")
+	private GeneralDateTime inputDate;
+
+	// column 対象情報ID
+	@NotNull
+	@Column(name = "TGT_INFO_ID")
+	private String targetSelection;
+}
