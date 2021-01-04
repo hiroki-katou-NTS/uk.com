@@ -2222,11 +2222,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 fields: ["workTypeCode", "workTypeName", "workTimeCode", "workTimeName", "shiftName", "startTime", "endTime", "shiftCode"],
             };
 
-//            $("#extable").exTable("mode", 'shift', updateMode, null, [{
-//                name: "BodyCellStyle",
-//                decorator: detailContentDeco
-//            }]);
-
            $("#extable").exTable("updateTable", "detail", {}, detailContentUpdate);
             
             self.setCoppyStyler();
