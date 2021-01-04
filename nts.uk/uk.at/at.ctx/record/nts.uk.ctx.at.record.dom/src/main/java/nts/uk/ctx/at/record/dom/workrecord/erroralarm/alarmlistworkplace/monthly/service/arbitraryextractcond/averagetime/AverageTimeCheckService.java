@@ -8,6 +8,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.enums.AverageTime;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service.arbitraryextractcond.comparison.ComparisonProcessingService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.WorkTimeOfMonthlyVT;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.midnighttime.IllegalMidnightTime;
@@ -86,9 +87,10 @@ public class AverageTimeCheckService {
                     total += monthlyCalculation.getAggregateTime().getHolidayWorkTime().getTotalHolidayWorkTime().getTime().v();
                     break;
                 case TOTAL_LATE_NIGHT:
-                    // 合計値　+＝　深夜時間．所定内深夜時間　+　深夜時間．所定外深夜時間
+                    // 合計値　+＝　深夜時間．所定内深夜時間　+　深夜時間．所定外深夜時間 //TODO Q&A 39056
+                    TimeMonthWithCalculation legalMidnightTime = workTime.getMidnightTime().getLegalMidnightTime();
                     IllegalMidnightTime illegalMidnightTime = workTime.getMidnightTime().getIllegalMidnightTime();
-                    total += illegalMidnightTime.getTime().getTime().v() + illegalMidnightTime.getBeforeTime().v();
+                    total += legalMidnightTime.getTime().v() + illegalMidnightTime.getTime().getTime().v();
                     break;
                 case FLEX_TIME:
                     // 合計値　+＝　フレックス時間
