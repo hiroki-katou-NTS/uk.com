@@ -1,0 +1,7 @@
+table#table tr td {
+	padding-top: 8px;
+}
+
+#func-notifier-errors {
+	top: 10px !important;
+}
