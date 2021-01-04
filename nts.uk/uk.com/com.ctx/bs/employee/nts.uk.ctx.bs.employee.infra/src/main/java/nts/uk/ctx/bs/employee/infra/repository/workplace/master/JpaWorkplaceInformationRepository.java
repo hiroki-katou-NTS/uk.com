@@ -355,7 +355,6 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 		return resultList.stream().map(item -> new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(item)))
 				.collect(Collectors.toList());
 	}
-	
 	@Override
 	public List<WorkplaceInfo> findByWkpId(String wkpId) {
 

@@ -26,5 +26,6 @@ public class PayManaRemainCommand {
 	private int closureId;
 	private Boolean checkedSplit;
 	private List<String> linkingDates;
-	
+	private Double linkingDate;
+	private Double displayRemainDays;
 }

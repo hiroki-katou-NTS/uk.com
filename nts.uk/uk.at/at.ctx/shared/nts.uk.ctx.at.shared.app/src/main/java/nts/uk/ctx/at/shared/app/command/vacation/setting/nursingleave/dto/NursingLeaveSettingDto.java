@@ -4,18 +4,23 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.vacation.setting.nursingleave.dto;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NumberDayNursing;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.TimeCareNursingSet;
 import nts.uk.shr.com.time.calendar.MonthDay;
 
 /**
@@ -33,7 +38,7 @@ public class NursingLeaveSettingDto {
     private Integer nursingCategory;
 
     /** The start month day. */
-    private MonthDay startMonthDay;
+    private Integer startMonthDay;
 
     /** The nursing number leave day. */
     private Integer nursingNumberLeaveDay;
@@ -46,6 +51,10 @@ public class NursingLeaveSettingDto {
 
     /** The absence work. */
     private Integer absenceWork;
+    
+    private Integer timeDigestiveUnit;
+    
+    private Integer manageDistinct;
 
     /**
      * To domain.
@@ -112,28 +121,7 @@ public class NursingLeaveSettingDto {
             return NursingCategory.valueOf(this.setting.nursingCategory);
         }
 
-        /*
-         * (non-Javadoc)
-         *
-         * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
-         * NursingVacationSettingGetMemento#getStartMonthDay()
-         */
-        @Override
-        public MonthDay getStartMonthDay() {
-            return this.setting.startMonthDay;
-        }
 
-        /*
-         * (non-Javadoc)
-         *
-         * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
-         * NursingVacationSettingGetMemento#getMaxPersonSetting()
-         */
-        @Override
-        public MaxPersonSetting getMaxPersonSetting() {
-            return new MaxPersonSetting(new JpaMaxPersonSettingGetMemento(this.setting.nursingNumberLeaveDay,
-                    this.setting.nursingNumberPerson));
-        }
 
 		/*
 		 * (non-Javadoc)
@@ -157,6 +145,24 @@ public class NursingLeaveSettingDto {
 			return Optional.of(this.setting.absenceWork);
 		}
 
+		@Override
+		public Integer getStartMonthDay() {
+			return this.setting.startMonthDay;
+		}
+
+		@Override
+		public TimeCareNursingSet getTimeCareNursingSet() {
+			return new TimeCareNursingSet(
+					EnumAdaptor.valueOf(this.setting.timeDigestiveUnit, TimeDigestiveUnit.class),
+					EnumAdaptor.valueOf(this.setting.manageDistinct, ManageDistinct.class ));
+		}
+
+		@Override
+		public MaxPersonSetting getMaxPersonSetting() {
+			 return new MaxPersonSetting(new JpaMaxPersonSettingGetMemento(this.setting.nursingNumberLeaveDay,
+	                    this.setting.nursingNumberPerson));
+		}
+
     }
 
     /**
@@ -168,39 +174,28 @@ public class NursingLeaveSettingDto {
         private Integer nursingNumberLeaveDay;
 
         /** The nursing number person. */
-        private Integer nursingNumberPerson;
+        private Integer nursingNumberLeaveDay2;
 
         /**
          * Instantiates a new jpa max person setting get memento.
          *
          * @param nursingNumberLeaveDay the nursing number leave day
-         * @param nursingNumberPerson the nursing number person
+         * @param nursingNumberLeaveDay2 the nursing number person
          */
-        public JpaMaxPersonSettingGetMemento(Integer nursingNumberLeaveDay, Integer nursingNumberPerson) {
+        public JpaMaxPersonSettingGetMemento(Integer nursingNumberLeaveDay, Integer nursingNumberLeaveDay2) {
             this.nursingNumberLeaveDay = nursingNumberLeaveDay;
-            this.nursingNumberPerson = nursingNumberPerson;
+            this.nursingNumberLeaveDay2 = nursingNumberLeaveDay2;
         }
 
-        /*
-         * (non-Javadoc)
-         *
-         * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
-         * MaxPersonSettingGetMemento#getNursingNumberLeaveDay()
-         */
-        @Override
-        public NumberDayNursing getNursingNumberLeaveDay() {
-            return this.nursingNumberLeaveDay != null ? new NumberDayNursing(this.nursingNumberLeaveDay) : null;
-        }
+		@Override
+		public NumberDayNursing getNursingNumberLeaveDay() {
+			 return this.nursingNumberLeaveDay != null ? new NumberDayNursing(this.nursingNumberLeaveDay) : null;
+		}
 
-        /*
-         * (non-Javadoc)
-         *
-         * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
-         * MaxPersonSettingGetMemento#getNursingNumberPerson()
-         */
-        @Override
-        public NumberDayNursing getNursingNumberPerson() {
-            return this.nursingNumberPerson != null ? new NumberDayNursing(this.nursingNumberPerson) : null;
-        }
+		@Override
+		public NumberDayNursing getNursingNumberLeaveDay2() {
+			 return this.nursingNumberLeaveDay2 != null ? new NumberDayNursing(this.nursingNumberLeaveDay2) : null;
+		}
+
     }
 }

@@ -33,16 +33,7 @@ public class KmamtMngAnnualSet extends UkJpaEntity implements Serializable {
     @Basic(optional = false)
     @Column(name = "CID")
     private String cid;
-    
-    /** The half max grant day. */
-    @Column(name = "HALF_MAX_GRANT_DAY")
-    private Double halfMaxGrantDay;
-    
-    /** The half max day year. */
-    @Basic(optional = false)
-    @Column(name = "HALF_MAX_DAY_YEAR")
-    private Integer halfMaxDayYear;
-    
+        
     /** The half manage atr. */
     @Column(name = "HALF_MANAGE_ATR")
     private Integer halfManageAtr;
@@ -63,24 +54,12 @@ public class KmamtMngAnnualSet extends UkJpaEntity implements Serializable {
     @Column(name = "RETENTION_YEAR")
     private Integer retentionYear;
     
-    /** The remaining max day. */
-    @Column(name = "REMAINING_MAX_DAY")
-    private Double remainingMaxDay;
-    
-    /** The next grant day disp atr. */
-    @Column(name = "NEXT_GRANT_DAY_DISP_ATR")
-    private Integer nextGrantDayDispAtr;
-    
-    /** The remaining num disp atr. */
-    @Column(name = "REMAINING_NUM_DISP_ATR")
-    private Integer remainingNumDispAtr;
-    
     /** The yearly of day. */
-    @Column(name = "YEARLY_OF_DAYS")
+    @Column(name = "SCHEDULD_WORKING_DAYS")
     private Double yearlyOfDays;
     
-    /** The Round Processing Classification. */
-    @Column(name = "ROUND_PRO_CLA")
+    /** ROUND_PRO_CLAThe Round Processing Classification. HALF_ROUND_PROC */
+    @Column(name = "HALF_ROUND_PROC")
     private Integer roundProcessCla;
     
     /**
@@ -106,7 +85,7 @@ public class KmamtMngAnnualSet extends UkJpaEntity implements Serializable {
      */
     public KmamtMngAnnualSet(String cid, Integer halfMaxDayYear) {
         this.cid = cid;
-        this.halfMaxDayYear = halfMaxDayYear;
+      //  this.halfMaxDayYear = halfMaxDayYear;
     }
 
     /* (non-Javadoc)

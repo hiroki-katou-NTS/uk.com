@@ -34,8 +34,7 @@
     <ui:define name="sidebar-content">
         <div id="tabpanel-1" role="tabpanel" data-bind="visible:  $vm.$user.role.isInCharge.attendance">
             <com:ko tag="if" bind="$vm.$user.role.isInCharge.attendance">
-            <div class="sidebar-content-header custom-header" >
-                <div>
+            <div class="sidebar-content-header" >
                     <span class="title">#{i18n.getText('Com_Company')}</span>
                     <!--I2_1-->
                     <a class="goback" tabindex="2"
@@ -46,7 +45,6 @@
                     <button tabindex="4" class="proceed" data-bind="click:iScreenClickRegister, enable: $root.errors.isEmpty" >#{i18n.getText('KSM008_187')}</button>
                     <!--I2_4-->
                     <button tabindex="5" class="danger"  data-bind="enable:vm.isIScreenUpdateMode(), click:iScreenClickDeleteButton" >#{i18n.getText('KSM008_188')}</button>
-                </div>
             </div>
             <div class="contents-area custom-class">
                 <div>
