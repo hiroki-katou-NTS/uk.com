@@ -108,11 +108,9 @@ public class JpaGetKMK004EmploymentExportData extends JpaRepository implements G
 				.getList();
 			
 		try (PreparedStatement stmt = this.connection().prepareStatement(GET_EMPLOYMENT.toString())) {
-//			stmt.setInt(1, startDate);
-//			stmt.setInt(2, endDate);
 			stmt.setString(1, cid);
 			stmt.setString(2, cid);
-			stmt.setInt(3,startYM);
+			stmt.setInt(3, startYM);
 			stmt.setInt(4, endYM);
 			NtsResultSet result = new NtsResultSet(stmt.executeQuery());
 			
@@ -138,7 +136,7 @@ public class JpaGetKMK004EmploymentExportData extends JpaRepository implements G
 		String cid = AppContexts.user().companyId();
 		int month = 1;
 		Query monthQuery = this.getEntityManager().createNativeQuery(GET_EXPORT_MONTH.toString()).setParameter("cid", cid);
-		List data = monthQuery.getResultList();
+		List<?> data = monthQuery.getResultList();
 		if (data.size() == 0) {
 			month = 1;
 		} else {

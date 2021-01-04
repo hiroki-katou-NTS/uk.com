@@ -1,8 +1,8 @@
-package nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetemp;
+package nts.uk.screen.at.app.command.kmk.kmk004.common.monthlyworktimesetemp;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
@@ -16,8 +16,8 @@ import nts.uk.shr.com.context.AppContexts;
  * 
  * @author sonnlb 雇用別月単位労働時間
  */
-@Data
 @NoArgsConstructor
+@Setter
 public class MonthlyWorkTimeSetEmpCommand extends MonthlyWorkTimeSetCommand {
 
 	@Getter
