@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.DisplayInforWhenStarting;
+import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServiceProcess;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
@@ -77,6 +78,9 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 	@Inject
 	private NewAfterRegister newAfterRegister;
 	
+	@Inject
+	private ApplicationApprovalService appRepository;
+	
 	/**
 	 * @name 登録する
 	 */
@@ -100,13 +104,14 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 		
 		//振休振出申請（新規）登録処理 (Xử lý đăng ký application nghỉ bù làm bù (New))
 		//QA: http://192.168.50.4:3000/issues/113451 -> done
+		//QA: http://192.168.50.4:3000/issues/113650
 		this.registrationApplicationProcess(
 				companyId, 
 				abs, 
 				rec, 
 				appDispInfoStartup.getAppDispInfoWithDateOutput().getBaseDate(),
 				appDispInfoStartup.getAppDispInfoNoDateOutput().isMailServerSet(), 
-				appDispInfoStartup.getAppDetailScreenInfo().get().getApprovalLst(), 
+				appDispInfoStartup.getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().get(),
 				command.existRec() ? command.rec.leaveComDayOffMana.stream().map(c->c.toDomain()).collect(Collectors.toList()) : new ArrayList<>(), 
 				command.existAbs() ? command.abs.leaveComDayOffMana.stream().map(c->c.toDomain()).collect(Collectors.toList()) : new ArrayList<>(), 
 				command.existAbs() ? command.abs.payoutSubofHDManagements.stream().map(c->c.toDomain()).collect(Collectors.toList()) : new ArrayList<>(), 
@@ -169,6 +174,7 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 			List<ApprovalPhaseStateImport_New> approvalLst, List<LeaveComDayOffManagement> leaveComDayOffMana_Rec,
 			ManageDistinct holidayManage, ApplicationSetting applicationSetting) {
 		//ドメイン「振出申請」を1件登録する(đăng ký 1 domain[đơn xin nghì bù])
+		appRepository.insertApp(rec.get(), approvalLst);
 		recruitmentAppRepository.insert(rec.get());
 		//アルゴリズム「登録前共通処理（新規）」を実行する(Thực hiện thuật toán [xử lý chung trước khi đăng ký(new)])
 		registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(rec.get().getEmployeeID(), rec.get());
@@ -178,6 +184,7 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 		interimRemainDataMngRegisterDateChange.registerDateChange(companyId, rec.get().getEmployeeID(), Arrays.asList(rec.get().getAppDate().getApplicationDate()));
 		
 		//ドメイン「振休申請」を1件登録する
+		appRepository.insertApp(abs.get(), approvalLst);
 		absenceLeaveAppRepository.insert(abs.get());
 		//アルゴリズム「登録前共通処理（新規）」を実行する(Thực hiện thuật toán [xử lý chung trước khi đăng ký(new)])
 		registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(abs.get().getEmployeeID(), abs.get());
@@ -216,6 +223,7 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 			List<LeaveComDayOffManagement> leaveComDayOffMana_Rec, ManageDistinct holidayManage,
 			ApplicationSetting applicationSetting) {
 		//ドメイン「振出申請」を1件登録する(đăng ký 1 domain[đơn xin nghì bù])
+		appRepository.insertApp(rec.get(), approvalLst);
 		recruitmentAppRepository.insert(rec.get());
 		//アルゴリズム「登録前共通処理（新規）」を実行する(Thực hiện thuật toán [xử lý chung trước khi đăng ký(new)])
 		registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(rec.get().getEmployeeID(), rec.get());
@@ -249,6 +257,7 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 			List<LeaveComDayOffManagement> leaveComDayOffMana_Abs, List<PayoutSubofHDManagement> payoutSubofHDManagement_Abs,
 			ApplicationSetting applicationSetting) {
 		//ドメイン「振休申請」を1件登録する
+		appRepository.insertApp(abs.get(), approvalLst);
 		absenceLeaveAppRepository.insert(abs.get());
 		//アルゴリズム「登録前共通処理（新規）」を実行する(Thực hiện thuật toán [xử lý chung trước khi đăng ký(new)])
 		registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(abs.get().getEmployeeID(), abs.get());

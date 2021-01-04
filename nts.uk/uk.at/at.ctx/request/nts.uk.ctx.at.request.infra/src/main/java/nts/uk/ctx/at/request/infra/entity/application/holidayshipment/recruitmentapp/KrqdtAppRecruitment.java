@@ -65,8 +65,7 @@ public class KrqdtAppRecruitment extends ContractUkJpaEntity implements Serializ
 
 	public KrqdtAppRecruitment(RecruitmentApp domain) {
 		super();
-		this.pK.cId = AppContexts.user().companyId();
-		this.pK.appID = domain.getAppID();
+		this.pK = new KrqdtAppRecAbsPK(AppContexts.user().companyId(), domain.getAppID()); 
 		this.workTypeCd = domain.getWorkInformation().getWorkTypeCode().v();
 		this.workTimeCd = domain.getWorkInformation().getWorkTimeCode().v();
 		this.workTimeStart1 = domain.getWorkTime(new WorkNo(1)).get().getTimeZone().getStartTime().v();

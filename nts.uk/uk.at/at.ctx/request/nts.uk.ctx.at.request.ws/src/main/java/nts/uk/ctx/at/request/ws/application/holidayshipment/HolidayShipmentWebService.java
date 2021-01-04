@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.ws.application.holidayshipment;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -25,7 +26,6 @@ import nts.uk.ctx.at.request.app.command.application.holidayshipment.HolidayShip
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.ReleaseHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveChangeAbsDateCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveHolidayShipmentCommand;
-import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.UpdateHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.SaveHolidayShipmentCommandHandlerRef5;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
@@ -33,7 +33,9 @@ import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmen
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenCFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShipmentDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.WorkTimeInfoDto;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.ChangeValueItemsOnHolidayShipment;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.HolidayShipmentScreenAFinder;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.ChangeDateParam;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.DisplayInforWhenStarting;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApproveProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
@@ -47,16 +49,16 @@ public class HolidayShipmentWebService extends WebService {
 	private HolidayShipmentScreenAFinder screenAFinder;
 	
 	@Inject
+	private ChangeValueItemsOnHolidayShipment changeValueItemsOnHolidayShipment;
+	
+	
+	@Inject
 	private SaveHolidayShipmentCommandHandlerRef5 saveCommandHandler;
-	
-	
 	
 	@Inject
 	private HolidayShipmentScreenCFinder screenCFinder;
 	@Inject
 	private HolidayShipmentScreenBFinder screenBFinder;
-	@Inject
-	private SaveHolidayShipmentCommandHandler saveHandler;
 	@Inject
 	private UpdateHolidayShipmentCommandHandler updateHandler;
 	@Inject
@@ -85,12 +87,16 @@ public class HolidayShipmentWebService extends WebService {
 				);
 	}
 	
-	
-	
 	@POST
 	@Path("changeRecDate")
-	public void changeRecDate(ChangeDateParam param) {
-		
+	public DisplayInforWhenStarting changeRecDate(ChangeDateParam param) {
+		return changeValueItemsOnHolidayShipment.changeRecDate(param.getHolidayDate(), Optional.ofNullable(param.getHolidayDate()), param.displayInforWhenStarting);
+	}
+	
+	@POST
+	@Path("changeAbsDate")
+	public DisplayInforWhenStarting changeAbsDate(ChangeDateParam param) {
+		return changeValueItemsOnHolidayShipment.changeAbsDate(Optional.ofNullable(param.getHolidayDate()), param.getHolidayDate(), param.displayInforWhenStarting);
 	}
 	
 	@POST
@@ -265,7 +271,7 @@ class ChangeWorkTypeParam {
 }
 
 @Value
-class ChangeDateParam {
+class ChangeDateParsam {
 
 	private String holidayDate;
 

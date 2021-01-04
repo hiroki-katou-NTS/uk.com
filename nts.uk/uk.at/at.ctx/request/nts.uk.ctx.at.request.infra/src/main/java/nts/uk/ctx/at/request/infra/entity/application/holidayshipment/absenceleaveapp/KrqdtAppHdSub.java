@@ -74,8 +74,7 @@ public class KrqdtAppHdSub extends ContractUkJpaEntity implements Serializable {
 	
 	public KrqdtAppHdSub(AbsenceLeaveApp domain) {
 		super();
-		this.pK.cId = AppContexts.user().companyId();
-		this.pK.appID = domain.getAppID();
+		this.pK = new KrqdtAppRecAbsPK(AppContexts.user().companyId(), domain.getAppID());
 		this.workTypeCd = domain.getWorkInformation().getWorkTypeCode().v();
 		this.workChangeAtr = domain.getWorkChangeUse().value;
 		if(domain.getWorkInformation().getWorkTimeCodeNotNull().isPresent()) {

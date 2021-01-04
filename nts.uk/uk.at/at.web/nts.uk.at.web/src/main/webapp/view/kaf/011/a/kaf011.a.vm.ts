@@ -88,7 +88,46 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 			vm.absenceLeaveApp.application.employeeIDLst = vm.recruitmentApp.application.employeeIDLst = vm.applicationCommon().employeeIDLst;
 			vm.absenceLeaveApp.application.opAppStandardReasonCD = vm.recruitmentApp.application.opAppStandardReasonCD = vm.applicationCommon().opAppStandardReasonCD;
 			vm.absenceLeaveApp.application.opAppReason = vm.recruitmentApp.application.opAppReason = vm.applicationCommon().opAppReason;
+			
+			vm.recruitmentApp.application.appDate.subscribe(value =>{
+				if(value != null){
+					vm.$blockui("grayout");
+					let holidayDate = vm.appCombinaSelected() == 1 ? null: vm.absenceLeaveApp.application.appDate;
+					vm.$ajax('at/request/application/holidayshipment/changeRecDate',{workingDate: value, holidayDate: holidayDate, displayInforWhenStarting: vm.displayInforWhenStarting()}).then((data: any) =>{
+						vm.bindData(data);
+					}).always(() => {
+						vm.$blockui("hide"); 
+					});
+				}
+			});
+			
+			vm.absenceLeaveApp.application.appDate.subscribe(value =>{
+				if(value != null){
+					vm.$blockui("grayout");
+					let workingDate = vm.appCombinaSelected() == 2 ? null: vm.recruitmentApp.application.appDate;
+					vm.$ajax('at/request/application/holidayshipment/changeAbsDate',{workingDate: workingDate, holidayDate: value, displayInforWhenStarting: vm.displayInforWhenStarting()}).then((data: any) =>{
+						vm.bindData(data);
+					}).always(() => {
+						vm.$blockui("hide"); 
+					});
+				}
+			});
 		}
+		
+		bindData(data:any){
+			let vm =this;
+			vm.appDispInfoStartupOutput(data.appDispInfoStartup);
+			vm.displayInforWhenStarting(data);
+			vm.isSendMail(data.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.manualSendMailAtr == 1);
+			vm.remainDays(data.remainingHolidayInfor.remainDays + '日');
+			vm.workTypeListWorkingDay(data.applicationForWorkingDay.workTypeList);
+			vm.workTypeListHoliDay(data.applicationForHoliday.workTypeList);
+			vm.appCombinaDipslay(data.substituteHdWorkAppSet.simultaneousApplyRequired == 1);
+			vm.recruitmentApp.bindingScreenA(data.applicationForWorkingDay, data);
+			vm.absenceLeaveApp.bindingScreenA(data.applicationForHoliday, data);
+			vm.comment.update(data.substituteHdWorkAppSet);
+		}
+		
 		mounted(){
 			
 		}
@@ -102,20 +141,21 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 				let data = self.displayInforWhenStarting();
 					data.rec = self.appCombinaSelected() != 2 ? ko.toJS(self.recruitmentApp): null;
 					if(data.rec){
-						data.rec.application.appDate = moment(data.rec.application.appDate).format('YYYY/MM/DD');
+						data.rec.application.opAppStartDate = data.rec.application.opAppEndDate = data.rec.application.appDate = moment(data.rec.application.appDate).format('YYYY/MM/DD');
 						_.remove(data.rec.workingHours, function(n: any) {
 							return n.timeZone.startTime == undefined || n.timeZone.startTime == undefined;  
 						}); 
 					}
 					data.abs = self.appCombinaSelected() != 1 ? ko.toJS(self.absenceLeaveApp): null;
 					if(data.abs){
-						data.abs.application.appDate = moment(data.abs.application.appDate).format('YYYY/MM/DD');
+						data.abs.application.opAppStartDate = data.abs.application.opAppEndDate = data.abs.application.appDate = moment(data.abs.application.appDate).format('YYYY/MM/DD');
 						_.remove(data.abs.workingHours, function(n: any) {
 							return n.timeZone.startTime == undefined || n.timeZone.startTime == undefined;  
 						}); 
 					}
 				console.log(data);	
 				vm.$ajax('at/request/application/holidayshipment/save', data).then((data: any) =>{
+					vm.$dialog.info({ messageId: "Msg_15" });
 				}).fail((failData) => {
 					vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds });
 				});
