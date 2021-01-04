@@ -14,7 +14,7 @@ public class HolidayShipmentRefactor5Command {
 	public RecruitmentAppCmd rec;
 	/** 振休振出申請起動時の表示情報  */
 	public DisplayInforWhenStarting displayInforWhenStarting;
-	/** 代行申請か */
+	/** 代行申請か có phải người đại diện không*/
 	public boolean represent;
 	
 	public boolean existAbs() {

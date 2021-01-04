@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.command.application.common.ApplicationInsertCmd;
 import nts.uk.ctx.at.request.app.command.application.common.ApplicationUpdateCmd;
@@ -25,9 +26,10 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  *
  */
 @Getter
+@NoArgsConstructor
 public class AbsenceLeaveAppCmd extends RecruitmentAppCmd{
 	
-	public Integer workChangeUse;
+	public Boolean workChangeUse;
 	
 	public String changeSourceHoliday;
 	
@@ -40,7 +42,7 @@ public class AbsenceLeaveAppCmd extends RecruitmentAppCmd{
 		return new AbsenceLeaveApp(
 				this.workingHours.stream().map(c-> c.toDomain()).collect(Collectors.toList()), 
 				workInformation.toDomain(), 
-				NotUseAtr.valueOf(this.workChangeUse), 
+				NotUseAtr.valueOf(this.workChangeUse?1:0), 
 				StringUtils.isEmpty(this.changeSourceHoliday) ? Optional.empty() : Optional.of(GeneralDate.fromString(this.changeSourceHoliday, "yyyy/MM/dd")), 
 				TypeApplicationHolidays.Abs, 
 				applicationInsert.toDomain());
@@ -51,7 +53,7 @@ public class AbsenceLeaveAppCmd extends RecruitmentAppCmd{
 		return new AbsenceLeaveApp(
 				this.workingHours.stream().map(c-> c.toDomain()).collect(Collectors.toList()), 
 				workInformation.toDomain(), 
-				NotUseAtr.valueOf(this.workChangeUse), 
+				NotUseAtr.valueOf(this.workChangeUse?1:0), 
 				StringUtils.isEmpty(this.changeSourceHoliday) ? Optional.empty() : Optional.of(GeneralDate.fromString(this.changeSourceHoliday, "yyyy/MM/dd")), 
 				TypeApplicationHolidays.Abs, 
 				applicationUpdate.toDomain(applicationDto));
@@ -80,7 +82,7 @@ public class AbsenceLeaveAppCmd extends RecruitmentAppCmd{
 			List<PayoutSubofHDManagementDto> payoutSubofHDManagementsOld) {
 		super(applicationDto, applicationInsert, applicationUpdate, workInformation, workingHours, leaveComDayOffMana,
 				leaveComDayOffManaOld);
-		this.workChangeUse = workChangeUse;
+		this.workChangeUse = workChangeUse == 1;
 		this.changeSourceHoliday = changeSourceHoliday;
 		this.payoutSubofHDManagements = payoutSubofHDManagements;
 		this.payoutSubofHDManagementsOld = payoutSubofHDManagementsOld;

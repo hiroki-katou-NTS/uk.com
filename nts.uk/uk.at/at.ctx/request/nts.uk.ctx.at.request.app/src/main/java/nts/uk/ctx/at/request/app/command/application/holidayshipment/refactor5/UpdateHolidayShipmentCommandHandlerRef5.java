@@ -67,14 +67,14 @@ public class UpdateHolidayShipmentCommandHandlerRef5 {
 		
 		Optional<AbsenceLeaveApp> abs = Optional.empty(); 
 		if(command.existAbs()) {
-			Optional<Application> application = applicationRepository.findByID(command.abs.applicationDto.getAppID());
+			Optional<Application> application = applicationRepository.findByID(command.abs.application.getAppID());
 			if(application.isPresent()) {
 				abs = Optional.of(command.abs.toDomainUpdateAbs(ApplicationDto.fromDomain(application.get())));
 			}
 		}
 		Optional<RecruitmentApp> rec = Optional.empty();
 		if(command.existRec()) {
-			Optional<Application> application = applicationRepository.findByID(command.rec.applicationDto.getAppID());
+			Optional<Application> application = applicationRepository.findByID(command.rec.application.getAppID());
 			if(application.isPresent()) {
 				rec = Optional.of(command.rec.toDomainUpdateRec(ApplicationDto.fromDomain(application.get())));
 			}

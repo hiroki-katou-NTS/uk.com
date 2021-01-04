@@ -7,6 +7,8 @@ module nts.uk.at.view.kaf011 {
 		appType: number; //0: Rec-振出, 1: Abs-振休
 		appID: string;
 		application: Application = new Application();
+		applicationInsert: Application = this.application;
+		applicationUpdate: Application = this.application;
 		workInformation: WorkInformation = new WorkInformation();
 		workingHours: KnockoutObservableArray<TimeZoneWithWorkNo> = ko.observableArray([new TimeZoneWithWorkNo(1)]);
 
@@ -17,7 +19,6 @@ module nts.uk.at.view.kaf011 {
 		workTypeList = ko.observableArray([]);
 		workTimeDisplay: KnockoutObservable<string> = ko.observable();
 		displayInforWhenStarting: any;
-
 		
 		//điều kiện hiển thị ※H1
 		dk1: KnockoutObservable<boolean> = ko.observable(false);
@@ -52,6 +53,11 @@ module nts.uk.at.view.kaf011 {
 				w2.update({startTime: data.startTime2, endTime: data.endTime2});
 				self.workingHours.push(w2);	
 			}
+			if(data.workTime){
+				self.workTimeDisplay(data.workTime + ' ' + 
+									(data.workTimeName?(data.workTimeName + ' ') : '' )+ 
+									moment(Math.floor(data.startTime / 60),'mm').format('mm') + ":" + moment(data.startTime % 60,'mm').format('mm') + getText('KAF011_37') + moment(Math.floor(data.endTime / 60),'mm').format('mm') + ":" + moment(data.endTime % 60,'mm').format('mm'));	
+			}
 			
 		}
 		
@@ -76,11 +82,10 @@ module nts.uk.at.view.kaf011 {
 		convertTimeToString(data: any){ 
 			let self = this;
 			if(data.first){
-				return '';
-			}
-			self.workTimeDisplay(data.selectedWorkTimeCode + ' ' + 
+				self.workTimeDisplay(data.selectedWorkTimeCode + ' ' + 
 									data.selectedWorkTimeName + ' ' + 
-									moment(Math.floor(data.first.start / 60),'mm').format('mm') + ":" + moment(data.first.start % 60,'mm').format('mm') + getText('KAF011_37') + moment(Math.floor(data.first.end / 60),'mm').format('mm') + ":" + moment(data.first.end % 60,'mm').format('mm'));         
+									moment(Math.floor(data.first.start / 60),'mm').format('mm') + ":" + moment(data.first.start % 60,'mm').format('mm') + getText('KAF011_37') + moment(Math.floor(data.first.end / 60),'mm').format('mm') + ":" + moment(data.first.end % 60,'mm').format('mm'));
+			}         
 		}
 		
 		checkDisplay(){
@@ -102,26 +107,6 @@ module nts.uk.at.view.kaf011 {
 						|| self.displayInforWhenStarting.workInfoAttendanceReflect.reflectWorkHour == 2) 
 		}
 				
-		time_convert(): string{ 
-			let self = this;
-			let start = _.find(self.workingHours(), {'workNo': 1}).timeZone.startTime();
-			let end = _.find(self.workingHours(), {'workNo': 1}).timeZone.endTime(); 
-			if(!start || !end){
-				return '';
-			}
-			return moment(Math.floor(start / 60),'mm').format('mm') + ":" + moment(start % 60,'mm').format('mm') + getText('KAF011_37') + moment(Math.floor(end / 60),'mm').format('mm') + ":" + moment(end % 60,'mm').format('mm');         
-		}
-		
-		collectWorkingHours(self: any){
-			self.workingHours = [];
-			if(self.workingHours1.timeZone.startTime() && self.workingHours1.timeZone.endTime()){
-				self.workingHours.push(self.workingHours1);
-			}
-			if(self.workingHours2.timeZone.startTime() && self.workingHours2.timeZone.endTime()){
-				self.workingHours.push(self.workingHours2);
-			}
-		}
-		
 		openKDL003() {
 			let self = this;
 			nts.uk.ui.windows.setShared('parentCodes',{
@@ -235,7 +220,7 @@ module nts.uk.at.view.kaf011 {
 			let self = this;
 			self.workNo = workNo;
 		}
-		update(timeZone: any){
+		update(timeZone: any) {
 			let self = this;
 			self.timeZone.update(timeZone);
 		}

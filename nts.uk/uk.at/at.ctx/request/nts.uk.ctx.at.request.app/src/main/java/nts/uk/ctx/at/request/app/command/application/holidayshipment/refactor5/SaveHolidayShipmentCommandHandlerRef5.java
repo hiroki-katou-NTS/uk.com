@@ -11,7 +11,7 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.dto.HolidayShipmentRefactor5Command;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.DisplayInforWhenStarting;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServiceProcess;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
@@ -80,13 +80,13 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 	/**
 	 * @name 登録する
 	 */
-	public void register(HolidayShipmentRefactor5Command command){
+	public void register(DisplayInforWhenStarting command){
 		String companyId = AppContexts.user().companyId();
 		Optional<AbsenceLeaveApp> abs = Optional.ofNullable(command.existAbs() ? command.abs.toDomainInsertAbs() : null);
 		Optional<RecruitmentApp> rec = Optional.ofNullable(command.existRec() ? command.rec.toDomainInsertRec(): null);
 
 		//申請表示情報 = 振休振出申請起動時の表示情報．申請表示情報
-		AppDispInfoStartupOutput appDispInfoStartup = command.displayInforWhenStarting.appDispInfoStartup.toDomain();
+		AppDispInfoStartupOutput appDispInfoStartup = command.appDispInfoStartup.toDomain();
 		
 		//登録前のエラーチェック処理(Xử lý error check trước khi đăng ký)
 		this.errorCheckProcessingBeforeRegistrationKAF011.processing(
@@ -110,7 +110,7 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 				command.existRec() ? command.rec.leaveComDayOffMana.stream().map(c->c.toDomain()).collect(Collectors.toList()) : new ArrayList<>(), 
 				command.existAbs() ? command.abs.leaveComDayOffMana.stream().map(c->c.toDomain()).collect(Collectors.toList()) : new ArrayList<>(), 
 				command.existAbs() ? command.abs.payoutSubofHDManagements.stream().map(c->c.toDomain()).collect(Collectors.toList()) : new ArrayList<>(), 
-				EnumAdaptor.valueOf(command.displayInforWhenStarting.holidayManage, ManageDistinct.class), 
+				EnumAdaptor.valueOf(command.holidayManage, ManageDistinct.class), 
 				appDispInfoStartup.getAppDispInfoNoDateOutput().getApplicationSetting());
 	}
 	

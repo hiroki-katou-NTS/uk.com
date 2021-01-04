@@ -104,17 +104,17 @@ public class PreRegistrationErrorCheck {
 	 */
 	public void preconditionCheck(Optional<AbsenceLeaveApp> abs, Optional<RecruitmentApp> rec) {
 		String cId = AppContexts.user().companyId();
-		if (abs.isPresent()) {
-			//勤務種類、就業時間帯チェックのメッセージを表示 (Hiển thị message check Type of work, working hours)
-			this.detailBeforeUpdate.displayWorkingHourCheck(cId, abs.get().getWorkInformation().getWorkTypeCode().v(), abs.get().getWorkInformation().getWorkTimeCode().v());
-			//ドメインモデル「振休申請」の事前条件をチェックする
-			abs.get().validateApp();
-		}
 		if (rec.isPresent()) {
 			//勤務種類、就業時間帯チェックのメッセージを表示 (Hiển thị message check Type of work, working hours)
 			this.detailBeforeUpdate.displayWorkingHourCheck(cId, rec.get().getWorkInformation().getWorkTypeCode().v(), rec.get().getWorkInformation().getWorkTimeCode().v());
 			//ドメインモデル「振出申請」の事前条件をチェックする
 			rec.get().validateApp();
+		}
+		if (abs.isPresent()) {
+			//勤務種類、就業時間帯チェックのメッセージを表示 (Hiển thị message check Type of work, working hours)
+			this.detailBeforeUpdate.displayWorkingHourCheck(cId, abs.get().getWorkInformation().getWorkTypeCode().v(), abs.get().getWorkInformation().getWorkTimeCodeNotNull().map(c->c.v()).orElse(null));
+			//ドメインモデル「振休申請」の事前条件をチェックする
+			abs.get().validateApp();
 		}
 	}
 	

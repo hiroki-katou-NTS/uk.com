@@ -28,7 +28,6 @@ import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveHoliday
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.UpdateHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.SaveHolidayShipmentCommandHandlerRef5;
-import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.dto.HolidayShipmentRefactor5Command;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenBFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenCFinder;
@@ -96,7 +95,7 @@ public class HolidayShipmentWebService extends WebService {
 	
 	@POST
 	@Path("save")
-	public void save(HolidayShipmentRefactor5Command command) {
+	public void save(DisplayInforWhenStarting command) {
 		saveCommandHandler.register(command);
 	}
 	

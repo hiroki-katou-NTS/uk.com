@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.command.application.common.ApplicationInsertCmd;
 import nts.uk.ctx.at.request.app.command.application.common.ApplicationUpdateCmd;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
@@ -21,9 +22,10 @@ import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.LeaveComDayOf
  */
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class RecruitmentAppCmd {
 	
-	public ApplicationDto applicationDto;
+	public ApplicationDto application;
 	
 	/** For KAF011A */
 	public ApplicationInsertCmd applicationInsert;

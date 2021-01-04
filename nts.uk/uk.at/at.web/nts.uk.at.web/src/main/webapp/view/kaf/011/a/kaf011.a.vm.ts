@@ -8,9 +8,6 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 	import RecruitmentApp = nts.uk.at.view.kaf011.RecruitmentApp;
 	import AbsenceLeaveApp = nts.uk.at.view.kaf011.AbsenceLeaveApp;
 	import Comment = nts.uk.at.view.kaf011.Comment;
-	const APIKAF011 = {
-        start: "at/request/application/holidayshipment/startPageARefactor"
-    }
 
 	@bean()
 	export class Kaf011AViewModel extends Kaf000AViewModel {
@@ -50,19 +47,24 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 		
 		settingCheck = ko.observable(true);
 		
-		created(params: TimeZoneWithWorkNo) {
+		created(params: KAF011Param) {
 			const vm = this;
 			let empLst: Array<string> = [];
 			let	dateLst: Array<string> = [];
+			if(params){
+				empLst = params.employeeIDLst || [__viewContext.user.employeeId];
+				params.recAppDate? dateLst.push(params.recAppDate):true;
+				params.absAppDate? dateLst.push(params.absAppDate):true;
+			}
 			vm.$blockui("grayout");
 			vm.loadData(empLst, dateLst, vm.appType()).then(() => {
-				vm.$ajax(APIKAF011.start, {sIDs: [], appDate: [], appDispInfoStartup: vm.appDispInfoStartupOutput()}).then((data: any) =>{
+				vm.$ajax('at/request/application/holidayshipment/startPageARefactor',{sIDs: [], appDate: [], appDispInfoStartup: vm.appDispInfoStartupOutput()}).then((data: any) =>{
 					vm.displayInforWhenStarting(data);
 					vm.isSendMail(data.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.manualSendMailAtr == 1);
 					vm.remainDays(data.remainingHolidayInfor.remainDays + '日');
 					vm.workTypeListWorkingDay(data.applicationForWorkingDay.workTypeList);
 					vm.workTypeListHoliDay(data.applicationForHoliday.workTypeList);
-					vm.appCombinaDipslay(data.substituteHdWorkAppSet.simultaneousApplyRequired == 0);
+					vm.appCombinaDipslay(data.substituteHdWorkAppSet.simultaneousApplyRequired == 1);
 					vm.recruitmentApp.bindingScreenA(data.applicationForWorkingDay, data);
 					vm.absenceLeaveApp.bindingScreenA(data.applicationForHoliday, data);
 					vm.comment.update(data.substituteHdWorkAppSet);
@@ -75,31 +77,48 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 				console.log(failData);
 				if (failData.messageId === "Msg_43") {
 					vm.$dialog.error(failData).then(() => { vm.$jump("com", "/view/ccg/008/a/index.xhtml"); });
-
 				} else {
 					vm.$dialog.error(failData);
 				}
 				vm.$blockui("hide"); 
 			});
 			
+			// refer Object common to rec and abs
 			vm.absenceLeaveApp.application.prePostAtr = vm.recruitmentApp.application.prePostAtr = vm.applicationCommon().prePostAtr;
 			vm.absenceLeaveApp.application.employeeIDLst = vm.recruitmentApp.application.employeeIDLst = vm.applicationCommon().employeeIDLst;
 			vm.absenceLeaveApp.application.opAppStandardReasonCD = vm.recruitmentApp.application.opAppStandardReasonCD = vm.applicationCommon().opAppStandardReasonCD;
 			vm.absenceLeaveApp.application.opAppReason = vm.recruitmentApp.application.opAppReason = vm.applicationCommon().opAppReason;
 		}
-		mounted(){}
+		mounted(){
+			
+		}
 		
 		register() {
+			const vm = this;
 			$('.nts-input').trigger("validate");
 			$('input').trigger("validate");
 			if(!nts.uk.ui.errors.hasError()){
 				let self = this;
-				let data = {
-					recruitmentApp : ko.toJS(self.recruitmentApp),
-					absenceLeaveApp : ko.toJS(self.recruitmentApp),
-					displayInforWhenStarting: self.displayInforWhenStarting()
-				}
+				let data = self.displayInforWhenStarting();
+					data.rec = self.appCombinaSelected() != 2 ? ko.toJS(self.recruitmentApp): null;
+					if(data.rec){
+						data.rec.application.appDate = moment(data.rec.application.appDate).format('YYYY/MM/DD');
+						_.remove(data.rec.workingHours, function(n: any) {
+							return n.timeZone.startTime == undefined || n.timeZone.startTime == undefined;  
+						}); 
+					}
+					data.abs = self.appCombinaSelected() != 1 ? ko.toJS(self.absenceLeaveApp): null;
+					if(data.abs){
+						data.abs.application.appDate = moment(data.abs.application.appDate).format('YYYY/MM/DD');
+						_.remove(data.abs.workingHours, function(n: any) {
+							return n.timeZone.startTime == undefined || n.timeZone.startTime == undefined;  
+						}); 
+					}
 				console.log(data);	
+				vm.$ajax('at/request/application/holidayshipment/save', data).then((data: any) =>{
+				}).fail((failData) => {
+					vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds });
+				});
 			}
 			
 			
@@ -107,7 +126,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 		
 		
 	}
-	export interface TimeZoneWithWorkNo {
+	export interface KAF011Param {
 		employeeIDLst: string[];
 		recAppDate: string; 
 		absAppDate: string;

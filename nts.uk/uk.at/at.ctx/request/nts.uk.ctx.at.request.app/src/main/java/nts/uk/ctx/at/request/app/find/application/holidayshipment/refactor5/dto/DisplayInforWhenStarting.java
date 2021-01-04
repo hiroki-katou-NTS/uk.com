@@ -42,4 +42,14 @@ public class DisplayInforWhenStarting {
 	//振出申請
 	public RecruitmentAppCmd rec;
 	
+	/** 代行申請か có phải người đại diện không*/
+	public boolean represent;
+	
+	public boolean existAbs() {
+		return this.abs != null;
+	}
+	
+	public boolean existRec() {
+		return this.rec != null;
+	}
 }
