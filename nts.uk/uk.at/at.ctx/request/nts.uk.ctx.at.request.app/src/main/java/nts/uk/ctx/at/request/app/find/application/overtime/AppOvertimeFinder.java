@@ -368,10 +368,16 @@ public class AppOvertimeFinder {
 	}
 	
 	public List<ConfirmMsgOutput> checkBeforeInsert(ParamCheckBeforeRegister param) {
+		Application application = param.appOverTime.application.toDomain();
+		AppOverTime appOverTime = param.appOverTime.toDomain();
+		if (appOverTime.getDetailOverTimeOp().isPresent()) {
+			appOverTime.getDetailOverTimeOp().get().setAppId(application.getAppID());
+		}
+		appOverTime.setApplication(application);
 		return overtimeService.checkBeforeInsert(
 				param.require,
 				param.companyId,
-				param.appOverTime.toDomain(),
+				appOverTime,
 				param.displayInfoOverTime.toDomain());
 	}
 	

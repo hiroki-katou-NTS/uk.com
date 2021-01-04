@@ -11,7 +11,9 @@ module nts.uk.at.view.kaf020.a {
         optionalItemAppSet: KnockoutObservableArray<OptionalItemAppSet> = ko.observableArray([]);
         empLst: Array<string> = [];
         dateLst: Array<string> = [];
+        baseDate: string;
         isAgentMode: KnockoutObservable<boolean> = ko.observable(false);
+
 
         created(params: AppInitParam) {
             const vm = this;
@@ -21,6 +23,7 @@ module nts.uk.at.view.kaf020.a {
                     vm.empLst = params.employeeIds;
                 }
                 if (!_.isEmpty(params.baseDate)) {
+                    vm.baseDate = params.baseDate;
                     let paramDate = moment(params.baseDate).format('YYYY/MM/DD');
                     vm.dateLst = [paramDate];
                 }
@@ -33,12 +36,7 @@ module nts.uk.at.view.kaf020.a {
                 if (data.length == 0) {
                     vm.$dialog.error({messageId: "Msg_1694"});
                 } else if (data.length == 1 && (!params || !params.fromB)) {
-                    vm.detail({
-                        optionalItem: data[0],
-                        empLst: vm.empLst,
-                        dateLst: vm.dateLst,
-                        isAgentMode: vm.isAgentMode()
-                    });
+                    vm.detail(data[0]);
                 } else {
                     vm.optionalItemAppSet(data);
                     $('#fixed-table').focus();
@@ -60,7 +58,8 @@ module nts.uk.at.view.kaf020.a {
                 optionalItem: optionalItem,
                 empLst: vm.empLst,
                 dateLst: vm.dateLst,
-                isAgentMode: vm.isAgentMode()
+                isAgentMode: vm.isAgentMode(),
+                baseDate: vm.baseDate
             });
         }
 

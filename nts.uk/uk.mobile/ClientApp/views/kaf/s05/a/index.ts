@@ -3,7 +3,7 @@ import { OverTimeShiftNight, BreakTime, TimeZoneNew, TimeZoneWithWorkNo, AppOver
 import { component, Prop } from '@app/core/component';
 import { StepwizardComponent } from '@app/components';
 import { KafS05Step1Component } from '../step1';
-import { KafS05Step2Component } from '../step2';
+import { HolidayTime, KafS05Step2Component } from '../step2';
 import { KafS05Step3Component } from '../step3';
 import { KDL002Component } from '../../../kdl/002';
 import { Kdl001Component } from '../../../kdl/001';
@@ -45,6 +45,8 @@ export class KafS05Component extends KafS00ShrComponent {
     public overTimeClf: number;
     public appId: string;
 
+    public isMsg_1562: Boolean = false;
+
     @Prop()
     public readonly params: InitParam;
 
@@ -60,6 +62,11 @@ export class KafS05Component extends KafS00ShrComponent {
 
         return value == NotUseAtr.USE;
     }
+    public get c2() {
+
+        return true;
+    }
+
     // 「残業申請の表示情報．基準日に関係しない情報．残業申請設定．申請詳細設定．時刻計算利用区分」＝する
     public get c3() {
         const self = this;
@@ -90,7 +97,7 @@ export class KafS05Component extends KafS00ShrComponent {
         let model = self.model as Model;
         let value = _.get(model, 'displayInfoOverTime.appDispInfoStartup.appDispInfoNoDateOutput.managementMultipleWorkCycles');
 
-        return value;
+        return value && self.c3;
     }
 
 
@@ -106,8 +113,14 @@ export class KafS05Component extends KafS00ShrComponent {
 
     public get c4_1() {
         const self = this;
+        let prePost;
+        if (self.modeNew) {
+            prePost = self.application.prePostAtr;
+        } else {
+            prePost = self.model.displayInfoOverTime.appDispInfoStartup.appDetailScreenInfo.application.prePostAtr;
+        }
 
-        return self.application.prePostAtr == 1;
+        return prePost == 1;
     }
     // 「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．時間外深夜時間を反映する」= する
     public get c5() {
@@ -435,38 +448,54 @@ export class KafS05Component extends KafS00ShrComponent {
             } else {
                 appOverTimeInsert.application = self.model.displayInfoOverTime.appDispInfoStartup.appDetailScreenInfo.application;
             }
-            if (step1.getWorkType()) {
+            if (step1.getWorkType() && self.c3) {
                 appOverTimeInsert.workInfoOp = {} as WorkInformation;
                 appOverTimeInsert.workInfoOp.workType = step1.getWorkType();
                 appOverTimeInsert.workInfoOp.workTime = step1.getWorkTime();
             }
             appOverTimeInsert.workHoursOp = [] as Array<TimeZoneWithWorkNo>;
-            {
-                let start1 = _.get(step1.getWorkHours1(), 'start');
-                let end1 = _.get(step1.getWorkHours1(), 'end');
-                if (_.isNumber(start1) && _.isNumber(end1)) {
-                    let timeZone = {} as TimeZoneWithWorkNo;
-                    timeZone.workNo = 1;
-                    timeZone.timeZone = {} as TimeZoneNew;
-                    timeZone.timeZone.startTime = start1;
-                    timeZone.timeZone.endTime = end1;
-                    appOverTimeInsert.workHoursOp.push(timeZone);
+            {   
+                if (self.c3) {
+                    let start = _.get(step1.getWorkHours1(), 'start');
+                    let end = _.get(step1.getWorkHours1(), 'end');
+                    if (_.isNumber(start) && _.isNumber(end)) {
+                        let timeZone = {} as TimeZoneWithWorkNo;
+                        timeZone.workNo = 1;
+                        timeZone.timeZone = {} as TimeZoneNew;
+                        timeZone.timeZone.startTime = start;
+                        timeZone.timeZone.endTime = end;
+                        appOverTimeInsert.workHoursOp.push(timeZone);
+                    }
+                }
+                if (self.c3_2) {
+                    let start = _.get(step1.getWorkHours2(), 'start');
+                    let end = _.get(step1.getWorkHours2(), 'end');
+                    if (_.isNumber(start) && _.isNumber(end)) {
+                        let timeZone = {} as TimeZoneWithWorkNo;
+                        timeZone.workNo = 2;
+                        timeZone.timeZone = {} as TimeZoneNew;
+                        timeZone.timeZone.startTime = start;
+                        timeZone.timeZone.endTime = end;
+                        appOverTimeInsert.workHoursOp.push(timeZone);
+                    }
                 }
             }
-            appOverTimeInsert.breakTimeOp = [] as Array<TimeZoneWithWorkNo>;
-            let breakTimes = step1.getBreakTimes() as Array<BreakTime>;
-            _.forEach(breakTimes, (item: BreakTime, index: number) => {
-                let start = _.get(item, 'valueHours.start');
-                let end = _.get(item, 'valueHours.end');
-                if (_.isNumber(start) && _.isNumber(end)) {
-                    let timeZone = {} as TimeZoneWithWorkNo;
-                    timeZone.workNo = index + 1;
-                    timeZone.timeZone = {} as TimeZoneNew;
-                    timeZone.timeZone.startTime = start;
-                    timeZone.timeZone.endTime = end;
-                    appOverTimeInsert.breakTimeOp.push(timeZone);
-                }
-            });
+            if (self.c3_1) {
+                appOverTimeInsert.breakTimeOp = [] as Array<TimeZoneWithWorkNo>;
+                let breakTimes = step1.getBreakTimes() as Array<BreakTime>;
+                _.forEach(breakTimes, (item: BreakTime, index: number) => {
+                    let start = _.get(item, 'valueHours.start');
+                    let end = _.get(item, 'valueHours.end');
+                    if (_.isNumber(start) && _.isNumber(end)) {
+                        let timeZone = {} as TimeZoneWithWorkNo;
+                        timeZone.workNo = index + 1;
+                        timeZone.timeZone = {} as TimeZoneNew;
+                        timeZone.timeZone.startTime = start;
+                        timeZone.timeZone.endTime = end;
+                        appOverTimeInsert.breakTimeOp.push(timeZone);
+                    }
+                });
+            }
 
         }
 
@@ -479,6 +508,7 @@ export class KafS05Component extends KafS00ShrComponent {
         let step2 = self.$refs.step2 as KafS05Step2Component;
 
         let overTimes = step2.overTimes as Array<OverTime>;
+        let holidayTimes = step2.holidayTimes as Array<HolidayTime>;
         let applicationTime = appOverTime.applicationTime = {} as ApplicationTime;
         let applicationTimes = applicationTime.applicationTime = [] as Array<OvertimeApplicationSetting>;
         _.forEach(overTimes, (item: OverTime) => {
@@ -501,7 +531,7 @@ export class KafS05Component extends KafS00ShrComponent {
             }
 
         });
-        _.forEach(overTimes, (item: OverTime) => {
+        _.forEach(holidayTimes, (item: HolidayTime) => {
             // AttendanceType.BREAKTIME
             if (item.type == AttendanceType.BREAKTIME && item.applicationTime > 0) {
                 let overtimeApplicationSetting = {} as OvertimeApplicationSetting;
@@ -512,6 +542,10 @@ export class KafS05Component extends KafS00ShrComponent {
             }
             if (item.type == AttendanceType.MIDDLE_BREAK_TIME && item.applicationTime > 0) {
                 self.toHolidayMidNightTime(item, applicationTime);
+            } else if (item.type == AttendanceType.MIDDLE_EXORBITANT_HOLIDAY && item.applicationTime > 0) {
+                self.toHolidayMidNightTime(item, applicationTime);
+            } else if (item.type == AttendanceType.MIDDLE_HOLIDAY_HOLIDAY && item.applicationTime > 0) {
+                self.toHolidayMidNightTime(item, applicationTime);
             }
 
         });
@@ -520,7 +554,7 @@ export class KafS05Component extends KafS00ShrComponent {
         // assign value to overtime and holidaytime
         return appOverTime;
     }
-    public toHolidayMidNightTime(overTime: OverTime, applicationTime: ApplicationTime) {
+    public toHolidayMidNightTime(overTime: HolidayTime, applicationTime: ApplicationTime) {
         if (_.isNil(applicationTime.overTimeShiftNight)) {
             applicationTime.overTimeShiftNight = {} as OverTimeShiftNight;
         }
@@ -537,7 +571,7 @@ export class KafS05Component extends KafS00ShrComponent {
         }
         holidayMidNightTime.attendanceTime = overTime.applicationTime;
 
-        return holidayMidNightTime;
+        return applicationTime.overTimeShiftNight.midNightHolidayTimes.push(holidayMidNightTime);
     }
 
     public toStep(value: number) {
@@ -547,9 +581,9 @@ export class KafS05Component extends KafS00ShrComponent {
             vm.$mask('show');
             let step1 = vm.$refs.step1 as KafS05Step1Component;
             vm.isValidateAll = vm.customValidate(step1);
-            vm.$validate();
+            step1.$validate();
             window.scrollTo(500, 0);
-            if (!vm.$valid || !vm.isValidateAll) {
+            if (!vm.$valid || !vm.isValidateAll || !step1.$valid) {
                 vm.$nextTick(() => {
                     vm.$mask('hide');
                 });
@@ -665,11 +699,6 @@ export class KafS05Component extends KafS00ShrComponent {
                     }).then((result: any) => {
                         vm.appId = result.data.appID;
                         vm.toStep(3);
-
-                        // return vm.$modal.info({ messageId: 'Msg_15'}).then(() => {
-
-                        //     return true;
-                        // });	
                     });
                 }
             }).then((result: any) => {
