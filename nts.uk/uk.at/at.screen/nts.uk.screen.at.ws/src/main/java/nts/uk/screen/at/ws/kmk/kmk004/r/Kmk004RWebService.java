@@ -5,10 +5,10 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetemp.CopyMonthlyWorkTimeSetEmpCommandHandler;
-import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetsha.CopyMonthlyWorkTimeSetShaCommandHandler;
-import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetwkp.CopyMonthlyWorkTimeSetCommand;
-import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetwkp.CopyMonthlyWorkTimeSetWkpCommandHandler;
+import nts.uk.screen.at.app.command.kmk.kmk004.common.monthlyworktimesetemp.CopyMonthlyWorkTimeSetEmpCommandHandler;
+import nts.uk.screen.at.app.command.kmk.kmk004.common.monthlyworktimesetsha.CopyMonthlyWorkTimeSetShaCommandHandler;
+import nts.uk.screen.at.app.command.kmk.kmk004.common.monthlyworktimesetwkp.CopyMonthlyWorkTimeSetCommand;
+import nts.uk.screen.at.app.command.kmk.kmk004.common.monthlyworktimesetwkp.CopyMonthlyWorkTimeSetWkpCommandHandler;
 
 @Path("screen/at/kmk004/r")
 @Produces("application/json")

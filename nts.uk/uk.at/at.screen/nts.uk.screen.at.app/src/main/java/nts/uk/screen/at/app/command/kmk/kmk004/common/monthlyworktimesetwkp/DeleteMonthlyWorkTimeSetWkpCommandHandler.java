@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetwkp;
+package nts.uk.screen.at.app.command.kmk.kmk004.common.monthlyworktimesetwkp;
 
 /**
  * 

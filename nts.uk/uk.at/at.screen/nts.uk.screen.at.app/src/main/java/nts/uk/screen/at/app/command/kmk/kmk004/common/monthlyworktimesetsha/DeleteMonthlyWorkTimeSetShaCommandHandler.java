@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetsha;
+package nts.uk.screen.at.app.command.kmk.kmk004.common.monthlyworktimesetsha;
 
 /**
  * 

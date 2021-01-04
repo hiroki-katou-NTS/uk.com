@@ -11,9 +11,9 @@ import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 import nts.uk.ctx.bs.company.dom.company.GetThePeriodOfTheYear;
-import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetcom.DeleteMonthlyWorkTimeSetComCommand;
-import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetcom.DeleteMonthlyWorkTimeSetComCommandHandler;
-import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetcom.YearMonthPeriodCommand;
+import nts.uk.screen.at.app.command.kmk.kmk004.common.monthlyworktimesetcom.DeleteMonthlyWorkTimeSetComCommand;
+import nts.uk.screen.at.app.command.kmk.kmk004.common.monthlyworktimesetcom.DeleteMonthlyWorkTimeSetComCommandHandler;
+import nts.uk.screen.at.app.command.kmk.kmk004.common.monthlyworktimesetcom.YearMonthPeriodCommand;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

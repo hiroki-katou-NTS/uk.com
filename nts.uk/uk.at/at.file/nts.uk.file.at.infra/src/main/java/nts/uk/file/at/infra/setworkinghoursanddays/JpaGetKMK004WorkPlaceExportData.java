@@ -113,7 +113,7 @@ public class JpaGetKMK004WorkPlaceExportData extends JpaRepository implements Ge
 			String cid = AppContexts.user().companyId();
 			int month = 1;
 			Query monthQuery = this.getEntityManager().createNativeQuery(GET_EXPORT_MONTH.toString()).setParameter("cid", cid);
-			List data = monthQuery.getResultList();
+			List<?> data = monthQuery.getResultList();
 			if (data.size() == 0) {
 				month = 1;
 			} else {

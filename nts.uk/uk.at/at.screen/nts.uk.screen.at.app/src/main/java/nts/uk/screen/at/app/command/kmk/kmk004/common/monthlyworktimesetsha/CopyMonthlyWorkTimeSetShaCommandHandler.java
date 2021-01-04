@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetemp;
+package nts.uk.screen.at.app.command.kmk.kmk004.common.monthlyworktimesetsha;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,17 +19,17 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
-import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetEmp;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetRepo;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetSha;
 import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 import nts.uk.ctx.bs.company.dom.company.GetThePeriodOfTheYear;
 import nts.uk.screen.at.app.command.kmk.kmk004.MonthlyLaborTimeCommand;
-import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetwkp.CopyMonthlyWorkTimeSetCommand;
+import nts.uk.screen.at.app.command.kmk.kmk004.common.monthlyworktimesetwkp.CopyMonthlyWorkTimeSetCommand;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class CopyMonthlyWorkTimeSetEmpCommandHandler extends CommandHandler<CopyMonthlyWorkTimeSetCommand> {
+public class CopyMonthlyWorkTimeSetShaCommandHandler extends CommandHandler<CopyMonthlyWorkTimeSetCommand> {
 	@Inject
 	private MonthlyWorkTimeSetRepo monthlyWorkTimeSetRepo;
 
@@ -37,7 +37,7 @@ public class CopyMonthlyWorkTimeSetEmpCommandHandler extends CommandHandler<Copy
 	private CompanyRepository companyRepo;
 
 	@Inject
-	private SaveMonthlyWorkTimeSetEmpCommandHandler saveHandler;
+	private SaveMonthlyWorkTimeSetShaCommandHandler saveHandler;
 
 	@Override
 	protected void handle(CommandHandlerContext<CopyMonthlyWorkTimeSetCommand> context) {
@@ -49,31 +49,30 @@ public class CopyMonthlyWorkTimeSetEmpCommandHandler extends CommandHandler<Copy
 		YearMonthPeriod yearMonths = GetThePeriodOfTheYear.getPeriodOfTheYear(require, AppContexts.user().companyId(),
 				cmd.getYear());
 
-		// 2. get(ログイン会社ID,雇用コード,勤務区分,年月期間)
+		// 2. get(ログイン会社ID,社員ID,勤務区分,年月期間)
 
-		List<MonthlyWorkTimeSetEmpCommand> workTimeSetEmps = this.monthlyWorkTimeSetRepo
-				.findEmploymentByPeriod(AppContexts.user().companyId(), cmd.getCopySource(),
+		List<MonthlyWorkTimeSetShaCommand> workTimeSetShas = this.monthlyWorkTimeSetRepo
+				.findEmployeeByPeriod(AppContexts.user().companyId(), cmd.getCopySource(),
 						EnumAdaptor.valueOf(cmd.getLaborAttr(), LaborWorkTypeAttr.class), yearMonths)
-				.stream().map(emp -> fromDomainToCommand(emp)).collect(Collectors.toList());
+				.stream().map(sha -> fromDomainToCommand(sha)).collect(Collectors.toList());
 
-		// 3 .職場別月単位労働時間（List）
+		// 3 .社員別月単位労働時間（List)
 
-		cmd.getCopyDestinations().forEach(empCd -> {
-			// ※複写元の職場IDで取得した職場別月単位労働時間の 職場IDに複写先職場IDをセットする
-			workTimeSetEmps.forEach(emp -> {
-				emp.setEmploymentCode(empCd);
+		cmd.getCopyDestinations().forEach(empId -> {
+			// ※複写元の社員IDで取得した社員別月単位労働時間の 社員IDに複写先社員IDをセットする
+			workTimeSetShas.forEach(sha -> {
+				sha.setEmpId(empId);
 			});
 
-			SaveMonthlyWorkTimeSetEmpCommand command = new SaveMonthlyWorkTimeSetEmpCommand(workTimeSetEmps);
+			SaveMonthlyWorkTimeSetShaCommand command = new SaveMonthlyWorkTimeSetShaCommand(workTimeSetShas);
 
 			this.saveHandler.handle(command);
 		});
 
 	}
 
-	private MonthlyWorkTimeSetEmpCommand fromDomainToCommand(MonthlyWorkTimeSetEmp domain) {
-		return new MonthlyWorkTimeSetEmpCommand(domain.getEmployment().v(), domain.getLaborAttr().value,
-				domain.getYm().v(),
+	private MonthlyWorkTimeSetShaCommand fromDomainToCommand(MonthlyWorkTimeSetSha domain) {
+		return new MonthlyWorkTimeSetShaCommand(domain.getEmpId(), domain.getLaborAttr().value, domain.getYm().v(),
 				new MonthlyLaborTimeCommand(domain.getLaborTime().getLegalLaborTime().v(),
 						domain.getLaborTime().getWithinLaborTime().map(x -> x.v()).orElse(null),
 						domain.getLaborTime().getWeekAvgTime().map(x -> x.v()).orElse(null)));

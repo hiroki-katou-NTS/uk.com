@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetcom;
+package nts.uk.screen.at.app.command.kmk.kmk004.common.monthlyworktimesetcom;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -14,9 +14,9 @@ import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTi
 import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 import nts.uk.ctx.bs.company.dom.company.GetThePeriodOfTheYear;
-import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetcom.YearMonthPeriodCommand;
-import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetwkp.DeleteMonthlyWorkTimeSetWkpCommand;
-import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetwkp.DeleteMonthlyWorkTimeSetWkpCommandHandler;
+import nts.uk.screen.at.app.command.kmk.kmk004.common.monthlyworktimesetcom.YearMonthPeriodCommand;
+import nts.uk.screen.at.app.command.kmk.kmk004.common.monthlyworktimesetwkp.DeleteMonthlyWorkTimeSetWkpCommand;
+import nts.uk.screen.at.app.command.kmk.kmk004.common.monthlyworktimesetwkp.DeleteMonthlyWorkTimeSetWkpCommandHandler;
 import nts.uk.screen.at.app.query.kmk004.common.WorkplaceList;
 import nts.uk.shr.com.context.AppContexts;
 

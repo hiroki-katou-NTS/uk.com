@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetemp;
+package nts.uk.screen.at.app.command.kmk.kmk004.common.monthlyworktimesetemp;
 
 import java.util.List;
 import java.util.Optional;

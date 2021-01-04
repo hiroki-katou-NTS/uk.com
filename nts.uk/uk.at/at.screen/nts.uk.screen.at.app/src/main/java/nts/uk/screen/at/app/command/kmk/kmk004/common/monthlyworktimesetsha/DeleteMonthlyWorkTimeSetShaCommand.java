@@ -1,7 +1,7 @@
-package nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetsha;
+package nts.uk.screen.at.app.command.kmk.kmk004.common.monthlyworktimesetsha;
 
 import lombok.Value;
-import nts.uk.screen.at.app.command.kmk.kmk004.monthlyworktimesetcom.YearMonthPeriodCommand;
+import nts.uk.screen.at.app.command.kmk.kmk004.common.monthlyworktimesetcom.YearMonthPeriodCommand;
 
 /**
  * 
