@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.env.dom.mailnoticeset.company.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -13,7 +15,6 @@ import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInformationUseMethod;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.EmployeeInfoContactImport;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.OtherContactDTO;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PersonContactImport;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -26,8 +27,7 @@ public class UserInformationUseMethodService {
 
 	private UserInformationUseMethodService() {}
 
-	public static ContactInformation get(Require require, String employeeId, String personalId) {
-		String companyId = AppContexts.user().companyId();
+	public static ContactInformation get(Require require, String companyId, String employeeId, String personalId) {
 		// $設定 = require.ユーザー情報の使用方法を取得する(ログイン会社ID)
 		Optional<UserInformationUseMethod> setting = require.getUserInfoByCid(companyId);
 		if (!setting.isPresent() || setting.get().getUseOfProfile() == NotUseAtr.NOT_USE) {
@@ -42,7 +42,7 @@ public class UserInformationUseMethodService {
 		// create 連絡先情報DTO
 		// $連絡先　＝　new　連絡先情報DTO()
 		ContactInformation contactInfo = new ContactInformation();
-		
+
 		// $設定.連絡先情報の設定
 		SettingContactInformation settingContactInfo = SettingContactInformation.builder().build();
 		if (setting.isPresent() && setting.get().getSettingContactInformation().isPresent()) {
@@ -51,25 +51,40 @@ public class UserInformationUseMethodService {
 		
 		if (employeeInfoContact.isPresent()) {
 			EmployeeInfoContactImport employeeContact = employeeInfoContact.get();
+			String companyMobilePhoneNumber = "";
+			String seatDialIn = "";
+			String seatExtensionNumber = "";
+			String companyEmailAddress = "";
+			String companyMobileEmailAddress = "";
 			//$連絡先.会社の携帯電話番号　＝　pvt-1.利用チェックする($設定.連絡先情報の設定.携帯電話（会社用）.連絡先利用設定、$社員連絡先.携帯電話番号が在席照会に表示するか)　==　true　？	$社員連絡先.携帯電話番号　：　Optional.Empty	
-			String companyMobilePhoneNumber = checkUsage(settingContactInfo.getCompanyMobilePhone().getContactUsageSetting(),  employeeContact.getIsCellPhoneNumberDisplay())
-					? employeeInfoContact.get().getCellPhoneNo() : "";
-					
+			if (settingContactInfo.getCompanyMobilePhone() != null) {
+				companyMobilePhoneNumber = checkUsage(settingContactInfo.getCompanyMobilePhone().getContactUsageSetting(), employeeContact.getIsCellPhoneNumberDisplay())
+						? employeeInfoContact.get().getCellPhoneNo() : "";
+			}
+
 			// $連絡先.座席ダイヤルイン　＝　pvt-1.利用チェックする($設定.連絡先情報の設定.ダイヤルイン番号.連絡先利用設定、$社員連絡先.座席ダイヤルインが在席照会に表示するか)　==　true　？	$社員連絡先.座席ダイヤルイン　：　Optional.Empty
-			String seatDialIn = checkUsage(settingContactInfo.getDialInNumber().getContactUsageSetting(), employeeContact.getIsSeatDialInDisplay()) 
-					? employeeInfoContact.get().getSeatDialIn() : "";
-			
+			if (settingContactInfo.getDialInNumber() != null) {
+				seatDialIn = checkUsage(settingContactInfo.getDialInNumber().getContactUsageSetting(), employeeContact.getIsSeatDialInDisplay()) 
+						? employeeInfoContact.get().getSeatDialIn() : "";
+			}
+
 			// $連絡先.座席内線番号　＝　pvt-1.利用チェックする($設定.連絡先情報の設定.内線番号.連絡先利用設定、$社員連絡先.座席内線番号が在席照会に表示するか)　==　true　？ $社員連絡先.座席内線番号　：　Optional.Empty												
-			String seatExtensionNumber = checkUsage(settingContactInfo.getExtensionNumber().getContactUsageSetting(), employeeContact.getIsSeatExtensionNumberDisplay()) 
-					? employeeInfoContact.get().getSeatExtensionNumber() : "";
-					
+			if (settingContactInfo.getExtensionNumber() != null) {
+				seatExtensionNumber = checkUsage(settingContactInfo.getExtensionNumber().getContactUsageSetting(), employeeContact.getIsSeatExtensionNumberDisplay()) 
+						? employeeInfoContact.get().getSeatExtensionNumber() : "";
+			}
+
 			// $連絡先.会社のメールアドレス　＝　pvt-1.利用チェックする($設定.連絡先情報の設定.会社メールアドレス.連絡先利用設定、$社員連絡先.メールアドレスが在席照会に表示するか)　==　true　？ $社員連絡先.メールアドレス　：　Optional.Empty												
-			String companyEmailAddress = checkUsage(settingContactInfo.getCompanyEmailAddress().getContactUsageSetting(), employeeContact.getIsMailAddressDisplay()) 
-					? employeeInfoContact.get().getMailAddress() : "";
+			if (settingContactInfo.getCompanyEmailAddress() != null) {
+				companyEmailAddress = checkUsage(settingContactInfo.getCompanyEmailAddress().getContactUsageSetting(), employeeContact.getIsMailAddressDisplay()) 
+						? employeeInfoContact.get().getMailAddress() : "";
+			}
 					
 			// $連絡先.会社の携帯メールアドレス　＝　pvt-1.利用チェックする($設定.連絡先情報の設定.会社携帯メールアドレス.連絡先利用設定、$社員連絡先.携帯メールアドレスが在席照会に表示するか)　==　true　？	$社員連絡先.携帯メールアドレス　：　Optional.Empty																
-			String companyMobileEmailAddress = checkUsage(settingContactInfo.getCompanyMobileEmailAddress().getContactUsageSetting(), employeeContact.getIsMobileMailAddressDisplay()) 
-					? employeeInfoContact.get().getMobileMailAddress() : "";
+			if (settingContactInfo.getCompanyMobileEmailAddress() != null) {
+				companyMobileEmailAddress = checkUsage(settingContactInfo.getCompanyMobileEmailAddress().getContactUsageSetting(), employeeContact.getIsMobileMailAddressDisplay()) 
+						? employeeInfoContact.get().getMobileMailAddress() : "";
+			}
 			
 			contactInfo.setCompanyMobilePhoneNumber(companyMobilePhoneNumber);
 			contactInfo.setSeatDialIn(new ContactName(seatDialIn));
@@ -80,38 +95,60 @@ public class UserInformationUseMethodService {
 
 		if (personalContact.isPresent()) {
 			PersonContactImport personContact = personalContact.get();
+			String personalMobilePhoneNumber = "";
+			String personalEmailAddress = "";
+			String personalMobileEmailAddress = "";
+			String emergencyNumber1 = "";
+			String emergencyNumber2 = "";
 			// $連絡先.個人の携帯電話番号　＝　pvt-1.利用チェックする($設定.連絡先情報の設定.携帯電話（個人用）.連絡先利用設定、$個人連絡先.携帯電話番号が在席照会に表示するか)　==　true　？$個人連絡先.携帯電話番号　：　Optional.Empty														
-			String personalMobilePhoneNumber = checkUsage(settingContactInfo.getPersonalMobilePhone().getContactUsageSetting(), personContact.getIsPhoneNumberDisplay())
-					? personalContact.get().getCellPhoneNo() : "";
-					
+			if (settingContactInfo.getPersonalMobilePhone() != null) {
+				personalMobilePhoneNumber = checkUsage(settingContactInfo.getPersonalMobilePhone().getContactUsageSetting(), personContact.getIsPhoneNumberDisplay())
+						? personalContact.get().getCellPhoneNo() : "";
+			}
+
 			// $連絡先.個人のメールアドレス　＝　pvt-1.利用チェックする($設定.連絡先情報の設定.個人メールアドレス.連絡先利用設定、$個人連絡先.メールアドレスが在席照会に表示するか)　==　true　？$個人連絡先.メールアドレス　：　Optional.Empty												
-			String personalEmailAddress = checkUsage(settingContactInfo.getPersonalEmailAddress().getContactUsageSetting(), personContact.getIsMailAddressDisplay())
-					? personalContact.get().getMailAddress() : "";
-			
+			if (settingContactInfo.getPersonalEmailAddress() != null) {
+				personalEmailAddress = checkUsage(settingContactInfo.getPersonalEmailAddress().getContactUsageSetting(), personContact.getIsMailAddressDisplay())
+						? personalContact.get().getMailAddress() : "";
+			}
+
 			// $連絡先.個人の携帯メールアドレス　＝　pvt-1.利用チェックする($設定.連絡先情報の設定.個人携帯メールアドレス.連絡先利用設定、$個人連絡先.携帯メールアドレスが在席照会に表示するか)　==　true　？	$個人連絡先.携帯メールアドレス　：　Optional.Empty													
-			String personalMobileEmailAddress = checkUsage(settingContactInfo.getPersonalMobileEmailAddress().getContactUsageSetting(), personContact.getIsMobileEmailAddressDisplay())
-					? personalContact.get().getMobileMailAddress() : "";
-					
+			if (settingContactInfo.getPersonalMobileEmailAddress() != null) {
+				personalMobileEmailAddress = checkUsage(settingContactInfo.getPersonalMobileEmailAddress().getContactUsageSetting(), personContact.getIsMobileEmailAddressDisplay())
+						? personalContact.get().getMobileMailAddress() : "";
+			}
+
 			// $連絡先.緊急連絡先１　＝　pvt-1.利用チェックする($設定.連絡先情報の設定.緊急電話番号1.連絡先利用設定、$個人連絡先.緊急連絡先１が在席照会に表示するか)　==　true　？$個人連絡先.緊急連絡先１.電話番号　：　Optional.Empty																
-			String emergencyNumber1 = checkUsage(settingContactInfo.getEmergencyNumber1().getContactUsageSetting(), personContact.getIsEmergencyContact1Display())
-					? personalContact.get().getEmergencyNumber1() : "";
+			if (settingContactInfo.getEmergencyNumber1() != null) {
+				emergencyNumber1 = checkUsage(settingContactInfo.getEmergencyNumber1().getContactUsageSetting(), personContact.getIsEmergencyContact1Display())
+						? personalContact.get().getEmergencyNumber1() : "";
+			}
+
 			// $連絡先.緊急連絡先２　＝　pvt-1.利用チェックする($設定.連絡先情報の設定.緊急電話番号2.連絡先利用設定、$個人連絡先.緊急連絡先２が在席照会に表示するか)　==　true　？$個人連絡先.緊急連絡先２.電話番号　：　Optional.Empty																
-			String emergencyNumber2 = checkUsage(settingContactInfo.getEmergencyNumber2().getContactUsageSetting(), personContact.getIsEmergencyContact2Display())
-					? personalContact.get().getEmergencyNumber2() : "";
+			if (settingContactInfo.getEmergencyNumber2() != null) {
+				emergencyNumber2 = checkUsage(settingContactInfo.getEmergencyNumber2().getContactUsageSetting(), personContact.getIsEmergencyContact2Display())
+						? personalContact.get().getEmergencyNumber2() : "";
+			}
 			// $連絡先.他の連絡先　＝　pvt-1.利用チェックする($設定.連絡先情報の設定.他の連絡先.連絡先利用設定、$個人連絡先.他の連絡先.在席照会に表示するか)　==　true　？new　他の連絡先情報（$個人連絡先.他の連絡先.NO、$設定.連絡先情報の設定.他の連絡先.連絡先名、$個人連絡先.他の連絡先.連絡先のアドレス）　：　Optional.Empty						
 			// ※他の連絡先がListです（1→５）
 
 			// Map<No, $設定.連絡先情報の設定.他の連絡先.連絡先利用設定>
-			Map<Integer, OtherContact> otherContacts = settingContactInfo.getOtherContacts().stream()
-					.collect(Collectors.toMap(OtherContact::getNo, valueMapper -> valueMapper));
+			Map<Integer, OtherContact> otherContacts = settingContactInfo.getOtherContacts() == null
+					? new HashMap<Integer, OtherContact>()
+					: settingContactInfo.getOtherContacts().stream()
+						.collect(Collectors.toMap(OtherContact::getNo, valueMapper -> valueMapper));
 			// Map<No, $個人連絡先.他の連絡先.在席照会に表示するか>
-			Map<Integer, OtherContactDTO> otherContactDtos = personContact.getOtherContacts().stream()
-					.collect(Collectors.toMap(OtherContactDTO::getNo, valueMapper -> valueMapper));
+			Map<Integer, OtherContactDTO> otherContactDtos = personContact.getOtherContacts() == null
+					? new HashMap<Integer, OtherContactDTO>()
+					: personContact.getOtherContacts().stream()
+						.collect(Collectors.toMap(OtherContactDTO::getNo, valueMapper -> valueMapper));
 			
-			List<OtherContactInfomation> otherContactInfors = personContact.getOtherContacts().stream().map(mapper -> {
-				return checkUsage(otherContacts.get(mapper.getNo()).getContactUsageSetting(), Optional.of(otherContactDtos.get(mapper.getNo()).isDisplay()))
-					? new OtherContactInfomation(mapper.getNo(), otherContacts.get(mapper.getNo()).getContactName().v(), otherContactDtos.get(mapper.getNo()).getAddress())
-					: null;
+			List<OtherContactInfomation> otherContactInfors = personContact.getOtherContacts() == null
+					? new ArrayList<>()
+					: personContact.getOtherContacts().stream().map(mapper -> {
+						return checkUsage(otherContacts.get(mapper.getNo()).getContactUsageSetting(), Optional.of(otherContactDtos.get(mapper.getNo()).isDisplay()))
+							? new OtherContactInfomation(mapper.getNo(), otherContactDtos.get(mapper.getNo()).getAddress(), otherContacts.get(mapper.getNo()).getContactName().v())
+							: null;
 			}).collect(Collectors.toList());
 			
 			contactInfo.setPersonalMobilePhoneNumber(personalMobilePhoneNumber);
@@ -131,12 +168,14 @@ public class UserInformationUseMethodService {
 	 * @param isDisplayAttendance
 	 * @return
 	 */
-	private static boolean checkUsage(ContactUsageSetting contactUsageSetting, Optional<Boolean> isDisplayAttendance) {
-		if (contactUsageSetting == ContactUsageSetting.DO_NOT_USE)
+	public static boolean checkUsage(ContactUsageSetting contactUsageSetting, Optional<Boolean> isDisplayAttendance) {
+		if (contactUsageSetting == ContactUsageSetting.DO_NOT_USE) {
 			return false;
-		if (contactUsageSetting == ContactUsageSetting.USE)
+		}
+		if (contactUsageSetting == ContactUsageSetting.USE) {
 			return true;
-		return isDisplayAttendance.isPresent();
+		}
+		return isDisplayAttendance.orElse(false);
 	}
 
 	public static interface Require {

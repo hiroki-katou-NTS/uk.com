@@ -13,55 +13,32 @@ module nts.uk.at.view.cdl010.a.screenModel {
 
     created(param: ObjectParam) {
       const vm = this;
+      vm.$blockui('grayout');
       vm.$ajax('com', API.getContactInfomation, param.employeeId)
-      // Call API to get ContactInformationRefer
-      const detailData: ContactInformationRefer = ({
-        businessName: 'ハタケ　カカシ',
-        categoryName: '分類１',
-        contactInformation: new ContactInformation({
-          companyMobilePhoneNumber: '080-1234-5678',
-          personalMobilePhoneNumber: '090-1234-xxx8',
-          emergencyNumber1: '080-xxx1-5678',
-          emergencyNumber2: '080-1234-5678',
-          seatDialIn: '123',
-          seatExtensionNumber: '3010',
-          companyEmailAddress: 'kakashi_hatake@nittsusysutem.co.jp',
-          companyMobileEmailAddress: 'hatake_kakashi@docomo.ne.jp',
-          personalEmailAddress: 'hatake_kakashi@gmail.com',
-          personalMobileEmailAddress: 'hatake_kakashi@docomo.ne.jp',
-          otherContactsInfomation: [
-            new OtherContact({ contactName: 'Skype', contactAddress: 'hatake_kakashi' }),
-            new OtherContact({ contactName: 'Zoom', contactAddress: 'htk_kakashi' }),
-            new OtherContact({ contactName: 'Twitter', contactAddress: 'kakashi_twitter' }),
-            new OtherContact({ contactName: 'Line', contactAddress: 'kakashi_line' }),
-            new OtherContact({ contactName: 'Zalo', contactAddress: 'kakashi_zalo' }),
-          ]
-        }),
-        employmentName: '正社員',
-        positionName: '一般職位',
-        workplaceName: '第一開発部'
+      .then((detailData: ContactInformationRefer) => {
+        if (detailData.contactInformation) {
+          const companyEmailAddress = detailData.contactInformation.companyEmailAddress;
+          const companyMobileEmailAddress = detailData.contactInformation.companyMobileEmailAddress;
+          const personalEmailAddress = detailData.contactInformation.personalEmailAddress;
+          const personalMobileEmailAddress = detailData.contactInformation.personalMobileEmailAddress;
+          detailData.contactInformation.companyEmailAddress = `<a href="mailto:${companyEmailAddress}">${companyEmailAddress}</a>`;
+          detailData.contactInformation.companyMobileEmailAddress = `<a href="mailto:${companyMobileEmailAddress}">${companyMobileEmailAddress}</a>`;
+          detailData.contactInformation.personalEmailAddress = `<a href="mailto:${personalEmailAddress}">${personalEmailAddress}</a>`;
+          detailData.contactInformation.personalMobileEmailAddress = `<a href="mailto:${personalMobileEmailAddress}">${personalMobileEmailAddress}</a>`;
+          vm.otherContact(detailData.contactInformation.otherContactsInfomation);
+        }
+        vm.detailData(detailData);
+      })
+      .fail(() => vm.$blockui('clear'))
+      .always(() => {
+        const contentAreaHeight = $('#contents-area').height();
+        const contentHeight = $('#content-cdl010').height();
+        if (contentAreaHeight > contentHeight) {
+          const subHeight = contentAreaHeight - contentHeight;
+          nts.uk.ui.windows.getSelf().setHeight(650 - subHeight);
+        }
+        vm.$blockui('clear');
       });
-      if (detailData.contactInformation) {
-        const companyEmailAddress = detailData.contactInformation.companyEmailAddress;
-        const companyMobileEmailAddress = detailData.contactInformation.companyMobileEmailAddress;
-        const personalEmailAddress = detailData.contactInformation.personalEmailAddress;
-        const personalMobileEmailAddress = detailData.contactInformation.personalMobileEmailAddress;
-        detailData.contactInformation.companyEmailAddress = `<a href="mailto:${companyEmailAddress}">${companyEmailAddress}</a>`;
-        detailData.contactInformation.companyMobileEmailAddress = `<a href="mailto:${companyMobileEmailAddress}">${companyMobileEmailAddress}</a>`;
-        detailData.contactInformation.personalEmailAddress = `<a href="mailto:${personalEmailAddress}">${personalEmailAddress}</a>`;
-        detailData.contactInformation.personalMobileEmailAddress = `<a href="mailto:${personalMobileEmailAddress}">${personalMobileEmailAddress}</a>`;
-        vm.otherContact(detailData.contactInformation.otherContactsInfomation);
-      }
-      vm.detailData(detailData);
-    }
-
-    mounted() {
-      const contentAreaHeight = $('#contents-area').height();
-      const contentHeight = $('#content-cdl010').height();
-      if (contentAreaHeight > contentHeight) {
-        const subHeight = contentAreaHeight - contentHeight;
-        nts.uk.ui.windows.getSelf().setHeight(650 - subHeight);
-      }
     }
 
     closeDialog() {
@@ -89,7 +66,7 @@ module nts.uk.at.view.cdl010.a.screenModel {
     /** 分類名 */
     categoryName: string = '';
     /** 職位名 */
-    positionName: string = '';
+    jobTitleName: string = '';
 
     constructor(init?: Partial<ContactInformationRefer>) {
       $.extend(this, init);

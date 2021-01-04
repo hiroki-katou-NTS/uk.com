@@ -11,9 +11,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.bs.person.pub.contact.OtherContact;
 import nts.uk.ctx.bs.person.pub.contact.PersonContactObject;
 import nts.uk.ctx.bs.person.pub.contact.PersonContactPub;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.adapter.PersonContactAdapter;
+import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.OtherContactDTO;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PersonContactImport;
 
 /**
@@ -47,7 +49,8 @@ public class PersonContactAdapterImpl implements PersonContactAdapter {
 					item.getIsMobileEmailAddressDisplay(),
 					item.getIsPhoneNumberDisplay(),
 					item.getIsEmergencyContact1Display(),
-					item.getIsEmergencyContact2Display()))
+					item.getIsEmergencyContact2Display(),
+					convertListOtherContact(item.getOtherContacts())))
 				.collect(Collectors.toList());
 	}
 
@@ -79,9 +82,19 @@ public class PersonContactAdapterImpl implements PersonContactAdapter {
 					item.getIsMobileEmailAddressDisplay(),
 					item.getIsPhoneNumberDisplay(),
 					item.getIsEmergencyContact1Display(),
-					item.getIsEmergencyContact2Display());
+					item.getIsEmergencyContact2Display(),
+					convertListOtherContact(item.getOtherContacts()));
 		}
 		return Optional.ofNullable(personContactImport);
 	}
-
+	
+	private List<OtherContactDTO> convertListOtherContact(List<OtherContact> otherContacts) {
+		return otherContacts.stream()
+				.map(mapper -> OtherContactDTO.builder()
+						.no(mapper.getNo())
+						.isDisplay(mapper.getIsDisplay().orElse(false))
+						.address(mapper.getAddress())
+						.build())
+				.collect(Collectors.toList());
+	}
 }

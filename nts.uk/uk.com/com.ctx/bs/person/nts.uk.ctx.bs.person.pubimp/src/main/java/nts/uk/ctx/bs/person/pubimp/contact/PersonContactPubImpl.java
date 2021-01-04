@@ -56,7 +56,7 @@ public class PersonContactPubImpl implements PersonContactPub {
 				.map(x -> OtherContact.builder()
 					.isDisplay(x.getIsDisplay())
 					.no(x.getOtherContactNo())
-					.contactName(x.getAddress().v())
+					.address(x.getAddress().v())
 					.build())
 				.collect(Collectors.toList());
 		pcObject.setOtherContacts(otherContacts);

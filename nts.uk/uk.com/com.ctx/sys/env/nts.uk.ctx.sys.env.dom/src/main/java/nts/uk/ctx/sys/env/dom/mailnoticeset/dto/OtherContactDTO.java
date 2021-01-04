@@ -1,16 +1,14 @@
 package nts.uk.ctx.sys.env.dom.mailnoticeset.dto;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * @author nws-ducnt
  *
  */
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
+@Builder
 public class OtherContactDTO {
 	private int no;
 

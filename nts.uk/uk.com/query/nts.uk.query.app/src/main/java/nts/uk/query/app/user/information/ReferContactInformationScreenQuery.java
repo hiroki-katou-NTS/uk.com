@@ -69,7 +69,7 @@ public class ReferContactInformationScreenQuery {
 	 */
 	public ReferContactInformationDto getContactInfomation(String employeeId) {
 		String cid = AppContexts.user().companyId();
-		String sid = AppContexts.user().employeeId();
+		String sid = employeeId.isEmpty() ? AppContexts.user().employeeId() : employeeId;
 		GeneralDate baseDate = GeneralDate.today();
 		String personalId = AppContexts.user().personId();
 		String employmentCode = "";
@@ -80,14 +80,15 @@ public class ReferContactInformationScreenQuery {
 		EmpBasicInfo empBasicInfo = new EmpBasicInfo();
 
 		List<EmpBasicInfo> listEmpInfo = employeeService
-				.getEmpBasicInfo(Arrays.asList(employeeId.isEmpty() ? sid : employeeId));
+				.getEmpBasicInfo(Arrays.asList(sid));
 		if (!listEmpInfo.isEmpty()) {
 			empBasicInfo = listEmpInfo.get(0);
+			personalId = empBasicInfo.getPId();
 		}
 
 		// step 2 : 連絡先情報を取得(Require, 会社ID, 社員ID, 個人ID)
 		RequireImpl require = new RequireImpl(personContactAdapter, employeeInfoContactAdapter, userInformationUseMethodRepository);
-		ContactInformation contactInfo = UserInformationUseMethodService.get(require, sid, personalId);
+		ContactInformation contactInfo = UserInformationUseMethodService.get(require, AppContexts.user().companyId(), sid, personalId);
 		ContactInformationDTO contactInformation = ContactInformationDTO.builder()
 				.companyMobileEmailAddress(contactInfo.getCompanyEmailAddress() != null ? contactInfo.getCompanyEmailAddress().orElse("") : "")
 				.personalMobileEmailAddress(contactInfo.getPersonalMobileEmailAddress() != null ? contactInfo.getPersonalMobileEmailAddress().orElse("") : "")
@@ -136,13 +137,12 @@ public class ReferContactInformationScreenQuery {
 					.getWorkplaceId();
 		}
 		List<WorkplaceInformation> workplaceInfo = this.wplInfoRepository.getAllWorkplaceByCompany(cid, workplaceCode);
-		return ReferContactInformationDto
-				.builder()
+		return ReferContactInformationDto.builder()
 				.businessName(empBasicInfo.getBusinessName())
-				.employmentName(employment.get().getEmploymentName().v())
-				.workplaceName(workplaceInfo.get(0).getWorkplaceName() != null ? workplaceInfo.get(0).getWorkplaceName().v() : "")
-				.jobTitleName(jobTitleInfo.get().getJobTitleName() != null ? jobTitleInfo.get().getJobTitleName().v() : "")
-				.classificationName(classification.get().getClassificationName() != null ? classification.get().getClassificationName().v() : "")
+				.employmentName(employment.isPresent() ? employment.get().getEmploymentName().v() : "")
+				.workplaceName(!workplaceInfo.isEmpty() ? workplaceInfo.get(0).getWorkplaceName().v() : "")
+				.jobTitleName(jobTitleInfo.isPresent() ? jobTitleInfo.get().getJobTitleName().v() : "")
+				.classificationName(classification.isPresent() ? classification.get().getClassificationName().v() : "")
 				.contactInformation(contactInformation)
 				.build();
 	}

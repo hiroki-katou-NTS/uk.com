@@ -80,7 +80,8 @@ public class PersonContactImport {
 			Optional<Boolean> isMobileEmailAddressDisplay,
 			Optional<Boolean> isPhoneNumberDisplay,
 			Optional<Boolean> isEmergencyContact1Display,
-			Optional<Boolean> isEmergencyContact2Display) {
+			Optional<Boolean> isEmergencyContact2Display,
+			List<OtherContactDTO> otherContacts) {
 		this.personId = personId;
 		this.mailAddress = mailAddress;
 		this.mobileMailAddress = mobileMailAddress;
@@ -92,6 +93,7 @@ public class PersonContactImport {
 		this.isPhoneNumberDisplay = isPhoneNumberDisplay;
 		this.isEmergencyContact1Display = isEmergencyContact1Display;
 		this.isEmergencyContact2Display = isEmergencyContact2Display;
+		this.otherContacts = otherContacts;
 	}
 
 	/**

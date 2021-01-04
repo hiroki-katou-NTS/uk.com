@@ -21,5 +21,5 @@ public class OtherContact {
 	/**
 	 * 連絡先名
 	 */
-	private String contactName;
+	private String address;
 }

@@ -54,7 +54,7 @@
                 <!-- A16_1 職位名 -->
                 <td>#{i18n.getText('CDL010_18')}</td>
                 <!-- A16_2 -->
-                <td data-bind="text: detailData().positionName"></td>
+                <td data-bind="text: detailData().jobTitleName"></td>
               </tr>
 
               <!-- 項目制御 ※1 -->
@@ -155,8 +155,8 @@
           <!-- A12 -->
           <table>
             <tbody data-bind="foreach: otherContact">
-              <tr>
-                <td class="w-175" data-bind="text: $vm.$i18n('CDL010_14', [contactName])">Skypeのアドレ</td>
+              <tr data-bind="if: !_.isNull($data)">
+                <td class="w-175" data-bind="text: $vm.$i18n('CDL010_14', [contactName])"></td>
                 <td data-bind="text: contactAddress"></td>
               </tr>
             </tbody>
