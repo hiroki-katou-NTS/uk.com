@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.assist.dom.referenceauth;
+package nts.uk.ctx.sys.assist.dom.reference.auth;
 
 import java.util.List;
 
