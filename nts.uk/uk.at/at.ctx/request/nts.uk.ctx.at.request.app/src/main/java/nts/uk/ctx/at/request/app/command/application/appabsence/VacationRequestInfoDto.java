@@ -26,4 +26,10 @@ public class VacationRequestInfoDto {
                 EnumAdaptor.valueOf(holidayApplicationType, HolidayAppType.class), 
                 info.toDomain());
     }
+    
+    public static VacationRequestInfoDto fromDomain(VacationRequestInfo domain) {
+        return new VacationRequestInfoDto(
+                domain.getHolidayApplicationType().value, 
+                SupplementInfoVacationDto.fromDomain(domain.getInfo()));
+    }
 }

@@ -1578,8 +1578,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		        appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v());
 		// INPUT．「休暇申請起動時の表示情報」を更新する
 		appAbsenceStartInfoOutput.setWorkTypeLst(workTypeLst);
-		appAbsenceStartInfoOutput.setSelectedWorkTypeCD(Optional.ofNullable(appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v()));
-		appAbsenceStartInfoOutput.setSelectedWorkTimeCD(Optional.ofNullable(appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCode().v()));
+		appAbsenceStartInfoOutput.setSelectedWorkTypeCD(appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode() == null ? Optional.empty() : Optional.of(appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v()));
+		appAbsenceStartInfoOutput.setSelectedWorkTimeCD(appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCode() == null ? Optional.empty() : Optional.of(appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCode().v()));
 		appAbsenceStartInfoOutput.setWorkTypeNotRegister(applyWorkTypeOutput.isMasterUnregister());
 		
 		List<String> appDates = new ArrayList<String>();

@@ -39,6 +39,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 		workTypeBefore: KnockoutObservable<any> = ko.observable();
 		workTypeAfter: KnockoutObservable<any> = ko.observable();
 		isFromOther: boolean = false;
+		isEnableSwitchBtn: boolean = true;
 
 		yearRemain: KnockoutObservable<number> = ko.observable();
 		subHdRemain: KnockoutObservable<number> = ko.observable();
@@ -548,7 +549,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 						vm.$dialog.error({messageId: "Msg_307"});
 						return false;
 					}
-					if (vm.endTime1() > vm.startTime2()) {
+					if (vm.checkTimeValid(vm.startTime2) && vm.endTime1() > vm.startTime2()) {
 						vm.$dialog.error({messageId: "Msg_581"});
 						return false;
 					}

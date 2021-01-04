@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.app.command.application.appabsence.ApplyForLeaveDto;
 import nts.uk.ctx.at.request.app.command.application.appabsence.CreatAppAbsenceCommand;
 import nts.uk.ctx.at.request.app.command.application.appabsence.UpdateAppAbsenceCommand;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AbsenceCheckRegisterDto;
@@ -592,6 +593,8 @@ public class AppAbsenceFinder {
 	public AbsenceStartScreenBOutput getAppForLeaveStartB(String companyID, String appID, AppDispInfoStartupDto appDispInfoStartupOutput) {
 	    AppForLeaveStartOutput appForLeaveStart = absenseProcess.getAppForLeaveStartB(companyID, appID, appDispInfoStartupOutput.toDomain());
 	    
-	    return null;
+	    return new AbsenceStartScreenBOutput(
+	            AppAbsenceStartInfoDto.fromDomain(appForLeaveStart.getAppAbsenceStartInfoOutput()), 
+	            ApplyForLeaveDto.fromDomain(appForLeaveStart.getApplyForLeave()));
 	}
 }
