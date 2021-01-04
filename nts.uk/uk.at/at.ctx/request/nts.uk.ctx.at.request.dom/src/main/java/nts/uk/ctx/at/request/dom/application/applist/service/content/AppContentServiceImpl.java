@@ -865,9 +865,9 @@ public class AppContentServiceImpl implements AppContentService {
 	 * @return
 	 */
 	private String getContentActualStatusCheckResult(PostAppData postAppData) {
-		if(postAppData==null ) {
-			return "";
-		}
+//		if(postAppData==null ) {
+//			return "";
+//		}
 		// 実績内容　＝　#CMM045_274 (nội dung thực tế ＝　#CMM045_274)
 		String result = I18NText.getText("CMM045_274");
 		// 実績内容　+＝　事後申請の実績データ．勤務種類名称 (nội dung thực tế +＝　data thực tế của đơn xin sau . WorktypeName)

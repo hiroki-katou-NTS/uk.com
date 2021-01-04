@@ -1178,7 +1178,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 				application.getOpAppReason().orElse(null), 
 				approvalListDisplaySetting.getAppReasonDisAtr(), 
 				ScreenAtr.CMM045,
-				overtimeHolidayWorkActual==null ? true : overtimeHolidayWorkActual.isActualStatus(),
+				overtimeHolidayWorkActual==null ? false : overtimeHolidayWorkActual.isActualStatus(),
 				application);
 		Optional<ApplicationTypeDisplay> opAppTypeDisplay = Optional.empty();
 		switch (appOverTime.getOverTimeClf()) {
