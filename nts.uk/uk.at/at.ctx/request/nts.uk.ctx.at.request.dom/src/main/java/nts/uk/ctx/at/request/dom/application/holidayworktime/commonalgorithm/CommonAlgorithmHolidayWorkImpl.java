@@ -633,7 +633,7 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 					default: break;
 			}
 		});
-		
+		// huytodo 113648
 		if(excessState.equals(outDateApplication.getFlex())) {
 			messageContentList.add(TextResource.localize("KAF005_63"));
 		}
