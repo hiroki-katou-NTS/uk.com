@@ -45,6 +45,7 @@ module nts.uk.at.view.kal013.b {
             [5, "AverageTime"], // TIME_FREEDOM(5, "平均時間自由"),
             [6, "AverageNumberDays"], // AVERAGE_DAY_FREE(6, "平均日数自由")
             [7, "AverageNumberTimes"], // AVERAGE_TIME_FREE(7, "平均回数自由")
+            [8, "AverageRatio"]
         ]);
 
         constructor(params: IParentParams) {
@@ -58,51 +59,31 @@ module nts.uk.at.view.kal013.b {
             }
 
             vm.pattern().checkItem.subscribe((value)=>{
-
                 // Clear error
                 nts.uk.ui.errors.clearAll();
-                //vm.pattern().clearCheckCod();
+                vm.pattern().clearCheckCod();
 
                 // Kind of control
-                // 月次 - 平均時間 ||  スケジュール／日次 - 時間対比
-                if ((vm.category() == WorkplaceCategory.MONTHLY && _.indexOf(vm.monthlyTimeControl,value) != -1)
-                    || (vm.category() == WorkplaceCategory.SCHEDULE_DAILY
-                            && (_.indexOf(vm.dailyTimeControl,value) != -1
-                                    || _.indexOf(vm.dailyTimeControlB, vm.pattern().checkCondB()) != -1))){
-                    vm.timeControl(true);
-                } else{
-                    vm.timeControl(false);
-                }
-                // Contraint
-                if (vm.category() == WorkplaceCategory.SCHEDULE_DAILY){
-                    vm.constraint(_.isNil(vm.dailyContraint.get(value))? vm.dailyContraint.get(1) : vm.dailyContraint.get(value));
-                } else{
-                    vm.constraint(vm.monthlyContraint.get(value));
-                }
+                vm.checkKindOfConrol(value);
+
+                // Constraint
+               vm.createConstraint(value);
 
                 // Change pattern
-                vm.switchPatternA(true)
+
                 vm.createcontrastList(vm.category(), value);
             });
 
             vm.pattern().checkCondB.subscribe((value)=>{
-                if (vm.switchPatternA() || vm.category() != WorkplaceCategory.SCHEDULE_DAILY){
+                if (!value || vm.switchPatternA() || vm.category() != WorkplaceCategory.SCHEDULE_DAILY){
                     return;
                 }
                 nts.uk.ui.errors.clearAll();
-                //vm.pattern().clearCheckCod();
-                vm.timeControl(false);
-                if (_.indexOf(vm.dailyTimeControlB, value) != -1) {
-                    vm.timeControl(true);
-                }
-
-                if (_.indexOf([1, 4, 7], value) != -1) {
-                    vm.constraint(vm.dailyContraint.get(1));
-                } else if (_.indexOf(vm.dailyTimeControlB, value) != -1) {
-                    vm.constraint(vm.dailyContraint.get(2));
-                } else if (_.indexOf([3, 6, 9], value) != -1) {
-                    vm.constraint(vm.dailyContraint.get(3));
-                }
+                vm.pattern().clearCheckCodB();
+                //Kind of control
+                vm.checkKindOfConrol(value,false);
+                // Constraint
+                vm.createConstraint(value,false);
             })
 
 
@@ -135,8 +116,7 @@ module nts.uk.at.view.kal013.b {
             vm.getEnum().done(()=>{
                 vm.createcontrastList(params.category, params.condition.checkItem);
                 vm.pattern().update(params.condition);
-                vm.pattern().checkItem.valueHasMutated();
-                vm.pattern().checkCondB.valueHasMutated();
+                vm.initScreen(params.condition.checkItem,params.condition.checkCondB,vm.switchPatternA());
             });
 
             vm.pattern().checkCond.subscribe((value)=>{
@@ -196,15 +176,34 @@ module nts.uk.at.view.kal013.b {
             return params;
         }
 
+        initScreen(value: number, valueCheck?: number, isPatternA: boolean = false){
+            const vm = this;
+            vm.checkKindOfConrol(value);
+
+            // Constraint
+            vm.createConstraint(value);
+
+            // Change pattern
+            vm.createcontrastList(vm.category(), value);
+
+            if (!isPatternA){
+                //vm.pattern().clearCheckCod();
+                vm.checkKindOfConrol(valueCheck,false);
+                // Constraint
+                vm.createConstraint(valueCheck,false);
+            }
+        }
+
         createcontrastList(category: number, value: number):void {
             const vm = this;
+            vm.switchPatternA(true)
             // 対比の場合 - スケジュール／日次
             if (category == WorkplaceCategory.SCHEDULE_DAILY && value == 0) {
                 vm.switchPatternA(false);
                 vm.contrastTypeList(__viewContext.enums.ContrastType);
             } else if (category == WorkplaceCategory.MONTHLY
                 && _.indexOf([CheckMonthlyItemsType.TIME_FREEDOM, CheckMonthlyItemsType.AVERAGE_DAY_FREE,
-                    CheckMonthlyItemsType.AVERAGE_TIME_FREE],value) != -1 ){
+                    CheckMonthlyItemsType.AVERAGE_TIME_FREE, CheckMonthlyItemsType.AVERAGE_RATIO_FREE],value) != -1 ){
                 vm.switchPatternA(false);
                 switch (value){
                     case CheckMonthlyItemsType.TIME_FREEDOM:
@@ -216,6 +215,9 @@ module nts.uk.at.view.kal013.b {
                     case CheckMonthlyItemsType.AVERAGE_TIME_FREE:
                         vm.contrastTypeList(__viewContext.enums.AverageNumberOfTimes);
                         break;
+                    case CheckMonthlyItemsType.AVERAGE_RATIO_FREE:
+                        vm.contrastTypeList(__viewContext.enums.AverageRatio);
+                        break;
                     default:
                         vm.contrastTypeList([]);
                         break;
@@ -223,6 +225,50 @@ module nts.uk.at.view.kal013.b {
             }
         }
 
+        checkKindOfConrol(value: number, isPatternA: boolean = true){
+            const vm = this;
+            // Kind of control
+            if (isPatternA){
+                // 月次 - 平均時間 ||  スケジュール／日次 - 時間対比
+                if ((vm.category() == WorkplaceCategory.MONTHLY && _.indexOf(vm.monthlyTimeControl,value) != -1)
+                    || (vm.category() == WorkplaceCategory.SCHEDULE_DAILY
+                        && (_.indexOf(vm.dailyTimeControl,value) != -1
+                            || _.indexOf(vm.dailyTimeControlB, vm.pattern().checkCondB()) != -1))){
+                    vm.timeControl(true);
+                } else{
+                    vm.timeControl(false);
+                }
+            } else
+            {
+                if (vm.category() == WorkplaceCategory.SCHEDULE_DAILY ) {
+                    vm.timeControl(false);
+                    if (_.indexOf(vm.dailyTimeControlB, value) != -1) {
+                        vm.timeControl(true);
+                    }
+                }
+            }
+        }
+
+        createConstraint(value: number, isPatternA: boolean = true){
+            const vm = this;
+            // Contraint
+            if (vm.category() == WorkplaceCategory.SCHEDULE_DAILY){
+                vm.constraint(_.isNil(vm.dailyContraint.get(value))? vm.dailyContraint.get(1) : vm.dailyContraint.get(value));
+            } else{
+                vm.constraint(vm.monthlyContraint.get(value));
+            }
+
+            if (!isPatternA && vm.category() == WorkplaceCategory.SCHEDULE_DAILY){
+                if (_.indexOf([1, 4, 7], value) != -1) {
+                    vm.constraint(vm.dailyContraint.get(1));
+                } else if (_.indexOf(vm.dailyTimeControlB, value) != -1) {
+                    vm.constraint(vm.dailyContraint.get(2));
+                } else if (_.indexOf([3, 6, 9], value) != -1) {
+                    vm.constraint(vm.dailyContraint.get(3));
+                }
+            }
+
+        }
         mounted() {
             const vm = this;
             $('#cbxTypeCheckWorkRecordcategory5').focus();
@@ -355,6 +401,13 @@ module nts.uk.at.view.kal013.b {
         }
         clearCheckCod(){
             this.checkCond(null);
+            this.checkCondB(null);
+            this.checkCondDis("");
+            this.minValue(null);
+            this.maxValue(null);
+        }
+        clearCheckCodB(){
+            this.checkCond(null);
             this.checkCondDis("");
             this.minValue(null);
             this.maxValue(null);
@@ -449,6 +502,9 @@ module nts.uk.at.view.kal013.b {
         /* 平均日数自由 */
         AVERAGE_DAY_FREE = 6,
         /* 平均回数自由 */
-        AVERAGE_TIME_FREE = 7
+        AVERAGE_TIME_FREE = 7,
+        /*平均比率自由 */
+        AVERAGE_RATIO_FREE = 8
+
     }
 }
