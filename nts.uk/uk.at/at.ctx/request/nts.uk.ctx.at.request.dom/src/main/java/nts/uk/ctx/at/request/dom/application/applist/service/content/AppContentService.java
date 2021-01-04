@@ -12,13 +12,13 @@ import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
+import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationTypeDisplay;
+import nts.uk.ctx.at.request.dom.application.applist.service.ListApplicantOutput;
 import nts.uk.ctx.at.request.dom.application.applist.service.datacreate.StampAppOutputTmp;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.ScreenAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.optionalitemappsetting.OptionalItemApplicationTypeName;
@@ -183,9 +183,9 @@ public interface AppContentService {
 	 * @param application
 	 * @return
 	 */
-	public String getOvertimeHolidayWorkContent(AppHolidayWork appHolidayWork, AppOverTime appOverTime, 
-			OvertimeHolidayWorkActual overtimeHolidayWorkActual, ApplicationType appType, PrePostAtr prePostAtr, 
-			ApplicationListAtr applicationListAtr, AppReason appReason, DisplayAtr appReasonDisAtr, ScreenAtr screenAtr, Application application);
+	public String getOvertimeHolidayWorkContent(AppOverTimeData appOverTimeData, AppHolidayWorkData appHolidayWorkData,
+			ApplicationType appType, PrePostAtr prePostAtr, ApplicationListAtr applicationListAtr, AppReason appReason, 
+			DisplayAtr appReasonDisAtr, ScreenAtr screenAtr, boolean actualStatus, Application application);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面ver4.アルゴリズム.申請一覧リスト取得実績.申請一覧リスト取得実績
@@ -194,4 +194,13 @@ public interface AppContentService {
 	 * @return
 	 */
 	public OvertimeHolidayWorkActual getOvertimeHolidayWorkActual(String companyID, Application application, WorkTypeCode workType, WorkTimeCode workTime);
+	
+	/**
+	 * Refactor4  各申請データを作成（スマホ）
+	 * UKDesign.UniversalK.就業.KAF_申請.CMMS45_申請一覧・承認一覧（スマホ）.A：申請一覧.アルゴリズム.各申請データを作成（スマホ）
+	 * @param application
+	 * @param listOfApplication
+	 * @return
+	 */
+	public Optional<ApplicationTypeDisplay> getAppDisplayByMobile(Application application, ListOfApplication listOfApplication);
 }

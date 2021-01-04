@@ -1,0 +1,233 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
+  <body>
+    <ui:composition template="../../../../master/base.xhtml">
+      <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE" />
+        <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+        <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+        <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+        <com:scriptfile
+          path="/view/ccg/share/ccg.service.js"
+          of="/nts.uk.com.web"
+        />
+        <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+
+        <com:stylefile path="kwr003.a.main.css" />
+        <com:scriptfile path="kwr003.a.common.js" />
+        <com:scriptfile path="kwr003.a.vm.js" />
+      </ui:define>
+
+      <ui:define name="content">
+        <div id="functions-area">
+          <!-- A1_1 -->
+          <button
+            tabindex="1"
+            id="btnExportExcel"
+            class="proceed"
+            data-bind="enable: $root.errors.isEmpty"
+          >
+            #{i18n.getText('KWR003_101')}
+          </button>
+          <!-- A1_2 -->
+          <button
+            tabindex="2"
+            id="btnExportPdf"
+            class="proceed"
+            data-bind="enable: $root.errors.isEmpty"
+          >
+            #{i18n.getText('KWR003_102')}
+          </button>
+        </div>
+        <!-- A1_2-->
+        <div id="content-area" class="kwr-003">
+          <!-- A3_1-->
+          <div id="CCG001"></div>
+          <div class="pull-left fixed-flex-layout-left">
+            <div class="employees-list">
+              <!-- A2_1, A2_2, A2_3 -->
+              <div class="panel panel-frame date-time-picker">
+                <div class="date-time-picker-label" data-bind="ntsFormLabel: {}">
+                  #{i18n.getText('KWR003_103')}
+                </div>
+                <!-- YearMonth Picker -->
+                <div
+                  tabindex="3"
+                  data-bind="ntsDatePicker: { 
+                  value: yearMonth, 
+                  dateFormat: 'yearmonth', 
+                  valueFormat: 'YYYYMM', 
+                  cssRanger: {}, 
+                  defaultClass: 'round-orange',
+                  name: 'ntsDatePicker',
+                  fiscalMonthsMode: true,
+                  showJumpButtons: true }"
+                  ></div>
+              </div>
+              <!-- A3_2-->
+              <div tabindex="4" id="kcp005" class="panel panel-frame">
+                22
+              </div>
+            </div>
+          </div>
+          <div class="pull-left fixed-flex-layout-right">
+            <!-- A4_1-->
+            <div class="panel panel-frame">
+              <div class="panel-row">
+                <div class="row-left">
+                  <!-- A5_1-->
+                  <div class="label" data-bind="ntsFormLabel: {}">
+                    #{i18n.getText('KWR003_104')}
+                  </div>
+                </div>
+                <div class="row-right">
+                  <div class="radios-group">
+                    <!-- A5_2 -->
+                    <div
+                      tabindex="5"
+                      data-bind="ntsRadioBoxGroup: {
+                        options: [
+                          { id: 0, name: '#{i18n.getText('KWR003_105')}'},
+                          { id: 1, name: '#{i18n.getText('KWR003_106')}'},
+                        ],
+                        optionsValue: 'id',
+                        optionsText: 'name',
+                        value: rdgSelectedId,
+                        enable: true,
+                        name: '#{i18n.getText('KWR003_104')}'
+                      }"
+                    ></div>
+                  </div>
+                  <div class="text-box-button">
+                    <div class="item item-1">
+                      <!-- A5_3_2 - KWR003_105-->
+                      <div
+                        tabindex="6"
+                        id="combo-box"
+                        data-bind="ntsComboBox: {
+                          name: '#{i18n.getText('KWR003_105')}',
+                          options:  [
+                            { code: 0, name: '基本給 0'},
+                            { code: 1, name: '基本給 1'},
+                            { code: 2, name: '基本給 2'},
+                            { code: 3, name: '基本給 3'},
+                            { code: 4, name: '基本給 4'},
+                          ],
+                          optionsValue: 'code',
+                          visibleItemsCount: 5,
+                          value: standardSelectedCode,
+                          optionsText: 'name',
+                          editable: false,
+                          enable: isEnableSelectedCode(),
+                          required: false,
+                          selectFirstIfNull: true
+                        }"
+                      ></div>
+                      <!-- A5_3_3-->
+                      <button
+                        tabindex="7"
+                        data-bind="enable: isEnableSelectedCode(), click: showDialogScreenB"
+                      >
+                        #{i18n.getText('KWR003_112')}
+                      </button>
+                    </div>
+                    <div class="item item-2">
+                      <!-- A5_3_2 - KWR003_105-->
+                      <div
+                        tabindex="8"
+                        id="combo-box"
+                        data-bind="ntsComboBox: {
+                          name: '#{i18n.getText('KWR003_106')}',
+                          options:  [
+                            { code: 0, name: '基本給 0'},
+                            { code: 1, name: '基本給 1'},
+                            { code: 2, name: '基本給 2'},
+                            { code: 3, name: '基本給 3'},
+                            { code: 4, name: '基本給 4'},
+                          ],
+                          optionsValue: 'code',
+                          visibleItemsCount: 5,
+                          value: standardSelectedCode,
+                          optionsText: 'name',
+                          editable: false,
+                          enable: !isEnableSelectedCode(),
+                          required: false,
+                          selectFirstIfNull: true
+                        }"
+                      ></div>
+                      <!-- A5_3_3-->
+                      <button
+                        tabindex="9"
+                        data-bind="enable: !isEnableSelectedCode(), click: showDialogScreenB"
+                      >
+                        #{i18n.getText('KWR003_112')}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="panel-row">
+                <div class="row-left">
+                  <!-- A6_1-->
+                  <div class="label" data-bind="ntsFormLabel: {}">
+                    #{i18n.getText('KWR003_107')}
+                  </div>
+                </div>
+                <div class="row-right row-switch-button">
+                  <!-- A6_2 -->
+                  <div
+                    tabindex="10"
+                    class="cf"
+                    data-bind="ntsSwitchButton: {
+                    name: '#{i18n.getText('KWR003_107')}',
+                    options: [
+                      { code: 0, name: '#{i18n.getText('KWR003_108')}'},
+                      { code: 1, name: '#{i18n.getText('KWR003_109')}'}
+                    ],
+                    optionsValue: 'code',
+                    optionsText: 'name',
+                    value: zeroDisplayClassification,
+                    required: false,
+                    enable: true }"
+                  ></div>
+                </div>
+              </div>
+              <div class="panel-row">
+                <div class="row-left">
+                  <!-- A7_1-->
+                  <div class="label" data-bind="ntsFormLabel: {}">
+                    #{i18n.getText('KWR003_110')}
+                  </div>
+                </div>
+                <div class="row-right row-switch-button">
+                  <!-- A7_2 -->
+                  <div
+                    tabindex="11"
+                    class="cf"
+                    data-bind="ntsSwitchButton: {
+                    name: '#{i18n.getText('KWR003_110')}',
+                    options: [
+                      { code: 0, name: '#{i18n.getText('KWR003_111')}'},
+                      { code: 1, name: '#{i18n.getText('KWR003_113')}'}
+                    ],
+                    optionsValue: 'code',
+                    optionsText: 'name',
+                    value: specifyingPageBreaks,
+                    required: false,
+                    enable: true }"
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ui:define>
+    </ui:composition>
+  </body>
+</html>

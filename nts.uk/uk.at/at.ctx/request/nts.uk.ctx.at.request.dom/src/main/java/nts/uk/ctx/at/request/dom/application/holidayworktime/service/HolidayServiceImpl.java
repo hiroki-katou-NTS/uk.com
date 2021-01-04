@@ -179,15 +179,19 @@ public class HolidayServiceImpl implements HolidayService {
 		//	乖離理由の表示区分を取得する
 		ReasonDissociationOutput reasonDissociationOutput = commonOverTimeAlgorithm.getInfoNoBaseDate(companyId, ApplicationType.HOLIDAY_WORK_APPLICATION, 
 				null, holidayWorkSetting.getOvertimeLeaveAppCommonSet());
-		if(!reasonDissociationOutput.getDivergenceReasonInputMethod().isEmpty()) {
-			appHdWorkDispInfoOutput.setUseInputDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonInputed());
-			appHdWorkDispInfoOutput.setUseComboDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonSelected());
-			if(!reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons().isEmpty()) {
-				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.of(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons()));
-			} else {
-				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.empty());
-			}
-		}	
+		if(reasonDissociationOutput != null) {
+			appHdWorkDispInfoOutput.setDivergenceTimeRoots(reasonDissociationOutput.getDivergenceTimeRoots());
+			appHdWorkDispInfoOutput.setDivergenceReasonInputMethod(reasonDissociationOutput.getDivergenceReasonInputMethod());
+		}
+//		if(!reasonDissociationOutput.getDivergenceReasonInputMethod().isEmpty()) {
+//			appHdWorkDispInfoOutput.setUseInputDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonInputed());
+//			appHdWorkDispInfoOutput.setUseComboDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonSelected());
+//			if(!reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons().isEmpty()) {
+//				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.of(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons()));
+//			} else {
+//				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.empty());
+//			}
+//		}	
 		
 		return appHdWorkDispInfoOutput;
 	}
@@ -282,7 +286,7 @@ public class HolidayServiceImpl implements HolidayService {
 			actualApplicationTime = preActualColorCheck.checkStatus(companyId, appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(), 
 					date, ApplicationType.HOLIDAY_WORK_APPLICATION, workType, workTime, OverrideSet.TIME_OUT_PRIORITY, 
 					Optional.of(CalcStampMiss.CAN_NOT_REGIS), breakTimeZoneSettingList.getTimeZones(), 
-					!actualContentDisplayList.isEmpty() ? Optional.of(actualContentDisplayList.get(0)): Optional.empty()).applicationTime;
+					!actualContentDisplayList.isEmpty() ? Optional.of(actualContentDisplayList.get(0)): Optional.empty());
 		}
 		if(!appDispInfoStartupOutput.getAppDetailScreenInfo().isPresent() 
 				|| (appDispInfoStartupOutput.getAppDetailScreenInfo().get().getUser().equals(User.APPLICANT) 
@@ -290,7 +294,7 @@ public class HolidayServiceImpl implements HolidayService {
 			actualApplicationTime = preActualColorCheck.checkStatus(companyId, appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(), 
 					date, ApplicationType.HOLIDAY_WORK_APPLICATION, workType, workTime, holidayWorkAppSet.getOvertimeLeaveAppCommonSet().getOverrideSet(), 
 					Optional.of(holidayWorkAppSet.getCalcStampMiss()), breakTimeZoneSettingList.getTimeZones(), 
-					!actualContentDisplayList.isEmpty() ? Optional.of(actualContentDisplayList.get(0)): Optional.empty()).applicationTime;
+					!actualContentDisplayList.isEmpty() ? Optional.of(actualContentDisplayList.get(0)): Optional.empty());
 		}
 		hdSelectWorkDispInfoOutput.setActualApplicationTime(actualApplicationTime);
 		
@@ -402,15 +406,19 @@ public class HolidayServiceImpl implements HolidayService {
 //		乖離理由の表示区分を取得する
 		ReasonDissociationOutput reasonDissociationOutput = commonOverTimeAlgorithm.getInfoNoBaseDate(companyId, ApplicationType.HOLIDAY_WORK_APPLICATION, 
 				null, appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet());
-		if(!reasonDissociationOutput.getDivergenceReasonInputMethod().isEmpty()) {
-			appHdWorkDispInfoOutput.setUseInputDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonInputed());
-			appHdWorkDispInfoOutput.setUseComboDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonSelected());
-			if(!reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons().isEmpty()) {
-				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.of(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons()));
-			} else {
-				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.empty());
-			}
+		if(reasonDissociationOutput != null) {
+			appHdWorkDispInfoOutput.setDivergenceTimeRoots(reasonDissociationOutput.getDivergenceTimeRoots());
+			appHdWorkDispInfoOutput.setDivergenceReasonInputMethod(reasonDissociationOutput.getDivergenceReasonInputMethod());
 		}
+//		if(!reasonDissociationOutput.getDivergenceReasonInputMethod().isEmpty()) {
+//			appHdWorkDispInfoOutput.setUseInputDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonInputed());
+//			appHdWorkDispInfoOutput.setUseComboDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonSelected());
+//			if(!reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons().isEmpty()) {
+//				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.of(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons()));
+//			} else {
+//				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.empty());
+//			}
+//		}
 		
 		//1-2.起動時勤務種類リストを取得する
 		List<WorkType> workTypeList = commonHolidayWorkAlgorithm.getWorkTypeList(companyId, appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpEmploymentSet().orElse(null));
@@ -442,7 +450,7 @@ public class HolidayServiceImpl implements HolidayService {
 						application.getAppDate().getApplicationDate(), ApplicationType.HOLIDAY_WORK_APPLICATION, appHolidayWork.getWorkInformation().getWorkTypeCode(), 
 						appHolidayWork.getWorkInformation().getWorkTimeCode(), OverrideSet.TIME_OUT_PRIORITY, 
 						Optional.of(CalcStampMiss.CAN_NOT_REGIS), deductionTimeList, 
-						!actualContentDisplayList.isEmpty() ? Optional.of(actualContentDisplayList.get(0)): Optional.empty()).applicationTime;
+						!actualContentDisplayList.isEmpty() ? Optional.of(actualContentDisplayList.get(0)): Optional.empty());
 			}
 			if(!appDispInfoStartupOutput.getAppDetailScreenInfo().isPresent() 
 					|| (appDispInfoStartupOutput.getAppDetailScreenInfo().get().getUser().equals(User.APPLICANT) 
@@ -451,7 +459,7 @@ public class HolidayServiceImpl implements HolidayService {
 						application.getAppDate().getApplicationDate(), ApplicationType.HOLIDAY_WORK_APPLICATION, appHolidayWork.getWorkInformation().getWorkTypeCode(), 
 						appHolidayWork.getWorkInformation().getWorkTimeCode(), appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet().getOverrideSet(), 
 						Optional.of(appHdWorkDispInfoOutput.getHolidayWorkAppSet().getCalcStampMiss()), deductionTimeList, 
-						!actualContentDisplayList.isEmpty() ? Optional.of(actualContentDisplayList.get(0)): Optional.empty()).applicationTime;
+						!actualContentDisplayList.isEmpty() ? Optional.of(actualContentDisplayList.get(0)): Optional.empty());
 			}
 			hdWorkDispInfoWithDateOutput.setActualApplicationTime(Optional.ofNullable(actualApplicationTime));
 			

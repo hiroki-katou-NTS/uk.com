@@ -1,32 +1,42 @@
 package nts.uk.ctx.at.request.dom.application.applist.service.content;
 
-import java.util.Optional;
-
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatusCheckResult;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 
 /**
  * refactor 5
  * @author Doan Duy Hung
  *
  */
+@AllArgsConstructor
 @Getter
 @Setter
 public class OvertimeHolidayWorkActual {
 	
-	private Optional<AppOverTime> opAppOverTimePre;
+	/**
+	 * 残業申請データ
+	 */
+	private AppOverTimeData appOverTimeData;
 	
-	private Optional<AppHolidayWork> opAppHolidayWorkPre;
+	/**
+	 * 休出時間申請データ
+	 */
+	private AppHolidayWorkData appHolidayWorkData;
 	
-	private ActualStatusCheckResult actualStatusCheckResult;
+	/**
+	 * 事後申請の実績データ
+	 */
+	private PostAppData postAppData;
 	
-	public OvertimeHolidayWorkActual() {
-		this.opAppOverTimePre = Optional.empty();
-		this.opAppHolidayWorkPre = Optional.empty();
-		this.actualStatusCheckResult = null;
-	}
+	/**
+	 * 実績状態
+	 */
+	private boolean actualStatus;
+	
+	/**
+	 * 背景色
+	 */
+	private String backgroundColor;
 
 }

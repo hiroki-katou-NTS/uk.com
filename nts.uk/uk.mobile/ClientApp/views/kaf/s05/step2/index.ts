@@ -1,6 +1,6 @@
 import { _, Vue } from '@app/provider';
 import { component } from '@app/core/component';
-import { KafS05Component} from '../a/index';
+import { KafS05Component } from '../a/index';
 import { KafS00SubP3Component } from 'views/kaf/s00/sub/p3';
 import { KafS00SubP1Component } from 'views/kaf/s00/sub/p1';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/s00';
@@ -50,7 +50,7 @@ export class KafS05Step2Component extends Vue {
             text: this.$i18n('KAFS05_54')
         }]
     } as Reason;
-    
+
 
     public created() {
         const self = this;
@@ -58,6 +58,7 @@ export class KafS05Step2Component extends Vue {
     public mounted() {
 
     }
+
     public bindOverTime() {
         const self = this;
         let displayInfoOverTime = self.$appContext.model.displayInfoOverTime;
@@ -142,7 +143,7 @@ export class KafS05Step2Component extends Vue {
                 let overTimeMidNight = _.get(calculationResultOp, 'applicationTimes[0].overTimeShiftNight.overTimeMidNight');
                 let findResult = _.findLast(overTimes, (i: OverTime) => i.type == AttendanceType.MIDNIGHT_OUTSIDE) as OverTime;
                 if (!_.isNil(findResult)) {
-                    findResult.applicationTime = overTimeMidNight || 0; 
+                    findResult.applicationTime = overTimeMidNight || 0;
                 }
             }
             // AttendanceType.FLEX_OVERTIME
@@ -150,7 +151,7 @@ export class KafS05Step2Component extends Vue {
                 let flexOverTime = _.get(calculationResultOp, 'applicationTimes[0].flexOverTime');
                 let findResult = _.findLast(overTimes, (i: OverTime) => i.type == AttendanceType.FLEX_OVERTIME) as OverTime;
                 if (!_.isNil(findResult)) {
-                    findResult.applicationTime = flexOverTime || 0; 
+                    findResult.applicationTime = flexOverTime || 0;
                 }
             }
         }
@@ -200,7 +201,7 @@ export class KafS05Step2Component extends Vue {
                     findResult.preApp.preAppExcess = advanceExcess.flex || ExcessTimeStatus.NONE;
                 }
             }
-    
+
         }
         // bind archivementApp
         let infoWithDateApplicationOp = displayInfoOverTime.infoWithDateApplicationOp;
@@ -229,8 +230,8 @@ export class KafS05Step2Component extends Vue {
                 let overTimeMidNight = _.get(infoWithDateApplicationOp, 'applicationTime.overTimeShiftNight.overTimeMidNight');
                 let findResult = _.findLast(overTimes, (i: OverTime) => i.type == AttendanceType.MIDNIGHT_OUTSIDE) as OverTime;
                 if (!_.isNil(findResult)) {
-                    findResult.actualApp.actualTime = overTimeMidNight || 0; 
-                    
+                    findResult.actualApp.actualTime = overTimeMidNight || 0;
+
                 }
                 if (achivementExcess) {
                     let findResult = _.findLast(overTimes, (item: OverTime) => item.type == AttendanceType.MIDNIGHT_OUTSIDE) as OverTime;
@@ -355,11 +356,11 @@ export class KafS05Step2Component extends Vue {
                 _.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
                     let findResult = _.findLast(holidayTimes, (i: OverTime) => i.type == item.attendanceType && i.frameNo == String(item.frameNo)) as HolidayTime;
                     if (!_.isNil(findResult)) {
-                        findResult.preApp.preAppTime = item.applicationTime;  
+                        findResult.preApp.preAppTime = item.applicationTime;
                     }
                 });
-                
-                
+
+
             }
 
             {
@@ -375,16 +376,16 @@ export class KafS05Step2Component extends Vue {
                         findResult = _.findLast(holidayTimes, (i: HolidayTime) => i.type == AttendanceType.MIDDLE_HOLIDAY_HOLIDAY); // AttendanceType.MIDDLE_HOLIDAY_HOLIDAY
                     }
                     if (!_.isNil(findResult)) {
-                        findResult.preApp.preAppTime = item.attendanceTime || 0;     
+                        findResult.preApp.preAppTime = item.attendanceTime || 0;
                     }
-    
+
                 });
 
             }
-            
 
-            
-            
+
+
+
         }
         // set color advance
         _.forEach(holidayTimes, (item: HolidayTime) => {
@@ -410,7 +411,7 @@ export class KafS05Step2Component extends Vue {
                     item.preApp.preAppExcess = findResult.excessState || ExcessTimeStatus.NONE;
                 }
             }
-            
+
         });
 
         // bind archivementApp
@@ -443,7 +444,7 @@ export class KafS05Step2Component extends Vue {
                     if (!_.isNil(findResult)) {
                         findResult.actualApp.actualTime = item.attendanceTime || 0;
                     }
-    
+
                 });
             }
         }
@@ -472,7 +473,7 @@ export class KafS05Step2Component extends Vue {
                     item.actualApp.actualExcess = findResult.excessState || ExcessTimeStatus.NONE;
                 }
             }
-            
+
         });
 
         self.holidayTimes = holidayTimes;
@@ -483,11 +484,7 @@ export class KafS05Step2Component extends Vue {
 
         return self.$parent as KafS05Component;
     }
-    get nameInsert(): string {
-        const self = this;
 
-        return self.$appContext.modeNew ? self.$i18n('KAFS02_11') : self.$i18n('KAFS02_18');
-    }
     public backStep1() {
         const self = this;
         self.$appContext.toStep(1);
@@ -500,9 +497,50 @@ export class KafS05Step2Component extends Vue {
         let divergenceTimeRoot2 = _.find(self.$appContext.model.displayInfoOverTime.infoNoBaseDate.divergenceTimeRoot, (item: DivergenceTimeRoot) => item.divergenceTimeNo == 2);
         let divergenceReasonInputMethod1 = _.find(self.$appContext.model.displayInfoOverTime.infoNoBaseDate.divergenceReasonInputMethod, (item: DivergenceReasonInputMethod) => item.divergenceTimeNo == 1);
         let divergenceReasonInputMethod2 = _.find(self.$appContext.model.displayInfoOverTime.infoNoBaseDate.divergenceReasonInputMethod, (item: DivergenceReasonInputMethod) => item.divergenceTimeNo == 2);
-        
+
         let reason1 = self.bindReason(divergenceTimeRoot1, divergenceReasonInputMethod1);
         let reason2 = self.bindReason(divergenceTimeRoot2, divergenceReasonInputMethod2);
+
+        if (!self.$appContext.modeNew) {
+            let findResult1 = _.findLast(self.$appContext.model.appOverTime.applicationTime.reasonDissociation, (item: any) => item.diviationTime == 1);
+            let findResult2 = _.findLast(self.$appContext.model.appOverTime.applicationTime.reasonDissociation, (item: any) => item.diviationTime == 2);
+            if (findResult1) {
+                reason1.reason = findResult1.reason;
+                let code = findResult1.reasonCode;
+                let isFindCode = _.findLast(reason1.dropdownList, (item: any) => item.code == code);
+                if (isFindCode) {
+                    reason1.selectedValue = isFindCode.code;
+                } else {
+                    reason1.dropdownList.shift();
+                    reason1.dropdownList.unshift({
+                        code,
+                        text: self.$i18n('KAFS05_55')
+                    });
+                    reason1.dropdownList.unshift({
+                        code: null,
+                        text: self.$i18n('KAFS05_54')
+                    });
+                }
+            }
+            if (findResult2) {
+                reason2.reason = findResult2.reason;
+                let code = findResult2.reasonCode;
+                let isFindCode = _.findLast(reason2.dropdownList, (item: any) => item.code == code);
+                if (isFindCode) {
+                    reason2.selectedValue = isFindCode.code;
+                } else {
+                    reason2.dropdownList.shift();
+                    reason2.dropdownList.unshift({
+                        code,
+                        text: self.$i18n('KAFS05_55')
+                    });
+                    reason2.dropdownList.unshift({
+                        code: null,
+                        text: self.$i18n('KAFS05_54')
+                    });
+                }
+            }
+        }
 
         self.reason1 = reason1;
         self.reason2 = reason2;
@@ -531,7 +569,7 @@ export class KafS05Step2Component extends Vue {
                     code,
                     text
                 });
-                
+
             });
         }
 
@@ -560,8 +598,8 @@ export class KafS05Step2Component extends Vue {
         {
             let item = {} as ReasonDivergence;
             item.diviationTime = 2;
-            item.reasonCode = self.reason1.selectedValue;
-            item.reason = self.reason1.reason;
+            item.reasonCode = self.reason2.selectedValue;
+            item.reason = self.reason2.reason;
             list.push(item);
         }
 

@@ -62,8 +62,6 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdwo
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.HolidayWorkAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.workrecord.dailyrecordprocess.dailycreationwork.BreakTimeZoneSetting;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.EarchInterimRemainCheck;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainCheckInputParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngCheckRegister;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
@@ -212,7 +210,7 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 		ApplicationTime applicationTime = preActualColorCheck.checkStatus(companyId, employeeId, date.orElse(null), ApplicationType.HOLIDAY_WORK_APPLICATION, 
 				initWork.getInitWorkTypeCd().orElse(null), initWork.getInitWorkTimeCd().orElse(null), holidayWorkSetting.getOvertimeLeaveAppCommonSet().getOverrideSet(), 
 				Optional.of(holidayWorkSetting.getCalcStampMiss()), hdWorkBreakTimeSetOutput.getDeductionTimeLst(), 
-				!actualContentDisplayList.isEmpty() ? Optional.of(actualContentDisplayList.get(0)): Optional.empty()).applicationTime;
+				!actualContentDisplayList.isEmpty() ? Optional.of(actualContentDisplayList.get(0)): Optional.empty());
 		hdWorkDispInfoWithDateOutput.setActualApplicationTime(Optional.ofNullable(applicationTime));
 		
 		//10-2.代休の設定を取得する
@@ -378,7 +376,7 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 					Optional.of(empAppHdWorkDispInfoOutput.getHolidayWorkAppSet().getCalcStampMiss()), 
 					empAppHdWorkDispInfoOutput.getHdWorkDispInfoWithDateOutput().getBreakTimeZoneSettingList().isPresent() ? 
 							empAppHdWorkDispInfoOutput.getHdWorkDispInfoWithDateOutput().getBreakTimeZoneSettingList().get().getTimeZones() : Collections.emptyList(), 
-					Optional.ofNullable(!actualContentDisplayLst.isEmpty() ? actualContentDisplayLst.get(0) : null)).applicationTime;
+					Optional.ofNullable(!actualContentDisplayLst.isEmpty() ? actualContentDisplayLst.get(0) : null));
 			
 			//	ループする社員の休日出勤申請起動時の表示情報 = INPUT．休日出勤申請起動時の表示情報
 			empAppHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().setOpPreAppContentDisplayLst(Optional.of(preAppContentDisplayLst));
@@ -388,7 +386,7 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 			//	事前申請・実績超過チェック
 			List<ConfirmMsgOutput> confirmMsgOutputs = this.checkExcess(empAppHdWorkDispInfoOutput, empAppHolidayWork);
 			if(employeeInfo.isPresent()) {
-				confirmMsgOutputMap.put(employeeInfo.get().getBussinessName(), confirmMsgOutputs);
+				confirmMsgOutputMap.put(employeeInfo.get().getBussinessName(), this.toMultiMessage(confirmMsgOutputs));
 			}
 			
 			//	申請時の乖離時間をチェックする
@@ -446,6 +444,39 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 	        
 		});
 		return confirmMsgOutputMap;
+	}
+	
+	private List<ConfirmMsgOutput> toMultiMessage(List<ConfirmMsgOutput> confirmMsgOutputs){
+		List<ConfirmMsgOutput> confirmMsgOutputsMulti = confirmMsgOutputs.stream().map(confirmMsg -> {
+				switch(confirmMsg.getMsgID()) {
+					case "Msg_235": confirmMsg.setMsgID("Msg_1995"); break;
+					case "Msg_391": confirmMsg.setMsgID("Msg_1996"); break;
+					case "Msg_323": confirmMsg.setMsgID("Msg_1997"); break;
+					case "Msg_1134": confirmMsg.setMsgID("Msg_1998"); break;
+					case "Msg_1518": confirmMsg.setMsgID("Msg_1999"); break;
+					case "Msg_236": confirmMsg.setMsgID("Msg_2000"); break;
+					case "Msg_327": confirmMsg.setMsgID("Msg_2001"); break;
+					case "Msg_448": confirmMsg.setMsgID("Msg_2002"); break;
+					case "Msg_449": confirmMsg.setMsgID("Msg_2003"); break;
+					case "Msg_450": confirmMsg.setMsgID("Msg_2004"); break;
+					case "Msg_451": confirmMsg.setMsgID("Msg_2005"); break;
+					case "Msg_324": confirmMsg.setMsgID("Msg_2008"); break;
+					case "Msg_237": confirmMsg.setMsgID("Msg_2009"); break;
+					case "Msg_238": confirmMsg.setMsgID("Msg_2010"); break;
+					case "Msg_1409": confirmMsg.setMsgID("Msg_2011"); break;
+					case "Msg_1535": confirmMsg.setMsgID("Msg_2012"); break;
+					case "Msg_1536": confirmMsg.setMsgID("Msg_2013"); break;
+					case "Msg_1537": confirmMsg.setMsgID("Msg_2014"); break;
+					case "Msg_1538": confirmMsg.setMsgID("Msg_2015"); break;
+					case "Msg_1508": confirmMsg.setMsgID("Msg_2019"); break;
+					case "Msg_2056": confirmMsg.setMsgID("Msg_2057"); break;
+					default:
+						confirmMsg.setMsgID(confirmMsg.getMsgID());
+						break;
+				}
+				return confirmMsg;
+			}).collect(Collectors.toList());
+		return confirmMsgOutputsMulti;
 	}
 	
 	@Override

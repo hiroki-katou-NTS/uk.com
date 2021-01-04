@@ -26,6 +26,9 @@ import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationTypeDisp
 import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
 import nts.uk.ctx.at.request.dom.application.applist.service.OverTimeFrame;
 import nts.uk.ctx.at.request.dom.application.applist.service.content.AppContentService;
+import nts.uk.ctx.at.request.dom.application.applist.service.content.AppHolidayWorkData;
+import nts.uk.ctx.at.request.dom.application.applist.service.content.AppOverTimeData;
+import nts.uk.ctx.at.request.dom.application.applist.service.content.AppTimeFrameData;
 import nts.uk.ctx.at.request.dom.application.applist.service.content.ArrivedLateLeaveEarlyItemContent;
 import nts.uk.ctx.at.request.dom.application.applist.service.content.OptionalItemOutput;
 import nts.uk.ctx.at.request.dom.application.applist.service.content.OvertimeHolidayWorkActual;
@@ -1128,26 +1131,54 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 			String companyID) {
 		// ドメインモデル「休日出勤申請」を取得してデータを作成
 		AppOverTime appOverTime = appOverTimeRepository.find(companyID, application.getAppID()).get();
+		// 勤務就業名称を作成
+		String workTypeName = appDetailInfoRepo.findWorkTypeName(
+				workTypeLst, 
+				appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()).orElse(null));
+		String workTimeName = appDetailInfoRepo.findWorkTimeName(
+				workTimeSettingLst, 
+				appOverTime.getWorkInfoOp().map(x -> x.getWorkTimeCodeNotNull().map(y -> y.v()).orElse(null)).orElse(null));
 		// ドメインモデル「申請」．事前事後区分をチェック
 		OvertimeHolidayWorkActual overtimeHolidayWorkActual = null;
 		if(application.getPrePostAtr()==PrePostAtr.POSTERIOR && applicationListAtr==ApplicationListAtr.APPROVER) {
 			overtimeHolidayWorkActual = appContentService.getOvertimeHolidayWorkActual(
 					companyID, 
-					application, 
+					appOverTime,
 					appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode()).orElse(null), 
 					appOverTime.getWorkInfoOp().map(x -> x.getWorkTimeCodeNotNull().orElse(null)).orElse(null));
 		}
 		// 　申請内容　＝　残業申請の申請内容
+		AppOverTimeData appOverTimeData = new AppOverTimeData(
+				appOverTime.getWorkHoursOp().map(x -> x.stream().filter(y -> y.getWorkNo().v()==1).findAny().map(y -> y.getTimeZone().getStartTime().v()).orElse(null)).orElse(null), 
+				appOverTime.getOverTimeClf().value, 
+				appOverTime.getWorkHoursOp().map(x -> x.stream().filter(y -> y.getWorkNo().v()==1).findAny().map(y -> y.getTimeZone().getEndTime().v()).orElse(null)).orElse(null), 
+				appOverTime.getAppID(),
+				appOverTime.getApplicationTime().getFlexOverTime().map(x -> x.v()), 
+				appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()), 
+				Optional.ofNullable(workTypeName), 
+				overtimeHolidayWorkActual==null ? Optional.empty() : Optional.ofNullable(overtimeHolidayWorkActual.getPostAppData()), 
+				overtimeHolidayWorkActual==null ? Optional.empty() : Optional.ofNullable(overtimeHolidayWorkActual.getAppOverTimeData()), 
+				appOverTime.getApplicationTime().getOverTimeShiftNight().map(x -> x.getOverTimeMidNight().v()), 
+				appOverTime.getWorkInfoOp().map(x -> x.getWorkTimeCodeNotNull().map(y -> y.v())).orElse(Optional.empty()), 
+				Optional.ofNullable(workTimeName), 
+				overtimeHolidayWorkActual==null ? Optional.empty() : Optional.ofNullable(overtimeHolidayWorkActual.getBackgroundColor()), 
+				appOverTime.getApplicationTime().getApplicationTime().stream().map(x -> new AppTimeFrameData(
+						null, 
+						x.getFrameNo().v(), 
+						x.getAttendanceType(), 
+						"", 
+						null, 
+						x.getApplicationTime().v())).collect(Collectors.toList()));
 		String appContent = appContentService.getOvertimeHolidayWorkContent(
-				null, 
-				appOverTime, 
-				overtimeHolidayWorkActual, 
+				appOverTimeData, 
+				null,
 				application.getAppType(), 
 				application.getPrePostAtr(), 
 				applicationListAtr, 
 				application.getOpAppReason().orElse(null), 
 				approvalListDisplaySetting.getAppReasonDisAtr(), 
-				ScreenAtr.CMM045, 
+				ScreenAtr.CMM045,
+				overtimeHolidayWorkActual==null ? false : overtimeHolidayWorkActual.isActualStatus(),
 				application);
 		Optional<ApplicationTypeDisplay> opAppTypeDisplay = Optional.empty();
 		switch (appOverTime.getOverTimeClf()) {
@@ -1172,26 +1203,51 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 			String companyID) {
 		// ドメインモデル「休日出勤申請」を取得してデータを作成
 		AppHolidayWork appHolidayWork = appHolidayWorkRepository.find(companyID, application.getAppID()).get();
+		// 勤務就業名称を作成
+		String workTypeName = appDetailInfoRepo.findWorkTypeName(
+				workTypeLst, 
+				appHolidayWork.getWorkInformation().getWorkTypeCode().v());
+		String workTimeName = appDetailInfoRepo.findWorkTimeName(
+				workTimeSettingLst, 
+				appHolidayWork.getWorkInformation().getWorkTimeCodeNotNull().map(y -> y.v()).orElse(null));
 		// ドメインモデル「申請」．事前事後区分をチェック
 		OvertimeHolidayWorkActual overtimeHolidayWorkActual = null;
 		if(application.getPrePostAtr()==PrePostAtr.POSTERIOR && applicationListAtr==ApplicationListAtr.APPROVER) {
 			overtimeHolidayWorkActual = appContentService.getOvertimeHolidayWorkActual(
 					companyID, 
-					application, 
+					appHolidayWork,
 					appHolidayWork.getWorkInformation().getWorkTypeCode(), 
 					appHolidayWork.getWorkInformation().getWorkTimeCodeNotNull().orElse(null));
 		}
 		// 申請内容　＝　休日出勤申請の申請内容
+		AppHolidayWorkData appHolidayWorkData = new AppHolidayWorkData(
+				appHolidayWork.getWorkingTimeList().map(x -> x.stream().filter(y -> y.getWorkNo().v()==1).findAny().map(y -> y.getTimeZone().getStartTime().v()).orElse(null)).orElse(null), 
+				appHolidayWork.getWorkingTimeList().map(x -> x.stream().filter(y -> y.getWorkNo().v()==1).findAny().map(y -> y.getTimeZone().getEndTime().v()).orElse(null)).orElse(null), 
+				appHolidayWork.getAppID(), 
+				appHolidayWork.getApplicationTime().getApplicationTime().stream().map(x -> new AppTimeFrameData(
+						null, 
+						x.getFrameNo().v(), 
+						x.getAttendanceType(), 
+						"", 
+						null, 
+						x.getApplicationTime().v())).collect(Collectors.toList()), 
+				Optional.of(appHolidayWork.getWorkInformation().getWorkTypeCode().v()), 
+				Optional.ofNullable(workTypeName), 
+				overtimeHolidayWorkActual==null ? Optional.empty() : Optional.ofNullable(overtimeHolidayWorkActual.getPostAppData()), 
+				overtimeHolidayWorkActual==null ? Optional.empty() : Optional.ofNullable(overtimeHolidayWorkActual.getAppHolidayWorkData()), 
+				appHolidayWork.getWorkInformation().getWorkTimeCodeNotNull().map(y -> y.v()), 
+				Optional.ofNullable(workTimeName), 
+				overtimeHolidayWorkActual==null ? Optional.empty() : Optional.ofNullable(overtimeHolidayWorkActual.getBackgroundColor()));
 		String appContent = appContentService.getOvertimeHolidayWorkContent(
-				appHolidayWork, 
 				null, 
-				overtimeHolidayWorkActual, 
+				appHolidayWorkData,
 				application.getAppType(), 
 				application.getPrePostAtr(), 
 				applicationListAtr, 
 				application.getOpAppReason().orElse(null), 
 				approvalListDisplaySetting.getAppReasonDisAtr(), 
-				ScreenAtr.CMM045, 
+				ScreenAtr.CMM045,
+				overtimeHolidayWorkActual==null ? false : overtimeHolidayWorkActual.isActualStatus(),
 				application);
 		return new AppHolidayWorkDataOutput(appContent);
 	}
