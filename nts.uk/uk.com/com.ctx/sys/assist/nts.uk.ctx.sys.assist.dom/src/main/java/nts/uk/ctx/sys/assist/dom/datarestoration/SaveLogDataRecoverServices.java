@@ -22,24 +22,30 @@ public class SaveLogDataRecoverServices {
 		GeneralDate logTime = targetDate;
 		int logSequenceNumber = repoDataRecoveryLog.getMaxSeqId(recoveryProcessId) + 1;
 		String errorContent_ = "";
-		if (errorContent.length() > 1995) {
-			errorContent_ =  subStringContent(errorContent, 1995);
-		} else {
-			errorContent_ = errorContent;
+		if (errorContent != null) {
+			if (errorContent.length() > 1995) {
+				errorContent_ =  subStringContent(errorContent, 1995);
+			} else {
+				errorContent_ = errorContent;
+			}
 		}
 
 		String processingContent_ = "";
-		if (processingContent.length() > 95) {
-			processingContent_ =  subStringContent(processingContent, 95);
-		} else {
-			processingContent_ = processingContent;
+		if (processingContent != null) {
+			if (processingContent.length() > 95) {
+				processingContent_ =  subStringContent(processingContent, 95);
+			} else {
+				processingContent_ = processingContent;
+			}
 		}
 
 		String contentSql_ = "";
-		if (contentSql.length() > 1995) {
-			contentSql_ = subStringContent(contentSql, 1995);
-		} else {
-			contentSql_ = contentSql;
+		if (contentSql != null) {
+			if (contentSql.length() > 1995) {
+				contentSql_ = subStringContent(contentSql, 1995);
+			} else {
+				contentSql_ = contentSql;
+			}
 		}
 
 		try {
