@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.dom.processexecution;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.ZoneOffset;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +17,7 @@ import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLo
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.ExecutionTaskSetting;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.TaskEndDate;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.TaskEndTime;
+import nts.uk.ctx.at.function.dom.processexecution.tasksetting.enums.EndDateClassification;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.enums.EndTimeClassification;
 import nts.uk.shr.com.task.schedule.UkJobScheduler;
 
@@ -72,7 +74,7 @@ public class ProcessExecutionServiceImpl implements ProcessExecutionService {
 		// 「次回実行日時（暫定）」が「終了日＋終了時刻」を過ぎているか判定する
 		GeneralDateTime endDateTime = null;
 		TaskEndDate endDate = execTaskSet.getEndDate();
-		if (endDate != null && endDate.getEndDate().isPresent()) {
+		if (endDate.getEndDateCls().equals(EndDateClassification.DATE) && endDate.getEndDate().isPresent()) {
 			TaskEndTime endTime = execTaskSet.getEndTime();
 			if (endTime != null && endTime.getEndTimeCls().equals(EndTimeClassification.YES)) {
 				// →「実行タスク設定.終了日.終了日」＋「実行タスク設定.終了時刻設定.終了時刻」＝終了日時
@@ -94,8 +96,7 @@ public class ProcessExecutionServiceImpl implements ProcessExecutionService {
 		if (endDateTime != null && nextExecDateTime.after(endDateTime)) {
 			// 次回実行日時をNULLとする
 			return null;
-		} 
-		
+		}
 		return nextExecDateTime;
 	}
 

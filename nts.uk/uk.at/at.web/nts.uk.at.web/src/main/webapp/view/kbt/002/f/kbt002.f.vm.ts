@@ -479,7 +479,6 @@ module nts.uk.at.view.kbt002.f {
       data.nextExecDate = dataToReplace.executionTaskSetting.nextExecDateTime ? 
                           moment.utc(dataToReplace.executionTaskSetting.nextExecDateTime).format(DATETIME_FORMAT) : 
                           vm.$i18n('KBT002_165');
-      data.execStatus = data.isTaskExecution ? 1 : 2;
       vm.initGridList(index);
     }
   }

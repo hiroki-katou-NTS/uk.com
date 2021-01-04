@@ -55,19 +55,21 @@ public class ChangeExecutionTaskSettingCommandHandler
 	protected ExecutionTaskSettingDto handle(CommandHandlerContext<ChangeExecutionTaskSettingCommand> context) {
 		ChangeExecutionTaskSettingCommand command = context.getCommand();
 		SaveExecutionTaskSettingCommand saveCommand = command.convertToSaveCommand();
-		ExecutionTaskSetting[] executionTaskSetting = new ExecutionTaskSetting[1];
+		ExecutionTaskSetting executionTaskSetting = null;
 		// ドメインモデル「更新処理自動実行管理」を取得し、「現在の実行状態」を確認する
 		Optional<ProcessExecutionLogManage> optLogManage = this.processExecutionLogManageRepository
 				.getLogByCIdAndExecCd(AppContexts.user().companyId(), command.getExecItemCd());
-		optLogManage.ifPresent(logManage -> {
-			logManage.getCurrentStatus().ifPresent(status -> {
+		if (optLogManage.isPresent()) {
+			ProcessExecutionLogManage logManage = optLogManage.get();
+			if (logManage.getCurrentStatus().isPresent()) {
+				CurrentExecutionStatus status = logManage.getCurrentStatus().get();
 				// 「実行中」の場合
 				if (status.equals(CurrentExecutionStatus.RUNNING)) {
 					// エラーメッセージ「#Msg_1318」を表示する
 					throw new BusinessException("Msg_1318");
 				}
 				// 「実行中」以外の場合
-				executionTaskSetting[0] = command.toDomain();
+				executionTaskSetting = command.toDomain();
 				// バッチのスケジュールを削除する
 				this.scheduler.unscheduleOnCurrentCompany(SortingProcessScheduleJob.class, command.getScheduleId());
 				if (command.getEndScheduleId() != null) {
@@ -109,34 +111,30 @@ public class ChangeExecutionTaskSettingCommandHandler
 						.cleanupJobClass(SortingProcessEndScheduleJob.class).build();
 				String scheduleId = this.schedule(options);
 				String endScheduleId = this.schedule(optionsEnd);
-				executionTaskSetting[0].setScheduleId(scheduleId);
-				executionTaskSetting[0].setEndScheduleId(Optional.ofNullable(endScheduleId));
+				executionTaskSetting.setScheduleId(scheduleId);
+				executionTaskSetting.setEndScheduleId(Optional.ofNullable(endScheduleId));
 				// INPUT「実行タスク設定．更新処理有効設定」を確認する
-				if (executionTaskSetting[0].isEnabledSetting()) {
+				if (executionTaskSetting.isEnabledSetting()) {
 					// アルゴリズム「次回実行日時作成処理」を実行する
 					Optional<GeneralDateTime> nextExecDateTime = Optional.ofNullable(
-							this.processExecutionService.processNextExecDateTimeCreation(executionTaskSetting[0]));
-					executionTaskSetting[0].setNextExecDateTime(nextExecDateTime);
+							this.processExecutionService.processNextExecDateTimeCreation(executionTaskSetting));
+					executionTaskSetting.setNextExecDateTime(nextExecDateTime);
 				} else {
 					// 次回実行日時をNULLとする
-					executionTaskSetting[0].setNextExecDateTime(Optional.empty());
+					executionTaskSetting.setNextExecDateTime(Optional.empty());
 				}
 				// 取得した内容をINPUT「実行タスク設定」にセットする
 				try {
 					// 登録処理
-					this.performRegister(executionTaskSetting[0], saveCommand);
+					this.performRegister(executionTaskSetting, saveCommand);
 				} catch (Exception e) {
 					throw new BusinessException("Msg_1110");
 				}
-			});
-			// ドメインモデル「更新処理自動実行管理」を更新する
-			logManage.setCurrentStatus(executionTaskSetting[0].isEnabledSetting() ? CurrentExecutionStatus.WAITING
-					: CurrentExecutionStatus.INVALID);
-			this.processExecutionLogManageRepository.update(logManage);
-		});
-		if (executionTaskSetting[0] != null) {
+			}
+		}
+		if (executionTaskSetting != null) {
 			// 更新後の「実行タスク設定」を返す
-			return ExecutionTaskSettingDto.fromDomain(executionTaskSetting[0]);
+			return ExecutionTaskSettingDto.fromDomain(executionTaskSetting);
 		}
 		return null;
 	}

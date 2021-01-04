@@ -52,43 +52,43 @@ public class SaveUpdateProcessAutoExecutionCommandHandler
 	@Override
 	protected void handle(CommandHandlerContext<SaveUpdateProcessAutoExecutionCommand> context) {
 		SaveUpdateProcessAutoExecutionCommand command = context.getCommand();
-		UpdateProcessAutoExecution domain = UpdateProcessAutoExecution.createFromMemento(AppContexts.user().companyId(),
-				command);
+		UpdateProcessAutoExecution execTaskSetting = UpdateProcessAutoExecution
+				.createFromMemento(AppContexts.user().companyId(), command);
 		// アルゴリズム「登録チェック処理」を実行する
-		domain.validate();
+		execTaskSetting.validate();
 		// 画面モードチェック
 		if (command.isNewMode()) {
 			// 新規モード
 			// 更新処理自動実行項目コードは重複してはならない
 			// #Msg_3
-			if (this.processExecutionRepository
-					.getProcessExecutionByCidAndExecCd(AppContexts.user().companyId(), domain.getExecItemCode().v())
-					.isPresent()) {
+			if (this.processExecutionRepository.getProcessExecutionByCidAndExecCd(AppContexts.user().companyId(),
+					execTaskSetting.getExecItemCode().v()).isPresent()) {
 				throw new BusinessException("Msg_3");
 			}
 			// アルゴリズム「新規登録処理」を実行する
-			this.processRegister(domain);
+			this.processRegister(execTaskSetting);
 		} else {
 			// 更新モード
-			this.processUpdate(domain, command.isEnabledSetting());
+			this.processUpdate(execTaskSetting, command.isEnabledSetting());
 		}
 	}
 
-	private void processRegister(UpdateProcessAutoExecution domain) {
+	private void processRegister(UpdateProcessAutoExecution execTaskSetting) {
 		String cid = AppContexts.user().companyId();
 		// ドメインモデル「更新処理自動実行」に新規登録する
-		this.processExecutionRepository.insert(domain);
+		this.processExecutionRepository.insert(execTaskSetting);
 		// ドメインモデル「更新処理自動実行管理」に新規登録する
 		this.processExecutionLogManageRepository.insert(ProcessExecutionLogManage.builder().companyId(cid)
-				.currentStatus(Optional.of(CurrentExecutionStatus.INVALID)).execItemCd(domain.getExecItemCode())
-				.overallStatus(Optional.of(EndStatus.NOT_IMPLEMENT)).build());
+				.currentStatus(Optional.of(CurrentExecutionStatus.INVALID))
+				.execItemCd(execTaskSetting.getExecItemCode()).overallStatus(Optional.of(EndStatus.NOT_IMPLEMENT))
+				.build());
 		// ドメインモデル「更新処理前回実行日時」に新規登録する
-		this.lastExecDateTimeRepository.insert(new LastExecDateTime(cid, domain.getExecItemCode(), null));
+		this.lastExecDateTimeRepository.insert(new LastExecDateTime(cid, execTaskSetting.getExecItemCode(), null));
 	}
 
-	private void processUpdate(UpdateProcessAutoExecution domain, boolean enabledSetting) {
+	private void processUpdate(UpdateProcessAutoExecution procExec, boolean enabledSetting) {
 		String cid = AppContexts.user().companyId();
-		String execItemCd = domain.getExecItemCode().v();
+		String execItemCd = procExec.getExecItemCode().v();
 		// ドメインモデル「更新処理自動実行管理」を取得し、現在の実行状態を判断する
 		Optional<ProcessExecutionLogManage> optLogMng = this.processExecutionLogManageRepository
 				.getLogByCIdAndExecCd(cid, execItemCd);
@@ -99,75 +99,81 @@ public class SaveUpdateProcessAutoExecutionCommandHandler
 				// エラーメッセージ「#Msg_1318」を表示する
 				throw new BusinessException("Msg_1318");
 			}
-			// Update 実行タスク設定
-			this.updateExecutionTaskSetting(cid, execItemCd, enabledSetting);
+			// ドメインモデル「実行タスク設定」があるかチェックする
+			Optional<ExecutionTaskSetting> optExecTaskSetting = this.executionTaskSettingRepository
+					.getByCidAndExecCd(cid, execItemCd);
+			optExecTaskSetting.ifPresent(execTaskSetting -> {
+				// Update 実行タスク設定
+				this.updateExecutionTaskSetting(cid, execItemCd, enabledSetting, execTaskSetting);
+				// ドメインモデル「更新処理自動実行管理」を更新する
+				logManage.setCurrentStatus(execTaskSetting.isEnabledSetting() ? CurrentExecutionStatus.WAITING
+						: CurrentExecutionStatus.INVALID);
+				this.processExecutionLogManageRepository.update(logManage);
+			});
 			// ドメインモデル「更新処理自動実行」に更新登録する
-			this.processExecutionRepository.update(domain);
+			this.processExecutionRepository.update(procExec);
 		});
 	}
 
-	private void updateExecutionTaskSetting(String cid, String execItemCd, boolean enabledSetting) {
-		// ドメインモデル「実行タスク設定」があるかチェックする
-		Optional<ExecutionTaskSetting> optExecTaskSetting = this.executionTaskSettingRepository.getByCidAndExecCd(cid,
-				execItemCd);
-		optExecTaskSetting.ifPresent(domain -> {
-			ChangeExecutionTaskSettingCommand command = ChangeExecutionTaskSettingCommand.builder()
-					.april(domain.getDetailSetting().getMonthly()
-							.map(data -> data.getMonth().getApril().equals(NotUseAtr.USE)).orElse(false))
-					.august(domain.getDetailSetting().getMonthly()
-							.map(data -> data.getMonth().getAugust().equals(NotUseAtr.USE)).orElse(false))
-					.companyId(cid)
-					.december(domain.getDetailSetting().getMonthly()
-							.map(data -> data.getMonth().getDecember().equals(NotUseAtr.USE)).orElse(false))
-					.enabledSetting(enabledSetting).endDate(domain.getEndDate().getEndDate().orElse(null))
-					.endDateCls(domain.getEndDate().getEndDateCls().value)
-					.endScheduleId(domain.getEndScheduleId().orElse(null))
-					.endTime(domain.getEndTime().getEndTime().map(EndTime::v).orElse(null))
-					.endTimeCls(domain.getEndTime().getEndTimeCls().value).execItemCd(execItemCd)
-					.february(domain.getDetailSetting().getMonthly()
-							.map(data -> data.getMonth().getFebruary().equals(NotUseAtr.USE)).orElse(false))
-					.friday(domain.getDetailSetting().getWeekly()
-							.map(data -> data.getWeekdaySetting().getFriday().equals(NotUseAtr.USE)).orElse(false))
-					.january(domain.getDetailSetting().getMonthly()
-							.map(data -> data.getMonth().getJanuary().equals(NotUseAtr.USE)).orElse(false))
-					.july(domain.getDetailSetting().getMonthly()
-							.map(data -> data.getMonth().getJuly().equals(NotUseAtr.USE)).orElse(false))
-					.june(domain.getDetailSetting().getMonthly()
-							.map(data -> data.getMonth().getJune().equals(NotUseAtr.USE)).orElse(false))
-					.march(domain.getDetailSetting().getMonthly()
-							.map(data -> data.getMonth().getMarch().equals(NotUseAtr.USE)).orElse(false))
-					.may(domain.getDetailSetting().getMonthly()
-							.map(data -> data.getMonth().getMay().equals(NotUseAtr.USE)).orElse(false))
-					.monday(domain.getDetailSetting().getWeekly()
-							.map(data -> data.getWeekdaySetting().getMonday().equals(NotUseAtr.USE)).orElse(false))
-					.nextExecDateTime(domain.getNextExecDateTime().orElse(null))
-					.november(domain.getDetailSetting().getMonthly()
-							.map(data -> data.getMonth().getNovember().equals(NotUseAtr.USE)).orElse(false))
-					.october(domain.getDetailSetting().getMonthly()
-							.map(data -> data.getMonth().getOctober().equals(NotUseAtr.USE)).orElse(false))
-					.oneDayRepClassification(domain.getOneDayRepInr().getOneDayRepCls().value)
-					.oneDayRepInterval(domain.getOneDayRepInr().getDetail().map(data -> data.value).orElse(null))
-					.repeatContent(domain.getContent().value)
-					.repeatMonthDateList(domain.getDetailSetting().getMonthly()
-							.map(data -> data.getDays().stream().map(date -> date.value).collect(Collectors.toList()))
-							.orElse(Collections.emptyList()))
-					.saturday(domain.getDetailSetting().getWeekly()
-							.map(data -> data.getWeekdaySetting().getSaturday().equals(NotUseAtr.USE)).orElse(false))
-					.scheduleId(domain.getScheduleId())
-					.september(domain.getDetailSetting().getMonthly()
-							.map(data -> data.getMonth().getSeptember().equals(NotUseAtr.USE)).orElse(false))
-					.startDate(domain.getStartDate()).startTime(domain.getStartTime().v())
-					.sunday(domain.getDetailSetting().getWeekly()
-							.map(data -> data.getWeekdaySetting().getSunday().equals(NotUseAtr.USE)).orElse(false))
-					.thursday(domain.getDetailSetting().getWeekly()
-							.map(data -> data.getWeekdaySetting().getThursday().equals(NotUseAtr.USE)).orElse(false))
-					.tuesday(domain.getDetailSetting().getWeekly()
-							.map(data -> data.getWeekdaySetting().getTuesday().equals(NotUseAtr.USE)).orElse(false))
-					.wednesday(domain.getDetailSetting().getWeekly()
-							.map(data -> data.getWeekdaySetting().getWednesday().equals(NotUseAtr.USE)).orElse(false))
-					.build();
-			this.changeExecutionTaskSettingCommandHandler.handle(command);
-		});
+	private void updateExecutionTaskSetting(String cid, String execItemCd, boolean enabledSetting,
+			ExecutionTaskSetting execTaskSetting) {
+		ChangeExecutionTaskSettingCommand command = ChangeExecutionTaskSettingCommand.builder()
+				.april(execTaskSetting.getDetailSetting().getMonthly()
+						.map(data -> data.getMonth().getApril().equals(NotUseAtr.USE)).orElse(false))
+				.august(execTaskSetting.getDetailSetting().getMonthly()
+						.map(data -> data.getMonth().getAugust().equals(NotUseAtr.USE)).orElse(false))
+				.companyId(cid)
+				.december(execTaskSetting.getDetailSetting().getMonthly()
+						.map(data -> data.getMonth().getDecember().equals(NotUseAtr.USE)).orElse(false))
+				.enabledSetting(enabledSetting).endDate(execTaskSetting.getEndDate().getEndDate().orElse(null))
+				.endDateCls(execTaskSetting.getEndDate().getEndDateCls().value)
+				.endScheduleId(execTaskSetting.getEndScheduleId().orElse(null))
+				.endTime(execTaskSetting.getEndTime().getEndTime().map(EndTime::v).orElse(null))
+				.endTimeCls(execTaskSetting.getEndTime().getEndTimeCls().value).execItemCd(execItemCd)
+				.february(execTaskSetting.getDetailSetting().getMonthly()
+						.map(data -> data.getMonth().getFebruary().equals(NotUseAtr.USE)).orElse(false))
+				.friday(execTaskSetting.getDetailSetting().getWeekly()
+						.map(data -> data.getWeekdaySetting().getFriday().equals(NotUseAtr.USE)).orElse(false))
+				.january(execTaskSetting.getDetailSetting().getMonthly()
+						.map(data -> data.getMonth().getJanuary().equals(NotUseAtr.USE)).orElse(false))
+				.july(execTaskSetting.getDetailSetting().getMonthly()
+						.map(data -> data.getMonth().getJuly().equals(NotUseAtr.USE)).orElse(false))
+				.june(execTaskSetting.getDetailSetting().getMonthly()
+						.map(data -> data.getMonth().getJune().equals(NotUseAtr.USE)).orElse(false))
+				.march(execTaskSetting.getDetailSetting().getMonthly()
+						.map(data -> data.getMonth().getMarch().equals(NotUseAtr.USE)).orElse(false))
+				.may(execTaskSetting.getDetailSetting().getMonthly()
+						.map(data -> data.getMonth().getMay().equals(NotUseAtr.USE)).orElse(false))
+				.monday(execTaskSetting.getDetailSetting().getWeekly()
+						.map(data -> data.getWeekdaySetting().getMonday().equals(NotUseAtr.USE)).orElse(false))
+				.nextExecDateTime(execTaskSetting.getNextExecDateTime().orElse(null))
+				.november(execTaskSetting.getDetailSetting().getMonthly()
+						.map(data -> data.getMonth().getNovember().equals(NotUseAtr.USE)).orElse(false))
+				.october(execTaskSetting.getDetailSetting().getMonthly()
+						.map(data -> data.getMonth().getOctober().equals(NotUseAtr.USE)).orElse(false))
+				.oneDayRepClassification(execTaskSetting.getOneDayRepInr().getOneDayRepCls().value)
+				.oneDayRepInterval(execTaskSetting.getOneDayRepInr().getDetail().map(data -> data.value).orElse(null))
+				.repeatContent(execTaskSetting.getContent().value)
+				.repeatMonthDateList(execTaskSetting.getDetailSetting().getMonthly()
+						.map(data -> data.getDays().stream().map(date -> date.value).collect(Collectors.toList()))
+						.orElse(Collections.emptyList()))
+				.saturday(execTaskSetting.getDetailSetting().getWeekly()
+						.map(data -> data.getWeekdaySetting().getSaturday().equals(NotUseAtr.USE)).orElse(false))
+				.scheduleId(execTaskSetting.getScheduleId())
+				.september(execTaskSetting.getDetailSetting().getMonthly()
+						.map(data -> data.getMonth().getSeptember().equals(NotUseAtr.USE)).orElse(false))
+				.startDate(execTaskSetting.getStartDate()).startTime(execTaskSetting.getStartTime().v())
+				.sunday(execTaskSetting.getDetailSetting().getWeekly()
+						.map(data -> data.getWeekdaySetting().getSunday().equals(NotUseAtr.USE)).orElse(false))
+				.thursday(execTaskSetting.getDetailSetting().getWeekly()
+						.map(data -> data.getWeekdaySetting().getThursday().equals(NotUseAtr.USE)).orElse(false))
+				.tuesday(execTaskSetting.getDetailSetting().getWeekly()
+						.map(data -> data.getWeekdaySetting().getTuesday().equals(NotUseAtr.USE)).orElse(false))
+				.wednesday(execTaskSetting.getDetailSetting().getWeekly()
+						.map(data -> data.getWeekdaySetting().getWednesday().equals(NotUseAtr.USE)).orElse(false))
+				.build();
+		// 変更後のドメインモデル「実行タスク設定」を更新する
+		this.changeExecutionTaskSettingCommandHandler.handle(command);
 	}
 
 }
