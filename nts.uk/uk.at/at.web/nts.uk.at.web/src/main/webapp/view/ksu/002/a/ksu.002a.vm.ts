@@ -462,6 +462,9 @@ module nts.uk.ui.at.ksu002.a {
 
 			if (changed.data.wtime.code !== cloned.data.wtime.code) {
 				state.wtime(EDIT_STATE.HAND_CORRECTION_MYSELF);
+				// if change time code, change time value state
+				state.value.begin(EDIT_STATE.HAND_CORRECTION_MYSELF);
+				state.value.finish(EDIT_STATE.HAND_CORRECTION_MYSELF);
 			}
 
 			if (changed.data.value.begin !== cloned.data.value.begin) {
