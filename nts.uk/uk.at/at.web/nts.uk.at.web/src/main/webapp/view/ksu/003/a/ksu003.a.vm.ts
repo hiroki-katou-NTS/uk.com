@@ -3030,7 +3030,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			for (let br = 0; br < self.lstBreakSum.length; br++) {
 				lstTimeFilter = _.filter(lstTime, (x: any) => {
 					return (x.start == self.lstBreakSum[br].start && x.end < self.lstBreakSum[br].end) ||
-						(x.start < self.lstBreakSum[br].start && x.end == self.lstBreakSum[br].end)
+						(x.start > self.lstBreakSum[br].start && x.end == self.lstBreakSum[br].end)
 				});
 				if (!_.isEmpty(lstTimeFilter)) {
 					for (let brk = 0; brk < lstTimeFilter.length; brk++) {
@@ -3073,6 +3073,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		// Tính tổng từng loại thời gian
 		calcChartTypeTime(schedule: any, typeChart: any, timeRangeLimit: any, lstTime: any, type : string, index : any) {
 			let self = this, startCalc = 0, endCalc = 0, lstTimeFilter: any = [];
+			if(type == "BREAK" && self.dataScreen003A().employeeInfo[index].fixedWorkInforDto.fixBreakTime == 0) return;
 			for (let o = 0; o < typeChart.length; o++) {
 				let brkT: any = typeChart[o];
 				let timeChartBrk = self.convertTimeToChart(_.isNil(brkT.startTime) ? brkT.start : (_.isNil(brkT.startTime.time) ? brkT.startTime : brkT.startTime.time),
@@ -3140,7 +3141,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									else if (!_.inRange(x.start, startCalc, timeChartBrk.endTime) && !_.inRange(x.end, startCalc, endCalc)) {
 										let lstTimeFilter2 = _.filter(lstTime, (x: any) => { return (x.start == startCalc) && (x.end == endCalc) })
 										if(_.isEmpty(lstTimeFilter2)){
-											
 											lstTime.push({
 											start: startCalc,
 											end: endCalc,
