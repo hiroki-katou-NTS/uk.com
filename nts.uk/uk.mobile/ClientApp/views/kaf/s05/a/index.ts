@@ -203,18 +203,19 @@ export class KafS05Component extends KafS00ShrComponent {
     public get c16_1() {
         const self = this;
         let model = self.model as Model;
+        let c16_1 = false;
         if (!_.isNil(model.displayInfoOverTime.calculationResultOp)) {
             _.forEach(model.displayInfoOverTime.calculationResultOp.applicationTimes, (i: ApplicationTime) => {
                 _.forEach(i.applicationTime, (item: OvertimeApplicationSetting) => {
                     if (item.attendanceType == AttendanceType.BREAKTIME) {
 
-                        return true;
+                        c16_1 = true;
                     }
                 });
             });
         }
 
-        return false;
+        return c16_1;
     }
     // ※表15 = ○　　AND　※表16-1 = ○　
     public get c16_1_2() {
@@ -227,15 +228,16 @@ export class KafS05Component extends KafS00ShrComponent {
     public get c16_2() {
         const self = this;
         let model = self.model as Model;
+        let c16_2 = false;
         let midNightHolidayTimes = _.get(model.displayInfoOverTime, 'calculationResultOp.applicationTimes[0].overTimeShiftNight.midNightHolidayTimes');
         _.forEach(midNightHolidayTimes, (item: HolidayMidNightTime) => {
             if (item.legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork && item.attendanceTime > 0) {
 
-                return true && self.c5;
+                c16_2 = true && self.c5;
             }
         });
 
-        return false;
+        return c16_2;
     }
     // ※表15 = ○　　AND　※表16-2 = ○　
     public get c16_2_2() {
@@ -247,15 +249,16 @@ export class KafS05Component extends KafS00ShrComponent {
     public get c16_3() {
         const self = this;
         let model = self.model as Model;
+        let c16_3 = false;
         let midNightHolidayTimes = _.get(model.displayInfoOverTime, 'calculationResultOp.applicationTimes[0].overTimeShiftNight.midNightHolidayTimes');
         _.forEach(midNightHolidayTimes, (item: HolidayMidNightTime) => {
             if (item.legalClf == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork && item.attendanceTime > 0) {
 
-                return true && self.c5;
+                c16_3 = true && self.c5;
             }
         });
 
-        return false;
+        return c16_3;
     }
     // ※表15 = ○　　AND　※表16-3 = ○　
     public get c16_3_2() {
@@ -268,15 +271,16 @@ export class KafS05Component extends KafS00ShrComponent {
     public get c16_4() {
         const self = this;
         let model = self.model as Model;
+        let c16_4 = false;
         let midNightHolidayTimes = _.get(model.displayInfoOverTime, 'calculationResultOp.applicationTimes[0].overTimeShiftNight.midNightHolidayTimes');
         _.forEach(midNightHolidayTimes, (item: HolidayMidNightTime) => {
             if (item.legalClf == StaturoryAtrOfHolidayWork.PublicHolidayWork && item.attendanceTime > 0) {
 
-                return true && self.c5;
+                c16_4 = true && self.c5;
             }
         });
 
-        return false;
+        return c16_4;
     }
     // ※表15 = ○　　AND　※表16-4 = ○　
     public get c16_4_2() {
