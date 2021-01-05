@@ -101,6 +101,10 @@ module nts.uk.at.view.kaf011 {
 				let w2 = new TimeZoneWithWorkNo(2);
 				w2.update({startTime: data.startTime2, endTime: data.endTime2});
 				self.workingHours.push(w2);	
+			}else{
+				self.workingHours.remove(c => {
+			        return c.workNo== 2;
+			    });
 			}
 			if(data.workTime){
 				self.workTimeDisplay(data.workTime + ' ' + 
@@ -126,6 +130,10 @@ module nts.uk.at.view.kaf011 {
 				let tg = new TimeZoneWithWorkNo(2);
 				tg.update(tg)
 				self.workingHours.push(tg);		
+			}else{
+				self.workingHours.remove(c => {
+			        return c.workNo== 2;
+			    });
 			}
 			self.started = true;
 		}
@@ -180,9 +188,13 @@ module nts.uk.at.view.kaf011 {
 								w2.update(data.second);
 							}else{
 								let tg = new TimeZoneWithWorkNo(2);
-							tg.update(data.second)
-							self.workingHours.push(tg);	
+								tg.update(data.second)
+								self.workingHours.push(tg);	
 							}
+						}else{
+							self.workingHours.remove(c => {
+						        return c.workNo== 2;
+						    });
 						}
 						
 						self.convertTimeToString(data);

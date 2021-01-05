@@ -143,14 +143,14 @@ public class PreRegistrationErrorCheck {
 	public void allDayAndHalfDayContradictionCheck(String companyID, Optional<AbsenceLeaveApp> abs, Optional<RecruitmentApp> rec) {
 		if(rec.isPresent() && abs.isPresent()) {
 			BigDecimal recDay = this.getByWorkType(rec.get().getWorkInformation().getWorkTypeCode().v(), companyID, WorkTypeClassification.Shooting);
-			if(recDay == new BigDecimal(0)) {
+			if(recDay.compareTo(new BigDecimal(0)) == 0) {
 				return;
 			}
 			BigDecimal absDay = this.getByWorkType(abs.get().getWorkInformation().getWorkTypeCode().v(), companyID, WorkTypeClassification.Pause);
-			if(absDay == new BigDecimal(0)) {
+			if(absDay.compareTo(new BigDecimal(0)) == 0) {
 				return;
 			}
-			if(recDay != absDay) {
+			if(recDay.compareTo(absDay) != 0) {
 				throw new BusinessException("Msg_698");
 			}
 		}
