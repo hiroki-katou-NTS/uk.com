@@ -16,10 +16,10 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @Value
 public class NightShiftOperationRule {
 	/** 夜勤運用区分*/
-	private final NotUseAtr nightShiftOperationAtr;
+	private NotUseAtr nightShiftOperationAtr;
 	
 	/**　時間帯*/
-	private final Optional<ClockHourMinuteSpan> shiftTime;
+	private Optional<ClockHourMinuteSpan> shiftTime;
 	
 	/**
 	 * 夜勤運用なしで作る
