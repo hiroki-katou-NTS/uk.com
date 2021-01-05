@@ -116,7 +116,8 @@ public class AverageNumDayCheckService {
                                 Optional<AggrResultOfAnnualLeave> annualLeave = aggResult.getAnnualLeave();
                                 // 合計値　を計算
                                 if (annualLeave.isPresent()) {
-                                    total += annualLeave.get().getAsOfPeriodEnd().getUsedDays().v();
+                                    // 合計値　+＝　年休の集計結果．年休情報(期間終了日時点)．残数．年休(マイナスあり)．使用数．合計．使用日数+使用時間数 //TODO Q&A 39077
+                                    total += annualLeave.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumber().getUsedDays().getUsedDays().v();
                                     total += annualLeave.get().getAsOfPeriodEnd().getUsedTime().v() * 60 / 8;
                                 }
                                 break;
@@ -124,7 +125,8 @@ public class AverageNumDayCheckService {
                                 Optional<AggrResultOfReserveLeave> reserveLeave = aggResult.getReserveLeave();
                                 // 合計値　を計算
                                 if (reserveLeave.isPresent()) {
-                                    total += reserveLeave.get().getAsOfPeriodEnd().getUsedDays().v();
+                                    // 合計値　+＝　積立年休の集計結果．積立年休情報(期間終了日時点)．残数．年休(マイナスあり)．使用数．合計．使用日数+使用時間数 //TODO Q&A 39077
+                                    total += reserveLeave.get().getAsOfPeriodEnd().getRemainingNumber().getReserveLeaveWithMinus().getUsedNumber().getUsedDays().v();
                                     // total += reserveLeave.get().getAsOfPeriodEnd().getUsedTime().v() * 60 / 8; //TODO Q&A 37551
                                 }
                                 break;

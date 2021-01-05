@@ -188,7 +188,7 @@ public class AverageRatioCheckService {
         }
 
         // 比率値　＝　総日数/総集計日数*100
-        Double avg = total / aggregateTotal + 100;
+        Double avg = total / aggregateTotal * 100;
         BigDecimal bd = new BigDecimal(Double.toString(avg));
         bd = bd.setScale(1, RoundingMode.HALF_UP);
         // 比較処理
@@ -245,13 +245,15 @@ public class AverageRatioCheckService {
         }
 
         // 代休使用数（※１）
-        if (breakDayOffRemain.getLstDetailData().stream().anyMatch(x -> OccurrenceDigClass.OCCURRENCE.equals(x.getOccurrentClass()))) {
+        // 「期間内の休出代休残数を取得する」から取得した．逐次発生の休暇明細一覧．発生消化区分　＝　消化　の場合
+        if (breakDayOffRemain.getLstDetailData().stream().anyMatch(x -> OccurrenceDigClass.DIGESTION.equals(x.getOccurrentClass()))) {
             // 代休使用数　＝　発生数．日数
             total += breakDayOffRemain.getOccurrenceDays();
         }
 
         // 振休使用数（※2）
-        if (absRecRemain.getLstAbsRecMng().stream().anyMatch(x -> OccurrenceDigClass.OCCURRENCE.equals(x.getOccurrentClass()))) {
+        // 「期間内の振出振休残数を取得する」から取得した．逐次発生の休暇明細一覧．発生消化区分　＝　消化　の場合
+        if (absRecRemain.getLstAbsRecMng().stream().anyMatch(x -> OccurrenceDigClass.DIGESTION.equals(x.getOccurrentClass()))) {
             // 振休使用数　＝　発生数．日数
             total += absRecRemain.getOccurrenceDays();
         }

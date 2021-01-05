@@ -239,7 +239,7 @@ module nts.uk.at.kal011.a {
             vm.$blockui("invisible");
             vm.$window.storage('KAL011DModalData').done((data) => {
                 if (!data.isClose) {
-                    let dataStored = { 
+                    let dataStored = {
                         processId: data.processId,
                         alarmPatternCode: vm.alarmPatternCode(),
                         alarmPatternName: vm.alarmPatternName
@@ -247,6 +247,8 @@ module nts.uk.at.kal011.a {
                     vm.$window.storage('KAL011BModalData', dataStored).done(() => {
                         vm.$window.modal('/view/kal/011/b/index.xhtml')
                     });
+                } else {
+                    vm.$blockui("clear");
                 }
             });
         }

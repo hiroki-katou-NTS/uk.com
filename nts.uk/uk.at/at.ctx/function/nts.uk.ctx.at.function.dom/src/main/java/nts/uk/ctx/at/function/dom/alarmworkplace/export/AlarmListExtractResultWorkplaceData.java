@@ -82,7 +82,6 @@ public class AlarmListExtractResultWorkplaceData {
     public static List<AlarmListExtractResultWorkplaceData> fromDomains(List<AlarmListExtractInfoWorkplace> alExtractInfos) {
         List<AlarmListExtractResultWorkplaceData> extractResultDtos = new ArrayList<>();
         for (AlarmListExtractInfoWorkplace alExtractInfo : alExtractInfos) {
-            String categoryName = TextResource.localize(alExtractInfo.getCategory().nameId);
             ExtractResult extractResult = alExtractInfo.getExtractResult();
             AlarmValueDate date = extractResult.getAlarmValueDate();
             String dateResult = convertAlarmValueDate(date.getStartDate());
@@ -95,7 +94,7 @@ public class AlarmListExtractResultWorkplaceData {
                     extractResult.getAlarmValueMessage().v(),
                     dateResult,
                     extractResult.getAlarmItemName().v(),
-                    categoryName,
+                    alExtractInfo.getCategoryName(),
                     extractResult.getCheckTargetValue(),
                     alExtractInfo.getCategory().value,
                     date.getStartDate(), //TODO Q&A 37860
