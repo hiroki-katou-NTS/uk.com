@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyLaborT
 @NoArgsConstructor
 public class MonthlyLaborTimeCommand {
 	/** 法定労働時間 */
-	private int legalLaborTime;
+	private Integer legalLaborTime;
 
 	/** 所定労働時間 */
 	/** 勤務区分がフレックスの場合、必ず所定労働時間と週平均時間が存在する */
@@ -27,7 +27,8 @@ public class MonthlyLaborTimeCommand {
 	private Integer weekAvgTime;
 
 	public MonthlyLaborTime toDomain() {
-		return MonthlyLaborTime.of(new MonthlyEstimateTime(this.legalLaborTime),
+		return MonthlyLaborTime.of(new MonthlyEstimateTime(this.legalLaborTime == null ? 0
+				: this.legalLaborTime),
 				Optional.ofNullable(
 						this.withinLaborTime == null ? null : new MonthlyEstimateTime(this.withinLaborTime)),
 				Optional.ofNullable(this.weekAvgTime == null ? null : new MonthlyEstimateTime(this.weekAvgTime)));

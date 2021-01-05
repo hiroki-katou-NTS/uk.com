@@ -76,7 +76,7 @@ module nts.uk.at.kmk004.components.flex {
 		alreadySettingList: KnockoutObservableArray<any> = ko.observableArray([]);
 
 		constructor(param?: IScreenData) {
-			
+
 			if (param) {
 				this.yearList(_.chain(param.yearList).map((item) => { return new YearItem(item); }).orderBy(['year'], ['desc']).value());
 				this.comFlexMonthActCalSet(param.flexBasicSetting.flexMonthActCalSet);
@@ -119,10 +119,10 @@ module nts.uk.at.kmk004.components.flex {
 
 		saveData() {
 			const vm = this;
-			
+
 			let saveitem = ko.toJS(vm.monthlyWorkTimeSetComs()),
 				year = Number(vm.selectedYear());
-				
+
 			vm.serverData = { year: year, data: saveitem };
 		}
 
@@ -131,11 +131,13 @@ module nts.uk.at.kmk004.components.flex {
 				yearList = vm.yearList();
 
 			_.remove(yearList, (item) => { return item.year == year; });
+
 			vm.yearList(yearList);
 
-			let svYears = vm.serverYears();
-			_.remove(svYears, year);
-			vm.serverYears(svYears)
+			let svYear = vm.serverYears();
+			_.remove(svYear, (y) => { return y == year; });
+
+			vm.serverYears(svYear);
 		}
 
 		setSelectedAfterRemove(year: number) {
