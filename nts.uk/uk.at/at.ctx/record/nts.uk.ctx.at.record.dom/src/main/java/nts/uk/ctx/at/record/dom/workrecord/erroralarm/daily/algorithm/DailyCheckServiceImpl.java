@@ -587,6 +587,11 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 					
 				// NO =8： 打刻順序不正
 				case 8:
+					if(!integra.getAttendanceLeave().isPresent() && !integra.getTempTime().isPresent() && !integra.getBreakTime().isPresent()
+							&& !integra.getOutingTime().isPresent()) break;
+					else {
+						if
+					}
 					
 				// NO = 9 ：打刻順序不正（入退門）
 				case 9:
