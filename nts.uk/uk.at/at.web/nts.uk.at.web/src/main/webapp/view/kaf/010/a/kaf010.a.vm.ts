@@ -113,7 +113,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			vm.loadData(empList, dateList, vm.appType())
 				.then((loadDataFlag: any) => {
 					vm.application().appDate.subscribe(value => {
-						console.log(value);
 						if (value) {
 							vm.changeDate();
 						}
@@ -125,7 +124,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						}
 						vm.itemControlHandler();
 						if (value == 0) {
-							console.log('trigger1')
 							$('.table-time2 .nts-fixed-header-wrapper').width(224);
 							if (vm.holidayTime().length > 3) {
 								$('.table-time2 .nts-fixed-body-wrapper').width(208);
@@ -141,7 +139,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 							// }
 							
 						} else {
-							console.log('trigger2')
 							$('.table-time2 .nts-fixed-header-wrapper').width(455);
 							$('.table-time2 .nts-fixed-body-wrapper').width(455);
 							$('.table-time3 .nts-fixed-header-wrapper').width(455);
@@ -181,7 +178,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					
 				}).then((successData: any) => {
 					if (successData) {
-						console.log(successData, 'res');
 						vm.dataSource = successData;
 						vm.itemControlHandler();
 						vm.bindOverTimeWorks(vm.dataSource);
@@ -251,7 +247,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 
 		itemControlHandler() {
 			const self = this;
-			console.log('star handle');
 			// ※28
 			self.managementMultipleWorkCyclescheck(self.dataSource.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles);
 			
@@ -504,7 +499,9 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					
 				})
 				.done(result => {
-					
+					if(result){
+						location.reload();
+					}
 				})
 				.fail((failData: any) => {
 					// xử lý lỗi nghiệp vụ riêng
@@ -627,7 +624,9 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					
 				})
 				.done(result => {
-					
+					if(result){
+						location.reload();
+					}
 				})
 				.fail((failData: any) => {
 					// xử lý lỗi nghiệp vụ riêng
@@ -771,7 +770,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		bindHolidayTime(res: AppHdWorkDispInfo, mode?: number) {
 			const self = this;
 			let holidayTimeArray = [] as Array<HolidayTime>;
-			console.log(res.workdayoffFrameList.length, 'length');
 
 			for (let i = 0; i < res.workdayoffFrameList.length; i++) {
 				let item = {} as HolidayTime;
@@ -912,7 +910,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 							let applicationTime = actualApplicationTime.applicationTime;
 							if (!_.isEmpty(applicationTime)) {
 								_.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
-									console.log(item);
 									holidayTimeArray
 										.filter(holidayTime => holidayTime.frameNo() == item.frameNo && item.attendanceType == AttendanceType.BREAKTIME)
 										.map(holidayTime => holidayTime.actualTime(item.applicationTime));
@@ -1467,7 +1464,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 							
 						})
 						.fail((res) =>{
-							console.log(res, 'fail');
+
 						})
 						.always(() =>{
 							self.$blockui('hide');
@@ -1599,9 +1596,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 									// let appTimeList = res.applicationTime.applicationTime;
 									// let holidayTimeArray = self.holidayTime();
 									// let overTimeArray = self.overTime();
-									// console.log(holidayTimeArray, 'HLDARR');
-									// console.log(self.overTime(), "OVTARR");
-									// console.log(res, 'calRes');
 									// appTimeList.forEach((appTime: OvertimeApplicationSetting) => {
 									// 	holidayTimeArray.forEach((holidayTime: HolidayTime) => {
 									// 		// A6_8
@@ -1639,7 +1633,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 								}
 							})
 							.fail((res) => { 
-								console.log('calculate fail');
+
 							})
 							.always(() => {
 								self.$blockui("hide");
