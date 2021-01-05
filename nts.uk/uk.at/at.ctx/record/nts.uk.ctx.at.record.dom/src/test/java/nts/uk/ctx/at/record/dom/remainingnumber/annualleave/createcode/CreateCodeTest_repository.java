@@ -35,12 +35,19 @@ public class CreateCodeTest_repository {
 //		/** ルートクラスのコメント */
 //		String classComment = "特別休暇月別残数データ";
 
+//		/** ルートクラスのパッケージ名 */
+//		String packageName = "nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param";
+//		/** ルートクラスのクラス名 */
+//		String className = "AggrResultOfAnnualLeave";
+//		/** ルートクラスのコメント */
+//		String classComment = "年休の集計結果";
+
 		/** ルートクラスのパッケージ名 */
-		String packageName = "nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param";
+		String packageName = "nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday";
 		/** ルートクラスのクラス名 */
-		String className = "AggrResultOfAnnualLeave";
+		String className = "SpecialLeave";
 		/** ルートクラスのコメント */
-		String classComment = "年休の集計結果";
+		String classComment = "特別休暇";
 
 //		/** ルートクラスのパッケージ名 */
 //		String packageName = "nts.uk.ctx.at.shared.dom.specialholiday";
@@ -143,10 +150,12 @@ public class CreateCodeTest_repository {
 
 				// コード生成(of)
 				classInfo.setCode_of(all_code, "	");
+				// コード生成(clone)
+				classInfo.setCode_clone(all_code, "	");
 
 				File file = new File(outpath + "\\" + classInfo.getClassName() + ".txt");
 
-				if (checkBeforeWritefile(file)){
+				if (CreateCodeTest_repository.checkBeforeWritefile(file)){
 				    FileWriter filewriter = new FileWriter(file);
 				    filewriter.write(all_code.toString());
 				    filewriter.close();
@@ -162,7 +171,7 @@ public class CreateCodeTest_repository {
 		System.out.println("終了しました!");
 	}
 
-	private static boolean checkBeforeWritefile(File file){
+	public static boolean checkBeforeWritefile(File file){
 	    if (file.exists()){
 	      if (file.isFile() && file.canWrite()){
 	        return true;

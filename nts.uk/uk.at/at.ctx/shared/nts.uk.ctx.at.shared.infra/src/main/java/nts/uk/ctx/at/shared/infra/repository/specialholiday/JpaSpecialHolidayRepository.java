@@ -70,7 +70,8 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 			+ "ORDER BY e.pk.specialHolidayCode ASC";
 
 	private final static String SELECT_SPHD_BY_CODE_QUERY = "SELECT sphd.CID, sphd.SPHD_CD, sphd.SPHD_NAME, sphd.SPHD_AUTO_GRANT, sphd.MEMO,"
-			+ " sphd.GRANT_TIMING, gra.GRANT_MD, gra.GRANTED_DAYS,"
+//			+ " sphd.GRANT_TIMING, gra.GRANT_MD, gra.GRANTED_DAYS,"
+			+ " sphd.GRANT_TIMING, sphd.GRANT_DATE, gra.GRANTED_DAYS,"
 			+ " pe.TIME_CSL_METHOD, gpe.PERIOD_START, gpe.PERIOD_END, pe.DEADLINE_MONTHS, pe.DEADLINE_YEARS, pe.LIMIT_CARRYOVER_DAYS,"
 			+ " re.RESTRICTION_CLS, re.AGE_LIMIT, re.GENDER_REST, re.REST_EMP, re.AGE_CRITERIA_CLS, re.AGE_BASE_DATE, re.AGE_LOWER_LIMIT, re.AGE_HIGHER_LIMIT, re.GENDER"
 			+ " FROM KSHST_SPECIAL_HOLIDAY sphd"
@@ -81,7 +82,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 			+ " LEFT JOIN KSHST_SPEC_LEAVE_REST re"
 			+ " ON sphd.CID = re.CID AND sphd.SPHD_CD = re.SPHD_CD"
 			+ " LEFT JOIN KSHMT_HDSP_GRANT_PERIOD gpe"
-			+ " ON pshd.CID = gpe.CID AND sphd.SPHD_CD = gpe.SPHD_CD "
+			+ " ON sphd.CID = gpe.CID AND sphd.SPHD_CD = gpe.SPHD_CD "
 			+ " WHERE sphd.CID = ? AND sphd.SPHD_CD = ?"
 			+ " ORDER BY sphd.SPHD_CD";
 
@@ -202,23 +203,23 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		String companyId = c.getString("CID");
 		int specialHolidayCode = c.getInt("SPHD_CD");
 		String specialHolidayName = c.getString("SPHD_NAME");
-		int autoGrant = c.getInt("SPHD_AUTO_GRANT");
+		int autoGrant = c.getInt("SPHD_AUTO_GRANT") != null ? c.getInt("SPHD_AUTO_GRANT") : 0;
 		String memo = c.getString("MEMO");
-		int typeTime = c.getInt("GRANT_TIMING");
-		int grantDate = c.getInt("GRANT_DATE");
+		int typeTime = c.getInt("GRANT_TIMING")!= null ? c.getInt("GRANT_TIMING") : 0;
+		int grantDate = c.getInt("GRANT_DATE") != null ? c.getInt("GRANT_DATE") : 0;
 //		boolean allowDisappear = c.getInt("ALLOW_DISAPPEAR") == 1 ? true : false;
 //		int interval = c.getInt("INTERVAL") != null ? c.getInt("INTERVAL") : 0;
 		int grantedDays = c.getInt("GRANTED_DAYS") != null ? c.getInt("GRANTED_DAYS") : 0;
-		int timeMethod = c.getInt("TIME_CSL_METHOD");
+		int timeMethod = c.getInt("TIME_CSL_METHOD") != null ? c.getInt("TIME_CSL_METHOD") : 0;
 		Integer startDate = c.getInt("PERIOD_START");
 		Integer endDate = c.getInt("PERIOD_END");
 		int deadlineMonths = c.getInt("DEADLINE_MONTHS") != null ? c.getInt("DEADLINE_MONTHS") : 0;
 		int deadlineYears = c.getInt("DEADLINE_YEARS") != null ? c.getInt("DEADLINE_YEARS") : 0;
 		int limitCarryoverDays = c.getInt("LIMIT_CARRYOVER_DAYS") != null ? c.getInt("LIMIT_CARRYOVER_DAYS") : 0;
-		int restrictionCls = c.getInt("RESTRICTION_CLS");
-		int ageLimit = c.getInt("AGE_LIMIT");
-		int genderRest = c.getInt("GENDER_REST");
-		int restEmp = c.getInt("REST_EMP");
+		int restrictionCls = c.getInt("RESTRICTION_CLS") != null ? c.getInt("RESTRICTION_CLS") : 0;
+		int ageLimit = c.getInt("AGE_LIMIT") != null ? c.getInt("AGE_LIMIT") : 0;
+		int genderRest = c.getInt("GENDER_REST") != null ? c.getInt("GENDER_REST") : 0;
+		int restEmp = c.getInt("REST_EMP") != null ? c.getInt("REST_EMP") : 0;
 		int ageCriteriaCls = c.getInt("AGE_CRITERIA_CLS") != null ? c.getInt("AGE_CRITERIA_CLS") : 0;
 		Integer ageBaseDateValue = c.getInt("AGE_BASE_DATE") != null ? c.getInt("AGE_BASE_DATE") : null;
 		MonthDay ageBaseDate = null;
@@ -241,9 +242,13 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		GrantTime grantTime = GrantTime.createFromJavaType(fixGrantDate, null);
 
 		/** 期間 */
-		DatePeriod period = new DatePeriod(
-				GeneralDate.ymd(9999, (int)(Math.floor(startDate / 100)), (int)(Math.floor(startDate % 100))),
-				GeneralDate.ymd(9999, (int)(Math.floor(endDate / 100)), (int)(Math.floor(endDate % 100))));
+		DatePeriod period = new DatePeriod(GeneralDate.ymd(9999,1,1), GeneralDate.ymd(9999,12,31)); // 要確認 初期値
+
+		if (startDate != null && endDate != null) {
+			period = new DatePeriod(
+					GeneralDate.ymd(9999, (int)(Math.floor(startDate / 100)), (int)(Math.floor(startDate % 100))),
+					GeneralDate.ymd(9999, (int)(Math.floor(endDate / 100)), (int)(Math.floor(endDate % 100))));
+		}
 
 		/** 期間付与 */
 		PeriodGrantDate periodGrantDate =

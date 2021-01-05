@@ -2450,10 +2450,8 @@ public class RecordDomRequireService {
 		@Override
 		public Optional<SpecialLeaveBasicInfo> specialLeaveBasicInfo(String sid, int spLeaveCD,
 				UseAtr use) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+			return specialLeaveBasicInfoRepo.getBySidLeaveCdUser(sid, spLeaveCD, use);
 		}
-
 
 	}
 }

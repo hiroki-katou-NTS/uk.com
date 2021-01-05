@@ -11,6 +11,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveRemainingDetail;
 
 /**
  * クラス情報
@@ -179,11 +180,8 @@ public class ClassInfo {
 
 	/**
 	 * コード生成（of）
-	 * @param classInfoManager クラス情報管理
 	 * @param all_code ルートクラスから生成したコード全て
 	 * @param tab タブインデント
-	 * @param pre_comment このメンバ変数が定義されているクラスまでのコメント
-	 * @param pre_code　このメンバ変数が定義されているクラスまでのコード
 	 */
 	public void setCode_of(
 			StringBuilder all_code,
@@ -266,6 +264,180 @@ public class ClassInfo {
 		all_code.append(System.lineSeparator());
 		all_code.append(tabInside);
 		all_code.append("return c; ");
+		all_code.append(System.lineSeparator());
+
+		all_code.append(tab);
+		all_code.append("}");
+		all_code.append(System.lineSeparator());
+		all_code.append(System.lineSeparator());
+	}
+
+	/**
+	 * コード生成（clone）
+	 * @param all_code ルートクラスから生成したコード全て
+	 * @param tab タブインデント
+	 */
+	public void setCode_clone(
+			StringBuilder all_code,
+			String tab
+			) {
+
+		// 内側インデントタブ
+		String tabInside = tab + "	";
+
+		all_code.append(tab);
+		all_code.append("static public ");
+		all_code.append(this.getClassName());
+		all_code.append(" clone(){");
+		all_code.append(System.lineSeparator());
+
+
+		// 引数
+		boolean isFirst = true;
+
+		all_code.append(tabInside);
+		all_code.append(this.getClassName());
+		all_code.append(" cloned = new ");
+		all_code.append(this.getClassName());
+		all_code.append("();");
+		all_code.append(System.lineSeparator());
+
+		for(MemberInfo memberInfo : memberInfoList) {
+			all_code.append(tabInside);
+			all_code.append("/** ");
+			all_code.append(memberInfo.getMemberNameComment());
+			all_code.append(" */");
+			all_code.append(System.lineSeparator());
+
+			if (memberInfo.isOptional() && memberInfo.isList()) {
+				all_code.append(tabInside);
+				all_code.append("if ( this.");
+				all_code.append(memberInfo.getMemberName());
+				all_code.append(".isPresent() ) {");
+				all_code.append(System.lineSeparator());
+
+				String tabInside2 = tabInside + "	";
+				String tabInside3 = tabInside2 + "	";
+
+				all_code.append(tabInside2);
+				all_code.append("cloned.");
+				all_code.append(memberInfo.getMemberName());
+				all_code.append(" = Optional.empty();");
+				all_code.append(System.lineSeparator());
+				all_code.append(tabInside);
+				all_code.append("} else {");
+				all_code.append(System.lineSeparator());
+				all_code.append(tabInside2);
+				all_code.append("ArrayList<");
+				all_code.append(memberInfo.getClassType());
+				all_code.append("> ");
+				all_code.append(memberInfo.getMemberName());
+				all_code.append(" = new ArrayList<");
+				all_code.append(memberInfo.getClassType());
+				all_code.append(">();");
+				all_code.append(System.lineSeparator());
+				all_code.append(tabInside2);
+				all_code.append("for(");
+				all_code.append(memberInfo.getClassType());
+				all_code.append(" c : this.");
+				all_code.append(memberInfo.getMemberName());
+				all_code.append(".get()) {");
+				all_code.append(System.lineSeparator());
+				all_code.append(tabInside3);
+				all_code.append(memberInfo.getMemberName());
+				all_code.append(".add(c.clone());");
+				all_code.append(System.lineSeparator());
+				all_code.append(tabInside2);
+				all_code.append("}");
+				all_code.append(System.lineSeparator());
+				all_code.append(tabInside2);
+				all_code.append("cloned.");
+				all_code.append(memberInfo.getMemberName());
+				all_code.append(" = Optional.of(");
+				all_code.append(memberInfo.getMemberName());
+				all_code.append(");");
+				all_code.append(System.lineSeparator());
+				all_code.append(tabInside);
+				all_code.append("}");
+				all_code.append(System.lineSeparator());
+
+			} else if (memberInfo.isOptional()) {
+				all_code.append(tabInside);
+				all_code.append("if ( this.");
+				all_code.append(memberInfo.getMemberName());
+				all_code.append(".isPresent() ) {");
+				all_code.append(System.lineSeparator());
+				String tabInside2 = tabInside + "	";
+				all_code.append(tabInside2);
+				all_code.append("cloned.");
+				all_code.append(memberInfo.getMemberName());
+				all_code.append(" = Optional.empty();");
+				all_code.append(System.lineSeparator());
+				all_code.append(tabInside);
+				all_code.append("} else {");
+				all_code.append(System.lineSeparator());
+				all_code.append(tabInside2);
+				all_code.append("cloned.");
+				all_code.append(memberInfo.getMemberName());
+				all_code.append(" = Optional.of(");
+				all_code.append(memberInfo.getMemberName());
+				all_code.append(".clone());");
+				all_code.append(System.lineSeparator());
+				all_code.append(tabInside);
+				all_code.append("}");
+				all_code.append(System.lineSeparator());
+
+			} if (memberInfo.isList()) {
+				String tabInside2 = tabInside + "	";
+				String tabInside3 = tabInside2 + "	";
+				all_code.append("ArrayList<");
+				all_code.append(memberInfo.getClassType());
+				all_code.append("> ");
+				all_code.append(memberInfo.getMemberName());
+				all_code.append(" = new ArrayList<");
+				all_code.append(memberInfo.getClassType());
+				all_code.append(">();");
+				all_code.append(System.lineSeparator());
+				all_code.append(tabInside2);
+				all_code.append("for(");
+				all_code.append(memberInfo.getClassType());
+				all_code.append(" c : this.");
+				all_code.append(memberInfo.getMemberName());
+				all_code.append(") {");
+				all_code.append(System.lineSeparator());
+				all_code.append(tabInside3);
+				all_code.append(memberInfo.getMemberName());
+				all_code.append(".add(c.clone());");
+				all_code.append(System.lineSeparator());
+				all_code.append(tabInside2);
+				all_code.append("}");
+				all_code.append(System.lineSeparator());
+				all_code.append(tabInside2);
+				all_code.append("cloned.");
+				all_code.append(memberInfo.getMemberName());
+				all_code.append(" = ");
+				all_code.append(memberInfo.getMemberName());
+				all_code.append(";");
+				all_code.append(System.lineSeparator());
+				all_code.append(tabInside);
+				all_code.append("}");
+				all_code.append(System.lineSeparator());
+			} else {
+				all_code.append(tabInside);
+				all_code.append("cloned.");
+				all_code.append(memberInfo.getMemberName());
+				all_code.append(" = ");
+				all_code.append(memberInfo.getMemberName());
+				all_code.append(".clone();");
+				all_code.append(System.lineSeparator());
+				all_code.append(tabInside);
+			}
+
+			all_code.append(System.lineSeparator());
+		}
+
+		all_code.append(tabInside);
+		all_code.append("return cloned; ");
 		all_code.append(System.lineSeparator());
 
 		all_code.append(tab);

@@ -17,7 +17,6 @@ import nts.gul.serialize.binary.SerializableWithOptional;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
 public class SpecialLeaveUseNumber extends DomainObject implements Cloneable, SerializableWithOptional {
 
 	/**
@@ -34,6 +33,11 @@ public class SpecialLeaveUseNumber extends DomainObject implements Cloneable, Se
 	 * 使用時間
 	 */
 	private Optional<SpecialLeaveUseTimes> useTimes;
+
+	public SpecialLeaveUseNumber() {
+		useDays = new SpecialLeaveUseDays();
+		useTimes = Optional.empty();
+	}
 
 	/**
 	 * コンストラクタ

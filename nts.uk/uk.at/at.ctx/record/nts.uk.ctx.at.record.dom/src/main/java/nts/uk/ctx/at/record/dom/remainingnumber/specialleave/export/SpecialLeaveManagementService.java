@@ -66,14 +66,14 @@ public class SpecialLeaveManagementService {
 
 		// ドメインモデル「特別休暇基本情報」を取得する
 		Optional<SpecialLeaveBasicInfo> optBasicInfor = require.specialLeaveBasicInfo(param.getSid(), param.getSpecialLeaveCode(), UseAtr.USE);
-		if(!optBasicInfor.isPresent() ){
+//		if(!optBasicInfor.isPresent() ){
 //				|| optBasicInfor.get().getUsed() == UseAtr.NOT_USE) {
 //			RemainDaysOfSpecialHoliday remainDays = new RemainDaysOfSpecialHoliday(new SpecialHolidayRemainInfor(0, 0, 0), 0, Optional.empty(), new ArrayList<>());
 //			InPeriodOfSpecialLeave specialLeaveInfor = new InPeriodOfSpecialLeave(new ArrayList<>(), remainDays, new ArrayList<>(), new ArrayList<>());
 //			return new InPeriodOfSpecialLeaveResultInfor(specialLeaveInfor, Finally.empty(), Finally.of(param.getComplileDate().end().addDays(1)));
-
-			optBasicInfor.get().getGrantSetting();
-		}
+//
+//			optBasicInfor.get().getGrantSetting();
+//		}
 
 		// 社員
 		EmployeeImport employee
@@ -775,6 +775,9 @@ public class SpecialLeaveManagementService {
 
 		SpecialLeaveInfo specialLeaveInfo = new SpecialLeaveInfo();
 
+		Optional<List<SpecialLeaveGrantRemainingData>> grantRemainingDataListOpt
+			= Optional.ofNullable(grantRemainingDataList);
+
 		// 特別休暇情報．年月日←パラメータ「年月日」
 //		returnInfo.setYmd(aggrPeriod.start());
 		specialLeaveInfo.setYmd(ymd);
@@ -784,10 +787,12 @@ public class SpecialLeaveManagementService {
 
 		// 特休情報．特休付与情報　←　パラメータ「付与残数データ」
 		List<SpecialLeaveGrantRemainingData> targetDatas = new ArrayList<>();
-		for (val grantRemainingData : grantRemainingDataList){
-			if (grantRemainingData.getExpirationStatus() == LeaveExpirationStatus.EXPIRED) continue;
-			targetDatas.add(grantRemainingData);
-			employeeId = grantRemainingData.getEmployeeId();
+		if ( grantRemainingDataListOpt.isPresent() ) {
+			for (val grantRemainingData : grantRemainingDataList){
+				if (grantRemainingData.getExpirationStatus() == LeaveExpirationStatus.EXPIRED) continue;
+				targetDatas.add(grantRemainingData);
+				employeeId = grantRemainingData.getEmployeeId();
+			}
 		}
 		targetDatas.sort((a, b) -> a.getGrantDate().compareTo(b.getGrantDate()));
 		specialLeaveInfo.setGrantRemainingList(targetDatas);
@@ -1863,7 +1868,7 @@ public class SpecialLeaveManagementService {
 		List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int specialLeaveCode,
 				LeaveExpirationStatus expirationStatus,GeneralDate grantDate, GeneralDate deadlineDate);
 
-		/** 特別休暇付与残数データ */
+		/**i 特別休暇付与残数データ */
 		List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int speCode,
 				DatePeriod datePriod, GeneralDate startDate, LeaveExpirationStatus expirationStatus);
 	}

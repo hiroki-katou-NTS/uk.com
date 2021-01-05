@@ -19,13 +19,13 @@ public class SpecialLeaveRemainingNumberInfo implements Cloneable {
 
 	/** 合計 */
 	private SpecialLeaveRemainingNumber remainingNumber;
-	
+
 	/** 付与前 */
 	private SpecialLeaveRemainingNumber remainingNumberBeforeGrant;
-	
+
 	/** 付与後 */
 	private Optional<SpecialLeaveRemainingNumber> remainingNumberAfterGrantOpt;
-	
+
 	/**
 	 * ファクトリ
 	 * @param remainingNumber 合計
@@ -38,33 +38,33 @@ public class SpecialLeaveRemainingNumberInfo implements Cloneable {
 			SpecialLeaveRemainingNumber remainingNumberBeforeGrant,
 			Optional<SpecialLeaveRemainingNumber> remainingNumberAfterGrantOpt
 			){
-		
+
 		SpecialLeaveRemainingNumberInfo domain = new SpecialLeaveRemainingNumberInfo();
 		domain.remainingNumber = remainingNumber;
 		domain.remainingNumberBeforeGrant = remainingNumberBeforeGrant;
 		domain.remainingNumberAfterGrantOpt= remainingNumberAfterGrantOpt;
 		return domain;
 	}
-	
+
 	/** コンストラクタ  */
 	public SpecialLeaveRemainingNumberInfo(){
 		this.remainingNumber = new SpecialLeaveRemainingNumber();
 		this.remainingNumberBeforeGrant = new SpecialLeaveRemainingNumber();
 		this.remainingNumberAfterGrantOpt = Optional.empty();
 	}
-	
+
 	/**
 	 * 特別休暇付与残数データから実特別休暇の特別休暇残数を作成
 	 * @param remainingDataList 特休付与残数データリスト
 	 * @param afterGrantAtr 付与後フラグ
 	 */
 	public void createRemainingNumberFromGrantRemaining(
-			List<SpecialLeaveGrantRemaining> remainingDataList, 
+			List<SpecialLeaveGrantRemaining> remainingDataList,
 			boolean afterGrantAtr){
-		
+
 		// 特休付与残数データから残数を作成
 		this.remainingNumber.createRemainingNumberFromGrantRemaining(remainingDataList);
-		
+
 		// 「付与後フラグ」をチェック
 		if (afterGrantAtr){
 			// 残数付与後　←　残数
@@ -75,30 +75,27 @@ public class SpecialLeaveRemainingNumberInfo implements Cloneable {
 			this.remainingNumberBeforeGrant = this.remainingNumber.clone();
 		}
 	}
-	
+
 	/**
 	 * クローン
 	 */
 	public SpecialLeaveRemainingNumberInfo clone() {
 		SpecialLeaveRemainingNumberInfo cloned = new SpecialLeaveRemainingNumberInfo();
-		try {
-			if ( remainingNumberBeforeGrant != null ){
-				cloned.remainingNumberBeforeGrant = this.remainingNumberBeforeGrant.clone();
-			}
-			if ( remainingNumber != null ){
-				cloned.remainingNumber = this.remainingNumber.clone();
-			}
-			
-			if (this.remainingNumberAfterGrantOpt.isPresent()){
-				cloned.remainingNumberAfterGrantOpt = Optional.of(this.remainingNumberAfterGrantOpt.get().clone());
-			}
+
+		if ( remainingNumberBeforeGrant != null ){
+			cloned.remainingNumberBeforeGrant = this.remainingNumberBeforeGrant.clone();
 		}
-		catch (Exception e){
-			throw new RuntimeException("SpecialLeaveRemainingInfo clone error.");
+		if ( remainingNumber != null ){
+			cloned.remainingNumber = this.remainingNumber.clone();
 		}
+
+		if (this.remainingNumberAfterGrantOpt.isPresent()){
+			cloned.remainingNumberAfterGrantOpt = Optional.of(this.remainingNumberAfterGrantOpt.get().clone());
+		}
+
 		return cloned;
 	}
-	
+
 	/**
 	 * クリア
 	 */
@@ -115,7 +112,7 @@ public class SpecialLeaveRemainingNumberInfo implements Cloneable {
 		// 合計残数を付与前に退避する
 		remainingNumberBeforeGrant = remainingNumber.clone();
 	}
-	
+
 	/**
 	 * 付与後退避処理
 	 */
@@ -123,7 +120,7 @@ public class SpecialLeaveRemainingNumberInfo implements Cloneable {
 		// 合計残数を付与後に退避する
 		remainingNumberAfterGrantOpt = Optional.of(remainingNumber.clone());
 	}
-	
+
 	/**
 	 * 明細をクリア。（要素数を０にする）
 	 */
@@ -134,6 +131,6 @@ public class SpecialLeaveRemainingNumberInfo implements Cloneable {
 			remainingNumberAfterGrantOpt.get().clearDetails();
 		}
 	}
-	
+
 }
 

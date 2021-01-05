@@ -26,6 +26,9 @@ public class CreateCodeTest_Entity {
 		  // データを格納するリスト
 		  List<String[]> data = new ArrayList<String[]>();
 
+		  // テーブル情報
+		  TableDefInfo tableDefInfo = new TableDefInfo();
+
 		  // カラムリスト
 		  ArrayList<ColumnDefInfo> columnDefInfoList = new ArrayList<ColumnDefInfo>();
 
@@ -46,31 +49,35 @@ public class CreateCodeTest_Entity {
 			  for (String[] line_data : data) {
 				  rowNo++;
 				  if ( rowNo < 12 ) { // 最初はスキップ
+					  if ( rowNo == 3 ) {
+						  tableDefInfo.setTableName(StringOf(line_data,2));
+					  } else if ( rowNo == 4 ) {
+						  tableDefInfo.setTableNameComment(StringOf(line_data,2));
+					  }
+					  continue;
+				  }
+
+				  if ( line_data[0]==null || line_data[0].trim().length()==0 ) {
+					  // カラム名がないときは終了
+					  break;
+				  }
+
+				  if ( line_data.length < 3 ) {
 					  continue;
 				  }
 
 				  ColumnDefInfo columnDefInfo = new ColumnDefInfo();
 
-				  // 各行データを要素毎に処理
-				  for (int i = 0; i < line_data.length; i++) {
-					  if ( line_data[1]==null || line_data[1].trim().length()==0 ) {
-						  // カラム名がないときは終了
-						  break;
-					  }
-//					  System.out.print(line_data,i + " ");
-					  columnDefInfo.setColumnNo(StringOf(line_data,0));
-					  columnDefInfo.setColumnName(StringOf(line_data,1));
-					  columnDefInfo.setColumnNameComment(StringOf(line_data,2));
-					  columnDefInfo.setColumnType(StringOf(line_data,7));
-					  columnDefInfo.setColumnLength(StringOf(line_data,8));
-					  columnDefInfo.setDecimalLength(StringOf(line_data,9));
-					  columnDefInfo.setDataLength(StringOf(line_data,16));
-					  columnDefInfo.setDefaultValue(StringOf(line_data,17));
-					  columnDefInfo.setNullable(StringOf(line_data,18));
-					  columnDefInfo.setBiko(StringOf(line_data,19));
-				  }
-
-				  System.out.println(columnDefInfo.debugString());
+				  columnDefInfo.setColumnNo(StringOf(line_data,0));
+				  columnDefInfo.setColumnName(StringOf(line_data,1));
+				  columnDefInfo.setColumnNameComment(StringOf(line_data,2));
+				  columnDefInfo.setColumnType(StringOf(line_data,7));
+				  columnDefInfo.setColumnLength(StringOf(line_data,8));
+				  columnDefInfo.setDecimalLength(StringOf(line_data,9));
+				  columnDefInfo.setDataLength(StringOf(line_data,16));
+				  columnDefInfo.setDefaultValue(StringOf(line_data,17));
+				  columnDefInfo.setNullable(StringOf(line_data,18));
+				  columnDefInfo.setBiko(StringOf(line_data,19));
 
 				  columnDefInfoList.add(columnDefInfo);
 			  }
@@ -78,6 +85,15 @@ public class CreateCodeTest_Entity {
 		  catch(Exception e) {
 			  System.out.println(e.getMessage() + e.getLocalizedMessage());
 		  }
+
+		  // カラムリストをセット
+		  tableDefInfo.setColumnInfoList(columnDefInfoList);
+
+		  // Entityファイル作成
+		  tableDefInfo.createEntityFile(outpath);
+
+		  // デバッグ用
+		  System.out.println(tableDefInfo.debugString());
 
 		  System.out.println("終了しました!");
 	}
