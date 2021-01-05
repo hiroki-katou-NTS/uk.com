@@ -6,4 +6,6 @@ import java.util.List;
 public interface SequenceMasterPub {
 	
 	 List<SequenceMasterExport> findAll(String companyId, String sequenceCode);
+	 
+	 List<SequenceMasterExport> findByCid(String companyId);
 }
