@@ -28,7 +28,7 @@ public class UpdateFlexBasicSettingByCompanyCommandHandler
 	protected void handle(CommandHandlerContext<UpdateFlexBasicSettingByCompanyCommand> context) {
 
 		UpdateFlexBasicSettingByCompanyCommand cmd = context.getCommand();
-		// フレックス勤務所定労働時間取得を登録・更新する
+		// 会社別フレックス勤務集計方法を登録・更新する
 		this.getFlexPredWorkTimeRepo.persistAndUpdate(cmd.getFlexPredWorkTime().toDomain());
 		// 会社別フレックス勤務集計方法を更新する
 

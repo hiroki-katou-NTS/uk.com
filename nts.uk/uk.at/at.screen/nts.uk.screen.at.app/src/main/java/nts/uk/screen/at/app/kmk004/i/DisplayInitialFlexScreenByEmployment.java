@@ -34,7 +34,7 @@ public class DisplayInitialFlexScreenByEmployment {
 		DisplayInitialFlexScreenByEmploymentDto result = new DisplayInitialFlexScreenByEmploymentDto();
 		String comId = AppContexts.user().companyId();
 
-		// 1.フレックス勤務所定労働時間取得
+		// 1.会社別フレックス勤務集計方法
 
 		this.getFlexPredWorkTimeRepo.find(comId).ifPresent(x -> {
 			result.getFlexBasicSetting().setFlexPredWorkTime(GetFlexPredWorkTimeDto.fromDomain(x));

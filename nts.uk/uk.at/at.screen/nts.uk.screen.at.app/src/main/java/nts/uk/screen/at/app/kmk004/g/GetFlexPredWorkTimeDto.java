@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkT
  * 
  * @author sonnlb
  *
- *         フレックス勤務所定労働時間取得
+ *         会社別フレックス勤務集計方法
  */
 @Data
 @AllArgsConstructor

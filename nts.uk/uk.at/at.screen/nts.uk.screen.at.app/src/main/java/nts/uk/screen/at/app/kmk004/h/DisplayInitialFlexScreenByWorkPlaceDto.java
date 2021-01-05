@@ -15,7 +15,7 @@ import nts.uk.screen.at.app.kmk004.g.GetFlexPredWorkTimeDto;
 @Data
 @NoArgsConstructor
 public class DisplayInitialFlexScreenByWorkPlaceDto {
-	// フレックス勤務所定労働時間取得
+	// 会社別フレックス勤務集計方法
 	private GetFlexPredWorkTimeDto flexPredWorkTime;
 	// 職場リスト
 	private List<String> alreadySettings;

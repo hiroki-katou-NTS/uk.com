@@ -28,7 +28,7 @@ public class DisplayInitialFlexBasicSettingByCompany {
 	public DisplayFlexBasicSettingByCompanyDto displayInitialFlexBasicSettingByCompany() {
 
 		DisplayFlexBasicSettingByCompanyDto result = new DisplayFlexBasicSettingByCompanyDto();
-		// フレックス勤務所定労働時間取得
+		// 会社別フレックス勤務集計方法
 		this.getFlexPredWorkTimeRepo.find(AppContexts.user().companyId()).ifPresent(x -> {
 
 			result.setFlexPredWorkTime(GetFlexPredWorkTimeDto.fromDomain(x));

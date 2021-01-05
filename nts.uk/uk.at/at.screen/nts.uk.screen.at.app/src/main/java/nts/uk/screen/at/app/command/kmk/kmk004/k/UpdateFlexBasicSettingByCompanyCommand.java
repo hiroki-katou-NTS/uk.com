@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class UpdateFlexBasicSettingByCompanyCommand {
-	// フレックス勤務所定労働時間取得
+	// 会社別フレックス勤務集計方法
 	private GetFlexPredWorkTimeCommand flexPredWorkTime;
 	// 会社別フレックス勤務集計方法
 	private ComFlexMonthActCalSetCommand flexMonthActCalSet;

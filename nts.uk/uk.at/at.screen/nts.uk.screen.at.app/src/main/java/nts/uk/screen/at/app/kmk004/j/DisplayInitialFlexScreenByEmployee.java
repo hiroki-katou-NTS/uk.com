@@ -22,7 +22,7 @@ public class DisplayInitialFlexScreenByEmployee {
 	public DisplayInitialFlexScreenByEmployeeDto displayInitialFlexScreenByEmployee() {
 
 		DisplayInitialFlexScreenByEmployeeDto result = new DisplayInitialFlexScreenByEmployeeDto();
-		// フレックス勤務所定労働時間取得
+		// 会社別フレックス勤務集計方法
 		// 1. ログイン会社ID
 		this.getFlexPredWorkTimeRepo.find(AppContexts.user().companyId()).ifPresent(x -> {
 
