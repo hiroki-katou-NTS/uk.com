@@ -2,6 +2,8 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.multimonth.algorithm;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -23,6 +25,7 @@ import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMergeRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.DataCheckAlarmListService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CheckedCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareSingleValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlAttendanceItemCondition;
@@ -64,33 +67,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialh
 import nts.uk.shr.com.i18n.TextResource;
 @Stateless
 public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtractCheckService{
-	/** 月別実績の勤怠時間 */
-	@Inject
-	private AttendanceTimeOfMonthlyRepository attendanceTimeRepo;
-	/** 月別実績の所属情報 */
-	@Inject
-	private AffiliationInfoOfMonthlyRepository affiliationInfoRepo;
-	/** 月別実績の任意項目 */
-	@Inject
-	private AnyItemOfMonthlyRepository anyItemRepo;
-	/** 年休月別残数データ */
-	@Inject
-	private AnnLeaRemNumEachMonthRepository annualLeaveRepo;
-	/** 積立年休月別残数データ */
-	@Inject
-	private RsvLeaRemNumEachMonthRepository reserveLeaveRepo;
-	/** 振休月別残数データ */
-	@Inject
-	private AbsenceLeaveRemainDataRepository absLeaRemRepo;
-	/** 代休月別残数データ */
-	@Inject
-	private MonthlyDayoffRemainDataRepository monDayoffRemRepo;
-	/** 特別休暇月別残数データ */
-	@Inject
-	private SpecialHolidayRemainDataRepository spcLeaRemRepo;
-	/** 勤怠項目変換 */
-	@Inject
-	private AttendanceItemConvertFactory attendanceItemConverterFact;
+	
 	
 	@Inject
 	private TimeOfMonthlyRepository timeRepo;
@@ -103,6 +80,8 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 	private MulMonAlarmCheckCondRepository mulMunCondRepos;
 	@Inject
 	private ConvertCompareTypeToText convertComparaToText;
+	@Inject
+	private DataCheckAlarmListService dataCheckAlarm;
 	@Override
 	public void extractMultiMonthlyAlarm(String cid, List<String> lstSid, YearMonthPeriod mPeriod,
 			List<String> lstAnyConID, List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
@@ -129,9 +108,9 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 						erCondition.getCompareRange().getEndValue().toString();
 				float avg = 0;
 				//複数月のチェック条件(連続)
-				int countTmp = 0;
+				//int countTmp = 0;
 				//複数月のチェック条件(該当月数)
-				List<YearMonth> lstYM = new ArrayList<>();
+				List<String> lstYM = new ArrayList<>();
 				List<MonthlyRecordValuesDto> lstSidOfMonthData = data.lstMonthData.get(sid);
 				//チェック対象値
 				double checkedValue = 0;
@@ -161,10 +140,6 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 							return itemValues.stream().map(iv -> getValue(iv))
 									.collect(Collectors.toList());
 						});
-					}
-					if(checkAddAlarm) {
-						
-						
 					}
 					break;
 				//連続時間、連続回数、連続金額、連続日数
@@ -245,12 +220,12 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 						});
 						if(checkPerMonth) {
 							countCosp += 1;
-							lstYM.add(result.getYearMonth());
+							lstYM.add(result.getYearMonth().lastGeneralDate().toString("yyyy/MM"));
 						}
 					}	
-					CompareSingleValue<V> checkgaitou = new CompareSingleValue(anyCond.getCompaOperator().get(), ConditionType.FIXED_VALUE);
-					checkgaitou.setValue((V) anyCond.getNumbers().get());
-					checkAddAlarm = checkgaitou.checkWithFixedValue(countCosp,  c -> Double.valueOf((String) c));
+					CompareSingleValue<Integer> checkgaitou = new CompareSingleValue<>(anyCond.getCompaOperator().get(), ConditionType.FIXED_VALUE);
+					checkgaitou.setValue(anyCond.getNumbers().get());
+					checkAddAlarm = checkgaitou.checkWithFixedValue(countCosp,  c -> Double.valueOf(c));
 					if(checkAddAlarm) checkedValue = countCosp;
 					break;
 					
@@ -283,7 +258,8 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 							erCondition.getCompareSingleValue() != null 
 									? erCondition.getCompareSingleValue().getConditionType().value
 									: erCondition.getCompareRange().getCompareOperator().value);
-					String periodYearMonth = mPeriod.start().toString()+ "～" + mPeriod.end();
+					
+					String periodYearMonth = mPeriod.start().lastGeneralDate().toString("yyyy/MM") + "～" + mPeriod.end().lastGeneralDate().toString("yyyy/MM");
 					if(anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_AMOUNT
 							|| anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_DAYS
 							|| anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_TIME
@@ -298,7 +274,7 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 							|| anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.NUMBER_TIMES) {
 						alarmDescription = TextResource.localize("KAL010_270", periodYearMonth, nameItem,
 								compareOperatorText.getCompareLeft(), startValue,
-								lstYM.toString(), String.valueOf(anyCond.getNumbers()));
+								lstYM.toString(), String.valueOf(anyCond.getNumbers().get()));
 						checkValue = TextResource.localize("KAL010_290", lstYM.toString(), String.valueOf(checkedValue));
 					} else {
 						if(compare <= 5) {
@@ -321,7 +297,7 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 						if(anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.AMOUNT) checkValue = checkValue + TextResource.localize("KAL010_287");
 						if(anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.DAYS) checkValue = checkValue + TextResource.localize("KAL010_288");
 					}
-					GeneralDate startDate = GeneralDate.ymd(mPeriod.start().year() , mPeriod.end().month(), 1);
+					GeneralDate startDate = GeneralDate.ymd(mPeriod.start().year() , mPeriod.start().month(), 1);
 					YearMonth endMonthTemp = mPeriod.end().addMonths(1);
 					GeneralDate endDateTemp = GeneralDate.ymd(endMonthTemp.year(), endMonthTemp.month(), 1);
 					GeneralDate enDate = endDateTemp.addDays(-1);
@@ -443,187 +419,9 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 				lstAttendancCheck.addAll(x.getErAlAttendanceItemCondition().getCountableTarget().getAddSubAttendanceItems().getSubstractionAttendanceItems());
 			});
 			//社員ID（List）、期間を設定して月別実績を取得する
-			this.lstMonthData = getMonthData(lstSid, mPeriod,lstAttendancCheck.stream().distinct().collect(Collectors.toList()));
+			this.lstMonthData = dataCheckAlarm.getMonthData(lstSid, mPeriod,lstAttendancCheck.stream().distinct().collect(Collectors.toList()));
 			//月次の勤怠項目を取得する
 			this.lstItemMond = attendanceAdapter.getMonthlyAttendanceItem(2);
-		}
-		/**
-		 * 月別実績データを取得する
-		 * @param lstSid
-		 * @param mPeriod
-		 */
-		private Map<String, List<MonthlyRecordValuesDto>> getMonthData(List<String> employeeIds,
-				YearMonthPeriod period, List<Integer> itemIds) {
-			Map<String, List<MonthlyRecordValuesDto>> results = new HashMap<>();
-
-			// 検索キーを準備する
-			val yearMonths = period.yearMonthsBetween();
-			
-			// 月別実績の勤怠時間を取得する
-			val attendanceTimes = attendanceTimeRepo.findBySidsAndYearMonths(employeeIds, yearMonths);
-			Map<String, Map<YearMonth, AttendanceTimeOfMonthly>> attendanceTimeMap = new HashMap<>();
-			for (val attendanceTime : attendanceTimes){
-				val employeeId = attendanceTime.getEmployeeId();
-				val yearMonth = attendanceTime.getYearMonth();
-				attendanceTimeMap.putIfAbsent(employeeId, new HashMap<>());
-				if (attendanceTimeMap.get(employeeId).containsKey(yearMonth)){
-					attendanceTime.sum(attendanceTimeMap.get(employeeId).get(yearMonth));
-					attendanceTimeMap.get(employeeId).put(yearMonth, attendanceTime);
-					continue;
-				}
-				attendanceTimeMap.get(employeeId).putIfAbsent(yearMonth, attendanceTime);
-			}
-			
-			// 月別実績の所属情報を取得する
-			val affiliationInfos = affiliationInfoRepo.findBySidsAndYearMonths(employeeIds, yearMonths);
-			Map<String, Map<YearMonth, AffiliationInfoOfMonthly>> affiliationInfoMap = new HashMap<>();
-			for (val affiliationInfo : affiliationInfos){
-				val employeeId = affiliationInfo.getEmployeeId();
-				val yearMonth = affiliationInfo.getYearMonth();
-				affiliationInfoMap.putIfAbsent(employeeId, new HashMap<>());
-				affiliationInfoMap.get(employeeId).putIfAbsent(yearMonth, affiliationInfo);
-			}
-			
-			// 月別実績の任意項目を取得する
-			val anyItems = anyItemRepo.findBySidsAndMonths(employeeIds, yearMonths);
-			Map<String, Map<YearMonth, List<AnyItemOfMonthly>>> anyItemMap = new HashMap<>();
-			for (val anyItem : anyItems){
-				val employeeId = anyItem.getEmployeeId();
-				val yearMonth = anyItem.getYearMonth();
-				anyItemMap.putIfAbsent(employeeId, new HashMap<>());
-				anyItemMap.get(employeeId).putIfAbsent(yearMonth, new ArrayList<>());
-				ListIterator<AnyItemOfMonthly> itrAnyItem = anyItemMap.get(employeeId).get(yearMonth).listIterator();
-				boolean isSum = false;
-				while (itrAnyItem.hasNext()){
-					val outAnyItem = itrAnyItem.next();
-					if (outAnyItem.getAnyItemId() == anyItem.getAnyItemId()){
-						outAnyItem.sum(anyItem);
-						itrAnyItem.set(outAnyItem);
-						isSum = true;
-						break;
-					}
-				}
-				if (!isSum) anyItemMap.get(employeeId).get(yearMonth).add(anyItem);
-			}
-			
-			// 年休月別残数データを取得する
-			val annualLeaves = annualLeaveRepo.findBySidsAndYearMonths(employeeIds, yearMonths);
-			Map<String, Map<YearMonth, AnnLeaRemNumEachMonth>> annualLeaveMap = new HashMap<>();
-			for (val annualLeave : annualLeaves){
-				val employeeId = annualLeave.getEmployeeId();
-				val yearMonth = annualLeave.getYearMonth();
-				annualLeaveMap.putIfAbsent(employeeId, new HashMap<>());
-				annualLeaveMap.get(employeeId).put(yearMonth, annualLeave);
-			}
-			
-			// 積立年休月別残数データを取得する
-			val reserveLeaves = reserveLeaveRepo.findBySidsAndYearMonths(employeeIds, yearMonths);
-			Map<String, Map<YearMonth, RsvLeaRemNumEachMonth>> reserveLeaveMap = new HashMap<>();
-			for (val reserveLeave : reserveLeaves){
-				val employeeId = reserveLeave.getEmployeeId();
-				val yearMonth = reserveLeave.getYearMonth();
-				reserveLeaveMap.putIfAbsent(employeeId, new HashMap<>());
-				reserveLeaveMap.get(employeeId).put(yearMonth, reserveLeave);
-			}
-			
-			// 振休月別残数データを取得する
-			val absenceLeaves = absLeaRemRepo.findBySidsAndYearMonths(employeeIds, yearMonths);
-			Map<String, Map<YearMonth, AbsenceLeaveRemainData>> absenceLeaveMap = new HashMap<>();
-			for (val absenceLeave : absenceLeaves){
-				val employeeId = absenceLeave.getSId();
-				val yearMonth = absenceLeave.getYm();
-				absenceLeaveMap.putIfAbsent(employeeId, new HashMap<>());
-				absenceLeaveMap.get(employeeId).put(yearMonth, absenceLeave);
-			}
-			
-			// 代休月別残数データを取得する
-			val monDayoffs = monDayoffRemRepo.findBySidsAndYearMonths(employeeIds, yearMonths);
-			Map<String, Map<YearMonth, MonthlyDayoffRemainData>> monDayoffMap = new HashMap<>();
-			for (val monDayoff : monDayoffs){
-				val employeeId = monDayoff.getSId();
-				val yearMonth = monDayoff.getYm();
-				monDayoffMap.putIfAbsent(employeeId, new HashMap<>());
-				monDayoffMap.get(employeeId).put(yearMonth, monDayoff);
-			}
-			
-			// 特別休暇月別残数データを取得する
-			val specialLeaves = spcLeaRemRepo.findBySidsAndYearMonths(employeeIds, yearMonths);
-			Map<String, Map<YearMonth, List<SpecialHolidayRemainData>>> specialLeaveMap = new HashMap<>();
-			for (val specialLeave : specialLeaves){
-				val employeeId = specialLeave.getSid();
-				val yearMonth = specialLeave.getYm();
-				specialLeaveMap.putIfAbsent(employeeId, new HashMap<>());
-				specialLeaveMap.get(employeeId).putIfAbsent(yearMonth, new ArrayList<>());
-				ListIterator<SpecialHolidayRemainData> itrSpecialLeave =
-						specialLeaveMap.get(employeeId).get(yearMonth).listIterator();
-				boolean isNotExist = false;
-				while (itrSpecialLeave.hasNext()){
-					val outSpecialLeave = itrSpecialLeave.next();
-					if (outSpecialLeave.getSpecialHolidayCd() == specialLeave.getSpecialHolidayCd()){
-						itrSpecialLeave.set(outSpecialLeave);
-						isNotExist = true;
-						break;
-					}
-				}
-				if (!isNotExist) specialLeaveMap.get(employeeId).get(yearMonth).add(specialLeave);
-			}
-			
-			for (val employeeId : employeeIds){
-				for (val yearMonth : yearMonths){
-					if (!attendanceTimeMap.containsKey(employeeId)) continue;
-					if (!attendanceTimeMap.get(employeeId).containsKey(yearMonth)) continue;
-					val attendanceTime = attendanceTimeMap.get(employeeId).get(yearMonth);
-
-					// 勤怠項目値リストに変換する準備をする
-					val monthlyConverter = attendanceItemConverterFact.createMonthlyConverter();
-					monthlyConverter.withAttendanceTime(attendanceTime);
-					if (affiliationInfoMap.containsKey(employeeId)){
-						if (affiliationInfoMap.get(employeeId).containsKey(yearMonth)){
-							monthlyConverter.withAffiliation(affiliationInfoMap.get(employeeId).get(yearMonth));
-						}
-					}
-					if (anyItemMap.containsKey(employeeId)){
-						if (anyItemMap.get(employeeId).containsKey(yearMonth)){
-							monthlyConverter.withAnyItem(anyItemMap.get(employeeId).get(yearMonth));
-						}
-					}
-					if (annualLeaveMap.containsKey(employeeId)){
-						if (annualLeaveMap.get(employeeId).containsKey(yearMonth)){
-							monthlyConverter.withAnnLeave(annualLeaveMap.get(employeeId).get(yearMonth));
-						}
-					}
-					if (reserveLeaveMap.containsKey(employeeId)){
-						if (reserveLeaveMap.get(employeeId).containsKey(yearMonth)){
-							monthlyConverter.withRsvLeave(reserveLeaveMap.get(employeeId).get(yearMonth));
-						}
-					}
-					if (absenceLeaveMap.containsKey(employeeId)){
-						if (absenceLeaveMap.get(employeeId).containsKey(yearMonth)){
-							monthlyConverter.withAbsenceLeave(absenceLeaveMap.get(employeeId).get(yearMonth));
-						}
-					}
-					if (monDayoffMap.containsKey(employeeId)){
-						if (monDayoffMap.get(employeeId).containsKey(yearMonth)){
-							monthlyConverter.withDayOff(monDayoffMap.get(employeeId).get(yearMonth));
-						}
-					}
-					if (specialLeaveMap.containsKey(employeeId)){
-						if (specialLeaveMap.get(employeeId).containsKey(yearMonth)){
-							monthlyConverter.withSpecialLeave(specialLeaveMap.get(employeeId).get(yearMonth));
-						}
-					}
-					
-					// 月別実績データ値リストに追加する
-					results.putIfAbsent(employeeId, new ArrayList<>());
-					results.get(employeeId).add(MonthlyRecordValuesDto.of(
-							yearMonth,
-							attendanceTime.getClosureId(),
-							attendanceTime.getClosureDate(),
-							monthlyConverter.convert(itemIds)));
-				}
-			}
-			
-			return results;
-		}
+		}		
 	}
 }

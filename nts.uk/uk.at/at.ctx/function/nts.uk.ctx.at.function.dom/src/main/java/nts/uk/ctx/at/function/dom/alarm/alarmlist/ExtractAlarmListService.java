@@ -211,9 +211,12 @@ public class ExtractAlarmListService {
 				}
 			}			
 		}
-		
-		lstExtractedAlarmData = this.sortExtractedResult(lstExtractedAlarmData);
-		result.setExtractedAlarmData(lstExtractedAlarmData);
+		Comparator<AlarmExtraValueWkReDto> comparator = Comparator.comparing(AlarmExtraValueWkReDto::getHierarchyCd)
+				.thenComparing(Comparator.comparing(AlarmExtraValueWkReDto::getEmployeeCode))
+				.thenComparing(Comparator.comparing(AlarmExtraValueWkReDto::getAlarmValueDate))
+				.thenComparing(Comparator.comparing(AlarmExtraValueWkReDto::getCategory));
+		List<AlarmExtraValueWkReDto> sortedAlarmExtraValue = lstExtractedAlarmData.stream().sorted(comparator).collect(Collectors.toList());		
+		result.setExtractedAlarmData(sortedAlarmExtraValue);
 		return result;
 		
 	}
@@ -227,8 +230,8 @@ public class ExtractAlarmListService {
 					Integer rs2 = a.getEmployeeCode().compareTo(b.getEmployeeCode());
 					if (rs2 == 0) {
 						if(a.getAlarmValueDate() != null) {
-							GeneralDate dateA = GeneralDate.fromString(a.getAlarmValueDate(), "yyyy/mm/dd");
-							GeneralDate dateB = GeneralDate.fromString(b.getAlarmValueDate(), "yyyy/mm/dd");
+							GeneralDate dateA = GeneralDate.fromString(a.getAlarmValueDate(), "yyyy/MM/dd");
+							GeneralDate dateB = GeneralDate.fromString(b.getAlarmValueDate(), "yyyy/MM/dd");
 							Integer rs3 = dateA.compareTo(dateB);
 		                    if(rs3 == 0){
 		                        return dateA.compareTo(dateB);

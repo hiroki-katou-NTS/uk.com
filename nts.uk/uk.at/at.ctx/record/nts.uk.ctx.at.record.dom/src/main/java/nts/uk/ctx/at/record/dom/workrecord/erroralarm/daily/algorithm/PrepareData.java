@@ -37,9 +37,11 @@ public class PrepareData {
 	// List＜勤務実績の固定抽出条件＞
 	// 本人確認状況　（List）
 	// 管理者未確認　（List）
+	// List＜労働条件＞
+	//　List＜打刻カード＞
 	private DataFixExtracCon dataforDailyFix;
 	
-	// List＜労働条件＞
+	// List＜就業時間帯の設定＞
 	private List<WorkTimeSetting> listWorktime;
 	
 }
