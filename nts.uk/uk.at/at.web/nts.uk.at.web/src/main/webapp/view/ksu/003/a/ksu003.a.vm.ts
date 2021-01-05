@@ -97,6 +97,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		checkDragDrog : boolean = false; // phân biệt resize = false vs drop = true
 		breakTime : any = "";
 		bindTypeTime : any = [];
+		holidayShort: any = [];
+		
 		constructor(data: any) {
 			let self = this;
 			// get data from sc A
@@ -2117,8 +2119,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									parent: parent,
 									lineNo: i,
 									start: timeChartOver.startTime - dispStart,
-									end: timeChartOver.endTime - dispStart,
-									zindex: 1001
+									end: timeChartOver.endTime - dispStart
 								});
 							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "OT", id, {startTime : timeChartOver.startTime - dispStart, endTime : timeChartOver.endTime - dispStart}, i, parent, 0, 9999, 0, 9999, 1000));
 							indexLeft = ++indexLeft;
@@ -2134,8 +2135,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									parent: parent,
 									lineNo: i,
 									start: timeChartOver.startTime - dispStart,
-									end: timeChartOver.endTime - dispStart,
-									zindex: 1001
+									end: timeChartOver.endTime - dispStart
 								});
 							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "OT", id, {startTime : timeChartOver.startTime - dispStart, endTime : timeChartOver.endTime - dispStart}, i, parent, 0, 9999, 0, 9999, 1000));
 							indexRight = ++indexRight;
@@ -2156,19 +2156,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				if (breakTime.length > 0) {
 					for (let o = 0; o < breakTime.length; o++) {
 						let y = breakTime[o];
-						let timeBrkLimitPrev : any = null, timeBrkLimitNext : any = null;
 						breakTime = _.sortBy(breakTime, [function(o : any) { return o.start; }])
 						timeChartBrk = self.convertTimeToChart(_.isNil(y.startTime) ? y.start : y.startTime, _.isNil(y.endTime) ? y.end : y.endTime);
-						
-						if(breakTime.length > 1 && o > 1){
-						timeBrkLimitPrev = {start : breakTime[o-1].start / 5, end : breakTime[o-1].end / 5};	
-						}
-						
-						if(o < breakTime.length - 1){
-							timeBrkLimitNext = {start : breakTime[o+1].start / 5, end : breakTime[o+1].end / 5};
-						}
-						
-						
 						let parent = `lgc${i}`;
 						startTime1 = self.checkTimeOfChart(timeChartBrk.startTime, timeRangeLimit);
 						endTime1 = self.checkTimeOfChart(timeChartBrk.endTime, timeRangeLimit);
@@ -2178,18 +2167,18 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							(timeChart.startTime < Math.floor(timeRangeLimit + self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)) &&
 							(_.inRange(timeChartBrk.startTime, self.dataInitStartKsu003Dto().byDateDto.dispStart * 12, Math.floor(timeRangeLimit + self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)) ||
 								_.inRange(timeChartBrk.endTime, self.dataInitStartKsu003Dto().byDateDto.dispStart * 12, Math.floor(timeRangeLimit + self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)))) {
-							let timeRange = self.checkRangeBreakTime(self.lstHolidayShort, { start: startTime1, end: endTime1 }, i);
+							let timeRange = self.checkRangeBreakTime(self.holidayShort, { start: startTime1, end: endTime1 }, i);
 							ruler.addChartWithType("BreakTime", {
 								id: `lgc${i}_` + indexBrks,
 								parent: parent,
 								lineNo: i,
 								start: startTime1 - dispStart,
 								end: endTime1 - dispStart,
-								limitStartMin: isConfirmed == 1 ? startTime1 - dispStart : (o > 0 && o < breakTime.length - 1 && timeBrkLimitPrev != null) ? timeBrkLimitPrev.end : timeRange.start - dispStart,
+								limitStartMin: isConfirmed == 1 ? startTime1 - dispStart : timeRange.start - dispStart,
 								limitStartMax: isConfirmed == 1 ? startTime1 - dispStart : timeRange.end - dispStart,
 								limitEndMin: isConfirmed == 1 ? endTime1 - dispStart : timeRange.start - dispStart,
-								limitEndMax: isConfirmed == 1 ? endTime1 - dispStart : (o > 0 && o < breakTime.length - 1 && timeBrkLimitNext != null) ? timeBrkLimitNext.start : timeRange.end - dispStart,
-								zindex: 1001,
+								limitEndMax: isConfirmed == 1 ? endTime1 - dispStart : timeRange.end - dispStart,
+								zIndex: 1001,
 								resizeFinished: (b: any, e: any, p: any) => {
 								},
 								dropFinished: (b: any, e: any) => {
@@ -2232,7 +2221,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								(_.inRange(timeChartBrk.startTime, self.dataInitStartKsu003Dto().byDateDto.dispStart * 12, Math.floor(timeRangeLimit + self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)) ||
 									_.inRange(timeChartBrk.endTime, self.dataInitStartKsu003Dto().byDateDto.dispStart * 12, Math.floor(timeRangeLimit + self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)))) {
 								parent = `rgc${i}`;
-								let timeRange = self.checkRangeBreakTime(self.lstHolidayShort, { start: startTime1, end: endTime1 }, i);
+								let timeRange = self.checkRangeBreakTime(self.holidayShort, { start: startTime1, end: endTime1 }, i);
 								const indexBrkr = indexRight;
 								ruler.addChartWithType("BreakTime", {
 									id: `rgc${i}_` + indexBrkr,
@@ -2240,11 +2229,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									lineNo: i,
 									start: startTime1 - dispStart,
 									end: endTime1 - dispStart,
-									limitStartMin: isConfirmed == 1 ? startTime1 - dispStart : (o > 0 && o < breakTime.length - 1 && timeBrkLimitPrev != null) ? timeBrkLimitPrev.end : timeRange.start - dispStart,
+									limitStartMin: isConfirmed == 1 ? startTime1 - dispStart : timeRange.start - dispStart,
 									limitStartMax: isConfirmed == 1 ? startTime1 - dispStart : timeRange.end - dispStart,
 									limitEndMin: isConfirmed == 1 ? endTime1 - dispStart : timeRange.start - dispStart,
-									limitEndMax: isConfirmed == 1 ? endTime1 - dispStart : (o > 0 && o < breakTime.length - 1 && timeBrkLimitNext != null) ? timeBrkLimitNext.start : timeRange.end - dispStart,
-									zindex: 1001,
+									limitEndMax: isConfirmed == 1 ? endTime1 - dispStart : timeRange.end - dispStart,
+									zIndex: 1001,
 									resizeFinished: (b: any, e: any, p: any) => {
 									},
 									dropFinished: (b: any, e: any) => {
@@ -2314,9 +2303,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									lineNo: i,
 									start: timeChartShort.startTime - dispStart,
 									end: timeChartShort.endTime - dispStart,
-									zindex: 1002
+									zIndex: 1052
 								});
-							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "ShortTime", id, {startTime : timeChartShort.startTime - dispStart, endTime : timeChartShort.endTime - dispStart}, i, parent, 0, 9999, 0, 9999, 1002));
+							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "ShortTime", id, {startTime : timeChartShort.startTime - dispStart, endTime : timeChartShort.endTime - dispStart}, i, parent, 0, 9999, 0, 9999, 1052));
 							indexLeft = ++indexLeft;
 						}
 
@@ -2329,9 +2318,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									lineNo: i,
 									start: timeChartShort.startTime - dispStart,
 									end: timeChartShort.endTime - dispStart,
-									zindex: 1002
+									zIndex: 1052
 								});
-							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "ShortTime", id, {startTime : timeChartShort.startTime - dispStart, endTime : timeChartShort.endTime - dispStart}, i, parent, 0, 9999, 0, 9999, 1002));
+							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "ShortTime", id, {startTime : timeChartShort.startTime - dispStart, endTime : timeChartShort.endTime - dispStart}, i, parent, 0, 9999, 0, 9999, 1052));
 							indexRight = ++indexRight;
 						}
 
@@ -2359,9 +2348,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									lineNo: i,
 									start: timeChartHoliday.startTime - dispStart,
 									end: timeChartHoliday.endTime - dispStart,
-									zindex: 1003
+									zIndex: 1103
 								});
-									fixedGc.push(self.addChartWithType045(datafilter[0].empId, "HolidayTime", id, {startTime : timeChartHoliday.startTime - dispStart, endTime : timeChartHoliday.endTime - dispStart}, i, parent, 0, 9999, 0, 9999, 1003));
+									fixedGc.push(self.addChartWithType045(datafilter[0].empId, "HolidayTime", id, {startTime : timeChartHoliday.startTime - dispStart, endTime : timeChartHoliday.endTime - dispStart}, i, parent, 0, 9999, 0, 9999, 1103));
 									indexLeft = ++indexLeft;
 								}
 							}
@@ -2376,9 +2365,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									lineNo: i,
 									start: timeChartHoliday.startTime - dispStart,
 									end: timeChartHoliday.endTime - dispStart,
-									zindex: 1003
+									zIndex: 1103
 								});
-									fixedGc.push(self.addChartWithType045(datafilter[0].empId, "HolidayTime", id, {startTime : timeChartHoliday.startTime - dispStart, endTime : timeChartHoliday.endTime - dispStart}, i, parent, 0, 9999, 0, 9999, 1003));
+									fixedGc.push(self.addChartWithType045(datafilter[0].empId, "HolidayTime", id, {startTime : timeChartHoliday.startTime - dispStart, endTime : timeChartHoliday.endTime - dispStart}, i, parent, 0, 9999, 0, 9999, 1103));
 									indexRight = ++indexRight;
 								}
 							}
@@ -3215,6 +3204,14 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									type: type,
 									index : index
 								})
+								
+								self.holidayShort.push({
+									start: startCalc,
+									end: endCalc,
+									type: type,
+									index : index
+								})
+								
 							}
 
 							lstTimeFilter = _.filter(lstTime, (x: any) => { return (x.start == timeChartBrk.startTime && x.end < timeChartBrk.endTime) || (x.start < timeChartBrk.startTime && x.end == timeChartBrk.endTime) })
@@ -3302,6 +3299,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								if (!_.isNil(type) && (type == "SHORT" || type == "HOLIDAY")&& (_.inRange(startCalc2, timeChart2.startTime, timeChart2.endTime)
 									|| _.inRange(endCalc2, timeChart2.startTime, timeChart2.endTime))) {
 									self.lstHolidayShort.push({
+										start: startCalc2,
+										end: endCalc2,
+										lstBreak: type,
+										index : index
+									})
+									
+									self.holidayShort.push({
 										start: startCalc2,
 										end: endCalc2,
 										lstBreak: type,
