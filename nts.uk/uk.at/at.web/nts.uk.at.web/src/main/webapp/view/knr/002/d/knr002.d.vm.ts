@@ -55,6 +55,7 @@ module knr002.d {
                                     let desCopyTemp = new EmpInfoTerminal(item.empInfoTerCode, item.empInfoTerName, item.modelEmpInfoTer, item.workLocationName);
                                     let currentItem = keyMap[item.empInfoTerCode];                           
                                     if (currentItem) {
+                                        desCopyTemp.modelEmpInfoTerName = currentItem.displayModelEmpInfoTer;
                                         desCopyTemp.workLocationName = currentItem.workLocationName;
                                     }                               
                                     desCopyTempList.push(desCopyTemp);

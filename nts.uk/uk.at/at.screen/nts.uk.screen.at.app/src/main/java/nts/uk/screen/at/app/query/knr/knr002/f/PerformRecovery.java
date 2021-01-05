@@ -31,6 +31,11 @@ public class PerformRecovery {
 	@Inject
 	TimeRecordSettingUpdateRegisterCommandHandler timeRecordSettingUpdateRegisterCommandHandler;
 
+	/**
+	 * @param empInfoTerCode
+	 * @param terminalCodeList
+	 * @return
+	 */
 	public PerformRecoveryDto recovery(String empInfoTerCode, List<String> terminalCodeList) {
 		PerformRecoveryDto dto = new PerformRecoveryDto();
 		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());

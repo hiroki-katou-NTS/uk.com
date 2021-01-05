@@ -12,11 +12,11 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTermi
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.TimeRecordReqSettingRepository;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoMenuHistory;
 import nts.uk.ctx.at.record.dom.reservation.bento.IBentoMenuHistoryRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 
 /**
  * 
@@ -36,6 +36,10 @@ public class GetBentoMenu {
     @Inject
     private  BentoMenuRepository bentoMenuRepository;
 	
+	/**
+	 * @param empInforTerCode
+	 * @return
+	 */
 	public GetBentoMenuDto getBentoMenu(String empInforTerCode) {
 		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
 		String companyId = AppContexts.user().companyId();
@@ -47,13 +51,11 @@ public class GetBentoMenu {
 			 List<DateHistoryItem> dateHistoryItem = bentoMenuHist.get().getHistoryItems()
 					 								 .stream().filter(e -> e.start().beforeOrEquals(date)&&e.end().afterOrEquals(date))
 					 								 .collect(Collectors.toList());
-			 if(dateHistoryItem.size() > 0) {
+			 if(!dateHistoryItem.isEmpty()) {
 				 BentoMenu bentoMenu = this.bentoMenuRepository
 						 				   .getBentoMenuByHistId(companyId, dateHistoryItem.get(0).identifier()); 
-				 dto.setBentoMenuList(bentoMenu.getMenu().stream().map(e -> {
-					 BentoMenuDto bentoMenuDto = new BentoMenuDto(e.getFrameNo(), e.getName().v());
-					 return bentoMenuDto;
-				 }).collect(Collectors.toList()));
+				 dto.setBentoMenuList(bentoMenu.getMenu().stream().map(e -> new BentoMenuDto(e.getFrameNo(), e.getName().v()))
+						 										  .collect(Collectors.toList()));
 			 }
 		 }		 
 		//	2. get*(履歴ID): 枠番、弁当名

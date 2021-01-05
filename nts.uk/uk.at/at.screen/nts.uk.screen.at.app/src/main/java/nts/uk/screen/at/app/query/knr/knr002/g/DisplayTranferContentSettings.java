@@ -28,6 +28,10 @@ public class DisplayTranferContentSettings {
 	@Inject
 	private TimeRecordReqSettingRepository timeRecordReqSettingRepository;
 
+	/**
+	 * @param empInforTerCode
+	 * @return
+	 */
 	public DisplayTranferContentSettingsDto getTimeRecordReqSetting(String empInforTerCode) {
 		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
 		EmpInfoTerminalCode terminalCode = new EmpInfoTerminalCode(empInforTerCode);

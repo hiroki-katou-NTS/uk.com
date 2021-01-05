@@ -32,6 +32,10 @@ public class GetEmployees {
 	private EmployeeInformationRepository empInfoRepo;
 	
 	
+	/**
+	 * @param empInforTerCode
+	 * @return
+	 */
 	public List<GetEmployeesDto> getEmployees(String empInforTerCode) {
 		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
 		

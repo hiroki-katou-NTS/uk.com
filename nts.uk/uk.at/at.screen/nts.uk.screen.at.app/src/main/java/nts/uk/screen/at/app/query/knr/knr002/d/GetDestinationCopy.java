@@ -39,11 +39,6 @@ public class GetDestinationCopy {
 	public List<GetDestinationCopyDto> getEmpInfoTerDestinalList(String empInforTerCode) {
 		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
 		String companyID = AppContexts.user().companyId();
-		// get the Selected Employment Information Terminal
-//		Optional<EmpInfoTerminal> empInfoTer = this.empInfoTerRepo
-//				.getEmpInfoTerminal(new EmpInfoTerminalCode(empInforTerCode), contractCode);
-//		if (!empInfoTer.isPresent())
-//			return null;
 		List<EmpInfoTerminal> empInfoTerList = this.empInfoTerRepo.getEmpInfoTerminalNotIncludeCode(contractCode, new EmpInfoTerminalCode(empInforTerCode));
 		if (empInfoTerList.isEmpty())
 			return null;

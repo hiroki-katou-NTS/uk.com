@@ -29,6 +29,10 @@ public class GetWorkTime {
 	@Inject
 	private TimeRecordReqSettingRepository timeRecordReqSettingRepository;
 	
+	/**
+	 * @param empInforTerCode
+	 * @return
+	 */
 	public GetWorkTimeDto getWorkTimes(String empInforTerCode) {
 		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
 		String companyId = AppContexts.user().companyId();
