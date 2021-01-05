@@ -77,7 +77,7 @@ module nts.uk.at.view.kal013.a {
                         if (typeof hasClicked == 'undefined' || hasClicked === 'false') {
                             $("#fixedTableCCDT")
                                 .attr('data-clicked', 'true')
-                                .ntsFixedTable({height: 350});
+                                .ntsFixedTable({height: 250});
                         }
                         break;
                 }
@@ -136,37 +136,9 @@ module nts.uk.at.view.kal013.a {
         openDialogD() {
             const vm = this;
 
-            // vm.$window
-            //     .storage('dataShareDialog046', params)
-            //     .then(() => vm.$window.modal('at', '/view/kdl/046/a/index.xhtml'))
-            //     .then(() => vm.$window.storage('dataShareKDL046'))
-            //     .then((data) => {
-            //         if (data) {
-            //
-            //             let orgInfo: TargetOrgIdenInfor = {
-            //                 unit: data.unit,
-            //                 workplaceId: data.workplaceId,
-            //                 workplaceGroupId: data.workplaceGroupID
-            //             };
-            //             vm.workplaceCode(data.workplaceCode || data.workplaceGroupCode);
-            //             vm.workplaceName(data.workplaceName || data.workplaceGroupName);
-            //             vm.targetOrganizationInfor(orgInfo);
-            //             vm.changeWorkplace(orgInfo).then(() => {
-            //                 vm.getBanWorkListByCode().then(() => {
-            //                     if (vm.listBanWorkTogether().length) {
-            //                         vm.selectedProhibitedCode(null);
-            //                         vm.selectedProhibitedCode(vm.listBanWorkTogether()[0].code);
-            //                     } else {
-            //                         vm.swithchNewMode();
-            //                     }
-            //                 });
-            //             })
-            //         }
-            //     });
-
             vm.$window.modal('/view/kal/013/d/index.xhtml', vm.selectedCategoryCode())
                 .then((result: any) => {
-                    if (result) {
+                    if (result && !_.isEmpty(result)) {
                         vm.$errors("clear");
                         vm.isCodeChangedFromScreenD(true);
                         if (result.shareParam == vm.selectedCategoryCode()) {
