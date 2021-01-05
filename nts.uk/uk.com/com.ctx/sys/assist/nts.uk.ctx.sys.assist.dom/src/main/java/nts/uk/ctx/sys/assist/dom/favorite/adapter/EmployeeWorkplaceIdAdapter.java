@@ -24,5 +24,5 @@ public interface EmployeeWorkplaceIdAdapter {
 	 * @param baseDate - 基準日
 	 * @return Map<社員ID、職場ID>
 	 */
-	public Map<String, String> getWorkplaceId(List<String> wpkIds, GeneralDate baseDate);
+	public Map<String, String> getWorkplaceId(List<String> sIds, GeneralDate baseDate);
 }
