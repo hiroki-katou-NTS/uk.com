@@ -92,7 +92,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 			vm.recruitmentApp.application.appDate.subscribe(value =>{
 				if(value != null){
 					vm.$blockui("grayout");
-					let holidayDate = (vm.appCombinaSelected() != 2 && vm.absenceLeaveApp.application.appDate()) ? moment(vm.absenceLeaveApp.application.appDate()).format('YYYY/MM/DD'): null;
+					let holidayDate = (vm.appCombinaSelected() != 1 && vm.absenceLeaveApp.application.appDate()) ? moment(vm.absenceLeaveApp.application.appDate()).format('YYYY/MM/DD'): null;
 					vm.$ajax('at/request/application/holidayshipment/changeRecDate',{workingDate: moment(value).format('YYYY/MM/DD'), holidayDate: holidayDate, displayInforWhenStarting: vm.displayInforWhenStarting()}).then((data: any) =>{
 						vm.bindData(data);
 					}).always(() => {
@@ -104,12 +104,20 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 			vm.absenceLeaveApp.application.appDate.subscribe(value =>{
 				if(value != null){
 					vm.$blockui("grayout");
-					let workingDate = (vm.appCombinaSelected() != 1 && vm.recruitmentApp.application.appDate()) ? moment(vm.recruitmentApp.application.appDate()).format('YYYY/MM/DD'): null;
+					let workingDate = (vm.appCombinaSelected() != 2 && vm.recruitmentApp.application.appDate()) ? moment(vm.recruitmentApp.application.appDate()).format('YYYY/MM/DD'): null;
 					vm.$ajax('at/request/application/holidayshipment/changeAbsDate',{workingDate: workingDate, holidayDate: moment(value).format('YYYY/MM/DD'), displayInforWhenStarting: vm.displayInforWhenStarting()}).then((data: any) =>{
 						vm.bindData(data);
 					}).always(() => {
 						vm.$blockui("hide"); 
 					});
+				}
+			});
+			
+			vm.appCombinaSelected.subscribe(value => {
+				if(value == 0 || value == 1){
+					vm.recruitmentApp.application.appDate.valueHasMutated();
+				}else{
+					vm.absenceLeaveApp.application.appDate.valueHasMutated();
 				}
 			});
 		}

@@ -36,6 +36,8 @@ import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.WorkTimeIn
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.ChangeValueItemsOnHolidayShipment;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.HolidayShipmentScreenAFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.ChangeDateParam;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.ChangeWokTypeParam;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.ChangeWorkTypeResultDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.DisplayInforWhenStarting;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApproveProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
@@ -80,11 +82,11 @@ public class HolidayShipmentWebService extends WebService {
 	@Path("startPageARefactor")
 	public DisplayInforWhenStarting startPageARefactor(StartPageARefactorParam param) {
 		return this.screenAFinder.startPageARefactor(
-				AppContexts.user().companyId(), 
-				CollectionUtil.isEmpty(param.getSIDs()) ? Arrays.asList(AppContexts.user().employeeId()) : param.getSIDs(), 
-				param.getAppDate(),
-				param.getAppDispInfoStartup()
-				);
+			AppContexts.user().companyId(), 
+			CollectionUtil.isEmpty(param.getSIDs()) ? Arrays.asList(AppContexts.user().employeeId()) : param.getSIDs(), 
+			param.getAppDate(),
+			param.getAppDispInfoStartup()
+		);
 	}
 	
 	@POST
@@ -105,15 +107,10 @@ public class HolidayShipmentWebService extends WebService {
 		saveCommandHandler.register(command);
 	}
 	
-	
-	
-	
-	
 	@POST
 	@Path("change_work_type")
-	public WorkTimeInfoDto changeWorkType(ChangeWorkTypeParam param) {
-//		return this.screenAFinder.changeWorkType(param.getWkTypeCD(), param.getWkTimeCD());
-		return null;
+	public ChangeWorkTypeResultDto changeWorkType(ChangeWokTypeParam param) {
+		return changeValueItemsOnHolidayShipment.changeWorkType(param.workTypeBefore, param.workTypeAfter, Optional.ofNullable(param.workTimeCode), param.leaveComDayOffMana, param.payoutSubofHDManagement);
 	}
 	
 	
@@ -159,7 +156,7 @@ public class HolidayShipmentWebService extends WebService {
 
 	@POST
 	@Path("get_selected_working_hours")
-	public WorkTimeInfoDto getSelectedWorkingHours(ChangeWorkTypeParam param) {
+	public WorkTimeInfoDto getSelectedWorkingHours(ChangeWokTypeParam param) {
 //		return this.screenAFinder.getSelectedWorkingHours(param.getWkTypeCD(), param.getWkTimeCD());
 		return null;
 	}
@@ -262,12 +259,6 @@ class StartScreenCParam {
 	private String sID;
 	private GeneralDate appDate;
 	private int uiType;
-}
-
-@Value
-class ChangeWorkTypeParam {
-	private String wkTypeCD;
-	private String wkTimeCD;
 }
 
 @Value
