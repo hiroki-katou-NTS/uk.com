@@ -115,9 +115,9 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		// 取得した期間
 		DatePeriod period = optPeriod.get();
 		AnnualHolidayGrantInfor outPut = new AnnualHolidayGrantInfor(new ArrayList<>(),fromTo.get(),period.end().addDays(1), sid, Optional.of(ymd));
-		//社員に対応する処理締めを取得する
+		// 社員に対応する処理締めを取得する
 		Closure closureOfEmp = ClosureService.getClosureDataByEmployee(require, cacheCarrier, sid, ymd);
-		//指定月の締め開始日を取得 - 3 4
+		// 指定月の締め開始日を取得 - 3 4
 		// 対象期間区分が１年経過時点の場合、指定月←取得した期間．開始日の年月部分
 		YearMonth ymStartDateByClosure = periodOutput == AFTER_1_YEAR ? optPeriod.get().start().yearMonth() : ym;
 		Optional<GeneralDate> optStartDate = this.getStartDateByClosure(sid, ymStartDateByClosure, closureOfEmp.getClosureMonth().getProcessingYm(), ymd);
@@ -126,7 +126,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 			return getAnnualHolidayGrantInforDto;
 		}
 		GeneralDate startDate = optStartDate.get();
-		//期間内の年休使用明細を取得する - 4
+		// 期間内の年休使用明細を取得する - 4
 		List<DailyInterimRemainMngDataAndFlg> lstUseInfor = this.lstRemainData(cid,
 				sid,
 				new DatePeriod(startDate, period.end()),

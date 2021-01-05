@@ -61,14 +61,14 @@ public class GetPeriodFromPreviousToNextGrantDateImpl implements GetPeriodFromPr
 		// 対象期間区分をチェックする - Check the target period classification
 		// 対象期間区分=null or 現在 or 過去の場合 - CURRENT: 0 , PAST: 2
 		if(periodOutput == null || periodOutput == CURRENT || periodOutput == PAST)  {
-			// 社員に対応する処理締めを取得する 
+			// 社員に対応する処理締めを取得する  - 1
 			Closure closureInfor = ClosureService.getClosureDataByEmployee(require, cacheCarrier, sid, ymd);
 			if(closureInfor == null) {
 				return Optional.empty();
 			}
-			//指定した年月の期間を算出する
+			// 指定した年月の期間を算出する - 2
 			DatePeriod datePeriodClosure = ClosureService.getClosurePeriod(require, closureInfor.getClosureId().value, ym);
-			//指定した年月日を基準に、前回付与日から次回付与日までの期間を取得
+			//指定した年月日を基準に、前回付与日から次回付与日までの期間を取得 - 3
 			periodGrant = this.getPeriodYMDGrant(cid, sid, datePeriodClosure.start().addDays(1), periodOutput, fromTo);
 		}
 		// 対象期間区分=１年経過時点の場合 ( AFTER_1_YEAR ) 

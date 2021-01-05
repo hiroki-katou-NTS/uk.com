@@ -143,6 +143,8 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	private static final int MAX_ROW = 28;
 	/** The Constant NORMAL_FONT_SIZE. */
 	private static final int NORMAL_FONT_SIZE = 9;
+	/** The Constant WORKPLACE_TITLE */
+	private static final String WORKPLACE_TITLE = "●職場：";
 	
 	@Inject
 	private CompanyAdapter company;
@@ -234,7 +236,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 			closure = closureAdapter.getClosureById(companyId, closureData.get(0).getClosureId()).get();
 		}
 
-		// 参照先区分をチェックする
+		// Input．対象期間をチェックする
 		if (EnumAdaptor.valueOf(selectedDateType, PeriodToOutput.class).equals(PeriodToOutput.PAST)) {
 			// 過去
 			// 所属情報取得用の基準日 ← INPUT.指定月 +取得した 「現在締め期間.終了年月日」の日
@@ -266,8 +268,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	 */
 
 	private List<EmployeeHolidayInformationExport> getData(OutputYearHolidayManagementQuery query) {
-		// từ xử lý ユーザ固有情報「年休管理表の出力条件」を更新する trở về trước được thực hiện dưới
-		// client
+		// từ xử lý ユーザ固有情報「年休管理表の出力条件」を更新する trở về trước được thực hiện bên client
 		String companyId = AppContexts.user().companyId();
 		// アルゴリズム「使用基準日判定処理」を実行する
 		GeneralDate baseDate = this.dateDetermination(query.getClosureData(), query.getSelectedDateType().value, query.getPrintDate(), query.getPeriod());
@@ -336,13 +337,14 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 			ReferenceAtr refType = EnumAdaptor.valueOf(query.getSelectedReferenceType(), ReferenceAtr.class);
 			Optional<AnnualHolidayGrantInfor> holidayInfo = Optional.empty();
 			List<AnnualHolidayGrantDetail> holidayDetails = Collections.emptyList();
+			
+			//対象期間をチェック - (Check khoảng thời gian)
 			if (query.getSelectedDateType() == PeriodToOutput.CURRENT) {
 				// 社員に対応する処理締めを取得する
 				Closure closure = ClosureService.getClosureDataByEmployee(
 						ClosureService.createRequireM3(closureRepo, closureEmploymentRepo, shareEmploymentAdapter),
 						new CacheCarrier(), empId, baseDate);
-				// アルゴリズム「年休付与情報を取得」を実行する I
-				// nhận thông tin trợ cấp nghỉ phép hàng năm
+				// アルゴリズム「年休付与情報を取得」を実行する I - nhận thông tin trợ cấp nghỉ phép hàng năm
 				if (closure != null && closure.getClosureMonth() != null) {
 					YearMonth yearMonthInput = closure.getClosureMonth().getProcessingYm();
 					// RQ550
@@ -525,7 +527,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 				List<AnnualHolidayGrantDetail> holidayDetails = emp.getHolidayDetails();
 				// tính tổng số dòng để xác định phân trang nếu data quá quy định
 				int dataLine = this.getTotalLineOfEmp(holidayInfo, holidayDetails, query);
-				String wpName = "●職場：" + emp.getWorkplace().getWorkplaceCode() + " "
+				String wpName = WORKPLACE_TITLE + emp.getWorkplace().getWorkplaceCode() + " "
 						+ emp.getWorkplace().getWorkplaceName();
 				String lastWpName = cells.get(lastWPRow, 0).getStringValue();
 				// tổng số dòng = số dòng data + 1 dòng in WorkPlace (nếu có);
