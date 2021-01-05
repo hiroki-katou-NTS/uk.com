@@ -15,7 +15,7 @@ module nts.uk.at.view.kaf006.shr.component2.viewmodel {
                         optionsValue: 'holidayAppType',
                         optionsText: 'displayName',
                         value: selectedType, 
-                        enable: $parent.isEnableSwitchBtn
+                        enable: $parent.updateMode
                     }"></div>
                 </div>
             </div>

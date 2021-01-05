@@ -48,7 +48,31 @@ public class JpaApplyForLeaveRepository extends JpaRepository implements ApplyFo
         if (!entityAppHdOpt.isPresent()) {
             throw new RuntimeException("Entity not existed");
         } else {
-            KrqdtAppHd entity = KrqdtAppHd.fromDomain(domain, CID, appId);
+            KrqdtAppHd entityInput = KrqdtAppHd.fromDomain(domain, CID, appId);
+            KrqdtAppHd entity = entityAppHdOpt.get();
+            
+            // Update entity attribute
+            entity.setHolidayAppType(entityInput.getHolidayAppType());
+            entity.setWorkTypeCd(entityInput.getWorkTypeCd());
+            entity.setWorkTimeCd(entityInput.getWorkTimeCd());
+            entity.setWorkTimeChangeAtr(entityInput.getWorkTimeChangeAtr());
+            entity.setWorkTimeStart1(entityInput.getWorkTimeStart1());
+            entity.setWorkTimeEnd1(entityInput.getWorkTimeEnd1());
+            entity.setWorkTimeStart2(entityInput.getWorkTimeStart2());
+            entity.setWorkTimeEnd2(entityInput.getWorkTimeEnd2());
+            entity.setHourOfSixtyOvertime(entityInput.getHourOfSixtyOvertime());
+            entity.setHourOfCare(entityInput.getHourOfCare());
+            entity.setHourOfChildCare(entityInput.getHourOfChildCare());
+            entity.setHourOfHdCom(entityInput.getHourOfHdCom());
+            entity.setFrameNoOfHdsp(entityInput.getFrameNoOfHdsp());
+            entity.setHourOfHdsp(entityInput.getHourOfHdsp());
+            entity.setHourOfHdPaid(entityInput.getHourOfHdPaid());
+            entity.setMournerFlg(entityInput.getMournerFlg());
+            entity.setRelationshipCD(entityInput.getRelationshipCD());
+            entity.setRelationshipReason(entityInput.getRelationshipReason());
+            entity.setHdComStartDate(entityInput.getHdComStartDate());
+            entity.setHdComEndDate(entityInput.getHdComEndDate());
+            
             this.commandProxy().update(entity);
         }
     }

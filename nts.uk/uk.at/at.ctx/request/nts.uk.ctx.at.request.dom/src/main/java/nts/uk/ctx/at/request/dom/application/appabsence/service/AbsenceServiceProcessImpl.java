@@ -1039,7 +1039,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 		Optional<String> selectedWorkTypeCD = appAbsenceStartInfoOutput.getSelectedWorkTypeCD();
 		if (selectedWorkTypeCD.isPresent()) {
 		    appAbsenceStartInfoOutput.setSelectedWorkTypeCD(
-		            appAbsenceStartInfoOutput.getWorkTypeLst().stream().filter(x -> x.getWorkTypeCode().v().equals(selectedWorkTypeCD)).collect(Collectors.toList()).size() > 0
+		            appAbsenceStartInfoOutput.getWorkTypeLst().stream().filter(x -> x.getWorkTypeCode().v().equals(selectedWorkTypeCD.get())).collect(Collectors.toList()).size() > 0
 		                    ? appAbsenceStartInfoOutput.getSelectedWorkTypeCD() : (workTypes.size() > 0 ? Optional.of(workTypes.get(0).getWorkTypeCode().v()) : Optional.empty()));
 		} else {
 		    appAbsenceStartInfoOutput.setSelectedWorkTypeCD(workTypes.isEmpty() ? Optional.empty() : Optional.of(workTypes.get(0).getWorkTypeCode().v()));

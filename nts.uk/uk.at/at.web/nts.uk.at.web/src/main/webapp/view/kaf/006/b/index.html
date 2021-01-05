@@ -44,12 +44,17 @@
                                         application: application,
                                         appDispInfoStartupOutput: appDispInfoStartupOutput
                                     } }"></div>
-    <div data-bind="component: { name: 'kaf000-b-component6',
-                            params: {
-                                appType: appType,
-                                application: application,
-                                appDispInfoStartupOutput: appDispInfoStartupOutput
-                            } }"></div>
+    <div>
+        <div data-bind="component: { name: 'kaf000-b-component6',
+                                params: {
+                                    appType: appType,
+                                    application: application,
+                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                } }" style="width: fit-content; display: inline-block; vertical-align: middle;"></div>
+        <div style="width: fit-content; display: inline-block; vertical-align: middle;">
+            <button data-bind="visible: condition31() && updateMode, text: $i18n('KAF006_86')"></button>
+        </div>
+    </div>
     <div>
         <div data-bind="component: { name: 'kaf006-shr-component2', 
                                     params: {
@@ -71,7 +76,8 @@
                         optionsValue: 'workTypeCode',
                         optionsText: 'name',
                         value: selectedWorkTypeCD,
-                        required: true
+                        required: true,
+                        enable: updateMode
                     }"></div>
                 </div>
             </div>

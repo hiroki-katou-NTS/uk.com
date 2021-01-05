@@ -40,6 +40,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 		workTypeAfter: KnockoutObservable<any> = ko.observable();
 		isFromOther: boolean = false;
 		isEnableSwitchBtn: boolean = true;
+		updateMode: boolean = true;
 
 		yearRemain: KnockoutObservable<number> = ko.observable();
 		subHdRemain: KnockoutObservable<number> = ko.observable();
@@ -220,6 +221,17 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 					holidayAppType: vm.selectedType()
 				};
 
+				command.startInfo.leaveComDayOffManas = _.map(command.startInfo.leaveComDayOffManas, (x: any) => {
+					x.dateOfUse = new Date(x.dateOfUse).toISOString();
+					x.outbreakDay = new Date(x.outbreakDay).toISOString();
+					return x;
+				});
+				command.startInfo.payoutSubofHDManas = _.map(command.startInfo.payoutSubofHDManas, (x: any) => {
+					x.dateOfUse = new Date(x.dateOfUse).toISOString();
+					x.outbreakDay = new Date(x.outbreakDay).toISOString();
+					return x;
+				});
+
                 vm.$blockui("show");
                 vm.$ajax(API.getAllAppForLeave, command).done((result) => {
 					vm.specAbsenceDispInfo(result.specAbsenceDispInfo);
@@ -295,6 +307,17 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 						holidayAppType: vm.selectedType(),
 						workTypeCd: vm.selectedWorkTypeCD()
 					};
+
+					commandChangeWorkType.startInfo.leaveComDayOffManas = _.map(commandChangeWorkType.startInfo.leaveComDayOffManas, (x: any) => {
+						x.dateOfUse = new Date(x.dateOfUse).toISOString();
+						x.outbreakDay = new Date(x.outbreakDay).toISOString();
+						return x;
+					});
+					commandChangeWorkType.startInfo.payoutSubofHDManas = _.map(commandChangeWorkType.startInfo.payoutSubofHDManas, (x: any) => {
+						x.dateOfUse = new Date(x.dateOfUse).toISOString();
+						x.outbreakDay = new Date(x.outbreakDay).toISOString();
+						return x;
+					});
 					// Process change workType
 					// 勤務種類変更時処理
 					vm.$blockui("show");
@@ -335,6 +358,17 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 					workTimeCode: vm.selectedWorkTimeCD(),
 					appAbsenceStartInfoDto: vm.data
 				};
+
+				commandChangeWorkTime.appAbsenceStartInfoDto.leaveComDayOffManas = _.map(commandChangeWorkTime.appAbsenceStartInfoDto.leaveComDayOffManas, (x: any) => {
+					x.dateOfUse = new Date(x.dateOfUse).toISOString();
+					x.outbreakDay = new Date(x.outbreakDay).toISOString();
+					return x;
+				});
+				commandChangeWorkTime.appAbsenceStartInfoDto.payoutSubofHDManas = _.map(commandChangeWorkTime.appAbsenceStartInfoDto.payoutSubofHDManas, (x: any) => {
+					x.dateOfUse = new Date(x.dateOfUse).toISOString();
+					x.outbreakDay = new Date(x.outbreakDay).toISOString();
+					return x;
+				});
 
 				vm.$blockui("show");
 				vm.$ajax(API.changeWorkTime, commandChangeWorkTime)
@@ -505,6 +539,17 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 				application: application
 			};
 
+			commandCheckRegister.appAbsenceStartInfoDto.leaveComDayOffManas = _.map(commandCheckRegister.appAbsenceStartInfoDto.leaveComDayOffManas, (x: any) => {
+				x.dateOfUse = new Date(x.dateOfUse).toISOString();
+				x.outbreakDay = new Date(x.outbreakDay).toISOString();
+				return x;
+			});
+			commandCheckRegister.appAbsenceStartInfoDto.payoutSubofHDManas = _.map(commandCheckRegister.appAbsenceStartInfoDto.payoutSubofHDManas, (x: any) => {
+				x.dateOfUse = new Date(x.dateOfUse).toISOString();
+				x.outbreakDay = new Date(x.outbreakDay).toISOString();
+				return x;
+			});
+
 			let appTypeSettingLst = vm.data.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting;
 			let qr = _.filter(appTypeSettingLst, { 'appType': vm.application().appType });
 
@@ -512,8 +557,16 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 			let commandRegister = {
 				applyForLeave: this.createDataVacationApp(),
 				appDates: appDates,
-				leaveComDayOffMana: vm.leaveComDayOffManas(),
-				payoutSubofHDManagements: vm.payoutSubofHDManagements(),
+				leaveComDayOffMana: _.map(vm.leaveComDayOffManas(), (x: any) => {
+					x.dateOfUse = new Date(x.dateOfUse).toISOString();
+					x.outbreakDay = new Date(x.outbreakDay).toISOString();
+					return x;
+				}),
+				payoutSubofHDManagements: _.map(vm.payoutSubofHDManagements(), (x: any) => {
+					x.dateOfUse = new Date(x.dateOfUse).toISOString();
+					x.outbreakDay = new Date(x.outbreakDay).toISOString();
+					return x;
+				}),
 				mailServerSet: vm.data.appDispInfoStartupOutput.appDispInfoNoDateOutput.mailServerSet,
 				application: application,
 				approvalRoot: vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.opListApprovalPhaseState,
@@ -827,6 +880,16 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 				holidayAppType: vm.selectedType(),
 				appWithDate: vm.appDispInfoStartupOutput().appDispInfoWithDateOutput
 			};
+			command.startInfo.leaveComDayOffManas = _.map(command.startInfo.leaveComDayOffManas, (x: any) => {
+				x.dateOfUse = new Date(x.dateOfUse).toISOString();
+				x.outbreakDay = new Date(x.outbreakDay).toISOString();
+				return x;
+			});
+			command.startInfo.payoutSubofHDManas = _.map(command.startInfo.payoutSubofHDManas, (x: any) => {
+				x.dateOfUse = new Date(x.dateOfUse).toISOString();
+				x.outbreakDay = new Date(x.outbreakDay).toISOString();
+				return x;
+			});
 
 			vm.$validate([
 				'#kaf000-a-component4 .nts-input'

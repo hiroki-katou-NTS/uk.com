@@ -7,7 +7,8 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
         <div id="kaf006tab4">
             <div style="margin-top: 10px;" data-bind="ntsCheckBox: {
                 checked: isChangeWorkHour,
-                text: $i18n('KAF006_18')
+                text: $i18n('KAF006_18'),
+                enable: $parent.updateMode
             }, visible: $parent.condition11"></div>
             <hr style="width: 700px; margin-inline-start: initial;" data-bind="visible: $parent.condition11" />
             <div class="table" data-bind="visible: $parent.condition11">
@@ -18,7 +19,7 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                             <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_19')"></div>
                         </div>
                         <div class="cell">
-                            <button style="margin-right: 5px;" data-bind="text: $i18n('KAF006_20'), enable: $parent.isChangeWorkHour, click: openKDL003"></button>
+                            <button style="margin-right: 5px;" data-bind="text: $i18n('KAF006_20'), enable: $parent.isChangeWorkHour() && $parent.updateMode, click: openKDL003"></button>
                         </div>
                         <div class="cell" data-bind="text: $parent.selectedWorkTimeDisp"></div>
                     </div>
@@ -34,8 +35,8 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                                 options: {
                                     timeWithDay: true,
                                     width: '120'
-                                }
-                            }, enable: $parent.condition30" />
+                                }, enable: $parent.condition30() && $parent.updateMode
+                            }" />
                             <span data-bind="text: $i18n('KAF006_47')"></span>
                             <input style="width: 120px;" data-bind="ntsTimeWithDayEditor: {
                                 name: $i18n('KAF006_59'),
@@ -44,8 +45,8 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                                 options: {
                                     timeWithDay: true,
                                     width: '120'
-                                }
-                            }, enable: $parent.condition30" />
+                                }, enable: $parent.condition30() && $parent.updateMode
+                            }" />
                         </div>
                     </div>
                     <div style="padding-bottom: 5px;" data-bind="visible: $parent.condition12">
@@ -60,8 +61,8 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                                 options: {
                                     timeWithDay: true,
                                     width: '120'
-                                }
-                            }, enable: $parent.condition30" />
+                                }, enable: $parent.condition30() && $parent.updateMode
+                            }" />
                             <span data-bind="text: $i18n('KAF006_47')"></span>
                             <input style="width: 120px;" data-bind="ntsTimeWithDayEditor: {
                                 name: $i18n('KAF006_61'),
@@ -70,8 +71,8 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                                 options: {
                                     timeWithDay: true,
                                     width: '120'
-                                }
-                            }, enable: $parent.condition30" />
+                                }, enable: $parent.condition30() && $parent.updateMode
+                            }" />
                         </div>
                     </div>
                 </div>
@@ -80,7 +81,7 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                 <div class="cell col-1">
                     <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_88')"></div>
                 </div>
-                <button style="width: 60px; margin-right: 5px;" class="cell" data-bind="text: $i18n('KAF006_50'), enable: !_.isEmpty($parent.application().appDate()), click: openKDL036"></button>
+                <button style="width: 60px; margin-right: 5px;" class="cell" data-bind="text: $i18n('KAF006_50'), enable: !_.isEmpty($parent.application().appDate()) && $parent.updateMode, click: openKDL036"></button>
                 <div class="cell" data-bind="text: $i18n('KAF006_89')"></div>
             </div>
             <div class="table" style="margin: 10px 0;" data-bind="visible: $parent.condition15">
@@ -109,7 +110,7 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                 <div class="cell col-1">
                     <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_48')"></div>
                 </div>
-                <button style="width: 60px; margin-right: 5px;" class="cell" data-bind="text: $i18n('KAF006_50'), enable: !_.isEmpty($parent.application().appDate()), click: openKDL035"></button>
+                <button style="width: 60px; margin-right: 5px;" class="cell" data-bind="text: $i18n('KAF006_50'), enable: !_.isEmpty($parent.application().appDate()) && $parent.updateMode, click: openKDL035"></button>
                 <div class="cell" data-bind="text: $i18n('KAF006_81')"></div>
             </div>
             <div class="table" style="margin: 10px 0;" data-bind="visible: $parent.condition14">
