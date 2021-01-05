@@ -89,7 +89,7 @@ module nts.uk.at.kal011.B {
 
         sendEmail() {
             let vm = this;
-            let modalData = { processId: vm.processId };
+            let modalData = { data: vm.dataSource, currentCode: vm.alarmPatternCode };
             vm.$window.storage('KAL011CModalData', modalData).done(() => {
                 vm.$window.modal('/view/kal/011/c/index.xhtml')
                     .then((result: any) => {
@@ -103,7 +103,7 @@ module nts.uk.at.kal011.B {
         }
     }
 
-    interface ExtractAlarmDto {
+    export interface ExtractAlarmDto {
         recordId: string;
         alarmValueMessage: string;
         alarmValueDate: string;

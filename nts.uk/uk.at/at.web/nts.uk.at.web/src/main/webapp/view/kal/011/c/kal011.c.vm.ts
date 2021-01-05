@@ -1,10 +1,12 @@
 module nts.uk.at.kal011.c {
 
+    import ExtractAlarm =  nts.uk.at.kal011.B.ExtractAlarmDto;
+
     const PATH_API = {
         //TODO wrote api path
         sendEmail: "at/function/alarm-workplace/alarm-list/send-email",
         getWorkPlace: "",
-    }
+    };
 
     @bean()
     export class Kal011CViewModel extends ko.ViewModel {
@@ -15,23 +17,22 @@ module nts.uk.at.kal011.c {
         columns: Array<any>;
         workPlaceList: Array<WorkPlace> = [];
         processId: string;
+        currentCode: string;
 
-        constructor(props: any) {
-            super();
-            const vm = this;
-        }
 
-        created() {
+        created(params : {data : Array<ExtractAlarm>} ) {
             const vm = this;
             _.extend(window, {vm});
-            vm.$window.storage('KAL011CModalData').done((data) => {
-                vm.processId = data.processId;
-                vm.getWorkPlaceList();
+            vm.$window.storage('KAL011CModalData').done((res) => {
+                if (res.data && res.data.length) {
+                    vm.workPlaceList = _.map(res.data, function (i: ExtractAlarm) {
+                       return new WorkPlace(i, false);
+                    });
+                    vm.currentCode = res.currentCode;
+                    $("#grid").igGrid("option", "dataSource", vm.workPlaceList);
+                };
             });
-            //mock data
-            for (let i = 1; i < 100; i++) {
-                vm.workPlaceList.push(new WorkPlace(false, 'id' + i, 'code' + i, 'name' + i));
-            }
+
             vm.startPage();
         }
 
@@ -43,27 +44,6 @@ module nts.uk.at.kal011.c {
             nts.uk.ui.windows.close();
         }
 
-        /**
-         *
-         * function to get table data
-         * @return JQueryPromise
-         */
-        getWorkPlaceList(): JQueryPromise<any> {
-            let vm = this;
-            let dfd = $.Deferred();
-            vm.$blockui("invisible");
-            let command = {
-                processId: vm.processId,
-            };
-            vm.$ajax(PATH_API.getWorkPlace, command).then((data) => {
-                //TODO map data with vm.workPlaceList
-            }).fail(function (error) {
-                vm.$dialog.error({messageId: error.messageId});
-            }).always(() => {
-                vm.$blockui("clear");
-            });
-            return dfd.promise();
-        }
 
         /**
          *
@@ -74,7 +54,7 @@ module nts.uk.at.kal011.c {
             let vm = this;
             let dfd = $.Deferred();
             vm.columns = [
-                {headerText: '', key: 'GUID', width: 1, hidden: true},
+                {headerText: '', key: 'guid', width: 1, hidden: true},
                 {
                     headerText: vm.$i18n('KAL011_24'),
                     dataType: 'boolean',
@@ -83,15 +63,15 @@ module nts.uk.at.kal011.c {
                     width: 150,
                     ntsControl: 'isSendTo'
                 },
-                {headerText: vm.$i18n('KAL011_25'), key: 'wpCode', width: 150},
-                {headerText: vm.$i18n('KAL011_26'), key: 'wpName', width: 383}
+                {headerText: vm.$i18n('KAL011_25'), key: 'workplaceCode', width: 150},
+                {headerText: vm.$i18n('KAL011_26'), key: 'workplaceName', width: 383}
             ];
             $("#grid").ntsGrid({
                 width : 700,
                 height: 380,
                 dataSource: vm.workPlaceList,
                 hidePrimaryKey: true,
-                primaryKey: 'GUID',
+                primaryKey: 'guid',
                 virtualization: true,
                 rowVirtualization: true,
                 virtualizationMode: 'continuous',
@@ -119,29 +99,15 @@ module nts.uk.at.kal011.c {
         doSendEmail() {
             const vm = this;
             vm.$blockui("invisible");
+            let lstSelected = _.filter(vm.workPlaceList, i => i.isSendTo === true);
+            let listValueExtractAlarmDto = vm.workPlaceList;
+            let currentAlarmCode = vm.currentCode;
             let command = {
-                workplaceIds: [
-                    "00000000-0000-0000-0000-000000000110"
-                ],
-                listValueExtractAlarmDto: [
-                    {
-                        guid: "dc3c8915-b1d2-411a-b8ad-e106751d81bc",
-                        workplaceID: "1b70774e-8e1c-4b4d-a71d-153261886c74",
-                        hierarchyCd: "",
-                        workplaceName: "第一開発部",
-                        employeeID: "0117dcfc-200b-46e8-a734-d87f1d563b82",
-                        employeeCode: "000001",
-                        employeeName: "0110の社員1",
-                        alarmValueDate: "2019/01/01",
-                        category: 5,
-                        categoryName: "日次",
-                        alarmItem: "6666",
-                        alarmValueMessage: "勤務種類:土曜休日,日曜休日 　計画所定労働時間 + 早退控除時間1 ≠ 323:43",
-                        comment: "24",
-                        checkedValue: "00:00"
-                    }
-                ],
-                currentAlarmCode : null
+                workplaceIds: _.map(lstSelected, function (i: any) {
+                    return i.workplaceID;
+                }),
+                listValueExtractAlarmDto,
+                currentAlarmCode
             };
             vm.$ajax(PATH_API.sendEmail, command).done((data) => {
                 vm.$dialog.info({messageId: "Msg_207"})
@@ -159,20 +125,44 @@ module nts.uk.at.kal011.c {
     }
 
     class WorkPlace {
-        GUID: string;
+        guid: string;
         isSendTo: boolean;
-        wpId: string;
-        wpCode: string;
-        wpName: string;
+        workplaceID: string;
+        workplaceCode: string;
+        workplaceName: string;
+        employeeID: string;
+        employeeCode: string;
+        employeeName: string;
+        alarmValueDate: string;
+        category: number;
+        categoryName: string;
+        alarmItem: string;
+        alarmValueMessage: string;
+        comment: string;
+        checkedValue: string;
+        hierarchyCd: string;
 
-        constructor(isSendTo: boolean, wpId: string, wpCode: string, wpName: string) {
-            this.GUID = nts.uk.util.randomId().replace(/-/g, "_");
+        constructor(data: ExtractAlarm, isSendTo: boolean) {
+            this.guid = nts.uk.util.randomId().replace(/-/g, "_");
             this.isSendTo = isSendTo;
-            this.wpId = wpId;
+            this.workplaceID = data.workplaceId;
             /* 職場コード*/
-            this.wpCode = wpCode;
+            this.workplaceCode = data.workplaceCode;
             /* 職場名*/
-            this.wpName = wpName;
+            this.workplaceName = data.workplaceName;
+            this.employeeID = null;
+            this.employeeCode = null;
+            this.employeeName = null;
+            this.alarmValueDate  = data.alarmValueDate;
+            this.category = data.category;
+            this.categoryName = data.categoryName;
+            this.alarmItem = data.alarmItemName;
+            this.alarmValueMessage = data.alarmValueMessage;
+            this.comment = data.comment;
+            this.checkedValue = data.checkTargetValue;
+            this.hierarchyCd = data.hierarchyCode;
+
         }
     }
+
 }
