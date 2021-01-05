@@ -18,7 +18,6 @@ import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.Attendanc
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.EmployeeInfor;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.StatusOfEmployee;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.WorkPlaceInfo;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;
 import nts.uk.ctx.at.function.dom.workledgeroutputitem.*;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
@@ -41,7 +40,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsImport;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -146,7 +144,7 @@ public class WorkLedgerOutputItemService extends ExportService<WorkLedgerOutputI
 
         RequireImpl require = new RequireImpl(monthlyItemService, actualMultipleMonthAdapter, shareEmploymentAdapter, closureRepository,
                 closureEmploymentRepository, affComHistAdapter,monthlyAttItemCanAggregateRepo,monthlyAttendanceItemRepository);
-        List<WorkLedgerDisplayContent> listData = CreateWorkLedgerDisplayContentDomainService.createWorkLedgerDisplayContent(require, datePeriod, employeeInfoList, workLedgerDetail, placeInfoList);
+        List<WorkLedgerDisplayContent> listData = CreateWorkLedgerDisplayContentQuery.createWorkLedgerDisplayContent(require, datePeriod, employeeInfoList, workLedgerDetail, placeInfoList);
         Comparator<WorkLedgerDisplayContent> compare = Comparator
                 .comparing(WorkLedgerDisplayContent::getWorkplaceCode)
                 .thenComparing(WorkLedgerDisplayContent::getEmployeeCode);
@@ -166,7 +164,7 @@ public class WorkLedgerOutputItemService extends ExportService<WorkLedgerOutputI
     }
 
     @AllArgsConstructor
-    public class RequireImpl implements CreateWorkLedgerDisplayContentDomainService.Require {
+    public class RequireImpl implements CreateWorkLedgerDisplayContentQuery.Require {
         private CompanyMonthlyItemService monthlyItemService;
         private ActualMultipleMonthAdapter actualMultipleMonthAdapter;
         private ShareEmploymentAdapter shareEmploymentAdapter;

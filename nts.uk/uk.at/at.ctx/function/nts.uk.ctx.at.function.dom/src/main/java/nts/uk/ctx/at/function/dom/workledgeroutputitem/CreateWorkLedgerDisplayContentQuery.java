@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  *
  * @author khai.dh
  */
-public class CreateWorkLedgerDisplayContentDomainService {
+public class CreateWorkLedgerDisplayContentQuery {
     /**
      * 勤務台帳の表示内容を作成する
      * @param require              Require
