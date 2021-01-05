@@ -30,11 +30,11 @@ public class CreateWorkStatusSettingDomainService {
         // 1.1 設定区分 ＝＝ 定型選択; 定型選択の重複をチェックする(出力項目設定コード, 会社ID)
         if (settingCategory == SettingClassificationCommon.STANDARD_SELECTION) {
 
-            checkDuplicate = WorkStatusOutputSettings.checkDuplicateStandardSelections(require, code.v());
+            checkDuplicate = require.checkTheStandard(code.v());
         }
         // 1.2 設定区分 == 自由設定; 自由設定の重複をチェックする(出力項目設定コード, 会社ID, 社員ID)
         if (settingCategory == SettingClassificationCommon.FREE_SETTING) {
-            checkDuplicate = WorkStatusOutputSettings.checkDuplicateFreeSettings(require, code.v(), empId);
+            checkDuplicate = require.checkFreedom(code.v(), empId);
         }
         // ①　== true
         if (checkDuplicate) {
@@ -55,7 +55,13 @@ public class CreateWorkStatusSettingDomainService {
             require.createNewFixedPhrase(finalOutputSettings);
         });
     }
-    public interface Require extends WorkStatusOutputSettings.Require {
+    public interface Require{
+        // 定型選択の場合	勤務状況表の出力設定Repository.exist(出力設定コード,ログイン会社ID)
+        // 	[R-1]　定型をチェックする-> 勤務状況表の出力項目Repository.	exist(コード、ログイン会社ID)
+        boolean checkTheStandard(String code);
+        // 自由設定の場合	勤務状況表の出力設定Repository.exist(出力設定コード,ログイン会社ID,ログイン社員ID)
+        // 	[R-2]  自由をチェックする->	勤務状況表の出力項目Repository.	exist(コード、ログイン会社ID、ログイン社員ID)
+        boolean checkFreedom(String code,String employeeId);
         //  [1]定型選択を新規作成する
         void createNewFixedPhrase(WorkStatusOutputSettings outputSettings);
 
