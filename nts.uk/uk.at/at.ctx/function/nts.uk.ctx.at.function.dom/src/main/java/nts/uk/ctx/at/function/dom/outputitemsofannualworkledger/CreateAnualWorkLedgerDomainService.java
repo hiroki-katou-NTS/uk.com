@@ -27,11 +27,11 @@ public class CreateAnualWorkLedgerDomainService {
 
         // 1.1 設定区分 ＝＝ 定型選択 ① : 定型選択の重複をチェックする(require,コード, ログイン会社ID) : boolean
         if (settingCategory == SettingClassificationCommon.STANDARD_SELECTION) {
-            checkDuplicate = AnnualWorkLedgerOutputSetting.checkDuplicateStandardSelection(require, new OutputItemSettingCode(code.v()));
+            checkDuplicate = require.checkTheStandard(new OutputItemSettingCode(code.v()));
         }
         // 1.2 設定区分 == 自由設定 ① : 自由設定の重複をチェックする(require,出力項目設定コード, 会社ID, 社員ID) : boolean
         if (settingCategory == SettingClassificationCommon.FREE_SETTING) {
-            checkDuplicate = AnnualWorkLedgerOutputSetting.checkDuplicateFreeSettings(require, new OutputItemSettingCode(code.v()), empId);
+            checkDuplicate = require.checkFreedom(new OutputItemSettingCode(code.v()), empId);
         }
 
         //2: [①　== true]
@@ -55,7 +55,18 @@ public class CreateAnualWorkLedgerDomainService {
         });
     }
 
-    public interface Require extends AnnualWorkLedgerOutputSetting.Require {
+    public interface Require {
+
+        // 定型選択の場合	年間勤務台帳の出力設定Repository.exist(出力設定コード,ログイン会社ID)
+        // 	[R-1]　定型をチェックする
+        // 	年間勤務台帳の出力項目Repository. exist(コード、ログイン会社ID)
+        boolean checkTheStandard(OutputItemSettingCode code);
+
+        // 自由設定の場合	年間勤務台帳の出力設定Repository.exist(出力設定コード,ログイン会社ID,ログイン社員ID)
+        //	[R-2]  自由をチェックする
+        //  年間勤務台帳の出力項目Repository. exist(コード、ログイン会社ID、ログイン社員ID)
+        boolean checkFreedom(OutputItemSettingCode code, String employeeId);
+
         //  [1]定型選択を新規作成する
         void createNewSetting(AnnualWorkLedgerOutputSetting outputSettings);
     }

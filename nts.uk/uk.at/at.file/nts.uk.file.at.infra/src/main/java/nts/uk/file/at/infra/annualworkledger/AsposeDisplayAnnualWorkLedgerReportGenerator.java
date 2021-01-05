@@ -225,9 +225,11 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
                 }
                 break;
             case DAYS:
-                if (valueDouble != 0 || isZeroDisplay) {
-                    DecimalFormat formatter2 = new DecimalFormat("#.#");
-                    rs = formatter2.format(valueDouble) +  TextResource.localize("KWR_1");
+                if(valueDouble!=null){
+                    if (valueDouble != 0 || isZeroDisplay) {
+                        DecimalFormat formatter2 = new DecimalFormat("#.#");
+                        rs = formatter2.format(valueDouble) +  TextResource.localize("KWR_1");
+                    }
                 }
                 break;
             case AMOUNT_OF_MONEY:
@@ -239,10 +241,13 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
                 }
                 break;
             case NUMBER_OF_TIMES:
-                if (valueDouble != 0 || isZeroDisplay) {
-                    DecimalFormat formatter1 = new DecimalFormat("#.#");
-                    rs = formatter1.format(valueDouble) + TextResource.localize("KWR_2");
+                if(valueDouble!=null){
+                    if (valueDouble != 0 || isZeroDisplay) {
+                        DecimalFormat formatter1 = new DecimalFormat("#.#");
+                        rs = formatter1.format(valueDouble) + TextResource.localize("KWR_2");
+                    }
                 }
+
                 break;
         }
         return rs;
