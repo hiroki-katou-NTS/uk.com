@@ -73,8 +73,22 @@ module nts.uk.ui.header {
                     <span class="bar-item-title company" data-bind="text: $component.companyName"></span>
                 </div>
                 <span class="divider"></span>
-                <div class="item-group">
+                <div class="item-group" data-bind="
+                        event: {
+                            mouseover: $component.userHover,
+                            mouseout: $component.userMouseOut
+                        },
+                        css: {
+                            hover: $component.userNameHover
+                        }">
                     <span class="bar-item-title user-name" data-bind="text: $component.userName"></span>
+                    <div class="menu-dropdown menu-item">
+                        <div class="menu-column">
+                            <div class="menu-items" data-bind="i18n: nts.uk.ui.toBeResource.manual"></div>
+                            <div class="menu-items divider"></div>
+                            <div class="menu-items" data-bind="i18n: nts.uk.ui.toBeResource.logout"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="avatar notification"></div>
@@ -96,6 +110,7 @@ module nts.uk.ui.header {
         menuBars!: KnockoutComputed<MenuBar[]>;
 
         userName: KnockoutObservable<string> = ko.observable('');
+        userNameHover: KnockoutObservable<boolean> = ko.observable(false);
 
         companies: KnockoutObservableArray<any> = ko.observableArray([]);
 
@@ -280,6 +295,18 @@ module nts.uk.ui.header {
 
         itemBarMouseOut(item: MenuBar) {
             item.hover(false);
+        }
+
+        userHover() {
+            const vm = this;
+
+            vm.userNameHover(true);
+        }
+
+        userMouseOut() {
+            const vm = this;
+
+            vm.userNameHover(false);            
         }
     }
 

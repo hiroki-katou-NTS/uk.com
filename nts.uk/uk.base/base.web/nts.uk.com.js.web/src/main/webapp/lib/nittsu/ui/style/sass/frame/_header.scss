@@ -279,6 +279,13 @@ div#master-wrapper {
 						}
 					}
 				}
+				
+				&>.item-group {
+					&>.menu-dropdown {
+						left: auto;
+						right: 16px;
+					}
+				}
 			}
 		}
 
