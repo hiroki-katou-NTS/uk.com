@@ -124,7 +124,7 @@ public class CreateWorkLedgerDisplayContentDomainService {
                         if (valueSub != null) {
                             monthlyValues.add(new MonthlyValue(
                                     valueSub.itemId(),
-                                    !isCharacter ? valueSub.value() : null,
+                                    !isCharacter ? valueSub.doubleOrDefault() : null,
                                     key,
                                     isCharacter ? valueSub.stringOrDefault() : null
                             ));
