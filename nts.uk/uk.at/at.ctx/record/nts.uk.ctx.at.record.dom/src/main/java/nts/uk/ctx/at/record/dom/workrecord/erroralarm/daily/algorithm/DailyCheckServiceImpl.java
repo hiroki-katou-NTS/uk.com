@@ -16,6 +16,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.approvalrootstate.AppRootStateConfirmAdapter;
 import nts.uk.ctx.at.record.dom.adapter.approvalrootstate.AppRootStateStatusSprImport;
 import nts.uk.ctx.at.record.dom.adapter.approvalrootstate.Request113Import;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.DailyRecordCreateErrorAlermService;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
@@ -54,11 +55,13 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.Sn
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.shr.com.i18n.TextResource;
 
 
 public class DailyCheckServiceImpl implements DailyCheckService{
@@ -104,6 +107,9 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 	
 	@Inject
 	private WorkingConditionRepository workingConditionRepository;
+	
+	@Inject
+	private DailyRecordCreateErrorAlermService dailyAlermService;
 	
 	
 	@Override
@@ -481,7 +487,11 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 	 * 日次の固定抽出条件のアラーム値を生成する
 	 */
 	private void GenerateAlarmValuesDailyFixedExtractConditions(DataFixExtracCon dataforDailyFix, IntegrationOfDaily integra,
-			String sid, GeneralDate day, String wplId, Map<Integer, String> work, List<WorkType> listWorkType) {
+			String sid, GeneralDate day, String wplId, Map<Integer, String> work, List<WorkType> listWorkType, 
+			List<WorkTimeSetting> listWorktime) {
+		
+		String alarmMessage = new String();
+		String alarmTarget = new String();
 		
 		// 本人確認状況（社員ID、年月日、状況）
 		Optional<IdentityVerifiForDay> identityStatus = dataforDailyFix.getIdentityVerifyStatus().stream()
@@ -508,24 +518,72 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 			
 				// NO=1:勤務種類未登録
 				case 1:
+					// 勤務種類コード
+					WorkTypeCode wkType = integra.getWorkInformation().getRecordInfo().getWorkTypeCode();
+					List<WorkTypeCode> listWk = listWorkType.stream().map(x -> x.getWorkTypeCode()).collect(Collectors.toList());
+					if(!listWk.contains(wkType)) {
+						alarmMessage = TextResource.localize("KAL010_7", wkType.v());
+						alarmTarget = TextResource.localize("KAL010_76", wkType.v());
+					}
 					
 				// NO=2:就業時間帯未登録
 				case 2:
-				
+					// 就業時間帯コード
+					WorkTimeCode wkTime = integra.getWorkInformation().getRecordInfo().getWorkTimeCode();
+					if(wkTime == null) break;
+					if(listWorktime.contains(wkTime)) {
+						alarmMessage = TextResource.localize("KAL010_9", wkTime.v());
+						alarmTarget = TextResource.localize("KAL010_77", wkTime.v());
+					}
+					
 				// NO=3:本人未確認チェック
 				case 3:
+					if(!identityStatus.isPresent()) break;
+					else {
+						if(identityStatus.get().getPersonSituation().equals("未確認")) {
+							alarmMessage = TextResource.localize("KAL010_43");
+							alarmTarget = TextResource.localize("KAL010_72");
+						}
+					}
 					
 				// NO=4:管理者未確認チェック
 				case 4:
+					if(!identityUnconfirm.isPresent()) break;
+					else {
+						if(identityUnconfirm.get().getPersonSituation().equals("未確認")) {
+							alarmMessage = TextResource.localize("KAL010_45");
+							alarmTarget = TextResource.localize("KAL010_73");
+						}
+					}
 					
 				// NO=5:データのチェック
 				case 5:
 					
 				// NO = 6： 打刻漏れ
 				case 6:
+					if(!integra.getAttendanceLeave().isPresent() && !integra.getTempTime().isPresent() && !integra.getBreakTime().isPresent())
+						break;
+					else {
+						// 打刻漏れ
+						List<EmployeeDailyPerError> employeePer = dailyAlermService.lackOfTimeLeavingStamping(integra);
+						if(!employeePer.isEmpty()) {
+							alarmMessage = TextResource.localize("KAL010_79");
+							alarmTarget = TextResource.localize("KAL010_610");
+						}
+					}
 					
 				// NO =7:打刻漏れ(入退門)
 				case 7:
+					if(!integra.getAttendanceLeavingGate().isPresent()) break;
+					else {
+						// 入退門打刻漏れ
+						List<EmployeeDailyPerError> employeeEr = dailyAlermService.lackOfAttendanceGateStamping(integra);
+						if(!employeeEr.isEmpty()) {
+							// hoi c Du tham so
+							alarmMessage = TextResource.localize("KAL010_80", "");
+							alarmTarget = TextResource.localize("KAL010_612", "");
+						}
+					}
 					
 				// NO =8： 打刻順序不正
 				case 8:
