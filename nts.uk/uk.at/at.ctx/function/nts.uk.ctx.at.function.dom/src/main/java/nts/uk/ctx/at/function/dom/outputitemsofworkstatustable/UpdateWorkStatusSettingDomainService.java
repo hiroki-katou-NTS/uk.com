@@ -40,7 +40,7 @@ public class UpdateWorkStatusSettingDomainService {
         );
         return AtomTask.of(() -> {
             // 7.1 設定区分 == 指定選択: 定型選択を更新する(会社ID, int, 勤務状況の出力設定, 勤務状況の出力項目, 勤務状況の出力項目詳細)
-            require.update(finalOutputSettings);
+            require.update(settingId,finalOutputSettings);
 
         });
     }
@@ -50,7 +50,7 @@ public class UpdateWorkStatusSettingDomainService {
         WorkStatusOutputSettings getWorkStatusOutputSettings(String settingId);
 
         // [2]	定型選択を更新する
-        void update(WorkStatusOutputSettings outputSettings);
+        void update(String settingId,WorkStatusOutputSettings outputSettings);
 
     }
 }

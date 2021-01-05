@@ -66,7 +66,7 @@ public class UpdateWorkStatusSettingDServiceTest {
                         UpdateWorkStatusSettingDomainService.updateSetting(require, settingId, code, name, settingCategory,
                                 outputItems),
 
-                any -> require.update(any.get()));
+                any -> require.update(settingId,any.get()));
     }
 
     @Test
@@ -89,6 +89,6 @@ public class UpdateWorkStatusSettingDServiceTest {
                         UpdateWorkStatusSettingDomainService.updateSetting(require, settingId, code, name, settingCategory,
                                 outputItems),
 
-                any -> require.update(any.get()));
+                any -> require.update(settingId,any.get()));
     }
 }

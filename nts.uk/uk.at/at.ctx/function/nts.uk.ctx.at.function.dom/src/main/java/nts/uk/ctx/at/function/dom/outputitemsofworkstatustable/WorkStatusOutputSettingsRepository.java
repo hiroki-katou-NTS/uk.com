@@ -25,7 +25,7 @@ public interface WorkStatusOutputSettingsRepository {
 
      //     [5]	自由設定を新規作成する
      // 	[6]	定型選択を更新する
-     void update(String cid, WorkStatusOutputSettings outputSettings);
+     void update(String cid,String settingId,WorkStatusOutputSettings outputSettings);
 
      //     [7] 自由設定を更新する
      // 	[8]	設定の詳細を削除する

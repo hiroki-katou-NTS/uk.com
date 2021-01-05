@@ -170,8 +170,7 @@ public class JpaWorkStatusOutputSettingsRepository extends JpaRepository impleme
     }
 
     @Override
-    public void update(String cid, WorkStatusOutputSettings outputSettings) {
-        val settingId = outputSettings.getSettingId();
+    public void update(String cid,String settingId, WorkStatusOutputSettings outputSettings) {
         this.commandProxy().update(KfnmtRptWkRecSetting.fromDomain(outputSettings, cid));
         val entityItem = this.queryProxy().query(FIND_DELETE_WORK_STATUS_ITEM, KfnmtRptWkRecItem.class)
                 .setParameter("settingId", settingId).getList();
