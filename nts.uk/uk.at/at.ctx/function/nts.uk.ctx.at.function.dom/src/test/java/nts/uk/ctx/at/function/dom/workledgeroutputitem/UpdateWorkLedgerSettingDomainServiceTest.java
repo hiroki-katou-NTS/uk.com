@@ -120,7 +120,7 @@ public class UpdateWorkLedgerSettingDomainServiceTest {
 					"uid02",
 					code,
 					name,
-					SettingClassificationCommon.STANDARD_SELECTION));
+					SettingClassificationCommon.FREE_SETTING));
 		}};
 		val actual = UpdateWorkLedgerSettingDomainService.updateSetting(
 				require,
