@@ -58,25 +58,25 @@ public class ToCheckConditions {
 
     public static <V> CheckConditions<V> checkMonExtracCon(int checkMonthlyItemsType, Optional<KrcstErAlCompareSingle> compareSingle, Optional<KrcstErAlCompareRange> compareRange, Optional<KrcstErAlSingleFixed> singleFixed) {
         if (singleFixed.isPresent() && compareSingle.isPresent()) {
-            if (checkMonthlyItemsType == CheckMonthlyItemsType.AVERAGE_TIME.value || checkMonthlyItemsType == CheckMonthlyItemsType.TIME_FREEDOM.value) {
+            if (checkMonthlyItemsType == CheckMonthlyItemsType.AVERAGE_TIME.value) {
                 return setCompareSingleValue((V) new AverageTime((int) singleFixed.get().fixedValue), compareSingle.get().compareAtr, compareSingle.get().conditionType);
-            } else if (checkMonthlyItemsType == CheckMonthlyItemsType.AVERAGE_NUMBER_DAY.value || checkMonthlyItemsType == CheckMonthlyItemsType.AVERAGE_DAY_FREE.value) {
+            } else if (checkMonthlyItemsType == CheckMonthlyItemsType.AVERAGE_NUMBER_DAY.value ) {
                 return setCompareSingleValue((V) new AverageNumberDays(new BigDecimal(singleFixed.get().fixedValue)), compareSingle.get().compareAtr, compareSingle.get().conditionType);
-            } else if (checkMonthlyItemsType == CheckMonthlyItemsType.AVERAGE_NUMBER_TIME.value || checkMonthlyItemsType == CheckMonthlyItemsType.AVERAGE_TIME_FREE.value) {
+            } else if (checkMonthlyItemsType == CheckMonthlyItemsType.AVERAGE_NUMBER_TIME.value ) {
                 return setCompareSingleValue((V) new AverageNumberTimes((int) singleFixed.get().fixedValue), compareSingle.get().compareAtr, compareSingle.get().conditionType);
-            } else if (checkMonthlyItemsType == CheckMonthlyItemsType.AVERAGE_RATIO.value || checkMonthlyItemsType == CheckMonthlyItemsType.AVERAGE_RATIO_FREE.value) {
+            } else if (checkMonthlyItemsType == CheckMonthlyItemsType.AVERAGE_RATIO.value ) {
                 return setCompareSingleValue((V) new AverageRatio((int) singleFixed.get().fixedValue), compareSingle.get().compareAtr, compareSingle.get().conditionType);
             } else {
                 return null;
             }
         } else if (compareRange.isPresent()) {
-            if (checkMonthlyItemsType == CheckMonthlyItemsType.AVERAGE_TIME.value || checkMonthlyItemsType == CheckMonthlyItemsType.TIME_FREEDOM.value) {
+            if (checkMonthlyItemsType == CheckMonthlyItemsType.AVERAGE_TIME.value) {
                 return setCompareRange((V) new AverageTime((int) compareRange.get().startValue), (V) new AverageTime((int) compareRange.get().endValue), compareRange.get().compareAtr);
-            } else if (checkMonthlyItemsType == CheckMonthlyItemsType.AVERAGE_NUMBER_DAY.value || checkMonthlyItemsType == CheckMonthlyItemsType.AVERAGE_DAY_FREE.value) {
+            } else if (checkMonthlyItemsType == CheckMonthlyItemsType.AVERAGE_NUMBER_DAY.value) {
                 return setCompareRange((V) new AverageNumberDays(new BigDecimal(compareRange.get().startValue)), (V) new AverageNumberDays(new BigDecimal(compareRange.get().endValue)), compareRange.get().compareAtr);
-            } else if (checkMonthlyItemsType == CheckMonthlyItemsType.AVERAGE_NUMBER_TIME.value || checkMonthlyItemsType == CheckMonthlyItemsType.AVERAGE_TIME_FREE.value) {
+            } else if (checkMonthlyItemsType == CheckMonthlyItemsType.AVERAGE_NUMBER_TIME.value ) {
                 return setCompareRange((V) new AverageNumberTimes((int) compareRange.get().startValue), (V) new AverageNumberTimes((int) compareRange.get().endValue), compareRange.get().compareAtr);
-            } else if (checkMonthlyItemsType == CheckMonthlyItemsType.AVERAGE_RATIO.value || checkMonthlyItemsType == CheckMonthlyItemsType.AVERAGE_RATIO_FREE.value) {
+            } else if (checkMonthlyItemsType == CheckMonthlyItemsType.AVERAGE_RATIO.value) {
                 return setCompareRange((V) new AverageRatio((int) compareRange.get().startValue), (V) new AverageRatio((int) compareRange.get().endValue), compareRange.get().compareAtr);
             } else {
                 return null;

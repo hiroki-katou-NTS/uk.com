@@ -42,6 +42,10 @@ public class JpaExtractionMonthlyConRepository extends JpaRepository implements 
             " JOIN KrcmtWkpMonExtracCon b ON a.krcstEralSingleFixedPK.conditionGroupId = b.errorAlarmCheckID ";
     private static final String SELECT_SINGLE_FIXED_BY_ID;
 
+    private static final String SELECT_TARGET = " SELECT a FROM KrcstErAlAtdTarget a " +
+            " JOIN KrcmtWkpMonExtracCon b ON a.KrcstErAlAtdTargetPK.conditionGroupId = b.errorAlarmCheckID ";
+    private static final String SELECT_TARGET_BY_ID;
+
     static {
         StringBuilder builderString = new StringBuilder();
         builderString.append(SELECT);
@@ -70,6 +74,11 @@ public class JpaExtractionMonthlyConRepository extends JpaRepository implements 
         builderString.append(" WHERE a.krcstEralSingleFixedPK.atdItemConNo = 0 ");
         builderString.append(" AND b.errorAlarmWorkplaceId IN :ids ");
         SELECT_SINGLE_FIXED_BY_ID = builderString.toString();
+
+        builderString = new StringBuilder();
+        builderString.append(SELECT_TARGET);
+        builderString.append(" WHERE a.krcstErAlAtdTargetPK.conditionGroupId IN :ids ");
+        SELECT_TARGET_BY_ID = builderString.toString();
     }
 
     @Override
@@ -83,10 +92,14 @@ public class JpaExtractionMonthlyConRepository extends JpaRepository implements 
                 .setParameter("ids", ids)
                 .setParameter("useAtr", useAtr)
                 .getList();
+
+        List<KrcstErAlAtdTarget> krcstErAlAtdTarget = this.queryProxy().query(SELECT_TARGET_BY_ID, KrcstErAlAtdTarget.class).setParameter("ids", ids).getList();
+
         return domains.stream().map(i -> i.toDomain(
                 krcstErAlCompareSingle.stream().filter(x -> x.krcstEralCompareSinglePK.conditionGroupId.equals(i.errorAlarmCheckID)).findFirst(),
                 krcstErAlCompareRange.stream().filter(x -> x.krcstEralCompareRangePK.conditionGroupId.equals(i.errorAlarmCheckID)).findFirst(),
-                krcstErAlSingleFixed.stream().filter(x -> x.krcstEralSingleFixedPK.conditionGroupId.equals(i.errorAlarmCheckID)).findFirst()
+                krcstErAlSingleFixed.stream().filter(x -> x.krcstEralSingleFixedPK.conditionGroupId.equals(i.errorAlarmCheckID)).findFirst(),
+                krcstErAlAtdTarget.stream().filter(x -> x.krcstErAlAtdTargetPK.conditionGroupId.equals(i.errorAlarmCheckID)).collect(Collectors.toList())
         )).collect(Collectors.toList());
     }
 
@@ -103,10 +116,13 @@ public class JpaExtractionMonthlyConRepository extends JpaRepository implements 
         List<KrcmtWkpMonExtracCon> domains = this.queryProxy().query(GET_BY_IDS, KrcmtWkpMonExtracCon.class)
                 .setParameter("ids", ids)
                 .getList();
+        List<KrcstErAlAtdTarget> krcstErAlAtdTarget = this.queryProxy().query(SELECT_TARGET_BY_ID, KrcstErAlAtdTarget.class).setParameter("ids", ids).getList();
+
         return domains.stream().map(i -> i.toDomain(
                 krcstErAlCompareSingle.stream().filter(x -> x.krcstEralCompareSinglePK.conditionGroupId.equals(i.errorAlarmCheckID)).findFirst(),
                 krcstErAlCompareRange.stream().filter(x -> x.krcstEralCompareRangePK.conditionGroupId.equals(i.errorAlarmCheckID)).findFirst(),
-                krcstErAlSingleFixed.stream().filter(x -> x.krcstEralSingleFixedPK.conditionGroupId.equals(i.errorAlarmCheckID)).findFirst()
+                krcstErAlSingleFixed.stream().filter(x -> x.krcstEralSingleFixedPK.conditionGroupId.equals(i.errorAlarmCheckID)).findFirst(),
+                krcstErAlAtdTarget.stream().filter(x -> x.krcstErAlAtdTargetPK.conditionGroupId.equals(i.errorAlarmCheckID)).collect(Collectors.toList())
         )).collect(Collectors.toList());
     }
 
@@ -116,6 +132,7 @@ public class JpaExtractionMonthlyConRepository extends JpaRepository implements 
         List<KrcstErAlCompareSingle> compareSingles = new ArrayList<>();
         List<KrcstErAlSingleFixed> singleFixeds = new ArrayList<>();
         List<KrcstErAlCompareRange> compareRanges = new ArrayList<>();
+        List<KrcstErAlAtdTarget> targetList = new ArrayList<>();
 
         System.out.println(domains);
 
@@ -124,23 +141,19 @@ public class JpaExtractionMonthlyConRepository extends JpaRepository implements 
             Double maxValue = null;
             if (i.getCheckConditions().isSingleValue()) {
                 switch (i.getCheckMonthlyItemsType()) {
-                    case AVERAGE_TIME:
-                    case TIME_FREEDOM: {
+                    case AVERAGE_TIME:{
                         minValue = Double.valueOf(((AverageTime) ((CompareSingleValue) i.getCheckConditions()).getValue()).v());
                         break;
                     }
-                    case AVERAGE_NUMBER_DAY:
-                    case AVERAGE_DAY_FREE: {
+                    case AVERAGE_NUMBER_DAY:{
                         minValue = ((AverageNumberDays) ((CompareSingleValue) i.getCheckConditions()).getValue()).v().doubleValue();
                         break;
                     }
-                    case AVERAGE_NUMBER_TIME:
-                    case AVERAGE_TIME_FREE: {
+                    case AVERAGE_NUMBER_TIME:{
                         minValue = Double.valueOf(((AverageNumberTimes) ((CompareSingleValue) i.getCheckConditions()).getValue()).v());
                         break;
                     }
-                    case AVERAGE_RATIO:
-                    case AVERAGE_RATIO_FREE: {
+                    case AVERAGE_RATIO:{
                         minValue = Double.valueOf(((AverageRatio) ((CompareSingleValue) i.getCheckConditions()).getValue()).v());
                         break;
                     }
@@ -158,26 +171,22 @@ public class JpaExtractionMonthlyConRepository extends JpaRepository implements 
                 singleFixeds.add(singleFixed);
             } else {
                 switch (i.getCheckMonthlyItemsType()) {
-                    case AVERAGE_TIME:
-                    case TIME_FREEDOM: {
+                    case AVERAGE_TIME: {
                         minValue = Double.valueOf(((AverageTime) ((CompareRange) i.getCheckConditions()).getStartValue()).v());
                         maxValue = Double.valueOf(((AverageTime) ((CompareRange) i.getCheckConditions()).getEndValue()).v());
                         break;
                     }
-                    case AVERAGE_NUMBER_DAY:
-                    case AVERAGE_DAY_FREE: {
+                    case AVERAGE_NUMBER_DAY:{
                         minValue = ((AverageNumberDays) ((CompareRange) i.getCheckConditions()).getStartValue()).v().doubleValue();
                         maxValue = ((AverageNumberDays) ((CompareRange) i.getCheckConditions()).getEndValue()).v().doubleValue();
                         break;
                     }
-                    case AVERAGE_NUMBER_TIME:
-                    case AVERAGE_TIME_FREE: {
+                    case AVERAGE_NUMBER_TIME:{
                         minValue = Double.valueOf(((AverageNumberTimes) ((CompareRange) i.getCheckConditions()).getStartValue()).v());
                         maxValue = Double.valueOf(((AverageNumberTimes) ((CompareRange) i.getCheckConditions()).getEndValue()).v());
                         break;
                     }
-                    case AVERAGE_RATIO:
-                    case AVERAGE_RATIO_FREE: {
+                    case AVERAGE_RATIO:{
                         minValue = Double.valueOf(((AverageRatio) ((CompareRange) i.getCheckConditions()).getStartValue()).v());
                         maxValue = Double.valueOf(((AverageRatio) ((CompareRange) i.getCheckConditions()).getEndValue()).v());
                         break;

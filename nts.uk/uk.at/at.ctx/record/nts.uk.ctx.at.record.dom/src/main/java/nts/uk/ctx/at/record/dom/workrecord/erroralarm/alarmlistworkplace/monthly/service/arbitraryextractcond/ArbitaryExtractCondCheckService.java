@@ -59,16 +59,16 @@ public class ArbitaryExtractCondCheckService {
                         .anyMatch(c -> c.getSid().equals(x.getEmployeeId()))).collect(Collectors.toList());
                 ExtractResultDto result = null;
                 switch (cond.getCheckMonthlyItemsType()) {
-                    case TIME_FREEDOM:
+                    case AVERAGE_TIME:
                         result = averageTimeCheckService.check(empInfosByWp.getKey(), cond, times, empInfosByWp.getValue(), ym);
                         break;
-                    case AVERAGE_DAY_FREE:
+                    case AVERAGE_NUMBER_DAY:
                         result = averageNumDayCheckService.check(cid, empInfosByWp.getKey(), cond, times, empInfosByWp.getValue(), ym);
                         break;
-                    case AVERAGE_TIME_FREE:
+                    case AVERAGE_NUMBER_TIME:
                         result = averageNumTimeCheckService.check(empInfosByWp.getKey(), cond, times, empInfosByWp.getValue(), ym);
                         break;
-                    case AVERAGE_RATIO_FREE:
+                    case AVERAGE_RATIO:
                         result = averageRatioCheckService.check(cid, empInfosByWp.getKey(), cond, times, empInfosByWp.getValue(), ym);
                         break;
                     default:

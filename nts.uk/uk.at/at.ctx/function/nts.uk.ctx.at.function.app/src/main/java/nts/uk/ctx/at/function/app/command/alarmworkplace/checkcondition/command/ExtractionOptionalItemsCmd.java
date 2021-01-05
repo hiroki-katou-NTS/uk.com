@@ -2,6 +2,8 @@ package nts.uk.ctx.at.function.app.command.alarmworkplace.checkcondition.command
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class ExtractionOptionalItemsCmd {
 
@@ -26,5 +28,9 @@ public class ExtractionOptionalItemsCmd {
     private String checkCond;
 
     private Integer checkCondB;
+
+    private List<Integer> additionAttendanceItems;
+
+    private List<Integer> substractionAttendanceItems;
 
 }

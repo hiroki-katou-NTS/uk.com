@@ -60,7 +60,9 @@ public class AverageNumDayCheckService {
 
         // 合計値　＝　0
         Double total = 0.0;
-        Optional<AverageNumberOfDays> averageNumDay = condition.getAverageValueItem().getAverageNumberOfDays();
+        // TODO DatLH
+//        Optional<AverageNumberOfDays> averageNumDay = condition.getAverageValueItem().getAverageNumberOfDays();
+        Optional<AverageNumberOfDays> averageNumDay = Optional.empty();
         if (!averageNumDay.isPresent()) return null;
         DatePeriod period = new DatePeriod(GeneralDate.ymd(ym.year(), ym.month(), 1), ym.lastGeneralDate());
         GeneralDate criteriaDate = GeneralDate.today();

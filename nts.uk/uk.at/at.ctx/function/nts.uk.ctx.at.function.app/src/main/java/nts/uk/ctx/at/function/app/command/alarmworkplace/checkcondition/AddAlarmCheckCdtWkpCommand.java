@@ -46,14 +46,9 @@ public class AddAlarmCheckCdtWkpCommand {
                     i.getUseAtr() == 0,
                     IdentifierUtil.randomUniqueId(),
                     this.convertConditionMon(i.getCheckItem(), i.getMinValue() == null ? "0" : i.getMinValue(), i.getMaxValue(), i.getOperator()),
-                    (i.getCheckItem() == CheckMonthlyItemsType.AVERAGE_TIME.value
-                            || i.getCheckItem() == CheckMonthlyItemsType.AVERAGE_NUMBER_DAY.value
-                            || i.getCheckItem() == CheckMonthlyItemsType.AVERAGE_NUMBER_TIME.value) ?
-                            i.getCheckCond() : null,
-                    i.getCheckItem() == CheckMonthlyItemsType.AVERAGE_DAY_FREE.value ? i.getCheckCondB() : null,
-                    i.getCheckItem() == CheckMonthlyItemsType.AVERAGE_TIME_FREE.value ? i.getCheckCondB() : null,
-                    i.getCheckItem() == CheckMonthlyItemsType.TIME_FREEDOM.value ? i.getCheckCondB() : null,
-                    i.getCheckItem() == CheckMonthlyItemsType.AVERAGE_RATIO_FREE.value ? i.getCheckCondB() : null,
+                    i.getAdditionAttendanceItems(),
+                    i.getSubstractionAttendanceItems(),
+                    i.getCheckItem() == CheckMonthlyItemsType.AVERAGE_RATIO.value ? i.getCheckCondB() : null,
                     i.getName(),
                     i.getMessage()
             )).collect(Collectors.toList());
@@ -138,8 +133,7 @@ public class AddAlarmCheckCdtWkpCommand {
         CheckConditions result = null;
         CheckMonthlyItemsType check = EnumAdaptor.valueOf(checkItem, CheckMonthlyItemsType.class);
         switch (check) {
-            case AVERAGE_TIME:
-            case TIME_FREEDOM:{
+            case AVERAGE_TIME:{
                 if (maxValue == null) {
                     result = setCompareSingleValue((V) new AverageTime(Integer.valueOf(minValue)), operator, 0);
                 } else {
@@ -147,8 +141,7 @@ public class AddAlarmCheckCdtWkpCommand {
                 }
                 break;
             }
-            case AVERAGE_NUMBER_DAY:
-            case AVERAGE_DAY_FREE:{
+            case AVERAGE_NUMBER_DAY:{
                 if (maxValue == null) {
                     result = setCompareSingleValue((V) new AverageNumberDays(new BigDecimal(minValue)), operator, 0);
                 } else {
@@ -156,8 +149,7 @@ public class AddAlarmCheckCdtWkpCommand {
                 }
                 break;
             }
-            case AVERAGE_NUMBER_TIME:
-            case AVERAGE_TIME_FREE: {
+            case AVERAGE_NUMBER_TIME:{
                 if (maxValue == null) {
                     result = setCompareSingleValue((V) new AverageNumberTimes(Integer.valueOf(minValue)), operator, 0);
                 } else {
@@ -165,8 +157,7 @@ public class AddAlarmCheckCdtWkpCommand {
                 }
                 break;
             }
-            case AVERAGE_RATIO:
-            case AVERAGE_RATIO_FREE: {
+            case AVERAGE_RATIO:{
                 if (maxValue == null) {
                     result = setCompareSingleValue((V) new AverageRatio(Integer.valueOf(minValue)), operator, 0);
                 } else {

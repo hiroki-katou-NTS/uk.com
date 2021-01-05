@@ -72,7 +72,7 @@ public class AverageRatioCheckService {
         // 総日数　＝　０、総集計日数　＝　０
         Double total = 0.0;
         Double aggregateTotal = 0.0;
-        Optional<AverageRatio> averageRatio = condition.getAverageValueItem().getAverageRatio();
+        Optional<AverageRatio> averageRatio = condition.getAverageRatio();
         if (!averageRatio.isPresent()) return null;
         DatePeriod period = new DatePeriod(GeneralDate.ymd(ym.year(), ym.month(), 1), ym.lastGeneralDate());
         GeneralDate criteriaDate = GeneralDate.today();

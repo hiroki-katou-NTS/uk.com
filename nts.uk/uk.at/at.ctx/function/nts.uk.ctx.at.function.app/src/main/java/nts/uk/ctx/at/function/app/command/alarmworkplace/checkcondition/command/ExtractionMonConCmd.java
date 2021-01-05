@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.app.command.alarmworkplace.checkcondition.command
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.ExtractionMonthlyCon;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.enums.AverageRatio;
 
 @Data
 @AllArgsConstructor
@@ -21,6 +22,7 @@ public class ExtractionMonConCmd {
     private String monExtracConName;
     private String messageDisp;
 
+    // TODO HopNT
     public static ExtractionMonConCmd fromDomain(ExtractionMonthlyCon domain) {
         return new ExtractionMonConCmd(
                 domain.getErrorAlarmWorkplaceId(),
@@ -28,11 +30,11 @@ public class ExtractionMonConCmd {
                 domain.getCheckMonthlyItemsType().value,
                 domain.isUseAtr(),
                 domain.getErrorAlarmCheckID(),
-                domain.getAverageValueItem().getCheckTarget().isPresent() ? domain.getAverageValueItem().getCheckTarget().get().v() : null,
-                domain.getAverageValueItem().getAverageNumberOfDays().isPresent() ? domain.getAverageValueItem().getAverageNumberOfDays().get().value : null,
-                domain.getAverageValueItem().getAverageNumberOfTimes().isPresent() ? domain.getAverageValueItem().getAverageNumberOfTimes().get().value : null,
-                domain.getAverageValueItem().getAverageTime().isPresent() ? domain.getAverageValueItem().getAverageTime().get().value : null,
-                domain.getAverageValueItem().getAverageRatio().isPresent() ? domain.getAverageValueItem().getAverageRatio().get().value : null,
+                 null,
+                null,
+                null,
+               null,
+                domain.getAverageRatio().isPresent() ? ((AverageRatio)domain.getAverageRatio().get()).value : null,
                 domain.getMonExtracConName().v(),
                 domain.getMessageDisp().v()
         );

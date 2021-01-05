@@ -48,7 +48,9 @@ public class AverageNumTimeCheckService {
         Double total = 0.0;
 
         // Input．アラームリスト（職場）月次の抽出条件．平均値をチェック
-        Optional<AverageNumberOfTimes> averageNumberOfTimes = condition.getAverageValueItem().getAverageNumberOfTimes();
+        // TODO DatLH
+//        Optional<AverageNumberOfTimes> averageNumberOfTimes = condition.getAverageValueItem().getAverageNumberOfTimes();
+        Optional<AverageNumberOfTimes> averageNumberOfTimes = Optional.empty();
         if (!averageNumberOfTimes.isPresent()) return null;
 
         for (AttendanceTimeOfMonthly time : times) {
