@@ -219,7 +219,7 @@ public class WorkTypeFinder {
                                 i.getDigestPublicHd().value,
                                 i.getHolidayAtr().value,
                                 i.getCountHodiday().value,
-                                i.getCloseAtr().value,
+                                i.getCloseAtr()!=null? i.getCloseAtr().value:null,
                                 i.getSumAbsenseNo(),
                                 i.getSumSpHodidayNo(),
                                 i.getTimeLeaveWork().value,
@@ -235,7 +235,7 @@ public class WorkTypeFinder {
                         e.getSymbolicName().v(),
                         e.getDeprecate().value,
                         e.getMemo().v(),
-                        e.getDailyWork().getWorkTypeUnit().value,// TODO
+                        e.getDailyWork().getWorkTypeUnit().value,
                         e.getDailyWork().getOneDay().value,
                         e.getDailyWork().getMorning().value,
                         e.getDailyWork().getAfternoon().value,
