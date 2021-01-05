@@ -1,6 +1,9 @@
 package nts.uk.ctx.sys.assist.dom.favorite;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
@@ -33,7 +36,7 @@ public class FavoriteSpecify extends AggregateRoot {
 	}
 	
 	//TODO [1] 対象情報名を渡す
-//	public List<String> PassingTargetInfoName( Require require) {
+	public List<String> PassingTargetInfoName() {
 //		if(this.targetSelection == TargetSelection.AFFILIATION_WORKPLACE) {
 //			return empty;
 //		}
@@ -43,7 +46,8 @@ public class FavoriteSpecify extends AggregateRoot {
 //		if(this.targetSelection == TargetSelection.WORKPLACE) {
 //			return require.getWorkplaceDisplayName(this.workplaceId);;
 //		}
-//	}
+		return Collections.emptyList();
+	}
 	
 	public static FavoriteSpecify createFromMemento(MementoGetter memento) {
 		FavoriteSpecify domain = new FavoriteSpecify();
