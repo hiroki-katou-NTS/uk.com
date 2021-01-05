@@ -1,10 +1,9 @@
 package nts.uk.ctx.sys.assist.infra.entity.favorite;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-
-import javax.enterprise.context.spi.Context;
+import java.util.stream.Collectors;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -15,11 +14,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
-
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.dom.favorite.FavoriteSpecify;
+import nts.uk.ctx.sys.assist.dom.favorite.TargetSelection;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -27,9 +26,9 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * UKDesign.データベース.ER図.オフィス支援.在席照会.お気に入り.OFIMT_FAVORITE
  * 在席照会のお気に入り設定
  */
+@Data
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @Table(name = "OFIMT_FAVORITE")
 public class FavoriteSpecifyEntity extends UkJpaEntity
 		implements FavoriteSpecify.MementoGetter, FavoriteSpecify.MementoSetter, Serializable {
@@ -140,12 +139,14 @@ public class FavoriteSpecifyEntity extends UkJpaEntity
 
 	@Override
 	public List<String> getWorkplaceId() {
-		// TODO Auto-generated method stub
-//		listFavoriteSpecifyEntityDetail.stream()
-//			.map(item -> {
-//				return item.getKey().
-//			})
-		return null;
+		if(targetSelection == TargetSelection.WORKPLACE.value) {
+			return listFavoriteSpecifyEntityDetail.stream()
+					.map(item -> {
+						return item.getPk().getTargetSelection();
+					})
+					.collect(Collectors.toList());
+		}
+		return Collections.emptyList();
 	}
 
 	@Override
