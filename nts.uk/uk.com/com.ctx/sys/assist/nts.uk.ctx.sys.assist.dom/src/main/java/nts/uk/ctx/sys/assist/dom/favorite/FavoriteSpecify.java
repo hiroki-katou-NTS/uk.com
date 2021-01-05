@@ -1,38 +1,41 @@
 package nts.uk.ctx.sys.assist.dom.favorite;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
 
 /*
- * UKDesign.ドメインモデル.NittsuSystem.UniversalK.オフィス支援.在席照会.在席照会.お気に入りの指定
+ * UKDesign.ドメインモッ�.NittsuSystem.UniversalK.オフィス支援.在席照�在席照�お気に入り�挮
  */
 public class FavoriteSpecify extends AggregateRoot {
 
 	// お気に入り名
 	private FavoriteName favoriteName;
 
-	// 作成者ID
+	// 作��D
 	private String creatorId;
 
 	// 入力日
 	private GeneralDateTime inputDate;
 
-	// 対象選択
+	// 対象選�
 	private TargetSelection targetSelection;
 
 	// 職場ID
 	private List<String> workplaceId;
 
-	// 順序
+	// 頺
 	private int order;
 
 	private FavoriteSpecify() {
 	}
 	
-	//TODO [1] 対象情報名を渡す
+	//TODO [1] 対象惱名を渡�
 //	public List<String> passingTargetInfoName( Require require) {
 //		if(this.targetSelection == TargetSelection.AFFILIATION_WORKPLACE) {
 //			return empty;
@@ -43,7 +46,8 @@ public class FavoriteSpecify extends AggregateRoot {
 //		if(this.targetSelection == TargetSelection.WORKPLACE) {
 //			return require.getWorkplaceDisplayName(this.workplaceId);;
 //		}
-//	}
+		return Collections.emptyList();
+	}
 	
 	public static FavoriteSpecify createFromMemento(MementoGetter memento) {
 		FavoriteSpecify domain = new FavoriteSpecify();
