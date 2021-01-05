@@ -20,7 +20,11 @@ module nts.uk.at.view.kaf006.shr.viewmodel {
             modal("/view/kdl/035/a/index.xhtml").onClosed(() => {
                 // get List<振休振出紐付け管理> from KDL035
                 linkingDates = getShared('KDL035_RESULT');
-                vm.payoutSubofHDManagements(linkingDates);
+                if (linkingDates) {
+                    vm.payoutSubofHDManagements(linkingDates);
+                } else {
+                    vm.payoutSubofHDManagements([]);
+                }
             });
 
         }
@@ -32,7 +36,11 @@ module nts.uk.at.view.kaf006.shr.viewmodel {
             setShared("KDL036_PARAMS", params)
             modal("/view/kdl/036/a/index.xhtml").onClosed(() => {
             listParam = getShared("KDL036_RESULT");
-            vm.leaveComDayOffManas(listParam);
+            if (listParam) {
+                vm.leaveComDayOffManas(listParam);
+            } else {
+                vm.leaveComDayOffManas([]);
+            }
           });
 
         }

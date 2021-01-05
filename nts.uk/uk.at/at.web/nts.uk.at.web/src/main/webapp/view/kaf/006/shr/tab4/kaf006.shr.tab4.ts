@@ -164,7 +164,7 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
             ko.contextFor(this.$el).$parent.content.openKDL035();
         }
 
-        openKDL003() {
+        public openKDL003() {
             ko.contextFor(this.$el).$parent.content.openKDL003();
         }
     }
