@@ -3,25 +3,34 @@ package nts.uk.ctx.at.request.app.command.application.appabsence;
 import java.util.List;
 
 import lombok.Data;
-import nts.uk.ctx.at.request.app.command.application.common.ApplicationCommand_New;
-import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceStartInfoDto;
+import nts.uk.ctx.at.request.app.command.application.common.AppDispInfoStartupCmd;
+import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
+import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.paymana.PayoutSubofHDManagementDto;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.LeaveComDayOffManaDto;
 
 @Data
 public class UpdateAppAbsenceCommand {
+    
+    private ApplicationDto application;
+    
+    // 休暇申請
+    private ApplyForLeaveDto applyForLeave;
+    
+    private AppDispInfoStartupCmd appDispInfoStartupOutput;
 	
-	private String companyID;
+    // 休日の申請日<List>
+	private List<String> holidayAppDates;
 	
-	private AppAbsenceStartInfoDto appAbsenceStartInfoDto;
+	// 古いの休出代休紐付け管理<List>
+	private List<LeaveComDayOffManaDto> oldLeaveComDayOffMana;
 	
-	private ApplicationCommand_New applicationCommand;
+	// 古いの振出振休紐付け管理<List>
+	private List<PayoutSubofHDManagementDto> oldPayoutSubofHDManagements;
 	
-	private AppAbsenceCommand appAbsenceCommand;
+	// 休出代休紐付け管理<List>
+	private List<LeaveComDayOffManaDto> leaveComDayOffMana;
 	
-	private Integer alldayHalfDay;
-	
-	private boolean agentAtr;
-	
-	private Boolean mourningAtr;
-	
-	public List<String> holidayDateLst;
+	// 振出振休紐付け管理<List>
+	private List<PayoutSubofHDManagementDto> payoutSubofHDManagements;
 }

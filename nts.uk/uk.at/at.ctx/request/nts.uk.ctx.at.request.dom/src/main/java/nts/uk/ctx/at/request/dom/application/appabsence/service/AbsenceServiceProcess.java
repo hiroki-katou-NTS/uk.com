@@ -440,4 +440,23 @@ public interface AbsenceServiceProcess {
             Optional<WorkInfoOfDailyAttendance> workInfoDaily,
             Optional<ScBasicScheduleImport> scheduleToWork, 
             Optional<WorkingConditionItem> workingCondition);
+    
+    /**
+         * 休暇申請（詳細）更新処理
+     * @param applyForLeave
+     * @param holidayAppDates
+     * @param oldLeaveComDayOffMana
+     * @param oldPayoutSubofHDManagements
+     * @param leaveComDayOffMana
+     * @param payoutSubofHDManagements
+     * @return
+     */
+    public ProcessResult updateApplyForLeave(
+            ApplyForLeave applyForLeave, 
+            List<String> holidayAppDates, 
+            List<LeaveComDayOffManagement> oldLeaveComDayOffMana, 
+            List<PayoutSubofHDManagement> oldPayoutSubofHDManagements,
+            List<LeaveComDayOffManagement> leaveComDayOffMana, 
+            List<PayoutSubofHDManagement> payoutSubofHDManagements, 
+            AppDispInfoStartupOutput appDispInfoStartupOutput);
 }

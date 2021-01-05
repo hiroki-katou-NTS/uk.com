@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 
 import lombok.val;
@@ -25,7 +24,6 @@ import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
-import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeaveRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
@@ -38,7 +36,6 @@ import nts.uk.ctx.at.request.dom.application.appabsence.service.output.SpecAbsen
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.VacationCheckOutput;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.VacationLinkManageInfo;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.three.AppAbsenceThreeProcess;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.AnnLeaveRemainNumberAdapter;
@@ -51,8 +48,8 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.ba
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.AppDetailScreenInfo;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
@@ -66,14 +63,12 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.ApplyWorkTypeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.CommonAlgorithmMobile;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.output.AppReasonOutput;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.AppliedDate;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.UseAtr;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReason;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.HolidayType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
@@ -90,7 +85,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.TargetSelectionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngParam;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RequiredTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepository;
@@ -257,6 +251,9 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	
 	@Inject
 	private NewAfterRegister afterRegisterService;
+	
+	@Inject
+    private DetailAfterUpdate detailAfterUpdate;
 	
 	private final String FORMAT_DATE = "yyyy/MM/dd";
 	
@@ -1901,8 +1898,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
                 appAbsence.getApplication().getAppID(),
                 appAbsence.getApplication().getPrePostAtr(),
                 appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDetailScreenInfo().get().getApplication().getVersion(),
-                appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v(),
-                appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCode().v(),
+                appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode() == null ? null : appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v(),
+                appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCode() == null ? null : appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCode().v(),
                 appAbsenceStartInfoOutput.getAppDispInfoStartupOutput());
         
         // 休暇申請登録時チェック処理
@@ -1939,5 +1936,48 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
                 this.payoutHdManaRepo.add(payoutSubofHDManagement);
             }
         }
+    }
+
+    @Override
+    public ProcessResult updateApplyForLeave(ApplyForLeave applyForLeave, List<String> holidayAppDates,
+            List<LeaveComDayOffManagement> oldLeaveComDayOffMana,
+            List<PayoutSubofHDManagement> oldPayoutSubofHDManagements,
+            List<LeaveComDayOffManagement> leaveComDayOffMana, 
+            List<PayoutSubofHDManagement> payoutSubofHDManagements, 
+            AppDispInfoStartupOutput appDispInfoStartupOutput) {
+        String companyID = AppContexts.user().companyId();
+        Application application = applyForLeave.getApplication();
+        // ドメインモデル「休暇申請」を更新する
+        this.applyForLeaveRepository.update(applyForLeave, companyID, application.getAppID());
+        
+        // 休暇紐付け管理を更新する
+        this.updateVacationLinkManage(oldLeaveComDayOffMana, oldPayoutSubofHDManagements, leaveComDayOffMana, payoutSubofHDManagements);
+        
+        // 年月日Listを作成する
+        GeneralDate startDate = applyForLeave.getApplication().getOpAppStartDate().isPresent() ? 
+                applyForLeave.getApplication().getOpAppStartDate().get().getApplicationDate() :
+                    applyForLeave.getApplication().getAppDate().getApplicationDate();
+                
+        GeneralDate endDate = applyForLeave.getApplication().getOpAppEndDate().isPresent() ? 
+                applyForLeave.getApplication().getOpAppEndDate().get().getApplicationDate() : 
+                    applyForLeave.getApplication().getAppDate().getApplicationDate();
+                
+        List<GeneralDate> listDates = new DatePeriod(startDate, endDate).datesBetween();
+        List<GeneralDate> listDatesTemp = listDates;
+        
+        List<GeneralDate> listHolidayDates = holidayAppDates.stream().map(date -> GeneralDate.fromString(date, FORMAT_DATE)).collect(Collectors.toList());
+        for (GeneralDate date : listDatesTemp) {
+            if (listHolidayDates.contains(date)) {
+                listDates.remove(date);
+            }
+        }
+        
+
+        // 暫定データの登録
+//        this.interimRemainData.registerDateChange(companyId, applyForLeave.getApplication().getEmployeeID(), listDates);
+        
+        // アルゴリズム「詳細画面登録後の処理」を実行する
+        // (Thực hiện 「xử lý sau khi đăng ký màn hình detail」)
+        return this.detailAfterUpdate.processAfterDetailScreenRegistration(companyID, application.getAppID(), appDispInfoStartupOutput);
     }
 }

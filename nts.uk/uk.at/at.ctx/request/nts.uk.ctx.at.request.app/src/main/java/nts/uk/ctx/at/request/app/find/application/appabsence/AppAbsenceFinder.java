@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.command.application.appabsence.ApplyForLeaveDto;
 import nts.uk.ctx.at.request.app.command.application.appabsence.CreatAppAbsenceCommand;
@@ -574,6 +575,7 @@ public class AppAbsenceFinder {
         String companyID = AppContexts.user().companyId();
         
         ApplyForLeave applyForLeave = param.getApplyForLeave().toDomain();
+        param.getApplication().setInputDate(GeneralDateTime.now().toString("yyyy/MM/dd HH:mm:ss"));
         Application application = param.getApplication().toDomain();
         applyForLeave.setApplication(application);
         AppAbsenceStartInfoOutput appAbsenceStartInfoOutput = param.getAppAbsenceStartInfoDto().toDomain(companyID);

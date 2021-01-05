@@ -157,15 +157,15 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
         }
 
         public openKDL036() {
-            ko.contextFor(this.$el).$parent.content.openKDL036();
+            ko.contextFor(this.$el).$data.openKDL036();
         }
 
         public openKDL035() {
-            ko.contextFor(this.$el).$parent.content.openKDL035();
+            ko.contextFor(this.$el).$data.openKDL035();
         }
 
         public openKDL003() {
-            ko.contextFor(this.$el).$parent.content.openKDL003();
+            ko.contextFor(this.$el).$data.openKDL003();
         }
     }
 }

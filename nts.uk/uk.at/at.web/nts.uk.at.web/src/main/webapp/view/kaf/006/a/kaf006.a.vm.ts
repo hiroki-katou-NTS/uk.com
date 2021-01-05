@@ -722,14 +722,14 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 
 			if (vm.selectedType() === 1) {
 				if (vm.leaveComDayOffManas().length > 0) {
-					vm.data.leaveComDayOffManas = _.map(vm.leaveComDayOffManas(), (x) => {
+					vm.data.leaveComDayOffManas = _.map(vm.leaveComDayOffManas(), (x: any) => {
 						x.dateOfUse = new Date(x.dateOfUse).toISOString();
 						x.outbreakDay = new Date(x.outbreakDay).toISOString();
 						return x;
 					});
 				}
 				if (vm.payoutSubofHDManagements().length > 0) {
-					vm.data.payoutSubofHDManas = _.map(vm.payoutSubofHDManagements(), (x) => {
+					vm.data.payoutSubofHDManas = _.map(vm.payoutSubofHDManagements(), (x: any) => {
 						x.dateOfUse = new Date(x.dateOfUse).toISOString();
 						x.outbreakDay = new Date(x.outbreakDay).toISOString();
 						return x;

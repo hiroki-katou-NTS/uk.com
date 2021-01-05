@@ -103,7 +103,7 @@ module nts.uk.at.view.kaf006.shr.tab1.viewmodel {
         }
 
         openKDL003() {
-            ko.contextFor(this.$el).$parent.content.openKDL003();
+            ko.contextFor(this.$el).$data.openKDL003();
         }
     }
 }
