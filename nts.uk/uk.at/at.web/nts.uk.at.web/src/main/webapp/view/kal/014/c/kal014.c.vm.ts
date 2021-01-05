@@ -29,8 +29,8 @@ module nts.uk.at.kal014.c {
 
             vm.strComboMonth = ko.observableArray(__viewContext.enums.SpecifiedMonth);
             vm.endComboMonth = ko.observableArray(__viewContext.enums.SpecifiedMonth);
-            vm.strComboDay = ko.observableArray(__viewContext.enums.PreviousClassification);
-            vm.endComboDay = ko.observableArray(__viewContext.enums.PreviousClassification);
+            vm.strComboDay = ko.observableArray(__viewContext.enums.FontRearSection);
+            vm.endComboDay = ko.observableArray(__viewContext.enums.FontRearSection);
             vm.dateSpecify = ko.observableArray([
                 {value: StartSpecify.DAYS, name: vm.$i18n("KAL014_44")},
                 {value: StartSpecify.MONTH, name: ""}

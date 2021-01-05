@@ -182,6 +182,7 @@ module nts.uk.at.kal014.a {
                     }
 
                     if (!data || data.length <= 0){
+                        vm.gridItems([]);
                         // Set to New Mode
                         vm.clickNewButton();
                         dfd.resolve();
