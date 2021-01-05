@@ -123,9 +123,6 @@ public class AppContentServiceImpl implements AppContentService {
 	@Inject
 	private CollectAchievement collectAchievement;
 
-	@Inject
-	private AppOverTimeRepository appOverTimeRepo;
-
 	@Override
 	public String getArrivedLateLeaveEarlyContent(AppReason appReason, DisplayAtr appReasonDisAtr, ScreenAtr screenAtr, List<ArrivedLateLeaveEarlyItemContent> itemContentLst,
 			ApplicationType appType, AppStandardReasonCode appStandardReasonCD) {
