@@ -53,8 +53,8 @@ module nts.uk.at.view.kmk017.a {
       const userAgent = window.navigator.userAgent;
       let msie = userAgent.match(/Trident.*rv\:11\./);
       if (!_.isNil(msie) && msie.index > -1) {        
-        vm.gridListHeight = $(window).width() > 1366 ? 585 : 317; //default < 1366
-      } else vm.gridListHeight = $(window).width() > 1366 ? 576 : 312; //default < 1366
+        vm.gridListHeight = $(window).width() > 1366 ? 600 : 324; //default < 1366
+      } else vm.gridListHeight = $(window).width() > 1366 ? 600 : 324; //default < 1366
     }
 
     //after render is ok
@@ -62,6 +62,9 @@ module nts.uk.at.view.kmk017.a {
       const vm = this;
       //$('#kcp004').focusTreeGridComponent();
       $('#single-tree-grid-kcp004_container').focus();
+      const userAgent = window.navigator.userAgent;
+      let msie = userAgent.match(/Trident.*rv\:11\./);
+      if (!_.isNil(msie) && msie.index > -1) $('.grid-list').addClass('fix-ie');
     }
 
     getWorkTimeSetting() {
@@ -334,7 +337,7 @@ module nts.uk.at.view.kmk017.a {
             { headerText: vm.$i18n('KMK017_7'), key: 'code', width: 70 },
             { headerText: vm.$i18n('KMK017_8'), key: 'name', width: 120 },
             { headerText: vm.$i18n('KMK017_9'), key: 'workingTime1', width: 120 },
-            { headerText: vm.$i18n('KMK017_11'), key: 'remarks', width: 310 },
+            { headerText: vm.$i18n('KMK017_11'), key: 'remarks', width: 310, columnCssClass: 'limited-label' },
           ]);
         } else
           vm.gridListHeader([
@@ -342,7 +345,7 @@ module nts.uk.at.view.kmk017.a {
             { headerText: vm.$i18n('KMK017_8'), key: 'name', width: 120 },
             { headerText: vm.$i18n('KMK017_9'), key: 'workingTime1', width: 120 },
             { headerText: vm.$i18n('KMK017_10'), key: 'workingTime2', width: 120 },
-            { headerText: vm.$i18n('KMK017_11'), key: 'remarks', width: 190 },
+            { headerText: vm.$i18n('KMK017_11'), key: 'remarks', width: 190, columnCssClass: 'limited-label' },
           ]);
       });
     }
