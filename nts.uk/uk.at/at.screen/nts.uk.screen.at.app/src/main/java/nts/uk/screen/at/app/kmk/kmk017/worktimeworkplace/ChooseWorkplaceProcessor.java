@@ -55,10 +55,10 @@ public class ChooseWorkplaceProcessor {
             PredetemineTimeSetting timeSetting = predetemineTimeSettings.stream().filter(i -> i.getWorkTimeCode().v().equals(x)).findFirst().orElse(null);
             if (timeSetting != null) {
                 timezoneUse1 = timeSetting.getPrescribedTimezoneSetting().getLstTimezone().stream().
-                    filter(i -> i.getWorkNo() == 1).findFirst().map(TimezoneUseDto::fromDomain).orElse(null);
+                    filter(i -> i.getWorkNo() == 1 && i.isUsed()).findFirst().map(TimezoneUseDto::fromDomain).orElse(null);
 
                 timezoneUse2 = timeSetting.getPrescribedTimezoneSetting().getLstTimezone().stream().
-                    filter(i -> i.getWorkNo() == 2).findFirst().map(TimezoneUseDto::fromDomain).orElse(null);
+                    filter(i -> i.getWorkNo() == 2 && i.isUsed()).findFirst().map(TimezoneUseDto::fromDomain).orElse(null);
             }
             return new ChooseWorkplaceDto(
                 x,
