@@ -1,16 +1,15 @@
 package nts.uk.ctx.sys.assist.dom.goout;
 
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
+import nts.uk.shr.com.time.AttendanceClock;
+
 
 /*
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.オフィス支援.在席照会.在席照会.社員の外出情報
  */
 public class GoOutEmployeeInformation {
-	// TODO 勤怠時刻 la gi?
-
 	// 外出時刻
-	private GeneralDateTime goOutTime;
+	private AttendanceClock goOutTime;
 
 	// 外出理由
 	private GoOutReason goOutReason;
@@ -19,7 +18,7 @@ public class GoOutEmployeeInformation {
 	private GeneralDate gouOutDate;
 
 	// 戻り時刻
-	private GeneralDateTime comebackTime;
+	private AttendanceClock comebackTime;
 
 	// 社員ID
 	private String sid;
@@ -34,41 +33,41 @@ public class GoOutEmployeeInformation {
 	}
 
 	public void getMemento(MementoGetter memento) {
-		this.goOutTime = memento.getGoOutTime();
+		this.goOutTime = new AttendanceClock(memento.getGoOutTime());
 		this.goOutReason = new GoOutReason(memento.getGoOutReason());
 		this.gouOutDate = memento.getGouOutDate();
-		this.comebackTime = memento.getComebackTime();
+		this.comebackTime = new AttendanceClock(memento.getComebackTime());
 		this.sid = memento.getSid();
 	}
 
 	public void setMemento(MementoSetter memento) {
-		memento.setGoOutTime(this.goOutTime);
+		memento.setGoOutTime(this.goOutTime.v());
 		memento.setGoOutReason(this.goOutReason.v());
 		memento.setGouOutDate(this.gouOutDate);
-		memento.setComebackTime(this.comebackTime);
+		memento.setComebackTime(this.comebackTime.v());
 		memento.setSid(this.sid);
 	}
 
 	public interface MementoSetter {
-		void setGoOutTime(GeneralDateTime goOutTime);
+		void setGoOutTime(Integer goOutTime);
 
 		void setGoOutReason(String goOutReason);
 
 		void setGouOutDate(GeneralDate gouOutDate);
 
-		void setComebackTime(GeneralDateTime comebackTime);
+		void setComebackTime(Integer comebackTime);
 
 		void setSid(String sid);
 	}
 
 	public interface MementoGetter {
-		GeneralDateTime getGoOutTime();
+		Integer getGoOutTime();
 
 		String getGoOutReason();
 
 		GeneralDate getGouOutDate();
 
-		GeneralDateTime getComebackTime();
+		Integer getComebackTime();
 
 		String getSid();
 	}

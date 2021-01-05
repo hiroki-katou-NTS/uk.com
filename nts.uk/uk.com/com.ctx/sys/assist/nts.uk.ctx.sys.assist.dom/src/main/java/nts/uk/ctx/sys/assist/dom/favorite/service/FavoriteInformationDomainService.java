@@ -28,7 +28,8 @@ public class FavoriteInformationDomainService {
 	public static Map<FavoriteSpecify, List<String>> get(FavoriteInformationRequire require, String sid) {
 		// $お気に入りList = require.お気に入りの指定を取得する(社員ID)	
 		List<FavoriteSpecify> getListFavoriteBySid = require.getBySid(sid);
-		return getListFavoriteBySid.stream().collect(Collectors.toMap(mapper -> mapper, FavoriteSpecify::PassingTargetInfoName));
+		return getListFavoriteBySid.stream()
+				.collect(Collectors.toMap(mapper -> mapper, FavoriteSpecify::passingTargetInfoName));
 	}
 	
 	

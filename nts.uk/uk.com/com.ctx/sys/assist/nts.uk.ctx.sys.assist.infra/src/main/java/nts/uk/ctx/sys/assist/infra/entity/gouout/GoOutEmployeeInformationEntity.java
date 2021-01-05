@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.assist.infra.entity.comment;
+package nts.uk.ctx.sys.assist.infra.entity.gouout;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
@@ -11,22 +11,22 @@ import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.sys.assist.dom.comment.EmployeeCommentInformation;
+import nts.uk.ctx.sys.assist.dom.goout.GoOutEmployeeInformation;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /*
- * UKDesign.データベース.ER図.オフィス支援.在席照会.コメント.OFIDT_COMMENT_SYA
- * 在席照会のコメント
+ * UKDesign.データベース.ER図.オフィス支援.在席照会.外出.OFIDT_GO_OUT_INFO_SYA
+ * 社員の外出情報
  */
 @Data
 @Entity
 @EqualsAndHashCode(callSuper = true)
-@Table(name = "OFIDT_COMMENT_SYA")
-public class EmployeeCommentInformationEntity extends UkJpaEntity
-		implements EmployeeCommentInformation.MementoGetter, EmployeeCommentInformation.MementoSetter, Serializable {
+@Table(name = "OFIDT_GO_OUT_INFO_SYA")
+public class GoOutEmployeeInformationEntity extends UkJpaEntity
+		implements GoOutEmployeeInformation.MementoGetter, GoOutEmployeeInformation.MementoSetter, Serializable {
 	/**
-	* 
-	*/
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
 
 	// column 排他バージョン
@@ -41,12 +41,22 @@ public class EmployeeCommentInformationEntity extends UkJpaEntity
 
 	// Embedded primary key 社員ID and 年月日
 	@EmbeddedId
-	private EmployeeCommentInformationEntityPK pk;
+	private GoOutEmployeeInformationEntityPK pk;
 
-	// column コメント
+	// column 外出時刻
 	@NotNull
-	@Column(name = "COMMENT")
-	private String comment;
+	@Column(name = "START_TIME")
+	private Integer goOutTime;
+
+	// column 戻り時刻
+	@NotNull
+	@Column(name = "END_TIME")
+	private Integer comebackTime;
+
+	// column 外出理由
+	@NotNull
+	@Column(name = "GO_OUT_REASON")
+	private String goOutReason;
 
 	@Override
 	protected Object getKey() {
@@ -54,24 +64,24 @@ public class EmployeeCommentInformationEntity extends UkJpaEntity
 	}
 
 	@Override
-	public void setDate(GeneralDate date) {
+	public void setGouOutDate(GeneralDate gouOutDate) {
 		if (this.pk == null) {
-			this.pk = new EmployeeCommentInformationEntityPK();
+			this.pk = new GoOutEmployeeInformationEntityPK();
 		}
-		this.pk.setDate(date);
+		this.pk.setGouOutDate(gouOutDate);
 	}
 
 	@Override
 	public void setSid(String sid) {
 		if (this.pk == null) {
-			this.pk = new EmployeeCommentInformationEntityPK();
+			this.pk = new GoOutEmployeeInformationEntityPK();
 		}
 		this.pk.setSid(sid);
 	}
 
 	@Override
-	public GeneralDate getDate() {
-		return this.pk.getDate();
+	public GeneralDate getGouOutDate() {
+		return this.pk.getGouOutDate();
 	}
 
 	@Override

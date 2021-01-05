@@ -10,33 +10,34 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
 
 /*
- * UKDesign.ドメインモデル.NittsuSystem.UniversalK.オフィス支援.在席照会.在席照会.お気に入りの指定
+ * UKDesign.ドメインモッ�.NittsuSystem.UniversalK.オフィス支援.在席照�在席照�お気に入り�挮
  */
 public class FavoriteSpecify extends AggregateRoot {
 
 	// お気に入り名
 	private FavoriteName favoriteName;
 
-	// 作成者ID
+	// 作��D
 	private String creatorId;
 
 	// 入力日
 	private GeneralDateTime inputDate;
 
-	// 対象選択
+	// 対象選�
 	private TargetSelection targetSelection;
 
 	// 職場ID
 	private List<String> workplaceId;
 
-	// 順序
+	// 頺
 	private int order;
 
 	private FavoriteSpecify() {
 	}
 	
-	//TODO [1] 対象情報名を渡す
-	public List<String> PassingTargetInfoName() {
+	//TODO [1] 対象惱名を渡�
+	public List<String> passingTargetInfoName() {
+//	public List<String> passingTargetInfoName( Require require) {
 //		if(this.targetSelection == TargetSelection.AFFILIATION_WORKPLACE) {
 //			return empty;
 //		}
