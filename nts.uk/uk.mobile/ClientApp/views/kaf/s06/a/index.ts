@@ -24,6 +24,21 @@ export class KafS06AComponent extends KafS00ShrComponent {
     public user: any = null;
     public modeNew: boolean = true;
     public application: Application = null;
+    public workHours1: {start: number, end: number} = null;
+    public workHours2: {start: number, end: number} = null;
+
+    public selectedValue = null;
+    public time: number = 0;
+    public dropdownList = [
+        {
+            code: null,
+            text: 'Select--'
+        },
+        {
+            code: '01',
+            text: 'abcd'
+        }
+    ];
     @Prop() 
     public readonly params: InitParam;
 
@@ -54,10 +69,11 @@ export class KafS06AComponent extends KafS00ShrComponent {
                 let command = {
 
                 } as StartMobileParam;
-                command.mode = vm.modeNew ? 1 : 0;
+                command.mode = vm.modeNew ? MODE_NEW : MODE_UPDATE;
                 command.companyId = vm.user.companyId;
                 command.employeeIdOp = vm.user.employeeId;
                 command.datesOp = [];
+                command.appDispInfoStartupOutput = vm.appDispInfoStartupOutput;
                 if (vm.modeNew) {
                     return vm.$http.post('at', API.start, command);  
                 }
@@ -210,6 +226,9 @@ export class KafS06AComponent extends KafS00ShrComponent {
             });
         });
     }
+
+
+    
 }
 const API = {
     start: 'at/request/application/appforleave/mobile/start',
@@ -217,3 +236,5 @@ const API = {
     registerSample: 'at/request/application/changeDataSample',
     sendMailAfterRegisterSample: ''
 };
+const MODE_NEW = 0;
+const MODE_UPDATE = 1;
