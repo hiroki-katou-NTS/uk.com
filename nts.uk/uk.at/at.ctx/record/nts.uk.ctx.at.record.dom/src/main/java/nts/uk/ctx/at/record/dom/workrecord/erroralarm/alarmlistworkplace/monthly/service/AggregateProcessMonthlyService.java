@@ -54,15 +54,17 @@ public class AggregateProcessMonthlyService {
         List<ExtractionMonthlyCon> extractMonthlyCons = extractionMonthlyConRepo.getBy(extractCondIds, true);
 
         // 月次の集計する前のデータを準備
-        MonthlyCheckDataDto data = beforeMonthlyAggregateService.prepareData(workplaceIds, ym);
+        MonthlyCheckDataDto data = beforeMonthlyAggregateService.prepareData(cid, workplaceIds, ym);
 
         List<AlarmListExtractionInfoWorkplaceDto> alarmListResults = new ArrayList<>();
 
         // 固定抽出条件をチェック
-        alarmListResults.addAll(fixedExtractCondCheckService.check(cid, data.getEmpInfosByWpMap(), fixExtractMonthlyCons, ym, data.getClosures()));
+        alarmListResults.addAll(fixedExtractCondCheckService.check(cid, data.getEmpInfosByWpMap(),
+                fixExtractMonthlyCons, ym, data.getClosures(), data.getApprovalProcess()));
 
         // 任意抽出条件をチェック
-        alarmListResults.addAll(arbitaryExtractCondCheckService.check(cid, data.getEmpInfosByWpMap(), extractMonthlyCons, ym, data.getAttendanceTimeOfMonthlies()));
+        alarmListResults.addAll(arbitaryExtractCondCheckService.check(cid, data.getEmpInfosByWpMap(),
+                extractMonthlyCons, ym, data.getAttendanceTimeOfMonthlies()));
 
         // リスト「アラーム抽出結果（職場別）」を返す。
         return alarmListResults;

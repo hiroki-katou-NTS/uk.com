@@ -10,6 +10,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.FixedExtractionMonthlyItemsRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.enums.FixedCheckMonthlyItemName;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service.fixedextractcond.monthlyundecided.MonthlyUndecidedCheckService;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcess;
 import nts.uk.ctx.at.shared.dom.scherec.alarm.alarmlistactractionresult.MessageDisplay;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
 
@@ -42,11 +43,13 @@ public class FixedExtractCondCheckService {
      * @param fixExtractMonthlyCons List＜アラームリスト（職場）月次の固定抽出条件＞
      * @param ym                    年月
      * @param closures              List＜締め＞
+     * @param approvalProcess       承認処理の利用設定
      * @return List＜アラーム抽出結果（職場別）＞
      */
     public List<AlarmListExtractionInfoWorkplaceDto> check(String cid, Map<String, List<EmployeeInfoImported>> empInfosByWpMap,
                                                            List<FixedExtractionMonthlyCon> fixExtractMonthlyCons,
-                                                           YearMonth ym, List<ClosureInfo> closures) {
+                                                           YearMonth ym, List<ClosureInfo> closures,
+                                                           Optional<ApprovalProcess> approvalProcess) {
         List<AlarmListExtractionInfoWorkplaceDto> alarmListResults = new ArrayList<>();
         List<FixedCheckMonthlyItemName> nos = fixExtractMonthlyCons.stream().map(FixedExtractionMonthlyCon::getNo)
                 .collect(Collectors.toList());
@@ -64,7 +67,7 @@ public class FixedExtractCondCheckService {
             switch (item.getNo()) {
                 case MONTHLY_UNDECIDED:
                     // 月次データ未確定をチェックする
-                    extractResults = monthlyUndecidedCheckService.check(cid, empInfosByWpMap, closures, ym);
+                    extractResults = monthlyUndecidedCheckService.check(cid, empInfosByWpMap, closures, ym, approvalProcess);
                     break;
             }
 

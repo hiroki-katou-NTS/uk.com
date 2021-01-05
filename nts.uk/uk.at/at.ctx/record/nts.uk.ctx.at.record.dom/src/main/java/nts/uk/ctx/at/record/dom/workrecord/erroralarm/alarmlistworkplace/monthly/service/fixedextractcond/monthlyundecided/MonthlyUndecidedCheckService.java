@@ -1,14 +1,18 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service.fixedextractcond.monthlyundecided;
 
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.workplace.EmployeeInfoImported;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.extractresult.ExtractResultDto;
 import nts.uk.ctx.at.record.dom.workrecord.manageactualsituation.approval.monthly.MonthlyApprovalProcess;
 import nts.uk.ctx.at.record.dom.workrecord.managectualsituation.ApprovalStatus;
+import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcess;
 import nts.uk.ctx.at.shared.dom.scherec.alarm.alarmlistactractionresult.AlarmValueDate;
 import nts.uk.ctx.at.shared.dom.scherec.alarm.alarmlistactractionresult.AlarmValueMessage;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
-import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureResultDto;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.i18n.TextResource;
 
 import javax.ejb.Stateless;
@@ -25,6 +29,10 @@ public class MonthlyUndecidedCheckService {
 
     @Inject
     private MonthlyApprovalProcess monthlyApprovalProcess;
+    @Inject
+    private ClosureRepository closureRepository;
+    @Inject
+    private ClosureEmploymentRepository closureEmpRepo;
 
     /**
      * 月次データ未確定をチェックする
@@ -33,19 +41,26 @@ public class MonthlyUndecidedCheckService {
      * @param empInfosByWpMap Map＜職場ID、List＜社員情報＞＞
      * @param closures        List＜締め＞
      * @param ym              年月
+     * @param approvalProcess 承認処理の利用設定
      * @return
      */
     public List<ExtractResultDto> check(String cid, Map<String, List<EmployeeInfoImported>> empInfosByWpMap,
-                                        List<ClosureInfo> closures, YearMonth ym) {
+                                        List<ClosureInfo> closures, YearMonth ym,
+                                        Optional<ApprovalProcess> approvalProcess) {
+
         List<ExtractResultDto> results = new ArrayList<>();
         // Input．Map＜職場ID、List＜社員情報＞＞をループする
         for (Map.Entry<String, List<EmployeeInfoImported>> empInfosByWp : empInfosByWpMap.entrySet()) {
             for (ClosureInfo closure : closures) {
                 List<EmployeeInfoImported> empInfos = empInfosByWp.getValue();
                 for (EmployeeInfoImported empInfo : empInfos) {
+                    // 締め開始日と締め日を取得する
+                    DatePeriod closurePeriod = ClosureService.getClosurePeriod(ClosureService.createRequireM1(closureRepository, closureEmpRepo),
+                            closure.getClosureId().value, ym);
+
                     // 対象月の月の承認が済んでいるかチェックする
                     ApprovalStatus status = monthlyApprovalProcess.monthlyApprovalCheck(cid, empInfo.getSid(), ym.v(),
-                            closure.getClosureId().value, null, Optional.empty(), Collections.emptyList());//TODO Q&A 37402
+                            closure.getClosureId().value, closurePeriod.start(), approvalProcess, Collections.emptyList());//TODO Q&A 37402
 
                     // 承認が済んでいるをチェック
                     if (ApprovalStatus.APPROVAL.equals(status)) continue;
