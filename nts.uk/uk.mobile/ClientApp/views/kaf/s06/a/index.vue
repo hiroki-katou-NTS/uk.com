@@ -101,8 +101,29 @@
       <!-- A10_1 -->
       <div class="card-header uk-bg-accordion">
         <span>{{ "KAFS06_23" | i18n }}</span>
-        <span class="badge badge-info">任意</span>
+        <span class="badge badge-warning">必須</span>
       </div>
+      <div>
+        <!--A10_3-->
+        <div class="row">
+            <div class="float_left col text-left">{{'KAFS06_24' | i18n}}</div>
+            <div class="float_right col text-right">{{'KAFS06_39' | i18n}}</div>
+        </div>
+        <!--A10_2-->
+        <div class="mt-1">
+            <!-- A4_3 -->
+            <nts-dropdown v-model="selectedValue">
+                <option v-for="(item, index) in dropdownList" :key="index" :value="item.code">
+                    {{item.text}}
+                </option>
+            </nts-dropdown>
+
+        </div>
+        <!--A10_4-->
+        <div>
+            <nts-checkbox v-model="checkBox" v-bind:value="1">{{'KAFS06_25' | i18n}}</nts-checkbox>
+        </div>
+    </div>
       
     </div>
     

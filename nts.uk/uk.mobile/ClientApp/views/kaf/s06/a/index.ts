@@ -29,6 +29,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
 
     public selectedValue = null;
     public time: number = 0;
+    public checkBox: Array<number> = [1];
     public dropdownList = [
         {
             code: null,
