@@ -697,7 +697,7 @@ export class KafS05Component extends KafS00ShrComponent {
         let step2 = vm.$refs.step2 as KafS05Step2Component;
         vm.isValidateAll = vm.customValidate(step2);
         vm.$validate();
-        if (!vm.$valid || !vm.isValidateAll) {
+        if (!step2.$valid || !vm.isValidateAll) {
             window.scrollTo(500, 0);
             vm.$nextTick(() => vm.$mask('hide'));
 
