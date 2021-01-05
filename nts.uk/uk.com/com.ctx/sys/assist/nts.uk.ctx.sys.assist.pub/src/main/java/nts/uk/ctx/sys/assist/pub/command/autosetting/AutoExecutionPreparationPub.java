@@ -12,9 +12,9 @@ public interface AutoExecutionPreparationPub {
 	
 	AutoPrepareDataExport autoStoragePrepare(String patternCode);
 	
-	void updateTargetEmployee(String storeProcessingId, String patternCode, List<String> empIds);
+	boolean updateTargetEmployee(String storeProcessingId, String patternCode, List<String> empIds);
 	
 	AutoPrepareDataExport autoDeletionPrepare(String patternCode);
 	
-	void updateEmployeeDeletion(String delId, List<String> empIds);
+	boolean updateEmployeeDeletion(String delId, List<String> empIds);
 }

@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.assist.pub.command.autosetting;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -8,9 +9,13 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import nts.arc.task.AsyncTaskInfoRepository;
+import nts.arc.task.AsyncTaskStatus;
 import nts.uk.ctx.sys.assist.app.command.autosetting.deletion.AutoDeletionPreparationCommandHandler;
 import nts.uk.ctx.sys.assist.app.command.autosetting.storage.AutoStoragePreparationCommandHandler;
 import nts.uk.ctx.sys.assist.app.command.deletedata.manualsetting.ManualSetDeletionService;
+import nts.uk.ctx.sys.assist.app.command.resultofsaving.ResultOfSavingCommand;
+import nts.uk.ctx.sys.assist.app.command.resultofsaving.ResultOfSavingHandler;
 import nts.uk.ctx.sys.assist.dom.deletedata.EmployeeDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.EmployeesDeletionRepository;
 import nts.uk.ctx.sys.assist.dom.deletedata.ManualSetDeletion;
@@ -22,6 +27,8 @@ import nts.uk.ctx.sys.assist.dom.storage.ManualSetOfDataSave;
 import nts.uk.ctx.sys.assist.dom.storage.ManualSetOfDataSaveHolder;
 import nts.uk.ctx.sys.assist.dom.storage.ManualSetOfDataSaveRepository;
 import nts.uk.ctx.sys.assist.dom.storage.ManualSetOfDataSaveService;
+import nts.uk.ctx.sys.assist.dom.storage.ResultOfSaving;
+import nts.uk.ctx.sys.assist.dom.storage.ResultOfSavingRepository;
 import nts.uk.ctx.sys.assist.dom.storage.TargetCategoryRepository;
 import nts.uk.ctx.sys.assist.dom.storage.TargetEmployees;
 import nts.uk.ctx.sys.assist.dom.storage.TargetEmployeesRepository;
@@ -39,18 +46,24 @@ public class AutoExecutionPreparationPubImpl implements AutoExecutionPreparation
 
 	@Inject
 	private ManualSetOfDataSaveRepository manualSetOfDataSaveRepository;
-	
+
+	@Inject
+	private ResultOfSavingRepository resultOfSavingRepository;
+
 	@Inject
 	private TargetCategoryRepository targetCategoryRepository;
-	
+
 	@Inject
 	private TargetEmployeesRepository targetEmployeesRepository;
 
 	@Inject
 	private ManualSetDeletionRepository manualSetDeletionRepository;
-	
+
 	@Inject
 	private EmployeesDeletionRepository employeesDeletionRepository;
+
+	@Inject
+	private AsyncTaskInfoRepository asyncTaskInfoRepository;
 
 	@Inject
 	private EmpBasicInfoAdapter empBasicInfoAdapter;
@@ -60,6 +73,9 @@ public class AutoExecutionPreparationPubImpl implements AutoExecutionPreparation
 
 	@Inject
 	private ManualSetDeletionService manualSetDeletionService;
+	
+	@Inject
+	private ResultOfSavingHandler resultOfSavingHandler;
 
 	@Override
 	public AutoPrepareDataExport autoStoragePrepare(String patternCode) {
@@ -72,7 +88,7 @@ public class AutoExecutionPreparationPubImpl implements AutoExecutionPreparation
 	}
 
 	@Override
-	public void updateTargetEmployee(String storeProcessId, String patternCode, List<String> empIds) {
+	public boolean updateTargetEmployee(String storeProcessId, String patternCode, List<String> empIds) {
 		// 更新処理自動実行の実行対象社員リストを取得する
 		List<TargetEmployees> targetEmployees = this.empBasicInfoAdapter
 				.getEmpBasicInfo(AppContexts.user().companyId(), empIds).stream()
@@ -82,12 +98,29 @@ public class AutoExecutionPreparationPubImpl implements AutoExecutionPreparation
 
 		ManualSetOfDataSave manualSet = this.manualSetOfDataSaveRepository.getManualSetOfDataSaveById(storeProcessId)
 				.orElse(null);
-		manualSet.setCategory(this.targetCategoryRepository
-				.getTargetCategoryListById(manualSet.getStoreProcessingId()));
+		String storeProcessingId = manualSet.getStoreProcessingId();
+		manualSet
+				.setCategory(this.targetCategoryRepository.getTargetCategoryListById(storeProcessingId));
 		manualSet.setEmployees(targetEmployees);
 		this.targetEmployeesRepository.addAll(targetEmployees);
 		// アルゴリズム「サーバー手動保存処理」を実行する
-		this.manualSetOfDataSaveService.start(new ManualSetOfDataSaveHolder(manualSet, patternCode));
+		String taskId = this.manualSetOfDataSaveService.start(new ManualSetOfDataSaveHolder(manualSet, patternCode))
+				.getTaskId();
+		// Wait until export service is done
+		AsyncTaskStatus taskStatus;
+		do {
+			taskStatus = this.asyncTaskInfoRepository.getStatus(taskId);
+		} while (taskStatus.equals(AsyncTaskStatus.PENDING) || taskStatus.equals(AsyncTaskStatus.RUNNING));
+		// Update file size if export is successful
+		Optional<ResultOfSaving> optResultOfSaving = this.resultOfSavingRepository
+				.getResultOfSavingById(storeProcessingId);
+		optResultOfSaving.ifPresent(result -> {
+			result.getFileId().ifPresent(fileId -> {
+				this.resultOfSavingHandler.handle(new ResultOfSavingCommand(storeProcessingId, fileId));
+			});
+		});
+		// Return whether errors have occured or not
+		return !taskStatus.equals(AsyncTaskStatus.COMPLETED);
 	}
 
 	@Override
@@ -101,7 +134,7 @@ public class AutoExecutionPreparationPubImpl implements AutoExecutionPreparation
 	}
 
 	@Override
-	public void updateEmployeeDeletion(String delId, List<String> empIds) {
+	public boolean updateEmployeeDeletion(String delId, List<String> empIds) {
 		// 取得できた社員IDを社員ID（List）とする
 		List<EmployeeDeletion> targetEmployees = this.empBasicInfoAdapter
 				.getEmpBasicInfo(AppContexts.user().companyId(), empIds).stream()
@@ -113,6 +146,13 @@ public class AutoExecutionPreparationPubImpl implements AutoExecutionPreparation
 		employeesDeletionRepository.addAll(targetEmployees);
 		ManualSetDeletion manualSet = this.manualSetDeletionRepository.getManualSetDeletionById(delId).orElse(null);
 		// アルゴリズム「サーバ手動削除処理」を実行する
-		this.manualSetDeletionService.start(manualSet);
+		String taskId = this.manualSetDeletionService.start(manualSet).getTaskId();
+		// Wait until export service is done
+		AsyncTaskStatus taskStatus;
+		do {
+			taskStatus = this.asyncTaskInfoRepository.getStatus(taskId);
+		} while (taskStatus.equals(AsyncTaskStatus.PENDING) || taskStatus.equals(AsyncTaskStatus.RUNNING));
+		// Return whether errors have occured or not
+		return !taskStatus.equals(AsyncTaskStatus.COMPLETED);
 	}
 }

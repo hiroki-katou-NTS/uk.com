@@ -3680,8 +3680,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
         		.filter(item -> item.getExecId().equals(execId))
         		.collect(Collectors.toList());
 		boolean hasError = false;
-		boolean hasException = false;
-		boolean hasOutputError = false;
+		boolean checkStopExec = false;
 		String errorMessage = "";
 		// Step ドメインモデル「更新処理自動実行ログ」を更新する
 		this.updateLog(execId, ProcessExecutionTask.EXTERNAL_OUTPUT, procExec, procExecLog);
@@ -3693,7 +3692,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			this.updateTaskLogs(taskLogLists, ProcessExecutionTask.EXTERNAL_OUTPUT, EndStatus.NOT_IMPLEMENT, null);
 			procExecLog.setTaskLogList(taskLogLists);
 			this.procExecLogRepo.update(procExecLog);
-			return true;
+			return false;
 		}
 		// するの場合
 		// 実行条件ごとにループする
@@ -3710,29 +3709,27 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 							output.getBaseDate(), execId);
 				} else {
 					hasError = true;
-					hasOutputError = true;
 					errorMessage = output != null ? output.getErrorMessage() : null;
 				}
 			}
 		} catch (Exception e) {
-			hasException = true;
 			hasError = true;
 		}
 		// ドメインモデル「更新処理自動実行ログ」を取得しチェックする
-		Optional<ProcessExecutionLog> optProcLog = this.procExecLogRepo.getLogByCIdAndExecCd(companyId,
-				procExec.getExecItemCode().v(), execId);
-		if (optProcLog.isPresent()) {
-			for (ExecutionTaskLog task : optProcLog.get().getTaskLogList()) {
-				if (task.getStatus().isPresent() && task.getStatus().get().equals(EndStatus.FORCE_END)) {
-					this.updateLogAfterProcess.updateLogAfterProcess(ProcessExecutionTask.EXTERNAL_OUTPUT, companyId,
-							execId, procExec, procExecLog, hasOutputError, hasError, errorMessage);
-				} else {
-					this.updateLogAfterProcess.updateLogAfterProcess(ProcessExecutionTask.EXTERNAL_OUTPUT, companyId,
-							execId, procExec, procExecLog, hasException, hasError, errorMessage);
-				}
-			}
+		Optional<ProcessExecutionLog> optLog = this.procExecLogRepo
+				.getLogByCIdAndExecCd(companyId, procExec.getExecItemCode().v(), execId);
+		if (optLog.isPresent()) {
+			ProcessExecutionLog log = optLog.get();
+			EndStatus status = log.getTaskLogList().stream()
+					.filter(task -> task.getProcExecTask().equals(ProcessExecutionTask.EXTERNAL_OUTPUT)
+							&& task.getExecId().equals(execId)).findFirst()
+					.get().getStatus().orElse(null);
+			checkStopExec = EndStatus.FORCE_END.equals(status);
 		}
-		return false;
+		// 各処理の後のログ更新処理
+		this.updateLogAfterProcess.updateLogAfterProcess(ProcessExecutionTask.EXTERNAL_OUTPUT, companyId, execId,
+				procExec, procExecLog, hasError, checkStopExec, errorMessage);
+		return checkStopExec;
 	}
 
 	/**
@@ -3750,6 +3747,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
         		.filter(item -> item.getExecId().equals(execId))
         		.collect(Collectors.toList());
 		boolean hasError = false;
+		boolean checkStopExec = false;
 		String errorMessage = "";
 		// Step ドメインモデル「更新処理自動実行ログ」を更新する
 		this.updateLog(execId, ProcessExecutionTask.SAVE_DATA, procExec, procExecLog);
@@ -3760,30 +3758,31 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			this.updateTaskLogs(taskLogLists, ProcessExecutionTask.SAVE_DATA, EndStatus.NOT_IMPLEMENT, null);
 			procExecLog.setTaskLogList(taskLogLists);
 			this.procExecLogRepo.update(procExecLog);
-			return true;
+			return false;
 		}
 
 		// アルゴリズム「自動削除準備」を実行する
 		try {
-			this.autoExecutionPreparationAdapter.autoStoragePrepare(procExec);
+			hasError = this.autoExecutionPreparationAdapter.autoStoragePrepare(procExec);
+			errorMessage = "async task error saving";
 		} catch (Exception e) {
-			errorMessage = e.getLocalizedMessage();
 			hasError = true;
 		}
 		// ドメインモデル「更新処理自動実行ログ」を取得しチェックする（中断されている場合は更新されているため、最新の情報を取得する）
-		ProcessExecutionLog log = this.procExecLogRepo
-				.getLogByCIdAndExecCd(companyId, procExec.getExecItemCode().v(), execId).get();
-		EndStatus status = log.getTaskLogList()
-				.stream()
-				.filter(task -> task.getProcExecTask().equals(ProcessExecutionTask.SAVE_DATA))
-				.findFirst()
-				.get()
-				.getStatus()
-				.orElse(null);
+		Optional<ProcessExecutionLog> optLog = this.procExecLogRepo.getLogByCIdAndExecCd(companyId,
+				procExec.getExecItemCode().v(), execId);
+		if (optLog.isPresent()) {
+			ProcessExecutionLog log = optLog.get();
+			EndStatus status = log.getTaskLogList().stream()
+					.filter(task -> task.getProcExecTask().equals(ProcessExecutionTask.SAVE_DATA)
+							&& task.getExecId().equals(execId)).findFirst().get()
+					.getStatus().orElse(null);
+			checkStopExec = EndStatus.FORCE_END.equals(status);
+		}
 		// 各処理の後のログ更新処理
-		this.updateLogAfterProcess.updateLogAfterProcess(ProcessExecutionTask.SAVE_DATA, companyId,
-				execId, procExec, procExecLog, hasError, EndStatus.FORCE_END.equals(status), errorMessage);
-		return false;
+		this.updateLogAfterProcess.updateLogAfterProcess(ProcessExecutionTask.SAVE_DATA, companyId, execId, procExec,
+				procExecLog, hasError, checkStopExec, errorMessage);
+		return checkStopExec;
 	}
 
 	/**
@@ -3801,40 +3800,42 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
         		.filter(item -> item.getExecId().equals(execId))
         		.collect(Collectors.toList());
 		boolean hasError = false;
+		boolean checkStopExec = false;
 		String errorMessage = "";
 		// Step ドメインモデル「更新処理自動実行ログ」を更新する
 		this.updateLog(execId, ProcessExecutionTask.DELETE_DATA, procExec, procExecLog);
 
 		// データの削除区分の判定する
 		// しないの場合
-		if (procExec.getExecSetting().getSaveData().getSaveDataCls().equals(NotUseAtr.NOT_USE)) {
+		if (procExec.getExecSetting().getDeleteData().getDataDelCls().equals(NotUseAtr.NOT_USE)) {
 			this.updateTaskLogs(taskLogLists, ProcessExecutionTask.DELETE_DATA, EndStatus.NOT_IMPLEMENT, null);
 			procExecLog.setTaskLogList(taskLogLists);
 			this.procExecLogRepo.update(procExecLog);
-			return true;
+			return false;
 		}
 
 		// アルゴリズム「自動削除準備」を実行する
 		try {
-			this.autoExecutionPreparationAdapter.autoDeletionPrepare(procExec);
+			hasError = this.autoExecutionPreparationAdapter.autoDeletionPrepare(procExec);
+			errorMessage = "async task error deleting";
 		} catch (Exception e) {
-			errorMessage = e.getLocalizedMessage();
 			hasError = true;
 		}
 		// ドメインモデル「更新処理自動実行ログ」を取得しチェックする（中断されている場合は更新されているため、最新の情報を取得する）
-		ProcessExecutionLog log = this.procExecLogRepo
-				.getLogByCIdAndExecCd(companyId, procExec.getExecItemCode().v(), execId).get();
-		EndStatus status = log.getTaskLogList()
-				.stream()
-				.filter(task -> task.getProcExecTask().equals(ProcessExecutionTask.DELETE_DATA))
-				.findFirst()
-				.get()
-				.getStatus()
-				.orElse(null);
+		Optional<ProcessExecutionLog> optLog = this.procExecLogRepo
+				.getLogByCIdAndExecCd(companyId, procExec.getExecItemCode().v(), execId);
+		if (optLog.isPresent()) {
+			ProcessExecutionLog log = optLog.get();
+			EndStatus status = log.getTaskLogList().stream()
+					.filter(task -> task.getProcExecTask().equals(ProcessExecutionTask.DELETE_DATA)
+							&& task.getExecId().equals(execId)).findFirst().get()
+					.getStatus().orElse(null);
+			checkStopExec = EndStatus.FORCE_END.equals(status);
+		}
 		// 各処理の後のログ更新処理
-		this.updateLogAfterProcess.updateLogAfterProcess(ProcessExecutionTask.DELETE_DATA, companyId,
-				execId, procExec, procExecLog, hasError, EndStatus.FORCE_END.equals(status), errorMessage);
-		return false;
+		this.updateLogAfterProcess.updateLogAfterProcess(ProcessExecutionTask.DELETE_DATA, companyId, execId, procExec,
+				procExecLog, hasError, checkStopExec, errorMessage);
+		return checkStopExec;
 	}
 
 	private boolean updateTaskLogs(List<ExecutionTaskLog> taskLogLists, ProcessExecutionTask procTask, EndStatus status,

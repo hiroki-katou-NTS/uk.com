@@ -107,7 +107,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		String practitioner = manualSetting.getPractitioner();
 		try {
 			String cid = manualSetting.getCid();
-			int saveForm = 0;
+			int saveForm = manualSetting.getSaveType().value;
 			String saveName = manualSetting.getSaveSetName().v();
 			GeneralDateTime saveStartDatetime = GeneralDateTime.now();
 

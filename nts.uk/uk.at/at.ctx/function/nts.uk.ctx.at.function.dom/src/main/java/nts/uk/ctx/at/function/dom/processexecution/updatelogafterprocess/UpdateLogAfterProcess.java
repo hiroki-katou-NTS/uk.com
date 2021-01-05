@@ -10,6 +10,7 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.function.dom.adapter.executionlog.ScheduleErrorLogAdapter;
 import nts.uk.ctx.at.function.dom.adapter.executionlog.ScheduleErrorLogImport;
 import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.AlarmCategoryFn;
@@ -128,7 +129,7 @@ public class UpdateLogAfterProcess {
 		case EXTERNAL_ACCEPTANCE:
 		case EXTERNAL_OUTPUT:
 			// INPUT「エラーメッセージ」を取得する (input get message error)
-			isHasErrorBusiness = errorMessage != null;
+			isHasErrorBusiness = !StringUtil.isNullOrEmpty(errorMessage, true);
 			break;
 		case INDEX_RECUNSTRUCTION:
 			break;

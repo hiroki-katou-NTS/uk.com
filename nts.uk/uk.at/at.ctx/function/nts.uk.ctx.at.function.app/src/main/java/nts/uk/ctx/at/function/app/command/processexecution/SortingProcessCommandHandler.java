@@ -25,7 +25,6 @@ import nts.uk.ctx.at.function.dom.processexecution.tasksetting.ExecutionTaskSett
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyInfo;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.enumcommon.Abolition;
 
 //import nts.uk.shr.com.task.schedule.UkJobScheduler;
 @Stateless
@@ -188,7 +187,10 @@ public class SortingProcessCommandHandler extends CommandHandler<ScheduleExecute
         // Step 1 ドメインモデル「会社情報」を取得する - Get domain model "company information"
         CompanyInfo companyInfo = this.companyAdapter.getCompanyInfoById(companyId);
         // Step 2 廃止区分をチェックする - Check the abolition category
-        return companyInfo.getIsAbolition() == Abolition.ABOLISH.value;
+        // Due to RQ only returns value if isAbolition = 1
+        // Otherwise returns a new Company instance
+        // If CompanyInfo value equals to a new instance
+        // Then this company is abolished
+        return companyInfo.equals(CompanyInfo.builder().build());
     }
-
 }

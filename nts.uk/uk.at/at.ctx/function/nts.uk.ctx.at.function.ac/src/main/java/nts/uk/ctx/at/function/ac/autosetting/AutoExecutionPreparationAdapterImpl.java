@@ -28,7 +28,7 @@ public class AutoExecutionPreparationAdapterImpl implements AutoExecutionPrepara
 	private ListEmpAutoExec listEmpAutoExec;
 
 	@Override
-	public void autoStoragePrepare(UpdateProcessAutoExecution domain) {
+	public boolean autoStoragePrepare(UpdateProcessAutoExecution domain) {
 		String patternCode = domain.getExecSetting().getSaveData().getPatternCode().map(AuxiliaryPatternCode::v).orElse(null);
 		AutoPrepareDataExport data = this.pub.autoStoragePrepare(patternCode);
 		String storeProcessingId = data.getProcessingId();
@@ -37,11 +37,11 @@ public class AutoExecutionPreparationAdapterImpl implements AutoExecutionPrepara
 		List<String> empIds = listEmpAutoExec.getListEmpAutoExec(AppContexts.user().companyId(), period,
 				domain.getExecScope().getExecScopeCls(), Optional.of(domain.getExecScope().getWorkplaceIdList()),
 				Optional.empty());
-		this.pub.updateTargetEmployee(storeProcessingId, patternCode, empIds);
+		return this.pub.updateTargetEmployee(storeProcessingId, patternCode, empIds);
 	}
 
 	@Override
-	public void autoDeletionPrepare(UpdateProcessAutoExecution domain) {
+	public boolean autoDeletionPrepare(UpdateProcessAutoExecution domain) {
 		AutoPrepareDataExport data = this.pub.autoDeletionPrepare(
 				domain.getExecSetting().getDeleteData().getPatternCode().map(AuxiliaryPatternCode::v).orElse(null));
 		String delId = data.getProcessingId();
@@ -50,6 +50,6 @@ public class AutoExecutionPreparationAdapterImpl implements AutoExecutionPrepara
 		List<String> empIds = listEmpAutoExec.getListEmpAutoExec(AppContexts.user().companyId(), period,
 				domain.getExecScope().getExecScopeCls(), Optional.of(domain.getExecScope().getWorkplaceIdList()),
 				Optional.empty());
-		this.pub.updateEmployeeDeletion(delId, empIds);
+		return this.pub.updateEmployeeDeletion(delId, empIds);
 	}
 }

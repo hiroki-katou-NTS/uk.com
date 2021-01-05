@@ -104,11 +104,11 @@ public class ChangeExecutionTaskSettingCommandHandler
 				UkJobScheduleOptions options = UkJobScheduleOptions
 						.builder(SortingProcessScheduleJob.class, scheduleIdDef, cron).userData(scheduletimeData)
 						.startDate(startDate).endDate(endDate).startClock(startTime).endClock(endTime)
-						.cleanupJobClass(SortingProcessEndScheduleJob.class).build();
+						.cleanupJobClass(SortingProcessScheduleJob.class).build();
 				UkJobScheduleOptions optionsEnd = UkJobScheduleOptions
 						.builder(SortingProcessEndScheduleJob.class, scheduleIdEnd, cron).userData(scheduletimeData)
 						.startDate(startDate).endDate(endDate).startClock(startTime).endClock(endTime)
-						.cleanupJobClass(SortingProcessEndScheduleJob.class).build();
+						.cleanupJobClass(SortingProcessScheduleJob.class).build();
 				String scheduleId = this.schedule(options);
 				String endScheduleId = this.schedule(optionsEnd);
 				executionTaskSetting.setScheduleId(scheduleId);

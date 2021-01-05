@@ -10,8 +10,8 @@ import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
 @Stateless
 public interface AutoExecutionPreparationAdapter {
 
-	void autoStoragePrepare(UpdateProcessAutoExecution domain);
+	boolean autoStoragePrepare(UpdateProcessAutoExecution domain);
 
-	void autoDeletionPrepare(UpdateProcessAutoExecution domain);
+	boolean autoDeletionPrepare(UpdateProcessAutoExecution domain);
 }
 
