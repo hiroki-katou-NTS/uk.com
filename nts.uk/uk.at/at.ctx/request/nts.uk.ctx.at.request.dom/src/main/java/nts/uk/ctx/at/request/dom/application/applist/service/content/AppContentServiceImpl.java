@@ -481,7 +481,9 @@ public class AppContentServiceImpl implements AppContentService {
 		// 承認状況照会　＝　String.Empty (tham khảo tình trạng approval)
 		String result = Strings.EMPTY;
 		for(ApprovalPhaseStateImport_New phase : approvalPhaseLst) {
-			if(phase.getApprovalAtr() == ApprovalBehaviorAtrImport_New.UNAPPROVED || phase.getApprovalAtr() == ApprovalBehaviorAtrImport_New.REMAND) {
+			if(phase.getApprovalAtr() == ApprovalBehaviorAtrImport_New.UNAPPROVED || 
+					phase.getApprovalAtr() == ApprovalBehaviorAtrImport_New.REMAND ||
+					phase.getApprovalAtr() == ApprovalBehaviorAtrImport_New.ORIGINAL_REMAND) {
 				// 承認状況照会　+＝　”－”  // (tham khảo tình trạng approval)
 				result += "－";
 			}
@@ -518,12 +520,9 @@ public class AppContentServiceImpl implements AppContentService {
 		}
 		// 反映状態(trạng thái phản ánh)　＝　PC：#CMM045_63スマホ：#CMMS45_8
 		boolean condition1 = 
-				(reflectedState==ReflectedState.NOTREFLECTED && phaseAtr==ApprovalBehaviorAtrImport_New.UNAPPROVED 
-					&& frameAtr==ApprovalBehaviorAtrImport_New.APPROVED) || 
-				(reflectedState==ReflectedState.NOTREFLECTED && phaseAtr==ApprovalBehaviorAtrImport_New.APPROVED && 
-						(frameAtr==ApprovalBehaviorAtrImport_New.APPROVED || frameAtr==ApprovalBehaviorAtrImport_New.UNAPPROVED)) ||
-				((reflectedState==ReflectedState.WAITREFLECTION || reflectedState==ReflectedState.REFLECTED) &&
-						phaseAtr==ApprovalBehaviorAtrImport_New.APPROVED && frameAtr==ApprovalBehaviorAtrImport_New.APPROVED);
+				(reflectedState==ReflectedState.WAITREFLECTION) ||
+				(phaseAtr==ApprovalBehaviorAtrImport_New.APPROVED) ||
+				(frameAtr==ApprovalBehaviorAtrImport_New.APPROVED);
 		if(condition1) {
 			if(device==ApprovalDevice.PC.value) {
 				result = "CMM045_63";

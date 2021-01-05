@@ -10,11 +10,12 @@ import lombok.NoArgsConstructor;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimeZoneUseDto;
-import nts.uk.ctx.at.request.app.find.setting.company.request.applicationsetting.apptypesetting.DisplayReasonDto;
-import nts.uk.ctx.at.request.app.find.setting.company.vacationapplicationsetting.HdAppSetDto;
+import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.applicationsetting.DisplayReasonDto;
+import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingDto;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.RemainVacationInfo;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppAbsenceStartInfoOutput;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
+import nts.uk.shr.com.context.AppContexts;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,7 +28,7 @@ public class AppAbsenceStartInfoDto {
 	/**
 	 * 休暇申請設定
 	 */
-	public HdAppSetDto hdAppSet;
+	public HolidayApplicationSettingDto hdAppSet;
 	
 	/**
 	 * 申請理由表示
@@ -79,7 +80,7 @@ public class AppAbsenceStartInfoDto {
 	public static AppAbsenceStartInfoDto fromDomain(AppAbsenceStartInfoOutput absenceStartInfoOutput) {
 		AppAbsenceStartInfoDto result = new AppAbsenceStartInfoDto();
 		result.appDispInfoStartupOutput = AppDispInfoStartupDto.fromDomain(absenceStartInfoOutput.getAppDispInfoStartupOutput());
-		result.hdAppSet = HdAppSetDto.convertToDto(absenceStartInfoOutput.getHdAppSet());
+		result.hdAppSet = HolidayApplicationSettingDto.fromDomain(absenceStartInfoOutput.getHdAppSet());
 		result.displayReasonLst = absenceStartInfoOutput.getDisplayReasonLst().stream().map(x -> DisplayReasonDto.fromDomain(x)).collect(Collectors.toList());
 		result.remainVacationInfo = absenceStartInfoOutput.getRemainVacationInfo();
 		result.workHoursDisp = absenceStartInfoOutput.isWorkHoursDisp();
@@ -95,7 +96,7 @@ public class AppAbsenceStartInfoDto {
 	public AppAbsenceStartInfoOutput toDomain() {
 		return new AppAbsenceStartInfoOutput(
 				appDispInfoStartupOutput.toDomain(), 
-				hdAppSet.toDomain(), 
+				hdAppSet.toDomain(AppContexts.user().companyId()),
 				displayReasonLst.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
 				remainVacationInfo, 
 				workHoursDisp, 

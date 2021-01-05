@@ -125,8 +125,8 @@ module nts.uk.ui.at.kcp013.shared {
                 columns: [
                     { prop: 'code', length: 5 },
                     { prop: 'name', length: 12 },
-                    { prop: 'tzStartToEnd1', length: 1 },
-                    { prop: 'tzStartToEnd2', length: 1 },
+                    { prop: 'tzStartToEnd1', length: 12 },
+                    { prop: 'tzStartToEnd2', length: 12 },
                     { prop: 'workStyleClassfication', length: 1 },
                     { prop: 'remark', length: 1 }
                 ]

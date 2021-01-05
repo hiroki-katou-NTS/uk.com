@@ -343,7 +343,18 @@ public class BusinessTripFinder {
 
         BusinessTripInfoOutput businessTripInfoOutput = changeWorkCodeParam.getBusinessTripInfoOutputDto().toDomain();
         GeneralDate inputDate = GeneralDate.fromString(changeWorkCodeParam.getDate(), "yyyy/MM/dd");
-        businessTripService.checkInputWorkCode(typeCode, timeCode, inputDate, startWorkTime, endWorkTime);
+
+        try {
+            businessTripService.checkInputWorkCode(typeCode, timeCode, inputDate, startWorkTime, endWorkTime);
+        } catch (Exception e) {
+            String msgId = BusinessException.takeFrom(e).get().getMessageId();
+            if (msgId.equals("Msg_1912") || msgId.equals("Msg_1913")) {
+                result.setMsg(msgId);
+            } else {
+                throw e;
+            }
+        }
+
         // アルゴリズム「出張申請就業時間帯チェック」を実行する
         if (Strings.isBlank(timeCode)) {
             return result;

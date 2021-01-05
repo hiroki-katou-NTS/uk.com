@@ -68,7 +68,7 @@ module nts.uk.ui.at.ksu002.a {
 					tabindex: $$tabindex
 				},
 				ntsComboBox: {
-					width: '430px',
+					width: 520,
 					name: $component.$i18n('KSU002_12'),
 					value: $component.workTypeData.selected,
 					options: $component.workTypeData.dataSources,
@@ -78,9 +78,9 @@ module nts.uk.ui.at.ksu002.a {
 					selectFirstIfNull: true,
 					visibleItemsCount: 10,
 					columns: [
-						{ prop: 'workTypeCode', length: 4 },
-						{ prop: 'name', length: 10 },
-						{ prop: 'memo', length: 10 },
+						{ prop: 'workTypeCode', length: 5 },
+						{ prop: 'name', length: 12 },
+						{ prop: 'memo', length: 1 },
 					]
 				}"></div>
 		</div>

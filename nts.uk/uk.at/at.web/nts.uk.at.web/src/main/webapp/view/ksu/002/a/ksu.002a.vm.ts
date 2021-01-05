@@ -93,7 +93,7 @@ module nts.uk.ui.at.ksu002.a {
 					if (!d) {
 						dr.begin = null;
 						dr.finish = null;
-						
+
 						// reset memento
 						vm.schedules.reset();
 
@@ -157,14 +157,17 @@ module nts.uk.ui.at.ksu002.a {
 											confirmed,
 											achievements,
 											needToWork,
-											workTypeCode,
-											workTypeName,
-											workTimeCode,
-											workTimeName,
-											startTime,
-											endTime,
 											dateInfoDuringThePeriod
 										} = $raw;
+
+										const {
+											workTypeName,
+											workTimeName,
+											workTypeCode,
+											workTimeCode,
+											startTime,
+											endTime
+										} = arch === NO ? $raw : (achievements || $raw);
 
 										// hack i18n
 										_.extend(names, { [workTypeName]: workTypeName });

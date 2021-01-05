@@ -1,8 +1,8 @@
 package nts.uk.screen.at.app.query.ksu.ksu002.a.input;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
+import nts.arc.time.YearMonth;
 
 /**
  * 
@@ -10,13 +10,8 @@ import lombok.Setter;
  *
  */
 
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
 public class ListOfPeriodsCloseInput {
-	@Setter
-	public Integer yearMonth;
-	
-	public int getYearMonth() {
-		return this.yearMonth == null ? -1 : this.yearMonth.intValue();
-	}
+	public YearMonth yearMonth;
 }

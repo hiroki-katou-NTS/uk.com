@@ -12,6 +12,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingRepository;
 import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.time.GeneralDate;
@@ -28,8 +30,6 @@ import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.IAppWorkChangeRepository;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.DispName;
@@ -51,7 +51,7 @@ public class ApplicationListForScreen {
 	@Inject
 	private AppAbsenceRepository appAbsenceRepository;
 	@Inject
-	private HdAppSetRepository hdAppSetRepository;
+	private HolidayApplicationSettingRepository hdAppSetRepository;
 	@Inject
 	private IAppWorkChangeRepository appWorkChangeRepository;
 	@Inject
@@ -133,7 +133,7 @@ public class ApplicationListForScreen {
 		}
 		List<Application> applicationHoliday = application.stream().filter(x -> x.getAppType().value == ApplicationType.ABSENCE_APPLICATION.value).collect(Collectors.toList());
 		if(!applicationHoliday.isEmpty()){
-			Optional<HdAppSet> hdAppSet = this.hdAppSetRepository.getAll();
+			Optional<HolidayApplicationSetting> hdAppSet = this.hdAppSetRepository.findSettingByCompanyId(companyID);
 			List<AppAbsence> apps = appAbsenceRepository.getAbsenceByIds(companyID, applicationHoliday.stream().map(c -> c.getAppID()).distinct().collect(Collectors.toList()));
 			List<ScBasicScheduleImport_Old> basicSchedules = new ArrayList<>();
 			GeneralDate minD = applicationHoliday.stream().map(c -> c.getOpAppStartDate().orElse(null)).filter(c -> c.getApplicationDate() != null)
@@ -269,39 +269,15 @@ public class ApplicationListForScreen {
 														.getDispName().toString();
 	}
 	
-	private String getAppAbsenceName(int holidayCode, Optional<HdAppSet> hdAppSet){
+	private String getAppAbsenceName(int holidayCode, Optional<HolidayApplicationSetting> hdAppSet){
 		String holidayAppTypeName ="";
 		if(!hdAppSet.isPresent()){
 			return holidayAppTypeName;
 		}
-		switch (holidayCode) {
-		case 0:
-			holidayAppTypeName = hdAppSet.get().getYearHdName() == null ? "" : hdAppSet.get().getYearHdName().toString();
-			break;
-		case 1:
-			holidayAppTypeName = hdAppSet.get().getObstacleName() == null ? "" : hdAppSet.get().getObstacleName().toString();
-			break;
-		case 2:
-			holidayAppTypeName = hdAppSet.get().getAbsenteeism()== null ? "" : hdAppSet.get().getAbsenteeism().toString();
-			break;
-		case 3:
-			holidayAppTypeName = hdAppSet.get().getSpecialVaca() == null ? "" : hdAppSet.get().getSpecialVaca().toString();
-			break;
-		case 4:
-			holidayAppTypeName = hdAppSet.get().getYearResig() == null ? "" : hdAppSet.get().getYearResig().toString();
-			break;
-		case 5:
-			holidayAppTypeName = hdAppSet.get().getHdName() == null ? "" : hdAppSet.get().getHdName().toString();
-			break;
-		case 6:
-			holidayAppTypeName = hdAppSet.get().getTimeDigest() == null ? "" : hdAppSet.get().getTimeDigest().toString();
-			break;
-		case 7:
-			holidayAppTypeName = hdAppSet.get().getFurikyuName() == null ? "" :  hdAppSet.get().getFurikyuName().toString();
-			break;
-		default:
-			break;
-		}
+		holidayAppTypeName = hdAppSet.get().getHolidayApplicationTypeDisplayName()
+				.stream()
+				.filter(i -> i.getHolidayApplicationType().value == holidayCode)
+				.findFirst().map(i -> i.getDisplayName().v()).orElse("");
 		return holidayAppTypeName;
 	}
 	
