@@ -204,7 +204,7 @@ export class KafS05Component extends KafS00ShrComponent {
         const self = this;
         let model = self.model as Model;
         let c16_1 = false;
-        if (!_.isNil(model.displayInfoOverTime.calculationResultOp)) {
+        if (!_.isNil(_.get(model, 'displayInfoOverTime.calculationResultOp'))) {
             _.forEach(model.displayInfoOverTime.calculationResultOp.applicationTimes, (i: ApplicationTime) => {
                 _.forEach(i.applicationTime, (item: OvertimeApplicationSetting) => {
                     if (item.attendanceType == AttendanceType.BREAKTIME) {
