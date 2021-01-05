@@ -64,6 +64,7 @@ module nts.uk.at.view.kmk004.p {
 		itemListP3_7: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
 
 		visibleP6_3: KnockoutObservable<boolean> = ko.observable(false);
+		enableP6_3: KnockoutObservable<boolean> = ko.observable(false);
 		requiredP3: KnockoutObservable<boolean> = ko.observable(false);
 
 		screenPData = new TransformScreenPData();
@@ -129,6 +130,7 @@ module nts.uk.at.view.kmk004.p {
 					vm.checkDisplay();
 
 					if (vm.mode() == SCREEN_MODE.UPDATE) {
+						vm.enableP6_3(true);
 						if (vm.screenPData.settingDto.settlementPeriod.period() === 1) {
 							vm.selectedP3_3(1);
 						} else {
@@ -146,6 +148,7 @@ module nts.uk.at.view.kmk004.p {
 					vm.checkDisplay();
 
 					if (vm.mode() == SCREEN_MODE.UPDATE) {
+						vm.enableP6_3(true);
 						if (vm.screenPData.settingDto.settlementPeriod.period() === 1) {
 							vm.selectedP3_3(1);
 						} else {
@@ -163,6 +166,7 @@ module nts.uk.at.view.kmk004.p {
 					vm.checkDisplay();
 
 					if (vm.mode() == SCREEN_MODE.UPDATE) {
+						vm.enableP6_3(true);
 						if (vm.screenPData.settingDto.settlementPeriod.period() === 1) {
 							vm.selectedP3_3(1);
 						} else {
@@ -175,10 +179,10 @@ module nts.uk.at.view.kmk004.p {
 
 		checkDisplay() {
 			const vm = this;
+			vm.visibleP6_3(true);
 			switch (vm.mode()) {
-
+			
 				case SCREEN_MODE.ADD:
-					vm.visibleP6_3(false);
 
 					if (vm.params.sidebarType == 'Com_Workplace') {
 						vm.message(vm.$i18n("KMK004_344"));
@@ -195,7 +199,6 @@ module nts.uk.at.view.kmk004.p {
 
 				case SCREEN_MODE.UPDATE:
 					vm.message('');
-					vm.visibleP6_3(true);
 
 					if (vm.params.sidebarType == 'Com_Company') {
 						vm.title('会社');
