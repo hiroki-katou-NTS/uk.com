@@ -149,7 +149,7 @@ public class JpaGetKMK004CompanyExportData extends JpaRepository implements GetK
 					//R8_4
 					((month - 1) % 12 + 1) + I18NText.getText("KMK004_401"),
 					//R8_5
-					KMK004PrintCommon.convertTime(normal.isPresent() ? normal.get().legalTime : 0),
+					KMK004PrintCommon.convertTime(normal.isPresent() ? normal.get().legalTime : null),
 					//R8_6
 					KMK004PrintCommon.convertTime(r.getInt(("DAILY_TIME"))),
 					//R8_7
@@ -171,11 +171,11 @@ public class JpaGetKMK004CompanyExportData extends JpaRepository implements GetK
 					//R8_15
 					((month - 1) % 12 + 1) + I18NText.getText("KMK004_401"),
 					//R8_16
-					KMK004PrintCommon.convertTime(flex.isPresent() ? flex.get().withinTime : 0),
+					refPreTime == null? null :KMK004PrintCommon.convertTime(flex.isPresent() ? flex.get().withinTime : null),
 					//R8_17
-					KMK004PrintCommon.convertTime(flex.isPresent() ? flex.get().legalTime : 0),
+					KMK004PrintCommon.convertTime(flex.isPresent() ? flex.get().legalTime : null),
 					//R8_18
-					KMK004PrintCommon.convertTime(flex.isPresent() ?flex.get().weekAvgTime : 0),
+					KMK004PrintCommon.convertTime(flex.isPresent() ?flex.get().weekAvgTime : null),
 					//R8_19
 					r.getInt("SETTLE_PERIOD_MON") == 2 ? "2ヶ月" : "3ヶ月",
 					//R8_20
@@ -195,7 +195,7 @@ public class JpaGetKMK004CompanyExportData extends JpaRepository implements GetK
 					//R8_27		
 					((month - 1) % 12 + 1) + I18NText.getText("KMK004_401"),
 					//R8_28
-					KMK004PrintCommon.convertTime(defor.isPresent() ? defor.get().legalTime : 0),
+					KMK004PrintCommon.convertTime(defor.isPresent() ? defor.get().legalTime : null),
 					//R8_29
 					KMK004PrintCommon.convertTime(r.getInt("REG_DAILY_TIME")),
 					//R8_30

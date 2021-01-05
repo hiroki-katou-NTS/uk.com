@@ -94,7 +94,6 @@ public class JpaGetKMK004WorkPlaceExportData extends JpaRepository implements Ge
 	     exportSQL.append("              LEFT JOIN KSHST_WKP_TRANS_LAB_TIME ON BSYMT_WKP_INFO.CID = KSHST_WKP_TRANS_LAB_TIME.CID   ");
 	     exportSQL.append("              AND BSYMT_WKP_INFO.WKP_ID = KSHST_WKP_TRANS_LAB_TIME.WKP_ID   ");
 	     exportSQL.append("             WHERE BSYMT_WKP_INFO.CID = ?  ");
-	     exportSQL.append("              AND BSYMT_WKP_INFO.WKP_ID IN (SELECT WKP_ID FROM KSRMT_LEGAL_TIME_M_WKP WHERE CID = ? AND KSRMT_LEGAL_TIME_M_WKP.YM >= ? AND KSRMT_LEGAL_TIME_M_WKP.YM <= ? )   ");
 	     exportSQL.append("            ) TBL  ");
 	     exportSQL.append("             ORDER BY TBL.HIERARCHY_CD ASC");
 
@@ -142,9 +141,6 @@ public class JpaGetKMK004WorkPlaceExportData extends JpaRepository implements Ge
 			
 			try (PreparedStatement stmt = this.connection().prepareStatement(GET_WORKPLACE.toString())) {
 				stmt.setString(1, cid);
-				stmt.setString(2, cid);
-				stmt.setInt(3, startYM);
-				stmt.setInt(4, endYM);
 				NtsResultSet result = new NtsResultSet(stmt.executeQuery());
 				result.forEach(i -> {
 					datas.addAll(buildWorkPlaceRow(i, legalTimes, startDate, endDate, month, startOfWeek));

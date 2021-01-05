@@ -87,8 +87,6 @@ public class JpaGetKMK004EmploymentExportData extends JpaRepository implements G
 											+" LEFT JOIN KRCST_EMP_REG_M_CAL_SET ON BSYMT_EMPLOYMENT.CID = KRCST_EMP_REG_M_CAL_SET.CID  "
 											+"            AND BSYMT_EMPLOYMENT.CODE = KRCST_EMP_REG_M_CAL_SET.EMP_CD"
 											+" WHERE BSYMT_EMPLOYMENT.CID = ? "
-											+" AND BSYMT_EMPLOYMENT.CODE IN (select EMP_CD from KSRMT_LEGAL_TIME_M_EMP WHERE CID = ? "
-											+" AND KSRMT_LEGAL_TIME_M_EMP.YM >= ? AND KSRMT_LEGAL_TIME_M_EMP.YM <= ?) "
 											+" ORDER BY IIF(BSYMT_EMPLOYMENT.NAME IS NOT NULL,0,1), BSYMT_EMPLOYMENT.CODE ";
 	@Override
 	public List<MasterData> getEmploymentExportData(int startDate, int endDate) {
@@ -109,9 +107,6 @@ public class JpaGetKMK004EmploymentExportData extends JpaRepository implements G
 			
 		try (PreparedStatement stmt = this.connection().prepareStatement(GET_EMPLOYMENT.toString())) {
 			stmt.setString(1, cid);
-			stmt.setString(2, cid);
-			stmt.setInt(3, startYM);
-			stmt.setInt(4, endYM);
 			NtsResultSet result = new NtsResultSet(stmt.executeQuery());
 			
 			result.forEach(i -> {
