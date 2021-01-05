@@ -175,17 +175,19 @@ module nts.uk.at.view.kmk004.components {
 
 			vm.years
 				.subscribe(() => {
-					if (ko.unwrap(vm.years).length == 0) {
-						vm.workTimeSaves([]);
-						vm.initList();
+					setTimeout(() => {
+						if (ko.unwrap(vm.years).length == 0) {
+							vm.workTimeSaves([]);
+							vm.initList();
 
-					} else {
-						if (ko.unwrap(vm.workTimeSaves).length > ko.unwrap(vm.years).length) {
-							_.remove(ko.unwrap(vm.workTimeSaves), ((value) => {
-								return value.year == ko.unwrap(vm.yearDelete);
-							}))
+						} else {
+							if (ko.unwrap(vm.workTimeSaves).length > ko.unwrap(vm.years).length) {
+								_.remove(ko.unwrap(vm.workTimeSaves), ((value) => {
+									return value.year == ko.unwrap(vm.yearDelete);
+								}))
+							}
 						}
-					}
+					}, 100);
 				});
 		}
 
