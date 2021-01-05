@@ -144,7 +144,6 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	}
 	
 	/**
-	 * ver5
 	 * 出勤系か
 	 * @param require
 	 * @return

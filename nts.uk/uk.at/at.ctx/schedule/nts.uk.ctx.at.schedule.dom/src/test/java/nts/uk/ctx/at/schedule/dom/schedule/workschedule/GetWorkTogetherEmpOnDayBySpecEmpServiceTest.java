@@ -29,12 +29,13 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
  * @author lan_lt
  *
  */
-@SuppressWarnings("static-access")
+
 @RunWith(JMockit.class)
 public class GetWorkTogetherEmpOnDayBySpecEmpServiceTest {
 	
 	@Injectable
 	GetWorkTogetherEmpOnDayBySpecEmpService.Require require;
+	
 	/**
 	 * input 社員ID = "sid_0"
 	 *       List<組織に出勤する社員ID> = "sid_1", "sid_2", "sid_3"
@@ -43,6 +44,7 @@ public class GetWorkTogetherEmpOnDayBySpecEmpServiceTest {
 	 * output: "sid_1", "sid_2"
 	 * 
 	 */
+	@SuppressWarnings("static-access")
 	@Test
 	public void getWorkTogetherEmployeeOnDay(@Mocked GetTargetIdentifiInforService targetOrgService
 			, @Mocked GetEmpCanReferBySpecOrganizationService empSameOrgService) {
@@ -89,9 +91,9 @@ public class GetWorkTogetherEmpOnDayBySpecEmpServiceTest {
 	public static class Helper{
 		/**
 		 *　勤務予定を作る
-		 * @param sid　社員ID
-		 * @param date　基準日
-		 * @param workInfo　勤務情報
+		 * @param sid 社員ID
+		 * @param date 基準日
+		 * @param workInfo 勤務情報
 		 * @return
 		 */
 		public static WorkSchedule createWorkSchedule(String sid, GeneralDate date, WorkInfoOfDailyAttendance workInfo) {

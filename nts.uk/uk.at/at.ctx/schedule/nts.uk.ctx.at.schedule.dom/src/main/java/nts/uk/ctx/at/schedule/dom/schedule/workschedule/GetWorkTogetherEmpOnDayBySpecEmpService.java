@@ -26,9 +26,13 @@ public class GetWorkTogetherEmpOnDayBySpecEmpService {
 		val targetOrg = GetTargetIdentifiInforService.get(require, baseDate, sid);
 		val targetEmps = GetEmpCanReferBySpecOrganizationService.getListEmpID(require, baseDate, sid, targetOrg);
 		val workSchedules = require.getWorkSchedule(targetEmps, baseDate);
-		val workTogetherList = workSchedules.stream().filter(ws -> ws.getWorkInfo().isAttendanceRate(require))
+		val workTogetherList = workSchedules.stream()
+				.filter(workSchedule -> workSchedule.getWorkInfo().isAttendanceRate(require))
 				.collect(Collectors.toList());
-		return workTogetherList.stream().map(wt -> wt.getEmployeeID()).filter(wTSid -> !wTSid.equals(sid)).collect(Collectors.toList());
+		return workTogetherList.stream()
+				.map(workTogether -> workTogether.getEmployeeID())
+				.filter(workTogether -> !workTogether.equals(sid))
+				.collect(Collectors.toList());
 	}
 	
 	public static interface Require extends GetTargetIdentifiInforService.Require, GetEmpCanReferBySpecOrganizationService.Require, WorkInfoOfDailyAttendance.Require{
