@@ -20,7 +20,7 @@ public interface EmployeeWorkplaceIdAdapter {
 	 * 
 	 * 社員IDリストから職場IDを取得する - Get a workplace ID from the employee ID list
 	 * 
-	 * @param wpkIds   - 社員IDリスト
+	 * @param sIds   - 社員IDリスト
 	 * @param baseDate - 基準日
 	 * @return Map<社員ID、職場ID>
 	 */

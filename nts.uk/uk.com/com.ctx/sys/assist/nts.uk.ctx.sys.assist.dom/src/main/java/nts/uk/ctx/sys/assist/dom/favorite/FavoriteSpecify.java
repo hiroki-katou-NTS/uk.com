@@ -11,20 +11,20 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 
 /*
- * UKDesign.ドメインモッ�.NittsuSystem.UniversalK.オフィス支援.在席照�在席照�お気に入り�挮
+ * UKDesign.ドメインモヿ�.NittsuSystem.UniversalK.オフィス支援.在席照�在席照�お気に入り�挮
  */
 public class FavoriteSpecify extends AggregateRoot {
 
 	// お気に入り名
 	private FavoriteName favoriteName;
 
-	// 作��D
+	// 作��D
 	private String creatorId;
 
 	// 入力日
 	private GeneralDateTime inputDate;
 
-	// 対象選�
+	// 対象選�
 	private TargetSelection targetSelection;
 
 	// 職場ID
@@ -108,13 +108,13 @@ public class FavoriteSpecify extends AggregateRoot {
 	// TODO
 	public interface Require {
 		/**
-		 * [R-1] 職場表示名を取得する
+		 * [R-1] 職場表示名を取得す�
 		 * 
-		 * @param wrkspIds 職場IDリスト
+		 * @param wrkspIds 職場IDリス�
 		 * @param date     基準日
 		 * @return List<String>
 		 * 
-		 *         職場情報を取得するAdapter.職場情報を取得する(職場IDリスト、基準日)
+		 *         職場惱を取得するAdapter.職場惱を取得す�職場IDリスト、基準日)
 		 */
 		public List<String> getWrkspDispName(List<String> wrkspIds, GeneralDate date);
 	}

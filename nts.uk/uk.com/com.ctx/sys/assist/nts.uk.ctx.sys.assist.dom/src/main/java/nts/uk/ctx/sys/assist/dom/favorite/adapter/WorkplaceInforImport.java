@@ -1,12 +1,11 @@
-package nts.uk.ctx.bs.employee.pub.workplace.master;
+package nts.uk.ctx.sys.assist.dom.favorite.adapter;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class WorkplaceInforExport {
-
+public class WorkplaceInforImport {
 	private String workplaceId;
 	private String hierarchyCode;
 	private String workplaceCode;

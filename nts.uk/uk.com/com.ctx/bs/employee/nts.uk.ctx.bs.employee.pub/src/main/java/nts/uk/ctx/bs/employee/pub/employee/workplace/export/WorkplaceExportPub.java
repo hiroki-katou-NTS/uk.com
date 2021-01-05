@@ -3,6 +3,7 @@ package nts.uk.ctx.bs.employee.pub.employee.workplace.export;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplaceInforExport;
 
 /**
  * 
@@ -34,4 +35,7 @@ public interface WorkplaceExportPub {
 	
 	//RQ560_HOATT_TAMTHOI
 	public List<WkpExport> getWkpConfigRQ560(String companyId, List<String> listWkpId, GeneralDate baseDate);
+	
+	//RQ560_HieuTT
+	public List<WorkplaceInforExport> getWkpRQ560(String companyId, List<String> listWkpId, GeneralDate baseDate);
 }
