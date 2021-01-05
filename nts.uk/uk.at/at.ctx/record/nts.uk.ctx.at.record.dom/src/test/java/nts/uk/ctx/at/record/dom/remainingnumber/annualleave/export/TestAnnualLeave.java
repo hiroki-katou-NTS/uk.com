@@ -208,14 +208,11 @@ public class TestAnnualLeave {
 						Optional.empty()
 						);
 
-				if ( aggrResultOfAnnualLeaveOpt.isPresent() ){
-
-					// 検証
-					assertProcedure(
-							caseNo,
-							aggrResultOfAnnualLeaveOpt.get(),
-							testOutputAggrResultOfAnnualLeaveListMap);
-				}
+				// 検証
+				assertProcedure(
+						caseNo,
+						aggrResultOfAnnualLeaveOpt.get(),
+						testOutputAggrResultOfAnnualLeaveListMap);
 
 				String ss = "";
 			}

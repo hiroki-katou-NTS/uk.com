@@ -54,22 +54,20 @@ public class SpecialLeaveUseNumber extends DomainObject implements Cloneable, Se
 	 * @param useTimes
 	 */
 	static public SpecialLeaveUseNumber of(
-			double useDays, Integer useTimes) {
+			double useDays_in, Integer useTimes_in) {
 
-		SpecialLeaveUseTimes specialLeaveUseTimes = null;
+		Optional<SpecialLeaveUseTimes> useTimes = Optional.empty();
 
-		if ( useTimes != null ) {
-			specialLeaveUseTimes
-				= new SpecialLeaveUseTimes(new SpecialLeavaRemainTime(useTimes));
+		if ( useTimes_in != null ) {
+			useTimes = Optional.of(new SpecialLeaveUseTimes(new SpecialLeavaRemainTime(useTimes_in)));
 		}
 
 		SpecialLeaveUseNumber specialLeaveUseNumber
 			= new SpecialLeaveUseNumber(
-					SpecialLeaveUseDays.of(new SpecialLeaveRemainDay(useDays)),
-					specialLeaveUseTimes);
+					SpecialLeaveUseDays.of(new SpecialLeaveRemainDay(useDays_in)),
+					useTimes);
 
 		return specialLeaveUseNumber;
-
 	}
 
 //	/**
@@ -99,14 +97,10 @@ public class SpecialLeaveUseNumber extends DomainObject implements Cloneable, Se
 	@Override
 	public SpecialLeaveUseNumber clone() {
 		SpecialLeaveUseNumber cloned = new SpecialLeaveUseNumber();
-		try {
-			cloned.useDays = this.useDays.clone();
-			if (this.useTimes.isPresent()){
-				cloned.useTimes = Optional.of(this.useTimes.get().clone());
-			}
-		}
-		catch (Exception e){
-			throw new RuntimeException("SpecialLeaveUseNumber clone error.");
+
+		cloned.useDays = this.useDays.clone();
+		if (this.useTimes.isPresent()){
+			cloned.useTimes = Optional.of(this.useTimes.get().clone());
 		}
 		return cloned;
 	}

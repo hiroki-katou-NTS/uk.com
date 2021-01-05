@@ -252,7 +252,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		// 次回年休付与日を計算
 		List<NextAnnualLeaveGrant> nextAnnualLeaveGrantList = new ArrayList<>();
 		{
-			// 次回年休付与を計算
+			//い 次回年休付与を計算
 			nextAnnualLeaveGrantList = CalcNextAnnualLeaveGrantDate.algorithm(
 					require, cacheCarrier,
 					companyId, employeeId, Optional.of(aggrPeriod),
@@ -269,7 +269,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 
 					// 次回年休付与の付与日数を条件によって更新する
 					{
-						// 年休出勤率を計算する
+						// い年休出勤率を計算する
 						val resultRateOpt = CalcAnnLeaAttendanceRate.algorithm(require, cacheCarrier,
 								companyId, employeeId,
 								nextAnnualGrantList.getGrantDate(),
@@ -323,11 +323,11 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			}
 		}
 
-		// 年休集計期間を作成
+		// ；年休集計期間を作成
 		List<AggregatePeriodWork> aggregateWork = createAggregatePeriod(
 				nextAnnualLeaveGrantList, aggrPeriod, grantRemainingDatas);
 
-		// 暫定年休管理データを取得する
+		// 2暫定年休管理データを取得する
 		val tempAnnualLeaveMngs = getTempAnnualLeaveMngs(
 				require, employeeId, aggrPeriod, mode,
 				isOverWriteOpt, forOverWriteListOpt);
@@ -344,8 +344,8 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		aggrResult = createShortRemainingDatas(
 				employeeId, companyId, aggrResult);
 
-//		// 年休不足分として作成した年休付与データを削除する
-//		aggrResult = deleteDummyRemainingDatas(aggrResult);
+		// 年休不足分として作成した年休付与データを削除する
+		aggrResult = deleteDummyRemainingDatas(aggrResult);
 
 		// 「年休の集計結果」を返す
 		return Optional.of(aggrResult);
@@ -874,12 +874,12 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			// 年休情報．付与残数データに作成した年休付与残数を追加
 			annualLeaveInfo.getGrantRemainingList().add(newRemainData);
 
-			// 年休不足分として作成した年休付与データを削除する
-			val itrRemainDatasTmp
-				= annualLeaveInfo.getGrantRemainingList().stream().filter(
-						c->c.isDummyAtr() == false
-						).collect(Collectors.toList());
-			annualLeaveInfo.setGrantRemainingList(itrRemainDatasTmp);
+//			// 年休不足分として作成した年休付与データを削除する
+//			val itrRemainDatasTmp
+//				= annualLeaveInfo.getGrantRemainingList().stream().filter(
+//						c->c.isDummyAtr() == false
+//						).collect(Collectors.toList());
+//			annualLeaveInfo.setGrantRemainingList(itrRemainDatasTmp);
 		}
 
 		// 年休の集計結果を返す

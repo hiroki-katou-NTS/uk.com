@@ -165,22 +165,8 @@ public class SpecialLeaveInfo implements Cloneable {
 				require, companyId, employeeId,
 				specialLeaveAggregatePeriodWork, specialHolidayInterimMngData, aggrResult);
 
-		// 残数不足エラーをチェックする -----------------------------
-		List<SpecialLeaveError> errors = new ArrayList<>();
-		{
-			// 特休残数がマイナスかチェック
-			val withMinus = this.remainingNumber.getSpecialLeaveWithMinus();
-			if (withMinus.getRemainingNumberInfo().getRemainingNumber().isMinus()){
-				if (specialLeaveAggregatePeriodWork.isAfterGrant()){
-					// 「日単位特休不足エラー（付与後）」を追加
-					errors.add(SpecialLeaveError.AFTERGRANT);
-				}
-				else {
-					// 「日単位特休不足エラー（付与前）」を追加
-					errors.add(SpecialLeaveError.BEFOREGRANT);
-				}
-			}
-		}
+		// 残数不足エラーをチェックする
+		aggrResult = this.checkError(aggrResult, specialLeaveAggregatePeriodWork);
 
 		// 期間終了退避処理  -----------------------------
 
@@ -208,7 +194,7 @@ public class SpecialLeaveInfo implements Cloneable {
 		} else {
 			// 「特別休暇の集計結果．特別休暇エラー情報」に受け取った特別休暇エラーを全て追加
 			// ※既に「特別休暇エラー情報」に存在する特別休暇エラーは追加不要。
-			for(SpecialLeaveError e : errors)
+			for(SpecialLeaveError e : aggrResult.getSpecialLeaveErrors())
 				aggrResult.addError(e);
 
 			// 年月日を更新　←　終了日
@@ -667,6 +653,30 @@ public class SpecialLeaveInfo implements Cloneable {
 		// 「特休の集計結果」を返す
 		return aggrResult;
 	}
+
+	private InPeriodOfSpecialLeaveResultInfor checkError(
+			InPeriodOfSpecialLeaveResultInfor resultInfo,
+			SpecialLeaveAggregatePeriodWork specialLeaveAggregatePeriodWork) {
+		// 残数不足エラーをチェックする -----------------------------
+		List<SpecialLeaveError> errors = new ArrayList<>();
+		{
+			// 特休残数がマイナスかチェック
+			val withMinus = this.remainingNumber.getSpecialLeaveWithMinus();
+			if (withMinus.getRemainingNumberInfo().getRemainingNumber().isMinus()){
+				if (specialLeaveAggregatePeriodWork.isAfterGrant()){
+					// 「特休不足エラー（付与後）」を追加
+					errors.add(SpecialLeaveError.AFTERGRANT);
+				}
+				else {
+					// 「特休不足エラー（付与前）」を追加
+					errors.add(SpecialLeaveError.BEFOREGRANT);
+				}
+			}
+		}
+		resultInfo.setSpecialLeaveErrors(errors);
+		return resultInfo;
+	}
+
 
 	/**
 	 * 付与残数データから特別休暇不足分の特別休暇付与残数を削除

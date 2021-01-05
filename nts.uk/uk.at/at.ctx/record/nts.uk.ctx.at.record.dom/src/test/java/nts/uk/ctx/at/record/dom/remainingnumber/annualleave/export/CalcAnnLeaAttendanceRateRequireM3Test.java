@@ -45,13 +45,14 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
  */
 public class CalcAnnLeaAttendanceRateRequireM3Test implements GetAnnLeaRemNumWithinPeriodProc.RequireM3 {
 
+	/** バイナリデータ */
+	HashMap<String, Object> binaryData;
+
+
 	public CalcAnnLeaAttendanceRateRequireM3Test(){
 		binaryData
 			= ObjectBinaryFile.read(CalcAnnLeaAttendanceRateRequireM3.destionationFile);
 	}
-
-	/** バイナリデータ */
-	HashMap<String, Object> binaryData;
 
 	/** 社員 */
 	@Override

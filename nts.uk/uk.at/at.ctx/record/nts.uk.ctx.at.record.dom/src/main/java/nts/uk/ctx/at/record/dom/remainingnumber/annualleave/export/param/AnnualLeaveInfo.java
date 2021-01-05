@@ -259,9 +259,9 @@ public class AnnualLeaveInfo implements Cloneable {
 
 			// 年月日を更新　←　終了日
 			this.ymd = aggregatePeriodWork.getPeriod().end();
-
-			// 「年休の集計結果」を返す
-			return aggrResult;
+//
+//			// 「年休の集計結果」を返す
+//			return aggrResult;
 		}
 
 		// 処理中の「年休集計期間WORK．終了日の期間かどうか」=true

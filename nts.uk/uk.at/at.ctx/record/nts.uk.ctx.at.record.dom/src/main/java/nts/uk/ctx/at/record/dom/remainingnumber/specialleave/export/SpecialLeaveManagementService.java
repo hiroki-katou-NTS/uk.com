@@ -58,22 +58,10 @@ public class SpecialLeaveManagementService {
 			CacheCarrier cacheCarrier,
 			ComplileInPeriodOfSpecialLeaveParam param) {
 
-
 		// 特別休暇の集計結果情報
 		InPeriodOfSpecialLeaveResultInfor outputData = new InPeriodOfSpecialLeaveResultInfor();
 
 		require.specialHoliday(param.getCid(), param.getSpecialLeaveCode());
-
-		// ドメインモデル「特別休暇基本情報」を取得する
-		Optional<SpecialLeaveBasicInfo> optBasicInfor = require.specialLeaveBasicInfo(param.getSid(), param.getSpecialLeaveCode(), UseAtr.USE);
-//		if(!optBasicInfor.isPresent() ){
-//				|| optBasicInfor.get().getUsed() == UseAtr.NOT_USE) {
-//			RemainDaysOfSpecialHoliday remainDays = new RemainDaysOfSpecialHoliday(new SpecialHolidayRemainInfor(0, 0, 0), 0, Optional.empty(), new ArrayList<>());
-//			InPeriodOfSpecialLeave specialLeaveInfor = new InPeriodOfSpecialLeave(new ArrayList<>(), remainDays, new ArrayList<>(), new ArrayList<>());
-//			return new InPeriodOfSpecialLeaveResultInfor(specialLeaveInfor, Finally.empty(), Finally.of(param.getComplileDate().end().addDays(1)));
-//
-//			optBasicInfor.get().getGrantSetting();
-//		}
 
 		// 社員
 		EmployeeImport employee
@@ -84,12 +72,7 @@ public class SpecialLeaveManagementService {
 				if (aggrPeriod == null) return outputData;
 
 		// パラメータ月次モード・その他モード
-		InterimRemainMngMode interimRemainMngMode;
-		if ( param.isMode() ){
-			interimRemainMngMode = InterimRemainMngMode.MONTHLY;
-		} else {
-			interimRemainMngMode = InterimRemainMngMode.OTHER;
-		}
+		InterimRemainMngMode interimRemainMngMode = InterimRemainMngMode.of(param.isMode());
 
 		List<InterimSpecialHolidayMng> overwriteInterim = new ArrayList<>();
 		param.getRemainData().stream().forEach(c-> overwriteInterim.add((InterimSpecialHolidayMng)c));
