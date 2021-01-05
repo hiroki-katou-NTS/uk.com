@@ -14,15 +14,18 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /*
  * UKDesign.データベース.ER図.オフィス支援.在席照会.お気に入り.OFIMT_FAVORITE_DETAIL
  * 在席照会のお気に入り設定詳細
  */
+
+@Data
 @Entity
-@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @Table(name = "OFIMT_FAVORITE_DETAIL")
 public class FavoriteSpecifyEntityDetail extends UkJpaEntity implements Serializable {

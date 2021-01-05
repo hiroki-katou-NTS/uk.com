@@ -33,7 +33,7 @@ public class FavoriteSpecify extends AggregateRoot {
 	}
 	
 	//TODO [1] 対象情報名を渡す
-//	public List<String> PassingTargetInfoName( Require require) {
+//	public List<String> passingTargetInfoName( Require require) {
 //		if(this.targetSelection == TargetSelection.AFFILIATION_WORKPLACE) {
 //			return empty;
 //		}
