@@ -105,6 +105,19 @@ module nts.uk.at.view.knr002.a {
                 .always(() => blockUI.clear() );
             }
 
+            private openKNR002GDialog(data: any) {
+                const vm = this;
+                blockUI.invisible();
+                setShared('KNR002G_empInfoTerCode', data.empInfoTerCode);
+                setShared('KNR002G_empInfoTerName', data.empInfoTerName);
+                setShared('KNR002G_modelEmpInfoTer', data.displayModelEmpInfoTer;
+                setShared('KNR002G_workLocationName', data.workLocationName);
+       
+                modal('/view/knr/002/g/index.xhtml', { title: 'G_Screen', }).onClosed(() => {
+                    blockUI.clear();
+                });
+            }
+
             private openKNR002BDialog(data: any) {
                 const vm = this;
                 blockUI.invisible();
@@ -123,7 +136,7 @@ module nts.uk.at.view.knr002.a {
                 });
             }
 
-            public openKNR002EDialog(data: any) {
+            private openKNR002EDialog(data: any) {
                 const vm = this;
                 blockUI.invisible();
                 setShared('knr002-e', data);
@@ -201,7 +214,7 @@ module nts.uk.at.view.knr002.a {
                     ntsControls: [
                         { name: 'Button7', text: getText("KNR002_50"), click: function(e: any) { vm.openKNR002BDialog(e) }, controlType: 'Button' },
                         { name: 'Button8', text: getText("KNR002_51"), click: function(e: any) { vm.openKNR002CDialog(e) }, controlType: 'Button' },
-                        { name: 'Button9', text: getText("KNR002_52"), click: function() { console.log('Button9'); }, controlType: 'Button' }
+                        { name: 'Button9', text: getText("KNR002_52"), click: function(e: any) { vm.openKNR002GDialog(e) }, controlType: 'Button' }
                     ],
                 });
 
