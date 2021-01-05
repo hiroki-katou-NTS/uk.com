@@ -2,18 +2,21 @@ package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DiverdenceReasonCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceReasonContent;
@@ -29,7 +32,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.To
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ActualWorkTimeDailyPerformDto implements ItemConst {
+public class ActualWorkTimeDailyPerformDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 割増時間: 日別実績の割増時間 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = PREMIUM, 
@@ -129,5 +132,134 @@ public class ActualWorkTimeDailyPerformDto implements ItemConst {
 
 	private AttendanceTimeOfExistMinus toAttendanceTimeWithMinus(Integer value) {
 		return value == null ? AttendanceTimeOfExistMinus.ZERO : new AttendanceTimeOfExistMinus(value);
+	}
+
+	
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case (RESTRAINT + DIFF):
+			return Optional.of(ItemValue.builder().value(constraintDifferenceTime).valueType(ValueType.TIME));
+		case (TIME_DIFF + WORKING_TIME):
+			return Optional.of(ItemValue.builder().value(timeDifferenceWorkingHours).valueType(ValueType.TIME));
+		default:
+			return Optional.empty();
+		}
+	}
+	
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case PREMIUM:
+			return new PremiumTimeDto();
+		case DIVERGENCE:
+			return new DivergenceTimeDto();
+		case RESTRAINT:
+			return new ConstraintTimeDto();
+		case TOTAL_LABOR:
+			return new TotalWorkingTimeDto();
+		default:
+			break;
+		}
+		return null;
+	}
+	
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case RESTRAINT:
+			return Optional.ofNullable(this.constraintTime);
+		case TOTAL_LABOR:
+			return Optional.ofNullable(this.totalWorkingTime);
+		default:
+			return Optional.empty();
+		}
+	}
+	
+
+	@Override
+	public int size(String path) {
+		switch (path) {
+		case PREMIUM:
+		case DIVERGENCE:
+			return 10;
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.size(path);
+	}
+	
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case PREMIUM:
+		case DIVERGENCE:
+			return PropType.IDX_LIST;
+		case (RESTRAINT + DIFF):
+		case (TIME_DIFF + WORKING_TIME):
+			return PropType.VALUE;
+		default:
+		}
+		return PropType.OBJECT;
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+		switch (path) {
+		case PREMIUM:
+			return (List<T>) this.premiumTimes;
+		case DIVERGENCE:
+			return (List<T>) this.divergenceTime;
+		default:
+		}
+		return AttendanceItemDataGate.super.gets(path);
+	}
+	
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case (RESTRAINT + DIFF):
+			this.constraintDifferenceTime = value.valueOrDefault(null);
+			break;
+		case (TIME_DIFF + WORKING_TIME):
+			this.timeDifferenceWorkingHours = value.valueOrDefault(null);
+			break;
+		default:
+			break;
+		}
+	}
+	
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case RESTRAINT:
+			this.constraintTime = (ConstraintTimeDto) value;
+			break;
+		case TOTAL_LABOR:
+			this.totalWorkingTime = (TotalWorkingTimeDto) value;
+			break;
+		default:
+		}
+	}
+	
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		switch (path) {
+		case PREMIUM:
+			this.premiumTimes = (List<PremiumTimeDto>) value;
+			break;
+		case DIVERGENCE:
+			this.divergenceTime = (List<DivergenceTimeDto>) value;
+			break;
+		default:
+		}
 	}
 }

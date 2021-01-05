@@ -25,7 +25,7 @@ public class ConvertFactory implements AttendanceItemConvertFactory {
 
 	@Override
 	public DailyRecordToAttendanceItemConverter createDailyConverter(Map<Integer, OptionalItem> optionalItems) {
-		return DailyRecordToAttendanceItemConverterImpl.builder(optionalItems).completed();
+		return DailyRecordToAttendanceItemConverterImpl.builder(optionalItems, optionalItem).completed();
 	}
 
 	@Override

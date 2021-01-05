@@ -2160,7 +2160,7 @@ public class KrcdtMonVerticalTotal extends UkJpaEntity implements Serializable {
 				TopPageDisplayOfMonthly.of(
 						new AttendanceTimeMonth(this.topPageOtTime), 
 						new AttendanceTimeMonth(this.topPageHolWorkTime), 
-						new AttendanceTimeMonth(this.topPageFlexTime)), 
+						new AttendanceTimeMonthWithMinus(this.topPageFlexTime)), 
 				IntervalTimeOfMonthly.of(
 						new AttendanceTimeMonth(this.intervalTime),
 						new AttendanceTimeMonth(this.intervalDeductTime)),
