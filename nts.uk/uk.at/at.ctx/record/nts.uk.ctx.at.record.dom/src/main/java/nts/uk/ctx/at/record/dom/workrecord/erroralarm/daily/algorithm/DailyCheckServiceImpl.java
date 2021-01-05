@@ -491,6 +491,106 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 		Optional<IdentityVerifiForDay> identityUnconfirm = dataforDailyFix.getAdminUnconfirm().stream()
 													.filter(y -> y.getEmployeeID().equals(sid) && y.getProcessingYmd().equals(day)).findFirst();
 		
+		// 個人情報の労働条件
+		Optional<WorkingCondition> wkCon = dataforDailyFix.getListWkConItem().stream().filter(a -> a.getEmployeeId().equals(sid) && a.getDateHistoryItem().contains(day)).findFirst();
+		
+		// List＜打刻カード番号＞
+		List<StampCard> stampCard = dataforDailyFix.getListStampCard().stream().filter(z -> z.getEmployeeId().equals(sid))
+													.collect(Collectors.toList());
+		
+		List<FixedConditionWorkRecord> listFixedConWk = dataforDailyFix.getListFixConWork();
+		
+		for(FixedConditionWorkRecord item : listFixedConWk) {
+//			if(item.getFixConWorkRecordNo().value == 5) {
+//				
+//			}
+			switch(item.getFixConWorkRecordNo().value) {
+			
+				// NO=1:勤務種類未登録
+				case 1:
+					
+				// NO=2:就業時間帯未登録
+				case 2:
+				
+				// NO=3:本人未確認チェック
+				case 3:
+					
+				// NO=4:管理者未確認チェック
+				case 4:
+					
+				// NO=5:データのチェック
+				case 5:
+					
+				// NO = 6： 打刻漏れ
+				case 6:
+					
+				// NO =7:打刻漏れ(入退門)
+				case 7:
+					
+				// NO =8： 打刻順序不正
+				case 8:
+					
+				// NO = 9 ：打刻順序不正（入退門）
+				case 9:
+					
+				// NO = 10 ： 休日打刻
+				case 10:
+					
+				// NO = 11 ：休日打刻(入退門)
+				case 11:
+					
+				// NO = 12：加給コード未登録
+				case 12:
+					
+				// NO = 13：契約時間超過
+				case 13:
+					
+				// NO = 14:契約時間未満
+				case 14:
+					
+				// NO = 15：曜日別の違反
+				case 15:
+					
+				// NO = 16:曜日別の就業時間帯不正
+				case 16:
+					
+				// NO = 17:乖離エラー
+				case 17:
+					
+				// NO = 18:手入力
+				case 18:
+					
+				// NO = 19:二重打刻チェック
+				case 19:
+					
+				// NO = 20:未計算
+				case 20:
+					
+				// NO = 21:過剰申請・入力
+				case 21:
+					
+				// NO = 22:複数回勤務
+				case 22:
+					
+				// NO = 23：臨時勤務
+				case 23:
+					
+				// NO = 24:特定日出勤
+				case 24:
+					
+				// NO = 25:未反映打刻
+				case 25:
+					
+				// NO＝26：実打刻オーバー
+				case 26:
+					
+				// NO＝27:二重打刻(入退門)
+				case 27:
+					
+				// NO＝28：乖離アラーム
+				case 28:
+			}
+		}
 	}
 	
 }
