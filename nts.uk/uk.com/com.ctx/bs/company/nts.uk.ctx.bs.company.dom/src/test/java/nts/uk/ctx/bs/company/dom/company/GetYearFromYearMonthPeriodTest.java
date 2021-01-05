@@ -33,7 +33,7 @@ public class GetYearFromYearMonthPeriodTest {
 	}
 
 	@Test
-	public void getYearFromYearMonthPeriodWhenStrJanuary() {
+	public void getYearFromYearMonthPeriodWhenCurrentYear() {
 
 		new Expectations() {
 			{
@@ -44,15 +44,15 @@ public class GetYearFromYearMonthPeriodTest {
 			}
 		};
 
-		List<YearMonth> yearMonths = Arrays.asList(new YearMonth(202001), new YearMonth(202102), new YearMonth(202103));
+		List<YearMonth> yearMonths = Arrays.asList(new YearMonth(202001), new YearMonth(202101));
 		List<Year> years = GetYearFromYearMonthPeriod.getYearFromYearMonthPeriod(require, CID, yearMonths);
 
 		assertThat(years).isEqualTo(Arrays.asList(new Year(2020), new Year(2021)));
 
-	}	
+	}
 	
 	@Test
-	public void getYearFromYearMonthPeriodWhenStrApril() {
+	public void getYearFromYearMonthPeriodOneYear() {
 
 		new Expectations() {
 			{
@@ -63,10 +63,29 @@ public class GetYearFromYearMonthPeriodTest {
 			}
 		};
 
-		List<YearMonth> yearMonths = Arrays.asList(new YearMonth(202001), new YearMonth(202102), new YearMonth(202105));
+		List<YearMonth> yearMonths = Arrays.asList(new YearMonth(202012), new YearMonth(202101));
 		List<Year> years = GetYearFromYearMonthPeriod.getYearFromYearMonthPeriod(require, CID, yearMonths);
 
-		assertThat(years).isEqualTo(Arrays.asList(new Year(2019), new Year(2020), new Year(2021)));
+		assertThat(years).isEqualTo(Arrays.asList(new Year(2020)));
+
+	}
+	
+	@Test
+	public void getYearFromYearMonthPeriodPreviousAndCurrentYear() {
+
+		new Expectations() {
+			{
+				require.find(CID);
+				result = Optional.ofNullable(new Company(new CompanyCode(""), null, MonthStr.FOUR, null, null, null,
+						null, null, new ContractCd(""), null, null));
+
+			}
+		};
+
+		List<YearMonth> yearMonths = Arrays.asList(new YearMonth(202003), new YearMonth(202104));
+		List<Year> years = GetYearFromYearMonthPeriod.getYearFromYearMonthPeriod(require, CID, yearMonths);
+
+		assertThat(years).isEqualTo(Arrays.asList(new Year(2019), new Year(2021)));
 		
 
 	}	
