@@ -1,0 +1,168 @@
+package uk.cnv.client.infra.repository.base;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import uk.cnv.client.UkConvertProperty;
+
+public abstract class RepositoryBase {
+	private String jdbcDriverName;
+	//private SQLServerDriver driver;
+	private String connectionString;
+	private Connection conn;
+
+	public RepositoryBase(String jdbcDriverName, String connectionStringKey) {
+		this.jdbcDriverName = jdbcDriverName;
+		this.connectionString = UkConvertProperty.getProperty(connectionStringKey);
+		loadJdbc();
+	}
+
+	private void loadJdbc() {
+    	try {
+			Class.forName(this.jdbcDriverName);
+	    	//driver = new SQLServerDriver();
+			//DriverManager.registerDriver(driver);
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException("DB接続設定が無効です。:" + this.jdbcDriverName);
+		}
+	}
+
+	public void connect() throws SQLException {
+		try {
+			this.conn = DriverManager.getConnection(this.connectionString);
+		}
+		catch (SQLException e) {
+			System.err.println("DB接続に失敗しました。" + e.getMessage());
+			throw e;
+		}
+	}
+	public void disConnect() {
+		try {
+			if(this.conn == null || this.conn.isClosed()) return;
+			this.conn.close();
+		} catch (SQLException e) {
+			System.err.println("DB接続の切断に失敗しました。" + e.getMessage());
+		}
+	}
+
+	public <T> Optional<T> getSingle(String sql, SelectRequire<T> require) {
+
+		List<T> result = new ArrayList<>();
+		Statement stmt;
+		ResultSet rset = null;
+		try {
+			if(conn == null || conn.isClosed()) {
+				this.connect();
+			}
+
+			stmt = conn.createStatement();
+			rset = stmt.executeQuery(sql);
+			while (rset.next()) {
+
+				T domain = require.toDomain(rset);
+				result.add(domain);
+			}
+		}
+		catch (SQLException ex) {
+			System.err.println(ex.getMessage());
+		}
+		finally {
+			if(rset != null) {
+				try {
+					rset.close();
+				}
+				catch (SQLException ex) {
+					System.err.println(ex.getMessage());
+				}
+			}
+			this.disConnect();
+		}
+
+		return result.stream().findFirst();
+	}
+
+	public <T> List<T> getList(String sql, SelectRequire<T> require) {
+
+		List<T> result = new ArrayList<>();
+		Statement stmt;
+		ResultSet rset = null;
+		try {
+			if(conn == null || conn.isClosed()) {
+				this.connect();
+			}
+
+			stmt = conn.createStatement();
+			rset = stmt.executeQuery(sql);
+			while (rset.next()) {
+
+				T domain = require.toDomain(rset);
+				result.add(domain);
+			}
+		}
+		catch (SQLException ex) {
+			System.err.println(ex.getMessage());
+		}
+		finally {
+			if(rset != null) {
+				try {
+					rset.close();
+				}
+				catch (SQLException ex) {
+					System.err.println(ex.getMessage());
+				}
+			}
+			this.disConnect();
+		}
+
+		return result;
+	}
+
+	public <T> void insert(InsertRequire require) {
+		PreparedStatement ps = null;
+		try {
+			if(conn == null || conn.isClosed()) {
+				this.connect();
+			}
+
+			conn.setAutoCommit(false);
+			ps = require.getPreparedStatement(conn);
+
+			ps.executeUpdate();
+
+			conn.commit();
+		}
+		catch (SQLException ex) {
+			try {
+				conn.rollback();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			System.err.println(ex.getMessage());
+		}
+		finally {
+			if(ps != null) {
+				try {
+					ps.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			this.disConnect();
+		}
+	}
+
+	public interface SelectRequire <T> {
+		T toDomain(ResultSet rs) throws SQLException;
+	}
+
+	public interface InsertRequire {
+		PreparedStatement getPreparedStatement(Connection conn) throws SQLException;
+	}
+}

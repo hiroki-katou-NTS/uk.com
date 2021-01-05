@@ -10,6 +10,8 @@
 **/.nb-gradle*
 **/.settings*
 **/.ide*
+**/.sts4-cache*
+!build.gradle
 
 #ignore spotlight cache
 **/.DS_Store
