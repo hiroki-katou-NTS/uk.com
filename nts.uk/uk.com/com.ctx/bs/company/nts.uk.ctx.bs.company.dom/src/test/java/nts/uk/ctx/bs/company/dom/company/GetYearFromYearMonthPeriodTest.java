@@ -33,7 +33,7 @@ public class GetYearFromYearMonthPeriodTest {
 	}
 
 	@Test
-	public void getYearFromYearMonthPeriod() {
+	public void getYearFromYearMonthPeriodWhenStrJanuary() {
 
 		new Expectations() {
 			{
@@ -48,6 +48,26 @@ public class GetYearFromYearMonthPeriodTest {
 		List<Year> years = GetYearFromYearMonthPeriod.getYearFromYearMonthPeriod(require, CID, yearMonths);
 
 		assertThat(years).isEqualTo(Arrays.asList(new Year(2020), new Year(2021)));
+
+	}	
+	
+	@Test
+	public void getYearFromYearMonthPeriodWhenStrApril() {
+
+		new Expectations() {
+			{
+				require.find(CID);
+				result = Optional.ofNullable(new Company(new CompanyCode(""), null, MonthStr.FOUR, null, null, null,
+						null, null, new ContractCd(""), null, null));
+
+			}
+		};
+
+		List<YearMonth> yearMonths = Arrays.asList(new YearMonth(202001), new YearMonth(202102), new YearMonth(202105));
+		List<Year> years = GetYearFromYearMonthPeriod.getYearFromYearMonthPeriod(require, CID, yearMonths);
+
+		assertThat(years).isEqualTo(Arrays.asList(new Year(2019), new Year(2020), new Year(2021)));
+		
 
 	}	
 	
