@@ -123,11 +123,113 @@
         <div>
             <nts-checkbox v-model="checkBox" v-bind:value="1">{{'KAFS06_25' | i18n}}</nts-checkbox>
         </div>
-    </div>
+      </div>
+
+      <!--A10_5-->
+      <div>
+        <div class="row">
+            <div class="float_left col text-left">{{'KAFS06_24' | i18n}}</div>
+        </div>
+        <div class="mt-1">
+            <nts-text-editor
+            v-model="text"
+            />
+
+        </div>
+      </div>
       
     </div>
     
+    <div v-if="true" class="card card-label mb-3">
+      <!--A11_1-->
+      <div class="card-header uk-bg-accordion">
+        <span>{{ "KAFS06_28" | i18n }}</span>
+        <span class="badge badge-info">任意</span>
+      </div>
+      <!--A11_2-->
+      <div class="px-3 mt-3">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col" class="bg-grey-200">{{'KAFS06_29' | i18n}}</th>
+              <th scope="col" class="bg-grey-200">{{'KAFS06_30' | i18n}}</th>
+              <th scope="col" class="bg-grey-200">{{'KAFS06_31' | i18n}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">1</th>
+              <td>Mark</td>
+              <td>Otto</td>
+            </tr>
 
+            <tr>
+              <th scope="row">1</th>
+              <td>Mark</td>
+              <td>Otto</td>
+            </tr>
+            
+          </tbody>
+        </table>
+        <!--A11_9-->
+        <div align="center">
+            <button type="button" class="shadow-none btn rounded-pill btn-info">
+              {{'KAFS06_32' | i18n}}
+              <i class="fas fa-angle-double-right" aria-hidden="true"></i>
+            </button>
+        </div>
+      </div>
+
+      
+    </div>
+
+
+
+
+
+
+    <div v-if="true" class="card card-label mb-3">
+      <!--A12_1-->
+      <div class="card-header uk-bg-accordion">
+        <span>{{ "KAFS06_33" | i18n }}</span>
+        <span class="badge badge-info">任意</span>
+      </div>
+      <!--A12_2-->
+      <div class="px-3 mt-3">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col" class="bg-grey-200">{{'KAFS06_34' | i18n}}</th>
+              <th scope="col" class="bg-grey-200">{{'KAFS06_35' | i18n}}</th>
+              <th scope="col" class="bg-grey-200">{{'KAFS06_31' | i18n}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">1</th>
+              <td>Mark</td>
+              <td>Otto</td>
+            </tr>
+
+            <tr>
+              <th scope="row">1</th>
+              <td>Mark</td>
+              <td>Otto</td>
+            </tr>
+            
+          </tbody>
+        </table>
+        <!--A12_9-->
+        <div align="center">
+            <button type="button" class="shadow-none btn rounded-pill btn-info">
+              {{'KAFS06_36' | i18n}}
+              <i class="fas fa-angle-double-right" aria-hidden="true"></i>
+            </button>
+        </div>
+      </div>
+
+      
+    </div>
 
 
 
@@ -139,6 +241,15 @@
         v-on:kaf000CChangeReasonCD="kaf000CChangeReasonCD"
         v-on:kaf000CChangeAppReason="kaf000CChangeAppReason"
       />
+    </div>
+
+    <div class="card card-label py-3">
+         <button
+            type="button"
+            class="btn btn-block btn-primary btn-lg"
+            v-on:click="register">
+            {{(modeNew ? 'KAFS06_37' : 'KAFS06_38') | i18n}}
+          </button>
     </div>
 
 </div>
