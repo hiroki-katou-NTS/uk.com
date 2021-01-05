@@ -75,7 +75,6 @@ public class SrcdtLogSetItemDetail extends UkJpaEntity implements Serializable {
 		this.srcdtLogSetItemDetailPK = srcdtLogSetItemDetailPK;
 		this.condition = condition;
 		this.symbol = symbol;
-		this.condition = condition;
 		this.cid = cid;
 	}
 }

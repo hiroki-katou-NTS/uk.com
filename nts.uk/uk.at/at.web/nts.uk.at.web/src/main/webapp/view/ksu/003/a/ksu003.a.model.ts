@@ -429,12 +429,12 @@ module nts.uk.at.view.ksu003.a.model {
 	 * 日別勤怠の休憩時間帯   (EA : List＜休憩時間帯＞＝勤務予定．休憩時間帯) 
 	 */
 	export class TimeSpanForCalcDto {
-		startTime: number; //開始 - 勤怠打刻(実打刻付き)
-		endTime: number; //終了 - 勤怠打刻(実打刻付き)
-		constructor(startTime: number,
-			endTime: number) {
-			this.startTime = startTime;
-			this.endTime = endTime;
+		start: number; //開始 - 勤怠打刻(実打刻付き)
+		end: number; //終了 - 勤怠打刻(実打刻付き)
+		constructor(start: number,
+			end: number) {
+			this.start = start;
+			this.end = end;
 
 		}
 	}
@@ -472,6 +472,19 @@ module nts.uk.at.view.ksu003.a.model {
 		endTimeRange2: TimeZoneDto;//日付終了時刻範囲時間帯2
 		fixBreakTime: number; //休憩時間帯を固定にする (0:false 1:true)
 		workType: number;//勤務タイプ : WorkTimeForm
+		isHoliday: boolean;// 休日か : SetupType
+		isNeedWorkTime: boolean;// 就業時間帯が不要 : 
+	}
+	
+	export class FixedWork {
+		empId: string; 
+		fixedWorkInforDto: FixedWorkInforDto; 
+		constructor(empId: string,
+			fixedWorkInforDto: FixedWorkInforDto) {
+			this.empId = empId;
+			this.fixedWorkInforDto = fixedWorkInforDto;
+
+		}
 	}
 
 	// 対象社員の勤務固定情報dto - 勤務固定情報dto
@@ -487,6 +500,8 @@ module nts.uk.at.view.ksu003.a.model {
 		endTimeRange2: TimeZoneDto;//日付終了時刻範囲時間帯2
 		fixBreakTime: number; //休憩時間帯を固定にする (0:false 1:true)
 		workType: number;//勤務タイプ : WorkTimeForm
+		isHoliday: boolean; // 休日か : SetupType
+		isNeedWorkTime: boolean; 
 		constructor(param: IFixedWorkInforDto) {
 			let self = this;
 			self.workTimeName = param.workTimeName;
@@ -500,6 +515,8 @@ module nts.uk.at.view.ksu003.a.model {
 			self.endTimeRange1 = param.endTimeRange1;
 			self.fixBreakTime = param.fixBreakTime;
 			self.workType = param.workType;
+			self.isHoliday = param.isHoliday;
+			self.isNeedWorkTime = param.isNeedWorkTime;
 		}
 	}
 
@@ -518,10 +535,10 @@ module nts.uk.at.view.ksu003.a.model {
 	}
 
 	export class GetInfoInitStartKsu003Dto {
-		byDateDto: DisplaySettingByDateDto; //スケジュール修正日付別の表示設定
-		displayInforOrganization: DisplayInfoOrganizationDto; // 組織の表示情報
-		manageMultiDto: WorkManageMultiDto; // 複数回勤務管理
-		functionControlDto: ScheFunctionControlDto; // スケジュール修正の機能制御 
+		byDateDto: DisplaySettingByDateDto = new DisplaySettingByDateDto(0,0,0); //スケジュール修正日付別の表示設定
+		displayInforOrganization: DisplayInfoOrganizationDto = new DisplayInfoOrganizationDto("", "", "", "", ""); // 組織の表示情報
+		manageMultiDto: WorkManageMultiDto = new WorkManageMultiDto("", 0); // 複数回勤務管理
+		functionControlDto: ScheFunctionControlDto = new ScheFunctionControlDto([], 0); // スケジュール修正の機能制御 
 		constructor(byDateDto: DisplaySettingByDateDto,
 			displayInforOrganization: DisplayInfoOrganizationDto,
 			manageMultiDto: WorkManageMultiDto,
@@ -534,7 +551,7 @@ module nts.uk.at.view.ksu003.a.model {
 	}
 	// スケジュール修正日付別の表示設定
 	export class DisplaySettingByDateDto {
-		dispRange: number; /** 表示範囲 */
+		dispRange: number ; /** 表示範囲 */
 		dispStart: number; /** 開始時刻 */
 		initDispStart: number;  /** スケジュール修正日付別の表示設定 */
 		constructor(dispRange: number,
