@@ -395,7 +395,7 @@ module nts.uk.at.view.kwr005.a {
           startMonth: _.toInteger(vm.periodDate().startDate), //対象年月,        
           endMonth: _.toInteger(vm.periodDate().endDate),
           isZeroDisplay: vm.zeroDisplayClassification() ? true : false,//ゼロ表示区分選択肢
-          pageBreak: vm.pageBreakSpecification() ? true : false, //改ページ指定選択肢,
+          code: vm.pageBreakSpecification() ? true : false, //改ページ指定選択肢,
           standardFreeClassification: vm.rdgSelectedId(), //自由設定: A5_4_2   || 定型選択 : A5_3_2,
           settingId: findObj.id, //ゼロ表示区分,
           closureId: vm.closureId() //締め日
