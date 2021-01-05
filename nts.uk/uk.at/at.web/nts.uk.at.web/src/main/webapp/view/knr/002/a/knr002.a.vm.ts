@@ -61,7 +61,7 @@ module nts.uk.at.view.knr002.a {
                 service.getAll()
                 .done((res: ResponseData) => {
                     if (res) {
-                        console.log(res, 'data1');
+                        setShared('KNR002D_empInfoTerList', res);
                         vm.dataSource(res);
                         vm.numOfRegTerminals(res.numOfRegTerminals);
                         vm.numAbnormalState(res.numAbnormalState);
@@ -110,7 +110,7 @@ module nts.uk.at.view.knr002.a {
                 blockUI.invisible();
                 setShared('KNR002G_empInfoTerCode', data.empInfoTerCode);
                 setShared('KNR002G_empInfoTerName', data.empInfoTerName);
-                setShared('KNR002G_modelEmpInfoTer', data.displayModelEmpInfoTer;
+                setShared('KNR002G_modelEmpInfoTer', data.displayModelEmpInfoTer);
                 setShared('KNR002G_workLocationName', data.workLocationName);
        
                 modal('/view/knr/002/g/index.xhtml', { title: 'G_Screen', }).onClosed(() => {
