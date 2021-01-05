@@ -2130,7 +2130,19 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				if (breakTime.length > 0) {
 					for (let o = 0; o < breakTime.length; o++) {
 						let y = breakTime[o];
+						let timeBrkLimitPrev : any = null, timeBrkLimitNext : any = null;
+						breakTime = _.sortBy(breakTime, [function(o : any) { return o.start; }])
 						timeChartBrk = self.convertTimeToChart(_.isNil(y.startTime) ? y.start : y.startTime, _.isNil(y.endTime) ? y.end : y.endTime);
+						
+						if(breakTime.length > 1 && o > 1){
+						timeBrkLimitPrev = {start : breakTime[o-1].start / 5, end : breakTime[o-1].end / 5};	
+						}
+						
+						if(o < breakTime.length - 1){
+							timeBrkLimitNext = {start : breakTime[o+1].start / 5, end : breakTime[o+1].end / 5};
+						}
+						
+						
 						let id = `lgc${i}_` + indexLeft, parent = `lgc${i}`;
 						startTime1 = self.checkTimeOfChart(timeChartBrk.startTime, timeRangeLimit);
 						endTime1 = self.checkTimeOfChart(timeChartBrk.endTime, timeRangeLimit);
@@ -2146,10 +2158,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								lineNo: i,
 								start: startTime1 - dispStart,
 								end: endTime1 - dispStart,
-								limitStartMin: timeRange.start - dispStart,
+								limitStartMin: (o > 0 && o < breakTime.length - 1 && timeBrkLimitPrev != null) ? timeBrkLimitPrev.end : timeRange.start - dispStart,
 								limitStartMax: timeRange.end - dispStart,
 								limitEndMin: timeRange.start - dispStart,
-								limitEndMax: timeRange.end - dispStart,
+								limitEndMax: (o > 0 && o < breakTime.length - 1 && timeBrkLimitNext != null) ? timeBrkLimitNext.start : timeRange.end - dispStart,
 								zindex: 1001,
 								resizeFinished: (b: any, e: any, p: any) => {
 								},
