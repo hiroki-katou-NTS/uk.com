@@ -8,6 +8,13 @@ export interface TimeZoneUseDto {
     startTime: number;
     endTime: number;
 }
+export interface Overtime60HManagementDto {
+    // 60H超休管理区分
+    overrest60HManagement: number;
+
+    // 60H超休消化単位
+    super60HDigestion: number;
+}
 interface RemainVacationInfoDto {
     // 年休管理
     annualLeaveManagement: any;
@@ -22,7 +29,7 @@ interface RemainVacationInfoDto {
     holidayManagement: any;
 
     // 60H超休管理
-    overtime60hManagement: any;
+    overtime60hManagement: Overtime60HManagementDto;
 
     // 介護看護休暇管理
     nursingCareLeaveManagement: any;
@@ -75,8 +82,27 @@ export interface HolidayApplicationReflectCommand {
     // 勤務情報、出退勤を反映する
     workAttendanceReflect: VacationAppReflectOptionCommand;
     // 時間休暇を反映する
-    timeLeaveReflect: any;
+    timeLeaveReflect: TimeLeaveAppReflectCondition;
 
+}
+export interface TimeLeaveAppReflectCondition {
+    // 60H超休
+    superHoliday60H: number;
+
+    // 介護
+    nursing: number;
+
+    // 子看護
+    childNursing: number;
+
+    // 時間代休
+    substituteLeaveTime: number;
+
+    // 時間年休
+    annualVacationTime: number;
+
+    // 時間特別休暇
+    specialVacationTime: number;
 }
 export interface AppAbsenceStartInfoDto {
     // 休出代休紐付け管理

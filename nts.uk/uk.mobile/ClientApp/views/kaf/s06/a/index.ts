@@ -127,7 +127,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
     public get c11() {
         const self = this;
         let model = self.model as Model;
-        let c11 = model.appAbsenceStartInfoDto.vacationApplicationReflect.workAttendanceReflect.reflectAttendance == 1;
+        let c11 = _.get(model, 'appAbsenceStartInfoDto.vacationApplicationReflect.workAttendanceReflect.reflectAttendance') == NotUseAtr.USE;
         
         return self.c7 || c11;
     }
@@ -143,21 +143,23 @@ export class KafS06AComponent extends KafS00ShrComponent {
         const self = this;
         let model = self.model as Model;
         
-        return true;
+        return self.c12 && self.c13_1 && self.c13_2;
     }
     // 休暇申請起動時の表示情報．休暇申請の反映．時間休暇を反映する．60H超休 = する
     public get c13_1() {
         const self = this;
         let model = self.model as Model;
+        let c13_1 = _.get(model, 'appAbsenceStartInfoDto.vacationApplicationReflect.timeLeaveReflect.superHoliday60H');
         
-        return true;
+        return c13_1;
     }
     // 休暇申請起動時の表示情報．休暇残数情報．60H超休管理．60H超休管理区分 = true
     public get c13_2() {
         const self = this;
         let model = self.model as Model;
+        let c13_2 = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.overtime60hManagement.overrest60HManagement');
         
-        return true;
+        return c13_2;
     }
     // ※12 = ○　AND　※14-1 = ○　AND　※14-2 = ○
     public get c14() {
@@ -400,6 +402,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
                 let data = result.data as Model;
                 if (vm.modeNew) {
                     vm.model = data;
+                    vm.bindComponent();
                 } else {
 
                 }   
@@ -541,6 +544,16 @@ export class KafS06AComponent extends KafS00ShrComponent {
                 return resolve(false);
             });
         });
+    }
+
+    public bindComponent() {
+        const self = this;
+
+    }
+
+    public openKDL002(type?: string) {
+        const self = this;
+        
     }
 
 
