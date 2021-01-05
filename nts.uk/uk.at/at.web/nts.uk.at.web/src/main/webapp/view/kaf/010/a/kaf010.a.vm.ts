@@ -288,7 +288,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			} else {
 				self.inputEnable(false)
 			}
-			// ※18	//huytodo
+			// ※18
 			if (self.dataSource.hdWorkOvertimeReflect.nightOvertimeReflectAtr == 0) {
 				self.nightOvertimeReflectAtrCheck(false);
 				// $(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length})`).hide();

@@ -12,8 +12,24 @@ import { ReasonDivergence, ExcessStateMidnight, ExcessStateDetail, OutDateApplic
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
-    validations: {},
-    constraints: [],
+    validations: {
+        reason1: {
+            reason: {
+                constraint: 'DivergenceReason'
+            }
+        },
+        reason2: {
+            reason: {
+                constraint: 'DivergenceReason'
+            }
+        },
+        DivergenceReason: {
+            constraint: 'DivergenceReason'
+        }
+    },
+    constraints: [
+        'nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.DivergenceReason'
+    ],
     components: {
         'kafs00subp3': KafS00SubP3Component,
         'kafs00subp1': KafS00SubP1Component,
@@ -33,17 +49,18 @@ export class KafS05Step2Component extends Vue {
 
     public reason1: Reason = {
         title: '',
-        reason: null,
+        reason: '',
         selectedValue: null,
         dropdownList: [{
             code: null,
             text: this.$i18n('KAFS05_54')
         }]
     } as Reason;
+    
 
     public reason2: Reason = {
         title: '',
-        reason: null,
+        reason: '',
         selectedValue: null,
         dropdownList: [{
             code: null,
@@ -56,7 +73,8 @@ export class KafS05Step2Component extends Vue {
         const self = this;
     }
     public mounted() {
-
+        const self = this;
+        console.log('mounted');
     }
 
     public bindOverTime() {
@@ -505,40 +523,38 @@ export class KafS05Step2Component extends Vue {
             let findResult1 = _.findLast(self.$appContext.model.appOverTime.applicationTime.reasonDissociation, (item: any) => item.diviationTime == 1);
             let findResult2 = _.findLast(self.$appContext.model.appOverTime.applicationTime.reasonDissociation, (item: any) => item.diviationTime == 2);
             if (findResult1) {
-                reason1.reason = findResult1.reason;
-                let code = findResult1.reasonCode;
+                reason1.reason = findResult1.reason || '';
+                let code = findResult1.reasonCode || null;
                 let isFindCode = _.findLast(reason1.dropdownList, (item: any) => item.code == code);
-                if (isFindCode) {
-                    reason1.selectedValue = isFindCode.code;
-                } else {
+                if (!isFindCode && code) {
                     reason1.dropdownList.shift();
                     reason1.dropdownList.unshift({
                         code,
-                        text: self.$i18n('KAFS05_55')
+                        text: code + self.SPACE_STRING + self.$i18n('KAFS05_55')
                     });
                     reason1.dropdownList.unshift({
                         code: null,
-                        text: self.$i18n('KAFS05_54')
+                        text: self.$i18n('KAFS05_54'),
                     });
                 }
+                reason1.selectedValue = code;
             }
             if (findResult2) {
-                reason2.reason = findResult2.reason;
-                let code = findResult2.reasonCode;
+                reason2.reason = findResult2.reason || '';
+                let code = findResult2.reasonCode || null;
                 let isFindCode = _.findLast(reason2.dropdownList, (item: any) => item.code == code);
-                if (isFindCode) {
-                    reason2.selectedValue = isFindCode.code;
-                } else {
+                if (!isFindCode && code) {
                     reason2.dropdownList.shift();
                     reason2.dropdownList.unshift({
                         code,
-                        text: self.$i18n('KAFS05_55')
+                        text: code + self.SPACE_STRING + self.$i18n('KAFS05_55')
                     });
                     reason2.dropdownList.unshift({
                         code: null,
                         text: self.$i18n('KAFS05_54')
                     });
                 }
+                reason2.selectedValue = code;               
             }
         }
 
@@ -551,7 +567,7 @@ export class KafS05Step2Component extends Vue {
         const self = this;
         let reason = {} as Reason;
         reason.title = self.SPACE_STRING;
-        reason.reason = null;
+        reason.reason = '';
         reason.selectedValue = null;
         if (!_.isNil(divergenceTimeRoot)) {
             reason.title = divergenceTimeRoot.divTimeName;
@@ -559,7 +575,8 @@ export class KafS05Step2Component extends Vue {
         reason.dropdownList = [] as Array<Object>;
         reason.dropdownList.push({
             code: null,
-            text: self.$i18n('KAFS05_54')
+            text: self.$i18n('KAFS05_54'),
+            defaultValue: false
         });
         if (!_.isNil(divergenceReasonInputMethod)) {
             _.forEach(divergenceReasonInputMethod.reasons, (item: DivergenceReasonSelect) => {
@@ -567,7 +584,8 @@ export class KafS05Step2Component extends Vue {
                 let text = item.divergenceReasonCode + ' ' + item.reason;
                 reason.dropdownList.push({
                     code,
-                    text
+                    text,
+                    defaultValue: false
                 });
 
             });
