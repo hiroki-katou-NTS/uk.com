@@ -154,7 +154,10 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
         for (int mi = 0; mi < yearMonths.size(); mi++) {
             cells.setColumnWidth(mi + 2, 7);
             val yearMonth = yearMonths.get(mi);
-            String yearMonthString = String.valueOf(yearMonth.month()) + TextResource.localize("KWR005_306");
+            String yearMonthString = ( mi >0 && yearMonth.month()==1) ? (String.valueOf(yearMonth.year())
+            +TextResource.localize("KWR005_307")+
+            String.valueOf(yearMonth.month()) + TextResource.localize("KWR005_306"))
+                    :(String.valueOf(yearMonth.month()) + TextResource.localize("KWR005_306"));
             cells.merge(rowCount, 0, 1, 2, true, true);
             cells.get(rowCount, 2 + mi).setValue(yearMonthString);
         }
