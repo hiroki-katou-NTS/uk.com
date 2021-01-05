@@ -71,7 +71,7 @@
 								<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_46')}</div>
 								<div class="ntsControl">
 									<div>
-										<button class="" data-bind="click: openKDL035">#{i18n.getText('KAF011_5')}</button>
+										<button class="" data-bind="click: openKDL036">#{i18n.getText('KAF011_5')}</button>
 										#{i18n.getText('KAF011_48')}
 									</div>
 									<div>
@@ -84,7 +84,7 @@
 											</thead>
 		        							<tbody data-bind="foreach: leaveComDayOffMana">
 												<tr>
-													<td data-bind="text: outbreakDay"></td>
+													<td data-bind="text: moment(outbreakDay).format('YYYY/MM/DD')"></td>
 													<td data-bind="text: dayNumberUsed"></td>
 												</tr>
 											</tbody>
@@ -169,7 +169,7 @@
 									<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_46')}</div>
 									<div class="ntsControl">
 										<div>
-											<button class="" data-bind="click: openKDL035">#{i18n.getText('KAF011_5')}</button>
+											<button class="" data-bind="click: openKDL036">#{i18n.getText('KAF011_5')}</button>
 											#{i18n.getText('KAF011_48')}
 										</div>
 										<div>
@@ -182,7 +182,7 @@
 												</thead>
 			        							<tbody data-bind="foreach: leaveComDayOffMana">
 													<tr>
-														<td data-bind="text: outbreakDay"></td>
+														<td data-bind="text: moment(outbreakDay).format('YYYY/MM/DD')"></td>
 														<td data-bind="text: dayNumberUsed"></td>
 													</tr>
 												</tbody>
@@ -196,7 +196,7 @@
 									<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_44')}</div>
 									<div class="ntsControl">
 										<div>
-											<button class="" data-bind="">#{i18n.getText('KAF011_5')}</button>
+											<button class="" data-bind="click: openKDL035">#{i18n.getText('KAF011_5')}</button>
 											#{i18n.getText('KAF011_47')}
 										</div>
 										<div>
@@ -209,7 +209,7 @@
 												</thead>
 			        							<tbody data-bind="foreach: payoutSubofHDManagements">
 													<tr>
-														<td data-bind="text: outbreakDay"></td>
+														<td data-bind="text: moment(outbreakDay).format('YYYY/MM/DD')"></td>
 														<td data-bind="text: dayNumberUsed"></td>
 													</tr>
 												</tbody>

@@ -202,7 +202,7 @@ module nts.uk.at.view.kaf011 {
 			});
 		}
 		
-		openKDL035() {
+		openKDL036() {
 			let self = this;
 			if(self.application.appDate() == "" ){
 				if(self.appType == 0){
@@ -211,21 +211,25 @@ module nts.uk.at.view.kaf011 {
 					$("#absAppDate").trigger("validate");	
 				}
 			}else{
-				nts.uk.ui.windows.setShared('KDL035_PARAMS', {
+				nts.uk.ui.windows.setShared('KDL036_PARAMS', {
 					employeeId: self.application.employeeIDLst()[0],
 					period: {
 						startDate: moment(self.application.appDate()).format('YYYY/MM/DD'),
 						endDate: moment(self.application.appDate()).format('YYYY/MM/DD')
 					},
-					daysUnit: 0.5,
-					targetSelectionAtr: 1,
+					daysUnit: self.workTypeSelected.workAtr == 0 ? 1: 0.5,
+					targetSelectionAtr: 1, //申請
 					actualContentDisplayList: self.displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst,
 					managementData: self.leaveComDayOffMana()
 				});
-				nts.uk.ui.windows.sub.modal( '/view/kdl/035/a/index.xhtml').onClosed(() => {
-					let data = nts.uk.ui.windows.getShared('KDL035_RESULT');
+				nts.uk.ui.windows.sub.modal( '/view/kdl/036/a/index.xhtml').onClosed(() => {
+					let data = nts.uk.ui.windows.getShared('KDL036_RESULT');
 					if(data){
-						self.leaveComDayOffMana(data);
+						let tg: SubWorkSubHolidayLinkingMng[] = [];
+						_.forEach(data, item =>{
+							tg.push(new SubWorkSubHolidayLinkingMng(item));	
+						});
+						self.leaveComDayOffMana(tg);
 					}
 				});
 			}
@@ -297,6 +301,35 @@ module nts.uk.at.view.kaf011 {
 			super.bindingScreenB(param, workTypeList, displayInforWhenStarting);
 			self.workChangeUse(param.workChangeUse);
 			self.changeSourceHoliday(param.changeSourceHoliday);
+		}
+		
+		openKDL035() {
+			let self = this;
+			if(self.application.appDate() == "" ){
+				$("#absAppDate").trigger("validate");	
+			}else{
+				nts.uk.ui.windows.setShared('KDL035_PARAMS', {
+					employeeId: self.application.employeeIDLst()[0],
+					period: {
+						startDate: moment(self.application.appDate()).format('YYYY/MM/DD'),
+						endDate: moment(self.application.appDate()).format('YYYY/MM/DD')
+					},
+					daysUnit: self.workTypeSelected.workAtr == 0 ? 1: 0.5,
+					targetSelectionAtr: 1,
+					actualContentDisplayList: self.displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst,
+					managementData: self.payoutSubofHDManagements()
+				});
+				nts.uk.ui.windows.sub.modal( '/view/kdl/035/a/index.xhtml').onClosed(() => {
+					let data = nts.uk.ui.windows.getShared('KDL035_RESULT');
+					if(data){
+						let tg: SubWorkSubHolidayLinkingMng[] = [];
+						_.forEach(data, item =>{
+							tg.push(new SubWorkSubHolidayLinkingMng(item));	
+						});
+						self.payoutSubofHDManagements(tg);
+					}
+				});
+			}
 		}
 	}
 	
@@ -372,20 +405,20 @@ module nts.uk.at.view.kaf011 {
 	
 	export class SubWorkSubHolidayLinkingMng {
         // 社員ID
-        employeeId: string;
+        sid: string;
         // 逐次休暇の紐付け情報 . 発生日
-        outbreakDay: string;
+        outbreakDay: Date;
         // 逐次休暇の紐付け情報 . 使用日
-        dateOfUse: string;
+        dateOfUse: Date;
         // 逐次休暇の紐付け情報 . 使用日数
         dayNumberUsed: number;
         // 逐次休暇の紐付け情報 . 対象選択区分
         targetSelectionAtr: number;
 		constructor(param: any){
 			let self = this;
-			self.employeeId = param.employeeId;
-			self.outbreakDay = param.outbreakDay;
-			self.dateOfUse = param.dateOfUse;
+			self.sid = param.employeeId || param.sid;
+			self.outbreakDay = new Date(param.outbreakDay);
+			self.dateOfUse = new Date(param.dateOfUse);
 			self.dayNumberUsed = param.dayNumberUsed;
 			self.targetSelectionAtr = param.targetSelectionAtr;
 		}
