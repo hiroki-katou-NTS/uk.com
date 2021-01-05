@@ -2197,18 +2197,18 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 										dataMidBrk = datafilterBrk[0], timeChartBrk2 : any = null, checkChange = 0;
 										let breakChange = _.filter(self.allTimeBrk, (x: any) => { return x.options.lineNo === i });
 										let indexBrk = _.findIndex(breakChange, (x: any) => {return x.options.id === (`lgc${i}_` + indexBrks)})
-										for (let l = 0; l < breakChange.length; l++) {
+										/*for (let l = 0; l < breakChange.length; l++) {
 											if (b + self.dispStart === breakChange[l].options.start && e + self.dispStart === breakChange[l].options.end) {
 												checkChange = 1;
 											}
-										}
+										}*/
 										self.dataScreen003A().employeeInfo[i].workScheduleDto.listBreakTimeZoneDto[indexBrk].start = b * 5 + self.dispStart * 5;
 										self.dataScreen003A().employeeInfo[i].workScheduleDto.listBreakTimeZoneDto[indexBrk].end = e * 5 + self.dispStart * 5;
-										if (checkChange == 0) {
+										/*if (checkChange == 0) {*/
 											$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "breaktime", dataMidBrk.breaktime == null ? "" : dataMidBrk.breaktime + " "); // + " " để phân biệt khi thay đổi vị trí nhưng không thay đổi giá trị
-										} else {
+										/*} else {
 											$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "breaktime", dataMidBrk.breaktime == null ? "" : dataMidBrk.breaktime);
-										}
+										}*/
 								},
 								canSlide: slide,
 								fixed: fixed
@@ -2253,19 +2253,19 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 										let breakChange = _.filter(self.allTimeBrk, (x: any) => { return x.options.lineNo === i });
 										let indexBrk = _.findIndex(breakChange, (x: any) => {return x.options.id === (`rgc${i}_` + indexBrkr)})
 										
-										for (let l = 0; l < breakChange.length; l++) {
+										/*for (let l = 0; l < breakChange.length; l++) {
 											if (b + self.dispStart === breakChange[l].options.start && e + self.dispStart === breakChange[l].options.end) {
 												checkChange = 1;
 											}
-										}
+										}*/
 										
 										self.dataScreen003A().employeeInfo[i].workScheduleDto.listBreakTimeZoneDto[indexBrk].start = b * 5 + self.dispStart * 5;
 										self.dataScreen003A().employeeInfo[i].workScheduleDto.listBreakTimeZoneDto[indexBrk].end = e * 5 + self.dispStart * 5;
-										if (checkChange == 0) {
+										//if (checkChange == 0) {
 											$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "breaktime", dataMidBrk.breaktime == null ? "" : dataMidBrk.breaktime + " "); // + " " để phân biệt khi thay đổi vị trí nhưng không thay đổi giá trị
-										} else {
-											$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "breaktime", dataMidBrk.breaktime == null ? "" : dataMidBrk.breaktime);
-										}
+										//} else {
+										//	$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "breaktime", dataMidBrk.breaktime == null ? "" : dataMidBrk.breaktime);
+										//}
 									},
 									canSlide: slide,
 									fixed: fixed
