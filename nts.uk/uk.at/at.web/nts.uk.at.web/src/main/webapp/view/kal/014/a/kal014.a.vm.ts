@@ -562,7 +562,7 @@ module nts.uk.at.kal014.a {
                             // Find new selected item
                             let index = _.findIndex(vm.gridItems(), item => item.code == vm.currentCode()),
                                 newCurrentCode: string = null;
-                            if ( vm.gridItems().length < 1){
+                            if ( vm.gridItems().length < 2){
                                 newCurrentCode = null;
                             }else if (index == (vm.gridItems().length -1 )){
                                 newCurrentCode = vm.gridItems()[index -1 ].code;
