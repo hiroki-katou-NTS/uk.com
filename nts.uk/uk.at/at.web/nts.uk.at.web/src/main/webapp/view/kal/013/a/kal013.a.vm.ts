@@ -19,8 +19,10 @@ module nts.uk.at.view.kal013.a {
         backButon: string = "/view/kal/012/a/index.xhtml";
         //categories
         categoryList: KnockoutObservableArray<common.Category> = ko.observableArray(common.workplaceCategory());
-        selectedCategoryCode: KnockoutObservable<number> = ko.observable(common.WorkplaceCategory.MASTER_CHECK_BASIC);
+        // selectedCategoryCode: KnockoutObservable<number> = ko.observable(common.WorkplaceCategory.MASTER_CHECK_BASIC);
+        selectedCategoryCode: KnockoutObservable<number> = ko.observable(null);
         selectedCategory: KnockoutObservable<common.CategoryPattern> = ko.observable(null);
+        selectedCategoryName: KnockoutObservable<string> = ko.observable(null);
         //Alarm list
         selectedAlarmCode: KnockoutObservable<string> = ko.observable(null);
         alarmListItems: KnockoutObservableArray<common.Alarm> = ko.observableArray([]);
@@ -60,7 +62,7 @@ module nts.uk.at.view.kal013.a {
 
             vm.workplaceCategory = common.WorkplaceCategory;
 
-            vm.getAlarmChecklist();
+            // vm.getAlarmChecklist();
 
             vm.tabSelections();
 
@@ -80,25 +82,12 @@ module nts.uk.at.view.kal013.a {
                 }
             });
 
-            //show tabs
-            vm.uniqueConditions = ko.observable(new tab.UniqueCondition(vm.selectedCategoryCode()));
-            vm.checkConditions = ko.observable(null);
-        }
-
-        created(params: any) {
-            const vm = this;
-        }
-
-        mounted() {
-            const vm = this;
-            $("#fixedTable").ntsFixedTable({height: 350});
-            vm.changeCategory();
-
             vm.selectedCategoryCode.subscribe(value => {
                 if (value != null) {
                     vm.changeCategory();
                     vm.getAlarmChecklist(value);
                     vm.showHiddenTabByCategory(value);
+                    vm.selectedCategoryName(_.filter(common.workplaceCategory(), i => i.code == value)[0].name);
                 }
             });
 
@@ -112,7 +101,23 @@ module nts.uk.at.view.kal013.a {
                 vm.uniqueConditions().selectedAll(false);
                 vm.uniqueConditions().alarmListItem(value);
 
-            })
+            });
+
+            //show tabs
+            vm.uniqueConditions = ko.observable(new tab.UniqueCondition(vm.selectedCategoryCode()));
+            vm.checkConditions = ko.observable(null);
+        }
+
+        created(params: any) {
+            const vm = this;
+        }
+
+        mounted() {
+            const vm = this;
+            $("#fixedTable").ntsFixedTable({height: 350});
+            // vm.changeCategory();
+
+            vm.selectedCategoryCode(common.WorkplaceCategory.MASTER_CHECK_BASIC);
         }
 
         switchNewMode() {

@@ -44,7 +44,7 @@ public class UpdateAlarmCheckCdtWkpCommand {
                         i.getCheckItem(),
                         i.getUseAtr() == 0,
                         IdentifierUtil.randomUniqueId(),
-                        this.convertConditionMon(i.getCheckItem(), i.getMinValue(), i.getMaxValue(), i.getOperator()),
+                        this.convertConditionMon(i.getCheckItem(), i.getMinValue() == null ? "0" : i.getMinValue(), i.getMaxValue(), i.getOperator()),
                         (i.getCheckItem() == CheckMonthlyItemsType.AVERAGE_TIME.value
                                 || i.getCheckItem() == CheckMonthlyItemsType.AVERAGE_NUMBER_DAY.value
                                 || i.getCheckItem() == CheckMonthlyItemsType.AVERAGE_NUMBER_TIME.value
@@ -53,7 +53,7 @@ public class UpdateAlarmCheckCdtWkpCommand {
                         i.getCheckItem() == CheckMonthlyItemsType.AVERAGE_DAY_FREE.value ? i.getCheckCondB() : null,
                         i.getCheckItem() == CheckMonthlyItemsType.AVERAGE_TIME_FREE.value ? i.getCheckCondB() : null,
                         i.getCheckItem() == CheckMonthlyItemsType.TIME_FREEDOM.value ? i.getCheckCondB() : null,
-                        i.getCheckItem() == CheckMonthlyItemsType.AVERAGE_RATIO.value ? i.getCheckCondB() : null,
+                        i.getCheckItem() == CheckMonthlyItemsType.AVERAGE_RATIO_FREE.value ? i.getCheckCondB() : null,
                         i.getName(),
                         i.getMessage()
                 );
@@ -75,7 +75,7 @@ public class UpdateAlarmCheckCdtWkpCommand {
                         i.getCheckItem(),
                         i.getUseAtr() == 0,
                         IdentifierUtil.randomUniqueId(),
-                        this.convertConditionSchel(i.getCheckItem(), i.getMinValue(), i.getMaxValue(), i.getOperator()),
+                        this.convertConditionSchel(i.getCheckItem(), i.getMinValue() == null ? "0" : i.getMinValue() , i.getMaxValue(), i.getOperator()),
                         i.getCheckItem() != CheckDayItemsType.CONTRAST.value ? i.getCheckCond() : null,
                         i.getCheckItem() == CheckDayItemsType.CONTRAST.value ? i.getCheckCondB() : null,
                         i.getName(),

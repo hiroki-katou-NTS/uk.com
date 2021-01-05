@@ -120,12 +120,10 @@
                     </div>
                     <div class="row">
                         <div>
-                            <div
-                                    data-bind="ntsFormLabel: { required: true }, text: $i18n('KAL003_9')"
-                            ></div>
+                            <div data-bind="ntsFormLabel: { required: true }, text: $i18n('KAL003_9')"></div>
                         </div>
-                        <div data-bind="with: selectedCategory" class="category-name">
-                            <label data-bind="text: name"></label>
+                        <div class="category-name">
+                            <label data-bind="text: selectedCategoryName"></label>
                         </div>
                     </div>
                 </div>

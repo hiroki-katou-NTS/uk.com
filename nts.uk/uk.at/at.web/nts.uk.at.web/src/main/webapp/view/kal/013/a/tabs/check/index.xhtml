@@ -61,7 +61,7 @@
                                   value: name,
                                   required: true,
                                   name: '#[KAL003_12]'
-                                }"/>
+                                }, attr: {id: no}"/>
             </td>
             <td class="text-center">
               <button data-bind="text: '条件', click: function(data) { $parent.displayScreenKAL003B(data) }" />
@@ -70,10 +70,7 @@
             <td class="text-center">
               <div class="cf" data-bind="ntsSwitchButton: {
                 name: 'UsageCategory',
-                options: [
-                  { code: 0, name: '四捨' },
-                  { code: 1, name: '切り上' }
-                ],
+                options: $parent.swithchButton,
                 optionsValue: 'code',
                 optionsText: 'name',
                 value: useAtr

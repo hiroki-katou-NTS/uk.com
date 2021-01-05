@@ -39,26 +39,24 @@ public class AddAlarmCheckCdtWkpCommand {
 
         if (!this.opItems.isEmpty()) {
 
-            result = this.opItems.stream().map(i -> {
-                return ExtractionMonthlyCon.create(
-                        IdentifierUtil.randomUniqueId(),
-                        i.getNo(),
-                        i.getCheckItem(),
-                        i.getUseAtr() == 0,
-                        IdentifierUtil.randomUniqueId(),
-                        this.convertConditionMon(i.getCheckItem(), i.getMinValue(), i.getMaxValue(), i.getOperator()),
-                        (i.getCheckItem() == CheckMonthlyItemsType.AVERAGE_TIME.value
-                                || i.getCheckItem() == CheckMonthlyItemsType.AVERAGE_NUMBER_DAY.value
-                                || i.getCheckItem() == CheckMonthlyItemsType.AVERAGE_NUMBER_TIME.value) ?
-                                i.getCheckCond() : null,
-                        i.getCheckItem() == CheckMonthlyItemsType.AVERAGE_DAY_FREE.value ? i.getCheckCondB() : null,
-                        i.getCheckItem() == CheckMonthlyItemsType.AVERAGE_TIME_FREE.value ? i.getCheckCondB() : null,
-                        i.getCheckItem() == CheckMonthlyItemsType.TIME_FREEDOM.value ? i.getCheckCondB() : null,
-                        i.getCheckItem() == CheckMonthlyItemsType.AVERAGE_RATIO.value ? i.getCheckCondB() : null,
-                        i.getName(),
-                        i.getMessage()
-                );
-            }).collect(Collectors.toList());
+            result = this.opItems.stream().map(i -> ExtractionMonthlyCon.create(
+                    IdentifierUtil.randomUniqueId(),
+                    i.getNo(),
+                    i.getCheckItem(),
+                    i.getUseAtr() == 0,
+                    IdentifierUtil.randomUniqueId(),
+                    this.convertConditionMon(i.getCheckItem(), i.getMinValue() == null ? "0" : i.getMinValue(), i.getMaxValue(), i.getOperator()),
+                    (i.getCheckItem() == CheckMonthlyItemsType.AVERAGE_TIME.value
+                            || i.getCheckItem() == CheckMonthlyItemsType.AVERAGE_NUMBER_DAY.value
+                            || i.getCheckItem() == CheckMonthlyItemsType.AVERAGE_NUMBER_TIME.value) ?
+                            i.getCheckCond() : null,
+                    i.getCheckItem() == CheckMonthlyItemsType.AVERAGE_DAY_FREE.value ? i.getCheckCondB() : null,
+                    i.getCheckItem() == CheckMonthlyItemsType.AVERAGE_TIME_FREE.value ? i.getCheckCondB() : null,
+                    i.getCheckItem() == CheckMonthlyItemsType.TIME_FREEDOM.value ? i.getCheckCondB() : null,
+                    i.getCheckItem() == CheckMonthlyItemsType.AVERAGE_RATIO_FREE.value ? i.getCheckCondB() : null,
+                    i.getName(),
+                    i.getMessage()
+            )).collect(Collectors.toList());
         }
 
         return result;
@@ -76,7 +74,7 @@ public class AddAlarmCheckCdtWkpCommand {
                         i.getCheckItem(),
                         i.getUseAtr() == 0,
                         IdentifierUtil.randomUniqueId(),
-                        this.convertConditionSchel(i.getCheckItem(), i.getMinValue(), i.getMaxValue(), i.getOperator()),
+                        this.convertConditionSchel(i.getCheckItem(), i.getMinValue() == null ? "0" : i.getMinValue(), i.getMaxValue(), i.getOperator()),
                         i.getCheckItem() != CheckDayItemsType.CONTRAST.value ? i.getCheckCond() : null,
                         i.getCheckItem() == CheckDayItemsType.CONTRAST.value ? i.getCheckCondB() : null,
                         i.getName(),

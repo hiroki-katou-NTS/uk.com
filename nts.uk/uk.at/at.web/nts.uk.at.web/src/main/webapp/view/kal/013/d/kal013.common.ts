@@ -7,12 +7,12 @@ module nts.uk.at.view.kal013 {
          */
         export function workplaceCategory() {
             return [
-                {code: WorkplaceCategory.MASTER_CHECK_BASIC, name: 'マスタチェック(基本)'},
-                {code: WorkplaceCategory.MASTER_CHECK_WORKPLACE, name: 'マスタチェック(職場)'},
-                {code: WorkplaceCategory.MASTER_CHECK_DAILY, name: 'マスタチェック(基本)'},
-                {code: WorkplaceCategory.SCHEDULE_DAILY, name: 'スケジュール／日次'},
-                {code: WorkplaceCategory.MONTHLY, name: '月次'},
-                {code: WorkplaceCategory.APPLICATION_APPROVAL, name: '申請承認'},
+                {code: WorkplaceCategory.MASTER_CHECK_BASIC, name: nts.uk.resource.getText("KAL020_21") },
+                {code: WorkplaceCategory.MASTER_CHECK_WORKPLACE, name: nts.uk.resource.getText("KAL020_210") },
+                {code: WorkplaceCategory.MASTER_CHECK_DAILY, name: nts.uk.resource.getText("KAL020_103") },
+                {code: WorkplaceCategory.SCHEDULE_DAILY, name: nts.uk.resource.getText("KAL020_300") },
+                {code: WorkplaceCategory.MONTHLY, name: nts.uk.resource.getText("KAL020_401") },
+                {code: WorkplaceCategory.APPLICATION_APPROVAL, name: nts.uk.resource.getText("KAL020_501") },
             ];
         }
 
@@ -125,7 +125,7 @@ module nts.uk.at.view.kal013 {
                 this.checkItem(checkItem);
                 this.useAtr(useAtr);
                 this.name(name);
-                this.minValue(minValue)
+                this.minValue(minValue);
                 this.maxValue(maxValue);
                 this.operator(operator);
                 this.message(message);

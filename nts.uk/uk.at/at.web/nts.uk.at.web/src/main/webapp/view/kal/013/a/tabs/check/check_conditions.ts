@@ -10,12 +10,19 @@ module nts.uk.at.view.kal013.a.tab {
         roundingRules: KnockoutObservableArray<any> = ko.observableArray([]);
         isEnableRemove: KnockoutObservable<boolean> = ko.observable(false);
 
+        swithchButton: KnockoutObservableArray<any> = ko.observableArray([]);
+
         category: number;
 
         constructor(checkConditions?: boolean, category?: number) {
             super();
 
             const vm = this;
+
+            vm.swithchButton([
+                { code: '1', name: vm.$i18n('KAL003_189') },
+                { code: '0', name: vm.$i18n('KAL003_190') }
+            ]);
 
             vm.checkConditions(checkConditions);
             if (category) {
@@ -71,16 +78,16 @@ module nts.uk.at.view.kal013.a.tab {
         addNewCheckCondition() {
             const vm = this;
             let lastItem = _.last(vm.checkConditionsList());
-            let index = vm.checkConditionsList().length;
+            let index = vm.checkConditionsList().length + 1 ;
 
             let newCheckCondition = new common.CheckConditionDto(
                 false,
                 null,
                 index,
                 vm.category == common.WorkplaceCategory.MONTHLY ? 1 : 0,
-                0,
+                1,
                 null,
-                "0",
+                null,
                 null,
                 0,
                 null,
@@ -95,9 +102,13 @@ module nts.uk.at.view.kal013.a.tab {
             let currentList = _.clone(vm.checkConditionsList());
             // Remove Item
             let afterRemoveLst = _.filter(currentList, (x: any) => x.isCheck() === false);
+            let selectedItems = _.filter(currentList, (x: any) => x.isCheck() === true);
             afterRemoveLst = _.sortBy(afterRemoveLst, i => i.no());
             _.forEach(afterRemoveLst, function (i: any, index) {
-                i.no(index);
+                i.no(index + 1);
+            });
+            _.forEach(selectedItems, function (i: any) {
+                $('#' + i.no()).ntsError('clear');
             });
             vm.checkConditionsList(afterRemoveLst);
             // vm.isEnableRemove(false);
