@@ -153,7 +153,7 @@ public class ChangeValueItemsOnHolidayShipment {
 		}
 		//休暇紐付管理をチェックする
 		VacationCheckOutput checkVacationTyingManage = absenceServiceProcess.checkVacationTyingManage(
-				workTypeBefore.toDomain(), 
+				workTypeBefore != null ? workTypeBefore.toDomain(): null, 
 				workTypeAfter.toDomain(), 
 				leaveComDayOffMana.stream().map(c->c.toDomain()).collect(Collectors.toList()), 
 				payoutSubofHDManagement.stream().map(c->c.toDomain()).collect(Collectors.toList()));

@@ -108,9 +108,9 @@ public class HolidayShipmentWebService extends WebService {
 	}
 	
 	@POST
-	@Path("change_work_type")
+	@Path("changeWorkType")
 	public ChangeWorkTypeResultDto changeWorkType(ChangeWokTypeParam param) {
-		return changeValueItemsOnHolidayShipment.changeWorkType(param.workTypeBefore, param.workTypeAfter, Optional.ofNullable(param.workTimeCode), param.leaveComDayOffMana, param.payoutSubofHDManagement);
+		return changeValueItemsOnHolidayShipment.changeWorkType(param.workTypeBefore, param.workTypeAfter, Optional.ofNullable(param.workTimeCode == "" ? null: param.workTimeCode), param.leaveComDayOffMana, param.payoutSubofHDManagements);
 	}
 	
 	

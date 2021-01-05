@@ -2,6 +2,8 @@ module nts.uk.at.view.kaf011 {
 	import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
 	import ApplicationCommon = nts.uk.at.view.kaf000.shr.viewmodel.Application;
 	import getText = nts.uk.resource.getText;
+	import block = nts.uk.ui.block;
+	import ajax = nts.uk.request.ajax;
 	/** 振出申請 */
 	export class RecruitmentApp {
 		appType: number; //0: Rec-振出, 1: Abs-振休
@@ -18,7 +20,7 @@ module nts.uk.at.view.kaf011 {
 		workTypeSelected = new WorkTypeSelected();
 		workTypeList = ko.observableArray([]);
 		workTimeDisplay: KnockoutObservable<string> = ko.observable();
-		displayInforWhenStarting: any;
+		displayInforWhenStarting: any = null;
 		
 		//điều kiện hiển thị ※H1
 		dk1: KnockoutObservable<boolean> = ko.observable(false);
@@ -28,19 +30,66 @@ module nts.uk.at.view.kaf011 {
 		dk3: KnockoutObservable<boolean> = ko.observable(false);
 		//
 		dk4: KnockoutObservable<boolean> = ko.observable(false);
+		
+		started: boolean = false;
+		
 		constructor(appType: number){
 			let self = this;
 			self.appType = appType;
 			self.workInformation.workType.subscribe((data: string)=>{
 				if(data){
-					self.workTypeSelected.update(_.find(self.workTypeList(), {'workTypeCode': data}));
+					let workTypeAfter = _.find(self.workTypeList(), {'workTypeCode': data});
+					self.workTypeSelected.update(workTypeAfter);
 					self.checkDisplay();
+					//only Rec-振出
+					if(self.appType == 0 && self.started){
+						let workTypeBefore = _.find(self.workTypeList(), {'workTypeCode': self.displayInforWhenStarting.applicationForWorkingDay.workType});
+						let payoutSubofHDManagements: any[] = [];
+						let command = {
+							workTypeBefore: workTypeBefore, 
+							workTypeAfter: workTypeAfter, 
+							workTimeCode: self.workInformation.workTime(),
+							leaveComDayOffMana: self.leaveComDayOffMana(),
+							payoutSubofHDManagements: payoutSubofHDManagements,
+						}
+						block.invisible();
+						ajax("at/request/application/holidayshipment/changeWorkType", command).done((data:any) => {
+							if(data.clearManageSubsHoliday){
+								self.leaveComDayOffMana([]);
+							}
+							let w1 = _.find(self.workingHours(), {'workNo': 1});
+							let w1n:any = _.find(data.workingHours, {'workNo': 1});
+							if(w1n){
+								w1.update(w1n.timeZone);	
+							}else{
+								w1.update({startTime: null, endTime: null});
+							}
+							let w2 = _.find(self.workingHours(), {'workNo': 2});
+							let w2n:any = _.find(data.workingHours, {'workNo': 2});
+							if(w2n){
+								if(w2){
+									w2.update(w2n.timeZone);	
+								}else{
+									let tg = new TimeZoneWithWorkNo(2);
+									tg.update(w2n.timeZone);
+									self.workingHours.push(tg);									
+								}
+							}else if(w2){
+								self.workingHours.remove(c => {
+							        return c.workNo== 2;
+							    });
+							}
+						}).always(() => {
+	                        block.clear();
+	                    });
+					}
 				}
 			});
 		}
 		
 		bindingScreenA(data: any, displayInforWhenStarting: any){
 			let self = this;
+			self.started = false;
 			_.orderBy(data.workTypeList, ['code'], ['asc'])
 			self.workTypeList(data.workTypeList);
 			self.workInformation.update(data);
@@ -58,6 +107,7 @@ module nts.uk.at.view.kaf011 {
 									(data.workTimeName?(data.workTimeName + ' ') : '' )+ 
 									moment(Math.floor(data.startTime / 60),'mm').format('mm') + ":" + moment(data.startTime % 60,'mm').format('mm') + getText('KAF011_37') + moment(Math.floor(data.endTime / 60),'mm').format('mm') + ":" + moment(data.endTime % 60,'mm').format('mm'));	
 			}
+			self.started = true;
 			
 		}
 		
@@ -77,6 +127,7 @@ module nts.uk.at.view.kaf011 {
 				tg.update(tg)
 				self.workingHours.push(tg);		
 			}
+			self.started = true;
 		}
 		
 		convertTimeToString(data: any){ 
@@ -179,6 +230,54 @@ module nts.uk.at.view.kaf011 {
 		
 		constructor(appType: number){
 			super(appType);
+			let self = this;
+			self.workInformation.workType.subscribe((data: string)=>{
+				//only Abs-振休
+				if(data && self.appType == 1 && self.started){
+					let workTypeAfter = _.find(self.workTypeList(), {'workTypeCode': data});
+					let workTypeBefore = _.find(self.workTypeList(), {'workTypeCode': self.displayInforWhenStarting.applicationForHoliday.workType});
+					let command = {
+						workTypeBefore: workTypeBefore, 
+						workTypeAfter: workTypeAfter, 
+						workTimeCode: self.workInformation.workTime(),
+						leaveComDayOffMana: self.leaveComDayOffMana(),
+						payoutSubofHDManagements: self.payoutSubofHDManagements(),
+					}
+					block.invisible();
+					ajax("at/request/application/holidayshipment/changeWorkType", command).done((data:any) => {
+						if(data.clearManageSubsHoliday){
+							self.leaveComDayOffMana([]);
+						}
+						if(data.clearManageHolidayString){
+							self.payoutSubofHDManagements([]);
+						}
+						let w1 = _.find(self.workingHours(), {'workNo': 1});
+						let w1n:any = _.find(data.workingHours, {'workNo': 1});
+						if(w1n){
+							w1.update(w1n.timeZone);	
+						}else{
+							w1.update({startTime: null, endTime: null});
+						}
+						let w2 = _.find(self.workingHours(), {'workNo': 2});
+						let w2n:any = _.find(data.workingHours, {'workNo': 2});
+						if(w2n){
+							if(w2){
+								w2.update(w2n.timeZone);	
+							}else{
+								let tg = new TimeZoneWithWorkNo(2);
+								tg.update(w2n.timeZone);
+								self.workingHours.push(tg);									
+							}
+						}else if(w2){
+							self.workingHours.remove(c => {
+						        return c.workNo== 2;
+						    });
+						}
+					}).always(() => {
+                        block.clear();
+                    });;
+				}
+			});
 		}
 		
 		bindingScreenBAbs(param: any, workTypeList: [], displayInforWhenStarting: any){
@@ -203,8 +302,8 @@ module nts.uk.at.view.kaf011 {
 	}
 	
 	export class WorkInformation {
-		workType: KnockoutObservable<string> = ko.observable('');
-		workTime: KnockoutObservable<string> = ko.observable('');
+		workType: KnockoutObservable<string> = ko.observable();
+		workTime: KnockoutObservable<string> = ko.observable();
 		constructor(){}
 		update(param: any){
 			let self = this;

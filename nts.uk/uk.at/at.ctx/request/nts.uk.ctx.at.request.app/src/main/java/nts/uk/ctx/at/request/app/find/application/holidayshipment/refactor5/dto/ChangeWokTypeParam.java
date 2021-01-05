@@ -22,6 +22,6 @@ public class ChangeWokTypeParam {
 	
 	public List<LeaveComDayOffManaDto> leaveComDayOffMana;
 	
-	public List<PayoutSubofHDManagementDto> payoutSubofHDManagement;
+	public List<PayoutSubofHDManagementDto> payoutSubofHDManagements;
 	
 }
