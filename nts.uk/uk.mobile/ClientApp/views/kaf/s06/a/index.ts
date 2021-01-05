@@ -56,8 +56,8 @@ export class KafS06AComponent extends KafS00ShrComponent {
                 } as StartMobileParam;
                 command.mode = vm.modeNew ? 1 : 0;
                 command.companyId = vm.user.companyId;
-                command.employeeIdOp = [];
-                command.employeeIdOp.push(vm.user.employeeId);
+                command.employeeIdOp = vm.user.employeeId;
+                command.datesOp = [];
                 if (vm.modeNew) {
                     return vm.$http.post('at', API.start, command);  
                 }
