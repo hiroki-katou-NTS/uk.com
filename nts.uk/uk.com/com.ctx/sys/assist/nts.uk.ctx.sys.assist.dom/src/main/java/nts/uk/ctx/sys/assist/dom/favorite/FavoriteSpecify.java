@@ -7,23 +7,24 @@ import java.util.stream.Collectors;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 
 /*
- * UKDesign.ドメインモッ�.NittsuSystem.UniversalK.オフィス支援.在席照�在席照�お気に入り�挮
+ * UKDesign.ドメインモッ�.NittsuSystem.UniversalK.オフィス支援.在席照�在席照�お気に入り�挮
  */
 public class FavoriteSpecify extends AggregateRoot {
 
 	// お気に入り名
 	private FavoriteName favoriteName;
 
-	// 作��D
+	// 作��D
 	private String creatorId;
 
 	// 入力日
 	private GeneralDateTime inputDate;
 
-	// 対象選�
+	// 対象選�
 	private TargetSelection targetSelection;
 
 	// 職場ID
@@ -34,21 +35,24 @@ public class FavoriteSpecify extends AggregateRoot {
 
 	private FavoriteSpecify() {
 	}
-	
-	//TODO [1] 対象惱名を渡�
-//	public List<String> passingTargetInfoName( Require require) {
-//		if(this.targetSelection == TargetSelection.AFFILIATION_WORKPLACE) {
-//			return empty;
-//		}
-//		if(this.targetSelection == TargetSelection.???) {
-//			return require.getBussinessName(this.listEmployee);
-//		}
-//		if(this.targetSelection == TargetSelection.WORKPLACE) {
-//			return require.getWorkplaceDisplayName(this.workplaceId);;
-//		}
-		return Collections.emptyList();
+
+	/**
+	 * [1] 対象惱名を渡
+	 * 
+	 * @param require
+	 * @return List<String>
+	 */
+	public List<String> passingTargetInfoName(Require require) {
+		switch (this.targetSelection) {
+		case AFFILIATION_WORKPLACE:
+			return Collections.emptyList();
+		case WORKPLACE:
+			return require.getWrkspDispName(this.workplaceId, GeneralDate.today());
+		default:
+			return Collections.emptyList();
+		}
 	}
-	
+
 	public static FavoriteSpecify createFromMemento(MementoGetter memento) {
 		FavoriteSpecify domain = new FavoriteSpecify();
 		domain.getMemento(memento);
@@ -99,5 +103,31 @@ public class FavoriteSpecify extends AggregateRoot {
 		List<String> getWorkplaceId();
 
 		Integer getOrder();
+	}
+
+	// TODO
+	public interface Require {
+		/**
+		 * [R-1] 職場表示名を取得する
+		 * 
+		 * @param wrkspIds 職場IDリスト
+		 * @param date     基準日
+		 * @return List<String>
+		 * 
+		 *         職場情報を取得するAdapter.職場情報を取得する(職場IDリスト、基準日)
+		 */
+		public List<String> getWrkspDispName(List<String> wrkspIds, GeneralDate date);
+	}
+
+	public class RequireImpl implements Require {
+		// TODO
+//		private adaptor;
+
+		@Override
+		public List<String> getWrkspDispName(List<String> wrkspIds, GeneralDate date) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
 	}
 }
