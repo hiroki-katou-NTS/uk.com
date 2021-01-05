@@ -137,24 +137,31 @@
                 </tr>
               </com:ko-if>
 
-              <tr>
-                <!-- A10_1 個人メールアドレス -->
-                <td>#{i18n.getText('CDL010_10')}</td>
-                <!-- A10_2 -->
-                <td data-bind="html: detailData().contactInformation.personalEmailAddress"></td>
-              </tr>
+              <!-- 項目制御 ※9 -->
+              <com:ko-if bind="!_.isEmpty(detailData().contactInformation.personalEmailAddress)">
+                <tr>
+                  <!-- A10_1 個人メールアドレス -->
+                  <td>#{i18n.getText('CDL010_10')}</td>
+                  <!-- A10_2 -->
+                  <td data-bind="html: detailData().contactInformation.personalEmailAddress"></td>
+                </tr>
+              </com:ko-if>
 
-              <tr>
-                <!-- A11_1 個人携帯メールアド -->
-                <td>#{i18n.getText('CDL010_11')}</td>
-                <!-- A11_2 -->
-                <td data-bind="html: detailData().contactInformation.personalMobileEmailAddress"></td>
-              </tr>
+              <!-- 項目制御 ※10 -->
+              <com:ko-if bind="!_.isEmpty(detailData().contactInformation.personalMobileEmailAddress)">
+                <tr>
+                  <!-- A11_1 個人携帯メールアド -->
+                  <td>#{i18n.getText('CDL010_11')}</td>
+                  <!-- A11_2 -->
+                  <td data-bind="html: detailData().contactInformation.personalMobileEmailAddress"></td>
+                </tr>
+              </com:ko-if>
             </tbody>
           </table>
           <!-- A12 -->
           <table>
             <tbody data-bind="foreach: otherContact">
+              <!-- 項目制御 ※11 -->
               <tr data-bind="if: !_.isNull($data)">
                 <td class="w-175" data-bind="text: $vm.$i18n('CDL010_14', [contactName])"></td>
                 <td data-bind="text: contactAddress"></td>

@@ -21,20 +21,23 @@ module nts.uk.at.view.cdl010.a.screenModel {
           const companyMobileEmailAddress = detailData.contactInformation.companyMobileEmailAddress;
           const personalEmailAddress = detailData.contactInformation.personalEmailAddress;
           const personalMobileEmailAddress = detailData.contactInformation.personalMobileEmailAddress;
-          detailData.contactInformation.companyEmailAddress = `<a href="mailto:${companyEmailAddress}">${companyEmailAddress}</a>`;
-          detailData.contactInformation.companyMobileEmailAddress = `<a href="mailto:${companyMobileEmailAddress}">${companyMobileEmailAddress}</a>`;
-          detailData.contactInformation.personalEmailAddress = `<a href="mailto:${personalEmailAddress}">${personalEmailAddress}</a>`;
-          detailData.contactInformation.personalMobileEmailAddress = `<a href="mailto:${personalMobileEmailAddress}">${personalMobileEmailAddress}</a>`;
+          detailData.contactInformation.companyEmailAddress = _.isEmpty(companyEmailAddress)
+            ? '' : `<a href="mailto:${companyEmailAddress}">${companyEmailAddress}</a>`;
+          detailData.contactInformation.companyMobileEmailAddress = _.isEmpty(companyMobileEmailAddress)
+            ? '' : `<a href="mailto:${companyMobileEmailAddress}">${companyMobileEmailAddress}</a>`;
+          detailData.contactInformation.personalEmailAddress = _.isEmpty(personalEmailAddress)
+            ? '' : `<a href="mailto:${personalEmailAddress}">${personalEmailAddress}</a>`;
+          detailData.contactInformation.personalMobileEmailAddress = _.isEmpty(personalMobileEmailAddress)
+            ? '' : `<a href="mailto:${personalMobileEmailAddress}">${personalMobileEmailAddress}</a>`;
           vm.otherContact(detailData.contactInformation.otherContactsInfomation);
         }
         vm.detailData(detailData);
       })
       .fail(() => vm.$blockui('clear'))
       .always(() => {
-        const contentAreaHeight = $('#contents-area').height();
         const contentHeight = $('#content-cdl010').height();
-        if (contentAreaHeight > contentHeight) {
-          const subHeight = contentAreaHeight - contentHeight;
+        if (545 > contentHeight) {
+          const subHeight = 545 - contentHeight;
           nts.uk.ui.windows.getSelf().setHeight(650 - subHeight);
         }
         vm.$blockui('clear');
