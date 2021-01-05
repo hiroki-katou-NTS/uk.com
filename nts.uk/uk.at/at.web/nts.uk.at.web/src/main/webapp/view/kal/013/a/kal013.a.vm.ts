@@ -71,12 +71,13 @@ module nts.uk.at.view.kal013.a {
                 let category: any = vm.selectedCategoryCode();
 
                 switch (category) {
+                    case vm.workplaceCategory.MONTHLY:
                     case vm.workplaceCategory.SCHEDULE_DAILY:
                         let hasClicked: any = $("#fixedTableCCDT").attr('data-clicked');
                         if (typeof hasClicked == 'undefined' || hasClicked === 'false') {
                             $("#fixedTableCCDT")
                                 .attr('data-clicked', 'true')
-                                .ntsFixedTable({height: 370});
+                                .ntsFixedTable({height: 350});
                         }
                         break;
                 }
@@ -114,7 +115,7 @@ module nts.uk.at.view.kal013.a {
 
         mounted() {
             const vm = this;
-            $("#fixedTable").ntsFixedTable({height: 350});
+            $("#fixedTable").ntsFixedTable({});
             // vm.changeCategory();
 
             vm.selectedCategoryCode(common.WorkplaceCategory.MASTER_CHECK_BASIC);
@@ -134,6 +135,34 @@ module nts.uk.at.view.kal013.a {
 
         openDialogD() {
             const vm = this;
+
+            // vm.$window
+            //     .storage('dataShareDialog046', params)
+            //     .then(() => vm.$window.modal('at', '/view/kdl/046/a/index.xhtml'))
+            //     .then(() => vm.$window.storage('dataShareKDL046'))
+            //     .then((data) => {
+            //         if (data) {
+            //
+            //             let orgInfo: TargetOrgIdenInfor = {
+            //                 unit: data.unit,
+            //                 workplaceId: data.workplaceId,
+            //                 workplaceGroupId: data.workplaceGroupID
+            //             };
+            //             vm.workplaceCode(data.workplaceCode || data.workplaceGroupCode);
+            //             vm.workplaceName(data.workplaceName || data.workplaceGroupName);
+            //             vm.targetOrganizationInfor(orgInfo);
+            //             vm.changeWorkplace(orgInfo).then(() => {
+            //                 vm.getBanWorkListByCode().then(() => {
+            //                     if (vm.listBanWorkTogether().length) {
+            //                         vm.selectedProhibitedCode(null);
+            //                         vm.selectedProhibitedCode(vm.listBanWorkTogether()[0].code);
+            //                     } else {
+            //                         vm.swithchNewMode();
+            //                     }
+            //                 });
+            //             })
+            //         }
+            //     });
 
             vm.$window.modal('/view/kal/013/d/index.xhtml', vm.selectedCategoryCode())
                 .then((result: any) => {

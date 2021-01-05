@@ -47,7 +47,7 @@
                     class="danger"
                     data-bind="text: $i18n('KAL003_8'), click: deleteAlarmListByWorkplace, enable: !isNewMode()"
             />
-            <button tabindex="6" id="a16" data-bind="text: $i18n('KAL003_7'), click: copyAlarm"/>
+            <button tabindex="6" id="a16" data-bind="text: $i18n('KAL003_7'), click: copyAlarm, enable: !isNewMode()"/>
         </div>
         <div id="contents-area" class="cf">
             <div class="pull-left" style="padding-left: 25px">

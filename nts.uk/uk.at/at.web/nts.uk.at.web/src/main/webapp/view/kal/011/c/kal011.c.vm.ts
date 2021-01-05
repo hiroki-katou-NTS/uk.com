@@ -15,7 +15,7 @@ module nts.uk.at.kal011.c {
          * nts.uk.ui.NtsGridListColumn
          */
         columns: Array<any>;
-        workPlaceList: Array<WorkPlace> = [];
+        workPlaceList: KnockoutObservableArray<WorkPlace> = ko.observableArray([]);
         processId: string;
         currentCode: string;
 
@@ -25,15 +25,23 @@ module nts.uk.at.kal011.c {
             _.extend(window, {vm});
             vm.$window.storage('KAL011CModalData').done((res) => {
                 if (res.data && res.data.length) {
-                    vm.workPlaceList = _.map(res.data, function (i: ExtractAlarm) {
-                       return new WorkPlace(i, false);
+                     let lstItem = _.map(res.data, function (i: ExtractAlarm) {
+                       // return new WorkPlace(i, false);
+                        return new WorkPlace(i);
                     });
+                    vm.workPlaceList(lstItem);
                     vm.currentCode = res.currentCode;
-                    $("#grid").igGrid("option", "dataSource", vm.workPlaceList);
+                    vm.startPage();
                 };
             });
 
-            vm.startPage();
+
+        }
+
+        mounted() {
+            const vm = this;
+
+
         }
 
         /**
@@ -54,38 +62,53 @@ module nts.uk.at.kal011.c {
             let vm = this;
             let dfd = $.Deferred();
             vm.columns = [
-                {headerText: '', key: 'guid', width: 1, hidden: true},
-                {
-                    headerText: vm.$i18n('KAL011_24'),
-                    dataType: 'boolean',
-                    key: 'isSendTo',
-                    showHeaderCheckbox: true,
-                    width: 150,
-                    ntsControl: 'isSendTo'
-                },
-                {headerText: vm.$i18n('KAL011_25'), key: 'workplaceCode', width: 150},
-                {headerText: vm.$i18n('KAL011_26'), key: 'workplaceName', width: 383}
+
             ];
             $("#grid").ntsGrid({
                 width : 700,
                 height: 380,
-                dataSource: vm.workPlaceList,
+                dataSource: vm.workPlaceList(),
                 hidePrimaryKey: true,
                 primaryKey: 'guid',
                 virtualization: true,
                 rowVirtualization: true,
                 virtualizationMode: 'continuous',
-                columns: vm.columns,
+                columns: [
+                    {
+                        headerText: "",
+                        key: "guid",
+                        width: 1,
+                        hidden: true
+                    },
+                    {
+                        headerText: vm.$i18n('KAL011_24'),
+                        key: "isSendTo",
+                        dataType: "boolean",
+                        width: "150px",
+                        ntsControl: "Checkbox",
+                        showHeaderCheckbox: true,
+                    },
+                    {
+                        headerText: vm.$i18n('KAL011_25'),
+                        key: "workplaceCode",
+                        width: 150
+                    },
+                    {
+                        headerText: vm.$i18n('KAL011_26'),
+                        key: "workplaceName",
+                        width: 383
+                    }
+                ],
                 features: [],
                 ntsControls: [
                     {
-                        name: 'isSendTo',
-                        options: {value: 1, text: ''},
-                        optionsValue: 'value',
-                        optionsText: 'text',
-                        controlType: 'CheckBox',
-                        enable: true
-                    }
+                        name: "Checkbox",
+                        options: { value: 1, text: "" },
+                        optionsValue: "value",
+                        optionsText: "text",
+                        controlType: "CheckBox",
+                        enable: true,
+                    },
                 ]
             });
             return dfd.promise();
@@ -99,13 +122,13 @@ module nts.uk.at.kal011.c {
         doSendEmail() {
             const vm = this;
             vm.$blockui("invisible");
-            let lstSelected = _.filter(vm.workPlaceList, i => i.isSendTo === true);
-            let listValueExtractAlarmDto = vm.workPlaceList;
+            let lstSelected = _.filter(vm.workPlaceList(), i => i.isSendTo === true);
+            let listValueExtractAlarmDto = ko.toJS(vm.workPlaceList());
             let currentAlarmCode = vm.currentCode;
             let command = {
-                workplaceIds: _.map(lstSelected, function (i: any) {
+                workplaceIds: _.uniq(_.map(lstSelected, function (i: any) {
                     return i.workplaceID;
-                }),
+                })),
                 listValueExtractAlarmDto,
                 currentAlarmCode
             };
@@ -142,9 +165,9 @@ module nts.uk.at.kal011.c {
         checkedValue: string;
         hierarchyCd: string;
 
-        constructor(data: ExtractAlarm, isSendTo: boolean) {
+        constructor(data: ExtractAlarm) {
             this.guid = nts.uk.util.randomId().replace(/-/g, "_");
-            this.isSendTo = isSendTo;
+            this.isSendTo = false;
             this.workplaceID = data.workplaceId;
             /* 職場コード*/
             this.workplaceCode = data.workplaceCode;
