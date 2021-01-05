@@ -9,6 +9,10 @@
 		<ui:define name="htmlHead">
 
 			<com:scriptfile set="IGNITE" />
+			<com:ValidatorScript>
+					nts.uk.ctx.at.shared.dom.common.DailyTime
+					nts.uk.ctx.at.shared.dom.common.WeeklyTime
+   			</com:ValidatorScript>
 			<script>
 				var dialogSize = {
 					width : 470,
@@ -33,14 +37,14 @@
 
 				<!-- P2_3 -->
 				<input tabindex="1" id="inputP2_3" class="input_time"
-					data-bind="ntsTimeEditor: { value: screenPData.deforLaborTimeComDto.dailyTime.time, inputFormat: 'time', mode: 'time', required: true, name: '#[KMK004_309]' }" />
+					data-bind="ntsTimeEditor: { value: screenPData.deforLaborTimeComDto.dailyTime.time, inputFormat: 'time', mode: 'time', required: true, constraint: 'DailyTime', name: '#[KMK004_309]' }" />
 
 				<!-- P2_4 -->
 				<label data-bind="text: $i18n('KMK004_310')"></label>
 
 				<!-- P2_5 -->
 				<input tabindex="2" class="input_time"
-					data-bind="ntsTimeEditor: { value: screenPData.deforLaborTimeComDto.weeklyTime.time, inputFormat: 'time', mode: 'time', required: true, name: '#[KMK004_310]' }" />
+					data-bind="ntsTimeEditor: { value: screenPData.deforLaborTimeComDto.weeklyTime.time, inputFormat: 'time', mode: 'time', required: true, constraint: 'WeeklyTime', name: '#[KMK004_310]' }" />
 				<br></br>
 				<!-- P3_1 -->
 				<div
