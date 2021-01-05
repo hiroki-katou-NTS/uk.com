@@ -394,19 +394,19 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		removePramXC(con, sid, date, "S***");
 		removePramXC(con, sid, date, "OTK*");
 //		
-//		String sqlQuery1 = "Delete From KRCDT_DAY_DG_ERAL Where [SID] = " + "'" + sid + "'" + " and PROCESSING_DATE = " + "'" + date + "'" ;
+//		String sqlQuery1 = "Delete From KRCDT_DAY_DG_ERAL Where SID = " + "'" + sid + "'" + " and PROCESSING_DATE = " + "'" + date + "'" ;
 //		try (val st = con.createStatement()) {
 //			st.executeUpdate(sqlQuery1);
 //		} catch (SQLException e) {
 //			throw new RuntimeException(e);
 //		}
-//		String sqlQuery2 = "Delete From KRCDT_DAY_ERAL Where [SID] = " + "'" + sid + "'" + " and PROCESSING_DATE = " + "'" + date + "'" ;
+//		String sqlQuery2 = "Delete From KRCDT_DAY_ERAL Where SID = " + "'" + sid + "'" + " and PROCESSING_DATE = " + "'" + date + "'" ;
 //		try (val st = con.createStatement()) {
 //			st.executeUpdate(sqlQuery2);
 //		} catch (SQLException e) {
 //			throw new RuntimeException(e);
 //		}
-//		String sqlQuery4 = "Delete From KRCDT_DAY_ERAL_ATD Where [SID] = " + "'" + sid + "'" + " and PROCESSING_DATE = " + "'" + date + "'" ;
+//		String sqlQuery4 = "Delete From KRCDT_DAY_ERAL_ATD Where SID = " + "'" + sid + "'" + " and PROCESSING_DATE = " + "'" + date + "'" ;
 //		try (val st = con.createStatement()) {
 //			st.executeUpdate(sqlQuery4);
 //		} catch (SQLException e) {
@@ -415,7 +415,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 	}
 	
 	private void removePramX(Connection con, String sid, GeneralDate date, String type) {
-		String sqlQuery = "Delete From " + checkErType(type) + " Where [SID] = " + "'" + sid + "'" + " and PROCESSING_DATE = " + "'" + date + "'" ;
+		String sqlQuery = "Delete From " + checkErType(type) + " Where SID = " + "'" + sid + "'" + " and PROCESSING_DATE = " + "'" + date + "'" ;
 		try (val st = con.createStatement()) {
 			st.executeUpdate(sqlQuery);
 		} catch (SQLException e) {
@@ -424,7 +424,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 	}
 	
 	private void removePramXC(Connection con, String sid, GeneralDate date, String type) {
-		String sqlQuery = "Delete From " + checkErTypeC(type) + " Where [SID] = " + "'" + sid + "'" + " and PROCESSING_DATE = " + "'" + date + "'" ;
+		String sqlQuery = "Delete From " + checkErTypeC(type) + " Where SID = " + "'" + sid + "'" + " and PROCESSING_DATE = " + "'" + date + "'" ;
 		try (val st = con.createStatement()) {
 			st.executeUpdate(sqlQuery);
 		} catch (SQLException e) {
@@ -453,7 +453,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 	@SneakyThrows
 	public void removeContinuosErrorIn(String sid, DatePeriod date, String code) {
 		String query = new String("DELETE c FROM KRCDT_DAY_ERAL_OTK_ATD c JOIN KRCDT_DAY_OTK_ERAL sb ON c.ID = sb.ID "
-				+ "WHERE sb.ERROR_CODE = ? AND sb.[SID] = ? AND sb.PROCESSING_DATE >= ? AND sb.PROCESSING_DATE <= ?");
+				+ "WHERE sb.ERROR_CODE = ? AND sb.SID = ? AND sb.PROCESSING_DATE >= ? AND sb.PROCESSING_DATE <= ?");
 		try (PreparedStatement statement = this.connection().prepareStatement(query)) {
 			statement.setString(1, code);
 			statement.setString(2, sid);
@@ -462,7 +462,7 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 			statement.executeUpdate();
 		}
 		
-		String query2 = new String("DELETE FROM KRCDT_DAY_OTK_ERAL WHERE ERROR_CODE = ? AND [SID] = ? AND PROCESSING_DATE >= ? AND PROCESSING_DATE <= ?");
+		String query2 = new String("DELETE FROM KRCDT_DAY_OTK_ERAL WHERE ERROR_CODE = ? AND SID = ? AND PROCESSING_DATE >= ? AND PROCESSING_DATE <= ?");
 		try (PreparedStatement statement = this.connection().prepareStatement(query2)) {
 			statement.setString(1, code);
 			statement.setString(2, sid);
