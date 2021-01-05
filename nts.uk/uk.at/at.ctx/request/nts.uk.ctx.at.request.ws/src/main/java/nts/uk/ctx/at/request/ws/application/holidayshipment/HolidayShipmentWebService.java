@@ -90,13 +90,13 @@ public class HolidayShipmentWebService extends WebService {
 	@POST
 	@Path("changeRecDate")
 	public DisplayInforWhenStarting changeRecDate(ChangeDateParam param) {
-		return changeValueItemsOnHolidayShipment.changeRecDate(param.getHolidayDate(), Optional.ofNullable(param.getHolidayDate()), param.displayInforWhenStarting);
+		return changeValueItemsOnHolidayShipment.changeRecDate(param.getWorkingDate().get(), param.getHolidayDate(), param.displayInforWhenStarting);
 	}
 	
 	@POST
 	@Path("changeAbsDate")
 	public DisplayInforWhenStarting changeAbsDate(ChangeDateParam param) {
-		return changeValueItemsOnHolidayShipment.changeAbsDate(Optional.ofNullable(param.getHolidayDate()), param.getHolidayDate(), param.displayInforWhenStarting);
+		return changeValueItemsOnHolidayShipment.changeAbsDate(param.getWorkingDate(), param.getHolidayDate().get(), param.displayInforWhenStarting);
 	}
 	
 	@POST
