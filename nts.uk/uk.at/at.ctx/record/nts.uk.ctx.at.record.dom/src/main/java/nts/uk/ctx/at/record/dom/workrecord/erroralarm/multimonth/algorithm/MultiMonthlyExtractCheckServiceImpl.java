@@ -2,6 +2,8 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.multimonth.algorithm;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -129,9 +131,9 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 						erCondition.getCompareRange().getEndValue().toString();
 				float avg = 0;
 				//複数月のチェック条件(連続)
-				int countTmp = 0;
+				//int countTmp = 0;
 				//複数月のチェック条件(該当月数)
-				List<YearMonth> lstYM = new ArrayList<>();
+				List<String> lstYM = new ArrayList<>();
 				List<MonthlyRecordValuesDto> lstSidOfMonthData = data.lstMonthData.get(sid);
 				//チェック対象値
 				double checkedValue = 0;
@@ -161,10 +163,6 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 							return itemValues.stream().map(iv -> getValue(iv))
 									.collect(Collectors.toList());
 						});
-					}
-					if(checkAddAlarm) {
-						
-						
 					}
 					break;
 				//連続時間、連続回数、連続金額、連続日数
@@ -245,12 +243,12 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 						});
 						if(checkPerMonth) {
 							countCosp += 1;
-							lstYM.add(result.getYearMonth());
+							lstYM.add(result.getYearMonth().lastGeneralDate().toString("yyyy/MM"));
 						}
 					}	
-					CompareSingleValue<V> checkgaitou = new CompareSingleValue(anyCond.getCompaOperator().get(), ConditionType.FIXED_VALUE);
-					checkgaitou.setValue((V) anyCond.getNumbers().get());
-					checkAddAlarm = checkgaitou.checkWithFixedValue(countCosp,  c -> Double.valueOf((String) c));
+					CompareSingleValue<Integer> checkgaitou = new CompareSingleValue<>(anyCond.getCompaOperator().get(), ConditionType.FIXED_VALUE);
+					checkgaitou.setValue(anyCond.getNumbers().get());
+					checkAddAlarm = checkgaitou.checkWithFixedValue(countCosp,  c -> Double.valueOf(c));
 					if(checkAddAlarm) checkedValue = countCosp;
 					break;
 					
@@ -283,7 +281,8 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 							erCondition.getCompareSingleValue() != null 
 									? erCondition.getCompareSingleValue().getConditionType().value
 									: erCondition.getCompareRange().getCompareOperator().value);
-					String periodYearMonth = mPeriod.start().toString()+ "～" + mPeriod.end();
+					
+					String periodYearMonth = mPeriod.start().lastGeneralDate().toString("yyyy/MM") + "～" + mPeriod.end().lastGeneralDate().toString("yyyy/MM");
 					if(anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_AMOUNT
 							|| anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_DAYS
 							|| anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_TIME
@@ -298,7 +297,7 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 							|| anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.NUMBER_TIMES) {
 						alarmDescription = TextResource.localize("KAL010_270", periodYearMonth, nameItem,
 								compareOperatorText.getCompareLeft(), startValue,
-								lstYM.toString(), String.valueOf(anyCond.getNumbers()));
+								lstYM.toString(), String.valueOf(anyCond.getNumbers().get()));
 						checkValue = TextResource.localize("KAL010_290", lstYM.toString(), String.valueOf(checkedValue));
 					} else {
 						if(compare <= 5) {
@@ -321,7 +320,7 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 						if(anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.AMOUNT) checkValue = checkValue + TextResource.localize("KAL010_287");
 						if(anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.DAYS) checkValue = checkValue + TextResource.localize("KAL010_288");
 					}
-					GeneralDate startDate = GeneralDate.ymd(mPeriod.start().year() , mPeriod.end().month(), 1);
+					GeneralDate startDate = GeneralDate.ymd(mPeriod.start().year() , mPeriod.start().month(), 1);
 					YearMonth endMonthTemp = mPeriod.end().addMonths(1);
 					GeneralDate endDateTemp = GeneralDate.ymd(endMonthTemp.year(), endMonthTemp.month(), 1);
 					GeneralDate enDate = endDateTemp.addDays(-1);
