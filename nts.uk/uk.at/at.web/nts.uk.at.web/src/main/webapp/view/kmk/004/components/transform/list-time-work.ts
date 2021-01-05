@@ -168,7 +168,6 @@ module nts.uk.at.view.kmk004.components {
 			vm.selectedId
 				.subscribe(() => {
 					vm.workTimeSaves([]);
-					// Do list years chưa load ra ngay khi selectID thay đổi nên em đã set TimeOut anh tìm giải pháp tối hơn cho em vs nhé :)
 					setTimeout(() => {
 						vm.selectedYear.valueHasMutated();
 					}, 100);
