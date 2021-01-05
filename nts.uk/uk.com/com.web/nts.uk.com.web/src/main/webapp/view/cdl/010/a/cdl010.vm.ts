@@ -16,7 +16,7 @@ module nts.uk.at.view.cdl010.a.screenModel {
       vm.$blockui('grayout');
       vm.$ajax('com', API.getContactInfomation, param.employeeId)
       .then((detailData: ContactInformationRefer) => {
-        if (detailData.contactInformation) {
+        if (detailData && detailData.contactInformation) {
           const companyEmailAddress = detailData.contactInformation.companyEmailAddress;
           const companyMobileEmailAddress = detailData.contactInformation.companyMobileEmailAddress;
           const personalEmailAddress = detailData.contactInformation.personalEmailAddress;
@@ -64,7 +64,7 @@ module nts.uk.at.view.cdl010.a.screenModel {
     /** 職場名 */
     workplaceName: string = '';
     /** 分類名 */
-    categoryName: string = '';
+    classificationName: string = '';
     /** 職位名 */
     jobTitleName: string = '';
 

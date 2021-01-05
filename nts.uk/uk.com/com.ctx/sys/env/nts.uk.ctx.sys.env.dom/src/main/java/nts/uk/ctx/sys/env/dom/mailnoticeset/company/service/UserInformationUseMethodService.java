@@ -45,7 +45,7 @@ public class UserInformationUseMethodService {
 
 		// $設定.連絡先情報の設定
 		SettingContactInformation settingContactInfo = SettingContactInformation.builder().build();
-		if (setting.isPresent() && setting.get().getSettingContactInformation().isPresent()) {
+		if (setting.get().getSettingContactInformation().isPresent()) {
 			settingContactInfo = setting.get().getSettingContactInformation().get();
 		}
 		

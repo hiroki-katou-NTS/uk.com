@@ -31,6 +31,7 @@ import nts.uk.ctx.sys.env.dom.mailnoticeset.company.service.UserInformationUseMe
 import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.EmployeeInfoContactImport;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PersonContactImport;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
 public class ReferContactInformationScreenQuery {
@@ -79,8 +80,7 @@ public class ReferContactInformationScreenQuery {
 		// step 1: <call> 社員IDから個人社員基本情報を取得
 		EmpBasicInfo empBasicInfo = new EmpBasicInfo();
 
-		List<EmpBasicInfo> listEmpInfo = employeeService
-				.getEmpBasicInfo(Arrays.asList(sid));
+		List<EmpBasicInfo> listEmpInfo = employeeService.getEmpBasicInfo(Arrays.asList(sid));
 		if (!listEmpInfo.isEmpty()) {
 			empBasicInfo = listEmpInfo.get(0);
 			personalId = empBasicInfo.getPId();
@@ -138,16 +138,15 @@ public class ReferContactInformationScreenQuery {
 		}
 		List<WorkplaceInformation> workplaceInfo = this.wplInfoRepository.getAllWorkplaceByCompany(cid, workplaceCode);
 		return ReferContactInformationDto.builder()
-				.businessName(empBasicInfo.getBusinessName())
-				.employmentName(employment.isPresent() ? employment.get().getEmploymentName().v() : "")
-				.workplaceName(!workplaceInfo.isEmpty() ? workplaceInfo.get(0).getWorkplaceName().v() : "")
-				.jobTitleName(jobTitleInfo.isPresent() ? jobTitleInfo.get().getJobTitleName().v() : "")
-				.classificationName(classification.isPresent() ? classification.get().getClassificationName().v() : "")
+				.businessName(empBasicInfo.getBusinessName().isEmpty() ? TextResource.localize("CDL010_19") : empBasicInfo.getBusinessName())
+				.employmentName(employment.isPresent() ? employment.get().getEmploymentName().v() : TextResource.localize("CDL010_19"))
+				.workplaceName(!workplaceInfo.isEmpty() ? workplaceInfo.get(0).getWorkplaceName().v() : TextResource.localize("CDL010_19"))
+				.jobTitleName(jobTitleInfo.isPresent() ? jobTitleInfo.get().getJobTitleName().v() : TextResource.localize("CDL010_19"))
+				.classificationName(classification.isPresent() ? classification.get().getClassificationName().v() : TextResource.localize("CDL010_19"))
 				.contactInformation(contactInformation)
 				.build();
 	}
 	
-
 	@AllArgsConstructor
     private static class RequireImpl implements UserInformationUseMethodService.Require {
 		

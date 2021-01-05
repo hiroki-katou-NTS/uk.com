@@ -69,20 +69,69 @@ public class UserInfoUseMethodServiceTest {
 	}
 	
 	/**
-	 * Test 連絡先情報を取得 with result is new ContactInformation();
+	 * Test 連絡先情報を取得 with result is new ContactInformation()
 	 */
 	@Test
 	public void testGetMethod() {
 		val res = UserInformationUseMethodService.get(require, "mock-companyId-empty", "mock-employeeId", "mock-personalId");
+		UserInformationUseMethod userInformationUseMethod = UserInfoUseMethodServiceTestHelper.initUserInformationUseMethod(2, true, true, 0, true);
+		new Expectations() {
+			{
+				require.getUserInfoByCid("mock-companyId");
+				result = Optional.of(userInformationUseMethod);
+			}
+		};
+		val res1 = UserInformationUseMethodService.get(require, "mock-companyId", "mock-employeeId", "mock-personalId");
 		assertThat(res).isEqualToComparingFieldByField(new ContactInformation());
+		assertThat(res1).isEqualToComparingFieldByField(new ContactInformation());
 	}
-
+	
 	/**
 	 * Test 連絡先情報を取得 with null field of settingContactInfo;
 	 */
 	@Test
 	public void testGetMethodNullFieldSettingContactInfo() {
-		UserInformationUseMethod userInformationUseMethod = UserInfoUseMethodServiceTestHelper.initUserInformationUseMethod(2, true, true);
+		UserInformationUseMethod userInformationUseMethod = UserInfoUseMethodServiceTestHelper.initUserInformationUseMethod(2, true, true, 1, true);
+		PersonContactImport personContactImport = UserInfoUseMethodServiceTestHelper.initPersonContactImport(true);
+		EmployeeInfoContactImport employeeInfoContactImport = UserInfoUseMethodServiceTestHelper.initEmployeeInfoContactImport();
+		new Expectations() {
+			{
+				require.getUserInfoByCid("mock-companyId");
+				result = Optional.of(userInformationUseMethod);
+			}
+			{
+				require.getByPersonalId("mock-personalId");
+				result = Optional.of(personContactImport);
+			}
+			{
+				require.getByContactInformation("mock-employeeId");
+				result = Optional.of(employeeInfoContactImport);
+			}
+		};
+		val res = UserInformationUseMethodService.get(require, "mock-companyId", "mock-employeeId", "mock-personalId");
+		assertThat(res.getCompanyMobilePhoneNumber()).isEqualTo("");
+		assertThat(res.getSeatDialIn().v()).isEqualTo("");
+		assertThat(res.getSeatExtensionNumber().v()).isEqualTo("");
+		assertThat(res.getCompanyEmailAddress()).isPresent();
+		assertThat(res.getCompanyEmailAddress().get()).isEqualTo("");
+		assertThat(res.getCompanyMobileEmailAddress()).isPresent();
+		assertThat(res.getCompanyMobileEmailAddress().get()).isEqualTo("");
+		
+		assertThat(res.getPersonalMobilePhoneNumber()).isEqualTo("");
+		assertThat(res.getPersonalEmailAddress()).isPresent();
+		assertThat(res.getPersonalEmailAddress().get()).isEqualTo("");
+		assertThat(res.getPersonalMobileEmailAddress()).isPresent();
+		assertThat(res.getPersonalMobileEmailAddress().get()).isEqualTo("");
+		assertThat(res.getEmergencyNumber1()).isEqualTo("");
+		assertThat(res.getEmergencyNumber2()).isEqualTo("");
+	}
+	
+	/**
+	 * Test 連絡先情報を取得 with null field of settingContactInfo;
+	 */
+	@Test
+	public void testGetMethodNotPresentSettingContactInfo() {
+		UserInformationUseMethod userInformationUseMethod = UserInfoUseMethodServiceTestHelper.initUserInformationUseMethod(2, true, true, 1, false);
 		PersonContactImport personContactImport = UserInfoUseMethodServiceTestHelper.initPersonContactImport(true);
 		EmployeeInfoContactImport employeeInfoContactImport = UserInfoUseMethodServiceTestHelper.initEmployeeInfoContactImport();
 		new Expectations() {
@@ -122,7 +171,7 @@ public class UserInfoUseMethodServiceTest {
 	 */
 	@Test
 	public void testGetMethodUseContact() {
-		UserInformationUseMethod userInformationUseMethod = UserInfoUseMethodServiceTestHelper.initUserInformationUseMethod(1, false, false);
+		UserInformationUseMethod userInformationUseMethod = UserInfoUseMethodServiceTestHelper.initUserInformationUseMethod(1, false, false, 1, true);
 		PersonContactImport personContactImport = UserInfoUseMethodServiceTestHelper.initPersonContactImport(false);
 		EmployeeInfoContactImport employeeInfoContactImport = UserInfoUseMethodServiceTestHelper.initEmployeeInfoContactImport();
 		new Expectations() {
@@ -164,7 +213,7 @@ public class UserInfoUseMethodServiceTest {
 	 */
 	@Test
 	public void testGetMethodNotUseContact() {
-		UserInformationUseMethod userInformationUseMethod = UserInfoUseMethodServiceTestHelper.initUserInformationUseMethod(0, false, false);
+		UserInformationUseMethod userInformationUseMethod = UserInfoUseMethodServiceTestHelper.initUserInformationUseMethod(0, false, false, 1, true);
 		PersonContactImport personContactImport = UserInfoUseMethodServiceTestHelper.initPersonContactImport(false);
 		EmployeeInfoContactImport employeeInfoContactImport = UserInfoUseMethodServiceTestHelper.initEmployeeInfoContactImport();
 		new Expectations() {
@@ -206,7 +255,7 @@ public class UserInfoUseMethodServiceTest {
 	 */
 	@Test
 	public void testGetMethodNullOtherContact() {
-		UserInformationUseMethod userInformationUseMethod = UserInfoUseMethodServiceTestHelper.initUserInformationUseMethod(2, true, false);
+		UserInformationUseMethod userInformationUseMethod = UserInfoUseMethodServiceTestHelper.initUserInformationUseMethod(0, true, false, 1, true);
 		PersonContactImport personContactImport = UserInfoUseMethodServiceTestHelper.initPersonContactImport(true);
 		EmployeeInfoContactImport employeeInfoContactImport = UserInfoUseMethodServiceTestHelper.initEmployeeInfoContactImport();
 		new Expectations() {
@@ -233,7 +282,7 @@ public class UserInfoUseMethodServiceTest {
 	 */
 	@Test
 	public void testGetMethodNotPresentEmpInfoAndPersonContact() {
-		UserInformationUseMethod userInformationUseMethod = UserInfoUseMethodServiceTestHelper.initUserInformationUseMethod(1, false, false);
+		UserInformationUseMethod userInformationUseMethod = UserInfoUseMethodServiceTestHelper.initUserInformationUseMethod(1, false, false, 1, true);
 		new Expectations() {
 			{
 				require.getUserInfoByCid("mock-companyId");

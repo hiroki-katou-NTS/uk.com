@@ -139,6 +139,9 @@ public class UserInfoUseMethodDto implements UserInformationUseMethod.MementoSet
 
 	@Override
 	public SettingContactInformation getSettingContactInformation() {
+		if (settingContactInformationDto == null) {
+			return null;
+		}
 		return SettingContactInformation.builder()
 				.companyEmailAddress(settingContactInformationDto.getCompanyEmailAddress() == null ? null : ContactSetting.builder()
 						.contactUsageSetting(ContactUsageSetting.valueOf(this.settingContactInformationDto.getCompanyEmailAddress().getContactUsageSetting()))

@@ -11,3 +11,7 @@
 table tbody td {
   padding-top: 10px;
 }
+table tbody td a {
+  color: blue !important;
+  text-decoration: underline;
+}

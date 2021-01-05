@@ -16,7 +16,8 @@ import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PersonContactImport;
 
 public class UserInfoUseMethodServiceTestHelper {
 
-	public static UserInformationUseMethod initUserInformationUseMethod(Integer contactUsageSetting, Boolean nullOtherContact, Boolean nullSettingContactInfo) {
+	public static UserInformationUseMethod initUserInformationUseMethod(Integer contactUsageSetting, Boolean nullOtherContact
+			, Boolean nullSettingContactInfo, Integer useOfProfile, Boolean presentSettingContactInfo) {
 		List<EmailDestinationFunctionDto> emailDestinationFunctionDtos = new ArrayList<>();
 		emailDestinationFunctionDtos.add(EmailDestinationFunctionDto.builder()
                 .emailClassification(0)
@@ -110,12 +111,12 @@ public class UserInfoUseMethodServiceTestHelper {
 
         UserInfoUseMethodDto memento = UserInfoUseMethodDto.builder()
                 .companyId("mock-companyId")
-                .useOfProfile(1)
+                .useOfProfile(useOfProfile)
                 .useOfPassword(1)
                 .useOfNotice(1)
                 .useOfLanguage(1)
                 .emailDestinationFunctionDtos(emailDestinationFunctionDtos)
-                .settingContactInformationDto(settingContactInformationDto)
+                .settingContactInformationDto(presentSettingContactInfo ? settingContactInformationDto : null)
                 .build();
         return UserInformationUseMethod.createFromMemento(memento);
 	}
