@@ -187,11 +187,6 @@ module nts.uk.at.view.knr002.c {
                         let listTimeRecordSetUpdateDto = [];
 
                         for (let key in obj) {
-                            if (obj[key] === 'undefined') {
-                                let timeRecordSetUpdateDto = new TimeRecordSetUpdateDto(key, null);
-                                listTimeRecordSetUpdateDto.push(timeRecordSetUpdateDto);
-                                continue;
-                            }
                             let timeRecordSetUpdateDto = new TimeRecordSetUpdateDto(key, obj[key]);
                             listTimeRecordSetUpdateDto.push(timeRecordSetUpdateDto); 
                         }      
