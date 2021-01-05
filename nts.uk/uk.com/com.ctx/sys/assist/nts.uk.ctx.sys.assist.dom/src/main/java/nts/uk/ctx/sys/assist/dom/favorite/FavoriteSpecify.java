@@ -10,20 +10,20 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
 
 /*
- * UKDesign.ドメインモッ�.NittsuSystem.UniversalK.オフィス支援.在席照�在席照�お気に入り�挮
+ * UKDesign.ドメインモッ�.NittsuSystem.UniversalK.オフィス支援.在席照�在席照�お気に入り�挮
  */
 public class FavoriteSpecify extends AggregateRoot {
 
 	// お気に入り名
 	private FavoriteName favoriteName;
 
-	// 作��D
+	// 作��D
 	private String creatorId;
 
 	// 入力日
 	private GeneralDateTime inputDate;
 
-	// 対象選�
+	// 対象選�
 	private TargetSelection targetSelection;
 
 	// 職場ID
@@ -35,7 +35,8 @@ public class FavoriteSpecify extends AggregateRoot {
 	private FavoriteSpecify() {
 	}
 	
-	//TODO [1] 対象惱名を渡�
+	//TODO [1] 対象惱名を渡�
+	public List<String> passingTargetInfoName() {
 //	public List<String> passingTargetInfoName( Require require) {
 //		if(this.targetSelection == TargetSelection.AFFILIATION_WORKPLACE) {
 //			return empty;
