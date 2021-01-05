@@ -292,13 +292,19 @@ module nts.uk.at.view.kmk004.l {
 					vm.selectedId(newValue);
 					vm.initBtnEnable(true);
 
-					vm.$ajax(KMK004O_API.SHA_GET_BASIC_SETTING + "/" + vm.selectedId()).done((data: any) => {
-						if (data.deforLaborTimeShaDto != null && data.shaDeforLaborMonthActCalSetDto != null) {
-							vm.btn_text('KMK004_343');
-						} else vm.btn_text('KMK004_342');
-					})
+					vm.getBtnContent();
+
 				});
 			});
+		}
+
+		getBtnContent() {
+			const vm = this;
+			vm.$ajax(KMK004O_API.SHA_GET_BASIC_SETTING + "/" + vm.selectedId()).done((data: any) => {
+				if (data.deforLaborTimeShaDto != null && data.shaDeforLaborMonthActCalSetDto != null) {
+					vm.btn_text('KMK004_343');
+				} else vm.btn_text('KMK004_342');
+			})
 		}
 
 		register() {
@@ -379,6 +385,7 @@ module nts.uk.at.view.kmk004.l {
 			vm.$window.modal('at', '/view/kmk/004/p/index.xhtml', ko.toJS(vm.params)).then(() => {
 				vm.isLoadData(true);
 				vm.getEmployeeIds();
+				vm.getBtnContent();
 			});
 		}
 

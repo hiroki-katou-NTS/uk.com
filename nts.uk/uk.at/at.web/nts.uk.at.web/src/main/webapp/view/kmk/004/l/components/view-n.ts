@@ -229,18 +229,23 @@ module nts.uk.at.view.kmk004.l {
 				vm.params.empCode(newValue);
 				vm.params.titleName = vm.currentItemName();
 				vm.selectedId(newValue);
-
-				vm.$ajax(KMK004N_API.EMP_GET_BASIC_SETTING + "/" + vm.selectedId()).done((data: any) => {
-					if (data.deforLaborTimeEmpDto != null && data.empDeforLaborMonthActCalSetDto != null) {
-						vm.btn_text('KMK004_341');
-					} else vm.btn_text('KMK004_340');
-				})
-
+				
+				vm.getBtnContent();
 			});
 
 			$('#empt-list-setting').ntsListComponent(vm.listComponentOption).done(() => {
 				vm.employeeList($('#empt-list-setting').getDataList());
 			});
+		}
+
+		getBtnContent() {
+			const vm = this;
+			vm.$ajax(KMK004N_API.EMP_GET_BASIC_SETTING + "/" + vm.selectedId()).done((data: any) => {
+				if (data.deforLaborTimeEmpDto != null && data.empDeforLaborMonthActCalSetDto != null) {
+					vm.btn_text('KMK004_341');
+				} else vm.btn_text('KMK004_340');
+			})
+
 		}
 
 		mounted() {
@@ -307,7 +312,7 @@ module nts.uk.at.view.kmk004.l {
 						})
 						.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
 						.then(() => {
-							$(document).ready(function () {
+							$(document).ready(function() {
 								$('#box-year').focus();
 							});
 						}).then(() => {
@@ -330,6 +335,7 @@ module nts.uk.at.view.kmk004.l {
 			vm.$window.modal('at', '/view/kmk/004/p/index.xhtml', ko.toJS(vm.params)).then(() => {
 				vm.isLoadData(true);
 				vm.reloadInitData();
+				vm.getBtnContent();
 			});
 		}
 

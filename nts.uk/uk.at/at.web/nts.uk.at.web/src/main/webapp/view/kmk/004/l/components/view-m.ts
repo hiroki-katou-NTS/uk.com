@@ -156,7 +156,7 @@ module nts.uk.at.view.kmk004.l {
 				tabindex: 1,
 				systemType: 2
 			};
-			vm.params = {isLoadData: vm.isLoadData, sidebarType: "Com_Workplace", wkpId: ko.observable(''), empCode: ko.observable(''), empId: ko.observable(''), titleName: '', deforLaborTimeComDto: null, settingDto: null }
+			vm.params = { isLoadData: vm.isLoadData, sidebarType: "Com_Workplace", wkpId: ko.observable(''), empCode: ko.observable(''), empId: ko.observable(''), titleName: '', deforLaborTimeComDto: null, settingDto: null }
 
 			vm.years
 				.subscribe(() => {
@@ -201,17 +201,21 @@ module nts.uk.at.view.kmk004.l {
 					vm.params.wkpId(data);
 					vm.params.titleName = vm.selectedItemText();
 					vm.selectedIdParam(data);
-
-					vm.$ajax(KMK004M_API.WKP_GET_BASIC_SETTING + "/" + vm.selectedIdParam()).done((data: any) => {
-						if (data.deforLaborTimeWkpDto != null && data.wkpDeforLaborMonthActCalSetDto != null) {
-							vm.btn_text('KMK004_339');
-						} else vm.btn_text('KMK004_338');
-					})
+					vm.getBtnContent();
 
 				});
 
 				vm.selectedId.valueHasMutated();
 			});
+		}
+
+		getBtnContent() {
+			const vm = this;
+			vm.$ajax(KMK004M_API.WKP_GET_BASIC_SETTING + "/" + vm.selectedIdParam()).done((data: any) => {
+				if (data.deforLaborTimeWkpDto != null && data.wkpDeforLaborMonthActCalSetDto != null) {
+					vm.btn_text('KMK004_339');
+				} else vm.btn_text('KMK004_338');
+			})
 		}
 
 		getwkpIdList() {
@@ -310,6 +314,7 @@ module nts.uk.at.view.kmk004.l {
 			vm.$window.modal('at', '/view/kmk/004/p/index.xhtml', ko.toJS(vm.params)).then(() => {
 				vm.isLoadData(true);
 				vm.getwkpIdList();
+				vm.getBtnContent();
 			});
 		}
 
