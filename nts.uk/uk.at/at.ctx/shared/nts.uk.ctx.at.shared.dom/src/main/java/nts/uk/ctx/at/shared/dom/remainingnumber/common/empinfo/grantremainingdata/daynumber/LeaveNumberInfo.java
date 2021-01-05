@@ -96,15 +96,12 @@ public class LeaveNumberInfo implements Cloneable {
 	@Override
 	public LeaveNumberInfo clone() {
 		LeaveNumberInfo cloned = new LeaveNumberInfo();
-		try {
-			cloned.grantNumber = grantNumber.clone();
-			cloned.usedNumber = usedNumber.clone();
-			cloned.remainingNumber = remainingNumber.clone();
-			cloned.usedPercent = new LeaveUsedPercent(usedPercent.v());
-		}
-		catch (Exception e){
-			throw new RuntimeException("LeaveGrantRemainingData clone error.");
-		}
+
+		cloned.grantNumber = grantNumber.clone();
+		cloned.usedNumber = usedNumber.clone();
+		cloned.remainingNumber = remainingNumber.clone();
+		cloned.usedPercent = new LeaveUsedPercent(usedPercent.v());
+
 		return cloned;
 	}
 

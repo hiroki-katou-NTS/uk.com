@@ -47,10 +47,10 @@ public class KrcmtInterimSpeHoliday extends UkJpaEntity implements Serializable 
 	@Column(name ="MNG_ATR")
 	public int mngAtr;
 	/** 使用日数 */
-	@Column(name ="USED_DAYS")
+	@Column(name ="USE_DAYS")
 	public Double usedDays;
 	/** 使用時間 */
-	@Column(name ="USED_TIME")
+	@Column(name ="USE_TIMES")
 	public Integer usedTime;
 //	/** 時間消化休暇かどうか */
 //	@Column(name ="TIME_DIGESTIVE_ATR")

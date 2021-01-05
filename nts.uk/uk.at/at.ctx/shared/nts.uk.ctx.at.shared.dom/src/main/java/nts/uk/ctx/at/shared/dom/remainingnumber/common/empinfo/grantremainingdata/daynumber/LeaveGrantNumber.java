@@ -34,15 +34,12 @@ public class LeaveGrantNumber {
 	@Override
 	public LeaveGrantNumber clone() {
 		LeaveGrantNumber cloned = new LeaveGrantNumber();
-		try {
-			cloned.days = new LeaveGrantDayNumber(days.v());
-			if ( minutes.isPresent() ){
-				cloned.minutes = Optional.of(new LeaveGrantTime(minutes.get().v()));
-			}
+
+		cloned.days = new LeaveGrantDayNumber(days.v());
+		if ( minutes.isPresent() ){
+			cloned.minutes = Optional.of(new LeaveGrantTime(minutes.get().v()));
 		}
-		catch (Exception e){
-			throw new RuntimeException("LeaveGrantRemainingData clone error.");
-		}
+
 		return cloned;
 	}
 

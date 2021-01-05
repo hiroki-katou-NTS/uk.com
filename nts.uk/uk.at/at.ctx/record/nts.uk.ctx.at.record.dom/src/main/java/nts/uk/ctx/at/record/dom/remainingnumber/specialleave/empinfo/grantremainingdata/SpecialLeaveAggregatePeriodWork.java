@@ -30,10 +30,10 @@ public class SpecialLeaveAggregatePeriodWork {
 	private SpecialLeaveLapsedWork lapsedWork;
 	/** 付与情報WORK */
 	private SpecialLeaveGrantWork grantWork;
-	
+
 //	/** 特休付与 */
 //	private Optional<NextSpecialLeaveGrant> specialLeaveGrant;
-	
+
 	/**
 	 * コンストラクタ
 	 */
@@ -45,9 +45,18 @@ public class SpecialLeaveAggregatePeriodWork {
 		this.lapsedWork = new SpecialLeaveLapsedWork();
 		this.grantWork = new SpecialLeaveGrantWork();
 	}
-	
+
+	public SpecialLeaveAggregatePeriodWork(DatePeriod period) {
+		this.period = period;
+		this.dayBeforePeriodEnd = false;
+		this.nextDayAfterPeriodEnd = false;
+		this.afterGrant = false;
+		this.lapsedWork = new SpecialLeaveLapsedWork();
+		this.grantWork = new SpecialLeaveGrantWork();
+	}
+
 	/**
-	 * 
+	 *
 	 * @param period 期間
 	 * @param dayBeforePeriodEnd
 	 * @param nextDayAfterPeriodEnd 期間終了後翌日
@@ -63,7 +72,7 @@ public class SpecialLeaveAggregatePeriodWork {
 			boolean afterGrant,
 			SpecialLeaveLapsedWork lapsedAtr,
 			SpecialLeaveGrantWork grantWork){
-		
+
 		SpecialLeaveAggregatePeriodWork domain = new SpecialLeaveAggregatePeriodWork();
 		domain.period = period;
 		domain.dayBeforePeriodEnd = dayBeforePeriodEnd;

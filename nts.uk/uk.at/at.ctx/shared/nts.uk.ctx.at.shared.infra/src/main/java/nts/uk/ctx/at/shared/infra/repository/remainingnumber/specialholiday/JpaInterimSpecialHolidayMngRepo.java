@@ -14,29 +14,30 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.Interi
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.ManagermentAtr;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.specialholiday.interim.KrcmtInterimSpeHoliday;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.specialholiday.interim.KrcmtInterimSpeHolidayPK;
+
 @Stateless
-public class JpaInterimSpecialHolidayMngRepo extends JpaRepository implements InterimSpecialHolidayMngRepository{
+public class JpaInterimSpecialHolidayMngRepo extends JpaRepository implements InterimSpecialHolidayMngRepository {
 
 	private static final String DELETE_BY_ID = "DELETE FROM KrcmtInterimSpeHoliday c"
 			+ " WHERE c.pk.specialHolidayId = :specialHolidayId";
 	private static final String QUERY_BY_ID = "SELECT c FROM KrcmtInterimSpeHoliday c"
 			+ " WHERE c.pk.specialHolidayId = :specialHolidayId";
+
 	private InterimSpecialHolidayMng toDomain(KrcmtInterimSpeHoliday c) {
-		return new InterimSpecialHolidayMng(
-				c.pk.specialHolidayId,
-				//c.pk.specialHolidayCode,
-				c.specialHolidayCode,
-				EnumAdaptor.valueOf(c.mngAtr, ManagermentAtr.class),
-				Optional.of(new UseTime(c.usedTime)),
+		return new InterimSpecialHolidayMng(c.pk.specialHolidayId,
+				// c.pk.specialHolidayCode,
+				c.specialHolidayCode, EnumAdaptor.valueOf(c.mngAtr, ManagermentAtr.class),
+				Optional.of(new UseTime(c.usedTime == null ? 0 : c.usedTime)),
 				Optional.of(new UseDay(c.usedDays)));
 	}
+
 	@Override
 	public void persistAndUpdateInterimSpecialHoliday(InterimSpecialHolidayMng domain) {
 //		KrcmtInterimSpeHolidayPK key = new KrcmtInterimSpeHolidayPK(domain.getSpecialHolidayId(), domain.getSpecialHolidayCode());
 		KrcmtInterimSpeHolidayPK key = new KrcmtInterimSpeHolidayPK(domain.getSpecialHolidayId());
 		KrcmtInterimSpeHoliday entity = this.getEntityManager().find(KrcmtInterimSpeHoliday.class, key);
 
-		if(entity == null) {
+		if (entity == null) {
 			entity = new KrcmtInterimSpeHoliday();
 			entity.mngAtr = domain.getMngAtr().value;
 			entity.usedDays = domain.getUseDays().isPresent() ? domain.getUseDays().get().v() : 0.0;
@@ -53,15 +54,16 @@ public class JpaInterimSpecialHolidayMngRepo extends JpaRepository implements In
 		}
 		this.getEntityManager().flush();
 	}
+
 	@Override
 	public void deleteSpecialHoliday(String specialId) {
 		this.getEntityManager().createQuery(DELETE_BY_ID).setParameter("specialHolidayId", specialId).executeUpdate();
 	}
+
 	@Override
 	public List<InterimSpecialHolidayMng> findById(String mngId) {
 		return this.queryProxy().query(QUERY_BY_ID, KrcmtInterimSpeHoliday.class)
-				.setParameter("specialHolidayId", mngId)
-				.getList(c -> toDomain(c));
+				.setParameter("specialHolidayId", mngId).getList(c -> toDomain(c));
 	}
 
 }

@@ -70,13 +70,10 @@ public class LeaveRemainingNumber {
 	@Override
 	public LeaveRemainingNumber clone() {
 		LeaveRemainingNumber cloned = new LeaveRemainingNumber();
-		try {
-			cloned.days = new LeaveRemainingDayNumber(days.v());
-			cloned.minutes = minutes.map(c -> new LeaveRemainingTime(c.v()));
-		}
-		catch (Exception e){
-			throw new RuntimeException("LeaveRemainingNumber clone error.");
-		}
+
+		cloned.days = new LeaveRemainingDayNumber(days.v());
+		cloned.minutes = minutes.map(c -> new LeaveRemainingTime(c.v()));
+
 		return cloned;
 	}
 

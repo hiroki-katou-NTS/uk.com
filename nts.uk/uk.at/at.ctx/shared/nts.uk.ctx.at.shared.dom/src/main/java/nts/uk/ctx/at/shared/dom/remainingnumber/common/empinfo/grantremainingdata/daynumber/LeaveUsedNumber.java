@@ -152,15 +152,12 @@ public class LeaveUsedNumber{
 	@Override
 	public LeaveUsedNumber clone() {
 		LeaveUsedNumber cloned = new LeaveUsedNumber();
-		try {
-			cloned.days = new LeaveUsedDayNumber(days.v());
-			cloned.minutes = minutes.map(c -> new LeaveUsedTime(c.v()));
-			cloned.stowageDays = stowageDays.map(c -> new LeaveUsedDayNumber(c.v()));
-			cloned.leaveOverLimitNumber = leaveOverLimitNumber.map(c -> c.clone());
-		}
-		catch (Exception e){
-			throw new RuntimeException("LeaveUsedNumber clone error.");
-		}
+
+		cloned.days = new LeaveUsedDayNumber(days.v());
+		cloned.minutes = minutes.map(c -> new LeaveUsedTime(c.v()));
+		cloned.stowageDays = stowageDays.map(c -> new LeaveUsedDayNumber(c.v()));
+		cloned.leaveOverLimitNumber = leaveOverLimitNumber.map(c -> c.clone());
+
 		return cloned;
 	}
 

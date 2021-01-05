@@ -2429,8 +2429,7 @@ public class RecordDomRequireService {
 
 		@Override
 		public List<InterimSpecialHolidayMng> interimSpecialHolidayMng(String mngId) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+			return interimSpecialHolidayMngRepo.findById(mngId);
 		}
 
 		@Override
@@ -2442,9 +2441,10 @@ public class RecordDomRequireService {
 
 		@Override
 		public List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int speCode,
-				DatePeriod datePriod, GeneralDate startDate, LeaveExpirationStatus expirationStatus) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+				DatePeriod datePeriod, LeaveExpirationStatus expirationStatus) {
+
+			return specialLeaveGrantRepo.getByPeriodStatus(
+					sid, speCode, expirationStatus, datePeriod.end(), datePeriod.start());
 		}
 
 		@Override

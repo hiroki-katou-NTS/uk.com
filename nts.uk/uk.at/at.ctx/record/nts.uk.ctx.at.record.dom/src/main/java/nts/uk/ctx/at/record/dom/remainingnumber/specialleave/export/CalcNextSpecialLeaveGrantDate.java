@@ -138,6 +138,9 @@ public class CalcNextSpecialLeaveGrantDate {
 			int spLeaveCD,
 			Optional<DatePeriod> period) {
 
+		List<NextSpecialLeaveGrant> nextSpecialLeaveGrantList
+			= new ArrayList<NextSpecialLeaveGrant>();
+
 		// 「特別休暇」を取得する
 		Optional<SpecialHoliday> specialHolidays = require.specialHoliday(companyId, spLeaveCD);
 		if ( specialHolidays.isPresent() ){
@@ -156,7 +159,7 @@ public class CalcNextSpecialLeaveGrantDate {
 
 					if ( grantDate.isPresent() ){
 						// 指定日の付与日一覧を求める
-						List<NextSpecialLeaveGrant> nextSpecialLeaveGrantList
+						nextSpecialLeaveGrantList
 							= getSpecifyGrantDateList(
 								require,
 								cacheCarrier,
@@ -171,7 +174,7 @@ public class CalcNextSpecialLeaveGrantDate {
 
 					if ( grantDate.isPresent() ){
 						// 期間の付与日一覧を求める
-						List<NextSpecialLeaveGrant> nextSpecialLeaveGrantList
+						nextSpecialLeaveGrantList
 							= getPeriodSpecialLeaveGrantInfo(
 								require,
 								cacheCarrier,
@@ -186,7 +189,7 @@ public class CalcNextSpecialLeaveGrantDate {
 				} else if (typeTime.equals(TypeTime.REFER_GRANT_DATE_TBL)){ // 付与テーブルを参照して付与する
 
 					// 付与テーブルの付与日一覧を求める
-					List<NextSpecialLeaveGrant> nextSpecialLeaveGrantList
+					nextSpecialLeaveGrantList
 						= getTableSpecialLeaveGrantInfo(
 							require,
 							cacheCarrier,
@@ -198,24 +201,12 @@ public class CalcNextSpecialLeaveGrantDate {
 							grantDate,
 							specialHolidays.get()
 							);
-
-//					SpecialLeaveManagementService.RequireM5 require,
-//					CacheCarrier cacheCarrier,
-//					String companyId,
-//					String employeeId,
-//					int spLeaveCD,
-//					CALL_FROM callFrom,
-//					Optional<DatePeriod> period,
-//					Optional<GeneralDate> grantDateOpt,
-//					SpecialLeaveBasicInfo specialLeaveBasicInfo,
-//					SpecialHoliday specialHoliday) {
-
 				}
 
 			}
 		}
 
-		return null;
+		return nextSpecialLeaveGrantList;
 	}
 
 	/**

@@ -377,7 +377,7 @@ public class SpecialLeaveManagementService {
 			// 期限切れ状態=使用可能
 
 			lstSpeData = require.specialLeaveGrantRemainingData(employeeId, specialLeaveCode,
-						aggrPeriod, aggrPeriod.start(), LeaveExpirationStatus.AVAILABLE);
+						aggrPeriod, LeaveExpirationStatus.AVAILABLE);
 
 			return lstSpeData;
 
@@ -458,8 +458,6 @@ public class SpecialLeaveManagementService {
 			List<NextSpecialLeaveGrant> nextSpecialLeaveGrantList,
 			DatePeriod aggrPeriod){
 
-		List<SpecialLeaveAggregatePeriodWork> aggregatePeriodWorks = new ArrayList<>();
-
 		// 期間終了日翌日
 		GeneralDate nextDayOfPeriodEnd = aggrPeriod.end();
 		if (nextDayOfPeriodEnd.before(GeneralDate.max())){
@@ -472,7 +470,7 @@ public class SpecialLeaveManagementService {
 		List<SpecialLeaveGrantRemainingData> lstSpeData
 			= require.specialLeaveGrantRemainingData(
 				employeeId, specialLeaveCode,
-				aggrPeriod, aggrPeriod.start(), LeaveExpirationStatus.AVAILABLE);
+				aggrPeriod, LeaveExpirationStatus.AVAILABLE);
 
 		// Comparator作成　期限日、付与日
 		Comparator<SpecialLeaveGrantRemainingData> comparator =
@@ -605,7 +603,9 @@ public class SpecialLeaveManagementService {
 
 			// リストの中で年月日が一番大きい処理単位分割日の終了日の期間かどうか = true
 			list.sort((a,b)->b.getYmd().compareTo(a.getYmd())); // 降順
-			list.get(0).setDayBeforePeriodEnd(true);
+			if (0 < list.size()) {
+				list.get(0).setDayBeforePeriodEnd(true);
+			}
 		}
 
 		// 終了日翌日の処理単位分割日を取得
@@ -685,6 +685,15 @@ public class SpecialLeaveManagementService {
 		boolean isFirst = true;
 		GeneralDate preYmd = null;
 
+
+		if (dividedDayList.size() <= 0)
+			return new ArrayList<>();
+
+		List<SpecialLeaveAggregatePeriodWork> aggregatePeriodWorks = new ArrayList<>();
+		SpecialLeaveAggregatePeriodWork firstPeriod = new SpecialLeaveAggregatePeriodWork(
+				new DatePeriod(aggrPeriod.start(),dividedDayList.get(0).getYmd().addDays(-1)));
+		aggregatePeriodWorks.add(firstPeriod);
+
 		for( SpecialLeaveDividedDayEachProcess c : dividedDayList ){
 
 			if ( isFirst ){
@@ -736,6 +745,14 @@ public class SpecialLeaveManagementService {
 			specialLeaveDividedDayEachProcess_pre.get().getGrantWork());
 
 		aggregatePeriodWorks.add(specialLeaveAggregatePeriodWork);
+
+
+		for(SpecialLeaveAggregatePeriodWork work : aggregatePeriodWorks) {
+			if(work.getPeriod().contains(aggrPeriod.end()))
+				work.setDayBeforePeriodEnd(true);
+			if(work.getPeriod().contains(aggrPeriod.end().addDays(1)))
+				work.setNextDayAfterPeriodEnd(true);
+		}
 
 		return aggregatePeriodWorks;
 	}
@@ -1853,7 +1870,8 @@ public class SpecialLeaveManagementService {
 
 		/**i 特別休暇付与残数データ */
 		List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int speCode,
-				DatePeriod datePriod, GeneralDate startDate, LeaveExpirationStatus expirationStatus);
+//				DatePeriod datePriod, GeneralDate startDate, LeaveExpirationStatus expirationStatus);
+				DatePeriod datePriod, LeaveExpirationStatus expirationStatus);
 	}
 
 	public static interface RequireM4 extends InforSpecialLeaveOfEmployeeSevice.RequireM4, RequireM1 {

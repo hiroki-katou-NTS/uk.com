@@ -142,7 +142,7 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 				require, leaveUsedNumber, companyId, employeeId, date);
 
 		// 残数不足で一部消化できなかったとき
-		if ( !remNumShiftListWork.getUnusedNumber().isLargerThanZero() ){
+		if ( remNumShiftListWork.getUnusedNumber().isLargerThanZero() ){
 
 			// 消化できなかった休暇使用数をもとに、付与残数ダミーデータを作成する
 
@@ -201,18 +201,14 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 	@Override
 	public LeaveGrantRemainingData clone() {
 		LeaveGrantRemainingData cloned = new LeaveGrantRemainingData();
-		try {
-			cloned.leaveID = new String(leaveID);
-			cloned.employeeId = new String(employeeId);
-			cloned.grantDate = grantDate;
-			cloned.deadline = deadline;
-			cloned.expirationStatus = expirationStatus;
-			cloned.registerType = registerType;
-			cloned.details = details.clone();
-		}
-		catch (Exception e){
-			throw new RuntimeException("LeaveGrantRemainingData clone error.");
-		}
+		cloned.leaveID = new String(leaveID);
+		cloned.employeeId = new String(employeeId);
+		cloned.grantDate = grantDate;
+		cloned.deadline = deadline;
+		cloned.expirationStatus = expirationStatus;
+		cloned.registerType = registerType;
+		cloned.details = details.clone();
+
 		return cloned;
 	}
 

@@ -35,24 +35,24 @@ public class SpecialLeaveDividedDayEachProcess {
 	private boolean afterGrant;
 //	/** 何回目の付与なのか */
 //	@Setter
-//	private int grantNumber = 0;	
-	
-	
+//	private int grantNumber = 0;
+
+
 	/**
 	 * コンストラクタ
 	 * @param ymd 年月日
 	 */
 	public SpecialLeaveDividedDayEachProcess(GeneralDate ymd){
-		
+
 		this.ymd = ymd;
 		this.lapsedWork = new SpecialLeaveLapsedWork();
 		this.grantWork = new SpecialLeaveGrantWork();
 		this.nextSpecialLeaveGrant = Optional.empty();
-		this.dayBeforePeriodEnd = true;
+		this.dayBeforePeriodEnd = false;
 		this.nextDayAfterPeriodEnd = false;
 		this.afterGrant = false;
 	}
-	
+
 //	/**
 //	 * ファクトリー
 //	 * @param ymd 年月日
@@ -69,7 +69,7 @@ public class SpecialLeaveDividedDayEachProcess {
 //			boolean nextDayAfterPeriodEnd,
 //			boolean grantAtr,
 //			boolean lapsedAtr){
-//		
+//
 //		DividedDayEachProcess domain = new DividedDayEachProcess(ymd);
 //		domain.nextAnnualLeaveGrant = nextAnnualLeaveGrant;
 //		domain.dayBeforePeriodEnd = dayBeforePeriodEnd;
@@ -77,6 +77,5 @@ public class SpecialLeaveDividedDayEachProcess {
 //		domain.grantAtr = grantAtr;
 //		domain.lapsedAtr = lapsedAtr;
 //		return domain;
-	
+
 }
-	
