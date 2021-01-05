@@ -68,7 +68,7 @@
         v-bind:key="index"
         :value="index"
       >
-        <div class="card-body">
+        <div v-show="item.visible" class="card-body">
           <div class="row mt-3">
             <div class="col-4">{{ item.title }}</div>
             <div class="col-8.5">
@@ -110,7 +110,7 @@
     <div class="card card-label" v-if="$appContext.c12">
         <!--A2_B5_1-->
         <div class="card-header uk-bg-accordion" style="align-items: center">
-            <v-label class="border-0 pl-0 my-n1">
+            <v-label class="border-0 pl-0 my-n1" v-bind:constraint="validations.DivergenceReason">
                 {{'KAFS05_78' | i18n(reason1.title)}}</v-label>
             <span class="badge badge-info">任意</span>
         </div>
@@ -134,7 +134,7 @@
                         <span class="small-header">{{'KAFS05_80' | i18n(reason1.title)}}</span>
                   </div>
                   <div>
-                        <nts-text-area　v-model="reason1.reason" />
+                        <nts-text-area v-model="reason1.reason" />
                   </div>
             </div>
         </div>
@@ -145,7 +145,7 @@
     <div class="card card-label" v-if="$appContext.c19">
         <!--A2_B6_1-->
         <div class="card-header uk-bg-accordion" style="align-items: center">
-            <v-label class="border-0 pl-0 my-n1">
+            <v-label class="border-0 pl-0 my-n1" v-bind:constraint="validations.DivergenceReason">
                 {{'KAFS05_78' | i18n(reason2.title)}}</v-label>
             <span class="badge badge-info">任意</span>
         </div>
@@ -169,7 +169,7 @@
                         <span class="small-header">{{'KAFS05_80' | i18n(reason2.title)}}</span>
                   </div>
                   <div>
-                        <nts-text-area　v-model="reason2.reason" />
+                        <nts-text-area v-model="reason2.reason" />
                   </div>
             </div>
         </div>
