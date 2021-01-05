@@ -227,7 +227,9 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	}
 	static {
 		StringBuilder builder = new StringBuilder();
-		builder.append("SELECT c FROM KshmtWorkType c");
+		builder.append("SELECT c,o.dispOrder FROM KshmtWorkType c");
+		builder.append(" LEFT JOIN KshmtWorkTypeOrder o");
+		builder.append(" ON c.kshmtWorkTypePK.companyId = o.kshmtWorkTypeDispOrderPk.companyId AND c.kshmtWorkTypePK.workTypeCode = o.kshmtWorkTypeDispOrderPk.workTypeCode");
 		builder.append(" WHERE c.kshmtWorkTypePK.companyId = :companyId");
 		builder.append(" AND c.deprecateAtr = 0");
 		builder.append(" AND ( ");
@@ -237,7 +239,7 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 		builder.append(" OR(c.worktypeAtr= 1 AND c.morningAtr = 7 AND c.afternoonAtr = 0)");
 		builder.append(" OR(c.worktypeAtr= 1 AND c.morningAtr = 0 AND c.afternoonAtr = 7)");
 		builder.append(")");
-		builder.append(" ORDER BY c.kshmtWorkTypeOrder.dispOrder ASC");
+		builder.append(" ORDER BY o.dispOrder ASC");
 		FIND_WORKTYPE_FOR_SHOTING = builder.toString();
 
 	}
@@ -256,7 +258,9 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	}
 	static {
 		StringBuilder builder = new StringBuilder();
-		builder.append("SELECT c FROM KshmtWorkType c");
+		builder.append("SELECT c,o.dispOrder FROM KshmtWorkType c");
+		builder.append(" LEFT JOIN KshmtWorkTypeOrder o");
+		builder.append(" ON c.kshmtWorkTypePK.companyId = o.kshmtWorkTypeDispOrderPk.companyId AND c.kshmtWorkTypePK.workTypeCode = o.kshmtWorkTypeDispOrderPk.workTypeCode");
 		builder.append(" WHERE c.kshmtWorkTypePK.companyId = :companyId");
 		builder.append(" AND c.deprecateAtr = 0");
 		builder.append(" AND ( ");
@@ -266,7 +270,7 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 		builder.append(" OR (c.worktypeAtr= 1 AND c.morningAtr = 8 AND c.afternoonAtr IN (1,2,3,4,5,6,9) )");
 		builder.append(" OR(c.worktypeAtr= 1 AND c.morningAtr IN (1,2,3,4,5,6,9)) AND c.afternoonAtr = 8 ");
 		builder.append(")");
-		builder.append(" ORDER BY c.kshmtWorkTypeOrder.dispOrder ASC");
+		builder.append(" ORDER BY o.dispOrder ASC");
 		FIND_WORKTYPE_FOR_PAUSE = builder.toString();
 
 	}
@@ -723,15 +727,15 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 
 	@Override
 	public List<WorkType> findWorkTypeForShorting(String companyId) {
-		return this.queryProxy().query(FIND_WORKTYPE_FOR_SHOTING, KshmtWorkType.class)
-				.setParameter("companyId", companyId).getList(x -> toDomain(x));
+		return this.queryProxy().query(FIND_WORKTYPE_FOR_SHOTING, Object[].class)
+				.setParameter("companyId", companyId).getList(x -> toDomainWithDispOrder(x));
 
 	}
 
 	@Override
 	public List<WorkType> findWorkTypeForPause(String companyId) {
-		return this.queryProxy().query(FIND_WORKTYPE_FOR_PAUSE,  KshmtWorkType.class)
-				.setParameter("companyId", companyId).getList(x -> toDomain(x));
+		return this.queryProxy().query(FIND_WORKTYPE_FOR_PAUSE,  Object[].class)
+				.setParameter("companyId", companyId).getList(x -> toDomainWithDispOrder(x));
 	}
 
 	@Override
@@ -810,10 +814,7 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 		KshmtWorkType entity = (KshmtWorkType) object[0];
 		Integer order = object[1] != null ? Integer.valueOf(object[1].toString()) : null;
 		
-		WorkType domain = WorkType.createSimpleFromJavaType(entity.kshmtWorkTypePK.companyId,
-				entity.kshmtWorkTypePK.workTypeCode, entity.symbolicName, entity.name, entity.abbreviationName,
-				entity.memo, entity.worktypeAtr, entity.oneDayAtr, entity.morningAtr, entity.afternoonAtr,
-				entity.deprecateAtr, entity.calculatorMethod);
+		WorkType domain = toDomain(entity);
 		if (order != null) {
 			domain.setDisplayOrder(order);
 		}
