@@ -231,10 +231,9 @@ module nts.uk.at.view.kmk017.a {
           workplaceId: workPlace[0].id,
           workTimeCodes: workTimeCodes
         }).done((data) => {
-          vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
+          vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {                    
             vm.getWorkingHoursDetails(workPlace[0].id);
             vm.isNewMode(false);
-            vm.$blockui('hide');
           });
         })
           .fail((error) => { console.log(error); })
@@ -253,9 +252,10 @@ module nts.uk.at.view.kmk017.a {
             workplaceId: workPlace[0].id
           }).done((data) => {
             vm.$dialog.info({ messageId: 'Msg_16' }).then(() => {
-              vm.getWorkingHoursDetails(workPlace[0].id);
-              vm.isNewMode(true);
               vm.$blockui('hide');
+              vm.getWorkingHoursDetails(workPlace[0].id);
+              vm.isNewMode(true);              
+              vm.alreadySettingList(_.filter(vm.alreadySettingList(), (x) => x.workplaceId !== workPlace[0].id));
             });
           })
             .fail((error) => { console.log(error); })
@@ -294,7 +294,6 @@ module nts.uk.at.view.kmk017.a {
           vm.isNewMode(true);
           vm.isEnableRegister(false);
         }
-
         vm.$blockui('hide');
       }).fail((error) => { console.log(error); }).always(() => vm.$blockui('hide'));
 
