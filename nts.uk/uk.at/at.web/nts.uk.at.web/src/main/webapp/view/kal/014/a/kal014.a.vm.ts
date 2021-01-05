@@ -391,7 +391,7 @@ module nts.uk.at.kal014.a {
                 }
             } else{
                 start = vm.$i18n('KAL014_44')
-                    + data.strDay()+  vm.$i18n('KAL014_46') + (data.strPreviousDay() == 0? "前" : "先");
+                    + data.strDay()+  vm.$i18n('KAL014_46') + (data.strPreviousDay() == 0? "前" : "後");
             }
 
             let end = "";
@@ -405,7 +405,7 @@ module nts.uk.at.kal014.a {
                 }
             } else{
                 end = vm.$i18n('KAL014_44')
-                    + data.endDay() +  vm.$i18n('KAL014_46') + (data.endPreviousDay() == 0? "前" : "先");
+                    + data.endDay() +  vm.$i18n('KAL014_46') + (data.endPreviousDay() == 0?"前" : "後");
             }
 
             return start + vm.$i18n('KAL014_42') + end;

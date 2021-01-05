@@ -10,8 +10,8 @@ module nts.uk.at.kal014.c {
         modalDTO: ModalDto = new ModalDto();
         strComboMonth: KnockoutObservableArray<any>;
         endComboMonth: KnockoutObservableArray<any>;
-        strComboDay: KnockoutObservableArray<any>;
-        endComboDay: KnockoutObservableArray<any>;
+        strComboDay: KnockoutObservableArray<ItemModel>;
+        endComboDay: KnockoutObservableArray<ItemModel>;
         strSelected: KnockoutObservable<number> = ko.observable(null);
         endSelected: KnockoutObservable<number> = ko.observable(null);
         workPalceCategory: any;
@@ -25,12 +25,15 @@ module nts.uk.at.kal014.c {
         constructor(params: any) {
             super();
             const vm = this;
+            let enumBeforeAfter = _.map(__viewContext.enums.FontRearSection, i=> new ItemModel(i.value, vm.$i18n(i.name)));
             vm.workPalceCategory = common.WORKPLACE_CATAGORY;
 
             vm.strComboMonth = ko.observableArray(__viewContext.enums.SpecifiedMonth);
             vm.endComboMonth = ko.observableArray(__viewContext.enums.SpecifiedMonth);
-            vm.strComboDay = ko.observableArray(__viewContext.enums.FontRearSection);
-            vm.endComboDay = ko.observableArray(__viewContext.enums.FontRearSection);
+
+            vm.strComboDay = ko.observableArray(enumBeforeAfter);
+            vm.endComboDay = ko.observableArray(enumBeforeAfter);
+
             vm.dateSpecify = ko.observableArray([
                 {value: StartSpecify.DAYS, name: vm.$i18n("KAL014_44")},
                 {value: StartSpecify.MONTH, name: ""}
@@ -261,6 +264,16 @@ module nts.uk.at.kal014.c {
             var self = this;
             self.id = id;
             self.name = name;
+        }
+    }
+
+    class ItemModel {
+        value: number;
+        name: string;
+
+        constructor(value: number, name: string) {
+            this.value = value;
+            this.name = name;
         }
     }
 }
