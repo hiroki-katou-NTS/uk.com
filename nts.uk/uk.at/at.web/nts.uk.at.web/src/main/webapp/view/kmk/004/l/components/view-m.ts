@@ -126,7 +126,7 @@ module nts.uk.at.view.kmk004.l {
 		public type: SIDEBAR_TYPE = 'Com_Workplace';
 		public selectedIdParam: KnockoutObservable<string> = ko.observable('');
 		isLoadData: KnockoutObservable<boolean> = ko.observable(false);
-		btn_text: KnockoutObservable<string> = ko.observable('');
+		btn_text: KnockoutObservable<string> = ko.observable('KMK004_338');
 		public workTimes: KnockoutObservableArray<WorkTimeL> = ko.observableArray([]);
 		public yearDelete: KnockoutObservable<number | null> = ko.observable(null);
 		public checkDelete: KnockoutObservable<boolean> = ko.observable(false);

@@ -147,7 +147,7 @@ module nts.uk.at.view.kmk004.l {
 		public existYear: KnockoutObservable<boolean> = ko.observable(false);
 		public type: SIDEBAR_TYPE = 'Com_Employment';
 		isLoadData: KnockoutObservable<boolean> = ko.observable(false);
-		btn_text: KnockoutObservable<string> = ko.observable('');
+		btn_text: KnockoutObservable<string> = ko.observable('KMK004_340');
 		public workTimes: KnockoutObservableArray<WorkTimeL> = ko.observableArray([]);
 		public yearDelete: KnockoutObservable<number | null> = ko.observable(null);
 		public checkDelete: KnockoutObservable<boolean> = ko.observable(false);
