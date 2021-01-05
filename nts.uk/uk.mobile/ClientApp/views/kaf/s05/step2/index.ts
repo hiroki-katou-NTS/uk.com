@@ -508,8 +508,9 @@ export class KafS05Step2Component extends Vue {
             let findResult2 = _.findLast(self.$appContext.model.appOverTime.applicationTime.reasonDissociation, (item: any) => item.diviationTime == 2);
             if (findResult1) {
                 reason1.reason = findResult1.reason;
-                let code = findResult1.reasonCode;
-                if (code) {
+                let code = findResult1.reasonCode || null;
+                let isFindCode = _.findLast(reason1.dropdownList, (item: any) => item.code == code);
+                if (!isFindCode && code) {
                     reason1.dropdownList.shift();
                     reason1.dropdownList.unshift({
                         code,
@@ -519,15 +520,14 @@ export class KafS05Step2Component extends Vue {
                         code: null,
                         text: self.$i18n('KAFS05_54'),
                     });
-                    reason1.selectedValue = code;
                 }
+                reason1.selectedValue = code;
             }
             if (findResult2) {
                 reason2.reason = findResult2.reason;
-                let code = findResult2.reasonCode;
+                let code = findResult2.reasonCode || null;
                 let isFindCode = _.findLast(reason2.dropdownList, (item: any) => item.code == code);
-                if (code) {
-                    reason2.selectedValue = isFindCode.code;
+                if (!isFindCode && code) {
                     reason2.dropdownList.shift();
                     reason2.dropdownList.unshift({
                         code,
@@ -537,9 +537,8 @@ export class KafS05Step2Component extends Vue {
                         code: null,
                         text: self.$i18n('KAFS05_54')
                     });
-                    reason2.selectedValue = code;
                 }
-                
+                reason2.selectedValue = code;               
             }
         }
 
