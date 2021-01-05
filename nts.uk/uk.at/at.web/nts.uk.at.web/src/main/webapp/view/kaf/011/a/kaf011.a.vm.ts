@@ -90,7 +90,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 			vm.absenceLeaveApp.application.opAppReason = vm.recruitmentApp.application.opAppReason = vm.applicationCommon().opAppReason;
 			
 			vm.recruitmentApp.application.appDate.subscribe(value =>{
-				if(value != null){
+				if(value != "" && !nts.uk.ui.errors.hasError()){
 					vm.$blockui("grayout");
 					let holidayDate = (vm.appCombinaSelected() != 1 && vm.absenceLeaveApp.application.appDate()) ? moment(vm.absenceLeaveApp.application.appDate()).format('YYYY/MM/DD'): null;
 					vm.$ajax('at/request/application/holidayshipment/changeRecDate',{workingDate: moment(value).format('YYYY/MM/DD'), holidayDate: holidayDate, displayInforWhenStarting: vm.displayInforWhenStarting()}).then((data: any) =>{
@@ -102,7 +102,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 			});
 			
 			vm.absenceLeaveApp.application.appDate.subscribe(value =>{
-				if(value != null){
+				if(value != "" && !nts.uk.ui.errors.hasError()){
 					vm.$blockui("grayout");
 					let workingDate = (vm.appCombinaSelected() != 2 && vm.recruitmentApp.application.appDate()) ? moment(vm.recruitmentApp.application.appDate()).format('YYYY/MM/DD'): null;
 					vm.$ajax('at/request/application/holidayshipment/changeAbsDate',{workingDate: workingDate, holidayDate: moment(value).format('YYYY/MM/DD'), displayInforWhenStarting: vm.displayInforWhenStarting()}).then((data: any) =>{
@@ -140,11 +140,15 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 			
 		}
 		
-		register() {
-			const vm = this;
+		triggerValidate(): boolean{
 			$('.nts-input').trigger("validate");
 			$('input').trigger("validate");
-			if(!nts.uk.ui.errors.hasError()){
+			return nts.uk.ui.errors.hasError();
+		}
+		
+		register() {
+			const vm = this;
+			if(!vm.triggerValidate()){
 				let self = this;
 				let data = self.displayInforWhenStarting();
 					data.rec = self.appCombinaSelected() != 2 ? ko.toJS(self.recruitmentApp): null;
