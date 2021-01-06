@@ -206,7 +206,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		initAppDetail() {
             let vm = this;
 			vm.$blockui('show');
-			console.log(vm.application());
             let command = {
 				companyId: vm.$user.companyId,
 				applicationId: vm.application().appID(),
@@ -284,7 +283,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			if(self.dataSource.appDispInfoStartupOutput.appDetailScreenInfo.outputMode == 0){
 				self.mode(MODE.VIEW);
 			}
-			console.log(self.mode());
 		}
 
 		reload(){
@@ -356,7 +354,9 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					
 				})
 				.done(result => {
-					
+					if(result){
+						location.reload();
+					}
 				})
 				.fail((failData: any) => {
 					// xử lý lỗi nghiệp vụ riêng
@@ -469,6 +469,12 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			const vm = this;
 			if(failData.messageId == "Msg_324") {
 				vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds });
+				return;
+			}	
+			if(failData.messageId == "Msg_197") {
+				vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds }).then(() => {
+					location.reload();
+				});		
 				return;
 			}	
 			vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds });
@@ -966,7 +972,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		bindHolidayTime(res: AppHdWorkDispInfo, mode?: number) {
 			const self = this;
 			let holidayTimeArray = [] as Array<HolidayTime>;
-			console.log(res.workdayoffFrameList.length, 'length');
 
 			for (let i = 0; i < res.workdayoffFrameList.length; i++) {
 				let item = {} as HolidayTime;
@@ -1830,7 +1835,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 							
 						})
 						.fail((res) =>{
-							console.log(res, 'fail');
+
 						})
 						.always(() =>{
 							self.$blockui('hide');
@@ -1927,7 +1932,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						workContent.breakTimes = breakTimeArray;
 						workContent.timeZones = timeZoneArray;
 						command.workContent = workContent;
-						console.log(command, 'calCMD');
 						self.$ajax(API.calculate, command)
 							.done((res: HolidayWorkCalculationResult) => {
 								if (res) {
@@ -1938,9 +1942,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 									// let appTimeList = res.applicationTime.applicationTime;
 									// let holidayTimeArray = self.holidayTime();
 									// let overTimeArray = self.overTime();
-									// console.log(holidayTimeArray, 'HLDARR');
-									// console.log(self.overTime(), "OVTARR");
-									// console.log(res, 'calRes');
 									// appTimeList.forEach((appTime: OvertimeApplicationSetting) => {
 									// 	holidayTimeArray.forEach((holidayTime: HolidayTime) => {
 									// 		// A6_8
@@ -1978,7 +1979,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 								}
 							})
 							.fail((res) => { 
-								console.log('calculate fail');
+
 							})
 							.always(() => {
 								self.$blockui("hide");

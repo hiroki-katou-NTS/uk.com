@@ -172,7 +172,7 @@ module cmm045.shr {
 			/** 入力者名称 */
 			opEntererName: string;
 			/** 背景色 */
-			opBackgroundColor: number;
+			opBackgroundColor: string;
 			/** 表示行数超 */
 			opMoreThanDispLineNO: boolean;
 
@@ -273,7 +273,7 @@ module cmm045.shr {
 			/** 入力者名称 */
 			opEntererName: string;
 			/** 背景色 */
-			opBackgroundColor: number;
+			opBackgroundColor: string;
 			/** 表示行数超 */
 			opMoreThanDispLineNO: boolean;
 		}
@@ -442,6 +442,13 @@ module cmm045.shr {
 				this.cID = cID;
 				this.sID = sID;
 			}
+		}
+		
+		export enum ConfirmDialog {
+			CONFIRM = 0,
+			NOT_CONFIRM = 1,
+			CONFIRM_ALL = 2,
+			NOT_CONFIRM_ALL = 3
 		}
     }
 }

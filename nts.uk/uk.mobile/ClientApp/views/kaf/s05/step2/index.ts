@@ -13,6 +13,11 @@ import { ReasonDivergence, ExcessStateMidnight, ExcessStateDetail, OutDateApplic
     template: require('./index.vue'),
     resource: require('./resources.json'),
     validations: {
+        item: {
+            applicationTime: {
+                constraint: 'OvertimeAppPrimitiveTime'
+            }
+        },
         reason1: {
             reason: {
                 constraint: 'DivergenceReason'
@@ -28,7 +33,8 @@ import { ReasonDivergence, ExcessStateMidnight, ExcessStateDetail, OutDateApplic
         }
     },
     constraints: [
-        'nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.DivergenceReason'
+        'nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.DivergenceReason',
+        'nts.uk.ctx.at.request.dom.application.overtime.primitivevalue.OvertimeAppPrimitiveTime'
     ],
     components: {
         'kafs00subp3': KafS00SubP3Component,

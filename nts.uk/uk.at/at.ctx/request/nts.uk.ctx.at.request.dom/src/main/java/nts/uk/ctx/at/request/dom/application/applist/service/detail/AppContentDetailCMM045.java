@@ -7,6 +7,7 @@ import nts.uk.ctx.at.request.dom.application.applist.extractcondition.Applicatio
 import nts.uk.ctx.at.request.dom.application.applist.service.AppCompltLeaveSync;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppPrePostGroup;
 import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
+import nts.uk.ctx.at.request.dom.application.applist.service.param.AttendanceNameItem;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.ctx.at.shared.dom.attendance.AttendanceItem;
@@ -194,14 +195,14 @@ public interface AppContentDetailCMM045 {
 	 * @param application
 	 * @param workTypeLst
 	 * @param workTimeSettingLst
-	 * @param attendanceItemLst
+	 * @param attendanceNameItemLst
 	 * @param applicationListAtr
 	 * @param approvalListDisplaySetting
 	 * @param companyID
 	 * @return
 	 */
 	public AppOvertimeDataOutput createOvertimeContent(Application application, List<WorkType> workTypeLst, List<WorkTimeSetting> workTimeSettingLst, 
-			List<AttendanceItem> attendanceItemLst, ApplicationListAtr applicationListAtr, ApprovalListDisplaySetting approvalListDisplaySetting,
+			List<AttendanceNameItem> attendanceNameItemLst, ApplicationListAtr applicationListAtr, ApprovalListDisplaySetting approvalListDisplaySetting,
 			String companyID);
 	
 	/**
@@ -209,13 +210,13 @@ public interface AppContentDetailCMM045 {
 	 * @param application
 	 * @param workTypeLst
 	 * @param workTimeSettingLst
-	 * @param attendanceItemLst
+	 * @param attendanceNameItemLst
 	 * @param applicationListAtr
 	 * @param approvalListDisplaySetting
 	 * @param companyID
 	 * @return
 	 */
 	public AppHolidayWorkDataOutput createHolidayWorkContent(Application application, List<WorkType> workTypeLst, List<WorkTimeSetting> workTimeSettingLst, 
-			List<AttendanceItem> attendanceItemLst, ApplicationListAtr applicationListAtr, ApprovalListDisplaySetting approvalListDisplaySetting,
+			List<AttendanceNameItem> attendanceNameItemLst, ApplicationListAtr applicationListAtr, ApprovalListDisplaySetting approvalListDisplaySetting,
 			String companyID);
 }

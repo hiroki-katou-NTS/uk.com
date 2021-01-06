@@ -33,6 +33,7 @@ import nts.uk.ctx.at.request.dom.application.applist.service.content.ArrivedLate
 import nts.uk.ctx.at.request.dom.application.applist.service.content.OptionalItemOutput;
 import nts.uk.ctx.at.request.dom.application.applist.service.content.OvertimeHolidayWorkActual;
 import nts.uk.ctx.at.request.dom.application.applist.service.datacreate.StampAppOutputTmp;
+import nts.uk.ctx.at.request.dom.application.applist.service.param.AttendanceNameItem;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
@@ -72,7 +73,6 @@ import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.optionalitemappsetting.OptionalItemAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.optionalitemappsetting.OptionalItemApplicationSetting;
-import nts.uk.ctx.at.shared.dom.attendance.AttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -1127,7 +1127,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 
 	@Override
 	public AppOvertimeDataOutput createOvertimeContent(Application application, List<WorkType> workTypeLst, List<WorkTimeSetting> workTimeSettingLst, 
-			List<AttendanceItem> attendanceItemLst, ApplicationListAtr applicationListAtr, ApprovalListDisplaySetting approvalListDisplaySetting,
+			List<AttendanceNameItem> attendanceNameItemLst, ApplicationListAtr applicationListAtr, ApprovalListDisplaySetting approvalListDisplaySetting,
 			String companyID) {
 		// ドメインモデル「休日出勤申請」を取得してデータを作成
 		AppOverTime appOverTime = appOverTimeRepository.find(companyID, application.getAppID()).get();
@@ -1143,7 +1143,12 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 		if(application.getPrePostAtr()==PrePostAtr.POSTERIOR && applicationListAtr==ApplicationListAtr.APPROVER) {
 			overtimeHolidayWorkActual = appContentService.getOvertimeHolidayWorkActual(
 					companyID, 
+					application,
+					workTypeLst,
+					workTimeSettingLst,
+					attendanceNameItemLst,
 					appOverTime,
+					null,
 					appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode()).orElse(null), 
 					appOverTime.getWorkInfoOp().map(x -> x.getWorkTimeCodeNotNull().orElse(null)).orElse(null));
 		}
@@ -1166,7 +1171,8 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 						null, 
 						x.getFrameNo().v(), 
 						x.getAttendanceType(), 
-						"", 
+						attendanceNameItemLst.stream().filter(y -> y.getAttendanceNo()==x.getFrameNo().v()&&y.getAttendanceType()==x.getAttendanceType())
+							.findAny().map(y -> y.getAttendanceName()).orElse(""), 
 						null, 
 						x.getApplicationTime().v())).collect(Collectors.toList()));
 		String appContent = appContentService.getOvertimeHolidayWorkContent(
@@ -1194,12 +1200,13 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 		default:
 			break;
 		}
-		return new AppOvertimeDataOutput(appContent, opAppTypeDisplay);
+		String backgroundColor = overtimeHolidayWorkActual==null ? "" : overtimeHolidayWorkActual.getBackgroundColor();
+		return new AppOvertimeDataOutput(appContent, opAppTypeDisplay, backgroundColor);
 	}
 
 	@Override
 	public AppHolidayWorkDataOutput createHolidayWorkContent(Application application, List<WorkType> workTypeLst, List<WorkTimeSetting> workTimeSettingLst, 
-			List<AttendanceItem> attendanceItemLst, ApplicationListAtr applicationListAtr, ApprovalListDisplaySetting approvalListDisplaySetting,
+			List<AttendanceNameItem> attendanceNameItemLst, ApplicationListAtr applicationListAtr, ApprovalListDisplaySetting approvalListDisplaySetting,
 			String companyID) {
 		// ドメインモデル「休日出勤申請」を取得してデータを作成
 		AppHolidayWork appHolidayWork = appHolidayWorkRepository.find(companyID, application.getAppID()).get();
@@ -1215,6 +1222,11 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 		if(application.getPrePostAtr()==PrePostAtr.POSTERIOR && applicationListAtr==ApplicationListAtr.APPROVER) {
 			overtimeHolidayWorkActual = appContentService.getOvertimeHolidayWorkActual(
 					companyID, 
+					application,
+					workTypeLst,
+					workTimeSettingLst,
+					attendanceNameItemLst,
+					null,
 					appHolidayWork,
 					appHolidayWork.getWorkInformation().getWorkTypeCode(), 
 					appHolidayWork.getWorkInformation().getWorkTimeCodeNotNull().orElse(null));
@@ -1228,7 +1240,8 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 						null, 
 						x.getFrameNo().v(), 
 						x.getAttendanceType(), 
-						"", 
+						attendanceNameItemLst.stream().filter(y -> y.getAttendanceNo()==x.getFrameNo().v()&&y.getAttendanceType()==x.getAttendanceType())
+							.findAny().map(y -> y.getAttendanceName()).orElse(""), 
 						null, 
 						x.getApplicationTime().v())).collect(Collectors.toList()), 
 				Optional.of(appHolidayWork.getWorkInformation().getWorkTypeCode().v()), 
@@ -1249,6 +1262,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 				ScreenAtr.CMM045,
 				overtimeHolidayWorkActual==null ? false : overtimeHolidayWorkActual.isActualStatus(),
 				application);
-		return new AppHolidayWorkDataOutput(appContent);
+		String backgroundColor = overtimeHolidayWorkActual==null ? "" : overtimeHolidayWorkActual.getBackgroundColor();
+		return new AppHolidayWorkDataOutput(appContent, backgroundColor);
 	}
 }
