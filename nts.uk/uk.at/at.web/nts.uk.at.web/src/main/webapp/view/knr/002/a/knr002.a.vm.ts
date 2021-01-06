@@ -61,7 +61,7 @@ module nts.uk.at.view.knr002.a {
                 service.getAll()
                 .done((res: ResponseData) => {
                     if (res) {
-                        setShared('KNR002D_empInfoTerList', res.listEmpInfoTerminalDto);
+                        
                         vm.dataSource(res);
                         vm.numOfRegTerminals(res.numOfRegTerminals);
                         vm.numAbnormalState(res.numAbnormalState);
@@ -93,6 +93,7 @@ module nts.uk.at.view.knr002.a {
                         }
     
                         vm.gridData(res.listEmpInfoTerminalDto);
+                        setShared('KNR002D_empInfoTerList', res.listEmpInfoTerminalDto);
                         vm.loadGrid();
                         vm.setGridSize();
                         $(window).on('resize', () => {

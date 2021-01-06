@@ -3380,6 +3380,16 @@ public class ProgramsManager {
     public static final Program KNR001A = new Program(WebAppId.AT, ProgramIdConsts.KNR001A, "KNR001_170",
             "/view/knr/001/a/index.xhtml");
     
+    /**
+     * KNR002
+     */
+    public static final Program KNR002A = new Program(WebAppId.AT, ProgramIdConsts.KNR002A, "KNR002_1",
+            "/view/knr/002/a/index.xhtml");
+    public static final Program KNR002C = new Program(WebAppId.AT, ProgramIdConsts.KNR002C, "KNR002_3",
+            "/view/knr/002/c/index.xhtml");
+    public static final Program KNR002E = new Program(WebAppId.AT, ProgramIdConsts.KNR002E, "KNR002_5",
+            "/view/knr/002/e/index.xhtml");
+    
 
     /**
      * All programs map.
