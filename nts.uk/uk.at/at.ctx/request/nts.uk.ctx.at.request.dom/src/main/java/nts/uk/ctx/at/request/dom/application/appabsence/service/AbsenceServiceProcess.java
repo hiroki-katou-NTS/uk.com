@@ -18,12 +18,10 @@ import nts.uk.ctx.at.request.dom.application.appabsence.service.output.VacationL
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.AppDetailScreenInfo;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.AppliedDate;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
@@ -459,4 +457,23 @@ public interface AbsenceServiceProcess {
             List<LeaveComDayOffManagement> leaveComDayOffMana, 
             List<PayoutSubofHDManagement> payoutSubofHDManagements, 
             AppDispInfoStartupOutput appDispInfoStartupOutput);
+    
+    /**
+            *  代休日を変更する
+     * @param companyID
+     * @param holidayDates
+     * @param appAbsenceStartInfoDto
+     * @return
+     */
+    public AppAbsenceStartInfoOutput getChangeHolidayDates(String companyID, List<GeneralDate> holidayDates, AppAbsenceStartInfoOutput appAbsenceStartInfoDto);
+    
+    /**
+         * 休暇申請を登録する
+     * @param companyID
+     * @param newApplyForLeave
+     * @param originApplyForLeave
+     * @param holidayDates
+     * @param appAbsenceStartInfoDto
+     */
+    public void registerHolidayDates(String companyID, ApplyForLeave newApplyForLeave, ApplyForLeave originApplyForLeave, List<GeneralDate> holidayDates, AppAbsenceStartInfoOutput appAbsenceStartInfoDto);
 }

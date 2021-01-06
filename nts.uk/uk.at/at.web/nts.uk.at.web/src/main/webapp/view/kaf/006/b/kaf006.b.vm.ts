@@ -964,6 +964,12 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 			});
 		}
 
+		openKAF006C() {
+			const vm = this;
+			nts.uk.ui.windows.setShared('KAF006C_PARAMS', { appAbsenceStartInfoOutput: vm.data, applyForLeave: vm.createDataVacationApp() });
+			nts.uk.ui.windows.sub.modal("/view/kaf/006/c/index.xhtml");
+		}
+
 		checkCondition11(data: any) {
 			const vm = this;
 			if (vm.data && vm.data.workHoursDisp) {

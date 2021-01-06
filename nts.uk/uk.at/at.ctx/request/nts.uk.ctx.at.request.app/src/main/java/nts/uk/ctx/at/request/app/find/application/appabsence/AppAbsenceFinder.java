@@ -18,6 +18,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.command.application.appabsence.ApplyForLeaveDto;
 import nts.uk.ctx.at.request.app.command.application.appabsence.CreatAppAbsenceCommand;
 import nts.uk.ctx.at.request.app.command.application.appabsence.UpdateAppAbsenceCommand;
+import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AbsenceCheckRegisterDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AbsenceStartScreenBOutput;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AccumulatedRestManagementDto;
@@ -598,5 +599,28 @@ public class AppAbsenceFinder {
 	    return new AbsenceStartScreenBOutput(
 	            AppAbsenceStartInfoDto.fromDomain(appForLeaveStart.getAppAbsenceStartInfoOutput()), 
 	            ApplyForLeaveDto.fromDomain(appForLeaveStart.getApplyForLeave()));
+	}
+	
+	public AppAbsenceStartInfoDto getChangeHolidayDates(String companyID, List<String> holidayDates, AppAbsenceStartInfoDto appAbsenceStartInfoDto) {
+	    AppAbsenceStartInfoOutput appAbsenceStartInfoOutput = absenseProcess.getChangeHolidayDates(
+	            companyID, 
+	            holidayDates.stream().map(x -> GeneralDate.fromString(x, "yyyy/MM/dd")).collect(Collectors.toList()), 
+	            appAbsenceStartInfoDto.toDomain(companyID));
+	    return AppAbsenceStartInfoDto.fromDomain(appAbsenceStartInfoOutput);
+	}
+	
+	public AbsenceCheckRegisterDto checkBeforeRegisterHolidayDates(String companyID, ApplicationDto oldApplication, ApplicationDto newApplication, AppAbsenceStartInfoDto appAbsenceStartInfoDto, ApplyForLeaveDto originApplyForLeave, ApplyForLeaveDto newApplyForLeave) {
+	    Application oldApp = oldApplication.toDomain();
+	    Application newApp = newApplication.toDomain();
+	    ApplyForLeave oldApplyForLeave = originApplyForLeave.toDomain();
+	    oldApplyForLeave.setApplication(oldApp);
+	    ApplyForLeave applyForLeave = newApplyForLeave.toDomain();
+	    applyForLeave.setApplication(newApp);
+	    
+	    AbsenceCheckRegisterOutput absenceCheckRegisterOutput = absenseProcess.checkAppAbsenceRegister(true, companyID, 
+	            appAbsenceStartInfoDto.toDomain(companyID), 
+	            oldApplyForLeave, 
+	            applyForLeave);
+	    return AbsenceCheckRegisterDto.fromDomain(absenceCheckRegisterOutput);
 	}
 }
