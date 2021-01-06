@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import javax.inject.Inject;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -47,6 +49,8 @@ import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionResultDetai
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordConverter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
@@ -108,6 +112,9 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 	
 	@Inject
 	private DailyRecordCreateErrorAlermService dailyAlermService;
+	
+	@Inject
+	private DailyRecordConverter dailyRecordConverter;
 	
 	
 	@Override
@@ -330,7 +337,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 			List<ErrorAlarmCondition> listErrorAlarmCon,
 			IntegrationOfDaily integra,  String sid, GeneralDate day, String wplId, Map<Integer, String> work,
 			List<String> extractConditionWorkRecord,
-			 List<WorkTypeCode> lstWkType, String errorDailyCheckId) {
+			 List<WorkTypeCode> lstWkType, String errorDailyCheckId, List<WorkPlaceHistImportAl> getWplByListSidAndPeriod) {
 		boolean testSid = true;
 		WorkTypeCode wkTypeCd = integra.getWorkInformation().getRecordInfo().getWorkTypeCode();
 		Optional<ErrorAlarmCondition> errorAlarm = errorConRep.findConditionByErrorAlamCheckId(errorDailyCheckId);
@@ -359,7 +366,10 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 				}
 				
 				if(testSid == true) {
+					List<ErrorAlarmWorkRecord> listError = errorAlarmRep.findByListErrorAlamCheckId(listErrorAlarmCon.stream()
+																		.map(x -> x.getErrorAlarmCheckID()).collect(Collectors.toList()));
 					// 実績をチェックする
+					OutputCheckResult outPut = this.CheckAchievement(day, sid, integra, workRecord, listErrorAlarmCon, listError, getWplByListSidAndPeriod);
 				}
 			}
 		}
@@ -369,73 +379,80 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 	/**
 	 * 実績をチェックする
 	 */
-	private void CheckAchievement(DatePeriod dPeriod, String sid, IntegrationOfDaily integra,
-			WorkRecordExtractingCondition workRecord, ErrorAlarmCondition errorAlarm,
+	private OutputCheckResult CheckAchievement(GeneralDate day, String sid, IntegrationOfDaily integra,
+			WorkRecordExtractingCondition workRecord, List<ErrorAlarmCondition> errorAlarm,
 			List<ErrorAlarmWorkRecord> listError, List<WorkPlaceHistImportAl> getWplByListSidAndPeriod) {
-		boolean checkErr = false;
 		List<AlarmListCheckInfor> listChkInfor = new ArrayList<>();
 		List<ResultOfEachCondition> listResult = new ArrayList<>();
 		String wid = null;
-		
-		Optional<ErrorAlarmWorkRecord> errAlarmWk = listError.stream().filter(x -> x.getErrorAlarmCheckID().equals(errorAlarm.getErrorAlarmCheckID())).findFirst();
 		
 		// 時間、回数、時刻、金額の場合
 		if(workRecord.getCheckItem() == TypeCheckWorkRecord.TIME || workRecord.getCheckItem() == TypeCheckWorkRecord.TIMES
 				|| workRecord.getCheckItem() == TypeCheckWorkRecord.TIME_OF_DAY 
 				|| workRecord.getCheckItem() == TypeCheckWorkRecord.AMOUNT_OF_MONEY) {
-
-			// 勤務種類をチェックする
-			WorkCheckResult checkResult = errorAlarm.getWorkTypeCondition().checkWorkType(new WorkInfoOfDailyPerformance(integra.getEmployeeId(), integra.getYmd(), integra.getWorkInformation()), 
-															Optional.ofNullable(SnapShot.of(integra.getWorkInformation().getRecordInfo(), new AttendanceTime(0))));
-//			if(checkResult.value != 1) {
-//				checkErr = errorAlarm.getAtdItemCondition().check(item->{
-//					if (item.isEmpty()) {
-//						return new ArrayList<>();
-//					}
-//					return errorAlarm.getAtdItemCondition().check(getValueFromItemIds);
-//				}) == WorkCheckResult.ERROR;
-//			}
 			
-			if(checkErr == true) {
+			
+			for(ErrorAlarmCondition alarmCon: errorAlarm) {
 				
-				// チェック結果を生成する
-				List<ExtractionResultDetail> extractResult = new ArrayList<>();
+				Optional<ErrorAlarmWorkRecord> errAlarmWk = listError.stream().filter(x -> x.getErrorAlarmCheckID()
+																				.equals(alarmCon.getErrorAlarmCheckID())).findFirst();
 				
-				// get workplace ID
-				Optional<WorkPlaceHistImportAl> wkpAl = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid)).findFirst();
-				if(wkpAl.isPresent()) {
-					List<WorkPlaceIdAndPeriodImportAl> lstWk = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid)).findFirst().get().getLstWkpIdAndPeriod();
-					Optional<WorkPlaceIdAndPeriodImportAl> wkpPer = lstWk.stream().filter(y -> y.getDatePeriod().equals(dPeriod)).findFirst();
-					if(wkpPer.isPresent()) {
-						wid = wkpPer.get().getWorkplaceId();
+				// 勤務種類をチェックする
+				WorkCheckResult checkResult = alarmCon.getWorkTypeCondition().checkWorkType(new WorkInfoOfDailyPerformance(integra.getEmployeeId(), integra.getYmd(), integra.getWorkInformation()), 
+																Optional.ofNullable(SnapShot.of(integra.getWorkInformation().getRecordInfo(), new AttendanceTime(0))));
+				
+				if(checkResult.value == 2) {
+					
+					// 勤怠項目をチェックする
+					WorkCheckResult result = alarmCon.getAtdItemCondition().check(item -> {
+
+						List<ItemValue> lstItemValue = dailyRecordConverter.createDailyConverter().setData(integra)
+								.convert(item);
+						return lstItemValue.stream().map(iv -> getValue(iv)).collect(Collectors.toList());
+
+					});
+					
+					if(result.value == 1) {
+						
+						// チェック結果を生成する
+						List<ExtractionResultDetail> extractResult = new ArrayList<>();
+						
+						// get workplace ID
+						Optional<WorkPlaceHistImportAl> wkpAl = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid)).findFirst();
+						if(wkpAl.isPresent()) {
+							List<WorkPlaceIdAndPeriodImportAl> lstWk = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid)).findFirst().get().getLstWkpIdAndPeriod();
+							Optional<WorkPlaceIdAndPeriodImportAl> wkpPer = lstWk.stream().filter(y -> y.getDatePeriod().contains(day)).findFirst();
+							if(wkpPer.isPresent()) {
+								wid = wkpPer.get().getWorkplaceId();
+							}
+						}
+						
+						
+						extractResult.add(new ExtractionResultDetail(sid,
+												new ExtractionAlarmPeriodDate(Optional.ofNullable(day),
+																				Optional.empty()), 
+												workRecord.getNameWKRecord().v(), alarmCon.getDisplayMessage().v(), 
+												GeneralDateTime.now(), Optional.ofNullable(wid), Optional.empty(), Optional.empty()));
+						listResult.add(new ResultOfEachCondition(EnumAdaptor.valueOf(1, AlarmListCheckType.class), String.valueOf(errAlarmWk.get().getRemarkColumnNo()), 
+								extractResult));
 					}
 				}
 				
-				extractResult.add(new ExtractionResultDetail(sid,
-										new ExtractionAlarmPeriodDate(Optional.ofNullable(dPeriod.start()),
-																		Optional.ofNullable(dPeriod.end())), 
-										workRecord.getNameWKRecord().v(), errorAlarm.getDisplayMessage().v(), 
-										GeneralDateTime.now(), Optional.ofNullable(wid), Optional.empty(), Optional.empty()));
-				listResult.add(new ResultOfEachCondition(EnumAdaptor.valueOf(1, AlarmListCheckType.class), String.valueOf(errAlarmWk.get().getRemarkColumnNo()), 
-						extractResult));
+				listChkInfor.add(new AlarmListCheckInfor(String.valueOf(errAlarmWk.get().getRemarkColumnNo()), EnumAdaptor.valueOf(1, AlarmListCheckType.class)));
 			}
-			listChkInfor.add(new AlarmListCheckInfor(String.valueOf(errAlarmWk.get().getRemarkColumnNo()), EnumAdaptor.valueOf(1, AlarmListCheckType.class)));
+
 		}
+		return new OutputCheckResult(listResult, listChkInfor);
 	}
 	
-	
-	/**
-	 *  グループ1をチェックする
-	 */
-	private void CheckGroup1(IntegrationOfDaily integra, ErrorAlarmCondition errorAlarm) {
-		
-		ErAlConditionsAttendanceItem group1 = errorAlarm.getAtdItemCondition().getGroup1();
-		Map<String, ErAlAttendanceItemCondition> map = new HashMap<String, ErAlAttendanceItemCondition>();
-		for(ErAlAttendanceItemCondition group : group1.getLstErAlAtdItemCon()) {
-			map.put(group1.getAtdItemConGroupId(), group);
+	private Double getValue(ItemValue value) {
+		if (value.value() == null) {
+			return null;
 		}
-		
+		return value.getValueType().isDouble() ? (Double) value.value()
+												: Double.valueOf((Integer) value.value());
 	}
+	
 	
 	/**
 	 * 日別実績のエラーアラームのアラーム値を生成する
