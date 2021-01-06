@@ -604,7 +604,7 @@ module nts.uk.at.view.kwr004.b {
         .done((result) => {
           if (_.isNil(result) || result.length == 0) {
             vm.clearModelToNew();
-            $('#btnB11').focus();
+            $('#KWR004_B32').focus();
           } else {
             //merge to settingListItems
             _.forEach(result, (x) => {
