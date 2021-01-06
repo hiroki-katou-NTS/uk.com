@@ -130,10 +130,10 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 			remNumShiftListWork.AddLeaveGrantRemainingData(targetRemainingData);
 
 			// 休暇使用数を消化できるかチェック
-			if ( !remNumShiftListWork.canDigest(
+			if ( remNumShiftListWork.canDigest(
 					require, leaveUsedNumber, companyId, employeeId, date) ){
 				// 消化できないときはループ
-				continue;
+				break;
 			}
 		}
 

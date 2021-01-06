@@ -252,15 +252,15 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		// 次回年休付与日を計算
 		List<NextAnnualLeaveGrant> nextAnnualLeaveGrantList = new ArrayList<>();
 		{
-			//い 次回年休付与を計算
+			// 次回年休付与を計算
 			nextAnnualLeaveGrantList = CalcNextAnnualLeaveGrantDate.algorithm(
 					require, cacheCarrier,
 					companyId, employeeId, Optional.of(aggrPeriod),
 					Optional.ofNullable(employee), annualLeaveEmpBasicInfoOpt,
 					grantHdTblSetOpt, lengthServiceTblsOpt);
 
-			// 「出勤率計算フラグ」をチェック
-			if (isCalcAttendanceRate){
+//			// 「出勤率計算フラグ」をチェック
+//			if (isCalcAttendanceRate){
 
 				// 勤務実績によって次回年休付与を更新
 				for (val nextAnnualGrantList : nextAnnualLeaveGrantList){
@@ -269,7 +269,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 
 					// 次回年休付与の付与日数を条件によって更新する
 					{
-						// い年休出勤率を計算する
+						// 年休出勤率を計算する
 						val resultRateOpt = CalcAnnLeaAttendanceRate.algorithm(require, cacheCarrier,
 								companyId, employeeId,
 								nextAnnualGrantList.getGrantDate(),
@@ -320,7 +320,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 						}
 					}
 				}
-			}
+//			}
 		}
 
 		// ；年休集計期間を作成
@@ -679,6 +679,14 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 				grantNumber++;
 			}
 		}
+
+		for(AggregatePeriodWork work : aggregatePeriodWorks) {
+			if(work.getPeriod().contains(aggrPeriod.end()))
+				work.setDayBeforePeriodEnd(true);
+			if(work.getPeriod().contains(aggrPeriod.end().addDays(1)))
+				work.setNextDayAfterPeriodEnd(true);
+		}
+
 
 		return aggregatePeriodWorks;
 

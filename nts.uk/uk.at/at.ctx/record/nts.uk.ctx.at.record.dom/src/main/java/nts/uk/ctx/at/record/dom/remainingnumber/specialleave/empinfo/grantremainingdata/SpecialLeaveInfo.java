@@ -557,11 +557,6 @@ public class SpecialLeaveInfo implements Cloneable {
 
 			// 特休を消化する
 			{
-//				// 特休使用数WORK
-//				ManagementDays useDaysWork = new ManagementDays(interimSpecialHolidayMng.getUseDays().v());
-//				// 特休使用残数WORK
-//				ManagementDays remainDaysWork = new ManagementDays(interimSpecialHolidayMng.getUseDays().v());
-
 				// 特休付与残数を取得
 				List<LeaveGrantRemainingData> targetRemainingDatas
 					= new ArrayList<LeaveGrantRemainingData>();
@@ -577,75 +572,48 @@ public class SpecialLeaveInfo implements Cloneable {
 				// 「休暇残数シフトリストWORK」一時変数を作成
 				RemNumShiftListWork remNumShiftListWork = new RemNumShiftListWork();
 
-//				// 取得した「付与残数」でループ
-//				List<LeaveGrantRemainingData> target = new ArrayList<>();
-//				for(LeaveGrantRemainingData obj : targetRemainingDatas)
-//					target.add(new LeaveGrantRemainingData(obj));
-
-//				targetRemainingDatas.forEach(a->{
-				List<LeaveGrantRemainingData> dummyList = new ArrayList<>();
-
-				for(LeaveGrantRemainingData a : targetRemainingDatas) {
-
-					// 使用数変数作成
-					double days = 0.0;
-					if ( interimSpecialHolidayMng.getUseDays().isPresent() ){
-						days = interimSpecialHolidayMng.getUseDays().get().v();
-					}
-					int minutes = 0;
-					if ( interimSpecialHolidayMng.getUseTimes().isPresent() ){
-						minutes = interimSpecialHolidayMng.getUseTimes().get().v();
-					}
-					LeaveUsedNumber leaveUsedNumber = new LeaveUsedNumber();
-					leaveUsedNumber.setDays(new LeaveUsedDayNumber(days));
-					leaveUsedNumber.setMinutes(Optional.of(new LeaveUsedTime(minutes)));
-
-					boolean isForcibly = true;
-
-					// 休暇付与残数を追加する
-					remNumShiftListWork.AddLeaveGrantRemainingData(a);
-
-					List<LeaveGrantRemainingData> target = targetRemainingDatas;
-
-					// 休暇残数を指定使用数消化する
-					LeaveGrantRemainingData.digest(
-							require,
-							dummyList,
-							remNumShiftListWork,
-							leaveUsedNumber,
-							companyId,
-							employeeId,
-							aggregatePeriodWork.getPeriod().start());
-
-					// 時間休暇消化数を求める
-					// 消化できた時間を求める
-					// 消化できた時間　←特別休暇使用数．使用時間 ー INPUT.消化できなかった休暇使用数．時間
-
-					// 特別休暇使用数．使用時間
-					int usedTime = 0;
-					if ( a.getDetails().getUsedNumber().getMinutes().isPresent() ){
-						usedTime = a.getDetails().getUsedNumber().getMinutes().get().v();
-					}
-					// 消化できなかった休暇使用数．時間
-					int unDigestTime = 0;
-					if ( remNumShiftListWork.getUnusedNumber().getMinutes().isPresent() ){
-						unDigestTime = remNumShiftListWork.getUnusedNumber().getMinutes().get().v();
-					}
-					usedTime -= unDigestTime;
-
-					// 時間休暇消化日一覧に追加をするか
-
-					// 消化できた時間があるか （消化できた時間　＞０）
-					if ( 0 < usedTime ){
-						// 消化日を追加
-						digestDateList.add(interimSpecialHolidayMng.getYmd());
-					}
-
-					// 残数（現在）を消化後の状態にする
-					this.updateRemainingNumber(aggregatePeriodWork.isAfterGrant());
-
+				// 使用数変数作成
+				double days = 0.0;
+				if ( interimSpecialHolidayMng.getUseDays().isPresent() ){
+					days = interimSpecialHolidayMng.getUseDays().get().v();
 				}
-				targetRemainingDatas.addAll(dummyList);
+				int minutes = 0;
+				if ( interimSpecialHolidayMng.getUseTimes().isPresent() ){
+					minutes = interimSpecialHolidayMng.getUseTimes().get().v();
+				}
+				LeaveUsedNumber leaveUsedNumber = new LeaveUsedNumber();
+				leaveUsedNumber.setDays(new LeaveUsedDayNumber(days));
+				leaveUsedNumber.setMinutes(Optional.of(new LeaveUsedTime(minutes)));
+
+				// 休暇残数を指定使用数消化する
+				LeaveGrantRemainingData.digest(
+						require,
+						targetRemainingDatas,
+						remNumShiftListWork,
+						leaveUsedNumber,
+						companyId,
+						employeeId,
+						aggregatePeriodWork.getPeriod().start());
+
+				// 時間休暇消化数を求める
+				int unDigestTime = 0;
+				if ( remNumShiftListWork.getUnusedNumber().getMinutes().isPresent() ){
+					unDigestTime = remNumShiftListWork.getUnusedNumber().getMinutes().get().v();
+				}
+
+				SpecialLeaveUsedWork work = SpecialLeaveUsedWork.of(interimSpecialHolidayMng);
+				int usedTime = work.calcDigestTime(unDigestTime);
+
+				// 時間休暇消化日一覧に追加をするか
+
+				// 消化できた時間があるか （消化できた時間　＞０）
+				if ( 0 < usedTime ){
+					// 消化日を追加
+					digestDateList.add(interimSpecialHolidayMng.getYmd());
+				}
+
+				// 残数（現在）を消化後の状態にする
+				this.updateRemainingNumber(aggregatePeriodWork.isAfterGrant());
 
 				// 実特休（特休（マイナスあり））に使用数を加算する
 				this.remainingNumber.getSpecialLeaveWithMinus().addUsedNumber(

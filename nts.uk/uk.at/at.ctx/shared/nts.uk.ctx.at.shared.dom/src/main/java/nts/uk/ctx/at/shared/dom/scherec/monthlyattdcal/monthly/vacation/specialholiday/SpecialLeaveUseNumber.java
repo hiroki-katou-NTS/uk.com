@@ -70,6 +70,13 @@ public class SpecialLeaveUseNumber extends DomainObject implements Cloneable, Se
 		return specialLeaveUseNumber;
 	}
 
+	public SpecialLeaveUseTimes getUseTimeOfZero() {
+		if(!this.getUseTimes().isPresent())
+			return new SpecialLeaveUseTimes(new SpecialLeavaRemainTime(0));
+		else
+			return this.getUseTimes().get();
+	}
+
 //	/**
 //	 * 使用日数、使用時間をクリア
 //	 */
