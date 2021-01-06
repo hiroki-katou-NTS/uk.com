@@ -121,8 +121,7 @@ public class WorkInfoOfDailyAttendanceTest {
 	
 	@Test
 	public void testCreate_scheduleTimeSheets_empty(
-			@Injectable WorkInformation scheduleInfo,
-			@Injectable WorkInformation recordInfo,
+			@Injectable WorkInformation workInfo,
 			@Injectable CalculationState calculationState,
 			@Injectable NotUseAttribute backStraightAtr,
 			@Injectable NotUseAttribute goStraightAtr,
@@ -132,22 +131,20 @@ public class WorkInfoOfDailyAttendanceTest {
 		// Arrange
 		val WorkInfoAndTimeZone = WorkInfoOfDailyAttendanceHelper.createWorkInfoAndTimeZone(Collections.emptyList());
 		new Expectations() { {
-			scheduleInfo.getWorkInfoAndTimeZone(require);
+			workInfo.getWorkInfoAndTimeZone(require);
 			result = Optional.of(WorkInfoAndTimeZone);
 		}};
 		
 		// Action
 		WorkInfoOfDailyAttendance target = WorkInfoOfDailyAttendance.create(require, 
-																		recordInfo, 
-																		scheduleInfo, 
+																		workInfo, 
 																		calculationState, 
 																		backStraightAtr, 
 																		goStraightAtr, 
 																		dayOfWeek);
 		
 		// Assert
-		assertThat(target.getRecordInfo()).isEqualTo(recordInfo);
-		assertThat(target.getScheduleInfo()).isEqualTo(scheduleInfo);
+		assertThat(target.getRecordInfo()).isEqualTo(workInfo);
 		assertThat( target.getCalculationState() ).isEqualTo( calculationState );
 		assertThat( target.getBackStraightAtr() ).isEqualTo( backStraightAtr );
 		assertThat( target.getGoStraightAtr() ).isEqualTo( goStraightAtr );
@@ -157,8 +154,7 @@ public class WorkInfoOfDailyAttendanceTest {
 	
 	@Test
 	public void testCreate_scheduleTimeSheets_not_empty(
-			@Injectable WorkInformation scheduleInfo,
-			@Injectable WorkInformation recordInfo,
+			@Injectable WorkInformation workInfo,
 			@Injectable CalculationState calculationState,
 			@Injectable NotUseAttribute backStraightAtr,
 			@Injectable NotUseAttribute goStraightAtr,
@@ -172,23 +168,21 @@ public class WorkInfoOfDailyAttendanceTest {
 				new TimeZone(new TimeWithDayAttr(30), new TimeWithDayAttr(40)));
 		val WorkInfoAndTimeZone = WorkInfoOfDailyAttendanceHelper.createWorkInfoAndTimeZone(listTimeZone);
 		
-		new Expectations(scheduleInfo) {{
-			scheduleInfo.getWorkInfoAndTimeZone(require);
+		new Expectations(workInfo) {{
+			workInfo.getWorkInfoAndTimeZone(require);
 			result = Optional.of(WorkInfoAndTimeZone);
 		}};
 		
 		// Action
 		WorkInfoOfDailyAttendance target = WorkInfoOfDailyAttendance.create(require, 
-																		recordInfo, 
-																		scheduleInfo, 
+																		workInfo, 
 																		calculationState, 
 																		backStraightAtr, 
 																		goStraightAtr, 
 																		dayOfWeek);
 		
 		// Assert
-		assertThat( target.getRecordInfo() ).isEqualTo( recordInfo );
-		assertThat( target.getScheduleInfo() ).isEqualTo( scheduleInfo );
+		assertThat( target.getRecordInfo() ).isEqualTo( workInfo );
 		assertThat( target.getCalculationState() ).isEqualTo( calculationState );
 		assertThat( target.getBackStraightAtr() ).isEqualTo( backStraightAtr );
 		assertThat( target.getGoStraightAtr() ).isEqualTo( goStraightAtr );
