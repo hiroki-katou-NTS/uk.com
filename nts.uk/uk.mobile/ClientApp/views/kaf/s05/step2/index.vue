@@ -48,7 +48,7 @@
               v-model="item.applicationTime"
               name=""
               v-bind:enable="$appContext.c3"
-              time-input-type="time-duration"
+              v-bind:constraint="OvertimeAppPrimitiveTime"
             />
           </div>
         </div>
@@ -89,7 +89,7 @@
               v-model="item.applicationTime"
               name=""
               v-bind:enable="$appContext.c3"
-              time-input-type="time-duration"
+              v-bind:constraint="OvertimeAppPrimitiveTime"
             />
           </div>
         </div>

@@ -17,6 +17,7 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorCheck;
@@ -77,6 +78,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class HolidayServiceImpl implements HolidayService {
@@ -513,9 +515,24 @@ public class HolidayServiceImpl implements HolidayService {
 
 	@Override
 	public void deleteHdChange(String applicationId) {
+		String companyId = AppContexts.user().companyId();
+		
 		Optional<BrkOffSupChangeMng> brkOffSupChangeMngOp = brkOffSupChangeMngRepository.findHolidayAppID(applicationId);
 		if(brkOffSupChangeMngOp.isPresent()) {
-			// huytodo get Domain 振休振出申請, change reflect and delete 振休申請休出変更管理
+			BrkOffSupChangeMng brkOffSupChangeMng = brkOffSupChangeMngOp.get();
+			
+			//	アルゴリズム「振休申請復活」を実行する
+				//	ドメインモデル「振休振出申請」を取得する
+			Application application = applicationRepository.findByID(companyId, applicationId).get();
+				//	「振休振出申請.反映情報.実績反映状態(stateReflectionReal)」を「未反映(notReflected)」に更新する
+			application.getReflectionStatus().getListReflectionStatusOfDay()
+				.forEach(state -> state.setActualReflectStatus(ReflectedState.NOTREFLECTED));
+			applicationRepository.update(application);
+			
+			//	ドメインモデル「振休申請休出変更管理」を削除する
+			brkOffSupChangeMngRepository.remove(brkOffSupChangeMng.getRecAppID(), brkOffSupChangeMng.getAbsenceLeaveAppID());
+			
+			//	暫定データの登録 	pending
 		}
 	}
 
