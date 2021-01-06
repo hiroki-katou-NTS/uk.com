@@ -50,8 +50,8 @@ public class FavoriteSpecifyEntityDetail extends UkJpaEntity implements Serializ
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({ 
-		@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
-		@JoinColumn(name = "INPUT_DATE", referencedColumnName = "INPUT_DATE", insertable = false, updatable = false)
+		@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = true, updatable = true),
+		@JoinColumn(name = "INPUT_DATE", referencedColumnName = "INPUT_DATE", insertable = true, updatable = true)
 		})
 	public FavoriteSpecifyEntity favoriteSpecifyEntity;
 
