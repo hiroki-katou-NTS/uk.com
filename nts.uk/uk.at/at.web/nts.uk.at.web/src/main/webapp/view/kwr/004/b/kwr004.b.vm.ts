@@ -394,7 +394,7 @@ module nts.uk.at.view.kwr004.b {
         vm.isEnableDuplicateButton(true);
         vm.isEnableDeleteButton(true);
         vm.isNewMode(false);
-        console.log(vm.isItemRemoved());
+        
         if (!vm.isItemRemoved())
           $('#KWR004_B33').focus();
         else {
@@ -870,11 +870,10 @@ module nts.uk.at.view.kwr004.b {
         vm.currentCodeList(newSelectedCode);
       } else {
         vm.clearModelToNew();
-        $('#btnB11').focus();
+        $('#KWR004_B32').focus();
       }
       //vm.addNewRow();
     }
-
   }
 
   //=================================================================
