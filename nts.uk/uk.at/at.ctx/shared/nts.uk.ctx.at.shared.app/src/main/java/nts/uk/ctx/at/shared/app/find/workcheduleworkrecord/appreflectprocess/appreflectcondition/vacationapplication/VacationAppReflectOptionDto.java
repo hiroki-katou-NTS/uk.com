@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.ap
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.VacationAppReflectOption;
 
 @Data
 @NoArgsConstructor
@@ -22,4 +23,8 @@ public class VacationAppReflectOptionDto {
      * 就業時間帯を反映する
      */
     private int reflectWorkHour;
+    
+    public static VacationAppReflectOptionDto fromDomain(VacationAppReflectOption domain) {
+    	return new VacationAppReflectOptionDto(domain.getOneDayLeaveDeleteAttendance().value, domain.getReflectAttendance().value, domain.getReflectWorkHour().value);
+    }
 }

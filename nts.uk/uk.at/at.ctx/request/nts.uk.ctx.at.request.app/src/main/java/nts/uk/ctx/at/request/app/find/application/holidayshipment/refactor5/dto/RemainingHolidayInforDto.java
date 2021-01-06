@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.app.find.application.holidayshipment.dto;
+package nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -6,11 +6,12 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.AbsRecDetailParaDto;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 
 @NoArgsConstructor
 @Getter
-public class RemainingHolidayInfor {
+public class RemainingHolidayInforDto {
 
 	/**
 	 * 振出振休明細
@@ -36,10 +37,13 @@ public class RemainingHolidayInfor {
 	 * 繰越日数
 	 */
 	private double carryForwardDays;
+	/**
+	 * 一番近い期限日
+	 */
 	@Setter
 	private String closestDueDate;
 
-	public RemainingHolidayInfor(AbsRecRemainMngOfInPeriod domain) {
+	public RemainingHolidayInforDto(AbsRecRemainMngOfInPeriod domain) {
 		this.lstAbsRecMng = domain.getLstAbsRecMng().stream().map(c->new AbsRecDetailParaDto(c)).collect(Collectors.toList());
 		this.remainDays = domain.getRemainDays();
 		this.unDigestedDays = domain.getUnDigestedDays();

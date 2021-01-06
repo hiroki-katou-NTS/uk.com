@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.ws.application.holidayshipment;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -25,15 +26,19 @@ import nts.uk.ctx.at.request.app.command.application.holidayshipment.HolidayShip
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.ReleaseHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveChangeAbsDateCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveHolidayShipmentCommand;
-import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.UpdateHolidayShipmentCommandHandler;
-import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenAFinder;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.SaveHolidayShipmentCommandHandlerRef5;
+import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenBFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenCFinder;
-import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.ChangeWorkingDateParam;
-import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.DisplayInforWhenStarting;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShipmentDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.WorkTimeInfoDto;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.ChangeValueItemsOnHolidayShipment;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.HolidayShipmentScreenAFinder;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.ChangeDateParam;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.ChangeWokTypeParam;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.ChangeWorkTypeResultDto;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.DisplayInforWhenStarting;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApproveProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.shr.com.context.AppContexts;
@@ -44,12 +49,18 @@ public class HolidayShipmentWebService extends WebService {
 
 	@Inject
 	private HolidayShipmentScreenAFinder screenAFinder;
+	
+	@Inject
+	private ChangeValueItemsOnHolidayShipment changeValueItemsOnHolidayShipment;
+	
+	
+	@Inject
+	private SaveHolidayShipmentCommandHandlerRef5 saveCommandHandler;
+	
 	@Inject
 	private HolidayShipmentScreenCFinder screenCFinder;
 	@Inject
 	private HolidayShipmentScreenBFinder screenBFinder;
-	@Inject
-	private SaveHolidayShipmentCommandHandler saveHandler;
 	@Inject
 	private UpdateHolidayShipmentCommandHandler updateHandler;
 	@Inject
@@ -68,25 +79,54 @@ public class HolidayShipmentWebService extends WebService {
 	private SaveChangeAbsDateCommandHandler changeAbsDateHander;
 
 	@POST
-	@Path("start")
-	public HolidayShipmentDto startPage(StartScreenAParam param) {
-		return this.screenAFinder.startPageA(param.getSIDs(), param.getAppDate(), param.getUiType());
-	}
-	
-	@POST
 	@Path("startPageARefactor")
 	public DisplayInforWhenStarting startPageARefactor(StartPageARefactorParam param) {
 		return this.screenAFinder.startPageARefactor(
-				AppContexts.user().companyId(), 
-				CollectionUtil.isEmpty(param.getSIDs()) ? Arrays.asList(AppContexts.user().employeeId()) : param.getSIDs(), 
-				param.getAppDate());
+			AppContexts.user().companyId(), 
+			CollectionUtil.isEmpty(param.getSIDs()) ? Arrays.asList(AppContexts.user().employeeId()) : param.getSIDs(), 
+			param.getAppDate(),
+			param.getAppDispInfoStartup()
+		);
 	}
-
+	
 	@POST
-	@Path("change_work_type")
-	public WorkTimeInfoDto changeWorkType(ChangeWorkTypeParam param) {
-		return this.screenAFinder.changeWorkType(param.getWkTypeCD(), param.getWkTimeCD());
+	@Path("changeRecDate")
+	public DisplayInforWhenStarting changeRecDate(ChangeDateParam param) {
+		return changeValueItemsOnHolidayShipment.changeRecDate(param.getWorkingDate().get(), param.getHolidayDate(), param.displayInforWhenStarting);
 	}
+	
+	@POST
+	@Path("changeAbsDate")
+	public DisplayInforWhenStarting changeAbsDate(ChangeDateParam param) {
+		return changeValueItemsOnHolidayShipment.changeAbsDate(param.getWorkingDate(), param.getHolidayDate().get(), param.displayInforWhenStarting);
+	}
+	
+	@POST
+	@Path("save")
+	public void save(DisplayInforWhenStarting command) {
+		saveCommandHandler.register(command);
+	}
+	
+	@POST
+	@Path("changeWorkType")
+	public ChangeWorkTypeResultDto changeWorkType(ChangeWokTypeParam param) {
+		return changeValueItemsOnHolidayShipment.changeWorkType(param.workTypeBefore, param.workTypeAfter, Optional.ofNullable(param.workTimeCode == "" ? null: param.workTimeCode), param.leaveComDayOffMana, param.payoutSubofHDManagements);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
 
 	@POST
 	@Path("update")
@@ -97,45 +137,37 @@ public class HolidayShipmentWebService extends WebService {
 	@POST
 	@Path("change_day")
 	public HolidayShipmentDto changeDay(ChangeDateParam param) {
-		return this.screenAFinder.changeAppDate(param.getTakingOutDate(), param.getHolidayDate(), param.getComType(),
-				param.getUiType());
+//		return this.screenAFinder.changeAppDate(param.getTakingOutDate(), param.getHolidayDate(), param.getComType(),
+//				param.getUiType());
+		return null;
 	}
 	
 	@POST
 	@Path("changeWorkingDateRefactor")
-	public DisplayInforWhenStarting changeWorkingDateRefactor(ChangeWorkingDateParam param) {
-		return this.screenAFinder.changeWorkingDateRefactor(
-				param.workingDate == null ? null : GeneralDate.fromString(param.workingDate, "yyyy/MM/dd"), 
-				param.holidayDate == null ? null : GeneralDate.fromString(param.holidayDate, "yyyy/MM/dd"), 
-				param.displayInforWhenStarting);
+	public DisplayInforWhenStarting changeWorkingDateRefactor() {
+//		return this.screenAFinder.changeWorkingDateRefactor(
+//				param.workingDate == null ? null : GeneralDate.fromString(param.workingDate, "yyyy/MM/dd"), 
+//				param.holidayDate == null ? null : GeneralDate.fromString(param.holidayDate, "yyyy/MM/dd"), 
+//				param.displayInforWhenStarting);
+		return null;
 	}
 	
-	@POST
-	@Path("changeHolidayDateRefactor")
-	public DisplayInforWhenStarting changeHolidayDateRefactor(ChangeWorkingDateParam param) {
-		return this.screenAFinder.changeHolidayDateRefactor(
-				param.workingDate == null ? null : GeneralDate.fromString(param.workingDate, "yyyy/MM/dd"), 
-				param.holidayDate == null ? null : GeneralDate.fromString(param.holidayDate, "yyyy/MM/dd"), 
-				param.displayInforWhenStarting);
-	}
+
 
 	@POST
 	@Path("get_selected_working_hours")
-	public WorkTimeInfoDto getSelectedWorkingHours(ChangeWorkTypeParam param) {
-		return this.screenAFinder.getSelectedWorkingHours(param.getWkTypeCD(), param.getWkTimeCD());
+	public WorkTimeInfoDto getSelectedWorkingHours(ChangeWokTypeParam param) {
+//		return this.screenAFinder.getSelectedWorkingHours(param.getWkTypeCD(), param.getWkTimeCD());
+		return null;
 	}
 
 	@POST
 	@Path("processBeforeRegister_New")
 	public List<ConfirmMsgDto> processBeforeRegister_New(SaveHolidayShipmentCommand command) {
-		return saveHandler.processBeforeRegister_New(command);
+		return null;/* saveHandler.handle(command); */
 	}
 	
-	@POST
-	@Path("save")
-	public JavaTypeResult<ProcessResult> save(SaveHolidayShipmentCommand command) {
-		return new JavaTypeResult<ProcessResult>(saveHandler.handle(command));
-	}
+
 
 	@POST
 	@Path("find_by_id")
@@ -210,9 +242,11 @@ class StartScreenAParam {
 @Value
 class StartPageARefactorParam {
 	//申請者リスト<Optional>
-	private List<String> sIDs;
+	public List<String> sIDs;
 	//申請対象日リスト<Optional>
-	private List<GeneralDate> appDate;
+	public AppDispInfoStartupDto appDispInfoStartup;
+	
+	public List<GeneralDate> appDate;
 }
 
 @Value
@@ -228,13 +262,7 @@ class StartScreenCParam {
 }
 
 @Value
-class ChangeWorkTypeParam {
-	private String wkTypeCD;
-	private String wkTimeCD;
-}
-
-@Value
-class ChangeDateParam {
+class ChangeDateParsam {
 
 	private String holidayDate;
 

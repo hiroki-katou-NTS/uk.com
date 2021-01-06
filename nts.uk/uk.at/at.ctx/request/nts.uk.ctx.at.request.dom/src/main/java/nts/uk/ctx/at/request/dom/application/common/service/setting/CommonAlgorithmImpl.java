@@ -22,7 +22,6 @@ import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.appabsence.apptimedigest.TimeDigestApplication;
-import nts.uk.ctx.at.request.dom.application.appabsence.service.output.SpecAbsenceDispInfo;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
@@ -218,7 +217,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			// 基準申請日の決定
 			GeneralDate recDate = dateLst.size() >= 1 ? dateLst.get(0) : null;
 			GeneralDate absDate = dateLst.size() >= 2 ? dateLst.get(1) : null;
-			targetDate = Optional.of(holidayShipmentService.detRefDate(recDate, absDate));
+			targetDate = holidayShipmentService.detRefDate(Optional.ofNullable(recDate), Optional.ofNullable(absDate));
 		}
 		// 基準日として扱う日の取得
 		GeneralDate baseDate = appDispInfoNoDateOutput.getApplicationSetting().getBaseDate(targetDate);

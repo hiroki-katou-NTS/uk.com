@@ -1980,4 +1980,34 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
         // (Thực hiện 「xử lý sau khi đăng ký màn hình detail」)
         return this.detailAfterUpdate.processAfterDetailScreenRegistration(companyID, application.getAppID(), appDispInfoStartupOutput);
     }
+
+    @Override
+    public void updateVacationLinkManage(List<LeaveComDayOffManagement> oldLeaveComDayOffMana,
+            List<PayoutSubofHDManagement> oldPayoutSubofHDManagements,
+            List<LeaveComDayOffManagement> newLeaveComDayOffMana,
+            List<PayoutSubofHDManagement> newPayoutSubofHDManagements) {
+        // ドメインモデル「休出代休紐付け管理」を削除する
+        for (LeaveComDayOffManagement leaveComDayOffMana : oldLeaveComDayOffMana) {
+            this.leaveComDayOffManaRepo.delete(leaveComDayOffMana.getSid(), leaveComDayOffMana.getAssocialInfo().getOutbreakDay(), leaveComDayOffMana.getAssocialInfo().getDateOfUse());
+        }
+        
+        // ドメインモデル「振出振休紐付け管理」を削除する
+        for (PayoutSubofHDManagement payoutSubofHDManagement : oldPayoutSubofHDManagements) {
+            this.payoutHdManaRepo.delete(payoutSubofHDManagement.getSid(), payoutSubofHDManagement.getAssocialInfo().getOutbreakDay(), payoutSubofHDManagement.getAssocialInfo().getDateOfUse());
+        }
+        
+        // ドメインモデル「休出代休紐付け管理」を登録する
+        if (!newLeaveComDayOffMana.isEmpty()) {
+            for (LeaveComDayOffManagement leaveComDayOffMana : newLeaveComDayOffMana) {
+                this.leaveComDayOffManaRepo.add(leaveComDayOffMana);
+            }
+        }
+        
+        // ドメインモデル「振出振休紐付け管理」を登録する
+        if (!newPayoutSubofHDManagements.isEmpty()) {
+            for (PayoutSubofHDManagement payoutSubofHDManagement : newPayoutSubofHDManagements) {
+                this.payoutHdManaRepo.add(payoutSubofHDManagement);
+            }
+        }
+    }
 }
