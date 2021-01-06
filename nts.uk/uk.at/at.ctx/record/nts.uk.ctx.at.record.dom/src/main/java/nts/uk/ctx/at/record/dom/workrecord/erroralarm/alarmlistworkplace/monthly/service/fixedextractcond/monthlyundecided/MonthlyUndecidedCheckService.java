@@ -60,7 +60,7 @@ public class MonthlyUndecidedCheckService {
 
                     // 対象月の月の承認が済んでいるかチェックする
                     ApprovalStatus status = monthlyApprovalProcess.monthlyApprovalCheck(cid, empInfo.getSid(), ym.v(),
-                            closure.getClosureId().value, closurePeriod.start(), approvalProcess, Collections.emptyList());//TODO Q&A 37402
+                            closure.getClosureId().value, closurePeriod.start(), approvalProcess, Collections.emptyList());
 
                     // 承認が済んでいるをチェック
                     if (ApprovalStatus.APPROVAL.equals(status)) continue;
