@@ -81,13 +81,13 @@ public class PreRegistrationErrorCheck {
 		
 		List<GeneralDate> dateLst = new ArrayList<>();
 		List<String> workTypeLst = new ArrayList<>();
-		if(abs.isPresent()) {
-			dateLst.add(abs.get().getAppDate().getApplicationDate());
-			workTypeLst.add(abs.get().getWorkInformation().getWorkTypeCode().v());
-		}
 		if(rec.isPresent()) {
 			dateLst.add(rec.get().getAppDate().getApplicationDate());
 			workTypeLst.add(rec.get().getWorkInformation().getWorkTypeCode().v());
+		}
+		if(abs.isPresent()) {
+			dateLst.add(abs.get().getAppDate().getApplicationDate());
+			workTypeLst.add(abs.get().getWorkInformation().getWorkTypeCode().v());
 		}
 		//QA: http://192.168.50.4:3000/issues/113341 => done
 		//申請の矛盾チェック
