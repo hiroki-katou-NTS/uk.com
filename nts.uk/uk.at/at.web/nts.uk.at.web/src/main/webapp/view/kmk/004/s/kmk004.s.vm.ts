@@ -11,9 +11,9 @@ module nts.uk.at.view.kmk004.s {
     export class ViewModel extends ko.ViewModel {
 
         public model: UnitSetting = new UnitSetting();
-        public managerUnit: KnockoutObservable<boolean> = ko.observable(false);
+        public managerUnit: KnockoutObservable<boolean> = ko.observable(false); 
         public value: KnockoutObservable<number | null> = ko.observable(null);
-        public check: KnockoutObservable<number | null> = ko.observable(null);
+        public check: KnockoutObservable<number | null> = ko.observable(1);
 
         create() {
             const vm = this;
