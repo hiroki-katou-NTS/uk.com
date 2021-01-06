@@ -53,6 +53,17 @@ public class MonthlyWorkingHoursByEmployee {
 		if (list.isEmpty()) {
 			return result;
 		}
+		
+		result = list.stream().map(m -> {
+			DisplayMonthlyWorkingDto d = new DisplayMonthlyWorkingDto();
+			
+			d.setYearMonth(m.getYm().v());
+			d.setLaborTime(new LaborTime(m.getLaborTime().getLegalLaborTime().v(),
+					m.getLaborTime().getWithinLaborTime().map(c -> c.v()).orElse(null),
+					m.getLaborTime().getWeekAvgTime().map(c -> c.v()).orElse(null)));
+			
+			return d;
+		}).collect(Collectors.toList());
 
 		result.stream().forEach(m -> {
 			Optional<MonthlyWorkTimeSetSha> setSha = list.stream().filter(x -> x.getYm().v() == m.getYearMonth())
