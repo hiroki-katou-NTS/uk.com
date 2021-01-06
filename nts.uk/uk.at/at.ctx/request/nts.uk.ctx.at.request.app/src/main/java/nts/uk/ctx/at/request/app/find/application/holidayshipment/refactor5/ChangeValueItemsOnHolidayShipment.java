@@ -147,7 +147,9 @@ public class ChangeValueItemsOnHolidayShipment {
 			PrescribedTimezoneSetting prescribedTimezoneSetting = appAbsenceFinder.initWorktimeCode(companyId, workTypeAfter.getWorkTypeCode(), workTimeCode.get());
 			if(prescribedTimezoneSetting != null) {
 				for (TimezoneUse time : prescribedTimezoneSetting.getLstTimezone()) {
-					workingHours.add(new TimeZoneWithWorkNoDto(time.getWorkNo(), new TimeZone_NewDto(time.getStart().v(), time.getEnd().v())));
+					if(time.isUsed()) {
+						workingHours.add(new TimeZoneWithWorkNoDto(time.getWorkNo(), new TimeZone_NewDto(time.getStart().v(), time.getEnd().v())));
+					}
 				}
 			}
 		}
