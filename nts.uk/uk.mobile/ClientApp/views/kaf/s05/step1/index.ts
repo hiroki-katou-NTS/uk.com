@@ -50,16 +50,19 @@ export class KafS05Step1Component extends Vue {
 
         return self.displayNumberBreakTime != 10; 
     }
-
-    @Watch('workHours1', {deep: true})
-    public changeWorkHours1(data: ValueTime) {
+    @Watch('$appContext.c3', {deep: true}) 
+    public updateValidator(data: any) {
         const self = this;
-        if (self.$appContext.c3) {
+        if (data) {
             self.$updateValidator('workHours1', {
                 required: true,
                 timeRange: true
             });
         }
+    }
+    @Watch('workHours1', {deep: true})
+    public changeWorkHours1(data: ValueTime) {
+        const self = this;
         if (_.isNil(_.get(data,'start')) || _.isNil(_.get(data, 'end')) || (self.isFirstModeUpdate && !self.$appContext.modeNew)) {
             self.isFirstModeUpdate = false;
 
