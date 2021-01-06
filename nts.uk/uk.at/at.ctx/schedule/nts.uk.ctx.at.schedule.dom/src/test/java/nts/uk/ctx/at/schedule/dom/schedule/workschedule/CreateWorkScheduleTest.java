@@ -275,7 +275,7 @@ public class CreateWorkScheduleTest {
 				ConfirmedATR.UNSETTLED, 
 				workInfo, 
 				affInfo, 
-				new ArrayList<>(), 
+				Optional.empty(), 
 				new ArrayList<>(), 
 				Optional.empty(), 
 				Optional.empty(), 

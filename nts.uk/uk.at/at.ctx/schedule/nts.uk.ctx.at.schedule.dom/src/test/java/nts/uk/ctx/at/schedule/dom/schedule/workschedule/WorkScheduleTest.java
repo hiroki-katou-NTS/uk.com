@@ -284,7 +284,7 @@ public class WorkScheduleTest {
 		
 		
 		WorkSchedule workSchedule = Helper.createWithParams( 
-				Optional.of(timeLeaving), 
+				timeLeaving, 
 				new ArrayList<>()); // editStateList is empty
 		
 		// Act
@@ -316,7 +316,7 @@ public class WorkScheduleTest {
 				new EditStateOfDailyAttd(WS_AttendanceItem.StartTime1.ID, EditStateSetting.IMPRINT )
 				));
 		
-		WorkSchedule workSchedule = Helper.createWithParams( Optional.of(timeLeaving), editStateList);
+		WorkSchedule workSchedule = Helper.createWithParams( timeLeaving, editStateList);
 		
 		// Act
 		NtsAssert.Invoke.privateMethod(workSchedule, "updateValueByHandCorrection", 
@@ -351,7 +351,7 @@ public class WorkScheduleTest {
 				Helper.createTimeLeavingOfDailyAttd( new TimeWithDayAttr(123), end1, Optional.empty(), Optional.empty());
 		
 		WorkSchedule workSchedule = Helper.createWithParams( 
-				Optional.of(timeLeaving), 
+				timeLeaving, 
 				new ArrayList<>()); // editStateList is empty
 		
 		new Expectations() {{
@@ -395,7 +395,7 @@ public class WorkScheduleTest {
 				new EditStateOfDailyAttd(WS_AttendanceItem.StartTime1.ID, EditStateSetting.IMPRINT )
 				));
 		
-		WorkSchedule workSchedule = Helper.createWithParams( Optional.of(timeLeaving), editStateList);
+		WorkSchedule workSchedule = Helper.createWithParams( timeLeaving, editStateList);
 		
 		new Expectations() {{
 			require.getLoginEmployeeId();
@@ -931,7 +931,7 @@ public class WorkScheduleTest {
 	
 	@Test
 	public void testHandCorrectBreakTimeList(
-			@Injectable List<BreakTimeOfDailyAttd> lstBreakTime) {
+			@Injectable Optional<BreakTimeOfDailyAttd> breakTime) {
 		
 		List<EditStateOfDailyAttd> editStateList = new ArrayList<>( Arrays.asList(
 				new EditStateOfDailyAttd(WS_AttendanceItem.WorkTime.ID, EditStateSetting.REFLECT_APPLICATION),
@@ -941,7 +941,7 @@ public class WorkScheduleTest {
 				new EditStateOfDailyAttd(WS_AttendanceItem.StartBreakTime5.ID, EditStateSetting.REFLECT_APPLICATION)
 				));
 		
-		WorkSchedule workSchedule = Helper.createWithParams(lstBreakTime, editStateList);
+		WorkSchedule workSchedule = Helper.createWithParams(breakTime, editStateList);
 		
 		new Expectations() {{
 			require.getLoginEmployeeId();
@@ -955,7 +955,7 @@ public class WorkScheduleTest {
 				new TimeSpanForCalc(new TimeWithDayAttr(500), new TimeWithDayAttr(600))
 				));
 		
-		assertThat(workSchedule.getLstBreakTime().get(0).getBreakTimeSheets())
+		assertThat(workSchedule.getLstBreakTime().get().getBreakTimeSheets())
 			.extracting( 
 					d -> d.getBreakFrameNo().v(),
 					d -> d.getStartTime().v(),
@@ -1014,12 +1014,12 @@ public class WorkScheduleTest {
 		}
 		
 		/**
-		 * @param optTimeLeaving 出退勤
+		 * @param timeLeaving 出退勤
 		 * @param editStateList 編修状態
 		 * @return
 		 */
 		static WorkSchedule createWithParams(
-				Optional<TimeLeavingOfDailyAttd> optTimeLeaving,
+				TimeLeavingOfDailyAttd timeLeaving,
 				List<EditStateOfDailyAttd> editStateList
 				) {
 			
@@ -1029,9 +1029,9 @@ public class WorkScheduleTest {
 					ConfirmedATR.UNSETTLED,
 					workInfo,
 					affInfo, 
-					Collections.emptyList(),
+					Optional.empty(),
 					editStateList, 
-					optTimeLeaving,
+					Optional.of( timeLeaving ),
 					Optional.empty(), 
 					Optional.empty(),
 					Optional.empty()); 
@@ -1051,7 +1051,6 @@ public class WorkScheduleTest {
 			
 			WorkInfoOfDailyAttendance workInfo = new WorkInfoOfDailyAttendance(
 					new WorkInformation(new WorkTypeCode("001"), new WorkTimeCode("002")),
-					new WorkInformation(new WorkTypeCode("001"), new WorkTimeCode("002")),
 					CalculationState.No_Calculated, 
 					goStraight, 
 					backStraight, 
@@ -1064,7 +1063,7 @@ public class WorkScheduleTest {
 					ConfirmedATR.UNSETTLED,
 					workInfo,
 					affInfo, 
-					Collections.emptyList(),
+					Optional.empty(),
 					Collections.emptyList(), 
 					optTimeLeaving,
 					Optional.empty(), 
@@ -1073,7 +1072,7 @@ public class WorkScheduleTest {
 		}
 		
 		static WorkSchedule createWithParams(
-				List<BreakTimeOfDailyAttd> lstBreakTime,
+				Optional<BreakTimeOfDailyAttd> breakTime,
 				List<EditStateOfDailyAttd> editStateList
 				) {
 			
@@ -1083,7 +1082,7 @@ public class WorkScheduleTest {
 					ConfirmedATR.UNSETTLED,
 					workInfo,
 					affInfo, 
-					lstBreakTime,
+					breakTime,
 					editStateList, 
 					Optional.empty(),
 					Optional.empty(), 
@@ -1098,7 +1097,7 @@ public class WorkScheduleTest {
 					confirmAtr,
 					workInfo,
 					affInfo, 
-					Collections.emptyList(),
+					Optional.empty(),
 					Collections.emptyList(),
 					Optional.empty(),
 					Optional.empty(),
@@ -1113,7 +1112,7 @@ public class WorkScheduleTest {
 					ConfirmedATR.UNSETTLED,
 					workInfo,
 					affInfo, 
-					Collections.emptyList(),
+					Optional.empty(),
 					editStateList,
 					Optional.empty(),
 					Optional.empty(),

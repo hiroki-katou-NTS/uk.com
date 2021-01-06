@@ -30,7 +30,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
@@ -137,13 +136,12 @@ public class WorkSchedule implements DomainAggregate {
 				WorkInfoOfDailyAttendance.create(
 						require, 
 						workInformation, 
-						workInformation, 
 						CalculationState.No_Calculated, 
 						NotUseAttribute.Not_use, 
 						NotUseAttribute.Not_use, 
 						DayOfWeek.convertFromCommonClass(date.dayOfWeekEnum())), 
 				AffiliationInforOfDailyAttd.create(require, employeeId, date), 
-				new ArrayList<>(), 
+				Optional.empty(), // TODO
 				new ArrayList<>(), 
 				Optional.of(TimeLeavingOfDailyAttd.createByPredetermineZone(
 						require, 
@@ -493,8 +491,8 @@ public class WorkSchedule implements DomainAggregate {
 				.collect(Collectors.toList());
 		
 		// update value of BreakTime
-		val newBreakTimeOfDailyAttd = new BreakTimeOfDailyAttd(BreakType.REFER_SCHEDULE, newBreakTimeSheets);
-		this.lstBreakTime = new ArrayList<BreakTimeOfDailyAttd>(Arrays.asList(newBreakTimeOfDailyAttd));
+		val newBreakTimeOfDailyAttd = new BreakTimeOfDailyAttd(newBreakTimeSheets);
+		this.lstBreakTime = Optional.of( newBreakTimeOfDailyAttd ); // TODO
 		
 		// update EditState of BreakTime(1...size)
 		this.lstEditState.removeIf( editState -> WS_AttendanceItem.isBreakTime( editState.getAttendanceItemId() ) );
