@@ -374,6 +374,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									dataFixed[0].workScheduleDto.startTime1 = x.startTime1;
 									self.checkTypeChange.push({type : "startTime1"});
 									if (x.startTime1 == "") {
+										self.checkMes += 1;
 										self.checkTimeInfo(dataMid.worktypeCode, dataMid.worktimeCode, "",
 							dataMid.startTime2.trim(), dataMid.endTime1.trim(), dataMid.endTime2.trim(), columnKey);
 									}
@@ -383,7 +384,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									dataFixed[0].workScheduleDto.startTime2 = x.startTime2;
 									self.checkTypeChange.push({type : "startTime2"});
 									if (x.startTime2 == "") {
-										return;
+										self.checkMes += 1;
+										self.checkTimeInfo(dataMid.worktypeCode, dataMid.worktimeCode, dataMid.startTime1,
+							"", dataMid.endTime1.trim(), dataMid.endTime2.trim(), columnKey);
 									}
 								}
 								if (columnKey === "endTime1") {
@@ -391,7 +394,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									dataFixed[0].workScheduleDto.endTime1 = x.endTime1;
 									self.checkTypeChange.push({type : "endTime1"});
 									if (x.endTime1 == "") {
-										return;
+										self.checkMes += 1000;
+										self.checkTimeInfo(dataMid.worktypeCode, dataMid.worktimeCode, dataMid.startTime1,
+							dataMid.startTime2.trim(), "", dataMid.endTime2.trim(), columnKey);
 									}
 								}
 								if (columnKey === "endTime2") {
@@ -399,7 +404,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									dataFixed[0].workScheduleDto.endTime2 = x.endTime2;
 									self.checkTypeChange.push({type : "endTime2"});
 									if (x.endTime2 == "") {
-										return;
+										self.checkMes += 1000;
+										self.checkTimeInfo(dataMid.worktypeCode, dataMid.worktimeCode, dataMid.startTime1,
+							dataMid.startTime2.trim(), dataMid.endTime1.trim(), "", columnKey);
 									}
 								}
 							}
@@ -1705,7 +1712,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				if (self.checkDisByDate == false || self.dataScreen003A().employeeInfo[index].workInfoDto.isConfirmed == 1)
 					return;
 					
-				let empId = self.lstEmpId[detail.rowIndex].empId, time = null, timeChart: any = null, timeChart2: any = null;
+				let empId = self.lstEmpId[detail.rowIndex].empId, time = null, timeChart: any = null, timeChart2: any = null, timeRangeLimit = ((self.timeRange * 60) / 5);
 				lstTimeChart = _.filter(self.allTimeChart, (x: any) => { return x.empId === empId });
 				let columnKey = detail.columnKey;
 
@@ -1715,16 +1722,16 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					timeChart = lstTimeChart[0].timeChart;
 					timeChart2 = lstTimeChart[0].timeChart2;
 					if (detail.columnKey === "startTime1") {
-						ruler.extend(detail.rowIndex, `lgc${detail.rowIndex}`, Math.floor(time / 5 - self.dispStart));
+						ruler.extend(detail.rowIndex, `lgc${detail.rowIndex}`, Math.floor((time / 5 - self.dispStart) > timeRangeLimit ? timeRangeLimit : (time / 5 - self.dispStart)));
 						if (time == "") return;
 					} else if (detail.columnKey === "endTime1") {
-						ruler.extend(detail.rowIndex, `lgc${detail.rowIndex}`, null, Math.floor(time / 5 - self.dispStart));
+						ruler.extend(detail.rowIndex, `lgc${detail.rowIndex}`, null, Math.floor((time / 5 - self.dispStart) > timeRangeLimit ? timeRangeLimit : (time / 5 - self.dispStart)));
 						if (time == "") return;
 					} else if (detail.columnKey === "startTime2" && timeChart2 != null) {
-						ruler.extend(detail.rowIndex, `rgc${detail.rowIndex}`, Math.floor(time / 5 - self.dispStart));
+						ruler.extend(detail.rowIndex, `rgc${detail.rowIndex}`, Math.floor((time / 5 - self.dispStart) > timeRangeLimit ? timeRangeLimit : (time / 5 - self.dispStart)));
 						if (time == "") return;
 					} else if (detail.columnKey === "endTime2" && timeChart2 != null) {
-						ruler.extend(detail.rowIndex, `rgc${detail.rowIndex}`, null, Math.floor(time / 5 - self.dispStart));
+						ruler.extend(detail.rowIndex, `rgc${detail.rowIndex}`, null, Math.floor((time / 5 - self.dispStart) > timeRangeLimit ? timeRangeLimit : (time / 5 - self.dispStart)));
 						if (time == "") return;
 					}
 				}
@@ -3612,10 +3619,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			let dfd = $.Deferred<any>(), command: any = {
 				workType: worktypeCode.trim(),
 				workTime: worktimeCode.trim(),
-				workTime1: new TimeZoneDto(new TimeOfDayDto(0, _.isString(startTime1) ? Math.floor(duration.parseString(startTime1).toValue()) : startTime1),
-					new TimeOfDayDto(0, _.isString(endTime1) ? Math.floor(duration.parseString(endTime1).toValue()) : endTime1)),
-				workTime2: new TimeZoneDto(new TimeOfDayDto(0, _.isString(startTime2) ? Math.floor(duration.parseString(startTime2).toValue()) : startTime2),
-					new TimeOfDayDto(0, _.isString(endTime2) ? Math.floor(duration.parseString(endTime2).toValue()) : endTime2)),
+				workTime1: startTime1 != "" && endTime1 != "" ? new TimeZoneDto(new TimeOfDayDto(0, _.isString(startTime1) ? Math.floor(duration.parseString(startTime1).toValue()) : startTime1),
+					new TimeOfDayDto(0, _.isString(endTime1) ? Math.floor(duration.parseString(endTime1).toValue()) : endTime1)) : null,
+				workTime2: startTime2 != "" && endTime2 != "" ? new TimeZoneDto(new TimeOfDayDto(0, _.isString(startTime2) ? Math.floor(duration.parseString(startTime2).toValue()) : startTime2),
+					new TimeOfDayDto(0, _.isString(endTime2) ? Math.floor(duration.parseString(endTime2).toValue()) : endTime2)) : null,
 			}
 
 			if((columnKey === "startTime1") || /*&& startTime1 != "" && endTime1 != "") || */
