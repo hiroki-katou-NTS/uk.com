@@ -724,6 +724,7 @@ module nts.uk.com.view.cmm024.a {
 								vm.workplaceScheduleHistorySelected('reload');
 								vm.workplaceScheduleHistoryObjSelected(null);
 								vm.workplaceScheduleHistoryListing();
+								vm.screenBModeAddNew(true);
 							}
 						}
 					});
@@ -984,6 +985,7 @@ module nts.uk.com.view.cmm024.a {
 				vm.companyScheduleHistoryObjSelected(null);
 				vm.companyScheduleHistoryListing();
 				vm.isReloadScreen(true);
+				vm.screenAModeAddNew(true);
 			}
 		}
 	}
