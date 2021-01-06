@@ -2,6 +2,9 @@ package nts.uk.ctx.sys.assist.dom.favorite;
 
 import java.util.Collections;
 import java.util.List;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
@@ -10,6 +13,7 @@ import nts.arc.time.GeneralDateTime;
 /*
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.オフィス支援.在席照会.在席照会.お気に入りの指定
  */
+@Getter
 public class FavoriteSpecify extends AggregateRoot {
 
 	// お気に入り名
@@ -116,6 +120,7 @@ public class FavoriteSpecify extends AggregateRoot {
 		public List<String> getWrkspDispName(List<String> wrkspIds, GeneralDate date);
 	}
 
+	@RequiredArgsConstructor
 	public class RequireImpl implements Require {
 		// TODO
 //		private adaptor;
