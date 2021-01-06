@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlistworkpla
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.ExtractionMonthlyCon;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.primitivevalue.AverageRatio;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.enums.AverageRatio;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlistworkplace.ToCheckConditions;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlAtdTarget;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlCompareRange;
@@ -90,7 +90,7 @@ public class KrcmtWkpMonExtracCon extends UkJpaEntity implements Serializable {
         entity.useAtr = domain.isUseAtr();
         entity.checkMonthlyItemsType = domain.getCheckMonthlyItemsType().value;
         entity.messageDisp = domain.getMessageDisp().v();
-        entity.averageRatio = domain.getAverageRatio().isPresent() ? ((AverageRatio) domain.getAverageRatio().get()).v() : null;
+        entity.averageRatio = domain.getAverageRatio().isPresent() ? ((AverageRatio) domain.getAverageRatio().get()).value : null;
         entity.errorAlarmCheckID = domain.getErrorAlarmCheckID();
         return entity;
     }

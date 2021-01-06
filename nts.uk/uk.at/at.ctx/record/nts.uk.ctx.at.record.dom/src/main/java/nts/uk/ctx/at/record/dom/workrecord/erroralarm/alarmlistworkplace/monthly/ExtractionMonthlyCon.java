@@ -4,10 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.enums.AverageRatio;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.enums.CheckMonthlyItemsType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.primitivevalue.AverageNumberDays;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.primitivevalue.AverageNumberTimes;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.primitivevalue.AverageRatio;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.primitivevalue.AverageTime;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.AddSubAttendanceItems;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CheckedTarget;
@@ -114,7 +114,7 @@ public class ExtractionMonthlyCon<V> extends AggregateRoot {
                 checkConditions,
                 new NameAlarmExtractionCondition(monExtracConName),
                 new DisplayMessage(messageDisp),
-                Optional.ofNullable(averageRatio == null ? null : new AverageRatio(averageRatio)),
+                Optional.ofNullable(averageRatio == null ? null : EnumAdaptor.valueOf(averageRatio, AverageRatio.class)),
                 Optional.of(new CountableTarget(
                         new AddSubAttendanceItems(additionAttendanceItems, substractionAttendanceItems))));
     }
@@ -132,7 +132,7 @@ public class ExtractionMonthlyCon<V> extends AggregateRoot {
             case AVERAGE_NUMBER_TIME:
                 return Double.valueOf(((AverageNumberTimes) target).v());
             case AVERAGE_RATIO:
-                return Double.valueOf(((AverageRatio) target).v());
+                return Double.valueOf(((AverageRatio) target).value);
             default:
                 throw new RuntimeException("Invalid チェック項目: " + this.checkMonthlyItemsType);
         }

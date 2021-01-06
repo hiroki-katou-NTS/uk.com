@@ -92,7 +92,9 @@ module nts.uk.at.view.kal013.a.tab {
                 0,
                 null,
                 null,
-                null
+                null,
+                [],
+                []
             );
             vm.addNewItem(newCheckCondition);
         }
@@ -124,6 +126,8 @@ module nts.uk.at.view.kal013.a.tab {
                     checkItem: data.checkItem(),
                     checkCond: data.checkCond(),
                     checkCondB: data.checkCondB(),
+                    countableAddAtdItems: data.additionAttendanceItems(),
+                    countableSubAtdItems: data.substractionAttendanceItems(),
                     operator: data.operator(),
                     minValue: data.minValue(),
                     maxValue: data.maxValue(),
@@ -135,13 +139,15 @@ module nts.uk.at.view.kal013.a.tab {
                 .then((result: any) => {
                     if (result && result.shareParam) {
                         console.log(result);
-                        data.checkItem(result.shareParam.checkItem);
-                        data.minValue(result.shareParam.minValue ? result.shareParam.minValue + "" : null);
-                        data.maxValue(result.shareParam.maxValue ? result.shareParam.maxValue + "" : null);
-                        data.message(result.shareParam.displayMessage);
-                        data.checkCond(result.shareParam.checkCondDis);
-                        data.operator(result.shareParam.operator);
-                        data.checkCondB(result.shareParam.checkCondB);
+                        data.checkItem(result.shareParam.condition.checkItem);
+                        data.minValue(result.shareParam.condition.minValue ? result.shareParam.condition.minValue + "" : null);
+                        data.maxValue(result.shareParam.condition.maxValue ? result.shareParam.condition.maxValue + "" : null);
+                        data.message(result.shareParam.condition.displayMessage);
+                        data.checkCond(result.shareParam.condition.checkCond);
+                        data.additionAttendanceItems(result.shareParam.condition.countableAddAtdItems);
+                        data.substractionAttendanceItems(result.shareParam.condition.countableSubAtdItems);
+                        data.operator(result.shareParam.condition.operator);
+                        data.checkCondB(result.shareParam.condition.checkCondB);
                     }
                     // bussiness logic after modal closed
 

@@ -277,7 +277,9 @@ module nts.uk.at.view.kal013.a {
                                     i.operator,
                                     i.messageDisp,
                                     i.checkTarget,
-                                    i.averageRatio || i.averageNumberOfDays || i.averageNumberOfTimes || i.averageTime
+                                    i.averageRatio,
+                                    i.additionAttendanceItems,
+                                    i.substractionAttendanceItems
                                 );
                             });
 
@@ -299,7 +301,8 @@ module nts.uk.at.view.kal013.a {
                                     i.operator,
                                     i.messageDisp,
                                     i.checkTarget,
-                                    i.contrastType
+                                    i.contrastType,
+                                    [],[]
                                 );
                             });
                         }
@@ -563,6 +566,9 @@ module nts.uk.at.view.kal013.a {
         minValue: string;
         maxValue: string;
         operator: number;
+
+        additionAttendanceItems: Array<number>;
+        substractionAttendanceItems: Array<number>;
     }
 
     interface ExtractionSchelCon {
@@ -578,5 +584,8 @@ module nts.uk.at.view.kal013.a {
         minValue: string;
         maxValue: string;
         operator: number;
+
+        additionAttendanceItems: Array<number>;
+        substractionAttendanceItems: Array<number>;
     }
 }

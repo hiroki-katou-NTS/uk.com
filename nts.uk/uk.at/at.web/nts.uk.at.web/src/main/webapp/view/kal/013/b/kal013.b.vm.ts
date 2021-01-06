@@ -8,6 +8,9 @@ module nts.uk.at.view.kal013.b {
 
     const PATH_API = {
        GET_ENUM_OPERATOR: "at/record/alarmwrkp/screen/getEnumCompareType",
+        GET_ATTENDANCEITEM: "at/record/businesstype/attendanceItem/getListMonthlyByAttendanceAtr/",
+        GET_ATTENDANCEITEMNAME_BYCODE: "at/record/divergencetime/setting/AttendanceDivergenceName",
+
     };
 
     @bean()
@@ -21,6 +24,9 @@ module nts.uk.at.view.kal013.b {
         switchPatternA: KnockoutObservable<boolean> = ko.observable(true);
         timeControl: KnockoutObservable<boolean> = ko.observable(true);
         constraint : KnockoutObservable<string> = ko.observable("");
+        lstItemNum: Array<AttdItemDto> = [];
+        lstItemTime: Array<AttdItemDto> = [];
+        lstItemDay: Array<AttdItemDto> = [];
         numberEditorOption: KnockoutObservable<NumberEditorOption> = ko.observable(new NumberEditorOption({
             grouplength: 0,
             decimallength: 0,
@@ -116,6 +122,16 @@ module nts.uk.at.view.kal013.b {
             vm.getEnum().done(()=>{
                 vm.initScreen(params.condition.checkItem,params.condition.checkCondB,vm.switchPatternA());
                 vm.pattern().update(params.condition);
+                if (!_.isEmpty(vm.pattern().countableSubAtdItems()) || !_.isEmpty(vm.pattern().countableAddAtdItems())){
+                    let codeList: Array<number>  = [];
+                    codeList = codeList.concat(vm.pattern().countableSubAtdItems());
+                    codeList = codeList.concat(vm.pattern().countableAddAtdItems());
+                    vm.$ajax(PATH_API.GET_ATTENDANCEITEMNAME_BYCODE,codeList).done((data: Array<AttendanceNameDivergenceDto>)=>{
+                        let nameAdd = _.map(_.filter(data, i => vm.pattern().countableAddAtdItems().indexOf(i.attendanceItemId) != -1),item => item.attendanceItemName);
+                        let nameSub = _.map(_.filter(data, i => vm.pattern().countableSubAtdItems().indexOf(i.attendanceItemId) != -1),item => item.attendanceItemName);
+                        vm.pattern().updateTextDis(nameAdd,nameSub);
+                    });
+                }
             });
 
             vm.pattern().checkCond.subscribe((value)=>{
@@ -198,20 +214,10 @@ module nts.uk.at.view.kal013.b {
                 vm.switchPatternA(false);
                 vm.contrastTypeList(__viewContext.enums.ContrastType);
             } else if (category == WorkplaceCategory.MONTHLY
-                && _.indexOf([CheckMonthlyItemsType.TIME_FREEDOM, CheckMonthlyItemsType.AVERAGE_DAY_FREE,
-                    CheckMonthlyItemsType.AVERAGE_TIME_FREE, CheckMonthlyItemsType.AVERAGE_RATIO_FREE],value) != -1 ){
+                && _.indexOf([CheckMonthlyItemsType.AVERAGE_RATIO],value) != -1 ){
                 vm.switchPatternA(false);
                 switch (value){
-                    case CheckMonthlyItemsType.TIME_FREEDOM:
-                        vm.contrastTypeList(__viewContext.enums.AverageTime);
-                        break;
-                    case CheckMonthlyItemsType.AVERAGE_DAY_FREE:
-                        vm.contrastTypeList(__viewContext.enums.AverageNumberOfDays);
-                        break;
-                    case CheckMonthlyItemsType.AVERAGE_TIME_FREE:
-                        vm.contrastTypeList(__viewContext.enums.AverageNumberOfTimes);
-                        break;
-                    case CheckMonthlyItemsType.AVERAGE_RATIO_FREE:
+                    case CheckMonthlyItemsType.AVERAGE_RATIO:
                         vm.contrastTypeList(__viewContext.enums.AverageRatio);
                         break;
                     default:
@@ -266,22 +272,89 @@ module nts.uk.at.view.kal013.b {
             const vm = this;
             $('#cbxTypeCheckWorkRecordcategory5').focus();
         }
+        //GET ALL MONTHLY
+        getListItemByAtrDailyAndMonthly(typeCheck: number, mode: number) {
+            const vm = this;
+            let dfd = $.Deferred<any>();
+            if (typeCheck == CheckMonthlyItemsType.AVERAGE_NUMBER_TIME) {
+                //With type 回数 - Times , Number  = 2
+                if (!_.isEmpty(vm.lstItemNum)){
+                    dfd.resolve(vm.lstItemNum);
+                    return dfd.promise();
+                }
+                vm.$ajax(PATH_API.GET_ATTENDANCEITEM + MONTHLYATTENDANCEITEMATR.NUMBER).done((lstAtdItem) => {
+                    vm.lstItemNum = lstAtdItem;
+                    dfd.resolve(lstAtdItem);
+                });
+            } else if (typeCheck == CheckMonthlyItemsType.AVERAGE_TIME) {
+                //With type 時間 - Time
+                if (!_.isEmpty(vm.lstItemTime)){
+                    dfd.resolve(vm.lstItemTime);
+                    return dfd.promise();
+                }
+                vm.$ajax(PATH_API.GET_ATTENDANCEITEM + MONTHLYATTENDANCEITEMATR.TIME).done((lstAtdItem) => {
+                    vm.lstItemTime = lstAtdItem;
+                    dfd.resolve(lstAtdItem);
+                });
+            } else if (typeCheck == CheckMonthlyItemsType.AVERAGE_NUMBER_DAY) { // 日数
+                if (!_.isEmpty(vm.lstItemDay)){
+                    dfd.resolve(vm.lstItemDay);
+                    return dfd.promise();
+                }
+                vm.$ajax(PATH_API.GET_ATTENDANCEITEM + MONTHLYATTENDANCEITEMATR.DAYS).done((lstAtdItem) => {
+                    vm.lstItemDay = lstAtdItem;
+                    dfd.resolve(lstAtdItem);
+                });
+            } else {
+                dfd.resolve([]);
+            }
+            return dfd.promise();
+        }
 
         //openSelectAtdItemDialogTarget() {
         btnSettingB2_2_click(params: any) {
             const vm = this;
-            let param: any = {
-                isMulti: false,
-                selecteds: [
-                    params.checkCond()
-                ]
-            }
-            setShared('KDL007_PARAM', param, true);
-            nts.uk.ui.windows.sub.modal('/view/kdl/007/a/index.xhtml').onClosed(() => {
-                let listResult = getShared('KDL007_VALUES');
+            if (vm.category() == WorkplaceCategory.SCHEDULE_DAILY){
+                let param: any = {
+                    isMulti: false,
+                    selecteds: [
+                        params.checkCond()
+                    ]
+                }
+                setShared('KDL007_PARAM', param, true);
+                nts.uk.ui.windows.sub.modal('/view/kdl/007/a/index.xhtml').onClosed(() => {
+                    let listResult = getShared('KDL007_VALUES');
 
-                vm.pattern().updateCheckCond(listResult.selecteds[0].length > 0 ? listResult.selecteds[0]: "");
-            });
+                    vm.pattern().updateCheckCond(listResult.selecteds[0].length > 0 ? listResult.selecteds[0]: "");
+                });
+            } else {
+                //Open dialog KDW007C
+                vm.getListItemByAtrDailyAndMonthly(vm.pattern().checkItem(), 1).done((lstItem: Array<AttdItemDto>) => {
+                    let lstItemCode = lstItem.map((item: any) => {
+                        return item.attendanceItemId;
+                    });
+                    let params = {
+                        //                                attr: 1,
+                        lstAllItems: lstItemCode,
+                        lstAddItems: vm.pattern().countableAddAtdItems(),
+                        lstSubItems: vm.pattern().countableSubAtdItems()
+                    };
+                    nts.uk.ui.windows.setShared("KDW007Params", params);
+                    nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/c/index.xhtml").onClosed(() => {
+                        $(".nts-input").ntsError("clear");
+                        let output = nts.uk.ui.windows.getShared("KDW007CResults");
+                        if (output) {
+                            vm.pattern().updateCheckCondKdw007(output.lstAddItems, output.lstSubItems);
+                            vm.$ajax(PATH_API.GET_ATTENDANCEITEMNAME_BYCODE,output.lstAddItems.concat(output.lstSubItems)).done((data: Array<AttendanceNameDivergenceDto>)=>{
+                                let nameAdd = _.map(_.filter(data, i => vm.pattern().countableAddAtdItems().indexOf(i.attendanceItemId) != -1),item => item.attendanceItemName);
+                                let nameSub = _.map(_.filter(data, i => vm.pattern().countableSubAtdItems().indexOf(i.attendanceItemId) != -1),item => item.attendanceItemName);
+                                vm.pattern().updateTextDis(nameAdd,nameSub);
+                            });
+                        }
+                    });
+                });
+
+            }
         }
 
         getEnum(): JQueryPromise<any>{
@@ -312,7 +385,9 @@ module nts.uk.at.view.kal013.b {
         validate(): boolean{
             const vm = this;
             let result: boolean = true;
-            if (vm.switchPatternA() && _.isEmpty(vm.pattern().checkCond())){
+            if (vm.switchPatternA() && ((vm.category() == WorkplaceCategory.SCHEDULE_DAILY &&  _.isEmpty(vm.pattern().checkCond()))
+                                    || (vm.category() == WorkplaceCategory.MONTHLY &&  _.isEmpty(vm.pattern().countableSubAtdItems())
+                                            &&  _.isEmpty(vm.pattern().countableAddAtdItems())))){
                 vm.$errors("#check-condition",{ messageId: 'MsgB_1', messageParams: [vm.$i18n("KAL003_25")] });
                 result = false;
             }
@@ -348,7 +423,20 @@ module nts.uk.at.view.kal013.b {
             if (errors.hasError() === true || !vm.validate()) {
                 return;
             }
-            let shareParam: IPattern = ko.toJS(vm.pattern());
+            let shareParam: IParentParams = {
+                category: vm.category(),
+                condition: {
+                    checkItem: vm.pattern().checkItem(),
+                    checkCond: vm.pattern().checkCond(),
+                    checkCondB: vm.pattern().checkCondB(),
+                    countableAddAtdItems: vm.pattern().countableAddAtdItems(),
+                    countableSubAtdItems: vm.pattern().countableSubAtdItems(),
+                    operator: vm.pattern().operator(),
+                    minValue: vm.pattern().minValue(),
+                    maxValue: vm.pattern().maxValue(),
+                    displayMessage: vm.pattern().displayMessage()
+                }
+            };
             console.log(shareParam);
             vm.$window.close({
                 shareParam
@@ -365,6 +453,8 @@ module nts.uk.at.view.kal013.b {
     class Pattern{
         checkItem: KnockoutObservable<number> = ko.observable(0);
         checkCond: KnockoutObservable<string> = ko.observable("");
+        countableAddAtdItems: KnockoutObservableArray<number> = ko.observableArray([]);
+        countableSubAtdItems: KnockoutObservableArray<number> = ko.observableArray([]);
         checkCondDis: KnockoutObservable<string> = ko.observable("");
         checkCondB: KnockoutObservable<number> = ko.observable(0);
         operator: KnockoutObservable<number> = ko.observable(0);
@@ -376,6 +466,8 @@ module nts.uk.at.view.kal013.b {
         update(params: IPattern){
             this.checkItem(_.isNil(params.checkItem) ? 0: params.checkItem);
             this.checkCond(params.checkCond);
+            this.countableAddAtdItems(_.isEmpty(params.countableAddAtdItems)? [] : params.countableAddAtdItems);
+            this.countableSubAtdItems(_.isEmpty(params.countableSubAtdItems)? [] : params.countableSubAtdItems);
             this.checkCondDis(params.checkCond);
             this.checkCondB(_.isNil(params.checkCondB) ? 1: params.checkCondB);
             this.operator(params.operator);
@@ -389,12 +481,22 @@ module nts.uk.at.view.kal013.b {
             this.checkCondDis(checkCondItem);
         }
 
+        updateCheckCondKdw007(addItems: Array<number>, subItems: Array<number>){
+            this.countableAddAtdItems(addItems);
+            this.countableSubAtdItems(subItems);
+        }
+        updateTextDis(addItem: Array<string>, subItems: Array<string>){
+            this.checkCondDis(_.join(addItem,'+') + (_.isEmpty(subItems) ? " " : ("-" +_.join(subItems,'-'))));
+        }
+
         clearMaxValue(){
             this.maxValue(null);
         }
         clearCheckCod(){
             this.checkCond(null);
             this.checkCondB(null);
+            this.countableAddAtdItems([]);
+            this.countableSubAtdItems([]);
             this.checkCondDis("");
             this.minValue(null);
             this.maxValue(null);
@@ -402,6 +504,8 @@ module nts.uk.at.view.kal013.b {
         clearCheckCodB(){
             this.checkCond(null);
             this.checkCondDis("");
+            this.countableAddAtdItems([]);
+            this.countableSubAtdItems([]);
             this.minValue(null);
             this.maxValue(null);
         }
@@ -410,6 +514,8 @@ module nts.uk.at.view.kal013.b {
     export interface IPattern{
         checkItem: number;
         checkCond: string;
+        countableAddAtdItems: Array<number>;
+        countableSubAtdItems: Array<number>;
         checkCondB: number;
         operator: number;
         minValue?: number;
@@ -488,15 +594,38 @@ module nts.uk.at.view.kal013.b {
         /* 平均回数 */
         AVERAGE_NUMBER_TIME = 3,
         /* 平均比率 */
-        AVERAGE_RATIO = 4,
-        /* 平均時間自由 */
-        TIME_FREEDOM = 5,
-        /* 平均日数自由 */
-        AVERAGE_DAY_FREE = 6,
-        /* 平均回数自由 */
-        AVERAGE_TIME_FREE = 7,
-        /*平均比率自由 */
-        AVERAGE_RATIO_FREE = 8
+        AVERAGE_RATIO = 4
 
+    }
+
+    enum MONTHLYATTENDANCEITEMATR {
+        TIME = 1,
+        /* 回数 */
+        NUMBER = 2,
+        /* 日数 */
+        DAYS = 3,
+        /* 金額 */
+        AMOUNT = 4,
+        /* マスタを参照する */
+        REFER_TO_MASTER = 5
+
+
+    }
+
+    class AttdItemDto {
+
+        attendanceItemId : number;
+        attendanceItemName: string;
+        attendanceItemDisplayNumber: number;
+        nameLineFeedPosition: number;
+        dailyAttendanceAtr: number;
+        displayNumber: number;
+        userCanUpdateAtr: number;
+    }
+
+    class AttendanceNameDivergenceDto {
+        attendanceItemId: number;
+        attendanceItemName: string;
+        attendanceItemDisplayNumber: number;
     }
 }

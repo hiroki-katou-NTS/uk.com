@@ -4,6 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.ExtractionMonthlyCon;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.enums.AverageRatio;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CountableTarget;
+
+import java.util.Collections;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -22,6 +26,8 @@ public class ExtractionMonConCmd {
     private String monExtracConName;
     private String messageDisp;
 
+    private List<Integer> additionAttendanceItems;
+    private List<Integer> substractionAttendanceItems;
     // TODO HopNT
     public static ExtractionMonConCmd fromDomain(ExtractionMonthlyCon domain) {
         return new ExtractionMonConCmd(
@@ -36,7 +42,9 @@ public class ExtractionMonConCmd {
                null,
                 domain.getAverageRatio().isPresent() ? ((AverageRatio)domain.getAverageRatio().get()).value : null,
                 domain.getMonExtracConName().v(),
-                domain.getMessageDisp().v()
+                domain.getMessageDisp().v(),
+                domain.getCheckedTarget().isPresent() ? ((CountableTarget) domain.getCheckedTarget().get()).getAddSubAttendanceItems().getAdditionAttendanceItems(): Collections.emptyList(),
+                domain.getCheckedTarget().isPresent() ? ((CountableTarget) domain.getCheckedTarget().get()).getAddSubAttendanceItems().getSubstractionAttendanceItems(): Collections.emptyList()
         );
     }
 

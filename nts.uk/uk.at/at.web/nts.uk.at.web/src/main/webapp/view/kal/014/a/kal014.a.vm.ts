@@ -344,6 +344,8 @@ module nts.uk.at.kal014.a {
 
 
         buildExtracMon(data: WkpExtractionPeriodMonthlyDto): string {
+            const vm = this;
+
             let start = "";
             if (data.strCurrentMonth()) {
                 start = "当月";
@@ -359,7 +361,7 @@ module nts.uk.at.kal014.a {
                     + (data.endPreviousAtr() == 0? "前" : "先");
             }
 
-            return start + " ～ " + end;
+            return start + " "+ vm.$i18n('KAL014_42') + " " +  end;
         }
         /**
          * This function is responsible for getting month value
@@ -408,7 +410,7 @@ module nts.uk.at.kal014.a {
                     + data.endDay() +  vm.$i18n('KAL014_46') + (data.endPreviousDay() == 0?"前" : "後");
             }
 
-            return start + vm.$i18n('KAL014_42') + end;
+            return start + " "+ vm.$i18n('KAL014_42') + " " + end;
         }
         /**
          * This function is responsible to click per item action and take decision which screen will open

@@ -111,6 +111,10 @@ module nts.uk.at.view.kal013 {
             message: KnockoutObservable<string> = ko.observable(null);
 
             checkCond: KnockoutObservable<string> = ko.observable(null);
+
+            additionAttendanceItems: KnockoutObservableArray<number> = ko.observableArray([]);
+            substractionAttendanceItems: KnockoutObservableArray<number> = ko.observableArray([]);
+
             checkCondB: KnockoutObservable<number> = ko.observable(null);
 
             constructor(isCheck: boolean, id: string,
@@ -118,7 +122,8 @@ module nts.uk.at.view.kal013 {
                         useAtr: number, name: string,
                         minValue: string, maxValue: string,
                         operator: number, message: string,
-                        checkCond: string, checkCondB: number) {
+                        checkCond: string, checkCondB: number,
+                        addItems: Array<number>, subItems: Array<number>) {
                 this.isCheck(isCheck);
                 this.id = id;
                 this.no(no);
@@ -131,6 +136,8 @@ module nts.uk.at.view.kal013 {
                 this.message(message);
                 this.checkCond(checkCond);
                 this.checkCondB(checkCondB);
+                this.additionAttendanceItems(addItems);
+                this.substractionAttendanceItems(subItems);
             }
         }
     }

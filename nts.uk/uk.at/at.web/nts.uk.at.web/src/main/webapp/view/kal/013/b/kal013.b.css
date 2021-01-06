@@ -1,5 +1,5 @@
 .pad_left_5px{
-    padding-left: 5px;
+    padding-left: 10px;
 }
 .row {
     height: 50px;
@@ -22,7 +22,7 @@
 }
 
 .text-area-style{
-    width: 506px;
+    width: 884px;
     height: 90px;
 }
 
@@ -31,7 +31,7 @@
         width: 243px !important;
     }
     .text-area-style{
-        width: 511px; !important;
+        width: 907px; !important;
         height: 90px; !important;
     }
 }

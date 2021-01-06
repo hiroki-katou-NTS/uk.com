@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.erroralarm.alarmlist.monthly;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.ExtractionMonthlyCon;
@@ -8,6 +9,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.primitivevalue.AverageNumberTimes;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.primitivevalue.AverageRatio;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.primitivevalue.AverageTime;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CountableTarget;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlistworkplace.monthly.KrcmtWkpMonExtracCon;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.*;
 import nts.uk.ctx.at.shared.dom.workrecord.alarm.attendanceitemconditions.CompareRange;
@@ -43,8 +45,12 @@ public class JpaExtractionMonthlyConRepository extends JpaRepository implements 
     private static final String SELECT_SINGLE_FIXED_BY_ID;
 
     private static final String SELECT_TARGET = " SELECT a FROM KrcstErAlAtdTarget a " +
-            " JOIN KrcmtWkpMonExtracCon b ON a.KrcstErAlAtdTargetPK.conditionGroupId = b.errorAlarmCheckID ";
+            " JOIN KrcmtWkpMonExtracCon b ON a.krcstErAlAtdTargetPK.conditionGroupId = b.errorAlarmCheckID ";
     private static final String SELECT_TARGET_BY_ID;
+
+
+    private static final String DELETE_TARGET = " DELETE FROM KrcstErAlAtdTarget a " +
+            " WHERE a.krcstErAlAtdTargetPK.conditionGroupId in :ids ";
 
     static {
         StringBuilder builderString = new StringBuilder();
@@ -77,7 +83,7 @@ public class JpaExtractionMonthlyConRepository extends JpaRepository implements 
 
         builderString = new StringBuilder();
         builderString.append(SELECT_TARGET);
-        builderString.append(" WHERE a.krcstErAlAtdTargetPK.conditionGroupId IN :ids ");
+        builderString.append(" WHERE b.errorAlarmWorkplaceId IN :ids ");
         SELECT_TARGET_BY_ID = builderString.toString();
     }
 
@@ -136,7 +142,7 @@ public class JpaExtractionMonthlyConRepository extends JpaRepository implements 
 
         System.out.println(domains);
 
-        domains.forEach(i -> {
+        domains.forEach((ExtractionMonthlyCon i) -> {
             Double minValue = null;
             Double maxValue = null;
             if (i.getCheckConditions().isSingleValue()) {
@@ -200,6 +206,24 @@ public class JpaExtractionMonthlyConRepository extends JpaRepository implements 
                 );
                 compareRanges.add(range);
             }
+
+            // Insert target
+            if (i.getCheckedTarget().isPresent()){
+                val value =  (CountableTarget) i.getCheckedTarget().get();
+                List<Integer> listImtem = new ArrayList<Integer>();
+                listImtem = value.getAddSubAttendanceItems().getAdditionAttendanceItems();
+                List<Integer> listSub = new ArrayList<>();
+                listSub = value.getAddSubAttendanceItems().getSubstractionAttendanceItems();
+                listImtem.forEach(item -> {
+                    val key = new KrcstErAlAtdTargetPK(i.getErrorAlarmCheckID(),0,item.intValue());
+                    targetList.add(new KrcstErAlAtdTarget(key,0));
+                });
+                listSub.forEach(item -> {
+                    val key = new KrcstErAlAtdTargetPK(i.getErrorAlarmCheckID(),0,item.intValue());
+                    targetList.add(new KrcstErAlAtdTarget(key,1));
+                });
+            }
+
         });
         if (!CollectionUtil.isEmpty(compareSingles) && !CollectionUtil.isEmpty(singleFixeds)) {
             this.commandProxy().insertAll(compareSingles);
@@ -208,16 +232,28 @@ public class JpaExtractionMonthlyConRepository extends JpaRepository implements 
         if (!CollectionUtil.isEmpty(compareRanges)) {
             this.commandProxy().insertAll(compareRanges);
         }
+        if (!CollectionUtil.isEmpty(targetList)) {
+            this.commandProxy().insertAll(targetList);
+        }
         this.commandProxy().insertAll(entities);
+
     }
 
     @Override
     public void delete(List<String> ids) {
         List<ExtractionMonthlyCon> domain = this.getByIds(ids);
         List<String> compareIds = domain.stream().map(ExtractionMonthlyCon::getErrorAlarmCheckID).collect(Collectors.toList());
+        if (CollectionUtil.isEmpty(compareIds)){
+            return;
+        }
         this.commandProxy().removeAll(KrcstErAlCompareSingle.class, compareIds.stream().map(i -> new KrcstErAlCompareSinglePK(i, 0)).collect(Collectors.toList()));
         this.commandProxy().removeAll(KrcstErAlSingleFixed.class, compareIds.stream().map(i -> new KrcstErAlSingleFixedPK(i, 0)).collect(Collectors.toList()));
         this.commandProxy().removeAll(KrcstErAlCompareRange.class, compareIds.stream().map(i -> new KrcstErAlCompareRangePK(i, 0)).collect(Collectors.toList()));
+
+        this.getEntityManager().createQuery(DELETE_TARGET)
+                .setParameter("ids", compareIds)
+                .executeUpdate();
+
         this.commandProxy().removeAll(KrcmtWkpMonExtracCon.class, ids);
     }
 }

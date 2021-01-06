@@ -7,8 +7,12 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.primitivevalue.AverageNumberTimes;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.primitivevalue.AverageRatio;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.primitivevalue.AverageTime;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CountableTarget;
 import nts.uk.ctx.at.shared.dom.workrecord.alarm.attendanceitemconditions.CompareRange;
 import nts.uk.ctx.at.shared.dom.workrecord.alarm.attendanceitemconditions.CompareSingleValue;
+
+import java.util.Collections;
+import java.util.List;
 
 
 @Data
@@ -30,6 +34,8 @@ public class ExtractionMonConDto {
     private String minValue;
     private String maxValue;
     private Integer operator;
+    private List<Integer> additionAttendanceItems;
+    private List<Integer> substractionAttendanceItems;
 
     public static ExtractionMonConDto fromDomain(ExtractionMonthlyCon domain) {
         String minValue = null;
@@ -97,7 +103,9 @@ public class ExtractionMonConDto {
                 domain.getMessageDisp().v(),
                 minValue,
                 maxValue,
-                operator
+                operator,
+                domain.getCheckedTarget().isPresent() ? ((CountableTarget) domain.getCheckedTarget().get()).getAddSubAttendanceItems().getAdditionAttendanceItems(): Collections.emptyList(),
+                domain.getCheckedTarget().isPresent() ? ((CountableTarget) domain.getCheckedTarget().get()).getAddSubAttendanceItems().getSubstractionAttendanceItems(): Collections.emptyList()
         );
     }
     
