@@ -28,6 +28,7 @@ public class MonthlyWorkingHoursByEmployee {
 
 	@Inject
 	private CompanyRepository companyRepo;
+	
 	@Inject
 	private MonthlyWorkTimeSetRepo monthlyWorkTimeSetRepo;
 	

@@ -170,7 +170,7 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 					r.getInt("INCLUDE_EXTRA_OT") != 0 ? KMK004PrintCommon.getLegalType(r.getInt("INCLUDE_HOLIDAY_OT"))
 							: null,
 					// R10_14
-					"Chung dep trai",
+					refPreTime != 0 ? KMK004PrintCommon.getFlexType(refPreTime) : null,
 					// R10_15
 					((month - 1) % 12 + 1) + I18NText.getText("KMK004_401"),
 					// R10_16
@@ -631,7 +631,7 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 		int month = 1;
 		Query monthQuery = this.getEntityManager().createNativeQuery(GET_EXPORT_MONTH.toString()).setParameter("cid",
 				cid);
-		List data = monthQuery.getResultList();
+		List<?> data = monthQuery.getResultList();
 		if (data.size() == 0) {
 			month = 1;
 		} else {

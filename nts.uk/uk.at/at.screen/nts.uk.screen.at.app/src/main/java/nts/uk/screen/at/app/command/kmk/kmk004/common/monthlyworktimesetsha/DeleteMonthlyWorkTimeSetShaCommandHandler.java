@@ -17,6 +17,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class DeleteMonthlyWorkTimeSetShaCommandHandler extends CommandHandler<DeleteMonthlyWorkTimeSetShaCommand> {
+	
 	@Inject
 	private MonthlyWorkTimeSetRepo monthlyWorkTimeSetRepo;
 

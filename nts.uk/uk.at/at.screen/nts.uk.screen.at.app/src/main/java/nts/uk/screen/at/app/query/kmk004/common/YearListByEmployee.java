@@ -30,6 +30,7 @@ public class YearListByEmployee {
 
 	@Inject
 	private MonthlyWorkTimeSetRepo monthlyWorkTimeSetRepo;
+	
 	@Inject
 	private CompanyRepository companyRepository;
 	

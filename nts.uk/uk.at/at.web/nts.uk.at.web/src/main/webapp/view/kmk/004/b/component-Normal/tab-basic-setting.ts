@@ -295,13 +295,21 @@ module nts.uk.at.view.kmk004.b {
 	}
 
 	interface ITabSetting {
+		// 日単位
 		daily: number;
+		// 週単位
 		weekly: number;
+		// 集計時間設定.週、月割増時間を集計する
 		deforWorkSurchargeWeekMonth: boolean;
+		// 集計時間設定.法定内残業を含める
 		deforWorkLegalOverTimeWork: boolean;
+		// 集計時間設定.法定外休出を含める
 		deforWorkLegalHoliday: boolean;
+		// 時間外超過設定.週、月割増時間を集計する
 		outsideSurchargeWeekMonth: boolean
+		// 時間外超過設定.法定内残業を含める
 		outsidedeforWorkLegalOverTimeWork: boolean;
+		// 時間外超過設定.法定外休出を含める
 		outsidedeforWorkLegalHoliday: boolean;
 	}
 

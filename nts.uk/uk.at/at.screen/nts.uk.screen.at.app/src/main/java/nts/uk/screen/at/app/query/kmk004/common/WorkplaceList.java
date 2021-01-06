@@ -36,14 +36,19 @@ public class WorkplaceList {
 
 	@Inject
 	private MonthlyWorkTimeSetRepo timeSetRepo;
+	
 	@Inject
 	private RegularLaborTimeWkpRepo regularLaborTimeWkpRepo;
+	
 	@Inject
 	private WkpRegulaMonthActCalSetRepo wkpRegulaMonthActCalSetRepo;
+	
 	@Inject
 	private DeforLaborTimeWkpRepo deforLaborTimeWkpRepo;
+	
 	@Inject
 	private WkpDeforLaborMonthActCalSetRepo wkpDeforLaborMonthActCalSetRepo;
+	
 	@Inject
 	private WkpFlexMonthActCalSetRepo wkpFlexMonthActCalSetRepo;
 

@@ -35,14 +35,19 @@ public class EmployeeList {
 
 	@Inject
 	private MonthlyWorkTimeSetRepo monthlyWorkTimeSetShaRepo;
+	
 	@Inject
 	private RegularLaborTimeShaRepo regularLaborTimeShaRepo;
+	
 	@Inject
 	private ShaRegulaMonthActCalSetRepo shaRegulaMonthActCalSetRepo;
+	
 	@Inject
 	private DeforLaborTimeShaRepo deforLaborTimeShaRepo;
+	
 	@Inject
 	private ShaDeforLaborMonthActCalSetRepo shaDeforLaborMonthActCalSetRepo;
+	
 	@Inject
 	private ShaFlexMonthActCalSetRepo shaFlexMonthActCalSetRepo;
 

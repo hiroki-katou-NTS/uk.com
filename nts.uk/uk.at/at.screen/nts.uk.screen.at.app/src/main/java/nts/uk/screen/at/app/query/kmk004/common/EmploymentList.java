@@ -36,14 +36,19 @@ public class EmploymentList {
 
 	@Inject
 	private MonthlyWorkTimeSetRepo monthlyWorkTimeSetEmpRepo;
+	
 	@Inject
 	private RegularLaborTimeEmpRepo regularLaborTimeEmpRepo;
+	
 	@Inject
 	private EmpRegulaMonthActCalSetRepo empRegulaMonthActCalSetRepo;
+	
 	@Inject
 	private DeforLaborTimeEmpRepo deforLaborTimeEmpRepo;
+	
 	@Inject
 	private EmpDeforLaborMonthActCalSetRepo empDeforLaborMonthActCalSetRepo;
+	
 	@Inject
 	private EmpFlexMonthActCalSetRepo empFlexMonthActCalSetRepo;
 	

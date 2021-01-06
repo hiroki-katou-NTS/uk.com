@@ -41,15 +41,15 @@ public class DisplayYearListByCompany {
 		String cid = AppContexts.user().companyId();
 		
 		//1 call 会社別月単位労働時間
-		List<MonthlyWorkTimeSetCom> coms = this.monthlyWorkTimeSetRepo.findMonthlyWorkTimeSetComByCid(cid, EnumAdaptor.valueOf(workTypeAttr, LaborWorkTypeAttr.class));
+		List<MonthlyWorkTimeSetCom> monthlyWorkTimeSetComs = this.monthlyWorkTimeSetRepo.findMonthlyWorkTimeSetComByCid(cid, EnumAdaptor.valueOf(workTypeAttr, LaborWorkTypeAttr.class));
 		
 		//2 call DS 年月期間から年度を取得
 		Require require = new Require(companyRepository);
 		
-		if(!coms.isEmpty()) {
+		if(!monthlyWorkTimeSetComs.isEmpty()) {
 			List<Year> list = GetYearFromYearMonthPeriod.getYearFromYearMonthPeriod(require,
 					cid,
-					coms.stream().map(m -> m.getYm()).collect(Collectors.toList()));
+					monthlyWorkTimeSetComs.stream().map(m -> m.getYm()).collect(Collectors.toList()));
 			
 			result = list.stream().map(m -> {
 				return new YearDto(m.v());

@@ -34,13 +34,13 @@ public class DisplayMonthlyWorkingHoursByCompany {
 
 	public List<DisplayMonthlyWorkingDto> get(DisplayMonthlyWorkingInput param) {
 		String cid = AppContexts.user().companyId();
-		List<DisplayMonthlyWorkingDto> resutl = new ArrayList<>();
+		List<DisplayMonthlyWorkingDto> result = new ArrayList<>();
 		
 		// 1 年度の期間を取得(require, 会社ID, 年度)
 		YearMonthPeriod yearMonthPeriod = companyRepository.get(cid, param.year);
 		List<MonthlyWorkTimeSetCom> coms = new ArrayList<>();
 		
-		resutl = yearMonthPeriod.stream().map(m -> {
+		result = yearMonthPeriod.stream().map(m -> {
 			LaborTime laborTime = new LaborTime(0, 0, 0);
 			DisplayMonthlyWorkingDto s = new DisplayMonthlyWorkingDto(m.v(), laborTime);
 			return s;
@@ -59,13 +59,13 @@ public class DisplayMonthlyWorkingHoursByCompany {
 		}
 
 		if (coms.isEmpty()) {
-			return resutl;
+			return result;
 		}
 
-		List<MonthlyWorkTimeSetCom> coms1 = coms;
+		List<MonthlyWorkTimeSetCom> coms_final = coms;
 
-		resutl.stream().forEach(m -> {
-			Optional<MonthlyWorkTimeSetCom> setCom = coms1.stream().filter(x -> x.getYm().v() == m.getYearMonth())
+		result.stream().forEach(m -> {
+			Optional<MonthlyWorkTimeSetCom> setCom = coms_final.stream().filter(x -> x.getYm().v() == m.getYearMonth())
 					.findFirst();
 			if (setCom.isPresent()) {
 				m.setLaborTime(new LaborTime(setCom.get().getLaborTime().getLegalLaborTime().v(),
@@ -74,6 +74,6 @@ public class DisplayMonthlyWorkingHoursByCompany {
 			}
 		});
 
-		return resutl;
+		return result;
 	}
 }

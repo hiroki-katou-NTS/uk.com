@@ -31,6 +31,7 @@ public class YearListByEmployment {
 
 	@Inject
 	private MonthlyWorkTimeSetRepo workTimeSetRepo;
+	
 	@Inject
 	private CompanyRepository companyRepository;
 
@@ -46,10 +47,10 @@ public class YearListByEmployment {
 		if(!workTimeSetEmps.isEmpty()) {
 			Require require = new Require(companyRepository);
 
-			List<Year> list = GetYearFromYearMonthPeriod.getYearFromYearMonthPeriod(require, cid,
+			List<Year> years = GetYearFromYearMonthPeriod.getYearFromYearMonthPeriod(require, cid,
 					workTimeSetEmps.stream().map(m -> m.getYm()).collect(Collectors.toList()));
 
-			result = list.stream().map(m -> {
+			result = years.stream().map(m -> {
 				return new YearDto(m.v());
 			}).collect(Collectors.toList());
 		}

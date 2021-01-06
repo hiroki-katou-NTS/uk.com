@@ -60,8 +60,6 @@ public class Kmk004WebService extends WebService {
 	@Inject
 	private SaveMonthlyWorkTimeSetComCommandHandler saveMonthlyWorkTimeSetComCommandHandler;
 
-	//
-
 	@Inject
 	private DeleteMonthlyWorkTimeSetComCommandHandler deleteMonthlyWorkTimeSetComCommandHandler;
 
