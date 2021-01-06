@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.dom.scheduledailytable;
+package scheduledailytable;
 
 /**
  * 応援者の出力方法

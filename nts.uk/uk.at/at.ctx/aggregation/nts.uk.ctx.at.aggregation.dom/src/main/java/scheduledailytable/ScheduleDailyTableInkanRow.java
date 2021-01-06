@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.dom.scheduledailytable;
+package scheduledailytable;
 
 import java.util.List;
 

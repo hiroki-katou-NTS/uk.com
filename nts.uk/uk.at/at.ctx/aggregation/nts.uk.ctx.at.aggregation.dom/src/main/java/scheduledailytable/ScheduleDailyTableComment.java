@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.dom.scheduledailytable;
+package scheduledailytable;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
