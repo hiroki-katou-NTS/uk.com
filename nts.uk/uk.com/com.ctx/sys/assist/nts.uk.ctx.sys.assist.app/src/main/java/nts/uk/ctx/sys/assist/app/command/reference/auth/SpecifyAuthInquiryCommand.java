@@ -15,5 +15,5 @@ public class SpecifyAuthInquiryCommand {
 	private String employmentRoleId;
 
 	// 見られる職位ID
-	private List<String> positonIdSeen;
+	private List<String> positionIdSeen;
 }
