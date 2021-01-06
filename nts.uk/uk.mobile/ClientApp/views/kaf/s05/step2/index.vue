@@ -48,7 +48,6 @@
               v-model="item.applicationTime"
               name=""
               v-bind:enable="$appContext.c3"
-              v-bind:constraint="OvertimeAppPrimitiveTime"
             />
           </div>
         </div>
@@ -89,7 +88,6 @@
               v-model="item.applicationTime"
               name=""
               v-bind:enable="$appContext.c3"
-              v-bind:constraint="OvertimeAppPrimitiveTime"
             />
           </div>
         </div>

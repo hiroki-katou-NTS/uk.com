@@ -67,7 +67,7 @@
       <!-- A1_B4_1 -->
       <div class="card-header uk-bg-accordion">
         <span>{{ "KAFS05_66" | i18n }}</span>
-        <span class="badge badge-warning">任意</span>
+        <span class="badge badge-warning">必須</span>
       </div>
       <!-- A1_B4_2 -->
       <div class="card-body">

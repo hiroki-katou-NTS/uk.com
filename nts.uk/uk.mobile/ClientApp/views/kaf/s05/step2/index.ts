@@ -606,6 +606,12 @@ export class KafS05Step2Component extends Vue {
         self.bindAllReason();
         self.bindOverTime();
         self.bindHolidayTime();
+        self.addConstraint();
+    }
+
+    public addConstraint() {
+        const self = this;
+
     }
 
     public getReasonDivergence() {

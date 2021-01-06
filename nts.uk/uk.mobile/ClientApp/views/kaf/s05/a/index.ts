@@ -423,6 +423,11 @@ export class KafS05Component extends KafS00ShrComponent {
                 self.model.displayInfoOverTime = res.data;
                 let step1 = self.$refs.step1 as KafS05Step1Component;
                 step1.loadData(self.model.displayInfoOverTime);
+                // エラーメッセージ(Msg_1556)を画面項目「A_A3_1」に表示する
+                // 「残業申請の表示情報．申請表示情報．申請表示情報(基準日関係あり)．表示する実績内容．実績詳細」== empty
+                let c1 = !_.isNil(_.get(self.model, 'displayInfoOverTime.appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst.opAchievementDetail'));
+                // 残業申請の表示情報．申請表示情報．申請表示情報(基準日関係あり)．表示する実績内容．実績詳細．実績スケ区分」= スケジュール）
+                let c2 = true;
                 self.$mask('hide');
             })
             .catch((res: any) => {
@@ -906,10 +911,10 @@ export class KafS05Component extends KafS00ShrComponent {
 
                     command.workTypeCode = step1.workInfo.workType.code;
                     command.workTimeCode = step1.workInfo.workTime.code;
-                    if (!_.isNil(step1.workHours1)) {
-                        command.startTimeSPR = step1.workHours1.start;
-                        command.endTimeSPR = step1.workHours1.end;
-                    }
+                    // if (!_.isNil(step1.workHours1)) {
+                    //     command.startTimeSPR = step1.workHours1.start;
+                    //     command.endTimeSPR = step1.workHours1.end;
+                    // }
                     command.actualContentDisplay = _.get(self.model.displayInfoOverTime, 'appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst[0]');
                     command.overtimeAppSet = self.model.displayInfoOverTime.infoNoBaseDate.overTimeAppSet;
                     self.$mask('show');
