@@ -5,7 +5,7 @@ import { KafS00SubP3Component } from 'views/kaf/s00/sub/p3';
 import { KafS00SubP1Component } from 'views/kaf/s00/sub/p1';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/s00';
 import { ExcessTimeStatus } from '../../s00/sub/p1';
-import { ReasonDivergence, ExcessStateMidnight, ExcessStateDetail, OutDateApplication, DivergenceReasonSelect, AppOverTime, OvertimeWorkFrame, DivergenceReasonInputMethod, DivergenceTimeRoot, AttendanceType, OvertimeApplicationSetting, HolidayMidNightTime, StaturoryAtrOfHolidayWork, WorkdayoffFrame } from '../a/define.interface';
+import { ReasonDivergence, ExcessStateMidnight, ExcessStateDetail, OutDateApplication, DivergenceReasonSelect, AppOverTime, OvertimeWorkFrame, DivergenceReasonInputMethod, DivergenceTimeRoot, AttendanceType, OvertimeApplicationSetting, HolidayMidNightTime, StaturoryAtrOfHolidayWork, WorkdayoffFrame, ExcessState } from '../a/define.interface';
 @component({
     name: 'kafs05step2',
     route: '/kaf/s05/step2',
@@ -607,6 +607,23 @@ export class KafS05Step2Component extends Vue {
         self.bindOverTime();
         self.bindHolidayTime();
         self.addConstraint();
+        self.checkAlarm();
+    }
+    public checkAlarm() {
+        const self = this;
+        // ・「残業申請の表示情報．計算結果．事前申請・実績の超過状態．事前申請なし」 = true ⇒#Msg_1557
+        let c1 = _.get(self.$appContext.model, 'displayInfoOverTime.calculationResultOp.overStateOutput.isExistApp');
+        // ・「残業申請の表示情報．計算結果．事前申請・実績の超過状態．実績状態」 = 超過アラーム⇒#Msg_1556
+        let c2 = _.get(self.$appContext.model, 'displayInfoOverTime.calculationResultOp.overStateOutput.achivementStatus') == ExcessState.EXCESS_ERROR;
+        if (c1) {
+            self.$appContext.$modal.error({ messageId: 'Msg_1557'})
+            .then(() => {
+                if (c2) {
+                    self.$appContext.$modal.error({ messageId: 'Msg_1556'});
+                }
+            });
+        }
+
     }
 
     public addConstraint() {

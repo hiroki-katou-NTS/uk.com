@@ -863,10 +863,6 @@ export class KafS05Component extends KafS00ShrComponent {
                     command.dateOp = self.modeNew ? self.date : self.appDispInfoStartupOutput.appDetailScreenInfo.application.appDate;
                     command.workTypeCode = step1.workInfo.workType.code;
                     command.workTimeCode = step1.workInfo.workTime.code;
-                    // if (!_.isNil(step1.workHours1)) {
-                    //     command.startTimeSPR = step1.workHours1.start;
-                    //     command.endTimeSPR = step1.workHours1.end;
-                    // }
                     command.actualContentDisplay = _.get(self.model.displayInfoOverTime, 'appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst[0]');
                     command.overtimeAppSet = self.model.displayInfoOverTime.infoNoBaseDate.overTimeAppSet;
                     self.$mask('show');
@@ -930,10 +926,6 @@ export class KafS05Component extends KafS00ShrComponent {
 
                     command.workTypeCode = step1.workInfo.workType.code;
                     command.workTimeCode = step1.workInfo.workTime.code;
-                    // if (!_.isNil(step1.workHours1)) {
-                    //     command.startTimeSPR = step1.workHours1.start;
-                    //     command.endTimeSPR = step1.workHours1.end;
-                    // }
                     command.actualContentDisplay = _.get(self.model.displayInfoOverTime, 'appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst[0]');
                     command.overtimeAppSet = self.model.displayInfoOverTime.infoNoBaseDate.overTimeAppSet;
                     self.$mask('show');
