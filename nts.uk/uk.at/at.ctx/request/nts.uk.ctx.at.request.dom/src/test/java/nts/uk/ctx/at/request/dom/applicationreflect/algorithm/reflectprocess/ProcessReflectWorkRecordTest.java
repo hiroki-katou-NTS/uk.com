@@ -2,8 +2,10 @@ package nts.uk.ctx.at.request.dom.applicationreflect.algorithm.reflectprocess;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
+import nts.uk.ctx.at.request.dom.applicationreflect.object.PreApplicationWorkScheReflectAttr;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -19,12 +21,14 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
+import nts.uk.ctx.at.request.dom.applicationreflect.AppReflectExecutionCondition;
 import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.checkprocess.PreCheckProcessWorkRecord;
 import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.checkprocess.PreCheckProcessWorkSchedule.PreCheckProcessResult;
 import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.common.ReflectApplicationHelper;
-import nts.uk.ctx.at.request.dom.applicationreflect.object.AppReflectExecCond;
 import nts.uk.ctx.at.request.dom.applicationreflect.object.ReflectStatusResult;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.ExecutionType;
+import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.application.common.ReflectedStateShare;
 import nts.uk.ctx.at.shared.dom.application.reflect.ReflectStatusResultShare;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -32,7 +36,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @RunWith(JMockit.class)
 public class ProcessReflectWorkRecordTest {
 
-	@Injectable
+	@Injectable	
 	private ProcessReflectWorkRecord.Require require;
 
 	private String companyId;
@@ -71,21 +75,25 @@ public class ProcessReflectWorkRecordTest {
 	@Test
 	public void testWorkReflected() {
 		Application application = ReflectApplicationHelper.createApp(PrePostAtr.POSTERIOR);
-
+		AppStamp stamp = new AppStamp(application);
+		stamp.setListDestinationTimeApp(new ArrayList<>());
+		stamp.setListDestinationTimeZoneApp(new ArrayList<>());
+		stamp.setListTimeStampApp(new ArrayList<>());
+		stamp.setListTimeStampAppOther(new ArrayList<>());
 		new Expectations() {
 			{
 				require.findAppReflectExecCond(companyId);
 				result = Optional
-						.of(new AppReflectExecCond(companyId, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.USE));// 勤務実績が確定状態でも反映する
+						.of(new AppReflectExecutionCondition(companyId, PreApplicationWorkScheReflectAttr.NOT_REFLECT, NotUseAtr.NOT_USE, NotUseAtr.USE));// 勤務実績が確定状態でも反映する
 
-				require.process(application, dateRefer, (ReflectStatusResultShare) any);
+				require.processWork((ExecutionType)any, (ApplicationShare)any, dateRefer, (ReflectStatusResultShare) any);
 				result = Pair.of(new ReflectStatusResultShare(ReflectedStateShare.REFLECTED, null, null),
 						Optional.empty());
 
 			}
 		};
 
-		val actualResult = ProcessReflectWorkRecord.processReflect(require, companyId, closureId, application, execType,
+		val actualResult = ProcessReflectWorkRecord.processReflect(require, companyId, closureId,  stamp, execType,
 				true, dateRefer, statusWorkRecord);
 
 		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(ReflectedState.REFLECTED);
@@ -106,20 +114,24 @@ public class ProcessReflectWorkRecordTest {
 	@Test
 	public void testBeforeNoReflect(@Mocked PreCheckProcessWorkRecord preCheck) {
 		Application application = ReflectApplicationHelper.createApp(PrePostAtr.POSTERIOR);
-
+		AppStamp stamp = new AppStamp(application);
+		stamp.setListDestinationTimeApp(new ArrayList<>());
+		stamp.setListDestinationTimeZoneApp(new ArrayList<>());
+		stamp.setListTimeStampApp(new ArrayList<>());
+		stamp.setListTimeStampAppOther(new ArrayList<>());
 		new Expectations() {
 			{
 				require.findAppReflectExecCond(companyId);
 				result = Optional
-						.of(new AppReflectExecCond(companyId, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE));// 勤務実績が確定状態でも反映する
+						.of(new AppReflectExecutionCondition(companyId, PreApplicationWorkScheReflectAttr.NOT_REFLECT, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE));// 勤務実績が確定状態でも反映する
 
-				PreCheckProcessWorkRecord.preCheck(require, companyId, application, closureId, anyBoolean,
+				PreCheckProcessWorkRecord.preCheck(require, companyId, stamp, closureId, anyBoolean,
 						(ReflectStatusResult) any, dateRefer);
 				result = new PreCheckProcessResult(NotUseAtr.NOT_USE, statusWorkRecord);
 			}
 		};
 
-		val actualResult = ProcessReflectWorkRecord.processReflect(require, companyId, closureId, application, execType,
+		val actualResult = ProcessReflectWorkRecord.processReflect(require, companyId, closureId, stamp, execType,
 				true, dateRefer, statusWorkRecord);
 
 		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(ReflectedState.NOTREFLECTED);
@@ -140,24 +152,28 @@ public class ProcessReflectWorkRecordTest {
 	@Test
 	public void testBeforeReflect(@Mocked PreCheckProcessWorkRecord preCheck) {
 		Application application = ReflectApplicationHelper.createApp(PrePostAtr.POSTERIOR);
-
+		AppStamp stamp = new AppStamp(application);
+		stamp.setListDestinationTimeApp(new ArrayList<>());
+		stamp.setListDestinationTimeZoneApp(new ArrayList<>());
+		stamp.setListTimeStampApp(new ArrayList<>());
+		stamp.setListTimeStampAppOther(new ArrayList<>());
 		new Expectations() {
 			{
 				require.findAppReflectExecCond(companyId);
 				result = Optional
-						.of(new AppReflectExecCond(companyId, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE));// 勤務実績が確定状態でも反映する
+						.of(new AppReflectExecutionCondition(companyId, PreApplicationWorkScheReflectAttr.NOT_REFLECT, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE));// 勤務実績が確定状態でも反映する
 
-				PreCheckProcessWorkRecord.preCheck(require, companyId, application, closureId, anyBoolean,
+				PreCheckProcessWorkRecord.preCheck(require, companyId, stamp, closureId, anyBoolean,
 						(ReflectStatusResult) any, dateRefer);
 				result = new PreCheckProcessResult(NotUseAtr.USE, statusWorkRecord);
 				
-				require.process(application, dateRefer, (ReflectStatusResultShare) any);
+				require.processWork((ExecutionType)any, (ApplicationShare)any, dateRefer, (ReflectStatusResultShare) any);
 				result = Pair.of(new ReflectStatusResultShare(ReflectedStateShare.REFLECTED, null, null),
 						Optional.empty());
 			}
 		};
 
-		val actualResult = ProcessReflectWorkRecord.processReflect(require, companyId, closureId, application, execType,
+		val actualResult = ProcessReflectWorkRecord.processReflect(require, companyId, closureId, stamp, execType,
 				true, dateRefer, statusWorkRecord);
 
 		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(ReflectedState.REFLECTED);

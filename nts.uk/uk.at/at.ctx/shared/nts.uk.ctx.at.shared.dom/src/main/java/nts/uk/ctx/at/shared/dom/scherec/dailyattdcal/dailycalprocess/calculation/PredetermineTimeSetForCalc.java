@@ -9,11 +9,13 @@ import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetermineTime;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -74,8 +76,27 @@ public class PredetermineTimeSetForCalc implements Cloneable{
 	/**
 	 * Aggregateの所定時間から計算用所定時間クラスへの変換
 	 */
-	public static PredetermineTimeSetForCalc convertFromAggregatePremiumTime(PredetemineTimeSetting predetermineTimeSet){
-		return new PredetermineTimeSetForCalc(predetermineTimeSet.getPrescribedTimezoneSetting().getLstTimezone()
+	public static PredetermineTimeSetForCalc convertFromAggregatePremiumTime(PredetemineTimeSetting predetermineTimeSet, WorkType workType) {
+		
+		List<TimezoneUse> timeZones;
+		switch (workType.getDailyWork().decisionNeedPredTime()) {
+		case FULL_TIME:
+			timeZones = predetermineTimeSet.getTimezoneByAmPmAtr(AmPmAtr.ONE_DAY);
+			break;
+		case MORNING:
+			timeZones = predetermineTimeSet.getTimezoneByAmPmAtr(AmPmAtr.AM);
+			break;
+		case AFTERNOON:
+			timeZones = predetermineTimeSet.getTimezoneByAmPmAtr(AmPmAtr.PM);
+			break;
+		default:
+			timeZones = new ArrayList<>();
+			break;
+		}
+		
+		
+		/** TODO: 三浦さんの処理待ち*/
+		return new PredetermineTimeSetForCalc(timeZones
 											  ,predetermineTimeSet.getPrescribedTimezoneSetting().getMorningEndTime()
 											  ,predetermineTimeSet.getPrescribedTimezoneSetting().getAfternoonStartTime()
 											  ,predetermineTimeSet.getPredTime()
@@ -248,11 +269,11 @@ public class PredetermineTimeSetForCalc implements Cloneable{
 	*/
 	public void fluctuationPredeterminedTimeSheetToSchedule(List<TimeLeavingWork> timeLeavingWorks) {
 		for(int i=0; i<timeLeavingWorks.size(); i++) {
-			if(timeLeavingWorks.get(i).getAttendanceStampTimeWithDay().isPresent()) {
-				this.timeSheets.get(i).updateStartTime(timeLeavingWorks.get(i).getAttendanceStampTimeWithDay().get());
+			if(timeLeavingWorks.get(i).getAttendanceTime().isPresent()) {
+				this.timeSheets.get(i).updateStartTime(timeLeavingWorks.get(i).getAttendanceTime().get());
 			}
-			if(timeLeavingWorks.get(i).getleaveStampTimeWithDay().isPresent()) {
-				this.timeSheets.get(i).updateStartTime(timeLeavingWorks.get(i).getleaveStampTimeWithDay().get());
+			if(timeLeavingWorks.get(i).getLeaveTime().isPresent()) {
+				this.timeSheets.get(i).updateStartTime(timeLeavingWorks.get(i).getLeaveTime().get());
 			}
 		}
 	}

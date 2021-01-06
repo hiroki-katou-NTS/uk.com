@@ -17,6 +17,8 @@ public class ApprSttSendMailInfoParam {
 	private int mailType;
 	private int closureId;
 	private int processingYm;
+	private int closureDay;
+	private boolean lastDayOfMonth;
 	private String startDate;
 	private String endDate;
 	private List<DisplayWorkplace> wkpInfoLst;

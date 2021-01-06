@@ -5,7 +5,13 @@ module nts.uk.ui.calendar {
 
 	export type CLICK_CELL = 'event' | 'holiday' | 'info';
 
-	const BD_SK = 'KSU_002.START_DATE';
+	export const KSU_USER_DATA = 'KSU002.USER_DATA';
+
+	export interface StorageData {
+		fdate: number;
+		wtypec: string;
+		wtimec: string;
+	}
 
 	export interface DayData<T = DataInfo> {
 		date: Date;
@@ -263,6 +269,7 @@ module nts.uk.ui.calendar {
 			}
 			.calendar .event-popper>.epc {
 				position: relative;
+				width: 220px;
 			}
 			.calendar .event-popper:not(.hide-arrow)>.epc:before {
 				content: '';
@@ -290,10 +297,7 @@ module nts.uk.ui.calendar {
 				z-index: 9;
 				position: fixed;
 				visibility: visible;
-				min-width: 220px;
-				max-width: 400px;
-				min-height: 220px;
-				max-height: 400px;
+				width: 220px;
 			}
         </style>
         <style type="text/css" rel="stylesheet" data-bind="html: $component.style"></style>
@@ -396,23 +400,27 @@ module nts.uk.ui.calendar {
 							const event = ko.unwrap(data.event);
 
 							if (event !== null) {
+								const { width, top, left } = element.getBoundingClientRect();
+
 								$.Deferred()
 									.resolve(true)
 									.then(() => {
-										const { width, top, left } = element.getBoundingClientRect();
-
 										$$popper.innerHTML = `<div class="epc"><div class="data">${event}</div></div>`;
-
+									})
+									.then(() => {
 										const pbound = $$popper.getBoundingClientRect();
+										const epc = $($$popper).find('.epc').get(0);
+										const ebound = epc.getBoundingClientRect();
 
 										const top1 = top - 7;
-										const top2 = window.innerHeight - pbound.height - 7;
+										const top2 = window.innerHeight - ebound.height - 7;
 
 										const left1 = left + width + 7;
 										const left2 = window.innerWidth - pbound.width - 30;
 
 										$$popper.style.top = `${Math.min(top1, top2)}px`;
 										$$popper.style.left = `${Math.min(left1, left2)}px`;
+										$$popper.style.height = `${ebound.height}px`;
 
 										if (top1 >= top2 || left1 >= left2) {
 											$$popper.classList.add('hide-arrow');
@@ -441,6 +449,7 @@ module nts.uk.ui.calendar {
 								}).then(() => {
 									$$popper.style.top = '0px';
 									$$popper.style.left = '0px';
+									$$popper.style.height = '0px';
 
 									$$popper.classList.remove('show');
 								});
@@ -479,7 +488,6 @@ module nts.uk.ui.calendar {
 							const holiday = ko.unwrap(data.holiday);
 
 							if (holiday) {
-								element.title = holiday;
 								element.innerHTML = holiday;
 								className.push(COLOR_CLASS.HOLIDAY);
 							} else {
@@ -680,13 +688,13 @@ module nts.uk.ui.calendar {
 				}));
 
 			vm.$window
-				.storage(BD_SK)
-				.then((v) => {
+				.storage(KSU_USER_DATA)
+				.then((v: StorageData) => {
 					options(listDates);
 
 					return v;
 				})
-				.then(v => vm.baseDate.start(v));
+				.then((v: StorageData) => vm.baseDate.start(v.fdate));
 
 			ko.computed({
 				read: () => {
@@ -702,8 +710,18 @@ module nts.uk.ui.calendar {
 			});
 
 			vm.baseDate.start
-				.subscribe(c => {
-					vm.$window.storage(BD_SK, c);
+				.subscribe(fdate => {
+					vm.$window
+						.storage(KSU_USER_DATA)
+						.then((store: undefined | StorageData) => {
+							if (store) {
+								const { wtypec, wtimec } = store;
+
+								vm.$window.storage(KSU_USER_DATA, { fdate, wtimec, wtypec });
+							} else {
+								vm.$window.storage(KSU_USER_DATA, { fdate, wtimec: null, wtypec: null });
+							}
+						});
 				});
 
 			vm.baseDate.model

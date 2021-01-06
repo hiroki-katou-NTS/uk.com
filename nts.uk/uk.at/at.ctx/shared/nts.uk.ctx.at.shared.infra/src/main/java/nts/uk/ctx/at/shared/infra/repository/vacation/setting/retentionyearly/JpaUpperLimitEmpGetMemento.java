@@ -8,6 +8,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.MaxDaysRetentio
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearsAmount;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSettingGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionEmpCtr;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionYearly;
 
 /**
  * The Class JpaUpperLimitEmpGetMemento.
@@ -15,14 +16,14 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionEmpCtr;
 public class JpaUpperLimitEmpGetMemento implements UpperLimitSettingGetMemento {
 
 	/** The type value. */
-	private KmfmtRetentionEmpCtr typeValue;
+	private KmfmtRetentionYearly typeValue;
 	
 	/**
 	 * Instantiates a new jpa upper limit emp get memento.
 	 *
 	 * @param typeValue the type value
 	 */
-	public JpaUpperLimitEmpGetMemento(KmfmtRetentionEmpCtr typeValue) {
+	public JpaUpperLimitEmpGetMemento(KmfmtRetentionYearly typeValue) {
 		this.typeValue = typeValue;
 	}
 	

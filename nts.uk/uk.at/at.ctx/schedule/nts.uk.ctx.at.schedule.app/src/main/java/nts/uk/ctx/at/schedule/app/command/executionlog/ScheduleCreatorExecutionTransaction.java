@@ -90,8 +90,14 @@ import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ReflectWorkInforDomai
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
@@ -324,17 +330,13 @@ public class ScheduleCreatorExecutionTransaction {
 					scheduleExecutionLog, context, period, masterCache, listBasicSchedule, registrationListDateSchedule,
 					carrier);
 
+			// 勤務予定を登録する
+			this.deleteSchedule(scheduleCreator.getEmployeeId(), period);
+			this.workScheduleRepository.insertAll(companyId, result.getListWorkSchedule());
+			
 			// Outputの勤務種類一覧を繰り返す
 			this.managedParallelWithContext.forEach(ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL),
 					result.getListWorkSchedule(), ws -> {
-						// 勤務予定を登録する
-						boolean checkUpdate = this.workScheduleRepository.checkExits(ws.getEmployeeID(), ws.getYmd());
-						if (checkUpdate) {
-							this.workScheduleRepository.update(ws);
-						} else {
-							this.workScheduleRepository.insert(ws);
-						}
-						;
 						// 暫定データの登録
 						this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, ws.getEmployeeID(),
 								Arrays.asList(ws.getYmd()));
@@ -487,12 +489,12 @@ public class ScheduleCreatorExecutionTransaction {
 		return new DataProcessingStatusResult(CID, null,
 				ProcessingStatus.valueOf(ProcessingStatus.NORMAL_PROCESS.value),
 				new WorkSchedule(creator.getEmployeeId(), dateInPeriod, ConfirmedATR.UNSETTLED,
-						new WorkInfoOfDailyAttendance(new WorkInformation("", ""), new WorkInformation("", ""),
+						new WorkInfoOfDailyAttendance(new WorkInformation("", ""), 
 								CalculationState.No_Calculated, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
 								nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek
 										.valueOf(dateInPeriod.dayOfWeek() - 1),
 								new ArrayList<>()),
-						null, new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty(),
+						null, Optional.empty(), new ArrayList<>(), Optional.empty(), Optional.empty(),
 						Optional.empty()),
 				workingConditionItem, employmentInfo);
 
@@ -611,7 +613,7 @@ public class ScheduleCreatorExecutionTransaction {
 					result.getWorkSchedule().getLstBreakTime(), result.getWorkSchedule().getOptAttendanceTime(),
 					result.getWorkSchedule().getOptTimeLeaving(), result.getWorkSchedule().getOptSortTimeWork(),
 					Optional.empty(), Optional.empty(), Optional.empty(), result.getWorkSchedule().getLstEditState(),
-					Optional.empty(), new ArrayList<>());
+					Optional.empty(), new ArrayList<>(), Optional.empty());
 			// // 勤務予定。編集状態一覧から項目IDを取得する - TQP
 			List<Integer> attendanceItemIdList = integrationOfDaily.getEditState().stream()
 					.map(editState -> editState.getAttendanceItemId()).distinct().collect(Collectors.toList());
@@ -674,7 +676,7 @@ public class ScheduleCreatorExecutionTransaction {
 							: Optional.empty();
 					// 勤務情報。勤務実績の勤務情報。勤務種類 = 処理中の勤務種類コード & 勤務情報。勤務実績の勤務情報。就業時間帯 =処理中の 就業時間帯コード
 					integrationOfDaily.getWorkInformation().setRecordInfo(prepareWorkOutput.getInformation().clone());
-					integrationOfDaily.getWorkInformation().setScheduleInfo(prepareWorkOutput.getInformation().clone());
+//					integrationOfDaily.getWorkInformation().setScheduleInfo(prepareWorkOutput.getInformation().clone());
 					// 出勤打刻自動セット ~ 出勤時刻を直行とする (勤務情報。直行区分＝勤務種類。出勤打刻自動セット)
 					integrationOfDaily.getWorkInformation()
 							.setGoStraightAtr(EnumAdaptor.valueOf(
@@ -720,47 +722,24 @@ public class ScheduleCreatorExecutionTransaction {
 					// 出退勤。退勤。打刻。時間。時刻変更手段＝実打刻
 					// 出退勤。遅刻を取り消した＝False
 					// 出退勤。早退を取り消した＝False
-					if (integrationOfDaily.getAttendanceLeave().isPresent()
-							&& !integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().isEmpty()) {
-						for (TimezoneUse y : prepareWorkOutput.getScheduleTimeZone()) {
-							int i = 0;
-							if (y.getWorkNo() == 2) {
-								i = 1;
-							}
-							integrationOfDaily.getAttendanceLeave().get().setTimeLeavingWorks(
-									integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().stream()
-											.sorted((a, b) -> a.getWorkNo().compareTo(b.getWorkNo()))
-											.collect(Collectors.toList()));
-							if (i == 0 || (i == 1 && integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks()
-									.size() > 1)) {
-								TimeLeavingWork x = integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks()
-										.get(i);
-								integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().get(i)
-										.setWorkNo(new WorkNo(y.getWorkNo()));
-								if (x.getAttendanceStamp().isPresent()
-										&& x.getAttendanceStamp().get().getStamp().get().getTimeDay() != null) {
-									x.getAttendanceStamp().get().getStamp().get().getTimeDay()
-											.setTimeWithDay(Optional.ofNullable(y.getStart()));
-									x.getAttendanceStamp().get().getStamp().get().getTimeDay().getReasonTimeChange()
-											.setTimeChangeMeans(TimeChangeMeans.REAL_STAMP);
-								}
-								if (x.getLeaveStamp().isPresent()
-										&& x.getLeaveStamp().get().getStamp().get().getTimeDay() != null) {
-									x.getLeaveStamp().get().getStamp().get().getTimeDay()
-											.setTimeWithDay(Optional.ofNullable(y.getEnd()));
-									x.getLeaveStamp().get().getStamp().get().getTimeDay().getReasonTimeChange()
-											.setTimeChangeMeans(TimeChangeMeans.REAL_STAMP);
-								}
-								x.setCanceledLate(false);
-								x.setCanceledEarlyLeave(false);
-							}
-						}
-						if (integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().size() > 1
-								&& prepareWorkOutput.getScheduleTimeZone().size() < 2) {
-							integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().remove(1);
-						}
+					List<TimeLeavingWork> timeLeavingWorks = new ArrayList<>();
+					for (TimezoneUse y : prepareWorkOutput.getScheduleTimeZone()) {
+						TimeActualStamp actualStart = new TimeActualStamp(null,
+								new WorkStamp(new WorkTimeInformation(
+										new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, Optional.empty()),
+										y.getStart()), Optional.empty()),
+								0);
+						TimeActualStamp actualEnd = new TimeActualStamp(null,
+								new WorkStamp(new WorkTimeInformation(
+										new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, Optional.empty()), y.getEnd()),
+										Optional.empty()),
+								0);
+						timeLeavingWorks.add(new TimeLeavingWork(new WorkNo(y.getWorkNo()), actualStart, actualEnd));
 					}
-					;
+					integrationOfDaily.setAttendanceLeave(timeLeavingWorks.isEmpty() ? Optional.empty()
+							: Optional.of(new TimeLeavingOfDailyAttd(timeLeavingWorks,
+									new WorkTimes(timeLeavingWorks.size()))));
+					
 					// 勤務予定から日別勤怠（Work）に変換する - TQP - đã thực hiện convert từ phía trên
 					// 編集状態あり
 					if (!attendanceItemIdList.isEmpty()) {
@@ -1243,6 +1222,9 @@ public class ScheduleCreatorExecutionTransaction {
 			// ドメインモデル「月間勤務就業設定」を取得する
 			getMonthlySetting = workMonthlySettingRepository.findById(command.getCompanyId(),
 					command.getContent().getSpecifyCreation().getMonthlyPatternCode().get().v(), dateInPeriod);
+			if(getMonthlySetting.isPresent()) {
+				return new PrepareWorkOutput(getMonthlySetting.get().getWorkInformation(), null, null, Optional.empty());
+			}
 		} else {
 			// 「労働条件項目．月間パターン」をチェックする
 			// Nullでない 場合
@@ -1304,8 +1286,13 @@ public class ScheduleCreatorExecutionTransaction {
 					workplaceHistItem, referenceBasicWork, dateInPeriod,
 					masterCache.getEmpGeneralInfo().getClassificationDto(),
 					masterCache.getEmpGeneralInfo().getWorkplaceDto(), creator);
-			return new PrepareWorkOutput(new WorkInformation(basicWorkSetting.get().getWorktypeCode().v(),
-					basicWorkSetting.get().getWorkingCode().v()), null, null, Optional.empty());
+			String workType = null;
+			String workTime = null;
+			if(basicWorkSetting.isPresent()) {
+				workType = basicWorkSetting.get().getWorktypeCode() == null ? null : basicWorkSetting.get().getWorktypeCode().v();
+				workTime = basicWorkSetting.get().getWorkingCode() == null ? null : basicWorkSetting.get().getWorkingCode().v();
+			}
+			return new PrepareWorkOutput(new WorkInformation(workType, workTime), null, null, Optional.empty());
 		}
 
 		// 営業日カレンダーで勤務予定作成する TQP
@@ -1714,11 +1701,12 @@ public class ScheduleCreatorExecutionTransaction {
 			return basicScheduleService.checkNeededOfWorkTimeSetting(workTypeCode);
 		}
 
-		@Override
-		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd,
-				Integer workNo) {
-			return workTimeSettingService.getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
-		}
+		// fix bug 113211
+//		@Override
+//		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd,
+//				Integer workNo) {
+//			return workTimeSettingService.getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
+//		}
 
 		@Override
 		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {

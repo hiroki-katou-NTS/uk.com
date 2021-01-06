@@ -282,11 +282,11 @@ public class TimeLeavingOfDailyService {
 			return timeLeave;
 		}
 		/** 自動打刻セットする */
-		timeLeave = new TimeLeavingOfDailyPerformance(workInfo.getEmployeeId(), workInfo.getYmd(), reflectService.createStamp(companyId, workInfo.getWorkInformation(), workConditionItem, timeLeave.getAttendance(), empId, target, null));
-		if (timeLeave != null) {
-			timeLeave.getAttendance().setWorkTimes(new WorkTimes(countTime(timeLeave)));
+		val attendance = reflectService.createStamp(companyId, workInfo.getWorkInformation(), workConditionItem, timeLeave.getAttendance(), empId, target, null);
+		if (attendance != null) {
+			attendance.setWorkTimes(new WorkTimes(countTime(timeLeave)));
 		}
-		return timeLeave;
+		return new TimeLeavingOfDailyPerformance(empId, target, attendance);
 	}
 
 	/** 出退勤回数の計算 */

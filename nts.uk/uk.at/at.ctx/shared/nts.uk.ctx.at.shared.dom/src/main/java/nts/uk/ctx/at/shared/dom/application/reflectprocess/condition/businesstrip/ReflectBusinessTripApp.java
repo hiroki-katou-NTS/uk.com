@@ -2,7 +2,6 @@ package nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.businesstr
 
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.ApplicationReflect;
 
 /**
  * @author thanh_nx
@@ -10,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.Application
  *         出張申請の反映
  */
 @Getter
-public class ReflectBusinessTripApp implements DomainAggregate, ApplicationReflect {
+public class ReflectBusinessTripApp implements DomainAggregate {
 
 	// 会社ID
 	private String companyId;

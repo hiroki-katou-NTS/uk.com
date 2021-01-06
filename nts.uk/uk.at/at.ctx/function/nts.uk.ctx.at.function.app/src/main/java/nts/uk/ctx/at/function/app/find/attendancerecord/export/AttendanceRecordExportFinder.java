@@ -28,11 +28,10 @@ public class AttendanceRecordExportFinder {
 	 *            the code
 	 * @return the all attendance record export
 	 */
-	public List<AttendanceRecordExportDto> getAllAttendanceRecordExportDaily(String companyId, long code) {
+	public List<AttendanceRecordExportDto> getAllAttendanceRecordExportDaily(String layoutId) {
 
 		// Get list of domain
-		List<AttendanceRecordExport> domainList = attendanceRecordExpRepo.getAllAttendanceRecordExportDaily(companyId,
-				code);
+		List<AttendanceRecordExport> domainList = attendanceRecordExpRepo.getAllAttendanceRecordExportDaily(layoutId);
 
 		// Convert domain to Dto
 
@@ -44,14 +43,20 @@ public class AttendanceRecordExportFinder {
 				dto.setColumnIndex(item.getColumnIndex());
 				dto.setExportAtr(item.getExportAtr().value);
 				dto.setUserAtr(item.getUseAtr());
-				if (item.getUpperPosition().isPresent())
+				if (item.getUpperPosition().isPresent()) {
 					dto.setUpperPosition(item.getUpperPosition().get().getNameDisplay());
-				else
+					dto.setUpperShow(true);
+				} else {
 					dto.setUpperPosition("");
-				if (item.getLowerPosition().isPresent())
+					dto.setUpperShow(false);
+				}
+				if (item.getLowerPosition().isPresent()) {
 					dto.setLowwerPosition(item.getLowerPosition().get().getNameDisplay());
-				else
+					dto.setLowerShow(true);
+				} else {
 					dto.setLowwerPosition("");
+					dto.setLowerShow(false);
+				}
 
 				dtoList.add(dto);
 
@@ -69,11 +74,10 @@ public class AttendanceRecordExportFinder {
 	 *            the code
 	 * @return the all attendance record export monthly
 	 */
-	public List<AttendanceRecordExportDto> getAllAttendanceRecordExportMonthly(String companyId, long code) {
+	public List<AttendanceRecordExportDto> getAllAttendanceRecordExportMonthly(String layoutId) {
 
 		// Get list of domain
-		List<AttendanceRecordExport> domainList = attendanceRecordExpRepo.getAllAttendanceRecordExportMonthly(companyId,
-				code);
+		List<AttendanceRecordExport> domainList = attendanceRecordExpRepo.getAllAttendanceRecordExportMonthly(layoutId);
 
 		// Convert domain to Dto
 
@@ -84,14 +88,20 @@ public class AttendanceRecordExportFinder {
 				dto.setColumnIndex(item.getColumnIndex());
 				dto.setExportAtr(item.getExportAtr().value);
 				dto.setUserAtr(item.getUseAtr());
-				if (item.getUpperPosition().isPresent())
+				if (item.getUpperPosition().isPresent()) {
 					dto.setUpperPosition(item.getUpperPosition().get().getNameDisplay());
-				else
+					dto.setUpperShow(true);
+				} else {
 					dto.setUpperPosition("");
-				if (item.getLowerPosition().isPresent())
+					dto.setUpperShow(false);
+				}
+				if (item.getLowerPosition().isPresent()) {
 					dto.setLowwerPosition(item.getLowerPosition().get().getNameDisplay());
-				else
+					dto.setLowerShow(true);
+				} else {
 					dto.setLowwerPosition("");
+					dto.setLowerShow(false);
+				}
 
 				dtoList.add(dto);
 

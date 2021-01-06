@@ -14,20 +14,27 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendan
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AgreeOverTimeOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.OverTimeWorkHoursOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CalculatedFlag;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.ColorConfirmResult;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
+import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayPrePost;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppDateContradictionAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.Time36AgreeCheckRegister;
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.timeitem.BonusPayTimeItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 
 public interface CommonOvertimeHoliday {
 	
@@ -50,7 +57,11 @@ public interface CommonOvertimeHoliday {
 	 * @param appType 時間外表示区分
 	 * @return
 	 */
-	public Optional<AgreeOverTimeOutput> getAgreementTime(String companyID, String employeeID, ApplicationType appType);
+	public Optional<OverTimeWorkHoursOutput> getAgreementTime(
+			String companyID,
+			String employeeID,
+			Time36AgreeCheckRegister extratimeExcessAtr,
+			NotUseAtr extratimeDisplayAtr);
 
 	/**
 	 * 01-04_加給時間を取得
@@ -171,7 +182,7 @@ public interface CommonOvertimeHoliday {
 	 * @param calculateFlg
 	 * @param timeCalUse 時刻計算利用区分
 	 */
-	void calculateButtonCheck(int calculateFlg, UseAtr timeCalUse);
+	void calculateButtonCheck(CalculatedFlag calculateFlg, UseAtr timeCalUse);
 	
 	/**
 	 * 03-03_３６上限チェック（月間） KAF005
@@ -284,7 +295,26 @@ public interface CommonOvertimeHoliday {
 	 */
 	public List<OvertimeInputCaculation> calculator(AppCommonSettingOutput appCommonSettingOutput, String appDate, String siftCD, String workTypeCode,
 			Integer startTime,Integer endTime, List<Integer> startTimeRests,List<Integer> endTimeRests);
-	
+	/**
+	 * Refactor5 06_計算処理
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム(残業・休出).06_計算処理
+	 * @param companyId
+	 * @param employeeId
+	 * @param date
+	 * @param workTypeCode
+	 * @param workTimeCode
+	 * @param timeZones
+	 * @param breakTimes
+	 * @return 申請時間 List
+	 */
+	public List<ApplicationTime> calculator(
+			String companyId,
+			String employeeId,
+			GeneralDate date,
+			Optional<String> workTypeCode,
+			Optional<String> workTimeCode,
+			List<TimeZone> timeZones,
+			List<BreakTimeSheet> breakTimes);
 	/**
 	 * 03-01-1_チェック条件
 	 * @param prePostAtr 事前事後区分

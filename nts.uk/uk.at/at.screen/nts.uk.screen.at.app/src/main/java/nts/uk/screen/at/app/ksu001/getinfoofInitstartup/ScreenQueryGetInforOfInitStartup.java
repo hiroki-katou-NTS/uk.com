@@ -16,6 +16,9 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.displaysetting.DisplaySettingByWorkplace;
 import nts.uk.ctx.at.schedule.dom.displaysetting.DisplaySettingByWorkplaceRepository;
+import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheAuthModifyDeadline;
+import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheAuthModifyDeadlineRepository;
+import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyStartDateService;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.DisplayInfoOrganization;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.GetTargetIdentifiInforService;
@@ -51,12 +54,15 @@ public class ScreenQueryGetInforOfInitStartup {
 	@Inject
 	private AffWorkplaceGroupRespository affWorkplaceGroupRepo;
 	
+	@Inject
+	private ScheAuthModifyDeadlineRepository scheAuthModifyDeadlineRepo;
+	
 	public DataScreenQueryGetInforDto getData() {
 		// Step 1,2
 		String companyID = AppContexts.user().companyId();
 		Optional<DisplaySettingByWorkplace> workScheDisplaySettingOpt = workScheDisplaySettingRepo.get(companyID);
 		if (!workScheDisplaySettingOpt.isPresent()) {
-			return new DataScreenQueryGetInforDto(null, null, null, null);
+			return new DataScreenQueryGetInforDto(null, null, null, null, null);
 		}
 
 		DatePeriod datePeriod = workScheDisplaySettingOpt.get().calcuInitDisplayPeriod();
@@ -73,7 +79,12 @@ public class ScreenQueryGetInforOfInitStartup {
 		
 		TargetOrgIdenInforDto targetOrgIdenInforDto = new TargetOrgIdenInforDto( targetOrgIdenInfor );
 		
-		return new DataScreenQueryGetInforDto(datePeriod.start(), datePeriod.end(), targetOrgIdenInforDto, displayInfoOrganization);
+		// step 5
+		RequireScheModifyStartDate requireScheModifyStartDate = new RequireScheModifyStartDate(scheAuthModifyDeadlineRepo);
+		String roleId = AppContexts.user().roles().forAttendance();
+		GeneralDate scheduleModifyStartDate = ScheModifyStartDateService.getModifyStartDate(requireScheModifyStartDate, roleId);
+		
+		return new DataScreenQueryGetInforDto(datePeriod.start(), datePeriod.end(), targetOrgIdenInforDto, displayInfoOrganization, scheduleModifyStartDate);
 	}
 	
 	@AllArgsConstructor
@@ -133,7 +144,18 @@ public class ScreenQueryGetInforOfInitStartup {
 			List<String> data = affWorkplaceGroupRepo.getWKPID(AppContexts.user().companyId(), WKPGRPID);
 			return data;
 		}
+	}
+	
+	@AllArgsConstructor
+	private static class RequireScheModifyStartDate implements ScheModifyStartDateService.Require {
 		
-		
+		@Inject
+		private ScheAuthModifyDeadlineRepository scheAuthModifyDeadlineRepo;
+
+		@Override
+		public Optional<ScheAuthModifyDeadline> getScheAuthModifyDeadline(String roleID) {
+			Optional<ScheAuthModifyDeadline> rs = scheAuthModifyDeadlineRepo.get(AppContexts.user().companyId(), roleID);
+			return rs;
+		}
 	}
 }

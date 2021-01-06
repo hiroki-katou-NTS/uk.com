@@ -24,7 +24,6 @@ import nts.uk.ctx.at.function.infra.entity.attendanceItemAndFrameLinking.KfnmtAt
 
 @Stateless
 public class JpaAttendanceItemLinkingRepository extends JpaRepository implements AttendanceItemLinkingRepository {
-
 	private static final String FIND;
 	private static final String FIND_BY_ANY_ITEM;
 	private static final String FIND_BY_ITEM_ID_AND_TYPE;
