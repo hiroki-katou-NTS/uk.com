@@ -1,17 +1,18 @@
-package nts.uk.ctx.at.schedule.ws.budget.schedulevertical.personalcounter;
+package nts.uk.ctx.at.aggregation.ws.schedulecounter.personalcounter;
 
-import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.personalcounter.RegisterPersonalCounterCommand;
-import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.personalcounter.RegisterPersonalCounterCommandHandler;
-import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.personal.PersonalCounterCategoryDto;
-import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.personal.PersonalCounterFinder;
-import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.PersonalCounterCategory;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import java.util.List;
+
+import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.aggregation.app.command.schedulecounter.personalcounter.RegisterPersonalCounterCommand;
+import nts.uk.ctx.at.aggregation.app.command.schedulecounter.personalcounter.RegisterPersonalCounterCommandHandler;
+import nts.uk.ctx.at.aggregation.app.find.schedulecounter.personal.PersonalCounterCategoryDto;
+import nts.uk.ctx.at.aggregation.app.find.schedulecounter.personal.PersonalCounterFinder;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.PersonalCounterCategory;
 
 /**
  * KML002 Screen C

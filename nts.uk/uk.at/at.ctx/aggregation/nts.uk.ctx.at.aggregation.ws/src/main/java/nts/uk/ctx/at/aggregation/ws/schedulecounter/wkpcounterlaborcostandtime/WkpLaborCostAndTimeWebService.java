@@ -1,16 +1,17 @@
-package nts.uk.ctx.at.schedule.ws.budget.schedulevertical.wkpcounterlaborcostandtime;
+package nts.uk.ctx.at.aggregation.ws.schedulecounter.wkpcounterlaborcostandtime;
 
-import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.wkpcounterlaborcostandtime.RegisterWkpLaborCostAndTimeCommand;
-import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.wkpcounterlaborcostandtime.RegisterWkpLaborCostAndTimeCommandHandler;
-import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.wkplaborcostandtime.WkpLaborCostAndTimeDto;
-import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.wkplaborcostandtime.WkpLaborCostAndTimeFinder;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import java.util.List;
+
+import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.aggregation.app.command.schedulecounter.wkpcounterlaborcostandtime.RegisterWkpLaborCostAndTimeCommand;
+import nts.uk.ctx.at.aggregation.app.command.schedulecounter.wkpcounterlaborcostandtime.RegisterWkpLaborCostAndTimeCommandHandler;
+import nts.uk.ctx.at.aggregation.app.find.schedulecounter.wkplaborcostandtime.WkpLaborCostAndTimeDto;
+import nts.uk.ctx.at.aggregation.app.find.schedulecounter.wkplaborcostandtime.WkpLaborCostAndTimeFinder;
 
 /**
  * KML002 Screen D

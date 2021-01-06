@@ -1,13 +1,13 @@
-package nts.uk.ctx.at.schedule.ws.budget.schedulevertical.timenumber;
-
-import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.timenumber.RegisterTimeNumberCounterCommand;
-import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.timenumber.RegisterTimeNumberCounterCommandHandler;
+package nts.uk.ctx.at.aggregation.ws.schedulecounter.timenumber;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+
+import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.aggregation.app.command.schedulecounter.timenumber.RegisterTimeNumberCounterCommand;
+import nts.uk.ctx.at.aggregation.app.command.schedulecounter.timenumber.RegisterTimeNumberCounterCommandHandler;
 
 /**
  * KML002 Screen G

@@ -1,17 +1,18 @@
-package nts.uk.ctx.at.schedule.ws.budget.schedulevertical.workplacecounter;
+package nts.uk.ctx.at.aggregation.ws.schedulecounter.workplacecounter;
 
-import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.workplacecounter.RegisterWorkplaceCounterCommand;
-import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.workplacecounter.RegisterWorkplaceCounterCommandHandler;
-import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.wkpcounter.WorkplaceCounterCategoryDto;
-import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.wkpcounter.WorkplaceCounterFinder;
-import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.WorkplaceCounterCategory;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import java.util.List;
+
+import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.aggregation.app.command.schedulecounter.workplacecounter.RegisterWorkplaceCounterCommand;
+import nts.uk.ctx.at.aggregation.app.command.schedulecounter.workplacecounter.RegisterWorkplaceCounterCommandHandler;
+import nts.uk.ctx.at.aggregation.app.find.schedulecounter.wkpcounter.WorkplaceCounterCategoryDto;
+import nts.uk.ctx.at.aggregation.app.find.schedulecounter.wkpcounter.WorkplaceCounterFinder;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.WorkplaceCounterCategory;
 
 /**
  * KML002 Screen B

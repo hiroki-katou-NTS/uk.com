@@ -1,16 +1,17 @@
-package nts.uk.ctx.at.schedule.ws.budget.schedulevertical.wkptimezonepeoplenumber;
+package nts.uk.ctx.at.aggregation.ws.schedulecounter.wkptimezonepeoplenumber;
 
-import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.wkptimezonepeoplenumber.RegisterWkpTimeZonePeopleNumberCommand;
-import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.wkptimezonepeoplenumber.RegisterWkpTimeZonePeopleNumberCommandHandler;
-import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.wkptimezone.WkpCounterStartTimeDto;
-import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.wkptimezone.WkpTimeZonePeopleNumberFinder;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import java.util.List;
+
+import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.aggregation.app.command.schedulecounter.wkptimezonepeoplenumber.RegisterWkpTimeZonePeopleNumberCommand;
+import nts.uk.ctx.at.aggregation.app.command.schedulecounter.wkptimezonepeoplenumber.RegisterWkpTimeZonePeopleNumberCommandHandler;
+import nts.uk.ctx.at.aggregation.app.find.schedulecounter.wkptimezone.WkpCounterStartTimeDto;
+import nts.uk.ctx.at.aggregation.app.find.schedulecounter.wkptimezone.WkpTimeZonePeopleNumberFinder;
 
 /**
  * KML002 Screen E
