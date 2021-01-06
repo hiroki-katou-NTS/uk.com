@@ -20,12 +20,13 @@ import { ReasonDivergence, ExcessStateMidnight, ExcessStateDetail, OutDateApplic
         },
         reason1: {
             reason: {
-                constraint: 'DivergenceReason'
+                constraint: 'DivergenceReason',
+
             }
         },
         reason2: {
             reason: {
-                constraint: 'DivergenceReason'
+                constraint: 'DivergenceReason',
             }
         },
         DivergenceReason: {
@@ -56,9 +57,9 @@ export class KafS05Step2Component extends Vue {
     public reason1: Reason = {
         title: '',
         reason: '',
-        selectedValue: null,
+        selectedValue: '',
         dropdownList: [{
-            code: null,
+            code: '',
             text: this.$i18n('KAFS05_54')
         }]
     } as Reason;
@@ -67,9 +68,9 @@ export class KafS05Step2Component extends Vue {
     public reason2: Reason = {
         title: '',
         reason: '',
-        selectedValue: null,
+        selectedValue: '',
         dropdownList: [{
-            code: null,
+            code: '',
             text: this.$i18n('KAFS05_54')
         }]
     } as Reason;
@@ -543,7 +544,7 @@ export class KafS05Step2Component extends Vue {
                         text: self.$i18n('KAFS05_54'),
                     });
                 }
-                reason1.selectedValue = code;
+                reason1.selectedValue = code || '';
             }
             if (findResult2) {
                 reason2.reason = findResult2.reason || '';
@@ -560,7 +561,7 @@ export class KafS05Step2Component extends Vue {
                         text: self.$i18n('KAFS05_54')
                     });
                 }
-                reason2.selectedValue = code;               
+                reason2.selectedValue = code || '';               
             }
         }
 
@@ -574,13 +575,13 @@ export class KafS05Step2Component extends Vue {
         let reason = {} as Reason;
         reason.title = self.SPACE_STRING;
         reason.reason = '';
-        reason.selectedValue = null;
+        reason.selectedValue = '';
         if (!_.isNil(divergenceTimeRoot)) {
             reason.title = divergenceTimeRoot.divTimeName;
         }
         reason.dropdownList = [] as Array<Object>;
         reason.dropdownList.push({
-            code: null,
+            code: '',
             text: self.$i18n('KAFS05_54'),
             defaultValue: false
         });

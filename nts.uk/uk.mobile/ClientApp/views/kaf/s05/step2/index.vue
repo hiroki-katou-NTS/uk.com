@@ -17,8 +17,8 @@
       </div>
       <!--A2_B1_5-->
       <div
-       v-if="$appContext.isMsg_1562" 
-      class="card bg-danger top-alert uk-text-danger topError"
+       v-if="!$valid || !$appContext.isValidateAll" 
+      class="card bg-danger top-alert uk-text-danger topError mt-2"
       >
         <button class="btn btn-link uk-text-danger">
           <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
