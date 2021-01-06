@@ -1491,6 +1491,19 @@ project (':exio.ctx:nts.uk.ctx.exio.dom') {
 	}
 }
 
+project (':exio.ctx:nts.uk.ctx.exio.pub') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+	}
+}
+
+project (':exio.ctx:nts.uk.ctx.exio.pubimp') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':exio.ctx:nts.uk.ctx.exio.dom')
+	}
+}
+
 project (':exio.ctx:nts.uk.ctx.exio.infra') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
