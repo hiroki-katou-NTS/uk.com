@@ -23,12 +23,10 @@
   margin: 10px 0;
 }
 
-.remove-wkh2 table th:nth-child(5),
-.remove-wkh2 table td:nth-child(5) {
-  display: none;
+.ui-iggrid .ui-iggrid-tablebody td.limited-label {
+  height: 23px;
 }
-
-.remove-wkh2 table th:nth-child(6),
-.remove-wkh2 table td:nth-child(6) {
-  width: 310px !important;
+.grid-list.fix-ie .ui-iggrid .ui-iggrid-tablebody td.limited-label {
+  height: 22px;
+  padding-top: 1px;
 }
