@@ -1,4 +1,5 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+
 module nts.uk.at.view.kwr003.b {
   const NUM_ROWS = 10;
 
@@ -257,17 +258,15 @@ module nts.uk.at.view.kwr003.b {
       params.outputItemList = outputItemList;
 
       let url = vm.isNewMode() ? PATH.createSettingItemDetails : PATH.updateSettingItemDetails;
-      let reloadParams = { standOrFree: vm.settingCategory(), code: vm.attendanceCode() };
+      let reloadParams = { standOrFree: vm.settingCategory(), code: vm.attendanceCode(), msgId: null };
 
       vm.$blockui('show');
       vm.$ajax(url, params).done(() => {
-        vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
-          //if (vm.isNewMode()) vm.loadSettingList(reloadParams);
+        vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {         
           vm.loadSettingList(reloadParams);
           vm.settingAttendance();
           vm.isNewMode(false);
           vm.$blockui('hide');
-
           $('#KWR003_B43').focus();
         });
         dfd.resolve();
@@ -276,9 +275,10 @@ module nts.uk.at.view.kwr003.b {
           case 'Msg_1903':
             vm.$dialog.error({ messageId: error.messageId }).then(() => {
               reloadParams.code = null;
+              reloadParams.msgId = 'Msg_1903';
               vm.loadSettingList(reloadParams);
-              nts.uk.ui.errors.clearAll();
-              $('#btnB11').focus();
+              //nts.uk.ui.errors.clearAll();
+              //$('#btnB11').focus();
             });
             break;
 
@@ -401,7 +401,7 @@ module nts.uk.at.view.kwr003.b {
         vm.currentCodeList(newSelectedCode);
       } else {
         vm.clearModelToNew();
-        $('#btnB11').focus();
+        $('#KWR003_B42').focus();
       }
     }
 
@@ -670,10 +670,12 @@ module nts.uk.at.view.kwr003.b {
 
           vm.currentCodeList(code);
 
+          if( !_.isNil(params.msgId) && params.msgId === 'Msg_1903') $('#btnB11').focus();          
+
         } else {
           //create new the settings list
           vm.clearModelToNew();
-          $('#btnB11').focus();
+          $('#KWR003_B42').focus();
         }
 
         vm.$blockui('hide');
