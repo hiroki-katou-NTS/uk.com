@@ -28,4 +28,10 @@ public interface ApplyForLeaveRepository {
      * @param appId
      */
     public void update(ApplyForLeave domain, String CID, String appId);
+    
+    /**
+     * @param CID
+     * @param appId
+     */
+    public void delete(String CID, String appId);
 }

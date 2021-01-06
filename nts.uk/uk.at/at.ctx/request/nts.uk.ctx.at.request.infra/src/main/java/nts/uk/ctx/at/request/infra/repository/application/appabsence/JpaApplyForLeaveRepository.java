@@ -76,4 +76,16 @@ public class JpaApplyForLeaveRepository extends JpaRepository implements ApplyFo
             this.commandProxy().update(entity);
         }
     }
+
+    @Override
+    public void delete(String CID, String appId) {
+     // Find entity
+        Optional<KrqdtAppHd> entityAppHdOpt = this.findEntity(CID, appId);
+        
+        if (!entityAppHdOpt.isPresent()) {
+            throw new RuntimeException("Entity not existed");
+        } else {
+            this.commandProxy().remove(entityAppHdOpt.get());
+        }
+    }
 }
