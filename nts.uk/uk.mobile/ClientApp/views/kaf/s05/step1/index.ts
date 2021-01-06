@@ -60,7 +60,7 @@ export class KafS05Step1Component extends Vue {
                 timeRange: true
             });
         }
-        if (_.isNil(_.get(data,'start')) || _.isNil(_.get(data, 'end')) || self.isFirstModeUpdate) {
+        if (_.isNil(_.get(data,'start')) || _.isNil(_.get(data, 'end')) || (self.isFirstModeUpdate && !self.$appContext.modeNew)) {
             self.isFirstModeUpdate = false;
 
             return;
