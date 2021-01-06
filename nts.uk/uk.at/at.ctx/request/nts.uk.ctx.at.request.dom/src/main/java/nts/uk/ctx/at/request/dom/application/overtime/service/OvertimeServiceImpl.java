@@ -1177,7 +1177,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 					       .checkAdvanceApp(
 					    		   ApplicationType.OVER_TIME_APPLICATION,
 					    		   appOverTime.getPrePostAtr(),
-					    		   Optional.of(appOverTime),
+					    		   displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpPreAppContentDisplayLst().map(x -> x.get(0).getApOptional()).orElse(Optional.empty()),
 					    		   Optional.empty());
 		// 申請日の矛盾チェック
 		commonAlgorithmOverTime.commonAlgorithmAB(
