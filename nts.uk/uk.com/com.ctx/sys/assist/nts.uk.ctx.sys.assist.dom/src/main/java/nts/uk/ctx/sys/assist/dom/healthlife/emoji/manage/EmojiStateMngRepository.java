@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.assist.dom.healthlife.emoji.manage;
 
+import java.util.Optional;
+
 /*
  * Repository UKDesign.ドメインモデル.NittsuSystem.UniversalK.NittsuSystem.Common (NtsCommons).ヘルスライフ.感情状態管理.感情状態管理.感情状態管理
  * 感情状態管理Repository							
@@ -25,5 +27,5 @@ public interface EmojiStateMngRepository {
 	 * @param cid 会社ID
 	 * @return EmojiStateMng 感情状態管理
 	 */
-	public EmojiStateMng getByCid(String cid);
+	public Optional<EmojiStateMng> getByCid(String cid);
 }
