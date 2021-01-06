@@ -139,7 +139,9 @@ public class ExtractAlarmListWorkPlaceFinder {
                     break;
                 case MONTHLY:
                     // 期間を作成する。
-                    period = getMonthTime(checkCond.getRangeToExtract());
+                    SingleMonth singleMonth = (SingleMonth) checkCond.getRangeToExtract();
+                    // ・期間　＝　Input．「当月」」ードメイン「チェック条件」の「単月」．月数
+                    period = new CheckConditionDto(WorkplaceCategory.MONTHLY, processingYm.addMonths(-singleMonth.getMonthNo()));
                     break;
                 case SCHEDULE_DAILY:
                     // スケジュール／日次の期間を取得する。
@@ -200,22 +202,6 @@ public class ExtractAlarmListWorkPlaceFinder {
             endYm = processingYm.addMonths(-endMonthNo.get().getMonthNo());
         }
         return new CheckConditionDto(category, startYm, endYm);
-    }
-
-    /**
-     * 月次の時間を取得する
-     *
-     * @param rangeToExtract ドメイン「抽出期間(単月)」
-     * @return 期間
-     */
-    private CheckConditionDto getMonthTime(RangeToExtract rangeToExtract) {
-        SingleMonth singleMonth = (SingleMonth) rangeToExtract;
-        // 時間を作成する。
-        YearMonth ym = YearMonth.of(GeneralDate.today().year(), GeneralDate.today().month());
-        // ・　時間　＝　システム日付の年月ー「Input．抽出期間(単月)．月数指定．月数」
-        ym = ym.addMonths(-singleMonth.getMonthNo());
-        // 作成した時間を返す。
-        return new CheckConditionDto(WorkplaceCategory.MONTHLY, ym);
     }
 
     /**
