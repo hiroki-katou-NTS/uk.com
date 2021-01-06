@@ -62,14 +62,12 @@ module nts.uk.at.view.kwr004.b {
     diligenceProjects: KnockoutObservableArray<DiligenceProject> = ko.observableArray([]);
     diligenceProjectsMonthly: KnockoutObservableArray<DiligenceProject> = ko.observableArray([]);
     attributeList: KnockoutObservableArray<any> = ko.observableArray([]);
+    isItemRemoved: KnockoutObservable<boolean> = ko.observable(false);
 
     constructor(params: any) {
       super();
 
       const vm = this;
-
-      //KDL047, 048
-      //vm.getSettingListKDL();
 
       //merge attributes, settings
       vm.switchAndDropBox();
@@ -239,6 +237,7 @@ module nts.uk.at.view.kwr004.b {
           vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
             vm.getSettingItemsLeft(vm.attendanceCode());
             vm.$blockui('hide');
+            $('#KWR004_B33').focus();
           });
         })
         .fail((error) => {
@@ -252,8 +251,8 @@ module nts.uk.at.view.kwr004.b {
       switch (messageId) {
         case 'Msg_1898':
           vm.$dialog.error({ messageId: messageId }).then(() => {
+            vm.isItemRemoved(true);
             vm.getSettingItemsLeft(null);
-            //$('#btnB11').focus();
           });
           break;
 
@@ -395,7 +394,13 @@ module nts.uk.at.view.kwr004.b {
         vm.isEnableDuplicateButton(true);
         vm.isEnableDeleteButton(true);
         vm.isNewMode(false);
-        $('#KWR004_B33').focus();
+        
+        if (!vm.isItemRemoved())
+          $('#KWR004_B33').focus();
+        else {
+          $('#btnB11').focus();
+          vm.isItemRemoved(false);
+        }
       }
 
       vm.$blockui('show');
@@ -437,7 +442,7 @@ module nts.uk.at.view.kwr004.b {
 
       _.forEach(outputItems, (x, index: number) => {
         independentCalc = (!_.isNil(x.independentCalcClassic)) ? x.independentCalcClassic : 2;
-        independentCalc = (maxItems === 2 && independentCalc === 2) ? 3 : independentCalc;        
+        independentCalc = (maxItems === 2 && independentCalc === 2) ? 3 : independentCalc;
         dailyAttributes = vm.dailyOrMonthlyAttributes(independentCalc);
         selectedListItems = []; //clear
         _.forEach(x.selectedListItems, (o) => {
@@ -482,8 +487,8 @@ module nts.uk.at.view.kwr004.b {
 
     dailyOrMonthlyAttributes(type: number) {
       const vm = this;
-      if( type === 1) return vm.dailyAloneAttributes()
-      else if( type === 2) return vm.monthlyAttributes();
+      if (type === 1) return vm.dailyAloneAttributes()
+      else if (type === 2) return vm.monthlyAttributes();
       else return vm.dailyCalcAttributes();
       //return type === 1 ? vm.dailyAloneAttributes() : vm.monthlyAttributes();
     }
@@ -599,7 +604,7 @@ module nts.uk.at.view.kwr004.b {
         .done((result) => {
           if (_.isNil(result) || result.length == 0) {
             vm.clearModelToNew();
-            $('#btnB11').focus();
+            $('#KWR004_B32').focus();
           } else {
             //merge to settingListItems
             _.forEach(result, (x) => {
@@ -613,7 +618,7 @@ module nts.uk.at.view.kwr004.b {
 
             let firstItem: any = _.head(vm.settingListItems());
             if (_.isNil(currentCode)) currentCode = firstItem.code;
-            vm.currentCodeList(currentCode);
+            vm.currentCodeList(currentCode);            
             //vm.currentCodeList.valueHasMutated();
           }
         }).fail(() => { });
@@ -865,11 +870,10 @@ module nts.uk.at.view.kwr004.b {
         vm.currentCodeList(newSelectedCode);
       } else {
         vm.clearModelToNew();
-        $('#btnB11').focus();
+        $('#KWR004_B32').focus();
       }
       //vm.addNewRow();
     }
-
   }
 
   //=================================================================
