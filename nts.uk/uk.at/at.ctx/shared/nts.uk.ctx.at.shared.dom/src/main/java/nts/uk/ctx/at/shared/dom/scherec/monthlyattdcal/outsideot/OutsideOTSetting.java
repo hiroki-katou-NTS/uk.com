@@ -21,6 +21,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.converter.MonthlyRec
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleopenperiod.RoleOfOpenPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleopenperiod.RoleOfOpenPeriodEnum;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.RoundingSetOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.TimeRoundingOfExcessOutsideTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeBreakdown;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.MonthlyCalculation;
@@ -58,11 +59,13 @@ public class OutsideOTSetting extends AggregateRoot implements Serializable{
 	/** The over times. */
 	// 超過時間一覧
 	private List<Overtime> overtimes;
+
+	//TODO QA 39234
+	/** 丸め */
+	private Optional<TimeRoundingOfExcessOutsideTime> timeRoundingOfExcessOutsideTime;
 	
 	/**
 	 * Instantiates a new overtime setting.
-	 *
-	 * @param memento the memento
 	 */
 	public OutsideOTSetting(String companyId, OvertimeNote note, List<OutsideOTBRDItem> breakdownItems, 
 			OutsideOTCalMed calculationMethod, List<Overtime> overtimes) {
@@ -73,6 +76,31 @@ public class OutsideOTSetting extends AggregateRoot implements Serializable{
 		this.calculationMethod = calculationMethod;
 		this.overtimes = overtimes;
 		
+		// validate domain
+		if(CollectionUtil.isEmpty(this.breakdownItems)){
+			throw new BusinessException("Msg_485");
+		}
+		if (!checkUseBreakdownItem()) {
+			throw new BusinessException("Msg_485");
+		}
+		if (this.checkOverlapOvertime()) {
+			throw new BusinessException("Msg_486");
+		}
+		if(this.checkOverlapProductNumber()){
+			throw new BusinessException("Msg_490");
+		}
+	}
+
+	//TODO QA 39234
+	public OutsideOTSetting(String companyId, OvertimeNote note, List<OutsideOTBRDItem> breakdownItems,
+			OutsideOTCalMed calculationMethod, List<Overtime> overtimes,Optional<TimeRoundingOfExcessOutsideTime> timeRoundingOfExcessOutsideTime) {
+
+		this.companyId = companyId;
+		this.note = note;
+		this.breakdownItems = breakdownItems;
+		this.calculationMethod = calculationMethod;
+		this.overtimes = overtimes;
+
 		// validate domain
 		if(CollectionUtil.isEmpty(this.breakdownItems)){
 			throw new BusinessException("Msg_485");

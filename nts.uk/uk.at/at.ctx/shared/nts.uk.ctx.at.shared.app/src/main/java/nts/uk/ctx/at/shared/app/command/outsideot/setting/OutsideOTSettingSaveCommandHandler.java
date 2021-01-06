@@ -64,19 +64,19 @@ public class OutsideOTSettingSaveCommandHandler extends CommandHandler<OutsideOT
 		
 		// to domain
 		OutsideOTSetting domainSetting = command.toDomainSetting(companyId);
-		SuperHD60HConMed domainSupper = command.toDomainSuper(companyId);
+//		SuperHD60HConMed domainSupper = command.toDomainSuper(companyId);
 		
-		Optional<Com60HourVacation> optionalCom60Hour = this.com60HourVacationRepository.findById(companyId);
-		if(optionalCom60Hour.isPresent()){
-			if(optionalCom60Hour.get().getSetting().getIsManage().equals(ManageDistinct.YES)){
-				// check domain setting and supper
-				this.checkDomainSettingAndSuper(domainSetting, domainSupper);
-			}
-		}
+//		Optional<Com60HourVacation> optionalCom60Hour = this.com60HourVacationRepository.findById(companyId);
+//		if(optionalCom60Hour.isPresent()){
+//			if(optionalCom60Hour.get().getSetting().getIsManage().equals(ManageDistinct.YES)){
+//				// check domain setting and supper
+//				this.checkDomainSettingAndSuper(domainSetting, domainSupper);
+//			}
+//		}
 		
 		// save domain
 		this.outsideOTSettingRepository.save(domainSetting);
-		this.superHD60HConMedRepository.save(domainSupper);
+//		this.superHD60HConMedRepository.save(domainSupper);
 	}
 	
 	/**
