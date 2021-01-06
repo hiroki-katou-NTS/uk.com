@@ -6,6 +6,8 @@ module knr002.g {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import modal =  nts.uk.ui.windows.sub.modal;
+    import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
+
 
     export module viewmodel{
         export class ScreenModel{
@@ -331,32 +333,32 @@ module knr002.g {
                             dialog.error({ messageId: "Msg_2035" }).then(() => {
                                 blockUI.clear();
                             });
+                            return;
                         }
 
-                        if((data.employeeIds.length <= 0 && self.sendEmployeeId())
-                        || (data.employeeIds.length > 0 && !self.sendEmployeeId())){
+                        if(((_.isNil(data.employeeIds) || data.employeeIds.length == 0) && self.sendEmployeeId())
+                        || ((!_.isNil(data.employeeIds) && data.employeeIds.length > 0) && !self.sendEmployeeId())){
                             $('#G6_1').ntsError('set', { messageId:'Msg_2023' });
                         }
 
-                        if((data.workTypeCodes.length <= 0 && self.sendWorkType())
-                        || (data.workTypeCodes.length > 0 && !self.sendWorkType())){
+                        if(((_.isNil(data.workTypeCodes) || data.workTypeCodes.length == 0) && self.sendWorkType())
+                        || ((!_.isNil(data.workTypeCodes) && data.workTypeCodes.length > 0) && !self.sendWorkType())){
                             $('#G6_2').ntsError('set', { messageId:'Msg_2024' });
                         }
 
-                        if((data.workTimeCodes.length <= 0 && self.sendWorkTime())
-                        || (data.workTimeCodes.length > 0 && !self.sendWorkTime())){
+                        if(((_.isNil(data.workTimeCodes) || data.workTimeCodes.length == 0) && self.sendWorkTime())
+                        || ((!_.isNil(data.workTimeCodes) && data.workTimeCodes.length > 0) && !self.sendWorkTime())){
                             $('#G6_3').ntsError('set', { messageId:'Msg_2025' });
                         }
 
-                        if((data.bentoMenuFrameNumbers.length <= 0 && self.sendBentoMenu())
-                        || (data.bentoMenuFrameNumbers.length > 0 && !self.sendBentoMenu())){
+                        if(((_.isNil(data.bentoMenuFrameNumbers) || data.bentoMenuFrameNumbers.length == 0) && self.sendBentoMenu())
+                        || ((!_.isNil(data.bentoMenuFrameNumbers) && data.bentoMenuFrameNumbers.length > 0) && !self.sendBentoMenu())){
                             $('#G6_6').ntsError('set', { messageId:'Msg_2026' });
                         }
                         if(self.hasError()){
                             return;
                         }
                         
-
                         service.determine(self.empInfoTerCode(),
                                           self.sendEmployeeId(),
                                           self.sendBentoMenu(),

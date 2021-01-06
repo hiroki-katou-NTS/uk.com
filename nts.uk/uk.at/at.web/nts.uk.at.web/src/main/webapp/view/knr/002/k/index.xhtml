@@ -10,7 +10,7 @@
 			<script>
 				var dialogSize = {
 					width : 500,
-					height : 700
+					height : 535
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -22,10 +22,10 @@
 
 		<ui:define name="content">
 			<!-- Remote Settings copy dialog -->
-			<div class="fixed-flex-layout" id="contents-area" style="margin-top: 50px;">
-				<div id="K1_1" style="margin-left: 15px;"
+			<div class="fixed-flex-layout" id="contents-area">
+				<div id="K1_1" style="margin-left: 15px; margin-top: 7px;"
 					data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KNR002_190')}</div>
-				<div>
+				<div style= "margin-top: 7px;">
 					<table id="multi-list"
 						data-bind="ntsGridList: {				
 									height: 384,		

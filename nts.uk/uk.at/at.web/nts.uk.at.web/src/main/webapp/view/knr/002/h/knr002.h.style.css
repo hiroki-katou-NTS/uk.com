@@ -21,6 +21,9 @@ table tr td {
 	clear: both;
 	width: 100%;
 }
+#functions-area-bottom > button {
+	margin-top: 11px;
+}
 body {
 	-ms-overflow-x: hidden;
 }

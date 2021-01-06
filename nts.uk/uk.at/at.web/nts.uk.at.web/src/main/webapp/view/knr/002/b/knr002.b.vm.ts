@@ -26,14 +26,14 @@ module knr002.b {
                 let today = new Date();
                 let year = today.getFullYear();
                 let month = self.fillZero(`${today.getMonth() + 1}`);
-                var date = today.getDate();
+                let date = today.getDate();
                 let hours = self.fillZero(`${today.getHours()}`);
                 let minutes = self.fillZero(`${today.getMinutes()}`);
                 let seconds = self.fillZero(`${today.getSeconds()}`);
                 
 
-                var sSystemDateTime = `${year}/${month}/${self.fillZero(`${date - 1}`)} ${hours}:${minutes}:${seconds}`;
-                var eSystemDateTime = `${year}/${month}/${self.fillZero(`${date}`)} ${hours}:${minutes}:${seconds}`;
+                let sSystemDateTime = `${year}/${month}/${self.fillZero(`${date - 1}`)} ${hours}:${minutes}:${seconds}`;
+                let eSystemDateTime = `${year}/${month}/${self.fillZero(`${date}`)} ${hours}:${minutes}:${seconds}`;
                 self.sTime =  ko.observable(sSystemDateTime);
                 self.eTime =  ko.observable(eSystemDateTime);
                 self.selectedLog = ko.observable(null);

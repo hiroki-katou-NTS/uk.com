@@ -15,7 +15,9 @@
 .contentDialog {
 	margin-left: 20px;
 }
-
+#functions-area-bottom > button {
+	margin-top: 11px;
+}
 .testcss {
 	color: red;	
 }

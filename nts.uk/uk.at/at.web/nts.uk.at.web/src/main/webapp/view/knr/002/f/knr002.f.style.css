@@ -33,6 +33,9 @@
 	height: 168px;
 	width: 565px;
 }
+#functions-area-bottom > button {
+	margin-top: 11px;
+}
 .testcss {
 	color: red;	
 }

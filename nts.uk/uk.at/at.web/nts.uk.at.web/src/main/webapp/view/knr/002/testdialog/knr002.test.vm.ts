@@ -170,6 +170,20 @@ module knr002.test {
                     blockUI.clear();
                 });
             }
+            
+            public openKNR002GDialog(data: any) {
+                const vm = this;
+                blockUI.invisible();
+                setShared('KNR002G_empInfoTerCode', data.empInfoTerCode);
+                setShared('KNR002G_empInfoTerName', data.empInfoTerName);
+                setShared('KNR002G_modelEmpInfoTer', data.displayModelEmpInfoTer;
+                setShared('KNR002G_workLocationName', data.workLocationName);
+       
+                modal('/view/knr/002/g/index.xhtml', { title: 'G_Screen', }).onClosed(() => {
+                    blockUI.clear();
+                });
+            }
+            
             /**
              * 
              */

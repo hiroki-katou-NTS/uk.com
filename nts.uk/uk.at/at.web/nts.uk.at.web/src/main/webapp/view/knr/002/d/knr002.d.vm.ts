@@ -45,6 +45,7 @@ module knr002.d {
                         } else {
                             // get Shared from A
                             let empInfoTerList = getShared('KNR002D_empInfoTerList');
+                            console.log("data: ", empInfoTerList);
                             let desCopyTempList = [];
                             if(empInfoTerList){
                                 let keyMap: any = {};
@@ -61,10 +62,11 @@ module knr002.d {
                                     desCopyTempList.push(desCopyTemp);
                                 }
                             } else{
-                                for(let item of data){
-                                    let desCopyTemp = new EmpInfoTerminal(item.empInfoTerCode, item.empInfoTerName, item.modelEmpInfoTer, item.workLocationName);
-                                    desCopyTempList.push(desCopyTemp);
-                                }   
+                                // do something
+                                // for(let item of data){
+                                //     let desCopyTemp = new EmpInfoTerminal(item.empInfoTerCode, item.empInfoTerName, item.modelEmpInfoTer, item.workLocationName);
+                                //     desCopyTempList.push(desCopyTemp);
+                                // }   
                             }
                             self.destinationCopyList(desCopyTempList);  
                         }                       
@@ -92,7 +94,7 @@ module knr002.d {
                         { headerText: '', key: 'availability', dataType: 'boolean', width: ' 35px', ntsControl: 'Checkbox' },
                         { headerText: getText('KNR002_105'), key: 'empInfoTerCode', dataType: 'string', width: 60},
                         { headerText: getText('KNR002_106'), key: 'empInfoTerName', dataType: 'string', width: 200},
-                        { headerText: getText('KNR002_107'), key: 'modelEmpInfoTerName', dataType: 'string', width: 70},
+                        { headerText: getText('KNR002_107'), key: 'modelEmpInfoTerName', dataType: 'string', width: 120},
                         { headerText: getText('KNR002_108'), key: 'workLocationName', dataType: 'string', width: 200},
                     ],
                     features: [{

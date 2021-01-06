@@ -56,6 +56,9 @@
 .column-2 .checkbox{
 	    margin-left: 9px;
 }
+#functions-area-bottom > button {
+	margin-top: 11px;
+}
 .testcss {
 	color: red;	
 }
