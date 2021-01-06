@@ -3,10 +3,13 @@ package nts.uk.ctx.at.request.dom.application.applist.service.detail;
 import java.util.List;
 
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppCompltLeaveSync;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppPrePostGroup;
 import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
+import nts.uk.ctx.at.shared.dom.attendance.AttendanceItem;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
@@ -174,4 +177,45 @@ public interface AppContentDetailCMM045 {
 	 * @return
 	 */
 	public String createBusinessTripData(Application application, DisplayAtr appReasonDisAtr, ScreenAtr screenAtr, String companyID);
+	
+	/**
+	 * refactor 4
+	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面ver4.アルゴリズム.申請データ作成ver4.任意申請データを作成.任意申請データを作成
+	 * @param application 申請
+	 * @param appReasonDisAtr 申請理由表示区分
+	 * @param screenAtr ScreenID
+	 * @param companyID 会社ID
+	 * @return
+	 */
+	public String createOptionalItemApp(Application application, DisplayAtr appReasonDisAtr, ScreenAtr screenAtr, String companyID);
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面ver4.アルゴリズム.各申請データを作成.残業申請データを作成.残業申請データを作成
+	 * @param application
+	 * @param workTypeLst
+	 * @param workTimeSettingLst
+	 * @param attendanceItemLst
+	 * @param applicationListAtr
+	 * @param approvalListDisplaySetting
+	 * @param companyID
+	 * @return
+	 */
+	public AppOvertimeDataOutput createOvertimeContent(Application application, List<WorkType> workTypeLst, List<WorkTimeSetting> workTimeSettingLst, 
+			List<AttendanceItem> attendanceItemLst, ApplicationListAtr applicationListAtr, ApprovalListDisplaySetting approvalListDisplaySetting,
+			String companyID);
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面ver4.アルゴリズム.各申請データを作成.休出時間申請データを作成.休出時間申請データを作成
+	 * @param application
+	 * @param workTypeLst
+	 * @param workTimeSettingLst
+	 * @param attendanceItemLst
+	 * @param applicationListAtr
+	 * @param approvalListDisplaySetting
+	 * @param companyID
+	 * @return
+	 */
+	public AppHolidayWorkDataOutput createHolidayWorkContent(Application application, List<WorkType> workTypeLst, List<WorkTimeSetting> workTimeSettingLst, 
+			List<AttendanceItem> attendanceItemLst, ApplicationListAtr applicationListAtr, ApprovalListDisplaySetting approvalListDisplaySetting,
+			String companyID);
 }

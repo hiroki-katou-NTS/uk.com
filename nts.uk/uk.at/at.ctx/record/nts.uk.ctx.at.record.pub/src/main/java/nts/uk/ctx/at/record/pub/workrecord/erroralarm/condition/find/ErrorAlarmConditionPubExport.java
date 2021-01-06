@@ -83,7 +83,7 @@ public class ErrorAlarmConditionPubExport {
 			condition.createWorkTypeCondition(this.workTypeCondition.isUseAtr(),
 					this.workTypeCondition.getComparePlanAndActual());
 			
-			if (this.workTypeCondition.getComparePlanAndActual() != FilterByCompare.EXTRACT_SAME.value) {
+			if (this.workTypeCondition.getComparePlanAndActual() != FilterByCompare.SELECTED.value) {
 				condition.setWorkTypePlan(this.workTypeCondition.isPlanFilterAtr(), this.workTypeCondition.getPlanLstWorkType());
 				condition.setWorkTypeActual(this.workTypeCondition.isActualFilterAtr(),
 						this.workTypeCondition.getActualLstWorkType());
@@ -96,7 +96,7 @@ public class ErrorAlarmConditionPubExport {
 			// Set WorkTimeCondtion
 			condition.createWorkTimeCondition(this.workTimeCondition.isUseAtr(),
 					this.workTimeCondition.getComparePlanAndActual());
-			if (this.workTimeCondition.getComparePlanAndActual() != FilterByCompare.EXTRACT_SAME.value) {
+			if (this.workTimeCondition.getComparePlanAndActual() != FilterByCompare.SELECTED.value) {
 				condition.setWorkTimePlan(this.workTimeCondition.isPlanFilterAtr(), this.workTimeCondition.getPlanLstWorkTime());
 				condition.setWorkTimeActual(this.workTimeCondition.isActualFilterAtr(),
 						this.workTimeCondition.getActualLstWorkTime());
@@ -222,7 +222,7 @@ public class ErrorAlarmConditionPubExport {
 			// Set WorkTypeConditionDto
 			this.workTypeCondition.setComparePlanAndActual(conditionDomain.getWorkTypeCondition().getComparePlanAndActual().value);
 			if (conditionDomain.getWorkTypeCondition()
-					.getComparePlanAndActual() != FilterByCompare.EXTRACT_SAME) {
+					.getComparePlanAndActual() != FilterByCompare.SELECTED) {
 				PlanActualWorkType wtypeConditionDomain = (PlanActualWorkType) conditionDomain
 						.getWorkTypeCondition();
 				this.workTypeCondition.setActualFilterAtr(wtypeConditionDomain.getWorkTypeActual().isUse());
@@ -246,7 +246,7 @@ public class ErrorAlarmConditionPubExport {
 			// Set WorkTimeConditionDto
 			this.workTimeCondition.setComparePlanAndActual(conditionDomain.getWorkTimeCondition().getComparePlanAndActual().value);
 			if (conditionDomain.getWorkTimeCondition()
-					.getComparePlanAndActual() != FilterByCompare.EXTRACT_SAME) {
+					.getComparePlanAndActual() != FilterByCompare.SELECTED) {
 				PlanActualWorkTime wtimeConditionDomain = (PlanActualWorkTime) conditionDomain
 						.getWorkTimeCondition();
 				this.workTimeCondition.setActualFilterAtr(wtimeConditionDomain.getWorkTimeActual().isUse());

@@ -11,7 +11,8 @@ import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
- * 日別実績の時間休暇使用時間
+ * 日別実績の時間休暇使用時間 (old)
+ * 日別勤怠の時間休暇使用時間 (new)
  * @author ken_takasu
  *
  */
@@ -107,7 +108,6 @@ public class TimevacationUseTimeOfDaily {
 		return result;
 	}
 	
-	
 	/**
 	 * 
 	 * 合計使用時間の計算
@@ -116,11 +116,11 @@ public class TimevacationUseTimeOfDaily {
 		int result = 0;
 		
 		result = this.timeAnnualLeaveUseTime.valueAsMinutes()
-				+this.timeCompensatoryLeaveUseTime.valueAsMinutes()
-				+this.sixtyHourExcessHolidayUseTime.valueAsMinutes()
-				+this.timeSpecialHolidayUseTime.valueAsMinutes()
-				+this.timeChildCareHolidayUseTime.valueAsMinutes()
-				+this.timeCareHolidayUseTime.valueAsMinutes();
+				+ this.timeCompensatoryLeaveUseTime.valueAsMinutes()
+				+ this.sixtyHourExcessHolidayUseTime.valueAsMinutes()
+				+ this.timeSpecialHolidayUseTime.valueAsMinutes()
+				+ this.timeChildCareHolidayUseTime.valueAsMinutes()
+				+ this.timeCareHolidayUseTime.valueAsMinutes();
 		return result;
 	}
 }

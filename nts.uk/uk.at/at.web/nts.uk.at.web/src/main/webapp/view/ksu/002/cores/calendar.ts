@@ -5,6 +5,14 @@ module nts.uk.ui.calendar {
 
 	export type CLICK_CELL = 'event' | 'holiday' | 'info';
 
+	export const KSU_USER_DATA = 'KSU002.USER_DATA';
+
+	export interface StorageData {
+		fdate: number;
+		wtypec: string;
+		wtimec: string;
+	}
+
 	export interface DayData<T = DataInfo> {
 		date: Date;
 		inRange: boolean;
@@ -195,7 +203,7 @@ module nts.uk.ui.calendar {
                 text-align: center;
             }
             .calendar .calendar-container .month .week .day .status span {
-                color: gray;
+                color: #404040;
                 font-size: 9px;
 				font-weight: 600;
 				display: block;
@@ -219,7 +227,7 @@ module nts.uk.ui.calendar {
                 background-color: #EDFAC2;
 			}
             .calendar .calendar-container .month .week .day.saturday .status {
-                background-color: #9BC2E6;
+                background-color: #8bd8ff;
             }
             .calendar .calendar-container .month .week .day.sunday .status,
             .calendar .calendar-container .month .week .day.holiday .status {
@@ -232,9 +240,7 @@ module nts.uk.ui.calendar {
                 background-color: #ffff00;
 			}
             .calendar .calendar-container .month:not(.title) .week .day.holiday .status,
-            .calendar .calendar-container .month:not(.title) .week .day.current .status,
-            .calendar .calendar-container .month:not(.title) .week .day.holiday .status span,
-            .calendar .calendar-container .month:not(.title) .week .day.current .status span {
+            .calendar .calendar-container .month:not(.title) .week .day.holiday .status span {
                 color: #f00;
 			}
             .calendar .calendar-container .month .week .day .data-info {
@@ -246,7 +252,7 @@ module nts.uk.ui.calendar {
                 background-color: #ffffff;
 			}
 			.calendar .calendar-container .month .week .day.diff-month .data-info {
-				background-color: #d9d9d9;
+				background-color: #ddddd2;
 			}
 			.calendar .event-popper {
 				top: 0px;
@@ -258,13 +264,12 @@ module nts.uk.ui.calendar {
 				background-color: #ccc;
 				border-radius: 5px;
 				padding: 5px;
-				min-width: 220px;
-				max-width: 400px;
-				min-height: 220px;
-				max-height: 400px;
+				width: 0;
+				height: 0;
 			}
 			.calendar .event-popper>.epc {
 				position: relative;
+				width: 220px;
 			}
 			.calendar .event-popper:not(.hide-arrow)>.epc:before {
 				content: '';
@@ -292,6 +297,7 @@ module nts.uk.ui.calendar {
 				z-index: 9;
 				position: fixed;
 				visibility: visible;
+				width: 220px;
 			}
         </style>
         <style type="text/css" rel="stylesheet" data-bind="html: $component.style"></style>
@@ -302,8 +308,12 @@ module nts.uk.ui.calendar {
 	})
 	export class SChedulerRefBindingHandler implements KnockoutBindingHandler {
 		init($$popper: HTMLElement, _valueAccessor: () => DayData, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
-			$$popper.classList.add('event-popper');
+			// attach element to binding context
 			_.extend(bindingContext, { $$popper });
+
+			$$popper.classList.add('event-popper');
+
+			return { controlsDescendantBindings: true };
 		}
 	}
 
@@ -390,23 +400,27 @@ module nts.uk.ui.calendar {
 							const event = ko.unwrap(data.event);
 
 							if (event !== null) {
+								const { width, top, left } = element.getBoundingClientRect();
+
 								$.Deferred()
 									.resolve(true)
 									.then(() => {
-										const { width, top, left } = element.getBoundingClientRect();
-
 										$$popper.innerHTML = `<div class="epc"><div class="data">${event}</div></div>`;
-
+									})
+									.then(() => {
 										const pbound = $$popper.getBoundingClientRect();
+										const epc = $($$popper).find('.epc').get(0);
+										const ebound = epc.getBoundingClientRect();
 
 										const top1 = top - 7;
-										const top2 = window.innerHeight - pbound.height - 7;
+										const top2 = window.innerHeight - ebound.height - 7;
 
 										const left1 = left + width + 7;
 										const left2 = window.innerWidth - pbound.width - 30;
 
 										$$popper.style.top = `${Math.min(top1, top2)}px`;
 										$$popper.style.left = `${Math.min(left1, left2)}px`;
+										$$popper.style.height = `${ebound.height}px`;
 
 										if (top1 >= top2 || left1 >= left2) {
 											$$popper.classList.add('hide-arrow');
@@ -414,7 +428,15 @@ module nts.uk.ui.calendar {
 											$$popper.classList.remove('hide-arrow');
 										}
 									})
-									.then(() => $$popper.classList.add('show'));
+									.then(() => {
+										const pbound = $$popper.getBoundingClientRect();
+
+										if (pbound.top !== 0 && pbound.left !== 0) {
+											$$popper.classList.add('show');
+										} else {
+											$$popper.classList.remove('show');
+										}
+									});
 							}
 						})
 						.on('mouseout', () => {
@@ -427,6 +449,9 @@ module nts.uk.ui.calendar {
 								}).then(() => {
 									$$popper.style.top = '0px';
 									$$popper.style.left = '0px';
+									$$popper.style.height = '0px';
+
+									$$popper.classList.remove('show');
 								});
 						});
 				}
@@ -463,7 +488,6 @@ module nts.uk.ui.calendar {
 							const holiday = ko.unwrap(data.holiday);
 
 							if (holiday) {
-								element.title = holiday;
 								element.innerHTML = holiday;
 								className.push(COLOR_CLASS.HOLIDAY);
 							} else {
@@ -652,7 +676,8 @@ module nts.uk.ui.calendar {
 
 		created() {
 			const vm = this;
-			const { data } = vm;
+			const { data, baseDate } = vm;
+			const { options, start } = baseDate;
 
 			const startDate = moment().startOf('week');
 			const listDates = _.range(0, 7)
@@ -662,7 +687,14 @@ module nts.uk.ui.calendar {
 					title: d.format('dddd')
 				}));
 
-			vm.baseDate.options(listDates);
+			vm.$window
+				.storage(KSU_USER_DATA)
+				.then((v: StorageData) => {
+					options(listDates);
+
+					return v;
+				})
+				.then((v: StorageData) => vm.baseDate.start(v.fdate));
 
 			ko.computed({
 				read: () => {
@@ -676,6 +708,21 @@ module nts.uk.ui.calendar {
 				},
 				owner: vm
 			});
+
+			vm.baseDate.start
+				.subscribe(fdate => {
+					vm.$window
+						.storage(KSU_USER_DATA)
+						.then((store: undefined | StorageData) => {
+							if (store) {
+								const { wtypec, wtimec } = store;
+
+								vm.$window.storage(KSU_USER_DATA, { fdate, wtimec, wtypec });
+							} else {
+								vm.$window.storage(KSU_USER_DATA, { fdate, wtimec: null, wtypec: null });
+							}
+						});
+				});
 
 			vm.baseDate.model
 				.subscribe((date: string) => {

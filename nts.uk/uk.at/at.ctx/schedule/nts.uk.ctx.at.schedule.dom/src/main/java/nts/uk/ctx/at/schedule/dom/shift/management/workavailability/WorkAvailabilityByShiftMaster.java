@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Value;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -30,13 +31,18 @@ public class WorkAvailabilityByShiftMaster implements WorkAvailability, DomainVa
 
 	/**
 	 * 作る
+	 * @param require
 	 * @param workableShiftCodeList 社員の勤務希望シフトリスト
 	 * @return
 	 */
-	public static WorkAvailabilityByShiftMaster create(List<ShiftMasterCode> workableShiftCodeList) {
+	public static WorkAvailabilityByShiftMaster create(Require require, List<ShiftMasterCode> workableShiftCodeList) {
 
 		if (workableShiftCodeList.isEmpty()) {
 			throw new RuntimeException("workable shift code list is empty!");
+		}
+		
+		if(!workableShiftCodeList.stream().allMatch(s -> require.shiftMasterIsExist(s))) {
+			throw new BusinessException("Msg_1705");
 		}
 
 		return new WorkAvailabilityByShiftMaster(workableShiftCodeList);
@@ -80,6 +86,9 @@ public class WorkAvailabilityByShiftMaster implements WorkAvailability, DomainVa
 
 		// シフトマスタを取得する
 		List<ShiftMaster> getShiftMaster(List<ShiftMasterCode> shiftMasterCodeList);
+		
+		//シフトマスタが存在するか
+		boolean shiftMasterIsExist(ShiftMasterCode shiftMasterCode);
 		
 	}
 	

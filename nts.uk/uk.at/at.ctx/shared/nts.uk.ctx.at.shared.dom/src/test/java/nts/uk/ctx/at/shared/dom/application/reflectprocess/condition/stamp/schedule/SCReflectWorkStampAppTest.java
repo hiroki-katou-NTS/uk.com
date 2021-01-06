@@ -15,10 +15,10 @@ import mockit.integration.junit4.JMockit;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.stamp.ReflectAppStamp;
 import nts.uk.ctx.at.shared.dom.application.stamp.AppStampShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppEnumShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.TimeZoneStampClassificationShare;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @RunWith(JMockit.class)
@@ -43,7 +43,7 @@ public class SCReflectWorkStampAppTest {
 
 		AppStampShare application = createAppStamp();
 
-		ReflectAppStamp reflectApp = noReflect();//// 応援開始、終了を反映する
+		StampAppReflect reflectApp = noReflect();//// 応援開始、終了を反映する
 
 		Collection<Integer> actualResult = SCReflectWorkStampApp.reflect(require, application, dailyApp, reflectApp);
 
@@ -68,7 +68,7 @@ public class SCReflectWorkStampAppTest {
 		AppStampShare application = createAppStamp();
 
 		// 出退勤を反映する
-		ReflectAppStamp reflectApp = reflectTimeLeav(NotUseAtr.USE);
+		StampAppReflect reflectApp = reflectTimeLeav(NotUseAtr.USE);
 
 		List<Integer> actualResult = new ArrayList<Integer>();
 		actualResult.addAll(SCReflectWorkStampApp.reflect(require, application, dailyApp, reflectApp));
@@ -76,7 +76,7 @@ public class SCReflectWorkStampAppTest {
 		assertThat(actualResult).isEqualTo(Arrays.asList(30, 31));
 
 		// 育児時間帯を反映する
-		ReflectAppStamp reflectApp1 = reflectChildCare(NotUseAtr.USE);
+		StampAppReflect reflectApp1 = reflectChildCare(NotUseAtr.USE);
 
 		List<Integer> actualResult1 = new ArrayList<Integer>();
 		application = ReflectApplicationHelper.createAppStamp(TimeStampAppEnumShare.ATTEENDENCE_OR_RETIREMENT, TimeZoneStampClassificationShare.PARENT);
@@ -85,7 +85,7 @@ public class SCReflectWorkStampAppTest {
 		assertThat(actualResult1).isEqualTo(Arrays.asList(759, 760, 763, 764));
 
 		// 臨時出退勤を反映する
-		ReflectAppStamp reflectApp2 = reflectTemporary(NotUseAtr.USE);
+		StampAppReflect reflectApp2 = reflectTemporary(NotUseAtr.USE);
 
 		List<Integer> actualResult2 = new ArrayList<Integer>();
 		application = ReflectApplicationHelper.createAppStamp(TimeStampAppEnumShare.EXTRAORDINARY, TimeZoneStampClassificationShare.PARENT);
@@ -94,7 +94,7 @@ public class SCReflectWorkStampAppTest {
 		assertThat(actualResult2).isEqualTo(Arrays.asList(50, 51));
 
 		// 介護時間帯を反映する
-		ReflectAppStamp reflectApp4 = reflectCare(NotUseAtr.USE);
+		StampAppReflect reflectApp4 = reflectCare(NotUseAtr.USE);
 
 		List<Integer> actualResult4 = new ArrayList<Integer>();
 		application = ReflectApplicationHelper.createAppStamp(null, TimeZoneStampClassificationShare.NURSE);
@@ -103,7 +103,7 @@ public class SCReflectWorkStampAppTest {
 		assertThat(actualResult4).isEqualTo(Arrays.asList(759, 760, 763, 764));
 
 		// 外出時間帯を反映する
-		ReflectAppStamp reflectApp5 = reflectGoOut(NotUseAtr.USE);
+		StampAppReflect reflectApp5 = reflectGoOut(NotUseAtr.USE);
 
 		List<Integer> actualResult5 = new ArrayList<Integer>();
 		application = ReflectApplicationHelper.createAppStamp(TimeStampAppEnumShare.GOOUT_RETURNING, null);
@@ -112,7 +112,7 @@ public class SCReflectWorkStampAppTest {
 		assertThat(actualResult5).isEqualTo(Arrays.asList(87, 88));
 
 		// 休憩時間帯を反映する
-		ReflectAppStamp reflectApp6 = reflectBreakTime(NotUseAtr.USE);
+		StampAppReflect reflectApp6 = reflectBreakTime(NotUseAtr.USE);
 
 		List<Integer> actualResult6 = new ArrayList<Integer>();
 		application = ReflectApplicationHelper.createAppStamp(null, TimeZoneStampClassificationShare.BREAK);
@@ -122,8 +122,8 @@ public class SCReflectWorkStampAppTest {
 
 	}
 
-	private ReflectAppStamp noReflect() {
-		return new ReflectAppStamp("", NotUseAtr.NOT_USE, // 出退勤を反映する
+	private StampAppReflect noReflect() {
+		return new StampAppReflect("", NotUseAtr.NOT_USE, // 出退勤を反映する
 				NotUseAtr.NOT_USE, // 育児時間帯を反映する
 				NotUseAtr.NOT_USE, // 臨時出退勤を反映する
 				NotUseAtr.NOT_USE, // 応援開始、終了を反映する
@@ -133,18 +133,18 @@ public class SCReflectWorkStampAppTest {
 
 	}
 
-	private ReflectAppStamp reflectTimeLeav(NotUseAtr atr) {
-		return new ReflectAppStamp("", atr, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
+	private StampAppReflect reflectTimeLeav(NotUseAtr atr) {
+		return new StampAppReflect("", atr, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
 				NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
 	}
 
-	private ReflectAppStamp reflectChildCare(NotUseAtr atr) {
-		return new ReflectAppStamp("", NotUseAtr.NOT_USE, atr, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
+	private StampAppReflect reflectChildCare(NotUseAtr atr) {
+		return new StampAppReflect("", NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, atr, NotUseAtr.NOT_USE,
 				NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
 	}
 
-	private ReflectAppStamp reflectTemporary(NotUseAtr atr) {
-		return new ReflectAppStamp("", NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, atr, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
+	private StampAppReflect reflectTemporary(NotUseAtr atr) {
+		return new StampAppReflect("", NotUseAtr.NOT_USE, atr, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
 				NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
 	}
 
@@ -153,18 +153,18 @@ public class SCReflectWorkStampAppTest {
 //				NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
 //	}
 
-	private ReflectAppStamp reflectCare(NotUseAtr atr) {
-		return new ReflectAppStamp("", NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, atr,
+	private StampAppReflect reflectCare(NotUseAtr atr) {
+		return new StampAppReflect("", NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, atr, 
+				NotUseAtr.NOT_USE);
+	}
+
+	private StampAppReflect reflectGoOut(NotUseAtr atr) {
+		return new StampAppReflect("", NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, atr, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
 				NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
 	}
 
-	private ReflectAppStamp reflectGoOut(NotUseAtr atr) {
-		return new ReflectAppStamp("", NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
-				NotUseAtr.NOT_USE, atr, NotUseAtr.NOT_USE);
-	}
-
-	private ReflectAppStamp reflectBreakTime(NotUseAtr atr) {
-		return new ReflectAppStamp("", NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
+	private StampAppReflect reflectBreakTime(NotUseAtr atr) {
+		return new StampAppReflect("", NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
 				NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, atr);
 	}
 

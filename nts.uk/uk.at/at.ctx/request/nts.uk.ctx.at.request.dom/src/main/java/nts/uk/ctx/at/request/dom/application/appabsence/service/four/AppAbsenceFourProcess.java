@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.dom.application.appabsence.service.four;
 
 import java.util.Optional;
 
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
 
 /**
  * @author loivt
@@ -16,5 +16,5 @@ public interface AppAbsenceFourProcess {
 	 * @param companyID
 	 * @return
 	 */
-	public boolean getDisplayControlWorkingHours(String workTypeCd,Optional<HdAppSet> hdAppSet,String companyID);
+	public boolean getDisplayControlWorkingHours(String workTypeCd, Optional<HolidayApplicationSetting> hdAppSet, String companyID);
 }

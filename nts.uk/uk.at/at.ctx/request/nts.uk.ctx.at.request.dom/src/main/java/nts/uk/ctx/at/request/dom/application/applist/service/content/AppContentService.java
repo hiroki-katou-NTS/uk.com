@@ -7,6 +7,7 @@ import java.util.Optional;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
@@ -16,13 +17,18 @@ import nts.uk.ctx.at.request.dom.application.applist.service.detail.ScreenAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.optionalitemappsetting.OptionalItemApplicationTypeName;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.ReasonForFixedForm;
 import nts.uk.ctx.at.shared.dom.attendance.AttendanceItem;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -111,8 +117,8 @@ public interface AppContentService {
 	 * @return
 	 */
 	public String getWorkChangeGoBackContent(ApplicationType appType, String workTypeName, String workTimeName, NotUseAtr goWorkAtr1, TimeWithDayAttr workTimeStart1, 
-			NotUseAtr goBackAtr1, TimeWithDayAttr workTimeEnd1, TimeWithDayAttr breakTimeStart1, TimeWithDayAttr breakTimeEnd1, DisplayAtr appReasonDisAtr,
-			AppReason appReason, Application application);
+			NotUseAtr goBackAtr1, TimeWithDayAttr workTimeEnd1, TimeWithDayAttr workTimeStart2, TimeWithDayAttr workTimeEnd2,
+			TimeWithDayAttr breakTimeStart1, TimeWithDayAttr breakTimeEnd1, DisplayAtr appReasonDisAtr, AppReason appReason, Application application);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面.アルゴリズム.各申請データを作成.各申請データを作成
@@ -149,4 +155,43 @@ public interface AppContentService {
 	 */
 	public String getReflectStatusApprovalListMode(ReflectedState reflectedState, ApprovalBehaviorAtrImport_New phaseAtr, 
 			ApprovalBehaviorAtrImport_New frameAtr, int device);
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面ver4.アルゴリズム.申請内容ver4.申請内容（任意項目申請）.申請内容（任意項目申請）
+	 * @param appReason 申請理由
+	 * @param appReasonDisAtr 申請理由表示区分
+	 * @param screenAtr ScreenID
+	 * @param optionalItemApplicationTypeName 任意申請種類名
+	 * @param optionalItemOutputLst <List>（任意項目名称、値、属性、単位）
+	 * @param appType 申請種類
+	 * @param appStandardReasonCD 定型理由コード
+	 * @return
+	 */
+	public String getOptionalItemAppContent(AppReason appReason, DisplayAtr appReasonDisAtr, ScreenAtr screenAtr, 
+			OptionalItemApplicationTypeName optionalItemApplicationTypeName, List<OptionalItemOutput> optionalItemOutputLst,
+			ApplicationType appType, AppStandardReasonCode appStandardReasonCD);
+	
+	/**
+	 * 申請内容（残業申請、休日出勤申請）
+	 * @param appType
+	 * @param prePostAtr
+	 * @param applicationListAtr
+	 * @param appReason
+	 * @param appReasonDisAtr
+	 * @param screenAtr
+	 * @param actualStatus
+	 * @param application
+	 * @return
+	 */
+	public String getOvertimeHolidayWorkContent(AppOverTimeData appOverTimeData, AppHolidayWorkData appHolidayWorkData,
+			ApplicationType appType, PrePostAtr prePostAtr, ApplicationListAtr applicationListAtr, AppReason appReason, 
+			DisplayAtr appReasonDisAtr, ScreenAtr screenAtr, boolean actualStatus, Application application);
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面ver4.アルゴリズム.申請一覧リスト取得実績.申請一覧リスト取得実績
+	 * @param companyID
+	 * @param application
+	 * @return
+	 */
+	public OvertimeHolidayWorkActual getOvertimeHolidayWorkActual(String companyID, Application application, WorkTypeCode workType, WorkTimeCode workTime);
 }

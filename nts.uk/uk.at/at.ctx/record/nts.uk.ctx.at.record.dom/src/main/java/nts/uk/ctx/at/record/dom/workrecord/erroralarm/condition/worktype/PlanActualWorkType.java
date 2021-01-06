@@ -5,13 +5,16 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkCheckResult;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.LogicalOperator;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
@@ -113,10 +116,13 @@ public class PlanActualWorkType extends WorkTypeCondition {
 	}
 
 	@Override
-	public WorkCheckResult checkWorkType(WorkInfoOfDailyPerformance workInfo) {
+	public WorkCheckResult checkWorkType(WorkInfoOfDailyPerformance workInfo, Optional<SnapShot> snapshot) {
 		WorkCheckResult compareTypeError = WorkCheckResult.NOT_CHECK;
-		if(this.getComparePlanAndActual() == FilterByCompare.EXTRACT_DIFFERENT){
-			if(workInfo.getWorkInformation().getRecordInfo().getWorkTypeCode().equals(workInfo.getWorkInformation().getScheduleInfo().getWorkTypeCode())){
+		
+		val scheduleWorkType = snapshot.map(c -> c.getWorkInfo().getWorkTypeCode()).orElse(null);
+		
+		if(this.getComparePlanAndActual() == FilterByCompare.NOT_SELECTED){
+			if(workInfo.getWorkInformation().getRecordInfo().getWorkTypeCode().equals(scheduleWorkType)){
 				compareTypeError = WorkCheckResult.NOT_ERROR;
 			} else {
 				compareTypeError = WorkCheckResult.ERROR;
@@ -126,7 +132,7 @@ public class PlanActualWorkType extends WorkTypeCondition {
 		WorkCheckResult planCheck = WorkCheckResult.NOT_CHECK;
 		if (this.workTypePlan != null) {
 			if(this.workTypePlan.isUse() && !this.workTypePlan.getLstWorkType().isEmpty()){
-				planCheck = this.workTypePlan.contains(workInfo.getWorkInformation().getScheduleInfo().getWorkTypeCode()) 
+				planCheck = this.workTypePlan.contains(scheduleWorkType) 
 						? WorkCheckResult.ERROR : WorkCheckResult.NOT_ERROR;
 			}
 		}

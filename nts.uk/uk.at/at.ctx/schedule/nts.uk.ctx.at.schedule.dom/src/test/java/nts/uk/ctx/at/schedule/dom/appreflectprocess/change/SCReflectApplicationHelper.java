@@ -16,7 +16,6 @@ import nts.uk.ctx.at.shared.dom.application.common.PrePostAtrShare;
 import nts.uk.ctx.at.shared.dom.application.common.ReflectedStateShare;
 import nts.uk.ctx.at.shared.dom.application.common.ReflectionStatusShare;
 import nts.uk.ctx.at.shared.dom.application.reflect.ReflectStatusResultShare;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.stamp.ReflectAppStamp;
 import nts.uk.ctx.at.shared.dom.application.stamp.AppStampShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.DestinationTimeAppShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.DestinationTimeZoneAppShare;
@@ -52,6 +51,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedul
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.StayingTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -128,25 +128,24 @@ public class SCReflectApplicationHelper {
 		Optional<ShortTimeOfDailyAttd> shortTime = Optional.of(new ShortTimeOfDailyAttd(shortWorkingTimeSheets));
 
 		// 日別勤怠の休憩時間帯
-		List<BreakTimeOfDailyAttd> breakTime = new ArrayList<>();
 		List<BreakTimeSheet> breakTimeSheets = new ArrayList<>();
 		breakTimeSheets
 				.add(new BreakTimeSheet(new BreakFrameNo(1), new TimeWithDayAttr(480), new TimeWithDayAttr(1020)));
-		breakTime.add(new BreakTimeOfDailyAttd(BreakType.REFER_WORK_TIME, breakTimeSheets));
+		Optional<BreakTimeOfDailyAttd> breakTime = Optional.of(new BreakTimeOfDailyAttd(breakTimeSheets));
 
 		Optional<AttendanceTimeOfDailyAttendance> attTimeOpt = Optional.of(new AttendanceTimeOfDailyAttendance(
 				WorkScheduleTimeOfDaily.defaultValue(), ActualWorkingTimeOfDaily.defaultValue(),
 				StayingTimeOfDaily.defaultValue(), new AttendanceTimeOfExistMinus(0), new AttendanceTimeOfExistMinus(0),
 				MedicalCareTimeOfDaily.defaultValue()));
 		return new WorkSchedule("1", GeneralDate.today(), ConfirmedATR.UNSETTLED,
-				new WorkInfoOfDailyAttendance(new WorkInformation("001", "001"), new WorkInformation("001", "001"),
+				new WorkInfoOfDailyAttendance(new WorkInformation("001", "001"),
 						CalculationState.No_Calculated, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
 						DayOfWeek.FRIDAY, new ArrayList<>()),
 				null, breakTime, new ArrayList<>(), attendanceLeave, attTimeOpt, shortTime);
 	}
 
-	public static ReflectAppStamp createReflectAppSet() {
-		return new ReflectAppStamp("1", NotUseAtr.USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
+	public static StampAppReflect createReflectAppSet() {
+		return new StampAppReflect("1", NotUseAtr.USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE,
 				NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
 	}
 }

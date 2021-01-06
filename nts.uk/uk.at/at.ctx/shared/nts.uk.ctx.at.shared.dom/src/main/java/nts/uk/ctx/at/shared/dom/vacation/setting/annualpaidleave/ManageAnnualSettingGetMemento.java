@@ -15,13 +15,7 @@ public interface ManageAnnualSettingGetMemento {
      * @return the company id
      */
     String getCompanyId();
-    
-    /**
-     * Gets the maximum day vacation.
-     *
-     * @return the maximum day vacation
-     */
-    AnnualLeaveGrantDay getMaxGrantDay();
+  
 
     /**
      * Gets the half day manage.
@@ -44,12 +38,6 @@ public interface ManageAnnualSettingGetMemento {
      */
     RemainingNumberSetting getRemainingNumberSetting();
 
-    /**
-     * Gets the display setting.
-     *
-     * @return the display setting
-     */
-    DisplaySetting getDisplaySetting();
     
     /**
      * Gets the yearly of day.

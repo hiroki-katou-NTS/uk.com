@@ -32,9 +32,14 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
         isEnable3: KnockoutObservable<Boolean> = ko.observable(false);
         isEnable4: KnockoutObservable<Boolean> = ko.observable(false);
         cancalAppDispSet: boolean = true;
+		isFromOther: boolean = false;
 
         created(params: AppInitParam) {
             const vm = this;
+			if(!_.isNil(__viewContext.transferred.value)) {
+				vm.isFromOther = true;
+			}
+			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
 			let empLst: Array<string> = [],
 				dateLst: Array<string> = [];
             vm.application = ko.observable(new Application(vm.appType()));
@@ -78,6 +83,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
             }
             vm.loadData(empLst, dateLst, vm.appType())
                 .then((loadDataFlag: any) => {
+					vm.application().employeeIDLst(empLst);
                     let appType = vm.appType,
                         appDates = dates,
                         appDispInfoStartupDto = ko.toJS(vm.appDispInfoStartupOutput),
@@ -639,7 +645,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
 
                     vm.arrivedLateLeaveEarlyInfo().arrivedLateLeaveEarly = arrivedLateLeaveEarly;
 
-                    let application: ApplicationDto = new ApplicationDto(null, null, ko.toJS(vm.application().prePostAtr), vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst[0].sid,
+                    let application: ApplicationDto = new ApplicationDto(null, null, ko.toJS(vm.application().prePostAtr), vm.application().employeeIDLst()[0],
                         ko.toJS(vm.application().appType), ko.toJS(vm.application().appDate), null, null, null, null, ko.toJS(vm.application().opReversionReason), ko.toJS(vm.application().appDate), ko.toJS(vm.application().appDate), ko.toJS(vm.application().opAppReason), ko.toJS(vm.application().opAppStandardReasonCD));
                     let command = {
                         agentAtr: true,

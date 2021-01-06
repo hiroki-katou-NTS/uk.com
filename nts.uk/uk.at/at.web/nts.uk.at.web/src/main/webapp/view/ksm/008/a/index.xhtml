@@ -57,7 +57,7 @@
                                 <span class="label" data-bind="text: alarm.name"></span>
                             </div>
                             <button tabindex="-1"
-                                    data-bind="ntsHelpButton: { position: 'right top', enable: true }">?
+                                    data-bind="ntsHelpButton: { image: image, position: 'right top', enable: true }">?
                             </button>
                         </td>
                     </tr>
@@ -74,6 +74,7 @@
                                     <div data-bind="ntsFormLabel:{constraint:['AlarmCheckMessage'], required: true }">#{i18n.getText('KSM008_9')}</div>
                                     <!--A5_3_3-->
                                     <input class="message" data-bind="ntsTextEditor: {value:  message.message ,
+                                                            name: '#[KSM008_10]',
                                                             constraint: 'AlarmCheckMessage',
                                                             required: true,
                                                             enable:true,

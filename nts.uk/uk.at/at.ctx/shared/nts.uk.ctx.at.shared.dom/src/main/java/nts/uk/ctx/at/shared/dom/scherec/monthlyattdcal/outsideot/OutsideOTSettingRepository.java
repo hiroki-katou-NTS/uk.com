@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.OutsideOTBRDItem;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.PremiumExtra60HRate;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.Overtime;
 
 /**
@@ -97,7 +98,9 @@ public interface OutsideOTSettingRepository {
 	 * @param companyId the company id
 	 */
 	public void saveAllOvertime(List<Overtime> overtimes, String companyId);
-
+	
+	public List<PremiumExtra60HRate> findAllPremiumExtraRate(String cid);
+	
 	/**
 	 *対応するドメインモデル「超過時間」を取得する Nhận domain model 「超過時間」 tương ứng
 	 *
