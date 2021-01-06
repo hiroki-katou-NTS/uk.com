@@ -116,7 +116,7 @@ public class GetEmpWorkFixedWorkInfoSc {
 			break;
 		}
 		
-		if(errorStatusWorkInfo != 1 && (information.get(0).getType() != "worktypeCode" && messErr != "Msg_434")) {
+		if(errorStatusWorkInfo != 1) {
 			throw new BusinessException(messErr);
 		}
 		
