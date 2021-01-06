@@ -113,7 +113,7 @@ public class FavoriteSpecifyEntity extends UkJpaEntity
 	}
 
 	@Override
-	public void setOrder(int order) {
+	public void setOrder(Integer order) {
 		this.order = order;
 	}
 

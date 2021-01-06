@@ -8,7 +8,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 
 /*
- * UKDesign.ドメインモヿ�.NittsuSystem.UniversalK.オフィス支援.在席照�在席照�お気に入り�挮
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.オフィス支援.在席照会.在席照会.お気に入りの指定
  */
 public class FavoriteSpecify extends AggregateRoot {
 
@@ -85,7 +85,7 @@ public class FavoriteSpecify extends AggregateRoot {
 
 		void setWorkplaceId(List<String> workplaceId);
 
-		void setOrder(int order);
+		void setOrder(Integer order);
 	}
 
 	public interface MementoGetter {
