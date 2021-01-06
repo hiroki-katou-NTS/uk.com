@@ -9,7 +9,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,11 +33,21 @@ public class WorkTimeWorkplaceServiceTest {
 		}};
 
 		WorkTimeWorkplaceService service = new WorkTimeWorkplaceService();
-		List<WorkTimeWorkplace> data = service.getByCid(require);
+		List<String> data = service.getByCid(require);
 		assertThat(data.size()).isEqualTo(1);
-		assertThat(data.get(0).getWorkTimeCodes().size()).isEqualTo(2);
-		assertThat(data.get(0).getCompanyID()).isEqualTo("CID");
-		assertThat(data.get(0).getWorkplaceID()).isEqualTo("WkpId");
+		assertThat(data.get(0)).isEqualTo("WkpId");
 	}
 
+	@Test
+	public void testGetByCid_case2() {
+		// Mock up
+		new Expectations() {{
+			require.getByCId();
+			result = Collections.emptyList();
+		}};
+
+		WorkTimeWorkplaceService service = new WorkTimeWorkplaceService();
+		List<String> data = service.getByCid(require);
+		assertThat(data.size()).isEqualTo(0);
+	}
 }

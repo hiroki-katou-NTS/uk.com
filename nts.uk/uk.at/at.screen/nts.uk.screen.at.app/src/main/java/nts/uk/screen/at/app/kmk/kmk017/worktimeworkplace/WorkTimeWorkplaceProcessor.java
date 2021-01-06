@@ -8,6 +8,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,8 +27,12 @@ public class WorkTimeWorkplaceProcessor {
     public List<WorkTimeWorkplaceDto> findWorkTimeWorkplace() {
 
         RequireImpl require = new RequireImpl(repository);
-        List<WorkTimeWorkplace> workTimeWorkplaces = workTimeWorkplaceService.getByCid(require);
-        return workTimeWorkplaces.stream().map(WorkTimeWorkplaceDto::setData).collect(Collectors.toList());
+
+        //1: 設定済みの職場を取得する(会社ID) : 職場ID（List）
+        List<String> workplaceIds = workTimeWorkplaceService.getByCid(require);
+
+        return workplaceIds.stream().map(x -> new WorkTimeWorkplaceDto(x, new ArrayList<>())).collect(Collectors.toList());
+
     }
 
     @AllArgsConstructor
