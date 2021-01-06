@@ -221,6 +221,36 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				} else {
 					color  = "#cee6ff";
 				}
+					
+					if(dataMid.worktypeCode == ""){
+						$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktypeName", "");
+						$("#extable-ksu003").exTable("cellValue", "middle", empId, "totalTime", "");
+						$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime1", "");
+						$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime2", "");
+						$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime1", "");
+						$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime2", "");
+						$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeCode", "");
+						$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", "");
+						
+						$("#extable-ksu003").exTable("disableCell", "middle", empId, "worktimeCode");
+						$("#extable-ksu003").exTable("disableCell", "middle", empId, "startTime1");
+						$("#extable-ksu003").exTable("disableCell", "middle", empId, "endTime1");
+						$("#extable-ksu003").exTable("disableCell", "middle", empId, "startTime2");
+						$("#extable-ksu003").exTable("disableCell", "middle", empId, "endTime2");
+						$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeName", getText('KSU003_55'));
+						$(".xcell").removeClass("x-error");
+						ruler.replaceAt(index, [{ // xóa chart khi là ngày nghỉ
+									type: "Flex",
+									options: {
+										id: `lgc` + index,
+										start: -1000,
+										end: -1000,
+										lineNo: index
+									}
+						}]);
+						return;
+					}
+						
 					// Nếu không cần work time	
 					if(dataFixed[0].fixedWorkInforDto.isNeedWorkTime == false){
 					$("#extable-ksu003").exTable("disableCell", "middle", empId, "worktimeCode");
@@ -243,7 +273,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					}
 				
 				if (self.checkGetInfo == false && self.checkUpdateMidChart == true) {
-					if (dataCell.originalEvent.detail.columnKey === "worktimeCode" && dataMid.worktimeCode != "") {
+					if (dataCell.originalEvent.detail.columnKey === "worktimeCode") {
 						self.checkUpdateTime.name = "worktimeCode";
 						self.checkUpdateTime.id = 1;
 						self.inputWorkInfo(dataMid, index, dataCell, dataFixed, empId, dataCell.originalEvent.detail.columnKey);
@@ -279,8 +309,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									type: "Flex",
 									options: {
 										id: `lgc` + index,
-										start: -1,
-										end: -1,
+										start: -1000,
+										end: -1000,
 										lineNo: index
 									}
 								}]);
@@ -625,8 +655,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				type: "Flex",
 				options: {
 					id: `lgc` + index,
-					start: -1,
-					end: -1,
+					start: -1000,
+					end: -1000,
 					lineNo: index
 				}
 			}]);
@@ -789,8 +819,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						type: "Flex",
 						options: {
 							id: `lgc` + index,
-							start: -1,
-							end: -1,
+							start: -1000,
+							end: -1000,
 							lineNo: index
 						}
 					}]);
@@ -1761,8 +1791,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									type: "Flex",
 									options: {
 										id: `lgc` + index,
-										start: -1,
-										end: -1,
+										start: -1000,
+										end: -1000,
 										lineNo: index
 									}
 								}]);
@@ -3704,16 +3734,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				block.clear();
 				return;
 			}
-				self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.workTypeCode = dataMid.worktypeCode;
-				self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.workTimeCode = dataMid.worktimeCode;
-				self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workTypeName = dataMid.worktypeName;
-				self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workTimeName = dataMid.worktimeName;
-				self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.startTime1 = dataMid.startTime1;
-				self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.endTime1 = dataMid.endTime1;
-				self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.startTime2 = dataMid.startTime2;
-				self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.endTime2 = dataMid.endTime2;
-
-				if (self.dataScreen003AFirst().employeeInfo[lineNo].workScheduleDto.workTimeCode == "") {
+				if (self.dataScreen003A().employeeInfo[lineNo].workScheduleDto != null || (self.dataScreen003A().employeeInfo[lineNo].workScheduleDto != null && self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.workTimeCode == "")) {
 					self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.listBreakTimeZoneDto = [];
 				}
 
@@ -3990,8 +4011,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 											type: "Flex",
 											options: {
 												id: `lgc` + lineNo,
-												start: -1,
-												end: -1,
+												start: -1000,
+												end: -1000,
 												lineNo: lineNo
 											}
 										}]);
