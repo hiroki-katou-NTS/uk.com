@@ -432,6 +432,7 @@ export class KafS05Component extends KafS00ShrComponent {
                 self.model.displayInfoOverTime = res.data;
                 let step1 = self.$refs.step1 as KafS05Step1Component;
                 step1.loadData(self.model.displayInfoOverTime);
+                step1.createHoursWorkTime();
                 // エラーメッセージ(Msg_1556)を画面項目「A_A3_1」に表示する
                 // 「残業申請の表示情報．申請表示情報．申請表示情報(基準日関係あり)．表示する実績内容．実績詳細」== empty
                 let c1 = _.isNil(_.get(self.model, 'displayInfoOverTime.appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail'));
@@ -450,7 +451,16 @@ export class KafS05Component extends KafS00ShrComponent {
                 self.$mask('hide');
             })
             .catch((res: any) => {
-                self.$mask('hide');
+                self.$nextTick(() => {
+                    self.$mask('hide');
+                });
+                // xử lý lỗi nghiệp vụ riêng
+                self.handleErrorCustom(res).then((result: any) => {
+                    if (result) {
+                        // xử lý lỗi nghiệp vụ chung
+                        self.handleErrorCommon(res);
+                    }
+                });
             });
     }
 
@@ -901,11 +911,21 @@ export class KafS05Component extends KafS00ShrComponent {
                         infoWithDateApplicationOp.workTimeCD = step1.workInfo.workTime.code;
                     }
                     step1.loadData(self.model.displayInfoOverTime, true);
+                    step1.createHoursWorkTime();
                 
 
                 })
                 .catch((res: any) => {
-                    self.handleErrorMessage(res);
+                    self.$nextTick(() => {
+                        self.$mask('hide');
+                    });
+                    // xử lý lỗi nghiệp vụ riêng
+                    self.handleErrorCustom(res).then((result: any) => {
+                        if (result) {
+                            // xử lý lỗi nghiệp vụ chung
+                            self.handleErrorCommon(res);
+                        }
+                    });
                 })
                 .then(() => self.$mask('hide'));
         } else {
@@ -964,10 +984,20 @@ export class KafS05Component extends KafS00ShrComponent {
                         infoWithDateApplicationOp.workTimeCD = step1.workInfo.workTime.code;
                     }
                     step1.loadData(self.model.displayInfoOverTime, true);
+                    step1.createHoursWorkTime();
 
                 })
                 .catch((res: any) => {
-                    self.handleErrorMessage(res);
+                    self.$nextTick(() => {
+                        self.$mask('hide');
+                    });
+                    // xử lý lỗi nghiệp vụ riêng
+                    self.handleErrorCustom(res).then((result: any) => {
+                        if (result) {
+                            // xử lý lỗi nghiệp vụ chung
+                            self.handleErrorCommon(res);
+                        }
+                    });
                 })
                 .then(() => self.$mask('hide'));
         }

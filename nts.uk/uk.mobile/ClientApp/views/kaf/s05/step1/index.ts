@@ -292,6 +292,24 @@ export class KafS05Step1Component extends Vue {
            
 
     }
+    // bind when change date, select worktype or worktime
+    public createHoursWorkTime() {
+        const self = this;
+        if (!_.isNil(self.workHours1)) {
+            self.workInfo.workTime.time = self.handleTimeWithDay(self.workHours1.start) + '～' + self.handleTimeWithDay(self.workHours1.end);
+        }
+    }
+
+    public handleTimeWithDay(time: number) {
+        const self = this;
+        const nameTime = '当日';
+        if (!time) {
+
+            return;
+        }
+
+        return (0 <= time && time < 1440) ? nameTime + self.$dt.timewd(time) : self.$dt.timewd(time);
+    }
 
     public createWorkInfo(codeType?: string, codeTime?: string) {
         const self = this;
@@ -320,15 +338,6 @@ export class KafS05Step1Component extends Vue {
 
         self.workInfo = workInfo;
     }
-
-    // public loadDataFromStep2() {
-    //     const self = this;
-    //     let appOverTime = self.$appContext.model.appOverTime as AppOverTime;
-    //     let displayOverTime = self.$appContext.model.displayInfoOverTime as DisplayInfoOverTime;
-    //     self.createWorkInfo(_.get(appOverTime, 'workInfoOp.workType') , _.get(appOverTime, 'workInfoOp.workTime'));
-    //     self.initBreakTime();
-
-    // }
 
     public addBreakHour() {
         const self= this;
