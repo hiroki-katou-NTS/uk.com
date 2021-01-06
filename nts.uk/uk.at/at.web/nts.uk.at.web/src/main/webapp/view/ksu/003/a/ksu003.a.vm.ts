@@ -238,6 +238,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						$("#extable-ksu003").exTable("disableCell", "middle", empId, "startTime2");
 						$("#extable-ksu003").exTable("disableCell", "middle", empId, "endTime2");
 						$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeName", getText('KSU003_55'));
+						let cssTotalTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(9)";
+						$(cssTotalTime).css("background-color", "#ffffff");
 						$(".xcell").removeClass("x-error");
 						ruler.replaceAt(index, [{ // xóa chart khi là ngày nghỉ
 									type: "Flex",
