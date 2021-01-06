@@ -5,8 +5,9 @@ import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
 
@@ -15,8 +16,7 @@ import nts.arc.time.GeneralDateTime;
  * AR_トップページアラームデータ
  */
 @Builder
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 @Getter
 public class ToppageAlarmData extends AggregateRoot {
 
@@ -38,12 +38,14 @@ public class ToppageAlarmData extends AggregateRoot {
 	/**
 	 * 表示社員ID
 	 */
-	private String displaySId;
+	@Default
+	private String displaySId = "";
 	
 	/**
 	 * 表示社員区分
 	 */
-	private DisplayAtr displayAtr;
+	@Default
+	private DisplayAtr displayAtr = DisplayAtr.PIC;
 	
 	/**
 	 * 解消済である
@@ -53,6 +55,7 @@ public class ToppageAlarmData extends AggregateRoot {
 	/**
 	 * 発生日時
 	 */
+	@Setter
 	private GeneralDateTime occurrenceDateTime;
 	
 	/**
@@ -67,5 +70,10 @@ public class ToppageAlarmData extends AggregateRoot {
 	
 	public void updateIsResolved(boolean isResolved) {
 		this.isResolved = isResolved;
+	}
+	
+	ToppageAlarmData() {
+		this.displaySId = "";
+		this.displayAtr = DisplayAtr.PIC;
 	}
 }

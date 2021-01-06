@@ -2,63 +2,89 @@ package nts.uk.ctx.at.function.dom.processexecution.executionlog;
 
 import java.util.Optional;
 
-//import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Builder;
+import lombok.Data;
 import nts.arc.time.GeneralDateTime;
 
 /**
- * 更新処理自動実行タスクログ
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.更新処理自動実行.更新処理自動実行ログ.更新処理自動実行タスクログ
  */
-@Getter
-@Setter
+@Builder
+@Data
 public class ExecutionTaskLog {
-	/* 更新処理 */
-	private ProcessExecutionTask procExecTask;
 	
-	/* 終了状態 */
-	private Optional<EndStatus> status;
-	
-	
+	/**
+	 * 実行ID
+	 */
 	private String execId;
-	
-	/* 前回実行日時 */
-	private GeneralDateTime lastExecDateTime;
-	
-	/* 前回終了日時*/
-	private GeneralDateTime lastEndExecDateTime;
-	
-	/* 全体のシステムエラー状態*/
-	private Boolean errorSystem;
-	
-	/* 全体の業務エラー状態*/
-	private Boolean errorBusiness;
 
-	public ExecutionTaskLog(ProcessExecutionTask procExecTask, Optional<EndStatus> status) {
-		super();
+    /**
+     * 更新処理
+     */
+    private ProcessExecutionTask procExecTask;
+
+    /**
+     * システムエラー内容
+     */
+    @Builder.Default
+    private Optional<String> systemErrorDetails = Optional.empty();
+
+    /**
+     * 全体のシステムエラー状態
+     */
+    @Builder.Default
+    private Optional<Boolean> errorSystem = Optional.empty();
+
+    /**
+     * 全体の業務エラー状態
+     */
+    @Builder.Default
+    private Optional<Boolean> errorBusiness = Optional.empty();
+
+    /**
+     * 前回実行日時
+     */
+    @Builder.Default
+    private Optional<GeneralDateTime> lastExecDateTime = Optional.empty();
+
+    /**
+     * 終了状態
+     */
+    @Builder.Default
+    private Optional<EndStatus> status = Optional.empty();
+
+    /**
+     * 前回終了日時
+     */
+    @Builder.Default
+    private Optional<GeneralDateTime> lastEndExecDateTime = Optional.empty();
+
+	public void setProcExecTask(ProcessExecutionTask procExecTask) {
 		this.procExecTask = procExecTask;
-		this.status = status;
 	}
 
-	public ExecutionTaskLog(ProcessExecutionTask procExecTask, Optional<EndStatus> status, String execId,
-			GeneralDateTime lastExecDateTime, GeneralDateTime lastEndExecDateTime, Boolean errorSystem,
-			Boolean errorBusiness) {
-		super();
-		this.procExecTask = procExecTask;
-		this.status = status;
-		this.execId = execId;
-		this.lastExecDateTime = lastExecDateTime;
-		this.lastEndExecDateTime = lastEndExecDateTime;
-		this.errorSystem = errorSystem;
-		this.errorBusiness = errorBusiness;
+	public void setSystemErrorDetails(String systemErrorDetails) {
+		this.systemErrorDetails = Optional.ofNullable(systemErrorDetails);
 	}
 
-//	public ExecutionTaskLog(ProcessExecutionTask procExecTask, Optional<EndStatus> status, String execId) {
-//		super();
-//		this.procExecTask = procExecTask;
-//		this.status = status;
-//		this.execId = execId;
-//	}
-	
-	
+	public void setErrorSystem(Boolean errorSystem) {
+		this.errorSystem = Optional.ofNullable(errorSystem);
+	}
+
+	public void setErrorBusiness(Boolean errorBusiness) {
+		this.errorBusiness = Optional.ofNullable(errorBusiness);
+	}
+
+	public void setLastExecDateTime(GeneralDateTime lastExecDateTime) {
+		this.lastExecDateTime = Optional.ofNullable(lastExecDateTime);
+	}
+
+	public void setStatus(EndStatus status) {
+		this.status = Optional.ofNullable(status);
+	}
+
+	public void setLastEndExecDateTime(GeneralDateTime lastEndExecDateTime) {
+		this.lastEndExecDateTime = Optional.ofNullable(lastEndExecDateTime);
+	}
+    
 }

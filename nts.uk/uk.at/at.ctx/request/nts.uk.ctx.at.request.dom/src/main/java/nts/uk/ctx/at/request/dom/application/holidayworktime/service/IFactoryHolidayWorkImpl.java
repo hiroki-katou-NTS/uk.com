@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 @Stateless
@@ -40,12 +40,12 @@ public class IFactoryHolidayWorkImpl implements IFactoryHolidayWork{
 	}
 
 	@Override
-	public AppHolidayWork buildHolidayWork(String companyID, String appID, String workTypeCode,
+	public AppHolidayWork_Old buildHolidayWork(String companyID, String appID, String workTypeCode,
 			String siftCode, Integer workClockStart1, Integer workClockEnd1, Integer workClockStart2,
 			Integer workClockEnd2, int goAtr1, int backAtr1, int goAtr2, int backAtr2, String divergenceReason,
 			int overTimeShiftNight, List<HolidayWorkInput> holidayWorkInputs, 
 			Optional<AppOvertimeDetail> appOvertimeDetail) {
-		AppHolidayWork appHolidayWork = AppHolidayWork.createSimpleFromJavaType(companyID, appID, workTypeCode,
+		AppHolidayWork_Old appHolidayWork = AppHolidayWork_Old.createSimpleFromJavaType(companyID, appID, workTypeCode,
 				siftCode, workClockStart1, workClockEnd1, workClockStart2, workClockEnd2,goAtr1,backAtr1,goAtr2,backAtr2, divergenceReason,
 				overTimeShiftNight);
 		appHolidayWork.setHolidayWorkInputs(holidayWorkInputs);

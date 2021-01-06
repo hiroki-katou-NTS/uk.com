@@ -56,16 +56,6 @@ module nts.uk.at.view.kfp001.g.viewmodel {
         block.clear();
       });
 
-      // アルゴリズム「起動時処理」を実行する
-      service.getAggrPeriod(self.arbitraryPeriodAggrExecId).done((result) => {
-        self.aggrPeriodDto(result);
-        dfd.resolve();
-      }).fail((error) => {
-        dfd.reject();
-        alertError(error);
-      }).always(() => {
-        block.clear();
-      });
       return dfd.promise();
     }
 

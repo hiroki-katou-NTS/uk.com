@@ -27,6 +27,7 @@
             <com:scriptfile path="/view/kaf/000/a/component6/kaf000.a.component6.js" />
             <com:scriptfile path="/view/kaf/000/a/component7/kaf000.a.component7.js" />
             <com:scriptfile path="/view/kaf/000/a/component8/kaf000.a.component8.js" />
+            <com:scriptfile path="/view/kaf/000/a/component9/kaf000.a.component9.js" />
             <com:scriptfile path="/view/kaf/004/shr/common/kaf004.shr.vm.js" />
             <com:scriptfile path="/view/kaf/004/shr/a/kaf004.shr.vm.js" />
             <com:scriptfile path="/view/kaf/004/a/kaf004.a.vm.js" />
@@ -34,6 +35,7 @@
         </ui:define>
         <ui:define name="content">
             <div id="functions-area">
+            	<div style="display: inline-block;" data-bind="component: { name: 'kaf000-a-component9', params: isFromOther }"></div>
                 <!-- A1_1 -->
                 <button class="proceed"
                     data-bind="enable: $root.errors.isEmpty, click: $vm.register">#{i18n.getText('KAF004_8')}</button>

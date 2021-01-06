@@ -4,7 +4,7 @@ import nts.arc.time.YearMonth;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeImport_Old;
 
 /**
  * 申請用時間外労働時間パラメータ
@@ -18,12 +18,12 @@ public class AgreeOverTimeOutput {
 	/**
 	 * 当月の時間外時間
 	 */
-	private AgreementTimeImport detailCurrentMonth;
+	private AgreementTimeImport_Old detailCurrentMonth;
 	
 	/**
 	 * 翌月の時間外時間
 	 */
-	private AgreementTimeImport detailNextMonth;
+	private AgreementTimeImport_Old detailNextMonth;
 	
 	/**
 	 * 当月の年月

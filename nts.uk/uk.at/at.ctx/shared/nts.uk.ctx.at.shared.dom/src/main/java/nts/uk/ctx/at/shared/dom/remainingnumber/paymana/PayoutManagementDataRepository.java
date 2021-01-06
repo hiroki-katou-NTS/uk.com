@@ -110,4 +110,9 @@ public interface PayoutManagementDataRepository {
 	 */
 	List<PayoutManagementData> getAllByUnknownDate(String sid, List<String> unknownDates);
 	
+	void delete(List<PayoutManagementData> payoutManagementDatas);
+	
+	List<PayoutManagementData> getByListId(List<String> payoutIds);
+	
+	List<PayoutManagementData> getByIdAndUnUse(String cid, String sid, GeneralDate expiredDate, double unUse);
 }
