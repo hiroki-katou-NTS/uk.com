@@ -287,24 +287,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						})
 						self.checkUpdateTime.name = "worktypeCode";
 						self.checkUpdateTime.id = 2;
-						$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime1", "");
-						$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime2", "");
-						$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime1", "");
-						$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime2", "");
-						let cssTotalTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(9)";
-						$(cssTotalTime).css("background-color", "#ffffff");
-						$("#extable-ksu003").exTable("cellValue", "middle", empId, "totalTime", "");
-						$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", "");
-						
-						ruler.replaceAt(index, [{ // xóa chart khi là ngày nghỉ
-									type: "Flex",
-									options: {
-										id: `lgc` + index,
-										start: -1000,
-										end: -1000,
-										lineNo: index
-									}
-						}]);
+					self.inputWorkInfo(dataMid, index, dataCell, dataFixed, empId, dataCell.originalEvent.detail.columnKey);
 					
 					// Nếu là ngày nghỉ	
 					if(dataFixed[0].fixedWorkInforDto != null && dataFixed[0].fixedWorkInforDto.isHoliday != null && dataFixed[0].fixedWorkInforDto.isHoliday == true){
@@ -323,14 +306,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					} 
 					
 					// Nếu không phải ngày nghỉ
-					if(dataFixed[0].fixedWorkInforDto.isHoliday != null && dataFixed[0].fixedWorkInforDto.isHoliday == false) {
+					if(dataFixed[0].fixedWorkInforDto != null && dataFixed[0].fixedWorkInforDto.isHoliday != null && dataFixed[0].fixedWorkInforDto.isHoliday == false) {
 					$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeName", "");
 					$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktypeName", "");
 					$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeCode", "");
 					
 					self.checkMes += 1;
-					
-					self.inputWorkInfo(dataMid, index, dataCell, dataFixed, empId, dataCell.originalEvent.detail.columnKey);
 					}
 					// Nếu giá trị là null
 					if(dataFixed[0].fixedWorkInforDto == null || dataFixed[0].fixedWorkInforDto.isHoliday == null) {
@@ -629,7 +610,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					} else {
 						$("#extable-ksu003").exTable("enableCell", "middle", empId, "worktimeCode");
 					}
-						return;
 					}
 				})
 				
@@ -825,7 +805,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			let dfd = $.Deferred<any>(), indexEmp = 0;
 			let targetOrgDto = [{
 				workTypeCode: workTypeCode,
-				workTimeCode: workTimeCode
+				workTimeCode: workTimeCode,
+				type : columnKey
 			}]
 			indexEmp = _.findIndex(self.dataScreen003A().employeeInfo, x => { return x.empId === empId });
 			service.getEmpWorkFixedWorkInfo(targetOrgDto)
@@ -839,14 +820,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 					dfd.resolve();
 				}).fail(function(error) {
-					if((columnKey == "worktimeCode" || (error.messageId != "Msg_434" && columnKey == "worktypeCode")) && self.checkMes != 101){
-						errorDialog({ messageId: error.messageId });
-					}
-					
-					if(self.checkMes == 101){
-						self.checkMes = 0;
-					}
-					
 					ruler.replaceAt(index, [{ // xóa chart khi là ngày nghỉ
 						type: "Flex",
 						options: {
@@ -856,18 +829,32 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							lineNo: index
 						}
 					}]);
-					$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime1", "");
+					/*$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime1", "");
 					$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime2", "");
 					$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime1", "");
 					$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime2", "");
-					$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeCode", "");
+					
+					if(columnKey != "worktimeCode"){
+						$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeCode", "");
+					}
+					
 					$("#extable-ksu003").exTable("cellValue", "middle", empId, "totalTime", "");
 					let cssTotalTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(9)";
 					$(cssTotalTime).css("background-color", "#ffffff");
 					$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", "");
 					$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeName", getText('KSU003_55'));
 					$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktypeName", "");
-					$(".xcell").removeClass("x-error");
+					$(".xcell").removeClass("x-error");*/
+					
+					if((columnKey == "worktimeCode" || (error.messageId != "Msg_434" && columnKey == "worktypeCode")) && self.checkMes != 101){
+						errorDialog({ messageId: error.messageId });
+					}
+					
+					if(self.checkMes == 101){
+						self.checkMes = 0;
+					}
+					return;
+					
 				}).always(function() {
 				});
 			return dfd.promise();
