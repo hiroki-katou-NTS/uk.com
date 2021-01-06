@@ -3619,10 +3619,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			let dfd = $.Deferred<any>(), command: any = {
 				workType: worktypeCode.trim(),
 				workTime: worktimeCode.trim(),
-				workTime1: startTime1 != "" && endTime1 != "" ? new TimeZoneDto(new TimeOfDayDto(0, _.isString(startTime1) ? Math.floor(duration.parseString(startTime1).toValue()) : startTime1),
-					new TimeOfDayDto(0, _.isString(endTime1) ? Math.floor(duration.parseString(endTime1).toValue()) : endTime1)) : null,
-				workTime2: startTime2 != "" && endTime2 != "" ? new TimeZoneDto(new TimeOfDayDto(0, _.isString(startTime2) ? Math.floor(duration.parseString(startTime2).toValue()) : startTime2),
-					new TimeOfDayDto(0, _.isString(endTime2) ? Math.floor(duration.parseString(endTime2).toValue()) : endTime2)) : null,
+				workTime1: startTime1 == "" && endTime1 == "" ? null : new TimeZoneDto(new TimeOfDayDto(0, _.isString(startTime1) ? Math.floor(duration.parseString(startTime1).toValue()) : startTime1),
+					new TimeOfDayDto(0, _.isString(endTime1) ? Math.floor(duration.parseString(endTime1).toValue()) : endTime1)),
+				workTime2: startTime2 == "" && endTime2 == "" ? null : new TimeZoneDto(new TimeOfDayDto(0, _.isString(startTime2) ? Math.floor(duration.parseString(startTime2).toValue()) : startTime2),
+					new TimeOfDayDto(0, _.isString(endTime2) ? Math.floor(duration.parseString(endTime2).toValue()) : endTime2)),
 			}
 
 			if((columnKey === "startTime1") || /*&& startTime1 != "" && endTime1 != "") || */
