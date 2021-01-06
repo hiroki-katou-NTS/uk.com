@@ -1,51 +1,31 @@
 module nts.uk.at.view.kaf012.a.viewmodel {
     import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
-    import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
-    import Model = nts.uk.at.view.kaf012.shr.viewmodel.Model;
     import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
     import Kaf000AViewModel = nts.uk.at.view.kaf000.a.viewmodel.Kaf000AViewModel;
 	import AppInitParam = nts.uk.at.view.kaf000.shr.viewmodel.AppInitParam;
+	import DataModel = nts.uk.at.view.kaf012.shr.viewmodel2.DataModel;
+    import AppTimeType = nts.uk.at.view.kaf012.shr.viewmodel2.AppTimeType;
+
+    const API = {
+        startNew: "at/request/application/timeLeave/initNewApp",
+        changeAppDate: "at/request/application/timeLeave/changeAppDate",
+        checkRegister: "at/request/application/timeLeave/checkBeforeRegister",
+        register: "at/request/application/timeLeave/register"
+    };
 
     @bean()
     class Kaf012AViewModel extends Kaf000AViewModel {
-
 		appType: KnockoutObservable<number> = ko.observable(AppType.ANNUAL_HOLIDAY_APPLICATION);
 		isAgentMode : KnockoutObservable<boolean> = ko.observable(false);
-        application: KnockoutObservable<Application>;
-        applicationTest: any = {
-                employeeID: this.$user.employeeId,
-                appType: '4',
-                appDate: moment(new Date()).format('YYYY/MM/DD'),
-                enteredPerson: this.$user.employeeId,
-                inputDate: moment(new Date()).format('YYYY/MM/DD HH:mm:ss'),
-                reflectionStatus: {
-                    listReflectionStatusOfDay: [{
-                        actualReflectStatus: 1,
-                        scheReflectStatus: 1,
-                        targetDate: '2020/01/07',
-                        opUpdateStatusAppReflect: {
-                            opActualReflectDateTime: '2020/01/07 20:11:11',
-                            opScheReflectDateTime: '2020/01/07 20:11:11',
-                            opReasonActualCantReflect: 1,
-                            opReasonScheCantReflect: 0
+        isSendMail: KnockoutObservable<boolean>;
+		application: KnockoutObservable<Application>;
+        reflectSetting: KnockoutObservable<any> = ko.observable(null);
+        timeLeaveManagement: KnockoutObservable<any> = ko.observable(null);
+        timeLeaveRemaining: KnockoutObservable<any> = ko.observable(null);
+        leaveType: KnockoutObservable<number> = ko.observable(null);
 
-                        },
-                        opUpdateStatusAppCancel: {
-                            opActualReflectDateTime: '2020/01/07 20:11:11',
-                            opScheReflectDateTime: '2020/01/07 20:11:11',
-                            opReasonActualCantReflect: 1,
-                            opReasonScheCantReflect: 0
-                        }
-                    }]
-                }
-
-
-
-            };
-        model: Model;
-        dataFetch: KnockoutObservable<ModelDto> = ko.observable(null);
-        mode: KnockoutObservable<String> = ko.observable('edit');
-        isSendMail: KnockoutObservable<Boolean>;
+        applyTimeData: KnockoutObservableArray<DataModel>;
+        specialLeaveFrame: KnockoutObservable<number>;
 
         created(params: AppInitParam) {
             const vm = this;
@@ -53,7 +33,6 @@ module nts.uk.at.view.kaf012.a.viewmodel {
 				dateLst: Array<string> = [];
             vm.isSendMail = ko.observable(false);
             vm.application = ko.observable(new Application(vm.appType()));
-            vm.model = new Model(true, true, true, '', '', '', '');
 			if (!_.isEmpty(params)) {
 				if (!_.isEmpty(params.employeeIds)) {
 					empLst = params.employeeIds;
@@ -69,58 +48,61 @@ module nts.uk.at.view.kaf012.a.viewmodel {
 					vm.isAgentMode(params.isAgentMode);
 				}
 			}
+            vm.applyTimeData = ko.observableArray([]);
+            for (let i = 0; i < 5; i++) {
+                vm.applyTimeData.push(new DataModel(i, vm.reflectSetting, vm.appDispInfoStartupOutput, vm.application));
+            }
+            vm.specialLeaveFrame = ko.observable(null);
             vm.$blockui("show");
             vm.loadData(empLst, dateLst, vm.appType())
             .then((loadDataFlag: any) => {
-                // vm.application().appDate.subscribe(value => {
-                //     console.log(value);
-                //     if (value) {
-                //         vm.changeDate();
-                //     }
-                // });
                 if(loadDataFlag) {
 					vm.application().employeeIDLst(empLst);
-                    let ApplicantEmployeeID: null,
-                        ApplicantList: null,
-                        appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput);
-                    let command = { ApplicantEmployeeID, ApplicantList, appDispInfoStartupOutput };
-                    console.log(command);
-                    // return vm.$ajax(API.startNew, command);
+                    const appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput);
+                    return vm.$ajax(API.startNew, appDispInfoStartupOutput);
                 }
             }).then((res: any) => {
                 if(res) {
-                    vm.dataFetch({
-                        workType: ko.observable(res.workType),
-                        workTime: ko.observable(res.workTime),
-                        appDispInfoStartup: ko.observable(res.appDispInfoStartup),
-                        goBackReflect: ko.observable(res.goBackReflect),
-                        lstWorkType: ko.observable(res.lstWorkType),
-                        goBackApplication: ko.observable(res.goBackApplication),
-                        isChangeDate: false
-                    });
-					if (!_.isEmpty(params)) {
-						if (!_.isEmpty(params.baseDate)) {
-							vm.changeDate();
-						}
-					}
+                    vm.reflectSetting(res.reflectSetting);
+                    vm.timeLeaveManagement(res.timeLeaveManagement);
+                    vm.timeLeaveRemaining(res.timeLeaveRemaining);
                 }
-            }).fail((failData: any) => {
-                let param;
-                if (failData.message) {
-                    param = {message: failData.message, messageParams: failData.parameterIds};
-                } else {
-                    param = {messageId: failData.messageId, messageParams: failData.parameterIds}
-                }
-                vm.$dialog.error(param);
-
+            }).fail((error: any) => {
+                vm.$dialog.error(error);
             }).always(() => vm.$blockui("hide"));
         }
 
         mounted() {
             const vm = this;
+            vm.application().appDate.subscribe(value => {
+                vm.handleChangeAppDate(value);
+            });
         }
 
-        public handleConfirmMessage(listMes: any, res: any) {
+        handleChangeAppDate(value: string) {
+            const vm = this;
+            vm.$validate([
+                '#kaf000-a-component4 .nts-input'
+            ]).then((valid: boolean) => {
+                if (valid) {
+                    const command = {
+                        appDate: new Date(value).toISOString(),
+                        appDisplayInfo: {
+                            appDispInfoStartupOutput: vm.appDispInfoStartupOutput()
+                        }
+                    };
+                    return vm.$blockui("show").then(() => vm.$ajax(API.changeAppDate, command));
+                }
+            }).done((res: any) => {
+                if (res) {
+                    vm.timeLeaveManagement(res.timeLeaveManagement);
+                }
+            }).fail((error: any) => {
+                vm.$dialog.error(error);
+            }).always(() => vm.$blockui("hide"));
+        }
+
+        public handleConfirmMessage(listMes: any, res: any): any {
             let vm = this;
             if (!_.isEmpty(listMes)) {
                 let item = listMes.shift();
@@ -137,102 +119,121 @@ module nts.uk.at.view.kaf012.a.viewmodel {
             }
         }
 
-        registerData(goBackApp) {
+        registerData(goBackApp: any) {
             let vm = this;
-            let paramsRegister = {
-                    companyId: vm.$user.companyId,
-                    applicationDto: vm.applicationTest,
-                    goBackDirectlyDto: goBackApp,
-                    inforGoBackCommonDirectDto: ko.toJS(vm.dataFetch),
-                    mode : vm.mode == 'edit'
-            };
+            // let paramsRegister = {
+                    // companyId: vm.$user.companyId,
+                    // applicationDto: vm.applicationTest,
+                    // goBackDirectlyDto: goBackApp,
+                    // inforGoBackCommonDirectDto: ko.toJS(vm.dataFetch),
+                    // mode : vm.mode == 'edit'
+            // };
 
-            return vm.$ajax(API.register, paramsRegister);
+            // return vm.$ajax(API.register, paramsRegister);
                 
         }
 
         register() {
             const vm = this;
-            let application = ko.toJS(vm.application);
-            vm.applicationTest.appID = application.appID;
-            vm.applicationTest.appDate = application.appDate;
-            vm.applicationTest.appType = application.appType;
-            vm.applicationTest.prePostAtr = application.prePostAtr;
-            vm.applicationTest.opAppStartDate = application.opAppStartDate;
-            vm.applicationTest.opAppEndDate = application.opAppEndDate;
-            vm.applicationTest.opAppReason = application.opAppReason;
-            vm.applicationTest.opAppStandardReasonCD = application.opAppStandardReasonCD;
-            vm.applicationTest.opReversionReason = application.opReversionReason;
-			vm.applicationTest.employeeID = application.employeeIDLst[0];
-            if (vm.model) {
-				let isCondition1 = vm.model.checkbox3() == true && !vm.model.workTypeCode() && (vm.dataFetch().goBackReflect().reflectApplication === 3 || vm.dataFetch().goBackReflect().reflectApplication === 2);
-				let isCondition2 = vm.model.checkbox3() == null && !vm.model.workTypeCode() && vm.dataFetch().goBackReflect().reflectApplication === 1;
-                if (isCondition1 || isCondition2) {
-                   // $('#workSelect').focus();
-					let el = document.getElementById('workSelect');
-	                if (el) {
-	                    el.focus();                                                    
-	                }
-                    return;
-                } 
-            }
-            let model = ko.toJS( vm.model );
-            let goBackApp = new GoBackApplication(
-                model.checkbox1 ? 1 : 0,
-                model.checkbox2 ? 1 : 0,
-            );
-            // is change can be null
-//            if (!_.isNull(model.checkbox3)) {
-                if (!_.isNull(model.checkbox3)) {
-                    goBackApp.isChangedWork = model.checkbox3 ? 1 : 0;                    
-                }
-                if (vm.mode && vm.model.checkbox3() || vm.dataFetch().goBackReflect().reflectApplication == 1) {
-                    if (!_.isEmpty(vm.model.workTypeCode())) {
-                        let dw = new DataWork( model.workTypeCode );
-                        if ( model.workTimeCode ) {
-                            dw.workTime = model.workTimeCode
-                        }
-                        goBackApp.dataWork = dw;
-                        
+            const application = ko.toJS(vm.application);
+            const details: Array<any> = [];
+            vm.applyTimeData().forEach((row : DataModel) => {
+                if (row.display() && row.timeZone.filter(i => !!i.startTime() || i.endTime()).length > 0) {
+                    if (row.appTimeType < 4) {
+                        details.push({
+                            appTimeType: row.appTimeType,
+                            timeZones: [{
+                                workNo: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.OFFWORK ? 1 : 2,
+                                startTime: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.ATWORK2 ? row.timeZone[0].startTime() : null,
+                                endTime: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.ATWORK2 ? null : row.timeZone[0].startTime(),
+                            }],
+                            applyTime: {
+                                substituteAppTime: row.applyTime[0].substituteAppTime(),
+                                annualAppTime: row.applyTime[0].annualAppTime(),
+                                childCareAppTime: row.applyTime[0].childCareAppTime(),
+                                careAppTime: row.applyTime[0].careAppTime(),
+                                super60AppTime: row.applyTime[0].super60AppTime(),
+                                specialAppTime: row.applyTime[0].specialAppTime(),
+                                specialLeaveFrameNo: vm.specialLeaveFrame(),
+                            }
+                        });
+                    } else {
+                        details.push({
+                            appTimeType: AppTimeType.PRIVATE,
+                            timeZones: row.timeZone
+                                .filter(z => z.appTimeType() == AppTimeType.PRIVATE && z.display() && (!!z.startTime() || !!z.endTime()))
+                                .map(z => ({workNo: z.workNo, startTime: z.startTime(), endTime: z.endTime()})),
+                            applyTime: {
+                                substituteAppTime: row.applyTime[0].substituteAppTime(),
+                                annualAppTime: row.applyTime[0].annualAppTime(),
+                                childCareAppTime: row.applyTime[0].childCareAppTime(),
+                                careAppTime: row.applyTime[0].careAppTime(),
+                                super60AppTime: row.applyTime[0].super60AppTime(),
+                                specialAppTime: row.applyTime[0].specialAppTime(),
+                                specialLeaveFrameNo: vm.specialLeaveFrame(),
+                            }
+                        });
+                        details.push({
+                            appTimeType: AppTimeType.UNION,
+                            timeZones: row.timeZone
+                                .filter(z => z.appTimeType() == AppTimeType.UNION && z.display() && (!!z.startTime() || !!z.endTime()))
+                                .map(z => ({workNo: z.workNo, startTime: z.startTime(), endTime: z.endTime()})),
+                            applyTime: {
+                                substituteAppTime: row.applyTime[1].substituteAppTime(),
+                                annualAppTime: row.applyTime[1].annualAppTime(),
+                                childCareAppTime: row.applyTime[1].childCareAppTime(),
+                                careAppTime: row.applyTime[1].careAppTime(),
+                                super60AppTime: row.applyTime[1].super60AppTime(),
+                                specialAppTime: row.applyTime[1].specialAppTime(),
+                                specialLeaveFrameNo: vm.specialLeaveFrame(),
+                            }
+                        });
                     }
-                    
                 }
-//            }
+            });
 
-            let param = {
-                companyId: this.$user.companyId,
-                agentAtr: true,
-                applicationDto: vm.applicationTest,
-                goBackDirectlyDto: goBackApp,
-                inforGoBackCommonDirectDto: ko.toJS( vm.dataFetch ),
-                mode: true
+            console.log(application);
+            console.log(details);
+
+            let params = {
+                timeDigestAppType: vm.leaveType(),
+                application: application,
+                details: details,
+                timeLeaveAppDisplayInfo: {
+                    appDispInfoStartupOutput: vm.appDispInfoStartupOutput(),
+                    timeLeaveManagement: vm.timeLeaveManagement(),
+                    timeLeaveRemaining: vm.timeLeaveRemaining(),
+                    reflectSetting: vm.reflectSetting()
+                },
+                agentMode: vm.isAgentMode()
             };
-            vm.$blockui( "show" );
+            params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingStart = new Date(params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingStart).toISOString();
+            params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingEnd = new Date(params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingEnd).toISOString();
+            vm.$blockui("show");
             vm.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
-                .then( isValid => {
-                    if ( isValid ) {
+                .then(isValid => {
+                    if (isValid) {
                         return true;
                     }
-                } )
-                .then( result => {
+                }).then(result => {
                     if (!result) return;
-                    return vm.$ajax(API.checkRegister, param); 
-                }).then( res => {
-                    if (res == undefined) return;
-                    if (_.isEmpty( res )) {
-                        return vm.registerData(goBackApp);
-                    }else {
-                        let listTemp = _.clone(res);
-                        vm.handleConfirmMessage(listTemp, goBackApp);
-                    }
+                    return vm.$ajax(API.checkRegister, params);
+                }).then(res => {
+                    console.log(res);
+                    // if (res == undefined) return;
+                    // if (_.isEmpty(res)) {
+                    //     return vm.registerData(goBackApp);
+                    // } else {
+                    //     let listTemp = _.clone(res);
+                    //     vm.handleConfirmMessage(listTemp, goBackApp);
+                    // }
                 }).done(result => {
                     if (result != undefined) {
-                        vm.$dialog.info( { messageId: "Msg_15" } ).then(() => {
+                        vm.$dialog.info({messageId: "Msg_15"}).then(() => {
                             location.reload();
-                        });                
+                        });
                     }
-                })
-                .fail( err => {
+                }).fail(err => {
                     let param;
                     if (err.message && err.messageId) {
                         param = {messageId: err.messageId, messageParams: err.parameterIds};
@@ -245,174 +246,8 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                         }
                     }
                     vm.$dialog.error(param);
-                })
-                .always(() => vm.$blockui("hide"));
-
-
-
-
-
+                }).always(() => vm.$blockui("hide"));
         }
-
-        changeDate() {
-            const vm = this;
-			vm.$blockui( "show" );
-            if(!_.isNull(ko.toJS(vm.dataFetch))) {
-                vm.dataFetch().isChangeDate = true;
-            }
-			let companyId = vm.$user.companyId;
-			let appDates = [];
-			appDates.push(ko.toJS(vm.application().appDate));
-			let employeeIds = ko.toJS(vm.application().employeeIDLst);
-            let dataClone = _.clone(vm.dataFetch());
-			let inforGoBackCommonDirectDto = ko.toJS(vm.dataFetch); 
-			inforGoBackCommonDirectDto.appDispInfoStartup = ko.toJS(vm.appDispInfoStartupOutput);
-			let commandChangeDate = {companyId, appDates, employeeIds, inforGoBackCommonDirectDto};
-          	/*  let appDisp = ko.toJS(vm.appDispInfoStartupOutput);
-            let listActual = appDisp.appDispInfoWithDateOutput.opActualContentDisplayLst;
-            if (listActual[0]) {
-                if(!_.isEmpty(listActual)) {
-                    if (listActual[0].opAchievementDetail) {
-                        let workType = listActual[0].opAchievementDetail.workTypeCD;
-                        let workTime = listActual[0].opAchievementDetail.workTimeCD;
-                        if (vm.mode && vm.model.checkbox3() || vm.dataFetch().goBackReflect().reflectApplication == 1) {
-                            if (!_.isNull(dataClone)) {
-                                dataClone.workTime(workTime);
-                                dataClone.workType(workType);                                                            
-                            }
-                        }
-                    }
-                }
-            }*/
-			
-            
-            if (!_.isNull(dataClone)) {
-				vm.$ajax(API.changeDate, commandChangeDate)
-				.done(res => {
-					if (res) {
-						dataClone.lstWorkType(res.lstWorkType);
-						dataClone.workType(res.workType);
-						dataClone.workTime(res.workTime);
-	                	dataClone.appDispInfoStartup = vm.appDispInfoStartupOutput;
-						vm.dataFetch(dataClone);						
-					}
-				}).fail(res => {
-					let param;
-                    if (res.message) {
-                        param = {message: res.message, messageParams: res.parameterIds};
-                    } else {
-                        param = {messageId: res.messageId, messageParams: res.parameterIds}
-                    }
-                    vm.$dialog.error(param);
-				}).always(res => {
-					vm.$blockui( "hide" );
-				});
-                
-                return;
-            }
-            vm.$blockui( "show" );
-            let ApplicantEmployeeID: null,
-            ApplicantList: null,
-            appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
-            command = { ApplicantEmployeeID, ApplicantList, appDispInfoStartupOutput };
-            vm.$ajax(API.startNew, command)
-                .done(res => {
-                    if (res) {
-                        vm.dataFetch({
-                            workType: ko.observable(res.workType),
-                            workTime: ko.observable(res.workTime),
-                            appDispInfoStartup: ko.observable(res.appDispInfoStartup),
-                            goBackReflect: ko.observable(res.goBackReflect),
-                            lstWorkType: ko.observable(res.lstWorkType),
-                            goBackApplication: ko.observable(res.goBackApplication),
-                            isChangeDate: false
-                        });
-                    }
-                })
-                .fail(res => {
-
-                    let param;
-                    if (res.message) {
-                        param = {message: res.message, messageParams: res.parameterIds};
-                    } else {
-                        param = {messageId: res.messageId, messageParams: res.parameterIds}
-                    }
-                    vm.$dialog.error(param);
-                })
-                .always(() => vm.$blockui( "hide" ));
-
-        }
-
-    }
-
-    export class GoBackApplication {
-        straightDistinction: number;
-        straightLine: number;
-        isChangedWork?: number;
-        dataWork?: DataWork;
-        constructor(straightDistinction: number, straightLine: number, isChangedWork?: number, dataWork?: DataWork) {
-            this.straightDistinction = straightDistinction;
-            this.straightLine = straightLine;
-            this.isChangedWork = isChangedWork;
-            this.dataWork = dataWork;
-        }
-    }
-
-    export class DataWork {
-        workType: string;
-        workTime?: string;
-        constructor(workType: string, workTime?: string) {
-            this.workType = workType;
-            this.workTime = workTime;
-        }
-    }
-
-    export class GoBackReflect {
-        companyId: string;
-        reflectApplication: number;
-    }
-
-    export class ModelDto {
-
-        workType: KnockoutObservable<any>;
-
-        workTime: KnockoutObservable<any>;
-
-        appDispInfoStartup: KnockoutObservable<any>;
-
-        goBackReflect: KnockoutObservable<GoBackReflect> = ko.observable( null );
-
-        lstWorkType: KnockoutObservable<any>;
-
-        goBackApplication: KnockoutObservable<any>;
-
-        isChangeDate: boolean = false;
-    }
-
-    const API = {
-        startNew: "at/request/application/timeLeave/initNewApp",
-        checkRegister: "at/request/application/gobackdirectly/checkBeforeRegisterNew",
-        register: "at/request/application/gobackdirectly/registerNewKAF009",
-        changeDate: "at/request/application/gobackdirectly/getAppDataByDate"
-    };
-
-    export class ApplicationStatus {
-        //        反映しない
-        public static DO_NOT_REFLECT: number = 0;
-        //        反映する
-        public static DO_REFLECT: number = 1;
-        //      申請時に決める(初期値：反映しない)
-        public static DO_NOT_REFLECT_1: number = 2;
-        //        申請時に決める(初期値：反映する)
-        public static DO_REFLECT_1: number = 3;
-    }
-
-    export class ParamBeforeRegister {
-        companyId: string;
-        agentAtr: boolean;
-        applicationDto: any;
-        goBackDirectlyDto: any;
-        inforGoBackCommonDirectDto: any;
 
     }
 
