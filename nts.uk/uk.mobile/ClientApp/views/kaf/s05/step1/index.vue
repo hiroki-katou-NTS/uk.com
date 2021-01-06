@@ -7,12 +7,12 @@
       />
     </div>
     <div
-      v-if="!$appContext.$valid || !$appContext.isValidateAll"
+      v-if="!$appContext.$valid || !$appContext.isValidateAll || $appContext.isMsg_1556"
       class="card bg-danger top-alert uk-text-danger topError"
     >
       <button class="btn btn-link uk-text-danger">
         <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
-        {{ "KAFS07_1" | i18n }}
+        {{ ($appContext.isMsg_1556 ? "Msg_1556" : "KAFS07_1") | i18n($appContext.isMsg_1556 ? $appContext.date : '') }}
       </button>
     </div>
     <div>

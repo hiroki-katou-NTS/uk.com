@@ -1,5 +1,5 @@
 import { _, Vue } from '@app/provider';
-import { OverTimeShiftNight, BreakTime, TimeZoneNew, TimeZoneWithWorkNo, AppOverTime, ParamCalculateMobile, ParamSelectWorkMobile, InfoWithDateApplication, ParamStartMobile, OvertimeAppAtr, Model, DisplayInfoOverTime, NotUseAtr, ApplicationTime, OvertimeApplicationSetting, AttendanceType, HolidayMidNightTime, StaturoryAtrOfHolidayWork, ParamBreakTime, WorkInformation, WorkHoursDto } from '../a/define.interface';
+import { TrackRecordAtr, OverTimeShiftNight, BreakTime, TimeZoneNew, TimeZoneWithWorkNo, AppOverTime, ParamCalculateMobile, ParamSelectWorkMobile, InfoWithDateApplication, ParamStartMobile, OvertimeAppAtr, Model, DisplayInfoOverTime, NotUseAtr, ApplicationTime, OvertimeApplicationSetting, AttendanceType, HolidayMidNightTime, StaturoryAtrOfHolidayWork, ParamBreakTime, WorkInformation, WorkHoursDto, AppDateContradictionAtr, ExcessState } from '../a/define.interface';
 import { component, Prop } from '@app/core/component';
 import { StepwizardComponent } from '@app/components';
 import { KafS05Step1Component } from '../step1';
@@ -46,6 +46,8 @@ export class KafS05Component extends KafS00ShrComponent {
     public appId: string;
 
     public isMsg_1562: Boolean = false;
+
+    public isMsg_1556: boolean = false;
 
     @Prop()
     public readonly params: InitParam;
@@ -425,9 +427,19 @@ export class KafS05Component extends KafS00ShrComponent {
                 step1.loadData(self.model.displayInfoOverTime);
                 // エラーメッセージ(Msg_1556)を画面項目「A_A3_1」に表示する
                 // 「残業申請の表示情報．申請表示情報．申請表示情報(基準日関係あり)．表示する実績内容．実績詳細」== empty
-                let c1 = !_.isNil(_.get(self.model, 'displayInfoOverTime.appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst.opAchievementDetail'));
+                let c1 = _.isNil(_.get(self.model, 'displayInfoOverTime.appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail'));
                 // 残業申請の表示情報．申請表示情報．申請表示情報(基準日関係あり)．表示する実績内容．実績詳細．実績スケ区分」= スケジュール）
-                let c2 = true;
+                let c2 = false;
+                if (!c1) {
+                    c2 = _.get(self.model, 'displayInfoOverTime.appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.trackRecordAtr') == TrackRecordAtr.SCHEDULE;
+                }
+                // 「残業申請の表示情報．基準日に関係しない情報．残業申請設定．残業休出申請共通設定．実績超過区分」= チェックする（登録不可）
+                let c3 = _.get(self.model, 'displayInfoOverTime.infoNoBaseDate.overTimeAppSet.overtimeLeaveAppCommonSetting.performanceExcessAtr') == AppDateContradictionAtr.CHECKNOTREGISTER;
+                if ((c1 || c2) && c3) {
+                    self.isMsg_1556 = true;
+                } else {
+                    self.isMsg_1556 = false;
+                }
                 self.$mask('hide');
             })
             .catch((res: any) => {
@@ -646,9 +658,16 @@ export class KafS05Component extends KafS00ShrComponent {
                     vm.model.displayInfoOverTime.calculationResultOp = res.data.calculationResultOp;
                     vm.model.displayInfoOverTime.workdayoffFrames = res.data.workdayoffFrames;
                     vm.model.displayInfoOverTime.calculatedFlag = res.data.calculatedFlag;
-                    vm.numb = value;
                     let step2 = vm.$refs.step2 as KafS05Step2Component;
                     step2.loadAllData();
+                    vm.numb = value;
+                    // 計算後の「残業申請の表示情報．計算結果．事前申請・実績の超過状態．実績状態」 = 超過エラー
+                    let c1 = _.get(vm.model, 'displayInfoOverTime.calculationResultOp.overStateOutput.achivementStatus') == ExcessState.EXCESS_ERROR;
+                    if (c1) {
+                        vm.isMsg_1556 = true;
+                    } else {
+                        vm.isMsg_1556 = false;
+                    }
                     vm.$nextTick(() => {
                         vm.$mask('hide');
                         step2.$forceUpdate();
@@ -889,7 +908,7 @@ export class KafS05Component extends KafS00ShrComponent {
             self.$modal(
                 'worktime',
                 {
-                    isAddNone: 0,
+                    isAddNone: 1,
                     seledtedWkTimeCDs: _.map(self.model.displayInfoOverTime.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode),
                     selectedWorkTimeCD: step1.getWorkTime(),
                     isSelectWorkTime: 1
