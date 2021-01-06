@@ -676,15 +676,15 @@ export class KafS05Component extends KafS00ShrComponent {
                     vm.model.displayInfoOverTime.workdayoffFrames = res.data.workdayoffFrames;
                     vm.model.displayInfoOverTime.calculatedFlag = res.data.calculatedFlag;
                     let step2 = vm.$refs.step2 as KafS05Step2Component;
-                    step2.loadAllData();
-                    vm.numb = value;
                     // 計算後の「残業申請の表示情報．計算結果．事前申請・実績の超過状態．実績状態」 = 超過エラー
                     let c1 = _.get(vm.model, 'displayInfoOverTime.calculationResultOp.overStateOutput.achivementStatus') == ExcessState.EXCESS_ERROR;
                     if (c1) {
                         vm.isMsg_1556 = true;
                     } else {
+                        vm.numb = value;
                         vm.isMsg_1556 = false;
                     }
+                    step2.loadAllData();
                     vm.$nextTick(() => {
                         vm.$mask('hide');
                         step2.$forceUpdate();
