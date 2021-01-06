@@ -30,6 +30,16 @@ public class AppHolidayWorkData {
 	private String appID;
 	
 	/**
+	 * 超過回数
+	 */
+	private Integer excessTimeNumber;
+	
+	/**
+	 * 超過時間
+	 */
+	private Integer excessTime;
+	
+	/**
 	 * 休出申請時間
 	 */
 	private List<AppTimeFrameData> appTimeFrameDataLst;
