@@ -57,6 +57,11 @@ module nts.uk.at.kmk004.r {
 			}
 			if (vm.param.screenMode === 'Com_Person') {
 				ULR = API.COPY_SHA;
+				cmd.copySource = _.find(vm.screenData().data(), ['code', vm.param.selected]).id;
+				cmd.copyDestinations = _.map(cmd.copyDestinations, (code) => {
+					let emp: any = _.find(vm.screenData().data(), ['code', code]);
+					return emp.id;
+				});
 			}
 
 			vm.$blockui('invisible')

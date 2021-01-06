@@ -288,7 +288,15 @@ class SidebarButton extends ko.ViewModel {
 			if (vm.screenMode == 'Com_Person') {
 
 				vm.$ajax(API_J_URL.AFTER_COPY).done((data) => {
-					vm.screenData().alreadySettingList(_.map(data, (item) => { return { code: item, isAlreadySetting: true } }));
+					vm.screenData().alreadySettingList(
+						_.map(data, (selectedId) => {
+							let emp: any = _.find($('#employee-list').getDataList(), ['id', selectedId]);
+							if (!emp) {
+								return { code: null, isAlreadySetting: false };
+							}
+							return { code: emp.code, isAlreadySetting: true };
+						}));
+					
 				}).always(() => { vm.$blockui("clear"); });
 
 			}
@@ -362,7 +370,14 @@ class SidebarButton extends ko.ViewModel {
 					vm.screenData().setSelectedAfterRemove(selectedYear);
 					vm.screenData().deleteYear(selectedYear);
 					vm.screenData().clearUnSaveList(selectedYear);
-					vm.screenData().alreadySettingList(_.map(data, (item) => { return { code: item, isAlreadySetting: true } }));
+					vm.screenData().alreadySettingList(
+						_.map(data, (selectedId) => {
+							let emp: any = _.find($('#employee-list').getDataList(), ['id', selectedId]);
+							if (!emp) {
+								return { code: null, isAlreadySetting: false };
+							}
+							return { code: emp.code, isAlreadySetting: true };
+						}));
 				});
 			}).always(() => { vm.$blockui("clear"); });
 		}
