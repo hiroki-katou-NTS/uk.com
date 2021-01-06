@@ -1,4 +1,4 @@
-package scheduledailytable;
+package nts.uk.ctx.at.aggregation.dom.scheduledailytable;
 
 import java.util.List;
 import java.util.Optional;
