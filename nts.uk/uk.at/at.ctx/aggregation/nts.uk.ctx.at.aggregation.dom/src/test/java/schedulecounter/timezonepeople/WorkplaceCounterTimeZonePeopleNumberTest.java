@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.timezonepeople;
+package schedulecounter.timezonepeople;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.timescounting;
+package schedulecounter.timescounting;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.estimate;
+package schedulecounter.estimate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;

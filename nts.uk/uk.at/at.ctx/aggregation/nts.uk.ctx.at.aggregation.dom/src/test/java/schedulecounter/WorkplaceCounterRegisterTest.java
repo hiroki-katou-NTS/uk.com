@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter;
+package schedulecounter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -11,7 +11,7 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
-import nts.uk.ctx.at.schedule.dom.shift.management.schedulecounter.timescounting.TimesNumberCounterType;
+import schedulecounter.timescounting.TimesNumberCounterType;
 
 @RunWith(JMockit.class)
 public class WorkplaceCounterRegisterTest {
