@@ -4,13 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.executionlog;
 
-import lombok.AllArgsConstructor;
+import java.util.Optional;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.layer.dom.DomainObject;
-import nts.arc.time.GeneralDate;
-
-import java.util.Optional;
 
 
 /**

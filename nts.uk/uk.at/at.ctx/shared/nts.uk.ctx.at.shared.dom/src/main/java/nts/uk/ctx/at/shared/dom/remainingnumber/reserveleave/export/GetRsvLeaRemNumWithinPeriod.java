@@ -394,7 +394,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 				
 				// 積立年休付与WORKを作成　→　端数処理
 				GrantWork grantWork = GrantWork.of(annualLeaveInfo.getYmd(), new ReserveLeaveGrantDayNumber(grantDays));
-				grantWork.roundGrantDays(annualLeaveSet);
+				grantWork.roundGrantDays(annualLeaveSet , targetMaxSet);
 				
 				// 積立年休付与WORKを返す
 				results.add(grantWork);

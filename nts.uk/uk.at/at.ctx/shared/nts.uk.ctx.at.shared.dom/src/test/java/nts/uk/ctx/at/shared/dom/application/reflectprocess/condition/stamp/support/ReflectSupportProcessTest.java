@@ -16,11 +16,11 @@ import nts.uk.ctx.at.shared.dom.application.common.PrePostAtrShare;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.stamp.ReflectAppStamp;
 import nts.uk.ctx.at.shared.dom.application.stamp.AppStampShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.StartEndClassificationShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppEnumShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppShare;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @RunWith(JMockit.class)
@@ -53,7 +53,7 @@ public class ReflectSupportProcessTest {
 				new ArrayList<>(), ReflectApplicationHelper.createAppShare(ApplicationTypeShare.STAMP_APPLICATION,
 						PrePostAtrShare.PREDICT));
 
-		ReflectAppStamp reflectApp = reflect(NotUseAtr.NOT_USE);//// 応援開始、終了を反映する
+		StampAppReflect reflectApp = reflect(NotUseAtr.NOT_USE);//// 応援開始、終了を反映する
 		List<Integer> actualResult = ReflectSupportProcess.reflect(require, application, dailyApp, reflectApp);
 
 		assertThat(actualResult).isEmpty();
@@ -84,14 +84,14 @@ public class ReflectSupportProcessTest {
 				new ArrayList<>(), ReflectApplicationHelper.createAppShare(ApplicationTypeShare.STAMP_APPLICATION,
 						PrePostAtrShare.PREDICT));
 
-		ReflectAppStamp reflectApp = reflect(NotUseAtr.USE);//// 応援開始、終了を反映する
+		StampAppReflect reflectApp = reflect(NotUseAtr.USE);//// 応援開始、終了を反映する
 		List<Integer> actualResult = ReflectSupportProcess.reflect(require, application, dailyApp, reflectApp);
 
 		assertThat(actualResult).isEqualTo(Arrays.asList(929, 921));
 	}
 
-	private ReflectAppStamp reflect(NotUseAtr atr) {
-		return new ReflectAppStamp("", NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, atr, NotUseAtr.NOT_USE,
+	private StampAppReflect reflect(NotUseAtr atr) {
+		return new StampAppReflect("", NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, atr,
 				NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
 
 	}

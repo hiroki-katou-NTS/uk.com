@@ -122,10 +122,10 @@ public class CreateWorkScheduleWorkInforBase {
 						Optional<TimeLeavingWork> timeLeavingWork = daily.getAttendanceLeave().get().getTimeLeavingWorks().stream().filter(i -> i.getWorkNo().v() == 1).findFirst();
 						if (timeLeavingWork.isPresent()) {
 							if (timeLeavingWork.get().getAttendanceStamp().isPresent()) {
-								if (timeLeavingWork.get().getAttendanceStamp().get().getActualStamp().isPresent()) {
-									if (timeLeavingWork.get().getAttendanceStamp().get().getActualStamp().get().getTimeDay() != null) {
-										if (timeLeavingWork.get().getAttendanceStamp().get().getActualStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
-											startTime = timeLeavingWork.get().getAttendanceStamp().get().getActualStamp().get().getTimeDay().getTimeWithDay().get().v();
+								if (timeLeavingWork.get().getAttendanceStamp().get().getStamp().isPresent()) {
+									if (timeLeavingWork.get().getAttendanceStamp().get().getStamp().get().getTimeDay() != null) {
+										if (timeLeavingWork.get().getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
+											startTime = timeLeavingWork.get().getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
 										}
 									}
 								}
@@ -138,10 +138,10 @@ public class CreateWorkScheduleWorkInforBase {
 						Optional<TimeLeavingWork> timeLeavingWork = daily.getAttendanceLeave().get().getTimeLeavingWorks().stream().filter(i -> i.getWorkNo().v() == 1).findFirst();
 						if (timeLeavingWork.isPresent()) {
 							if (timeLeavingWork.get().getLeaveStamp().isPresent()) {
-								if (timeLeavingWork.get().getLeaveStamp().get().getActualStamp().isPresent()) {
-									if (timeLeavingWork.get().getLeaveStamp().get().getActualStamp().get().getTimeDay() != null) {
-										if (timeLeavingWork.get().getLeaveStamp().get().getActualStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
-											endtTime = timeLeavingWork.get().getLeaveStamp().get().getActualStamp().get().getTimeDay().getTimeWithDay().get().v();
+								if (timeLeavingWork.get().getLeaveStamp().get().getStamp().isPresent()) {
+									if (timeLeavingWork.get().getLeaveStamp().get().getStamp().get().getTimeDay() != null) {
+										if (timeLeavingWork.get().getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
+											endtTime = timeLeavingWork.get().getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
 										}
 									}
 								}
@@ -172,6 +172,8 @@ public class CreateWorkScheduleWorkInforBase {
 							.isActive(false) //
 							.workTypeIsNotExit(workTypeIsNotExit)
 							.workTimeIsNotExit(workTimeIsNotExit)
+							.workTypeNameKsu002(workTypeInfor.map(m -> m.getAbbreviationName()).orElse(workTypeCode == null ? null : workTypeCode + "{#KSU002_31}"))
+							.workTimeNameKsu002(workTimeSetting.map(m -> m.getWorkTimeDisplayName().getWorkTimeAbName().v()).orElse(workTimeCode == null ? null : workTimeCode + "{#KSU002_31}"))
 							.build();
 
 					listWorkScheduleWorkInfor.add(dto);
@@ -214,10 +216,10 @@ public class CreateWorkScheduleWorkInforBase {
 			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
 		}
 
-		@Override
-		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo) {
-			return workTimeSettingService .getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
-		}
+//		@Override
+//		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo) {
+//			return workTimeSettingService .getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
+//		}
 
 		@Override
 		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {

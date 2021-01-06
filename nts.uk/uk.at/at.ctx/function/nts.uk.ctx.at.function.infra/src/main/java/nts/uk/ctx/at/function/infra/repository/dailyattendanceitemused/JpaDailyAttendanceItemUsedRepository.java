@@ -31,7 +31,7 @@ public class JpaDailyAttendanceItemUsedRepository extends JpaRepository implemen
 	
 	private static final String SELECT_BY_ATD_WORK_ATTENDANCE = "SELECT d FROM KfnctAtdIdRptDai d"
 			+ " WHERE d.kfnctAtdIdRptDaiPK.companyId = :companyId AND d.atdWorkAttendance = 1";
-
+	
 	@Override
 	public List<Integer> getAllDailyItemId(String companyId, BigDecimal reportId) {
 		String query = "";

@@ -133,10 +133,10 @@ public class GetScheduleOfWorkInfo002 {
 							.needToWork(m.needToWork)
 							.supportCategory(m.supportCategory)
 							.workTypeCode(m.workTypeCode)
-							.workTypeName(m.workTypeName)
+							.workTypeName(m.getWorkTypeNameKsu002())
 							.workTypeEditStatus(workTypeEditStatus)
 							.workTimeCode(m.getWorkTimeCode())
-							.workTimeName(m.getWorkTimeName())
+							.workTimeName(m.getWorkTimeNameKsu002())
 							.workTimeEditStatus(workTimeEditStatus)
 							.startTime(m.startTime)
 							.startTimeEditState(startTimeEditState)
@@ -183,11 +183,12 @@ public class GetScheduleOfWorkInfo002 {
 			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
 		}
 
-		@Override
-		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd, String workTypeCd,
-				Integer workNo) {
-			return workTimeSettingService.getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
-		}
+		// fix bug 113211
+//		@Override
+//		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd, String workTypeCd,
+//				Integer workNo) {
+//			return workTimeSettingService.getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
+//		}
 
 		@Override
 		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {

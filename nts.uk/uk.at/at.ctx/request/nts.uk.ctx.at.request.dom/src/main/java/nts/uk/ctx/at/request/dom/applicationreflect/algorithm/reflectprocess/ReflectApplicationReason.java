@@ -91,7 +91,7 @@ public class ReflectApplicationReason {
 			List<ItemContent> conts = ITEMCONTENT.stream()
 					.filter(x -> x.beforeAfter == app.getPrePostAtr()
 							&& x.type == app.getApplicationTypeReason().getAppType()
-							&& (app.getApplicationTypeReason().getOverAppAtr().isPresent()
+							&& (app.getApplicationTypeReason().getAppType() == ApplicationType.OVER_TIME_APPLICATION
 									? app.getApplicationTypeReason().getOverAppAtr().get() == x.getOver()
 									: true))
 					.collect(Collectors.toList());

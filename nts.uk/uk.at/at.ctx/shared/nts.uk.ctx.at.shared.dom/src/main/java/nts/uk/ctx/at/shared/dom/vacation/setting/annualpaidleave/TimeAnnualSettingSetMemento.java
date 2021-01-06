@@ -27,11 +27,6 @@ public interface TimeAnnualSettingSetMemento {
      */
     void setTimeManageType(ManageDistinct timeManageType);
 
-    /**
-     * Sets the time unit.
-     *
-     * @param timeUnit the new time unit
-     */
     void setTimeUnit(TimeDigestiveUnit timeUnit);
 
     /**
@@ -41,17 +36,7 @@ public interface TimeAnnualSettingSetMemento {
      */
     void setMaxYearDayLeave(TimeAnnualMaxDay maxYearDayLeave);
 
-    /**
-     * Sets the enough time one day.
-     *
-     * @param isEnoughTimeOneDay the new enough time one day
-     */
-    void setEnoughTimeOneDay(boolean isEnoughTimeOneDay);
-    
-    /**
-     * Sets TimeAnnualRoundProcesCla.
-     * 
-     * @param timeAnnualRoundProcesCla
-     */
     void setRoundProcessClassific(TimeAnnualRoundProcesCla timeAnnualRoundProcesCla);
+    
+    void setTimeAnnualLeaveTimeDay(TimeAnnualLeaveTimeDay timeAnnualLeaveTimeDay);
 }

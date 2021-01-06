@@ -210,8 +210,7 @@ module nts.uk.com.view.cli002.a {
             name: "Selection",
             mode: "row",
             multipleSelection: false,
-            activation: false,
-            rowSelectionChanged: function () { },
+            activation: false
           },
         ],
         ntsFeatures: [

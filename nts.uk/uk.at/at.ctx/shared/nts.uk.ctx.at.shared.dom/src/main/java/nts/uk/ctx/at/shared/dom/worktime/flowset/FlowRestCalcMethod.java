@@ -69,5 +69,9 @@ public enum FlowRestCalcMethod {
 		// Not found.
 		return null;
 	}
+	
+	public boolean isUseMasterAndStamp() {
+		return this == FlowRestCalcMethod.USE_MASTER_AND_STAMP;
+	}
 
 }

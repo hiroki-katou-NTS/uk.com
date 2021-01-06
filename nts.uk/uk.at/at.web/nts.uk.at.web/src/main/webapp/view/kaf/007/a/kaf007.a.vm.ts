@@ -25,9 +25,14 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 		comment2: KnockoutObservable<string> = ko.observable("");
 		isStraightGo: KnockoutObservable<boolean> = ko.observable(false);
 		isStraightBack: KnockoutObservable<boolean> = ko.observable(false);
+		isFromOther: boolean = false;
 
 		created(params: AppInitParam) {
 			const vm = this;
+			if(!_.isNil(__viewContext.transferred.value)) {
+				vm.isFromOther = true;
+			}
+			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
 			let empLst: Array<string> = [],
 				dateLst: Array<string> = [];
 			if (!_.isEmpty(params)) {
@@ -54,6 +59,7 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 			vm.loadData(empLst, dateLst, vm.appType())
 				.then((loadDataFlag: any) => {
 					if (loadDataFlag) {
+						vm.application().employeeIDLst(empLst);
 						let appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
 							command = { empLst, dateLst, appDispInfoStartupOutput };
 						return vm.$ajax(API.startNew, command);
@@ -260,7 +266,8 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 				opStampRequestMode: vm.application().opStampRequestMode(),
 				prePostAtr: vm.application().prePostAtr(),
 				inputDate: moment(new Date()).format('YYYY/MM/DD HH:mm:ss'),
-				enteredPerson: vm.$user.employeeId
+				enteredPerson: vm.$user.employeeId,
+				employeeID: vm.application().employeeIDLst()[0]
 			}
 
 			let command = {

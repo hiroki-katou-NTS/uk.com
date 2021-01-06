@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
@@ -21,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
  * @return the flow time setting
  */
 @Getter
+@Setter
 @NoArgsConstructor
 public class FlowWorkHolidayTimeZone extends WorkTimeDomainObject implements Cloneable{
 
