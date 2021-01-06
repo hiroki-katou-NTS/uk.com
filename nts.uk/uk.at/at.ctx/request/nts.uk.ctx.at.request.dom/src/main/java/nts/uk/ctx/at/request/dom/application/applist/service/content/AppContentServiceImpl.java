@@ -12,14 +12,16 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.i18n.I18NText;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.ApprovalDevice;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
@@ -36,6 +38,11 @@ import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppStampData
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.ScreenAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AttendanceNameItem;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementExcessInfoImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeOfManagePeriod;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.standardtime.AgreementMonthSettingAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.standardtime.AgreementMonthSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFrameImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
@@ -46,7 +53,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.PreAppContentD
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
@@ -71,15 +77,14 @@ import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.ReasonForFixe
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.ReasonTypeItem;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.ScheRecAtr;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -99,12 +104,6 @@ public class AppContentServiceImpl implements AppContentService {
 	private AppContentDetailCMM045 appContentDetailCMM045;
 	
 	@Inject
-	private WorkTypeRepository workTypeRepository;
-	
-	@Inject
-	private WorkTimeSettingRepository workTimeSettingRepository;
-	
-	@Inject
 	private PreActualColorCheck preActualColorCheck;
 	
 	@Inject
@@ -112,15 +111,6 @@ public class AppContentServiceImpl implements AppContentService {
 	
 	@Inject
 	private HolidayWorkAppSetRepository holidayWorkAppSetRepository;
-	
-	@Inject
-	private ApplicationRepository applicationRepository;
-	
-	@Inject
-	private AppOverTimeRepository appOverTimeRepository;
-	
-	@Inject
-	private AppHolidayWorkRepository appHolidayWorkRepository;
 	
 	@Inject
 	private CollectAchievement collectAchievement;
@@ -133,6 +123,12 @@ public class AppContentServiceImpl implements AppContentService {
 
 	@Inject
 	private AppOverTimeRepository appOverTimeRepo;
+	
+	@Inject
+	private AgreementTimeAdapter agreementTimeAdapter;
+	
+	@Inject
+	private AgreementMonthSettingAdapter agreementMonthSettingAdapter;
 
 	@Override
 	public String getArrivedLateLeaveEarlyContent(AppReason appReason, DisplayAtr appReasonDisAtr, ScreenAtr screenAtr, List<ArrivedLateLeaveEarlyItemContent> itemContentLst,
@@ -384,7 +380,7 @@ public class AppContentServiceImpl implements AppContentService {
 	public ListOfApplication createEachAppData(Application application, String companyID, List<WorkTimeSetting> lstWkTime,
 			List<WorkType> lstWkType, List<AttendanceNameItem> attendanceNameItemLst, ApplicationListAtr mode, ApprovalListDisplaySetting approvalListDisplaySetting,
 			ListOfApplication listOfApp, Map<String, List<ApprovalPhaseStateImport_New>> mapApproval, int device,
-			AppListExtractCondition appListExtractCondition, List<String> agentLst) {
+			AppListExtractCondition appListExtractCondition, List<String> agentLst, Map<String, Pair<Integer, Integer>> cacheTime36) {
 		if(device == ApprovalDevice.PC.value) {
 			// ドメインモデル「申請」．申請種類をチェック (Check Domain「Application.ApplicationType
 			switch (application.getAppType()) {
@@ -423,7 +419,8 @@ public class AppContentServiceImpl implements AppContentService {
 						attendanceNameItemLst, 
 						appListExtractCondition.getAppListAtr(), 
 						approvalListDisplaySetting, 
-						companyID);
+						companyID, 
+						cacheTime36);
 				listOfApp.setAppContent(appOvertimeDataOutput.getAppContent());
 				listOfApp.setOpAppTypeDisplay(appOvertimeDataOutput.getOpAppTypeDisplay());
 				listOfApp.setOpBackgroundColor(Optional.ofNullable(appOvertimeDataOutput.getBackgroundColor()));
@@ -437,7 +434,8 @@ public class AppContentServiceImpl implements AppContentService {
 						attendanceNameItemLst, 
 						appListExtractCondition.getAppListAtr(), 
 						approvalListDisplaySetting, 
-						companyID);
+						companyID,
+						cacheTime36);
 				listOfApp.setAppContent(appHolidayWorkDataOutput.getAppContent());
 				listOfApp.setOpBackgroundColor(Optional.ofNullable(appHolidayWorkDataOutput.getBackgroundColor()));
 				break;
@@ -743,7 +741,24 @@ public class AppContentServiceImpl implements AppContentService {
 			// 申請内容を改行(thêm kí tự xuống dòng)
 			result += "\n";
 			// 申請内容　+＝　#CMM045_282 +　”　”　+　時間外時間データ．「実績時間 + 申請時間」　+　#CMM045_283　+　{0}回
-			result += I18NText.getText("CMM045_282") + I18NText.getText("CMM045_283", I18NText.getText("CMM045_284")); 
+			String excessTime = "";
+			String excessTimeNumber = "";
+			if(appType==ApplicationType.HOLIDAY_WORK_APPLICATION) {
+				if(appHolidayWorkData.getExcessTime()!=null) {
+					excessTime = new TimeWithDayAttr(appHolidayWorkData.getExcessTime()).getRawTimeWithFormat();
+				}
+				if(appHolidayWorkData.getExcessTimeNumber()!=null) {
+					excessTimeNumber = appHolidayWorkData.getExcessTimeNumber().toString();
+				}
+			} else {
+				if(appOverTimeData.getExcessTime()!=null) {
+					excessTime = new TimeWithDayAttr(appOverTimeData.getExcessTime()).getRawTimeWithFormat();
+				}
+				if(appOverTimeData.getExcessTimeNumber()!=null) {
+					excessTimeNumber = appOverTimeData.getExcessTimeNumber().toString();
+				}
+			}
+			result += I18NText.getText("CMM045_282") + excessTime + " " + I18NText.getText("CMM045_283") + I18NText.getText("CMM045_284", excessTimeNumber);
 		} else {
 			if((appType==ApplicationType.OVER_TIME_APPLICATION && appOverTimeData.getOpPreAppData().isPresent()) ||
 				(appType==ApplicationType.HOLIDAY_WORK_APPLICATION && appHolidayWorkData.getOpPreAppData().isPresent())){
@@ -789,17 +804,31 @@ public class AppContentServiceImpl implements AppContentService {
 				}
 				result += this.getDisplayFrame(appType, appTimeFrameDataLst);
 			}
-//			if(appType==ApplicationType.HOLIDAY_WORK_APPLICATION) {
-//				if(appHolidayWork.getAppOvertimeDetail().isPresent()) {
-//					// 申請内容　+＝　#CMM045_282 +　”　”　+　時間外時間データ．「実績時間 + 申請時間」　+　#CMM045_283　+　{0}回
-//					result += I18NText.getText("CMM045_282") + I18NText.getText("CMM045_283", I18NText.getText("CMM045_284"));
-//				}
-//			} else {
-//				if(appOverTime.getDetailOverTimeOp().isPresent()) {
-//					// 申請内容　+＝　#CMM045_282 +　”　”　+　時間外時間データ．「実績時間 + 申請時間」　+　#CMM045_283　+　{0}回
-//					result += I18NText.getText("CMM045_282") + I18NText.getText("CMM045_283", I18NText.getText("CMM045_284"));
-//				}
-//			}
+			String excessTime = "";
+			String excessTimeNumber = "";
+			if(appType==ApplicationType.HOLIDAY_WORK_APPLICATION) {
+				if(appHolidayWorkData.getExcessTime() > 0) {
+					// 申請内容　+＝　#CMM045_282 +　”　”　+　時間外時間データ．「実績時間 + 申請時間」　+　#CMM045_283　+　{0}回
+					if(appHolidayWorkData.getExcessTime()!=null) {
+						excessTime = new TimeWithDayAttr(appHolidayWorkData.getExcessTime()).getRawTimeWithFormat();
+					}
+					if(appHolidayWorkData.getExcessTimeNumber()!=null) {
+						excessTimeNumber = appHolidayWorkData.getExcessTimeNumber().toString();
+					}
+					result += I18NText.getText("CMM045_282") + excessTime + " " + I18NText.getText("CMM045_283") + I18NText.getText("CMM045_284", excessTimeNumber);
+				}
+			} else {
+				if(appOverTimeData.getExcessTime() > 0) {
+					// 申請内容　+＝　#CMM045_282 +　”　”　+　時間外時間データ．「実績時間 + 申請時間」　+　#CMM045_283　+　{0}回
+					if(appOverTimeData.getExcessTime()!=null) {
+						excessTime = new TimeWithDayAttr(appOverTimeData.getExcessTime()).getRawTimeWithFormat();
+					}
+					if(appOverTimeData.getExcessTimeNumber()!=null) {
+						excessTimeNumber = appOverTimeData.getExcessTimeNumber().toString();
+					}
+					result += I18NText.getText("CMM045_282") + excessTime + " " + I18NText.getText("CMM045_283") + I18NText.getText("CMM045_284", excessTimeNumber);
+				}
+			}
 		}
 		// 申請理由内容　＝　申請内容の申請理由
 		String appReasonContent = this.getAppReasonContent(
@@ -957,6 +986,8 @@ public class AppContentServiceImpl implements AppContentService {
 					appOverTimePre.getOverTimeClf().value, 
 					appOverTimePre.getWorkHoursOp().map(x -> x.stream().filter(y -> y.getWorkNo().v()==1).findAny().map(y -> y.getTimeZone().getEndTime().v()).orElse(null)).orElse(null), 
 					appOverTimePre.getAppID(),
+					null,
+					null,
 					appOverTimePre.getApplicationTime().getFlexOverTime().map(x -> x.v()), 
 					appOverTimePre.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()), 
 					workTypeLst.stream().filter(x -> x.getWorkTypeCode().equals(appOverTimePre.getWorkInfoOp().map(y -> y.getWorkTypeCode()).orElse(null)))
@@ -982,7 +1013,9 @@ public class AppContentServiceImpl implements AppContentService {
 			appHolidayWorkData = new AppHolidayWorkData(
 					appHolidayWorkPre.getWorkingTimeList().map(x -> x.stream().filter(y -> y.getWorkNo().v()==1).findAny().map(y -> y.getTimeZone().getStartTime().v()).orElse(null)).orElse(null), 
 					appHolidayWorkPre.getWorkingTimeList().map(x -> x.stream().filter(y -> y.getWorkNo().v()==1).findAny().map(y -> y.getTimeZone().getEndTime().v()).orElse(null)).orElse(null), 
-					appHolidayWorkPre.getAppID(), 
+					appHolidayWorkPre.getAppID(),
+					null,
+					null,
 					appHolidayWorkPre.getApplicationTime().getApplicationTime().stream().map(x -> new AppTimeFrameData(
 							null, 
 							x.getFrameNo().v(), 
@@ -1160,5 +1193,37 @@ public class AppContentServiceImpl implements AppContentService {
 		// ドメインモデル「特定加給時間項目」を取得 ( Lấy domain model 「特定加給時間項目」)
 		
 		return result;
+	}
+
+	@Override
+	public Pair<Integer, Integer> getAgreementTime36(String employeeID, YearMonth yearMonth, Map<String, Pair<Integer, Integer>> cache) {
+		Integer excessTime = null;
+		Integer excessTimeNumber = null;
+		// 社員ID＋年月で保持されたキャッシュが存在する
+		if(cache.containsKey(employeeID+yearMonth.v().toString())) {
+			return cache.get(employeeID+yearMonth.v().toString());
+		}
+		// 【NO.333】36協定時間の取得
+		AgreementTimeOfManagePeriod agreementTimeOfManagePeriod = agreementTimeAdapter.getAgreementTimeOfManagePeriod(
+				employeeID, 
+				yearMonth, 
+				Collections.emptyList(), 
+				GeneralDate.today(), 
+				ScheRecAtr.SCHEDULE);
+		// [NO.708]社員と年月を指定して３６協定年月設定を取得する
+		AgreementMonthSettingOutput agreementMonthSettingOutput = agreementMonthSettingAdapter.getData(employeeID, yearMonth);
+		if(agreementMonthSettingOutput.getIsExist()) {
+			// 超過時間＝管理期間の36協定時間.法定上限対象時間.対象時間
+			excessTime = agreementTimeOfManagePeriod.getLegalMaxTime().getAgreementTime().v();
+		} else {
+			// 超過時間＝管理期間の36協定時間.３６協定対象時間.対象時間
+			excessTime = agreementTimeOfManagePeriod.getAgreementTime().getAgreementTime().v();
+		}
+		// [No.605]年月を指定して年間超過回数の取得
+		AgreementExcessInfoImport agreementExcessInfoImport = agreementMonthSettingAdapter.getDataRq605(employeeID, yearMonth);
+		excessTimeNumber = agreementExcessInfoImport.getExcessTimes();
+		// 社員ID＋年月で保持する(キャッシュ)
+		cache.put(employeeID+yearMonth.v().toString(), Pair.of(excessTime, excessTimeNumber));
+		return Pair.of(excessTime, excessTimeNumber);
 	}
 }

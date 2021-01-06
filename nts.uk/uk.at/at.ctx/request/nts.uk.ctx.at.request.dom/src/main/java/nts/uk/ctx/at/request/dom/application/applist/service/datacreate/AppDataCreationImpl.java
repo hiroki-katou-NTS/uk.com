@@ -90,6 +90,7 @@ public class AppDataCreationImpl implements AppDataCreation {
 		
 		Map<String, SyEmployeeImport> mapEmpInfo = new HashMap<>();
 		Map<Pair<String, DatePeriod>, WkpInfo> mapWkpInfo = new HashMap<>();
+		Map<String, Pair<Integer, Integer>> cacheTime36 = new HashMap<>();
 		GeneralDate sysDate = GeneralDate.today();
 		List<String> agentLst = agentAdapter.lstAgentData(companyID, AppContexts.user().employeeId(), sysDate, sysDate).stream().map(x -> x.getEmployeeId()).collect(Collectors.toList());
 		List<ListOfApplication> appOutputLst = new ArrayList<>();
@@ -120,7 +121,8 @@ public class AppDataCreationImpl implements AppDataCreation {
 					mapApproval, 
 					device, 
 					appListExtractCondition,
-					agentLst);
+					agentLst,
+					cacheTime36);
 			// 申請内容＝-1(Nội dung đơn xin＝-1 )
 			if(listOfApp.getAppContent()=="-1") {
 				// パラメータ：申請一覧情報.申請一覧から削除する(xóa từ list đơn xin)
