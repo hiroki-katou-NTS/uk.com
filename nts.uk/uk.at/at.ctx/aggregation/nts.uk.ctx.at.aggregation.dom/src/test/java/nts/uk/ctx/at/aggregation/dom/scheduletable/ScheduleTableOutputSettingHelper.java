@@ -1,9 +1,18 @@
-package scheduletable;
+package nts.uk.ctx.at.aggregation.dom.scheduletable;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.at.aggregation.dom.scheduletable.OneRowOutputItem;
+import nts.uk.ctx.at.aggregation.dom.scheduletable.OutputItem;
+import nts.uk.ctx.at.aggregation.dom.scheduletable.OutputSettingCode;
+import nts.uk.ctx.at.aggregation.dom.scheduletable.OutputSettingName;
+import nts.uk.ctx.at.aggregation.dom.scheduletable.PersonalCounterCategory;
+import nts.uk.ctx.at.aggregation.dom.scheduletable.ScheduleTableAttendanceItem;
+import nts.uk.ctx.at.aggregation.dom.scheduletable.ScheduleTableOutputSetting;
+import nts.uk.ctx.at.aggregation.dom.scheduletable.ScheduleTablePersonalInfoItem;
+import nts.uk.ctx.at.aggregation.dom.scheduletable.WorkplaceCounterCategory;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 public class ScheduleTableOutputSettingHelper {

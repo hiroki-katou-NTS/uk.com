@@ -1,4 +1,4 @@
-package scheduletable;
+package nts.uk.ctx.at.aggregation.dom.scheduletable;
 
 import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;

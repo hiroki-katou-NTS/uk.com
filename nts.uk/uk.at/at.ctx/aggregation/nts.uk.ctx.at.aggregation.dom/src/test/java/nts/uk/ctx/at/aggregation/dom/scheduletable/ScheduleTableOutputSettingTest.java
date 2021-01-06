@@ -1,4 +1,4 @@
-package scheduletable;
+package nts.uk.ctx.at.aggregation.dom.scheduletable;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -10,6 +10,15 @@ import org.junit.Test;
 
 import mockit.Injectable;
 import nts.arc.testing.assertion.NtsAssert;
+import nts.uk.ctx.at.aggregation.dom.scheduletable.OneRowOutputItem;
+import nts.uk.ctx.at.aggregation.dom.scheduletable.OutputItem;
+import nts.uk.ctx.at.aggregation.dom.scheduletable.OutputSettingCode;
+import nts.uk.ctx.at.aggregation.dom.scheduletable.OutputSettingName;
+import nts.uk.ctx.at.aggregation.dom.scheduletable.PersonalCounterCategory;
+import nts.uk.ctx.at.aggregation.dom.scheduletable.ScheduleTableAttendanceItem;
+import nts.uk.ctx.at.aggregation.dom.scheduletable.ScheduleTableOutputSetting;
+import nts.uk.ctx.at.aggregation.dom.scheduletable.ScheduleTablePersonalInfoItem;
+import nts.uk.ctx.at.aggregation.dom.scheduletable.WorkplaceCounterCategory;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 public class ScheduleTableOutputSettingTest {

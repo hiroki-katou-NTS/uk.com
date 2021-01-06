@@ -1,10 +1,14 @@
-package scheduletable;
+package nts.uk.ctx.at.aggregation.dom.scheduletable;
 
 import org.junit.Test;
 
 import mockit.Expectations;
 import mockit.Injectable;
 import nts.arc.testing.assertion.NtsAssert;
+import nts.uk.ctx.at.aggregation.dom.scheduletable.CopyScheduleTableOutputSettingService;
+import nts.uk.ctx.at.aggregation.dom.scheduletable.OutputSettingCode;
+import nts.uk.ctx.at.aggregation.dom.scheduletable.OutputSettingName;
+import nts.uk.ctx.at.aggregation.dom.scheduletable.ScheduleTableOutputSetting;
 
 public class CopyScheduleTableOutputSettingServiceTest {
 	

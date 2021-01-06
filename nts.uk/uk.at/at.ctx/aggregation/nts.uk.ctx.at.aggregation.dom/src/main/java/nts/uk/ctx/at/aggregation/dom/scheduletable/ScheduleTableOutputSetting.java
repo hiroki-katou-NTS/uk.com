@@ -1,4 +1,4 @@
-package scheduletable;
+package nts.uk.ctx.at.aggregation.dom.scheduletable;
 
 import java.util.ArrayList;
 import java.util.HashSet;
