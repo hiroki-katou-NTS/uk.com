@@ -835,22 +835,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							lineNo: index
 						}
 					}]);
-					/*$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime1", "");
-					$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime2", "");
-					$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime1", "");
-					$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime2", "");
-					
-					if(columnKey != "worktimeCode"){
-						$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeCode", "");
-					}
-					
-					$("#extable-ksu003").exTable("cellValue", "middle", empId, "totalTime", "");
-					let cssTotalTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(9)";
-					$(cssTotalTime).css("background-color", "#ffffff");
-					$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", "");
-					$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeName", getText('KSU003_55'));
-					$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktypeName", "");
-					$(".xcell").removeClass("x-error");*/
 					
 					if((columnKey == "worktimeCode" || (error.messageId != "Msg_434" && columnKey == "worktypeCode")) && self.checkMes != 101){
 						errorDialog({ messageId: error.messageId });
