@@ -9,6 +9,7 @@ import { KDL002Component } from '../../../kdl/002';
 import { Kdl001Component } from '../../../kdl/001';
 import { KafS00ShrComponent, AppType, Application, InitParam } from 'views/kaf/s00/shr';
 import { OverTime } from '../step2/index';
+import { OverTimeWorkHoursDto } from '../../s00/sub/p2';
 
 @component({
     name: 'kafs05',
@@ -54,6 +55,12 @@ export class KafS05Component extends KafS00ShrComponent {
 
     public get step() {
         return `step_${this.numb}`;
+    }
+    public get overTimeWorkHoursDto(): OverTimeWorkHoursDto {
+        const self = this;
+        let model = self.model as Model;
+        
+        return _.get(model, 'displayInfoOverTime.infoNoBaseDate.agreeOverTimeOutput') || null;
     }
 
     // 「残業申請の表示情報．基準日に関係しない情報．残業申請設定．残業休出申請共通設定．時間外表示区分」＝する
@@ -714,6 +721,7 @@ export class KafS05Component extends KafS00ShrComponent {
 
         return validAllChild;
     }
+
 
     public register() {
         const vm = this;

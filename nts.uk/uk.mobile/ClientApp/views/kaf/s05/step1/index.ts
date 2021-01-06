@@ -2,6 +2,7 @@ import { _, Vue } from '@app/provider';
 import { component, Watch } from '@app/core/component';
 import { KafS00SubP3Component } from 'views/kaf/s00/sub/p3';
 import { KafS00SubP1Component } from 'views/kaf/s00/sub/p1';
+import { KafS00SubP2Component } from 'views/kaf/s00/sub/p2';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/s00';
 import { TimeZoneWithWorkNo, BreakTime, TimeZoneNew, WorkHoursDto, AppOverTime, InfoWithDateApplication , DisplayInfoOverTime, TimeZone, ParamBreakTime, BreakTimeZoneSetting} from '../a/define.interface';
 import { KafS05Component} from '../a/index';
@@ -25,6 +26,7 @@ import { KafS05Component} from '../a/index';
     components: {
         'kafs00subp3': KafS00SubP3Component,
         'kafs00subp1': KafS00SubP1Component,
+        'kafs00subp2': KafS00SubP2Component,
         'kafs00-a': KafS00AComponent,
         'kafs00-b': KafS00BComponent,
         'kafs00-c': KafS00CComponent

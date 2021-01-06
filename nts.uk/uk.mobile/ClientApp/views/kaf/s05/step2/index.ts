@@ -5,6 +5,7 @@ import { KafS00SubP3Component } from 'views/kaf/s00/sub/p3';
 import { KafS00SubP1Component } from 'views/kaf/s00/sub/p1';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/s00';
 import { ExcessTimeStatus } from '../../s00/sub/p1';
+import { KafS00SubP2Component } from 'views/kaf/s00/sub/p2';
 import { ReasonDivergence, ExcessStateMidnight, ExcessStateDetail, OutDateApplication, DivergenceReasonSelect, AppOverTime, OvertimeWorkFrame, DivergenceReasonInputMethod, DivergenceTimeRoot, AttendanceType, OvertimeApplicationSetting, HolidayMidNightTime, StaturoryAtrOfHolidayWork, WorkdayoffFrame, ExcessState } from '../a/define.interface';
 @component({
     name: 'kafs05step2',
@@ -40,6 +41,7 @@ import { ReasonDivergence, ExcessStateMidnight, ExcessStateDetail, OutDateApplic
     components: {
         'kafs00subp3': KafS00SubP3Component,
         'kafs00subp1': KafS00SubP1Component,
+        'kafs00subp2': KafS00SubP2Component,
         'kafs00-a': KafS00AComponent,
         'kafs00-b': KafS00BComponent,
         'kafs00-c': KafS00CComponent
