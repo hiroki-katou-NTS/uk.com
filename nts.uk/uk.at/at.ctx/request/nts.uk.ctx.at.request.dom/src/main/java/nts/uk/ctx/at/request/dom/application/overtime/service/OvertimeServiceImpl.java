@@ -1166,7 +1166,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 			DisplayInfoOverTime displayInfoOverTime,
 			AppOverTime appOverTime) {
 		// 勤務種類、就業時間帯チェックのメッセージを表示
-		otherCommonAlgorithm.checkWorkingInfo(
+		detailBeforeUpdate.displayWorkingHourCheck(
 				companyId,
 				appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()).orElse(null),
 				appOverTime.getWorkInfoOp().map(x -> x.getWorkTimeCode().v()).orElse(null));
