@@ -769,8 +769,8 @@ public class AppContentServiceImpl implements AppContentService {
 				// 申請内容　+＝　「申請の内容（事前、事後内容）」を取得
 				result += this.getDetailApplicationPrePost(
 						appType, 
-						appOverTimeData.getOpPreAppData().orElse(null), 
-						appHolidayWorkData.getOpPreAppData().orElse(null));
+						appOverTimeData==null ? null : appOverTimeData.getOpPreAppData().orElse(null), 
+						appHolidayWorkData==null ? null : appHolidayWorkData.getOpPreAppData().orElse(null));
 			} else {
 				// 申請内容　＋＝CMM045_273＋CMM045_306
 				result += I18NText.getText("CMM045_273") + I18NText.getText("CMM045_306");
