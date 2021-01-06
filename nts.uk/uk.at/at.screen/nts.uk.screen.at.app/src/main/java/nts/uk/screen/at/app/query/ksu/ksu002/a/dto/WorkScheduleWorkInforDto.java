@@ -74,6 +74,8 @@ public class WorkScheduleWorkInforDto {
 	
 	@Builder
 	public static class Achievement {
+		
+		public String employeeId;
 
 		// Khu vực Optional
 		// 勤務種類コード
