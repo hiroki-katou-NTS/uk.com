@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.TimeSpecialVacationRemaining;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.TimeVacationRemainingOutput;
@@ -23,13 +24,13 @@ public class TimeLeaveRemaining {
     private Integer super60HRemainingTime = 0;
 
     // 介護の残日数
-    private Integer careRemainingDays = 0;
+    private Double careRemainingDays = 0.0;
 
     // 介護の残時間
     private Integer careRemainingTime = 0;
 
     // 子看護の残日数
-    private Integer childCareRemainingDays = 0;
+    private Double childCareRemainingDays = 0.0;
 
     // 子看護の残時間
     private Integer childCareRemainingTime = 0;
@@ -47,7 +48,8 @@ public class TimeLeaveRemaining {
     private List<TimeSpecialVacationRemaining> specialTimeFrames = new ArrayList<>();
 
     // 残数期間
-    private DatePeriod remainingPeriod;
+    private GeneralDate remainingStart;
+    private GeneralDate remainingEnd;
 
     public static TimeVacationRemainingOutput setDataOutput(TimeLeaveRemaining dto) {
         return new TimeVacationRemainingOutput(
@@ -60,7 +62,7 @@ public class TimeLeaveRemaining {
             dto.careRemainingDays,
             dto.annualTimeLeaveRemainingTime,
             dto.specialTimeFrames,
-            dto.remainingPeriod
+            new DatePeriod(dto.remainingStart, dto.remainingEnd)
         );
     }
 
@@ -75,7 +77,8 @@ public class TimeLeaveRemaining {
                 domain.getAnnualTimeLeaveRemainingDays(),
                 domain.getAnnualTimeLeaveRemainingTime(),
                 domain.getSpecialTimeFrames(),
-                domain.getRemainingPeriod()
+                domain.getRemainingPeriod().start(),
+                domain.getRemainingPeriod().end()
         );
     }
 }

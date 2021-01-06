@@ -77,11 +77,11 @@ public class TimeLeaveApplicationCommand {
 //            result.setChildTime(new AttendanceTime(applicationTime));
 //            result.setTimeOff(new AttendanceTime(applicationTime));
 //            result.setTimeSpecialVacation(new AttendanceTime(applicationTime));
-//            result.setTimeAnualLeave(new AttendanceTime(applicationTime));
+//            result.setTimeAnnualLeave(new AttendanceTime(applicationTime));
 //        } else if (timeDigestAppType == TimeDigestAppType.TIME_OFF.value) {
-//            result.setTimeAnualLeave(new AttendanceTime(applicationTime));
+//            result.setTimeAnnualLeave(new AttendanceTime(applicationTime));
 //        } else if (timeDigestAppType == TimeDigestAppType.TIME_ANNUAL_LEAVE.value) {
-//            result.setTimeAnualLeave(new AttendanceTime(applicationTime));
+//            result.setTimeAnnualLeave(new AttendanceTime(applicationTime));
 //        } else if (timeDigestAppType == TimeDigestAppType.CHILD_NURSING_TIME.value) {
 //            result.setChildTime(new AttendanceTime(applicationTime));
 //        } else if (timeDigestAppType == TimeDigestAppType.NURSING_TIME.value) {

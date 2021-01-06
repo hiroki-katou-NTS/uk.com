@@ -8,21 +8,11 @@ import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.TimeL
 import java.util.List;
 
 @Data
-public class RequestParam {
+public class ChangeSpecialLeaveFrameParams {
 
-    //時間休暇種類
-    private int timeDigestAppType;
-
-    //時間休暇申請
-    //詳細
-    private List<TimeLeaveAppDetailDto> details;
-
-    // 申請
-    private ApplicationDto application;
+    private Integer specialLeaveFrameNo;
 
     //時間休暇申請の表示情報
     private TimeLeaveAppDisplayInfoDto timeLeaveAppDisplayInfo;
 
-    //代休申請区分
-    private boolean agentMode;
 }

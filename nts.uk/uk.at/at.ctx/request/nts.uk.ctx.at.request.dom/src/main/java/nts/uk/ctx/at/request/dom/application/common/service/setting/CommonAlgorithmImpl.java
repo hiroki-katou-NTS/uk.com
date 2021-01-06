@@ -767,7 +767,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		if (!this.isValidAttendanceTime(timeDigestApplication.getChildTime()) && 
 		        !this.isValidAttendanceTime(timeDigestApplication.getNursingTime()) && 
 		        !this.isValidAttendanceTime(timeDigestApplication.getOvertime60H()) && 
-		        !this.isValidAttendanceTime(timeDigestApplication.getTimeAnualLeave()) &&
+		        !this.isValidAttendanceTime(timeDigestApplication.getTimeAnnualLeave()) &&
 		        !this.isValidAttendanceTime(timeDigestApplication.getTimeOff()) &&
 		        !this.isValidAttendanceTime(timeDigestApplication.getTimeSpecialVacation())) {
             throw new BusinessException("Msg_511");
@@ -831,24 +831,24 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		    }
 		}
 		
-		if (timeDigestApplication.getTimeAnualLeave() != null && timeDigestApplication.getTimeAnualLeave().v() > 0) {
+		if (timeDigestApplication.getTimeAnnualLeave() != null && timeDigestApplication.getTimeAnnualLeave().v() > 0) {
 		    int remainAnnual = 0;
 		    if (annualLeaveUnit.isPresent()) {
 		        switch (substituteHoliday.get()) {
                 case OneMinute:
-                    remainAnnual = timeDigestApplication.getTimeAnualLeave().v() % 1;
+                    remainAnnual = timeDigestApplication.getTimeAnnualLeave().v() % 1;
                     break;
                 case FifteenMinute:
-                    remainAnnual = timeDigestApplication.getTimeAnualLeave().v() % 15;
+                    remainAnnual = timeDigestApplication.getTimeAnnualLeave().v() % 15;
                     break;
                 case ThirtyMinute:
-                    remainAnnual = timeDigestApplication.getTimeAnualLeave().v() % 30;
+                    remainAnnual = timeDigestApplication.getTimeAnnualLeave().v() % 30;
                     break;
                 case OneHour:
-                    remainAnnual = timeDigestApplication.getTimeAnualLeave().v() % 60;
+                    remainAnnual = timeDigestApplication.getTimeAnnualLeave().v() % 60;
                     break;
                 case TwoHour:
-                    remainAnnual = timeDigestApplication.getTimeAnualLeave().v() % 120;
+                    remainAnnual = timeDigestApplication.getTimeAnnualLeave().v() % 120;
                     break;
                 default:
                     break;

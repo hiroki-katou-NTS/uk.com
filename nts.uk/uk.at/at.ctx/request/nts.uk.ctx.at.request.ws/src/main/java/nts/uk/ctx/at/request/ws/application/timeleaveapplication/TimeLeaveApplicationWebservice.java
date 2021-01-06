@@ -6,10 +6,7 @@ import nts.uk.ctx.at.request.app.command.application.timeleaveapplication.Regist
 import nts.uk.ctx.at.request.app.command.application.timeleaveapplication.UpdateTimeLeaveApplicationCommand;
 import nts.uk.ctx.at.request.app.command.application.timeleaveapplication.UpdateTimeLeaveApplicationCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
-import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.ChangeAppDateParams;
-import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.RequestParam;
-import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.StartProcessTimeLeaveParam;
-import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.TimeLeaveApplicationFinder;
+import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.*;
 import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.StartProcessTimeLeaveAppDto;
 import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.TimeLeaveAppDisplayInfoDto;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
@@ -45,6 +42,12 @@ public class TimeLeaveApplicationWebservice extends WebService {
     @Path("changeAppDate")
     public TimeLeaveAppDisplayInfoDto changeAppDate(ChangeAppDateParams params) {
         return this.finder.changeApplyDate(params);
+    }
+
+    @POST
+    @Path("changeSpecialFrame")
+    public TimeLeaveAppDisplayInfoDto changeSpecialLeaveFrame(ChangeSpecialLeaveFrameParams params) {
+        return this.finder.changeSpecialLeaveFrame(params);
     }
 
     /**

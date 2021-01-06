@@ -8,13 +8,12 @@ import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.TimeL
 import java.util.List;
 
 @Data
-public class RequestParam {
+public class CalculateAppTimeMobileParams {
 
     //時間休暇種類
     private int timeDigestAppType;
 
     //時間休暇申請
-    //詳細
     private List<TimeLeaveAppDetailDto> details;
 
     // 申請
@@ -23,6 +22,7 @@ public class RequestParam {
     //時間休暇申請の表示情報
     private TimeLeaveAppDisplayInfoDto timeLeaveAppDisplayInfo;
 
-    //代休申請区分
-    private boolean agentMode;
+    //画面モード true: Edit mode ; false: Display mode
+    private boolean screenMode;
+
 }

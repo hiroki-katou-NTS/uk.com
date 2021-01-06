@@ -43,7 +43,7 @@ public class TimeDigestApplication {
     /**
      * 時間年休時間
      */
-    private AttendanceTime timeAnualLeave;
+    private AttendanceTime timeAnnualLeave;
 
     /**
      * 特別休暇枠NO
@@ -55,14 +55,14 @@ public class TimeDigestApplication {
             AttendanceTime childTime, 
             AttendanceTime timeOff, 
             AttendanceTime timeSpecialVacation, 
-            AttendanceTime timeAnualLeave, 
+            AttendanceTime timeAnnualLeave,
             Optional<Integer> specialVacationFrameNO) {
         this.overtime60H = overtime60H;
         this.nursingTime = nursingTime;
         this.childTime = childTime;
         this.timeOff = timeOff;
         this.timeSpecialVacation = timeSpecialVacation;
-        this.timeAnualLeave = timeAnualLeave;
+        this.timeAnnualLeave = timeAnnualLeave;
         this.specialVacationFrameNO = specialVacationFrameNO == null ? Optional.empty() : specialVacationFrameNO;
     }
 }

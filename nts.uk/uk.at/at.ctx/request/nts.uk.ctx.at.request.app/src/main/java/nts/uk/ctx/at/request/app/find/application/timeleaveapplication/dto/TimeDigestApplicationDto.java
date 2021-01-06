@@ -2,17 +2,44 @@ package nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.request.dom.application.appabsence.apptimedigest.TimeDigestApplication;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-
-import java.util.Optional;
 
 @Data
 @AllArgsConstructor
 public class TimeDigestApplicationDto {
 
-    private int appTimeType;
+    /**
+     * 60H超休
+     */
+    private Integer super60AppTime;
 
-    private TimeDigestDto timeDigestDto;
+    /**
+     * 介護時間
+     */
+    private Integer careAppTime;
+
+    /**
+     * 子の看護時間
+     */
+    private Integer childCareAppTime;
+
+    /**
+     * 時間代休時間
+     */
+    private Integer substituteAppTime;
+
+    /**
+     * 時間特別休暇
+     */
+    private Integer specialAppTime;
+
+    /**
+     * 時間年休時間
+     */
+    private Integer annualAppTime;
+
+    /**
+     * 特別休暇枠NO
+     */
+    private Integer specialLeaveFrameNo;
 
 }

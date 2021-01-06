@@ -11,6 +11,9 @@ import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.TimeL
 @AllArgsConstructor
 @Data
 public class ChangeAppDateParams {
-    private GeneralDate applyDate;
+    // 申請日
+    private GeneralDate appDate;
+
+    // 時間休暇申請の表示情報
     private TimeLeaveAppDisplayInfoDto appDisplayInfo;
 }

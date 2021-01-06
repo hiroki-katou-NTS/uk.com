@@ -10,7 +10,6 @@ import nts.uk.ctx.at.request.dom.application.*;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.*;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
-import nts.uk.ctx.at.request.infra.entity.application.businesstrip.KrqdtAppTrip;
 import nts.uk.ctx.at.request.infra.entity.application.timeleaveapplication.KrqdtAppTimeHd;
 import nts.uk.ctx.at.request.infra.entity.application.timeleaveapplication.KrqdtAppTimeHdInput;
 import nts.uk.ctx.at.request.infra.entity.application.timeleaveapplication.KrqdtAppTimeHdInputPK;
@@ -245,7 +244,7 @@ public class JpaTimeLeaveApplicationRepository extends JpaRepository implements 
                     detail.getTimeDigestApplication().getNursingTime().v() > 0 ? detail.getTimeDigestApplication().getNursingTime().v() : null,
                     detail.getTimeDigestApplication().getChildTime().v() > 0 ? detail.getTimeDigestApplication().getChildTime().v() : null,
                     detail.getTimeDigestApplication().getTimeOff().v() > 0 ? detail.getTimeDigestApplication().getTimeOff().v() : null,
-                    detail.getTimeDigestApplication().getTimeAnualLeave().v() > 0 ? detail.getTimeDigestApplication().getTimeAnualLeave().v() : null,
+                    detail.getTimeDigestApplication().getTimeAnnualLeave().v() > 0 ? detail.getTimeDigestApplication().getTimeAnnualLeave().v() : null,
                     detail.getTimeDigestApplication().getTimeSpecialVacation().v() > 0 ? detail.getTimeDigestApplication().getTimeSpecialVacation().v() : null,
                     detail.getTimeDigestApplication().getSpecialVacationFrameNO().isPresent() ? detail.getTimeDigestApplication().getSpecialVacationFrameNO().get() : null
                 );

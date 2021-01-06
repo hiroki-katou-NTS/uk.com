@@ -54,8 +54,4 @@ public interface TimeLeaveApplicationService {
      */
     void checkBeforeUpdate(int timeDigestAppType, TimeLeaveApplication timeLeaveApplication, TimeLeaveApplicationOutput output);
 
-    /**
-     * 特別休暇枠を選択する
-     */
-    TimeLeaveApplicationOutput getSpecialVacation(Optional<Integer> specialHdFrameNo, TimeLeaveApplicationOutput timeLeaveApplicationOutput);
 }

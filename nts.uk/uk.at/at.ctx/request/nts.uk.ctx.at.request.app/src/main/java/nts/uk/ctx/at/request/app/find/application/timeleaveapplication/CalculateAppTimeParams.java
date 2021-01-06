@@ -1,28 +1,24 @@
 package nts.uk.ctx.at.request.app.find.application.timeleaveapplication;
 
 import lombok.Data;
-import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
-import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.TimeLeaveAppDetailDto;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.OutingTimeZoneDto;
 import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.TimeLeaveAppDisplayInfoDto;
+import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.TimeZoneDto;
 
 import java.util.List;
 
 @Data
 public class CalculateAppTimeParams {
+    // 申請日
+    private GeneralDate appDate;
 
-    //時間休暇種類
-    private int timeDigestAppType;
+    // 時間休暇申請の表示情報
+    private TimeLeaveAppDisplayInfoDto appDisplayInfo;
 
-    //時間休暇申請
-    private List<TimeLeaveAppDetailDto> digestApplications;
+    // 時間帯<List>
+    private List<TimeZoneDto> timeZones;
 
-    // 申請
-    private ApplicationDto application;
-
-    //時間休暇申請の表示情報
-    private TimeLeaveAppDisplayInfoDto timeLeaveAppDisplayInfo;
-
-    //画面モード true: Edit mode ; false: Display mode
-    private boolean screenMode;
-
+    // 外出時間帯<List>
+    private List<OutingTimeZoneDto> outingTimeZones;
 }

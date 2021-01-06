@@ -10,6 +10,7 @@ import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.*;
 import nts.uk.ctx.at.request.dom.adapter.timeleaveapplication.DailyAttendanceTimeAdapter;
 import nts.uk.ctx.at.request.dom.adapter.timeleaveapplication.DailyAttendanceTimeImport;
 import nts.uk.ctx.at.request.dom.application.*;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeDigestAppType;
@@ -24,7 +25,6 @@ import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardRe
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectDto;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectRepository;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
 import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
@@ -38,6 +38,7 @@ import org.apache.commons.lang3.StringUtils;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Stateless
 public class TimeLeaveApplicationFinder {
@@ -49,9 +50,6 @@ public class TimeLeaveApplicationFinder {
     private TimeLeaveApplicationService timeLeaveApplicationService;
 
     @Inject
-    private TimeLeaveAppReflectRepository timeLeaveAppReflectRepo;
-
-    @Inject
     private WorkingConditionRepository workingConditionRepo;
 
     @Inject
@@ -61,14 +59,13 @@ public class TimeLeaveApplicationFinder {
     private TimeLeaveApplicationRepository timeLeaveApplicationRepository;
 
     @Inject
-    private TimeLeaveAppReflectRepository timeLeaveAppReflectRepository;
+    private DailyAttendanceTimeCaculation dailyAttendanceTimeCaculation;
 
     /**
      * 登録前チェック
      */
     public List<ConfirmMsgOutput> checkBeforeRegister(RequestParam param) {
         String sid = AppContexts.user().employeeId();
-        List<ConfirmMsgOutput> confirmMsgOutputs;
         TimeLeaveApplicationOutput output = TimeLeaveAppDisplayInfoDto.mappingData(param.getTimeLeaveAppDisplayInfo());
         ApplicationDto applicationDto = param.getApplication();
 
@@ -88,10 +85,10 @@ public class TimeLeaveApplicationFinder {
         );
 
         // アルゴリズム「2-1.新規画面登録前の処理」を実行する
-        confirmMsgOutputs = processBeforeRegister.processBeforeRegister_New(
+        List<ConfirmMsgOutput> confirmMsgOutputs = processBeforeRegister.processBeforeRegister_New(
             AppContexts.user().companyId(),
             EmploymentRootAtr.APPLICATION,
-            true,
+            param.isAgentMode(),
             application,
             null,
             output.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpErrorFlag().get(),
@@ -99,7 +96,7 @@ public class TimeLeaveApplicationFinder {
             output.getAppDispInfoStartup()
         );
 
-        TimeLeaveApplication domain = TimeLeaveApplicationDto.toDomain(param.getTimeLeaveApplicationDto(), application);
+        TimeLeaveApplication domain = new TimeLeaveApplication(application, param.getDetails().stream().map(TimeLeaveAppDetailDto::toDomain).collect(Collectors.toList()));
 
         //時間休暇申請登録前チェック
         timeLeaveApplicationService.checkBeforeRigister(param.getTimeDigestAppType(), domain, output);
@@ -165,7 +162,7 @@ public class TimeLeaveApplicationFinder {
             || params.getAppDisplayInfo().getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().isEmpty()
             || params.getAppDisplayInfo().getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get(0).getOpAchievementDetail() == null
             || StringUtils.isEmpty(params.getAppDisplayInfo().getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get(0).getOpAchievementDetail().getWorkTypeCD())) {
-            throw new BusinessException("Msg_1695", params.getApplyDate().toString("yyyy/MM/dd"));
+            throw new BusinessException("Msg_1695", params.getAppDate().toString("yyyy/MM/dd"));
         }
         // 「承認ルートの基準日」をチェックする
         if (params.getAppDisplayInfo().getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getApplicationSetting().getRecordDate() == RecordDate.SYSTEM_DATE.value) {
@@ -175,7 +172,7 @@ public class TimeLeaveApplicationFinder {
         Optional<WorkingCondition> workingCondition = workingConditionRepo.getBySidAndStandardDate(
             companyId,
             params.getAppDisplayInfo().getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(),
-            params.getApplyDate()
+            params.getAppDate()
         );
         if (!workingCondition.isPresent())
             throw new BusinessException("Msg_430");
@@ -187,7 +184,7 @@ public class TimeLeaveApplicationFinder {
         TimeVacationManagementOutput timeVacationManagement = timeLeaveApplicationService.getTimeLeaveManagement(
             companyId,
             params.getAppDisplayInfo().getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(),
-            params.getApplyDate()
+            params.getAppDate()
         );
 
         params.getAppDisplayInfo().setTimeLeaveManagement(TimeLeaveManagement.fromOutput(timeVacationManagement));
@@ -195,10 +192,20 @@ public class TimeLeaveApplicationFinder {
         return params.getAppDisplayInfo();
     }
 
+    public TimeLeaveAppDisplayInfoDto changeSpecialLeaveFrame(ChangeSpecialLeaveFrameParams params) {
+        String companyId = AppContexts.user().companyId();
+        return TimeLeaveAppDisplayInfoDto.fromOutput(
+            timeLeaveApplicationService.getSpecialLeaveRemainingInfo(
+                companyId,
+                Optional.ofNullable(params.getSpecialLeaveFrameNo()),
+                TimeLeaveAppDisplayInfoDto.mappingData(params.getTimeLeaveAppDisplayInfo())
+            )
+        );
+    }
     /**
      * KAFS12 : 申請時間を計算する
      */
-    public TimeLeaveCalculateDto calculateApplicationTime(CalculateAppTimeParams param) {
+    public TimeLeaveCalculateDto calculateApplicationTimeMobile(CalculateAppTimeMobileParams param) {
         String sid = AppContexts.user().employeeId();
         TimeLeaveApplicationOutput output = TimeLeaveAppDisplayInfoDto.mappingData(param.getTimeLeaveAppDisplayInfo());
         ApplicationDto applicationDto = param.getApplication();
@@ -255,27 +262,18 @@ public class TimeLeaveApplicationFinder {
         //外出時間帯<List>
         List<TimeZoneWithWorkNo> lstOutingTimeZone = new ArrayList<>();
 
-        param.getDigestApplications().forEach(x -> {
+        param.getDetails().forEach(x -> {
             if (x.getAppTimeType() == AppTimeType.ATWORK.value || x.getAppTimeType() == AppTimeType.OFFWORK.value) {
-                lstTimeZone.add(new TimeZoneWithWorkNo(
-                        1, x.getStartTime(), x.getEndTime()
-                    )
-                );
+                lstTimeZone.addAll(x.getTimeZones().stream().map(i -> new TimeZoneWithWorkNo(1, i.getStartTime(), i.getEndTime())).collect(Collectors.toList()));
             } else if (x.getAppTimeType() == AppTimeType.ATWORK2.value || x.getAppTimeType() == AppTimeType.OFFWORK2.value) {
-                lstTimeZone.add(new TimeZoneWithWorkNo(
-                        2, x.getStartTime(), x.getEndTime()
-                    )
-                );
+                lstTimeZone.addAll(x.getTimeZones().stream().map(i -> new TimeZoneWithWorkNo(2, i.getStartTime(), i.getEndTime())).collect(Collectors.toList()));
             } else if (x.getAppTimeType() == AppTimeType.PRIVATE.value || x.getAppTimeType() == AppTimeType.UNION.value) {
-                lstOutingTimeZone.add(new TimeZoneWithWorkNo(
-                        x.getWorkNo(), x.getStartTime(), x.getEndTime()
-                    )
-                );
+                lstOutingTimeZone.addAll(x.getTimeZones().stream().map(i -> new TimeZoneWithWorkNo(i.getWorkNo(), i.getStartTime(), i.getEndTime())).collect(Collectors.toList()));
             }
         });
 
         //1日分の勤怠時間を仮計算
-        CalculationResult calculationResult = getDaily1AttendanceTime(GeneralDate.fromString(applicationDto.getAppDate(), "yyyy/MM/dd"),
+        CalculationResult calculationResult = calculateApplicationTime(GeneralDate.fromString(applicationDto.getAppDate(), "yyyy/MM/dd"),
             param.getTimeLeaveAppDisplayInfo(), lstTimeZone, lstOutingTimeZone);
 
         //取得した「計算結果」を返す
@@ -284,9 +282,9 @@ public class TimeLeaveApplicationFinder {
 
 
     /**
-     * KAF012 : 計算する
+     * KAF012 : 申請時間を計算する
      */
-    public CalculationResult getDaily1AttendanceTime(GeneralDate baseDate, TimeLeaveAppDisplayInfoDto info, List<TimeZoneWithWorkNo> lstTimeZone, List<TimeZoneWithWorkNo> lstOutingTimeZone) {
+    public CalculationResult calculateApplicationTime(GeneralDate baseDate, TimeLeaveAppDisplayInfoDto info, List<TimeZoneWithWorkNo> lstTimeZone, List<TimeZoneWithWorkNo> lstOutingTimeZone) {
 
         AchievementDetailDto achievementDetailDto = info.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().
             getOpActualContentDisplayLst().get(0).getOpAchievementDetail();
@@ -359,18 +357,17 @@ public class TimeLeaveApplicationFinder {
             param.getAppDispInfoStartupOutput()
         );
 
-        TimeLeaveApplicationDto timeLeaveApplicationDto = TimeLeaveApplicationDto.fromDomain(timeLeaveApplication.get());
         StartProcessTimeLeaveAppDto startProcessTimeLeaveAppDto = new StartProcessTimeLeaveAppDto();
         startProcessTimeLeaveAppDto.setTimeLeaveAppDisplayInfo(timeLeaveAppDisplayInfo);
-        startProcessTimeLeaveAppDto.setTimeLeaveApplicationDto(TimeLeaveApplicationDto.fromDomain(timeLeaveApplication.get()));
+        startProcessTimeLeaveAppDto.setDetails(timeLeaveApplication.get().getLeaveApplicationDetails().stream().map(TimeLeaveAppDetailDto::fromDomain).collect(Collectors.toList()));
 
         //取得した「時間休暇申請．詳細．申請時間」の時間>0:00の項目種類が複数ある
-        if (timeLeaveApplicationDto.getTimeDigestAppType() == TimeDigestAppType.USE_COMBINATION.value) {
-            //申請時間を計算する
-            CalculationResult calculationResult = getDaily1AttendanceTime(baseDate, timeLeaveAppDisplayInfo, new ArrayList<>(), new ArrayList<>());
-
-            startProcessTimeLeaveAppDto.setCalculationResult(calculationResult);
-        }
+//        if (timeLeaveApplicationDto.getTimeDigestAppType() == TimeDigestAppType.USE_COMBINATION.value) {
+//            //申請時間を計算する
+//            CalculationResult calculationResult = calculateApplicationTime(baseDate, timeLeaveAppDisplayInfo, new ArrayList<>(), new ArrayList<>());
+//
+//            startProcessTimeLeaveAppDto.setCalculationResult(calculationResult);
+//        }
         return startProcessTimeLeaveAppDto;
     }
 }
