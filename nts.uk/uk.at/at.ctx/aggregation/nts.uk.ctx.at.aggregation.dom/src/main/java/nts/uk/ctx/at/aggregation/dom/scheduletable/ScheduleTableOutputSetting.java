@@ -7,6 +7,8 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.PersonalCounterCategory;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.WorkplaceCounterCategory;
 
 /**
  * スケジュール表の出力設定
