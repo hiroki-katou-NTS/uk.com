@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeRecordImport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.SClsHistImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.enums.UseAtr;
-import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.GrantNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveAppSetting;
@@ -722,7 +722,7 @@ public class CalcNextSpecialLeaveGrantDate {
 						employeeId,
 						spLeaveCD,
 						grantDaysInforByDates.getNextSpecialLeaveGrant(),
-						grantDaysInforByDates.getGrantDate().get());
+						grantDaysInforByDates.getGrantDate());
 
 			return nextSpecialLeaveGrant;
 		}
@@ -1378,7 +1378,7 @@ public class CalcNextSpecialLeaveGrantDate {
 			String employeeId,
 			int spLeaveCD,
 			List<NextSpecialLeaveGrant> nextSpecialLeaveGrantList,
-			GeneralDate grantDateAfterPeriod) {
+			Optional<GeneralDate> grantDateAfterPeriod) {
 
 		// 「特別休暇」を取得する
 		Optional<SpecialHoliday> specialHolidays = require.specialHoliday(companyId, spLeaveCD);
@@ -1456,7 +1456,7 @@ public class CalcNextSpecialLeaveGrantDate {
 					if( preNextSpecialLeaveGrant.isPresent() ){
 						// 最後
 						preNextSpecialLeaveGrant.get().setDeadLine(
-							grantDateAfterPeriod.addDays(-1));
+							grantDateAfterPeriod.get().addDays(-1));
 					}
 				}
 			}

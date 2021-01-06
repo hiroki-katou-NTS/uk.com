@@ -498,7 +498,7 @@ public class NotDepentSpecialLeaveOfEmployeeImpl implements NotDepentSpecialLeav
 		return result;
 	}
 	@Override
-	public Map<String, List<SpecialHolidayInfor>> getPeriodGrantDate(List<GrantDaysInforByDatesInfo> param, SpecialHoliday speHoliday) {
+	public Map<String, List<SpecialHolidayInfor>> getPeriodGrantDate(List<GrantDaysInforByDates> param, SpecialHoliday speHoliday) {
 		return InforSpecialLeaveOfEmployeeSevice.getDeadlineInfo(param, speHoliday);
 	}
 

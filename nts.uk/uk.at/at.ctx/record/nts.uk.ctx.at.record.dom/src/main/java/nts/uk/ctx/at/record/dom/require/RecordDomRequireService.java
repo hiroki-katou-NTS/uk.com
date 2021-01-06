@@ -339,6 +339,7 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.CalcNextAnnLeaGrantInfo;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.GetNextAnnualLeaveGrantProcKdm002;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYearRepository;
+import nts.uk.ctx.at.record.dom.adapter.company.SyCompanyRecordAdapter;
 
 @Stateless
 public class RecordDomRequireService {
@@ -644,6 +645,8 @@ public class RecordDomRequireService {
 	private SuperHD60HConMedRepository superHD60HConMedRepo;
 	@Inject
 	protected ElapseYearRepository ElapseYearRepository;
+	@Inject
+	private SyCompanyRecordAdapter syCompanyRecordAdapter;
 
 	public static interface Require extends RemainNumberTempRequireService.Require, GetAnnAndRsvRemNumWithinPeriod.RequireM2,
 		CalcAnnLeaAttendanceRate.RequireM3, GetClosurePeriod.RequireM1, GetClosureStartForEmployee.RequireM1,
@@ -735,7 +738,7 @@ public class RecordDomRequireService {
 				bentoReservationRepo, bentoMenuRepo, integrationOfDailyGetter,
 				weekRuleManagementRepo, sharedAffWorkPlaceHisAdapter, getProcessingDate,
 				roleOfOpenPeriodRepo, snapshotAdapter, superHD60HConMedRepo,
-				ElapseYearRepository);
+				ElapseYearRepository, syCompanyRecordAdapter);
 	}
 
 	public static class RequireImpl extends RemainNumberTempRequireService.RequireImp implements Require {
@@ -855,7 +858,7 @@ public class RecordDomRequireService {
 				WeekRuleManagementRepo weekRuleManagementRepo, SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter,
 				GetProcessingDate getProcessingDate, RoleOfOpenPeriodRepository roleOfOpenPeriodRepo,
 				DailySnapshotWorkAdapter snapshotAdapter, SuperHD60HConMedRepository superHD60HConMedRepo,
-				ElapseYearRepository elapseYearRepo) {
+				ElapseYearRepository elapseYearRepo,SyCompanyRecordAdapter syCompanyRecordAdapter) {
 
 			super(comSubstVacationRepo, compensLeaveComSetRepo, specialLeaveGrantRepo, empEmployeeAdapter,
 					grantDateTblRepo, elapseYearRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo, interimSpecialHolidayMngRepo,
@@ -995,6 +998,7 @@ public class RecordDomRequireService {
 			this.roleOfOpenPeriodRepo = roleOfOpenPeriodRepo;
 			this.snapshotAdapter = snapshotAdapter;
 			this.superHD60HConMedRepo = superHD60HConMedRepo;
+			this.syCompanyRecordAdapter = syCompanyRecordAdapter;
 		}
 
 		private SuperHD60HConMedRepository superHD60HConMedRepo;
@@ -1242,6 +1246,9 @@ public class RecordDomRequireService {
 		private WeekRuleManagementRepo weekRuleManagementRepo;
 
 		private IntegrationOfDailyGetter integrationOfDailyGetter;
+
+		private SyCompanyRecordAdapter syCompanyRecordAdapter;
+
 
 		@Override
 		public Optional<SEmpHistoryImport> employeeEmploymentHis(CacheCarrier cacheCarrier, String companyId,
@@ -2417,8 +2424,7 @@ public class RecordDomRequireService {
 
 		@Override
 		public List<AffCompanyHistImport> listAffCompanyHistImport(List<String> listAppId, DatePeriod period) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+			return syCompanyRecordAdapter.getAffCompanyHistByEmployee(listAppId, period);
 		}
 
 		@Override

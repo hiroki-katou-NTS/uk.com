@@ -667,7 +667,7 @@ public class InforSpecialLeaveOfEmployeeSevice {
 	 * đối ứng cho cps003
 	 * 期限を取得する
 	 */
-	public static Map<String, List<SpecialHolidayInfor>> getDeadlineInfo(List<GrantDaysInforByDatesInfo> grantDaysInfors,
+	public static Map<String, List<SpecialHolidayInfor>> getDeadlineInfo(List<GrantDaysInforByDates> grantDaysInfors,
 			SpecialHoliday specialHoliday) {
 		Map<String, List<SpecialHolidayInfor>> result = new HashMap<>();
 
