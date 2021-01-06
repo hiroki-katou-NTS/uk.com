@@ -131,10 +131,10 @@ public class WorkAvailabilityRuleDateSettingTest {
 		WorkAvailabilityRuleDateSetting target = WorkAvailabilityRuleDateSettingHelper.createWithParam(15, 10, 3);
 		
 		List<WorkAvailabilityOfOneDay> expectations = Arrays.asList(
-				WorkAvailabilityRuleDateSettingHelper.createExpectation(require, GeneralDate.ymd(2020, 10, 4), AssignmentMethod.HOLIDAY),
+				WorkAvailabilityRuleDateSettingHelper.createExpectation(require, GeneralDate.ymd(2020, 10, 1), AssignmentMethod.HOLIDAY),
+				WorkAvailabilityRuleDateSettingHelper.createExpectation(require, GeneralDate.ymd(2020, 10, 2), AssignmentMethod.HOLIDAY),
 				WorkAvailabilityRuleDateSettingHelper.createExpectation(require, GeneralDate.ymd(2020, 10, 3), AssignmentMethod.HOLIDAY),
-				WorkAvailabilityRuleDateSettingHelper.createExpectation(require, GeneralDate.ymd(2020, 10, 4), AssignmentMethod.HOLIDAY),
-				WorkAvailabilityRuleDateSettingHelper.createExpectation(require, GeneralDate.ymd(2020, 10, 5), AssignmentMethod.HOLIDAY)
+				WorkAvailabilityRuleDateSettingHelper.createExpectation(require, GeneralDate.ymd(2020, 10, 4), AssignmentMethod.HOLIDAY)
 				);
 		
 		boolean isOverHolidayMaxDays = target.isOverHolidayMaxDays(require, expectations);
@@ -154,11 +154,11 @@ public class WorkAvailabilityRuleDateSettingTest {
 		WorkAvailabilityRuleDateSetting target = WorkAvailabilityRuleDateSettingHelper.createWithParam(15, 10, 3);
 		
 		List<WorkAvailabilityOfOneDay> expectations = Arrays.asList(
-				WorkAvailabilityRuleDateSettingHelper.createExpectationByShiftMaster(GeneralDate.ymd(2020, 10, 4), wAByShiftMaster1),
-				WorkAvailabilityRuleDateSettingHelper.createExpectationByShiftMaster(GeneralDate.ymd(2020, 10, 4), wAByShiftMaster2),
-				WorkAvailabilityRuleDateSettingHelper.createExpectationByShiftMaster(GeneralDate.ymd(2020, 10, 4), wAByShiftMaster3),
+				WorkAvailabilityRuleDateSettingHelper.createExpectationByShiftMaster(GeneralDate.ymd(2020, 10, 1), wAByShiftMaster1),
+				WorkAvailabilityRuleDateSettingHelper.createExpectationByShiftMaster(GeneralDate.ymd(2020, 10, 2), wAByShiftMaster2),
+				WorkAvailabilityRuleDateSettingHelper.createExpectationByShiftMaster(GeneralDate.ymd(2020, 10, 3), wAByShiftMaster3),
 				WorkAvailabilityRuleDateSettingHelper.createExpectationByShiftMaster(GeneralDate.ymd(2020, 10, 4), wAByShiftMaster4),
-				WorkAvailabilityRuleDateSettingHelper.createExpectationByShiftMaster(GeneralDate.ymd(2020, 10, 4), wAByShiftMaster5)
+				WorkAvailabilityRuleDateSettingHelper.createExpectationByShiftMaster(GeneralDate.ymd(2020, 10, 5), wAByShiftMaster5)
 				);
 		
 		
@@ -200,13 +200,12 @@ public class WorkAvailabilityRuleDateSettingTest {
 		WorkAvailabilityRuleDateSetting target = WorkAvailabilityRuleDateSettingHelper.createWithParam(15, 10, 3);
 		
 		List<WorkAvailabilityOfOneDay> expectations = Arrays.asList(
-				WorkAvailabilityRuleDateSettingHelper.createExpectationByShiftMaster(GeneralDate.ymd(2020, 10, 4), wAByShiftMaster1),
-				WorkAvailabilityRuleDateSettingHelper.createExpectationByShiftMaster(GeneralDate.ymd(2020, 10, 4), wAByShiftMaster2),
-				WorkAvailabilityRuleDateSettingHelper.createExpectationByShiftMaster(GeneralDate.ymd(2020, 10, 4), wAByShiftMaster3),
+				WorkAvailabilityRuleDateSettingHelper.createExpectationByShiftMaster(GeneralDate.ymd(2020, 10, 1), wAByShiftMaster1),
+				WorkAvailabilityRuleDateSettingHelper.createExpectationByShiftMaster(GeneralDate.ymd(2020, 10, 2), wAByShiftMaster2),
+				WorkAvailabilityRuleDateSettingHelper.createExpectationByShiftMaster(GeneralDate.ymd(2020, 10, 3), wAByShiftMaster3),
 				WorkAvailabilityRuleDateSettingHelper.createExpectationByShiftMaster(GeneralDate.ymd(2020, 10, 4), wAByShiftMaster4),
-				WorkAvailabilityRuleDateSettingHelper.createExpectationByShiftMaster(GeneralDate.ymd(2020, 10, 4), wAByShiftMaster5)
+				WorkAvailabilityRuleDateSettingHelper.createExpectationByShiftMaster(GeneralDate.ymd(2020, 10, 5), wAByShiftMaster5)
 				);
-		
 		
 		new Expectations() {
 			{
