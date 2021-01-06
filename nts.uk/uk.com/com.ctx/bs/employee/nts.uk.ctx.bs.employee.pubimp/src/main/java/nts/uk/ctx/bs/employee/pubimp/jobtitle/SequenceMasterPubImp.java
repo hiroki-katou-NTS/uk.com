@@ -25,15 +25,6 @@ public class SequenceMasterPubImp implements SequenceMasterPub{
 			return new SequenceMasterExport(x.getCompanyId().v(), x.getOrder(), x.getSequenceCode().v(), x.getSequenceName().v());
 		}).collect(Collectors.toList());
 	}
-	
-	@Override
-	public List<SequenceMasterExport> findByCid(String companyId) {
-		// TODO Auto-generated method stub
-		return this.repo.findByCompanyId(companyId).stream()
-				.map(x -> {
-			return new SequenceMasterExport(x.getCompanyId().v(), x.getOrder(), x.getSequenceCode().v(), x.getSequenceName().v());
-		}).collect(Collectors.toList());
-	}
 
 	@Override
 	public List<SequenceMasterExport> findByLoginCompanyId() {
