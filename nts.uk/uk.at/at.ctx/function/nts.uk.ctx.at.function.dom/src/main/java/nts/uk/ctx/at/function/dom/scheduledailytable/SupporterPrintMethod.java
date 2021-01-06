@@ -2,7 +2,7 @@ package nts.uk.ctx.at.function.dom.scheduledailytable;
 
 /**
  * 応援者の出力方法
- * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.勤務計画実施表.応援者の出力方法
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.予実集計.勤務計画実施表.勤務計画実施表の印刷対象
  * @author dan_pv
  *
  */

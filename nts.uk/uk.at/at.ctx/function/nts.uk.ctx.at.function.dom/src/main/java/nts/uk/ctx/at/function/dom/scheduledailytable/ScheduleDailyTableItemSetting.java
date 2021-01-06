@@ -9,7 +9,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 勤務計画実施表の項目設定
- * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.勤務計画実施表.勤務計画実施表の項目設定
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.予実集計.勤務計画実施表.勤務計画実施表の項目設定
  * @author dan_pv
  *
  */

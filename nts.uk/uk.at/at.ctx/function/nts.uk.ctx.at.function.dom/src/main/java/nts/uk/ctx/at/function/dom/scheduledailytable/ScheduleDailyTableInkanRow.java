@@ -8,7 +8,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 勤務計画実施表の印鑑欄
- * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.勤務計画実施表.勤務計画実施表の印鑑欄
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.予実集計.勤務計画実施表.勤務計画実施表の印鑑欄
  * @author dan_pv
  *
  */
@@ -23,7 +23,7 @@ public class ScheduleDailyTableInkanRow {
 	/**
 	 * 見出しリスト
 	 */
-	private List<ScheduleDailyTableInkanName> titleList;
+	private List<ScheduleDailyTableInkanTitle> titleList;
 	
 	/**
 	 * 作る
@@ -33,7 +33,7 @@ public class ScheduleDailyTableInkanRow {
 	 */
 	public static ScheduleDailyTableInkanRow create(
 			NotUseAtr notUseAtr,
-			List<ScheduleDailyTableInkanName> titleList) {
+			List<ScheduleDailyTableInkanTitle> titleList) {
 		if ( titleList.size() > 6 ) {
 			throw new BusinessException("Msg_2085");
 		}

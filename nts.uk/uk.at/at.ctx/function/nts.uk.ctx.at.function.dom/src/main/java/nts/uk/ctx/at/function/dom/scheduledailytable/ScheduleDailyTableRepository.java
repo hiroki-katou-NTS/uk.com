@@ -28,7 +28,7 @@ public interface ScheduleDailyTableRepository {
 	/**
 	 * @param domain 勤務計画実施表の出力設定
 	 */
-	public void udpate(ScheduleDailyTablePrintSetting domain);
+	public void update(ScheduleDailyTablePrintSetting domain);
 	
 	/**
 	 * @param companyId 会社ID
