@@ -13,5 +13,8 @@ table tbody td {
 }
 table tbody td a {
   color: blue !important;
-  text-decoration: underline;
+}
+table td span {
+  width: 280px !important;
+  text-decoration: underline !important;
 }

@@ -9,7 +9,7 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
       <script>
-        var dialogSize = { width: 460, height: 650 };
+        var dialogSize = { width: 480, height: 650 };
 			</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cdl010.a.css" />
@@ -31,28 +31,28 @@
             <tbody>
               <tr>
                 <!-- A13_1 雇用名 -->
-                <td>#{i18n.getText('CDL010_15')}</td>
+                <td class="w-175">#{i18n.getText('CDL010_15')}</td>
                 <!-- A13_2 -->
                 <td data-bind="text: detailData().employmentName"></td>
               </tr>
 
               <tr>
                 <!-- A14_1 職場名 -->
-                <td>#{i18n.getText('CDL010_16')}</td>
+                <td class="w-175">#{i18n.getText('CDL010_16')}</td>
                 <!-- A14_2 -->
                 <td data-bind="text: detailData().workplaceName"></td>
               </tr>
 
               <tr>
                 <!-- A15_1 分類名 -->
-                <td>#{i18n.getText('CDL010_17')}</td>
+                <td class="w-175">#{i18n.getText('CDL010_17')}</td>
                 <!-- A15_2 -->
                 <td data-bind="text: detailData().classificationName"></td>
               </tr>
 
               <tr>
                 <!-- A16_1 職位名 -->
-                <td>#{i18n.getText('CDL010_18')}</td>
+                <td class="w-175">#{i18n.getText('CDL010_18')}</td>
                 <!-- A16_2 -->
                 <td data-bind="text: detailData().jobTitleName"></td>
               </tr>
@@ -61,7 +61,7 @@
               <com:ko-if bind="!_.isEmpty(detailData().contactInformation.companyMobilePhoneNumber)">
                 <tr>
                   <!-- A2_1 携帯電話（会社用）-->
-                  <td>#{i18n.getText('CDL010_12')}</td>
+                  <td class="w-175">#{i18n.getText('CDL010_12')}</td>
                   <!-- A2_2 -->
                   <td data-bind="text: detailData().contactInformation.companyMobilePhoneNumber"></td>
                 </tr>
@@ -71,7 +71,7 @@
               <com:ko-if bind="!_.isEmpty(detailData().contactInformation.personalMobilePhoneNumber)">
                 <tr>
                   <!-- A3_1 携帯電話（個人用） -->
-                  <td>#{i18n.getText('CDL010_3')}</td>
+                  <td class="w-175">#{i18n.getText('CDL010_3')}</td>
                   <!-- A3_2 -->
                   <td data-bind="text: detailData().contactInformation.personalMobilePhoneNumber"></td>
                 </tr>
@@ -81,7 +81,7 @@
               <com:ko-if bind="!_.isEmpty(detailData().contactInformation.emergencyNumber1)">
                 <tr>
                   <!-- A4_1 緊急電話番号1 -->
-                  <td>#{i18n.getText('CDL010_4')}</td>
+                  <td class="w-175">#{i18n.getText('CDL010_4')}</td>
                   <!-- A4_2 -->
                   <td data-bind="text: detailData().contactInformation.emergencyNumber1"></td>
                 </tr>
@@ -91,7 +91,7 @@
               <com:ko-if bind="!_.isEmpty(detailData().contactInformation.emergencyNumber2)">
                 <tr>
                   <!-- A5_1 緊急電話番号2 -->
-                  <td>#{i18n.getText('CDL010_5')}</td>
+                  <td class="w-175">#{i18n.getText('CDL010_5')}</td>
                   <!-- A5_2 -->
                   <td data-bind="text: detailData().contactInformation.emergencyNumber2"></td>
                 </tr>
@@ -101,7 +101,7 @@
               <com:ko-if bind="!_.isEmpty(detailData().contactInformation.seatDialIn)">
                 <tr>
                   <!-- A6_1 ダイヤルイン番 -->
-                  <td>#{i18n.getText('CDL010_6')}</td>
+                  <td class="w-175">#{i18n.getText('CDL010_6')}</td>
                   <!-- A6_2 -->
                   <td data-bind="text: detailData().contactInformation.seatDialIn"></td>
                 </tr>
@@ -111,7 +111,7 @@
               <com:ko-if bind="!_.isEmpty(detailData().contactInformation.seatExtensionNumber)">
                 <tr>
                   <!-- A7_1 内線番号 -->
-                  <td>#{i18n.getText('CDL010_7')}</td>
+                  <td class="w-175">#{i18n.getText('CDL010_7')}</td>
                   <!-- A7_2 -->
                   <td data-bind="text: detailData().contactInformation.seatExtensionNumber"></td>
                 </tr>
@@ -121,7 +121,7 @@
               <com:ko-if bind="!_.isEmpty(detailData().contactInformation.companyEmailAddress)">
                 <tr>
                   <!-- A8_1 会社メールアドレス -->
-                  <td>#{i18n.getText('CDL010_8')}</td>
+                  <td class="w-175">#{i18n.getText('CDL010_8')}</td>
                   <!-- A8_2 -->
                   <td data-bind="html: detailData().contactInformation.companyEmailAddress"></td>
                 </tr>
@@ -131,7 +131,7 @@
               <com:ko-if bind="!_.isEmpty(detailData().contactInformation.companyMobileEmailAddress)">
                 <tr>
                   <!-- A9_1 会社携帯メールアドレ -->
-                  <td>#{i18n.getText('CDL010_9')}</td>
+                  <td class="w-175">#{i18n.getText('CDL010_9')}</td>
                   <!-- A9_2 -->
                   <td data-bind="html: detailData().contactInformation.companyMobileEmailAddress"></td>
                 </tr>
@@ -141,7 +141,7 @@
               <com:ko-if bind="!_.isEmpty(detailData().contactInformation.personalEmailAddress)">
                 <tr>
                   <!-- A10_1 個人メールアドレス -->
-                  <td>#{i18n.getText('CDL010_10')}</td>
+                  <td class="w-175">#{i18n.getText('CDL010_10')}</td>
                   <!-- A10_2 -->
                   <td data-bind="html: detailData().contactInformation.personalEmailAddress"></td>
                 </tr>
@@ -151,7 +151,7 @@
               <com:ko-if bind="!_.isEmpty(detailData().contactInformation.personalMobileEmailAddress)">
                 <tr>
                   <!-- A11_1 個人携帯メールアド -->
-                  <td>#{i18n.getText('CDL010_11')}</td>
+                  <td class="w-175">#{i18n.getText('CDL010_11')}</td>
                   <!-- A11_2 -->
                   <td data-bind="html: detailData().contactInformation.personalMobileEmailAddress"></td>
                 </tr>
