@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.dom.scheduletable;
+package scheduletable;
 
 /**
  * スケジュール表の勤怠項目

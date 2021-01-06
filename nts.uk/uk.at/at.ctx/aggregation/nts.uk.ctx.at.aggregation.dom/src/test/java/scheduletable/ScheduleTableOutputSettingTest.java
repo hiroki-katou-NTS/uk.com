@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.dom.scheduletable;
+package scheduletable;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
