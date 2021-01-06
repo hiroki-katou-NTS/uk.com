@@ -3,7 +3,9 @@ package nts.uk.ctx.at.request.dom.applicationreflect;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.request.dom.applicationreflect.object.PreApplicationWorkScheReflectAttr;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -22,7 +24,7 @@ public class AppReflectExecutionCondition extends AggregateRoot {
     /**
      * 事前申請を勤務予定に反映する
      */
-    private NotUseAtr applyBeforeWorkSchedule;
+    private PreApplicationWorkScheReflectAttr applyBeforeWorkSchedule;
 
     /**
      * 勤務予定が確定状態でも反映する
@@ -36,7 +38,7 @@ public class AppReflectExecutionCondition extends AggregateRoot {
 
     public static AppReflectExecutionCondition create(String companyId, int applyBeforeSchedule, int evenIfScheduleConfirmed, int evenIfRecordConfirmed) {
         return new AppReflectExecutionCondition(companyId,
-                NotUseAtr.valueOf(applyBeforeSchedule),
+                EnumAdaptor.valueOf(applyBeforeSchedule, PreApplicationWorkScheReflectAttr.class),
                 NotUseAtr.valueOf(evenIfScheduleConfirmed),
                 NotUseAtr.valueOf(evenIfRecordConfirmed));
     }

@@ -1106,16 +1106,11 @@ module cmm045.a.viewmodel {
 
 			if(key=='appType') {
 				let appInfo = { appName: ''};
-				if(_.isNull(item.application.opStampRequestMode)) {
-					appInfo = _.find(self.appListExtractConditionDto.opListOfAppTypes, o => o.appType == item[key]);
+				if(item.opAppTypeDisplay) {
+					appInfo = _.find(self.appListExtractConditionDto.opListOfAppTypes, o => o.appType == item[key] && o.opApplicationTypeDisplay==item.opAppTypeDisplay);
 				} else {
-					if(item.application.opStampRequestMode==0) {
-						appInfo = _.find(self.appListExtractConditionDto.opListOfAppTypes, o => o.appType == item[key] && o.opApplicationTypeDisplay==3);
-					} else {
-						appInfo = _.find(self.appListExtractConditionDto.opListOfAppTypes, o => o.appType == item[key] && o.opApplicationTypeDisplay==4);
-					}
+					appInfo = _.find(self.appListExtractConditionDto.opListOfAppTypes, o => o.appType == item[key]);
 				}
-
 				if(_.isUndefined(appInfo)) {
 					return '';
 				} else {
@@ -2307,7 +2302,9 @@ module cmm045.a.viewmodel {
 								comfirmData.push(obj);
 							}
 						});
-						return service.approverAfterConfirm(comfirmData);
+						return service.approverAfterConfirm(comfirmData).done((data)=>{
+							service.reflectListApp(Object.keys(data.successMap));
+						});
 					}
 				}).then((data: any) => {
 					if(data) {

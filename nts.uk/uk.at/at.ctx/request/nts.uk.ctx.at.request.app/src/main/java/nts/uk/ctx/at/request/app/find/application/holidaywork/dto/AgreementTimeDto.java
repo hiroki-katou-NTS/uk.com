@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.app.find.application.holidaywork.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeImport_Old;
 /**
  * 
  * @author Doan Duy Hung
@@ -21,7 +21,7 @@ public class AgreementTimeDto {
 	/** エラーメッセージ */
 	private String errorMessage;
 	
-	public static AgreementTimeDto fromDomain(AgreementTimeImport agreementTimeImport){
+	public static AgreementTimeDto fromDomain(AgreementTimeImport_Old agreementTimeImport){
 		if(agreementTimeImport==null){
 			return new AgreementTimeDto(
 					null, 

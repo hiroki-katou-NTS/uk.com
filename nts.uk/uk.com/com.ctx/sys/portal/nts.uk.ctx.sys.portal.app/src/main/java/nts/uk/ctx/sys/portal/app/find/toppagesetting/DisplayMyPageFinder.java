@@ -13,32 +13,21 @@ import org.apache.commons.lang3.StringUtils;
 
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.portal.app.find.standardmenu.StandardMenuDto;
-import nts.uk.ctx.sys.portal.app.find.toppage.TopPageDto;
-import nts.uk.ctx.sys.portal.app.find.toppage.TopPageFinder;
 import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
 import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenu;
 import nts.uk.ctx.sys.portal.dom.flowmenu.FlowMenuRepository;
 import nts.uk.ctx.sys.portal.dom.layout.Layout;
-import nts.uk.ctx.sys.portal.dom.layout.LayoutNew;
-import nts.uk.ctx.sys.portal.dom.layout.LayoutNewRepository;
+import nts.uk.ctx.sys.portal.dom.layout.LayoutRepository;
 import nts.uk.ctx.sys.portal.dom.layout.LayoutType;
-import nts.uk.ctx.sys.portal.dom.layout.PGType;
-import nts.uk.ctx.sys.portal.dom.placement.Placement;
-import nts.uk.ctx.sys.portal.dom.placement.PlacementRepository;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
 import nts.uk.ctx.sys.portal.dom.toppage.LayoutDisplayType;
-import nts.uk.ctx.sys.portal.dom.toppage.ToppageNew;
-import nts.uk.ctx.sys.portal.dom.toppage.ToppageNewRepository;
+import nts.uk.ctx.sys.portal.dom.toppage.Toppage;
+import nts.uk.ctx.sys.portal.dom.toppage.ToppageRepository;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.CreateFlowMenu;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.CreateFlowMenuRepository;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.FlowMenuLayout;
-import nts.uk.ctx.sys.portal.dom.toppagesetting.PortalJobTitleAdapter;
-import nts.uk.ctx.sys.portal.dom.toppagesetting.PortalJobTitleImport;
-import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageJobSet;
-import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageJobSetRepository;
-import nts.uk.ctx.sys.portal.dom.toppagesetting.TopPageSelfSetRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -48,22 +37,10 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class DisplayMyPageFinder {
-	@Inject
-	private TopPageSelfSetRepository toppageRepository;
-	@Inject
-	private PlacementRepository placementRepository;
-	@Inject
-	private TopPageSetFactory topPageSet;
-	@Inject
-	private TopPageFinder toppageFinder;
-	@Inject
-	private TopPageJobSetRepository topPageJobSet;
-	@Inject
-	private PortalJobTitleAdapter jobTitleAdapter;
 	@Inject 
-	private ToppageNewRepository topPageRepo;
+	private ToppageRepository topPageRepo;
 	@Inject
-	private LayoutNewRepository layoutRepo;
+	private LayoutRepository layoutRepo;
 	@Inject
 	private CreateFlowMenuRepository cFlowMenuRepo;
 	@Inject
@@ -73,54 +50,6 @@ public class DisplayMyPageFinder {
 	
 	private static final String IS_LOGIN = "login";
 
-	/**
-	 * find layout (top page)
-	 * 
-	 * @param topPageCode
-	 * @return
-	 */
-	public LayoutAllDto findLayoutTopPage(String fromScreen, String topPageCode) {
-		// companyId
-		String companyId = AppContexts.user().companyId();
-		if (topPageCode != null && topPageCode != "") {// co top page code
-			LayoutForMyPageDto layoutMypage = topPageSet.findLayoutMyPage();
-			// check my page: use or not use
-			boolean checkMyPage = topPageSet.checkMyPageSet();
-			// check top page: setting or not setting
-			boolean checkTopPage = topPageSet.checkTopPageSet();
-			TopPageDto topPage = toppageFinder.findByCode(companyId, topPageCode, "0");
-			if (topPage == null) {// data is empty
-				return new LayoutAllDto(layoutMypage, null, true, checkMyPage, checkTopPage);
-			}
-			Optional<Layout> layout = toppageRepository.find(topPage.getLayoutId(), PGType.TOPPAGE.value);
-			if (layout.isPresent()) {// co du lieu
-				List<Placement> placements = placementRepository.findByLayout(topPage.getLayoutId());
-				LayoutForTopPageDto layoutTopPage = topPageSet.buildLayoutTopPage(layout.get(), placements);
-				return new LayoutAllDto(layoutMypage, layoutTopPage, true, checkMyPage, checkTopPage);
-			}
-			return new LayoutAllDto(layoutMypage, null, true, checkMyPage, checkTopPage);
-		}
-		// top page code is empty
-		// get position(所属職位履歴)
-		Optional<PortalJobTitleImport> jobPosition = jobTitleAdapter.getJobPosition(AppContexts.user().employeeId());
-		List<String> lstJobId = new ArrayList<>();
-		if (!jobPosition.isPresent()) {
-			return topPageSet.getTopPageNotPosition(fromScreen);
-		}
-
-		lstJobId.add(jobPosition.get().getJobTitleID());
-
-		// lay top page job title set
-		List<TopPageJobSet> lstTpJobSet = topPageJobSet.findByListJobId(companyId, lstJobId);
-		if (lstTpJobSet.isEmpty()) {// position and job setting
-			return topPageSet.getTopPageNotPosition(fromScreen);
-		}
-
-		TopPageJobSet tpJobSet = lstTpJobSet.get(0);
-
-		return topPageSet.getTopPageForPosition(fromScreen, jobPosition.get(), tpJobSet);
-
-	}
 	
 	/**
 	 * UKDesign.UniversalK.共通.CCG_メニュートップページ.CCG008_トップページ.A：トップページ.アルゴリズム.新規起動.新規起動
@@ -139,19 +68,28 @@ public class DisplayMyPageFinder {
 		// 指定がある場合
 		} else {
 			Optional<String> displayCode = this.getTopPageDisplay(param.getFromScreen(), param.getTopPageSetting());
-			//	標準メニューの場合
-			if (param.getTopPageSetting().get().getMenuClassification() != MenuClassification.TopPage.value) {
-				result.setMenuClassification(MenuClassification.Standard.value);
-				Optional<StandardMenu> standardMenu = this.standardMenuRepo.getStandardMenubyCode(cId, param.getTopPageSetting().get().getLoginMenuCode(),
-						param.getTopPageSetting().get().getSystem(), param.getTopPageSetting().get().getMenuClassification());
-				if(standardMenu.isPresent()) {
-					result.setStandardMenu(StandardMenuDto.fromDomain(standardMenu.get()));
+			if(!displayCode.isPresent()) {
+				return null;
+			}
+			if(param.getFromScreen().equals(IS_LOGIN)) {
+				//	標準メニューの場合
+				if (param.getTopPageSetting().get().getMenuClassification() != MenuClassification.TopPage.value) {
+					result.setMenuClassification(MenuClassification.Standard.value);
+					Optional<StandardMenu> standardMenu = this.standardMenuRepo.getStandardMenubyCode(cId, displayCode.get(),
+							param.getTopPageSetting().get().getSystem(), param.getTopPageSetting().get().getMenuClassification());
+					if(standardMenu.isPresent()) {
+						result.setStandardMenu(StandardMenuDto.fromDomain(standardMenu.get()));
+					}
+					//	トップページの場合
+				} else if (param.getTopPageSetting().get().getLoginMenuCode().isEmpty() || param.getTopPageSetting().get().getMenuClassification() == MenuClassification.TopPage.value) {
+					DisplayInTopPage dataDisplay = this.displayTopPage(displayCode.orElse(""));
+					result.setDisplayTopPage(dataDisplay);
 				}
-				//	トップページの場合
-			} else if (param.getTopPageSetting().get().getMenuClassification() == MenuClassification.TopPage.value) {
+			} else {
 				DisplayInTopPage dataDisplay = this.displayTopPage(displayCode.orElse(""));
 				result.setDisplayTopPage(dataDisplay);
 			}
+			
 		}
 
 		return result;
@@ -165,13 +103,13 @@ public class DisplayMyPageFinder {
 	public DisplayInTopPage displayTopPage(String topPageCode) {
 		String cId = AppContexts.user().companyId(); 
 		//	アルゴリズム「トップページを取得する」を実行する
-		Optional<ToppageNew> topPage = this.topPageRepo.getByCidAndCode(cId, topPageCode);
+		Optional<Toppage> topPage = this.topPageRepo.getByCidAndCode(cId, topPageCode);
 		DisplayInTopPage result = new DisplayInTopPage();
 		
 		// 取得したレイアウト枠１～３を画面の枠に合わせて設置する
-		Optional<LayoutNew> layout1 = Optional.empty();
-		Optional<LayoutNew> layout2 = Optional.empty();
-		Optional<LayoutNew> layout3 = Optional.empty();
+		Optional<Layout> layout1 = Optional.empty();
+		Optional<Layout> layout2 = Optional.empty();
+		Optional<Layout> layout3 = Optional.empty();
 
 		// ドメインモデル「レイアウト」（レイアウト枠１）が存在している
 		if (topPage.isPresent()) {
@@ -208,6 +146,7 @@ public class DisplayMyPageFinder {
 								.flowCode(data.get().getFlowMenuCode().v())
 								.flowName(data.get().getFlowMenuName().v())
 								.fileId(data.get().getFlowMenuLayout().map(FlowMenuLayout::getFileId).orElse(""))
+								.isFlowmenu(true)
 								.build());
 					}
 				} else {
@@ -219,6 +158,7 @@ public class DisplayMyPageFinder {
 											.fileId(item.getFlowMenuLayout()
 														.map(FlowMenuLayout::getFileId)
 														.orElse(""))
+											.isFlowmenu(true)
 											.build())
 							.collect(Collectors.toList());
 				}
@@ -226,16 +166,17 @@ public class DisplayMyPageFinder {
 				//	フローメニュー（アップロード）の場合
 				//	アルゴリズム「フローメニュー（アップロード）リストを取得する」を実行する
 				//	Inputフローコードが指定されている場合
-				if (layout1.get().getFlowMenuCd().isPresent()) {
+				if (layout1.get().getFlowMenuUpCd().isPresent()) {
 					//	ドメインモデル「フローメニュー」を取得する
-					Optional<FlowMenu> data = this.flowMenuRepository.findByCodeAndType(cId
-							, layout1.get().getFlowMenuCd().get().v()
+					Optional<FlowMenu> data = this.flowMenuRepository.findByToppagePartCodeAndType(cId
+							, layout1.get().getFlowMenuUpCd().get().v()
 							, TopPagePartType.FlowMenu.value);
 					if (data.isPresent()) {
 						listFlow.add(FlowMenuOutputCCG008.builder()
 								.flowCode(data.get().getCode().v())
 								.flowName(data.get().getName().v())
 								.fileId(data.get().getFileID())
+								.isFlowmenu(false)
 								.build());
 					}
 				} else {
@@ -245,6 +186,7 @@ public class DisplayMyPageFinder {
 								.flowCode(item.getCode().v())
 								.flowName(item.getName().v())
 								.fileId(item.getFileID())
+								.isFlowmenu(false)
 								.build())
 							.collect(Collectors.toList());
 				}
@@ -252,32 +194,34 @@ public class DisplayMyPageFinder {
 				result.setUrlLayout1(layout1.get().getUrl().orElse(""));
 			}
 			result.setLayout1(listFlow);
-			// アルゴリズム「レイアウトにウィジェットを表示する」を実行する
-			if(layout2.isPresent() && !layout2.get().getWidgetSettings().isEmpty()) {
-				List<WidgetSettingDto> lstWidgetLayout2 = layout2.get().getWidgetSettings().stream()
-						.map(x -> WidgetSettingDto.builder()
-									.widgetType(x.getWidgetType().value)
-									.order(x.getOrder())
-									.build())
-						.collect(Collectors.toList());
-				result.setLayout2(lstWidgetLayout2);
-			} else {
-				result.setLayout2(new ArrayList<WidgetSettingDto>());
-			}
-
-			// アルゴリズム「レイアウトにウィジェットを表示する」を実行する
-			if(layout3.isPresent() && !layout3.get().getWidgetSettings().isEmpty()) {
-				List<WidgetSettingDto> lstWidgetLayout3 = layout3.get().getWidgetSettings().stream()
-						.map(x -> WidgetSettingDto.builder()
-									.widgetType(x.getWidgetType().value)
-									.order(x.getOrder())
-									.build())
-						.collect(Collectors.toList());
-				result.setLayout3(lstWidgetLayout3);
-			} else {
-				result.setLayout3(new ArrayList<WidgetSettingDto>());
-			}
 		}
+		
+		// アルゴリズム「レイアウトにウィジェットを表示する」を実行する
+		if(layout2.isPresent() && !layout2.get().getWidgetSettings().isEmpty()) {
+			List<WidgetSettingDto> lstWidgetLayout2 = layout2.get().getWidgetSettings().stream()
+					.map(x -> WidgetSettingDto.builder()
+								.widgetType(x.getWidgetType().value)
+								.order(x.getOrder())
+								.build())
+					.collect(Collectors.toList());
+			result.setLayout2(lstWidgetLayout2);
+		} else {
+			result.setLayout2(new ArrayList<WidgetSettingDto>());
+		}
+
+		// アルゴリズム「レイアウトにウィジェットを表示する」を実行する
+		if(layout3.isPresent() && !layout3.get().getWidgetSettings().isEmpty()) {
+			List<WidgetSettingDto> lstWidgetLayout3 = layout3.get().getWidgetSettings().stream()
+					.map(x -> WidgetSettingDto.builder()
+								.widgetType(x.getWidgetType().value)
+								.order(x.getOrder())
+								.build())
+					.collect(Collectors.toList());
+			result.setLayout3(lstWidgetLayout3);
+		} else {
+			result.setLayout3(new ArrayList<WidgetSettingDto>());
+		}
+			
 		return result;
 	}
 	

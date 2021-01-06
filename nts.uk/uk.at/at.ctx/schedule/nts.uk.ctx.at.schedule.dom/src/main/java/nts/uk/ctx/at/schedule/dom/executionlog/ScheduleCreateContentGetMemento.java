@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.schedule.dom.executionlog;
 
-import nts.arc.time.GeneralDate;
-
 import java.util.Optional;
 
 /**

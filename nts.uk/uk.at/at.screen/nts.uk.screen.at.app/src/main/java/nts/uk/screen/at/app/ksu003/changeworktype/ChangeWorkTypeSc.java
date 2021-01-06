@@ -126,12 +126,13 @@ public class ChangeWorkTypeSc {
 			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
 		}
 
-		@Override
-		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd,
-				Integer workNo) {
-			// đang để tạm vị trí của workTimeCd, workTypeCd - cần sửa lại sau - TQP
-			return workTimeSettingService.getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
-		}
+		// fix bug 113211
+//		@Override
+//		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd,
+//				Integer workNo) {
+//			// đang để tạm vị trí của workTimeCd, workTypeCd - cần sửa lại sau - TQP
+//			return workTimeSettingService.getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
+//		}
 
 		@Override
 		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {

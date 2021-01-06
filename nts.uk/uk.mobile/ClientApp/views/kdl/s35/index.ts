@@ -67,6 +67,24 @@ export class KdlS35Component extends Vue {
         return Math.max(counted, 0);
     }
 
+    get itemDecided() {
+        const vm = this;
+        const { daysUnit, substituteHolidayList, substituteWorkInfoList } = vm;
+        const required = substituteHolidayList.length * daysUnit;
+        // tinh lai counted
+        const counted = substituteWorkInfoList
+            .map((m) => m.checked ? m.remainingNumber : 0)
+            .reduce((p, c) => p -= c, required);
+        const lastIndex = substituteWorkInfoList.filter((f) => f.checked).length;
+
+        return substituteWorkInfoList
+            .map((m) => ({
+                ...m,
+                // tinh toan lai gia tri remain cua thang cuoi cung duoc check
+                remainingNumber: counted < 0 && lastIndex === m.index ? m.remainingNumber + counted :  m.remainingNumber
+            }));
+    }
+
     public checkRequirementOfDayWithCheck(item: ISubstituteWorkInfo) {
         const vm = this;
 
@@ -91,7 +109,15 @@ export class KdlS35Component extends Vue {
                 .warn({ messageId: 'Msg_1761' })
                 .then(() => {
                     item.checked = false;
+                    item.index = -1;
+                    // gan index checked = -1
                 });
+        } else if (item.checked) {
+            item.index = _.filter(substituteWorkInfoList, (item) => item.checked === true).length;
+            // gan index checked cho item
+        } else {
+            // gan index checked = -1
+            item.index = -1;
         }
     }
 
@@ -139,6 +165,7 @@ export class KdlS35Component extends Vue {
                 vm.substituteWorkInfoList = substituteWorkInfoList
                     .map((m, index) => ({
                         ...m,
+                        index: -1,
                         checked: !!_.find(vm.managementData, (i) => i.outbreakDay == m.substituteWorkDate),
                         enable: new Date(m.expirationDate).getTime() > new Date(vm.startDate).getTime(),
                         get icon() {
@@ -175,8 +202,7 @@ export class KdlS35Component extends Vue {
     }
 
     public mounted() {
-        const self = this;
-
+        const vm = this;
 
     }
 
@@ -189,19 +215,13 @@ export class KdlS35Component extends Vue {
             return;
         }
 
-        if (!vm.checkNumberOfDays()) {
-            vm.$modal.warn({ messageId: 'Msg_1761' });
-
-            return;
-        }
-
         const data: ParamsData = {
             daysUnit: vm.daysUnit,
             employeeId: vm.employeeId,
             substituteHolidayList: vm.substituteHolidayList
                 .map((m) => new Date(m).toISOString()),
             targetSelectionAtr: vm.targetSelectionAtr,
-            substituteWorkInfoList: vm.substituteWorkInfoList
+            substituteWorkInfoList: vm.itemDecided
                 .filter((item) => item.checked)
                 .map((m) => ({ ...m }))
         };
@@ -221,27 +241,8 @@ export class KdlS35Component extends Vue {
                 vm.showError(error);
             });
     }
-
-    private checkNumberOfDays(): boolean {
-        const vm = this;
-
-        const required = vm.substituteHolidayList.length * vm.daysUnit;
-        let total = 0;
-        const selected: ISubstituteWorkInfo[] =
-            _.orderBy(vm.substituteWorkInfoList
-                .filter((f) => f.checked), ['remainingNumber'], ['desc']);
-
-        for (let i = 0; i < selected.length; i++) {
-            if (total >= required) {
-
-                return false;
-            }
-            total += selected[i].remainingNumber;
-        }
-
-        return true;
-    }
 }
+
 
 interface IParam {
     //社員ID								
@@ -320,6 +321,7 @@ interface ISubstituteWorkInfo {
     substituteWorkDate: string;
     checked: boolean;
     enable: boolean;
+    index: number;
 }
 
 enum DataType {

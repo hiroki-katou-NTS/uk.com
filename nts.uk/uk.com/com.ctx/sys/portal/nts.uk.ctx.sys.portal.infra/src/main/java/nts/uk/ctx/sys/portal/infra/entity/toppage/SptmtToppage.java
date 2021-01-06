@@ -11,7 +11,7 @@ import javax.persistence.Version;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import nts.uk.ctx.sys.portal.dom.toppage.ToppageNew;
+import nts.uk.ctx.sys.portal.dom.toppage.Toppage;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "SPTMT_TOPPAGE")
 @EqualsAndHashCode(callSuper = true)
 public class SptmtToppage extends UkJpaEntity
-		implements Serializable, ToppageNew.MementoSetter, ToppageNew.MementoGetter {
+		implements Serializable, Toppage.MementoSetter, Toppage.MementoGetter {
 
 	private static final long serialVersionUID = 1L;
 

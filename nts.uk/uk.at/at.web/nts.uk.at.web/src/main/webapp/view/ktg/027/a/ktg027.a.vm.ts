@@ -230,7 +230,10 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
             <!-- A3_1 -->
             <td class="border-bot"><a href="#" data-bind="text: businessName, click: function() { $component.openKTG026($data) }"></a></td>
             <!-- A3_2 -->
-            <td class="border-bot text-right"><a href="#" data-bind="text: $component.genTime(agreementTime), click:function() { $component.openKDW003($data) } "></a></td>
+            <td class="border-bot text-right"><a href="#" data-bind="text: $component.genTime(agreementTime), 
+                                                                      click:function() { $component.openKDW003($data) }, 
+                                                                      style:{color: $component.genTextColor(status), 
+                                                                      'background-color': $component.genBackgroundColor(status)}"></a></td>
             <td class="pl-20 inline-flex position-relative">
               <!-- A2_5 -->
               <div class="dashed45"></div>
@@ -288,13 +291,14 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
             dataItem.status = item.state;
             lstTemp.push(dataItem);
           });
-          _.each(lstTemp, (item: any) => {
+          const lstSort =  _.orderBy(lstTemp, ["agreementTime"], ["asc"])
+          _.each(lstSort, (item: any) => {
             let itemData = _.find(vm.listEmp(), (itemE) => {
               return item.employeeId === itemE.employeeId;
             });
             item.businessName = itemData.businessName;
           });
-          vm.listShowData(lstTemp);
+          vm.listShowData(lstSort);
           vm.closureId(response.closureId);
         })
         .always(() => vm.$blockui("clear"));
@@ -311,9 +315,6 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
 
     // format number to HM
     public genTime(data: any) {
-      if(data >= 6000){
-        return formatById("Clock_Short_HM", 6000);
-      }
       return formatById("Clock_Short_HM", data);
     }
 

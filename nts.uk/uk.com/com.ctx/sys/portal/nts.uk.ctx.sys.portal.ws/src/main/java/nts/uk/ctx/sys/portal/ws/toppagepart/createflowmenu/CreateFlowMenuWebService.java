@@ -112,6 +112,12 @@ public class CreateFlowMenuWebService extends WebService {
 	}
 	
 	@POST
+	@Path("/extractFlow/{fileId}")
+	public ExtractionResponseDto extractDataFlow(@PathParam("fileId") String fileId) throws IOException {
+		return this.exportService.extractFlowMenu(fileId);
+	}
+	
+	@POST
 	@Path("/extractListFileId")
 	public List<ExtractionResponseDto> extractListData(ParamListFileId param) throws IOException {
 		return this.exportService.extractByListFileId(param.getLstFileId());

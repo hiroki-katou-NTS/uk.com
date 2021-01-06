@@ -1,6 +1,7 @@
 /// <reference path='../../../../lib/nittsu/viewcontext.d.ts' />
 
 module nts.uk.com.view.ccg015.d {
+  import ntsFile = nts.uk.request.file; 
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
@@ -26,6 +27,8 @@ module nts.uk.com.view.ccg015.d {
     flowMenuCd: KnockoutObservable<string> = ko.observable('');
     flowMenuUpCd: KnockoutObservable<string> = ko.observable('');
     url: KnockoutObservable<string> = ko.observable('');
+    fileID: KnockoutObservable<string> = ko.observable('');
+    filePath: KnockoutObservable<string> = ko.observable('');
 
     created(params: any) {
       const vm = this;
@@ -65,11 +68,32 @@ module nts.uk.com.view.ccg015.d {
           })
           .always(() => vm.$blockui('clear'));
       });
+
+      vm.flowMenuSelectedCode.subscribe(data => {
+        const flowMenuChoose = _.findIndex(vm.listFlowMenu(), (item: FlowMenuItem) => { return item.flowCode === data });
+        vm.flowMenuSelectedCode(vm.listFlowMenu()[flowMenuChoose].flowCode);
+        const fileIdChoose: string = vm.listFlowMenu()[flowMenuChoose].fileId;
+        vm.$blockui('grayout');
+        vm.$ajax('sys/portal/createflowmenu/extract/' + fileIdChoose).then((item: any) => {
+          if (!_.isEmpty(item)) {
+            vm.renderHTML(item.htmlContent, 'frame1');
+          }
+        }).always(() => vm.$blockui('clear'));
+      })
+
+      vm.toppageSelectedCode.subscribe(data => {
+        const topPagePartChoose = _.findIndex(vm.listTopPagePart(), (item: TopPagePartItem) => { return item.flowCode ===  data});
+        vm.toppageSelectedCode(vm.listTopPagePart()[topPagePartChoose].flowCode);
+        const fileIdChoose: string = vm.listTopPagePart()[topPagePartChoose].fileId;
+        vm.fileID(fileIdChoose);
+        vm.filePath(ntsFile.liveViewUrl(fileIdChoose, 'index.htm'));
+      })
     }
 
     mounted() {
       const vm = this;
       vm.checkDataLayout(vm.params);
+      $('#D2_2').focus();
     }
 
     private changeLayout(layoutType: number): JQueryPromise<any> {
@@ -82,8 +106,12 @@ module nts.uk.com.view.ccg015.d {
         .then((result: any) => {
           if (result && layoutType === LayoutType.FLOW_MENU) {
             vm.listFlowMenu(result);
+            vm.flowMenuSelectedCode(vm.listFlowMenu()[0].flowCode);
           } else if (result && layoutType === LayoutType.FLOW_MENU_UPLOAD) {
             vm.listTopPagePart(result);
+            if(result.length > 0){
+              vm.toppageSelectedCode(vm.listTopPagePart()[0].flowCode);
+            }
           } else {
             // Do nothing
           }
@@ -105,27 +133,16 @@ module nts.uk.com.view.ccg015.d {
           if (result) {
             vm.isNewMode(false)
             vm.layoutType(result.layoutType);
-            if (result.flowMenuCd) {
+            if (result.flowMenuCd && vm.layoutType() === 0) {
               const flowMenuChoose = _.findIndex(vm.listFlowMenu(), (item: FlowMenuItem) => { return item.flowCode === result.flowMenuCd });
               vm.flowMenuSelectedCode(vm.listFlowMenu()[flowMenuChoose].flowCode);
-              const fileIdChoose: string = vm.listFlowMenu()[flowMenuChoose].fileId;
-              vm.$ajax('sys/portal/createflowmenu/extract/' + fileIdChoose).then((item: any) => {
-                if (!_.isEmpty(item)) {
-                  vm.renderHTML(item.htmlContent, 'frame1');
-                }
-              });
             }
-            if (result.flowMenuUpCd) {
+            if (result.flowMenuUpCd && vm.layoutType() === 1) {
               const topPagePartChoose = _.findIndex(vm.listTopPagePart(), (item: TopPagePartItem) => { return item.flowCode === result.flowMenuCd });
               vm.toppageSelectedCode(vm.listTopPagePart()[topPagePartChoose].flowCode);
-              const fileIdChoose: string = vm.listFlowMenu()[topPagePartChoose].fileId;
-              vm.$ajax('sys/portal/createflowmenu/extract/' + fileIdChoose).then((item: any) => {
-                if (!_.isEmpty(item)) {
-                  vm.renderHTML(item.htmlContent, 'frame2');
-                }
-              });
             }
             vm.url(result.url);
+            vm.urlIframe3(result.url);
           } else {
             vm.isNewMode(true);
             vm.layoutType(0);
@@ -191,10 +208,12 @@ module nts.uk.com.view.ccg015.d {
         .then(() => {
           vm.isNewMode(false);
           vm.$blockui('clear');
-          vm.$dialog.info({ messageId: "Msg_15" });
+          vm.$dialog.info({ messageId: "Msg_15" }).then(() => $('#D2_2').focus());
         })
         .always(() => vm.$blockui('clear'));
     }
+
+ 
 
     // URLの内容表示するを
     showUrl() {

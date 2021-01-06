@@ -1,7 +1,12 @@
+#ccg020 {
+  height: 30px;
+  width: 315px;
+}
 #message {
   display: inline-block;
+  position: absolute;
 }
-.img {
+.img-ccg020 {
   width: 20px;
   position: relative;
   top: 5px;
@@ -9,6 +14,7 @@
 }
 #search-bar {
   display: inline-block;
+  width: 220px;
 }
 #search-bar button.search-btn.caret-bottom.ntsSearchBox_Component {
   display: none;
@@ -19,13 +25,12 @@
 }
 #search-icon {
   background-size: auto !important;
-  top: 10px;
-  position: relative;
+  top: 0px;
+  position: absolute;
   cursor: pointer;
-  left: 5px;
 }
 .result-search {
-  display: block;
+  display: block !important;
   line-height: 2;
   padding-left: 10px;
   padding-right: 10px;
@@ -107,7 +112,8 @@ ul#list-box-search {
 }
 #img-avatar {
   width: 28px;
-  top: 7px;
+  /* top: 5px; */
+  top: -3px;
   position: relative;
   border-radius: 50%;
   display: inline;
@@ -128,11 +134,21 @@ div#user-image {
   height: 100%;
   border-radius: 50%;
   padding: 2px;
+  position: relative;
+  bottom: 3px;
+  /* position: relative;
+  bottom: 2px; */
 }
 #header #menu-header #logo-area > #user-info {
-  position: absolute;
-  top: -10px;
-  right: 0px;
+  display: flex;
+}
+#header #menu-header #logo-area > #user-info > #user {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+#header #menu-header #logo-area > #user-info > #company {
+  margin-bottom: 6px;
 }
 div#operation-info {
   display: none;
@@ -140,6 +156,15 @@ div#operation-info {
 #new-notice-msg {
   position: relative;
   right: 15px;
-  top: -8px;
+  /* top: -8px; */
   padding: 0;
+}
+#notice-msg {
+  cursor: pointer;
+}
+#search-input {
+  width: 162px !important;
+  top: 0;
+  position: absolute;
+  left: 30px;
 }

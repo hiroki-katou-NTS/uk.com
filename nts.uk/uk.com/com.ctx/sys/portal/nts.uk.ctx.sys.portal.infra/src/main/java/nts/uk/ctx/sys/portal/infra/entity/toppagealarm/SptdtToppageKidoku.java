@@ -21,7 +21,10 @@ import nts.uk.ctx.sys.portal.dom.toppagealarm.DisplayAtr;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.IdentificationKey;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmLog;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
+/**
+ *既読日時  Entity
+ *
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -44,6 +47,9 @@ public class SptdtToppageKidoku extends UkJpaEntity implements Serializable {
 	@Column(name = "CONTRACT_CD")
 	private String contractCd;
 	
+	/**
+	 * 既読日時
+	 */
 	@Basic(optional = false)
 	@Column(name = "ALREADY_DATETIME")
 	private GeneralDateTime alreadyDatetime;

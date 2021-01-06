@@ -121,7 +121,7 @@ public class FlowMenuLayoutCommand implements CreateFlowMenu.MementoGetter {
 								new HorizontalAndVerticalPosition(
 										EnumAdaptor.valueOf(dto.getHorizontalPosition(), HorizontalPosition.class), 
 										EnumAdaptor.valueOf(dto.getVerticalPosition(), VerticalPosition.class))))
-						.linkContent(Optional.ofNullable(dto.getLinkContent()))
+						.linkContent(Optional.ofNullable(dto.getLinkContent()).map(DisplayName::new))
 						.sizeAndPosition(new SizeAndPosition(
 								new HorizontalAndVerticalSize(dto.getColumn()),
 								new HorizontalAndVerticalSize(dto.getRow()),
@@ -186,7 +186,7 @@ public class FlowMenuLayoutCommand implements CreateFlowMenu.MementoGetter {
 								new HorizontalAndVerticalPosition(
 										EnumAdaptor.valueOf(dto.getHorizontalPosition(), HorizontalPosition.class), 
 										EnumAdaptor.valueOf(dto.getVerticalPosition(), VerticalPosition.class))))
-						.linkContent(Optional.ofNullable(dto.getLinkContent()))
+						.linkContent(Optional.ofNullable(dto.getLinkContent()).map(DisplayName::new))
 						.sizeAndPosition(new SizeAndPosition(
 								new HorizontalAndVerticalSize(dto.getColumn()),
 								new HorizontalAndVerticalSize(dto.getRow()),

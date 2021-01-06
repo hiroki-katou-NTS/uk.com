@@ -18,15 +18,16 @@ import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.Year;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
-import nts.uk.ctx.sys.auth.dom.wkpmanager.dom.EmpBasicInfoImport;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.GetExcessTimesYearAdapter;
 import nts.uk.ctx.at.function.dom.adapter.standardtime.GetAgreementPeriodFromYearAdapter;
+import nts.uk.ctx.at.record.app.find.monthly.agreement.export.AgreementExcessInfoDto;
+import nts.uk.ctx.at.record.app.find.monthly.root.AgreementTimeOfManagePeriodDto;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.closure.ClosureHistPeriod;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.closure.GetSpecifyPeriod;
-
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementTime;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementTimeOfMngPeriod;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
+import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.ScheRecAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
@@ -34,14 +35,12 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.sys.auth.dom.adapter.person.EmployeeBasicInforAuthImport;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.EmpInfoAdapter;
-import nts.uk.ctx.at.record.app.find.monthly.agreement.export.AgreementExcessInfoDto;
-import nts.uk.ctx.at.record.app.find.monthly.root.AgreementTimeOfManagePeriodDto;
+import nts.uk.ctx.sys.auth.dom.wkpmanager.dom.EmpBasicInfoImport;
 import nts.uk.screen.at.app.ktgwidget.find.dto.EmployeesOvertimeDisplayDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.PresentClosingPeriodDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.YearAndEmpOtHoursDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.YearMonthOvertime;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -138,8 +137,7 @@ public class KTG026QueryProcessor {
 		// 上長用の時間外時間表示．対象社員の年間超過回数＝取得した「36協定超過情報」
 		AgreementExcessInfoDto agreeInfo = AgreementExcessInfoDto.builder()
 				.excessTimes(otHours.getAgreeInfo())
-				.yearMonths(
-						otHours.getOvertimeHours().stream().map(x -> x.getYearMonth()).collect(Collectors.toList()))
+				.yearMonths(otHours.getOvertimeHours().stream().map(x -> x.getYearMonth()).collect(Collectors.toList()))
 				.build();
 
 		// 社員ID(List)から個人社員基本情報を取得
@@ -264,7 +262,13 @@ public class KTG026QueryProcessor {
 				
 			} else if (processingDate.lessThanOrEqualTo(loopYM)) { // [INPUT．当月の年月<=ループする年月]がtrue
 				// 【NO.333】36協定時間の取得
-				AgreementTimeOfManagePeriod agreementTimeDetail = GetAgreementTime.get(require, employeeId, loopYM, new ArrayList<>(), loopYM.lastGeneralDate(), ScheRecAtr.SCHEDULE);
+				AgreementTimeOfManagePeriod agreementTimeDetail = GetAgreementTime.get(
+						require
+						, employeeId
+						, loopYM
+						, new ArrayList<>()
+						, loopYM.lastGeneralDate()
+						, ScheRecAtr.SCHEDULE);
 				
 				if (agreementTimeDetail != null) {
 					ymOvertimes.add(YearMonthOvertime.builder()
@@ -276,7 +280,7 @@ public class KTG026QueryProcessor {
 			} else { // [INPUT．当月の年月<=ループする年月]がfalse
 				// [NO.612]年月期間を指定して管理期間の36協定時間を取得する
 				List<AgreementTimeOfManagePeriod> agreementTimeToppageLst = 
-						GetAgreementTimeOfMngPeriod.get(require, Arrays.asList(employeeId), new YearMonthPeriod(datePeriod.get().start().yearMonth(), datePeriod.get().end().yearMonth()));
+						GetAgreementTimeOfMngPeriod.get(require, Arrays.asList(employeeId), new YearMonthPeriod(loopYM, loopYM));
 				
 				if (!agreementTimeToppageLst.isEmpty()) {
 					ymOvertimes.addAll(agreementTimeToppageLst.stream()

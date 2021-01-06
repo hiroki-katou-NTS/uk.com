@@ -3,7 +3,6 @@ package nts.uk.ctx.sys.portal.dom.toppagesetting;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.sys.portal.dom.layout.Layout;
 
 /**
  * 
@@ -29,13 +28,6 @@ public interface TopPageSelfSetRepository {
  	 * @param topPageSelfSet
  	 */
  	void updateTopPageSelfSet(TopPageSelfSet topPageSelfSet);
-	/**
-	 * Find a Layout
-	 *
-	 * @param layoutID
-	 * @return Optional Layout
-	 */
-	Optional<Layout> find(String layoutID, int pgType);
 	/**
 	 * get job position
 	 * @param employeeId

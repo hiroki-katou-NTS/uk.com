@@ -7,13 +7,15 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.subst;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ManageDeadline;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSettingSetMemento;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstComSubstVacation;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstSubstVacationSetting;
 
 /**
  * The Class JpaSubstVacationSettingSetMemento.
  */
-public class JpaSubstVacationSettingSetMemento<T extends KsvstSubstVacationSetting>
+public class JpaSubstVacationSettingSetMemento<T extends KsvstComSubstVacation>
 		implements SubstVacationSettingSetMemento {
 
 	/** The type value. */
@@ -29,40 +31,38 @@ public class JpaSubstVacationSettingSetMemento<T extends KsvstSubstVacationSetti
 		this.typeValue = typeValue;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.subst.
-	 * SubstVacationSettingSetMemento#setIsManage(nts.uk.ctx.at.shared.dom.
-	 * vacation.setting.ManageDistinct)
-	 */
 	@Override
-	public void setIsManage(ManageDistinct isManage) {
-		this.typeValue.setIsManage(isManage.value);
+	public void setManageDeadline(ManageDeadline manageDeadline) {
+		this.typeValue.setExpDateMngMethod(manageDeadline.value);
+		
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.subst.
-	 * SubstVacationSettingSetMemento#setExpirationDate(nts.uk.ctx.at.shared.dom
-	 * .vacation.setting.subst.VacationExpiration)
-	 */
 	@Override
 	public void setExpirationDate(ExpirationTime expirationDate) {
-		this.typeValue.setExpirationDateSet(expirationDate.value);
+		this.typeValue.setExpitationDateSet(expirationDate.value);
+		
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.subst.
-	 * SubstVacationSettingSetMemento#setAllowPrepaidLeave(nts.uk.ctx.at.shared.
-	 * dom.vacation.setting.ApplyPermission)
-	 */
 	@Override
 	public void setAllowPrepaidLeave(ApplyPermission allowPrepaidLeave) {
-		this.typeValue.setAllowPrepaidLeave(allowPrepaidLeave.value);
+		this.typeValue.setAllowPrepaidLeave(allowPrepaidLeave.value);	
 	}
+
+	@Override
+	public void setManageDistinct(ManageDistinct manageDistinct) {
+		this.typeValue.setManageAtr(manageDistinct.value);
+		
+	}
+
+	@Override
+	public void setLinkingManagementATR(ManageDistinct linkingManagementATR) {
+		this.typeValue.setLinkMngAtr(linkingManagementATR.value);
+		
+	}
+
+
+
+	
+	
 
 }

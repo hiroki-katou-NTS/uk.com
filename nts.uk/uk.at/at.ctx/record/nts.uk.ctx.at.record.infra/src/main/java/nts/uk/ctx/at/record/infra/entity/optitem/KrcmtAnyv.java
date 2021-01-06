@@ -47,8 +47,8 @@ public class KrcmtAnyv extends UkJpaEntity implements Serializable {
 	/** The usage atr. */
 	@Column(name = "USAGE_ATR")
 	private int usageAtr;
-	
-	/** The calc atr */
+
+	/** The calculation atr. */
 	@Column(name = "CALC_ATR")
 	private int calcAtr;
 

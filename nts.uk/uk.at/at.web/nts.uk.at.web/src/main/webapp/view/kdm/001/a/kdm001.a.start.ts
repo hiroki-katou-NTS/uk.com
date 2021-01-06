@@ -16,10 +16,17 @@ module nts.uk.at.view.kdm001.a {
                 viewmodelA.updateDataList(true);
             });
             $(".tab-b").click(() => {
-                viewmodelB.startPage().done(() => {
-                    $('#emp-component').focus();
-                    nts.uk.ui.block.clear();
-                });
+                if (viewmodelB.isOnStartUp) {
+                    viewmodelB.startPage().done(() => {
+                        $('#emp-component').focus();
+                        nts.uk.ui.block.clear();
+                    });
+                } else {
+                    viewmodelB.getSubstituteDataList(viewmodelB.getSearchCondition(), true).done(() => {
+                        $('#emp-component').focus();
+                        nts.uk.ui.block.clear();
+                    });
+                }
             });
         });
     });

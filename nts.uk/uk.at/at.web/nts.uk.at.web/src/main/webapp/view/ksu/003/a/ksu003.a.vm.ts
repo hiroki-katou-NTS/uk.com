@@ -4,6 +4,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 	import getShared = nts.uk.ui.windows.getShared;
 	import errorDialog = nts.uk.ui.dialog.alertError;
 	import dialog = nts.uk.ui.dialog;
+	import bundledErrors = nts.uk.ui.dialog.bundledErrors;
 	import block = nts.uk.ui.block;
 	import exTable = nts.uk.ui.exTable;
 	import chart = nts.uk.ui.chart;
@@ -12,6 +13,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 	import parseTime = nts.uk.time.parseTime;
 	import model = nts.uk.at.view.ksu003.a.model;
 	import duration = nts.uk.time.minutesBased.duration; // convert time 
+	import characteristics = nts.uk.characteristics;
 	/**
 	 * ScreenModel
 	 */
@@ -19,76 +21,102 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 	export class ScreenModel {
 
 		KEY: string = 'USER_KSU003_INFOR';
-		employeeIdLogin: string = __viewContext.user.employeeId;
-		targetDate: KnockoutObservable<string> = ko.observable('2020/05/02'); /*A2_1_3*/
+		employeeIdLogin: string = __viewContext.user.employeeId; // Employee login
+
+		targetDate: KnockoutObservable<string> = ko.observable('2020/05/02'); // A2_1_3
 		targetDateDay: KnockoutObservable<string> = ko.observable('');
-		organizationName: KnockoutObservable<string> = ko.observable(''); /*A2_2*/
-		selectedDisplayPeriod: KnockoutObservable<number> = ko.observable(1); /*A2_5*/
+
+		organizationName: KnockoutObservable<string> = ko.observable(''); // A2_2
+		selectedDisplayPeriod: KnockoutObservable<number> = ko.observable(1); // A2_5
+
 		itemList: KnockoutObservableArray<ItemModel>; /*A3_2*/
 		selectOperationUnit: KnockoutObservable<string> = ko.observable('0');
+
 		sortList: KnockoutObservableArray<ItemModel>; /*A3_4*/
 		checked: KnockoutObservable<string> = ko.observable();
-		checkedName: KnockoutObservable<boolean> = ko.observable(true); /*A3_3 */
+
+		checkedName: KnockoutObservable<boolean> = ko.observable(false); // A3_3
+
 		showA9: boolean;
-		checkNext: KnockoutObservable<boolean> = ko.observable(true);
+		checkNext: KnockoutObservable<boolean> = ko.observable(true); // xử lý next day
 		checkPrv: KnockoutObservable<boolean> = ko.observable(true);
-		indexBtnToLeft: KnockoutObservable<number> = ko.observable(0);// dùng cho xử lý của botton toLeft, toRight
-		indexBtnToDown: KnockoutObservable<number> = ko.observable(0);// dùng cho xử lý của botton toDown, toUp
+
+		indexBtnToLeft: KnockoutObservable<number> = ko.observable(0);// xử lý của botton toLeft, toRight
+		indexBtnToDown: KnockoutObservable<number> = ko.observable(0);// xử lý của botton toDown, toUp
+
 		dataFromA: KnockoutObservable<model.InforScreenADto> = ko.observable(); //Data get from Screen A
 		dataScreen003A: KnockoutObservable<model.DataScreenA> = ko.observable();
+		dataScreen003AFirst: KnockoutObservable<model.DataScreenA> = ko.observable();
 		dataScreen045A: KnockoutObservable<model.DataFrom045> = ko.observable();
-		dataA6: KnockoutObservable<model.A6Data> = ko.observable();
 		dataInitStartKsu003Dto: KnockoutObservable<model.GetInfoInitStartKsu003Dto> = ko.observable();
 		displayWorkInfoByDateDto: KnockoutObservable<Array<model.DisplayWorkInfoByDateDto>> = ko.observable();
 		displayDataKsu003: KnockoutObservable<Array<model.DisplayWorkInfoByDateDto>> = ko.observable();
-		getFixedWorkInformationDto: KnockoutObservable<Array<any>> = ko.observable();
-		dataColorA6: Array<any> = [];
-		employeeWorkInfo: KnockoutObservable<model.EmployeeWorkInfoDto> = ko.observable(); //社員勤務情報　dto
-		employeeScheduleInfo: Array<any> = [];
+		fixedWorkInformationDto: Array<model.FixedWork> = [];
+
 		workingInfoColor: KnockoutObservable<string> = ko.observable(''); // A6_color①
 		totalTimeColor: KnockoutObservable<string> = ko.observable(''); // A7 color
-		/** A3_2 pixel */
-		operationUnit: KnockoutObservable<number> = ko.observable(3.5);
+		dataColorA6: Array<any> = [];
+
+		employeeWorkInfo: KnockoutObservable<model.EmployeeWorkInfoDto> = ko.observable(); //社員勤務情報　dto
+		employeeScheduleInfo: Array<any> = [];
+
+		operationUnit: KnockoutObservable<number> = ko.observable(3.5); // A3_2 pixel (mỗi ô đang để 40px)
 		operationOneMinus: KnockoutObservable<number> = ko.observable(12);
 
 		localStore: KnockoutObservable<ILocalStore> = ko.observable();
-		startScrollGc: KnockoutObservable<number> = ko.observable();
-
 		lstEmpId: Array<IEmpidName> = [];
-		startScrollY: number = 8;
-		timeRange: number = 0;
+		timeRange: number = 0; // thời gian bắt đầu ở header phần detail
+		initDispStart: number = 0; // thời gian bắt đầu của scroll phần detail
+		dispStart : number = 0;
 
 		timeBrkText: KnockoutObservable<string> = ko.observable();
-		timeBrkMinu: KnockoutObservable<number> = ko.observable();
 
 		checkGetInfo: boolean = false;
-		dataOfGantChart: Array<ITimeGantChart> = [];
+
+		dataOfGantChart: Array<ITimeGantChart> = []; // data của từng phần trên extable
 		midDataGC: Array<any> = [];
 		disableDs: any = [];
 		leftDs: any = [];
-		tooltip: any = [];
-		allGcShow: any = [];
-		allTimeChart: any = [];
-		checkClearTime: boolean = true;
-		checkUpdateMidChart: boolean = true;
-		checkClearTimeErr: boolean = true;
 
-		/** Các loại thời gian */
-		constructor() {
+		tooltip: any = [];
+
+		allGcShow: any = []; // lưu gant chart và data để tạo lại
+		allTimeChart: any = [];
+		allTimeBrk: any = [];
+		allGcScreen : any = [];
+
+
+		checkClearTime: boolean = true; // check when change work time, work type
+		checkUpdateMidChart: boolean = true;
+		checkUpdateTime: any = [];
+
+		lstDis: any = [];
+		lstBreakSum: any = []; // list break time xuất hiện trên màn hình
+		lstHolidayShort: any = [];
+
+		totalTimeWork: any = 0;
+		checkDisByDate: boolean = true;
+
+		totalTimeBreak: any = null;
+		lstBreakShow : any = [];
+		checkTypeChange : any = [];
+		
+		checkDragDrog : boolean = false; // phân biệt resize = false vs drop = true
+		constructor(data: any) {
 			let self = this;
 			// get data from sc A
+			self.localStore(data);
 			self.dataFromA = ko.observable(getShared('dataFromA'));
+			if ((self.dataFromA().daySelect < self.dataFromA().dayEdit && self.dataFromA().dayEdit !== "1900/01/01") || (self.dataFromA().daySelect < moment(new Date()).format('YYYY/MM/DD') && self.dataFromA().dayEdit !== "1900/01/01")) {
+				self.checkDisByDate = false;
+			}
 			self.lstEmpId = _.flatMap(self.dataFromA().listEmp, c => [{ empId: c.id, name: c.name, code: c.code }]);
 			self.targetDate(self.dataFromA().daySelect);
 			if (self.targetDate() === (self.dataFromA().startDate)) {
 				self.checkPrv(false);
-				$("#icon-prev-all").css("filter", "contrast(0.7)");
-				$("#icon-prev-one").css("filter", "contrast(0.7)");
 			}
 			if (self.targetDate() === (self.dataFromA().endDate)) {
 				self.checkNext(false);
-				$("#icon-next-one").css("filter", "contrast(0.7)");
-				$("#icon-next-all").css("filter", "contrast(0.7)");
 			}
 			self.targetDateDay(self.targetDate() + moment(self.targetDate()).format('(ddd)'));
 			self.tooltip = getShared("dataTooltip");
@@ -105,24 +133,24 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				new ItemModel('1', getText('KSU003_60'))
 			]);
 			self.showA9 = true;
-
-			storage.getItem(self.KEY).ifPresent((data: any) => {
-				let userInfor: ILocalStore = JSON.parse(data);
-				self.indexBtnToLeft(userInfor.showHide);
-				self.selectOperationUnit(userInfor.operationUnit);
-				self.selectedDisplayPeriod(userInfor.displayFormat);
-				self.checked(userInfor.startTimeSort);
-				self.checkedName(userInfor.showWplName);
+			if (!_.isNil(data)) {
+				self.indexBtnToLeft(data.showHide);
+				self.selectOperationUnit(data.operationUnit);
+				self.selectedDisplayPeriod(data.displayFormat);
+				self.checked(data.startTimeSort);
+				self.checkedName(data.showWplName);
 				self.lstEmpId = self.lstEmpId.sort(function(a: any, b: any) {
-					return _.findIndex(userInfor.lstEmpIdSort, x => { return x.empId == a.empId }) - _.findIndex(userInfor.lstEmpIdSort, x => { return x.empId == b.empId });
+					return _.findIndex(data.lstEmpIdSort, (x: any) => { return x.empId == a.empId }) - _.findIndex(data.lstEmpIdSort, (x: any) => { return x.empId == b.empId });
 				})
-			});
+
+				localStorage.removeItem("http://localhost:8080/nts.uk.at.web/view/ksu/003/a/index.xhtml/extable-ksu003/areawidths");
+			};
 			/* 開始時刻順に並び替える(A3_3)はチェックされている */
 			self.checked.subscribe((value) => {
 				let checkSort = [];
-				storage.getItem(self.KEY).ifPresent((data: any) => {
+				if (!_.isNil(data)) {
 					checkSort = $("#extable-ksu003").exTable('updatedCells');
-				})
+				}
 				if (checkSort.length > 0) {
 					dialog.confirm({ messageId: "Msg_447" }).ifYes(() => {
 						self.sortEmployee(value);
@@ -138,13 +166,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			/** A3_4 */
 			self.checkedName.subscribe((value) => {
 				self.localStore().showWplName = value;
-				storage.setItemAsJson(self.KEY, self.localStore());
+				characteristics.save(self.KEY, self.localStore());
 			});
 
 			/** A2_5 */
 			self.selectedDisplayPeriod.subscribe((value) => {
 				self.localStore().displayFormat = value;
-				storage.setItemAsJson(self.KEY, self.localStore());
+				characteristics.save(self.KEY, self.localStore());
 			});
 
 			/** 操作単位選択に選択する A3_2 */
@@ -172,25 +200,36 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					ruler.setSnatchInterval(c);
 
 				self.localStore().operationUnit = value;
-				storage.setItemAsJson(self.KEY, self.localStore());
-
+				characteristics.save(self.KEY, self.localStore());
 
 			});
+
+			self.checkUpdateTime = {
+				name: "",
+				id: 0
+			}
 			// tính tổng thời gian khi thay đổi start và end time
 			$("#extable-ksu003").on("extablecellupdated", (dataCell: any) => {
 				let index: number = dataCell.originalEvent.detail.rowIndex;
 				let dataMid = $("#extable-ksu003").exTable('dataSource', 'middle').body[index];
 				let empId = self.lstEmpId[dataCell.originalEvent.detail.rowIndex].empId;
-				if (self.checkGetInfo == false) {
+				let dataFixed = _.filter(self.dataScreen003A().employeeInfo, x => { return x.empId === empId }),
+					dataFixInfo = _.filter(self.fixedWorkInformationDto, x => { return x.empId === empId });
 
-					// 勤務種類を変更する (nhập thủ công worktype code , worktime code )
-					if ((dataCell.originalEvent.detail.columnKey === "worktypeCode" && dataMid.worktypeCode != "") ||
-						(dataCell.originalEvent.detail.columnKey === "worktimeCode" && dataMid.worktimeCode != "")) {
+				if (self.checkGetInfo == false && self.checkUpdateMidChart == true) {
+					if (dataCell.originalEvent.detail.columnKey === "worktimeCode" && dataMid.worktimeCode != "") {
+						self.checkUpdateTime.name = "worktimeCode";
+						self.checkUpdateTime.id = 1;
+						self.inputWorkInfo(index, dataCell, dataFixed, empId);
+					}
 
-						$("#extable").exTable("updateTable", "middle", null, null);
+					// 勤務種類を変更する (nhập thủ công worktype code)
+					if ((dataCell.originalEvent.detail.columnKey === "worktypeCode" && dataMid.worktypeCode != "")) {
+						self.checkUpdateTime.name = "worktypeCode";
+						self.checkUpdateTime.id = 2;
 						let targetOrgDto = {
-							workTypeCode: dataMid.worktypeCode.length > 3 ? dataMid.worktypeCode.slice(0, 3) : dataMid.worktypeCode,
-							workTimeCode: dataMid.worktimeCode.length > 3 ? dataMid.worktimeCode.slice(0, 3) : dataMid.worktimeCode
+							workTypeCode: dataMid.worktypeCode.trim(),
+							workTimeCode: dataMid.worktimeCode.trim()
 						}
 						service.changeWorkType(targetOrgDto).done((data: any) => {
 
@@ -204,132 +243,49 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeCode", "");
 
 								$("#extable-ksu003").exTable("cellValue", "middle", empId, "totalTime", "");
+								let cssTotalTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(9)";
+								$(cssTotalTime).css("background-color", "#ffffff");
 								$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", "");
-								let dataFixed = _.filter(self.dataScreen003A().employeeInfo, x => { return x.empId === empId });
-								let lineNo = _.findIndex(self.dataScreen003A().employeeInfo, x => { return x.empId == empId });
-								let dataCheckColor: Array<model.DisplayWorkInfoByDateDto> = _.filter(self.dataScreen003A().employeeInfo, (x: any) => { return x.empId === empId });
-								let cssWorkType: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(1)";
-								let cssWorkTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(3)";
-								let cssWorkTypeName: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(2)";
-								let cssWorkTimeName: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(4)";
+
 								if (data.holiday == false) {
-									self.checkClearTime = true;
-									$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeName", "");
-									$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktypeName", "");
+									$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeName", getText('KSU003_55'));
+									$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktypeName", data.workTypeName);
 								} else {
 									self.checkClearTime = false;
 									$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeName", getText('KSU003_55'));
 									$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktypeName", data.workTypeName);
-									if (dataCheckColor[0].workScheduleDto.workTypeCode === $("#extable-ksu003").exTable('dataSource', 'middle').body[index].worktypeCode) {
-										// css cho worktimecode và worktypecode
-										$(cssWorkTypeName).addClass("x-link");
-									$(cssWorkTypeName).css("display", "revert");
-									$(cssWorkTypeName).css("color", "black");
-									$(cssWorkTypeName).hover(x => {
-										$(text).css("text-decoration", "none");
-									})
-										
-									}
-
-									if (dataCheckColor[0].workScheduleDto.workTimeCode === $("#extable-ksu003").exTable('dataSource', 'middle').body[index].worktimeCode) {
-										$(cssWorkTimeName).addClass("x-link");
-									$(cssWorkTimeName).css("display", "revert");
-									$(cssWorkTimeName).css("color", "black");
-									$(cssWorkTimeName).hover(x => {
-										$(cssWorkTimeName).css("text-decoration", "none");
-									})
-									}
-
-								}
-								self.getEmpWorkFixedWorkInfo($("#extable-ksu003").exTable('dataSource', 'middle').body[index].worktypeCode,
-									$("#extable-ksu003").exTable('dataSource', 'middle').body[index].worktimeCode, empId, index).done(() => {
-										self.removeChart(index);
-										if (data.holiday == false) {
-											if (dataCell.originalEvent.detail.value != "" &&
-												dataCell.originalEvent.detail.value != null) {
-												self.convertDataIntoExtable(index);
-												let lstBrkTime = dataFixed[0].workScheduleDto.listBreakTimeZoneDto, totalBrkTime = "", totalTimebr: any = null;
-												lstBrkTime.forEach((x: any) => {
-													totalTimebr += (_.isNil(x.endTime) ? x.end : x.endTime) - (_.isNil(x.startTime) ? x.start : x.startTime);
-												})
-
-												totalBrkTime = totalTimebr != null ? formatById("Clock_Short_HM", totalTimebr) : "";
-
-												let totalTime = self.calcTotalTime(dataFixed[0].workScheduleDto),
-													schedule: model.EmployeeWorkScheduleDto = dataFixed[0].workScheduleDto,
-													fixed: model.FixedWorkInforDto = dataFixed[0].fixedWorkInforDto,
-													info: model.EmployeeWorkInfoDto = dataFixed[0].workInfoDto;
-												$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktypeCode", schedule.workTypeCode);
-												$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktypeName", fixed.workTypeName);
-												$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeCode", schedule.workTimeCode);
-												$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeName", fixed.workTimeName);
-												$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime1", formatById("Clock_Short_HM", (schedule.startTime1)));
-												$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime1", formatById("Clock_Short_HM", (schedule.endTime1)));
-												$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime2", formatById("Clock_Short_HM", (schedule.startTime2)));
-												$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime2", formatById("Clock_Short_HM", (schedule.endTime2)));
-												$("#extable-ksu003").exTable("cellValue", "middle", empId, "totalTime", totalTime);
-												$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", totalBrkTime);
-
-												self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.workTypeCode = schedule.workTypeCode;
-												self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.workTimeCode = schedule.workTimeCode;
-												self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.startTime1 = schedule.startTime1;
-												self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.endTime1 = schedule.endTime1;
-												self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.startTime2 = schedule.startTime2;
-												self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.endTime2 = schedule.endTime2;
-												if (lstBrkTime.length > 0) {
-													self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.listBreakTimeZoneDto = lstBrkTime;
-												}
-
-												self.dataScreen003A().employeeInfo[lineNo].workInfoDto.directAtr = info.directAtr;
-												self.dataScreen003A().employeeInfo[lineNo].workInfoDto.bounceAtr = info.bounceAtr;
-
-												self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workTypeName = fixed.workTypeName;
-												self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workTimeName = fixed.workTimeName;
-												self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType = fixed.workType;
-												self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.fixBreakTime = fixed.fixBreakTime;
-
-												if (dataCheckColor[0].workScheduleDto.workTypeCode === $("#extable-ksu003").exTable('dataSource', 'middle').body[index].worktypeCode) {
-													// css cho worktimecode và worktypecode
-													$(cssWorkType).css("background-color", "#ffffff");
-												}
-
-												if (dataCheckColor[0].workScheduleDto.workTimeCode === $("#extable-ksu003").exTable('dataSource', 'middle').body[index].worktimeCode) {
-													$(cssWorkTime).css("background-color", "#ffffff");
-												}
-												$(cssWorkTypeName).addClass("x-link");
-												$(cssWorkTypeName).css("display", "revert");
-												$(cssWorkTypeName).hover(x => {
-													$(cssWorkTypeName).css("text-decoration", "underline");
-													$(cssWorkTypeName).css("color", "#0D86D1");
-												}, x => {
-													$(cssWorkTypeName).css("text-decoration", "none");
-													$(cssWorkTypeName).css("color", "black");
-												})
-												$(cssWorkTimeName).addClass("x-link");
-												$(cssWorkTimeName).css("display", "revert");
-												$(cssWorkTimeName).hover(x => {
-													$(cssWorkTimeName).css("text-decoration", "underline");
-													$(cssWorkTimeName).css("color", "#0D86D1");
-												}, x => {
-													$(cssWorkTimeName).css("text-decoration", "none");
-													$(cssWorkTimeName).css("color", "black");
-												})
-
-												let datafilter: Array<ITimeGantChart> = _.filter(self.dataOfGantChart, (x: any) => { return x.empId === empId });
-												if (datafilter.length > 0) {
-													//self.updateGantChart(datafilter, lineNo, fixedGc, lstBreak, indexS, indexF);
-													self.addAllChart(datafilter, index, [], self.midDataGC, "");
-													ruler.replaceAt(index, [
-														...self.allGcShow
-													]);
-												}
-												return;
-											}
+									ruler.replaceAt(index, [{ // xóa chart khi là ngày nghỉ
+										type: "Flex",
+										options: {
+											id: `lgc` + index,
+											start: -1,
+											end: -1,
+											lineNo: index
 										}
-									})
+									}]);
+
+									return;
+								}
+								self.inputWorkInfo(index, dataCell, dataFixed, empId);
 							} else {
-								console.log("aaa");
-								self.getEmpWorkFixedWorkInfo(dataMid.worktypeCode, dataMid.worktimeCode);
+								self.getEmpWorkFixedWorkInfo($("#extable-ksu003").exTable('dataSource', 'middle').body[index].worktypeCode,
+									$("#extable-ksu003").exTable('dataSource', 'middle').body[index].worktimeCode, empId, index, "type");
+								/*self.midContent.dataSource[index] = ({
+									empId: empId, worktypeCode: $("#extable-ksu003").exTable('dataSource', 'middle').body[index].worktypeCode, worktypeName: "", worktimeCode: "", worktimeName: "",
+									startTime1: "", endTime1: "", startTime2: "", endTime2: "", totalTime: "", breaktime: ""
+								});
+								$("#extable-ksu003").exTable("updateTable", "middle", self.headerMidExtable, self.midContent);*/
+								$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime1", "");
+								$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime2", "");
+								$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime1", "");
+								$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime2", "");
+								$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeCode", "");
+								let cssTotalTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(9)";
+								$(cssTotalTime).css("background-color", "#ffffff");
+								$("#extable-ksu003").exTable("cellValue", "middle", empId, "totalTime", "");
+								$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", "");
+								$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeName", getText('KSU003_55'));
+								$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktypeName", "");
 							}
 						}).fail(function(error) {
 							errorDialog({ messageId: error.messageId });
@@ -337,36 +293,86 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						});
 					}
 					let columnKey = dataCell.originalEvent.detail.columnKey;
-					if (columnKey === "startTime1" || columnKey === "startTime2" ||
-						columnKey === "endTime1" || columnKey === "endTime2") {
-						let timeConvert = self.convertTime(dataMid.startTime1, dataMid.endTime1, dataMid.startTime2, dataMid.endTime2);
+					if ((columnKey === "startTime1" || columnKey === "startTime2" ||
+						columnKey === "endTime1" || columnKey === "endTime2") && self.checkUpdateTime.id == 0) {
+						if(self.checkDragDrog != true){
+							self.checkTimeInfo(dataMid.worktypeCode, dataMid.worktimeCode, dataMid.startTime1.trim(), dataMid.startTime2.trim(), dataMid.endTime1.trim(), dataMid.endTime2.trim());
+						let timeConvert = self.convertTime(dataMid.startTime1.trim(), dataMid.endTime1.trim(), dataMid.startTime2.trim(), dataMid.endTime2.trim());
 						self.employeeScheduleInfo.forEach((x, i) => {
 							if (i === dataCell.originalEvent.detail.rowIndex) {
 								if (columnKey === "startTime1") {
 									x.startTime1 = timeConvert.start;
+									dataFixed[0].workScheduleDto.startTime1 = x.startTime1;
+									self.checkTypeChange.push({type : "startTime1"});
+									if (x.startTime1 == "") {
+										return;
+									}
 								}
 								if (columnKey === "startTime2") {
 									x.startTime2 = timeConvert.start2;
+									dataFixed[0].workScheduleDto.startTime2 = x.startTime2;
+									self.checkTypeChange.push({type : "startTime2"});
+									if (x.startTime2 == "") {
+										return;
+									}
 								}
 								if (columnKey === "endTime1") {
 									x.endTime1 = timeConvert.end;
+									dataFixed[0].workScheduleDto.endTime1 = x.endTime1;
+									self.checkTypeChange.push({type : "endTime1"});
+									if (x.endTime1 == "") {
+										return;
+									}
 								}
 								if (columnKey === "endTime2") {
 									x.endTime2 = timeConvert.end2;
+									dataFixed[0].workScheduleDto.endTime2 = x.endTime2;
+									self.checkTypeChange.push({type : "endTime2"});
+									if (x.endTime2 == "") {
+										return;
+									}
 								}
 							}
 						})
-						let totalTime: number = null;
+						if ((timeConvert.start == "" && timeConvert.end != "") || (timeConvert.start != "" && timeConvert.end == "")
+							|| (timeConvert.start2 == "" && timeConvert.end2 != "") || (timeConvert.start2 != "" && timeConvert.end2 == ""))
+							return;
+						// tính lại tổng time
+						let lstTime: any = [], timeRangeLimit = ((self.timeRange * 60) / 5), totalBrkTime: any = null;
+						self.lstBreakSum = [], self.lstBreakShow = [];
+						lstTime = self.calcChartTypeTime(dataFixed[0], dataFixed[0].workScheduleDto.listBreakTimeZoneDto,
+							timeRangeLimit, lstTime, 1,index);
+						for (let e = 0; e < dataFixed[0].workInfoDto.listTimeVacationAndType.length; e++) {
+							let y = dataFixed[0].workInfoDto.listTimeVacationAndType[e];
+							lstTime = self.calcChartTypeTime(dataFixed[0], y.timeVacation.timeZone, timeRangeLimit, lstTime, 4,index);
+						}
+						lstTime = self.calcChartTypeTime(dataFixed[0], dataFixed[0].workInfoDto.shortTime,
+							timeRangeLimit, lstTime, 2,index);
 
-						if (!_.isNaN(timeConvert.end) && !_.isNaN(timeConvert.start) && timeConvert.end != "" && timeConvert.start != "" && !_.isNil(timeConvert.start) && !_.isNil(timeConvert.end)) {
-							totalTime += (timeConvert.end - timeConvert.start)
-						}
-						if (!_.isNaN(timeConvert.end2) && !_.isNaN(timeConvert.start2) && timeConvert.end2 != "" && timeConvert.start2 != "" && !_.isNil(timeConvert.start2) && !_.isNil(timeConvert.end2)) {
-							totalTime += (timeConvert.end2 - timeConvert.start2);
-						}
-						if (!self.checkClearTime == false && totalTime != null) {
-							totalTime = formatById("Clock_Short_HM", totalTime);
+						lstTime = self.calcChartTypeTime(dataFixed[0], dataFixInfo[0].fixedWorkInforDto.overtimeHours, timeRangeLimit, lstTime, 3,index);
+						let totalTime = self.calcAllTime(dataFixed[0], lstTime, timeRangeLimit);
+
+						totalBrkTime = self.calcAllBrk(lstTime);
+						totalBrkTime = totalBrkTime != null ? formatById("Clock_Short_HM", totalBrkTime * 5) : "";
+
+						self.totalTimeBreak = totalBrkTime;
+
+						if (totalBrkTime === (totalBrkTime + " "))
+							totalBrkTime = totalBrkTime.trim();
+						else
+							totalBrkTime = (totalBrkTime + " ");
+							
+						if (totalBrkTime === ("0:00"))
+							totalBrkTime = totalBrkTime;
+						else
+							totalBrkTime = totalBrkTime.trim();
+
+						$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", totalBrkTime);
+						if (!self.checkClearTime == false) {
+							let cssTotalTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(9)";
+							$(cssTotalTime).css("background-color", "#ffffff");
 							$("#extable-ksu003").exTable("cellValue", "middle", empId, "totalTime", totalTime != null ? totalTime : "");
+						}
 						}
 					}
 				}
@@ -386,16 +392,139 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			return dfd.promise();
 		}
 
-		setDataToMidExtable(empId: string, schedule: model.EmployeeWorkScheduleDto, fixed: model.FixedWorkInforDto, totalTime: any, totalBrkTime: any) {
+		public inputWorkInfo(index: number, dataCell: any, dataFixed: any, empId: string) {
+			let self = this;
+			self.getEmpWorkFixedWorkInfo($("#extable-ksu003").exTable('dataSource', 'middle').body[index].worktypeCode,
+				$("#extable-ksu003").exTable('dataSource', 'middle').body[index].worktimeCode, empId, index, "time").done(() => {
+					self.removeChart(index);
+					if (dataCell.originalEvent.detail.value != "" &&
+						dataCell.originalEvent.detail.value != null) {
+						self.checkClearTime = true;
+
+						let lstBrkTime = dataFixed[0].workScheduleDto.listBreakTimeZoneDto, totalBrkTime: any = null;
+
+						let lstTime: any = [], timeRangeLimit = ((self.timeRange * 60) / 5);
+						self.lstBreakSum = [],self.lstBreakShow = [];
+						lstTime = self.calcChartTypeTime(dataFixed[0], dataFixed[0].workScheduleDto.listBreakTimeZoneDto,
+							timeRangeLimit, lstTime, 1,index);
+						for (let e = 0; e < dataFixed[0].workInfoDto.listTimeVacationAndType.length; e++) {
+							let y = dataFixed[0].workInfoDto.listTimeVacationAndType[e];
+							lstTime = self.calcChartTypeTime(dataFixed[0], y.timeVacation.timeZone, timeRangeLimit, lstTime, 4,index);
+						}
+						lstTime = self.calcChartTypeTime(dataFixed[0], dataFixed[0].workInfoDto.shortTime,
+							timeRangeLimit, lstTime, 2,index);
+						let dataFixInfo = _.filter(self.fixedWorkInformationDto, x => { return x.empId === empId });
+						lstTime = self.calcChartTypeTime(dataFixed[0], dataFixInfo[0].fixedWorkInforDto.overtimeHours, timeRangeLimit, lstTime, 3,index);
+						let totalTime = self.calcAllTime(dataFixed[0], lstTime, timeRangeLimit);
+
+						totalBrkTime = self.calcAllBrk(lstTime);
+						totalBrkTime = totalBrkTime != null ? formatById("Clock_Short_HM", totalBrkTime * 5) : "";
+
+						let schedule: model.EmployeeWorkScheduleDto = dataFixed[0].workScheduleDto,
+							fixed: model.FixedWorkInforDto = dataFixed[0].fixedWorkInforDto,
+							info: model.EmployeeWorkInfoDto = dataFixed[0].workInfoDto;
+
+						$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktypeCode", schedule.workTypeCode);
+						$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktypeName", fixed.workTypeName);
+						$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeCode", schedule.workTimeCode);
+						$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeName", fixed.workTimeName);
+						$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime1", formatById("Clock_Short_HM", (schedule.startTime1)));
+						$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime1", formatById("Clock_Short_HM", (schedule.endTime1)));
+						if (schedule.startTime2 != null)
+							$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime2", formatById("Clock_Short_HM", (schedule.startTime2)));
+						else
+							$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime2", "");
+
+						if (schedule.endTime2 != null)
+							$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime2", formatById("Clock_Short_HM", (schedule.endTime2)));
+						else
+							$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime2", "");
+						$("#extable-ksu003").exTable("cellValue", "middle", empId, "totalTime", totalTime);
+						let cssTotalTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(9)";
+						$(cssTotalTime).css("background-color", "#ffffff");
+						$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", totalBrkTime == totalBrkTime + " " ? totalBrkTime : totalBrkTime + "");
+
+						self.dataScreen003A().employeeInfo[index].workScheduleDto.workTypeCode = schedule.workTypeCode;
+						self.dataScreen003A().employeeInfo[index].workScheduleDto.workTimeCode = schedule.workTimeCode;
+						self.dataScreen003A().employeeInfo[index].workScheduleDto.startTime1 = schedule.startTime1;
+						self.dataScreen003A().employeeInfo[index].workScheduleDto.endTime1 = schedule.endTime1;
+						self.dataScreen003A().employeeInfo[index].workScheduleDto.startTime2 = schedule.startTime2;
+						self.dataScreen003A().employeeInfo[index].workScheduleDto.endTime2 = schedule.endTime2;
+						let dataMid = $("#extable-ksu003").exTable('dataSource', 'middle').body[index];
+						self.checkTimeInfo(dataMid.worktypeCode, dataMid.worktimeCode, dataMid.startTime1.trim(),
+							dataMid.startTime2.trim(), dataMid.endTime1.trim(), dataMid.endTime2.trim());
+
+						if (lstBrkTime != null && lstBrkTime.length > 0) {
+							self.dataScreen003A().employeeInfo[index].workScheduleDto.listBreakTimeZoneDto = lstBrkTime;
+						}
+
+						self.dataScreen003A().employeeInfo[index].workInfoDto.directAtr = info.directAtr;
+						self.dataScreen003A().employeeInfo[index].workInfoDto.bounceAtr = info.bounceAtr;
+
+						self.dataScreen003A().employeeInfo[index].fixedWorkInforDto.workTypeName = fixed.workTypeName;
+						self.dataScreen003A().employeeInfo[index].fixedWorkInforDto.workTimeName = fixed.workTimeName;
+						self.dataScreen003A().employeeInfo[index].fixedWorkInforDto.workType = fixed.workType;
+						self.dataScreen003A().employeeInfo[index].fixedWorkInforDto.fixBreakTime = fixed.fixBreakTime;
+
+						self.convertDataIntoExtable(index);
+
+						let datafilter: Array<ITimeGantChart> = _.filter(self.dataOfGantChart, (x: any) => { return x.empId === empId });
+						if (datafilter.length > 0) {
+							//self.updateGantChart(datafilter, lineNo, fixedGc, lstBreak, indexS, indexF);
+							self.addAllChart(datafilter, index, [], self.midDataGC, "");
+							ruler.replaceAt(index, [
+								...self.allGcShow
+							]);
+						}
+						self.checkUpdateTime.name = "";
+						self.checkUpdateTime.id = 0;
+						return;
+					}
+				})
+		}
+
+		setDataToMidExtable(index: number, empId: string, schedule: model.EmployeeWorkScheduleDto, fixed: model.FixedWorkInforDto, totalTime: any, totalBrkTime: any) {
+			let workTypeName = "", workTimeName = "";
+			if (schedule == null) {
+				workTimeName = getText('KSU003_55');
+			}
+			if (fixed != null) {
+				if (fixed.workTypeName != null && fixed.workTypeName != "") {
+					workTypeName = fixed.workTypeName;
+				}
+				if (fixed.workTimeName != null && fixed.workTimeName != "") {
+					workTimeName = fixed.workTimeName;
+				}
+			}
+			if (schedule.workTimeCode == null || schedule.workTimeCode == "") {
+				workTypeName = getText('KSU003_55');
+			} else if (schedule.workTypeCode != null && schedule.workTypeCode != "" && fixed != null
+				&& (fixed.workTypeName == null || fixed.workTypeName == "")) {
+				workTypeName = schedule.workTypeCode + getText('KSU003_54')
+			}
+			// set work time name
+			if ((schedule.workTimeCode == null || schedule.workTimeCode == "")) {
+				workTimeName = getText('KSU003_55');
+			} else {
+				if (fixed != null && (fixed.workTimeName == null || fixed.workTimeName == "")) {
+					workTimeName = schedule.workTimeCode + getText('KSU003_54');
+				}
+			}
 			$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktypeCode", schedule.workTypeCode);
-			$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktypeName", fixed.workTypeName);
+			$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktypeName", workTypeName);
 			$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeCode", schedule.workTimeCode);
-			$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeName", fixed.workTimeName);
+			$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeName", workTimeName);
 			$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime1", formatById("Clock_Short_HM", (schedule.startTime1)));
 			$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime1", formatById("Clock_Short_HM", (schedule.endTime1)));
-			$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime2", formatById("Clock_Short_HM", (schedule.startTime2)));
-			$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime2", formatById("Clock_Short_HM", (schedule.endTime2)));
+
+			if (schedule.startTime2 != null)
+				$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime2", formatById("Clock_Short_HM", (schedule.startTime2)));
+			if (schedule.endTime2 != null)
+				$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime2", formatById("Clock_Short_HM", (schedule.endTime2)));
+
 			$("#extable-ksu003").exTable("cellValue", "middle", empId, "totalTime", totalTime);
+			let cssTotalTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(9)";
+			$(cssTotalTime).css("background-color", "#ffffff");
 			$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", totalBrkTime);
 		}
 
@@ -414,7 +543,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		public getData() {
 			let self = this;
 			let canModified = 0;
-			if (self.dataFromA().dayEdit < self.targetDate()) {
+			block.grayout();
+			// 修正可能 - Check ngày có thể chỉnh sửa 
+			if ((self.dataFromA().dayEdit <= self.targetDate()) || (self.targetDate() < moment(new Date()).format('YYYY/MM/DD') && self.dataFromA().dayEdit !== "1900/01/01")) {
 				canModified = 1;
 			}
 			let data003A: model.DataScreenA = {
@@ -432,6 +563,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				employeeInfo: [],
 			}
 			self.dataScreen003A(data003A);
+			self.dataScreen003AFirst(data003A);
 			self.getInforFirt();
 			let local: ILocalStore = {
 				startTimeSort: self.checked(),
@@ -447,13 +579,192 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				self.convertDataIntoExtable();
 				self.initExtableData();
 			});
+			block.clear();
+		}
+
+		// ①<<ScreenQuery>> 初期起動の情報取得
+		public getInforFirt() {
+			let self = this;
+			let dfd = $.Deferred<any>();
+			let targetOrgDto = {
+				unit: self.dataFromA().unit,
+				workplaceId: self.dataFromA().workplaceId,
+				workplaceGroupId: self.dataFromA().workplaceGroupId
+			}
+			service.getDataStartScreen(targetOrgDto)
+				.done((data: model.GetInfoInitStartKsu003Dto) => {
+					self.dataInitStartKsu003Dto(data);
+/*					self.dataInitStartKsu003Dto().byDateDto.dispStart = 7;
+					self.dataInitStartKsu003Dto().byDateDto.initDispStart = 7;*/
+					self.organizationName(self.dataInitStartKsu003Dto().displayInforOrganization.displayName);
+					self.dataScreen003A().targetInfor = data.manageMultiDto.useATR;
+					self.timeRange = self.dataInitStartKsu003Dto().byDateDto.dispRange == 0 ? 24 : 48;
+					self.initDispStart = self.dataInitStartKsu003Dto().byDateDto.initDispStart;
+					self.dispStart = (self.dataInitStartKsu003Dto().byDateDto.dispStart * 60) / 5;
+					self.dataScreen003A().targetInfor = self.dataInitStartKsu003Dto().manageMultiDto.useATR;
+					self.dataScreen003A().scheCorrection = self.dataInitStartKsu003Dto().functionControlDto != null
+						? self.dataInitStartKsu003Dto().functionControlDto.changeableWorks : [0, 1, 2, 3];
+				}).fail(function(error) {
+					errorDialog({ messageId: error.messageId });
+					dfd.reject();
+				}).always(function() {
+				});
+		}
+
+		// ②<<ScreenQuery>> 日付別勤務情報で表示する
+		public getWorkingByDate(targetDate: any, check?: number): JQueryPromise<any> {
+			let self = this;
+			let dfd = $.Deferred<any>();
+			let targetOrg = {
+				unit: self.dataFromA().unit,
+				workplaceId: self.dataFromA().workplaceId != null ? self.dataFromA().workplaceId : null,
+				workplaceGroupId: self.dataFromA().workplaceGroupId != null ? self.dataFromA().workplaceGroupId : null
+			}
+			let lstEmpId = _.flatMap(self.dataFromA().listEmp, c => [c.id]);
+			let param = {
+				targetOrg: targetOrg,
+				lstEmpId: lstEmpId,
+				date: targetDate
+			};
+			service.displayDataKsu003(param)
+				.done((data: Array<model.DisplayWorkInfoByDateDto>) => {
+					if (self.checked() === "0") {
+						let dataSort = self.sortEmpByTime(data);
+						dataSort = dataSort.sort(function(a, b) {
+							return (a.startTime != null ? a.startTime : Infinity) - (b.startTime != null ? b.startTime : Infinity);
+						});
+						self.lstEmpId = self.lstEmpId.sort(function(a: any, b: any) {
+							return _.findIndex(dataSort, x => { return x.empId == a.empId }) - _.findIndex(dataSort, x => { return x.empId == b.empId });
+						});
+					}
+					data = data.sort(function(a: any, b: any) {
+						return _.findIndex(self.lstEmpId, x => { return x.empId == a.empId }) - _.findIndex(self.lstEmpId, x => { return x.empId == b.empId });
+					});
+					self.dataScreen003A().employeeInfo = data;
+					self.dataScreen003AFirst().employeeInfo = data;
+					self.fixedWorkInformationDto = _.map(self.dataScreen003A().employeeInfo, (z) => ({
+						empId: z.empId,
+						fixedWorkInforDto: z.fixedWorkInforDto
+					}))
+					self.employeeScheduleInfo = _.map(self.dataScreen003A().employeeInfo, (x) => ({
+						empId: x.empId,
+						startTime1: x.workScheduleDto != null && x.workScheduleDto.startTime1 != null ? x.workScheduleDto.startTime1 : "",
+						endTime1: x.workScheduleDto != null && x.workScheduleDto.endTime1 != null ? x.workScheduleDto.endTime1 : "",
+						startTime2: x.workScheduleDto != null && x.workScheduleDto.startTime2 != null ? x.workScheduleDto.startTime2 : "",
+						endTime2: x.workScheduleDto != null && x.workScheduleDto.endTime2 != null ? x.workScheduleDto.endTime2 : "",
+						listBreakTimeZoneDto: x.workScheduleDto != null &&
+							x.workScheduleDto.listBreakTimeZoneDto != null ? x.workScheduleDto.listBreakTimeZoneDto : ""
+					}));
+
+					self.employeeScheduleInfo = self.employeeScheduleInfo.sort(function(a, b) {
+						return _.findIndex(self.lstEmpId, x => { return x.empId == a.empId }) -
+							_.findIndex(self.lstEmpId, x => { return x.empId == b.empId });
+					});
+					dfd.resolve(data);
+				}).fail(function(error) {
+					errorDialog({ messageId: error.messageId });
+					dfd.reject();
+				}).always(function() {
+				});
+			return dfd.promise();
+		}
+
+		// 社員勤務予定と勤務固定情報を取得する
+		public getEmpWorkFixedWorkInfo(workTypeCode: string, workTimeCode: string, empId?: string, index?: number, type?: string): JQueryPromise<any> {
+			let self = this;
+			let dfd = $.Deferred<any>(), indexEmp = 0;
+			let targetOrgDto = [{
+				workTypeCode: workTypeCode,
+				workTimeCode: workTimeCode
+			}]
+			indexEmp = _.findIndex(self.dataScreen003A().employeeInfo, x => { return x.empId === empId });
+			service.getEmpWorkFixedWorkInfo(targetOrgDto)
+				.done((data: model.DisplayWorkInfoByDateDto) => {
+					if (data.fixedWorkInforDto.workType == null) return;
+					self.dataScreen003A().employeeInfo[indexEmp].fixedWorkInforDto = data.fixedWorkInforDto;
+					self.dataScreen003A().employeeInfo[indexEmp].workScheduleDto = data.workScheduleDto;
+					self.fixedWorkInformationDto[indexEmp].fixedWorkInforDto = data.fixedWorkInforDto;
+
+					dfd.resolve(data);
+				}).fail(function(error) {
+					errorDialog({ messageId: error.messageId });
+					ruler.replaceAt(index, [{ // xóa chart khi là ngày nghỉ
+						type: "Flex",
+						options: {
+							id: `lgc` + index,
+							start: -1,
+							end: -1,
+							lineNo: index
+						}
+					}]);
+					$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime1", "");
+					$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime2", "");
+					$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime1", "");
+					$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime2", "");
+					$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeCode", "");
+					$("#extable-ksu003").exTable("cellValue", "middle", empId, "totalTime", "");
+					let cssTotalTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(9)";
+					$(cssTotalTime).css("background-color", "#ffffff");
+					$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", "");
+					$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeName", getText('KSU003_55'));
+					$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktypeName", "");
+				}).always(function() {
+				});
+			return dfd.promise();
+		}
+
+		// 勤務種類を変更する
+
+		public sortEmpByTime(employeeInfo: Array<model.DisplayWorkInfoByDateDto>) {
+			let dataSort = _.map(employeeInfo, (x: model.DisplayWorkInfoByDateDto) => ({
+				empId: x.empId,
+				startTime: (x.workScheduleDto != null && (x.workScheduleDto.startTime1 != null)) ? x.workScheduleDto.startTime1 : null
+			}))
+
+			return dataSort;
+		}
+
+		// 社員を並び替える
+		public sortEmployee(value: any) {
+			let self = this;
+			let dataSort = self.sortEmpByTime(self.dataScreen003A().employeeInfo);
+			let param = {
+				ymd: self.targetDate(),
+				lstEmpId: _.map(self.lstEmpId, (x: IEmpidName) => { return { empId: x.empId, code: x.code } })
+			}
+			if (value === '0') {
+				dataSort = dataSort.sort(function(a: any, b: any) {
+					return (a.startTime != null ? a.startTime : Infinity) - (b.startTime != null ? b.startTime : Infinity);
+				});
+				self.lstEmpId = self.lstEmpId.sort(function(a: any, b: any) {
+					return _.findIndex(dataSort, x => { return x.empId == a.empId }) - _.findIndex(dataSort, x => { return x.empId == b.empId });
+				});
+				self.localStore().lstEmpIdSort = self.lstEmpId;
+				characteristics.save(self.KEY, self.localStore());
+				self.destroyAndCreateGrid(self.lstEmpId, 1);
+			} else {
+				service.sortEmployee(param)
+					.done((data: Array<model.DisplayWorkInfoByDateDto>) => {
+						self.lstEmpId = self.lstEmpId.sort(function(a: any, b: any) {
+							return _.findIndex(data, x => { return x == a.empId }) - _.findIndex(data, x => { return x == b.empId });
+						});
+						self.localStore().lstEmpIdSort = self.lstEmpId;
+						characteristics.save(self.KEY, self.localStore());
+						self.destroyAndCreateGrid(self.lstEmpId, 1);
+					}).fail(function(error) {
+						errorDialog({ messageId: error.messageId });
+					}).always(function() {
+					});
+			}
+			self.localStore().startTimeSort = value;
+			characteristics.save(self.KEY, self.localStore());
 		}
 
 		// Tạo data để truyền vào ExTable
 		public convertDataIntoExtable(index?: number) {
 
 			let self = this, disableDs: any = [], leftDs: any = [], middleDs: any = [],
-				timeGantChart: Array<ITimeGantChart> = [], typeOfTime: string, startTimeArr: any = [];
+				timeGantChart: Array<ITimeGantChart> = [], typeOfTime: string, startTimeArr: any = [], lstTime: any = [];
 			let gcFixedWorkTime: Array<model.IFixedFlowFlexTime> = [],
 				gcBreakTime: Array<model.IBreakTime> = [],
 				gcOverTime: Array<model.IOverTime> = [],
@@ -463,20 +774,24 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				gcCoreTime: Array<model.ICoreTime> = [],
 				gcHolidayTime: Array<model.IHolidayTime> = [],
 				gcShortTime: Array<model.IShortTime> = [];
-			_.forEach(_.isNil(index) ? self.dataScreen003A().employeeInfo : [self.dataScreen003A().employeeInfo[0]], (schedule: model.DisplayWorkInfoByDateDto) => {
+			_.forEach(_.isNil(index) ? self.dataScreen003A().employeeInfo : [self.dataScreen003A().employeeInfo[index]], (schedule: model.DisplayWorkInfoByDateDto, index) => {
 				gcFixedWorkTime = [], gcBreakTime = [], gcOverTime = [], gcSupportTime = null,
 					gcFlowTime = [], gcFlexTime = [], gcCoreTime = [], gcHolidayTime = [],
-					gcShortTime = [], typeOfTime = "";
+					gcShortTime = [], typeOfTime = "", self.lstBreakSum = [];
+				let lineNo =  _.findIndex(self.lstEmpId, (x) => { return x.empId === schedule.empId; });
 				let color = self.setColorEmployee(schedule.workInfoDto.isNeedWorkSchedule, schedule.workInfoDto.isCheering);
-				if (color === '#ddddd2') {
+				let colorA6 = self.setColorWorkingInfo(schedule.empId, schedule.workInfoDto.isConfirmed
+					, schedule.workScheduleDto != null ? schedule.workScheduleDto : null, schedule.workInfoDto.isNeedWorkSchedule);
+				if (schedule.workInfoDto.isConfirmed == 0 && schedule.workInfoDto.isNeedWorkSchedule == 0) {
 					disableDs.push({
 						empId: schedule.empId,
-						color: color
+						color: "#ddddd2",
 					});
 				}
 				leftDs.push({
 					empId: schedule.empId,
-					color: color
+					color: color,
+					colorA6: colorA6
 				});
 
 				let startTime1 = "", startTime2 = "", endTime1 = "", endTime2 = "";
@@ -486,27 +801,31 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						endTime1 = schedule.workScheduleDto.endTime1 != null ? formatById("Clock_Short_HM", schedule.workScheduleDto.endTime1) : "",
 						endTime2 = schedule.workScheduleDto.endTime2 != null ? formatById("Clock_Short_HM", schedule.workScheduleDto.endTime2) : "";
 				}
-				let totalTime: any = "", totalBreakTime: any = 0, totalBreakTime1: any = 0, totalBreakTime2: any = 0;
 				let workTypeName = "", workTimeName = "";
-				if (schedule.workScheduleDto != null && schedule.fixedWorkInforDto != null) {
-					totalTime = self.calcTotalTime(schedule.workScheduleDto);
-					self.setColorWorkingInfo(schedule.empId, schedule.workInfoDto.isConfirmed, schedule.workScheduleDto);
-					// Bind *worktypecode - *worktimecode
-					if (schedule.workScheduleDto.workTimeCode == null) {
-						workTypeName = getText('KSU003_55');
-					} else if (schedule.workScheduleDto.workTypeCode != null && schedule.fixedWorkInforDto != null
-						&& schedule.fixedWorkInforDto.workTypeName != null) {
+				if (schedule.fixedWorkInforDto != null) {
+					if (schedule.fixedWorkInforDto.workTypeName != null && schedule.fixedWorkInforDto.workTypeName != "") {
 						workTypeName = schedule.fixedWorkInforDto.workTypeName;
-					} else {
+					}
+					if (schedule.fixedWorkInforDto.workTimeName != null && schedule.fixedWorkInforDto.workTimeName != "") {
+						workTimeName = schedule.fixedWorkInforDto.workTimeName;
+					}
+				}
+				if (schedule.workScheduleDto == null && schedule.fixedWorkInforDto == null) {
+					workTimeName = getText('KSU003_55');
+				}
+				if (schedule.workScheduleDto != null && schedule.fixedWorkInforDto != null) {
+					// Bind *worktypecode - *worktimecode
+					if (schedule.workScheduleDto.workTypeCode == null || schedule.workScheduleDto.workTypeCode == "") {
+						workTypeName = getText('KSU003_55');
+					} else if (schedule.workScheduleDto.workTypeCode != null && schedule.workScheduleDto.workTypeCode != "" && schedule.fixedWorkInforDto != null
+						&& (schedule.fixedWorkInforDto.workTypeName == null || schedule.fixedWorkInforDto.workTypeName == "")) {
 						workTypeName = schedule.workScheduleDto.workTypeCode + getText('KSU003_54')
 					}
 					// set work time name
-					if (schedule.workScheduleDto.workTimeCode == null) {
+					if (schedule.workScheduleDto.workTimeCode == null || schedule.workScheduleDto.workTimeCode == "") {
 						workTimeName = getText('KSU003_55');
 					} else {
-						if (schedule.fixedWorkInforDto != null && schedule.fixedWorkInforDto.workTimeName != null) {
-							workTimeName = schedule.fixedWorkInforDto.workTimeName;
-						} else {
+						if (schedule.fixedWorkInforDto != null && (schedule.fixedWorkInforDto.workTimeName == "" || schedule.fixedWorkInforDto.workTimeName == null)) {
 							workTimeName = schedule.workScheduleDto.workTimeCode + getText('KSU003_54');
 						}
 					}
@@ -557,6 +876,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						typeOfTime = "Fixed"
 					}
 				}
+
+				// Tính tổng thời gian làm việc
+				let lstBreak = 1, lstTime: any = [], timeRangeLimit = ((self.timeRange * 60) / 5);
 				if (schedule.fixedWorkInforDto != null && schedule.workScheduleDto != null) {
 					// Thời gian break time
 					// 勤務固定情報　dto.Optional<休憩時間帯を固定にする>＝falseの時に、休憩時間横棒が生成されない。 (defaut gcBreakTime = [])
@@ -574,26 +896,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						})
 
 						// Tính tổng BREAK-TIME khi khởi động
-						schedule.workScheduleDto.listBreakTimeZoneDto.forEach((brkT: any) => {
-							let brkTChart = self.convertTimeToChart(_.isNil(brkT.startTime) ? brkT.start : brkT.startTime, _.isNil(brkT.endTime) ? brkT.end : brkT.endTime),
-								timeChart = self.convertTimeToChart(schedule.workScheduleDto.startTime1, schedule.workScheduleDto.endTime1),
-								brkTChart2: any = null, timeChart2: any = null;
-
-							if (_.inRange(brkTChart.startTime, timeChart.startTime, timeChart.endTime) ||
-								_.inRange(brkTChart.endTime, timeChart.startTime, timeChart.endTime)) {
-								totalBreakTime1 += self.calcBreakTime(brkTChart, timeChart);
-							}
-
-							if (schedule.workScheduleDto.startTime2 != null && schedule.fixedWorkInforDto.workType != WorkTimeForm.FLEX) {
-								brkTChart2 = self.convertTimeToChart(_.isNil(brkT.startTime) ? brkT.start : brkT.startTime, _.isNil(brkT.endTime) ? brkT.end : brkT.endTime)
-								timeChart2 = self.convertTimeToChart(schedule.workScheduleDto.startTime2, schedule.workScheduleDto.endTime2)
-								if (_.inRange(brkTChart.startTime, timeChart2.startTime, timeChart2.endTime) ||
-									_.inRange(brkTChart.endTime, timeChart2.startTime, timeChart2.endTime)) {
-									totalBreakTime2 += self.calcBreakTime(brkTChart2, timeChart2);
-								}
-							}
-							totalBreakTime = totalBreakTime2 + totalBreakTime1;
-						})
+						lstTime = self.calcChartTypeTime(schedule, schedule.workScheduleDto.listBreakTimeZoneDto, timeRangeLimit, lstTime, lstBreak, lineNo);
 					}
 
 					// Thời gian làm thêm
@@ -605,6 +908,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						lstOverTime: schedule.fixedWorkInforDto.overtimeHours,
 						color: "#ffff00"
 					})
+					// Tính tổng thời gian làm thêm
+					lstTime = self.calcChartTypeTime(schedule, schedule.fixedWorkInforDto.overtimeHours, timeRangeLimit, lstTime, 3, lineNo);
 
 					// Thời gian lưu động 
 					// 勤務固定情報　dto．Optional<勤務タイプ>== 流動勤務&&社員勤務情報　dto．応援か＝＝時間帯応援元　or 応援ではない
@@ -613,24 +918,16 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						// 社員勤務予定dto.Optional<開始時刻1>, 社員勤務予定dto.Optional<終了時刻1>
 						gcFlowTime.push({
 							timeNo: 1,
-							// 社員勤務情報　dto > 社員ID
 							empId: schedule.workInfoDto.employeeId,
-							// 勤務固定情報　dto > Optional<勤務タイプ>
 							workType: schedule.fixedWorkInforDto.workType,
 							color: "#ffc000",
-							// 社員勤務情報　dto > 応援か
 							isCheering: schedule.workInfoDto.isCheering,
-
-							// 社員勤務予定　dto > Optional<開始時刻1>, Optional<終了時刻1>
 							startTime: schedule.workScheduleDto.startTime1,
 							endTime: schedule.workScheduleDto.endTime1,
-
-							// // 勤務固定情報　dto > Optional<日付開始時刻範囲時間帯1>, Optional<日付終了時刻範囲時間帯1>, 
 							startTimeRange: schedule.fixedWorkInforDto.startTimeRange1,
 							endTimeRange: schedule.fixedWorkInforDto.endTimeRange1
 
 						});
-
 						startTimeArr.add(schedule.workScheduleDto.startTime2);
 						// 複数回勤務管理.使用区別＝＝true
 						// 社員勤務予定dto.Optional<開始時刻2>, 社員勤務予定dto.Optional<終了時刻2>
@@ -702,6 +999,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						})
 					}
 
+					// Tính tổng thời gian holiday time
+					for (let e = 0; e < schedule.workInfoDto.listTimeVacationAndType.length; e++) {
+						let y = schedule.workInfoDto.listTimeVacationAndType[e];
+						lstTime = self.calcChartTypeTime(schedule, y.timeVacation.timeZone, timeRangeLimit, lstTime, 4, lineNo);
+					}
+
 					// Thời gian chăm sóc / giữ trẻ (short time)
 					// 社員勤務情報　dto．Optional<育児介護短時間> が存在する
 					if (schedule.workInfoDto.shortTime != null && schedule.workInfoDto.shortTime.length > 0) {
@@ -712,10 +1015,17 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							listShortTime: schedule.workInfoDto.shortTime
 						})
 					}
+					// Tính tổng thời gian short time
+					lstTime = self.calcChartTypeTime(schedule, schedule.workInfoDto.shortTime, timeRangeLimit, lstTime, 2, lineNo);
 				}
-				self.timeBrkMinu(totalBreakTime);
-				let totalBreakTimeNum = formatById("Clock_Short_HM", (totalBreakTime * 5));
-				self.timeBrkText(totalBreakTimeNum);
+
+				// Tổng thời gian break time
+				let brkTotal: any = 0;
+				brkTotal = self.calcAllBrk(lstTime);
+
+				self.totalTimeWork = self.calcAllTime(schedule, lstTime, timeRangeLimit);
+				brkTotal = formatById("Clock_Short_HM", (brkTotal * 5));
+				self.timeBrkText(brkTotal);
 				if (schedule.workScheduleDto != null) {
 					middleDs.push({
 						empId: schedule.empId, cert: getText('KSU003_22'),
@@ -725,12 +1035,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						worktime: workTimeName,
 						startTime1: startTime1, endTime1: endTime1,
 						startTime2: startTime2, endTime2: endTime2,
-						totalTime: totalTime, breaktime: self.timeBrkText(), color: self.dataColorA6
+						totalTime: self.totalTimeWork, breaktime: self.timeBrkText(),
+						color: colorA6
 					});
 				} else {
 					middleDs.push({
 						empId: schedule.empId, cert: getText('KSU003_22'), worktypeCode: "",
-						worktype: "", worktimeCode: "", worktime: "",
+						worktype: workTypeName, worktimeCode: "", worktime: workTimeName,
 						startTime1: "", endTime1: "",
 						startTime2: "", endTime2: "",
 						totalTime: "", breaktime: "", color: ""
@@ -752,305 +1063,27 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					gcShortTime: gcShortTime
 				});
 			});
+			// tạo dữ liệu để truyền vào init extable
 			self.leftDs = leftDs;
 			self.disableDs = disableDs;
 			self.dataOfGantChart = timeGantChart;
 			self.midDataGC = middleDs;
 			startTimeArr = _.sortBy(startTimeArr, [function(o: any) { return o; }]);
-			self.startScrollY = startTimeArr[0];
-		}
-
-		public nextDay() {
-			let self = this;
-			let checkSort = $("#extable-ksu003").exTable('updatedCells');
-			if (checkSort.length > 0) {
-				dialog.confirm({ messageId: "Msg_447" }).ifYes(() => {
-					self.changeTargetDate(1, 1);
-					self.checkNext(true);
-					self.checkPrv(true);
-					$("#icon-prev-all").css("filter", "contrast(1)");
-					$("#icon-prev-one").css("filter", "contrast(1)");
-					if (self.dataFromA().endDate <= self.targetDate()) {
-						self.targetDate(self.dataFromA().endDate);
-						self.checkNext(false);
-						$("#icon-next-one").css("filter", "contrast(0.7)");
-						$("#icon-next-all").css("filter", "contrast(0.7)");
-					}
-					self.hoverEvent(self.targetDate());
-					self.convertDataIntoExtable();
-					self.destroyAndCreateGrid(self.lstEmpId);
-				}).ifNo(() => { return; });
-			}
-		}
-
-		public nextAllDay() {
-			let self = this, i = 7;
-			let nextDay: any = moment(moment(self.targetDate()).add(7, 'd').format('YYYY/MM/DD'));
-			let checkSort = $("#extable-ksu003").exTable('updatedCells');
-			if (checkSort.length > 0) {
-				dialog.confirm({ messageId: "Msg_447" }).ifYes(() => {
-					self.checkNext(true);
-					self.checkPrv(true);
-					$("#icon-prev-all").css("filter", "contrast(1)");
-					$("#icon-prev-one").css("filter", "contrast(1)");
-					if (self.dataFromA().endDate <= nextDay._i) {
-						let date: number = moment(self.dataFromA().endDate).date() - moment(self.targetDate()).date();
-						self.checkNext(false);
-						$("#icon-next-all").css("filter", "contrast(0.7)");
-						$("#icon-next-one").css("filter", "contrast(0.7)");
-
-						self.changeTargetDate(1, date);
-					} else {
-						self.changeTargetDate(1, i);
-					}
-					self.hoverEvent(self.targetDate());
-					self.destroyAndCreateGrid(self.lstEmpId);
-
-				}).ifNo(() => { return; });
-			}
-		}
-
-		public prevDay() {
-			let self = this;
-			let checkSort = $("#extable-ksu003").exTable('updatedCells');
-			if (checkSort.length > 0) {
-				dialog.confirm({ messageId: "Msg_447" }).ifYes(() => {
-					self.changeTargetDate(0, 1);
-					self.checkPrv(true);
-					self.checkNext(true);
-					$("#icon-next-all").css("filter", "contrast(1)");
-					$("#icon-next-one").css("filter", "contrast(1)");
-					if (self.dataFromA().startDate >= self.targetDate()) {
-						self.targetDate(self.dataFromA().startDate);
-						self.checkPrv(false);
-						$("#icon-prev-one").css("filter", "contrast(0.7)");
-						$("#icon-prev-all").css("filter", "contrast(0.7)");
-					}
-					self.hoverEvent(self.targetDate());
-					self.destroyAndCreateGrid(self.lstEmpId);
-
-				}).ifNo(() => { return; });
-			}
-		}
-
-		public prevAllDay() {
-			let self = this, i = 7;
-			let prvDay: any = moment(moment(self.targetDate()).subtract(7, 'd').format('YYYY/MM/DD'));
-			let checkSort = $("#extable-ksu003").exTable('updatedCells');
-			if (checkSort.length > 0) {
-				dialog.confirm({ messageId: "Msg_447" }).ifYes(() => {
-					self.checkPrv(true);
-					self.checkNext(true);
-					$("#icon-next-all").css("filter", "contrast(1)");
-					$("#icon-next-one").css("filter", "contrast(1)");
-					if (self.dataFromA().startDate >= prvDay._i) {
-						let date: number = moment(self.targetDate()).date() - moment(self.dataFromA().startDate).date();
-						self.checkPrv(false);
-						$("#icon-prev-all").css("filter", "contrast(0.7)");
-						$("#icon-prev-one").css("filter", "contrast(0.7)");
-
-						self.changeTargetDate(0, date);
-					} else {
-						self.changeTargetDate(0, 7);
-					}
-					self.hoverEvent(self.targetDate());
-					self.destroyAndCreateGrid(self.lstEmpId);
-
-				}).ifNo(() => { return; });
-			}
-		}
-
-		public changeTargetDate(nextOrprev: number, index: number) {
-			let self = this;
-			if (nextOrprev === 1) {
-				let time: any = moment(moment(self.targetDate()).add(index, 'd').format('YYYY/MM/DD'));
-				self.targetDate(time._i);
-			} else {
-				let time: any = moment(moment(self.targetDate()).subtract(index, 'd').format('YYYY/MM/DD'));
-				self.targetDate(time._i);
-			}
-			self.targetDateDay(self.targetDate() + moment(self.targetDate()).format('(ddd)'));
-		}
-
-		public getInforFirt() {
-			let self = this;
-			let dfd = $.Deferred<any>();
-			let targetOrgDto = {
-				unit: self.dataFromA().unit,
-				workplaceId: self.dataFromA().workplaceId,
-				workplaceGroupId: self.dataFromA().workplaceGroupId
-			}
-			// ①<<ScreenQuery>> 初期起動の情報取得
-			service.getDataStartScreen(targetOrgDto)
-				.done((data: model.GetInfoInitStartKsu003Dto) => {
-					self.dataInitStartKsu003Dto(data);
-					self.organizationName(self.dataInitStartKsu003Dto().displayInforOrganization.displayName);
-					self.dataScreen003A().targetInfor = data.manageMultiDto.useATR;
-					self.timeRange = self.dataInitStartKsu003Dto().byDateDto.dispRange == 0 ? 24 : 48;
-					self.dataScreen003A().targetInfor = self.dataInitStartKsu003Dto().manageMultiDto.useATR;
-					self.dataScreen003A().scheCorrection = self.dataInitStartKsu003Dto().functionControlDto != null
-						? self.dataInitStartKsu003Dto().functionControlDto.changeableWorks : [0, 1, 2, 3];
-				}).fail(function(error) {
-					errorDialog({ messageId: error.messageId });
-				}).always(function() {
-				});
-		}
-
-		// ②<<ScreenQuery>> 日付別勤務情報で表示する
-		public getWorkingByDate(targetDate: any, check: number): JQueryPromise<any> {
-			let self = this;
-			let dfd = $.Deferred<any>();
-			block.grayout();
-			let targetOrg = {
-				unit: self.dataFromA().unit,
-				workplaceId: self.dataFromA().workplaceId != null ? self.dataFromA().workplaceId : null,
-				workplaceGroupId: self.dataFromA().workplaceGroupId != null ? self.dataFromA().workplaceGroupId : null
-			}
-			let lstEmpId = _.flatMap(self.dataFromA().listEmp, c => [c.id]);
-			let param = {
-				targetOrg: targetOrg,
-				lstEmpId: lstEmpId,
-				date: targetDate
-			};
-			service.displayDataKsu003(param)
-				.done((data: Array<model.DisplayWorkInfoByDateDto>) => {
-					if (self.checked() === "0") {
-						let dataSort = self.sortEmpByTime(data);
-						dataSort = dataSort.sort(function(a, b) {
-							return (a.startTime != 0 ? a.startTime : Infinity) - (b.startTime != 0 ? b.startTime : Infinity);
-						});
-						self.lstEmpId = self.lstEmpId.sort(function(a: any, b: any) {
-							return _.findIndex(dataSort, x => { return x.empId == a.empId }) - _.findIndex(dataSort, x => { return x.empId == b.empId });
-						});
-					}
-					data = data.sort(function(a: any, b: any) {
-						return _.findIndex(self.lstEmpId, x => { return x.empId == a.empId }) - _.findIndex(self.lstEmpId, x => { return x.empId == b.empId });
-					});
-					self.dataScreen003A().employeeInfo = data;
-
-					self.employeeScheduleInfo = _.map(self.dataScreen003A().employeeInfo, (x) => ({
-						empId: x.empId,
-						startTime1: x.workScheduleDto != null && x.workScheduleDto.startTime1 != null ? x.workScheduleDto.startTime1 : "",
-						endTime1: x.workScheduleDto != null && x.workScheduleDto.endTime1 != null ? x.workScheduleDto.endTime1 : "",
-						startTime2: x.workScheduleDto != null && x.workScheduleDto.startTime2 != null ? x.workScheduleDto.startTime2 : "",
-						endTime2: x.workScheduleDto != null && x.workScheduleDto.endTime2 != null ? x.workScheduleDto.endTime2 : "",
-						listBreakTimeZoneDto: x.workScheduleDto != null &&
-							x.workScheduleDto.listBreakTimeZoneDto != null ? x.workScheduleDto.listBreakTimeZoneDto : ""
-					}))
-
-					self.employeeScheduleInfo = self.employeeScheduleInfo.sort(function(a, b) {
-						return _.findIndex(self.lstEmpId, x => { return x.empId == a.empId }) -
-							_.findIndex(self.lstEmpId, x => { return x.empId == b.empId });
-					});
-					dfd.resolve(data);
-				}).fail(function(error) {
-					errorDialog({ messageId: error.messageId });
-				}).always(function() {
-					block.clear();
-				});
-			return dfd.promise();
 		}
 
 		public initExtableData() {
 			let self = this;
 			setTimeout(() => {
-				self.initExtableChart(self.dataOfGantChart, self.leftDs, self.midDataGC, self.disableDs);
+
+				if (!_.isEmpty(self.leftDs))
+					self.initExtableChart(self.dataOfGantChart, self.leftDs, self.midDataGC, self.disableDs);
+
 				self.showHide();
-				if (!_.isNil(self.startScrollY)) {
-
-					if (!_.isString(self.startScrollY))
-						self.startScrollY = formatById("Clock_Short_HM", self.startScrollY);
-
-					let time = self.convertTimePixel(self.startScrollY);
-					self.startScrollGc(time * self.operationUnit() - 42);
-				}
-				$("#extable-ksu003").exTable("scrollBack", 0, { h: self.startScrollGc() });
-				self.dataA6 = null;
+				$("#extable-ksu003").exTable("scrollBack", 0, { h: Math.floor(self.initDispStart * 12 - self.dispStart * 12) });
 			}, 200)
-
 		}
 
-		// 社員勤務予定と勤務固定情報を取得する
-		public getEmpWorkFixedWorkInfo(workTypeCode: string, workTimeCode: string, empId?: string, index?: number): JQueryPromise<any> {
-			let self = this;
-			let dfd = $.Deferred<any>(), indexEmp = 0;
-			let targetOrgDto = [{
-				workTypeCode: workTypeCode,
-				workTimeCode: workTimeCode
-			}]
-			service.getEmpWorkFixedWorkInfo(targetOrgDto)
-				.done((data: model.DisplayWorkInfoByDateDto) => {
-					indexEmp = _.findIndex(self.dataScreen003A().employeeInfo, x => { return x.empId === empId })
-					self.dataScreen003A().employeeInfo[indexEmp].fixedWorkInforDto = data.fixedWorkInforDto;
-					self.dataScreen003A().employeeInfo[indexEmp].workScheduleDto = data.workScheduleDto;
-
-					dfd.resolve(data);
-				}).fail(function(error) {
-					errorDialog({ messageId: error.messageId });
-					ruler.replaceAt(index, [{ // xóa chart khi là ngày nghỉ
-						type: "Flex",
-						options: {
-							id: `lgc` + index,
-							start: -1,
-							end: -1,
-							lineNo: index
-						}
-					}]);
-					self.checkClearTimeErr == false;
-					return;
-				}).always(function() {
-				});
-			return dfd.promise();
-		}
-
-		// 勤務種類を変更する
-
-		public sortEmpByTime(employeeInfo: Array<model.DisplayWorkInfoByDateDto>) {
-			let dataSort = _.map(employeeInfo, (x: model.DisplayWorkInfoByDateDto) => ({
-				empId: x.empId,
-				startTime: x.workScheduleDto != null ? x.workScheduleDto.startTime1 : 0
-			}))
-
-			return dataSort;
-		}
-
-		// 社員を並び替える
-		public sortEmployee(value: any) {
-			let self = this;
-			let dataSort = self.sortEmpByTime(self.dataScreen003A().employeeInfo);
-			let param = {
-				ymd: self.targetDate(),
-				lstEmpId: _.map(self.lstEmpId, (x: IEmpidName) => { return x.empId })
-			}
-			if (value === '0') {
-				dataSort = dataSort.sort(function(a: any, b: any) {
-					return (a.startTime != 0 ? a.startTime : Infinity) - (b.startTime != 0 ? b.startTime : Infinity);
-				});
-				self.lstEmpId = self.lstEmpId.sort(function(a: any, b: any) {
-					return _.findIndex(dataSort, x => { return x.empId == a.empId }) - _.findIndex(dataSort, x => { return x.empId == b.empId });
-				});
-				self.localStore().lstEmpIdSort = self.lstEmpId;
-				storage.setItemAsJson(self.KEY, self.localStore());
-				self.destroyAndCreateGrid(self.lstEmpId);
-			} else {
-				service.sortEmployee(param)
-					.done((data: Array<model.DisplayWorkInfoByDateDto>) => {
-						self.lstEmpId = self.lstEmpId.sort(function(a: any, b: any) {
-							return _.findIndex(data, x => { return x == a.empId }) - _.findIndex(data, x => { return x == b.empId });
-						});
-						self.localStore().lstEmpIdSort = self.lstEmpId;
-						storage.setItemAsJson(self.KEY, self.localStore());
-						self.destroyAndCreateGrid(self.lstEmpId);
-					}).fail(function(error) {
-						errorDialog({ messageId: error.messageId });
-					}).always(function() {
-					});
-			}
-			self.localStore().startTimeSort = value;
-			storage.setItemAsJson(self.KEY, self.localStore());
-		}
-
-		destroyAndCreateGrid(lstId: any) {
+		destroyAndCreateGrid(lstId: any, check: any) {
 			let self = this;
 			let leftDs: any = [];
 			leftDs.push({
@@ -1059,175 +1092,29 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			});
 			$("#extable-ksu003").children().remove();
 			$("#extable-ksu003").removeData();
-			self.initExtableData();
-		}
 
-		// open dialog kdl045
-		public openKdl045Dialog(empId: string) {
-			let self = this;
-			block.grayout();
-
-			let data: any = _.filter(self.dataScreen003A().employeeInfo, (x) => { return x.empId === empId; }), // lấy dữl iệu theo empId từ list dữ liệu của màn KSU003
-				lineNo = _.findIndex(self.lstEmpId, (x) => { return x.empId === empId; }),
-				dataShare: model.ParamKsu003 = {
-					employeeInfo: data[0],
-					targetInfor: self.dataScreen003A().targetInfor,
-					canModified: 1, //self.dataScreen003A().canModified, // comment tạm để test
-					scheCorrection: self.dataScreen003A().scheCorrection,
-					unit: self.dataFromA().unit,
-					targetId: self.dataFromA().unit === 0 ? self.dataFromA().workplaceId : self.dataFromA().workplaceGroupId,
-					workplaceName: self.dataFromA().workplaceName
-				};
-			setShared('dataShareTo045', dataShare);
-			nts.uk.ui.windows.sub.modal('/view/kdl/045/a/index.xhtml').onClosed(() => {
-				self.dataScreen045A(getShared('dataFromKdl045'));
-				if (!_.isNil(self.dataScreen045A())) {
-					self.checkGetInfo = true;
-					let lstBrkTime = self.dataScreen045A().workScheduleDto.listBreakTimeZoneDto, totalBrkTime = "",
-						lstBreak: any = lstBrkTime, totalTimebr: any = null;
-					lstBrkTime.forEach((x: any) => {
-						totalTimebr += x.endTime - x.startTime;
-					})
-
-					totalBrkTime = totalTimebr != null ? formatById("Clock_Short_HM", totalTimebr) : ""
-
-					let totalTime = self.calcTotalTime(self.dataScreen045A().workScheduleDto),
-						schedule: model.EmployeeWorkScheduleDto = self.dataScreen045A().workScheduleDto,
-						fixed: model.FixedWorkInforDto = self.dataScreen045A().fixedWorkInforDto,
-						info: model.EmployeeWorkInfoDto = self.dataScreen045A().workInfoDto;
-
-					self.setDataToMidExtable(empId, schedule, fixed, totalTime, totalBrkTime);
-					self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.workTypeCode = schedule.workTypeCode;
-					self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.workTimeCode = schedule.workTimeCode;
-					self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.startTime1 = schedule.startTime1;
-					self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.endTime1 = schedule.endTime1;
-					self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.startTime2 = schedule.startTime2;
-					self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.endTime2 = schedule.endTime2;
-					if (lstBrkTime.length > 0) {
-						self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.listBreakTimeZoneDto = lstBrkTime;
-					}
-
-					self.dataScreen003A().employeeInfo[lineNo].workInfoDto.directAtr = info.directAtr;
-					self.dataScreen003A().employeeInfo[lineNo].workInfoDto.bounceAtr = info.bounceAtr;
-
-					self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workTypeName = fixed.workTypeName;
-					self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workTimeName = fixed.workTimeName;
-					self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType = fixed.workType;
-					self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.fixBreakTime = fixed.fixBreakTime;
-
+			if (check == 1)
+				self.initExtableData();
+			else {
+				self.getWorkingByDate(self.targetDate(), 1).done(() => {
 					self.convertDataIntoExtable();
-
-					let datafilter: Array<ITimeGantChart> = _.filter(self.dataOfGantChart, (x: any) => { return x.empId === empId });
-					if (datafilter.length > 0) {
-						//self.updateGantChart(datafilter, lineNo, fixedGc, lstBreak, indexS, indexF);
-						self.addAllChart(datafilter, lineNo, [], self.midDataGC, "KDL045", lstBreak);
-						ruler.replaceAt(lineNo, [
-							...self.allGcShow
-						]);
-					}
-				}
-				self.checkGetInfo = false;
-				block.clear();
-			});
-		}
-
-		public calcTotalTime(workScheduleDto: model.EmployeeWorkScheduleDto, ) {
-			let totalTime: any = null;
-			if (!_.isNil(workScheduleDto)) {
-				if (workScheduleDto.endTime2 != null && workScheduleDto.startTime2 != null)
-					totalTime = (workScheduleDto.endTime1 - workScheduleDto.startTime1) + (workScheduleDto.endTime2 - workScheduleDto.startTime2);
-				else if (workScheduleDto.endTime1 != null && workScheduleDto.startTime1 != null)
-					totalTime = (workScheduleDto.endTime1 - workScheduleDto.startTime1);
-
-				totalTime = totalTime != null ? formatById("Clock_Short_HM", totalTime) : "";
+					self.initExtableData();
+				});
 			}
-			return totalTime;
-		}
-
-		/** A1_3 - Open dialog G */
-		public openGDialog() {
-			let self = this;
-			block.grayout();
-			let dataShare = {
-				employeeIDs: _.map(self.lstEmpId, (x: IEmpidName) => { return x.empId }),
-				startDate: self.targetDate(),
-				endDate: self.targetDate(),
-				employeeInfo: self.dataFromA().listEmp
-			};
-			setShared('dataShareDialogG', dataShare);
-			nts.uk.ui.windows.sub.modal('/view/ksu/001/g/index.xhtml').onClosed(() => {
-				block.clear();
-			});
-		}
-
-		public openKdl003Dialog(workTypeCode: string, workTimeCode: string, empId: string) {
-			let self = this;
-			block.grayout();
-			let dataShare = {
-				workTypeCode: workTypeCode,
-				workTimeCode: workTimeCode
-			};
-			setShared('parentCodes', dataShare, true);
-			nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(() => {
-				let dataShareKdl003 = getShared('childData');
-
-				if (!_.isNil(dataShareKdl003)) {
-					let param = [{
-						workType: dataShareKdl003.selectedWorkTypeCode,
-						workTime: dataShareKdl003.selectedWorkTimeCode
-					}]
-					// 社員勤務予定と勤務固定情報を取得する
-					service.getEmpWorkFixedWorkInfo(param).done((data: model.DataFrom045) => {
-						let lineNo = _.findIndex(self.dataScreen003A().employeeInfo, (x) => { return x.empId === empId; });
-						self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto = data.fixedWorkInforDto;
-						self.dataScreen003A().employeeInfo[lineNo].workScheduleDto = data.workScheduleDto;
-
-						let totalTime = self.calcTotalTime(self.dataScreen045A().workScheduleDto), totalTimebr = 0;
-
-						data.workScheduleDto.listBreakTimeZoneDto.forEach((x: any) => {
-							totalTimebr += x.endTime - x.startTime;
-						})
-
-						let totalBrkTime = totalTimebr != null ? formatById("Clock_Short_HM", totalTimebr) : "";
-
-						self.setDataToMidExtable(empId, data.workScheduleDto, data.fixedWorkInforDto, totalTime, totalBrkTime);
-						self.convertDataIntoExtable(lineNo);
-
-						let datafilter: Array<ITimeGantChart> = _.filter(self.dataOfGantChart, (x: any) => { return x.empId === empId });
-						if (datafilter.length > 0) {
-							//self.updateGantChart(datafilter, lineNo, fixedGc, lstBreak, indexS, indexF);
-							self.addAllChart(datafilter, lineNo, [], self.midDataGC, "KDL003");
-							ruler.replaceAt(lineNo, [
-								...self.allGcShow
-							]);
-						}
-
-					}).fail(function(error) {
-						errorDialog({ messageId: error.messageId });
-					}).always(function() {
-					});
-				}
-				block.clear();
-			});
-		}
-
-		/** A1_4 - Close modal */
-		public closeDialog(): void {
-			nts.uk.ui.windows.close();
 		}
 
 		// Khởi tạo EXTABLE-GANTCHART
 		initExtableChart(timeGantChart: Array<ITimeGantChart>, leftDs: any, midData: any, disableDs: any): void {
-
+			block.grayout();
 			let self = this;
-			let displayRange = self.dataInitStartKsu003Dto().byDateDto.dispRange == 0 ? 24 : 48, totalBreakTime = "0:00";
+			let displayRange = self.timeRange, totalBreakTime = "0:00";
 
 			let middleContentDeco: any = [], leftContentDeco: any = [], detailContentDeco: any = [];
 
 			// phần leftMost
 			let leftmostColumns = [],
 				leftmostHeader = {},
-				leftmostContent = {}, disableDSFilter = [];
+				leftmostContent = {}, disableDSFilter: any = [];
 
 			leftmostColumns = [{
 				key: "empName",
@@ -1257,32 +1144,216 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				disableDSFilter = _.filter(disableDs, (x: any) => { return x.empId === self.lstEmpId[i].empId }); // list không dùng schedule
 
 				leftmostDs.push({ empId: self.lstEmpId[i].empId, empName: eName, cert: getText('KSU003_22') });
+				if (!_.isEmpty(leftDSFilter)) {
+					leftContentDeco.push(new CellColor("empName", leftDSFilter[0].empId, leftDSFilter[0].color)); // set màu cho emp name
+					leftContentDeco.push(new CellColor("cert", leftDSFilter[0].empId, leftDSFilter[0].color));
+				}
 
-				leftContentDeco.push(new CellColor("empName", leftDSFilter[0].empId, leftDSFilter[0].color)); // set màu cho emp name
-				leftContentDeco.push(new CellColor("cert", leftDSFilter[0].empId, leftDSFilter[0].color));
+				let checkColor = ({
+					worktypeCode: 1,
+					worktypeName: 1,
+					worktimeCode: 1,
+					worktimeName: 1,
+					startTime1: 1,
+					endTime1: 1,
+					startTime2: 1,
+					endTime2: 1,
+					totalTime: 1,
+					breaktime: 1
+				})
+				
+				// SET COLOR A6
+				if (dataMid.color != "" && dataMid.color !== null && self.dataScreen003A().employeeInfo[i].workInfoDto.isNeedWorkSchedule == 1 && self.checkDisByDate != false) {
+					if (checkColor.worktypeCode != 0)
+						middleContentDeco.push(new CellColor("worktypeCode", self.lstEmpId[i].empId,
+							dataMid.color.workingInfoColor === "#eccefb" ? "#eccefb" : dataMid.color.workTypeColor));
+
+					if (checkColor.worktypeName != 0)
+						middleContentDeco.push(new CellColor("worktypeName", self.lstEmpId[i].empId,
+							dataMid.color.workingInfoColor === "#eccefb" ? "#eccefb" : dataMid.color.workTypeColor));
+
+					if (checkColor.worktimeCode != 0)
+						middleContentDeco.push(new CellColor("worktimeCode", self.lstEmpId[i].empId,
+							dataMid.color.workingInfoColor === "#eccefb" ? "#eccefb" : dataMid.color.workTimeColor));
+
+					if (checkColor.worktimeName != 0)
+						middleContentDeco.push(new CellColor("worktimeName", self.lstEmpId[i].empId,
+							dataMid.color.workingInfoColor === "#eccefb" ? "#eccefb" : dataMid.color.workTimeColor));
+
+					if (checkColor.startTime1 != 0)
+						middleContentDeco.push(new CellColor("startTime1", self.lstEmpId[i].empId,
+							dataMid.color.workingInfoColor === "#eccefb" ? "#eccefb" : dataMid.color.startTime1Color));
+
+					if (checkColor.endTime1 != 0)
+						middleContentDeco.push(new CellColor("endTime1", self.lstEmpId[i].empId,
+							dataMid.color.workingInfoColor === "#eccefb" ? "#eccefb" : dataMid.color.endTime1Color));
+
+					if (checkColor.startTime2 != 0)
+						middleContentDeco.push(new CellColor("startTime2", self.lstEmpId[i].empId,
+							dataMid.color.workingInfoColor === "#eccefb" ? "#eccefb" : dataMid.color.startTime2Color));
+
+					if (checkColor.endTime2 != 0)
+						middleContentDeco.push(new CellColor("endTime2", self.lstEmpId[i].empId,
+							dataMid.color.workingInfoColor === "#eccefb" ? "#eccefb" : dataMid.color.endTime2Color));
+
+					if (checkColor.breaktime != 0)
+						middleContentDeco.push(new CellColor("breaktime", self.lstEmpId[i].empId,
+							dataMid.color.workingInfoColor === "#eccefb" ? "#eccefb" : dataMid.color.breakTimeColor));
+
+					if (checkColor.totalTime != 0)
+						middleContentDeco.push(new CellColor("totalTime", self.lstEmpId[i].empId,
+							dataMid.color.workingInfoColor === "#eccefb" ? "#eccefb" : dataMid.color.totalTimeColor));
+				}
+
 				if (disableDSFilter.length > 0) {
 					leftContentDeco.push(new CellColor("empName", disableDSFilter[0].empId, "xseal", leftDSFilter[0].color)); // set màu cho emp name khi bị dis
 					leftContentDeco.push(new CellColor("cert", disableDSFilter[0].empId, "xseal", leftDSFilter[0].color));
-
-					middleContentDeco.push(new CellColor("worktypeCode", disableDSFilter[0].empId, "xseal", disableDSFilter[0].color));
-					middleContentDeco.push(new CellColor("worktypeName", disableDSFilter[0].empId, "xseal", disableDSFilter[0].color));
-					middleContentDeco.push(new CellColor("worktimeCode", disableDSFilter[0].empId, "xseal", disableDSFilter[0].color));
-					middleContentDeco.push(new CellColor("worktimeName", disableDSFilter[0].empId, "xseal", disableDSFilter[0].color));
-					middleContentDeco.push(new CellColor("startTime1", disableDSFilter[0].empId, "xseal", disableDSFilter[0].color));
-					middleContentDeco.push(new CellColor("endTime1", disableDSFilter[0].empId, "xseal", disableDSFilter[0].color));
-					middleContentDeco.push(new CellColor("startTime2", disableDSFilter[0].empId, "xseal", disableDSFilter[0].color));
-					middleContentDeco.push(new CellColor("endTime2", disableDSFilter[0].empId, "xseal", disableDSFilter[0].color));
-					middleContentDeco.push(new CellColor("totalTime", disableDSFilter[0].empId, "xseal", disableDSFilter[0].color));
-					middleContentDeco.push(new CellColor("breaktime", disableDSFilter[0].empId, "xseal", disableDSFilter[0].color));
-					for (let z = 0; z <= displayRange; z++) {
+					middleContentDeco.push(new CellColor("worktypeCode", disableDSFilter[0].empId, "xseal"));
+					middleContentDeco.push(new CellColor("worktypeName", disableDSFilter[0].empId, "xseal"));
+					middleContentDeco.push(new CellColor("worktimeCode", disableDSFilter[0].empId, "xseal"));
+					middleContentDeco.push(new CellColor("worktimeName", disableDSFilter[0].empId, "xseal"));
+					middleContentDeco.push(new CellColor("startTime1", disableDSFilter[0].empId, "xseal"));
+					middleContentDeco.push(new CellColor("endTime1", disableDSFilter[0].empId, "xseal"));
+					middleContentDeco.push(new CellColor("startTime2", disableDSFilter[0].empId, "xseal"));
+					middleContentDeco.push(new CellColor("endTime2", disableDSFilter[0].empId, "xseal"));
+					middleContentDeco.push(new CellColor("totalTime", disableDSFilter[0].empId, "xseal"));
+					middleContentDeco.push(new CellColor("breaktime", disableDSFilter[0].empId, "xseal"));
+					$("#extable-ksu003").exTable("cellValue", "middle", disableDSFilter[0].empId, "worktimeName", getText('KSU003_55'));
+					// set dis for detail DS
+					/*for (let z = self.dataInitStartKsu003Dto().byDateDto.dispStart; z <= (displayRange + self.dataInitStartKsu003Dto().byDateDto.dispStart); z++) {
 						detailContentDeco.push(new CellColor(z.toString(), disableDSFilter[0].empId, disableDSFilter[0].color));
+					}*/
+				} else {
+					let isNeedWorkSchedule = self.dataScreen003A().employeeInfo[i].workInfoDto.isNeedWorkSchedule,
+						canModified = self.dataScreen003A().canModified, // 修正可能
+						isConfirmed = self.dataScreen003A().employeeInfo[i].workInfoDto.isConfirmed; // 確定済みか
+					// set ẩn hiện A6, A7, A8
+
+					if (self.dataScreen003A().employeeInfo[i].fixedWorkInforDto == null || (self.dataScreen003A().employeeInfo[i].fixedWorkInforDto != null &&
+						self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.workType == null)) {
+						middleContentDeco.push(new CellColor("startTime2", self.lstEmpId[i].empId, "xseal", 0));
+						middleContentDeco.push(new CellColor("endTime2", self.lstEmpId[i].empId, "xseal", 0));
+						checkColor.startTime2 = 0;
+						checkColor.endTime2 = 0;
+
+						middleContentDeco.push(new CellColor("startTime1", self.lstEmpId[i].empId, "xseal", 0));
+						middleContentDeco.push(new CellColor("endTime1", self.lstEmpId[i].empId, "xseal", 0));
+						checkColor.startTime1 = 0;
+						checkColor.endTime1 = 0;
 					}
 
+
+					if (isNeedWorkSchedule != 1) { // ※2 & ※3
+						middleContentDeco.push(new CellColor("worktypeCode", self.lstEmpId[i].empId, "xseal", 0)); // 4 
+						middleContentDeco.push(new CellColor("worktypeName", self.lstEmpId[i].empId, "xseal", 0)); // 4
+						middleContentDeco.push(new CellColor("worktimeName", self.lstEmpId[i].empId, "xseal", 0)); // 4
+						checkColor.worktypeCode = 0;
+						checkColor.worktypeName = 0;
+						checkColor.worktimeName = 0;
+						self.lstDis.push({
+							empId: self.lstEmpId[i].empId
+						})
+
+					} else {// [※2]=〇
+						if (self.dataScreen003A().employeeInfo[i].fixedWorkInforDto != null &&
+							self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.workType != null &&
+							self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.workType === WorkTimeForm.FIXED) { // 10
+
+						}
+						if (canModified == 0 || isConfirmed == 1) { // [※3]=〇 ※4 x x 確定済みか
+							middleContentDeco.push(new CellColor("worktypeCode", self.lstEmpId[i].empId, "xseal", 0));
+							middleContentDeco.push(new CellColor("worktypeName", self.lstEmpId[i].empId, "xseal", 0));
+							middleContentDeco.push(new CellColor("worktimeName", self.lstEmpId[i].empId, "xseal", 0));
+							middleContentDeco.push(new CellColor("worktimeCode", self.lstEmpId[i].empId, "xseal", 0));
+							checkColor.worktypeCode = 0;
+							checkColor.worktypeName = 0;
+							checkColor.worktimeName = 0;
+							checkColor.worktimeCode = 0;
+							self.lstDis.push({
+								empId: self.lstEmpId[i].empId
+							})
+
+							//self.checkDisByDate = false;
+						}
+
+						if (canModified == 1) { // [※4]=〇 // 修正可能
+							if (_.isNil(dataMid.worktimeCode) || dataMid.worktimeCode == "") {
+								middleContentDeco.push(new CellColor("worktimeCode", self.lstEmpId[i].empId, "xseal", 0)); // ※9 x
+								checkColor.worktimeCode = 0;
+								self.lstDis.push({
+									empId: self.lstEmpId[i].empId
+								})
+							}
+							if (self.dataScreen003A().employeeInfo[i].fixedWorkInforDto != null && self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.workType != null) {
+								if (self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.workType == 0 || // [※5]=〇
+									self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.workType == 1 ||
+									self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.workType == 2) {
+									if (self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.workType != null &&
+										self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.workType === WorkTimeForm.FLEX) { // ※7 x
+										middleContentDeco.push(new CellColor("startTime2", self.lstEmpId[i].empId, "xseal", 0));
+										middleContentDeco.push(new CellColor("endTime2", self.lstEmpId[i].empId, "xseal", 0));
+										checkColor.startTime2 = 0;
+										checkColor.endTime2 = 0;
+									}
+								} else {
+									middleContentDeco.push(new CellColor("startTime2", self.lstEmpId[i].empId, "xseal", 0));
+									middleContentDeco.push(new CellColor("endTime2", self.lstEmpId[i].empId, "xseal", 0));
+									checkColor.startTime2 = 0;
+									checkColor.endTime2 = 0;
+								}
+							}
+						} else {
+
+							middleContentDeco.push(new CellColor("startTime2", self.lstEmpId[i].empId, "xseal", 0));
+							middleContentDeco.push(new CellColor("endTime2", self.lstEmpId[i].empId, "xseal", 0));
+							checkColor.startTime2 = 0;
+							checkColor.endTime2 = 0;
+
+							middleContentDeco.push(new CellColor("startTime1", self.lstEmpId[i].empId, "xseal", 0));
+							middleContentDeco.push(new CellColor("endTime1", self.lstEmpId[i].empId, "xseal", 0));
+							checkColor.startTime1 = 0;
+							checkColor.endTime1 = 0;
+
+							middleContentDeco.push(new CellColor("worktimeCode", self.lstEmpId[i].empId, "xseal", 0)); // ※9 x
+							checkColor.worktimeCode = 0;
+							self.lstDis.push({
+								empId: self.lstEmpId[i].empId
+							});
+						}
+						if (self.dataScreen003A().employeeInfo[i].fixedWorkInforDto != null &&
+							self.dataScreen003A().employeeInfo[i].fixedWorkInforDto.fixBreakTime === 0) { // ※8
+							middleContentDeco.push(new CellColor("breaktime", self.lstEmpId[i].empId, "xseal", 0));
+							$("#extable-ksu003").exTable("cellValue", "middle", self.lstEmpId[i].empId, "breakTime", " ");
+							checkColor.breaktime = 0;
+
+						}
+					}
+
+					if (self.checkDisByDate == false) {
+						middleContentDeco.push(new CellColor("worktypeCode", self.lstEmpId[i].empId, "xseal"));
+						middleContentDeco.push(new CellColor("worktypeName", self.lstEmpId[i].empId, "xseal"));
+						middleContentDeco.push(new CellColor("worktimeCode", self.lstEmpId[i].empId, "xseal"));
+						middleContentDeco.push(new CellColor("worktimeName", self.lstEmpId[i].empId, "xseal"));
+						middleContentDeco.push(new CellColor("startTime1", self.lstEmpId[i].empId, "xseal"));
+						middleContentDeco.push(new CellColor("endTime1", self.lstEmpId[i].empId, "xseal"));
+						middleContentDeco.push(new CellColor("startTime2", self.lstEmpId[i].empId, "xseal"));
+						middleContentDeco.push(new CellColor("endTime2", self.lstEmpId[i].empId, "xseal"));
+						middleContentDeco.push(new CellColor("totalTime", self.lstEmpId[i].empId, "xseal"));
+						middleContentDeco.push(new CellColor("breaktime", self.lstEmpId[i].empId, "xseal"));
+					}
+					
+					//self.checkDisByDate = true;
 				}
 
+				/*if(self.checkDisByDate == false) {
+						for (let z = self.dataInitStartKsu003Dto().byDateDto.dispStart; z <= (displayRange + self.dataInitStartKsu003Dto().byDateDto.dispStart); z++) {
+						detailContentDeco.push(new CellColor(z.toString(), self.lstEmpId[i].empId, "#ddddd2"));
+						}
+				}*/
+
 				middleDs.push({
-					empId: dataMid.empId, worktypeCode: dataMid.worktypeCode + " ",
-					worktypeName: dataMid.worktype, worktimeCode: dataMid.worktimeCode + " ", worktimeName: dataMid.worktime,
+					empId: dataMid.empId, worktypeCode: dataMid.worktypeCode,
+					worktypeName: dataMid.worktype, worktimeCode: dataMid.worktimeCode, worktimeName: disableDSFilter.length > 0 ? "" : dataMid.worktime,
 					startTime1: dataMid.startTime1, endTime1: dataMid.endTime1,
 					startTime2: dataMid.startTime2, endTime2: dataMid.endTime2,
 					totalTime: dataMid.totalTime, breaktime: totalBreakTime === "" ? "0:00" : totalBreakTime
@@ -1300,53 +1371,94 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			};
 			// Phần middle
 			let middleColumns = [], middleHeader = {}, middleContent = {};
-			middleColumns = [
-				{
-					headerText: getText('KSU003_23'), group: [
-						{ headerText: "", key: "worktypeCode", width: "40px", handlerType: "input", dataType: "text" },
-						{
-							headerText: "", key: "worktypeName", width: "38px", control: "link", css: { whiteSpace: "pre" }, handler: function(e: any) {
-								self.openKdl003Dialog(e.worktypeCode, e.worktimeCode, e.empId);
-							}
-						}]
-				},
-				{
-					headerText: getText('KSU003_25'), group: [
-						{ headerText: "", key: "worktimeCode", width: "40px", handlerType: "input", dataType: "text" },
-						{
-							headerText: "", key: "worktimeName", width: "38px", control: "link", css: { whiteSpace: "pre" }, handler: function(e: any) {
-								self.openKdl003Dialog(e.worktypeCode, e.worktimeCode, e.empId);
-							}
-						}]
-				},
-				{
-					headerText: getText('KSU003_27'), group: [
-						{ headerText: "", key: "startTime1", width: "40px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr" }]
-				},
-				{
-					headerText: getText('KSU003_28'), group: [
-						{ headerText: "", key: "endTime1", width: "40px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr" }]
-				},
-				{
-					headerText: getText('KSU003_29'), group: [
-						{ headerText: "", key: "startTime2", width: "40px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr" }]
-				},
-				{
-					headerText: getText('KSU003_30'), group: [
-						{ headerText: "", key: "endTime2", width: "40px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr" }]
-				},
-				{
-					headerText: getText('KSU003_31'), group: [
-						{ headerText: "", key: "totalTime", width: "40px", dataType: "duration", primitiveValue: "TimeWithDayAttr" }]
-				},
-				{
-					headerText: getText('KSU003_32'), group: [
-						{ headerText: "", key: "breaktime", width: "35px", dataType: "duration", primitiveValue: "TimeWithDayAttr" }]
-				}
-			];
+			if (self.dataScreen003A().targetInfor == 1) {
+				middleColumns = [
+					{
+						headerText: getText('KSU003_23'), group: [
+							{ headerText: "", key: "worktypeCode", width: "40px", handlerType: "input", dataType: "text", primitiveValue: "WorkTypeCode", required: true },
+							{
+								headerText: "", key: "worktypeName", width: "38px", control: "link", primitiveValue: "WorkTypeName", css: { whiteSpace: "pre" }, handler: function(e: any) {
+									self.openKdl003Dialog(e.worktypeCode, e.worktimeCode, e.empId);
+								}
+							}]
+					},
+					{
+						headerText: getText('KSU003_25'), group: [
+							{ headerText: "", key: "worktimeCode", width: "40px", handlerType: "input", dataType: "text", primitiveValue: "WorkTimeCode", required: true },
+							{
+								headerText: "", key: "worktimeName", width: "38px", control: "link", primitiveValue: "WorkTimeName", css: { whiteSpace: "pre" }, handler: function(e: any) {
+									self.openKdl003Dialog(e.worktypeCode, e.worktimeCode, e.empId);
+								}
+							}]
+					},
+					{
+						headerText: getText('KSU003_27'), group: [
+							{ headerText: "", key: "startTime1", width: "40px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
+					},
+					{
+						headerText: getText('KSU003_28'), group: [
+							{ headerText: "", key: "endTime1", width: "40px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
+					},
+					{
+						headerText: getText('KSU003_29'), group: [
+							{ headerText: "", key: "startTime2", width: "40px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
+					},
+					{
+						headerText: getText('KSU003_30'), group: [
+							{ headerText: "", key: "endTime2", width: "40px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
+					},
+					{
+						headerText: getText('KSU003_31'), group: [
+							{ headerText: "", key: "totalTime", width: "40px", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
+					},
+					{
+						headerText: getText('KSU003_32'), group: [
+							{ headerText: "", key: "breaktime", width: "35px", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
+					}
+				];
+			} else {
+				middleColumns = [
+					{
+						headerText: getText('KSU003_23'), group: [
+							{ headerText: "", key: "worktypeCode", width: "40px", handlerType: "input", dataType: "text", primitiveValue: "WorkTypeCode", required: true },
+							{
+								headerText: "", key: "worktypeName", width: "38px", control: "link", primitiveValue: "WorkTypeName", css: { whiteSpace: "pre" }, handler: function(e: any) {
+									self.openKdl003Dialog(e.worktypeCode, e.worktimeCode, e.empId);
+								}
+							}]
+					},
+					{
+						headerText: getText('KSU003_25'), group: [
+							{ headerText: "", key: "worktimeCode", width: "40px", handlerType: "input", dataType: "text", primitiveValue: "WorkTimeCode", required: true },
+							{
+								headerText: "", key: "worktimeName", width: "38px", control: "link", primitiveValue: "WorkTimeName", css: { whiteSpace: "pre" }, handler: function(e: any) {
+									self.openKdl003Dialog(e.worktypeCode, e.worktimeCode, e.empId);
+								}
+							}]
+					},
+					{
+						headerText: getText('KSU003_27'), group: [
+							{ headerText: "", key: "startTime1", width: "40px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
+					},
+					{
+						headerText: getText('KSU003_28'), group: [
+							{ headerText: "", key: "endTime1", width: "40px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
+					},
+
+					{
+						headerText: getText('KSU003_31'), group: [
+							{ headerText: "", key: "totalTime", width: "40px", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
+					},
+					{
+						headerText: getText('KSU003_32'), group: [
+							{ headerText: "", key: "breaktime", width: "35px", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
+					}
+				];
+			}
+
 			middleHeader = {
 				columns: middleColumns,
-				width: "391px",
+				width: self.dataScreen003A().targetInfor == 1 ? "391px" : "311px",
 				rowHeight: "33px"
 			};
 			middleContent = {
@@ -1363,8 +1475,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 			// A8_2 TQP
 			// let timesOfHeader : model.DisplaySettingByDateDto  = self.dataInitStartKsu003Dto().byDateDto();
-			for (let y = 0; y <= displayRange; y++) {
-				if (y == 0) {
+			for (let y = self.dataInitStartKsu003Dto().byDateDto.dispStart; y <= (displayRange + self.dataInitStartKsu003Dto().byDateDto.dispStart); y++) {
+				if (y == self.dataInitStartKsu003Dto().byDateDto.dispStart) {
 					detailColumns.push({ key: "empId", width: "0px", headerText: "ABC", visible: false });
 				} else {
 					detailColumns.push({ key: (y - 1).toString(), width: width });
@@ -1373,7 +1485,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			// Phần detail
 			detailHeaderDs = [{ empId: "" }];
 			let detailHeaders = {};
-			for (let y = 0; y <= displayRange; y++) {
+			for (let y = self.dataInitStartKsu003Dto().byDateDto.dispStart; y <= (displayRange + self.dataInitStartKsu003Dto().byDateDto.dispStart); y++) {
 				detailHeaderDs[0][y] = y.toString();
 				detailHeaders[y] = "";
 			}
@@ -1382,7 +1494,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				columns: detailColumns,
 				dataSource: detailHeaderDs,
 				rowHeight: "33px",
-				width: "1008px"
+				width: "966px"
 			};
 
 			let detailContentDs = [];
@@ -1433,87 +1545,29 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				let datafilter: Array<ITimeGantChart> = _.filter(timeGantChart, (x: any) => { return x.empId === self.lstEmpId[i].empId });
 				self.addAllChart(datafilter, i, lstBreakTime, midData, "");
 			}
-
 			// Thay đổi gant chart khi thay đổi giờ
 			let recharge = function(detail: any) {
 				let index = detail.rowIndex, dataMid = $("#extable-ksu003").exTable('dataSource', 'middle').body[index];
-				if (!self.checkClearTime == false) {
-					// check thời gian Tú chưa làm - TQP 時刻が不正かチェックする - đang lỗi đợi Tú QA
-					if ((detail.columnKey === "startTime1" && (dataMid.startTime1 != null && dataMid.startTime1 != "")) ||
-						(detail.columnKey === "endTime1" && (dataMid.endTime1 != null && dataMid.endTime1 != "")) ||
-						(detail.columnKey === "startTime2" && (dataMid.startTime2 != null && dataMid.startTime2 != "")) ||
-						(detail.columnKey === "endTime2" && (dataMid.endTime2 != null && dataMid.endTime2 != "")) &&
-						(dataMid.worktypeCode != null && (dataMid.worktimeCode != null && dataMid.worktimeCode != ""))) {
-						let command: any = {
-							workType: dataMid.worktypeCode,
-							workTime: dataMid.worktimeCode,
-							workTime1: dataMid.startTime1 != "" ? new TimeZoneDto(new TimeOfDayDto(0, Math.round(duration.parseString(dataMid.startTime1).toValue())),
-								new TimeOfDayDto(0, Math.round(duration.parseString(dataMid.endTime1).toValue()))) : null,
-							workTime2: dataMid.startTime2 != "" ? new TimeZoneDto(new TimeOfDayDto(0, Math.round(duration.parseString(dataMid.startTime2).toValue())),
-								new TimeOfDayDto(0, Math.round(duration.parseString(dataMid.endTime2).toValue()))) : null
-						}
-						service.checkTimeIsIncorrect(command).done(function(result) {
-							dfd.resolve();
-						}).fail(function(res: any) {
-							errorDialog({ messageId: res.messageId, messageParams: res.parameterIds });
-							return;
-						}).always(function() {
-							block.clear();
-							dfd.resolve();
-						});
-					}
+				let empId = self.lstEmpId[detail.rowIndex].empId, time = null, timeChart: any = null, timeChart2: any = null;
+				lstTimeChart = _.filter(self.allTimeChart, (x: any) => { return x.empId === empId })
 
-					let empId = self.lstEmpId[detail.rowIndex].empId;
-					lstTimeChart = _.filter(self.allTimeChart, (x: any) => { return x.empId === empId })
-					let time = duration.parseString(detail.value).toValue(), timeChart = lstTimeChart[0].timeChart, timeChart2 = lstTimeChart[0].timeChart2;
-					let startMinutes: any = null, endMinutes: any = null, startMinutes2: any = null, endMinutes2: any = null;
+				if (lstTimeChart.length > 0) {
+					if (detail.columnKey === "startTime1" || detail.columnKey === "endTime1" || detail.columnKey === "startTime2" || detail.columnKey === "endTime2")
+						time = duration.parseString(detail.value).toValue();
+					timeChart = lstTimeChart[0].timeChart;
+					timeChart2 = lstTimeChart[0].timeChart2;
 					if (detail.columnKey === "startTime1") {
-						ruler.extend(detail.rowIndex, `lgc${detail.rowIndex}`, Math.round(time / 5));
-						startMinutes = Math.round(time / 5);
-						endMinutes = timeChart.endTime;
+						ruler.extend(detail.rowIndex, `lgc${detail.rowIndex}`, Math.floor(time / 5 - self.dispStart));
+						if (time == "") return;
 					} else if (detail.columnKey === "endTime1") {
-						ruler.extend(detail.rowIndex, `lgc${detail.rowIndex}`, null, Math.round(time / 5));
-						startMinutes = timeChart.startTime;
-						endMinutes = Math.round(time / 5);
+						ruler.extend(detail.rowIndex, `lgc${detail.rowIndex}`, null, Math.floor(time / 5 - self.dispStart));
+						if (time == "") return;
 					} else if (detail.columnKey === "startTime2" && timeChart2 != null) {
-						ruler.extend(detail.rowIndex, `rgc${detail.rowIndex}`, Math.round(time / 5));
-						startMinutes2 = Math.round(time / 5);
-						endMinutes2 = timeChart2.endTime;
+						ruler.extend(detail.rowIndex, `rgc${detail.rowIndex}`, Math.floor(time / 5 - self.dispStart));
+						if (time == "") return;
 					} else if (detail.columnKey === "endTime2" && timeChart2 != null) {
-						ruler.extend(detail.rowIndex, `rgc${detail.rowIndex}`, null, Math.round(time / 5));
-						startMinutes2 = timeChart2.startTime;
-						endMinutes2 = Math.round(time / 5);
-					}
-
-					// Tính lại tổng BREAK-TIME
-					let totalTimeNews = 0, totalTimeNews1 = 0;
-					if (detail.columnKey === "startTime1" || detail.columnKey === "endTime1" || detail.columnKey === "startTime2" ||
-						detail.columnKey === "endTime2") {
-						let lstBreakByEmpid = _.filter(lstBreakTime, (x: any) => { return x.empId === empId })
-						lstBreakByEmpid.forEach((brk: any) => {
-							let brkChart = {
-								startTime: brk.startTime,
-								endTime: brk.endTime
-							}, timeCharts = {
-								startTime: startMinutes == null ? timeChart.startTime : startMinutes,
-								endTime: endMinutes == null ? timeChart.endTime : endMinutes
-							}
-							if (_.inRange(brk.startTime, startMinutes, endMinutes) || _.inRange(brk.endTime, startMinutes, endMinutes)) {
-								totalTimeNews += self.calcBreakTime(brkChart, timeCharts);
-							}
-
-							if (timeChart2 != null) {
-								if (_.inRange(brk.startTime, startMinutes2, endMinutes2) || _.inRange(brk.endTime, startMinutes2, endMinutes2)) {
-									timeCharts = {
-										startTime: startMinutes2 == null ? timeChart2.startTime : startMinutes2,
-										endTime: endMinutes2 == null ? timeChart2.endTime : endMinutes2
-									}
-									totalTimeNews1 += self.calcBreakTime(brkChart, timeCharts);
-								}
-							}
-						})
-						totalTimeBrk = formatById("Clock_Short_HM", ((totalTimeNews + totalTimeNews1) * 5));
-						$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", totalTimeBrk === 0 ? "0:00" : totalTimeBrk);
+						ruler.extend(detail.rowIndex, `rgc${detail.rowIndex}`, null, Math.floor(time / 5 - self.dispStart));
+						if (time == "") return;
 					}
 				}
 			};
@@ -1524,36 +1578,129 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 			$("#extable-ksu003").on("extablecellretained", (e: any) => {
 				recharge(e.detail);
+				let index: number = e.detail.rowIndex;
+				let dataMid = $("#extable-ksu003").exTable('dataSource', 'middle').body[index];
+				let empId = self.lstEmpId[index].empId;
+				let dataFixed = _.filter(self.dataScreen003A().employeeInfo, x => { return x.empId === empId }),
+					dataFixInfo = _.filter(self.fixedWorkInformationDto, x => { return x.empId === empId });
+					
+					let columnKey = e.detail.columnKey;
+					if ((columnKey === "startTime1" || columnKey === "startTime2" ||
+						columnKey === "endTime1" || columnKey === "endTime2") && self.checkUpdateTime.id == 0) {
+						self.checkTimeInfo(dataMid.worktypeCode, dataMid.worktimeCode, dataMid.startTime1.trim(), dataMid.startTime2.trim(), dataMid.endTime1.trim(), dataMid.endTime2.trim());
+						let timeConvert = self.convertTime(dataMid.startTime1.trim(), dataMid.endTime1.trim(), dataMid.startTime2.trim(), dataMid.endTime2.trim());
+						self.employeeScheduleInfo.forEach((x, i) => {
+							if (i === index) {
+								if (columnKey === "startTime1") {
+									x.startTime1 = timeConvert.start;
+									dataFixed[0].workScheduleDto.startTime1 = x.startTime1;
+									if (x.startTime1 == "") {
+										return;
+									}
+								}
+								if (columnKey === "startTime2") {
+									x.startTime2 = timeConvert.start2;
+									dataFixed[0].workScheduleDto.startTime2 = x.startTime2;
+									if (x.startTime2 == "") {
+										return;
+									}
+								}
+								if (columnKey === "endTime1") {
+									x.endTime1 = timeConvert.end;
+									dataFixed[0].workScheduleDto.endTime1 = x.endTime1;
+									if (x.endTime1 == "") {
+										return;
+									}
+								}
+								if (columnKey === "endTime2") {
+									x.endTime2 = timeConvert.end2;
+									dataFixed[0].workScheduleDto.endTime2 = x.endTime2;
+									if (x.endTime2 == "") {
+										return;
+									}
+								}
+							}
+						})
+						if ((timeConvert.start == "" && timeConvert.end != "") || (timeConvert.start != "" && timeConvert.end == "")
+							|| (timeConvert.start2 == "" && timeConvert.end2 != "") || (timeConvert.start2 != "" && timeConvert.end2 == ""))
+							return;
+						// tính lại tổng time
+						let lstTime: any = [], timeRangeLimit = ((self.timeRange * 60) / 5), totalBrkTime: any = null;
+						self.lstBreakSum = [], self.lstBreakShow = [];
+						lstTime = self.calcChartTypeTime(dataFixed[0], dataFixed[0].workScheduleDto.listBreakTimeZoneDto,
+							timeRangeLimit, lstTime, 1,index);
+						for (let e = 0; e < dataFixed[0].workInfoDto.listTimeVacationAndType.length; e++) {
+							let y = dataFixed[0].workInfoDto.listTimeVacationAndType[e];
+							lstTime = self.calcChartTypeTime(dataFixed[0], y.timeVacation.timeZone, timeRangeLimit, lstTime, 4,index);
+						}
+						lstTime = self.calcChartTypeTime(dataFixed[0], dataFixed[0].workInfoDto.shortTime,
+							timeRangeLimit, lstTime, 2,index);
+
+						lstTime = self.calcChartTypeTime(dataFixed[0], dataFixInfo[0].fixedWorkInforDto.overtimeHours, timeRangeLimit, lstTime, 3,index);
+						let totalTime = self.calcAllTime(dataFixed[0], lstTime, timeRangeLimit);
+
+						totalBrkTime = self.calcAllBrk(lstTime);
+						totalBrkTime = totalBrkTime != null ? formatById("Clock_Short_HM", totalBrkTime * 5) : "";
+
+						self.totalTimeBreak = totalBrkTime;
+
+						if (totalBrkTime === (totalBrkTime + " "))
+							totalBrkTime = totalBrkTime.trim();
+						else
+							totalBrkTime = (totalBrkTime + " ");
+							
+						if (totalBrkTime === ("0:00"))
+							totalBrkTime = totalBrkTime;
+						else
+							totalBrkTime = totalBrkTime.trim();
+
+						$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", totalBrkTime);
+						if (!self.checkClearTime == false) {
+							let cssTotalTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(9)";
+							$(cssTotalTime).css("background-color", "#ffffff");
+							$("#extable-ksu003").exTable("cellValue", "middle", empId, "totalTime", totalTime != null ? totalTime : "");
+						}
+					}
 			});
 
-			storage.getItem(self.KEY).ifPresent((data: any) => {
-				let userInfor: ILocalStore = JSON.parse(data);
-				if (userInfor.operationUnit === "0") {
+			$("#hr-row2").css("width", window.innerWidth - 40 + 'px');
+			if (window.innerWidth == 1280) {
+				$("#note-sort").css("margin-left", "1171px");
+			}
+			if (window.innerWidth == 1320) {
+				$("#note-sort").css("margin-left", "1245px");
+				if (navigator.userAgent.indexOf("Chrome") == -1) {
+
+				}
+			}
+			if (!_.isNil(self.localStore)) {
+				if (self.localStore().operationUnit === "0") {
 					ruler.setSnatchInterval(1);
-				} else if (userInfor.operationUnit === "1") {
+				} else if (self.localStore().operationUnit === "1") {
 					ruler.setSnatchInterval(2);
-				} else if (userInfor.operationUnit === "2") {
+				} else if (self.localStore().operationUnit === "2") {
 					ruler.setSnatchInterval(3);
-				} else if (userInfor.operationUnit === "3") {
+				} else if (self.localStore().operationUnit === "3") {
 					ruler.setSnatchInterval(6);
-				} else if (userInfor.operationUnit === "4") {
+				} else if (self.localStore().operationUnit === "4") {
 					ruler.setSnatchInterval(12);
 				}
-			});
+			};
 
 			// set lock slide and resize chart
 			//ruler.setLock([0, 1, 3], true);
 
 			// set height grid theo localStorage đã lưu
 			self.setPositionButonDownAndHeightGrid();
+			block.clear();
 		}
 
 		/** ADD-CHART-ZONE */
 		addAllChart(datafilter: Array<ITimeGantChart>, i: number, lstBreakTime: any, midData: any, screen: string, lstBrkNew?: any) {
-			let self = this, fixedGc: any = [], totalBreakTimeNew: any = 0, timeRangeLimit = Math.round((self.timeRange * 60) / 5);
-			let timeChart: any = null, timeChart2: any = null, lgc = "", rgc = "", timeChartOver: any = null, timeChartCore: any = null,
+			let self = this, fixedGc: any = [], totalBreakTimeNew: any = 0, timeRangeLimit = Math.floor((self.timeRange * 60) / 5 + self.dispStart);
+			let timeChart: any = null, timeChart2: any = null, lgc = null, rgc = null, timeChartOver: any = null, timeChartCore: any = null,
 				timeChartBrk: any = null, timeChartHoliday: any = null, timeChartShort: any = null, indexLeft = 0, indexRight = 0;
-			let timeMinus: any = [], timeMinus2: any = [];
+			let timeMinus: any = [], timeMinus2: any = [], start1 = null, start2 = null, end1 = null, end2 = null,dispStart= (self.dataInitStartKsu003Dto().byDateDto.dispStart * 60) / 5;
 			if (datafilter != null) {
 				if (datafilter[0].typeOfTime != "" || datafilter[0].typeOfTime != null) {
 					// add chart for FIXED-TIME - thời gian cố định
@@ -1564,25 +1711,27 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							startTime: fixed[0].startTime,
 							endTime: fixed[0].endTime
 						})
+						let limitTime = self.checkLimitTime(fixed, timeRangeLimit, 0)
 
-						if ((self.timeRange === 24 && timeMinus[0].startTime < 1440 && timeMinus[0].startTime != null || self.timeRange === 48 && timeMinus[0].startTime < 2880 && timeMinus[0].startTime != null)) {
+						if (timeMinus[0].startTime < timeMinus[0].endTime && (self.timeRange === 24 && timeMinus[0].startTime < 1440 && timeMinus[0].startTime != null ||
+							self.timeRange === 48 && timeMinus[0].startTime < 2880 && timeMinus[0].startTime != null)) {
+							start1 = self.checkTimeOfChart(timeChart.startTime, timeRangeLimit);
+							end1 = self.checkTimeOfChart(timeChart.endTime, timeRangeLimit);
+						}
+
+						if (start1 != null) {
 							lgc = ruler.addChartWithType("Fixed", {
 								id: `lgc${i}`,
 								lineNo: i,
-								start: timeChart.startTime > timeRangeLimit ? timeRangeLimit : timeChart.startTime,
-								end: timeChart.endTime > timeRangeLimit ? timeRangeLimit : timeChart.endTime,
-								limitStartMin: self.checkRangeLimitTime(fixed, timeRangeLimit, 1, 0) ? Math.round(fixed[0].startTimeRange.startTime.time / 5) : 0,
-								limitStartMax: self.checkRangeLimitTime(fixed, timeRangeLimit, 2, 0) ? Math.round(fixed[0].startTimeRange.endTime.time / 5) : timeRangeLimit,
-								limitEndMin: self.checkRangeLimitTime(fixed, timeRangeLimit, 3, 0) ? Math.round(fixed[0].endTimeRange.startTime.time / 5) : timeRangeLimit,
-								limitEndMax: self.checkRangeLimitTime(fixed, timeRangeLimit, 4, 0) ? Math.round(fixed[0].endTimeRange.endTime.time / 5) : timeRangeLimit,
-								resizeFinished: (b: any, e: any, p: any) => {
-									console.log("test");
-								},
-								dropFinished: (b: any, e: any) => {
-									console.log("test");
-								}
+								start: start1 - dispStart,
+								end: end1 - dispStart,
+								limitStartMin: start1 - dispStart,
+								limitStartMax: limitTime.limitStartMax - dispStart,
+								limitEndMin: end1 - dispStart,
+								limitEndMax: limitTime.limitEndMax - dispStart
 							});
-							fixedGc.push(self.addChartWithType045(ruler, "Fixed", `lgc${i}`, timeChart, i, null, 0, 9999, 0, 9999));
+							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "Fixed", `lgc${i}`, {startTime : timeChart.startTime - dispStart, endTime : timeChart.endTime - dispStart}, i, null, 
+							limitTime.limitStartMin - dispStart, limitTime.limitStartMax - dispStart, limitTime.limitEndMin - dispStart, limitTime.limitEndMax - dispStart));
 							indexLeft = indexLeft++;
 						}
 
@@ -1592,27 +1741,29 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								startTime: fixed[1].startTime,
 								endTime: fixed[1].endTime
 							})
+
+							if (timeMinus[0].startTime < timeMinus[0].endTime && (self.timeRange === 24 && timeMinus2[0].startTime < 1440 && timeMinus2[0].startTime != null ||
+								self.timeRange === 48 && timeMinus2[0].startTime < 2880 && timeMinus2[0].startTime != null)) {
+								start2 = self.checkTimeOfChart(timeChart2.startTime, timeRangeLimit);
+								end2 = self.checkTimeOfChart(timeChart2.endTime, timeRangeLimit);
+							}
 							//lgc = self.addChartWithTypes(ruler, "Fixed", `lgc${i}`, timeChart, i);
-							if ((self.timeRange === 24 && timeMinus2[0].startTime < 1440 && timeMinus2[0].startTime != null || self.timeRange === 48 && timeMinus2[0].startTime < 2880 && timeMinus2[0].startTime != null)) {
+							let limitTime = self.checkLimitTime(fixed, timeRangeLimit, 1)
+							if (start2 != null) {
 								rgc = ruler.addChartWithType("Fixed", {
 									id: `rgc${i}`,
 									lineNo: i,
-									start: timeChart2.startTime > timeRangeLimit ? timeRangeLimit : timeChart2.startTime,
-									end: timeChart2.endTime > timeRangeLimit ? timeRangeLimit : timeChart2.endTime,
-									limitStartMin: self.checkRangeLimitTime(fixed, timeRangeLimit, 1, 1) ? Math.round(fixed[1].startTimeRange.startTime.time / 5) : 0,
-									limitStartMax: self.checkRangeLimitTime(fixed, timeRangeLimit, 2, 1) ? Math.round(fixed[1].startTimeRange.endTime.time / 5) : timeRangeLimit,
-									limitEndMin: self.checkRangeLimitTime(fixed, timeRangeLimit, 3, 1) ? Math.round(fixed[1].endTimeRange.startTime.time / 5) : timeRangeLimit,
-									limitEndMax: self.checkRangeLimitTime(fixed, timeRangeLimit, 4, 1) ? Math.round(fixed[1].endTimeRange.endTime.time / 5) : timeRangeLimit,
-									resizeFinished: (b: any, e: any, p: any) => {
-										console.log("test");
-									},
-									dropFinished: (b: any, e: any) => {
-										console.log("test");
-									}
+									start: start2 - dispStart,
+									end: end2 - dispStart,
+									limitStartMin: limitTime.limitStartMin - dispStart,
+									limitStartMax: limitTime.limitStartMax - dispStart,
+									limitEndMin: limitTime.limitEndMin - dispStart,
+									limitEndMax: limitTime.limitEndMax - dispStart
 								});
 							}
 
-							fixedGc.push(self.addChartWithType045(ruler, "Fixed", `rgc${i}`, timeChart2, i, null, 0, 9999, 0, 9999));
+							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "Fixed", `rgc${i}`, {startTime : timeChart2.startTime - dispStart, endTime : timeChart2.endTime - dispStart}, i, null, limitTime.limitStartMin - dispStart, 
+							limitTime.limitStartMax - dispStart, limitTime.limitEndMin - dispStart, limitTime.limitEndMax - dispStart));
 							indexRight = indexRight++;
 						}
 					}
@@ -1624,50 +1775,76 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							startTime: changeable[0].startTime,
 							endTime: changeable[0].endTime
 						})
+						let limitTime = self.checkLimitTime(changeable, timeRangeLimit, 0);
+						if (timeMinus[0].startTime < timeMinus[0].endTime && (self.timeRange === 24 && timeMinus[0].startTime < 1440 && timeMinus[0].startTime != null ||
+							self.timeRange === 48 && timeMinus[0].startTime < 2880 && timeMinus[0].startTime != null)) {
+							start1 = self.checkTimeOfChart(timeChart.startTime, timeRangeLimit);
+							end1 = self.checkTimeOfChart(timeChart.endTime, timeRangeLimit);
+						}
 
-						lgc = ruler.addChartWithType("Changeable", {
-							id: `lgc${i}`,
-							lineNo: i,
-							start: timeChart.startTime > timeRangeLimit ? timeRangeLimit : timeChart.startTime,
-							end: timeChart.endTime > timeRangeLimit ? timeRangeLimit : timeChart.endTime,
-							limitStartMin: self.checkRangeLimitTime(changeable, timeRangeLimit, 1, 0) ? Math.round(changeable[0].startTimeRange.startTime.time / 5) : 0,
-							limitStartMax: self.checkRangeLimitTime(changeable, timeRangeLimit, 2, 0) ? Math.round(changeable[0].startTimeRange.endTime.time / 5) : timeRangeLimit,
-							limitEndMin: self.checkRangeLimitTime(changeable, timeRangeLimit, 3, 0) ? Math.round(changeable[0].endTimeRange.startTime.time / 5) : timeRangeLimit,
-							limitEndMax: self.checkRangeLimitTime(changeable, timeRangeLimit, 4, 0) ? Math.round(changeable[0].endTimeRange.endTime.time / 5) : timeRangeLimit,
-							resizeFinished: (b: any, e: any, p: any) => {
-								console.log("test");
-							},
-							dropFinished: (b: any, e: any) => {
-								console.log("test");
-							}
-						});
+						if (timeMinus[0].startTime < timeMinus[0].endTime && (self.timeRange === 24 && timeMinus[0].startTime < 1440 && timeMinus[0].startTime != null ||
+							self.timeRange === 48 && timeMinus[0].startTime < 2880 && timeMinus[0].startTime != null)) {
+							lgc = ruler.addChartWithType("Changeable", {
+								id: `lgc${i}`,
+								lineNo: i,
+								start: start1 - dispStart,
+								end: end1 - dispStart,
+								limitStartMin: limitTime.limitStartMin - dispStart,
+								limitStartMax: limitTime.limitStartMax - dispStart,
+								limitEndMin: limitTime.limitEndMin - dispStart,
+								limitEndMax: limitTime.limitEndMax - dispStart,
+								resizeFinished: (b: any, e: any, p: any) => {
+									if (self.checkDisByDate == false)
+										return;
+								},
+								dropFinished: (b: any, e: any) => {
+									if (self.checkDisByDate == false)
+										return;
+								}
+							});
 
-						fixedGc.push(self.addChartWithType045(ruler, "Changeable", `lgc${i}`, timeChart, i, null, 0, 9999, 0, 9999));
-						indexLeft = indexLeft++;
+							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "Changeable", `lgc${i}`, {startTime : timeChart.startTime - dispStart, endTime : timeChart.endTime - dispStart}, i, null, limitTime.limitStartMin - dispStart, limitTime.limitStartMax - dispStart, 
+							limitTime.limitEndMin - dispStart, limitTime.limitEndMax - dispStart));
+							indexLeft = indexLeft++;
+						}
+
 						if (changeable.length > 1 && changeable[1].startTime != null && changeable[1].endTime != null) {
 							timeChart2 = self.convertTimeToChart(changeable[1].startTime, changeable[1].endTime);
 							timeMinus2.push({
 								startTime: changeable[1].startTime,
 								endTime: changeable[1].endTime
 							})
-							rgc = ruler.addChartWithType("Changeable", {
-								id: `rgc${i}`,
-								lineNo: i,
-								start: timeChart2.startTime > timeRangeLimit ? timeRangeLimit : timeChart2.startTime,
-								end: timeChart2.endTime > timeRangeLimit ? timeRangeLimit : timeChart2.endTime,
-								limitStartMin: self.checkRangeLimitTime(changeable, timeRangeLimit, 1, 1) ? Math.round(changeable[1].startTimeRange.startTime.time / 5) : 0,
-								limitStartMax: self.checkRangeLimitTime(changeable, timeRangeLimit, 2, 1) ? Math.round(changeable[1].startTimeRange.endTime.time / 5) : timeRangeLimit,
-								limitEndMin: self.checkRangeLimitTime(changeable, timeRangeLimit, 3, 1) ? Math.round(changeable[1].endTimeRange.startTime.time / 5) : timeRangeLimit,
-								limitEndMax: self.checkRangeLimitTime(changeable, timeRangeLimit, 4, 1) ? Math.round(changeable[1].endTimeRange.endTime.time / 5) : timeRangeLimit,
-								resizeFinished: (b: any, e: any, p: any) => {
-									console.log("test");
-								},
-								dropFinished: (b: any, e: any) => {
-									console.log("test");
-								}
-							});
-							fixedGc.push(self.addChartWithType045(ruler, "Changeable", `rgc${i}`, timeChart2, i, null, 0, 9999, 0, 9999));
-							indexRight = indexRight++;
+							let limitTime = self.checkLimitTime(changeable, timeRangeLimit, 1);
+
+							if (timeMinus[0].startTime < timeMinus[0].endTime && (self.timeRange === 24 && timeMinus2[0].startTime < 1440 && timeMinus2[0].startTime != null ||
+								self.timeRange === 48 && timeMinus2[0].startTime < 2880 && timeMinus2[0].startTime != null)) {
+								start2 = self.checkTimeOfChart(timeChart2.startTime, timeRangeLimit);
+								end2 = self.checkTimeOfChart(timeChart2.endTime, timeRangeLimit);
+							}
+
+							if (start2 != null) {
+								rgc = ruler.addChartWithType("Changeable", {
+									id: `rgc${i}`,
+									lineNo: i,
+									start: start2 - dispStart,
+									end: end2 - dispStart,
+									limitStartMin: limitTime.limitStartMin - dispStart,
+									limitStartMax: limitTime.limitStartMax - dispStart,
+									limitEndMin: limitTime.limitEndMin - dispStart,
+									limitEndMax: limitTime.limitEndMax - dispStart,
+									resizeFinished: (b: any, e: any, p: any) => {
+										if (self.checkDisByDate == false)
+											return;
+									},
+									dropFinished: (b: any, e: any) => {
+										if (self.checkDisByDate == false)
+											return;
+									}
+								});
+								fixedGc.push(self.addChartWithType045(datafilter[0].empId, "Changeable", `rgc${i}`, {startTime : timeChart2.startTime - dispStart, endTime : timeChart2.endTime - dispStart}, i, null, limitTime.limitStartMin - dispStart, limitTime.limitStartMax - dispStart, limitTime.limitEndMin - dispStart, limitTime.limitEndMax - dispStart));
+								indexRight = indexRight++;
+							}
+
 						}
 					}
 
@@ -1683,41 +1860,51 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						if (coreTime.length > 0) {
 							timeChartCore = self.convertTimeToChart(coreTime[0].coreStartTime, coreTime[0].coreEndTime);
 						}
-						if (timeChart.startTime < timeRangeLimit) {
+						let limitTime = self.checkLimitTime(flex, timeRangeLimit, 0);
+						if (timeMinus[0].startTime < timeMinus[0].endTime && timeChart.startTime < timeRangeLimit) {
 							lgc = ruler.addChartWithType("Flex", {
 								id: `lgc${i}`,
 								lineNo: i,
-								start: timeChart.startTime >= timeRangeLimit ? timeRangeLimit : timeChart.startTime,
-								end: timeChart.endTime >= timeRangeLimit ? timeRangeLimit : timeChart.endTime,
-								limitStartMin: self.checkRangeLimitTime(flex, timeRangeLimit, 1, 0) ? Math.round(flex[0].startTimeRange.startTime.time / 5) : 0,
-								limitStartMax: self.checkRangeLimitTime(flex, timeRangeLimit, 2, 0) ? Math.round(flex[0].startTimeRange.endTime.time / 5) : timeRangeLimit,
-								limitEndMin: self.checkRangeLimitTime(flex, timeRangeLimit, 3, 0) ? Math.round(flex[0].endTimeRange.startTime.time / 5) : timeRangeLimit,
-								limitEndMax: self.checkRangeLimitTime(flex, timeRangeLimit, 4, 0) ? Math.round(flex[0].endTimeRange.endTime.time / 5) : timeRangeLimit
+								start: self.checkTimeOfChart(timeChart.startTime, timeRangeLimit) - dispStart,
+								end: self.checkTimeOfChart(timeChart.endTime, timeRangeLimit) - dispStart,
+								limitStartMin: limitTime.limitStartMin - dispStart,
+								limitStartMax: limitTime.limitStartMax - dispStart,
+								limitEndMin: limitTime.limitEndMin - dispStart,
+								limitEndMax: limitTime.limitEndMax - dispStart,
+								resizeFinished: (b: any, e: any, p: any) => {
+									if (self.checkDisByDate == false)
+										return;
+								},
+								dropFinished: (b: any, e: any) => {
+									if (self.checkDisByDate == false)
+										return;
+								}
 							});
-
-							fixedGc.push(self.addChartWithType045(ruler, "Flex", `lgc${i}`, timeChart, i));
+							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "Flex", `lgc${i}`, {startTime : timeChart.startTime - dispStart, endTime : timeChart.endTime - dispStart}, i, null, limitTime.limitStartMin - dispStart, limitTime.limitStartMax - dispStart, limitTime.limitEndMin - dispStart, limitTime.limitEndMax - dispStart));
 							indexLeft = ++indexLeft;
 							// CORE-TIME
-							if (coreTime.length > 0) {
+							if (coreTime.length > 0 && (_.inRange(coreTime[0].coreStartTime, timeMinus[0].startTime, timeMinus[0].endTime) ||
+								_.inRange(coreTime[0].coreEndTime, timeMinus[0].startTime, timeMinus[0].endTime))) {
 								ruler.addChartWithType("CoreTime", {
 									id: `lgc${i}_` + indexLeft,
 									parent: `lgc${i}`,
 									lineNo: i,
-									start: timeChartCore.startTime,
-									end: timeChartCore.endTime,
+									start: timeChartCore.startTime - dispStart,
+									end: timeChartCore.endTime - dispStart,
 									pin: true
 								});
-
-								fixedGc.push(self.addChartWithType045(ruler, "CoreTime", `lgc${i}_` + indexLeft, timeChartCore, i, `lgc${i}`));
+								fixedGc.push(self.addChartWithType045(datafilter[0].empId, "CoreTime", `lgc${i}_` + indexLeft, {startTime : timeChartCore.startTime - dispStart, endTime : timeChartCore.endTime - dispStart}, i, `lgc${i}`));
 								indexLeft = ++indexLeft;
 							}
 						}
 					}
-					self.allTimeChart.push({
-						empId: datafilter[0].empId,
-						timeChart: timeChart,
-						timeChart2: timeChart2
-					})
+					if (timeChart != null) {
+						self.allTimeChart.push({
+							empId: datafilter[0].empId,
+							timeChart: timeChart,
+							timeChart2: timeChart2
+						})
+					}
 				};
 
 				// Lần này chưa đối ứng
@@ -1725,31 +1912,51 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				if (suportTime != null) {
 					timeChart = self.convertTimeToChart(suportTime[0].coreStartTime, suportTime[0].coreEndTime);
 					spgc = self.addChildChartWithTypes(ruler, "SupportTime", `lgc${i}_` + indexF, timeChart, i, `lgc${i}`)
-
+		
 					indexF = ++indexF;
 				}*/
-
+				// OVER-TIME
 				let overTime = datafilter[0].gcOverTime;
-				if (overTime.length > 0 && datafilter[0].typeOfTime !== "Changeable") {
-					overTime[0].lstOverTime.forEach(y => {
+				if (overTime.length > 0 && datafilter[0].typeOfTime !== "Changeable" && datafilter[0].typeOfTime != "Flex") {
+					for (let o = 0; o < overTime[0].lstOverTime.length; o++) {
+						let y = overTime[0].lstOverTime[o];
 						timeChartOver = self.convertTimeToChart(y.startTime, y.endTime);
 						let id = `lgc${i}_` + indexLeft, parent = `lgc${i}`;
-						if (datafilter[0].gantCharts === 1 && y.workNo === 2) {
-							if (timeMinus2.length > 0 && timeChartOver.startTime >= y.endTime) {
-								id = `rgc${i}_` + indexRight, parent = `rgc${i}`;
-								indexRight = ++indexRight;
-							}
+						if ((timeMinus.length > 0 && timeMinus[0].startTime != null && timeMinus[0].endTime != null) &&
+							(timeChart.startTime < Math.floor(timeRangeLimit + self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)) &&
+							(_.inRange(timeChartOver.startTime, self.dataInitStartKsu003Dto().byDateDto.dispStart * 12, Math.floor(timeRangeLimit + self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)) ||
+								_.inRange(timeChartOver.endTime, self.dataInitStartKsu003Dto().byDateDto.dispStart * 12, Math.floor(timeRangeLimit + self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)))) {
+							ruler.addChartWithType("OT", {
+									id: id,
+									parent: parent,
+									lineNo: i,
+									start: timeChartOver.startTime - dispStart,
+									end: timeChartOver.endTime - dispStart,
+									zindex: 1001
+								});
+							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "OT", id, {startTime : timeChartOver.startTime - dispStart, endTime : timeChartOver.endTime - dispStart}, i, parent, 0, 9999, 0, 9999, 1000));
+							indexLeft = ++indexLeft;
 						}
-						if ((self.timeRange === 24 && y.startTime < 1440 || self.timeRange === 48 && y.endTime < 2880)) {
-							self.addChildChartWithTypes(ruler, "OT", id, timeChartOver, i, parent, 0, 9999, 0, 9999, null, 1000)
-							fixedGc.push(self.addChartWithType045(ruler, "OT", id, timeChartOver, i, parent, 0, 9999, 0, 9999, 1000));
 
-							if (parent !== `rgc${i}`)
-								indexLeft = ++indexLeft;
+						if ((timeMinus2.length > 0 && timeMinus2[0].startTime != null && timeMinus2[0].endTime != null) &&
+							(timeChart2.startTime < Math.floor(timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)) &&
+							(_.inRange(timeChartOver.startTime, 0, Math.floor(timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)) ||
+								_.inRange(timeChartOver.endTime, 0, Math.floor(timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)))) {
+							id = `rgc${i}_` + indexRight, parent = `rgc${i}`;
+							ruler.addChartWithType("OT", {
+									id: id,
+									parent: parent,
+									lineNo: i,
+									start: timeChartOver.startTime - dispStart,
+									end: timeChartOver.endTime - dispStart,
+									zindex: 1001
+								});
+							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "OT", id, {startTime : timeChartOver.startTime - dispStart, endTime : timeChartOver.endTime - dispStart}, i, parent, 0, 9999, 0, 9999, 1000));
+							indexRight = ++indexRight;
 						}
-					})
+					}
 				};
-
+				let startTime1 = 0, startTime2 = 0, endTime1 = 0, endTime2 = 0;
 				let breakTime: any = [];
 				if (datafilter[0].gcBreakTime.length > 0) {
 					breakTime = datafilter[0].gcBreakTime[0].lstBreakTime;
@@ -1759,73 +1966,89 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					}
 				}
 
+				// Add BREAK-TIME
 				if (breakTime.length > 0) {
-					breakTime.forEach((y: any) => {
+					for (let o = 0; o < breakTime.length; o++) {
+						let y = breakTime[o];
 						timeChartBrk = self.convertTimeToChart(_.isNil(y.startTime) ? y.start : y.startTime, _.isNil(y.endTime) ? y.end : y.endTime);
 						let id = `lgc${i}_` + indexLeft, parent = `lgc${i}`;
+						startTime1 = self.checkTimeOfChart(timeChartBrk.startTime, timeRangeLimit);
+						endTime1 = self.checkTimeOfChart(timeChartBrk.endTime, timeRangeLimit);
 
-						if (timeMinus.length > 0 && (_.inRange(y.startTime != null ? y.startTime : y.start, timeMinus[0].startTime, timeMinus[0].endTime) ||
-							_.inRange(y.endTime, timeMinus[0].startTime, timeMinus[0].endTime))) {
-
+						if ((timeMinus.length > 0 && timeMinus[0].startTime != null && timeMinus[0].endTime != null) &&
+							(timeChart.startTime < Math.floor(timeRangeLimit + self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)) &&
+							(_.inRange(timeChartBrk.startTime, self.dataInitStartKsu003Dto().byDateDto.dispStart * 12, Math.floor(timeRangeLimit + self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)) ||
+								_.inRange(timeChartBrk.endTime, self.dataInitStartKsu003Dto().byDateDto.dispStart * 12, Math.floor(timeRangeLimit + self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)))) {
+							let timeRange = self.checkRangeBreakTime(self.lstHolidayShort, { start: startTime1, end: endTime1 }, i);
 							ruler.addChartWithType("BreakTime", {
 								id: id,
 								parent: parent,
 								lineNo: i,
-								start: timeChartBrk.startTime,
-								end: timeChartBrk.endTime,
-								limitStartMin: 0,
-								limitStartMax: 9999,
-								limitEndMin: 0,
-								limitEndMax: 9999,
+								start: startTime1 - dispStart,
+								end: endTime1 - dispStart,
+								limitStartMin: timeRange.start - dispStart,
+								limitStartMax: timeRange.end - dispStart,
+								limitEndMin: timeRange.start - dispStart,
+								limitEndMax: timeRange.end - dispStart,
 								zindex: 1001,
 								resizeFinished: (b: any, e: any, p: any) => {
 								},
 								dropFinished: (b: any, e: any) => {
 									let datafilterBrk = _.filter(midData, (x: any) => { return x.empId === self.lstEmpId[i].empId }),
-										dataMidBrk = datafilterBrk[0];
-									breakTime = dataMidBrk.breaktime;
-									if (b !== timeChartBrk.startTime && e !== timeChartBrk.endTime) {
-										$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "breaktime", breakTime == null ? "0:00" : breakTime + " "); // + " " để phân biệt khi thay đổi vị trí nhưng không thay đổi giá trị
-									} else {
-										$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "breaktime", breakTime == null ? "0:00" : breakTime);
-									}
+										dataMidBrk = datafilterBrk[0], timeChartBrk2 : any = null, checkChange = 0;
+										let breakChange = _.filter(self.allTimeBrk, (x: any) => { return x.options.lineNo === i });
+										let indexBrk = _.findIndex(breakChange, (x: any) => {return x.options.id === id})
+										for (let l = 0; l < breakChange.length; l++) {
+											if (b + self.dispStart === breakChange[l].options.start && e + self.dispStart === breakChange[l].options.end) {
+												checkChange = 1;
+											}
+										}
+										self.dataScreen003A().employeeInfo[i].workScheduleDto.listBreakTimeZoneDto[indexBrk].start = b * 5 + self.dispStart * 5;
+										self.dataScreen003A().employeeInfo[i].workScheduleDto.listBreakTimeZoneDto[indexBrk].end = e * 5 + self.dispStart * 5;
+										if (checkChange == 0) {
+											$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "breaktime", dataMidBrk.breaktime == null ? "0:00" : dataMidBrk.breaktime + " "); // + " " để phân biệt khi thay đổi vị trí nhưng không thay đổi giá trị
+										} else {
+											$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "breaktime", dataMidBrk.breaktime == null ? "0:00" : dataMidBrk.breaktime);
+										}
 								}
 							});
-							fixedGc.push(self.addChartWithType045(ruler, "BreakTime", id, timeChartBrk, i, parent, 0, 9999, 0, 9999, 1001));
+							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "BreakTime", id, {startTime : timeChartBrk.startTime - dispStart, endTime : timeChartBrk.endTime - dispStart}, i, parent, timeRange.start, timeRange.end, timeRange.start, timeRange.end, 1001));
+							self.allTimeBrk.push(self.addChartWithType045(datafilter[0].empId, "BreakTime", id, timeChartBrk, i, parent, timeRange.start, timeRange.end, timeRange.start, timeRange.end, 1001));
 							indexLeft = ++indexLeft;
 						}
 
 						if (datafilter[0].gantCharts === 1) {
-							if (timeMinus2.length > 0 && (_.inRange(y.startTime != null ? y.startTime : y.start, timeMinus2[0].startTime, timeMinus2[0].endTime) ||
-								_.inRange(y.endTime, timeMinus2[0].startTime, timeMinus2[0].endTime))) {
+							if ((timeMinus2.length > 0 && timeMinus2[0].startTime != null && timeMinus2[0].endTime != null) &&
+								(timeChart2.startTime < Math.floor(timeRangeLimit + self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)) &&
+								(_.inRange(timeChartBrk.startTime, self.dataInitStartKsu003Dto().byDateDto.dispStart * 12, Math.floor(timeRangeLimit + self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)) ||
+									_.inRange(timeChartBrk.endTime, self.dataInitStartKsu003Dto().byDateDto.dispStart * 12, Math.floor(timeRangeLimit + self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)))) {
 								id = `rgc${i}_` + indexRight, parent = `rgc${i}`;
-								indexRight = ++indexRight;
-
+								let timeRange = self.checkRangeBreakTime(self.lstHolidayShort, { start: startTime1, end: endTime1 }, i);
 								ruler.addChartWithType("BreakTime", {
 									id: id,
 									parent: parent,
 									lineNo: i,
-									start: timeChartBrk.startTime,
-									end: timeChartBrk.endTime,
-									limitStartMin: 0,
-									limitStartMax: 9999,
-									limitEndMin: 0,
-									limitEndMax: 9999,
+									start: startTime1 - dispStart,
+									end: endTime1 - dispStart,
+									limitStartMin: timeRange.start - dispStart,
+									limitStartMax: timeRange.end - dispStart,
+									limitEndMin: timeRange.start - dispStart,
+									limitEndMax: timeRange.end - dispStart,
 									zindex: 1001,
 									resizeFinished: (b: any, e: any, p: any) => {
 									},
 									dropFinished: (b: any, e: any) => {
 										let datafilterBrk = _.filter(midData, (x: any) => { return x.empId === self.lstEmpId[i].empId }),
 											dataMidBrk = datafilterBrk[0];
-										breakTime = dataMidBrk.breaktime;
-										if (b !== timeChartBrk.startTime && e !== timeChartBrk.endTime) {
-											$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "breaktime", self.timeBrkText() == null ? "0:00" : self.timeBrkText() + " ");
-										} else {
-											$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "breaktime", self.timeBrkText() == null ? "0:00" : self.timeBrkText());
-										}
+										let breakChange = _.filter(self.allTimeBrk, (x: any) => { return x.options.lineNo === i });
+										let indexBrk = _.findIndex(breakChange, (x: any) => {return x.options.id === id})
+										self.dataScreen003A().employeeInfo[i].workScheduleDto.listBreakTimeZoneDto[indexBrk].start = b * 5;
+										self.dataScreen003A().employeeInfo[i].workScheduleDto.listBreakTimeZoneDto[indexBrk].end = e * 5;
+										$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "breaktime", dataMidBrk.breaktime == null ? "0:00" : dataMidBrk.breaktime + " ");
 									}
 								});
-								fixedGc.push(self.addChartWithType045(ruler, "BreakTime", id, timeChartBrk, i, parent, 0, 9999, 0, 9999, 1001));
+								fixedGc.push(self.addChartWithType045(datafilter[0].empId, "BreakTime", id, timeChartBrk, i, parent, 0, 9999, 0, 9999, 1001));
+								self.allTimeBrk.push(self.addChartWithType045(datafilter[0].empId, "BreakTime", id, {startTime : timeChartBrk.startTime - dispStart, endTime : timeChartBrk.endTime - dispStart}, i, parent, timeRange.start, timeRange.end, timeRange.start, timeRange.end, 1001));
 								indexRight = ++indexRight;
 							}
 						}
@@ -1837,44 +2060,76 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							empId: datafilter[0].empId
 						})
 
-					})
+					}
 				} else {
 					$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "breaktime", "0:00");
 				}
 
 				let shortTime = datafilter[0].gcShortTime;
 				if (shortTime.length > 0) {
-					shortTime[0].listShortTime.forEach(y => {
+					for (let o = 0; o < shortTime[0].listShortTime.length; o++) {
+						let y = shortTime[0].listShortTime[o];
 						timeChartShort = self.convertTimeToChart(y.startTime.time, y.endTime.time);
+						startTime1 = self.checkTimeOfChart(timeChartShort.startTime, timeRangeLimit);
+						endTime1 = self.checkTimeOfChart(timeChartShort.endTime, timeRangeLimit);
 						let id = `lgc${i}_` + indexLeft, parent = `lgc${i}`;
 
 						if (timeMinus.length > 0 && (_.inRange(y.startTime.time, timeMinus[0].startTime, timeMinus[0].endTime) ||
 							_.inRange(y.endTime.time, timeMinus[0].startTime, timeMinus[0].endTime))) {
+							ruler.addChartWithType("ShortTime", {
+									id: id,
+									parent: parent,
+									lineNo: i,
+									start: timeChartShort.startTime - dispStart,
+									end: timeChartShort.endTime - dispStart,
+									zindex: 1002
+								});
+							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "ShortTime", id, {startTime : timeChartShort.startTime - dispStart, endTime : timeChartShort.endTime - dispStart}, i, parent, 0, 9999, 0, 9999, 1002));
 							indexLeft = ++indexLeft;
 						}
 
 						if (timeMinus2.length > 0 && (_.inRange(y.startTime.time, timeMinus2[0].startTime, timeMinus2[0].endTime) ||
 							_.inRange(y.endTime.time, timeMinus2[0].startTime, timeMinus2[0].endTime))) {
 							id = `rgc${i}_` + indexRight, parent = `rgc${i}`;
+							ruler.addChartWithType("ShortTime", {
+									id: id,
+									parent: parent,
+									lineNo: i,
+									start: timeChartShort.startTime - dispStart,
+									end: timeChartShort.endTime - dispStart,
+									zindex: 1002
+								});
+							fixedGc.push(self.addChartWithType045(datafilter[0].empId, "ShortTime", id, {startTime : timeChartShort.startTime - dispStart, endTime : timeChartShort.endTime - dispStart}, i, parent, 0, 9999, 0, 9999, 1002));
 							indexRight = ++indexRight;
 						}
 
-						self.addChildChartWithTypes(ruler, "ShortTime", id, timeChartShort, i, parent, 0, 9999, 0, 9999, null, 1002)
-						fixedGc.push(self.addChartWithType045(ruler, "ShortTime", id, timeChartShort, i, parent, 0, 9999, 0, 9999, 1002));
-
-					})
+					}
 				}
 
 				let holidayTime = datafilter[0].gcHolidayTime;
 				if (holidayTime.length > 0) {
-					holidayTime[0].listTimeVacationAndType.forEach(x => {
-						x.timeVacation.timeZone.forEach(hld => {
+					for (let o = 0; o < holidayTime[0].listTimeVacationAndType.length; o++) {
+						let y = holidayTime[0].listTimeVacationAndType[o];
+						for (let e = 0; e < y.timeVacation.timeZone.length; e++) {
+							let hld = y.timeVacation.timeZone[e];
 							timeChartHoliday = self.convertTimeToChart(hld.startTime.time, hld.endTime.time);
+
+							startTime1 = self.checkTimeOfChart(timeChartHoliday.startTime, timeRangeLimit);
+							endTime1 = self.checkTimeOfChart(timeChartHoliday.endTime, timeRangeLimit);
 							let id = `lgc${i}_` + indexLeft, parent = `lgc${i}`;
 
 							if (timeMinus.length > 0 && (_.inRange(hld.startTime.time, timeMinus[0].startTime, timeMinus[0].endTime) ||
 								_.inRange(hld.endTime.time, timeMinus[0].startTime, timeMinus[0].endTime))) {
 								if ((self.timeRange === 24 && hld.startTime.time < 1440 || self.timeRange === 48 && hld.endTime.time < 2880)) {
+									ruler.addChartWithType("HolidayTime", {
+									id: id,
+									parent: parent,
+									lineNo: i,
+									start: timeChartHoliday.startTime - dispStart,
+									end: timeChartHoliday.endTime - dispStart,
+									zindex: 1003
+								});
+									fixedGc.push(self.addChartWithType045(datafilter[0].empId, "HolidayTime", id, {startTime : timeChartHoliday.startTime - dispStart, endTime : timeChartHoliday.endTime - dispStart}, i, parent, 0, 9999, 0, 9999, 1003));
 									indexLeft = ++indexLeft;
 								}
 							}
@@ -1883,109 +2138,160 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								_.inRange(hld.endTime.time, timeMinus2[0].startTime, timeMinus2[0].endTime))) {
 								id = `rgc${i}_` + indexRight, parent = `rgc${i}`;
 								if ((self.timeRange === 24 && hld.startTime.time < 1440 || self.timeRange === 48 && hld.endTime.time < 2880)) {
+									ruler.addChartWithType("HolidayTime", {
+									id: id,
+									parent: parent,
+									lineNo: i,
+									start: timeChartHoliday.startTime - dispStart,
+									end: timeChartHoliday.endTime - dispStart,
+									zindex: 1003
+								});
+									fixedGc.push(self.addChartWithType045(datafilter[0].empId, "HolidayTime", id, {startTime : timeChartHoliday.startTime - dispStart, endTime : timeChartHoliday.endTime - dispStart}, i, parent, 0, 9999, 0, 9999, 1003));
 									indexRight = ++indexRight;
 								}
 							}
-							self.addChildChartWithTypes(ruler, "HolidayTime", id, timeChartHoliday, i, parent, 0, 9999, 0, 9999, null, 1003);
-							fixedGc.push(self.addChartWithType045(ruler, "HolidayTime", id, timeChartHoliday, i, parent, 0, 9999, 0, 9999, 1003));
-						})
-					})
+						}
+					}
 				}
 			}
 
 			// thay đổi giá trị khi kéo thanh chart
-			let timeLeft = timeChart, timeRight = timeChart2;
 			$(lgc).on("gcresize", (e: any) => {
+				if (self.checkDisByDate == false)
+					return;
 				let param = e.detail;
 				let startMinute = 0, endMinute = 0;
-				startMinute = duration.create(param[0] * 5).text;
-				endMinute = duration.create(param[1] * 5).text;
+				self.checkDragDrog = false;
+				startMinute = duration.create(param[0] * 5 + self.dispStart * 5).text;
+				endMinute = duration.create(param[1] * 5 + self.dispStart * 5).text;
 				if (param[2]) {
-					$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "startTime1", startMinute);
+					$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "startTime1", startMinute );
 				} else {
 					$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "endTime1", endMinute);
 				}
-				let totalTimeNew = 0;
-
-				let lstBreakByEmpid = _.filter(lstBreakTime, (x: any) => { return x.empId === datafilter[0].empId })
-				lstBreakByEmpid.forEach((brk: any) => {
-					let startMinutes = param[0], endMinutes = param[1];
-					if (_.inRange(brk.startTime, startMinutes, endMinutes) || _.inRange(brk.endTime, startMinutes, endMinutes)) {
-						timeLeft = {
-							startTime: startMinutes,
-							endTime: endMinutes
-						}
-						totalTimeNew += self.calcBreakTime(brk, timeLeft);
-					}
-
-					if (timeChart2 != null && datafilter[0].typeOfTime != "Flex" &&
-						(_.inRange(brk.startTime, timeRight.startTime, timeRight.endTime) ||
-							_.inRange(brk.endTime, timeRight.startTime, timeRight.endTime))) {
-						totalTimeNew += self.calcBreakTime(brk, timeRight);
-					}
-				})
-
-				totalBreakTimeNew = formatById("Clock_Short_HM", (totalTimeNew * 5));
-				$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "breaktime", totalBreakTimeNew === 0 ? "0:00" : totalBreakTimeNew);
+				self.checkTypeChange = [];
 			});
 
 			$(rgc).on("gcresize", (e: any) => {
+				if (self.checkDisByDate == false)
+					return;
 				let param = e.detail;
 				let startMinute, endMinute;
-				startMinute = duration.create(param[0] * 5).text;
-				endMinute = duration.create(param[1] * 5).text;
+				self.checkDragDrog = false;
+				startMinute = duration.create(param[0] * 5 + self.dispStart * 5).text;
+				endMinute = duration.create(param[1] * 5 + self.dispStart * 5).text;
 				if (param[2]) {
 					$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "startTime2", startMinute);
 				} else {
 					$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "endTime2", endMinute);
 				}
-				let totalTimeNew = 0;
-				let lstBreakByEmpid = _.filter(lstBreakTime, (x: any) => { return x.empId === datafilter[0].empId })
-				lstBreakByEmpid.forEach((brk: any) => {
-					let startMinutes = param[0], endMinutes = param[1];
-					if (_.inRange(brk.startTime, startMinutes, endMinutes) || _.inRange(brk.endTime, startMinutes, endMinutes)) {
-						timeRight = {
-							startTime: startMinutes,
-							endTime: endMinutes
-						}
-						totalTimeNew += self.calcBreakTime(brk, timeRight);
-					}
-
-					if (timeChart != null && datafilter[0].typeOfTime != "Flex" &&
-						(_.inRange(brk.startTime, timeLeft.startTime, timeLeft.endTime) ||
-							_.inRange(brk.endTime, timeLeft.startTime, timeLeft.endTime))) {
-						totalTimeNew += self.calcBreakTime(brk, timeLeft);
-					}
-				})
-				totalBreakTimeNew = formatById("Clock_Short_HM", (totalTimeNew * 5));
-				$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "breaktime", totalBreakTimeNew === 0 ? "0:00" : totalBreakTimeNew);
+				self.checkTypeChange = [];
 			});
 
 			$(lgc).on("gcdrop", (e: any) => {
+				if (self.checkDisByDate == false)
+					return;
 				let param = e.detail;
-				let minutes = duration.create(param[0] * 5).text;
-				$("#extable").exTable("cellValue", "middle", i + "", "startTime1", minutes);
-				minutes = duration.create(param[1] * 5).text;
-				$("#extable").exTable("cellValue", "middle", i + "", "endTime1", minutes);
+				let startMinute = 0, endMinute = 0;
+				startMinute = duration.create(param[0] * 5 + self.dispStart * 5).text;
+				endMinute = duration.create(param[1] * 5 + self.dispStart * 5).text;
+				self.checkDragDrog = true;
+				if (param) {
+					$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "startTime1", startMinute);
+					$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "endTime1", endMinute);
+				}
+				self.checkTypeChange = [];
 			});
 
 			$(rgc).on("gcdrop", (e: any) => {
+				if (self.checkDisByDate == false)
+					return;
 				let param = e.detail;
-				let minutes = duration.create(param[0] * 5).text;
-				$("#extable").exTable("cellValue", "middle", i + "", "startTime1", minutes);
-				minutes = duration.create(param[1] * 5).text;
-				$("#extable").exTable("cellValue", "middle", i + "", "endTime1", minutes);
+				let startMinute, endMinute;
+				startMinute = duration.create(param[0] * 5 + self.dispStart * 5).text;
+				endMinute = duration.create(param[1] * 5 + self.dispStart * 5).text;
+				self.checkDragDrog = true;
+				if (param) {
+					$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "startTime2", startMinute);
+					$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "endTime2", endMinute);
+				}
+				self.checkTypeChange = [];
 			});
 			self.allGcShow = fixedGc;
-
-			if (window.outerWidth <= 1280) {
-				$("#note-sort").css("margin-left", "1022px");
-			} else {
-				$("#note-sort").css("margin-left", "1050px");
-			}
 		}
 
-		addChartWithType045(ruler: any, type: any, id: any, timeChart: any, lineNo: any, parent?: any,
+		// Kiểm tra giới hạn của thời gian 
+		checkLimitTime(time: any, timeRangeLimit: any, index: number) {
+			let self = this;
+			let timeLimit = null, limitStartMin = 0, limitStartMax = timeRangeLimit, limitEndMin = 0, limitEndMax = timeRangeLimit;
+			let dispStart =  (self.dataInitStartKsu003Dto().byDateDto.dispStart * 60) / 5;
+			if (time[index].startTimeRange != null) {
+				if (index > 0) {
+					limitStartMin = time[index].endTime;
+				}
+				limitStartMin = self.checkRangeLimitTime(time, timeRangeLimit, 1, 0) ? Math.floor((time[index].startTimeRange.startTime.time) / 5) : self.dataInitStartKsu003Dto().byDateDto.dispStart;
+				limitStartMax = self.checkRangeLimitTime(time, timeRangeLimit, 2, 0) ? Math.floor((time[index].startTimeRange.endTime.time) / 5) : timeRangeLimit;
+				if (time[index].startTimeRange.startTime.time <= self.dataInitStartKsu003Dto().byDateDto.dispStart) {
+					limitStartMin = self.dataInitStartKsu003Dto().byDateDto.dispStart;
+				}
+				if (time[index].startTimeRange.endTime.time <= self.dataInitStartKsu003Dto().byDateDto.dispStart) {
+					limitStartMax = self.dataInitStartKsu003Dto().byDateDto.dispStart;
+				}
+			} else if (time[0].startTimeRange != null) {
+
+				limitStartMin = Math.floor((time[0].startTimeRange.startTime.time) / 5)
+			}
+
+			if (time[index].endTimeRange != null) {
+				limitEndMin = self.checkRangeLimitTime(time, timeRangeLimit, 3, 0) ? Math.floor((time[index].endTimeRange.startTime.time) / 5) : timeRangeLimit;
+				limitEndMax = self.checkRangeLimitTime(time, timeRangeLimit, 4, 0) ? Math.floor((time[index].endTimeRange.endTime.time) / 5) : timeRangeLimit;
+				if (time[index].endTimeRange.startTime.time <= self.dataInitStartKsu003Dto().byDateDto.dispStart) {
+					limitEndMin = self.dataInitStartKsu003Dto().byDateDto.dispStart;
+				}
+				if (time[index].endTimeRange.endTime.time <= self.dataInitStartKsu003Dto().byDateDto.dispStart) {
+					limitEndMax = self.dataInitStartKsu003Dto().byDateDto.dispStart;
+				}
+			}
+
+			timeLimit = {
+				limitStartMin: limitStartMin < dispStart ? dispStart : limitStartMin,
+				limitStartMax: limitStartMax < dispStart ? dispStart : limitStartMax,
+				limitEndMin: limitEndMin< dispStart ? dispStart : limitEndMin,
+				limitEndMax: limitEndMax < dispStart ? dispStart : limitEndMax
+			}
+			return timeLimit;
+		}
+
+		checkTimeOfChart(time: any, timeRangeLimit: any) {
+			// check start time
+			let self = this;
+			if (time > timeRangeLimit) {
+				time = timeRangeLimit;
+			}
+
+			if (time < Math.floor((self.dataInitStartKsu003Dto().byDateDto.dispStart * 60) / 5)) {
+				time = Math.floor((self.dataInitStartKsu003Dto().byDateDto.dispStart * 60) / 5);
+			}
+
+			return time;
+		}
+
+		checkRangeBreakTime(lstHoliday: any[], breakTime: any, index : any) {
+			let rangeBreak: any = { start: 0, end: 9999 };
+			lstHoliday = _.filter(lstHoliday, x => {return x.index === index});
+			
+			for (let i = 0; i < lstHoliday.length; i++) {
+				if (lstHoliday[i].start > breakTime.end) {
+					rangeBreak.end = lstHoliday[i].start;
+				}
+				if (lstHoliday[i].end < breakTime.start) {
+					rangeBreak.start = lstHoliday[i].end;
+				}
+			}
+			return rangeBreak;
+		}
+
+		addChartWithType045(empId: string, type: any, id: any, timeChart: any, lineNo: any, parent?: any,
 			limitStartMin?: any, limitStartMax?: any, limitEndMin?: any, limitEndMax?: any, zIndex?: any) {
 			let self = this, timeEnd = self.convertTimePixel(self.timeRange === 24 ? "24:00" : "48:00");
 			return {
@@ -2000,7 +2306,31 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					limitStartMax: limitStartMax,
 					limitEndMin: limitEndMin,
 					limitEndMax: limitEndMax,
-					zIndex: !_.isNil(zIndex) ? zIndex : 1000
+					zIndex: !_.isNil(zIndex) ? zIndex : 1000,
+					resizeFinished: (b: any, e: any, p: any) => {
+						if (!_.isNil(id) && _.includes(id, 'lgc')) {
+							if (p == true)
+								$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime1", formatById("Clock_Short_HM", (b) * 5));
+							else
+								$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime1", formatById("Clock_Short_HM", (e) * 5));
+						} else {
+							if (p == true)
+								$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime2", formatById("Clock_Short_HM", (b) * 5));
+							else
+								$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime2", formatById("Clock_Short_HM", (e) * 5));
+						}
+
+						console.log("test");
+					},
+					dropFinished: (b: any, e: any) => {
+						if (!_.isNil(parent) && _.includes(id, 'lgc')) {
+							$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime1", formatById("Clock_Short_HM", (b) * 5));
+							$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime1", formatById("Clock_Short_HM", (e) * 5));
+						} else {
+							$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime2", formatById("Clock_Short_HM", (b) * 5));
+							$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime2", formatById("Clock_Short_HM", (e) * 5));
+						}
+					}
 				}
 			}
 		}
@@ -2024,58 +2354,112 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		}
 		/** ADD-TYPE-CHART */
 		addTypeOfChart(ruler: any) {
-			let self = this;
+			let self = this, fixed = "None";
+			if (self.checkDisByDate == false) {
+				fixed = "Both"
+			}
+
 			ruler.addType({
-				name: "Fixed", color: "#ccccff", lineWidth: 30, canSlide: false, unitToPx: self.operationUnit()
+				name: "Fixed",
+				color: "#ccccff",
+				lineWidth: 30,
+				canSlide: false,
+				unitToPx: self.operationUnit(),
+				fixed: fixed
 			});
 
 			ruler.addType({
-				name: "Changeable", color: "#ffc000", lineWidth: 30, canSlide: true, unitToPx: self.operationUnit()
+				name: "Changeable",
+				color: "#ffc000",
+				lineWidth: 30,
+				canSlide: self.checkDisByDate == false ? false : true,
+				unitToPx: self.operationUnit(),
+				fixed: fixed
 			});
 
 			ruler.addType({
-				name: "Flex", color: "#ccccff", lineWidth: 30, canSlide: true, unitToPx: self.operationUnit()
+				name: "Flex",
+				color: "#ccccff",
+				lineWidth: 30,
+				canSlide: self.checkDisByDate == false ? false : true,
+				unitToPx: self.operationUnit(),
+				fixed: fixed
 			});
 
 			ruler.addType({
-				name: "BreakTime", followParent: true, color: "#ff9999", lineWidth: 30, canSlide: true,
-				unitToPx: self.operationUnit(), pin: true, rollup: true, roundEdge: true, fixed: "Both"
+				name: "BreakTime",
+				followParent: true,
+				color: "#ff9999",
+				lineWidth: 30,
+				canSlide: self.checkDisByDate == false ? false : true,
+				unitToPx: self.operationUnit(),
+				pin: true,
+				rollup: true,
+				roundEdge: true,
+				fixed: "Both"
 			});
 
 			ruler.addType({
-				name: "OT", followParent: true, color: "#ffff00", lineWidth: 30, canSlide: false,
-				unitToPx: self.operationUnit(), pin: true, rollup: true, fixed: "Both"
+				name: "OT",
+				followParent: true,
+				color: "#ffff00",
+				lineWidth: 30,
+				canSlide: false,
+				unitToPx: self.operationUnit(),
+				pin: true,
+				rollup: true,
+				fixed: "Both"
 			});
 
 			ruler.addType({
-				name: "HolidayTime", followParent: true, color: "#c4bd97", lineWidth: 30, canSlide: false,
-				unitToPx: self.operationUnit(), pin: true, rollup: true, roundEdge: false, fixed: "Both"
+				name: "HolidayTime",
+				followParent: true, color: "#c4bd97",
+				lineWidth: 30,
+				canSlide: false,
+				unitToPx: self.operationUnit(),
+				pin: true,
+				rollup: true,
+				roundEdge: false,
+				fixed: "Both"
 			});
 
 			ruler.addType({
-				name: "ShortTime", followParent: true, color: "#6fa527", lineWidth: 30, canSlide: false,
-				unitToPx: self.operationUnit(), pin: true, rollup: true, roundEdge: false, fixed: "Both"
+				name: "ShortTime",
+				followParent: true,
+				color: "#6fa527",
+				lineWidth: 30,
+				canSlide: false,
+				unitToPx: self.operationUnit(),
+				pin: true,
+				rollup: true,
+				roundEdge: false,
+				fixed: "Both"
 			});
 
 			ruler.addType({
-				name: "CoreTime", color: "#00ffcc", lineWidth: 30, unitToPx: self.operationUnit(), fixed: "Both"
+				name: "CoreTime",
+				color: "#00ffcc",
+				lineWidth: 30,
+				unitToPx: self.operationUnit(),
+				fixed: "Both"
 			});
 		}
 
 		// Kiểm tra giới hạn hiển thị của thanh chart
 		checkRangeLimitTime(flex: any, timeRangeLimit: number, type: number, index: number) {
-			let check = false;
+			let check = false, self = this;
+
 			if (flex.length > 0) {
-				if (type == 1 && flex[index].startTimeRange != null && Math.round(flex[index].startTimeRange.startTime.time / 5) <= timeRangeLimit) {
+				if (type == 1 && flex[index].startTimeRange != null && Math.floor((flex[index].startTimeRange.startTime.time - self.dataInitStartKsu003Dto().byDateDto.dispStart * 60) / 5) <= timeRangeLimit) {
 					check = true;
 				}
-				if (type == 2 && flex[index].startTimeRange != null && Math.round(flex[index].startTimeRange.endTime.time / 5) < timeRangeLimit) {
+				if (type == 2 && flex[index].startTimeRange != null && Math.floor((flex[index].startTimeRange.endTime.time - self.dataInitStartKsu003Dto().byDateDto.dispStart * 60) / 5) < timeRangeLimit) {
 					check = true;
 				}
-				if (type == 3 && flex[index].endTimeRange != null && Math.round(flex[index].endTimeRange.startTime.time / 5) <= timeRangeLimit) {
+				if (type == 3 && flex[index].endTimeRange != null && Math.floor((flex[index].endTimeRange.startTime.time - self.dataInitStartKsu003Dto().byDateDto.dispStart * 60) / 5) <= timeRangeLimit) {
 					check = true;
 				}
-				if (type == 4 && flex[index].endTimeRange != null && Math.round(flex[index].endTimeRange.endTime.time / 5) < timeRangeLimit) {
+				if (type == 4 && flex[index].endTimeRange != null && Math.floor((flex[index].endTimeRange.endTime.time - self.dataInitStartKsu003Dto().byDateDto.dispStart * 60) / 5) < timeRangeLimit) {
 					check = true;
 				}
 			}
@@ -2101,90 +2485,74 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				case SupportAtr.TIMEZONE_RESPONDENT:
 					return '#ffccff';
 			}
+			return "";
 		}
 		checkColorA6(workInfo: any) {
 			let workTypeColor = "";
 			if (workInfo === EditStateSetting.HAND_CORRECTION_MYSELF) {
-				workTypeColor = "94b7fe"
+				workTypeColor = "#94b7fe"
 			} else if (workInfo === EditStateSetting.HAND_CORRECTION_OTHER) {
-				workTypeColor = "cee6ff"
+				workTypeColor = "#cee6ff"
 			} else if (workInfo === EditStateSetting.REFLECT_APPLICATION) {
-				workTypeColor = "bfea60"
+				workTypeColor = "#bfea60"
 			}
 			return workTypeColor;
 		}
 		/** A6_color① - chua xong o phan login va xin bang don */
-		setColorWorkingInfo(empId: string, isConfirmed: number, workScheduleDto: any) {
+		setColorWorkingInfo(empId: string, isConfirmed: number, workScheduleDto: any, isNeedWorkSchedule: any) {
 			let self = this, workTypeColor = "", workTimeColor = "", startTime1Color = "", endTime1Color = "",
-				startTime2Color = "", endTime2Color = "", breakTimeColor = "";
+				startTime2Color = "", endTime2Color = "", breakTimeColor = "", workingInfoColor = "";
 
-			if (isConfirmed == 0) {
-				self.workingInfoColor('#ddddd2');
-			} else {
-				self.workingInfoColor('#eccefb');
+			if (isConfirmed == 0 && isNeedWorkSchedule == 0) {
+				workingInfoColor = '#ddddd2';
 			}
-			// work type
-			if (workScheduleDto.workTypeStatus != null) {
-				workTypeColor = self.checkColorA6(workScheduleDto.workTypeStatus);
+			if (isConfirmed == 1) {
+				workingInfoColor = '#eccefb';
 			}
-			// work time
-			if (workScheduleDto.workTimeStatus != null) {
-				workTimeColor = self.checkColorA6(workScheduleDto.workTimeStatus);
-			}
-			// start time 1
-			if (workScheduleDto.startTime1Status != null) {
-				startTime1Color = self.checkColorA6(workScheduleDto.startTime1Status);
-			}
-			// end time 1
-			if (workScheduleDto.endTime1Status != null) {
-				endTime1Color = self.checkColorA6(workScheduleDto.endTime1Status);
-			}
-			// start time 2
-			if (workScheduleDto.startTime2Status != null) {
-				startTime2Color = self.checkColorA6(workScheduleDto.startTime2Status);
-			}
-			// end time 2
-			if (workScheduleDto.endTime2Status != null) {
-				endTime2Color = self.checkColorA6(workScheduleDto.endTime2Status);
-			}
-			// break time
-			if (workScheduleDto.breakTimeStatus != null) {
-				breakTimeColor = self.checkColorA6(workScheduleDto.endTime2Status);
+			if (workScheduleDto != null) {
+				// work type
+				if (workScheduleDto.workTypeStatus != null) {
+					workTypeColor = self.checkColorA6(workScheduleDto.workTypeStatus);
+				}
+				// work time
+				if (workScheduleDto.workTimeStatus != null) {
+					workTimeColor = self.checkColorA6(workScheduleDto.workTimeStatus);
+				}
+				// start time 1
+				if (workScheduleDto.startTime1Status != null) {
+					startTime1Color = self.checkColorA6(workScheduleDto.startTime1Status);
+				}
+				// end time 1
+				if (workScheduleDto.endTime1Status != null) {
+					endTime1Color = self.checkColorA6(workScheduleDto.endTime1Status);
+				}
+				// start time 2
+				if (workScheduleDto.startTime2Status != null) {
+					startTime2Color = self.checkColorA6(workScheduleDto.startTime2Status);
+				}
+				// end time 2
+				if (workScheduleDto.endTime2Status != null) {
+					endTime2Color = self.checkColorA6(workScheduleDto.endTime2Status);
+				}
+				// break time
+				if (workScheduleDto.breakTimeStatus != null) {
+					breakTimeColor = self.checkColorA6(workScheduleDto.endTime2Status);
+				}
 			}
 
-			self.dataColorA6.push({
-				empId: empId,
+			return ({
 				workTypeColor: workTypeColor,
 				workTimeColor: workTimeColor,
 				startTime1Color: startTime1Color,
 				endTime1Color: endTime1Color,
 				startTime2Color: startTime2Color,
 				endTime2Color: endTime2Color,
-				breakTimeColor: breakTimeColor
+				breakTimeColor: breakTimeColor,
+				workingInfoColor: workingInfoColor
 
 			});
 		}
 
-		// A7_color①
-		a7SetColor(empId: string, isConfirmed: number, workScheduleDto: any) {
-			let self = this, breakTimeColor = "";
-
-			if (isConfirmed == 0) {
-				self.totalTimeColor('#ddddd2');
-			} else {
-				self.totalTimeColor('#eccefb');
-			}
-
-			// break time
-			if (workScheduleDto.breakTimeStatus != null) {
-				if (workScheduleDto.breakTimeStatus === EditStateSetting.HAND_CORRECTION_MYSELF) {
-					breakTimeColor = "94b7fe"
-				} else if (workScheduleDto.breakTimeStatus === EditStateSetting.HAND_CORRECTION_OTHER) {
-					breakTimeColor = "cee6ff"
-				}
-			}
-			return breakTimeColor;
-		}
 
 		setPositionButonToRightToLeft() {
 			let self = this, marginleftOfbtnToRight: number = 0;
@@ -2199,10 +2567,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 			$("#extable-ksu003").exTable("setHeight", 10 * 30 + 18);
 			$(".toDown").css({ "margin-top": 10 * 30 + 8 + 'px' });
-			$("#master-wrapper").css({ 'overflow-y': 'auto' });
-			$("#master-wrapper").css({ 'overflow-x': 'hidden' });
-			//}
-			$("#extable-ksu003").exTable("scrollBack", 0, { h: self.startScrollGc() });
+
+			$("#extable-ksu003").exTable("scrollBack", 0, { h: Math.floor(self.initDispStart * 12 - self.dispStart * 12) });
+			$("#functon-area-row2-left").focus();
 		}
 
 		setWidth(): any {
@@ -2217,27 +2584,45 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				if (self.showA9) {
 					$("#extable-ksu003").exTable("hideMiddle");
 				}
-				$(".toLeft").css("margin-left", "210px");
-				if (navigator.userAgent.indexOf("Chrome") == -1) {
-					$(".toLeft").css("margin-left", 100 + 'px');
+				$(".toLeft").css("margin-left", 193 + 'px');
+				if (window.innerWidth >= 1320) {
+					$(".toLeft").css('margin-left', 188 + 'px');
 				}
+				if (window.innerHeight < 700) {
+					$(".ex-header-detail").css({ "width": 966 + 'px' });
+					$(".ex-body-detail").css({ "width": 983 + 'px' });
+				}
+
 			} else {
 				if (self.showA9) {
 					$("#extable-ksu003").exTable("showMiddle");
 				}
 				$(".ex-header-middle").css("width", 560 + 'px' + '!important')
-				$(".toLeft").css("margin-left", 577 + 'px');
-				if (navigator.userAgent.indexOf("Chrome") == -1) {
-					$(".toLeft").css("margin-left", 562 + 'px');
+				if (window.innerWidth >= 1320) {
+					$(".toLeft").css('margin-left', 580 + 'px');
+					if (self.dataScreen003A().targetInfor == 0) {
+						$(".toLeft").css("margin-left", 500 + 'px');
+					}
+				} else {
+					$(".toLeft").css("margin-left", 585 + 'px');
+					if (self.dataScreen003A().targetInfor == 0) {
+						$(".toLeft").css("margin-left", 505 + 'px');
+					}
 				}
-				$(".ex-body-detail").css({ 'overflow-x': 'scroll hidden' + '!important' });
-				$(".ex-body-detail").css({ 'overflow': 'none' + '!important' });
-				$(".ex-body-detail").css({ 'overflow-y': 'auto' + '!important' });
+				if (window.innerHeight < 700) {
+					$(".ex-header-detail").css({ "width": 588 + 'px' });
+					$(".ex-body-detail").css({ "width": 604 + 'px' });
+					if (self.dataScreen003A().targetInfor == 0) {
+						$(".ex-header-detail").css({ "width": 672 + 'px' });
+						$(".ex-body-detail").css({ "width": 689 + 'px' });
+					}
+				}
 			}
+
 			self.indexBtnToLeft(self.indexBtnToLeft() + 1);
 			self.localStore().showHide = self.indexBtnToLeft();
-			storage.setItemAsJson(self.KEY, self.localStore());
-			$("#extable-ksu003").exTable("scrollBack", 0, { h: self.startScrollGc() });
+			characteristics.save(self.KEY, self.localStore());
+			$("#extable-ksu003").exTable("scrollBack", 0, { h: Math.floor(self.initDispStart * 12 - self.dispStart * 12) });
 		}
 
 		toDown() {
@@ -2246,17 +2631,33 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			exTableHeight = 17 * 30 + 18;
 			$("#master-wrapper").css({ 'overflow-x': 'hidden' });
 			if (self.indexBtnToDown() % 2 == 0) {
-				//$(".toDown").css("background", "url() no-repeat center");
 				$("#extable-ksu003").exTable("setHeight", exTableHeight);
 				$(".toDown").css('margin-top', exTableHeight - 8 + 'px');
 				$("#master-wrapper").css({ 'overflow-y': 'auto' });
-
+				$("#master-wrapper").css({ 'overflow-x': 'hidden' });
+				$("#contents-area").css({ 'overflow-x': 'hidden' });
+				if (window.innerWidth >= 1320) {
+					$("#A1_4").css("margin-right", "0px")
+					$("#note-color").css("margin-right", "18px")
+					$("#hr-row2").css("width", "1264px")
+				}
+				if (window.innerWidth < 1320) {
+					$("#note-sort").css("margin-left", "1158px");
+				}
 			} else {
 				exTableHeight = 10 * 30 + 18;
-				//$(".toDown").css("background", "url() no-repeat center");
 				$("#extable-ksu003").exTable("setHeight", exTableHeight);
 				$(".toDown").css('margin-top', exTableHeight - 8 + 'px');
+				$("#contents-area").css({ 'overflow-x': 'hidden' });
 
+				if (window.innerWidth >= 1320) {
+					$("#A1_4").css("margin-right", "20px")
+					$("#note-color").css("margin-right", "35px")
+				}
+
+				if (window.innerWidth < 1320) {
+					$("#note-sort").css("margin-left", "1171px");
+				}
 			}
 			self.indexBtnToDown(self.indexBtnToDown() + 1);
 		}
@@ -2267,19 +2668,106 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				if (!self.showA9) {
 					$("#extable-ksu003").exTable("showMiddle");
 				}
-				$(".toLeft").css("margin-left", 577 + 'px');
-				if (navigator.userAgent.indexOf("Chrome") == -1) {
-					$(".toLeft").css("margin-left", 562 + 'px');
+				if (window.innerWidth >= 1320) {
+					$(".toLeft").css('margin-left', 580 + 'px');
+					if (self.dataScreen003A().targetInfor == 0) {
+						$(".toLeft").css("margin-left", 500 + 'px');
+					}
+				} else {
+					$(".toLeft").css("margin-left", 585 + 'px');
+					if (self.dataScreen003A().targetInfor == 0) {
+						$(".toLeft").css("margin-left", 505 + 'px');
+					}
 				}
 			} else {
 				if (self.showA9) {
 					$("#extable-ksu003").exTable("hideMiddle");
 				}
-				$(".toLeft").css("margin-left", "210px");
-				if (navigator.userAgent.indexOf("Chrome") == -1) {
-					$(".toLeft").css("margin-left", 200 + 'px');
+				$(".toLeft").css("margin-left", 193 + 'px');
+				if (window.innerWidth >= 1320) {
+					$(".toLeft").css('margin-left', 188 + 'px');
 				}
 			}
+
+			if (window.innerHeight < 700) {
+				if (window.innerWidth < 1320) {
+					if (self.indexBtnToLeft() % 2 == 0) {
+						$(".ex-header-detail").css({ "width": 588 + 'px' });
+						$(".ex-body-detail").css({ "width": 604 + 'px' });
+						if (self.dataScreen003A().targetInfor == 0) {
+							$(".ex-header-detail").css({ "width": 672 + 'px' });
+							$(".ex-body-detail").css({ "width": 689 + 'px' });
+						}
+					} else {
+						$(".ex-header-detail").css({ "width": 966 + 'px' });
+						$(".ex-body-detail").css({ "width": 983 + 'px' });
+					}
+
+					$("#label-display").css("margin-left", 55 + 'px');
+					$(".toDown").css('margin-left', 0 + 'px');
+					if (navigator.userAgent.indexOf("Chrome") == -1) {
+						$(".toDown").css('margin-left', 0 + 'px');
+					}
+				}
+			} else {
+				$(".toDown").css('margin-left', -5 + 'px');
+			}
+			$("#functon-area-row2-left").focus();
+		}
+
+		calcTimeDuplicate(timeStart: any, timeEnd: any, startTime: any, endTime: any, type: number) {
+			let duplicateTime: any = [];
+			duplicateTime = ({
+				startTime: 0,
+				endTime: 0
+			});
+			if (_.inRange(timeStart, startTime, endTime) || _.inRange(timeEnd, startTime, endTime)) {
+				if (timeStart <= startTime && timeEnd <= endTime) {
+					duplicateTime = ({
+						startTime: startTime,
+						endTime: timeEnd
+					});
+				}
+
+				if (timeStart >= startTime && timeEnd >= endTime) {
+					duplicateTime = ({
+						startTime: timeStart,
+						endTime: endTime
+					});
+				}
+
+				if (timeStart >= startTime && timeEnd <= endTime) {
+					duplicateTime = ({
+						startTime: timeStart,
+						endTime: timeEnd
+					});
+				}
+			}
+			return duplicateTime;
+		}
+
+		// Tính tổng giờ làm các chart
+		calcSumTime(brkT: any, schedule: any, totalBreakTime1: any, totalBreakTime2: any, totalBreakTime: any) {
+			let self = this;
+			let brkTChart = self.convertTimeChart(_.isNil(brkT.startTime) ? brkT.start : brkT.startTime, _.isNil(brkT.endTime) ? brkT.end : brkT.endTime),
+				timeChart = self.convertTimeChart(schedule.workScheduleDto.startTime1, schedule.workScheduleDto.endTime1),
+				brkTChart2: any = null, timeChart2: any = null;
+
+			if (_.inRange(brkTChart.startTime, timeChart.startTime, timeChart.endTime) ||
+				_.inRange(brkTChart.endTime, timeChart.startTime, timeChart.endTime)) {
+				totalBreakTime1 += self.calcBreakTime(brkTChart, timeChart);
+			}
+
+			if (schedule.workScheduleDto.startTime2 != null && schedule.fixedWorkInforDto.workType != WorkTimeForm.FLEX) {
+				brkTChart2 = self.convertTimeChart(_.isNil(brkT.startTime) ? brkT.start : brkT.startTime, _.isNil(brkT.endTime) ? brkT.end : brkT.endTime)
+				timeChart2 = self.convertTimeChart(schedule.workScheduleDto.startTime2, schedule.workScheduleDto.endTime2)
+				if (_.inRange(brkTChart2.startTime, timeChart2.startTime, timeChart2.endTime) ||
+					_.inRange(brkTChart2.endTime, timeChart2.startTime, timeChart2.endTime)) {
+					totalBreakTime2 += self.calcBreakTime(brkTChart2, timeChart2);
+				}
+			}
+			totalBreakTime = totalBreakTime2 + totalBreakTime1;
+			return totalBreakTime;
 		}
 
 		// Tính tổng BREAK-TIME khi kéo gant chart
@@ -2301,11 +2789,456 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			return totalBreak;
 		}
 
+		calcTotalTime(workScheduleDto: model.EmployeeWorkScheduleDto, whenCall?: any) {
+			let totalTime: any = null;
+			if (!_.isNil(workScheduleDto)) {
+				if (workScheduleDto.endTime2 != null && workScheduleDto.startTime2 != null)
+					totalTime = (workScheduleDto.endTime1 - workScheduleDto.startTime1) + (workScheduleDto.endTime2 - workScheduleDto.startTime2);
+				else if (workScheduleDto.endTime1 != null && workScheduleDto.startTime1 != null)
+					totalTime = (workScheduleDto.endTime1 - workScheduleDto.startTime1);
+				if (_.isNil(whenCall))
+					totalTime = totalTime != null ? formatById("Clock_Short_HM", totalTime) : "";
+			}
+			return totalTime;
+		}
+
+		calcAllBrk(lstTime: any) {
+			let self = this, brkTotal = 0, lstTimeFilter: any = [];
+			for (let br = 0; br < self.lstBreakSum.length; br++) {
+				lstTimeFilter = _.filter(lstTime, (x: any) => {
+					return (x.start == self.lstBreakSum[br].start && x.end < self.lstBreakSum[br].end) ||
+						(x.start < self.lstBreakSum[br].start && x.end == self.lstBreakSum[br].end)
+				});
+				if (!_.isEmpty(lstTimeFilter)) {
+					for (let brk = 0; brk < lstTimeFilter.length; brk++) {
+						brkTotal += (self.lstBreakSum[br].end - self.lstBreakSum[br].start) - (lstTimeFilter[brk].end - lstTimeFilter[brk].start)
+					}
+				} else {
+					brkTotal += self.lstBreakSum[br].end - self.lstBreakSum[br].start;
+				}
+			}
+			return brkTotal;
+		}
+
+		calcAllTime(schedule: any, lstTime: any, timeRangeLimit: any) {
+			// Tính tổng thời gian làm việc
+			let self = this;
+			let totalTimeAll = 0, totalTimeWork = 0,
+				start1 = (schedule.workScheduleDto != null && schedule.workScheduleDto.startTime1 != null) ? (self.checkTimeOfChart(schedule.workScheduleDto.startTime1, timeRangeLimit * 5)) : 0,
+				end1 = (schedule.workScheduleDto != null && schedule.workScheduleDto.endTime1 != null) ? (self.checkTimeOfChart(schedule.workScheduleDto.endTime1, timeRangeLimit * 5)) : 0,
+				start2 = (schedule.workScheduleDto != null && schedule.workScheduleDto.startTime2 != null) ? (self.checkTimeOfChart(schedule.workScheduleDto.startTime2, timeRangeLimit * 5)) : 0,
+				end2 = (schedule.workScheduleDto != null && schedule.workScheduleDto.endTime2 != null) ? (self.checkTimeOfChart(schedule.workScheduleDto.endTime2, timeRangeLimit * 5)) : 0;
+			lstTime.forEach((total: any) => {
+				totalTimeAll += (total.end * 5) - (total.start * 5)
+			});
+			start1 = start1 <= self.dispStart * 5 ? self.dispStart * 5 : start1 ;
+			
+			if(start2 != null && start2 != 0)
+			start2 = start2 <= self.dispStart * 5 ? self.dispStart * 5 : start2;
+			
+			if (start2 != 0 && end2 != 0)
+				totalTimeWork = ((end2 - (end2 % 5)) - (start2 - (start2 % 5))) + ((end1 - (end1 % 5)) - (start1 - (start1 % 5)));
+			else if (end1 != 0 && (start2 == 0 || end2 == 0))
+				totalTimeWork = ((end1 - (end1 % 5)) - (start1 - (start1 % 5)));
+			totalTimeWork = totalTimeWork - totalTimeAll;
+			
+			let totalTimeWorks = totalTimeWork != 0 ? formatById("Clock_Short_HM", totalTimeWork) : "";
+
+			return totalTimeWorks;
+		}
+
+		// Tính tổng từng loại thời gian
+		calcChartTypeTime(schedule: any, typeChart: any, timeRangeLimit: any, lstTime: any, lstBreak : any, index : any) {
+			let self = this, startCalc = 0, endCalc = 0, lstTimeFilter: any = [];
+			for (let o = 0; o < typeChart.length; o++) {
+				let brkT: any = typeChart[o];
+				let timeChartBrk = self.convertTimeToChart(_.isNil(brkT.startTime) ? brkT.start : (_.isNil(brkT.startTime.time) ? brkT.startTime : brkT.startTime.time),
+					_.isNil(brkT.endTime) ? brkT.end : (_.isNil(brkT.endTime.time) ? brkT.endTime : brkT.endTime.time)),
+					timeChart = self.convertTimeToChart(schedule.workScheduleDto.startTime1, schedule.workScheduleDto.endTime1), timeChart2: any = null;
+
+				
+					startCalc = self.checkTimeOfChart(timeChartBrk.startTime, timeRangeLimit);
+					endCalc = self.checkTimeOfChart(timeChartBrk.endTime, timeRangeLimit);
+			if (_.inRange(startCalc, timeChart.startTime, timeChart.endTime) || _.inRange(endCalc, timeChart.startTime, timeChart.endTime)) {
+					let duplicateTime = self.calcTimeDuplicate(startCalc, endCalc, timeChart.startTime, timeChart.endTime, 1);
+
+					startCalc = duplicateTime.startTime;
+					endCalc = duplicateTime.endTime;
+					
+					self.lstBreakShow.push({
+									start: startCalc,
+									end: endCalc,
+									lstBreak: lstBreak,
+									index : index
+					})
+					if (startCalc != endCalc) {
+						if ((timeChart != null && timeChart.startTime != null && timeChart.endTime != null) &&
+							(timeChart.startTime < (timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)) &&
+							(_.inRange(timeChart.startTime, 0, (timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)) ||
+								_.inRange(timeChart.endTime, 0, (timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)))) {
+
+							if (!_.isNil(lstBreak) && lstBreak == 1 && (_.inRange(startCalc, timeChart.startTime, timeChart.endTime) || _.inRange(endCalc, timeChart.startTime, timeChart.endTime))) {
+								self.lstBreakSum.push({
+									start: startCalc,
+									end: endCalc,
+									lstBreak: lstBreak,
+									index : index
+								})
+								
+							}
+
+							if (!_.isNil(lstBreak) && (lstBreak == 2 || lstBreak == 4)&& (_.inRange(startCalc, timeChart.startTime, timeChart.endTime) || _.inRange(endCalc, timeChart.startTime, timeChart.endTime))) {
+								self.lstHolidayShort.push({
+									start: startCalc,
+									end: endCalc,
+									lstBreak: lstBreak,
+									index : index
+								})
+							}
+
+							lstTimeFilter = _.filter(lstTime, (x: any) => { return (x.start == timeChartBrk.startTime && x.end < timeChartBrk.endTime) || (x.start < timeChartBrk.startTime && x.end == timeChartBrk.endTime) })
+							if ((_.isEmpty(lstTimeFilter) && (startCalc != timeChart.endTime && endCalc != timeChart.startTime) && (_.inRange(startCalc, timeChart.startTime, timeChart.endTime) || _.inRange(endCalc, timeChart.startTime, timeChart.endTime)))) {
+								
+								_.map(lstTime, (x: any) => {
+									// xs > tcs & xe < tce
+										if (x.start >= startCalc && x.end <= endCalc) {
+										x.start = startCalc;
+										x.end = endCalc;
+									}
+									// xs < tcs & xe < tce
+									else if (x.start <= startCalc && x.end <= endCalc && _.inRange(startCalc, x.start, x.end)) {
+											x.end = endCalc;
+									}
+									// xs > tcs & xe > tce
+									else if (x.start >= startCalc && x.end >= endCalc && _.inRange(endCalc, x.start, x.end)) {
+											x.start = startCalc;
+									}
+									else if (!_.inRange(x.start, startCalc, timeChartBrk.endTime) && !_.inRange(x.end, startCalc, endCalc)) {
+										let lstTimeFilter2 = _.filter(lstTime, (x: any) => { return (x.start == startCalc) && (x.end == endCalc) })
+										if(_.isEmpty(lstTimeFilter2)){
+											
+											lstTime.push({
+											start: startCalc,
+											end: endCalc,
+											lstBreak: lstBreak,
+											index : index
+										})
+										}
+									}
+								})
+							}
+
+							if ((!_.isEmpty(lstTimeFilter) && (startCalc != timeChart.endTime && endCalc != timeChart.startTime)
+								&& (_.inRange(startCalc, startCalc, timeChart.endTime) || _.inRange(endCalc, startCalc, timeChart.endTime)))) {
+								_.map(lstTime, (x: any) => {
+									if (x.start == startCalc && x.end < endCalc) {
+										x.end = endCalc;
+									}
+								})
+							}
+
+
+							if (_.isEmpty(lstTime) && !_.isNil(lstBreak) && (startCalc != timeChart.endTime && endCalc != timeChart.startTime) && (_.inRange(startCalc, timeChart.startTime, timeChart.endTime) || _.inRange(endCalc, timeChart.startTime, timeChart.endTime))) {
+								lstTime.push({
+									start: startCalc,
+									end: endCalc,
+									lstBreak: lstBreak,
+									index : index
+								})
+							}
+						}
+					}
+				}
+
+				if (self.dataScreen003A().targetInfor === 1) {
+							timeChart2 = self.convertTimeToChart(schedule.workScheduleDto.startTime2, schedule.workScheduleDto.endTime2)
+							if ((schedule.workScheduleDto.startTime2 != null && schedule.workScheduleDto.endTime2 != null) &&
+								(timeChart2.startTime < (timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)) &&
+								(_.inRange(timeChartBrk.startTime, 0, (timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)) ||
+									_.inRange(timeChartBrk.endTime, 0, (timeRangeLimit - self.dataInitStartKsu003Dto().byDateDto.dispStart * 12)))) {
+								let startCalc2 = self.checkTimeOfChart(timeChartBrk.startTime, timeRangeLimit), endCalc2 = self.checkTimeOfChart(timeChartBrk.endTime, timeRangeLimit);
+								let duplicateTime2 = self.calcTimeDuplicate(startCalc2, endCalc2, timeChart2.startTime, timeChart2.endTime, 2);
+								startCalc2 = duplicateTime2.startTime, endCalc2 = duplicateTime2.endTime;
+								self.lstBreakShow.push({
+									start: startCalc,
+									end: endCalc,
+									lstBreak: lstBreak,
+									index : index
+								})
+								
+								if (startCalc2 != endCalc2) {
+
+								if (!_.isNil(lstBreak) && lstBreak == 1 && (_.inRange(startCalc2, timeChart2.startTime, timeChart2.endTime)
+									|| _.inRange(endCalc2, timeChart2.startTime, timeChart2.endTime))) {
+									self.lstBreakSum.push({
+										start: startCalc2,
+										end: endCalc2,
+										lstBreak: lstBreak,
+										index : index
+									})
+								}
+
+								if (!_.isNil(lstBreak) && lstBreak == 2 && (_.inRange(startCalc2, timeChart2.startTime, timeChart2.endTime)
+									|| _.inRange(endCalc, timeChart2.startTime, timeChart2.endTime))) {
+									self.lstHolidayShort.push({
+										start: startCalc2,
+										end: endCalc2,
+										lstBreak: lstBreak,
+										index : index
+									})
+								}
+
+								lstTimeFilter = _.filter(lstTime, (x: any) => { return (x.start == timeChartBrk.startTime && x.end < timeChartBrk.endTime) || (x.start < timeChartBrk.startTime && x.end == timeChartBrk.endTime) });
+								if ((_.isEmpty(lstTimeFilter) && (startCalc2 != timeChart2.endTime && endCalc2 != timeChart2.startTime)
+									&& (_.inRange(startCalc2, timeChart2.startTime, timeChart2.endTime) || _.inRange(endCalc2, timeChart2.startTime, timeChart2.endTime)))) {
+									lstTime.push({
+										start: startCalc2,
+										end: endCalc2,
+										lstBreak: lstBreak,
+										index : index
+									})
+								}
+								if ((!_.isEmpty(lstTimeFilter) && (startCalc2 != timeChart2.endTime && endCalc2 != timeChart2.startTime)
+									&& (_.inRange(startCalc2, timeChart2.startTime, timeChart2.endTime) || _.inRange(endCalc2, timeChart2.startTime, timeChart2.endTime)))) {
+									_.map(lstTime, (x: any) => {
+									// xs > tcs & xe < tce
+										if (x.start >= startCalc2 && x.end <= endCalc2) {
+										x.start = startCalc2;
+										x.end = endCalc2;
+									}
+									// xs < tcs & xe < tce
+									else if (x.start <= startCalc2 && x.end <= endCalc2 && _.inRange(startCalc2, x.start, x.end)) {
+											x.end = endCalc2;
+									}
+									// xs > tcs & xe > tce
+									else if (x.start >= startCalc2 && x.end >= endCalc && _.inRange(endCalc2, x.start, x.end)) {
+											x.start = startCalc2;
+									}
+									else if (!_.inRange(x.start, startCalc2, timeChartBrk.endTime) && !_.inRange(x.end, startCalc2, endCalc2)) {
+										let lstTimeFilter2 = _.filter(lstTime, (x: any) => { return (x.start == startCalc2) && (x.end == endCalc2) })
+										if(_.isEmpty(lstTimeFilter2)){
+											
+											lstTime.push({
+											start: startCalc2,
+											end: endCalc2,
+											lstBreak: lstBreak,
+											index : index
+										})
+										}
+									}
+								})
+								}
+
+								if (_.isEmpty(lstTime) && !_.isNil(lstBreak) && (startCalc2 != timeChart2.endTime && endCalc2 != timeChart2.startTime)
+									&& (_.inRange(startCalc2, timeChart2.startTime, timeChart2.endTime) || _.inRange(endCalc2, timeChart2.startTime, timeChart2.endTime))) {
+									lstTime.push({
+										start: startCalc2,
+										end: endCalc2,
+										lstBreak: lstBreak,
+										index : index
+									})
+								}
+							}
+					}
+				}
+			}
+			return lstTime;
+		}
+
+		public nextDay() {
+			let self = this;
+			let checkSort = $("#extable-ksu003").exTable('updatedCells');
+			block.grayout();
+			if (checkSort.length > 0) {
+				dialog.confirm({ messageId: "Msg_447" }).ifYes(() => {
+					self.nextDayImpl();
+				}).ifNo(() => { return; });
+			} else {
+				self.nextDayImpl();
+			}
+			block.clear();
+		}
+
+		public nextDayImpl() {
+			let self = this;
+			self.changeTargetDate(1, 1);
+			self.checkNext(true);
+			self.checkPrv(true);
+			/*$("#icon-prev-all").css("filter", "contrast(1)");
+			$("#icon-prev-one").css("filter", "contrast(1)");*/
+			if (self.dataFromA().endDate <= self.targetDate()) {
+				self.targetDate(self.dataFromA().endDate);
+				self.checkNext(false);
+				/*$("#icon-next-one").css("filter", "contrast(0.7)");
+				$("#icon-next-all").css("filter", "contrast(0.7)");*/
+			}
+			self.hoverEvent(self.targetDate());
+			self.destroyAndCreateGrid(self.lstEmpId, 0);
+		}
+
+		public nextAllDay() {
+			let self = this, i = 7,
+				nextDay: any = moment(moment(self.targetDate()).add(7, 'd').format('YYYY/MM/DD')),
+				checkSort = $("#extable-ksu003").exTable('updatedCells');
+			if (checkSort.length > 0) {
+				dialog.confirm({ messageId: "Msg_447" }).ifYes(() => {
+					self.nextAllDayImpl(i, nextDay);
+				}).ifNo(() => { return; });
+			} else {
+				self.nextAllDayImpl(i, nextDay);
+			}
+		}
+
+		public nextAllDayImpl(i: number, nextDay: any) {
+			let self = this;
+			self.checkNext(true);
+			self.checkPrv(true);
+
+			/*$("#icon-prev-all").css("filter", "contrast(1)");
+			$("#icon-prev-one").css("filter", "contrast(1)");*/
+			if (self.dataFromA().endDate <= nextDay._i) {
+				let date: number = moment(self.dataFromA().endDate).date() - moment(self.targetDate()).date();
+				self.checkNext(false);
+				/*$("#icon-next-all").css("filter", "contrast(0.7)");
+				$("#icon-next-one").css("filter", "contrast(0.7)");*/
+
+				self.changeTargetDate(1, date);
+			} else {
+				self.changeTargetDate(1, i);
+			}
+			self.hoverEvent(self.targetDate());
+			self.destroyAndCreateGrid(self.lstEmpId, 0);
+		}
+
+		public prevDay() {
+			let self = this;
+			let checkSort = $("#extable-ksu003").exTable('updatedCells');
+			if (checkSort.length > 0) {
+				dialog.confirm({ messageId: "Msg_447" }).ifYes(() => {
+					self.prevDayImpl();
+				}).ifNo(() => { return; });
+			} else {
+				self.prevDayImpl();
+			}
+		}
+
+		public prevDayImpl() {
+			let self = this;
+			self.changeTargetDate(0, 1);
+			self.checkPrv(true);
+			self.checkNext(true);
+			/*$("#icon-next-all").css("filter", "contrast(1)");
+			$("#icon-next-one").css("filter", "contrast(1)");*/
+			if (self.dataFromA().startDate >= self.targetDate()) {
+				self.targetDate(self.dataFromA().startDate);
+				self.checkPrv(false);
+				/*$("#icon-prev-one").css("filter", "contrast(0.7)");
+				$("#icon-prev-all").css("filter", "contrast(0.7)");*/
+			}
+			self.hoverEvent(self.targetDate());
+			self.destroyAndCreateGrid(self.lstEmpId, 0);
+		}
+
+		public prevAllDay() {
+			let self = this, i = 7;
+			let prvDay: any = moment(moment(self.targetDate()).subtract(7, 'd').format('YYYY/MM/DD'));
+			let checkSort = $("#extable-ksu003").exTable('updatedCells');
+			if (checkSort.length > 0) {
+				dialog.confirm({ messageId: "Msg_447" }).ifYes(() => {
+					self.prevAllDayImpl(i, prvDay);
+				}).ifNo(() => { return; });
+			} else {
+				self.prevAllDayImpl(i, prvDay);
+			}
+		}
+
+		public prevAllDayImpl(i: number, prvDay: any) {
+			let self = this;
+			self.checkPrv(true);
+			self.checkNext(true);
+			/*$("#icon-next-all").css("filter", "contrast(1)");
+			$("#icon-next-one").css("filter", "contrast(1)");*/
+			if (self.dataFromA().startDate >= prvDay._i) {
+				let date: number = moment(self.targetDate()).date() - moment(self.dataFromA().startDate).date();
+				self.checkPrv(false);
+				/*$("#icon-prev-all").css("filter", "contrast(0.7)");
+				$("#icon-prev-one").css("filter", "contrast(0.7)");*/
+
+				self.changeTargetDate(0, date);
+			} else {
+				self.changeTargetDate(0, 7);
+			}
+			self.hoverEvent(self.targetDate());
+			self.destroyAndCreateGrid(self.lstEmpId, 0);
+		}
+
+		public changeTargetDate(nextOrprev: number, index: number) {
+			let self = this;
+			if (nextOrprev === 1) {
+				let time: any = moment(moment(self.targetDate()).add(index, 'd').format('YYYY/MM/DD'));
+				self.targetDate(time._i);
+			} else {
+				let time: any = moment(moment(self.targetDate()).subtract(index, 'd').format('YYYY/MM/DD'));
+				self.targetDate(time._i);
+			}
+			self.targetDateDay(self.targetDate() + moment(self.targetDate()).format('(ddd)'));
+		}
+
+		public checkTimeInfo(worktypeCode: any, worktimeCode: any, startTime1: any, startTime2: any, endTime1: any, endTime2: any) {
+			let command: any = {
+				workType: worktypeCode.trim(),
+				workTime: worktimeCode.trim(),
+				workTime1: startTime1 != "" && startTime1 != null ? new TimeZoneDto(new TimeOfDayDto(0, _.isString(startTime1) ? Math.floor(duration.parseString(startTime1).toValue()) : startTime1),
+					new TimeOfDayDto(0, _.isString(endTime1) ? Math.floor(duration.parseString(endTime1).toValue()) : endTime1)) : null,
+				workTime2: startTime2 != "" && startTime2 != null ? new TimeZoneDto(new TimeOfDayDto(0, _.isString(startTime2) ? Math.floor(duration.parseString(startTime2).toValue()) : startTime2),
+					new TimeOfDayDto(0, _.isString(endTime2) ? Math.floor(duration.parseString(endTime2).toValue()) : endTime2)) : null,
+			}
+			service.checkTimeIsIncorrect(command).done(function(result) {
+				let errors = [];
+				for (let i = 0; i < result.length; i++) {
+					if (!result[i].check) {
+						if (result[i].timeSpan == null) {
+							errors.push({
+								message: nts.uk.resource.getMessage('Msg_439', getText('KDL045_12')),
+								messageId: "Msg_439",
+								supplements: {}
+							});
+						} else {
+							if (result[i].timeSpan.startTime == result[i].timeSpan.endTime) {
+								errors.push({
+									message: nts.uk.resource.getMessage('Msg_2058', [result[i].nameError, result[i].timeInput]),
+									messageId: "Msg_2058",
+									supplements: {}
+								});
+							} else {
+								errors.push({
+									message: nts.uk.resource.getMessage('Msg_1772', [result[i].nameError, formatById("Clock_Short_HM", result[i].timeSpan.startTime), formatById("Clock_Short_HM", result[i].timeSpan.endTime)]),
+									messageId: "Msg_1772",
+									supplements: {}
+								});
+							}
+						}
+					}
+				}
+
+				if (errors.length > 0) {
+
+					let errorsInfo = _.uniqBy(errors, x => { return x.message });
+					bundledErrors({ errors: errorsInfo });
+					return;
+				}
+
+			}).fail(function(res: any) {
+				errorDialog({ messageId: res.messageId, messageParams: res.parameterIds });
+			}).always(function() {
+			});
+		}
+
 		convertTime(timeStart: any, timeEnd: any, timeStart2: any, timeEnd2: any) {
-			if (timeStart != "") timeStart = Math.round(duration.parseString(timeStart).toValue());
-			if (timeEnd != "") timeEnd = Math.round(duration.parseString(timeEnd).toValue());
-			if (timeStart2 != "") timeStart2 = Math.round(duration.parseString(timeStart2).toValue());
-			if (timeEnd2 != "") timeEnd2 = Math.round(duration.parseString(timeEnd2).toValue());
+			if (timeStart != "") timeStart = Math.floor(duration.parseString(timeStart).toValue());
+			if (timeEnd != "") timeEnd = Math.floor(duration.parseString(timeEnd).toValue());
+			if (timeStart2 != "") timeStart2 = Math.floor(duration.parseString(timeStart2).toValue());
+			if (timeEnd2 != "") timeEnd2 = Math.floor(duration.parseString(timeEnd2).toValue());
 
 			let timeConvert = {
 				start: timeStart != "" ? timeStart : "",
@@ -2314,6 +3247,15 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				end2: timeEnd2 != "" ? timeEnd2 : ""
 			}
 			return timeConvert;
+		}
+
+		convertTimeChart(startTime: any, endTime: any) {
+			let convertTime = null;
+			convertTime = {
+				startTime: startTime,
+				endTime: endTime
+			}
+			return convertTime;
 		}
 
 		convertTimeToChart(startTime: any, endTime: any) {
@@ -2330,11 +3272,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			return convertTime;
 		}
 
-		public convertTimePixel(timeStart: any) {
-			let time = 0;
+		convertTimePixel(timeStart: any) {
+			let time = 0, self = this;
 			if (timeStart != null) {
 				// convert string to pixel
-				time = Math.round(duration.parseString(timeStart).toValue() / 5);
+				time = Math.floor((duration.parseString(timeStart).toValue()) / 5);
 			}
 			return time;
 		}
@@ -2342,85 +3284,308 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		/** 行事(A2_1_6)をクリックする  (Click "event"(A2_1_6) */
 		hoverEvent(targetDate: any) {
 			let self = this, tooltip = _.filter(self.tooltip, (x: any) => { return x.ymd === targetDate });
+			let check = 0;
 			if (tooltip.length > 0) {
 				let htmlToolTip = tooltip[0].htmlTooltip;
-				$('#event').tooltip({
-					content: htmlToolTip != null ? htmlToolTip : "",
-					tooltipClass: "tooltip-styling"
+				$('#event').on({
+					"click": function() {
+						$(this).tooltip({
+							items: "#event", content: htmlToolTip != null ? htmlToolTip : "",
+							tooltipClass: "tooltip-styling"
+						});
+						$(this).tooltip("open");
+						check = 1;
+					},
+					"mouseout": function(a: any) {
+						if (check == 1)
+							$(this).tooltip("disable");
+					}
 				});
 			}
 		}
 
+		// open dialog kdl045
+		public openKdl045Dialog(empId: string) {
+			let self = this, lineNo = _.findIndex(self.lstEmpId, (x) => { return x.empId === empId; }),
+				dataMid = $("#extable-ksu003").exTable('dataSource', 'middle').body[lineNo];
+				
+			block.grayout();
+			if (self.dataScreen003A().employeeInfo[lineNo].workScheduleDto != null) {
+				self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.workTypeCode = dataMid.worktypeCode.trim();
+				self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.workTimeCode = dataMid.worktimeCode.trim();
+				self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.startTime1 = dataMid.startTime1.trim();
+				self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.endTime1 = dataMid.endTime1.trim();
+				self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.startTime2 = dataMid.startTime2.trim();
+				self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.endTime2 = dataMid.endTime2.trim();
+
+				if (self.dataScreen003AFirst().employeeInfo[lineNo].workScheduleDto.workTimeCode == "") {
+					self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.listBreakTimeZoneDto = [];
+				}
+			}
+
+			let data: Array<model.DisplayWorkInfoByDateDto> = _.filter(self.dataScreen003A().employeeInfo, (x) => { return x.empId === empId; }); // lấy dữl iệu theo empId từ list dữ liệu của màn KSU003	
+			let dataEmployee = _.filter(self.dataFromA().listEmp, (x : any) => { return x.id === empId; });
+			let dataShare: any = {
+				employeeInfo: data[0],
+				targetInfor: self.dataScreen003A().targetInfor,
+				canModified: self.dataScreen003A().canModified, // comment tạm để test
+				scheCorrection: self.dataScreen003A().scheCorrection,
+				unit: self.dataFromA().unit,
+				targetId: self.dataFromA().unit === 0 ? self.dataFromA().workplaceId : self.dataFromA().workplaceGroupId,
+				workplaceName: self.dataFromA().workplaceName
+			};
+			dataShare.employeeInfo.employeeCode = dataEmployee[0].code;
+			dataShare.employeeInfo.employeeName = dataEmployee[0].name;
+			setShared('dataShareTo045', dataShare);
+			nts.uk.ui.windows.sub.modal('/view/kdl/045/a/index.xhtml').onClosed(() => {
+				self.dataScreen045A(getShared('dataFromKdl045'));
+				if (!_.isNil(self.dataScreen045A())) {
+					self.checkGetInfo = true;
+					let lstBrkTime = self.dataScreen045A().workScheduleDto.listBreakTimeZoneDto, totalBrkTime = "",
+						lstBreak: any = lstBrkTime, totalTimebr: any = null;
+					lstBrkTime.forEach((x: any) => {
+						totalTimebr += x.endTime - x.startTime;
+					})
+
+					totalBrkTime = totalTimebr != null ? formatById("Clock_Short_HM", totalTimebr) : ""
+
+					let totalTime = self.calcTotalTime(self.dataScreen045A().workScheduleDto),
+						schedule = self.dataScreen045A().workScheduleDto,
+						fixed = self.dataScreen045A().fixedWorkInforDto,
+						info = self.dataScreen045A().workInfoDto;
+					self.setDataToMidExtable(lineNo, empId, schedule, fixed, totalTime, totalBrkTime);
+					if (_.isNull(self.dataScreen003A().employeeInfo[lineNo].workScheduleDto)) {
+						self.dataScreen003A().employeeInfo[lineNo].workScheduleDto = {
+							startTime1: schedule.startTime1,
+							startTime1Status: schedule.endTime1,
+							endTime1: schedule.endTime1,
+							endTime1Status: null,
+							startTime2: schedule.startTime2,
+							startTime2Status: null,
+							endTime2: schedule.endTime2,
+							endTime2Status: null,
+							listBreakTimeZoneDto: lstBrkTime.length > 0 ? lstBrkTime : [],
+							workTypeCode: schedule.workTypeCode,
+							breakTimeStatus: null,
+							workTypeStatus: null,
+							workTimeCode: schedule.workTimeCode,
+							workTimeStatus: null
+						}
+					} else {
+						self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.startTime1 = schedule.startTime1;
+						self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.startTime1Status = schedule.endTime1;
+						self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.endTime1 = schedule.endTime1;
+						self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.startTime2 = schedule.startTime2;
+						self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.endTime2 = schedule.endTime2;
+						self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.listBreakTimeZoneDto = lstBrkTime.length > 0 ? lstBrkTime : [];
+						self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.workTypeCode = schedule.workTypeCode;
+						self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.workTimeCode = schedule.workTimeCode;
+					}
+
+					if (_.isNull(self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto)) {
+						self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto = {
+							workTimeName: fixed.workTimeName,
+							coreStartTime: null,
+							coreEndTime: null,
+							overtimeHours: [],
+							startTimeRange1: null,
+							endTimeRange1: null,
+							workTypeName: fixed.workTypeName,
+							startTimeRange2: null,
+							endTimeRange2: null,
+							fixBreakTime: fixed.fixBreakTime,
+							workType: fixed.workType,
+							isHoliday: null,							
+							isNeedWorkTime : null
+						}
+					} else {
+						self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workTimeName = fixed.workTimeName;
+						self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workTypeName = fixed.workTypeName;
+						self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.fixBreakTime = fixed.fixBreakTime;
+						self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType = fixed.workType;
+					}
+
+					self.dataScreen003A().employeeInfo[lineNo].workInfoDto.directAtr = info.directAtr;
+					self.dataScreen003A().employeeInfo[lineNo].workInfoDto.bounceAtr = info.bounceAtr;
+
+					if (schedule.workTimeCode == null || schedule.workTimeCode == "") {
+						$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime1", "");
+						$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime2", "");
+						$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime1", "");
+						$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime2", "");
+						$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeCode", "");
+						$("#extable-ksu003").exTable("cellValue", "middle", empId, "totalTime", "");
+						let cssTotalTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (lineNo + 2).toString() + ")" + " > td:nth-child(9)";
+						$(cssTotalTime).css("background-color", "#ffffff");
+						$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", "");
+						$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeName", getText('KSU003_55'));
+						return;
+					}
+
+					self.convertDataIntoExtable();
+
+					let datafilter: Array<ITimeGantChart> = _.filter(self.dataOfGantChart, (x: any) => { return x.empId === empId });
+					if (datafilter.length > 0) {
+						//self.updateGantChart(datafilter, lineNo, fixedGc, lstBreak, indexS, indexF);
+						self.addAllChart(datafilter, lineNo, [], self.midDataGC, "KDL045", lstBreak);
+						ruler.replaceAt(lineNo, [
+							...self.allGcShow
+						]);
+					}
+				}
+				self.checkGetInfo = false;
+				block.clear();
+			});
+		}
+
+
+		/** A1_3 - Open dialog G */
+		public openGDialog() {
+			let self = this;
+			block.grayout();
+			let dataShare = {
+				employeeIDs: _.map(self.lstEmpId, (x: IEmpidName) => { return x.empId }),
+				startDate: self.targetDate(),
+				endDate: self.targetDate(),
+				employeeInfo: self.dataFromA().listEmp
+			};
+			setShared('dataShareDialogG', dataShare);
+			nts.uk.ui.windows.sub.modal('/view/ksu/001/g/index.xhtml').onClosed(() => {
+				block.clear();
+				setTimeout(() => {
+					$('#period-setting').focus();
+				}, 0.5);
+			});
+		}
+
+		public openKdl003Dialog(workTypeCode: string, workTimeCode: string, empId: string) {
+			let self = this;
+			block.grayout();
+			nts.uk.ui.windows.setShared('parentCodes', {
+				workTypeCodes: [],
+				selectedWorkTypeCode: workTypeCode.length > 3 ? workTypeCode.slice(0, 3) : workTypeCode,
+				workTimeCodes: [],
+				selectedWorkTimeCode: workTimeCode.length > 3 ? workTimeCode.slice(0, 3) : workTimeCode
+			}, true);
+			let checkOpen = _.filter(self.disableDs, (x: any) => { return x.empId === empId });
+			let checkOpen2 = _.filter(self.lstDis, (x: any) => { return x.empId === empId });
+			if (checkOpen.length < 1 && checkOpen2.length < 1) {
+				nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(() => {
+					let dataShareKdl003 = getShared('childData');
+
+					if (!_.isNil(dataShareKdl003)) {
+						let param = [{
+							workTypeCode: dataShareKdl003.selectedWorkTypeCode,
+							workTimeCode: dataShareKdl003.selectedWorkTimeCode
+						}]
+						// 社員勤務予定と勤務固定情報を取得する
+						service.getEmpWorkFixedWorkInfo(param).done((data: model.DataFrom045) => {
+							if (!_.isNil(data)) {
+								let lineNo = _.findIndex(self.dataScreen003A().employeeInfo, (x) => { return x.empId === empId; });
+								if (data.fixedWorkInforDto.workType == null) {
+									$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktypeCode", data.workScheduleDto.workTypeCode);
+									$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime1", "");
+									$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime2", " ");
+									$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime1", "");
+									$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime2", " ");
+									$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeCode", "");
+									$("#extable-ksu003").exTable("cellValue", "middle", empId, "totalTime", "");
+									let cssTotalTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (lineNo + 2).toString() + ")" + " > td:nth-child(9)";
+									$(cssTotalTime).css("background-color", "#ffffff");
+									$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", "");
+									$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeName", getText('KSU003_55'));
+									$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktypeName", data.fixedWorkInforDto.workTypeName);
+									return;
+								}
+
+								if (data.workScheduleDto.startTime1) {
+									self.checkClearTime = false;
+									self.checkUpdateMidChart = false;
+								}
+
+								self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto = data.fixedWorkInforDto;
+								self.dataScreen003A().employeeInfo[lineNo].workScheduleDto = data.workScheduleDto;
+
+								let totalTime = self.calcTotalTime(data.workScheduleDto), totalTimebr = 0;
+
+								if (data.workScheduleDto.listBreakTimeZoneDto != null && data.workScheduleDto.listBreakTimeZoneDto.length > 0) {
+									data.workScheduleDto.listBreakTimeZoneDto.forEach((x: any) => {
+										totalTimebr += (!_.isNil(x.endTime) ? x.endTime : x.end) - (!_.isNil(x.startTime) ? x.startTime : x.start);
+									})
+								}
+
+								let totalBrkTime = totalTimebr != null ? formatById("Clock_Short_HM", totalTimebr) : "";
+
+								self.setDataToMidExtable(lineNo, empId, data.workScheduleDto, data.fixedWorkInforDto, totalTime, totalBrkTime);
+								self.convertDataIntoExtable(lineNo);
+
+								let datafilter: Array<ITimeGantChart> = _.filter(self.dataOfGantChart, (x: any) => { return x.empId === empId });
+								if (datafilter.length > 0) {
+									//self.updateGantChart(datafilter, lineNo, fixedGc, lstBreak, indexS, indexF);
+									self.addAllChart(datafilter, lineNo, [], self.midDataGC, "KDL003");
+									if (self.allGcShow.length > 0) {
+										ruler.replaceAt(lineNo, [
+											...self.allGcShow
+										]);
+									} else {
+										ruler.replaceAt(lineNo, [{ // xóa chart khi là ngày nghỉ
+											type: "Flex",
+											options: {
+												id: `lgc` + lineNo,
+												start: -1,
+												end: -1,
+												lineNo: lineNo
+											}
+										}]);
+									}
+								}
+
+							}
+
+						}).fail(function(error) {
+							errorDialog({ messageId: error.messageId });
+						}).always(function() {
+							self.checkUpdateMidChart = true;
+						});
+					}
+					block.clear();
+				});
+			}
+			block.clear();
+		}
+
+		/** A1_4 - Close modal */
+		public closeDialog(): void {
+			nts.uk.ui.windows.close();
+		}
+	
 	}
 
-	/**
- * 応援区分
- */
 	export enum SupportAtr {
-		/**
-		 * 応援ではない
-		 */
 		NOT_CHEERING = 1,
-		/**
-		 * 時間帯応援元
-		 */
 		TIMEZONE_SUPPORTER = 2,
-		/**
-		 * 時間帯応援先
-		 */
 		TIMEZONE_RESPONDENT = 3,
-		/**
-		 * 終日応援元
-		 */
 		ALL_DAY_SUPPORTER = 4,
-		/**
-		 * 終日応援先
-		 */
 		ALL_DAY_RESPONDENT = 5
 	}
 
 	export enum EditStateSetting {
-		/**
-		* 手修正（本人）
-		*/
 		HAND_CORRECTION_MYSELF = 0,
-		/**
-		 * 手修正（他人） 
-		 */
 		HAND_CORRECTION_OTHER = 1,
-		/**
-		 * 申請反映
-		 */
 		REFLECT_APPLICATION = 2,
-		/**
-		 * 打刻反映
-		 */
 		IMPRINT = 3
 	}
 
 	export enum WorkTimeForm {
-		/**
-		* 固定勤務 
-		*/
 		FIXED = 0,
-		/**
-		 * フレックス勤務
-		 */
 		FLEX = 1,
-		/**
-		 * 流動勤務
-		 */
 		FLOW = 2,
-		/**
-		 * 時差勤務
-		 */
 		TIMEDIFFERENCE = 3
 	}
 
 	class ItemModel {
 		code: string;
 		name: string;
-
 		constructor(code: string, name: string) {
 			this.code = code;
 			this.name = name;
@@ -2453,7 +3618,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 	interface IEmpidName {
 		empId: string,
-		name: string
+		name: string,
+		code: string
 	}
 
 	//時間帯(実装コードなし/使用不可)

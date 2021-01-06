@@ -16,7 +16,7 @@ public class FileAttachmentSetting extends DomainObject {
 	/**
 	 * 添付ファイル内容
 	 */
-	private Optional<String> linkContent;
+	private Optional<DisplayName> linkContent;
 	
 	/**
 	 * 添付ファイルID

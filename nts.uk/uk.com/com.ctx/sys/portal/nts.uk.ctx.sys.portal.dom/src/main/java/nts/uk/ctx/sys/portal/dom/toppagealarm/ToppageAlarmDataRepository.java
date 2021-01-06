@@ -25,11 +25,19 @@ public interface ToppageAlarmDataRepository {
 	
 	/**
 	 * [3] get未読(会社ID,社員ID)
+	 * @param companyId 会社ID
+	 * @param sId 社員ID
+	 * @param afterDateTime
+	 * @return List＜トップページアラームデータ＞
 	 */
 	List<ToppageAlarmData> getUnread(String companyId, String sId, GeneralDateTime afterDateTime);
 	
 	/**
 	 * [4] get未読と既読(会社ID,社員ID)
+	 * @param companyId 会社ID
+	 * @param sId 社員ID
+	 * @param afterDateTime
+	 * @return List＜トップページアラームデータ＞
 	 */
 	List<ToppageAlarmData> getAll(String companyId, String sId, GeneralDateTime afterDateTime);
 	

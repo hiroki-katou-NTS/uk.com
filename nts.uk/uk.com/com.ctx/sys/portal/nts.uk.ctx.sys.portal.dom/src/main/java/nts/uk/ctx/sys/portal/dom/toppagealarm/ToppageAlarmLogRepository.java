@@ -23,6 +23,12 @@ public interface ToppageAlarmLogRepository {
 	
 	/**
 	 * [3] get(会社ID、アラーム分類、識別キー、表示社員ID)
+	 * @param companyId 会社ID
+	 * @param alarmCls アラーム分類
+	 * @param idenKey 識別キー
+	 * @param sId 社員ID
+	 * @param dispAtr 表示社員区分
+	 * @return Optional＜既読日時＞
 	 */
 	Optional<ToppageAlarmLog> get(String companyId, AlarmClassification alarmCls, String idenKey, String sId, DisplayAtr dispAtr);
 	
