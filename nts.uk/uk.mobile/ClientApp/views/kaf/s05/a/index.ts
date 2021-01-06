@@ -357,7 +357,7 @@ export class KafS05Component extends KafS00ShrComponent {
             vm.user = user;
         }).then(() => {
             if (vm.modeNew) {
-                return vm.loadCommonSetting(AppType.OVER_TIME_APPLICATION);
+                return vm.loadCommonSetting(AppType.OVER_TIME_APPLICATION, null, null, null, vm.overTimeClf);
             }
 
             return true;

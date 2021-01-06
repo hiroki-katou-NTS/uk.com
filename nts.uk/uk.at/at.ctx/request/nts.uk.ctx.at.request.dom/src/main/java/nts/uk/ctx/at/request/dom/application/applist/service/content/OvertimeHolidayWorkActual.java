@@ -31,6 +31,8 @@ public class OvertimeHolidayWorkActual {
 	
 	/**
 	 * 実績状態
+	 * true: 実績状態＝実績あり
+	 * false: 実績状態＝実績なし
 	 */
 	private boolean actualStatus;
 	
