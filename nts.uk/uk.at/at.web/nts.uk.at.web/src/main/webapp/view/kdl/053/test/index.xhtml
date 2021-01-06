@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />	
+
+			<com:stylefile path="kdl053.test.style.css" />	
+			<com:scriptfile path="kdl053.test.vm.js" />
+			<com:scriptfile path="kdl053.test.start.js" />
+
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<button data-bind="click: openDialog">Open KDL053</button>
+			</div>
+			<div id="content-area">
+				<!-- <div id="left-content">
+					<div style="margin-top: 20px; margin-left: 20px;" id="daterangepicker" tabindex="1" data-bind="ntsDateRangePicker: { 
+						required: required, 
+						enable: enable, 
+						showNextPrevious: true, 
+						value: dateValue, 
+						maxRange: 'oneMonth'}"> </div>		
+						
+				</div>
+				<br/>
+				<div id="right-content">
+					<div style="margin-top:60px; margin-left: 20px;" id="ccgcomponent" tabindex="1" ></div>
+					<div style="margin-left: 380px;" id="component-items-list" ></div>
+				</div> -->
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+
+</html>

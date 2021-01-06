@@ -3372,6 +3372,11 @@ public class ProgramsManager {
             ProgramIdConsts.KDL051A,
             "KDL051_1",
             "/view/kdl/051/single.xhtml");
+	/**
+	 * KDL053
+	 */
+	public static final Program KDL053 = new Program(WebAppId.AT, ProgramIdConsts.KDL053, "KDL053_1",
+            "/view/kdl/053/index.xhtml");
 
     /**
      * CMM024
