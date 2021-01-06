@@ -60,9 +60,7 @@ public class EmployeeCommentInformationRepositoryImpl extends JpaRepository
 	@Override
 	public void delete(EmployeeCommentInformation domain) {
 		EmployeeCommentInformationEntity entity = EmployeeCommentInformationRepositoryImpl.toEntity(domain);
-		Optional<EmployeeCommentInformationEntity> oldEntity = this.queryProxy().find(entity.getPk(),
-				EmployeeCommentInformationEntity.class);
-		oldEntity.ifPresent(e -> this.commandProxy().remove(e));
+		this.commandProxy().remove(entity.getPk());
 	}
 
 	@Override
