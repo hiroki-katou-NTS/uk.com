@@ -394,7 +394,7 @@ module nts.uk.at.view.kwr004.b {
         vm.isEnableDuplicateButton(true);
         vm.isEnableDeleteButton(true);
         vm.isNewMode(false);
-        
+
         if (!vm.isItemRemoved())
           $('#KWR004_B33').focus();
         else {
@@ -604,7 +604,11 @@ module nts.uk.at.view.kwr004.b {
         .done((result) => {
           if (_.isNil(result) || result.length == 0) {
             vm.clearModelToNew();
-            $('#KWR004_B32').focus();
+            if (vm.isItemRemoved()) {
+              $('#btnB11').focus();
+              vm.isItemRemoved(false);
+            } else
+              $('#KWR004_B32').focus();
           } else {
             //merge to settingListItems
             _.forEach(result, (x) => {
@@ -618,7 +622,7 @@ module nts.uk.at.view.kwr004.b {
 
             let firstItem: any = _.head(vm.settingListItems());
             if (_.isNil(currentCode)) currentCode = firstItem.code;
-            vm.currentCodeList(currentCode);            
+            vm.currentCodeList(currentCode);
             //vm.currentCodeList.valueHasMutated();
           }
         }).fail(() => { });

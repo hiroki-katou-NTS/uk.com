@@ -122,10 +122,10 @@ module nts.uk.at.view.kwr003.b {
 
     mounted() {
       const vm = this;
-      if (!!navigator.userAgent.match(/Trident.*rv\:11\./)){
+      if (!!navigator.userAgent.match(/Trident.*rv\:11\./)) {
         $("#multiGridList").ntsFixedTable({ height: 'auto' });
-        $('.kwr-003b').addClass('ie');        
-      }  else
+        $('.kwr-003b').addClass('ie');
+      } else
         $("#multiGridList").ntsFixedTable({ height: 370 });
     }
 
@@ -262,7 +262,7 @@ module nts.uk.at.view.kwr003.b {
 
       vm.$blockui('show');
       vm.$ajax(url, params).done(() => {
-        vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {         
+        vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
           vm.loadSettingList(reloadParams);
           vm.settingAttendance();
           vm.isNewMode(false);
@@ -670,12 +670,15 @@ module nts.uk.at.view.kwr003.b {
 
           vm.currentCodeList(code);
 
-          if( !_.isNil(params.msgId) && params.msgId === 'Msg_1903') $('#btnB11').focus();          
+          if (!_.isNil(params.msgId) && params.msgId === 'Msg_1903') $('#btnB11').focus();
 
         } else {
           //create new the settings list
           vm.clearModelToNew();
-          $('#KWR003_B42').focus();
+          if (!_.isNil(params.msgId) && params.msgId === 'Msg_1903')
+            $('#btnB11').focus();
+          else
+            $('#KWR003_B42').focus();
         }
 
         vm.$blockui('hide');
@@ -764,7 +767,7 @@ module nts.uk.at.view.kwr003.b {
     openDialogKDL048(row: any) {
       let vm = this,
         selectionItem: Array<string> = [];
-        vm.shareParam.exportAtr = 1; //４：時間 - ５：回数 - 7：金額		
+      vm.shareParam.exportAtr = 1; //４：時間 - ５：回数 - 7：金額		
       vm.shareParam.attribute.attributeList = [
         new AttendanceType(4, vm.$i18n('KWR002_180')),
         new AttendanceType(5, vm.$i18n('KWR002_181')),
