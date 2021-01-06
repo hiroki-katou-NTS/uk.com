@@ -22,7 +22,6 @@ import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
-@SuppressWarnings("unchecked")
 @RunWith(JMockit.class)
 public class WorkAvailabilityByShiftMasterTest {
 	
@@ -49,6 +48,7 @@ public class WorkAvailabilityByShiftMasterTest {
 	 * output: false
 	 */
 	@Test
+	@SuppressWarnings("unchecked")
 	public void testIsHolidayAvailability_false() {
 		
 		WorkAvailabilityByShiftMaster shiftExp = WorkAvailabilityByShiftMasterTestHelper.createWithShiftCodes("S01", "S02");
@@ -60,10 +60,10 @@ public class WorkAvailabilityByShiftMasterTest {
 				result= Arrays.asList(shiftMaster1, shiftMaster2);
 				
 				shiftMaster1.isAttendanceRate(require);
-				result = false;
+				result = true;
 				
 				shiftMaster2.isAttendanceRate(require);
-				result = false;
+				result = true;
 			}
 		};
 		
@@ -75,6 +75,7 @@ public class WorkAvailabilityByShiftMasterTest {
 	 * output: false
 	 */
 	@Test
+	@SuppressWarnings("unchecked")
 	public void testIsHolidayAvailability_have_element_true() {
 		
 		WorkAvailabilityByShiftMaster shiftExp = WorkAvailabilityByShiftMasterTestHelper.createWithShiftCodes("S01", "S02");
@@ -86,10 +87,10 @@ public class WorkAvailabilityByShiftMasterTest {
 				result= Arrays.asList(shiftMaster1, shiftMaster2);
 				
 				shiftMaster1.isAttendanceRate(require);
-				result = false;
+				result = true;
 				
 				shiftMaster2.isAttendanceRate(require);
-				result = true;
+				result = false;
 			}
 		};
 		
@@ -100,6 +101,7 @@ public class WorkAvailabilityByShiftMasterTest {
 	 * input: シフトマスタの出勤系か中にelement first　: true
 	 * output: true
 	 */
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testIsHolidayAvailability_first_true() {
 		
@@ -112,7 +114,7 @@ public class WorkAvailabilityByShiftMasterTest {
 				result= Arrays.asList(shiftMaster1, shiftMaster2);
 				
 				shiftMaster1.isAttendanceRate(require);
-				result = true;
+				result = false;
 			}
 		};
 		

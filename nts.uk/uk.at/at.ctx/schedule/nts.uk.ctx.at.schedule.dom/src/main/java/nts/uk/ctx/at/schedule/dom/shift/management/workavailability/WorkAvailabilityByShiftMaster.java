@@ -54,8 +54,8 @@ public class WorkAvailabilityByShiftMaster implements WorkAvailability, DomainVa
 	@Override
 	public boolean isHolidayAvailability(WorkAvailability.Require require) {
 		List<ShiftMaster> shiftList = require.getShiftMaster(this.workableShiftCodeList);
-		return  shiftList.stream()
-				.anyMatch(c -> c.isAttendanceRate(require));
+		return shiftList.stream()
+				.anyMatch(c -> !c.isAttendanceRate(require));
 	}
 
 	@Override
