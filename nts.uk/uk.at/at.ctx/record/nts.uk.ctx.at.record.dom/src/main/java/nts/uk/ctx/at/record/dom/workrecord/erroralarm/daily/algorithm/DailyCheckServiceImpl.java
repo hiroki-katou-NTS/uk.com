@@ -6,9 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import javax.inject.Inject;
-
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -486,12 +484,14 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 	/**
 	 * 日次の固定抽出条件のアラーム値を生成する
 	 */
-	private void GenerateAlarmValuesDailyFixedExtractConditions(DataFixExtracCon dataforDailyFix, IntegrationOfDaily integra,
+	private OutputCheckResult GenerateAlarmValuesDailyFixedExtractConditions(DataFixExtracCon dataforDailyFix, IntegrationOfDaily integra,
 			String sid, GeneralDate day, String wplId, Map<Integer, String> work, List<WorkType> listWorkType, 
 			List<WorkTimeSetting> listWorktime) {
 		
 		String alarmMessage = new String();
 		String alarmTarget = new String();
+		List<ResultOfEachCondition> listResultCond = new ArrayList<>();
+		List<AlarmListCheckInfor> listAlarmChk = new ArrayList<>();
 		
 		// 本人確認状況（社員ID、年月日、状況）
 		Optional<IdentityVerifiForDay> identityStatus = dataforDailyFix.getIdentityVerifyStatus().stream()
@@ -511,149 +511,169 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 		List<FixedConditionWorkRecord> listFixedConWk = dataforDailyFix.getListFixConWork();
 		
 		for(FixedConditionWorkRecord item : listFixedConWk) {
-//			if(item.getFixConWorkRecordNo().value == 5) {
-//				
-//			}
-			switch(item.getFixConWorkRecordNo().value) {
+			if(item.getFixConWorkRecordNo().value != 5 && integra.getWorkInformation() == null) {
+				switch(item.getFixConWorkRecordNo().value) {
+				
+					// NO=1:勤務種類未登録
+					case 1:
+						// 勤務種類コード
+						WorkTypeCode wkType = integra.getWorkInformation().getRecordInfo().getWorkTypeCode();
+						List<WorkTypeCode> listWk = listWorkType.stream().map(x -> x.getWorkTypeCode()).collect(Collectors.toList());
+						if(!listWk.contains(wkType)) {
+							alarmMessage = TextResource.localize("KAL010_7", wkType.v());
+							alarmTarget = TextResource.localize("KAL010_76", wkType.v());
+						}
+						
+					// NO=2:就業時間帯未登録
+					case 2:
+						// 就業時間帯コード
+						WorkTimeCode wkTime = integra.getWorkInformation().getRecordInfo().getWorkTimeCode();
+						if(wkTime == null) break;
+						if(listWorktime.contains(wkTime)) {
+							alarmMessage = TextResource.localize("KAL010_9", wkTime.v());
+							alarmTarget = TextResource.localize("KAL010_77", wkTime.v());
+						}
+						
+					// NO=3:本人未確認チェック
+					case 3:
+						if(!identityStatus.isPresent()) break;
+						else {
+							if(identityStatus.get().getPersonSituation().equals("未確認")) {
+								alarmMessage = TextResource.localize("KAL010_43");
+								alarmTarget = TextResource.localize("KAL010_72");
+							}
+						}
+						
+					// NO=4:管理者未確認チェック
+					case 4:
+						if(!identityUnconfirm.isPresent()) break;
+						else {
+							if(identityUnconfirm.get().getPersonSituation().equals("未確認")) {
+								alarmMessage = TextResource.localize("KAL010_45");
+								alarmTarget = TextResource.localize("KAL010_73");
+							}
+						}
+						
+					// NO=5:データのチェック
+					case 5:
+						
+					// NO = 6： 打刻漏れ
+					case 6:
+						if(!integra.getAttendanceLeave().isPresent() && !integra.getTempTime().isPresent() && !integra.getBreakTime().isPresent())
+							break;
+						else {
+							// 打刻漏れ
+							List<EmployeeDailyPerError> employeePer = dailyAlermService.lackOfTimeLeavingStamping(integra);
+							if(!employeePer.isEmpty()) {
+								alarmMessage = TextResource.localize("KAL010_79");
+								alarmTarget = TextResource.localize("KAL010_610");
+							}
+						}
+						
+					// NO =7:打刻漏れ(入退門)
+					case 7:
+						if(!integra.getAttendanceLeavingGate().isPresent()) break;
+						else {
+							// 入退門打刻漏れ
+							List<EmployeeDailyPerError> employeeEr = dailyAlermService.lackOfAttendanceGateStamping(integra);
+							if(!employeeEr.isEmpty()) {
+								alarmMessage = TextResource.localize("KAL010_80", "");
+								alarmTarget = TextResource.localize("KAL010_612", "");
+							}
+						}
+						
+					// NO =8： 打刻順序不正
+					case 8:
+						if(!integra.getAttendanceLeave().isPresent() && !integra.getTempTime().isPresent() && !integra.getBreakTime().isPresent()
+								&& !integra.getOutingTime().isPresent()) break;
+						else {
+						}
+						
+					// NO = 9 ：打刻順序不正（入退門）
+					case 9:
+						
+					// NO = 10 ： 休日打刻
+					case 10:
+						
+					// NO = 11 ：休日打刻(入退門)
+					case 11:
+						
+					// NO = 12：加給コード未登録
+					case 12:
+						
+					// NO = 13：契約時間超過
+					case 13:
+						
+					// NO = 14:契約時間未満
+					case 14:
+						
+					// NO = 15：曜日別の違反
+					case 15:
+						
+					// NO = 16:曜日別の就業時間帯不正
+					case 16:
+						
+					// NO = 17:乖離エラー
+					case 17:
+						
+					// NO = 18:手入力
+					case 18:
+						
+					// NO = 19:二重打刻チェック
+					case 19:
+						
+					// NO = 20:未計算
+					case 20:
+						
+					// NO = 21:過剰申請・入力
+					case 21:
+						
+					// NO = 22:複数回勤務
+					case 22:
+						
+					// NO = 23：臨時勤務
+					case 23:
+						
+					// NO = 24:特定日出勤
+					case 24:
+						
+					// NO = 25:未反映打刻
+					case 25:
+						
+					// NO＝26：実打刻オーバー
+					case 26:
+						
+					// NO＝27:二重打刻(入退門)
+					case 27:
+						
+					// NO＝28：乖離アラーム
+					case 28:
+					default:
+				}
+				
+			}
 			
-				// NO=1:勤務種類未登録
-				case 1:
-					// 勤務種類コード
-					WorkTypeCode wkType = integra.getWorkInformation().getRecordInfo().getWorkTypeCode();
-					List<WorkTypeCode> listWk = listWorkType.stream().map(x -> x.getWorkTypeCode()).collect(Collectors.toList());
-					if(!listWk.contains(wkType)) {
-						alarmMessage = TextResource.localize("KAL010_7", wkType.v());
-						alarmTarget = TextResource.localize("KAL010_76", wkType.v());
-					}
-					
-				// NO=2:就業時間帯未登録
-				case 2:
-					// 就業時間帯コード
-					WorkTimeCode wkTime = integra.getWorkInformation().getRecordInfo().getWorkTimeCode();
-					if(wkTime == null) break;
-					if(listWorktime.contains(wkTime)) {
-						alarmMessage = TextResource.localize("KAL010_9", wkTime.v());
-						alarmTarget = TextResource.localize("KAL010_77", wkTime.v());
-					}
-					
-				// NO=3:本人未確認チェック
-				case 3:
-					if(!identityStatus.isPresent()) break;
-					else {
-						if(identityStatus.get().getPersonSituation().equals("未確認")) {
-							alarmMessage = TextResource.localize("KAL010_43");
-							alarmTarget = TextResource.localize("KAL010_72");
-						}
-					}
-					
-				// NO=4:管理者未確認チェック
-				case 4:
-					if(!identityUnconfirm.isPresent()) break;
-					else {
-						if(identityUnconfirm.get().getPersonSituation().equals("未確認")) {
-							alarmMessage = TextResource.localize("KAL010_45");
-							alarmTarget = TextResource.localize("KAL010_73");
-						}
-					}
-					
-				// NO=5:データのチェック
-				case 5:
-					
-				// NO = 6： 打刻漏れ
-				case 6:
-					if(!integra.getAttendanceLeave().isPresent() && !integra.getTempTime().isPresent() && !integra.getBreakTime().isPresent())
-						break;
-					else {
-						// 打刻漏れ
-						List<EmployeeDailyPerError> employeePer = dailyAlermService.lackOfTimeLeavingStamping(integra);
-						if(!employeePer.isEmpty()) {
-							alarmMessage = TextResource.localize("KAL010_79");
-							alarmTarget = TextResource.localize("KAL010_610");
-						}
-					}
-					
-				// NO =7:打刻漏れ(入退門)
-				case 7:
-					if(!integra.getAttendanceLeavingGate().isPresent()) break;
-					else {
-						// 入退門打刻漏れ
-						List<EmployeeDailyPerError> employeeEr = dailyAlermService.lackOfAttendanceGateStamping(integra);
-						if(!employeeEr.isEmpty()) {
-							// hoi c Du tham so
-							alarmMessage = TextResource.localize("KAL010_80", "");
-							alarmTarget = TextResource.localize("KAL010_612", "");
-						}
-					}
-					
-				// NO =8： 打刻順序不正
-				case 8:
-					if(!integra.getAttendanceLeave().isPresent() && !integra.getTempTime().isPresent() && !integra.getBreakTime().isPresent()
-							&& !integra.getOutingTime().isPresent()) break;
-					else {
-						if
-					}
-					
-				// NO = 9 ：打刻順序不正（入退門）
-				case 9:
-					
-				// NO = 10 ： 休日打刻
-				case 10:
-					
-				// NO = 11 ：休日打刻(入退門)
-				case 11:
-					
-				// NO = 12：加給コード未登録
-				case 12:
-					
-				// NO = 13：契約時間超過
-				case 13:
-					
-				// NO = 14:契約時間未満
-				case 14:
-					
-				// NO = 15：曜日別の違反
-				case 15:
-					
-				// NO = 16:曜日別の就業時間帯不正
-				case 16:
-					
-				// NO = 17:乖離エラー
-				case 17:
-					
-				// NO = 18:手入力
-				case 18:
-					
-				// NO = 19:二重打刻チェック
-				case 19:
-					
-				// NO = 20:未計算
-				case 20:
-					
-				// NO = 21:過剰申請・入力
-				case 21:
-					
-				// NO = 22:複数回勤務
-				case 22:
-					
-				// NO = 23：臨時勤務
-				case 23:
-					
-				// NO = 24:特定日出勤
-				case 24:
-					
-				// NO = 25:未反映打刻
-				case 25:
-					
-				// NO＝26：実打刻オーバー
-				case 26:
-					
-				// NO＝27:二重打刻(入退門)
-				case 27:
-					
-				// NO＝28：乖離アラーム
-				case 28:
+			listAlarmChk.add(new AlarmListCheckInfor(String.valueOf(item.getFixConWorkRecordNo().value), 
+					EnumAdaptor.valueOf(0, AlarmListCheckType.class)));
+			
+			if(!alarmMessage.isEmpty()) {
+				List<ExtractionResultDetail> lstResultDetail = new ArrayList<>();
+				// ドメインモデル「勤務実績の固定抽出項目」を取得する
+				List<FixedConditionData> fixCond = fixConRep.getAllFixedConditionData();
+				
+				lstResultDetail.add(new ExtractionResultDetail(sid, 
+						new ExtractionAlarmPeriodDate(Optional.ofNullable(day),Optional.empty()), 
+													fixCond.stream().filter(x -> x.getFixConWorkRecordNo()
+																					.equals(item.getFixConWorkRecordNo()))
+																					.findFirst().get().getFixConWorkRecordName().v(),
+													alarmMessage, GeneralDateTime.now(), Optional.ofNullable(wplId),
+													Optional.ofNullable(item.getMessage().v()), Optional.empty()));
+				
+				listResultCond.add(new ResultOfEachCondition(EnumAdaptor.valueOf(0, AlarmListCheckType.class),
+						String.valueOf(item.getFixConWorkRecordNo().value), lstResultDetail));
 			}
 		}
+		return new OutputCheckResult(listResultCond, listAlarmChk);
 	}
 	
 }
