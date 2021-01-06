@@ -22,8 +22,7 @@ public class JpaWeekRuleManagementRepoImpl extends JpaRepository implements Week
 	@Override
 	public void add(WeekRuleManagement domain) {
 		
-		KsrmtWeekRuleMng entity = new KsrmtWeekRuleMng(domain.getCid(), domain.getWeekStart().value);
-		this.commandProxy().insert(entity);
+		this.commandProxy().insert(KsrmtWeekRuleMng.map(domain));
 	}
 
 	@Override

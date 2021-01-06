@@ -20,13 +20,12 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Getter
 @NoArgsConstructor
 public class BreakTimeOfDailyAttd implements DomainObject {
-	//休憩種類
-	private BreakType breakType;
+	
 	//時間帯
 	private List<BreakTimeSheet> breakTimeSheets;
-	public BreakTimeOfDailyAttd(BreakType breakType, List<BreakTimeSheet> breakTimeSheets) {
+	
+	public BreakTimeOfDailyAttd(List<BreakTimeSheet> breakTimeSheets) {
 		super();
-		this.breakType = breakType;
 		this.breakTimeSheets = breakTimeSheets;
 	}
 	

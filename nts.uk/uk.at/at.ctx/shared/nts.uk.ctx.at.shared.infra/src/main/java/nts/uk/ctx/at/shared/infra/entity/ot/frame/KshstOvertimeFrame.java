@@ -46,6 +46,14 @@ public class KshstOvertimeFrame extends UkJpaEntity implements Serializable {
     /** The trans fr name. */
     @Column(name = "TRANS_FR_NAME")
     private String transFrName;
+    
+    /** The role. */
+    @Column(name = "ROLE")
+    private short role;
+    
+    /** The transfer atr. */
+    @Column(name = "TRANSFER_ATR")
+    private short transferAtr;
 
     /**
      * Instantiates a new kshst overtime frame.

@@ -85,7 +85,7 @@ public class WorkScheduleTest {
 	@Test
 	public void getters() {
 		WorkSchedule data = new WorkSchedule("employeeID",
-				GeneralDate.today(), ConfirmedATR.CONFIRMED, null, null, new ArrayList<>(),
+				GeneralDate.today(), ConfirmedATR.CONFIRMED, null, null, Optional.empty(),
 				new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty());
 		NtsAssert.invokeGetters(data);
 	}
@@ -1005,7 +1005,7 @@ public class WorkScheduleTest {
 					ConfirmedATR.UNSETTLED,
 					workInfo,
 					affInfo, 
-					Collections.emptyList(),
+					Optional.empty(),
 					Collections.emptyList(),
 					optTimeLeaving, // parameter
 					optAttendanceTime, // parameter

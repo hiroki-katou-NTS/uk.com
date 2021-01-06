@@ -67,11 +67,12 @@ public class WorkSchedule implements DomainAggregate {
 
 	/** 所属情報 **/
 	private AffiliationInforOfDailyAttd affInfo;
-
-	/** 休憩時間帯 */
-	private List<BreakTimeOfDailyAttd> lstBreakTime;
-
-	/** 編集状態 */
+	
+	/** 休憩時間帯**/
+	@Getter
+	private Optional<BreakTimeOfDailyAttd> lstBreakTime;
+	
+	/** 編集状態 **/
 	private List<EditStateOfDailyAttd> lstEditState;
 
 	/** 出退勤 */
@@ -93,7 +94,7 @@ public class WorkSchedule implements DomainAggregate {
 	 */
 	public WorkSchedule(String sid, GeneralDate date, ConfirmedATR confirmedAtr
 			, WorkInfoOfDailyAttendance workInfo, AffiliationInforOfDailyAttd affInfo
-			, List<BreakTimeOfDailyAttd> breakTime, List<EditStateOfDailyAttd> editState
+			, Optional<BreakTimeOfDailyAttd> breakTime, List<EditStateOfDailyAttd> editState
 			, Optional<TimeLeavingOfDailyAttd> timeLeaving, Optional<AttendanceTimeOfDailyAttendance> attendanceTime
 			, Optional<ShortTimeOfDailyAttd> sortTimeWork) {
 

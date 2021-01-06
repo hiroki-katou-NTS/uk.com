@@ -5,12 +5,12 @@ import java.util.Optional;
 
 import lombok.Value;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppCompltLeaveSync;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
 
 @Value
 public class ApplicationsListOutput {
 	List<ApprovalSttAppDetail> approvalSttAppDetail; 
-	Optional<HdAppSet> lstHdAppSet;
+	Optional<HolidayApplicationSetting> lstHdAppSet;
 	List<AppCompltLeaveSync> listSync;
 	boolean displayPrePostFlg;
 }

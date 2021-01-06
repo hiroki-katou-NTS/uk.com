@@ -1,11 +1,13 @@
 package nts.uk.ctx.at.function.dom.monthlyworkschedule;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * The Class MonthlyAttendanceItemsDisplay.
  */
 @Data
+@NoArgsConstructor
 public class MonthlyAttendanceItemsDisplay {
 
 	/** The order no. */

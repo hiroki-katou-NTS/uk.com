@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.SpecCou
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.SpecTotalCountMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.TADaysCountCondOfMonthlyAggr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.TADaysCountOfMonthlyAggr;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.VerticalTotalMethodOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.AggregateMethodOfMonthly;
 
 /**
  * The Class AddVerticalTotalMethodOfMonthlyCommand.
@@ -27,6 +27,8 @@ public class AddVerticalTotalMethodOfMonthlyCommand {
 	private boolean notWorkCount;
 	// 計算対象外のカウント条件
 	private int specCount;
+	// 計算対象外のカウント条件
+	private boolean calcWithPreviousMonthLastWeek;
 	
 //	/** 計算対象外のカウント条件 */ 
 //	private int specCountNotCalcSubject;
@@ -34,10 +36,11 @@ public class AddVerticalTotalMethodOfMonthlyCommand {
 //	/** 勤務種類のカウント条件 */
 //	private Map<Integer, Boolean> workTypeSetting;
 	
-	public VerticalTotalMethodOfMonthly toDomain(String companyId) {
-		return VerticalTotalMethodOfMonthly.of(
+	public AggregateMethodOfMonthly toDomain(String companyId) {
+		return AggregateMethodOfMonthly.of(
 				companyId, 
 				TADaysCountOfMonthlyAggr.of(EnumAdaptor.valueOf(attendanceItemCountingMethod, TADaysCountCondOfMonthlyAggr.class)),
-				new SpecTotalCountMonthly(continuousCount, notWorkCount, EnumAdaptor.valueOf(specCount, SpecCountNotCalcSubject.class)));
+				SpecTotalCountMonthly.of(continuousCount, notWorkCount, EnumAdaptor.valueOf(specCount, SpecCountNotCalcSubject.class)),
+				calcWithPreviousMonthLastWeek);
 	}
 }

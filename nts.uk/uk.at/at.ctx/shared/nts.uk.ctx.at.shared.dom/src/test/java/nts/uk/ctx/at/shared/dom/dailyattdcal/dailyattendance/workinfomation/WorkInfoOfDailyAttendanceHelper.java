@@ -16,13 +16,13 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 public class WorkInfoOfDailyAttendanceHelper {
 	public static WorkInfoOfDailyAttendance getWorkInfoOfDailyAttendanceDefault() {
 		WorkInformation recordInfo1 = new WorkInformation("ty1", "ti1");
-		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = new WorkInfoOfDailyAttendance(recordInfo1, recordInfo1, CalculationState.Calculated, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
+		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = new WorkInfoOfDailyAttendance(recordInfo1, CalculationState.Calculated, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
 				DayOfWeek.FRIDAY, new ArrayList<>());
 		return workInfoOfDailyAttendance;
 	}
 	
 	public static WorkInfoOfDailyAttendance getData(WorkInformation recordInfo) {
-		return new WorkInfoOfDailyAttendance(recordInfo, recordInfo, CalculationState.Calculated, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
+		return new WorkInfoOfDailyAttendance(recordInfo, CalculationState.Calculated, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
 				DayOfWeek.FRIDAY, new ArrayList<>());
 	}
 	

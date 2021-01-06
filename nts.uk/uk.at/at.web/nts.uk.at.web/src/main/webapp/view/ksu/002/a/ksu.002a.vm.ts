@@ -40,6 +40,32 @@ module nts.uk.ui.at.ksu002.a {
 				data.state.value.begin(state.value.begin);
 				data.state.value.finish(state.value.finish);
 			}
+		},
+		hasChange: function (dayDatas: DayDataRawObsv[]) {
+			const changeds = dayDatas
+				.map(({ data }) => {
+					const {
+						$raw,
+						wtime,
+						wtype,
+						value,
+						achievement
+					} = data;
+					const {
+						workTypeCode,
+						workTimeCode,
+						startTime,
+						endTime
+					} = ko.unwrap(achievement) ? $raw.achievements : $raw;
+
+					return ko.unwrap(wtype.code) !== workTypeCode
+						|| ko.unwrap(wtime.code) !== workTimeCode
+						|| ko.unwrap(value.begin) !== startTime
+						|| ko.unwrap(value.finish) !== endTime;
+				})
+				.filter((f) => !!f);
+
+			return changeds.length !== 0;
 		}
 	};
 
@@ -93,7 +119,7 @@ module nts.uk.ui.at.ksu002.a {
 					if (!d) {
 						dr.begin = null;
 						dr.finish = null;
-						
+
 						// reset memento
 						vm.schedules.reset();
 
@@ -157,14 +183,17 @@ module nts.uk.ui.at.ksu002.a {
 											confirmed,
 											achievements,
 											needToWork,
-											workTypeCode,
-											workTypeName,
-											workTimeCode,
-											workTimeName,
-											startTime,
-											endTime,
 											dateInfoDuringThePeriod
 										} = $raw;
+
+										const {
+											workTypeName,
+											workTimeName,
+											workTypeCode,
+											workTimeCode,
+											startTime,
+											endTime
+										} = arch === NO ? $raw : (achievements || $raw);
 
 										// hack i18n
 										_.extend(names, { [workTypeName]: workTypeName });
@@ -227,17 +256,15 @@ module nts.uk.ui.at.ksu002.a {
 
 											if (specificDay || !!optCompanyEventName || !!optWorkplaceEventName) {
 												const events: string[] = [];
-												events.push('<table><tbody>');
-												if (!!optCompanyEventName) {
-													events.push(`<tr class="cen"><td>${vm.$i18n('KSU001_4014')}</td><td>${vm.$i18n('KSU001_4018')}</td><td>${_.escape(optCompanyEventName)}</td></tr>`);
-												}
+												events.push('<table><colgroup><col width="90"></col><col width="10"></col></colgroup><tbody>');
 
-												if (!!optWorkplaceEventName) {
-													events.push(`<tr class="wen"><td>${vm.$i18n('KSU001_4015')}</td><td>${vm.$i18n('KSU001_4018')}</td><td>${_.escape(optWorkplaceEventName)}</td></tr>`);
-												}
+												events.push(`<tr class="cen"><td>${vm.$i18n('KSU001_4014')}</td><td>${vm.$i18n('KSU001_4018')}</td><td>${!!optCompanyEventName ? _.escape(optCompanyEventName) : vm.$i18n('KSU001_4019')}</td></tr>`);
+
+												events.push(`<tr class="wen"><td>${vm.$i18n('KSU001_4015')}</td><td>${vm.$i18n('KSU001_4018')}</td><td>${!!optWorkplaceEventName ? _.escape(optWorkplaceEventName) : vm.$i18n('KSU001_4019')}</td></tr>`);
+
+												events.push(`<tr class="sdc"><td rowspan="${listSpecDayNameCompany.length || 1}">${vm.$i18n('KSU001_4016')}</td><td>${vm.$i18n('KSU001_4018')}</td><td>${!!listSpecDayNameCompany.length ? _.escape(_.head(listSpecDayNameCompany) || '') : vm.$i18n('KSU001_4019')}</td></tr>`);
 
 												if (!!listSpecDayNameCompany.length) {
-													events.push(`<tr class="sdc"><td rowspan="${listSpecDayNameCompany.length || 1}">${vm.$i18n('KSU001_4016')}</td><td>${vm.$i18n('KSU001_4018')}</td><td>${_.escape(_.head(listSpecDayNameCompany) || '')}</td></tr>`);
 													_.each(listSpecDayNameCompany, (v, i) => {
 														if (!!i) {
 															events.push(`<tr class="sdc"><td></td><td>${_.escape(v)}</td></tr>`)
@@ -245,8 +272,9 @@ module nts.uk.ui.at.ksu002.a {
 													});
 												}
 
+												events.push(`<tr class="swc"><td rowspan="${listSpecDayNameWorkplace.length || 1}">${vm.$i18n('KSU001_4017')}</td><td>${vm.$i18n('KSU001_4018')}</td><td>${!!listSpecDayNameWorkplace.length ? _.escape(_.head(listSpecDayNameWorkplace) || '') : vm.$i18n('KSU001_4019')}</td></tr>`);
+
 												if (!!listSpecDayNameWorkplace.length) {
-													events.push(`<tr class="swc"><td rowspan="${listSpecDayNameWorkplace.length || 1}">${vm.$i18n('KSU001_4017')}</td><td>${vm.$i18n('KSU001_4018')}</td><td>${_.escape(_.head(listSpecDayNameWorkplace) || '')}</td></tr>`);
 													_.each(listSpecDayNameWorkplace, (v, i) => {
 														if (!!i) {
 															events.push(`<tr class="swc"><td></td><td>${_.escape(v)}</td></tr>`)
@@ -277,13 +305,8 @@ module nts.uk.ui.at.ksu002.a {
 				.subscribe((arch) => {
 					const { NO } = ACHIEVEMENT;
 					const { IMPRINT } = EDIT_STATE;
-					const undo = vm.schedules.undoAble();
-					const redo = vm.schedules.redoAble();
 
 					const schedules: DayDataMementoObsv[] = ko.unwrap(vm.schedules);
-
-					// soft reset (only undo, redo)
-					vm.schedules.reset(!(undo || redo));
 
 					// reset data
 					_.each(schedules, (sc) => {
@@ -327,6 +350,9 @@ module nts.uk.ui.at.ksu002.a {
 						// state of achievement (both data & switch select)
 						data.achievement(arch === NO ? null : !!$raw.achievements);
 					});
+
+					// reset state of memento
+					vm.schedules.reset();
 				});
 		}
 
@@ -460,6 +486,9 @@ module nts.uk.ui.at.ksu002.a {
 
 			if (changed.data.wtime.code !== cloned.data.wtime.code) {
 				state.wtime(EDIT_STATE.HAND_CORRECTION_MYSELF);
+				// if change time code, change time value state
+				state.value.begin(EDIT_STATE.HAND_CORRECTION_MYSELF);
+				state.value.finish(EDIT_STATE.HAND_CORRECTION_MYSELF);
 			}
 
 			if (changed.data.value.begin !== cloned.data.value.begin) {

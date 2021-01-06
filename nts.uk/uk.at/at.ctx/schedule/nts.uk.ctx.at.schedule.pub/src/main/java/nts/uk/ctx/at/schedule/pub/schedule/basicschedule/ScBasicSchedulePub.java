@@ -39,7 +39,7 @@ public interface ScBasicSchedulePub {
 	 * @param baseDate
 	 * @return
 	 */
-	public ScWorkScheduleExport_New findByIdNewV2(String employeeId, GeneralDate baseDate);
+	public Optional<ScWorkScheduleExport_New> findByIdNewV2(String employeeId, GeneralDate baseDate);
 	
 	public List<ScBasicScheduleExport> findById(List<String> employeeID, DatePeriod date);
 
