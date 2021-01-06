@@ -1,12 +1,14 @@
 package nts.uk.ctx.sys.assist.infra.entity.reference.auth;
 
 import java.io.Serializable;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Version;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -15,8 +17,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * UKDesign.データベース.ER図.オフィス支援.在席照会.運用方法.OFIMT_AUTH_REFER
  *  在席照会の参照権限設定
  */
-@Data
 @Entity
+@Data
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "OFIMT_AUTH_REFER")
 public class SpecifyAuthInquiryEntity extends UkJpaEntity implements Serializable {

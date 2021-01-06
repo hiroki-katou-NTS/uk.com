@@ -31,5 +31,5 @@ public class SpecifyAuthInquiryEntityPK implements Serializable {
 	// column 見られる職位ID
 	@NotNull
 	@Column(name = "JOB_TITLE_ID")
-	private String positonIdSeen;
+	private String positionIdSeen;
 }
