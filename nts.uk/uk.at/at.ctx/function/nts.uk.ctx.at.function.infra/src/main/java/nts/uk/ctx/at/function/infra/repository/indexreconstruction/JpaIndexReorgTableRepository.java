@@ -12,6 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.ejb.Stateless;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
@@ -38,18 +39,6 @@ public class JpaIndexReorgTableRepository extends JpaRepository implements Index
 			+ " WHERE f.pk.categoryNo = :categoryNo AND f.pk.tablePhysName = :tablePhysName";
 
 	private static final String QUERY_SELECT_BY_IDS = QUERY_SELECT_ALL + " WHERE f.pk.categoryNo IN :categoryNos";
-
-//	private static final String QUERY_CACULATE_FRAG_RATE = "SELECT a.object_id, object_name(a.object_id) AS TableName," + 
-//			" a.index_id, name AS IndedxName, avg_fragmentation_in_percent" + 
-//			" FROM sys.dm_db_index_physical_stats" + 
-//			" (DB_ID ('UK4')" + 
-//			" , OBJECT_ID(:tablePhysName)" + 
-//			" , NULL" + 
-//			" , NULL" + 
-//			" , NULL) AS a" + 
-//			" INNER JOIN sys.indexes AS b" + 
-//			" ON a.object_id = b.object_id" + 
-//			" AND a.index_id = b.index_id;";
 
 	private static final String QUERY_RECONFIG_INDEX = "ALTER INDEX ALL ON %s REORGANIZE;";
 
@@ -131,6 +120,8 @@ public class JpaIndexReorgTableRepository extends JpaRepository implements Index
 		try (PreparedStatement stmt = this.connection().prepareStatement(QUERY_CACULATE_FRAG_RATE_TEST)) {
 			File file = new File(System.getProperty("jboss.server.config.dir") + "/standalone.xml");
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+			factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
 			Document prop = factory.newDocumentBuilder().parse(file);
 			String connectionInfo = prop.getElementsByTagName("connection-url").item(1).getTextContent();
 			Pattern p = Pattern.compile(".DatabaseName=(\\w+)$");
@@ -150,20 +141,6 @@ public class JpaIndexReorgTableRepository extends JpaRepository implements Index
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-
-//		return this.queryProxy()
-//				.query(QUERY_CACULATE_FRAG_RATE)
-//				.setParameter("tablePhysName", tablePhysName)
-//				.getList( c -> {
-//					BigDecimal fragRate = ((BigDecimal) c[4]).setScale(2);
-//					return CalculateFragRate.builder()
-//							.tablePhysicalName((String) c[1])
-//							.indexId((int) c[2])
-//							.indexName((String) c[3])
-//							.fragmentationRate(fragRate)
-//							.build();
-//				});
-
 	}
 
 	/**
@@ -173,10 +150,6 @@ public class JpaIndexReorgTableRepository extends JpaRepository implements Index
 	 */
 	@Override
 	public void reconfiguresIndex(String tablePhysName) {
-//		this.queryProxy()
-//				.query(QUERY_RECONFIG_INDEX)
-//				.setParameter("tablePhysName", tablePhysName)
-//				.getQuery();
 		String query = String.format(QUERY_RECONFIG_INDEX, tablePhysName);
 		this.getEntityManager().createNativeQuery(query).executeUpdate();
 	}

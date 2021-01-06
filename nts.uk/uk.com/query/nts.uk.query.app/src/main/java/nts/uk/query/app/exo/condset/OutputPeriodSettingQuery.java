@@ -50,7 +50,7 @@ public class OutputPeriodSettingQuery {
 					periodSetting.getEndDateSpecify().orElse(null));
 
 			// 開始日と終了日が逆転になっているかをチェックする
-			if (startDate.after(endDate)) {
+			if (startDate != null && startDate.after(endDate)) {
 				// 開始日＞終了日
 				return new ServerExternalOutputDto(false, "Msg_917");
 			} else {

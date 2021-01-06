@@ -361,7 +361,8 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		(Checkstatus thực hiện domain 「更新処理自動実行管理」 )
          */
         TaskDataSetter dataSetter = context.asAsync().getDataSetter();
-        if (processExecutionLogManage.getCurrentStatus().isPresent()
+        if (processExecutionLogManage != null
+        		&& processExecutionLogManage.getCurrentStatus().isPresent()
         		&& !processExecutionLogManage.getCurrentStatus().get().equals(CurrentExecutionStatus.WAITING)) {
         	dataSetter.setData("message1101", "Msg_1101");
         	throw new BusinessException("Msg_1101");

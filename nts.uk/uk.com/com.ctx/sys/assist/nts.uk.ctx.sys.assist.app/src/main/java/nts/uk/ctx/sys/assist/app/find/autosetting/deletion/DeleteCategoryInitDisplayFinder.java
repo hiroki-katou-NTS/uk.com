@@ -1,6 +1,5 @@
 package nts.uk.ctx.sys.assist.app.find.autosetting.deletion;
 
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,14 +46,6 @@ public class DeleteCategoryInitDisplayFinder {
 
 		// ２．ログイン者が担当者か判断する
 		LoginPersonInCharge pic = picService.getPic();
-		
-		//TODO: FAKE-DATA
-		pic.setAttendance(true);
-		pic.setEmployeeInfo(true);
-		pic.setOfficeHelper(true);
-		pic.setPayroll(true);
-		pic.setPersonnel(true);
-		
 		dto.setPic(pic);
 
 		// List <削除カテゴリマスタ>を取得する
@@ -78,11 +69,7 @@ public class DeleteCategoryInitDisplayFinder {
 	}
 
 	private List<DeleteCategoryDto> getCategoryList(LoginPersonInCharge pic) {
-		List<SystemType> systemTypes = picService.getSystemTypes(pic);
-		
-		//TODO: FAKE-DATA
-		systemTypes = Arrays.asList(SystemType.values());
-				
+		List<SystemType> systemTypes = picService.getSystemTypes(pic);			
 		return systemTypes.stream()
 				.map(type -> categoryForDelService.categoriesBySystemType(type.value).stream()
 						.map(domain -> DeleteCategoryDto.fromDomain(domain, type.value)).collect(Collectors.toList()))

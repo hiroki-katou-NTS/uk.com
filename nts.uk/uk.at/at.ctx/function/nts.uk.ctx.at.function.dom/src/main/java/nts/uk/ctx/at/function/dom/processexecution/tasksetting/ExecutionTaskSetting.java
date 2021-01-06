@@ -168,14 +168,14 @@ public class ExecutionTaskSetting extends AggregateRoot {
 	public void setNextExecDateTime() {
 		GeneralDateTime now = GeneralDateTime.now();
 		if (!this.isEnabledSetting()) {
-			this.nextExecDateTime = null;
+			this.nextExecDateTime = Optional.empty();
 		}
 
 		/*
 		 * ◆◆事後条件 ・設定された次回実行日時が終了日を過ぎていたら次回実行日時 ＝ NULL とする
 		 */
 		if (this.nextExecDateTime.isPresent() && this.nextExecDateTime.get().before(now)) {
-			this.nextExecDateTime = null;
+			this.nextExecDateTime = Optional.empty();
 		}
 	}
 

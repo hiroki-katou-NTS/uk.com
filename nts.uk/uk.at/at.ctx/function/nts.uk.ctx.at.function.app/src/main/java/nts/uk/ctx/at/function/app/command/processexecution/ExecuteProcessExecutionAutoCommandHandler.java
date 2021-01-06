@@ -3679,14 +3679,14 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 					// Step 9 インデックス再構成後の断片化率を計算する
 					List<CalculateFragRate> resultCaculateFragRatesAfter = this.indexReorgTableRepository
 							.calculateFragRate(indexReorgTable.getTablePhysName().v());
-					resultCaculateFragRates.forEach(indexResult -> {
+					resultCaculateFragRates.forEach(indexResult -> 
 						resultCaculateFragRatesAfter.stream()
 								.filter(item -> item.getTablePhysicalName().equals(indexResult.getTablePhysicalName().v())
-										&& (item.getIndexName() != null && item.getIndexName().equals(indexResult.getIndexName().v())))
+										&& (indexResult.getIndexName().v().equals(item.getIndexName())))
 								.findFirst()
 								.ifPresent(fragRate -> indexResult.setFragmentationRateAfterProcessing(
-										new FragmentationRate(fragRate.getFragmentationRate())));
-					});
+										new FragmentationRate(fragRate.getFragmentationRate())))
+					);
 					indexReconstructionResult.addAll(resultCaculateFragRates);
 				});
 				// Step 10: 「インデックス再構成結果」を更新して「インデックス再構成結果履歴」に追加する
