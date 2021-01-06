@@ -151,6 +151,9 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 
 				return new OptionalItem(new JpaOptionalItemGetMemento(item, range));
 			});
+		}catch (Exception e){
+			System.out.println("Check error mes KWR :-----------------" + e.getMessage());
+			return Collections.emptyList();
 		}
 	}
 
@@ -268,7 +271,7 @@ public class JpaOptionalItemRepository extends JpaRepository implements Optional
 				return new OptionalItem(new JpaOptionalItemGetMemento(item, range));
 			});
 		} catch (Exception e){
-			System.out.println("Error issue 38689:-------------------------------" + e.getMessage());
+			System.out.println("Check error mes KWR:-----------------------" + e.getMessage());
 			return Collections.emptyList();
 		}
 	}
