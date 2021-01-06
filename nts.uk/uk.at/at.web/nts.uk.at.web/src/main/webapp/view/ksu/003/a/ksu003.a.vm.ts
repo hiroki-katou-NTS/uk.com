@@ -280,6 +280,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					// 勤務種類を変更する (nhập thủ công worktype code)
 					if ((dataCell.originalEvent.detail.columnKey === "worktypeCode" && dataMid.worktypeCode != "")) {
 						
+						
 						self.bindTypeTime.push({
 							index : index,
 							value : true
@@ -294,6 +295,16 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						$(cssTotalTime).css("background-color", "#ffffff");
 						$("#extable-ksu003").exTable("cellValue", "middle", empId, "totalTime", "");
 						$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", "");
+						
+						ruler.replaceAt(index, [{ // xóa chart khi là ngày nghỉ
+									type: "Flex",
+									options: {
+										id: `lgc` + index,
+										start: -1000,
+										end: -1000,
+										lineNo: index
+									}
+						}]);
 					
 					// Nếu là ngày nghỉ	
 					if(dataFixed[0].fixedWorkInforDto != null && dataFixed[0].fixedWorkInforDto.isHoliday != null && dataFixed[0].fixedWorkInforDto.isHoliday == true){
@@ -3847,7 +3858,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					self.dataScreen003A().employeeInfo[lineNo].workInfoDto.bounceAtr = info.bounceAtr;
 								
 					if(self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.isNeedWorkTime == false){
-						$("#extable-ksu003").exTable("enableCell", "middle", empId, "worktimeCode");
+						$("#extable-ksu003").exTable("disableCell", "middle", empId, "worktimeCode");
 					} else {
 						$("#extable-ksu003").exTable("enableCell", "middle", empId, "worktimeCode");
 					}
@@ -3875,18 +3886,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						$(".xcell").removeClass("x-error");
 						self.checkGetInfo = false;
 						return;
-					}else{
-						$("#extable-ksu003").exTable("enableCell", "middle", empId, "worktimeCode");
-						$("#extable-ksu003").exTable("enableCell", "middle", empId, "startTime1");
-						$("#extable-ksu003").exTable("enableCell", "middle", empId, "endTime1");
-						if(self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType != WorkTimeForm.FLEX){
-							$("#extable-ksu003").exTable("enableCell", "middle", empId, "startTime2");
-							$("#extable-ksu003").exTable("enableCell", "middle", empId, "endTime2");
-						}
-					}	
-						
+					}
 					self.setDataToMidExtable(lineNo, empId, schedule, fixed, totalTime, totalBrkTime);
-
 					self.convertDataIntoExtable();
 
 					let datafilter: Array<ITimeGantChart> = _.filter(self.dataOfGantChart, (x: any) => { return x.empId === empId });
@@ -3900,6 +3901,21 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				}
 				self.checkGetInfo = false;
 				block.clear();
+				if(self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.isNeedWorkTime == true){
+				$("#extable-ksu003").exTable("enableCell", "middle", empId, "worktimeCode");
+						$("#extable-ksu003").exTable("enableCell", "middle", empId, "startTime1");
+						$("#extable-ksu003").exTable("enableCell", "middle", empId, "endTime1");
+						if(self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType != WorkTimeForm.FLEX){
+							$("#extable-ksu003").exTable("enableCell", "middle", empId, "startTime2");
+							$("#extable-ksu003").exTable("enableCell", "middle", empId, "endTime2");
+				}
+				} else {
+					$("#extable-ksu003").exTable("disableCell", "middle", empId, "worktimeCode");
+						$("#extable-ksu003").exTable("disableCell", "middle", empId, "startTime1");
+						$("#extable-ksu003").exTable("disableCell", "middle", empId, "endTime1");
+						$("#extable-ksu003").exTable("disableCell", "middle", empId, "startTime2");
+						$("#extable-ksu003").exTable("disableCell", "middle", empId, "endTime2");
+				}
 				$(".xcell").removeClass("x-error");
 			});
 		}
