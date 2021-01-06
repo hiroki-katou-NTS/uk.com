@@ -98,6 +98,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		breakTime : any = "";
 		bindTypeTime : any = [];
 		holidayShort: any = [];
+		checkMes: number = 0;
 		constructor(data: any) {
 			let self = this;
 			// get data from sc A
@@ -275,15 +276,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					}
 				
 				if (self.checkGetInfo == false && self.checkUpdateMidChart == true) {
-					if (dataCell.originalEvent.detail.columnKey === "worktimeCode") {
-						self.checkUpdateTime.name = "worktimeCode";
-						self.checkUpdateTime.id = 1;
-						self.inputWorkInfo(dataMid, index, dataCell, dataFixed, empId, dataCell.originalEvent.detail.columnKey);
-						self.bindTypeTime.push({
-							index : index,
-							value : true
-						})
-					}
 
 					// 勤務種類を変更する (nhập thủ công worktype code)
 					if ((dataCell.originalEvent.detail.columnKey === "worktypeCode" && dataMid.worktypeCode != "")) {
@@ -323,6 +315,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					if(dataFixed[0].fixedWorkInforDto.isHoliday != null && dataFixed[0].fixedWorkInforDto.isHoliday == false) {
 					$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeName", "");
 					$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktypeName", "");
+					$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeCode", "");
+					
+					self.checkMes += 1;
 					
 					self.inputWorkInfo(dataMid, index, dataCell, dataFixed, empId, dataCell.originalEvent.detail.columnKey);
 					}
@@ -345,6 +340,18 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						self.dataScreen003A().employeeInfo[index].workScheduleDto.startTime2 = dataMid2.startTime2;
 						self.dataScreen003A().employeeInfo[index].workScheduleDto.endTime2 = dataMid2.endTime2;	
 					}
+					
+					if (dataCell.originalEvent.detail.columnKey === "worktimeCode") {
+						self.checkUpdateTime.name = "worktimeCode";
+						self.checkUpdateTime.id = 1;
+						self.inputWorkInfo(dataMid, index, dataCell, dataFixed, empId, dataCell.originalEvent.detail.columnKey);
+						self.bindTypeTime.push({
+							index : index,
+							value : true
+						})
+						self.checkMes += 100;
+					}
+					
 					let columnKey = dataCell.originalEvent.detail.columnKey;
 					if ((columnKey === "startTime1" || columnKey === "startTime2" ||
 						columnKey === "endTime1" || columnKey === "endTime2") && self.checkUpdateTime.id == 0) {
@@ -367,7 +374,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									dataFixed[0].workScheduleDto.startTime1 = x.startTime1;
 									self.checkTypeChange.push({type : "startTime1"});
 									if (x.startTime1 == "") {
-										return;
+										self.checkTimeInfo(dataMid.worktypeCode, dataMid.worktimeCode, "",
+							dataMid.startTime2.trim(), dataMid.endTime1.trim(), dataMid.endTime2.trim(), columnKey);
 									}
 								}
 								if (columnKey === "startTime2") {
@@ -462,9 +470,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				cssEndTime1: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(6)",
 				cssStartTime2: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(7)",
 				cssEndTime2: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(8)";
-			if(columnKey === "worktypeCode"){
+			/*if(columnKey === "worktypeCode"){
 				workTimeCode = self.dataScreen003AFirst().employeeInfo[index].workScheduleDto.workTimeCode;
-			}
+			}*/
 			
 			if(empId === self.employeeIdLogin){
 							color = "#94b7fe";
@@ -813,8 +821,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 					dfd.resolve();
 				}).fail(function(error) {
-					if(columnKey == "worktimeCode" || (error.messageId != "Msg_434" && columnKey == "worktypeCode")){
+					if((columnKey == "worktimeCode" || (error.messageId != "Msg_434" && columnKey == "worktypeCode")) && self.checkMes != 101){
 						errorDialog({ messageId: error.messageId });
+					}
+					
+					if(self.checkMes == 101){
+						self.checkMes = 0;
 					}
 					
 					ruler.replaceAt(index, [{ // xóa chart khi là ngày nghỉ
@@ -3600,16 +3612,16 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			let dfd = $.Deferred<any>(), command: any = {
 				workType: worktypeCode.trim(),
 				workTime: worktimeCode.trim(),
-				workTime1: startTime1 != "" && startTime1 != null ? new TimeZoneDto(new TimeOfDayDto(0, _.isString(startTime1) ? Math.floor(duration.parseString(startTime1).toValue()) : startTime1),
-					new TimeOfDayDto(0, _.isString(endTime1) ? Math.floor(duration.parseString(endTime1).toValue()) : endTime1)) : null,
-				workTime2: startTime2 != "" && startTime2 != null ? new TimeZoneDto(new TimeOfDayDto(0, _.isString(startTime2) ? Math.floor(duration.parseString(startTime2).toValue()) : startTime2),
-					new TimeOfDayDto(0, _.isString(endTime2) ? Math.floor(duration.parseString(endTime2).toValue()) : endTime2)) : null,
+				workTime1: new TimeZoneDto(new TimeOfDayDto(0, _.isString(startTime1) ? Math.floor(duration.parseString(startTime1).toValue()) : startTime1),
+					new TimeOfDayDto(0, _.isString(endTime1) ? Math.floor(duration.parseString(endTime1).toValue()) : endTime1)),
+				workTime2: new TimeZoneDto(new TimeOfDayDto(0, _.isString(startTime2) ? Math.floor(duration.parseString(startTime2).toValue()) : startTime2),
+					new TimeOfDayDto(0, _.isString(endTime2) ? Math.floor(duration.parseString(endTime2).toValue()) : endTime2)),
 			}
 
-			if((columnKey === "startTime1" && startTime1 != "" && endTime1 != "") || 
-			(columnKey === "startTime2" && startTime2 != "" && endTime2 != "") ||
-			(columnKey === "endTime1" && endTime1 != "" && startTime1 != "") ||
-			(columnKey === "endTime2" && endTime2 != "" && startTime2 != "")){
+			if((columnKey === "startTime1") || /*&& startTime1 != "" && endTime1 != "") || */
+			(columnKey === "startTime2" /*&& startTime2 != "" && endTime2 != ""*/) ||
+			(columnKey === "endTime1" /*&& endTime1 != "" && startTime1 != ""*/) ||
+			(columnKey === "endTime2" /*&& endTime2 != "" && startTime2 != ""*/)){
 			service.checkTimeIsIncorrect(command).done(function(result) {
 				let errors = [];
 				for (let i = 0; i < result.length; i++) {
