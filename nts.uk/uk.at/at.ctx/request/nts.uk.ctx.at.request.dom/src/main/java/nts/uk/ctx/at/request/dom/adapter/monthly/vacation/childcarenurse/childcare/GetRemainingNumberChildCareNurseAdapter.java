@@ -1,13 +1,14 @@
-package nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare;
+package nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.childcare;
+
+import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.ChildCareNursePeriodImport;
+import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.TmpChildCareNurseMngWorkImport;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 
 import java.util.List;
 import java.util.Optional;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
-import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.AggrResultOfChildCareNurse;
-import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.TmpChildCareNurseMngWork;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 
 
 /**
@@ -15,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAt
  * @author yuri_tamakoshi
  */
 
-public interface  GetRemainingNumberChildCareNurse {
+public interface GetRemainingNumberChildCareNurseAdapter {
 
 		/**
 		 * 期間中の子の看護休暇残数を取得
@@ -31,14 +32,14 @@ public interface  GetRemainingNumberChildCareNurse {
 		 * @return 子の看護介護休暇集計結果
 		 */
 		 // RequestList206
-		ChildCareNursePeriodExport getChildCareNurseRemNumWithinPeriod(
-				String employeeId,
-				DatePeriod period,
-				InterimRemainMngMode performReferenceAtr,
-				GeneralDate criteriaDate,
-				Optional<Boolean> isOverWrite,
-				Optional<List<TmpChildCareNurseMngWorkExport>> tempChildCareDataforOverWriteList,
-				Optional<ChildCareNursePeriodExport> prevChildCareLeave,
-				Optional<CreateAtr> createAtr,
-				Optional<GeneralDate> periodOverWrite);
+		ChildCareNursePeriodImport getChildCareNurseRemNumWithinPeriod(
+                String employeeId,
+                DatePeriod period,
+                InterimRemainMngMode performReferenceAtr,
+                GeneralDate criteriaDate,
+                Optional<Boolean> isOverWrite,
+                Optional<List<TmpChildCareNurseMngWorkImport>> tempChildCareDataforOverWriteList,
+                Optional<ChildCareNursePeriodImport> prevChildCareLeave,
+                Optional<CreateAtr> createAtr,
+                Optional<GeneralDate> periodOverWrite);
 }

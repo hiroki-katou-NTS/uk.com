@@ -1,21 +1,21 @@
-package nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare;
-
-import java.util.List;
-import java.util.Optional;
+package nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.care;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.AggrResultOfChildCareNurse;
-import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.childcare.TmpChildCareNurseMngWork;
+import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.ChildCareNursePeriodImport;
+import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.TmpChildCareNurseMngWorkImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
+
+import java.util.List;
+import java.util.Optional;
 
 
 /**
  * 期間中の介護休暇残数を取得
  * @author yuri_tamakoshi
  */
-public interface GetRemainingNumberCare {
+public interface GetRemainingNumberCareAdapter {
 
 		/**
 		 * 期間中の介護休暇残数を取得
@@ -31,12 +31,15 @@ public interface GetRemainingNumberCare {
 		 * @return 子の看護介護休暇集計結果
 		 */
 		 // RequestList207
-		ChildCareNursePeriodExport getCareRemNumWithinPeriod(String employeeId,DatePeriod period,
+		ChildCareNursePeriodImport getCareRemNumWithinPeriod(
+				String employeeId,
+				DatePeriod period,
 				InterimRemainMngMode performReferenceAtr,
 				GeneralDate criteriaDate,
 				Optional<Boolean> isOverWrite,
-				Optional<List<TmpChildCareNurseMngWorkExport>> tempCareDataforOverWriteList,
-				Optional<ChildCareNursePeriodExport> prevCareLeave,
+				Optional<List<TmpChildCareNurseMngWorkImport>> tempCareDataforOverWriteList,
+				Optional<ChildCareNursePeriodImport> prevCareLeave,
 				Optional<CreateAtr> createAtr,
-				Optional<GeneralDate> periodOverWrite);
+				Optional<GeneralDate> periodOverWrite
+		);
 }

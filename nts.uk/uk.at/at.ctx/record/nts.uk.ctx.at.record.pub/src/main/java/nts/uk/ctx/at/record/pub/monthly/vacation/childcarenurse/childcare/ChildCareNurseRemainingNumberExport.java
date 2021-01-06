@@ -8,7 +8,7 @@ import lombok.Getter;
  * @author yuri_tamakoshi
 */
 @Getter
-public class ChildCareNurseRemainingNumber  implements Cloneable{
+public class ChildCareNurseRemainingNumberExport implements Cloneable{
 
 	/** 子の看護休暇使用日数 */
 	private  Double usedDays;
@@ -18,7 +18,7 @@ public class ChildCareNurseRemainingNumber  implements Cloneable{
 	/**
 	 * コンストラクタ
 	 */
-	public ChildCareNurseRemainingNumber(){
+	public ChildCareNurseRemainingNumberExport(){
 
 		this.usedDays = new Double(0.0);
 		this.usedTime = Optional.empty();
@@ -26,15 +26,15 @@ public class ChildCareNurseRemainingNumber  implements Cloneable{
 
 	/**
 	 * ファクトリー
-	 * @param usedDay　子の看護休暇使用日数
-	 * @param usedTimes　子の看護休暇使用時間
+	 * @param usedDays　子の看護休暇使用日数
+	 * @param usedTime　子の看護休暇使用時間
 	 * @return 子の看護介護残数
 	*/
-	public static ChildCareNurseRemainingNumber of (
+	public static ChildCareNurseRemainingNumberExport of (
 			Double usedDays,
 			Optional<Integer> usedTime) {
 
-		ChildCareNurseRemainingNumber domain = new ChildCareNurseRemainingNumber();
+		ChildCareNurseRemainingNumberExport domain = new ChildCareNurseRemainingNumberExport();
 		domain.usedDays = usedDays;
 		domain.usedTime = usedTime;
 		return domain;

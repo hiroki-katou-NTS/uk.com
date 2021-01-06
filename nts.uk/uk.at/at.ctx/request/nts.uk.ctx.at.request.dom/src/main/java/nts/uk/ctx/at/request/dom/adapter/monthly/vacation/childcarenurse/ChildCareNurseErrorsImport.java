@@ -1,5 +1,6 @@
-package nts.uk.ctx.at.record.pub.monthly.vacation.childcarenurse.childcare;
+package nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse;
 
+import lombok.Data;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
 
@@ -8,7 +9,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.Child
  * 子の看護介護エラー情報
  * @author yuri_tamakoshi
  */
-public class ChildCareNurseErrors {
+@Data
+public class ChildCareNurseErrorsImport {
 	/** 子の看護介護使用数 */
 	private  ChildCareNurseUsedNumber usedNumber;
 	/** 子の看護介護上限日数 */
@@ -19,7 +21,7 @@ public class ChildCareNurseErrors {
 	/**
 	 * コンストラクタ
 	 */
-	public ChildCareNurseErrors(){
+	public ChildCareNurseErrorsImport(){
 
 		this.usedNumber = new ChildCareNurseUsedNumber();
 		this.limitDays = new Double(0.0);
@@ -32,12 +34,12 @@ public class ChildCareNurseErrors {
 	 * @param ymd 子の看護介護エラー対象年月日
 	 * @return 子の看護介護エラー情報
 	 */
-	public static ChildCareNurseErrors of(
+	public static ChildCareNurseErrorsImport of(
 			ChildCareNurseUsedNumber usedNumber,
 			Double limitDays,
 			GeneralDate ymd) {
 
-		ChildCareNurseErrors domain = new ChildCareNurseErrors();
+		ChildCareNurseErrorsImport domain = new ChildCareNurseErrorsImport();
 		domain.usedNumber = usedNumber;
 		domain.limitDays = limitDays;
 		domain.ymd = ymd;

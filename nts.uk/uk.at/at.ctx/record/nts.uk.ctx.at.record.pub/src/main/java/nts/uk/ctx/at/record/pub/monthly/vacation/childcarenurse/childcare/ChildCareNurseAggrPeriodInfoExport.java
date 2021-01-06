@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.Child
   * @author yuri_tamakoshi
  */
 @Getter
-public class ChildCareNurseAggrPeriodInfo {
+public class ChildCareNurseAggrPeriodInfoExport {
 	/** 子の看護介護休暇の時間休暇使用回数 */
 	private Integer usedCount;
 	/** 子の看護介護休暇の時間休暇使用日数 */
@@ -20,7 +20,7 @@ public class ChildCareNurseAggrPeriodInfo {
 	/**
 	 * コンストラクタ
 	 */
-	public ChildCareNurseAggrPeriodInfo(){
+	public ChildCareNurseAggrPeriodInfoExport(){
 		this.usedCount = new Integer(0);
 		this.usedDays = new Integer(0);
 		this.aggrPeriodUsedNumber = new ChildCareNurseUsedNumber();
@@ -33,12 +33,12 @@ public class ChildCareNurseAggrPeriodInfo {
 	 * @param aggrPeriodUsedNumber集計期間の子の看護介護休暇使用数
 	 * @return 集計期間の子の看護介護休暇情報
 	 */
-	public static ChildCareNurseAggrPeriodInfo of(
+	public static ChildCareNurseAggrPeriodInfoExport of(
 			Integer usedCount,
 			Integer usedDays,
 			ChildCareNurseUsedNumber aggrPeriodUsedNumber){
 
-		ChildCareNurseAggrPeriodInfo domain = new ChildCareNurseAggrPeriodInfo();
+		ChildCareNurseAggrPeriodInfoExport domain = new ChildCareNurseAggrPeriodInfoExport();
 		domain.usedCount = usedCount;
 		domain.usedDays = usedDays;
 		domain.aggrPeriodUsedNumber = aggrPeriodUsedNumber;
