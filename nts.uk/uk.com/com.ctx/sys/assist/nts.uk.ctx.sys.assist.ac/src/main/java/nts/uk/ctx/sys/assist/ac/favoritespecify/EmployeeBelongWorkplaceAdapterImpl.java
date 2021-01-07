@@ -1,8 +1,6 @@
 package nts.uk.ctx.sys.assist.ac.favoritespecify;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -25,8 +23,6 @@ public class EmployeeBelongWorkplaceAdapterImpl implements EmployeeBelongWorkpla
 
 	@Override
 	public List<String> getEmployeeByWplAndBaseDate(List<String> wkps, GeneralDate baseDate) {
-		// $社員IDMap＝ new HashMap<>()
-		Map<String, String> sIds = new HashMap<>();
 
 		// $期間 ＝ 期間(基準日、基準日)
 		DatePeriod period = new DatePeriod(baseDate, baseDate);

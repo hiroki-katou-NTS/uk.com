@@ -9,12 +9,15 @@ public class EmployeeBasicImport {
 	/** The emp id. */
 	// 社員ID
 	private String employeeId;
-
-	/** The employeeCode. */
+	
 	// 個人ID
-	private String personId;
+	private String personalId;
 
 	/** The BusinessName. */
 	// ビジネスネーム
 	private String BusinessName;
+	
+	/** The employee code. */
+	// 社員コード
+	private String employeeCode;
 }

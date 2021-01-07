@@ -1,7 +1,7 @@
 package nts.uk.ctx.sys.assist.dom.favorite.adapter;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import nts.arc.time.GeneralDate;
 
@@ -10,5 +10,5 @@ import nts.arc.time.GeneralDate;
  *  @author hieutt
  */
 public interface WorkplaceInforAdaptor {
-	public HashMap<String, WorkplaceInforImport> getWorkplaceInfor(List<String> lstWorkplaceID, GeneralDate baseDate);
+	public Map<String, WorkplaceInforImport> getWorkplaceInfor(List<String> lstWorkplaceID, GeneralDate baseDate);
 }
