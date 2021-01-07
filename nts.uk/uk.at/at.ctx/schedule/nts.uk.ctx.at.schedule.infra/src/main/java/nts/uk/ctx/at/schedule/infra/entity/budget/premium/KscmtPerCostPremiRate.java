@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCMT_PER_COST_PREMI_RATE")
+@Table(name = "KMLST_PREMIUM_SET")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KscmtPerCostPremiRate extends UkJpaEntity implements Serializable {

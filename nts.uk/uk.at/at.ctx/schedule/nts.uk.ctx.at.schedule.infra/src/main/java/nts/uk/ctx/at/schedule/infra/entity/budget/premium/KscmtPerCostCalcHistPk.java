@@ -11,13 +11,12 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
-public class KscmtPerCostCalPk implements Serializable {
+public class KscmtPerCostCalcHistPk implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Column(name = "CID")
     public String companyID;
 
-    @Column(name = "HIS_ID")
+    @Column(name = "HIST_ID")
     public String histID;
-
 }

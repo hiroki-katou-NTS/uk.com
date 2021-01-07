@@ -4,7 +4,6 @@ package nts.uk.ctx.at.schedule.infra.entity.budget.premium;
 import lombok.*;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculation;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -17,21 +16,16 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCMT_PER_COST_CALC")
+@Table(name = "KMLMT_COST_CALC_SET")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KscmtPerCostCal extends UkJpaEntity implements Serializable {
+public class KscmtPerCostCalc extends UkJpaEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @EmbeddedId
-    public KscmtPerCostCalPk pk;
+    public KscmtPerCostCalcPk pk;
 
-    @Column(name = "START_DATE")
-    public GeneralDate startDate;
-
-    @Column(name = "END_DATE")
-    public GeneralDate endDate;
     //人件費計算設定.単価
     @Column(name = "UNITPRICE_ATR")
     public Integer unitPriceAtr;
@@ -54,26 +48,18 @@ public class KscmtPerCostCal extends UkJpaEntity implements Serializable {
     public int unitPriceSettingMethod;
     // 人件費計算設定->就業時間単価
     @Column(name = "WORKING_HOURS_UNITPRICE_ATR")
-    public int wokkingHoursUnitPriceAtr;
+    public int workingHoursUnitPriceAtr;
 
     @Override
     protected Object getKey() {
         return null;
     }
 
-    public KscmtPerCostCal update(DateHistoryItem domain) {
-        this.endDate = domain.end();
-        this.startDate = domain.start();
-        return this;
-    }
-
-    public static KscmtPerCostCal toEntity(PersonCostCalculation domain, GeneralDate startDate, GeneralDate endDate, String histId) {
+    public static KscmtPerCostCalc toEntity(PersonCostCalculation domain, String histId) {
         val unitPrice = domain.getUnitPrice();
 
-        return new KscmtPerCostCal(
-                new KscmtPerCostCalPk(domain.getCompanyID(), histId),
-                startDate,
-                endDate,
+        return new KscmtPerCostCalc(
+                new KscmtPerCostCalcPk(domain.getCompanyID(), histId),
                 unitPrice.isPresent() ? unitPrice.get().value : null,
                 domain.getRemark().v(),
                 domain.getRoundingSetting().getRoundingOfPremium().getPriceRounding().value,

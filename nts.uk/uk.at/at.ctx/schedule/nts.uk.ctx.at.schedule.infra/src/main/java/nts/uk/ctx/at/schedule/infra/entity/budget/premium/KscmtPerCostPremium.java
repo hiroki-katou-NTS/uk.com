@@ -19,29 +19,20 @@ import java.util.stream.Collectors;
 @Setter
 @Entity
 @Table(name = "KMLDT_PREMIUM_ATTENDANCE")
-public class KmldtPremiumAttendance extends UkJpaEntity {
+public class KscmtPerCostPremium extends UkJpaEntity {
     @EmbeddedId
-    public KmldpPremiumAttendancePK kmldpPremiumAttendancePK;
-
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @PrimaryKeyJoinColumns({
-//            @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
-//            @PrimaryKeyJoinColumn(name = "HIS_ID", referencedColumnName = "HIS_ID"),
-//            @PrimaryKeyJoinColumn(name = "PREMIUM_NO", referencedColumnName = "PREMIUM_NO")
-//    })
-//    public KmlstPremiumSet kmlstPremiumSet;
-
+    public KscmtPerCostPremiumPk kscmtPerCostPremiumPk;
     @Override
     protected Object getKey() {
-        return kmldpPremiumAttendancePK;
+        return kscmtPerCostPremiumPk;
     }
 
-    public static List<KmldtPremiumAttendance> toEntity(List<PremiumSetting> premiumSettings,String histId) {
-        List<KmldtPremiumAttendance> rs = new ArrayList<>();
+    public static List<KscmtPerCostPremium> toEntity(List<PremiumSetting> premiumSettings, String histId) {
+        List<KscmtPerCostPremium> rs = new ArrayList<>();
         premiumSettings.forEach(
                 e -> {
-                    rs.addAll(e.getAttendanceItems().stream().map(i -> new KmldtPremiumAttendance(
-                            new KmldpPremiumAttendancePK(
+                    rs.addAll(e.getAttendanceItems().stream().map(i -> new KscmtPerCostPremium(
+                            new KscmtPerCostPremiumPk(
                                     e.getCompanyID(),
                                     histId,
                                     e.getID().value,

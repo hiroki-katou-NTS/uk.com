@@ -15,6 +15,7 @@ import nts.uk.shr.com.context.AppContexts;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -35,15 +36,19 @@ public class RegisterLaborCalculationSettingCommandHandler extends CommandHandle
         val amountRoundingSetting = new AmountRoundingSetting(EnumAdaptor.valueOf(unit,AmountUnit.class),EnumAdaptor.valueOf(rounding,AmountRounding.class));
         val roundingSetting = new PersonCostRoundingSetting(roundingOfPremium, amountRoundingSetting);
         val cid = AppContexts.user().companyId();
+
         val unitPrice = EnumAdaptor.valueOf(command.getUnitPrice(), UnitPrice.class);
-        val premiumSettings = command.getPremiumSettingList().stream().map(e -> new PremiumSetting(
-                cid,
-                null,
-                EnumAdaptor.valueOf(e.getID(), ExtraTimeItemNo.class),
-                new PremiumRate(e.getRate()),
-                EnumAdaptor.valueOf(e.getUnitPrice(), UnitPrice.class),
-                e.getAttendanceItems()
-        )).collect(Collectors.toList());
+        val premiumSettings = new ArrayList<PremiumSetting>();
+        if(command.getPremiumSettingList()!=null|| !command.getPremiumSettingList().isEmpty()){
+            premiumSettings.addAll(command.getPremiumSettingList().stream().map(e -> new PremiumSetting(
+                    cid,
+                    null,
+                    EnumAdaptor.valueOf(e.getID(), ExtraTimeItemNo.class),
+                    new PremiumRate(e.getRate()),
+                    EnumAdaptor.valueOf(e.getUnitPrice(), UnitPrice.class),
+                    e.getAttendanceItems()
+            )).collect(Collectors.toList()));
+        }
         val domain = new PersonCostCalculation(
                 roundingSetting,
                 cid,

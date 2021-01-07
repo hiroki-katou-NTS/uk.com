@@ -30,14 +30,7 @@ public interface PersonCostCalculationRepository {
     List<PersonCostCalculation> findByCompanyID(String companyID);
 
     /**
-     * get single PersonCostCalculation by company ID and history ID
-     *
-     * @param companyID company ID
-     * @return single PersonCostCalculation by company ID and history ID
-     */
-    Optional<PersonCostCalculation> findItemByDate(String companyID, GeneralDate startDate);
-
-    /**
+     * /**
      * get single PersonCostCalculation by company ID and history ID
      *
      * @param companyID company ID
@@ -46,27 +39,7 @@ public interface PersonCostCalculationRepository {
      */
     Optional<PersonCostCalculation> findItemByHistoryID(String companyID, String historyID);
 
-    /**
-     * get single PersonCostCalculation before input date by company ID
-     *
-     * @param companyID company ID
-     * @return single PersonCostCalculation before input date by company ID
-     */
-    Optional<PersonCostCalculation> findItemBefore(String companyID, GeneralDate startDate);
-
-    /**
-     * get single PersonCostCalculation after input date by company ID
-     *
-     * @param companyID company ID
-     * @return single PersonCostCalculation after input date by company ID
-     */
-    Optional<PersonCostCalculation> findItemAfter(String companyID, GeneralDate startDate);
-
-
-    void update(PersonCostCalculation personCostCalculation);
-
     void delete(String companyId, String historyId);
-
 
     List<PersonCostCalculation> findByCompanyIDAndDisplayNumber(String companyID, GeneralDate date);
 
@@ -74,9 +47,7 @@ public interface PersonCostCalculationRepository {
 
     List<PremiumSetting> findPremiumSettingBy(String companyID, GeneralDate date);
 
-
     Optional<HistPersonCostCalculation> getHistPersonCostCalculation(String cid);
-
 
     Optional<PersonCostCalAndDateDto> getPersonCost(String cid, String histId);
 
