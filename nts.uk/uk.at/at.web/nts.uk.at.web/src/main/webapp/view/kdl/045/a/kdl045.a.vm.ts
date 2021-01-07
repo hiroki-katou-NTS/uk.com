@@ -610,7 +610,9 @@ module nts.uk.at.view.kdl045.a {
                                     }
                                 }
                             });
-                        }
+                        }else{
+							self.workStyle(null);
+						}
                     }
                 });
             }
@@ -957,7 +959,8 @@ module nts.uk.at.view.kdl045.a {
                                 workTypeName : self.workTypeName(),//勤務種類名称
                                 workTimeName : self.workTimeName(), //就業時間帯名称
                                 workType : self.workTimeForm(),//勤務タイプ
-                                fixBreakTime : self.fixBreakTime()
+                                fixBreakTime : self.fixBreakTime(),
+								isHoliday : self.workStyle() == 0 ? true : false
                                 
                             };
                         
