@@ -78,7 +78,7 @@
               </div>
             </div>
           </div>
-          <div class="fixed-flex-layout-right">          
+          <div class="fixed-flex-layout-right">
             <div class="table">
               <div class="cell">
                 <!--A3_8-->
@@ -97,7 +97,10 @@
                 </button>
               </div>
             </div>
-            <div class="table two-columns" data-bind="with: currentPersonCost, as: 'person'">
+            <div
+              class="table two-columns"
+              data-bind="with: currentPersonCost, as: 'person'"
+            >
               <div class="cell cell-column-1">
                 <div class="table three-columns">
                   <div class="cell column1">
@@ -109,7 +112,8 @@
                   <div class="cell column2">
                     <!--A4_10-->
                     <div
-                      tabindex="9" class="field-required"
+                      tabindex="9"
+                      class="field-required"
                       data-bind="ntsRadioBoxGroup: {
 											name: '#[KML001_72]',
 											options: [
@@ -130,14 +134,12 @@
                       class="cell valign-center"
                       data-bind="text: '#{i18n.getText('KML001_75')}'"
                     ></div>
-                    <div
-                      class="cell valign-center"
-                      
-                    >
+                    <div class="cell valign-center">
                       <!--A4_14-->
                       <div
                         id="combo-box"
-                        tabindex="10" class="field-required"
+                        tabindex="10"
+                        class="field-required"
                         data-bind="ntsComboBox: {
 													name: '#[KML001_75]',
 													options: $parent.unitPriceOpt(),
@@ -283,27 +285,50 @@
               </div>
             </div>
             <!-- table list -->
-            <div class="table" id="premium-set-div">
-              <table id="premium-set-tbl">
+            <div
+              class="nts-fixed-header-container ui-iggrid nts-fixed-header"
+              id="premium-set-div"
+            >
+              <table id="premium-set-tbl" class="fixed-table">
+                <colgroup>
+                  <col width="270px" />
+                  <col width="90px" />
+                  <col width="100px" />
+                  <col width="450px" />
+                </colgroup>
                 <thead>
                   <tr>
-                    <th>#{i18n.getText('KML001_12')}</th>
-                    <th>#{i18n.getText('KML001_13')}</th>
-                    <th>#{i18n.getText('KML001_82')}</th>                   
-                    <th>#{i18n.getText('KML001_14')}</th>
+                    <th class="ui-widget-header">
+                      #{i18n.getText('KML001_12')}
+                    </th>
+                    <th class="ui-widget-header">
+                      #{i18n.getText('KML001_13')}
+                    </th>
+                    <th class="ui-widget-header">
+                      #{i18n.getText('KML001_82')}
+                    </th>
+                    <th class="ui-widget-header">
+                      #{i18n.getText('KML001_14')}
+                    </th>
                   </tr>
                 </thead>
-                <tbody data-bind="foreach: currentPersonCost().premiumSets">    
-									<com:ko-if bind="$index() === 0 &amp;&amp; $vm.currentPersonCost().calculationSetting() === 1">             
-									<tr>
-                    <td data-bind="text: '#{i18n.getText('KML001_83')}'"></td>
-                    <td class="valign-right" data-bind="text: '#{i18n.getText('KML001_84')}'">100%</td>
-                    <td>                      
-                      <div
-                        id="comboBoxA5_13"
-                        class="combo-box-a5-10 field-required"
-                        tabindex="15"
-                        data-bind="ntsComboBox: {
+                <tbody data-bind="foreach: currentPersonCost().premiumSets">
+                  <com:ko-if
+                    bind="$index() === 0 &amp;&amp; $vm.currentPersonCost().calculationSetting() === 1"
+                  >
+                    <tr>
+                      <td data-bind="text: '#{i18n.getText('KML001_83')}'"></td>
+                      <td class="valign-right percent-100">
+                        <span
+                          data-bind="text: '#{i18n.getText('KML001_84')}'"
+                        ></span>
+                      </td>
+                      <td>
+                        <div
+                          id="comboBoxA5_13"
+                          class="combo-box-a5-10 field-required"
+                          tabindex="15"
+                          data-bind="ntsComboBox: {
 														name: '#[KML001_85]',
 														options: $parent.unitPriceOpt(),
 														optionsValue: 'code',
@@ -314,17 +339,17 @@
 														visibleItemsCount: 5,
 														enable: $vm.currentPersonCost().calculationSetting() === 1,
 														required: true }"
-                      ></div>
-                    </td>
-                    <td></td>
-									</tr>
-									</com:ko-if>
+                        ></div>
+                      </td>
+                      <td></td>
+                    </tr>
+                  </com:ko-if>
                   <tr data-bind="css: { notUse: useAtr() == 0 }">
                     <td
                       style="word-wrap: break-word"
                       data-bind="text: (name()=='')?'ITEM'+($index()+1):name()"
                     ></td>
-                    <td>
+                    <td class="valign-center">
                       <span>
                         <input
                           tabindex="16"
@@ -344,7 +369,7 @@
                         />
                       </span>
                     </td>
-                    <td>
+                    <td class="valign-center">
                       <div
                         id="comboBoxA5_10"
                         class="combo-box-a5-10 field-required"
@@ -369,26 +394,28 @@
                       ></div>
                     </td>
                     <td class="control-group valign-center">
-                      <div class="cell">
-                        <button
-                          class="small"
-                          tabindex="16"
-                          data-bind="click: function(){ $vm.selectDialog($data, $index())}"
-                        >
-                          #{i18n.getText('KML001_15')}
-                        </button>
-                      </div>
-                      <div class="cell">
-                        <input
-                          class="premiumInput premiumItems field-required"
-                          data-bind="ntsTextEditor: {
-													name: '#[KML001_14]',
-													value: $parent.viewAttendanceItems()[$index()],
-													constraint: 'Memo',
-													option: { width: '360px' },
-													enable: true,
-													readonly: true }"
-                        />
+                      <div class="table">
+                        <div class="cell valign-center">
+                          <button
+                            class="small"
+                            tabindex="16"
+                            data-bind="click: function(){ $vm.selectDialog($data, $index())}"
+                          >
+                            #{i18n.getText('KML001_15')}
+                          </button>
+                        </div>
+                        <div class="cell valign-center">
+                          <input
+                            class="premiumInput premiumItems field-required"
+                            data-bind="ntsTextEditor: {
+                              name: '#[KML001_14]',
+                              value: $parent.viewAttendanceItems()[$index()],
+                              constraint: 'Memo',
+                              option: { width: '370px' },
+                              enable: true,
+                              readonly: true }"
+                          />
+                        </div>
                       </div>
                     </td>
                   </tr>

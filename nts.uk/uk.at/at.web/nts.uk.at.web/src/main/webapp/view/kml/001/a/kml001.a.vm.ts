@@ -53,8 +53,8 @@ module nts.uk.at.view.kml001.a {
           { code: 0, name: self.$i18n('KML001_22') },
           { code: 1, name: self.$i18n('KML001_23') },
           { code: 2, name: self.$i18n('KML001_24') },
-          { code: 3, name: self.$i18n('KML001_25') },
-          { code: 4, name: self.$i18n('KML001_26') }
+          { code: 3, name: self.$i18n('KML001_26') },
+          { code: 4, name: self.$i18n('KML001_25') }
         ]);
 
         self.currentPersonCost().unitPrice.subscribe((newValue) => {
@@ -71,7 +71,7 @@ module nts.uk.at.view.kml001.a {
           //console.log(newValue);
         });
       }
-
+      
       /**
        * get data on start page
        */
@@ -93,12 +93,15 @@ module nts.uk.at.view.kml001.a {
               self.isInsert(false);
             } else self.$blockui('hide');
             
+            let height__: number = $(window).width() > 1366 ? 464 : 224;
+            $("#premium-set-tbl").ntsFixedTable({ height: height__ });
+
             dfd.resolve();
           })
           .fail((res1, res2) => {
             if (!_.isNil(res1) && !_.isNil(res2)) {
               nts.uk.ui.dialog.alertError(res1.message + '\n' + res2.message).then(() => {
-                if (res2.messageId === 'Msg_2027' || res21.messageId === 'Msg_2027') {
+                if (res2.messageId === 'Msg_2027' || res1.messageId === 'Msg_2027') {
                   nts.uk.request.jump('com', '/view/ccg/008/a/index.xhtml');
                 }
               });
@@ -503,8 +506,16 @@ module nts.uk.at.view.kml001.a {
     
         nts.uk.ui.windows.setShared('PERSONAL_HISTORY', ko.toJS(params));
         nts.uk.ui.windows.sub.modal("/view/kml/001/c/index.xhtml", { title: "履歴の追加", dialogClass: "no-close" })
-        .onClosed(function() {
-
+        .onClosed(() => {
+          const personal_cloned = nts.uk.ui.windows.getShared('PERSONAL_CLONED');
+          if( !_.isNil(personal_cloned) && personal_cloned) {
+            self.$blockui('grayout');
+            servicebase.personCostCalculationSelect().done((data) => {
+              self.loadHistoryListPanel(data.lisHist, null);
+              self.isInsert(false);
+              //self.$blockui('grayout');
+            }).always(() => self.$blockui('hide'));
+          }
         });
       }
 
@@ -514,10 +525,21 @@ module nts.uk.at.view.kml001.a {
       editDialog(): void {
         nts.uk.ui.block.invisible();
         var self = this;
-        let index = _.findIndex(self.personCostList(), function (o) { return self.currentPersonCost().startDate() == o.startDate(); });
+        /* let index = _.findIndex(self.personCostList(), function (o) { return self.currentPersonCost().startDate() == o.startDate(); });
         nts.uk.ui.windows.setShared('personCostList',
           _.map(self.personCostList(), item => vmbase.ProcessHandler.toObjectPersonCost(item))
-        );
+        ); */
+        let personCostList: Array<any> = [];
+        const gridPersonCostList = self.gridPersonCostList();
+
+        if(gridPersonCostList.length > 1) {
+          personCostList.push(gridPersonCostList[0]);
+          personCostList.push(gridPersonCostList[1]);
+        } else if(gridPersonCostList.length > 0 ) {
+          personCostList.push(gridPersonCostList[0]);
+        }
+
+        nts.uk.ui.windows.setShared('personCostList', personCostList);
         nts.uk.ui.windows.setShared('currentPersonCost', vmbase.ProcessHandler.toObjectPersonCost(self.currentPersonCost()));
         nts.uk.ui.windows.sub.modal("/view/kml/001/d/index.xhtml", { title: "履歴の編集", dialogClass: "no-close" }).onClosed(function () {
           let editedIndex = nts.uk.ui.windows.getShared('isEdited');
@@ -539,7 +561,7 @@ module nts.uk.at.view.kml001.a {
           }
           $("#memo").focus();
           self.setTabindex();
-        });;
+        });
       }
 
       /**
