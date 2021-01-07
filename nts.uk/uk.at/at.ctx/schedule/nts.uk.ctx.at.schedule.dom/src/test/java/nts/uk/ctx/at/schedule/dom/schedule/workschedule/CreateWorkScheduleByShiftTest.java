@@ -3,6 +3,7 @@ package nts.uk.ctx.at.schedule.dom.schedule.workschedule;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -15,6 +16,7 @@ import mockit.MockUp;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.CreateWorkSchedule.Require;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 
@@ -71,6 +73,7 @@ public class CreateWorkScheduleByShiftTest {
 					String employeeId, 
 					GeneralDate date, 
 					WorkInformation workInformation,
+					List<TimeSpanForCalc> breakTimeList,
 					Map<Integer, T> updateInfoMap) {
 				return mockResult;
 			}
