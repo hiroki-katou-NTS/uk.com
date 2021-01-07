@@ -9,10 +9,11 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-	
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.pub.jobtitle.EmployeeJobHistExport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
+import nts.uk.ctx.sys.assist.dom.favorite.adapter.EmployeeJobHistImport;
 import nts.uk.ctx.sys.assist.dom.favorite.adapter.EmployeePositionAdapter;
 
 @Stateless
@@ -23,14 +24,18 @@ public class EmployeePositionAdapterImpl implements EmployeePositionAdapter {
 	private SyJobTitlePub jobTitlePub;
 
 	@Override
-	public Map<String, String> getPositionBySidsAndBaseDate(List<String> sIds, GeneralDate baseDate) {
+	public Map<String, EmployeeJobHistImport> getPositionBySidsAndBaseDate(List<String> sIds, GeneralDate baseDate) {
 		// $職位Map ＝ new HashMap<>()
 		List<EmployeeJobHistExport> jobHistory = this.jobTitlePub.findSJobHistByListSId(sIds, baseDate).stream()
 				.filter(value -> sIds.contains(value.getEmployeeId())).collect(Collectors.toList());
-		if (jobHistory.isEmpty()) {                                                    
+		if (jobHistory.isEmpty()) {
 			return Collections.emptyMap();
 		}
-		Map<String, String> jobMap = jobHistory.stream().collect(Collectors.toMap(x -> x.getEmployeeId(), x -> x.getJobTitleID()));
+		Map<String, EmployeeJobHistImport> jobMap = jobHistory.stream()
+				.collect(Collectors.toMap(x -> x.getEmployeeId(),
+						x -> EmployeeJobHistImport.builder().employeeId(x.getEmployeeId()).jobTitleID(x.getJobTitleID())
+								.jobTitleName(x.getJobTitleName()).startDate(x.getStartDate()).endDate(x.getEndDate())
+								.jobTitleCode(x.getJobTitleCode()).build()));
 		return jobMap;
 	}
 

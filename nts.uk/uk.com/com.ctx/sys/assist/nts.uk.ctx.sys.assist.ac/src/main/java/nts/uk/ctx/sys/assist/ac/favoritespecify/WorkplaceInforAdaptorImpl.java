@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.assist.ac.favoritespecify;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -18,9 +19,9 @@ public class WorkplaceInforAdaptorImpl implements WorkplaceInforAdaptor {
 	public WorkplaceExportPub pub;
 
 	@Override
-	public HashMap<String, WorkplaceInforImport> getWorkplaceInfor(List<String> lstWorkplaceID, GeneralDate baseDate) {
-		HashMap<String, WorkplaceInforImport> result = new HashMap<String, WorkplaceInforImport>();
-		List<WorkplaceInforExport> lstWkP = pub.getWkpRQ560(AppContexts.user().companyId(), lstWorkplaceID, baseDate);
+	public Map<String, WorkplaceInforImport> getWorkplaceInfor(List<String> lstWorkplaceID, GeneralDate baseDate) {
+		Map<String, WorkplaceInforImport> result = new HashMap<String, WorkplaceInforImport>();
+		List<WorkplaceInforExport> lstWkP = this.pub.getWkpRQ560(AppContexts.user().companyId(), lstWorkplaceID, baseDate);
 		for (WorkplaceInforExport x : lstWkP) {
 			result.put(x.getWorkplaceId(),
 					new WorkplaceInforImport(x.getWorkplaceId(), x.getHierarchyCode(), x.getWorkplaceCode(),

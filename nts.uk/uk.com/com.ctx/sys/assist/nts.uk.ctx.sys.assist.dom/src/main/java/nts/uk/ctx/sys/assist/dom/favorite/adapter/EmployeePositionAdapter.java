@@ -26,5 +26,5 @@ public interface EmployeePositionAdapter {
 	 * @return Map<社員ID、職場ID>
 	 */
 	
-	public Map<String, String> getPositionBySidsAndBaseDate(List<String> sIds, GeneralDate baseDate);
+	public Map<String, EmployeeJobHistImport> getPositionBySidsAndBaseDate(List<String> sIds, GeneralDate baseDate);
 }

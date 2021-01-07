@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.assist.ac.favoritespecify;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -16,11 +17,11 @@ public class PersonalInformationAdapterImpl implements PersonalInformationAdapte
 	public SyEmployeePub pub;
 
 	@Override
-	public HashMap<String, EmployeeBasicImport> getPersonalInformation(List<String> lstSid) {
-		HashMap<String, EmployeeBasicImport> result = new HashMap<String, EmployeeBasicImport>();
+	public Map<String, EmployeeBasicImport> getPersonalInformation(List<String> lstSid) {
+		Map<String, EmployeeBasicImport> result = new HashMap<String, EmployeeBasicImport>();
 		List<EmpInfoExport> lstEmployee = pub.getEmpInfo(lstSid);
 		for (EmpInfoExport x : lstEmployee) {
-			result.put(x.getEmployeeId(), new EmployeeBasicImport(x.getEmployeeId(), x.getPId(), x.getBusinessName()));
+			result.put(x.getEmployeeId(), new EmployeeBasicImport(x.getEmployeeId(), x.getPId(), x.getBusinessName(), x.getEmployeeCode()));
 		}
 		return result;
 	}
