@@ -3,6 +3,7 @@ $editor-border-color: #EAE8F2;
 .ntsControl {
 	
 	.nts-input {
+		outline: none;
 		border: 1px solid $editor-border-color;
 		padding: 0px 10px;
 		font-family: $font_family_monospace;
@@ -11,8 +12,8 @@ $editor-border-color: #EAE8F2;
 		line-height: 28px;
 		
 		&:focus{
-			outline: none;
-			box-shadow: 0 0 1px 1px $focused_color;
+			border-color: $focused_color;
+			box-shadow: 0 0 0 2px lighten($color: $focused_color, $amount: 30);
 		}
 	
 		&.enterkey {
