@@ -100,7 +100,7 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 							data-bind="
 								style: {'background-color': backgroundColor()},
 								ntsTimeWithDayEditor: {
-									name: '#[KAF005_337]', 
+									name: frameName, 
 									value: start,
 									constraint:'OvertimeAppPrimitiveTime',
 									inputFormat: 'time',
@@ -154,6 +154,7 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 							data-bind=" 
 								style: {'background-color': backgroundColor()},
 								ntsTimeEditor: { 
+									name: frameName, 
 									value: applicationTime, 
 									option: {width: '85px', timeWithDay: true},
 									inputFormat: 'time',
