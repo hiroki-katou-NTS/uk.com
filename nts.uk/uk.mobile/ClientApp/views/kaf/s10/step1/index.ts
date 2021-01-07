@@ -227,7 +227,7 @@ export class KafS10Step1Component extends Vue {
         command.endTime = self.workHours1.end;
         command.appHdWorkDispInfo = parent.model.appHdWorkDispInfo;
 
-        // parent.getBreakTime(command); huytodo
+        parent.getBreakTime(command);
         
     }
 
