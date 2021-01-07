@@ -19,4 +19,6 @@ public class SelectTypeHolidayParam {
 	private AppAbsenceStartInfoDto appAbsenceStartInfoDto;
 	// ・休暇種類
 	private ApplyForLeaveDto applyForLeaveDto;
+	
+	private Integer holidayAppType;
 }

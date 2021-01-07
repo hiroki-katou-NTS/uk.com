@@ -123,7 +123,7 @@ public class AppAbsenceFinderMobile {
 				param.getCompanyId(),
 				param.getAppAbsenceStartInfoDto().toDomain(param.getCompanyId()),
 				Optional.ofNullable(param.getDates()).orElse(Collections.emptyList()),
-			    HolidayAppType.ABSENCE);
+			    EnumAdaptor.valueOf(param.getHolidayAppType(), HolidayAppType.class));
 		return AppAbsenceStartInfoDto.fromDomain(appAbsenceStartInfoOutput);
 	}
 	/**
