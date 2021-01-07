@@ -346,6 +346,9 @@ export class KafS05Component extends KafS00ShrComponent {
     public fetchData() {
         const vm = this;
         vm.$mask('show');
+        if (!vm.modeNew) {
+            vm.date = vm.appDispInfoStartupOutput.appDetailScreenInfo.application.appDate;
+        }
         if (vm.modeNew) {
             if (vm.$route.query.a == '0') {
                 vm.overTimeClf = 0;
