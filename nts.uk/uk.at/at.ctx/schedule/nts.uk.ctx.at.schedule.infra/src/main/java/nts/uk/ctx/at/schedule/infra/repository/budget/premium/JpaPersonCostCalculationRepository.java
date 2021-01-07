@@ -335,6 +335,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
         }
         return Optional.empty();
     }
+
     private int converAmountRounding(int unit) {
         switch (unit) {
             case 0:
@@ -349,6 +350,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
                 throw new RuntimeException("invalid value");
         }
     }
+
     @Override
     public void createHistPersonCl(PersonCostCalculation domain, GeneralDate startDate, GeneralDate endDate, String histId) {
         val entityPerCostCal = KscmtPerCostCal.toEntity(domain, startDate, endDate, histId);
@@ -373,6 +375,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 
     @Override
     public void update(PersonCostCalculation domain, HistPersonCostCalculation domainHist) {
+        val histId = domain.getHistoryID();
         List<KscmtPerCostCal> updateList = new ArrayList<>();
         domainHist.getHistoryItems().forEach(i -> {
             val oldPerCostCal = this.queryProxy().find(new KscmtPerCostCalPk(domainHist.getCompanyId(), i.identifier()), KscmtPerCostCal.class);
@@ -383,6 +386,10 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
                     item.setEndDate(i.start());
                     val entity = KscmtPerCostCal.toEntity(domain, i.start(), i.end(), i.identifier());
                     updateList.add(entity);
+                    if (item.getPk().histID.equals(histId)) {
+                        updatePerCostPremiRate(domain, histId);
+                        updateKmldtPremiumAttendance(domain, histId);
+                    }
                 }
                 item.setEndDate(i.end());
                 item.setStartDate(i.start());
@@ -427,7 +434,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
         val listRate = getPersonCostByListHistId(companyID, listHistId);
         for (KscmtPerCostCal item : listEntity) {
             val listPremiumSetting = listRate.stream().filter(x -> x.getHistoryID().equals(item.pk.histID)).collect(Collectors.toList());
-            if(listPremiumSetting.isEmpty())continue;
+            if (listPremiumSetting.isEmpty()) continue;
             val sub = toSimpleDomain(item, listPremiumSetting);
             rs.add(sub);
         }
@@ -454,6 +461,46 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
                 .setParameter("historyID", historyID)
                 .setParameter("displayNumber", displayNumber)
                 .getList(e -> e.kmldpPremiumAttendancePK.attendanceID);
+    }
+
+    private void updatePerCostPremiRate(PersonCostCalculation domain, String histId) {
+        val listItemNos = domain.getPremiumSettings().stream().map(e -> e.getID().value).collect(Collectors.toList());
+        String queryRate = "SELECT a FROM KscmtPerCostPremiRate a " +
+                " WHERE a.pk.companyID = :cid " +
+                " AND a.pk.histID  =  :histIDs " +
+                " AND a.pk.premiumNo  IN  :listItemNos ";
+        List<KscmtPerCostPremiRate> listEntityRate = new ArrayList<>();
+        CollectionUtil.split(listItemNos, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+            listEntityRate.addAll(this.queryProxy().query(queryRate, KscmtPerCostPremiRate.class)
+                    .setParameter("cid", domain.getCompanyID())
+                    .setParameter("histIDs", splitData)
+                    .getList());
+        });
+        if (!listEntityRate.isEmpty()) {
+            this.commandProxy().removeAll(listEntityRate);
+            this.getEntityManager().flush();
+            this.commandProxy().insertAll(KscmtPerCostPremiRate.toEntity(domain, histId));
+        }
+    }
+
+    private void updateKmldtPremiumAttendance(PersonCostCalculation domain, String histId) {
+        val cid = domain.getCompanyID();
+        val historyID = domain.getHistoryID();
+        val displayNumber = domain.getPremiumSettings().stream().map(e -> e.getID().value);
+        String queryAtt = "SELECT a FROM KmldtPremiumAttendance a " +
+                " WHERE a.kmldpPremiumAttendancePK.companyID = :cid " +
+                " AND a.kmldpPremiumAttendancePK.historyID = :historyID " +
+                " AND a.kmldpPremiumAttendancePK.displayNumber IN :displayNumbers ";
+        val entityOld = this.queryProxy().query(queryAtt, KmldtPremiumAttendance.class)
+                .setParameter("cid", cid)
+                .setParameter("historyID", historyID)
+                .setParameter("displayNumber", displayNumber)
+                .getList();
+        if (!entityOld.isEmpty()) {
+            this.commandProxy().removeAll(entityOld);
+            this.getEntityManager().flush();
+            this.commandProxy().insertAll(KmldtPremiumAttendance.toEntity(domain.getPremiumSettings(), histId));
+        }
     }
 
 }

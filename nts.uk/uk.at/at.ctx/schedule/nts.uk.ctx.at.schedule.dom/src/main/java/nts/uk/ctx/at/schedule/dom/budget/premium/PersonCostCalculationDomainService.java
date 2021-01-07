@@ -15,7 +15,7 @@ public interface PersonCostCalculationDomainService {
 
 	public void deletePersonCostCalculation(String companyId, String histotyId);
 
-	public void updateHistPersonCalculation(PersonCostCalculation domain,String histotyId, DatePeriod period);
+	public void updateHistPersonCalculation(PersonCostCalculation domain,String histotyId, GeneralDate generalDate);
 
 	public void registerLaborCalculationSetting(PersonCostCalculation domain, GeneralDate date);
 

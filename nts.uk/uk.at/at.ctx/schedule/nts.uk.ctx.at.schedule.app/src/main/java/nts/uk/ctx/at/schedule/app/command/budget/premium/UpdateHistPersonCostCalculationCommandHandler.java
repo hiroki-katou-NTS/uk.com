@@ -57,8 +57,7 @@ public class UpdateHistPersonCostCalculationCommandHandler extends CommandHandle
                 new WorkingHoursUnitPrice(command.getWorkingHoursUnitPrice()),
                 command.getHistoryID()
         );
-        DatePeriod period = new DatePeriod(command.getStartDate(), GeneralDate.max());
-        service.updateHistPersonCalculation(domain, command.getHistoryID(), period);
+        service.updateHistPersonCalculation(domain, command.getHistoryID(), command.getStartDate());
 
     }
 }

@@ -53,10 +53,11 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
     }
 
     @Override
-    public void updateHistPersonCalculation(PersonCostCalculation domain, String histotyId, DatePeriod period) {
+    public void updateHistPersonCalculation(PersonCostCalculation domain, String histotyId,  GeneralDate generalDate) {
         val companyId = AppContexts.user().companyId();
         // List all Hist
         val listHistPersonCostCal = this.personCostCalculationRepository.getHistPersonCostCalculation(companyId);
+
         // Create list empty.
         HistPersonCostCalculation listHist = new HistPersonCostCalculation(companyId, new ArrayList<>());
         if (listHistPersonCostCal.isPresent()) {
@@ -68,7 +69,9 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
         if (!optionalHisItem.isPresent()) {
 
             throw new BusinessException("");
+
         }
+        val period = new DatePeriod(generalDate,GeneralDate.max());
         //Update item
         listHist.changeSpan(optionalHisItem.get(), period);
         // get item before
