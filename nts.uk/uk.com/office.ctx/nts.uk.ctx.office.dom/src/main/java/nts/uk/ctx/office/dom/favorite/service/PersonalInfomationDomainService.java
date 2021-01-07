@@ -3,6 +3,9 @@ package nts.uk.ctx.office.dom.favorite.service;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.office.dom.favorite.adapter.EmployeeBasicImport;
@@ -11,6 +14,7 @@ import nts.uk.ctx.office.dom.favorite.adapter.SequenceMasterImport;
 import nts.uk.ctx.office.dom.favorite.adapter.WorkplaceInforImport;
 
 /*
+ * 
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.オフィス支援.在席照会.お気に入り.個人情報を取得
  * 
  * 
@@ -31,7 +35,7 @@ public class PersonalInfomationDomainService {
 	 * @param sIds
 	 * @param workplaceInfo
 	 * @param positionId
-	 * @param positionOder
+	 * @param positionOrder
 	 * @param personalInfo
 	 * @return
 	 */
@@ -43,11 +47,10 @@ public class PersonalInfomationDomainService {
 //					.sid(v)
 //					.hierarchyCode(workplaceInfo.get(v).getHierarchyCode())
 //					.order(Optional.empty())
-//					.positionCode(null)
+//					.positionCode(positionId.get(v).getEmployeeId())
 //					.employeeCode(personalInfo.get(v).getEmployeeCode())
-//					.build()
+//					.build();
 //			}).collect(Collectors.toList());
-//		}
 		return Collections.emptyList();
 	}
 
