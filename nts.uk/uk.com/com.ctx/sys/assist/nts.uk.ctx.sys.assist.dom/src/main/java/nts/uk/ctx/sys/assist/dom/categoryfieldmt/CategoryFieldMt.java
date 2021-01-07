@@ -624,4 +624,8 @@ public class CategoryFieldMt extends AggregateRoot {
 		return false;
 	}
 	
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
 }
