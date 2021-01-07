@@ -13,6 +13,8 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeaveRepository;
+import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 //import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.NewAppCommonSetService;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.DetailScreenBefore;
@@ -54,6 +56,9 @@ public class DetailAppCommonSetImpl implements DetailAppCommonSetService {
 	@Inject
 	private AppOverTimeRepository appOverTimeRepository;
 	
+	@Inject
+	private ApplyForLeaveRepository applyForLeaveRepository;
+	
 	@Override
 	public ApplicationMetaOutput getDetailAppCommonSet(String companyID, String applicationID) {
 		Optional<Application> opApplication = applicationRepository.findByID(companyID, applicationID);
@@ -84,10 +89,14 @@ public class DetailAppCommonSetImpl implements DetailAppCommonSetService {
 		DetailScreenAppData detailScreenAppData = detailScreenBefore.getDetailScreenAppData(appID);
 		// 取得した「申請．申請種類」をチェックする
 		ApplicationType appType = detailScreenAppData.getApplication().getAppType();
+		Optional<HolidayAppType> opHolidayAppType = Optional.empty();
 		Optional<OvertimeAppAtr> opOvertimeAppAtr = Optional.empty();
 		if(appType==ApplicationType.OVER_TIME_APPLICATION) {
 			// ドメインモデル「残業申請」を取得する
 			opOvertimeAppAtr = appOverTimeRepository.find(companyID, appID).map(x -> x.getOverTimeClf());
+		} else if(appType==ApplicationType.ABSENCE_APPLICATION) {
+			// ドメインモデル「休暇申請」を取得する
+			opHolidayAppType = applyForLeaveRepository.findApplyForLeave(companyID, appID).map(x -> x.getVacationInfo().getHolidayApplicationType());
 		}
 		// 起動時の申請表示情報を取得する
 		List<String> applicantLst = Arrays.asList(detailScreenAppData.getApplication().getEmployeeID());
@@ -105,7 +114,7 @@ public class DetailAppCommonSetImpl implements DetailAppCommonSetService {
 				applicantLst, 
 				dateLst, 
 				false,
-				Optional.empty(), 
+				opHolidayAppType, 
 				opOvertimeAppAtr);
 		// 入力者の社員情報を取得する (Lấy employee inforrmation của người nhập)
 		Optional<EmployeeInfoImport> opEmployeeInfoImport = commonAlgorithm.getEnterPersonInfor(

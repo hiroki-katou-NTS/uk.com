@@ -61,6 +61,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 			}
 			vm.$blockui("grayout");
 			vm.loadData(empLst, dateLst, vm.appType()).then(() => {
+				vm.$blockui("grayout");
 				vm.$ajax('at/request/application/holidayshipment/startPageARefactor',{sIDs: [], appDate: [], appDispInfoStartup: vm.appDispInfoStartupOutput()}).then((data: any) =>{
 					vm.displayInforWhenStarting(data);
 					vm.isSendMail(data.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.manualSendMailAtr == 1);
@@ -71,10 +72,14 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					vm.recruitmentApp.bindingScreenA(data.applicationForWorkingDay, data);
 					vm.absenceLeaveApp.bindingScreenA(data.applicationForHoliday, data);
 					vm.comment.update(data.substituteHdWorkAppSet);
-				}).always(() => {
 					$('#isSendMail').css({'display': 'inline-block'});
 					$('#contents-area').css({'display': ''});
 					vm.$blockui("hide"); 
+				}).fail((failData: any) => {
+					$('#functions-area').css({'display': 'none'});
+					vm.$dialog.error(failData).then(() => { vm.$jump("com", "/view/ccg/008/a/index.xhtml"); });
+				}).always(() => {
+					
 				});
 			}).fail((failData: any) => {
 				console.log(failData);

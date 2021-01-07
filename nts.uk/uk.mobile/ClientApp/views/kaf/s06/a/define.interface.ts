@@ -375,6 +375,34 @@ export interface SpecAbsenceDispInfoDto {
      */
     dateSpecHdRelationLst: Array<DateSpecHdRelationOutput>;
 }
+export interface WorkTypeDto {
+    /* 勤務種類コード */
+    workTypeCode: string;
+    /* 勤務種類名称 */
+    name: string;
+    /* 勤務種類略名 */
+    abbreviationName: string;
+    /* 勤務種類記号名 */
+    symbolicName: string;
+    /* 廃止区分 */
+    abolishAtr: number;
+    /* 勤務種類備考 */
+    memo: string;
+    /* 勤務の単位 */
+    workAtr: number;
+    /* 1日 */
+    oneDayCls: number;
+    /* 午前 */
+    morningCls: number;
+    /* 午後 */
+    afternoonCls: number;
+    /* 出勤率の計算方法 */
+    calculatorMethod: number;
+
+    dispOrder: number;
+
+    workTypeSets: Array<any>;
+}
 export interface AppAbsenceStartInfoDto {
     // 休出代休紐付け管理
     leaveComDayOffManas: Array<any>;
@@ -401,7 +429,7 @@ export interface AppAbsenceStartInfoDto {
     workHoursDisp: boolean;
 
     // 勤務種類一覧
-    workTypeLst: Array<any>;
+    workTypeLst: Array<WorkTypeDto>;
 
     // 勤務時間帯一覧
     workTimeLst: Array<TimeZoneUseDto>;

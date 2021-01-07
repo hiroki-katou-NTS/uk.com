@@ -402,9 +402,23 @@ public class AppContentServiceImpl implements AppContentService {
 			switch (application.getAppType()) {
 			case COMPLEMENT_LEAVE_APPLICATION:
 				// 振休振出申請データを作成( Tạo data application nghỉ bù làm bù)
+				String contentComplementLeave = appContentDetailCMM045.getContentComplementLeave(
+						application, 
+						companyID, 
+						lstWkType, 
+						approvalListDisplaySetting.getAppReasonDisAtr(), 
+						ScreenAtr.CMM045);
+				listOfApp.setAppContent(contentComplementLeave);
 				break;
 			case ABSENCE_APPLICATION:
 				// 申請一覧リスト取得休暇 (Ngày nghỉ lấy  Application list)
+				String contentApplyForLeave = appContentDetailCMM045.getContentApplyForLeave(
+						application, 
+						companyID, 
+						lstWkType, 
+						approvalListDisplaySetting.getAppReasonDisAtr(),
+						ScreenAtr.CMM045);
+				listOfApp.setAppContent(contentApplyForLeave);
 				break;
 			case GO_RETURN_DIRECTLY_APPLICATION:
 				// 直行直帰申請データを作成 ( Tạo dữ liệu đơn xin đi làm, về nhà thẳng)
@@ -850,7 +864,7 @@ public class AppContentServiceImpl implements AppContentService {
 		String appReasonContent = this.getAppReasonContent(
 				appReasonDisAtr, 
 				appReason, 
-				null, 
+				screenAtr, 
 				application.getOpAppStandardReasonCD().orElse(null), 
 				appType, 
 				Optional.empty());
@@ -1297,7 +1311,7 @@ public class AppContentServiceImpl implements AppContentService {
 		String appReasonContent = this.getAppReasonContent(
 				appReasonDisAtr, 
 				application.getOpAppReason().orElse(null),
-				null, 
+				screenAtr, 
 				application.getOpAppStandardReasonCD().orElse(null), 
 				application.getAppType(), 
 				Optional.empty());
