@@ -24,6 +24,7 @@ module nts.uk.at.view.kml001.shr {
       unitPrice: number;
       memo: string;
       premiumSets: Array<PremiumSettingInterface>;
+      personCostRoundingSetting: any;
       calculationSetting: number;
       roundingUnitPrice: number;
       unit: number;
@@ -39,6 +40,7 @@ module nts.uk.at.view.kml001.shr {
       unitPrice: KnockoutObservable<number> = ko.observable(0);
       memo: KnockoutObservable<string>;
       premiumSets: KnockoutObservableArray<PremiumSetting>;
+      personCostRoundingSetting: KnockoutObservable<any>;
       //ver9
       calculationSetting: KnockoutObservable<number> = ko.observable(1);
       roundingUnitPrice: KnockoutObservable<number>;
@@ -49,6 +51,7 @@ module nts.uk.at.view.kml001.shr {
         companyID: string, historyID: string,
         startDate: string, endDate: string,
         unitPrice: number, memo: string,
+        personCostRoundingSetting: any,
         premiumSets: Array<PremiumSettingInterface>,
         calculationSetting: number = 1, roundingUnitPrice: number = 0,
         unit: number = 1, inUnits: number = 0, workingHour: number
@@ -60,6 +63,7 @@ module nts.uk.at.view.kml001.shr {
         self.endDate = ko.observable(endDate);
         self.unitPrice = ko.observable(unitPrice);
         self.memo = ko.observable(memo);
+        self.personCostRoundingSetting = ko.observable(personCostRoundingSetting);
         self.premiumSets = ko.observableArray(_.map(premiumSets, premiumSet => vmbase.ProcessHandler.fromObjectPremiumSet(premiumSet)));
         //ver9
         self.calculationSetting = ko.observable(calculationSetting);
@@ -79,6 +83,7 @@ module nts.uk.at.view.kml001.shr {
         self.unitPrice(data.unitPrice);
         self.memo(data.memo);
         self.premiumSets(_.map(data.premiumSets, premiumSet => vmbase.ProcessHandler.fromObjectPremiumSet(premiumSet)));
+        self.personCostRoundingSetting(data.personCostRoundingSetting);
         //ver9
         self.calculationSetting(data.calculationSetting);
         self.roundingUnitPrice(data.roundingUnitPrice);
@@ -183,6 +188,7 @@ module nts.uk.at.view.kml001.shr {
           object.endDate,
           object.unitPrice,
           object.memo,
+          object.personCostRoundingSetting,
           object.premiumSets,
           object.calculationSetting,
           object.roundingUnitPrice,
@@ -197,6 +203,7 @@ module nts.uk.at.view.kml001.shr {
        */
       static toObjectPersonCost(koObject: PersonCostCalculation): PersonCostCalculationInterface {
         let premiumSets: Array<PremiumSettingInterface> = [];
+        console.log(koObject);
         koObject.premiumSets().forEach(function (koPremiumSet) { premiumSets.push(ProcessHandler.toObjectPremiumSet(koPremiumSet)); });
         return {
           companyID: koObject.companyID(),
@@ -206,6 +213,7 @@ module nts.uk.at.view.kml001.shr {
           unitPrice: koObject.unitPrice(),
           memo: koObject.memo(),
           premiumSets: premiumSets,
+          personCostRoundingSetting: koObject.personCostRoundingSetting(),
           calculationSetting: koObject.calculationSetting(),
           roundingUnitPrice: koObject.roundingUnitPrice(),
           unit: koObject.unit(),
@@ -247,7 +255,7 @@ module nts.uk.at.view.kml001.shr {
       }
 
       static createPersonCostCalFromValue(objectPersonCostCalculation: PersonCostCalculationInterface, premiumItems: Array<PremiumItem>): PersonCostCalculation {
-        let personCostCalculation = new PersonCostCalculation("", "", "", "", 0, "", [], 1, 0, 0, 1, 0);
+        let personCostCalculation = new PersonCostCalculation("", "", "", "", 0, "", null, [], 1, 0, 0, 1, 0);
         var self = this;
         personCostCalculation.companyID(objectPersonCostCalculation.companyID);
         personCostCalculation.historyID(objectPersonCostCalculation.historyID);
