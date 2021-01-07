@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.record.app.command.knr.knr002.g.EmpTerminalRegisterInRequestCommand;
+import nts.uk.ctx.at.record.app.command.knr.knr002.g.EmpTerminalRegisterInRequestCommandHandler;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.TimeRecordReqSettingRepository;
@@ -27,7 +29,9 @@ public class DisplayTranferContentSettings {
 	//	就業情報端末のリクエスト一覧Repository.[1] 就業情報端末のリクエスト一覧を取得する
 	@Inject
 	private TimeRecordReqSettingRepository timeRecordReqSettingRepository;
-
+	//	就業情報端末のリクエスト一覧に登録するCommandHandler.handle
+	@Inject
+	private EmpTerminalRegisterInRequestCommandHandler empTerminalRegisterInRequestCommandHandler;
 	/**
 	 * @param empInforTerCode
 	 * @return
@@ -64,6 +68,20 @@ public class DisplayTranferContentSettings {
 											.reservationReceive(false)	//	全ての予約データ
 										.workTime(Collections.emptyList())
 										.build();
+			//	
+			this.empTerminalRegisterInRequestCommandHandler.handle(new EmpTerminalRegisterInRequestCommand(
+																	timeRecordReqSettingValue.getTerminalCode(),
+																	timeRecordReqSettingValue.isSendEmployeeId(),
+																	timeRecordReqSettingValue.isSendWorkType(),
+																	timeRecordReqSettingValue.isSendWorkTime(),
+																	timeRecordReqSettingValue.isOverTimeHoliday(),
+																	timeRecordReqSettingValue.isApplicationReason(),
+																	timeRecordReqSettingValue.isSendBentoMenu(),
+																	timeRecordReqSettingValue.isTimeSetting(),
+																	timeRecordReqSettingValue.isReboot(), 
+																	timeRecordReqSettingValue.isStampReceive(),
+																	timeRecordReqSettingValue.isApplicationReceive(),
+																	timeRecordReqSettingValue.isReservationReceive()));
 		} else {
 			timeRecordReqSettingValue = timeRecordReqSetting.get();
 		}

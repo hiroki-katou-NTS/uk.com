@@ -142,7 +142,7 @@ module knr002.h {
              */
             private enter(): any{
                 let self = this;
-                self.isCancel = false;
+                setShared('KNR002H_isCancel', false); 
                 if(!self.employeesListVal() || self.employeesListVal().length <= 0){
                     dialog.error({ messageId: "Msg_2023" }).then(() => {
                         // do something
@@ -151,17 +151,14 @@ module knr002.h {
                 }else {
                     setShared('KNR002H_selectedList', self.employeesListVal().map(e => e.employeeId));
                     nts.uk.ui.windows.close();
-                }
-                setShared('KNR002H_isCancel', self.isCancel);  
+                } 
             }
 
             /**
              * cancel_Dialog
              */
             private cancel_Dialog(): any {
-                let self = this;
-                self.isCancel = true;
-                setShared('KNR002H_isCancel', self.isCancel);
+                setShared('KNR002H_isCancel', true);
                 nts.uk.ui.windows.close();
             }
 

@@ -38,7 +38,6 @@ module knr002.k {
                         if(!data){
                             //do something
                         }else if(data.bentoMenuList){
-                            console.log("data: ", data);
                             let bentoMenuTemp = [];
                             for(let item of data.bentoMenuList){
                                 let bentoTemp = new BentoMenuItem(item.bentoMenuFrameNumber, item.bentoMenuName);
@@ -67,7 +66,7 @@ module knr002.k {
              */
             private enter(): any{
                 let self = this;
-                self.isCancel = false;
+                setShared('KNR002K_isCancel', false);
                 if(!self.selectedList() || self.selectedList().length <= 0){
                     dialog.error({ messageId: "Msg_2026" }).then(() => {
                         blockUI.clear();
@@ -76,15 +75,13 @@ module knr002.k {
                     setShared('KNR002K_selectedList', self.selectedList());
                     nts.uk.ui.windows.close();
                 }
-                setShared('KNR002K_isCancel', self.isCancel);
+                
             }
             /**
              * cancel_Dialog
              */
             private cancel_Dialog(): any {
-                let self = this;
-                self.isCancel = true;
-                setShared('KNR002K_isCancel', self.isCancel);
+                setShared('KNR002K_isCancel', true);
                 nts.uk.ui.windows.close();
             }
    

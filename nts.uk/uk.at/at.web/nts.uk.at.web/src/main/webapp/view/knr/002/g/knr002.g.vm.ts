@@ -296,6 +296,7 @@ module knr002.g {
                             service.makeSelectedBentoMenu(command).done(() => {
                                 blockUI.invisible();
                                 dialog.info({ messageId: "Msg_15" }).then(() => {
+                                    console.log("command: ", command);
                                     self.sendBentoMenu(true);
                                 });                      
                             }).fail(() => {
@@ -315,6 +316,7 @@ module knr002.g {
                 var self = this;
                 self.clearErrors();
                 service.confirm(self.empInfoTerCode()).done((data) => {
+                    console.log("data: ", data);
                     if(!data){
                         // do something
                         console.log("no data");
@@ -335,24 +337,24 @@ module knr002.g {
                             });
                             return;
                         }
-
-                        if(((_.isNil(data.employeeIds) || data.employeeIds.length == 0) && self.sendEmployeeId())
-                        || ((!_.isNil(data.employeeIds) && data.employeeIds.length > 0) && !self.sendEmployeeId())){
+                        
+                        if(((isNullOrUndefined(data.employeeIds) || data.employeeIds.length == 0) && self.sendEmployeeId())
+                        || ((!isNullOrUndefined(data.employeeIds) && data.employeeIds.length > 0) && !self.sendEmployeeId())){
                             $('#G6_1').ntsError('set', { messageId:'Msg_2023' });
                         }
 
-                        if(((_.isNil(data.workTypeCodes) || data.workTypeCodes.length == 0) && self.sendWorkType())
-                        || ((!_.isNil(data.workTypeCodes) && data.workTypeCodes.length > 0) && !self.sendWorkType())){
+                        if(((isNullOrUndefined(data.workTypeCodes) || data.workTypeCodes.length == 0) && self.sendWorkType())
+                        || ((!isNullOrUndefined(data.workTypeCodes) && data.workTypeCodes.length > 0) && !self.sendWorkType())){
                             $('#G6_2').ntsError('set', { messageId:'Msg_2024' });
                         }
 
-                        if(((_.isNil(data.workTimeCodes) || data.workTimeCodes.length == 0) && self.sendWorkTime())
-                        || ((!_.isNil(data.workTimeCodes) && data.workTimeCodes.length > 0) && !self.sendWorkTime())){
+                        if(((isNullOrUndefined(data.workTimeCodes) || data.workTimeCodes.length == 0) && self.sendWorkTime())
+                        || ((!isNullOrUndefined(data.workTimeCodes) && data.workTimeCodes.length > 0) && !self.sendWorkTime())){
                             $('#G6_3').ntsError('set', { messageId:'Msg_2025' });
                         }
 
-                        if(((_.isNil(data.bentoMenuFrameNumbers) || data.bentoMenuFrameNumbers.length == 0) && self.sendBentoMenu())
-                        || ((!_.isNil(data.bentoMenuFrameNumbers) && data.bentoMenuFrameNumbers.length > 0) && !self.sendBentoMenu())){
+                        if(((isNullOrUndefined(data.bentoMenuFrameNumbers) || data.bentoMenuFrameNumbers.length == 0) && self.sendBentoMenu())
+                        || ((!isNullOrUndefined(data.bentoMenuFrameNumbers) && data.bentoMenuFrameNumbers.length > 0) && !self.sendBentoMenu())){
                             $('#G6_6').ntsError('set', { messageId:'Msg_2026' });
                         }
                         if(self.hasError()){
