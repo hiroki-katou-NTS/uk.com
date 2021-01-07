@@ -88,14 +88,15 @@ module knr002.h {
                     showClassification: true, // 分類条件
                     showJobTitle: true, // 職位条件
                     showWorktype: false, // 勤種条件
-                    isMutipleCheck: true, // 選択モード                   
+                    isMutipleCheck: true, // 選択モード       
+                    isInDialog: true,            
 
                     /** Return data */
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                         self.searchByEmploymentType(data.listEmployee);
                         self.listEmployee(data.listEmployee);
                     }
-                }
+                };
             }
 
             public startPage(): JQueryPromise<any> {
@@ -246,6 +247,7 @@ module knr002.h {
             showJobTitle: boolean; // 職位条件
             showWorktype: boolean; // 勤種条件
             isMutipleCheck: boolean; // 選択モード
+            isInDialog: boolean;    // 
 
             /** Data returned */
             returnDataFromCcg001: (data: Ccg001ReturnedData) => void;
