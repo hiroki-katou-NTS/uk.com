@@ -162,23 +162,11 @@ module nts.uk.at.view.kmk004.b {
                 .subscribe(() => {
                     vm.mode("New");
                     vm.reloadData();
-                    // if (vm.type === 'Com_Person') {
-                    //     setTimeout(() => {
-                    //         if (ko.unwrap(vm.years).length == 0) {
-                    //             vm.initList();
-                    //         } else {
-                    //             vm.reloadData();
-                    //         }
-                    //     }, 100);
-                    // } else {
-                    //     vm.reloadData();
-                    // }
                 });
 
             vm.selectId
                 .subscribe(() => {
                     vm.workTimeSaves([]);
-                    // vm.reloadData();
                 });
 
             vm.years
@@ -290,16 +278,10 @@ module nts.uk.at.view.kmk004.b {
                                     .done((data: IWorkTime[]) => {
                                         if (data.length > 0) {
                                             const data1: IWorkTime[] = [];
-                                            // let check = true;
-
-                                            // const exist = _.find(ko.unwrap(vm.years), (m: IYear) => m.year as number == ko.unwrap(vm.selectedYear) as number);
-
-                                            // if (exist) {
-                                            //     check = !exist.isNew;
-                                            // }
-
                                             data.map(m => {
-                                                const s: IWorkTime = { check: true, yearMonth: m.yearMonth, laborTime: m.laborTime };
+                                                const s: IWorkTime = { check: m.laborTime == -1 ? false : true, 
+                                                    yearMonth: m.yearMonth, 
+                                                    laborTime: m.laborTime == -1 ? null : m.laborTime };
                                                 data1.push(s);
                                             });
 

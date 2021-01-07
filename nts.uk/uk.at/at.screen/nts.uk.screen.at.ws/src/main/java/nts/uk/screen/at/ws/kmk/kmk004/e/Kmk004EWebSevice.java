@@ -25,7 +25,6 @@ import nts.uk.screen.at.app.query.kmk004.b.WorkTimeComDto;
 import nts.uk.screen.at.app.query.kmk004.common.DisplayMonthlyWorkingDto;
 import nts.uk.screen.at.app.query.kmk004.common.EmployeeIdDto;
 import nts.uk.screen.at.app.query.kmk004.common.EmployeeList;
-import nts.uk.screen.at.app.query.kmk004.common.MonthlyWorkingHoursByEmployee;
 import nts.uk.screen.at.app.query.kmk004.common.YearDto;
 import nts.uk.screen.at.app.query.kmk004.common.YearListByEmployee;
 
@@ -49,7 +48,7 @@ public class Kmk004EWebSevice extends WebService {
 	private YearListByEmployee years;
 	
 	@Inject
-	private MonthlyWorkingHoursByEmployee workTime;
+	private SelectYearEmployee workTime;
 	
 	@Inject
 	private SaveMonthlyWorkTimeSetShaCommandHandler saveWorkTime;
