@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.bs.employee.dom.jobtitle.sequence.SequenceMasterRepository;
 import nts.uk.ctx.bs.employee.pub.jobtitle.SequenceMasterExport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.SequenceMasterPub;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class SequenceMasterPubImp implements SequenceMasterPub{
@@ -24,14 +25,15 @@ public class SequenceMasterPubImp implements SequenceMasterPub{
 			return new SequenceMasterExport(x.getCompanyId().v(), x.getOrder(), x.getSequenceCode().v(), x.getSequenceName().v());
 		}).collect(Collectors.toList());
 	}
-	
+
 	@Override
-	public List<SequenceMasterExport> findByCid(String companyId) {
-		// TODO Auto-generated method stub
-		return this.repo.findByCompanyId(companyId).stream()
-				.map(x -> {
-			return new SequenceMasterExport(x.getCompanyId().v(), x.getOrder(), x.getSequenceCode().v(), x.getSequenceName().v());
-		}).collect(Collectors.toList());
+	public List<SequenceMasterExport> findByLoginCompanyId() {
+		return this.repo.findByCompanyId(AppContexts.user().companyId()).stream()
+				.map(mapper -> new SequenceMasterExport(mapper.getCompanyId().v(),
+						mapper.getOrder(),
+						mapper.getSequenceCode().v(),
+						mapper.getSequenceName().v()))
+				.collect(Collectors.toList());
 	}
 
 }

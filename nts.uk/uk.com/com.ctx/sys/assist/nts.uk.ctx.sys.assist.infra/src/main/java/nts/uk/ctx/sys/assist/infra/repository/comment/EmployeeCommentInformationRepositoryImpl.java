@@ -1,0 +1,94 @@
+package nts.uk.ctx.sys.assist.infra.repository.comment;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+
+import nts.arc.layer.infra.data.DbConsts;
+import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.sys.assist.dom.comment.EmployeeCommentInformation;
+import nts.uk.ctx.sys.assist.dom.comment.EmployeeCommentInformationRepository;
+import nts.uk.ctx.sys.assist.infra.entity.comment.EmployeeCommentInformationEntity;
+import nts.uk.shr.com.context.AppContexts;
+
+/*
+ * Repository Implements UKDesign.ドメインモデル.NittsuSystem.UniversalK.オフィス支援.在席照会.在席照会.社員のコメント情報
+ */
+@Stateless
+public class EmployeeCommentInformationRepositoryImpl extends JpaRepository
+		implements EmployeeCommentInformationRepository {
+
+	// select by List Sids and Date
+	private static final String SELECT_BY_SIDS_AND_DATE = "SELECT m FROM EmployeeCommentInformationEntity m WHERE m.pk.sid IN :sids AND m.pk.date = :date";
+
+	// select by Sid and Date
+	private static final String SELECT_BY_SID_AND_DATE = "SELECT m FROM EmployeeCommentInformationEntity m WHERE m.pk.sid = :sid AND m.pk.date = :date";
+
+	// select TOP 1 by Sid
+	private static final String SELECT_TOP_1_BY_SID = "SELECT TOP 1 m FROM EmployeeCommentInformationEntity m WHERE m.pk.sid = :sid ORDER BY m.pk.date DESC";
+
+	private static EmployeeCommentInformationEntity toEntity(EmployeeCommentInformation domain) {
+		EmployeeCommentInformationEntity entity = new EmployeeCommentInformationEntity();
+		domain.setMemento(entity);
+		return entity;
+	}
+
+	@Override
+	public void insert(EmployeeCommentInformation domain) {
+		EmployeeCommentInformationEntity entity = EmployeeCommentInformationRepositoryImpl.toEntity(domain);
+		entity.setContractCd(AppContexts.user().contractCode());
+		this.commandProxy().insert(entity);
+	}
+
+	@Override
+	public void update(EmployeeCommentInformation domain) {
+		EmployeeCommentInformationEntity entity = EmployeeCommentInformationRepositoryImpl.toEntity(domain);
+		Optional<EmployeeCommentInformationEntity> oldEntity = this.queryProxy().find(entity.getPk(),
+				EmployeeCommentInformationEntity.class);
+		oldEntity.ifPresent(updateEntity -> {
+			updateEntity.setComment(entity.getComment());
+			this.commandProxy().update(updateEntity);
+		});
+	}
+
+	@Override
+	public void delete(EmployeeCommentInformation domain) {
+		EmployeeCommentInformationEntity entity = EmployeeCommentInformationRepositoryImpl.toEntity(domain);
+		this.commandProxy().remove(entity.getPk());
+	}
+
+	@Override
+	public Map<String, EmployeeCommentInformation> getByListSidAndDate(List<String> sids, GeneralDate date) {
+		Map<String, EmployeeCommentInformation> map = new HashMap<>();
+		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subSids -> {
+			List<EmployeeCommentInformation> list = this.queryProxy()
+					.query(SELECT_BY_SIDS_AND_DATE, EmployeeCommentInformationEntity.class)
+					.setParameter("sids", subSids).setParameter("date", date)
+					.getList(EmployeeCommentInformation::createFromMemento);
+			Map<String, EmployeeCommentInformation> subMap = list.stream()
+					.collect(Collectors.toMap(EmployeeCommentInformation::getSid, domain -> domain));
+			map.putAll(subMap);
+		});
+		return map;
+	}
+
+	@Override
+	public Optional<EmployeeCommentInformation> getBySidAndDate(String sid, GeneralDate date) {
+		return this.queryProxy().query(SELECT_BY_SID_AND_DATE, EmployeeCommentInformationEntity.class)
+				.setParameter("sid", sid).setParameter("date", date)
+				.getSingle(EmployeeCommentInformation::createFromMemento);
+	}
+
+	@Override
+	public Optional<EmployeeCommentInformation> getBySid(String sid) {
+		return this.queryProxy().query(SELECT_TOP_1_BY_SID, EmployeeCommentInformationEntity.class)
+				.setParameter("sid", sid).getSingle(EmployeeCommentInformation::createFromMemento);
+	}
+
+}

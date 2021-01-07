@@ -2,7 +2,7 @@ package nts.uk.ctx.sys.assist.dom.favorite;
 
 import java.util.List;
 import java.util.Optional;
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 
 /*
  * Repository UKDesign.ドメインモデル.NittsuSystem.UniversalK.オフィス支援.在席照会.在席照会.お気に入りの指定
@@ -44,5 +44,5 @@ public interface FavoriteSpecifyRepository {
 	 * @param date
 	 * @return Optional<FavoriteSpecify> Optional<お気に入りの指定>
 	 */
-	public Optional<FavoriteSpecify> getBySidAndDate(String sid, GeneralDate date);
+	public Optional<FavoriteSpecify> getBySidAndDate(String sid, GeneralDateTime date);
 }
