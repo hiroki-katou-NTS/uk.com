@@ -52,15 +52,16 @@
           <span>worktype name</span>
         </button>
         <!--A6_7-->
-        <div>
+        <div v-if="c9">
             <nts-checkbox v-model="checkBoxC7" v-bind:value="true">{{'KAFS06_54' | i18n}}</nts-checkbox>
         </div>
         <!--A6_4-->
-        <span class="textSize uk-text-dark-gray">{{ "KAFS06_13" | i18n }}</span>
+        <span v-if="c9" class="textSize uk-text-dark-gray">{{ "KAFS06_13" | i18n }}</span>
         <!--A6_5-->
         <button
           type="button"
           v-on:click="openKDL002('worktime')"
+          v-if="c9"
           v-bind:enable="true"
           class="btn btn-selection mt-2 mb-2"
         >
@@ -75,7 +76,7 @@
 
 
 
-    <div v-if="true" class="card card-label">
+    <div v-if="c9" class="card card-label">
       <!-- A7_1 -->
       <div class="card-header uk-bg-accordion">
         <span>{{ "KAFS06_15" | i18n }}</span>
@@ -83,10 +84,10 @@
       </div>
       <!-- A7_2 -->
       <div class="card-body">
-        <nts-time-range-input v-model="workHours1" />
+        <nts-time-range-input v-model="workHours1" v-bind:enable="c11" />
       </div>
     </div>
-    <div v-if="true" class="card card-label">
+    <div v-if="c10" class="card card-label">
       <!-- A8_1 -->
       <div class="card-header uk-bg-accordion">
         <span>{{ "KAFS06_16" | i18n }}</span>
@@ -94,17 +95,17 @@
       </div>
       <!-- A8_2 -->
       <div class="card-body">
-        <nts-time-range-input v-model="workHours2" />
+        <nts-time-range-input v-model="workHours2" v-bind:enable="c11" />
       </div>
     </div>
 
     <div v-if="true" class="card card-label">
         <!--A9_1-->
-        <div class="card-header uk-bg-accordion">
+        <div v-if="c12" class="card-header uk-bg-accordion">
             <span>{{ "KAFS06_17" | i18n }}</span>
             <span class="badge badge-warning">任意</span>
         </div>
-        <div class="row px-2">
+        <div v-if="c12" class="row px-2">
             <!--A9_2-->
             <span
                 class="border-customer col p-2 m-2 text-center">
@@ -119,7 +120,7 @@
 
 
         </div>
-        <div>
+        <div v-if="c13">
             <!--A9_5-->
             <div class="row">
                 <div class="float_left col text-left textSize">{{'Com_ExsessHoliday' | i18n}}</div>
@@ -142,19 +143,18 @@
 
     <div v-if="true" class="card card-label">
       <!-- A10_1 -->
-      <div class="card-header uk-bg-accordion">
+      <div v-if="c18" class="card-header uk-bg-accordion">
         <span>{{ "KAFS06_23" | i18n }}</span>
         <span class="badge badge-warning">必須</span>
       </div>
       <div>
         <!--A10_3-->
-        <div class="row">
+        <div v-if="c18" class="row">
             <div class="float_left col text-left textSize">{{'KAFS06_24' | i18n}}</div>
             <div class="float_right col text-right textSize">{{'KAFS06_39' | i18n}}</div>
         </div>
         <!--A10_2-->
-        <div class="mt-1">
-            <!-- A4_3 -->
+        <div v-if="c18" class="mt-1">
             <nts-dropdown v-model="selectedValue">
                 <option v-for="(item, index) in dropdownList" :key="index" :value="item.code">
                     {{item.text}}
@@ -163,13 +163,13 @@
 
         </div>
         <!--A10_4-->
-        <div>
+        <div v-if="c19">
             <nts-checkbox v-model="checkBox" v-bind:value="1">{{'KAFS06_25' | i18n}}</nts-checkbox>
         </div>
       </div>
 
       <!--A10_5-->
-      <div>
+      <div v-if="c20">
         <div class="row">
             <div class="float_left col text-left textSize">{{'KAFS06_24' | i18n}}</div>
         </div>
