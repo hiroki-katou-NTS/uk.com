@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
@@ -34,8 +33,7 @@ public class FavoriteSpecify extends AggregateRoot {
 	// 頺
 	private int order;
 
-	private FavoriteSpecify() {
-	}
+	public FavoriteSpecify() {}
 
 	/**
 	 * [1] 対象惱名を渡
@@ -118,18 +116,5 @@ public class FavoriteSpecify extends AggregateRoot {
 		 *         職場惱を取得するAdapter.職場惱を取得す�職場IDリスト、基準日)
 		 */
 		public List<String> getWrkspDispName(List<String> wrkspIds, GeneralDate date);
-	}
-
-	@RequiredArgsConstructor
-	public class RequireImpl implements Require {
-		// TODO
-//		private adaptor;
-
-		@Override
-		public List<String> getWrkspDispName(List<String> wrkspIds, GeneralDate date) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
 	}
 }
