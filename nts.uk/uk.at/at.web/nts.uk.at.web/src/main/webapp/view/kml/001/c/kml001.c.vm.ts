@@ -21,7 +21,7 @@ module nts.uk.at.view.kml001.c {
         self.newStartDate = ko.observable(null);
         self.beginStartDate = ko.observable(vmbase.ProcessHandler.getOneDayAfter(self.lastStartDate()));        
         self.size = ko.observable(self.latestHistory().size);        
-        self.textKML001_47 = ko.observable(nts.uk.resource.getText('KML001_47', [self.lastStartDate()]));                
+        self.textKML001_47 = ko.observable(nts.uk.resource.getMessage('KML001_47', [self.lastStartDate()]));                
       }
 
       /**
@@ -51,7 +51,7 @@ module nts.uk.at.view.kml001.c {
         $("#startDateInput").trigger('validate');
         
         if( !moment(self.newStartDate()).isSameOrAfter(moment(self.beginStartDate()))) {
-          $("#startDateInput").ntsError('set', { messageId: "Msg_102" });         
+          $("#startDateInput").ntsError('set', { messageId: "Msg_102" }); //C1_3
         }
 
         if(nts.uk.ui.errors.hasError()) return;
