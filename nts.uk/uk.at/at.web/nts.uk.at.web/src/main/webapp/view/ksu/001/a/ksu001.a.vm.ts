@@ -450,11 +450,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 if (data.dataBasicDto.useWorkAvailabilityAtr == false) {
                     $('#A1_7').css('visibility','hidden');
                     $('#A1_7_1').css('display','none');
+                    $('#A1_7').off('click');
                 }
                 
                 // ẩn hiện A1_5 ※27
                 if (data.dataBasicDto.usePublicAtr == false) {
                     $('#A1_5').css('visibility','hidden');
+                    $('#A1_5').off('click');
                 }
                 
                 self.scheduleModifyStartDate = data.dataBasicDto.scheduleModifyStartDate;
