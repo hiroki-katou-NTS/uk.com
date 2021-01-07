@@ -470,7 +470,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
     }
     class StdOutputCondSetDto {
         cid: string;
-        conditionSetCd: string;
+        conditionSetCode: string;
         categoryId: number;
         delimiter: number;
         itemOutputName: number;
@@ -478,11 +478,11 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         conditionSetName: string;
         conditionOutputName: number;
         stringFormat: number;
-        constructor(cid: string, conditionSetCd: string, categoryId: number, delimiter: number
+        constructor(cid: string, conditionSetCode: string, categoryId: number, delimiter: number
             , itemOutputName: number, autoExecution: number, conditionSetName: string,
             conditionOutputName: number, stringFormat: number) {
             this.cid = cid;
-            this.conditionSetCd = conditionSetCd;
+            this.conditionSetCode = conditionSetCode;
             this.categoryId = categoryId;
             this.delimiter = delimiter;
             this.itemOutputName = itemOutputName;

@@ -6,7 +6,7 @@ import nts.arc.layer.dom.AggregateRoot;
 
 /**
  * The Class TopPageSetting
- * 
+ * Domain  トップページの設定
  * @author sonnh1
  * 
  * 

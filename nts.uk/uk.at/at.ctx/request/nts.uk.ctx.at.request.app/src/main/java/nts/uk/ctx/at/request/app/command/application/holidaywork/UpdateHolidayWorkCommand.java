@@ -133,5 +133,5 @@ public class UpdateHolidayWorkCommand {
 	
 	private String appReasonID;
 	
-	private AppHdWorkDispInfoCmd appHdWorkDispInfoCmd;
+	private AppHdWorkDispInfoCmd_Old appHdWorkDispInfoCmd;
 }

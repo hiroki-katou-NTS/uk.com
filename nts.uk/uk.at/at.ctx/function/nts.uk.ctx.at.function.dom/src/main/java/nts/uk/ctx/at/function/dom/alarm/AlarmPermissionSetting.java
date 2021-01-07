@@ -19,9 +19,9 @@ public class AlarmPermissionSetting  extends DomainObject {
 	 *  list role
 	 */
 	private List<String> roleIds;
-	
+
 	public AlarmPermissionSetting(String alarmPatternCD, String companyID, boolean authSetting,
-			List<String> roleIds) {
+	                              List<String> roleIds) {
 		super();
 		this.authSetting = authSetting;
 		this.roleIds = roleIds;
