@@ -131,12 +131,12 @@ module nts.uk.at.view.kmk004.components {
 				if (last.length < 2) {
 					last = '0' + last;
 				}
-				
-				if (total){
+
+				if (total) {
 					vm.total(first + ':' + last);
-				} else if (vm.checkNullYear()) {
-					vm.total('0:00');
-				} else vm.total('');
+				} else if (!vm.checkNullYear()) {
+					vm.total('');
+				} else vm.total('0:00');
 
 				if (ko.unwrap(vm.selectedYear) != null) {
 					const index = _.map(ko.unwrap(vm.years), m => m.year.toString()).indexOf(ko.unwrap(vm.selectedYear).toString());
