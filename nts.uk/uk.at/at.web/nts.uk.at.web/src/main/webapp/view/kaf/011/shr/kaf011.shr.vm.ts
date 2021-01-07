@@ -107,8 +107,9 @@ module nts.uk.at.view.kaf011 {
 			    });
 			}
 			if(data.workTime){
+				let workTime: any = _.find(displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst, {'worktimeCode': data.workTime});
 				self.workTimeDisplay(data.workTime + ' ' + 
-									(data.workTimeName?(data.workTimeName + ' ') : '' )+ 
+									(workTime?(workTime.workTimeDisplayName.workTimeName + ' ') : '' )+ 
 									moment(Math.floor(data.startTime / 60),'mm').format('mm') + ":" + moment(data.startTime % 60,'mm').format('mm') + getText('KAF011_37') + moment(Math.floor(data.endTime / 60),'mm').format('mm') + ":" + moment(data.endTime % 60,'mm').format('mm'));	
 			}
 			self.started = true;
