@@ -98,7 +98,7 @@ public class ReflectApplicationHelper {
 				new WorkInfoOfDailyAttendance(new WorkInformation("001", "001"),
 						CalculationState.No_Calculated, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
 						DayOfWeek.FRIDAY, scheduleTimeSheets),
-				null, null, Optional.empty(), new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty(),
+				null, null, Optional.empty(), new ArrayList<>(), Optional.empty(), new BreakTimeOfDailyAttd(), Optional.empty(),
 				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
 				new ArrayList<>(), Optional.empty(), new ArrayList<>(), Optional.empty());
 		return new DailyRecordOfApplication(new ArrayList<>(), classification, domainDaily);
@@ -130,7 +130,7 @@ public class ReflectApplicationHelper {
 				new WorkInfoOfDailyAttendance(new WorkInformation("001", "001"),
 						CalculationState.No_Calculated, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
 						DayOfWeek.FRIDAY, new ArrayList<>()),
-				null, null, Optional.empty(), new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty(),
+				null, null, Optional.empty(), new ArrayList<>(), Optional.empty(), new BreakTimeOfDailyAttd(), Optional.empty(),
 				attendanceLeave, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
 				new ArrayList<>(), Optional.empty(), new ArrayList<>(), Optional.empty());
 		return new DailyRecordOfApplication(new ArrayList<>(), classification, domainDaily);
@@ -193,7 +193,7 @@ public class ReflectApplicationHelper {
 		// 日別勤怠の休憩時間帯
 		List<BreakTimeSheet> breakTimeSheets = new ArrayList<>();
 		breakTimeSheets.add(new BreakTimeSheet(new BreakFrameNo(no), new TimeWithDayAttr(480), new TimeWithDayAttr(1020)));
-		Optional<BreakTimeOfDailyAttd> breakTime = Optional.of(new BreakTimeOfDailyAttd(breakTimeSheets));
+		BreakTimeOfDailyAttd breakTime = new BreakTimeOfDailyAttd(breakTimeSheets);
 
 		// 日別勤怠の応援作業時間帯
 		List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheet = new ArrayList<>();

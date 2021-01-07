@@ -93,6 +93,7 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
@@ -494,7 +495,7 @@ public class ScheduleCreatorExecutionTransaction {
 								nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek
 										.valueOf(dateInPeriod.dayOfWeek() - 1),
 								new ArrayList<>()),
-						null, Optional.empty(), new ArrayList<>(), Optional.empty(), Optional.empty(),
+						null, new BreakTimeOfDailyAttd(), new ArrayList<>(), Optional.empty(), Optional.empty(),
 						Optional.empty()),
 				workingConditionItem, employmentInfo);
 

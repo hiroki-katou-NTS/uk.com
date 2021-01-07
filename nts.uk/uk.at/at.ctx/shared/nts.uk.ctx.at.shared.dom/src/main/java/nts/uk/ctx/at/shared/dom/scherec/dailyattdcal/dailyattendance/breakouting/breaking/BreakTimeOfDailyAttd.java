@@ -1,11 +1,11 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.objecttype.DomainObject;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
@@ -18,11 +18,15 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  *
  */
 @Getter
-@NoArgsConstructor
 public class BreakTimeOfDailyAttd implements DomainObject {
 	
 	//時間帯
 	private List<BreakTimeSheet> breakTimeSheets;
+	
+	public BreakTimeOfDailyAttd() {
+		super();
+		this.breakTimeSheets = new ArrayList<>();
+	}
 	
 	public BreakTimeOfDailyAttd(List<BreakTimeSheet> breakTimeSheets) {
 		super();
