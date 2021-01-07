@@ -38,7 +38,8 @@ const template = `
 								name: 'monthly-working-hours',
 								params: {
 											screenData:screenData,
-											screenMode:screenMode
+											screenMode:screenMode,
+											startYM:startYM
 										}
 								}">
 						</div>
@@ -72,10 +73,14 @@ class ScreenIComponent extends ko.ViewModel {
 
 	alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
 
+	startYM: KnockoutObservable<number> = ko.observable(0);
+
 	created(params: any) {
 		let vm = this;
 
 		vm.screenMode = params.screenMode;
+
+		vm.startYM = params.startYM;
 
 		vm.screenData().initDumpData(params.startYM());
 
@@ -118,7 +123,7 @@ class ScreenIComponent extends ko.ViewModel {
 				let isChanged = vm.screenData().saveToUnSaveList();
 				if (isChanged) { vm.screenData().setUpdateYear(vm.screenData().serverData.year); }
 				vm.screenData().serverData = unsaveItem;
-				vm.screenData().monthlyWorkTimeSetComs(_.map(unsaveItem.data, (item: IMonthlyWorkTimeSetCom) => { return new MonthlyWorkTimeSetCom(item); }));
+				vm.screenData().monthlyWorkTimeSetComs(_.map(unsaveItem.data, (item: IMonthlyWorkTimeSetCom) => { return new MonthlyWorkTimeSetCom(vm.screenData(), item); }));
 			} else {
 				let isChanged = vm.screenData().saveToUnSaveList();
 				if (isChanged) { vm.screenData().setUpdateYear(vm.screenData().serverData.year); }
@@ -202,7 +207,7 @@ class ScreenIComponent extends ko.ViewModel {
 					vm.screenData().yearList(_.chain(data.yearList).map((item: any) => { return new YearItem(item); }).orderBy(['year'], ['desc']).value());
 					vm.screenData().serverYears(data.yearList);
 					vm.screenData().unSaveSetComs = [];
-
+					data.yearList.reverse();
 					if (vm.screenData().selectedYear() == data.yearList[0]) {
 						vm.screenData().selectedYear.valueHasMutated();
 					} else {
