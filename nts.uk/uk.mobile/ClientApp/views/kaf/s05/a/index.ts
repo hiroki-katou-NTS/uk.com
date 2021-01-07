@@ -373,6 +373,7 @@ export class KafS05Component extends KafS00ShrComponent {
         }).then((loadData: any) => {
             if (loadData) {
                 vm.updateKaf000_A_Params(vm.user);
+                vm.kaf000_A_Params.opOvertimeAppAtr = vm.overTimeClf;
                 vm.updateKaf000_B_Params(vm.modeNew);
                 vm.updateKaf000_C_Params(vm.modeNew);
                 if (vm.modeNew) {
