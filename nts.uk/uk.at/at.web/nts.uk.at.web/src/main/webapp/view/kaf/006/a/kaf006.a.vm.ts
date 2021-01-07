@@ -271,6 +271,17 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 					payoutSubofHDManagements: vm.payoutSubofHDManagements()
 				};
 
+				commandCheckTyingManage.leaveComDayOffMana = _.map(commandCheckTyingManage.leaveComDayOffMana, (x: any) => {
+					x.dateOfUse = new Date(x.dateOfUse).toISOString();
+					x.outbreakDay = new Date(x.outbreakDay).toISOString();
+					return x;
+				});
+				commandCheckTyingManage.payoutSubofHDManagements = _.map(commandCheckTyingManage.payoutSubofHDManagements, (x: any) => {
+					x.dateOfUse = new Date(x.dateOfUse).toISOString();
+					x.outbreakDay = new Date(x.outbreakDay).toISOString();
+					return x;
+				});
+
 				// Check vacation tying manage
 				// 休暇紐付管理をチェックする
 				vm.$blockui("show");
