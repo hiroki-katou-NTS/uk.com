@@ -6,9 +6,11 @@ import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.TimeL
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplication;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.TimeLeaveApplicationOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
@@ -18,8 +20,8 @@ import nts.uk.shr.com.context.AppContexts;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.util.Arrays;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 時間休暇申請を登録する
@@ -47,28 +49,33 @@ public class RegisterTimeLeaveApplicationCommandHandler extends CommandHandlerWi
     protected ProcessResult handle(CommandHandlerContext<RegisterTimeLeaveApplicationCommand> context) {
 
         RegisterTimeLeaveApplicationCommand command = context.getCommand();
-        Application application = command.getApplication().toDomain();
         TimeLeaveApplicationOutput timeLeaveApplicationOutput = TimeLeaveAppDisplayInfoDto.mappingData(command.getTimeLeaveAppDisplayInfo());
 
         // ドメインモデル「申請」の新規登録をする
-        this.appRepository.insertApp(
-            application,
-            timeLeaveApplicationOutput
+        Application application = command.getApplication().toDomain();
+        List<ApprovalPhaseStateImport_New> listApprovalPhaseState = timeLeaveApplicationOutput
                 .getAppDispInfoStartup()
                 .getAppDispInfoWithDateOutput()
-                .getOpListApprovalPhaseState().isPresent() ? timeLeaveApplicationOutput.getAppDispInfoStartup()
-                .getAppDispInfoWithDateOutput()
                 .getOpListApprovalPhaseState()
-                .get() : null);
+                .orElse(new ArrayList<>());
+        this.appRepository.insertApp(application, listApprovalPhaseState);
 
         //ドメインモデル「時間休暇申請」を登録する
-        timeLeaveApplicationRepository.add(TimeLeaveApplicationCommand.toDomain(command.getTimeLeaveApplicationCommand(), application));
+        TimeLeaveApplication timeLeaveApplication = new TimeLeaveApplication(
+                application,
+                command.getDetails().stream().map(TimeLeaveAppDetailCommand::toDomain).collect(Collectors.toList())
+        );
+        this.timeLeaveApplicationRepository.add(timeLeaveApplication);
 
         //2-2.新規画面登録時承認反映情報の整理
         this.registerService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
 
         //暫定データの登録
-        this.interimRemainDataMngRegisterDateChange.registerDateChange(AppContexts.user().companyId(), application.getEmployeeID(), Arrays.asList(application.getAppDate().getApplicationDate()));
+        this.interimRemainDataMngRegisterDateChange.registerDateChange(
+                AppContexts.user().companyId(),
+                application.getEmployeeID(),
+                Arrays.asList(application.getAppDate().getApplicationDate())
+        );
 
         Optional<AppTypeSetting> appTypeSet = timeLeaveApplicationOutput
             .getAppDispInfoStartup()

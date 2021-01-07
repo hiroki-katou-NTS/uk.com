@@ -7,7 +7,7 @@ module nts.uk.at.view.kaf012.a.viewmodel {
     import AppTimeType = nts.uk.at.view.kaf012.shr.viewmodel2.AppTimeType;
 
     const API = {
-        startNew: "at/request/application/timeLeave/initNewApp",
+        startNew: "at/request/application/timeLeave/init",
         changeAppDate: "at/request/application/timeLeave/changeAppDate",
         checkRegister: "at/request/application/timeLeave/checkBeforeRegister",
         register: "at/request/application/timeLeave/register"
@@ -59,13 +59,16 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                 if(loadDataFlag) {
 					vm.application().employeeIDLst(empLst);
                     const appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput);
-                    return vm.$ajax(API.startNew, appDispInfoStartupOutput);
+                    return vm.$ajax(API.startNew, {appDispInfoStartupOutput: appDispInfoStartupOutput});
                 }
             }).then((res: any) => {
                 if(res) {
                     vm.reflectSetting(res.reflectSetting);
                     vm.timeLeaveManagement(res.timeLeaveManagement);
                     vm.timeLeaveRemaining(res.timeLeaveRemaining);
+                }
+                if (!_.isEmpty(params) && !_.isEmpty(params.baseDate)) {
+                    vm.handleChangeAppDate(params.baseDate);
                 }
             }).fail((error: any) => {
                 vm.$dialog.error(error);
@@ -119,24 +122,31 @@ module nts.uk.at.view.kaf012.a.viewmodel {
             }
         }
 
-        registerData(goBackApp: any) {
+        registerData(details: Array<any>) {
             let vm = this;
-            // let paramsRegister = {
-                    // companyId: vm.$user.companyId,
-                    // applicationDto: vm.applicationTest,
-                    // goBackDirectlyDto: goBackApp,
-                    // inforGoBackCommonDirectDto: ko.toJS(vm.dataFetch),
-                    // mode : vm.mode == 'edit'
-            // };
-
-            // return vm.$ajax(API.register, paramsRegister);
-                
+            let paramsRegister = {
+                timeLeaveAppDisplayInfo: {
+                    appDispInfoStartupOutput: vm.appDispInfoStartupOutput(),
+                    timeLeaveManagement: vm.timeLeaveManagement(),
+                    timeLeaveRemaining: vm.timeLeaveRemaining(),
+                    reflectSetting: vm.reflectSetting()
+                },
+                application: ko.toJS(vm.application),
+                details: details
+            };
+            return vm.$ajax(API.register, paramsRegister);
         }
 
         register() {
             const vm = this;
             const application = ko.toJS(vm.application);
             const details: Array<any> = [];
+            const timeLeaveAppDisplayInfo = {
+                appDispInfoStartupOutput: vm.appDispInfoStartupOutput(),
+                    timeLeaveManagement: vm.timeLeaveManagement(),
+                    timeLeaveRemaining: vm.timeLeaveRemaining(),
+                    reflectSetting: vm.reflectSetting()
+            };
             vm.applyTimeData().forEach((row : DataModel) => {
                 if (row.display() && row.timeZone.filter(i => !!i.startTime() || i.endTime()).length > 0) {
                     if (row.appTimeType < 4) {
@@ -154,58 +164,52 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                                 careAppTime: row.applyTime[0].careAppTime(),
                                 super60AppTime: row.applyTime[0].super60AppTime(),
                                 specialAppTime: row.applyTime[0].specialAppTime(),
-                                specialLeaveFrameNo: vm.specialLeaveFrame(),
+                                specialLeaveFrameNo: row.applyTime[0].specialAppTime() > 0 ? vm.specialLeaveFrame() : null,
                             }
                         });
                     } else {
-                        details.push({
-                            appTimeType: AppTimeType.PRIVATE,
-                            timeZones: row.timeZone
-                                .filter(z => z.appTimeType() == AppTimeType.PRIVATE && z.display() && (!!z.startTime() || !!z.endTime()))
-                                .map(z => ({workNo: z.workNo, startTime: z.startTime(), endTime: z.endTime()})),
-                            applyTime: {
-                                substituteAppTime: row.applyTime[0].substituteAppTime(),
-                                annualAppTime: row.applyTime[0].annualAppTime(),
-                                childCareAppTime: row.applyTime[0].childCareAppTime(),
-                                careAppTime: row.applyTime[0].careAppTime(),
-                                super60AppTime: row.applyTime[0].super60AppTime(),
-                                specialAppTime: row.applyTime[0].specialAppTime(),
-                                specialLeaveFrameNo: vm.specialLeaveFrame(),
-                            }
-                        });
-                        details.push({
-                            appTimeType: AppTimeType.UNION,
-                            timeZones: row.timeZone
-                                .filter(z => z.appTimeType() == AppTimeType.UNION && z.display() && (!!z.startTime() || !!z.endTime()))
-                                .map(z => ({workNo: z.workNo, startTime: z.startTime(), endTime: z.endTime()})),
-                            applyTime: {
-                                substituteAppTime: row.applyTime[1].substituteAppTime(),
-                                annualAppTime: row.applyTime[1].annualAppTime(),
-                                childCareAppTime: row.applyTime[1].childCareAppTime(),
-                                careAppTime: row.applyTime[1].careAppTime(),
-                                super60AppTime: row.applyTime[1].super60AppTime(),
-                                specialAppTime: row.applyTime[1].specialAppTime(),
-                                specialLeaveFrameNo: vm.specialLeaveFrame(),
-                            }
-                        });
+                        const privateTimeZones = row.timeZone.filter(z => z.appTimeType() == AppTimeType.PRIVATE && z.display() && (!!z.startTime() || !!z.endTime()));
+                        if (privateTimeZones.length > 0) {
+                            details.push({
+                                appTimeType: AppTimeType.PRIVATE,
+                                timeZones: privateTimeZones.map(z => ({workNo: z.workNo, startTime: z.startTime(), endTime: z.endTime()})),
+                                applyTime: {
+                                    substituteAppTime: row.applyTime[0].substituteAppTime(),
+                                    annualAppTime: row.applyTime[0].annualAppTime(),
+                                    childCareAppTime: row.applyTime[0].childCareAppTime(),
+                                    careAppTime: row.applyTime[0].careAppTime(),
+                                    super60AppTime: row.applyTime[0].super60AppTime(),
+                                    specialAppTime: row.applyTime[0].specialAppTime(),
+                                    specialLeaveFrameNo: row.applyTime[0].specialAppTime() > 0 ? vm.specialLeaveFrame() : null,
+                                }
+                            });
+                        }
+                        const unionTimeZones = row.timeZone.filter(z => z.appTimeType() == AppTimeType.UNION && z.display() && (!!z.startTime() || !!z.endTime()));
+                        if (unionTimeZones.length > 0) {
+                            details.push({
+                                appTimeType: AppTimeType.UNION,
+                                timeZones: unionTimeZones.map(z => ({workNo: z.workNo, startTime: z.startTime(), endTime: z.endTime()})),
+                                applyTime: {
+                                    substituteAppTime: row.applyTime[1].substituteAppTime(),
+                                    annualAppTime: row.applyTime[1].annualAppTime(),
+                                    childCareAppTime: row.applyTime[1].childCareAppTime(),
+                                    careAppTime: row.applyTime[1].careAppTime(),
+                                    super60AppTime: row.applyTime[1].super60AppTime(),
+                                    specialAppTime: row.applyTime[1].specialAppTime(),
+                                    specialLeaveFrameNo: row.applyTime[1].specialAppTime() > 0 ? vm.specialLeaveFrame() : null,
+                                }
+                            });
+                        }
                     }
                 }
             });
-
-            console.log(application);
-            console.log(details);
-
             let params = {
                 timeDigestAppType: vm.leaveType(),
                 application: application,
                 details: details,
-                timeLeaveAppDisplayInfo: {
-                    appDispInfoStartupOutput: vm.appDispInfoStartupOutput(),
-                    timeLeaveManagement: vm.timeLeaveManagement(),
-                    timeLeaveRemaining: vm.timeLeaveRemaining(),
-                    reflectSetting: vm.reflectSetting()
-                },
-                agentMode: vm.isAgentMode()
+                timeLeaveAppDisplayInfo: timeLeaveAppDisplayInfo,
+                agentMode: vm.isAgentMode(),
+                newMode: true
             };
             params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingStart = new Date(params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingStart).toISOString();
             params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingEnd = new Date(params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingEnd).toISOString();
@@ -219,14 +223,13 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                     if (!result) return;
                     return vm.$ajax(API.checkRegister, params);
                 }).then(res => {
-                    console.log(res);
-                    // if (res == undefined) return;
-                    // if (_.isEmpty(res)) {
-                    //     return vm.registerData(goBackApp);
-                    // } else {
-                    //     let listTemp = _.clone(res);
-                    //     vm.handleConfirmMessage(listTemp, goBackApp);
-                    // }
+                    if (res == undefined) return;
+                    if (_.isEmpty(res)) {
+                        return vm.registerData(details);
+                    } else {
+                        let listTemp = _.clone(res);
+                        vm.handleConfirmMessage(listTemp, details);
+                    }
                 }).done(result => {
                     if (result != undefined) {
                         vm.$dialog.info({messageId: "Msg_15"}).then(() => {

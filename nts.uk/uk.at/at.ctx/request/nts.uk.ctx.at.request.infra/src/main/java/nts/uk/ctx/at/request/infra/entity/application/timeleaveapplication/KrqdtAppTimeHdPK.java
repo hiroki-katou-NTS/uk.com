@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.infra.entity.application.timeleaveapplication;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import javax.persistence.Embeddable;
 @NoArgsConstructor
 @Embeddable
 @Getter
+@EqualsAndHashCode
 public class KrqdtAppTimeHdPK {
 
     @Column(name = "CID")

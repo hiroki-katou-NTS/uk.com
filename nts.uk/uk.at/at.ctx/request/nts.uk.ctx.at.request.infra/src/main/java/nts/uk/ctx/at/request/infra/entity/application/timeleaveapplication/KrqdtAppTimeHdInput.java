@@ -18,7 +18,7 @@ public class KrqdtAppTimeHdInput extends ContractUkJpaEntity {
     private static final long serialVersionUID = 1L;
 
     @EmbeddedId
-    public KrqdtAppTimeHdInputPK krqdtAppTimeHdInputPK;
+    public KrqdtAppTimeHdInputPK pk;
 
     @Column(name = "HOUR_OF_SIXTY_OVERTIME")
     public Integer sixtyHOvertime;
@@ -36,14 +36,14 @@ public class KrqdtAppTimeHdInput extends ContractUkJpaEntity {
     public Integer hoursOfHoliday;
 
     @Column(name = "HOUR_OF_HDSP")
-    public Integer TimeSpecialVacation;
+    public Integer timeSpecialVacation;
 
     @Column(name = "FRAME_NO_OF_HDSP")
     public Integer specialHdFrameNo;
 
     @Override
     protected Object getKey() {
-        return this.krqdtAppTimeHdInputPK;
+        return this.pk;
     }
 
 }

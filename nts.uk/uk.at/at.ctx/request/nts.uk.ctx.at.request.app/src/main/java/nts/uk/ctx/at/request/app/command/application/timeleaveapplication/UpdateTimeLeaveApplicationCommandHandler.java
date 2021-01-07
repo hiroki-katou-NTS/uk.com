@@ -18,6 +18,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * 時間休暇申請を更新する
@@ -43,16 +44,19 @@ public class UpdateTimeLeaveApplicationCommandHandler extends CommandHandlerWith
 
     @Override
     protected ProcessResult handle(CommandHandlerContext<UpdateTimeLeaveApplicationCommand> context) {
-
+        String companyId = AppContexts.user().companyId();
         UpdateTimeLeaveApplicationCommand command = context.getCommand();
-        Application application = command.getApplication().toDomain(command
-            .getTimeLeaveAppDisplayInfo().getAppDispInfoStartupOutput().getAppDetailScreenInfo().getApplication());
-
-        TimeLeaveApplication timeLeaveApplication = TimeLeaveApplicationCommand.toDomain(command.getTimeLeaveApplicationCommand(), application);
         TimeLeaveApplicationOutput timeLeaveApplicationOutput = TimeLeaveAppDisplayInfoDto.mappingData(command.getTimeLeaveAppDisplayInfo());
 
-        timeLeaveApplicationService.checkBeforeUpdate(command.getTimeLeaveApplicationCommand().getTimeDigestAppType(),
-            timeLeaveApplication, timeLeaveApplicationOutput);
+        Application application = command.getApplication().toDomain(command.getTimeLeaveAppDisplayInfo().getAppDispInfoStartupOutput().getAppDetailScreenInfo().getApplication());
+        TimeLeaveApplication timeLeaveApplication = new TimeLeaveApplication(
+                application,
+                command.getDetails().stream().map(TimeLeaveAppDetailCommand::toDomain).collect(Collectors.toList())
+        );
+
+//        timeLeaveApplicationService.checkBeforeRegister(
+//                command.getTimeLeaveApplicationCommand().getTimeDigestAppType(),
+//            timeLeaveApplication, timeLeaveApplicationOutput);
 
         //ドメインモデル「申請」の更新をする
         applicationRepository.update(application);
@@ -61,8 +65,11 @@ public class UpdateTimeLeaveApplicationCommandHandler extends CommandHandlerWith
         timeLeaveApplicationRepository.update(timeLeaveApplication);
 
         //暫定データの登録
-        this.interimRemainDataMngRegisterDateChange.registerDateChange(AppContexts.user().companyId(),
-            application.getEmployeeID(), Arrays.asList(application.getAppDate().getApplicationDate()));
+        this.interimRemainDataMngRegisterDateChange.registerDateChange(
+                companyId,
+                application.getEmployeeID(),
+                Arrays.asList(application.getAppDate().getApplicationDate())
+        );
 
         //4-2.詳細画面登録後の処理
         return detailAfterUpdate.processAfterDetailScreenRegistration(AppContexts.user().companyId(), application.getAppID(),

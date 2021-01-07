@@ -43,6 +43,7 @@
 			<com:scriptfile path="/view/kaf/000/shr/kaf000.shr.vm.js" />
 			<com:stylefile path="/view/kaf/005/shr/kaf005.share.style.css" />
 			<com:stylefile path="/view/kaf/010/shr/kaf010.share.style.css" />
+			<com:stylefile path="/view/kaf/012/shr/kaf012.share.style.css" />
 			<com:scriptfile path="/view/kaf/000/b/component1/kaf000.b.component1.js" />
 			<com:scriptfile path="/view/kaf/000/b/component2/kaf000.b.component2.js" />
 			<com:scriptfile path="/view/kaf/000/b/component3/kaf000.b.component3.js" />
@@ -78,6 +79,9 @@
 			<com:scriptfile path="/view/kaf/010/shr/work_info/kaf010.shr.work_info.vm.js" />
 			<com:scriptfile path="/view/kaf/010/shr/time/kaf010.shr.time.vm.js" />
 			<com:scriptfile path="/view/kaf/010/b/kaf010.b.vm.js" />
+			<com:scriptfile path="/view/kaf/012/shr/kaf012.shr1.vm.js" />
+			<com:scriptfile path="/view/kaf/012/shr/kaf012.shr2.vm.js" />
+			<com:scriptfile path="/view/kaf/012/b/kaf012.b.vm.js" />
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
@@ -243,7 +247,10 @@
 					</div>
 				</div>
 				<div data-bind="if: ko.unwrap(appType) === getAppType('ANNUAL_HOLIDAY_APPLICATION')">
-					APP TYPE = 8
+                    <div data-bind="component: {
+							name: 'kaf012-b',
+							params: childParam
+						}"></div>
 				</div>
 				<div data-bind="if: ko.unwrap(appType) === getAppType('EARLY_LEAVE_CANCEL_APPLICATION')">
 					<div data-bind="component: {

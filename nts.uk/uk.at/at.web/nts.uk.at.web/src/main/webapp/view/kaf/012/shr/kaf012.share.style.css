@@ -34,7 +34,7 @@
 	background-color: #CFF1A5;
 }
 
-.time-input {
+#kaf012-share-component2 .time-input {
 	width: 42px;
 }
 
@@ -60,13 +60,18 @@
 	vertical-align: top;
 }
 
-button.caret-right::after {
+#time-calc-button.caret-right::after {
 	left: 105%;
 	margin-top: -7em;
 	border-top-width: 7em;
 	border-bottom-width: 7em;
 }
 
-li .ui-igcombo-wrapper {
-	width: 80px;
+#kaf012-share-component2 button.nts-switch-button {
+	width: initial;
+}
+
+#kaf012-share-component2 .control-group {
+	margin-bottom: 10px;
+	margin-top: 0px;
 }

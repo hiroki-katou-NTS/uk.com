@@ -49,69 +49,73 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                         </tr>
                     </thead>
                     <tbody data-bind="foreach: applyTimeData">
-                        <tr data-bind="if: display">
+                        <tr data-bind="if: display, attr: {height: !display() ? '0' : appTimeType < 4 ? '85px' : displayShowMore() ? '192px' : '464px'}">
                             <td class="bg-green" data-bind="text: appTimeTypeName"/>
-                            <td>
+                            <td style="vertical-align: baseline">
                                 <div class="control-group valign-center">
                                     <span data-bind="text: scheduledTimeLabel"/>
                                     <span data-bind="text: scheduledTime" style="font-weight: bold;"/>
                                 </div>
-                                <ul data-bind="foreach: timeZone">
-                                    <li data-bind="if: display">
-                                        <div  data-bind="if: $parent.appTimeType < 4" class="control-group valign-center">
-                                            <input class="time-input"
-                                                    data-bind="ntsTimeEditor: {
-                                                                    name: $parent.appTimeType < 4 ? $parent.appTimeTypeName : $vm.$i18n('KAF012_29'), 
-                                                                    constraint: 'AttendanceClock', 
-                                                                    value: startTime, 
-                                                                    inputFormat: 'time', 
-                                                                    mode: 'time'
-                                                                }"/>
-                                            <span data-bind="text: $parent.attendLeaveLabel"/>
-                                            <span data-bind="text: $parent.lateTimeLabel"/>
-                                            <span data-bind="text: $parent.lateTime" style="font-weight: bold;"/>
+                                <div>
+                                    <div data-bind="foreach: timeZone">
+                                        <div data-bind="if: display">
+                                            <div data-bind="if: $parent.appTimeType < 4" class="control-group valign-center">
+                                                <input class="time-input"
+                                                        data-bind="ntsTimeEditor: {
+                                                                        name: $parent.appTimeType < 4 ? $parent.appTimeTypeName : $vm.$i18n('KAF012_29'), 
+                                                                        constraint: 'AttendanceClock', 
+                                                                        value: startTime, 
+                                                                        inputFormat: 'time', 
+                                                                        mode: 'time'
+                                                                    }"/>
+                                                <span data-bind="text: $parent.attendLeaveLabel"/>
+                                                <span data-bind="text: $parent.lateTimeLabel"/>
+                                                <span data-bind="text: $parent.lateTime" style="font-weight: bold;"/>
+                                            </div>
+                                            <div data-bind="ifnot: $parent.appTimeType < 4" class="control-group valign-center">
+                                                <input class="time-input"
+                                                        data-bind="ntsTimeEditor: {
+                                                                        name: $parent.appTimeType < 4 ? $parent.appTimeTypeName : $vm.$i18n('KAF012_29'), 
+                                                                        constraint: 'AttendanceClock', 
+                                                                        value: startTime, 
+                                                                        inputFormat: 'time', 
+                                                                        mode: 'time'
+                                                                    }"/>
+                                                <span class="label" data-bind="text: $vm.$i18n('KAF012_30')"/>
+                                                <input class="time-input"
+                                                        data-bind="ntsTimeEditor: {
+                                                                        name: $parent.appTimeType < 4 ? $parent.appTimeTypeName : $vm.$i18n('KAF012_31'), 
+                                                                        constraint: 'AttendanceClock', 
+                                                                        value: endTime, 
+                                                                        inputFormat: 'time', 
+                                                                        mode: 'time'
+                                                                    }"/>
+                                                <div style="width: 80px" data-bind="ntsComboBox: {
+                                                                            name: $vm.$i18n('KAF012_32'),
+                                                                            options: ko.observableArray([
+                                                                                {value: 4, name: $vm.$i18n('KAF012_33')},
+                                                                                {value: 5, name: $vm.$i18n('KAF012_34')}
+                                                                            ]),
+                                                                            optionsValue: 'value',
+                                                                            optionsText: 'name',
+                                                                            value: appTimeType,
+                                                                            columns: [{ prop: 'name', length: 4 }],
+                                                                            required: false,
+                                                                            editable: false,
+                                                                            visibleItemsCount: 2
+                                                                        },
+                                                                        css: {hidden: !displayCombobox()}"/>
+                                            </div>
                                         </div>
-                                        <div  data-bind="ifnot: $parent.appTimeType < 4" class="control-group valign-center">
-                                            <input class="time-input"
-                                                    data-bind="ntsTimeEditor: {
-                                                                    name: $parent.appTimeType < 4 ? $parent.appTimeTypeName : $vm.$i18n('KAF012_29'), 
-                                                                    constraint: 'AttendanceClock', 
-                                                                    value: startTime, 
-                                                                    inputFormat: 'time', 
-                                                                    mode: 'time'
-                                                                }"/>
-                                            <span class="label" data-bind="text: $vm.$i18n('KAF012_30')"/>
-                                            <input class="time-input"
-                                                    data-bind="ntsTimeEditor: {
-                                                                    name: $parent.appTimeType < 4 ? $parent.appTimeTypeName : $vm.$i18n('KAF012_31'), 
-                                                                    constraint: 'AttendanceClock', 
-                                                                    value: endTime, 
-                                                                    inputFormat: 'time', 
-                                                                    mode: 'time'
-                                                                }"/>
-                                            <input style="width: 80px" data-bind="ntsComboBox: {
-                                                                        name: $vm.$i18n('KAF012_32'),
-                                                                        options: ko.observableArray([
-                                                                            {value: 4, name: $vm.$i18n('KAF012_33')},
-                                                                            {value: 5, name: $vm.$i18n('KAF012_34')}
-                                                                        ]),
-                                                                        optionsValue: 'value',
-                                                                        optionsText: 'name',
-                                                                        value: appTimeType,
-                                                                        columns: [{ prop: 'name', length: 4 }],
-                                                                        required: false 
-                                                                    },
-                                                                    css: { hidden: !displayCombobox() }">  
-                                        </div>
-                                    </li>
-                                </ul>
+                                    </div>
+                                </div>
                                 <a class="hyperlink" href="" data-bind="text: $vm.$i18n('KAF012_37'), click: showMore, css: { hidden: !displayShowMore() }"/>
                             </td>
                         </tr>
                     </tbody>
                 </table>
                 <div style="display: inline-block; width: 100px; text-align: center;" class="pull-left">
-                    <button class="proceed caret-right" style="height: 300px;" data-bind="text: $i18n('KAF012_38')"/>
+                    <button id="time-calc-button" class="proceed caret-right" style="height: 300px;" data-bind="text: $i18n('KAF012_38')"/>
                 </div>
                 <table id="kaf012-calc-table">
                     <thead>
@@ -144,7 +148,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                         </tr>
                     </thead>
                     <tbody data-bind="foreach: applyTimeData">
-                        <tr data-bind="if: display(), attr: {height: !display() ? '0' : appTimeType < 4 ? '85px' : displayShowMore() ? '192px' : '464px'}">
+                        <tr data-bind="if: display, attr: {height: !display() ? '0' : appTimeType < 4 ? '85px' : displayShowMore() ? '192px' : '464px'}">
                             <td data-bind="style: {'vertical-align': appTimeType < 4 ? 'middle' : 'initial'}, css: {hidden: $parent.leaveType() != 6}, foreach: applyTime">
                                 <div>
                                     <span data-bind="text: appTimeType == 4 ? $vm.$i18n('KAF012_33') : $vm.$i18n('KAF012_34'), 
@@ -153,7 +157,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                 </div>
                             </td>
                             <td data-bind="style: {'vertical-align': appTimeType < 4 ? 'middle' : 'initial'}, css: {hidden: $parent.leaveType() != 0 &amp;&amp; $parent.leaveType() != 6}, foreach: applyTime">
-                                <div data-bind="if: display, attr: {class: appTimeType < 4 ? '' : 'control-group'}">
+                                <div data-bind="if: display, attr: {class: appTimeType < 4 || !display() ? '' : 'control-group'}">
                                     <span style="display: flex" data-bind="text: appTimeType == 4 ? $vm.$i18n('KAF012_33') : $vm.$i18n('KAF012_34'), 
                                                         css: {hidden: appTimeType < 4}"/>
                                     <input class="time-input"
@@ -167,7 +171,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                 </div>
                             </td>
                             <td data-bind="style: {'vertical-align': appTimeType < 4 ? 'middle' : 'initial'}, css: {hidden: $parent.leaveType() != 1 &amp;&amp; $parent.leaveType() != 6}, foreach: applyTime">
-                                <div data-bind="if: display, attr: {class: appTimeType < 4 ? '' : 'control-group'}">
+                                <div data-bind="if: display, attr: {class: appTimeType < 4 || !display() ? '' : 'control-group'}">
                                     <span style="display: flex" data-bind="text: appTimeType == 4 ? $vm.$i18n('KAF012_33') : $vm.$i18n('KAF012_34'), 
                                                             css: {hidden: appTimeType < 4}"/>
                                     <input class="time-input"
@@ -181,7 +185,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                 </div>
                             </td>
                             <td data-bind="style: {'vertical-align': appTimeType < 4 ? 'middle' : 'initial'}, css: {hidden: $parent.leaveType() != 2 &amp;&amp; $parent.leaveType() != 6}, foreach: applyTime">
-                                <div data-bind="if: display, attr: {class: appTimeType < 4 ? '' : 'control-group'}">
+                                <div data-bind="if: display, attr: {class: appTimeType < 4 || !display() ? '' : 'control-group'}">
                                     <span style="display: flex" data-bind="text: appTimeType == 4 ? $vm.$i18n('KAF012_33') : $vm.$i18n('KAF012_34'), 
                                                         css: {hidden: appTimeType < 4}"/>
                                     <input class="time-input"
@@ -195,7 +199,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                 </div>
                             </td>
                             <td data-bind="style: {'vertical-align': appTimeType < 4 ? 'middle' : 'initial'}, css: {hidden: $parent.leaveType() != 3 &amp;&amp; $parent.leaveType() != 6}, foreach: applyTime">
-                                <div data-bind="if: display, attr: {class: appTimeType < 4 ? '' : 'control-group'}">
+                                <div data-bind="if: display, attr: {class: appTimeType < 4 || !display() ? '' : 'control-group'}">
                                     <span style="display: flex" data-bind="text: appTimeType == 4 ? $vm.$i18n('KAF012_33') : $vm.$i18n('KAF012_34'), 
                                                         css: {hidden: appTimeType < 4}"/>
                                     <input class="time-input"
@@ -209,7 +213,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                 </div>
                             </td>
                             <td data-bind="style: {'vertical-align': appTimeType < 4 ? 'middle' : 'initial'}, css: {hidden: $parent.leaveType() != 4 &amp;&amp; $parent.leaveType() != 6}, foreach: applyTime">
-                                <div data-bind="if: display, attr: {class: appTimeType < 4 ? '' : 'control-group'}">
+                                <div data-bind="if: display, attr: {class: appTimeType < 4 || !display() ? '' : 'control-group'}">
                                     <span style="display: flex" data-bind="text: appTimeType == 4 ? $vm.$i18n('KAF012_33') : $vm.$i18n('KAF012_34'), 
                                                         css: {hidden: appTimeType < 4}"/>
                                     <input class="time-input"
@@ -223,7 +227,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                 </div>
                             </td>
                             <td data-bind="style: {'vertical-align': appTimeType < 4 ? 'middle' : 'initial'}, css: {hidden: $parent.leaveType() != 5 &amp;&amp; $parent.leaveType() != 6}, foreach: applyTime">
-                                <div data-bind="if: display, attr: {class: appTimeType < 4 ? '' : 'control-group'}">
+                                <div data-bind="if: display, attr: {class: appTimeType < 4 || !display() ? '' : 'control-group'}">
                                     <span style="display: flex" data-bind="text: appTimeType == 4 ? $vm.$i18n('KAF012_33') : $vm.$i18n('KAF012_34'), 
                                                         css: {hidden: appTimeType < 4}"/>
                                     <input class="time-input"
@@ -401,7 +405,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
         UNION = 5 /**	組合外出 */
     }
     
-    class TimeZone {
+    export class TimeZone {
         appTimeType: KnockoutObservable<number>;
         workNo: number;
         startTime: KnockoutObservable<number>;
@@ -415,6 +419,17 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
             this.endTime = ko.observable(null);
             this.display = ko.observable(workNo < 4);
             this.displayCombobox = ko.computed(() => {
+                if (!!reflectSetting
+                    && !!reflectSetting()
+                    && reflectSetting().destination.privateGoingOut == 0
+                    && reflectSetting().destination.unionGoingOut == 1) {
+                    this.appTimeType(AppTimeType.UNION);
+                } else if (!!reflectSetting
+                    && !!reflectSetting()
+                    && reflectSetting().destination.privateGoingOut == 1
+                    && reflectSetting().destination.unionGoingOut == 0) {
+                    this.appTimeType(AppTimeType.PRIVATE);
+                }
                 return !!reflectSetting
                     && !!reflectSetting()
                     && reflectSetting().destination.privateGoingOut == 1
@@ -423,7 +438,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
         }
     }
 
-    class ApplyTime {
+    export class ApplyTime {
         appTimeType: number;
         inputName: string;
         display: KnockoutObservable<boolean>;
@@ -433,7 +448,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
         careAppTime: KnockoutObservable<number>;
         super60AppTime: KnockoutObservable<number>;
         specialAppTime: KnockoutObservable<number>;
-        specialLeaveFrameNo: KnockoutObservable<number>;
+
         constructor(appTimeType: number, reflectSetting?: KnockoutObservable<ReflectSetting>) {
             this.appTimeType = appTimeType;
             this.substituteAppTime = ko.observable(0);
@@ -442,7 +457,6 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
             this.careAppTime = ko.observable(0);
             this.super60AppTime = ko.observable(0);
             this.specialAppTime = ko.observable(0);
-            this.specialLeaveFrameNo = ko.observable(null);
             switch (this.appTimeType) {
                 case AppTimeType.ATWORK:
                     this.inputName = getText("KAF012_14");

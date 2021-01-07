@@ -18,7 +18,7 @@ public class KrqdtAppTimeHd extends ContractUkJpaEntity {
     private static final long serialVersionUID = 1L;
 
     @EmbeddedId
-    public KrqdtAppTimeHdPK krqdtAppTimeHdPK;
+    public KrqdtAppTimeHdPK pk;
 
     @Column(name = "WORK_TIME_END")
     public Integer workTimeEnd;
@@ -28,7 +28,7 @@ public class KrqdtAppTimeHd extends ContractUkJpaEntity {
 
     @Override
     protected Object getKey() {
-        return this.krqdtAppTimeHdPK;
+        return this.pk;
     }
 
 }

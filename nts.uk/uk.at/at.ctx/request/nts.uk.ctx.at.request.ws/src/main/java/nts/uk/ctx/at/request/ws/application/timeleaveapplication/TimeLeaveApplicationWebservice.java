@@ -5,9 +5,7 @@ import nts.uk.ctx.at.request.app.command.application.timeleaveapplication.Regist
 import nts.uk.ctx.at.request.app.command.application.timeleaveapplication.RegisterTimeLeaveApplicationCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.timeleaveapplication.UpdateTimeLeaveApplicationCommand;
 import nts.uk.ctx.at.request.app.command.application.timeleaveapplication.UpdateTimeLeaveApplicationCommandHandler;
-import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.*;
-import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.StartProcessTimeLeaveAppDto;
 import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.TimeLeaveAppDisplayInfoDto;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
@@ -33,9 +31,9 @@ public class TimeLeaveApplicationWebservice extends WebService {
 
 
     @POST
-    @Path("initNewApp")
-    public TimeLeaveAppDisplayInfoDto initNewApplication(AppDispInfoStartupDto appDispInfoStartupOutput) {
-        return this.finder.initNewTimeLeaveApplication(appDispInfoStartupOutput);
+    @Path("init")
+    public TimeLeaveAppDisplayInfoDto initApplication(StartProcessTimeLeaveParams params) {
+        return this.finder.initTimeLeaveApplication(params);
     }
 
     @POST
@@ -55,7 +53,7 @@ public class TimeLeaveApplicationWebservice extends WebService {
      */
     @POST
     @Path("checkBeforeRegister")
-    public List<ConfirmMsgOutput> checkBeforeRegister(RequestParam param) {
+    public List<ConfirmMsgOutput> checkBeforeRegister(CheckRegisterParams param) {
         return this.finder.checkBeforeRegister(param);
     }
 
@@ -75,15 +73,6 @@ public class TimeLeaveApplicationWebservice extends WebService {
     @Path("update")
     public ProcessResult update(UpdateTimeLeaveApplicationCommand command) {
         return this.update.handle(command);
-    }
-
-    /**
-     * 起動する
-     */
-    @POST
-    @Path("startProcess")
-    public StartProcessTimeLeaveAppDto startProcessTimeLeaveApp(StartProcessTimeLeaveParam param) {
-        return this.finder.initUpdateTimeLeaveApp(param);
     }
 
 }

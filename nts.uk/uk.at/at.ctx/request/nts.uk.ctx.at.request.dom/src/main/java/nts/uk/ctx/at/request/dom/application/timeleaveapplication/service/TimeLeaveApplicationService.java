@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.timeleaveapplication.service;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeDigestAppType;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplication;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.TimeLeaveApplicationOutput;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.TimeVacationManagementOutput;
@@ -47,11 +48,11 @@ public interface TimeLeaveApplicationService {
     /**
      * 時間休暇申請登録前チェック
      */
-    void checkBeforeRigister(int timeDigestAppType, TimeLeaveApplication timeLeaveApplication, TimeLeaveApplicationOutput timeLeaveApplicationOutput);
+    void checkBeforeRegister(String companyId, TimeDigestAppType timeLeaveType, TimeLeaveApplication timeLeaveApplication, TimeLeaveApplicationOutput timeLeaveApplicationOutput);
 
-    /**
-     * 登録前チェック
-     */
-    void checkBeforeUpdate(int timeDigestAppType, TimeLeaveApplication timeLeaveApplication, TimeLeaveApplicationOutput output);
+//    /**
+//     * 登録前チェック
+//     */
+//    void checkBeforeUpdate(int timeDigestAppType, TimeLeaveApplication timeLeaveApplication, TimeLeaveApplicationOutput output);
 
 }

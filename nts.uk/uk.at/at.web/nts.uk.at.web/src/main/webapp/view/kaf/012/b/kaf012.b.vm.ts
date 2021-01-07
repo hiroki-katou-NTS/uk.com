@@ -1,95 +1,113 @@
 module nts.uk.at.view.kaf012.b.viewmodel {
     import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
-    import Model = nts.uk.at.view.kaf012.shr.viewmodel.Model;
-	import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
+    import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
 	import PrintContentOfEachAppDto = nts.uk.at.view.kaf000.shr.viewmodel.PrintContentOfEachAppDto;
+    import DataModel = nts.uk.at.view.kaf012.shr.viewmodel2.DataModel;
+    import TimeZone = nts.uk.at.view.kaf012.shr.viewmodel2.TimeZone;
+    import AppTimeType = nts.uk.at.view.kaf012.shr.viewmodel2.AppTimeType;
+
+    const API = {
+        checkRegister: "at/request/application/timeLeave/checkBeforeRegister",
+        updateApplication: "at/request/application/timeLeave/update",
+        getDetail: "at/request/application/timeLeave/init"
+    };
+
     const template = `
         <div>
-    <div data-bind="component: { name: 'kaf000-b-component1',
-                                params: {
-                                    appType: appType,
-                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                } }"></div>
-    <div data-bind="component: { name: 'kaf000-b-component2',
-                                params: {
-                                    appType: appType,
-                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                } }"></div>
-    <div data-bind="component: { name: 'kaf000-b-component3',
-                                params: {
-                                    appType: appType,
-                                    approvalReason: approvalReason,
-                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                } }"></div>
-    <div class="table">
-        <div class="cell" style="width: 825px;" data-bind="component: { name: 'kaf000-b-component4',
-                            params: {
-                                appType: appType,
-                                application: application,
-                                appDispInfoStartupOutput: appDispInfoStartupOutput
-                            } }"></div>
-        <div class="cell" style="position: absolute;" data-bind="component: { name: 'kaf000-b-component9',
-                            params: {
-                                appType: appType,
-                                application: application,
-                                appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
-                            } }"></div>
-    </div>
-    <div data-bind="component: { name: 'kaf000-b-component5',
-                                params: {
-                                    appType: appType,
-                                    application: application,
-                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                } }"></div>
-    <div data-bind="component: { name: 'kaf000-b-component6',
-                                params: {
-                                    appType: appType,
-                                    application: application,
-                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                } }"></div>
-    <div data-bind="component: { name: 'kaf012-share', params: {dataFetch: dataFetch, model:model, mode: mode } }"></div>
-    <div data-bind="component: { name: 'kaf000-b-component7',
-                                params: {
-                                    appType: appType,
-                                    application: application,
-                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                } }"></div>
-    <div data-bind="component: { name: 'kaf000-b-component8',
-                                params: {
-                                    appType: appType,
-                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                } }"></div>
-</div>
+            <div data-bind="component: { name: 'kaf000-b-component1', 
+                                        params: {
+                                            appType: appType,
+                                            appDispInfoStartupOutput: appDispInfoStartupOutput	
+                                        } }"></div>
+            <div data-bind="component: { name: 'kaf000-b-component2', 
+                                        params: {
+                                            appType: appType,
+                                            appDispInfoStartupOutput: appDispInfoStartupOutput
+                                        } }"></div>
+            <div data-bind="component: { name: 'kaf000-b-component3', 
+                                        params: {
+                                            appType: appType,
+                                            approvalReason: approvalReason,
+                                            appDispInfoStartupOutput: appDispInfoStartupOutput
+                                        } }"></div>
+            <div data-bind="component: { name: 'kaf012-share-component1',
+                                                    params: {
+                                                        reflectSetting: reflectSetting,
+                                                        timeLeaveManagement: timeLeaveManagement,
+                                                        timeLeaveRemaining: timeLeaveRemaining,
+                                                        leaveType: leaveType
+                                                    }}"/>
+            <div class="table">
+                <div class="cell" style="min-width: 825px; padding-right: 10px;">
+                    <div data-bind="component: { name: 'kaf000-b-component4',
+							params: {
+								appType: appType,
+								application: application,
+								appDispInfoStartupOutput: appDispInfoStartupOutput
+							} }"></div>
+                    <div data-bind="component: { name: 'kaf000-b-component5', 
+                                                params: {
+                                                    appType: appType,
+                                                    application: application,
+                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                                } }"></div>
+                    <div data-bind="component: { name: 'kaf000-b-component6', 
+                                                params: {
+                                                    appType: appType,
+                                                    application: application,
+                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                                } }"></div>
+                    <div data-bind="component: { name: 'kaf012-share-component2',
+                                        params: {
+                                            reflectSetting: reflectSetting,
+                                            timeLeaveManagement: timeLeaveManagement,
+                                            timeLeaveRemaining: timeLeaveRemaining,
+                                            leaveType: leaveType,
+                                            appDispInfoStartupOutput: appDispInfoStartupOutput,
+                                            application: application,
+                                            applyTimeData: applyTimeData,
+                                            specialLeaveFrame: specialLeaveFrame
+                                        }}"/>
+                    <div data-bind="component: { name: 'kaf000-b-component7', 
+                                                params: {
+                                                    appType: appType,
+                                                    application: application,
+                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                                } }"></div>
+                    <div data-bind="component: { name: 'kaf000-b-component8', 
+                                                params: {
+                                                    appType: appType,
+                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                                } }"></div>
+                </div>
+                <div class="cell" style="position: absolute;" data-bind="component: { name: 'kaf000-b-component9',
+							params: {
+								appType: appType,
+								application: application,
+								appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
+							} }"></div>
+            </div>
+        </div>
     `
     @component({
         name: 'kaf012-b',
         template: template
     })
-    class Kaf009BViewModel extends ko.ViewModel {
+    class Kaf012BViewModel extends ko.ViewModel {
 
-		appType: KnockoutObservable<number> = ko.observable(AppType.GO_RETURN_DIRECTLY_APPLICATION);
-        appDispInfoStartupOutput: any;
-        application: KnockoutObservable<Application>;
-        model: Model;
-        dataFetch: KnockoutObservable<ModelDto> = ko.observable(null);
-        mode: KnockoutObservable<String> = ko.observable('edit');
+		appType: KnockoutObservable<number> = ko.observable(AppType.ANNUAL_HOLIDAY_APPLICATION);
+        appDispInfoStartupOutput: KnockoutObservable<any>;
         approvalReason: KnockoutObservable<string>;
         printContentOfEachAppDto: KnockoutObservable<PrintContentOfEachAppDto>;
-        applicationTest: any = {
-            employeeID: this.$user.employeeId,
-            appDate: moment(new Date()).format('YYYY/MM/DD'),
-            enteredPerson: this.$user.employeeId,
-            inputDate: moment(new Date()).format('YYYY/MM/DD HH:mm:ss'),
-            opStampRequestMode: 1,
-            opReversionReason: '1',
-            opAppStartDate: '2020/08/07',
-            opAppEndDate: '2020/08/08',
-            opAppReason: 'jdjadja',
-            opAppStandardReasonCD: 1
+        mode: KnockoutObservable<String> = ko.observable('edit');
+        application: KnockoutObservable<Application>;
+        reflectSetting: KnockoutObservable<any> = ko.observable(null);
+        timeLeaveManagement: KnockoutObservable<any> = ko.observable(null);
+        timeLeaveRemaining: KnockoutObservable<any> = ko.observable(null);
+        leaveType: KnockoutObservable<number> = ko.observable(null);
 
-
-        };
-
+        applyTimeData: KnockoutObservableArray<DataModel> = ko.observableArray([]);
+        specialLeaveFrame: KnockoutObservable<number> = ko.observable(null);
 
         created(
             params: {
@@ -107,15 +125,12 @@ module nts.uk.at.view.kaf012.b.viewmodel {
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             vm.application = params.application;
 			vm.appType = params.appType;
-            vm.model = new Model(true, true, true, '', '', '', '');
-            if (ko.toJS(vm.appDispInfoStartupOutput).appDetailScreenInfo) {
-                let mode = ko.toJS(vm.appDispInfoStartupOutput).appDetailScreenInfo.outputMode == 1 ? 'edit' : 'view';
-				vm.mode(mode); 
+			vm.approvalReason = params.approvalReason;
+            for (let i = 0; i < 5; i++) {
+                vm.applyTimeData.push(new DataModel(i, vm.reflectSetting, vm.appDispInfoStartupOutput, vm.application));
             }
-            vm.createParamKAF009();
+            vm.getAppData();
 
-            vm.applicationTest = vm.appDispInfoStartupOutput().appDetailScreenInfo.application;
-            vm.approvalReason = params.approvalReason;
             // gui event con ra viewmodel cha
             // nhớ dùng bind(vm) để ngữ cảnh lúc thực thi
             // luôn là component
@@ -125,12 +140,12 @@ module nts.uk.at.view.kaf012.b.viewmodel {
 
 		reload() {
 			const vm = this;
-			if(vm.appType() === AppType.GO_RETURN_DIRECTLY_APPLICATION) {
-				vm.createParamKAF009();
+			if(vm.appType() === AppType.ANNUAL_HOLIDAY_APPLICATION) {
+				vm.getAppData();
 			}
 		}
 
-        createParamKAF009() {
+        getAppData() {
             let vm = this;
             vm.$blockui('show');
 			if (ko.toJS(vm.appDispInfoStartupOutput).appDetailScreenInfo) {
@@ -138,27 +153,42 @@ module nts.uk.at.view.kaf012.b.viewmodel {
 				vm.mode(mode); 
             }
             return vm.$ajax(API.getDetail, {
-                companyId: vm.$user.companyId,
-                applicationId: vm.application().appID()
+                appId: vm.application().appID(),
+                appDispInfoStartupOutput: vm.appDispInfoStartupOutput()
             }).done(res => {
-                console.log(res);
                 if (res) {
-                    vm.dataFetch({
-                        workType: ko.observable(res.workType),
-                        workTime: ko.observable(res.workTime),
-                        appDispInfoStartup: ko.observable(res.appDispInfoStartup),
-                        goBackReflect: ko.observable(res.goBackReflect),
-                        lstWorkType: ko.observable(res.lstWorkType),
-                        goBackApplication: ko.observable(res.goBackApplication)
+                    vm.reflectSetting(res.reflectSetting);
+                    vm.timeLeaveManagement(res.timeLeaveManagement);
+                    vm.timeLeaveRemaining(res.timeLeaveRemaining);
+                    res.details.forEach((detail: TimeLeaveAppDetail) => {
+                        detail.timeZones.forEach(z => {
+                            vm.applyTimeData()[4].timeZone[z.workNo - 1].startTime(z.startTime);
+                            vm.applyTimeData()[4].timeZone[z.workNo - 1].endTime(z.endTime);
+                        });
+                        if (detail.appTimeType <= 4) {
+                            vm.applyTimeData()[detail.appTimeType].timeZone[0].startTime(detail.timeZones[0].startTime);
+                            vm.applyTimeData()[detail.appTimeType].timeZone[0].endTime(detail.timeZones[0].endTime);
+                            vm.applyTimeData()[detail.appTimeType].applyTime[0].substituteAppTime(detail.applyTime.substituteAppTime);
+                            vm.applyTimeData()[detail.appTimeType].applyTime[0].annualAppTime(detail.applyTime.annualAppTime);
+                            vm.applyTimeData()[detail.appTimeType].applyTime[0].childCareAppTime(detail.applyTime.childCareAppTime);
+                            vm.applyTimeData()[detail.appTimeType].applyTime[0].careAppTime(detail.applyTime.careAppTime);
+                            vm.applyTimeData()[detail.appTimeType].applyTime[0].super60AppTime(detail.applyTime.super60AppTime);
+                            vm.applyTimeData()[detail.appTimeType].applyTime[0].specialAppTime(detail.applyTime.specialAppTime);
+                        } else {
+                            vm.applyTimeData()[4].applyTime[1].substituteAppTime(detail.applyTime.substituteAppTime);
+                            vm.applyTimeData()[4].applyTime[1].annualAppTime(detail.applyTime.annualAppTime);
+                            vm.applyTimeData()[4].applyTime[1].childCareAppTime(detail.applyTime.childCareAppTime);
+                            vm.applyTimeData()[4].applyTime[1].careAppTime(detail.applyTime.careAppTime);
+                            vm.applyTimeData()[4].applyTime[1].super60AppTime(detail.applyTime.super60AppTime);
+                            vm.applyTimeData()[4].applyTime[1].specialAppTime(detail.applyTime.specialAppTime);
+                        }
                     });
-                    vm.printContentOfEachAppDto().opInforGoBackCommonDirectOutput = ko.toJS(vm.dataFetch);
+                    // vm.printContentOfEachAppDto().opInforGoBackCommonDirectOutput = ko.toJS(vm.dataFetch);
                 }
             }).fail(err => {
                 vm.handleError(err);
             }).always(() => vm.$blockui('hide'));
         }
-
-
 
         mounted() {
             const vm = this;
@@ -167,54 +197,54 @@ module nts.uk.at.view.kaf012.b.viewmodel {
         // event update cần gọi lại ở button của view cha
         update() {
             const vm = this;
-            if (!vm.appDispInfoStartupOutput().appDetailScreenInfo) {
-                return;
-            }
-            let application = ko.toJS(vm.application);
-            vm.applicationTest = vm.appDispInfoStartupOutput().appDetailScreenInfo.application;
-
-            vm.applicationTest.prePostAtr = application.prePostAtr;
-            vm.applicationTest.opAppReason = application.opAppReason;
-            vm.applicationTest.opAppStandardReasonCD = application.opAppStandardReasonCD;
-            vm.applicationTest.opReversionReason = application.opReversionReason;
-			if (vm.model) {
-                let isCondition1 = vm.model.checkbox3() == true && !vm.model.workTypeCode() && (vm.dataFetch().goBackReflect().reflectApplication === 3 || vm.dataFetch().goBackReflect().reflectApplication === 2);
-				let isCondition2 = vm.model.checkbox3() == null && !vm.model.workTypeCode() && vm.dataFetch().goBackReflect().reflectApplication === 1;
-                if (isCondition1 || isCondition2) {
-                   // $('#workSelect').focus();
-					let el = document.getElementById('workSelect');
-	                if (el) {
-	                    el.focus();                                                    
-	                }
-                    return;
-                } 
-			}
-            let model = ko.toJS( vm.model );
-            let goBackApp = new GoBackApplication(
-                model.checkbox1 ? 1 : 0,
-                model.checkbox2 ? 1 : 0,
-            );
-			// is change can be null
-            if (!_.isNull(model.checkbox3) || vm.dataFetch().goBackReflect().reflectApplication == 2 || vm.dataFetch().goBackReflect().reflectApplication == 3) {
-                goBackApp.isChangedWork = model.checkbox3 ? 1 : 0;
-
-            }
-            
-			if	(!(vm.dataFetch().goBackReflect().reflectApplication == 2 || vm.dataFetch().goBackReflect().reflectApplication == 3)) {
-				goBackApp.isChangedWork = null;
-			}
-            if (vm.mode && vm.model.checkbox3() || vm.dataFetch().goBackReflect().reflectApplication == 1) {
-                let dw = new DataWork( model.workTypeCode );
-                if ( model.workTimeCode ) {
-                    dw.workTime = model.workTimeCode
-                }
-                goBackApp.dataWork = dw;
-
-            }
+            // if (!vm.appDispInfoStartupOutput().appDetailScreenInfo) {
+            //     return;
+            // }
+            // let application = ko.toJS(vm.application);
+            // vm.applicationTest = vm.appDispInfoStartupOutput().appDetailScreenInfo.application;
+            //
+            // vm.applicationTest.prePostAtr = application.prePostAtr;
+            // vm.applicationTest.opAppReason = application.opAppReason;
+            // vm.applicationTest.opAppStandardReasonCD = application.opAppStandardReasonCD;
+            // vm.applicationTest.opReversionReason = application.opReversionReason;
+            // if (vm.model) {
+            //     let isCondition1 = vm.model.checkbox3() == true && !vm.model.workTypeCode() && (vm.dataFetch().goBackReflect().reflectApplication === 3 || vm.dataFetch().goBackReflect().reflectApplication === 2);
+				// let isCondition2 = vm.model.checkbox3() == null && !vm.model.workTypeCode() && vm.dataFetch().goBackReflect().reflectApplication === 1;
+            //     if (isCondition1 || isCondition2) {
+            //        // $('#workSelect').focus();
+				// 	let el = document.getElementById('workSelect');
+	         //        if (el) {
+	         //            el.focus();
+	         //        }
+            //         return;
+            //     }
+            // }
+            // let model = ko.toJS( vm.model );
+            // let goBackApp = new GoBackApplication(
+            //     model.checkbox1 ? 1 : 0,
+            //     model.checkbox2 ? 1 : 0,
+            // );
+            // // is change can be null
+            // if (!_.isNull(model.checkbox3) || vm.dataFetch().goBackReflect().reflectApplication == 2 || vm.dataFetch().goBackReflect().reflectApplication == 3) {
+            //     goBackApp.isChangedWork = model.checkbox3 ? 1 : 0;
+            //
+            // }
+            //
+            // if	(!(vm.dataFetch().goBackReflect().reflectApplication == 2 || vm.dataFetch().goBackReflect().reflectApplication == 3)) {
+				// goBackApp.isChangedWork = null;
+            // }
+            // if (vm.mode && vm.model.checkbox3() || vm.dataFetch().goBackReflect().reflectApplication == 1) {
+            //     let dw = new DataWork( model.workTypeCode );
+            //     if ( model.workTimeCode ) {
+            //         dw.workTime = model.workTimeCode
+            //     }
+            //     goBackApp.dataWork = dw;
+            //
+            // }
 			
             vm.$blockui("show");
 
-            return vm.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
+            return vm.$validate('.nts-input', '#kaf000-b-component3-prePost', '#kaf000-b-component5-comboReason')
                 .then(isValid => {
                     if (isValid) {
                         return true;
@@ -226,7 +256,7 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                             companyId: this.$user.companyId,
                             agentAtr: true,
                             applicationDto: vm.applicationTest,
-                            goBackDirectlyDto: goBackApp,
+                            goBackDirectlyDto: null,
                             inforGoBackCommonDirectDto: ko.toJS( vm.dataFetch ),
                             mode: false
                         };
@@ -236,10 +266,10 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                 }).then(res => {
                     if (res == undefined) return;
                     if ( _.isEmpty( res ) ) {
-                        return vm.registerData( goBackApp );
+                        return vm.registerData( null );
                     } else {
                         let listTemp = _.clone( res );
-                        return vm.handleConfirmMessage( listTemp, goBackApp );
+                        return vm.handleConfirmMessage( listTemp, null );
 
                     }
 
@@ -254,11 +284,9 @@ module nts.uk.at.view.kaf012.b.viewmodel {
 
                 }).always(() => vm.$blockui("hide"));
 
-
-
-
         }
-        public handleConfirmMessage(listMes: any, res: any) {
+
+        handleConfirmMessage(listMes: any, res: any): any {
             let vm = this;
             if (!_.isEmpty(listMes)) {
                 let item = listMes.shift();
@@ -275,17 +303,18 @@ module nts.uk.at.view.kaf012.b.viewmodel {
             }
         }
 
-        registerData(goBackApp) {
-            let vm = this;
-            let paramsUpdate = {
-                applicationDto: vm.applicationTest,
-                goBackDirectlyDto: goBackApp,
-                inforGoBackCommonDirectDto: ko.toJS(vm.dataFetch)
-            }
-
-             return vm.$ajax(API.updateApplication, paramsUpdate);
+        registerData(goBackApp: any) {
+            // let vm = this;
+            // let paramsUpdate = {
+            //     applicationDto: vm.applicationTest,
+            //     goBackDirectlyDto: goBackApp,
+            //     inforGoBackCommonDirectDto: ko.toJS(vm.dataFetch)
+            // }
+            //
+            //  return vm.$ajax(API.updateApplication, paramsUpdate);
 
         }
+
         public handleError(err: any) {
             const vm = this;
             let param;
@@ -299,67 +328,26 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                     param = {messageId: err.messageId, messageParams: err.parameterIds};
                 }
             }
-            vm.$dialog.error(param).then(res => {
+            vm.$dialog.error(param).then((err: any) => {
                 if (err.messageId == 'Msg_197') {
                 	ko.contextFor($('#contents-area')[0]).$vm.loadData();
                 }
             });
         }
+    }
 
-
-
-
-
-
-        dispose() {
-            const vm = this;
-
+    interface TimeLeaveAppDetail {
+        appTimeType: number,
+        applyTime: {
+            annualAppTime: number,
+            super60AppTime: number,
+            careAppTime: number,
+            childCareAppTime: number,
+            substituteAppTime: number,
+            specialAppTime: number,
+            specialLeaveFrameNo: number
         }
-    }
-    export class GoBackReflect {
-        companyId: string;
-        reflectApplication: number;
-    }
-    export class ModelDto {
-
-        workType: KnockoutObservable<any>;
-
-        workTime: KnockoutObservable<any>;
-
-        appDispInfoStartup: KnockoutObservable<any>;
-
-        goBackReflect: KnockoutObservable<GoBackReflect> = ko.observable( null );
-
-        lstWorkType: KnockoutObservable<any>;
-
-        goBackApplication: KnockoutObservable<any>;
-    }
-    export class GoBackApplication {
-        straightDistinction: number;
-        straightLine: number;
-        isChangedWork?: number;
-        dataWork?: DataWork;
-        constructor(straightDistinction: number, straightLine: number, isChangedWork?: number, dataWork?: DataWork) {
-            this.straightDistinction = straightDistinction;
-            this.straightLine = straightLine;
-            this.isChangedWork = isChangedWork;
-            this.dataWork = dataWork;
-        }
-    }
-
-
-    export class DataWork {
-        workType: string;
-        workTime?: string;
-        constructor(workType: string, workTime?: string) {
-            this.workType = workType;
-            this.workTime = workTime;
-        }
-    }
-    const API = {
-        checkRegister: "at/request/application/gobackdirectly/checkBeforeRegisterNew",
-        updateApplication: "at/request/application/gobackdirectly/updateNewKAF009",
-        getDetail: "at/request/application/gobackdirectly/getDetail"
+        timeZones: Array<{workNo: number, startTime: number, endTime: number}>
     }
 
 }

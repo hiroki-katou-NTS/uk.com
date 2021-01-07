@@ -3,11 +3,14 @@ package nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.TimeLeaveApplicationOutput;
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectDto;
 import nts.uk.ctx.at.shared.app.find.workingcondition.WorkingConditionItemDto;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+
+import java.util.List;
 
 /**
  * 時間休暇申請の表示情報
@@ -33,6 +36,9 @@ public class TimeLeaveAppDisplayInfoDto {
     // 申請表示情報
     private AppDispInfoStartupDto appDispInfoStartupOutput;
 
+    //時間休暇申請. 詳細
+    private List<TimeLeaveAppDetailDto> details;
+
     public static TimeLeaveApplicationOutput mappingData(TimeLeaveAppDisplayInfoDto info) {
         return new TimeLeaveApplicationOutput(
                 info.workingConditionItem,
@@ -44,12 +50,12 @@ public class TimeLeaveAppDisplayInfoDto {
     }
 
     public static TimeLeaveAppDisplayInfoDto fromOutput(TimeLeaveApplicationOutput output) {
-        return new TimeLeaveAppDisplayInfoDto(
-                output.getWorkingConditionItem(),
-                TimeLeaveRemaining.fromOutput(output.getTimeVacationRemaining()),
-                TimeLeaveAppReflectDto.fromDomain(output.getTimeLeaveApplicationReflect()),
-                TimeLeaveManagement.fromOutput(output.getTimeVacationManagement()),
-                AppDispInfoStartupDto.fromDomain(output.getAppDispInfoStartup())
-        );
+        TimeLeaveAppDisplayInfoDto dto = new TimeLeaveAppDisplayInfoDto();
+        dto.workingConditionItem = output.getWorkingConditionItem();
+        dto.timeLeaveRemaining = TimeLeaveRemaining.fromOutput(output.getTimeVacationRemaining());
+        dto.reflectSetting = TimeLeaveAppReflectDto.fromDomain(output.getTimeLeaveApplicationReflect());
+        dto.timeLeaveManagement = TimeLeaveManagement.fromOutput(output.getTimeVacationManagement());
+        dto.appDispInfoStartupOutput = AppDispInfoStartupDto.fromDomain(output.getAppDispInfoStartup());
+        return dto;
     }
 }
