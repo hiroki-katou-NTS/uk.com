@@ -357,59 +357,67 @@ public class WorkTimeSettingFinder {
 
         Integer allCheckStatus = null;
         String companyID = AppContexts.user().companyId();
-        List<WorkTimeSetting> allWorkHours = new ArrayList<>();
-        List<WorkTimeSetting> workingHoursByWorkplace = new ArrayList<>();
-        List<WorkTimeSetting> availableWorkingHours = new ArrayList<>();
+        List<WorkTimeDto> allWorkHours = new ArrayList<>();
+        List<WorkTimeDto> workingHoursByWorkplace = new ArrayList<>();
+        List<WorkTimeDto> selectableWorkingHours = new ArrayList<>();
 
         // ドメインモデル「複数回勤務管理」を取得する
         Optional<WorkManagementMultiple> optWorkMultiple = workMultipleRepo.findByCode(companyID);
-        if (isCheckAll) {
-            if (baseDate != null) {
-                // 会社で使用できる就業時間帯を全件を取得する
-                if (!codes.isEmpty()) {
+        if (baseDate != null) {
+            // 会社で使用できる就業時間帯を全件を取得する
+            if (!codes.isEmpty()) {
+                List<WorkTimeSetting> listWorkTime = workTimeSettingRepository.findByCompanyId(companyID).stream()
+                        .filter(x -> x.getAbolishAtr() == AbolishAtr.NOT_ABOLISH)
+                        .sorted(Comparator.comparing(x -> x.getWorktimeCode().v())).collect(Collectors.toList());
+                List<PredetemineTimeSetting> workTimeSetItems = this.predetemineTimeSettingRepository
+                        .findByCompanyID(companyID);
+
+                allWorkHours.addAll(getWorkTimeDtos(listWorkTime, workTimeSetItems));
+
+                List<WorkTimeSetting> workTimeItems = this.workTimeSettingRepository.findByCodes(companyID, codes);
+                List<PredetemineTimeSetting> workTimeSetItem = this.predetemineTimeSettingRepository
+                        .findByCodeList(companyID, codes);
+                selectableWorkingHours.addAll(getWorkTimeDtos(workTimeItems, workTimeSetItem));
+                if (codes.size() == workTimeItems.size()) {
+                    allCheckStatus = 0;
+                } else {
+                    allCheckStatus = 1;
+                }
+
+            } else {
+                //職場で利用できる就業時間帯を取得する(上位職場も参照)
+                // 職場IDと基準日から上位職場を取得する
+                List<String> workPlaceIdList = this.affWorkplaceAdapter.getUpperWorkplace(companyID,
+                        workPlaceId, baseDate);
+                // 取得した所属職場ID＋その上位職場IDを先頭から最後までループする
+                // Loop theo AffWorkplace ID + upperWorkplaceID  từ đầu đến cuối
+                List<WorkTimeSetting> workTimeSettingList = new ArrayList<>();
+                for (String wkpID : workPlaceIdList) {
+                    // アルゴリズム「職場IDから職場別就業時間帯を取得」を実行する
+                    List<WorkTimeSetting> listWorkTime = workTimeWorkplaceRepo.getWorkTimeWorkplaceById(companyID, wkpID);
+                    workTimeSettingList.addAll(listWorkTime);
+                }
+                List<PredetemineTimeSetting> workTimeSetItems = this.predetemineTimeSettingRepository
+                        .findByCompanyID(companyID);
+                allWorkHours.addAll(getWorkTimeDtos(workTimeSettingList, workTimeSetItems));
+
+                if (!workTimeSettingList.isEmpty()) {
+                    allCheckStatus = 0;
+                    workingHoursByWorkplace.addAll(getWorkTimeDtos(workTimeSettingList, workTimeSetItems));
+
+                } else {
+                    allCheckStatus = 1;
                     List<WorkTimeSetting> listWorkTime = workTimeSettingRepository.findByCompanyId(companyID).stream()
                             .filter(x -> x.getAbolishAtr() == AbolishAtr.NOT_ABOLISH)
                             .sorted(Comparator.comparing(x -> x.getWorktimeCode().v())).collect(Collectors.toList());
-                    allWorkHours.addAll(listWorkTime);
-                    val dtoList = listWorkTime.stream().filter(x -> checkCodeInList(codes, x.getWorktimeCode().toString())).collect(Collectors.toList());
+                    workingHoursByWorkplace.addAll(getWorkTimeDtos(listWorkTime, workTimeSetItems));
 
-                    if (codes.size() == dtoList.size()) {
-                        allCheckStatus = 0;
-                    } else {
-                        allCheckStatus = 1;
-                    }
-                    workingHoursByWorkplace.addAll(dtoList);
-
-                } else {
-                    // reqList496
-                    // 職場IDと基準日から上位職場を取得する
-                    List<String> workPlaceIdList = this.affWorkplaceAdapter.getUpperWorkplace(companyID,
-                            workPlaceId, baseDate);
-                    // 取得した所属職場ID＋その上位職場IDを先頭から最後までループする
-                    // Loop theo AffWorkplace ID + upperWorkplaceID  từ đầu đến cuối
-                    List<WorkTimeSetting> workTimeSettingList = new ArrayList<>();
-                    for (String wkpID : workPlaceIdList) {
-                        // アルゴリズム「職場IDから職場別就業時間帯を取得」を実行する
-                        List<WorkTimeSetting> listWorkTime = workTimeWorkplaceRepo.getWorkTimeWorkplaceById(companyID, wkpID);
-                        workTimeSettingList.addAll(listWorkTime);
-                    }
-                    if (!workTimeSettingList.isEmpty()) {
-                        allCheckStatus = 0;
-                        allWorkHours.addAll(workTimeSettingList);
-
-                    } else {
-                        allCheckStatus = 1;
-                        List<WorkTimeSetting> listWorkTime = workTimeSettingRepository.findByCompanyId(companyID).stream()
-                                .filter(x -> x.getAbolishAtr() == AbolishAtr.NOT_ABOLISH)
-                                .sorted(Comparator.comparing(x -> x.getWorktimeCode().v())).collect(Collectors.toList());
-
-                    }
                 }
-
             }
+
         }
 
-        return new WorkTimeResultDto(allCheckStatus, allWorkHours, workingHoursByWorkplace, availableWorkingHours);
+        return new WorkTimeResultDto(allCheckStatus, allWorkHours, selectableWorkingHours, workingHoursByWorkplace);
 
     }
 
