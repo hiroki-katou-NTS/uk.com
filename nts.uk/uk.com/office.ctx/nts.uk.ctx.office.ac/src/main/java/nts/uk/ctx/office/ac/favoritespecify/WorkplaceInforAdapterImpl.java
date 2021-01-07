@@ -9,11 +9,11 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.pub.employee.workplace.export.WorkplaceExportPub;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplaceInforExport;
-import nts.uk.ctx.office.dom.favorite.adapter.WorkplaceInforAdaptor;
+import nts.uk.ctx.office.dom.favorite.adapter.WorkplaceInforAdapter;
 import nts.uk.ctx.office.dom.favorite.adapter.WorkplaceInforImport;
 import nts.uk.shr.com.context.AppContexts;
 
-public class WorkplaceInforAdaptorImpl implements WorkplaceInforAdaptor {
+public class WorkplaceInforAdapterImpl implements WorkplaceInforAdapter {
 
 	@Inject
 	public WorkplaceExportPub pub;

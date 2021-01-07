@@ -18,7 +18,7 @@ import nts.uk.ctx.office.infra.entity.reference.auth.SpecifyAuthInquiryEntityPK;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class JpaSpecifyAuthInquiryRepository extends JpaRepository implements SpecifyAuthInquiryRepository{
+public class SpecifyAuthInquiryRepositoryImpl extends JpaRepository implements SpecifyAuthInquiryRepository{
 
 	private static final String FIND_BY_CID_ROLEID = String.join(" ",
 			"SELECT s FROM SpecifyAuthInquiryEntity",
