@@ -11,6 +11,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.appabsence.AbsenceWorkType;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
@@ -70,8 +71,14 @@ public class AppAbsenceThreeProcessImpl implements AppAbsenceThreeProcess {
 		        workTypes = getWorkTypeByHolidayType(companyID,holidayType.value);
 		    } else {
 		        for (TargetWorkTypeByApp wt : targetWorkTypes.get()) {
-		            if (!CollectionUtil.isEmpty(wt.getWorkTypeLst())) {
-		                workTypes.addAll(workTypeRepository.findNotDeprecatedByListCode(companyID, wt.getWorkTypeLst()));
+		            if (wt.getAppType().equals(ApplicationType.ABSENCE_APPLICATION) && wt.getOpHolidayAppType().get().equals(holidayType)) {
+		                if (!CollectionUtil.isEmpty(wt.getWorkTypeLst())) {
+		                    workTypes.addAll(workTypeRepository.findNotDeprecatedByListCode(companyID, wt.getWorkTypeLst()));
+		                } else {
+		                    workTypes = getWorkTypeByHolidayType(companyID,holidayType.value);
+		                }
+		            } else {
+		                continue;
 		            }
 		        }
 		    }

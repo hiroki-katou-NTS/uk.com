@@ -4,8 +4,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.pub.monthly.agreement.GetExcessTimesYearPub;
+import nts.uk.ctx.at.record.pub.monthly.agreement.export.AgreementExcessInfoExport;
 import nts.uk.ctx.at.record.pub.standardtime.AgreementMonthSettingOutputExport;
 import nts.uk.ctx.at.record.pub.standardtime.AgreementMonthSettingPub;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementExcessInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.standardtime.AgreementMonthSettingAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.standardtime.AgreementMonthSettingOutput;
 /**
@@ -19,6 +22,9 @@ public class AgreementMonthSettingAdapterImpl implements AgreementMonthSettingAd
 	@Inject
 	private AgreementMonthSettingPub pub;
 	
+	@Inject
+	private GetExcessTimesYearPub getExcessTimesYearPub;
+	
 	@Override
 	public AgreementMonthSettingOutput getData(String employeeId, YearMonth yearMonth) {
 		AgreementMonthSettingOutput output = new AgreementMonthSettingOutput();
@@ -28,6 +34,12 @@ public class AgreementMonthSettingAdapterImpl implements AgreementMonthSettingAd
 		output.setOpAgreementMonthSetting(export.getOpAgreementMonthSetting());
 		
 		return output;
+	}
+
+	@Override
+	public AgreementExcessInfoImport getDataRq605(String employeeID, YearMonth ym) {
+		AgreementExcessInfoExport export = getExcessTimesYearPub.getDataRq605(employeeID, ym);
+		return new AgreementExcessInfoImport(export.getExcessTimes(), export.getYearMonths());
 	}
 
 }

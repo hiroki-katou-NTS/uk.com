@@ -113,7 +113,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			vm.loadData(empList, dateList, vm.appType())
 				.then((loadDataFlag: any) => {
 					vm.application().appDate.subscribe(value => {
-						console.log(value);
 						if (value) {
 							vm.changeDate();
 						}
@@ -125,7 +124,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						}
 						vm.itemControlHandler();
 						if (value == 0) {
-							console.log('trigger1')
 							$('.table-time2 .nts-fixed-header-wrapper').width(224);
 							if (vm.holidayTime().length > 3) {
 								$('.table-time2 .nts-fixed-body-wrapper').width(208);
@@ -141,7 +139,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 							// }
 							
 						} else {
-							console.log('trigger2')
 							$('.table-time2 .nts-fixed-header-wrapper').width(455);
 							$('.table-time2 .nts-fixed-body-wrapper').width(455);
 							$('.table-time3 .nts-fixed-header-wrapper').width(455);
@@ -181,7 +178,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					
 				}).then((successData: any) => {
 					if (successData) {
-						console.log(successData, 'res');
 						vm.dataSource = successData;
 						vm.itemControlHandler();
 						vm.bindOverTimeWorks(vm.dataSource);
@@ -251,19 +247,20 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 
 		itemControlHandler() {
 			const self = this;
-			console.log('star handle');
 			// ※28
 			self.managementMultipleWorkCyclescheck(self.dataSource.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles);
 			
 			if(self.application().prePostAtr() == 1){
 				// ※27
-				if (self.dataSource.hdWorkOvertimeReflect.holidayWorkAppReflect.after.othersReflect.reflectDivergentReasonAtr == 1 && self.dataSource.useInputDivergenceReason == true) {
+				if (self.dataSource.hdWorkOvertimeReflect.holidayWorkAppReflect.after.othersReflect.reflectDivergentReasonAtr == 1 && 
+					(self.dataSource.divergenceReasonInputMethod.length > 0 && self.dataSource.divergenceReasonInputMethod[0].divergenceReasonInputed == true)) {
 					self.inputReflectDivergenceCheck(true);
 				} else {
 					self.inputReflectDivergenceCheck(false);
 				}
 				// ※26
-				if (self.dataSource.hdWorkOvertimeReflect.holidayWorkAppReflect.after.othersReflect.reflectDivergentReasonAtr == 1 && self.dataSource.useComboDivergenceReason == true) {
+				if (self.dataSource.hdWorkOvertimeReflect.holidayWorkAppReflect.after.othersReflect.reflectDivergentReasonAtr == 1 && 
+					(self.dataSource.divergenceReasonInputMethod.length > 0 && self.dataSource.divergenceReasonInputMethod[0].divergenceReasonSelected == true)) {
 					self.selectReflectDivergenceCheck(true);
 				} else {
 					self.selectReflectDivergenceCheck(false);
@@ -286,7 +283,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			} else {
 				self.inputEnable(false)
 			}
-			// ※18	//huytodo
+			// ※18
 			if (self.dataSource.hdWorkOvertimeReflect.nightOvertimeReflectAtr == 0) {
 				self.nightOvertimeReflectAtrCheck(false);
 				// $(`#fixed-table-holiday tr:nth-child(${self.holidayTime().length})`).hide();
@@ -442,7 +439,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 				return;
 			}
 			
-			if(vm.mode() == MODE.NORMAL){
+			if(vm.mode() != MODE.MULTiPLE_AGENT){
 				vm.registerSingle();
 			} else {
 				vm.registerMulti();
@@ -502,7 +499,9 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					
 				})
 				.done(result => {
-					
+					if(result){
+						location.reload();
+					}
 				})
 				.fail((failData: any) => {
 					// xử lý lỗi nghiệp vụ riêng
@@ -625,7 +624,9 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					
 				})
 				.done(result => {
-					
+					if(result){
+						location.reload();
+					}
 				})
 				.fail((failData: any) => {
 					// xử lý lỗi nghiệp vụ riêng
@@ -641,8 +642,9 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 
 		setComboDivergenceReason(res: AppHdWorkDispInfo) {
 			const self = this;
-			if(res.comboDivergenceReason && res.comboDivergenceReason.length > 0){
-				let comboBoxOptions: Array<ComboDivergenceReason> = res.comboDivergenceReason
+			res.divergenceReasonInputMethod
+			if(res.divergenceReasonInputMethod.length > 0 && res.divergenceReasonInputMethod[0].reasons.length > 0){
+				let comboBoxOptions: Array<ComboDivergenceReason> = res.divergenceReasonInputMethod[0].reasons
 						.map(reason => {
 							reason.comboBoxText = reason.divergenceReasonCode + ' ' + reason.reason;
 							return reason;
@@ -768,7 +770,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		bindHolidayTime(res: AppHdWorkDispInfo, mode?: number) {
 			const self = this;
 			let holidayTimeArray = [] as Array<HolidayTime>;
-			console.log(res.workdayoffFrameList.length, 'length');
 
 			for (let i = 0; i < res.workdayoffFrameList.length; i++) {
 				let item = {} as HolidayTime;
@@ -909,7 +910,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 							let applicationTime = actualApplicationTime.applicationTime;
 							if (!_.isEmpty(applicationTime)) {
 								_.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
-									console.log(item);
 									holidayTimeArray
 										.filter(holidayTime => holidayTime.frameNo() == item.frameNo && item.attendanceType == AttendanceType.BREAKTIME)
 										.map(holidayTime => holidayTime.actualTime(item.applicationTime));
@@ -1238,7 +1238,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 							})
 							// A7_14
 							if(self.nightOvertimeReflectAtrCheck()){
-								let overTimeShiftNight = applicationTime.overTimeShiftNight;
+								let overTimeShiftNight = appHolidayWork.applicationTime.overTimeShiftNight;
 								if (!_.isNil(overTimeShiftNight)) {
 									overTimeArray
 										.filter(overTime => overTime.type() == AttendanceType.MIDNIGHT_OUTSIDE)
@@ -1448,10 +1448,11 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 							self.dataSource.dispFlexTime = res.dispFlexTime;
 							self.dataSource.hdWorkDispInfoWithDateOutput = res.hdWorkDispInfoWithDateOutput;
 							self.dataSource.holidayWorkAppSet = res.holidayWorkAppSet;
+							self.dataSource.hdWorkOvertimeReflect = res.hdWorkOvertimeReflect;
 							self.dataSource.otWorkHoursForApplication = res.otWorkHoursForApplication;
 							self.dataSource.overtimeFrameList = res.overtimeFrameList;
-							self.dataSource.useComboDivergenceReason = res.useComboDivergenceReason;
-							self.dataSource.useInputDivergenceReason = res.useInputDivergenceReason;
+							self.dataSource.divergenceReasonInputMethod = res.divergenceReasonInputMethod;
+							self.dataSource.divergenceTimeRoots = res.divergenceTimeRoots;
 							self.dataSource.workdayoffFrameList = res.workdayoffFrameList;
 
 							self.bindOverTimeWorks(self.dataSource);
@@ -1463,7 +1464,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 							
 						})
 						.fail((res) =>{
-							console.log(res, 'fail');
+
 						})
 						.always(() =>{
 							self.$blockui('hide');
@@ -1493,10 +1494,11 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					self.dataSource.dispFlexTime = res.dispFlexTime;
 					self.dataSource.hdWorkDispInfoWithDateOutput = res.hdWorkDispInfoWithDateOutput;
 					self.dataSource.holidayWorkAppSet = res.holidayWorkAppSet;
+					self.dataSource.hdWorkOvertimeReflect = res.hdWorkOvertimeReflect;
 					self.dataSource.otWorkHoursForApplication = res.otWorkHoursForApplication;
 					self.dataSource.overtimeFrameList = res.overtimeFrameList;
-					self.dataSource.useComboDivergenceReason = res.useComboDivergenceReason;
-					self.dataSource.useInputDivergenceReason = res.useInputDivergenceReason;
+					self.dataSource.divergenceReasonInputMethod = res.divergenceReasonInputMethod;
+					self.dataSource.divergenceTimeRoots = res.divergenceTimeRoots;
 					self.dataSource.workdayoffFrameList = res.workdayoffFrameList;
 
 					self.bindRestTime(self.dataSource);
@@ -1594,9 +1596,6 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 									// let appTimeList = res.applicationTime.applicationTime;
 									// let holidayTimeArray = self.holidayTime();
 									// let overTimeArray = self.overTime();
-									// console.log(holidayTimeArray, 'HLDARR');
-									// console.log(self.overTime(), "OVTARR");
-									// console.log(res, 'calRes');
 									// appTimeList.forEach((appTime: OvertimeApplicationSetting) => {
 									// 	holidayTimeArray.forEach((holidayTime: HolidayTime) => {
 									// 		// A6_8
@@ -1634,7 +1633,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 								}
 							})
 							.fail((res) => { 
-								console.log('calculate fail');
+
 							})
 							.always(() => {
 								self.$blockui("hide");
@@ -1677,6 +1676,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 				return $.Deferred().resolve(true);
 			}
 			let msg = listMes[0];
+			msg.paramLst.unshift(keys[0]); //add empName to top of array;
 
 			return vm.$dialog.confirm({ messageId: msg.msgID, messageParams: msg.paramLst })
 				.then((value) => {
@@ -1704,8 +1704,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 	}
 	interface AppHdWorkDispInfo {
 		dispFlexTime: boolean;
-		useInputDivergenceReason: boolean;
-		useComboDivergenceReason: boolean;
+		divergenceTimeRoots: any
 		workdayoffFrameList: Array<WorkdayoffFrame>;
 		otWorkHoursForApplication: AgreeOverTimeOutput;
 		hdWorkDispInfoWithDateOutput: HdWorkDispInfoWithDateOutput;
@@ -1713,8 +1712,15 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		appDispInfoStartupOutput: any;
 		overtimeFrameList: Array<OvertimeWorkFrame>;
 		holidayWorkAppSet: any;
-		comboDivergenceReason: Array<ComboDivergenceReason>;
+		divergenceReasonInputMethod: Array<DivergenceReasonInputMethod>;
 		hdWorkOvertimeReflect: any;
+	}
+	interface DivergenceReasonInputMethod{
+		divergenceTimeNo: number;
+		companyId: string;
+		divergenceReasonInputed: boolean;
+		divergenceReasonSelected: boolean;
+		reasons: Array<ComboDivergenceReason>;
 	}
 	interface OvertimeWorkFrame {
 		overtimeWorkFrName: string;
