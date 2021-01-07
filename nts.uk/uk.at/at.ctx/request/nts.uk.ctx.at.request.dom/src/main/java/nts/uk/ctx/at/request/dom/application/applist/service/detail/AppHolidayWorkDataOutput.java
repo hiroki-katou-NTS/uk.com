@@ -15,9 +15,4 @@ public class AppHolidayWorkDataOutput {
 	 * 申請内容
 	 */
 	private String appContent;
-	
-	/**
-	 * 背景色
-	 */
-	private String backgroundColor;
 }

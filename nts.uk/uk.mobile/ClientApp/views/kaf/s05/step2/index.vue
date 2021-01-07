@@ -6,21 +6,8 @@
         v-if="$appContext.kaf000_A_Params != null"
         v-bind:params="$appContext.kaf000_A_Params"
       />
-      <div class="accordion mb-2" v-if="$appContext.overTimeWorkHoursDto != null">
-          <div class="card" v-if="true">
-            <div class="card-header uk-bg-accordion">
-              <button class="btn btn-link" type="button">
-                  {{'KAFS00_4' | i18n}}
-              </button>
-            </div>
-            <div class="collapse">
-              <div class="card-body">
-                  <kafs00subp2 v-bind:params="$appContext.overTimeWorkHoursDto" />      
-              </div>
-            </div>
-          </div>
-      </div>
     </div>
+
     <!-- A2_B1 -->
     <div class="card card-label">
       <!--A2_B1_1-->
@@ -30,8 +17,8 @@
       </div>
       <!--A2_B1_5-->
       <div
-       v-if="!$valid || !$appContext.isValidateAll" 
-      class="card bg-danger top-alert uk-text-danger topError mt-2"
+       v-if="$appContext.isMsg_1562" 
+      class="card bg-danger top-alert uk-text-danger topError"
       >
         <button class="btn btn-link uk-text-danger">
           <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
@@ -61,6 +48,7 @@
               v-model="item.applicationTime"
               name=""
               v-bind:enable="$appContext.c3"
+              time-input-type="time-duration"
             />
           </div>
         </div>
@@ -80,7 +68,7 @@
         v-bind:key="index"
         :value="index"
       >
-        <div v-show="item.visible" class="card-body">
+        <div class="card-body">
           <div class="row mt-3">
             <div class="col-4">{{ item.title }}</div>
             <div class="col-8.5">
@@ -101,6 +89,7 @@
               v-model="item.applicationTime"
               name=""
               v-bind:enable="$appContext.c3"
+              time-input-type="time-duration"
             />
           </div>
         </div>
@@ -121,7 +110,7 @@
     <div class="card card-label" v-if="$appContext.c12">
         <!--A2_B5_1-->
         <div class="card-header uk-bg-accordion" style="align-items: center">
-            <v-label class="border-0 pl-0 my-n1" v-bind:constraint="validations.DivergenceReason">
+            <v-label class="border-0 pl-0 my-n1">
                 {{'KAFS05_78' | i18n(reason1.title)}}</v-label>
             <span class="badge badge-info">任意</span>
         </div>
@@ -145,7 +134,7 @@
                         <span class="small-header">{{'KAFS05_80' | i18n(reason1.title)}}</span>
                   </div>
                   <div>
-                        <nts-text-area v-model="reason1.reason" />
+                        <nts-text-area　v-model="reason1.reason" />
                   </div>
             </div>
         </div>
@@ -156,7 +145,7 @@
     <div class="card card-label" v-if="$appContext.c19">
         <!--A2_B6_1-->
         <div class="card-header uk-bg-accordion" style="align-items: center">
-            <v-label class="border-0 pl-0 my-n1" v-bind:constraint="validations.DivergenceReason">
+            <v-label class="border-0 pl-0 my-n1">
                 {{'KAFS05_78' | i18n(reason2.title)}}</v-label>
             <span class="badge badge-info">任意</span>
         </div>
@@ -180,7 +169,7 @@
                         <span class="small-header">{{'KAFS05_80' | i18n(reason2.title)}}</span>
                   </div>
                   <div>
-                        <nts-text-area v-model="reason2.reason" />
+                        <nts-text-area　v-model="reason2.reason" />
                   </div>
             </div>
         </div>

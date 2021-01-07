@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -17,8 +16,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-
-import org.apache.logging.log4j.util.Strings;
 
 import lombok.SneakyThrows;
 import nts.arc.enums.EnumAdaptor;
@@ -43,7 +40,6 @@ import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 import nts.uk.ctx.at.request.dom.application.ReflectionStatusOfDay;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.infra.entity.application.KrqdpAppReflectState;
 import nts.uk.ctx.at.request.infra.entity.application.KrqdpApplication;
@@ -257,9 +253,9 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	 */
 	@Override
 	public List<Application> getListAppModeApprCMM045(String companyID, DatePeriod period, List<String> lstAppId,
-			boolean unapprovalStatus, boolean approvalStatus, boolean denialStatus, boolean agentApprovalStatus, 
-			boolean remandStatus, boolean cancelStatus, List<Integer> lstType, List<PrePostAtr> prePostAtrLst, 
-			List<String> employeeIDLst, List<StampRequestMode> stampRequestModeLst, List<OvertimeAppAtr> overtimeAppAtrLst) {
+			boolean unapprovalStatus, boolean approvalStatus, boolean denialStatus, boolean agentApprovalStatus,
+			boolean remandStatus, boolean cancelStatus, List<Integer> lstType, List<PrePostAtr> prePostAtrLst,
+			List<String> employeeIDLst, List<StampRequestMode> stampRequestModeLst) {
 		if (lstAppId.isEmpty()) {
 			return new ArrayList<>();
 		}
@@ -287,26 +283,19 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 			String lstStateString = NtsStatement.In.createParamsString(lstState);
 
 			String whereCondition = "";
-			String connectAppTypeString = "";
-			String connectStampString = "";
-			String connectOvertimeString = "";
+			String connectString = "";
+			if(!CollectionUtil.isEmpty(lstType) && !CollectionUtil.isEmpty(stampRequestModeLst)) {
+				connectString = " union ";
+			}
 			if(!CollectionUtil.isEmpty(lstType)) {
-				connectAppTypeString = "select c.APP_ID from KRQDT_APPLICATION c left join KRQDT_APP_REFLECT_STATE d on c.APP_ID = d.APP_ID " +
-						"where c.APP_ID IN @subListId AND c.APP_TYPE IN @lstType AND d.REFLECT_PER_STATE IN @lstState " +
-						"AND c.CID = @companyID AND c.PRE_POST_ATR IN @prePostAtrLst";
+				whereCondition += "select APP_ID from KRQDT_APPLICATION where APP_ID IN @subListId AND APP_TYPE IN @lstType " +
+						"AND b.REFLECT_PER_STATE IN @lstState AND a.CID = @companyID AND a.PRE_POST_ATR IN @prePostAtrLst";
 			}
 			if(!CollectionUtil.isEmpty(stampRequestModeLst)) {
-				connectStampString = "select e.APP_ID from KRQDT_APPLICATION e left join KRQDT_APP_REFLECT_STATE f on e.APP_ID = f.APP_ID " +
-						"where e.APP_ID IN @subListId AND e.STAMP_OPTION_ATR IN @stampRequestModeLst " +
-						"AND f.REFLECT_PER_STATE IN @lstState AND e.CID = @companyID AND e.PRE_POST_ATR IN @prePostAtrLst";
+				whereCondition += connectString + "select APP_ID from KRQDT_APPLICATION where APP_ID IN @subListId AND STAMP_OPTION_ATR IN @stampRequestModeLst " +
+						"AND b.REFLECT_PER_STATE IN @lstState AND a.CID = @companyID AND a.PRE_POST_ATR IN @prePostAtrLst";
 			}
-			if(!CollectionUtil.isEmpty(overtimeAppAtrLst)) {
-				connectOvertimeString = "select g.APP_ID from KRQDT_APPLICATION g left join KRQDT_APP_REFLECT_STATE h on g.APP_ID = h.APP_ID " +
-						"left join KRQDT_APP_OVERTIME i on g.APP_ID = i.APP_ID  where g.APP_ID IN @subListId " +
-						"AND h.REFLECT_PER_STATE IN @lstState AND g.CID = @companyID AND g.PRE_POST_ATR IN @prePostAtrLst AND i.OVERTIME_ATR IN @overtimeAppAtrLst";
-			}
-			whereCondition = Arrays.asList(connectAppTypeString, connectStampString, connectOvertimeString).stream()
-					.filter(x -> Strings.isNotBlank(x)).collect(Collectors.joining(" union "));
+
 			String sql =
 					"select a.EXCLUS_VER as aEXCLUS_VER, a.CONTRACT_CD as aCONTRACT_CD, a.CID as aCID, a.APP_ID as aAPP_ID, a.PRE_POST_ATR as aPRE_POST_ATR, " +
 					"a.INPUT_DATE as aINPUT_DATE, a.ENTERED_PERSON_SID as aENTERED_PERSON_SID, " +
@@ -336,9 +325,6 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 			}
 			if(!CollectionUtil.isEmpty(stampRequestModeLst)) {
 				ntsStatement = ntsStatement.paramInt("stampRequestModeLst", stampRequestModeLst.stream().map(x -> x.value).collect(Collectors.toList()));
-			}
-			if(!CollectionUtil.isEmpty(overtimeAppAtrLst)) {
-				ntsStatement = ntsStatement.paramInt("overtimeAppAtrLst", overtimeAppAtrLst.stream().map(x -> x.value).collect(Collectors.toList()));
 			}
 			List<Map<String, Object>> mapLst = ntsStatement.getList(rec -> toObject(rec));
 			List<KrqdtApplication> krqdtApplicationLst = convertToEntity(mapLst);
@@ -875,30 +861,23 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	}
 
 	@Override
-	public List<Application> getByAppTypeList(List<String> employeeLst, GeneralDate startDate, GeneralDate endDate, List<ApplicationType> appTypeLst, 
-			List<PrePostAtr> prePostAtrLst, List<StampRequestMode> stampRequestModeLst, List<OvertimeAppAtr> overtimeAppAtrLst) {
+	public List<Application> getByAppTypeList(List<String> employeeLst, GeneralDate startDate, GeneralDate endDate,
+			List<ApplicationType> appTypeLst, List<PrePostAtr> prePostAtrLst, List<StampRequestMode> stampRequestModeLst) {
 		String whereCondition = "";
-		String connectAppTypeString = "";
-		String connectStampString = "";
-		String connectOvertimeString = "";
+		String connectString = "";
+		if(!CollectionUtil.isEmpty(appTypeLst) && !CollectionUtil.isEmpty(stampRequestModeLst)) {
+			connectString = " union ";
+		}
 		if(!CollectionUtil.isEmpty(appTypeLst)) {
-			connectAppTypeString = "select APP_ID from KRQDT_APPLICATION where APPLICANTS_SID in @employeeLst " +
-					"and APP_START_DATE <= @endDate and APP_END_DATE >= @startDate " +
+			whereCondition += "select APP_ID from KRQDT_APPLICATION where APPLICANTS_SID in @employeeLst " +
+					"and APP_START_DATE >= @startDate and APP_END_DATE <= @endDate " +
 					"and APP_TYPE in @appTypeLst and PRE_POST_ATR in @prePostAtrLst";
 		}
 		if(!CollectionUtil.isEmpty(stampRequestModeLst)) {
-			connectStampString = "select APP_ID from KRQDT_APPLICATION where APPLICANTS_SID in @employeeLst " +
-					"and APP_START_DATE <= @endDate and APP_END_DATE >= @startDate " +
+			whereCondition += connectString + "select APP_ID from KRQDT_APPLICATION where APPLICANTS_SID in @employeeLst " +
+					"and APP_START_DATE >= @startDate and APP_END_DATE <= @endDate " +
 					"and STAMP_OPTION_ATR in @stampRequestModeLst and PRE_POST_ATR in @prePostAtrLst";
 		}
-		if(!CollectionUtil.isEmpty(overtimeAppAtrLst)) {
-			connectOvertimeString = "select c.APP_ID from KRQDT_APPLICATION c left join KRQDT_APP_OVERTIME d on c.APP_ID = d.APP_ID " +
-					"where c.APPLICANTS_SID in @employeeLst " +
-					"and c.APP_START_DATE <= @endDate and c.APP_END_DATE >= @startDate " +
-					"and c.PRE_POST_ATR in @prePostAtrLst and d.OVERTIME_ATR in @overtimeAppAtrLst";
-		}
-		whereCondition = Arrays.asList(connectAppTypeString, connectStampString, connectOvertimeString).stream()
-				.filter(x -> Strings.isNotBlank(x)).collect(Collectors.joining(" union "));
 
 		String sql = "select a.EXCLUS_VER as aEXCLUS_VER, a.CONTRACT_CD as aCONTRACT_CD, a.CID as aCID, a.APP_ID as aAPP_ID, a.PRE_POST_ATR as aPRE_POST_ATR, " +
 				"a.INPUT_DATE as aINPUT_DATE, a.ENTERED_PERSON_SID as aENTERED_PERSON_SID, " +
@@ -922,9 +901,6 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		}
 		if(!CollectionUtil.isEmpty(stampRequestModeLst)) {
 			ntsStatement = ntsStatement.paramInt("stampRequestModeLst", stampRequestModeLst.stream().map(x -> x.value).collect(Collectors.toList()));
-		}
-		if(!CollectionUtil.isEmpty(overtimeAppAtrLst)) {
-			ntsStatement = ntsStatement.paramInt("overtimeAppAtrLst", overtimeAppAtrLst.stream().map(x -> x.value).collect(Collectors.toList()));
 		}
 		List<Map<String, Object>> mapLst = ntsStatement.getList(rec -> toObject(rec));
 		List<KrqdtApplication> krqdtApplicationLst = convertToEntity(mapLst);

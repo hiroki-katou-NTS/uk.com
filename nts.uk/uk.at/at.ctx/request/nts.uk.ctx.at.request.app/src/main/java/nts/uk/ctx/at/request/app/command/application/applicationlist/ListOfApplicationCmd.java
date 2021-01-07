@@ -140,7 +140,7 @@ public class ListOfApplicationCmd {
 	/**
 	 * 背景色
 	 */
-	private String opBackgroundColor;
+	private Integer opBackgroundColor;
 	
 	/**
 	 * 表示行数超

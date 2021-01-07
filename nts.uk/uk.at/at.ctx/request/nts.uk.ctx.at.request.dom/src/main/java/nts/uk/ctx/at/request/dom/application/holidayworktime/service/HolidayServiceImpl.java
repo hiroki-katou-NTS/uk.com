@@ -17,7 +17,6 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
-import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorCheck;
@@ -78,7 +77,6 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class HolidayServiceImpl implements HolidayService {
@@ -181,19 +179,15 @@ public class HolidayServiceImpl implements HolidayService {
 		//	乖離理由の表示区分を取得する
 		ReasonDissociationOutput reasonDissociationOutput = commonOverTimeAlgorithm.getInfoNoBaseDate(companyId, ApplicationType.HOLIDAY_WORK_APPLICATION, 
 				null, holidayWorkSetting.getOvertimeLeaveAppCommonSet());
-		if(reasonDissociationOutput != null) {
-			appHdWorkDispInfoOutput.setDivergenceTimeRoots(reasonDissociationOutput.getDivergenceTimeRoots());
-			appHdWorkDispInfoOutput.setDivergenceReasonInputMethod(reasonDissociationOutput.getDivergenceReasonInputMethod());
-		}
-//		if(!reasonDissociationOutput.getDivergenceReasonInputMethod().isEmpty()) {
-//			appHdWorkDispInfoOutput.setUseInputDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonInputed());
-//			appHdWorkDispInfoOutput.setUseComboDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonSelected());
-//			if(!reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons().isEmpty()) {
-//				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.of(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons()));
-//			} else {
-//				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.empty());
-//			}
-//		}	
+		if(!reasonDissociationOutput.getDivergenceReasonInputMethod().isEmpty()) {
+			appHdWorkDispInfoOutput.setUseInputDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonInputed());
+			appHdWorkDispInfoOutput.setUseComboDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonSelected());
+			if(!reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons().isEmpty()) {
+				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.of(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons()));
+			} else {
+				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.empty());
+			}
+		}	
 		
 		return appHdWorkDispInfoOutput;
 	}
@@ -408,19 +402,15 @@ public class HolidayServiceImpl implements HolidayService {
 //		乖離理由の表示区分を取得する
 		ReasonDissociationOutput reasonDissociationOutput = commonOverTimeAlgorithm.getInfoNoBaseDate(companyId, ApplicationType.HOLIDAY_WORK_APPLICATION, 
 				null, appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet());
-		if(reasonDissociationOutput != null) {
-			appHdWorkDispInfoOutput.setDivergenceTimeRoots(reasonDissociationOutput.getDivergenceTimeRoots());
-			appHdWorkDispInfoOutput.setDivergenceReasonInputMethod(reasonDissociationOutput.getDivergenceReasonInputMethod());
+		if(!reasonDissociationOutput.getDivergenceReasonInputMethod().isEmpty()) {
+			appHdWorkDispInfoOutput.setUseInputDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonInputed());
+			appHdWorkDispInfoOutput.setUseComboDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonSelected());
+			if(!reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons().isEmpty()) {
+				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.of(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons()));
+			} else {
+				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.empty());
+			}
 		}
-//		if(!reasonDissociationOutput.getDivergenceReasonInputMethod().isEmpty()) {
-//			appHdWorkDispInfoOutput.setUseInputDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonInputed());
-//			appHdWorkDispInfoOutput.setUseComboDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonSelected());
-//			if(!reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons().isEmpty()) {
-//				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.of(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons()));
-//			} else {
-//				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.empty());
-//			}
-//		}
 		
 		//1-2.起動時勤務種類リストを取得する
 		List<WorkType> workTypeList = commonHolidayWorkAlgorithm.getWorkTypeList(companyId, appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpEmploymentSet().orElse(null));
@@ -515,24 +505,9 @@ public class HolidayServiceImpl implements HolidayService {
 
 	@Override
 	public void deleteHdChange(String applicationId) {
-		String companyId = AppContexts.user().companyId();
-		
 		Optional<BrkOffSupChangeMng> brkOffSupChangeMngOp = brkOffSupChangeMngRepository.findHolidayAppID(applicationId);
 		if(brkOffSupChangeMngOp.isPresent()) {
-			BrkOffSupChangeMng brkOffSupChangeMng = brkOffSupChangeMngOp.get();
-			
-			//	アルゴリズム「振休申請復活」を実行する
-				//	ドメインモデル「振休振出申請」を取得する
-			Application application = applicationRepository.findByID(companyId, applicationId).get();
-				//	「振休振出申請.反映情報.実績反映状態(stateReflectionReal)」を「未反映(notReflected)」に更新する
-			application.getReflectionStatus().getListReflectionStatusOfDay()
-				.forEach(state -> state.setActualReflectStatus(ReflectedState.NOTREFLECTED));
-			applicationRepository.update(application);
-			
-			//	ドメインモデル「振休申請休出変更管理」を削除する
-			brkOffSupChangeMngRepository.remove(brkOffSupChangeMng.getRecAppID(), brkOffSupChangeMng.getAbsenceLeaveAppID());
-			
-			//	暫定データの登録 	pending
+			// huytodo get Domain 振休振出申請, change reflect and delete 振休申請休出変更管理
 		}
 	}
 

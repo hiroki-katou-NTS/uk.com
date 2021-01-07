@@ -140,7 +140,7 @@ public class ListOfApplication {
 	/**
 	 * 背景色
 	 */
-	private Optional<String> opBackgroundColor;
+	private Optional<Integer> opBackgroundColor;
 	
 	/**
 	 * 表示行数超

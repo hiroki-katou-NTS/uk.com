@@ -8,14 +8,13 @@ module nts.uk.at.view.kaf006.shr.component2.viewmodel {
                 <div class="cell col-1">
                     <div class="cell valign-center" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_15')"></div>
                 </div>
-                <div class="cell" data-bind="visible: $parent.condition1">
+                <div class="cell">
                     <div data-bind="ntsSwitchButton: { 
                         name: $i18n('KAF006_15'),
                         options: hdAppSet,
                         optionsValue: 'holidayAppType',
                         optionsText: 'displayName',
-                        value: selectedType, 
-                        enable: $parent.updateMode
+                        value: selectedType
                     }"></div>
                 </div>
             </div>
@@ -40,10 +39,8 @@ module nts.uk.at.view.kaf006.shr.component2.viewmodel {
             const vm = this;
 
             vm.hdAppSet.subscribe(() => {
-                if (!vm.selectedType()) {
-                    if (vm.hdAppSet().length > 0) {
-                        vm.selectedType(vm.hdAppSet()[0].holidayAppType);
-                    }
+                if (vm.hdAppSet().length > 0) {
+                    vm.selectedType(vm.hdAppSet()[0].holidayAppType);
                 }
             });
         }

@@ -571,9 +571,7 @@ public class AsposeAppOverTime {
 			cells.deleteRow(11);
 		}
 		
-		if (!c2 
-				// || StringUtils.isBlank(contentD11)
-				) {
+		if (!c2 || StringUtils.isBlank(contentD11)) {
 			result.setStartReasonCommon(result.getStartReasonCommon() + 1);
 			cells.deleteRow(10);
 		}

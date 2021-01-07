@@ -15,23 +15,21 @@ import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppForLea
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.SpecAbsenceDispInfo;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.VacationCheckOutput;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.VacationLinkManageInfo;
-import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.AppDetailScreenInfo;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.AppliedDate;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 public interface AbsenceServiceProcess {
@@ -420,60 +418,4 @@ public interface AbsenceServiceProcess {
     public void updateVacationLinkManage(List<LeaveComDayOffManagement> oldLeaveComDayOffMana, 
             List<PayoutSubofHDManagement> oldPayoutSubofHDManagements, List<LeaveComDayOffManagement> newLeaveComDayOffMana, 
             List<PayoutSubofHDManagement> newPayoutSubofHDManagements);
-    
-    /**
-         * 指定する勤務種類に必要な休暇時間を算出する
-     * @param employeeID
-     * @param date
-     * @param workTypeCode
-     * @param workTimeCode
-     * @param scheduleToWork
-     * @param workingCondition
-     * @return
-     */
-    public AttendanceTime calculateTimeRequired(String employeeID, 
-            Optional<GeneralDate> date, 
-            Optional<String> workTypeCode, 
-            Optional<String> workTimeCode, 
-            Optional<WorkInfoOfDailyAttendance> workInfoDaily,
-            Optional<ScBasicScheduleImport> scheduleToWork, 
-            Optional<WorkingConditionItem> workingCondition);
-    
-    /**
-         * 休暇申請（詳細）更新処理
-     * @param applyForLeave
-     * @param holidayAppDates
-     * @param oldLeaveComDayOffMana
-     * @param oldPayoutSubofHDManagements
-     * @param leaveComDayOffMana
-     * @param payoutSubofHDManagements
-     * @return
-     */
-    public ProcessResult updateApplyForLeave(
-            ApplyForLeave applyForLeave, 
-            List<String> holidayAppDates, 
-            List<LeaveComDayOffManagement> oldLeaveComDayOffMana, 
-            List<PayoutSubofHDManagement> oldPayoutSubofHDManagements,
-            List<LeaveComDayOffManagement> leaveComDayOffMana, 
-            List<PayoutSubofHDManagement> payoutSubofHDManagements, 
-            AppDispInfoStartupOutput appDispInfoStartupOutput);
-    
-    /**
-            *  代休日を変更する
-     * @param companyID
-     * @param holidayDates
-     * @param appAbsenceStartInfoDto
-     * @return
-     */
-    public AppAbsenceStartInfoOutput getChangeHolidayDates(String companyID, List<GeneralDate> holidayDates, AppAbsenceStartInfoOutput appAbsenceStartInfoDto);
-    
-    /**
-         * 休暇申請を登録する
-     * @param companyID
-     * @param newApplyForLeave
-     * @param originApplyForLeave
-     * @param holidayDates
-     * @param appAbsenceStartInfoDto
-     */
-    public void registerHolidayDates(String companyID, ApplyForLeave newApplyForLeave, ApplyForLeave originApplyForLeave, List<GeneralDate> holidayDates, AppAbsenceStartInfoOutput appAbsenceStartInfoDto);
 }

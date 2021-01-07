@@ -33,12 +33,12 @@ public class AppAbsenceStartInfoOutput {
     /**
          * 休出代休紐付け管理
      */
-    private List<LeaveComDayOffManagement> leaveComDayOffManas = new ArrayList<LeaveComDayOffManagement>();
+    private List<LeaveComDayOffManagement> leaveComDayOffManas;
     
     /**
          * 振出振休紐付け管理
      */
-    private List<PayoutSubofHDManagement> payoutSubofHDManagements = new ArrayList<PayoutSubofHDManagement>();
+    private List<PayoutSubofHDManagement> payoutSubofHDManagements;
 	
 	/**
 	 * 申請表示情報

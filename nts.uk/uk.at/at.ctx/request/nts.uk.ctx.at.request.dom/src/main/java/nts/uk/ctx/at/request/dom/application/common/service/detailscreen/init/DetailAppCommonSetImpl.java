@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -23,9 +24,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.OutputMode;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -50,9 +48,6 @@ public class DetailAppCommonSetImpl implements DetailAppCommonSetService {
 	
 	@Inject
 	private InitMode initMode;
-	
-	@Inject
-	private AppOverTimeRepository appOverTimeRepository;
 	
 	@Override
 	public ApplicationMetaOutput getDetailAppCommonSet(String companyID, String applicationID) {
@@ -82,14 +77,8 @@ public class DetailAppCommonSetImpl implements DetailAppCommonSetService {
 	public AppDispInfoStartupOutput getCommonSetBeforeDetail(String companyID, String appID) {
 		// 詳細画面の申請データを取得する
 		DetailScreenAppData detailScreenAppData = detailScreenBefore.getDetailScreenAppData(appID);
-		// 取得した「申請．申請種類」をチェックする
-		ApplicationType appType = detailScreenAppData.getApplication().getAppType();
-		Optional<OvertimeAppAtr> opOvertimeAppAtr = Optional.empty();
-		if(appType==ApplicationType.OVER_TIME_APPLICATION) {
-			// ドメインモデル「残業申請」を取得する
-			opOvertimeAppAtr = appOverTimeRepository.find(companyID, appID).map(x -> x.getOverTimeClf());
-		}
 		// 起動時の申請表示情報を取得する
+		ApplicationType appType = detailScreenAppData.getApplication().getAppType();
 		List<String> applicantLst = Arrays.asList(detailScreenAppData.getApplication().getEmployeeID());
 		GeneralDate startDate = detailScreenAppData.getApplication().getOpAppStartDate().map(x -> x.getApplicationDate())
 				.orElse(detailScreenAppData.getApplication().getAppDate().getApplicationDate());
@@ -105,8 +94,7 @@ public class DetailAppCommonSetImpl implements DetailAppCommonSetService {
 				applicantLst, 
 				dateLst, 
 				false,
-				Optional.empty(), 
-				opOvertimeAppAtr);
+				Optional.empty(), Optional.empty());
 		// 入力者の社員情報を取得する (Lấy employee inforrmation của người nhập)
 		Optional<EmployeeInfoImport> opEmployeeInfoImport = commonAlgorithm.getEnterPersonInfor(
 				detailScreenAppData.getApplication().getEmployeeID(), 

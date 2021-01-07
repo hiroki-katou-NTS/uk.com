@@ -1,5 +1,5 @@
 import { _, Vue } from '@app/provider';
-import { TrackRecordAtr, OverTimeShiftNight, BreakTime, TimeZoneNew, TimeZoneWithWorkNo, AppOverTime, ParamCalculateMobile, ParamSelectWorkMobile, InfoWithDateApplication, ParamStartMobile, OvertimeAppAtr, Model, DisplayInfoOverTime, NotUseAtr, ApplicationTime, OvertimeApplicationSetting, AttendanceType, HolidayMidNightTime, StaturoryAtrOfHolidayWork, ParamBreakTime, WorkInformation, WorkHoursDto, AppDateContradictionAtr, ExcessState } from '../a/define.interface';
+import { OverTimeShiftNight, BreakTime, TimeZoneNew, TimeZoneWithWorkNo, AppOverTime, ParamCalculateMobile, ParamSelectWorkMobile, InfoWithDateApplication, ParamStartMobile, OvertimeAppAtr, Model, DisplayInfoOverTime, NotUseAtr, ApplicationTime, OvertimeApplicationSetting, AttendanceType, HolidayMidNightTime, StaturoryAtrOfHolidayWork, ParamBreakTime, WorkInformation, WorkHoursDto } from '../a/define.interface';
 import { component, Prop } from '@app/core/component';
 import { StepwizardComponent } from '@app/components';
 import { KafS05Step1Component } from '../step1';
@@ -9,7 +9,6 @@ import { KDL002Component } from '../../../kdl/002';
 import { Kdl001Component } from '../../../kdl/001';
 import { KafS00ShrComponent, AppType, Application, InitParam } from 'views/kaf/s00/shr';
 import { OverTime } from '../step2/index';
-import { OverTimeWorkHoursDto } from '../../s00/sub/p2';
 
 @component({
     name: 'kafs05',
@@ -48,19 +47,11 @@ export class KafS05Component extends KafS00ShrComponent {
 
     public isMsg_1562: Boolean = false;
 
-    public isMsg_1556: boolean = false;
-
     @Prop()
     public readonly params: InitParam;
 
     public get step() {
         return `step_${this.numb}`;
-    }
-    public get overTimeWorkHoursDto(): OverTimeWorkHoursDto {
-        const self = this;
-        let model = self.model as Model;
-        
-        return _.get(model, 'displayInfoOverTime.infoNoBaseDate.agreeOverTimeOutput') || null;
     }
 
     // 「残業申請の表示情報．基準日に関係しない情報．残業申請設定．残業休出申請共通設定．時間外表示区分」＝する
@@ -175,56 +166,31 @@ export class KafS05Component extends KafS00ShrComponent {
     // （「事前事後区分」が表示する　AND　「事前事後区分」が「事後」を選択している）　OR
     // （「事前事後区分」が表示しない　AND 「残業申請の表示情報．申請表示情報．申請表示情報(基準日関係あり)．事前事後区分」= 「事後」）
     public get c15() {
-        const self = this;
-        let model = self.model as Model;
-        let c15 = false;
-        if (!self.modeNew) {
 
-            return self.model.displayInfoOverTime.appDispInfoStartup.appDetailScreenInfo.application.prePostAtr == 1;
-        }
-        if (model.displayInfoOverTime.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr == 0) {				
-            let prePost = model.displayInfoOverTime.appDispInfoStartup.appDispInfoWithDateOutput.prePostAtr;
-            if (prePost == 1) {
-                c15 = true;					
-            } else {
-                c15 = false;
-            }
-            
-            return c15;
-        } else {
-            let prePost = self.application.prePostAtr;
-            if (prePost == 1) {
-                c15 = true;					
-            } else {
-                c15 = false;
-            }
 
-            return c15;
-        }
+        return true;
     }
     // ※表16-1 = ○　OR　※表16-2 = ○　OR　※表16-3 = ○　OR　※表16-4 = ○
     public get c16() {
-        const self = this;
 
-        return self.c16_1 || self.c16_2 || self.c16_3 || self.c16_4;
+        return true;
     }
     // 「残業申請の表示情報．計算結果．申請時間．申請時間．type」= 休出時間 があるの場合
     public get c16_1() {
         const self = this;
-        let model = self.model as Model;
-        let c16_1 = false;
-        if (!_.isNil(_.get(model, 'displayInfoOverTime.calculationResultOp'))) {
-            _.forEach(model.displayInfoOverTime.calculationResultOp.applicationTimes, (i: ApplicationTime) => {
+        let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
+        if (!_.isNil(displayOverTime.calculationResultOp)) {
+            _.forEach(displayOverTime.calculationResultOp.applicationTimes, (i: ApplicationTime) => {
                 _.forEach(i.applicationTime, (item: OvertimeApplicationSetting) => {
                     if (item.attendanceType == AttendanceType.BREAKTIME) {
 
-                        c16_1 = true;
+                        return true;
                     }
                 });
             });
         }
 
-        return c16_1;
+        return false;
     }
     // ※表15 = ○　　AND　※表16-1 = ○　
     public get c16_1_2() {
@@ -236,17 +202,16 @@ export class KafS05Component extends KafS00ShrComponent {
     // ※表5 = ○ AND「残業申請の表示情報．計算結果．申請時間．就業時間外深夜時間．休出深夜時間．法定区分」= 法定内休出 があるの場合
     public get c16_2() {
         const self = this;
-        let model = self.model as Model;
-        let c16_2 = false;
-        let midNightHolidayTimes = _.get(model.displayInfoOverTime, 'calculationResultOp.applicationTimes[0].overTimeShiftNight.midNightHolidayTimes');
+        let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
+        let midNightHolidayTimes = _.get(displayOverTime, 'calculationResultOp.applicationTimes[0].overTimeShiftNight.midNightHolidayTimes');
         _.forEach(midNightHolidayTimes, (item: HolidayMidNightTime) => {
             if (item.legalClf == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork && item.attendanceTime > 0) {
 
-                c16_2 = true && self.c5;
+                return true && self.c5;
             }
         });
 
-        return c16_2;
+        return false;
     }
     // ※表15 = ○　　AND　※表16-2 = ○　
     public get c16_2_2() {
@@ -257,17 +222,16 @@ export class KafS05Component extends KafS00ShrComponent {
     // ※表5 = ○ AND「残業申請の表示情報．計算結果．申請時間．就業時間外深夜時間．休出深夜時間．法定区分」= 法定外休出 があるの場合
     public get c16_3() {
         const self = this;
-        let model = self.model as Model;
-        let c16_3 = false;
-        let midNightHolidayTimes = _.get(model.displayInfoOverTime, 'calculationResultOp.applicationTimes[0].overTimeShiftNight.midNightHolidayTimes');
+        let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
+        let midNightHolidayTimes = _.get(displayOverTime, 'calculationResultOp.applicationTimes[0].overTimeShiftNight.midNightHolidayTimes');
         _.forEach(midNightHolidayTimes, (item: HolidayMidNightTime) => {
             if (item.legalClf == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork && item.attendanceTime > 0) {
 
-                c16_3 = true && self.c5;
+                return true && self.c5;
             }
         });
 
-        return c16_3;
+        return false;
     }
     // ※表15 = ○　　AND　※表16-3 = ○　
     public get c16_3_2() {
@@ -279,17 +243,16 @@ export class KafS05Component extends KafS00ShrComponent {
     // ※表5 = ○ AND「残業申請の表示情報．計算結果．申請時間．就業時間外深夜時間．休出深夜時間．法定区分」= 祝日休出 があるの場合
     public get c16_4() {
         const self = this;
-        let model = self.model as Model;
-        let c16_4 = false;
-        let midNightHolidayTimes = _.get(model.displayInfoOverTime, 'calculationResultOp.applicationTimes[0].overTimeShiftNight.midNightHolidayTimes');
+        let displayOverTime = self.model.displayInfoOverTime as DisplayInfoOverTime;
+        let midNightHolidayTimes = _.get(displayOverTime, 'calculationResultOp.applicationTimes[0].overTimeShiftNight.midNightHolidayTimes');
         _.forEach(midNightHolidayTimes, (item: HolidayMidNightTime) => {
             if (item.legalClf == StaturoryAtrOfHolidayWork.PublicHolidayWork && item.attendanceTime > 0) {
 
-                c16_4 = true && self.c5;
+                return true && self.c5;
             }
         });
 
-        return c16_4;
+        return false;
     }
     // ※表15 = ○　　AND　※表16-4 = ○　
     public get c16_4_2() {
@@ -366,7 +329,7 @@ export class KafS05Component extends KafS00ShrComponent {
             vm.user = user;
         }).then(() => {
             if (vm.modeNew) {
-                return vm.loadCommonSetting(AppType.OVER_TIME_APPLICATION, null, null, null, vm.overTimeClf);
+                return vm.loadCommonSetting(AppType.OVER_TIME_APPLICATION);
             }
 
             return true;
@@ -432,35 +395,10 @@ export class KafS05Component extends KafS00ShrComponent {
                 self.model.displayInfoOverTime = res.data;
                 let step1 = self.$refs.step1 as KafS05Step1Component;
                 step1.loadData(self.model.displayInfoOverTime);
-                step1.createHoursWorkTime();
-                // エラーメッセージ(Msg_1556)を画面項目「A_A3_1」に表示する
-                // 「残業申請の表示情報．申請表示情報．申請表示情報(基準日関係あり)．表示する実績内容．実績詳細」== empty
-                let c1 = _.isNil(_.get(self.model, 'displayInfoOverTime.appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail'));
-                // 残業申請の表示情報．申請表示情報．申請表示情報(基準日関係あり)．表示する実績内容．実績詳細．実績スケ区分」= スケジュール）
-                let c2 = false;
-                if (!c1) {
-                    c2 = _.get(self.model, 'displayInfoOverTime.appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.trackRecordAtr') == TrackRecordAtr.SCHEDULE;
-                }
-                // 「残業申請の表示情報．基準日に関係しない情報．残業申請設定．残業休出申請共通設定．実績超過区分」= チェックする（登録不可）
-                let c3 = _.get(self.model, 'displayInfoOverTime.infoNoBaseDate.overTimeAppSet.overtimeLeaveAppCommonSetting.performanceExcessAtr') == AppDateContradictionAtr.CHECKNOTREGISTER;
-                if ((c1 || c2) && c3) {
-                    self.isMsg_1556 = true;
-                } else {
-                    self.isMsg_1556 = false;
-                }
                 self.$mask('hide');
             })
             .catch((res: any) => {
-                self.$nextTick(() => {
-                    self.$mask('hide');
-                });
-                // xử lý lỗi nghiệp vụ riêng
-                self.handleErrorCustom(res).then((result: any) => {
-                    if (result) {
-                        // xử lý lỗi nghiệp vụ chung
-                        self.handleErrorCommon(res);
-                    }
-                });
+                self.$mask('hide');
             });
     }
 
@@ -675,19 +613,11 @@ export class KafS05Component extends KafS00ShrComponent {
                     vm.model.displayInfoOverTime.calculationResultOp = res.data.calculationResultOp;
                     vm.model.displayInfoOverTime.workdayoffFrames = res.data.workdayoffFrames;
                     vm.model.displayInfoOverTime.calculatedFlag = res.data.calculatedFlag;
+                    vm.numb = value;
                     let step2 = vm.$refs.step2 as KafS05Step2Component;
-                    // 計算後の「残業申請の表示情報．計算結果．事前申請・実績の超過状態．実績状態」 = 超過エラー
-                    let c1 = _.get(vm.model, 'displayInfoOverTime.calculationResultOp.overStateOutput.achivementStatus') == ExcessState.EXCESS_ERROR;
-                    if (c1) {
-                        vm.isMsg_1556 = true;
-                    } else {
-                        vm.numb = value;
-                        vm.isMsg_1556 = false;
-                    }
                     step2.loadAllData();
                     vm.$nextTick(() => {
                         vm.$mask('hide');
-                        step2.$forceUpdate();
                     });
                 })
                 .catch((res: any) => {
@@ -732,14 +662,13 @@ export class KafS05Component extends KafS00ShrComponent {
         return validAllChild;
     }
 
-
     public register() {
         const vm = this;
         vm.$mask('show');
         let step2 = vm.$refs.step2 as KafS05Step2Component;
         vm.isValidateAll = vm.customValidate(step2);
-        // step2.$validate();
-        if (!step2.$valid || !vm.isValidateAll) {
+        vm.$validate();
+        if (!vm.$valid || !vm.isValidateAll) {
             window.scrollTo(500, 0);
             vm.$nextTick(() => vm.$mask('hide'));
 
@@ -881,6 +810,10 @@ export class KafS05Component extends KafS00ShrComponent {
                     command.dateOp = self.modeNew ? self.date : self.appDispInfoStartupOutput.appDetailScreenInfo.application.appDate;
                     command.workTypeCode = step1.workInfo.workType.code;
                     command.workTimeCode = step1.workInfo.workTime.code;
+                    if (!_.isNil(step1.workHours1)) {
+                        command.startTimeSPR = step1.workHours1.start;
+                        command.endTimeSPR = step1.workHours1.end;
+                    }
                     command.actualContentDisplay = _.get(self.model.displayInfoOverTime, 'appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst[0]');
                     command.overtimeAppSet = self.model.displayInfoOverTime.infoNoBaseDate.overTimeAppSet;
                     self.$mask('show');
@@ -911,28 +844,18 @@ export class KafS05Component extends KafS00ShrComponent {
                         infoWithDateApplicationOp.workTimeCD = step1.workInfo.workTime.code;
                     }
                     step1.loadData(self.model.displayInfoOverTime, true);
-                    step1.createHoursWorkTime();
                 
 
                 })
                 .catch((res: any) => {
-                    self.$nextTick(() => {
-                        self.$mask('hide');
-                    });
-                    // xử lý lỗi nghiệp vụ riêng
-                    self.handleErrorCustom(res).then((result: any) => {
-                        if (result) {
-                            // xử lý lỗi nghiệp vụ chung
-                            self.handleErrorCommon(res);
-                        }
-                    });
+                    self.handleErrorMessage(res);
                 })
                 .then(() => self.$mask('hide'));
         } else {
             self.$modal(
                 'worktime',
                 {
-                    isAddNone: 1,
+                    isAddNone: 0,
                     seledtedWkTimeCDs: _.map(self.model.displayInfoOverTime.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode),
                     selectedWorkTimeCD: step1.getWorkTime(),
                     isSelectWorkTime: 1
@@ -954,6 +877,10 @@ export class KafS05Component extends KafS00ShrComponent {
 
                     command.workTypeCode = step1.workInfo.workType.code;
                     command.workTimeCode = step1.workInfo.workTime.code;
+                    if (!_.isNil(step1.workHours1)) {
+                        command.startTimeSPR = step1.workHours1.start;
+                        command.endTimeSPR = step1.workHours1.end;
+                    }
                     command.actualContentDisplay = _.get(self.model.displayInfoOverTime, 'appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst[0]');
                     command.overtimeAppSet = self.model.displayInfoOverTime.infoNoBaseDate.overTimeAppSet;
                     self.$mask('show');
@@ -984,20 +911,10 @@ export class KafS05Component extends KafS00ShrComponent {
                         infoWithDateApplicationOp.workTimeCD = step1.workInfo.workTime.code;
                     }
                     step1.loadData(self.model.displayInfoOverTime, true);
-                    step1.createHoursWorkTime();
 
                 })
                 .catch((res: any) => {
-                    self.$nextTick(() => {
-                        self.$mask('hide');
-                    });
-                    // xử lý lỗi nghiệp vụ riêng
-                    self.handleErrorCustom(res).then((result: any) => {
-                        if (result) {
-                            // xử lý lỗi nghiệp vụ chung
-                            self.handleErrorCommon(res);
-                        }
-                    });
+                    self.handleErrorMessage(res);
                 })
                 .then(() => self.$mask('hide'));
         }

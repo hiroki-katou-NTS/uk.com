@@ -5,43 +5,18 @@ import { KafS00SubP3Component } from 'views/kaf/s00/sub/p3';
 import { KafS00SubP1Component } from 'views/kaf/s00/sub/p1';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/s00';
 import { ExcessTimeStatus } from '../../s00/sub/p1';
-import { KafS00SubP2Component } from 'views/kaf/s00/sub/p2';
-import { ReasonDivergence, ExcessStateMidnight, ExcessStateDetail, OutDateApplication, DivergenceReasonSelect, AppOverTime, OvertimeWorkFrame, DivergenceReasonInputMethod, DivergenceTimeRoot, AttendanceType, OvertimeApplicationSetting, HolidayMidNightTime, StaturoryAtrOfHolidayWork, WorkdayoffFrame, ExcessState } from '../a/define.interface';
+import { ReasonDivergence, ExcessStateMidnight, ExcessStateDetail, OutDateApplication, DivergenceReasonSelect, AppOverTime, OvertimeWorkFrame, DivergenceReasonInputMethod, DivergenceTimeRoot, AttendanceType, OvertimeApplicationSetting, HolidayMidNightTime, StaturoryAtrOfHolidayWork, WorkdayoffFrame } from '../a/define.interface';
 @component({
     name: 'kafs05step2',
     route: '/kaf/s05/step2',
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
-    validations: {
-        item: {
-            applicationTime: {
-                constraint: 'OvertimeAppPrimitiveTime'
-            }
-        },
-        reason1: {
-            reason: {
-                constraint: 'DivergenceReason',
-
-            }
-        },
-        reason2: {
-            reason: {
-                constraint: 'DivergenceReason',
-            }
-        },
-        DivergenceReason: {
-            constraint: 'DivergenceReason'
-        }
-    },
-    constraints: [
-        'nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.DivergenceReason',
-        'nts.uk.ctx.at.request.dom.application.overtime.primitivevalue.OvertimeAppPrimitiveTime'
-    ],
+    validations: {},
+    constraints: [],
     components: {
         'kafs00subp3': KafS00SubP3Component,
         'kafs00subp1': KafS00SubP1Component,
-        'kafs00subp2': KafS00SubP2Component,
         'kafs00-a': KafS00AComponent,
         'kafs00-b': KafS00BComponent,
         'kafs00-c': KafS00CComponent
@@ -58,21 +33,20 @@ export class KafS05Step2Component extends Vue {
 
     public reason1: Reason = {
         title: '',
-        reason: '',
-        selectedValue: '',
+        reason: null,
+        selectedValue: null,
         dropdownList: [{
-            code: '',
+            code: null,
             text: this.$i18n('KAFS05_54')
         }]
     } as Reason;
-    
 
     public reason2: Reason = {
         title: '',
-        reason: '',
-        selectedValue: '',
+        reason: null,
+        selectedValue: null,
         dropdownList: [{
-            code: '',
+            code: null,
             text: this.$i18n('KAFS05_54')
         }]
     } as Reason;
@@ -82,8 +56,7 @@ export class KafS05Step2Component extends Vue {
         const self = this;
     }
     public mounted() {
-        const self = this;
-        console.log('mounted');
+
     }
 
     public bindOverTime() {
@@ -528,45 +501,6 @@ export class KafS05Step2Component extends Vue {
         let reason1 = self.bindReason(divergenceTimeRoot1, divergenceReasonInputMethod1);
         let reason2 = self.bindReason(divergenceTimeRoot2, divergenceReasonInputMethod2);
 
-        if (!self.$appContext.modeNew) {
-            let findResult1 = _.findLast(self.$appContext.model.appOverTime.applicationTime.reasonDissociation, (item: any) => item.diviationTime == 1);
-            let findResult2 = _.findLast(self.$appContext.model.appOverTime.applicationTime.reasonDissociation, (item: any) => item.diviationTime == 2);
-            if (findResult1) {
-                reason1.reason = findResult1.reason || '';
-                let code = findResult1.reasonCode || null;
-                let isFindCode = _.findLast(reason1.dropdownList, (item: any) => item.code == code);
-                if (!isFindCode && code) {
-                    reason1.dropdownList.shift();
-                    reason1.dropdownList.unshift({
-                        code,
-                        text: code + self.SPACE_STRING + self.$i18n('KAFS05_55')
-                    });
-                    reason1.dropdownList.unshift({
-                        code: null,
-                        text: self.$i18n('KAFS05_54'),
-                    });
-                }
-                reason1.selectedValue = code || '';
-            }
-            if (findResult2) {
-                reason2.reason = findResult2.reason || '';
-                let code = findResult2.reasonCode || null;
-                let isFindCode = _.findLast(reason2.dropdownList, (item: any) => item.code == code);
-                if (!isFindCode && code) {
-                    reason2.dropdownList.shift();
-                    reason2.dropdownList.unshift({
-                        code,
-                        text: code + self.SPACE_STRING + self.$i18n('KAFS05_55')
-                    });
-                    reason2.dropdownList.unshift({
-                        code: null,
-                        text: self.$i18n('KAFS05_54')
-                    });
-                }
-                reason2.selectedValue = code || '';               
-            }
-        }
-
         self.reason1 = reason1;
         self.reason2 = reason2;
 
@@ -576,16 +510,15 @@ export class KafS05Step2Component extends Vue {
         const self = this;
         let reason = {} as Reason;
         reason.title = self.SPACE_STRING;
-        reason.reason = '';
-        reason.selectedValue = '';
+        reason.reason = null;
+        reason.selectedValue = null;
         if (!_.isNil(divergenceTimeRoot)) {
             reason.title = divergenceTimeRoot.divTimeName;
         }
         reason.dropdownList = [] as Array<Object>;
         reason.dropdownList.push({
-            code: '',
-            text: self.$i18n('KAFS05_54'),
-            defaultValue: false
+            code: null,
+            text: self.$i18n('KAFS05_54')
         });
         if (!_.isNil(divergenceReasonInputMethod)) {
             _.forEach(divergenceReasonInputMethod.reasons, (item: DivergenceReasonSelect) => {
@@ -593,8 +526,7 @@ export class KafS05Step2Component extends Vue {
                 let text = item.divergenceReasonCode + ' ' + item.reason;
                 reason.dropdownList.push({
                     code,
-                    text,
-                    defaultValue: false
+                    text
                 });
 
             });
@@ -609,35 +541,6 @@ export class KafS05Step2Component extends Vue {
         self.bindAllReason();
         self.bindOverTime();
         self.bindHolidayTime();
-        self.addConstraint();
-        self.checkAlarm();
-    }
-    public checkAlarm() {
-        const self = this;
-        if (self.$appContext.step != '2') {
-
-            return;
-        }
-        // ・「残業申請の表示情報．計算結果．事前申請・実績の超過状態．事前申請なし」 = true ⇒#Msg_1557
-        let c1 = _.get(self.$appContext.model, 'displayInfoOverTime.calculationResultOp.overStateOutput.isExistApp');
-        // ・「残業申請の表示情報．計算結果．事前申請・実績の超過状態．実績状態」 = 超過アラーム⇒#Msg_1556
-        let c2 = _.get(self.$appContext.model, 'displayInfoOverTime.calculationResultOp.overStateOutput.achivementStatus') == ExcessState.EXCESS_ERROR;
-        if (c1) {
-            self.$appContext.$modal.error({ messageId: 'Msg_1557'})
-            .then(() => {
-                if (c2) {
-                    self.$appContext.$modal.error({ messageId: 'Msg_1556'});
-                }
-            });
-        }
-
-    }
-
-    public addConstraint() {
-        const self = this;
-        // _.forEach(self.overTimes, (overtime: OverTime, index: number) => {
-        //     self.$updateValidator(`overTimes[${index}].applicationTime`, _.get(self.validations, 'item.applicationTime'));
-        // });
     }
 
     public getReasonDivergence() {
@@ -654,8 +557,8 @@ export class KafS05Step2Component extends Vue {
         {
             let item = {} as ReasonDivergence;
             item.diviationTime = 2;
-            item.reasonCode = self.reason2.selectedValue;
-            item.reason = self.reason2.reason;
+            item.reasonCode = self.reason1.selectedValue;
+            item.reason = self.reason1.reason;
             list.push(item);
         }
 

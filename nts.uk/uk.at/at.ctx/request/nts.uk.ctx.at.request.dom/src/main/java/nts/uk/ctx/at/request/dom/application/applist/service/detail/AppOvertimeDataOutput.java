@@ -23,9 +23,4 @@ public class AppOvertimeDataOutput {
 	 * 申請種類表示（Optional）
 	 */
 	private Optional<ApplicationTypeDisplay> opAppTypeDisplay;
-	
-	/**
-	 * 背景色
-	 */
-	private String backgroundColor;
 }

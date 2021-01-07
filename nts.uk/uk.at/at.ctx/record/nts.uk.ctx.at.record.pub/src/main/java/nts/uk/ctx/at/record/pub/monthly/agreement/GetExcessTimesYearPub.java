@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import nts.arc.time.GeneralDate;
-import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.Year;
 import nts.uk.ctx.at.record.pub.monthly.agreement.export.AgreementExcessInfoExport;
 
@@ -41,7 +40,4 @@ public interface GetExcessTimesYearPub {
 	 */
 	// RequestList555
 	AgreementExcessInfoExport andRemainTimes(String employeeId, Year year, GeneralDate baseDate);
-	
-	// RequestList605
-	AgreementExcessInfoExport getDataRq605(String employeeID, YearMonth ym);
 }

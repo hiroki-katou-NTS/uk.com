@@ -24,10 +24,4 @@ public class ApplyForLeaveDto {
                 reflectFreeTimeApp.toDomain(),
                 vacationInfo.toDomain());
     }
-    
-    public static ApplyForLeaveDto fromDomain(ApplyForLeave domain) {
-        return new ApplyForLeaveDto(
-                ReflectFreeTimeAppDto.fromDomain(domain.getReflectFreeTimeApp()), 
-                VacationRequestInfoDto.fromDomain(domain.getVacationInfo()));
-    }
 }

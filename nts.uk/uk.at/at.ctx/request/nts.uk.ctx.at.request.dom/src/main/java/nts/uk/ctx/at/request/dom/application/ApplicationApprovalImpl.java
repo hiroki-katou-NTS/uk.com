@@ -8,7 +8,6 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
-import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeaveRepository;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
@@ -77,7 +76,7 @@ public class ApplicationApprovalImpl implements ApplicationApprovalService {
 	private RecruitmentAppRepository recRepo;
 
 	@Inject
-	private ApplyForLeaveRepository appAbsenceRepository;
+	private AppAbsenceRepository appAbsenceRepository;
 	@Inject
 	private BrkOffSupChangeMngRepository brkOffSupChangeMngRepository;
 

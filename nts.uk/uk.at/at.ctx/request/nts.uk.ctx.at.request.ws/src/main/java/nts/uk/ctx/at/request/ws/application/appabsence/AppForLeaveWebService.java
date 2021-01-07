@@ -11,7 +11,6 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.appabsence.CreatAppAbsenceCommand;
 import nts.uk.ctx.at.request.app.command.application.appabsence.CreatAppAbsenceCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.appabsence.RegisterAppAbsenceCommand;
-import nts.uk.ctx.at.request.app.command.application.appabsence.RegisterHolDatesCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.appabsence.UpdateAppAbsenceCommand;
 import nts.uk.ctx.at.request.app.command.application.appabsence.UpdateAppAbsenceCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.appabsence.AppAbsenceFinder;
@@ -20,15 +19,12 @@ import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AbsenceStartScr
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceDetailDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceStartInfoDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppForLeaveStartBCommand;
-import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ChangeHolidayDatesParam;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ChangeRelationShipDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ChangeWorkTypeParam;
-import nts.uk.ctx.at.request.app.find.application.appabsence.dto.CheckBeforeRegisterHolidayParam;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.CheckTyingManagementParam;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.DisplayAllScreenParam;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ParamGetAllAppAbsence;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ParamInitAppAbsence;
-import nts.uk.ctx.at.request.app.find.application.appabsence.dto.RegisterHolidayDatesParam;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.SpecAbsenceParam;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimeZoneUseDto;
@@ -48,8 +44,6 @@ public class AppForLeaveWebService extends WebService{
 	private CreatAppAbsenceCommandHandler creatAppAbsence;
 	@Inject
 	private UpdateAppAbsenceCommandHandler updateAppAbsence;
-	@Inject
-	private RegisterHolDatesCommandHandler registerHolDates;
 	
 	@POST
 	@Path("getAppForLeaveStart")
@@ -105,13 +99,12 @@ public class AppForLeaveWebService extends WebService{
 	@POST
 	@Path("getListWorkTime")
 	public List<String> getListWorkTime(ParamGetAllAppAbsence param) {
-//		return this.appForLeaveFinder.getListWorkTimeCodes(param.getStartAppDate(),param.getEmployeeID());
-	    return null;
+		return this.appForLeaveFinder.getListWorkTimeCodes(param.getStartAppDate(),param.getEmployeeID());
 	}
 	@POST
-	@Path("findChangeWorkTime")
-	public AppAbsenceStartInfoDto getWorkingHours(ParamGetAllAppAbsence param) {
-		return this.appForLeaveFinder.getWorkingHours(param.getDate(), param.getWorkTimeCode(),param.getWorkTypeCode(), param.getAppAbsenceStartInfoDto());
+	@Path("getWorkingHours")
+	public List<TimeZoneUseDto> getWorkingHours(ParamGetAllAppAbsence param) {
+		return this.appForLeaveFinder.getWorkingHours(param.getWorkTimeCode(),param.getWorkTypeCode(),param.getHolidayType(), param.getAppAbsenceStartInfoDto());
 	}
 	@POST
 	@Path("insert")
@@ -144,7 +137,7 @@ public class AppForLeaveWebService extends WebService{
 	
 	@POST
 	@Path("checkBeforeUpdate")
-	public AbsenceCheckRegisterDto checkBeforeUpdate(CreatAppAbsenceCommand param){
+	public AbsenceCheckRegisterDto checkBeforeRegister(UpdateAppAbsenceCommand param){
 		return appForLeaveFinder.checkBeforeUpdate(param);
 	}
 	
@@ -161,28 +154,6 @@ public class AppForLeaveWebService extends WebService{
 	    String companyID = AppContexts.user().companyId();
 	    
 	    return appForLeaveFinder.getAppForLeaveStartB(companyID, param.getAppID(), param.getAppDispInfoStartupOutput());
-	}
-	
-	@POST
-	@Path("changeHolidayDates")
-	public AppAbsenceStartInfoDto getChangeHolidayDates(ChangeHolidayDatesParam param) {
-	    String companyID = AppContexts.user().companyId();
-	    
-	    return appForLeaveFinder.getChangeHolidayDates(companyID, param.getHolidayDates(), param.getAppAbsenceStartInfoDto());
-	}
-	
-	@POST
-	@Path("checkBeforeRegisterHolidayDates")
-	public AbsenceCheckRegisterDto checkBeforeRegisterHolidayDates(CheckBeforeRegisterHolidayParam param) {
-	    String companyID = AppContexts.user().companyId();
-	    
-	    return appForLeaveFinder.checkBeforeRegisterHolidayDates(companyID, param.getOldApplication(), param.getNewApplication(), param.getAppAbsenceStartInfoDto(), param.getOriginApplyForLeave(), param.getNewApplyForLeave());
-	}
-	
-	@POST
-	@Path("registerHolidayDates")
-	public void registerHolidayDates(RegisterHolidayDatesParam param) {
-	    registerHolDates.handle(param);
 	}
 }
 

@@ -242,7 +242,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
                 } 
                 // ・申請表示情報(基準日関係なし)．事前受付時分がNullじゃない
                 else {
-                    prePart = vm.$i18n('KAF000_41', [nts.uk.time.format.byId("Time_Short_HM", value.appDispInfoNoDateOutput.opAdvanceReceptionHours)]);  
+                    prePart = vm.$i18n('KAF000_41', [value.appDispInfoNoDateOutput.opAdvanceReceptionHours]);  
                 }             
             }
             // {2}事後受付日

@@ -2,7 +2,6 @@ import { _, Vue } from '@app/provider';
 import { component, Watch } from '@app/core/component';
 import { KafS00SubP3Component } from 'views/kaf/s00/sub/p3';
 import { KafS00SubP1Component } from 'views/kaf/s00/sub/p1';
-import { KafS00SubP2Component } from 'views/kaf/s00/sub/p2';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/s00';
 import { TimeZoneWithWorkNo, BreakTime, TimeZoneNew, WorkHoursDto, AppOverTime, InfoWithDateApplication , DisplayInfoOverTime, TimeZone, ParamBreakTime, BreakTimeZoneSetting} from '../a/define.interface';
 import { KafS05Component} from '../a/index';
@@ -26,7 +25,6 @@ import { KafS05Component} from '../a/index';
     components: {
         'kafs00subp3': KafS00SubP3Component,
         'kafs00subp1': KafS00SubP1Component,
-        'kafs00subp2': KafS00SubP2Component,
         'kafs00-a': KafS00AComponent,
         'kafs00-b': KafS00BComponent,
         'kafs00-c': KafS00CComponent
@@ -52,20 +50,17 @@ export class KafS05Step1Component extends Vue {
 
         return self.displayNumberBreakTime != 10; 
     }
-    @Watch('$appContext.c3', {deep: true}) 
-    public updateValidator(data: any) {
+
+    @Watch('workHours1', {deep: true})
+    public changeWorkHours1(data: ValueTime) {
         const self = this;
-        if (data) {
+        if (self.$appContext.c3) {
             self.$updateValidator('workHours1', {
                 required: true,
                 timeRange: true
             });
         }
-    }
-    @Watch('workHours1', {deep: true})
-    public changeWorkHours1(data: ValueTime) {
-        const self = this;
-        if (_.isNil(_.get(data,'start')) || _.isNil(_.get(data, 'end')) || (self.isFirstModeUpdate && !self.$appContext.modeNew)) {
+        if (_.isNil(_.get(data,'start')) || _.isNil(_.get(data, 'end')) || self.isFirstModeUpdate) {
             self.isFirstModeUpdate = false;
 
             return;
@@ -292,24 +287,6 @@ export class KafS05Step1Component extends Vue {
            
 
     }
-    // bind when change date, select worktype or worktime
-    public createHoursWorkTime() {
-        const self = this;
-        if (!_.isNil(self.workHours1)) {
-            self.workInfo.workTime.time = self.handleTimeWithDay(self.workHours1.start) + '～' + self.handleTimeWithDay(self.workHours1.end);
-        }
-    }
-
-    public handleTimeWithDay(time: number) {
-        const self = this;
-        const nameTime = '当日';
-        if (!time) {
-
-            return;
-        }
-
-        return (0 <= time && time < 1440) ? nameTime + self.$dt.timewd(time) : self.$dt.timewd(time);
-    }
 
     public createWorkInfo(codeType?: string, codeTime?: string) {
         const self = this;
@@ -338,6 +315,15 @@ export class KafS05Step1Component extends Vue {
 
         self.workInfo = workInfo;
     }
+
+    // public loadDataFromStep2() {
+    //     const self = this;
+    //     let appOverTime = self.$appContext.model.appOverTime as AppOverTime;
+    //     let displayOverTime = self.$appContext.model.displayInfoOverTime as DisplayInfoOverTime;
+    //     self.createWorkInfo(_.get(appOverTime, 'workInfoOp.workType') , _.get(appOverTime, 'workInfoOp.workTime'));
+    //     self.initBreakTime();
+
+    // }
 
     public addBreakHour() {
         const self= this;

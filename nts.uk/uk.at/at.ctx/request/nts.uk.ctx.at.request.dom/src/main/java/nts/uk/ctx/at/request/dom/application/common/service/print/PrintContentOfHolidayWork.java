@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.dom.application.common.service.print;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -17,7 +15,6 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeName;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeName;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
-import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.DivergenceReasonInputMethod;
 
 /**
  * 休日出勤申請の印刷内容
@@ -29,20 +26,15 @@ import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.Divergence
 @Data
 public class PrintContentOfHolidayWork {
 	
-//	/**
-//	 * 乖離理由の入力を利用する
-//	 */
-//	private boolean useInputDivergenceReason;
-//	
-//	/**
-//	 * 乖離理由の選択肢を利用する
-//	 */
-//	private boolean useComboDivergenceReason;
+	/**
+	 * 乖離理由の入力を利用する
+	 */
+	private boolean useInputDivergenceReason;
 	
 	/**
-	 * 乖離時間枠
+	 * 乖離理由の選択肢を利用する
 	 */
-	private List<DivergenceTimeRoot> divergenceTimeRoots = Collections.emptyList();
+	private boolean useComboDivergenceReason;
 	
 	/**
 	 * 乖離理由を反映する
@@ -58,11 +50,6 @@ public class PrintContentOfHolidayWork {
 	 * 休憩を反映する
 	 */
 	private NotUseAtr breakReflect;
-	
-	/**
-	 * 利用する乖離理由
-	 */
-	private List<DivergenceReasonInputMethod> divergenceReasonInputMethod = Collections.emptyList();
 	
 	/**
 	 * 勤務種類コード

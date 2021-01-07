@@ -38,11 +38,4 @@ public class ApplyforSpecialLeaveDto {
                 Optional.ofNullable(new RelationshipCDPrimitive(relationshipCD)), 
                 Optional.ofNullable(new RelationshipReasonPrimitive(relationshipReason)));
     }
-    
-    public static ApplyforSpecialLeaveDto fromDomain(ApplyforSpecialLeave domain) {
-        return new ApplyforSpecialLeaveDto(
-                domain.isMournerFlag(), 
-                domain.getRelationshipCD().isPresent() ? domain.getRelationshipCD().get().v() : null, 
-                domain.getRelationshipReason().isPresent() ? domain.getRelationshipReason().get().v() : null);
-    }
 }

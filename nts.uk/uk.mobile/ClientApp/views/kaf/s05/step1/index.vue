@@ -5,29 +5,14 @@
         v-if="$appContext.kaf000_A_Params != null"
         v-bind:params="$appContext.kaf000_A_Params"
       />
-      <div class="accordion mb-2" v-if="$appContext.overTimeWorkHoursDto != null">
-          <div class="card" v-if="true">
-            <div class="card-header uk-bg-accordion">
-              <button class="btn btn-link" type="button">
-                  {{'KAFS00_4' | i18n}}
-              </button>
-            </div>
-            <div class="collapse">
-              <div class="card-body">
-                  <kafs00subp2 v-bind:params="$appContext.overTimeWorkHoursDto" />      
-              </div>
-            </div>
-          </div>
-      </div>
-
     </div>
     <div
-      v-if="!$appContext.$valid || !$appContext.isValidateAll || $appContext.isMsg_1556"
+      v-if="!$appContext.$valid || !$appContext.isValidateAll"
       class="card bg-danger top-alert uk-text-danger topError"
     >
       <button class="btn btn-link uk-text-danger">
         <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
-        {{ ($appContext.isMsg_1556 ? "Msg_1556" : "KAFS07_1") | i18n($appContext.isMsg_1556 ? $appContext.date : '') }}
+        {{ "KAFS07_1" | i18n }}
       </button>
     </div>
     <div>
@@ -82,7 +67,7 @@
       <!-- A1_B4_1 -->
       <div class="card-header uk-bg-accordion">
         <span>{{ "KAFS05_66" | i18n }}</span>
-        <span class="badge badge-warning">必須</span>
+        <span class="badge badge-warning">任意</span>
       </div>
       <!-- A1_B4_2 -->
       <div class="card-body">
@@ -154,7 +139,7 @@
           class="btn btn-block btn-success btn-lg text-center"
           v-on:click="$appContext.toStep(2)"
         >
-          {{ ($appContext.c3 ? 'KAFS05_16' : 'KAFS05_17') | i18n}}
+          {{ ($appContext.modeNew ? 'KAFS05_16' : 'KAFS05_17') | i18n}}
         </button>
       </div> 
 

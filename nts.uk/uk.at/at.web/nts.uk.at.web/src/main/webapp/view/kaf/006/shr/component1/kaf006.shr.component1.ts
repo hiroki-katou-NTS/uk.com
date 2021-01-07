@@ -7,19 +7,19 @@ module nts.uk.at.view.kaf006.shr.component1.viewmodel {
             <table>
                 <tr class="text-center bg-green">
                     <!-- A14_1 -->
-                    <td class="table-border py-10" data-bind="text: $i18n('KAF006_69'), visible: $parent.condition21"></td>
+                    <td class="table-border py-10" data-bind="text: $i18n('KAF006_69')"></td>
                     <!-- A14_2 -->
-                    <td class="table-border py-10" data-bind="text: $i18n('KAF006_70'), visible: $parent.condition22"></td>
+                    <td class="table-border py-10" data-bind="text: $i18n('KAF006_70')"></td>
                     <!-- A14_3 -->
-                    <td class="table-border py-10" data-bind="text: $i18n('KAF006_71'), visible: $parent.condition23"></td>
+                    <td class="table-border py-10" data-bind="text: $i18n('KAF006_71')"></td>
                     <!-- A14_4 -->
-                    <td class="table-border py-10" data-bind="text: $i18n('KAF006_72'), visible: $parent.condition24"></td>
+                    <td class="table-border py-10" data-bind="text: $i18n('KAF006_72')"></td>
                 </tr>
                 <tr class="text-right">
-                    <td class="table-border text-right py-5" data-bind="text: $parent.yearRemain, visible: $parent.condition21"></td>
-                    <td class="table-border text-right py-5" data-bind="text: $parent.subHdRemain, visible: $parent.condition22"></td>
-                    <td class="table-border text-right py-5" data-bind="text: $parent.subVacaRemain, visible: $parent.condition23"></td>
-                    <td class="table-border text-right py-5" data-bind="text: $parent.remainingHours, visible: $parent.condition24"></td>
+                    <td class="table-border text-right py-5" data-bind="text: $parent.yearRemain"></td>
+                    <td class="table-border text-right py-5" data-bind="text: $parent.subHdRemain"></td>
+                    <td class="table-border text-right py-5" data-bind="text: $parent.subVacaRemain"></td>
+                    <td class="table-border text-right py-5" data-bind="text: $parent.remainingHours"></td>
                 </tr>
             </table>
         </div>

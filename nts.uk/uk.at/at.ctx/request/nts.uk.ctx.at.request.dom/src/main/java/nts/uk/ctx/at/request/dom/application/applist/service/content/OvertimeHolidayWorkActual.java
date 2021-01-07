@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.dom.application.applist.service.content;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,7 +8,6 @@ import lombok.Setter;
  * @author Doan Duy Hung
  *
  */
-@AllArgsConstructor
 @Getter
 @Setter
 public class OvertimeHolidayWorkActual {
@@ -31,14 +29,12 @@ public class OvertimeHolidayWorkActual {
 	
 	/**
 	 * 実績状態
-	 * true: 実績状態＝実績あり
-	 * false: 実績状態＝実績なし
 	 */
-	private boolean actualStatus;
+	private boolean actualStatusCheckResult;
 	
 	/**
 	 * 背景色
 	 */
-	private String backgroundColor;
+	private Integer backgroundColor;
 
 }

@@ -35,16 +35,4 @@ public class TimeDigestApplicationDto {
                 timeAnualLeave == null ? null : new AttendanceTime(timeAnualLeave), 
                 Optional.ofNullable(specialVacationFrameNO));
     }
-    
-    public static TimeDigestApplicationDto fromDomain (TimeDigestApplication domain) {
-        return new TimeDigestApplicationDto(
-                domain.getOvertime60H() == null ? null : domain.getOvertime60H().v(), 
-                domain.getNursingTime() == null ? null : domain.getNursingTime().v(), 
-                domain.getChildTime() == null ? null : domain.getChildTime().v(), 
-                domain.getTimeOff() == null ? null : domain.getTimeOff().v(),
-                domain.getTimeSpecialVacation() == null ? null : domain.getTimeSpecialVacation().v(), 
-                domain.getTimeAnualLeave() == null ? null : domain.getTimeAnualLeave().v(), 
-                domain.getSpecialVacationFrameNO().isPresent() ? domain.getSpecialVacationFrameNO().get() : null);
-        
-    }
 }

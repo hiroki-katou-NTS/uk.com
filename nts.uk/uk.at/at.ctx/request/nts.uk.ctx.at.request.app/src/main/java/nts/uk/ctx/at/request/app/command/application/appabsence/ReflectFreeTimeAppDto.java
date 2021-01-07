@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.app.command.application.appabsence;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,13 +34,5 @@ public class ReflectFreeTimeAppDto {
                 Optional.ofNullable(timeDegestion.toDomain()), 
                 workInfo.toDomain(), 
                 EnumAdaptor.valueOf(workChangeUse, NotUseAtr.class));
-    }
-    
-    public static ReflectFreeTimeAppDto fromDomain(ReflectFreeTimeApp domain) {
-        return new ReflectFreeTimeAppDto(
-                domain.getWorkingHours().isPresent() ? domain.getWorkingHours().get().stream().map(x -> TimeZoneWithWorkNoDto.fromDomain(x)).collect(Collectors.toList()) : Collections.emptyList(), 
-                domain.getTimeDegestion().isPresent() ? TimeDigestApplicationDto.fromDomain(domain.getTimeDegestion().get()) : null,
-                WorkInformationDto.fromDomain(domain.getWorkInfo()), 
-                domain.getWorkChangeUse().value);
     }
 }

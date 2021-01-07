@@ -1166,7 +1166,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 			DisplayInfoOverTime displayInfoOverTime,
 			AppOverTime appOverTime) {
 		// 勤務種類、就業時間帯チェックのメッセージを表示
-		detailBeforeUpdate.displayWorkingHourCheck(
+		otherCommonAlgorithm.checkWorkingInfo(
 				companyId,
 				appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()).orElse(null),
 				appOverTime.getWorkInfoOp().map(x -> x.getWorkTimeCode().v()).orElse(null));
@@ -1177,7 +1177,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 					       .checkAdvanceApp(
 					    		   ApplicationType.OVER_TIME_APPLICATION,
 					    		   appOverTime.getPrePostAtr(),
-					    		   displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpPreAppContentDisplayLst().map(x -> x.get(0).getApOptional()).orElse(Optional.empty()),
+					    		   Optional.of(appOverTime),
 					    		   Optional.empty());
 		// 申請日の矛盾チェック
 		commonAlgorithmOverTime.commonAlgorithmAB(
