@@ -30,4 +30,12 @@ public class SupplementInfoVacationDto {
                 Optional.ofNullable(datePeriod.toDomain()),
                 Optional.ofNullable(applyForSpeLeave.toDomain()));
     }
+    
+    public static SupplementInfoVacationDto fromDomain(SupplementInfoVacation domain) {
+        return new SupplementInfoVacationDto(
+                domain.getDatePeriod().isPresent() ? new DatePeriodDto(
+                        domain.getDatePeriod().get().start().toString(), 
+                        domain.getDatePeriod().get().end().toString()) : null, 
+                domain.getApplyForSpeLeaveOptional().isPresent() ? ApplyforSpecialLeaveDto.fromDomain(domain.getApplyForSpeLeaveOptional().get()) : null);
+    }
 }

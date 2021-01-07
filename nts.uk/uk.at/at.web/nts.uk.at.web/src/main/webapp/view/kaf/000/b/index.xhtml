@@ -36,7 +36,8 @@
 			<com:stylefile path="/view/kaf/002/d/kaf002.d.main.css" />
 			<com:scriptfile path="/view/kaf/004/shr/common/kaf004.shr.vm.js" />
             <com:scriptfile path="/view/kaf/004/shr/b/kaf004.shr.vm.js" />
-            <com:stylefile path="/view/kaf/004/b/kaf004.b.css" />
+			<com:stylefile path="/view/kaf/004/b/kaf004.b.css" />
+            <com:stylefile path="/view/kaf/006/shr/kaf006.shr.css" />
 			<com:stylefile path="/view/kaf/000/b/kaf000.b.css" />
 			<com:stylefile path="/view/kaf/008/shr/kaf008.share.style.css" />
 			<com:stylefile path="/view/kaf/020/shr/kaf020.shr.css" />
@@ -67,6 +68,14 @@
 			<com:scriptfile path="/view/kaf/002/d/kaf002.d.vm.js" />
 			<com:scriptfile path="/view/kaf/009/b/kaf009.b.vm.js" />
 			<com:scriptfile path="/view/kaf/004/b/kaf004.b.vm.js" />
+            <com:scriptfile path="/view/kaf/006/shr/kaf006.shr.vm.js" />
+            <com:scriptfile path="/view/kaf/006/shr/component1/kaf006.shr.component1.js" />
+            <com:scriptfile path="/view/kaf/006/shr/component2/kaf006.shr.component2.js" />
+            <com:scriptfile path="/view/kaf/006/shr/tab1/kaf006.shr.tab1.js" />
+            <com:scriptfile path="/view/kaf/006/shr/tab2/kaf006.shr.tab2.js" />
+            <com:scriptfile path="/view/kaf/006/shr/tab3/kaf006.shr.tab3.js" />
+            <com:scriptfile path="/view/kaf/006/shr/tab4/kaf006.shr.tab4.js" />
+			<com:scriptfile path="/view/kaf/006/b/kaf006.b.vm.js" />
 			<com:scriptfile path="/view/kaf/005/shr/footer/kaf005.shr.footer.vm.js" />
 			<com:scriptfile path="/view/kaf/005/shr/header/kaf005.shr.header.vm.js" />
 			<com:scriptfile path="/view/kaf/005/shr/work_info/kaf005.shr.work_info.vm.js" />
@@ -202,7 +211,10 @@
 						}"></div>
 				</div>
 				<div data-bind="if: ko.unwrap(appType) === getAppType('ABSENCE_APPLICATION')">
-					APP TYPE = 1
+					<div data-bind="component: {
+						name: 'kaf006-b', 
+						params: childParam
+					}"></div>
 				</div>
 				<div data-bind="if: ko.unwrap(appType) === getAppType('WORK_CHANGE_APPLICATION')">
 					<div data-bind="component: {
