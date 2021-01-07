@@ -28,10 +28,9 @@ export interface WorkdayoffFrame {
     workdayoffFrName: string;
 }
 export interface CalculationResult {
-    flag: number;
-    overTimeZoneFlag: number;
-    overStateOutput: OverStateOutput;
-    applicationTimes: Array<ApplicationTime>;
+    actualOvertimeStatus: any;
+    calculatedFlag: number;
+    applicationTime: ApplicationTime;
 }
 export interface OverStateOutput {
     isExistApp: boolean;
@@ -67,13 +66,22 @@ export interface ExcessStateDetail {
 }
 export interface ParamBreakTime {
     companyId: string;
+    appDate: string;
     workTypeCode: string;
     workTimeCode: string;
     startTime: number;
     endTime: number;
-    actualContentDisplayDtos: any;
+    appHdWorkDispInfo: any;
 }
-
+export interface ParamChangeWorkMobile {
+    companyId: string;
+    appDate: string;
+    workTypeCode: string;
+    workTimeCode: string;
+    startTime: number;
+    endTime: number;
+    appHdWorkDispInfo: any;
+}
 export interface InfoWithDateApplication {
     workTypeCD?: string;
     workTimeCD?: string;
@@ -427,17 +435,58 @@ export interface ApplicationInsertCmd {
 export interface ParamStartMobile {
     mode: boolean;
     companyId: string;
-    employeeIdOptional: string;
-    dateOptional: string;
-    disOptional: any;
-    appOptional: any;
+    employeeId: string;
+    appDate: string;
+    appHdWorkDispInfo: any;
+    appHolidayWork: any;
     appDispInfoStartupOutput: any;
-    overtimeAppAtr: number;
 }
 
 export interface Model {
-    appOverTime: AppOverTime;
-    displayInfoOverTime: DisplayInfoOverTime;
+    appHolidayWork: AppHolidayWork;
+    appHdWorkDispInfo: AppHdWorkDispInfo;
+}
+export interface AppHolidayWork {
+    workInformation: WorkInformation;
+    applicationTime: ApplicationTime;
+    backHomeAtr: boolean;
+    goWorkAtr: boolean;
+    breakTimeList: Array<TimeZoneWithWorkNo>;
+    workingTimeList: Array<TimeZoneWithWorkNo>;
+    appOvertimeDetail: AppOvertimeDetail;
+    application: ApplicationDto;
+}
+export interface AppHdWorkDispInfo {
+    dispFlexTime: boolean;
+    divergenceTimeRoots: any;
+    workdayoffFrameList: Array<WorkdayoffFrame>;
+    otWorkHoursForApplication: AgreeOverTimeOutput;
+    hdWorkDispInfoWithDateOutput: HdWorkDispInfoWithDateOutput;
+    calculationResult: CalculationResult;
+    appDispInfoStartupOutput: any;
+    overtimeFrameList: Array<OvertimeWorkFrame>;
+    holidayWorkAppSet: any;
+    divergenceReasonInputMethod: Array<DivergenceReasonInputMethod>;
+    hdWorkOvertimeReflect: any;
+}
+export interface HdWorkDispInfoWithDateOutput {
+    initWorkType: string;
+    initWorkTypeName: string;
+    initWorkTime: string;
+    initWorkTimeName: string;
+    workHours: WorkHoursDto;
+    breakTimeZoneSettingList: BreakTimeZoneSetting;
+    actualApplicationTime: ApplicationTime;
+    workTypeList: Array<WorkType>;
+    overtimeStatus: OvertimeStatus;
+    subHdManage: boolean;
+}
+export interface OvertimeStatus {
+    isPreApplicationOvertime: boolean;
+    attendanceType: number;
+    isActualOvertime: boolean;
+    frameNo: number;
+    isInputCalculationDiff: boolean;
 }
 export interface ParamBreakTime {	
     workTypeCode: string;
@@ -460,12 +509,12 @@ export interface ParamSelectWorkMobile {
 }
 export interface ParamCalculateMobile {
     companyId: string;
-    displayInfoOverTime: DisplayInfoOverTime;
-    appOverTimeInsert: AppOverTime;
-    appOverTimeUpdate: AppOverTime;
-    mode: Boolean;
     employeeId: string;
-    dateOp: string;
+    appDate: string;
+    mode: Boolean;
+    appHdWorkDispInfo: AppHdWorkDispInfo;
+    appHolidayWorkInsert: AppHolidayWork;
+    appHolidayWorkUpdate: AppHolidayWork;
 }
 export interface BreakTime {
     valueHours: any;
@@ -477,4 +526,16 @@ export enum CalculatedFlag {
     CALCULATED, 	
     // 未計算
     UNCALCULATED 
+}
+export enum AppDateContradictionAtr {
+    //  チェックしない
+    NOTCHECK,
+    //  チェックする（登録可）
+    CHECKREGISTER,
+    //  チェックする（登録不可）
+    CHECKNOTREGISTER
+}
+export enum PrePostAtr {
+    PRE,
+    POST
 }
