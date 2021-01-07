@@ -5,6 +5,7 @@ import java.io.Serializable;
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 
 /** 月別実績のトップページ表示用時間 */
@@ -21,9 +22,10 @@ public class TopPageDisplayOfMonthly implements Serializable{
 	private AttendanceTimeMonth holidayWork;
 	
 	/** フレックス合計時間 */
-	private AttendanceTimeMonth flex;
+	private AttendanceTimeMonthWithMinus flex;
 	
-	private TopPageDisplayOfMonthly(AttendanceTimeMonth overtime, AttendanceTimeMonth holidayWork, AttendanceTimeMonth flex) {
+	private TopPageDisplayOfMonthly(AttendanceTimeMonth overtime, AttendanceTimeMonth holidayWork, 
+			AttendanceTimeMonthWithMinus flex) {
 		this.overtime = overtime;
 		this.holidayWork = holidayWork;
 		this.flex = flex;
@@ -31,11 +33,11 @@ public class TopPageDisplayOfMonthly implements Serializable{
 	
 	public static TopPageDisplayOfMonthly empty() {
 		
-		return new TopPageDisplayOfMonthly(new AttendanceTimeMonth(0), new AttendanceTimeMonth(0), new AttendanceTimeMonth(0));
+		return new TopPageDisplayOfMonthly(new AttendanceTimeMonth(0), new AttendanceTimeMonth(0), new AttendanceTimeMonthWithMinus(0));
 	}
 	
 	public static TopPageDisplayOfMonthly of(AttendanceTimeMonth overtime, 
-			AttendanceTimeMonth holidayWork, AttendanceTimeMonth flex) {
+			AttendanceTimeMonth holidayWork, AttendanceTimeMonthWithMinus flex) {
 		
 		return new TopPageDisplayOfMonthly(overtime, holidayWork, flex);
 	}

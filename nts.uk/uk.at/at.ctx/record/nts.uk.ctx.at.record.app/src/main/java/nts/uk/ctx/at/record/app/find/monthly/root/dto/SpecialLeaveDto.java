@@ -1,9 +1,12 @@
 package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.DayAndTimeDto;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeave;
@@ -12,8 +15,8 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialh
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class SpecialLeaveDto implements ItemConst {
-
+public class SpecialLeaveDto implements ItemConst, AttendanceItemDataGate {
+	
 	/** 残数 */
 	@AttendanceItemLayout(jpPropertyName = REMAIN, layout = LAYOUT_A)
 	private DayAndTimeDto remain;
@@ -69,4 +72,59 @@ public class SpecialLeaveDto implements ItemConst {
 //				Optional.ofNullable(afterRemainGrant == null ? null : afterRemainGrant.toSpecial()));
 		return null;
 	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case USAGE:
+			return new DayTimeUsedNumberDto();
+		case REMAIN:
+		case (REMAIN + GRANT + BEFORE):
+		case NOT_DIGESTION:
+		case (REMAIN + GRANT + AFTER):
+			return new DayAndTimeDto();
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.newInstanceOf(path);
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case USAGE:
+			return Optional.ofNullable(useNumber);
+		case REMAIN:
+			return Optional.ofNullable(remain);
+		case (REMAIN + GRANT + BEFORE):
+			return Optional.ofNullable(beforeRemainGrant);
+		case NOT_DIGESTION:
+			return Optional.ofNullable(unDegestionNumber);
+		case (REMAIN + GRANT + AFTER):
+			return Optional.ofNullable(afterRemainGrant);
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.get(path);
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case USAGE:
+			useNumber = (SpecialLeaveUseNumberDto) value; break;
+		case REMAIN:
+			remain = (DayAndTimeDto) value; break;
+		case (REMAIN + GRANT + BEFORE):
+			beforeRemainGrant = (DayAndTimeDto) value; break;
+		case NOT_DIGESTION:
+			unDegestionNumber = (DayAndTimeDto) value; break;
+		case (REMAIN + GRANT + AFTER):
+			afterRemainGrant = (DayAndTimeDto) value; break;
+		default:
+			break;
+		}
+	}
+
+	
 }

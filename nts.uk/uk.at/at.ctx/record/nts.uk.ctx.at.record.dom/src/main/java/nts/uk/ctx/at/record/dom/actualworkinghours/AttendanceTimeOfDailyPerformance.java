@@ -8,6 +8,9 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.val;
+import nts.arc.diagnose.stopwatch.Stopwatch;
+import nts.arc.diagnose.stopwatch.Stopwatch.TimeUnit;
+import nts.arc.diagnose.stopwatch.Stopwatches;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
@@ -211,7 +214,7 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 					.map(editState -> editState.getAttendanceItemId()).distinct().collect(Collectors.toList());
 
 			copyIntegrationOfDaily.setAttendanceTimeOfDailyPerformance(calcResult.isPresent()?Optional.of(calcResult.get().getTime()):Optional.empty());
-			
+			Stopwatches.start("勤怠項目コンバーター計測");
 			List<ItemValue> itemValueList = Collections.emptyList();
 			if (!attendanceItemIdList.isEmpty()) {
 				DailyRecordToAttendanceItemConverter beforDailyRecordDto = forCalcDivergenceDto.setData(recordReGetClass.getIntegrationOfDaily());
@@ -225,7 +228,9 @@ public class AttendanceTimeOfDailyPerformance extends AggregateRoot {
 				// マイナスの乖離時間を0にする
 				AttendanceTimeOfDailyPerformance.divergenceMinusValueToZero(copyIntegrationOfDaily);
 			}
-
+			Stopwatches.stop("勤怠項目コンバーター計測");
+			Stopwatches.printAll(TimeUnit.MILLI_SECOND);
+			Stopwatches.reset("勤怠項目コンバーター計測");
 			// 手修正後の再計算
 			result = reCalc(copyIntegrationOfDaily,
 					recordReGetClass.getCalculationRangeOfOneDay(), recordReGetClass.getIntegrationOfDaily().getEmployeeId(), companyCommonSetting , forCalcDivergenceDto,

@@ -1,13 +1,17 @@
 package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.breaktime.BreakTimeOfMonthly;
 
@@ -15,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.wor
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の休憩時間 */
-public class BreakTimeOfMonthlyDto implements ItemConst {
+public class BreakTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 休憩時間: 勤怠月間時間 */
 	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_A)
@@ -64,5 +68,59 @@ public class BreakTimeOfMonthlyDto implements ItemConst {
 				new AttendanceTimeMonth(withinDeductionTime),
 				new AttendanceTimeMonth(excessBreakTime), 
 				new AttendanceTimeMonth(excessDeductionTime));
+	}
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case TIME:
+			return Optional.of(ItemValue.builder().value(breakTime).valueType(ValueType.TIME));
+		case WITHIN_STATUTORY:
+			return Optional.of(ItemValue.builder().value(withinBreakTime).valueType(ValueType.TIME));
+		case EXCESS_STATUTORY:
+			return Optional.of(ItemValue.builder().value(excessBreakTime).valueType(ValueType.TIME));
+		case COUNT:
+			return Optional.of(ItemValue.builder().value(breakTimes).valueType(ValueType.TIME));
+		case (WITHIN_STATUTORY + DEDUCTION):
+			return Optional.of(ItemValue.builder().value(withinDeductionTime).valueType(ValueType.TIME));
+		case (EXCESS_STATUTORY + DEDUCTION):
+			return Optional.of(ItemValue.builder().value(excessDeductionTime).valueType(ValueType.TIME));
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case TIME:
+		case WITHIN_STATUTORY:
+		case EXCESS_STATUTORY:
+		case COUNT:
+		case (WITHIN_STATUTORY + DEDUCTION):
+		case (EXCESS_STATUTORY + DEDUCTION):
+			return PropType.VALUE;
+		default:
+			return PropType.OBJECT;
+		}
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case TIME:
+			breakTime = value.valueOrDefault(0); break;
+		case WITHIN_STATUTORY:
+			withinBreakTime = value.valueOrDefault(0); break;
+		case EXCESS_STATUTORY:
+			excessBreakTime = value.valueOrDefault(0); break;
+		case COUNT:
+			breakTimes = value.valueOrDefault(0); break;
+		case (WITHIN_STATUTORY + DEDUCTION):
+			withinDeductionTime = value.valueOrDefault(0); break;
+		case (EXCESS_STATUTORY + DEDUCTION):
+			excessDeductionTime = value.valueOrDefault(0); break;
+		default:
+		}
 	}
 }
