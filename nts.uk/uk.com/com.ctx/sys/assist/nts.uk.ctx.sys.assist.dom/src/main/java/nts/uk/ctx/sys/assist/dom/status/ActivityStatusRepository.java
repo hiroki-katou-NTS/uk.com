@@ -48,12 +48,4 @@ public interface ActivityStatusRepository {
 	 */
 	public Optional<ActivityStatus> getBySidAndDate(String sid, GeneralDate date);
 
-	/**
-	 * [6]最新のステータスを取得する
-	 * 
-	 * @param sid  社員ID
-	 * @param date 年月日
-	 * @return Optional<ActivityStatus> Optional<在席のステータス>
-	 */
-	public Optional<ActivityStatus> getLastest(String sid, GeneralDate date);
 }
