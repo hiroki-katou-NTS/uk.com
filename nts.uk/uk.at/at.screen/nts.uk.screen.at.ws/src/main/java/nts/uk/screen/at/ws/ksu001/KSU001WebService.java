@@ -8,11 +8,16 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.RegisterWorkSchedule;
+import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.WorkScheduleCommand;
 import nts.uk.screen.at.app.ksu001.changepage.ChangePageParam;
 import nts.uk.screen.at.app.ksu001.changepage.GetDataWhenChangePage;
 import nts.uk.screen.at.app.ksu001.changepage.GetShiftPalChangePageResult;
 import nts.uk.screen.at.app.ksu001.changeworkplace.ChangeWorkPlaceFinder;
 import nts.uk.screen.at.app.ksu001.changeworkplace.ChangeWorkPlaceParam;
+import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DateInformationDto;
+import nts.uk.screen.at.app.ksu001.getevent.EventFinder;
+import nts.uk.screen.at.app.ksu001.getevent.EventFinderParam;
 import nts.uk.screen.at.app.ksu001.getsendingperiod.ChangeMonthDto;
 import nts.uk.screen.at.app.ksu001.getsendingperiod.ChangeMonthFinder;
 import nts.uk.screen.at.app.ksu001.getsendingperiod.ChangePeriodModeFinder;
@@ -59,6 +64,10 @@ public class KSU001WebService extends WebService{
 	private ChangeWorkPlaceFinder changeWorkPlaceFinder;
 	@Inject
 	private ValidDataWhenEditTime validTime;
+	@Inject
+	private EventFinder eventFinder;
+	@Inject
+	private RegisterWorkSchedule regWorkSchedule;
 	
 	@POST
 	@Path("start")
@@ -138,4 +147,20 @@ public class KSU001WebService extends WebService{
 		StartKSU001Dto data = changeWorkPlaceFinder.getData(param);
 		return data;
 	}
+	
+	@POST
+	@Path("get-event") 
+	public List<DateInformationDto> getEvent(EventFinderParam param) {
+		List<DateInformationDto> data = eventFinder.getEvent(param);
+		return data;
+	}
+	
+	@POST
+	@Path("reg-workschedule") 
+	public void regWorkSchedule(List<WorkScheduleCommand> param) {
+		regWorkSchedule.handle(param);
+	}
+	
+	
+	
 }
