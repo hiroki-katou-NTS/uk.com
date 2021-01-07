@@ -53,11 +53,10 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
     }
 
     @Override
-    public void updateHistPersonCalculation(PersonCostCalculation domain, String histotyId,  GeneralDate generalDate) {
+    public void updateHistPersonCalculation(PersonCostCalculation domain, String historyId,  GeneralDate generalDate) {
         val companyId = AppContexts.user().companyId();
         // List all Hist
         val listHistPersonCostCal = this.personCostCalculationRepository.getHistPersonCostCalculation(companyId);
-
         // Create list empty.
         HistPersonCostCalculation listHist = new HistPersonCostCalculation(companyId, new ArrayList<>());
         if (listHistPersonCostCal.isPresent()) {
@@ -65,20 +64,27 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
         }
         // Get item update
         Optional<DateHistoryItem> optionalHisItem = listHist.items().stream()
-                .filter(x -> x.identifier().equals(histotyId)).findFirst();
+                .filter(x -> x.identifier().equals(historyId)).findFirst();
         if (!optionalHisItem.isPresent()) {
 
             throw new BusinessException("");
 
         }
-        val period = new DatePeriod(generalDate,GeneralDate.max());
-        //Update item
-        listHist.changeSpan(optionalHisItem.get(), period);
-        // get item before
-        val itemBefore = listHist.immediatelyBefore(optionalHisItem.get());
         val listUpdate = new ArrayList<DateHistoryItem>();
-        listUpdate.add(optionalHisItem.get());
-        itemBefore.ifPresent(listUpdate::add);
+        DateHistoryItem itemOld = optionalHisItem.get();
+        if(optionalHisItem.get().end().equals(GeneralDate.max())){
+
+            val period = new DatePeriod(generalDate,GeneralDate.max());
+            //Update item
+            listHist.changeSpan(optionalHisItem.get(), period);
+            // get item before
+            val itemBefore = listHist.immediatelyBefore(optionalHisItem.get());
+
+            listUpdate.add(optionalHisItem.get());
+            itemBefore.ifPresent(listUpdate::add);
+        }else {
+            listUpdate.add(itemOld);
+        }
 
         personCostCalculationRepository.update(domain, new HistPersonCostCalculation(companyId, listUpdate));
     }

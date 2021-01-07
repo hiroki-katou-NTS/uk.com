@@ -377,26 +377,28 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
     public void update(PersonCostCalculation domain, HistPersonCostCalculation domainHist) {
         val histId = domain.getHistoryID();
         List<KscmtPerCostCal> updateList = new ArrayList<>();
-        domainHist.getHistoryItems().forEach(i -> {
-            val oldPerCostCal = this.queryProxy().find(new KscmtPerCostCalPk(domainHist.getCompanyId(), i.identifier()), KscmtPerCostCal.class);
-            if (oldPerCostCal.isPresent()) {
-                val item = oldPerCostCal.get();
-                if (item.getPk().histID.equals(domain.getHistoryID())) {
-                    item.setStartDate(i.end());
-                    item.setEndDate(i.start());
-                    val entity = KscmtPerCostCal.toEntity(domain, i.start(), i.end(), i.identifier());
-                    updateList.add(entity);
-                    if (item.getPk().histID.equals(histId)) {
-                        updatePerCostPremiRate(domain, histId);
-                        updateKmldtPremiumAttendance(domain, histId);
+
+            domainHist.getHistoryItems().forEach(i -> {
+                val oldPerCostCal = this.queryProxy().find(new KscmtPerCostCalPk(domainHist.getCompanyId(), i.identifier()), KscmtPerCostCal.class);
+                if (oldPerCostCal.isPresent()) {
+                    val item = oldPerCostCal.get();
+                    if (item.getPk().histID.equals(domain.getHistoryID())) {
+                        item.setStartDate(i.end());
+                        item.setEndDate(i.start());
+                        val entity = KscmtPerCostCal.toEntity(domain, i.start(), i.end(), i.identifier());
+                        updateList.add(entity);
+                        if (item.getPk().histID.equals(histId)) {
+                            updatePerCostPremiRate(domain, histId);
+                            updateKmldtPremiumAttendance(domain, histId);
+                        }
                     }
+                    item.setEndDate(i.end());
+                    item.setStartDate(i.start());
+                    updateList.add(item);
                 }
-                item.setEndDate(i.end());
-                item.setStartDate(i.start());
-                updateList.add(item);
-            }
-        });
-        this.commandProxy().updateAll(updateList);
+            });
+            this.commandProxy().updateAll(updateList);
+
     }
 
     @Override
@@ -473,7 +475,8 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
         CollectionUtil.split(listItemNos, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
             listEntityRate.addAll(this.queryProxy().query(queryRate, KscmtPerCostPremiRate.class)
                     .setParameter("cid", domain.getCompanyID())
-                    .setParameter("histIDs", splitData)
+                    .setParameter("histIDs", histId)
+                    .setParameter("listItemNos", splitData)
                     .getList());
         });
         if (!listEntityRate.isEmpty()) {
@@ -485,20 +488,24 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 
     private void updateKmldtPremiumAttendance(PersonCostCalculation domain, String histId) {
         val cid = domain.getCompanyID();
-        val historyID = domain.getHistoryID();
-        val displayNumber = domain.getPremiumSettings().stream().map(e -> e.getID().value);
+        val displayNumber = domain.getPremiumSettings().stream().map(e -> e.getID().value).collect(Collectors.toList());
         String queryAtt = "SELECT a FROM KmldtPremiumAttendance a " +
                 " WHERE a.kmldpPremiumAttendancePK.companyID = :cid " +
                 " AND a.kmldpPremiumAttendancePK.historyID = :historyID " +
                 " AND a.kmldpPremiumAttendancePK.displayNumber IN :displayNumbers ";
-        val entityOld = this.queryProxy().query(queryAtt, KmldtPremiumAttendance.class)
-                .setParameter("cid", cid)
-                .setParameter("historyID", historyID)
-                .setParameter("displayNumber", displayNumber)
-                .getList();
-        if (!entityOld.isEmpty()) {
-            this.commandProxy().removeAll(entityOld);
+
+        List<KmldtPremiumAttendance> listEntity = new ArrayList<>();
+        CollectionUtil.split(displayNumber, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+            listEntity.addAll(this.queryProxy().query(queryAtt, KmldtPremiumAttendance.class)
+                    .setParameter("cid", cid)
+                    .setParameter("historyID", histId)
+                    .setParameter("displayNumbers", displayNumber)
+                    .getList());
+        });
+        if (!listEntity.isEmpty()) {
+            this.commandProxy().removeAll(listEntity);
             this.getEntityManager().flush();
+
             this.commandProxy().insertAll(KmldtPremiumAttendance.toEntity(domain.getPremiumSettings(), histId));
         }
     }
