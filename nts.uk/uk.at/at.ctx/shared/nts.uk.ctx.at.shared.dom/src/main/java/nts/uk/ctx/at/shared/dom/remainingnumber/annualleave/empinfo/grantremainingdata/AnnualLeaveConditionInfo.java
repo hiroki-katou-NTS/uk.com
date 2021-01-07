@@ -11,7 +11,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.YearDayNumber;
 public class AnnualLeaveConditionInfo implements Serializable{
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
@@ -35,6 +35,24 @@ public class AnnualLeaveConditionInfo implements Serializable{
 		domain.prescribedDays = new YearDayNumber(prescribedDays);
 		domain.deductedDays = new YearDayNumber(deductedDays);
 		domain.workingDays = new YearDayNumber(workingDays);
+		return domain;
+	}
+	/**
+	 * ファクトリー
+	 * @param prescribedDays　所定日数
+	 * @param deductedDays　控除日数
+	 * @param workingDays 労働日数
+	 * @return AnnualLeaveConditionInfo
+	*/
+	public static AnnualLeaveConditionInfo of(
+			YearDayNumber prescribedDays,
+			YearDayNumber deductedDays,
+			YearDayNumber workingDays) {
+
+		AnnualLeaveConditionInfo domain = new AnnualLeaveConditionInfo();
+		domain.prescribedDays = prescribedDays;
+		domain.deductedDays = deductedDays;
+		domain.workingDays = workingDays;
 		return domain;
 	}
 

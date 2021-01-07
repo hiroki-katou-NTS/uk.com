@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.YearDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemaining;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
 
@@ -25,7 +26,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 public class AnnualLeaveGrantRemainingData extends LeaveGrantRemaining {
 
 //	private String annLeavID;
-//	
+//
 //	private String cid;
 //	/**
 //	 * 社員ID
@@ -67,7 +68,7 @@ public class AnnualLeaveGrantRemainingData extends LeaveGrantRemaining {
 			GeneralDate grantDate, GeneralDate deadline, int expirationStatus, int registerType, double grantDays,
 			Integer grantMinutes, double usedDays, Integer usedMinutes, Double stowageDays, double remainDays,
 			Integer remainMinutes, double usedPercent, Double prescribedDays, Double deductedDays, Double workingDays) {
-		
+
 			AnnualLeaveGrantRemainingData domain = new AnnualLeaveGrantRemainingData();
 			domain.cid = cID;
 			domain.leaveID = annLeavID;
@@ -88,7 +89,7 @@ public class AnnualLeaveGrantRemainingData extends LeaveGrantRemaining {
 			}
 			return domain;
 	}
-	
+
 	public void updateData(GeneralDate grantDate, GeneralDate deadline, int expirationStatus, int registerType,
 			double grantDays, Integer grantMinutes, double usedDays, Integer usedMinutes, Double stowageDays,
 			double remainDays, Integer remainMinutes, double usedPercent) {
@@ -96,11 +97,24 @@ public class AnnualLeaveGrantRemainingData extends LeaveGrantRemaining {
 		this.deadline = deadline;
 		this.expirationStatus = EnumAdaptor.valueOf(expirationStatus, LeaveExpirationStatus.class);
 		this.registerType = EnumAdaptor.valueOf(registerType, GrantRemainRegisterType.class);
-		
+
 		this.details = new AnnualLeaveNumberInfo(grantDays, grantMinutes, usedDays, usedMinutes, stowageDays,
 				remainDays, remainMinutes, usedPercent);
-		
+
 	}
+	/**
+	 * ファクトリー
+	 * @param annualLeaveConditionInfo　年休付与条件情報
+	 * @return AnnualLeaveGrantRemainingData
+	*/
+	public static AnnualLeaveGrantRemainingData of(
+			Optional<AnnualLeaveConditionInfo> annualLeaveConditionInfo) {
+
+		AnnualLeaveGrantRemainingData domain = new AnnualLeaveGrantRemainingData();
+		domain.annualLeaveConditionInfo = annualLeaveConditionInfo;
+		return domain;
+	}
+
 
 	/**
 	 * 年休付与残数履歴データを年休付与残数データに変換
@@ -109,7 +123,7 @@ public class AnnualLeaveGrantRemainingData extends LeaveGrantRemaining {
 	 */
 	// 2019.3.3 ADD shuichi_ishida
 	public static AnnualLeaveGrantRemainingData createFromHistory(AnnualLeaveRemainingHistory history) {
-		
+
 		AnnualLeaveGrantRemainingData domain = new AnnualLeaveGrantRemainingData();
 		domain.cid = history.getCid();
 		domain.leaveID = IdentifierUtil.randomUniqueId();
@@ -131,24 +145,24 @@ public class AnnualLeaveGrantRemainingData extends LeaveGrantRemaining {
 //	 */
 //	// 2018.4.23 add shuichi_ishida
 //	public double digest(double usedDays, boolean isForcibly){
-//		
+//
 //		// 「年休使用日数」を所得
 //		if (usedDays <= 0.0) return 0.0;
 //		double remainingDays = usedDays;
-//		
+//
 //		// 年休残数が足りているかチェック
 //		boolean isSubtractRemain = false;
 //		val remainingNumber = this.details.getRemainingNumber();
 //		if (remainingNumber.getDays().v().doubleValue() >= remainingDays) isSubtractRemain = true;
 //		// 「強制的に消化する」をチェック
 //		else if (isForcibly) isSubtractRemain = true;
-//		
+//
 //		if (isSubtractRemain){
-//			
+//
 //			// 年休残数から減算
 //			double newRemain = remainingNumber.getDays().v() - remainingDays;
 //			this.details.setRemainingNumber(AnnualLeaveRemainingNumber.createFromJavaType(newRemain, null));
-//			
+//
 //			// 年休使用数に加算
 //			double newUsed = this.details.getUsedNumber().getDays().v() + remainingDays;
 //			Double stowageDays = null;
@@ -156,15 +170,15 @@ public class AnnualLeaveGrantRemainingData extends LeaveGrantRemaining {
 //				stowageDays = this.details.getUsedNumber().getStowageDays().get().v();
 //			}
 //			this.details.setUsedNumber(AnnualLeaveUsedNumber.createFromJavaType(newUsed, null, stowageDays));
-//			
+//
 //			// 年休使用残を0にする
 //			remainingDays = 0.0;
 //		}
 //		else {
-//			
+//
 //			// 年休使用残から減算
 //			remainingDays -= remainingNumber.getDays().v();
-//			
+//
 //			// 年休使用数に加算
 //			double newUsed = this.details.getUsedNumber().getDays().v() + remainingNumber.getDays().v();
 //			Double stowageDays = null;
@@ -172,15 +186,15 @@ public class AnnualLeaveGrantRemainingData extends LeaveGrantRemaining {
 //				stowageDays = this.details.getUsedNumber().getStowageDays().get().v();
 //			}
 //			this.details.setUsedNumber(AnnualLeaveUsedNumber.createFromJavaType(newUsed, null, stowageDays));
-//			
+//
 //			// 年休残数を0にする
 //			this.details.setRemainingNumber(AnnualLeaveRemainingNumber.createFromJavaType(0.0, null));
 //		}
-//		
+//
 //		// 年休使用残を返す
 //		return remainingDays;
 //	}
-	
+
 	public static boolean validate(GeneralDate grantDate, GeneralDate deadlineDate,
 			BigDecimal grantDays, BigDecimal usedDays, BigDecimal remainDays, String grantDateItemName, String deadlineDateItemName) {
 		boolean isNull = validate(grantDate, deadlineDate, grantDays, usedDays, remainDays);
