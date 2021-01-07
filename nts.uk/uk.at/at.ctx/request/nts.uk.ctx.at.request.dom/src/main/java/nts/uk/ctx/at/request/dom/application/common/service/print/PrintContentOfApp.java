@@ -91,7 +91,8 @@ public class PrintContentOfApp {
 	/**
 	 * 休暇申請の印刷内容
 	 */
-
+	private Optional<PrintContentOfApplyForLeave> opPrintContentApplyForLeave;
+	
 	/**
 	 * 休日出勤の印刷内容
 	 */
@@ -152,5 +153,6 @@ public class PrintContentOfApp {
 		this.opBusinessTripPrintContent = Optional.empty();
 		this.opDetailOutput = Optional.empty();
 		this.optionalItemPrintContent = Optional.empty();
+		this.opPrintContentApplyForLeave = Optional.empty();
 	}
 }

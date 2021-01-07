@@ -119,9 +119,9 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
             params.eventUpdate(vm.update.bind(vm));
 			params.eventReload(vm.reload.bind(vm));
         };
-
+		
         mounted() {
-            const vm = this;
+			const vm = this;
 
             vm.maxNumberOfDay = ko.computed(() => {
 				let data = vm.$i18n("KAF006_44").concat("\n");
@@ -508,6 +508,11 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 					if (hdAppSetInput && hdAppSetInput.length > 0) {
 						vm.hdAppSet(hdAppSetInput);
 					}
+					
+					vm.printContentOfEachAppDto().opPrintContentApplyForLeave = {
+						appAbsenceStartInfoOutput: vm.data,
+						applyForLeave: vm.createDataVacationApp()
+			};
                 }).fail((error) => {
                     vm.$dialog.error({ messageId: error.messageId, messageParams: error.parameterIds });
                 }).always(() => vm.$blockui('hide'));
@@ -618,7 +623,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 			}
 
 			if (vm.specAbsenceDispInfo()) {
-				vm.dateSpecHdRelationLst(vm.specAbsenceDispInfo().dateSpecHdRelationLst);
+				vm.dateSpecHdRelationLst(vm.specAbsenceDispInfo().dateSpecHdRelationLst ? vm.specAbsenceDispInfo().dateSpecHdRelationLst : []);
 				
 				if (vm.dateSpecHdRelationLst() && vm.dateSpecHdRelationLst().length > 0) {
 					vm.selectedDateSpec(vm.dateSpecHdRelationLst()[0].relationCD);
