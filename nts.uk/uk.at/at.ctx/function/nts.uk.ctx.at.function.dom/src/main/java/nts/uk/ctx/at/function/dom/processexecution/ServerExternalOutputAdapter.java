@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.function.dom.processexecution;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -11,7 +13,8 @@ import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public interface ServerExternalOutputAdapter {
 
-	ServerExternalOutputImport findExternalOutput(String cid, String conditionCd) throws Exception;
-	
-	void processAutoExecution(String conditionCd, DatePeriod period, GeneralDate baseDate, String execId);
+	Optional<ServerExternalOutputImport> findExternalOutput(String cid, String conditionCd);
+
+	Optional<String> processAutoExecution(ProcessExecutionScope scope, String companyId, String execId,
+			DatePeriod period, GeneralDate baseDate, String conditionCd);
 }

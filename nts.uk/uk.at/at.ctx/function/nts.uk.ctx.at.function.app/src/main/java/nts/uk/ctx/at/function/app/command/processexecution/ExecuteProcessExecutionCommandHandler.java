@@ -3697,28 +3697,34 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		}
 		// するの場合
 		// 実行条件ごとにループする
-		try {
-			for (ExternalOutputConditionCode conditionCd : procExec.getExecSetting().getExternalOutput()
-					.getExtOutCondCodeList()) {
-				// サーバ外部出力実行時引数処理
-				ServerExternalOutputImport output = this.serverExternalOutputAdapter.findExternalOutput(companyId,
-						conditionCd.v());
+		for (ExternalOutputConditionCode conditionCd : procExec.getExecSetting().getExternalOutput()
+				.getExtOutCondCodeList()) {
+			// サーバ外部出力実行時引数処理
+			Optional<ServerExternalOutputImport> optOutput = this.serverExternalOutputAdapter
+					.findExternalOutput(companyId, conditionCd.v());
+			if (optOutput.isPresent()) {
+				ServerExternalOutputImport output = optOutput.get();
 				// 実行結果を確認する
-				if (output != null && output.isExecutionResult()) {
+				if (output.isExecutionResult()) {
 					// アルゴリズム「サーバ外部出力自動実行」を実行する
-					this.serverExternalOutputAdapter.processAutoExecution(conditionCd.v(), output.getPeriod(),
-							output.getBaseDate(), execId);
+					Optional<String> optErrMessage = this.serverExternalOutputAdapter.processAutoExecution(
+							procExec.getExecScope(), companyId, execId, output.getPeriod(), output.getBaseDate(),
+							conditionCd.v());
+					if (optErrMessage.isPresent()) {
+						hasError = true;
+						errorMessage = optErrMessage.get();
+					}
 				} else {
 					hasError = true;
 					errorMessage = output != null ? output.getErrorMessage() : null;
 				}
+			} else {
+				hasError = true;
 			}
-		} catch (Exception e) {
-			hasError = true;
 		}
 		// ドメインモデル「更新処理自動実行ログ」を取得しチェックする
-		Optional<ProcessExecutionLog> optLog = this.procExecLogRepo
-				.getLogByCIdAndExecCd(companyId, procExec.getExecItemCode().v(), execId);
+		Optional<ProcessExecutionLog> optLog = this.procExecLogRepo.getLogByCIdAndExecCd(companyId,
+				procExec.getExecItemCode().v(), execId);
 		if (optLog.isPresent()) {
 			ProcessExecutionLog log = optLog.get();
 			EndStatus status = log.getTaskLogList().stream()
@@ -3768,6 +3774,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			errorMessage = "async task error saving";
 		} catch (Exception e) {
 			hasError = true;
+			errorMessage = e.getMessage();
 		}
 		// ドメインモデル「更新処理自動実行ログ」を取得しチェックする（中断されている場合は更新されているため、最新の情報を取得する）
 		Optional<ProcessExecutionLog> optLog = this.procExecLogRepo.getLogByCIdAndExecCd(companyId,
@@ -3821,6 +3828,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			errorMessage = "async task error deleting";
 		} catch (Exception e) {
 			hasError = true;
+			errorMessage = e.getMessage();
 		}
 		// ドメインモデル「更新処理自動実行ログ」を取得しチェックする（中断されている場合は更新されているため、最新の情報を取得する）
 		Optional<ProcessExecutionLog> optLog = this.procExecLogRepo

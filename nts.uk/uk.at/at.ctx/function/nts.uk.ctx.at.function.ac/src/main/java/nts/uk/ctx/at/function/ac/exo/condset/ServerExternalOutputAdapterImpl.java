@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.function.ac.exo.condset;
 
+import java.util.List;
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -7,8 +10,10 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScope;
 import nts.uk.ctx.at.function.dom.processexecution.ServerExternalOutputAdapter;
 import nts.uk.ctx.at.function.dom.processexecution.ServerExternalOutputImport;
+import nts.uk.ctx.at.function.dom.processexecution.listempautoexec.ListEmpAutoExec;
 import nts.uk.query.pub.exo.condset.ServerExternalOutputExport;
 import nts.uk.query.pub.exo.condset.ServerExternalOutputPub;
 
@@ -19,16 +24,26 @@ public class ServerExternalOutputAdapterImpl implements ServerExternalOutputAdap
 	@Inject
 	private ServerExternalOutputPub pub;
 
+	@Inject
+	private ListEmpAutoExec listEmpAutoExec;
+
 	@Override
-	public ServerExternalOutputImport findExternalOutput(String cid, String conditionCd) throws Exception {
-		ServerExternalOutputExport export = pub.findExternalOutput(cid, conditionCd);
-		return new ServerExternalOutputImport(export.isExecutionResult(), export.getErrorMessage(), export.getPeriod(),
-				export.getBaseDate());
+	public Optional<ServerExternalOutputImport> findExternalOutput(String cid, String conditionCd) {
+		try {
+			ServerExternalOutputExport export = pub.findExternalOutput(cid, conditionCd);
+			return Optional.ofNullable(export).map(exp -> new ServerExternalOutputImport(exp.isExecutionResult(),
+					exp.getErrorMessage(), exp.getPeriod(), exp.getBaseDate()));
+		} catch (Exception e) {
+			return Optional.empty();
+		}
 	}
 
 	@Override
-	public void processAutoExecution(String conditionCd, DatePeriod period, GeneralDate baseDate, String execId) {
-		this.pub.processAutoExecution(conditionCd, period, baseDate, null, execId);
+	public Optional<String> processAutoExecution(ProcessExecutionScope scope, String companyId, String execId,
+			DatePeriod period, GeneralDate baseDate, String conditionCd) {
+		List<String> empIds = this.listEmpAutoExec.getListEmpAutoExec(companyId, period, scope.getExecScopeCls(),
+				Optional.ofNullable(scope.getWorkplaceIdList()), Optional.empty());
+		return this.pub.processAutoExecution(companyId, conditionCd, period, baseDate, null, execId, empIds);
 	}
 
 }
