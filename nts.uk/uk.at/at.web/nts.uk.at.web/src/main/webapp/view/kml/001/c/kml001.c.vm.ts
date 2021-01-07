@@ -15,15 +15,13 @@ module nts.uk.at.view.kml001.c {
       constructor() {
         super();
         const self = this;
-        self.latestHistory(nts.uk.ui.windows.getShared('PERSONAL_HISTORY'));
-        console.log(self.latestHistory());
+        self.latestHistory(nts.uk.ui.windows.getShared('PERSONAL_HISTORY'));     
         self.copyDataFlag = ko.observable(true);
         self.lastStartDate = ko.observable(self.latestHistory().latestHistory.startDate);        
         self.newStartDate = ko.observable(null);
         self.beginStartDate = ko.observable(vmbase.ProcessHandler.getOneDayAfter(self.lastStartDate()));        
         self.size = ko.observable(self.latestHistory().size);        
-        self.textKML001_47 = ko.observable(nts.uk.resource.getText('KML001_47', [self.lastStartDate()]));
-                
+        self.textKML001_47 = ko.observable(nts.uk.resource.getText('KML001_47', [self.lastStartDate()]));                
       }
 
       /**
@@ -31,17 +29,6 @@ module nts.uk.at.view.kml001.c {
        */
       submitAndCloseDialog(): void {
         const self = this;
-        /* if (!vmbase.ProcessHandler.validateDateInput(self.newStartDate(), self.beginStartDate())) {
-          $("#startDateInput").ntsError('set', { messageId: "Msg_102" });
-        } else {
-          //call to save
-          self.$dialog.info({ messageId: 'Msg_15' }).then(() => {
-            nts.uk.ui.windows.setShared('newStartDate', self.newStartDate());
-            nts.uk.ui.windows.setShared('copyDataFlag', self.copyDataFlag());
-            nts.uk.ui.windows.close();
-          });
-        } */        
-
         self.createClonePersonalCost();
       }
 
@@ -90,7 +77,7 @@ module nts.uk.at.view.kml001.c {
 
         let personCostRoundingSetting: any = {
           unitPriceRounding: self.copyDataFlag() ? self.currentPersonCost().roundingUnitPrice : 0,
-          unit: self.copyDataFlag() ? self.currentPersonCost().unit : 0,
+          unit: self.copyDataFlag() ? self.currentPersonCost().unit : 1,
           rounding: self.copyDataFlag() ? self.currentPersonCost().inUnits : 0
         };
 
@@ -107,6 +94,7 @@ module nts.uk.at.view.kml001.c {
         };
 
         self.$blockui('show');
+
         servicebase.personCostCalculationInsert(params)
         .done(() => {
           self.$dialog.info({ messageId: 'Msg_15'}).then( () => {            
