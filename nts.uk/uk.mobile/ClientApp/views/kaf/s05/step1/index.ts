@@ -52,7 +52,7 @@ export class KafS05Step1Component extends Vue {
 
         return self.displayNumberBreakTime != 10; 
     }
-    @Watch('$appContext.c3', {deep: true}) 
+    @Watch('$appContext.c3') 
     public updateValidator(data: any) {
         const self = this;
         if (data) {
@@ -109,6 +109,14 @@ export class KafS05Step1Component extends Vue {
 
     public mounted() {
         const self = this;
+        if (!self.$appContext.modeNew) {
+            if (self.$appContext.c3) {
+                self.$updateValidator('workHours1', {
+                    required: true,
+                    timeRange: true
+                });
+            }
+        }
     }
 
     
