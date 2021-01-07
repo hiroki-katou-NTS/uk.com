@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
@@ -17,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualle
 /** 年休使用情報 */
 @NoArgsConstructor
 @AllArgsConstructor
-public class AnnualLeaveUsedInfoDto implements ItemConst {
+public class AnnualLeaveUsedInfoDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 付与前 */
 	@AttendanceItemLayout(jpPropertyName = GRANT + BEFORE, layout = LAYOUT_A)

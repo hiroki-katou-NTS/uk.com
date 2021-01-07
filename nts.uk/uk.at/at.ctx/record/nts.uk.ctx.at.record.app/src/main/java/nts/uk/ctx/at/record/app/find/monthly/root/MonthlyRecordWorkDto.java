@@ -218,7 +218,8 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 	}
 	
 	public List<SpecialHolidayRemainData> toSpecialHoliday(){
-		return this.specialHoliday.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate());
+		return new ArrayList<>();
+//		return this.specialHoliday.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate());
 	}
 	
 	public MonthlyDayoffRemainData toDayOff(){
@@ -244,19 +245,21 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 	@Override
 	public IntegrationOfMonthly toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate) {
 		if (this.attendanceTime == null) return new IntegrationOfMonthly();
-		return new IntegrationOfMonthly(
-				Optional.ofNullable(this.attendanceTime == null ? null : this.attendanceTime.toDomain(employeeId, ym, closureID, closureDate)),
-				Optional.ofNullable(this.affiliation == null ? null : this.affiliation.toDomain(employeeId, ym, closureID, closureDate)),
-				this.anyItem == null ? new ArrayList<>() : this.anyItem.toDomain(employeeId, ym, closureID, closureDate),
-				Optional.ofNullable(agreementTime == null ? null : agreementTime.toDomain(employeeId, ym, closureID, closureDate)),
-				Optional.ofNullable(this.annLeave == null ? null : this.annLeave.toDomain(employeeId, ym, closureID, closureDate)),
-				Optional.ofNullable(this.rsvLeave == null ? null : this.rsvLeave.toDomain(employeeId, ym, closureID, closureDate)),
-				Optional.ofNullable(this.absenceLeave == null ? null : this.absenceLeave.toDomain(employeeId, ym, closureID, closureDate)),
-				Optional.ofNullable(this.dayOff == null ? null : this.dayOff.toDomain(employeeId, ym, closureID, closureDate)),
-				this.specialHoliday == null ? new ArrayList<>() : this.specialHoliday.toDomain(employeeId, ym, closureID, closureDate),
-				this.remarks == null ? new ArrayList<>(): this.remarks.toDomain(employeeId, ym, closureID, closureDate),
-				Optional.ofNullable(this.care == null ? null : this.care.toDomain(employeeId, ym, closureID, closureDate)),
-				Optional.ofNullable(this.childCare == null ? null : this.childCare.toDomain(employeeId, ym, closureID, closureDate)));
+		
+		return null;
+//		return new IntegrationOfMonthly(
+//				Optional.ofNullable(this.attendanceTime == null ? null : this.attendanceTime.toDomain(employeeId, ym, closureID, closureDate)),
+//				Optional.ofNullable(this.affiliation == null ? null : this.affiliation.toDomain(employeeId, ym, closureID, closureDate)),
+//				this.anyItem == null ? new ArrayList<>() : this.anyItem.toDomain(employeeId, ym, closureID, closureDate),
+//				Optional.ofNullable(agreementTime == null ? null : agreementTime.toDomain(employeeId, ym, closureID, closureDate)),
+//				Optional.ofNullable(this.annLeave == null ? null : this.annLeave.toDomain(employeeId, ym, closureID, closureDate)),
+//				Optional.ofNullable(this.rsvLeave == null ? null : this.rsvLeave.toDomain(employeeId, ym, closureID, closureDate)),
+//				Optional.ofNullable(this.absenceLeave == null ? null : this.absenceLeave.toDomain(employeeId, ym, closureID, closureDate)),
+//				Optional.ofNullable(this.dayOff == null ? null : this.dayOff.toDomain(employeeId, ym, closureID, closureDate)),
+//				this.specialHoliday == null ? new ArrayList<>() : this.specialHoliday.toDomain(employeeId, ym, closureID, closureDate),
+//				this.remarks == null ? new ArrayList<>(): this.remarks.toDomain(employeeId, ym, closureID, closureDate),
+//				Optional.ofNullable(this.care == null ? null : this.care.toDomain(employeeId, ym, closureID, closureDate)),
+//				Optional.ofNullable(this.childCare == null ? null : this.childCare.toDomain(employeeId, ym, closureID, closureDate)));
 	}
 	
 	public static MonthlyRecordWorkDto fromOnlyAttTime(IntegrationOfMonthly domain) {
@@ -281,7 +284,7 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 			dto.setDayOff(MonthlyDayoffRemainDataDto.from(domain.getMonthlyDayoffRemain().orElse(null)));
 			dto.setRemarks(MonthlyRemarksDto.from(domain.getRemarks()));
 			dto.setRsvLeave(RsvLeaRemNumEachMonthDto.from(domain.getReserveLeaveRemain().orElse(null)));
-			dto.setSpecialHoliday(SpecialHolidayRemainDataDto.from(domain.getSpecialLeaveRemainList()));
+//			dto.setSpecialHoliday(SpecialHolidayRemainDataDto.from(domain.getSpecialLeaveRemainList()));
 			domain.getAffiliationInfo().ifPresent(aff -> {
 				dto.setAffiliation(AffiliationInfoOfMonthlyDto.from(aff));
 				dto.setYearMonth(aff.getYearMonth());

@@ -10,12 +10,12 @@ import javax.ejb.Stateless;
 
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnualLeaveUsedNumberFromRemDataService;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnualLeaveUsedNumberFromRemDataService.RequireM3;
-import nts.uk.ctx.at.record.pub.monthly.vacation.annualleave.GetAnnualLeaveUsedNumberFromRemData;
+import nts.uk.ctx.at.record.pub.monthly.vacation.annualleave.GetAnnualLeaveUsedNumberFromRemDataPub;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
 
 @Stateless
-public class GetAnnualLeaveUsedNumberFromRemDataImpl implements GetAnnualLeaveUsedNumberFromRemData{
+public class GetAnnualLeaveUsedNumberFromRemDataPubImpl implements GetAnnualLeaveUsedNumberFromRemDataPub{
 
 	/**
 	 * 付与残数データから使用数を消化する

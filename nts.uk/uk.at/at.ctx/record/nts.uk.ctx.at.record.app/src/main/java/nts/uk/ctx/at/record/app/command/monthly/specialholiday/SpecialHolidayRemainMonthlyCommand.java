@@ -29,8 +29,8 @@ public class SpecialHolidayRemainMonthlyCommand extends MonthlyWorkCommonCommand
 	}
 
 	@Override
-	public List<SpecialHolidayRemainData> toDomain() {
-		return data == null ? new ArrayList<>() : data.toDomain(getEmployeeId(), getYearMonth(), getClosureId(), getClosureDate());
+	public SpecialHolidayRemainData toDomain() {
+		return data == null ? null : data.toDomain(getEmployeeId(), getYearMonth(), getClosureId(), getClosureDate());
 	}
 	
 	

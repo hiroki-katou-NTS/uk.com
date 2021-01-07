@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 /**
  * 使用数を暫定年休管理データに変換する
  */
-public interface GetTempAnnualLeaveMngsFromUsedNumber {
+public interface GetTempAnnualLeaveMngsFromUsedNumberPub {
 	/**
 	 * 使用数を暫定年休管理データに変換する
 	 * @param employeeId 社員ID
