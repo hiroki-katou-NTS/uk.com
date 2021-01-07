@@ -11,6 +11,7 @@ import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.function.dom.adapter.WorkPlaceHistImport;
 import nts.uk.ctx.at.function.dom.adapter.alarm.AlarmListPersonServiceAdapter;
 import nts.uk.ctx.at.function.dom.adapter.companyRecord.StatusOfEmployeeAdapter;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.StatusOfEmployeeAdapterAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceHistImportAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceIdAndPeriodImportAl;
@@ -45,13 +46,30 @@ public class AlarmListPersonServiceAdapterImpl implements AlarmListPersonService
 		
 	}
 	
+	/**
+	 * 日次
+	 */
 	@Override
-	public void extractDailyCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod,
-			String errorMasterCheckId, 
-			List<WorkPlaceHistImport> lstWplHist,
-			List<StatusOfEmployeeAdapter> lstStatusEmp, List<ResultOfEachCondition> lstResultCondition,
-			List<AlarmListCheckInfor> lstCheckInfor) {
+	public void extractDailyCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod, 
+			String errorDailyCheckId, DailyAlarmCondition dailyAlarmCondition, 
+			List<WorkPlaceHistImport> getWplByListSidAndPeriod, 
+			List<StatusOfEmployeeAdapter> lstStatusEmp, 
+			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType) {
 		
+		List<String> extractConditionWorkRecord = dailyAlarmCondition.getExtractConditionWorkRecord();
+		List<String> errorDailyCheckCd = dailyAlarmCondition.getErrorAlarmCode();
+		
+		List<WorkPlaceHistImportAl> lstWkpIdAndPeriod = getWplByListSidAndPeriod.stream().map(x -> 
+					new WorkPlaceHistImportAl(x.getEmployeeId(), 
+							x.getLstWkpIdAndPeriod().stream()
+							.map(a -> new WorkPlaceIdAndPeriodImportAl(a.getDatePeriod(), a.getWorkplaceId())).collect(Collectors.toList()))
+				).collect(Collectors.toList());
+		
+		List<StatusOfEmployeeAdapterAl> lstStaEmp = lstStatusEmp.stream()
+			.map(x -> new StatusOfEmployeeAdapterAl(x.getEmployeeId(), x.getListPeriod())).collect(Collectors.toList());
+		
+		extractService.extractDailyCheckResult(cid, lstSid, dPeriod, errorDailyCheckId, extractConditionWorkRecord, 
+				errorDailyCheckCd, lstWkpIdAndPeriod, lstStaEmp, lstResultCondition, lstCheckType);
 	}
 
 	@Override
