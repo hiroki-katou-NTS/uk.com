@@ -277,8 +277,29 @@ export class KafS10Component extends KafS00ShrComponent {
         return appHolidayWork;
     }
 
-    public getBreakTime(){
-        
+    public getBreakTime(command: ParamBreakTime) {
+        const self = this;
+        self.$mask('show');
+        self.$http.post(
+            'at',
+            API.getBreakTime,
+            command
+        ).then((res: any) => {
+            let appHdWorkDispInfo = _.get(self.model, 'appHdWorkDispInfo') as AppHdWorkDispInfo;
+            if (!_.isNil(appHdWorkDispInfo)) {
+                appHdWorkDispInfo = res.data;
+            } else {
+                appHdWorkDispInfo = {} as AppHdWorkDispInfo;
+                appHdWorkDispInfo = res.data;
+            }
+            let step1 = self.$refs.step1 as KafS10Step1Component;
+            if (!_.isNil(step1)) {
+                step1.createBreakTime(res.data.timeZones);
+            }
+
+        }).catch((res: any) => {
+            self.handleErrorMessage(res);
+        }).then(() => self.$mask('hide'));
     }
 
     public customValidate(viewModel: any) {
