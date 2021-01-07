@@ -111,10 +111,13 @@ class MonthlyWorkingHours extends ko.ViewModel {
 
 	popUpShow = false;
 
+	startYM = 0;
+
 	created(param: IParam) {
 		let vm = this;
 		vm.screenData = param.screenData;
 		vm.screenMode = param.screenMode;
+		vm.startYM = param.startYM();
 
 		$(".popup-area1").ntsPopup({
 			position: {
@@ -150,8 +153,17 @@ class MonthlyWorkingHours extends ko.ViewModel {
 				let yearList = vm.screenData().yearList();
 				yearList.push(new YearItem(Number(result.year), true));
 				vm.screenData().yearList(_.orderBy(yearList, ['year'], ['desc']));
-				vm.screenData().setNewYear(vm.screenData().yearList()[0].year);
-				vm.screenData().selectedYear(vm.screenData().yearList()[0].year);
+				if (!vm.startYM) {
+					vm.$blockui('invisible');
+					vm.$ajax(API_G_URL.CHANGE_YEAR + Number(result.year)).done((data: Array<IMonthlyWorkTimeSetCom>) => {
+						vm.startYM = data[0].yearMonth;
+						vm.screenData().setNewYear(vm.startYM, vm.screenData().yearList()[0].year);
+						vm.screenData().selectedYear(vm.screenData().yearList()[0].year);
+					}).always(() => { vm.$blockui('clear'); });
+				} else {
+					vm.screenData().setNewYear(vm.startYM, vm.screenData().yearList()[0].year);
+					vm.screenData().selectedYear(vm.screenData().yearList()[0].year);
+				}
 			}
 		});
 	}
@@ -188,5 +200,6 @@ class MonthlyWorkingHours extends ko.ViewModel {
 interface IParam {
 	screenData: KnockoutObservable<FlexScreenData>;
 	isShowCheckbox: boolean;
+	startYM: KnockoutObservable<number>;
 }
 

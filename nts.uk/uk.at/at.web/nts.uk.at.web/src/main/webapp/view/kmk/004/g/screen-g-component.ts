@@ -33,7 +33,8 @@ const template = `
 								name: 'monthly-working-hours',
 								params: {
 											screenData:screenData,
-											screenMode:screenMode
+											screenMode:screenMode,
+											startYM:startYM
 										}
 								}">
 							</div>
@@ -101,7 +102,7 @@ class ScreenGComponent extends ko.ViewModel {
 				let isChanged = vm.screenData().saveToUnSaveList();
 				if (isChanged) { vm.screenData().setUpdateYear(vm.screenData().serverData.year); }
 				vm.screenData().serverData = unsaveItem;
-				vm.screenData().monthlyWorkTimeSetComs(_.map(unsaveItem.data, (item: IMonthlyWorkTimeSetCom) => { return new MonthlyWorkTimeSetCom(item); }));
+				vm.screenData().monthlyWorkTimeSetComs(_.map(unsaveItem.data, (item: IMonthlyWorkTimeSetCom) => { return new MonthlyWorkTimeSetCom(vm.screenData(),item); }));
 			} else {
 				let isChanged = vm.screenData().saveToUnSaveList();
 				if (isChanged) { vm.screenData().setUpdateYear(vm.screenData().serverData.year); }

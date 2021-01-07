@@ -43,7 +43,8 @@ const template = `
 									name: 'monthly-working-hours',
 									params: {
 												screenData:screenData,
-												screenMode:screenMode
+												screenMode:screenMode,
+												startYM:startYM
 											}
 									}">
 							</div>
@@ -82,16 +83,16 @@ class ScreenJComponent extends ko.ViewModel {
 
 	alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
 
-	startYm = 0;
+	startYM: KnockoutObservable<number> = ko.observable(0);
 
 	created(params: any) {
 		let vm = this;
 
 		vm.screenMode = params.screenMode;
 
-		vm.startYm = params.startYM();
+		vm.startYM = params.startYM;
 
-		vm.screenData().initDumpData(vm.startYm);
+		vm.screenData().initDumpData(vm.startYM());
 
 		vm.regSelectedYearEvent();
 
@@ -124,20 +125,18 @@ class ScreenJComponent extends ko.ViewModel {
 			let unsaveItem = _.find(vm.screenData().unSaveSetComs, ['year', year]);
 
 			if (unsaveItem) {
-				let isChanged = vm.screenData().saveToUnSaveList();
-				if (isChanged) { vm.screenData().setUpdateYear(vm.screenData().serverData.year); }
+				vm.screenData().saveToUnSaveList();
 				vm.screenData().serverData = unsaveItem;
-				vm.screenData().monthlyWorkTimeSetComs(_.map(unsaveItem.data, (item: IMonthlyWorkTimeSetCom) => { return new MonthlyWorkTimeSetCom(item); }));
+				vm.screenData().monthlyWorkTimeSetComs(_.map(unsaveItem.data, (item: IMonthlyWorkTimeSetCom) => { return new MonthlyWorkTimeSetCom(vm.screenData(), item); }));
 			} else {
-				let isChanged = vm.screenData().saveToUnSaveList();
-				if (isChanged) { vm.screenData().setUpdateYear(vm.screenData().serverData.year); }
+				vm.screenData().saveToUnSaveList();
 				//else load data from sever
 
 				let selectedEmp = _.find(vm.employeeList(), ['code', vm.screenData().selected()]);
 				vm.$blockui('invisible');
 				vm.$ajax(API_J_URL.CHANGE_YEAR + selectedEmp.id + '/' + year).done((data) => {
 					let workTimes = [];
-					let startMonth = vm.startYm % 100;
+					let startMonth = vm.startYM() % 100;
 					for (let i = 0; i < 12; i++) {
 						let ym = ((vm.screenData().selectedYear() * 100 + Math.floor((startMonth + i) / 12) * 100)) + ((startMonth + i) % 12);
 						if ((startMonth + i) % 12 == 0) {
