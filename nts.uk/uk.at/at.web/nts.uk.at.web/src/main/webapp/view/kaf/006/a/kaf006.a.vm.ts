@@ -602,6 +602,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 			}).done((result) => {
 				if (result) {
 					return vm.$dialog.info({ messageId: "Msg_15"}).then(() => {
+						window.location.reload();
 						return true;
 					});	
 				}
