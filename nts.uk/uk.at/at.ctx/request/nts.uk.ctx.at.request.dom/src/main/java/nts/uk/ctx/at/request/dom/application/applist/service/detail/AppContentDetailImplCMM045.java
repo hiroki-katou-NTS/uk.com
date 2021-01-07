@@ -1422,6 +1422,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 				result += " " + I18NText.getText("CMM045_277");
 			}
 			// 申請内容　+＝　”　”　+　申請．申請日数を取得する　+　#CMM045_278
+			result += " ";
 			DatePeriod period = null;
 			if(application.getOpAppStartDate().isPresent() && application.getOpAppEndDate().isPresent()) {
 				period = new DatePeriod(application.getOpAppStartDate().get().getApplicationDate(), application.getOpAppEndDate().get().getApplicationDate());
@@ -1430,6 +1431,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 				period = new DatePeriod(application.getAppDate().getApplicationDate(), application.getAppDate().getApplicationDate());
 				result += String.valueOf(period.datesBetween().size());
 			}
+			result += I18NText.getText("CMM045_278");
 		}
 		// 申請理由内容　＝　申請内容の申請理由
 		String appReasonContent = appContentService.getAppReasonContent(
