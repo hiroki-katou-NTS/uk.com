@@ -219,6 +219,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
                 }).then((data) => {
 					if (data) {
 						vm.fetchData(data);
+						$("#work-type-combobox").focus()
 						return data;
 					}
 				}).then((data) => {
