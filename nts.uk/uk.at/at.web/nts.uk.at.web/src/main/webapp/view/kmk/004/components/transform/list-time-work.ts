@@ -55,7 +55,7 @@ module nts.uk.at.view.kmk004.components {
                                         enable: $data.check,
                                         inputFormat: 'time',
 										constraint: 'MonthlyTime',
-										name: '#[KMK004_305]'
+										name: '#[KMK004_305]',
                                         option: {
                                             width: '60px',
                                             textalign: 'center'}, 
