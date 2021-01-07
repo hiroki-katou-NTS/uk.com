@@ -74,7 +74,9 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                     text: $i18n('KAF006_18'),
                     enable: $parent.updateMode
                 }"></div>
-                <hr style="width: 700px; margin-inline-start: initial;" />
+                <div style="width: 700px;">
+                    <hr data-bind="visible: $parent.condition11" />
+                </div>
                 <div class="table">
                     <div class="cell col-1"></div>
                     <div class="cell">

@@ -9,7 +9,9 @@ module nts.uk.at.view.kaf006.shr.tab1.viewmodel {
                 text: $i18n('KAF006_18'),
                 enable: $parent.updateMode
             }, visible: $parent.condition11"></div>
-            <hr style="width: 700px; margin-inline-start: initial;" />
+            <div style="width: 700px;">
+                <hr/>
+            </div>
             <div class="table">
                 <div class="cell col-1"></div>
                 <div class="cell">
