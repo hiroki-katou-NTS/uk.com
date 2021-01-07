@@ -158,10 +158,10 @@ public class DailyRecordAdUpServiceImpl implements DailyRecordAdUpService {
 	}
 
 	@Override
-	public void adUpBreakTime(Optional<BreakTimeOfDailyPerformance> breakTime) {
-		breakTime.ifPresent(domain -> {
-			breakTimeRepo.update(domain);
-		});
+	public void adUpBreakTime(BreakTimeOfDailyPerformance breakTime) {
+//		breakTime.ifPresent(domain -> {
+			breakTimeRepo.update(breakTime);
+//		});
 
 	}
 
