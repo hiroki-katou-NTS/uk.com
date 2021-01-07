@@ -35,6 +35,16 @@ public class AppOverTimeData {
 	private String appID;
 	
 	/**
+	 * 超過回数
+	 */
+	private Integer excessTimeNumber;
+	
+	/**
+	 * 超過時間
+	 */
+	private Integer excessTime;
+	
+	/**
 	 * フレックス超過時間
 	 */
 	private Optional<Integer> opFlexOvertime;

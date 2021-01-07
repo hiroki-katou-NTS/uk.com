@@ -5,7 +5,8 @@ import { KafS00SubP3Component } from 'views/kaf/s00/sub/p3';
 import { KafS00SubP1Component } from 'views/kaf/s00/sub/p1';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/s00';
 import { ExcessTimeStatus } from '../../s00/sub/p1';
-import { ReasonDivergence, ExcessStateMidnight, ExcessStateDetail, OutDateApplication, DivergenceReasonSelect, AppOverTime, OvertimeWorkFrame, DivergenceReasonInputMethod, DivergenceTimeRoot, AttendanceType, OvertimeApplicationSetting, HolidayMidNightTime, StaturoryAtrOfHolidayWork, WorkdayoffFrame } from '../a/define.interface';
+import { KafS00SubP2Component } from 'views/kaf/s00/sub/p2';
+import { ReasonDivergence, ExcessStateMidnight, ExcessStateDetail, OutDateApplication, DivergenceReasonSelect, AppOverTime, OvertimeWorkFrame, DivergenceReasonInputMethod, DivergenceTimeRoot, AttendanceType, OvertimeApplicationSetting, HolidayMidNightTime, StaturoryAtrOfHolidayWork, WorkdayoffFrame, ExcessState } from '../a/define.interface';
 @component({
     name: 'kafs05step2',
     route: '/kaf/s05/step2',
@@ -20,12 +21,13 @@ import { ReasonDivergence, ExcessStateMidnight, ExcessStateDetail, OutDateApplic
         },
         reason1: {
             reason: {
-                constraint: 'DivergenceReason'
+                constraint: 'DivergenceReason',
+
             }
         },
         reason2: {
             reason: {
-                constraint: 'DivergenceReason'
+                constraint: 'DivergenceReason',
             }
         },
         DivergenceReason: {
@@ -39,6 +41,7 @@ import { ReasonDivergence, ExcessStateMidnight, ExcessStateDetail, OutDateApplic
     components: {
         'kafs00subp3': KafS00SubP3Component,
         'kafs00subp1': KafS00SubP1Component,
+        'kafs00subp2': KafS00SubP2Component,
         'kafs00-a': KafS00AComponent,
         'kafs00-b': KafS00BComponent,
         'kafs00-c': KafS00CComponent
@@ -56,9 +59,9 @@ export class KafS05Step2Component extends Vue {
     public reason1: Reason = {
         title: '',
         reason: '',
-        selectedValue: null,
+        selectedValue: '',
         dropdownList: [{
-            code: null,
+            code: '',
             text: this.$i18n('KAFS05_54')
         }]
     } as Reason;
@@ -67,9 +70,9 @@ export class KafS05Step2Component extends Vue {
     public reason2: Reason = {
         title: '',
         reason: '',
-        selectedValue: null,
+        selectedValue: '',
         dropdownList: [{
-            code: null,
+            code: '',
             text: this.$i18n('KAFS05_54')
         }]
     } as Reason;
@@ -543,7 +546,7 @@ export class KafS05Step2Component extends Vue {
                         text: self.$i18n('KAFS05_54'),
                     });
                 }
-                reason1.selectedValue = code;
+                reason1.selectedValue = code || '';
             }
             if (findResult2) {
                 reason2.reason = findResult2.reason || '';
@@ -560,7 +563,7 @@ export class KafS05Step2Component extends Vue {
                         text: self.$i18n('KAFS05_54')
                     });
                 }
-                reason2.selectedValue = code;               
+                reason2.selectedValue = code || '';               
             }
         }
 
@@ -574,13 +577,13 @@ export class KafS05Step2Component extends Vue {
         let reason = {} as Reason;
         reason.title = self.SPACE_STRING;
         reason.reason = '';
-        reason.selectedValue = null;
+        reason.selectedValue = '';
         if (!_.isNil(divergenceTimeRoot)) {
             reason.title = divergenceTimeRoot.divTimeName;
         }
         reason.dropdownList = [] as Array<Object>;
         reason.dropdownList.push({
-            code: null,
+            code: '',
             text: self.$i18n('KAFS05_54'),
             defaultValue: false
         });
@@ -606,6 +609,35 @@ export class KafS05Step2Component extends Vue {
         self.bindAllReason();
         self.bindOverTime();
         self.bindHolidayTime();
+        self.addConstraint();
+        self.checkAlarm();
+    }
+    public checkAlarm() {
+        const self = this;
+        if (self.$appContext.step != '2') {
+
+            return;
+        }
+        // ・「残業申請の表示情報．計算結果．事前申請・実績の超過状態．事前申請なし」 = true ⇒#Msg_1557
+        let c1 = _.get(self.$appContext.model, 'displayInfoOverTime.calculationResultOp.overStateOutput.isExistApp');
+        // ・「残業申請の表示情報．計算結果．事前申請・実績の超過状態．実績状態」 = 超過アラーム⇒#Msg_1556
+        let c2 = _.get(self.$appContext.model, 'displayInfoOverTime.calculationResultOp.overStateOutput.achivementStatus') == ExcessState.EXCESS_ERROR;
+        if (c1) {
+            self.$appContext.$modal.error({ messageId: 'Msg_1557'})
+            .then(() => {
+                if (c2) {
+                    self.$appContext.$modal.error({ messageId: 'Msg_1556'});
+                }
+            });
+        }
+
+    }
+
+    public addConstraint() {
+        const self = this;
+        // _.forEach(self.overTimes, (overtime: OverTime, index: number) => {
+        //     self.$updateValidator(`overTimes[${index}].applicationTime`, _.get(self.validations, 'item.applicationTime'));
+        // });
     }
 
     public getReasonDivergence() {
