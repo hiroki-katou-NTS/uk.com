@@ -397,7 +397,7 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 
 			//	事前申請・実績超過チェック
 			List<ConfirmMsgOutput> confirmMsgOutputs = this.checkExcess(empAppHdWorkDispInfoOutput, empAppHolidayWork);
-			if(employeeInfo.isPresent()) {
+			if(employeeInfo.isPresent() && confirmMsgOutputs.size() > 0) {
 				confirmMsgOutputMap.put(employeeInfo.get().getBussinessName(), this.toMultiMessage(confirmMsgOutputs));
 			}
 			
