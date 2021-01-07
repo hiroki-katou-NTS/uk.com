@@ -145,7 +145,7 @@
 										</div>
 									</div>
 								</com:ko-if>
-								<com:ko-if bind="dk3() &amp;&amp; _.find(workingHours(), {'workNo': 2}) &amp;&amp; ($parent.displayInforWhenStarting() == null ? false : $parent.displayInforWhenStarting().appDispInfoStartup.managementMultipleWorkCycles == 1)">
+								<com:ko-if bind="dk3() &amp;&amp; _.find(workingHours(), {'workNo': 2}) &amp;&amp; ($parent.displayInforWhenStarting() == null ? false : $parent.displayInforWhenStarting().appDispInfoStartup.appDispInfoNoDateOutput.managementMultipleWorkCycles == 1)">
 									<div class="row">
 										<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF011_34')}</div>
 										<div class="ntsControl">
