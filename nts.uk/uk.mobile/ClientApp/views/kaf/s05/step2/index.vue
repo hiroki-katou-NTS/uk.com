@@ -6,8 +6,21 @@
         v-if="$appContext.kaf000_A_Params != null"
         v-bind:params="$appContext.kaf000_A_Params"
       />
+      <div class="accordion mb-2" v-if="$appContext.overTimeWorkHoursDto != null">
+          <div class="card" v-if="true">
+            <div class="card-header uk-bg-accordion">
+              <button class="btn btn-link" type="button">
+                  {{'KAFS00_4' | i18n}}
+              </button>
+            </div>
+            <div class="collapse">
+              <div class="card-body">
+                  <kafs00subp2 v-bind:params="$appContext.overTimeWorkHoursDto" />      
+              </div>
+            </div>
+          </div>
+      </div>
     </div>
-
     <!-- A2_B1 -->
     <div class="card card-label">
       <!--A2_B1_1-->
@@ -17,8 +30,8 @@
       </div>
       <!--A2_B1_5-->
       <div
-       v-if="$appContext.isMsg_1562" 
-      class="card bg-danger top-alert uk-text-danger topError"
+       v-if="!$valid || !$appContext.isValidateAll" 
+      class="card bg-danger top-alert uk-text-danger topError mt-2"
       >
         <button class="btn btn-link uk-text-danger">
           <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
@@ -48,7 +61,6 @@
               v-model="item.applicationTime"
               name=""
               v-bind:enable="$appContext.c3"
-              v-bind:constraint="OvertimeAppPrimitiveTime"
             />
           </div>
         </div>
@@ -89,7 +101,6 @@
               v-model="item.applicationTime"
               name=""
               v-bind:enable="$appContext.c3"
-              v-bind:constraint="OvertimeAppPrimitiveTime"
             />
           </div>
         </div>

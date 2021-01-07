@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.commons.lang3.tuple.Pair;
+
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -138,7 +141,8 @@ public interface AppContentService {
 	 */
 	public ListOfApplication createEachAppData(Application application, String companyID, List<WorkTimeSetting> lstWkTime, List<WorkType> lstWkType, 
 			List<AttendanceNameItem> attendanceNameItemLst, ApplicationListAtr mode, ApprovalListDisplaySetting approvalListDisplaySetting, ListOfApplication listOfApp, 
-			Map<String,List<ApprovalPhaseStateImport_New>> mapApproval, int device, AppListExtractCondition appListExtractCondition, List<String> agentLst);
+			Map<String,List<ApprovalPhaseStateImport_New>> mapApproval, int device, AppListExtractCondition appListExtractCondition, List<String> agentLst,
+			Map<String, Pair<Integer, Integer>> cacheTime36);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面.アルゴリズム.各申請データを作成.承認状況照会内容.承認状況照会内容
@@ -213,4 +217,15 @@ public interface AppContentService {
 	 * @return
 	 */
 	public List<AttendanceNameItem> getAttendanceNameItemLst(String companyID);
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面ver4.アルゴリズム.各申請データを作成.申請一覧36協定時間の取得.申請一覧36協定時間の取得
+	 * @param employeeID
+	 * @param yearMonth
+	 * @param cache
+	 * @return
+	 * pair left: 超過時間
+	 * pair right: 超過回数
+	 */
+	public Pair<Integer, Integer> getAgreementTime36(String employeeID, YearMonth yearMonth, Map<String, Pair<Integer, Integer>> cache);
 }
