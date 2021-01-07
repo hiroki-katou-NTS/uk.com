@@ -34,8 +34,6 @@ public class GetAnnualLeaveUsedNumberFromRemDataService {
 			LeaveUsedNumber usedNumber,
 			RequireM3 require) {
 
-		// 休暇付与残数データ
-		List<LeaveGrantRemainingData> leaveGrantRemainingData = new ArrayList<>();
 		// 暫定年休管理データ
 		List<TempAnnualLeaveMngs> tempAnnualLeaveMngs = new ArrayList<>();
 		// 休暇残数シフトリストWORK
@@ -63,7 +61,7 @@ public class GetAnnualLeaveUsedNumberFromRemDataService {
 					currentProcess.getYmd()); 				// 作成した「暫定休暇管理データ．対象日」
 		}
 
-		return leaveGrantRemainingData;
+		return remainingData;
 
 	}
 	// require

@@ -7,7 +7,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
 
 /**
- * 使用数を暫定年休管理データに変換する
+ * 付与残数データから使用数を消化する
  */
 public interface GetAnnualLeaveUsedNumberFromRemData {
 
