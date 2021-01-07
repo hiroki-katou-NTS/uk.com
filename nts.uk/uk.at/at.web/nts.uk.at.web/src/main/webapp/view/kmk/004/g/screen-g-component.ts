@@ -75,7 +75,7 @@ class ScreenGComponent extends ko.ViewModel {
 			.then(() => vm.$ajax(API_G_URL.START_PAGE))
 			.done((startData) => {
 				vm.$blockui('invisible');
-				vm.$ajax(API_G_URL.CHANGE_YEAR + 9999).done((data: Array<IMonthlyWorkTimeSetCom>) => {
+				vm.$ajax(API_G_URL.CHANGE_YEAR + 2020).done((data: Array<IMonthlyWorkTimeSetCom>) => {
 					vm.startYM(data[0].yearMonth);
 					vm.screenData().updateData(startData);
 					vm.screenData().initDumpData(data[0].yearMonth);
