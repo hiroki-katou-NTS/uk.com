@@ -54,6 +54,8 @@ module nts.uk.at.view.kmk004.components {
                                         value: $data.laborTime,
                                         enable: $data.check,
                                         inputFormat: 'time',
+										constraint: 'MonthlyTime',
+										name: '#[KMK004_305]'
                                         option: {
                                             width: '60px',
                                             textalign: 'center'}, 
@@ -65,6 +67,8 @@ module nts.uk.at.view.kmk004.components {
                                         value: $data.laborTime,
                                         enable: $data.check, 
                                         inputFormat: 'time',
+										constraint: 'MonthlyTime',
+										name: '#[KMK004_305]',
                                         option: {
                                             width: '60px',
                                             textalign: 'center'}, 
@@ -127,15 +131,19 @@ module nts.uk.at.view.kmk004.components {
 				if (last.length < 2) {
 					last = '0' + last;
 				}
-
-				vm.total(first + ':' + last);
+				
+				if (total){
+					vm.total(first + ':' + last);
+				} else {
+					vm.total('0:00');
+				}
 
 				if (ko.unwrap(vm.selectedYear) != null) {
 					const index = _.map(ko.unwrap(vm.years), m => m.year.toString()).indexOf(ko.unwrap(vm.selectedYear).toString());
 
 					if (ko.unwrap(vm.years).length > 0) {
 						if (ko.unwrap(vm.mode) === 'Update') {
-							if (!ko.unwrap(vm.years)[index]) {
+							if (!ko.unwrap(vm.years)[index].isNew) {
 								_.remove(ko.unwrap(vm.years), ((value) => {
 									return value.year == ko.unwrap(vm.selectedYear);
 								}));

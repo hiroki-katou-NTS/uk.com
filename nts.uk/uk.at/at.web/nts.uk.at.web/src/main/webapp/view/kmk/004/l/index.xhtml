@@ -7,6 +7,10 @@
 	<ui:composition template="/master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
+			
+			<com:ValidatorScript>
+					nts.uk.ctx.at.shared.dom.common.MonthlyTime
+   			</com:ValidatorScript>
 
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
