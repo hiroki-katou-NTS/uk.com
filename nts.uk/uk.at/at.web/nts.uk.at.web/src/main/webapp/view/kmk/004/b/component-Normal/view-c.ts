@@ -4,7 +4,7 @@ module nts.uk.at.view.kmk004.b {
 	const template = `
 		<div class="sidebar-content-header">
 			<div class="title" data-bind="i18n: 'Com_Workplace'"></div>
-			<a tabindex="1" class="goback" data-bind="ntsLinkButton: { jump: '/view/kmk/004/a/index.xhtml' },i18n: 'KMK004_224'"></a>
+			<a class="goback"  data-bind="ntsLinkButton: { jump: '../a/index.xhtml' },i18n: 'KMK004_224'"></a>
 			<button tabindex="2" class="proceed" data-bind="i18n: 'KMK004_225', enable: existYear, click: add"></button>
 			<button tabindex="3" data-bind="i18n: 'KMK004_226', enable: checkDelete, click: copy"></button>
 			<button tabindex="4" class="danger" data-bind="i18n: 'KMK004_227', enable: checkDelete, click: remote"></button>

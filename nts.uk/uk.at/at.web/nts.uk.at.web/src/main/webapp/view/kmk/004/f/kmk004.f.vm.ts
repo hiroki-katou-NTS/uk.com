@@ -65,8 +65,6 @@ module nts.uk.at.view.kmk004.f {
 
             vm.init();
             vm.reloadData();
-            // vm.model.deforWorkSurchargeWeekMonth.valueHasMutated();
-            // vm.model.outsideSurchargeWeekMonth.valueHasMutated();
 
             switch (vm.type) {
                 case 'Com_Company':
@@ -91,11 +89,6 @@ module nts.uk.at.view.kmk004.f {
             $(document).ready(function () {
                 $('.input-forcus').focus();
             });
-
-            // vm.init();
-            // vm.model.deforWorkSurchargeWeekMonth.valueHasMutated();
-            // vm.model.outsideSurchargeWeekMonth.valueHasMutated();
-            // vm.reloadData();
         }
 
         closeDialog() {
@@ -222,7 +215,7 @@ module nts.uk.at.view.kmk004.f {
             const vm = this;
             switch (vm.type) {
                 case 'Com_Company':
-                    vm.$blockui('invisible')
+                    vm.$blockui('grayout')
                         .then(() => vm.$ajax(API.DISPLAY_BASICSETTING))
                         .then((data: IModel) => {
                             vm.model.update(data);
@@ -231,7 +224,7 @@ module nts.uk.at.view.kmk004.f {
                     break;
                 case 'Com_Workplace':
                     if (ko.unwrap(vm.selectId) !== '') {
-                        vm.$blockui('invisible')
+                        vm.$blockui('grayout')
                             .then(() => vm.$ajax(API.GET_SETTING_WORKPLACE + "/" + ko.unwrap(vm.selectId)))
                             .then((data: IModel) => {
                                 vm.model.update(data);
@@ -241,7 +234,7 @@ module nts.uk.at.view.kmk004.f {
                     break;
                 case 'Com_Employment':
                     if (ko.unwrap(vm.selectId) !== '') {
-                        vm.$blockui('invisible')
+                        vm.$blockui('grayout')
                             .then(() => vm.$ajax(API.GET_SETTING_EMPLOYMENT + "/" + ko.unwrap(vm.selectId)))
                             .then((data: IModel) => {
                                 vm.model.update(data);
@@ -251,7 +244,7 @@ module nts.uk.at.view.kmk004.f {
                     break;
                 case 'Com_Person':
                     if (ko.unwrap(vm.selectId) !== '') {
-                        vm.$blockui('invisible')
+                        vm.$blockui('grayout')
                             .then(() => vm.$ajax(API.GET_SETTING_EMPLOYEE + "/" + ko.unwrap(vm.selectId)))
                             .then((data: IModel) => {
                                 vm.model.update(data);
