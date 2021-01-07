@@ -6,7 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.Column;
@@ -32,6 +34,11 @@ public class KscmtPerCostCalcHist extends UkJpaEntity implements Serializable {
     @Column(name = "END_YMD")
     public GeneralDate endDate;
 
+    @Column(name = "CONTRACT_CD")
+    public String contractCd ;
+
+
+
     @Override
     protected Object getKey() {
         return pk;
@@ -40,6 +47,7 @@ public class KscmtPerCostCalcHist extends UkJpaEntity implements Serializable {
     public KscmtPerCostCalcHist update(DateHistoryItem domain) {
         this.endDate = domain.end();
         this.startDate = domain.start();
+        this.contractCd =  AppContexts.user().contractCode();
         return this;
     }
     public static KscmtPerCostCalcHist toEntity(GeneralDate startDate, GeneralDate endDate, String histId, String cid) {
@@ -47,7 +55,8 @@ public class KscmtPerCostCalcHist extends UkJpaEntity implements Serializable {
         return new KscmtPerCostCalcHist(
                 new KscmtPerCostCalcHistPk(cid, histId),
                 startDate,
-                endDate
+                endDate,
+                AppContexts.user().contractCode()
         );
     }
 }

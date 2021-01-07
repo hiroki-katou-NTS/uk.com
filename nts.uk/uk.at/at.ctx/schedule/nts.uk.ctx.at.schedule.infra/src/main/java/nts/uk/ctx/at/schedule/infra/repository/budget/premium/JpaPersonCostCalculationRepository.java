@@ -16,6 +16,7 @@ import nts.uk.ctx.at.schedule.infra.entity.budget.premium.*;
 import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRounding;
 import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountUnit;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 import javax.ejb.Stateless;
@@ -39,20 +40,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 
     private static final String SEL_BY_CID = "SELECT a FROM KscmtPerCostCalc a WHERE a.pk.companyID = :companyID ";
     private static final String SEL_BY_CID_HIST = "SELECT a FROM KscmtPerCostCalcHist a WHERE a.pk.companyID = :companyID ORDER BY a.startDate ASC";
-
-    private static final String SEL_ITEM_BY_DATE = "SELECT a FROM KscmtPerCostCalc a WHERE a.pk.companyID = :companyID AND a.startDate = :startDate";
-
     private static final String SEL_ITEM_BY_HID = "SELECT a FROM KscmtPerCostCalc a WHERE a.pk.companyID = :companyID AND a.pk.histID = :historyID";
-
-    private static final String SEL_ITEM_BEFORE = "SELECT a FROM KscmtPerCostCalc a WHERE a.pk.companyID = :companyID AND a.startDate < :startDate ORDER BY a.startDate DESC";
-
-    private static final String SEL_ITEM_AFTER = "SELECT a FROM KscmtPerCostCalc a WHERE a.pk.companyID = :companyID AND a.startDate > :startDate";
-
-    private static final String SEL_PRE_ATTEND = "SELECT a FROM KscmtPerCostPremium a "
-            + "WHERE a.kscmtPerCostPremiumPk.companyID = :companyID "
-            + "AND a.kscmtPerCostPremiumPk.historyID = :historyID "
-            + "AND a.kscmtPerCostPremiumPk.displayNumber = :displayNumber "
-            + "AND a.kscmtPerCostPremiumPk.attendanceID = :attendanceID ";
 
     @Override
     public void add(PersonCostCalculation personCostCalculation) {
@@ -76,48 +64,16 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     @Override
-    public Optional<PersonCostCalculation> findItemByDate(String companyID, GeneralDate startDate) {
-        return this.queryProxy().query(SEL_ITEM_BY_DATE, KscmtPerCostCalc.class).setParameter("companyID", companyID).setParameter("startDate", startDate)
-                .getSingle().map(x -> toDomainPersonCostCalculation(x));
-    }
-
-    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    @Override
     public Optional<PersonCostCalculation> findItemByHistoryID(String companyID, String historyID) {
         return this.queryProxy().query(SEL_ITEM_BY_HID, KscmtPerCostCalc.class).setParameter("companyID", companyID).setParameter("historyID", historyID)
                 .getSingle().map(x -> toDomainPersonCostCalculation(x));
     }
 
-    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    @Override
-    public Optional<PersonCostCalculation> findItemBefore(String companyID, GeneralDate startDate) {
-        List<KscmtPerCostCalc> result = this.queryProxy().query(SEL_ITEM_BEFORE, KscmtPerCostCalc.class)
-                .setParameter("companyID", companyID).setParameter("startDate", startDate).getList();
-        if (result.isEmpty()) return Optional.ofNullable(null);
-        return Optional.of(toDomainPersonCostCalculation(result.get(0)));
-    }
-
-    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    @Override
-    public Optional<PersonCostCalculation> findItemAfter(String companyID, GeneralDate startDate) {
-        List<KscmtPerCostCalc> result = this.queryProxy().query(SEL_ITEM_AFTER, KscmtPerCostCalc.class)
-                .setParameter("companyID", companyID).setParameter("startDate", startDate).getList();
-        if (result.isEmpty()) return Optional.empty();
-        return Optional.of(toDomainPersonCostCalculation(result.get(0)));
-    }
-
-    @Override
-    public void update(PersonCostCalculation personCostCalculation) {
-
-    }
 
     @Override
     public void delete(String companyId, String historyId) {
-
-        val entityPerCosst = this.queryProxy().query(SEL_ITEM_BY_HID, KscmtPerCostCalc.class).setParameter("companyID", companyId).setParameter("historyID", historyId)
-                .getSingle();
-
-        entityPerCosst.ifPresent(kscmtPerCostCalc -> this.commandProxy().remove(kscmtPerCostCalc));
+        this.commandProxy().remove(KscmtPerCostCalc.class,new KscmtPerCostCalcPk(companyId,historyId));
+        this.commandProxy().remove(KscmtPerCostCalcHist.class,new KscmtPerCostCalcHistPk(companyId,historyId));
         String queryRate = "SELECT a FROM KscmtPerCostPremiRate a " +
                 " WHERE a.pk.companyID = :cid " +
                 " AND a.pk.histID = :histID ";
@@ -128,7 +84,6 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
         if (!listEntityRate.isEmpty()) {
             this.commandProxy().removeAll(listEntityRate);
         }
-
         String queryPremiumAttendance = "SELECT a FROM KscmtPerCostPremium a " +
                 " WHERE a.kscmtPerCostPremiumPk.companyID = :cid " +
                 " AND a.kscmtPerCostPremiumPk.historyID = :histID ";
@@ -144,7 +99,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 
     private PersonCostCalculation toSimpleDomain(KscmtPerCostCalc kscmtPerCostCalc, List<PremiumSetting> premiumSetting) {
 
-        val roundingOfPremium = new UnitPriceRoundingSetting(EnumAdaptor.valueOf(kscmtPerCostCalc.costRounding, UnitPriceRounding.class));
+        val roundingOfPremium = new UnitPriceRoundingSetting(EnumAdaptor.valueOf(kscmtPerCostCalc.unitPriceRounding, UnitPriceRounding.class));
         val amountRoundingSetting = new AmountRoundingSetting(
                 AmountUnit.valueOf(converAmountRounding(kscmtPerCostCalc.getCostUnit())),
                 AmountRounding.valueOf(kscmtPerCostCalc.costRounding)
@@ -169,7 +124,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
      * @return PersonCostCalculation Domain Object
      */
     private PersonCostCalculation toDomainPersonCostCalculation(KscmtPerCostCalc kscmtPerCostCalc) {
-        val roundingOfPremium = new UnitPriceRoundingSetting(EnumAdaptor.valueOf(kscmtPerCostCalc.costRounding, UnitPriceRounding.class));
+        val roundingOfPremium = new UnitPriceRoundingSetting(EnumAdaptor.valueOf(kscmtPerCostCalc.unitPriceRounding, UnitPriceRounding.class));
         val amountRoundingSetting = new AmountRoundingSetting(
                 AmountUnit.valueOf(converAmountRounding(kscmtPerCostCalc.getCostUnit())),
                 AmountRounding.valueOf(kscmtPerCostCalc.costRounding)
@@ -400,9 +355,9 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
                 if (item.getPk().histID.equals(domain.getHistoryID())) {
                     itemHist.setStartDate(i.end());
                     itemHist.setEndDate(i.start());
+
                     val entity = KscmtPerCostCalc.toEntity(domain, i.identifier());
                     val entityHist = KscmtPerCostCalcHist.toEntity(i.start(), i.end(), i.identifier(), domain.getCompanyID());
-
                     updateList.add(entity);
                     updateListHist.add(entityHist);
                     if (item.getPk().histID.equals(histId)) {

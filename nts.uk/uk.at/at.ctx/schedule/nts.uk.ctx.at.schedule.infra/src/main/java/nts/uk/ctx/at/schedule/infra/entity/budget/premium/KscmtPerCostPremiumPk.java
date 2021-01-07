@@ -21,7 +21,7 @@ public class KscmtPerCostPremiumPk implements Serializable {
     @Column(name="CID")
     public String companyID;
 
-    @Column(name="HIS_ID")
+    @Column(name="HIST_ID")
     public String historyID;
 
     @Column(name="PREMIUM_NO")
