@@ -19,12 +19,15 @@ import org.apache.logging.log4j.util.Strings;
 import lombok.val;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeaveRepository;
+import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
+import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.ApplyforSpecialLeave;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppCompltLeaveSync;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppPrePostGroup;
@@ -88,6 +91,8 @@ import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.optionalitemappsetting.OptionalItemAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.optionalitemappsetting.OptionalItemApplicationSetting;
+import nts.uk.ctx.at.shared.dom.relationship.Relationship;
+import nts.uk.ctx.at.shared.dom.relationship.repository.RelationshipRepository;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -158,6 +163,9 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 	
 	@Inject
 	private ApplicationRepository applicationRepository;
+	
+	@Inject
+	private RelationshipRepository relationshipRepository;
 
 	private final static String KDL030 = "\n";
 	private final static String CMM045 = "<br/>";
@@ -1377,6 +1385,67 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 			AbsenceLeaveApp absenceLeaveApp = absenceLeaveAppRepository.findByID(opCompltLeaveSimMng.get().getAbsenceLeaveAppID()).get();
 			return new LinkComplementLeaveOutput(appID, TypeApplicationHolidays.Abs, absenceLeaveApp, recruitmentApp);
 		}
+	}
+	
+	@Override
+	public String getContentApplyForLeave(Application application, String companyID, List<WorkType> workTypeLst,
+			DisplayAtr appReasonDisAtr, ScreenAtr screenAtr) {
+		String result = "";
+		// ドメインモデル「休暇申請」を取得してデータを作成 ( Lấy domain 「休暇申請」 để tạo data)
+		ApplyForLeave applyForLeave = applyForLeaveRepository.findApplyForLeave(companyID, application.getAppID()).get();
+		// 休暇申請.休暇種類をチェック(Check  đơn xin nghỉ. loại nghỉ)
+		if(applyForLeave.getVacationInfo().getHolidayApplicationType()==HolidayAppType.SUBSTITUTE_HOLIDAY) {
+			// 休暇申請.画面描画情報.補足情報.代休日変更の申請期間.開始日＝empty
+			if(applyForLeave.getVacationInfo().getInfo().getDatePeriod().isPresent()) {
+				// 申請内容＝「値」＋改行(nội dung đơn xin = 「value」 + xuống dòng)
+				DatePeriod datePeriod = applyForLeave.getVacationInfo().getInfo().getDatePeriod().get();
+				if(datePeriod.start().equals(datePeriod.end())) {
+					result += I18NText.getText("CMM045_304", datePeriod.start().toString("YYYY/MM/DD"));
+				} else {
+					result += I18NText.getText("CMM045_304", datePeriod.start().toString("YYYY/MM/DD") + I18NText.getText("CMM045_100") + datePeriod.end().toString("YYYY/MM/DD"));
+				}
+			}
+		}
+		// 勤務就業名称を作成 ( Tạo tên workEmployment)
+		String workTypeName = appDetailInfoRepo.findWorkTypeName(workTypeLst, applyForLeave.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v());
+		// 申請内容＋　＝　取得した勤務種類名称 ( Nội dung application = Tên Work type đã lấy)
+		result += workTypeName;
+		if(applyForLeave.getVacationInfo().getHolidayApplicationType()==HolidayAppType.SPECIAL_HOLIDAY) {
+			// ドメインモデル「特別休暇申請」を取得 ( Lấy domain 「特別休暇申請」)
+			ApplyforSpecialLeave applyforSpecialLeave = applyForLeave.getVacationInfo().getInfo().getApplyForSpeLeaveOptional().get();
+			// imported(就業.Shared)「続柄」を取得する ( Lấy imported(就業.Shared)「relationship」
+			Optional<Relationship> opRelationship = relationshipRepository.findByCode(companyID, applyforSpecialLeave.getRelationshipCD().map(x -> x.v()).orElse(null));
+			// 申請内容　+＝　”　”　+　続柄名称(nội dung đơn xin +＝　”　”　+ tên quan hệ)
+			result += " " + opRelationship.map(x -> x.getRelationshipName().v()).orElse("");
+			if(applyforSpecialLeave.isMournerFlag()) {
+				// 申請内容　+＝　”　”　+　#CMM045_277 ( Nội dung application　+＝　”　”　+　#CMM045_277)
+				result += " " + I18NText.getText("CMM045_277");
+			}
+			// 申請内容　+＝　”　”　+　申請．申請日数を取得する　+　#CMM045_278
+			result += " ";
+			DatePeriod period = null;
+			if(application.getOpAppStartDate().isPresent() && application.getOpAppEndDate().isPresent()) {
+				period = new DatePeriod(application.getOpAppStartDate().get().getApplicationDate(), application.getOpAppEndDate().get().getApplicationDate());
+				result += String.valueOf(period.datesBetween().size());
+			} else {
+				period = new DatePeriod(application.getAppDate().getApplicationDate(), application.getAppDate().getApplicationDate());
+				result += String.valueOf(period.datesBetween().size());
+			}
+			result += I18NText.getText("CMM045_278");
+		}
+		// 申請理由内容　＝　申請内容の申請理由
+		String appReasonContent = appContentService.getAppReasonContent(
+				appReasonDisAtr, 
+				application.getOpAppReason().orElse(null),
+				screenAtr,
+				application.getOpAppStandardReasonCD().orElse(null), 
+				application.getAppType(), 
+				Optional.of(applyForLeave.getVacationInfo().getHolidayApplicationType()));
+		// 申請内容を改行
+		if(Strings.isNotBlank(appReasonContent)) {
+			result += "\n" + appReasonContent;
+		}
+		return result;
 	}
 	
 }
