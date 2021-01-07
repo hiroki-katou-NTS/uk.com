@@ -2,7 +2,8 @@ import { _, Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/s00';
 import { KafS00ShrComponent, AppType, Application, InitParam } from 'views/kaf/s00/shr';
-import { AppAbsenceStartInfoDto, StartMobileParam, NotUseAtr, TimeZoneUseDto } from '../a/define.interface';
+import { AppAbsenceStartInfoDto, StartMobileParam, NotUseAtr, TimeZoneUseDto, HolidayAppTypeDispNameDto, ManageDistinct, TargetWorkTypeByApp, ApplicationType, HolidayAppType } from '../a/define.interface';
+import { drop } from 'lodash';
 
 @component({
     name: 'kafs06a',
@@ -548,7 +549,66 @@ export class KafS06AComponent extends KafS00ShrComponent {
 
     public bindComponent() {
         const self = this;
+        self.bindHolidayType();
+    }
 
+    public bindHolidayType() {
+        const self = this;
+        if (!self.model.appAbsenceStartInfoDto) {
+
+            return;
+        }
+        let dropDownList = [];
+        // 休暇申請起動時の表示情報．休暇申請設定．休暇申請種類表示名．表示名
+        let dispNames = self.model.appAbsenceStartInfoDto.hdAppSet.dispNames as Array<HolidayAppTypeDispNameDto>;
+        dropDownList = _.map(dispNames, (item: HolidayAppTypeDispNameDto) => {
+
+            return {
+                code: item.holidayAppType,
+                text: item.displayName
+            };
+        });
+        dropDownList.unshift({
+            code: null,
+            text: '--- 選択してください ---'
+        });
+        self.dropdownList = dropDownList;
+        // 
+
+    }
+
+    public getSelectedValue() {
+        const self = this;
+        if (!self.model.appAbsenceStartInfoDto) {
+
+            return;
+        }
+        // 休暇申請起動時の表示情報．休暇残数情報．年休管理区分　＝　管理する
+        let c1_1 = self.model.appAbsenceStartInfoDto.remainVacationInfo.annualLeaveManagement.annualLeaveManageDistinct == ManageDistinct.YES;
+        // 休暇申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係あり)．雇用別申請承認設定．申請別対象勤務種類．休暇種類を利用しない = false
+        // AND　休暇申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係あり)．雇用別申請承認設定．申請別対象勤務種類．休暇申請の種類 = 年次有休
+        let c1_2 = 
+        !_.isNil(_.find(_.get(self.model, 'appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoWithDateOutput.opEmploymentSet.targetWorkTypeByAppLst')
+        , (item: TargetWorkTypeByApp) => item.appType == ApplicationType.ABSENCE_APPLICATION && item.opHolidayAppType == HolidayAppType.ANNUAL_PAID_LEAVE && !item.opHolidayTypeUse));
+        // 休暇申請起動時の表示情報．休暇残数情報．代休管理区分　＝　管理する
+        let c1_3 = self.model.appAbsenceStartInfoDto.remainVacationInfo.substituteLeaveManagement.substituteLeaveManagement == ManageDistinct.YES;
+        //休暇申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係あり)．雇用別申請承認設定．申請別対象勤務種類．休暇種類を利用しない = false
+        // AND　休暇申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係あり)．雇用別申請承認設定．申請別対象勤務種類．休暇申請の種類 = 代休
+        let c1_4 = 
+        !_.isNil(_.find(_.get(self.model, 'appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoWithDateOutput.opEmploymentSet.targetWorkTypeByAppLst')
+        , (item: TargetWorkTypeByApp) => item.appType == ApplicationType.ABSENCE_APPLICATION && item.opHolidayAppType == HolidayAppType.SUBSTITUTE_HOLIDAY && !item.opHolidayTypeUse));
+        // 休暇申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係あり)．雇用別申請承認設定．申請別対象勤務種類．休暇種類を利用しない = false
+        // AND　休暇申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係あり)．雇用別申請承認設定．申請別対象勤務種類．休暇申請の種類 = 欠勤
+        let c1_5 =
+        !_.isNil(_.find(_.get(self.model, 'appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoWithDateOutput.opEmploymentSet.targetWorkTypeByAppLst')
+        , (item: TargetWorkTypeByApp) => item.appType == ApplicationType.ABSENCE_APPLICATION && item.opHolidayAppType == HolidayAppType.ABSENCE && !item.opHolidayTypeUse));
+        // 休暇申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係あり)．雇用別申請承認設定．申請別対象勤務種類．休暇種類を利用しない = false
+        // AND　休暇申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係あり)．雇用別申請承認設定．申請別対象勤務種類．休暇申請の種類 = 特別休暇
+        let c1_6 =
+        !_.isNil(_.find(_.get(self.model, 'appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoWithDateOutput.opEmploymentSet.targetWorkTypeByAppLst')
+        , (item: TargetWorkTypeByApp) => item.appType == ApplicationType.ABSENCE_APPLICATION && item.opHolidayAppType == HolidayAppType.SPECIAL_HOLIDAY && !item.opHolidayTypeUse));
+        // 休暇申請起動時の表示情報．休暇残数情報．積休管理区分　＝　管理する
+        let c1_7 = true;
     }
 
     public openKDL002(type?: string) {
