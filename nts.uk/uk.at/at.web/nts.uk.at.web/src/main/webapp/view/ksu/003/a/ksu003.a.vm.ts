@@ -217,6 +217,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				cssEndTime1: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(6)",
 				cssStartTime2: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(7)",
 				cssEndTime2: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(8)";
+				
+				let checkErr = _.filter($("#extable-ksu003").data("errors"), (x: any)=> {
+					return x.rowIndex === index;
+				})
+				if (checkErr.length > 0 && $("#extable-ksu003").data("errors").length > 0 && dataCell.detail.value != "") {
+					return;
+				}
 
 				if(empId === self.employeeIdLogin){
 					color = "#94b7fe";
@@ -364,8 +371,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									self.checkTypeChange.push({type : "startTime1"});
 									if (x.startTime1 == "") {
 										self.checkMes += 1;
-										self.checkTimeInfo(dataMid.worktypeCode, dataMid.worktimeCode, "",
-							dataMid.startTime2.trim(), dataMid.endTime1.trim(), dataMid.endTime2.trim(), columnKey);
 									}
 								}
 								if (columnKey === "startTime2") {
@@ -374,8 +379,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									self.checkTypeChange.push({type : "startTime2"});
 									if (x.startTime2 == "") {
 										self.checkMes += 1;
-										self.checkTimeInfo(dataMid.worktypeCode, dataMid.worktimeCode, dataMid.startTime1,
-							"", dataMid.endTime1.trim(), dataMid.endTime2.trim(), columnKey);
+
 									}
 								}
 								if (columnKey === "endTime1") {
@@ -384,8 +388,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									self.checkTypeChange.push({type : "endTime1"});
 									if (x.endTime1 == "") {
 										self.checkMes += 1000;
-										self.checkTimeInfo(dataMid.worktypeCode, dataMid.worktimeCode, dataMid.startTime1,
-							dataMid.startTime2.trim(), "", dataMid.endTime2.trim(), columnKey);
+
 									}
 								}
 								if (columnKey === "endTime2") {
@@ -394,8 +397,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									self.checkTypeChange.push({type : "endTime2"});
 									if (x.endTime2 == "") {
 										self.checkMes += 1000;
-										self.checkTimeInfo(dataMid.worktypeCode, dataMid.worktimeCode, dataMid.startTime1,
-							dataMid.startTime2.trim(), dataMid.endTime1.trim(), "", columnKey);
+
 									}
 								}
 							}
