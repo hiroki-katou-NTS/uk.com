@@ -33,7 +33,8 @@ const template = `
 								name: 'monthly-working-hours',
 								params: {
 											screenData:screenData,
-											screenMode:screenMode
+											screenMode:screenMode,
+											startYM:startYM
 										}
 								}">
 							</div>
@@ -72,9 +73,13 @@ class ScreenGComponent extends ko.ViewModel {
 		vm.startYM = params.startYM;
 		vm.$blockui('invisible')
 			.then(() => vm.$ajax(API_G_URL.START_PAGE))
-			.done((data) => {
-
-				vm.screenData().updateData(data);
+			.done((startData) => {
+				vm.$blockui('invisible');
+				vm.$ajax(API_G_URL.CHANGE_YEAR + 9999).done((data: Array<IMonthlyWorkTimeSetCom>) => {
+					vm.startYM(data[0].yearMonth);
+					vm.screenData().updateData(startData);
+					vm.screenData().initDumpData(data[0].yearMonth);
+				}).always(() => { vm.$blockui('clear'); });
 			})
 			.always(() => vm.$blockui('clear'));
 
@@ -101,7 +106,7 @@ class ScreenGComponent extends ko.ViewModel {
 				let isChanged = vm.screenData().saveToUnSaveList();
 				if (isChanged) { vm.screenData().setUpdateYear(vm.screenData().serverData.year); }
 				vm.screenData().serverData = unsaveItem;
-				vm.screenData().monthlyWorkTimeSetComs(_.map(unsaveItem.data, (item: IMonthlyWorkTimeSetCom) => { return new MonthlyWorkTimeSetCom(item); }));
+				vm.screenData().monthlyWorkTimeSetComs(_.map(unsaveItem.data, (item: IMonthlyWorkTimeSetCom) => { return new MonthlyWorkTimeSetCom(vm.screenData(), item); }));
 			} else {
 				let isChanged = vm.screenData().saveToUnSaveList();
 				if (isChanged) { vm.screenData().setUpdateYear(vm.screenData().serverData.year); }

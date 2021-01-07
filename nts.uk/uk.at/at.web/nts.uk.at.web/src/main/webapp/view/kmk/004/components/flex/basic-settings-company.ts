@@ -174,12 +174,12 @@ class BasicSettingsCompany extends ko.ViewModel {
 		if (vm.screenMode == 'Com_Person')
 			vm.screenData().alreadySettingList(
 				_.map(data, (selectedId) => {
-							let emp: any = _.find($('#employee-list').getDataList(), ['id', selectedId]);
-							if (!emp) {
-								return { code: null, isAlreadySetting: false };
-							}
-							return { code: emp.code, isAlreadySetting: true };
-						})
+					let emp: any = _.find($('#employee-list').getDataList(), ['id', selectedId]);
+					if (!emp) {
+						return { code: null, isAlreadySetting: false };
+					}
+					return { code: emp.code, isAlreadySetting: true };
+				})
 			);
 	}
 

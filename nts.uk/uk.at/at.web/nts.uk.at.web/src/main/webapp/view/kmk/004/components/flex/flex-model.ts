@@ -98,8 +98,8 @@ module nts.uk.at.kmk004.components.flex {
 				}
 				workTimes.push({ yearMonth: yearMonth, laborTime: { withinLaborTime: null, legalLaborTime: null, weekAvgTime: null, checkbox: false } });
 			}
-			let setComs = _.map(workTimes, (item: IMonthlyWorkTimeSetCom) => { return new MonthlyWorkTimeSetCom(item); });
-			console.log(setComs);
+			let setComs = _.map(workTimes, (item: IMonthlyWorkTimeSetCom) => { return new MonthlyWorkTimeSetCom(vm, item); });
+
 			vm.monthlyWorkTimeSetComs(setComs);
 		}
 
@@ -108,7 +108,7 @@ module nts.uk.at.kmk004.components.flex {
 
 			vm.serverData = { year: year, data: data };
 
-			vm.monthlyWorkTimeSetComs(_.map(data, (item: IMonthlyWorkTimeSetCom) => { return new MonthlyWorkTimeSetCom(item); }));
+			vm.monthlyWorkTimeSetComs(_.map(data, (item: IMonthlyWorkTimeSetCom) => { return new MonthlyWorkTimeSetCom(vm, item); }));
 		}
 
 		clearUpdateYear(year: number) {
@@ -189,7 +189,7 @@ module nts.uk.at.kmk004.components.flex {
 				oldData = vm.serverData ? vm.serverData.data : [];
 			let isChanged = false;
 			if (oldData.length) {
-				let compareOldData = ko.toJS(_.map(oldData, (item: IMonthlyWorkTimeSetCom) => { return new MonthlyWorkTimeSetCom(item); })),
+				let compareOldData = ko.toJS(_.map(oldData, (item: IMonthlyWorkTimeSetCom) => { return new MonthlyWorkTimeSetCom(vm, item); })),
 					newData = ko.toJS(vm.monthlyWorkTimeSetComs()),
 					oldYear = vm.serverData.year;
 				isChanged = _.differenceWith(compareOldData, newData, _.isEqual).length > 0;
@@ -220,11 +220,11 @@ module nts.uk.at.kmk004.components.flex {
 			return vm.serverYears().length > 0 ? vm.serverYears().indexOf(Number(vm.selectedYear())) != -1 : false;
 		}
 
-		setNewYear(year: number) {
+		setNewYear(startYM: number, year: number) {
 			const vm = this;
 			let workTimes = [];
 
-			let startMonth = ko.toJS(vm.monthlyWorkTimeSetComs())[0].yearMonth % 100;
+			let startMonth = startYM % 100;
 
 			for (let i = 0; i < 12; i++) {
 				let ym = ((year * 100 + Math.floor((startMonth + i) / 12) * 100)) + ((startMonth + i) % 12);
@@ -236,7 +236,7 @@ module nts.uk.at.kmk004.components.flex {
 
 			vm.serverData = { year: year, data: workTimes };
 			vm.unSaveSetComs.push({ year: year, data: workTimes });
-			let setComs = _.map(workTimes, (item: IMonthlyWorkTimeSetCom) => { return new MonthlyWorkTimeSetCom(item); });
+			let setComs = _.map(workTimes, (item: IMonthlyWorkTimeSetCom) => { return new MonthlyWorkTimeSetCom(vm, item); });
 			vm.monthlyWorkTimeSetComs(setComs);
 		}
 
@@ -293,10 +293,10 @@ module nts.uk.at.kmk004.components.flex {
 		//月労働時間
 		laborTime: KnockoutObservable<MonthlyLaborTime>;
 
-		constructor(param: IMonthlyWorkTimeSetCom) {
+		constructor(screen: FlexScreenData, param: IMonthlyWorkTimeSetCom) {
 			this.yearMonth = param.yearMonth;
 			this.yearMonthText = param.yearMonth.toString().substring(4).replace(/^0+/, "");
-			this.laborTime = ko.observable(new MonthlyLaborTime(param.laborTime));
+			this.laborTime = ko.observable(new MonthlyLaborTime(screen, param.laborTime));
 		}
 	}
 
@@ -310,13 +310,34 @@ module nts.uk.at.kmk004.components.flex {
 
 		checkbox: KnockoutObservable<boolean> = ko.observable(true);
 
-		constructor(param: IMonthlyLaborTime) {
+		constructor(screen: FlexScreenData, param: IMonthlyLaborTime) {
 			this.withinLaborTime(param.withinLaborTime);
 			this.legalLaborTime(param.legalLaborTime);
 			this.weekAvgTime(param.weekAvgTime);
 			this.checkbox(param.checkbox);
 
+			this.withinLaborTime.subscribe(() => {
+				if (screen.selectedYear()) {
+					screen.setUpdateYear(screen.selectedYear());
+				}
+			});
+
+			this.legalLaborTime.subscribe(() => {
+				if (screen.selectedYear()) {
+					screen.setUpdateYear(screen.selectedYear());
+				}
+			});
+
+			this.weekAvgTime.subscribe(() => {
+				if (screen.selectedYear()) {
+					screen.setUpdateYear(screen.selectedYear());
+				}
+			});
+
 			this.checkbox.subscribe((state) => {
+				if (screen.selectedYear()) {
+					screen.setUpdateYear(screen.selectedYear());
+				}
 				if (state) {
 					this.withinLaborTime(0);
 					this.legalLaborTime(0);
