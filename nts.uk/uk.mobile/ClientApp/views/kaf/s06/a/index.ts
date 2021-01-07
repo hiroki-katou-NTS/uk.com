@@ -2,7 +2,7 @@ import { _, Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/s00';
 import { KafS00ShrComponent, AppType, Application, InitParam } from 'views/kaf/s00/shr';
-import { AppAbsenceStartInfoDto, StartMobileParam, NotUseAtr, TimeZoneUseDto, HolidayAppTypeDispNameDto, ManageDistinct, TargetWorkTypeByApp, ApplicationType, HolidayAppType } from '../a/define.interface';
+import { MaxNumberDayType, AppAbsenceStartInfoDto, StartMobileParam, NotUseAtr, TimeZoneUseDto, HolidayAppTypeDispNameDto, ManageDistinct, TargetWorkTypeByApp, ApplicationType, HolidayAppType } from '../a/define.interface';
 import { drop } from 'lodash';
 
 @component({
@@ -30,7 +30,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
 
     public selectedValue = null;
     public time: number = 0;
-    public checkBox: Array<number> = [1];
+    public checkBoxC7: false;
     public text: null;
     public model: Model = {} as Model;
     public dropdownList = [
@@ -45,7 +45,11 @@ export class KafS06AComponent extends KafS00ShrComponent {
     ];
     @Prop() 
     public readonly params: InitParam;
+    
+    public get HolidayAppType() {
 
+        return HolidayAppType;
+    }
     // ※2 = ○　OR　※3 = ○　OR　※4 = ○　OR　※5 = ○　
     public get c1() {
         const self = this;
@@ -84,15 +88,16 @@ export class KafS06AComponent extends KafS00ShrComponent {
 
         return c5 == NotUseAtr.USE;
     }
-
+    // UI処理【1】
     public get c6() {
 
         return true;
     }
-
+    // 「A6_7」にチェックある場合
     public get c7() {
+        const self = this;
 
-        return true;
+        return self.checkBoxC7 || false;
     }
     // 休暇申請起動時の表示情報．就業時間帯表示フラグ = true
     public get c9() {
@@ -135,9 +140,8 @@ export class KafS06AComponent extends KafS00ShrComponent {
     // 「A4_3」が「時間消化」を選択している
     public get c12() {
         const self = this;
-        let model = self.model as Model;
 
-        return true;
+        return self.selectedValue == HolidayAppType.DIGESTION_TIME;
     }
     // ※12 = ○　AND　※13-1 = ○　AND　※13-2 = ○
     public get c13() {
@@ -167,42 +171,46 @@ export class KafS06AComponent extends KafS00ShrComponent {
         const self = this;
         let model = self.model as Model;
         
-        return true;
+        return self.c12 || self.c14_1 || self.c14_2;
     }
     // 休暇申請起動時の表示情報．休暇申請の反映．時間休暇を反映する．時間代休 = する
     public get c14_1() {
         const self = this;
         let model = self.model as Model;
-        
-        return true;
+        let c14_1 = _.get(model, 'appAbsenceStartInfoDto.vacationApplicationReflect.timeLeaveReflect.substituteLeaveTime') == NotUseAtr.USE;
+       
+        return c14_1;
     }
     // 休暇申請起動時の表示情報．休暇残数情報．代休管理区分．時間代休管理区分 = true
     public get c14_2() {
         const self = this;
         let model = self.model as Model;
+        let c14_2 = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.substituteLeaveManagement.timeAllowanceManagement') == ManageDistinct.YES;
         
-        return true;
+        return c14_2;
     }
     // ※12 = ○　AND　※15-1 = ○　AND　※15-2 = ○
     public get c15() {
         const self = this;
         let model = self.model as Model;
         
-        return true;
+        return self.c12 || self.c15_1 || self.c15_2;
     }
     // 休暇申請起動時の表示情報．休暇申請の反映．時間休暇を反映する．時間年休=する
     public get c15_1() {
         const self = this;
         let model = self.model as Model;
+        let c15_1 = _.get(model, 'appAbsenceStartInfoDto.vacationApplicationReflect.timeLeaveReflect.annualVacationTime') == NotUseAtr.USE;
         
-        return true;
+        return c15_1;
     }
     // 休暇申請起動時の表示情報．休暇残数情報．年休管理．時間年休管理区分 = true
     public get c15_2() {
         const self = this;
         let model = self.model as Model;
+        let c15_2 = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.annualLeaveManagement.timeAnnualLeaveManage') == ManageDistinct.YES;
         
-        return true;
+        return c15_2;
     }
 
     // ※12 = ○　AND　※16-1 = ○　AND　※16-2 = ○　AND　※16-3 = ○
@@ -210,112 +218,122 @@ export class KafS06AComponent extends KafS00ShrComponent {
         const self = this;
         let model = self.model as Model;
         
-        return true;
+        return self.c12 || self.c16_1 || self.c16_2 || self.c16_3;
     }
     // 休暇申請起動時の表示情報．休暇申請の反映．時間休暇を反映する．子看護= する
     public get c16_1() {
         const self = this;
         let model = self.model as Model;
-        
-        return true;
+        let c16_1 = _.get(model, 'appAbsenceStartInfoDto.vacationApplicationReflect.timeLeaveReflect.childNursing') == NotUseAtr.USE;
+
+        return c16_1;
     }
     // 休暇申請起動時の表示情報．休暇残数情報．介護看護休暇管理．子の看護管理区分 = true
     public get c16_2() {
         const self = this;
         let model = self.model as Model;
+        let c16_2 = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.nursingCareLeaveManagement.childNursingManagement') == ManageDistinct.YES;
         
-        return true;
+        return c16_2;
     }
     // 休暇申請起動時の表示情報．休暇残数情報．介護看護休暇管理．時間子の看護の管理区分 = true
     public get c16_3() {
         const self = this;
         let model = self.model as Model;
+        let c16_3 = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.nursingCareLeaveManagement.timeChildNursingManagement') == ManageDistinct.YES; 
         
-        return true;
+        return c16_3;
     }
     // ※12 = ○　AND　※17-1 = ○　AND　※17-2 = ○　AND　※17-3 = ○
     public get c17() {
         const self = this;
         let model = self.model as Model;
         
-        return true;
+        return self.c12 || self.c17_1 || self.c17_2 || self.c17_3;
     }
     // 休暇申請起動時の表示情報．休暇申請の反映．時間休暇を反映する．介護 = する
     public get c17_1() {
         const self = this;
         let model = self.model as Model;
+        let c17_1 = _.get(model, 'appAbsenceStartInfoDto.vacationApplicationReflect.timeLeaveReflect.nursing') == NotUseAtr.USE;
         
-        return true;
+        return c17_1;
     }
     // 休暇申請起動時の表示情報．休暇残数情報．介護看護休暇管理．介護管理区分 = true
     public get c17_2() {
         const self = this;
         let model = self.model as Model;
-        
-        return true;
+        let c17_2 = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.nursingCareLeaveManagement.longTermCareManagement') == ManageDistinct.YES;
+
+        return c17_2;
     }
     // 休暇申請起動時の表示情報．休暇残数情報．介護看護休暇管理．時間介護の管理区分 = true
     public get c17_3() {
         const self = this;
         let model = self.model as Model;
+        let c17_3 = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.nursingCareLeaveManagement.timeCareManagement') == ManageDistinct.YES;
         
-        return true;
+        return c17_3;
     }
     // ※18-1 = ○　AND　※18-2 = ○　AND　※18-3 = ○
     public get c18() {
         const self = this;
         let model = self.model as Model;
         
-        return true;
+        return self.c18_1 || self.c18_2 || self.c18_3;
     }
     // 「休暇種類」が「特別休暇」を選択している
     public get c18_1() {
         const self = this;
-        let model = self.model as Model;
         
-        return true;
+        return self.selectedValue == HolidayAppType.SPECIAL_HOLIDAY;
     }
     // 休暇申請起動時の表示情報．特別休暇表情報．事象に応じた特休フラグ = true 
     public get c18_2() {
         const self = this;
         let model = self.model as Model;
-        
-        return true;
+        let c18_2 = _.get(model, 'appAbsenceStartInfoDto.specAbsenceDispInfo.specHdForEventFlag');
+
+        return c18_2 || false;
     }
     // 休暇申請起動時の表示情報．特別休暇表情報．事象に対する特別休暇．上限日数．種類 =「続柄ごとに上限を設定する」
     public get c18_3() {
         const self = this;
         let model = self.model as Model;
-        
-        return true;
+        let c18_3 = _.get(model, 'appAbsenceStartInfoDto.specAbsenceDispInfo.specHdEvent.maxNumberDay') == MaxNumberDayType.REFER_RELATIONSHIP;
+
+        return c18_3;
     }
     // ※18 = ○　AND　休暇申請起動時の表示情報．特別休暇表情報．事象に対する特別休暇．忌引とする = true
     public get c19() {
         const self = this;
         let model = self.model as Model;
+        let c19 = _.get(model, 'appAbsenceStartInfoDto.specAbsenceDispInfo.specHdEvent.makeInvitation') == NotUseAtr.USE;
         
-        return true;
+        return c19;
     }
     // ※18 = ○　AND　休暇申請起動時の表示情報．特別休暇表情報．続柄毎の上限日数リスト．3親等以内とする = true
     public get c20() {
         const self = this;
         let model = self.model as Model;
+        let c20 = _.get(model, 'appAbsenceStartInfoDto.specAbsenceDispInfo.dateSpecHdRelationLst[0].threeParentOrLess');
         
-        return true;
+        return self.c18 && (c20 || false);
     }
     // ※21-1 = ○　AND　※21-2 = ○
     public get c21() {
         const self = this;
         let model = self.model as Model;
         
-        return true;
+        return self.c21_1 && self.c21_2;
     }
     // 休暇申請起動時の表示情報. 休暇残数情報．代休管理．紐づけ管理区分 = 管理する
     public get c21_1() {
         const self = this;
         let model = self.model as Model;
+        let c21_1 = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.substituteLeaveManagement.linkingManagement') == ManageDistinct.YES;
         
-        return true;
+        return c21_1;
     }
     // todo
     public get c21_2() {
@@ -329,16 +347,16 @@ export class KafS06AComponent extends KafS00ShrComponent {
         const self = this;
         let model = self.model as Model;
         
-        return true;
+        return self.c22_1 && self.c22_2;
 
     }
     // 休暇申請起動時の表示情報. 休暇残数情報．振休管理．紐づけ管理区分」= 管理する
     public get c22_1() {
         const self = this;
         let model = self.model as Model;
+        let c22_1 = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.holidayManagement.linkingManagement') == ManageDistinct.YES;
         
-        return true;
-
+        return c22_1;
     }
     // todo
     public get c22_2() {
@@ -573,11 +591,12 @@ export class KafS06AComponent extends KafS00ShrComponent {
             text: '--- 選択してください ---'
         });
         self.dropdownList = dropDownList;
+        self.selectedValue = self.getSelectedValue();
         // 
 
     }
 
-    public getSelectedValue() {
+    public getSelectedValue(): HolidayAppType {
         const self = this;
         if (!self.model.appAbsenceStartInfoDto) {
 
@@ -608,7 +627,58 @@ export class KafS06AComponent extends KafS00ShrComponent {
         !_.isNil(_.find(_.get(self.model, 'appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoWithDateOutput.opEmploymentSet.targetWorkTypeByAppLst')
         , (item: TargetWorkTypeByApp) => item.appType == ApplicationType.ABSENCE_APPLICATION && item.opHolidayAppType == HolidayAppType.SPECIAL_HOLIDAY && !item.opHolidayTypeUse));
         // 休暇申請起動時の表示情報．休暇残数情報．積休管理区分　＝　管理する
-        let c1_7 = true;
+        let c1_7 = self.model.appAbsenceStartInfoDto.remainVacationInfo.accumulatedRestManagement.accumulatedManage == ManageDistinct.YES;
+        // 休暇申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係あり)．雇用別申請承認設定．申請別対象勤務種類．休暇種類を利用しない = false
+        // AND　休暇申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係あり)．雇用別申請承認設定．申請別対象勤務種類．休暇申請の種類 = 積立年休
+        let c1_8 = 
+        !_.isNil(_.find(_.get(self.model, 'appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoWithDateOutput.opEmploymentSet.targetWorkTypeByAppLst')
+        , (item: TargetWorkTypeByApp) => item.appType == ApplicationType.ABSENCE_APPLICATION && item.opHolidayAppType == HolidayAppType.YEARLY_RESERVE && !item.opHolidayTypeUse));
+        // 休暇申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係あり)．雇用別申請承認設定．申請別対象勤務種類．休暇種類を利用しない = false
+        // AND　休暇申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係あり)．雇用別申請承認設定．申請別対象勤務種類．休暇申請の種類 = 休日
+        let c1_9 =
+        !_.isNil(_.find(_.get(self.model, 'appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoWithDateOutput.opEmploymentSet.targetWorkTypeByAppLst')
+        , (item: TargetWorkTypeByApp) => item.appType == ApplicationType.ABSENCE_APPLICATION && item.opHolidayAppType == HolidayAppType.HOLIDAY && !item.opHolidayTypeUse));
+        // 休暇申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係あり)．雇用別申請承認設定．申請別対象勤務種類．休暇種類を利用しない = false
+        // AND　休暇申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係あり)．雇用別申請承認設定．申請別対象勤務種類．休暇申請の種類 = 時間消化
+        let c1_10 =
+        !_.isNil(_.find(_.get(self.model, 'appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoWithDateOutput.opEmploymentSet.targetWorkTypeByAppLst')
+        , (item: TargetWorkTypeByApp) => item.appType == ApplicationType.ABSENCE_APPLICATION && item.opHolidayAppType == HolidayAppType.DIGESTION_TIME && !item.opHolidayTypeUse));
+
+        // ※1-1 = ○　AND　※1-2 = ○ -> 年次有給
+        if (c1_1 && c1_2) {
+
+            return HolidayAppType.ANNUAL_PAID_LEAVE;
+        }
+        // ※1-3 = ○　AND　※1-4 = ○ -> 代休
+        if (c1_3 && c1_4) {
+
+            return HolidayAppType.SUBSTITUTE_HOLIDAY;
+        }
+        // ※1-5 = ○ -> 欠勤
+        if (c1_5) {
+
+            return HolidayAppType.ABSENCE;
+        }
+        // ※1-6 = ○ -> 特別休暇
+        if (c1_6) {
+
+            return HolidayAppType.SPECIAL_HOLIDAY;
+        }
+        // ※1-7 = ○　AND　※8 = ○ -> 積立年休
+        if (c1_7 && c1_8) {
+
+            return HolidayAppType.YEARLY_RESERVE;
+        }
+        // ※1-9 = ○ -> 休日
+        if (c1_9) {
+
+            return HolidayAppType.HOLIDAY;
+        }
+        // ※1-10 = ○ -> 時間消化
+        if (c1_10) {
+
+            return HolidayAppType.DIGESTION_TIME;
+        }
     }
 
     public openKDL002(type?: string) {

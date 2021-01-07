@@ -146,24 +146,55 @@ export interface SubstituteLeaveManagementDto {
     // 代休管理区分
     substituteLeaveManagement: number;
 }
+export interface AccumulatedRestManagementDto {
+    // 積休管理区分
+    accumulatedManage: number;
+}
+export interface NursingCareLeaveManagementDto {
+    // 子の看護管理区分
+    childNursingManagement: number;
+
+    // 時間介護の消化単位
+    timeCareDigestive: number;
+
+    // 時間介護の管理区分
+    timeCareManagement: number;
+
+    // 時間子の看護の消化単位
+    timeChildNursingDigestive: number;
+
+    // 時間子の看護の管理区分
+    timeChildNursingManagement: number;
+
+    // 介護管理区分
+    longTermCareManagement: number;
+}
+
+export interface HolidayManagementDto {
+    // 紐づけ管理区分
+    linkingManagement: number;
+    
+    // 振休管理区分
+    holidayManagement: number;
+}
 interface RemainVacationInfoDto {
     // 年休管理
     annualLeaveManagement: AnualLeaveManagementDto;
 
     // 積休管理
-    accumulatedRestManagement: any;
+    accumulatedRestManagement: AccumulatedRestManagementDto;
 
     // 代休管理
     substituteLeaveManagement: SubstituteLeaveManagementDto;
 
     // 振休管理
-    holidayManagement: any;
+    holidayManagement: HolidayManagementDto;
 
     // 60H超休管理
     overtime60hManagement: Overtime60HManagementDto;
 
     // 介護看護休暇管理
-    nursingCareLeaveManagement: any;
+    nursingCareLeaveManagement: NursingCareLeaveManagementDto;
 
     // 年休残数
     yearRemain: number;
@@ -248,6 +279,102 @@ export interface HolidayApplicationSettingDto {
     // 休暇申請種類表示名
     dispNames: Array<HolidayAppTypeDispNameDto>;
 }
+export enum MaxNumberDayType {
+    LIMIT_FIXED_DAY = 1,
+    REFER_RELATIONSHIP = 2
+}
+export interface SpecialHolidayEventDto {
+    /* 会社ID */
+    companyId: string;
+
+    /* 特別休暇枠NO */
+    specialHolidayEventNo: number;
+
+    /* 上限日数の設定方法 */
+    maxNumberDay: MaxNumberDayType;
+
+    /* 固定上限日数 */
+    fixedDayGrant: number;
+
+    /* 忌引とする */
+    makeInvitation: number;
+
+    /* 休日を取得日に含める */
+    includeHolidays: number;
+
+    ageLimit: number;
+
+    /* 性別条件 */
+    genderRestrict: number;
+
+    /* 雇用条件 */
+    restrictEmployment: number;
+
+    /* 分類条件 */
+    restrictClassification: number;
+
+    /* 性別 */
+    gender: number;
+
+    /* 年齢範囲 */
+    ageRange: any;
+
+    /* 年齢基準 */
+    ageStandard: number;
+
+    /* 年齢基準 */
+    ageStandardBaseDate: number;
+
+    /* メモ */
+    memo: string;
+
+    /* 分類一覧 */
+    clsList: Array<any>;
+
+    /* 雇用一覧 */
+    empList: Array<any>;
+}
+export interface DateSpecHdRelationOutput {
+    //コード
+    relationCD: string;
+    //続柄名
+    relationName: string;
+    //上限日数
+    maxDate: number;
+    /* 3親等以内とする */
+    threeParentOrLess: boolean;
+}
+export interface SpecAbsenceDispInfoDto {
+    /**
+     * 事象に応じた特休フラグ
+     */
+    specHdForEventFlag: boolean;
+
+    /**
+     * 事象に対する特別休暇
+     */
+    specHdEvent: SpecialHolidayEventDto;
+
+    /**
+     * 特休枠NO
+     */
+    frameNo: number;
+
+    /**
+     * 上限日数
+     */
+    maxDay: number;
+
+    /**
+     * 喪主加算日数
+     */
+    dayOfRela: number;
+
+    /**
+     * 続柄毎の上限日数リスト
+     */
+    dateSpecHdRelationLst: Array<DateSpecHdRelationOutput>;
+}
 export interface AppAbsenceStartInfoDto {
     // 休出代休紐付け管理
     leaveComDayOffManas: Array<any>;
@@ -283,7 +410,7 @@ export interface AppAbsenceStartInfoDto {
     workTypeNotRegister: boolean;
 
     // 特別休暇表示情報
-    specAbsenceDispInfo: any;
+    specAbsenceDispInfo: SpecAbsenceDispInfoDto;
 
     // 選択中の勤務種類
     selectedWorkTypeCD: string;

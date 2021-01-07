@@ -53,7 +53,7 @@
         </button>
         <!--A6_7-->
         <div>
-            <nts-checkbox v-model="checkBox" v-bind:value="1">{{'KAFS06_54' | i18n}}</nts-checkbox>
+            <nts-checkbox v-model="checkBoxC7" v-bind:value="true">{{'KAFS06_54' | i18n}}</nts-checkbox>
         </div>
         <!--A6_4-->
         <span class="textSize uk-text-dark-gray">{{ "KAFS06_13" | i18n }}</span>
