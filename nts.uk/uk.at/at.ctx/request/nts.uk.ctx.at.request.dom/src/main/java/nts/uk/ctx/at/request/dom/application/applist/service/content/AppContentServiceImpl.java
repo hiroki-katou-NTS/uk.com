@@ -1102,7 +1102,7 @@ public class AppContentServiceImpl implements AppContentService {
 						achievementDetail.getOpLeaveTime().orElse(null), 
 						Optional.ofNullable(achievementDetail.getWorkTimeCD()), 
 						achievementDetail.getOpWorkTimeName(), 
-						achiveOp.getApplicationTime().stream().map(x -> new AppTimeFrameData(
+						achiveOp==null ? Collections.emptyList() : achiveOp.getApplicationTime().stream().map(x -> new AppTimeFrameData(
 								null, 
 								x.getFrameNo().v(), 
 								x.getAttendanceType(), 
