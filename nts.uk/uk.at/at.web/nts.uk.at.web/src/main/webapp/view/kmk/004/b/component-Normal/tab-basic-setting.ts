@@ -95,7 +95,8 @@ module nts.uk.at.view.kmk004.b {
             }
 
             .table-view .label-row .label-column {
-                border: 1px solid gray;
+				border: 1px solid gray;
+				width: 151px;
               }
 
 			.table-view td, .table-view th{

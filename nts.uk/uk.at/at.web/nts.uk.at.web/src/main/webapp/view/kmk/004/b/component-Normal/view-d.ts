@@ -165,11 +165,12 @@ module nts.uk.at.view.kmk004.b {
 					vm.$dialog.info({ messageId: 'Msg_15' });
 				}).then(() => {
 					vm.selectedYear.valueHasMutated();
+				})
+				.then(() => {
+					$(document).ready(function () {
+						$('.listbox').focus();
+					});
 				});
-			$(document).ready(function () {
-				vm.change.valueHasMutated();
-				$('.listbox').focus();
-			});
 		}
 
 		copy() {
@@ -181,11 +182,14 @@ module nts.uk.at.view.kmk004.b {
 				selected: ko.unwrap(vm.emloyment.code),
 				year: ko.unwrap(vm.selectedYear),
 				laborAttr: 0,
-			}).then(() => {
+			})
+			.then(() => {
 				vm.change.valueHasMutated();
-			});
-			$(document).ready(function () {
-				$('.listbox').focus();
+			})
+			.then(() => {
+				$(document).ready(function () {
+					$('.listbox').focus();
+				});
 			});
 		}
 
@@ -221,14 +225,13 @@ module nts.uk.at.view.kmk004.b {
 						})
 						.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
 						.then(() => {
-							$(document).ready(function () {
-								$('.listbox').focus();
-							});
-						}).then(() => {
 							vm.$errors('clear');
 						}).then(() => {
 							vm.change.valueHasMutated();
 							vm.selectedYear.valueHasMutated();
+							$(document).ready(function () {
+								$('.listbox').focus();
+							});
 						})
 						.always(() => vm.$blockui("clear"));
 				})
@@ -240,7 +243,7 @@ module nts.uk.at.view.kmk004.b {
 				type: vm.type,
 				selectId: ko.unwrap(vm.emloyment.code),
 				nameSynthetic: ko.unwrap(vm.emloyment.name),
-				isSetting: !ko.unwrap(vm.emloyment.isAlreadySetting)
+				isSetting: !ko.unwrap(vm.checkSeting)
 			};
 			vm.$window.modal('/view/kmk/004/f/index.xhtml', params).then(() => {
 				vm.change.valueHasMutated();

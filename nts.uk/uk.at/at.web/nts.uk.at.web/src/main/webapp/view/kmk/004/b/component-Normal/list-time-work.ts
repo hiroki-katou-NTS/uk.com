@@ -60,6 +60,7 @@ module nts.uk.at.view.kmk004.b {
                             <!-- ko ifnot: $parent.checkEmployee -->
                                 <input class="lable-input" 
                                     data-bind="ntsTimeEditor: {
+                                        name:'#[KMK004_222]',
                                         value: $data.laborTime,
                                         enable: $data.check, 
                                         inputFormat: 'time',
@@ -339,6 +340,7 @@ module nts.uk.at.view.kmk004.b {
 
                         vm.workTimes(data1.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
                         vm.mode('Update');
+                        vm.total('');
                     }
                 });
             ;

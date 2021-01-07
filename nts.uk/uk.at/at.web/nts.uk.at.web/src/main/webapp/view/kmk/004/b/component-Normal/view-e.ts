@@ -217,17 +217,15 @@ module nts.uk.at.view.kmk004.b {
 								}));
 								vm.years.push(new IYear(ko.unwrap(vm.selectedYear) as number, false));
 								vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
-							})
-							.then(() => {
-								$(document).ready(function () {
-									$('.listbox').focus();
-								});
 							}).then(() => {
 								vm.selectedYear.valueHasMutated();
 								vm.change.valueHasMutated();
 							})
 							.then(() => {
 								vm.$errors('clear');
+								$(document).ready(function () {
+									$('.listbox').focus();
+								});
 							});
 					}
 				});
@@ -242,11 +240,14 @@ module nts.uk.at.view.kmk004.b {
 				selected: ko.unwrap(vm.employees),
 				year: ko.unwrap(vm.model.code),
 				laborAttr: 0,
-			}).then(() => {
+			})
+			.then(() => {
 				vm.change.valueHasMutated();
-			});
-			$(document).ready(function () {
-				$('.listbox').focus();
+			})
+			.then(() => {
+				$(document).ready(function () {
+					$('.listbox').focus();
+				});
 			});
 		}
 
@@ -256,7 +257,7 @@ module nts.uk.at.view.kmk004.b {
 				type: vm.type,
 				selectId: ko.unwrap(vm.model.id),
 				nameSynthetic: ko.unwrap(vm.model.nameSynthetic),
-				isSetting: !ko.unwrap(vm.model.isAlreadySetting)
+				isSetting: !ko.unwrap(vm.checkSeting)
 			};
 			vm.$window.modal('/view/kmk/004/f/index.xhtml', params).then(() => {
 				vm.change.valueHasMutated();
@@ -293,13 +294,12 @@ module nts.uk.at.view.kmk004.b {
 						})
 						.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
 						.then(() => {
-							$(document).ready(function () {
-								$('.listbox').focus();
-							});
-						}).then(() => {
 							vm.$errors('clear');
 						}).then(() => {
 							vm.selectedYear.valueHasMutated();
+							$(document).ready(function () {
+								$('.listbox').focus();
+							});
 						})
 						.always(() => vm.$blockui("clear"));
 				})
