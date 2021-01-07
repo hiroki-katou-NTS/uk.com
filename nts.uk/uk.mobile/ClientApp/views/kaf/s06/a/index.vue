@@ -48,8 +48,8 @@
           class="btn btn-selection mt-2 mb-2"
         >
         <!--A6_3-->
-          <span class="badge badge-secondary">wortype code</span>
-          <span>worktype name</span>
+          <span class="badge badge-secondary">{{workType.code}}</span>
+          <span>{{workType.name}}</span>
         </button>
         <!--A6_7-->
         <div v-if="c9">
@@ -65,10 +65,10 @@
           v-bind:enable="true"
           class="btn btn-selection mt-2 mb-2"
         >
-          <span class="badge badge-secondary">wortime code</span>
-          <span>worktime name</span>
+          <span class="badge badge-secondary">{{workTime.code}}</span>
+          <span>{{workTime.name}}</span>
           <!--A6_6-->
-          <span class="d-block mt-1">9:30 ~ 11:30</span>
+          <span class="d-block mt-1">{{workTime.time}}</span>
         </button>
       </div>
     </div>
@@ -109,13 +109,13 @@
             <!--A9_2-->
             <span
                 class="border-customer col p-2 m-2 text-center">
-                {{"KAFS06_18" | i18n}}
+                {{"KAFS06_18" | i18n([A9_2])}}
             </span>
 
             <!--A9_3-->
             <span 
                 class="border-customer col p-2 m-2 text-center">
-                {{"KAFS06_19" | i18n}}
+                {{"KAFS06_19" | i18n([A9_3])}}
             </span>
 
 
@@ -124,13 +124,87 @@
             <!--A9_5-->
             <div class="row">
                 <div class="float_left col text-left textSize">{{'Com_ExsessHoliday' | i18n}}</div>
-                <div class="float_right col text-right textSize">{{'KAFS06_22' | i18n}}</div>
+                <div class="float_right col text-right textSize">{{'KAFS06_22' | i18n([A9_5])}}</div>
             </div>
             <!--A9_4-->
             <div class="card-body">
                 <nts-time-editor
                     v-model="time"
                     name="'Com_ExsessHoliday'"
+                    showTitle="false"
+                    v-bind:enable="true"
+                    time-input-type="time-duration"
+                />
+            </div>
+        </div>
+
+        <div v-if="c14">
+            <!--A9_7-->
+            <div class="row">
+                <div class="float_left col text-left textSize">{{'KAFS06_20' | i18n}}</div>
+                <div class="float_right col text-right textSize">{{'KAFS06_22' | i18n([A9_7])}}</div>
+            </div>
+            <!--A9_6-->
+            <div class="card-body">
+                <nts-time-editor
+                    v-model="time"
+                    name="'KAFS06_20'"
+                    showTitle="false"
+                    v-bind:enable="true"
+                    time-input-type="time-duration"
+                />
+            </div>
+        </div>
+
+        <div v-if="c15">
+            <!--A9_9-->
+            <div class="row">
+                <div class="float_left col text-left textSize">{{'KAFS06_21' | i18n}}</div>
+                <div class="float_right col text-right textSize">{{'KAFS06_22' | i18n([A9_9])}}</div>
+            </div>
+            <!--A9_8-->
+            <div class="card-body">
+                <nts-time-editor
+                    v-model="time"
+                    name="'KAFS06_21'"
+                    showTitle="false"
+                    v-bind:enable="true"
+                    time-input-type="time-duration"
+                />
+            </div>
+        </div>
+
+
+        <div v-if="c16">
+            <!--A9_11-->
+            <div class="row">
+                <div class="float_left col text-left textSize">{{'Com_ChildNurseHoliday' | i18n}}</div>
+                <div class="float_right col text-right textSize">{{'KAFS06_22' | i18n([A9_11])}}</div>
+            </div>
+            <!--A9_10-->
+            <div class="card-body">
+                <nts-time-editor
+                    v-model="time"
+                    name="'Com_ChildNurseHoliday'"
+                    showTitle="false"
+                    v-bind:enable="true"
+                    time-input-type="time-duration"
+                />
+            </div>
+        </div>
+
+
+        <div v-if="c17">
+            <!--A9_13-->
+            <div class="row">
+                <div class="float_left col text-left textSize">{{'Com_CareHoliday' | i18n}}</div>
+                <div class="float_right col text-right textSize">{{'KAFS06_22' | i18n([A9_13])}}</div>
+            </div>
+            <!--A9_12-->
+            <div class="card-body">
+                <nts-time-editor
+                    v-model="time"
+                    name="'Com_CareHoliday'"
                     showTitle="false"
                     v-bind:enable="true"
                     time-input-type="time-duration"
@@ -183,7 +257,7 @@
       
     </div>
     
-    <div v-if="true" class="card card-label mb-3">
+    <div v-if="c21" class="card card-label mb-3">
       <!--A11_1-->
       <div class="card-header uk-bg-accordion">
         <span>{{ "KAFS06_28" | i18n }}</span>
@@ -216,7 +290,11 @@
         </table>
         <!--A11_9-->
         <div align="center">
-            <button type="button" class="shadow-none btn rounded-pill btn-info">
+            <button 
+            type="button" 
+            v-bind:disabled="!(c23 && modeNew)"
+            v-on:click="openCDL()"
+            class="shadow-none btn rounded-pill btn-info">
               {{'KAFS06_32' | i18n}}
               <i class="fas fa-angle-double-right" aria-hidden="true"></i>
             </button>
@@ -231,7 +309,7 @@
 
 
 
-    <div v-if="true" class="card card-label mb-3">
+    <div v-if="c22" class="card card-label mb-3">
       <!--A12_1-->
       <div class="card-header uk-bg-accordion">
         <span>{{ "KAFS06_33" | i18n }}</span>
@@ -264,7 +342,11 @@
         </table>
         <!--A12_9-->
         <div align="center">
-            <button type="button" class="shadow-none btn rounded-pill btn-info">
+            <button 
+            type="button" 
+            v-bind:disabled="!(c23 && modeNew)"
+            v-on:click="openCDL()"
+            class="shadow-none btn rounded-pill btn-info">
               {{'KAFS06_36' | i18n}}
               <i class="fas fa-angle-double-right" aria-hidden="true"></i>
             </button>
