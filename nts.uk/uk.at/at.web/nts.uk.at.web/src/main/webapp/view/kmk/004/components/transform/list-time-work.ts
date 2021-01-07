@@ -134,9 +134,9 @@ module nts.uk.at.view.kmk004.components {
 				
 				if (total){
 					vm.total(first + ':' + last);
-				} else {
+				} else if (vm.checkNullYear()) {
 					vm.total('0:00');
-				}
+				} else vm.total('');
 
 				if (ko.unwrap(vm.selectedYear) != null) {
 					const index = _.map(ko.unwrap(vm.years), m => m.year.toString()).indexOf(ko.unwrap(vm.selectedYear).toString());
