@@ -2,7 +2,7 @@ import { _, Vue } from '@app/provider';
 import { component, Prop, Watch } from '@app/core/component';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/s00';
 import { KafS00ShrComponent, AppType, Application, InitParam } from 'views/kaf/s00/shr';
-import { WorkTypeDto, MaxNumberDayType, AppAbsenceStartInfoDto, StartMobileParam, NotUseAtr, TimeZoneUseDto, HolidayAppTypeDispNameDto, ManageDistinct, TargetWorkTypeByApp, ApplicationType, HolidayAppType } from '../a/define.interface';
+import { WorkTypeDto, MaxNumberDayType, AppAbsenceStartInfoDto, StartMobileParam, NotUseAtr, TimeZoneUseDto, HolidayAppTypeDispNameDto, ManageDistinct, TargetWorkTypeByApp, ApplicationType, HolidayAppType, DateSpecHdRelationOutput } from '../a/define.interface';
 
 @component({
     name: 'kafs06a',
@@ -28,11 +28,28 @@ export class KafS06AComponent extends KafS00ShrComponent {
     public workHours2: {start: number, end: number} = null;
 
     public selectedValue = null;
+    @Watch('selectedValue', {deep: true})
+    public selectHolidayType(data: any) {
+        const self = this;
+        self.selectedHolidayType(data);
+    }
+    public selectedRelationship = null;
     public time: number = 0;
     public checkBoxC7: false;
     public text: null;
     public model: Model = {} as Model;
     public dropdownList = [
+        {
+            code: null,
+            text: 'Select ---'
+        },
+        {
+            code: '01',
+            text: 'abcd'
+        }
+    ];
+
+    public dropdownRelationship = [
         {
             code: null,
             text: 'Select ---'
@@ -52,6 +69,8 @@ export class KafS06AComponent extends KafS00ShrComponent {
         name: '',
         time: ''
     } as WorkInfo;
+
+
     @Prop() 
     public readonly params: InitParam;
     @Watch('c9') 
@@ -520,7 +539,6 @@ export class KafS06AComponent extends KafS00ShrComponent {
                 vm.application.appDate = vm.$dt.date(objectDate.startDate, 'YYYY/MM/DD');
                 vm.application.opAppStartDate = vm.$dt.date(objectDate.startDate, 'YYYY/MM/DD');
                 vm.application.opAppEndDate = vm.$dt.date(objectDate.endDate, 'YYYY/MM/DD');
-                // console.log('changeDateCustom');
             }
         }
     }
@@ -648,6 +666,26 @@ export class KafS06AComponent extends KafS00ShrComponent {
         self.bindHolidayType();
         self.bindWorkInfo();
         self.bindWorkHours();
+        self.bindRelationship();
+    }
+
+    public bindRelationship() {
+        const self = this;
+        // 特別休暇表示情報．続柄毎の上限日数リスト．続柄名
+        // 特別休暇表示情報．続柄毎の上限日数リスト．コード
+        let dropdownRelationship = [] as Array<any>;
+        let dateSpecHdRelationLst = _.get(self.model, 'appAbsenceStartInfoDto.specAbsenceDispInfo.dateSpecHdRelationLst') as Array<DateSpecHdRelationOutput>;
+        _.forEach(dateSpecHdRelationLst, (item: DateSpecHdRelationOutput) => {
+            dropdownRelationship.push({
+                code: item.relationCD,
+                text: item.relationName
+            });
+        });
+        self.dropdownRelationship = dropdownRelationship;
+        if (!_.isEmpty(dropdownRelationship)) {
+            self.selectedRelationship = dropdownRelationship[0].code;
+        }
+
     }
     public bindWorkHours(mode?: boolean) {
         const self = this;
@@ -820,6 +858,14 @@ export class KafS06AComponent extends KafS00ShrComponent {
     public openCDL() {
         const self = this;
         console.log('openCDL');
+    }
+
+    public selectedHolidayType(data: any) {
+        const self = this;
+        let command = {
+
+        } as any;
+
     }
 
 

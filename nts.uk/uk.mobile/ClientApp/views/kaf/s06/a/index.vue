@@ -229,8 +229,8 @@
         </div>
         <!--A10_2-->
         <div v-if="c18" class="mt-1">
-            <nts-dropdown v-model="selectedValue">
-                <option v-for="(item, index) in dropdownList" :key="index" :value="item.code">
+            <nts-dropdown v-model="selectedRelationship">
+                <option v-for="(item, index) in dropdownRelationship" :key="index" :value="item.code">
                     {{item.text}}
                 </option>
             </nts-dropdown>
