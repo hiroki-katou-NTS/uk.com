@@ -7,9 +7,6 @@ import java.util.Optional;
 import org.junit.Test;
 
 import nts.arc.testing.assertion.NtsAssert;
-import nts.uk.ctx.at.aggregation.dom.scheduletable.OneRowOutputItem;
-import nts.uk.ctx.at.aggregation.dom.scheduletable.ScheduleTableAttendanceItem;
-import nts.uk.ctx.at.aggregation.dom.scheduletable.ScheduleTablePersonalInfoItem;
 
 public class OneRowOutputItemTest {
 	

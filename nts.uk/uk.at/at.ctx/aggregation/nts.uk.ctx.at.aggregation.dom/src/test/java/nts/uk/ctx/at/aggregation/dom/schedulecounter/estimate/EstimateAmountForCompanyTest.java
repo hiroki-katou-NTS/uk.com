@@ -10,12 +10,6 @@ import org.junit.runner.RunWith;
 import lombok.val;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.estimate.EstimateAmount;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.estimate.EstimateAmountByCondition;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.estimate.EstimateAmountDetail;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.estimate.EstimateAmountForCompany;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.estimate.EstimateAmountList;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.estimate.EstimateAmountNo;
 @RunWith(JMockit.class)
 public class EstimateAmountForCompanyTest {
 	

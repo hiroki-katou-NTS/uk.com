@@ -11,10 +11,6 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.WorkplaceCounter;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.WorkplaceCounterCategory;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.WorkplaceCounterRegister;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.WorkplaceCounterRegisterResult;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.timescounting.TimesNumberCounterType;
 
 @RunWith(JMockit.class)

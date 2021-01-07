@@ -6,7 +6,6 @@ import org.junit.Test;
 
 import lombok.val;
 import nts.arc.testing.assertion.NtsAssert;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.laborcostandtime.LaborCostAndTime;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 

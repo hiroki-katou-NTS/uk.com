@@ -3,7 +3,6 @@ package nts.uk.ctx.at.aggregation.app.command.schedulecounter.wkpcounterlaborcos
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Data
 @AllArgsConstructor

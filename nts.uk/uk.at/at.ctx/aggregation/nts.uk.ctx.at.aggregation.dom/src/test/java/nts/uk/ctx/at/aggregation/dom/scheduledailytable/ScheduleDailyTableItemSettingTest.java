@@ -12,10 +12,6 @@ import org.junit.runner.RunWith;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
-import nts.uk.ctx.at.aggregation.dom.scheduledailytable.ScheduleDailyTableComment;
-import nts.uk.ctx.at.aggregation.dom.scheduledailytable.ScheduleDailyTableInkanRow;
-import nts.uk.ctx.at.aggregation.dom.scheduledailytable.ScheduleDailyTableItemSetting;
-import nts.uk.ctx.at.aggregation.dom.scheduledailytable.SupporterPrintMethod;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @RunWith(JMockit.class)

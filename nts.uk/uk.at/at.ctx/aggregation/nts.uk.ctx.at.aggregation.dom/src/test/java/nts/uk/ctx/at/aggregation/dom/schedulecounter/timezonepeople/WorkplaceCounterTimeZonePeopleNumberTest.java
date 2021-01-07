@@ -11,8 +11,6 @@ import java.util.stream.IntStream;
 import org.junit.Test;
 
 import nts.arc.testing.assertion.NtsAssert;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.timezonepeople.WorkplaceCounterStartTime;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.timezonepeople.WorkplaceCounterTimeZonePeopleNumber;
 
 public class WorkplaceCounterTimeZonePeopleNumberTest {
 	

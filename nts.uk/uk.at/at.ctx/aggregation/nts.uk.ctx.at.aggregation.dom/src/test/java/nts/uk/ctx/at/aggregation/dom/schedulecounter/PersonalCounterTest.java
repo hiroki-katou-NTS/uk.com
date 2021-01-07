@@ -7,8 +7,6 @@ import java.util.Arrays;
 import org.junit.Test;
 
 import nts.arc.testing.assertion.NtsAssert;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.PersonalCounter;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.PersonalCounterCategory;
 
 public class PersonalCounterTest {
 	
