@@ -29,11 +29,18 @@
 							Use RadioBox only to customize your layout like below demo
 						</note>
 						<br/>
-						<div data-bind="ntsRadioButton: {checked: selectedValue2, enable: enable, option: option, optionValue: 'value', optionText: 'text', group: 'ntsControl'}"></div>
-						<div data-bind="ntsRadioButton: {checked: selectedValue3, enable: enable, optionText: 'No Option' }"></div>
+						<label data-bind="ntsRadioButton: {checked: selectedValue2, enable: enable, option: option, optionValue: 'value', optionText: 'text', group: 'ntsControl'}"></label>
+
+						<label id="abc" data-bind="ntsRadioButton: { checked: selectedValue3, optionText: 'Option 1', option: '1', name: 'abc', hasFocus: $vm.focusable }"></label>
+						<label data-bind="ntsRadioButton: { checked: selectedValue3, optionText: 'Option 2', option: '2', name: 'abc' }"></label>
 						
-						<br/><span data-bind="text: ko.toJSON(selectedValue2())"></span>
-						<br/><span data-bind="text: ko.toJSON(selectedValue3())"></span>
+						<br/><span data-bind="text: ko.toJSON($vm.selectedValue2)"></span>
+						<br/><span data-bind="text: ko.toJSON($vm.selectedValue3)"></span>
+						<br/><span data-bind="text: ko.toJSON($vm.focusable)"></span>
+
+						<div>
+							<button data-bind="click: $vm.focus">Focus radio</button>
+						</div>
 						<article class="cf">
 							<div class="tabs">
 								<ol>
@@ -43,25 +50,12 @@
 								</ol> 
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
-<pre><![CDATA[<!-- Manual Binding -->
-<span class="ntsControl">
-	<label class="ntsRadioBox">
-		<input type="radio" name="textRadio" data-bind="checkedValue: 4, checked: selectedValue, enable: enable" />
-		<span class="box"></span><span class="label" data-bind="text: 'Four'"></span>
-	</label>
-</span>
-
-<!-- Foreach Binding -->
+<pre><![CDATA[<!-- Foreach Binding -->
 <div data-bind="foreach: items">
-	<span class="ntsControl">
-		<label class="ntsRadioBox">
-			<input type="radio" name="textRadio" data-bind="checkedValue: value, checked: $parent.selectedValue, enable: $parent.enable" />
-			<span class="box"></span><span class="label" data-bind="text: text"></span>
-		</label>
-	</span>
+	<label data-bind="ntsRadioButton: { checked: $parent.selectedValue, enable: $parent.enable, optionText: text, option: value, group: 'abc' }"></label>
 </div>
-<div data-bind="ntsRadioButton: {checked: selectedValue2, enable: enable, option: option, optionValue: 'value', optionText: 'text', group: 'ntsControl'}"></div>
-<div data-bind="ntsRadioButton: {checked: selectedValue3, enable: enable, optionText: 'No Option', group: 'ntsControl' }"></div>]]></pre>
+<label data-bind="ntsRadioButton: { checked: selectedValue3, optionText: 'Option 1', option: '1', group: 'abc' }"></label>
+<label data-bind="ntsRadioButton: { checked: selectedValue3, optionText: 'Option 2', option: '2', group: 'abc' }"></label>]]></pre>
 									<h2>API</h2>
 									<table>
 										<colgroup>
