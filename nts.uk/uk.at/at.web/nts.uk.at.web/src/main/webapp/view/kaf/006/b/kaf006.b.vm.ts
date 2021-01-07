@@ -37,6 +37,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 		workTypeAfter: KnockoutObservable<any> = ko.observable();
 		isEnableSwitchBtn: boolean = true;
 		updateMode: boolean = true;
+		dateBeforeChange: KnockoutObservable<string> = ko.observable(null);
 
 		yearRemain: KnockoutObservable<number> = ko.observable();
 		subHdRemain: KnockoutObservable<number> = ko.observable();
@@ -91,6 +92,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 		condition8: KnockoutObservable<boolean> = ko.observable(true);
 		condition9: KnockoutObservable<boolean> = ko.observable(true);
 		condition31: KnockoutObservable<boolean> = ko.observable(true);
+		condition32: KnockoutObservable<boolean> = ko.observable(false);
         
         created(params: {
             appType: any,
@@ -502,6 +504,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 					vm.selectedType(success.applyForLeave.vacationInfo.holidayApplicationType);
 					vm.fetchData(success.appAbsenceStartInfo);
 					vm.fetchDataAppForLeave(success.applyForLeave);
+					vm.checkCondition32(success.applyForLeave);
 					if (hdAppSetInput && hdAppSetInput.length > 0) {
 						vm.hdAppSet(hdAppSetInput);
 					}
@@ -564,6 +567,18 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 				vm.isCheckMourn(param.vacationInfo.info.applyForSpeLeave.mournerFlag);
 				// B9_5
 				vm.relationshipReason(param.vacationInfo.info.applyForSpeLeave.relationshipReason);
+			}
+
+			if (param.vacationInfo.info.datePeriod) {
+				let textDate = "";
+
+				if (param.vacationInfo.info.datePeriod.startDate) {
+					textDate = param.vacationInfo.info.datePeriod.startDate;
+				}
+				if (param.vacationInfo.info.datePeriod.endDate && (param.vacationInfo.info.datePeriod.endDate !== param.vacationInfo.info.datePeriod.startDate)) {
+					textDate = textDate.concat("～").concat(param.vacationInfo.info.datePeriod.endDate);
+				}
+				vm.dateBeforeChange(vm.$i18n('KAF006_85', [textDate]));
 			}
 		};
 
@@ -1172,6 +1187,16 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 				}
 			}
 			vm.condition31(false);
+		}
+
+		checkCondition32(data: any) {
+			const vm = this;
+			if (data.vacationInfo.info.datePeriod && (vm.checkTimeValid(ko.observable(data.vacationInfo.info.datePeriod.startDate)) || vm.checkTimeValid(ko.observable(data.vacationInfo.info.datePeriod.endDate)))) {
+				vm.condition32(true);
+				return true;
+			}
+
+			vm.condition32(false);
 		}
     };
 

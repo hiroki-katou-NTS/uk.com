@@ -140,9 +140,9 @@ module nts.uk.at.view.kaf006.shr.tab3.viewmodel {
                         </thead>
                         <tbody data-bind="foreach: ko.toJS($parent.leaveComDayOffManas)">
                             <tr>
-                                <td class="py-10" data-bind="text: outbreakDay"></td>
-                                <td class="py-10" data-bind="text: dateOfUse"></td>
-                                <td class="py-10" data-bind="text: dayNumberUsed"></td>
+                                <td class="py-10" data-bind="text: nts.uk.time.formatDate(new Date(outbreakDay), 'yyyy/MM/ddD')"></td>
+                                <td class="py-10" data-bind="text: nts.uk.time.formatDate(new Date(dateOfUse), 'yyyy/MM/ddD')"></td>
+                                <td class="py-10" data-bind="text: nts.uk.resource.getText('KAF006_46', [dayNumberUsed])"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -163,15 +163,15 @@ module nts.uk.at.view.kaf006.shr.tab3.viewmodel {
                         <thead>
                             <tr class="bg-green">
                                 <th style="width: 100px;" class="py-10" data-bind="text: $i18n('KAF006_52')"></th>
-                                <th style="width: 100px;" class="py-10" data-bind="text: $i18n('KAF006_46')"></th>
+                                <th style="width: 100px;" class="py-10" data-bind="text: $i18n('KAF006_95')"></th>
                                 <th style="width: 100px;" class="py-10" data-bind="text: $i18n('KAF006_55')"></th>
                             </tr>
                         </thead>
                         <tbody data-bind="foreach: ko.toJS($parent.payoutSubofHDManagements)">
                             <tr>
-                                <td class="py-10" data-bind="text: outbreakDay"></td>
-                                <td class="py-10" data-bind="text: dateOfUse"></td>
-                                <td class="py-10" data-bind="text: dayNumberUsed"></td>
+                                <td class="py-10" data-bind="text: nts.uk.time.formatDate(new Date(outbreakDay), 'yyyy/MM/ddD')"></td>
+                                <td class="py-10" data-bind="text: nts.uk.time.formatDate(new Date(dateOfUse), 'yyyy/MM/ddD')"></td>
+                                <td class="py-10" data-bind="text: nts.uk.resource.getText('KAF006_46', [dayNumberUsed])"></td>
                             </tr>
                         </tbody>
                     </table>

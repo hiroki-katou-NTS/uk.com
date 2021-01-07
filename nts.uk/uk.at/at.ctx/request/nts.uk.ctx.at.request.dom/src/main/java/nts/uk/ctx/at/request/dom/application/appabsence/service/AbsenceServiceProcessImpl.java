@@ -1464,6 +1464,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 				, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpErrorFlag().orElse(null) // KAF006: -PhuongDV domain fix pending- confirm input
 				, lstDates
 				, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput());
+		result.setConfirmMsgLst(lstConfirmMsg);
 		// 申請の矛盾チェック
 		List<GeneralDate> dateLst = new ArrayList<GeneralDate>();
 		GeneralDate currentDate = newAbsence.getOpAppStartDate().get().getApplicationDate();
