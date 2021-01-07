@@ -29,27 +29,27 @@ public class SpecialLeaveUsedInfo implements Cloneable, SerializableWithOptional
 
 	/** 合計 */
 	private SpecialLeaveUseNumber usedNumber;
-	
+
 	/** 付与前 */
 	private SpecialLeaveUseNumber usedNumberBeforeGrant;
-	
+
 	/** 特休使用回数 （1日2回使用した場合２回でカウント）*/
 	private UsedTimes specialLeaveUsedTimes;
-	
+
 	/** 特休使用日数 （1日2回使用した場合１回でカウント） */
 	private UsedTimes specialLeaveUsedDayTimes;
-	
+
 	/** 付与後 */
 	private Optional<SpecialLeaveUseNumber> usedNumberAfterGrantOpt;
-	
-	
+
+
 	/**
 	 * ファクトリ
 	 * @param usedNumber 合計
 	 * @param usedNumberBeforeGrant 付与前
 	 * @param specialLeaveUsedTimes 時間特休使用回数
 	 * @param specialLeaveUsedDayTimes 時間特休使用日数
-	 * @param usedNumberAfterGrant 付与後 
+	 * @param usedNumberAfterGrant 付与後
 	 * @return
 	 */
 	public static SpecialLeaveUsedInfo of(
@@ -59,7 +59,7 @@ public class SpecialLeaveUsedInfo implements Cloneable, SerializableWithOptional
 			UsedTimes specialLeaveUsedDayTimes,
 			Optional<SpecialLeaveUseNumber> usedNumberAfterGrantOpt
 			){
-		
+
 		SpecialLeaveUsedInfo domain = new SpecialLeaveUsedInfo();
 		domain.usedNumber = usedNumber;
 		domain.usedNumberBeforeGrant = usedNumberBeforeGrant;
@@ -68,7 +68,7 @@ public class SpecialLeaveUsedInfo implements Cloneable, SerializableWithOptional
 		domain.usedNumberAfterGrantOpt = usedNumberAfterGrantOpt;
 		return domain;
 	}
-	
+
 	/** コンストラクタ */
 	public SpecialLeaveUsedInfo(){
 		usedNumber = new SpecialLeaveUseNumber();
@@ -77,50 +77,50 @@ public class SpecialLeaveUsedInfo implements Cloneable, SerializableWithOptional
 		specialLeaveUsedDayTimes = new UsedTimes(0);
 		usedNumberAfterGrantOpt = Optional.empty();
 	}
-	
-	
+
+
 	/**
 	 * クローン
 	 */
 	public SpecialLeaveUsedInfo clone() {
 		SpecialLeaveUsedInfo cloned = new SpecialLeaveUsedInfo();
-		try {
+//		try {
 			if ( usedNumberBeforeGrant != null ){
 				cloned.usedNumberBeforeGrant = this.usedNumberBeforeGrant.clone();
 			}
 			if ( usedNumber != null ){
 				cloned.usedNumber = this.usedNumber.clone();
 			}
-			
-			/** 時間特休使用回数 */ 
+
+			/** 時間特休使用回数 */
 			cloned.specialLeaveUsedTimes = new UsedTimes(this.specialLeaveUsedTimes.v());
-			
-			/** 時間特休使用日数 */ 
+
+			/** 時間特休使用日数 */
 			cloned.specialLeaveUsedDayTimes = new UsedTimes(this.specialLeaveUsedDayTimes.v());
-			
+
 			if (this.usedNumberAfterGrantOpt.isPresent()){
 				cloned.usedNumberAfterGrantOpt = Optional.of(this.usedNumberAfterGrantOpt.get().clone());
 			}
-		}
-		catch (Exception e){
-			throw new RuntimeException("SpecialLeaveUsedInfo clone error.");
-		}
+//		}
+//		catch (Exception e){
+//			throw new RuntimeException("SpecialLeaveUsedInfo clone error.");
+//		}
 		return cloned;
 	}
-	
+
 	/**
 	 * 使用数を加算する
 	 * @param usedNumber 使用数
 	 * @param afterGrantAtr 付与後フラグ
 	 */
 	public void addUsedNumber(SpecialLeaveUseNumber usedNumber, boolean afterGrantAtr){
-	
+
 		// 使用数に加算
 		this.usedNumber.addUsedNumber(usedNumber);
-		
+
 		// 「付与後フラグ」をチェック
 		if (afterGrantAtr){
-		
+
 			// 使用日数付与後に加算
 			if ( this.usedNumberAfterGrantOpt.isPresent() ){
 				this.usedNumberAfterGrantOpt.get().addUsedNumber(usedNumber);
@@ -129,13 +129,13 @@ public class SpecialLeaveUsedInfo implements Cloneable, SerializableWithOptional
 			}
 		}
 		else {
-			
+
 			// 使用日数付与前に加算
 			this.usedNumberBeforeGrant.addUsedNumber(usedNumber);
-			
+
 		}
 	}
-	
+
 	/**
 	 * クリア
 	 */
@@ -146,7 +146,7 @@ public class SpecialLeaveUsedInfo implements Cloneable, SerializableWithOptional
 		specialLeaveUsedDayTimes = new UsedTimes(0);
 		usedNumberAfterGrantOpt = Optional.empty();
 	}
-	
+
 	/**
 	 * 付与前退避処理
 	 */
@@ -154,7 +154,7 @@ public class SpecialLeaveUsedInfo implements Cloneable, SerializableWithOptional
 		// 合計残数を付与前に退避する
 		usedNumberBeforeGrant = usedNumber.clone();
 	}
-	
+
 	/**
 	 * 付与後退避処理
 	 */
@@ -162,12 +162,12 @@ public class SpecialLeaveUsedInfo implements Cloneable, SerializableWithOptional
 		// 合計残数を付与後に退避する
 		usedNumberAfterGrantOpt = Optional.of(usedNumber.clone());
 	}
-	
-	private void writeObject(ObjectOutputStream stream){	
+
+	private void writeObject(ObjectOutputStream stream){
 		writeObjectWithOptional(stream);
-	}	
-	private void readObject(ObjectInputStream stream){	
+	}
+	private void readObject(ObjectInputStream stream){
 		readObjectWithOptional(stream);
-	}	
+	}
 
 }

@@ -58,9 +58,31 @@ public class SpecialLeaveRemainingNumber {
 	 * @return
 	 */
 	public boolean isMinus(){
+		if ( this.isMinusOfDay() ){
+			return true;
+		}
+		if ( timeOfRemain.isPresent() ){
+			if ( this.isMinusOfTime() ){
+				return true;
+			}
+		}
+		return false;
+	}
+	/**
+	 * 残数がマイナスのときにはTrueを返す
+	 * @return
+	 */
+	public boolean isMinusOfDay(){
 		if ( dayNumberOfRemain.v() < 0.0 ){
 			return true;
 		}
+		return false;
+	}
+	/**
+	 * 残数がマイナスのときにはTrueを返す
+	 * @return
+	 */
+	public boolean isMinusOfTime(){
 		if ( timeOfRemain.isPresent() ){
 			if ( timeOfRemain.get().v() < 0 ){
 				return true;
@@ -85,30 +107,27 @@ public class SpecialLeaveRemainingNumber {
 		details = new ArrayList<SpecialLeaveRemainingDetail>();
 	}
 
-	/**
-	 * クローン
-	 */
-	@Override
-	protected SpecialLeaveRemainingNumber clone() {
+	public SpecialLeaveRemainingNumber clone(){
+
 		SpecialLeaveRemainingNumber cloned = new SpecialLeaveRemainingNumber();
-		try {
-			cloned = (SpecialLeaveRemainingNumber)super.clone();
-			cloned.dayNumberOfRemain = new DayNumberOfRemain(this.dayNumberOfRemain.v());
-			if (this.timeOfRemain.isPresent()){
-				cloned.timeOfRemain = Optional.of(new TimeOfRemain(this.timeOfRemain.get().v()));
-			}
-			if ( !this.details.isEmpty() ){
-				ArrayList<SpecialLeaveRemainingDetail> list
-					= new ArrayList<SpecialLeaveRemainingDetail>();
-				this.details.stream().forEach(c->{
-					list.add(c.clone());
-				});
-				cloned.details = list;
-			}
+
+		/** 合計残日数 */
+		cloned.dayNumberOfRemain = new DayNumberOfRemain(this.getDayNumberOfRemain().v());
+
+		/** 合計残時間 */
+		if ( this.timeOfRemain.isPresent() ) {
+			cloned.timeOfRemain = Optional.of(new TimeOfRemain(timeOfRemain.get().v()));
+		} else {
+			cloned.timeOfRemain = Optional.empty();
 		}
-		catch (Exception e){
-			throw new RuntimeException("SpecialLeaveRemainingNumber clone error.");
+
+		/** 明細 */
+		ArrayList<SpecialLeaveRemainingDetail> details = new ArrayList<SpecialLeaveRemainingDetail>();
+		for(SpecialLeaveRemainingDetail c : this.details) {
+			details.add(c.clone());
 		}
+		cloned.details = details;
+
 		return cloned;
 	}
 

@@ -15,10 +15,10 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KtvmtT
  * The Class JpaTimeVacationSettingSetMemento.
  */
 public class JpaTimeAnnualSettingSetMemento implements TimeAnnualSettingSetMemento {
-    
+
     /** The entity. */
     private KtvmtTimeAnnualSet entity;
-    
+
     /**
      * Instantiates a new jpa time vacation setting set memento.
      *
@@ -27,10 +27,10 @@ public class JpaTimeAnnualSettingSetMemento implements TimeAnnualSettingSetMemen
     public JpaTimeAnnualSettingSetMemento(KtvmtTimeAnnualSet entity) {
         this.entity = entity;
     }
-    
+
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
      * TimeVacationSettingSetMemento#setCompanyId(java.lang.String)
      */
@@ -38,10 +38,10 @@ public class JpaTimeAnnualSettingSetMemento implements TimeAnnualSettingSetMemen
     public void setCompanyId(String companyId) {
         this.entity.setCid(companyId);
     }
-    
+
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
      * TimeVacationSettingSetMemento#setTimeManageType(nts.uk.ctx.at.shared.dom.
      * vacation.setting.ManageDistinct)
@@ -53,7 +53,7 @@ public class JpaTimeAnnualSettingSetMemento implements TimeAnnualSettingSetMemen
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
      * TimeVacationSettingSetMemento#setTimeUnit(nts.uk.ctx.at.shared.dom.
      * vacation.setting.TimeVacationDigestiveUnit)
@@ -65,7 +65,7 @@ public class JpaTimeAnnualSettingSetMemento implements TimeAnnualSettingSetMemen
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
      * TimeVacationSettingSetMemento#setMaxYearDayLeave(nts.uk.ctx.at.shared.dom
      * .vacation.setting.annualpaidleave.YearVacationTimeMaxDay)
@@ -77,16 +77,16 @@ public class JpaTimeAnnualSettingSetMemento implements TimeAnnualSettingSetMemen
         this.entity.setTimeMaxDayUnifComp(maxYearDayLeave.maxNumberUniformCompany.v());
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
-     * TimeVacationSettingSetMemento#setEnoughTimeOneDay(boolean)
-     */
-    @Override
-    public void setEnoughTimeOneDay(boolean isEnoughTimeOneDay) {
-        this.entity.setIsEnoughTimeOneDay(isEnoughTimeOneDay == true ? 1 : 0);
-    }
+//    /*
+//     * (non-Javadoc)
+//     *
+//     * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
+//     * TimeVacationSettingSetMemento#setEnoughTimeOneDay(boolean)
+//     */
+//    @Override
+//    public void setEnoughTimeOneDay(boolean isEnoughTimeOneDay) {
+//        this.entity.setIsEnoughTimeOneDay(isEnoughTimeOneDay == true ? 1 : 0);
+//    }
 
     /*
      * (non-Javadoc)

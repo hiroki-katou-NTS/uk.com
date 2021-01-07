@@ -106,14 +106,13 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 
 	/**
 	 * 休暇残数を指定使用数消化する
+	 * @param require
 	 * @param targetRemainingDatas 付与残数
-	 * @param repositoriesRequiredByRemNum 残数処理 キャッシュクラス
 	 * @param remNumShiftListWork 複数の付与残数の消化処理を行う一時変数
 	 * @param leaveUsedNumber 休暇使用数
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
-	 * @param baseDate　基準日
-	 * @param isForcibly　強制的に消化するか
+	 * @param date　年月日
 	 */
 	public static void digest(
 			LeaveRemainingNumber.RequireM3 require,
@@ -122,8 +121,7 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 			LeaveUsedNumber leaveUsedNumber,
 			String companyId,
 			String employeeId,
-			GeneralDate baseDate,
-			boolean isForcibly){
+			GeneralDate date){
 
 		// 取得した「付与残数」でループ
 		for (val targetRemainingData : targetRemainingDatas){
@@ -132,19 +130,19 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 			remNumShiftListWork.AddLeaveGrantRemainingData(targetRemainingData);
 
 			// 休暇使用数を消化できるかチェック
-			if ( !remNumShiftListWork.canDigest(
-					require, leaveUsedNumber, companyId, employeeId, baseDate) ){
+			if ( remNumShiftListWork.canDigest(
+					require, leaveUsedNumber, companyId, employeeId, date) ){
 				// 消化できないときはループ
-				continue;
+				break;
 			}
 		}
 
 		// 休暇使用数を消化する
 		remNumShiftListWork.digest(
-				require, leaveUsedNumber, companyId, employeeId, baseDate);
+				require, leaveUsedNumber, companyId, employeeId, date);
 
 		// 残数不足で一部消化できなかったとき
-		if ( !remNumShiftListWork.getUnusedNumber().isLargerThanZero() ){
+		if ( remNumShiftListWork.getUnusedNumber().isLargerThanZero() ){
 
 			// 消化できなかった休暇使用数をもとに、付与残数ダミーデータを作成する
 
@@ -157,9 +155,9 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 			dummyRemainData.setEmployeeId(employeeId);
 
 			// 付与日←パラメータ「年月日」
-			dummyRemainData.setGrantDate(baseDate);
+			dummyRemainData.setGrantDate(date);
 			// 期限日←パラメータ「年月日」
-			dummyRemainData.setDeadline(baseDate);
+			dummyRemainData.setDeadline(date);
 			// 期限切れ状態←使用可能
 			dummyRemainData.setExpirationStatus(LeaveExpirationStatus.AVAILABLE);
 			// 登録種別←月締め
@@ -203,18 +201,14 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 	@Override
 	public LeaveGrantRemainingData clone() {
 		LeaveGrantRemainingData cloned = new LeaveGrantRemainingData();
-		try {
-			cloned.leaveID = new String(leaveID);
-			cloned.employeeId = new String(employeeId);
-			cloned.grantDate = grantDate;
-			cloned.deadline = deadline;
-			cloned.expirationStatus = expirationStatus;
-			cloned.registerType = registerType;
-			cloned.details = details.clone();
-		}
-		catch (Exception e){
-			throw new RuntimeException("LeaveGrantRemainingData clone error.");
-		}
+		cloned.leaveID = new String(leaveID);
+		cloned.employeeId = new String(employeeId);
+		cloned.grantDate = grantDate;
+		cloned.deadline = deadline;
+		cloned.expirationStatus = expirationStatus;
+		cloned.registerType = registerType;
+		cloned.details = details.clone();
+
 		return cloned;
 	}
 

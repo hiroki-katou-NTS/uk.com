@@ -112,14 +112,28 @@ public class SpecialLeaveGrantRemainingData extends LeaveGrantRemaining {
 	@Override
 	public SpecialLeaveGrantRemainingData clone() {
 		SpecialLeaveGrantRemainingData cloned;
-		try {
-			cloned = (SpecialLeaveGrantRemainingData)super.clone();
-			cloned.specialLeaveCode = specialLeaveCode;
-		}
-		catch (Exception e){
-			throw new RuntimeException("SpecialLeaveGrantRemainingData clone error.");
-		}
+		cloned = SpecialLeaveGrantRemainingData.of(super.clone(), this.specialLeaveCode);
+		cloned.specialLeaveCode = specialLeaveCode;
+
 		return cloned;
 	}
 
+
+	public static SpecialLeaveGrantRemainingData of(LeaveGrantRemaining remain, int code) {
+		SpecialLeaveGrantRemainingData domain = new SpecialLeaveGrantRemainingData();
+
+		domain.leaveID = remain.getLeaveID();
+		domain.cid = remain.getCid();
+		domain.employeeId = remain.getEmployeeId();
+		domain.grantDate = remain.getGrantDate();
+		domain.deadline = remain.getDeadline();
+		domain.expirationStatus = remain.getExpirationStatus();
+		domain.registerType = remain.getRegisterType();
+		domain.details = remain.getDetails().clone();
+
+		domain.dummyAtr = remain.isDummyAtr();
+		domain.specialLeaveCode = code;
+
+		return domain;
+	}
 }

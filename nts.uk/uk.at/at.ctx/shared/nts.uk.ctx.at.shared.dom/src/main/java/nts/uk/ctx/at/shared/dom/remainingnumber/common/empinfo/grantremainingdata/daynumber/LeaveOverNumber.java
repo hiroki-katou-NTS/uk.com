@@ -37,14 +37,11 @@ public class LeaveOverNumber {
 	public LeaveOverNumber clone() {
 
 		LeaveOverNumber cloned;
-		try {
-			cloned = new LeaveOverNumber(
-					numberOverDays,
-					timeOver.map(c -> new TimeOver(c.v())));
-		}
-		catch (Exception e){
-			throw new RuntimeException("LeaveGrantRemainingData clone error.");
-		}
+
+		cloned = new LeaveOverNumber(
+				numberOverDays,
+				timeOver.map(c -> new TimeOver(c.v())));
+
 		return cloned;
 	}
 }

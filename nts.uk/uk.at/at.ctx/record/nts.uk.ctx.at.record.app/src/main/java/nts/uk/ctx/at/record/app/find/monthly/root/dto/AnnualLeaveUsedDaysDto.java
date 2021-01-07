@@ -32,6 +32,7 @@ public class AnnualLeaveUsedDaysDto implements ItemConst {
 	private Double usedDaysAfterGrant;
 
 	public static AnnualLeaveUsedDaysDto from(AnnualLeaveUsedDays domain) {
+		/** NULL POINT*/
 		return domain == null ? null : new AnnualLeaveUsedDaysDto(domain.getUsedDayNumber().v(), 0, null);
 	}
 	

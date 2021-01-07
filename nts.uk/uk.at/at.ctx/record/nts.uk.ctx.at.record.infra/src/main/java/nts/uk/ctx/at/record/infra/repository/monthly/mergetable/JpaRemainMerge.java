@@ -223,7 +223,7 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 				.setParameter("yearMonth", yearMonth.v())
 				.getList();
 		List<SpecialHolidayRemainData> results = new ArrayList<>();
-		for (val entity : entitys) results.addAll(entity.toDomainSpecialHolidayRemainList());
+		for (val entity : entitys) results.addAll(entity.toDomainSpecialHolidayRemainData());
 		return results;
 	}
 	/**

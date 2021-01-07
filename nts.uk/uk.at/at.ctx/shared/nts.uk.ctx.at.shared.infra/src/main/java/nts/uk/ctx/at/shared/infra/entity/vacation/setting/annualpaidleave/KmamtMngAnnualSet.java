@@ -37,11 +37,11 @@ public class KmamtMngAnnualSet extends UkJpaEntity implements Serializable {
 //    /** The half max grant day. */
 //    @Column(name = "HALF_MAX_GRANT_DAY")
 //    private Double halfMaxGrantDay;
-
-    /** The half max day year. */
-    @Basic(optional = false)
-    @Column(name = "HALF_MAX_DAY_YEAR")
-    private Integer halfMaxDayYear;
+//
+//    /** The half max day year. */
+//    @Basic(optional = false)
+//    @Column(name = "HALF_MAX_DAY_YEAR")
+//    private Integer halfMaxDayYear;
 
     /** The half manage atr. */
     @Column(name = "HALF_MANAGE_ATR")
@@ -114,10 +114,10 @@ public class KmamtMngAnnualSet extends UkJpaEntity implements Serializable {
      * @param cid the cid
      * @param halfMaxDayYear the half max day year
      */
-    public KmamtMngAnnualSet(String cid, Integer halfMaxDayYear) {
-        this.cid = cid;
-        this.halfMaxDayYear = halfMaxDayYear;
-    }
+//    public KmamtMngAnnualSet(String cid, Integer halfMaxDayYear) {
+//        this.cid = cid;
+//        this.halfMaxDayYear = halfMaxDayYear;
+//    }
 
     /* (non-Javadoc)
      * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()

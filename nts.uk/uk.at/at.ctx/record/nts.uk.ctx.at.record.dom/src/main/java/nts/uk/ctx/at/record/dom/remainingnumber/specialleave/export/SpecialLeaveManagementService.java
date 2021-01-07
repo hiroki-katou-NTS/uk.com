@@ -58,22 +58,10 @@ public class SpecialLeaveManagementService {
 			CacheCarrier cacheCarrier,
 			ComplileInPeriodOfSpecialLeaveParam param) {
 
-
 		// 特別休暇の集計結果情報
 		InPeriodOfSpecialLeaveResultInfor outputData = new InPeriodOfSpecialLeaveResultInfor();
 
 		require.specialHoliday(param.getCid(), param.getSpecialLeaveCode());
-
-		// ドメインモデル「特別休暇基本情報」を取得する
-		Optional<SpecialLeaveBasicInfo> optBasicInfor = require.specialLeaveBasicInfo(param.getSid(), param.getSpecialLeaveCode(), UseAtr.USE);
-		if(!optBasicInfor.isPresent() ){
-//				|| optBasicInfor.get().getUsed() == UseAtr.NOT_USE) {
-//			RemainDaysOfSpecialHoliday remainDays = new RemainDaysOfSpecialHoliday(new SpecialHolidayRemainInfor(0, 0, 0), 0, Optional.empty(), new ArrayList<>());
-//			InPeriodOfSpecialLeave specialLeaveInfor = new InPeriodOfSpecialLeave(new ArrayList<>(), remainDays, new ArrayList<>(), new ArrayList<>());
-//			return new InPeriodOfSpecialLeaveResultInfor(specialLeaveInfor, Finally.empty(), Finally.of(param.getComplileDate().end().addDays(1)));
-
-			optBasicInfor.get().getGrantSetting();
-		}
 
 		// 社員
 		EmployeeImport employee
@@ -84,12 +72,7 @@ public class SpecialLeaveManagementService {
 				if (aggrPeriod == null) return outputData;
 
 		// パラメータ月次モード・その他モード
-		InterimRemainMngMode interimRemainMngMode;
-		if ( param.isMode() ){
-			interimRemainMngMode = InterimRemainMngMode.MONTHLY;
-		} else {
-			interimRemainMngMode = InterimRemainMngMode.OTHER;
-		}
+		InterimRemainMngMode interimRemainMngMode = InterimRemainMngMode.of(param.isMode());
 
 		List<InterimSpecialHolidayMng> overwriteInterim = new ArrayList<>();
 		param.getRemainData().stream().forEach(c-> overwriteInterim.add((InterimSpecialHolidayMng)c));
@@ -141,7 +124,7 @@ public class SpecialLeaveManagementService {
 
 			// 特休の消滅・付与・消化
 			outputData = specialLeaveInfo.lapsedGrantDigest(
-					require, // ooooo
+					require,
 					param.getCid(),
 					param.getSid(),
 					aggregatePeriodWork,
@@ -394,7 +377,7 @@ public class SpecialLeaveManagementService {
 			// 期限切れ状態=使用可能
 
 			lstSpeData = require.specialLeaveGrantRemainingData(employeeId, specialLeaveCode,
-						aggrPeriod, aggrPeriod.start(), LeaveExpirationStatus.AVAILABLE);
+						aggrPeriod, LeaveExpirationStatus.AVAILABLE);
 
 			return lstSpeData;
 
@@ -475,8 +458,6 @@ public class SpecialLeaveManagementService {
 			List<NextSpecialLeaveGrant> nextSpecialLeaveGrantList,
 			DatePeriod aggrPeriod){
 
-		List<SpecialLeaveAggregatePeriodWork> aggregatePeriodWorks = new ArrayList<>();
-
 		// 期間終了日翌日
 		GeneralDate nextDayOfPeriodEnd = aggrPeriod.end();
 		if (nextDayOfPeriodEnd.before(GeneralDate.max())){
@@ -489,7 +470,7 @@ public class SpecialLeaveManagementService {
 		List<SpecialLeaveGrantRemainingData> lstSpeData
 			= require.specialLeaveGrantRemainingData(
 				employeeId, specialLeaveCode,
-				aggrPeriod, aggrPeriod.start(), LeaveExpirationStatus.AVAILABLE);
+				aggrPeriod, LeaveExpirationStatus.AVAILABLE);
 
 		// Comparator作成　期限日、付与日
 		Comparator<SpecialLeaveGrantRemainingData> comparator =
@@ -622,7 +603,9 @@ public class SpecialLeaveManagementService {
 
 			// リストの中で年月日が一番大きい処理単位分割日の終了日の期間かどうか = true
 			list.sort((a,b)->b.getYmd().compareTo(a.getYmd())); // 降順
-			list.get(0).setDayBeforePeriodEnd(true);
+			if (0 < list.size()) {
+				list.get(0).setDayBeforePeriodEnd(true);
+			}
 		}
 
 		// 終了日翌日の処理単位分割日を取得
@@ -702,6 +685,15 @@ public class SpecialLeaveManagementService {
 		boolean isFirst = true;
 		GeneralDate preYmd = null;
 
+
+		if (dividedDayList.size() <= 0)
+			return new ArrayList<>();
+
+		List<SpecialLeaveAggregatePeriodWork> aggregatePeriodWorks = new ArrayList<>();
+		SpecialLeaveAggregatePeriodWork firstPeriod = new SpecialLeaveAggregatePeriodWork(
+				new DatePeriod(aggrPeriod.start(),dividedDayList.get(0).getYmd().addDays(-1)));
+		aggregatePeriodWorks.add(firstPeriod);
+
 		for( SpecialLeaveDividedDayEachProcess c : dividedDayList ){
 
 			if ( isFirst ){
@@ -754,6 +746,14 @@ public class SpecialLeaveManagementService {
 
 		aggregatePeriodWorks.add(specialLeaveAggregatePeriodWork);
 
+
+		for(SpecialLeaveAggregatePeriodWork work : aggregatePeriodWorks) {
+			if(work.getPeriod().contains(aggrPeriod.end()))
+				work.setDayBeforePeriodEnd(true);
+			if(work.getPeriod().contains(aggrPeriod.end().addDays(1)))
+				work.setNextDayAfterPeriodEnd(true);
+		}
+
 		return aggregatePeriodWorks;
 	}
 
@@ -775,6 +775,9 @@ public class SpecialLeaveManagementService {
 
 		SpecialLeaveInfo specialLeaveInfo = new SpecialLeaveInfo();
 
+		Optional<List<SpecialLeaveGrantRemainingData>> grantRemainingDataListOpt
+			= Optional.ofNullable(grantRemainingDataList);
+
 		// 特別休暇情報．年月日←パラメータ「年月日」
 //		returnInfo.setYmd(aggrPeriod.start());
 		specialLeaveInfo.setYmd(ymd);
@@ -784,10 +787,12 @@ public class SpecialLeaveManagementService {
 
 		// 特休情報．特休付与情報　←　パラメータ「付与残数データ」
 		List<SpecialLeaveGrantRemainingData> targetDatas = new ArrayList<>();
-		for (val grantRemainingData : grantRemainingDataList){
-			if (grantRemainingData.getExpirationStatus() == LeaveExpirationStatus.EXPIRED) continue;
-			targetDatas.add(grantRemainingData);
-			employeeId = grantRemainingData.getEmployeeId();
+		if ( grantRemainingDataListOpt.isPresent() ) {
+			for (val grantRemainingData : grantRemainingDataList){
+				if (grantRemainingData.getExpirationStatus() == LeaveExpirationStatus.EXPIRED) continue;
+				targetDatas.add(grantRemainingData);
+				employeeId = grantRemainingData.getEmployeeId();
+			}
 		}
 		targetDatas.sort((a, b) -> a.getGrantDate().compareTo(b.getGrantDate()));
 		specialLeaveInfo.setGrantRemainingList(targetDatas);
@@ -1863,9 +1868,10 @@ public class SpecialLeaveManagementService {
 		List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int specialLeaveCode,
 				LeaveExpirationStatus expirationStatus,GeneralDate grantDate, GeneralDate deadlineDate);
 
-		/** 特別休暇付与残数データ */
+		/**i 特別休暇付与残数データ */
 		List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int speCode,
-				DatePeriod datePriod, GeneralDate startDate, LeaveExpirationStatus expirationStatus);
+//				DatePeriod datePriod, GeneralDate startDate, LeaveExpirationStatus expirationStatus);
+				DatePeriod datePriod, LeaveExpirationStatus expirationStatus);
 	}
 
 	public static interface RequireM4 extends InforSpecialLeaveOfEmployeeSevice.RequireM4, RequireM1 {

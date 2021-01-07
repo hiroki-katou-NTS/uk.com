@@ -9,7 +9,6 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.adapters.NormalizedStringAdapter;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -62,7 +61,6 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualle
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.HalfDayAnnLeaRemainingNum;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.HalfDayAnnLeaUsedNum;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.HalfDayAnnualLeave;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.RealAnnualLeave;
 //import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.TimeAnnualLeaveUsedTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.UndigestedAnnualLeaveDays;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.UndigestedTimeAnnualLeaveTime;
@@ -75,22 +73,18 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reservel
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveRemainingDetail;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveRemainingInfo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveRemainingNumber;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveUndigestedNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.ActualSpecialLeaveRemain;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.ActualSpecialLeaveRemainDay;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeavaRemainTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeave;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveGrantUseDay;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveRemain;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveRemainDay;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveRemainingNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveRemainingNumberInfo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUnDigestion;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUseDays;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUseNumber;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUseTimes;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.UseNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUsedInfo;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -3128,49 +3122,37 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		/** 年休 */
 
 		/** 年休.使用情報.合計.使用日数.使用日数 */
-		AnnualLeaveUsedDayNumber val_annleaUsedDays
-			= new AnnualLeaveUsedDayNumber(this.annleaUsedDays);
+		AnnualLeaveUsedDays val_annleaUsedDays = AnnualLeaveUsedDays.of(new AnnualLeaveUsedDayNumber(this.annleaUsedDays));
 
 		/** 年休.使用情報.合計.使用時間.使用時間 */
-		UsedMinutes val_annleaUsedMinutes = null;
-		if ( this.annleaUsedMinutes != null ) {
-			val_annleaUsedMinutes = new UsedMinutes(this.annleaUsedMinutes);
-		}
+		Optional<AnnualLeaveUsedTime> val_annleaUsedMinutes = Optional.ofNullable(this.annleaUsedMinutes == null ? null 
+				: AnnualLeaveUsedTime.of(new UsedMinutes(this.annleaUsedMinutes)));
 
 		/** 年休.使用情報.付与前.使用日数.使用日数 */
-		AnnualLeaveUsedDayNumber val_annleaUsedDaysBefore
-			= new AnnualLeaveUsedDayNumber(this.annleaUsedDaysBefore);
+		AnnualLeaveUsedDays val_annleaUsedDaysBefore = AnnualLeaveUsedDays.of(new AnnualLeaveUsedDayNumber(this.annleaUsedDaysBefore));
 
 		/** 年休.使用情報.付与前.使用時間.使用時間 */
-		UsedMinutes val_annleaUsedMinutesBefore = null;
-		if ( this.annleaUsedMinutesBefore != null ) {
-			val_annleaUsedMinutesBefore = new UsedMinutes(this.annleaUsedMinutesBefore);
-		}
+		Optional<AnnualLeaveUsedTime> val_annleaUsedMinutesBefore = Optional.ofNullable(this.annleaUsedMinutesBefore == null ? null 
+				: AnnualLeaveUsedTime.of(new UsedMinutes(this.annleaUsedMinutesBefore)));
 
 		/** 年休.使用情報.時間年休使用回数 （1日2回使用した場合２回でカウント） */
-		UsedTimes  val_annleaUsedTimes = null;
-		if ( this.annleaUsedTimes != null ){
-			val_annleaUsedTimes = new UsedTimes(this.annleaUsedTimes);
-		}
+		UsedTimes val_annleaUsedTimes = new UsedTimes(this.annleaUsedTimes == null ? 0 : this.annleaUsedTimes);
 
 		/** 年休.使用情報.時間年休使用日数 （1日2回使用した場合１回でカウント） */
 		UsedTimes val_annualLeaveUsedDayTimes12 = new UsedTimes(0);
 
 		/** 年休.使用情報.付与後.使用日数.使用日数 */
-		AnnualLeaveUsedDayNumber val_annleaUsedDaysAfter = null;
+		AnnualLeaveUsedDays val_annleaUsedDaysAfter = null;
 		if ( this.annleaUsedDaysAfter != null ) {
-			val_annleaUsedDaysAfter = new AnnualLeaveUsedDayNumber(this.annleaUsedDaysAfter);
+			val_annleaUsedDaysAfter = AnnualLeaveUsedDays.of(new AnnualLeaveUsedDayNumber(this.annleaUsedDaysAfter));
 		}
 
 		/** 年休.使用情報.付与後.使用時間.使用時間 */
-		UsedMinutes  val_annleaUsedMinutesAfter = null;
-		if ( this.annleaUsedMinutesAfter != null ) {
-			val_annleaUsedMinutesAfter = new UsedMinutes(this.annleaUsedMinutesAfter);
-		}
+		Optional<AnnualLeaveUsedTime> val_annleaUsedMinutesAfter = Optional.ofNullable(this.annleaUsedMinutesAfter == null ? null 
+				: AnnualLeaveUsedTime.of(new UsedMinutes(this.annleaUsedMinutesAfter)));
 
 		/** 年休.残数情報.合計.合計残日数 */
-		AnnualLeaveRemainingDayNumber val_annleaRemainingDays
-			= new AnnualLeaveRemainingDayNumber(this.annleaRemainingDays);
+		AnnualLeaveRemainingDayNumber val_annleaRemainingDays = new AnnualLeaveRemainingDayNumber(this.annleaRemainingDays);
 
 		/** 年休.残数情報.合計.合計残時間 */
 		Optional<AnnualLeaveRemainingTime> val_annleaRemainingMinutes = Optional.empty();
@@ -3182,14 +3164,12 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		List<AnnualLeaveRemainingDetail> val_details17 = new ArrayList<>();
 
 		/** 年休.残数情報.付与前.合計残日数 */
-		AnnualLeaveRemainingDayNumber val_annleaRemainingDaysBefore
-			= new AnnualLeaveRemainingDayNumber(this.annleaRemainingDaysBefore);
+		AnnualLeaveRemainingDayNumber val_annleaRemainingDaysBefore = new AnnualLeaveRemainingDayNumber(this.annleaRemainingDaysBefore);
 
 		/** 年休.残数情報.付与前.合計残時間 */
-		Optional<AnnualLeaveRemainingTime> val_annleaRemainingMinutesBefore = null;
+		Optional<AnnualLeaveRemainingTime> val_annleaRemainingMinutesBefore = Optional.empty();
 		if ( this.annleaRemainingMinutesBefore != null ) {
-			val_annleaRemainingMinutesBefore
-				= Optional.of(new AnnualLeaveRemainingTime(this.annleaRemainingMinutesBefore));
+			val_annleaRemainingMinutesBefore = Optional.of(new AnnualLeaveRemainingTime(this.annleaRemainingMinutesBefore));
 		}
 
 		/** 年休.残数情報.付与前.明細 */
@@ -3210,126 +3190,41 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 
 		/** 年休.残数情報.付与後.明細 */
 		List<AnnualLeaveRemainingDetail>  val_details23 = new ArrayList<>();
-
-		AnnualLeave annualLeave = AnnualLeave.of(
-			/** 年休.使用情報 */
-			AnnualLeaveUsedInfo.of(
-				/** 年休.使用情報.合計 */
-				AnnualLeaveUsedNumber.of(
-					/** 年休.使用情報.合計.使用日数 */
-					AnnualLeaveUsedDays.of(
-						/** 年休.使用情報.合計.使用日数.使用日数 */
-						 val_annleaUsedDays
-					)
-					/** 年休.使用情報.合計.使用時間 */
-					,Optional.ofNullable(AnnualLeaveUsedTime.of(
-						/** 年休.使用情報.合計.使用時間.使用時間 */
-						 val_annleaUsedMinutes
-						)
-					)
-				)
-				/** 年休.使用情報.付与前 */
-				,AnnualLeaveUsedNumber.of(
-					/** 年休.使用情報.付与前.使用日数 */
-					AnnualLeaveUsedDays.of(
-						/** 年休.使用情報.付与前.使用日数.使用日数 */
-						 val_annleaUsedDaysBefore
-					)
-					/** 年休.使用情報.付与前.使用時間 */
-					,Optional.ofNullable(AnnualLeaveUsedTime.of(
-						/** 年休.使用情報.付与前.使用時間.使用時間 */
-						 val_annleaUsedMinutesBefore
-						 )
-					)
-				)
-				/** 年休.使用情報.時間年休使用回数 （1日2回使用した場合２回でカウント） */
-				, val_annleaUsedTimes
-				/** 年休.使用情報.時間年休使用日数 （1日2回使用した場合１回でカウント） */
-				, val_annualLeaveUsedDayTimes12
-
-				/** 年休.使用情報.付与後 */
-				,Optional.ofNullable(AnnualLeaveUsedNumber.of(
-					/** 年休.使用情報.付与後.使用日数 */
-					AnnualLeaveUsedDays.of(
-						/** 年休.使用情報.付与後.使用日数.使用日数 */
-						 val_annleaUsedDaysAfter
-					)
-					/** 年休.使用情報.付与後.使用時間 */
-					,Optional.ofNullable(
-							AnnualLeaveUsedTime.of(
-									/** 年休.使用情報.付与後.使用時間.使用時間 */
-									val_annleaUsedMinutesAfter
-							)
-					)
-				))
-			)
-			/** 年休.残数情報 */
-			,AnnualLeaveRemainingNumberInfo.of(
-				/** 年休.残数情報.合計 */
-				AnnualLeaveRemainingNumber.of(
-					/** 年休.残数情報.合計.合計残日数 */
-					 val_annleaRemainingDays
-					/** 年休.残数情報.合計.合計残時間 */
-					, val_annleaRemainingMinutes
-					/** 年休.残数情報.合計.明細 */
-					, val_details17
-				)
-				/** 年休.残数情報.付与前 */
-				,AnnualLeaveRemainingNumber.of(
-					/** 年休.残数情報.付与前.合計残日数 */
-					 val_annleaRemainingDaysBefore
-					/** 年休.残数情報.付与前.合計残時間 */
-					, val_annleaRemainingMinutesBefore
-					/** 年休.残数情報.付与前.明細 */
-					, val_details20
-				)
-				/** 年休.残数情報.付与後 */
-				,Optional.ofNullable(AnnualLeaveRemainingNumber.of(
-					/** 年休.残数情報.付与後.合計残日数 */
-					 val_annleaRemainingDaysAfter
-					/** 年休.残数情報.付与後.合計残時間 */
-					, val_annleaRemainingMinutesAfter
-					/** 年休.残数情報.付与後.明細 */
-					, val_details23
-				))
-			)
-		);
+ 
+		AnnualLeave annualLeave = createAnnualLeave(val_annleaUsedDays, val_annleaUsedMinutes, val_annleaUsedDaysBefore,
+				val_annleaUsedMinutesBefore, val_annleaUsedTimes, val_annualLeaveUsedDayTimes12,
+				val_annleaUsedDaysAfter, val_annleaUsedMinutesAfter, val_annleaRemainingDays,
+				val_annleaRemainingMinutes, val_details17, val_annleaRemainingDaysBefore,
+				val_annleaRemainingMinutesBefore, val_details20, val_annleaRemainingDaysAfter,
+				val_annleaRemainingMinutesAfter, val_details23);
 
 		/** 実年休.使用情報.合計.使用日数.使用日数 */
-		AnnualLeaveUsedDayNumber val_annleaFactUsedDays = new AnnualLeaveUsedDayNumber(this.annleaFactUsedDays);
+		AnnualLeaveUsedDays val_annleaFactUsedDays = AnnualLeaveUsedDays.of(new AnnualLeaveUsedDayNumber(this.annleaFactUsedDays));
 
 		/** 実年休.使用情報.合計.使用時間.使用時間 */
-		UsedMinutes val_annleaFactUsedMinutes = null;
-		if ( this.annleaFactUsedMinutes != null ) {
-			val_annleaFactUsedMinutes = new UsedMinutes(this.annleaFactUsedMinutes);
-		}
+		Optional<AnnualLeaveUsedTime> val_annleaFactUsedMinutes = Optional.ofNullable(this.annleaFactUsedMinutes == null ? null 
+				: AnnualLeaveUsedTime.of(new UsedMinutes(this.annleaFactUsedMinutes)));
 
 		/** 実年休.使用情報.付与前.使用日数.使用日数 */
-		AnnualLeaveUsedDayNumber val_annleaFactUsedDaysBefore = new AnnualLeaveUsedDayNumber(this.annleaFactUsedDaysBefore);
+		AnnualLeaveUsedDays val_annleaFactUsedDaysBefore = AnnualLeaveUsedDays.of(new AnnualLeaveUsedDayNumber(this.annleaFactUsedDaysBefore));
 
 		/** 実年休.使用情報.付与前.使用時間.使用時間 */
-		UsedMinutes val_annleaFactUsedMinutesBefore = null;
-		if ( this.annleaFactUsedMinutesBefore != null ) {
-			val_annleaFactUsedMinutesBefore = new UsedMinutes(this.annleaFactUsedMinutesBefore);
-		}
+		Optional<AnnualLeaveUsedTime> val_annleaFactUsedMinutesBefore = Optional.ofNullable(this.annleaFactUsedMinutesBefore == null ? null 
+				: AnnualLeaveUsedTime.of(new UsedMinutes(this.annleaFactUsedMinutesBefore)));
 
 		/** 実年休.使用情報.時間年休使用回数 （1日2回使用した場合２回でカウント） */
-		UsedTimes val_annleaFactUsedTimes = null;
-		if ( this.annleaFactUsedTimes != null ) {
-			val_annleaFactUsedTimes = new UsedTimes(this.annleaFactUsedTimes);
-		}
+		UsedTimes val_annleaFactUsedTimes = new UsedTimes(this.annleaFactUsedTimes == null ? 0 : this.annleaFactUsedTimes);
 
 		/** 実年休.使用情報.時間年休使用日数 （1日2回使用した場合１回でカウント） */
 		UsedTimes val_annualLeaveUsedDayTimes29 = new UsedTimes(0);
 
 		/** 実年休.使用情報.付与後.使用日数.使用日数 */
-		AnnualLeaveUsedDayNumber val_annleaFactUsedDaysAfter = new AnnualLeaveUsedDayNumber(annleaFactUsedDaysAfter);
+		AnnualLeaveUsedDays val_annleaFactUsedDaysAfter = this.annleaFactUsedDaysAfter == null ? null 
+				: AnnualLeaveUsedDays.of(new AnnualLeaveUsedDayNumber(this.annleaFactUsedDaysAfter));
 
 		/** 実年休.使用情報.付与後.使用時間.使用時間 */
-		UsedMinutes val_annleaFactUsedMinutesAfter = null;
-		if ( this.annleaFactUsedMinutesAfter != null ) {
-			val_annleaFactUsedMinutesAfter = new UsedMinutes(this.annleaFactUsedMinutesAfter);
-		}
+		Optional<AnnualLeaveUsedTime> val_annleaFactUsedMinutesAfter = Optional.ofNullable(this.annleaFactUsedMinutesAfter == null ? null 
+				: AnnualLeaveUsedTime.of(new UsedMinutes(this.annleaFactUsedMinutesAfter)));
 
 		/** 実年休.残数情報.合計.合計残日数 */
 		AnnualLeaveRemainingDayNumber val_annleaFactRemainingDays = new AnnualLeaveRemainingDayNumber(this.annleaFactRemainingDays);
@@ -3347,7 +3242,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		AnnualLeaveRemainingDayNumber val_annleaFactRemainingDaysBefore = new AnnualLeaveRemainingDayNumber(this.annleaFactRemainingDaysBefore);
 
 		/** 実年休.残数情報.付与前.合計残時間 */
-		Optional<AnnualLeaveRemainingTime> val_annleaFactRemainingMinutesBefore = null;
+		Optional<AnnualLeaveRemainingTime> val_annleaFactRemainingMinutesBefore = Optional.empty();
 		if ( this.annleaFactRemainingMinutesBefore != null ) {
 			val_annleaFactRemainingMinutesBefore = Optional.of(new AnnualLeaveRemainingTime(this.annleaFactRemainingMinutesBefore));
 		}
@@ -3371,85 +3266,12 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		List<AnnualLeaveRemainingDetail> val_details40 = new ArrayList<AnnualLeaveRemainingDetail>();
 
 
-		/** 実年休 */
-		AnnualLeave realAnnualLeave = AnnualLeave.of(
-			/** 実年休.使用情報 */
-			AnnualLeaveUsedInfo.of(
-				/** 実年休.使用情報.合計 */
-				AnnualLeaveUsedNumber.of(
-					/** 実年休.使用情報.合計.使用日数 */
-					AnnualLeaveUsedDays.of(
-						/** 実年休.使用情報.合計.使用日数.使用日数 */
-						val_annleaFactUsedDays
-					)
-					/** 実年休.使用情報.合計.使用時間 */
-					, Optional.ofNullable(AnnualLeaveUsedTime.of(
-						/** 実年休.使用情報.合計.使用時間.使用時間 */
-						val_annleaFactUsedMinutes
-					))
-				)
-				/** 実年休.使用情報.付与前 */
-				, AnnualLeaveUsedNumber.of(
-					/** 実年休.使用情報.付与前.使用日数 */
-					AnnualLeaveUsedDays.of(
-						/** 実年休.使用情報.付与前.使用日数.使用日数 */
-						val_annleaFactUsedDaysBefore
-					)
-					/** 実年休.使用情報.付与前.使用時間 */
-					, Optional.ofNullable(AnnualLeaveUsedTime.of(
-						/** 実年休.使用情報.付与前.使用時間.使用時間 */
-						val_annleaFactUsedMinutesBefore
-					))
-				)
-				/** 実年休.使用情報.時間年休使用回数 （1日2回使用した場合２回でカウント） */
-				, val_annleaFactUsedTimes
-				/** 実年休.使用情報.時間年休使用日数 （1日2回使用した場合１回でカウント） */
-				, val_annualLeaveUsedDayTimes29
-				/** 実年休.使用情報.付与後 */
-				, Optional.ofNullable(AnnualLeaveUsedNumber.of(
-					/** 実年休.使用情報.付与後.使用日数 */
-					AnnualLeaveUsedDays.of(
-						/** 実年休.使用情報.付与後.使用日数.使用日数 */
-						val_annleaFactUsedDaysAfter
-					)
-					/** 実年休.使用情報.付与後.使用時間 */
-					, Optional.ofNullable(AnnualLeaveUsedTime.of(
-						/** 実年休.使用情報.付与後.使用時間.使用時間 */
-						val_annleaFactUsedMinutesAfter
-					))
-				))
-			)
-			/** 実年休.残数情報 */
-			, AnnualLeaveRemainingNumberInfo.of(
-				/** 実年休.残数情報.合計 */
-				AnnualLeaveRemainingNumber.of(
-					/** 実年休.残数情報.合計.合計残日数 */
-					val_annleaFactRemainingDays
-					/** 実年休.残数情報.合計.合計残時間 */
-					, val_annleaFactRemainingMinutes
-					/** 実年休.残数情報.合計.明細 */
-					, val_details34
-				)
-				/** 実年休.残数情報.付与前 */
-				, AnnualLeaveRemainingNumber.of(
-					/** 実年休.残数情報.付与前.合計残日数 */
-					val_annleaFactRemainingDaysBefore
-					/** 実年休.残数情報.付与前.合計残時間 */
-					, val_annleaFactRemainingMinutesBefore
-					/** 実年休.残数情報.付与前.明細 */
-					, val_details37
-				)
-				/** 実年休.残数情報.付与後 */
-				, Optional.ofNullable(AnnualLeaveRemainingNumber.of(
-					/** 実年休.残数情報.付与後.合計残日数 */
-					val_annleaFactRemainingDaysAfter
-					/** 実年休.残数情報.付与後.合計残時間 */
-					, val_annleaFactRemainingMinutesAfter
-					/** 実年休.残数情報.付与後.明細 */
-					, val_details40
-				))
-			)
-		);
+		AnnualLeave realAnnualLeave = createAnnualLeave(val_annleaFactUsedDays, val_annleaFactUsedMinutes,
+				val_annleaFactUsedDaysBefore, val_annleaFactUsedMinutesBefore, val_annleaFactUsedTimes,
+				val_annualLeaveUsedDayTimes29, val_annleaFactUsedDaysAfter, val_annleaFactUsedMinutesAfter,
+				val_annleaFactRemainingDays, val_annleaFactRemainingMinutes, val_details34,
+				val_annleaFactRemainingDaysBefore, val_annleaFactRemainingMinutesBefore, val_details37,
+				val_annleaFactRemainingDaysAfter, val_annleaFactRemainingMinutesAfter, val_details40);
 
 		// 半日年休
 		HalfDayAnnualLeave halfDayAnnualLeave = null;
@@ -3572,12 +3394,38 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				Optional.ofNullable(maxRemainingTime),
 				Optional.ofNullable(realMaxRemainingTime),
 				AnnualLeaveAttdRateDays.of(
-						new MonthlyDays((double)this.annleaLaborDays),
-						new MonthlyDays((double)this.annleaPredeterminedDays),
-						new MonthlyDays((double)this.annleaDeductionDays)),
+						new MonthlyDays(this.annleaLaborDays),
+						new MonthlyDays(this.annleaPredeterminedDays),
+						new MonthlyDays(this.annleaDeductionDays)),
 				(this.annleaGrantAtr != 0),
 				annualLeaveUndigestedNumber);
 
+	}
+
+	private AnnualLeave createAnnualLeave(AnnualLeaveUsedDays val_annleaUsedDays,
+			Optional<AnnualLeaveUsedTime> val_annleaUsedMinutes, AnnualLeaveUsedDays val_annleaUsedDaysBefore,
+			Optional<AnnualLeaveUsedTime> val_annleaUsedMinutesBefore, UsedTimes val_annleaUsedTimes,
+			UsedTimes val_annualLeaveUsedDayTimes12, AnnualLeaveUsedDays val_annleaUsedDaysAfter,
+			Optional<AnnualLeaveUsedTime> val_annleaUsedMinutesAfter, AnnualLeaveRemainingDayNumber val_annleaRemainingDays,
+			Optional<AnnualLeaveRemainingTime> val_annleaRemainingMinutes,
+			List<AnnualLeaveRemainingDetail> val_details17, AnnualLeaveRemainingDayNumber val_annleaRemainingDaysBefore,
+			Optional<AnnualLeaveRemainingTime> val_annleaRemainingMinutesBefore,
+			List<AnnualLeaveRemainingDetail> val_details20, AnnualLeaveRemainingDayNumber val_annleaRemainingDaysAfter,
+			Optional<AnnualLeaveRemainingTime> val_annleaRemainingMinutesAfter,
+			List<AnnualLeaveRemainingDetail> val_details23) {
+		
+		return AnnualLeave.of(
+			AnnualLeaveUsedInfo.of(
+				AnnualLeaveUsedNumber.of(val_annleaUsedDays, val_annleaUsedMinutes), 
+				AnnualLeaveUsedNumber.of(val_annleaUsedDaysBefore, val_annleaUsedMinutesBefore), 
+				val_annleaUsedTimes, 
+				val_annualLeaveUsedDayTimes12,
+				Optional.ofNullable(val_annleaUsedDaysAfter == null ? null : AnnualLeaveUsedNumber.of(val_annleaUsedDaysAfter, val_annleaUsedMinutesAfter))),
+			AnnualLeaveRemainingNumberInfo.of(
+				AnnualLeaveRemainingNumber.of(val_annleaRemainingDays, val_annleaRemainingMinutes, val_details17),
+				AnnualLeaveRemainingNumber.of(val_annleaRemainingDaysBefore, val_annleaRemainingMinutesBefore, val_details20),
+				Optional.ofNullable(val_annleaRemainingDaysAfter == null ? null : AnnualLeaveRemainingNumber.of(val_annleaRemainingDaysAfter, val_annleaRemainingMinutesAfter, val_details23)))
+		);
 	}
 
 	/**
@@ -3622,7 +3470,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 						ReserveLeaveRemainingNumber.of(
 								new ReserveLeaveRemainingDayNumber(this.getRsvleaRemainingDaysBefore()),
 								new ArrayList<ReserveLeaveRemainingDetail>()),
-						Optional.of(valRemainAfter)
+						Optional.ofNullable(valRemainAfter)
 				));
 
 		// 実積立年休：残数付与後
@@ -3651,7 +3499,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 						ReserveLeaveRemainingNumber.of(
 								new ReserveLeaveRemainingDayNumber(this.rsvleaFactRemainingDaysBefore),
 								realDetailBefore),
-						Optional.of(valFactRemainAfter)
+						Optional.ofNullable(valFactRemainAfter)
 				));
 
 		// 積立年休付与情報
@@ -3705,247 +3553,47 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		return merge;
 	}
 
-	public List<SpecialHolidayRemainData> toDomainSpecialHolidayRemainList(){
-		List<SpecialHolidayRemainData> results = new ArrayList<>();
-		results.add(this.toDomainSpecialHolidayRemainData1());
-		results.add(this.toDomainSpecialHolidayRemainData2());
-		results.add(this.toDomainSpecialHolidayRemainData3());
-		results.add(this.toDomainSpecialHolidayRemainData4());
-		results.add(this.toDomainSpecialHolidayRemainData5());
-		results.add(this.toDomainSpecialHolidayRemainData6());
-		results.add(this.toDomainSpecialHolidayRemainData7());
-		results.add(this.toDomainSpecialHolidayRemainData8());
-		results.add(this.toDomainSpecialHolidayRemainData9());
-		results.add(this.toDomainSpecialHolidayRemainData10());
-		results.add(this.toDomainSpecialHolidayRemainData11());
-		results.add(this.toDomainSpecialHolidayRemainData12());
-		results.add(this.toDomainSpecialHolidayRemainData13());
-		results.add(this.toDomainSpecialHolidayRemainData14());
-		results.add(this.toDomainSpecialHolidayRemainData15());
-		results.add(this.toDomainSpecialHolidayRemainData16());
-		results.add(this.toDomainSpecialHolidayRemainData17());
-		results.add(this.toDomainSpecialHolidayRemainData18());
-		results.add(this.toDomainSpecialHolidayRemainData19());
-		results.add(this.toDomainSpecialHolidayRemainData20());
-		return results;
-	}
-
-	public Optional<SpecialHolidayRemainData> toDomainSpecialHolidayRemain(int speCode){
-		switch (speCode){
-		case 1:
-			return Optional.of(this.toDomainSpecialHolidayRemainData1());
-		case 2:
-			return Optional.of(this.toDomainSpecialHolidayRemainData2());
-		case 3:
-			return Optional.of(this.toDomainSpecialHolidayRemainData3());
-		case 4:
-			return Optional.of(this.toDomainSpecialHolidayRemainData4());
-		case 5:
-			return Optional.of(this.toDomainSpecialHolidayRemainData5());
-		case 6:
-			return Optional.of(this.toDomainSpecialHolidayRemainData6());
-		case 7:
-			return Optional.of(this.toDomainSpecialHolidayRemainData7());
-		case 8:
-			return Optional.of(this.toDomainSpecialHolidayRemainData8());
-		case 9:
-			return Optional.of(this.toDomainSpecialHolidayRemainData9());
-		case 10:
-			return Optional.of(this.toDomainSpecialHolidayRemainData10());
-		case 11:
-			return Optional.of(this.toDomainSpecialHolidayRemainData11());
-		case 12:
-			return Optional.of(this.toDomainSpecialHolidayRemainData12());
-		case 13:
-			return Optional.of(this.toDomainSpecialHolidayRemainData13());
-		case 14:
-			return Optional.of(this.toDomainSpecialHolidayRemainData14());
-		case 15:
-			return Optional.of(this.toDomainSpecialHolidayRemainData15());
-		case 16:
-			return Optional.of(this.toDomainSpecialHolidayRemainData16());
-		case 17:
-			return Optional.of(this.toDomainSpecialHolidayRemainData17());
-		case 18:
-			return Optional.of(this.toDomainSpecialHolidayRemainData18());
-		case 19:
-			return Optional.of(this.toDomainSpecialHolidayRemainData19());
-		case 20:
-			return Optional.of(this.toDomainSpecialHolidayRemainData20());
-		default:
-			return Optional.empty();
-		}
-	}
-
-	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData(
-			int dataNo,
-			double useDays,
-			double beforeUseDays,
-			Double afterUseDays,
-			Integer useMinutes,
-			Integer beforeUseMinutes,
-			Integer afterUseMinutes,
-			Integer useTimes,
-			double factUseDays,
-			double beforeFactUseDays,
-			Double afterFactUseDays,
-			Integer factUseMinutes,
-			Integer beforeFactUseMinutes,
-			Integer afterFactUseMinutes,
-			Integer factUseTimes,
-			double remainDays,
-			Integer remainMinutes,
-			double factRemainDays,
-			Integer factRemainMinutes,
-			double beforeRemainDays,
-			Integer beforeRemainMinutes,
-			double beforeFactRemainDays,
-			Integer beforeFactRemainMinutes,
-			Double afterRemainDays,
-			Integer afterRemainMinutes,
-			Double afterFactRemainDays,
-			Integer afterFactRemainMinutes,
-			double notUseDays,
-			Integer notUseMinutes,
-			int grantAtr,
-			Double grantDays){
-
-		// Entity クラス再作成
-//		// 実特別休暇の各属性
-//		SpecialLeavaRemainTime valFactRemainTimes = null;
-//		if (factRemainMinutes != null){
-//			valFactRemainTimes = new SpecialLeavaRemainTime(factRemainMinutes);
-//		}
-//		SpecialLeavaRemainTime valBeforeFactRemainTimes = null;
-//		if (beforeFactRemainMinutes != null){
-//			valBeforeFactRemainTimes = new SpecialLeavaRemainTime(beforeFactRemainMinutes);
-//		}
-//		SpecialLeaveRemainDay valAfterFactUseDays = null;
-//		if (afterFactUseDays != null){
-//			valAfterFactUseDays = new SpecialLeaveRemainDay(afterFactUseDays);
-//		}
-//		SpecialLeaveUseTimes actualUseTime = null;
-//		if (factUseTimes != null &&
-//			factUseMinutes != null &&
-//			beforeFactUseMinutes != null){
-//			SpecialLeavaRemainTime valAfterFactUseTimes = null;
-//			if (afterFactUseMinutes != null){
-//				valAfterFactUseTimes = new SpecialLeavaRemainTime(afterFactUseMinutes);
-//			}
-//			actualUseTime = new SpecialLeaveUseTimes(
-//					new UseNumber(factUseTimes),
-//					new SpecialLeavaRemainTime(factUseMinutes),
-//					new SpecialLeavaRemainTime(beforeFactUseMinutes),
-//					Optional.ofNullable(valAfterFactUseTimes));
-//		}
-//		ActualSpecialLeaveRemain actualAfterRemainGrant = null;
-//		if (afterFactRemainDays != null){
-//			SpecialLeavaRemainTime valAfterFactRemainTimes = null;
-//			if (afterFactRemainMinutes != null){
-//				valAfterFactRemainTimes = new SpecialLeavaRemainTime(afterFactRemainMinutes);
-//			}
-//			actualAfterRemainGrant = new ActualSpecialLeaveRemain(
-//					new ActualSpecialLeaveRemainDay(afterFactRemainDays),
-//					Optional.ofNullable(valAfterFactRemainTimes));
-//		}
-//
-//		// 実特別休暇
-//		ActualSpecialLeave actualSpecial = new ActualSpecialLeave(
-//				new ActualSpecialLeaveRemain(
-//						new ActualSpecialLeaveRemainDay(factRemainDays),
-//						Optional.ofNullable(valFactRemainTimes)),
-//				new ActualSpecialLeaveRemain(
-//						new ActualSpecialLeaveRemainDay(beforeFactRemainDays),
-//						Optional.ofNullable(valBeforeFactRemainTimes)),
-//				new SpecialLeaveUseNumber(
-//						new SpecialLeaveUseDays(
-//								new SpecialLeaveRemainDay(factUseDays),
-//								new SpecialLeaveRemainDay(beforeFactUseDays),
-//								Optional.ofNullable(valAfterFactUseDays)),
-//						Optional.ofNullable(actualUseTime)),
-//				Optional.ofNullable(actualAfterRemainGrant));
-//
-//		// 特別休暇の各属性
-//		SpecialLeavaRemainTime valRemainTimes = null;
-//		if (remainMinutes != null){
-//			valRemainTimes = new SpecialLeavaRemainTime(remainMinutes);
-//		}
-//		SpecialLeavaRemainTime valBeforeRemainTimes = null;
-//		if (beforeRemainMinutes != null){
-//			valBeforeRemainTimes = new SpecialLeavaRemainTime(beforeRemainMinutes);
-//		}
-//		SpecialLeaveRemainDay valAfterUseDays = null;
-//		if (afterUseDays != null){
-//			valAfterUseDays = new SpecialLeaveRemainDay(afterUseDays);
-//		}
-//		SpecialLeaveUseTimes specialUseTime = null;
-//		if (useTimes != null &&
-//			useMinutes != null &&
-//			beforeUseMinutes != null){
-//			SpecialLeavaRemainTime valAfterUseTimes = null;
-//			if (afterUseMinutes != null){
-//				valAfterUseTimes = new SpecialLeavaRemainTime(afterUseMinutes);
-//			}
-//			specialUseTime = new SpecialLeaveUseTimes(
-//					new UseNumber(useTimes),
-//					new SpecialLeavaRemainTime(useMinutes),
-//					new SpecialLeavaRemainTime(beforeUseMinutes),
-//					Optional.ofNullable(valAfterUseTimes));
-//		}
-//		SpecialLeavaRemainTime valNotUseTime = null;
-//		if (notUseMinutes != null){
-//			valNotUseTime = new SpecialLeavaRemainTime(notUseMinutes);
-//		}
-//		SpecialLeaveRemain specialAfterRemainGrant = null;
-//		if (afterRemainDays != null){
-//			SpecialLeavaRemainTime valAfterRemainTimes = null;
-//			if (afterRemainMinutes != null){
-//				valAfterRemainTimes = new SpecialLeavaRemainTime(afterRemainMinutes);
-//			}
-//			specialAfterRemainGrant = new SpecialLeaveRemain(
-//					new SpecialLeaveRemainDay(afterRemainDays),
-//					Optional.ofNullable(valAfterRemainTimes));
-//		}
-//
-//		// 特別休暇
-//		SpecialLeave specialLeave = new SpecialLeave(
-//				new SpecialLeaveRemain(
-//						new SpecialLeaveRemainDay(remainDays),
-//						Optional.ofNullable(valRemainTimes)),
-//				new SpecialLeaveRemain(
-//						new SpecialLeaveRemainDay(beforeRemainDays),
-//						Optional.ofNullable(valBeforeRemainTimes)),
-//				new SpecialLeaveUseNumber(
-//						new SpecialLeaveUseDays(
-//								new SpecialLeaveRemainDay(useDays),
-//								new SpecialLeaveRemainDay(beforeUseDays),
-//								Optional.ofNullable(valAfterUseDays)),
-//						Optional.ofNullable(specialUseTime)),
-//				new SpecialLeaveUnDigestion(
-//						new SpecialLeaveRemainDay(notUseDays),
-//						Optional.ofNullable(valNotUseTime)),
-//				Optional.ofNullable(specialAfterRemainGrant));
-//
-//		// 付与日数
-//		SpecialLeaveGrantUseDay valGrantDays = null;
-//		if (grantDays != null){
-//			valGrantDays = new SpecialLeaveGrantUseDay(grantDays);
-//		}
-//
-//		// 特別休暇月別残数データ//
-//		return new SpecialHolidayRemainData(
-//				this.krcdtMonRemainPk.getEmployeeId(),
-//				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
-//				this.krcdtMonRemainPk.getClosureId(),
-//				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1),
-//				new DatePeriod(this.startDate, this.endDate),
-//				EnumAdaptor.valueOf(this.closureStatus, ClosureStatus.class),
-//				dataNo,
-//				actualSpecial,
-//				specialLeave,
-//				Optional.ofNullable(valGrantDays),
-//				(grantAtr == 1));
-		return null;
+	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData(int dataNo, 
+			double useDays, double beforeUseDays, Double afterUseDays,
+			Integer useMinutes, Integer beforeUseMinutes, Integer afterUseMinutes, Integer useTimes, 
+			double factUseDays, double beforeFactUseDays, Double afterFactUseDays, 
+			Integer factUseMinutes, Integer beforeFactUseMinutes, Integer afterFactUseMinutes, Integer factUseTimes,
+			double remainDays, Integer remainMinutes, double factRemainDays, Integer factRemainMinutes, 
+			double beforeRemainDays, Integer beforeRemainMinutes, double beforeFactRemainDays, Integer beforeFactRemainMinutes,
+			Double afterRemainDays, Integer afterRemainMinutes, Double afterFactRemainDays, Integer afterFactRemainMinutes, 
+			double notUseDays, Integer notUseMinutes, int grantAtr, Double grantDays) {
+		
+		return new SpecialHolidayRemainData(
+				this.krcdtMonRemainPk.getEmployeeId(), 
+				new YearMonth(this.krcdtMonRemainPk.getYearMonth()), 
+				this.krcdtMonRemainPk.getClosureId(), 
+				new DatePeriod(this.startDate, this.endDate), 
+				EnumAdaptor.valueOf(this.closureStatus, ClosureStatus.class), 
+				new ClosureDate(this.krcdtMonRemainPk.getClosureDay(), this.krcdtMonRemainPk.getIsLastDay() == 1), 
+				dataNo, 
+				SpecialLeave.of(SpecialLeaveUsedInfo.of(SpecialLeaveUseNumber.of(factUseDays, factUseMinutes), 
+														SpecialLeaveUseNumber.of(beforeFactUseDays, beforeFactUseMinutes), 
+														new UsedTimes(factUseTimes), 
+														new UsedTimes(0), 
+														afterFactUseDays == null && afterFactUseMinutes == null ? Optional.empty() : Optional.of(SpecialLeaveUseNumber.of(afterFactUseDays, afterFactUseMinutes))),
+								SpecialLeaveRemainingNumberInfo.of(
+														SpecialLeaveRemainingNumber.createFromJavaType(factRemainDays, factRemainMinutes),
+														SpecialLeaveRemainingNumber.createFromJavaType(beforeFactRemainDays, beforeFactRemainMinutes), 
+														afterFactRemainDays == null && afterFactRemainMinutes == null ? Optional.empty() : Optional.of(SpecialLeaveRemainingNumber.createFromJavaType(afterFactRemainDays, afterFactRemainMinutes)))),
+				SpecialLeave.of(SpecialLeaveUsedInfo.of(SpecialLeaveUseNumber.of(useDays, useMinutes), 
+														SpecialLeaveUseNumber.of(beforeUseDays, beforeUseMinutes), 
+														new UsedTimes(useTimes), 
+														new UsedTimes(0), 
+														afterUseDays == null && afterUseMinutes == null ? Optional.empty() : Optional.of(SpecialLeaveUseNumber.of(afterUseDays, afterUseMinutes))),
+								SpecialLeaveRemainingNumberInfo.of(
+														SpecialLeaveRemainingNumber.createFromJavaType(remainDays, remainMinutes),
+														SpecialLeaveRemainingNumber.createFromJavaType(beforeRemainDays, beforeRemainMinutes), 
+														afterRemainDays == null && afterRemainMinutes == null ? Optional.empty() : Optional.of(SpecialLeaveRemainingNumber.createFromJavaType(afterRemainDays, afterRemainMinutes)))), 
+				grantAtr == 1,
+				new SpecialLeaveUnDigestion(
+						new SpecialLeaveRemainDay(notUseDays),
+						Optional.ofNullable(notUseMinutes == null ? null : new SpecialLeavaRemainTime(notUseMinutes))), 
+				Optional.ofNullable(grantDays == null ? null : new SpecialLeaveGrantUseDay(grantDays)));
 	}
 
 	private SpecialHolidayRemainData toDomainSpecialHolidayRemainData1(){
@@ -4664,26 +4312,23 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				EnumAdaptor.valueOf(closureStatus, ClosureStatus.class),
 				this.startDate,
 				this.endDate,
-				new DayOffDayAndTimes(
-						new RemainDataDaysMonth(this.dayOffOccurredDays),
-						this.dayOffOccurredTimes == null ? Optional.empty() : Optional.ofNullable(
-								new RemainDataTimesMonth(this.dayOffOccurredTimes))),
-				new DayOffDayAndTimes(
-						new RemainDataDaysMonth(this.dayOffUsedDays),
-						this.dayOffUsedMinutes == null ? Optional.empty() : Optional.ofNullable(
-								new RemainDataTimesMonth(this.dayOffUsedMinutes))),
-				new DayOffRemainDayAndTimes(
-						new AttendanceDaysMonthToTal(this.dayOffRemainingDays),
-						this.dayOffRemainingMinutes == null ? Optional.empty() : Optional.ofNullable(
-								new RemainingMinutes(this.dayOffRemainingMinutes))),
-				new DayOffRemainDayAndTimes(
-						new AttendanceDaysMonthToTal(this.dayOffCarryforwardDays),
-						this.dayOffCarryforwardMinutes == null ? Optional.empty() : Optional.ofNullable(
-								new RemainingMinutes(this.dayOffCarryforwardMinutes))),
-				new DayOffDayAndTimes(
-						new RemainDataDaysMonth(this.dayOffUnUsedDays),
-						this.dayOffUnUsedTimes == null ? Optional.empty() : Optional.ofNullable(
-								new RemainDataTimesMonth(this.dayOffUnUsedTimes))));
+				createDayOff(this.dayOffOccurredDays, this.dayOffOccurredTimes),
+				createDayOff(this.dayOffUsedDays, this.dayOffUsedMinutes),
+				createDayOffRemain(this.dayOffRemainingDays, this.dayOffRemainingMinutes),
+				createDayOffRemain(this.dayOffCarryforwardDays, this.dayOffCarryforwardMinutes),
+				createDayOff(this.dayOffUnUsedDays, this.dayOffUnUsedTimes));
+	}
+
+	private DayOffRemainDayAndTimes createDayOffRemain(double days, Integer times) {
+		return new DayOffRemainDayAndTimes(
+				new AttendanceDaysMonthToTal(days),
+				Optional.ofNullable(times == null ? null : new RemainingMinutes(times)));
+	}
+
+	private DayOffDayAndTimes createDayOff(double days, Integer times) {
+		return new DayOffDayAndTimes(
+				new RemainDataDaysMonth(days),
+				Optional.ofNullable(times == null ? null : new RemainDataTimesMonth(times)));
 	}
 
 	/**

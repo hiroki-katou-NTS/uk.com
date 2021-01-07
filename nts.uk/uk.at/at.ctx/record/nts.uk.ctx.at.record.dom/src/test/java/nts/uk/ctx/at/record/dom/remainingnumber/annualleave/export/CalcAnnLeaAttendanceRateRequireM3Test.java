@@ -45,13 +45,14 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
  */
 public class CalcAnnLeaAttendanceRateRequireM3Test implements GetAnnLeaRemNumWithinPeriodProc.RequireM3 {
 
+	/** バイナリデータ */
+	HashMap<String, Object> binaryData;
+
+
 	public CalcAnnLeaAttendanceRateRequireM3Test(){
 		binaryData
 			= ObjectBinaryFile.read(CalcAnnLeaAttendanceRateRequireM3.destionationFile);
 	}
-
-	/** バイナリデータ */
-	HashMap<String, Object> binaryData;
 
 	/** 社員 */
 	@Override
@@ -146,23 +147,23 @@ public class CalcAnnLeaAttendanceRateRequireM3Test implements GetAnnLeaRemNumWit
 		return listFilter;
 	}
 
-	@Override
-	public List<WorkInfoOfDailyPerformance> dailyWorkInfos(String employeeId, DatePeriod datePeriod) {
-		//return workInformationRepo.findByPeriodOrderByYmd(employeeId, datePeriod);
-		//	"select * from KRCDT_WORK_SCHEDULE_TIME where SID = ? and YMD >= ? and YMD <= ? order by YMD ")) {
-
-		List<WorkInfoOfDailyPerformance> list
-			= (List<WorkInfoOfDailyPerformance>)binaryData.get(WorkInfoOfDailyPerformance.class.toString());
-		List<WorkInfoOfDailyPerformance> listFilter
-			= list.stream()
-				.filter(c -> c.getEmployeeId().equals(employeeId))
-				.filter(c -> c.getYmd().afterOrEquals(datePeriod.start()))
-				.filter(c -> c.getYmd().beforeOrEquals(datePeriod.end()))
-				.sorted((a1, a2) -> a1.getYmd().compareTo(a2.getYmd()))
-				.collect(Collectors.toList());
-
-		return listFilter;
-	}
+//	@Override
+//	public List<WorkInfoOfDailyPerformance> dailyWorkInfos(String employeeId, DatePeriod datePeriod) {
+//		//return workInformationRepo.findByPeriodOrderByYmd(employeeId, datePeriod);
+//		//	"select * from KRCDT_WORK_SCHEDULE_TIME where SID = ? and YMD >= ? and YMD <= ? order by YMD ")) {
+//
+//		List<WorkInfoOfDailyPerformance> list
+//			= (List<WorkInfoOfDailyPerformance>)binaryData.get(WorkInfoOfDailyPerformance.class.toString());
+//		List<WorkInfoOfDailyPerformance> listFilter
+//			= list.stream()
+//				.filter(c -> c.getEmployeeId().equals(employeeId))
+//				.filter(c -> c.getYmd().afterOrEquals(datePeriod.start()))
+//				.filter(c -> c.getYmd().beforeOrEquals(datePeriod.end()))
+//				.sorted((a1, a2) -> a1.getYmd().compareTo(a2.getYmd()))
+//				.collect(Collectors.toList());
+//
+//		return listFilter;
+//	}
 
 	@Override
 	public Optional<WorkType> workType(String companyId, String workTypeCd) {
@@ -370,6 +371,12 @@ public class CalcAnnLeaAttendanceRateRequireM3Test implements GetAnnLeaRemNumWit
 
 	@Override
 	public List<ClosureEmployment> employmentClosure(String companyId, List<String> employmentCDs) {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
+	@Override
+	public Map<GeneralDate, WorkInfoOfDailyAttendance> dailyWorkInfos(String employeeId, DatePeriod datePeriod) {
 		// TODO 自動生成されたメソッド・スタブ
 		return null;
 	}

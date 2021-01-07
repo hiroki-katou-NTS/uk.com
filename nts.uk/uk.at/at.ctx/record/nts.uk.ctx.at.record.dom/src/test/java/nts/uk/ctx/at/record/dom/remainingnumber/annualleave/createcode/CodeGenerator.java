@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.createcode;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 /**

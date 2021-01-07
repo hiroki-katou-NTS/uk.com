@@ -62,13 +62,23 @@ public class LeaveGrantRemaining extends LeaveGrantRemainingData {
 	@Override
 	public LeaveGrantRemaining clone() {
 		LeaveGrantRemaining cloned;
-		try {
-			cloned = (LeaveGrantRemaining)super.clone();
-//			cloned.dummyAtr = dummyAtr;
-		}
-		catch (Exception e){
-			throw new RuntimeException("LeaveGrantRemaining clone error.");
-		}
+
+		cloned = LeaveGrantRemaining.of(super.clone());
 		return cloned;
+	}
+
+	public static LeaveGrantRemaining of(LeaveGrantRemainingData data) {
+
+		LeaveGrantRemaining domain = new LeaveGrantRemaining();
+		domain.leaveID = data.getLeaveID();
+		domain.cid = data.getCid();
+		domain.employeeId = data.getEmployeeId();
+		domain.grantDate = data.getGrantDate();
+		domain.deadline = data.getDeadline();
+		domain.expirationStatus = data.getExpirationStatus();
+		domain.registerType = data.getRegisterType();
+		domain.details =data.getDetails().clone();
+
+		return domain;
 	}
 }

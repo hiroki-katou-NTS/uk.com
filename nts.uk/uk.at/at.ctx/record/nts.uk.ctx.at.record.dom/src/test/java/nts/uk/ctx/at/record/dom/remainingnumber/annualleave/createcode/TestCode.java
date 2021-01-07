@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainData;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
@@ -218,250 +218,245 @@ public class TestCode {
 
 	public void test2() {
 
-		/** 会社ID */
-		String  val_companyId1;
-		/** 特別休暇コード */
-		SpecialHolidayCode  val_specialHolidayCode2;
-		/** 特別休暇名称 */
-		SpecialHolidayName  val_specialHolidayName3;
-		/** 付与・期限情報.付与するタイミングの種類 */
-		TypeTime  val_typeTime4;
-		/** 付与・期限情報.付与基準日 */
-		Optional<GrantDate>  val_grantDate5;
-		/** 付与・期限情報.指定日付与.付与日数.付与日数 */
-		GrantedDays  val_grantDays6;
-		/** 付与・期限情報.指定日付与.期限.会社ID */
-		String  val_companyId7;
-		/** 付与・期限情報.指定日付与.期限.特別休暇コード */
-		SpecialHolidayCode  val_specialHolidayCode8;
-		/** 付与・期限情報.指定日付与.期限.期限指定方法 */
-		TimeLimitSpecification  val_timeSpecifyMethod9;
-		/** 付与・期限情報.指定日付与.期限.有効期限.月数 */
-		SpecialVacationMonths  val_months10;
-		/** 付与・期限情報.指定日付与.期限.有効期限.年数 */
-		SpecialVacationYears  val_years11;
-		/** 付与・期限情報.指定日付与.期限.蓄積上限.蓄積上限日数を制限する */
-		boolean  val_limit12;
-		/** 付与・期限情報.指定日付与.期限.蓄積上限.繰越上限日数 */
-		Optional<LimitCarryoverDays>  val_limitCarryoverDays13;
-		/** 付与・期限情報.指定日付与.付与月日. */
-		int  val_month14;
-		/** 付与・期限情報.指定日付与.付与月日. */
-		int  val_day15;
-		/** 付与・期限情報.付与日テーブル参照付与.会社ID */
-		String  val_companyId16;
-		/** 付与・期限情報.付与日テーブル参照付与.特別休暇コード */
-		SpecialHolidayCode  val_specialHolidayCode17;
-		/** 付与・期限情報.付与日テーブル参照付与.期限指定方法 */
-		TimeLimitSpecification  val_timeSpecifyMethod18;
-		/** 付与・期限情報.付与日テーブル参照付与.有効期限.月数 */
-		SpecialVacationMonths  val_months19;
-		/** 付与・期限情報.付与日テーブル参照付与.有効期限.年数 */
-		SpecialVacationYears  val_years20;
-		/** 付与・期限情報.付与日テーブル参照付与.蓄積上限.蓄積上限日数を制限する */
-		boolean  val_limit21;
-		/** 付与・期限情報.付与日テーブル参照付与.蓄積上限.繰越上限日数 */
-		Optional<LimitCarryoverDays>  val_limitCarryoverDays22;
-		/** 付与・期限情報.期間付与.期間 */
-		DatePeriod  val_period23;
-		/** 付与・期限情報.期間付与.付与日数.付与日数 */
-		GrantedDays  val_grantDays24;
-		/** 特別休暇利用条件.会社ID */
-		String  val_companyId25;
-		/** 特別休暇利用条件.特別休暇コード */
-		SpecialHolidayCode  val_specialHolidayCode26;
-		/** 特別休暇利用条件.分類条件 */
-		UseAtr  val_restrictionCls27;
-		/** 特別休暇利用条件.年齢条件 */
-		UseAtr  val_ageLimit28;
-		/** 特別休暇利用条件.性別条件 */
-		UseAtr  val_genderRest29;
-		/** 特別休暇利用条件.雇用条件 */
-		UseAtr  val_restEmp30;
-		/** 特別休暇利用条件.分類一覧 */
-		List<String>  val_listCls31;
-		/** 特別休暇利用条件.年齢基準.年齢基準年区分 */
-		AgeBaseYear  val_ageCriteriaCls32;
-		/** 特別休暇利用条件.年齢基準.年齢基準日 */
-		MonthDay  val_ageBaseDate33;
-		/** 特別休暇利用条件.年齢範囲.年齢下限 */
-		AgeLimit  val_ageLowerLimit34;
-		/** 特別休暇利用条件.年齢範囲.年齢上限 */
-		AgeLimit  val_ageHigherLimit35;
-		/** 特別休暇利用条件.性別 */
-		GenderCls  val_gender36;
-		/** 特別休暇利用条件.雇用一覧 */
-		List<String>  val_listEmp37;
-		/** 対象項目.対象の欠勤枠 */
-		List<Integer>  val_absenceFrameNo38;
-		/** 対象項目.対象の特別休暇枠 */
-		List<Integer>  val_frameNo39;
-		/** 自動付与区分 */
-		NotUseAtr  val_autoGrant40;
-		/** メモ */
-		Memo  val_memo41;
-
-			SpecialHoliday.of(
-				/** 会社ID */
-				 val_companyId1
-				/** 特別休暇コード */
-				, val_specialHolidayCode2
-				/** 特別休暇名称 */
-				, val_specialHolidayName3
-				/** 付与・期限情報 */
-				,GrantRegular.of(
-					/** 付与・期限情報.付与するタイミングの種類 */
-					 val_typeTime4
-					/** 付与・期限情報.付与基準日 */
-					, val_grantDate5
-		)			/** 付与・期限情報.指定日付与 */
-					,Optional.of(FixGrantDate.of(
-						/** 付与・期限情報.指定日付与.付与日数 */
-						RegularGrantDays.of(
-							/** 付与・期限情報.指定日付与.付与日数.付与日数 */
-							 val_grantDays6
-
-						)
-						/** 付与・期限情報.指定日付与.期限 */
-						,GrantDeadline.of(
-							/** 付与・期限情報.指定日付与.期限.会社ID */
-							 val_companyId7
-							/** 付与・期限情報.指定日付与.期限.特別休暇コード */
-							, val_specialHolidayCode8
-							/** 付与・期限情報.指定日付与.期限.期限指定方法 */
-							, val_timeSpecifyMethod9
-							/** 付与・期限情報.指定日付与.期限.有効期限 */
-							,Optional.of(SpecialVacationDeadline.of(
-								/** 付与・期限情報.指定日付与.期限.有効期限.月数 */
-								 val_months10
-								/** 付与・期限情報.指定日付与.期限.有効期限.年数 */
-								, val_years11
-
-							)
-							/** 付与・期限情報.指定日付与.期限.蓄積上限 */
-							,Optional.of(LimitAccumulationDays.of(
-								/** 付与・期限情報.指定日付与.期限.蓄積上限.蓄積上限日数を制限する */
-								 val_limit12
-								/** 付与・期限情報.指定日付与.期限.蓄積上限.繰越上限日数 */
-								, val_limitCarryoverDays13
-		)
-							)
-
-						)
-						/** 付与・期限情報.指定日付与.付与月日 */
-						,Optional.of(MonthDay.of(
-							/** 付与・期限情報.指定日付与.付与月日. */
-							 val_month14
-							/** 付与・期限情報.指定日付与.付与月日. */
-							, val_day15
-
-						)
-
-					)
-					/** 付与・期限情報.付与日テーブル参照付与 */
-					,Optional.of(GrantDeadline.of(
-						/** 付与・期限情報.付与日テーブル参照付与.会社ID */
-						 val_companyId16
-						/** 付与・期限情報.付与日テーブル参照付与.特別休暇コード */
-						, val_specialHolidayCode17
-						/** 付与・期限情報.付与日テーブル参照付与.期限指定方法 */
-						, val_timeSpecifyMethod18
-						/** 付与・期限情報.付与日テーブル参照付与.有効期限 */
-						,Optional.of(SpecialVacationDeadline.of(
-							/** 付与・期限情報.付与日テーブル参照付与.有効期限.月数 */
-							 val_months19
-							/** 付与・期限情報.付与日テーブル参照付与.有効期限.年数 */
-							, val_years20
-
-						)
-						/** 付与・期限情報.付与日テーブル参照付与.蓄積上限 */
-						,Optional.of(LimitAccumulationDays.of(
-							/** 付与・期限情報.付与日テーブル参照付与.蓄積上限.蓄積上限日数を制限する */
-							 val_limit21
-							/** 付与・期限情報.付与日テーブル参照付与.蓄積上限.繰越上限日数 */
-							, val_limitCarryoverDays22
-		)
-						)
-
-					)
-					/** 付与・期限情報.期間付与 */
-					,Optional.of(PeriodGrantDate.of(
-						/** 付与・期限情報.期間付与.期間 */
-						 val_period23
-						// !!クラスファイルが見つかりません。→　DatePeriod
-
-						/** 付与・期限情報.期間付与.付与日数 */
-						,RegularGrantDays.of(
-							/** 付与・期限情報.期間付与.付与日数.付与日数 */
-							 val_grantDays24
-
-						)
-
-					)
-
-				)
-				/** 特別休暇利用条件 */
-				,SpecialLeaveRestriction.of(
-					/** 特別休暇利用条件.会社ID */
-					 val_companyId25
-					/** 特別休暇利用条件.特別休暇コード */
-					, val_specialHolidayCode26
-					/** 特別休暇利用条件.分類条件 */
-					, val_restrictionCls27
-					/** 特別休暇利用条件.年齢条件 */
-					, val_ageLimit28
-					/** 特別休暇利用条件.性別条件 */
-					, val_genderRest29
-					/** 特別休暇利用条件.雇用条件 */
-					, val_restEmp30
-					/** 特別休暇利用条件.分類一覧 */
-					, val_listCls31
-					/** 特別休暇利用条件.年齢基準 */
-					,AgeStandard.of(
-						/** 特別休暇利用条件.年齢基準.年齢基準年区分 */
-						 val_ageCriteriaCls32
-						/** 特別休暇利用条件.年齢基準.年齢基準日 */
-						, val_ageBaseDate33
-						// !!クラスファイルが見つかりません。→　MonthDay
-
-
-					)
-					/** 特別休暇利用条件.年齢範囲 */
-					,AgeRange.of(
-						/** 特別休暇利用条件.年齢範囲.年齢下限 */
-						 val_ageLowerLimit34
-						/** 特別休暇利用条件.年齢範囲.年齢上限 */
-						, val_ageHigherLimit35
-
-					)
-					/** 特別休暇利用条件.性別 */
-					, val_gender36
-					/** 特別休暇利用条件.雇用一覧 */
-					, val_listEmp37
-
-				)
-				/** 対象項目 */
-				,TargetItem.of(
-					/** 対象項目.対象の欠勤枠 */
-					 val_absenceFrameNo38
-					/** 対象項目.対象の特別休暇枠 */
-					, val_frameNo39
-
-				)
-				/** 自動付与区分 */
-				, val_autoGrant40
-				// !!クラスファイルが見つかりません。→　NotUseAtr
-
-				/** メモ */
-				, val_memo41
-				// !!クラスファイルが見つかりません。→　Memo
-
-
-		);
-
-
-
+//		/** 会社ID */
+//		String  val_companyId1;
+//		/** 特別休暇コード */
+//		SpecialHolidayCode  val_specialHolidayCode2;
+//		/** 特別休暇名称 */
+//		SpecialHolidayName  val_specialHolidayName3;
+//		/** 付与・期限情報.付与するタイミングの種類 */
+//		TypeTime  val_typeTime4;
+//		/** 付与・期限情報.付与基準日 */
+//		Optional<GrantDate>  val_grantDate5;
+//		/** 付与・期限情報.指定日付与.付与日数.付与日数 */
+//		GrantedDays  val_grantDays6;
+//		/** 付与・期限情報.指定日付与.期限.会社ID */
+//		String  val_companyId7;
+//		/** 付与・期限情報.指定日付与.期限.特別休暇コード */
+//		SpecialHolidayCode  val_specialHolidayCode8;
+//		/** 付与・期限情報.指定日付与.期限.期限指定方法 */
+//		TimeLimitSpecification  val_timeSpecifyMethod9;
+//		/** 付与・期限情報.指定日付与.期限.有効期限.月数 */
+//		SpecialVacationMonths  val_months10;
+//		/** 付与・期限情報.指定日付与.期限.有効期限.年数 */
+//		SpecialVacationYears  val_years11;
+//		/** 付与・期限情報.指定日付与.期限.蓄積上限.蓄積上限日数を制限する */
+//		boolean  val_limit12;
+//		/** 付与・期限情報.指定日付与.期限.蓄積上限.繰越上限日数 */
+//		Optional<LimitCarryoverDays>  val_limitCarryoverDays13;
+//		/** 付与・期限情報.指定日付与.付与月日. */
+//		int  val_month14;
+//		/** 付与・期限情報.指定日付与.付与月日. */
+//		int  val_day15;
+//		/** 付与・期限情報.付与日テーブル参照付与.会社ID */
+//		String  val_companyId16;
+//		/** 付与・期限情報.付与日テーブル参照付与.特別休暇コード */
+//		SpecialHolidayCode  val_specialHolidayCode17;
+//		/** 付与・期限情報.付与日テーブル参照付与.期限指定方法 */
+//		TimeLimitSpecification  val_timeSpecifyMethod18;
+//		/** 付与・期限情報.付与日テーブル参照付与.有効期限.月数 */
+//		SpecialVacationMonths  val_months19;
+//		/** 付与・期限情報.付与日テーブル参照付与.有効期限.年数 */
+//		SpecialVacationYears  val_years20;
+//		/** 付与・期限情報.付与日テーブル参照付与.蓄積上限.蓄積上限日数を制限する */
+//		boolean  val_limit21;
+//		/** 付与・期限情報.付与日テーブル参照付与.蓄積上限.繰越上限日数 */
+//		Optional<LimitCarryoverDays>  val_limitCarryoverDays22;
+//		/** 付与・期限情報.期間付与.期間 */
+//		DatePeriod  val_period23;
+//		/** 付与・期限情報.期間付与.付与日数.付与日数 */
+//		GrantedDays  val_grantDays24;
+//		/** 特別休暇利用条件.会社ID */
+//		String  val_companyId25;
+//		/** 特別休暇利用条件.特別休暇コード */
+//		SpecialHolidayCode  val_specialHolidayCode26;
+//		/** 特別休暇利用条件.分類条件 */
+//		UseAtr  val_restrictionCls27;
+//		/** 特別休暇利用条件.年齢条件 */
+//		UseAtr  val_ageLimit28;
+//		/** 特別休暇利用条件.性別条件 */
+//		UseAtr  val_genderRest29;
+//		/** 特別休暇利用条件.雇用条件 */
+//		UseAtr  val_restEmp30;
+//		/** 特別休暇利用条件.分類一覧 */
+//		List<String>  val_listCls31;
+//		/** 特別休暇利用条件.年齢基準.年齢基準年区分 */
+//		AgeBaseYear  val_ageCriteriaCls32;
+//		/** 特別休暇利用条件.年齢基準.年齢基準日 */
+//		MonthDay  val_ageBaseDate33;
+//		/** 特別休暇利用条件.年齢範囲.年齢下限 */
+//		AgeLimit  val_ageLowerLimit34;
+//		/** 特別休暇利用条件.年齢範囲.年齢上限 */
+//		AgeLimit  val_ageHigherLimit35;
+//		/** 特別休暇利用条件.性別 */
+//		GenderCls  val_gender36;
+//		/** 特別休暇利用条件.雇用一覧 */
+//		List<String>  val_listEmp37;
+//		/** 対象項目.対象の欠勤枠 */
+//		List<Integer>  val_absenceFrameNo38;
+//		/** 対象項目.対象の特別休暇枠 */
+//		List<Integer>  val_frameNo39;
+//		/** 自動付与区分 */
+//		NotUseAtr  val_autoGrant40;
+//		/** メモ */
+//		Memo  val_memo41;
+//
+//			SpecialHoliday.of(
+//				/** 会社ID */
+//				 val_companyId1
+//				/** 特別休暇コード */
+//				, val_specialHolidayCode2
+//				/** 特別休暇名称 */
+//				, val_specialHolidayName3
+//				/** 付与・期限情報 */
+//				,GrantRegular.of(
+//					/** 付与・期限情報.付与するタイミングの種類 */
+//					 val_typeTime4
+//					/** 付与・期限情報.付与基準日 */
+//					, val_grantDate5
+//		)			/** 付与・期限情報.指定日付与 */
+//					,Optional.of(FixGrantDate.of(
+//						/** 付与・期限情報.指定日付与.付与日数 */
+//						RegularGrantDays.of(
+//							/** 付与・期限情報.指定日付与.付与日数.付与日数 */
+//							 val_grantDays6
+//
+//						)
+//						/** 付与・期限情報.指定日付与.期限 */
+//						,GrantDeadline.of(
+//							/** 付与・期限情報.指定日付与.期限.会社ID */
+//							 val_companyId7
+//							/** 付与・期限情報.指定日付与.期限.特別休暇コード */
+//							, val_specialHolidayCode8
+//							/** 付与・期限情報.指定日付与.期限.期限指定方法 */
+//							, val_timeSpecifyMethod9
+//							/** 付与・期限情報.指定日付与.期限.有効期限 */
+//							,Optional.of(SpecialVacationDeadline.of(
+//								/** 付与・期限情報.指定日付与.期限.有効期限.月数 */
+//								 val_months10
+//								/** 付与・期限情報.指定日付与.期限.有効期限.年数 */
+//								, val_years11
+//
+//							)
+//							/** 付与・期限情報.指定日付与.期限.蓄積上限 */
+//							,Optional.of(LimitAccumulationDays.of(
+//								/** 付与・期限情報.指定日付与.期限.蓄積上限.蓄積上限日数を制限する */
+//								 val_limit12
+//								/** 付与・期限情報.指定日付与.期限.蓄積上限.繰越上限日数 */
+//								, val_limitCarryoverDays13
+//		)
+//							)
+//
+//						)
+//						/** 付与・期限情報.指定日付与.付与月日 */
+//						,Optional.of(MonthDay.of(
+//							/** 付与・期限情報.指定日付与.付与月日. */
+//							 val_month14
+//							/** 付与・期限情報.指定日付与.付与月日. */
+//							, val_day15
+//
+//						)
+//
+//					)
+//					/** 付与・期限情報.付与日テーブル参照付与 */
+//					,Optional.of(GrantDeadline.of(
+//						/** 付与・期限情報.付与日テーブル参照付与.会社ID */
+//						 val_companyId16
+//						/** 付与・期限情報.付与日テーブル参照付与.特別休暇コード */
+//						, val_specialHolidayCode17
+//						/** 付与・期限情報.付与日テーブル参照付与.期限指定方法 */
+//						, val_timeSpecifyMethod18
+//						/** 付与・期限情報.付与日テーブル参照付与.有効期限 */
+//						,Optional.of(SpecialVacationDeadline.of(
+//							/** 付与・期限情報.付与日テーブル参照付与.有効期限.月数 */
+//							 val_months19
+//							/** 付与・期限情報.付与日テーブル参照付与.有効期限.年数 */
+//							, val_years20
+//
+//						)
+//						/** 付与・期限情報.付与日テーブル参照付与.蓄積上限 */
+//						,Optional.of(LimitAccumulationDays.of(
+//							/** 付与・期限情報.付与日テーブル参照付与.蓄積上限.蓄積上限日数を制限する */
+//							 val_limit21
+//							/** 付与・期限情報.付与日テーブル参照付与.蓄積上限.繰越上限日数 */
+//							, val_limitCarryoverDays22
+//		)
+//						)
+//
+//					)
+//					/** 付与・期限情報.期間付与 */
+//					,Optional.of(PeriodGrantDate.of(
+//						/** 付与・期限情報.期間付与.期間 */
+//						 val_period23
+//						// !!クラスファイルが見つかりません。→　DatePeriod
+//
+//						/** 付与・期限情報.期間付与.付与日数 */
+//						,RegularGrantDays.of(
+//							/** 付与・期限情報.期間付与.付与日数.付与日数 */
+//							 val_grantDays24
+//
+//						)
+//
+//					)
+//
+//				)
+//				/** 特別休暇利用条件 */
+//				,SpecialLeaveRestriction.of(
+//					/** 特別休暇利用条件.会社ID */
+//					 val_companyId25
+//					/** 特別休暇利用条件.特別休暇コード */
+//					, val_specialHolidayCode26
+//					/** 特別休暇利用条件.分類条件 */
+//					, val_restrictionCls27
+//					/** 特別休暇利用条件.年齢条件 */
+//					, val_ageLimit28
+//					/** 特別休暇利用条件.性別条件 */
+//					, val_genderRest29
+//					/** 特別休暇利用条件.雇用条件 */
+//					, val_restEmp30
+//					/** 特別休暇利用条件.分類一覧 */
+//					, val_listCls31
+//					/** 特別休暇利用条件.年齢基準 */
+//					,AgeStandard.of(
+//						/** 特別休暇利用条件.年齢基準.年齢基準年区分 */
+//						 val_ageCriteriaCls32
+//						/** 特別休暇利用条件.年齢基準.年齢基準日 */
+//						, val_ageBaseDate33
+//						// !!クラスファイルが見つかりません。→　MonthDay
+//
+//
+//					)
+//					/** 特別休暇利用条件.年齢範囲 */
+//					,AgeRange.of(
+//						/** 特別休暇利用条件.年齢範囲.年齢下限 */
+//						 val_ageLowerLimit34
+//						/** 特別休暇利用条件.年齢範囲.年齢上限 */
+//						, val_ageHigherLimit35
+//
+//					)
+//					/** 特別休暇利用条件.性別 */
+//					, val_gender36
+//					/** 特別休暇利用条件.雇用一覧 */
+//					, val_listEmp37
+//
+//				)
+//				/** 対象項目 */
+//				,TargetItem.of(
+//					/** 対象項目.対象の欠勤枠 */
+//					 val_absenceFrameNo38
+//					/** 対象項目.対象の特別休暇枠 */
+//					, val_frameNo39
+//
+//				)
+//				/** 自動付与区分 */
+//				, val_autoGrant40
+//				// !!クラスファイルが見つかりません。→　NotUseAtr
+//
+//				/** メモ */
+//				, val_memo41
+//				// !!クラスファイルが見つかりません。→　Memo
+//
+//
+//		);
 	}
-
-
 }

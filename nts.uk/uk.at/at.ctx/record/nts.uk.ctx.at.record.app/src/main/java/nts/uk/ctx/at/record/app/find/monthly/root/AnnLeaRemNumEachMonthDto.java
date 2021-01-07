@@ -109,9 +109,8 @@ public class AnnLeaRemNumEachMonthDto extends MonthlyItemCommon {
 	@AttendanceItemValue(type = ValueType.FLAG)
 	private boolean grantAtr;
 
-	/** 付与区分 */
+	/** 未消化 */
 	@AttendanceItemLayout(jpPropertyName = NOT_DIGESTION, layout = LAYOUT_K)
-	@AttendanceItemValue(type = ValueType.FLAG)
 	private AnnualLeaveUndigestedNumberDto undigestedNumber;
 
 	@Override

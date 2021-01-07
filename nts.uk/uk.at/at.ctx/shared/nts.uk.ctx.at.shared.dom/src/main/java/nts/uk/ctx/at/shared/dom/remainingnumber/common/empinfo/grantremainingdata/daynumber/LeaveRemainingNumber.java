@@ -62,16 +62,18 @@ public class LeaveRemainingNumber {
 		return new LeaveRemainingNumber(days, minutes);
 	}
 
+	public LeaveRemainingTime getMinutesOrZero() {
+		if(!this.getMinutes().isPresent())return new LeaveRemainingTime(0);
+		return this.getMinutes().get();
+	}
+
 	@Override
 	public LeaveRemainingNumber clone() {
 		LeaveRemainingNumber cloned = new LeaveRemainingNumber();
-		try {
-			cloned.days = new LeaveRemainingDayNumber(days.v());
-			cloned.minutes = minutes.map(c -> new LeaveRemainingTime(c.v()));
-		}
-		catch (Exception e){
-			throw new RuntimeException("LeaveRemainingNumber clone error.");
-		}
+
+		cloned.days = new LeaveRemainingDayNumber(days.v());
+		cloned.minutes = minutes.map(c -> new LeaveRemainingTime(c.v()));
+
 		return cloned;
 	}
 
@@ -82,7 +84,7 @@ public class LeaveRemainingNumber {
 	public void add(LeaveRemainingNumber aLeaveRemainingNumber){
 
 		// 日付加算
-		days = days.add(getDays());
+		days = days.add(aLeaveRemainingNumber.getDays());
 
 		// 時間加算
 		if ( aLeaveRemainingNumber.getMinutes().isPresent() ){
@@ -117,13 +119,9 @@ public class LeaveRemainingNumber {
 		// 消化できなかった休暇使用数クラスのオブジェクトを作成
 		LeaveUsedNumber unusedNumber = new LeaveUsedNumber();
 
-		if ( !leaveUsedNumber.getMinutes().isPresent() ){ // 休暇使用数
-			return unusedNumber;
-		}
-
 		while(true){
 			if ( 1 <= this.days.v() // 1<=メンバ変数.休暇残数.日数
-				&& 1 <= leaveUsedNumber.getMinutes().get().v() // input.休暇使用数.時間
+				&& 1 <= leaveUsedNumber.getMinutesOrZero().v() // input.休暇使用数.時間
 			){
 				boolean needStacking = false; // 積み崩しが必要かどうか
 
@@ -131,7 +129,7 @@ public class LeaveRemainingNumber {
 					// メンバ変数.時間が存在しないときは、積み崩しが必要
 					needStacking = true;
 
-				} else if ( this.getMinutes().get().v() < leaveUsedNumber.getMinutes().get().v() ){
+				} else if ( this.getMinutes().get().v() < leaveUsedNumber.getMinutesOrZero().v() ){
 					// メンバ変数.時間 < input.休暇使用数.時間のときは、積み崩しが必要
 					needStacking = true;
 				}
@@ -172,19 +170,15 @@ public class LeaveRemainingNumber {
 
 		// Input.休暇使用数.日数<=メンバ変数.日数
 		if ( leaveUsedNumber.getDays().v() <= days.v() ){
-			if ( leaveUsedNumber.getMinutes().isPresent() ){
-				if ( leaveUsedNumber.getMinutes().get().v() == 0 ){
-					// Input.休暇使用数.時間が０のときは足りている
-					surfaceRemNum = true;
+			if ( leaveUsedNumber.getMinutesOrZero().v() == 0 ){
+				// Input.休暇使用数.時間が０のときは足りている
+				surfaceRemNum = true;
 
-				} else if ( this.getMinutes().isPresent() ){
-					// Input.休暇使用数.時間<=メンバ変数.時間
-					if ( leaveUsedNumber.getMinutes().isPresent() ){
-						if ( leaveUsedNumber.getMinutes().get().v()
-								<= this.getMinutes().get().v() ){
-							surfaceRemNum = true;
-						}
-					}
+			} else if ( this.getMinutes().isPresent() ){
+				// Input.休暇使用数.時間<=メンバ変数.時間
+				if ( leaveUsedNumber.getMinutesOrZero().v()
+						<= this.getMinutes().get().v() ){
+					surfaceRemNum = true;
 				}
 			}
 		}
@@ -200,9 +194,7 @@ public class LeaveRemainingNumber {
 		if ( this.getMinutes().isPresent() ){
 			this_time = this.getMinutes().get().v();
 		}
-		if ( leaveUsedNumber.getMinutes().isPresent() ){
-			input_time = leaveUsedNumber.getMinutes().get().v();
-		}
+		input_time = leaveUsedNumber.getMinutesOrZero().v();
 
 		// 残数が足りている場合
 		if ( surfaceRemNum ){

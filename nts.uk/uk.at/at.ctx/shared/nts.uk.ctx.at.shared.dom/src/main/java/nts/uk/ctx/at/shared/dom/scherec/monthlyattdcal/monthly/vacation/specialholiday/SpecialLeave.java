@@ -21,31 +21,31 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
 @Setter
 @Getter
 public class SpecialLeave extends DomainObject implements Cloneable, Serializable {
-	
+
 	/**
 	 * Serializable
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	/**
 	 * 特別休暇使用情報
 	 */
 	private SpecialLeaveUsedInfo usedNumberInfo;
-	
+
 	/**
 	 * 特別休暇残数情報
 	 */
 	private SpecialLeaveRemainingNumberInfo remainingNumberInfo;
-	
+
 	/**
 	 * コンストラクタ
 	 */
 	public SpecialLeave(){
-		
+
 		this.usedNumberInfo = new SpecialLeaveUsedInfo();
 		this.remainingNumberInfo = new SpecialLeaveRemainingNumberInfo();
 	}
-	
+
 	/**
 	 * ファクトリー
 	 * @param usedNumberInfo 特別休暇使用情報
@@ -55,26 +55,26 @@ public class SpecialLeave extends DomainObject implements Cloneable, Serializabl
 	public static SpecialLeave of(
 			SpecialLeaveUsedInfo usedNumberInfo,
 			SpecialLeaveRemainingNumberInfo remainingNumberInfo){
-		
+
 		SpecialLeave domain = new SpecialLeave();
 		domain.usedNumberInfo = usedNumberInfo;
 		domain.remainingNumberInfo = remainingNumberInfo;
 		return domain;
 	}
-	
+
 	@Override
 	public SpecialLeave clone() {
 		SpecialLeave cloned = new SpecialLeave();
-		try {
+//		try {
 			cloned.usedNumberInfo = this.usedNumberInfo.clone();
 			cloned.remainingNumberInfo = this.remainingNumberInfo.clone();
-		}
-		catch (Exception e){
-			throw new RuntimeException("SpecialLeave clone error.");
-		}
+//		}
+//		catch (Exception e){
+//			throw new RuntimeException("SpecialLeave clone error.");
+//		}
 		return cloned;
 	}
-	
+
 	/**
 	 * データをクリア
 	 */
@@ -90,22 +90,22 @@ public class SpecialLeave extends DomainObject implements Cloneable, Serializabl
 	 */
 	public void createRemainingNumberFromGrantRemaining(
 			List<SpecialLeaveGrantRemaining> remainingDataList, boolean afterGrantAtr){
-		
+
 		// 特別休暇付与残数データから特別休暇残数を作成
-		this.remainingNumberInfo.createRemainingNumberFromGrantRemaining(remainingDataList, afterGrantAtr);	
+		this.remainingNumberInfo.createRemainingNumberFromGrantRemaining(remainingDataList, afterGrantAtr);
 	}
-	
+
 	/**
 	 * 使用数を加算する
 	 * @param days 日数
 	 * @param afterGrantAtr 付与後フラグ
 	 */
 	public void addUsedNumber(SpecialLeaveUseNumber usedNumber, boolean afterGrantAtr){
-	
+
 		this.usedNumberInfo.addUsedNumber(usedNumber, afterGrantAtr);
-		
+
 	}
-	
+
 	/**
 	 * 付与前退避処理
 	 */
@@ -114,7 +114,7 @@ public class SpecialLeave extends DomainObject implements Cloneable, Serializabl
 		this.usedNumberInfo.saveStateBeforeGrant();
 		this.remainingNumberInfo.saveStateBeforeGrant();
 	}
-	
+
 	/**
 	 * 付与後退避処理
 	 */
@@ -123,5 +123,5 @@ public class SpecialLeave extends DomainObject implements Cloneable, Serializabl
 		this.usedNumberInfo.saveStateAfterGrant();
 		this.remainingNumberInfo.saveStateAfterGrant();
 	}
-	
+
 }

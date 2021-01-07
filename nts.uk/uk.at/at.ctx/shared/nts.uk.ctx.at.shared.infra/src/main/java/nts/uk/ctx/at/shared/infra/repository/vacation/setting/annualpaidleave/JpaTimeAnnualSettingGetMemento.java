@@ -17,10 +17,10 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KtvmtT
  * The Class JpaTimeVacationSettingGetMemento.
  */
 public class JpaTimeAnnualSettingGetMemento implements TimeAnnualSettingGetMemento {
-    
+
     /** The entity. */
     private KtvmtTimeAnnualSet entity;
-    
+
     /**
      * Instantiates a new jpa time vacation setting get memento.
      *
@@ -29,10 +29,10 @@ public class JpaTimeAnnualSettingGetMemento implements TimeAnnualSettingGetMemen
     public JpaTimeAnnualSettingGetMemento(KtvmtTimeAnnualSet entity) {
         this.entity = entity;
     }
-    
+
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
      * TimeVacationSettingGetMemento#getCompanyId()
      */
@@ -40,10 +40,10 @@ public class JpaTimeAnnualSettingGetMemento implements TimeAnnualSettingGetMemen
     public String getCompanyId() {
         return this.entity.getCid();
     }
-    
+
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
      * TimeVacationSettingGetMemento#getTimeManageType()
      */
@@ -54,7 +54,7 @@ public class JpaTimeAnnualSettingGetMemento implements TimeAnnualSettingGetMemen
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
      * TimeVacationSettingGetMemento#getTimeUnit()
      */
@@ -65,7 +65,7 @@ public class JpaTimeAnnualSettingGetMemento implements TimeAnnualSettingGetMemen
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
      * TimeVacationSettingGetMemento#getMaxYearDayLeave()
      */
@@ -79,19 +79,20 @@ public class JpaTimeAnnualSettingGetMemento implements TimeAnnualSettingGetMemen
         return timeMaxDay;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
-     * TimeVacationSettingGetMemento#isEnoughTimeOneDay()
-     */
-    @Override
-    public boolean isEnoughTimeOneDay() {
-        return this.entity.getIsEnoughTimeOneDay() == 1 ? true : false;
-    }
+    // 要確認1224
+//    /*
+//     * (non-Javadoc)
+//     *
+//     * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
+//     * TimeVacationSettingGetMemento#isEnoughTimeOneDay()
+//     */
+//    @Override
+//    public boolean isEnoughTimeOneDay() {
+//        return this.entity.getIsEnoughTimeOneDay() == 1 ? true : false;
+//    }
 
 	@Override
-	public TimeAnnualRoundProcesCla GetRoundProcessClassific() {		
+	public TimeAnnualRoundProcesCla GetRoundProcessClassific() {
 		return TimeAnnualRoundProcesCla.valueOf(this.entity.getRoundProcessCla());
 	}
 }
