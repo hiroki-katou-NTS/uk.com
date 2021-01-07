@@ -12,14 +12,14 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
  * The Interface CompensatoryLeaveComGetMemento.
  */
 public interface CompensatoryLeaveComGetMemento {
-	
+
 	/**
 	 * Gets the company id.
 	 *
 	 * @return the company id
 	 */
 	String getCompanyId();
-	
+
 	/**
 	 * Gets the checks if is managed.
 	 *
@@ -33,7 +33,7 @@ public interface CompensatoryLeaveComGetMemento {
 	 * @return the compensatory acquisition use
 	 */
 	CompensatoryAcquisitionUse getCompensatoryAcquisitionUse();
-	
+
 	/**
 	 * Gets the compensatory digestive time unit.
 	 *
@@ -47,4 +47,9 @@ public interface CompensatoryLeaveComGetMemento {
 	 * @return the compensatory occurrence setting
 	 */
 	List<CompensatoryOccurrenceSetting> getCompensatoryOccurrenceSetting();
+
+	// 代休発生設定 ---
+	SubstituteHolidaySetting getSubstituteHolidaySetting();
+	// 紐付け管理区分
+	ManageDistinct getLinkingManagementATR();
 }

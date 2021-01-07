@@ -13,14 +13,14 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum FilterByCompare {
 	
-	//予定と実績の比較をしない
-	DO_NOT_COMPARE(0, "Enum_FilterByCompare_NotCompare"),
+	//全て
+	ALL(0, "Enum_TargetServiceType_All"),
 	
-	//予定と実績が同じものを抽出する
-	EXTRACT_SAME(1, "Enum_FilterByCompare_Extract_Same"),
+	//選択
+	SELECTED(1, "Enum_TargetServiceType_Selection"),
 	
-	//予定と実績が異なるものを抽出する
-	EXTRACT_DIFFERENT(2, "Enum_FilterByCompare_Extract_Different");
+	//選択以外
+	NOT_SELECTED(2, "Enum_TargetServiceType_OtherSelection");
 
 	public final int value;
 

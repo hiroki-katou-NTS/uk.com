@@ -184,16 +184,9 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
             command.setMaxNumberSemiVacation(setttingDB.getManageAnnualSetting().getHalfDayManage().reference.value);
             command.setMaxNumberCompany(setttingDB.getManageAnnualSetting().getHalfDayManage()
                     .maxNumberUniformCompany.v());
-            command.setMaxGrantDay(setttingDB.getManageAnnualSetting().getMaxGrantDay().v());
-            command.setMaxRemainingDay(setttingDB.getManageAnnualSetting().getRemainingNumberSetting()
-                    .remainingDayMaxNumber.v());
             command.setNumberYearRetain(setttingDB.getManageAnnualSetting().getRemainingNumberSetting()
                     .retentionYear.v());
             command.setAnnualPriority(setttingDB.getAcquisitionSetting().annualPriority.value);
-            command.setRemainingNumberDisplay(setttingDB.getManageAnnualSetting().getDisplaySetting()
-                    .remainingNumberDisplay.value);
-            command.setNextGrantDayDisplay(setttingDB.getManageAnnualSetting().getDisplaySetting()
-                    .nextGrantDayDisplay.value);            
             command.setYearlyOfDays(setttingDB.getManageAnnualSetting().getYearlyOfNumberDays().v());
             command.setRoundProcessCla(setttingDB.getManageAnnualSetting().getHalfDayManage().roundProcesCla.value);
 
@@ -238,7 +231,6 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
         command.setMaxNumberSemiVacation(MaxDayReference.CompanyUniform.value);
         command.setMaxNumberCompany(null);
         // TODO: Check value default
-        command.setMaxGrantDay(null);
         command.setMaxRemainingDay(null);
         command.setNumberYearRetain(null);
         command.setYearlyOfDays(null);

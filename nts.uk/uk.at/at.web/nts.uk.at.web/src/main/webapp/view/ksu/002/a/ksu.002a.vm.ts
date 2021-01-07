@@ -40,6 +40,32 @@ module nts.uk.ui.at.ksu002.a {
 				data.state.value.begin(state.value.begin);
 				data.state.value.finish(state.value.finish);
 			}
+		},
+		hasChange: function (dayDatas: DayDataRawObsv[]) {
+			const changeds = dayDatas
+				.map(({ data }) => {
+					const {
+						$raw,
+						wtime,
+						wtype,
+						value,
+						achievement
+					} = data;
+					const {
+						workTypeCode,
+						workTimeCode,
+						startTime,
+						endTime
+					} = ko.unwrap(achievement) ? $raw.achievements : $raw;
+
+					return ko.unwrap(wtype.code) !== workTypeCode
+						|| ko.unwrap(wtime.code) !== workTimeCode
+						|| ko.unwrap(value.begin) !== startTime
+						|| ko.unwrap(value.finish) !== endTime;
+				})
+				.filter((f) => !!f);
+
+			return changeds.length !== 0;
 		}
 	};
 
@@ -279,13 +305,8 @@ module nts.uk.ui.at.ksu002.a {
 				.subscribe((arch) => {
 					const { NO } = ACHIEVEMENT;
 					const { IMPRINT } = EDIT_STATE;
-					const undo = vm.schedules.undoAble();
-					const redo = vm.schedules.redoAble();
 
 					const schedules: DayDataMementoObsv[] = ko.unwrap(vm.schedules);
-
-					// soft reset (only undo, redo)
-					vm.schedules.reset(!(undo || redo) || arch === NO);
 
 					// reset data
 					_.each(schedules, (sc) => {
@@ -329,6 +350,9 @@ module nts.uk.ui.at.ksu002.a {
 						// state of achievement (both data & switch select)
 						data.achievement(arch === NO ? null : !!$raw.achievements);
 					});
+
+					// reset state of memento
+					vm.schedules.reset();
 				});
 		}
 
@@ -462,6 +486,9 @@ module nts.uk.ui.at.ksu002.a {
 
 			if (changed.data.wtime.code !== cloned.data.wtime.code) {
 				state.wtime(EDIT_STATE.HAND_CORRECTION_MYSELF);
+				// if change time code, change time value state
+				state.value.begin(EDIT_STATE.HAND_CORRECTION_MYSELF);
+				state.value.finish(EDIT_STATE.HAND_CORRECTION_MYSELF);
 			}
 
 			if (changed.data.value.begin !== cloned.data.value.begin) {

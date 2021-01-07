@@ -11,9 +11,9 @@ import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.ReflectDire
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.ReflectStartEndWork;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.ReflectWorkInformation;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.workchange.ReflectAttendance;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.workchange.ReflectWorkChangeApplication;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.workchange.schedule.SCReflectWorkChangeApp.WorkInfoDto;
 import nts.uk.ctx.at.shared.dom.application.workchange.AppWorkChangeShare;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -24,7 +24,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class RCReflectWorkChangeApp {
 
 	public static Collection<Integer> reflect(Require require, AppWorkChangeShare appWorkChange,
-			DailyRecordOfApplication dailyApp, ReflectWorkChangeApplication reflectWorkChange) {
+			DailyRecordOfApplication dailyApp, ReflectWorkChangeApp reflectWorkChange) {
 		Set<Integer> lstItemId = new HashSet<>();
 		// ReflectWorkChangeApplication
 		// [勤務種類コード、就業時間帯コード]を勤務情報DTOへセット
@@ -42,7 +42,7 @@ public class RCReflectWorkChangeApp {
 		// [出退勤を反映するか]をチェック
 
 		// [出退勤を反映するか]をチェック
-		if (reflectWorkChange.getReflectAttendance() == NotUseAtr.USE) {
+		if (reflectWorkChange.getWhetherReflectAttendance() == NotUseAtr.USE) {
 			/// 出退勤の反映
 			lstItemId.addAll(ReflectAttendance.reflect(appWorkChange.getTimeZoneWithWorkNoLst(),
 					ScheduleRecordClassifi.RECORD, dailyApp, Optional.of(true), Optional.of(true)));

@@ -11,6 +11,7 @@ import javax.persistence.MappedSuperclass;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -20,18 +21,13 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public abstract class KsvstSubstVacationSetting extends UkJpaEntity {
+public abstract class KsvstSubstVacationSetting extends ContractUkJpaEntity {
 
 	/** The is manage. */
-	@Column(name = "IS_MANAGE")
+	@Column(name = "MANAGE_ATR")
 	private int isManage;
+	
 
-	/** The expiration date set. */
-	@Column(name = "EXPIRATION_DATE_SET")
-	private int expirationDateSet;
-
-	/** The allow prepaid leave. */
-	@Column(name = "ALLOW_PREPAID_LEAVE")
-	private int allowPrepaidLeave;
-
+	
+	
 }

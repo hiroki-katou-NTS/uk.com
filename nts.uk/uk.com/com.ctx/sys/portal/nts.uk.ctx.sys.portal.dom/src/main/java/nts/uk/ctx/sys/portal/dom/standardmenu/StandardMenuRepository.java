@@ -17,6 +17,13 @@ public interface StandardMenuRepository {
 	 * @return the list
 	 */
 	List<StandardMenu> findAll(String companyId);
+	
+	/**
+	 * 
+	 * @param companyId
+	 * @return
+	 */
+	List<StandardMenu> findAll1(String companyId);
 
 	/**
 	 * added by sonnh1
@@ -155,7 +162,6 @@ public interface StandardMenuRepository {
 	 */
 	int maxOrderStandardMenu(String companyId, int system, int classification);
 	
-	
 	Optional<StandardMenu> getPgName(String companyId, String programId, String screenId, String queryString);
 	
 	List<StandardMenu> findByCIDMobileCode(String companyID, List<String> codeLst);
@@ -165,4 +171,8 @@ public interface StandardMenuRepository {
 	Optional<StandardMenu> getMenuDisplayNameNoQuery(String companyId, String programId, String screenId);
 
 	List<StandardMenu> findByProgram(String companyId, int system, List<MenuClassification> classifications, List<String> programIds, String screenId);
+	
+	List<StandardMenu> findByMenuAndWebMenuDisplay(String cid, int classification, int menuAtr, int webSetting);
+	
+	Optional<StandardMenu> findByCIDSystemMenuClassificationCode(String cid, int system, int classification, String code);
 }

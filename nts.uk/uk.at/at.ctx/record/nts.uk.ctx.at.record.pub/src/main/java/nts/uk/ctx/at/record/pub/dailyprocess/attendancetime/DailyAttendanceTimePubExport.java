@@ -2,10 +2,12 @@ package nts.uk.ctx.at.record.pub.dailyprocess.attendancetime;
 
 import java.util.Map;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 
 /**
@@ -34,14 +36,24 @@ public class DailyAttendanceTimePubExport {
 	
 	//所定外深夜時間
 	private TimeWithCalculation midNightTime;
+	
+	//計算合計外深夜時間
+	private AttendanceTime timeOutSideMidnight;
+	
+	//計算残業深夜時間
+	private AttendanceTime calOvertimeMidnight;
+	
+	//計算休出深夜時間 (法定区分,休出深夜時間)
+	private Map<StaturoryAtrOfHolidayWork,AttendanceTime> calHolidayMidnight;
 
 	/**
 	 * Constructor 
 	 */
 	public DailyAttendanceTimePubExport(Map<OverTimeFrameNo, TimeWithCalculation> overTime,
-			Map<HolidayWorkFrameNo, TimeWithCalculation> holidayWorkTime,
-			Map<Integer, AttendanceTime> bonusPayTime, Map<Integer, AttendanceTime> specBonusPayTime,
-			TimeWithCalculation flexTime, TimeWithCalculation midNightTime) {
+			Map<HolidayWorkFrameNo, TimeWithCalculation> holidayWorkTime, Map<Integer, AttendanceTime> bonusPayTime,
+			Map<Integer, AttendanceTime> specBonusPayTime, TimeWithCalculation flexTime,
+			TimeWithCalculation midNightTime, AttendanceTime timeOutSideMidnight, AttendanceTime calOvertimeMidnight,
+			Map<StaturoryAtrOfHolidayWork, AttendanceTime> calHolidayMidnight) {
 		super();
 		this.overTime = overTime;
 		this.holidayWorkTime = holidayWorkTime;
@@ -49,6 +61,8 @@ public class DailyAttendanceTimePubExport {
 		this.specBonusPayTime = specBonusPayTime;
 		this.flexTime = flexTime;
 		this.midNightTime = midNightTime;
+		this.timeOutSideMidnight = timeOutSideMidnight;
+		this.calOvertimeMidnight = calOvertimeMidnight;
+		this.calHolidayMidnight = calHolidayMidnight;
 	}
-
 }

@@ -8,6 +8,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.app.find.outsideot.dto.OvertimeDto;
 
 /**
  * The Class OvertimeSaveCommand.
@@ -17,6 +18,6 @@ import lombok.Setter;
 public class OvertimeSaveCommand {
 
 	/** The overtimes. */
-	private List<OvertimeSaveDto> overtimes;
+	private List<OvertimeDto> overtimes;
 	
 }

@@ -385,6 +385,9 @@ project (':hr.screen:nts.uk.screen.hr.app') {
 		compile(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: version)
 		
 		compile(group: 'com.query', name: 'nts.uk.query.app', version: version)
+		runtime(group: 'exio.ctx', name: 'nts.uk.ctx.exio.ac', version: version)
+		runtime(group: 'exio.ctx', name: 'nts.uk.ctx.exio.dom', version: version)
+		runtime(group: 'exio.ctx', name: 'nts.uk.ctx.exio.infra', version: version)
 		compile(group: 'com.query', name: 'nts.uk.query.model', version: version)
 	}
 }
@@ -590,6 +593,9 @@ project (':hr.web:nts.uk.hr.web') {
 		
 		runtime(group: 'com.query', name: 'nts.uk.query.ac', version: version)
 		runtime(group: 'com.query', name: 'nts.uk.query.app', version: version)
+		runtime(group: 'exio.ctx', name: 'nts.uk.ctx.exio.ac', version: version)
+		runtime(group: 'exio.ctx', name: 'nts.uk.ctx.exio.dom', version: version)
+		runtime(group: 'exio.ctx', name: 'nts.uk.ctx.exio.infra', version: version)
 		runtime(group: 'com.query', name: 'nts.uk.query.infra', version: version)
 		runtime(group: 'com.query', name: 'nts.uk.query.model', version: version)
 		runtime(group: 'com.query', name: 'nts.uk.query.pub', version: version)

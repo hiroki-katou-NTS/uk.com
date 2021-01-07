@@ -27,9 +27,14 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
         });
 
         appDate: KnockoutObservable<any> = ko.observable(null);
+		isFromOther: boolean = false;
 
         created(params: AppInitParam) {
             const vm = this;
+			if(!_.isNil(__viewContext.transferred.value)) {
+				vm.isFromOther = true;
+			}
+			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
 			let empLst: Array<string> = [],
 				dateLst: Array<string> = [];
             vm.isSendMail = ko.observable(false);
@@ -154,14 +159,21 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
             const tripOutput = dataFetch.businessTripOutput;
             const tripContent = dataFetch.businessTripContent;
 
-            let lstContent: Array<BusinessTripInfoDetail> = _.map(tripOutput.businessTripActualContent, function (i) {
-                return {
+            let mapScreenContent: Array<ScreenContent> = [];
+            let lstContent: Array<BusinessTripInfoDetail> = [];
+            _.forEach(tripOutput.businessTripActualContent, function (i: any) {
+                mapScreenContent.push({
                     date: i.date,
-                    wkTypeCd: i.opAchievementDetail.workTypeCD,
-                    wkTimeCd: i.opAchievementDetail.workTimeCD,
-                    startWorkTime: i.opAchievementDetail.opWorkTime,
-                    endWorkTime: i.opAchievementDetail.opLeaveTime
-                }
+                    workTypeName: i.opAchievementDetail.opWorkTypeName,
+                    workTimeName: i.opAchievementDetail.opWorkTimeName,
+                });
+                lstContent.push({
+                        date: i.date,
+                        wkTypeCd: i.opAchievementDetail.workTypeCD,
+                        wkTimeCd: i.opAchievementDetail.workTimeCD,
+                        startWorkTime: i.opAchievementDetail.opWorkTime,
+                        endWorkTime: i.opAchievementDetail.opLeaveTime
+                });
             });
             let businessTripDto: any = {
                 departureTime: tripContent.departureTime,
@@ -174,7 +186,8 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
             let command = {
                 businessTrip: businessTripDto,
                 businessTripInfoOutput: tripOutput,
-                application: applicationDto
+                application: applicationDto,
+                screenDetails: mapScreenContent
             };
 
             vm.$blockui( "show" );
@@ -242,17 +255,32 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
             const vm = this;
 
             if (err && err.messageId) {
-
-                if ( _.includes(["Msg_23","Msg_24","Msg_1912","Msg_1913"], err.messageId)) {
+                // 年月日＋#Msg_ID
+                if ( _.includes(["Msg_23","Msg_24","Msg_1912","Msg_1913","Msg_457","Msg_1685"], err.messageId)) {
                     err.message = err.parameterIds[0] + err.message;
                 }
 
                 switch (err.messageId) {
                     case "Msg_23":
                     case "Msg_24":
-                    case "Msg_1715":
-                    case "Msg_702": {
+                    case "Msg_457": {
                         let id = '#' + err.parameterIds[0].replace(/\//g, "") + '-wkCode';
+                        vm.$errors({
+                            [id]: err
+                        });
+                        break;
+                    }
+                    case "Msg_1715": {
+                        let id = '#' + err.parameterIds[1].replace(/\//g, "") + '-wkCode';
+                        vm.$errors({
+                            [id]: err
+                        });
+                        break;
+                    }
+                    case "Msg_1685":
+                    case "Msg_1912":
+                    case "Msg_1913": {
+                        let id = '#' + err.parameterIds[0].replace(/\//g, "") + '-tmCode';
                         vm.$errors({
                             [id]: err
                         });
@@ -305,6 +333,12 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
     interface MessageOutput {
         msgID: string;
         paramLst: Array<string>
+    }
+
+    interface ScreenContent {
+        date: string;
+        workTypeName: string;
+        workTimeName: string;
     }
 
     const API = {

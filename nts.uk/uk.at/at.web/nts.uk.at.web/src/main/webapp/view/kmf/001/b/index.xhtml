@@ -10,7 +10,7 @@
 			<script>
 				var dialogSize = {
 					width : 500,
-					height : 540
+					height : 360
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -63,32 +63,7 @@
 							</td>
 						</tr>						
 					</table>
-				</div>
-				
-				<!--時間年休の説明-->
-				<div style="width: 451px; margin-top: 30px;">
-					<label style="margin-left: 20px; display: block; font-size: 15px;"
-						class="content-label">#{i18n.getText('KMF001_146')}</label>
-				</div>
-				
-				<!--時間年休一覧-->
-				<div style="display: inline-flex;">
-					<table class="table table-bordered" id="priorityTable" tabindex="-1"
-						style="margin-top: 30px; border-collapse: collapse; width: 280px; text-align: center; margin-left: 89px;">
-						<tr>
-							<td>
-								<div tabindex="5" data-bind="ntsCheckBox: { checked: priorityOverpaid, enable: enableInputPriority, text: '#{i18n.getText('KMF001_147')}'}"></div>
-							</td>
-						</tr>				
-						
-						<tr>
-							<td>
-								<div tabindex="6" data-bind="ntsCheckBox: { checked: sixtyHoursTimeOverrideHoliday, enable: enableInputPriority, text: '#{i18n.getText('KMF001_148')}'}"></div>
-							</td>
-						</tr>						
-					</table>
-				</div>
-
+				</div>			
 				<div id="functions-area-bottom">
 					<!-- 決定 -->
 					<button tabindex="7"

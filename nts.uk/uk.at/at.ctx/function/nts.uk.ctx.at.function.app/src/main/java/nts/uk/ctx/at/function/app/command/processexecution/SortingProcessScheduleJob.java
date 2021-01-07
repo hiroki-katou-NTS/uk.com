@@ -11,7 +11,6 @@ import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 import nts.arc.scoped.request.thread.ThreadRequestContextHolder;
 import nts.arc.scoped.session.thread.ThreadSessionContextHolder;
-import nts.arc.time.GeneralDateTime;
 import nts.gul.serialize.ObjectSerializer;
 import nts.gul.web.communicate.typedapi.FailureCause;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ExecutionTaskSettingRepository;
@@ -20,7 +19,6 @@ import nts.uk.shr.com.communicate.PathToWebApi;
 import nts.uk.shr.com.communicate.batch.BatchServer;
 //import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.uk.shr.com.task.schedule.ExecutionContext;
-import nts.uk.shr.com.task.schedule.UkJobScheduler;
 import nts.uk.shr.com.task.schedule.UkScheduledJob;
 
 @Stateless
@@ -33,9 +31,6 @@ public class SortingProcessScheduleJob extends UkScheduledJob {
 
 	@Inject
 	private ExecutionTaskSettingRepository execSettingRepo;
-	
-	@Inject
-	private UkJobScheduler scheduler;
 
 	@Inject
 	private BatchServer batchServer;
@@ -60,13 +55,13 @@ public class SortingProcessScheduleJob extends UkScheduledJob {
 		
 		Optional<ExecutionTaskSetting> data = this.execSettingRepo.getByCidAndExecCd(companyId, execItemCd);
 		if(data.isPresent()) {
-			if(data.get().isRepeat()) {
-				GeneralDateTime nextFireTime = data
-						.map(e -> e.getScheduleId())
-						.flatMap(id -> this.scheduler.getNextFireTime(id))
-						.orElse(null);
-				s.setNextDate(nextFireTime);
-			}
+//			if(data.get().isRepeat()) {
+//				GeneralDateTime nextFireTime = data
+//						.map(e -> e.getScheduleId())
+//						.flatMap(id -> this.scheduler.getNextFireTime(id))
+//						.orElse(null);
+//				s.setNextDate(nextFireTime);
+//			}
 		}
 		if (this.batchServer.exists()) {
 			

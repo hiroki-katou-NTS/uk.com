@@ -6,8 +6,8 @@ package nts.uk.ctx.at.record.infra.repository.optitem;
 
 import java.util.Optional;
 
-import nts.uk.ctx.at.record.infra.entity.optitem.KrcmtCalcResultRange;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcmtAnyv;
+import nts.uk.ctx.at.record.infra.entity.optitem.KrcmtCalcResultRange;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcResultRange;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.CalculationClassification;
@@ -96,7 +96,7 @@ public class JpaOptionalItemSetMemento implements OptionalItemSetMemento {
 	public void setOptionalItemUsageAtr(OptionalItemUsageAtr optionalItemUsageAtr) {
 		this.entity.setUsageAtr(optionalItemUsageAtr.value);
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
