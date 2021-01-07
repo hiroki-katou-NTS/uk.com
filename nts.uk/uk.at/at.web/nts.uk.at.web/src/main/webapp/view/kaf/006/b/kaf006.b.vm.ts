@@ -827,7 +827,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 		}
 
 		private checkTimeValid(time: KnockoutObservable<number>): boolean {
-			if (_.isNil(time()) || _.isEmpty(time())) {
+			if (_.isNil(time()) || time() === "") {
 				return false;
 			}
 			return true;

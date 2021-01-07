@@ -459,7 +459,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 			
 			// vm.specAbsenceDispInfo(data.specAbsenceDispInfo);
 			if (vm.specAbsenceDispInfo()) {
-				vm.dateSpecHdRelationLst(vm.specAbsenceDispInfo().dateSpecHdRelationLst);
+				vm.dateSpecHdRelationLst(vm.specAbsenceDispInfo().dateSpecHdRelationLst ? vm.specAbsenceDispInfo().dateSpecHdRelationLst : []);
 				
 				if (vm.dateSpecHdRelationLst() && vm.dateSpecHdRelationLst().length > 0) {
 					vm.selectedDateSpec(vm.dateSpecHdRelationLst()[0].relationCD);
@@ -527,8 +527,8 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 				 null, 
 				 null, 
 				 ko.toJS(vm.application().opReversionReason), 
-				 ko.toJS(vm.application().appDate), 
-				 ko.toJS(vm.application().appDate), 
+				 ko.toJS(vm.application().opAppStartDate), 
+				 ko.toJS(vm.application().opAppEndDate), 
 				 ko.toJS(vm.application().opAppReason), 
 				 ko.toJS(vm.application().opAppStandardReasonCD));
 
@@ -663,7 +663,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 		}
 
 		private checkTimeValid(time: KnockoutObservable<number>): boolean {
-			if (_.isNil(time()) || _.isEmpty(time())) {
+			if (_.isNil(time()) || time() === "") {
 				return false;
 			}
 			return true;
