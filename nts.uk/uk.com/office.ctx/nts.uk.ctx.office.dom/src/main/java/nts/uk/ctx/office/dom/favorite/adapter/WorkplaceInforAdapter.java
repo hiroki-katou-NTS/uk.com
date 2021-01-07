@@ -10,5 +10,5 @@ import nts.arc.time.GeneralDate;
  *  @author hieutt
  */
 public interface WorkplaceInforAdapter {
-	public Map<String, WorkplaceInforImport> getWorkplaceInfor(List<String> lstWorkplaceID, GeneralDate baseDate);
+	public Map<String, WorkplaceInforImport> getWorkplaceInfor(List<String> lstWorkplaceId, GeneralDate baseDate);
 }
