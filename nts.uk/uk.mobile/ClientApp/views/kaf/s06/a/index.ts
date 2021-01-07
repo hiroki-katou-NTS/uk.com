@@ -1,4 +1,4 @@
-import { _, Vue } from '@app/provider';
+import { _, Vue, moment } from '@app/provider';
 import { component, Prop, Watch } from '@app/core/component';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/s00';
 import { KafS00ShrComponent, AppType, Application, InitParam } from 'views/kaf/s00/shr';
@@ -31,13 +31,39 @@ export class KafS06AComponent extends KafS00ShrComponent {
     @Watch('selectedValue', {deep: true})
     public selectHolidayType(data: any) {
         const self = this;
-        self.selectedHolidayType(data);
+        if (data) {
+            self.selectedHolidayType(data);
+        }
     }
     public selectedRelationship = null;
     public time: number = 0;
     public checkBoxC7: false;
     public text: null;
     public model: Model = {} as Model;
+    public linkWithVacation = [
+        {
+            holiday: '',
+            substituteHoliday: '',
+            numOfUser: 0
+        },
+        {
+            holiday: '',
+            substituteHoliday: '',
+            numOfUser: 0
+        }
+    ];
+    public linkWithDraw = [
+        {
+            holiday: '',
+            substituteHoliday: '',
+            numOfUser: 0
+        },
+        {
+            holiday: '',
+            substituteHoliday: '',
+            numOfUser: 0
+        }
+    ];
     public dropdownList = [
         {
             code: null,
@@ -474,9 +500,13 @@ export class KafS06AComponent extends KafS00ShrComponent {
     }
 
 
-
-    public created() {
+    public mounted() {
+        const self = this;
+        self.fetchData();
+    }
+    public fetchData() {
         const vm = this;
+        vm.$mask('show');
         if (vm.params) {
             vm.modeNew = false;
             vm.appDispInfoStartupOutput = vm.params.appDispInfoStartupOutput;
@@ -531,6 +561,9 @@ export class KafS06AComponent extends KafS00ShrComponent {
             });
         }).then(() => vm.$mask('hide'));
     }
+    public created() {
+        
+    }
 
     public kaf000BChangeDate(objectDate) {
         const vm = this;
@@ -584,7 +617,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
             return;
         }
         vm.$mask('show');
-        vm.$http.post('at', API.checkBeforeRegisterSample, ['Msg_260', 'Msg_261'])
+        vm.$http.post('at', API.registerSample, ['Msg_260', 'Msg_261'])
         .then((result: any) => {
             if (result) {
                 // xử lý confirmMsg
@@ -727,6 +760,17 @@ export class KafS06AComponent extends KafS00ShrComponent {
             workTimeTime = self.handleTimeWithDay(existTime.startTime) + '～' + self.handleTimeWithDay(existTime.endTime);
         }
 
+        self.workType = {
+            code: workTypeCode,
+            name: workTypeName
+        } as WorkInfo;
+
+        self.workTime = {
+            code: workTimeCode,
+            name: workTimeName,
+            time: workTimeTime
+        } as WorkInfo;
+
     }
     public handleTimeWithDay(time: number) {
         const self = this;
@@ -767,9 +811,9 @@ export class KafS06AComponent extends KafS00ShrComponent {
 
     public getSelectedValue(): HolidayAppType {
         const self = this;
-        if (!self.model.appAbsenceStartInfoDto) {
+        if (!self.model.appAbsenceStartInfoDto || !_.isNil(self.selectedValue)) {
 
-            return;
+            return self.selectedValue;
         }
         // 休暇申請起動時の表示情報．休暇残数情報．年休管理区分　＝　管理する
         let c1_1 = self.model.appAbsenceStartInfoDto.remainVacationInfo.annualLeaveManagement.annualLeaveManageDistinct == ManageDistinct.YES;
@@ -862,10 +906,46 @@ export class KafS06AComponent extends KafS00ShrComponent {
 
     public selectedHolidayType(data: any) {
         const self = this;
+        self.$mask('show');
         let command = {
-
+            companyId: self.user.companyId,
+            dates: self.getDates(),
+            appAbsenceStartInfoDto: self.model.appAbsenceStartInfoDto,
+            holidayAppType: Number(data)
         } as any;
 
+        self.$http.post('at', API.selectTypeHoliday, command)
+                  .then((res: any) => {
+                        console.log(res.data);
+                        let model = {} as Model;
+                        model.applyForLeaveDto = self.model.applyForLeaveDto;
+                        model.appAbsenceStartInfoDto = res.data;
+                        self.model = model;
+                        self.bindComponent();
+                  })
+                  .catch((res: any) => {
+                        self.handleErrorCustom(res).then((result) => {
+                            if (result) {
+                                self.handleErrorCommon(res);
+                            }
+                        });
+                  })
+                  .then((res: any) => self.$mask('hide'));
+
+    }
+
+    public getDates() {
+        const vm = this;
+        let startDate = vm.application.opAppStartDate;
+        let endDate = vm.application.opAppEndDate;
+        let listDate = [];
+        let diffDate = moment(endDate).diff(moment(startDate), 'days');
+        for (let i = 0; i <= diffDate; i++) {
+            let loopDate = moment(moment(startDate, 'YYYY/MM/DD').add(i, 'day').format('YYYY/MM/DD'));
+            listDate.push(loopDate.format('YYYY/MM/DD'));
+        }
+
+        return listDate;
     }
 
 
@@ -882,7 +962,7 @@ interface WorkInfo {
 }
 const API = {
     start: 'at/request/application/appforleave/mobile/start',
-    checkBeforeRegisterSample: 'at/request/application/checkBeforeSample',
+    selectTypeHoliday: 'at/request/application/appforleave/mobile/selectTypeHoliday',
     registerSample: 'at/request/application/changeDataSample',
     sendMailAfterRegisterSample: ''
 };

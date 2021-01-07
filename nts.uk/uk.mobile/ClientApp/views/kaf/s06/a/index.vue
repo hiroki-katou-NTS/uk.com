@@ -274,18 +274,15 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>Mark</td>
-              <td>Otto</td>
+            <tr 
+              v-for="(item, index) in linkWithVacation"
+              v-bind:key="index"
+              :value="index"
+            >
+              <th scope="row">{{item.holiday}}</th>
+              <td>{{item.substituteHoliday}}</td>
+              <td>{{item.numOfUser}}</td>
             </tr>
-
-            <tr>
-              <th scope="row">1</th>
-              <td>Mark</td>
-              <td>Otto</td>
-            </tr>
-            
           </tbody>
         </table>
         <!--A11_9-->
@@ -326,16 +323,14 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>Mark</td>
-              <td>Otto</td>
-            </tr>
-
-            <tr>
-              <th scope="row">1</th>
-              <td>Mark</td>
-              <td>Otto</td>
+            <tr 
+              v-for="(item, index) in linkWithDraw"
+              v-bind:key="index"
+              :value="index"
+            >
+              <th scope="row">{{item.holiday}}</th>
+              <td>{{item.substituteHoliday}}</td>
+              <td>{{item.numOfUser}}</td>
             </tr>
             
           </tbody>
