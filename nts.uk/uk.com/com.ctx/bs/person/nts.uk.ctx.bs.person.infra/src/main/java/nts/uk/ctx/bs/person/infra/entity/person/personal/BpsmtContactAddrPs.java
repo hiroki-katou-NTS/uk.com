@@ -310,35 +310,35 @@ public class BpsmtContactAddrPs extends UkJpaEntity implements PersonalContact.M
                 OtherContact.builder()
                         .otherContactNo(1)
                         .address(new OtherContactAddress(this.address1)) 
-                        .isDisplay(Optional.of(this.isDisplay1 == null ? false : this.isDisplay1 == 1))
+                        .isDisplay(Optional.ofNullable(this.isDisplay1).map(data -> data == 1))
                         .build()
         );
         otherContacts.add(
                 OtherContact.builder()
                         .otherContactNo(2)
                         .address(new OtherContactAddress(this.address2))
-                        .isDisplay(Optional.of(this.isDisplay2 == null ? false : this.isDisplay2 == 1))
+                        .isDisplay(Optional.ofNullable(this.isDisplay2).map(data -> data == 1))
                         .build()
         );
         otherContacts.add(
                 OtherContact.builder()
                         .otherContactNo(3)
                         .address(new OtherContactAddress(this.address3))
-                        .isDisplay(Optional.of(this.isDisplay3 == null ? false : this.isDisplay3 == 1))
+                        .isDisplay(Optional.ofNullable(this.isDisplay3).map(data -> data == 1))
                         .build()
         );
         otherContacts.add(
                 OtherContact.builder()
                         .otherContactNo(4)
                         .address(new OtherContactAddress(this.address4))
-                        .isDisplay(Optional.of(this.isDisplay4 == null ? false : this.isDisplay4 == 1))
+                        .isDisplay(Optional.ofNullable(this.isDisplay4).map(data -> data == 1))
                         .build()
         );
         otherContacts.add(
                 OtherContact.builder()
                         .otherContactNo(5)
                         .address(new OtherContactAddress(this.address5))
-                        .isDisplay(Optional.of(this.isDisplay5 == null ? false : this.isDisplay5 == 1))
+                        .isDisplay(Optional.ofNullable(this.isDisplay5).map(data -> data == 1))
                         .build()
         );
         return otherContacts;
