@@ -3,7 +3,6 @@
  */
 package nts.uk.screen.at.app.query.ksu.ksu002.a;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,13 +26,13 @@ public class GetDataDaily {
 
 		// lay data Daily
 		List<WorkScheduleWorkInforDto> listDataDaily = getWorkRecord.getDataActualOfWorkInfo(param);
-		List<WorkScheduleWorkInforDto.Achievement> result = new ArrayList<>();
 
-		result = listDataDaily.stream().map(m -> {
-			WorkScheduleWorkInforDto.Achievement arch = WorkScheduleWorkInforDto
+		return listDataDaily.stream().map(m -> {
+			return WorkScheduleWorkInforDto
 					.Achievement
 					.builder()
 					.employeeId(m.getEmployeeId())
+					.date(m.getDate())
 					.workTypeCode(m.getWorkTypeCode())
 					.workTypeName(m.getWorkTypeName())
 					.workTimeCode(m.getWorkTimeCode())
@@ -41,9 +40,6 @@ public class GetDataDaily {
 					.startTime(m.getStartTime())
 					.endTime(m.getEndTime())
 					.build();
-			return arch;
 		}).collect(Collectors.toList());
-		
-		return result;
 	}
 }
