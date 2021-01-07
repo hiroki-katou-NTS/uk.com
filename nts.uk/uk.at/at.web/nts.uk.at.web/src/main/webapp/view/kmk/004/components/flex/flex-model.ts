@@ -89,14 +89,18 @@ module nts.uk.at.kmk004.components.flex {
 		initDumpData(ym: number) {
 			const vm = this;
 			let workTimes: Array<IMonthlyWorkTimeSetCom> = [];
+			let startMonth = ym % 100;
+
 			for (let i = 0; i < 12; i++) {
-				workTimes.push({ yearMonth: Number(moment().format("YYYY")) * 100 + (ym % 100) + i, laborTime: { withinLaborTime: null, legalLaborTime: null, weekAvgTime: null } });
+				let yearMonth = ((Number(moment().format("YYYY")) * 100 + Math.floor((startMonth + i) / 12) * 100)) + ((startMonth + i) % 12);
+				if ((startMonth + i) % 12 == 0) {
+					yearMonth = (Number(moment().format("YYYY")) * 100) + 12;
+				}
+				workTimes.push({ yearMonth: yearMonth, laborTime: { withinLaborTime: null, legalLaborTime: null, weekAvgTime: null, checkbox: false } });
 			}
 			let setComs = _.map(workTimes, (item: IMonthlyWorkTimeSetCom) => { return new MonthlyWorkTimeSetCom(item); });
+			console.log(setComs);
 			vm.monthlyWorkTimeSetComs(setComs);
-			_.forEach(vm.monthlyWorkTimeSetComs(), (item) => {
-				item.laborTime().checkbox(false);
-			});
 		}
 
 		setYM(year: number, data: Array<IMonthlyWorkTimeSetCom>) {
@@ -122,6 +126,15 @@ module nts.uk.at.kmk004.components.flex {
 
 			let saveitem = ko.toJS(vm.monthlyWorkTimeSetComs()),
 				year = Number(vm.selectedYear());
+
+			let unsaveItem = _.find(vm.unSaveSetComs, ['year', year]);
+
+			if (unsaveItem) {
+				unsaveItem.data = saveitem;
+			}
+
+
+			vm.serverData = { year: year, data: saveitem };
 
 			vm.serverData = { year: year, data: saveitem };
 		}
@@ -209,18 +222,22 @@ module nts.uk.at.kmk004.components.flex {
 
 		setNewYear(year: number) {
 			const vm = this;
-			let workTimes = ko.toJS(vm.monthlyWorkTimeSetComs());
+			let workTimes = [];
 
-			_.forEach(workTimes, function(item: IMonthlyWorkTimeSetCom) {
-				item.yearMonth = (year * 100) + (item.yearMonth % 100);
-				item.laborTime.withinLaborTime = 0;
-				item.laborTime.legalLaborTime = 0;
-				item.laborTime.weekAvgTime = 0;
-			});
+			let startMonth = ko.toJS(vm.monthlyWorkTimeSetComs())[0].yearMonth % 100;
+
+			for (let i = 0; i < 12; i++) {
+				let ym = ((year * 100 + Math.floor((startMonth + i) / 12) * 100)) + ((startMonth + i) % 12);
+				if ((startMonth + i) % 12 == 0) {
+					ym = (year * 100) + 12;
+				}
+				workTimes.push({ yearMonth: ym, laborTime: { checkbox: true, withinLaborTime: 0, legalLaborTime: 0, weekAvgTime: 0 } });
+			}
+
 			vm.serverData = { year: year, data: workTimes };
-			//vm.unSaveSetComs.push({ year: year, data: workTimes });
-			/*let setComs = _.map(workTimes, (item: IMonthlyWorkTimeSetCom) => { return new MonthlyWorkTimeSetCom(item); });
-			vm.monthlyWorkTimeSetComs(setComs);*/
+			vm.unSaveSetComs.push({ year: year, data: workTimes });
+			let setComs = _.map(workTimes, (item: IMonthlyWorkTimeSetCom) => { return new MonthlyWorkTimeSetCom(item); });
+			vm.monthlyWorkTimeSetComs(setComs);
 		}
 
 		updateData(param: IScreenData) {
@@ -297,6 +314,7 @@ module nts.uk.at.kmk004.components.flex {
 			this.withinLaborTime(param.withinLaborTime);
 			this.legalLaborTime(param.legalLaborTime);
 			this.weekAvgTime(param.weekAvgTime);
+			this.checkbox(param.checkbox);
 
 			this.checkbox.subscribe((state) => {
 				if (state) {
@@ -304,7 +322,6 @@ module nts.uk.at.kmk004.components.flex {
 					this.legalLaborTime(0);
 					this.weekAvgTime(0);
 				} else {
-
 					this.withinLaborTime(null);
 					this.legalLaborTime(null);
 					this.weekAvgTime(null);
@@ -353,5 +370,7 @@ module nts.uk.at.kmk004.components.flex {
 		legalLaborTime: number;
 		//週平均時間
 		weekAvgTime: number;
+
+		checkbox: boolean;
 	}
 }

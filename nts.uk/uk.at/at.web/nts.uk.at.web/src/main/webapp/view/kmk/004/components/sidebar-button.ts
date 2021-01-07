@@ -48,6 +48,7 @@ class SidebarButton extends ko.ViewModel {
 				vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
 					vm.screenData().saveToUnSaveList();
 					vm.screenData().clearUpdateYear(vm.screenData().selectedYear());
+					vm.screenData().saveData();
 				});
 			}).fail((error) => {
 				vm.$dialog.error(error);
@@ -71,6 +72,7 @@ class SidebarButton extends ko.ViewModel {
 				vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
 					vm.screenData().saveToUnSaveList();
 					vm.screenData().clearUpdateYear(vm.screenData().selectedYear());
+					vm.screenData().saveData();
 				});
 			}).fail((error) => {
 				vm.$dialog.error(error);
@@ -89,8 +91,9 @@ class SidebarButton extends ko.ViewModel {
 			vm.$blockui('invisible');
 			vm.$ajax(API_I_URL.UPDATE, { workTimeSetEmps: workTimeSetComs }).done(() => {
 				vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-					vm.screenData().serverYears.push(Number(vm.screenData().selectedYear()));
+					vm.screenData().saveToUnSaveList();
 					vm.screenData().clearUpdateYear(vm.screenData().selectedYear());
+					vm.screenData().saveData();
 				});
 			}).fail((error) => {
 				vm.$dialog.error(error);
@@ -107,11 +110,16 @@ class SidebarButton extends ko.ViewModel {
 				timeSet.empId = selectedEmp.id;
 			});
 
+			workTimeSetComs = _.filter(workTimeSetComs, ['laborTime.checkbox', true]);
+
+			let sha: any = _.find(vm.getScreenDatas(), ['code', vm.screenData().selected()]);
+
 			vm.$blockui('invisible');
-			vm.$ajax(API_J_URL.UPDATE, { workTimeSetShas: workTimeSetComs }).done(() => {
+			vm.$ajax(API_J_URL.UPDATE, { year: vm.screenData().selectedYear(), sId: sha.id, workTimeSetShas: workTimeSetComs }).done(() => {
 				vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-					vm.screenData().serverYears.push(Number(vm.screenData().selectedYear()));
+					vm.screenData().saveToUnSaveList();
 					vm.screenData().clearUpdateYear(vm.screenData().selectedYear());
+					vm.screenData().saveData();
 				});
 			}).fail((error) => {
 				vm.$dialog.error(error);
@@ -191,6 +199,8 @@ class SidebarButton extends ko.ViewModel {
 			_.forEach(workTimeSetComs, (timeSet) => {
 				timeSet.employmentCode = empCd;
 			});
+
+			workTimeSetComs = _.filter(workTimeSetComs, ['laborTime.checkbox', true]);
 
 			vm.$blockui('invisible');
 			vm.$ajax(API_I_URL.REGISTER, { workTimeSetEmps: workTimeSetComs }).done((data) => {
@@ -296,7 +306,7 @@ class SidebarButton extends ko.ViewModel {
 							}
 							return { code: emp.code, isAlreadySetting: true };
 						}));
-					
+
 				}).always(() => { vm.$blockui("clear"); });
 
 			}

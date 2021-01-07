@@ -82,12 +82,16 @@ class ScreenJComponent extends ko.ViewModel {
 
 	alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
 
+	startYm = 0;
+
 	created(params: any) {
 		let vm = this;
 
 		vm.screenMode = params.screenMode;
 
-		vm.screenData().initDumpData(params.startYM());
+		vm.startYm = params.startYM();
+
+		vm.screenData().initDumpData(vm.startYm);
 
 		vm.regSelectedYearEvent();
 
@@ -132,7 +136,17 @@ class ScreenJComponent extends ko.ViewModel {
 				let selectedEmp = _.find(vm.employeeList(), ['code', vm.screenData().selected()]);
 				vm.$blockui('invisible');
 				vm.$ajax(API_J_URL.CHANGE_YEAR + selectedEmp.id + '/' + year).done((data) => {
-					vm.screenData().setYM(year, data);
+					let workTimes = [];
+					let startMonth = vm.startYm % 100;
+					for (let i = 0; i < 12; i++) {
+						let ym = ((vm.screenData().selectedYear() * 100 + Math.floor((startMonth + i) / 12) * 100)) + ((startMonth + i) % 12);
+						if ((startMonth + i) % 12 == 0) {
+							ym = (vm.screenData().selectedYear() * 100) + 12;
+						}
+						let time: IMonthlyWorkTimeSetCom = _.find(data, ['yearMonth', ym]);
+						workTimes.push({ yearMonth: ym, laborTime: { checkbox: time ? true : false, withinLaborTime: time ? time.laborTime.withinLaborTime : null, legalLaborTime: time ? time.laborTime.legalLaborTime : null, weekAvgTime: time ? time.laborTime.weekAvgTime : null } });
+					}
+					vm.screenData().setYM(year, workTimes);
 				}).always(() => { vm.$blockui('clear'); });
 
 			}

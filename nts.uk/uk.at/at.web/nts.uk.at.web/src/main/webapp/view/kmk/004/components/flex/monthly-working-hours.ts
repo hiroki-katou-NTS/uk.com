@@ -150,8 +150,8 @@ class MonthlyWorkingHours extends ko.ViewModel {
 				let yearList = vm.screenData().yearList();
 				yearList.push(new YearItem(Number(result.year), true));
 				vm.screenData().yearList(_.orderBy(yearList, ['year'], ['desc']));
-				vm.screenData().selectedYear(vm.screenData().yearList()[0].year);
 				vm.screenData().setNewYear(vm.screenData().yearList()[0].year);
+				vm.screenData().selectedYear(vm.screenData().yearList()[0].year);
 			}
 		});
 	}

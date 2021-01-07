@@ -95,7 +95,7 @@ public class JpaGetKMK004EmploymentExportData extends JpaRepository implements G
 		int month = this.month();
 		
 		int startYM = startDate * 100 + month;
-		int endYM = startDate * 100 + ((month + 11) / 12)*100 + (month + 11) % 12;
+		int endYM = startDate * 100 + ((month + 11) / 12) * 100 + (month + 11) % 12;
 		
 		String startOfWeek = getStartOfWeek(cid);
 

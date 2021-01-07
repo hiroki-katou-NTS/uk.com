@@ -12,6 +12,7 @@ import nts.uk.screen.at.app.command.kmk.kmk004.common.monthlyworktimesetsha.Save
 import nts.uk.screen.at.app.command.kmk.kmk004.j.DeleteFlexMonthlyWorkTimeSetShaCommand;
 import nts.uk.screen.at.app.command.kmk.kmk004.j.DeleteFlexMonthlyWorkTimeSetShaCommandHandler;
 import nts.uk.screen.at.app.command.kmk.kmk004.j.RegisterFlexMonthlyWorkTimeSetShaCommandHandler;
+import nts.uk.screen.at.app.command.kmk.kmk004.j.UpdateFlexMonthlyWorkTimeSetShaCommand;
 import nts.uk.screen.at.app.command.kmk.kmk004.j.UpdateFlexMonthlyWorkTimeSetShaCommandHandler;
 import nts.uk.screen.at.app.kmk004.j.AfterChangeFlexEmployeeSetting;
 import nts.uk.screen.at.app.kmk004.j.AfterChangeFlexEmployeeSettingDto;
@@ -81,7 +82,7 @@ public class Kmk004JWebService {
 
 	@POST
 	@Path("update")
-	public void update(SaveMonthlyWorkTimeSetShaCommand command) {
+	public void update(UpdateFlexMonthlyWorkTimeSetShaCommand command) {
 		this.updateHandler.handle(command);
 	}
 
