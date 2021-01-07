@@ -120,12 +120,17 @@ button {
 
     &:focus,
     &:hover {
-        background-color: #FBFCFF;        
+        background-color: #FBFCFF;
     }
 
     &:active {
         border-color: #EAE8F2;
         background-color: #EAE8F2;
+    }
+        
+    &:focus,
+    &:active {
+        box-shadow: 0 0 0 2px lighten($color: #EAE8F2, $amount: 0.5);
     }
 
     &.white {
@@ -149,6 +154,11 @@ button {
         &:active {
             background-color: #FCA6AB;
         }
+        
+        &:focus,
+        &:active {
+            box-shadow: 0 0 0 2px lighten($color: #DA0D4F, $amount: 30);
+        }
     }
 
     &.green,
@@ -167,6 +177,11 @@ button {
         &:active {
             background-color: rgba(68, 224, 140, 0.6);
         }
+        
+        &:focus,
+        &:active {
+            box-shadow: 0 0 0 2px lighten($color: #30CC40, $amount: 30);
+        }
 
         &.solid {
             color: #fff;
@@ -175,12 +190,15 @@ button {
             &:focus,
             &:hover {
                 background-color: #30B82C;
-                box-shadow: 0px 4px 20px rgba(123, 242, 199, 0.6);
             }
 
             &:active {
                 background: #169A1C;
-                box-shadow: 0px 4px 20px rgba(123, 242, 199, 0.8);
+            }
+        
+            &:focus,
+            &:active {
+                box-shadow: 0 0 0 2px lighten($color: #169A1C, $amount: 30);
             }
         }
 
@@ -207,6 +225,11 @@ button {
             &.selected {
                 color: #fff;
                 background-color: #30CC40;                
+            }
+        
+            &:focus,
+            &:active {
+                box-shadow: 0 0 0 2px lighten($color: #30CC40, $amount: 25);
             }
 
             &.icon {
