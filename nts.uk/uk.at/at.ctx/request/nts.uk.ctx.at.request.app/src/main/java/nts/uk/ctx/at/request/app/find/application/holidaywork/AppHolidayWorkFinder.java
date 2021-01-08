@@ -391,12 +391,18 @@ public class AppHolidayWorkFinder {
 
 	public CheckBeforeOutputDto checkBeforeRegisterMobile(ParamCheckBeforeRegisterMobile param) {
 		CheckBeforeOutput checkBeforeOutput;
+		Application application = param.getAppHolidayWork().getApplication().toDomain();
+		AppHolidayWork appHolidayWork = param.getAppHolidayWork().toDomain();
+		if (appHolidayWork.getAppOvertimeDetail().isPresent()) {
+			appHolidayWork.getAppOvertimeDetail().get().setAppId(application.getAppID());
+		}
+		appHolidayWork.setApplication(application);
 		if(param.getMode()) {
 			checkBeforeOutput = holidayWorkService.checkBeforeRegister(param.isRequire(), param.getCompanyId(), 
-					param.getAppHdWorkDispInfo().toDomain(), param.getAppHolidayWork().toDomain(), false);
+					param.getAppHdWorkDispInfo().toDomain(), appHolidayWork, false);
 		} else {
 			checkBeforeOutput = holidayWorkService.checkBeforeUpdate(param.isRequire(), param.getCompanyId(), 
-					param.getAppHdWorkDispInfo().toDomain(), param.getAppHolidayWork().toDomain());
+					param.getAppHdWorkDispInfo().toDomain(), appHolidayWork);
 		}
 		return CheckBeforeOutputDto.fromDomain(checkBeforeOutput);
 	}

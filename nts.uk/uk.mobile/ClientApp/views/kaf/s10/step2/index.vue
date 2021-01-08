@@ -150,10 +150,10 @@
 
     <!--A2_8_1-->
     <div class="card card-label">
-        <!-- huytodo v-on:click="$appContext.register" -->
       <button
         type="button"
         class="btn btn-block btn-primary btn-lg"
+        v-on:click="$appContext.register"
       >
         {{($appContext.modeNew ? 'KAFS10_20' : 'KAFS10_21') | i18n}}
       </button>
