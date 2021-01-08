@@ -411,6 +411,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 					}).then((data) => {
 						if (data) {
 							vm.fetchData(data);
+							vm.timeRequired(nts.uk.time.format.byId("Clock_Short_HM", vm.requiredVacationTime()));
 							return data;
 						}
 					}).then((data) => {
@@ -1285,7 +1286,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 			nts.uk.ui.windows.setShared('parentCodes', {
                 workTypeCodes: workTypeCodes,
                 selectedWorkTypeCode: vm.selectedWorkTypeCD(),
-                workTimeCodes: workTimeCodes,
+                workTimeCodes: [],
                 selectedWorkTimeCode: vm.selectedWorkTimeCD(),
 			}, true);
 			

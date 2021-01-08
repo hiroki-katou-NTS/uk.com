@@ -709,7 +709,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 			nts.uk.ui.windows.setShared('parentCodes', {
                 workTypeCodes: workTypeCodes,
                 selectedWorkTypeCode: vm.selectedWorkTypeCD(),
-                workTimeCodes: workTimeCodes,
+                workTimeCodes: [],
                 selectedWorkTimeCode: vm.selectedWorkTimeCD(),
 			}, true);
 			

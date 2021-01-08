@@ -412,7 +412,7 @@ public class AppAbsenceFinder {
 		        Optional.empty());
 		
 		// 返ってきた「必要時間」を「休暇申請起動時の表示情報」にセットする
-		appAbsenceStartInfoDto.setRequiredVacationTime(requireTime.v());
+		appAbsenceStartInfoOutput.setRequiredVacationTimeOptional(Optional.ofNullable(requireTime));
 		
 		return AppAbsenceStartInfoDto.fromDomain(appAbsenceStartInfoOutput);
 	}
