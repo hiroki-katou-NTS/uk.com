@@ -16,7 +16,6 @@ import nts.uk.ctx.at.schedule.infra.entity.budget.premium.*;
 import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRounding;
 import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountUnit;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 import javax.ejb.Stateless;
@@ -40,6 +39,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 
     private static final String SEL_BY_CID = "SELECT a FROM KscmtPerCostCalc a WHERE a.pk.companyID = :companyID ";
     private static final String SEL_BY_CID_HIST = "SELECT a FROM KscmtPerCostCalcHist a WHERE a.pk.companyID = :companyID ORDER BY a.startDate ASC";
+    private static final String SEL_BY_HIST_ = "SELECT a FROM KscmtPerCostCalcHist a WHERE a.pk.companyID = :companyID AND a.pk.histID IN :historyIDs";
     private static final String SEL_ITEM_BY_HID = "SELECT a FROM KscmtPerCostCalc a WHERE a.pk.companyID = :companyID AND a.pk.histID = :historyID";
 
     @Override
@@ -72,8 +72,8 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 
     @Override
     public void delete(String companyId, String historyId) {
-        this.commandProxy().remove(KscmtPerCostCalc.class,new KscmtPerCostCalcPk(companyId,historyId));
-        this.commandProxy().remove(KscmtPerCostCalcHist.class,new KscmtPerCostCalcHistPk(companyId,historyId));
+        this.commandProxy().remove(KscmtPerCostCalc.class, new KscmtPerCostCalcPk(companyId, historyId));
+        this.commandProxy().remove(KscmtPerCostCalcHist.class, new KscmtPerCostCalcHistPk(companyId, historyId));
         String queryRate = "SELECT a FROM KscmtPerCostPremiRate a " +
                 " WHERE a.pk.companyID = :cid " +
                 " AND a.pk.histID = :histID ";
@@ -343,34 +343,36 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
     @Override
     public void update(PersonCostCalculation domain, HistPersonCostCalculation domainHist) {
         val histId = domain.getHistoryID();
-        List<KscmtPerCostCalc> updateList = new ArrayList<>();
+        val cid = domain.getCompanyID();
         List<KscmtPerCostCalcHist> updateListHist = new ArrayList<>();
-        domainHist.getHistoryItems().forEach(i -> {
-            val oldPerCostCal = this.queryProxy().find(new KscmtPerCostCalcPk(domainHist.getCompanyId(), i.identifier()), KscmtPerCostCalc.class);
-            val oldPerCostCalcHist = this.queryProxy().find(new KscmtPerCostCalcHistPk(domainHist.getCompanyId(), i.identifier()), KscmtPerCostCalcHist.class);
-
-            if (oldPerCostCal.isPresent() && oldPerCostCalcHist.isPresent()) {
-                val item = oldPerCostCal.get();
-                val itemHist = oldPerCostCalcHist.get();
-                if (item.getPk().histID.equals(domain.getHistoryID())) {
-                    itemHist.setStartDate(i.end());
-                    itemHist.setEndDate(i.start());
-
-                    val entity = KscmtPerCostCalc.toEntity(domain, i.identifier());
-                    val entityHist = KscmtPerCostCalcHist.toEntity(i.start(), i.end(), i.identifier(), domain.getCompanyID());
-                    updateList.add(entity);
-                    updateListHist.add(entityHist);
-                    if (item.getPk().histID.equals(histId)) {
-                        updatePerCostPremiRate(domain, histId);
-                        updateKmldtPremiumAttendance(domain, histId);
-                    }
-                }
-
+        if(!domain.getPremiumSettings().isEmpty()){
+            updatePerCostPremiRate(domain, histId);
+            updateKmldtPremiumAttendance(domain, histId);
+            val entityPer = this.queryProxy().find(new KscmtPerCostCalcPk(domain.getCompanyID(), domain.getHistoryID()), KscmtPerCostCalc.class);
+            if (entityPer.isPresent()) {
+                val entity = KscmtPerCostCalc.toEntity(domain, domain.getHistoryID());
+                this.commandProxy().update(entity);
             }
-        });
-        this.commandProxy().updateAll(updateList);
-        this.commandProxy().updateAll(updateListHist);
-
+        }
+        if (!domainHist.getHistoryItems().isEmpty()) {
+            val historyIDs = new ArrayList<>();
+            domainHist.getHistoryItems().forEach(e -> {
+                updateListHist.add(KscmtPerCostCalcHist.toEntity(e.start(), e.end(), e.identifier(), cid));
+                historyIDs.add(e.identifier());
+            });
+            List<KscmtPerCostCalcHist> entityOld = new ArrayList<>();
+            CollectionUtil.split(historyIDs, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+                entityOld.addAll(this.queryProxy().query(SEL_BY_HIST_, KscmtPerCostCalcHist.class)
+                        .setParameter("companyID", cid)
+                        .setParameter("historyIDs", splitData)
+                        .getList());
+            });
+            if (!entityOld.isEmpty()) {
+                this.commandProxy().removeAll(entityOld);
+                this.getEntityManager().flush();
+                this.commandProxy().insertAll(updateListHist);
+            }
+        }
     }
 
     @Override
@@ -423,7 +425,6 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
             HistPersonCostCalculation hist = new HistPersonCostCalculation(companyID, historyItems);
             result.setHistPersonCostCalculation(hist);
         }
-
         return result;
     }
 
@@ -467,7 +468,6 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
                 " WHERE a.kscmtPerCostPremiumPk.companyID = :cid " +
                 " AND a.kscmtPerCostPremiumPk.historyID = :historyID " +
                 " AND a.kscmtPerCostPremiumPk.displayNumber IN :displayNumbers ";
-
         List<KscmtPerCostPremium> listEntity = new ArrayList<>();
         CollectionUtil.split(displayNumber, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
             listEntity.addAll(this.queryProxy().query(queryAtt, KscmtPerCostPremium.class)
@@ -483,5 +483,4 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
             this.commandProxy().insertAll(KscmtPerCostPremium.toEntity(domain.getPremiumSettings(), histId));
         }
     }
-
 }
