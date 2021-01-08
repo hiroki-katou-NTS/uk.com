@@ -223,7 +223,8 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 				vm.endTime1(null);
 				vm.endTime2(null);
 
-				vm.$errors("clear");
+				// vm.$errors("clear");
+				nts.uk.ui.errors.clearAll()
 				
 				let appDates = [];
 				if (_.isNil(vm.application().opAppStartDate())) {
