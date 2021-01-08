@@ -92,13 +92,20 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 		condition9: KnockoutObservable<boolean> = ko.observable(true);
 
         created(params: AppInitParam) {
-            const vm = this;
+			const vm = this;
+			let dataTransfer: DataTransfer;
+			if (_.isNil(params)) {
+				dataTransfer = __viewContext.transferred.value; // from spr		
+			}
 			if(!_.isNil(__viewContext.transferred.value)) {
 				vm.isFromOther = true;
 			}
 			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
 			let empLst: Array<string> = [],
 				dateLst: Array<string> = [];
+			if (!_.isNil(_.get(dataTransfer, 'appDate'))) {
+				dateLst.push(dataTransfer.appDate);
+			}
 			if (!_.isEmpty(params)) {
 				if (!_.isEmpty(params.employeeIds)) {
 					empLst = params.employeeIds;
@@ -113,7 +120,18 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 				if (params.isAgentMode) {
 					vm.isAgentMode(params.isAgentMode);
 				}
-            }
+			}
+			
+			if (!_.isNil(dataTransfer)) {
+				vm.application().appDate(dataTransfer.appDate);
+				vm.application().opAppStartDate(dataTransfer.appDate);
+				vm.application().opAppEndDate(dataTransfer.appDate);
+			}
+			if (!_.isNil(params)) {
+				if (!_.isNil(params.baseDate)) {
+					vm.application().appDate(moment(params.baseDate).format('YYYY/MM/DD'));					
+				}
+			}
 			
 			// Load data common
             vm.$blockui("show");
@@ -1298,5 +1316,13 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 		changeWorkType: 'at/request/application/appforleave/findChangeWorkType',
 		changeWorkTime: 'at/request/application/appforleave/findChangeWorkTime',
 		changeRela: 'at/request/application/appforleave/changeRela'
-    }
+	}
+	
+	interface DataTransfer {
+		startTime: number;
+		endTime: number;
+		employeeID: string;
+		appDate: string;
+		applicationReason: string;
+	}
 }
