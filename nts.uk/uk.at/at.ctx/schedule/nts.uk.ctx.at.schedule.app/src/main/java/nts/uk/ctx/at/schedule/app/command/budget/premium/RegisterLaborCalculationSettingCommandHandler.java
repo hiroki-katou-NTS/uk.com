@@ -52,7 +52,7 @@ public class RegisterLaborCalculationSettingCommandHandler extends CommandHandle
         val domain = new PersonCostCalculation(
                 roundingSetting,
                 cid,
-                new Remarks(command.getRemarks()),
+                new Remarks(command.getMemo()),
                 premiumSettings
                 ,
                 Optional.of(unitPrice),

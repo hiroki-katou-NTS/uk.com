@@ -19,7 +19,7 @@ public class UpdateHistPersonCostCalculationCommand {
 
     private Integer workingHoursUnitPrice;
 
-    private  String remarks;
+    private  String memo;
 
     private PerCostRoundSettingDto personCostRoundingSetting;
 

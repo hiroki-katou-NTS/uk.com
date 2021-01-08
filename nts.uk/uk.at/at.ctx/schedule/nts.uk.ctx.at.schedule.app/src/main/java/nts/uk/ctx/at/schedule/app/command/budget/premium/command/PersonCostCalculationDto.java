@@ -23,9 +23,9 @@ public class PersonCostCalculationDto {
 
     private Integer workingHoursUnitPrice;
 
-    private  String remarks;
+    private  String memo;
 
     private PerCostRoundSettingDto personCostRoundingSetting;
 
-    private List<PremiumSettingDto> premiumSettingList;
+    private List<PremiumSettingDto> premiumSets;
 }
