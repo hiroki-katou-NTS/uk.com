@@ -61,9 +61,9 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 			}
 			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
 			let paramDate;
-			if(params){
-				if (!_.isEmpty(params.baseDate)) {
-					paramDate = moment(params.baseDate).format('YYYY/MM/DD');
+			if(vm.params){
+				if (!_.isEmpty(vm.params.baseDate)) {
+					paramDate = moment(vm.params.baseDate).format('YYYY/MM/DD');
 					vm.absenceLeaveApp.application.appDate(paramDate);
 					vm.absenceLeaveApp.application.opAppStartDate(paramDate);
                     vm.absenceLeaveApp.application.opAppEndDate(paramDate);
@@ -71,8 +71,8 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					vm.recruitmentApp.application.opAppStartDate(paramDate);
                     vm.recruitmentApp.application.opAppEndDate(paramDate);
 				}
-				if (params.isAgentMode) {
-					vm.isAgentMode(params.isAgentMode);
+				if (vm.params.isAgentMode) {
+					vm.isAgentMode(vm.params.isAgentMode);
 				}
 			}else {
 				vm.absenceLeaveApp.application.appDate('');
@@ -83,7 +83,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
                 vm.recruitmentApp.application.opAppEndDate('');
 			}
 			vm.$blockui("grayout");
-			vm.loadData(params?params.employeeIds:[], paramDate?[paramDate]:[], vm.appType()).then(() => {
+			vm.loadData(vm.params?vm.params.employeeIds:[], paramDate?[paramDate]:[], vm.appType()).then(() => {
 				vm.$blockui("grayout");
 				vm.$ajax('at/request/application/holidayshipment/startPageARefactor',{sIDs: [], appDate: [], appDispInfoStartup: vm.appDispInfoStartupOutput()}).then((data: any) =>{
 					vm.displayInforWhenStarting(data);
