@@ -14,9 +14,18 @@ import { ReasonDivergence, ExcessStateMidnight, ExcessStateDetail, OutDateApplic
     template: require('./index.vue'),
     resource: require('./resources.json'),
     validations: {
-        item: {
+        overTimes: {
             applicationTime: {
-                constraint: 'OvertimeAppPrimitiveTime'
+                loop: true,
+                constraint: 'OvertimeAppPrimitiveTime',
+                validate: true
+            }
+        },
+        holidayTimes: {
+            applicationTime: {
+                loop: true,
+                constraint: 'OvertimeAppPrimitiveTime',
+                validate: true
             }
         },
         reason1: {
@@ -282,6 +291,7 @@ export class KafS05Step2Component extends Vue {
         // bind origin array
         self.overTimes = overTimes;
 
+        
     }
 
     public bindHolidayTime() {
@@ -611,6 +621,7 @@ export class KafS05Step2Component extends Vue {
         self.bindHolidayTime();
         self.addConstraint();
         self.checkAlarm();
+        self.$updateValidator();
     }
     public checkAlarm() {
         const self = this;

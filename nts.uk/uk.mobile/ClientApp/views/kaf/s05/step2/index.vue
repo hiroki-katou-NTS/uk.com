@@ -58,9 +58,10 @@
           </div>
           <div v-show="item.visible" class="card-body">
             <nts-time-editor
-              v-model="item.applicationTime"
+              v-model="overTimes[index].applicationTime"
               name=""
-              v-bind:enable="$appContext.c3"
+              v-bind:record-id="index"
+              v-bind:disabled="!$appContext.c3_disable"
             />
           </div>
         </div>
@@ -98,9 +99,9 @@
           </div>
           <div class="card-body">
             <nts-time-editor
-              v-model="item.applicationTime"
+              v-model="holidayTimes[index].applicationTime"
               name=""
-              v-bind:enable="$appContext.c3"
+              v-bind:disabled="!$appContext.c3_disable"
             />
           </div>
         </div>
