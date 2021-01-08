@@ -26,6 +26,6 @@ public class RegisterLaborCalculationSettingCommand {
 
     private PerCostRoundSettingDto personCostRoundingSetting;
 
-    private List<PremiumSettingDto> premiumSettingList;
+    private List<PremiumSettingDto> premiumSets;
 
 }

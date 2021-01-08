@@ -4,8 +4,6 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.app.command.budget.premium.command.UpdateHistPersonCostCalculationCommand;
 import nts.uk.ctx.at.schedule.dom.budget.premium.*;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.ExtraTimeItemNo;
@@ -40,8 +38,8 @@ public class UpdateHistPersonCostCalculationCommandHandler extends CommandHandle
         val cid = AppContexts.user().companyId();
         val unitPrice = EnumAdaptor.valueOf(command.getUnitPrice(), UnitPrice.class);
         val premiumSettings = new ArrayList<PremiumSetting>();
-        if(command.getPremiumSettingList()!=null||!command.getPremiumSettingList().isEmpty()){
-            premiumSettings.addAll(command.getPremiumSettingList().stream().map(e -> new PremiumSetting(
+        if(command.getPremiumSets()!=null||!command.getPremiumSets().isEmpty()){
+            premiumSettings.addAll(command.getPremiumSets().stream().map(e -> new PremiumSetting(
                     cid,
                     command.getHistoryID(),
                     EnumAdaptor.valueOf(e.getID(), ExtraTimeItemNo.class),

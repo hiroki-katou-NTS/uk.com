@@ -39,8 +39,8 @@ public class RegisterLaborCalculationSettingCommandHandler extends CommandHandle
 
         val unitPrice = EnumAdaptor.valueOf(command.getUnitPrice(), UnitPrice.class);
         val premiumSettings = new ArrayList<PremiumSetting>();
-        if(command.getPremiumSettingList()!=null|| !command.getPremiumSettingList().isEmpty()){
-            premiumSettings.addAll(command.getPremiumSettingList().stream().map(e -> new PremiumSetting(
+        if(command.getPremiumSets()!=null|| !command.getPremiumSets().isEmpty()){
+            premiumSettings.addAll(command.getPremiumSets().stream().map(e -> new PremiumSetting(
                     cid,
                     null,
                     EnumAdaptor.valueOf(e.getID(), ExtraTimeItemNo.class),
