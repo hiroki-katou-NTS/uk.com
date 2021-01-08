@@ -117,7 +117,10 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 				if(value != "" && !$('#recAppDate').ntsError('hasError') && vm.recruitmentApp.started){
 					vm.$blockui("grayout");
 					let holidayDate = (vm.appCombinaSelected() != 1 && vm.absenceLeaveApp.application.appDate() && !$('#absAppDate').ntsError('hasError')) ? moment(vm.absenceLeaveApp.application.appDate()).format('YYYY/MM/DD'): null;
-					vm.$ajax('at/request/application/holidayshipment/changeRecDate',{workingDate: moment(value).format('YYYY/MM/DD'), holidayDate: holidayDate, displayInforWhenStarting: vm.displayInforWhenStarting()}).then((data: any) =>{
+					let displayInforWhenStartingdto = vm.displayInforWhenStarting();
+					displayInforWhenStartingdto.rec = null;
+					displayInforWhenStartingdto.abs = null;
+					vm.$ajax('at/request/application/holidayshipment/changeRecDate',{workingDate: moment(value).format('YYYY/MM/DD'), holidayDate: holidayDate, displayInforWhenStarting: displayInforWhenStartingdto}).then((data: any) =>{
 						vm.bindData(data);
 					}).always(() => {
 						vm.$blockui("hide"); 
@@ -128,8 +131,11 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 			vm.absenceLeaveApp.application.appDate.subscribe(value =>{
 				if(value != "" && !$('#absAppDate').ntsError('hasError') && vm.recruitmentApp.started){
 					vm.$blockui("grayout");
+					let displayInforWhenStartingdto = vm.displayInforWhenStarting();
+					displayInforWhenStartingdto.rec = null;
+					displayInforWhenStartingdto.abs = null;
 					let workingDate = (vm.appCombinaSelected() != 2 && vm.recruitmentApp.application.appDate() && !$('#recAppDate').ntsError('hasError')) ? moment(vm.recruitmentApp.application.appDate()).format('YYYY/MM/DD'): null;
-					vm.$ajax('at/request/application/holidayshipment/changeAbsDate',{workingDate: workingDate, holidayDate: moment(value).format('YYYY/MM/DD'), displayInforWhenStarting: vm.displayInforWhenStarting()}).then((data: any) =>{
+					vm.$ajax('at/request/application/holidayshipment/changeAbsDate',{workingDate: workingDate, holidayDate: moment(value).format('YYYY/MM/DD'), displayInforWhenStarting: displayInforWhenStartingdto}).then((data: any) =>{
 						vm.bindData(data);
 					}).always(() => {
 						vm.$blockui("hide"); 

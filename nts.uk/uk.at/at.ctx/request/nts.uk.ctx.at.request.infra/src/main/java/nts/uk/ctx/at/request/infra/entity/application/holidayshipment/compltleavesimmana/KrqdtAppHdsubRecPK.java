@@ -22,25 +22,20 @@ import lombok.Setter;
  * 
  * @author sonnlb
  */
-public class KrqdtCompltLeaveSimManaPK implements Serializable {
+public class KrqdtAppHdsubRecPK implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * 振出申請ID
-	 */
+	@Basic(optional = false)
+	@Column(name = "CID")
+	private String cId;
+	
 	@Basic(optional = false)
 	@Column(name = "REC_APP_ID")
 	private String recAppID;
 
-	/**
-	 * 振休申請ID
-	 */
 	@Basic(optional = false)
-	@Column(name = "ABSENCE_LEAVE_APP_ID")
+	@Column(name = "HDSUB_APP_ID")
 	private String absenceLeaveAppID;
 
 }

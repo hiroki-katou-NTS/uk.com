@@ -25,8 +25,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.Bef
 import nts.uk.ctx.at.request.dom.application.holidayshipment.HolidayShipmentService;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMng;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMngRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.AppHdsubRec;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.AppHdsubRecRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.SyncState;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
@@ -55,7 +55,7 @@ public class HolidayShipmentScreenBFinder {
 	@Inject
 	private RecruitmentAppRepository recRepo;
 	@Inject
-	private CompltLeaveSimMngRepository CompLeaveRepo;
+	private AppHdsubRecRepository CompLeaveRepo;
 //	@Inject
 //	private ApplicationRepository appRepo;
 //	@Inject
@@ -214,10 +214,10 @@ public class HolidayShipmentScreenBFinder {
 
 		SyncState result = SyncState.ASYNCHRONOUS;
 
-		Optional<CompltLeaveSimMng> CompltLeaveSimMngOpt = CompLeaveRepo.findByAbsID(applicationID);
+		Optional<AppHdsubRec> CompltLeaveSimMngOpt = CompLeaveRepo.findByAbsID(applicationID);
 		if (CompltLeaveSimMngOpt.isPresent()) {
 
-			CompltLeaveSimMng compltLeaveSimMng = CompltLeaveSimMngOpt.get();
+			AppHdsubRec compltLeaveSimMng = CompltLeaveSimMngOpt.get();
 
 			result = compltLeaveSimMng.getSyncing();
 
@@ -248,9 +248,9 @@ public class HolidayShipmentScreenBFinder {
 	private SyncState getCompltLeaveSimMngFromRecID(String applicationID, HolidayShipmentDto screenInfo) {
 		// ドメインモデル「振休振出同時申請管理」を1件取得する
 		SyncState result = SyncState.ASYNCHRONOUS;
-		Optional<CompltLeaveSimMng> CompltLeaveSimMngOpt = CompLeaveRepo.findByRecID(applicationID);
+		Optional<AppHdsubRec> CompltLeaveSimMngOpt = CompLeaveRepo.findByRecID(applicationID);
 		if (CompltLeaveSimMngOpt.isPresent()) {
-			CompltLeaveSimMng compltLeaveSimMng = CompltLeaveSimMngOpt.get();
+			AppHdsubRec compltLeaveSimMng = CompltLeaveSimMngOpt.get();
 			result = compltLeaveSimMng.getSyncing();
 			Optional<AbsenceLeaveApp> absAppOpt = absRepo.findByID(compltLeaveSimMng.getAbsenceLeaveAppID());
 			if (absAppOpt.isPresent()) {
@@ -390,7 +390,7 @@ public class HolidayShipmentScreenBFinder {
 	}
 
 	private Optional<AbsenceLeaveAppDto> getAbsAppRefactor(String applicationID, String companyID) {
-		Optional<CompltLeaveSimMng> compltLeaveSimMngOpt = CompLeaveRepo.findByRecID(applicationID);
+		Optional<AppHdsubRec> compltLeaveSimMngOpt = CompLeaveRepo.findByRecID(applicationID);
 		if (compltLeaveSimMngOpt.isPresent() && compltLeaveSimMngOpt.get().getSyncing().equals(SyncState.SYNCHRONIZING)) {
 			Optional<AbsenceLeaveApp> absAppOpt = absRepo.findByID(compltLeaveSimMngOpt.get().getAbsenceLeaveAppID());
 			if (absAppOpt.isPresent()) {
@@ -403,7 +403,7 @@ public class HolidayShipmentScreenBFinder {
 	}
 	
 	private Optional<RecruitmentAppDto> getRecAppRefactor(String applicationID, String companyID) {
-		Optional<CompltLeaveSimMng> compltLeaveSimMngOpt = CompLeaveRepo.findByAbsID(applicationID);
+		Optional<AppHdsubRec> compltLeaveSimMngOpt = CompLeaveRepo.findByAbsID(applicationID);
 		if (compltLeaveSimMngOpt.isPresent() && compltLeaveSimMngOpt.get().getSyncing().equals(SyncState.SYNCHRONIZING)) {
 			Optional<RecruitmentApp> recAppOpt = recRepo.findByID(compltLeaveSimMngOpt.get().getRecAppID());
 			if(recAppOpt.isPresent()) {
