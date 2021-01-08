@@ -94,7 +94,7 @@ module nts.uk.ui.chart {
                     
                     if (parentChart && _.find(parentChart.children, (child: GanttChart) => {
                         return child.id !== chart.id && !child.bePassedThrough 
-                            && ((pDec.start < child.end && pDec.start >= child.start) || (pDec.end > child.start && pDec.end <= child.end));
+                            && ((chart.start >= child.end && pDec.start < child.end) || (chart.end <= child.start && pDec.end > child.start));
                     })) return;
                     
                     _.forEach(chart.children, (child: GanttChart) => {
