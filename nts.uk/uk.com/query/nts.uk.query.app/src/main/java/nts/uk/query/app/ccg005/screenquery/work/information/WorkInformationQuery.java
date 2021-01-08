@@ -1,4 +1,4 @@
-package nts.uk.query.app.work.information;
+package nts.uk.query.app.ccg005.screenquery.work.information;
 
 import java.util.List;
 

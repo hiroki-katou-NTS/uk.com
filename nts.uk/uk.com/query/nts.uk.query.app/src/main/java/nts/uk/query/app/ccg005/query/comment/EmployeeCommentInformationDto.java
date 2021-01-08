@@ -1,4 +1,4 @@
-package nts.uk.query.app.comment;
+package nts.uk.query.app.ccg005.query.comment;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;

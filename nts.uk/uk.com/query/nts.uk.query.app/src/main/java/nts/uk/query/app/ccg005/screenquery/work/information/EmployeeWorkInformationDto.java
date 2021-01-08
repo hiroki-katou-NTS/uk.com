@@ -1,4 +1,4 @@
-package nts.uk.query.app.work.information;
+package nts.uk.query.app.ccg005.screenquery.work.information;
 
 /*
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.オフィス支援.在席照会.ステータス.勤務情報の取得.社員の勤務情報

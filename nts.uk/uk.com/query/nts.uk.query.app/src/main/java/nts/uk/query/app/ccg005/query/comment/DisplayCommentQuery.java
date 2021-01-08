@@ -1,4 +1,4 @@
-package nts.uk.query.app.comment;
+package nts.uk.query.app.ccg005.query.comment;
 
 import java.util.List;
 import java.util.Map;

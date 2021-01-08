@@ -4,12 +4,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import nts.uk.ctx.office.dom.favorite.FavoriteSpecify;
 import nts.uk.ctx.office.dom.favorite.FavoriteSpecifyRepository;
 import nts.uk.ctx.office.dom.favorite.service.FavoriteInformationDomainService.FavoriteInformationRequire;
 
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class DefaultFavoriteInfoRequireImpl implements FavoriteInformationRequire {
 
 	@Inject
