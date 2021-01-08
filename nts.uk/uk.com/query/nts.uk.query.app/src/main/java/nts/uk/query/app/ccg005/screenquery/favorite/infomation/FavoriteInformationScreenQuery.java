@@ -1,11 +1,11 @@
 package nts.uk.query.app.ccg005.screenquery.favorite.infomation;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 
-import nts.uk.ctx.office.dom.favorite.FavoriteSpecify;
 import nts.uk.ctx.office.dom.favorite.FavoriteSpecifyRepository;
 import nts.uk.ctx.office.dom.favorite.service.DefaultFavoriteInfoRequireImpl;
 import nts.uk.ctx.office.dom.favorite.service.FavoriteInformationDomainService;
@@ -19,9 +19,15 @@ public class FavoriteInformationScreenQuery {
 	@Inject
 	private FavoriteSpecifyRepository repo;
 
-	public Map<FavoriteSpecify, List<String>> getFavoriteInformation() {
+	public Map<FavoriteSpecifyDto, List<String>> getFavoriteInformation() {
 		DefaultFavoriteInfoRequireImpl rq = new DefaultFavoriteInfoRequireImpl(repo);
 		String sid = AppContexts.user().employeeId();
-		return FavoriteInformationDomainService.get(rq, sid);
+		Map<FavoriteSpecifyDto, List<String>> returnMap = new HashMap<>();
+		FavoriteInformationDomainService.get(rq, sid).forEach((key, value) -> {
+			FavoriteSpecifyDto dto = new FavoriteSpecifyDto();
+			key.setMemento(dto);
+			returnMap.put(dto, value);
+		});
+		return returnMap;
 	}
 }
