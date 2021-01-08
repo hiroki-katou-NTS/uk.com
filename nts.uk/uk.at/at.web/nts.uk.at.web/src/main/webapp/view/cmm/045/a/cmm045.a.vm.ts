@@ -2301,7 +2301,8 @@ module cmm045.a.viewmodel {
 				appName,
 				appDate: item.appDate,
 				opBackgroundColor: item.opBackgroundColor,
-				appContent: item.appContent
+				appContent: item.appContent,
+				isMulti: itemLst.length > 1 
 			});
 			nts.uk.ui.windows.sub.modal("/view/cmm/045/b/index.xhtml").onClosed(() => {
 				let result = nts.uk.ui.windows.getShared('CMM045B_RESULT');

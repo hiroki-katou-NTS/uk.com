@@ -12,6 +12,7 @@ module cmm045.b.viewmodel {
 		topComment: KnockoutObservable<string> = ko.observable("");
 		appContent: KnockoutObservable<string> = ko.observable("");
 		bottomComment: KnockoutObservable<string> = ko.observable("");
+		isMulti: KnockoutObservable<boolean> = ko.observable(true);
 				
         created() {
 			const vm = this;
@@ -19,6 +20,7 @@ module cmm045.b.viewmodel {
 			vm.applicantName(params.applicantName);
 			vm.appName(params.appName);
 			vm.appDate(params.appDate);
+			vm.isMulti(params.isMulti);
 			vm.appContent(_.escape(params.appContent).replace(/\n/g, '<br/>'));
 			if(params.opBackgroundColor=='bg-pre-application-excess') {
 				vm.topComment(_.escape(vm.$i18n('CMM045_72')).replace(/\n/g, '<br/>'));
