@@ -1,13 +1,16 @@
 package nts.uk.ctx.office.dom.favorite;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.office.dom.favorite.adapter.WorkplaceInforImport;
 
 /*
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.オフィス支援.在席照会.在席照会.お気に入りの指定
@@ -46,7 +49,9 @@ public class FavoriteSpecify extends AggregateRoot {
 		case AFFILIATION_WORKPLACE:
 			return Collections.emptyList();
 		case WORKPLACE:
-			return require.getWrkspDispName(this.workplaceId, GeneralDate.today());
+			List<String> list = new ArrayList<>();
+			require.getWrkspDispName(this.workplaceId, GeneralDate.today()).forEach((key, value) -> list.add(value.getWorkplaceDisplayName()));
+			return list;
 		default:
 			return Collections.emptyList();
 		}
@@ -104,8 +109,7 @@ public class FavoriteSpecify extends AggregateRoot {
 		Integer getOrder();
 	}
 
-	// TODO
-	public interface Require {
+	public static interface Require {
 		/**
 		 * [R-1] 職場表示名を取得す�
 		 * 
@@ -115,6 +119,6 @@ public class FavoriteSpecify extends AggregateRoot {
 		 * 
 		 *         職場惱を取得するAdapter.職場惱を取得す�職場IDリスト、基準日)
 		 */
-		public List<String> getWrkspDispName(List<String> wrkspIds, GeneralDate date);
+		public Map<String, WorkplaceInforImport> getWrkspDispName(List<String> wrkspIds, GeneralDate date);
 	}
 }
