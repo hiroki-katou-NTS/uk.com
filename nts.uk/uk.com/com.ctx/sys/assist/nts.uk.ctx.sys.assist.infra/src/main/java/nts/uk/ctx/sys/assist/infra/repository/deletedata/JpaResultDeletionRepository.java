@@ -8,12 +8,11 @@ import javax.ejb.Stateless;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.google.common.base.Strings;
-
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.assist.dom.deletedata.ManualSetDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.ResultDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.ResultDeletionRepository;
@@ -83,14 +82,14 @@ private static final String SELECT_WITH_NOT_NULL_LIST_EMPLOYEE =
 			
 			// redmine #108204
 			String password = "";
-			if (manualSetDel.isExistCompressPassFlg() && !Strings.isNullOrEmpty(resultDel.getFileId())) {
+			if (manualSetDel.isExistCompressPassFlg() && !StringUtil.isNullOrEmpty(resultDel.getFileId(), true)) {
 				String passwordOpt = manualSetDel.getPasswordCompressFileEncrypt().map(i -> i.v()).orElse("");
 				if (StringUtils.isNotEmpty(passwordOpt)) {
 					password = CommonKeyCrypt.encrypt(passwordOpt);
 				} 
 			} 
 			
-			if(!Strings.isNullOrEmpty(resultDel.getFileId())){
+			if(!StringUtil.isNullOrEmpty(resultDel.getFileId(), true)){
 				data.fileName  = resultDel.getFileName().toString();
 			}else{
 				data.fileName = "";

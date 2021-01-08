@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class OptionalAggrDto {
 	private boolean mode;
 
-	private OptionalAggrPeriodDto optionalAggrPeriodDto;
+	private AnyAggrPeriodDto anyAggrPeriodDto;
 
 	private AggrPeriodExcutionDto aggrPeriodExcutionDto;
 	

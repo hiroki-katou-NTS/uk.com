@@ -422,7 +422,9 @@ public class AppContentServiceImpl implements AppContentService {
 						companyID, 
 						cacheTime36);
 				listOfApp.setAppContent(appOvertimeDataOutput.getAppContent());
+				// 申請一覧.申請種類表示＝取得した申請種類表示(ApplicationList. AppTypeDisplay = AppTypeDisplay đã get)
 				listOfApp.setOpAppTypeDisplay(appOvertimeDataOutput.getOpAppTypeDisplay());
+				// 申請一覧．背景色　＝　取得した背景色(ApplicationList.màu nền = màu nền đã get)
 				listOfApp.setOpBackgroundColor(Optional.ofNullable(appOvertimeDataOutput.getBackgroundColor()));
 				break;
 			case HOLIDAY_WORK_APPLICATION:
@@ -437,6 +439,7 @@ public class AppContentServiceImpl implements AppContentService {
 						companyID,
 						cacheTime36);
 				listOfApp.setAppContent(appHolidayWorkDataOutput.getAppContent());
+				// 申請一覧．背景色　＝　取得した背景色(ApplicationList.màu nền = màu nền đã get)
 				listOfApp.setOpBackgroundColor(Optional.ofNullable(appHolidayWorkDataOutput.getBackgroundColor()));
 				break;
 			case BUSINESS_TRIP_APPLICATION:
@@ -873,11 +876,6 @@ public class AppContentServiceImpl implements AppContentService {
 			if(Strings.isNotBlank(result)) {
 				result += " ";
 			}
-			// 勤怠項目の内容
-			result += this.getDisplayFrame(appType, appHolidayWorkData.getAppTimeFrameDataLst());
-			if(Strings.isNotBlank(result)) {
-				result += " ";
-			}
 		} else {
 			// 申請内容　+＝　申請データ．勤務開始時間
 			result += new TimeWithDayAttr(appOverTimeData.getStartTime()).getFullText();
@@ -886,11 +884,6 @@ public class AppContentServiceImpl implements AppContentService {
 			}
 			// 申請内容　+＝　#CMM045_100+　申請データ．勤務終了時間
 			result += I18NText.getText("CMM045_100") + new TimeWithDayAttr(appOverTimeData.getEndTime()).getFullText();
-			if(Strings.isNotBlank(result)) {
-				result += " ";
-			}
-			// 勤怠項目の内容
-			result += this.getDisplayFrame(appType, appOverTimeData.getAppTimeFrameDataLst());
 			if(Strings.isNotBlank(result)) {
 				result += " ";
 			}
@@ -903,6 +896,9 @@ public class AppContentServiceImpl implements AppContentService {
 			appTimeFrameDataLst = appOverTimeData.getAppTimeFrameDataLst();
 		}
 		result += this.getDisplayFrame(appType, appTimeFrameDataLst);
+		if(Strings.isNotBlank(result)) {
+			result += " ";
+		}
 		return result;
 	}
 	
@@ -916,8 +912,10 @@ public class AppContentServiceImpl implements AppContentService {
 	private String getDisplayFrame(ApplicationType appType, List<AppTimeFrameData> appTimeFrameDataLst) {
 		// 勤怠項目の内容　＝　String.Empty(nội dung của AttendanceItem =String.Empty)
 		String result = "";
-		result = appTimeFrameDataLst.stream().sorted(Comparator.comparing(x -> String.valueOf(x.getAttendanceType().value) + String.valueOf(x.getAttendanceNo())))
-		.map(x -> {
+		result = appTimeFrameDataLst.stream().sorted(Comparator.comparing((AppTimeFrameData x) -> {
+			String frameNoStr = String.format("%02d", x.getAttendanceNo());
+			return String.valueOf(x.getAttendanceType().value) + frameNoStr;
+		})).map(x -> {
 			// 勤怠項目の内容　+＝申請時間データ．勤怠名称　+　申請時間データ．申請時間 (nội dung AttendanceItem +＝ ApplicationTimeData. AttendanceName 　+　ApplicationTimedata. ApplicationTime)
 			return x.getAttendanceName() + new TimeWithDayAttr(x.getApplicationTime()).getRawTimeWithFormat();
 		}).collect(Collectors.joining(" "));
@@ -1102,7 +1100,7 @@ public class AppContentServiceImpl implements AppContentService {
 						achievementDetail.getOpLeaveTime().orElse(null), 
 						Optional.ofNullable(achievementDetail.getWorkTimeCD()), 
 						achievementDetail.getOpWorkTimeName(), 
-						achiveOp.getApplicationTime().stream().map(x -> new AppTimeFrameData(
+						achiveOp==null ? Collections.emptyList() : achiveOp.getApplicationTime().stream().map(x -> new AppTimeFrameData(
 								null, 
 								x.getFrameNo().v(), 
 								x.getAttendanceType(), 

@@ -81,7 +81,7 @@ export class KafS05Component extends KafS00ShrComponent {
         const self = this;
         let model = self.model as Model;
         let value = _.get(model, 'displayInfoOverTime.infoNoBaseDate.overTimeAppSet.applicationDetailSetting.timeCalUse');
-
+        
         return value == NotUseAtr.USE;
     }
     // ※表15 = × AND「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．残業申請．事前．休憩・外出を申請反映する」＝する
@@ -346,6 +346,9 @@ export class KafS05Component extends KafS00ShrComponent {
     public fetchData() {
         const vm = this;
         vm.$mask('show');
+        if (!vm.modeNew) {
+            vm.date = vm.appDispInfoStartupOutput.appDetailScreenInfo.application.appDate;
+        }
         if (vm.modeNew) {
             if (vm.$route.query.a == '0') {
                 vm.overTimeClf = 0;
@@ -373,6 +376,7 @@ export class KafS05Component extends KafS00ShrComponent {
         }).then((loadData: any) => {
             if (loadData) {
                 vm.updateKaf000_A_Params(vm.user);
+                vm.kaf000_A_Params.opOvertimeAppAtr = vm.overTimeClf;
                 vm.updateKaf000_B_Params(vm.modeNew);
                 vm.updateKaf000_C_Params(vm.modeNew);
                 if (vm.modeNew) {
@@ -488,7 +492,6 @@ export class KafS05Component extends KafS00ShrComponent {
         const self = this;
         console.log('emit' + opAppStandardReasonCD);
         self.application.opAppStandardReasonCD = opAppStandardReasonCD;
-
     }
 
     public kaf000CChangeAppReason(opAppReason) {
@@ -612,6 +615,10 @@ export class KafS05Component extends KafS00ShrComponent {
 
         });
         appOverTime.applicationTime.reasonDissociation = step2.getReasonDivergence();
+        if (!self.modeNew) {
+            appOverTime.application.opAppReason = self.application.opAppReason || self.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason as any;
+            appOverTime.application.opAppStandardReasonCD = self.application.opAppStandardReasonCD || self.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD as any;
+        }
 
         // assign value to overtime and holidaytime
         return appOverTime;

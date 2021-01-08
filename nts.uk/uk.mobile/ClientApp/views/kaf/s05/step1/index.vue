@@ -154,7 +154,7 @@
           class="btn btn-block btn-success btn-lg text-center"
           v-on:click="$appContext.toStep(2)"
         >
-          {{ ($appContext.modeNew ? 'KAFS05_16' : 'KAFS05_17') | i18n}}
+          {{ ($appContext.c3 ? 'KAFS05_16' : 'KAFS05_17') | i18n}}
         </button>
       </div> 
 

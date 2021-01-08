@@ -9,19 +9,19 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.YearSpecifiedType;
 @Setter
 @Getter
 public class ExtractionPeriodMonthlyDto {
-	
+
 	private String extractionId;
 
 	private int extractionRange;
 
 	private int unit;
-	
+
 	private int strSpecify;
-	
+
 	private int yearType;
-	
+
 	private int specifyMonth;
-	
+
 	private int strMonth;
 
 	private int strCurrentMonth;
@@ -29,15 +29,15 @@ public class ExtractionPeriodMonthlyDto {
 	private int strPreviousAtr;
 
 	private int endSpecify;
-	
+
 	private int extractPeriod;
 
 	private int endMonth;
 
 	private int endCurrentMonth;
-	
+
 	private int endPreviousAtr;
-	
+
 	public static ExtractionPeriodMonthlyDto fromDomain(ExtractionPeriodMonth domain){
 		ExtractionPeriodMonthlyDto dto = new ExtractionPeriodMonthlyDto();
 		dto.setExtractionId(domain.getExtractionId());

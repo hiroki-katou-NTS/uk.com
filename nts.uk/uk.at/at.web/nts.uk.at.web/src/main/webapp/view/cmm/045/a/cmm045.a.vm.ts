@@ -2264,18 +2264,24 @@ module cmm045.a.viewmodel {
 			if(item.appType!=AppType.OVER_TIME_APPLICATION && item.appType!=AppType.HOLIDAY_WORK_APPLICATION) {
 				itemConfirmLst.push(item);
 				return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, false, false).then((result: any) => {
-					dfd.resolve(result);
+					return dfd.resolve(result);
+				});
+			}
+			if(_.isEmpty(item.opBackgroundColor)) {
+				itemConfirmLst.push(item);
+				return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, false, false).then((result: any) => {
+					return dfd.resolve(result);
 				});
 			}
 			if(notConfirmAll) {
 				return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, false, true).then((result: any) => {
-					dfd.resolve(result);
+					return dfd.resolve(result);
 				});
 			}
 			if(confirmAll) {
 				itemConfirmLst.push(item);
 				return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, true, false).then((result: any) => {
-					dfd.resolve(result);
+					return dfd.resolve(result);
 				});
 			}
 			
@@ -2292,20 +2298,20 @@ module cmm045.a.viewmodel {
 					case vmbase.ConfirmDialog.CONFIRM: 
 						itemConfirmLst.push(item);
 						return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, false, false).then((result: any) => {
-							dfd.resolve(result);
+							return dfd.resolve(result);
 						});
 					case vmbase.ConfirmDialog.CONFIRM_ALL: 
 						itemConfirmLst.push(item);
-						return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, false, false).then((result: any) => {
-							dfd.resolve(result);
+						return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, true, false).then((result: any) => {
+							return dfd.resolve(result);
 						});
 					case vmbase.ConfirmDialog.NOT_CONFIRM_ALL: 
 						return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, false, true).then((result: any) => {
-							dfd.resolve(result);
+							return dfd.resolve(result);
 						});
 					default: 
 						return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, false, false).then((result: any) => {
-							dfd.resolve(result);
+							return dfd.resolve(result);
 						});
 				}
 			});
@@ -2401,6 +2407,9 @@ module cmm045.a.viewmodel {
 									}
 									displayMsg += "\n " + item.applicantName  + " " + item.appDate + " " + appName + ": " + data.failMap[item.appID];
 								});
+							}
+							if(_.isEmpty(displayMsg)) {
+								displayMsg += nts.uk.resource.getMessage('Msg_1725');
 							}
 							if(isInfoDialog) {
 								nts.uk.ui.dialog.info(displayMsg).then(() => {$('#daterangepicker .ntsEndDatePicker').focus()});
