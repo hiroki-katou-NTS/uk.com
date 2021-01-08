@@ -47,6 +47,14 @@ table td.text-center {
   width: 222px;
 }
 
+#fixedTable .nts-switch-button {
+  width: 60px;
+}
+
 #fixedTableCCDT .nts-input {
   width: 122px;
+}
+
+#fixedTableCCDT .nts-switch-button {
+  width: 60px;
 }

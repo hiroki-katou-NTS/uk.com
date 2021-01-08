@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.daily.DailyCheckService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.MasterCheckService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.StatusOfEmployeeAdapterAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceHistImportAl;
@@ -20,10 +21,16 @@ public class AlarmListPersonExtractServicePubImpl implements AlarmListPersonExtr
 	
 	@Inject
 	private MasterCheckService masterCheck;
+	
 	@Inject
 	private MonthlyExtractCheckService monthCheck;
+	
 	@Inject
 	private MultiMonthlyExtractCheckService multiMonthCheck;
+	
+	@Inject
+	private DailyCheckService dailyCheck;
+	
 	@Override
 	public void extractMasterCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod,
 			String errorMasterCheckId,
@@ -39,10 +46,13 @@ public class AlarmListPersonExtractServicePubImpl implements AlarmListPersonExtr
 	
 	@Override
 	public void extractDailyCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod,
-			List<String> errorMasterCheckId, List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
+			String errorDailyCheckId, List<String> extractConditionWorkRecord, List<String> errorDailyCheckCd,
+			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
 			List<StatusOfEmployeeAdapterAl> lstStatusEmp, List<ResultOfEachCondition> lstResultCondition,
 			List<AlarmListCheckInfor> lstCheckType) {
-		// TODO Auto-generated method stub
+		
+		dailyCheck.extractDailyCheck(cid, lstSid, dPeriod, errorDailyCheckId, extractConditionWorkRecord, 
+				errorDailyCheckCd, getWplByListSidAndPeriod, lstStatusEmp, lstResultCondition, lstCheckType);
 		
 	}
 

@@ -451,7 +451,7 @@ module nts.uk.at.view.kal013.a {
             vm.tabs = ko.observableArray([
                 {
                     id: 'tab-1',
-                    title: vm.$i18n('KAL003_15'),
+                    title: vm.$i18n('KAL003_67'),
                     content: '.tab-content-1',
                     enable: ko.observable(true),
                     visible: ko.observable(true)

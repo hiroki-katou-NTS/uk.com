@@ -130,6 +130,8 @@ module nts.uk.at.view.kal013.b {
                         let nameAdd = _.map(_.filter(data, i => vm.pattern().countableAddAtdItems().indexOf(i.attendanceItemId) != -1),item => item.attendanceItemName);
                         let nameSub = _.map(_.filter(data, i => vm.pattern().countableSubAtdItems().indexOf(i.attendanceItemId) != -1),item => item.attendanceItemName);
                         vm.pattern().updateTextDis(nameAdd,nameSub);
+                    }).fail((error)=>{
+                        vm.$dialog.error({ messageId: error.messageId });
                     });
                 }
             });
@@ -285,6 +287,8 @@ module nts.uk.at.view.kal013.b {
                 vm.$ajax(PATH_API.GET_ATTENDANCEITEM + MONTHLYATTENDANCEITEMATR.NUMBER).done((lstAtdItem) => {
                     vm.lstItemNum = lstAtdItem;
                     dfd.resolve(lstAtdItem);
+                }).fail((error)=>{
+                    dfd.reject(error);
                 });
             } else if (typeCheck == CheckMonthlyItemsType.AVERAGE_TIME) {
                 //With type 時間 - Time
@@ -295,6 +299,8 @@ module nts.uk.at.view.kal013.b {
                 vm.$ajax(PATH_API.GET_ATTENDANCEITEM + MONTHLYATTENDANCEITEMATR.TIME).done((lstAtdItem) => {
                     vm.lstItemTime = lstAtdItem;
                     dfd.resolve(lstAtdItem);
+                }).fail((error)=>{
+                    dfd.reject(error);
                 });
             } else if (typeCheck == CheckMonthlyItemsType.AVERAGE_NUMBER_DAY) { // 日数
                 if (!_.isEmpty(vm.lstItemDay)){
@@ -304,6 +310,8 @@ module nts.uk.at.view.kal013.b {
                 vm.$ajax(PATH_API.GET_ATTENDANCEITEM + MONTHLYATTENDANCEITEMATR.DAYS).done((lstAtdItem) => {
                     vm.lstItemDay = lstAtdItem;
                     dfd.resolve(lstAtdItem);
+                }).fail((error)=>{
+                    dfd.reject(error);
                 });
             } else {
                 dfd.resolve([]);
@@ -349,9 +357,13 @@ module nts.uk.at.view.kal013.b {
                                 let nameAdd = _.map(_.filter(data, i => vm.pattern().countableAddAtdItems().indexOf(i.attendanceItemId) != -1),item => item.attendanceItemName);
                                 let nameSub = _.map(_.filter(data, i => vm.pattern().countableSubAtdItems().indexOf(i.attendanceItemId) != -1),item => item.attendanceItemName);
                                 vm.pattern().updateTextDis(nameAdd,nameSub);
+                            }).fail((error)=>{
+                                vm.$dialog.error({ messageId: error.messageId });
                             });
                         }
                     });
+                }).fail((error)=>{
+                    vm.$dialog.error({ messageId: error.messageId });
                 });
 
             }
