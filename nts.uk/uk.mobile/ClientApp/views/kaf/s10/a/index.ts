@@ -9,6 +9,7 @@ import { KDL002Component } from '../../../kdl/002';
 import { Kdl001Component } from '../../../kdl/001';
 import { KafS00ShrComponent, AppType, Application, InitParam } from 'views/kaf/s00/shr';
 import { OverTime } from '../step2/index';
+import { OverTimeWorkHoursDto } from '../../s00/sub/p2';
 
 @component({
     name: 'kafs10a',
@@ -39,12 +40,21 @@ export class KafS10Component extends KafS00ShrComponent {
     public date: string;
 
     public model: Model = {} as Model;
+
+    //huytodo isMsg step1
     
     @Prop()
     public readonly params: InitParam;
 
     public get step() {
         return `step_${this.numb}`;
+    }
+
+    public get overTimeWorkHoursDto(): OverTimeWorkHoursDto {
+        const self = this;
+        let model = self.model as Model;
+        
+        return _.get(model, 'otWorkHoursForApplication') || null;
     }
 
     public created() {
@@ -101,7 +111,6 @@ export class KafS10Component extends KafS00ShrComponent {
                 return true;
             }
         }).then((result: any) => {
-            console.log(result);
             if (result) {
                 if (vm.modeNew) {
                     let modelClone = {} as Model;
@@ -139,9 +148,19 @@ export class KafS10Component extends KafS00ShrComponent {
             self.model.appHdWorkDispInfo = res.data;
             let step1 = self.$refs.step1 as KafS10Step1Component;
             step1.loadData(self.model.appHdWorkDispInfo);
+            step1.createHoursWorkTime();
             self.$mask('hide');
         }).catch((res: any) => {
-            self.$mask('hide');
+            self.$nextTick(() => {
+                self.$mask('hide');
+            });
+            // xử lý lỗi nghiệp vụ riêng
+            self.handleErrorCustom(res).then((result: any) => {
+                if (result) {
+                    // xử lý lỗi nghiệp vụ chung
+                    self.handleErrorCommon(res);
+                }
+            });
         });
     }
 
@@ -181,7 +200,7 @@ export class KafS10Component extends KafS00ShrComponent {
                 vm.model.appHdWorkDispInfo = res.data;
                 vm.numb = value;
                 let step2 = vm.$refs.step2 as KafS10Step2Component;
-                // step2.loadAllData();
+                step2.loadAllData();
                 vm.$nextTick(() => {
                     vm.$mask('hide');
                     step2.$forceUpdate();
@@ -294,7 +313,7 @@ export class KafS10Component extends KafS00ShrComponent {
             }
             let step1 = self.$refs.step1 as KafS10Step1Component;
             if (!_.isNil(step1)) {
-                step1.createBreakTime(res.data.timeZones);
+                step1.createBreakTime(appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.breakTimeZoneSettingList.timeZones);
             }
 
         }).catch((res: any) => {
@@ -373,6 +392,7 @@ export class KafS10Component extends KafS00ShrComponent {
                     }
                     self.model.appHdWorkDispInfo = appHdWorkDispInfo;
                     step1.loadData(self.model.appHdWorkDispInfo, true);
+                    step1.createHoursWorkTime();
                 }).catch((res: any) => {
                     self.handleErrorMessage(res);
                 }).then(() => self.$mask('hide'));
@@ -424,6 +444,7 @@ export class KafS10Component extends KafS00ShrComponent {
                     }
                     self.model.appHdWorkDispInfo = appHdWorkDispInfo;
                     step1.loadData(self.model.appHdWorkDispInfo, true);
+                    step1.createHoursWorkTime();
             }).catch((res: any) => {
                     self.handleErrorMessage(res);
             }).then(() => self.$mask('hide'));
@@ -432,7 +453,6 @@ export class KafS10Component extends KafS00ShrComponent {
 
     public kaf000BChangeDate(objectDate) {
         const self = this;
-        console.log('emit', objectDate);
         if (objectDate.startDate) {
             if (self.modeNew) {
                 self.application.appDate = self.$dt.date(objectDate.startDate, 'YYYY/MM/DD');
@@ -446,19 +466,16 @@ export class KafS10Component extends KafS00ShrComponent {
 
     public kaf000BChangePrePost(prePostAtr) {
         const self = this;
-        console.log('emit', prePostAtr);
         self.application.prePostAtr = prePostAtr;
     }
 
     public kaf000CChangeReasonCD(opAppStandardReasonCD) {
         const self = this;
-        console.log('emit', opAppStandardReasonCD);
         self.application.opAppStandardReasonCD = opAppStandardReasonCD;
     }
 
     public kaf000CChangeAppReason(opAppReason) {
         const self = this;
-        console.log('emit', opAppReason);
         self.application.opAppReason = opAppReason;
     }
 
@@ -646,7 +663,7 @@ export class KafS10Component extends KafS00ShrComponent {
     public get c10() {
         const self = this;
         let model = self.model as Model;
-        if (self.application.prePostAtr == 1) {
+        if (!_.isNil(self.application) && self.application.prePostAtr == 1) {
             if (_.get(model, 'appHdWorkDispInfo.hdWorkOvertimeReflect.holidayWorkAppReflect.after.othersReflect.reflectDivergentReasonAtr') == NotUseAtr.USE && 
                 (_.get(model, 'appHdWorkDispInfo.divergenceReasonInputMethod').length > 0 && _.get(model, 'appHdWorkDispInfo.divergenceReasonInputMethod[0].divergenceReasonSelected'))) {
                 return true;
@@ -663,7 +680,7 @@ export class KafS10Component extends KafS00ShrComponent {
     public get c11() {
         const self = this;
         let model = self.model as Model;
-        if (self.application.prePostAtr == 1) {
+        if (!_.isNil(self.application) && self.application.prePostAtr == 1) {
             if (_.get(model, 'appHdWorkDispInfo.hdWorkOvertimeReflect.holidayWorkAppReflect.after.othersReflect.reflectDivergentReasonAtr') == NotUseAtr.USE && 
                 (_.get(model, 'appHdWorkDispInfo.divergenceReasonInputMethod').length > 0 && _.get(model, 'appHdWorkDispInfo.divergenceReasonInputMethod[0].divergenceReasonInputed'))) {
                 return true;
