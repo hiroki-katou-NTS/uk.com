@@ -41,7 +41,7 @@
 			<com:scriptfile path="kaf011.a.vm.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div id="functions-area">
+			<div id="functions-area" class="kaf011">
 				<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty" tabindex="1">#{i18n.getText('KAF011_3')}</button>
 				<button class="" data-bind="click: openKDL009" tabindex="2">#{i18n.getText('KAF011_7')}</button>
 				<div id="isSendMail" style="display: none" data-bind="component: { name: 'kaf000-a-component7', 
@@ -52,7 +52,7 @@
 											} }"></div>
 			</div>
 			
-			<div id="contents-area" style="display: none">
+			<div id="contents-area" class="kaf011" style="display: none">
 				<div data-bind="component: { name: 'kaf000-a-component1', 
 											params: {
 												appType: appType,
