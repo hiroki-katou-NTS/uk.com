@@ -79,7 +79,7 @@ public class AppAbsenceFinderMobile {
 		// 申請表示情報(基準日関係あり)を取得する
 		AppDispInfoWithDateOutput appDispInfoWithDateOutput = commonAlgorithm.getAppDispInfoWithDate(
 				param.getCompanyId(),
-				ApplicationType.OVER_TIME_APPLICATION,
+				ApplicationType.ABSENCE_APPLICATION,
 				Optional.ofNullable(param.getDates()).orElse(Collections.emptyList())
 													 .stream()
 													 .map(x -> GeneralDate.fromString(x, DATE_FORMAT))
@@ -94,7 +94,7 @@ public class AppAbsenceFinderMobile {
 				param.getCompanyId(),
 				param.getAppAbsenceStartInfoDto(),
 				Optional.ofNullable(param.getDates()).orElse(Collections.emptyList()),
-				ApplicationType.ABSENCE_APPLICATION.value,
+				param.getAppHolidayType(),
 				AppDispInfoWithDateDto.fromDomain(appDispInfoWithDateOutput));
 	}
 	/**
