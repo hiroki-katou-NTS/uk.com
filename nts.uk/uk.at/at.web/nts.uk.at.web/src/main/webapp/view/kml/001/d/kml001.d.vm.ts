@@ -6,7 +6,7 @@ module nts.uk.at.view.kml001.d {
             isUpdate: KnockoutObservable<boolean>;
             deleteAble: KnockoutObservable<boolean>;
             size: number;
-            personCostList: KnockoutObservableArray<vmbase.PersonalCost>;
+            personCostList: KnockoutObservableArray<any>;
             currentPersonCost: KnockoutObservable<vmbase.PersonCostCalculation>;
             isLast: KnockoutObservable<boolean>;
             beforeStartDate: KnockoutObservable<string>;
@@ -19,7 +19,7 @@ module nts.uk.at.view.kml001.d {
                 /* self.personCostList = ko.observableArray(
                     _.map(nts.uk.ui.windows.getShared('personCostList'), (item : vmbase.PersonCostCalculationInterface) => { return vmbase.ProcessHandler.fromObjectPerconCost(item); })
                 ); */
-                console.log(nts.uk.ui.windows.getShared('currentPersonCost'));
+             
                 self.personCostList = ko.observableArray(nts.uk.ui.windows.getShared('personCostList'));              
                 self.currentPersonCost = ko.observable(
                     vmbase.ProcessHandler.fromObjectPerconCost(nts.uk.ui.windows.getShared('currentPersonCost'))
@@ -28,8 +28,8 @@ module nts.uk.at.view.kml001.d {
                 self.size = _.size(self.personCostList());
                 self.isLast = ko.observable((_.findIndex(self.personCostList(), function (o) { return self.currentPersonCost().startDate() == o.startDate; }) == 0) ? true : false);
                 self.deleteAble = ko.observable((self.isLast() && (self.size > 1))); // can delete when item is last and list have more than one item
-                self.beforeStartDate = ko.observable((self.size > 1) ? self.personCostList()[1].startDate() : "1900/01/01");
-                self.onedayAfterBeforeStartDate = ko.observable(moment(self.beforeStartDate()).add(1, 'days').format('YYYY/MM/DD'));
+                self.beforeStartDate = ko.observable((self.size > 1) ? self.personCostList()[1].startDate : "1900/01/01"); //ver9
+                self.onedayAfterBeforeStartDate = ko.observable(moment(self.beforeStartDate()).add(0, 'days').format('YYYY/MM/DD'));//ver9, old verion: before add(1, 'days')
                 self.currentEndDate = ko.observable(self.currentPersonCost().endDate());
                 self.newStartDate = ko.observable(self.currentPersonCost().startDate());
                 self.isUpdate = ko.observable(self.deleteAble() ? false : true);
@@ -61,7 +61,7 @@ module nts.uk.at.view.kml001.d {
                     }
                 } else {
                     if (self.deleteAble()) {
-                        nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function () {
+                        nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function () { //ver 9 change from Msg_128 -> 18
                             servicebase.personCostCalculationDelete(vmbase.ProcessHandler.toObjectPersonCost(self.currentPersonCost()))
                                 .done(function (res: Array<any>) {
                                     self.$dialog.info({ messageId: 'Msg_16' }).then(() => {

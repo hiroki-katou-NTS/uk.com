@@ -264,7 +264,7 @@ module nts.uk.at.view.kml001.a {
           workingHoursUnitPrice: self.currentPersonCost().workingHour(),
           remarks: self.currentPersonCost().memo(),
           personCostRoundingSetting: personCostRoundingSetting,
-          premiumSettingList: premiumSettingList
+          premiumSets: premiumSettingList
         };
 
         servicebase.personCostCalculationUpdate(params)
