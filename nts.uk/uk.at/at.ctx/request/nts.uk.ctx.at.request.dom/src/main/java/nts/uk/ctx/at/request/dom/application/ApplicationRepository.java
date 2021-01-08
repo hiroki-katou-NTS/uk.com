@@ -203,5 +203,7 @@ public interface ApplicationRepository {
 			ApplicationType appType, String employeeID);
 	
 	public List<Application> getApprSttByEmpPeriod(String employeeID, DatePeriod period);
+	
+	public Optional<String> getNewestPreAppIDByEmpDate(String employeeID, GeneralDate date, ApplicationType appType);
 
 }

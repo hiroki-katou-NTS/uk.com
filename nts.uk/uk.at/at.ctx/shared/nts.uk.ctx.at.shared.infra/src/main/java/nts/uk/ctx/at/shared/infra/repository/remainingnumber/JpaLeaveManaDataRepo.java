@@ -279,6 +279,13 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 		}
 		return Optional.empty();
 	}
+	
+	@Override
+	public List<LeaveManagementData> getListByLeaveId(List<String> leaveIDs) {
+		String QUERY_BY_ID = "SELECT s FROM KrcmtLeaveManaData s WHERE s.leaveID IN :leaveIDs";
+		return this.queryProxy().query(QUERY_BY_ID, KrcmtLeaveManaData.class).setParameter("leaveIDs", leaveIDs)
+				.getList(x -> toDomain(x));
+	}
 
 	@Override
 	public void udpateByHolidaySetting(String leaveId, Boolean isCheckedExpired, GeneralDate expiredDate,
@@ -530,5 +537,20 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 				.collect(Collectors.toList());
 	}
 	
-	
+	@Override
+	public List<LeaveManagementData> getListByIdAndUnUse(String cid, String sid, GeneralDate expiredDate, double unUse) {
+		String QUERY = "SELECT l FROM KrcmtLeaveManaData l"
+				+ " WHERE l.cID = :cid"
+				+ " AND l.sID = :sid"
+				+ " AND l.expiredDate >= :expiredDate"
+				+ " AND l.unUsedDays >= :unUse"
+				+ " ORDER BY l.dayOff ASC";
+		return this.queryProxy().query(QUERY, KrcmtLeaveManaData.class)
+				.setParameter("cid", cid)
+				.setParameter("sid", sid)
+				.setParameter("expiredDate", expiredDate)
+				.setParameter("unUse", unUse)
+				.getList(entity -> toDomain(entity));
+	}
+
 }

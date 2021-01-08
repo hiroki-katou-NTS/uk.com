@@ -44,6 +44,7 @@ module nts.uk.at.view.kaf022.a.viewmodel {
 
         /*A21*/
         itemListA21_2: KnockoutObservableArray<ItemModel>;
+        itemListA21_4: KnockoutObservableArray<ItemModel>;
         appReflectCondition: KnockoutObservable<AppReflectExeCondition>;
 
         appTypeLabels = ["KAF022_3", "KAF022_4", "KAF022_5", "KAF022_6", "KAF022_7", "KAF022_8", "KAF022_11", "KAF022_707", "KAF022_10", "KAF022_12", "KAF022_705"];
@@ -161,6 +162,11 @@ module nts.uk.at.view.kaf022.a.viewmodel {
             self.itemListA21_2 = ko.observableArray([
                 new ItemModel(1, getText('KAF022_44')),
                 new ItemModel(0, getText('KAF022_396'))
+            ]);
+            self.itemListA21_4 = ko.observableArray([
+                new ItemModel(0, getText('KAF022_781')),
+                new ItemModel(1, getText('KAF022_782')),
+                new ItemModel(2, getText('KAF022_783'))
             ]);
             self.appReflectCondition = ko.observable(new AppReflectExeCondition(null));
 

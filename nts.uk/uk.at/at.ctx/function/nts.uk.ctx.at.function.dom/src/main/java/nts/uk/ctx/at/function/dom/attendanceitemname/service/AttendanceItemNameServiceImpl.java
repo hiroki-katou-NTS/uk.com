@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,8 +29,6 @@ import nts.uk.ctx.at.function.dom.adapter.OptionalItemAdapter;
 import nts.uk.ctx.at.function.dom.adapter.OptionalItemImport;
 import nts.uk.ctx.at.function.dom.adapter.PremiumItemFuncAdapter;
 import nts.uk.ctx.at.function.dom.adapter.PremiumItemFuncAdapterDto;
-import nts.uk.ctx.at.function.dom.temporaryabsence.frame.TempAbsenceFrameApdater;
-import nts.uk.ctx.at.function.dom.temporaryabsence.frame.TempAbsenceFrameApdaterDto;
 import nts.uk.ctx.at.function.dom.adapter.SpecificDateAdapter;
 import nts.uk.ctx.at.function.dom.adapter.SpecificDateImport;
 import nts.uk.ctx.at.function.dom.adapter.reservation.bento.BentoMenuAdaptor;
@@ -38,20 +37,28 @@ import nts.uk.ctx.at.function.dom.attendanceitemframelinking.AttendanceItemLinki
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.FrameCategory;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.repository.AttendanceItemLinkingRepository;
+import nts.uk.ctx.at.function.dom.dailyattendanceitem.FormCanUsedForTime;
 import nts.uk.ctx.at.function.dom.temporaryabsence.frame.TempAbsenceFrameApdater;
 import nts.uk.ctx.at.function.dom.temporaryabsence.frame.TempAbsenceFrameApdaterDto;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPTimeItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.timeitem.BonusPayTimeItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemUsedRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.UseClassification;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.OutsideOTBRDItem;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.Overtime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyAttendanceItemUsedRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.service.CompanyMonthlyItemService;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesRepository;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
@@ -121,6 +128,21 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 	
 	@Inject
 	private TempAbsenceFrameApdater tempAbsenceFrameApdater;
+	
+	@Inject
+	private MonthlyAttendanceItemUsedRepository monthlyAttendanceItemUsedRepository;
+	
+	@Inject
+	private DailyAttendanceItemUsedRepository dailyAttendanceItemUsedRepository;
+	
+	@Inject
+	private DailyAttendanceItemRepository dailyAttendanceItemRepository;
+
+	@Inject
+	private CompanyDailyItemService companyDailyItemService;
+	
+	@Inject
+	private CompanyMonthlyItemService companyMonthlyItemService;
 
 	@Override
 	public List<AttItemName> getNameOfAttendanceItem(List<Integer> attendanceItemIds, TypeOfItem type) {
@@ -608,27 +630,24 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 				.getByCompanyIdAndUseClassification(companyId, UseClassification.UseClass_NotUse.value);
 		
 		// 使用不可のList<時間外超過の内訳項目＞をチェックする Check list < hạng mục chi tiết tăng ca> không thể sử dụng
-		if (!outsideOTBRDItems.isEmpty()) {
+		// 使用不可のList<超過時間＞をチェック Check list <thời gian vượt quá> không thể sử dụng
+		if (!outsideOTBRDItems.isEmpty() && !overtimes.isEmpty()) {
+			// List<枠NO>：使用不可のList<超過時間>．超過時間NO
+			List<BigDecimal> frameNos = overtimes.stream()
+					.map(t -> BigDecimal.valueOf(t.getOvertimeNo().value))
+					.collect(Collectors.toList());
 			
-			// 使用不可のList<超過時間＞をチェック Check list <thời gian vượt quá> không thể sử dụng
-			if (!overtimes.isEmpty()) {
-				// List<枠NO>：使用不可のList<超過時間>．超過時間NO
-				List<BigDecimal> frameNos = overtimes.stream()
-						.map(t -> BigDecimal.valueOf(t.getOvertimeNo().value))
-						.collect(Collectors.toList());
-				
-				List<Integer> frameCategories = Arrays.asList(FrameCategory.ExcessTime.value);
-				
-				List<Integer> breakdownItemNos = outsideOTBRDItems.stream().map(t -> t.getBreakdownItemNo().value).collect(Collectors.toList());
+			List<Integer> frameCategories = Arrays.asList(FrameCategory.ExcessTime.value);
+			
+			List<Integer> breakdownItemNos = outsideOTBRDItems.stream().map(t -> t.getBreakdownItemNo().value).collect(Collectors.toList());
 
-				// List<使用不可の超過時間系勤怠項目ID＞を取得する Nhận list <Attendance items ID liên quand đến thời gian OT không thể sử dụng>
-				List<Integer> notUsedTime = this.attendanceItemLinkingRepository
-						.findByFrameNoTypeAndFramCategoryAndBreakdownItemNo(frameNos, type.value, frameCategories, breakdownItemNos).stream()
-						.map(t -> t.getAttendanceItemId())
-						.collect(Collectors.toList());
-				// List＜使用可能な勤怠項目ID＞からList<使用不可の勤怠項目ID>を除く 
-				attendanceItemIdAvaiable.removeAll(notUsedTime);
-			}
+			// List<使用不可の超過時間系勤怠項目ID＞を取得する Nhận list <Attendance items ID liên quand đến thời gian OT không thể sử dụng>
+			List<Integer> notUsedTime = this.attendanceItemLinkingRepository
+					.findByFrameNoTypeAndFramCategoryAndBreakdownItemNo(frameNos, type.value, frameCategories, breakdownItemNos).stream()
+					.map(t -> t.getAttendanceItemId())
+					.collect(Collectors.toList());
+			// List＜使用可能な勤怠項目ID＞からList<使用不可の勤怠項目ID>を除く 
+			attendanceItemIdAvaiable.removeAll(notUsedTime);
 		}
 		
 		// 使用不可の回数集計を取得する Nhận tính toán số lần không thể sử dụng
@@ -750,4 +769,106 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 				return null;
 		}
 	}
+	
+	@Override
+	public List<Integer> getMonthlyAttendanceItemsAvaiable(String companyId, FormCanUsedForTime formId, TypeOfItem type) {
+		// アルゴリズム「帳票で利用できる月次の勤怠項目を取得する」を実行する Thực hiện thuật toán 「帳票で利用できる月次の勤怠項目を取得する」
+		List<Integer> monthlyItemUsed = this.monthlyAttendanceItemUsedRepository.getAllMonthlyItemId(companyId, formId.value);
+
+		// アルゴリズム「使用不可の勤怠項目を除く」を実行する Thực hiện thuật toán 「使用不可の勤怠項目を除く」	
+		return this.getAvaiableAttendanceItem(companyId, type, monthlyItemUsed);
+	}
+
+	@Override
+	public List<Integer> getDailyAttendanceItemsAvaiable(String companyId, FormCanUsedForTime formId, TypeOfItem type) {
+		// アルゴリズム「帳票で利用できる日次の勤怠項目を取得する」を実行する Thực hiện thuật toán 「帳票で利用できる日次の勤怠項目を取得する」
+		List<Integer> dailyItemUsed = this.dailyAttendanceItemUsedRepository.getAllDailyItemId(companyId,
+				BigDecimal.valueOf(formId.value));
+		
+		// アルゴリズム「使用不可の勤怠項目を除く」を実行する Thực hiện thuật toán 「使用不可の勤怠項目を除く」
+		return this.getAvaiableAttendanceItem(companyId, type, dailyItemUsed);
+	}
+
+	@Override
+	public List<AttendanceItemDto> getDailyAttendanceItemNameAndAttr(String companyId, List<Integer> attendanceIdList) {
+		List<AttendanceItemDto> result = new ArrayList<AttendanceItemDto>();
+		// 日次の勤怠項目を取得する Nhận daily Attendance items
+		List<DailyAttendanceItem> dailyAttendanceItemList = this.dailyAttendanceItemRepository.getListById(companyId, attendanceIdList);
+		
+		// 取得した勤怠項目の件数をチェックする (Check số attendance item đã lấy)
+		if (dailyAttendanceItemList.isEmpty()) { //0件の場合
+			// 終了状態：取得失敗 (Trạng thái kết thúc : Acquisition failure)
+			return Collections.emptyList();
+		}
+
+		// アルゴリズム「会社の日次を取得する」を実行する
+		List<AttItemName> dailyItems = this.companyDailyItemService.getDailyItems(
+			companyId,
+			Optional.of(AppContexts.user().roles().forAttendance()),
+			attendanceIdList,
+			Collections.emptyList());
+		
+		// 取得したドメインモデル「日次の勤怠項目」（日次勤怠項目の属性、日次の勤怠項目に関連するマスタの種類、表示番号）と取得したList＜勤怠項目ID、名称＞を結合する
+		dailyAttendanceItemList.stream()
+			.forEach(item -> {
+				Optional<AttItemName> attendance = dailyItems.stream()
+					.filter(attd -> attd.getAttendanceItemId() == item.getAttendanceItemId())
+					.findFirst();
+
+				if (attendance.isPresent()) {
+					result.add(AttendanceItemDto.builder()
+						.attendanceItemId(attendance.get().getAttendanceItemId())
+						.attendanceItemName(attendance.get().getAttendanceItemName())
+						.attendanceAtr(item.getDailyAttendanceAtr().value)
+						.masterType(item.getMasterType().isPresent() ? item.getMasterType().get().value : null)
+						.displayNumbers(item.getDisplayNumber())
+						.build());
+				}
+			});
+
+		// List＜勤怠項目ID、名称、属性、マスタの種類。表示番号＞を渡す
+		return result;
+	}
+
+	@Override
+	public List<AttendanceItemDto> getMonthlyAttendanceItemNameAndAttr(String companyId,
+			List<Integer> attendanceIdList) {
+		List<AttendanceItemDto> result = new ArrayList<AttendanceItemDto>();
+		// 月次の勤怠項目を取得する Nhận Monthly attendance items
+		List<MonthlyAttendanceItem> monthlyAttendanceItemList = this.monthlyAttendanceItemRepository.findByAttendanceItemId(companyId, attendanceIdList);
+		
+		// 取得した勤怠項目の件数をチェックする Check Attendance items đã nhận
+		if (monthlyAttendanceItemList.isEmpty()) { //0件の場合
+			// 終了状態：取得失敗 Trạng thái kết thúc : Nhận thất bại
+			return Collections.emptyList();
+		}
+		
+		// アルゴリズム「会社の日次を取得する」を実行する
+		List<AttItemName> monthlyItems = this.companyMonthlyItemService.getMonthlyItems(
+			companyId,
+			Optional.of(AppContexts.user().roles().forAttendance()),
+			attendanceIdList,
+			Collections.emptyList());
+
+		// 取得したドメインモデル「月次の勤怠項目」（月次項目の属性、表示番号）と取得したList＜勤怠項目ID、名称＞を結合する
+		monthlyAttendanceItemList.stream()
+			.forEach(item -> {
+				Optional<AttItemName> attendance = monthlyItems.stream()
+					.filter(attd -> attd.getAttendanceItemId() == item.getAttendanceItemId())
+					.findFirst();
+
+				if (attendance.isPresent()) {
+					result.add(AttendanceItemDto.builder()
+						.attendanceItemId(attendance.get().getAttendanceItemId())
+						.attendanceItemName(attendance.get().getAttendanceItemName())
+						.attendanceAtr(item.getMonthlyAttendanceAtr().value)
+						.displayNumbers(item.getDisplayNumber())
+						.build());
+				}
+			});
+
+		// List＜勤怠項目ID、名称、属性、表示番号＞を渡す
+		return result;
+	}
+	
 }

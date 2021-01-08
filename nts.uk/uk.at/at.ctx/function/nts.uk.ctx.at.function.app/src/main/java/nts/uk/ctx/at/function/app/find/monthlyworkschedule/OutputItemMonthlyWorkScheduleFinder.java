@@ -46,7 +46,6 @@ import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformanceFunction
 import nts.uk.ctx.at.shared.app.service.workrule.closure.ClosureEmploymentService;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.BusinessType;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.repository.BusinessTypesRepository;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyAttendanceItemUsedRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.service.CompanyMonthlyItemService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.shr.com.context.AppContexts;
@@ -86,11 +85,7 @@ public class OutputItemMonthlyWorkScheduleFinder {
 
 	@Inject
 	private ClosureEmploymentService closureEmploymentService;
-	
-	/** The monthly attendance item used repository. */
-	@Inject
-	private MonthlyAttendanceItemUsedRepository monthlyAttendanceItemUsedRepository;
-	
+
 	/** The attendance item name service */
 	@Inject
 	private AttendanceItemNameService attendanceItemNameService;
@@ -173,8 +168,8 @@ public class OutputItemMonthlyWorkScheduleFinder {
 		String companyID = AppContexts.user().companyId();
 		Map<String, Object> mapDtoReturn = new HashMap<>();
 		// ドメインモデル「画面で使用可能な月次勤怠項目」を取得する
-		List<Integer> attdIds = this.getMonthlyAttendanceItemsAvaiable(companyID
-																	 , FormCanUsedForTime.MONTHLY_WORK_SCHEDULE.value
+		List<Integer> attdIds = this.attendanceItemNameService.getMonthlyAttendanceItemsAvaiable(companyID
+																	 , FormCanUsedForTime.MONTHLY_WORK_SCHEDULE
 																	 , TypeOfItem.Monthly);
 
 		//アルゴリズム「会社の月次を取得する」を実行する (Execute the algorithm "Get company's monthly")
@@ -415,22 +410,5 @@ public class OutputItemMonthlyWorkScheduleFinder {
 			YearMonth date = closure.getClosureMonth().getProcessingYm();
 			return new PeriodDto(date.toString(), date.toString());
 		}
-	}
-	
-	/**
-	 * UKDesign.UniversalK.就業.KWR_帳表.帳票共通アルゴリズム.画面で使用可能な月次勤怠項目を取得する.画面で使用可能な月次勤怠項目を取得する
-	 * @param companyId 会社ID
-	 * @param formId 帳票ID
-	 * @param type 勤怠項目の種類
-	 * @return the monthly attendance items avaiable
-	 */
-	public List<Integer> getMonthlyAttendanceItemsAvaiable(String companyId, int formId, TypeOfItem type) {
-		// アルゴリズム「帳票で利用できる月次の勤怠項目を取得する」を実行する Thực hiện thuật toán 「帳票で利用できる月次の勤怠項目を取得する」
-		List<Integer> monthlyItemUsed = this.monthlyAttendanceItemUsedRepository.getAllMonthlyItemId(companyId, formId);
-
-		// アルゴリズム「使用不可の勤怠項目を除く」を実行する Thực hiện thuật toán 「使用不可の勤怠項目を除く」
-		List<Integer> avaiableItem = this.attendanceItemNameService.getAvaiableAttendanceItem(companyId, type, monthlyItemUsed);
-		
-		return avaiableItem;
 	}
 }

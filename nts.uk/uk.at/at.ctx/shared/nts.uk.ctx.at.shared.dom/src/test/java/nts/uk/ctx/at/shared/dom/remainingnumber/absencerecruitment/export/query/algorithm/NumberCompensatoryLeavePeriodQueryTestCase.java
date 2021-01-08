@@ -441,149 +441,149 @@ public class NumberCompensatoryLeavePeriodQueryTestCase {
 	// 6 暫定半日振休取得、確定休出1日残っているが2019/11/14に期限切れになる
 	// 振休取得日 2019/11/14 2019/11/15(日数 = 0.5)
 	// 確定休出 2019/8/14 (日数 = 1, 期限日 = 2019/11/14 )
-	@Test
-	public void testCase6() {
-		List<InterimAbsMng> useAbsMng = Arrays.asList(
-				new InterimAbsMng("bdda6a46-2cbe-48c8-85f8-c04ca554e132", new RequiredDay(0.5), new UnOffsetDay(0.5)),
-				new InterimAbsMng("bdda6a46-2cbe-48c8-85f8-c04ca554e133", new RequiredDay(0.5), new UnOffsetDay(0.5)));
-
-//		List<InterimRecMng> useRecMng = Arrays.asList(new InterimRecMng("adda6a46-2cbe-48c8-85f8-c04ca554e132",
-//				GeneralDate.ymd(2019, 11, 14), new OccurrenceDay(1.0), StatutoryAtr.PUBLIC, new UnUsedDay(1.0)));
-
-		List<InterimRemain> interimMng = Arrays.asList(
-//				new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e132", SID, GeneralDate.ymd(2019, 8, 14),
+//	@Test
+//	public void testCase6() {
+//		List<InterimAbsMng> useAbsMng = Arrays.asList(
+//				new InterimAbsMng("bdda6a46-2cbe-48c8-85f8-c04ca554e132", new RequiredDay(0.5), new UnOffsetDay(0.5)),
+//				new InterimAbsMng("bdda6a46-2cbe-48c8-85f8-c04ca554e133", new RequiredDay(0.5), new UnOffsetDay(0.5)));
+//
+////		List<InterimRecMng> useRecMng = Arrays.asList(new InterimRecMng("adda6a46-2cbe-48c8-85f8-c04ca554e132",
+////				GeneralDate.ymd(2019, 11, 14), new OccurrenceDay(1.0), StatutoryAtr.PUBLIC, new UnUsedDay(1.0)));
+//
+//		List<InterimRemain> interimMng = Arrays.asList(
+////				new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e132", SID, GeneralDate.ymd(2019, 8, 14),
+////						CreateAtr.SCHEDULE, RemainType.PICKINGUP, RemainAtr.SINGLE),
+//
+//				new InterimRemain("bdda6a46-2cbe-48c8-85f8-c04ca554e132", SID, GeneralDate.ymd(2019, 11, 14),
+//						CreateAtr.SCHEDULE, RemainType.PAUSE, RemainAtr.SINGLE),
+//				new InterimRemain("bdda6a46-2cbe-48c8-85f8-c04ca554e133", SID, GeneralDate.ymd(2019, 11, 15),
+//						CreateAtr.SCHEDULE, RemainType.PAUSE, RemainAtr.SINGLE));
+//
+//		CompenLeaveAggrResult compenLeaveAggrResult = new CompenLeaveAggrResult(
+//				new VacationDetails(Collections.emptyList()), new ReserveLeaveRemainingDayNumber(0.0),
+//				new ReserveLeaveRemainingDayNumber(0.0), new ReserveLeaveRemainingDayNumber(0.0),
+//				new ReserveLeaveRemainingDayNumber(0.0), new ReserveLeaveRemainingDayNumber(0.0),
+//				Finally.of(GeneralDate.ymd(2019, 12, 21)), Collections.emptyList(), Collections.emptyList());
+//
+//		new Expectations() {
+//			{
+//				
+//				//List<PayoutManagementData> 
+//				require.getByUnUseState(CID, SID, (GeneralDate) any, 0, DigestionAtr.UNUSED);
+//				result = Arrays.asList(new PayoutManagementData("adda6a46-2cbe-48c8-85f8-c04ca554e132", CID, SID, false,
+//						GeneralDate.ymd(2019, 8, 14), GeneralDate.ymd(2019, 11, 14), HolidayAtr.PUBLIC_HOLIDAY.value, 1.0, 1.0, 0));
+//				
+//				require.findByEmployeeIdOrderByStartDate(anyString);
+//				result = Arrays.asList(new EmploymentHistShareImport(SID, "00",
+//						new DatePeriod(GeneralDate.ymd(2000, 11, 03), GeneralDate.ymd(9999, 12, 31))));
+//
+//				require.findEmploymentHistory(CID, SID, (GeneralDate) any);
+//				result = Optional.of(new BsEmploymentHistoryImport(SID, "00", "A",
+//						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
+//
+//				require.findEmpById(anyString, anyString);
+//				result = Optional.of(new EmpSubstVacation(CID, "00", ManageDistinct.YES));
+//			}
+//		};
+//
+//		AbsRecMngInPeriodRefactParamInput inputParam = new AbsRecMngInPeriodRefactParamInput(CID, SID,
+//				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)),
+//				GeneralDate.ymd(2019, 11, 30), false, true, useAbsMng, interimMng, new ArrayList<>(),
+//				Optional.of(compenLeaveAggrResult), Optional.empty(), Optional.empty(),
+//				new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
+//
+//		CompenLeaveAggrResult resultActual = NumberCompensatoryLeavePeriodQuery.process(require, inputParam);
+//
+//		CompenLeaveAggrResult resultExpected = new CompenLeaveAggrResult(new VacationDetails(new ArrayList<>()),
+//				new ReserveLeaveRemainingDayNumber(-0.5), new ReserveLeaveRemainingDayNumber(0.5),
+//				new ReserveLeaveRemainingDayNumber(0.0), new ReserveLeaveRemainingDayNumber(1.0),
+//				new ReserveLeaveRemainingDayNumber(1.0), Finally.of(GeneralDate.ymd(2020, 11, 1)), new ArrayList<>(),
+//				Arrays.asList(PauseError.PAUSEREMAINNUMBER));
+//
+//		NumberCompensatoryLeavePeriodQueryTest.assertData(resultActual, resultExpected);
+//		assertThat(resultActual.getLstSeqVacation())
+//				.extracting(x -> x.getOutbreakDay(), x -> x.getDateOfUse(), x -> x.getDayNumberUsed(),
+//						x -> x.getTargetSelectionAtr())
+//				.containsExactly(
+//						Tuple.tuple(GeneralDate.ymd(2019, 8, 14), GeneralDate.ymd(2019, 11, 14),
+//								new ReserveLeaveRemainingDayNumber(0.5), TargetSelectionAtr.AUTOMATIC));
+//	}
+//
+//	// 7暫定1日休出し、暫定1日振休取得 確定休出0.5日（0.5日紐づけ済み）が残っている
+//	// 振休取得日 2019/11/15
+//	// 休出日 2019/11/10
+//	// 確定休出 2019/10/14 (日数 = 0.5, 期限日 = 2020/1/14 )
+//
+//	@Test
+//	public void testCase7() {
+//		List<InterimAbsMng> useAbsMng = Arrays.asList(
+//				new InterimAbsMng("bdda6a46-2cbe-48c8-85f8-c04ca554e133", new RequiredDay(1.0), new UnOffsetDay(1.0)));
+//
+//		List<InterimRecMng> useRecMng = Arrays.asList(
+//				new InterimRecMng("adda6a46-2cbe-48c8-85f8-c04ca554e132", GeneralDate.max(), new OccurrenceDay(1.0),
+//						StatutoryAtr.PUBLIC, new UnUsedDay(1.0))
+////				new InterimRecMng("adda6a46-2cbe-48c8-85f8-c04ca554e134", GeneralDate.ymd(2020, 1, 14),
+////						new OccurrenceDay(0.5), StatutoryAtr.PUBLIC, new UnUsedDay(0.5))
+//				);
+//
+//		List<InterimRemain> interimMng = Arrays.asList(
+//				new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e132", SID, GeneralDate.ymd(2019, 11, 10),
 //						CreateAtr.SCHEDULE, RemainType.PICKINGUP, RemainAtr.SINGLE),
-
-				new InterimRemain("bdda6a46-2cbe-48c8-85f8-c04ca554e132", SID, GeneralDate.ymd(2019, 11, 14),
-						CreateAtr.SCHEDULE, RemainType.PAUSE, RemainAtr.SINGLE),
-				new InterimRemain("bdda6a46-2cbe-48c8-85f8-c04ca554e133", SID, GeneralDate.ymd(2019, 11, 15),
-						CreateAtr.SCHEDULE, RemainType.PAUSE, RemainAtr.SINGLE));
-
-		CompenLeaveAggrResult compenLeaveAggrResult = new CompenLeaveAggrResult(
-				new VacationDetails(Collections.emptyList()), new ReserveLeaveRemainingDayNumber(0.0),
-				new ReserveLeaveRemainingDayNumber(0.0), new ReserveLeaveRemainingDayNumber(0.0),
-				new ReserveLeaveRemainingDayNumber(0.0), new ReserveLeaveRemainingDayNumber(0.0),
-				Finally.of(GeneralDate.ymd(2019, 12, 21)), Collections.emptyList(), Collections.emptyList());
-
-		new Expectations() {
-			{
-				
-				//List<PayoutManagementData> 
-				require.getByUnUseState(CID, SID, (GeneralDate) any, 0, DigestionAtr.UNUSED);
-				result = Arrays.asList(new PayoutManagementData("adda6a46-2cbe-48c8-85f8-c04ca554e132", CID, SID, false,
-						GeneralDate.ymd(2019, 8, 14), GeneralDate.ymd(2019, 11, 14), HolidayAtr.PUBLIC_HOLIDAY.value, 1.0, 1.0, 0));
-				
-				require.findByEmployeeIdOrderByStartDate(anyString);
-				result = Arrays.asList(new EmploymentHistShareImport(SID, "00",
-						new DatePeriod(GeneralDate.ymd(2000, 11, 03), GeneralDate.ymd(9999, 12, 31))));
-
-				require.findEmploymentHistory(CID, SID, (GeneralDate) any);
-				result = Optional.of(new BsEmploymentHistoryImport(SID, "00", "A",
-						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
-
-				require.findEmpById(anyString, anyString);
-				result = Optional.of(new EmpSubstVacation(CID, "00", ManageDistinct.YES));
-			}
-		};
-
-		AbsRecMngInPeriodRefactParamInput inputParam = new AbsRecMngInPeriodRefactParamInput(CID, SID,
-				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)),
-				GeneralDate.ymd(2019, 11, 30), false, true, useAbsMng, interimMng, new ArrayList<>(),
-				Optional.of(compenLeaveAggrResult), Optional.empty(), Optional.empty(),
-				new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
-
-		CompenLeaveAggrResult resultActual = NumberCompensatoryLeavePeriodQuery.process(require, inputParam);
-
-		CompenLeaveAggrResult resultExpected = new CompenLeaveAggrResult(new VacationDetails(new ArrayList<>()),
-				new ReserveLeaveRemainingDayNumber(-0.5), new ReserveLeaveRemainingDayNumber(0.5),
-				new ReserveLeaveRemainingDayNumber(0.0), new ReserveLeaveRemainingDayNumber(1.0),
-				new ReserveLeaveRemainingDayNumber(1.0), Finally.of(GeneralDate.ymd(2020, 11, 1)), new ArrayList<>(),
-				Arrays.asList(PauseError.PAUSEREMAINNUMBER));
-
-		NumberCompensatoryLeavePeriodQueryTest.assertData(resultActual, resultExpected);
-		assertThat(resultActual.getLstSeqVacation())
-				.extracting(x -> x.getOutbreakDay(), x -> x.getDateOfUse(), x -> x.getDayNumberUsed(),
-						x -> x.getTargetSelectionAtr())
-				.containsExactly(
-						Tuple.tuple(GeneralDate.ymd(2019, 8, 14), GeneralDate.ymd(2019, 11, 14),
-								new ReserveLeaveRemainingDayNumber(0.5), TargetSelectionAtr.AUTOMATIC));
-	}
-
-	// 7暫定1日休出し、暫定1日振休取得 確定休出0.5日（0.5日紐づけ済み）が残っている
-	// 振休取得日 2019/11/15
-	// 休出日 2019/11/10
-	// 確定休出 2019/10/14 (日数 = 0.5, 期限日 = 2020/1/14 )
-
-	@Test
-	public void testCase7() {
-		List<InterimAbsMng> useAbsMng = Arrays.asList(
-				new InterimAbsMng("bdda6a46-2cbe-48c8-85f8-c04ca554e133", new RequiredDay(1.0), new UnOffsetDay(1.0)));
-
-		List<InterimRecMng> useRecMng = Arrays.asList(
-				new InterimRecMng("adda6a46-2cbe-48c8-85f8-c04ca554e132", GeneralDate.max(), new OccurrenceDay(1.0),
-						StatutoryAtr.PUBLIC, new UnUsedDay(1.0))
-//				new InterimRecMng("adda6a46-2cbe-48c8-85f8-c04ca554e134", GeneralDate.ymd(2020, 1, 14),
-//						new OccurrenceDay(0.5), StatutoryAtr.PUBLIC, new UnUsedDay(0.5))
-				);
-
-		List<InterimRemain> interimMng = Arrays.asList(
-				new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e132", SID, GeneralDate.ymd(2019, 11, 10),
-						CreateAtr.SCHEDULE, RemainType.PICKINGUP, RemainAtr.SINGLE),
-//				new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e134", SID, GeneralDate.ymd(2019, 10, 14),
-//						CreateAtr.SCHEDULE, RemainType.PICKINGUP, RemainAtr.SINGLE),
-
-				new InterimRemain("bdda6a46-2cbe-48c8-85f8-c04ca554e133", SID, GeneralDate.ymd(2019, 11, 15),
-						CreateAtr.SCHEDULE, RemainType.PAUSE, RemainAtr.SINGLE));
-
-		CompenLeaveAggrResult compenLeaveAggrResult = new CompenLeaveAggrResult(
-				new VacationDetails(Collections.emptyList()), new ReserveLeaveRemainingDayNumber(0.0),
-				new ReserveLeaveRemainingDayNumber(0.0), new ReserveLeaveRemainingDayNumber(0.0),
-				new ReserveLeaveRemainingDayNumber(0.0), new ReserveLeaveRemainingDayNumber(0.0),
-				Finally.of(GeneralDate.ymd(2019, 12, 21)), Collections.emptyList(), Collections.emptyList());
-
-		new Expectations() {
-			{
-				
-				require.getByUnUseState(CID, SID, (GeneralDate) any, 0, DigestionAtr.UNUSED);
-				result = Arrays.asList(new PayoutManagementData("adda6a46-2cbe-48c8-85f8-c04ca554e134", CID, SID, false,
-						GeneralDate.ymd(2019, 10, 14), GeneralDate.ymd(2020, 1, 14), HolidayAtr.PUBLIC_HOLIDAY.value, 0.5, 0.5, 0));
-				
-				require.findByEmployeeIdOrderByStartDate(anyString);
-				result = Arrays.asList(new EmploymentHistShareImport(SID, "00",
-						new DatePeriod(GeneralDate.ymd(2000, 11, 03), GeneralDate.ymd(9999, 12, 31))));
-
-				require.findEmploymentHistory(CID, SID, (GeneralDate) any);
-				result = Optional.of(new BsEmploymentHistoryImport(SID, "00", "A",
-						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
-
-				require.findEmpById(anyString, anyString);
-				result = Optional.of(new EmpSubstVacation(CID, "00", ManageDistinct.YES
-						));
-			}
-		};
-
-		AbsRecMngInPeriodRefactParamInput inputParam = new AbsRecMngInPeriodRefactParamInput(CID, SID,
-				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)),
-				GeneralDate.ymd(2019, 11, 30), false, true, useAbsMng, interimMng, useRecMng,
-				Optional.of(compenLeaveAggrResult), Optional.empty(), Optional.empty(),
-				new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
-
-		CompenLeaveAggrResult resultActual = NumberCompensatoryLeavePeriodQuery.process(require, inputParam);
-
-		CompenLeaveAggrResult resultExpected = new CompenLeaveAggrResult(new VacationDetails(new ArrayList<>()),
-				new ReserveLeaveRemainingDayNumber(0.5), new ReserveLeaveRemainingDayNumber(0.0),
-				new ReserveLeaveRemainingDayNumber(1.0), new ReserveLeaveRemainingDayNumber(1.0),
-				new ReserveLeaveRemainingDayNumber(0.5), Finally.of(GeneralDate.ymd(2020, 11, 1)), new ArrayList<>(),
-				Arrays.asList());
-
-		NumberCompensatoryLeavePeriodQueryTest.assertData(resultActual, resultExpected);
-		assertThat(resultActual.getLstSeqVacation())
-				.extracting(x -> x.getOutbreakDay(), x -> x.getDateOfUse(), x -> x.getDayNumberUsed(),
-						x -> x.getTargetSelectionAtr())
-				.containsExactly(
-						Tuple.tuple(GeneralDate.ymd(2019, 10, 14), GeneralDate.ymd(2019, 11, 15),
-								new ReserveLeaveRemainingDayNumber(1.0), TargetSelectionAtr.AUTOMATIC),
-						Tuple.tuple(GeneralDate.ymd(2019, 11, 10), GeneralDate.ymd(2019, 11, 15),
-								new ReserveLeaveRemainingDayNumber(0.5), TargetSelectionAtr.AUTOMATIC));
-	}
+////				new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e134", SID, GeneralDate.ymd(2019, 10, 14),
+////						CreateAtr.SCHEDULE, RemainType.PICKINGUP, RemainAtr.SINGLE),
+//
+//				new InterimRemain("bdda6a46-2cbe-48c8-85f8-c04ca554e133", SID, GeneralDate.ymd(2019, 11, 15),
+//						CreateAtr.SCHEDULE, RemainType.PAUSE, RemainAtr.SINGLE));
+//
+//		CompenLeaveAggrResult compenLeaveAggrResult = new CompenLeaveAggrResult(
+//				new VacationDetails(Collections.emptyList()), new ReserveLeaveRemainingDayNumber(0.0),
+//				new ReserveLeaveRemainingDayNumber(0.0), new ReserveLeaveRemainingDayNumber(0.0),
+//				new ReserveLeaveRemainingDayNumber(0.0), new ReserveLeaveRemainingDayNumber(0.0),
+//				Finally.of(GeneralDate.ymd(2019, 12, 21)), Collections.emptyList(), Collections.emptyList());
+//
+//		new Expectations() {
+//			{
+//				
+//				require.getByUnUseState(CID, SID, (GeneralDate) any, 0, DigestionAtr.UNUSED);
+//				result = Arrays.asList(new PayoutManagementData("adda6a46-2cbe-48c8-85f8-c04ca554e134", CID, SID, false,
+//						GeneralDate.ymd(2019, 10, 14), GeneralDate.ymd(2020, 1, 14), HolidayAtr.PUBLIC_HOLIDAY.value, 0.5, 0.5, 0));
+//				
+//				require.findByEmployeeIdOrderByStartDate(anyString);
+//				result = Arrays.asList(new EmploymentHistShareImport(SID, "00",
+//						new DatePeriod(GeneralDate.ymd(2000, 11, 03), GeneralDate.ymd(9999, 12, 31))));
+//
+//				require.findEmploymentHistory(CID, SID, (GeneralDate) any);
+//				result = Optional.of(new BsEmploymentHistoryImport(SID, "00", "A",
+//						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
+//
+//				require.findEmpById(anyString, anyString);
+//				result = Optional.of(new EmpSubstVacation(CID, "00", ManageDistinct.YES
+//						));
+//			}
+//		};
+//
+//		AbsRecMngInPeriodRefactParamInput inputParam = new AbsRecMngInPeriodRefactParamInput(CID, SID,
+//				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)),
+//				GeneralDate.ymd(2019, 11, 30), false, true, useAbsMng, interimMng, useRecMng,
+//				Optional.of(compenLeaveAggrResult), Optional.empty(), Optional.empty(),
+//				new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
+//
+//		CompenLeaveAggrResult resultActual = NumberCompensatoryLeavePeriodQuery.process(require, inputParam);
+//
+//		CompenLeaveAggrResult resultExpected = new CompenLeaveAggrResult(new VacationDetails(new ArrayList<>()),
+//				new ReserveLeaveRemainingDayNumber(0.5), new ReserveLeaveRemainingDayNumber(0.0),
+//				new ReserveLeaveRemainingDayNumber(1.0), new ReserveLeaveRemainingDayNumber(1.0),
+//				new ReserveLeaveRemainingDayNumber(0.5), Finally.of(GeneralDate.ymd(2020, 11, 1)), new ArrayList<>(),
+//				Arrays.asList());
+//
+//		NumberCompensatoryLeavePeriodQueryTest.assertData(resultActual, resultExpected);
+//		assertThat(resultActual.getLstSeqVacation())
+//				.extracting(x -> x.getOutbreakDay(), x -> x.getDateOfUse(), x -> x.getDayNumberUsed(),
+//						x -> x.getTargetSelectionAtr())
+//				.containsExactly(
+//						Tuple.tuple(GeneralDate.ymd(2019, 10, 14), GeneralDate.ymd(2019, 11, 15),
+//								new ReserveLeaveRemainingDayNumber(1.0), TargetSelectionAtr.AUTOMATIC),
+//						Tuple.tuple(GeneralDate.ymd(2019, 11, 10), GeneralDate.ymd(2019, 11, 15),
+//								new ReserveLeaveRemainingDayNumber(0.5), TargetSelectionAtr.AUTOMATIC));
+//	}
 }

@@ -52,7 +52,8 @@ module nts.uk.at.view.kmf001.m {
                         self.description(data.screenQuery);
                     }
                     else {
-                        self.description(getText('KMF001_293'));
+                         //self.startingDay(getText(('KMF001_292'),[data.hdDay]));
+                        self.description(getText('KMF001_337'));
                     }
                     dfd.resolve();
                 });

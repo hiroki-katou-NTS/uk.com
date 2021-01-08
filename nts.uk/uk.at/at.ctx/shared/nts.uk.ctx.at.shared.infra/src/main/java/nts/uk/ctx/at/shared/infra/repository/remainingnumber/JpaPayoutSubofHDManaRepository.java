@@ -40,8 +40,11 @@ public class JpaPayoutSubofHDManaRepository extends JpaRepository implements Pay
 
 	private static final String DELETE_BY_SUBID = "DELETE FROM KrcmtPayoutSubOfHDMana ps WHERE ps.krcmtPayoutSubOfHDManaPK.sid =:sid and ps.krcmtPayoutSubOfHDManaPK.digestDate =:digestDate";
 
-	private static final String DELETE_BY_SID = "DELETE FROM KrcmtPayoutSubOfHDMana ps WHERE ( ps.krcmtPayoutSubOfHDManaPK.sid = :sid1 OR  ps.krcmtPayoutSubOfHDManaPK.sid = :sid2 ) and ps.krcmtPayoutSubOfHDManaPK.digestDate =:digestDate and ps.krcmtPayoutSubOfHDManaPK.occDate =:occDate";
-	
+	private static final String DELETE_BY_SID = "DELETE FROM KrcmtPayoutSubOfHDMana ps"
+			+ " WHERE (ps.krcmtPayoutSubOfHDManaPK.sid = :sid1 OR ps.krcmtPayoutSubOfHDManaPK.sid = :sid2)"
+			+ " AND (ps.krcmtPayoutSubOfHDManaPK.digestDate IN :digestDates"
+			+ " OR ps.krcmtPayoutSubOfHDManaPK.occDate IN :occDates)";
+
 	@Override
 	public void add(PayoutSubofHDManagement domain) {
 		this.commandProxy().insert(toEntity(domain));
@@ -68,13 +71,13 @@ public class JpaPayoutSubofHDManaRepository extends JpaRepository implements Pay
 	}
 	
 	@Override
-	public void delete(String sid1, String sid2, GeneralDate occDate, GeneralDate digestDate) {
+	public void delete(String sid1, String sid2, List<GeneralDate> occDates, List<GeneralDate> digestDates) {
 		this.getEntityManager().createQuery(DELETE_BY_SID)
-		.setParameter("sid1", sid1)
-		.setParameter("sid2", sid2)
-		.setParameter("occDate", occDate)
-		.setParameter("digestDate", digestDate)
-		.executeUpdate();
+			.setParameter("sid1", sid1)
+			.setParameter("sid2", sid2)
+			.setParameter("occDates", occDates)
+			.setParameter("digestDates", digestDates)
+			.executeUpdate();
 
 	}
 
@@ -145,9 +148,7 @@ public class JpaPayoutSubofHDManaRepository extends JpaRepository implements Pay
 			result = this.queryProxy().query(GET_BY_LISTDATE, KrcmtPayoutSubOfHDMana.class)
 						.setParameter("sid", sid)
 						.setParameter("lstDate", lstDate)
-						.getList()
-						.stream()
-						.map(item -> toDomain(item)).collect(Collectors.toList());
+						.getList(item -> toDomain(item));
 		}
 		return result;
 	}
@@ -159,9 +160,7 @@ public class JpaPayoutSubofHDManaRepository extends JpaRepository implements Pay
 			result = this.queryProxy().query(GET_BY_LIST_OCC_DATE, KrcmtPayoutSubOfHDMana.class)
 						.setParameter("sid", sid)
 						.setParameter("lstDate", lstDate)
-						.getList()
-						.stream()
-						.map(item -> toDomain(item)).collect(Collectors.toList());
+						.getList(item -> toDomain(item));
 		}
 		return result;
 	}
