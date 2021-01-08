@@ -3870,7 +3870,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				block.clear();
 				return;
 			}
-			if (self.dataScreen003A().employeeInfo[lineNo].workScheduleDto == null || (self.dataScreen003A().employeeInfo[lineNo].workScheduleDto != null && self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.workTimeCode == "")) {
+			if (self.dataScreen003A().employeeInfo[lineNo].workScheduleDto != null || (self.dataScreen003A().employeeInfo[lineNo].workScheduleDto != null && self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.workTimeCode == "")) {
 				self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.listBreakTimeZoneDto = [];
 			}
 
@@ -4002,9 +4002,31 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							...self.allGcShow
 						]);
 					}
-				}
-				self.checkGetInfo = false;
-				block.clear();
+					
+					let cssWorkType: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (lineNo + 2).toString() + ")" + " > td:nth-child(1)",
+				cssWorkTypeName: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (lineNo + 2).toString() + ")" + " > td:nth-child(2)",
+				cssWorkTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (lineNo + 2).toString() + ")" + " > td:nth-child(3)",
+				cssWorkTName: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (lineNo + 2).toString() + ")" + " > td:nth-child(4)",
+				cssStartTime1: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (lineNo + 2).toString() + ")" + " > td:nth-child(5)",
+				cssEndTime1: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (lineNo + 2).toString() + ")" + " > td:nth-child(6)",
+				cssStartTime2: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (lineNo + 2).toString() + ")" + " > td:nth-child(7)",
+				cssEndTime2: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (lineNo + 2).toString() + ")" + " > td:nth-child(8)";
+				
+				let color = "";
+							if (empId === self.employeeIdLogin) {
+								color = "#94b7fe";
+							} else {
+								color = "#cee6ff";
+							}
+							
+							$(cssWorkType).css("background-color", color);
+							$(cssWorkTypeName).css("background-color", color);
+							$(cssStartTime1).css("background-color", color);
+							$(cssEndTime1).css("background-color", color);
+							$(cssStartTime2).css("background-color", color);
+							$(cssEndTime2).css("background-color", color);
+							$(cssWorkTime).css("background-color", color);
+							$(cssWorkTName).css("background-color", color);
 				if (self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.isNeedWorkTime == true) {
 					$("#extable-ksu003").exTable("enableCell", "middle", empId, "worktimeCode");
 					$("#extable-ksu003").exTable("enableCell", "middle", empId, "startTime1");
@@ -4021,6 +4043,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					$("#extable-ksu003").exTable("disableCell", "middle", empId, "endTime2");
 				}
 				$(".xcell").removeClass("x-error");
+				}
+				self.checkGetInfo = false;
+				block.clear();
 			});
 		}
 
