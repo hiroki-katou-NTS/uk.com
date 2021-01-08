@@ -97,13 +97,13 @@ public class KwrmtErAlWorkRecord extends ContractUkJpaEntity implements Serializ
 	public String errorAlarmName;
 
 	@Column(name = "FIXED_ATR")
-	public int fixedAtr;
+	public boolean fixedAtr;
 
 	@Column(name = "USE_ATR")
-	public int useAtr;
+	public boolean useAtr;
 	
 	@Column(name = "REMARK_CANCEL_ERR_INP")
-	public int remarkCancelErrorInput;
+	public boolean remarkCancelErrorInput;
 	
 	@Column(name = "REMARK_COLUMN_NO")
 	public int remarkColumnNo;
@@ -112,13 +112,13 @@ public class KwrmtErAlWorkRecord extends ContractUkJpaEntity implements Serializ
 	public int typeAtr;
 
 	@Column(name = "BOLD_ATR")
-	public int boldAtr;
+	public boolean boldAtr;
 
 	@Column(name = "MESSAGE_COLOR")
 	public String messageColor;
 
 	@Column(name = "CANCELABLE_ATR")
-	public int cancelableAtr;
+	public boolean cancelableAtr;
 
 	@Column(name = "ERROR_DISPLAY_ITEM")
 	public Integer errorDisplayItem;
@@ -148,9 +148,9 @@ public class KwrmtErAlWorkRecord extends ContractUkJpaEntity implements Serializ
 		return this.kwrmtErAlWorkRecordPK;
 	}
 
-	public KwrmtErAlWorkRecord(KwrmtErAlWorkRecordPK kwrmtErAlWorkRecordPK, String errorAlarmName, int fixedAtr,
-			int useAtr, int remarkCancelErrorInput, int remarkColumnNo, int typeAtr, int boldAtr, String messageColor,
-			int cancelableAtr, Integer errorDisplayItem, String eralCheckId, KrcmtErAlCondition krcmtErAlCondition,
+	public KwrmtErAlWorkRecord(KwrmtErAlWorkRecordPK kwrmtErAlWorkRecordPK, String errorAlarmName, boolean fixedAtr,
+			boolean useAtr, boolean remarkCancelErrorInput, int remarkColumnNo, int typeAtr, boolean boldAtr, String messageColor,
+			boolean cancelableAtr, Integer errorDisplayItem, String eralCheckId, KrcmtErAlCondition krcmtErAlCondition,
 			List<KrcmtEralApplication> krcstErAlApplication, String cancelRoleId) {
 		super();
 		this.kwrmtErAlWorkRecordPK = kwrmtErAlWorkRecordPK;
@@ -343,12 +343,12 @@ public class KwrmtErAlWorkRecord extends ContractUkJpaEntity implements Serializ
 				domain.getCode().v());
 		// Set main data KwrmtErAlWorkRecord
 		String errorAlarmName = domain.getName().v();
-		int fixedAtr = domain.getFixedAtr() ? 1 : 0;
-		int useAtr = domain.getUseAtr() ? 1 : 0;
+		boolean fixedAtr = domain.getFixedAtr();
+		boolean useAtr = domain.getUseAtr();
 		int typeAtr = domain.getTypeAtr().value;
-		int boldAtr = domain.getMessage().getBoldAtr() ? 1 : 0;
+		boolean boldAtr = domain.getMessage().getBoldAtr();
 		String messageColor = domain.getMessage().getMessageColor().v();
-		int cancelableAtr = domain.getCancelableAtr() ? 1 : 0;
+		boolean cancelableAtr = domain.getCancelableAtr();
 		Integer errorDisplayItem = domain.getErrorDisplayItem();
 		String eralCheckId = domain.getErrorAlarmCheckID();
 		List<KrcmtEralApplication> krcstErAlApplication = domain.getLstApplication().stream()
@@ -462,7 +462,7 @@ public class KwrmtErAlWorkRecord extends ContractUkJpaEntity implements Serializ
 					conditionDomain.getContinuousPeriod() != null ? conditionDomain.getContinuousPeriod().v() : 0);
 		}
 		KwrmtErAlWorkRecord entity = new KwrmtErAlWorkRecord(kwrmtErAlWorkRecordPK, errorAlarmName, fixedAtr, useAtr,
-				domain.getRemarkCancelErrorInput().value, domain.getRemarkColumnNo(), typeAtr, boldAtr,
+				domain.getRemarkCancelErrorInput().isUse(), domain.getRemarkColumnNo(), typeAtr, boldAtr,
 				messageColor.equals("") ? null : messageColor, cancelableAtr, errorDisplayItem, eralCheckId,
 				krcmtErAlCondition, krcstErAlApplication, cancelRoleId);
 		return entity;
@@ -474,9 +474,9 @@ public class KwrmtErAlWorkRecord extends ContractUkJpaEntity implements Serializ
 	
 	public static ErrorAlarmWorkRecord toDomain(KwrmtErAlWorkRecord entity, List<KrcmtEralApplication> erAlApp) {
 		return ErrorAlarmWorkRecord.createFromJavaType(entity.kwrmtErAlWorkRecordPK.companyId,
-				entity.kwrmtErAlWorkRecordPK.errorAlarmCode, entity.errorAlarmName, entity.fixedAtr == 1,
-				entity.useAtr == 1, entity.remarkCancelErrorInput, entity.remarkColumnNo, entity.typeAtr,
-				entity.boldAtr == 1, entity.messageColor, entity.cancelableAtr == 1, entity.errorDisplayItem,
+				entity.kwrmtErAlWorkRecordPK.errorAlarmCode, entity.errorAlarmName, entity.fixedAtr,
+				entity.useAtr, entity.remarkCancelErrorInput, entity.remarkColumnNo, entity.typeAtr,
+				entity.boldAtr, entity.messageColor, entity.cancelableAtr, entity.errorDisplayItem,
 				Optional.ofNullable(erAlApp).orElse(Collections.emptyList()).stream()
 						.map(eralAppEntity -> eralAppEntity.krcstErAlApplicationPK.appTypeCd)
 						.collect(Collectors.toList()),
@@ -491,9 +491,9 @@ public class KwrmtErAlWorkRecord extends ContractUkJpaEntity implements Serializ
 	//fix for response
 	public static ErrorAlarmWorkRecord convertToDomainForRes(KwrmtErAlWorkRecord entity, List<KwrmtErAlWorkRecord> erAlApp) {
 		return ErrorAlarmWorkRecord.createFromJavaType(entity.kwrmtErAlWorkRecordPK.companyId,
-				entity.kwrmtErAlWorkRecordPK.errorAlarmCode, entity.errorAlarmName, entity.fixedAtr == 1,
-				entity.useAtr == 1, entity.remarkCancelErrorInput, entity.remarkColumnNo, entity.typeAtr,
-				entity.boldAtr == 1, entity.messageColor, entity.cancelableAtr == 1, entity.errorDisplayItem,
+				entity.kwrmtErAlWorkRecordPK.errorAlarmCode, entity.errorAlarmName, entity.fixedAtr,
+				entity.useAtr, entity.remarkCancelErrorInput, entity.remarkColumnNo, entity.typeAtr,
+				entity.boldAtr, entity.messageColor, entity.cancelableAtr, entity.errorDisplayItem,
 						erAlApp.isEmpty() || erAlApp.get(0).oneKrcstErAlApplication == null  
 						? null : erAlApp.stream().map(item -> 
 						item.oneKrcstErAlApplication.krcstErAlApplicationPK.appTypeCd).collect(Collectors.toList()),
@@ -516,7 +516,7 @@ public class KwrmtErAlWorkRecord extends ContractUkJpaEntity implements Serializ
 		ErrorAlarmCondition condition = ErrorAlarmCondition.init();
 		condition.setDisplayMessage(alCon.messageDisplay);
 		condition.setContinuousPeriod(alCon.continuousPeriod);
-		if (entity.fixedAtr != 1) {
+		if (!entity.fixedAtr) {
 			// Set AlCheckTargetCondition
 			condition.createAlCheckTargetCondition(alCon.filterByBusinessType == 1,
 					alCon.filterByJobTitle == 1, alCon.filterByEmployment == 1,
@@ -716,7 +716,7 @@ public class KwrmtErAlWorkRecord extends ContractUkJpaEntity implements Serializ
 		ErrorAlarmCondition condition = ErrorAlarmCondition.init();
 		condition.setDisplayMessage(alCon.messageDisplay);
 		condition.setContinuousPeriod(alCon.continuousPeriod);
-		if (entity.fixedAtr != 1) {
+		if (!entity.fixedAtr) {
 			// Set AlCheckTargetCondition
 			condition.createAlCheckTargetCondition(alCon.filterByBusinessType == 1,
 					alCon.filterByJobTitle == 1, alCon.filterByEmployment == 1,

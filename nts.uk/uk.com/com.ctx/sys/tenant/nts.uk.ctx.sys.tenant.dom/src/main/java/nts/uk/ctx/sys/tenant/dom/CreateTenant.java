@@ -27,18 +27,15 @@ public class CreateTenant {
 
 		val tenantAuthentication = TenantAuthentication.create(tenantCode, tenantPassword, tenantStartDate);
 		
-		val tenantAdministartor = CreateTenantAdministrator.create(
-				require, tenantCode, administratorLoginId, administratorPassword);
-		
 		return AtomTask.of(() -> {
 			
 			require.add(tenantAuthentication);
 			
-		}).then(tenantAdministartor);
+		});
 	}
 
 	
-	public static interface Require extends CreateTenantAdministrator.Require {
+	public static interface Require {
 		
 		boolean existsTenant(String tenantCode);
 		

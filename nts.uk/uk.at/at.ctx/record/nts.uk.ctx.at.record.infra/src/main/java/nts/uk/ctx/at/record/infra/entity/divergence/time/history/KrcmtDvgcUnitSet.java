@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.infra.entity.divergence.time.history;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -35,7 +34,7 @@ public class KrcmtDvgcUnitSet extends ContractUkJpaEntity implements Serializabl
 
 	/** The worktype use set. */
 	@Column(name="WORKTYPE_USE_SET")
-	private BigDecimal worktypeUseSet;
+	private boolean worktypeUseSet;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()

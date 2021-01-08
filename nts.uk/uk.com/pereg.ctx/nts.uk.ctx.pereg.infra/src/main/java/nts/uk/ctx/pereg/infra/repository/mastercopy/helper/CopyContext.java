@@ -6,7 +6,6 @@ import nts.arc.layer.infra.data.jdbc.JdbcProxy;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.layer.infra.data.query.QueryProxy;
 import nts.uk.ctx.pereg.infra.repository.mastercopy.CopyMethodOnConflict;
-import nts.uk.shr.com.context.AppContexts;
 
 @RequiredArgsConstructor
 public class CopyContext {
@@ -17,20 +16,33 @@ public class CopyContext {
 	
 	public final QueryProxy query;
 	
-	public final String contractCode = AppContexts.user().contractCode();
+	public final ContractCode contractCode;
 	
-	public final CompanyId companyId = new CompanyId();
+	public final CompanyId companyId;
 	
 	public final CopyMethodOnConflict copyMethodOnConflict;
 	
 	public NtsStatement jdbc(String sql) {
 		return jdbc.query(sql);
 	}
-	
+
+	@RequiredArgsConstructor
+	public static class ContractCode {
+
+		public final String source;
+		
+		public final String target;
+		
+		public static ContractCode same(String contractCode) {
+			return new ContractCode(contractCode, contractCode);
+		}
+	}
+
+	@RequiredArgsConstructor
 	public static class CompanyId {
 
-		public final String source = AppContexts.user().zeroCompanyIdInContract();
+		public final String source;
 		
-		public final String target = AppContexts.user().companyId();
+		public final String target;
 	}
 }

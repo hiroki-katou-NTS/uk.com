@@ -52,21 +52,21 @@ import nts.uk.ctx.at.record.infra.entity.monthly.erroralarm.KrcdtEmployeeMonthly
 import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonTimeAtd;
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.flex.KshmtCalcMFlexCarMax;
 import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtDayInfoPerWork;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtDaySyaError;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtDaySyaErrorAtd;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtEmpDivErAl;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtEmpErAlCommon;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtDaySyaErrorAtd;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtErDivAtd;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtErOtkAtd;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtErSuAtd;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtOtkErAl;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.KrcdtDaySyaError;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcmtEralApplication;
 import nts.uk.ctx.at.record.infra.entity.workrecord.identificationstatus.KrcdtIdentificationStatus;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtApprovalProcess;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtApprovalProcessPk;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtAttendanceAut;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiPerformEdFun;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiPerformEdFunPk;
-import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtAttendanceAut;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtFormatPerformance;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtFormatPerformancePk;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtIdentityProcess;
@@ -258,7 +258,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 //	private final static String SELECT_ALL_DIVREASON = "SELECT c FROM KrcmtDvgcReason c"
 //			+ " WHERE c.id.cid = :companyId";
 
-	private final static String SELECT_ALL_DIVREASON_JDBC = "SELECT REASON, [NO], REASON_CD FROM KRCMT_DVGC_REASON c WHERE CID = ?";
+	private final static String SELECT_ALL_DIVREASON_JDBC = "SELECT REASON, NO, REASON_CD FROM KRCMT_DVGC_REASON c WHERE CID = ?";
 
 	private final static String SELECT_CONFIRM_DAY = "SELECT c FROM KrcdtIdentificationStatus c"
 			+ " WHERE c.krcdtIdentificationStatusPK.companyID = :companyID"
@@ -1431,8 +1431,8 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		return this.queryProxy().query(FIND_DVGC_TIME, KrcmtDvgcTime.class).setParameter("cid", companyId)
 				.setParameter("no", divergenceNo)
 				.getList(x -> new DivergenceTimeDto(x.getId().getNo(), companyId, x.getDvgcTimeUseSet().intValue(),
-						x.getDvgcReasonInputed().intValue() == 1 ? true : false,
-						x.getDvgcReasonSelected().intValue() == 1 ? true : false));
+						x.isDvgcReasonInputed(),
+						x.isDvgcReasonSelected()));
 
 	}
 

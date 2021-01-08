@@ -99,7 +99,7 @@ public class ErrorAlarmWorkRecord extends AggregateRoot {
 	 * @return ErrorAlarmWorkRecord
 	 **/
 	public static ErrorAlarmWorkRecord createFromJavaType(String companyId, String code, String name, boolean fixedAtr,
-			boolean useAtr, int remarkCancelErrorInput, int remarkColumnNo, int typeAtr, boolean boldAtr,
+			boolean useAtr, boolean remarkCancelErrorInput, int remarkColumnNo, int typeAtr, boolean boldAtr,
 			String messageColor, boolean cancelableAtr, Integer errorDisplayItem, List<Integer> lstApplication,
 			String errorAlarmCheckID) {
 		ErrorAlarmWorkRecord errorAlarmWorkRecord = new ErrorAlarmWorkRecord(companyId,

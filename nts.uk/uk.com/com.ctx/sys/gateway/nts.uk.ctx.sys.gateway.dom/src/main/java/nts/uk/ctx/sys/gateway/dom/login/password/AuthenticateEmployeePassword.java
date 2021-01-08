@@ -44,8 +44,10 @@ public class AuthenticateEmployeePassword {
 			return AuthenticateEmployeePasswordResult.succeededWithResetPassword(identified);
 		}
 		
+		//TODO: ちゃんと作る
 		// パスワードポリシー
-		val passwordPolicyResult = checkPasswordPolicy(require, tenantCode, password, user);
+//		val passwordPolicyResult = checkPasswordPolicy(require, tenantCode, password, user);
+		PasswordValidationOnLogin passwordPolicyResult  = PasswordValidationOnLogin.ok();
 		
 		return AuthenticateEmployeePasswordResult.succeeded(identified, passwordPolicyResult);
 	}

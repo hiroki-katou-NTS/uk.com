@@ -43,11 +43,11 @@ public class KrcmtDvgcTime extends ContractUkJpaEntity implements Serializable {
 
 	/** The dvgc reason inputed. */
 	@Column(name = "DVGC_REASON_INPUTED")
-	private BigDecimal dvgcReasonInputed;
+	private boolean dvgcReasonInputed;
 
 	/** The dvgc reason selected. */
 	@Column(name = "DVGC_REASON_SELECTED")
-	private BigDecimal dvgcReasonSelected;
+	private boolean dvgcReasonSelected;
 
 	/** The dvgc time name. */
 	@Column(name = "DVGC_TIME_NAME")
@@ -63,16 +63,16 @@ public class KrcmtDvgcTime extends ContractUkJpaEntity implements Serializable {
 
 	/** The reason input canceled. */
 	@Column(name = "REASON_INPUT_CANCELED")
-	private BigDecimal reasonInputCanceled;
+	private boolean reasonInputCanceled;
 
 	/** The reason select canceled. */
 	@Column(name = "REASON_SELECT_CANCELED")
-	private BigDecimal reasonSelectCanceled;
+	private boolean reasonSelectCanceled;
 	
 	/** The krcst dvgc attendances. */
 	@JoinColumns({
 			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
-			@JoinColumn(name = "[NO]", referencedColumnName = "[NO]", insertable = true, updatable = true) })
+			@JoinColumn(name = "NO", referencedColumnName = "NO", insertable = true, updatable = true) })
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<KrcmtDvgcAttendance> krcstDvgcAttendances;
 

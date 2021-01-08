@@ -29,11 +29,11 @@ public class DivergenceTimeErrorCancelMethod {
 	 * @param reasonSelected
 	 *            the reason selected
 	 */
-	public DivergenceTimeErrorCancelMethod(int reasonInputed, int reasonSelected) {
+	public DivergenceTimeErrorCancelMethod(boolean reasonInputed, boolean reasonSelected) {
 
-		this.reasonInputed = reasonInputed == 1;
+		this.reasonInputed = reasonInputed;
 
-		this.reasonSelected = reasonSelected == 1;
+		this.reasonSelected = reasonSelected;
 
 	}
 

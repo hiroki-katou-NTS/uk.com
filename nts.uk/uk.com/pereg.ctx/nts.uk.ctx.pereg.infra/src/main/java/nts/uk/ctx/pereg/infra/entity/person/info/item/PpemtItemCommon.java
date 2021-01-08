@@ -11,14 +11,18 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import lombok.NoArgsConstructor;
+import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
+import nts.uk.ctx.pereg.infra.repository.mastercopy.CopiedOnTenantCreated;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
 @Table(name = "PPEMT_ITEM_COMMON")
-public class PpemtItemCommon extends UkJpaEntity implements Serializable {
+public class PpemtItemCommon extends UkJpaEntity implements Serializable, CopiedOnTenantCreated {
 
 	private static final long serialVersionUID = 1L;
+	
+	public static final JpaEntityMapper<PpemtItemCommon> MAPPER = new JpaEntityMapper<>(PpemtItemCommon.class);
 
 	@EmbeddedId
 	public PpemtPerInfoItemCmPK ppemtPerInfoItemCmPK;
@@ -148,6 +152,11 @@ public class PpemtItemCommon extends UkJpaEntity implements Serializable {
 		this.relatedCategoryCode = relatedCategoryCode;
 		this.resourceId = resourceId;
 		this.canAbolition = canAbolition;
+	}
+
+	@Override
+	public void changeContractCode(String newContractCode) {
+		ppemtPerInfoItemCmPK.categoryCd = newContractCode;
 	}
 
 }

@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.uk.ctx.sys.gateway.app.command.login.session.LoginAuthorizeAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.CheckIfCanLogin;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
@@ -99,6 +100,16 @@ public class LoginRequire {
 
 		@Override
 		public void authorizeLoginSession(IdentifiedEmployeeInfo identified) {
+			val CompanyInforImport =  getCompanyInforImport(identified.getCompanyId());
+			loginUserContextManager.loggedInAsEmployee(
+					identified.getUserId(),
+					identified.getUser().getAssociatedPersonID().get(),
+					identified.getTenantCode(),
+					identified.getCompanyId(),
+					CompanyInforImport.getCompanyCode(),
+					identified.getEmployeeId(),
+					identified.getEmployee().getEmployeeCode());
+			
 			loginAuthorizeAdapter.authorize(
 					loginUserContextManager.roleIdSetter(),
 					identified.getUserId());

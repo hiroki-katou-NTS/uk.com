@@ -229,9 +229,9 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 				stmt.setString(subIdList.size() + 1, companyId);
 				datas.addAll(new NtsResultSet(stmt.executeQuery()).getList(rs -> {
 					return ErrorAlarmWorkRecord.createFromJavaType(rs.getString("CID"), rs.getString("ERROR_ALARM_CD"),
-							rs.getString("ERROR_ALARM_NAME"), rs.getInt("FIXED_ATR") == 1, rs.getInt("USE_ATR") == 1,
-							rs.getInt("REMARK_CANCEL_ERR_INP"), rs.getInt("REMARK_COLUMN_NO"), rs.getInt("ERAL_ATR"),
-							rs.getInt("BOLD_ATR") == 1, rs.getString("MESSAGE_COLOR"), rs.getInt("CANCELABLE_ATR") == 1,
+							rs.getString("ERROR_ALARM_NAME"), rs.getBoolean("FIXED_ATR"), rs.getBoolean("USE_ATR"),
+							rs.getBoolean("REMARK_CANCEL_ERR_INP"), rs.getInt("REMARK_COLUMN_NO"), rs.getInt("ERAL_ATR"),
+							rs.getBoolean("BOLD_ATR"), rs.getString("MESSAGE_COLOR"), rs.getBoolean("CANCELABLE_ATR"),
 							rs.getInt("ERROR_DISPLAY_ITEM"), rs.getInt("APP_TYPE_CD") == null ? Collections.emptyList() : Arrays.asList(rs.getInt("APP_TYPE_CD")),
 							rs.getString("ERAL_CHECK_ID"));
 				}));
@@ -291,7 +291,7 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 				String eralID = rs.getString("ERAL_CHECK_ID"), group1Id = rs.getString("ATD_ITEM_CONDITION_GROUP1"),
 						group2ID = rs.getString("ATD_ITEM_CONDITION_GROUP2");
 
-				Integer fixedAtr = rs.getInt("FIXED_ATR");
+				boolean fixedAtr = rs.getBoolean("FIXED_ATR");
 
 				if (group1Id != null) {
 					conG1.put(group1Id, eralID);
@@ -301,20 +301,23 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 				}
 				ErrorAlarmWorkRecord eral = eRecord.get(eralID);
 				if (eral == null) {
-					String erAlCode = rs.getString("ERROR_ALARM_CD"), erAlName = rs.getString("ERROR_ALARM_NAME"),
-							mesColor = rs.getString("MESSAGE_COLOR"), mesDisplay = rs.getString("MESSAGE_DISPLAY");
+					String 	erAlCode = rs.getString("ERROR_ALARM_CD"), 
+							erAlName = rs.getString("ERROR_ALARM_NAME"),
+							mesColor = rs.getString("MESSAGE_COLOR"), 
+							mesDisplay = rs.getString("MESSAGE_DISPLAY");
 
-					Integer remarkCanRemove = rs.getInt("REMARK_CANCEL_ERR_INP"),
-							remarkNo = rs.getInt("REMARK_COLUMN_NO"), erAlAtr = rs.getInt("ERAL_ATR"),
-							boldAtr = rs.getInt("BOLD_ATR"), cancelableAtr = rs.getInt("CANCELABLE_ATR"),
+					Integer remarkNo = rs.getInt("REMARK_COLUMN_NO"), 
+							erAlAtr = rs.getInt("ERAL_ATR"),
 							displayItem = rs.getInt("ERROR_DISPLAY_ITEM"),
 							continuousAtr = rs.getInt("CONTINUOUS_PERIOD"),
 							filterByBusinessType = rs.getInt("FILTER_BY_BUSINESS_TYPE"),
 							filterByJob = rs.getInt("FILTER_BY_JOB_TITLE"),
 							filterByEmployment = rs.getInt("FILTER_BY_EMPLOYMENT"),
 							filterByClassification = rs.getInt("FILTER_BY_CLASSIFICATION"),
-							wtComAtr = rs.getInt("WT_COMPARE_ATR"), useGroup2 = rs.getInt("GROUP2_USE_ATR"),
-							whComAtr = rs.getInt("WH_COMPARE_ATR"), useWorkType = rs.getInt("WORKTYPE_USE_ATR"),
+							wtComAtr = rs.getInt("WT_COMPARE_ATR"), 
+							useGroup2 = rs.getInt("GROUP2_USE_ATR"),
+							whComAtr = rs.getInt("WH_COMPARE_ATR"), 
+							useWorkType = rs.getInt("WORKTYPE_USE_ATR"),
 							useWorkTypePlan = rs.getInt("WT_PLAN_FILTER_ATR"),
 							useWorkTypeActual = rs.getInt("WT_ACTUAL_FILTER_ATR"),
 							workTypeOperator = rs.getInt("WT_PLAN_ACTUAL_OPERATOR"),
@@ -323,15 +326,20 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 							useWorkTimeActual = rs.getInt("WH_ACTUAL_FILTER_ATR"),
 							workTimeOperator = rs.getInt("WH_PLAN_ACTUAL_OPERATOR"),
 							groupOperator = rs.getInt("OPERATOR_BETWEEN_GROUPS");
+					
+					boolean boldAtr = rs.getBoolean("BOLD_ATR"), 
+							remarkCanRemove = rs.getBoolean("REMARK_CANCEL_ERR_INP"),
+							cancelableAtr = rs.getBoolean("CANCELABLE_ATR");
 
-					eral = ErrorAlarmWorkRecord.createFromJavaType(companyId, erAlCode, erAlName, fixedAtr == 1, useAtr,
-							remarkCanRemove, remarkNo, erAlAtr, boldAtr == 1, mesColor, cancelableAtr == 1, displayItem,
+
+					eral = ErrorAlarmWorkRecord.createFromJavaType(companyId, erAlCode, erAlName, fixedAtr, useAtr,
+							remarkCanRemove, remarkNo, erAlAtr, boldAtr, mesColor, cancelableAtr, displayItem,
 							new ArrayList<>(), eralID);
 
 					ErrorAlarmCondition condition = new ErrorAlarmCondition(eralID, mesDisplay);
 					condition.setContinuousPeriod(continuousAtr != null ? continuousAtr : 0);
 
-					if (fixedAtr != 1) {
+					if (!fixedAtr) {
 						// Set AlCheckTargetCondition
 						condition.createAlCheckTargetCondition(filterByBusinessType == 1, filterByJob == 1,
 								filterByEmployment == 1, filterByClassification == 1, new ArrayList<>(),

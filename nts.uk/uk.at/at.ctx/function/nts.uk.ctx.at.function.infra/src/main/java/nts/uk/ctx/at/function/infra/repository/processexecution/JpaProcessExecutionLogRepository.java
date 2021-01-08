@@ -13,6 +13,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.Query;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.gul.collection.CollectionUtil;
@@ -26,6 +27,7 @@ import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutio
 //import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionLogManage;
 //import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtProcessExecutionLogPK;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
+import nts.uk.shr.infra.data.jdbc.UkPreparedStatement;
 
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
@@ -42,14 +44,6 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 			+ "WHERE pel.kfnmtProcExecLogPK.companyId = :companyId "
 			+ "AND pel.kfnmtProcExecLogPK.execItemCd = :execItemCd "
 			+ "AND pel.kfnmtProcExecLogPK.execId = :execId ";
-	
-	private static final String SELECT_BY_KEY = SELECT_ALL 
-			+ "WHERE pel.kfnmtProcExecLogPK.companyId = :companyId "
-			+ "AND pel.kfnmtProcExecLogPK.execItemCd = :execItemCd ";
-	
-	private static final String SELECT_TASK_LOG = "SELECT k FROM KfnmtExecutionTaskLog k"+ 
-	" WHERE k.kfnmtExecTaskLogPK.companyId = :companyId " + " AND k.kfnmtExecTaskLogPK.execItemCd= :execItemCd ";
-	
 	
 	private static final String SELECT_BY_CID_AND_EXEC_CD = SELECT_ALL
 			+ "WHERE pel.kfnmtProcExecLogPK.companyId = :companyId "
@@ -111,15 +105,16 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 					+ " ,RFL_APPR_START = ?"
 					+ " ,RFL_APPR_END = ?"
 					+ " WHERE CID = ? AND EXEC_ITEM_CD = ? AND EXEC_ID = ? ";
-			try (PreparedStatement ps = this.connection().prepareStatement(JDBCUtil.toUpdateWithCommonField(updateTableSQL))) {
-				ps.setDate(1, updateData.schCreateStart ==null?null: Date.valueOf(updateData.schCreateStart.localDate()));
-				ps.setDate(2, updateData.schCreateEnd ==null?null: Date.valueOf(updateData.schCreateEnd.localDate()));
-				ps.setDate(3, updateData.dailyCreateStart ==null?null: Date.valueOf(updateData.dailyCreateStart.localDate()));
-				ps.setDate(4, updateData.dailyCreateEnd ==null?null: Date.valueOf(updateData.dailyCreateEnd.localDate()));
-				ps.setDate(5, updateData.dailyCalcStart ==null?null: Date.valueOf(updateData.dailyCalcStart.localDate()));
-				ps.setDate(6, updateData.dailyCalcEnd ==null?null: Date.valueOf(updateData.dailyCalcEnd.localDate()));
-				ps.setDate(7, updateData.reflectApprovalResultStart ==null?null: Date.valueOf(updateData.reflectApprovalResultStart.localDate()));
-				ps.setDate(8, updateData.reflectApprovalResultEnd ==null?null: Date.valueOf(updateData.reflectApprovalResultEnd.localDate()));
+			try (PreparedStatement pss = this.connection().prepareStatement(JDBCUtil.toUpdateWithCommonField(updateTableSQL))) {
+				val ps = new UkPreparedStatement(pss);
+				ps.setString(1, updateData.schCreateStart ==null?null: Date.valueOf(updateData.schCreateStart.localDate()));
+				ps.setString(2, updateData.schCreateEnd ==null?null: Date.valueOf(updateData.schCreateEnd.localDate()));
+				ps.setString(3, updateData.dailyCreateStart ==null?null: Date.valueOf(updateData.dailyCreateStart.localDate()));
+				ps.setString(4, updateData.dailyCreateEnd ==null?null: Date.valueOf(updateData.dailyCreateEnd.localDate()));
+				ps.setString(5, updateData.dailyCalcStart ==null?null: Date.valueOf(updateData.dailyCalcStart.localDate()));
+				ps.setString(6, updateData.dailyCalcEnd ==null?null: Date.valueOf(updateData.dailyCalcEnd.localDate()));
+				ps.setString(7, updateData.reflectApprovalResultStart ==null?null: Date.valueOf(updateData.reflectApprovalResultStart.localDate()));
+				ps.setString(8, updateData.reflectApprovalResultEnd ==null?null: Date.valueOf(updateData.reflectApprovalResultEnd.localDate()));
 				ps.setString(9, domain.getCompanyId());
 				ps.setString(10, domain.getExecItemCd().v());
 				ps.setString(11, domain.getExecId());
@@ -137,16 +132,17 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 						+ " ,ERROR_SYSTEM = ?"
 						+ " ,ERROR_BUSINESS = ?"
 						+ " WHERE CID = ? AND EXEC_ITEM_CD = ? AND EXEC_ID = ? AND TASK_ID = ? ";
-				try (PreparedStatement ps = this.connection().prepareStatement(JDBCUtil.toUpdateWithCommonField(updateTableSQL))) {
-					ps.setString(1, kfnmtExecutionTaskLog.status ==null?null:kfnmtExecutionTaskLog.status.toString());
-					ps.setString(2, kfnmtExecutionTaskLog.lastExecDateTime ==null?null:kfnmtExecutionTaskLog.lastExecDateTime.toString());
-					ps.setString(3, kfnmtExecutionTaskLog.lastEndExecDateTime ==null?null:kfnmtExecutionTaskLog.lastEndExecDateTime.toString());
-					ps.setString(4, kfnmtExecutionTaskLog.errorSystem == null?null:(kfnmtExecutionTaskLog.errorSystem ==1?"1":"0"));
-					ps.setString(5, kfnmtExecutionTaskLog.errorBusiness == null?null:(kfnmtExecutionTaskLog.errorBusiness ==1?"1":"0"));
+				try (PreparedStatement pss = this.connection().prepareStatement(JDBCUtil.toUpdateWithCommonField(updateTableSQL))) {
+					val ps = new UkPreparedStatement(pss);
+					ps.setString(1, kfnmtExecutionTaskLog.status ==null?null:kfnmtExecutionTaskLog.status);
+					ps.setString(2, kfnmtExecutionTaskLog.lastExecDateTime ==null?null:kfnmtExecutionTaskLog.lastExecDateTime);
+					ps.setString(3, kfnmtExecutionTaskLog.lastEndExecDateTime ==null?null:kfnmtExecutionTaskLog.lastEndExecDateTime);
+					ps.setString(4, kfnmtExecutionTaskLog.errorSystem == null?null:kfnmtExecutionTaskLog.errorSystem);
+					ps.setString(5, kfnmtExecutionTaskLog.errorBusiness == null?null:kfnmtExecutionTaskLog.errorBusiness);
 					ps.setString(6, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.companyId);
 					ps.setString(7, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.execItemCd);
 					ps.setString(8, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.execId);
-					ps.setInt(9, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.taskId);
+					ps.setString(9, kfnmtExecutionTaskLog.kfnmtExecTaskLogPK.taskId);
 					ps.executeUpdate();
 				}
 			}

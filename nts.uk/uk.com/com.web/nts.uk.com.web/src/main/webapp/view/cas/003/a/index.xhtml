@@ -14,16 +14,14 @@
 			<com:scriptfile path="cas003.a.vm.js" />
 			<com:scriptfile path="cas003.a.service.js" />
 			<com:ValidatorScript>
-				nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordLowestDigits
-				nts.uk.ctx.sys.gateway.dom.securitypolicy.AlphabetDigit
-				nts.uk.ctx.sys.gateway.dom.securitypolicy.NumberOfDigits
-				nts.uk.ctx.sys.gateway.dom.securitypolicy.SymbolCharacters
-				nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordHistoryCount
-				nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordValidityPeriod
-				nts.uk.ctx.sys.gateway.dom.securitypolicy.NotificationPasswordChange
-				nts.uk.ctx.sys.gateway.dom.securitypolicy.LockInterval
-				nts.uk.ctx.sys.gateway.dom.securitypolicy.ErrorCount
-				nts.uk.ctx.sys.gateway.dom.securitypolicy.LockOutMessage
+				nts.uk.ctx.sys.gateway.dom.securitypolicy.password.complexity.PasswordMinimumLength
+				nts.uk.ctx.sys.gateway.dom.securitypolicy.password.complexity.PasswordSpecifiedCharacterDigits
+				nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordHistoryCount
+				nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordValidityPeriod
+				nts.uk.ctx.sys.gateway.dom.securitypolicy.password.NotificationPasswordChange
+				nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.LockInterval
+				nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.ErrorCount
+				nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.LockOutMessage
 			</com:ValidatorScript>
 		</ui:define>
 
@@ -40,14 +38,14 @@
 
 						<div class="component-area">
 							<div
-								data-bind="ntsFormLabel: { required: true, constraint: 'PasswordLowestDigits' }">
+								data-bind="ntsFormLabel: { required: true, constraint: 'PasswordMinimumLength' }">
 								#{i18n.getText('CAS003_4')}</div>
 
 							<input tabindex="4" id="txtlowestDigit"
 								data-bind="ntsNumberEditor: {
 														name: '#[CAS003_4]',
 														value: lowestDigits, 
-														constraint: 'PasswordLowestDigits', 
+														constraint: 'PasswordMinimumLength', 
 														option: { width: '60px' },
 														required: true, 
 														enable: passPolicyCheck}" />
@@ -56,7 +54,7 @@
 
 						<div class="component-area">
 							<div class="form1"
-								data-bind="ntsFormLabel: { required: true, constraint: ['AlphabetDigit','NumberOfDigits','SymbolCharacters'] }">
+								data-bind="ntsFormLabel: { required: true, constraint: ['PasswordSpecifiedCharacterDigits'] }">
 								#{i18n.getText('CAS003_6')}</div>
 
 							<div class="contentPassComplex">
@@ -65,7 +63,7 @@
 									data-bind="ntsNumberEditor: {
 														name: '#[CAS003_7]',
 														value: alphabetDigit, 
-														constraint: 'AlphabetDigit', 
+														constraint: 'PasswordSpecifiedCharacterDigits', 
 														option: { width: '60px' },
 														required: true, 
 														enable: passPolicyCheck}" />
@@ -78,7 +76,7 @@
 									data-bind="ntsNumberEditor: {
 														name: '#[CAS003_10]',
 														value: numberOfDigits, 
-														constraint: 'NumberOfDigits', 
+														constraint: 'PasswordSpecifiedCharacterDigits', 
 														option: { width: '60px' },
 														required: true, 
 														enable: passPolicyCheck}" />
@@ -92,7 +90,7 @@
 									data-bind="ntsNumberEditor: {
 														name: '#[CAS003_13]',
 														value: symbolCharacters, 
-														constraint: 'SymbolCharacters', 
+														constraint: 'PasswordSpecifiedCharacterDigits', 
 														option: { width: '60px' },
 														required: true, 
 														enable: passPolicyCheck}" />

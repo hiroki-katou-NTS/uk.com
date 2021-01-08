@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.infra.repository.divergence.time.history;
 
-import java.math.BigDecimal;
-
 import lombok.Setter;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTimeUsageUnitGetMemento;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcmtDvgcUnitSet;
@@ -50,7 +48,7 @@ public class JpaDivergenceReferenceTimeUsageUnitGetMemento implements Divergence
 	 */
 	@Override
 	public boolean getWorkTypeUseSet() {
-		return this.krcstDrtUseUnit.getWorktypeUseSet().equals(BigDecimal.ONE);
+		return this.krcstDrtUseUnit.isWorktypeUseSet();
 	}
 
 }
