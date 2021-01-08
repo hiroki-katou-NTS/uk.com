@@ -1,5 +1,21 @@
 
 
+export interface SelectWorkTypeHolidayParam {
+    // 会社ID
+    companyId: string;
+    // 申請日リスト
+    dates: Array<string>;
+    // 休暇申請起動時の表示情報
+    appAbsenceStartInfoOutput: AppAbsenceStartInfoDto;
+    // 休暇種類
+    applyForLeaveOp: ApplyForLeaveDto;
+    // 勤務種類コード<Optional>
+    workTypeCodeBeforeOp: WorkTypeDto;
+
+    workTypeCodeAfterOp: WorkTypeDto;
+
+    holidayAppType: number;
+}
 export interface ChangeDateParamMobile {
     companyId: string;
 
