@@ -1400,10 +1400,11 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 				// 申請内容＝「値」＋改行(nội dung đơn xin = 「value」 + xuống dòng)
 				DatePeriod datePeriod = applyForLeave.getVacationInfo().getInfo().getDatePeriod().get();
 				if(datePeriod.start().equals(datePeriod.end())) {
-					result += I18NText.getText("CMM045_304", datePeriod.start().toString("YYYY/MM/DD"));
+					result += I18NText.getText("CMM045_304", datePeriod.start().toString());
 				} else {
-					result += I18NText.getText("CMM045_304", datePeriod.start().toString("YYYY/MM/DD") + I18NText.getText("CMM045_100") + datePeriod.end().toString("YYYY/MM/DD"));
+					result += I18NText.getText("CMM045_304", datePeriod.start().toString() + I18NText.getText("CMM045_100") + datePeriod.end().toString());
 				}
+				result += "\n";
 			}
 		}
 		// 勤務就業名称を作成 ( Tạo tên workEmployment)
