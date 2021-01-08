@@ -31,6 +31,19 @@ module nts.uk.at.view.kaf006.c.viewmodel {
                 vm.applyForleave = params.applyForLeave;
                 vm.application = params.appAbsenceStartInfoOutput.appDispInfoStartupOutput.appDetailScreenInfo.application;
                 vm.appType = vm.application.appType;
+
+                let startDate = vm.application.opAppStartDate;
+                let endDate = vm.application.opAppEndDate;
+                if (startDate === endDate) {
+                    vm.dispMultDate(false);
+                    vm.appDate(startDate);
+                } else {
+                    vm.dispMultDate(true);
+                    vm.dateRange().startDate = startDate;
+                    vm.dateRange().endDate = endDate;
+                    vm.dateRange.valueHasMutated();
+                }
+
                 vm.appAbsenceStartInfoOutput = params.appAbsenceStartInfoOutput;
                 vm.appDispInfoStartupOutput(params.appAbsenceStartInfoOutput.appDispInfoStartupOutput);
                 vm.reasonLst = vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.reasonTypeItemLst;
@@ -60,10 +73,10 @@ module nts.uk.at.view.kaf006.c.viewmodel {
     
                     let holidayDates = [];
                     if (startDate) {
-                        holidayDates.push(startDate);
+                        holidayDates.push(new Date(startDate).toISOString());
                     }
                     if (endDate) {
-                        holidayDates.push(endDate);
+                        holidayDates.push(new Date(endDate).toISOString());
                     }
 
                     if (_.isEmpty(holidayDates)) {
@@ -104,10 +117,10 @@ module nts.uk.at.view.kaf006.c.viewmodel {
     
                     let holidayDates = [];
                     if (startDate) {
-                        holidayDates.push(startDate);
+                        holidayDates.push(new Date(startDate).toISOString());
                     }
                     if (endDate) {
-                        holidayDates.push(endDate);
+                        holidayDates.push(new Date(endDate).toISOString());
                     }
 
                     if (_.isEmpty(holidayDates)) {
