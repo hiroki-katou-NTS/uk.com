@@ -74,13 +74,6 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 				if (vm.params.isAgentMode) {
 					vm.isAgentMode(vm.params.isAgentMode);
 				}
-			}else {
-				vm.absenceLeaveApp.application.appDate('');
-				vm.absenceLeaveApp.application.opAppStartDate('');
-                vm.absenceLeaveApp.application.opAppEndDate('');
-				vm.recruitmentApp.application.appDate('');
-				vm.recruitmentApp.application.opAppStartDate('');
-                vm.recruitmentApp.application.opAppEndDate('');
 			}
 			vm.$blockui("grayout");
 			vm.loadData(vm.params?vm.params.employeeIds:[], paramDate?[paramDate]:[], vm.appType()).then(() => {
@@ -198,9 +191,9 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 						}); 
 					}
 				console.log(data);	
-				vm.$ajax('at/request/application/holidayshipment/save', data).then((data: any) =>{
+				vm.$ajax('at/request/application/holidayshipment/save', data).then(() =>{
 					vm.$dialog.info({ messageId: "Msg_15" }).done(()=>{
-						vm.created();
+						vm.$jump("/view/kaf/011/a/index.xhtml", vm.params);
 					});
 				}).fail((failData) => {
 					vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds });
