@@ -2,9 +2,9 @@ package nts.uk.ctx.at.function.dom.alarm.alarmlist.appapproval;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -15,21 +15,25 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.task.parallel.ManagedParallelWithContext;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.function.dom.adapter.WorkPlaceHistImport;
 import nts.uk.ctx.at.function.dom.adapter.agent.AgentApprovalAdapter;
+import nts.uk.ctx.at.function.dom.adapter.agent.AgentApprovalImport;
 import nts.uk.ctx.at.function.dom.adapter.application.ApplicationAdapter;
+import nts.uk.ctx.at.function.dom.adapter.application.ApplicationImport;
 import nts.uk.ctx.at.function.dom.adapter.application.ApplicationStateImport;
 import nts.uk.ctx.at.function.dom.adapter.application.ReflectStateImport;
+import nts.uk.ctx.at.function.dom.adapter.approvalroot.ApprovalRootRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.approvalrootstate.ApprovalBehaviorAtr;
-import nts.uk.ctx.at.function.dom.adapter.approvalrootstate.ApprovalPhaseStateImport;
 import nts.uk.ctx.at.function.dom.adapter.approvalrootstate.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.function.dom.adapter.approvalrootstate.ApprovalRootStateImport;
+import nts.uk.ctx.at.function.dom.adapter.approvalrootstate.ApproverStateImport;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.recordcheck.ErAlWorkRecordCheckAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.erroralarm.recordcheck.RegulationInfoEmployeeResult;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
-import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.ErAlConstant;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckTargetCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.ExtractionCondition;
@@ -37,7 +41,13 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.AppApprovalAl
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.AppApprovalFixedCheckItem;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.AppApprovalFixedExtractCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.AppApprovalFixedExtractConditionRepository;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.AppApprovalFixedExtractItem;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.AppApprovalFixedExtractItemRepository;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckType;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionAlarmPeriodDate;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionResultDetail;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
 import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
@@ -60,6 +70,10 @@ public class AppApprovalAggregationProcessService {
 	
 	@Inject
 	private ManagedParallelWithContext parallel;
+	@Inject
+	private AppApprovalFixedExtractItemRepository itemReposi;
+	@Inject
+	private ApprovalRootRecordAdapter approvalRootAdapter;
 
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<ValueExtractAlarm> aggregate(String companyID , List<AlarmCheckConditionByCategory> erAlCheckCondition, DatePeriod period, List<EmployeeSearchDto> employees, 
@@ -95,7 +109,7 @@ public class AppApprovalAggregationProcessService {
 			}
 			
 			fixedExtractCond.stream().forEach(fixedCond -> {
-				switch (AppApprovalFixedCheckItem.valueOf(fixedCond.getNo())) {
+				/*switch (AppApprovalFixedCheckItem.valueOf(fixedCond.getNo())) {
 					case NOT_APPROVED_1:
 						unapprove(empList, period, fixedCond, employees, result);
 						break;
@@ -138,7 +152,7 @@ public class AppApprovalAggregationProcessService {
 					case MISS_WORK_IN_HOLIDAY_APP:
 						missAfterApp();
 						break;
-				}
+				}*/
 			});
 			
 		});
@@ -146,120 +160,312 @@ public class AppApprovalAggregationProcessService {
 		return result;
 	}
 	
+	public class DataCheck{
+		/** 申請承認の固定抽出条件	 */
+		List<AppApprovalFixedExtractCondition> lstExtractCond;
+		/**申請承認の固定抽出項目 */
+		List<AppApprovalFixedExtractItem> lstExtractItem;
+		/**	承認ルートインスタンス */
+		List<ApprovalRootStateImport> lstAppRootStates;
+		/**申請 */
+		List<ApplicationStateImport> lstApp;
+		List<ApproverStateImport> lstApproval;
+		//選択した社員から代行依頼者IDを検索
+		List<AgentApprovalImport> lstAgent;
+		//承認者未指定
+		Map<String, List<String>> mapAppRootUnregister;
+		public DataCheck(String cid, List<String> lstSid, DatePeriod period, String erAlCheckIds) {
+			this.lstExtractCond =  fixedExtractConditionRepo.findById(erAlCheckIds, true);
+			if(this.lstExtractCond.isEmpty()) return;
+			
+			this.lstExtractItem = itemReposi.findAll();
+			
+			this.lstExtractCond.stream().forEach( x -> {
+				if(this.lstAppRootStates == null &&
+						(x.getNo() == AppApprovalFixedCheckItem.NOT_APPROVED_1
+						|| x.getNo() == AppApprovalFixedCheckItem.NOT_APPROVED_2
+						|| x.getNo() == AppApprovalFixedCheckItem.NOT_APPROVED_3
+						|| x.getNo() == AppApprovalFixedCheckItem.NOT_APPROVED_4
+						|| x.getNo() == AppApprovalFixedCheckItem.NOT_APPROVED_5)) {
+					this.lstAppRootStates =  approvalRootStateAdapter.findByEmployeesAndPeriod(lstSid, period, 0);
+				}
+				if(this.lstApp == null &&
+						(x.getNo() == AppApprovalFixedCheckItem.NOT_APPROVED_COND_NOT_SATISFY
+						|| x.getNo() == AppApprovalFixedCheckItem.DISAPPROVE
+						|| x.getNo() == AppApprovalFixedCheckItem.NOT_REFLECT)) {
+					// [No.423]社員、日付リスト一致する申請を取得する
+					this.lstApp = applicationAdapter.findByEmployeesAndDates(lstSid, period);
+				}
+				if(x.getNo() == AppApprovalFixedCheckItem.REPRESENT_APPROVE) {
+					// ドメインモデル「代行承認」を取得する
+					this.lstAgent = agentApprovalAdapter.findByAgentApproverAndPeriod(cid, lstSid, period, 1);
+				}
+				if(x.getNo() == AppApprovalFixedCheckItem.APPROVE) {
+					this.lstApproval = approvalRootStateAdapter.findApprovalRootStateIds(cid, lstSid, period);
+				}
+				if(x.getNo() == AppApprovalFixedCheckItem.APPROVER_NOT_SPECIFIED) {
+					this.mapAppRootUnregister = approvalRootAdapter.lstEmplUnregister(cid, period, lstSid);
+				}
+			});
+		}
+	}
+	
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public void aggregateCheck(String companyID , String erAlCheckIds,
+			DatePeriod period,
+			List<String> lstSid, List<WorkPlaceHistImport> lstWplHist,
+			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckInfor,
+			Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+		DataCheck data = new DataCheck(companyID, lstSid, period, erAlCheckIds);
+		if(data.lstExtractCond.isEmpty()) return;
+		parallel.forEach(CollectionUtil.partitionBySize(lstSid, 100), empList -> {
+			synchronized(this) {
+				if (shouldStop.get()) return;
+			}
+			
+			data.lstExtractCond.stream().forEach(fixedCond -> {
+				lstCheckInfor.add(new AlarmListCheckInfor(String.valueOf(fixedCond.getNo().value), AlarmListCheckType.FixCheck));
+				
+				switch (fixedCond.getNo()) {
+					case NOT_APPROVED_1:
+					case NOT_APPROVED_2:
+					case NOT_APPROVED_3:
+					case NOT_APPROVED_4:
+					case NOT_APPROVED_5:
+						checkUnapprove(empList,
+								period,
+								fixedCond,
+								lstWplHist,
+								lstResultCondition,
+								data,
+								companyID);
+						break;
+					case NOT_APPROVED_COND_NOT_SATISFY:						
+					case DISAPPROVE:						
+					case NOT_REFLECT:
+						checkApplicationState(empList,
+								period,
+								fixedCond, 
+								lstWplHist,
+								lstResultCondition,
+								data);
+						break;
+					case REPRESENT_APPROVE:
+						checkAgentApprove(empList,
+								period,
+								fixedCond, 
+								lstWplHist,
+								lstResultCondition,
+								data,companyID);
+						break;
+					case APPROVE:
+						checkShouldApprove(empList,
+								period,
+								fixedCond, 
+								lstWplHist,
+								lstResultCondition,
+								data);
+						break;
+					case APPROVER_NOT_SPECIFIED:
+						approverNotSpecified(empList,
+								period,
+								fixedCond, 
+								lstWplHist,
+								lstResultCondition,
+								data);
+						break;
+					case MISS_OT_APP:
+						missAfterApp();
+						break;
+					case MISS_WORK_IN_HOLIDAY_APP:
+						missAfterApp();
+						break;
+				}
+			});
+			
+		});
+	}
 	/**
 	 * 未承認
 	 * @param empId
 	 * @param period
 	 * @param approvalPhaseNo
 	 */
-	private void unapprove(List<String> empIds, DatePeriod period, AppApprovalFixedExtractCondition fixedExtractCond,
-			List<EmployeeSearchDto> employees, List<ValueExtractAlarm> extractAlarms) {
+	private void checkUnapprove(List<String> empIds, DatePeriod period, AppApprovalFixedExtractCondition fixedExtractCond,
+			 List<WorkPlaceHistImport> lstWplHist,
+			List<ResultOfEachCondition> lstResultCondition, DataCheck data, String cid) {
+		if(data.lstAppRootStates == null || data.lstAppRootStates.isEmpty()) return;
 		// 対象者と期間から承認ルートインスタンスを取得する
-		List<ApprovalRootStateImport> approvalRootStates = approvalRootStateAdapter.findByEmployeesAndPeriod(empIds, period, 0);
-		Map<String, String> employeeWpMap = new HashMap<>();
-		approvalRootStates.stream().forEach(r -> {
+		List<String> lstAppId = data.lstAppRootStates.stream().map(x -> x.getRootStateID()).collect(Collectors.toList());
+		List<ApplicationImport> lstApp = applicationAdapter.getAppById(cid, lstAppId);
+		AppApprovalFixedExtractItem item = data.lstExtractItem.stream().filter(x -> x.getNo().equals(fixedExtractCond.getNo()))
+				.collect(Collectors.toList()).get(0);
+		data.lstAppRootStates.stream().forEach(r -> {
 			long unapproveCount = r.getListApprovalPhaseState().stream().filter(p ->
 					//INPUT.承認フェーズ番号が承認ルートインスタンス.承認フェーズインスタンス[1..5]に存在するかをチェックする
-					p.getPhaseOrder() == fixedExtractCond.getNo() 
+					p.getPhaseOrder() == fixedExtractCond.getNo().value
 					// 承認フェーズインスタンス[INPUT.承認フェーズ番号].承認区分＝【未承認】の件数をチェックする
 					&& p.getApprovalAtr() == ApprovalBehaviorAtr.UNAPPROVED.value).count();
-			String wpId = employeeWpMap.computeIfAbsent(r.getEmployeeID(), k -> {
-				return employees.stream().filter(e -> r.getEmployeeID().equals(e.getId())).findFirst()
-							.map(e -> e.getWorkplaceId()).orElse(null);
-			});
-			
 			if (unapproveCount > 0) {
-				String targetDate = r.getApprovalRecordDate().toString(ErAlConstant.DATE_FORMAT);
-				String ymd = TextResource.localize("KAL010_908", targetDate, targetDate);
-				String category = TextResource.localize("KAL010_500");
-				String alarmItem = TextResource.localize("KAL010_501");
-				ValueExtractAlarm alarm = new ValueExtractAlarm(wpId, r.getEmployeeID(), ymd, category, 
-						alarmItem, "未承認件数", fixedExtractCond.getMessage().v(), 
-						TextResource.localize("KAL010_506", Long.toString(unapproveCount)));
-				extractAlarms.add(alarm);
-			}
-		});
-	}
-	
-	private void unapproveReflectCondNotSatisfy(List<String> empIds, DatePeriod period, AppApprovalFixedExtractCondition fixedExtractCond,
-			ReflectStateImport reflectState, List<EmployeeSearchDto> employees, List<ValueExtractAlarm> extractAlarms) {
-		// [No.423]社員、日付リスト一致する申請を取得する
-		List<ApplicationStateImport> applications = applicationAdapter.findByEmployeesAndDates(empIds, period);
-		Map<String, String> employeeWpMap = new HashMap<>();
-		applications.stream().filter(a -> a.getReflectState() == reflectState.value).forEach(a -> {
-			String wpId = employeeWpMap.computeIfAbsent(a.getEmployeeID(), k -> {
-				return employees.stream().filter(e -> a.getEmployeeID().equals(e.getId())).findFirst()
-							.map(e -> e.getWorkplaceId()).orElse(null);
-			});
-			
-			String targetDate = a.getAppDate().toString(ErAlConstant.DATE_FORMAT);
-			String ymd = TextResource.localize("KAL010_908", targetDate, targetDate);
-			String category = TextResource.localize("KAL010_500");
-			String alarmItem = TextResource.localize("KAL010_507");
-			ValueExtractAlarm alarm = new ValueExtractAlarm(wpId, a.getEmployeeID(), ymd, category,
-					alarmItem, reflectState.name, fixedExtractCond.getMessage().v(),
-					TextResource.localize("KAL010_506", "1"));
-			extractAlarms.add(alarm);
-		});
-	}
-	
-	private void agentApprove(List<String> empIds, DatePeriod period, AppApprovalFixedExtractCondition fixedExtractCond,
-			List<EmployeeSearchDto> employees, List<ValueExtractAlarm> extractAlarms) {
-		String companyId = AppContexts.user().companyId();
-		// ドメインモデル「代行承認」を取得する
-		List<String> agentIds = agentApprovalAdapter.findByAgentApproverAndPeriod(companyId, empIds, period, 1).stream()
-			.map(a -> a.getAgentID()).collect(Collectors.toList());
-		
-		// ドメインモデル「承認ルートインスタンス」を取得する
-		approvalRootStateAdapter.findByAgentApproverAndPeriod(companyId, agentIds, period);
-		
-		// ドメインモデル「申請」を取得する
-		// TODO:
-		// Need new request list
-	}
-	
-	private void approve(List<String> empIds, DatePeriod period, AppApprovalFixedExtractCondition fixedExtractCond,
-			List<EmployeeSearchDto> employees, List<ValueExtractAlarm> extractAlarms) {
-		String companyId = AppContexts.user().companyId();
-		Map<String, String> employeeWpMap = new HashMap<>();
-		approvalRootStateAdapter.findApprovalRootStateIds(companyId, empIds, period).stream().forEach(a -> {
-			String wpId = employeeWpMap.computeIfAbsent(a.getApproverId(), k -> {
-				return employees.stream().filter(e -> a.getApproverId().equals(e.getId())).findFirst()
-							.map(e -> e.getWorkplaceId()).orElse(null);
-			});
-			
-			String targetDate = a.getAppDate().toString(ErAlConstant.DATE_FORMAT);
-			String ymd = TextResource.localize("KAL010_908", targetDate, targetDate);
-			String category = TextResource.localize("KAL010_500");
-			String alarmItem = TextResource.localize("KAL010_515");
-			ValueExtractAlarm alarm = new ValueExtractAlarm(wpId, a.getApproverId(), ymd, category,
-					alarmItem, "要承認件数", fixedExtractCond.getMessage().v(),
-					TextResource.localize("KAL010_516", "1"));
-			extractAlarms.add(alarm);
-		});
-	}
-	
-	private void approverNotSpecified(List<String> empIds, DatePeriod period, AppApprovalFixedExtractCondition fixedExtractCond,
-			List<EmployeeSearchDto> employees, List<ValueExtractAlarm> extractAlarms) {
-		// 対象者と期間から承認ルートインスタンスを取得する
-		List<ApprovalRootStateImport> approvalRootStates = approvalRootStateAdapter.findByEmployeesAndPeriod(empIds, period, 0);
-		Map<String, String> employeeWpMap = new HashMap<>();
-		approvalRootStates.stream().forEach(a -> {
-			List<ApprovalPhaseStateImport> approvalPhases = a.getListApprovalPhaseState();
-			if (approvalPhases == null || approvalPhases.isEmpty()) {
-				String wpId = employeeWpMap.computeIfAbsent(a.getEmployeeID(), k -> {
-					return employees.stream().filter(e -> a.getEmployeeID().equals(e.getId())).findFirst()
-								.map(e -> e.getWorkplaceId()).orElse(null);
-				});
+				ApplicationImport app = lstApp.stream().filter(x -> x.getAppID().equals(r.getRootStateID())).collect(Collectors.toList()).get(0);
+				ExtractionAlarmPeriodDate pDate = new ExtractionAlarmPeriodDate(Optional.ofNullable(r.getApprovalRecordDate()), Optional.empty());
 				
-				String targetDate = a.getApprovalRecordDate().toString(ErAlConstant.DATE_FORMAT);
-				String ymd = TextResource.localize("KAL010_908", targetDate, targetDate);
-				String category = TextResource.localize("KAL010_500");
-				String alarmItem = TextResource.localize("KAL010_517");
-				ValueExtractAlarm alarm = new ValueExtractAlarm(wpId, a.getEmployeeID(), ymd, category,
-						alarmItem, null, fixedExtractCond.getMessage().v(), alarmItem);
-				extractAlarms.add(alarm);
+				setAlarmResult(fixedExtractCond,lstWplHist, lstResultCondition,
+						item, r.getEmployeeID(), period, pDate,
+						TextResource.localize("KAL010_522", String.valueOf(fixedExtractCond.getNo().value)),
+						TextResource.localize("KAL010_529",app.getAppTypeName()));
 			}
+		});
+	}
+	private void setAlarmResult(AppApprovalFixedExtractCondition fixedExtractCond, List<WorkPlaceHistImport> lstWplHist,
+			List<ResultOfEachCondition> lstResultCondition, AppApprovalFixedExtractItem item, String sid,
+			DatePeriod period,ExtractionAlarmPeriodDate pDate, String alarmContent, String alarmTaget) {
+		String wpId = lstWplHist.stream().filter(x -> x.getEmployeeId().equals(sid))
+				.collect(Collectors.toList()).get(0).getLstWkpIdAndPeriod().stream()
+				.filter(a -> a.getDatePeriod().start().beforeOrEquals(period.end()) && a.getDatePeriod().end().afterOrEquals(period.start()))
+				.collect(Collectors.toList()).get(0).getWorkplaceId();
+		ExtractionResultDetail detail = new ExtractionResultDetail(sid,
+				pDate,
+				item.getName(),
+				alarmContent,
+				GeneralDateTime.now(),
+				Optional.ofNullable(wpId),
+				fixedExtractCond.getMessage().isPresent() ? Optional.ofNullable(fixedExtractCond.getMessage().get().v()) : Optional.empty(),
+				Optional.ofNullable(alarmTaget));
+		List<ResultOfEachCondition> result = lstResultCondition.stream()
+				.filter(x -> x.getCheckType() == AlarmListCheckType.FreeCheck && x.getNo().equals(String.valueOf(fixedExtractCond.getNo().value)))
+				.collect(Collectors.toList());
+		if(result.isEmpty()) {
+			ResultOfEachCondition resultCon = new ResultOfEachCondition(AlarmListCheckType.FixCheck,
+					String.valueOf(fixedExtractCond.getNo().value),
+					new ArrayList<>());
+			resultCon.getLstResultDetail().add(detail);
+			lstResultCondition.add(resultCon);
+		} else {
+			ResultOfEachCondition ex = result.get(0);
+			lstResultCondition.remove(ex);
+			ex.getLstResultDetail().add(detail);
+			lstResultCondition.add(ex);
+		}
+	}
+	/**
+	 * 申請の状況チェック
+	 * @param empIds
+	 * @param period
+	 * @param fixedExtractCond
+	 * @param lstWplHist
+	 * @param lstResultCondition
+	 * @param data
+	 */
+	private void checkApplicationState(List<String> empIds, DatePeriod period, AppApprovalFixedExtractCondition fixedExtractCond,
+			List<WorkPlaceHistImport> lstWplHist,
+			List<ResultOfEachCondition> lstResultCondition, DataCheck data) {
+		if(data.lstApp == null || data.lstApp.isEmpty()) return;
+		
+		ReflectStateImport refState = ReflectStateImport.WAIT_REFLECTION;
+		if(fixedExtractCond.getNo() == AppApprovalFixedCheckItem.NOT_APPROVED_COND_NOT_SATISFY) refState = ReflectStateImport.NOT_REFLECTED;
+		if(fixedExtractCond.getNo() == AppApprovalFixedCheckItem.DISAPPROVE) refState = ReflectStateImport.DENIAL;
+		if(fixedExtractCond.getNo() == AppApprovalFixedCheckItem.NOT_REFLECT) refState = ReflectStateImport.WAIT_REFLECTION;
+		AppApprovalFixedExtractItem item = data.lstExtractItem.stream().filter(x -> x.getNo().equals(fixedExtractCond.getNo()))
+				.collect(Collectors.toList()).get(0);
+		for(ApplicationStateImport a: data.lstApp) {
+			if(a.getReflectState() == refState.value) {
+				ExtractionAlarmPeriodDate pDate = new ExtractionAlarmPeriodDate(Optional.ofNullable(a.getAppDate()), Optional.empty());
+				setAlarmResult(fixedExtractCond,lstWplHist, lstResultCondition,
+						item, a.getEmployeeID(), period, pDate,
+						TextResource.localize("KAL010_523", a.getAppTypeName(), refState.name),
+						TextResource.localize("KAL010_529", a.getAppTypeName()));
+			}
+		}
+	}
+	/**
+	 * 代行者として反映待ち申請の状況をチェック
+	 * @param empIds
+	 * @param period
+	 * @param fixedExtractCond
+	 * @param lstWplHist
+	 * @param lstResultCondition
+	 * @param data
+	 * @param cid
+	 */
+	private void checkAgentApprove(List<String> empIds, DatePeriod period, AppApprovalFixedExtractCondition fixedExtractCond,
+			List<WorkPlaceHistImport> lstWplHist,
+			List<ResultOfEachCondition> lstResultCondition, DataCheck data, String cid) {
+		if(data.lstAgent == null || data.lstAgent.isEmpty()) return;
+		List<String> lstApproverID = data.lstAgent.stream().map(x -> x.getApproverID()).distinct().collect(Collectors.toList());
+		if(lstApproverID.isEmpty()) return;
+		AppApprovalFixedExtractItem item = data.lstExtractItem.stream().filter(a -> a.getNo().equals(fixedExtractCond.getNo()))
+				.collect(Collectors.toList()).get(0);
+		ExtractionAlarmPeriodDate pDate = new ExtractionAlarmPeriodDate(Optional.ofNullable(period.start()), Optional.empty());
+		lstApproverID.stream().forEach(x-> {
+			List<String> lstAgentID = data.lstAgent.stream()
+					.filter(a -> a.getApproverID().equals(x)).map(z -> z.getAgentID()).collect(Collectors.toList());
+			//ドメインモデル「承認ルートインスタンス」を取得する
+			List<ApprovalRootStateImport> lstAppRootStatesAgen = approvalRootStateAdapter.findByAgentApproverAndPeriod(cid, lstAgentID, period);
+			List<String> lstAppId = lstAppRootStatesAgen.stream()
+					.map(a -> a.getRootStateID()).collect(Collectors.toList());
+			if(!lstAppId.isEmpty()) {
+				//ドメインモデル「申請」を取得する
+				List<ApplicationImport> lstApp = applicationAdapter.getAppById(cid, lstAppId).stream()
+						.filter(a -> a.getState() == 1)
+						.collect(Collectors.toList());
+				if(!lstApp.isEmpty()) {
+					setAlarmResult(fixedExtractCond,lstWplHist, lstResultCondition,
+							item, x, period, pDate,
+							TextResource.localize("KAL010_524", String.valueOf(lstApp.size())),
+							TextResource.localize("KAL010_529", lstApp.stream().map(a -> a.getAppTypeName()).distinct().collect(Collectors.toList()).toString()));
+				}
+			}
+		});
+		
+	}
+	/**
+	 * 10.要承認: 承認すべき申請をチェック
+	 * @param empIds
+	 * @param period
+	 * @param fixedExtractCond
+	 * @param employees
+	 * @param extractAlarms
+	 */
+	private void checkShouldApprove(List<String> empIds, DatePeriod period, AppApprovalFixedExtractCondition fixedExtractCond,
+			List<WorkPlaceHistImport> lstWplHist,
+			List<ResultOfEachCondition> lstResultCondition, DataCheck data) {
+		if(data.lstApproval == null || data.lstApproval.isEmpty()) return;
+		
+		List<String> lstApproverId = data.lstApproval.stream()
+				.map(x -> x.getApproverId()).distinct().collect(Collectors.toList());
+		AppApprovalFixedExtractItem item = data.lstExtractItem.stream().filter(a -> a.getNo().equals(fixedExtractCond.getNo()))
+				.collect(Collectors.toList()).get(0);
+
+		ExtractionAlarmPeriodDate pDate = new ExtractionAlarmPeriodDate(Optional.ofNullable(period.start()), Optional.empty());
+		lstApproverId.stream().forEach(approver -> {
+			int count = data.lstApproval.stream().filter(x -> x.getApproverId().equals(approver)).collect(Collectors.toList()).size();
+			setAlarmResult(fixedExtractCond,lstWplHist, lstResultCondition,
+					item, approver, period, pDate,
+					TextResource.localize("KAL010_526", String.valueOf(count)),
+					TextResource.localize("KAL010_527", String.valueOf(count)));
+		});		
+	}
+	/**
+	 * 11.承認者未指定
+	 * @param empIds
+	 * @param period
+	 * @param fixedExtractCond
+	 * @param employees
+	 * @param extractAlarms
+	 */
+	private void approverNotSpecified(List<String> empIds, DatePeriod period, AppApprovalFixedExtractCondition fixedExtractCond,
+			List<WorkPlaceHistImport> lstWplHist,
+			List<ResultOfEachCondition> lstResultCondition, DataCheck data) {
+		if(data.mapAppRootUnregister == null || data.mapAppRootUnregister.isEmpty()) return;
+		AppApprovalFixedExtractItem item = data.lstExtractItem.stream().filter(a -> a.getNo().equals(fixedExtractCond.getNo()))
+				.collect(Collectors.toList()).get(0);
+		ExtractionAlarmPeriodDate pDate = new ExtractionAlarmPeriodDate(Optional.ofNullable(period.start()), Optional.empty());
+		data.mapAppRootUnregister.forEach((a,b) -> {
+			setAlarmResult(fixedExtractCond,lstWplHist, lstResultCondition,
+					item, a, period, pDate,
+					TextResource.localize("KAL010_528", period.start().toString("yyyy/MM/dd") + "～" + period.end().toString("yyyy/MM/dd")),
+					TextResource.localize("KAL010_529", b.toString()));
 		});
 	}
 	

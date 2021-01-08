@@ -18,5 +18,7 @@ public interface AppApprovalFixedExtractConditionRepository {
 	public void update(AppApprovalFixedExtractCondition domain);
 	
 	public void delete(String id);
+	
+	public List<AppApprovalFixedExtractCondition> findById(String id, boolean useAtr);
 
 }

@@ -1,8 +1,10 @@
 package nts.uk.ctx.workflow.pub.approvalroot;
 
 import java.util.List;
+import java.util.Map;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.workflow.pub.approvalroot.export.ApprovalRootExport;
 import nts.uk.ctx.workflow.pub.approvalroot.export.ApproverInfoExport;
 
@@ -35,4 +37,12 @@ public interface ApprovalRootPub {
 	List<ApproverInfoExport> convertToApprover(String cid, String sid, GeneralDate baseDate, String jobTitleId);
 	
 	Integer getCurrentApprovePhase(String rootStateID, Integer rootType);
+	/**
+	 * 就業の承認ルート未登録の社員を取得する
+	 * @param cid
+	 * @param period
+	 * @param lstSid
+	 * @return
+	 */
+	Map<String, List<String>> lstEmplUnregister(String cid, DatePeriod period, List<String> lstSid);
 }

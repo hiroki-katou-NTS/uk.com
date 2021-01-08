@@ -18,7 +18,9 @@ public class FixedApprovalFinder {
 	
 	public List<AppApprovalFixedExtractItemDto> findAll() {
 		List<AppApprovalFixedExtractItemDto> data = repository.findAll().stream()
-				.map(e -> new AppApprovalFixedExtractItemDto(e.getNo(), e.getInitMessage().v(), e.getErAlAtr().value, e.getName().name))
+				.map(e -> new AppApprovalFixedExtractItemDto(e.getNo().value,
+						e.getInitMessage().v(),
+						e.getErAlAtr().value, e.getName()))
 				.collect(Collectors.toList());
 		if(data.isEmpty())
 			return Collections.emptyList();

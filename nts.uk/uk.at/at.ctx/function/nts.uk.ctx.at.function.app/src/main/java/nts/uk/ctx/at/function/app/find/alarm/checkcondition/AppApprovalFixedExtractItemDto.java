@@ -17,9 +17,9 @@ public class AppApprovalFixedExtractItemDto {
 	private String name;
 	
 	public AppApprovalFixedExtractItemDto(AppApprovalFixedExtractItem domain) {
-		this.no = domain.getNo();
+		this.no = domain.getNo().value;
 		this.displayMessage = domain.getInitMessage().v();
 		this.erAlAtr = domain.getErAlAtr().value;
-		this.name = domain.getName().name;
+		this.name = domain.getName();
 	}
 }

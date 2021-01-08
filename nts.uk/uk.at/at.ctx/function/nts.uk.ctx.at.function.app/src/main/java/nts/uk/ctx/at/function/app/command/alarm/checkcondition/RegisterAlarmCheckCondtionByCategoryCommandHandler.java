@@ -43,6 +43,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.AnnualHolid
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.IAlarmCheckConAgrRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.IAlarmCheckSubConAgrRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.AppApprovalAlarmCheckCondition;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.AppApprovalFixedCheckItem;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.AppApprovalFixedExtractCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.AppApprovalFixedExtractConditionRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.ErrorAlarmMessage;
@@ -168,11 +169,9 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 					if (dto.getAppAlarmConId() == null || dto.getAppAlarmConId().equals("")) {
 						dto.setAppAlarmConId(appAlarmId);
 						this.appApprovalFixedExtractConditionRepository
-						.add(new AppApprovalFixedExtractCondition(dto.getAppAlarmConId(), dto.getNo(),
-								new ErrorAlarmMessage(dto.getDisplayMessage()), dto.isUseAtr()));
+						.add(toDomain(dto));
 					} else {
-						this.appApprovalFixedExtractConditionRepository.update(new AppApprovalFixedExtractCondition(dto.getAppAlarmConId(), dto.getNo(),
-								new ErrorAlarmMessage(dto.getDisplayMessage()), dto.isUseAtr()));
+						this.appApprovalFixedExtractConditionRepository.update(toDomain(dto));
 					}
 				}
 				break;
@@ -475,8 +474,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 						.getListFixedExtractConditionWorkRecord()) {
 					dto.setAppAlarmConId(appAlarmId);
 					appApprovalFixedExtractConditionRepository
-							.add(new AppApprovalFixedExtractCondition(dto.getAppAlarmConId(), dto.getNo(),
-									new ErrorAlarmMessage(dto.getDisplayMessage()), dto.isUseAtr()));
+							.add(toDomain(dto));
 				}
 				break;
 
@@ -648,6 +646,13 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 
 			conditionRepo.add(domain);
 		}
+	}
+
+	private AppApprovalFixedExtractCondition toDomain(AppApprovalFixedExtractConditionDto dto) {
+		return new AppApprovalFixedExtractCondition(dto.getAppAlarmConId(),
+				EnumAdaptor.valueOf(dto.getNo(), AppApprovalFixedCheckItem.class),
+				Optional.ofNullable(new ErrorAlarmMessage(dto.getDisplayMessage())), 
+				dto.isUseAtr());
 	}
 
 }

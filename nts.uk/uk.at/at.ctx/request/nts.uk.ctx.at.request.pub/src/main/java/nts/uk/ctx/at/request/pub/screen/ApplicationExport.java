@@ -6,6 +6,7 @@ import nts.arc.time.GeneralDate;
 @Data
 
 public class ApplicationExport {
+	private String appID;
 	/**
 	 * appDate,申請日
 	 */

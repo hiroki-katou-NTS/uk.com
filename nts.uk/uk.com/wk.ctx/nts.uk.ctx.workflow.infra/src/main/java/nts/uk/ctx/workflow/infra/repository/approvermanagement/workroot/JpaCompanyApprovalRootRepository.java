@@ -12,6 +12,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
@@ -115,7 +116,15 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 	private static final String FIND_ANYITEM;
 	private static final String FIND_NOTICE;
 	private static final String FIND_BUS_EVENT;
+	private static final String FIND_DATEPERIOD;
 	static {
+		StringBuilder builderEmp = new StringBuilder();
+		builderEmp.append("SELECT * ");
+		builderEmp.append("FROM WWFMT_COM_APPROVAL_ROOT  WHERE CID = 'companyID' ");
+		builderEmp.append("AND SYSTEM_ATR = 'sysAtr' AND START_DATE <= 'eDate' AND END_DATE >= 'sDate' ");
+		builderEmp.append("AND EMPLOYMENT_ROOT_ATR in 'rootAtr'");
+		FIND_DATEPERIOD = builderEmp.toString();
+		
 		StringBuilder builder = new StringBuilder();
 		builder.append("SELECT CID, APPROVAL_ID, HIST_ID, START_DATE, END_DATE, APP_TYPE, ");
 		builder.append("CONFIRMATION_ROOT_TYPE, EMPLOYMENT_ROOT_ATR, SYSTEM_ATR, NOTICE_ID, BUS_EVENT_ID ");
@@ -557,5 +566,22 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 					.getList(c->toDomainComApR(c)));
 		}
 		return lstResult;
+	}
+	@Override
+	public List<CompanyApprovalRoot> findByDatePeriod(String cid, DatePeriod period, SystemAtr sysAtr, List<Integer> lstRootAtr) {
+		String query = FIND_DATEPERIOD;
+		query = query.replaceAll("companyID", cid);
+		query = query.replaceAll("sysAtr", String.valueOf(sysAtr.value));
+		query = query.replaceAll("sDate", period.start().toString("yyyy-MM-dd"));
+		query = query.replaceAll("eDate", period.end().toString("yyyy-MM-dd"));
+		query = query.replaceAll("rootAtr", "("+ lstRootAtr.toString() + ")");
+		try (PreparedStatement pstatement = this.connection().prepareStatement(query)) {
+			List<CompanyApprovalRoot> lstResult = new NtsResultSet(pstatement.executeQuery())
+			.getList(x -> convertNtsResult(x));
+			return lstResult;
+		} catch (Exception e) {
+			throw new RuntimeException("CompanyApprovalRoot error");
+		}
+		
 	}
 }
