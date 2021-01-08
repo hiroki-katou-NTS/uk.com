@@ -71,14 +71,14 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 
 	@Inject
 	private SendAutoExeEmailService sendAutoExeEmailService;
-	
+
 	@Inject
 	private DailyMonthlyprocessAdapterFn dailyMonthlyprocessAdapterFn;
 
 	@Override
 	public OutputExecAlarmListPro execAlarmListProcessing(String extraProcessStatusID, String companyId,
-			List<String> workplaceIdList, List<String> listPatternCode, GeneralDateTime dateTime,
-			boolean sendMailPerson, boolean sendMailAdmin,String alarmCode,String empCalAndSumExecLogID) {
+	                                                      List<String> workplaceIdList, List<String> listPatternCode, GeneralDateTime dateTime,
+	                                                      boolean sendMailPerson, boolean sendMailAdmin, String alarmCode, String empCalAndSumExecLogID) {
 		String errorMessage = "";
 		// ドメインモデル「アラームリスト抽出処理状況」を取得する
 		// TODO : ・状態＝処理中???
@@ -93,7 +93,7 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 			alarmListExtraProcessStatusRepo.addAlListExtaProcess(alarm);
 			// エラー内容にエラーメッセージ(#Msg_1432)を設定する
 			errorMessage = TextResource.localize("Msg_1432");
-			return new OutputExecAlarmListPro(false, errorMessage,false);
+			return new OutputExecAlarmListPro(false, errorMessage, false);
 
 		}
 
@@ -119,8 +119,8 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 		}
 		// if (listClosureEmp.isEmpty())
 		// return new OutputExecAlarmListPro(false,errorMessage);
-		
-		
+
+
 		// 「締め」を取得する
 		List<Closure> listClosure = closureRepository.findAllActive(companyId, UseClassification.UseClass_Use);
 
@@ -131,8 +131,8 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 		for (ClosureEmployment closureEmployment : listClosureEmp) {
 			List<String> listOneCode = new ArrayList<>();
 			listOneCode.add(closureEmployment.getEmploymentCD());
-			RegulationInfoEmployeeAdapterImport employeeInfo = this.createQueryEmployee(listOneCode , dateTime.toDate(),
-					dateTime.toDate(),workplaceIdList);
+			RegulationInfoEmployeeAdapterImport employeeInfo = this.createQueryEmployee(listOneCode, dateTime.toDate(),
+					dateTime.toDate(), workplaceIdList);
 			List<RegulationInfoEmployeeAdapterDto> lstRegulationInfoEmployee = this.regulationInfoEmployeeAdapter
 					.find(employeeInfo);
 			// if (lstRegulationInfoEmployee.isEmpty())
@@ -158,19 +158,20 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 						GeneralDate endDate = GeneralDate.fromString(checkConditionTime.getEndDate(), "yyyy/MM/dd");
 						PeriodByAlarmCategory periodByAlarmCategory = new PeriodByAlarmCategory(
 								checkConditionTime.getCategory(), checkConditionTime.getCategoryName(), startDate,
-								endDate,checkConditionTime.getPeriod36Agreement());
+								endDate, checkConditionTime.getPeriod36Agreement());
 						listPeriodByCategory.add(periodByAlarmCategory);
 					} else if (checkConditionTime.getCategory() == AlarmCategory.MONTHLY.value
 							|| checkConditionTime.getCategory() == AlarmCategory.MULTIPLE_MONTH.value) {
-						GeneralDate startDate = GeneralDate.fromString(checkConditionTime.getStartMonth().substring(0,4)+"/"+checkConditionTime.getStartMonth().substring(4,6) + "/01",
+						GeneralDate startDate = GeneralDate.fromString(checkConditionTime.getStartMonth().substring(0, 4) + "/" + checkConditionTime.getStartMonth().substring(4, 6) + "/01",
 								"yyyy/MM/dd");
 						GeneralDate endDate = GeneralDate
-								.fromString(checkConditionTime.getStartMonth().substring(0,4)+"/"+checkConditionTime.getStartMonth().substring(4,6) + "/01", "yyyy/MM/dd").addMonths(1)
+								.fromString(checkConditionTime.getStartMonth().substring(0, 4) + "/" + checkConditionTime.getStartMonth().substring(4, 6) + "/01", "yyyy/MM/dd").addMonths(1)
 								.addDays(-1);
 						PeriodByAlarmCategory periodByAlarmCategory = new PeriodByAlarmCategory(
 								checkConditionTime.getCategory(), checkConditionTime.getCategoryName(), startDate,
-								endDate,checkConditionTime.getPeriod36Agreement());
+								endDate, checkConditionTime.getPeriod36Agreement());
 						listPeriodByCategory.add(periodByAlarmCategory);
+
 					} else if (checkConditionTime.getCategory() == AlarmCategory.AGREEMENT.value) {
 						if (checkConditionTime.getCategoryName().equals("36協定　1・2・4週間")) {
 							GeneralDate startDate = GeneralDate.fromString(checkConditionTime.getStartDate(),
@@ -179,7 +180,7 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 									"yyyy/MM/dd");
 							PeriodByAlarmCategory periodByAlarmCategory = new PeriodByAlarmCategory(
 									checkConditionTime.getCategory(), checkConditionTime.getCategoryName(), startDate,
-									endDate,checkConditionTime.getPeriod36Agreement());
+									endDate, checkConditionTime.getPeriod36Agreement());
 							listPeriodByCategory.add(periodByAlarmCategory);
 						} else if (checkConditionTime.getCategoryName().equals("36協定　年間")) {
 							GeneralDate startDate = GeneralDate.fromString(checkConditionTime.getYear() + "/"
@@ -192,39 +193,40 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 									.addYears(1).addMonths(-1);
 							PeriodByAlarmCategory periodByAlarmCategory = new PeriodByAlarmCategory(
 									checkConditionTime.getCategory(), checkConditionTime.getCategoryName(), startDate,
-									endDate,checkConditionTime.getPeriod36Agreement());
+									endDate, checkConditionTime.getPeriod36Agreement());
 							listPeriodByCategory.add(periodByAlarmCategory);
 						} else {
-							GeneralDate startDate = GeneralDate.fromString(checkConditionTime.getStartMonth().substring(0,4)+"/"+checkConditionTime.getStartMonth().substring(4,6)  + "/01",
+							GeneralDate startDate = GeneralDate.fromString(checkConditionTime.getStartMonth().substring(0, 4) + "/" + checkConditionTime.getStartMonth().substring(4, 6) + "/01",
 									"yyyy/MM/dd");
 							GeneralDate endDate = GeneralDate
-									.fromString(checkConditionTime.getStartMonth().substring(0,4)+"/"+checkConditionTime.getStartMonth().substring(4,6)  + "/01", "yyyy/MM/dd").addMonths(1)
+									.fromString(checkConditionTime.getStartMonth().substring(0, 4) + "/" + checkConditionTime.getStartMonth().substring(4, 6) + "/01", "yyyy/MM/dd").addMonths(1)
 									.addDays(-1);
 							PeriodByAlarmCategory periodByAlarmCategory = new PeriodByAlarmCategory(
 									checkConditionTime.getCategory(), checkConditionTime.getCategoryName(), startDate,
-									endDate,checkConditionTime.getPeriod36Agreement());
+									endDate, checkConditionTime.getPeriod36Agreement());
 							listPeriodByCategory.add(periodByAlarmCategory);
 						}
 					}
+
 				}
 
 				// 集計処理を実行する
 				ExtractedAlarmDto extractedAlarmDto = extractAlarmListService.extractAlarm(listEmployeeSearch,
 						patternCode, listPeriodByCategory);
 				listExtractedAlarmDto.add(extractedAlarmDto);
-				
+
 				//ドメインモデル「更新処理自動実行ログ」を取得しチェックする（中断されている場合は更新されているため、最新の情報を取得する）
 				Optional<ExeStateOfCalAndSumImportFn> exeStateOfCalAndSumImportFn = dailyMonthlyprocessAdapterFn.executionStatus(empCalAndSumExecLogID);
-				if(exeStateOfCalAndSumImportFn.isPresent())
-					if(exeStateOfCalAndSumImportFn.get() == ExeStateOfCalAndSumImportFn.START_INTERRUPTION) {
-						return new OutputExecAlarmListPro(true, errorMessage,true);
+				if (exeStateOfCalAndSumImportFn.isPresent())
+					if (exeStateOfCalAndSumImportFn.get() == ExeStateOfCalAndSumImportFn.START_INTERRUPTION) {
+						return new OutputExecAlarmListPro(true, errorMessage, true);
 					}
 			} // end for listpattencode
 
 		} // end list employmentcode
 
 		Optional<OutputSendAutoExe> outputSendAutoExe = sendAutoExeEmailService.sendAutoExeEmail(companyId, dateTime,
-				listExtractedAlarmDto, sendMailPerson, sendMailAdmin,alarmCode);
+				listExtractedAlarmDto, sendMailPerson, sendMailAdmin, alarmCode);
 
 		AlarmListExtraProcessStatus alarmListExtra = alarmListExtraProcessStatus.get();
 		int endTime = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
@@ -234,17 +236,17 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 				alarmListExtra.setStatus(ExtractionState.ABNORMAL_TERMI);
 				alarmListExtraProcessStatusRepo.updateAlListExtaProcess(alarmListExtra);
 				errorMessage = TextResource.localize(outputSendAutoExe.get().getErrorMessage());
-				return new OutputExecAlarmListPro(false, errorMessage,false);
-			}else {
+				return new OutputExecAlarmListPro(false, errorMessage, false);
+			} else {
 				alarmListExtra.setStatus(ExtractionState.SUCCESSFUL_COMPLE);
 				alarmListExtraProcessStatusRepo.updateAlListExtaProcess(alarmListExtra);
 				errorMessage = TextResource.localize(outputSendAutoExe.get().getErrorMessage());
-				return new OutputExecAlarmListPro(true, errorMessage,false);
+				return new OutputExecAlarmListPro(true, errorMessage, false);
 			}
 		}
 		alarmListExtra.setStatus(ExtractionState.SUCCESSFUL_COMPLE);
 		alarmListExtraProcessStatusRepo.updateAlListExtaProcess(alarmListExtra);
-		return new OutputExecAlarmListPro(true, errorMessage,false);
+		return new OutputExecAlarmListPro(true, errorMessage, false);
 	}
 
 	private EmployeeSearchDto convertToImport(RegulationInfoEmployeeAdapterDto employeeInfo) {
@@ -254,7 +256,7 @@ public class ExecAlarmListProcessingDefault implements ExecAlarmListProcessingSe
 	}
 
 	private RegulationInfoEmployeeAdapterImport createQueryEmployee(List<String> employeeCodes, GeneralDate startDate,
-			GeneralDate endDate,List<String> wordplaceIds) {
+	                                                                GeneralDate endDate, List<String> wordplaceIds) {
 		RegulationInfoEmployeeAdapterImport query = new RegulationInfoEmployeeAdapterImport();
 		query.setBaseDate(GeneralDateTime.now());
 		query.setReferenceRange(EmployeeReferenceRange.ONLY_MYSELF.value);

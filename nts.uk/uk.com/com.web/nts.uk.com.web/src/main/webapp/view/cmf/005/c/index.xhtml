@@ -101,7 +101,7 @@
           <div class="fixed-flex-layout-left">
             <!-- C11_1 削除セット選択(パネル) -->
             <div
-              data-bind="ntsPanel: { width: '100%', height: '570px', direction: 'right', showIcon: true, visible: true }">
+              data-bind="ntsPanel: { height: '540px', direction: 'right', showIcon: true, visible: true }">
               <div class="valign-center halign-center">
                 <!-- C11_2 絞り込み検索 -->
                 <div id="C11_1" data-bind="ntsSearchBox: {
@@ -307,7 +307,7 @@
                   <input id="C12_3" class="password-input form-B div-column-2" data-bind="ntsTextEditor: { 
                     name: '#[CMF003_238]',
                     value: password, 
-                    enable: usePasswordChecked,
+                    enable: true,
                     required: usePasswordChecked,
                     constraint: 'PasswordCompressFile',
                     option: { textmode: 'password' } }" tabindex="15" />
@@ -319,7 +319,7 @@
                   <input id="C12_6" class="password-input form-B div-column-2" data-bind="ntsTextEditor: { 
                     name: '#[CMF003_286]',
                     value: confirmPassword, 
-                    enable: usePasswordChecked,
+                    enable: true,
                     required: usePasswordChecked,
                     constraint: 'PasswordCompressFile',
                     option: { textmode: 'password' } }" tabindex="16" />

@@ -197,7 +197,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             let self = this;
             dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 let data :any= {
-                    conditionSetCd: self.selectedConditionSettingCode()
+                    conditionSetCode: self.selectedConditionSettingCode()
                 }
                 service.deleteCnd(data).done(result => {
                     dialog.info({ messageId: "Msg_16" }).then(() => {
@@ -366,7 +366,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                return;
             }
             let data :any = {
-                             conditionSetCd: self.conditionSetData().conditionSetCode(),
+                             conditionSetCode: self.conditionSetData().conditionSetCode(),
                              categoryId: self.conditionSetData().categoryId(),
                              delimiter: self.conditionSetData().delimiter(),
                              itemOutputName: self.conditionSetData().itemOutputName(),

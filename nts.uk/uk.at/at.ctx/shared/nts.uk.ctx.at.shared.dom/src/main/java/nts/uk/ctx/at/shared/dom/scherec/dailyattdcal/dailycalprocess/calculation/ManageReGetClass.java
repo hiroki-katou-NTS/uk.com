@@ -185,12 +185,10 @@ public class ManageReGetClass {
 	public int getBreakCount() {
 		//常に実績から取得する
 		
-		return integrationOfDaily.getBreakTime().map(c -> {
-			return c.getBreakTimeSheets().stream()
+		return integrationOfDaily.getBreakTime().getBreakTimeSheets().stream()
 					.filter(timeSheet -> (timeSheet.getStartTime() != null && timeSheet.getEndTime() != null 
 							&& timeSheet.getEndTime().greaterThan(timeSheet.getStartTime())))
 					.collect(Collectors.toList()).size();
-		}).orElse(0);
 //		Optional<BreakTimeOfDailyAttd> record = integrationOfDaily.getBreakTime().stream()
 //				.filter(dailyPerformance -> dailyPerformance.getBreakType().equals(BreakType.REFER_WORK_TIME))
 //				.findFirst();

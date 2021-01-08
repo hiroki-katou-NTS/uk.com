@@ -595,6 +595,10 @@ project (':hr.web:nts.uk.hr.web') {
 		runtime(group: 'com.query', name: 'nts.uk.query.pub', version: version)
 		runtime(group: 'com.query', name: 'nts.uk.query.pubimp', version: version)
 		
+		runtime(group: 'exio.ctx', name: 'nts.uk.ctx.exio.ac', version: version)
+		runtime(group: 'exio.ctx', name: 'nts.uk.ctx.exio.dom', version: version)
+		runtime(group: 'exio.ctx', name: 'nts.uk.ctx.exio.infra', version: version)
+		
 		// implement eraAdapter
 		runtime group: 'com.basic.company', name: 'nts.uk.ctx.basic.app', version: version
 		runtime group: 'com.basic.company', name: 'nts.uk.ctx.basic.dom', version: version

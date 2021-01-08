@@ -488,7 +488,6 @@ module nts.uk.ui.calendar {
 							const holiday = ko.unwrap(data.holiday);
 
 							if (holiday) {
-								element.title = holiday;
 								element.innerHTML = holiday;
 								className.push(COLOR_CLASS.HOLIDAY);
 							} else {
