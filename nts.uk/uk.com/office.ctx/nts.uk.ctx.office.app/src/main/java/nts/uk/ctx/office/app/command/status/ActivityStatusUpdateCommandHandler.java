@@ -1,5 +1,7 @@
 package nts.uk.ctx.office.app.command.status;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -24,6 +26,12 @@ public class ActivityStatusUpdateCommandHandler extends CommandHandler<ActivityS
 	protected void handle(CommandHandlerContext<ActivityStatusCommand> context) {
 		ActivityStatusCommand command = context.getCommand();
 		ActivityStatus domain = ActivityStatus.createFromMemento(command);
-		activityStatusRepository.update(domain);
+		Optional<ActivityStatus> checkDomain = activityStatusRepository.getBySidAndDate(domain.getSid(),
+				domain.getDate());
+		if (checkDomain.isPresent()) {
+			activityStatusRepository.update(domain);
+		} else {
+			activityStatusRepository.insert(domain);
+		}
 	}
 }
