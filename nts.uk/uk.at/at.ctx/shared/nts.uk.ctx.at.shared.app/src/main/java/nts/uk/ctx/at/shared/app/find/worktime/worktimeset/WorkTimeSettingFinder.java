@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktime.worktimeset;
 
-import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeDto;
@@ -360,9 +359,14 @@ public class WorkTimeSettingFinder {
         List<WorkTimeDto> allWorkHours = new ArrayList<>();
         List<WorkTimeDto> workingHoursByWorkplace = new ArrayList<>();
         List<WorkTimeDto> selectableWorkingHours = new ArrayList<>();
-
+        String cid = null;
+        Integer useATR = null;
         // ドメインモデル「複数回勤務管理」を取得する
         Optional<WorkManagementMultiple> optWorkMultiple = workMultipleRepo.findByCode(companyID);
+        if (optWorkMultiple.isPresent()) {
+            cid = optWorkMultiple.get().getCompanyID();
+            useATR = optWorkMultiple.get().getUseATR().value;
+        }
         if (baseDate != null) {
             // 会社で使用できる就業時間帯を全件を取得する
             if (!codes.isEmpty()) {
@@ -417,11 +421,14 @@ public class WorkTimeSettingFinder {
 
         }
 
-        return new WorkTimeResultDto(allCheckStatus, allWorkHours, selectableWorkingHours, workingHoursByWorkplace);
+        return new WorkTimeResultDto(allCheckStatus
+                , allWorkHours
+                , selectableWorkingHours
+                , workingHoursByWorkplace
+                , cid
+                , useATR
+        );
 
     }
 
-    private boolean checkCodeInList(List<String> codes, String code) {
-        return codes.stream().anyMatch(x -> x.equals(code));
-    }
 }
