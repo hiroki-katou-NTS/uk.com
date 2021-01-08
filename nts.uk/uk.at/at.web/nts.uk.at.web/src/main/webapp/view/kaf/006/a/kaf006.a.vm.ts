@@ -744,7 +744,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 				};
 			}
 
-			let applyForSpeLeaveOptional = {};
+			let applyForSpeLeaveOptional = null;
 			if (vm.selectedType() === 3) {
 				applyForSpeLeaveOptional = {
 					mournerFlag: vm.isCheckMourn(),

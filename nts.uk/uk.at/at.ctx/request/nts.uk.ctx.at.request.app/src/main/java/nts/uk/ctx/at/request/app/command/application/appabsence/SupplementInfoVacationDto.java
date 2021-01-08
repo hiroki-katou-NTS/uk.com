@@ -28,7 +28,7 @@ public class SupplementInfoVacationDto {
     public SupplementInfoVacation toDomain() {
         return new SupplementInfoVacation(
                 Optional.ofNullable(datePeriod.toDomain()),
-                Optional.ofNullable(applyForSpeLeave.toDomain()));
+                applyForSpeLeave == null ? Optional.empty() : Optional.ofNullable(applyForSpeLeave.toDomain()));
     }
     
     public static SupplementInfoVacationDto fromDomain(SupplementInfoVacation domain) {
