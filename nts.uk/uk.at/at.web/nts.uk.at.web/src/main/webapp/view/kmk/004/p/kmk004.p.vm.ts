@@ -107,13 +107,16 @@ module nts.uk.at.view.kmk004.p {
 		loadData() {
 			const vm = this;
 			vm.$blockui("grayout");
-
+			vm.checkDisplay();
+			
 			//会社
 			if (vm.params.sidebarType == 'Com_Company') {
+				vm.title('会社');
+				vm.visibleP6_3(false);
 				vm.mode(SCREEN_MODE.UPDATE);
+				
 				vm.$ajax(KMK004_P_API.COM_GET_BASIC_SETTING).done((data: IResponse) => {
 					vm.bindingData(data);
-					vm.checkDisplay();
 
 					if (vm.screenPData.settingDto.settlementPeriod.period() === 1) {
 						vm.selectedP3_3(1);
@@ -127,7 +130,6 @@ module nts.uk.at.view.kmk004.p {
 			if (vm.params.sidebarType == 'Com_Workplace') {
 				vm.$ajax(KMK004_P_API.WKP_GET_BASIC_SETTING + "/" + vm.params.wkpId).done((data: IResponse) => {
 					vm.bindingData(data);
-					vm.checkDisplay();
 
 					if (vm.mode() == SCREEN_MODE.UPDATE) {
 						vm.enableP6_3(true);
@@ -145,7 +147,6 @@ module nts.uk.at.view.kmk004.p {
 			if (vm.params.sidebarType == 'Com_Employment') {
 				vm.$ajax(KMK004_P_API.EMP_GET_BASIC_SETTING + "/" + vm.params.empCode).done((data: IResponse) => {
 					vm.bindingData(data);
-					vm.checkDisplay();
 
 					if (vm.mode() == SCREEN_MODE.UPDATE) {
 						vm.enableP6_3(true);
@@ -163,7 +164,6 @@ module nts.uk.at.view.kmk004.p {
 			if (vm.params.sidebarType == 'Com_Person') {
 				vm.$ajax(KMK004_P_API.SHA_GET_BASIC_SETTING + "/" + vm.params.empId).done((data: IResponse) => {
 					vm.bindingData(data);
-					vm.checkDisplay();
 
 					if (vm.mode() == SCREEN_MODE.UPDATE) {
 						vm.enableP6_3(true);
@@ -199,12 +199,6 @@ module nts.uk.at.view.kmk004.p {
 
 				case SCREEN_MODE.UPDATE:
 					vm.message('');
-
-					if (vm.params.sidebarType == 'Com_Company') {
-						vm.title('会社');
-						vm.visibleP6_3(false);
-					}
-
 					break;
 			}
 		}
