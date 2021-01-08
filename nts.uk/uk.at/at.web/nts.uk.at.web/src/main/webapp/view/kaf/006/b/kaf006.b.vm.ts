@@ -386,6 +386,17 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 						vm.$blockui("hide");
 					});
 			});
+
+			// disply condtion for item A10_3
+			vm.isDispMourn = ko.computed(() => {
+				if (vm.specAbsenceDispInfo()) {
+					if (vm.specAbsenceDispInfo().specHdForEventFlag && vm.specAbsenceDispInfo().specHdEvent.maxNumberDay === 2 && vm.specAbsenceDispInfo().specHdEvent.makeInvitation === 1) {
+						return true;
+					}
+				}
+
+				return false;
+			});
         };
 
         reload() {
