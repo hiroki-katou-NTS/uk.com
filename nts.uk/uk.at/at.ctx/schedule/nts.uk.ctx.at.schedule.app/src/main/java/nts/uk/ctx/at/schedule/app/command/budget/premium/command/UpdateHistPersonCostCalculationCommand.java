@@ -23,5 +23,5 @@ public class UpdateHistPersonCostCalculationCommand {
 
     private PerCostRoundSettingDto personCostRoundingSetting;
 
-    private List<PremiumSettingDto> premiumSettingList;
+    private List<PremiumSettingDto> premiumSets;
 }
