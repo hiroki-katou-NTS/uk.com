@@ -157,68 +157,7 @@ module nts.uk.at.view.kml001.a {
           dfd.resolve();
         }
         return dfd.promise();
-      }
-
-      /**
-       * insert/update new person cost calculation -> delete
-       */
-      /* saveData(): void {
-        nts.uk.ui.block.invisible();
-        var self = this;
-        $("#startDateInput").trigger("validate");
-        $("#memo").trigger("validate");
-        $(".premiumPercent").trigger("validate");
-        if (!nts.uk.ui.errors.hasError()) {
-          if (self.isInsert()) {
-            if (moment(self.newStartDate()).isAfter(moment(self.lastStartDate))) {
-              // insert new data if startDate have no error
-              let ymd = self.newStartDate();
-              self.currentPersonCost().startDate(ymd);
-              servicebase.personCostCalculationInsert(vmbase.ProcessHandler.toObjectPersonCost(self.currentPersonCost()))
-                .done(function (res: Array<any>) {
-                  servicebase.personCostCalculationSelect()
-                    .done(function (newData: Array<any>) {
-                      // refresh data list
-                      self.personCostList.removeAll();
-                      self.gridPersonCostList.removeAll();
-                      self.isInsert(false);
-                      self.loadData(newData, 0);
-                      nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function () { nts.uk.ui.block.clear(); });
-                    }).fail(function (res) {
-                      nts.uk.ui.dialog.alertError(res.message).then(function () { nts.uk.ui.block.clear(); });
-                    });
-                }).fail(function (res) {
-                  nts.uk.ui.dialog.alertError(res.message).then(function () { nts.uk.ui.block.clear(); });
-                });
-
-            } else {
-              $("#startDateInput").ntsError('set', { messageId: "Msg_65" });
-              nts.uk.ui.block.clear();
-            }
-          } else {
-            // update new data for current personCostCalculation
-            let index = _.findIndex(self.personCostList(), function (item) { return item.historyID() == self.currentPersonCost().historyID() });
-            self.currentPersonCost().startDate(self.newStartDate());
-            servicebase.personCostCalculationUpdate(vmbase.ProcessHandler.toObjectPersonCost(self.currentPersonCost()))
-              .done(function (res: Array<any>) {
-                servicebase.personCostCalculationSelect()
-                  .done(function (newData: Array<any>) {
-                    // refresh data list
-                    self.personCostList.removeAll();
-                    self.gridPersonCostList.removeAll();
-                    self.loadData(newData, index);
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function () { nts.uk.ui.block.clear(); });
-                  }).fail(function (res) {
-                    nts.uk.ui.dialog.alertError(res.message).then(function () { nts.uk.ui.block.clear(); });
-                  });
-              }).fail(function (res) {
-                nts.uk.ui.dialog.alertError(res.message).then(function () { nts.uk.ui.block.clear(); });
-              });
-
-          }
-        } else nts.uk.ui.block.clear();
-      }
- */
+      }      
 
       registerUpdateData() {
         let self = this;
