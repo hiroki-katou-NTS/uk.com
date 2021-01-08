@@ -36662,7 +36662,7 @@ var nts;
                                     return;
                                 if (parentChart && _.find(parentChart.children, function (child) {
                                     return child.id !== chart.id && !child.bePassedThrough
-                                        && ((pDec_1.start < child.end && pDec_1.start >= child.start) || (pDec_1.end > child.start && pDec_1.end <= child.end));
+                                        && ((chart.start >= child.end && pDec_1.start < child.end) || (chart.end <= child.start && pDec_1.end > child.start));
                                 }))
                                     return;
                                 _.forEach(chart.children, function (child) {
