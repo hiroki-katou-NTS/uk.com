@@ -86,7 +86,7 @@ public class EmployeeCommentInformationRepositoryImpl extends JpaRepository
 	}
 
 	@Override
-	public Optional<EmployeeCommentInformation> getBySid(String sid) {
+	public Optional<EmployeeCommentInformation> getTop1BySid(String sid) {
 		return this.queryProxy().query(SELECT_TOP_1_BY_SID, EmployeeCommentInformationEntity.class)
 				.setParameter("sid", sid).getSingle(EmployeeCommentInformation::createFromMemento);
 	}

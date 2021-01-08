@@ -55,5 +55,5 @@ public interface EmployeeCommentInformationRepository {
 	 * @param sid 社員ID
 	 * @return Optional<EmployeeCommentInformation> Optional<社員のコメント情報>
 	 */
-	public Optional<EmployeeCommentInformation> getBySid(String sid);
+	public Optional<EmployeeCommentInformation> getTop1BySid(String sid);
 }
