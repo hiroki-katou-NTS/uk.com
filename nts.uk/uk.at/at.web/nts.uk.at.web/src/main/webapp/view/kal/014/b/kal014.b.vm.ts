@@ -1,3 +1,4 @@
+
 module nts.uk.at.kal014.b {
 
     import common=nts.uk.at.kal014.common;
@@ -30,8 +31,8 @@ module nts.uk.at.kal014.b {
             vm.modalDTO.endMonth(endMonth);
             vm.isStartDateEnable = ko.observable(vm.checkStartDateISEnable());
             vm.isEndDateEnable = ko.observable(vm.checkEndDateISEnable());
-            vm.strComboMonth = ko.observableArray(__viewContext.enums.StandardMonth);
-            vm.endComboMonth = ko.observableArray(__viewContext.enums.StandardMonth);
+            vm.strComboMonth = ko.observableArray(__viewContext.enums.SpecifiedMonth);
+            vm.endComboMonth = ko.observableArray(__viewContext.enums.SpecifiedMonth);
         }
 
         created(params: any) {
