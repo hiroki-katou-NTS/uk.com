@@ -1,0 +1,23 @@
+package nts.uk.query.app.ccg005.screenquery.goout;
+
+import lombok.Data;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.office.dom.goout.GoOutEmployeeInformation;
+
+@Data
+public class GoOutEmployeeInformationDto implements GoOutEmployeeInformation.MementoSetter {
+	// 外出時刻
+	private Integer goOutTime;
+
+	// 外出理由
+	private String goOutReason;
+
+	// 年月日
+	private GeneralDate gouOutDate;
+
+	// 戻り時刻
+	private Integer comebackTime;
+
+	// 社員ID
+	private String sid;
+}
