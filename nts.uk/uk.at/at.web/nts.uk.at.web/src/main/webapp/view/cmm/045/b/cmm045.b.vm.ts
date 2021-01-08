@@ -31,6 +31,9 @@ module cmm045.b.viewmodel {
 				vm.bottomComment(vm.$i18n('CMM045_75'));
 				vm.isPreError(false);
 			}
+			vm.$nextTick(() => {
+				$("#cmm045-b-btn-confirm").focus();
+			});
         }
 
 		confirm() {
