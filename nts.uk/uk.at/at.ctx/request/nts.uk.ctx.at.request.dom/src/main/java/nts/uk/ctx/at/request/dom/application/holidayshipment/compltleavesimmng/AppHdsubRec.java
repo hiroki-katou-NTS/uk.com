@@ -15,7 +15,7 @@ import nts.arc.layer.dom.AggregateRoot;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CompltLeaveSimMng extends AggregateRoot {
+public class AppHdsubRec extends AggregateRoot {
 
 	/**
 	 * 振出申請ID
