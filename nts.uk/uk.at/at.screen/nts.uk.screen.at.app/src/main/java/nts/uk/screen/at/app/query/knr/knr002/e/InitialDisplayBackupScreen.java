@@ -42,7 +42,7 @@ public class InitialDisplayBackupScreen {
 	@Inject
 	private TimeRecordSetUpdateListRepository timeRecordSetUpdateListRepository;
 
-	public InitialDisplayBackupScreenDto startEmpInfoTerminalBak() {
+	public InitialDisplayBackupScreenDto handle() {
 		
 		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
 		// 1: get*(契約コード)：　就業情報端末

@@ -11,9 +11,12 @@ module nts.uk.at.view.knr002.a {
 
             // switch button
             filterButton: KnockoutObservableArray<any>;
-            selectedFilter: KnockoutObservable<string>;
+            selectedFilter: KnockoutObservable<number>;
             dataSource: KnockoutObservable<ResponseData> = ko.observable();
             gridData: KnockoutObservableArray<ListEmpInfoTerminalDto> = ko.observableArray([]);
+            normalList: Array<ListEmpInfoTerminalDto> = [];
+            abNormalList: Array<ListEmpInfoTerminalDto> = [];
+            notCommunicatedList: Array<ListEmpInfoTerminalDto> = [];
 
             // num of state
             numAbnormalState: KnockoutObservable<number> = ko.observable(0);
@@ -26,14 +29,31 @@ module nts.uk.at.view.knr002.a {
             constructor() {
                 const vm = this;
                 vm.filterButton = ko.observableArray([
-                    { code: '3', name: getText("KNR002_21") },
-                    { code: '0', name: getText("KNR002_22") },
-                    { code: '1', name: getText("KNR002_23") },
-                    { code: '2', name: getText("KNR002_24") }
+                    { code: 3, name: getText("KNR002_21") },
+                    { code: 0, name: getText("KNR002_22") },
+                    { code: 1, name: getText("KNR002_23") },
+                    { code: 2, name: getText("KNR002_24") }
                 ]);
-                vm.selectedFilter = ko.observable('3');
+                vm.selectedFilter = ko.observable(3);
                 vm.selectedFilter.subscribe(function(value) {
-                    vm.filterHandle(value); 
+                    switch(value) {
+                        case 0:
+                            $("#grid").ntsGrid("destroy");
+                            vm.loadGrid(vm.normalList);
+                            break;
+                        case 1:
+                            $("#grid").ntsGrid("destroy");
+                            vm.loadGrid(vm.abNormalList);
+                            break;
+                        case 2:
+                            $("#grid").ntsGrid("destroy");
+                            vm.loadGrid(vm.notCommunicatedList);
+                            break;
+                        case 3:
+                            $("#grid").ntsGrid("destroy");
+                            vm.loadGrid(vm.dataSource().listEmpInfoTerminalDto);
+                            break;
+                    }
                 });
             }
 
@@ -61,7 +81,7 @@ module nts.uk.at.view.knr002.a {
                 service.getAll()
                 .done((res: ResponseData) => {
                     if (res) {
-                        
+                        // let start = performance.now();
                         vm.dataSource(res);
                         vm.numOfRegTerminals(res.numOfRegTerminals);
                         vm.numAbnormalState(res.numAbnormalState);
@@ -81,25 +101,28 @@ module nts.uk.at.view.knr002.a {
                             }
                             if (dto.terminalCurrentState === 0) {
                                 dto.displayCurrentState = getText("KNR002_22");
+                                vm.normalList.push(dto);
                             }
                             if (dto.terminalCurrentState === 1) {
                                 dto.displayCurrentState = getText("KNR002_23");
+                                vm.abNormalList.push(dto);
                             }
                             if (dto.terminalCurrentState === 2) {
                                 dto.displayCurrentState = getText("KNR002_24");
+                                vm.notCommunicatedList.push(dto);
                             }
-    
-                            dto.displayFlag = dto.requestFlag ? getText("KNR002_250") : '';
+                            dto.displayFlag = dto.requestFlag ? getText("KNR002_250") : '';   
                         }
     
                         vm.gridData(res.listEmpInfoTerminalDto);
                         setShared('KNR002D_empInfoTerList', res.listEmpInfoTerminalDto);
-                        vm.loadGrid();
-                        vm.setGridSize();
+                        vm.loadGrid(vm.dataSource().listEmpInfoTerminalDto);
+                        //vm.setGridSize();
                         $(window).on('resize', () => {
                             vm.setGridSize();
                             vm.removeBorder();
                         });
+                        // console.log("in service: " + (performance.now() - start));
                     }
                 })
                 .fail(res => console.log('fail roi'))
@@ -145,15 +168,6 @@ module nts.uk.at.view.knr002.a {
                     blockUI.clear();
                 });
             }
-            
-
-            private filterHandle(value: string) {
-                $("#grid").igGridFiltering('filter', ([{ fieldName: "terminalCurrentState", expr: parseInt(value), cond: "equals"}]));
-                    $('.ui-iggrid-footer').css('display', 'none');
-                    if (value == '3') {
-                        $("#grid").igGridFiltering("filter", []);
-                    } 
-            }
 
             private setGridSize() {
                 let width = window.innerWidth;
@@ -162,7 +176,7 @@ module nts.uk.at.view.knr002.a {
                 $('#grid').igGrid('option', 'height', height - 198);
             }
 
-            private loadGrid() {
+            private loadGrid(data: any) {
                 let vm = this;
 
                 var stateTable: any = [];
@@ -176,15 +190,18 @@ module nts.uk.at.view.knr002.a {
                     
                     
                 });
-                    
+                   
+                // let start = performance.now();
+                let gridWidth = window.innerWidth - 17;
+                let gridHeight = window.innerHeight - 198; 
                 $("#grid").ntsGrid({
-                    width: '800px',
-                    height: '400px',
-                    dataSource: vm.dataSource().listEmpInfoTerminalDto,
+                    width: gridWidth,
+                    height: gridHeight,
+                    dataSource: data,
                     primaryKey: 'empInfoTerCode',
                     virtualization: true,
                     virtualizationMode: 'continuous',
-                    autoFitWindow: true,
+                    //autoFitWindow: true,
                     columns: [
                             { headerText: getText("KNR002_40"), key: 'empInfoTerCode', dataType: 'string', width: '90px'},
                             { headerText: 'CurrentState', key: 'terminalCurrentState', dataType: 'number', width: '0px',  hidden: true },
@@ -201,8 +218,6 @@ module nts.uk.at.view.knr002.a {
                     ],
                     features: [
                             { 
-                                name: 'Filtering', 
-                                renderFilterButton : false
                             }
                         ],
                     ntsFeatures: [
@@ -219,7 +234,8 @@ module nts.uk.at.view.knr002.a {
                     ],
                 });
 
-                vm.filterHandle(vm.selectedFilter());
+				// console.log("load grid;;: " + (performance.now() - start));
+                //vm.filterHandle(vm.selectedFilter());
                 vm.removeBorder();
             }
         }

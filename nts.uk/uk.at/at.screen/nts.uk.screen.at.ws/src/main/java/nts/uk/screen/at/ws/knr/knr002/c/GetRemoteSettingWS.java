@@ -12,7 +12,7 @@ import nts.uk.screen.at.app.query.knr.knr002.a.GetListInfoOfEmpInfoTerminalComma
 import nts.uk.screen.at.app.query.knr.knr002.c.GetRemoteSettings;
 import nts.uk.screen.at.app.query.knr.knr002.c.RemoteSettingsDto;
 
-@Path("screen/at/knr002/c")
+@Path("screen/knr002/c")
 @Produces(MediaType.APPLICATION_JSON)
 public class GetRemoteSettingWS {
 

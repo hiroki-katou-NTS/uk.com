@@ -99,7 +99,7 @@ public class JpaTimeRecordSetFormatListRepository extends JpaRepository implemen
             TimeRecordSetFormatList timeRecordSetFormatList = toDomain(e.getValue());
             listTimeRecordSetFormatList.add(timeRecordSetFormatList);
         });
-		return null;
+		return listTimeRecordSetFormatList;
 	}
 
 	@Override

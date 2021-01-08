@@ -2,7 +2,7 @@ module nts.uk.at.view.knr002.c.service {
     import ajax = nts.uk.request.ajax;
 
     let paths: any = {
-        getData: 'screen/at/knr002/c/getRemoteSettings',
+        getData: 'screen/knr002/c/getRemoteSettings',
         register: 'at/record/knr002/cmd/c/registerAndSubmit',
     };
 

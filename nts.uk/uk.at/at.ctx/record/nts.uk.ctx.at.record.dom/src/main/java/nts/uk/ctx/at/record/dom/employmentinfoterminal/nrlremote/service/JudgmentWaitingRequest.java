@@ -30,7 +30,7 @@ public class JudgmentWaitingRequest {
 		
 		// 3: 復旧時リクエスト待ちか(項目の数件: int): boolean
 		Map<EmpInfoTerminalCode, Boolean> mapCodeFlag = listTimeRecordSetUpdateList.stream()
-				.collect(Collectors.toMap(e -> e.getEmpInfoTerCode(), e -> e.isWaitingReqRecovery(mapCodeSeveralItem.get(e.getEmpInfoTerCode()))));
+				.collect(Collectors.toMap(e -> e.getEmpInfoTerCode(), e -> e.isWaitingReqRecovery(mapCodeSeveralItem.get(e.getEmpInfoTerCode()) != null ? mapCodeSeveralItem.get(e.getEmpInfoTerCode()) : -1)));
 		
 		return mapCodeFlag;
 	}

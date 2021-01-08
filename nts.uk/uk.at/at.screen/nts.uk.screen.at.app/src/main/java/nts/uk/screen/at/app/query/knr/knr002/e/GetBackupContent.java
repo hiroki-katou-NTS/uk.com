@@ -24,10 +24,11 @@ public class GetBackupContent {
 	@Inject
 	private TimeRecordSetFormatBakRepository repository;
 	
-	public List<BackupContentDto> handle(EmpInfoTerminalCode empInfoTerCode) {
+	public List<BackupContentDto> handle(String code) {
 		
 		// 1: タイムレコード設定フォーマットを 取得する(契約コード、就業情報端末コード): タイムレコード設定フォーマット
 		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
+		EmpInfoTerminalCode empInfoTerCode = new EmpInfoTerminalCode(code);
 		List<TimeRecordSetFormat> listTimeRecordSetFormat = repository.getTimeRecordSetFormat(contractCode, empInfoTerCode);
 		
 		return listTimeRecordSetFormat.stream().map(e -> BackupContentDto.toDto(e)).collect(Collectors.toList());
