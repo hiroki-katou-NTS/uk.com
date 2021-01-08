@@ -372,9 +372,12 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
             updatePerCostPremiRate(domain, histId);
             updateKmldtPremiumAttendance(domain, histId);
             val entityPer = this.queryProxy().find(new KscmtPerCostCalcPk(domain.getCompanyID(), domain.getHistoryID()), KscmtPerCostCalc.class);
+            val entity = KscmtPerCostCalc.toEntity(domain, domain.getHistoryID());
             if (entityPer.isPresent()) {
-                val entity = KscmtPerCostCalc.toEntity(domain, domain.getHistoryID());
+
                 this.commandProxy().update(entity);
+            }else {
+                this.commandProxy().insert(entity);
             }
         }
         if (!domainHist.getHistoryItems().isEmpty()) {
@@ -449,7 +452,6 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
     }
 
     private List<Integer> listEntityAtt(String cid, String historyID, int displayNumber) {
-
         return this.queryProxy().query(SEL_PER_COST, KscmtPerCostPremium.class)
                 .setParameter("cid", cid)
                 .setParameter("historyID", historyID)
@@ -459,7 +461,6 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 
     private void updatePerCostPremiRate(PersonCostCalculation domain, String histId) {
         val listItemNos = domain.getPremiumSettings().stream().map(e -> e.getID().value).collect(Collectors.toList());
-
         List<KscmtPerCostPremiRate> listEntityRate = new ArrayList<>();
         CollectionUtil.split(listItemNos, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
             listEntityRate.addAll(this.queryProxy().query(SEL_PREMI_RATE, KscmtPerCostPremiRate.class)
@@ -471,8 +472,8 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
         if (!listEntityRate.isEmpty()) {
             this.commandProxy().removeAll(listEntityRate);
             this.getEntityManager().flush();
-            this.commandProxy().insertAll(KscmtPerCostPremiRate.toEntity(domain, histId));
         }
+        this.commandProxy().insertAll(KscmtPerCostPremiRate.toEntity(domain, histId));
     }
 
     private void updateKmldtPremiumAttendance(PersonCostCalculation domain, String histId) {
@@ -489,7 +490,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
         if (!listEntity.isEmpty()) {
             this.commandProxy().removeAll(listEntity);
             this.getEntityManager().flush();
-            this.commandProxy().insertAll(KscmtPerCostPremium.toEntity(domain.getPremiumSettings(), histId));
         }
+        this.commandProxy().insertAll(KscmtPerCostPremium.toEntity(domain.getPremiumSettings(), histId));
     }
 }
