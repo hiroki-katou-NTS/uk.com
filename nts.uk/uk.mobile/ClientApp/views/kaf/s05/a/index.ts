@@ -616,8 +616,8 @@ export class KafS05Component extends KafS00ShrComponent {
         });
         appOverTime.applicationTime.reasonDissociation = step2.getReasonDivergence();
         if (!self.modeNew) {
-            appOverTime.application.opAppReason = self.application.opAppReason as any;
-            appOverTime.application.opAppStandardReasonCD = self.application.opAppStandardReasonCD as any;
+            appOverTime.application.opAppReason = self.application.opAppReason || self.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason as any;
+            appOverTime.application.opAppStandardReasonCD = self.application.opAppStandardReasonCD || self.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD as any;
         }
 
         // assign value to overtime and holidaytime
