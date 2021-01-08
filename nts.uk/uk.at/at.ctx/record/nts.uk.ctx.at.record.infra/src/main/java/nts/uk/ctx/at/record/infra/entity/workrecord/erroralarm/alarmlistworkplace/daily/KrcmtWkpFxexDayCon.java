@@ -51,6 +51,7 @@ public class KrcmtWkpFxexDayCon extends UkJpaEntity implements Serializable {
         entity.errorAlarmWorkplaceId = domain.getErrorAlarmWorkplaceId();
         entity.fixedCheckDayItems = domain.getFixedCheckDayItems().value;
         entity.messageDisp = domain.getMessageDisp().v();
+        entity.useAtr = domain.isUseAtr();
         return entity;
     }
 
