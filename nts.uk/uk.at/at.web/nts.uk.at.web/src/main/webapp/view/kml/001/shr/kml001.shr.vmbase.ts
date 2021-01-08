@@ -203,7 +203,6 @@ module nts.uk.at.view.kml001.shr {
        */
       static toObjectPersonCost(koObject: PersonCostCalculation): PersonCostCalculationInterface {
         let premiumSets: Array<PremiumSettingInterface> = [];
-        console.log(koObject);
         koObject.premiumSets().forEach(function (koPremiumSet) { premiumSets.push(ProcessHandler.toObjectPremiumSet(koPremiumSet)); });
         return {
           companyID: koObject.companyID(),
