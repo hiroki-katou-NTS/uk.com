@@ -155,21 +155,26 @@ module nts.uk.at.view.kmk004.b {
 			}));
 			const input = { employmentCode: ko.unwrap(vm.emloyment.code), yearMonth: yearMonth, laborTime: times };
 
-			vm.$ajax(API.ADD_WORK_TIME, input)
-				.done(() => {
-					_.remove(ko.unwrap(vm.years), ((value) => {
-						return value.year == ko.unwrap(vm.selectedYear);
-					}));
-					vm.years.push(new IYear(ko.unwrap(vm.selectedYear), false));
-					vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
-					vm.$dialog.info({ messageId: 'Msg_15' });
-				}).then(() => {
-					vm.selectedYear.valueHasMutated();
-				})
-				.then(() => {
-					$(document).ready(function () {
-						$('.listbox').focus();
-					});
+			vm.validate()
+				.then((valid: boolean) => {
+					if (valid) {
+						vm.$ajax(API.ADD_WORK_TIME, input)
+							.done(() => {
+								_.remove(ko.unwrap(vm.years), ((value) => {
+									return value.year == ko.unwrap(vm.selectedYear);
+								}));
+								vm.years.push(new IYear(ko.unwrap(vm.selectedYear), false));
+								vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
+								vm.$dialog.info({ messageId: 'Msg_15' });
+							}).then(() => {
+								vm.selectedYear.valueHasMutated();
+							})
+							.then(() => {
+								$(document).ready(function () {
+									$('.listbox').focus();
+								});
+							});
+					}
 				});
 		}
 
@@ -183,14 +188,14 @@ module nts.uk.at.view.kmk004.b {
 				year: ko.unwrap(vm.selectedYear),
 				laborAttr: 0,
 			})
-			.then(() => {
-				vm.change.valueHasMutated();
-			})
-			.then(() => {
-				$(document).ready(function () {
-					$('.listbox').focus();
+				.then(() => {
+					vm.change.valueHasMutated();
+				})
+				.then(() => {
+					$(document).ready(function () {
+						$('.listbox').focus();
+					});
 				});
-			});
 		}
 
 		remote() {

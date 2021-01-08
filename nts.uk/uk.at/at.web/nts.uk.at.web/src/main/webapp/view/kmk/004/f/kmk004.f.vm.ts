@@ -58,29 +58,35 @@ module nts.uk.at.view.kmk004.f {
         created(params?: IParams) {
             const vm = this;
 
-            vm.type = params.type;
-            vm.selectId = params.selectId;
-            vm.nameSynthetic = params.nameSynthetic;
-            vm.attendance(params.isSetting);
+            vm.$blockui('grayout')
+                .then(() => {
+                    vm.type = params.type;
+                    vm.selectId = params.selectId;
+                    vm.nameSynthetic = params.nameSynthetic;
+                    vm.attendance(params.isSetting);
 
-            vm.init();
-            vm.reloadData();
+                    vm.init();
+                    vm.reloadData();
 
-            switch (vm.type) {
-                case 'Com_Company':
-                    vm.checkCompany(true);
-                    vm.attendance(true);
-                    break;
-                case 'Com_Workplace':
-                    vm.checkWorkPlace(false);
-                    break;
-                case 'Com_Employment':
-                    vm.checkEmployment(false);
-                    break;
-                case 'Com_Person':
-                    vm.checkEmployee(false);
-                    break;
-            }
+                    switch (vm.type) {
+                        case 'Com_Company':
+                            vm.checkCompany(true);
+                            vm.attendance(true);
+                            break;
+                        case 'Com_Workplace':
+                            vm.checkWorkPlace(false);
+                            break;
+                        case 'Com_Employment':
+                            vm.checkEmployment(false);
+                            break;
+                        case 'Com_Person':
+                            vm.checkEmployee(false);
+                            break;
+                    }
+                })
+                .then(() => {
+                    vm.$blockui('clear');
+                });
         }
 
         mounted() {
@@ -153,7 +159,6 @@ module nts.uk.at.view.kmk004.f {
                         .then(vm.$window.close);
                     break;
             }
-
         }
 
         remote() {
@@ -277,11 +282,11 @@ class Model {
     daily: KnockoutObservable<number> = ko.observable(0);
     weekly: KnockoutObservable<number> = ko.observable(0);
     deforWorkSurchargeWeekMonth: KnockoutObservable<boolean> = ko.observable(false);
-    deforWorkLegalOverTimeWork: KnockoutObservable<boolean> = ko.observable(false);;
-    deforWorkLegalHoliday: KnockoutObservable<boolean> = ko.observable(false);;
+    deforWorkLegalOverTimeWork: KnockoutObservable<boolean> = ko.observable(false);
+    deforWorkLegalHoliday: KnockoutObservable<boolean> = ko.observable(false);
     outsideSurchargeWeekMonth: KnockoutObservable<boolean> = ko.observable(false);
-    outsidedeforWorkLegalOverTimeWork: KnockoutObservable<boolean> = ko.observable(false);;
-    outsidedeforWorkLegalHoliday: KnockoutObservable<boolean> = ko.observable(false);;
+    outsidedeforWorkLegalOverTimeWork: KnockoutObservable<boolean> = ko.observable(false);
+    outsidedeforWorkLegalHoliday: KnockoutObservable<boolean> = ko.observable(false);
 
     constructor(params?: IModel) {
         this.update(params);

@@ -120,14 +120,16 @@ module nts.uk.at.view.kmk004.b {
 
             vm.workTimes.subscribe((wts) => {
                 const total: number = wts.reduce((p, c) => p += Number(c.laborTime()), 0);
-                const finst: string = Math.floor(total / 60) + '';
-                var last: string = total % 60 + '';
+                if (!isNaN(total)) {
+                    const finst: string = Math.floor(total / 60) + '';
+                    var last: string = total % 60 + '';
 
-                if (last.length < 2) {
-                    last = '0' + last;
+                    if (last.length < 2) {
+                        last = '0' + last;
+                    }
+
+                    vm.total(finst + ':' + last);
                 }
-
-                vm.total(finst + ':' + last);
 
                 if (ko.unwrap(vm.selectedYear) != null) {
                     const index = _.map(ko.unwrap(vm.years), m => m.year.toString()).indexOf(ko.unwrap(vm.selectedYear).toString());
@@ -148,7 +150,7 @@ module nts.uk.at.view.kmk004.b {
 
                 _.forEach(ko.unwrap(vm.workTimes), ((value) => {
                     if (ko.unwrap(value.check)) {
-                        if (ko.unwrap(value.laborTime)  == null) {
+                        if (ko.unwrap(value.laborTime) == null) {
                             value.updateLaborTime(0);
                         }
                     } else {
@@ -215,7 +217,6 @@ module nts.uk.at.view.kmk004.b {
                                         vm.mode('Update');
                                     }
                                 });
-                            ;
                         }
                         break;
                     case 'Com_Workplace':
@@ -279,9 +280,11 @@ module nts.uk.at.view.kmk004.b {
                                         if (data.length > 0) {
                                             const data1: IWorkTime[] = [];
                                             data.map(m => {
-                                                const s: IWorkTime = { check: m.laborTime == -1 ? false : true, 
-                                                    yearMonth: m.yearMonth, 
-                                                    laborTime: m.laborTime == -1 ? null : m.laborTime };
+                                                const s: IWorkTime = {
+                                                    check: m.laborTime == -1 ? false : true,
+                                                    yearMonth: m.yearMonth,
+                                                    laborTime: m.laborTime == -1 ? null : m.laborTime
+                                                };
                                                 data1.push(s);
                                             });
 
