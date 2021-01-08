@@ -61,7 +61,7 @@
               v-model="overTimes[index].applicationTime"
               name=""
               v-bind:record-id="index"
-              v-bind:enable="$appContext.c3"
+              v-bind:disabled="!$appContext.c3_disable"
             />
           </div>
         </div>
@@ -101,7 +101,7 @@
             <nts-time-editor
               v-model="holidayTimes[index].applicationTime"
               name=""
-              v-bind:enable="$appContext.c3"
+              v-bind:disabled="!$appContext.c3_disable"
             />
           </div>
         </div>

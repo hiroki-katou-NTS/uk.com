@@ -71,9 +71,13 @@ export class KafS05Component extends KafS00ShrComponent {
 
         return value == NotUseAtr.USE;
     }
+    //「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．残業申請．実績の勤務情報へ反映する」＝する
     public get c2() {
-
-        return true;
+        const self = this;
+        let model = self.model as Model;
+        let c2 = _.get(model, 'displayInfoOverTime.infoNoBaseDate.overTimeReflect.overtimeWorkAppReflect.reflectActualWorkAtr') == NotUseAtr.USE;
+        
+        return c2;
     }
 
     // 「残業申請の表示情報．基準日に関係しない情報．残業申請設定．申請詳細設定．時刻計算利用区分」＝する
@@ -81,6 +85,14 @@ export class KafS05Component extends KafS00ShrComponent {
         const self = this;
         let model = self.model as Model;
         let value = _.get(model, 'displayInfoOverTime.infoNoBaseDate.overTimeAppSet.applicationDetailSetting.timeCalUse');
+        
+        return value == NotUseAtr.USE;
+    }
+    // 「残業申請の表示情報．基準日に関係しない情報．残業申請設定．申請詳細設定．時間入力利用区分」= する
+    public get c3_disable() {
+        const self = this;
+        let model = self.model as Model;
+        let value = _.get(model, 'displayInfoOverTime.infoNoBaseDate.overTimeAppSet.applicationDetailSetting.timeInputUse');
         
         return value == NotUseAtr.USE;
     }
