@@ -1,7 +1,22 @@
 
+
+export interface ChangeDateParamMobile {
+    companyId: string;
+
+    dates: Array<string>;
+
+    appAbsenceStartInfoDto: AppAbsenceStartInfoDto;
+
+    applyForLeaveDto: ApplyForLeaveDto;
+
+    appHolidayType: number;
+}
+export interface ApplyForLeaveDto {
+    name: string;
+}
 export interface AppForLeaveStartOutputDto {
     appAbsenceStartInfoDto: AppAbsenceStartInfoDto;
-    applyForLeaveDto: any;
+    applyForLeaveDto: ApplyForLeaveDto;
 }
 export interface TimeZoneUseDto {
     useAtr: number;
