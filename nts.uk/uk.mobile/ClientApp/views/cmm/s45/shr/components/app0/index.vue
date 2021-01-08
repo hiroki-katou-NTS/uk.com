@@ -154,12 +154,12 @@
 
 
     <!-- B6_1 -->
-    <div class="card card-label" v-if="c18 || true">
+    <div class="card card-label" v-if="c18">
         <div class="card-header uk-bg-accordion mt-2">
             <span>{{ "KAFS05_73" | i18n }}</span>
         </div>
     </div>
-    <div v-if="c18 || true">
+    <div v-if="c18">
       <div
       v-for="(item, index) in holidayTimes"
         v-bind:key="index"
