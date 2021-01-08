@@ -88,7 +88,7 @@ public class DailyRecordToAttendanceItemConverterImpl extends AttendanceItemConv
 			this.withEmployeeErrors(domain.getEmployeeError());
 		}
 		this.withOutingTime(domain.getOutingTime().orElse(null));
-		this.withBreakTime(domain.getBreakTime().orElse(new BreakTimeOfDailyAttd()));
+		this.withBreakTime(domain.getBreakTime());
 		this.withAttendanceTime(domain.getAttendanceTimeOfDailyPerformance().orElse(null));
 		this.withTimeLeaving(domain.getAttendanceLeave().orElse(null));
 		this.withShortTime(domain.getShortTime().orElse(null));
