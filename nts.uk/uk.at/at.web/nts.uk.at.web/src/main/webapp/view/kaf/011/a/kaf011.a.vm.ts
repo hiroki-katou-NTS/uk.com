@@ -11,7 +11,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 
 	@bean()
 	export class Kaf011AViewModel extends Kaf000AViewModel {
-		params: KAF011Param;
+		params: AppInitParam;
 		
 		appType: KnockoutObservable<number> = ko.observable(AppType.COMPLEMENT_LEAVE_APPLICATION);
 		applicationCommon: KnockoutObservable<Application> = ko.observable(new Application());
@@ -48,16 +48,27 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 		];
 		
 		settingCheck = ko.observable(true);
+		isFromOther: boolean = false;
 		
-		created(params: KAF011Param) {
+		created(params: AppInitParam) {
 			const vm = this;
 			vm.params = params;
+			if(!_.isNil(__viewContext.transferred.value)) {
+				vm.isFromOther = true;
+			}
+			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
 			let empLst: Array<string> = [];
 			let	dateLst: Array<string> = [];
 			if(params){
-				empLst = params.employeeIDLst || [__viewContext.user.employeeId];
-				params.recAppDate? dateLst.push(params.recAppDate):true;
-				params.absAppDate? dateLst.push(params.absAppDate):true;
+				empLst = params.employeeIds || [__viewContext.user.employeeId];
+				if (!_.isEmpty(params.baseDate)) {
+					let paramDate = moment(params.baseDate).format('YYYY/MM/DD');
+					dateLst = [paramDate];
+					
+				}
+				if (params.isAgentMode) {
+					vm.isAgentMode(params.isAgentMode);
+				}
 			}
 			vm.$blockui("grayout");
 			vm.loadData(empLst, dateLst, vm.appType()).then(() => {
@@ -72,6 +83,9 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					vm.recruitmentApp.bindingScreenA(data.applicationForWorkingDay, data);
 					vm.absenceLeaveApp.bindingScreenA(data.applicationForHoliday, data);
 					vm.comment.update(data.substituteHdWorkAppSet);
+					vm.recruitmentApp.application.appDate(dateLst[0]);
+					vm.recruitmentApp.application.opAppStartDate(dateLst[0]);
+                    vm.recruitmentApp.application.opAppEndDate(dateLst[0]);
 					$('#isSendMail').css({'display': 'inline-block'});
 					$('#contents-area').css({'display': ''});
 					vm.$blockui("hide"); 
@@ -188,10 +202,10 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 		openKDL009() {
 			let self = this;
 			nts.uk.ui.windows.setShared('KDL009_DATA', {
-				employeeIds: (self.params ? self.params.employeeIDLst : [__viewContext.user.employeeId]),
+				employeeIds: (self.params ? self.params.employeeIds : [__viewContext.user.employeeId]),
 				baseDate: moment(new Date()).format("YYYYMMDD")
 			});
-			if(self.params && self.params.employeeIDLst.length > 1){
+			if(self.params && self.params.employeeIds.length > 1){
 				nts.uk.ui.windows.sub.modal( '/view/kdl/009/a/multi.xhtml');	
 			}else{
 				nts.uk.ui.windows.sub.modal( '/view/kdl/009/a/single.xhtml');

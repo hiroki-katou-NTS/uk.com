@@ -33,6 +33,7 @@
 			<com:scriptfile path="/view/kaf/000/a/component6/kaf000.a.component6.js" />
 			<com:scriptfile path="/view/kaf/000/a/component7/kaf000.a.component7.js" />
 			<com:scriptfile path="/view/kaf/000/a/component8/kaf000.a.component8.js" />
+			<com:scriptfile path="/view/kaf/000/a/component9/kaf000.a.component9.js" />
 			
 			<com:stylefile path="../shr/kaf011.shr.css" />
 			<com:stylefile path="kaf011.a.css" />
@@ -42,6 +43,7 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
+				<div style="display: inline-block;" data-bind="component: { name: 'kaf000-a-component9', params: isFromOther }"></div>
 				<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty" tabindex="1">#{i18n.getText('KAF011_3')}</button>
 				<button class="" data-bind="click: openKDL009" tabindex="2">#{i18n.getText('KAF011_7')}</button>
 				<div id="isSendMail" style="display: none" data-bind="component: { name: 'kaf000-a-component7', 
