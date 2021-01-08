@@ -13,7 +13,6 @@ import nts.uk.ctx.at.request.dom.adapter.record.remainingnumber.holidayover60h.G
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.AnnLeaveRemainNumberAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaReferenceDateImport;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
@@ -63,7 +62,6 @@ import nts.uk.ctx.at.shared.dom.workrule.vacation.specialvacation.timespecialvac
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHolidayFrame;
 import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHolidayFrameRepository;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 
@@ -111,9 +109,6 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
 
     @Inject
     private CommonAlgorithm commonAlgorithm;
-
-    @Inject
-    private DetailBeforeUpdate detailBeforeProcessRegisterService;
 
     @Inject
     private SpecialLeaveGrantRepository specialLeaveGrantRepo;

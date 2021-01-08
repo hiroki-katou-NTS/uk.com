@@ -10,7 +10,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Process
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplication;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.TimeLeaveApplicationOutput;
-import nts.uk.ctx.at.request.dom.application.timeleaveapplication.service.TimeLeaveApplicationService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -34,9 +33,6 @@ public class UpdateTimeLeaveApplicationCommandHandler extends CommandHandlerWith
     private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
 
     @Inject
-    private TimeLeaveApplicationService timeLeaveApplicationService;
-
-    @Inject
     private DetailAfterUpdate detailAfterUpdate;
 
     @Inject
@@ -53,10 +49,6 @@ public class UpdateTimeLeaveApplicationCommandHandler extends CommandHandlerWith
                 application,
                 command.getDetails().stream().map(TimeLeaveAppDetailCommand::toDomain).collect(Collectors.toList())
         );
-
-//        timeLeaveApplicationService.checkBeforeRegister(
-//                command.getTimeLeaveApplicationCommand().getTimeDigestAppType(),
-//            timeLeaveApplication, timeLeaveApplicationOutput);
 
         //ドメインモデル「申請」の更新をする
         applicationRepository.update(application);

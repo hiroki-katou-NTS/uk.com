@@ -42,7 +42,11 @@ public class TimeLeaveAppDetailDto {
     public static TimeLeaveAppDetailDto fromDomain(TimeLeaveApplicationDetail domain) {
         return new TimeLeaveAppDetailDto(
                 domain.getAppTimeType().value,
-                domain.getTimeZoneWithWorkNoLst().stream().map(i -> new TimeZoneDto(i.getWorkNo().v(), i.getTimeZone().getStartTime().v(), i.getTimeZone().getEndTime().v())).collect(Collectors.toList()),
+                domain.getTimeZoneWithWorkNoLst().stream().map(i -> new TimeZoneDto(
+                        i.getWorkNo().v(),
+                        i.getTimeZone().getStartTime() == null ? null : i.getTimeZone().getStartTime().v(),
+                        i.getTimeZone().getEndTime() == null ? null : i.getTimeZone().getEndTime().v()
+                )).collect(Collectors.toList()),
                 new TimeDigestApplicationDto(
                         domain.getTimeDigestApplication().getOvertime60H().v(),
                         domain.getTimeDigestApplication().getNursingTime().v(),

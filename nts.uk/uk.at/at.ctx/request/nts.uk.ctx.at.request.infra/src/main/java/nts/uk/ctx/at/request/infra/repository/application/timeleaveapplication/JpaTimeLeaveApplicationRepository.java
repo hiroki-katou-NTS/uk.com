@@ -97,7 +97,7 @@ public class JpaTimeLeaveApplicationRepository extends JpaRepository implements 
 
         this.commandProxy().removeAll(KrqdtAppTimeHd.class, entities.stream().map(i -> i.pk).collect(Collectors.toList()));
         this.commandProxy().removeAll(KrqdtAppTimeHdInput.class, details.stream().map(i -> i.pk).collect(Collectors.toList()));
-
+        this.getEntityManager().flush();
         this.commandProxy().insertAll(toEntity(domain));
         this.commandProxy().insertAll(toEntityDetail(domain));
     }

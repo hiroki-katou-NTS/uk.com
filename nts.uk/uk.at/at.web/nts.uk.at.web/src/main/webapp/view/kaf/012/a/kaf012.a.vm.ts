@@ -80,6 +80,22 @@ module nts.uk.at.view.kaf012.a.viewmodel {
             vm.application().appDate.subscribe(value => {
                 vm.handleChangeAppDate(value);
             });
+            vm.appDispInfoStartupOutput.subscribe(value => {
+                if (value) {
+                    if (value.appDispInfoWithDateOutput.opActualContentDisplayLst && value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail) {
+                        vm.applyTimeData()[AppTimeType.ATWORK].timeZones[0].startTime(value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opWorkTime);
+                        vm.applyTimeData()[AppTimeType.OFFWORK].timeZones[0].startTime(value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opLeaveTime);
+                        vm.applyTimeData()[AppTimeType.ATWORK2].timeZones[0].startTime(value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opWorkTime2);
+                        vm.applyTimeData()[AppTimeType.OFFWORK2].timeZones[0].startTime(value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opDepartureTime2);
+                        const outingTimes = value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.stampRecordOutput.outingTime || [];
+                        outingTimes.forEach((time: any) => {
+                            vm.applyTimeData()[4].timeZones[time.frameNo - 1].startTime(time.opStartTime);
+                            vm.applyTimeData()[4].timeZones[time.frameNo - 1].endTime(time.opEndTime);
+                            vm.applyTimeData()[4].timeZones[time.frameNo - 1].appTimeType(time.opGoOutReasonAtr == 3 ? AppTimeType.UNION : AppTimeType.PRIVATE);
+                        });
+                    }
+                }
+            });
         }
 
         handleChangeAppDate(value: string) {
@@ -123,8 +139,8 @@ module nts.uk.at.view.kaf012.a.viewmodel {
         }
 
         registerData(details: Array<any>) {
-            let vm = this;
-            let paramsRegister = {
+            const vm = this;
+            const paramsRegister = {
                 timeLeaveAppDisplayInfo: {
                     appDispInfoStartupOutput: vm.appDispInfoStartupOutput(),
                     timeLeaveManagement: vm.timeLeaveManagement(),
@@ -139,23 +155,16 @@ module nts.uk.at.view.kaf012.a.viewmodel {
 
         register() {
             const vm = this;
-            const application = ko.toJS(vm.application);
             const details: Array<any> = [];
-            const timeLeaveAppDisplayInfo = {
-                appDispInfoStartupOutput: vm.appDispInfoStartupOutput(),
-                    timeLeaveManagement: vm.timeLeaveManagement(),
-                    timeLeaveRemaining: vm.timeLeaveRemaining(),
-                    reflectSetting: vm.reflectSetting()
-            };
             vm.applyTimeData().forEach((row : DataModel) => {
-                if (row.display() && row.timeZone.filter(i => !!i.startTime() || i.endTime()).length > 0) {
+                if (row.display() && row.timeZones.filter(i => !!i.startTime() || i.endTime()).length > 0) {
                     if (row.appTimeType < 4) {
                         details.push({
                             appTimeType: row.appTimeType,
                             timeZones: [{
                                 workNo: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.OFFWORK ? 1 : 2,
-                                startTime: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.ATWORK2 ? row.timeZone[0].startTime() : null,
-                                endTime: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.ATWORK2 ? null : row.timeZone[0].startTime(),
+                                startTime: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.ATWORK2 ? row.timeZones[0].startTime() : null,
+                                endTime: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.ATWORK2 ? null : row.timeZones[0].startTime(),
                             }],
                             applyTime: {
                                 substituteAppTime: row.applyTime[0].substituteAppTime(),
@@ -168,7 +177,7 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                             }
                         });
                     } else {
-                        const privateTimeZones = row.timeZone.filter(z => z.appTimeType() == AppTimeType.PRIVATE && z.display() && (!!z.startTime() || !!z.endTime()));
+                        const privateTimeZones = row.timeZones.filter(z => z.appTimeType() == AppTimeType.PRIVATE && z.display() && (!!z.startTime() || !!z.endTime()));
                         if (privateTimeZones.length > 0) {
                             details.push({
                                 appTimeType: AppTimeType.PRIVATE,
@@ -184,7 +193,7 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                                 }
                             });
                         }
-                        const unionTimeZones = row.timeZone.filter(z => z.appTimeType() == AppTimeType.UNION && z.display() && (!!z.startTime() || !!z.endTime()));
+                        const unionTimeZones = row.timeZones.filter(z => z.appTimeType() == AppTimeType.UNION && z.display() && (!!z.startTime() || !!z.endTime()));
                         if (unionTimeZones.length > 0) {
                             details.push({
                                 appTimeType: AppTimeType.UNION,
@@ -203,25 +212,27 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                     }
                 }
             });
-            let params = {
-                timeDigestAppType: vm.leaveType(),
-                application: application,
-                details: details,
-                timeLeaveAppDisplayInfo: timeLeaveAppDisplayInfo,
-                agentMode: vm.isAgentMode(),
-                newMode: true
-            };
-            params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingStart = new Date(params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingStart).toISOString();
-            params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingEnd = new Date(params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingEnd).toISOString();
+
             vm.$blockui("show");
             vm.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
                 .then(isValid => {
                     if (isValid) {
-                        return true;
+                        const params = {
+                            timeDigestAppType: vm.leaveType(),
+                            applicationNew: ko.toJS(vm.application),
+                            details: details,
+                            timeLeaveAppDisplayInfo: {
+                                appDispInfoStartupOutput: vm.appDispInfoStartupOutput(),
+                                timeLeaveManagement: vm.timeLeaveManagement(),
+                                timeLeaveRemaining: vm.timeLeaveRemaining(),
+                                reflectSetting: vm.reflectSetting()
+                            },
+                            agentMode: vm.isAgentMode()
+                        };
+                        params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingStart = new Date(params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingStart).toISOString();
+                        params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingEnd = new Date(params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingEnd).toISOString();
+                        return vm.$ajax(API.checkRegister, params);
                     }
-                }).then(result => {
-                    if (!result) return;
-                    return vm.$ajax(API.checkRegister, params);
                 }).then(res => {
                     if (res == undefined) return;
                     if (_.isEmpty(res)) {

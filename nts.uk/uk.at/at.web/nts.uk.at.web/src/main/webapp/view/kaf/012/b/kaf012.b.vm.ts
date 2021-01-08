@@ -3,8 +3,8 @@ module nts.uk.at.view.kaf012.b.viewmodel {
     import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
 	import PrintContentOfEachAppDto = nts.uk.at.view.kaf000.shr.viewmodel.PrintContentOfEachAppDto;
     import DataModel = nts.uk.at.view.kaf012.shr.viewmodel2.DataModel;
-    import TimeZone = nts.uk.at.view.kaf012.shr.viewmodel2.TimeZone;
     import AppTimeType = nts.uk.at.view.kaf012.shr.viewmodel2.AppTimeType;
+    import LeaveType = nts.uk.at.view.kaf012.shr.viewmodel1.LeaveType;
 
     const API = {
         checkRegister: "at/request/application/timeLeave/checkBeforeRegister",
@@ -99,7 +99,6 @@ module nts.uk.at.view.kaf012.b.viewmodel {
         appDispInfoStartupOutput: KnockoutObservable<any>;
         approvalReason: KnockoutObservable<string>;
         printContentOfEachAppDto: KnockoutObservable<PrintContentOfEachAppDto>;
-        mode: KnockoutObservable<String> = ko.observable('edit');
         application: KnockoutObservable<Application>;
         reflectSetting: KnockoutObservable<any> = ko.observable(null);
         timeLeaveManagement: KnockoutObservable<any> = ko.observable(null);
@@ -148,10 +147,6 @@ module nts.uk.at.view.kaf012.b.viewmodel {
         getAppData() {
             let vm = this;
             vm.$blockui('show');
-			if (ko.toJS(vm.appDispInfoStartupOutput).appDetailScreenInfo) {
-                let mode = ko.toJS(vm.appDispInfoStartupOutput).appDetailScreenInfo.outputMode == 1 ? 'edit' : 'view';
-				vm.mode(mode); 
-            }
             return vm.$ajax(API.getDetail, {
                 appId: vm.application().appID(),
                 appDispInfoStartupOutput: vm.appDispInfoStartupOutput()
@@ -160,29 +155,39 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                     vm.reflectSetting(res.reflectSetting);
                     vm.timeLeaveManagement(res.timeLeaveManagement);
                     vm.timeLeaveRemaining(res.timeLeaveRemaining);
+                    let totalAppTime: Array<number> = [0, 0, 0, 0, 0, 0], specialFrame: number = null;
                     res.details.forEach((detail: TimeLeaveAppDetail) => {
                         detail.timeZones.forEach(z => {
-                            vm.applyTimeData()[4].timeZone[z.workNo - 1].startTime(z.startTime);
-                            vm.applyTimeData()[4].timeZone[z.workNo - 1].endTime(z.endTime);
+                            const index = detail.appTimeType < 4 ? 0 : z.workNo - 1;
+                            const startTime = detail.appTimeType >= 4
+                                            || detail.appTimeType == AppTimeType.ATWORK
+                                            || detail.appTimeType == AppTimeType.ATWORK2 ? z.startTime : z.endTime;
+                            const endTime = detail.appTimeType < 4 ? null : z.endTime;
+                            vm.applyTimeData()[detail.appTimeType].timeZones[index].startTime(startTime);
+                            vm.applyTimeData()[detail.appTimeType].timeZones[index].endTime(endTime);
                         });
-                        if (detail.appTimeType <= 4) {
-                            vm.applyTimeData()[detail.appTimeType].timeZone[0].startTime(detail.timeZones[0].startTime);
-                            vm.applyTimeData()[detail.appTimeType].timeZone[0].endTime(detail.timeZones[0].endTime);
-                            vm.applyTimeData()[detail.appTimeType].applyTime[0].substituteAppTime(detail.applyTime.substituteAppTime);
-                            vm.applyTimeData()[detail.appTimeType].applyTime[0].annualAppTime(detail.applyTime.annualAppTime);
-                            vm.applyTimeData()[detail.appTimeType].applyTime[0].childCareAppTime(detail.applyTime.childCareAppTime);
-                            vm.applyTimeData()[detail.appTimeType].applyTime[0].careAppTime(detail.applyTime.careAppTime);
-                            vm.applyTimeData()[detail.appTimeType].applyTime[0].super60AppTime(detail.applyTime.super60AppTime);
-                            vm.applyTimeData()[detail.appTimeType].applyTime[0].specialAppTime(detail.applyTime.specialAppTime);
-                        } else {
-                            vm.applyTimeData()[4].applyTime[1].substituteAppTime(detail.applyTime.substituteAppTime);
-                            vm.applyTimeData()[4].applyTime[1].annualAppTime(detail.applyTime.annualAppTime);
-                            vm.applyTimeData()[4].applyTime[1].childCareAppTime(detail.applyTime.childCareAppTime);
-                            vm.applyTimeData()[4].applyTime[1].careAppTime(detail.applyTime.careAppTime);
-                            vm.applyTimeData()[4].applyTime[1].super60AppTime(detail.applyTime.super60AppTime);
-                            vm.applyTimeData()[4].applyTime[1].specialAppTime(detail.applyTime.specialAppTime);
-                        }
+                        const index1 = detail.appTimeType <= 4 ? detail.appTimeType : 4;
+                        const index2 = detail.appTimeType <= 4 ? 0 : 1;
+                        vm.applyTimeData()[index1].applyTime[index2].substituteAppTime(detail.applyTime.substituteAppTime);
+                        vm.applyTimeData()[index1].applyTime[index2].annualAppTime(detail.applyTime.annualAppTime);
+                        vm.applyTimeData()[index1].applyTime[index2].childCareAppTime(detail.applyTime.childCareAppTime);
+                        vm.applyTimeData()[index1].applyTime[index2].careAppTime(detail.applyTime.careAppTime);
+                        vm.applyTimeData()[index1].applyTime[index2].super60AppTime(detail.applyTime.super60AppTime);
+                        vm.applyTimeData()[index1].applyTime[index2].specialAppTime(detail.applyTime.specialAppTime);
+                        totalAppTime[LeaveType.SUBSTITUTE] += detail.applyTime.substituteAppTime;
+                        totalAppTime[LeaveType.ANNUAL] += detail.applyTime.annualAppTime;
+                        totalAppTime[LeaveType.CHILD_NURSING] += detail.applyTime.childCareAppTime;
+                        totalAppTime[LeaveType.NURSING] += detail.applyTime.careAppTime;
+                        totalAppTime[LeaveType.SUPER_60H] += detail.applyTime.super60AppTime;
+                        totalAppTime[LeaveType.SPECIAL] += detail.applyTime.specialAppTime;
+                        specialFrame = detail.applyTime.specialLeaveFrameNo;
                     });
+                    if (totalAppTime.filter(i => i > 0).length > 1) {
+                        vm.leaveType(LeaveType.COMBINATION);
+                    } else {
+                        vm.leaveType(_.findIndex(totalAppTime, i => i > 0));
+                    }
+                    vm.specialLeaveFrame(specialFrame);
                     // vm.printContentOfEachAppDto().opInforGoBackCommonDirectOutput = ko.toJS(vm.dataFetch);
                 }
             }).fail(err => {
@@ -197,93 +202,103 @@ module nts.uk.at.view.kaf012.b.viewmodel {
         // event update cần gọi lại ở button của view cha
         update() {
             const vm = this;
-            // if (!vm.appDispInfoStartupOutput().appDetailScreenInfo) {
-            //     return;
-            // }
-            // let application = ko.toJS(vm.application);
-            // vm.applicationTest = vm.appDispInfoStartupOutput().appDetailScreenInfo.application;
-            //
-            // vm.applicationTest.prePostAtr = application.prePostAtr;
-            // vm.applicationTest.opAppReason = application.opAppReason;
-            // vm.applicationTest.opAppStandardReasonCD = application.opAppStandardReasonCD;
-            // vm.applicationTest.opReversionReason = application.opReversionReason;
-            // if (vm.model) {
-            //     let isCondition1 = vm.model.checkbox3() == true && !vm.model.workTypeCode() && (vm.dataFetch().goBackReflect().reflectApplication === 3 || vm.dataFetch().goBackReflect().reflectApplication === 2);
-				// let isCondition2 = vm.model.checkbox3() == null && !vm.model.workTypeCode() && vm.dataFetch().goBackReflect().reflectApplication === 1;
-            //     if (isCondition1 || isCondition2) {
-            //        // $('#workSelect').focus();
-				// 	let el = document.getElementById('workSelect');
-	         //        if (el) {
-	         //            el.focus();
-	         //        }
-            //         return;
-            //     }
-            // }
-            // let model = ko.toJS( vm.model );
-            // let goBackApp = new GoBackApplication(
-            //     model.checkbox1 ? 1 : 0,
-            //     model.checkbox2 ? 1 : 0,
-            // );
-            // // is change can be null
-            // if (!_.isNull(model.checkbox3) || vm.dataFetch().goBackReflect().reflectApplication == 2 || vm.dataFetch().goBackReflect().reflectApplication == 3) {
-            //     goBackApp.isChangedWork = model.checkbox3 ? 1 : 0;
-            //
-            // }
-            //
-            // if	(!(vm.dataFetch().goBackReflect().reflectApplication == 2 || vm.dataFetch().goBackReflect().reflectApplication == 3)) {
-				// goBackApp.isChangedWork = null;
-            // }
-            // if (vm.mode && vm.model.checkbox3() || vm.dataFetch().goBackReflect().reflectApplication == 1) {
-            //     let dw = new DataWork( model.workTypeCode );
-            //     if ( model.workTimeCode ) {
-            //         dw.workTime = model.workTimeCode
-            //     }
-            //     goBackApp.dataWork = dw;
-            //
-            // }
-			
-            vm.$blockui("show");
+            if (!vm.appDispInfoStartupOutput().appDetailScreenInfo) {
+                return;
+            }
+            const details: Array<any> = [];
+            vm.applyTimeData().forEach((row : DataModel) => {
+                if (row.display() && row.timeZones.filter(i => !!i.startTime() || i.endTime()).length > 0) {
+                    if (row.appTimeType < 4) {
+                        details.push({
+                            appTimeType: row.appTimeType,
+                            timeZones: [{
+                                workNo: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.OFFWORK ? 1 : 2,
+                                startTime: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.ATWORK2 ? row.timeZones[0].startTime() : null,
+                                endTime: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.ATWORK2 ? null : row.timeZones[0].startTime(),
+                            }],
+                            applyTime: {
+                                substituteAppTime: row.applyTime[0].substituteAppTime(),
+                                annualAppTime: row.applyTime[0].annualAppTime(),
+                                childCareAppTime: row.applyTime[0].childCareAppTime(),
+                                careAppTime: row.applyTime[0].careAppTime(),
+                                super60AppTime: row.applyTime[0].super60AppTime(),
+                                specialAppTime: row.applyTime[0].specialAppTime(),
+                                specialLeaveFrameNo: row.applyTime[0].specialAppTime() > 0 ? vm.specialLeaveFrame() : null,
+                            }
+                        });
+                    } else {
+                        const privateTimeZones = row.timeZones.filter(z => z.appTimeType() == AppTimeType.PRIVATE && z.display() && (!!z.startTime() || !!z.endTime()));
+                        if (privateTimeZones.length > 0) {
+                            details.push({
+                                appTimeType: AppTimeType.PRIVATE,
+                                timeZones: privateTimeZones.map(z => ({workNo: z.workNo, startTime: z.startTime(), endTime: z.endTime()})),
+                                applyTime: {
+                                    substituteAppTime: row.applyTime[0].substituteAppTime(),
+                                    annualAppTime: row.applyTime[0].annualAppTime(),
+                                    childCareAppTime: row.applyTime[0].childCareAppTime(),
+                                    careAppTime: row.applyTime[0].careAppTime(),
+                                    super60AppTime: row.applyTime[0].super60AppTime(),
+                                    specialAppTime: row.applyTime[0].specialAppTime(),
+                                    specialLeaveFrameNo: row.applyTime[0].specialAppTime() > 0 ? vm.specialLeaveFrame() : null,
+                                }
+                            });
+                        }
+                        const unionTimeZones = row.timeZones.filter(z => z.appTimeType() == AppTimeType.UNION && z.display() && (!!z.startTime() || !!z.endTime()));
+                        if (unionTimeZones.length > 0) {
+                            details.push({
+                                appTimeType: AppTimeType.UNION,
+                                timeZones: unionTimeZones.map(z => ({workNo: z.workNo, startTime: z.startTime(), endTime: z.endTime()})),
+                                applyTime: {
+                                    substituteAppTime: row.applyTime[1].substituteAppTime(),
+                                    annualAppTime: row.applyTime[1].annualAppTime(),
+                                    childCareAppTime: row.applyTime[1].childCareAppTime(),
+                                    careAppTime: row.applyTime[1].careAppTime(),
+                                    super60AppTime: row.applyTime[1].super60AppTime(),
+                                    specialAppTime: row.applyTime[1].specialAppTime(),
+                                    specialLeaveFrameNo: row.applyTime[1].specialAppTime() > 0 ? vm.specialLeaveFrame() : null,
+                                }
+                            });
+                        }
+                    }
+                }
+            });
 
+            vm.$blockui("show");
             return vm.$validate('.nts-input', '#kaf000-b-component3-prePost', '#kaf000-b-component5-comboReason')
                 .then(isValid => {
                     if (isValid) {
-                        return true;
-
-                    }
-                }).then(result => {
-                    if(!result) return;
-                    let param = {
-                            companyId: this.$user.companyId,
-                            agentAtr: true,
-                            applicationDto: vm.applicationTest,
-                            goBackDirectlyDto: null,
-                            inforGoBackCommonDirectDto: ko.toJS( vm.dataFetch ),
-                            mode: false
+                        const params = {
+                            timeDigestAppType: vm.leaveType(),
+                            applicationUpdate: ko.toJS(vm.application),
+                            details: details,
+                            timeLeaveAppDisplayInfo: {
+                                appDispInfoStartupOutput: vm.appDispInfoStartupOutput(),
+                                timeLeaveManagement: vm.timeLeaveManagement(),
+                                timeLeaveRemaining: vm.timeLeaveRemaining(),
+                                reflectSetting: vm.reflectSetting()
+                            },
+                            agentMode: false
                         };
-
-
-                    return vm.$ajax(API.checkRegister, param);
+                        params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingStart = new Date(params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingStart).toISOString();
+                        params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingEnd = new Date(params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingEnd).toISOString();
+                        return vm.$ajax(API.checkRegister, params);
+                    }
                 }).then(res => {
                     if (res == undefined) return;
                     if ( _.isEmpty( res ) ) {
-                        return vm.registerData( null );
+                        return vm.registerData( details );
                     } else {
                         let listTemp = _.clone( res );
-                        return vm.handleConfirmMessage( listTemp, null );
+                        return vm.handleConfirmMessage( listTemp, details );
 
                     }
-
                 }).done(result => {
                     if (result != undefined) {
-                        vm.$dialog.info( { messageId: "Msg_15" } ).then(() => {
-                        	ko.contextFor($('#contents-area')[0]).$vm.loadData();
-                        });
+                        vm.$dialog.info( { messageId: "Msg_15" } );
                     }
                 }).fail(err => {
                     vm.handleError(err);
-
                 }).always(() => vm.$blockui("hide"));
-
         }
 
         handleConfirmMessage(listMes: any, res: any): any {
@@ -303,16 +318,19 @@ module nts.uk.at.view.kaf012.b.viewmodel {
             }
         }
 
-        registerData(goBackApp: any) {
-            // let vm = this;
-            // let paramsUpdate = {
-            //     applicationDto: vm.applicationTest,
-            //     goBackDirectlyDto: goBackApp,
-            //     inforGoBackCommonDirectDto: ko.toJS(vm.dataFetch)
-            // }
-            //
-            //  return vm.$ajax(API.updateApplication, paramsUpdate);
-
+        registerData(details: Array<any>) {
+            const vm = this;
+            const paramsRegister = {
+                timeLeaveAppDisplayInfo: {
+                    appDispInfoStartupOutput: vm.appDispInfoStartupOutput(),
+                    timeLeaveManagement: vm.timeLeaveManagement(),
+                    timeLeaveRemaining: vm.timeLeaveRemaining(),
+                    reflectSetting: vm.reflectSetting()
+                },
+                application: ko.toJS(vm.application),
+                details: details
+            };
+            return vm.$ajax(API.updateApplication, paramsRegister);
         }
 
         public handleError(err: any) {
@@ -321,7 +339,6 @@ module nts.uk.at.view.kaf012.b.viewmodel {
             if (err.message && err.messageId) {
                 param = {messageId: err.messageId, messageParams: err.parameterIds};
             } else {
-
                 if (err.message) {
                     param = {message: err.message, messageParams: err.parameterIds};
                 } else {

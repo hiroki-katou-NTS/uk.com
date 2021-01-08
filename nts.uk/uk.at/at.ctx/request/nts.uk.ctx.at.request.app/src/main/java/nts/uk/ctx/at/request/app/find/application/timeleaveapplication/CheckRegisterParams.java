@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.app.find.application.timeleaveapplication;
 
 import lombok.Data;
+import nts.uk.ctx.at.request.app.command.application.common.ApplicationUpdateCmd;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.TimeLeaveAppDetailDto;
 import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.TimeLeaveAppDisplayInfoDto;
@@ -14,7 +15,9 @@ public class CheckRegisterParams {
     private int timeDigestAppType;
 
     // 申請
-    private ApplicationDto application;
+    private ApplicationDto applicationNew;
+
+    private ApplicationUpdateCmd applicationUpdate;
 
     // 時間休暇申請. 詳細
     private List<TimeLeaveAppDetailDto> details;
@@ -24,6 +27,4 @@ public class CheckRegisterParams {
 
     // 代休申請区分
     private boolean agentMode;
-
-    private boolean newMode;
 }

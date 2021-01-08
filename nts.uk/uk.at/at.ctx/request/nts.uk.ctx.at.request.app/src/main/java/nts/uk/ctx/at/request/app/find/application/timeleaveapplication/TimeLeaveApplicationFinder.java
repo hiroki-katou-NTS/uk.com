@@ -300,24 +300,24 @@ public class TimeLeaveApplicationFinder {
         Application application;
         TimeLeaveApplicationOutput output = TimeLeaveAppDisplayInfoDto.mappingData(params.getTimeLeaveAppDisplayInfo());
 
-        if (params.isNewMode()) {
+        if (params.getApplicationNew() != null) {
             String employeeId = AppContexts.user().employeeId();
             application = Application.createFromNew(
-                    EnumAdaptor.valueOf(params.getApplication().getPrePostAtr(), PrePostAtr.class),
+                    EnumAdaptor.valueOf(params.getApplicationNew().getPrePostAtr(), PrePostAtr.class),
                     employeeId,
-                    EnumAdaptor.valueOf(params.getApplication().getAppType(), ApplicationType.class),
-                    new ApplicationDate(GeneralDate.fromString(params.getApplication().getAppDate(), "yyyy/MM/dd")),
+                    EnumAdaptor.valueOf(params.getApplicationNew().getAppType(), ApplicationType.class),
+                    new ApplicationDate(GeneralDate.fromString(params.getApplicationNew().getAppDate(), "yyyy/MM/dd")),
                     employeeId,
                     Optional.empty(),
                     Optional.empty(),
-                    Optional.of(new ApplicationDate(GeneralDate.fromString(params.getApplication().getOpAppStartDate(), "yyyy/MM/dd"))),
-                    Optional.of(new ApplicationDate(GeneralDate.fromString(params.getApplication().getOpAppEndDate(), "yyyy/MM/dd"))),
-                    params.getApplication().getOpAppReason() == null
+                    Optional.of(new ApplicationDate(GeneralDate.fromString(params.getApplicationNew().getOpAppStartDate(), "yyyy/MM/dd"))),
+                    Optional.of(new ApplicationDate(GeneralDate.fromString(params.getApplicationNew().getOpAppEndDate(), "yyyy/MM/dd"))),
+                    params.getApplicationNew().getOpAppReason() == null
                             ? Optional.empty()
-                            : Optional.of(new AppReason(params.getApplication().getOpAppReason())),
-                    params.getApplication().getOpAppStandardReasonCD() == null
+                            : Optional.of(new AppReason(params.getApplicationNew().getOpAppReason())),
+                    params.getApplicationNew().getOpAppStandardReasonCD() == null
                             ? Optional.empty()
-                            : Optional.of(new AppStandardReasonCode(params.getApplication().getOpAppStandardReasonCD()))
+                            : Optional.of(new AppStandardReasonCode(params.getApplicationNew().getOpAppStandardReasonCD()))
             );
 
             // アルゴリズム「2-1.新規画面登録前の処理」を実行する
@@ -332,7 +332,7 @@ public class TimeLeaveApplicationFinder {
                     output.getAppDispInfoStartup()
             );
         } else {
-            application = params.getApplication().toDomain();
+            application = params.getApplicationUpdate().toDomain(params.getTimeLeaveAppDisplayInfo().getAppDispInfoStartupOutput().getAppDetailScreenInfo().getApplication());
             // 4-1.詳細画面登録前の処理
             detailBeforeProcessRegisterService.processBeforeDetailScreenRegistration(
                     companyId,

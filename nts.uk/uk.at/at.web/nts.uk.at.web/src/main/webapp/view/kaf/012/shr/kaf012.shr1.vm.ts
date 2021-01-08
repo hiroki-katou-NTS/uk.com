@@ -328,7 +328,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
         }
     }
 
-    interface TimeLeaveRemaining {
+    export interface TimeLeaveRemaining {
         annualTimeLeaveRemainingDays: number,
         annualTimeLeaveRemainingTime: number,
         careRemainingDays: number,
@@ -336,8 +336,8 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
         childCareRemainingDays: number,
         childCareRemainingTime: number,
         remainingPeriod: {
-            reversed: boolean,
-            endMax: boolean
+            remainingStart: string,
+            remainingEnd: string
         },
         specialTimeFrames: Array<any>,
         subTimeLeaveRemainingTime: number,
