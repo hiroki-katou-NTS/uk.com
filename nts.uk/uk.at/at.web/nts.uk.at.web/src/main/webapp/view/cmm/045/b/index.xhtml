@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 770,
+					height : 480
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="/view/cmm/045/b/cmm045.b.main.css" />
+			<com:scriptfile path="../shr/cmm045.shr.vmbase.js" />
+			<com:scriptfile path="/view/cmm/045/b/cmm045.b.vm.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="contents-area">
+				<div class="table cmm045-div-table">
+					<div class="cell" style="width: 400px; padding-left: 5px; padding-right: 5px;" data-bind="text: applicantName"></div>
+					<div class="cell" style="width: 175px; padding-left: 5px; padding-right: 5px;" data-bind="text: appName"></div>
+					<div class="cell" style="padding-left: 5px; padding-right: 5px;" data-bind="text: appDate"></div>
+				</div>
+				<div class="table cmm045-div-table" data-bind="html: topComment"></div>
+				<div class="table cmm045-div-table">
+					<table id="content-table" style="width: 710px;">
+						<thead>
+							<tr style="background-color: #99ccff">
+								<td style="text-align: center; padding: 5px;">#{i18n.getText('CMM045_70')}</td>
+							</tr>
+						</thead>
+						<tbody>
+							<tr data-bind="css: { 'bg-pre-application-excess': isPreError(), 'bg-workinh-result-excess': !isPreError() }">
+								<td style="vertical-align: top; padding: 5px;" data-bind="html: appContent"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="table cmm045-div-table" data-bind="text: bottomComment"></div>
+				<div class="table" style="margin-left: 20px;">#{i18n.getText('CMM045_71')}</div>
+			</div>
+			<div id="functions-area-bottom">
+				<div style="display: inline-block;"><button id="cmm045-b-btn-confirm" data-bind="click: confirm">#{i18n.getText('Msg_35')}</button></div>
+				<div style="display: inline-block;"><button data-bind="click: notConfirm">#{i18n.getText('Msg_36')}</button></div>
+				<div style="display: inline-block;" data-bind="if: isMulti"><button data-bind="click: confirmAll">#{i18n.getText('Msg_379')}</button></div>
+				<div style="display: inline-block;" data-bind="if: isMulti"><button data-bind="click: notConfirmAll">#{i18n.getText('Msg_380')}</button></div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

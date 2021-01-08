@@ -39,12 +39,11 @@ public class WorkScheduleWorkInforAcFinder implements WorkScheduleWorkInforAdapt
 	public Optional<WorkScheduleWorkInforImport> get(String employeeID, GeneralDate ymd) {
 		Optional<WorkScheduleExport> data = workSchedulePub.get(employeeID, ymd);
 		if (data.isPresent()) {
-			Optional<BreakTimeOfDailyAttdImport> listBreakTimeOfDailyAttdImport = data.get().getListBreakTimeOfDaily()
-					.map(c -> new BreakTimeOfDailyAttdImport(
-							c.getBreakTimeSheets().stream()
+			BreakTimeOfDailyAttdImport listBreakTimeOfDailyAttdImport = new BreakTimeOfDailyAttdImport(
+					data.get().getListBreakTimeOfDaily().getBreakTimeSheets().stream()
 									.map(x -> new BreakTimeSheetImport(x.getBreakFrameNo(), x.getStartTime(),
 											x.getEndTime(), x.getBreakTime()))
-									.collect(Collectors.toList())));
+									.collect(Collectors.toList()));
 			return Optional.of(new WorkScheduleWorkInforImport(data.get().getWorkTyle(), data.get().getWorkTime(),
 					data.get().getGoStraightAtr(), data.get().getBackStraightAtr(),
 					!data.get().getTimeLeavingOfDailyAttd().isPresent() ? null

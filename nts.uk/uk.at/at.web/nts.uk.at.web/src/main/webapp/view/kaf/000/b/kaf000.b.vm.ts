@@ -19,11 +19,13 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         application: KnockoutObservable<Application> = ko.observable(new Application(0));
         approvalReason: KnockoutObservable<string> = ko.observable("");
 		opPrintContentOfEachApp: PrintContentOfEachAppDto = {
+            opPrintContentOfHolidayWork: null,
 			opPrintContentOfWorkChange: null,
 			opAppStampOutput: null,
 			opArrivedLateLeaveEarlyInfo: null,
 			opInforGoBackCommonDirectOutput: null,
             opBusinessTripInfoOutput: null,
+			opDetailOutput: null,
             opOptionalItemOutput: null,
 		};
         childParam: any = {};
@@ -133,6 +135,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 								condition = condition && o.opApplicationTypeDisplay==4;
 								opString = "D";
 							}
+						}
+						if(vm.appType() == 0) {
+							return false;
 						}
 						return condition;
 					});
@@ -435,8 +440,28 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             case "Msg_1692":
             case "Msg_1691":
             case "Msg_1693":
-                vm.$dialog.error(res);
+                vm.$dialog.error({ messageId: res.messageId, messageParams: res.parameterIds });
                 break;
+			case 'Msg_235':
+			case 'Msg_391':
+			case 'Msg_1518':
+			case 'Msg_236':
+			case 'Msg_324':
+			case 'Msg_237':
+			case 'Msg_238':
+			case 'Msg_327':
+			case 'Msg_328':
+			case 'Msg_1530':
+			case 'Msg_448':
+			case 'Msg_449':
+			case 'Msg_450':
+			case 'Msg_451':
+			case 'Msg_768':
+			case 'Msg_1715':
+			case 'Msg_1521':
+			case 'Msg_1648':
+				vm.$dialog.error({ messageId: res.messageId, messageParams: res.parameterIds });
+				break;
             default:
                 vm.$dialog.error(res.message).then(() => {
                     vm.$jump("com", "/view/ccg/008/a/index.xhtml");
@@ -485,6 +510,16 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 					}
 				}
 			});
+		}
+		
+		getAppNameForAppOverTime(overtimeAtr: number) {
+			const vm = this;
+			let appNameInfo = _.find(vm.appNameList, (o: any) => vm.appType() == 0 && o.opApplicationTypeDisplay==overtimeAtr);
+			if(appNameInfo) {
+				document.getElementById("pg-name").innerHTML = appNameInfo.opProgramID + "B " + appNameInfo.appName;
+			} else {
+				document.getElementById("pg-name").innerHTML = "";
+			}
 		}
     }
 

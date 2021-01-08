@@ -66,6 +66,10 @@ public class ProxyApplicationFinder {
                     .collect(Collectors.toList());
         }
 
+        if (result.isEmpty()) {
+            throw new BusinessException("Msg_2071");
+        }
+
         if (!CollectionUtil.isEmpty(result)) {
 
             List<AtMenuNameQueryImport> queryImports = new ArrayList<>();
@@ -167,8 +171,11 @@ public class ProxyApplicationFinder {
                 return "";
             case 14:
                 return "KAF021";
+            case 15:
+                return "KAF020";
+            default:
+                return null;
         }
-        return null;
     }
 
 }
