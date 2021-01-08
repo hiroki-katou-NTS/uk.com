@@ -185,9 +185,9 @@ module nts.uk.at.view.kml001.a {
         });
 
         let personCostRoundingSetting: any = {
-          unitPriceRounding: self.currentPersonCost().personCostRoundingSetting().roundingUnitPrice(), // 0 -> 2
-          unit: self.currentPersonCost().personCostRoundingSetting().unit(), // 1, 10, 100, 1000,
-          rounding: self.currentPersonCost().personCostRoundingSetting().inUnits() // 0 -> 9
+          unitPriceRounding: self.currentPersonCost().personCostRoundingSetting().roundingUnitPrice, // 0 -> 2
+          unit: self.currentPersonCost().personCostRoundingSetting().unit, // 1, 10, 100, 1000,
+          rounding: self.currentPersonCost().personCostRoundingSetting().inUnits // 0 -> 9
         };
 
         let startDate = moment.utc(self.currentPersonCost().startDate(), 'YYYY-MM-DD').toISOString();
@@ -206,11 +206,12 @@ module nts.uk.at.view.kml001.a {
           premiumSets: premiumSettingList
         };
 
+        self.$blockui('show');
         servicebase.personCostCalculationUpdate(params)
           .done(() => {
             self.$dialog.info({ messageId: "Msg_15" }).then(() => {
-              self.reloadHistoryList();
               self.$blockui('hide');
+              self.reloadHistoryList();
             });
           })
           .fail((error) => {
@@ -238,7 +239,7 @@ module nts.uk.at.view.kml001.a {
         var self = this;
         /* let currentIndex = _.findIndex(self.personCostList(), function (item) { return item.historyID() == self.currentPersonCost().historyID() });
         let index = currentIndex ? currentIndex : 0;  */
-       
+
         let oldPremiumSets = self.clonePersonCostCalculation(self.currentPersonCost()).premiumSets();
         nts.uk.ui.windows.setShared('isInsert', self.isInsert());
         nts.uk.ui.windows.sub.modal("/view/kml/001/b/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function () {
@@ -375,26 +376,29 @@ module nts.uk.at.view.kml001.a {
         nts.uk.ui.windows.setShared('Multiple', true);
         servicebase.getAttendanceItemByType(0)
           .done(function (res: Array<any>) {
+            nts.uk.ui.block.clear();
             nts.uk.ui.windows.setShared('AllAttendanceObj', _.map(res, function (item) { return item.attendanceItemId }));
             nts.uk.ui.windows.sub.modal("/view/kdl/021/a/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function () {
               let newList = nts.uk.ui.windows.getShared('selectedChildAttendace');
-              if (newList != null) {
-                nts.uk.ui.errors.clearAll();
-                if (newList.length != 0) {
-                  if (!_.isEqual(newList, currentList)) {
-                    //clone Knockout Object
-                    self.currentPersonCost().startDate(self.newStartDate());
-                    self.currentPersonCost(self.clonePersonCostCalculation(self.currentPersonCost()));
-                    self.newStartDate(self.currentPersonCost().startDate());
-                    self.getItem(newList, index);
+              nts.uk.ui.block.invisible();
+              _.defer(() => {
+                if (newList != null) {
+                  nts.uk.ui.errors.clearAll();
+                  if (newList.length != 0) {
+                    if (!_.isEqual(newList, currentList)) {
+                      //clone Knockout Object
+                      //self.currentPersonCost().startDate(self.newStartDate());
+                      //self.currentPersonCost(self.clonePersonCostCalculation(self.currentPersonCost()));
+                      //elf.newStartDate(self.currentPersonCost().startDate());
+                      self.getItem(newList, index);
+                    }
+                  } else {
+                    self.currentPersonCost().premiumSets()[index].attendanceItems([]);
                   }
-                } else {
-                  self.currentPersonCost().premiumSets()[index].attendanceItems([]);
                 }
-              }
-
-              nts.uk.ui.block.clear();
-              self.setTabindex();
+                nts.uk.ui.block.clear();
+              });
+              //self.setTabindex();
             });
           }).fail(function (res) {
             nts.uk.ui.dialog.alertError(res.message).then(function () { nts.uk.ui.block.clear(); });
