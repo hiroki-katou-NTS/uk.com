@@ -264,7 +264,7 @@ export class KafS05Step1Component extends Vue {
         self.workHours2 = workHours2.start ?  workHours2 : null;
 
     }
-    public loadData(displayInfoOverTime?: DisplayInfoOverTime, inputByUser?: boolean) {
+    public loadData(displayInfoOverTime?: DisplayInfoOverTime, inputByUser?: boolean, isOpenKDL?: boolean) {
         const self = this;
         if (!_.isNil(displayInfoOverTime)) {
 
@@ -283,8 +283,8 @@ export class KafS05Step1Component extends Vue {
 
                 return;
             }
-            let codeType = _.get(displayInfoOverTime, 'infoWithDateApplicationOp.workTypeCD');
-            let codeTime = _.get(displayInfoOverTime, 'infoWithDateApplicationOp.workTimeCD');
+            let codeType = isOpenKDL ? self.workInfo.workType.code : _.get(displayInfoOverTime, 'infoWithDateApplicationOp.workTypeCD');
+            let codeTime = isOpenKDL ? self.workInfo.workTime.code : _.get(displayInfoOverTime, 'infoWithDateApplicationOp.workTimeCD');
             self.createWorkInfo(codeType, codeTime);
             self.createBreakTime(_.get(displayInfoOverTime, 'infoWithDateApplicationOp.breakTime.timeZones'));
 
