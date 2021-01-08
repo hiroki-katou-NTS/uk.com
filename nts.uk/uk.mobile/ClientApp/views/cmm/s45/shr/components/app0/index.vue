@@ -9,7 +9,7 @@
     <div v-if="c3">
         <!-- B1_2 -->
         <div class="row mt-1 mb-1">
-            <div class="col-12 pl-3"> {{"KAFS05_64" | i18n}} </div>
+            <div class="col-12 pl-3 textSize">{{"KAFS05_64" | i18n}}</div>
         </div>
         <!-- B1_3 -->
         <div class="row mt-1 mb-1">
@@ -23,7 +23,7 @@
 
         <!-- B1_4 -->
         <div class="row mt-1 mb-1">
-            <div class="col-12 pl-3"> {{"KAFS05_65" | i18n}} </div>
+            <div class="col-12 pl-3 textSize"> {{"KAFS05_65" | i18n}} </div>
         </div>
         <!-- B1_5 -->
         <div class="row mt-1 mb-1">
@@ -94,7 +94,7 @@
         >
             <!-- B4_2 -->
             <div class="row mt-1 mb-1">
-                <div class="col-12"> {{item.title}} </div>
+                <div class="col-12 textSize"> {{item.title}} </div>
             </div>
             <!-- B4_3 -->
             <div class="row mt-1 mb-1">
@@ -124,7 +124,7 @@
     >   
         <div v-if="c4" class="row mt-1 mb-1">
             <!-- B5_2_1 -->
-            <div class="col pl-4">
+            <div class="col pl-4 textSize">
                 {{item.title}}
             </div>
             <!-- B5_2_2 -->
@@ -167,7 +167,7 @@
       >  
         <div class="row mt-1 mb-1">
             <!-- B6_2_1 -->
-            <div class="col pl-4">
+            <div class="col pl-4 textSize">
                 {{item.title}}
             </div>
             <!-- B6_2_2 -->
