@@ -11,7 +11,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 
 	@bean()
 	export class Kaf011AViewModel extends Kaf000AViewModel {
-		params: KAF011Param;
+		params: AppInitParam;
 		
 		appType: KnockoutObservable<number> = ko.observable(AppType.COMPLEMENT_LEAVE_APPLICATION);
 		applicationCommon: KnockoutObservable<Application> = ko.observable(new Application());
@@ -48,19 +48,42 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 		];
 		
 		settingCheck = ko.observable(true);
+		isFromOther: boolean = false;
 		
-		created(params: KAF011Param) {
+		created(params?: AppInitParam) {
 			const vm = this;
-			vm.params = params;
-			let empLst: Array<string> = [];
-			let	dateLst: Array<string> = [];
 			if(params){
-				empLst = params.employeeIDLst || [__viewContext.user.employeeId];
-				params.recAppDate? dateLst.push(params.recAppDate):true;
-				params.absAppDate? dateLst.push(params.absAppDate):true;
+				vm.params = params;	
+			}
+			
+			if(!_.isNil(__viewContext.transferred.value)) {
+				vm.isFromOther = true;
+			}
+			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
+			let paramDate;
+			if(params){
+				if (!_.isEmpty(params.baseDate)) {
+					paramDate = moment(params.baseDate).format('YYYY/MM/DD');
+					vm.absenceLeaveApp.application.appDate(paramDate);
+					vm.absenceLeaveApp.application.opAppStartDate(paramDate);
+                    vm.absenceLeaveApp.application.opAppEndDate(paramDate);
+					vm.recruitmentApp.application.appDate(paramDate);
+					vm.recruitmentApp.application.opAppStartDate(paramDate);
+                    vm.recruitmentApp.application.opAppEndDate(paramDate);
+				}
+				if (params.isAgentMode) {
+					vm.isAgentMode(params.isAgentMode);
+				}
+			}else {
+				vm.absenceLeaveApp.application.appDate('');
+				vm.absenceLeaveApp.application.opAppStartDate('');
+                vm.absenceLeaveApp.application.opAppEndDate('');
+				vm.recruitmentApp.application.appDate('');
+				vm.recruitmentApp.application.opAppStartDate('');
+                vm.recruitmentApp.application.opAppEndDate('');
 			}
 			vm.$blockui("grayout");
-			vm.loadData(empLst, dateLst, vm.appType()).then(() => {
+			vm.loadData(params?params.employeeIds:[], paramDate?[paramDate]:[], vm.appType()).then(() => {
 				vm.$blockui("grayout");
 				vm.$ajax('at/request/application/holidayshipment/startPageARefactor',{sIDs: [], appDate: [], appDispInfoStartup: vm.appDispInfoStartupOutput()}).then((data: any) =>{
 					vm.displayInforWhenStarting(data);
@@ -74,9 +97,9 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					vm.comment.update(data.substituteHdWorkAppSet);
 					$('#isSendMail').css({'display': 'inline-block'});
 					$('#contents-area').css({'display': ''});
+					$('#functions-area').css({'opacity': ''});
 					vm.$blockui("hide"); 
 				}).fail((failData: any) => {
-					$('#functions-area').css({'display': 'none'});
 					vm.$dialog.error(failData).then(() => { vm.$jump("com", "/view/ccg/008/a/index.xhtml"); });
 				}).always(() => {
 					
@@ -98,7 +121,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 			vm.absenceLeaveApp.application.opAppReason = vm.recruitmentApp.application.opAppReason = vm.applicationCommon().opAppReason;
 			
 			vm.recruitmentApp.application.appDate.subscribe(value =>{
-				if(value != "" && !$('#recAppDate').ntsError('hasError')){
+				if(value != "" && !$('#recAppDate').ntsError('hasError') && vm.recruitmentApp.started){
 					vm.$blockui("grayout");
 					let holidayDate = (vm.appCombinaSelected() != 1 && vm.absenceLeaveApp.application.appDate() && !$('#absAppDate').ntsError('hasError')) ? moment(vm.absenceLeaveApp.application.appDate()).format('YYYY/MM/DD'): null;
 					vm.$ajax('at/request/application/holidayshipment/changeRecDate',{workingDate: moment(value).format('YYYY/MM/DD'), holidayDate: holidayDate, displayInforWhenStarting: vm.displayInforWhenStarting()}).then((data: any) =>{
@@ -110,7 +133,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 			});
 			
 			vm.absenceLeaveApp.application.appDate.subscribe(value =>{
-				if(value != "" && !$('#absAppDate').ntsError('hasError')){
+				if(value != "" && !$('#absAppDate').ntsError('hasError') && vm.recruitmentApp.started){
 					vm.$blockui("grayout");
 					let workingDate = (vm.appCombinaSelected() != 2 && vm.recruitmentApp.application.appDate() && !$('#recAppDate').ntsError('hasError')) ? moment(vm.recruitmentApp.application.appDate()).format('YYYY/MM/DD'): null;
 					vm.$ajax('at/request/application/holidayshipment/changeAbsDate',{workingDate: workingDate, holidayDate: moment(value).format('YYYY/MM/DD'), displayInforWhenStarting: vm.displayInforWhenStarting()}).then((data: any) =>{
@@ -176,7 +199,9 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					}
 				console.log(data);	
 				vm.$ajax('at/request/application/holidayshipment/save', data).then((data: any) =>{
-					vm.$dialog.info({ messageId: "Msg_15" });
+					vm.$dialog.info({ messageId: "Msg_15" }).done(()=>{
+						vm.created();
+					});
 				}).fail((failData) => {
 					vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds });
 				});
@@ -188,10 +213,10 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 		openKDL009() {
 			let self = this;
 			nts.uk.ui.windows.setShared('KDL009_DATA', {
-				employeeIds: (self.params ? self.params.employeeIDLst : [__viewContext.user.employeeId]),
+				employeeIds: (self.params ? self.params.employeeIds : [__viewContext.user.employeeId]),
 				baseDate: moment(new Date()).format("YYYYMMDD")
 			});
-			if(self.params && self.params.employeeIDLst.length > 1){
+			if(self.params && self.params.employeeIds.length > 1){
 				nts.uk.ui.windows.sub.modal( '/view/kdl/009/a/multi.xhtml');	
 			}else{
 				nts.uk.ui.windows.sub.modal( '/view/kdl/009/a/single.xhtml');
