@@ -64,7 +64,12 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 				if (!_.isEmpty(params.baseDate)) {
 					let paramDate = moment(params.baseDate).format('YYYY/MM/DD');
 					dateLst = [paramDate];
-					
+					vm.absenceLeaveApp.application.appDate(dateLst[0]);
+					vm.absenceLeaveApp.application.opAppStartDate(dateLst[0]);
+                    vm.absenceLeaveApp.application.opAppEndDate(dateLst[0]);
+					vm.recruitmentApp.application.appDate(dateLst[0]);
+					vm.recruitmentApp.application.opAppStartDate(dateLst[0]);
+                    vm.recruitmentApp.application.opAppEndDate(dateLst[0]);
 				}
 				if (params.isAgentMode) {
 					vm.isAgentMode(params.isAgentMode);
@@ -83,9 +88,6 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					vm.recruitmentApp.bindingScreenA(data.applicationForWorkingDay, data);
 					vm.absenceLeaveApp.bindingScreenA(data.applicationForHoliday, data);
 					vm.comment.update(data.substituteHdWorkAppSet);
-					vm.recruitmentApp.application.appDate(dateLst[0]);
-					vm.recruitmentApp.application.opAppStartDate(dateLst[0]);
-                    vm.recruitmentApp.application.opAppEndDate(dateLst[0]);
 					$('#isSendMail').css({'display': 'inline-block'});
 					$('#contents-area').css({'display': ''});
 					vm.$blockui("hide"); 
