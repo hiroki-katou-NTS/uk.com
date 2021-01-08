@@ -1206,7 +1206,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 				let dateSpecHdRelationLst = vm.data.specAbsenceDispInfo.dateSpecHdRelationLst;
 				let selectedRela = _.filter(dateSpecHdRelationLst, { 'relationCD': vm.selectedDateSpec() });
 
-				if (vm.selectedDateSpec() && selectedRela.length > 0 && selectedRela.threeParentOrLess) {
+				if (vm.selectedDateSpec() && selectedRela.length > 0 && selectedRela[0].threeParentOrLess) {
 					vm.condition8(true);
 					return true;
 				}
