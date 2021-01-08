@@ -73,10 +73,10 @@ module nts.uk.at.view.kaf006.c.viewmodel {
     
                     let holidayDates = [];
                     if (startDate) {
-                        holidayDates.push(new Date(startDate).toISOString());
+                        holidayDates.push(new Date(startDate).toLocaleDateString());
                     }
                     if (endDate) {
-                        holidayDates.push(new Date(endDate).toISOString());
+                        holidayDates.push(new Date(endDate).toLocaleDateString());
                     }
 
                     if (_.isEmpty(holidayDates)) {
@@ -87,6 +87,16 @@ module nts.uk.at.view.kaf006.c.viewmodel {
                         holidayDates: holidayDates,
                         appAbsenceStartInfoDto: vm.appAbsenceStartInfoOutput
                     }
+                    command.appAbsenceStartInfoDto.leaveComDayOffManas = _.map(command.appAbsenceStartInfoDto.leaveComDayOffManas, (x: any) => {
+                        x.dateOfUse = new Date(x.dateOfUse).toISOString();
+                        x.outbreakDay = new Date(x.outbreakDay).toISOString();
+                        return x;
+                    });
+                    command.appAbsenceStartInfoDto.payoutSubofHDManas = _.map(command.appAbsenceStartInfoDto.payoutSubofHDManas, (x: any) => {
+                        x.dateOfUse = new Date(x.dateOfUse).toISOString();
+                        x.outbreakDay = new Date(x.outbreakDay).toISOString();
+                        return x;
+                    });
     
                     block.invisible();
                     service.changeHolidayDates(command)
@@ -117,10 +127,10 @@ module nts.uk.at.view.kaf006.c.viewmodel {
     
                     let holidayDates = [];
                     if (startDate) {
-                        holidayDates.push(new Date(startDate).toISOString());
+                        holidayDates.push(new Date(startDate).toLocaleDateString());
                     }
                     if (endDate) {
-                        holidayDates.push(new Date(endDate).toISOString());
+                        holidayDates.push(new Date(endDate).toLocaleDateString());
                     }
 
                     if (_.isEmpty(holidayDates)) {
@@ -131,6 +141,16 @@ module nts.uk.at.view.kaf006.c.viewmodel {
                         holidayDates: holidayDates,
                         appAbsenceStartInfoDto: vm.appAbsenceStartInfoOutput
                     }
+                    command.appAbsenceStartInfoDto.leaveComDayOffManas = _.map(command.appAbsenceStartInfoDto.leaveComDayOffManas, (x: any) => {
+                        x.dateOfUse = new Date(x.dateOfUse).toISOString();
+                        x.outbreakDay = new Date(x.outbreakDay).toISOString();
+                        return x;
+                    });
+                    command.appAbsenceStartInfoDto.payoutSubofHDManas = _.map(command.appAbsenceStartInfoDto.payoutSubofHDManas, (x: any) => {
+                        x.dateOfUse = new Date(x.dateOfUse).toISOString();
+                        x.outbreakDay = new Date(x.outbreakDay).toISOString();
+                        return x;
+                    });
     
                     block.invisible();
                     service.changeHolidayDates(command)
