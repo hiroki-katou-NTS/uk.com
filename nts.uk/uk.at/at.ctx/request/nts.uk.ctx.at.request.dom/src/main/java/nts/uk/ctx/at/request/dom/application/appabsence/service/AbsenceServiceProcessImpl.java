@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.application.appabsence.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -1730,14 +1731,10 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
                     applyForLeave.getApplication().getAppDate().getApplicationDate();
                 
         List<GeneralDate> listDates = new DatePeriod(startDate, endDate).datesBetween();
-        List<GeneralDate> listDatesTemp = listDates;
         
         List<GeneralDate> listHolidayDates = appDates.stream().map(date -> GeneralDate.fromString(date, FORMAT_DATE)).collect(Collectors.toList());
-        for (GeneralDate date : listDatesTemp) {
-            if (listHolidayDates.contains(date)) {
-                listDates.remove(date);
-            }
-        }
+        
+        listDates = listDates.stream().filter(date -> !listHolidayDates.contains(date)).collect(Collectors.toList());
         
         // 暫定データの登録
 //        this.interimRemainData.registerDateChange(companyId, applyForLeave.getApplication().getEmployeeID(), listDates);
@@ -1822,13 +1819,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
         DatePeriod datePeriod = new DatePeriod(GeneralDate.fromString(appStartDate, FORMAT_DATE), GeneralDate.fromString(appEndDate, FORMAT_DATE));
         List<GeneralDate> listDates = datePeriod.datesBetween();
         
-        List<GeneralDate> listDatesTemp = listDates;
-        
-        for (GeneralDate date : listDatesTemp) {
-            if (lstDatesHoliday.contains(date)) {
-                listDates.remove(date);
-            }
-        }
+        listDates = listDates.stream().filter(date -> !lstDatesHoliday.contains(date)).collect(Collectors.toList());
         
      // INPUT．「勤務種類」が代休の勤務種類かチェックする
         List<LeaveComDayOffManagement> leaveComDayOffManagements = new ArrayList<LeaveComDayOffManagement>();
@@ -1966,15 +1957,10 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
                     applyForLeave.getApplication().getAppDate().getApplicationDate();
                 
         List<GeneralDate> listDates = new DatePeriod(startDate, endDate).datesBetween();
-        List<GeneralDate> listDatesTemp = listDates;
         
         List<GeneralDate> listHolidayDates = holidayAppDates.stream().map(date -> GeneralDate.fromString(date, FORMAT_DATE)).collect(Collectors.toList());
-        for (GeneralDate date : listDatesTemp) {
-            if (listHolidayDates.contains(date)) {
-                listDates.remove(date);
-            }
-        }
-        
+
+        listDates = listDates.stream().filter(date -> !listHolidayDates.contains(date)).collect(Collectors.toList());
 
         // 暫定データの登録
 //        this.interimRemainData.registerDateChange(companyId, applyForLeave.getApplication().getEmployeeID(), listDates);
@@ -2066,13 +2052,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
         DatePeriod datePeriod = new DatePeriod(GeneralDate.fromString(startDate, FORMAT_DATE), GeneralDate.fromString(endDate, FORMAT_DATE));
         List<GeneralDate> listDates = datePeriod.datesBetween();
         
-        List<GeneralDate> listDatesTemp = listDates;
-        
-        for (GeneralDate date : listDatesTemp) {
-            if (holidayDates.contains(date)) {
-                listDates.remove(date);
-            }
-        }
+        listDates = listDates.stream().filter(date -> !holidayDates.contains(date)).collect(Collectors.toList());
         
         // INPUT．「休出代休紐付け管理」Listをチェックする
         if (!leaveComDayOffMana.isEmpty()) {
