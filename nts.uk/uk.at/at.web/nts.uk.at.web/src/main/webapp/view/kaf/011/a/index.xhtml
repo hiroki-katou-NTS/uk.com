@@ -42,7 +42,7 @@
 			<com:scriptfile path="kaf011.a.vm.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div id="functions-area" class="kaf011">
+			<div id="functions-area" class="kaf011" style="opacity: 0;">
 				<div style="display: inline-block;" data-bind="component: { name: 'kaf000-a-component9', params: isFromOther }"></div>
 				<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty" tabindex="1">#{i18n.getText('KAF011_3')}</button>
 				<button class="" data-bind="click: openKDL009" tabindex="2">#{i18n.getText('KAF011_7')}</button>

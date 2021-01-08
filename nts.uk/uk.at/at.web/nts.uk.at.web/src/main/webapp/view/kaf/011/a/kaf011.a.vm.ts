@@ -50,33 +50,40 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 		settingCheck = ko.observable(true);
 		isFromOther: boolean = false;
 		
-		created(params: AppInitParam) {
+		created(params?: AppInitParam) {
 			const vm = this;
-			vm.params = params;
+			if(params){
+				vm.params = params;	
+			}
+			
 			if(!_.isNil(__viewContext.transferred.value)) {
 				vm.isFromOther = true;
 			}
 			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
-			let empLst: Array<string> = [];
-			let	dateLst: Array<string> = [];
+			let paramDate;
 			if(params){
-				empLst = params.employeeIds || [__viewContext.user.employeeId];
 				if (!_.isEmpty(params.baseDate)) {
-					let paramDate = moment(params.baseDate).format('YYYY/MM/DD');
-					dateLst = [paramDate];
-					vm.absenceLeaveApp.application.appDate(dateLst[0]);
-					vm.absenceLeaveApp.application.opAppStartDate(dateLst[0]);
-                    vm.absenceLeaveApp.application.opAppEndDate(dateLst[0]);
-					vm.recruitmentApp.application.appDate(dateLst[0]);
-					vm.recruitmentApp.application.opAppStartDate(dateLst[0]);
-                    vm.recruitmentApp.application.opAppEndDate(dateLst[0]);
+					paramDate = moment(params.baseDate).format('YYYY/MM/DD');
+					vm.absenceLeaveApp.application.appDate(paramDate);
+					vm.absenceLeaveApp.application.opAppStartDate(paramDate);
+                    vm.absenceLeaveApp.application.opAppEndDate(paramDate);
+					vm.recruitmentApp.application.appDate(paramDate);
+					vm.recruitmentApp.application.opAppStartDate(paramDate);
+                    vm.recruitmentApp.application.opAppEndDate(paramDate);
 				}
 				if (params.isAgentMode) {
 					vm.isAgentMode(params.isAgentMode);
 				}
+			}else {
+				vm.absenceLeaveApp.application.appDate('');
+				vm.absenceLeaveApp.application.opAppStartDate('');
+                vm.absenceLeaveApp.application.opAppEndDate('');
+				vm.recruitmentApp.application.appDate('');
+				vm.recruitmentApp.application.opAppStartDate('');
+                vm.recruitmentApp.application.opAppEndDate('');
 			}
 			vm.$blockui("grayout");
-			vm.loadData(empLst, dateLst, vm.appType()).then(() => {
+			vm.loadData(params?params.employeeIds:[], paramDate?[paramDate]:[], vm.appType()).then(() => {
 				vm.$blockui("grayout");
 				vm.$ajax('at/request/application/holidayshipment/startPageARefactor',{sIDs: [], appDate: [], appDispInfoStartup: vm.appDispInfoStartupOutput()}).then((data: any) =>{
 					vm.displayInforWhenStarting(data);
@@ -90,9 +97,9 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					vm.comment.update(data.substituteHdWorkAppSet);
 					$('#isSendMail').css({'display': 'inline-block'});
 					$('#contents-area').css({'display': ''});
+					$('#functions-area').css({'opacity': ''});
 					vm.$blockui("hide"); 
 				}).fail((failData: any) => {
-					$('#functions-area').css({'display': 'none'});
 					vm.$dialog.error(failData).then(() => { vm.$jump("com", "/view/ccg/008/a/index.xhtml"); });
 				}).always(() => {
 					
@@ -192,7 +199,9 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					}
 				console.log(data);	
 				vm.$ajax('at/request/application/holidayshipment/save', data).then((data: any) =>{
-					vm.$dialog.info({ messageId: "Msg_15" });
+					vm.$dialog.info({ messageId: "Msg_15" }).done(()=>{
+						vm.created();
+					});
 				}).fail((failData) => {
 					vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds });
 				});
