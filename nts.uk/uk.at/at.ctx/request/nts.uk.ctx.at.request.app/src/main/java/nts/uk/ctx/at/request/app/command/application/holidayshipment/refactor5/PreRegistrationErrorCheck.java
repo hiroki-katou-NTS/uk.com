@@ -90,8 +90,9 @@ public class PreRegistrationErrorCheck {
 			workTypeLst.add(abs.get().getWorkInformation().getWorkTypeCode().v());
 		}
 		//QA: http://192.168.50.4:3000/issues/113341 => done
+		// hiện tại đang comment - không check chờ Trả lời QA: http://192.168.50.4:3000/issues/113784
 		//申請の矛盾チェック
-		 this.commonAlgorithm.appConflictCheck(companyId, employeeInfo, dateLst, workTypeLst, opActualContentDisplayLst);
+		//this.commonAlgorithm.appConflictCheck(companyId, employeeInfo, dateLst, workTypeLst, opActualContentDisplayLst);
 
 		//アルゴリズム「終日半日矛盾チェック」を実行する
 		this.allDayAndHalfDayContradictionCheck(companyId, abs, rec);
