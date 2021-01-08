@@ -65,6 +65,9 @@ export class KafS05Step2Component extends Vue {
 
     public readonly SPACE_STRING = ' ';
 
+    public isMsg_1557 = false;
+    public isMsg_1556 = false;
+
     public reason1: Reason = {
         title: '',
         reason: '',
@@ -634,12 +637,15 @@ export class KafS05Step2Component extends Vue {
         // ・「残業申請の表示情報．計算結果．事前申請・実績の超過状態．実績状態」 = 超過アラーム⇒#Msg_1556
         let c2 = _.get(self.$appContext.model, 'displayInfoOverTime.calculationResultOp.overStateOutput.achivementStatus') == ExcessState.EXCESS_ERROR;
         if (c1) {
-            self.$appContext.$modal.error({ messageId: 'Msg_1557'})
-            .then(() => {
-                if (c2) {
-                    self.$appContext.$modal.error({ messageId: 'Msg_1556'});
-                }
-            });
+            self.isMsg_1557 = true;
+        } else {
+            self.isMsg_1557 = false;
+        }
+
+        if (c1) {
+            self.isMsg_1556 = true;
+        } else {
+            self.isMsg_1556 = false;
         }
 
     }
