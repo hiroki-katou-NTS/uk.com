@@ -206,10 +206,10 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             //社員に対応する処理締めを取得する
             service.findClosureByEmpID().done(function(closure: any) {
                 if (closure) {
-                    //  取得した「締め.当月」の前月を指定年月へ移送
-                    //社員範囲選択の締め日(締めID)の「当月」を使用する。
-                    //また、全締めの場合は、登録されている先頭の締め日の「当月」を使用する。.
+                    // ユーザー固有情報「年休管理表の出力条件」を取得する
+                    self.setDataWhenStart(closure);
 
+                    //  取得した「締め.当月」の前月を指定年月へ移送
                     let currentMonth = moment(closure.closureMonth.toString()).format('YYYYMM');
                     let closureDay = closure.closureHistories[0].closureDate.closureDay;
                     let startDateRange: any;
@@ -228,7 +228,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                     //取得した「締め.当月」より期間へ移送
                     self.period({ startDate: startDateRange, endDate: endDateRange });
 
-                    self.setDataWhenStart(closure);
+
                     self.closureDate(closure.closureMonth);
                 } else {
                     //指定月 = null
@@ -281,7 +281,6 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             self.optionExtractionValue(screenInfo.extConditionSettingCoparison);
             self.doubleTrack(screenInfo.doubleTrack);
             self.printAnnualLeaveDateSelect(screenInfo.printAnnualLeaveDate);
-            self.pageBreakSelected(screenInfo.pageBreakSelected);
             if (screenInfo.printDate) {
                 //指定月 ≠ null
                 //取得したデータを画面に表示する
