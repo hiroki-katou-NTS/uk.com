@@ -184,6 +184,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 						if (vm.specAbsenceDispInfo()) {
 							vm.specAbsenceDispInfo().maxDay = success.maxDayObj.maxDay;
 							vm.specAbsenceDispInfo().dayOfRela = success.maxDayObj.dayOfRela;
+							vm.specAbsenceDispInfo.valueHasMutated();
 						}
 					}
                 }).fail((error) => {
@@ -744,7 +745,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 				};
 			}
 
-			let applyForSpeLeaveOptional = {};
+			let applyForSpeLeaveOptional = null;
 			if (vm.selectedType() === 3) {
 				applyForSpeLeaveOptional = {
 					mournerFlag: vm.isCheckMourn(),
