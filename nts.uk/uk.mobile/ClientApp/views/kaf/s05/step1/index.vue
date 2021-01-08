@@ -73,7 +73,7 @@
           }}</span>
           <span>{{ workInfo.workTime.name }}</span>
 
-          <span class="d-block mt-1">{{ workInfo.workTime.time }}</span>
+          <span class="d-block mt-1 textSize">{{ workInfo.workTime.time }}</span>
         </button>
       </div>
     </div>

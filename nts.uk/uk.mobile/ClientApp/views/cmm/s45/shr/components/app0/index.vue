@@ -2,8 +2,8 @@
 <div class="cmms45shrcomponentsapp0">
     <!-- B1_1 -->
     <div class="card card-label" v-if="c3">
-        <div class="card-header uk-bg-accordion mt-2">
-            <span>{{ "KAFS05_63" | i18n }}</span>
+        <div class="card-header uk-bg-accordion mt-2 headerDiv">
+            <span class="textPosition">{{ "KAFS05_63" | i18n }}</span>
         </div>
     </div>
     <div v-if="c3">
@@ -38,8 +38,8 @@
 
     <!-- B2_1 -->
     <div class="card card-label" v-if="c3">
-        <div class="card-header uk-bg-accordion mt-2">
-            <span>{{ "KAFS05_66" | i18n }}</span>
+        <div class="card-header uk-bg-accordion mt-2 headerDiv">
+            <span class="textPosition">{{ "KAFS05_66" | i18n }}</span>
         </div>
     </div>
     <!-- B2_2 -->
@@ -60,8 +60,8 @@
 
     <!-- B3_1 -->
     <div class="card card-label" v-if="c3_2">
-        <div class="card-header uk-bg-accordion mt-2">
-            <span>{{ "KAFS05_67" | i18n }}</span>
+        <div class="card-header uk-bg-accordion mt-2 headerDiv">
+            <span class="textPosition">{{ "KAFS05_67" | i18n }}</span>
         </div>
     </div>
     <!-- B3_2 -->
@@ -82,8 +82,8 @@
 
     <!-- B4_1 -->
     <div class="card card-label" v-if="c3_1">
-        <div class="card-header uk-bg-accordion mt-2">
-            <span>{{ "KAFS05_68" | i18n }}</span>
+        <div class="card-header uk-bg-accordion mt-2 headerDiv">
+            <span class="textPosition">{{ "KAFS05_68" | i18n }}</span>
         </div>
     </div>
     <div v-if="c3_1">
@@ -113,8 +113,8 @@
 
     <!-- B5_1 -->
     <div class="card card-label" v-if="c4">
-        <div class="card-header uk-bg-accordion mt-2">
-            <span>{{ "KAFS05_70" | i18n }}</span>
+        <div class="card-header uk-bg-accordion mt-2 headerDiv">
+            <span class="textPosition">{{ "KAFS05_70" | i18n }}</span>
         </div>
     </div>
     <div
@@ -155,8 +155,8 @@
 
     <!-- B6_1 -->
     <div class="card card-label" v-if="c18">
-        <div class="card-header uk-bg-accordion mt-2">
-            <span>{{ "KAFS05_73" | i18n }}</span>
+        <div class="card-header uk-bg-accordion mt-2 headerDiv">
+            <span class="textPosition">{{ "KAFS05_73" | i18n }}</span>
         </div>
     </div>
     <div v-if="c18">
