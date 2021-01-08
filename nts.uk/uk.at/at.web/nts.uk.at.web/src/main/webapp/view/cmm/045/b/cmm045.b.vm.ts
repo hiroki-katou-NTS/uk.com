@@ -19,7 +19,7 @@ module cmm045.b.viewmodel {
 			let params = nts.uk.ui.windows.getShared('CMM045B_PARAMS');
 			vm.applicantName(params.applicantName);
 			vm.appName(params.appName);
-			vm.appDate(params.appDate);
+			vm.appDate(moment(params.appDate,'YYYY/MM/DD').format('YYYY/MM/DD(dd)'));
 			vm.isMulti(params.isMulti);
 			vm.appContent(_.escape(params.appContent).replace(/\n/g, '<br/>'));
 			if(params.opBackgroundColor=='bg-pre-application-excess') {
