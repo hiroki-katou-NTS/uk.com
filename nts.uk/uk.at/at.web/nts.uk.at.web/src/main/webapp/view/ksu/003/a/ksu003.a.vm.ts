@@ -3863,21 +3863,16 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 		// open dialog kdl045
 		public openKdl045Dialog(empId: string) {
-			let self = this, lineNo = _.findIndex(self.lstEmpId, (x) => { return x.empId === empId; }),
-				dataMid = $("#extable-ksu003").exTable('dataSource', 'middle').body[lineNo];
+			let self = this, lineNo = _.findIndex(self.lstEmpId, (x) => { return x.empId === empId; });
 			block.grayout();
 			if (self.dataScreen003A().employeeInfo[lineNo].workInfoDto.isConfirmed == 1) {
 				block.clear();
 				return;
 			}
-			if (self.dataScreen003A().employeeInfo[lineNo].workScheduleDto != null || (self.dataScreen003A().employeeInfo[lineNo].workScheduleDto != null && self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.workTimeCode == "")) {
-				self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.listBreakTimeZoneDto = [];
-			}
 
-			let data: Array<model.DisplayWorkInfoByDateDto> = _.filter(self.dataScreen003A().employeeInfo, (x) => { return x.empId === empId; }); // lấy dữl iệu theo empId từ list dữ liệu của màn KSU003	
 			let dataEmployee = _.filter(self.dataFromA().listEmp, (x: any) => { return x.id === empId; });
 			let dataShare: any = {
-				employeeInfo: data[0],
+				employeeInfo: self.dataScreen003A().employeeInfo[lineNo],
 				targetInfor: self.dataScreen003A().targetInfor,
 				canModified: self.dataScreen003A().canModified, // comment tạm để test
 				scheCorrection: self.dataScreen003A().scheCorrection,

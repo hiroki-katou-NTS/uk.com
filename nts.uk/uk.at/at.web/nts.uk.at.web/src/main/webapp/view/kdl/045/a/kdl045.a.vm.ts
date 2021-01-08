@@ -202,7 +202,9 @@ module nts.uk.at.view.kdl045.a {
                     startTime: self.employee().employeeInfo.workScheduleDto != null && self.employee().employeeInfo.workScheduleDto.startTime2 != '' ? self.employee().employeeInfo.workScheduleDto.startTime2  : null, 
                     endTime: self.employee().employeeInfo.workScheduleDto != null && self.employee().employeeInfo.workScheduleDto.endTime2 != '' ? self.employee().employeeInfo.workScheduleDto.endTime2 : null});
                 self.isShowTimeRange2 = (self.employee().targetInfor == 1 ? true : false);
-                if(self.employee().employeeInfo.workScheduleDto == null || (self.employee().employeeInfo.workScheduleDto.startTime2 == 0 || self.employee().employeeInfo.workScheduleDto.endTime2 == 0)){
+                if(self.employee().employeeInfo.workScheduleDto == null || (self.employee().employeeInfo.workScheduleDto.startTime2 == 0 || self.employee().employeeInfo.workScheduleDto.endTime2 == 0)
+					|| (self.employee().employeeInfo.workScheduleDto.startTime2 == null || self.employee().employeeInfo.workScheduleDto.endTime2 == null)
+					){
                     self.isEnableA5_9(false);
                 }
                 
