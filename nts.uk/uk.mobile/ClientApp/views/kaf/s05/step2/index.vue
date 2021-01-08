@@ -21,6 +21,22 @@
           </div>
       </div>
     </div>
+
+    <div>
+        <div class="border border-warning rounded p-1 mt-2 alarm-message" role="alert" style="display:block;"
+            v-if="isMsg_1557 || isMsg_1556">
+            <div v-if="isMsg_1557" style="display:flex;">
+                <fa-font icon="exclamation-triangle" class="text-danger m-2" />
+                <span style="align-self:center">{{ 'Msg_1557' | i18n($appContext.date) }}</span>
+            </div>
+            <div v-if="isMsg_1556" style="display:flex;">
+                <fa-font icon="exclamation-triangle" class="text-danger m-2" />
+                <span style="align-self:center">{{ 'Msg_1556' | i18n($dt($appContext.date)) }}</span>
+            </div>
+        </div>
+    </div>
+
+
     <!-- A2_B1 -->
     <div class="card card-label">
       <!--A2_B1_1-->
@@ -58,9 +74,10 @@
           </div>
           <div v-show="item.visible" class="card-body">
             <nts-time-editor
-              v-model="item.applicationTime"
+              v-model="overTimes[index].applicationTime"
               name=""
-              v-bind:enable="$appContext.c3"
+              v-bind:record-id="index"
+              v-bind:disabled="!$appContext.c3_disable"
             />
           </div>
         </div>
@@ -98,9 +115,9 @@
           </div>
           <div class="card-body">
             <nts-time-editor
-              v-model="item.applicationTime"
+              v-model="holidayTimes[index].applicationTime"
               name=""
-              v-bind:enable="$appContext.c3"
+              v-bind:disabled="!$appContext.c3_disable"
             />
           </div>
         </div>

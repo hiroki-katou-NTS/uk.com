@@ -14,9 +14,18 @@ import { ReasonDivergence, ExcessStateMidnight, ExcessStateDetail, OutDateApplic
     template: require('./index.vue'),
     resource: require('./resources.json'),
     validations: {
-        item: {
+        overTimes: {
             applicationTime: {
-                constraint: 'OvertimeAppPrimitiveTime'
+                loop: true,
+                constraint: 'OvertimeAppPrimitiveTime',
+                validate: true
+            }
+        },
+        holidayTimes: {
+            applicationTime: {
+                loop: true,
+                constraint: 'OvertimeAppPrimitiveTime',
+                validate: true
             }
         },
         reason1: {
@@ -55,6 +64,9 @@ export class KafS05Step2Component extends Vue {
     public holidayTimes: Array<HolidayTime> = [];
 
     public readonly SPACE_STRING = ' ';
+
+    public isMsg_1557 = false;
+    public isMsg_1556 = false;
 
     public reason1: Reason = {
         title: '',
@@ -282,6 +294,7 @@ export class KafS05Step2Component extends Vue {
         // bind origin array
         self.overTimes = overTimes;
 
+        
     }
 
     public bindHolidayTime() {
@@ -611,6 +624,7 @@ export class KafS05Step2Component extends Vue {
         self.bindHolidayTime();
         self.addConstraint();
         self.checkAlarm();
+        self.$updateValidator();
     }
     public checkAlarm() {
         const self = this;
@@ -623,12 +637,15 @@ export class KafS05Step2Component extends Vue {
         // ・「残業申請の表示情報．計算結果．事前申請・実績の超過状態．実績状態」 = 超過アラーム⇒#Msg_1556
         let c2 = _.get(self.$appContext.model, 'displayInfoOverTime.calculationResultOp.overStateOutput.achivementStatus') == ExcessState.EXCESS_ERROR;
         if (c1) {
-            self.$appContext.$modal.error({ messageId: 'Msg_1557'})
-            .then(() => {
-                if (c2) {
-                    self.$appContext.$modal.error({ messageId: 'Msg_1556'});
-                }
-            });
+            self.isMsg_1557 = true;
+        } else {
+            self.isMsg_1557 = false;
+        }
+
+        if (c1) {
+            self.isMsg_1556 = true;
+        } else {
+            self.isMsg_1556 = false;
         }
 
     }
