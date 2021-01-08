@@ -277,7 +277,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
         if (listEntityPerCostCal.isPresent() && listEntityPerCostCalHist.isPresent()) {
             val entity = listEntityPerCostCal.get();
             val entityHist = listEntityPerCostCalHist.get();
-            val roundingOfPremium = new UnitPriceRoundingSetting(EnumAdaptor.valueOf(entity.costRounding, UnitPriceRounding.class));
+            val roundingOfPremium = new UnitPriceRoundingSetting(EnumAdaptor.valueOf(entity.unitPriceRounding, UnitPriceRounding.class));
             val amountRoundingSetting = new AmountRoundingSetting(
                     AmountUnit.valueOf(converAmountRounding(entity.getCostUnit())),
                     AmountRounding.valueOf(entity.costRounding)
