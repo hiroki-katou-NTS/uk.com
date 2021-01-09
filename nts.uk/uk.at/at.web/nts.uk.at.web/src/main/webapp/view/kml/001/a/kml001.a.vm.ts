@@ -66,10 +66,10 @@ module nts.uk.at.view.kml001.a {
           self.getPersonalDetails(newValue);
         });
 
-        self.currentPersonCost().calculationSetting.subscribe((newValue) => {
+        /* self.currentPersonCost().calculationSetting.subscribe((newValue) => {
           //self._calculationSetting(newValue);
           //console.log(newValue);
-        });
+        }); */
       }
 
       /**
@@ -217,19 +217,22 @@ module nts.uk.at.view.kml001.a {
       reloadHistoryList() {
         const self = this;
         self.$blockui('grayout');
+        self.gridPersonCostList.removeAll();
+        self.currentPersonCost().premiumSets.removeAll();
         servicebase.personCostCalculationSelect().done((data) => {
           if (!_.isNil(data.lisHist)) {
+            self.$blockui('hide');
             self.loadHistoryListPanel(data.lisHist, null);
             self.isInsert(false);
           }
-        }).always(() => self.$blockui('hide'));
+        }).fail((error) => self.$blockui('hide'));
       }
       /**
        * open premium dialog
        */
       premiumDialog(): void {
-        
-        var self = this; 
+
+        var self = this;
         let oldPremiumSets = self.clonePersonCostCalculation(self.currentPersonCost()).premiumSets();
         nts.uk.ui.windows.setShared('isInsert', self.isInsert());
         nts.uk.ui.windows.sub.modal("/view/kml/001/b/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function () {
@@ -242,6 +245,7 @@ module nts.uk.at.view.kml001.a {
             $.when(dfdPremiumItemSelect, dfdPersonCostCalculationSelect).done((premiumItemSelectData, dfdPersonCostCalculationSelectData) => {
               // Premium Item Select: Done
               self.premiumItems.removeAll();
+              premiumItemSelectData = _.orderBy(premiumItemSelectData, ['displayNumber'], ['asc']);
               premiumItemSelectData.forEach(function (item) {
                 self.premiumItems.push(
                   new vmbase.PremiumItem(
@@ -294,7 +298,7 @@ module nts.uk.at.view.kml001.a {
             });
           } else {
             nts.uk.ui.block.clear();
-          }         
+          }
         });
       }
 
@@ -368,11 +372,11 @@ module nts.uk.at.view.kml001.a {
             nts.uk.ui.block.clear();
             nts.uk.ui.windows.setShared('AllAttendanceObj', _.map(res, function (item) { return item.attendanceItemId }));
             nts.uk.ui.windows.sub.modal("/view/kdl/021/a/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function () {
-              let newList = nts.uk.ui.windows.getShared('selectedChildAttendace');              
+              let newList = nts.uk.ui.windows.getShared('selectedChildAttendace');
               if (newList != null) {
                 nts.uk.ui.errors.clearAll();
                 if (newList.length != 0) {
-                  if (!_.isEqual(newList, currentList)) {                   
+                  if (!_.isEqual(newList, currentList)) {
                     nts.uk.ui.block.invisible();
                     self.getItem(newList, index).done(() => {
                       nts.uk.ui.block.clear();
@@ -381,7 +385,7 @@ module nts.uk.at.view.kml001.a {
                 } else {
                   self.currentPersonCost().premiumSets()[index].attendanceItems([]);
                 }
-              }             
+              }
             });
           }).fail(function (res) {
             nts.uk.ui.dialog.alertError(res.message).then(function () { nts.uk.ui.block.clear(); });
@@ -479,6 +483,7 @@ module nts.uk.at.view.kml001.a {
 
         let historyItem = [];
         self.gridPersonCostList.removeAll();
+        
         if (!_.isNil(dataResource) && dataResource.length > 0) {
           let tempHistory: string = currentHistory;
           dataResource.forEach(function (item, index) {
@@ -497,8 +502,8 @@ module nts.uk.at.view.kml001.a {
 
           self.gridPersonCostList(_.orderBy(historyItem, 'endDate', 'desc'));
           if (currentHistory === null) {
-            self.currentGridPersonCost(tempHistory);
             self.selectedHistory(_.head(self.gridPersonCostList()));//latest
+            self.currentGridPersonCost(tempHistory);
             self.isLastItem(true);
           }
         }
@@ -520,31 +525,32 @@ module nts.uk.at.view.kml001.a {
           self.selectedHistory(findHistory);
           servicebase.findByHistoryID({ historyID: findHistory.historyId }).done((data) => {
             if (data) {
-              self.getPersonalCostCalculatorDetails(data);
-            }
-            self.$blockui('hide');
-          }).fail(res => { console.log(res); })
-            .always(() => {
-              self.$blockui('hide');
-            });
+              self.getPersonalCostCalculatorDetails(data).done(() => {
+                if (ko.unwrap(self.viewAttendanceItems()).length) {
+                  self.$blockui('hide');
+                }
+              }).fail(() => { self.$blockui('hide'); });
+            } else self.$blockui('hide');
+          }).fail(res => { console.log(res); });
 
           self.isInsert(false);
           $("#memo").focus();
 
         } else {
-          $("#startDateInput").focus();
+          $("#memo").focus();
+          self.isInsert(true);
         }
       }
 
-      getPersonalCostCalculatorDetails(data: any) {
-        const self = this;       
-
+      getPersonalCostCalculatorDetails(data: any): JQueryPromise<any> {
+        const self = this;
+        const dfd = $.Deferred<any>();
         if (!_.isNil(data)) {
 
           let premiumSets: Array<vmbase.PremiumSettingInterface> = [];
 
           self.createViewAttendanceItemsDefault(data.premiumSets.length);
-
+          
           data.premiumSets.forEach((item, index) => {
             let attendanceNames: Array<vmbase.AttendanceItem> = [];
             let listAttendance: Array<string> = [];
@@ -567,6 +573,8 @@ module nts.uk.at.view.kml001.a {
             premiumSets.push(premiumSetting);
           });
 
+          premiumSets = _.orderBy(premiumSets, 'displayNumber', 'asc');
+
           let tempPerson: vmbase.PersonCostCalculationInterface = {};
           tempPerson.companyID = data.companyID;
           tempPerson.historyID = data.historyID;
@@ -583,7 +591,13 @@ module nts.uk.at.view.kml001.a {
           tempPerson.personCostRoundingSetting = data.personCostRoundingSetting;
 
           self.currentPersonCost().updateData(tempPerson);
+
+          dfd.resolve();
+        } else {
+          dfd.reject();
         }
+
+        return dfd.promise();
       }
 
       getCompanyPremiumList() {
