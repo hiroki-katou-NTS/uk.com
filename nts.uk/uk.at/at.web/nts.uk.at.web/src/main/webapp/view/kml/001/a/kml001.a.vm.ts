@@ -121,13 +121,6 @@ module nts.uk.at.view.kml001.a {
         return dfd.promise();
       }
 
-      private uuid() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-          var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-          return v.toString(16);
-        });
-      }
-
       /**
        * get list item for each premium setting
        */
@@ -235,12 +228,8 @@ module nts.uk.at.view.kml001.a {
        * open premium dialog
        */
       premiumDialog(): void {
-        nts.uk.ui.block.invisible();
-        var self = this;
-        /* let currentIndex = _.findIndex(self.personCostList(), function (item) { 
-          return item.historyID() == self.currentPersonCost().historyID() });
-        let index = currentIndex ? currentIndex : 0;  */
-
+        
+        var self = this; 
         let oldPremiumSets = self.clonePersonCostCalculation(self.currentPersonCost()).premiumSets();
         nts.uk.ui.windows.setShared('isInsert', self.isInsert());
         nts.uk.ui.windows.sub.modal("/view/kml/001/b/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function () {
@@ -305,8 +294,7 @@ module nts.uk.at.view.kml001.a {
             });
           } else {
             nts.uk.ui.block.clear();
-          }
-          self.setTabindex();
+          }         
         });
       }
 
@@ -384,11 +372,7 @@ module nts.uk.at.view.kml001.a {
               if (newList != null) {
                 nts.uk.ui.errors.clearAll();
                 if (newList.length != 0) {
-                  if (!_.isEqual(newList, currentList)) {
-                    //clone Knockout Object
-                    //self.currentPersonCost().startDate(self.newStartDate());
-                    //self.currentPersonCost(self.clonePersonCostCalculation(self.currentPersonCost()));
-                    //elf.newStartDate(self.currentPersonCost().startDate());
+                  if (!_.isEqual(newList, currentList)) {                   
                     nts.uk.ui.block.invisible();
                     self.getItem(newList, index).done(() => {
                       nts.uk.ui.block.clear();
