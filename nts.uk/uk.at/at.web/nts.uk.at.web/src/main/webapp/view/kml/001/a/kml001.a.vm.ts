@@ -211,7 +211,7 @@ module nts.uk.at.view.kml001.a {
           .done(() => {
             self.$dialog.info({ messageId: "Msg_15" }).then(() => {
               self.$blockui('hide');
-              self.reloadHistoryList();
+              //self.reloadHistoryList();
             });
           })
           .fail((error) => {
@@ -237,7 +237,8 @@ module nts.uk.at.view.kml001.a {
       premiumDialog(): void {
         nts.uk.ui.block.invisible();
         var self = this;
-        /* let currentIndex = _.findIndex(self.personCostList(), function (item) { return item.historyID() == self.currentPersonCost().historyID() });
+        /* let currentIndex = _.findIndex(self.personCostList(), function (item) { 
+          return item.historyID() == self.currentPersonCost().historyID() });
         let index = currentIndex ? currentIndex : 0;  */
 
         let oldPremiumSets = self.clonePersonCostCalculation(self.currentPersonCost()).premiumSets();
@@ -379,26 +380,24 @@ module nts.uk.at.view.kml001.a {
             nts.uk.ui.block.clear();
             nts.uk.ui.windows.setShared('AllAttendanceObj', _.map(res, function (item) { return item.attendanceItemId }));
             nts.uk.ui.windows.sub.modal("/view/kdl/021/a/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function () {
-              let newList = nts.uk.ui.windows.getShared('selectedChildAttendace');
-              nts.uk.ui.block.invisible();
-              _.defer(() => {
-                if (newList != null) {
-                  nts.uk.ui.errors.clearAll();
-                  if (newList.length != 0) {
-                    if (!_.isEqual(newList, currentList)) {
-                      //clone Knockout Object
-                      //self.currentPersonCost().startDate(self.newStartDate());
-                      //self.currentPersonCost(self.clonePersonCostCalculation(self.currentPersonCost()));
-                      //elf.newStartDate(self.currentPersonCost().startDate());
-                      self.getItem(newList, index);
-                    }
-                  } else {
-                    self.currentPersonCost().premiumSets()[index].attendanceItems([]);
+              let newList = nts.uk.ui.windows.getShared('selectedChildAttendace');              
+              if (newList != null) {
+                nts.uk.ui.errors.clearAll();
+                if (newList.length != 0) {
+                  if (!_.isEqual(newList, currentList)) {
+                    //clone Knockout Object
+                    //self.currentPersonCost().startDate(self.newStartDate());
+                    //self.currentPersonCost(self.clonePersonCostCalculation(self.currentPersonCost()));
+                    //elf.newStartDate(self.currentPersonCost().startDate());
+                    nts.uk.ui.block.invisible();
+                    self.getItem(newList, index).done(() => {
+                      nts.uk.ui.block.clear();
+                    });
                   }
+                } else {
+                  self.currentPersonCost().premiumSets()[index].attendanceItems([]);
                 }
-                nts.uk.ui.block.clear();
-              });
-              //self.setTabindex();
+              }             
             });
           }).fail(function (res) {
             nts.uk.ui.dialog.alertError(res.message).then(function () { nts.uk.ui.block.clear(); });
@@ -531,6 +530,8 @@ module nts.uk.at.view.kml001.a {
 
           self.$blockui('grayout');
 
+          self.currentPersonCost().premiumSets.removeAll();
+
           let findHistory = _.find(self.gridPersonCostList(), (x) => x.dateRange === value);
           self.selectedHistory(findHistory);
           servicebase.findByHistoryID({ historyID: findHistory.historyId }).done((data) => {
@@ -538,7 +539,7 @@ module nts.uk.at.view.kml001.a {
               self.getPersonalCostCalculatorDetails(data);
             }
             self.$blockui('hide');
-          }).fail(res => { })
+          }).fail(res => { console.log(res); })
             .always(() => {
               self.$blockui('hide');
             });
@@ -552,7 +553,8 @@ module nts.uk.at.view.kml001.a {
       }
 
       getPersonalCostCalculatorDetails(data: any) {
-        const self = this;
+        const self = this;       
+
         if (!_.isNil(data)) {
 
           let premiumSets: Array<vmbase.PremiumSettingInterface> = [];
