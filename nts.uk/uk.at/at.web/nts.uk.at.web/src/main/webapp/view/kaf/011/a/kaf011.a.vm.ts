@@ -61,9 +61,9 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 			}
 			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
 			let paramDate;
-			if(params){
-				if (!_.isEmpty(params.baseDate)) {
-					paramDate = moment(params.baseDate).format('YYYY/MM/DD');
+			if(vm.params){
+				if (!_.isEmpty(vm.params.baseDate)) {
+					paramDate = moment(vm.params.baseDate).format('YYYY/MM/DD');
 					vm.absenceLeaveApp.application.appDate(paramDate);
 					vm.absenceLeaveApp.application.opAppStartDate(paramDate);
                     vm.absenceLeaveApp.application.opAppEndDate(paramDate);
@@ -71,19 +71,12 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					vm.recruitmentApp.application.opAppStartDate(paramDate);
                     vm.recruitmentApp.application.opAppEndDate(paramDate);
 				}
-				if (params.isAgentMode) {
-					vm.isAgentMode(params.isAgentMode);
+				if (vm.params.isAgentMode) {
+					vm.isAgentMode(vm.params.isAgentMode);
 				}
-			}else {
-				vm.absenceLeaveApp.application.appDate('');
-				vm.absenceLeaveApp.application.opAppStartDate('');
-                vm.absenceLeaveApp.application.opAppEndDate('');
-				vm.recruitmentApp.application.appDate('');
-				vm.recruitmentApp.application.opAppStartDate('');
-                vm.recruitmentApp.application.opAppEndDate('');
 			}
 			vm.$blockui("grayout");
-			vm.loadData(params?params.employeeIds:[], paramDate?[paramDate]:[], vm.appType()).then(() => {
+			vm.loadData(vm.params?vm.params.employeeIds:[], paramDate?[paramDate]:[], vm.appType()).then(() => {
 				vm.$blockui("grayout");
 				vm.$ajax('at/request/application/holidayshipment/startPageARefactor',{sIDs: [], appDate: [], appDispInfoStartup: vm.appDispInfoStartupOutput()}).then((data: any) =>{
 					vm.displayInforWhenStarting(data);
@@ -124,7 +117,10 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 				if(value != "" && !$('#recAppDate').ntsError('hasError') && vm.recruitmentApp.started){
 					vm.$blockui("grayout");
 					let holidayDate = (vm.appCombinaSelected() != 1 && vm.absenceLeaveApp.application.appDate() && !$('#absAppDate').ntsError('hasError')) ? moment(vm.absenceLeaveApp.application.appDate()).format('YYYY/MM/DD'): null;
-					vm.$ajax('at/request/application/holidayshipment/changeRecDate',{workingDate: moment(value).format('YYYY/MM/DD'), holidayDate: holidayDate, displayInforWhenStarting: vm.displayInforWhenStarting()}).then((data: any) =>{
+					let displayInforWhenStartingdto = vm.displayInforWhenStarting();
+					displayInforWhenStartingdto.rec = null;
+					displayInforWhenStartingdto.abs = null;
+					vm.$ajax('at/request/application/holidayshipment/changeRecDate',{workingDate: moment(value).format('YYYY/MM/DD'), holidayDate: holidayDate, displayInforWhenStarting: displayInforWhenStartingdto}).then((data: any) =>{
 						vm.bindData(data);
 					}).always(() => {
 						vm.$blockui("hide"); 
@@ -135,8 +131,11 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 			vm.absenceLeaveApp.application.appDate.subscribe(value =>{
 				if(value != "" && !$('#absAppDate').ntsError('hasError') && vm.recruitmentApp.started){
 					vm.$blockui("grayout");
+					let displayInforWhenStartingdto = vm.displayInforWhenStarting();
+					displayInforWhenStartingdto.rec = null;
+					displayInforWhenStartingdto.abs = null;
 					let workingDate = (vm.appCombinaSelected() != 2 && vm.recruitmentApp.application.appDate() && !$('#recAppDate').ntsError('hasError')) ? moment(vm.recruitmentApp.application.appDate()).format('YYYY/MM/DD'): null;
-					vm.$ajax('at/request/application/holidayshipment/changeAbsDate',{workingDate: workingDate, holidayDate: moment(value).format('YYYY/MM/DD'), displayInforWhenStarting: vm.displayInforWhenStarting()}).then((data: any) =>{
+					vm.$ajax('at/request/application/holidayshipment/changeAbsDate',{workingDate: workingDate, holidayDate: moment(value).format('YYYY/MM/DD'), displayInforWhenStarting: displayInforWhenStartingdto}).then((data: any) =>{
 						vm.bindData(data);
 					}).always(() => {
 						vm.$blockui("hide"); 
@@ -198,9 +197,9 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 						}); 
 					}
 				console.log(data);	
-				vm.$ajax('at/request/application/holidayshipment/save', data).then((data: any) =>{
+				vm.$ajax('at/request/application/holidayshipment/save', data).then(() =>{
 					vm.$dialog.info({ messageId: "Msg_15" }).done(()=>{
-						vm.created();
+						vm.$jump("/view/kaf/011/a/index.xhtml", vm.params);
 					});
 				}).fail((failData) => {
 					vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds });

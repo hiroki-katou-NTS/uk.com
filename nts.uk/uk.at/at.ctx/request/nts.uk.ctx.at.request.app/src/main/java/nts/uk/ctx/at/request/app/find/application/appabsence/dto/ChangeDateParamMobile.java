@@ -19,4 +19,6 @@ public class ChangeDateParamMobile {
 	private AppAbsenceStartInfoDto appAbsenceStartInfoDto;
 	
 	private ApplyForLeaveDto applyForLeaveDto;
+	
+	private int appHolidayType;
 }

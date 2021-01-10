@@ -2,8 +2,9 @@ import { _, Vue, moment } from '@app/provider';
 import { component, Prop, Watch } from '@app/core/component';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/s00';
 import { KafS00ShrComponent, AppType, Application, InitParam } from 'views/kaf/s00/shr';
-import { WorkTypeDto, MaxNumberDayType, AppAbsenceStartInfoDto, StartMobileParam, NotUseAtr, TimeZoneUseDto, HolidayAppTypeDispNameDto, ManageDistinct, TargetWorkTypeByApp, ApplicationType, HolidayAppType, DateSpecHdRelationOutput } from '../a/define.interface';
-
+import { WorkTypeDto, MaxNumberDayType, AppAbsenceStartInfoDto, StartMobileParam, NotUseAtr, TimeZoneUseDto, HolidayAppTypeDispNameDto, ManageDistinct, TargetWorkTypeByApp, ApplicationType, HolidayAppType, DateSpecHdRelationOutput, ChangeDateParamMobile } from '../a/define.interface';
+import { KDL002Component } from '../../../kdl/002';
+import { Kdl001Component } from '../../../kdl/001';
 @component({
     name: 'kafs06a',
     route: '/kaf/s06/a',
@@ -15,10 +16,13 @@ import { WorkTypeDto, MaxNumberDayType, AppAbsenceStartInfoDto, StartMobileParam
     components: {
         'kafs00-a': KafS00AComponent,
         'kafs00-b': KafS00BComponent,
-        'kafs00-c': KafS00CComponent
+        'kafs00-c': KafS00CComponent,
+        'worktype': KDL002Component,
+        'worktime': Kdl001Component,
     }
 })
 export class KafS06AComponent extends KafS00ShrComponent {
+    public readonly DATE_PATTERN: string = 'YYYY/MM/DD';
     public text1: string = null;
     public isValidateAll: boolean = true;
     public user: any = null;
@@ -564,14 +568,42 @@ export class KafS06AComponent extends KafS00ShrComponent {
     public created() {
         
     }
+    public changeDate() {
+        const self = this;
+        self.$mask('show');
+        let command = {} as ChangeDateParamMobile;
+        command.companyId = self.user.companyId;
+        command.dates = self.getDates();
+        command.appAbsenceStartInfoDto = self.model.appAbsenceStartInfoDto;
+        command.applyForLeaveDto = self.model.applyForLeaveDto;
+        let holidayAppType = self.selectedValue || HolidayAppType.ANNUAL_PAID_LEAVE;
+        command.appHolidayType = Number(holidayAppType);
+        self.$http.post('at', API.changeDate, command)
+                  .then((res: any) => {
+                        let model = {} as Model;
+                        model.applyForLeaveDto = self.model.applyForLeaveDto;
+                        model.appAbsenceStartInfoDto = res.data;
+                        self.model = model;
+                        self.bindComponent();
+                    })
+                  .catch((res: any) => {
+                        self.handleErrorCustom(res).then((result) => {
+                            if (result) {
+                                self.handleErrorCommon(res);
+                            }
+                        });
+                    })
+                  .then((res: any) => self.$mask('hide'));
 
+    }
     public kaf000BChangeDate(objectDate) {
         const vm = this;
         if (objectDate.startDate) {
             if (vm.modeNew) {
-                vm.application.appDate = vm.$dt.date(objectDate.startDate, 'YYYY/MM/DD');
-                vm.application.opAppStartDate = vm.$dt.date(objectDate.startDate, 'YYYY/MM/DD');
-                vm.application.opAppEndDate = vm.$dt.date(objectDate.endDate, 'YYYY/MM/DD');
+                vm.application.appDate = vm.$dt.date(objectDate.startDate, vm.DATE_PATTERN);
+                vm.application.opAppStartDate = vm.$dt.date(objectDate.startDate, vm.DATE_PATTERN);
+                vm.application.opAppEndDate = vm.$dt.date(objectDate.endDate, vm.DATE_PATTERN);
+                vm.changeDate();
             }
         }
     }
@@ -896,6 +928,21 @@ export class KafS06AComponent extends KafS00ShrComponent {
 
     public openKDL002(type?: string) {
         const self = this;
+
+        self.$modal('worktype', {
+                seledtedWkTypeCDs: _.map(_.get(self.model, 'appAbsenceStartInfoDto.workTypeLst'), (item: WorkTypeDto) => item.workTypeCode),
+                selectedWorkTypeCD: self.workType.code,
+                seledtedWkTimeCDs: _.map(_.get(self.model, 'appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst'), (item: any) => item.worktimeCode),
+                selectedWorkTimeCD: self.workTime.code,
+                isSelectWorkTime: 1,
+            })
+            .then((result) => {
+
+            })
+            .catch((res: any) => {
+
+            });
+
         
     }
 
@@ -941,8 +988,8 @@ export class KafS06AComponent extends KafS00ShrComponent {
         let listDate = [];
         let diffDate = moment(endDate).diff(moment(startDate), 'days');
         for (let i = 0; i <= diffDate; i++) {
-            let loopDate = moment(moment(startDate, 'YYYY/MM/DD').add(i, 'day').format('YYYY/MM/DD'));
-            listDate.push(loopDate.format('YYYY/MM/DD'));
+            let loopDate = moment(moment(startDate, vm.DATE_PATTERN).add(i, 'day').format(vm.DATE_PATTERN));
+            listDate.push(loopDate.format(vm.DATE_PATTERN));
         }
 
         return listDate;
@@ -963,6 +1010,8 @@ interface WorkInfo {
 const API = {
     start: 'at/request/application/appforleave/mobile/start',
     selectTypeHoliday: 'at/request/application/appforleave/mobile/selectTypeHoliday',
+    changeDate: 'at/request/application/appforleave/mobile/findChangeAppdate',
+    selectWorkType: 'at/request/application/appforleave/mobile/selectWorkType',
     registerSample: 'at/request/application/changeDataSample',
     sendMailAfterRegisterSample: ''
 };

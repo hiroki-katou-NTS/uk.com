@@ -23,8 +23,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualC
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMng;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMngRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.AppHdsubRec;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.AppHdsubRecRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.SyncState;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
@@ -67,7 +67,7 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
 	
 	@Inject
-	private CompltLeaveSimMngRepository compltLeaveSimMngRepository;
+	private AppHdsubRecRepository compltLeaveSimMngRepository;
 	
 	@Inject
 	private WorkTypeRepository workTypeRepo;
@@ -193,7 +193,7 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 		
 		//ドメイン「振休振出同時申請管理」を1件登録する
 		//QA: http://192.168.50.4:3000/issues/113413 => done
-		compltLeaveSimMngRepository.insert(new CompltLeaveSimMng(rec.get().getAppID(), abs.get().getAppID(), SyncState.SYNCHRONIZING));
+		compltLeaveSimMngRepository.insert(new AppHdsubRec(rec.get().getAppID(), abs.get().getAppID(), SyncState.SYNCHRONIZING));
 		//振休振出同時登録時紐付け管理を登録する
 		this.registerTheLinkManagement(companyId, abs.get(), rec.get(), holidayManage);
 		
