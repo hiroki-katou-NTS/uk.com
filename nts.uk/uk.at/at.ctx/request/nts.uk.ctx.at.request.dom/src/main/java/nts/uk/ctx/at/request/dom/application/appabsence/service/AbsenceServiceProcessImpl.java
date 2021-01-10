@@ -113,6 +113,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.Annu
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.LeaveSetOutput;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SixtyHourSettingOutput;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SubstitutionHolidayOutput;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
@@ -259,6 +260,9 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	@Inject
     private DetailAfterUpdate detailAfterUpdate;
 	
+	@Inject
+    private CompensLeaveComSetRepository compensLeaveComSetRepo;
+	
 	private final String FORMAT_DATE = "yyyy/MM/dd";
 	
 	@Override
@@ -384,7 +388,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	    NursingLeaveSetting nursingLeaveSetting = this.getNursingLeaveSetting(companyID, NursingCategory.Nursing);
 	    
 	    // 代休の紐付け管理区分を取得する
-	    CompensatoryLeaveEmSetting compensatoryLeaveEmSet = require.compensatoryLeaveEmSetting(companyID, sID);
+	    CompensatoryLeaveComSetting compensatoryLeaveComSetting = compensLeaveComSetRepo.find(companyID);
 	    
 	    // 振休の紐付け管理区分を取得する
 	    ComSubstVacation comSubstVacation = this.getComSubstVacation(companyID);
@@ -401,7 +405,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	    SubstituteLeaveManagement substituteLeaveManagement = new SubstituteLeaveManagement(
 	            EnumAdaptor.valueOf(substituationHoliday.getDigestiveUnit(), TimeDigestiveUnit.class), 
 	            EnumAdaptor.valueOf(substituationHoliday.isTimeOfPeriodFlg() ? 1 : 0, ManageDistinct.class), 
-	            compensatoryLeaveEmSet.getIsManaged(),
+	            compensatoryLeaveComSetting.getIsManaged(),
 	            EnumAdaptor.valueOf(substituationHoliday.isSubstitutionFlg() ? 1 : 0, ManageDistinct.class));
 	    
 	    HolidayManagement holidayManagement = new HolidayManagement(
