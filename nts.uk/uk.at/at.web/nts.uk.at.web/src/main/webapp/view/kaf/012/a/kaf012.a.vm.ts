@@ -5,6 +5,7 @@ module nts.uk.at.view.kaf012.a.viewmodel {
 	import AppInitParam = nts.uk.at.view.kaf000.shr.viewmodel.AppInitParam;
 	import DataModel = nts.uk.at.view.kaf012.shr.viewmodel2.DataModel;
     import AppTimeType = nts.uk.at.view.kaf012.shr.viewmodel2.AppTimeType;
+    import LeaveType = nts.uk.at.view.kaf012.shr.viewmodel1.LeaveType;
 
     const API = {
         startNew: "at/request/application/timeLeave/init",
@@ -72,7 +73,10 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                 }
             }).fail((error: any) => {
                 vm.$dialog.error(error);
-            }).always(() => vm.$blockui("hide"));
+            }).always(() => {
+                vm.$blockui("hide");
+                $(vm.$el).find('#kaf000-a-component4-singleDate').focus();
+            });
         }
 
         mounted() {
@@ -167,13 +171,13 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                                 endTime: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.ATWORK2 ? null : row.timeZones[0].startTime(),
                             }],
                             applyTime: {
-                                substituteAppTime: row.applyTime[0].substituteAppTime(),
-                                annualAppTime: row.applyTime[0].annualAppTime(),
-                                childCareAppTime: row.applyTime[0].childCareAppTime(),
-                                careAppTime: row.applyTime[0].careAppTime(),
-                                super60AppTime: row.applyTime[0].super60AppTime(),
-                                specialAppTime: row.applyTime[0].specialAppTime(),
-                                specialLeaveFrameNo: row.applyTime[0].specialAppTime() > 0 ? vm.specialLeaveFrame() : null,
+                                substituteAppTime: vm.leaveType() == LeaveType.SUBSTITUTE || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].substituteAppTime() : 0,
+                                annualAppTime: vm.leaveType() == LeaveType.ANNUAL || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].annualAppTime() : 0,
+                                childCareAppTime: vm.leaveType() == LeaveType.CHILD_NURSING || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].childCareAppTime() : 0,
+                                careAppTime: vm.leaveType() == LeaveType.NURSING || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].careAppTime() : 0,
+                                super60AppTime: vm.leaveType() == LeaveType.SUPER_60H || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].super60AppTime() : 0,
+                                specialAppTime: vm.leaveType() == LeaveType.SPECIAL || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].specialAppTime() : 0,
+                                specialLeaveFrameNo: vm.leaveType() == LeaveType.SPECIAL || (vm.leaveType() == LeaveType.COMBINATION && row.applyTime[0].specialAppTime() > 0) ? vm.specialLeaveFrame() : null,
                             }
                         });
                     } else {

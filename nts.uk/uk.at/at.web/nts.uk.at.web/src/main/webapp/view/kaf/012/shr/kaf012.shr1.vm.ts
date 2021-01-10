@@ -335,12 +335,10 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
         careRemainingTime: number,
         childCareRemainingDays: number,
         childCareRemainingTime: number,
-        remainingPeriod: {
-            remainingStart: string,
-            remainingEnd: string
-        },
         specialTimeFrames: Array<any>,
         subTimeLeaveRemainingTime: number,
         super60HRemainingTime: number,
+        remainingStart: string,
+        remainingEnd: string
     }
 }

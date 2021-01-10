@@ -75,7 +75,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
         errorEmpty: KnockoutObservable<boolean> = ko.observable(true);
 
-        childUpdateEvent!: () => any;
+        childUpdateEvent: () => any;
 		childReloadEvent: () => any;
 
 		appNameList: any = null;

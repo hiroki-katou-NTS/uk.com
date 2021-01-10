@@ -3,11 +3,9 @@ package nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.TimeLeaveApplicationOutput;
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectDto;
-import nts.uk.ctx.at.shared.app.find.workingcondition.WorkingConditionItemDto;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 
 import java.util.List;
