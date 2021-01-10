@@ -70,7 +70,6 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 		nursing: KnockoutObservable<number> = ko.observable();
 		
 		// Condition
-		condition10: KnockoutObservable<boolean> = ko.observable(true);
 		condition11: KnockoutObservable<boolean> = ko.observable(true);
 		condition30: KnockoutObservable<boolean> = ko.observable(true);
 		condition12: KnockoutObservable<boolean> = ko.observable(true);
@@ -90,6 +89,10 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 		condition7: KnockoutObservable<boolean> = ko.observable(true);
 		condition8: KnockoutObservable<boolean> = ko.observable(true);
 		condition9: KnockoutObservable<boolean> = ko.observable(true);
+		condition10Substi: KnockoutObservable<boolean> = ko.observable(false);
+		condition10Annual: KnockoutObservable<boolean> = ko.observable(false);
+		condition10Accum: KnockoutObservable<boolean> = ko.observable(false);
+;
 
         created(params: AppInitParam) {
 			const vm = this;
@@ -994,17 +997,36 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 
 		checkCondition10(data: any) {
 			const vm = this;
-			if (vm.data && vm.data.remainVacationInfo && (
-				vm.data.remainVacationInfo.substituteLeaveManagement.substituteLeaveManagement === 1 ||
-				vm.data.remainVacationInfo.overtime60hManagement.overrest60HManagement === 1 ||
-				vm.data.remainVacationInfo.annualLeaveManagement.annualLeaveManageDistinct === 1 ||
-				vm.data.remainVacationInfo.accumulatedRestManagement.accumulatedManage === 1
-			)) {
-				vm.condition10(true);
-				return true;
+			// if (vm.data && vm.data.remainVacationInfo && (
+			// 	vm.data.remainVacationInfo.substituteLeaveManagement.substituteLeaveManagement === 1 ||
+			// 	vm.data.remainVacationInfo.overtime60hManagement.overrest60HManagement === 1 ||
+			// 	vm.data.remainVacationInfo.annualLeaveManagement.annualLeaveManageDistinct === 1 ||
+			// 	vm.data.remainVacationInfo.accumulatedRestManagement.accumulatedManage === 1
+			// )) {
+			// 	vm.condition10(true);
+			// 	return true;
+			// }
+			// vm.condition10(false);
+			// return false
+			if (vm.data && vm.data.remainVacationInfo) {
+				if (vm.data.remainVacationInfo.substituteLeaveManagement.substituteLeaveManagement === 1) {
+					vm.condition10Substi(true);
+				} else {
+					vm.condition10Substi(false);
+				}
+
+				if (vm.data.remainVacationInfo.annualLeaveManagement.annualLeaveManageDistinct === 1) {
+					vm.condition10Annual(true);
+				} else {
+					vm.condition10Annual(false);
+				}
+
+				if (vm.data.remainVacationInfo.accumulatedRestManagement.accumulatedManage === 1) {
+					vm.condition10Accum(true);
+				} else {
+					vm.condition10Accum(false);
+				}
 			}
-			vm.condition10(false);
-			return false
 		}
 
 		checkCondition11(data: any) {
