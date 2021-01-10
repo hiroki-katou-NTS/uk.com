@@ -8,6 +8,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.infra.repository.application.optional.AposeOptionalItem;
+import nts.uk.ctx.at.request.infra.repository.application.timeleaveapplication.AsposeTimeLeaveApplication;
 import org.apache.logging.log4j.util.Strings;
 
 import com.aspose.cells.Cell;
@@ -72,6 +73,9 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 	
 	@Inject
 	private AsposeAppHolidayWork asposeAppHolidayWork;
+
+	@Inject
+	private AsposeTimeLeaveApplication asposeTimeLeaveApp;
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, PrintContentOfApp printContentOfApp, ApplicationType appType) {
@@ -194,6 +198,11 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			}
 			break;
 		case ANNUAL_HOLIDAY_APPLICATION:
+			asposeTimeLeaveApp.printAppContent(worksheet, printContentOfApp);
+			reasonLabel = worksheet.getCells().get("B15");
+			remarkLabel = worksheet.getCells().get("B18");
+			reasonContent = worksheet.getCells().get("D15");
+			printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
 			break;
 		case EARLY_LEAVE_CANCEL_APPLICATION:
 			asposeLateLeaveEarly.printLateEarlyContent(worksheet, printContentOfApp);
@@ -235,7 +244,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		case STAMP_APPLICATION:
 			return "";
 		case ANNUAL_HOLIDAY_APPLICATION:
-			return "";
+			return "application/KAF012_template.xlsx";
 		case EARLY_LEAVE_CANCEL_APPLICATION:
 			return "application/KAF004_template.xlsx";
 		case COMPLEMENT_LEAVE_APPLICATION:

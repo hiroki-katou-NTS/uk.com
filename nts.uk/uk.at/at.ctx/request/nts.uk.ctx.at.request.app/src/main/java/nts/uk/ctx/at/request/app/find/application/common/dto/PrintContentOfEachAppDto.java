@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.app.find.application.common.dto;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.at.request.app.command.application.holidaywork.PrintContentOfHolidayWorkCmd;
@@ -11,11 +12,13 @@ import nts.uk.ctx.at.request.app.find.application.gobackdirectly.InforGoBackComm
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ArrivedLateLeaveEarlyInfoDto;
 import nts.uk.ctx.at.request.app.find.application.optitem.optitemdto.OptionalItemApplicationPrintDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampOutputDto;
+import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.TimeLeaveAppDetailDto;
 import nts.uk.ctx.at.request.dom.application.common.service.print.PrintContentOfEachApp;
 import nts.uk.ctx.at.request.dom.application.common.service.print.PrintContentOfWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeOutput;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * refactor 4
@@ -36,6 +39,7 @@ public class PrintContentOfEachAppDto {
     /**
      * 時間休暇申請の印刷内容
      */
+    public List<TimeLeaveAppDetailDto> opPrintContentOfTimeLeave;
 
     /**
      * 打刻申請の印刷内容
@@ -94,9 +98,11 @@ public class PrintContentOfEachAppDto {
 		if(opPrintContentOfHolidayWork != null) {
 			printContentOfEachApp.setOpPrintContentOfHolidayWork(Optional.of(opPrintContentOfHolidayWork.toDomain()));
 		}
+		if (opPrintContentOfTimeLeave != null) {
+            printContentOfEachApp.setOpPrintContentOfTimeLeave(Optional.of(opPrintContentOfTimeLeave.stream().map(TimeLeaveAppDetailDto::toDomain).collect(Collectors.toList())));
+        }
 		if (opDetailOutput != null) {
 			printContentOfEachApp.setOpDetailOutput(Optional.of(opDetailOutput.toDomain()));
-			
 		}
         return printContentOfEachApp;
     }
