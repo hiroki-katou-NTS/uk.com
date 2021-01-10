@@ -114,6 +114,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.Leav
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SixtyHourSettingOutput;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SubstitutionHolidayOutput;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingRepository;
@@ -383,11 +384,9 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	    NursingLeaveSetting nursingLeaveSetting = this.getNursingLeaveSetting(companyID, NursingCategory.Nursing);
 	    
 	    // 代休の紐付け管理区分を取得する
-	    // pending for refactor domain
-	    CompensatoryLeaveComSetting compensatoryLeaveComSetting = this.getCompLeaveComSetting(companyID);
+	    CompensatoryLeaveEmSetting compensatoryLeaveEmSet = require.compensatoryLeaveEmSetting(companyID, sID);
 	    
 	    // 振休の紐付け管理区分を取得する
-        // pending for refactor domain
 	    ComSubstVacation comSubstVacation = this.getComSubstVacation(companyID);
 	    
 	    // OUTPUTを作成して返す
@@ -402,13 +401,11 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	    SubstituteLeaveManagement substituteLeaveManagement = new SubstituteLeaveManagement(
 	            EnumAdaptor.valueOf(substituationHoliday.getDigestiveUnit(), TimeDigestiveUnit.class), 
 	            EnumAdaptor.valueOf(substituationHoliday.isTimeOfPeriodFlg() ? 1 : 0, ManageDistinct.class), 
-//	            compensatoryLeaveComSetting.getIsManaged(),
-	            ManageDistinct.YES,
+	            compensatoryLeaveEmSet.getIsManaged(),
 	            EnumAdaptor.valueOf(substituationHoliday.isSubstitutionFlg() ? 1 : 0, ManageDistinct.class));
 	    
 	    HolidayManagement holidayManagement = new HolidayManagement(
-//	            comSubstVacation.getSetting().getIsManage(),
-	            ManageDistinct.YES,
+	            comSubstVacation.getLinkingManagementATR(),
 	            EnumAdaptor.valueOf(leaveSet.isSubManageFlag() ? 1 : 0, ManageDistinct.class));
 	    
 	    Overtime60HManagement overtime60hManagement = new Overtime60HManagement(
@@ -416,16 +413,12 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	            EnumAdaptor.valueOf(setting60H.getSixtyHourOverDigestion(), TimeDigestiveUnit.class));
 	    
 	    NursingCareLeaveManagement nursingCareLeaveManagement = new NursingCareLeaveManagement(
-//	            childNursingLeaveSetting.getManageType(), 
-	            ManageDistinct.YES,
-	            // Mock data START
-	            TimeDigestiveUnit.OneHour, 
-	            ManageDistinct.YES, 
-	            TimeDigestiveUnit.OneHour, 
-	            ManageDistinct.YES, 
-	            // Mock data END
-//	            nursingLeaveSetting.getManageType());
-	            ManageDistinct.YES);
+	            childNursingLeaveSetting.getManageType(), 
+	            nursingLeaveSetting.getTimeCareNursingSetting().getTimeDigestiveUnit(),
+	            nursingLeaveSetting.getTimeCareNursingSetting().getManageDistinct(),
+	            childNursingLeaveSetting.getTimeCareNursingSetting().getTimeDigestiveUnit(),
+	            childNursingLeaveSetting.getTimeCareNursingSetting().getManageDistinct(),
+	            nursingLeaveSetting.getManageType());
 	    
 		return new CheckDispHolidayType(
 		        annualLeaveManagement, 
@@ -450,13 +443,9 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 
     private NursingLeaveSetting getNursingLeaveSetting(String companyID, NursingCategory nursingType) {
 	    // ドメインモデル「介護看護休暇設定」を取得する (Lấy domain NursingLeaveSetting)
-//	    List<NursingLeaveSetting> nursingLeaveSettings = nursingLeaveSettingRepo.findByCompanyId(companyID)
-//	            .stream().filter(setting -> setting.getNursingCategory().equals(nursingType))
-//	            .collect(Collectors.toList());
-//	    
-//	    
-//        return nursingLeaveSettings.size() > 0 ? nursingLeaveSettings.get(0) : null;
-        return null;
+	    NursingLeaveSetting nursingLeaveSettings = nursingLeaveSettingRepo.findByCompanyIdAndNursingCategory(companyID, nursingType.value);
+	    
+        return nursingLeaveSettings;
     }
 
 	@Override
