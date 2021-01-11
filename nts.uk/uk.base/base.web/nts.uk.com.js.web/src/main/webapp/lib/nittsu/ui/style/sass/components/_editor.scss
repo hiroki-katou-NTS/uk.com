@@ -5,11 +5,11 @@ $editor-border-color: #EAE8F2;
 	.nts-input {
 		outline: none;
 		border: 1px solid $editor-border-color;
-		padding: 0px 10px;
+		padding: 6px 10px;
 		font-family: $font_family_monospace;
 		border-radius: 3px;
 		overflow: visible;
-		line-height: 28px;
+		font-size: 13px;
 		
 		&:focus{
 			border-color: $focused_color;
