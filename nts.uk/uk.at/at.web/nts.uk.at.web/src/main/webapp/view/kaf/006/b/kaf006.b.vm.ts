@@ -38,6 +38,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 		isEnableSwitchBtn: boolean = true;
 		updateMode: boolean = true;
 		dateBeforeChange: KnockoutObservable<string> = ko.observable(null);
+		isDispTime2ByWorkTime: KnockoutObservable<boolean> = ko.observable(false);
 
 		yearRemain: KnockoutObservable<number> = ko.observable();
 		subHdRemain: KnockoutObservable<number> = ko.observable();
@@ -385,6 +386,28 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 					}).then((data) => {
 						if (data) {
 							vm.fetchData(data);
+							vm.timeRequired(nts.uk.time.format.byId("Clock_Short_HM", vm.requiredVacationTime()));
+
+							let workTimeLst = data.workTimeLst;
+							if (workTimeLst.length > 0) {
+								if (_.filter(workTimeLst, { 'workNo': 1 }).length > 0) {
+									let workTime1: any = _.filter(workTimeLst, { 'workNo': 1 })[0];
+									vm.startTime1(workTime1.startTime);
+									vm.endTime1(workTime1.endTime);
+								}
+								if (_.filter(workTimeLst, { 'workNo': 2 }).length > 0) {
+									let workTime2: any = _.filter(workTimeLst, { 'workNo': 2 })[0];
+									if (workTime2.useAtr === 0) {
+										vm.isDispTime2ByWorkTime(false);
+									} else {
+										vm.isDispTime2ByWorkTime(true);
+										vm.startTime1(workTime2.startTime);
+										vm.endTime1(workTime2.endTime);
+									}
+								} else {
+									vm.isDispTime2ByWorkTime(false);
+								}
+							}
 							return data;
 						}
 					}).then((data) => {
@@ -744,10 +767,10 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 					vm.selectedWorkTimeCD(childData.selectedWorkTimeCode);
 					vm.selectedWorkTimeName(childData.selectedWorkTimeName);
 
-					vm.startTime1(childData.first.start);
-					vm.endTime1(childData.first.end);
-					vm.startTime2(childData.second.start);
-					vm.endTime2(childData.second.end);
+					// vm.startTime1(childData.first.start);
+					// vm.endTime1(childData.first.end);
+					// vm.startTime2(childData.second.start);
+					// vm.endTime2(childData.second.end);
                 }
             });
 		};
