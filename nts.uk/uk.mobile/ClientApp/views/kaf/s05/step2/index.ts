@@ -628,21 +628,21 @@ export class KafS05Step2Component extends Vue {
     }
     public checkAlarm() {
         const self = this;
-        if (self.$appContext.step != '2') {
+        if (self.$appContext.step != 'step_2') {
 
             return;
         }
         // ・「残業申請の表示情報．計算結果．事前申請・実績の超過状態．事前申請なし」 = true ⇒#Msg_1557
         let c1 = _.get(self.$appContext.model, 'displayInfoOverTime.calculationResultOp.overStateOutput.isExistApp');
         // ・「残業申請の表示情報．計算結果．事前申請・実績の超過状態．実績状態」 = 超過アラーム⇒#Msg_1556
-        let c2 = _.get(self.$appContext.model, 'displayInfoOverTime.calculationResultOp.overStateOutput.achivementStatus') == ExcessState.EXCESS_ERROR;
+        let c2 = _.get(self.$appContext.model, 'displayInfoOverTime.calculationResultOp.overStateOutput.achivementStatus') == ExcessState.EXCESS_ALARM;
         if (c1) {
             self.isMsg_1557 = true;
         } else {
             self.isMsg_1557 = false;
         }
 
-        if (c1) {
+        if (c2) {
             self.isMsg_1556 = true;
         } else {
             self.isMsg_1556 = false;
