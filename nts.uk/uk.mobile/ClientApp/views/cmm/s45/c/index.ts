@@ -6,7 +6,6 @@ import { Phase } from 'views/cmm/s45/shr/index';
 import { AppType, AppTypeName } from 'views/kaf/s00/shr';
 
 import {
-    CmmS45ComponentsApp1Component,
     CmmS45ComponentsApp2Component,
     CmmS45ComponentsApp3Component,
     CmmS45ComponentsApp4Component,
@@ -30,7 +29,6 @@ import {
         // khai báo virtual tag name
         'approved': ApprovedComponent,
         'appsample': CmmS45ShrComponentsAppsampleComponent,
-        'app1': CmmS45ComponentsApp1Component,
         'app2': CmmS45ComponentsApp2Component,
         'app3': CmmS45ComponentsApp3Component,
         'app4': CmmS45ComponentsApp4Component,

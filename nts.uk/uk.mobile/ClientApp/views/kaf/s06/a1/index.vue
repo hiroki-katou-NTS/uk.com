@@ -1,5 +1,5 @@
 <template>
-<div class="cmms45shrcomponentsapp1">
+<div class="kafs06a1">
     <h3>Hello {{title | i18n}} component!</h3>
     <nts-text-editor
         name='title'

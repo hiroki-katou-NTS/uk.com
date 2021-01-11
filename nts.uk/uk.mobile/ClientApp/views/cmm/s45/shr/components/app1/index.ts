@@ -1,193 +1,71 @@
 import { Vue, _ } from '@app/provider';
-import { component, Prop, Watch } from '@app/core/component';
-import { IApprovalPhase, IApprovalFrame, IApprover } from 'views/cmm/s45/shr/index.d';
+import { component, Prop } from '@app/core/component';
+import { AppForLeaveStartOutputDto } from 'views/kaf/s06/a/define.interface';
 
 @component({
-    name: 'cmms45componentsapp1',
+    name: 'cmms45shrcomponentsapp1',
+    route: '/cmm/s45/shr/components/app1',
     style: require('./style.scss'),
     template: require('./index.vue'),
+    resource: require('./resources.json'),
     validations: {},
     constraints: []
 })
-export class CmmS45ComponentsApp1Component extends Vue {
-    @Prop({ default: () => ({ appOvertime: null }) })
-    public params: { appOvertime: IOvertime };
+export class CmmS45ShrComponentsApp1Component extends Vue {
+    @Prop({
+        default: () => ({
+            appDispInfoStartupOutput: null,
+            appDetail: null
+        })
+    })
+    public readonly params: {
+        appDispInfoStartupOutput: any,
+        appDetail: any
+    };
+    public title: string = 'CmmS45ShrComponentsApp1';
 
-    public title: string = 'CmmS45ComponentsApp1';
+    public dataOutput = {} as AppForLeaveStartOutputDto;
 
-    get $app() {
-        return this.params.appOvertime;
+    public user: any;
+    public created() {
+        const self = this;
+
+        
     }
 
-    get appType() {
-        if (this.$app.appType == 0) {
-            return '残業申請';
-        } else {
-            return '';
-        }
+    public mounted() {
+        const self = this;
+
+        self.$auth.user.then((usr: any) => {
+            self.user = usr;
+        }).then((res: any) => {
+            self.fetchData(self.params);
+        });
+        self.$watch('params.appDispInfoStartupOutput', (newV, oldV) => {
+            self.fetchData(self.params);
+        });
     }
+    public fetchData(getParams: any) {
+        const self = this;
 
-    get prePost() {
-        if (this.$app.prePostAtr == 0) {
-            return '事前';
-        } else {
-            return '事後';
-        }
+        let command = {} as any;
+        self.$http.post('at', API.getDetailInfo, command)
+                    .then((res: any) => {
+                        self.dataOutput = res.data;
+
+                        self.bindComponent();
+                    })
+                    .catch((res: any) => {
+                        self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+                    })
+                    .then(() => self.$emit('loading-complete'));
     }
+    public bindComponent() {
+        const self = this;
 
-    get isPostApp() {
-        if (this.$app.prePostAtr == 1) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
-    get breakTimeLst() {
-        let breakTimeLst: Array<IOvertimeBreak> = this.$app.breakTimeLst;
-
-        return breakTimeLst;
-    }
-
-    get overTimeLst() {
-        let self = this;
-        let overtimeLst: Array<OvertimeFrame> = _.filter(self.$app.frameLst, {'attendanceID': 1})
-                                                .map((frame) => { 
-                                                    let overtimeColor = _.find(self.$app.timeLst, (overtimeColor) => {
-                                                        return overtimeColor.attendanceID == 1 &&
-                                                                overtimeColor.frameNo == frame.frameNo;    
-                                                    });
-
-                                                    return new OvertimeFrame(frame, overtimeColor, self.$app.appOvertimeNightFlg, self.$app.flexFLag);
-                                                });
-        overtimeLst.push(new OvertimeFrame(
-            {'attendanceID': 1, 'frameNo': 11, 'frameName': ''},
-                _.find(self.$app.timeLst, {'attendanceID': 1, 'frameNo': 11}),
-                self.$app.appOvertimeNightFlg, 
-                self.$app.flexFLag
-        ));
-        overtimeLst.push(new OvertimeFrame(
-            {'attendanceID': 1, 'frameNo': 12, 'frameName': ''},
-                _.find(self.$app.timeLst, {'attendanceID': 1, 'frameNo': 12}),
-                self.$app.appOvertimeNightFlg, 
-                self.$app.flexFLag
-        ));
-
-        return overtimeLst;
-    }
-
-    get restTimeLst() {
-        return [];
-    }
-
-    get payTimeLst() {
-        let self = this;
-        let payTimeLst: Array<OvertimeFrame> = _.filter(self.$app.frameLst, {'attendanceID': 3})
-                                                .map((frame) => { 
-                                                    let overtimeColor = _.find(self.$app.timeLst, (overtimeColor) => {
-                                                        return overtimeColor.attendanceID == 3 &&
-                                                                overtimeColor.frameNo == frame.frameNo;    
-                                                    });
-
-                                                    return new OvertimeFrame(frame, overtimeColor);
-                                                });
-
-        return payTimeLst;
     }
 }
-
-export interface IOvertime {
-    appDate: string;
-    appOvertimeNightFlg: boolean;
-    appReason: string;
-    appType: number;
-    applicant: string;
-    displayAppReasonContentFlg: boolean;
-    displayBonusTime: boolean;
-    displayCaculationTime: boolean;
-    displayDivergenceReasonForm: boolean;
-    displayDivergenceReasonInput: boolean;
-    displayRestTime: boolean;
-    divergenceReasonContent: string;
-    endTime: number;
-    flexFLag: boolean;
-    inputDate: string;
-    prePostAtr: number;
-    representer: string;
-    startTime: number;
-    frameLst: Array<OvertimeFrame>;
-    breakTimeLst: Array<IOvertimeBreak>;
-    timeLst: Array<IOvertimeColor>;
-    typicalReasonDisplayFlg: boolean;
-    workTimeCD: string;
-    workTimeName: string;
-    workTypeCD: string;
-    workTypeName: string;
-}
-
-export interface IOvertimeColor {
-    actualError: number;
-    actualTime: number;
-    appTime: number;
-    attendanceID: number;
-    calcError: number;
-    calcTime: number;
-    frameNo: number;
-    preAppError: number;
-    preAppTime: number;
-}
-
-export interface IOvertimeBreak {
-    frameNo: number;
-    startTime: number;
-    endTime: number;   
-}
-
-export interface IOvertimeFrame {
-    attendanceID: number;
-    frameNo: number;
-    frameName: string;   
-}
-
-export class OvertimeFrame {
-    public attendanceID: number = 0;
-    public frameNo: number = 0;
-    public frameName: string = '';
-    public actualError: number = 0;
-    public actualTime: number = null;
-    public appTime: number = null;
-    public calcError: number = 0;
-    public calcTime: number = null;
-    public preAppError: number = 0;
-    public preAppTime: number = null;
-    public appOvertimeNightFlg?: boolean = false;
-    public flexFLag?: boolean = false;
-
-    constructor(overtimeFrame: IOvertimeFrame, overtimeColor: IOvertimeColor, appOvertimeNightFlg?: boolean, flexFLag?: boolean) {
-        this.attendanceID = overtimeFrame.attendanceID;
-        this.frameNo = overtimeFrame.frameNo;
-        this.frameName = overtimeFrame.frameName;
-        if (overtimeColor) {
-            this.actualError = overtimeColor.actualError;
-            this.actualTime = overtimeColor.actualTime;
-            this.appTime = overtimeColor.appTime;
-            this.calcError = overtimeColor.calcError;
-            this.calcTime = overtimeColor.calcTime;
-            this.preAppError = overtimeColor.preAppError;
-            this.preAppTime = overtimeColor.preAppTime;
-        }
-        if (appOvertimeNightFlg) {
-            this.appOvertimeNightFlg = appOvertimeNightFlg;
-        }
-        if (flexFLag) {
-            this.flexFLag = flexFLag;
-        }
-    }
-
-    get getDisplay() {
-        return (this.frameNo <= 10) ||
-                (this.frameNo == 11 && this.appOvertimeNightFlg) ||
-                (this.frameNo == 12 && this.flexFLag);  
-    }
-}
-
+const API = {
+    getDetailInfo: 'at/request/application/appforleave/mobile/getDetailInfo'
+};
