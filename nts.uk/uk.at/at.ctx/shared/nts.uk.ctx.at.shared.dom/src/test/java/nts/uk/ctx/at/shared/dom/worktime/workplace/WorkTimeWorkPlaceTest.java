@@ -22,12 +22,4 @@ public class WorkTimeWorkPlaceTest {
 			new WorkTimeWorkplace("cid","wkpId", workTimeCodes);
 		NtsAssert.invokeGetters(data);
 	}
-
-	@Test
-	public void testCreate() {
-		WorkTimeWorkplace actual = WorkTimeWorkplace.create("cid","wkpId", workTimeCodes);
-		assertThat(actual.getCompanyID()).isEqualTo("cid");
-		assertThat(actual.getWorkplaceID()).isEqualTo("wkpId");
-		assertThat(actual.getWorkTimeCodes().size()).isEqualTo(2);
-	}
 }

@@ -16,7 +16,7 @@ public class WorkTimeWorkplaceService {
 	 * 設定済みの職場を取得する
 	 */
 	public List<String> getByCid(Require require) {
-		return require.getByCId().stream().map(WorkTimeWorkplace::getWorkplaceID).collect(Collectors.toList());
+		return require.getByCId().stream().map(WorkTimeWorkplace::getWorkplaceID).distinct().collect(Collectors.toList());
 	}
 
 	public static interface Require {
