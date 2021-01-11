@@ -25,6 +25,8 @@ export class CmmS45ShrComponentsApp0Component extends Vue {
 
     public reasons: Array<Reason> = [];
 
+    public isEmptyBreakTime: boolean = false;
+
     public workHours1: WorkHours = {
         start: '',
         end: ''
@@ -782,6 +784,7 @@ export class CmmS45ShrComponentsApp0Component extends Vue {
     public bindBreakTime() {
         const self = this;
         let breakTime = [] as Array<BreakTime>;
+        let countBreakTime = 0;
         _.range(1, 10)
         .forEach((index: number) => {
             let result = _.findLast(_.get(self.dataOutput, 'appOverTime.breakTimeOp'), (i: TimeZoneWithWorkNo) => i.workNo == index) as any;
@@ -792,8 +795,12 @@ export class CmmS45ShrComponentsApp0Component extends Vue {
                 item.title = self.$i18n('KAFS05_69', String(item.frameNo));
                 item.valueHours = {start: self.$dt.timedr(findResult.startTime || 0), end: self.$dt.timedr(findResult.endTime || 0)};
                 breakTime.push(item);
+                countBreakTime++;
             }
         });
+        if (countBreakTime === 0) {
+            self.isEmptyBreakTime = true;
+        }
         self.breakTimes = breakTime;
 
     }
@@ -826,10 +833,10 @@ export class CmmS45ShrComponentsApp0Component extends Vue {
     }
     public createWorkHours(start: number, end: number) {
         const self = this;
-        if (_.isNil(start) || _.isNil(end)) {
+        if (!_.isNumber(start) || !_.isNumber(end)) {
 
             return {
-                start: '',
+                start: self.$i18n('KAFS05_54'),
                 end: ''
             } as WorkHours;
         }
@@ -846,7 +853,7 @@ export class CmmS45ShrComponentsApp0Component extends Vue {
         workType.code = codeType || '';
 
         let workTime = {} as Work;
-        workTime.code = codeTime || '';
+        workTime.code = codeTime || self.$i18n('KAFS07_9');
         let displayInfoOverTime = _.get(self.dataOutput, 'displayInfoOverTime');
         if (displayInfoOverTime) {
             let workTypes = displayInfoOverTime.infoBaseDateOutput.worktypes;
@@ -855,9 +862,11 @@ export class CmmS45ShrComponentsApp0Component extends Vue {
             workType.name = resultWorkType ? (resultWorkType.name || '')  : self.$i18n('KAFS05_55');
 
             let workTimes = displayInfoOverTime.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst;
-            let resultWorkTime = 
-                    _.find(workTimes, (i: any) => i.worktimeCode == workTime.code);
-            workTime.name = resultWorkTime ? (_.get(resultWorkTime, 'workTimeDisplayName.workTimeName') || '') : self.$i18n('KAFS05_55');
+            if (codeTime) {
+                let resultWorkTime = 
+                        _.find(workTimes, (i: any) => i.worktimeCode == workTime.code);
+                workTime.name = resultWorkTime ? (_.get(resultWorkTime, 'workTimeDisplayName.workTimeName') || '') : self.$i18n('KAFS05_55');
+            }
   
         }
         let workInfo = {} as WorkInfo;

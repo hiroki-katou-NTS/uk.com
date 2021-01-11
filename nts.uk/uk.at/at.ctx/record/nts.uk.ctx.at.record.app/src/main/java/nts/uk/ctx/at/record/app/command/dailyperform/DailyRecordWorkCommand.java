@@ -298,7 +298,7 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 				
 		Optional<OutingTimeOfDailyAttd> outing = this.getOutingTime().toDomain().map(c -> c.getOutingTime());
 				
-		BreakTimeOfDailyAttd breakTime = this.getBreakTime().toDomain().map(c -> c.getTimeZone()).get();
+		BreakTimeOfDailyAttd breakTime = this.getBreakTime().toDomain().map(c -> c.getTimeZone()).orElse(new BreakTimeOfDailyAttd());
 				
 		Optional<AttendanceTimeOfDailyAttendance> attendanceTime = this.getAttendanceTime().toDomain().map(c -> c.getTime());
 				

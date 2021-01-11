@@ -2284,13 +2284,25 @@ module cmm045.a.viewmodel {
 					return dfd.resolve(result);
 				});
 			}
-			
+			let appInfo = { appName: ''},
+				appName = "";
+			if(item.opAppTypeDisplay) {
+				appInfo = _.find(self.appListExtractConditionDto.opListOfAppTypes, o => o.appType == item.appType && o.opApplicationTypeDisplay==item.opAppTypeDisplay);
+			} else {
+				appInfo = _.find(self.appListExtractConditionDto.opListOfAppTypes, o => o.appType == item.appType);
+			}
+			if(_.isUndefined(appInfo)) {
+				appName = '';
+			} else {
+				appName = _.escape(appInfo.appName);
+			}
 			nts.uk.ui.windows.setShared("CMM045B_PARAMS", {
 				applicantName: item.applicantName,
-				appName: '',
+				appName,
 				appDate: item.appDate,
 				opBackgroundColor: item.opBackgroundColor,
-				appContent: item.appContent
+				appContent: item.appContent,
+				isMulti: itemLst.length > 1 
 			});
 			nts.uk.ui.windows.sub.modal("/view/cmm/045/b/index.xhtml").onClosed(() => {
 				let result = nts.uk.ui.windows.getShared('CMM045B_RESULT');

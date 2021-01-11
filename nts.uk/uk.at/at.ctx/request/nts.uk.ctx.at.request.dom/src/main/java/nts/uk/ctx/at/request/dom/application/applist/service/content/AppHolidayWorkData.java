@@ -17,12 +17,12 @@ public class AppHolidayWorkData {
 	/**
 	 * 勤務開始時間
 	 */
-	private int startTime;
+	private Integer startTime;
 	
 	/**
 	 * 勤務終了時間
 	 */
-	private int endTime;
+	private Integer endTime;
 	
 	/**
 	 * 申請ID
