@@ -38,11 +38,11 @@ public interface AlarmListPersonExtractServicePub {
 	 * @param lstResultCondition
 	 * @param lstCheckType
 	 */
-	void extractDailyCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod, 
-			List<String> errorMasterCheckId,
-			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod, 
-			List<StatusOfEmployeeAdapterAl> lstStatusEmp,
-			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType);
+	void extractDailyCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod,
+			String errorDailyCheckId, List<String> extractConditionWorkRecord, List<String> errorDailyCheckCd,
+			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
+			List<StatusOfEmployeeAdapterAl> lstStatusEmp, List<ResultOfEachCondition> lstResultCondition,
+			List<AlarmListCheckInfor> lstCheckType);
 	/**
 	 * 月次
 	 */

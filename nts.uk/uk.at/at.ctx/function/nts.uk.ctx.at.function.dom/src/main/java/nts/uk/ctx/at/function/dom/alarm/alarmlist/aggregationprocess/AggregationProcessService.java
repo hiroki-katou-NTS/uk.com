@@ -215,12 +215,18 @@ public class AggregationProcessService {
 	public AlarmListResultDto processAlarmListResult(String cid, String pattentCd, 
 			List<PeriodByAlarmCategory> lstCategoryPeriod,List<String> lstSid, String runCode,
 			Consumer<Integer> counter, Supplier<Boolean> shouldStop){
+		
 		AlarmListResultDto result = new AlarmListResultDto();
+		List<AlarmExtracResult> lstExtracResult = new ArrayList<>();
+		List<CategoryCondValueDto> lstValueDto = new ArrayList<>();
+		
 		//パラメータ．パターンコードをもとにドメインモデル「アラームリストパターン設定」を取得する
 		Optional<AlarmPatternSetting> findByAlarmPatternCode = alPatternSettingRepo.findByAlarmPatternCode(cid, pattentCd);
+		
 		if(!findByAlarmPatternCode.isPresent()) {
 			throw new BusinessException("Msg_2059", pattentCd);
 		}
+		
 		AlarmPatternSetting alarmPattern = findByAlarmPatternCode.get();
 		//ドメインモデル「カテゴリ別アラームチェック条件」を取得
 		List<AlarmCheckConditionByCategory> lstCondCate = new ArrayList<>();
@@ -230,20 +236,21 @@ public class AggregationProcessService {
 					x.getCheckConditionList());
 			lstCondCate.addAll(lstCond);
 		});
+		
 		if(lstCondCate.isEmpty()) {
 			throw new BusinessException("Msg_2038");
 		}
 		
-		List<AlarmExtracResult> lstExtracResult = new ArrayList<>();
-		List<CategoryCondValueDto> lstValueDto = new ArrayList<>();
 		lstCondCate.stream().forEach(x ->{
 			List<AlarmListCheckInfor> mapCondCdCheckNoType = new ArrayList<>();
 			CategoryCondValueDto valuesDto = new CategoryCondValueDto(x.getCategory(), x.getCode().v(), mapCondCdCheckNoType);
 			DatePeriod datePeriod = null;
+			
 			//期間条件を絞り込む TODO can xem lai voi truong hop 36
 			List<PeriodByAlarmCategory> periodCheck = lstCategoryPeriod.stream()
 					.filter(y -> y.getCategory() == x.getCategory().value)
 					.collect(Collectors.toList());
+			
 			if(!periodCheck.isEmpty() && periodCheck.get(0).getStartDate() != null) {
 				datePeriod = new DatePeriod(periodCheck.get(0).getStartDate(),periodCheck.get(0).getEndDate());
 				if(x.getCategory() == AlarmCategory.MONTHLY || x.getCategory() == AlarmCategory.MULTIPLE_MONTH) {
@@ -251,8 +258,10 @@ public class AggregationProcessService {
 							periodCheck.get(0).getEndDate().addMonths(1).addDays(-1));
 				}
 			}
+			
 			List<String> lstSidTmp = new ArrayList<>(lstSid);
 			AlarmCheckTargetCondition extractTargetCondition = x.getExtractTargetCondition();
+			
 			//対象者をしぼり込む(レスポンス改善)
 			if(!extractTargetCondition.getLstBusinessTypeCode().isEmpty()
 					|| !extractTargetCondition.getLstClassificationCode().isEmpty()
@@ -284,9 +293,14 @@ public class AggregationProcessService {
 				
 				case SCHEDULE_DAILY:
 					DailyAlarmCondition dailyAlarmCon = (DailyAlarmCondition) x.getExtractionCondition();
-					ConExtractedDaily conExtracDai = dailyAlarmCon.getConExtractedDaily();					
+					ConExtractedDaily conExtracDai = dailyAlarmCon.getConExtractedDaily();		
+					
+					extractAlarmService.extractDailyCheckResult(cid, lstSid, datePeriod, 
+							dailyAlarmCon.getDailyAlarmConID(), dailyAlarmCon,
+							getWplByListSidAndPeriod, lstStatusEmp, lstResultCondition, lstCheckType);
 					
 				case SCHEDULE_WEEKLY:
+					break;
 					
 				case SCHEDULE_4WEEK:
 					AlarmCheckCondition4W4D fourW4DCheckCond = (AlarmCheckCondition4W4D) x.getExtractionCondition();
@@ -299,14 +313,19 @@ public class AggregationProcessService {
 					AlarmListCheckInfor w4d4CheckInfor = new AlarmListCheckInfor(String.valueOf(w4d4Cond.value), AlarmListCheckType.FixCheck);
 					valuesDto.getMapCondCdCheckNoType().add(w4d4CheckInfor);
 					break;
+					
 				case SCHEDULE_MONTHLY:
 					break;
+					
 				case SCHEDULE_YEAR:
 					break;
+					
 				case DAILY:
 					break;
+					
 				case WEEKLY:
 					break;
+					
 				case MONTHLY:
 					MonAlarmCheckCon monCheck = (MonAlarmCheckCon) x.getExtractionCondition();
 					extractAlarmService.extractMonthCheckResult(cid,
@@ -318,6 +337,7 @@ public class AggregationProcessService {
 							lstResultCondition,
 							lstCheckType);
 					break;
+					
 				case APPLICATION_APPROVAL:
 					AppApprovalAlarmCheckCondition appCond = (AppApprovalAlarmCheckCondition) x.getExtractionCondition();
 					appApprovalAggregationProcessService.aggregateCheck(cid, appCond.getApprovalAlarmConID(),
@@ -329,6 +349,7 @@ public class AggregationProcessService {
 							counter,
 							shouldStop);
 					break;
+					
 				case MULTIPLE_MONTH:
 					MulMonAlarmCond mulMonCheck = (MulMonAlarmCond) x.getExtractionCondition();
 					extractAlarmService.extractMultiMonthCheckResult(cid,
@@ -341,12 +362,16 @@ public class AggregationProcessService {
 					break;
 				case ANY_PERIOD:
 					break;
+					
 				case ATTENDANCE_RATE_FOR_HOLIDAY:
 					break;
+					
 				case AGREEMENT:
 					break;
+					
 				case MAN_HOUR_CHECK:
 					break;
+					
 				case MASTER_CHECK:
 					MasterCheckAlarmCheckCondition masterCheck = (MasterCheckAlarmCheckCondition) x.getExtractionCondition();
 					extractAlarmService.extractMasterCheckResult(cid, lstSidTmp, 
@@ -357,6 +382,7 @@ public class AggregationProcessService {
 							lstResultCondition,
 							lstCheckType);
 					break;	
+					
 				default:
 					break;
 				
@@ -376,14 +402,17 @@ public class AggregationProcessService {
 			}
 			
 		});
-		AlarmPatternExtractResult alarmResult = new AlarmPatternExtractResult(cid, runCode, pattentCd, alarmPattern.getAlarmPatternName().v(), lstExtracResult);
+		
+		AlarmPatternExtractResult alarmResult = new AlarmPatternExtractResult(cid, runCode, pattentCd, 
+																				alarmPattern.getAlarmPatternName().v(), 
+																				lstExtracResult);
 		result.setExtracting(true);
 		result.setLstAlarmResult(lstExtracResult);
+		
 		//アラーム（トップページ）永続化の処理 TODO doi ung khi co yeu cau
 		//this.createAlarmToppage(alarmResult, lstSid, lstValueDto, lstCategoryPeriod, alarmPattern.getAlarmPatternName().v());
 		return result;
 			
-		
 	}
 	/**
 	 * アラーム（トップページ）永続化の処理

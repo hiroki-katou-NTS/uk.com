@@ -6,8 +6,8 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.function.dom.adapter.WorkPlaceHistImport;
 import nts.uk.ctx.at.function.dom.adapter.companyRecord.StatusOfEmployeeAdapter;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.CategoryCondValueDto;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
 
 public interface AlarmListPersonServiceAdapter {
@@ -38,11 +38,11 @@ public interface AlarmListPersonServiceAdapter {
 	 * @param lstResultCondition
 	 * @param lstCheckInfor
 	 */
-	void extractDailyCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod,
-			String errorMasterCheckId,
-			List<WorkPlaceHistImport> lstWplHist,
-			List<StatusOfEmployeeAdapter> lstStatusEmp,List<ResultOfEachCondition> lstResultCondition,
-			List<AlarmListCheckInfor> lstCheckInfor);
+	void extractDailyCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod, 
+			String errorDailyCheckId, DailyAlarmCondition dailyAlarmCondition,
+			List<WorkPlaceHistImport> getWplByListSidAndPeriod, 
+			List<StatusOfEmployeeAdapter> lstStatusEmp, 
+			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType);
 	/**
 	 * 月次
 	 * @param cid
