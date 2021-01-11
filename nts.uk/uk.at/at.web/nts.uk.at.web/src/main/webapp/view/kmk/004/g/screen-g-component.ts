@@ -3,7 +3,7 @@
 import IMonthlyWorkTimeSetCom = nts.uk.at.kmk004.components.flex.IMonthlyWorkTimeSetCom;
 import MonthlyWorkTimeSetCom = nts.uk.at.kmk004.components.flex.MonthlyWorkTimeSetCom;
 import IMonthlyLaborTime = nts.uk.at.kmk004.components.flex.IMonthlyLaborTime;
-const template = `
+const g_template = `
 					<div class="sidebar-content-header">
 					<!-- ko component: {
 										    name: "sidebar-button",
@@ -55,7 +55,7 @@ const API_G_URL = {
 
 @component({
 	name: 'screen-g-component',
-	template
+	template: g_template
 })
 
 class ScreenGComponent extends ko.ViewModel {
@@ -79,6 +79,7 @@ class ScreenGComponent extends ko.ViewModel {
 					vm.startYM(data[0].yearMonth);
 					vm.screenData().updateData(startData);
 					vm.screenData().initDumpData(data[0].yearMonth);
+					vm.screenData().setFocus('load');
 				}).always(() => { vm.$blockui('clear'); });
 			})
 			.always(() => vm.$blockui('clear'));
@@ -123,7 +124,6 @@ class ScreenGComponent extends ko.ViewModel {
 	}
 
 	mounted() {
-		$("#year-list").focus();
 	}
 
 }

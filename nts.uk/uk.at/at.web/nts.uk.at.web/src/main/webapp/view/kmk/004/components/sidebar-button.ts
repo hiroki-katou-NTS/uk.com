@@ -1,7 +1,7 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 
-const template = `
+const sidebar_template = `
 		<div class="title" data-bind="i18n:screenMode"></div>
 		<a class="goback"  data-bind="ntsLinkButton: { jump: '../a/index.xhtml' },i18n: 'KMK004_224'"></a>
 		<button data-bind=" enable:enableSave() ,click: register,i18n: 'KMK004_225'" class="proceed"></button>
@@ -11,7 +11,7 @@ const template = `
 
 @component({
 	name: 'sidebar-button',
-	template
+	template: sidebar_template
 })
 
 class SidebarButton extends ko.ViewModel {
@@ -50,6 +50,7 @@ class SidebarButton extends ko.ViewModel {
 					vm.screenData().clearUpdateYear(vm.screenData().selectedYear());
 					vm.screenData().saveData();
 				});
+				vm.screenData().setFocus();
 			}).fail((error) => {
 				vm.$dialog.error(error);
 			}).always(() => {
@@ -73,6 +74,7 @@ class SidebarButton extends ko.ViewModel {
 					vm.screenData().saveToUnSaveList();
 					vm.screenData().clearUpdateYear(vm.screenData().selectedYear());
 					vm.screenData().saveData();
+					vm.screenData().setFocus();
 				});
 			}).fail((error) => {
 				vm.$dialog.error(error);
@@ -94,6 +96,7 @@ class SidebarButton extends ko.ViewModel {
 					vm.screenData().saveToUnSaveList();
 					vm.screenData().clearUpdateYear(vm.screenData().selectedYear());
 					vm.screenData().saveData();
+					vm.screenData().setFocus();
 				});
 			}).fail((error) => {
 				vm.$dialog.error(error);
@@ -120,6 +123,7 @@ class SidebarButton extends ko.ViewModel {
 					vm.screenData().saveToUnSaveList();
 					vm.screenData().clearUpdateYear(vm.screenData().selectedYear());
 					vm.screenData().saveData();
+					vm.screenData().setFocus();
 				});
 			}).fail((error) => {
 				vm.$dialog.error(error);
@@ -160,6 +164,7 @@ class SidebarButton extends ko.ViewModel {
 					vm.screenData().serverYears.push(Number(vm.screenData().selectedYear()));
 					vm.screenData().clearUpdateYear(vm.screenData().selectedYear());
 					vm.screenData().saveData();
+					vm.screenData().setFocus('load');
 				});
 			}).fail((error) => {
 				vm.$dialog.error(error);
@@ -185,6 +190,7 @@ class SidebarButton extends ko.ViewModel {
 					vm.screenData().clearUpdateYear(vm.screenData().selectedYear());
 					vm.screenData().saveData();
 					vm.screenData().alreadySettingList(_.map(data, (item) => { return { workplaceId: item, isAlreadySetting: true } }));
+					vm.screenData().setFocus('load');
 				});
 			}).fail((error) => {
 				vm.$dialog.error(error);
@@ -209,6 +215,7 @@ class SidebarButton extends ko.ViewModel {
 					vm.screenData().clearUpdateYear(vm.screenData().selectedYear());
 					vm.screenData().saveData();
 					vm.screenData().alreadySettingList(_.map(data, (item) => { return { code: item, isAlreadySetting: true } }));
+					vm.screenData().setFocus('load');
 				});
 			}).fail((error) => {
 				vm.$dialog.error(error);
@@ -242,6 +249,7 @@ class SidebarButton extends ko.ViewModel {
 							}
 							return { code: emp.code, isAlreadySetting: true };
 						}));
+					vm.screenData().setFocus('load');
 				});
 			}).fail((error) => {
 				vm.$dialog.error(error);
@@ -287,12 +295,14 @@ class SidebarButton extends ko.ViewModel {
 
 				vm.$ajax(API_H_URL.AFTER_COPY).done((data) => {
 					vm.screenData().alreadySettingList(_.map(data, (item) => { return { workplaceId: item, isAlreadySetting: true } }));
+					vm.screenData().setFocus('load');
 				}).always(() => { vm.$blockui("clear"); });
 			}
 			if (vm.screenMode == 'Com_Employment') {
 
 				vm.$ajax(API_I_URL.AFTER_COPY).done((data) => {
 					vm.screenData().alreadySettingList(_.map(data, (item) => { return { code: item, isAlreadySetting: true } }));
+					vm.screenData().setFocus('load');
 				}).always(() => { vm.$blockui("clear"); });
 			}
 			if (vm.screenMode == 'Com_Person') {
@@ -306,7 +316,7 @@ class SidebarButton extends ko.ViewModel {
 							}
 							return { code: emp.code, isAlreadySetting: true };
 						}));
-
+					vm.screenData().setFocus('load');
 				}).always(() => { vm.$blockui("clear"); });
 
 			}
@@ -339,6 +349,7 @@ class SidebarButton extends ko.ViewModel {
 					vm.screenData().setSelectedAfterRemove(selectedYear);
 					vm.screenData().deleteYear(selectedYear);
 					vm.screenData().clearUnSaveList(selectedYear);
+					vm.screenData().setFocus('load');
 				});
 			}).always(() => { vm.$blockui("clear"); });
 		}
@@ -352,6 +363,7 @@ class SidebarButton extends ko.ViewModel {
 					vm.screenData().deleteYear(selectedYear);
 					vm.screenData().clearUnSaveList(selectedYear);
 					vm.screenData().alreadySettingList(_.map(data, (item) => { return { workplaceId: item, isAlreadySetting: true } }));
+					vm.screenData().setFocus('load');
 				});
 			}).always(() => { vm.$blockui("clear"); });
 		}
@@ -365,6 +377,7 @@ class SidebarButton extends ko.ViewModel {
 					vm.screenData().deleteYear(selectedYear);
 					vm.screenData().clearUnSaveList(selectedYear);
 					vm.screenData().alreadySettingList(_.map(data, (item) => { return { code: item, isAlreadySetting: true } }));
+					vm.screenData().setFocus('load');
 				});
 			}).always(() => { vm.$blockui("clear"); });
 		}
@@ -388,6 +401,7 @@ class SidebarButton extends ko.ViewModel {
 							}
 							return { code: emp.code, isAlreadySetting: true };
 						}));
+					vm.screenData().setFocus('load');
 				});
 			}).always(() => { vm.$blockui("clear"); });
 		}

@@ -1,7 +1,7 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 
-const template = `
+const h_template = `
 					<div class="sidebar-content-header">
 						<!-- ko component: {
 											    name: "sidebar-button",
@@ -61,7 +61,7 @@ const API_H_URL = {
 
 @component({
 	name: 'screen-h-component',
-	template
+	template: h_template
 })
 
 class ScreenHComponent extends ko.ViewModel {
@@ -142,8 +142,9 @@ class ScreenHComponent extends ko.ViewModel {
 		vm.$blockui('invisible')
 			.then(() => vm.$ajax(API_H_URL.START_PAGE + selectedId))
 			.done((data) => {
-				vm.screenData().alreadySettingList(_.map(data.alreadySettings, (item) => { return { workplaceId: item, isAlreadySetting: true } }));
 				vm.screenData().updateData(data);
+				vm.screenData().alreadySettingList(_.map(data.alreadySettings, (item) => { return { workplaceId: item, isAlreadySetting: true } }));
+				vm.screenData().setFocus('load');
 			})
 			.always(() => vm.$blockui('clear'));
 	}
@@ -216,6 +217,7 @@ class ScreenHComponent extends ko.ViewModel {
 
 					vm.screenData().comFlexMonthActCalSet(data.flexBasicSetting.flexMonthActCalSet);
 					vm.screenData().getFlexPredWorkTime(data.flexBasicSetting.flexPredWorkTime);
+					vm.screenData().setFocus('load');
 				})
 				.always(() => vm.$blockui('clear'));
 

@@ -220,6 +220,10 @@ module nts.uk.at.kmk004.components.flex {
 			return vm.serverYears().length > 0 ? vm.serverYears().indexOf(Number(vm.selectedYear())) != -1 : false;
 		}
 
+		setFocus(mode?: 'load' | 'change') {
+			$('#year-list').focus();
+		}
+
 		setNewYear(startYM: number, year: number) {
 			const vm = this;
 			let workTimes = [];
