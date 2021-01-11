@@ -10,8 +10,6 @@ import java.util.Map;
 
 import javax.ejb.Stateless;
 
-import org.apache.commons.lang3.StringUtils;
-
 import nts.arc.time.GeneralDate;
 
 /**
