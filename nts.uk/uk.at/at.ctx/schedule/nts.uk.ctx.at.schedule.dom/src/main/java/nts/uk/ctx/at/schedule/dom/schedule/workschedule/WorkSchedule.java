@@ -141,7 +141,7 @@ public class WorkSchedule implements DomainAggregate {
 						NotUseAttribute.Not_use, 
 						DayOfWeek.convertFromCommonClass(date.dayOfWeekEnum())), 
 				AffiliationInforOfDailyAttd.create(require, employeeId, date), 
-				Optional.empty(), // TODO
+				new BreakTimeOfDailyAttd(),
 				new ArrayList<>(), 
 				Optional.of(TimeLeavingOfDailyAttd.createByPredetermineZone(
 						require, 
@@ -491,8 +491,7 @@ public class WorkSchedule implements DomainAggregate {
 				.collect(Collectors.toList());
 		
 		// update value of BreakTime
-		val newBreakTimeOfDailyAttd = new BreakTimeOfDailyAttd(newBreakTimeSheets);
-		this.lstBreakTime = Optional.of( newBreakTimeOfDailyAttd ); // TODO
+		this.lstBreakTime = new BreakTimeOfDailyAttd(newBreakTimeSheets);
 		
 		// update EditState of BreakTime(1...size)
 		this.lstEditState.removeIf( editState -> WS_AttendanceItem.isBreakTime( editState.getAttendanceItemId() ) );
