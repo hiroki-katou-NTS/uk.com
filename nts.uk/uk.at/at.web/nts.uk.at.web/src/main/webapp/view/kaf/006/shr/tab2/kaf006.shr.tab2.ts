@@ -39,7 +39,7 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                             enable: $parent.updateMode
                         }" />
                     </div>
-                    <div class="table" style="padding-bottom: 5px;" data-bind="$parent.condition19ChildNursing">
+                    <div class="table" style="padding-bottom: 5px;" data-bind="visible: $parent.condition19ChildNursing">
                         <div class="cell col-1" data-bind="text: $i18n('Com_ChildNurseHoliday')"></div>
                         <input style="width: 50px;" class="cell" data-bind="ntsTimeEditor: {
                             name: $i18n('Com_ChildNurseHoliday'),
@@ -49,7 +49,7 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                             enable: $parent.updateMode
                         }" />
                     </div>
-                    <div class="table" style="padding-bottom: 5px;" data-bind="$parent.condition19Nursing">
+                    <div class="table" style="padding-bottom: 5px;" data-bind="visible: $parent.condition19Nursing">
                         <div class="cell col-1" data-bind="text: $i18n('Com_CareHoliday')"></div>
                         <input style="width: 50px;" class="cell" data-bind="ntsTimeEditor: {
                             name: $i18n('Com_CareHoliday'),
