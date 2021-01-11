@@ -14,9 +14,9 @@ import lombok.Data;
 @AllArgsConstructor
 public class WorkInformationDto {
 	
-	private String workTypeCd;
+	public String workTypeCd;
 	
-	private String workTimeCd;
+	public String workTimeCd;
 	
 	
 }
