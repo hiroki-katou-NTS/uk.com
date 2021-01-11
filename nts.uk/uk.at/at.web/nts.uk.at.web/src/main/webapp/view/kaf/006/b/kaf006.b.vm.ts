@@ -150,7 +150,11 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 				const vm = this;
 
 				if (vm.selectedWorkTimeCD()) {
-					return vm.selectedWorkTimeCD() + " " + vm.selectedWorkTimeName();
+					if (vm.selectedWorkTimeName()) {
+						return vm.selectedWorkTimeCD() + " " + vm.selectedWorkTimeName();
+					} else {
+						return vm.selectedWorkTimeCD() + " " + "マスタ未登録";
+					}
 				}
 
 				return vm.$i18n("KAF006_21");
