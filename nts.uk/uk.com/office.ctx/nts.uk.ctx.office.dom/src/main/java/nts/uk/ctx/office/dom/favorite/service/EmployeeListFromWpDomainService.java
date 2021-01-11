@@ -19,6 +19,7 @@ public class EmployeeListFromWpDomainService {
 	/**
 	 * [1]社員IDリストを取得
 	 * @param Require @Require
+	 * @param sid ログイン社員ID
 	 * @param wkpIds 職場IDリスト
 	 * @param ymd 基準日
 	 * @return 社員IDリスト

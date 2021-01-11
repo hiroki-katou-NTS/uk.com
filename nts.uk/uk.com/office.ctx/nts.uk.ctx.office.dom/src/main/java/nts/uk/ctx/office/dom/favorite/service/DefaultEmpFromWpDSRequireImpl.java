@@ -5,13 +5,13 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.office.dom.favorite.adapter.EmployeeBelongWorkplaceAdapter;
 import nts.uk.ctx.office.dom.favorite.adapter.EmployeeWorkplaceIdAdapter;
 import nts.uk.ctx.office.dom.favorite.service.EmployeeListFromWpDomainService.Require;
 
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class DefaultEmpFromWpDSRequireImpl implements Require {
 	@Inject
 	private EmployeeWorkplaceIdAdapter employeeWorkplaceIdAdapter;
