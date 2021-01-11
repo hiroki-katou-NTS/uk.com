@@ -18,7 +18,11 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>3日</td>
+                                <td>
+                                    <span v-if="displayInforWhenStarting">
+                                        {{ 'KAFS11_31' | i18n(displayInforWhenStarting.remainingHolidayInfor.remainDays) }}    
+                                    </span>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -32,7 +36,7 @@
             {{ 'KAFS11_3' | i18n }}
         </button>
     </div>
-    <div class="card card-label">
+    <div class="card card-label" v-if="dispPrePostAtr">
         <div class="card-header uk-bg-accordion" style="align-items: center">
             <v-label class="border-0 pl-0 my-n3">
                 {{'KAFS00_8' | i18n}}</v-label>
@@ -41,7 +45,7 @@
         <div class="card-body">
             <div style="width: 100%" id="prePostSelect">
                 <nts-switchbox v-for="(option, optionIndex) in prePostResource" v-bind:key="optionIndex"
-                    v-bind:disabled="false"
+                    v-bind:disabled="!enablePrePostAtr"
                     v-model="prePostAtr"
                     v-bind:value="option.code">
                         {{option.text | i18n}}
@@ -67,7 +71,7 @@
         </div>
     </div>
     <div>
-        <div class="card card-label">
+        <div class="card card-label" v-if="dispComplementContent">
             <div class="card-header uk-bg-sea-green" style="align-items: center">
                 <v-label class="border-0 pl-0 my-n3">
                     {{'KAFS11_8' | i18n}}</v-label>
@@ -77,64 +81,66 @@
                 <nts-date-input v-model="complementDate"/>
             </div>
         </div>
-        <div class="card card-label">
+        <div class="card card-label" v-if="dispComplementContent">
             <div class="card-header uk-bg-accordion" style="align-items: center">
                 <v-label class="border-0 pl-0 my-n3">
                     {{'KAFS11_9' | i18n}}</v-label>
                 <span class="badge badge-warning" style="height: 30%">必須</span>
             </div>
-            <div class="card-body">
+            <div class="card-body mb-3">
                 <div>
-                    <button class="btn btn-selection">
+                    <button class="btn btn-selection" v-on:click="openKDLS02(true)">
                         <span class="uk-text-dark-gray" style="font-size: 90%">{{'KAFS11_10' | i18n}}</span>
                     </button>
                 </div>
                 <div>
                     <span class="uk-text-dark-gray ml-3" style="font-size: 90%">
-                        <span class="font-weight-bold mr-3">{{ complementWorkType.code | i18n }}</span>
-                        <span>{{ complementWorkType.name | i18n }}</span>
+                        <span class="font-weight-bold mr-3">{{ complementWorkInfo.workTypeCD | i18n }}</span>
+                        <span>{{ getWorkTypeName(complementWorkInfo.workTypeCD) }}</span>
                     </span>       
                 </div>
                 <div>
-                    <button class="btn btn-selection">
+                    <button class="btn btn-selection" v-on:click="openKDLS01(true)">
                         <span class="uk-text-dark-gray" style="font-size: 90%">{{'KAFS11_11' | i18n}}</span>
                     </button>      
                 </div>
                 <div>
                     <span class="uk-text-dark-gray ml-3" style="font-size: 90%">
-                        <span class="font-weight-bold mr-3">{{ complementWorkTime.code | i18n }}</span>
-                        <span>{{ complementWorkTime.name | i18n }}</span>
+                        <span class="font-weight-bold mr-3">{{ complementWorkInfo.workTimeCD | i18n }}</span>
+                        <span>{{ getWorkTimeName(complementWorkInfo.workTimeCD) }}</span>
                     </span>    
                 </div>
                 <div class="mt-2 mb-2">
-                    <span class="uk-text-dark-gray ml-3">
-                        <span>{{ complementWorkTime.time | i18n }}</span>
-                    </span>    
+                    <div class="uk-text-dark-gray ml-3">
+                        <div v-html="getWorkTimeLabel(complementWorkInfo.workTimeCD)"></div>
+                    </div>    
                 </div>
             </div>
         </div>
-        <div class="card card-label">
+        <div class="card card-label" v-if="dispComplementContent">
             <div class="card-header uk-bg-accordion" style="align-items: center">
                 <v-label class="border-0 pl-0 my-n3">
                     {{'KAFS11_12' | i18n}}</v-label>
                 <span class="badge badge-warning" style="height: 30%">必須</span>
             </div>
             <div class="card-body">
-                <nts-time-range-input v-model="complementTimeRange1"/>
+                <nts-time-range-input v-model="complementWorkInfo.timeRange1"
+                    v-bind:disabled="!cdtSubMngComplementDailyType()"/>
             </div>
         </div>
-        <div class="card card-label">
+        <div class="card card-label" v-if="dispComplementTimeRange2">
             <div class="card-header uk-bg-accordion" style="align-items: center">
                 <v-label class="border-0 pl-0 my-n3">
                     {{'KAFS11_13' | i18n}}</v-label>
                 <span class="badge badge-info" style="height: 30%">任意</span>
             </div>
             <div class="card-body">
-                <nts-time-range-input v-model="complementTimeRange2"/>
+                <nts-time-range-input v-model="complementWorkInfo.timeRange2"
+                    v-bind:disabled="!cdtSubMngComplementDailyType()"/>
             </div>
         </div>
     </div>
-    <div class="card card-label">
+    <div class="card card-label" v-if="dispLeaveLinkContent1">
         <div class="card-header uk-bg-accordion" style="align-items: center">
             <v-label class="border-0 pl-0 my-n3">
                 {{'KAFS11_19' | i18n}}</v-label>
@@ -164,7 +170,7 @@
         </div>
     </div>
     <div>
-        <div class="card card-label">
+        <div class="card card-label" v-if="dispLeaveContent">
             <div class="card-header uk-bg-sea-green" style="align-items: center">
                 <v-label class="border-0 pl-0 my-n3">
                     {{'KAFS11_14' | i18n}}</v-label>
@@ -175,63 +181,65 @@
             </div>
         </div>
         <div class="card card-label">
-            <div class="card-header uk-bg-accordion" style="align-items: center">
+            <div class="card-header uk-bg-accordion" style="align-items: center" v-if="dispLeaveContent">
                 <v-label class="border-0 pl-0 my-n3">
                     {{'KAFS11_16' | i18n}}</v-label>
                 <span class="badge badge-warning" style="height: 30%">必須</span>
             </div>
-            <div class="card-body">
-                <div>
-                    <button class="btn btn-selection">
+            <div class="card-body mb-3">
+                <div v-if="dispLeaveContent">
+                    <button class="btn btn-selection" v-on:click="openKDLS02(false)">
                         <span class="uk-text-dark-gray" style="font-size: 90%">{{'KAFS11_10' | i18n}}</span>
                     </button>
                 </div>
-                <div>
+                <div v-if="dispLeaveContent">
                     <span class="uk-text-dark-gray ml-3" style="font-size: 90%">
-                        <span class="font-weight-bold mr-3">{{ leaveWorkType.code | i18n }}</span>
-                        <span>{{ leaveWorkType.name | i18n }}</span>
+                        <span class="font-weight-bold mr-3">{{ leaveWorkInfo.workTypeCD | i18n }}</span>
+                        <span>{{ getWorkTypeName(leaveWorkInfo.workTypeCD) }}</span>
                     </span>       
                 </div>
-                <div>
-                    <button class="btn btn-selection">
+                <div v-if="dispLeaveWorkTime">
+                    <button class="btn btn-selection" v-on:click="openKDLS01(false)">
                         <span class="uk-text-dark-gray" style="font-size: 90%">{{'KAFS11_11' | i18n}}</span>
                     </button>      
                 </div>
-                <div>
+                <div v-if="dispLeaveWorkTime">
                     <span class="uk-text-dark-gray ml-3" style="font-size: 90%">
-                        <span class="font-weight-bold mr-3">{{ leaveWorkTime.code | i18n }}</span>
-                        <span>{{ leaveWorkTime.name | i18n }}</span>
+                        <span class="font-weight-bold mr-3">{{ leaveWorkInfo.workTimeCD | i18n }}</span>
+                        <span>{{ getWorkTimeName(leaveWorkInfo.workTimeCD) }}</span>
                     </span>    
                 </div>
-                <div class="mt-2 mb-2">
-                    <span class="uk-text-dark-gray ml-3">
-                        <span>{{ leaveWorkTime.time | i18n }}</span>
-                    </span>    
+                <div class="mt-2 mb-2" v-if="dispLeaveWorkTime">
+                    <div class="uk-text-dark-gray ml-3">
+                        <div v-html="getWorkTimeLabel(leaveWorkInfo.workTimeCD)"></div>
+                    </div>    
                 </div>
             </div>
         </div>
-        <div class="card card-label">
+        <div class="card card-label" v-if="dispLeaveTimeRange1">
             <div class="card-header uk-bg-accordion" style="align-items: center">
                 <v-label class="border-0 pl-0 my-n3">
                     {{'KAFS11_17' | i18n}}</v-label>
                 <span class="badge badge-warning" style="height: 30%">必須</span>
             </div>
             <div class="card-body">
-                <nts-time-range-input v-model="leaveTimeRange1"/>
+                <nts-time-range-input v-model="leaveWorkInfo.timeRange1"
+                    v-bind:disabled="!enableLeaveTimeRange()"/>
             </div>
         </div>
-        <div class="card card-label">
+        <div class="card card-label" v-if="dispLeaveTimeRange2">
             <div class="card-header uk-bg-accordion" style="align-items: center">
                 <v-label class="border-0 pl-0 my-n3">
                     {{'KAFS11_18' | i18n}}</v-label>
                 <span class="badge badge-info" style="height: 30%">任意</span>
             </div>
             <div class="card-body">
-                <nts-time-range-input v-model="leaveTimeRange2"/>
+                <nts-time-range-input v-model="leaveWorkInfo.timeRange2"
+                    v-bind:disabled="!enableLeaveTimeRange()"/>
             </div>
         </div>
     </div>
-    <div class="card card-label">
+    <div class="card card-label" v-if="dispLeaveLinkContent2">
         <div class="card-header uk-bg-accordion" style="align-items: center">
             <v-label class="border-0 pl-0 my-n3">
                 {{'KAFS11_19' | i18n}}</v-label>
@@ -260,7 +268,7 @@
             </div>
         </div>
     </div>
-    <div class="card card-label">
+    <div class="card card-label" v-if="dispComplementLinkContent">
         <div class="card-header uk-bg-accordion" style="align-items: center">
             <v-label class="border-0 pl-0 my-n3">
                 {{'KAFS11_23' | i18n}}</v-label>
