@@ -12,8 +12,10 @@ import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.AddInforImport;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyDto;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyImport622;
+import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyInfo;
 import nts.uk.ctx.bs.company.pub.company.AddInforExport;
 import nts.uk.ctx.bs.company.pub.company.BeginOfMonthExport;
+import nts.uk.ctx.bs.company.pub.company.CompanyExport;
 import nts.uk.ctx.bs.company.pub.company.CompanyExport622;
 import nts.uk.ctx.bs.company.pub.company.ICompanyPub;
 
@@ -80,5 +82,22 @@ public class CompanyAdapterImp implements CompanyAdapter {
 				export.getComNameKana(), export.getShortComName(), export.getRepname(), export.getRepjob(),
 				export.getContractCd(), export.getTaxNo(), export.getStartMonth(), addInfo, export.getIsAbolition());
 
+	}
+	
+	/**
+	 * Gets the company info by id.
+	 *
+	 * @param companyId the company id
+	 * @return the company info by id
+	 */
+	@Override
+	public CompanyInfo getCompanyInfoById(String companyId) {
+		CompanyExport companyEx = this.companyPub.getCompanyByCid(companyId);
+		return CompanyInfo.builder()
+				.companyCode(companyEx.getCompanyCode())
+				.companyId(companyEx.getCompanyId())
+				.companyName(companyEx.getCompanyName())
+				.isAbolition(companyEx.getIsAbolition())
+				.build();
 	}
 }

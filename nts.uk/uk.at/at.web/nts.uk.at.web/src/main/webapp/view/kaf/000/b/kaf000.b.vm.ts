@@ -136,6 +136,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 								opString = "D";
 							}
 						}
+						if(vm.appType() == 0) {
+							return false;
+						}
 						return condition;
 					});
 				if(appNameInfo) {
@@ -507,6 +510,16 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 					}
 				}
 			});
+		}
+		
+		getAppNameForAppOverTime(overtimeAtr: number) {
+			const vm = this;
+			let appNameInfo = _.find(vm.appNameList, (o: any) => vm.appType() == 0 && o.opApplicationTypeDisplay==overtimeAtr);
+			if(appNameInfo) {
+				document.getElementById("pg-name").innerHTML = appNameInfo.opProgramID + "B " + appNameInfo.appName;
+			} else {
+				document.getElementById("pg-name").innerHTML = "";
+			}
 		}
     }
 

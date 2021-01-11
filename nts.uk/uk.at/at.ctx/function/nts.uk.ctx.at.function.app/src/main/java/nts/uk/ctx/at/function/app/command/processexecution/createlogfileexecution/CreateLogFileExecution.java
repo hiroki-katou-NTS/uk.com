@@ -12,9 +12,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
+import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
 import nts.uk.ctx.at.function.dom.processexecution.createlogfileexecution.CalTimeRangeDateTimeToString;
-import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogManageRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionRepository;
@@ -43,19 +42,19 @@ public class CreateLogFileExecution {
 			return;
 		}
 		// ドメインモデル「更新処理自動実行」取得
-		Optional<ProcessExecution> optProcessExecution = processExecutionRepo
+		Optional<UpdateProcessAutoExecution> optProcessExecution = processExecutionRepo
 				.getProcessExecutionByCidAndExecCd(companyId, execItemCd);
 		String execItemName = "";
 		if (optProcessExecution.isPresent()) {
 			execItemName = optProcessExecution.get().getExecItemName().v();
 		}
-		String errorSystem = optProcessExeLogManage.get().getErrorSystem() == null ? "正常"
-				: (optProcessExeLogManage.get().getErrorSystem() ? "異常" : "正常");
-		String errorBusiness = optProcessExeLogManage.get().getErrorBusiness() == null ? "正常"
-				: (optProcessExeLogManage.get().getErrorBusiness() ? "異常" : "正常");
+		String errorSystem = optProcessExeLogManage.get().getErrorSystem()
+				.map(value -> value ? "異常" : "正常").orElse("正常");
+		String errorBusiness = optProcessExeLogManage.get().getErrorBusiness()
+				.map(value -> value ? "異常" : "正常").orElse("正常");
 
-		String timeRun = CalTimeRangeDateTimeToString.calTimeExec(optProcessExeLogManage.get().getLastExecDateTime(),
-				optProcessExeLogManage.get().getLastEndExecDateTime());
+		String timeRun = CalTimeRangeDateTimeToString.calTimeExec(optProcessExeLogManage.get().getLastExecDateTime().get(),
+				optProcessExeLogManage.get().getLastEndExecDateTime().get());
 
 		String lastEndExecDateTime = "";
 		if(optProcessExeLogManage.get().getLastEndExecDateTime() != null) {

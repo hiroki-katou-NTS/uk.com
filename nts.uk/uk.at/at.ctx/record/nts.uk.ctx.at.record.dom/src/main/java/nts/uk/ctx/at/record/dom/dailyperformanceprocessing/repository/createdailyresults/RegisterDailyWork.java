@@ -82,8 +82,7 @@ public class RegisterDailyWork {
 		}
 		
 		//日別実績の休憩時間帯を登録する
-		Optional<BreakTimeOfDailyPerformance> breakTimes = integrationOfDaily.getBreakTime()
-				.map(c -> new BreakTimeOfDailyPerformance(employeeId, ymd, c));
+		BreakTimeOfDailyPerformance breakTimes = new BreakTimeOfDailyPerformance(employeeId, ymd, integrationOfDaily.getBreakTime());
 		dailyRecordAdUpService.adUpBreakTime(breakTimes);
 		
 		//日別実績の勤務種別を登録する (đã xóa nên k insert)

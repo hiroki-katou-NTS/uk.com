@@ -26,6 +26,10 @@ module nts.uk.com.view.ktg031.b {
       vm.getProcessExecution();
     }
 
+    mounted() {
+      $('#closebtn').focus();
+    }
+
     private getProcessExecution() {
       const vm = this;
       vm.$blockui('grayout');
@@ -40,11 +44,14 @@ module nts.uk.com.view.ktg031.b {
           const listAlarmSetting: AlarmDisplaySettingDto[] = _.map(res, (item, index) => {
             // トップページに表示（本人） and トップページに表示（管理者）
             let isDisplayMessage = '';
-            if (item.mailPrincipal && item.mailAdministrator) {
+            const mailPrincipal = item.execSetting.alarmExtraction.mailPrincipal;
+            const mailAdministrator = item.execSetting.alarmExtraction.mailAdministrator;
+            const alarmCode = item.execSetting.alarmExtraction.alarmCode;
+            if (mailPrincipal && mailAdministrator) {
               isDisplayMessage = vm.$i18n('KTG031_29');
-            } else if (item.mailPrincipal) {
+            } else if (mailPrincipal) {
               isDisplayMessage = vm.$i18n('KTG031_30');
-            } else if (item.mailAdministrator) {
+            } else if (mailAdministrator) {
               isDisplayMessage = vm.$i18n('KTG031_31');
             } else {
               isDisplayMessage = vm.$i18n('KTG031_32');
@@ -52,7 +59,7 @@ module nts.uk.com.view.ktg031.b {
             return new AlarmDisplaySettingDto({
               rowNumber: index,
               classification: vm.$i18n('KTG031_25'),
-              alarmProcessing: `${item.execItemName}（${vm.mapAlarmCodeName[item.alarmCode]}）`,
+              alarmProcessing: `${item.execItemName}（${vm.mapAlarmCodeName[alarmCode]}）`,
               isDisplay: isDisplayMessage,
             });
           });
@@ -107,37 +114,12 @@ module nts.uk.com.view.ktg031.b {
 
   interface ProcessExecutionDto {
     companyId: string;
-    execItemCd: string;
+    execItemCode: string;
     execItemName: string;
-    perScheduleCls: boolean;
-    targetMonth: number;
-    targetDate: number;
-    creationPeriod: number;
-    creationTarget: number;
-    recreateWorkType: boolean;
-    manualCorrection: boolean;
-    createEmployee: boolean;
-    recreateTransfer: boolean;
-    dailyPerfCls: boolean;
-    dailyPerfItem: number;
-    midJoinEmployee: boolean;
-    reflectResultCls: boolean;
-    monthlyAggCls: boolean;
-    execScopeCls: number;
-    refDate: string;
-    recreateTypeChangePerson: boolean;
-    recreateTransfers: boolean;
-    appRouteUpdateAtr: boolean;
-    createNewEmp: boolean;
-    appRouteUpdateMonthly: boolean;
-    processExecType: number;
-    alarmAtr: boolean;
-    alarmCode: string;
-    mailPrincipal: boolean;
-    mailAdministrator: boolean;
-    designatedYear: number;
-    startMonthDay: number;
-    endMonthDay: number;
-    workplaceList: string[];
+    execScope: any;
+    execSetting: any;
+    executionType: number;
+    reExecCondition: any;
+    cloudCreFlag: boolean;
   }
 }

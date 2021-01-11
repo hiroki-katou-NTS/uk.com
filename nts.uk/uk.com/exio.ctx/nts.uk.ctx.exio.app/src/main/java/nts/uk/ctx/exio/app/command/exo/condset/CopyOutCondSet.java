@@ -3,11 +3,12 @@ package nts.uk.ctx.exio.app.command.exo.condset;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
 
 @Getter
 @Setter
 @AllArgsConstructor
-public class CopyOutCondSet {
+public class CopyOutCondSet implements StdOutputCondSet.MementoGetter {
 
 	private boolean result;
 	private String destinationName;
@@ -28,6 +29,12 @@ public class CopyOutCondSet {
 		this.destinationName = destinationName;
 		this.destinationCode = destinationCode;
 		this.result = result;
+	}
+
+	@Override
+	public String getCompanyId() {
+		// NOT IMPLEMENTED
+		return null;
 	}
 
 }

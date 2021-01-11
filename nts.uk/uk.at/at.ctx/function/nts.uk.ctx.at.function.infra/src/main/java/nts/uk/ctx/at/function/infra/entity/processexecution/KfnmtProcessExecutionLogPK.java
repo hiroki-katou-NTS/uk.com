@@ -20,8 +20,4 @@ public class KfnmtProcessExecutionLogPK implements Serializable{
 	/* コード */
 	@Column(name = "EXEC_ITEM_CD")
 	public String execItemCd;
-	
-	/* 実行ID */
-	@Column(name = "EXEC_ID")
-	public String execId;
 }
