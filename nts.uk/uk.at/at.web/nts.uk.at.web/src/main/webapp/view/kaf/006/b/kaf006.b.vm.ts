@@ -1093,18 +1093,21 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 						vm.condition19Over60(true);
 					} else {
 						vm.condition19Over60(false);
+						vm.over60H(null);
 					}
 				if (vm.data.vacationApplicationReflect.timeLeaveReflect.substituteLeaveTime === 1 
 					&& vm.data.remainVacationInfo.accumulatedRestManagement.accumulatedManage === 1) {
 						vm.condition19Substitute(true);
 					} else {
 						vm.condition19Substitute(false);
+						vm.timeOff(null);
 					}
 				if (vm.data.vacationApplicationReflect.timeLeaveReflect.annualVacationTime === 1 
 					&& vm.data.remainVacationInfo.annualLeaveManagement.timeAnnualLeaveManage === 1) {
 						vm.condition19Annual(true);
 					} else {
 						vm.condition19Annual(false);
+						vm.annualTime(null);
 					}
 				if (vm.data.vacationApplicationReflect.timeLeaveReflect.childNursing === 1 
 					&& vm.data.remainVacationInfo.nursingCareLeaveManagement.childNursingManagement === 1 
@@ -1112,6 +1115,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 						vm.condition19ChildNursing(true);
 					} else {
 						vm.condition19ChildNursing(false);
+						vm.childNursing(null);
 					}
 				if (vm.data.vacationApplicationReflect.timeLeaveReflect.nursing === 1 
 					&& vm.data.remainVacationInfo.nursingCareLeaveManagement.longTermCareManagement === 1 
@@ -1119,6 +1123,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 						vm.condition19Nursing(true);
 					} else {
 						vm.condition19Nursing(false);
+						vm.nursing(null);
 					}
 			}
 		}
