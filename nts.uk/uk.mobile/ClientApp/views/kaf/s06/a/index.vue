@@ -22,7 +22,7 @@
         <!-- A4_2 -->
         <div class="mt-1">
             <!-- A4_3 -->
-            <nts-dropdown v-model="selectedValue">
+            <nts-dropdown v-model="selectedValueHolidayType">
                 <option v-for="(item, index) in dropdownList" :key="index" :value="item.code">
                     {{item.text}}
                 </option>
@@ -80,7 +80,7 @@
       <!-- A7_1 -->
       <div class="card-header uk-bg-accordion">
         <span>{{ "KAFS06_15" | i18n }}</span>
-        <span class="badge badge-warning">任意</span>
+        <span class="badge badge-warning">必須</span>
       </div>
       <!-- A7_2 -->
       <div class="card-body">
@@ -103,7 +103,7 @@
         <!--A9_1-->
         <div v-if="c12" class="card-header uk-bg-accordion">
             <span>{{ "KAFS06_17" | i18n }}</span>
-            <span class="badge badge-warning">任意</span>
+            <span class="badge badge-warning">必須</span>
         </div>
         <div v-if="c12" class="row px-2">
             <!--A9_2-->
@@ -129,7 +129,7 @@
             <!--A9_4-->
             <div class="card-body">
                 <nts-time-editor
-                    v-model="time"
+                    v-model="inputA9_5"
                     name="'Com_ExsessHoliday'"
                     showTitle="false"
                     v-bind:enable="true"
@@ -147,7 +147,7 @@
             <!--A9_6-->
             <div class="card-body">
                 <nts-time-editor
-                    v-model="time"
+                    v-model="inputA9_7"
                     name="'KAFS06_20'"
                     showTitle="false"
                     v-bind:enable="true"
@@ -165,7 +165,7 @@
             <!--A9_8-->
             <div class="card-body">
                 <nts-time-editor
-                    v-model="time"
+                    v-model="inputA9_9"
                     name="'KAFS06_21'"
                     showTitle="false"
                     v-bind:enable="true"
@@ -184,7 +184,7 @@
             <!--A9_10-->
             <div class="card-body">
                 <nts-time-editor
-                    v-model="time"
+                    v-model="inputA9_11"
                     name="'Com_ChildNurseHoliday'"
                     showTitle="false"
                     v-bind:enable="true"
@@ -203,7 +203,7 @@
             <!--A9_12-->
             <div class="card-body">
                 <nts-time-editor
-                    v-model="time"
+                    v-model="inputA9_13"
                     name="'Com_CareHoliday'"
                     showTitle="false"
                     v-bind:enable="true"
@@ -225,7 +225,7 @@
         <!--A10_3-->
         <div v-if="c18" class="row">
             <div class="float_left col text-left textSize">{{'KAFS06_24' | i18n}}</div>
-            <div class="float_right col text-right textSize">{{'KAFS06_39' | i18n}}</div>
+            <div class="float_right col text-right textSize">{{'KAFS06_39' | i18n(A10_3)}}</div>
         </div>
         <!--A10_2-->
         <div v-if="c18" class="mt-1">
@@ -238,7 +238,7 @@
         </div>
         <!--A10_4-->
         <div v-if="c19">
-            <nts-checkbox v-model="checkBox" v-bind:value="1">{{'KAFS06_25' | i18n}}</nts-checkbox>
+            <nts-checkbox v-model="mournerFlag" v-bind:value="true">{{'KAFS06_25' | i18n}}</nts-checkbox>
         </div>
       </div>
 
@@ -290,7 +290,7 @@
             <button 
             type="button" 
             v-bind:disabled="!(c23 && modeNew)"
-            v-on:click="openCDL()"
+            v-on:click="openKDLS36()"
             class="shadow-none btn rounded-pill btn-info">
               {{'KAFS06_32' | i18n}}
               <i class="fas fa-angle-double-right" aria-hidden="true"></i>
@@ -340,7 +340,7 @@
             <button 
             type="button" 
             v-bind:disabled="!(c23 && modeNew)"
-            v-on:click="openCDL()"
+            v-on:click="openKDLS35()"
             class="shadow-none btn rounded-pill btn-info">
               {{'KAFS06_36' | i18n}}
               <i class="fas fa-angle-double-right" aria-hidden="true"></i>
