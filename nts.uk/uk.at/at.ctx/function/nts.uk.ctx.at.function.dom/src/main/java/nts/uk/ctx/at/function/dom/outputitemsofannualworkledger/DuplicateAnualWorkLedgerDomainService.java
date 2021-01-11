@@ -20,7 +20,6 @@ public class DuplicateAnualWorkLedgerDomainService {
                                      OutputItemSettingCode settingCode, OutputItemSettingName settingName) {
 
         String empId = AppContexts.user().employeeId();
-        String cId = AppContexts.user().companyId();
 
         // 1 ⓪出力設定の詳細を取得する(会社ID, GUID) : 年間勤務台帳の出力設定
         Optional<AnnualWorkLedgerOutputSetting> oldSetting = require.getSetting(settingId);
