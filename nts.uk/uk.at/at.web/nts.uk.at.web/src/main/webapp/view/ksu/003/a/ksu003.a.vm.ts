@@ -226,8 +226,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					return x.columnKey === dataCell.detail.columnKey;
 				})
 				if (checkErr2.length > 0 && checkErr.length > 0 && $("#extable-ksu003").data("errors").length > 0 && dataCell.detail.value != "") {
-					/*let format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
-					if (format.test(dataCell.detail.value) == true)*/
+					let format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+					if (format.test(dataCell.detail.value) == true)
 						return;
 				}
 
@@ -460,11 +460,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		public startPage(): JQueryPromise<any> {
 			block.grayout();
 			let self = this, dfd = $.Deferred<any>();
-			self.getData().done(() => {
-				self.hoverEvent(self.targetDate());
-				block.clear();
-				dfd.resolve();
-			});
+			self.getData();
+			self.hoverEvent(self.targetDate());
+			dfd.resolve();
+			block.clear();
 			return dfd.promise();
 		}
 
@@ -714,9 +713,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			}]);
 		}
 
-		public getData() : JQueryPromise<any>{
-			let self = this, dfd = $.Deferred<any>();
+		public getData() {
+			let self = this;
 			let canModified = 0;
+			block.grayout();
 			// 修正可能 - Check ngày có thể chỉnh sửa 
 			if ((self.dataFromA().dayEdit <= self.targetDate()) || (self.targetDate() < moment(new Date()).format('YYYY/MM/DD') && self.dataFromA().dayEdit !== "1900/01/01")) {
 				canModified = 1;
@@ -751,11 +751,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			self.getWorkingByDate(self.targetDate(), 1).done(() => {
 				self.convertDataIntoExtable();
 				self.initExtableData();
-				
-				dfd.resolve();
 			});
-			
-			return dfd.promise();
+			block.clear();
 		}
 
 		// ①<<ScreenQuery>> 初期起動の情報取得
@@ -843,7 +840,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					errorDialog({ messageId: error.messageId });
 					dfd.reject();
 				}).always(function() {
-					block.clear();
 				});
 			return dfd.promise();
 		}
@@ -967,7 +963,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					}
 
 				}).always(function() {
-					block.clear();
 				});
 			return dfd.promise();
 		}
@@ -985,7 +980,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 		// 社員を並び替える
 		public sortEmployee(value: any) {
-			block.grayout();
 			let self = this;
 			let dataSort = self.sortEmpByTime(self.dataScreen003A().employeeInfo);
 			let param = {
@@ -1341,7 +1335,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				self.showHide();
 				$("#extable-ksu003").exTable("scrollBack", 0, { h: Math.floor(self.initDispStart * 42 - self.dispStart * 3.5) });
 			}, 200)
-			
 		}
 
 		destroyAndCreateGrid(lstId: any, check: any) {
@@ -1354,21 +1347,19 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			$("#extable-ksu003").children().remove();
 			$("#extable-ksu003").removeData();
 
-			if (check == 1){
+			if (check == 1)
 				self.initExtableData();
-				block.clear();
-				}
 			else {
 				self.getWorkingByDate(self.targetDate(), 1).done(() => {
 					self.convertDataIntoExtable();
 					self.initExtableData();
-					block.clear();
 				});
 			}
 		}
 
 		// Khởi tạo EXTABLE-GANTCHART
 		initExtableChart(timeGantChart: Array<ITimeGantChart>, leftDs: any, midData: any, disableDs: any): void {
+			block.grayout();
 			let self = this;
 			let displayRange = self.timeRange, totalBreakTime = "";
 
@@ -2067,6 +2058,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 			// set height grid theo localStorage đã lưu
 			self.setPositionButonDownAndHeightGrid();
+			block.clear();
 		}
 
 		/** ADD-CHART-ZONE */
@@ -3159,10 +3151,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				$("#extable-ksu003").exTable("setHeight", exTableHeight);
 				$(".toDown").css('margin-top', exTableHeight - 8 + 'px');
 				$("#contents-area").css({ 'overflow-x': 'hidden' });
-				
-				if (navigator.userAgent.indexOf("Chrome") == -1) {
-						$("#master-wrapper").css({ 'overflow-y': 'hidden' });
-				}
 
 				if (window.innerWidth >= 1320) {
 					$("#A1_4").css("margin-right", "20px")
@@ -3658,6 +3646,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		public nextDay() {
 			let self = this;
 			let checkSort = $("#extable-ksu003").exTable('updatedCells');
+
 			if (checkSort.length > 0) {
 				dialog.confirm({ messageId: "Msg_447" }).ifYes(() => {
 					self.nextDayImpl();
@@ -3683,6 +3672,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			}
 			self.hoverEvent(self.targetDate());
 			self.destroyAndCreateGrid(self.lstEmpId, 0);
+			block.clear();
 		}
 
 		public nextAllDay() {
@@ -3702,7 +3692,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 		public nextAllDayImpl(i: number, nextDay: any) {
 			let self = this;
-			block.grayout();
 			self.checkNext(true);
 			self.checkPrv(true);
 
@@ -3736,7 +3725,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 		public prevDayImpl() {
 			let self = this;
-			block.grayout();
 			self.changeTargetDate(0, 1);
 			self.checkPrv(true);
 			self.checkNext(true);
@@ -3767,7 +3755,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 		public prevAllDayImpl(i: number, prvDay: any) {
 			let self = this;
-			block.grayout();
 			self.checkPrv(true);
 			self.checkNext(true);
 			/*$("#icon-next-all").css("filter", "contrast(1)");
@@ -3851,7 +3838,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				}).fail(function(res: any) {
 					errorDialog({ messageId: res.messageId, messageParams: res.parameterIds });
 				}).always(function() {
-					block.clear();
 				});
 			} else {
 				dfd.resolve();
@@ -4273,16 +4259,17 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 										$("#extable-ksu003").exTable("enableCell", "middle", empId, "endTime2");
 									}
 								}
-						block.clear();
+
 						}).fail(function(error) {
-							block.clear();
 							errorDialog({ messageId: error.messageId });
 						}).always(function() {
 							self.checkUpdateMidChart = true;
 						});
 					}
+					block.clear();
 				});
 			}
+			block.clear();
 			$(".xcell").removeClass("x-error");
 		}
 
