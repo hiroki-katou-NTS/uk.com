@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 
@@ -18,20 +19,27 @@ import nts.arc.time.GeneralDate;
 
 @Stateless
 public class RegisterWorkSchedule {
+	
+	@Inject
+	private RegisWorkScheduleCommandHandler regisWorkSchedule;
+	
+	@Inject
+	private RegisWorkScheduleShiftCmdHandler regisWorkScheduleShift;
 
 	private static final String DATE_FORMAT = "yyyy/MM/dd";
 
-	public void handle(List<WorkScheduleCommand> command) {
+	public ResultRegisWorkSchedule handle(List<WorkScheduleCommand> command) {
 		if (command.isEmpty())
-			return;
+			return null;
+		ResultRegisWorkSchedule rs = null;
 		if (command.get(0).viewMode == "shift") {
 			List<WorkScheduleSaveCommand> dataReg = convertParam(command, "shift");
-			System.out.println(dataReg);
+			rs = regisWorkScheduleShift.handle(dataReg);
 		} else {
 			List<WorkScheduleSaveCommand> dataReg = convertParam(command, "other");
-			System.out.println(dataReg);
+			rs = regisWorkSchedule.handle(dataReg);
 		}
-		
+		return rs;
 	}
 
 	private List<WorkScheduleSaveCommand> convertParam(List<WorkScheduleCommand> command, String viewMode) {
