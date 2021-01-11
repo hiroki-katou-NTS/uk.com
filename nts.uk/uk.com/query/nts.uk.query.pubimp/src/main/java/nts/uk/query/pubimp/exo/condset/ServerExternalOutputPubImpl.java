@@ -1,6 +1,5 @@
 package nts.uk.query.pubimp.exo.condset;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -38,8 +37,8 @@ public class ServerExternalOutputPubImpl implements ServerExternalOutputPub {
 
 	@Override
 	public Optional<String> processAutoExecution(String cid, String conditionCd, DatePeriod period,
-			GeneralDate baseDate, Integer categoryId, String execId, List<String> empIds) {
+			GeneralDate baseDate, Integer categoryId, String execId) {
 		return this.autoExecutionServerExternalOutputQuery.processAutoExecution(cid, conditionCd, period, baseDate,
-				categoryId, execId, empIds);
+				categoryId, execId);
 	}
 }

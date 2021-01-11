@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.function.ac.exo.condset;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -13,7 +12,6 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScope;
 import nts.uk.ctx.at.function.dom.processexecution.ServerExternalOutputAdapter;
 import nts.uk.ctx.at.function.dom.processexecution.ServerExternalOutputImport;
-import nts.uk.ctx.at.function.dom.processexecution.listempautoexec.ListEmpAutoExec;
 import nts.uk.query.pub.exo.condset.ServerExternalOutputExport;
 import nts.uk.query.pub.exo.condset.ServerExternalOutputPub;
 
@@ -23,9 +21,6 @@ public class ServerExternalOutputAdapterImpl implements ServerExternalOutputAdap
 
 	@Inject
 	private ServerExternalOutputPub pub;
-
-	@Inject
-	private ListEmpAutoExec listEmpAutoExec;
 
 	@Override
 	public Optional<ServerExternalOutputImport> findExternalOutput(String cid, String conditionCd) {
@@ -41,9 +36,7 @@ public class ServerExternalOutputAdapterImpl implements ServerExternalOutputAdap
 	@Override
 	public Optional<String> processAutoExecution(ProcessExecutionScope scope, String companyId, String execId,
 			DatePeriod period, GeneralDate baseDate, String conditionCd) {
-		List<String> empIds = this.listEmpAutoExec.getListEmpAutoExec(companyId, period, scope.getExecScopeCls(),
-				Optional.ofNullable(scope.getWorkplaceIdList()), Optional.empty());
-		return this.pub.processAutoExecution(companyId, conditionCd, period, baseDate, null, execId, empIds);
+		return this.pub.processAutoExecution(companyId, conditionCd, period, baseDate, null, execId);
 	}
 
 }

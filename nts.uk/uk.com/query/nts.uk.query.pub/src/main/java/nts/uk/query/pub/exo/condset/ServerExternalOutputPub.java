@@ -1,6 +1,5 @@
 package nts.uk.query.pub.exo.condset;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -17,5 +16,5 @@ public interface ServerExternalOutputPub {
 	ServerExternalOutputExport findExternalOutput(String cid, String conditionCd);
 
 	Optional<String> processAutoExecution(String cid, String conditionCd, DatePeriod period, GeneralDate baseDate,
-			Integer categoryId, String execId, List<String> empIds);
+			Integer categoryId, String execId);
 }
