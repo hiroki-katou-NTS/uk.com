@@ -228,6 +228,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
                 }).then((data) => {
 					if (data) {
 						vm.fetchData(data);
+						vm.appDispInfoStartupOutput(data.appDispInfoStartupOutput);
 						$("#work-type-combobox").focus()
 						return data;
 					}
@@ -542,6 +543,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 					// B3_2
 					vm.selectedType(success.applyForLeave.vacationInfo.holidayApplicationType);
 					vm.fetchData(success.appAbsenceStartInfo);
+					vm.appDispInfoStartupOutput(success.appAbsenceStartInfo.appDispInfoStartupOutput);
 					vm.fetchDataAppForLeave(success.applyForLeave);
 					vm.checkCondition32(success.applyForLeave);
 					if (hdAppSetInput && hdAppSetInput.length > 0) {
@@ -641,7 +643,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 			let workTypesAfter = _.filter(vm.data.workTypeLst, {'workTypeCode': data.selectedWorkTypeCD});
 			vm.workTypeAfter(workTypesAfter.length > 0 ? workTypesAfter[0] : null);
 
-			vm.appDispInfoStartupOutput(data.appDispInfoStartupOutput);
+			// vm.appDispInfoStartupOutput(data.appDispInfoStartupOutput);
 			vm.specAbsenceDispInfo(data.specAbsenceDispInfo);
 
 			if (data.requiredVacationTime) {

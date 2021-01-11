@@ -271,6 +271,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 					if (data) {
 						$("#work-type-combobox").focus()
 						vm.fetchData(data);
+						vm.appDispInfoStartupOutput(data.appDispInfoStartupOutput);
 						return data;
 					}
 				}).then((data) => {
@@ -485,7 +486,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 			// vm.selectedWorkTypeCD(data.selectedWorkTypeCD);
 			
 			
-			vm.appDispInfoStartupOutput(data.appDispInfoStartupOutput);
+			// vm.appDispInfoStartupOutput(data.appDispInfoStartupOutput);
 			
 			if (data.requiredVacationTime) {
 				vm.requiredVacationTime(data.requiredVacationTime);
