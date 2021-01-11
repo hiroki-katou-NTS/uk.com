@@ -278,10 +278,10 @@
               v-for="(item, index) in linkWithVacation"
               v-bind:key="index"
               :value="index"
-            >
-              <th scope="row">{{item.holiday}}</th>
-              <td>{{item.substituteHoliday}}</td>
-              <td>{{item.numOfUser}}</td>
+            > 
+              <td>{{item.outbreakDay}}</td>
+              <td>{{item.dateOfUse}}</td>
+              <td>{{item.dayNumberUsed}}</td>
             </tr>
           </tbody>
         </table>
@@ -328,9 +328,9 @@
               v-bind:key="index"
               :value="index"
             >
-              <th scope="row">{{item.holiday}}</th>
-              <td>{{item.substituteHoliday}}</td>
-              <td>{{item.numOfUser}}</td>
+              <td>{{item.outbreakDay}}</td>
+              <td>{{item.dateOfUse}}</td>
+              <td>{{item.dayNumberUsed}}</td>
             </tr>
             
           </tbody>
