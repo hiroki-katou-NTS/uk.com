@@ -1,5 +1,6 @@
 package nts.uk.ctx.health.dom.emoji.employee;
 
+import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
@@ -8,12 +9,15 @@ import nts.uk.ctx.health.dom.emoji.manage.EmojiType;
 /*
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.NittsuSystem.Common (NtsCommons).ヘルスライフ.感情状態管理.感情状態管理.社員の感情状態
  */
+@Getter
 public class EmployeeEmojiState extends AggregateRoot {
-
+	//年月日
 	private GeneralDate date;
 
+	//感情種類
 	private EmojiType emojiType;
 
+	//社員ID
 	private String sid;
 
 	private EmployeeEmojiState() {
