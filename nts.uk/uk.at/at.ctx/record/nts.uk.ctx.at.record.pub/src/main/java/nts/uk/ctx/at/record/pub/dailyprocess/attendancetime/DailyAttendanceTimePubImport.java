@@ -49,4 +49,12 @@ public class DailyAttendanceTimePubImport {
 	
 	//休憩終了時刻
 	List<AttendanceTime> breakEndTime = Collections.emptyList();
+	
+	// 外出時間帯(List)(time đi ra ngoai)
+	List<TimeZone> lstOutingTimeZone = Collections.emptyList();
+	
+	// 育児時間帯(List)(time chăm soc trẻ)
+	List<TimeZone> lstChildcareTime = Collections.emptyList();
+	
+	
 }
