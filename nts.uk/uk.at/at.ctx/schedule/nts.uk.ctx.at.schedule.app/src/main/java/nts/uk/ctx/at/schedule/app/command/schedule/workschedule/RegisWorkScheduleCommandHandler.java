@@ -19,6 +19,7 @@ import javax.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.adapter.classification.SClsHistImported;
@@ -70,7 +71,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class RegisWorkScheduleCommandHandler extends CommandHandler<List<WorkScheduleSaveCommand>>{
+public class RegisWorkScheduleCommandHandler extends CommandHandlerWithResult<List<WorkScheduleSaveCommand>, ResultRegisWorkSchedule>{
 	
 	@Inject
 	private BasicScheduleService basicScheduleService;
@@ -113,7 +114,7 @@ public class RegisWorkScheduleCommandHandler extends CommandHandler<List<WorkSch
 	private EmpEmployeeAdapter empAdapter;
 	
 	@Override
-	protected void handle(CommandHandlerContext<List<WorkScheduleSaveCommand>> context) {
+	protected ResultRegisWorkSchedule handle(CommandHandlerContext<List<WorkScheduleSaveCommand>> context) {
 
 		List<WorkScheduleSaveCommand> commands = context.getCommand();
 
@@ -191,6 +192,7 @@ public class RegisWorkScheduleCommandHandler extends CommandHandler<List<WorkSch
 		}
 		rs.setHasError(isError);
 		rs.setListErrorInfo(listErrorInfo);
+		return rs;
 	}
 	
 	@AllArgsConstructor
