@@ -1,25 +1,28 @@
 $editor-border-color: #EAE8F2;
 
 .ntsControl {
-	
-	.nts-input {
-		outline: none;
-		border: 1px solid $editor-border-color;
-		padding: 6px 10px;
-		font-family: $font_family_monospace;
-		border-radius: 3px;
-		overflow: visible;
-		font-size: 13px;
+	input.nts-input,
+	textarea.nts-input {
+		&:not([type=radio]),
+		&:not([type=checkbox]) {
+			outline: none;
+			border: 1px solid $editor-border-color;
+			padding: 6px 10px;
+			font-family: $font_family_monospace;
+			border-radius: 3px;
+			overflow: visible;
+			font-size: 13px;
+			
+			&:focus {
+				border-color: $focused_color;
+				box-shadow: 0 0 0 2px lighten($color: $focused_color, $amount: 30);
+			}
 		
-		&:focus {
-			border-color: $focused_color;
-			box-shadow: 0 0 0 2px lighten($color: $focused_color, $amount: 30);
-		}
-	
-		&.enterkey {
-		    background-image: url('images/icons/enter_mark.png');
-		    background-position: right;
-		    background-repeat: no-repeat;
+			&.enterkey {
+				background-image: url('images/icons/enter_mark.png');
+				background-position: right;
+				background-repeat: no-repeat;
+			}
 		}
 	}
 	
