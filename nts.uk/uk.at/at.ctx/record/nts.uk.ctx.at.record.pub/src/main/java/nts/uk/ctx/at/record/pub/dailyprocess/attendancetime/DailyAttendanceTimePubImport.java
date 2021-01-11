@@ -54,9 +54,9 @@ public class DailyAttendanceTimePubImport {
 	
 	// add params (redmine #113606)
 	//外出時間帯(List)(time đi ra ngoai)
-	List<OutingTimeSheet> outingTimeSheets;
+	List<OutingTimeSheet> outingTimeSheets = Collections.emptyList();
 	//育児時間帯(List)(time chăm soc trẻ)
-	List<ShortWorkingTimeSheet> shortWorkingTimeSheets;
+	List<ShortWorkingTimeSheet> shortWorkingTimeSheets = Collections.emptyList();
 	
 	
 }
