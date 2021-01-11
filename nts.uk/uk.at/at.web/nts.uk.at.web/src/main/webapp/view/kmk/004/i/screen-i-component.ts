@@ -75,6 +75,8 @@ class ScreenIComponent extends ko.ViewModel {
 
 	startYM: KnockoutObservable<number> = ko.observable(0);
 
+	selectedClosureId: KnockoutObservable<number> = ko.observable(null);
+
 	created(params: any) {
 		let vm = this;
 
@@ -85,8 +87,6 @@ class ScreenIComponent extends ko.ViewModel {
 		vm.screenData().initDumpData(params.startYM());
 
 		vm.regSelectedYearEvent();
-
-
 
 		vm.initEmploymentList().done((selected) => {
 			vm.startPage(selected);
@@ -173,6 +173,9 @@ class ScreenIComponent extends ko.ViewModel {
 				isDisplayClosureSelection: true,
 				isDialog: false,
 				isShowNoSelectRow: false,
+				isDisplayFullClosureOption: true,
+				closureSelectionType: ko.observable(null),
+				selectedClosureId: vm.selectedClosureId,
 				alreadySettingList: vm.screenData().alreadySettingList,
 				maxRows: 12
 			};
@@ -188,6 +191,10 @@ class ScreenIComponent extends ko.ViewModel {
 			vm.screenData().selected.valueHasMutated();
 
 			dfd.resolve(vm.screenData().selected());
+
+			vm.selectedClosureId.subscribe(() => {
+				$('#empt-list-setting').ntsListComponent(listComponentOption);
+			});
 		});
 
 		return dfd.promise();
@@ -197,7 +204,7 @@ class ScreenIComponent extends ko.ViewModel {
 		const vm = this;
 		vm.screenData().selected.subscribe((empCd) => {
 
-			if (!empCd) {
+			if (!empCd || !empCd.length) {
 				return;
 			}
 

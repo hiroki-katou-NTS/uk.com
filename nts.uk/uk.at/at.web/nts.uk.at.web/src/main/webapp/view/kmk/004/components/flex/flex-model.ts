@@ -314,7 +314,10 @@ module nts.uk.at.kmk004.components.flex {
 			this.withinLaborTime(param.withinLaborTime);
 			this.legalLaborTime(param.legalLaborTime);
 			this.weekAvgTime(param.weekAvgTime);
-			this.checkbox(param.checkbox);
+			this.checkbox(param.checkbox ? param.checkbox : true);
+			if (param.weekAvgTime == null && param.legalLaborTime == null && param.withinLaborTime == null) {
+				this.checkbox(false);
+			}
 
 			this.withinLaborTime.subscribe(() => {
 				if (screen.selectedYear()) {
