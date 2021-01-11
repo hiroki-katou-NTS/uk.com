@@ -149,7 +149,6 @@
       </div>
     </div>
     <div>
-      <app1 v-if="true" v-bind:params="{appOvertime: appOvertime}" />
       <app2 v-if="appType==2" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
       <app3 v-if="appType==3" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
       <app4 v-if="appType==4" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
