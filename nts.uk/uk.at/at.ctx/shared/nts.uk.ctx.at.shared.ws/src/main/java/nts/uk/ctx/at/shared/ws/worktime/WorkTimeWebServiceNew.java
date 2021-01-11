@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.ws.worktime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Value;
+import lombok.val;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.app.command.worktime.common.WorkTimeCommandFinder;
@@ -273,5 +274,5 @@ class getWorkTimeDto {
 class FindByCodeDto{
     List<String> codes;
     String workPlaceId;
-    GeneralDate baseDate;
+    String baseDate;
 }

@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 public class WorkTimeResultDto {
-    private Integer disabledSegment;
+    private Integer allCheckStatus;
     private List<WorkTimeDto> allWorkHours;
     private List<WorkTimeDto> availableWorkingHours;
     private List<WorkTimeDto> workingHoursByWorkplace;
