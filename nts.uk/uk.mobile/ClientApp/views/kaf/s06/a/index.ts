@@ -661,15 +661,13 @@ export class KafS06AComponent extends KafS00ShrComponent {
                 command.mailServerSet = vm.model.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoNoDateOutput.mailServerSet;
                 command.approvalRoot = vm.model.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoWithDateOutput.opListApprovalPhaseState;
                 command.application = commandCheck.application;
-                command.apptypeSetting = vm.model.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting;
+                command.apptypeSetting = vm.model.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting[0];
                 command.leaveComDayOffMana = vm.linkWithVacation;
                 command.payoutSubofHDManagements = vm.linkWithDraw;
                 
                 // đăng kí 
-                return vm.$http.post('at', API.insert, command).then(() => {
-                    return vm.$modal.info({ messageId: 'Msg_15'}).then(() => {
-                        return true;
-                    });	
+                return vm.$http.post('at', API.insert, command).then((res: any) => {
+                    vm.$goto('kafs06a1', { mode: vm.modeNew ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID });
                 });
             }
         }).then((result: any) => {
@@ -1214,22 +1212,21 @@ export class KafS06AComponent extends KafS00ShrComponent {
         if (self.c19) {
             // A10_4
             applyForSpeLeave.mournerFlag = self.mournerFlag || false;
+        } else {
+            applyForSpeLeave.mournerFlag = false;
         }
         if (self.c20) {
             // A10_5
             applyForSpeLeave.relationshipReason = self.relationshipReason;
         }
-        if (_.some(applyForSpeLeave)) {
-            info.applyForSpeLeave = applyForSpeLeave;
-        }
+
+        info.applyForSpeLeave = applyForSpeLeave;
 
         vacationInfo.holidayApplicationType = self.selectedValueHolidayType;
         if (_.some(info)) {
             vacationInfo.info = info;
         }
-        if (_.some(vacationInfo)) {
-            applyForLeave.vacationInfo = vacationInfo;
-        }
+        applyForLeave.vacationInfo = vacationInfo;
         if (_.some(reflectFreeTimeApp)) {
             applyForLeave.reflectFreeTimeApp = reflectFreeTimeApp;
         }
@@ -1380,3 +1377,9 @@ interface HolidayWorkSubHolidayLinkingMng {
 }
 const MODE_NEW = 0;
 const MODE_UPDATE = 1;
+enum ScreenMode {
+    // 新規モード
+    NEW = 0,
+    // 詳細モード
+    DETAIL = 1
+}

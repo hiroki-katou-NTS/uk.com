@@ -18,6 +18,8 @@ import {
     Reason
 } from 'views/cmm/s45/shr/components';
 
+import { CmmS45ShrComponentsApp1Component } from 'views/cmm/s45/shr/components/app1/index';
+
 @component({
     name: 'cmms45c',
     style: require('./style.scss'),
@@ -37,6 +39,7 @@ import {
         'app7': CmmS45ShrComponentsApp7Component,
         'app15': CmmS45ShrComponentsApp15Component,
         'app0': CmmS45ShrComponentsApp0Component,
+        'app1': CmmS45ShrComponentsApp1Component,
         'render': {
             template: `<div class="">{{params.id}} {{params.name}}</div>`,
             props: ['params']
@@ -365,6 +368,9 @@ export class CmmS45CComponent extends Vue {
                     self.$goto('kafs05', self.appTransferData);
                 }
                 break;
+            case 1: 
+                self.$goto('kafs06a', self.appTransferData); 
+                break;  
             default:
                 break;
         }

@@ -156,6 +156,7 @@
       <app15 v-if="appType==15" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
       <app0 v-if="appType==0" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
       <app0 v-if="appType==6" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
+      <app1 v-if="appType==1" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
       </div>
     </div>
     <div v-if="comboReasonDisp || textReasonDisp" class="row content-div uk-bg-headline border-top uk-border-light-gray">{{'CMMS45_34' | i18n}}</div>

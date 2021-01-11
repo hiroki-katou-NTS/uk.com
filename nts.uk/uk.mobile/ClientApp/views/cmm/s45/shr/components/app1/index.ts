@@ -48,10 +48,11 @@ export class CmmS45ShrComponentsApp1Component extends Vue {
     public fetchData(getParams: any) {
         const self = this;
 
-        let command = {} as any;
+        let command = self.createCommand() as any;
         self.$http.post('at', API.getDetailInfo, command)
                     .then((res: any) => {
                         self.dataOutput = res.data;
+                        self.params.appDetail = self.dataOutput;
 
                         self.bindComponent();
                     })
@@ -59,6 +60,19 @@ export class CmmS45ShrComponentsApp1Component extends Vue {
                         self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
                     })
                     .then(() => self.$emit('loading-complete'));
+    }
+
+    public createCommand() {
+        const self = this;
+
+        if (self.user) {
+
+            return {
+                companyId: self.user.companyId,
+                appId: self.params.appDispInfoStartupOutput.appDetailScreenInfo.application.appID,
+                appDispInfoStartup: self.params.appDispInfoStartupOutput
+            };
+        }
     }
     public bindComponent() {
         const self = this;
