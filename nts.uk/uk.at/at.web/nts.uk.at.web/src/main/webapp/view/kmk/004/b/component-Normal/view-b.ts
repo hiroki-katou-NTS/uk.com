@@ -50,7 +50,8 @@ module nts.uk.at.view.kmk004.b {
 						type: type,
 						selectId: selectId,
 						workTimes: workTimes,
-						yearDelete: yearDelete
+						yearDelete: yearDelete,
+						startDate: startDate
 					}
 				}"></div>
 			</div>
@@ -83,6 +84,7 @@ module nts.uk.at.view.kmk004.b {
 		public checkDelete: KnockoutObservable<boolean> = ko.observable(false);
 		public yearDelete: KnockoutObservable<number | null> = ko.observable(null);
 		public selectId: KnockoutObservable<string> = ko.observable('');
+		public startDate: KnockoutObservable<number> = ko.observable(2020);
 
 		created() {
 			const vm = this;
@@ -206,7 +208,7 @@ module nts.uk.at.view.kmk004.b {
 
 		openDialogQ() {
 			const vm = this;
-			const param = { years: ko.unwrap(vm.years).map((m: IYear) => m.year) };
+			const param = { startDate: ko.unwrap(vm.startDate), years: ko.unwrap(vm.years).map((m: IYear) => m.year) };
 			vm.$window.modal('/view/kmk/004/q/index.xhtml', param).then((result) => {
 				if (result) {
 					vm.years.push(new IYear(parseInt(result.year), true));

@@ -1,7 +1,7 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 
-const template = `
+const j_template = `
 					<div class="sidebar-content-header">
 						<!-- ko component: {
 											    name: "sidebar-button",
@@ -70,7 +70,7 @@ const API_J_URL = {
 
 @component({
 	name: 'screen-j-component',
-	template
+	template: j_template
 })
 
 class ScreenJComponent extends ko.ViewModel {
@@ -160,6 +160,7 @@ class ScreenJComponent extends ko.ViewModel {
 			.then(() => vm.$ajax(API_J_URL.START_PAGE))
 			.done((data) => {
 				vm.screenData().getFlexPredWorkTime(data.flexBasicSetting.flexPredWorkTime);
+				vm.screenData().setFocus('load');
 			})
 			.always(() => vm.$blockui('clear'));
 	}
@@ -313,6 +314,7 @@ class ScreenJComponent extends ko.ViewModel {
 					}
 
 					vm.screenData().comFlexMonthActCalSet(data.flexBasicSetting.flexMonthActCalSet);
+					vm.screenData().setFocus('load');
 				})
 				.always(() => vm.$blockui('clear'));
 

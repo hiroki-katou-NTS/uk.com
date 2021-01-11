@@ -1,7 +1,7 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 
-const template = `
+const i_template = `
 					<div class="sidebar-content-header">
 						<!-- ko component: {
 											    name: "sidebar-button",
@@ -62,7 +62,7 @@ const API_I_URL = {
 
 @component({
 	name: 'screen-i-component',
-	template
+	template: i_template
 })
 
 class ScreenIComponent extends ko.ViewModel {
@@ -146,6 +146,7 @@ class ScreenIComponent extends ko.ViewModel {
 			.done((data) => {
 				vm.screenData().alreadySettingList(_.map(data.alreadySettings, (item) => { return { code: item, isAlreadySetting: true } }));
 				vm.screenData().updateData(data);
+				vm.screenData().setFocus('load');
 			})
 			.always(() => vm.$blockui('clear'));
 	}
@@ -222,6 +223,7 @@ class ScreenIComponent extends ko.ViewModel {
 					}
 
 					vm.screenData().comFlexMonthActCalSet(data.flexBasicSetting.flexMonthActCalSet);
+					vm.screenData().setFocus('load');
 				})
 				.always(() => vm.$blockui('clear'));
 

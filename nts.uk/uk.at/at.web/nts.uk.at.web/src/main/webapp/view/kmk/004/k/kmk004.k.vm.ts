@@ -65,8 +65,7 @@ module nts.uk.at.kmk004.k {
 
 				vm.screenData().updateData(data);
 				vm.notSetting(data.flexMonthActCalSet == null);
-
-
+				$('#settlePeriod').focus();
 			}).always(() => { vm.$blockui('clear'); });
 		}
 
