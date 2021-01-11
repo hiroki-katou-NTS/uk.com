@@ -51,7 +51,7 @@ module nts.uk.at.view.kmk004.l {
 					</div>
 					<div class="content">
 							<div class="div_row"> 
-								<div class= "box-year" id= "box-year" data-bind="component: {
+								<div class= "box-year" data-bind="component: {
 									name: 'box-year',
 									params:{ 
 										selectedYear: selectedYear,
@@ -107,16 +107,16 @@ module nts.uk.at.view.kmk004.l {
 	}
 
 	interface IWorkTimeSetCom {
-		employmentCode: string;
-		laborAttr: number;
-		yearMonth: number;
-		laborTime: ILaborTime;
+		employmentCode: string; //雇用コード
+		laborAttr: number; //勤務区分
+		yearMonth: number; //年月
+		laborTime: ILaborTime; //月労働時間
 	}
 
 	interface ILaborTime {
-		legalLaborTime: number,
-		withinLaborTime: number,
-		weekAvgTime: number
+		legalLaborTime: number, //法定労働時間
+		withinLaborTime: number, //所定労働時間
+		weekAvgTime: number //週平均時間
 	}
 
 	@component({
@@ -128,17 +128,8 @@ module nts.uk.at.view.kmk004.l {
 		listComponentOption: any;
 		selectedCode: KnockoutObservable<string>;
 		selectedId: KnockoutObservable<string> = ko.observable('');
-		multiSelectedCode: KnockoutObservableArray<string>;
-		isShowAlreadySet: KnockoutObservable<boolean>;
 		alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
-		isDialog: KnockoutObservable<boolean>;
-		isShowNoSelectRow: KnockoutObservable<boolean>;
-		isMultiSelect: KnockoutObservable<boolean>;
 		employeeList: KnockoutObservableArray<UnitModel>;
-		isDisplayClosureSelection: KnockoutObservable<boolean>;
-		isDisplayFullClosureOption: KnockoutObservable<boolean>;
-		closureSelectionType: KnockoutObservable<number>;
-		selectClosureTypeList: KnockoutObservableArray<any>;
 		currentItemName: KnockoutObservable<string>;
 
 		public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
@@ -160,31 +151,17 @@ module nts.uk.at.view.kmk004.l {
 		created() {
 			let vm = this;
 			vm.selectedCode = ko.observable('1');
-			vm.multiSelectedCode = ko.observableArray(['0', '1', '4']);
-			vm.isShowAlreadySet = ko.observable(true);
-			vm.isDialog = ko.observable(false);
-			vm.isShowNoSelectRow = ko.observable(false);
-			vm.isMultiSelect = ko.observable(false);
-			vm.isDisplayClosureSelection = ko.observable(true);
-			vm.isDisplayFullClosureOption = ko.observable(false);
-			vm.closureSelectionType = ko.observable(1);
-			vm.selectClosureTypeList = ko.observableArray([
-				{ code: 1, name: 'Select Full Closure option' },
-				{ code: 2, name: 'Select by selected closure code' },
-				{ code: 3, name: 'Nothing (Select first option)' },
-			]);
-
 			vm.listComponentOption = {
-				isShowAlreadySet: vm.isShowAlreadySet(),
-				isMultiSelect: vm.isMultiSelect(),
+				isShowAlreadySet: true,
+				isMultiSelect: false,
 				listType: ListType.EMPLOYMENT,
 				selectType: SelectType.SELECT_FIRST_ITEM,
 				selectedCode: vm.selectedCode,
-				isDialog: vm.isDialog(),
-				isShowNoSelectRow: vm.isShowNoSelectRow(),
+				isDialog: false,
+				isShowNoSelectRow: false,
 				alreadySettingList: vm.alreadySettingList,
 				maxRows: 12,
-				isDisplayClosureSelection: vm.isDisplayClosureSelection(),
+				isDisplayClosureSelection: false,
 			};
 
 			vm.reloadInitData();
@@ -276,7 +253,7 @@ module nts.uk.at.view.kmk004.l {
 					vm.reloadInitData();
 				}).then(() => {
 					$(document).ready(function() {
-						$('#box-year').focus();
+						$('.listbox').focus();
 					})
 				}).always(() => {
 					vm.$errors('clear');
@@ -313,7 +290,7 @@ module nts.uk.at.view.kmk004.l {
 						.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
 						.then(() => {
 							$(document).ready(function() {
-								$('#box-year').focus();
+								$('.listbox').focus();
 							});
 						}).then(() => {
 							vm.$errors('clear');

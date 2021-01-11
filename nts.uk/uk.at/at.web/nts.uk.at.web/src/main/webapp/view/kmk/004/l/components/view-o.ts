@@ -55,7 +55,7 @@ module nts.uk.at.view.kmk004.l {
 					</div>
 					<div class="content">
 						<div class="div_row"> 
-							<div class= "box-year" id= "box-year" data-bind="component: {
+							<div class= "box-year" data-bind="component: {
 									name: 'box-year',
 									params:{ 
 										selectedYear: selectedYear,
@@ -100,16 +100,16 @@ module nts.uk.at.view.kmk004.l {
 	}
 
 	interface IWorkTimeSetCom {
-		empId: string;
-		laborAttr: number;
-		yearMonth: number;
-		laborTime: ILaborTime;
+		empId: string; //社員 ID
+		laborAttr: number; //勤務区分
+		yearMonth: number; //年月
+		laborTime: ILaborTime; //月労働時間
 	}
 
 	interface ILaborTime {
-		legalLaborTime: number,
-		withinLaborTime: number,
-		weekAvgTime: number
+		legalLaborTime: number, //法定労働時間
+		withinLaborTime: number, //所定労働時間
+		weekAvgTime: number //週平均時間
 	}
 
 	@component({
@@ -123,15 +123,7 @@ module nts.uk.at.view.kmk004.l {
 		//KCP005
 		listComponentOption: any;
 		selectedCode: KnockoutObservable<string>;
-		multiSelectedCode: KnockoutObservableArray<string>;
-		isShowAlreadySet: KnockoutObservable<boolean>;
 		alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
-		isDialog: KnockoutObservable<boolean>;
-		isShowNoSelectRow: KnockoutObservable<boolean>;
-		isMultiSelect: KnockoutObservable<boolean>;
-		isShowWorkPlaceName: KnockoutObservable<boolean>;
-		isShowSelectAllButton: KnockoutObservable<boolean>;
-		disableSelection: KnockoutObservable<boolean>;
 
 		employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
 		currentItemName: KnockoutObservable<string>;
@@ -207,31 +199,23 @@ module nts.uk.at.view.kmk004.l {
 
 			//KCP005
 			vm.selectedCode = ko.observable('1');
-			vm.multiSelectedCode = ko.observableArray(['0', '1', '4']);
-			vm.isShowAlreadySet = ko.observable(true);
-			vm.isDialog = ko.observable(false);
-			vm.isShowNoSelectRow = ko.observable(false);
-			vm.isMultiSelect = ko.observable(false);
-			vm.isShowWorkPlaceName = ko.observable(true);
-			vm.isShowSelectAllButton = ko.observable(false);
-			vm.disableSelection = ko.observable(false);
 			vm.currentItemName = ko.observable('');
 
 			vm.getEmployeeIds();
 
 			vm.listComponentOption = {
-				isShowAlreadySet: vm.isShowAlreadySet(),
-				isMultiSelect: vm.isMultiSelect(),
+				isShowAlreadySet: true,
+				isMultiSelect: false,
 				listType: ListType.EMPLOYEE,
 				employeeInputList: vm.employeeList,
 				selectType: SelectType.SELECT_FIRST_ITEM,
 				selectedCode: vm.selectedCode,
-				isDialog: vm.isDialog(),
-				isShowNoSelectRow: vm.isShowNoSelectRow(),
+				isDialog: false,
+				isShowNoSelectRow: false,
 				alreadySettingList: vm.alreadySettingList,
-				isShowWorkPlaceName: vm.isShowWorkPlaceName(),
-				isShowSelectAllButton: vm.isShowSelectAllButton(),
-				disableSelection: vm.disableSelection()
+				isShowWorkPlaceName: true,
+				isShowSelectAllButton: false,
+				disableSelection: false
 			};
 			vm.params = { isLoadData: vm.isLoadData, sidebarType: "Com_Person", wkpId: ko.observable(''), empCode: ko.observable(''), empId: ko.observable(''), titleName: '', deforLaborTimeComDto: null, settingDto: null };
 			vm.years
@@ -332,7 +316,7 @@ module nts.uk.at.view.kmk004.l {
 					vm.getEmployeeIds();
 				}).then(() => {
 					$(document).ready(function() {
-						$('#box-year').focus();
+						$('.listbox').focus();
 					})
 				}).always(() => {
 					vm.$errors('clear');
@@ -369,7 +353,7 @@ module nts.uk.at.view.kmk004.l {
 						.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
 						.then(() => {
 							$(document).ready(function() {
-								$('#box-year').focus();
+								$('.listbox').focus();
 							});
 						}).then(() => {
 							vm.$errors('clear');

@@ -38,7 +38,7 @@ module nts.uk.at.view.kmk004.l {
 					
 					<div class="div_row"> 
 								
-								<div class= "box-year" id= "class= "box-year" data-bind="component: {
+								<div class= "box-year" data-bind="component: {
 									name: 'box-year',
 									params:{ 
 										selectedYear: selectedYear,
@@ -65,15 +65,15 @@ module nts.uk.at.view.kmk004.l {
 	`;
 
 	interface IWorkTimeSetCom {
-		laborAttr: number;
-		yearMonth: number;
-		laborTime: ILaborTime;
+		laborAttr: number; //勤務区分
+		yearMonth: number; //年月
+		laborTime: ILaborTime; //月労働時間
 	}
 
 	interface ILaborTime {
-		legalLaborTime: number,
-		withinLaborTime: number,
-		weekAvgTime: number
+		legalLaborTime: number, //法定労働時間
+		withinLaborTime: number, //所定労働時間
+		weekAvgTime: number //週平均時間
 	}
 
 	@component({
@@ -162,7 +162,7 @@ module nts.uk.at.view.kmk004.l {
 					vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
 				}).then(() => {
 					$(document).ready(function() {
-						$('#box-year').focus();
+						$('.listbox').focus();
 					})
 				}).always(() => {
 					vm.$errors('clear');
@@ -196,7 +196,7 @@ module nts.uk.at.view.kmk004.l {
 						.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
 						.then(() => {
 							$(document).ready(function() {
-								$('#box-year').focus();
+								$('.listbox').focus();
 							});
 						}).then(() => {
 							vm.$errors('clear');

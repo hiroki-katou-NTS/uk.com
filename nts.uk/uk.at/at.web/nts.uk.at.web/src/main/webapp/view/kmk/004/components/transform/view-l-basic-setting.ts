@@ -26,88 +26,87 @@ module nts.uk.at.view.kmk004 {
 
 	//Init Screen L Response
 	export interface InitScreenLResponse {
-		usageUnitSetting: UsageUnitSetting;
-		deforLaborMonthTimeComDto: DeforLaborMonthTimeComDto;
+		usageUnitSetting: UsageUnitSetting; //利用単位の設定を取得すs
+		deforLaborMonthTimeComDto: DeforLaborMonthTimeComDto; //会社別基本設定（変形労働）を表示する
 	}
 
 	export interface UsageUnitSetting {
-		workPlace: boolean;
-		employment: boolean;
-		employee: boolean;
+		workPlace: boolean; //職場
+		employment: boolean; //雇用
+		employee: boolean; //社員
 	}
 
 	export interface DeforLaborMonthTimeComDto {
 		deforLaborTimeComDto: DeforLaborTimeComDto; //会社別変形労働法定労働時間
 		comDeforLaborMonthActCalSetDto: ComDeforLaborMonthActCalSetDto; //会社別変形労働集計設定
-		yearDto: YearDto;
+		yearDto: YearDto; //会社別年度リストを表示する
 	}
 
 	export interface ComDeforLaborMonthActCalSetDto {
-		comId: String;
+		comId: String; //会社 ID
 		aggregateTimeSet: ExcessOutsideTimeSetReg; //集計時間設定
 		excessOutsideTimeSet: ExcessOutsideTimeSetReg; //時間外超過設定
 		settlementPeriod: SettlementPeriod; //清算期間
 	}
 
 	export interface YearDto {
-		year: number;
+		year: number; //年度
 	}
 
 	//Init Screen M Response
 	export interface InitScreenMResponse {
-		wkpId: WorkplaceIdDto;
-		selectWorkplaceDeforDto: SelectWorkplaceDeforDto;
+		wkpId: WorkplaceIdDto; //職場 ID
+		selectWorkplaceDeforDto: SelectWorkplaceDeforDto; //職場を選択する
 	}
 
 	export interface WorkplaceIdDto {
-		workplaceId: String;
+		workplaceId: String; //職場 ID
 	}
 
 	export interface SelectWorkplaceDeforDto {
-		deforLaborMonthTimeWkpDto: DeforLaborMonthTimeWkpDto;
-		yearDto: YearDto;
+		deforLaborMonthTimeWkpDto: DeforLaborMonthTimeWkpDto; //職場別基本設定（変形労働）を表示する
+		yearDto: YearDto; //職場別年度リストを表示する
 	}
 
 	export interface DeforLaborMonthTimeWkpDto {
-		deforLaborTimeWkpDto: DeforLaborTimeWkpDto;
-		wkpDeforLaborMonthActCalSetDto: WkpDeforLaborMonthActCalSetDto;
+		deforLaborTimeWkpDto: DeforLaborTimeWkpDto; //職場別変形労働法定労働時間
+		wkpDeforLaborMonthActCalSetDto: WkpDeforLaborMonthActCalSetDto; //職場別変形労働集計設定
 	}
 
 	export interface DeforLaborTimeWkpDto extends DeforLaborTimeComDto {
-		wkpId: String;
+		wkpId: String; //職場 ID
 	}
 
 	export interface WkpDeforLaborMonthActCalSetDto extends SettingDto {
-		wkpId: String;
+		wkpId: String; //職場 ID
 	}
-
 
 	//Init Screen N Response
 	export interface InitScreenNResponse {
-		employmentCodeDto: EmploymentCodeDto;
-		selectEmploymentDeforDto: SelectEmploymentDeforDto;
+		employmentCodeDto: EmploymentCodeDto; //雇用リスト
+		selectEmploymentDeforDto: SelectEmploymentDeforDto; //雇用を選択する
 	}
 
 	export interface EmploymentCodeDto {
-		employmentCode: String;
+		employmentCode: String; //雇用コード
 	}
 
 	export interface SelectEmploymentDeforDto {
-		deforLaborMonthTimeEmpDto: DeforLaborMonthTimeEmpDto;
-		yearDto: YearDto;
+		deforLaborMonthTimeEmpDto: DeforLaborMonthTimeEmpDto;　//雇用別基本設定（変形労働）を表示する
+		yearDto: YearDto; //雇用別年度リストを表示する
 	}
 
 	export interface DeforLaborMonthTimeEmpDto {
-		deforLaborTimeEmpDto: DeforLaborTimeEmpDto;
-		empDeforLaborMonthActCalSetDto: EmpDeforLaborMonthActCalSetDto;
+		deforLaborTimeEmpDto: DeforLaborTimeEmpDto; //雇用別変形労働法定労働時間
+		empDeforLaborMonthActCalSetDto: EmpDeforLaborMonthActCalSetDto; //雇用別変形労働集計設定
 	}
 
 	export interface DeforLaborTimeEmpDto extends DeforLaborTimeComDto {
-		empCd: String;
+		empCd: String; //雇用コード
 	}
 
 	export interface EmpDeforLaborMonthActCalSetDto extends SettingDto {
-		empCd: String;
+		empCd: String; //雇用コード
 	}
 
 	export class TransformScreenData {
