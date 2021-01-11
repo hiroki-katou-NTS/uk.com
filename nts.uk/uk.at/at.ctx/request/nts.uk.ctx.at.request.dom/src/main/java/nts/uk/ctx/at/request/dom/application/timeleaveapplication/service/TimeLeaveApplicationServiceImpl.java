@@ -182,10 +182,10 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
         );
 
         // 10-2.代休の設定を取得する
-        SubstitutionHolidayOutput substituationHoliday =  AbsenceTenProcess.getSettingForSubstituteHoliday(require, cache, companyId, employeeId, baseDate);
+        SubstitutionHolidayOutput substitutionHoliday =  AbsenceTenProcess.getSettingForSubstituteHoliday(require, cache, companyId, employeeId, baseDate);
         TimeAllowanceManagement timeSubstituteLeaveMng = new TimeAllowanceManagement(
-                EnumAdaptor.valueOf(substituationHoliday.getDigestiveUnit(), TimeDigestiveUnit.class),
-                substituationHoliday.isTimeOfPeriodFlg()
+                EnumAdaptor.valueOf(substitutionHoliday.getDigestiveUnit(), TimeDigestiveUnit.class),
+                substitutionHoliday.isTimeOfPeriodFlg()
         );
 
         // ドメインモデル「60H超休管理設定」を取得する

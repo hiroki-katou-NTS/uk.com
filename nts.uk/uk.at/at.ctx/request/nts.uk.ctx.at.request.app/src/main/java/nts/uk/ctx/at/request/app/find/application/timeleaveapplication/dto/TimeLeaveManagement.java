@@ -81,17 +81,17 @@ public class TimeLeaveManagement {
                         output.getTimeAllowanceManagement().isTimeBaseManagementClass()
                 ),
                 new Super60HLeaveMng(
-                        output.getSupHolidayManagement().getSuper60HDigestion().value,
+                        output.getSupHolidayManagement().getSuper60HDigestion() != null ? output.getSupHolidayManagement().getSuper60HDigestion().value : null,
                         output.getSupHolidayManagement().isOverrest60HManagement()
                 ),
                 new NursingLeaveMng(
-                        output.getChildNursingManagement().getTimeDigestiveUnit().value,
+                        output.getChildNursingManagement().getTimeDigestiveUnit() != null ? output.getChildNursingManagement().getTimeDigestiveUnit().value : null,
                         output.getChildNursingManagement().isTimeManagementClass(),
-                        output.getChildNursingManagement().getTimeChildDigestiveUnit().value,
+                        output.getChildNursingManagement().getTimeChildDigestiveUnit() != null ? output.getChildNursingManagement().getTimeChildDigestiveUnit().value : null,
                         output.getChildNursingManagement().isTimeChildManagementClass()
                 ),
                 new TimeSpecialLeaveMng(
-                        output.getTimeSpecialLeaveMng().getTimeSpecialLeaveUnit().value,
+                        output.getTimeSpecialLeaveMng().getTimeSpecialLeaveUnit() != null ? output.getTimeSpecialLeaveMng().getTimeSpecialLeaveUnit().value : null,
                         output.getTimeSpecialLeaveMng().isTimeSpecialLeaveManagement(),
                         output.getTimeSpecialLeaveMng().getListSpecialFrame().stream().map(SpecialHolidayFrameDto::fromDomain).collect(Collectors.toList())
                 )

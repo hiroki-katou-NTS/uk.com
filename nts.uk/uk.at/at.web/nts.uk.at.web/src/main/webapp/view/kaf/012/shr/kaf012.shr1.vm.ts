@@ -63,6 +63,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
         timeLeaveManagement: KnockoutObservable<TimeLeaveManagement>;
         timeLeaveRemaining: KnockoutObservable<TimeLeaveRemaining>;
         leaveType: KnockoutObservable<number>;
+        application: KnockoutObservable<any>;
 
         display1: KnockoutObservable<boolean>;
         substituteRemaining: KnockoutObservable<string>;
@@ -88,6 +89,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
             vm.timeLeaveManagement = params.timeLeaveManagement;
             vm.timeLeaveRemaining = params.timeLeaveRemaining;
             vm.leaveType = params.leaveType;
+            vm.application = params.application;
             vm.display1 = ko.computed(() => {
                 return !!vm.timeLeaveManagement()
                     && vm.timeLeaveManagement().timeSubstituteLeaveMng.timeSubstituteLeaveMngAtr
@@ -198,7 +200,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
         openKDL005() {
             const vm = this;
             var param: any = {
-                employeeIds: [vm.$user.employeeId],
+                employeeIds: vm.application().employeeIDLst(),
                 baseDate: new Date().toISOString().split("T")[0].replace('-','').replace('-','')
             };
             setShared('KDL005_DATA', param);
@@ -212,7 +214,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
         openKDL020() {
             let vm = this;
             const data = {
-                employeeIds: [vm.$user.employeeId],
+                employeeIds: vm.application().employeeIDLst(),
                 baseDate: new Date().toISOString().split("T")[0].replace('-','').replace('-','')
             };
             setShared('KDL020A_PARAM', data);
@@ -226,7 +228,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
         openKDL051() {
             let vm = this;
             const data = {
-                employeeIds: [vm.$user.employeeId],
+                employeeIds: vm.application().employeeIDLst(),
                 baseDate: new Date().toISOString().split("T")[0].replace('-','').replace('-','')
             };
             setShared('KDL051A_PARAM', data);
@@ -240,7 +242,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
         openKDL052() {
             const vm = this;
             const data = {
-                employeeList: [vm.$user.employeeId],
+                employeeList: vm.application().employeeIDLst(),
                 baseDate: new Date().toISOString()
             };
             if (data.employeeList.length > 1) {
@@ -253,7 +255,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
         openKDL017() {
             const vm = this;
             const data = {
-                employeeIds: [vm.$user.employeeId],
+                employeeIds: vm.application().employeeIDLst(),
                 baseDate: new Date().toISOString().split("T")[0].replace('-','').replace('-','')
             };
             nts.uk.ui.windows.setShared('KDL017_PARAM', data);
@@ -279,7 +281,8 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
         reflectSetting: KnockoutObservable<ReflectSetting>,
         timeLeaveManagement: KnockoutObservable<TimeLeaveManagement>,
         timeLeaveRemaining: KnockoutObservable<TimeLeaveRemaining>,
-        leaveType: KnockoutObservable<number>;
+        leaveType: KnockoutObservable<number>,
+        application: KnockoutObservable<any>
     }
 
     export interface ReflectSetting {
