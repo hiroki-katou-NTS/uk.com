@@ -853,7 +853,7 @@ export class CmmS45ShrComponentsApp0Component extends Vue {
         workType.code = codeType || '';
 
         let workTime = {} as Work;
-        workTime.code = codeTime || '';
+        workTime.code = codeTime || self.$i18n('KAFS07_9');
         let displayInfoOverTime = _.get(self.dataOutput, 'displayInfoOverTime');
         if (displayInfoOverTime) {
             let workTypes = displayInfoOverTime.infoBaseDateOutput.worktypes;
@@ -862,9 +862,11 @@ export class CmmS45ShrComponentsApp0Component extends Vue {
             workType.name = resultWorkType ? (resultWorkType.name || '')  : self.$i18n('KAFS05_55');
 
             let workTimes = displayInfoOverTime.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst;
-            let resultWorkTime = 
-                    _.find(workTimes, (i: any) => i.worktimeCode == workTime.code);
-            workTime.name = resultWorkTime ? (_.get(resultWorkTime, 'workTimeDisplayName.workTimeName') || '') : self.$i18n('KAFS05_55');
+            if (codeTime) {
+                let resultWorkTime = 
+                        _.find(workTimes, (i: any) => i.worktimeCode == workTime.code);
+                workTime.name = resultWorkTime ? (_.get(resultWorkTime, 'workTimeDisplayName.workTimeName') || '') : self.$i18n('KAFS05_55');
+            }
   
         }
         let workInfo = {} as WorkInfo;
