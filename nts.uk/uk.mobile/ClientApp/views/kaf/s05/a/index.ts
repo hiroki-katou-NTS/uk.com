@@ -933,6 +933,7 @@ export class KafS05Component extends KafS00ShrComponent {
                             infoWithDateApplicationOp.breakTime = res.data.breakTimeZoneSetting;
                             infoWithDateApplicationOp.workTypeCD = step1.workInfo.workType.code;
                             infoWithDateApplicationOp.workTimeCD = step1.workInfo.workTime.code;
+                            self.model.displayInfoOverTime.infoWithDateApplicationOp = infoWithDateApplicationOp;
                         }
                         step1.loadData(self.model.displayInfoOverTime, true, true);
                         step1.createHoursWorkTime();
@@ -1012,6 +1013,7 @@ export class KafS05Component extends KafS00ShrComponent {
                             infoWithDateApplicationOp.breakTime = res.data.breakTimeZoneSetting;
                             infoWithDateApplicationOp.workTypeCD = step1.workInfo.workType.code;
                             infoWithDateApplicationOp.workTimeCD = step1.workInfo.workTime.code;
+                            self.model.displayInfoOverTime.infoWithDateApplicationOp = infoWithDateApplicationOp;
                         }
                         step1.loadData(self.model.displayInfoOverTime, true, true);
                         step1.createHoursWorkTime();
