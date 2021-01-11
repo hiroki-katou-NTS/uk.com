@@ -861,7 +861,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", "");
 						$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeCode", "");
 						$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeName", getText('KSU003_55'));
-						$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktypeName", (data.workTypeName == null || data.workTypeName == "") ? $("#extable-ksu003").exTable('dataSource', 'middle').body[index].worktypeCode + getText('KSU003_54') : data.workTypeName);
+						$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktypeName", data.workTypeName);
 
 						$("#extable-ksu003").exTable("disableCell", "middle", empId, "worktimeCode");
 						$("#extable-ksu003").exTable("disableCell", "middle", empId, "startTime1");
