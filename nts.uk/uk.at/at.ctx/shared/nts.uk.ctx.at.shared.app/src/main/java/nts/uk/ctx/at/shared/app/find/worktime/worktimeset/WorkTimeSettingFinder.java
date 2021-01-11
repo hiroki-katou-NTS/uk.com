@@ -352,7 +352,7 @@ public class WorkTimeSettingFinder {
      * @param codes the codes
      * @return the list
      */
-    public WorkTimeResultDto findByCodeNew(List<String> codes, String workPlaceId, GeneralDate baseDate, boolean isCheckAll) {
+    public WorkTimeResultDto findByCodeNew(List<String> codes, String workPlaceId, GeneralDate baseDate) {
 
         Integer allCheckStatus = null;
         String companyID = AppContexts.user().companyId();
@@ -430,5 +430,4 @@ public class WorkTimeSettingFinder {
         );
 
     }
-
 }

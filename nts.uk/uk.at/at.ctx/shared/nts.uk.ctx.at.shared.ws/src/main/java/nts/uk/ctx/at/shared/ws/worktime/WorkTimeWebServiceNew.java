@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.ws.worktime;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.Value;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
@@ -257,13 +259,19 @@ public class WorkTimeWebServiceNew extends WebService {
     //----------------Update KDL001
     @POST
     @Path("findByCodeNew")
-    public WorkTimeResultDto findByCodeNew(List<String> codes, String workPlaceId, GeneralDate baseDate, boolean isCheckAll) {
-        return this.workTimeSetFinder.findByCodeNew(codes, workPlaceId, baseDate,isCheckAll);
+    public WorkTimeResultDto findByCodeNew(FindByCodeDto dto) {
+        return this.workTimeSetFinder.findByCodeNew(dto.codes, dto.workPlaceId, dto.baseDate);
     }
-
 }
 
 @Value
 class getWorkTimeDto {
     List<String> wkTimeCodes;
+}
+@AllArgsConstructor
+@Getter
+class FindByCodeDto{
+    List<String> codes;
+    String workPlaceId;
+    GeneralDate baseDate;
 }
