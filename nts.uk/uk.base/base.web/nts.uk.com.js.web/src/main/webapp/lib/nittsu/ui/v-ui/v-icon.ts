@@ -14,7 +14,7 @@ module nts.ui.icons {
             return { controlsDescendantBindings: false };
         }
         update(element: SVGElement, valueAccessor: () => string | KnockoutObservable<string>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: nts.uk.ui.vm.ViewModel, bindingContext: KnockoutBindingContext) {
-            const icon: string = ko.unwrap(valueAccessor());
+            const icon: string = ko.unwrap(valueAccessor()).toUpperCase();
             const size: number = ko.unwrap(allBindingsAccessor.get('size'));
             const width: number = ko.unwrap(allBindingsAccessor.get('width'));
             const height: number = ko.unwrap(allBindingsAccessor.get('height'));
@@ -203,4 +203,6 @@ module nts.ui.icons {
     <path d="M9.7373 15.5806H17.7373" stroke="#30CC40" stroke-linecap="round"/>
     <path d="M9.7373 17.5806H17.7373" stroke="#30CC40" stroke-linecap="round"/>
     <rect x="4.7373" y="0.580566" width="8" height="3" rx="1" fill="white"/>`;
+
+    export const INFO = `<circle cx="6" cy="6" r="6" fill="#30CC40"/><path d="M5.15051 9.80005V4.61005H6.85051V9.80005H5.15051ZM6.85051 2.66005V3.96005H5.15051V2.66005H6.85051Z" fill="white"/>`
 }
