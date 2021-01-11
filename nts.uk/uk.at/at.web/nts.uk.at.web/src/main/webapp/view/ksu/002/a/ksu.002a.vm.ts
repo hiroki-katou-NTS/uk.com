@@ -149,7 +149,8 @@ module nts.uk.ui.at.ksu002.a {
 					const command = {
 						listSid: [vm.$user.employeeId],
 						startDate: moment(begin).toISOString(),
-						endDate: moment(finish).toISOString()
+						endDate: moment(finish).toISOString(),
+						actualData: vm.achievement() === ACHIEVEMENT.YES
 					};
 
 					vm.$errors('clear')
