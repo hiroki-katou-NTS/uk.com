@@ -330,12 +330,14 @@ module nts.uk.at.view.kdl001.a {
             selectedWorkTimeName: string;
             first: Time;
             second: Time;
+            remark: string;
             constructor(data?) {
                 if (data) {
                     this.selectedWorkTimeCode = data.code;
                     this.selectedWorkTimeName = data.name;
                     this.first = new Time(data.firstStartTime, data.firstEndTime);
                     this.second = new Time(data.secondStartTime, data.secondEndTime);
+                    this.remark = data.remark;
                 }
             }
         }
