@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.app.command.application.appabsence;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.enums.EnumAdaptor;
@@ -24,12 +26,14 @@ public class VacationRequestInfoDto {
     public VacationRequestInfo toDomain() {
         return new VacationRequestInfo(
                 EnumAdaptor.valueOf(holidayApplicationType, HolidayAppType.class), 
-                info.toDomain());
+                Optional.ofNullable(info).map(SupplementInfoVacationDto::toDomain).orElse(null));
     }
     
     public static VacationRequestInfoDto fromDomain(VacationRequestInfo domain) {
         return new VacationRequestInfoDto(
                 domain.getHolidayApplicationType().value, 
-                SupplementInfoVacationDto.fromDomain(domain.getInfo()));
+                Optional.ofNullable(domain.getInfo())
+                	.map(x -> SupplementInfoVacationDto.fromDomain(domain.getInfo()))
+                	.orElse(null));
     }
 }
