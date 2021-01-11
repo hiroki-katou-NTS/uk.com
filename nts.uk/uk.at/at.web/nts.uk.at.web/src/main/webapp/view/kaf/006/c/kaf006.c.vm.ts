@@ -115,6 +115,7 @@ module nts.uk.at.view.kaf006.c.viewmodel {
                                 nts.uk.ui.dialog.error({ messageId: error.messageId });
                             }
                         }).always(() => {
+                            $("#appDate").focus();
                             block.clear();
                         });
                 }
@@ -169,6 +170,7 @@ module nts.uk.at.view.kaf006.c.viewmodel {
                                 nts.uk.ui.dialog.error({ messageId: error.messageId });
                             }
                         }).always(() => {
+                            $("#dateRange .ntsStartDatePicker").focus();
                             block.clear();
                         });
                 }
