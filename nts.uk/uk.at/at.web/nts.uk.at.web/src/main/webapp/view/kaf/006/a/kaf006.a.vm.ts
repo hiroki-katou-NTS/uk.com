@@ -447,8 +447,8 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 										vm.isDispTime2ByWorkTime(false);
 									} else {
 										vm.isDispTime2ByWorkTime(true);
-										vm.startTime1(workTime2.startTime);
-										vm.endTime1(workTime2.endTime);
+										vm.startTime2(workTime2.startTime);
+										vm.endTime2(workTime2.endTime);
 									}
 								} else {
 									vm.isDispTime2ByWorkTime(false);
