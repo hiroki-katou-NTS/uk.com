@@ -7,7 +7,40 @@
 }
 
 .ui-igcombo-wrapper {
+	outline: none;
 	
+	&:focus {		
+		border-radius: 2px;
+
+		.ui-igcombo {
+			border-color: $focused_color;
+			box-shadow: 0 0 0 2px lighten($color: $focused_color, $amount: 30);
+		}
+	}
+	
+	.ui-igcombo {
+		border-radius: 2px;
+		border-color: #EAE8F2;
+
+		&.ui-state-active {
+			border-color: $focused_color;
+			box-shadow: 0 0 0 2px lighten($color: $focused_color, $amount: 30);
+			
+			&:focus {
+				border-color: #0096f2;
+			}
+		}
+
+		.ui-igcombo-button {
+			background-color: transparent;
+		}
+
+		.ui-igcombo-buttonicon {
+			border-left: none !important;
+			background-color: transparent !important;
+		}
+	}
+
 	&.error {
 		> .ui-igcombo {
 			border-color: #ff6666;
@@ -26,34 +59,10 @@
 		overflow: hidden;
 		margin-right: 5px;
 	}
-  	
-}
-
-.ui-state-active {
-	border-color: #0096f2;
-		
-	&:focus {
-	  	border-color: #0096f2;
-	}
 }
 
 .compact-grid {
 	.ui-igcombo-wrapper {
 		height: 27px;
-	}
-}
-
-.ntsControl {
-	.ui-igcombo {
-		border-color: #EAE8F2;
-
-		.ui-igcombo-button {
-			background-color: transparent;
-		}
-
-		.ui-igcombo-buttonicon {
-			border-left: none !important;
-			background-color: transparent !important;
-		}
 	}
 }

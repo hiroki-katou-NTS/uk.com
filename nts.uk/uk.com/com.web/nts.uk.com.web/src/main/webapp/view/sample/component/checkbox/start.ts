@@ -1,17 +1,8 @@
-__viewContext.ready(function () {
-    class ScreenModel {
-        checked: KnockoutObservable<boolean>;
-        readonly: KnockoutObservable<boolean>;
-        enable: KnockoutObservable<boolean>;
-        
-        constructor() {
-            var self = this;
-            self.checked = ko.observable(true);
-            self.enable = ko.observable(true);
-            self.readonly = ko.observable(false);
-        }
+module nts.uk.ui.sample.checkbox {
+    @bean()
+    export class ScreenModel extends ko.ViewModel {
+        checked: KnockoutObservable<boolean> = ko.observable(true);
+        readonly: KnockoutObservable<boolean> = ko.observable(true);
+        enable: KnockoutObservable<boolean> = ko.observable(false);
     }
-    
-    this.bind(new ScreenModel());
-    
-});
+}
