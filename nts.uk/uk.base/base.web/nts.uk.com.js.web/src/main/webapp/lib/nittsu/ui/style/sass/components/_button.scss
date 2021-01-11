@@ -130,7 +130,8 @@ button {
         
     &:focus,
     &:active {
-        box-shadow: 0 0 0 2px lighten($color: #EAE8F2, $amount: 0.5);
+        border-color: $focused_color;
+        box-shadow: 0 0 0 2px lighten($color: $focused_color, $amount: 30);
     }
 
     &.white {
