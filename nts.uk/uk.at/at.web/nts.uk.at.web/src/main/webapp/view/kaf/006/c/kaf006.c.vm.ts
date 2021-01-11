@@ -73,10 +73,10 @@ module nts.uk.at.view.kaf006.c.viewmodel {
     
                     let holidayDates = [];
                     if (startDate) {
-                        holidayDates.push(new Date(startDate).toLocaleDateString());
+                        holidayDates.push(nts.uk.time.formatDate(new Date(startDate), "yyyy-MM-dd"));
                     }
                     if (endDate) {
-                        holidayDates.push(new Date(endDate).toLocaleDateString());
+                        holidayDates.push(nts.uk.time.formatDate(new Date(endDate), "yyyy-MM-dd"));
                     }
 
                     if (_.isEmpty(holidayDates)) {
@@ -127,10 +127,10 @@ module nts.uk.at.view.kaf006.c.viewmodel {
     
                     let holidayDates = [];
                     if (startDate) {
-                        holidayDates.push(new Date(startDate).toLocaleDateString());
+                        holidayDates.push(nts.uk.time.formatDate(new Date(startDate), "yyyy-MM-dd"));
                     }
                     if (endDate) {
-                        holidayDates.push(new Date(endDate).toLocaleDateString());
+                        holidayDates.push(nts.uk.time.formatDate(new Date(endDate), "yyyy-MM-dd"));
                     }
 
                     if (_.isEmpty(holidayDates)) {
