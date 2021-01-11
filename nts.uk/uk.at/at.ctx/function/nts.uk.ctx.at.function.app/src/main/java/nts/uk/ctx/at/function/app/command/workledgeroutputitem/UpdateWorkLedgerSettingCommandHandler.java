@@ -44,9 +44,9 @@ public class UpdateWorkLedgerSettingCommandHandler extends CommandHandler<Update
         val outputItemLists = command.getOutputItemList();
 
         RequireImpl require = new RequireImpl(workLedgerOutputItemRepo);
-
+        val code =  new OutputItemSettingCode(command.getCode());
         AtomTask persist = UpdateWorkLedgerSettingDomainService
-                .updateSetting(require,id,name,settingCategory,outputItemLists);
+                .updateSetting(require,id,name,code,settingCategory,outputItemLists);
         transaction.execute(persist::run);
 
     }

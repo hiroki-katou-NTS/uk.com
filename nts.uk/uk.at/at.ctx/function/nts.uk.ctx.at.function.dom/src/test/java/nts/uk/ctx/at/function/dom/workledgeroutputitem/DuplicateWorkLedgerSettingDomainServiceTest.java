@@ -198,7 +198,7 @@ public class DuplicateWorkLedgerSettingDomainServiceTest {
 
 		NtsAssert.atomTask(
 				() -> actual,
-				any-> require.duplicateWorkLedgerOutputItem("employeeId04", "dupSrcId04", "uid04", code, name)
+				any-> require.duplicateWorkLedgerOutputItem( "dupSrcId04", "uid04", code, name)
 		);
 	}
 
@@ -251,7 +251,7 @@ public class DuplicateWorkLedgerSettingDomainServiceTest {
 
 		NtsAssert.atomTask(
 				() -> actual,
-				any-> require.duplicateWorkLedgerOutputItem("employeeId05", "dupSrcId05", "uid05", code, name)
+				any-> require.duplicateWorkLedgerOutputItem( "dupSrcId05", "uid05", code, name)
 		);
 	}
 }

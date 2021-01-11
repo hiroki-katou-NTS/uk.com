@@ -51,6 +51,7 @@ public class UpdateWorkLedgerSettingDomainServiceTest {
 					require,
 					"uid01",
 					name,
+					code,
 					SettingClassificationCommon.STANDARD_SELECTION,
 					Arrays.asList(new AttendanceItemToPrint(1, 1))
 			);
@@ -87,6 +88,7 @@ public class UpdateWorkLedgerSettingDomainServiceTest {
 				require,
 				"uid02",
 				name,
+				code,
 				SettingClassificationCommon.STANDARD_SELECTION,
 				Arrays.asList(new AttendanceItemToPrint(1, 1))
 		);
@@ -126,6 +128,7 @@ public class UpdateWorkLedgerSettingDomainServiceTest {
 				require,
 				"uid03",
 				name,
+				code,
 				SettingClassificationCommon.FREE_SETTING,
 				Arrays.asList(new AttendanceItemToPrint(1, 1))
 		);

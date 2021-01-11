@@ -172,7 +172,7 @@ public class JpaWorkLedgerOutputItemRepo extends JpaRepository implements WorkLe
     }
 
     @Override
-    public void duplicateConfigDetails(String cid, String employeeId, String replicationSourceSettingId, String replicationDestinationSettingId, OutputItemSettingCode duplicateCode, OutputItemSettingName copyDestinationName) {
+    public void duplicateConfigDetails(String cid, String replicationSourceSettingId, String replicationDestinationSettingId, OutputItemSettingCode duplicateCode, OutputItemSettingName copyDestinationName) {
         val optEntitySetting = this.queryProxy().query(FIND_WORK_LEDGER_SETTING_FOR_DUP, KfnmtRptRecSetting.class)
                 .setParameter("cid", cid)
                 .setParameter("settingId", replicationSourceSettingId).getSingle();

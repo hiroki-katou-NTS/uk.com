@@ -57,7 +57,7 @@ public class DuplicateWorkLedgerSettingDomainService {
 		String uid = IdentifierUtil.randomUniqueId();
 
 		return AtomTask.of(() -> {
-			require.duplicateWorkLedgerOutputItem(employeeId, dupSrcId, uid, dupCode, dupName);
+			require.duplicateWorkLedgerOutputItem(dupSrcId, uid, dupCode, dupName);
 		});
 	}
 
@@ -82,7 +82,6 @@ public class DuplicateWorkLedgerSettingDomainService {
 		 * Call 勤務台帳の出力項目Repository#設定の詳細を複製するる
 		 */
 		void duplicateWorkLedgerOutputItem(
-				String employeeId,
 				String dupSrcId,
 				String dupDestId,
 				OutputItemSettingCode dupCode,
