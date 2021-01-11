@@ -450,8 +450,11 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 			AnnualHolidayGrantInfor annalInforJoinLeaving = holidayInfo.isPresent() ? holidayInfo.get() : null;
 			AnnualHolidayGrantData holidayGrantData = this.getJoinLeavingForAnnualLeaveGrantInfo(employee.getEmployeeId(), annalInforJoinLeaving, holidayDetails);
 //			holidayGrantData.setAnnualHolidayGrantInfor(holidayInfo);
-			List<AnnualHolidayGrantDetail> holidayDetailsSort   = holidayGrantData.getHolidayDetails().stream().sorted((a, b) -> a.getYmd().compareTo(b.getYmd()))
-					.collect(Collectors.toList());
+			List<AnnualHolidayGrantDetail> holidayDetailsSort   = holidayGrantData.getHolidayDetails();
+			if (!holidayGrantData.getHolidayDetails().isEmpty()) {
+				holidayDetailsSort = holidayGrantData.getHolidayDetails().stream()
+						.sorted((a, b) -> a.getYmd().compareTo(b.getYmd())).collect(Collectors.toList());
+			}
 //			holidayGrantData.setHolidayDetails(holidayDetails);
 			employee.setHolidayInfo(holidayGrantData.getAnnualHolidayGrantInfor());
 			employee.setHolidayDetails(holidayDetailsSort);
@@ -465,6 +468,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 			//エラーメッセージ(Msg_37)を表示する
 			throw new BusinessException("Msg_37");
 		}
+		// [No.560]職場IDから職場の情報をすべて取得する - Get all workplace information from the workplace ID
 		Map<WorkplaceHolidayExport, List<EmployeeHolidayInformationExport>> resultmap = employeeExports.stream()
 				.collect(Collectors.groupingBy(o -> o.getWorkplace()));
 
@@ -914,7 +918,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 			AnnualHolidayGrantInfor annualHolidayGrantInfor, List<AnnualHolidayGrantDetail> holidayDetailList) {
 		AnnualHolidayGrantData annualHolidayGrantData = new AnnualHolidayGrantData();
 		List<AnnualHolidayGrant> lstGrantInfor = new ArrayList<AnnualHolidayGrant>();
-		List<AnnualHolidayGrantDetail> holidayDetais = new ArrayList<AnnualHolidayGrantDetail>();
+		List<AnnualHolidayGrantDetail> holidayDetails = new ArrayList<AnnualHolidayGrantDetail>();
 		// 指定された社員の全ての所属会社履歴(YMD)を取得する
 		// 社員の指定期間中の所属期間を取得する RQ588
 		DatePeriod workPeriod = new DatePeriod(GeneralDate.ymd(1900, 01, 01), GeneralDate.ymd(9999, 12, 31));
@@ -956,7 +960,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 					for(DatePeriod period: employeeExport.getListPeriod()) {
 						if(!detail.getYmd().after(period.start()) || !detail.getYmd().before(period.end())) {
 							// <OUTPUT>年休使用詳細(i) を削除(空に)する。
-							holidayDetais.add(new AnnualHolidayGrantDetail());
+							holidayDetails.add(new AnnualHolidayGrantDetail());
 						}
 					}
 				}
@@ -977,6 +981,8 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 					}
 				};
 			}
+			annualHolidayGrantData.setHolidayDetails(holidayDetails);
+			annualHolidayGrantData.setAnnualHolidayGrantInfor(Optional.ofNullable(annualHolidayGrantInfor));
 		}
 		
 		
