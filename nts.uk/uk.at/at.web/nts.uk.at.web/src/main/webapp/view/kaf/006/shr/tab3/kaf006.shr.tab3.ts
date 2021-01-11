@@ -79,7 +79,7 @@ module nts.uk.at.view.kaf006.shr.tab3.viewmodel {
                 </div>
             </div>
             <div class="table">
-                <div class="cell" style="width: 400px">
+                <div class="cell" style="width: 500px">
                     <div class="table">
                         <div class="cell col-1" data-bind="visible: $parent.condition6">
                             <div class="cell valign-center required" data-bind="ntsFormLabel:{ required: true }, text: $i18n('KAF006_33')"></div>
