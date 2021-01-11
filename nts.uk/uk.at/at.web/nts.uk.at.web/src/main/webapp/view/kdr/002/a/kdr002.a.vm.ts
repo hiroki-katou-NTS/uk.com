@@ -471,7 +471,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         constructor(screen: ScreenModel) {
             let self = this,
                 program = nts.uk.ui._viewModel.kiban.programName().split(" ");
-            self.programName = (program[1] != null ? program[1] : "");
+            self.programName = (program[1] != null ? program[1] : "年休管理表");
             self.exportTime = moment().format();
             // 対象期間
             self.selectedDateType = screen.selectedDateType();
