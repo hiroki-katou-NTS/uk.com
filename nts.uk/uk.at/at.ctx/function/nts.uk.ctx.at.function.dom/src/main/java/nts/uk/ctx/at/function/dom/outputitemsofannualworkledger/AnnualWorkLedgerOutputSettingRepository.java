@@ -35,7 +35,7 @@ public interface AnnualWorkLedgerOutputSettingRepository {
     void deleteSettingDetail(String settingId);
 
     //  [9]	設定の詳細を複製する
-    void duplicateConfigurationDetail(String cid, String optionalEmployeeId,
+    void duplicateConfigurationDetail(String cid,
                                       String replicationSourceSettingsId, String destinationSettingId,
                                       OutputItemSettingCode outputItemSettingCode, OutputItemSettingName outputItemSettingName);
 

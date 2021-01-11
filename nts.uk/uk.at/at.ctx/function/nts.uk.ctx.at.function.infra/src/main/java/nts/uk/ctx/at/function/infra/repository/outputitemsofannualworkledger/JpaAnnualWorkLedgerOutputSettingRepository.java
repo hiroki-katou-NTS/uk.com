@@ -206,7 +206,7 @@ public class JpaAnnualWorkLedgerOutputSettingRepository extends JpaRepository im
     }
 
     @Override
-    public void duplicateConfigurationDetail(String cid, String optionalEmployeeId, String replicationSourceSettingsId,
+    public void duplicateConfigurationDetail(String cid, String replicationSourceSettingsId,
                                              String destinationSettingId, OutputItemSettingCode outputItemSettingCode,
                                              OutputItemSettingName outputItemSettingName) {
         val optEntitySetting = this.queryProxy().query(FIND_WORK_SETTING, KfnmtRptYrRecSetting.class)

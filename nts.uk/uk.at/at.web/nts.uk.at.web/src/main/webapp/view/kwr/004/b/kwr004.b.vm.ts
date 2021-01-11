@@ -61,6 +61,7 @@ module nts.uk.at.view.kwr004.b {
     workStatusTableOutputItem: KnockoutObservable<any> = ko.observable(null);
     diligenceProjects: KnockoutObservableArray<DiligenceProject> = ko.observableArray([]);
     diligenceProjectsMonthly: KnockoutObservableArray<DiligenceProject> = ko.observableArray([]);
+    diligenceProjectsDaily: KnockoutObservableArray<DiligenceProject> = ko.observableArray([]);
     attributeList: KnockoutObservableArray<any> = ko.observableArray([]);
     isItemRemoved: KnockoutObservable<boolean> = ko.observable(false);
 
@@ -394,7 +395,7 @@ module nts.uk.at.view.kwr004.b {
         vm.isEnableDuplicateButton(true);
         vm.isEnableDeleteButton(true);
         vm.isNewMode(false);
-        
+
         if (!vm.isItemRemoved())
           $('#KWR004_B33').focus();
         else {
@@ -453,7 +454,7 @@ module nts.uk.at.view.kwr004.b {
         });
 
         //create label to display
-        selectionItem = vm.getAttendanceAttributes(dailyOrMonthly, independentCalc, selectedListItems);
+        selectionItem = vm.getAttendanceAttributes(dailyOrMonthly, independentCalc, selectedListItems, x.attribute);
         if (_.isEmpty(selectionItem)) selectedListItems = [];
         //create new row
         let selectedTime: number = selectedListItems.length > 0 ? selectedListItems[0].attendanceItemId : -1;
@@ -604,7 +605,11 @@ module nts.uk.at.view.kwr004.b {
         .done((result) => {
           if (_.isNil(result) || result.length == 0) {
             vm.clearModelToNew();
-            $('#KWR004_B32').focus();
+            if (vm.isItemRemoved()) {
+              $('#btnB11').focus();
+              vm.isItemRemoved(false);
+            } else
+              $('#KWR004_B32').focus();
           } else {
             //merge to settingListItems
             _.forEach(result, (x) => {
@@ -618,7 +623,7 @@ module nts.uk.at.view.kwr004.b {
 
             let firstItem: any = _.head(vm.settingListItems());
             if (_.isNil(currentCode)) currentCode = firstItem.code;
-            vm.currentCodeList(currentCode);            
+            vm.currentCodeList(currentCode);
             //vm.currentCodeList.valueHasMutated();
           }
         }).fail(() => { });
@@ -706,7 +711,7 @@ module nts.uk.at.view.kwr004.b {
         vm.shareParam.attribute.attributeList.push(new AttendanceType(6, vm.$i18n('KWR002_182')));
         vm.shareParam.diligenceProjectList = vm.diligenceProjectsMonthly(); //KDL048
       } else
-        vm.shareParam.diligenceProjectList = vm.diligenceProjects(); //KDL048
+        vm.shareParam.diligenceProjectList = vm.diligenceProjectsDaily(); //KDL048
 
       vm.shareParam.itemNameLine.name = row.name();
       vm.shareParam.attribute.selected = row.itemAttribute(); //setting Category
@@ -768,26 +773,58 @@ module nts.uk.at.view.kwr004.b {
       vm.$ajax(PATH.getInitDayMonth, { settingClassification: 1, formNumberDisplay: 7 }).done((result) => {
         if (result && result.listDaily) {
           _.forEach(result.listDaily, (item) => {
-            vm.diligenceProjects.push(new DiligenceProject(
-              item.attendanceItemId,
-              item.attendanceItemName,
-              item.attributes,//attendanceAtr
-              item.attendanceItemDisplayNumber,
-              item.masterType
-            )
+            let masterType = (item.masterType === 1 || item.masterType === 2 || item.masterType === null) ? item.masterType : null;
+            let attendanceAtr: any = ((item.attributes === 1 && item.masterType === 1) || (item.attributes === 2 && item.masterType === 2))
+              ? 0 : (item.attributes === 3 && item.masterType === null ? 6 : null);
+            vm.diligenceProjects.push(
+              new DiligenceProject(
+                item.attendanceItemId,
+                item.attendanceItemName,
+                item.attributes,//attendanceAtr
+                item.attendanceItemDisplayNumber,
+                masterType,
+                attendanceAtr
+              )
+            );
+            //export 1    
+            attendanceAtr = item.attributes === 4
+              ? 5
+              : item.attributes === 5
+                ? 2
+                : item.attributes === 7
+                  ? 3
+                  : null;
+            vm.diligenceProjectsDaily.push(
+              new DiligenceProject(
+                item.attendanceItemId,
+                item.attendanceItemName,
+                item.attributes,//attendanceAtr
+                item.attendanceItemDisplayNumber,
+                masterType,
+                attendanceAtr
+              )
             );
           });
         }
 
         if (result && result.listMonthly) {
           _.forEach(result.listMonthly, (item) => {
-            vm.diligenceProjectsMonthly.push(new DiligenceProject(
-              item.attendanceItemId,
-              item.attendanceItemName,
-              item.attributes,//attendanceAtr
-              item.attendanceItemDisplayNumber,
-              item.masterType
-            )
+            //export 3
+            let attendanceAtr = item.attributes === 4
+              ? 1
+              : item.attributes === 5
+                ? 2 : item.attributes === 6
+                  ? 3 : item.attributes === 7
+                    ? 4 : null;
+            vm.diligenceProjectsMonthly.push(
+              new DiligenceProject(
+                item.attendanceItemId,
+                item.attendanceItemName,
+                item.attributes,//attendanceAtr
+                item.attendanceItemDisplayNumber,
+                item.masterType,
+                attendanceAtr
+              )
             );
           });
         }
@@ -833,15 +870,18 @@ module nts.uk.at.view.kwr004.b {
      * @param selectedListItems 
      * @return Array
      */
-    getAttendanceAttributes(type: boolean, icClassic: number, selectedListItems: Array<any>) {
+    getAttendanceAttributes(type: boolean, icClassic: number, selectedListItems: Array<any>, attribute: any) {
       const vm = this;
       let temp = [],
         attributesItems = vm.diligenceProjects();
       //from 3rd - Monthly
-      if (icClassic === 2 && !type) attributesItems = vm.diligenceProjectsMonthly();
+      if (icClassic === 2 && !type)
+        attributesItems = vm.diligenceProjectsMonthly();
+      else if (icClassic === 2 && type)
+        attributesItems = vm.diligenceProjectsDaily();
 
       _.forEach(selectedListItems, (x) => {
-        let findAttend = _.find(attributesItems, (e) => x.attendanceItemId === e.attendanceItemId);
+        let findAttend = _.find(attributesItems, (e) => x.attendanceItemId === e.attendanceItemId && attribute === e.attributes);
         if (!_.isNil(findAttend)) {
           temp.push({ operator: x.operator, name: findAttend.attendanceItemName });
         }
@@ -1043,7 +1083,7 @@ module nts.uk.at.view.kwr004.b {
     //attributes: any;
     // 表示番号
     indicatesNumber: any;
-    constructor(id: any, name: any, attributes: any, indicatesNumber: any, masterType: number | null) {
+    constructor(id: any, name: any, attributes: any, indicatesNumber: any, masterType: number | null, attendanceAtr: number | null) {
       this.attendanceItemId = id;
       this.attendanceItemName = name;
       this.attributes = attributes;
@@ -1053,7 +1093,7 @@ module nts.uk.at.view.kwr004.b {
       this.id = id;
       this.name = name;
       this.indicatesNumber = indicatesNumber;
-      this.attendanceAtr = attributes;
+      this.attendanceAtr = attendanceAtr;
     }
   }
 }

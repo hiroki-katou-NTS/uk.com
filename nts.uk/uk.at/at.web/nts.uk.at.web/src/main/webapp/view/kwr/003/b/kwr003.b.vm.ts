@@ -53,6 +53,7 @@ module nts.uk.at.view.kwr003.b {
 
     workStatusTableOutputItem: KnockoutObservable<any> = ko.observable(null);
     diligenceProjects: KnockoutObservableArray<DiligenceProject> = ko.observableArray([]);
+    diligenceProjectsDKL48: KnockoutObservableArray<DiligenceProject> = ko.observableArray([]);
 
     constructor(params: any) {
       super();
@@ -107,7 +108,7 @@ module nts.uk.at.view.kwr003.b {
         vm.shareParam.attribute.selected = vm.comboSelected();
         vm.shareParam.selectedTime = vm.tableSelected();
         vm.shareParam.attendanceItems = vm.diligenceProjects();
-        vm.shareParam.diligenceProjectList = vm.diligenceProjects();
+        vm.shareParam.diligenceProjectList = vm.diligenceProjectsDKL48();
       });
     }
 
@@ -122,10 +123,10 @@ module nts.uk.at.view.kwr003.b {
 
     mounted() {
       const vm = this;
-      if (!!navigator.userAgent.match(/Trident.*rv\:11\./)){
+      if (!!navigator.userAgent.match(/Trident.*rv\:11\./)) {
         $("#multiGridList").ntsFixedTable({ height: 'auto' });
-        $('.kwr-003b').addClass('ie');        
-      }  else
+        $('.kwr-003b').addClass('ie');
+      } else
         $("#multiGridList").ntsFixedTable({ height: 370 });
     }
 
@@ -262,7 +263,7 @@ module nts.uk.at.view.kwr003.b {
 
       vm.$blockui('show');
       vm.$ajax(url, params).done(() => {
-        vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {         
+        vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
           vm.loadSettingList(reloadParams);
           vm.settingAttendance();
           vm.isNewMode(false);
@@ -495,7 +496,8 @@ module nts.uk.at.view.kwr003.b {
               //get selected items: 選択項目
               if (x.independentCalClassic === 2) {
                 _.forEach(attendanceItemList, (element: any) => {
-                  let findObj = _.find(listDaily, (listItem: any) => listItem.attendanceItemId === element.attendanceItemId);
+                  let findObj = _.find(listDaily, (listItem: any) => listItem.attendanceItemId === element.attendanceItemId  
+                                                    && x.itemDetailAtt === listItem.attributes);
                   if (!_.isNil(findObj)) {
                     dataItemsWithOperation.push({
                       itemId: element.attendanceItemId,
@@ -618,14 +620,41 @@ module nts.uk.at.view.kwr003.b {
       vm.$ajax(PATH.getFormInfo, { formNumberDisplay: 6 }).done((result) => {
         if (result && result.listDaily) {
           _.forEach(result.listDaily, (item) => {
-            vm.diligenceProjects.push(new DiligenceProject(
-              item.attendanceItemId,
-              item.attendanceItemName,
-              item.attributes, //attendanceAtr
-              item.attendanceItemDisplayNumber,
-              item.masterType
-            )
+            let masterType = (item.masterType === 1 || item.masterType === 2 || item.masterType === null) ? item.masterType : null;
+            let attendanceAtr: any = ((item.attributes === 1 && item.masterType === 1) || (item.attributes === 2 && item.masterType === 2))
+              ? 0 : (item.attributes === 3 && item.masterType === null ? 6 : null);
+            //KLD047
+            vm.diligenceProjects.push(
+              new DiligenceProject(
+                item.attendanceItemId,
+                item.attendanceItemName,
+                item.attributes, //attendanceAtr
+                item.attendanceItemDisplayNumber,
+                masterType,
+                attendanceAtr
+              )
             );
+
+            //KLD048 - export = 1
+            attendanceAtr = item.attributes === 4
+                            ? 5
+                            : item.attributes === 5
+                              ? 2
+                              : item.attributes === 7
+                                ? 3
+                                : null;
+
+            vm.diligenceProjectsDKL48.push(
+              new DiligenceProject(
+                item.attendanceItemId,
+                item.attendanceItemName,
+                item.attributes, //attendanceAtr
+                item.attendanceItemDisplayNumber,
+                item.masterType,
+                attendanceAtr
+              )
+            );
+
           });
         }
         vm.$blockui('hide');
@@ -669,13 +698,16 @@ module nts.uk.at.view.kwr003.b {
           }
 
           vm.currentCodeList(code);
-
-          if( !_.isNil(params.msgId) && params.msgId === 'Msg_1903') $('#btnB11').focus();          
+          vm.currentCodeList.valueHasMutated();
+          if (!_.isNil(params.msgId) && params.msgId === 'Msg_1903') $('#btnB11').focus();
 
         } else {
           //create new the settings list
           vm.clearModelToNew();
-          $('#KWR003_B42').focus();
+          if (!_.isNil(params.msgId) && params.msgId === 'Msg_1903')
+            $('#btnB11').focus();
+          else
+            $('#KWR003_B42').focus();
         }
 
         vm.$blockui('hide');
@@ -764,7 +796,7 @@ module nts.uk.at.view.kwr003.b {
     openDialogKDL048(row: any) {
       let vm = this,
         selectionItem: Array<string> = [];
-        vm.shareParam.exportAtr = 1; //４：時間 - ５：回数 - 7：金額		
+      vm.shareParam.exportAtr = 1; //４：時間 - ５：回数 - 7：金額		
       vm.shareParam.attribute.attributeList = [
         new AttendanceType(4, vm.$i18n('KWR002_180')),
         new AttendanceType(5, vm.$i18n('KWR002_181')),
@@ -999,17 +1031,18 @@ module nts.uk.at.view.kwr003.b {
     //attributes: any;
     // 表示番号
     indicatesNumber: any;
-    constructor(id: any, name: any, attributes: any, indicatesNumber: any, masterType: number | null) {
+    constructor(id: any, name: any, attributes: any, indicatesNumber: any, masterType: number | null, attendanceAtr: number | null) {
       this.attendanceItemId = id;
       this.attendanceItemName = name;
       this.attributes = attributes;
       this.displayNumbers = indicatesNumber;
+      //this.masterType = masterType;
       this.masterType = masterType;
       //48
       this.id = id;
       this.name = name;
       this.indicatesNumber = indicatesNumber;
-      this.attendanceAtr = attributes;
+      this.attendanceAtr = attendanceAtr;
     }
   }
 
