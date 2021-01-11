@@ -148,7 +148,7 @@ class MonthlyWorkingHours extends ko.ViewModel {
 
 	openQDialog() {
 		const vm = this;
-		vm.$window.modal('/view/kmk/004/q/index.xhtml', { years: _.map(vm.screenData().yearList(), (yearItem: YearItem) => { return yearItem.year; }) }).then((result) => {
+		vm.$window.modal('/view/kmk/004/q/index.xhtml', { startDate: vm.startYM(), years: _.map(vm.screenData().yearList(), (yearItem: YearItem) => { return yearItem.year; }) }).then((result) => {
 			if (result) {
 				let yearList = vm.screenData().yearList();
 				yearList.push(new YearItem(Number(result.year), true));
