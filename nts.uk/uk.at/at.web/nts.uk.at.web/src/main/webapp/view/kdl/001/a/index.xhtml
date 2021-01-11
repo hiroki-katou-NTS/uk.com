@@ -21,7 +21,7 @@
 			<ui:define name="content">
 				<div id="contents-area">
 					<div class="label">#{i18n.getText('KDL001_2')}</div>
-				<!-- 	<div class="control-group">
+					<div class="control-group">
 						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL001_3')}</div>
 						<span data-bind="ntsSwitchButton: {
 								options: ko.observableArray([
@@ -32,14 +32,14 @@
 								optionsText: 'name',
 								value: searchOption,
 								enable: isEnableSwitchButton }"></span>
-					</div>	 -->
+					</div>
 					<div class="control-group valign-center">
 						<div id="search-div">		
 							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL001_3')}</div>			
 							<input class= "inputTime" id="inputStartTime" data-bind="ntsTimeWithDayEditor: {name: '#[KDL001_21]', value: startTime, constraint:'TimeWithDayAttr',enable: true, readonly: false, required: false}" />
 							<span class="label">～</span>
 							<input class ="inputTime" data-bind="ntsTimeWithDayEditor: {name: '#[KDL001_22]', value: endTime, constraint:'TimeWithDayAttr',enable: true, readonly: false, required: false}" />
-							<button class="caret-bottom" data-bind="click: search">#{i18n.getText('KDL001_10')}</button>						
+							<button class="caret-bottom" data-bind="click: searchByTime">#{i18n.getText('KDL001_10')}</button>						
 						</div>	
 					
 						<div class="table search-by-code">
@@ -53,7 +53,7 @@
 							</div>
 							<div class="cell">
 								<div class="control-group">
-									<div data-bind="ntsCheckBox: { checked: false, enable: true, text: '#{i18n.getText('KDL001_24')}' }"></div>
+									<div data-bind="ntsCheckBox: { checked: isAllCheckStatus, enable: true, text: '#{i18n.getText('KDL001_24')}' }"></div>
 									<button data-bind="click: returnData">#{i18n.getText('KDL001_11')}</button>	
 								</div>
 							</div>

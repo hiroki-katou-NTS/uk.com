@@ -17,6 +17,12 @@ module nts.uk.at.view.kdl001.a {
             gridHeight: number = 260;
             initialWorkTimeCodes: Array<String>;
             searchCode: KnockoutObservable<string> = ko.observable(null);
+
+            //ver 8
+            workPlaceId: KnockoutObservable<string> = ko.observable(null);
+            baseDate: KnockoutObservable<string> = ko.observable(null);
+            isAllCheckStatus: KnockoutObservable<boolean> = ko.ob;
+
             constructor() {
                 var self = this;
                 self.columns = ko.observableArray([
@@ -44,16 +50,31 @@ module nts.uk.at.view.kdl001.a {
                 self.endTime = ko.observable('');
                 self.selectAbleItemList = ko.observableArray([]);
                 self.initialWorkTimeCodes = ko.observableArray([]);
+                //ver 8
+                self.workPlaceId(nts.uk.ui.windows.getShared('kml001WorkPlaceId'));
+                self.baseDate(nts.uk.ui.windows.getShared('kml001BaseDate'));
             }
 
             startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
                 nts.uk.ui.block.invisible();
-                kdl001.a.service.findByCodeList(self.selectAbleCodeList())
-                    .done(function(data) {
+                //ver 8 
+                /*if (!_.isEmpty(self.baseDate()) {
+                     self.baseDate(moment.utc(self.baseDate(), 'YYYY-MM-DD').toISOString());
+                 }*/
+
+                const params = {
+                    "baseDate": self.baseDate(),
+                    "codes": self.selectAbleCodeList(),
+                    "workPlaceId": self.workPlaceId()
+                };
+
+                kdl001.a.service.findByCodeList(params) //old version: self.selectAbleCodeList()
+                    .done(function (data) {
+                        self.isAllCheckStatus(data.disabledSegment); //allCheckStatus
                         data = _.sortBy(data, (item: any) => { return item.code; });
-                            self.bindItemList(data);
+                        self.bindItemList(data);
                         if (!nts.uk.util.isNullOrEmpty(self.selectAbleItemList())) {
                             if (nts.uk.util.isNullOrEmpty(self.selectedCodeList())) {
                                 self.selectedCodeList([_.first(self.selectAbleItemList()).code]);
@@ -71,30 +92,41 @@ module nts.uk.at.view.kdl001.a {
                         nts.uk.ui.block.clear();
                         dfd.resolve();
                     })
-                    .fail(function(res) {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
+                    .fail(function (res) {
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function () { nts.uk.ui.block.clear(); });
                     });
                 return dfd.promise();
             }
+
             bindItemList(data) {
-                let self = this;
+                let self = this,
+                    selectAbleItemList: Array<WorkTimeSet> = [];
+
                 self.selectAbleItemList().clear();
                 self.selectAbleItemList.push(new WorkTimeSet());
-                if (!nts.uk.util.isNullOrEmpty(data)) {
-                    self.selectAbleItemList(self.selectAbleItemList().concat(_.map(data, item => { return new WorkTimeSet(item) })));
+
+                if (self.isAllCheckStatus()) {
+                    selectAbleItemList = data.allWorkHours;
+                } else {
+                    selectAbleItemList = (self.selectAbleCodeList().length > 0) ? data.availableWorkingHours : data.workingHoursByWorkplace;
                 }
-                
+
+                if (!nts.uk.util.isNullOrEmpty(data)) {
+                    self.selectAbleItemList(self.selectAbleItemList().concat(_.map(selectAbleItemList, item => { return new WorkTimeSet(item) })));
+                }
+
                 // Set initial work time list.
-                self.initialWorkTimeCodes = _.map(self.selectAbleItemList(), function(item) { return item.code })
+                self.initialWorkTimeCodes = _.map(self.selectAbleItemList(), function (item) { return item.code })
             }
 
+            //Old version
             search() {
                 nts.uk.ui.block.invisible();
                 var self = this;
-                if( nts.uk.util.isNullOrEmpty(self.startTime()) && nts.uk.util.isNullOrEmpty(self.endTime()) ) {
-                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_307' }).then(() => { 
+                if (nts.uk.util.isNullOrEmpty(self.startTime()) && nts.uk.util.isNullOrEmpty(self.endTime())) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_307' }).then(() => {
                         $('#inputStartTime').focus();
-                        nts.uk.ui.block.clear(); 
+                        nts.uk.ui.block.clear();
                     });
                     return;
                 }
@@ -110,7 +142,7 @@ module nts.uk.at.view.kdl001.a {
                     endTime: nts.uk.util.isNullOrEmpty(self.endTime()) ? null : self.endTime()
                 }
                 kdl001.a.service.findByTime(command)
-                    .done(function(data) {
+                    .done(function (data) {
                         data = _.sortBy(data, (item: any) => { return item.code; });
                         self.selectAbleItemList(data);
                         if (!nts.uk.util.isNullOrEmpty(self.selectAbleItemList())) {
@@ -122,8 +154,8 @@ module nts.uk.at.view.kdl001.a {
                         }
                         nts.uk.ui.block.clear();
                     })
-                    .fail(function(res) {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
+                    .fail(function (res) {
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function () { nts.uk.ui.block.clear(); });
                     });
             }
 
@@ -135,14 +167,14 @@ module nts.uk.at.view.kdl001.a {
                 self.endTimeOption(1);
                 self.endTime('');
                 kdl001.a.service.findByCodeList(self.selectAbleCodeList())
-                    .done(function(data) {
+                    .done(function (data) {
                         data = _.sortBy(data, (item: any) => { return item.code; });
                         self.bindItemList(data);
                         if (!nts.uk.util.isNullOrEmpty(self.selectAbleItemList())) {
                             if (nts.uk.util.isNullOrEmpty(self.selectedCodeList())) {
                                 self.selectedCodeList([_.first(self.selectAbleItemList()).code]);
                             }
-                            if(nts.uk.util.isNullOrEmpty(self.selectedCode())){
+                            if (nts.uk.util.isNullOrEmpty(self.selectedCode())) {
                                 self.selectedCode(_.first(self.selectAbleItemList()).code);
                             }
                         } else {
@@ -151,8 +183,8 @@ module nts.uk.at.view.kdl001.a {
                         }
                         nts.uk.ui.block.clear();
                     })
-                    .fail(function(res) {
-                        nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
+                    .fail(function (res) {
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function () { nts.uk.ui.block.clear(); });
                     });
                 $("#inputStartTime").focus();
             }
@@ -163,7 +195,7 @@ module nts.uk.at.view.kdl001.a {
                 if (!self.multiSelectMode)
                     self.selectedCodeList(nts.uk.util.isNullOrUndefined(self.selectedCode()) ? [] : [self.selectedCode()]);
                 if (self.selectedCodeList().length == 0) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_29" }).then(function() { nts.uk.ui.block.clear(); });
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_29" }).then(function () { nts.uk.ui.block.clear(); });
                 } else {
                     nts.uk.ui.windows.setShared('kml001selectedCodeList', self.selectedCodeList());
                     nts.uk.ui.windows.setShared('kml001selectedTimes', self.getSelectedTimeItems(self.selectedCodeList()));
@@ -187,13 +219,46 @@ module nts.uk.at.view.kdl001.a {
 
             searchByCodeName() {
                 let self = this;
-                if( nts.uk.util.isNullOrEmpty(self.searchCode()) ) {
-                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_2073' }).then(() => { 
+                if (nts.uk.util.isNullOrEmpty(self.searchCode())) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_2073' }).then(() => {
                         $('#A2_6').focus();
-                        nts.uk.ui.block.clear(); 
+                        nts.uk.ui.block.clear();
                     });
                     return;
                 }
+                
+                let afterFilterSelectAbleItemList: Array<WorkTimeSet> = [];
+                afterFilterSelectAbleItemList = _.filter(self.selectAbleItemList(), item => { 
+                    return item.code.indexOf(self.searchCode()) > -1 || item.name.indexOf(self.searchCode() > -1);
+                });
+
+                self.selectAbleItemList.removeAll();
+                self.selectAbleItemList(afterFilterSelectAbleItemList);
+            }
+
+            searchByTime() {
+                
+                var self = this;
+                if (nts.uk.util.isNullOrEmpty(self.startTime()) && nts.uk.util.isNullOrEmpty(self.endTime())) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_307' }).then(() => {
+                        //$('#inputStartTime').focus();
+                        nts.uk.ui.block.clear();
+                    });
+
+                    return;
+                }
+
+                if ($('#inputEndTime').ntsError('hasError') || $('#inputStartTime').ntsError('hasError')) {
+                    return;
+                }
+
+                let afterFilterSelectAbleItemList: Array<WorkTimeSet> = [];
+                afterFilterSelectAbleItemList = _.filter(self.selectAbleItemList(), item => { 
+                    return item.firstStartTime >= self.startTime() && item.firstEndTime  <= self.endTime();
+                });
+
+                self.selectAbleItemList.removeAll();
+                self.selectAbleItemList(afterFilterSelectAbleItemList);
             }
         }
         export class TimeItem {
@@ -217,7 +282,6 @@ module nts.uk.at.view.kdl001.a {
                 this.start = startTime;
                 this.end = endTime;
             }
-
         }
 
         export class WorkTimeSet {
@@ -243,9 +307,7 @@ module nts.uk.at.view.kdl001.a {
                     this.firstEndTime = data.firstEndTime;
                     this.secondStartTime = data.secondStartTime;
                     this.secondEndTime = data.secondEndTime;
-
                 }
-
             }
 
         }
@@ -257,9 +319,6 @@ module nts.uk.at.view.kdl001.a {
             //workTime2: string;
             workAtr: string;
             remark: string;
-
-
-
         }
     }
 }
