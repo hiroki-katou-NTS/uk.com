@@ -25,6 +25,8 @@ export class CmmS45ShrComponentsApp0Component extends Vue {
 
     public reasons: Array<Reason> = [];
 
+    public isEmptyBreakTime: boolean = false;
+
     public workHours1: WorkHours = {
         start: '',
         end: ''
@@ -144,14 +146,14 @@ export class CmmS45ShrComponentsApp0Component extends Vue {
         let value1 = _.get(self.dataOutput, 'displayInfoOverTime.infoNoBaseDate.overTimeReflect.overtimeWorkAppReflect.reflectBeforeBreak');
         let value2 = _.get(self.dataOutput, 'displayInfoOverTime.infoNoBaseDate.overTimeReflect.overtimeWorkAppReflect.reflectBreakOuting');
 
-        return (value1 == NotUseAtr.USE || value2 == NotUseAtr.USE); 
+        return ((!self.c15 && value1 == NotUseAtr.USE) || (self.c15 && value2 == NotUseAtr.USE)); 
     }
     // c3 ＝ ○ AND「残業申請の表示情報．申請表示情報．申請表示情報(基準日関係なし)．複数回勤務の管理」＝true"
     public get c3_2() {
         const self = this;
         let c3_2 = _.get(self.dataOutput, 'displayInfoOverTime.appDispInfoStartup.appDispInfoNoDateOutput.managementMultipleWorkCycles');
 
-        return self.c3 || c3_2;
+        return self.c3 && c3_2;
     }
     // 「残業申請の表示情報．基準日に関する情報．残業申請で利用する残業枠．残業枠一覧」 <> empty
     public get c4() {
@@ -196,6 +198,12 @@ export class CmmS45ShrComponentsApp0Component extends Vue {
         let c14_2 = c14_1 ? findResult.divergenceReasonInputed : false;
         
         return c14_1 && c14_2;
+    }
+
+    public get c15 () {
+        const self = this;
+
+        return _.get(self.dataOutput, 'displayInfoOverTime.appDispInfoStartup.appDetailScreenInfo.application.prePostAtr') == 1;
     }
     public get c12() {
         const self = this;
@@ -776,6 +784,7 @@ export class CmmS45ShrComponentsApp0Component extends Vue {
     public bindBreakTime() {
         const self = this;
         let breakTime = [] as Array<BreakTime>;
+        let countBreakTime = 0;
         _.range(1, 10)
         .forEach((index: number) => {
             let result = _.findLast(_.get(self.dataOutput, 'appOverTime.breakTimeOp'), (i: TimeZoneWithWorkNo) => i.workNo == index) as any;
@@ -786,8 +795,12 @@ export class CmmS45ShrComponentsApp0Component extends Vue {
                 item.title = self.$i18n('KAFS05_69', String(item.frameNo));
                 item.valueHours = {start: self.$dt.timedr(findResult.startTime || 0), end: self.$dt.timedr(findResult.endTime || 0)};
                 breakTime.push(item);
+                countBreakTime++;
             }
         });
+        if (countBreakTime === 0) {
+            self.isEmptyBreakTime = true;
+        }
         self.breakTimes = breakTime;
 
     }
@@ -820,10 +833,10 @@ export class CmmS45ShrComponentsApp0Component extends Vue {
     }
     public createWorkHours(start: number, end: number) {
         const self = this;
-        if (_.isNil(start) || _.isNil(end)) {
+        if (!_.isNumber(start) || !_.isNumber(end)) {
 
             return {
-                start: '',
+                start: self.$i18n('KAFS05_54'),
                 end: ''
             } as WorkHours;
         }

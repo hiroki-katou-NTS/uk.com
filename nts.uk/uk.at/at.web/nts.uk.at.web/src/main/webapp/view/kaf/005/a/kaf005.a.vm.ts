@@ -662,7 +662,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			}
 
 			// validate chung KAF000
-			vm.$validate('#kaf000-a-component4 .nts-input', 
+			vm.$validate(
+			'#kaf000-a-component4 .nts-input',
+			'#kaf000-a-component5 .nts-input', 
 			'#kaf000-a-component3-prePost', 
 			'#kaf000-a-component5-comboReason',
 			'#inpStartTime1',

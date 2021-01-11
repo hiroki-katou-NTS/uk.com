@@ -15,11 +15,11 @@ public class Days {
 	//Previous / previous classification
 	/**前・先区分*/
 	private PreviousClassification dayPrevious;
-		
+
 	/** Day*/
 	// 日
 	private Day day;
-	
+
 	/** Make it the day*/
 	// 当日とする
 	private boolean makeToDay;

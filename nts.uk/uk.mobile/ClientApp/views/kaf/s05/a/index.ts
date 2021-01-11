@@ -71,9 +71,13 @@ export class KafS05Component extends KafS00ShrComponent {
 
         return value == NotUseAtr.USE;
     }
+    //「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．残業申請．実績の勤務情報へ反映する」＝する
     public get c2() {
-
-        return true;
+        const self = this;
+        let model = self.model as Model;
+        let c2 = _.get(model, 'displayInfoOverTime.infoNoBaseDate.overTimeReflect.overtimeWorkAppReflect.reflectActualWorkAtr') == NotUseAtr.USE;
+        
+        return c2;
     }
 
     // 「残業申請の表示情報．基準日に関係しない情報．残業申請設定．申請詳細設定．時刻計算利用区分」＝する
@@ -81,6 +85,14 @@ export class KafS05Component extends KafS00ShrComponent {
         const self = this;
         let model = self.model as Model;
         let value = _.get(model, 'displayInfoOverTime.infoNoBaseDate.overTimeAppSet.applicationDetailSetting.timeCalUse');
+        
+        return value == NotUseAtr.USE;
+    }
+    // 「残業申請の表示情報．基準日に関係しない情報．残業申請設定．申請詳細設定．時間入力利用区分」= する
+    public get c3_disable() {
+        const self = this;
+        let model = self.model as Model;
+        let value = _.get(model, 'displayInfoOverTime.infoNoBaseDate.overTimeAppSet.applicationDetailSetting.timeInputUse');
         
         return value == NotUseAtr.USE;
     }
@@ -92,7 +104,7 @@ export class KafS05Component extends KafS00ShrComponent {
         let value1 = _.get(model, 'displayInfoOverTime.infoNoBaseDate.overTimeReflect.overtimeWorkAppReflect.reflectBeforeBreak');
         let value2 = _.get(model, 'displayInfoOverTime.infoNoBaseDate.overTimeReflect.overtimeWorkAppReflect.reflectBreakOuting');
 
-        return (value1 == NotUseAtr.USE || value2 == NotUseAtr.USE);
+        return ((!self.c15 && value1 == NotUseAtr.USE) || (self.c15 && value2 == NotUseAtr.USE));
     }
     // ※表3 = ○　OR　※表3-1-1 = ○
     public get c3_1() {
@@ -180,10 +192,10 @@ export class KafS05Component extends KafS00ShrComponent {
         let c15 = false;
         if (!self.modeNew) {
 
-            return self.model.displayInfoOverTime.appDispInfoStartup.appDetailScreenInfo.application.prePostAtr == 1;
+            return _.get(self.model, 'displayInfoOverTime.appDispInfoStartup.appDetailScreenInfo.application.prePostAtr') == 1;
         }
-        if (model.displayInfoOverTime.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr == 0) {				
-            let prePost = model.displayInfoOverTime.appDispInfoStartup.appDispInfoWithDateOutput.prePostAtr;
+        if (_.get(model, 'displayInfoOverTime.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr') == 0) {				
+            let prePost = _.get(model, 'displayInfoOverTime.appDispInfoStartup.appDispInfoWithDateOutput.prePostAtr');
             if (prePost == 1) {
                 c15 = true;					
             } else {
@@ -192,7 +204,7 @@ export class KafS05Component extends KafS00ShrComponent {
             
             return c15;
         } else {
-            let prePost = self.application.prePostAtr;
+            let prePost = _.get(self.application, 'prePostAtr');
             if (prePost == 1) {
                 c15 = true;					
             } else {
@@ -376,6 +388,7 @@ export class KafS05Component extends KafS00ShrComponent {
         }).then((loadData: any) => {
             if (loadData) {
                 vm.updateKaf000_A_Params(vm.user);
+                vm.kaf000_A_Params.opOvertimeAppAtr = vm.overTimeClf;
                 vm.updateKaf000_B_Params(vm.modeNew);
                 vm.updateKaf000_C_Params(vm.modeNew);
                 if (vm.modeNew) {
@@ -615,8 +628,8 @@ export class KafS05Component extends KafS00ShrComponent {
         });
         appOverTime.applicationTime.reasonDissociation = step2.getReasonDivergence();
         if (!self.modeNew) {
-            appOverTime.application.opAppReason = self.application.opAppReason as any;
-            appOverTime.application.opAppStandardReasonCD = self.application.opAppStandardReasonCD as any;
+            appOverTime.application.opAppReason = self.application.opAppReason || self.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason as any;
+            appOverTime.application.opAppStandardReasonCD = self.application.opAppStandardReasonCD || self.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD as any;
         }
 
         // assign value to overtime and holidaytime
@@ -869,6 +882,10 @@ export class KafS05Component extends KafS00ShrComponent {
                 .then((f: any) => {
                     let workTypeCode;
                     let workTimeCode;
+                    if (!f) {
+
+                        return;
+                    }
                     workTypeCode = f.selectedWorkType.workTypeCode;
                     workTimeCode = f.selectedWorkTime.code;
                     step1.setWorkCode(
@@ -899,25 +916,27 @@ export class KafS05Component extends KafS00ShrComponent {
 
                 })
                 .then((res: any) => {
-                    let step1 = self.$refs.step1 as KafS05Step1Component;
-                    // call API select work info
-                    let infoWithDateApplicationOp = _.get(self.model.displayInfoOverTime, 'infoWithDateApplicationOp') as InfoWithDateApplication;
-                    if (!_.isNil(infoWithDateApplicationOp)) {
-                        infoWithDateApplicationOp.breakTime = res.data.breakTimeZoneSetting;
-                        infoWithDateApplicationOp.applicationTime = res.data.applicationTime;
-                        infoWithDateApplicationOp.workHours = res.data.workHours;
-                        infoWithDateApplicationOp.workTypeCD = step1.workInfo.workType.code;
-                        infoWithDateApplicationOp.workTimeCD = step1.workInfo.workTime.code;
-                    } else {
-                        infoWithDateApplicationOp = {} as InfoWithDateApplication;
-                        infoWithDateApplicationOp.applicationTime = res.data.applicationTime;
-                        infoWithDateApplicationOp.workHours = res.data.workHours;
-                        infoWithDateApplicationOp.breakTime = res.data.breakTimeZoneSetting;
-                        infoWithDateApplicationOp.workTypeCD = step1.workInfo.workType.code;
-                        infoWithDateApplicationOp.workTimeCD = step1.workInfo.workTime.code;
+                    if (res) {
+                        let step1 = self.$refs.step1 as KafS05Step1Component;
+                        // call API select work info
+                        let infoWithDateApplicationOp = _.get(self.model.displayInfoOverTime, 'infoWithDateApplicationOp') as InfoWithDateApplication;
+                        if (!_.isNil(infoWithDateApplicationOp)) {
+                            infoWithDateApplicationOp.breakTime = res.data.breakTimeZoneSetting;
+                            infoWithDateApplicationOp.applicationTime = res.data.applicationTime;
+                            infoWithDateApplicationOp.workHours = res.data.workHours;
+                            infoWithDateApplicationOp.workTypeCD = step1.workInfo.workType.code;
+                            infoWithDateApplicationOp.workTimeCD = step1.workInfo.workTime.code;
+                        } else {
+                            infoWithDateApplicationOp = {} as InfoWithDateApplication;
+                            infoWithDateApplicationOp.applicationTime = res.data.applicationTime;
+                            infoWithDateApplicationOp.workHours = res.data.workHours;
+                            infoWithDateApplicationOp.breakTime = res.data.breakTimeZoneSetting;
+                            infoWithDateApplicationOp.workTypeCD = step1.workInfo.workType.code;
+                            infoWithDateApplicationOp.workTimeCD = step1.workInfo.workTime.code;
+                        }
+                        step1.loadData(self.model.displayInfoOverTime, true, true);
+                        step1.createHoursWorkTime();
                     }
-                    step1.loadData(self.model.displayInfoOverTime, true);
-                    step1.createHoursWorkTime();
                 
 
                 })
@@ -945,6 +964,10 @@ export class KafS05Component extends KafS00ShrComponent {
                 }
             ).then((f: any) => {
                 if (f) {
+                    if (!f) {
+
+                        return;
+                    }
                     step1.setWorkTime(
                         f.selectedWorkTime.code,
                         f.selectedWorkTime.name,
@@ -972,25 +995,27 @@ export class KafS05Component extends KafS00ShrComponent {
                 }
             })
                 .then((res: any) => {
-                    // call API select work info
-                    let step1 = self.$refs.step1 as KafS05Step1Component;
-                    let infoWithDateApplicationOp = _.get(self.model.displayInfoOverTime, 'infoWithDateApplicationOp') as InfoWithDateApplication;
-                    if (!_.isNil(infoWithDateApplicationOp)) {
-                        infoWithDateApplicationOp.breakTime = res.data.breakTimeZoneSetting;
-                        infoWithDateApplicationOp.applicationTime = res.data.applicationTime;
-                        infoWithDateApplicationOp.workHours = res.data.workHours;
-                        infoWithDateApplicationOp.workTypeCD = step1.workInfo.workType.code;
-                        infoWithDateApplicationOp.workTimeCD = step1.workInfo.workTime.code;
-                    } else {
-                        infoWithDateApplicationOp = {} as InfoWithDateApplication;
-                        infoWithDateApplicationOp.applicationTime = res.data.applicationTime;
-                        infoWithDateApplicationOp.workHours = res.data.workHours;
-                        infoWithDateApplicationOp.breakTime = res.data.breakTimeZoneSetting;
-                        infoWithDateApplicationOp.workTypeCD = step1.workInfo.workType.code;
-                        infoWithDateApplicationOp.workTimeCD = step1.workInfo.workTime.code;
+                    if (res) {
+                        // call API select work info
+                        let step1 = self.$refs.step1 as KafS05Step1Component;
+                        let infoWithDateApplicationOp = _.get(self.model.displayInfoOverTime, 'infoWithDateApplicationOp') as InfoWithDateApplication;
+                        if (!_.isNil(infoWithDateApplicationOp)) {
+                            infoWithDateApplicationOp.breakTime = res.data.breakTimeZoneSetting;
+                            infoWithDateApplicationOp.applicationTime = res.data.applicationTime;
+                            infoWithDateApplicationOp.workHours = res.data.workHours;
+                            infoWithDateApplicationOp.workTypeCD = step1.workInfo.workType.code;
+                            infoWithDateApplicationOp.workTimeCD = step1.workInfo.workTime.code;
+                        } else {
+                            infoWithDateApplicationOp = {} as InfoWithDateApplication;
+                            infoWithDateApplicationOp.applicationTime = res.data.applicationTime;
+                            infoWithDateApplicationOp.workHours = res.data.workHours;
+                            infoWithDateApplicationOp.breakTime = res.data.breakTimeZoneSetting;
+                            infoWithDateApplicationOp.workTypeCD = step1.workInfo.workType.code;
+                            infoWithDateApplicationOp.workTimeCD = step1.workInfo.workTime.code;
+                        }
+                        step1.loadData(self.model.displayInfoOverTime, true, true);
+                        step1.createHoursWorkTime();
                     }
-                    step1.loadData(self.model.displayInfoOverTime, true);
-                    step1.createHoursWorkTime();
 
                 })
                 .catch((res: any) => {

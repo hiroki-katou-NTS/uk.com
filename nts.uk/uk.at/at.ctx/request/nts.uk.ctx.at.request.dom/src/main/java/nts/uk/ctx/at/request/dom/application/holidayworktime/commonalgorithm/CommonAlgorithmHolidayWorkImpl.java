@@ -397,7 +397,7 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 
 			//	事前申請・実績超過チェック
 			List<ConfirmMsgOutput> confirmMsgOutputs = this.checkExcess(empAppHdWorkDispInfoOutput, empAppHolidayWork);
-			if(employeeInfo.isPresent()) {
+			if(employeeInfo.isPresent() && confirmMsgOutputs.size() > 0) {
 				confirmMsgOutputMap.put(employeeInfo.get().getBussinessName(), this.toMultiMessage(confirmMsgOutputs));
 			}
 			
@@ -774,10 +774,10 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 					hdWorkDispInfoWithDateOutput.getWorkHours().getEndTimeOp2().orElse(null));
 		}
 		List<TimeZone> timeZones = new ArrayList<TimeZone>();
-		if(timeZoneNo1.getStart() != null && timeZoneNo1.getEnd() != null) {
+		if(timeZoneNo1.getStart() != null && timeZoneNo1.getStart().v() > 0 && timeZoneNo1.getEnd() != null && timeZoneNo1.getEnd().v() > 0) {
 			timeZones.add(timeZoneNo1);
 		}
-		if(timeZoneNo2.getStart() != null && timeZoneNo2.getEnd() != null) {
+		if(timeZoneNo2.getStart() != null && timeZoneNo2.getStart().v() > 0 && timeZoneNo2.getEnd() != null && timeZoneNo2.getEnd().v() > 0) {
 			timeZones.add(timeZoneNo2);
 		}
 		workContent.setTimeZones(timeZones);

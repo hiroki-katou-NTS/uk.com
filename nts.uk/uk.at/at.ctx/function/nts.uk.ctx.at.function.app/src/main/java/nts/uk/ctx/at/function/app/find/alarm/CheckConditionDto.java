@@ -13,7 +13,7 @@ import nts.uk.ctx.at.function.app.find.alarm.extractionrange.ExtractionRangeYear
 @AllArgsConstructor
 public class CheckConditionDto {
 	private int alarmCategory;
-	private List<String> checkConditionCodes;	
+	private List<String> checkConditionCodes;
 	private ExtractionPeriodDailyDto extractionDaily;
 	private ExtractionPeriodUnitDto extractionUnit;
 	private List<ExtractionPeriodMonthlyDto> listExtractionMonthly;
