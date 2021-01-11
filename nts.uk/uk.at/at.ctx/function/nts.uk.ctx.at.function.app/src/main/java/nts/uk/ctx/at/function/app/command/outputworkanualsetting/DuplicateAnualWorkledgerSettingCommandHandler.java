@@ -65,10 +65,10 @@ public class DuplicateAnualWorkledgerSettingCommandHandler extends CommandHandle
         }
 
         @Override
-        public void duplicate(String emId, String replicationSourceSettingId,
+        public void duplicate(String replicationSourceSettingId,
                                                   String replicationDestinationSettingId,
                                                   OutputItemSettingCode duplicateCode, OutputItemSettingName copyDestinationName) {
-            this.repository.duplicateConfigurationDetail(AppContexts.user().companyId(), emId, replicationSourceSettingId,
+            this.repository.duplicateConfigurationDetail(AppContexts.user().companyId(), replicationSourceSettingId,
                 replicationDestinationSettingId, duplicateCode, copyDestinationName);
         }
     }

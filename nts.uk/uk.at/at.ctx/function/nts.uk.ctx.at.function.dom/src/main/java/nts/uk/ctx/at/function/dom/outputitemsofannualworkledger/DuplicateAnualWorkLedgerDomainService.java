@@ -49,7 +49,7 @@ public class DuplicateAnualWorkLedgerDomainService {
         // 6.勤務状況設定の複製
         return AtomTask.of(() ->
             // 7.設定を複製する(会社ID, GUID, GUID, 勤務状況の設定表示コード, 勤務状況の設定名称)
-            require.duplicate(empId,settingId, id, settingCode, settingName)
+            require.duplicate(settingId, id, settingCode, settingName)
         );
     }
 
@@ -64,7 +64,7 @@ public class DuplicateAnualWorkLedgerDomainService {
         boolean exist(OutputItemSettingCode code, String employeeId);
 
         //  [4] 設定の詳細を複製する
-        void duplicate(String emId, String replicationSourceSettingId,
+        void duplicate( String replicationSourceSettingId,
                        String replicationDestinationSettingId,
                        OutputItemSettingCode duplicateCode, OutputItemSettingName copyDestinationName);
     }

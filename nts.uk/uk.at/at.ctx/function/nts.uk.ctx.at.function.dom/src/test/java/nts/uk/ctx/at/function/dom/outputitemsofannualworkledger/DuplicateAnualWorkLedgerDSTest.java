@@ -123,7 +123,7 @@ public class DuplicateAnualWorkLedgerDSTest {
         };
         NtsAssert.atomTask(() ->
                 DuplicateAnualWorkLedgerDomainService.duplicate(require, SettingClassificationCommon.FREE_SETTING, settingId, code,name),
-            any -> require.duplicate(any.get(), any.get(),any.get(), any.get(),any.get())
+            any -> require.duplicate(any.get(),any.get(), any.get(),any.get())
         );
 
     }
