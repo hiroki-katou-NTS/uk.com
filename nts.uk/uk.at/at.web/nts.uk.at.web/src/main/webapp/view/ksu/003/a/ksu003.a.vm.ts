@@ -7,8 +7,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 	import bundledErrors = nts.uk.ui.dialog.bundledErrors;
 	import block = nts.uk.ui.block;
 	import exTable = nts.uk.ui.exTable;
-	import caution = nts.uk.ui.dialog.caution;
+	import chart = nts.uk.ui.chart;
+	import storage = uk.localStorage;
 	import formatById = nts.uk.time.format.byId;
+	import parseTime = nts.uk.time.parseTime;
 	import model = nts.uk.at.view.ksu003.a.model;
 	import duration = nts.uk.time.minutesBased.duration; // convert time 
 	import characteristics = nts.uk.characteristics;
@@ -98,11 +100,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		holidayShort: any = [];
 		checkMes: number = 0;
 		defautData: any = [];
-		
-		enableSave : KnockoutObservable<boolean> = ko.observable(false); // ver 2
-		/*checkEnableSave : boolean = true;
-		checkEnableWork : boolean = true;
-		checkEnableTime : boolean = true;*/
 		constructor(data: any) {
 			let self = this;
 			// get data from sc A
@@ -233,13 +230,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					if (format.test(dataCell.detail.value) == true)*/
 						return;
 				}
-				
-				// check an hien save button // ver 2
-				/*let checkSort = $("#extable-ksu003").exTable('updatedCells');
-				if(checkSort.length > 0 && (_.isNil($("#extable-ksu003").data("errors")) || (!_.isNil($("#extable-ksu003").data("errors")) && $("#extable-ksu003").data("errors").length == 0)) 
-				&& self.checkEnableSave == true && self.checkEnableWork == true && self.checkEnableTime == true){
-					self.enableSave(true);
-				}*/
 
 				if (empId === self.employeeIdLogin) {
 					color = "#94b7fe";
@@ -476,12 +466,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				dfd.resolve();
 			});
 			return dfd.promise();
-		}
-		
-		public saveData(){
-			let self = this;
-			
-			return;
 		}
 
 		public inputWorkInfo(dataMid: any, index: number, dataCell: any, dataFixed: any, empId: string, columnKey: string) {
@@ -872,7 +856,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			}
 			if(columnKey == "worktypeCode"){
 			service.changeWorkType(targetOrgDto).done((data: any) => {
-						if(!_.isNil(data) && data.holiday == true){
+						if(data.holiday == true){
 						$("#extable-ksu003").exTable("cellValue", "middle", empId, "totalTime", "");
 						$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime1", "");
 						$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime2", "");
@@ -923,24 +907,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					self.dataScreen003A().employeeInfo[indexEmp].fixedWorkInforDto = data.fixedWorkInforDto;
 					self.dataScreen003A().employeeInfo[indexEmp].workScheduleDto = data.workScheduleDto;
 					self.fixedWorkInformationDto[indexEmp].fixedWorkInforDto = data.fixedWorkInforDto;
-					
-					// ver 2
-					/*self.checkEnableSave = true;
-					self.checkEnableWork = true;*/
-					
-					// ver 2
-					/*let checkSort = $("#extable-ksu003").exTable('updatedCells');
-					if(checkSort.length > 0 && (_.isNil($("#extable-ksu003").data("errors")) || (!_.isNil($("#extable-ksu003").data("errors")) && $("#extable-ksu003").data("errors").length == 0)) 
-					&& self.checkEnableSave == true){
-						self.enableSave(true);
-					}*/
 
 					dfd.resolve();
 				}).fail(function(error) {
-					// ver 2
-					/*self.enableSave(false);
-					self.checkEnableWork = false;*/
-					
 					ruler.replaceAt(index, [{ // xóa chart khi là ngày nghỉ
 						type: "Flex",
 						options: {
@@ -953,21 +922,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 					if ((columnKey == "worktimeCode" || (error.messageId != "Msg_434" && columnKey == "worktypeCode")) && self.checkMes != 101) {
 						self.checkMes = 0;
-						caution({ messageId: error.messageId }).then(() => {
-						    let cssWorkType: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(1)",
-							cssWorkTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(3)";
-							
-							if(columnKey == "worktypeCode"){
-								$(cssWorkType).click();
-								$(cssWorkType).click();
-							}
-							
-							if(columnKey == "worktimeCode"){
-								$(cssWorkTime).click();
-								$(cssWorkTime).click();
-							}
-							
-						});
+						errorDialog({ messageId: error.messageId });
 					}
 					
 					if (error.messageId == "Msg_29" && columnKey == "worktypeCode"){
@@ -1014,7 +969,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				}).always(function() {
 					block.clear();
 				});
-			
 			return dfd.promise();
 		}
 
@@ -3891,20 +3845,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					if (errors.length > 0) {
 						let errorsInfo = _.uniqBy(errors, x => { return x.message });
 						bundledErrors({ errors: errorsInfo });
-						// ver 2
-						//self.checkEnableSave = false;
-						//self.checkEnableTime = false;
-						//self.enableSave(false);
-					} //else {
-						// ver 2
-						/*self.checkEnableSave = true;
-						self.checkEnableTime = true;
-						let checkSort = $("#extable-ksu003").exTable('updatedCells');
-						if(checkSort.length > 0 && (_.isNil($("#extable-ksu003").data("errors")) || (!_.isNil($("#extable-ksu003").data("errors")) && $("#extable-ksu003").data("errors").length == 0)) 
-						&& self.checkEnableSave == true && self.checkEnableWork == true){
-							self.enableSave(true);
-						}*/
-					//}
+					}
 
 					dfd.resolve();
 				}).fail(function(res: any) {
