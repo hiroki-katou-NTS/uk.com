@@ -1,4 +1,4 @@
-package uk.cnv.client.dom.fileimport;
+package uk.cnv.client.dom;
 
 import java.util.List;
 

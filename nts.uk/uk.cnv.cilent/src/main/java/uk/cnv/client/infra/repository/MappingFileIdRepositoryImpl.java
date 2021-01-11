@@ -2,18 +2,18 @@ package uk.cnv.client.infra.repository;
 
 import lombok.val;
 import nts.arc.layer.app.file.storage.StoredFileInfo;
-import uk.cnv.client.dom.fileimport.MapptingFileIdRepository;
+import uk.cnv.client.dom.fileimport.MappingFileIdRepository;
 import uk.cnv.client.infra.entity.JmKihon;
 import uk.cnv.client.infra.entity.ScvmtMappingFileId;
 import uk.cnv.client.infra.repository.base.UkCnvRepositoryBase;
 
-public class JpaMappingFileIdRepository extends UkCnvRepositoryBase implements MapptingFileIdRepository {
+public class MappingFileIdRepositoryImpl extends UkCnvRepositoryBase implements MappingFileIdRepository {
 
 	@Override
-	public void insert(StoredFileInfo mapptingFile, JmKihon employee) {
+	public void insert(StoredFileInfo mapptingFile, JmKihon employee, String FileType) {
 		val entity = new ScvmtMappingFileId(
 					mapptingFile.getId(),
-					"PROFILE_PHOTO",
+					FileType,
 					employee.getPid(),
 					employee.getCompanyCode(),
 					employee.getEmployeeCode()

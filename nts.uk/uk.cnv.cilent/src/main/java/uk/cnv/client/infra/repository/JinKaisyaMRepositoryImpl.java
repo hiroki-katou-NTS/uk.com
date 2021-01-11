@@ -4,11 +4,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import uk.cnv.client.dom.fileimport.JinKaisyaMRepository;
+import uk.cnv.client.dom.JinKaisyaMRepository;
 import uk.cnv.client.infra.entity.JinKaisyaM;
 import uk.cnv.client.infra.repository.base.ErpRepositoryBase;
 
-public class JpaJinKaisyaMRepository extends ErpRepositoryBase implements JinKaisyaMRepository {
+public class JinKaisyaMRepositoryImpl extends ErpRepositoryBase implements JinKaisyaMRepository {
 
 	@Override
 	public List<JinKaisyaM> getAll() {
@@ -17,7 +17,7 @@ public class JpaJinKaisyaMRepository extends ErpRepositoryBase implements JinKai
 		List<JinKaisyaM> result;
 		result = this.getList(sql, new SelectRequire<JinKaisyaM>() {
 			@Override
-			public JinKaisyaM toDomain(ResultSet rs) throws SQLException{
+			public JinKaisyaM toEntity(ResultSet rs) throws SQLException{
 				return JinKaisyaM.fromRS(rs);
 			}
 		});

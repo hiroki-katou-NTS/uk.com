@@ -68,6 +68,10 @@ allprojects {
 		// JMockit
 		testCompile group: 'org.jmockit', name: 'jmockit', version: '1.28'
 
+		// Jackson
+		compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.3'
+		compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.3'
+
 		// Mime Detection Utility
 		compile group: 'eu.medsea.mimeutil', name: 'mime-util', version: '2.1.3'
 

@@ -1,7 +1,7 @@
 package uk.cnv.client.infra.impls;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -11,107 +11,72 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 //import java.io.FileNotFoundException;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import nts.arc.layer.app.file.storage.StoredFileInfo;
 import uk.cnv.client.UkConvertProperty;
+import uk.cnv.client.dom.fileimport.MappingFileIdRepository;
+import uk.cnv.client.infra.repository.MappingFileIdRepositoryImpl;
 
 
-public class FileStorageImpl{
+public class FileUploader{
 
     private static final String EOL = "\r\n";
+    private static final String FILEID_JSON_NAME = "id";
 
-	public void store(Path pathToSource, String originalFileName, String fileType) {
-		callUploadApi(pathToSource, originalFileName, fileType);
+    private MappingFileIdRepository repo;
 
-		//TODO: FileIdMappingへの書き込み
+    public FileUploader() {
+    	repo = new MappingFileIdRepositoryImpl();
+    }
 
-		return;
+	public StoredFileInfo store(Path pathToSource, String stereotype, String fileType) {
+		StoredFileInfo retult;
+		try {
+			retult = callUploadApi(pathToSource, stereotype, fileType);
+		} catch (IOException e) {
+			System.err.println("ファイルアップロードに失敗しました。" + pathToSource.toFile().getPath());
+			e.printStackTrace();
+			return null;
+		}
+
+		return retult;
 	}
 
-	private void callUploadApi(Path pathToSource, String originalFileName, String fileType) {
-		try {
-			loginUk();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-			return;
-		}
+	private StoredFileInfo callUploadApi(Path pathToSource, String stereotype, String fileType) throws JsonParseException, JsonMappingException, IOException {
+
+		loginUk();
 
 		String serverUrl = UkConvertProperty.getProperty("UkApServerUrl");
-		URL url = null;
-		try {
-			url = new URL(serverUrl + "nts.uk.com.web/webapi/ntscommons/arc/filegate/upload");
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-			return;
-		}
-//
-//		HttpRequest.BodyPublisher dataProcessor1 = HttpRequest.BodyPublishers.ofString("{\"stereotype\":\"" + fileType +  "\"}");
-//		HttpRequest.BodyPublisher dataProcessor2 = HttpRequest.BodyPublishers.ofString("{\"filename\":\"" + originalFileName +  "\"}");
-//		HttpRequest.BodyPublisher fileProcessor;
-//		try {
-//			fileProcessor = HttpRequest.BodyPublishers.ofFile(pathToSource);
-//		} catch (FileNotFoundException e) {
-//			e.printStackTrace();
-//			return null;
-//		}
-//		HttpRequest request = HttpRequest.newBuilder()
-//				.uri(uri)
-//				.headers("Content-Type","multipart/form-data","boundary","boundaryValue") // appropriate boundary values
-//				.POST(dataProcessor1)
-//				.POST(dataProcessor2)
-//				.POST(fileProcessor)
-//				.build();
-//
-//		HttpClient client = HttpClient.newBuilder().build();
-//		HttpResponse.BodyHandler<String> bodyHandler = HttpResponse.BodyHandlers.ofString();
-//
-//		HttpResponse<String> response;
-//		try {
-//			response = client.send(request, bodyHandler);
-//		} catch (IOException | InterruptedException e) {
-//			e.printStackTrace();
-//			return null;
-//		}
-//		return response;
+		URL url = new URL(serverUrl + "nts.uk.com.web/webapi/ntscommons/arc/filegate/upload");
 
-    	HttpURLConnection httpConn = null;
+		ObjectMapper mapper = new ObjectMapper();
+		Map<String, Object> map = new HashMap<String, Object>();
+		String jsonStr = null;
 
-    	try (FileInputStream file = new FileInputStream(pathToSource.toFile())) {
-    		httpConn = (HttpURLConnection) url.openConnection();
+		jsonStr = upload(pathToSource.toFile().getPath(), url, stereotype);
+		jsonStr = jsonStr.replace("[", "").replace("]", "");
+		map = mapper.readValue(jsonStr, new TypeReference<Map<String, String>>(){});
+		//StoredFileInfo fileInfo = mapper.readValue(jsonStr, StoredFileInfo.class);
 
-    		final String boundary = UUID.randomUUID().toString();
-
-            httpConn.setDoOutput(true);
-    		httpConn.setRequestMethod("POST");// HTTPメソッド
-    		httpConn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
-
-    		try (OutputStream out = httpConn.getOutputStream()) {
-    			out.write(("--" + boundary + EOL +
-    					"Content-Disposition: form-data; name=\"file\"; " +
-    					"filename=\"" + originalFileName + "\"" + EOL +
-    					"Content-Type: application/octet-stream" + EOL + EOL)
-    					.getBytes(StandardCharsets.UTF_8)
-    					);
-    			byte[] buffer = new byte[128];
-    			int size = -1;
-    			while (-1 != (size = file.read(buffer))) {
-    				out.write(buffer, 0, size);
-    			}
-    			out.write((EOL + "--" + boundary + "--" + EOL).getBytes(StandardCharsets.UTF_8));
-    			out.flush();
-    			System.err.println(httpConn.getResponseMessage());
-    			return;
-
-    		} finally {
-    			httpConn.disconnect();
-    		}
-    	} catch (IOException e) {
-			e.printStackTrace();
-		}
+		return StoredFileInfo.createNewWithId(
+				(String) map.get(FILEID_JSON_NAME),
+				(String) map.get("originalName"),
+				(String) map.get("fileType"),
+				(String) map.get("mimeType"),
+				Long.parseLong((String) map.get("originalSize"))
+			);
 	}
 
 	private void loginUk() throws IOException {
@@ -227,39 +192,91 @@ public class FileStorageImpl{
         return sb.toString();
     }
 
-    private void upload(String filename, URL url) throws IOException {
+    private String upload(String filepath, URL url, String stereotype) throws IOException {
 
     	HttpURLConnection httpConn = null;
 
-    	try (FileInputStream file = new FileInputStream(filename)) {
+    	try (FileInputStream fileStream = new FileInputStream(filepath)) {
     		httpConn = (HttpURLConnection) url.openConnection();
 
     		final String boundary = UUID.randomUUID().toString();
 
+    		httpConn.setDoInput(true);
             httpConn.setDoOutput(true);
     		httpConn.setRequestMethod("POST");// HTTPメソッド
+    		httpConn.setRequestProperty("connection", "Keep-Alive");
+    		httpConn.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)");
+    		httpConn.setRequestProperty("Charsert", "UTF-8");
     		httpConn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
 
+
     		try (OutputStream out = httpConn.getOutputStream()) {
-    			out.write(("--" + boundary + EOL +
-    					"Content-Disposition: form-data; name=\"file\"; " +
-    					"filename=\"" + filename + "\"" + EOL +
-    					"Content-Type: application/octet-stream" + EOL + EOL)
-    					.getBytes(StandardCharsets.UTF_8)
-    					);
-    			byte[] buffer = new byte[128];
+    			File file = new File(filepath);
+
+    			// stereotype
+    			StringBuilder sb = new StringBuilder();
+    			sb.append("--");
+    			sb.append(boundary);
+    			sb.append(EOL);
+    			sb.append("Content-Disposition: form-data; ");
+    			sb.append("name=\"stereotype\"" + EOL+ EOL);
+    			sb.append(stereotype + EOL);
+
+    			// filename
+    			sb.append("--");
+    			sb.append(boundary);
+    			sb.append(EOL);
+    			sb.append("Content-Disposition: form-data; ");
+    			sb.append("name=\"filename\"" + EOL+ EOL);
+    			sb.append(file.getName() + EOL);
+
+    			// userfile
+				sb.append("--");
+				sb.append(boundary);
+				sb.append(EOL);
+				sb.append("Content-Disposition: form-data;");
+				sb.append("name=\"userfile\"; ");
+				sb.append("filename=\""+ file.getName() + "\";" + EOL);
+				sb.append("Content-Type:" + Files.probeContentType(file.toPath()) + EOL+ EOL);
+
+    			byte[] buffer = sb.toString().getBytes(StandardCharsets.UTF_8);
+    			out.write(buffer);
+
     			int size = -1;
-    			while (-1 != (size = file.read(buffer))) {
+    			while (-1 != (size = fileStream.read(buffer))) {
     				out.write(buffer, 0, size);
     			}
+				out.write(EOL.getBytes());
+
     			out.write((EOL + "--" + boundary + "--" + EOL).getBytes(StandardCharsets.UTF_8));
     			out.flush();
-    			System.err.println(httpConn.getResponseMessage());
-    			return;
+    			out.close();
 
+    			int status = httpConn.getResponseCode();
+
+    			switch(status) {
+    				case 200:
+    				case 201:
+	    				{
+			    			BufferedReader reader = new BufferedReader(new InputStreamReader(httpConn.getInputStream()));
+
+			    			StringBuilder responce = new StringBuilder();
+			    			String line = null;
+			    			while ((line = reader.readLine()) != null) {
+			    				responce.append(line + EOL);
+			    			}
+			    			reader.close();
+			    			responce.toString();
+
+			    			return responce.toString();
+	    				}
+    			}
     		} finally {
     			httpConn.disconnect();
     		}
+
+    		return null;
+
     	}
 	}
 

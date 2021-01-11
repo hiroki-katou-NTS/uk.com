@@ -14,7 +14,6 @@ import uk.cnv.client.UkConvertProperty;
 
 public abstract class RepositoryBase {
 	private String jdbcDriverName;
-	//private SQLServerDriver driver;
 	private String connectionString;
 	private Connection conn;
 
@@ -27,8 +26,6 @@ public abstract class RepositoryBase {
 	private void loadJdbc() {
     	try {
 			Class.forName(this.jdbcDriverName);
-	    	//driver = new SQLServerDriver();
-			//DriverManager.registerDriver(driver);
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException("DB接続設定が無効です。:" + this.jdbcDriverName);
 		}
@@ -66,7 +63,7 @@ public abstract class RepositoryBase {
 			rset = stmt.executeQuery(sql);
 			while (rset.next()) {
 
-				T domain = require.toDomain(rset);
+				T domain = require.toEntity(rset);
 				result.add(domain);
 			}
 		}
@@ -102,7 +99,7 @@ public abstract class RepositoryBase {
 			rset = stmt.executeQuery(sql);
 			while (rset.next()) {
 
-				T domain = require.toDomain(rset);
+				T domain = require.toEntity(rset);
 				result.add(domain);
 			}
 		}
@@ -159,7 +156,7 @@ public abstract class RepositoryBase {
 	}
 
 	public interface SelectRequire <T> {
-		T toDomain(ResultSet rs) throws SQLException;
+		T toEntity(ResultSet rs) throws SQLException;
 	}
 
 	public interface InsertRequire {
