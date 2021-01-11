@@ -471,7 +471,13 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 
 			vm.$blockui("show");
 			let dfd = $.Deferred();
-			vm.$ajax('at', API.checkBeforeUpdate, commandCheckUpdate)
+			vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason', '#kaf000-a-component5-textReason', '#combo-box', '#inpReasonTextarea', '#work-type-combobox')
+			.then((isValid) => {
+				if (isValid) {
+					// validate riêng cho màn hình
+					return vm.$ajax('at', API.checkBeforeUpdate, commandCheckUpdate)
+				}
+			})
 			.then((result) => {
 				if (result) {
 					holidayAppDates = result.holidayDateLst;
