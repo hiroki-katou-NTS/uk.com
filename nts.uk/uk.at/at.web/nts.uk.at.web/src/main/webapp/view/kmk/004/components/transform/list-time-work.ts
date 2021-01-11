@@ -104,7 +104,7 @@ module nts.uk.at.view.kmk004.components {
 		public selectedYear: KnockoutObservable<number | null> = ko.observable(null);
 		public checkNullYear: KnockoutObservable<boolean> = ko.observable(false);
 		public checkEmployee: KnockoutObservable<boolean> = ko.observable(false);
-		public years: KnockoutObservableArray<IYear>;
+		public years: KnockoutObservableArray<IYear> = ko.observableArray([]);
 		public type: SIDEBAR_TYPE;
 		public mode: KnockoutObservable<'New' | 'Update'> = ko.observable('New');
 		public selectedId: KnockoutObservable<string> = ko.observable('');
@@ -125,17 +125,17 @@ module nts.uk.at.view.kmk004.components {
 
 			vm.workTimes.subscribe((wts) => {
 				const total: number = wts.reduce((p, c) => p += Number(c.laborTime()), 0);
-				const first: string = Math.floor(total / 60) + '';
-				var last: string = total % 60 + '';
 
-				if (last.length < 2) {
-					last = '0' + last;
-				}
+				if (!isNaN(total)) {
+					const first: string = Math.floor(total / 60) + '';
+					var last: string = total % 60 + '';
 
-				if (total) {
+					if (last.length < 2) {
+						last = '0' + last;
+					}
+
 					vm.total(first + ':' + last);
-				} else if (!vm.checkNullYear()) {
-					vm.total('');
+					
 				} else vm.total('0:00');
 
 				if (ko.unwrap(vm.selectedYear) != null) {
@@ -178,7 +178,7 @@ module nts.uk.at.view.kmk004.components {
 					vm.workTimeSaves([]);
 					setTimeout(() => {
 						vm.selectedYear.valueHasMutated();
-					}, 100);
+					}, 200);
 				});
 
 			vm.years
@@ -195,7 +195,7 @@ module nts.uk.at.view.kmk004.components {
 								}))
 							}
 						}
-					}, 100);
+					}, 200);
 				});
 		}
 
@@ -353,6 +353,7 @@ module nts.uk.at.view.kmk004.components {
 						});
 						vm.workTimes(data1.map(m => new WorkTimeL({ ...m, parent: vm.workTimes })));
 						vm.mode('Update');
+						vm.total('');
 					}
 				});
 		}
