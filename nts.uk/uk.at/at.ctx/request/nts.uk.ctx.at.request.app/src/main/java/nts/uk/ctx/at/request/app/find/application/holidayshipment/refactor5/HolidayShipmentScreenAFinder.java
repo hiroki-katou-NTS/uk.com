@@ -426,7 +426,7 @@ public class HolidayShipmentScreenAFinder {
 		GeneralDate result = GeneralDate.max();
 		for (AbsRecDetailPara absRecDetailPara : lstAbsRecMng) {
 			if(absRecDetailPara.getUnUseOfRec().isPresent() 
-					&& absRecDetailPara.getUnUseOfRec().get().getExpirationDate().after(result)) {
+					&& absRecDetailPara.getUnUseOfRec().get().getExpirationDate().before(result)) {
 				result = absRecDetailPara.getUnUseOfRec().get().getExpirationDate();
 			}
 		}
