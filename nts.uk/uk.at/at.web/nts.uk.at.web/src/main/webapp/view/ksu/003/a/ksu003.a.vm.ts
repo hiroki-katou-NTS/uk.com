@@ -325,7 +325,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						}
 						// Nếu giá trị là null
 						if (dataFixed[0].fixedWorkInforDto == null || dataFixed[0].fixedWorkInforDto.isHoliday == null) {
-							self.getEmpWorkFixedWorkInfo(dataCell.originalEvent.detail.columnKey, empId, index, "type");
+							self.getEmpWorkFixedWorkInfo($("#extable-ksu003").exTable('dataSource', 'middle').body[index].worktypeCode,
+								$("#extable-ksu003").exTable('dataSource', 'middle').body[index].worktimeCode, dataCell.originalEvent.detail.columnKey, empId, index, "type");
 							$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeName", getText('KSU003_55'));
 							$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktypeName", "");
 							//$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeCode", "");
@@ -487,12 +488,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			} else {
 				color = "#cee6ff";
 			}
-			
-			if(columnKey === "worktypeCode"){
-				self.getChangeWorkType(columnKey, empId, index);
-			}
-			
-			self.getEmpWorkFixedWorkInfo(columnKey, empId, index).done(() => {
+			self.getEmpWorkFixedWorkInfo($("#extable-ksu003").exTable('dataSource', 'middle').body[index].worktypeCode,
+				workTimeCode, columnKey, empId, index, "time").done(() => {
 					$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeCode", workTimeCode);
 
 					if (self.dataScreen003A().employeeInfo[index].fixedWorkInforDto.isHoliday == true) {
@@ -843,50 +840,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				});
 			return dfd.promise();
 		}
-		
-		public getChangeWorkType(columnKey: string, empId: string, index: number) {
-			let self = this;
-			let targetOrgDto = {
-				workTypeCode: $("#extable-ksu003").exTable('dataSource', 'middle').body[index].worktypeCode,
-				workTimeCode: $("#extable-ksu003").exTable('dataSource', 'middle').body[index].worktimeCode
-			}
-			if(columnKey == "worktypeCode"){
-			service.changeWorkType(targetOrgDto).done((data: any) => {
-						if(data.holiday == true){
-						$("#extable-ksu003").exTable("cellValue", "middle", empId, "totalTime", "");
-						$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime1", "");
-						$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime2", "");
-						$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime1", "");
-						$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime2", "");
-						$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", "");
-						$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeCode", "");
-						$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeName", getText('KSU003_55'));
-						$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktypeName", data.workTypeName);
-
-						$("#extable-ksu003").exTable("disableCell", "middle", empId, "worktimeCode");
-						$("#extable-ksu003").exTable("disableCell", "middle", empId, "startTime1");
-						$("#extable-ksu003").exTable("disableCell", "middle", empId, "endTime1");
-						$("#extable-ksu003").exTable("disableCell", "middle", empId, "startTime2");
-						$("#extable-ksu003").exTable("disableCell", "middle", empId, "endTime2");
-						
-						$(".xcell").removeClass("x-error");
-						return;
-						} else {
-						$("#extable-ksu003").exTable("enableCell", "middle", empId, "worktimeCode");
-						$("#extable-ksu003").exTable("enableCell", "middle", empId, "startTime1");
-						$("#extable-ksu003").exTable("enableCell", "middle", empId, "endTime1");
-					if (self.dataScreen003A().employeeInfo[index].fixedWorkInforDto.workType != WorkTimeForm.FLEX) {
-						$("#extable-ksu003").exTable("enableCell", "middle", empId, "startTime2");
-						$("#extable-ksu003").exTable("enableCell", "middle", empId, "endTime2");
-					}
-						}
-					})
-				
-			}
-		}
 
 		// 社員勤務予定と勤務固定情報を取得する
-		public getEmpWorkFixedWorkInfo(columnKey: string, empId?: string, index?: number, type?: string): JQueryPromise<any> {
+		public getEmpWorkFixedWorkInfo(workTypeCode: string, workTimeCode: string, columnKey: string, empId?: string, index?: number, type?: string): JQueryPromise<any> {
 			let self = this;
 			let dfd = $.Deferred<any>(), indexEmp = 0;
 			let targetOrgDto = [{
@@ -894,7 +850,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				workTimeCode: $("#extable-ksu003").exTable('dataSource', 'middle').body[index].worktimeCode
 			}]
 			indexEmp = _.findIndex(self.dataScreen003A().employeeInfo, x => { return x.empId === empId });
-			
 			service.getEmpWorkFixedWorkInfo(targetOrgDto)
 				.done((data: model.DisplayWorkInfoByDateDto) => {
 					$(".xcell").removeClass("x-error");
@@ -919,19 +874,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					if ((columnKey == "worktimeCode" || (error.messageId != "Msg_434" && columnKey == "worktypeCode")) && self.checkMes != 101) {
 						self.checkMes = 0;
 						errorDialog({ messageId: error.messageId });
-					}
-					
-					if (error.messageId == "Msg_29" && columnKey == "worktypeCode"){
-						let color = "";
-						if (empId === self.employeeIdLogin) {
-							color = "#94b7fe";
-						} else {
-							color = "#cee6ff";
-						}
-						let cssWorkType: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(1)",
-						cssWorkTypeName: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(2)";
-						$(cssWorkType).css("background-color", color);
-						$(cssWorkTypeName).css("background-color", color);
 					}
 
 					if (error.messageId == "Msg_434" && columnKey == "worktypeCode") {
@@ -1936,7 +1878,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					}
 					// Nếu giá trị là null
 					if (dataFixed[0].fixedWorkInforDto == null || dataFixed[0].fixedWorkInforDto.isHoliday == null) {
-						self.getEmpWorkFixedWorkInfo(e.originalEvent.detail.columnKey, empId, index, "type");
+						self.getEmpWorkFixedWorkInfo($("#extable-ksu003").exTable('dataSource', 'middle').body[index].worktypeCode,
+							$("#extable-ksu003").exTable('dataSource', 'middle').body[index].worktimeCode, e.originalEvent.detail.columnKey, empId, index, "type");
 						$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeName", getText('KSU003_55'));
 						$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktypeName", "");
 						//$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeCode", "");
