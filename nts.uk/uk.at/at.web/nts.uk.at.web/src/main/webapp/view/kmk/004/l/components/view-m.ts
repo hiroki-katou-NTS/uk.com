@@ -59,7 +59,8 @@ module nts.uk.at.view.kmk004.l {
 											selectedYear: selectedYear,
 											type: type,
 											selectedId: selectedIdParam,
-											years: years
+											years: years,
+											startYM: startYM
 										}
 									}"></div>
 									
@@ -71,7 +72,8 @@ module nts.uk.at.view.kmk004.l {
 										workTimes: workTimes,
 										type: type,
 										selectedId: selectedIdParam,
-										yearDelete: yearDelete
+										yearDelete: yearDelete,
+										startYM: startYM
 									}
 								}"></div>
 								</div>
@@ -130,7 +132,8 @@ module nts.uk.at.view.kmk004.l {
 		public workTimes: KnockoutObservableArray<WorkTimeL> = ko.observableArray([]);
 		public yearDelete: KnockoutObservable<number | null> = ko.observable(null);
 		public checkDelete: KnockoutObservable<boolean> = ko.observable(false);
-
+		public startYM: KnockoutObservable<number> = ko.observable(0);
+		
 		constructor(private params: IParam) {
 			super();
 		}

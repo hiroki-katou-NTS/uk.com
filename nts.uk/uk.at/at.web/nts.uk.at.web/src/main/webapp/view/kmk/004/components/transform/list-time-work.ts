@@ -13,6 +13,7 @@ module nts.uk.at.view.kmk004.components {
 		selectedId: KnockoutObservable<string>;
 		type: SIDEBAR_TYPE;
 		yearDelete: KnockoutObservable<number | null>;
+		startYM: KnockoutObservable<number>;
 	}
 
 	const API = {
@@ -110,6 +111,7 @@ module nts.uk.at.view.kmk004.components {
 		public selectedId: KnockoutObservable<string> = ko.observable('');
 		public workTimeSaves: KnockoutObservableArray<WorkTimeSaveL> = ko.observableArray([]);
 		public yearDelete: KnockoutObservable<number | null> = ko.observable(null);
+		public startYM: KnockoutObservable<number> = ko.observable(0);
 
 		created(params: Params) {
 			const vm = this;
@@ -120,6 +122,7 @@ module nts.uk.at.view.kmk004.components {
 			vm.selectedId = params.selectedId;
 			vm.type = params.type;
 			vm.yearDelete = params.yearDelete;
+			vm.startYM = params.startYM;
 
 			vm.initList();
 
@@ -236,6 +239,7 @@ module nts.uk.at.view.kmk004.components {
 										});
 
 										vm.workTimes(workTime.map(m => new WorkTimeL({ ...m, parent: vm.workTimes })));
+										vm.startYM(data[0].yearMonth);
 										vm.mode('Update');
 									}
 								});
@@ -261,6 +265,7 @@ module nts.uk.at.view.kmk004.components {
 											});
 
 											vm.workTimes(workTime.map(m => new WorkTimeL({ ...m, parent: vm.workTimes })));
+											vm.startYM(data[0].yearMonth);
 										}
 										vm.mode('Update');
 									});
@@ -289,6 +294,7 @@ module nts.uk.at.view.kmk004.components {
 											});
 
 											vm.workTimes(workTime.map(m => new WorkTimeL({ ...m, parent: vm.workTimes })));
+											vm.startYM(data[0].yearMonth);
 										}
 										vm.mode('Update');
 									});
@@ -312,6 +318,7 @@ module nts.uk.at.view.kmk004.components {
 											data.map(m => {
 												const s: IWorkTimeL = { check: true, yearMonth: m.yearMonth, laborTime: m.laborTime };
 												workTime.push(s);
+												vm.startYM(data[0].yearMonth);
 											});
 
 											vm.workTimes(workTime.map(m => new WorkTimeL({ ...m, parent: vm.workTimes })));
@@ -352,6 +359,7 @@ module nts.uk.at.view.kmk004.components {
 							data1.push(s);
 						});
 						vm.workTimes(data1.map(m => new WorkTimeL({ ...m, parent: vm.workTimes })));
+						vm.startYM(data1[0].yearMonth);
 						vm.mode('Update');
 						vm.total('');
 					}

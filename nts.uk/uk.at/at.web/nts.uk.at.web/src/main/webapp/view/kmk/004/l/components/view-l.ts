@@ -44,7 +44,8 @@ module nts.uk.at.view.kmk004.l {
 										selectedYear: selectedYear,
 										type: type,
 										selectedId: ko.observable(''),
-										years: years
+										years: years,
+										startYM: startYM
 									}
 								}"></div>
 								
@@ -56,7 +57,8 @@ module nts.uk.at.view.kmk004.l {
 										workTimes: workTimes,
 										type: type,
 										selectedId: ko.observable(''),
-										yearDelete: yearDelete
+										yearDelete: yearDelete,
+										startYM: startYM
 									}
 								}"></div>
 					</div>
@@ -91,6 +93,7 @@ module nts.uk.at.view.kmk004.l {
 		isLoadData: KnockoutObservable<boolean> = ko.observable(false);
 		public yearDelete: KnockoutObservable<number | null> = ko.observable(null);
 		public checkDelete: KnockoutObservable<boolean> = ko.observable(false);
+		public startYM: KnockoutObservable<number> = ko.observable(0);
 
 		constructor(private params: IParam) {
 			super();
@@ -99,7 +102,6 @@ module nts.uk.at.view.kmk004.l {
 		created() {
 			let vm = this;
 			vm.params = { isLoadData: vm.isLoadData, sidebarType: "Com_Company", wkpId: ko.observable(''), empCode: ko.observable(''), empId: ko.observable(''), titleName: '', deforLaborTimeComDto: null, settingDto: null }
-
 			vm.years
 				.subscribe(() => {
 					if (ko.unwrap(vm.years).length > 0) {
@@ -128,6 +130,7 @@ module nts.uk.at.view.kmk004.l {
 						vm.checkDelete(false);
 					}
 				});
+				
 
 		}
 

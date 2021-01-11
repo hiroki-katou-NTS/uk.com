@@ -10,6 +10,7 @@ module nts.uk.at.view.kmk004.components.transform {
 		type: SIDEBAR_TYPE;
 		selectedId?: KnockoutObservable<string>;
 		years: KnockoutObservableArray<IYear>;
+		startYM: KnockoutObservable<number>;
 	}
 
 	const template = `
@@ -42,6 +43,7 @@ module nts.uk.at.view.kmk004.components.transform {
 		public type: SIDEBAR_TYPE;
 		public selectedId: KnockoutObservable<string> = ko.observable('');
 		initBtnEnable: KnockoutObservable<boolean> = ko.observable(false);
+		public startYM: KnockoutObservable<number> = ko.observable(0);
 
 		created(params: Params) {
 			const vm = this;
@@ -49,7 +51,8 @@ module nts.uk.at.view.kmk004.components.transform {
 			vm.type = params.type;
 			vm.selectedId = params.selectedId;
 			vm.itemList = params.years;
-
+			vm.startYM = params.startYM;
+			
 			if (vm.type != 'Com_Person') {
 				vm.initBtnEnable(true);
 			}
@@ -146,7 +149,6 @@ module nts.uk.at.view.kmk004.components.transform {
 
 		loadData(selectedIndex: number = 0) {
 			const vm = this;
-			//vm.itemList([]);
 			switch (vm.type) {
 				case 'Com_Company':
 					break;
@@ -225,7 +227,8 @@ module nts.uk.at.view.kmk004.components.transform {
 
 		openQDialog() {
 			const vm = this;
-			const param = { years: ko.unwrap(vm.itemList).map((m: IYear) => m.year) };
+			const param = { startDate: vm.startYM(), years: ko.unwrap(vm.itemList).map((m: IYear) => m.year) };
+			
 			vm.$window.modal('/view/kmk/004/q/index.xhtml', param).then((result) => {
 				if (result) {
 					vm.itemList.push(new IYear(parseInt(result.year), true));
