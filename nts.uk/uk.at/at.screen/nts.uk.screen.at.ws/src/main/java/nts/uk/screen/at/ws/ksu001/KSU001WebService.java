@@ -9,6 +9,7 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.RegisterWorkSchedule;
+import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.ResultRegisWorkSchedule;
 import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.WorkScheduleCommand;
 import nts.uk.screen.at.app.ksu001.changepage.ChangePageParam;
 import nts.uk.screen.at.app.ksu001.changepage.GetDataWhenChangePage;
@@ -157,8 +158,9 @@ public class KSU001WebService extends WebService{
 	
 	@POST
 	@Path("reg-workschedule") 
-	public void regWorkSchedule(List<WorkScheduleCommand> param) {
-		regWorkSchedule.handle(param);
+	public ResultRegisWorkSchedule regWorkSchedule(List<WorkScheduleCommand> param) {
+		ResultRegisWorkSchedule rs = regWorkSchedule.handle(param);
+		return rs;
 	}
 	
 	

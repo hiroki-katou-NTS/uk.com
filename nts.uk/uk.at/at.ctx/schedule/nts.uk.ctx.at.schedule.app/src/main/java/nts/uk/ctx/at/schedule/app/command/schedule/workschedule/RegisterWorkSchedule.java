@@ -12,6 +12,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * @author laitv
@@ -56,9 +57,9 @@ public class RegisterWorkSchedule {
 				String workTypeCd = wsCmd.workTypeCd;
 				String workTimeCd = wsCmd.workTimeCd;
 				WorkInformationDto workInfor = new WorkInformationDto(workTypeCd, workTimeCd);
-				Map<Integer, Integer> mapAttendIdWithTime = new HashMap<Integer, Integer>();
-				Integer startTime = wsCmd.startTime;
-				Integer endTime   = wsCmd.endTime;
+				Map<Integer, TimeWithDayAttr> mapAttendIdWithTime = new HashMap<Integer, TimeWithDayAttr>();
+				TimeWithDayAttr startTime = new TimeWithDayAttr(wsCmd.startTime);
+				TimeWithDayAttr endTime   = new TimeWithDayAttr(wsCmd.endTime);
 				if (wsCmd.isChangeTime) {
 					mapAttendIdWithTime.put(31, startTime);
 					mapAttendIdWithTime.put(34, endTime);
