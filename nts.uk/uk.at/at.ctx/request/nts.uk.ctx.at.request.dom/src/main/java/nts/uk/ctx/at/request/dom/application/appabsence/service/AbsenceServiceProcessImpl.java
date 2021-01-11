@@ -1425,7 +1425,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 			// 時間消化のチェック処理
 			/*public void checkTimeDigestProcess(String companyID, TimeDigestApplication timeDigestApplication
 					, RemainVacationInfo remainVacationInfo, String employeeId, GeneralDate baseDate ){*/
-			this.checkTimeDigestProcess(companyID, appAbScene.getReflectFreeTimeApp().getTimeDegestion().get()
+			this.checkTimeDigestProcess(companyID, appAbScene.getReflectFreeTimeApp().getTimeDegestion().orElse(null)
 					, appAbsenceStartInfoOutput.getRemainVacationInfo()
 					, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid()
 					, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getBaseDate());
