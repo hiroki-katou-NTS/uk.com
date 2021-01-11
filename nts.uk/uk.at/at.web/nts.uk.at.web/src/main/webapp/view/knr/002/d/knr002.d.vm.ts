@@ -122,10 +122,11 @@ module knr002.d {
                         return;
                     }); 
                 } else {    
+                    setShared('KNR002D_selectableCodeList', self.selectableCodeList);
                     self.command.empInfoTerCode = self.selectableCodeList;              
                     service.checkRemoteSettingsToCopy(self.selectableCodeList).done(()=>{
                         self.call_C_Api(self.command);
-                    }).fail((err)=>{
+                    }).fail(err => { 
                         dialog.confirm({messageId: err.messageId, messageParams: err.parameterIds})
                         .ifYes(() => {                   
                             self.call_C_Api(self.command);
@@ -135,8 +136,6 @@ module knr002.d {
                             blockUI.clear(); 
                         });
                     });
-                    setShared('KNR002D_selectableCodeList', self.selectableCodeList);
-                    nts.uk.ui.windows.close();
                 }          
             }
             /**
@@ -166,7 +165,7 @@ module knr002.d {
             private call_C_Api(command: any): any{
                 service.registerAndSubmitChanges(command).done(() => { 
                     nts.uk.ui.windows.close();
-                }).fail((err) => {
+                }).fail(err => {
                     dialog.error({messageId: err.messageId});
                 });
             }
