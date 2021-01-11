@@ -21,7 +21,7 @@ module nts.uk.at.view.kml001.c {
         self.newStartDate = ko.observable(null);
         self.beginStartDate = ko.observable(vmbase.ProcessHandler.getOneDayAfter(self.lastStartDate()));        
         self.size = ko.observable(self.latestHistory().size);        
-        self.textKML001_47 = ko.observable(nts.uk.resource.getMessage('KML001_47', [self.lastStartDate()]));                
+        self.textKML001_47 = ko.observable(nts.uk.resource.getText('KML001_47', [self.lastStartDate()]));            
       }
 
       /**
@@ -76,21 +76,21 @@ module nts.uk.at.view.kml001.c {
         });
 
         let personCostRoundingSetting: any = {
-          unitPriceRounding: self.copyDataFlag() ? self.currentPersonCost().roundingUnitPrice : 0,
-          unit: self.copyDataFlag() ? self.currentPersonCost().unit : 1,
-          rounding: self.copyDataFlag() ? self.currentPersonCost().inUnits : 0
+          unitPriceRounding: self.copyDataFlag() ? self.currentPersonCost().roundingUnitPrice : vmbase.UnitPriceRounding.ROUND_UP,//単価の丸め
+          unit: self.copyDataFlag() ? self.currentPersonCost().unit : vmbase.AmountUnit.ONE_HUNDRED_YEN, //金額の丸め
+          rounding: self.copyDataFlag() ? self.currentPersonCost().inUnits : vmbase.InUnits.TRUNCATION //単位で
         };
 
         let startDate = moment.utc(self.newStartDate(), 'YYYY-MM-DD').toISOString(); 
         let params: any = {
           startDate: startDate,
           historyID: null,
-          unitPrice: self.copyDataFlag() ? self.currentPersonCost().unitPrice : 0,
-          howToSetUnitPrice: self.copyDataFlag() ? self.currentPersonCost().calculationSetting : 0,
-          workingHoursUnitPrice: self.copyDataFlag() ? self.currentPersonCost().workingHour : 0,
-          remarks: self.copyDataFlag() ? self.currentPersonCost().memo : null,
+          unitPrice: self.copyDataFlag() ? self.currentPersonCost().unitPrice : vmbase.UnitPrice.Price_1, //計算用単価
+          howToSetUnitPrice: self.copyDataFlag() ? self.currentPersonCost().calculationSetting : vmbase.CalculationSetting.Premium_Rate,//割増金額の計算設定
+          workingHoursUnitPrice: self.copyDataFlag() ? self.currentPersonCost().workingHour : vmbase.UnitPrice.Price_1, //計算用単価
+          memo: self.copyDataFlag() ? self.currentPersonCost().memo : null, //備考
           personCostRoundingSetting: personCostRoundingSetting,
-          premiumSettingList: self.copyDataFlag() ? premiumSettingList : []
+          premiumSets: self.copyDataFlag() ? premiumSettingList : []
         };
 
         self.$blockui('show');
@@ -99,7 +99,7 @@ module nts.uk.at.view.kml001.c {
         .done(() => {
           self.$dialog.info({ messageId: 'Msg_15'}).then( () => {            
             self.$blockui('hide');
-            nts.uk.ui.windows.setShared('PERSONAL_CLONED', true);            
+            nts.uk.ui.windows.setShared('PERSONAL_CLONED', self.copyDataFlag());            
             nts.uk.ui.windows.close();            
           });          
         })

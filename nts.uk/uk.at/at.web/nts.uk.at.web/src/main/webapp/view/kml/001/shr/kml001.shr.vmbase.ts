@@ -30,6 +30,8 @@ module nts.uk.at.view.kml001.shr {
       unit: number;
       inUnits: number;
       workingHour: number;
+      howToSetUnitPrice: number;
+      workingHoursUnitPrice: number;
     }
 
     export class PersonCostCalculation {
@@ -47,6 +49,9 @@ module nts.uk.at.view.kml001.shr {
       unit: KnockoutObservable<number>;
       inUnits: KnockoutObservable<number>;
       workingHour: KnockoutObservable<number>;
+      howToSetUnitPrice: KnockoutObservable<number>;
+      workingHoursUnitPrice: KnockoutObservable<number>;
+
       constructor(
         companyID: string, historyID: string,
         startDate: string, endDate: string,
@@ -67,10 +72,12 @@ module nts.uk.at.view.kml001.shr {
         self.premiumSets = ko.observableArray(_.map(premiumSets, premiumSet => vmbase.ProcessHandler.fromObjectPremiumSet(premiumSet)));
         //ver9
         self.calculationSetting = ko.observable(calculationSetting);
+        self.howToSetUnitPrice = ko.observable(calculationSetting);
         self.roundingUnitPrice = ko.observable(roundingUnitPrice);
         self.unit = ko.observable(unit);
         self.inUnits = ko.observable(inUnits);
         self.workingHour = ko.observable(workingHour);
+        self.workingHoursUnitPrice = ko.observable(workingHour);
       }
 
 
@@ -217,7 +224,9 @@ module nts.uk.at.view.kml001.shr {
           roundingUnitPrice: koObject.roundingUnitPrice(),
           unit: koObject.unit(),
           inUnits: koObject.inUnits(),
-          workingHour: koObject.workingHour()
+          workingHour: koObject.workingHour(),
+          howToSetUnitPrice: koObject.calculationSetting(),
+          workingHoursUnitPrice: koObject.workingHour()
         };
       }
 
@@ -334,6 +343,97 @@ module nts.uk.at.view.kml001.shr {
       MSG066 = <any>"割増項目が設定されてません。",
       MSG102 = <any>"最新の履歴開始日以前に履歴を追加することはできません。",
       MSG128 = <any>"最後の履歴を削除することができません。"
+    }
+
+    //人件費単価端数処理
+    export enum UnitPriceRounding {
+      // 切り上げ
+      ROUND_UP = 0, //Enum_UnitPriceRounding_roundUp
+      //切り捨て
+      TRUNCATION = 1,//Enum_UnitPriceRounding_truncation
+      //四捨五入
+      DOWN_4_UP_5 = 2,//Enum_UnitPriceRounding_down4Up5
+    }
+    // 端数処理位置
+    export enum AmountUnit {
+
+      /** The one yen. */
+      // 1円
+      ONE_YEN = 1,//Enum_AmountUnit_oneYen
+
+      /** The ten yen. */
+      // 10円
+      TEN_YEN = 10, //Enum_AmountUnit_tenYen
+
+      /** The one hundred yen. */
+      // 100円
+      ONE_HUNDRED_YEN = 100,//Enum_AmountUnit_oneHundredYen
+
+      /** The one thousand yen. */
+      // 1000円
+      ONE_THOUSAND_YEN = 1000, //Enum_AmountUnit_oneThousandYen
+    }
+    // 端数処理
+    export enum Rounding {
+
+      /** The rounding down. */
+      // 切り捨て
+      ROUNDING_DOWN = 0, //"切り捨て", "Enum_Rounding_Down"),
+
+      /** The rounding up. */
+      // 切り上げ
+      ROUNDING_UP = 1, //"切り上げ", "Enum_Rounding_Up"),
+
+      /** The rounding down over. */
+      // 未満切捨、以上切上
+      ROUNDING_DOWN_OVER = 2, //"未満切捨、以上切上", "Enum_Rounding_Down_Over");
+    }
+
+    export enum InUnits {
+      /** The truncation. */
+      // 切り捨て
+      TRUNCATION = 0, //"ENUM_ROUNDING_TRUNCATION"
+
+      /** The round up. */
+      // 切り上げ
+      ROUND_UP = 1, //"ENUM_ROUNDING_ROUND_UP"
+
+      /** The down 1 up 2. */
+      // 一捨二入
+      DOWN_1_UP_2 = 2, //"ENUM_ROUNDING_DOWN_1_UP_2"
+
+      /** The down 2 up 3. */
+      // 二捨三入
+      DOWN_2_UP_3 = 3, //"ENUM_ROUNDING_DOWN_2_UP_3"
+
+      /** The down 3 up 4. */
+      // 三捨四入
+      DOWN_3_UP_4 = 4, //"ENUM_ROUNDING_DOWN_3_UP_4"
+
+      /** The down 4 up 5. */
+      // 四捨五入
+      DOWN_4_UP_5 = 5, //"ENUM_ROUNDING_DOWN_4_UP_5"
+
+      /** The down 5 up 6. */
+      // 五捨六入
+      DOWN_5_UP_6 = 6, //"ENUM_ROUNDING_DOWN_5_UP_6"
+
+      /** The down 6 up 7. */
+      // 六捨七入
+      DOWN_6_UP_7 = 7, //"ENUM_ROUNDING_DOWN_6_UP_7"
+
+      /** The down 7 up 8. */
+      // 七捨八入
+      DOWN_7_UP_8 = 8, //"ENUM_ROUNDING_DOWN_7_UP_8"
+
+      /** The down 8 up 9. */
+      // 八捨九入
+      DOWN_8_UP_9 = 9, //"ENUM_ROUNDING_DOWN_8_UP_9"
+    }
+
+    export enum CalculationSetting {
+      Premium_Rate = 0,
+      Unit_Price = 1
     }
   }
 }
