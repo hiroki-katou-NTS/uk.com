@@ -236,7 +236,7 @@ public class AsposeApplyForLeave {
                             .append(HALF_WIDTH_SPACE)
                             .append("～")
                             .append(HALF_WIDTH_SPACE)
-                            .append(workingHours1.get(0).getTimeZone().getEndTime().getFullText())
+                            .append(workingHours2.get(0).getTimeZone().getEndTime().getFullText())
                             .toString();
                 }
             }
