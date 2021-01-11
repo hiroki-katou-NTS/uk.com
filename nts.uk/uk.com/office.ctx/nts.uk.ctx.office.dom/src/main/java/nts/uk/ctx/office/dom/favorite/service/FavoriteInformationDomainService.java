@@ -22,8 +22,6 @@ public class FavoriteInformationDomainService {
 	@Inject
 	private static WorkplaceInforAdapter adapter;
 	
-	private FavoriteInformationDomainService() {}
-	
 	/**
 	 * 
 	 * 社員IDからすべてお気に入りと対象情報名を取得します。
