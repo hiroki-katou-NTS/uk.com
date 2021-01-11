@@ -10,6 +10,7 @@ module nts.uk.at.view.kmk004.b {
         selectId: KnockoutObservable<string>;
         workTimes: KnockoutObservableArray<WorkTime>;
         yearDelete: KnockoutObservable<number | null>;
+        startDate: KnockoutObservable<number>;
     }
 
     const API = {
@@ -105,6 +106,7 @@ module nts.uk.at.view.kmk004.b {
         public mode: KnockoutObservable<'New' | 'Update'> = ko.observable('New');
         public workTimeSaves: KnockoutObservableArray<WorkTimeSave> = ko.observableArray([]);
         public yearDelete: KnockoutObservable<number | null> = ko.observable(null);
+        public startDate: KnockoutObservable<number> = ko.observable(2020);
 
         created(params: Params) {
             const vm = this;
@@ -115,6 +117,7 @@ module nts.uk.at.view.kmk004.b {
             vm.selectId = params.selectId;
             vm.workTimes = params.workTimes;
             vm.yearDelete = params.yearDelete;
+            vm.startDate = params.startDate;
 
             vm.initList();
 
@@ -208,6 +211,7 @@ module nts.uk.at.view.kmk004.b {
                                 .done((data: IWorkTime[]) => {
                                     if (data.length > 0) {
                                         const data1: IWorkTime[] = [];
+                                        vm.startDate(data[0].yearMonth);
                                         data.map(m => {
                                             const s: IWorkTime = { check: true, yearMonth: m.yearMonth, laborTime: m.laborTime };
                                             data1.push(s);
@@ -231,6 +235,7 @@ module nts.uk.at.view.kmk004.b {
                                     .done((data: IWorkTime[]) => {
                                         if (data.length > 0) {
                                             const data1: IWorkTime[] = [];
+                                            vm.startDate(data[0].yearMonth);
                                             data.map(m => {
                                                 const s: IWorkTime = { check: true, yearMonth: m.yearMonth, laborTime: m.laborTime };
                                                 data1.push(s);
@@ -255,6 +260,7 @@ module nts.uk.at.view.kmk004.b {
                                     .done((data: IWorkTime[]) => {
                                         if (data.length > 0) {
                                             const data1: IWorkTime[] = [];
+                                            vm.startDate(data[0].yearMonth);
                                             data.map(m => {
                                                 const s: IWorkTime = { check: true, yearMonth: m.yearMonth, laborTime: m.laborTime };
                                                 data1.push(s);
@@ -279,6 +285,7 @@ module nts.uk.at.view.kmk004.b {
                                     .done((data: IWorkTime[]) => {
                                         if (data.length > 0) {
                                             const data1: IWorkTime[] = [];
+                                            vm.startDate(data[0].yearMonth);
                                             data.map(m => {
                                                 const s: IWorkTime = {
                                                     check: m.laborTime == -1 ? false : true,
