@@ -14,13 +14,13 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification;
 public class StartMonth {
 
 	/** 開始月の指定方法 */
-	private SpecifyStartMonth specifyStartMonth;
+	private SpecifyStartMonth specifyStartMonth; // Phương pháp xác định tháng bắt đầu
 
 	/** 月数指定 */
-	private Optional<MonthNo> strMonthNo = Optional.empty();
+	private Optional<MonthNo> strMonthNo = Optional.empty(); // Use for SpecifyStartMonth.DESIGNATE_CLOSE_START_MONTH
 	
 	/** 固定月度 */
-	private Optional<FixedMonthly> fixedMonthly = Optional.empty();
+	private Optional<FixedMonthly> fixedMonthly = Optional.empty(); // Use for SpecifyStartMonth.SPECIFY_FIXED_MOON_DEGREE
 	
 	public StartMonth(int specifyStartMonth) {
 		this.specifyStartMonth = EnumAdaptor.valueOf(specifyStartMonth, SpecifyStartMonth.class);
@@ -34,7 +34,7 @@ public class StartMonth {
 		this.fixedMonthly = Optional.of(new FixedMonthly(yearSpecifiedType, designatedMonth));
 	}
 	
-	public boolean isFixedMomnth() {
+	public boolean isFixedMonth() {
 		return this.specifyStartMonth == SpecifyStartMonth.SPECIFY_FIXED_MOON_DEGREE;
 	}
 	

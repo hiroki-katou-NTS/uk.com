@@ -49,10 +49,10 @@ public class AlarmPatternSettingFinder {
 		List<AlarmCheckConditonCodeDto> result = new ArrayList<AlarmCheckConditonCodeDto>();
 		List<AlarmCheckConditionByCategory> listCheckCondition = alarmCategoryRepo.findAll(companyId);
 		listCheckCondition.sort((a , b) -> a.getCategory().value- b.getCategory().value);
-		
+
 		result = listCheckCondition.stream().map(domain -> this.convertToCheckConditionCode(domain))
 				.collect(Collectors.toList());
-		
+
 		return result;
 	}
 
@@ -86,43 +86,43 @@ public class AlarmPatternSettingFinder {
 		List<ExtractionPeriodMonthlyDto> listExtractionMonthly = new ArrayList<ExtractionPeriodMonthlyDto>();
 		ExtractionRangeYearDto extractionYear =null;
 		ExtractionAverMonthDto extractionAverMonth = null;
-		
+
 		if (domain.isDaily() || domain.isManHourCheck()) {
 			ExtractionRangeBase extractBase = domain.getExtractPeriodList().get(0);
 			ExtractionPeriodDaily extractionPeriodDaily = (ExtractionPeriodDaily) extractBase;
 			extractionPeriodDailyDto = ExtractionPeriodDailyDto.fromDomain(extractionPeriodDaily);
-			
+
 		} else if (domain.isMonthly() || domain.isMultipleMonth()) {
 			ExtractionRangeBase extractBase = domain.getExtractPeriodList().get(0);
 			ExtractionPeriodMonth extractionPeriodMonth = (ExtractionPeriodMonth) extractBase;
 			ExtractionPeriodMonthlyDto extractionPeriodMonthlyDto = ExtractionPeriodMonthlyDto
 					.fromDomain(extractionPeriodMonth);
 			listExtractionMonthly.add(extractionPeriodMonthlyDto);
-			
+
 		} else if (domain.is4W4D()) {
 			ExtractionRangeBase extractBase = domain.getExtractPeriodList().get(0);
 			extractionUnit = ExtractionPeriodUnitDto.fromDomain((ExtractionPeriodUnit) extractBase);
-			
+
 		}	else if(domain.isAgrrement()) {
-			
+
 			for(ExtractionRangeBase extractBase : domain.getExtractPeriodList()) {
-				
+
 				if(extractBase instanceof ExtractionPeriodDaily) {
 					ExtractionPeriodDaily extractionPeriodDaily = (ExtractionPeriodDaily) extractBase;
 					extractionPeriodDailyDto = ExtractionPeriodDailyDto.fromDomain(extractionPeriodDaily);
-					
+
 				}else if(extractBase  instanceof ExtractionPeriodMonth) {
 					ExtractionPeriodMonth extractionPeriodMonth = (ExtractionPeriodMonth) extractBase;
 					listExtractionMonthly.add(ExtractionPeriodMonthlyDto.fromDomain(extractionPeriodMonth));
-					
+
 				}else if (extractBase instanceof AYear){
 					extractionYear  = ExtractionRangeYearDto.fromDomain((AYear) extractBase);
 				} else {
 					extractionAverMonth = ExtractionAverMonthDto.fromDomain((AverageMonth) extractBase);
 				}
 			}
-			
-		}			
+
+		}
 
 		return new CheckConditionDto(domain.getAlarmCategory().value, domain.getCheckConditionList(),
 				extractionPeriodDailyDto, extractionUnit, listExtractionMonthly, extractionYear, extractionAverMonth);
@@ -146,5 +146,5 @@ public class AlarmPatternSettingFinder {
 			return listRole1.contains(roleId);
 		}
 	}
-	
+
 }

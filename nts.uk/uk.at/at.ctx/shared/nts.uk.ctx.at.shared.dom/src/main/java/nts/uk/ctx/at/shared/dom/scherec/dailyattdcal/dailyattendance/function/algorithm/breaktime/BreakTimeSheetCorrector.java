@@ -54,11 +54,7 @@ public class BreakTimeSheetCorrector {
 		converter.setData(dailyRecord);
 		val edittedItems = dailyRecord.getEditState().stream().map(c -> c.getAttendanceItemId()).collect(Collectors.toList());
 		if(edittedItems.isEmpty()) {
-			if (breakTime.isEmpty()) { 
-				dailyRecord.setBreakTime(Optional.empty());
-				return;
-			}
-			dailyRecord.setBreakTime(Optional.of(new BreakTimeOfDailyAttd(breakTime)));
+			dailyRecord.setBreakTime(new BreakTimeOfDailyAttd(breakTime));
 			return;
 		}
 		val oldValues = converter.convert(edittedItems);

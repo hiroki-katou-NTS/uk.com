@@ -16,6 +16,7 @@ module nts.uk.at.kaf021.b {
         datas: Array<EmployeeAgreementTimeNew> = [];
         appType: common.AppTypeEnum = null;
         processingMonth: number;
+        year: number;
 
         yearTimeValidation = new validation.TimeValidator(this.$i18n("KAF021_18"), "AgreementOneYearTime", { required: true, valueType: "Clock", inputFormat: "hh:mm", outputFormat: "time", mode: "time" });
         reasonsValidation = new validation.StringValidator(this.$i18n("KAF021_19"), "ReasonsForAgreement", { required: true });
@@ -202,6 +203,7 @@ module nts.uk.at.kaf021.b {
 
             let datas: Array<EmployeeAgreementTimeNew> = [];
             _.each(params.datas, (item: any) => {
+                vm.year =  item.year;
                 let data: EmployeeAgreementTimeNew = {
                     employeeId: item.employeeId,
                     wkpName: item.wkpName,
@@ -423,7 +425,7 @@ module nts.uk.at.kaf021.b {
 
         getYear() {
             const vm = this;
-            return Number(moment(vm.getDate()).format("YYYY"));
+            return vm.year;
         }
 
         getCurrentMaxKey() {
