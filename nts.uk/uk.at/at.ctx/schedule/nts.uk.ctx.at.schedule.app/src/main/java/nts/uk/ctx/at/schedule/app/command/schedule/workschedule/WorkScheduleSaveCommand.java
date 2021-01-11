@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Getter
 @Setter
@@ -23,7 +24,7 @@ public class WorkScheduleSaveCommand {
 	// 勤務情報
 	public WorkInformationDto workInfor;
 	// Map<勤怠項目ID, <T>>
-	public Map<Integer, Integer> mapAttendIdWithTime;
+	public Map<Integer, TimeWithDayAttr> mapAttendIdWithTime;
 	// 休憩時間帯：List<時間帯>
 	public List<TimeSpanForCalc> breakTimeList;
 	// ksu001 sử dụng
@@ -37,7 +38,7 @@ public class WorkScheduleSaveCommand {
 	}
 
 	public WorkScheduleSaveCommand(String sid, GeneralDate ymd, WorkInformationDto workInfor,
-			Map<Integer, Integer> mapAttendIdWithTime, List<TimeSpanForCalc> breakTimeList) {
+			Map<Integer, TimeWithDayAttr> mapAttendIdWithTime, List<TimeSpanForCalc> breakTimeList) {
 		super();
 		this.sid = sid;
 		this.ymd = ymd;
