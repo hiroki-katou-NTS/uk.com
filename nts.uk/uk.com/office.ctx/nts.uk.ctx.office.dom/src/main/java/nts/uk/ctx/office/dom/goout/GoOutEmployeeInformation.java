@@ -17,7 +17,7 @@ public class GoOutEmployeeInformation {
 	private GoOutReason goOutReason;
 
 	// 年月日
-	private GeneralDate gouOutDate;
+	private GeneralDate gouOutDate;//TODO
 
 	// 戻り時刻
 	private AttendanceClock comebackTime;
