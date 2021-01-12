@@ -9,6 +9,7 @@ import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternCode;
 import nts.uk.ctx.at.function.dom.alarmworkplace.AlarmPatternSettingWorkPlace;
 import nts.uk.ctx.at.function.dom.alarmworkplace.AlarmPatternSettingWorkPlaceRepository;
@@ -61,13 +62,16 @@ public class ExtractAlarmListWorkPlaceCommandHandler extends AsyncCommandHandler
 
         dataSetter.setData("ctgCount", counter.get());
         // 集計処理
-        aggregateProcessService.process(cid, command.getAlarmPatternCode(), command.getWorkplaceIds(),
+        List<AlarmListExtractInfoWorkplace> extractInfos = aggregateProcessService.process(cid,
+                command.getAlarmPatternCode(), command.getWorkplaceIds(),
                 convertPeriods(command.getCategoryPeriods()), command.getProcessId(),
                 finished -> {
                     counter.set(counter.get() + finished);
                     dataSetter.updateData("ctgCount", counter.get());
                 },
                 () -> shouldStop(cid, context, asyncContext));
+
+        dataSetter.setData("isEmptyExtractData", CollectionUtil.isEmpty(extractInfos));
     }
 
     /**

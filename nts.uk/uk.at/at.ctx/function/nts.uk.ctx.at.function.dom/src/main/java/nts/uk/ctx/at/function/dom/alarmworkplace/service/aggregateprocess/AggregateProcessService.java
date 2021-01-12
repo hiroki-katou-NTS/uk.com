@@ -59,10 +59,11 @@ public class AggregateProcessService {
      * @param periods          List<カテゴリ別期間>
      */
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public void process(String cid, String alarmPatternCode, List<String> workplaceIds,
-                        List<PeriodByAlarmCategory> periods, String processId,
-                        Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+    public List<AlarmListExtractInfoWorkplace> process(String cid, String alarmPatternCode, List<String> workplaceIds,
+                                                       List<PeriodByAlarmCategory> periods, String processId,
+                                                       Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
         GeneralDate baseDate = GeneralDate.today();
+        List<AlarmListExtractInfoWorkplace> extractInfoAll = new ArrayList<>();
         // [No.560]職場IDから職場の情報をすべて取得する
         Map<String, WorkPlaceInforExport> wpInfoMap = this.workplaceAdapter.getWorkplaceInforByWkpIds(cid, workplaceIds, baseDate)
                 .stream().collect(Collectors.toMap(WorkPlaceInforExport::getWorkplaceId, x -> x));
@@ -148,7 +149,10 @@ public class AggregateProcessService {
 
             });
             alarmListExtractInfoWorkplaceRepo.addAll(extractInfos);
+            extractInfoAll.addAll(extractInfos);
             counter.accept(1);
         }
+
+        return extractInfoAll;
     }
 }

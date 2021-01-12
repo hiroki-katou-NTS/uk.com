@@ -49,9 +49,15 @@ module nts.uk.at.kal011.d {
             vm.start = vm.$date.now();
             vm.startTime(moment(vm.start).format(vm.formatDate))
             vm.interval = setInterval(vm.countTime, 1000, vm);
-            vm.extractAlarm().done((data: any) => {
-                console.log(data);
+            vm.extractAlarm().done((taskDatas: any) => {
+                console.log(taskDatas);
                 vm.extractUpdateStatus(ExtractState.SUCCESSFUL_COMPLE);
+                
+                let isEmpty: any = _.find(taskDatas, (task: any) => { return task.key == "isEmptyExtractData" });
+                if (isEmpty) {
+                    vm.$dialog.error({messageId: "Msg_835"});
+                    vm.setControlStatus(ScreenMode.INTERRUPT);
+                }
             }).fail((err: any) => {
                 vm.extractUpdateStatus(ExtractState.ABNORMAL_TERMI);
                 vm.$dialog.error(err);
@@ -80,13 +86,12 @@ module nts.uk.at.kal011.d {
                         return nts.uk.request.asyncTask.getInfo(vm.taskId).done(function (res: any) {
                             vm.updateProgress(res.taskDatas);
                             if (res.succeeded) {
-                                let data = {};
                                 vm.setControlStatus(ScreenMode.SUCCESSFUL);
 
-                                dfd.resolve(data);
+                                dfd.resolve(res.taskDatas);
                             } else if (res.failed) {
                                 // 抽出処理が中断された場合
-                                vm.setControlStatus(ScreenMode.INTERRUPT);
+                                vm.setControlStatus(ScreenMode.NOT_START);
                                 dfd.reject(res.error);
                             }
                         });
