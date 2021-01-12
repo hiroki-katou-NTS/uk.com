@@ -3,41 +3,41 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
   @component({
     name: 'ccg005-component',
-    template: `<div id="contents-area" class="fixed-flex-layout">
+    template: `<div style="display: flex; position: relative; padding: 0 10px 0 10px; overflow-y: auto; height: 465px" id="ccg005-watching">
     <div id="ccg005-content">
       <div class="grade-header-top">
         <!-- A0 -->
         <span data-bind="i18n: 'CCG005_1'" class="ccg005-bold"></span>
         <!-- A1_5 -->
-        <i data-bind="ntsIcon: {no: 5, width: 25, height: 25}"></i>
+        <i data-bind="ntsIcon: {no: 5, width: 25, height: 25}, click: $component.openScreenCCG005B"></i>
         <!-- A1_6 -->
-        <img width="25px" height="25px" src="../resource/reload.png"/>
+        <img width="25px" height="25px" src="${__viewContext.rootPath}/view/ccg/005/resource/reload.png"/>
       </div>
       <div class="grade-header-center">
         <table>
           <tr>
             <td>
               <!-- A1_1 -->
-              <img width="40px" height="40px" style="border-radius: 50%;" src="../resource/AVERAGE.png"/>
+              <img width="40px" height="40px" style="border-radius: 50%;" src="${__viewContext.rootPath}/view/ccg/005/resource/AVERAGE.png"/>
             </td>
             <td style="padding-left: 5px; width: 370px;">
               <!-- A1_2 -->
               <span class="ccg005-bold" data-bind="text: initPresenceData().businessName"></span>
               <div class="ccg005-flex">
                 <!-- A1_3 -->
-                <img width="20px" height="20px" src="../resource/AVERAGE.png"/>
+                <img width="20px" height="20px" src="${__viewContext.rootPath}/view/ccg/005/resource/AVERAGE.png"/>
                 <!-- A1_4 -->
                 <span>bb</span>
               </div>
             </td>
             <td>
               <!-- A1_7 -->
-              <img class="ccg005-status-img" width="25px" height="25px" src="../resource/AVERAGE.png"/>
+              <img class="ccg005-status-img" width="25px" height="25px" src="${__viewContext.rootPath}/view/ccg/005/resource/AVERAGE.png"/>
             </td>
           </tr>
         </table>
       </div>
-      <div class="grade-header-bottom ccg005-flex">
+      <div class="grade-header-bottom ccg005-flex" style="position: relative;">
         <!-- A2_3 -->
         <div data-bind="ntsDatePicker: {
           name: '#[CCG005_36]',
@@ -48,13 +48,13 @@ module nts.uk.at.view.ccg005.a.screenModel {
         }"></div>
         <!-- A2_1 -->
         <button id="ccg005-legends" style="margin-left: 5px;" data-bind="ntsLegendButton: legendOptions"></button>
-        <div style="margin-left: 30px; display: flex; align-items: center;">
+        <div style="right: 0; position: absolute; display: flex; align-items: center;">
           <!-- A3_2 -->
-          <img id="ccg005-star-img" style="margin-right: 5px;" width="20px" height="20px" src="../resource/favorite.png"/>
+          <img id="ccg005-star-img" style="margin-right: 5px;" width="20px" height="20px" src="${__viewContext.rootPath}/view/ccg/005/resource/favorite.png"/>
           <!-- A3_1 -->
           <div data-bind="ntsComboBox: {
             options: itemList,
-            width: '100px',
+            width: '130px',
             visibleItemsCount: 5,
             value: selectedCode,
             optionsValue: 'code',
@@ -85,10 +85,10 @@ module nts.uk.at.view.ccg005.a.screenModel {
       <!-- A5 -->
       <div class="grade-body-bottom">
         <table style="width: 100%; border-collapse: separate; border-spacing: 0 5px">
-          <tr style="background-color: yellow;">
+          <tr style="background-color: yellow; height: 50px;">
             <td style="padding-right: 5px; width: 30px; background-color: white;">
               <!-- A4_1 -->
-              <img style="border-radius: 50%; border: 1px groove;" width="25px" height="25px" src="../resource/AVERAGE.png"/>
+              <img style="border-radius: 50%; border: 1px groove;" width="25px" height="25px" src="${__viewContext.rootPath}/view/ccg/005/resource/AVERAGE.png"/>
             </td>
             <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset">
               <!-- A4_8 -->
@@ -101,14 +101,14 @@ module nts.uk.at.view.ccg005.a.screenModel {
                 <!-- A4_2 -->
                 <span>text 2</span>
                 <!-- A4_4 -->
-                <img width="13px" height="13px" src="../resource/application.png" />
+                <img width="13px" height="13px" src="${__viewContext.rootPath}/view/ccg/005/resource/application.png" />
               </div>
               <!-- A4_3 -->
               <div>emoji 1</div>
             </td>
             <td class="ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
               <!-- A4_7 -->
-              <span class="ccg005-flex"><img class="ccg005-status-img" width="25px" height="25px" src="../resource/AVERAGE.png"/></span>
+              <span class="ccg005-flex"><img class="ccg005-status-img" width="25px" height="25px" src="${__viewContext.rootPath}/view/ccg/005/resource/AVERAGE.png"/></span>
             </td>
             <td class="ccg005-pl-5 ccg005-border-groove ccg005-left-unset">
               <!-- A4_6 time -->
@@ -119,30 +119,41 @@ module nts.uk.at.view.ccg005.a.screenModel {
           </tr>
         </table>
       </div>
-      <div class="grade-bottom ccg005-flex" style="width: 100%; align-items: center; position: relative; margin-top: 10px;">
-        <div class="ccg005-pagination ccg005-flex">
-          <img width="15px" height="20px" src="../resource/previous.png" />
-          <span>1-7/25</span>
-          <img width="15px" height="20px" src="../resource/next.png" />
-        </div>
-        <div class="ccg005-switch-btn" style="position: absolute; right: 0;">
-          <!-- A5_4 -->
-          <div class="cf" data-bind="ntsSwitchButton: {
-            options: contentSelections,
-            optionsValue: 'code',
-            optionsText: 'name',
-            value: contentSelected }"></div>
-        </div>
+      <div class="grade-bottom ccg005-flex" style="width: 100%; align-items: center; position: relative; margin-top: 10px; margin-bottom: 10px;">
+        <table style="width: 100%;">
+          <tr>
+            <td>
+              <div class="ccg005-pagination ccg005-flex" style="align-items: center;">
+                <!-- A5_1 -->
+                <img width="15px" class="ccg005-pagination-btn" height="20px" src="${__viewContext.rootPath}/view/ccg/005/resource/previous.png" data-bind="click: $component.previousPage"/>
+                <!-- A5_2 -->
+                <span style="white-space: nowrap;" data-bind="text: $component.paginationText()"></span>
+                <!-- A5_3 -->
+                <img width="15px" height="20px" class="ccg005-pagination-btn" src="${__viewContext.rootPath}/view/ccg/005/resource/next.png" data-bind="click: $component.nextPage"/>
+              </div>
+            </td>
+            <td style="width: 100%">
+              <div class="ccg005-switch-btn" style="float: right;">
+                <!-- A5_4 -->
+                <div class="cf" data-bind="ntsSwitchButton: {
+                  options: contentSelections,
+                  optionsValue: 'code',
+                  optionsText: 'name',
+                  value: contentSelected }"></div>
+              </div>
+            </td>
+          </tr>
+        </table>
       </div>
     </div>
 
     <!-- A3_2 Popup -->
-    <div id="ccg005-star-popup" style="width: 140px;">
+    <div id="ccg005-star-popup" style="width: 130px;">
       <!-- A3_2.1 -->
       <table>
         <tr>
           <td style="text-align: right;">
-            <a style="color: blue; text-decoration: underline;" data-bind="i18n: 'CCG005_34'"></a>
+            <a style="color: blue; text-decoration: underline;" data-bind="i18n: 'CCG005_34', click: $component.openScreenCCG005D"></a>
           </td>
         </tr>
         <tr>
@@ -153,7 +164,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
               enterkey: submit,
               option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                 textmode: 'text',
-                width: '120px',
+                width: '110px',
                 placeholder: $component.placeholder()
               }))
             }"></input>
@@ -178,7 +189,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
           </td>
           <!-- A1_7.1 -->
           <td>
-            <img width="25px" height="25px" src="#{request.contextPath}/view/ccg/005/resource/stt_notpresent.png" />
+            <img width="25px" height="25px" src="${__viewContext.rootPath}/view/ccg/005/resource/stt_notpresent.png" />
           </td>
           <td data-bind="i18n: 'CCG005_43'"></td>
         </tr>
@@ -188,17 +199,17 @@ module nts.uk.at.view.ccg005.a.screenModel {
           </td>
           <!-- A1_7.2 -->
           <td>
-            <img width="25px" height="25px" src="../resource/stt_present.png" />
+            <img width="25px" height="25px" src="${__viewContext.rootPath}/view/ccg/005/resource/stt_present.png" />
           </td>
           <td data-bind="i18n: 'CCG005_44'"></td>
         </tr>
-        <tr>
+        <tr data-bind="click: $component.openScreenCCG005E">
           <td>
             <i data-bind="ntsIcon: {no: 78, width: 15, height: 25}"></i>
           </td>
           <!-- A1_7.3 -->
           <td>
-            <img width="25px" height="25px" src="../resource/stt_goout.png" />
+            <img width="25px" height="25px" src="${__viewContext.rootPath}/view/ccg/005/resource/stt_goout.png" />
           </td>
           <td data-bind="i18n: 'CCG005_39'"></td>
         </tr>
@@ -208,7 +219,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
           </td>
           <!-- A1_7.4 -->
           <td>
-            <img width="25px" height="25px" src="../resource/stt_gohome.png" />
+            <img width="25px" height="25px" src="${__viewContext.rootPath}/view/ccg/005/resource/stt_gohome.png" />
           </td>
           <td data-bind="i18n: 'CCG005_44'"></td>
         </tr>
@@ -218,7 +229,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
           </td>
           <!-- A1_7.5 -->
           <td>
-            <img width="25px" height="25px" src="../resource/stt_holiday.png" />
+            <img width="25px" height="25px" src="${__viewContext.rootPath}/view/ccg/005/resource/stt_holiday.png" />
           </td>
           <td data-bind="i18n: 'CCG005_40'"></td>
         </tr>
@@ -239,10 +250,10 @@ module nts.uk.at.view.ccg005.a.screenModel {
       border: 1px groove;
     }
     .ccg005-right-unset {
-      border-right: unset;
+      border-right: none;
     }
     .ccg005-left-unset {
-      border-left: unset;
+      border-left: none;
     }
     .ccg005-flex {
       display: flex;
@@ -271,6 +282,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       width: calc(100% - 5px);
       border: 1px groove black;
     }
+    #ccg005-status-popup table tr,
     #ccg005-content i, #ccg005-content img {
       cursor: pointer;
     }
@@ -302,6 +314,18 @@ module nts.uk.at.view.ccg005.a.screenModel {
     initPresenceData: KnockoutObservable<InitPresenceData>;
 
     placeholder: KnockoutObservable<string> = ko.observable(this.$i18n('CCG005_45'));
+    height: KnockoutObservable<number> = ko.observable(465);
+    // Pagination
+    currentPage: KnockoutObservable<number> = ko.observable(1);
+    totalRow: KnockoutObservable<number> = ko.observable(7);
+    perPage: KnockoutObservable<number> = ko.observable(7);
+    totalElement: KnockoutObservable<number> = ko.observable(101);
+    paginationText: KnockoutComputed<string> = ko.computed(() => {
+      const vm = this;
+      const start = vm.perPage() * (vm.currentPage() - 1) + 1;
+      const end = start + vm.totalRow();
+      return `${start}-${end}/${vm.totalElement()}`;
+    })
 
     created() {
       const vm = this;
@@ -336,8 +360,21 @@ module nts.uk.at.view.ccg005.a.screenModel {
       $('#ccg005-legends').click(() => {
         $('.legend-item-symbol').first().css('border', '1px groove');
       });
+      vm.initResizeable();
       vm.initPopupArea();
       vm.initPopupStatus();
+    }
+
+    initResizeable() {
+      $(window).on('ccg005.resize', () => {
+        const subHeight = $('#ccg005-content').height()
+          - $('.grade-header-top').height()
+          - $('.grade-header-center').height()
+          - $('.grade-header-bottom').height()
+          - $('.grade-body-top').height()
+          - $('.grade-bottom').height();
+        _.floor(subHeight/55);
+      });
     }
 
     /**
@@ -385,7 +422,36 @@ module nts.uk.at.view.ccg005.a.screenModel {
       });
     }
 
+    nextPage() {
+      const vm = this;
+      if (vm.currentPage() * vm.perPage() < vm.totalElement()) {
+        vm.currentPage(vm.currentPage() + 1);
+      }
+    }
+
+    previousPage() {
+      const vm = this;
+      if (vm.currentPage() > 1) {
+        vm.currentPage(vm.currentPage() - 1);
+      }
+    }
+
     submit() {}
+
+    openScreenCCG005B() {
+      const vm = this;
+      vm.$window.modal('/view/ccg/005/b/index.xhtml', {});
+    }
+
+    openScreenCCG005D() {
+      const vm = this;
+      vm.$window.modal('/view/ccg/005/d/index.xhtml', {});
+    }
+
+    openScreenCCG005E() {
+      const vm = this;
+      vm.$window.modal('/view/ccg/005/e/index.xhtml', {});
+    }
   }
 
   class ItemModel {
