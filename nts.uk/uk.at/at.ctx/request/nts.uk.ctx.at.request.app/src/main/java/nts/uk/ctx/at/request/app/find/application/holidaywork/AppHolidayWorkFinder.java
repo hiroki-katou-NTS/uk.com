@@ -391,16 +391,22 @@ public class AppHolidayWorkFinder {
 
 	public CheckBeforeOutputDto checkBeforeRegisterMobile(ParamCheckBeforeRegisterMobile param) {
 		CheckBeforeOutput checkBeforeOutput;
-		Application application = param.getAppHolidayWork().getApplication().toDomain();
-		AppHolidayWork appHolidayWork = param.getAppHolidayWork().toDomain();
-		if (appHolidayWork.getAppOvertimeDetail().isPresent()) {
-			appHolidayWork.getAppOvertimeDetail().get().setAppId(application.getAppID());
-		}
-		appHolidayWork.setApplication(application);
 		if(param.getMode()) {
+			Application application = param.getAppHolidayWorkInsert().getApplication().toDomain();
+			AppHolidayWork appHolidayWork = param.getAppHolidayWorkInsert().toDomain();
+			if (appHolidayWork.getAppOvertimeDetail().isPresent()) {
+				appHolidayWork.getAppOvertimeDetail().get().setAppId(application.getAppID());
+			}
+			appHolidayWork.setApplication(application);
 			checkBeforeOutput = holidayWorkService.checkBeforeRegister(param.isRequire(), param.getCompanyId(), 
 					param.getAppHdWorkDispInfo().toDomain(), appHolidayWork, false);
 		} else {
+			Application application = param.getAppHolidayWorkUpdate().getApplication().toDomain(param.getAppHdWorkDispInfo().getAppDispInfoStartupOutput().getAppDetailScreenInfo().getApplication());
+			AppHolidayWork appHolidayWork = param.getAppHolidayWorkUpdate().toDomain();
+			if (appHolidayWork.getAppOvertimeDetail().isPresent()) {
+				appHolidayWork.getAppOvertimeDetail().get().setAppId(application.getAppID());
+			}
+			appHolidayWork.setApplication(application);
 			checkBeforeOutput = holidayWorkService.checkBeforeUpdate(param.isRequire(), param.getCompanyId(), 
 					param.getAppHdWorkDispInfo().toDomain(), appHolidayWork);
 		}

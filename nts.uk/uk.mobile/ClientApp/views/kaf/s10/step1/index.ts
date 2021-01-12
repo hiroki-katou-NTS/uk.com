@@ -204,7 +204,6 @@ export class KafS10Step1Component extends Vue {
             let workTimes = appHdWorkDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst;
             let resultWorkTime = 
                     _.find(workTimes, (i: any) => i.worktimeCode == workTime.code);
-            console.log(resultWorkTime);
             workTime.name = resultWorkTime ? (_.get(resultWorkTime, 'workTimeDisplayName.workTimeName') || '') : self.$i18n('KAFS05_55');
   
         }

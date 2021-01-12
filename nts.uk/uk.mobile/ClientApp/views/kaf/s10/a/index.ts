@@ -12,7 +12,7 @@ import { OverTime } from '../step2/index';
 import { OverTimeWorkHoursDto } from '../../s00/sub/p2';
 
 @component({
-    name: 'kafs10a',
+    name: 'kafs10',
     route: '/kaf/s10/a',
     style: require('./style.scss'),
     template: require('./index.vue'),
@@ -541,7 +541,8 @@ export class KafS10Component extends KafS00ShrComponent {
             mode: vm.modeNew,
             companyId: vm.user.companyId,
             appHdWorkDispInfo: vm.model.appHdWorkDispInfo,
-            appHolidayWork: vm.model.appHolidayWork
+            appHolidayWorkInsert: vm.model.appHolidayWork,
+            appHolidayWorkUpdate: vm.model.appHolidayWork,
         }).then((result: any) => {
             if (result) {
                 // xử lý confirmMsg
@@ -626,7 +627,6 @@ export class KafS10Component extends KafS00ShrComponent {
 
     public handleErrorCustom(failData: any): any {
         const vm = this;
-        console.log(failData, 'error');
 
         return new Promise((resolve) => {
             if (failData.messageId == 'Msg_26') {
