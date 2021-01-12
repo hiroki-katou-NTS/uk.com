@@ -30,7 +30,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             opOptionalItemOutput: null,
 		};
         childParam: any = {};
-		kaf011BViewModel:KnockoutObservable<Kaf011BViewModel> = ko.observable({});
+		kaf011BViewModel:KnockoutObservable<Kaf011BViewModel> = ko.observable(null);
 
 		displayGoback: KnockoutObservable<boolean> = ko.observable(false);
 		enableBack: KnockoutObservable<boolean> = ko.pureComputed(() => {
@@ -103,7 +103,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 eventUpdate: function(a: any) { vm.getChildUpdateEvent.apply(vm, [a]) },
 				eventReload: function(a: any) { vm.getChildReloadEvent.apply(vm, [a]) },
             }
-			vm.kaf011BViewModel(new Kaf011BViewModel(vm.childParam));
+			
 			vm.$blockui("show");
 			vm.$ajax(API.getAppNameInAppList).then((data) => {
 				vm.appNameList = data;
@@ -124,6 +124,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 		        vm.application().opReversionReason(successData.appDetailScreenInfo.application.opReversionReason);
 		        vm.application().opStampRequestMode(successData.appDetailScreenInfo.application.opStampRequestMode);
                 vm.appDispInfoStartupOutput(successData);
+				vm.kaf011BViewModel(new Kaf011BViewModel(vm.childParam));
                 let viewContext: any = __viewContext,
                     loginID = viewContext.user.employeeId,
                     loginFlg = successData.appDetailScreenInfo.application.enteredPerson == loginID || successData.appDetailScreenInfo.application.employeeID == loginID,

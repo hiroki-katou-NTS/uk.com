@@ -7,6 +7,9 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 	import RecruitmentApp = nts.uk.at.view.kaf011.RecruitmentApp;
 	import AbsenceLeaveApp = nts.uk.at.view.kaf011.AbsenceLeaveApp;
 	import Comment = nts.uk.at.view.kaf011.Comment;
+	import getText = nts.uk.resource.getText;
+	import block = nts.uk.ui.block;
+	import ajax = nts.uk.request.ajax;
 
     export class Kaf011BViewModel{
 
@@ -20,9 +23,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 		recruitmentApp = new RecruitmentApp(0);
 		absenceLeaveApp = new AbsenceLeaveApp(1);
 		comment = new Comment();
-		
 		displayInforWhenStarting = ko.observable(null);
-		
 		
         constructor(
             params: {
@@ -41,13 +42,34 @@ module nts.uk.at.view.kaf011.b.viewmodel {
             vm.printContentOfEachAppDto = ko.observable(params.printContentOfEachAppDto);
             vm.approvalReason = params.approvalReason;
 			vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
-            // gui event con ra viewmodel cha
-            // nhớ dùng bind(vm) để ngữ cảnh lúc thực thi
-            // luôn là component
             params.eventUpdate(vm.update.bind(vm));
             params.eventReload(vm.reload.bind(vm));
+			if(vm.application().appID()!= null){
+				vm.loadData();
+			}			
         }
-
+		
+		loadData(){
+			const vm = this;
+			block.invisible();
+				ajax('at/request/application/holidayshipment/startPageBRefactor',{appID: vm.application().appID(), appDispInfoStartupDto: vm.appDispInfoStartupOutput()}).then((data: any) =>{
+					console.log(data);
+					if(data.rec && data.abs){
+						vm.recruitmentApp.bindingScreenB(data.rec, data.applicationForWorkingDay.workTypeList, vm.appDispInfoStartupOutput());
+						vm.absenceLeaveApp.bindingScreenB(data.abs, data.applicationForHoliday.workTypeList, vm.appDispInfoStartupOutput());	
+					}else if(data.rec){
+						vm.appCombinaSelected(1);
+						vm.recruitmentApp.bindingScreenB(data.rec, data.applicationForWorkingDay.workTypeList, vm.appDispInfoStartupOutput());
+					}else if(data.abs){
+						vm.appCombinaSelected(2);
+						vm.absenceLeaveApp.bindingScreenB(data.abs, data.applicationForHoliday.workTypeList, vm.appDispInfoStartupOutput());
+					}
+					
+				}).fail((failData: any) => {
+				}).always(() => {
+                    block.clear();
+                });
+		}
 
         reload() {
             const vm = this;

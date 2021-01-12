@@ -31,21 +31,6 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 		absenceLeaveApp = new AbsenceLeaveApp(1);
 		
 		isAgentMode = ko.observable(false);
-		selectedRuleCode = ko.observable('');
-		required = ko.observable(true);
-		enable = ko.observable(true);
-		date = ko.observable('2020/10/20');
-		
-		workTypeSelected = ko.observable(1);
-		workTime = ko.observable('001 aaaa 08:30 ~ 12:00');
-		
-		startTime1 = ko.observable(510);
-		endTime1 = ko.observable(1050);
-		
-		related = [
-			{date: '2020/04/04(土)', number: '0.5日'},
-			{date:  '2020/04/04(土)', number: '0.5日'}
-		];
 		
 		settingCheck = ko.observable(true);
 		isFromOther: boolean = false;

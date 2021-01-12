@@ -367,8 +367,10 @@ module nts.uk.at.view.kaf011 {
 			self.workNo = workNo;
 		}
 		update(timeZone: any) {
-			let self = this;
-			self.timeZone.update(timeZone);
+			if(timeZone){
+				let self = this;
+				self.timeZone.update(timeZone);	
+			}
 		}
 		
 	}
