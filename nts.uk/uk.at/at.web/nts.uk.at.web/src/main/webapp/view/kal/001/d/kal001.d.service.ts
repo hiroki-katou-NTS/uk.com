@@ -140,7 +140,7 @@ module nts.uk.at.view.kal001.d.service {
                     this.name = p.categoryName;     
                     this.period36Agreement = p.period36Agreement;     
                                         
-                    if(p.category==2|| p.category==5){//スケジュール4週,日次,申請承認
+                    if(p.category==2 || p.category==5 || p.category==8){//スケジュール4週,日次,申請承認
                         this.startDate =nts.uk.time.parseMoment(p.startDate).momentObject.toISOString() ;
                         this.endDate = nts.uk.time.parseMoment(p.endDate).momentObject.toISOString() ;
                         

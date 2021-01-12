@@ -7,6 +7,7 @@ import nts.arc.time.GeneralDate;
 @Data
 @AllArgsConstructor
 public class ApplicationImport {
+	private String appID;
 	/**
 	 * appDate,申請日
 	 */
@@ -23,4 +24,8 @@ public class ApplicationImport {
 	 * appTypeName,申請表示名※
 	 */
 	private String appTypeName;
+	/**
+	 * 反映状態: 0, "未反映"/1, "反映待ち"/2, "反映済"/3, "取消済"/4, "差し戻し"/5, "否認"
+	 */
+	private Integer state;
 }

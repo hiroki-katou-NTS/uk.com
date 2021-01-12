@@ -28,8 +28,8 @@ public class AppApprovalFixedExtractConditionDto {
 	public static AppApprovalFixedExtractConditionDto fromDomain(AppApprovalFixedExtractCondition domain) {
 		return new AppApprovalFixedExtractConditionDto(domain.getErrorAlarmCheckId()
 				, ""
-				, domain.getNo()
-				, domain.getMessage().v()
+				, domain.getNo().value
+				, domain.getMessage().isPresent() ? domain.getMessage().get().v() : ""
 				, domain.isUseAtr()
 				, ErrorAlarmAtr.OTH.value);
 	}

@@ -35,10 +35,12 @@ import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.AlarmExtraValueWkReDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.appapproval.AppApprovalAggregationProcessService;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckTargetCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.AppApprovalAlarmCheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.ConExtractedDaily;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmCheckCondition4W4D;
@@ -80,6 +82,8 @@ public class AggregationProcessService {
 	private AlarmCheckConditionByCategoryRepository checkConditionRepo;
 	@Inject
 	private ErAlWorkRecordCheckAdapter erCheckAdapter;
+	@Inject
+	private AppApprovalAggregationProcessService appApprovalAggregationProcessService;
 		
 	public List<AlarmExtraValueWkReDto> processAlarmListWorkRecord(GeneralDate baseDate, String companyID, List<EmployeeSearchDto> listEmployee, 
 			String checkPatternCode, List<PeriodByAlarmCategory> periodByCategory) {
@@ -335,6 +339,15 @@ public class AggregationProcessService {
 					break;
 					
 				case APPLICATION_APPROVAL:
+					AppApprovalAlarmCheckCondition appCond = (AppApprovalAlarmCheckCondition) x.getExtractionCondition();
+					appApprovalAggregationProcessService.aggregateCheck(cid, appCond.getApprovalAlarmConID(),
+							datePeriod,
+							lstSidTmp,
+							getWplByListSidAndPeriod,
+							lstResultCondition, 
+							lstCheckType,
+							counter,
+							shouldStop);
 					break;
 					
 				case MULTIPLE_MONTH:

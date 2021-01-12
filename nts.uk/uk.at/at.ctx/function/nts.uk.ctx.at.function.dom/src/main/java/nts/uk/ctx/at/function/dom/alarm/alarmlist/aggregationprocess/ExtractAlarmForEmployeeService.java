@@ -33,6 +33,7 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.mastercheck.MasterCheckAggrega
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.monthly.MonthlyAggregateProcessService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.multiplemonth.MultipleMonthAggregateProcessService;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.FourW4DCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.master.MasterCheckAlarmCheckCondition;
@@ -124,10 +125,11 @@ public class ExtractAlarmForEmployeeService {
 				});
 				
 				// カテゴリ：日次のチェック条件(daily)
-				if (checkCondition.isDaily()) {
-					for (String checkConditionCode : checkCondition.getCheckConditionList()) {						
+			List<String> checkConditionList = checkCondition.getCheckConditionList();
+			if (checkCondition.isDaily()) {
+					for (String checkConditionCode : checkConditionList) {
 						// アルゴリズム「日次の集計処理」を実行する
-						result.addAll(dailyAggregationProcessService.dailyAggregationProcess(comId, checkConditionCode, 
+						result.addAll(dailyAggregationProcessService.dailyAggregationProcess(comId, checkConditionCode,
 								periodAlarms.get(0), employees, datePeriods.get(0)));
 					}
 				}
@@ -135,20 +137,20 @@ public class ExtractAlarmForEmployeeService {
 				else if (checkCondition.is4W4D()) {
 					// アルゴリズム「4週4休の集計処理」を実行する
 //					for (String checkConditionCode : checkCondition.getCheckConditionList()) {
-						List<ValueExtractAlarm> w4d4AlarmList = w4D4AlarmService.calculateTotal4W4D(employees, datePeriods.get(0), checkCondition.getCheckConditionList());
+						List<ValueExtractAlarm> w4d4AlarmList = w4D4AlarmService.calculateTotal4W4D(employees, datePeriods.get(0), checkConditionList);
 						result.addAll(w4d4AlarmList);
 //					}
 				}
 				// カテゴリ：36協定
 				else if(checkCondition.isAgrrement()) {
 					//36協定の集計処理
-					List<ValueExtractAlarm> agreementAlarmList = agreementProcessService.agreementProcess(checkCondition.getCheckConditionList(), periodAlarms, employees, agreementSetObj);
+					List<ValueExtractAlarm> agreementAlarmList = agreementProcessService.agreementProcess(checkConditionList, periodAlarms, employees, agreementSetObj);
 					result.addAll(agreementAlarmList);
 				}
 				// カテゴリ：月次のチェック条件 (monthly)
 				else if (checkCondition.isMonthly()) {
 					
-					for (String checkConditionCode : checkCondition.getCheckConditionList()) {						
+					for (String checkConditionCode : checkConditionList) {
 						// アルゴリズム「日次の集計処理」を実行する
 						List<ValueExtractAlarm> monthlyAlarmList = monthlyAggregateProcessService.monthlyAggregateProcess(comId,checkConditionCode, datePeriods.get(0), employees, appovalProcess, identConfrimProcess);
 						result.addAll(monthlyAlarmList);
@@ -157,7 +159,7 @@ public class ExtractAlarmForEmployeeService {
 				//Hoidd
 				else if (checkCondition.isMultipleMonth()) {
 					
-					for (String checkConditionCode : checkCondition.getCheckConditionList()) {						
+					for (String checkConditionCode : checkConditionList) {
 						// 複数月の集計処理
 						List<ValueExtractAlarm> mutilpleMonthlAlarmList = multipleMonthAggregateProcessService.multimonthAggregateProcess(comId,checkConditionCode, datePeriods.get(0), employees);
 						result.addAll(mutilpleMonthlAlarmList);
@@ -165,7 +167,7 @@ public class ExtractAlarmForEmployeeService {
 				}
 				//年休の集計処理(holiday)
 				else if (checkCondition.isAttHoliday()) {
-					for (String checkConditionCode : checkCondition.getCheckConditionList()) {
+					for (String checkConditionCode : checkConditionList) {
 						List<ValueExtractAlarm> mutilpleMonthlAlarmList = totalProcessAnnualHoliday.totalProcessAnnualHoliday(comId,checkConditionCode, employees);
 						result.addAll(mutilpleMonthlAlarmList);
 					}

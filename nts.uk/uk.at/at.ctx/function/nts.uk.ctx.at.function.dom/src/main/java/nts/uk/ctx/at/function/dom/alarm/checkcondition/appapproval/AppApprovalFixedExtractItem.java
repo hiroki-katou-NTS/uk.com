@@ -9,16 +9,16 @@ import nts.arc.layer.dom.AggregateRoot;
 @Getter
 public class AppApprovalFixedExtractItem extends AggregateRoot {
 	
-	private int no;
+	private AppApprovalFixedCheckItem no;
 	
 	private ErrorAlarmMessage initMessage;
 	
 	private ErrorAlarmAtr erAlAtr;
 	
-	private AppApprovalFixedCheckItem name;
+	private String name;
 
-	public AppApprovalFixedExtractItem(int no, ErrorAlarmMessage initMessage, ErrorAlarmAtr erAlAtr,
-			AppApprovalFixedCheckItem name) {
+	public AppApprovalFixedExtractItem(AppApprovalFixedCheckItem no, ErrorAlarmMessage initMessage, ErrorAlarmAtr erAlAtr,
+			String name) {
 		this.no = no;
 		this.initMessage = initMessage;
 		this.erAlAtr = erAlAtr;

@@ -49,20 +49,22 @@ public class WorkScheduleWorkInforAcFinder implements WorkScheduleWorkInforAdapt
 	}
 
 	private WorkScheduleWorkInforImport convert(WorkScheduleExport data) {
-		Optional<BreakTimeOfDailyAttdImport> listBreakTimeOfDailyAttdImport = data.getListBreakTimeOfDaily()
-				.map(c -> new BreakTimeOfDailyAttdImport(
-						c.getBreakTimeSheets().stream()
-								.map(x -> new BreakTimeSheetImport(x.getBreakFrameNo(), x.getStartTime(),
-										x.getEndTime(), x.getBreakTime()))
-								.collect(Collectors.toList())));
-		return new WorkScheduleWorkInforImport(data.getEmployeeId(), data.getConfirmedATR(), data.getWorkTyle(),
-				data.getWorkTime(), data.getGoStraightAtr(), data.getBackStraightAtr(),
-				!data.getTimeLeavingOfDailyAttd().isPresent() ? null
-						: new TimeLeavingOfDailyAttdImport(
-						data.getTimeLeavingOfDailyAttd().get().getTimeLeavingWorks().stream()
-								.map(this::convertToTimeLeavingWork).collect(Collectors.toList()),
-						data.getTimeLeavingOfDailyAttd().get().getWorkTimes()),
-				listBreakTimeOfDailyAttdImport);
+		if (data.isPresent()) {
+			BreakTimeOfDailyAttdImport listBreakTimeOfDailyAttdImport = new BreakTimeOfDailyAttdImport(
+					data.get().getListBreakTimeOfDaily().getBreakTimeSheets().stream()
+									.map(x -> new BreakTimeSheetImport(x.getBreakFrameNo(), x.getStartTime(),
+											x.getEndTime(), x.getBreakTime()))
+									.collect(Collectors.toList()));
+			return Optional.of(new WorkScheduleWorkInforImport(data.get().getWorkTyle(), data.get().getWorkTime(),
+					data.get().getGoStraightAtr(), data.get().getBackStraightAtr(),
+					!data.get().getTimeLeavingOfDailyAttd().isPresent() ? null
+							: new TimeLeavingOfDailyAttdImport(
+									data.get().getTimeLeavingOfDailyAttd().get().getTimeLeavingWorks().stream()
+											.map(c -> convertToTimeLeavingWork(c)).collect(Collectors.toList()),
+									data.get().getTimeLeavingOfDailyAttd().get().getWorkTimes()),
+					listBreakTimeOfDailyAttdImport));
+		}
+		return Optional.empty();
 	}
 
 	private TimeLeavingWorkImport convertToTimeLeavingWork(TimeLeavingWorkExport domain) {

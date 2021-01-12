@@ -888,7 +888,7 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 
 	private static final String SELECT_ALL_WORKTYPE_BY_LIST_CODE = SELECT_FROM_WORKTYPE
 			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId "
-			+ "AND c.kshmtWorkTypeSetPK.workTypeCode IN :workTypeCodes ";
+			+ "AND c.kshmtWorkTypePK.workTypeCode IN :workTypeCodes ";
 	
 	@Override
 	public List<WorkType> findByCidAndWorkTypeCodes(String companyId, List<String> workTypeCodes) {

@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
@@ -14,14 +16,14 @@ public class AppApprovalFixedExtractCondition extends AggregateRoot {
 	 */
 	private String errorAlarmCheckId;
 	
-	private int no;
+	private AppApprovalFixedCheckItem no;
 	
-	private ErrorAlarmMessage message;
+	private Optional<ErrorAlarmMessage> message;
 	
 	private boolean useAtr;
 
 	
-	public AppApprovalFixedExtractCondition(String errorAlarmCheckId, int no, ErrorAlarmMessage message,
+	public AppApprovalFixedExtractCondition(String errorAlarmCheckId, AppApprovalFixedCheckItem no, Optional<ErrorAlarmMessage> message,
 			boolean useAtr) {
 		this.errorAlarmCheckId = errorAlarmCheckId;
 		this.no = no;

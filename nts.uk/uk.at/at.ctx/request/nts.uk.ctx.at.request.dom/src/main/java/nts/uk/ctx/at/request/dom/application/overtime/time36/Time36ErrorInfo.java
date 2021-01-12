@@ -23,7 +23,12 @@ public enum Time36ErrorInfo {
 	/**
 	 * 上限複数月平均時間エラー
 	 */
-	AVERAGE_MONTH_TIME_ERROR(3,"上限複数月平均時間エラー");
+	AVERAGE_MONTH_TIME_ERROR(3,"上限複数月平均時間エラー"),
+	
+	/**
+	 * 上限年間時間エラー
+	 */
+	MAX_YEAR_TIME_ERROR(4,"上限年間時間エラー");
 	
 	public final int value;
 	

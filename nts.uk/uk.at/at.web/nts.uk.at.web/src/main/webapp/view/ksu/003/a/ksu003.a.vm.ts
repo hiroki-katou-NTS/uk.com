@@ -101,8 +101,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		lstBreakShow : any = [];
 		checkTypeChange : any = [];
 		
-		checkDragDrog : boolean = false;
-		sliceFixedTime : boolean = false;
+		checkDragDrog : boolean = false; // phân biệt resize = false vs drop = true
 		constructor(data: any) {
 			let self = this;
 			// get data from sc A
@@ -595,8 +594,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			service.getDataStartScreen(targetOrgDto)
 				.done((data: model.GetInfoInitStartKsu003Dto) => {
 					self.dataInitStartKsu003Dto(data);
-					self.dataInitStartKsu003Dto().byDateDto.dispStart = 7;
-					self.dataInitStartKsu003Dto().byDateDto.initDispStart = 7;
+/*					self.dataInitStartKsu003Dto().byDateDto.dispStart = 7;
+					self.dataInitStartKsu003Dto().byDateDto.initDispStart = 7;*/
 					self.organizationName(self.dataInitStartKsu003Dto().displayInforOrganization.displayName);
 					self.dataScreen003A().targetInfor = data.manageMultiDto.useATR;
 					self.timeRange = self.dataInitStartKsu003Dto().byDateDto.dispRange == 0 ? 24 : 48;
@@ -2162,6 +2161,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					return;
 				let param = e.detail;
 				let startMinute = 0, endMinute = 0;
+				self.checkDragDrog = false;
 				startMinute = duration.create(param[0] * 5 + self.dispStart * 5).text;
 				endMinute = duration.create(param[1] * 5 + self.dispStart * 5).text;
 				if (param[2]) {
@@ -2177,6 +2177,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					return;
 				let param = e.detail;
 				let startMinute, endMinute;
+				self.checkDragDrog = false;
 				startMinute = duration.create(param[0] * 5 + self.dispStart * 5).text;
 				endMinute = duration.create(param[1] * 5 + self.dispStart * 5).text;
 				if (param[2]) {
@@ -3393,7 +3394,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							startTimeRange2: null,
 							endTimeRange2: null,
 							fixBreakTime: fixed.fixBreakTime,
-							workType: fixed.workType
+							workType: fixed.workType,
+							isHoliday: null,							
+							isNeedWorkTime : null
 						}
 					} else {
 						self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workTimeName = fixed.workTimeName;

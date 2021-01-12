@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.AppApprovalFixedCheckItem;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.AppApprovalFixedExtractItem;
@@ -21,8 +22,10 @@ public class JpaAppApprovalFixedExtractItemRepository extends JpaRepository impl
 		String query = "SELECT a FROM KrqmtAppApprovalFixedExtractItem a ORDER BY a.no ASC";
 		return this.queryProxy().query(query, KrqmtAppApprovalFixedExtractItem.class).getList()
 				.stream().map(a -> new AppApprovalFixedExtractItem(
-						a.getNo(), new ErrorAlarmMessage(a.getInitMessage())
-						, ErrorAlarmAtr.values()[a.getElAlAtr()], AppApprovalFixedCheckItem.fromName(a.getName())))
+						EnumAdaptor.valueOf(a.getNo(), AppApprovalFixedCheckItem.class),
+						new ErrorAlarmMessage(a.getInitMessage())
+						, ErrorAlarmAtr.values()[a.getElAlAtr()],
+						a.getName()))
 				.collect(Collectors.toList());
 	}
 }

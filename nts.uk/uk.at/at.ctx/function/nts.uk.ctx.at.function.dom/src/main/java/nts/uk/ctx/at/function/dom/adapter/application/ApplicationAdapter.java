@@ -31,4 +31,6 @@ public interface ApplicationAdapter {
 	 * @return
 	 */
 	List<ApplicationStateImport> findByEmployeesAndDates(List<String> empIds, DatePeriod period);
+	
+	public List<ApplicationImport> getAppById(String cid, List<String> lstAppId);
 }

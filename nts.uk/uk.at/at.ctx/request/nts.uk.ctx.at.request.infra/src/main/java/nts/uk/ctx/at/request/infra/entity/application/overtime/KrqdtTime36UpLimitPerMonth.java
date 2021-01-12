@@ -43,7 +43,7 @@ public class KrqdtTime36UpLimitPerMonth extends UkJpaEntity {
     	@PrimaryKeyJoinColumn(name="CID", referencedColumnName="CID"),
     	@PrimaryKeyJoinColumn(name="APP_ID", referencedColumnName="APP_ID")
     })
-	public KrqdtAppOvertimeDetail appOvertimeDetail;
+	public KrqdtAppOvertimeDetail_Old appOvertimeDetail;
 
 	@Override
 	protected Object getKey() {

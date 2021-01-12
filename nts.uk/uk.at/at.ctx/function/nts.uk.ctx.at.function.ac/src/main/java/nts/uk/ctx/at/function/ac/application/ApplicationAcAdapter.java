@@ -31,7 +31,7 @@ public class ApplicationAcAdapter implements ApplicationAdapter {
 		List<ApplicationExport> applicationExportList = applicationPub.getApplicationBySID(employeeID, startDate,
 				endDate);
 		return applicationExportList.stream()
-				.map(e -> new ApplicationImport(e.getAppDate(), e.getAppType(), e.getEmployeeID(), e.getAppTypeName()))
+				.map(e -> new ApplicationImport(e.getAppID(), e.getAppDate(), e.getAppType(), e.getEmployeeID(), e.getAppTypeName(), e.getReflectState()))
 				.collect(Collectors.toList());
 	}
 
@@ -48,6 +48,13 @@ public class ApplicationAcAdapter implements ApplicationAdapter {
 		return applicationPub.getApplicationBySID(empIds, period.start(), period.end()).stream()
 				.map(a -> new ApplicationStateImport(a.getAppDate(), a.getAppType(), a.getEmployeeID(), 
 						a.getAppTypeName(), a.getReflectState()))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<ApplicationImport> getAppById(String cid, List<String> lstAppId) {
+		return applicationPub.getAppById(cid, lstAppId).stream()
+				.map(e -> new ApplicationImport(e.getAppID(), e.getAppDate(), e.getAppType(), e.getEmployeeID(), e.getAppTypeName(), e.getReflectState()))
 				.collect(Collectors.toList());
 	}
 

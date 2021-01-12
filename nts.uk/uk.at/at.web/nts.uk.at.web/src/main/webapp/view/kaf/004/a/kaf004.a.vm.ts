@@ -32,9 +32,14 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
         isEnable3: KnockoutObservable<Boolean> = ko.observable(false);
         isEnable4: KnockoutObservable<Boolean> = ko.observable(false);
         cancalAppDispSet: boolean = true;
+		isFromOther: boolean = false;
 
         created(params: AppInitParam) {
             const vm = this;
+			if(!_.isNil(__viewContext.transferred.value)) {
+				vm.isFromOther = true;
+			}
+			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
 			let empLst: Array<string> = [],
 				dateLst: Array<string> = [];
             vm.application = ko.observable(new Application(vm.appType()));

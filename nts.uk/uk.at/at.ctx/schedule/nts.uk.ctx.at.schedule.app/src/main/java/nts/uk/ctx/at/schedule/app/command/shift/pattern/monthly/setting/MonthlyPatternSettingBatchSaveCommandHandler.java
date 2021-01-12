@@ -144,17 +144,14 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 					.findById(companyId, command.getMonthlyPatternCode(), toStartDate);
 			
 			// check day is public holiday
-			if (publicHoliday.isPresent()) {
-
-				// data public holiday setting
-				WorkMonthlySetting dataPublic = command.toDomainPublicHolidays(companyId, toStartDate);
-				if (dataPublic != null) {
-					// check exist data
-					if (!workMonthlySetting.isPresent()) {
-						addWorkMonthlySettings.add(dataPublic);
-					} else if (command.isOverwrite()) {
-						updateWorkMonthlySettings.add(dataPublic);
-					}
+			// data public holiday setting
+			WorkMonthlySetting dataPublic = command.toDomainPublicHolidays(companyId, toStartDate);
+			if (publicHoliday.isPresent() && dataPublic != null) {
+				// check exist data
+				if (!workMonthlySetting.isPresent()) {
+					addWorkMonthlySettings.add(dataPublic);
+				} else if (command.isOverwrite()) {
+					updateWorkMonthlySettings.add(dataPublic);
 				}
 			} else {
 				// is work day
