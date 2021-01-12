@@ -283,6 +283,7 @@ module nts.uk.ui.koExtentions {
 
                 return { controlsDescendantBindings: true };
             }
+            update() {}
         }
     }
 }

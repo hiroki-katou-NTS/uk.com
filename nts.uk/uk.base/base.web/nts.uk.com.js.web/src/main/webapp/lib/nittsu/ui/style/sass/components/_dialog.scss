@@ -22,6 +22,7 @@
 		border-color: $_border_color;
 		border-radius: 0px;
 	}
+	
 	.ui-dialog-titlebar-icon{
 		max-width:20px;
 		max-height:20px;
@@ -81,7 +82,7 @@
 	> .ui-dialog-buttonpane {
 		padding: 10px 0;
 		margin: 0px;
-		border-top: solid 1px $_border_color;
+		border-top: solid 1px transparent;
 		text-align: center;
 		position:relative;
 		
