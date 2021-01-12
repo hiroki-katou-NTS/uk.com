@@ -26,7 +26,7 @@ public class UpdateAppAbsenceMobileCommand {
 	private List<String> holidayAppDates;
 	
 	// 古いの休出代休紐付け管理<List>
-	private List<LeaveComDayOffManaDto> LeaveComDayOffManaDto;
+	private List<LeaveComDayOffManaDto> leaveComDayOffManaDto;
 	
 	// 古いの振出振休紐付け管理<List>
 	private List<PayoutSubofHDManagementDto> payoutSubofHDManagementDto;
