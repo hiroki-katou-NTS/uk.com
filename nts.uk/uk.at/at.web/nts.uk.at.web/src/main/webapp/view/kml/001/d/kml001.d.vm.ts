@@ -19,12 +19,12 @@ module nts.uk.at.view.kml001.d {
                 /* self.personCostList = ko.observableArray(
                     _.map(nts.uk.ui.windows.getShared('personCostList'), (item : vmbase.PersonCostCalculationInterface) => { return vmbase.ProcessHandler.fromObjectPerconCost(item); })
                 ); */
-             
-                self.personCostList = ko.observableArray(nts.uk.ui.windows.getShared('personCostList'));              
+
+                self.personCostList = ko.observableArray(nts.uk.ui.windows.getShared('personCostList'));
                 self.currentPersonCost = ko.observable(
                     vmbase.ProcessHandler.fromObjectPerconCost(nts.uk.ui.windows.getShared('currentPersonCost'))
                 );
-          
+
                 self.size = _.size(self.personCostList());
                 self.isLast = ko.observable((_.findIndex(self.personCostList(), function (o) { return self.currentPersonCost().startDate() == o.startDate; }) == 0) ? true : false);
                 self.deleteAble = ko.observable((self.isLast() && (self.size > 1))); // can delete when item is last and list have more than one item
@@ -51,9 +51,11 @@ module nts.uk.at.view.kml001.d {
                         self.currentPersonCost().premiumSets([]);
                         servicebase.personCostCalculationUpdate(vmbase.ProcessHandler.toObjectPersonCost(self.currentPersonCost()))
                             .done(function (res: Array<any>) {
-                                nts.uk.ui.windows.setShared('isEdited', 0);
-                                nts.uk.ui.block.clear();
-                                nts.uk.ui.windows.close();
+                                self.$dialog.info({ messageId: 'Msg_156' }).then(() => {
+                                    nts.uk.ui.windows.setShared('isEdited', 0);
+                                    nts.uk.ui.block.clear();
+                                    nts.uk.ui.windows.close();
+                                });
                             })
                             .fail(function (res) {
                                 nts.uk.ui.dialog.alertError(res.message).then(function () { nts.uk.ui.block.clear(); });

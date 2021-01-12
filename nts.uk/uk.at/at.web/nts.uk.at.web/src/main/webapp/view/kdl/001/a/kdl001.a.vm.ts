@@ -5,7 +5,7 @@ module nts.uk.at.view.kdl001.a {
             multiSelectMode: KnockoutObservable<boolean>;
             isSelection: KnockoutObservable<boolean> = ko.observable(false);
             workingHoursItemLists: KnockoutObservableArray<WorkTimeSet>; //all
-            selectableWorkingHours: KnockoutObservableArray<WorkTimeSet>; //custom
+            selectableWorkingHours: KnockoutObservableArray<WorkTimeSet> = ko.observableArray(false);; //custom
             selectAbleItemList: KnockoutObservableArray<WorkTimeSet>;
             selectAbleCodeList: KnockoutObservableArray<string>;
             selectedCodeList: KnockoutObservableArray<string>;
@@ -25,7 +25,7 @@ module nts.uk.at.view.kdl001.a {
             baseDate: KnockoutObservable<string> = ko.observable(null);
             isEnableCheckStatus: KnockoutObservable<boolean> = ko.observable(false);
             isAllCheckShow: KnockoutObservable<boolean> = ko.observable(false);
-            isCheckStatus: KnockoutObservable<boolean> = ko.observable(false);
+            isCheckAllStatus: KnockoutObservable<boolean> = ko.observable(false);
             selectAbleCodeListBk: KnockoutObservableArray<string> = ko.observable(false);
             selectedCodeListBk: KnockoutObservableArray<string> = ko.observable(false);
             selectedCodeBk: KnockoutObservable<string> = ko.observable(false);
@@ -144,15 +144,16 @@ module nts.uk.at.view.kdl001.a {
             bindItemList(data) {
                 let self = this,
                     selectAbleItemList: Array<WorkTimeSet> = [];
+                //let isCheckAllStatus = self.selectAbleCodeList().length > 0 ? false : data.allCheckStatus;
 
-                self.isCheckStatus(data.allCheckStatus);
+                self.isCheckAllStatus(data.allCheckStatus);
                 self.isAllCheckShow(data.allCheckStatus);
 
                 self.workingHoursItemLists.removeAll();
                 self.workingHoursItemLists.push(new WorkTimeSet());
 
                 if (self.isAllCheckShow()) { //check all
-                    selectAbleItemList = data.allWorkHours;
+                    selectAbleItemList = data.allWorkHours;                    
                 } else {
                     selectAbleItemList = (self.selectAbleCodeList().length > 0) ? data.availableWorkingHours : data.workingHoursByWorkplace;
                 }
@@ -160,8 +161,10 @@ module nts.uk.at.view.kdl001.a {
                 //to restore
                 if (!nts.uk.util.isNullOrEmpty(data)) {
                     self.workingHoursItemLists(self.workingHoursItemLists().concat(_.map(data.allWorkHours, item => { return new WorkTimeSet(item) })));
-
+                    //send from parent screen
                     let selectableItemList = (self.selectAbleCodeList().length > 0) ? data.availableWorkingHours : data.workingHoursByWorkplace;
+                    self.selectableWorkingHours.removeAll();
+                    self.selectableWorkingHours.push(new WorkTimeSet());
                     self.selectableWorkingHours(self.selectableWorkingHours().concat(_.map(selectableItemList, item => { return new WorkTimeSet(item) })));
                 }
 
@@ -329,17 +332,26 @@ module nts.uk.at.view.kdl001.a {
 
             clearSearch() {
                 const self = this;
+                nts.uk.ui.block.invisible();
+                self.resetAllData().then(() => {
+                    nts.uk.ui.block.clear();
+                });
+                
+            }
+
+            resetAllData() : JQueryPromise<any> {
+                const self = this;
+                const dfd = $.Deferred();
                 self.selectAbleItemList.removeAll();
                 self.startTime(null);
                 self.endTime(null);
                 self.searchCode(null);
-                self.isAllCheckShow(self.isCheckStatus());
-                /* if (self.isCheckStatus())
-                    self.selectAbleItemList(_.cloneDeep(self.workingHoursItemLists()));
-                else
-                    self.selectAbleItemList(_.cloneDeep(self.selectableWorkingHours())); */
+                self.isAllCheckShow(self.isCheckAllStatus());
+                self.selectAbleItemList(_.cloneDeep(self.isCheckAllStatus() ? self.workingHoursItemLists() : self.selectableWorkingHours()));
                 self.resetConditionSelected();
                 $('#inputStartTime').focus();
+                dfd.resolve();
+                return dfd.promise();
             }
 
             resetConditionSelected() {
