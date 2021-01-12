@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.dto.HolidayShipmentRefactor5Command;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServiceProcess;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
@@ -58,6 +59,9 @@ public class UpdateHolidayShipmentCommandHandlerRef5 {
 	
 	@Inject
 	private WorkTypeRepository workTypeRepo;
+	
+	@Inject
+	private ApplicationRepository appRepository;
 	
 	/**
 	 * @name 登録する
@@ -116,6 +120,7 @@ public class UpdateHolidayShipmentCommandHandlerRef5 {
 			AppDispInfoStartupOutput appDispInfoStartup) {
 		if(rec.isPresent()){
 			//ドメイン「振出申請」を1件更新する
+			appRepository.update(rec.get());
 			recruitmentAppRepository.update(rec.get());
 			//休暇紐付け管理を更新する 
 			absenceServiceProcess.updateVacationLinkManage(leaveComDayOffMana_Rec_Old, new ArrayList<>(), leaveComDayOffMana_Rec, new ArrayList<>());
@@ -127,6 +132,7 @@ public class UpdateHolidayShipmentCommandHandlerRef5 {
 		}
 		if(abs.isPresent()){
 			//ドメイン「振休申請」を1件更新する
+			appRepository.update(abs.get());
 			absenceLeaveAppRepository.update(abs.get());
 			if(!rec.isPresent()) {
 				//休暇紐付け管理を更新する
