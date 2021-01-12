@@ -6,22 +6,23 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
         <div id="kaf006tab2">
             <div class="table" style="margin-top: 5px;">
                 <div class="cell col-1">
-                    <div class="cell valign-center" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_28')"></div>
+                    <div class="cell valign-center" data-bind="ntsFormLabel:{ required: true }, text: $i18n('KAF006_28')"></div>
                 </div>
                 <div class="cell">
                     <div class="table" style="padding-bottom: 5px;" data-bind="visible: $parent.condition19Over60">
                         <div class="cell col-1" data-bind="text: $i18n('Com_ExsessHoliday')"></div>
-                        <input style="width: 50px;" class="cell" data-bind="ntsTimeEditor: {
+                        <input id="over60H" style="width: 50px;" class="cell" data-bind="ntsTimeEditor: {
                             name: $i18n('Com_ExsessHoliday'),
                             value: $parent.over60H,
                             constraint: 'TimeOffPrimitive',
                             mode: 'time',
-                            enable: $parent.updateMode
+                            enable: $parent.updateMode, 
+                            requỉed: true
                         }" />
                     </div>
                     <div class="table" style="padding-bottom: 5px;" data-bind="visible: $parent.condition19Substitute">
                         <div class="cell col-1" data-bind="text: $i18n('KAF006_30')"></div>
-                        <input style="width: 50px;" class="cell" data-bind="ntsTimeEditor: {
+                        <input id="timeOff" style="width: 50px;" class="cell" data-bind="ntsTimeEditor: {
                             name: $i18n('KAF006_30'),
                             value: $parent.timeOff,
                             constraint: 'TimeOffPrimitive',
@@ -31,32 +32,35 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                     </div>
                     <div class="table" style="padding-bottom: 5px;" data-bind="visible: $parent.condition19Annual">
                         <div class="cell col-1" data-bind="text: $i18n('KAF006_29')"></div>
-                        <input style="width: 50px;" class="cell" data-bind="ntsTimeEditor: {
+                        <input id="annualTime" style="width: 50px;" class="cell" data-bind="ntsTimeEditor: {
                             name: $i18n('KAF006_29'),
                             value: $parent.annualTime,
                             constraint: 'TimeOffPrimitive',
                             mode: 'time',
-                            enable: $parent.updateMode
+                            enable: $parent.updateMode, 
+                            requỉed: true
                         }" />
                     </div>
                     <div class="table" style="padding-bottom: 5px;" data-bind="visible: $parent.condition19ChildNursing">
                         <div class="cell col-1" data-bind="text: $i18n('Com_ChildNurseHoliday')"></div>
-                        <input style="width: 50px;" class="cell" data-bind="ntsTimeEditor: {
+                        <input id="childNursing" style="width: 50px;" class="cell" data-bind="ntsTimeEditor: {
                             name: $i18n('Com_ChildNurseHoliday'),
                             value: $parent.childNursing,
                             constraint: 'TimeOffPrimitive',
                             mode: 'time',
-                            enable: $parent.updateMode
+                            enable: $parent.updateMode, 
+                            requỉed: true
                         }" />
                     </div>
                     <div class="table" style="padding-bottom: 5px;" data-bind="visible: $parent.condition19Nursing">
                         <div class="cell col-1" data-bind="text: $i18n('Com_CareHoliday')"></div>
-                        <input style="width: 50px;" class="cell" data-bind="ntsTimeEditor: {
+                        <input id="nursing" style="width: 50px;" class="cell" data-bind="ntsTimeEditor: {
                             name: $i18n('Com_CareHoliday'),
                             value: $parent.nursing,
                             constraint: 'TimeOffPrimitive',
                             mode: 'time',
-                            enable: $parent.updateMode
+                            enable: $parent.updateMode, 
+                            requỉed: true
                         }" />
                     </div>
                     <hr style="width: 250px; margin-inline-start: initial;"/>

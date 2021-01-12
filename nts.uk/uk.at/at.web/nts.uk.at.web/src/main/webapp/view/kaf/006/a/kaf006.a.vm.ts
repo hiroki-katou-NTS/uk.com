@@ -659,7 +659,15 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 			vm.$blockui("show");
 			// validate chung KAF000
 			vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason', '#kaf000-a-component5-textReason')
-			.then((isValid) => {
+			.then((valid) => {
+				if (valid) {
+					if (vm.selectedType() === 6) {
+						return 	vm.$validate('#over60H', '#timeOff', '#annualTime', '#childNursing', '#nursing');
+					} else {
+						return true;
+					}
+				}
+			}).then((isValid) => {
 				if (isValid) {
 					// validate riêng cho màn hình
 					return true;

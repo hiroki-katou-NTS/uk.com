@@ -510,10 +510,19 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 			vm.$blockui("show");
 			let dfd = $.Deferred();
 			vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason', '#kaf000-a-component5-textReason', '#combo-box', '#inpReasonTextarea', '#work-type-combobox')
+			.then((valid) => {
+				if (valid) {
+					if (vm.selectedType() === 6) {
+						return 	vm.$validate('#over60H', '#timeOff', '#annualTime', '#childNursing', '#nursing');
+					} else {
+						return true;
+					}
+				}
+			})
 			.then((isValid) => {
 				if (isValid) {
 					// validate riêng cho màn hình
-					return vm.$ajax('at', API.checkBeforeUpdate, commandCheckUpdate)
+					return vm.$ajax('at', API.checkBeforeUpdate, commandCheckUpdate);
 				}
 			})
 			.then((result) => {
