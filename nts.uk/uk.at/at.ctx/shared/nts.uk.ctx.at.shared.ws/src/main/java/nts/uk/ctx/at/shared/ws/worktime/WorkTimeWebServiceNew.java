@@ -257,10 +257,19 @@ public class WorkTimeWebServiceNew extends WebService {
         return this.workTimeSettingInfoFinder.findWTLanguageByCidAndLangId(langId);
     }
 
+
+
     //----------------Update KDL001
     @POST
     @Path("findByCodeNew")
     public WorkTimeResultDto findByCodeNew(FindByCodeDto dto) {
+        return this.workTimeSetFinder.findByCodeNew(dto.codes, dto.workPlaceId, dto.baseDate);
+    }
+
+    //----------------Update KDL003
+    @POST
+    @Path("findAllNew")
+    public WorkTimeResultDto findAllNew(FindByCodeDto dto) {
         return this.workTimeSetFinder.findByCodeNew(dto.codes, dto.workPlaceId, dto.baseDate);
     }
 }

@@ -27,6 +27,9 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingCondition;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -76,6 +79,9 @@ public class WorkTimeSettingFinder {
 
     @Inject
     private WorkTimeWorkplaceRepository workTimeWorkplaceRepo;
+
+    @Inject
+    public WorkTypeRepository workTypeRepository;
 
     /**
      * Find all simple.
@@ -381,7 +387,7 @@ public class WorkTimeSettingFinder {
             List<PredetemineTimeSetting> workTimeSetItem = this.predetemineTimeSettingRepository
                     .findByCodeList(companyID, codes);
             selectableWorkingHours.addAll(getWorkTimeDtos(workTimeItems, workTimeSetItem));
-            if (codes.size() == workTimeItems.size()) {
+            if (codes.size() == allWorkHours.size()) {
                 allCheckStatus = 0;
             } else {
                 allCheckStatus = 1;
@@ -422,8 +428,6 @@ public class WorkTimeSettingFinder {
             }
 
         }
-
-
         return new WorkTimeResultDto(allCheckStatus
                 , allWorkHours
                 , selectableWorkingHours
@@ -433,4 +437,5 @@ public class WorkTimeSettingFinder {
         );
 
     }
+
 }
