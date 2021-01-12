@@ -190,12 +190,12 @@ module nts.uk.at.kal011.a {
                 }
                 let conditionSelecteds = _.filter(vm.conditions(), (condition: CheckCondition) => condition.isChecked());
                 if (_.isEmpty(conditionSelecteds)) {
-                    vm.$dialog.error({ messageId: "Msg_1167" });
+                    vm.$dialog.error({ messageId: "Msg_1168" });
                     return
                 }
                 let conditionSelectedInvalids = _.filter(conditionSelecteds, (condition: CheckCondition) => !condition.isValid());
                 if (!_.isEmpty(conditionSelectedInvalids)) {
-                    vm.$dialog.error({ messageId: "Msg_1168" });
+                    vm.$dialog.error({ messageId: "Msg_1167" });
                     return
                 }
 

@@ -135,13 +135,11 @@ module nts.uk.at.kal011.c {
             vm.$ajax(PATH_API.sendEmail, command).done((data) => {
                 vm.$dialog.info({messageId: "Msg_207"})
                     .then(() => {
-                        //TODO write business logic
                         vm.closeDialog();
                     });
             }).fail(function (error) {
                 vm.$dialog.error({messageId: error.messageId});
             }).always(() => {
-                vm.closeDialog();
                 vm.$blockui("clear");
             });
         }
