@@ -4,7 +4,8 @@ module nts.uk.at.view.kdl001.a {
             columns: KnockoutObservableArray<NtsGridListColumn>;
             multiSelectMode: KnockoutObservable<boolean>;
             isSelection: KnockoutObservable<boolean> = ko.observable(false);
-            workingHoursItemLists: KnockoutObservableArray<WorkTimeSet>;
+            workingHoursItemLists: KnockoutObservableArray<WorkTimeSet>; //all
+            selectableWorkingHours: KnockoutObservableArray<WorkTimeSet>; //custom
             selectAbleItemList: KnockoutObservableArray<WorkTimeSet>;
             selectAbleCodeList: KnockoutObservableArray<string>;
             selectedCodeList: KnockoutObservableArray<string>;
@@ -15,14 +16,15 @@ module nts.uk.at.view.kdl001.a {
             endTimeOption: KnockoutObservable<number>;
             endTime: KnockoutObservable<number>;
             isEnableSwitchButton: KnockoutObservable<boolean> = ko.observable(false);
-            gridHeight: number = 260;
+            gridHeight: number = 375;
             initialWorkTimeCodes: Array<String>;
             searchCode: KnockoutObservable<string> = ko.observable(null);
 
             //ver 8
             workPlaceId: KnockoutObservable<string> = ko.observable(null);
             baseDate: KnockoutObservable<string> = ko.observable(null);
-            isAllCheckStatus: KnockoutObservable<boolean> = ko.observable(false);
+            isEnableCheckStatus: KnockoutObservable<boolean> = ko.observable(false);
+            isAllCheckShow: KnockoutObservable<boolean> = ko.observable(false);
             isCheckStatus: KnockoutObservable<boolean> = ko.observable(false);
             selectAbleCodeListBk: KnockoutObservableArray<string> = ko.observable(false);
             selectedCodeListBk: KnockoutObservableArray<string> = ko.observable(false);
@@ -34,9 +36,9 @@ module nts.uk.at.view.kdl001.a {
                 self.multiSelectMode = nts.uk.ui.windows.getShared('kml001multiSelectMode');
                 self.isSelection = nts.uk.ui.windows.getShared('kml001isSelection');
                 if (!self.multiSelectMode) {
-                    self.gridHeight = 260;
+                    self.gridHeight = 375;
                 } else {
-                    self.gridHeight = 255;
+                    self.gridHeight = 375;
                 }
                 self.selectAbleCodeList = ko.observableArray(<Array<string>>nts.uk.ui.windows.getShared('kml001selectAbleCodeList'));
                 self.selectAbleCodeListBk(_.cloneDeep(self.selectAbleCodeList()));
@@ -57,6 +59,13 @@ module nts.uk.at.view.kdl001.a {
                 //ver 8
                 self.workPlaceId(nts.uk.ui.windows.getShared('kml001WorkPlaceId'));
                 self.baseDate(nts.uk.ui.windows.getShared('kml001BaseDate'));
+
+                self.isAllCheckShow.subscribe((isCheck) => {
+                    if (isCheck)
+                        self.selectAbleItemList(_.cloneDeep(self.workingHoursItemLists()));
+                    else
+                        self.selectAbleItemList(_.cloneDeep(self.selectableWorkingHours()));
+                });
             }
 
             startPage(): JQueryPromise<any> {
@@ -76,26 +85,28 @@ module nts.uk.at.view.kdl001.a {
 
                 kdl001.a.service.findByCodeList(params) //old version: self.selectAbleCodeList()
                     .done(function (data) {
-                        self.isAllCheckStatus(data.allCheckStatus); //allCheckStatus
-                        self.isCheckStatus(data.allCheckStatus);
+                        //1 -> not show
+                        //0 -> show
+                        let isAllShow = data.allCheckStatus === 0 ? true : false;
+                        self.isEnableCheckStatus(isAllShow); //allCheckStatus     
 
-                        if(data.useATR === 1) {
+                        if (data.useATR === 1) {
                             self.columns([
                                 { headerText: nts.uk.resource.getText('KDL001_12'), prop: 'code', width: 50 },
                                 { headerText: nts.uk.resource.getText('KDL001_13'), prop: 'name', width: 130 },
-                                { headerText: nts.uk.resource.getText('KDL001_14'), prop: 'workTime1', width: 200 },
-                                { headerText: nts.uk.resource.getText('KDL001_15'), prop: 'workTime2', width: 200 }, //tam thoi comment theo yeu cau cua oohashi san
-                                { headerText: nts.uk.resource.getText('KDL001_16'), prop: 'workAtr', width: 160 },
-                                { headerText: nts.uk.resource.getText('KDL001_17'), prop: 'remark', template: '<span>${remark}</span>' }
+                                { headerText: nts.uk.resource.getText('KDL001_14'), prop: 'workTime1', width: 180 },
+                                { headerText: nts.uk.resource.getText('KDL001_15'), prop: 'workTime2', width: 180 }, //tam thoi comment theo yeu cau cua oohashi san
+                                { headerText: nts.uk.resource.getText('KDL001_16'), prop: 'workAtr', width: 150 },
+                                { headerText: nts.uk.resource.getText('KDL001_17'), prop: 'remark', columnCssClass: "limited-label", template: '<span>${remark}</span>' }
                             ]);
                         } else {
                             self.columns([
                                 { headerText: nts.uk.resource.getText('KDL001_12'), prop: 'code', width: 50 },
                                 { headerText: nts.uk.resource.getText('KDL001_13'), prop: 'name', width: 130 },
-                                { headerText: nts.uk.resource.getText('KDL001_14'), prop: 'workTime1', width: 200 },
+                                { headerText: nts.uk.resource.getText('KDL001_14'), prop: 'workTime1', width: 180 },
                                 //{ headerText: nts.uk.resource.getText('KDL001_15'), prop: 'workTime2', width: 200 }, //tam thoi comment theo yeu cau cua oohashi san
-                                { headerText: nts.uk.resource.getText('KDL001_16'), prop: 'workAtr', width: 160 },
-                                { headerText: nts.uk.resource.getText('KDL001_17'), prop: 'remark', template: '<span>${remark}</span>' }
+                                { headerText: nts.uk.resource.getText('KDL001_16'), prop: 'workAtr', width: 150 },
+                                { headerText: nts.uk.resource.getText('KDL001_17'), prop: 'remark', columnCssClass: "limited-label", template: '<span>${remark}</span>' }
                             ]);
                         }
 
@@ -134,20 +145,24 @@ module nts.uk.at.view.kdl001.a {
                 let self = this,
                     selectAbleItemList: Array<WorkTimeSet> = [];
 
+                self.isCheckStatus(data.allCheckStatus);
+                self.isAllCheckShow(data.allCheckStatus);
+
                 self.workingHoursItemLists.removeAll();
                 self.workingHoursItemLists.push(new WorkTimeSet());
 
-                //self.selectAbleItemList().clear();
-                //self.selectAbleItemList.push(new WorkTimeSet());
-
-                if (self.isAllCheckStatus()) {
+                if (self.isAllCheckShow()) { //check all
                     selectAbleItemList = data.allWorkHours;
                 } else {
                     selectAbleItemList = (self.selectAbleCodeList().length > 0) ? data.availableWorkingHours : data.workingHoursByWorkplace;
                 }
 
+                //to restore
                 if (!nts.uk.util.isNullOrEmpty(data)) {
-                    self.workingHoursItemLists(self.workingHoursItemLists().concat(_.map(selectAbleItemList, item => { return new WorkTimeSet(item) })));
+                    self.workingHoursItemLists(self.workingHoursItemLists().concat(_.map(data.allWorkHours, item => { return new WorkTimeSet(item) })));
+
+                    let selectableItemList = (self.selectAbleCodeList().length > 0) ? data.availableWorkingHours : data.workingHoursByWorkplace;
+                    self.selectableWorkingHours(self.selectableWorkingHours().concat(_.map(selectableItemList, item => { return new WorkTimeSet(item) })));
                 }
 
                 self.selectAbleItemList.removeAll();
@@ -232,7 +247,10 @@ module nts.uk.at.view.kdl001.a {
                 if (!self.multiSelectMode)
                     self.selectedCodeList(nts.uk.util.isNullOrUndefined(self.selectedCode()) ? [] : [self.selectedCode()]);
                 if (self.selectedCodeList().length == 0) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_29" }).then(function () { nts.uk.ui.block.clear(); });
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_29" }).then(function () {
+                        nts.uk.ui.block.clear();
+                        $("#day-list-tbl").igGrid("container").focus();
+                    });
                 } else {
                     nts.uk.ui.windows.setShared('kml001selectedCodeList', self.selectedCodeList());
                     nts.uk.ui.windows.setShared('kml001selectedTimes', self.getSelectedTimeItems(self.selectedCodeList()));
@@ -264,7 +282,7 @@ module nts.uk.at.view.kdl001.a {
                     });
                     return;
                 }
-                
+
                 self.selectAbleItemList(_.cloneDeep(self.workingHoursItemLists()));
                 let afterFilterSelectAbleItemList: Array<WorkTimeSet> = [];
                 afterFilterSelectAbleItemList = _.filter(self.selectAbleItemList(), (item) => {
@@ -273,7 +291,9 @@ module nts.uk.at.view.kdl001.a {
 
                 self.selectAbleItemList.removeAll();
                 self.selectAbleItemList(afterFilterSelectAbleItemList);
-                self.selectAbleItemList.unshift(new WorkTimeSet());
+                if (afterFilterSelectAbleItemList.length === 0) {
+                    self.selectAbleItemList.unshift(new WorkTimeSet());
+                }
                 self.resetConditionSelected();
                 //self.selectAbleItemList(self.selectAbleItemList().concat(_.map(afterFilterSelectAbleItemList, item => { return new WorkTimeSet(item) })));
             }
@@ -282,7 +302,7 @@ module nts.uk.at.view.kdl001.a {
                 var self = this;
                 if (nts.uk.util.isNullOrEmpty(self.startTime()) && nts.uk.util.isNullOrEmpty(self.endTime())) {
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_307' }).then(() => {
-                        //$('#inputStartTime').focus();
+                        $('#inputStartTime').focus();
                         nts.uk.ui.block.clear();
                     });
 
@@ -292,16 +312,18 @@ module nts.uk.at.view.kdl001.a {
                 if ($('#inputEndTime').ntsError('hasError') || $('#inputStartTime').ntsError('hasError')) {
                     return;
                 }
-                
+
                 self.selectAbleItemList(_.cloneDeep(self.workingHoursItemLists()));
                 let afterFilterSelectAbleItemList: Array<WorkTimeSet> = [];
                 afterFilterSelectAbleItemList = _.filter(self.selectAbleItemList(), item => {
                     return item.firstStartTime >= self.startTime() && item.firstEndTime <= self.endTime();
                 });
 
-                afterFilterSelectAbleItemList.unshift(new WorkTimeSet());
                 self.selectAbleItemList.removeAll();
                 self.selectAbleItemList(afterFilterSelectAbleItemList);
+                if (afterFilterSelectAbleItemList.length === 0) {
+                    self.selectAbleItemList.unshift(new WorkTimeSet());
+                }
                 self.resetConditionSelected();
             }
 
@@ -311,20 +333,23 @@ module nts.uk.at.view.kdl001.a {
                 self.startTime(null);
                 self.endTime(null);
                 self.searchCode(null);
-                self.isAllCheckStatus(self.isCheckStatus());
-                self.selectAbleItemList(_.cloneDeep(self.workingHoursItemLists()));
+                self.isAllCheckShow(self.isCheckStatus());
+                /* if (self.isCheckStatus())
+                    self.selectAbleItemList(_.cloneDeep(self.workingHoursItemLists()));
+                else
+                    self.selectAbleItemList(_.cloneDeep(self.selectableWorkingHours())); */
                 self.resetConditionSelected();
                 $('#inputStartTime').focus();
             }
 
             resetConditionSelected() {
                 const self = this;
-                self.selectedCode(self.selectedCodeBk());                
-                self.selectAbleCodeList(_.cloneDeep(self.selectAbleCodeListBk()));                          
+                self.selectedCode(self.selectedCodeBk());
+                self.selectAbleCodeList(_.cloneDeep(self.selectAbleCodeListBk()));
                 self.selectedCodeList(_.cloneDeep(self.selectedCodeListBk()));
             }
         }
-        
+
         export class TimeItem {
             selectedWorkTimeCode: string;
             selectedWorkTimeName: string;
