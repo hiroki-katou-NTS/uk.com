@@ -8,10 +8,9 @@
 
 .ui-igcombo-wrapper {
 	outline: none;
+	border-radius: 2px;
 	
-	&:focus {		
-		border-radius: 2px;
-
+	&:focus {
 		.ui-igcombo {
 			border-color: $focused_color;
 			box-shadow: 0 0 0 2px lighten($color: $focused_color, $amount: 30);
@@ -42,8 +41,22 @@
 	}
 
 	&.error {
-		> .ui-igcombo {
+		&> .ui-igcombo {
 			border-color: #ff6666;
+		}
+
+		&:focus {
+			&> .ui-igcombo {
+				border-color: #ff6666;
+				box-shadow: 0 0 0 2px lighten($color: #ff6666, $amount: 15);
+			}
+		}
+		
+		&> .ui-igcombo {
+			&.ui-state-active {
+				border-color: #ff6666;
+				box-shadow: 0 0 0 2px lighten($color: #ff6666, $amount: 15);
+			}
 		}
 	}
 }
