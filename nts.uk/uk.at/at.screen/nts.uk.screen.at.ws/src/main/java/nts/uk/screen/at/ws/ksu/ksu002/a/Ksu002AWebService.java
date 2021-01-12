@@ -1,6 +1,10 @@
 package nts.uk.screen.at.ws.ksu.ksu002.a;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -9,6 +13,9 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.RegisWorkScheduleCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.WorkInformationDto;
+import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.WorkScheduleSaveCommand;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.WorkTypeInfomation;
 import nts.uk.screen.at.app.ksu001.processcommon.CorrectWorkTimeHalfDayParam;
 import nts.uk.screen.at.app.ksu001.processcommon.GetListWorkTypeAvailable;
@@ -22,6 +29,7 @@ import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.SystemDateDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.WorkScheduleWorkInforDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.input.DisplayInWorkInfoInput;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.input.ListOfPeriodsCloseInput;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Path("screen/ksu/ksu002/")
 @Produces("application/json")
@@ -51,6 +59,9 @@ public class Ksu002AWebService extends WebService {
 	//Ver2
 	@Inject
 	private CorrectWorkTimeHalfDayKSu002 correctWorkTimeHalfDay;
+	
+	@Inject
+	private RegisWorkScheduleCommandHandler regisWorkSchedule;
 	
 	
 	@POST
@@ -86,6 +97,27 @@ public class Ksu002AWebService extends WebService {
 	@Path("correctWorkTimeHalfDay")
 	public CorrectWorkTimeHalfDayOutput correctWorkTimeHalfDay(CorrectWorkTimeHalfDayParam param) {
 		return this.correctWorkTimeHalfDay.get(param);
+	}
+	
+	@POST
+	@Path("regisWorkSchedule")
+	public void regisWorkSchedule(List<RegisterWorkScheduleInput> param) {
+		List<WorkScheduleSaveCommand> commands = param.stream().map(m -> {
+			Map<Integer, TimeWithDayAttr> map = new HashMap<Integer, TimeWithDayAttr>();
+			map.put(31, new TimeWithDayAttr(m.getRegisterDates().getStart()));
+			map.put(34, new TimeWithDayAttr(m.getRegisterDates().getEnd()));
+			
+			return new WorkScheduleSaveCommand(
+					m.getSid(),
+					m.getRegisterDates().getDate(),
+					new WorkInformationDto(
+							m.getRegisterDates().getWorkTypeCd(),
+							m.getRegisterDates().getWorkTimeCd()),
+					map,
+					new ArrayList<>());
+		}).collect(Collectors.toList());
+		
+		this.regisWorkSchedule.handle(commands);
 	}
 	
 //	@POST
