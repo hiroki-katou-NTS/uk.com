@@ -6,12 +6,12 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.sys.portal.dom.layout.LayoutNew;
+import nts.uk.ctx.sys.portal.dom.layout.Layout;
 import nts.uk.ctx.sys.portal.dom.layout.WidgetSetting;
 
 @Getter
 @Setter
-public class LayoutNewDto implements LayoutNew.MementoSetter {
+public class LayoutNewDto implements Layout.MementoSetter {
 	
 	/** ウィジェット設定 */
 	private List<WidgetSettingDto> widgetSettings;
@@ -31,7 +31,7 @@ public class LayoutNewDto implements LayoutNew.MementoSetter {
 	private String url;
 
 	@Override
-	public void setWidgetSettings(String contractCode, List<WidgetSetting> widgetSettings) {
+	public void setWidgetSettings(List<WidgetSetting> widgetSettings) {
 		if (widgetSettings == null) {
 			return;
 		}

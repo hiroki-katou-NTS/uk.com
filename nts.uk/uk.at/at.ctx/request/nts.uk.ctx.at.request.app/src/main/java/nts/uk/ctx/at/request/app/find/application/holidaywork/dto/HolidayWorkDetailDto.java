@@ -10,9 +10,9 @@ import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 @NoArgsConstructor
 public class HolidayWorkDetailDto {
 	
-	public AppHdWorkDispInfoDto appHdWorkDispInfoOutput;
+	public AppHdWorkDispInfoDto_Old appHdWorkDispInfoOutput;
 	
-	public AppHolidayWorkDto appHolidayWork;
+	public AppHolidayWorkDto_Old appHolidayWork;
 	
 	public List<CaculationTime> caculationTimes;
 	
@@ -20,8 +20,8 @@ public class HolidayWorkDetailDto {
 	
 	public static HolidayWorkDetailDto fromDomain(HolidayWorkDetailOutput holidayWorkDetailOutput) {
 		HolidayWorkDetailDto result = new HolidayWorkDetailDto();
-		result.appHdWorkDispInfoOutput = AppHdWorkDispInfoDto.fromDomain(holidayWorkDetailOutput.getAppHdWorkDispInfoOutput());
-		result.appHolidayWork = AppHolidayWorkDto.fromDomain(holidayWorkDetailOutput.getAppHolidayWork());
+		result.appHdWorkDispInfoOutput = AppHdWorkDispInfoDto_Old.fromDomain(holidayWorkDetailOutput.getAppHdWorkDispInfoOutput());
+		result.appHolidayWork = AppHolidayWorkDto_Old.fromDomain(holidayWorkDetailOutput.getAppHolidayWork());
 		result.caculationTimes = holidayWorkDetailOutput.getCaculationTimes();
 		result.preActualColorResult = holidayWorkDetailOutput.getPreActualColorResult();
 		return result;

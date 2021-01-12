@@ -25,6 +25,10 @@ import nts.uk.ctx.sys.portal.dom.toppagealarm.LinkURL;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmData;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
+/**
+ * トップページアラームデータ Entity
+ *
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -47,16 +51,26 @@ public class SptdtToppageAlarm extends UkJpaEntity implements Serializable {
 	@Column(name = "CONTRACT_CD")
 	private String contractCd;
 	
+	/**
+	 * 発生日時
+	 */
 	@Basic(optional = false)
 	@Column(name = "CRT_DATETIME")
 	private GeneralDateTime crtDatetime;
 	
+	/**
+	 * 表示メッセージ
+	 */
 	@Basic(optional = false)
 	@Column(name = "MESSEGE")
 	private String messege;
 	
+	/**
+	 * リンクURL
+	 */
 	@Column(name = "LINK_URL")
 	private String linkUrl;
+	
 	
 	@Override
 	protected Object getKey() {

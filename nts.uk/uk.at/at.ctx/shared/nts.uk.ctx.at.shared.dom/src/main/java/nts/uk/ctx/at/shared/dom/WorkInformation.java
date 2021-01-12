@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.worktime.WorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.shared.dom.worktype.AttendanceDayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -235,6 +235,10 @@ public class WorkInformation {
 		val workSetting = workTimeSetting.get().getWorkSetting(require);
 		val predetermineTimeSetting = workSetting.getPredetermineTimeSetting(require);
 		val attendanceDayAttr = workType.get().chechAttendanceDay();
+		if ( attendanceDayAttr == AttendanceDayAttr.HOLIDAY ) {
+			return Optional.of(WorkInfoAndTimeZone.createWithoutPredetermineTimeZone( workType.get(), workTimeSetting.get() ));
+		}
+		
 		val correctedTimezones = predetermineTimeSetting.getTimezoneByAmPmAtr(attendanceDayAttr.toAmPmAtr().get()).stream()
 				.map( e -> (TimeZone) e).collect(Collectors.toList());
 		
@@ -354,7 +358,19 @@ public class WorkInformation {
 
 	}
 
-
+	/**
+	 * 同一か
+	 * @param otherObject 比較対象
+	 * @return true if they are same workType and same workTime
+	 */
+	public boolean isSame(WorkInformation otherObject) {
+		
+		if ( ! this.workTypeCode.v().equals(otherObject.getWorkTypeCode().v()) ) {
+			return false;
+		}
+		
+		return this.workTimeCode.equals( otherObject.getWorkTimeCodeNotNull());
+	}
 
 	public static interface Require
 		extends	WorkTimeSetting.Require

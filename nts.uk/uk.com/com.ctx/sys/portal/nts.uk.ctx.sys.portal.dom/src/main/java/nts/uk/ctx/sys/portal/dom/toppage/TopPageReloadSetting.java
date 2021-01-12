@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.portal.dom.toppage;
 import java.math.BigDecimal;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
@@ -12,6 +13,7 @@ import nts.arc.layer.dom.AggregateRoot;
  *
  */
 @Getter
+@NoArgsConstructor
 public class TopPageReloadSetting extends AggregateRoot {
 
 	/** 会社ID */
@@ -19,8 +21,6 @@ public class TopPageReloadSetting extends AggregateRoot {
 
 	/** リロード間隔 */
 	private ReloadPeriodEnum reloadInterval;
-
-	public TopPageReloadSetting() {}
 
 	public static TopPageReloadSetting createFromMemento(MementoGetter memento) {
 		TopPageReloadSetting domain = new TopPageReloadSetting();

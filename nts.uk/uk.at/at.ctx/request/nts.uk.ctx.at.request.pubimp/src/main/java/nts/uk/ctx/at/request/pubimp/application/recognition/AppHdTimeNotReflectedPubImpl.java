@@ -20,8 +20,8 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork_Old;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.pub.application.recognition.AppHdTimeNotReflectedPub;
@@ -34,7 +34,7 @@ public class AppHdTimeNotReflectedPubImpl implements AppHdTimeNotReflectedPub {
 	private ApplicationRepository repoApplication;
 	
 	@Inject
-	private AppHolidayWorkRepository appHdWorkRepository;
+	private AppHolidayWorkRepository_Old appHdWorkRepository;
 	
 	/**
 	 * Request list No.299
@@ -44,7 +44,7 @@ public class AppHdTimeNotReflectedPubImpl implements AppHdTimeNotReflectedPub {
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<ApplicationHdTimeExport> acquireTotalAppHdTimeNotReflected(String sId, GeneralDate startDate, GeneralDate endDate) {
 		String companyId = AppContexts.user().companyId();
-		Map<String, AppHolidayWork> mapHd = new HashMap<>();
+		Map<String, AppHolidayWork_Old> mapHd = new HashMap<>();
 		List<ApplicationHdTimeExport> results = new ArrayList<>();
 		List<Application> appHd = repoApplication.getListAppByType(companyId, sId, startDate, endDate, PrePostAtr.POSTERIOR.value,
 				ApplicationType.HOLIDAY_WORK_APPLICATION.value, Arrays.asList(ReflectedState.NOTREFLECTED.value,ReflectedState.WAITREFLECTION.value));
@@ -61,7 +61,7 @@ public class AppHdTimeNotReflectedPubImpl implements AppHdTimeNotReflectedPub {
 		}
 		mapHd = appHdWorkRepository.getListAppHdWorkFrame(companyId, lstId);
 		for(Map.Entry<GeneralDate, String> entry : mapApp.entrySet()) {
-			AppHolidayWork hdDetail = mapHd.get(entry.getValue());
+			AppHolidayWork_Old hdDetail = mapHd.get(entry.getValue());
 			List<HolidayWorkInput> hdWorkInput = hdDetail.getHolidayWorkInputs();
 			int cal = 0;
 			// 取得した「休日出勤申請」の休出時間を、日付別に集計する

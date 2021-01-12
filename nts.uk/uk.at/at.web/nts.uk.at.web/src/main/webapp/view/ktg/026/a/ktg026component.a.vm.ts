@@ -339,22 +339,6 @@ module nts.uk.at.view.ktg026.a.Ktg026ComponentViewModel {
       });
     }
 
-    private onRefreshToppage() {
-      const vm = this;
-      vm.$blockui('grayout');
-      const cache = windows.getShared('cache');
-      const processingYm = vm.employeesOvertime.closingPeriod ? vm.employeesOvertime.closingPeriod.processingYm : moment().format('YYYYMM');
-      const targetYear = cache.currentOrNextMonth === 1 ? vm.employeesOvertime.yearIncludeThisMonth : vm.employeesOvertime.yearIncludeNextMonth;
-      const requestBody: Ktg026BodyParmas = new Ktg026BodyParmas({
-        employeeId: vm.employeeId,
-        closingId: vm.employeesOvertime.closureID,
-        targetYear: targetYear,
-        processingYm: processingYm
-      });
-
-      vm.extractOvertime(requestBody);
-    }
-
     private extractOvertime(requestBody: Ktg026BodyParmas): void {
       const vm = this;
       vm.$blockui('grayout');

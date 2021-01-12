@@ -25,7 +25,7 @@ public class LayoutTest {
 	@Test
 	public void createFromMementoAndGetMemento() {
 		//When
-		LayoutNew domain = LayoutNew.createFromMemento(mockDto);
+		Layout domain = Layout.createFromMemento(mockDto);
 		//Then
 		assertThat(domain.getCid()).isEqualTo(mockDto.getCid());
 		assertThat(domain.getWidgetSettings()).isEqualTo(mockDto.getWidgetSettings());
@@ -33,7 +33,7 @@ public class LayoutTest {
 		assertThat(domain.getWidgetSettings().get(0).getOrder()).isEqualTo(mockDto.getWidgetSettings().get(0).getOrder());
 		assertThat(domain.getTopPageCode().v()).isEqualTo(mockDto.getTopPageCode());
 		assertThat(domain.getLayoutNo().v()).isEqualTo(mockDto.getLayoutNo());
-		assertThat(domain.getLayoutType().value).isEqualTo(mockDto.getLayoutType());
+		assertThat(domain.getLayoutType().value).isEqualTo(mockDto.getLayoutType().intValue());
 		assertThat(domain.getCid()).isEqualTo(mockDto.getCid());
 		assertThat(domain.getFlowMenuCd().get().v()).isEqualTo(mockDto.getFlowMenuCd());
 		assertThat(domain.getFlowMenuUpCd().get().v()).isEqualTo(mockDto.getFlowMenuUpCd());
@@ -44,7 +44,7 @@ public class LayoutTest {
 	public void testSetMemeto() {
 		//Given
 		LayoutDto dto = LayoutDto.builder().build();
-		LayoutNew domain = LayoutNew.createFromMemento(mockDto);
+		Layout domain = Layout.createFromMemento(mockDto);
 		
 		//When
 		domain.setMemento(dto);
@@ -56,7 +56,7 @@ public class LayoutTest {
 		assertThat(domain.getWidgetSettings().get(0).getOrder()).isEqualTo(mockDto.getWidgetSettings().get(0).getOrder());
 		assertThat(domain.getTopPageCode().v()).isEqualTo(mockDto.getTopPageCode());
 		assertThat(domain.getLayoutNo().v()).isEqualTo(mockDto.getLayoutNo());
-		assertThat(domain.getLayoutType().value).isEqualTo(mockDto.getLayoutType());
+		assertThat(domain.getLayoutType().value).isEqualTo(mockDto.getLayoutType().intValue());
 		assertThat(domain.getCid()).isEqualTo(mockDto.getCid());
 		assertThat(domain.getFlowMenuCd().get().v()).isEqualTo(mockDto.getFlowMenuCd());
 		assertThat(domain.getFlowMenuUpCd().get().v()).isEqualTo(mockDto.getFlowMenuUpCd());
@@ -66,7 +66,7 @@ public class LayoutTest {
 	@Test
 	public void getters() {
 		//When
-		LayoutNew domain = LayoutNew.createFromMemento(mockDto);
+		Layout domain = Layout.createFromMemento(mockDto);
 		// then
 		NtsAssert.invokeGetters(domain);
 	}
@@ -76,7 +76,7 @@ public class LayoutTest {
 		//given
 		LayoutDto mockDtoNull = LayoutDto.builder().build();
 		//when
-		LayoutNew domain =  new LayoutNew();
+		Layout domain =  new Layout();
 		domain.getMemento(mockDtoNull);
 		//then
 		NtsAssert.invokeGetters(domain);

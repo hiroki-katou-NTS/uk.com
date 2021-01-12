@@ -41,13 +41,36 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         expirationDateRes: number = 0;
         /** A4_3  凡例 */
         legendOptions: any = {
-            // name: '#[KDM001_153]',
             items: [
                 { labelText: nts.uk.resource.getText("KDM001_154") },
                 { labelText: nts.uk.resource.getText("KDM001_155") },
                 { labelText: nts.uk.resource.getText("KDM001_156") }
             ]
         };
+
+        // Update ver48
+        remainingData: KnockoutObservableArray<any> = ko.observableArray([]);
+
+        residualNumber: KnockoutComputed<number> = ko.computed(() => {
+            let total = 0;
+            _.map(this.remainingData(), item => {
+                total += item.dayLetf;
+            });
+            return total;
+        });
+
+        displayResidualNumber: KnockoutComputed<string> = ko.computed(() => getText('KDM001_25', [this.residualNumber()]));
+
+        expiredNumber: KnockoutComputed<number> = ko.computed(() => {
+            let total = 0;
+            _.map(this.remainingData(), item => {
+                total += item.usedDay;
+            });
+            return total;
+        });
+
+        displayExpiredNumber: KnockoutComputed<string> = ko.computed(() => getText('KDM001_26', [this.expiredNumber()]));
+        // End update ver48
 
         constructor() {
             const vm = this;
@@ -271,17 +294,17 @@ module nts.uk.at.view.kdm001.a.viewmodel {
               vm.dateValue.valueHasMutated();
             });
             vm.selectedItem.subscribe(x => {
-              if(vm.listEmployee){
-                vm.selectedEmployeeObject= _.find(vm.listEmployee, item => { return item.employeeId === x; });
+              if(vm.listEmployee) {
+                vm.selectedEmployeeObject = _.find(vm.listEmployee, item => item.employeeId === x);
               }
-              this.updateDataList(true);
+              vm.updateDataList(true);
             });
             vm.selectedPeriodItem.subscribe(period => {
                 if (period === 0) {
                     nts.uk.ui.errors.clearAll();
-                    this.updateDataList(true);
+                    vm.updateDataList(true);
                 } else {
-                    this.updateDataList(true);
+                    vm.updateDataList(true);
                 }
             });
         }
@@ -300,25 +323,30 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         public removeData(value: CompositePayOutSubMngData) {
             block.invisible();
             dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                let self = this;
-                let data = {
-                    payoutId: value.occurrenceId !== '' ? value.occurrenceId : null,
-                    subOfHDID: value.digestionId !== '' ? value.digestionId : null
+                const vm = this;
+                const mergeCell = value.mergeCell;
+                const listItem: CompositePayOutSubMngData[] = _.filter(vm.compositePayOutSubMngData(),
+                    item => _.toNumber(item.mergeCell) === _.toNumber(mergeCell));
+                const payoutIds = _.map(listItem, item => item.occurrenceId);
+                const subOfHDIDs = _.map(listItem, item => item.digestionId);
+                const data = {
+                    payoutId: payoutIds,
+                    subOfHDID: subOfHDIDs
                 };
 
                 service.removePayout(data).done(() => {
                     dialog.info({ messageId: "Msg_16" })
-                        .then(() => self.updateDataList(true));
+                        .then(() => vm.updateDataList(true));
                 }).fail(function (res) {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId });
-                    self.updateDataList(true);
+                    vm.updateDataList(true);
                 }).always(() => block.clear());
             }).then(() => block.clear());
         }
 
         openNewSubstituteData() {
             let self = this;
-            setShared('KDM001_D_PARAMS', { selectedEmployee: self.selectedEmployeeObject, closureId: self.closureID });
+            setShared('KDM001_D_PARAMS', { selectedEmployee: self.selectedEmployeeObject, closureId: self.closureID, residualNumber: self.residualNumber() });
 
             modal("/view/kdm/001/d/index.xhtml").onClosed(function () {
                 let params = getShared('KDM001_A_PARAMS');
@@ -365,6 +393,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             if (!nts.uk.ui.errors.hasError()) {
                 service.getFurikyuMngDataExtraction(empId, isPeriod).done(function (res: any) {
                     let arrayResponse = res.remainingData;
+                    self.remainingData(res.remainingData);
                     let compositePayOutSubMngDataArray: CompositePayOutSubMngData[] = [];
                     for (let i = 0; i < arrayResponse.length; i++) {
                         compositePayOutSubMngDataArray.push(new CompositePayOutSubMngData(arrayResponse[i], res.startDate, res.endDate));
@@ -395,13 +424,33 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                             $("#compositePayOutSubMngDataGrid").ntsGrid("enableNtsControlAt", rowId, "edit", 'Button');
                         }
                     });
-                    
+
+                    if (_.isNil(res.wkHistory)) {
+                        self.selectedEmployeeObject = {
+                            employeeId: res.employeeId,
+                            employeeCode: res.employeeCode,
+                            employeeName: res.employeeName,
+                            workplaceId: '',
+                            workplaceCode: '',
+                            workplaceName: ''
+                        };
+                    } else {
+                        self.selectedEmployeeObject = {
+                            employeeId: res.employeeId,
+                            employeeCode: res.employeeCode,
+                            employeeName: res.employeeName,
+                            workplaceId: res.wkHistory.workplaceId,
+                            workplaceCode: res.wkHistory.workplaceCode,
+                            workplaceName: res.wkHistory.workplaceName
+                        };
+                    }
+
                 }).fail(function (res: any) {
                   dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
                     if(res.messageId === 'Msg_1731'){
                       self.newDataDisable(true);
                     }
-                    
+
                     self.compositePayOutSubMngData([]);
                     console.log(res);
                 });
@@ -423,7 +472,28 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     // add dialog
                     dialog.alertError({ messageId: "Msg_1306" });
 
-                }).fail(function (res: any) {
+                    if (_.isNil(res.wkHistory)) {
+                        self.selectedEmployeeObject = {
+                            employeeId: res.employeeId,
+                            employeeCode: res.employeeCode,
+                            employeeName: res.employeeName,
+                            workplaceId: '',
+                            workplaceCode: '',
+                            workplaceName: ''
+                        };
+                    } else {
+                        self.selectedEmployeeObject = {
+                            employeeId: res.employeeId,
+                            employeeCode: res.employeeCode,
+                            employeeName: res.employeeName,
+                            workplaceId: res.wkHistory.workplaceId,
+                            workplaceCode: res.wkHistory.workplaceCode,
+                            workplaceName: res.wkHistory.workplaceName
+                        };
+                    }
+
+                })
+                .fail((res: any) => {
                     self.compositePayOutSubMngData([]);
                     console.log(res);
                 });

@@ -16,10 +16,10 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
 import nts.uk.ctx.sys.portal.dom.enums.System;
-import nts.uk.ctx.sys.portal.dom.layout.LayoutNewRepository;
+import nts.uk.ctx.sys.portal.dom.layout.LayoutRepository;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
-import nts.uk.ctx.sys.portal.dom.toppage.ToppageNew;
-import nts.uk.ctx.sys.portal.dom.toppage.ToppageNewRepository;
+import nts.uk.ctx.sys.portal.dom.toppage.Toppage;
+import nts.uk.ctx.sys.portal.dom.toppage.ToppageRepository;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -33,9 +33,9 @@ public class DeleteTopPageCommandHandler extends CommandHandler<DeleteTopPageCom
 	@Inject
 	private WebMenuRepository webMenuRepository;
 	@Inject
-	private LayoutNewRepository layoutNewRepository;
+	private LayoutRepository layoutNewRepository;
 	@Inject
-	private ToppageNewRepository toppageNewRepository;
+	private ToppageRepository toppageNewRepository;
 	@Inject
 	private StandardMenuRepository standardMenuRepo;
 
@@ -53,7 +53,7 @@ public class DeleteTopPageCommandHandler extends CommandHandler<DeleteTopPageCom
 			// 「レイアウト」を削除する
 			layoutNewRepository.delete(companyId, command.getTopPageCode(), lstLayoutNo);
 		}
-		Optional<ToppageNew> tp = toppageNewRepository.getByCidAndCode(companyId, command.getTopPageCode());
+		Optional<Toppage> tp = toppageNewRepository.getByCidAndCode(companyId, command.getTopPageCode());
 		if (tp.isPresent()) {
 			// 「トップページ」を削除する
 			toppageNewRepository.delete(companyId, command.getTopPageCode());

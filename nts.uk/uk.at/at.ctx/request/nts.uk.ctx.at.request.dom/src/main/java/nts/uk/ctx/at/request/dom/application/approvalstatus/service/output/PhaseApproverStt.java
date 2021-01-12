@@ -24,5 +24,5 @@ public class PhaseApproverStt {
 	 */
 	private Integer countRemainApprover;
 	
-	private int approvalAtr;
+	private Integer approvalAtr;
 }

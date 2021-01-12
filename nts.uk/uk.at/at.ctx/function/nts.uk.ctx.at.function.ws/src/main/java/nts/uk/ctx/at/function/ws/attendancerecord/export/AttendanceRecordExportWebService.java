@@ -13,7 +13,6 @@ import nts.uk.ctx.at.function.app.find.attendancerecord.export.AttendanceIdItemD
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.AttendanceIdItemFinder;
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.AttendanceRecordExportDto;
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.AttendanceRecordExportFinder;
-import nts.uk.ctx.at.function.app.find.attendancerecord.export.AttributeOfAttendanceItemDto;
 import nts.uk.ctx.at.function.app.find.attendancerecord.item.ApprovalProcessingUseSettingDto;
 import nts.uk.ctx.at.function.app.find.attendancerecord.item.ApprovalProcessingUseSettingFinder;
 import nts.uk.ctx.at.function.app.find.attendancerecord.item.AttendanceRecordKeyDto;
@@ -21,6 +20,7 @@ import nts.uk.ctx.at.function.app.find.attendancerecord.item.CalculateAttendance
 import nts.uk.ctx.at.function.app.find.attendancerecord.item.CalculateAttendanceRecordFinder;
 import nts.uk.ctx.at.function.app.find.attendancerecord.item.SingleAttendanceRecordDto;
 import nts.uk.ctx.at.function.app.find.attendancerecord.item.SingleAttendanceRecordFinder;
+import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -155,7 +155,7 @@ public class AttendanceRecordExportWebService {
 	 */
 	@POST
 	@Path("getDailyAttendanceItems")
-	public List<AttributeOfAttendanceItemDto> getDailyAttendanceItems() {
+	public List<AttendanceItemDto> getDailyAttendanceItems() {
 		return this.attendanceItemFinder.getDailyAttendanceItemAtrs();
 	}
 	
@@ -166,7 +166,7 @@ public class AttendanceRecordExportWebService {
 	 */
 	@POST
 	@Path("getMonthlyAttendanceItems")
-	public List<AttributeOfAttendanceItemDto> getMonthlyAttendanceItems() {
+	public List<AttendanceItemDto> getMonthlyAttendanceItems() {
 		return this.attendanceItemFinder.getMonthlyAttendanceItemAtrs();
 	}
 }

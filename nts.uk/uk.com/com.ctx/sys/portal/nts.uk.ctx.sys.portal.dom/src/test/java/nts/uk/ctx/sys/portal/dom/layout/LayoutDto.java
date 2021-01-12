@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class LayoutDto implements LayoutNew.MementoSetter, LayoutNew.MementoGetter{
+public class LayoutDto implements Layout.MementoSetter, Layout.MementoGetter{
 	/** ウィジェット設定 */
 	private List<WidgetSetting> widgetSettings;
 	/** トップページコード */
@@ -97,7 +97,7 @@ public class LayoutDto implements LayoutNew.MementoSetter, LayoutNew.MementoGett
 	}
 
 	@Override
-	public void setWidgetSettings(String contractCode, List<WidgetSetting> widgetSettings) {
+	public void setWidgetSettings(List<WidgetSetting> widgetSettings) {
 		this.widgetSettings = widgetSettings;
 	}
 }

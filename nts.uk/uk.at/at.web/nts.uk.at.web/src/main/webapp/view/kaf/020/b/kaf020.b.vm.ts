@@ -23,16 +23,22 @@ module nts.uk.at.view.kaf020.b {
             appDispInfoStartupOutput: ko.observable(null)
         });
         allOptional: any = [];
+		isFromOther: boolean = false;
+		empLst: Array<string> = [];
+        dateLst: Array<string> = [];
+        baseDate: string;
 
         constructor(props: any) {
             super();
         }
+        
 
         created(params: any) {
             const vm = this;
-            if (params != undefined) {
-                nts.uk.characteristics.save("KAF020InitParams", params)
-                vm.code = params.code;
+            if (params && params.isAgentMode) vm.isAgentMode(params.isAgentMode);
+            if (params != undefined && params.optionalItem) {
+                nts.uk.characteristics.save("KAF020InitParams", params.optionalItem);
+                vm.code = params.optionalItem.code;
 
             } else {
                 nts.uk.characteristics.restore("KAF020InitParams").then((cacheParams: any) => {
@@ -41,11 +47,18 @@ module nts.uk.at.view.kaf020.b {
                     }
                 })
             }
+			if(!_.isNil(__viewContext.transferred.value)) {
+				vm.isFromOther = true;
+			}
+			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
+            if (params && params.empLst) vm.empLst = params.empLst;
+            if (params && params.dateLst) vm.dateLst = params.dateLst;
+            if (params && params.baseDate) vm.baseDate = params.baseDate;
             vm.$blockui("show");
-            vm.loadData([], [], vm.appType()).then((loadFlag) => {
+            vm.loadData(vm.empLst, vm.dateLst, vm.appType()).then((loadFlag) => {
                 if (loadFlag) {
-                    if (params != undefined) {
-                        return vm.fetchData(params);
+                    if (params != undefined && params.optionalItem) {
+                        return vm.fetchData(params.optionalItem);
                     } else {
                         nts.uk.characteristics.restore("KAF020InitParams").then((cacheParams: any) => {
                             return vm.fetchData(cacheParams);
@@ -54,11 +67,9 @@ module nts.uk.at.view.kaf020.b {
                 }
             }).then((response: any) => {
 
-            })
-        }
-
-        mounted() {
-            const vm = this;
+            }).always(() => {
+                vm.$blockui("hide");
+            });
         }
 
         fetchData(params: any) {
@@ -69,27 +80,29 @@ module nts.uk.at.view.kaf020.b {
                 params.settingItems.forEach((opItem: any) => {
                     let optionalItem: OptionalItem = _.find(optionalItems, {optionalItemNo: opItem.no});
                     let controlOfAttendanceItem: any = _.find(controlAttendance, {itemDailyID: opItem.no + 640});
-                    contents.push({
-                        optionalItemName: optionalItem.optionalItemName,
-                        optionalItemNo: optionalItem.optionalItemNo,
-                        optionalItemAtr: optionalItem.optionalItemAtr,
-                        unit: optionalItem.unit,
-                        inputUnitOfTimeItem: controlOfAttendanceItem ? controlOfAttendanceItem.inputUnitOfTimeItem : null,
-                        description: optionalItem.description,
-                        timeUpper: optionalItem.calcResultRange.timeRange.dailyTimeRange.upperLimit != null ? nts.uk.time.format.byId("Time_Short_HM", optionalItem.calcResultRange.timeRange.dailyTimeRange.upperLimit) : null,
-                        timeLower: optionalItem.calcResultRange.timeRange.dailyTimeRange.lowerLimit != null ? nts.uk.time.format.byId("Time_Short_HM", optionalItem.calcResultRange.timeRange.dailyTimeRange.lowerLimit) : null,
-                        amountLower: optionalItem.calcResultRange.amountRange.dailyAmountRange.lowerLimit,
-                        amountUpper: optionalItem.calcResultRange.amountRange.dailyAmountRange.upperLimit,
-                        numberLower: optionalItem.calcResultRange.numberRange.dailyNumberRange.lowerLimit,
-                        numberUpper: optionalItem.calcResultRange.numberRange.dailyNumberRange.upperLimit,
-                        upperCheck: optionalItem.calcResultRange.upperCheck,
-                        lowerCheck: optionalItem.calcResultRange.lowerCheck,
-                        time: ko.observable(''),
-                        times: ko.observable(),
-                        amount: ko.observable(),
-                        detail: '',
-                        dispOrder: opItem.dispOrder
-                    });
+                    if (optionalItem) {
+                        contents.push({
+                            optionalItemName: optionalItem.optionalItemName,
+                            optionalItemNo: optionalItem.optionalItemNo,
+                            optionalItemAtr: optionalItem.optionalItemAtr,
+                            unit: optionalItem.unit,
+                            inputUnitOfTimeItem: controlOfAttendanceItem ? controlOfAttendanceItem.inputUnitOfTimeItem : null,
+                            description: optionalItem.description,
+                            timeUpper: optionalItem.calcResultRange.timeRange.dailyTimeRange.upperLimit != null ? nts.uk.time.format.byId("Time_Short_HM", optionalItem.calcResultRange.timeRange.dailyTimeRange.upperLimit) : null,
+                            timeLower: optionalItem.calcResultRange.timeRange.dailyTimeRange.lowerLimit != null ? nts.uk.time.format.byId("Time_Short_HM", optionalItem.calcResultRange.timeRange.dailyTimeRange.lowerLimit) : null,
+                            amountLower: optionalItem.calcResultRange.amountRange.dailyAmountRange.lowerLimit,
+                            amountUpper: optionalItem.calcResultRange.amountRange.dailyAmountRange.upperLimit,
+                            numberLower: optionalItem.calcResultRange.numberRange.dailyNumberRange.lowerLimit,
+                            numberUpper: optionalItem.calcResultRange.numberRange.dailyNumberRange.upperLimit,
+                            upperCheck: optionalItem.calcResultRange.upperCheck,
+                            lowerCheck: optionalItem.calcResultRange.lowerCheck,
+                            time: ko.observable(''),
+                            times: ko.observable(),
+                            amount: ko.observable(),
+                            detail: '',
+                            dispOrder: opItem.dispOrder
+                        });
+                    }
                 });
                 vm.dataFetch({applicationContents: ko.observableArray(contents), name: params.name, appDispInfoStartupOutput: ko.observable(vm.appDispInfoStartupOutput())});
             }).then(() => {
@@ -111,7 +124,12 @@ module nts.uk.at.view.kaf020.b {
 
         goBack() {
             const vm = this;
-            vm.$jump('../a/index.xhtml');
+            vm.$jump('../a/index.xhtml', {
+                fromB: true,
+                employeeIds: vm.empLst,
+                baseDate: vm.baseDate,
+                isAgentMode: vm.isAgentMode()
+            });
         }
 
         register() {

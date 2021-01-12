@@ -560,6 +560,9 @@ public class WorkInformationTest {
 	}
 
 
+	/**
+	 * 勤務種類を取得できない
+	 */
 	@Test
 	public void getWorkInfoAndTimeZone_1() {
 		WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimeCode");
@@ -574,6 +577,9 @@ public class WorkInformationTest {
 		assertThat( workInformation.getWorkInfoAndTimeZone(require) ).isEmpty();
 	}
 
+	/**
+	 * 就業時間帯コードがない
+	 */
 	@Test
 	public void getWorkInfoAndTimeZone_2() {
 		WorkInformation workInformation = new WorkInformation("workTypeCode", null);
@@ -592,6 +598,9 @@ public class WorkInformationTest {
 		assertThat(result.get().getWorkType().getWorkTypeCode()).isEqualTo(workInformation.getWorkTypeCode());
 	}
 
+	/**
+	 * 就業時間帯を取得できない
+	 */
 	@Test
 	public void getWorkInfoAndTimeZone_3() {
 		WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimeCode");
@@ -607,6 +616,47 @@ public class WorkInformationTest {
 		};
 
 		assertThat( workInformation.getWorkInfoAndTimeZone(require) ).isEmpty();
+	}
+	
+	/**
+	 * 勤務種類は1日休日系
+	 */
+	@Test
+	public void getWorkInfoAndTimeZone_withoutPredetermineTimeZone(
+			@Injectable WorkType workType,
+			@Injectable WorkTimeSetting workTimeSetting,
+			@Injectable WorkSetting workSetting,
+			@Injectable PredetemineTimeSetting predetemineTimeSetting
+			) {
+		WorkInformation workInformation = new WorkInformation(
+				new WorkTypeCode("workTypeCode"), // 休暇
+				new WorkTimeCode("workTimeCode"));
+
+		new Expectations() {
+			{
+				require.getWorkType(anyString);
+				result = Optional.of(workType);
+				
+				require.getWorkTime( anyString );
+				result = Optional.of(workTimeSetting);
+				
+				workTimeSetting.getWorkSetting(require);
+				result = workSetting;
+				
+				workSetting.getPredetermineTimeSetting(require);
+				result = predetemineTimeSetting;
+				
+				workType.chechAttendanceDay();
+				result = AttendanceDayAttr.HOLIDAY;
+			}
+		};
+
+		Optional<WorkInfoAndTimeZone> result = workInformation.getWorkInfoAndTimeZone(require);
+		
+		assertThat( result.get().getWorkType() ).isEqualTo( workType );
+		assertThat( result.get().getWorkTime().get() ).isEqualTo( workTimeSetting );
+		assertThat( result.get().getTimeZones() ).isEmpty();
+		
 	}
 
 	@Test
@@ -1066,6 +1116,51 @@ public class WorkInformationTest {
 		assertThat( result ).isPresent();
 		assertThat( result.get() ).isEqualTo( workSetting );
 
+	}
+	
+	@Test
+	public void testEquals_differentWorkType() {
+		
+		WorkInformation target = new WorkInformation(new WorkTypeCode("k01"), new WorkTimeCode("s01"));
+		WorkInformation otherObject = new WorkInformation(new WorkTypeCode("k02"), new WorkTimeCode("s01"));
+		
+		assertThat( target.isSame(otherObject) ).isFalse();
+	}
+	
+	@Test
+	public void testEquals_sameWorkType_workTimesAllEmpty() {
+		
+		WorkInformation target = new WorkInformation(new WorkTypeCode("k01"), null );
+		WorkInformation otherObject = new WorkInformation(new WorkTypeCode("k01"), null );
+		
+		assertThat( target.isSame(otherObject) ).isTrue();
+	}
+	
+	@Test
+	public void testEquals_sameWorkType_workTimeNotMatch_case1() {
+		
+		WorkInformation target = new WorkInformation(new WorkTypeCode("k01"), new WorkTimeCode("s01") );
+		WorkInformation otherObject = new WorkInformation(new WorkTypeCode("k01"), null );
+		
+		assertThat( target.isSame(otherObject) ).isFalse();
+	}
+	
+	@Test
+	public void testEquals_sameWorkType_workTimeNotMatch_case2() {
+		
+		WorkInformation target = new WorkInformation(new WorkTypeCode("k01"), null );
+		WorkInformation otherObject = new WorkInformation(new WorkTypeCode("k01"), new WorkTimeCode("s01") );
+		
+		assertThat( target.isSame(otherObject) ).isFalse();
+	}
+	
+	@Test
+	public void testEquals_sameWorkType_sameWorkTime() {
+		
+		WorkInformation target = new WorkInformation(new WorkTypeCode("k01"), new WorkTimeCode("s01") );
+		WorkInformation otherObject = new WorkInformation(new WorkTypeCode("k01"), new WorkTimeCode("s01") );
+		
+		assertThat( target.isSame(otherObject) ).isTrue();
 	}
 
 

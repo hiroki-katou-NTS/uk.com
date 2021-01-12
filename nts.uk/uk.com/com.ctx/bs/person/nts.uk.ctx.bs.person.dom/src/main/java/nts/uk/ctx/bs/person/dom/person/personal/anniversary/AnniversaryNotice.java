@@ -9,7 +9,7 @@ import java.time.MonthDay;
 import java.time.format.DateTimeFormatter;
 
 /**
- * UKDesign.データベース.ER図.基幹.個人.個人のインフォメーション.個人のインフォメーション.個人の記念日情報
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.基幹.個人.個人のインフォメーション.個人の記念日
  */
 @Getter
 public class AnniversaryNotice extends AggregateRoot {

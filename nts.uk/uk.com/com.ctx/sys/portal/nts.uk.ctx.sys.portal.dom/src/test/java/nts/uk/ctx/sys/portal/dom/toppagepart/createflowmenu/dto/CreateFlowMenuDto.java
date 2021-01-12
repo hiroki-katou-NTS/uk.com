@@ -131,20 +131,20 @@ public class CreateFlowMenuDto implements CreateFlowMenu.MementoSetter, CreateFl
 
 	@Override
 	public void setFileAttachmentSettings(List<FileAttachmentSetting> fileAttachmentSettings, String contractCode) {
-//		this.fileAttachmentSettings = fileAttachmentSettings.stream()
-//				.map(domain -> FileAttachmentSettingDto.builder()
-//						.bold(domain.getFontSetting().getSizeAndColor().isBold()? 1 : 0)
-//						.column(domain.getSizeAndPosition().getColumn().v())
-//						.fileId(domain.getFileId())
-//						.fontSize(domain.getFontSetting().getSizeAndColor().getFontSize().v())
-//						.height(domain.getSizeAndPosition().getHeight().v())
-//						.horizontalPosition(domain.getFontSetting().getPosition().getHorizontalPosition().value)
-//						.linkContent(domain.getLinkContent().orElse(null))
-//						.row(domain.getSizeAndPosition().getRow().v())
-//						.verticalPosition(domain.getFontSetting().getPosition().getVerticalPosition().value)
-//						.width(domain.getSizeAndPosition().getWidth().v())
-//						.build())
-//				.collect(Collectors.toList());
+		this.fileAttachmentSettings = fileAttachmentSettings.stream()
+				.map(domain -> FileAttachmentSettingDto.builder()
+						.bold(domain.getFontSetting().getSizeAndColor().isBold() ? 1 : 0)
+						.column(domain.getSizeAndPosition().getColumn().v())
+						.fileId(domain.getFileId())
+						.fontSize(domain.getFontSetting().getSizeAndColor().getFontSize().v())
+						.height(domain.getSizeAndPosition().getHeight().v())
+						.horizontalPosition(domain.getFontSetting().getPosition().getHorizontalPosition().value)
+						.linkContent(domain.getLinkContent().map(DisplayName::v).orElse(null))
+						.row(domain.getSizeAndPosition().getRow().v())
+						.verticalPosition(domain.getFontSetting().getPosition().getVerticalPosition().value)
+						.width(domain.getSizeAndPosition().getWidth().v())
+						.build())
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -183,20 +183,20 @@ public class CreateFlowMenuDto implements CreateFlowMenu.MementoSetter, CreateFl
 
 	@Override
 	public void setLinkSettings(List<LinkSetting> linkSettings, String contractCode) {
-//		this.linkSettings = linkSettings.stream()
-//				.map(domain -> LinkSettingDto.builder()
-//						.bold(domain.getFontSetting().getSizeAndColor().isBold() ? 1 : 0)
-//						.column(domain.getSizeAndPosition().getColumn().v())
-//						.fontSize(domain.getFontSetting().getSizeAndColor().getFontSize().v())
-//						.height(domain.getSizeAndPosition().getHeight().v())
-//						.horizontalPosition(domain.getFontSetting().getPosition().getHorizontalPosition().value)
-//						.linkContent(domain.getLinkContent().orElse(null))
-//						.row(domain.getSizeAndPosition().getRow().v())
-//						.url(domain.getUrl().v())
-//						.verticalPosition(domain.getFontSetting().getPosition().getVerticalPosition().value)
-//						.width(domain.getSizeAndPosition().getWidth().v())
-//						.build())
-//				.collect(Collectors.toList());
+		this.linkSettings = linkSettings.stream()
+				.map(domain -> LinkSettingDto.builder()
+						.bold(domain.getFontSetting().getSizeAndColor().isBold() ? 1 : 0)
+						.column(domain.getSizeAndPosition().getColumn().v())
+						.fontSize(domain.getFontSetting().getSizeAndColor().getFontSize().v())
+						.height(domain.getSizeAndPosition().getHeight().v())
+						.horizontalPosition(domain.getFontSetting().getPosition().getHorizontalPosition().value)
+						.linkContent(domain.getLinkContent().map(DisplayName::v).orElse(null))
+						.row(domain.getSizeAndPosition().getRow().v())
+						.url(domain.getUrl().v())
+						.verticalPosition(domain.getFontSetting().getPosition().getVerticalPosition().value)
+						.width(domain.getSizeAndPosition().getWidth().v())
+						.build())
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -237,23 +237,22 @@ public class CreateFlowMenuDto implements CreateFlowMenu.MementoSetter, CreateFl
 
 	@Override
 	public List<FileAttachmentSetting> getFileAttachmentSettings() {
-//		return this.fileAttachmentSettings.stream()
-//				.map(dto -> FileAttachmentSetting.builder()
-//						.fileId(dto.getFileId())
-//						.fontSetting(new FontSetting(
-//								new SizeAndColor(dto.getBold() == SizeAndColor.BOLD, Optional.empty(), Optional.empty(), new FontSize(dto.getFontSize())), 
-//								new HorizontalAndVerticalPosition(
-//										EnumAdaptor.valueOf(dto.getHorizontalPosition(), HorizontalPosition.class), 
-//										EnumAdaptor.valueOf(dto.getVerticalPosition(), VerticalPosition.class))))
-//						.linkContent(Optional.ofNullable(dto.getLinkContent()))
-//						.sizeAndPosition(new SizeAndPosition(
-//								new HorizontalAndVerticalSize(dto.getColumn()),
-//								new HorizontalAndVerticalSize(dto.getRow()),
-//								new HorizontalAndVerticalSize(dto.getHeight()),
-//								new HorizontalAndVerticalSize(dto.getWidth())))
-//						.build())
-//				.collect(Collectors.toList());
-		return new ArrayList<FileAttachmentSetting>();
+		return this.fileAttachmentSettings.stream()
+				.map(dto -> FileAttachmentSetting.builder()
+						.fileId(dto.getFileId())
+						.fontSetting(new FontSetting(
+								new SizeAndColor(dto.getBold() == SizeAndColor.BOLD, Optional.empty(), Optional.empty(), new FontSize(dto.getFontSize())), 
+								new HorizontalAndVerticalPosition(
+										EnumAdaptor.valueOf(dto.getHorizontalPosition(), HorizontalPosition.class), 
+										EnumAdaptor.valueOf(dto.getVerticalPosition(), VerticalPosition.class))))
+						.linkContent(Optional.ofNullable(dto.getLinkContent()).map(DisplayName::new))
+						.sizeAndPosition(new SizeAndPosition(
+								new HorizontalAndVerticalSize(dto.getColumn()),
+								new HorizontalAndVerticalSize(dto.getRow()),
+								new HorizontalAndVerticalSize(dto.getHeight()),
+								new HorizontalAndVerticalSize(dto.getWidth())))
+						.build())
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -303,26 +302,25 @@ public class CreateFlowMenuDto implements CreateFlowMenu.MementoSetter, CreateFl
 
 	@Override
 	public List<LinkSetting> getLinkSettings() {
-//		return this.linkSettings.stream()
-//				.map(dto -> LinkSetting.builder()
-//						.fontSetting(new FontSetting(
-//								new SizeAndColor(
-//										dto.getBold() == SizeAndColor.BOLD,
-//										Optional.empty(),
-//										Optional.empty(),
-//										new FontSize(dto.getFontSize())), 
-//								new HorizontalAndVerticalPosition(
-//										EnumAdaptor.valueOf(dto.getHorizontalPosition(), HorizontalPosition.class), 
-//										EnumAdaptor.valueOf(dto.getVerticalPosition(), VerticalPosition.class))))
-//						.linkContent(Optional.ofNullable(dto.getLinkContent()))
-//						.sizeAndPosition(new SizeAndPosition(
-//								new HorizontalAndVerticalSize(dto.getColumn()),
-//								new HorizontalAndVerticalSize(dto.getRow()),
-//								new HorizontalAndVerticalSize(dto.getHeight()),
-//								new HorizontalAndVerticalSize(dto.getWidth())))
-//						.url(new URL(dto.getUrl()))
-//						.build())
-//				.collect(Collectors.toList());
-		return new ArrayList<LinkSetting>();
+		return this.linkSettings.stream()
+				.map(dto -> LinkSetting.builder()
+						.fontSetting(new FontSetting(
+								new SizeAndColor(
+										dto.getBold() == SizeAndColor.BOLD,
+										Optional.empty(),
+										Optional.empty(),
+										new FontSize(dto.getFontSize())), 
+								new HorizontalAndVerticalPosition(
+										EnumAdaptor.valueOf(dto.getHorizontalPosition(), HorizontalPosition.class), 
+										EnumAdaptor.valueOf(dto.getVerticalPosition(), VerticalPosition.class))))
+						.linkContent(Optional.ofNullable(dto.getLinkContent()).map(DisplayName::new))
+						.sizeAndPosition(new SizeAndPosition(
+								new HorizontalAndVerticalSize(dto.getColumn()),
+								new HorizontalAndVerticalSize(dto.getRow()),
+								new HorizontalAndVerticalSize(dto.getHeight()),
+								new HorizontalAndVerticalSize(dto.getWidth())))
+						.url(new URL(dto.getUrl()))
+						.build())
+				.collect(Collectors.toList());
 	}
 }
