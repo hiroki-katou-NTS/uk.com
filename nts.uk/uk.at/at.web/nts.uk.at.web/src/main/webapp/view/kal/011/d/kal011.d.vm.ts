@@ -55,7 +55,7 @@ module nts.uk.at.kal011.d {
                 
                 let isEmpty: any = _.find(taskDatas, (task: any) => { return task.key == "isEmptyExtractData" });
                 if (isEmpty) {
-                    vm.$dialog.error({messageId: "Msg_835"});
+                    vm.$dialog.info({messageId: "Msg_835"});
                     vm.setControlStatus(ScreenMode.INTERRUPT);
                 }
             }).fail((err: any) => {
