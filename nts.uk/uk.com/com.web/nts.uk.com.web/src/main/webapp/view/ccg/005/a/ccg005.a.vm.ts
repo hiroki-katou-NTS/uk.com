@@ -9,7 +9,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         <!-- A0 -->
         <span data-bind="i18n: 'CCG005_1'" class="ccg005-bold"></span>
         <!-- A1_5 -->
-        <i data-bind="ntsIcon: {no: 5, width: 25, height: 25}, click: $component.openScreenB></i>
+        <i data-bind="ntsIcon: {no: 5, width: 25, height: 25}, click: $component.openScreenCCG005B"></i>
         <!-- A1_6 -->
         <img width="25px" height="25px" src="${__viewContext.rootPath}/view/ccg/005/resource/reload.png"/>
       </div>
@@ -153,7 +153,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       <table>
         <tr>
           <td style="text-align: right;">
-            <a style="color: blue; text-decoration: underline;" data-bind="i18n: 'CCG005_34'"></a>
+            <a style="color: blue; text-decoration: underline;" data-bind="i18n: 'CCG005_34', click: $component.openScreenCCG005D"></a>
           </td>
         </tr>
         <tr>
@@ -203,7 +203,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
           </td>
           <td data-bind="i18n: 'CCG005_44'"></td>
         </tr>
-        <tr>
+        <tr data-bind="click: $component.openScreenCCG005E">
           <td>
             <i data-bind="ntsIcon: {no: 78, width: 15, height: 25}"></i>
           </td>
@@ -438,9 +438,19 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
     submit() {}
 
-    openScreenB() {
+    openScreenCCG005B() {
       const vm = this;
       vm.$window.modal('/view/ccg/005/b/index.xhtml', {});
+    }
+
+    openScreenCCG005D() {
+      const vm = this;
+      vm.$window.modal('/view/ccg/005/d/index.xhtml', {});
+    }
+
+    openScreenCCG005E() {
+      const vm = this;
+      vm.$window.modal('/view/ccg/005/e/index.xhtml', {});
     }
   }
 
