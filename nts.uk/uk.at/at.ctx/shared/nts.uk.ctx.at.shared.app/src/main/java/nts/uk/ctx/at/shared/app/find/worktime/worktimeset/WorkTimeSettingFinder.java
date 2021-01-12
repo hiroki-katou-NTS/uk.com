@@ -388,9 +388,9 @@ public class WorkTimeSettingFinder {
                     .findByCodeList(companyID, codes);
             selectableWorkingHours.addAll(getWorkTimeDtos(workTimeItems, workTimeSetItem));
             if (codes.size() == allWorkHours.size()) {
-                allCheckStatus = 0;
-            } else {
                 allCheckStatus = 1;
+            } else {
+                allCheckStatus = 0;
             }
 
         } else {
