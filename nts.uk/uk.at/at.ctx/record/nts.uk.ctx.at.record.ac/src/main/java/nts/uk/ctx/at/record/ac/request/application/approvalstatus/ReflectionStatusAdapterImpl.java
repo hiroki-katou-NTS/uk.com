@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.ac.request.application.approvalstatus;
 
-import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.request.application.approvalstatus.*;
 import nts.uk.ctx.at.request.pub.application.approvalstatus.*;
 
@@ -18,8 +18,8 @@ public class ReflectionStatusAdapterImpl implements ReflectionStatusAdapter {
     private ReflectionStatusPub reflectionStatusPub;
 
     @Override
-    public Map<String, List<ApplicationDateImport>> getAppByEmployeeDate(List<String> employeeIDS, GeneralDate startDate, GeneralDate endDate) {
-        return reflectionStatusPub.getAppByEmployeeDate(employeeIDS, startDate, endDate).entrySet().stream()
+    public Map<String, List<ApplicationDateImport>> getAppByEmployeeDate(List<String> employeeIDS, DatePeriod period) {
+        return reflectionStatusPub.getAppByEmployeeDate(employeeIDS, period).entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, x -> convertAppDate(x.getValue())));
     }
 

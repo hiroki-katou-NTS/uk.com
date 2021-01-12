@@ -41,8 +41,8 @@ public class ReflectionStatusCheckService {
 
         List<String> employeeIds = employeeInfos.stream().map(x -> x.getSid()).collect(Collectors.toList());
         // [No.690]社員（List）,期間に一致する申請を取得する
-        List<ApplicationDateImport> appDates = reflectionStatusAdapter.getAppByEmployeeDate(employeeIds,
-                period.start(), period.end()).entrySet().stream().flatMap(x -> x.getValue().stream())
+        List<ApplicationDateImport> appDates = reflectionStatusAdapter.getAppByEmployeeDate(employeeIds, period)
+                .entrySet().stream().flatMap(x -> x.getValue().stream())
                 .collect(Collectors.toList());
 
         // 実績反映状態＝【INPUT.反映状態】の件数をチェックする
