@@ -14,11 +14,17 @@ export interface MaxDaySpecHdDto {
     //喪主加算日数
     dayOfRela: number;
 }
+export interface VacationCheckOutputDto {
+    // 代休紐付管理をクリアする
+    clearManageSubsHoliday: boolean;
+    // 振休紐付管理をクリアする
+    clearManageHolidayString: boolean;
+}
 export interface SelectWorkOutputDto {
     // 休暇申請起動時の表示情報
     appAbsenceStartInfoDto: AppAbsenceStartInfoDto;
 
-    vacationCheckOutputDto: any;
+    vacationCheckOutputDto: VacationCheckOutputDto;
 }
 export interface SelectWorkTimeHolidayParam {
     // ・会社ID
@@ -98,6 +104,29 @@ export interface TimeDigestApplicationDto {
     timeAnualLeave: number;
 
     specialVacationFrameNO: number;
+}
+export interface UpdateAppAbsenceMobileCommand {
+    application: any;
+
+    // 休暇申請
+    applyForLeave: ApplyForLeaveDto;
+
+    appDispInfoStartupOutput: any;
+
+    // 休日の申請日<List>
+    holidayAppDates: Array<string>;
+
+    // 古いの休出代休紐付け管理<List>
+    leaveComDayOffManaDto: Array<LeaveComDayOffManaDto>;
+
+    // 古いの振出振休紐付け管理<List>
+    payoutSubofHDManagementDto: Array<PayoutSubofHDManagementDto>;
+
+    // 休出代休紐付け管理<List>
+    leaveComDayOffMana: Array<LeaveComDayOffManaDto>;
+
+    // 振出振休紐付け管理<List>
+    payoutSubofHDManagements: Array<PayoutSubofHDManagementDto>;
 }
 export interface WorkInformationDto {
     //	勤務種類コード
@@ -236,6 +265,8 @@ export interface CheckInsertMobileParam {
     applyForLeave: ApplyForLeaveDto;
 
     application: any;
+
+    applicationUpdate: any;
 
     mode: boolean;
 }
