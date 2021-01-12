@@ -8,38 +8,84 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = { width: 380, height: 400 };</script>
+			<script>var dialogSize = { width: 490, height: 400 };</script>
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:ValidatorScript>
 				nts.uk.ctx.at.function.dom.attendancerecord.item.ItemName
 			</com:ValidatorScript>
-			<com:stylefile path="ccg005.b.style.css" />
-			<com:scriptfile path="ccg005.b.vm.js" />
+			<com:stylefile path="ccg005.d.style.css" />
+			<com:scriptfile path="ccg005.d.vm.js" />
 		</ui:define>
 		<ui:define name="content">
 			<div class="contents-area">
         <div class="button-head">
-          <!-- B1_1 -->
-          <button id="B1_1" tabindex="7" class="x-large proceed" style="margin-left: 25px;">#{i18n.getText('CCG005_2')}</button>
-          <!-- B1_2 -->
-          <button id="B1_2" tabindex="8" class="x-large" data-bind="click: onClickCancel" style="float: right; margin-right: 25px;">#{i18n.getText('CCG005_3')}</button>
+          <!-- D1_1 -->
+          <button id="D1_1" class="large" style="margin-left: 25px;">#{i18n.getText('CCG005_8')}</button>
+          <!-- D1_2 -->
+          <button id="D1_2" class="large proceed" style="margin-left: 40px;">#{i18n.getText('CCG005_2')}</button>
+          <!-- D1_3 -->
+          <button id="D1_3" class="large danger" style="margin-left: 120px;">#{i18n.getText('CCG005_9')}</button>
+          <!-- D1_4 -->
+          <button id="D1_4" class="large" data-bind="click: onClickCancel" style="float: right; margin-right: 25px;">#{i18n.getText('CCG005_3')}</button>
         </div>
         <hr></hr>
         <div class="text">
-          <span style="font-size: larger;">#{i18n.getText('CCG005_4')}</span>
+          <!-- D2_1 -->
+          <span style="font-size: unset;">#{i18n.getText('CCG005_10')}</span>
         </div>
         <div style="margin-top: 15px;">
           <div class="table-left">
-            <table id="single-list" data-bind="ntsGridList: {
-              height: 200,
-              options: items,
-              optionsValue: 'code',
-              columns: columns,
-              multiple: false,
-              value: selectSingle
-            }"></table>
+            <div style="display: inline-block;">
+              <!-- D3 -->
+              <table id="grid-test-single"
+                data-bind="ntsGridList: {
+                    height: 200,
+                    dataSource: items,
+                    primaryKey: 'code',
+                    columns: columns,
+                    value: selectSingle,
+                    multiple: false
+                  }"
+                class=""></table>
+            </div>
+            <!-- D4 -->
+            <div id="grid-up-down"
+              data-bind="ntsUpDown: {
+                  targetSource: items,
+                  primaryKey: 'code',
+                  comId: '#grid-test-single',
+                  type: 'grid'
+                }"
+              class=""></div>
           </div>
-  
+          <div class="content-right">
+            <div>
+              <!-- D5_1 -->
+              <input data-bind="ntsTextEditor: {
+                value: name,
+                option: option,
+                required: true,
+                enable: true}" />
+            </div>
+            <!-- D5_2 -->
+            <div class="cf" style="margin-top: 20px;" data-bind="ntsSwitchButton: {
+              name: 'Sample Switch',
+              options: roundingRules,
+              optionsValue: 'code',
+              optionsText: 'name',
+              value: selectedRuleCode,
+              enable: true }"></div>
+            <div style="margin-top: 20px;">
+              <!-- D5_3 -->
+              <button >#{i18n.getText('CCG005_31')}</button>
+              <!-- D5_4 -->
+              <input data-bind="ntsTextEditor: {
+                value: name,
+                option: option1,
+                required: true,
+                readonly: true}" />
+            </div>
+          </div>
         </div>
 			</div>
 		</ui:define>
