@@ -6,7 +6,12 @@
         v-bind:params="kaf000_A_Params"
       />
     </div>
-
+    <div v-if="!$valid || !isValidateAll" class="card bg-danger top-alert uk-text-danger topError">
+              <button class="btn btn-link uk-text-danger">
+                <i class="fa fa-exclamation-circle" aria-hidden="true" ></i>
+                {{ 'KAFS07_1' | i18n }}
+              </button>
+    </div>
     <kafs00-b
         v-if="kaf000_B_Params != null"
         v-bind:params="kaf000_B_Params"
@@ -249,7 +254,9 @@
         </div>
         <div class="mt-1">
             <nts-text-editor
-            v-model="relationshipReason"
+              v-model="relationshipReason"
+              name='relationshipReason' 
+              showTitle="false"
             />
 
         </div>

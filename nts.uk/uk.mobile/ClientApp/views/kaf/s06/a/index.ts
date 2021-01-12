@@ -13,8 +13,31 @@ import { KdlS36Component } from '../../../kdl/s36';
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
-    validations: {},
-    constraints: [],
+    validations: {
+        inputA9_5: {
+            constraint: 'AttendanceTime'
+        },
+        inputA9_7: {
+            constraint: 'AttendanceTime'
+        },
+        inputA9_9: {
+            constraint: 'AttendanceTime'
+        },
+        inputA9_11: {
+            constraint: 'AttendanceTime'
+        },
+        inputA9_13: {
+            constraint: 'AttendanceTime'
+        },
+        relationshipReason: {
+            constraint: 'RelationshipReasonPrimitive'
+        }
+    },
+    constraints: [
+        'nts.uk.ctx.at.shared.dom.common.time.AttendanceTime',
+        'nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.RelationshipReasonPrimitive',
+    ],
+
     components: {
         'kafs00-a': KafS00AComponent,
         'kafs00-b': KafS00BComponent,
@@ -40,7 +63,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
     public maxDaySpecHdDto: MaxDaySpecHdDto;
     public time: number = 0;
     public checkBoxC7: boolean = false;
-    public relationshipReason: null;
+    public relationshipReason: string = '';
     public model: Model = {} as Model;
     public inputA9_5: number = null;
     public inputA9_7: number = null;
