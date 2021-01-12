@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.ac.workschedule;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -40,7 +39,23 @@ public class WorkScheduleWorkInforAcFinder implements WorkScheduleWorkInforAdapt
 	@Override
 	public Optional<WorkScheduleWorkInforImport> get(String employeeID, GeneralDate ymd) {
 		Optional<WorkScheduleExport> data = workSchedulePub.get(employeeID, ymd);
-		return data.map(this::convert);
+		if (data.isPresent()) {
+			BreakTimeOfDailyAttdImport listBreakTimeOfDailyAttdImport = new BreakTimeOfDailyAttdImport(
+					data.get().getListBreakTimeOfDaily().get().getBreakTimeSheets().stream()
+							.map(x -> new BreakTimeSheetImport(x.getBreakFrameNo(), x.getStartTime(),
+									x.getEndTime(), x.getBreakTime()))
+							.collect(Collectors.toList()));
+			return Optional.of(new WorkScheduleWorkInforImport(data.get().getEmployeeId(),
+					data.get().getConfirmedATR(), data.get().getWorkTyle(), data.get().getWorkTime(),
+					data.get().getGoStraightAtr(), data.get().getBackStraightAtr(),
+					!data.get().getTimeLeavingOfDailyAttd().isPresent() ? null
+							: new TimeLeavingOfDailyAttdImport(
+							data.get().getTimeLeavingOfDailyAttd().get().getTimeLeavingWorks().stream()
+									.map(c -> convertToTimeLeavingWork(c)).collect(Collectors.toList()),
+							data.get().getTimeLeavingOfDailyAttd().get().getWorkTimes()),
+					listBreakTimeOfDailyAttdImport));
+		}
+		return Optional.empty();
 	}
 
 	@Override
@@ -49,22 +64,20 @@ public class WorkScheduleWorkInforAcFinder implements WorkScheduleWorkInforAdapt
 	}
 
 	private WorkScheduleWorkInforImport convert(WorkScheduleExport data) {
-		if (data.isPresent()) {
-			BreakTimeOfDailyAttdImport listBreakTimeOfDailyAttdImport = new BreakTimeOfDailyAttdImport(
-					data.get().getListBreakTimeOfDaily().getBreakTimeSheets().stream()
-									.map(x -> new BreakTimeSheetImport(x.getBreakFrameNo(), x.getStartTime(),
-											x.getEndTime(), x.getBreakTime()))
-									.collect(Collectors.toList()));
-			return Optional.of(new WorkScheduleWorkInforImport(data.get().getWorkTyle(), data.get().getWorkTime(),
-					data.get().getGoStraightAtr(), data.get().getBackStraightAtr(),
-					!data.get().getTimeLeavingOfDailyAttd().isPresent() ? null
-							: new TimeLeavingOfDailyAttdImport(
-									data.get().getTimeLeavingOfDailyAttd().get().getTimeLeavingWorks().stream()
-											.map(c -> convertToTimeLeavingWork(c)).collect(Collectors.toList()),
-									data.get().getTimeLeavingOfDailyAttd().get().getWorkTimes()),
-					listBreakTimeOfDailyAttdImport));
-		}
-		return Optional.empty();
+		Optional<BreakTimeOfDailyAttdImport> listBreakTimeOfDailyAttdImport = data.getListBreakTimeOfDaily()
+				.map(c -> new BreakTimeOfDailyAttdImport(
+						c.getBreakTimeSheets().stream()
+								.map(x -> new BreakTimeSheetImport(x.getBreakFrameNo(), x.getStartTime(),
+										x.getEndTime(), x.getBreakTime()))
+								.collect(Collectors.toList())));
+		return new WorkScheduleWorkInforImport(data.getEmployeeId(), data.getConfirmedATR(), data.getWorkTyle(),
+				data.getWorkTime(), data.getGoStraightAtr(), data.getBackStraightAtr(),
+				!data.getTimeLeavingOfDailyAttd().isPresent() ? null
+						: new TimeLeavingOfDailyAttdImport(
+						data.getTimeLeavingOfDailyAttd().get().getTimeLeavingWorks().stream()
+								.map(this::convertToTimeLeavingWork).collect(Collectors.toList()),
+						data.getTimeLeavingOfDailyAttd().get().getWorkTimes()),
+				listBreakTimeOfDailyAttdImport.orElse(null));
 	}
 
 	private TimeLeavingWorkImport convertToTimeLeavingWork(TimeLeavingWorkExport domain) {

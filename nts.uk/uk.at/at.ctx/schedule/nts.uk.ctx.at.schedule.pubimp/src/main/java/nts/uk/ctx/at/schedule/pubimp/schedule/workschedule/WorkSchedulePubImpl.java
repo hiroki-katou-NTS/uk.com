@@ -78,7 +78,7 @@ public class WorkSchedulePubImpl implements WorkSchedulePub {
 				data.getWorkInfo().getRecordInfo().getWorkTimeCode() == null ? null
 						: data.getWorkInfo().getRecordInfo().getWorkTimeCode().v(),
 				data.getWorkInfo().getGoStraightAtr().value, data.getWorkInfo().getBackStraightAtr().value,
-				timeLeavingOfDailyAttd,listBreakTimeOfDaily);
+				timeLeavingOfDailyAttd,Optional.of(listBreakTimeOfDaily));
 		return workScheduleExport;
 
 	}
