@@ -17,7 +17,7 @@ public class GoOutEmployeeInformation {
 	private GoOutReason goOutReason;
 
 	// 年月日
-	private GeneralDate gouOutDate;//TODO
+	private GeneralDate goOutDate;
 
 	// 戻り時刻
 	private AttendanceClock comebackTime;
@@ -37,7 +37,7 @@ public class GoOutEmployeeInformation {
 	public void getMemento(MementoGetter memento) {
 		this.goOutTime = new AttendanceClock(memento.getGoOutTime());
 		this.goOutReason = new GoOutReason(memento.getGoOutReason());
-		this.gouOutDate = memento.getGouOutDate();
+		this.goOutDate = memento.getGoOutDate();
 		this.comebackTime = new AttendanceClock(memento.getComebackTime());
 		this.sid = memento.getSid();
 	}
@@ -45,7 +45,7 @@ public class GoOutEmployeeInformation {
 	public void setMemento(MementoSetter memento) {
 		memento.setGoOutTime(this.goOutTime.v());
 		memento.setGoOutReason(this.goOutReason.v());
-		memento.setGouOutDate(this.gouOutDate);
+		memento.setGoOutDate(this.goOutDate);
 		memento.setComebackTime(this.comebackTime.v());
 		memento.setSid(this.sid);
 	}
@@ -55,7 +55,7 @@ public class GoOutEmployeeInformation {
 
 		void setGoOutReason(String goOutReason);
 
-		void setGouOutDate(GeneralDate gouOutDate);
+		void setGoOutDate(GeneralDate gouOutDate);
 
 		void setComebackTime(Integer comebackTime);
 
@@ -67,7 +67,7 @@ public class GoOutEmployeeInformation {
 
 		String getGoOutReason();
 
-		GeneralDate getGouOutDate();
+		GeneralDate getGoOutDate();
 
 		Integer getComebackTime();
 

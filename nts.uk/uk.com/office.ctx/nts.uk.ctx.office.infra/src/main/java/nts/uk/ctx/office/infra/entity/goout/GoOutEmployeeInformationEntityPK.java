@@ -29,5 +29,5 @@ public class GoOutEmployeeInformationEntityPK implements Serializable {
 	// column 年月日
 	@NotNull
 	@Column(name = "YMD")
-	private GeneralDate gouOutDate;
+	private GeneralDate goOutDate;
 }

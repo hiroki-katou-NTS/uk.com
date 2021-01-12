@@ -15,7 +15,7 @@ public class GoOutEmployeeInformationDto implements GoOutEmployeeInformation.Mem
 	private String goOutReason;
 
 	// 年月日
-	private GeneralDate gouOutDate;
+	private GeneralDate goOutDate;
 
 	// 戻り時刻
 	private Integer comebackTime;
