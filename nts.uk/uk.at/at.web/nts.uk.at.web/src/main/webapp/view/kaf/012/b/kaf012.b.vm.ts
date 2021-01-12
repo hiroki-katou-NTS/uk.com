@@ -35,7 +35,8 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                                                         reflectSetting: reflectSetting,
                                                         timeLeaveManagement: timeLeaveManagement,
                                                         timeLeaveRemaining: timeLeaveRemaining,
-                                                        leaveType: leaveType
+                                                        leaveType: leaveType,
+                                                        application: application
                                                     }}"/>
             <div class="table">
                 <div class="cell" style="min-width: 825px; padding-right: 10px;">
@@ -66,7 +67,8 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                                             appDispInfoStartupOutput: appDispInfoStartupOutput,
                                             application: application,
                                             applyTimeData: applyTimeData,
-                                            specialLeaveFrame: specialLeaveFrame
+                                            specialLeaveFrame: specialLeaveFrame,
+                                            eventCalc: eventCalc
                                         }}"/>
                     <div data-bind="component: { name: 'kaf000-b-component7', 
                                                 params: {
@@ -108,6 +110,9 @@ module nts.uk.at.view.kaf012.b.viewmodel {
         applyTimeData: KnockoutObservableArray<DataModel> = ko.observableArray([]);
         specialLeaveFrame: KnockoutObservable<number> = ko.observable(null);
 
+        childCalcEvent: () => any;
+        eventCalc: any;
+
         created(
             params: {
 				appType: any,
@@ -135,6 +140,8 @@ module nts.uk.at.view.kaf012.b.viewmodel {
             // luôn là component
             params.eventUpdate(vm.update.bind(vm));
 			params.eventReload(vm.reload.bind(vm));
+
+			vm.eventCalc = function(a: any) { vm.getChildCalcEvent.apply(vm, [a]) };
         }
 
 		reload() {
@@ -190,6 +197,10 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                     }
                     if (specialFrame != null) vm.specialLeaveFrame(specialFrame);
                     vm.printContentOfEachAppDto().opPrintContentOfTimeLeave = res.details;
+
+                    if(vm.leaveType() == LeaveType.COMBINATION && _.isFunction(vm.childCalcEvent)) {
+                        vm.childCalcEvent();
+                    }
                 }
             }).fail(err => {
                 vm.handleError(err);
@@ -331,6 +342,8 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                 application: ko.toJS(vm.application),
                 details: details
             };
+            paramsRegister.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingStart = new Date(paramsRegister.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingStart).toISOString();
+            paramsRegister.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingEnd = new Date(paramsRegister.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingEnd).toISOString();
             return vm.$ajax(API.updateApplication, paramsRegister);
         }
 
@@ -351,6 +364,11 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                 	ko.contextFor($('#contents-area')[0]).$vm.loadData();
                 }
             });
+        }
+
+        getChildCalcEvent(evt: () => void) {
+            const vm = this;
+            vm.childCalcEvent = evt;
         }
     }
 

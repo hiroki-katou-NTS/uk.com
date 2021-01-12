@@ -6,7 +6,8 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
     import TimeLeaveRemaining = nts.uk.at.view.kaf012.shr.viewmodel1.TimeLeaveRemaining;
 
     const API = {
-        changeSpecialFrame: "at/request/application/timeLeave/changeSpecialFrame"
+        changeSpecialFrame: "at/request/application/timeLeave/changeSpecialFrame",
+        calculateTime: "at/request/application/timeLeave/calculateTime",
     };
 
     const template = `
@@ -122,7 +123,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                     </table>
                 </div>
                 <div style="width: 100px; text-align: center; margin: auto auto" class="pull-left">
-                    <button id="time-calc-button" class="proceed caret-right" data-bind="text: $i18n('KAF012_38')"/>
+                    <button id="time-calc-button" class="proceed caret-right" data-bind="text: $i18n('KAF012_38'), click: handleCalculate"/>
                 </div>
                 <div class="pull-left">
                     <table id="kaf012-calc-table">
@@ -158,10 +159,10 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                         <tbody data-bind="foreach: applyTimeData">
                             <tr data-bind="if: display, attr: {height: !display() ? '0' : appTimeType < 4 ? '85px' : displayShowMore() ? '192px' : '464px'}">
                                 <td data-bind="style: {'vertical-align': appTimeType < 4 ? 'middle' : 'initial'}, css: {hidden: $parent.leaveType() != 6}, foreach: applyTime">
-                                    <div>
-                                        <span data-bind="text: appTimeType == 4 ? $vm.$i18n('KAF012_33') : $vm.$i18n('KAF012_34'), 
+                                    <div data-bind="if: display, attr: {class: appTimeType < 4 || !display() ? '' : 'control-group'}">
+                                        <span style="display: flex; padding-bottom: 5px;" data-bind="text: appTimeType == 4 ? $vm.$i18n('KAF012_33') : $vm.$i18n('KAF012_34'), 
                                                         css: {hidden: appTimeType < 4}"/>
-                                        <span>0:00</span>
+                                        <span style="display: block; padding-bottom: 4px;" data-bind="text: calculatedTime"/>
                                     </div>
                                 </td>
                                 <td data-bind="style: {'vertical-align': appTimeType < 4 ? 'middle' : 'initial'}, css: {hidden: $parent.leaveType() != 0 &amp;&amp; $parent.leaveType() != 6}, foreach: applyTime">
@@ -308,6 +309,8 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                     );
             });
             vm.applyTimeData = params.applyTimeData;
+            if (params.eventCalc)
+                params.eventCalc(vm.handleCalculate.bind(vm));
         }
 
         mounted() {
@@ -373,7 +376,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                     } else {
                         vm.switchOptions(result);
                     }
-                    if (!vm.leaveType()) vm.leaveType(vm.switchOptions()[0].code);
+                    if (result.length > 0 && !vm.leaveType()) vm.leaveType(vm.switchOptions()[0].code);
                 }
             });
             vm.specialLeaveFrame.subscribe(value => {
@@ -404,6 +407,190 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                     vm.$dialog.error(error);
                 }).always(() => vm.$blockui("hide"));
         }
+
+        handleCalculate() {
+            const vm = this;
+            const command = {
+                timeLeaveType: vm.leaveType(),
+                appDate: new Date(vm.application().appDate()).toISOString(),
+                appDisplayInfo: {
+                    appDispInfoStartupOutput: vm.appDispInfoStartupOutput(),
+                    timeLeaveManagement: vm.timeLeaveManagement(),
+                    timeLeaveRemaining: vm.timeLeaveRemaining(),
+                    reflectSetting: vm.reflectSetting()
+                },
+                timeZones: [],
+                outingTimeZones: []
+            };
+            command.appDisplayInfo.timeLeaveRemaining.remainingStart = new Date(command.appDisplayInfo.timeLeaveRemaining.remainingStart).toISOString();
+            command.appDisplayInfo.timeLeaveRemaining.remainingEnd = new Date(command.appDisplayInfo.timeLeaveRemaining.remainingEnd).toISOString();
+            vm.$blockui("show").then(() => {
+                return vm.$ajax(API.calculateTime, command);
+            }).done((data: any) => {
+                vm.applyTimeData().forEach(row => {
+                    switch (vm.leaveType()) {
+                        case LeaveType.SUBSTITUTE:
+                            switch (row.appTimeType) {
+                                case 0:
+                                    row.applyTime[0].substituteAppTime(data.timeBeforeWork1);
+                                    break;
+                                case 1:
+                                    row.applyTime[0].substituteAppTime(data.timeAfterWork1);
+                                    break;
+                                case 2:
+                                    row.applyTime[0].substituteAppTime(data.timeBeforeWork2);
+                                    break;
+                                case 3:
+                                    row.applyTime[0].substituteAppTime(data.timeAfterWork2);
+                                    break;
+                                case 4:
+                                    row.applyTime[0].substituteAppTime(data.privateOutingTime);
+                                    row.applyTime[1].substituteAppTime(data.unionOutingTime);
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                        case LeaveType.ANNUAL:
+                            switch (row.appTimeType) {
+                                case 0:
+                                    row.applyTime[0].annualAppTime(data.timeBeforeWork1);
+                                    break;
+                                case 1:
+                                    row.applyTime[0].annualAppTime(data.timeAfterWork1);
+                                    break;
+                                case 2:
+                                    row.applyTime[0].annualAppTime(data.timeBeforeWork2);
+                                    break;
+                                case 3:
+                                    row.applyTime[0].annualAppTime(data.timeAfterWork2);
+                                    break;
+                                case 4:
+                                    row.applyTime[0].annualAppTime(data.privateOutingTime);
+                                    row.applyTime[1].annualAppTime(data.unionOutingTime);
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                        case LeaveType.CHILD_NURSING:
+                            switch (row.appTimeType) {
+                                case 0:
+                                    row.applyTime[0].childCareAppTime(data.timeBeforeWork1);
+                                    break;
+                                case 1:
+                                    row.applyTime[0].childCareAppTime(data.timeAfterWork1);
+                                    break;
+                                case 2:
+                                    row.applyTime[0].childCareAppTime(data.timeBeforeWork2);
+                                    break;
+                                case 3:
+                                    row.applyTime[0].childCareAppTime(data.timeAfterWork2);
+                                    break;
+                                case 4:
+                                    row.applyTime[0].childCareAppTime(data.privateOutingTime);
+                                    row.applyTime[1].childCareAppTime(data.unionOutingTime);
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                        case LeaveType.NURSING:
+                            switch (row.appTimeType) {
+                                case 0:
+                                    row.applyTime[0].childCareAppTime(data.timeBeforeWork1);
+                                    break;
+                                case 1:
+                                    row.applyTime[0].childCareAppTime(data.timeAfterWork1);
+                                    break;
+                                case 2:
+                                    row.applyTime[0].childCareAppTime(data.timeBeforeWork2);
+                                    break;
+                                case 3:
+                                    row.applyTime[0].childCareAppTime(data.timeAfterWork2);
+                                    break;
+                                case 4:
+                                    row.applyTime[0].childCareAppTime(data.privateOutingTime);
+                                    row.applyTime[1].childCareAppTime(data.unionOutingTime);
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                        case LeaveType.SUPER_60H:
+                            switch (row.appTimeType) {
+                                case 0:
+                                    row.applyTime[0].super60AppTime(data.timeBeforeWork1);
+                                    break;
+                                case 1:
+                                    row.applyTime[0].super60AppTime(data.timeAfterWork1);
+                                    break;
+                                case 2:
+                                    row.applyTime[0].super60AppTime(data.timeBeforeWork2);
+                                    break;
+                                case 3:
+                                    row.applyTime[0].super60AppTime(data.timeAfterWork2);
+                                    break;
+                                case 4:
+                                    row.applyTime[0].super60AppTime(data.privateOutingTime);
+                                    row.applyTime[1].super60AppTime(data.unionOutingTime);
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                        case LeaveType.SPECIAL:
+                            switch (row.appTimeType) {
+                                case 0:
+                                    row.applyTime[0].specialAppTime(data.timeBeforeWork1);
+                                    break;
+                                case 1:
+                                    row.applyTime[0].specialAppTime(data.timeAfterWork1);
+                                    break;
+                                case 2:
+                                    row.applyTime[0].specialAppTime(data.timeBeforeWork2);
+                                    break;
+                                case 3:
+                                    row.applyTime[0].specialAppTime(data.timeAfterWork2);
+                                    break;
+                                case 4:
+                                    row.applyTime[0].specialAppTime(data.privateOutingTime);
+                                    row.applyTime[1].specialAppTime(data.unionOutingTime);
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                        case LeaveType.COMBINATION:switch (row.appTimeType) {
+                            case 0:
+                                row.applyTime[0].calculatedTime(nts.uk.time.format.byId("Clock_Short_HM", data.timeBeforeWork1));
+                                break;
+                            case 1:
+                                row.applyTime[0].calculatedTime(nts.uk.time.format.byId("Clock_Short_HM", data.timeAfterWork1));
+                                break;
+                            case 2:
+                                row.applyTime[0].calculatedTime(nts.uk.time.format.byId("Clock_Short_HM", data.timeBeforeWork2));
+                                break;
+                            case 3:
+                                row.applyTime[0].calculatedTime(nts.uk.time.format.byId("Clock_Short_HM", data.timeAfterWork2));
+                                break;
+                            case 4:
+                                row.applyTime[0].calculatedTime(nts.uk.time.format.byId("Clock_Short_HM", data.privateOutingTime));
+                                row.applyTime[1].calculatedTime(nts.uk.time.format.byId("Clock_Short_HM", data.unionOutingTime));
+                                break;
+                            default:
+                                break;
+                        }
+                            break;
+                        default:
+                            break;
+                    }
+                });
+            }).fail(error => {
+                vm.$dialog.error(error);
+            }).always(() => vm.$blockui("hide"));
+        }
+
     }
     
     interface Params {
@@ -414,7 +601,8 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
         appDispInfoStartupOutput: KnockoutObservable<any>,
         application: KnockoutObservable<any>,
         applyTimeData: KnockoutObservableArray<DataModel>,
-        specialLeaveFrame: KnockoutObservable<number>
+        specialLeaveFrame: KnockoutObservable<number>,
+        eventCalc?: (a: any) => void
     }
 
     export enum AppTimeType {
@@ -463,6 +651,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
         appTimeType: number;
         inputName: string;
         display: KnockoutObservable<boolean>;
+        calculatedTime: KnockoutObservable<string>;
         substituteAppTime: KnockoutObservable<number>;
         annualAppTime: KnockoutObservable<number>;
         childCareAppTime: KnockoutObservable<number>;
@@ -472,6 +661,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
 
         constructor(appTimeType: number, reflectSetting?: KnockoutObservable<ReflectSetting>) {
             this.appTimeType = appTimeType;
+            this.calculatedTime = ko.observable("0:00");
             this.substituteAppTime = ko.observable(0);
             this.annualAppTime = ko.observable(0);
             this.childCareAppTime = ko.observable(0);

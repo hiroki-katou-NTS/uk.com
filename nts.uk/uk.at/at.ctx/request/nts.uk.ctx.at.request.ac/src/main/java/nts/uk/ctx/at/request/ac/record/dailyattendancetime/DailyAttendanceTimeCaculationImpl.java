@@ -24,7 +24,9 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendan
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculationImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.TimeWithCalculationImport;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
@@ -45,7 +47,9 @@ public class DailyAttendanceTimeCaculationImpl implements DailyAttendanceTimeCac
 			String workTimeCode,
 			List<TimeZone> lstTimeZone,
 			List<Integer> breakStartTimes,
-			List<Integer> breakEndTime) {
+			List<Integer> breakEndTime,
+			List<OutingTimeSheet> outingTimeSheets,
+			List<ShortWorkingTimeSheet> shortWorkingTimeSheets) {
 		DailyAttendanceTimePubImport dailyAttendanceTimePubImport = new DailyAttendanceTimePubImport();
 		dailyAttendanceTimePubImport.setEmployeeid(employeeID);
 		dailyAttendanceTimePubImport.setYmd(ymd);
@@ -54,6 +58,8 @@ public class DailyAttendanceTimeCaculationImpl implements DailyAttendanceTimeCac
 		dailyAttendanceTimePubImport.setLstTimeZone(lstTimeZone);
 		dailyAttendanceTimePubImport.setBreakStartTime(getTimes(breakStartTimes));
 		dailyAttendanceTimePubImport.setBreakEndTime(getTimes(breakEndTime));
+		dailyAttendanceTimePubImport.setOutingTimeSheets(outingTimeSheets);
+		dailyAttendanceTimePubImport.setShortWorkingTimeSheets(shortWorkingTimeSheets);
 		//1日分の勤怠時間を仮計算
 		DailyAttendanceTimePubExport dailyAttendanceTimePubExport = dailyAttendanceTimePub.calcDailyAttendance(dailyAttendanceTimePubImport);
 		

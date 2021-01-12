@@ -112,12 +112,12 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
                     if (vm.timeLeaveRemaining().annualTimeLeaveRemainingDays <= 0)
                         return nts.uk.time.format.byId("Time_Short_HM", vm.timeLeaveRemaining().annualTimeLeaveRemainingTime);
                     else if (vm.timeLeaveRemaining().annualTimeLeaveRemainingTime <= 0)
-                        return vm.$i18n("KAF006_46", [nts.uk.time.format.byId("Time_Short_HM", vm.timeLeaveRemaining().annualTimeLeaveRemainingDays)]);
+                        return vm.$i18n("KAF006_46", [vm.timeLeaveRemaining().annualTimeLeaveRemainingDays.toString()]);
                     else
                         return vm.$i18n(
                             "KDL005_29",
                             [
-                                nts.uk.time.format.byId("Time_Short_HM", vm.timeLeaveRemaining().annualTimeLeaveRemainingDays),
+                                vm.timeLeaveRemaining().annualTimeLeaveRemainingDays.toString(),
                                 nts.uk.time.format.byId("Time_Short_HM", vm.timeLeaveRemaining().annualTimeLeaveRemainingTime)
                             ]);
                 }
@@ -134,12 +134,12 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
                     if (vm.timeLeaveRemaining().childCareRemainingDays <= 0)
                         return nts.uk.time.format.byId("Time_Short_HM", vm.timeLeaveRemaining().childCareRemainingTime);
                     else if (vm.timeLeaveRemaining().childCareRemainingTime <= 0)
-                        return vm.$i18n("KAF006_46", [nts.uk.time.format.byId("Time_Short_HM", vm.timeLeaveRemaining().childCareRemainingDays)]);
+                        return vm.$i18n("KAF006_46", [vm.timeLeaveRemaining().childCareRemainingDays.toString()]);
                     else
                         return vm.$i18n(
                             "KDL005_29",
                             [
-                                nts.uk.time.format.byId("Time_Short_HM", vm.timeLeaveRemaining().childCareRemainingDays),
+                                vm.timeLeaveRemaining().childCareRemainingDays.toString(),
                                 nts.uk.time.format.byId("Time_Short_HM", vm.timeLeaveRemaining().childCareRemainingTime)
                             ]);
                 }
@@ -156,12 +156,12 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
                     if (vm.timeLeaveRemaining().careRemainingDays <= 0)
                         return nts.uk.time.format.byId("Time_Short_HM", vm.timeLeaveRemaining().careRemainingTime);
                     else if (vm.timeLeaveRemaining().careRemainingTime <= 0)
-                        return vm.$i18n("KAF006_46", [nts.uk.time.format.byId("Time_Short_HM", vm.timeLeaveRemaining().careRemainingDays)]);
+                        return vm.$i18n("KAF006_46", [vm.timeLeaveRemaining().careRemainingDays.toString()]);
                     else
                         return vm.$i18n(
                             "KDL005_29",
                             [
-                                nts.uk.time.format.byId("Time_Short_HM", vm.timeLeaveRemaining().careRemainingDays),
+                                vm.timeLeaveRemaining().careRemainingDays.toString(),
                                 nts.uk.time.format.byId("Time_Short_HM", vm.timeLeaveRemaining().careRemainingTime)
                             ]);
                 }
@@ -200,8 +200,8 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
         openKDL005() {
             const vm = this;
             var param: any = {
-                employeeIds: vm.application().employeeIDLst(),
-                baseDate: new Date().toISOString().split("T")[0].replace('-','').replace('-','')
+                employeeIds: vm.application().employeeIDLst().length == 0 ? [vm.$user.employeeId] : vm.application().employeeIDLst(),
+                baseDate: vm.timeLeaveRemaining().remainingStart.replace(/\//g, '')
             };
             setShared('KDL005_DATA', param);
             if(param.employeeIds.length > 1) {
@@ -214,8 +214,8 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
         openKDL020() {
             let vm = this;
             const data = {
-                employeeIds: vm.application().employeeIDLst(),
-                baseDate: new Date().toISOString().split("T")[0].replace('-','').replace('-','')
+                employeeIds: vm.application().employeeIDLst().length == 0 ? [vm.$user.employeeId] : vm.application().employeeIDLst(),
+                baseDate: vm.timeLeaveRemaining().remainingStart.replace(/\//g, '')
             };
             setShared('KDL020A_PARAM', data);
             if(data.employeeIds.length > 1 ) {
@@ -228,8 +228,8 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
         openKDL051() {
             let vm = this;
             const data = {
-                employeeIds: vm.application().employeeIDLst(),
-                baseDate: new Date().toISOString().split("T")[0].replace('-','').replace('-','')
+                employeeIds: vm.application().employeeIDLst().length == 0 ? [vm.$user.employeeId] : vm.application().employeeIDLst(),
+                baseDate: vm.timeLeaveRemaining().remainingStart.replace(/\//g, '')
             };
             setShared('KDL051A_PARAM', data);
             if(data.employeeIds.length > 1 ) {
@@ -242,7 +242,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
         openKDL052() {
             const vm = this;
             const data = {
-                employeeList: vm.application().employeeIDLst(),
+                employeeList: vm.application().employeeIDLst().length == 0 ? [vm.$user.employeeId] : vm.application().employeeIDLst(),
                 baseDate: new Date().toISOString()
             };
             if (data.employeeList.length > 1) {
@@ -255,8 +255,8 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
         openKDL017() {
             const vm = this;
             const data = {
-                employeeIds: vm.application().employeeIDLst(),
-                baseDate: new Date().toISOString().split("T")[0].replace('-','').replace('-','')
+                employeeIds: vm.application().employeeIDLst().length == 0 ? [vm.$user.employeeId] : vm.application().employeeIDLst(),
+                baseDate: vm.timeLeaveRemaining().remainingStart.replace(/\//g, '')
             };
             nts.uk.ui.windows.setShared('KDL017_PARAM', data);
             if(data.employeeIds.length > 1) {

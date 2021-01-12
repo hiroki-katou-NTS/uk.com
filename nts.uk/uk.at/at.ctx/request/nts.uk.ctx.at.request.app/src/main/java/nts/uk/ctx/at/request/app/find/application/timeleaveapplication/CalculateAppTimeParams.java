@@ -10,6 +10,8 @@ import java.util.List;
 
 @Data
 public class CalculateAppTimeParams {
+    private Integer timeLeaveType;
+
     // 申請日
     private GeneralDate appDate;
 

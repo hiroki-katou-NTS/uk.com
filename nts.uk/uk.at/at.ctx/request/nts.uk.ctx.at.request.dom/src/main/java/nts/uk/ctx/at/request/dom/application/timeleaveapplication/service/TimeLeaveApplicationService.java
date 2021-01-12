@@ -49,10 +49,4 @@ public interface TimeLeaveApplicationService {
      * 時間休暇申請登録前チェック
      */
     void checkBeforeRegister(String companyId, TimeDigestAppType timeLeaveType, TimeLeaveApplication timeLeaveApplication, TimeLeaveApplicationOutput timeLeaveApplicationOutput);
-
-//    /**
-//     * 登録前チェック
-//     */
-//    void checkBeforeUpdate(int timeDigestAppType, TimeLeaveApplication timeLeaveApplication, TimeLeaveApplicationOutput output);
-
 }

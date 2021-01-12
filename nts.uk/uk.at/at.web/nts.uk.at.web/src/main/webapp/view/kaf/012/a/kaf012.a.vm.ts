@@ -72,7 +72,11 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                     vm.handleChangeAppDate(params.baseDate);
                 }
             }).fail((error: any) => {
-                vm.$dialog.error(error);
+                vm.$dialog.error(error).then(() => {
+                    if (error.messageId == "Msg_474") {
+                        nts.uk.request.jumpToTopPage();
+                    }
+                });
             }).always(() => {
                 vm.$blockui("hide");
                 $(vm.$el).find('#kaf000-a-component4-singleDate').focus();
@@ -154,6 +158,8 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                 application: ko.toJS(vm.application),
                 details: details
             };
+            paramsRegister.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingStart = new Date(paramsRegister.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingStart).toISOString();
+            paramsRegister.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingEnd = new Date(paramsRegister.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingEnd).toISOString();
             return vm.$ajax(API.register, paramsRegister);
         }
 

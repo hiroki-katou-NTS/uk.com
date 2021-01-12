@@ -7,10 +7,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.service.other.output.AchievementDetailDto;
 import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.*;
-import nts.uk.ctx.at.request.dom.adapter.timeleaveapplication.DailyAttendanceTimeAdapter;
-import nts.uk.ctx.at.request.dom.adapter.timeleaveapplication.DailyAttendanceTimeImport;
 import nts.uk.ctx.at.request.dom.application.*;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
@@ -26,6 +23,7 @@ import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardRe
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectDto;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
+import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
 import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
@@ -52,13 +50,10 @@ public class TimeLeaveApplicationFinder {
     private WorkingConditionRepository workingConditionRepo;
 
     @Inject
-    private DailyAttendanceTimeAdapter dailyAttendanceTimeAdapter;
-
-    @Inject
     private TimeLeaveApplicationRepository timeLeaveApplicationRepository;
 
-    @Inject
-    private DailyAttendanceTimeCaculation dailyAttendanceTimeCaculation;
+//    @Inject
+//    private DailyAttendanceTimeCaculation dailyAttendanceTimeCaculation;
 
     @Inject
     private DetailBeforeUpdate detailBeforeProcessRegisterService;
@@ -105,7 +100,6 @@ public class TimeLeaveApplicationFinder {
         // 取得した情報をOUTPUTにセットしする
         initData.setAppDispInfoStartupOutput(params.getAppDispInfoStartupOutput());
         initData.setReflectSetting(TimeLeaveAppReflectDto.fromDomain(reflectSetting));
-        initData.setWorkingConditionItem(workingConditionItem.get());
         initData.setTimeLeaveManagement(TimeLeaveManagement.fromOutput(timeVacationManagement));
         initData.setTimeLeaveRemaining(TimeLeaveRemaining.fromOutput(timeVacationRemaining));
 
@@ -166,7 +160,6 @@ public class TimeLeaveApplicationFinder {
         );
 
         params.getAppDisplayInfo().setTimeLeaveManagement(TimeLeaveManagement.fromOutput(timeVacationManagement));
-        params.getAppDisplayInfo().setWorkingConditionItem(workingConditionItem.get());
         return params.getAppDisplayInfo();
     }
 
@@ -189,27 +182,117 @@ public class TimeLeaveApplicationFinder {
     /**
      * KAF012 : 申請時間を計算する
      */
-    public CalculationResult calculateApplicationTime(GeneralDate baseDate, TimeLeaveAppDisplayInfoDto info, List<TimeZoneWithWorkNo> lstTimeZone, List<TimeZoneWithWorkNo> lstOutingTimeZone) {
-
+    public CalculationResultDto calculateApplicationTime(Integer timeLeaveType, GeneralDate baseDate, TimeLeaveAppDisplayInfoDto info, List<TimeZoneWithWorkNo> lstTimeZone, List<TimeZoneWithWorkNo> lstOutingTimeZone) {
+        String employeeId = info.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid();
         AchievementDetailDto achievementDetailDto = info.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().
                 getOpActualContentDisplayLst().get(0).getOpAchievementDetail();
 
         //1日分の勤怠時間を仮計算
-        DailyAttendanceTimeImport daily1AttendanceTime = dailyAttendanceTimeAdapter.calcDailyAttendance(
-                info.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(),
-                baseDate,
-                achievementDetailDto.getWorkTypeCD(),
-                achievementDetailDto.getWorkTimeCD(),
+        //TODO wait for requestlist
 
-                //TODO chờ team nsvn update RQL23
-                Collections.emptyList(),
-                Collections.emptyList(),
-                Collections.emptyList()
-        );
+        // 取得した「日別勤怠の勤怠時間」をOUTPUTにセットする
+        CalculationResultDto calculationResult = new CalculationResultDto();
+        calculationResult.setTimeBeforeWork1(10);
+        calculationResult.setTimeAfterWork1(10);
+        calculationResult.setTimeBeforeWork2(10);
+        calculationResult.setTimeAfterWork2(10);
+        calculationResult.setPrivateOutingTime(10);
+        calculationResult.setUnionOutingTime(10);
 
-        //TODO map daily1AttendanceTime
-        CalculationResult calculationResult = new CalculationResult();
-        return calculationResult;
+        TimeDigestAppType leaveType = EnumAdaptor.valueOf(timeLeaveType, TimeDigestAppType.class);
+        if (leaveType == TimeDigestAppType.USE_COMBINATION)
+            return calculationResult;
+        else {
+            // 「計算結果」を消化単位に切り上げて返す
+            TimeVacationManagementOutput mng = TimeLeaveManagement.setDtaOutput(info.getTimeLeaveManagement());
+            TimeDigestiveUnit unit;
+            switch (leaveType) {
+                case TIME_OFF:
+                    unit = mng.getTimeAllowanceManagement().getTimeBaseRestingUnit();
+                    break;
+                case TIME_ANNUAL_LEAVE:
+                    unit = mng.getTimeAnnualLeaveManagement().getTimeAnnualLeaveUnit();
+                    break;
+                case CHILD_NURSING_TIME:
+                    unit = mng.getChildNursingManagement().getTimeChildDigestiveUnit();
+                    break;
+                case NURSING_TIME:
+                    unit = mng.getChildNursingManagement().getTimeDigestiveUnit();
+                    break;
+                case SIXTY_H_OVERTIME:
+                    unit = mng.getSupHolidayManagement().getSuper60HDigestion();
+                    break;
+                case TIME_SPECIAL_VACATION:
+                    unit = mng.getTimeSpecialLeaveMng().getTimeSpecialLeaveUnit();
+                    break;
+                default:
+                    unit = null;
+                    break;
+            }
+            switch (unit) {
+                case OneMinute:
+                    break;
+                case FifteenMinute:
+                    if (calculationResult.getTimeBeforeWork1() % 15 != 0)
+                        calculationResult.setTimeBeforeWork1(((calculationResult.getTimeBeforeWork1() / 15) + 1) * 15);
+                    if (calculationResult.getTimeAfterWork1() % 15 != 0)
+                        calculationResult.setTimeAfterWork1(((calculationResult.getTimeAfterWork1() / 15) + 1) * 15);
+                    if (calculationResult.getTimeBeforeWork2() % 15 != 0)
+                        calculationResult.setTimeBeforeWork2(((calculationResult.getTimeBeforeWork2() / 15) + 1) * 15);
+                    if (calculationResult.getTimeAfterWork2() % 15 != 0)
+                        calculationResult.setTimeAfterWork2(((calculationResult.getTimeAfterWork2() / 15) + 1) * 15);
+                    if (calculationResult.getPrivateOutingTime() % 15 != 0)
+                        calculationResult.setPrivateOutingTime(((calculationResult.getPrivateOutingTime() / 15) + 1) * 15);
+                    if (calculationResult.getUnionOutingTime() % 15 != 0)
+                        calculationResult.setUnionOutingTime(((calculationResult.getUnionOutingTime() / 15) + 1) * 15);
+                    break;
+                case ThirtyMinute:
+                    if (calculationResult.getTimeBeforeWork1() % 30 != 0)
+                        calculationResult.setTimeBeforeWork1(((calculationResult.getTimeBeforeWork1() / 30) + 1) * 30);
+                    if (calculationResult.getTimeAfterWork1() % 30 != 0)
+                        calculationResult.setTimeAfterWork1(((calculationResult.getTimeAfterWork1() / 30) + 1) * 30);
+                    if (calculationResult.getTimeBeforeWork2() % 30 != 0)
+                        calculationResult.setTimeBeforeWork2(((calculationResult.getTimeBeforeWork2() / 30) + 1) * 30);
+                    if (calculationResult.getTimeAfterWork2() % 30 != 0)
+                        calculationResult.setTimeAfterWork2(((calculationResult.getTimeAfterWork2() / 30) + 1) * 30);
+                    if (calculationResult.getPrivateOutingTime() % 30 != 0)
+                        calculationResult.setPrivateOutingTime(((calculationResult.getPrivateOutingTime() / 30) + 1) * 30);
+                    if (calculationResult.getUnionOutingTime() % 30 != 0)
+                        calculationResult.setUnionOutingTime(((calculationResult.getUnionOutingTime() / 30) + 1) * 30);
+                    break;
+                case OneHour:
+                    if (calculationResult.getTimeBeforeWork1() % 60 != 0)
+                        calculationResult.setTimeBeforeWork1(((calculationResult.getTimeBeforeWork1() / 60) + 1) * 60);
+                    if (calculationResult.getTimeAfterWork1() % 60 != 0)
+                        calculationResult.setTimeAfterWork1(((calculationResult.getTimeAfterWork1() / 60) + 1) * 60);
+                    if (calculationResult.getTimeBeforeWork2() % 60 != 0)
+                        calculationResult.setTimeBeforeWork2(((calculationResult.getTimeBeforeWork2() / 60) + 1) * 60);
+                    if (calculationResult.getTimeAfterWork2() % 60 != 0)
+                        calculationResult.setTimeAfterWork2(((calculationResult.getTimeAfterWork2() / 60) + 1) * 60);
+                    if (calculationResult.getPrivateOutingTime() % 60 != 0)
+                        calculationResult.setPrivateOutingTime(((calculationResult.getPrivateOutingTime() / 60) + 1) * 60);
+                    if (calculationResult.getUnionOutingTime() % 60 != 0)
+                        calculationResult.setUnionOutingTime(((calculationResult.getUnionOutingTime() / 60) + 1) * 60);
+                    break;
+                case TwoHour:
+                    if (calculationResult.getTimeBeforeWork1() % 120 != 0)
+                        calculationResult.setTimeBeforeWork1(((calculationResult.getTimeBeforeWork1() / 120) + 1) * 120);
+                    if (calculationResult.getTimeAfterWork1() % 120 != 0)
+                        calculationResult.setTimeAfterWork1(((calculationResult.getTimeAfterWork1() / 120) + 1) * 120);
+                    if (calculationResult.getTimeBeforeWork2() % 120 != 0)
+                        calculationResult.setTimeBeforeWork2(((calculationResult.getTimeBeforeWork2() / 120) + 1) * 120);
+                    if (calculationResult.getTimeAfterWork2() % 120 != 0)
+                        calculationResult.setTimeAfterWork2(((calculationResult.getTimeAfterWork2() / 120) + 1) * 120);
+                    if (calculationResult.getPrivateOutingTime() % 120 != 0)
+                        calculationResult.setPrivateOutingTime(((calculationResult.getPrivateOutingTime() / 120) + 1) * 120);
+                    if (calculationResult.getUnionOutingTime() % 120 != 0)
+                        calculationResult.setUnionOutingTime(((calculationResult.getUnionOutingTime() / 120) + 1) * 120);
+                    break;
+                default:
+                    break;
+            }
+            return calculationResult;
+        }
 
     }
 
@@ -284,7 +367,7 @@ public class TimeLeaveApplicationFinder {
         });
 
         //1日分の勤怠時間を仮計算
-        CalculationResult calculationResult = calculateApplicationTime(GeneralDate.fromString(applicationDto.getAppDate(), "yyyy/MM/dd"),
+        CalculationResultDto calculationResult = calculateApplicationTime(0, GeneralDate.fromString(applicationDto.getAppDate(), "yyyy/MM/dd"),
             param.getTimeLeaveAppDisplayInfo(), lstTimeZone, lstOutingTimeZone);
 
         //取得した「計算結果」を返す
@@ -321,6 +404,7 @@ public class TimeLeaveApplicationFinder {
             );
 
             // アルゴリズム「2-1.新規画面登録前の処理」を実行する
+            System.out.println("2-1.新規画面登録前の処理");
             confirmMsgOutputs = processBeforeRegister.processBeforeRegister_New(
                     companyId,
                     EmploymentRootAtr.APPLICATION,

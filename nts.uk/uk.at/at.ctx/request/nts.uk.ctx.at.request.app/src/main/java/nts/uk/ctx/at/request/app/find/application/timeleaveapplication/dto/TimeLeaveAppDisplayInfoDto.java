@@ -19,9 +19,6 @@ import java.util.List;
 @Data
 public class TimeLeaveAppDisplayInfoDto {
 
-    // 労働条件項目
-    private WorkingConditionItem workingConditionItem;
-
     // 時間休暇残数
     private TimeLeaveRemaining timeLeaveRemaining;
 
@@ -39,7 +36,6 @@ public class TimeLeaveAppDisplayInfoDto {
 
     public static TimeLeaveApplicationOutput mappingData(TimeLeaveAppDisplayInfoDto info) {
         return new TimeLeaveApplicationOutput(
-                info.workingConditionItem,
                 TimeLeaveRemaining.setDataOutput(info.timeLeaveRemaining),
                 TimeLeaveAppReflectDto.toDomain(info.reflectSetting),
                 TimeLeaveManagement.setDtaOutput(info.timeLeaveManagement),
@@ -49,7 +45,6 @@ public class TimeLeaveAppDisplayInfoDto {
 
     public static TimeLeaveAppDisplayInfoDto fromOutput(TimeLeaveApplicationOutput output) {
         TimeLeaveAppDisplayInfoDto dto = new TimeLeaveAppDisplayInfoDto();
-        dto.workingConditionItem = output.getWorkingConditionItem();
         dto.timeLeaveRemaining = TimeLeaveRemaining.fromOutput(output.getTimeVacationRemaining());
         dto.reflectSetting = TimeLeaveAppReflectDto.fromDomain(output.getTimeLeaveApplicationReflect());
         dto.timeLeaveManagement = TimeLeaveManagement.fromOutput(output.getTimeVacationManagement());

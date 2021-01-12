@@ -15,9 +15,6 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 @Data
 public class TimeLeaveApplicationOutput {
 
-    //労働条件項目
-    private WorkingConditionItem workingConditionItem;
-
     //時間休暇残数
     private TimeVacationRemainingOutput timeVacationRemaining;
 

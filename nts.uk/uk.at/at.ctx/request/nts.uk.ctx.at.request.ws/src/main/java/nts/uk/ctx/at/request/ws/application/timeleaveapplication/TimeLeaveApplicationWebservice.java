@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import java.util.Collections;
 import java.util.List;
 
 @Path("at/request/application/timeLeave")
@@ -46,6 +47,18 @@ public class TimeLeaveApplicationWebservice extends WebService {
     @Path("changeSpecialFrame")
     public TimeLeaveAppDisplayInfoDto changeSpecialLeaveFrame(ChangeSpecialLeaveFrameParams params) {
         return this.finder.changeSpecialLeaveFrame(params);
+    }
+
+    @POST
+    @Path("calculateTime")
+    public CalculationResultDto calculateTime(CalculateAppTimeParams params) {
+        return this.finder.calculateApplicationTime(
+                params.getTimeLeaveType(),
+                params.getAppDate(),
+                params.getAppDisplayInfo(),
+                Collections.emptyList(),
+                Collections.emptyList()
+        );
     }
 
     /**

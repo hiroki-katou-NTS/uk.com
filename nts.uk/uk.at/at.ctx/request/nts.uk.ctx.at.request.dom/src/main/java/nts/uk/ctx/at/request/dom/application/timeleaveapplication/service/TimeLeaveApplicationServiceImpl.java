@@ -439,30 +439,6 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
         checkContractTime(timeLeaveApplication, workingConditionItem.get());
     }
 
-//    /**
-//     * 登録前チェック
-//     */
-//    @Override
-//    public void checkBeforeUpdate(int timeDigestAppType, TimeLeaveApplication timeLeaveApplication, TimeLeaveApplicationOutput output) {
-//
-//        // 4-1.詳細画面登録前の処理
-//        this.detailBeforeProcessRegisterService.processBeforeDetailScreenRegistration(
-//            AppContexts.user().companyId(),
-//            timeLeaveApplication.getApplication().getEmployeeID(),
-//            timeLeaveApplication.getApplication().getAppDate().getApplicationDate(),
-//            EmploymentRootAtr.APPLICATION.value,
-//            timeLeaveApplication.getApplication().getAppID(),
-//            timeLeaveApplication.getApplication().getPrePostAtr(),
-//            timeLeaveApplication.getApplication().getVersion(),
-//            null,
-//            null,
-//            output.getAppDispInfoStartup()
-//        );
-//
-//        this.checkBeforeRigister(timeDigestAppType,timeLeaveApplication,output);
-//
-//    }
-
     /**
      * 時間休暇優先順位チェック
      */
