@@ -103,8 +103,8 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 				  																							imp.getWorkTypeCode(), 
 				  																							imp.getWorkTimeCode(), 
 				  																							breakTimeSheets, 
-				  																							Collections.emptyList(), 
-				  																							Collections.emptyList())));
+				  																							imp.getOutingTimeSheets(), 
+				  																							imp.getShortWorkingTimeSheets())));
 	}
 	
 	/**

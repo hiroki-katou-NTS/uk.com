@@ -269,7 +269,8 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 
 	@Override
 	public BreakTimeOfDailyAttd breakTime() {
-		return this.dailyRecord.getBreakTime().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate())).get();
+		return this.dailyRecord.getBreakTime().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()))
+				.orElse(new BreakTimeOfDailyAttd());
 	}
 
 	@Override
