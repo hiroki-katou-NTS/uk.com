@@ -71,7 +71,7 @@ module nts.uk.at.view.kdl053.test {
 				let request: any = {};				
 				let errorRegistrationList: any = [];
 				
-				request.isRegistered = self.selectedId();
+				request.hasError = self.selectedId();
 				request.employeeIds = self.employeeIds();
 				
 				_.each(self.currentCodeList(), id =>{
