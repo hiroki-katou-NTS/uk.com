@@ -25,4 +25,14 @@ public class EmployeeContactObjectImport {
 	// 携帯電話番号
 	private String cellPhoneNo;
 
+	/**
+	 * メールアドレスが在席照会に表示するか
+	 */
+	private Boolean isMailAddressDisplay;
+
+	/**
+	 * 携帯メールアドレスが在席照会に表示するか
+	 */
+	private Boolean isMobileMailAddressDisplay;
+
 }

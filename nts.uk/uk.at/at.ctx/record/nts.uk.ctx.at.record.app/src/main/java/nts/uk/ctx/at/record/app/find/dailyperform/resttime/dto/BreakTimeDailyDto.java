@@ -99,7 +99,7 @@ public class BreakTimeDailyDto extends AttendanceItemCommon {
 	@Override
 	public BreakTimeOfDailyAttd toDomain(String emp, GeneralDate date) {
 		if(!this.isHaveData()) {
-			return null;
+			return new BreakTimeOfDailyAttd();
 		}
 		if (employeeId == null) {
 			employeeId = this.employeeId();

@@ -16,6 +16,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.TrackRe
 import nts.uk.ctx.at.shared.app.find.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheetDto;
 import nts.uk.ctx.at.shared.app.find.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheetDto;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 
 /**
  * refactor 4
@@ -136,6 +137,11 @@ public class AchievementDetailDto {
 	 */
 	@Setter
 	private List<OvertimeLeaveTime> opOvertimeLeaveTimeLst;
+	/**
+	 * 計算フレックス
+	 */
+	@Setter
+	private Integer opFlexTime;
 	
 	public static AchievementDetailDto fromDomain(AchievementDetail achievementDetail) {
 		return new AchievementDetailDto(
@@ -158,7 +164,8 @@ public class AchievementDetailDto {
 				achievementDetail.getOpInlawHolidayMidnightTime().map(x -> x.v()).orElse(null), 
 				achievementDetail.getOpOutlawHolidayMidnightTime().map(x -> x.v()).orElse(null), 
 				achievementDetail.getOpPublicHolidayMidnightTime().map(x -> x.v()).orElse(null), 
-				achievementDetail.getOpOvertimeLeaveTimeLst().orElse(null));
+				achievementDetail.getOpOvertimeLeaveTimeLst().orElse(null),
+				achievementDetail.getOpFlexTime().map(x -> x.v()).orElse(null));
 	}
 	
 	public AchievementDetail toDomain() {
@@ -182,6 +189,7 @@ public class AchievementDetailDto {
 				opInlawHolidayMidnightTime == null ? Optional.empty() : Optional.of(new AttendanceTime(opInlawHolidayMidnightTime)), 
 				opOutlawHolidayMidnightTime == null ? Optional.empty() : Optional.of(new AttendanceTime(opOutlawHolidayMidnightTime)), 
 				opPublicHolidayMidnightTime == null ? Optional.empty() : Optional.of(new AttendanceTime(opPublicHolidayMidnightTime)), 
-				CollectionUtil.isEmpty(opOvertimeLeaveTimeLst) ? Optional.empty() : Optional.of(opOvertimeLeaveTimeLst));
+				CollectionUtil.isEmpty(opOvertimeLeaveTimeLst) ? Optional.empty() : Optional.of(opOvertimeLeaveTimeLst),
+				opFlexTime == null ? Optional.empty() : Optional.of(new AttendanceTimeOfExistMinus(opFlexTime)));
 	}
 }

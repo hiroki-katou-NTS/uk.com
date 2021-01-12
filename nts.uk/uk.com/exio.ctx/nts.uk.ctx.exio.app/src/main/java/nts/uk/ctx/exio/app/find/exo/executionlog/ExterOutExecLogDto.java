@@ -2,6 +2,11 @@ package nts.uk.ctx.exio.app.find.exo.executionlog;
 
 import lombok.Value;
 import nts.uk.ctx.exio.dom.exo.execlog.ExterOutExecLog;
+
+/**
+ * The Class ExterOutExecLogDto.
+ * 	外部出力実行結果ログ
+ */
 @Value
 public class ExterOutExecLogDto {
 	/**

@@ -69,5 +69,10 @@ public class AddSubHdManagementCommand {
 	private Double dayRemaining;
 
 	private int closureId;
+
 	private List<String> lstLinkingDate;
+	
+	private Double linkingDate;
+	
+	private Double displayRemainDays;
 }

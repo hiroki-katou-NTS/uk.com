@@ -101,7 +101,7 @@ public class KfnmtExtractionPeriodDaily extends UkJpaEntity implements Serializa
 		} else if (endPrev == EndSpecify.MONTH) {
 			endDate.setEndMonth(EnumAdaptor.valueOf(endPreviousMonth, PreviousClassification.class), endMonth,
 					endCurrentMonth == 0 ? false : true);
-		} 
+		}
 
 		ExtractionPeriodDaily periodDaily = new ExtractionPeriodDaily(this.kfnmtExtractionPeriodDailyPK.extractionId,
 				this.kfnmtExtractionPeriodDailyPK.extractionRange, startDate, endDate);
@@ -141,21 +141,21 @@ public class KfnmtExtractionPeriodDaily extends UkJpaEntity implements Serializa
 			this.endMonth = endDate.getEndMonth().get().getMonth();
 		}
 	}
-	
+
 	public void fromEntity(KfnmtExtractionPeriodDaily newEntity) {
 		this.strSpecify = newEntity.strSpecify;
 		this.strPreviousDay = newEntity.strPreviousDay;
 		this.strMakeToDay = newEntity.strMakeToDay;
 		this.strDay = newEntity.strDay;
 		this.strPreviousMonth = newEntity.strPreviousMonth;
-		this.strCurrentMonth = newEntity.strCurrentMonth;		
+		this.strCurrentMonth = newEntity.strCurrentMonth;
 		this.strMonth = newEntity.strMonth;
 		this.endSpecify = newEntity.endSpecify;
 		this.endPreviousDay = newEntity.endPreviousDay;
 		this.endMakeToDay = newEntity.endMakeToDay;
 		this.endDay = newEntity.endDay;
 		this.endPreviousMonth = newEntity.endPreviousMonth;
-		this.endCurrentMonth = newEntity.endCurrentMonth;		
-		this.endMonth = newEntity.endMonth;	
+		this.endCurrentMonth = newEntity.endCurrentMonth;
+		this.endMonth = newEntity.endMonth;
 	}
 }

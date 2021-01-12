@@ -334,7 +334,8 @@ module nts.uk.ui.at.ksu002.a {
 					} else if (cache.mode !== c) {
 						if (hasChange) {
 							vm.$dialog
-								.confirm({ messageId: 'Msg_1732' })
+								// update ver 1.21
+								.confirm({ messageId: c === ACHIEVEMENT.YES ? 'Msg_2086' : 'Msg_1732' })
 								.then((v) => {
 									if (v === 'yes') {
 										cache.mode = c;

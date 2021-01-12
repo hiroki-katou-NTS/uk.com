@@ -9,5 +9,7 @@ public interface EmpBasicInfoAdapter {
 	 * @return String
 	 */
 	List<EmpBasicInfoImport> getEmployeeCodeByEmpId(String empId);
+	
+	List<EmpBasicInfoImport> getEmpBasicInfo(String companyId, List<String> employeeIds);
 
 }
