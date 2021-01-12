@@ -68,6 +68,9 @@ module nts.uk.at.kal011.B {
                 });
                 vm.$ajax(API.GET + "/" + vm.processId).done((res: Array<ExtractAlarmDto>) => {
                     vm.dataSource = res;
+                    if (res && res.length == 0) {
+                        vm.flgActive(false);
+                    }
                     $("#grid").igGrid("option", "dataSource", vm.dataSource);
                 }).fail((err: any) => vm.$dialog.error(err)).always(() => vm.$blockui("clear"));
             })
