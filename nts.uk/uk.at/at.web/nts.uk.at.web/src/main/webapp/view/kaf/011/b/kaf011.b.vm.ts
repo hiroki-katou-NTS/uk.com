@@ -43,27 +43,12 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
             // luôn là component
             params.eventUpdate(vm.update.bind(vm));
             params.eventReload(vm.reload.bind(vm));
-			vm.initAppDetail();
         }
 
-        initAppDetail() {
-            let vm = this;
-            vm.$blockui('show');
-            let command = {};
-            return vm.$ajax(API.initAppDetail, command)
-            .done(res => {
-                if (res) {
-                    vm.printContentOfEachAppDto().opPrintContentOfWorkChange = res;
-                }
-            }).fail(err => {
-	
-            }).always(() => vm.$blockui('hide'));
-        }
 
         reload() {
             const vm = this;
             if (vm.appType() == vm.application().appType) {
-            	vm.initAppDetail();
             }
         }
 
