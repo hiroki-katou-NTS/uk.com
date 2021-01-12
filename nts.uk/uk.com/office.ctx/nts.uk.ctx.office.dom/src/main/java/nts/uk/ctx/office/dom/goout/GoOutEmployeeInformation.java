@@ -1,5 +1,6 @@
 package nts.uk.ctx.office.dom.goout;
 
+import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.time.AttendanceClock;
 
@@ -7,6 +8,7 @@ import nts.uk.shr.com.time.AttendanceClock;
 /*
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.オフィス支援.在席照会.在席照会.社員の外出情報
  */
+@Getter
 public class GoOutEmployeeInformation {
 	// 外出時刻
 	private AttendanceClock goOutTime;
