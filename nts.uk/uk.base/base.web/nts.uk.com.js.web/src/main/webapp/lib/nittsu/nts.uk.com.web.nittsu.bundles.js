@@ -18071,6 +18071,7 @@ var nts;
                             }
                             return { controlsDescendantBindings: true };
                         };
+                        NtsMultiCheckBoxBindingHandler.prototype.update = function () { };
                         NtsMultiCheckBoxBindingHandler = __decorate([
                             handler({
                                 bindingName: 'ntsMultiCheckBox',
@@ -21145,6 +21146,8 @@ var nts;
                             element.removeAttribute('data-bind');
                             return { controlsDescendantBindings: true };
                         };
+                        NtsFormLabelBindingHandler.prototype.update = function () {
+                        };
                         NtsFormLabelBindingHandler = __decorate([
                             handler({
                                 bindingName: 'ntsFormLabel'
@@ -21174,8 +21177,8 @@ var nts;
                     function NtsGridListBindingHandler() {
                     }
                     NtsGridListBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var HEADER_HEIGHT = 27;
-                        var ROW_HEIGHT = 23;
+                        var HEADER_HEIGHT = 45;
+                        var ROW_HEIGHT = 37;
                         var DIFF_NUMBER = 2;
                         var $grid = $(element).addClass("nts-gridlist");
                         var gridId = $grid.attr('id');
@@ -21199,7 +21202,7 @@ var nts;
                         $grid.data("selectionDisables", selectionDisables);
                         $grid.data("initValue", value);
                         if (data.multiple) {
-                            ROW_HEIGHT = 24;
+                            ROW_HEIGHT = 37;
                             // Internet Explorer 6-11
                             var _document = document;
                             var isIE = /*@cc_on!@*/ false || !!_document.documentMode;
@@ -21217,7 +21220,7 @@ var nts;
                                 name: 'RowSelectors',
                                 enableCheckBoxes: data.multiple,
                                 enableRowNumbering: false,
-                                rowSelectorColumnWidth: 25
+                                rowSelectorColumnWidth: 30
                             });
                         }
                         if (columnResize) {
@@ -22391,6 +22394,7 @@ var nts;
                             }
                             return { controlsDescendantBindings: true };
                         };
+                        NtsRadioBoxGroupBindingHandler.prototype.update = function () { };
                         NtsRadioBoxGroupBindingHandler = __decorate([
                             handler({
                                 bindingName: 'ntsRadioBoxGroup',
