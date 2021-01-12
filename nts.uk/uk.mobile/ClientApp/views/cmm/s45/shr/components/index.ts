@@ -9,4 +9,4 @@ export * from './app5';
 export * from './app7';
 export * from './app9';
 export * from './appsample';
-import './app6';
+export * from './app6';

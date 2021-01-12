@@ -1,9 +1,10 @@
 import { _, Vue } from '@app/provider';
 import { component, Watch } from '@app/core/component';
-import { KafS00SubP3Component } from 'views/kaf/s00/sub/p3';
 import { KafS00SubP1Component } from 'views/kaf/s00/sub/p1';
+import { KafS00SubP2Component } from 'views/kaf/s00/sub/p2';
+import { KafS00SubP3Component } from 'views/kaf/s00/sub/p3';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/s00';
-import { TimeZoneWithWorkNo, BreakTime, TimeZoneNew, WorkHoursDto, AppHolidayWork, InfoWithDateApplication, AppHdWorkDispInfo , TimeZone, ParamBreakTime, BreakTimeZoneSetting} from '../a/define.interface';
+import { TimeZoneWithWorkNo, BreakTime, TimeZoneNew, WorkHoursDto, AppHdWorkDispInfo, ParamBreakTime } from '../a/define.interface';
 import { KafS10Component} from '../a/index';
 
 @component({
@@ -18,14 +19,18 @@ import { KafS10Component} from '../a/index';
         //         timeRange: true,
         //     }
         // },
-        // workInfo: {
-        //     workType: {
-        //         required: true,
-        //     },
-        //     workTime: {
-        //         required: true,
-        //     }
-        // },
+        workInfo: {
+            workType: {
+                code: {
+                    required: true,
+                }
+            },
+            workTime: {
+                code: {
+                    required: true,
+                }
+            }
+        },
         workHours1: {
             required: true,
             timeRange: true,
@@ -37,8 +42,9 @@ import { KafS10Component} from '../a/index';
     },
     constraints: [],
     components: {
-        'kafs00subp3': KafS00SubP3Component,
         'kafs00subp1': KafS00SubP1Component,
+        'kafs00subp2': KafS00SubP2Component,
+        'kafs00subp3': KafS00SubP3Component,
         'kafs00-a': KafS00AComponent,
         'kafs00-b': KafS00BComponent,
         'kafs00-c': KafS00CComponent
@@ -198,7 +204,6 @@ export class KafS10Step1Component extends Vue {
             let workTimes = appHdWorkDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst;
             let resultWorkTime = 
                     _.find(workTimes, (i: any) => i.worktimeCode == workTime.code);
-            console.log(resultWorkTime);
             workTime.name = resultWorkTime ? (_.get(resultWorkTime, 'workTimeDisplayName.workTimeName') || '') : self.$i18n('KAFS05_55');
   
         }
@@ -234,6 +239,25 @@ export class KafS10Step1Component extends Vue {
     @Watch('workHours2', {deep: true})
     public changeWorkHours2(data: any) {
         console.log(data);
+    }
+
+    // bind when change date, select worktype or worktime
+    public createHoursWorkTime() {
+        const self = this;
+        if (!_.isNil(self.workHours1)) {
+            self.workInfo.workTime.time = self.handleTimeWithDay(self.workHours1.start) + '～' + self.handleTimeWithDay(self.workHours1.end);
+        }
+    }
+
+    public handleTimeWithDay(time: number) {
+        const self = this;
+        const nameTime = '当日';
+        if (!time) {
+
+            return;
+        }
+
+        return (0 <= time && time < 1440) ? nameTime + self.$dt.timewd(time) : self.$dt.timewd(time);
     }
 
     public getWorkHours1() {

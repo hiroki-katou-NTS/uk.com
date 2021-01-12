@@ -293,46 +293,46 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
         
         AppOvertimeDetail appOvertimeDetail = new AppOvertimeDetail();
         
-        //18.３６時間の上限チェック(新規登録)_NEW
-        Time36ErrorInforList time36UpperLimitCheckResult = time36UpperLimitCheck.checkRegister(companyId, 
-        		appHolidayWork.getApplication().getEmployeeID(), 
-        		appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode(), 
-        		appHolidayWork.getApplication(),
-        		Optional.empty(), 
-        		Optional.of(appHolidayWork),
-        		appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet().getExtratimeExcessAtr(), 
-        		appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet().getExtratimeDisplayAtr());
-        if(!time36UpperLimitCheckResult.getTime36AgreementErrorLst().isEmpty()) {
-        	time36UpperLimitCheckResult.getTime36AgreementErrorLst().forEach(error -> {
-            	switch(error.getTime36AgreementErrorAtr()) {
-    	        	case MONTH_ERROR:
-    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1535", 
-    	        				Arrays.asList(this.convertTime(error.getAgreementTime()), this.convertTime(error.getThreshold()))));
-    	        		break;
-    	        	case YEAR_ERROR:
-    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1536", 
-    	        				Arrays.asList(this.convertTime(error.getAgreementTime()), this.convertTime(error.getThreshold()))));
-    	        		break;
-    	        	case MAX_MONTH_ERROR:
-    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1537", 
-    	        				Arrays.asList(this.convertTime(error.getAgreementTime()), this.convertTime(error.getThreshold()))));
-    	        		break;
-    	        	case MAX_YEAR_ERROR:
-    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_2056", 
-    	        				Arrays.asList(this.convertTime(error.getAgreementTime()), this.convertTime(error.getThreshold()))));
-    	        		break;
-    	        	case MAX_MONTH_AVERAGE_ERROR:
-    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1538", 
-    	        				Arrays.asList(
-    	        						this.convertTime(error.getOpYearMonthPeriod().isPresent() ? error.getOpYearMonthPeriod().get().start().v() : null), 
-    	        						this.convertTime(error.getOpYearMonthPeriod().isPresent() ? error.getOpYearMonthPeriod().get().end().v() : null),
-    	        						this.convertTime(error.getAgreementTime()), 
-    	        						this.convertTime(error.getThreshold()))));
-    	        		break;
-    	        		default: break;
-            	}
-            });
-        }
+//        //18.３６時間の上限チェック(新規登録)_NEW
+//        Time36ErrorInforList time36UpperLimitCheckResult = time36UpperLimitCheck.checkRegister(companyId, 
+//        		appHolidayWork.getApplication().getEmployeeID(), 
+//        		appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode(), 
+//        		appHolidayWork.getApplication(),
+//        		Optional.empty(), 
+//        		Optional.of(appHolidayWork),
+//        		appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet().getExtratimeExcessAtr(), 
+//        		appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet().getExtratimeDisplayAtr());
+//        if(!time36UpperLimitCheckResult.getTime36AgreementErrorLst().isEmpty()) {
+//        	time36UpperLimitCheckResult.getTime36AgreementErrorLst().forEach(error -> {
+//            	switch(error.getTime36AgreementErrorAtr()) {
+//    	        	case MONTH_ERROR:
+//    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1535", 
+//    	        				Arrays.asList(this.convertTime(error.getAgreementTime()), this.convertTime(error.getThreshold()))));
+//    	        		break;
+//    	        	case YEAR_ERROR:
+//    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1536", 
+//    	        				Arrays.asList(this.convertTime(error.getAgreementTime()), this.convertTime(error.getThreshold()))));
+//    	        		break;
+//    	        	case MAX_MONTH_ERROR:
+//    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1537", 
+//    	        				Arrays.asList(this.convertTime(error.getAgreementTime()), this.convertTime(error.getThreshold()))));
+//    	        		break;
+//    	        	case MAX_YEAR_ERROR:
+//    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_2056", 
+//    	        				Arrays.asList(this.convertTime(error.getAgreementTime()), this.convertTime(error.getThreshold()))));
+//    	        		break;
+//    	        	case MAX_MONTH_AVERAGE_ERROR:
+//    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1538", 
+//    	        				Arrays.asList(
+//    	        						this.convertTime(error.getOpYearMonthPeriod().isPresent() ? error.getOpYearMonthPeriod().get().start().v() : null), 
+//    	        						this.convertTime(error.getOpYearMonthPeriod().isPresent() ? error.getOpYearMonthPeriod().get().end().v() : null),
+//    	        						this.convertTime(error.getAgreementTime()), 
+//    	        						this.convertTime(error.getThreshold()))));
+//    	        		break;
+//    	        		default: break;
+//            	}
+//            });
+//        }
         
     	//	申請の矛盾チェック
     	commonAlgorithm.appConflictCheck(companyId, appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0), 
@@ -426,46 +426,46 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 	        Optional<EmploymentHistoryImported> empHist = employmentAdapter.getEmpHistBySid(companyId, empId, 
 	        		empAppHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getBaseDate());
 	        
-	        //18.３６時間の上限チェック(新規登録)_NEW
-	        Time36ErrorInforList time36UpperLimitCheckResult = time36UpperLimitCheck.checkRegister(companyId, 
-	        		appHolidayWork.getApplication().getEmployeeID(), 
-	        		appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode(), 
-	        		appHolidayWork.getApplication(),
-	        		Optional.empty(), 
-	        		Optional.of(appHolidayWork),
-	        		appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet().getExtratimeExcessAtr(), 
-	        		appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet().getExtratimeDisplayAtr());
-	        if(!time36UpperLimitCheckResult.getTime36AgreementErrorLst().isEmpty()) {
-	        	time36UpperLimitCheckResult.getTime36AgreementErrorLst().forEach(error -> {
-	            	switch(error.getTime36AgreementErrorAtr()) {
-	    	        	case MONTH_ERROR:
-	    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1535", 
-	    	        				Arrays.asList(this.convertTime(error.getAgreementTime()), this.convertTime(error.getThreshold()))));
-	    	        		break;
-	    	        	case YEAR_ERROR:
-	    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1536", 
-	    	        				Arrays.asList(this.convertTime(error.getAgreementTime()), this.convertTime(error.getThreshold()))));
-	    	        		break;
-	    	        	case MAX_MONTH_ERROR:
-	    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1537", 
-	    	        				Arrays.asList(this.convertTime(error.getAgreementTime()), this.convertTime(error.getThreshold()))));
-	    	        		break;
-	    	        	case MAX_YEAR_ERROR:
-	    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_2056", 
-	    	        				Arrays.asList(this.convertTime(error.getAgreementTime()), this.convertTime(error.getThreshold()))));
-	    	        		break;
-	    	        	case MAX_MONTH_AVERAGE_ERROR:
-	    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1538", 
-	    	        				Arrays.asList(
-	    	        						this.convertTime(error.getOpYearMonthPeriod().isPresent() ? error.getOpYearMonthPeriod().get().start().v() : null), 
-	    	        						this.convertTime(error.getOpYearMonthPeriod().isPresent() ? error.getOpYearMonthPeriod().get().end().v() : null),
-	    	        						this.convertTime(error.getAgreementTime()), 
-	    	        						this.convertTime(error.getThreshold()))));
-	    	        		break;
-	    	        		default: break;
-	            	}
-	            });
-	        }
+//	        //18.３６時間の上限チェック(新規登録)_NEW
+//	        Time36ErrorInforList time36UpperLimitCheckResult = time36UpperLimitCheck.checkRegister(companyId, 
+//	        		appHolidayWork.getApplication().getEmployeeID(), 
+//	        		appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode(), 
+//	        		appHolidayWork.getApplication(),
+//	        		Optional.empty(), 
+//	        		Optional.of(appHolidayWork),
+//	        		appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet().getExtratimeExcessAtr(), 
+//	        		appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet().getExtratimeDisplayAtr());
+//	        if(!time36UpperLimitCheckResult.getTime36AgreementErrorLst().isEmpty()) {
+//	        	time36UpperLimitCheckResult.getTime36AgreementErrorLst().forEach(error -> {
+//	            	switch(error.getTime36AgreementErrorAtr()) {
+//	    	        	case MONTH_ERROR:
+//	    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1535", 
+//	    	        				Arrays.asList(this.convertTime(error.getAgreementTime()), this.convertTime(error.getThreshold()))));
+//	    	        		break;
+//	    	        	case YEAR_ERROR:
+//	    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1536", 
+//	    	        				Arrays.asList(this.convertTime(error.getAgreementTime()), this.convertTime(error.getThreshold()))));
+//	    	        		break;
+//	    	        	case MAX_MONTH_ERROR:
+//	    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1537", 
+//	    	        				Arrays.asList(this.convertTime(error.getAgreementTime()), this.convertTime(error.getThreshold()))));
+//	    	        		break;
+//	    	        	case MAX_YEAR_ERROR:
+//	    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_2056", 
+//	    	        				Arrays.asList(this.convertTime(error.getAgreementTime()), this.convertTime(error.getThreshold()))));
+//	    	        		break;
+//	    	        	case MAX_MONTH_AVERAGE_ERROR:
+//	    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1538", 
+//	    	        				Arrays.asList(
+//	    	        						this.convertTime(error.getOpYearMonthPeriod().isPresent() ? error.getOpYearMonthPeriod().get().start().v() : null), 
+//	    	        						this.convertTime(error.getOpYearMonthPeriod().isPresent() ? error.getOpYearMonthPeriod().get().end().v() : null),
+//	    	        						this.convertTime(error.getAgreementTime()), 
+//	    	        						this.convertTime(error.getThreshold()))));
+//	    	        		break;
+//	    	        		default: break;
+//	            	}
+//	            });
+//	        }
 	        
 	    	//	申請の矛盾チェック
 	    	commonAlgorithm.appConflictCheck(companyId, employeeInfo.orElse(null), 

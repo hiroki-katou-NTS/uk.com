@@ -1222,12 +1222,14 @@ public class ProgramIdConsts {
 	//スマホ②
 	public static final String KAFS04A = "KAFS04A";
 	public static final String KAFS05A = "KAFS05A";
+	public static final String KAFS10A = "KAFS10A";
 	public static final String KAFS07A = "KAFS07A";
 	public static final String KAFS08A = "KAFS08A";
 	public static final String KAFS09A = "KAFS09A";
 	public static final String KAFS12A = "KAFS12A";
 	public static final String KAFS20A = "KAFS20A";
 	public static final String KAFS05B = "KAFS05B";
+	public static final String KAFS10B = "KAFS10B";
 	public static final String KAFS02A = "KAFS02A";
 	public static final String KAFS02C = "KAFS02C";
 	public static final String CMMS45B = "CMMS45B";
