@@ -1,7 +1,7 @@
 import { Vue, _ } from '@app/provider';
 import { component, Prop } from '@app/core/component';
-import { TimeZoneWithWorkNoDto, AppForLeaveStartOutputDto, ManageDistinct, MaxNumberDayType, NotUseAtr, TimeZoneUseDto, HolidayAppType, WorkTypeUnit, WorkAtr, WorkTypeDto, HolidayAppTypeDispNameDto } from 'views/kaf/s06/a/define.interface';
-import { times } from 'lodash';
+import { TimeZoneWithWorkNoDto, AppForLeaveStartOutputDto, ManageDistinct, MaxNumberDayType, NotUseAtr, TimeZoneUseDto, HolidayAppType, WorkTypeUnit, WorkAtr, WorkTypeDto, HolidayAppTypeDispNameDto, DateSpecHdRelationOutput } from 'views/kaf/s06/a/define.interface';
+import { isEmpty, isNil, times } from 'lodash';
 
 @component({
     name: 'cmms45shrcomponentsapp1',
@@ -48,6 +48,22 @@ export class CmmS45ShrComponentsApp1Component extends Vue {
 
         
     }
+    // list data
+    // 休出代休紐付け管理．紐付け．発生日
+    public get B7(): Array<LinkWithVacation> {
+        const self = this;
+        let items = _.get(self.dataOutput, 'appAbsenceStartInfoDto.leaveComDayOffManas');
+
+        return (!_.isEmpty(items) && !isNil(items)) ? items : [];
+    }
+
+    // list data
+    public get B8(): Array<LinkWithVacation> {
+        const self = this;
+        let items = _.get(self.dataOutput, 'appAbsenceStartInfoDto.payoutSubofHDManas');
+
+        return (!_.isEmpty(items) && !_.isNil(items)) ? items : [];
+   }
 
     public get B1_2() {
         const self = this;
@@ -102,6 +118,33 @@ export class CmmS45ShrComponentsApp1Component extends Vue {
         let time = _.get(self.dataOutput, 'applyForLeaveDto.reflectFreeTimeApp.timeDegestion.nursingTime') || 0;
         
         return time;
+    }
+
+    public get B6_3() {
+        const self = this;
+
+        // 画面描画情報．補足情報．特別休暇．続柄コード
+        const relationCDOp = _.get(self.dataOutput, 'applyForLeaveDto.vacationInfo.info.applyForSpeLeave.relationshipCD');
+        // 特別休暇表示情報．続柄毎の上限日数リスト．続柄名
+        const dateSpecHdRelationLst = _.get(self.dataOutput, 'appAbsenceStartInfoDto.specAbsenceDispInfo.dateSpecHdRelationLst') as Array<DateSpecHdRelationOutput>;
+
+        const dateSpecHdRelation = _.findLast(dateSpecHdRelationLst, (item: DateSpecHdRelationOutput) => item.relationCD == relationCDOp) as DateSpecHdRelationOutput;
+
+        return _.get(dateSpecHdRelation, 'relationName') || self.$i18n('KAFS06_50');
+    }
+    public get B6_5() {
+        const self = this;
+
+        const mournerFlag = _.get(self.dataOutput, 'applyForLeaveDto.vacationInfo.info.applyForSpeLeave.mournerFlag');
+        
+        return mournerFlag ? self.$i18n('KAFS06_25') : self.$i18n('KAFS06_53');
+    }
+    public get B6_7() {
+        const self = this;
+
+        const relationshipReason = _.get(self.dataOutput, 'applyForLeaveDto.vacationInfo.info.applyForSpeLeave.relationshipReason');
+        
+        return relationshipReason || '';
     }
     public get _() {
         return _;
@@ -506,4 +549,21 @@ interface Work {
 interface WorkHours {
     start: string;
     end: string;
+}
+
+export interface LinkWithVacation {
+    // 社員ID
+    sid: string;
+
+    // 逐次休暇の紐付け情報 . 発生日
+    outbreakDay: string;
+
+    // 逐次休暇の紐付け情報 . 使用日
+    dateOfUse: string;
+
+    // 逐次休暇の紐付け情報 . 使用日数
+    dayNumberUsed: number;
+
+    // 逐次休暇の紐付け情報 . 対象選択区分
+    targetSelectionAtr: number;
 }
