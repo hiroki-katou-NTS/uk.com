@@ -25,10 +25,10 @@ public class SearchEmployeeScreenQuery {
 	public void searchForEmployee(String keyWorks, GeneralDate baseDate, boolean emojiUseage) {
 		List<String> sidsSearch = new ArrayList<>();
 		//1: 社員コードで検索する() 
-		List<String> sidsByCode = employeeFinder.searchByEmployeeCode(keyWorks, 0, baseDate); // TODO systemType
+		List<String> sidsByCode = employeeFinder.searchByEmployeeCode(keyWorks, 0, baseDate); // システム区分　＝　就業  ＝  0
 		sidsSearch.addAll(sidsByCode);
 		//2: 社員名で検索する()
-		List<String> sidsByName = employeeFinder.searchByEmployeeName(keyWorks, 0, baseDate);  // TODO systemType
+		List<String> sidsByName = employeeFinder.searchByEmployeeName(keyWorks, 0, baseDate);  // システム区分　＝　就業  ＝  0
 		sidsSearch.addAll(sidsByName);
 		//3: 参照できるか判断する(Require, 社員ID, 年月日): List<社員ID>
 		DefaultRequireImpl deterEmpLstDsRequireImpl = new DefaultRequireImpl(repo, adapter);

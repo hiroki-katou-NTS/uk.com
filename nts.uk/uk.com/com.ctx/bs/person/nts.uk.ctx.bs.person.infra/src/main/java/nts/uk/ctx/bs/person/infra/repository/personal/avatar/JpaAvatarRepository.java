@@ -7,6 +7,8 @@ import nts.uk.ctx.bs.person.infra.entity.person.avatar.BpsdtPsAvatar;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
+
+import java.util.List;
 import java.util.Optional;
 
 @Stateless
@@ -14,6 +16,9 @@ public class JpaAvatarRepository extends JpaRepository implements AvatarReposito
 
     //select by personal ID
     private static final String SELECT_BY_PERSONAL_ID = "SELECT avatar FROM BpsdtPsAvatar avatar WHERE avatar.bpsdtPsAvatarPK.personalId = :personalId";
+    
+    //select by personal IDs
+    private static final String SELECT_BY_PERSONAL_IDS = "SELECT avatar FROM BpsdtPsAvatar avatar WHERE avatar.bpsdtPsAvatarPK.personalId IN :personalIds";
 
     private static BpsdtPsAvatar toEntity(UserAvatar domain) {
         BpsdtPsAvatar entity = new BpsdtPsAvatar();
@@ -55,4 +60,12 @@ public class JpaAvatarRepository extends JpaRepository implements AvatarReposito
                 .setParameter("personalId", personalId)
                 .getSingle(UserAvatar::createFromMemento);
     }
+
+	@Override
+	public List<UserAvatar> getAvatarByPersonalIds(List<String> pids) {
+		 return this.queryProxy()
+	                .query(SELECT_BY_PERSONAL_IDS, BpsdtPsAvatar.class)
+	                .setParameter("personalIds", pids)
+	                .getList(UserAvatar::createFromMemento);
+	}
 }
