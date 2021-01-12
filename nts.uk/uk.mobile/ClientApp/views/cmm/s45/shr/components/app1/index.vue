@@ -32,11 +32,11 @@
         </div>
 
         <!-- B2_4 -->
-        <div class="row mt-1 mb-1">
+        <div v-if="c9" class="row mt-1 mb-1">
             <div class="col-12 pl-3 textSize"> {{"KAFS06_13" | i18n}} </div>
         </div>
         <!-- B2_5 -->
-        <div class="row mt-1 mb-1">
+        <div v-if="c9" class="row mt-1 mb-1">
             <div class="col-1.5 pr-2 pl-3">
                 {{_.get(workInfo, 'workTime.code') || ''}}
             </div>
@@ -48,13 +48,13 @@
 
 
     <!-- B3_1 -->
-    <div class="card card-label" v-if="true">
+    <div class="card card-label" v-if="c9">
         <div class="card-header uk-bg-accordion mt-2 headerDiv">
             <span class="textPosition">{{ "KAFS06_15" | i18n }}</span>
         </div>
     </div>
     <!-- B3_2 -->
-    <div v-if="true">
+    <div v-if="c9">
         <div class="row mt-1 mb-1">
             <div class="col-1.5 pl-3 pr-1 text-left">
                 {{workHours1.start || ''}}
@@ -70,13 +70,13 @@
 
 
     <!-- B4_1 -->
-    <div class="card card-label" v-if="true">
+    <div class="card card-label" v-if="c10">
         <div class="card-header uk-bg-accordion mt-2 headerDiv">
             <span class="textPosition">{{ "KAFS06_16" | i18n }}</span>
         </div>
     </div>
     <!-- B4_2 -->
-    <div v-if="true">
+    <div v-if="c10">
         <div class="row mt-1 mb-1">
             <div class="col-1.5 pl-3 pr-1 text-left">
                 {{workHours2.start}}

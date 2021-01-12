@@ -389,15 +389,13 @@ export class CmmS45ShrComponentsApp1Component extends Vue {
 
         let workHours2 = _.findLast(_.get(self.dataOutput, 'applyForLeaveDto.reflectFreeTimeApp.workingHours'), (item: TimeZoneWithWorkNoDto) => item.workNo == 2);
         // 1
-        if (workHours1) {
-            self.workHours1 = self.createWorkHours(workHours1.timeZone.startTime,
-                workHours1.timeZone.endTime);
-        }
+        self.workHours1 = self.createWorkHours(
+            _.get(workHours1, 'timeZone.startTime'),
+            _.get(workHours1, 'timeZone.endTime'));
         // 2
-        if (workHours2) {
-            self.workHours2 = self.createWorkHours(workHours2.timeZone.startTime,
-                workHours2.timeZone.endTime);
-        }
+        self.workHours2 = self.createWorkHours(
+            _.get(workHours2, 'timeZone.startTime'),
+            _.get(workHours2, 'timeZone.endTime'));
     }
 }
 
