@@ -252,7 +252,7 @@ public class ExtractAlarmListWorkPlaceFinder {
                 YearMonth startYm = processingYm.addMonths(-strMonth.get().getMonth());
                 // ・開始の日　＝　締め期間．開始日の日
                 // startDate = GeneralDate.ymd(startYm.year(), startYm.month(), closurePeriod.start().day());
-                startDate = getDate(startYm, closurePeriod.end().day());
+                startDate = getDate(startYm, closurePeriod.start().day());
             }
         }
         return startDate;
