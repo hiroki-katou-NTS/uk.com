@@ -20,8 +20,8 @@ module nts.uk.at.view.kaf011.b.viewmodel {
         printContentOfEachAppDto: KnockoutObservable<PrintContentOfEachAppDto>;
 		time: KnockoutObservable<number> = ko.observable(1);
 		appCombinaSelected = ko.observable(0);
-		recruitmentApp = new RecruitmentApp(0);
-		absenceLeaveApp = new AbsenceLeaveApp(1);
+		recruitmentApp = new RecruitmentApp(0, false);
+		absenceLeaveApp = new AbsenceLeaveApp(1, false);
 		comment = new Comment();
 		displayInforWhenStarting = ko.observable(null);
 		

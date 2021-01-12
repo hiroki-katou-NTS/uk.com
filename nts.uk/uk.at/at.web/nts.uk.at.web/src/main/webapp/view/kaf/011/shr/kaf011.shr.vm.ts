@@ -33,8 +33,13 @@ module nts.uk.at.view.kaf011 {
 		
 		started: boolean = false;
 		
-		constructor(appType: number){
+		isAScreen: KnockoutObservable<boolean> = ko.observable(false); //true: screen A, false: screen B
+		
+		constructor(appType: number, isAScreen?: boolean){
 			let self = this;
+			if(screen != undefined){
+				self.isAScreen(isAScreen);
+			}
 			self.appType = appType;
 			self.workInformation.workType.subscribe((data: string)=>{
 				if(data){
@@ -246,8 +251,8 @@ module nts.uk.at.view.kaf011 {
 		payoutSubofHDManagements: KnockoutObservableArray<SubWorkSubHolidayLinkingMng> = ko.observableArray([]);
 		payoutSubofHDManagementsOld: KnockoutObservableArray<SubWorkSubHolidayLinkingMng> = ko.observableArray([]);
 		
-		constructor(appType: number){
-			super(appType);
+		constructor(appType: number, isAScreen?: boolean){
+			super(appType, isAScreen);
 			let self = this;
 			self.workInformation.workType.subscribe((data: string)=>{
 				//only Abs-振休

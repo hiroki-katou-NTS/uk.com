@@ -11,7 +11,12 @@
 						<div class="ruleLine"></div>
 						<div class="row">
 							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF011_22')}</div>
-							<div id="recAppDate" data-bind="ntsDatePicker: {name: '#{i18n.getText('KAF011_22')}', value: application.appDate, dateFormat: 'YYYY/MM/DD', required: true }"></div>
+							<com:ko-if bind="isAScreen">
+								<div id="recAppDate" data-bind="ntsDatePicker: {name: '#{i18n.getText('KAF011_22')}', value: application.appDate, dateFormat: 'YYYY/MM/DD', required: true }"></div>
+							</com:ko-if>
+							<com:ko-if bind="!isAScreen()">
+								<span data-bind="text: application.appDate"></span>
+							</com:ko-if>
 						</div>
 						<div class="row">
 							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF011_28')}</div>
@@ -22,7 +27,9 @@
 		                                        optionsText: 'name',
 		                                        value: workInformation.workType,
 		                                        columns: [{ prop: 'workTypeCode', length: 3 },{ prop: 'name', length: 15 }],
-		                                        required: true }">
+		                                        required: true,
+		                                        enable: isAScreen 
+		                                        }">
 		                    </div>					
 						</div>
 						<div class="row">
@@ -102,7 +109,12 @@
 						<div class="ruleLine"></div>
 						<div class="row">
 							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF011_22')}</div>
-							<div id="absAppDate" data-bind="ntsDatePicker: {name: '#{i18n.getText('KAF011_22')}', value: application.appDate, dateFormat: 'YYYY/MM/DD', required: true }"></div>
+							<com:ko-if bind="isAScreen">
+								<div id="absAppDate" data-bind="ntsDatePicker: {name: '#{i18n.getText('KAF011_22')}', value: application.appDate, dateFormat: 'YYYY/MM/DD', required: true }"></div>
+							</com:ko-if>
+							<com:ko-if bind="!isAScreen()">
+								<span data-bind="text: application.appDate"></span>
+							</com:ko-if>
 						</div>
 						<div class="row">
 							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF011_28')}</div>
@@ -113,7 +125,8 @@
 		                                        optionsText: 'name',
 		                                        value: workInformation.workType,
 		                                        columns: [{ prop: 'workTypeCode', length: 3 },{ prop: 'name', length: 15 }],
-		                                        required: true }">
+		                                        required: true,
+		                                        enable: isAScreen }">
 		                    </div>					
 						</div>
 						<div class="holidaySetting">
