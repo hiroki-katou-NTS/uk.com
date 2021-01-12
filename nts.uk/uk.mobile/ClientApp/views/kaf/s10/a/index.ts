@@ -10,6 +10,7 @@ import { Kdl001Component } from '../../../kdl/001';
 import { KafS00ShrComponent, AppType, Application, InitParam } from 'views/kaf/s00/shr';
 import { OverTime } from '../step2/index';
 import { OverTimeWorkHoursDto } from '../../s00/sub/p2';
+import { ExcessTimeStatus } from '../../s00/sub/p1';
 
 @component({
     name: 'kafs10',
@@ -41,7 +42,8 @@ export class KafS10Component extends KafS00ShrComponent {
 
     public model: Model = {} as Model;
 
-    //huytodo isMsg step1
+    public isMsg_1556: boolean = false;
+    public isMsg_1557: boolean = false;
     
     @Prop()
     public readonly params: InitParam;
@@ -54,7 +56,7 @@ export class KafS10Component extends KafS00ShrComponent {
         const self = this;
         let model = self.model as Model;
         
-        return _.get(model, 'otWorkHoursForApplication') || null;
+        return _.get(model, 'appHdWorkDispInfo.otWorkHoursForApplication') || null;
     }
 
     public created() {
@@ -198,6 +200,8 @@ export class KafS10Component extends KafS00ShrComponent {
                 command
             ).then((res: any) => {
                 vm.model.appHdWorkDispInfo = res.data;
+                vm.isMsg_1557 = _.get(vm.model, 'appHdWorkDispInfo.calculationResult.actualOvertimeStatus.isExistApp');
+                vm.isMsg_1556 = _.get(vm.model, 'appHdWorkDispInfo.calculationResult.actualOvertimeStatus.achivementStatus') == ExcessTimeStatus.ALARM;
                 vm.numb = value;
                 let step2 = vm.$refs.step2 as KafS10Step2Component;
                 step2.loadAllData();
@@ -629,16 +633,22 @@ export class KafS10Component extends KafS00ShrComponent {
         const vm = this;
 
         return new Promise((resolve) => {
-            if (failData.messageId == 'Msg_26') {
-                vm.$modal.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
+            switch (failData.messageId) {
+                case 'Msg_26':
+                    vm.$modal.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
                     .then(() => {
                         vm.$goto('ccg008a');
                     });
 
-                return resolve(false);
-            }
+                    return resolve(false);
+                case 'Msg_1556':
+                    vm.isMsg_1556 = true;
 
-            return resolve(true);
+                    return resolve(false);
+                default:
+
+                    return resolve(true);
+            }
         });
     }
 

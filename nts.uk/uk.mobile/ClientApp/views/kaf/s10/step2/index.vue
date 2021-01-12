@@ -22,6 +22,24 @@
       </div>
     </div>
 
+    <div
+      v-if="$appContext.isMsg_1556 || $appContext.isMsg_1557"
+      class="card topAlarm" style="margin-bottom: 10px"
+    >
+      <button class="btn btn-link">
+        <div v-if="$appContext.isMsg_1556">
+          <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+          {{ "Msg_1556" | i18n($appContext.date) }}
+          <br/>
+        </div>
+        <div v-if="$appContext.isMsg_1557">
+          <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+          {{ "Msg_1557" | i18n($appContext.date) }}
+          <br/>
+        </div>
+      </button>
+    </div>
+
     <!-- HolidayTime -->
     <div class="card card-label">
       <!-- A2_B2_1 -->
