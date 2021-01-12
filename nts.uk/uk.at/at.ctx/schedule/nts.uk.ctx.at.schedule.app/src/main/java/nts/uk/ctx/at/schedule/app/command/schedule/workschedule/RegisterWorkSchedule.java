@@ -33,7 +33,8 @@ public class RegisterWorkSchedule {
 		if (command.isEmpty())
 			return null;
 		ResultRegisWorkSchedule rs = null;
-		if (command.get(0).viewMode == "shift") {
+		String viewMode = command.get(0).viewMode;
+		if (viewMode.equals("shift")) {
 			List<WorkScheduleSaveCommand> dataReg = convertParam(command, "shift");
 			rs = regisWorkScheduleShift.handle(dataReg);
 		} else {
@@ -60,7 +61,7 @@ public class RegisterWorkSchedule {
 				Map<Integer, TimeWithDayAttr> mapAttendIdWithTime = new HashMap<Integer, TimeWithDayAttr>();
 				TimeWithDayAttr startTime = new TimeWithDayAttr(wsCmd.startTime);
 				TimeWithDayAttr endTime   = new TimeWithDayAttr(wsCmd.endTime);
-				if (wsCmd.isChangeTime) {
+				if (wsCmd.workTimeCd != null && wsCmd.startTime != 0 && wsCmd.endTime != 0 ) {
 					mapAttendIdWithTime.put(31, startTime);
 					mapAttendIdWithTime.put(34, endTime);
 				}

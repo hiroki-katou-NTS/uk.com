@@ -1711,12 +1711,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         regSchedule() : JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
+            nts.uk.ui.block.grayout();
             let itemLocal = uk.localStorage.getItem(self.KEY);
             let userInfor = JSON.parse(itemLocal.get());
             let updatedCells = $("#extable").exTable("updatedCells");
             let viewMode = userInfor.disPlayFormat;
             let params = [];
-
+    
             let cellsGroup = self.groupByRowIndAndColKey(updatedCells, function(cell) {
                 return [cell.rowIndex, cell.columnKey];
             });
@@ -1725,8 +1726,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             let dataReg = self.buidDataReg(userInfor.disPlayFormat, cellsGroup);
             service.regWorkSchedule(dataReg).done((rs) => {
-                
-                console.log('dang ky thanh cong');
+                console.log(rs);
+                if(rs.listErrorInfo.length > 0){
+                    //self.openKDL053(rs);
+                }
                 nts.uk.ui.block.clear();
             }).fail(function(error) {
                 nts.uk.ui.block.clear();
@@ -1735,13 +1738,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
             return dfd.promise();
         }
-        
+
         buidDataReg(viewMode, cellsGroup) {
             let self = this;
             let dataReg = [];
             if (viewMode == 'time') {
                 _.forEach(cellsGroup, function(cells) {
-                    if (cells.lengh > 0) {
+                    if (cells.length > 0) {
                         let cell = cells[0];
                         let sid = self.listSid()[cell.rowIndex];
                         let ymd = moment(cell.columnKey.slice(1)).format('YYYY/MM/DD');
@@ -1830,15 +1833,28 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         }
         
         groupByRowIndAndColKey(array, f) {
-            var groups = {};
+            let groups = {};
             array.forEach(function(o) {
-                var group = JSON.stringify(f(o));
+                let group = JSON.stringify(f(o));
                 groups[group] = groups[group] || [];
                 groups[group].push(o);
             });
             return Object.keys(groups).map(function(group) {
                 return groups[group];
             })
+        }
+
+        openKDL053(dataReg : any) {
+            let self = this;
+            let param = {
+                sids: self.listSid(),                 // 社員の並び順
+                isRegistered: dataReg.isRegistered,   // 登録されたか
+                listErrorInfo: dataReg.listErrorInfo, // エラー内容リスト
+            }
+            setShared('dataShareDialog053', param);
+            nts.uk.ui.windows.sub.modal('/view/kdl/053/a/index.xhtml').onClosed(function(): any {
+                console.log('closed');
+            });
         }
 
         /**
