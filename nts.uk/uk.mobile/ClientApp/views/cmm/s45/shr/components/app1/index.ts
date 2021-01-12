@@ -1,6 +1,7 @@
 import { Vue, _ } from '@app/provider';
 import { component, Prop } from '@app/core/component';
-import { TimeZoneWithWorkNoDto, AppForLeaveStartOutputDto, ManageDistinct, MaxNumberDayType, NotUseAtr, TimeZoneUseDto } from 'views/kaf/s06/a/define.interface';
+import { TimeZoneWithWorkNoDto, AppForLeaveStartOutputDto, ManageDistinct, MaxNumberDayType, NotUseAtr, TimeZoneUseDto, HolidayAppType, WorkTypeUnit, WorkAtr, WorkTypeDto, HolidayAppTypeDispNameDto } from 'views/kaf/s06/a/define.interface';
+import { times } from 'lodash';
 
 @component({
     name: 'cmms45shrcomponentsapp1',
@@ -23,6 +24,7 @@ export class CmmS45ShrComponentsApp1Component extends Vue {
         appDispInfoStartupOutput: any,
         appDetail: any
     };
+
     public title: string = 'CmmS45ShrComponentsApp1';
 
     public dataOutput = {} as AppForLeaveStartOutputDto;
@@ -47,6 +49,60 @@ export class CmmS45ShrComponentsApp1Component extends Vue {
         
     }
 
+    public get B1_2() {
+        const self = this;
+        let dispNames = _.get(self.dataOutput, 'appAbsenceStartInfoDto.hdAppSet.dispNames') || [];
+        let holidayAppType = _.get(self.dataOutput, 'applyForLeaveDto.vacationInfo.holidayApplicationType') || 0;
+
+        
+        return _.get(_.find(dispNames, (item: HolidayAppTypeDispNameDto) => item.holidayAppType == holidayAppType), 'displayName') || 'not exist type holiday';
+    }
+    public get B5_2() {
+        const self = this;
+
+        let time = _.get(self.dataOutput, 'appAbsenceStartInfoDto.requiredVacationTime') || 0;
+
+        return time;
+    }
+    public get B5_3() {
+        const self = this;
+
+        return self.B5_4 + self.B5_5 + self.B5_6 + self.B5_7 + self.B5_8;
+    }
+    public get B5_4() {
+        const self = this;
+        let time = _.get(self.dataOutput, 'applyForLeaveDto.reflectFreeTimeApp.timeDegestion.overtime60H') || 0;
+        
+        return time;
+    }
+
+    public get B5_5() {
+        const self = this;
+        let time = _.get(self.dataOutput, 'applyForLeaveDto.reflectFreeTimeApp.timeDegestion.timeOff') || 0;
+        
+        return time;
+    }
+
+    public get B5_6() {
+        const self = this;
+        let time = _.get(self.dataOutput, 'applyForLeaveDto.reflectFreeTimeApp.timeDegestion.timeAnualLeave') || 0;
+        
+        return time;
+    }
+
+    public get B5_7() {
+        const self = this;
+        let time = _.get(self.dataOutput, 'applyForLeaveDto.reflectFreeTimeApp.timeDegestion.childTime') || 0;
+        
+        return time;
+    }
+
+    public get B5_8() {
+        const self = this;
+        let time = _.get(self.dataOutput, 'applyForLeaveDto.reflectFreeTimeApp.timeDegestion.nursingTime') || 0;
+        
+        return time;
+    }
     public get _() {
         return _;
     }
@@ -81,15 +137,16 @@ export class CmmS45ShrComponentsApp1Component extends Vue {
     // 「休暇申請起動時の表示情報．勤務時間帯一覧．勤務NO = 2」がある
     public get c10_2() {
         const self = this;
-        let c10_2 = _.findLast(self.dataOutput.appAbsenceStartInfoDto.workTimeLst, (item: TimeZoneUseDto) => item.workNo == 2);
+        let c10_2 = _.findLast(_.get(self.dataOutput, 'appAbsenceStartInfoDto.workTimeLst'), (item: TimeZoneUseDto) => item.workNo == 2);
 
         return !_.isNil(c10_2);
     }
     // 「A4_3」が「時間消化」を選択している
     public get c12() {
         const self = this;
-
-        return true;
+        let c12 = _.get(self.dataOutput, 'applyForLeaveDto.vacationInfo.holidayApplicationType') == HolidayAppType.DIGESTION_TIME;
+        
+        return c12;
     }
     // ※12 = ○　AND　※13-1 = ○　AND　※13-2 = ○
     public get c13() {
@@ -214,8 +271,9 @@ export class CmmS45ShrComponentsApp1Component extends Vue {
     // 「休暇種類」が「特別休暇」を選択している
     public get c18_1() {
         const self = this;
-
-        return true;
+        let c18_1 = _.get(self.dataOutput, 'applyForLeaveDto.vacationInfo.holidayApplicationType') == HolidayAppType.SPECIAL_HOLIDAY;
+        
+        return c18_1;
     }
     // 休暇申請起動時の表示情報．特別休暇表情報．事象に応じた特休フラグ = true 
     public get c18_2() {
@@ -258,11 +316,28 @@ export class CmmS45ShrComponentsApp1Component extends Vue {
         
         return c21_1;
     }
-    // todo
     public get c21_2() {
         const self = this;
         
-        return true;
+        const workTypeInfo = _.findLast(
+            _.get(self.dataOutput, 'appAbsenceStartInfoDto.workTypeLst'),
+            (item: any) => item.worTypeCode === _.get(self.dataOutput, 'applyForLeaveDto.reflectFreeTimeApp.workInfo.workType')
+            ) as WorkTypeDto;
+        
+        const workTypeSet = _.get(workTypeInfo, 'workTypeSets[0]');
+
+        if (!workTypeInfo || !workTypeSet) {
+            
+            return false;
+        }
+        let workAtr = workTypeInfo.workAtr;
+        if (workAtr == WorkTypeUnit.OneDay) {
+
+            return workTypeSet.workAtr == WorkAtr.OneDay;
+        } else {
+
+            return workTypeSet.workAtr != WorkAtr.OneDay;
+        }
     }
     // ※22-1 = ○　AND　※22-2 = ○
     public get c22() {
@@ -277,12 +352,28 @@ export class CmmS45ShrComponentsApp1Component extends Vue {
         
         return c22_1;
     }
-    // todo
     public get c22_2() {
         const self = this;
         
-        return true;
+        const workTypeInfo = _.findLast(
+            _.get(self.dataOutput, 'appAbsenceStartInfoDto.workTypeLst'),
+            (item: any) => item.worTypeCode === _.get(self.dataOutput, 'applyForLeaveDto.reflectFreeTimeApp.workInfo.workType')
+            ) as WorkTypeDto;
+        
+        const workTypeSet = _.get(workTypeInfo, 'workTypeSets[0]');
 
+        if (!workTypeInfo || !workTypeSet) {
+            
+            return false;
+        }
+        let workAtr = workTypeInfo.workAtr;
+        if (workAtr == WorkTypeUnit.OneDay) {
+
+            return workTypeSet.workAtr == WorkAtr.OneDay;
+        } else {
+
+            return workTypeSet.workAtr != WorkAtr.OneDay;
+        }
     }
     public mounted() {
         const self = this;

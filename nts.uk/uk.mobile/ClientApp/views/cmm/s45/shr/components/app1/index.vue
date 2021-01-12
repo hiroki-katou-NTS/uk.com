@@ -7,7 +7,7 @@
         </div>
     </div>
     <!--B1_2-->
-    <span class="text-left">{{ "KAFS06_1000" | i18n }}</span>
+    <div class="text-left">{{B1_2}}</div>
 
     <!--B2_1-->
     <div class="card card-label" v-if="true">
@@ -90,6 +90,26 @@
         </div>
     </div>
 
-    
+
+    <!--B5_1-->
+    <div class="card card-label" v-if="c12">
+        <div class="card-header uk-bg-accordion mt-2 headerDiv">
+            <span class="textPosition">{{ "KAFS06_16" | i18n }}</span>
+        </div>
+    </div>
+    <div v-if="c12" class="row mt-2">
+        <div class="col pl-3">{{ "KAFS06_18" | i18n([$dt.timept(B5_2)]) }}</div>
+        <div class="col pl-3">{{ "KAFS06_19" | i18n([$dt.timept(B5_3)]) }}</div>
+    </div>
+    <!--B5_4-->
+    <div v-if="c13" class="text-left mt-2 pl-3">{{ "KAFS06_42" | i18n([$dt.timept(B5_4)]) }}</div>
+    <!--B5_5-->
+    <div v-if="c14" class="text-left mt-2 pl-3">{{ "KAFS06_43" | i18n([$dt.timept(B5_5)]) }}</div>
+    <!--B5_6-->
+    <div v-if="c15" class="text-left mt-2 pl-3">{{ "KAFS06_44" | i18n([$dt.timept(B5_6)]) }}</div>
+    <!--B5_7-->
+    <div v-if="c16" class="text-left mt-2 pl-3">{{ "KAFS06_45" | i18n([$dt.timept(B5_7)]) }}</div>
+    <!--B5_8-->
+    <div v-if="c17" class="text-left my-2 pl-3">{{ "KAFS06_46" | i18n([$dt.timept(B5_8)]) }}</div>
 </div>
 </template>

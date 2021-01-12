@@ -90,17 +90,17 @@ export interface TimeZoneWithWorkNoDto {
     timeZone: TimeZoneNewDto;
 }
 export interface TimeDigestApplicationDto {
-
+    // 60H超休
     overtime60H: number;
-
+    // 介護時間
     nursingTime: number;
-
+    // 子の看護時間
     childTime: number;
-
+    // 時間代休
     timeOff: number;
 
     timeSpecialVacation: number;
-
+    // 時間年休
     timeAnualLeave: number;
 
     specialVacationFrameNO: number;
@@ -642,6 +642,16 @@ export enum WorkTypeUnit {
     OneDay,
     // 午前と午後
     MonringAndAfternoon
+}
+export enum WorkAtr {
+    // 1日
+    OneDay,
+
+    // 午前
+    Monring,
+
+    // 午後
+    Afternoon
 }
 export interface WorkTypeDto {
     /* 勤務種類コード */
