@@ -8,6 +8,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.office.dom.goout.GoOutEmployeeInformation;
 import nts.uk.ctx.office.dom.goout.GoOutEmployeeInformationRepository;
 
+//外出・戻り情報を取得 //TODO link
 public class GoOutInformationScreenQuery {
 
 	@Inject
