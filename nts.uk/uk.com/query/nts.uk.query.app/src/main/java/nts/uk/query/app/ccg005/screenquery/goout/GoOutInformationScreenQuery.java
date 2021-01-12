@@ -15,7 +15,7 @@ public class GoOutInformationScreenQuery {
 
 	public GoOutEmployeeInformationDto getGoOutInformation(String sid, GeneralDate date) {
 		Optional<GoOutEmployeeInformation> domain = repo.getBySidAndDate(sid, date);
-		GoOutEmployeeInformationDto dto = new GoOutEmployeeInformationDto();
+		GoOutEmployeeInformationDto dto = GoOutEmployeeInformationDto.builder().build();
 		domain.ifPresent(goOut -> goOut.setMemento(dto));
 		return dto;
 	}

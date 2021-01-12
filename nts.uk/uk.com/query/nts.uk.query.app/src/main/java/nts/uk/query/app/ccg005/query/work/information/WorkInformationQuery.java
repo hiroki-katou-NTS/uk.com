@@ -31,7 +31,10 @@ public class WorkInformationQuery {
 	
 	public List<EmployeeWorkInformationDto> getWorkInformationQuery(List<String> sids, GeneralDate baseDate) {
 		// 1. get(社員IDリスト、基準日): List<日別実績の勤務情報> TODO
+		//WorkInfoOfDailyPerformance WorkInformationRepository
+		
 		// 2. get(社員IDリスト、基準日): List<勤務予定> TODO
+		
 		// 3. get(社員IDリスト、基準日): List<日別実績の出退勤> TODO: convert to DTO
 		//List<TimeLeavingOfDailyPerformance> timeLeaveDto = timeLeaveRepo.finds(sids, baseDate);
 

@@ -10,9 +10,11 @@ public class AttendanceStatusJudgmentService {
 
 	public Optional<ActivityStatus> getActivityStatus(Required required, String sId,  GeneralDate date) {
 		//WorkInfoOfDailyPerformance WorkInformationRepository
-		
+		//TimeLeavingOfDailyPerformance
+		//WorkType
 		return null;
 	}
+	
 	public interface Required {
 	
 	/* 
