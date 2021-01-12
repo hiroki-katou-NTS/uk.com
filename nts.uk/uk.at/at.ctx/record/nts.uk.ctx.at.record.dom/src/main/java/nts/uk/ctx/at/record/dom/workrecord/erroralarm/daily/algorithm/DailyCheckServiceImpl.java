@@ -634,7 +634,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 						
 					// NO = 6： 打刻漏れ
 					case 6:
-						if(!integra.getAttendanceLeave().isPresent() && !integra.getTempTime().isPresent() && !integra.getBreakTime().equals(Optional.empty()))
+						if(!integra.getAttendanceLeave().isPresent() && !integra.getTempTime().isPresent() && !integra.getBreakTime().equals(null))
 							break;
 						else {
 							// 打刻漏れ
@@ -659,7 +659,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 						
 					// NO =8： 打刻順序不正
 					case 8:
-						if(!integra.getAttendanceLeave().isPresent() && !integra.getTempTime().isPresent() && !integra.getBreakTime().equals(Optional.empty())
+						if(!integra.getAttendanceLeave().isPresent() && !integra.getTempTime().isPresent() && !integra.getBreakTime().equals(null)
 								&& !integra.getOutingTime().isPresent()) break;
 						else {
 						}
