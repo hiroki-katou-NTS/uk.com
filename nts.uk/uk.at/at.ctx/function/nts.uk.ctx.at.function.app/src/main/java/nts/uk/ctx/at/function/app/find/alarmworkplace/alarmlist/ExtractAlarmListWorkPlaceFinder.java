@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.function.app.find.alarmworkplace.alarmlist;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.alarm.AlarmPatternCode;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.Days;
@@ -12,9 +14,11 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.StartSpecify;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.MonthNo;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.singlemonth.SingleMonth;
 import nts.uk.ctx.at.function.dom.alarmworkplace.*;
-import nts.uk.ctx.at.function.dom.alarmworkplace.alarmlist.ExtractAlarmListWorkPlaceService;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.WorkplaceCategory;
 import nts.uk.ctx.at.function.dom.alarmworkplace.export.AlarmListExtractResultWorkplaceData;
+import nts.uk.ctx.at.function.dom.alarmworkplace.extractprocessstatus.AlarmListExtractProcessStatusWorkplace;
+import nts.uk.ctx.at.function.dom.alarmworkplace.extractprocessstatus.AlarmListExtractProcessStatusWorkplaceRepository;
+import nts.uk.ctx.at.function.dom.alarmworkplace.extractprocessstatus.ExtractState;
 import nts.uk.ctx.at.function.dom.alarmworkplace.extractresult.AlarmListExtractInfoWorkplaceRepository;
 import nts.uk.ctx.at.record.dom.organization.EmploymentHistoryImported;
 import nts.uk.ctx.at.record.dom.organization.adapter.EmploymentAdapter;
@@ -42,8 +46,6 @@ import java.util.stream.Collectors;
 public class ExtractAlarmListWorkPlaceFinder {
 
     @Inject
-    private ExtractAlarmListWorkPlaceService extractAlarmListWorkPlaceService;
-    @Inject
     private AlarmPatternSettingWorkPlaceRepository alarmPatternSettingWorkPlaceRepo;
     @Inject
     private EmploymentAdapter employmentAdapter;
@@ -53,6 +55,8 @@ public class ExtractAlarmListWorkPlaceFinder {
     private ClosureRepository closureRepo;
     @Inject
     private AlarmListExtractInfoWorkplaceRepository alarmListExtractInfoWorkplaceRepo;
+    @Inject
+    private AlarmListExtractProcessStatusWorkplaceRepository alarmListExtractProcessStatusWorkplaceRepo;
 
     /**
      * アラームリストの初期起動
@@ -248,7 +252,7 @@ public class ExtractAlarmListWorkPlaceFinder {
                 YearMonth startYm = processingYm.addMonths(-strMonth.get().getMonth());
                 // ・開始の日　＝　締め期間．開始日の日
                 // startDate = GeneralDate.ymd(startYm.year(), startYm.month(), closurePeriod.start().day());
-                startDate = getDate(startYm, closurePeriod.end().day());
+                startDate = getDate(startYm, closurePeriod.start().day());
             }
         }
         return startDate;
@@ -295,6 +299,18 @@ public class ExtractAlarmListWorkPlaceFinder {
             return lastDate;
         } else {
             return GeneralDate.ymd(ym.year(), ym.month(), day);
+        }
+    }
+
+    /**
+     * 抽出状況を確認する
+     */
+    public void checkProcessStatus() {
+        String cid = AppContexts.user().companyId();
+        // ドメインモデル「アラームリスト抽出処理状況(職場別)」をチェックする
+        List<AlarmListExtractProcessStatusWorkplace> processes = alarmListExtractProcessStatusWorkplaceRepo.getBy(cid, ExtractState.PROCESSING);
+        if (!CollectionUtil.isEmpty(processes)) {
+            throw new BusinessException("Msg_993");
         }
     }
 

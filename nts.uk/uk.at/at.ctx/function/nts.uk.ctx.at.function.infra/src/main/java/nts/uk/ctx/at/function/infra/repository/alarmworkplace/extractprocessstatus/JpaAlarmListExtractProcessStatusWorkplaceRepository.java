@@ -3,9 +3,11 @@ package nts.uk.ctx.at.function.infra.repository.alarmworkplace.extractprocesssta
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.alarmworkplace.extractprocessstatus.AlarmListExtractProcessStatusWorkplace;
 import nts.uk.ctx.at.function.dom.alarmworkplace.extractprocessstatus.AlarmListExtractProcessStatusWorkplaceRepository;
+import nts.uk.ctx.at.function.dom.alarmworkplace.extractprocessstatus.ExtractState;
 import nts.uk.ctx.at.function.infra.entity.alarmworkplace.extractprocessstatus.KfnmtWkpAlexProStatus;
 
 import javax.ejb.Stateless;
+import java.util.List;
 import java.util.Optional;
 
 @Stateless
@@ -14,6 +16,7 @@ public class JpaAlarmListExtractProcessStatusWorkplaceRepository extends JpaRepo
     private static final String SELECT;
 
     private static final String SELECT_BY_ID_AND_CID;
+    private static final String SELECT_BY_CID_AND_STATUS;
 
     static {
         StringBuilder builderString = new StringBuilder();
@@ -25,6 +28,10 @@ public class JpaAlarmListExtractProcessStatusWorkplaceRepository extends JpaRepo
         builderString.append("WHERE a.pk.extraStatusId = :id AND a.companyID = :companyId ");
         SELECT_BY_ID_AND_CID = builderString.toString();
 
+        builderString = new StringBuilder();
+        builderString.append(SELECT);
+        builderString.append("WHERE a.status = :status AND a.companyID = :companyId ");
+        SELECT_BY_CID_AND_STATUS = builderString.toString();
     }
 
     @Override
@@ -34,6 +41,14 @@ public class JpaAlarmListExtractProcessStatusWorkplaceRepository extends JpaRepo
             .setParameter("id", id)
             .getSingle(KfnmtWkpAlexProStatus::toDomain);
 
+    }
+
+    @Override
+    public List<AlarmListExtractProcessStatusWorkplace> getBy(String companyId, ExtractState status) {
+        return this.queryProxy().query(SELECT_BY_CID_AND_STATUS, KfnmtWkpAlexProStatus.class)
+                .setParameter("companyId", companyId)
+                .setParameter("status", status.value)
+                .getList(KfnmtWkpAlexProStatus::toDomain);
     }
 
     @Override
