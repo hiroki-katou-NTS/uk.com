@@ -805,6 +805,10 @@ project (':com.screen:nts.uk.screen.com.app') {
 		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
 		compile project(':wk.ctx:nts.uk.ctx.workflow.dom')
 		compile project(':wk.ctx:nts.uk.ctx.workflow.app')
+		compile project(':office.ctx:nts.uk.ctx.office.dom')
+		compile project(':office.ctx:nts.uk.ctx.office.app')
+		compile project(':health.ctx:nts.uk.ctx.health.dom')
+		compile project(':health.ctx:nts.uk.ctx.health.app')
 		
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.app')
 		compile project(':pereg.ctx:nts.uk.ctx.pereg.app')
