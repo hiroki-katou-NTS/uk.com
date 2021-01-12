@@ -976,7 +976,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
             
         }
         self.mournerFlag = _.get(applyForSpeLeave, 'mournerFlag') || false;
-        self.relationshipReason = _.get(applyForSpeLeave, 'relationshipReason') || null;
+        self.relationshipReason = _.get(applyForSpeLeave, 'relationshipReason') || '';
         const specAbsenceDispInfo = _.get(self.model, 'appAbsenceStartInfoDto.specAbsenceDispInfo');
         if (specAbsenceDispInfo) {
             self.maxDaySpecHdDto = {
