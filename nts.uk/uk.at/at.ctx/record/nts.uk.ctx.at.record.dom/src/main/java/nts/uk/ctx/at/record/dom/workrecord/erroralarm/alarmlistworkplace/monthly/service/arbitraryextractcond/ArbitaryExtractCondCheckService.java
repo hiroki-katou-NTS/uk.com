@@ -5,6 +5,7 @@ import nts.uk.ctx.at.record.dom.adapter.workplace.EmployeeInfoImported;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.extractresult.AlarmListExtractionInfoWorkplaceDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.extractresult.ExtractResultDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.ExtractionMonthlyCon;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service.arbitraryextractcond.averageShare.AverageShareCheckService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service.arbitraryextractcond.averagenumday.AverageNumDayCheckService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service.arbitraryextractcond.averagenumtime.AverageNumTimeCheckService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.service.arbitraryextractcond.averageratio.AverageRatioCheckService;
@@ -34,6 +35,8 @@ public class ArbitaryExtractCondCheckService {
     private AverageNumTimeCheckService averageNumTimeCheckService;
     @Inject
     private AverageRatioCheckService averageRatioCheckService;
+    @Inject
+    private AverageShareCheckService averageShareCheckService;
 
     /**
      * 任意抽出条件をチェック
@@ -58,15 +61,28 @@ public class ArbitaryExtractCondCheckService {
                 List<AttendanceTimeOfMonthly> times = attendanceTimeOfMonthlies.stream().filter(x -> empInfosByWp.getValue().stream()
                         .anyMatch(c -> c.getSid().equals(x.getEmployeeId()))).collect(Collectors.toList());
                 ExtractResultDto result = null;
+//                switch (cond.getCheckMonthlyItemsType()) {
+//                    case AVERAGE_TIME:
+//                        result = averageTimeCheckService.check(empInfosByWp.getKey(), cond, times, empInfosByWp.getValue(), ym);
+//                        break;
+//                    case AVERAGE_NUMBER_DAY:
+//                        result = averageNumDayCheckService.check(cid, empInfosByWp.getKey(), cond, times, empInfosByWp.getValue(), ym);
+//                        break;
+//                    case AVERAGE_NUMBER_TIME:
+//                        result = averageNumTimeCheckService.check(empInfosByWp.getKey(), cond, times, empInfosByWp.getValue(), ym);
+//                        break;
+//                    case AVERAGE_RATIO:
+//                        result = averageRatioCheckService.check(cid, empInfosByWp.getKey(), cond, times, empInfosByWp.getValue(), ym);
+//                        break;
+//                    default:
+//                        break;
+//                }
                 switch (cond.getCheckMonthlyItemsType()) {
                     case AVERAGE_TIME:
-                        result = averageTimeCheckService.check(empInfosByWp.getKey(), cond, times, empInfosByWp.getValue(), ym);
-                        break;
                     case AVERAGE_NUMBER_DAY:
-                        result = averageNumDayCheckService.check(cid, empInfosByWp.getKey(), cond, times, empInfosByWp.getValue(), ym);
-                        break;
                     case AVERAGE_NUMBER_TIME:
-                        result = averageNumTimeCheckService.check(empInfosByWp.getKey(), cond, times, empInfosByWp.getValue(), ym);
+//                        result = averageTimeCheckService.check(empInfosByWp.getKey(), cond, times, empInfosByWp.getValue(), ym);
+                        result = averageShareCheckService.check(empInfosByWp.getKey(), cond, times, empInfosByWp.getValue(), ym, null);
                         break;
                     case AVERAGE_RATIO:
                         result = averageRatioCheckService.check(cid, empInfosByWp.getKey(), cond, times, empInfosByWp.getValue(), ym);
