@@ -26,6 +26,7 @@ public class PrintContentOfEachApp {
 	/**
 	 * 休暇申請の印刷内容
 	 */
+    private Optional<PrintContentOfApplyForLeave> opPrintContentApplyForLeave;
 
 	/**
 	 * 休日出勤の印刷内容

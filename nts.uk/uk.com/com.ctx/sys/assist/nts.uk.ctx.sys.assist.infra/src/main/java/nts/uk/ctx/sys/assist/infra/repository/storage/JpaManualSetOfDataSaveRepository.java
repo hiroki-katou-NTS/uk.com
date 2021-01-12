@@ -29,10 +29,11 @@ public class JpaManualSetOfDataSaveRepository extends JpaRepository implements M
 
 	private ManualSetOfDataSave toDomain(SspmtManualSetOfDataSave entity) {
 		return new ManualSetOfDataSave(entity.cid, entity.storeProcessingId, entity.passwordAvailability,
-				entity.saveSetName, entity.referenceDate, entity.compressedPassword, entity.executionDateAndTime,
-				entity.daySaveEndDate, entity.daySaveStartDate,
-				entity.monthSaveEndDate, entity.monthSaveStartDate, entity.suppleExplanation, entity.endYear,
-				entity.startYear, entity.presenceOfEmployee, entity.practitioner, 1);
+				entity.saveSetName, entity.referenceDate,
+				entity.compressedPassword != null ? CommonKeyCrypt.decrypt(entity.compressedPassword) : null,
+				entity.executionDateAndTime, entity.daySaveEndDate, entity.daySaveStartDate, entity.monthSaveEndDate,
+				entity.monthSaveStartDate, entity.suppleExplanation, entity.endYear, entity.startYear,
+				entity.presenceOfEmployee, entity.practitioner, entity.executionAtr);
 	}
 
 	private SspmtManualSetOfDataSave toEntity(ManualSetOfDataSave dom) {
@@ -42,10 +43,10 @@ public class JpaManualSetOfDataSaveRepository extends JpaRepository implements M
 						? CommonKeyCrypt.encrypt(dom.getCompressedPassword().v())
 						: null,
 				dom.getExecutionDateAndTime(), dom.getDaySaveEndDate(), dom.getDaySaveStartDate(),
-				dom.getMonthSaveEndDate(), dom.getMonthSaveStartDate(),
-				dom.getSuppleExplanation(), dom.getEndYear().isPresent() ? dom.getEndYear().get().v() : null,
+				dom.getMonthSaveEndDate(), dom.getMonthSaveStartDate(), dom.getSuppleExplanation(),
+				dom.getEndYear().isPresent() ? dom.getEndYear().get().v() : null,
 				dom.getStartYear().isPresent() ? dom.getStartYear().get().v() : null, dom.getPresenceOfEmployee().value,
-				dom.getPractitioner());
+				dom.getPractitioner(), dom.getSaveType().value);
 	}
 
 	@Override
@@ -64,6 +65,11 @@ public class JpaManualSetOfDataSaveRepository extends JpaRepository implements M
 	public Optional<ManualSetOfDataSave> getManualSetOfDataSaveById(String storeProcessingId) {
 		return this.queryProxy().query(SELECT_BY_KEY_STRING_STORE, SspmtManualSetOfDataSave.class)
 				.setParameter("storeProcessingId", storeProcessingId).getSingle(c -> toDomain(c));
+	}
+
+	@Override
+	public void update(ManualSetOfDataSave domain) {
+		this.commandProxy().update(toEntity(domain));
 	}
 
 }

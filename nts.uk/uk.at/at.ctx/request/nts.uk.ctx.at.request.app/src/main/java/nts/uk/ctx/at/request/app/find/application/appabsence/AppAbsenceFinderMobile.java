@@ -9,26 +9,36 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.app.command.application.appabsence.CreatAppAbsenceCommand;
+import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AbsenceCheckRegisterDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceStartInfoDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppForLeaveStartOutputDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ChangeDateParamMobile;
+import nts.uk.ctx.at.request.app.find.application.appabsence.dto.CheckInsertMobileParam;
+import nts.uk.ctx.at.request.app.find.application.appabsence.dto.DetailInfoParam;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.MaxDaySpecHdDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.MaxHolidayDayParamMobile;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.SelectTypeHolidayParam;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.SelectWorkOutputDto;
+import nts.uk.ctx.at.request.app.find.application.appabsence.dto.SelectWorkTimeHolidayParam;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.SelectWorkTypeHolidayParam;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.StartMobileParam;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.VacationCheckOutputDto;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoWithDateDto;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServiceProcess;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServiceProcessMobile;
+import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AbsenceCheckRegisterOutput;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppAbsenceStartInfoOutput;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppForLeaveStartOutput;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.VacationCheckOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.service.MaxDaySpecHdOutput;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.service.SpecialHolidayEventAlgorithm;
 
@@ -79,7 +89,7 @@ public class AppAbsenceFinderMobile {
 		// 申請表示情報(基準日関係あり)を取得する
 		AppDispInfoWithDateOutput appDispInfoWithDateOutput = commonAlgorithm.getAppDispInfoWithDate(
 				param.getCompanyId(),
-				ApplicationType.OVER_TIME_APPLICATION,
+				ApplicationType.ABSENCE_APPLICATION,
 				Optional.ofNullable(param.getDates()).orElse(Collections.emptyList())
 													 .stream()
 													 .map(x -> GeneralDate.fromString(x, DATE_FORMAT))
@@ -94,7 +104,7 @@ public class AppAbsenceFinderMobile {
 				param.getCompanyId(),
 				param.getAppAbsenceStartInfoDto(),
 				Optional.ofNullable(param.getDates()).orElse(Collections.emptyList()),
-				ApplicationType.ABSENCE_APPLICATION.value,
+				param.getAppHolidayType(),
 				AppDispInfoWithDateDto.fromDomain(appDispInfoWithDateOutput));
 	}
 	/**
@@ -123,7 +133,7 @@ public class AppAbsenceFinderMobile {
 				param.getCompanyId(),
 				param.getAppAbsenceStartInfoDto().toDomain(param.getCompanyId()),
 				Optional.ofNullable(param.getDates()).orElse(Collections.emptyList()),
-			    HolidayAppType.ABSENCE);
+			    EnumAdaptor.valueOf(param.getHolidayAppType(), HolidayAppType.class));
 		return AppAbsenceStartInfoDto.fromDomain(appAbsenceStartInfoOutput);
 	}
 	/**
@@ -152,5 +162,72 @@ public class AppAbsenceFinderMobile {
 		output.vacationCheckOutputDto = VacationCheckOutputDto.fromDomain(vacationCheckOutput);
 		
 		return output;
+	}
+	/**
+	 * Refactor5
+	 * UKDesign.UniversalK.就業.KAF_申請.KAFS06_休暇申請（スマホ）.A：休暇申請入力画面.ユースケース
+	 * @param param
+	 * @return
+	 */
+	public AppAbsenceStartInfoDto selectWorkTime(SelectWorkTimeHolidayParam param) {
+		// 「KDLS01_就業時間帯選択（スマホ）」を起動する from UI
+		// 就業時間帯変更時処理
+		AppAbsenceStartInfoOutput output = absenceServiceProcess.workTimesChangeProcess(
+				param.getCompanyId(),
+				param.getAppAbsenceStartInfoDto().toDomain(param.getCompanyId()),
+				param.getWorkTypeCode(),
+				Optional.ofNullable(param.getWorkTimeCodeOp()));
+		// 指定する勤務種類に必要な休暇時間を算出する
+		AttendanceTime attendanceTime= absenceServiceProcess.calculateTimeRequired(
+				param.getEmployeeId(),
+				Optional.ofNullable(param.getDatesOp())
+					.flatMap(x -> CollectionUtil.isEmpty(x) ? Optional.empty() : Optional.of(GeneralDate.fromString(x.get(0), DATE_FORMAT))),
+				Optional.ofNullable(param.getWorkTypeCode()),
+				Optional.ofNullable(param.getWorkTimeCodeOp()),
+				Optional.empty(),
+				Optional.empty(),
+				Optional.empty());
+		// 返ってきた「必要時間」を「休暇申請起動時の表示情報」にセットする
+		output.setRequiredVacationTimeOptional(Optional.ofNullable(attendanceTime));
+		
+		return AppAbsenceStartInfoDto.fromDomain(output);
+	}
+	
+	public AbsenceCheckRegisterDto checkBeforeInsert(CheckInsertMobileParam param) {
+		AbsenceCheckRegisterOutput output;
+		ApplyForLeave applyForLeave = param.getApplyForLeave().toDomain();
+		Application application = param.getApplication().toDomain();
+		applyForLeave.setApplication(application);
+		// INPUT．「画面モード」をチェックする
+		if (param.getMode()) {
+			// 登録前のエラーチェック処理
+			output = absenceServiceProcess.checkBeforeRegister(
+					param.getCompanyId(),
+					param.getAppAbsenceStartInfoDto().toDomain(param.getCompanyId()),
+					applyForLeave,
+					false);
+			
+		} else {
+			// 更新前のエラーチェック処理
+			output = absenceServiceProcess.checkBeforeUpdate(
+					param.getCompanyId(),
+					param.getAppAbsenceStartInfoDto().toDomain(param.getCompanyId()),
+					applyForLeave,
+					false);			
+		}
+		// 返ってきた内容をOUTPUTとして返す	
+		return AbsenceCheckRegisterDto.fromDomain(output);
+	}
+	/**
+	 * Refactor5
+	 * UKDesign.UniversalK.就業.KAF_申請.KAFS06_休暇申請（スマホ）.B：休暇申請確認画面.アルゴリズム.休暇申請確認画面を起動する
+	 * @param param
+	 * @return
+	 */
+	public AppForLeaveStartOutputDto getDetailInfo(DetailInfoParam param) {
+		return AppForLeaveStartOutputDto.fromDomain(absenceServiceProcess.getAppForLeaveStartB(
+				param.getCompanyId(),
+				param.getAppId(),
+				param.getAppDispInfoStartup().toDomain()));
 	}
 }

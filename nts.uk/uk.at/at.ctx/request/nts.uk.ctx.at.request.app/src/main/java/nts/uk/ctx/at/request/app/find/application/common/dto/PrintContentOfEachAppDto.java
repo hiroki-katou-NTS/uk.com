@@ -4,18 +4,17 @@ import java.util.Optional;
 
 import nts.uk.ctx.at.request.app.command.application.holidaywork.PrintContentOfHolidayWorkCmd;
 import nts.uk.ctx.at.request.app.command.application.overtime.DetailOutputCommand;
-import nts.uk.ctx.at.request.app.command.application.overtime.DisplayInfoOverTimeCommand;
 import nts.uk.ctx.at.request.app.command.application.workchange.AppWorkChangeOutputCmd;
+import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ApplyForleaveOutputCmd;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.BusinessTripDto;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.InforGoBackCommonDirectDto;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ArrivedLateLeaveEarlyInfoDto;
 import nts.uk.ctx.at.request.app.find.application.optitem.optitemdto.OptionalItemApplicationPrintDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampOutputDto;
+import nts.uk.ctx.at.request.dom.application.common.service.print.PrintContentOfApplyForLeave;
 import nts.uk.ctx.at.request.dom.application.common.service.print.PrintContentOfEachApp;
 import nts.uk.ctx.at.request.dom.application.common.service.print.PrintContentOfWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeOutput;
-
-import java.util.Optional;
 
 /**
  * refactor 4
@@ -27,6 +26,7 @@ public class PrintContentOfEachAppDto {
     /**
      * 休暇申請の印刷内容
      */
+    public ApplyForleaveOutputCmd opPrintContentApplyForLeave;
 
     /**
      * 勤務変更申請の印刷内容
@@ -97,6 +97,9 @@ public class PrintContentOfEachAppDto {
 		if (opDetailOutput != null) {
 			printContentOfEachApp.setOpDetailOutput(Optional.of(opDetailOutput.toDomain()));
 			
+		}
+		if (opPrintContentApplyForLeave != null) {
+		    printContentOfEachApp.setOpPrintContentApplyForLeave(Optional.of(opPrintContentApplyForLeave.toDomain()));
 		}
         return printContentOfEachApp;
     }

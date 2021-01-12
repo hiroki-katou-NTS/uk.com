@@ -31,9 +31,9 @@ tr:hover > td {
 }
 
 .nts-fixed-table table.fixed-table > tbody > tr > td, .nts-fixed-table table.fixed-table > tbody > tr > th {
-    overflow: unset; !important;
+    overflow: visible; !important;
 }
 
 .ui-iggrid table td, .ui-iggrid table th {
-    overflow: unset; !important;
+    overflow: visible; !important;
 }

@@ -22,7 +22,7 @@
         <!-- A4_2 -->
         <div class="mt-1">
             <!-- A4_3 -->
-            <nts-dropdown v-model="selectedValue">
+            <nts-dropdown v-model="selectedValueHolidayType">
                 <option v-for="(item, index) in dropdownList" :key="index" :value="item.code">
                     {{item.text}}
                 </option>
@@ -48,26 +48,27 @@
           class="btn btn-selection mt-2 mb-2"
         >
         <!--A6_3-->
-          <span class="badge badge-secondary">wortype code</span>
-          <span>worktype name</span>
+          <span class="badge badge-secondary">{{workType.code}}</span>
+          <span>{{workType.name}}</span>
         </button>
         <!--A6_7-->
-        <div>
-            <nts-checkbox v-model="checkBox" v-bind:value="1">{{'KAFS06_54' | i18n}}</nts-checkbox>
+        <div v-if="c9">
+            <nts-checkbox v-model="checkBoxC7" v-bind:value="true">{{'KAFS06_54' | i18n}}</nts-checkbox>
         </div>
         <!--A6_4-->
-        <span class="textSize uk-text-dark-gray">{{ "KAFS06_13" | i18n }}</span>
+        <span v-if="c9" class="textSize uk-text-dark-gray">{{ "KAFS06_13" | i18n }}</span>
         <!--A6_5-->
         <button
           type="button"
           v-on:click="openKDL002('worktime')"
+          v-if="c9"
           v-bind:enable="true"
           class="btn btn-selection mt-2 mb-2"
         >
-          <span class="badge badge-secondary">wortime code</span>
-          <span>worktime name</span>
+          <span class="badge badge-secondary">{{workTime.code}}</span>
+          <span>{{workTime.name}}</span>
           <!--A6_6-->
-          <span class="d-block mt-1">9:30 ~ 11:30</span>
+          <span class="d-block mt-1">{{workTime.time}}</span>
         </button>
       </div>
     </div>
@@ -75,18 +76,18 @@
 
 
 
-    <div v-if="true" class="card card-label">
+    <div v-if="c9" class="card card-label">
       <!-- A7_1 -->
       <div class="card-header uk-bg-accordion">
         <span>{{ "KAFS06_15" | i18n }}</span>
-        <span class="badge badge-warning">任意</span>
+        <span class="badge badge-warning">必須</span>
       </div>
       <!-- A7_2 -->
       <div class="card-body">
-        <nts-time-range-input v-model="workHours1" />
+        <nts-time-range-input v-model="workHours1" v-bind:enable="c11" />
       </div>
     </div>
-    <div v-if="true" class="card card-label">
+    <div v-if="c10" class="card card-label">
       <!-- A8_1 -->
       <div class="card-header uk-bg-accordion">
         <span>{{ "KAFS06_16" | i18n }}</span>
@@ -94,42 +95,116 @@
       </div>
       <!-- A8_2 -->
       <div class="card-body">
-        <nts-time-range-input v-model="workHours2" />
+        <nts-time-range-input v-model="workHours2" v-bind:enable="c11" />
       </div>
     </div>
 
     <div v-if="true" class="card card-label">
         <!--A9_1-->
-        <div class="card-header uk-bg-accordion">
+        <div v-if="c12" class="card-header uk-bg-accordion">
             <span>{{ "KAFS06_17" | i18n }}</span>
-            <span class="badge badge-warning">任意</span>
+            <span class="badge badge-warning">必須</span>
         </div>
-        <div class="row px-2">
+        <div v-if="c12" class="row px-2">
             <!--A9_2-->
             <span
                 class="border-customer col p-2 m-2 text-center">
-                {{"KAFS06_18" | i18n}}
+                {{"KAFS06_18" | i18n([A9_2])}}
             </span>
 
             <!--A9_3-->
             <span 
                 class="border-customer col p-2 m-2 text-center">
-                {{"KAFS06_19" | i18n}}
+                {{"KAFS06_19" | i18n([A9_3])}}
             </span>
 
 
         </div>
-        <div>
+        <div v-if="c13">
             <!--A9_5-->
             <div class="row">
                 <div class="float_left col text-left textSize">{{'Com_ExsessHoliday' | i18n}}</div>
-                <div class="float_right col text-right textSize">{{'KAFS06_22' | i18n}}</div>
+                <div class="float_right col text-right textSize">{{'KAFS06_22' | i18n([A9_5])}}</div>
             </div>
             <!--A9_4-->
             <div class="card-body">
                 <nts-time-editor
-                    v-model="time"
+                    v-model="inputA9_5"
                     name="'Com_ExsessHoliday'"
+                    showTitle="false"
+                    v-bind:enable="true"
+                    time-input-type="time-duration"
+                />
+            </div>
+        </div>
+
+        <div v-if="c14">
+            <!--A9_7-->
+            <div class="row">
+                <div class="float_left col text-left textSize">{{'KAFS06_20' | i18n}}</div>
+                <div class="float_right col text-right textSize">{{'KAFS06_22' | i18n([A9_7])}}</div>
+            </div>
+            <!--A9_6-->
+            <div class="card-body">
+                <nts-time-editor
+                    v-model="inputA9_7"
+                    name="'KAFS06_20'"
+                    showTitle="false"
+                    v-bind:enable="true"
+                    time-input-type="time-duration"
+                />
+            </div>
+        </div>
+
+        <div v-if="c15">
+            <!--A9_9-->
+            <div class="row">
+                <div class="float_left col text-left textSize">{{'KAFS06_21' | i18n}}</div>
+                <div class="float_right col text-right textSize">{{'KAFS06_22' | i18n([A9_9])}}</div>
+            </div>
+            <!--A9_8-->
+            <div class="card-body">
+                <nts-time-editor
+                    v-model="inputA9_9"
+                    name="'KAFS06_21'"
+                    showTitle="false"
+                    v-bind:enable="true"
+                    time-input-type="time-duration"
+                />
+            </div>
+        </div>
+
+
+        <div v-if="c16">
+            <!--A9_11-->
+            <div class="row">
+                <div class="float_left col text-left textSize">{{'Com_ChildNurseHoliday' | i18n}}</div>
+                <div class="float_right col text-right textSize">{{'KAFS06_22' | i18n([A9_11])}}</div>
+            </div>
+            <!--A9_10-->
+            <div class="card-body">
+                <nts-time-editor
+                    v-model="inputA9_11"
+                    name="'Com_ChildNurseHoliday'"
+                    showTitle="false"
+                    v-bind:enable="true"
+                    time-input-type="time-duration"
+                />
+            </div>
+        </div>
+
+
+        <div v-if="c17">
+            <!--A9_13-->
+            <div class="row">
+                <div class="float_left col text-left textSize">{{'Com_CareHoliday' | i18n}}</div>
+                <div class="float_right col text-right textSize">{{'KAFS06_22' | i18n([A9_13])}}</div>
+            </div>
+            <!--A9_12-->
+            <div class="card-body">
+                <nts-time-editor
+                    v-model="inputA9_13"
+                    name="'Com_CareHoliday'"
                     showTitle="false"
                     v-bind:enable="true"
                     time-input-type="time-duration"
@@ -142,34 +217,33 @@
 
     <div v-if="true" class="card card-label">
       <!-- A10_1 -->
-      <div class="card-header uk-bg-accordion">
+      <div v-if="c18" class="card-header uk-bg-accordion">
         <span>{{ "KAFS06_23" | i18n }}</span>
         <span class="badge badge-warning">必須</span>
       </div>
       <div>
         <!--A10_3-->
-        <div class="row">
+        <div v-if="c18" class="row">
             <div class="float_left col text-left textSize">{{'KAFS06_24' | i18n}}</div>
-            <div class="float_right col text-right textSize">{{'KAFS06_39' | i18n}}</div>
+            <div class="float_right col text-right textSize">{{'KAFS06_39' | i18n(A10_3)}}</div>
         </div>
         <!--A10_2-->
-        <div class="mt-1">
-            <!-- A4_3 -->
-            <nts-dropdown v-model="selectedValue">
-                <option v-for="(item, index) in dropdownList" :key="index" :value="item.code">
+        <div v-if="c18" class="mt-1">
+            <nts-dropdown v-model="selectedRelationship">
+                <option v-for="(item, index) in dropdownRelationship" :key="index" :value="item.code">
                     {{item.text}}
                 </option>
             </nts-dropdown>
 
         </div>
         <!--A10_4-->
-        <div>
-            <nts-checkbox v-model="checkBox" v-bind:value="1">{{'KAFS06_25' | i18n}}</nts-checkbox>
+        <div v-if="c19">
+            <nts-checkbox v-model="mournerFlag" v-bind:value="true">{{'KAFS06_25' | i18n}}</nts-checkbox>
         </div>
       </div>
 
       <!--A10_5-->
-      <div>
+      <div v-if="c20">
         <div class="row">
             <div class="float_left col text-left textSize">{{'KAFS06_24' | i18n}}</div>
         </div>
@@ -183,7 +257,7 @@
       
     </div>
     
-    <div v-if="true" class="card card-label mb-3">
+    <div v-if="c21" class="card card-label mb-3">
       <!--A11_1-->
       <div class="card-header uk-bg-accordion">
         <span>{{ "KAFS06_28" | i18n }}</span>
@@ -200,23 +274,24 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>Mark</td>
-              <td>Otto</td>
+            <tr 
+              v-for="(item, index) in linkWithVacation"
+              v-bind:key="index"
+              :value="index"
+            > 
+              <td>{{item.outbreakDay}}</td>
+              <td>{{item.dateOfUse}}</td>
+              <td>{{item.dayNumberUsed}}</td>
             </tr>
-
-            <tr>
-              <th scope="row">1</th>
-              <td>Mark</td>
-              <td>Otto</td>
-            </tr>
-            
           </tbody>
         </table>
         <!--A11_9-->
         <div align="center">
-            <button type="button" class="shadow-none btn rounded-pill btn-info">
+            <button 
+            type="button" 
+            v-bind:disabled="!(c23 && modeNew)"
+            v-on:click="openKDLS36()"
+            class="shadow-none btn rounded-pill btn-info">
               {{'KAFS06_32' | i18n}}
               <i class="fas fa-angle-double-right" aria-hidden="true"></i>
             </button>
@@ -231,7 +306,7 @@
 
 
 
-    <div v-if="true" class="card card-label mb-3">
+    <div v-if="c22" class="card card-label mb-3">
       <!--A12_1-->
       <div class="card-header uk-bg-accordion">
         <span>{{ "KAFS06_33" | i18n }}</span>
@@ -248,23 +323,25 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>Mark</td>
-              <td>Otto</td>
-            </tr>
-
-            <tr>
-              <th scope="row">1</th>
-              <td>Mark</td>
-              <td>Otto</td>
+            <tr 
+              v-for="(item, index) in linkWithDraw"
+              v-bind:key="index"
+              :value="index"
+            >
+              <td>{{item.outbreakDay}}</td>
+              <td>{{item.dateOfUse}}</td>
+              <td>{{item.dayNumberUsed}}</td>
             </tr>
             
           </tbody>
         </table>
         <!--A12_9-->
         <div align="center">
-            <button type="button" class="shadow-none btn rounded-pill btn-info">
+            <button 
+            type="button" 
+            v-bind:disabled="!(c23 && modeNew)"
+            v-on:click="openKDLS35()"
+            class="shadow-none btn rounded-pill btn-info">
               {{'KAFS06_36' | i18n}}
               <i class="fas fa-angle-double-right" aria-hidden="true"></i>
             </button>

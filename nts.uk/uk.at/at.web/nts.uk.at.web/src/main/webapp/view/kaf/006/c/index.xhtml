@@ -39,13 +39,13 @@
                                 text: '#{i18n.getText('KAF006_12')}' }"></div>
                             <!-- C2_3 -->
                             <div class="inline" data-bind="visible: !dispMultDate()">
-                                <div data-bind="ntsDatePicker: {name: '#{i18n.getText('KAF006_8')}',
+                                <div id="appDate" data-bind="ntsDatePicker: {name: '#{i18n.getText('KAF006_8')}',
                                                             required:true,
                                                             value: appDate }">
                                     </div>
                             </div>
                             <div class="inline" data-bind="visible: dispMultDate">
-                                <div data-bind="ntsDateRangePicker: { 
+                                <div id="dateRange" data-bind="ntsDateRangePicker: { 
                                     required: true, 
                                     enable: true,
                                     showNextPrevious: false, 

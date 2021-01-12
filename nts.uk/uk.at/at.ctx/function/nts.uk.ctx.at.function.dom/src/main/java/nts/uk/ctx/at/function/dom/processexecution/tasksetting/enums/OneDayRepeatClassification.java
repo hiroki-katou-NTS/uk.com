@@ -7,10 +7,7 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 public enum OneDayRepeatClassification {
-	/* なし */
 	NONE(0),
-	
-	/* あり */
 	YES(1);
 	
 	/** The value. */

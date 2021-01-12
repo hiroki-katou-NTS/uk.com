@@ -412,7 +412,7 @@ public class AppAbsenceFinder {
 		        Optional.empty());
 		
 		// 返ってきた「必要時間」を「休暇申請起動時の表示情報」にセットする
-		appAbsenceStartInfoDto.setRequiredVacationTime(requireTime.v());
+		appAbsenceStartInfoOutput.setRequiredVacationTimeOptional(Optional.ofNullable(requireTime));
 		
 		return AppAbsenceStartInfoDto.fromDomain(appAbsenceStartInfoOutput);
 	}
@@ -604,7 +604,7 @@ public class AppAbsenceFinder {
 	public AppAbsenceStartInfoDto getChangeHolidayDates(String companyID, List<String> holidayDates, AppAbsenceStartInfoDto appAbsenceStartInfoDto) {
 	    AppAbsenceStartInfoOutput appAbsenceStartInfoOutput = absenseProcess.getChangeHolidayDates(
 	            companyID, 
-	            holidayDates.stream().map(x -> GeneralDate.fromString(x, "yyyy/MM/dd")).collect(Collectors.toList()), 
+	            holidayDates.stream().map(x -> GeneralDate.fromString(x, "yyyy-MM-DD")).collect(Collectors.toList()), 
 	            appAbsenceStartInfoDto.toDomain(companyID));
 	    return AppAbsenceStartInfoDto.fromDomain(appAbsenceStartInfoOutput);
 	}

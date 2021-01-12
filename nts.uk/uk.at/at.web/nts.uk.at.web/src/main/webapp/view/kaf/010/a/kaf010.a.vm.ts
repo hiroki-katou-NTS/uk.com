@@ -1515,11 +1515,13 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			param.companyId = self.$user.companyId;
 			param.dateList = [self.application().appDate()];
 			param.applicationType = AppType.HOLIDAY_WORK_APPLICATION;
+			self.dataSource.appDispInfoStartupOutput.appDispInfoWithDateOutput.prePostAtr = self.application().prePostAtr;
 			param.appHdWorkDispInfoDto = ko.toJS(self.dataSource);
 			self.$blockui('show');
 			self.$ajax(API.changeAppDate, param)
 				.done((res: AppHdWorkDispInfo) => { 
 					self.dataSource = res;
+					self.itemControlHandler();
 					self.bindOverTimeWorks(self.dataSource);
 					self.bindWorkInfo(self.dataSource, true);
 					self.bindRestTime(self.dataSource);

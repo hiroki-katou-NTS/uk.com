@@ -31,6 +31,19 @@ module nts.uk.at.view.kaf006.c.viewmodel {
                 vm.applyForleave = params.applyForLeave;
                 vm.application = params.appAbsenceStartInfoOutput.appDispInfoStartupOutput.appDetailScreenInfo.application;
                 vm.appType = vm.application.appType;
+
+                let startDate = vm.application.opAppStartDate;
+                let endDate = vm.application.opAppEndDate;
+                if (startDate === endDate) {
+                    vm.dispMultDate(false);
+                    vm.appDate(startDate);
+                } else {
+                    vm.dispMultDate(true);
+                    vm.dateRange().startDate = startDate;
+                    vm.dateRange().endDate = endDate;
+                    vm.dateRange.valueHasMutated();
+                }
+
                 vm.appAbsenceStartInfoOutput = params.appAbsenceStartInfoOutput;
                 vm.appDispInfoStartupOutput(params.appAbsenceStartInfoOutput.appDispInfoStartupOutput);
                 vm.reasonLst = vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.reasonTypeItemLst;
@@ -60,10 +73,10 @@ module nts.uk.at.view.kaf006.c.viewmodel {
     
                     let holidayDates = [];
                     if (startDate) {
-                        holidayDates.push(startDate);
+                        holidayDates.push(nts.uk.time.formatDate(new Date(startDate), "yyyy-MM-dd"));
                     }
                     if (endDate) {
-                        holidayDates.push(endDate);
+                        holidayDates.push(nts.uk.time.formatDate(new Date(endDate), "yyyy-MM-dd"));
                     }
 
                     if (_.isEmpty(holidayDates)) {
@@ -74,6 +87,16 @@ module nts.uk.at.view.kaf006.c.viewmodel {
                         holidayDates: holidayDates,
                         appAbsenceStartInfoDto: vm.appAbsenceStartInfoOutput
                     }
+                    command.appAbsenceStartInfoDto.leaveComDayOffManas = _.map(command.appAbsenceStartInfoDto.leaveComDayOffManas, (x: any) => {
+                        x.dateOfUse = new Date(x.dateOfUse).toISOString();
+                        x.outbreakDay = new Date(x.outbreakDay).toISOString();
+                        return x;
+                    });
+                    command.appAbsenceStartInfoDto.payoutSubofHDManas = _.map(command.appAbsenceStartInfoDto.payoutSubofHDManas, (x: any) => {
+                        x.dateOfUse = new Date(x.dateOfUse).toISOString();
+                        x.outbreakDay = new Date(x.outbreakDay).toISOString();
+                        return x;
+                    });
     
                     block.invisible();
                     service.changeHolidayDates(command)
@@ -92,6 +115,7 @@ module nts.uk.at.view.kaf006.c.viewmodel {
                                 nts.uk.ui.dialog.error({ messageId: error.messageId });
                             }
                         }).always(() => {
+                            $("#appDate").focus();
                             block.clear();
                         });
                 }
@@ -104,10 +128,10 @@ module nts.uk.at.view.kaf006.c.viewmodel {
     
                     let holidayDates = [];
                     if (startDate) {
-                        holidayDates.push(startDate);
+                        holidayDates.push(nts.uk.time.formatDate(new Date(startDate), "yyyy-MM-dd"));
                     }
                     if (endDate) {
-                        holidayDates.push(endDate);
+                        holidayDates.push(nts.uk.time.formatDate(new Date(endDate), "yyyy-MM-dd"));
                     }
 
                     if (_.isEmpty(holidayDates)) {
@@ -118,6 +142,16 @@ module nts.uk.at.view.kaf006.c.viewmodel {
                         holidayDates: holidayDates,
                         appAbsenceStartInfoDto: vm.appAbsenceStartInfoOutput
                     }
+                    command.appAbsenceStartInfoDto.leaveComDayOffManas = _.map(command.appAbsenceStartInfoDto.leaveComDayOffManas, (x: any) => {
+                        x.dateOfUse = new Date(x.dateOfUse).toISOString();
+                        x.outbreakDay = new Date(x.outbreakDay).toISOString();
+                        return x;
+                    });
+                    command.appAbsenceStartInfoDto.payoutSubofHDManas = _.map(command.appAbsenceStartInfoDto.payoutSubofHDManas, (x: any) => {
+                        x.dateOfUse = new Date(x.dateOfUse).toISOString();
+                        x.outbreakDay = new Date(x.outbreakDay).toISOString();
+                        return x;
+                    });
     
                     block.invisible();
                     service.changeHolidayDates(command)
@@ -136,6 +170,7 @@ module nts.uk.at.view.kaf006.c.viewmodel {
                                 nts.uk.ui.dialog.error({ messageId: error.messageId });
                             }
                         }).always(() => {
+                            $("#dateRange .ntsStartDatePicker").focus();
                             block.clear();
                         });
                 }

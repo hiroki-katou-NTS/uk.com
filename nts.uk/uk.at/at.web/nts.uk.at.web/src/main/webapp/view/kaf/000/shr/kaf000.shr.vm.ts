@@ -90,6 +90,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 		/**
 		 * 休暇申請の印刷内容
 		 */
+        opPrintContentApplyForLeave: any;
         
          /**
          * 休日出勤の印刷内容

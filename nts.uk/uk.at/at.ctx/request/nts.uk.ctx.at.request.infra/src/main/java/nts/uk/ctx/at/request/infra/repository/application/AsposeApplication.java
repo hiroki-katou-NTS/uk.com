@@ -29,6 +29,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.print.ApplicationGen
 import nts.uk.ctx.at.request.dom.application.common.service.print.ApproverPrintDetails;
 import nts.uk.ctx.at.request.dom.application.common.service.print.PrintContentOfApp;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
+import nts.uk.ctx.at.request.infra.repository.application.appabsence.AsposeApplyForLeave;
 import nts.uk.ctx.at.request.infra.repository.application.businesstrip.AposeBusinessTrip;
 import nts.uk.ctx.at.request.infra.repository.application.gobackdirectly.AsposeGoReturnDirectly;
 import nts.uk.ctx.at.request.infra.repository.application.holidaywork.AsposeAppHolidayWork;
@@ -72,6 +73,9 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 	
 	@Inject
 	private AsposeAppHolidayWork asposeAppHolidayWork;
+	
+	@Inject
+	private AsposeApplyForLeave asposeApplyForLeave;
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, PrintContentOfApp printContentOfApp, ApplicationType appType) {
@@ -153,6 +157,11 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
 			break;
 		case ABSENCE_APPLICATION:
+		    int deleteCntAbs = asposeApplyForLeave.printApplyForLeaveContent(worksheet, printContentOfApp);
+		    reasonLabel = worksheet.getCells().get("B" + (17- deleteCntAbs));
+            remarkLabel = worksheet.getCells().get("B" + (20- deleteCntAbs));
+            reasonContent = worksheet.getCells().get("D" + (17- deleteCntAbs));
+            printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
 			break;
 		case WORK_CHANGE_APPLICATION:
 			int deleteCntWC = asposeWorkChange.printWorkChangeContent(worksheet, printContentOfApp);
@@ -223,7 +232,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		case OVER_TIME_APPLICATION:
 			return "application/KAF005_template.xlsx";
 		case ABSENCE_APPLICATION:
-			return "";
+			return "application/KAF006_template.xlsx";
 		case WORK_CHANGE_APPLICATION:
 			return "application/KAF007_template.xlsx";
 		case BUSINESS_TRIP_APPLICATION:

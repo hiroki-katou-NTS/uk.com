@@ -49,11 +49,11 @@
                 <button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty"
                     tabindex="1">#{i18n.getText('KAF006_1')}</button>
                 <!-- A1_7 -->
-                <button data-bind="click: openKDL020, visible: condition10" tabindex="3">#{i18n.getText('KAF006_67')}</button>
+                <button data-bind="click: openKDL020, visible: condition10Annual" tabindex="3">#{i18n.getText('KAF006_67')}</button>
                 <!-- A1_8 -->
-                <button data-bind="click: openKDL029, visible: condition10" tabindex="3">#{i18n.getText('KAF006_68')}</button>
+                <button data-bind="click: openKDL029, visible: condition10Accum" tabindex="3">#{i18n.getText('KAF006_68')}</button>
                 <!-- A1_3 -->
-                <button data-bind="click: openKDL005, visible: condition10" tabindex="3">#{i18n.getText('KAF006_3')}</button>
+                <button data-bind="click: openKDL005, visible: condition10Substi" tabindex="3">#{i18n.getText('KAF006_3')}</button>
                 <div data-bind="component: { name: 'kaf000-a-component7', 
 											params: {
 												appType: appType,
@@ -68,16 +68,16 @@
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }"></div>
                 <div class="table">
-                    <div class="cell" style="width: 825px;">
+                    <div class="cell" style="width: 900px;">
                         <div class="table">
-                            <div class="cell" style="width: 350px;" data-bind="component: { name: 'kaf000-a-component2',
+                            <div class="cell" style="width: 450px;" data-bind="component: { name: 'kaf000-a-component2',
                                                                 params: {
                                                                     appType: appType,
                                                                     application: application,
                                                                     appDispInfoStartupOutput: appDispInfoStartupOutput,
                                                                     isAgentMode: isAgentMode
                                                                       } }"></div>
-                            <div class="cell" style="position: absolute;" data-bind="component: { name: 'kaf006-shr-component1', 
+                            <div class="cell" style="position: absolute; margin-left: 10px; margin-top: 5px; top: 15px;" data-bind="component: { name: 'kaf006-shr-component1', 
                                                                       params: {
                                                                           appType: appType,
                                                                           application: application,

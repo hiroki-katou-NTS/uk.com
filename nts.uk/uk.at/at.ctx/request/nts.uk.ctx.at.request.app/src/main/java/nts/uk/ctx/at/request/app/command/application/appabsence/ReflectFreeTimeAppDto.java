@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.enums.EnumAdaptor;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.WorkInformationDto;
 import nts.uk.ctx.at.request.dom.application.appabsence.ReflectFreeTimeApp;
 import nts.uk.ctx.at.shared.app.find.common.TimeZoneWithWorkNoDto;
@@ -30,9 +31,14 @@ public class ReflectFreeTimeAppDto {
     private int workChangeUse;
     
     public ReflectFreeTimeApp toDomain() {
-        return new ReflectFreeTimeApp(
-                Optional.ofNullable(workingHours.stream().map(x -> x.toDomain()).collect(Collectors.toList())), 
-                Optional.ofNullable(timeDegestion.toDomain()), 
+        return new ReflectFreeTimeApp(	
+                Optional.ofNullable(workingHours)
+                	.flatMap(x -> 
+		                			CollectionUtil.isEmpty(x)
+		                			? Optional.empty()
+		                			: Optional.of(x.stream().map(TimeZoneWithWorkNoDto::toDomain).collect(Collectors.toList()))),
+                	
+                Optional.ofNullable(timeDegestion).flatMap(x -> Optional.of(x.toDomain())), 
                 workInfo.toDomain(), 
                 EnumAdaptor.valueOf(workChangeUse, NotUseAtr.class));
     }

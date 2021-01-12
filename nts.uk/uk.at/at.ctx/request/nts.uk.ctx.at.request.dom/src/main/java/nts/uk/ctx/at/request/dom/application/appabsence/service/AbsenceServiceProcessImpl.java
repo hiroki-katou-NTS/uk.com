@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.application.appabsence.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,6 +22,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
@@ -112,7 +114,9 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.Annu
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.LeaveSetOutput;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SixtyHourSettingOutput;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SubstitutionHolidayOutput;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingRepository;
@@ -257,6 +261,12 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	@Inject
     private DetailAfterUpdate detailAfterUpdate;
 	
+	@Inject
+    private CompensLeaveComSetRepository compensLeaveComSetRepo;
+	
+	@Inject
+	private ApplicationRepository applicationRepository;
+	
 	private final String FORMAT_DATE = "yyyy/MM/dd";
 	
 	@Override
@@ -382,11 +392,9 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	    NursingLeaveSetting nursingLeaveSetting = this.getNursingLeaveSetting(companyID, NursingCategory.Nursing);
 	    
 	    // 代休の紐付け管理区分を取得する
-	    // pending for refactor domain
-	    CompensatoryLeaveComSetting compensatoryLeaveComSetting = this.getCompLeaveComSetting(companyID);
+	    CompensatoryLeaveComSetting compensatoryLeaveComSetting = compensLeaveComSetRepo.find(companyID);
 	    
 	    // 振休の紐付け管理区分を取得する
-        // pending for refactor domain
 	    ComSubstVacation comSubstVacation = this.getComSubstVacation(companyID);
 	    
 	    // OUTPUTを作成して返す
@@ -401,13 +409,11 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	    SubstituteLeaveManagement substituteLeaveManagement = new SubstituteLeaveManagement(
 	            EnumAdaptor.valueOf(substituationHoliday.getDigestiveUnit(), TimeDigestiveUnit.class), 
 	            EnumAdaptor.valueOf(substituationHoliday.isTimeOfPeriodFlg() ? 1 : 0, ManageDistinct.class), 
-//	            compensatoryLeaveComSetting.getIsManaged(),
-	            ManageDistinct.YES,
+	            compensatoryLeaveComSetting.getIsManaged(),
 	            EnumAdaptor.valueOf(substituationHoliday.isSubstitutionFlg() ? 1 : 0, ManageDistinct.class));
 	    
 	    HolidayManagement holidayManagement = new HolidayManagement(
-//	            comSubstVacation.getSetting().getIsManage(),
-	            ManageDistinct.YES,
+	            comSubstVacation.getLinkingManagementATR(),
 	            EnumAdaptor.valueOf(leaveSet.isSubManageFlag() ? 1 : 0, ManageDistinct.class));
 	    
 	    Overtime60HManagement overtime60hManagement = new Overtime60HManagement(
@@ -415,16 +421,12 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	            EnumAdaptor.valueOf(setting60H.getSixtyHourOverDigestion(), TimeDigestiveUnit.class));
 	    
 	    NursingCareLeaveManagement nursingCareLeaveManagement = new NursingCareLeaveManagement(
-//	            childNursingLeaveSetting.getManageType(), 
-	            ManageDistinct.YES,
-	            // Mock data START
-	            TimeDigestiveUnit.OneHour, 
-	            ManageDistinct.YES, 
-	            TimeDigestiveUnit.OneHour, 
-	            ManageDistinct.YES, 
-	            // Mock data END
-//	            nursingLeaveSetting.getManageType());
-	            ManageDistinct.YES);
+	            childNursingLeaveSetting.getManageType(), 
+	            nursingLeaveSetting.getTimeCareNursingSetting().getTimeDigestiveUnit(),
+	            nursingLeaveSetting.getTimeCareNursingSetting().getManageDistinct(),
+	            childNursingLeaveSetting.getTimeCareNursingSetting().getTimeDigestiveUnit(),
+	            childNursingLeaveSetting.getTimeCareNursingSetting().getManageDistinct(),
+	            nursingLeaveSetting.getManageType());
 	    
 		return new CheckDispHolidayType(
 		        annualLeaveManagement, 
@@ -449,13 +451,9 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 
     private NursingLeaveSetting getNursingLeaveSetting(String companyID, NursingCategory nursingType) {
 	    // ドメインモデル「介護看護休暇設定」を取得する (Lấy domain NursingLeaveSetting)
-//	    List<NursingLeaveSetting> nursingLeaveSettings = nursingLeaveSettingRepo.findByCompanyId(companyID)
-//	            .stream().filter(setting -> setting.getNursingCategory().equals(nursingType))
-//	            .collect(Collectors.toList());
-//	    
-//	    
-//        return nursingLeaveSettings.size() > 0 ? nursingLeaveSettings.get(0) : null;
-        return null;
+	    NursingLeaveSetting nursingLeaveSettings = nursingLeaveSettingRepo.findByCompanyIdAndNursingCategory(companyID, nursingType.value);
+	    
+        return nursingLeaveSettings;
     }
 
 	@Override
@@ -1431,7 +1429,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 			// 時間消化のチェック処理
 			/*public void checkTimeDigestProcess(String companyID, TimeDigestApplication timeDigestApplication
 					, RemainVacationInfo remainVacationInfo, String employeeId, GeneralDate baseDate ){*/
-			this.checkTimeDigestProcess(companyID, appAbScene.getReflectFreeTimeApp().getTimeDegestion().get()
+			this.checkTimeDigestProcess(companyID, appAbScene.getReflectFreeTimeApp().getTimeDegestion().orElse(null)
 					, appAbsenceStartInfoOutput.getRemainVacationInfo()
 					, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid()
 					, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getBaseDate());
@@ -1730,14 +1728,10 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
                     applyForLeave.getApplication().getAppDate().getApplicationDate();
                 
         List<GeneralDate> listDates = new DatePeriod(startDate, endDate).datesBetween();
-        List<GeneralDate> listDatesTemp = listDates;
         
         List<GeneralDate> listHolidayDates = appDates.stream().map(date -> GeneralDate.fromString(date, FORMAT_DATE)).collect(Collectors.toList());
-        for (GeneralDate date : listDatesTemp) {
-            if (listHolidayDates.contains(date)) {
-                listDates.remove(date);
-            }
-        }
+        
+        listDates = listDates.stream().filter(date -> !listHolidayDates.contains(date)).collect(Collectors.toList());
         
         // 暫定データの登録
 //        this.interimRemainData.registerDateChange(companyId, applyForLeave.getApplication().getEmployeeID(), listDates);
@@ -1822,13 +1816,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
         DatePeriod datePeriod = new DatePeriod(GeneralDate.fromString(appStartDate, FORMAT_DATE), GeneralDate.fromString(appEndDate, FORMAT_DATE));
         List<GeneralDate> listDates = datePeriod.datesBetween();
         
-        List<GeneralDate> listDatesTemp = listDates;
-        
-        for (GeneralDate date : listDatesTemp) {
-            if (lstDatesHoliday.contains(date)) {
-                listDates.remove(date);
-            }
-        }
+        listDates = listDates.stream().filter(date -> !lstDatesHoliday.contains(date)).collect(Collectors.toList());
         
      // INPUT．「勤務種類」が代休の勤務種類かチェックする
         List<LeaveComDayOffManagement> leaveComDayOffManagements = new ArrayList<LeaveComDayOffManagement>();
@@ -1950,6 +1938,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
             AppDispInfoStartupOutput appDispInfoStartupOutput) {
         String companyID = AppContexts.user().companyId();
         Application application = applyForLeave.getApplication();
+        applicationRepository.update(application);
+        
         // ドメインモデル「休暇申請」を更新する
         this.applyForLeaveRepository.update(applyForLeave, companyID, application.getAppID());
         
@@ -1966,15 +1956,10 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
                     applyForLeave.getApplication().getAppDate().getApplicationDate();
                 
         List<GeneralDate> listDates = new DatePeriod(startDate, endDate).datesBetween();
-        List<GeneralDate> listDatesTemp = listDates;
         
         List<GeneralDate> listHolidayDates = holidayAppDates.stream().map(date -> GeneralDate.fromString(date, FORMAT_DATE)).collect(Collectors.toList());
-        for (GeneralDate date : listDatesTemp) {
-            if (listHolidayDates.contains(date)) {
-                listDates.remove(date);
-            }
-        }
-        
+
+        listDates = listDates.stream().filter(date -> !listHolidayDates.contains(date)).collect(Collectors.toList());
 
         // 暫定データの登録
 //        this.interimRemainData.registerDateChange(companyId, applyForLeave.getApplication().getEmployeeID(), listDates);
@@ -2066,13 +2051,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
         DatePeriod datePeriod = new DatePeriod(GeneralDate.fromString(startDate, FORMAT_DATE), GeneralDate.fromString(endDate, FORMAT_DATE));
         List<GeneralDate> listDates = datePeriod.datesBetween();
         
-        List<GeneralDate> listDatesTemp = listDates;
-        
-        for (GeneralDate date : listDatesTemp) {
-            if (holidayDates.contains(date)) {
-                listDates.remove(date);
-            }
-        }
+        listDates = listDates.stream().filter(date -> !holidayDates.contains(date)).collect(Collectors.toList());
         
         // INPUT．「休出代休紐付け管理」Listをチェックする
         if (!leaveComDayOffMana.isEmpty()) {

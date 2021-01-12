@@ -39,7 +39,7 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                             enable: $parent.updateMode
                         }" />
                     </div>
-                    <div class="table" style="padding-bottom: 5px;" data-bind="$parent.condition19ChildNursing">
+                    <div class="table" style="padding-bottom: 5px;" data-bind="visible: $parent.condition19ChildNursing">
                         <div class="cell col-1" data-bind="text: $i18n('Com_ChildNurseHoliday')"></div>
                         <input style="width: 50px;" class="cell" data-bind="ntsTimeEditor: {
                             name: $i18n('Com_ChildNurseHoliday'),
@@ -49,7 +49,7 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                             enable: $parent.updateMode
                         }" />
                     </div>
-                    <div class="table" style="padding-bottom: 5px;" data-bind="$parent.condition19Nursing">
+                    <div class="table" style="padding-bottom: 5px;" data-bind="visible: $parent.condition19Nursing">
                         <div class="cell col-1" data-bind="text: $i18n('Com_CareHoliday')"></div>
                         <input style="width: 50px;" class="cell" data-bind="ntsTimeEditor: {
                             name: $i18n('Com_CareHoliday'),
@@ -74,7 +74,9 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                     text: $i18n('KAF006_18'),
                     enable: $parent.updateMode
                 }"></div>
-                <hr style="width: 700px; margin-inline-start: initial;" />
+                <div style="width: 700px;">
+                    <hr data-bind="visible: $parent.condition11" />
+                </div>
                 <div class="table">
                     <div class="cell col-1"></div>
                     <div class="cell">
@@ -146,8 +148,10 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                 <div class="cell col-1">
                     <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_88')"></div>
                 </div>
-                <button style="width: 60px; margin-right: 5px;" class="cell" data-bind="text: $i18n('KAF006_50'), enable: !_.isEmpty($parent.application().appDate()) && $parent.updateMode, click: openKDL036"></button>
-                <div class="cell" data-bind="text: $i18n('KAF006_89')"></div>
+                <div class="cell valign-center">
+                    <button style="width: 60px; margin-right: 5px;" data-bind="text: $i18n('KAF006_50'), enable: !_.isEmpty($parent.application().appDate()) && $parent.updateMode, click: openKDL036"></button>
+                    <div style="display: inline-block" data-bind="text: $i18n('KAF006_89')"></div>
+                </div>
             </div>
             <div class="table" style="margin: 10px 0;" data-bind="visible: $parent.condition15">
                 <div class="cell col-1"></div>
@@ -175,8 +179,10 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                 <div class="cell col-1">
                     <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_48')"></div>
                 </div>
-                <button style="width: 60px; margin-right: 5px;" class="cell" data-bind="text: $i18n('KAF006_50'), enable: !_.isEmpty($parent.application().appDate()) && $parent.updateMode, click: openKDL035"></button>
-                <div class="cell" data-bind="text: $i18n('KAF006_81')"></div>
+                <div class="cell valign-center">
+                    <button style="width: 60px; margin-right: 5px;" data-bind="text: $i18n('KAF006_50'), enable: !_.isEmpty($parent.application().appDate()) && $parent.updateMode, click: openKDL035"></button>
+                    <div style="display: inline-block" data-bind="text: $i18n('KAF006_81')"></div>
+                </div>
             </div>
             <div class="table" style="margin: 10px 0;" data-bind="visible: $parent.condition14">
                 <div class="cell col-1"></div>

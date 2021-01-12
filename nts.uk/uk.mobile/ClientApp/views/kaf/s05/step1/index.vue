@@ -50,7 +50,7 @@
         <!--A1_B3_2-->
         <span class="textSize uk-text-dark-gray">{{ "KAFS05_64" | i18n }}</span>
         <button
-          v-bind:enable="$appContext.c2"
+          v-bind:disabled="!$appContext.c2"
           v-on:click="$appContext.openKDL002('worktype')"
           type="button"
           class="btn btn-selection mt-2 mb-2"
@@ -65,7 +65,7 @@
         <button
           type="button"
           v-on:click="$appContext.openKDL002('worktime')"
-          v-bind:enable="$appContext.c2"
+          v-bind:disabled="!$appContext.c2"
           class="btn btn-selection mt-2 mb-2"
         >
           <span class="badge badge-secondary">{{
@@ -73,7 +73,7 @@
           }}</span>
           <span>{{ workInfo.workTime.name }}</span>
 
-          <span class="d-block mt-1">{{ workInfo.workTime.time }}</span>
+          <span class="d-block mt-1 textSize">{{ workInfo.workTime.time }}</span>
         </button>
       </div>
     </div>
