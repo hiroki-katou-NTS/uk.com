@@ -11,7 +11,7 @@ module nts.uk.at.view.kdl053 {
     class Kdl053ViewModel extends ko.ViewModel {		
         period: string = "";
         isRegistered: KnockoutObservable<boolean> = ko.observable(true);
-        registrationErrorList: KnockoutObservable<any> = ko.observable();
+        registrationErrorList: KnockoutObservable<any> = ko.observable([]);
         constructor(params: any) {
             super();
             const self = this;
@@ -21,8 +21,20 @@ module nts.uk.at.view.kdl053 {
             const self = this;
 
             let data = getShared('dataShareDialogKDL053');
-            let errorRegistrationList = data.errorRegistrationList;
+            let errorRegistrationList: any = [];
+            let errorRegistrationListTmp = data.errorRegistrationList;
             let employeeIds = data.employeeIds;
+            _.each(employeeIds, id =>{      
+                let temp: any = [];
+                _.each(errorRegistrationListTmp, err => {
+                    if(err.sid == id) {
+                        temp.push(err);
+                    }
+                })               
+                // _.sortBy(temp, item => item.date);
+                errorRegistrationList = _.union(errorRegistrationList, _.sortBy(temp, item => item.date));
+
+            });
             self.isRegistered(data.isRegistered == 1);        
             _.each(errorRegistrationList, errorLog =>{
                 switch (self.getDayfromDate(errorLog.date)){

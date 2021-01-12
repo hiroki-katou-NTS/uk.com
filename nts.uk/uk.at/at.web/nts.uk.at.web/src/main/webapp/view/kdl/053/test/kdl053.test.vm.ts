@@ -17,21 +17,22 @@ module nts.uk.at.view.kdl053.test {
 			enable: KnockoutObservable<boolean>;
 
 			errorRegistrations = ko.observable( [
-						{id: 0, employeeCdName:'000001 天海　春香',  date:'2020/12/08', errId: 163, errMsg: '開始時刻と終了時刻が逆転してします。'}, 
-                        {id: 1,employeeCdName:'000001 天海　春香', date:'2020/12/09', errId: 195, errMsg: '開始時刻と終了時刻が逆転してします。'}, 
-                        {id: 2,employeeCdName:'000001 天海　春香', date:'2020/12/10', errId: 201, errMsg: '開始時刻と終了時刻が逆転してします。' },
-                        {id: 3,employeeCdName:'000001 天海　春香', date:'2020/12/11', errId: 205, errMsg: '開始時刻と終了時刻が逆転してします。' },
-                        {id: 4,employeeCdName:'000001 天海　春香', date:'2020/12/12', errId: 537, errMsg: '開始時刻と終了時刻が逆転してします。' },                  
-                        {id: 5,employeeCdName:'000001 天海　春香', date:'2020/12/13', errId: 165, errMsg: '開始時刻と終了時刻が逆転してします。' },
-                        {id: 6,employeeCdName:'000002 新規　ログ', date:'2020/12/11', errId: 165, errMsg: '開始時刻と終了時刻が逆転してします。'},                        
-                        {id: 7,employeeCdName:'000002 新規　ログ', date:'2020/12/12', errId: 195, errMsg: '開始時刻と終了時刻が逆転してします。' },
-                        {id: 8,employeeCdName:'000002 新規　ログ', date:'2020/12/13', errId: 201, errMsg: '開始時刻と終了時刻が逆転してします。' },
-                        {id: 9,employeeCdName:'000012 承認者　課長', date:'2020/12/08', errId: 205, errMsg: '開始時刻と終了時刻が逆転してします。' },
-                        {id: 10,employeeCdName:'000012 承認者　課長', date:'2020/12/09', errId: 537, errMsg: '開始時刻と終了時刻が逆転してします。' },
-                        {id: 11,employeeCdName:'000012 承認者　課長', date:'2020/12/13', errId: 537, errMsg: '開始時刻と終了時刻が逆転してします。'}
+						{id: 0,sid: 'b4496e4d-2c79-4611-85c1-e251a72c8ce8', employeeCdName:'000001 天海　春香',  date:'2020/12/08', errId: 163, errMsg: '開始時刻と終了時刻が逆転してします。'}, 
+                        {id: 1,sid: 'b4496e4d-2c79-4611-85c1-e251a72c8ce8', employeeCdName:'000001 天海　春香', date:'2020/12/09', errId: 195, errMsg: '開始時刻と終了時刻が逆転してします。'}, 
+                        {id: 2,sid: 'b4496e4d-2c79-4611-85c1-e251a72c8ce8', employeeCdName:'000001 天海　春香', date:'2020/12/10', errId: 201, errMsg: '開始時刻と終了時刻が逆転してします。' },
+                        {id: 3,sid: 'b4496e4d-2c79-4611-85c1-e251a72c8ce8',employeeCdName:'000001 天海　春香', date:'2020/12/11', errId: 205, errMsg: '開始時刻と終了時刻が逆転してします。' },
+                        {id: 4,sid: 'b4496e4d-2c79-4611-85c1-e251a72c8ce8',employeeCdName:'000001 天海　春香', date:'2020/12/12', errId: 537, errMsg: '開始時刻と終了時刻が逆転してします。' },                  
+                        {id: 5,sid: 'b4496e4d-2c79-4611-85c1-e251a72c8ce8',employeeCdName:'000001 天海　春香', date:'2020/12/13', errId: 165, errMsg: '開始時刻と終了時刻が逆転してします。' },
+                        {id: 6,sid: '47cd3836-8dd3-4352-ab81-50eb4074e5fc',employeeCdName:'000002 新規　ログ', date:'2020/12/11', errId: 165, errMsg: '開始時刻と終了時刻が逆転してします。'},                        
+                        {id: 7,sid: '47cd3836-8dd3-4352-ab81-50eb4074e5fc',employeeCdName:'000002 新規　ログ', date:'2020/12/12', errId: 195, errMsg: '開始時刻と終了時刻が逆転してします。' },
+                        {id: 8,sid: '47cd3836-8dd3-4352-ab81-50eb4074e5fc',employeeCdName:'000002 新規　ログ', date:'2020/12/13', errId: 201, errMsg: '開始時刻と終了時刻が逆転してします。' },
+                        {id: 9,sid: '1d7a260a-864d-4577-8e1d-4814c04c540f',employeeCdName:'000012 承認者　課長', date:'2020/12/08', errId: 205, errMsg: '開始時刻と終了時刻が逆転してします。' },
+                        {id: 10,sid: '1d7a260a-864d-4577-8e1d-4814c04c540f',employeeCdName:'000012 承認者　課長', date:'2020/12/09', errId: 537, errMsg: '開始時刻と終了時刻が逆転してします。' },
+                        {id: 11,sid: '1d7a260a-864d-4577-8e1d-4814c04c540f',employeeCdName:'000012 承認者　課長', date:'2020/12/13', errId: 537, errMsg: '開始時刻と終了時刻が逆転してします。'}
 					]);
 			employeeIds: KnockoutObservableArray<string> = ko.observableArray([
-				'000001', '000002','000012'
+				'1d7a260a-864d-4577-8e1d-4814c04c540f', 'b4496e4d-2c79-4611-85c1-e251a72c8ce8',
+				'47cd3836-8dd3-4352-ab81-50eb4074e5fc'
 			]);			
 			
 			constructor() {
@@ -80,27 +81,6 @@ module nts.uk.at.view.kdl053.test {
 				setShare('dataShareDialogKDL053', request);
 				self.currentScreen = nts.uk.ui.windows.sub.modal('/view/kdl/053/index.xhtml');
 			}
-
-			// selectSomeItems() {
-			// 	this.currentCode('0010');
-			// 	this.currentCodeList.removeAll();
-			// 	this.currentCodeList.push('001');
-			// 	this.currentCodeList.push('002');
-			// }
-			
-			// deselectAll() {
-			// 	this.currentCode(null);
-			// 	this.currentCodeList.removeAll();
-			// }
-			
-			// addItem() {
-			// 	this.items.push(new ItemModel(this.count.toString(), '基本給',  this.count, ""+this.count));
-			// 	this.count;
-			// }
-			
-			// removeItem() {
-			// 	this.items.shift();
-			// }
 		}	
 		class ItemModel {
 			id: number;
