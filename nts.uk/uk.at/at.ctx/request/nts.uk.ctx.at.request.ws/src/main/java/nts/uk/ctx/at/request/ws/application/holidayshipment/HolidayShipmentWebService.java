@@ -29,12 +29,12 @@ import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveHoliday
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.UpdateHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.SaveHolidayShipmentCommandHandlerRef5;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
-import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenBFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenCFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShipmentDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.WorkTimeInfoDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.ChangeValueItemsOnHolidayShipment;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.HolidayShipmentScreenAFinder;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.HolidayShipmentScreenBFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.ChangeDateParam;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.ChangeWokTypeParam;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.ChangeWorkTypeResultDto;
@@ -53,14 +53,16 @@ public class HolidayShipmentWebService extends WebService {
 	@Inject
 	private ChangeValueItemsOnHolidayShipment changeValueItemsOnHolidayShipment;
 	
-	
 	@Inject
 	private SaveHolidayShipmentCommandHandlerRef5 saveCommandHandler;
 	
 	@Inject
-	private HolidayShipmentScreenCFinder screenCFinder;
-	@Inject
 	private HolidayShipmentScreenBFinder screenBFinder;
+	
+	
+	@Inject
+	private HolidayShipmentScreenCFinder screenCFinder;
+	
 	@Inject
 	private UpdateHolidayShipmentCommandHandler updateHandler;
 	@Inject
@@ -169,17 +171,12 @@ public class HolidayShipmentWebService extends WebService {
 	
 
 
-	@POST
-	@Path("find_by_id")
-	public HolidayShipmentDto findByID(StartScreenBParam param) {
-		return this.screenBFinder.findByID(param.getAppID());
-	}
 	
 	
 	@POST
 	@Path("startPageBRefactor")
 	public DisplayInforWhenStarting startPageBRefactor(StartScreenBParam param) {
-		return this.screenBFinder.startPageBRefactor(param.getAppID());
+		return this.screenBFinder.startPageBRefactor(AppContexts.user().companyId(), param.getAppID(), param.getAppDispInfoStartupDto());
 	}
 
 	@POST
@@ -252,6 +249,7 @@ class StartPageARefactorParam {
 @Value
 class StartScreenBParam {
 	private String appID;
+	private AppDispInfoStartupDto appDispInfoStartupDto;
 }
 
 @Value
