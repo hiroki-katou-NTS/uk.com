@@ -266,7 +266,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeName", getText('KSU003_55'));
 					let cssTotalTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(9)";
 					
-					if($(cssTotalTime).css("background-color") != "rgb(221, 221, 210)" )
+					if($(cssTotalTime).css("background-color") != "rgb(221, 221, 210)" && $(cssTotalTime).css("background-color") != "rgb(236, 206, 251)")
 					$(cssTotalTime).css("background-color", "#ffffff");
 					
 					$(".xcell").removeClass("x-error");
@@ -449,7 +449,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								if (!self.checkClearTime == false) {
 									let cssTotalTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(9)";
 									
-									if($(cssTotalTime).css("background-color") != "rgb(221, 221, 210)" )
+									if($(cssTotalTime).css("background-color") != "rgb(221, 221, 210)" && $(cssTotalTime).css("background-color") != "rgb(236, 206, 251)")
 									$(cssTotalTime).css("background-color", "#ffffff");
 									
 									$("#extable-ksu003").exTable("cellValue", "middle", empId, "totalTime", totalTime != null ? totalTime : "");
@@ -596,7 +596,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 					let cssTotalTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(9)";
 					
-					if($(cssTotalTime).css("background-color") != "rgb(221, 221, 210)" )
+					if($(cssTotalTime).css("background-color") != "rgb(221, 221, 210)" && $(cssTotalTime).css("background-color") != "rgb(236, 206, 251)")
 					$(cssTotalTime).css("background-color", "#ffffff");
 					
 					$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", totalBrkTime == totalBrkTime + " " ? totalBrkTime : totalBrkTime + "");
@@ -726,7 +726,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			
 			let cssTotalTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(9)";
 			
-			if($(cssTotalTime).css("background-color") != "rgb(221, 221, 210)" )
+			if($(cssTotalTime).css("background-color") != "rgb(221, 221, 210)" && $(cssTotalTime).css("background-color") != "rgb(236, 206, 251)")
 			$(cssTotalTime).css("background-color", "#ffffff");
 			
 			$("#extable-ksu003").exTable("cellValue", "middle", empId, "totalTime", totalTime != null ? totalTime : "");
@@ -1960,7 +1960,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeName", getText('KSU003_55'));
 					let cssTotalTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(9)";
 					
-					if($(cssTotalTime).css("background-color") != "rgb(221, 221, 210)" )
+					if($(cssTotalTime).css("background-color") != "rgb(221, 221, 210)" && $(cssTotalTime).css("background-color") != "rgb(236, 206, 251)")
 					$(cssTotalTime).css("background-color", "#ffffff");
 					
 					$(".xcell").removeClass("x-error");
@@ -2495,7 +2495,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 									let cssTotalTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (i + 2).toString() + ")" + " > td:nth-child(9)";
 									
-									if($(cssTotalTime).css("background-color") != "rgb(221, 221, 210)" )
+									if($(cssTotalTime).css("background-color") != "rgb(221, 221, 210)" && $(cssTotalTime).css("background-color") != "rgb(236, 206, 251)")
 									$(cssTotalTime).css("background-color", "#ffffff");
 									
 									$("#extable-ksu003").exTable("cellValue", "middle", self.lstEmpId[i].empId, "totalTime", totalTime != null ? totalTime : "");
@@ -2952,7 +2952,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 							let cssTotalTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (lineNo + 2).toString() + ")" + " > td:nth-child(9)";
 							
-							if($(cssTotalTime).css("background-color") != "rgb(221, 221, 210)" )
+							if($(cssTotalTime).css("background-color") != "rgb(221, 221, 210)" && $(cssTotalTime).css("background-color") != "rgb(236, 206, 251)")
 							$(cssTotalTime).css("background-color", "#ffffff");
 							
 							$("#extable-ksu003").exTable("cellValue", "middle", self.lstEmpId[lineNo].empId, "totalTime", totalTime != null ? totalTime : "");
@@ -3410,7 +3410,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", totalBrkTime);
 			let cssTotalTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(9)";
 			
-			if($(cssTotalTime).css("background-color") != "rgb(221, 221, 210)" )
+			if($(cssTotalTime).css("background-color") != "rgb(221, 221, 210)" && $(cssTotalTime).css("background-color") != "rgb(236, 206, 251)")
 			$(cssTotalTime).css("background-color", "#ffffff");
 			
 			$("#extable-ksu003").exTable("cellValue", "middle", empId, "totalTime", totalTime != null ? totalTime : "");
@@ -4203,7 +4203,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						$("#extable-ksu003").exTable("cellValue", "middle", empId, "totalTime", "");
 						let cssTotalTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (lineNo + 2).toString() + ")" + " > td:nth-child(9)";
 						
-						if($(cssTotalTime).css("background-color") != "rgb(221, 221, 210)" )
+						if($(cssTotalTime).css("background-color") != "rgb(221, 221, 210)" && $(cssTotalTime).css("background-color") != "rgb(236, 206, 251)")
 						$(cssTotalTime).css("background-color", "#ffffff");
 						
 						$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", "0:00");
@@ -4368,7 +4368,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									$("#extable-ksu003").exTable("cellValue", "middle", empId, "totalTime", "");
 									let cssTotalTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (lineNo + 2).toString() + ")" + " > td:nth-child(9)";
 									
-									if($(cssTotalTime).css("background-color") != "rgb(221, 221, 210)" )
+									if($(cssTotalTime).css("background-color") != "rgb(221, 221, 210)" && $(cssTotalTime).css("background-color") != "rgb(236, 206, 251)")
 									$(cssTotalTime).css("background-color", "#ffffff");
 									
 									$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", data.workScheduleDto.workTypeCode != "" ? "0:00" : "");
