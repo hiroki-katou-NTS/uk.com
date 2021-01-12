@@ -27,7 +27,8 @@ $button-disabled-base-color: #888888;
     vertical-align: bottom;
 }
 
-button {
+button,
+span.button {
     @extend %btn-default;
 
     &>span {
@@ -176,7 +177,9 @@ button {
         }
 
         &:active {
-            background-color: rgba(68, 224, 140, 0.6);
+            &:not(:disabled) {
+                background-color: rgba(68, 224, 140, 0.6);
+            }
         }
         
         &:focus,

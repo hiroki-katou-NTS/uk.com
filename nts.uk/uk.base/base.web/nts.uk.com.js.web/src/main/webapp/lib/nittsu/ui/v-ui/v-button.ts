@@ -159,7 +159,7 @@ module nts.ui.controls.buttons {
                     .addClass('link')
                     .on('mouseup', () => vm.active(false))
                     .on('mousedown', () => {
-                        if (vm.$el.hasAttribute('disabled')) {
+                        if (vm.$el.hasAttribute('disabled') || ko.unwrap(vm.params.disabled) || vm.$el.tagName !== 'BUTTON') {
                             return;
                         }
 
@@ -188,6 +188,10 @@ module nts.ui.controls.buttons {
                         }
                     })
                     .on('click', () => {
+                        if (vm.$el.hasAttribute('disabled') || ko.unwrap(vm.params.disabled) || vm.$el.tagName !== 'BUTTON') {
+                            return;
+                        }
+                        
                         if (ko.isObservable(params.state)) {
                             const value = ko.unwrap(params.value);
 

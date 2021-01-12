@@ -141,6 +141,30 @@ module nts.ui.icons {
         <rect x="33.5" y="31.5" width="17" height="17" rx="1.5" transform="rotate(-180 33.5 31.5)" fill="#30CC40" stroke="#30CC40"/>
         <path d="M25 19.5173V26.4835" stroke="#F2FFCF" stroke-linecap="round"/>
         <path d="M21.5168 23L28.4831 23" stroke="#F2FFCF" stroke-linecap="round"/>`;
+        
+    export const LIST_PLUS_UNSELECT = `<path d="M0.5 2C0.5 1.17157 1.17157 0.5 2 0.5H25C25.8284 0.5 26.5 1.17157 26.5 2V3.5H0.5V2Z" stroke="#30CC40"/>
+        <path d="M0.5 2C0.5 1.17157 1.17157 0.5 2 0.5H9.5V3.5H0.5V2Z" fill="#30CC40" stroke="#30CC40"/>
+        <rect x="0.5" y="8.5" width="26" height="3" stroke="#30CC40"/>
+        <rect x="0.5" y="8.5" width="9" height="3" fill="#30CC40" stroke="#30CC40"/>
+        <rect x="0.5" y="16.5" width="26" height="3" stroke="#30CC40"/>
+        <rect x="0.5" y="16.5" width="9" height="3" fill="#30CC40" stroke="#30CC40"/>
+        <path d="M0.5 24.5H26.5V26C26.5 26.8284 25.8284 27.5 25 27.5H2C1.17157 27.5 0.5 26.8284 0.5 26V24.5Z" stroke="#30CC40"/>
+        <path d="M0.5 24.5H9.5V27.5H2C1.17157 27.5 0.5 26.8284 0.5 26V24.5Z" fill="#30CC40" stroke="#30CC40"/>
+        <rect x="33.5" y="31.5" width="17" height="17" rx="1.5" transform="rotate(-180 33.5 31.5)" fill="#30CC40" stroke="#30CC40"/>
+        <path d="M25 19.5173V26.4835" stroke="#F2FFCF" stroke-linecap="round"/>
+        <path d="M21.5168 23L28.4831 23" stroke="#F2FFCF" stroke-linecap="round"/>`;
+        
+    export const LIST_PLUS_SELECT = `<path d="M0.5 2C0.5 1.17157 1.17157 0.5 2 0.5H25C25.8284 0.5 26.5 1.17157 26.5 2V3.5H0.5V2Z" stroke="#FFF"/>
+        <path d="M0.5 2C0.5 1.17157 1.17157 0.5 2 0.5H9.5V3.5H0.5V2Z" fill="#FFF" stroke="#FFF"/>
+        <rect x="0.5" y="8.5" width="26" height="3" stroke="#FFF"/>
+        <rect x="0.5" y="8.5" width="9" height="3" fill="#FFF" stroke="#FFF"/>
+        <rect x="0.5" y="16.5" width="26" height="3" stroke="#FFF"/>
+        <rect x="0.5" y="16.5" width="9" height="3" fill="#FFF" stroke="#FFF"/>
+        <path d="M0.5 24.5H26.5V26C26.5 26.8284 25.8284 27.5 25 27.5H2C1.17157 27.5 0.5 26.8284 0.5 26V24.5Z" stroke="#FFF"/>
+        <path d="M0.5 24.5H9.5V27.5H2C1.17157 27.5 0.5 26.8284 0.5 26V24.5Z" fill="#FFF" stroke="#FFF"/>
+        <rect x="33.5" y="31.5" width="17" height="17" rx="1.5" transform="rotate(-180 33.5 31.5)" fill="#FFF" stroke="#FFF"/>
+        <path d="M25 19.5173V26.4835" stroke="#30CC40" stroke-linecap="round"/>
+        <path d="M21.5168 23L28.4831 23" stroke="#30CC40" stroke-linecap="round"/>`;
 
     export const PLUS_SQUARE = `<rect width="30" height="30" rx="2" fill="white"/>
         <path d="M15 10V20" stroke="#44E08C" stroke-width="2" stroke-linecap="square"/>

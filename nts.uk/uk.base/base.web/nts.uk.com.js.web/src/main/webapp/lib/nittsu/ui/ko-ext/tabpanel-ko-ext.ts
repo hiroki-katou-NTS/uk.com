@@ -4,7 +4,7 @@ module nts.uk.ui.koExtentions {
     export module tabpanel {
 
         type TABPANEL_PARAMS = {
-            direction: 'horizontal' | 'vertical' | KnockoutObservable<'horizontal' | 'vertical'>;
+            direction: 'horizontal' | 'vertical' | 'vertical-link' | KnockoutObservable<'horizontal' | 'vertical' | 'vertical-link'>;
             active: string | KnockoutObservable<string>;
             dataSource: TabModel[] | KnockoutObservableArray<TabModel>;
         };
@@ -54,34 +54,56 @@ module nts.uk.ui.koExtentions {
                     element.classList.remove('has-content');
                 }
 
-                const ntsRadioBoxGroup = {
-                    options: ko.computed({
-                        read: () => {
-                            const ds: TabModel[] = ko.toJS(accessor.dataSource);
+                const bindingData = (dir: 'horizontal' | 'vertical' | 'vertical-link') => {
+                    const tabs = tablist.get(0);
 
-                            return ds.filter((d) => d.visible !== false)
-                                .map((d) => ({
-                                    ...d,
-                                    active,
-                                    tabindex
-                                }));
-                        },
-                        disposeWhenNodeIsRemoved: element
-                    }),
-                    optionsText: 'title',
-                    optionsValue: 'id',
-                    value: accessor.active,
-                    tabindex,
-                };
+                    const ntsRadioBoxGroup = {
+                        options: ko.computed({
+                            read: () => {
+                                const ds: TabModel[] = ko.toJS(accessor.dataSource);
 
-                ko.applyBindingsToNode(tablist.get(0), { ntsRadioBoxGroup }, bindingContext);
+                                return ds.filter((d) => d.visible !== false)
+                                    .map((d) => ({
+                                        ...d,
+                                        active,
+                                        tabindex,
+                                        dataBind: 'vertical-link' !== dir ? undefined : {
+                                            'btn-link': d.title,
+                                            icon: d.icon || 'CHECKBOX',
+                                            width: 40,
+                                            height: 32,
+                                            state: active,
+                                            value: d.id,
+                                            disabled: d.enable === false
+                                        }
+                                    }));
+                            },
+                            disposeWhenNodeIsRemoved: element
+                        }),
+                        optionsText: 'title',
+                        optionsValue: 'id',
+                        value: accessor.active,
+                        tabindex,
+                    };
+
+                    ko.cleanNode(tabs);
+                    tabs.innerHTML = '';
+
+                    ko.applyBindingsToNode(tabs, { ntsRadioBoxGroup }, bindingContext);
+                }
+
+                bindingData(ko.toJS(accessor.direction));
+
+                if (ko.isObservable(accessor.direction)) {
+                    accessor.direction.subscribe(bindingData);
+                }
 
                 return { controlsDescendantBindings: false };
             }
             update(element: HTMLElement, valueAccessor: () => TABPANEL_PARAMS, allBindingsAccessor: () => any, viewModel: nts.uk.ui.vm.ViewModel, bindingContext: KnockoutBindingContext & { $vm: nts.uk.ui.vm.ViewModel }): void {
                 const data = valueAccessor();
                 const active = ko.unwrap(data.active);
-                const direction = ko.unwrap<'vertical' | 'horizontal'>(data.direction) || 'horizontal';
+                const direction = ko.unwrap<'vertical' | 'horizontal' | 'vertical-link'>(data.direction) || 'horizontal';
 
                 const dataSource = ko.unwrap<TabModel[]>(data.dataSource);
                 const tab = _.find(dataSource, (t: TabModel) => t.id === active);
@@ -96,6 +118,7 @@ module nts.uk.ui.koExtentions {
 
                 element.classList.remove('vertical');
                 element.classList.remove('horizontal');
+                element.classList.remove('vertical-link');
 
                 element.classList.add(direction);
 

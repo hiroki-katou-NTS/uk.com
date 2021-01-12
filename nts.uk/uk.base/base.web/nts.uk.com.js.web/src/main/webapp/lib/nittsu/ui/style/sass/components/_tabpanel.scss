@@ -10,6 +10,7 @@
 	}
 
 	&.vertical,
+	&.vertical-link,
 	&.horizontal {
 		&>.tabs-list {
 			box-sizing: border-box;
@@ -28,10 +29,13 @@
 						position: relative;
 						display: inline-block;
 						padding: 5px 10px;
-						border-radius: 2px;
-						box-sizing: border-box;
-						border: 1px solid transparent;
-						background-color: transparent;
+
+						&:not(.button) {
+							border-radius: 2px;
+							box-sizing: border-box;
+							border: 1px solid transparent;
+							background-color: transparent;
+						}
 
 						&::before,
 						&::after {
@@ -94,7 +98,8 @@
 		}
 	}
 	
-	&.vertical {
+	&.vertical,
+	&.vertical-link {
 		&>.tabs-list {	
 			float: left;		
 			width:  224px;
@@ -121,6 +126,43 @@
 			&::after {
 				content: '';
 				clear: both;
+			}
+		}
+	}
+	
+	&.vertical-link {
+		&>.tabs-list {
+			label {
+				&>input {
+					&+span {
+						&>svg {
+							&:first-child {
+								margin-top: 20px;
+							}
+						}
+					}
+
+					&:checked {
+						&+span {
+							&::after {
+								content: none;
+							}
+						}
+					}
+
+					&:disabled {
+						&+span {
+							&:hover,
+							&:focus,
+							&:active {
+								color: #d7d7d7 !important;
+								box-shadow: none;
+								border-color: #EAE8F2;
+								background-color: #fff !important;
+							}
+						}
+					}
+				}
 			}
 		}
 	}

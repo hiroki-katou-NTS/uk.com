@@ -14,6 +14,7 @@ module nts.uk.ui.koExtentions {
             tabindex?: number | string | KnockoutObservable<number | string>;
             hasFocus: boolean | KnockoutObservable<boolean>;
             required: boolean | KnockoutObservable<boolean>;
+            dataBind: any;
         }
 
         @handler({
@@ -56,6 +57,11 @@ module nts.uk.ui.koExtentions {
                 const $span = $('<span>').appendTo($label).get(0);
 
                 ko.applyBindingsToNode($span, { i18n: text }, bindingContext);
+
+                if (accessor.dataBind) {
+                    $span.classList.add('button');
+                    ko.applyBindingsToNode($span, accessor.dataBind, bindingContext);
+                }
 
                 if ($element.attr('tabindex')) {
                     const tabindex = $element.attr('tabindex');
@@ -188,7 +194,8 @@ module nts.uk.ui.koExtentions {
                                 optionText,
                                 optionValue,
                                 tabindex: tabindex !== undefined ? tabindex : $tabindex,
-                                enable: enable === false ? enable : option.enable !== undefined ? option.enable : enable
+                                enable: enable === false ? enable : option.enable !== undefined ? option.enable : enable,
+                                dataBind: option.dataBind
                             }));
                     },
                     disposeWhenNodeIsRemoved: element
