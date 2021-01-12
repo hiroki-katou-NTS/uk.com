@@ -30,7 +30,9 @@ public class UserInformationUseMethodService {
 	public static ContactInformation get(Require require, String companyId, String employeeId, String personalId) {
 		// $設定 = require.ユーザー情報の使用方法を取得する(ログイン会社ID)
 		Optional<UserInformationUseMethod> setting = require.getUserInfoByCid(companyId);
+		// if　$設定.isEmpty() || $設定.プロフィールの利用==しない
 		if (!setting.isPresent() || setting.get().getUseOfProfile() == NotUseAtr.NOT_USE) {
+			// return  new 連絡先情報DTO()
 			return new ContactInformation();
 		}
 		// $個人連絡先 = require. 個人連絡先を取得する(個人ID)
@@ -48,7 +50,7 @@ public class UserInformationUseMethodService {
 		if (setting.get().getSettingContactInformation().isPresent()) {
 			settingContactInfo = setting.get().getSettingContactInformation().get();
 		}
-		
+		// if　$社員連絡先　NOT　Empty
 		if (employeeInfoContact.isPresent()) {
 			EmployeeInfoContactImport employeeContact = employeeInfoContact.get();
 			String companyMobilePhoneNumber = "";
@@ -93,6 +95,7 @@ public class UserInformationUseMethodService {
 			contactInfo.setCompanyMobileEmailAddress(Optional.ofNullable(companyMobileEmailAddress));
 		}
 
+		// if　$個人連絡先　NOT　Empty
 		if (personalContact.isPresent()) {
 			PersonContactImport personContact = personalContact.get();
 			String personalMobilePhoneNumber = "";

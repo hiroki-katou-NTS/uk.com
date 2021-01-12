@@ -25,6 +25,7 @@ public class UserInfoUseMethodServiceTest {
 
 	/**
 	 * Test [pvt-1]利用チェックする: No1
+	 * 連絡先利用設定　==　利用する
 	 */
 	@Test
 	public void testCheckUsageUse() {
@@ -34,6 +35,7 @@ public class UserInfoUseMethodServiceTest {
 	
 	/**
 	 * Test [pvt-1]利用チェックする: No2
+	 * 連絡先利用設定　==　利用しない
 	 */
 	@Test
 	public void testCheckUsageNotUse() {
@@ -43,6 +45,8 @@ public class UserInfoUseMethodServiceTest {
 	
 	/**
 	 * Test [pvt-1]利用チェックする: No3
+	 * 連絡先利用設定=個人選択可
+	 * 在席照会に表示するか true
 	 */
 	@Test
 	public void testCheckUsageIndividualSelect() {
@@ -52,6 +56,8 @@ public class UserInfoUseMethodServiceTest {
 	
 	/**
 	 * Test [pvt-1]利用チェックする: No4
+	 * 連絡先利用設定=個人選択可
+	 * 在席照会に表示するか false
 	 */
 	@Test
 	public void testCheckUsageIndividualSelect2() {
@@ -61,6 +67,8 @@ public class UserInfoUseMethodServiceTest {
 	
 	/**
 	 * Test [pvt-1]利用チェックする: No5
+	 * 連絡先利用設定=個人選択可
+	 * 在席照会に表示するか empty
 	 */
 	@Test
 	public void testCheckUsageIndividualSelect3() {
@@ -70,9 +78,11 @@ public class UserInfoUseMethodServiceTest {
 	
 	/**
 	 * Test 連絡先情報を取得 with result is new ContactInformation()
+	 * $設定.isEmpty() || $設定.プロフィールの利用==しない
 	 */
 	@Test
 	public void testGetMethod() {
+		// $設定.isEmpty()
 		val res = UserInformationUseMethodService.get(require, "mock-companyId-empty", "mock-employeeId", "mock-personalId");
 		UserInformationUseMethod userInformationUseMethod = UserInfoUseMethodServiceTestHelper.initUserInformationUseMethod(2, true, true, 0, true);
 		new Expectations() {
@@ -81,6 +91,7 @@ public class UserInfoUseMethodServiceTest {
 				result = Optional.of(userInformationUseMethod);
 			}
 		};
+		// $設定.プロフィールの利用==しない
 		val res1 = UserInformationUseMethodService.get(require, "mock-companyId", "mock-employeeId", "mock-personalId");
 		assertThat(res).isEqualToComparingFieldByField(new ContactInformation());
 		assertThat(res1).isEqualToComparingFieldByField(new ContactInformation());
@@ -88,6 +99,7 @@ public class UserInfoUseMethodServiceTest {
 	
 	/**
 	 * Test 連絡先情報を取得 with null field of settingContactInfo;
+	 * $設定.連絡先情報の設定.* Null
 	 */
 	@Test
 	public void testGetMethodNullFieldSettingContactInfo() {
@@ -127,7 +139,8 @@ public class UserInfoUseMethodServiceTest {
 	}
 	
 	/**
-	 * Test 連絡先情報を取得 with null field of settingContactInfo;
+	 * Test 連絡先情報を取得 with settingContactInfo not present
+	 * $設定.連絡先情報の設定 Empty
 	 */
 	@Test
 	public void testGetMethodNotPresentSettingContactInfo() {
@@ -168,6 +181,7 @@ public class UserInfoUseMethodServiceTest {
 	
 	/**
 	 * Test 連絡先情報を取得 with use contact;
+	 * 他の連絡先.連絡先利用設定=利用する
 	 */
 	@Test
 	public void testGetMethodUseContact() {
@@ -210,6 +224,7 @@ public class UserInfoUseMethodServiceTest {
 	
 	/**
 	 * Test 連絡先情報を取得 with notuse contact;
+	 * 他の連絡先.連絡先利用設定=利用しない
 	 */
 	@Test
 	public void testGetMethodNotUseContact() {
@@ -252,6 +267,7 @@ public class UserInfoUseMethodServiceTest {
 	
 	/**
 	 * Test 連絡先情報を取得 with null otherContact;
+	 * 他の連絡先: null
 	 */
 	@Test
 	public void testGetMethodNullOtherContact() {
@@ -279,6 +295,8 @@ public class UserInfoUseMethodServiceTest {
 	
 	/**
 	 * Test 連絡先情報を取得 with employeeInfoContactImport is not present
+	 * $社員連絡先　Empty
+	 * $個人連絡先　Empty
 	 */
 	@Test
 	public void testGetMethodNotPresentEmpInfoAndPersonContact() {
