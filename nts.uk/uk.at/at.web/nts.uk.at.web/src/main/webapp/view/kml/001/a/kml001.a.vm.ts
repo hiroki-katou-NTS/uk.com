@@ -552,9 +552,11 @@ module nts.uk.at.view.kml001.a {
           let premiumSetting: vmbase.PremiumSettingInterface = {};
           self.createViewAttendanceItemsDefault(data.premiumSets.length);
           if (data.premiumSets.length > 0) {
+
+            data.premiumSets = _.orderBy(data.premiumSets, 'id', 'asc');
+
             data.premiumSets.forEach((item, index) => {
               let attendanceNames: Array<vmbase.AttendanceItem> = [];
-              let listAttendance: Array<string> = [];
 
               _.forEach(item.attendanceNames, (item) => {
                 attendanceNames.push(new vmbase.AttendanceItem(item.attendanceItemId, item.attendanceItemName));
