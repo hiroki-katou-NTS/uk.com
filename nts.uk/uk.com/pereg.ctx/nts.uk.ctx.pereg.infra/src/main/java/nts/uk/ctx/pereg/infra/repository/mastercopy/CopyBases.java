@@ -23,17 +23,17 @@ public class CopyBases {
 		TABLES.put("PPEMT_ITEM_COMMON", PpemtItemCommon.MAPPER);
 	}
 
-	public static void execute(CopyContext ctx, String targetContractCode) {
+	public static void execute(CopyContext ctx) {
 		
 		for (val table : TABLES.entrySet()) {
 			String tableName = table.getKey();
 			val mapper = table.getValue();
 			
 			String select = "select * from " + tableName + " where CONTRACT_CD = @cd";
-			List<? extends CopiedOnTenantCreated> entities = ctx.jdbc(select).paramString("cd", targetContractCode)
+			List<? extends CopiedOnTenantCreated> entities = ctx.jdbc(select).paramString("cd", ctx.contractCode.source)
 					.getList(rec -> mapper.toEntity(rec));
 			
-			entities.forEach(e -> e.changeContractCode(targetContractCode));
+			entities.forEach(e -> e.changeContractCode(ctx.contractCode.target));
 			
 			ctx.command.insertAll(entities);
 		}
