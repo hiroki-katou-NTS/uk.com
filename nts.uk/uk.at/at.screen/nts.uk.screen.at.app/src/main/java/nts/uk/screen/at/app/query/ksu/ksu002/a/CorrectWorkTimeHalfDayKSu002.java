@@ -31,8 +31,8 @@ public class CorrectWorkTimeHalfDayKSu002 {
 		Optional<TimeZone> time =  zone.getTimeZones().stream().findFirst();
 		
 		if (time.isPresent()) {
-			result.setStart(time.get().getStart().v());
-			result.setEnd(time.get().getEnd().v());
+			result.setStartTime(time.get().getStart().v());
+			result.setEndTime(time.get().getEnd().v());
 		}
 		
 		return result;

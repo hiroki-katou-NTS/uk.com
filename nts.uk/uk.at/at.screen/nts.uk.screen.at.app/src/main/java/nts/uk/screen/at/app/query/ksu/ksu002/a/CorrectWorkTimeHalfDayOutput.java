@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class CorrectWorkTimeHalfDayOutput {
 
-	private Integer start;
-	private Integer end;
+	private Integer startTime;
+	private Integer endTime;
 	
 }
