@@ -84,8 +84,6 @@ export class KafS10Step2Component extends Vue {
         self.bindReasonDivergence();
         self.bindHolidayTime();
         self.bindOverTime();
-        // self.addConstraint();  huytodo
-        // self.checkAlarm();  huytodo
     }
 
     public bindHolidayTime() {
@@ -481,27 +479,6 @@ export class KafS10Step2Component extends Vue {
         }
         self.reason = reason;
     }
-
-    //huytodo
-    // public checkAlarm() {
-    //     const self = this;
-    //     if (self.$appContext.step != '2') {
-
-    //         return;
-    //     }
-    //     // ・「残業申請の表示情報．計算結果．事前申請・実績の超過状態．事前申請なし」 = true ⇒#Msg_1557
-    //     let c1 = _.get(self.$appContext.model, 'appHdWorkDispInfo.calculationResult.actualOvertimeStatus.isExistApp');
-    //     // ・「残業申請の表示情報．計算結果．事前申請・実績の超過状態．実績状態」 = 超過アラーム⇒#Msg_1556
-    //     let c2 = _.get(self.$appContext.model, 'appHdWorkDispInfo.calculationResult.actualOvertimeStatus.achivementStatus') == ExcessTimeStatus.ERROR;
-    //     if (c1) {
-    //         self.$appContext.$modal.error({ messageId: 'Msg_1557'})
-    //         .then(() => {
-    //             if (c2) {
-    //                 self.$appContext.$modal.error({ messageId: 'Msg_1556'});
-    //             }
-    //         });
-    //     }
-    // }
 
     public getReasonDivergence() {
         const self = this;
