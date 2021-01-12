@@ -35,34 +35,46 @@ module nts.uk.ui.koExtentions {
 
                 const childs = $(element).children();
 
-                const tablist = $('<div>', { class: 'tabs-list', html: `<button data-bind="tab-item: $data" />` });
+                const tablist = $('<div>', { class: 'tabs-list' });
 
                 tablist
                     .appendTo(element);
 
-                const wrapper = $('<div>', { class: 'tabs-content' });
+                if (childs.length) {
+                    const wrapper = $('<div>', { class: 'tabs-content' });
 
-                wrapper
-                    .append(childs)
-                    .appendTo(element);
+                    wrapper
+                        .append(childs)
+                        .appendTo(element);
 
-                const buttons = ko.computed({
-                    read: () => {
-                        const dataSource = ko.unwrap<TabModel[]>(accessor.dataSource);
+                    element.classList.add('has-content');
+                    element.classList.remove('no-content');
+                } else {
+                    element.classList.add('no-content');
+                    element.classList.remove('has-content');
+                }
 
-                        return dataSource
-                            .map((d) => ({
-                                ...d,
-                                active,
-                                tabindex
-                            }));
-                    },
-                    disposeWhenNodeIsRemoved: element
-                });
+                const ntsRadioBoxGroup = {
+                    options: ko.computed({
+                        read: () => {
+                            const ds: TabModel[] = ko.toJS(accessor.dataSource);
 
-                ko.applyBindingsToNode(tablist.get(0), { foreach: buttons }, bindingContext);
+                            return ds.filter((d) => d.visible !== false)
+                                .map((d) => ({
+                                    ...d,
+                                    active,
+                                    tabindex
+                                }));
+                        },
+                        disposeWhenNodeIsRemoved: element
+                    }),
+                    optionsText: 'title',
+                    optionsValue: 'id',
+                    value: accessor.active,
+                    tabindex,
+                };
 
-                // ko.applyBindingsToNode(wrapper.get(0), bindingContext);
+                ko.applyBindingsToNode(tablist.get(0), { ntsRadioBoxGroup }, bindingContext);
 
                 return { controlsDescendantBindings: false };
             }
@@ -98,59 +110,6 @@ module nts.uk.ui.koExtentions {
                 $(element)
                     .find((tab || {}).content || '')
                     .removeClass('hidden');
-            }
-        }
-
-        @handler({
-            bindingName: 'tab-item',
-            validatable: true,
-            virtual: false
-        })
-        export class TabPanelItemBindingHandler implements KnockoutBindingHandler {
-            init(element: HTMLButtonElement, valueAccessor: () => TabModel & { active: string | KnockoutObservable<string> }, allBindingsAccessor: () => any, viewModel: nts.uk.ui.vm.ViewModel, bindingContext: KnockoutBindingContext & { $vm: nts.uk.ui.vm.ViewModel }): { controlsDescendantBindings: boolean } {
-                const accessor = valueAccessor();
-
-                element.removeAttribute('data-bind');
-
-                $(element)
-                    .on('click', () => {
-                        if (ko.isObservable(accessor.active)) {
-                            accessor.active(accessor.id);
-                        }
-                    });
-
-                return { controlsDescendantBindings: true };
-            }
-            update(element: HTMLButtonElement, valueAccessor: () => TabModel & { tabindex: string; active: string | KnockoutObservable<string> }, allBindingsAccessor: () => any, viewModel: nts.uk.ui.vm.ViewModel, bindingContext: KnockoutBindingContext & { $vm: nts.uk.ui.vm.ViewModel }) {
-                const mvm = new ko.ViewModel();
-                const accessor = valueAccessor();
-                const title = ko.unwrap(accessor.title);
-                const active = ko.unwrap(accessor.active);
-                const enable = ko.unwrap(accessor.enable);
-                const visible = ko.unwrap(accessor.visible);
-                const tabindex = ko.unwrap(accessor.tabindex);
-
-                element.innerText = mvm.$i18n(title);
-
-                element.setAttribute('tabindex', tabindex);
-
-                if (enable) {
-                    element.removeAttribute('disabled');
-                } else {
-                    element.setAttribute('disabled', 'disabled');
-                }
-
-                if (!visible) {
-                    element.classList.add('hidden');
-                } else {
-                    element.classList.remove('hidden');
-                }
-
-                if (active === accessor.id) {
-                    element.classList.add('active');
-                } else {
-                    element.classList.remove('active');
-                }
             }
         }
     }
