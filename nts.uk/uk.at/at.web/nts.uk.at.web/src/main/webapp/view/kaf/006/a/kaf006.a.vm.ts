@@ -852,10 +852,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 				vacationInfo: {
 					holidayApplicationType: holidayAppType,
 					info: {
-						datePeriod: {
-							startDate: vm.application().opAppStartDate(),
-							endDate: vm.application().opAppEndDate()
-						},
+						datePeriod: null,
 						applyForSpeLeave: applyForSpeLeaveOptional
 					}
 				}
