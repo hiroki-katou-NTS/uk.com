@@ -14,7 +14,7 @@ public class AddAlarmPatternSettingCommand {
 	/**
 	 * アラームリストパターン名称
 	 */
-	private String alarmPatterName;
+	private String alarmPatternName;
 	/**
 	 * アラームリスト権限設定
 	 */
@@ -22,6 +22,6 @@ public class AddAlarmPatternSettingCommand {
 	/**
 	 * チェック条件
 	 */
-	private List<CheckConditionCommand> checkConditonList;
+	private List<CheckConditionCommand> checkConditionList;
 
 }
