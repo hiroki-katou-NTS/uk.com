@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.dom.alarmworkplace.extractprocessstatus;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 
 import java.util.Optional;
 
@@ -62,19 +63,15 @@ public class AlarmListExtractProcessStatusWorkplace extends AggregateRoot {
         this.status = status;
     }
 
-    public void setEndDateAndEndTime(GeneralDate endDate, Integer endTime) {
-        this.endDate = Optional.ofNullable(endDate);
-        this.endTime = Optional.ofNullable(endTime);
-    }
-
-    public void setEndDateAndEndTime(GeneralDate endDate, Integer endTime, ExtractState status) {
-        this.endDate = Optional.ofNullable(endDate);
-        this.endTime = Optional.ofNullable(endTime);
-        this.status = status;
-    }
-
     public void setStatus(ExtractState status) {
         this.status = status;
+
+        if (ExtractState.INTERRUPTION.equals(status) || ExtractState.ABNORMAL_TERMI.equals(status)
+                || ExtractState.SUCCESSFUL_COMPLE.equals(status)) {
+            GeneralDateTime now = GeneralDateTime.now();
+            this.endDate = Optional.of(now.toDate());
+            this.endTime = Optional.of(now.hours() * 60 + now.minutes());
+        }
     }
 
 }

@@ -5,6 +5,7 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.function.dom.alarmworkplace.extractprocessstatus.AlarmListExtractProcessStatusWorkplace;
 import nts.uk.ctx.at.function.dom.alarmworkplace.extractprocessstatus.AlarmListExtractProcessStatusWorkplaceRepository;
 import nts.uk.ctx.at.function.dom.alarmworkplace.extractprocessstatus.ExtractState;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -22,10 +23,10 @@ public class ExtractProcessStatusService {
 
     public String create(String cid) {
         String id = IdentifierUtil.randomUniqueId();
+        String sid = AppContexts.user().employeeId();
         GeneralDateTime now = GeneralDateTime.now();
         AlarmListExtractProcessStatusWorkplace domain = new AlarmListExtractProcessStatusWorkplace(id, cid,
-                now.toDate(), now.hours() * 60 + now.minutes(),
-                null, null, null,
+                now.toDate(), now.hours() * 60 + now.minutes(), sid, null, null,
                 ExtractState.PROCESSING);
         alarmListExtractProcessStatusWorkplaceRepo.add(domain);
         return domain.getId();
