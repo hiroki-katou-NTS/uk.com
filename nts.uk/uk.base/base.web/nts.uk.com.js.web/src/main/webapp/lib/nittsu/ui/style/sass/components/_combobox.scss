@@ -74,6 +74,35 @@
 	}
 }
 
+.ui-igcombo-dropdown {		
+	.ui-igcombo-fieldholder {
+		background-color: #FBFCFF !important;
+		
+		input {
+			&.ui-igcombo-field {
+				border-radius: 2px;
+				border: 1px solid #DCDDE4;
+			}
+		}
+	}
+
+	.ui-igcombo-listitem {
+		&.ui-state-default {
+			background-color: #FBFCFF;
+
+			&.ui-state-active {				
+				background-color: #30CC40;
+			}
+		}
+	}
+	
+	&.ui-widget-content {
+		margin-top: 3px;
+		border-radius: 2px;
+		border: 1px solid #DCDDE4;
+	}
+}
+
 .compact-grid {
 	.ui-igcombo-wrapper {
 		height: 27px;
