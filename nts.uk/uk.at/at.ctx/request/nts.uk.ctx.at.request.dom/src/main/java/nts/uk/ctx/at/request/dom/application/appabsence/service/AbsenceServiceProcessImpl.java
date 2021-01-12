@@ -1459,7 +1459,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 				, false // KAF006: -PhuongDV domain fix pending- confirm input
 				, newAbsence.getApplication()
 				, null
-				, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpErrorFlag().orElse(null) // KAF006: -PhuongDV domain fix pending- confirm input
+				, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpErrorFlag().orElse(ErrorFlagImport.NO_ERROR) // KAF006: -PhuongDV domain fix pending- confirm input
 				, lstDates
 				, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput());
 		result.setConfirmMsgLst(lstConfirmMsg);
@@ -1523,6 +1523,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 //				mournerAtr);
 //		result.addAll(confirmMsgLst2);
 		// 「確認メッセージリスト」を返す
+		result.setHolidayDateLst(Collections.emptyList());
 		return result;
 	}
 	
@@ -2010,7 +2011,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
     }
 
     @Override
-    public void registerHolidayDates(String companyID, ApplyForLeave newApplyForLeave,
+    public ProcessResult registerHolidayDates(String companyID, ApplyForLeave newApplyForLeave,
             ApplyForLeave originApplyForLeave, List<GeneralDate> holidayDates,
             AppAbsenceStartInfoOutput appAbsenceStartInfoDto) {
         // 申請の取消処理
@@ -2018,13 +2019,13 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
         
         // 休出代休紐付け管理を更新する
         this.updateLinkManage(
-                newApplyForLeave.getApplication().getOpAppStartDate().get().toString(), 
-                newApplyForLeave.getApplication().getOpAppEndDate().get().toString(), 
+                newApplyForLeave.getApplication().getOpAppStartDate().get().getApplicationDate().toString(FORMAT_DATE), 
+                newApplyForLeave.getApplication().getOpAppEndDate().get().getApplicationDate().toString(FORMAT_DATE), 
                 holidayDates, 
                 appAbsenceStartInfoDto.getLeaveComDayOffManas(), 
                 appAbsenceStartInfoDto.getPayoutSubofHDManagements());
         // 休暇申請（新規）登録処理
-        this.registerAppAbsence(
+        ProcessResult processResult = this.registerAppAbsence(
                 newApplyForLeave, 
                 holidayDates.stream().map(x -> x.toString("yyyy/MM/dd")).collect(Collectors.toList()), 
                 Collections.emptyList(), 
@@ -2032,6 +2033,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
                 appAbsenceStartInfoDto.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isMailServerSet(), 
                 appAbsenceStartInfoDto.getAppDispInfoStartupOutput().getAppDetailScreenInfo().get().getApprovalLst(), 
                 appAbsenceStartInfoDto.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings().get(0));
+        
+        return processResult;
     }
     
     /**

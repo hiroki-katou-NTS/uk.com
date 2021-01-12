@@ -58,7 +58,7 @@
                         <!-- C3_1 -->
                         <div class="cell col-1" style="vertical-align: middle; width: 110px;" data-bind="ntsFormLabel: { required: requireLabel1 }">#{i18n.getText('KAF006_24')}</div>
                         <!-- C3_2 -->
-                        <div class="cell valign-center" data-bind="ntsComboBox: { 
+                        <div id="reasonLst" class="cell valign-center" data-bind="ntsComboBox: { 
                             required: requireLabel1, 
                             enable: true, 
                             visibleItemsCount: 5, 
@@ -78,7 +78,7 @@
                         </div>
                         <!-- C4_2 -->
                         <div class="cell valign-center">
-                            <textarea style="height: 120px;" data-bind="ntsMultilineEditor: { 
+                            <textarea id="reasonTxt" style="height: 120px;" data-bind="ntsMultilineEditor: { 
                                 required: requireLabel2,
                                 constraint: 'AppReason', 
                                 name: '#{i18n.getText('KAF006_26')}', 

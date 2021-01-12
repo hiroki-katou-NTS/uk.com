@@ -181,8 +181,8 @@ public class AppForLeaveWebService extends WebService{
 	
 	@POST
 	@Path("registerHolidayDates")
-	public void registerHolidayDates(RegisterHolidayDatesParam param) {
-	    registerHolDates.handle(param);
+	public ProcessResult registerHolidayDates(RegisterHolidayDatesParam param) {
+	    return registerHolDates.handle(param);
 	}
 }
 
