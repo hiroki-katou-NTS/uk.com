@@ -124,7 +124,7 @@ module nts.uk.at.view.kmk004.l {
 
 		//KCP005
 		listComponentOption: any;
-		selectedCode: KnockoutObservable<string>;
+		selectedCode: KnockoutObservable<any> = ko.observable();
 		alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
 
 		employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
@@ -149,6 +149,7 @@ module nts.uk.at.view.kmk004.l {
 
 		created() {
 			const vm = this;
+
 			vm.ccg001ComponentOption = {
 				/** Common properties */
 				systemType: 1,
@@ -196,30 +197,23 @@ module nts.uk.at.view.kmk004.l {
 						}));
 
 					vm.employeeList(employees);
+
+					if (employees.length) {
+						vm.selectedCode(employees[0].code);
+						$('.listbox').focus();
+						if (employees.length > 300) {
+							vm.initEmployeeList();
+						}
+					}
 				}
 
 			}
 
 			//KCP005
-			vm.selectedCode = ko.observable('1');
 			vm.currentItemName = ko.observable('');
 
 			vm.getEmployeeIds();
 
-			vm.listComponentOption = {
-				isShowAlreadySet: true,
-				isMultiSelect: false,
-				listType: ListType.EMPLOYEE,
-				employeeInputList: vm.employeeList,
-				selectType: SelectType.SELECT_FIRST_ITEM,
-				selectedCode: vm.selectedCode,
-				isDialog: false,
-				isShowNoSelectRow: false,
-				alreadySettingList: vm.alreadySettingList,
-				isShowWorkPlaceName: true,
-				isShowSelectAllButton: false,
-				disableSelection: false
-			};
 			vm.params = { isLoadData: vm.isLoadData, sidebarType: "Com_Person", wkpId: ko.observable(''), empCode: ko.observable(''), empId: ko.observable(''), titleName: '', deforLaborTimeComDto: null, settingDto: null };
 			vm.years
 				.subscribe(() => {
@@ -268,7 +262,8 @@ module nts.uk.at.view.kmk004.l {
 
 		mounted() {
 			let vm = this;
-			$('#com-kcp005').ntsListComponent(vm.listComponentOption);
+			vm.initEmployeeList();
+
 			$('#com-ccg001').ntsGroupComponent(vm.ccg001ComponentOption).done(() => {
 
 				vm.selectedCode.subscribe((newValue) => {
@@ -283,6 +278,28 @@ module nts.uk.at.view.kmk004.l {
 
 				});
 			});
+		}
+
+		initEmployeeList() {
+			let vm = this;
+
+			vm.listComponentOption = {
+				isShowAlreadySet: true,
+				isMultiSelect: false,
+				listType: ListType.EMPLOYEE,
+				employeeInputList: vm.employeeList,
+				selectType: SelectType.SELECT_FIRST_ITEM,
+				selectedCode: vm.selectedCode,
+				isDialog: false,
+				isShowNoSelectRow: false,
+				alreadySettingList: vm.alreadySettingList,
+				isShowWorkPlaceName: true,
+				isShowSelectAllButton: false,
+				disableSelection: false
+			};
+			
+			$('#com-kcp005').ntsListComponent(vm.listComponentOption);
+
 		}
 
 		getBtnContent() {
