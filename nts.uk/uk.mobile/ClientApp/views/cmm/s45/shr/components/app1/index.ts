@@ -1,6 +1,6 @@
 import { Vue, _ } from '@app/provider';
 import { component, Prop } from '@app/core/component';
-import { AppForLeaveStartOutputDto, ManageDistinct, MaxNumberDayType, NotUseAtr, TimeZoneUseDto } from 'views/kaf/s06/a/define.interface';
+import { TimeZoneWithWorkNoDto, AppForLeaveStartOutputDto, ManageDistinct, MaxNumberDayType, NotUseAtr, TimeZoneUseDto } from 'views/kaf/s06/a/define.interface';
 
 @component({
     name: 'cmms45shrcomponentsapp1',
@@ -12,6 +12,7 @@ import { AppForLeaveStartOutputDto, ManageDistinct, MaxNumberDayType, NotUseAtr,
     constraints: []
 })
 export class CmmS45ShrComponentsApp1Component extends Vue {
+    
     @Prop({
         default: () => ({
             appDispInfoStartupOutput: null,
@@ -27,11 +28,36 @@ export class CmmS45ShrComponentsApp1Component extends Vue {
     public dataOutput = {} as AppForLeaveStartOutputDto;
 
     public user: any;
+
+    public workInfo: WorkInfo = {} as WorkInfo;
+
+    public workHours1: WorkHours = {
+        start: '',
+        end: ''
+    } as WorkHours;
+
+    public workHours2: WorkHours = {
+        start: '',
+        end: ''
+    } as WorkHours;
+
     public created() {
         const self = this;
 
         
     }
+
+    public get _() {
+        return _;
+    }
+    // 休暇申請起動時の表示情報．休暇申請設定．就業時間帯利用区分 = 利用しない
+    public get c2() {
+        const self = this;
+        let c2 = true;
+
+        return c2;
+    }
+
     // 休暇申請起動時の表示情報．就業時間帯表示フラグ = true
     public get c9() {
         const self = this;
@@ -301,10 +327,94 @@ export class CmmS45ShrComponentsApp1Component extends Vue {
     }
     public bindComponent() {
         const self = this;
+        self.bindWorkInfo();
+        self.bindWorkHours();
+    }
 
+    public bindWorkInfo() {
+        const self = this;
+        let workInfo = self.dataOutput.applyForLeaveDto.reflectFreeTimeApp.workInfo;
+        self.createWorkInfo(_.get(workInfo, 'workType'), _.get(workInfo, 'workTime'));
 
     }
+
+    public createWorkInfo(codeType?: string, codeTime?: string) {
+        const self = this;
+
+        let workType = {} as Work;
+        workType.code = codeType || '';
+
+        let workTime = {} as Work;
+        workTime.code = codeTime || (self.c2 ? self.$i18n('KAFS06_51') : self.$i18n('KAF006_55'));
+        let workTypes = _.get(self.dataOutput, 'appAbsenceStartInfoDto.workTypeLst');
+
+        let resultWorkType = 
+            _.find(workTypes, (i: any) => i.workTypeCode == workType.code);
+        workType.name = resultWorkType ? (resultWorkType.name || '')  : self.$i18n('KAFS06_50');
+
+        let workTimes = self.dataOutput.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst;
+        if (codeTime) {
+            let resultWorkTime = 
+                    _.find(workTimes, (i: any) => i.worktimeCode == workTime.code);
+            workTime.name = resultWorkTime ? (_.get(resultWorkTime, 'workTimeDisplayName.workTimeName') || '') : self.$i18n('KAFS06_50');
+        }
+  
+        
+        let workInfo = {} as WorkInfo;
+        workInfo.workType = workType;
+        workInfo.workTime = workTime;
+
+        self.workInfo = workInfo;
+    }
+
+    public createWorkHours(start: number, end: number) {
+        const self = this;
+        if (!_.isNumber(start) || !_.isNumber(end)) {
+
+            return {
+                start: self.$i18n('KAFS06_52'),
+                end: ''
+            } as WorkHours;
+        }
+
+        return {
+            start: self.$dt.timedr(start || 0),
+            end: self.$dt.timedr(end || 0)
+        } as WorkHours;
+    }
+
+    public bindWorkHours() {
+        const self = this;
+        let workHours1 = _.findLast(_.get(self.dataOutput, 'applyForLeaveDto.reflectFreeTimeApp.workingHours'), (item: TimeZoneWithWorkNoDto) => item.workNo == 1);
+
+        let workHours2 = _.findLast(_.get(self.dataOutput, 'applyForLeaveDto.reflectFreeTimeApp.workingHours'), (item: TimeZoneWithWorkNoDto) => item.workNo == 2);
+        // 1
+        if (workHours1) {
+            self.workHours1 = self.createWorkHours(workHours1.timeZone.startTime,
+                workHours1.timeZone.endTime);
+        }
+        // 2
+        if (workHours2) {
+            self.workHours2 = self.createWorkHours(workHours2.timeZone.startTime,
+                workHours2.timeZone.endTime);
+        }
+    }
 }
+
 const API = {
     getDetailInfo: 'at/request/application/appforleave/mobile/getDetailInfo'
 };
+
+interface WorkInfo {
+    workType: Work;
+    workTime: Work;
+}
+interface Work {
+    code: string;
+    name: string;
+    time?: string;
+}
+interface WorkHours {
+    start: string;
+    end: string;
+}
