@@ -99,15 +99,14 @@
 											} }"></div>
 				<com:ko-if bind="appCombinaDipslay">						
 					<div style="margin-top: 10px;">
-						<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_18')}</div>
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF011_18')}</div>
 						<div class="cf" data-bind="ntsSwitchButton: {
 																name:  $i18n('KAF011_18'),
 																options: __viewContext.enums.ApplicationCombination,
 																optionsValue: 'value',
 																optionsText: 'name',
 																value: appCombinaSelected,
-																required: false,
-																enable: enable }"></div>
+																 }"></div>
 					</div>
 				</com:ko-if>
 				<ui:include src="../shr/index.xhtml" />
