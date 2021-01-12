@@ -85,7 +85,7 @@ public class WorkScheduleTest {
 	@Test
 	public void getters() {
 		WorkSchedule data = new WorkSchedule("employeeID",
-				GeneralDate.today(), ConfirmedATR.CONFIRMED, null, null, Optional.empty(),
+				GeneralDate.today(), ConfirmedATR.CONFIRMED, null, null, new BreakTimeOfDailyAttd(),
 				new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty());
 		NtsAssert.invokeGetters(data);
 	}
@@ -125,7 +125,7 @@ public class WorkScheduleTest {
 		assertThat( result.getEmployeeID() ).isEqualTo( "empId" );
 		assertThat ( result.getYmd() ).isEqualTo( GeneralDate.ymd(2020, 11, 1) );
 		assertThat ( result.getConfirmedATR() ).isEqualTo( ConfirmedATR.UNSETTLED );
-		assertThat ( result.getLstBreakTime() ).isEmpty();
+		assertThat ( result.getLstBreakTime().getBreakTimeSheets() ).isEmpty();
 		assertThat ( result.getLstEditState() ).isEmpty();
 		assertThat ( result.getOptAttendanceTime() ).isEmpty();
 		assertThat ( result.getOptSortTimeWork() ).isEmpty();
@@ -159,7 +159,7 @@ public class WorkScheduleTest {
 		assertThat( result.getEmployeeID() ).isEqualTo( "empId" );
 		assertThat( result.getYmd() ).isEqualTo( GeneralDate.ymd(2020, 11, 1) );
 		assertThat( result.getConfirmedATR() ).isEqualTo( ConfirmedATR.UNSETTLED );
-		assertThat( result.getLstBreakTime() ).isEmpty();
+		assertThat( result.getLstBreakTime().getBreakTimeSheets() ).isEmpty();
 		assertThat( result.getLstEditState() )
 			.extracting( 
 					d -> d.getAttendanceItemId(),
@@ -931,7 +931,7 @@ public class WorkScheduleTest {
 	
 	@Test
 	public void testHandCorrectBreakTimeList(
-			@Injectable Optional<BreakTimeOfDailyAttd> breakTime) {
+			@Injectable BreakTimeOfDailyAttd breakTime) {
 		
 		List<EditStateOfDailyAttd> editStateList = new ArrayList<>( Arrays.asList(
 				new EditStateOfDailyAttd(WS_AttendanceItem.WorkTime.ID, EditStateSetting.REFLECT_APPLICATION),
@@ -955,7 +955,7 @@ public class WorkScheduleTest {
 				new TimeSpanForCalc(new TimeWithDayAttr(500), new TimeWithDayAttr(600))
 				));
 		
-		assertThat(workSchedule.getLstBreakTime().get().getBreakTimeSheets())
+		assertThat(workSchedule.getLstBreakTime().getBreakTimeSheets())
 			.extracting( 
 					d -> d.getBreakFrameNo().v(),
 					d -> d.getStartTime().v(),
@@ -1005,7 +1005,7 @@ public class WorkScheduleTest {
 					ConfirmedATR.UNSETTLED,
 					workInfo,
 					affInfo, 
-					Optional.empty(),
+					new BreakTimeOfDailyAttd(),
 					Collections.emptyList(),
 					optTimeLeaving, // parameter
 					optAttendanceTime, // parameter
@@ -1029,7 +1029,7 @@ public class WorkScheduleTest {
 					ConfirmedATR.UNSETTLED,
 					workInfo,
 					affInfo, 
-					Optional.empty(),
+					new BreakTimeOfDailyAttd(),
 					editStateList, 
 					Optional.of( timeLeaving ),
 					Optional.empty(), 
@@ -1063,7 +1063,7 @@ public class WorkScheduleTest {
 					ConfirmedATR.UNSETTLED,
 					workInfo,
 					affInfo, 
-					Optional.empty(),
+					new BreakTimeOfDailyAttd(),
 					Collections.emptyList(), 
 					optTimeLeaving,
 					Optional.empty(), 
@@ -1072,7 +1072,7 @@ public class WorkScheduleTest {
 		}
 		
 		static WorkSchedule createWithParams(
-				Optional<BreakTimeOfDailyAttd> breakTime,
+				BreakTimeOfDailyAttd breakTime,
 				List<EditStateOfDailyAttd> editStateList
 				) {
 			
@@ -1097,7 +1097,7 @@ public class WorkScheduleTest {
 					confirmAtr,
 					workInfo,
 					affInfo, 
-					Optional.empty(),
+					new BreakTimeOfDailyAttd(),
 					Collections.emptyList(),
 					Optional.empty(),
 					Optional.empty(),
@@ -1112,7 +1112,7 @@ public class WorkScheduleTest {
 					ConfirmedATR.UNSETTLED,
 					workInfo,
 					affInfo, 
-					Optional.empty(),
+					new BreakTimeOfDailyAttd(),
 					editStateList,
 					Optional.empty(),
 					Optional.empty(),

@@ -5,6 +5,7 @@ module cmm045.a.viewmodel {
     import character = nts.uk.characteristics;
     import request = nts.uk.request;
     import getShared = nts.uk.ui.windows.getShared;
+	import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
     export class ScreenModel {
         roundingRules: KnockoutObservableArray<vmbase.ApplicationDisplayAtr> = ko.observableArray([]);
         //delete switch button - ver35
@@ -59,26 +60,28 @@ module cmm045.a.viewmodel {
         isLimit500: KnockoutObservable<boolean> = ko.observable(false);
         isApprove: KnockoutObservable<boolean>;
         isActiveApprove: any;
+		confirmAll: boolean = false;
+		notConfirmAll: boolean = false;
 
         constructor() {
             let self = this;
-            $(".popup-panel").ntsPopup({
+            $(".popup-panel-cmm045").ntsPopup({
                 position: {
-                    my: "left top",
-                    at: "left bottom",
+                    my: "left bottom",
+                    at: "right top",
                     of: ".hyperlink"
                 },
                 showOnStart: false,
                 dismissible: false
             });
 
-            $("a.hyperlink").click(() => {$(".popup-panel").ntsPopup("toggle");});
+            $("a.hyperlink").click(() => {$(".popup-panel-cmm045").ntsPopup("toggle");});
             $(window).on("mousedown.popup", function(e) {
-                let control = $(".popup-panel");
+                let control = $(".popup-panel-cmm045");
                 if (!$(e.target).is(control)
                     && control.has(e.target).length === 0
                     && !$(e.target).is($(".hyperlink"))) {
-                    $(".popup-panel").ntsPopup("hide");
+                    $(".popup-panel-cmm045").ntsPopup("hide");
                 }
             });
 
@@ -225,7 +228,7 @@ module cmm045.a.viewmodel {
 							$('.nts-fixed-body-table').width(_.sum(_.values(obj.width)));
 	                    } else {
 	                        if($('.nts-fixed-header-container').width()-812 < 70) {
-								$('col.appContent').width(70);	
+								$('col.appContent').width(70);
 							} else {
 								$('col.appContent').width($('.nts-fixed-header-container').width()-812);
 							}
@@ -241,7 +244,7 @@ module cmm045.a.viewmodel {
 							leftValue = 0;
 						for(let i = 0; i < headerSize; i++) {
 							leftValue += $('.nts-fixed-header-wrapper .ui-widget-header')[i].offsetWidth;
-							$('.resize-handle')[i].style.left = leftValue + 'px';		
+							$('.resize-handle')[i].style.left = leftValue + 'px';
 						}
 	                });
 	            } else {
@@ -282,7 +285,7 @@ module cmm045.a.viewmodel {
 							$('.nts-fixed-body-table').width(_.sum(_.values(obj.width)));
 	                    } else {
 	                        if($('.nts-fixed-header-container').width()-775 < 70) {
-								$('col.appContent').width(70);	
+								$('col.appContent').width(70);
 							} else {
 								$('col.appContent').width($('.nts-fixed-header-container').width()-775);
 							}
@@ -298,7 +301,7 @@ module cmm045.a.viewmodel {
 							leftValue = 0;
 						for(let i = 0; i < headerSize; i++) {
 							leftValue += $('.nts-fixed-header-wrapper .ui-widget-header')[i].offsetWidth;
-							$('.resize-handle')[i].style.left = leftValue + 'px';		
+							$('.resize-handle')[i].style.left = leftValue + 'px';
 						}
 	                });
 				}
@@ -434,14 +437,14 @@ module cmm045.a.viewmodel {
             }
 			if (!self.appListExtractConditionDto.preOutput && !self.appListExtractConditionDto.postOutput) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_1722" }).then(() => {
-                    $(".popup-panel").ntsPopup("toggle");
+                    $(".popup-panel-cmm045").ntsPopup("toggle");
                 });
                 return false;
 			}
 			let selectAppTypeLst = _.filter(self.appListExtractConditionDto.opListOfAppTypes, o => o.choice);
 			if (_.isEmpty(selectAppTypeLst)) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_1723" }).then(() => {
-                    $(".popup-panel").ntsPopup("toggle");
+                    $(".popup-panel-cmm045").ntsPopup("toggle");
                 });
                 return false;
 			}
@@ -1073,6 +1076,10 @@ module cmm045.a.viewmodel {
 
                         }
                     }
+					else if(column.key == 'appContent') {
+						$td.html(self.customContent(column.key, item));
+						$td.addClass(item.opBackgroundColor);
+					}
                     else {
                         $td.html(self.customContent(column.key, item));
                     }
@@ -2247,6 +2254,81 @@ module cmm045.a.viewmodel {
         //     return features;
         // }
 
+		checkDialog(itemLst: any, itemConfirmLst: any, confirmAll: boolean, notConfirmAll: boolean): any {
+			const self = this;
+			let dfd = $.Deferred();
+			if(_.isEmpty(itemLst)) {
+				return dfd.resolve(itemConfirmLst);
+			}
+			let item = itemLst[0];
+			if(item.appType!=AppType.OVER_TIME_APPLICATION && item.appType!=AppType.HOLIDAY_WORK_APPLICATION) {
+				itemConfirmLst.push(item);
+				return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, false, false).then((result: any) => {
+					return dfd.resolve(result);
+				});
+			}
+			if(_.isEmpty(item.opBackgroundColor)) {
+				itemConfirmLst.push(item);
+				return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, false, false).then((result: any) => {
+					return dfd.resolve(result);
+				});
+			}
+			if(notConfirmAll) {
+				return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, false, true).then((result: any) => {
+					return dfd.resolve(result);
+				});
+			}
+			if(confirmAll) {
+				itemConfirmLst.push(item);
+				return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, true, false).then((result: any) => {
+					return dfd.resolve(result);
+				});
+			}
+			let appInfo = { appName: ''},
+				appName = "";
+			if(item.opAppTypeDisplay) {
+				appInfo = _.find(self.appListExtractConditionDto.opListOfAppTypes, o => o.appType == item.appType && o.opApplicationTypeDisplay==item.opAppTypeDisplay);
+			} else {
+				appInfo = _.find(self.appListExtractConditionDto.opListOfAppTypes, o => o.appType == item.appType);
+			}
+			if(_.isUndefined(appInfo)) {
+				appName = '';
+			} else {
+				appName = _.escape(appInfo.appName);
+			}
+			nts.uk.ui.windows.setShared("CMM045B_PARAMS", {
+				applicantName: item.applicantName,
+				appName,
+				appDate: item.appDate,
+				opBackgroundColor: item.opBackgroundColor,
+				appContent: item.appContent,
+				isMulti: itemLst.length > 1 
+			});
+			nts.uk.ui.windows.sub.modal("/view/cmm/045/b/index.xhtml").onClosed(() => {
+				let result = nts.uk.ui.windows.getShared('CMM045B_RESULT');
+				switch(result) {
+					case vmbase.ConfirmDialog.CONFIRM: 
+						itemConfirmLst.push(item);
+						return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, false, false).then((result: any) => {
+							return dfd.resolve(result);
+						});
+					case vmbase.ConfirmDialog.CONFIRM_ALL: 
+						itemConfirmLst.push(item);
+						return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, true, false).then((result: any) => {
+							return dfd.resolve(result);
+						});
+					case vmbase.ConfirmDialog.NOT_CONFIRM_ALL: 
+						return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, false, true).then((result: any) => {
+							return dfd.resolve(result);
+						});
+					default: 
+						return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, false, false).then((result: any) => {
+							return dfd.resolve(result);
+						});
+				}
+			});
+			return dfd.promise();
+		}
 
 		appListApprove(isApprovalAll: boolean) {
 			const self = this;
@@ -2268,7 +2350,7 @@ module cmm045.a.viewmodel {
 			}
 			nts.uk.ui.dialog.confirm({ messageId: msgConfirm}).ifYes(() => {
 				block.invisible();
-				let listOfApplicationCmds = [];
+				let listOfApplicationCmds: any = [];
 				_.each(self.items(), function(item) {
 					// 対象の申請が未承認の申請の場合
 					if(!item.checkAtr) {
@@ -2291,65 +2373,76 @@ module cmm045.a.viewmodel {
 					block.clear();
 					return;
 				}
-				let device = 0,
-					command = { isApprovalAll, device, listOfApplicationCmds };
-				service.approveCheck(command).then((data: any) => {
-					if(data) {
-						let comfirmData = [];
-						_.each(Object.keys(data.successMap), (dataAppID: any) => {
-							let obj = _.find(listOfApplicationCmds, o => o.appID == dataAppID);
-							if(!_.isUndefined(obj)) {
-								comfirmData.push(obj);
-							}
-						});
-						return service.approverAfterConfirm(comfirmData).done((data)=>{
-							service.reflectListApp(Object.keys(data.successMap));
-						});
-					}
-				}).then((data: any) => {
-					if(data) {
-						let isInfoDialog = true,
-							displayMsg = "";
-						if(!_.isEmpty(data.successMap)) {
-							displayMsg += nts.uk.resource.getMessage('Msg_220') + "\n";
-						} else {
-							isInfoDialog = false;
-						}
-						if(!_.isEmpty(data.failMap)) {
-							if(isInfoDialog) {
-								displayMsg += nts.uk.resource.getMessage('Msg_1726');
-							} else {
-								displayMsg += nts.uk.resource.getMessage('Msg_1725');
-							}
-							let itemFailMap = _.filter(listOfApplicationCmds, item => _.includes(Object.keys(data.failMap), item.appID));
-							_.each(itemFailMap, item => {
-								let appInfo = _.find(self.appListExtractConditionDto.opListOfAppTypes, o => o.appType == item.appType),
-									appName = "";
-								if(!_.isUndefined(appInfo)) {
-									appName = appInfo.appName;
+				
+				self.checkDialog(listOfApplicationCmds, [], false, false).then((listCmdAfterConfirm: any) => {
+					let device = 0,
+						command = 
+						{ 
+							isApprovalAll, 
+							device, 
+							listOfApplicationCmds: listCmdAfterConfirm
+						};
+					service.approveCheck(command).then((data: any) => {
+						if(data) {
+							let comfirmData = [];
+							_.each(Object.keys(data.successMap), (dataAppID: any) => {
+								let obj = _.find(listOfApplicationCmds, o => o.appID == dataAppID);
+								if(!_.isUndefined(obj)) {
+									comfirmData.push(obj);
 								}
-								displayMsg += "\n " + item.applicantName  + " " + item.appDate + " " + appName + ": " + data.failMap[item.appID];
+							});
+							return service.approverAfterConfirm(comfirmData).done((data)=>{
+								service.reflectListApp(Object.keys(data.successMap));
 							});
 						}
-						if(isInfoDialog) {
-							nts.uk.ui.dialog.info(displayMsg).then(() => {$('#daterangepicker .ntsEndDatePicker').focus()});
-						} else {
-						 	nts.uk.ui.dialog.alertError(displayMsg).then(() => {$('#daterangepicker .ntsEndDatePicker').focus()});
+					}).then((data: any) => {
+						if(data) {
+							let isInfoDialog = true,
+								displayMsg = "";
+							if(!_.isEmpty(data.successMap)) {
+								displayMsg += nts.uk.resource.getMessage('Msg_220') + "\n";
+							} else {
+								isInfoDialog = false;
+							}
+							if(!_.isEmpty(data.failMap)) {
+								if(isInfoDialog) {
+									displayMsg += nts.uk.resource.getMessage('Msg_1726');
+								} else {
+									displayMsg += nts.uk.resource.getMessage('Msg_1725');
+								}
+								let itemFailMap = _.filter(listOfApplicationCmds, item => _.includes(Object.keys(data.failMap), item.appID));
+								_.each(itemFailMap, item => {
+									let appInfo = _.find(self.appListExtractConditionDto.opListOfAppTypes, o => o.appType == item.appType),
+										appName = "";
+									if(!_.isUndefined(appInfo)) {
+										appName = appInfo.appName;
+									}
+									displayMsg += "\n " + item.applicantName  + " " + item.appDate + " " + appName + ": " + data.failMap[item.appID];
+								});
+							}
+							if(_.isEmpty(displayMsg)) {
+								displayMsg += nts.uk.resource.getMessage('Msg_1725');
+							}
+							if(isInfoDialog) {
+								nts.uk.ui.dialog.info(displayMsg).then(() => {$('#daterangepicker .ntsEndDatePicker').focus()});
+							} else {
+							 	nts.uk.ui.dialog.alertError(displayMsg).then(() => {$('#daterangepicker .ntsEndDatePicker').focus()});
+							}
+							return data;
 						}
-						return data;
-					}
-	            }).then((data) => {
-					if(!_.isEmpty(data.successMap)) {
-						return service.findByPeriod(self.appListExtractConditionDto);
-					}
-				}).then((data: any) => {
-					if(data) {
-						return self.reload(data.appListExtractCondition, data.appListInfo);
-					}
-				}).always(() => {
-                    block.clear();
-                    $('#daterangepicker .ntsEndDatePicker').focus();
-                });
+		            }).then((data) => {
+						if(!_.isEmpty(data.successMap)) {
+							return service.findByPeriod(self.appListExtractConditionDto);
+						}
+					}).then((data: any) => {
+						if(data) {
+							return self.reload(data.appListExtractCondition, data.appListInfo);
+						}
+					}).always(() => {
+	                    block.clear();
+	                    $('#daterangepicker .ntsEndDatePicker').focus();
+	                });
+				});
 			});
 		}
     }

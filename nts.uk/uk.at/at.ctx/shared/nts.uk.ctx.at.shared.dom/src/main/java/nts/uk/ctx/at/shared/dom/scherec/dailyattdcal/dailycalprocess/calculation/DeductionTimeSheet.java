@@ -59,7 +59,7 @@ public class DeductionTimeSheet {
 	// 計上用
 	private final List<TimeSheetOfDeductionItem> forRecordTimeZoneList;
 	//休憩
-	private final Optional<BreakTimeOfDailyAttd> breakTimeOfDailyList;
+	private final BreakTimeOfDailyAttd breakTimeOfDailyList;
 	//外出
 	private final Optional<OutingTimeOfDailyAttd> dailyGoOutSheet;
 	//短時間
@@ -230,8 +230,7 @@ public class DeductionTimeSheet {
 	}
 
 	private static List<TimeSheetOfDeductionItem> getBreakTimeDeductionForCalc(IntegrationOfDaily integrationOfDaily) {
-		return integrationOfDaily.getBreakTime().map(c -> c.changeAllTimeSheetToDeductionItem())
-														.orElseGet(() -> new ArrayList<>());
+		return integrationOfDaily.getBreakTime().changeAllTimeSheetToDeductionItem();
 	}
 
 	/** 休憩時間帯の取得 */
