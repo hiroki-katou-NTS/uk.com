@@ -96,7 +96,7 @@
                 <div>
                     <span class="uk-text-dark-gray ml-3" style="font-size: 90%">
                         <span class="font-weight-bold mr-3">{{ complementWorkInfo.workTypeCD | i18n }}</span>
-                        <span>{{ getWorkTypeName(complementWorkInfo.workTypeCD) }}</span>
+                        <span>{{ getWorkTypeName(complementWorkInfo.workTypeCD, true) }}</span>
                     </span>       
                 </div>
                 <div>
@@ -195,7 +195,7 @@
                 <div v-if="dispLeaveContent">
                     <span class="uk-text-dark-gray ml-3" style="font-size: 90%">
                         <span class="font-weight-bold mr-3">{{ leaveWorkInfo.workTypeCD | i18n }}</span>
-                        <span>{{ getWorkTypeName(leaveWorkInfo.workTypeCD) }}</span>
+                        <span>{{ getWorkTypeName(leaveWorkInfo.workTypeCD, false) }}</span>
                     </span>       
                 </div>
                 <div v-if="dispLeaveWorkTime">
@@ -303,7 +303,7 @@
         v-on:kaf000CChangeAppReason="kaf000CChangeAppReason" />
     </div>
     <div class="mb-3">
-        <button class="btn btn-primary w-100">
+        <button class="btn btn-primary w-100" v-on:click="register()">
             <span v-if="params">{{'KAFS11_30' | i18n}}</span>
             <span v-else>{{'KAFS11_29' | i18n}}</span>
         </button>
