@@ -31,6 +31,10 @@ import { KdlS36Component } from '../../../kdl/s36';
         },
         relationshipReason: {
             constraint: 'RelationshipReasonPrimitive'
+        },
+        selectedValueHolidayType: {
+            required: true,
+            validate: true
         }
     },
     constraints: [
@@ -57,7 +61,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
     public application: Application = null;
     public workHours1: {start: number, end: number} = null;
     public workHours2: {start: number, end: number} = null;
-    public selectedValueHolidayType = null;
+    public selectedValueHolidayType: any = null;
 
     public isFirstUpdate = false; /// turn off watch while firstly go to update mode
     public maxDaySpecHdDto: MaxDaySpecHdDto;

@@ -25,7 +25,7 @@
             <span class="badge badge-warning">必須</span>
         </div>
         <!-- A4_2 -->
-        <div class="mt-1">
+        <div class="mt-3">
             <!-- A4_3 -->
             <nts-dropdown v-model="selectedValueHolidayType">
                 <option v-for="(item, index) in dropdownList" :key="index" :value="item.code">
