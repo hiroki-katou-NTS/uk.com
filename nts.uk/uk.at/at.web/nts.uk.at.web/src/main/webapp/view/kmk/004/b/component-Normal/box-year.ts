@@ -53,15 +53,15 @@ module nts.uk.at.view.kmk004.b {
             vm.type = params.type;
             vm.itemList = params.years;
 
+            vm.reloadData(0);
         }
 
         mounted() {
             const vm = this;
-
-            vm.reloadData(0);
-
+            
             vm.selectId
                 .subscribe(() => {
+                    vm.selectedYear(null);
                     vm.reloadData(0);
                 });
         }
@@ -148,7 +148,6 @@ module nts.uk.at.view.kmk004.b {
                                 vm.itemList(years);
                             })
                             .then(() => {
-
                                 if (ko.unwrap(vm.itemList) != []) {
                                     if (ko.unwrap(vm.itemList)[selectedIndex]) {
                                         vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);

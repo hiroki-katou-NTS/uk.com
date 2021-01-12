@@ -165,30 +165,31 @@ module nts.uk.at.view.kmk004.b {
 
             vm.selectedYear
                 .subscribe(() => {
-                    vm.mode("New");
-                    vm.reloadData();
+                    if (ko.unwrap(ko.unwrap(vm.selectedYear) != null)){
+                        vm.mode("New");
+                        vm.reloadData();
+                    }
                 });
 
             vm.selectId
                 .subscribe(() => {
                     vm.workTimeSaves([]);
+                    console.log('id');
                 });
 
             vm.years
                 .subscribe(() => {
-                    setTimeout(() => {
-                        if (ko.unwrap(vm.years).length == 0) {
-                            vm.workTimeSaves([]);
-                            vm.initList();
+                    if (ko.unwrap(vm.years).length == 0) {
+                        vm.workTimeSaves([]);
+                        vm.initList();
 
-                        } else {
-                            if (ko.unwrap(vm.workTimeSaves).length > ko.unwrap(vm.years).length) {
-                                _.remove(ko.unwrap(vm.workTimeSaves), ((value) => {
-                                    return value.year == ko.unwrap(vm.yearDelete);
-                                }))
-                            }
+                    } else {
+                        if (ko.unwrap(vm.workTimeSaves).length > ko.unwrap(vm.years).length) {
+                            _.remove(ko.unwrap(vm.workTimeSaves), ((value) => {
+                                return value.year == ko.unwrap(vm.yearDelete);
+                            }))
                         }
-                    }, 100);
+                    }
                 });
         }
 
