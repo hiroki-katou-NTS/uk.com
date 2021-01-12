@@ -308,6 +308,7 @@ public class OutsideOTSettingExportImpl implements MasterListData {
 		return languageId.equals(LANGUAGE_ID_JAPAN);
 	}
 
+	// TODO : ADD THÊM 1 COL
 	/**
 	 * Gets the master data one.
 	 *
@@ -386,7 +387,7 @@ public class OutsideOTSettingExportImpl implements MasterListData {
 
 		return masterDatas;
 	}
-
+	// TODO : KO SỬA.
 	/**
 	 * Gets the master data three.
 	 *
@@ -421,7 +422,7 @@ public class OutsideOTSettingExportImpl implements MasterListData {
 
 		return masterDatas;
 	}
-	
+	// TODO : KO SỬA
 	/**
 	 * Gets the master data four.
 	 *
