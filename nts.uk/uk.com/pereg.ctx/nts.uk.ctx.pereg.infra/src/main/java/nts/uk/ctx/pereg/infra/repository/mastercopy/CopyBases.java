@@ -18,7 +18,7 @@ import nts.uk.ctx.pereg.infra.repository.mastercopy.helper.CopyContext;
 public class CopyBases {
 	
 	private static final Map<String, JpaEntityMapper<? extends CopiedOnTenantCreated>> TABLES = new HashMap<>();
-	{
+	static {
 		TABLES.put("PPEMT_CTG_COMMON", PpemtCtgCommon.MAPPER);
 		TABLES.put("PPEMT_ITEM_COMMON", PpemtItemCommon.MAPPER);
 	}
