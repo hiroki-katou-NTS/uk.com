@@ -247,7 +247,8 @@ public class ExtractAlarmListWorkPlaceFinder {
                 // ・開始の年月　＝　「Input．当月の年月」－　「Input．抽出期間(日単位)．開始日．締め日指定．月数」
                 YearMonth startYm = processingYm.addMonths(-strMonth.get().getMonth());
                 // ・開始の日　＝　締め期間．開始日の日
-                startDate = GeneralDate.ymd(startYm.year(), startYm.month(), closurePeriod.start().day());
+                // startDate = GeneralDate.ymd(startYm.year(), startYm.month(), closurePeriod.start().day());
+                startDate = getDate(startYm, closurePeriod.end().day());
             }
         }
         return startDate;
@@ -278,13 +279,23 @@ public class ExtractAlarmListWorkPlaceFinder {
             // 終了日を作成する。
             Optional<Month> endMonth = period.getEndDate().getEndMonth();
             if (endMonth.isPresent()) {
-                // ・終了の年月　＝　「Input．当月の年月」－　「Input．抽出期間(日単位)．終了日．締め日指定．月数」
-                YearMonth startYm = processingYm.addMonths(-endMonth.get().getMonth());
+                // ・終了の年月　＝　「Input．当月の年月」－　「Input．抽出期間(日単位)．終了日．締め日指定．月数」 + 1
+                YearMonth endYm = processingYm.addMonths(-endMonth.get().getMonth()).addMonths(1);
                 // ・終了の日　＝　締め期間．終了日の日
-                endDate = GeneralDate.ymd(startYm.year(), startYm.month(), closurePeriod.end().day());
+                // endDate = GeneralDate.ymd(endYm.year(), endYm.month(), closurePeriod.end().day());
+                endDate = getDate(endYm, closurePeriod.end().day());
             }
         }
         return endDate;
+    }
+
+    private GeneralDate getDate(YearMonth ym, int day) {
+        GeneralDate lastDate = ym.lastGeneralDate();
+        if (day > lastDate.day()) {
+            return lastDate;
+        } else {
+            return GeneralDate.ymd(ym.year(), ym.month(), day);
+        }
     }
 
     public List<AlarmListExtractResultWorkplaceData> getExtractResult(String processId) {

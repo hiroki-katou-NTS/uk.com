@@ -86,7 +86,7 @@ public class AlarmListExtractResultWorkplaceData {
             AlarmValueDate date = extractResult.getAlarmValueDate();
             String dateResult = convertAlarmValueDate(date.getStartDate());
             if (date.getEndDate().isPresent()) {
-                dateResult += "～" + convertAlarmValueDate(date.getEndDate().get());  //TODO Q&A 37860
+                dateResult += "～" + convertAlarmValueDate(date.getEndDate().get());
             }
 
             AlarmListExtractResultWorkplaceData result = new AlarmListExtractResultWorkplaceData(
@@ -97,7 +97,7 @@ public class AlarmListExtractResultWorkplaceData {
                     alExtractInfo.getCategoryName(),
                     extractResult.getCheckTargetValue(),
                     alExtractInfo.getCategory().value,
-                    date.getStartDate(), //TODO Q&A 37860
+                    date.getStartDate(),
                     extractResult.getComment().isPresent() ? extractResult.getComment().get().v() : "",
                     extractResult.getWorkplaceId().orElse(""),
                     extractResult.getWorkplaceCode().orElse(""),
