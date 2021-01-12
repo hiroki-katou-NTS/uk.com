@@ -20,6 +20,7 @@ import nts.uk.ctx.at.function.dom.adapter.employeebasic.EmployeeBasicInfoFnImpor
 import nts.uk.ctx.at.function.dom.adapter.employeebasic.SyEmployeeFnAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workplace.WorkPlaceInforExport;
 import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceAdapter;
+import nts.uk.ctx.at.function.dom.alarm.AlarmPatternSetting;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.AggregationProcessService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.AlarmListResultDto;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
@@ -132,11 +133,13 @@ public class ExtractAlarmListService {
 	 * @param lstCategoryPeriod　List<カテゴリ別期間>
 	 * @param lstSid　List<従業員>
 	 * @param runCode　自動実行コード　（Default：　”Z”）
+	 * @param alarmPattern 自動変更の場合NULLを渡す
 	 * @return
 	 */
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public ExtractedAlarmDto extractResultAlarm(String cid, String pattentCd, 
 			List<PeriodByAlarmCategory> lstCategoryPeriod,List<String> lstSid, String runCode,
+			AlarmPatternSetting alarmPattern, List<AlarmCheckConditionByCategory> lstCondCate,
 			Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
 		ExtractedAlarmDto result = new ExtractedAlarmDto();
 		if (lstSid.isEmpty()) {
@@ -148,6 +151,8 @@ public class ExtractAlarmListService {
 				lstCategoryPeriod,
 				lstSid,
 				runCode,
+				alarmPattern,
+				lstCondCate,
 				counter,
 				shouldStop);
 		result.setExtracting(alarmResult.isExtracting());
