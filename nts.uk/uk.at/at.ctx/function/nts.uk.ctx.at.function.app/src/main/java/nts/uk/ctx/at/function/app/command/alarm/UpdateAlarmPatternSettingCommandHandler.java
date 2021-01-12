@@ -66,13 +66,13 @@ public class UpdateAlarmPatternSettingCommandHandler extends CommandHandler<AddA
 		AlarmPermissionSetting alarmPerSet = new AlarmPermissionSetting(c.getAlarmPatternCD(), companyId,
 				c.getAlarmPerSet().isAuthSetting(), c.getAlarmPerSet().getRoleIds());
 
-		List<CheckCondition> checkConList = c.getCheckConditonList().stream()
+		List<CheckCondition> checkConList = c.getCheckConditionList().stream()
 				.map(x ->convertToCheckCondition(x, c.getAlarmPatternCD()))
 				.collect(Collectors.toList());
 		// set update property
 		domain.setAlarmPerSet(alarmPerSet);
 		domain.setCheckConList(checkConList);
-		domain.setAlarmPatternName(c.getAlarmPatterName());
+		domain.setAlarmPatternName(c.getAlarmPatternName());
 
 		//AverageMonth
 		// check domain logic
