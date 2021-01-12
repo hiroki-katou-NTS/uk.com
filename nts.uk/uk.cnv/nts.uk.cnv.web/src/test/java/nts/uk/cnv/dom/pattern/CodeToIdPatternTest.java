@@ -1,5 +1,7 @@
 package nts.uk.cnv.dom.pattern;
 
+import static org.junit.Assert.*;
+
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -44,6 +46,6 @@ public class CodeToIdPatternTest {
 		ConversionSQL result = target.apply(cs);
 		String sql = result.build(info);
 
-        //assertTrue(result);
+        assertTrue(!sql.isEmpty());
 	}
 }

@@ -26,8 +26,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import nts.arc.layer.app.file.storage.StoredFileInfo;
 import uk.cnv.client.UkConvertProperty;
-import uk.cnv.client.dom.fileimport.MappingFileIdRepository;
-import uk.cnv.client.infra.repository.MappingFileIdRepositoryImpl;
 
 
 public class FileUploader{
@@ -35,10 +33,7 @@ public class FileUploader{
     private static final String EOL = "\r\n";
     private static final String FILEID_JSON_NAME = "id";
 
-    private MappingFileIdRepository repo;
-
     public FileUploader() {
-    	repo = new MappingFileIdRepositoryImpl();
     }
 
 	public StoredFileInfo store(Path pathToSource, String stereotype, String fileType) {
@@ -79,7 +74,7 @@ public class FileUploader{
 			);
 	}
 
-	private void loginUk() throws IOException {
+	private String loginUk() throws IOException {
 		String serverUrl = UkConvertProperty.getProperty("UkApServerUrl");
 		URL url = null;
 
@@ -108,7 +103,7 @@ public class FileUploader{
         httpHeaders.put("Content-Type", "application/json");
         final String resultStr = doPost(url, "UTF-8", httpHeaders, postJson);
 
-		return;
+		return resultStr;
 	}
 
     private String doPost(URL url, String encoding, Map<String, String> headers, String jsonString) throws IOException {

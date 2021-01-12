@@ -91,7 +91,6 @@ public class TableDesignImportService {
 		throw new JSQLParserException();
 	}
 
-	@SuppressWarnings("unchecked")
 	private static TableDesign toDomain(
 			TableDesignVer ver,
 			CreateTable statement, List<CreateIndex> createIndex, TableDefineType typeDefine,
@@ -267,7 +266,6 @@ public class TableDesignImportService {
 				);
 	}
 
-	@SuppressWarnings("unchecked")
 	private static void analyzeIndex(CreateTable statement, List<Indexes> indexes, Map<String, Integer> pk, Map<String, Integer> uk, boolean isClusteredPK) {
 		for (Iterator<Index> indexDef =  statement.getIndexes().iterator(); indexDef.hasNext();) {
 			Index index = (Index) indexDef.next();

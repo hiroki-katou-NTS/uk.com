@@ -100,6 +100,7 @@ public class TableDesignerService {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public ImportFromFileResult importFromFile(ImportFromFileDto params) {
 		ImportFromFileResult result = new ImportFromFileResult(0, new ArrayList<>());
 
