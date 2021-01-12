@@ -18,7 +18,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaAppHdsubRecRepository extends JpaRepository implements AppHdsubRecRepository {
 
-	private static final String FIND_ALL = "SELECT m FROM KrqdtCompltLeaveSimMana m";
+	private static final String FIND_ALL = "SELECT m FROM KrqdtAppHdsubRec m";
 	private static final String FIND_BY_REC_APP_ID = FIND_ALL + " WHERE m.pk.recAppID=:recAppID ";
 	private static final String FIND_BY_ABS_APP_ID = FIND_ALL + " WHERE m.pk.absenceLeaveAppID=:absenceLeaveAppID ";
 	private static final String FIND_BY_APPID = FIND_ALL 

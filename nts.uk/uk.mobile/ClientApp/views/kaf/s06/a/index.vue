@@ -68,7 +68,7 @@
           <span class="badge badge-secondary">{{workTime.code}}</span>
           <span>{{workTime.name}}</span>
           <!--A6_6-->
-          <span class="d-block mt-1">{{workTime.time}}</span>
+          <span class="textSize d-block mt-1">{{workTime.time}}</span>
         </button>
       </div>
     </div>
@@ -249,7 +249,7 @@
         </div>
         <div class="mt-1">
             <nts-text-editor
-            v-model="text"
+            v-model="relationshipReason"
             />
 
         </div>
@@ -289,7 +289,7 @@
         <div align="center">
             <button 
             type="button" 
-            v-bind:disabled="!(c23 && modeNew)"
+            v-bind:disabled="!(c23 || !modeNew)"
             v-on:click="openKDLS36()"
             class="shadow-none btn rounded-pill btn-info">
               {{'KAFS06_32' | i18n}}
@@ -339,7 +339,7 @@
         <div align="center">
             <button 
             type="button" 
-            v-bind:disabled="!(c23 && modeNew)"
+            v-bind:disabled="!(c23 || !modeNew)"
             v-on:click="openKDLS35()"
             class="shadow-none btn rounded-pill btn-info">
               {{'KAFS06_36' | i18n}}
