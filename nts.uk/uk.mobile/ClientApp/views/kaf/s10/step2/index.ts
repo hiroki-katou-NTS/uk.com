@@ -297,12 +297,12 @@ export class KafS10Step2Component extends Vue {
             overTime.applicationTime = 0;
             overTime.visible = self.$appContext.c9;
             overTime.preApp = {
-                preAppDisp: self.$appContext.c9_2,
+                preAppDisp: self.$appContext.c9_3,
                 preAppTime: 0,
                 preAppExcess: ExcessTimeStatus.NONE,
             };
             overTime.actualApp = {
-                actualDisp: self.$appContext.c9_2,
+                actualDisp: self.$appContext.c9_3,
                 actualTime: 0,
                 actualExcess: ExcessTimeStatus.NONE
             };

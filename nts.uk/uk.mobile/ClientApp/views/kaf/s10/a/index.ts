@@ -835,6 +835,13 @@ export class KafS10Component extends KafS00ShrComponent {
         return self.c6 && self.c7 && self.c9;
     }
 
+    //  ※6 = ○　AND　※9 = ○
+    public get c9_3() {
+        const self = this;
+
+        return self.c6 && self.c9;
+    }
+
     //  ＄：休日出勤申請起動時の表示情報
     //  「＄．利用する乖離理由」<> empty
     //  AND 「＄．利用する乖離理由．乖離理由の選択肢を利用する」がtrue 
