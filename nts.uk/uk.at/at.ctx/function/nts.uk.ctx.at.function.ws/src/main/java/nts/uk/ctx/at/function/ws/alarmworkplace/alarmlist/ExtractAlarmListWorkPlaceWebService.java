@@ -59,6 +59,12 @@ public class ExtractAlarmListWorkPlaceWebService extends WebService {
     }
 
     @POST
+    @Path("extract/check")
+    public void extractCheck() {
+        extractAlarmListWorkPlaceFinder.checkProcessStatus();
+    }
+
+    @POST
     @Path("extract/start")
     public JavaTypeResult<String> extractStarting() {
         return new JavaTypeResult<>(createAlarmListExtractProcessStatusWorkplaceCommandHandler.handle(new CreateAlarmListExtractProcessStatusWorkplaceCommand()));

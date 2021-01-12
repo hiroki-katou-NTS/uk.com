@@ -5,6 +5,7 @@ module nts.uk.at.kal011.a {
     const API = {
         INIT: "at/function/alarm-workplace/alarm-list/init",
         GET_CHECK_CONDITION: "at/function/alarm-workplace/alarm-list/get-check-conditions",
+        EXTRACT_CHECK: "at/function/alarm-workplace/alarm-list/extract/check"
     }
 
     @bean()
@@ -198,39 +199,44 @@ module nts.uk.at.kal011.a {
                     return
                 }
 
-                let categoryPeriods = _.map(conditionSelecteds, (condition: CheckCondition) => {
-                    switch (condition.periodType) {
-                        case PeriodType.PERIOD_DATE:
-                            return {
-                                category: condition.category,
-                                startDate: condition.dateRange().startDate.toISOString(),
-                                endDate: condition.dateRange().endDate.toISOString()
-                            }
-                        case PeriodType.PERIOD_YM:
-                            return {
-                                category: condition.category,
-                                startYm: condition.dateRangeYm().startDate,
-                                endYm: condition.dateRangeYm().endDate
-                            }
-                        case PeriodType.SINGLE_MONTH:
-                            return {
-                                category: condition.category,
-                                yearMonth: condition.yearMonth()
-                            }
+                vm.$blockui("invisible");
+                vm.$ajax(API.EXTRACT_CHECK).done(() => {
+                    let categoryPeriods = _.map(conditionSelecteds, (condition: CheckCondition) => {
+                        switch (condition.periodType) {
+                            case PeriodType.PERIOD_DATE:
+                                return {
+                                    category: condition.category,
+                                    startDate: condition.dateRange().startDate.toISOString(),
+                                    endDate: condition.dateRange().endDate.toISOString()
+                                }
+                            case PeriodType.PERIOD_YM:
+                                return {
+                                    category: condition.category,
+                                    startYm: condition.dateRangeYm().startDate,
+                                    endYm: condition.dateRangeYm().endDate
+                                }
+                            case PeriodType.SINGLE_MONTH:
+                                return {
+                                    category: condition.category,
+                                    yearMonth: condition.yearMonth()
+                                }
+                        }
+                    })
+    
+                    let modalData: any = {
+                        alarmPatternCode: vm.alarmPatternCode(),
+                        workplaceIds: vm.workplaceIds(),
+                        categoryPeriods: categoryPeriods
                     }
-                })
-
-                let modalData: any = {
-                    alarmPatternCode: vm.alarmPatternCode(),
-                    workplaceIds: vm.workplaceIds(),
-                    categoryPeriods: categoryPeriods
-                }
-                vm.$window.storage('KAL011DModalData', modalData).done(() => {
-                    vm.$window.modal('/view/kal/011/d/index.xhtml')
-                        .then((result: any) => {
-                            vm.openKal011BMOdal();
-                        });
-                });
+                    vm.$window.storage('KAL011DModalData', modalData).done(() => {
+                        vm.$window.modal('/view/kal/011/d/index.xhtml')
+                            .then((result: any) => {
+                                vm.openKal011BMOdal();
+                            });
+                    });
+                }).fail((err: any) => {
+                    vm.$dialog.error(err);
+                }).always(() => vm.$blockui("clear"));
             })
         }
 
