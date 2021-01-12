@@ -67,7 +67,7 @@ public class NoRefTimeCfmService {
                         && x.getYm().year() == year).collect(Collectors.toList());
 
                 if (CollectionUtil.isEmpty(monthTimeWps)) {
-                    // 職場IDから職場の情報をすべて取得する //TODO Q&A 38606
+                    // 職場IDから職場の情報をすべて取得する
                     List<WorkplaceInfor> wpInfos = workplaceConfigInfoAdapter.getWorkplaceInforByWkpIds(cid,
                             Collections.singletonList(workplaceId), GeneralDate.ymd(startYear, ymPeriod.start().month(), 1));
                     String wpCode = "";

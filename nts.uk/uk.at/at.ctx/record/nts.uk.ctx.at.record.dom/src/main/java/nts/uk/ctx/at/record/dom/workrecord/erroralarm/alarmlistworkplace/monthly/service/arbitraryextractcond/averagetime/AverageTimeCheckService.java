@@ -89,7 +89,7 @@ public class AverageTimeCheckService {
                     total += monthlyCalculation.getAggregateTime().getHolidayWorkTime().getTotalHolidayWorkTime().getTime().v();
                     break;
                 case TOTAL_LATE_NIGHT:
-                    // 合計値　+＝　深夜時間．所定内深夜時間　+　深夜時間．所定外深夜時間 //TODO Q&A 39056
+                    // 合計値　+＝　深夜時間．所定内深夜時間　+　深夜時間．所定外深夜時間
                     TimeMonthWithCalculation legalMidnightTime = workTime.getMidnightTime().getLegalMidnightTime();
                     IllegalMidnightTime illegalMidnightTime = workTime.getMidnightTime().getIllegalMidnightTime();
                     total += legalMidnightTime.getTime().v() + illegalMidnightTime.getTime().getTime().v();
