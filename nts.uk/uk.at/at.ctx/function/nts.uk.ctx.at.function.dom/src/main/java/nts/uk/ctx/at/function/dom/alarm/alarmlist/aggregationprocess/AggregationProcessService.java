@@ -210,35 +210,37 @@ public class AggregationProcessService {
 	 * @param runCode　自動実行コード　（Default：　”Z”）
 	 * @param counter
 	 * @param shouldStop
+	 * @param alarmPattern 自動変更の場合NULLを渡す
 	 * @return 
 	 */
 	public AlarmListResultDto processAlarmListResult(String cid, String pattentCd, 
 			List<PeriodByAlarmCategory> lstCategoryPeriod,List<String> lstSid, String runCode,
+			AlarmPatternSetting alarmPattern, List<AlarmCheckConditionByCategory> lstCondCate,
 			Consumer<Integer> counter, Supplier<Boolean> shouldStop){
 		
 		AlarmListResultDto result = new AlarmListResultDto();
 		List<AlarmExtracResult> lstExtracResult = new ArrayList<>();
 		List<CategoryCondValueDto> lstValueDto = new ArrayList<>();
-		
-		//パラメータ．パターンコードをもとにドメインモデル「アラームリストパターン設定」を取得する
-		Optional<AlarmPatternSetting> findByAlarmPatternCode = alPatternSettingRepo.findByAlarmPatternCode(cid, pattentCd);
-		
-		if(!findByAlarmPatternCode.isPresent()) {
-			throw new BusinessException("Msg_2059", pattentCd);
-		}
-		
-		AlarmPatternSetting alarmPattern = findByAlarmPatternCode.get();
-		//ドメインモデル「カテゴリ別アラームチェック条件」を取得
-		List<AlarmCheckConditionByCategory> lstCondCate = new ArrayList<>();
-		alarmPattern.getCheckConList().stream().forEach(x->{
-			List<AlarmCheckConditionByCategory> lstCond = checkConditionRepo.findByCategoryAndCode(cid, 
-					x.getAlarmCategory().value, 
-					x.getCheckConditionList());
-			lstCondCate.addAll(lstCond);
-		});
-		
-		if(lstCondCate.isEmpty()) {
-			throw new BusinessException("Msg_2038");
+		if(alarmPattern == null && !pattentCd.isEmpty()) {
+			//パラメータ．パターンコードをもとにドメインモデル「アラームリストパターン設定」を取得する
+			Optional<AlarmPatternSetting> findByAlarmPatternCode = alPatternSettingRepo.findByAlarmPatternCode(cid, pattentCd);
+			
+			if(!findByAlarmPatternCode.isPresent()) {
+				throw new BusinessException("Msg_2059", pattentCd);
+			}
+			
+			alarmPattern = findByAlarmPatternCode.get();
+			//ドメインモデル「カテゴリ別アラームチェック条件」を取得
+			alarmPattern.getCheckConList().stream().forEach(x->{
+				List<AlarmCheckConditionByCategory> lstCond = checkConditionRepo.findByCategoryAndCode(cid, 
+						x.getAlarmCategory().value, 
+						x.getCheckConditionList());
+				lstCondCate.addAll(lstCond);
+			});
+			
+			if(lstCondCate.isEmpty()) {
+				throw new BusinessException("Msg_2038");
+			}
 		}
 		
 		lstCondCate.stream().forEach(x ->{
