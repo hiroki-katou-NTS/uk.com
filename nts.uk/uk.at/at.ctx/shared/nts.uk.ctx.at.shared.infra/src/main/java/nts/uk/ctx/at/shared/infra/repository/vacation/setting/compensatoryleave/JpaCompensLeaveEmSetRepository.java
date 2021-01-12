@@ -84,7 +84,7 @@ public class JpaCompensLeaveEmSetRepository extends JpaRepository implements Com
     @Override
     public CompensatoryLeaveEmSetting find(String companyId, String employmentCode) {
         
-    	val entity = this.findEntity("KCLMT_COMPENS_LEAVE_EMP", companyId, employmentCode, KclmtCompensLeaveEmp.MAPPER);
+    	/*val entity = this.findEntity("KCLMT_COMPENS_LEAVE_EMP", companyId, employmentCode, KclmtCompensLeaveEmp.MAPPER);
     	if (entity == null) return null;
     	
     	entity.setKclmtAcquisitionEmp(
@@ -92,7 +92,12 @@ public class JpaCompensLeaveEmSetRepository extends JpaRepository implements Com
     	entity.setKctmtDigestTimeEmp(
     			this.findEntity("KCTMT_DIGEST_TIME_EMP", companyId, employmentCode, KctmtDigestTimeEmp.MAPPER));
     	
-        return new CompensatoryLeaveEmSetting(new JpaCompensLeaveEmSettingGetMemento(entity));
+        return new CompensatoryLeaveEmSetting(new JpaCompensLeaveEmSettingGetMemento(entity));*/
+    	Optional<KclmtCompensLeaveEmp> entity = this.queryProxy().find(new KclmtCompensLeaveEmpPK(companyId, employmentCode), KclmtCompensLeaveEmp.class);
+    	if(entity.isPresent()){
+    		return entity.get().toDomain();
+    	}	
+    	return null;
     }
     
     @SneakyThrows

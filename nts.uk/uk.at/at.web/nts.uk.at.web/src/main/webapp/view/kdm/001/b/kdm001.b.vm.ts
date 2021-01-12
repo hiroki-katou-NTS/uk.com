@@ -42,6 +42,30 @@
         startDate: string = '';
         endDate: string = '';
 
+        // Update ver48
+        remainingData: KnockoutObservableArray<any> = ko.observableArray([]);
+
+        residualNumber: KnockoutComputed<number> = ko.computed(() => {
+            let total = 0;
+            _.map(this.remainingData(), item => {
+                total += item.dayLetf;
+            });
+            return total;
+        });
+
+        displayResidualNumber: KnockoutComputed<string> = ko.computed(() => getText('KDM001_38', [this.residualNumber()]));
+
+        expiredNumber: KnockoutComputed<number> = ko.computed(() => {
+            let total = 0;
+            _.map(this.remainingData(), item => {
+                total += item.usedDay;
+            });
+            return total;
+        });
+
+        displayExpiredNumber: KnockoutComputed<string> = ko.computed(() => getText('KDM001_39', [this.expiredNumber()]));
+        // End update ver48
+
         constructor() {
             let self = this;
             self.initSubstituteDataList();
@@ -101,7 +125,6 @@
             }
             /** A4_3  凡例 */ 
             self.legendOptions = {											
-                // name: '#[KDM001_153]',
                 items: [
                     { labelText: nts.uk.resource.getText("KDM001_154") },
                     { labelText: nts.uk.resource.getText("KDM001_155") },
@@ -117,21 +140,14 @@
                     } else {
                         self.unknowEmployeeInfo = false;
                     }
-                    self.getSubstituteDataList(self.getSearchCondition());
+                    self.getSubstituteDataList(self.getSearchCondition(), true);
                 }
                 self.isOnStartUp = false;
             });
             self.selectedPeriodItem.subscribe(x => {
-                if (x == 0){
-                    self.startPage()
-                    block.clear();
-                    nts.uk.ui.errors.clearAll();
-                }
-                else if (x == 1){
-                    self.getSubstituteDataList(self.getSearchCondition());
-                    block.clear();
-                    nts.uk.ui.errors.clearAll();
-                }    
+                self.getSubstituteDataList(self.getSearchCondition(), true);
+                block.clear();
+                nts.uk.ui.errors.clearAll();
             });
         }
 
@@ -151,7 +167,7 @@
 
         openNewSubstituteData() {
             let self = this;
-            setShared('KDM001_I_PARAMS', { selectedEmployee: self.selectedEmployee, closure: self.closureEmploy });
+            setShared('KDM001_I_PARAMS', { selectedEmployee: self.selectedEmployee, closure: self.closureEmploy, residualNumber: self.residualNumber() });
             modal("/view/kdm/001/i/index.xhtml").onClosed(function() {
                 let resParam = getShared("KDM001_I_PARAMS_RES");
                 if (resParam) {
@@ -177,26 +193,28 @@
             }
         }
 
-        getSubstituteDataList(searchCondition: any, isShowMsg?: boolean) {
+        getSubstituteDataList(searchCondition: any, isShowMsg?: boolean): JQueryPromise<void> {
             let self = this;
+            const dfd = $.Deferred()
             if (self.selectedPeriodItem() == 1){
                 $("#daterangepicker .ntsDatepicker").trigger("validate");
             }
             if (!nts.uk.ui.errors.hasError()) {
                 service.getExtraHolidayData(searchCondition).done(function(result) {
-                    
-                    if (self.unknowEmployeeInfo){ 
-                        if (result.wkHistory){
-                            self.selectedEmployee.workplaceId = result.wkHistory.workplaceId;
-                            self.selectedEmployee.workplaceCode = result.wkHistory.workplaceCode;
-                            self.selectedEmployee.workplaceName = result.wkHistory.workplaceName;
-                            self.selectedEmployee.employeeCode = result.employeeCode;
-                            self.selectedEmployee.employeeName = result.employeeName;
-                        }
+
+                    if (result.wkHistory) {
+                        self.selectedEmployee.workplaceId = result.wkHistory.workplaceId;
+                        self.selectedEmployee.workplaceCode = result.wkHistory.workplaceCode;
+                        self.selectedEmployee.workplaceName = result.wkHistory.workplaceName;
+                        self.selectedEmployee.employeeCode = result.employeeCode;
+                        self.selectedEmployee.employeeName = result.employeeName;
                     }
                     if (result.closureEmploy && result.sempHistoryImport){
                         self.closureEmploy = result.closureEmploy;
                         self.listExtractData = result.remainingData;
+                        self.remainingData(result.remainingData);
+                        self.startDate = result.startDate;
+                        self.endDate = result.endDate;
                         self.convertToDisplayList(isShowMsg);
                         self.updateSubstituteDataList();
                         self.isHaveError(false);
@@ -216,41 +234,29 @@
                     }
                     self.subData = [];
                     self.updateSubstituteDataList();
-                    dialog.alertError({ messageId: result.messageId, messageParams: result.parameterIds })
+                    dialog.alertError({ messageId: result.messageId, messageParams: result.parameterIds });
+                    dfd.reject();
                 });
             }
+
+            return dfd.promise();
         }
 
         getSearchCondition() {
             let self = this;
             let searchCondition = null;
             if (self.selectedPeriodItem() == 1) {
-                searchCondition = { searchMode: 1, employeeId: self.selectedEmployee.employeeId, startDate: null, endDate: null };
+                searchCondition = { searchMode: 1, employeeId: self.selectedEmployee.employeeId };
             } else {
-                searchCondition = { searchMode: 0, employeeId: self.selectedEmployee.employeeId, startDate: null, endDate: null };
+                searchCondition = { searchMode: 0, employeeId: self.selectedEmployee.employeeId };
             }
             return searchCondition;
         }
 
         convertToDisplayList(isShowMsg?: boolean) {
             let self = this;
-            let totalRemain = 0, dayOffDate, remain, expired, listData = [];
+            const listData: any[] = [];
             _.forEach(self.listExtractData, data => {
-                dayOffDate = data.dayOffDate;
-                remain = data.remain;
-                expired = data.expired;
-                if (data.type ==1 ){
-                    remain = remain * -1;
-                    expired = expired * -1;
-                }
-                totalRemain += remain + expired;
-
-                if (data.unknownDate == 1) {
-                    if (!dayOffDate){
-                        dayOffDate = '';
-                    } else dayOffDate += '';
-                   
-                }
 
                 let substituedexpiredDate = '';
                 if (data.deadLine === '') {
@@ -273,11 +279,11 @@
                     `${data.occurrenceId}${data.digestionId}`,
                     data.occurrenceId,
                     data.digestionId,
-                    (_.isEmpty(data.occurrenceId) || data.occurrenceId !== 0) && _.isEmpty(data.accrualDate) ? getText('KDM001_160') : data.accrualDate, // B4_1_1
+                    !_.isEmpty(data.occurrenceId) && data.occurrenceId !== 0 && _.isEmpty(data.accrualDate) ? getText('KDM001_160') : data.accrualDate, // B4_1_1
                     data.occurrenceDay === 0 ? '' : data.occurrenceDay + getText('KDM001_27') + data.occurrenceHour, //B4_2_2
                     null,
                     substituedexpiredDate, //B4_4_2
-                    (_.isEmpty(data.digestionId) || data.digestionId !== 0) && _.isEmpty(data.digestionDay) ? getText('KDM001_160') : data.digestionDay, //B4_2_3
+                    !_.isEmpty(data.digestionId) && data.digestionId !== 0 && _.isEmpty(data.digestionDay) ? getText('KDM001_160') : data.digestionDay, //B4_2_3
                     data.digestionDays > 0 ? data.digestionDays + getText('KDM001_27') + data.digestionTimes : data.digestionTimes, //B4_2_4
                     null,
                     data.dayLetf > 0 ? data.dayLetf + getText('KDM001_27') + data.remainingHours : data.remainingHours, //B4_2_5
@@ -288,7 +294,7 @@
                 ));
 
             });
-            if (isShowMsg && self.listExtractData.length == 0) {
+            if (isShowMsg && self.listExtractData.length === 0) {
                 dialog.alertError({ messageId: 'Msg_726' });
             }
             self.subData = listData;
@@ -349,7 +355,8 @@
                                 columnKey: 'substituedWorkingHours',
                                 mergeOn: 'always',
                                 mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
-                                    this.isMergeStrategy(prevRec, curRec, columnKey)
+                                    prevRec['substituedWorkingDate'] === curRec['substituedWorkingDate']
+                                    && this.isMergeStrategy(prevRec, curRec, columnKey)
                             },
                             {
                                 columnKey: 'substituedHolidayDate',
@@ -360,9 +367,21 @@
                             {
                                 columnKey: 'substituteHolidayHours',
                                 mergeOn: 'always',
-                                mergeStrategy: (prevRec: any, curRec: any, columnKey: any) => {
-                                    this.isMergeStrategy(prevRec, curRec, columnKey)
-                                }
+                                mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
+                                    prevRec['substituedHolidayDate'] === curRec['substituedHolidayDate']
+                                    && this.isMergeStrategy(prevRec, curRec, columnKey)
+                            },
+                            {
+                                columnKey: 'remainHolidayHours',
+                                mergeOn: 'always',
+                                mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
+                                    prevRec['mergeCell'] === curRec['mergeCell'] && prevRec[columnKey] === curRec[columnKey]
+                            },
+                            {
+                                columnKey: 'expiredHolidayHours',
+                                mergeOn: 'always',
+                                mergeStrategy: (prevRec: any, curRec: any, columnKey: any) =>
+                                    prevRec['mergeCell'] === curRec['mergeCell'] && prevRec[columnKey] === curRec[columnKey]
                             },
                             {
                                 columnKey: 'delete',
@@ -378,7 +397,7 @@
                         pageSizeList : [15, 50, 100]
                     },
                 ],
-                ntsControls: [                
+                ntsControls: [
                     { name: 'ButtonCorrection', text: getText('KDM001_100'), click: (value: any) => { self.deleteHolidaySetting(value) }, controlType: 'Button' }
                 ]
                 
@@ -414,29 +433,23 @@
             block.invisible();
             service.getInfoEmLogin().done(loginerInfo => {
                 service.getWpName().then((wp: any) => {
-                    if (wp == null || wp.workplaceId == null || wp.workplaceId == "") {
-                        dialog.alertError({ messageId: "Msg_504" }).then(() => {
-                            nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
-                        });
-                    } else {
-                        if (!_.find(self.employeeInputList(), item => item.id === loginerInfo.sid)) {
-                            self.employeeInputList.push(new EmployeeKcp009(loginerInfo.sid,
-                                loginerInfo.employeeCode, loginerInfo.employeeName, wp.name, wp.name));
+                    if (!_.find(self.employeeInputList(), item => item.id === loginerInfo.sid)) {
+                        self.employeeInputList.push(new EmployeeKcp009(loginerInfo.sid,
+                            loginerInfo.employeeCode, loginerInfo.employeeName, wp.name, wp.name));
 
-                            self.selectedEmployee = {
-                                employeeId: loginerInfo.sid, employeeCode: loginerInfo.employeeCode, employeeName: loginerInfo.employeeName,
-                                workplaceId: wp.workplaceId, workplaceCode: wp.code, workplaceName: wp.name
-                            };
-                        }
-                        self.initKCP009();
-                        dfd.resolve();
+                        self.selectedEmployee = {
+                            employeeId: loginerInfo.sid, employeeCode: loginerInfo.employeeCode, employeeName: loginerInfo.employeeName,
+                            workplaceId: wp.workplaceId, workplaceCode: wp.code, workplaceName: wp.name
+                        };
                     }
+                    setTimeout(() => {
+                        self.initKCP009();
+                    }, 10);
+                    dfd.resolve();
                 });
-                
                 const employeeId = self.selectedEmployee ? self.selectedEmployee.employeeId : null;
                 searchCondition = { searchMode: self.selectedPeriodItem(), employeeId: employeeId };
                 service.getExtraHolidayData(searchCondition).done(result => {
-                    console.log("Data: ",result);
                     if (result.closureEmploy && result.sempHistoryImport) {
                         let wkHistory = result.wkHistory;
                         self.closureEmploy = result.closureEmploy;
@@ -447,17 +460,17 @@
                             self.employeeInputList.push(new EmployeeKcp009(loginerInfo.sid,
                                 loginerInfo.employeeCode, loginerInfo.employeeName, wkHistory.workplaceName, wkHistory.wkpDisplayName));
                         self.listExtractData = result.remainingData;
+                        self.remainingData(result.remainingData);
                         self.totalRemainingNumber = result.totalRemainingNumber;
-                        self.convertToDisplayList();
+                        self.startDate = result.startDate;
+                        self.endDate = result.endDate;
+                        self.convertToDisplayList(true);
                         self.updateSubstituteDataList();
                         self.isHaveError(false);
                         if (result.dispExpiredDate){
                             self.dispExpiredDate(result.dispExpiredDate);
                         }
-                        self.initKCP009();
                         self.disableLinkedData();
-                        self.startDate = result.startDate;
-                        self.endDate = result.endDate;
                     }else{
                         self.subData = [];
                         self.updateSubstituteDataList();
@@ -472,13 +485,15 @@
                     if (result.messageId && result.messageId === 'Msg_1731') {
                         self.isHaveError(true);
                     }
-                    dialog.alertError({ messageId: result.messageId, messageParams: result.parameterIds }).then(function() { block.clear(); });
+                    
+                    dialog.alertError({ messageId: result.messageId, messageParams: result.parameterIds }).then(() => block.clear());
                     dfd.reject();
                 });
             }).fail(function(result) {
-                dialog.alertError({ messageId: result.messageId, messageParams: result.parameterIds }).then(function() { block.clear(); });
+                dialog.alertError({ messageId: result.messageId, messageParams: result.parameterIds }).then(() => block.clear());
                 dfd.reject();
             });
+
             return dfd.promise();
         }
 
@@ -559,29 +574,25 @@
         deleteHolidaySetting(value: any): void {
             block.invisible();
             //確認メッセージ（Msg_18）を表示する
-            dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                let self = this, rowDataInfo
-                if (value.dataType == 0) {
-                    rowDataInfo = _.find(self.listExtractData, x => {
-                        return x.id === value.id;
-                    });
-                } else {
-                    rowDataInfo = _.find(self.listExtractData, x => {
-                        return x.comDayOffID === value.id;
-                    });
-                }
-                let command = {
-                        leaveId: value.occurrenceId,
-                        comDayOffID: value.digestionId
+            dialog.confirm({ messageId: 'Msg_18' }).ifYes(() => {
+                const vm = this;
+                const mergeCell = value.mergeCell;
+                const listItem: SubstitutedData[] = _.filter(vm.subData,
+                    item => _.toNumber(item.mergeCell) === _.toNumber(mergeCell));
+                const leaveId = _.map(listItem, item => item.occurrenceId);
+                const comDayOffID = _.map(listItem, item => item.digestionId);
+                const command = {
+                    leaveId: leaveId,
+                    comDayOffID: comDayOffID
                 };
                 service.deleteHolidaySetting(command)
-                    .then(() => dialog.info({ messageId: "Msg_16" }))
-                    .fail(error => dialog.alertError(error))
-                    .always(() => {
-                        self.startPage()
-                        self.getSubstituteDataList(self.getSearchCondition());
-                        block.clear();
-                    });
+                    .then(() => dialog.info({ messageId: 'Msg_16' })
+                        .then(() => vm.getSubstituteDataList(vm.getSearchCondition(), true)))
+                    .fail(error => {
+                        dialog.alertError(error);
+                        vm.getSubstituteDataList(vm.getSearchCondition(), true);
+                    })
+                    .always(() => block.clear());
             })
             .then(() => block.clear());
         }

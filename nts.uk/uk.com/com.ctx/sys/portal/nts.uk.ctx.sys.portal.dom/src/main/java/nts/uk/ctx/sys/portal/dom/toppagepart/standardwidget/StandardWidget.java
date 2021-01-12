@@ -1,8 +1,10 @@
 package nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePart;
@@ -14,6 +16,7 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.size.Size;
  *
  */
 @Getter
+@Setter
 public class StandardWidget extends TopPagePart {
 	
 	// 勤務状況の詳細設定
@@ -24,7 +27,7 @@ public class StandardWidget extends TopPagePart {
 
 	// 標準ウィジェット種別
 	private StandardWidgetType standardWidgetType;
-
+	
 	// 申請状況の詳細設定
 	private List<ApplicationStatusDetailedSetting> appStatusDetailedSettingList;
 	
@@ -48,11 +51,22 @@ public class StandardWidget extends TopPagePart {
 			List<ApprovedAppStatusDetailedSetting> approvedAppStatusDetailedSettingList,
 			StandardWidgetType standardWidgetType,
 			List<ApplicationStatusDetailedSetting> appStatusDetailedSettingList) {
+		
 		super(companyID, toppagePartID, code, name, type, size);
-		this.detailedWorkStatusSettingList = detailedWorkStatusSettingList;
-		this.approvedAppStatusDetailedSettingList = approvedAppStatusDetailedSettingList;
+		
+		this.detailedWorkStatusSettingList = new ArrayList<>();
+		this.approvedAppStatusDetailedSettingList = new ArrayList<>();
+		this.appStatusDetailedSettingList = new ArrayList<>();
+		
 		this.standardWidgetType = standardWidgetType;
-		this.appStatusDetailedSettingList = appStatusDetailedSettingList;
+		if(standardWidgetType == StandardWidgetType.WORK_STATUS) {
+			this.detailedWorkStatusSettingList = detailedWorkStatusSettingList;
+		}else if(standardWidgetType == StandardWidgetType.APPROVE_STATUS) {
+			this.approvedAppStatusDetailedSettingList = approvedAppStatusDetailedSettingList;
+		}else if(standardWidgetType == StandardWidgetType.APPLICATION_STATUS) {
+			this.appStatusDetailedSettingList = appStatusDetailedSettingList;
+		}
+		
 	}
 
 }

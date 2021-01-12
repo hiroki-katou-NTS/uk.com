@@ -172,7 +172,7 @@ module cmm045.shr {
 			/** 入力者名称 */
 			opEntererName: string;
 			/** 背景色 */
-			opBackgroundColor: number;
+			opBackgroundColor: string;
 			/** 表示行数超 */
 			opMoreThanDispLineNO: boolean;
 
@@ -217,7 +217,7 @@ module cmm045.shr {
 		        this.details = '';
 		        this.appName = '';
 		        this.appAtr = '';
-		        this.checkAtr = this.opApprovalFrameStatus == 0 ? true : false;
+		        this.checkAtr = this.reflectionStatus == 'CMM045_62' ? true : false;
 		        this.version = 0;
 		        this.checkTimecolor = 0;
 		        this.appIdSub = '';
@@ -273,7 +273,7 @@ module cmm045.shr {
 			/** 入力者名称 */
 			opEntererName: string;
 			/** 背景色 */
-			opBackgroundColor: number;
+			opBackgroundColor: string;
 			/** 表示行数超 */
 			opMoreThanDispLineNO: boolean;
 		}
@@ -432,12 +432,23 @@ module cmm045.shr {
 		}
 		export class columnWidth {
 			appLstAtr: boolean;
-			width: number;
+			width: any;
+			cID: string;
+			sID: string;
 
-			constructor(appLstAtr: boolean, width: number) {
+			constructor(appLstAtr: boolean, width: any, cID: string, sID: string) {
 				this.appLstAtr = appLstAtr;
-				this.width = width
+				this.width = width;
+				this.cID = cID;
+				this.sID = sID;
 			}
+		}
+		
+		export enum ConfirmDialog {
+			CONFIRM = 0,
+			NOT_CONFIRM = 1,
+			CONFIRM_ALL = 2,
+			NOT_CONFIRM_ALL = 3
 		}
     }
 }

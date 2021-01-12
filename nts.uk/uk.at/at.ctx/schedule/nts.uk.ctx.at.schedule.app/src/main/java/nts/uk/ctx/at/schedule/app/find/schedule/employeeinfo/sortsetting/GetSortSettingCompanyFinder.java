@@ -28,19 +28,15 @@ public class GetSortSettingCompanyFinder {
 
 	public SortSettingDto getSortSetting() {
 		String companyID = AppContexts.user().companyId();
-		SortSettingDto result = new SortSettingDto();
+		//SortSettingDto result = new SortSettingDto();
 		// 指定した会社の並び替え設定を取得する
 		Optional<SortSetting> data = repo.get(companyID);
-		List<OrderListDto> lstOrders = new ArrayList<>();
+		//List<OrderListDto> lstOrders = new ArrayList<>();
 		List<OrderListDto> lstOrderReal = new ArrayList<>();
-		
-		lstOrders.add(new OrderListDto(0, I18NText.getText("KSU001_4048")));
-		lstOrders.add(new OrderListDto(0, I18NText.getText("KSU001_4049")));
-		lstOrders.add(new OrderListDto(0, I18NText.getText("KSU001_4050")));
-		lstOrders.add(new OrderListDto(0, I18NText.getText("Com_Jobtitle")));
-		lstOrders.add(new OrderListDto(0, I18NText.getText("Com_Class")));
+		List<OrderListDto> lstOrder = new ArrayList<>();
+
 		if (data.isPresent()) {
-			List<OrderListDto> lstOrder = data.get().getOrderedList().stream()
+		 lstOrder = data.get().getOrderedList().stream()
 					.map(x -> {
 						String name = "";
 						if(x.getType().value == 0){
@@ -59,14 +55,9 @@ public class GetSortSettingCompanyFinder {
 							name = I18NText.getText("Com_Class");
 						}
 						return new OrderListDto(x.getSortOrder().value, name);}).collect(Collectors.toList());
-			if (!lstOrder.isEmpty()) {
-				lstOrders.removeAll(lstOrder);
-				lstOrderReal.addAll(lstOrders);
-
-				return new SortSettingDto(companyID, lstOrder ,lstOrderReal);
-			}
+			return new SortSettingDto(companyID, lstOrder ,lstOrderReal);
 		}
-		return new SortSettingDto(companyID, lstOrders ,lstOrderReal);
+		return new SortSettingDto(companyID, lstOrder ,lstOrderReal);
 
 	}
 }

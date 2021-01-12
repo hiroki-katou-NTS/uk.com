@@ -7,6 +7,7 @@ import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;
+import nts.uk.shr.com.primitive.ZeroPaddedCode;
 
 /**
  * @author hungnm
@@ -14,6 +15,7 @@ import nts.uk.shr.com.primitive.CodePrimitiveValue;
 // 加給設定コード
 @StringCharType(CharType.ALPHA_NUMERIC)
 @StringMaxLength(3)
+@ZeroPaddedCode
 public class BonusPaySettingCode extends CodePrimitiveValue<BonusPaySettingCode> {
 
 	/** The Constant serialVersionUID. */

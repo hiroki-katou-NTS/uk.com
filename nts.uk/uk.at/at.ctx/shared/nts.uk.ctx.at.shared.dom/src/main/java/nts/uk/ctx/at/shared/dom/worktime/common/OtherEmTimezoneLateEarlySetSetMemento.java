@@ -19,13 +19,7 @@ public interface OtherEmTimezoneLateEarlySetSetMemento {
 	void setDelTimeRoundingSet(TimeRoundingSetting delTimeRoundingSet);
 	
 	
-	/**
-	 * Sets the stamp exactly time is late early.
-	 *
-	 * @param stampExactlyTimeIsLateEarly the new stamp exactly time is late early
-	 */
-	void setStampExactlyTimeIsLateEarly(boolean stampExactlyTimeIsLateEarly);
-	
+
 	
 	/**
 	 * Sets the grace time set.

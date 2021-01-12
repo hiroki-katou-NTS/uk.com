@@ -4,9 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
@@ -18,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 //就業時間帯の打刻設定
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class WorkTimezoneStampSet extends WorkTimeDomainObject implements Cloneable{
 
 	/** The rounding sets. */
@@ -88,5 +91,22 @@ public class WorkTimezoneStampSet extends WorkTimeDomainObject implements Clonea
 			throw new RuntimeException("WorkTimezoneStampSet clone error.");
 		}
 		return cloned;
+	}
+	
+	/**
+	 * デフォルト設定のインスタンスを生成する
+	 * @return 就業時間帯の打刻設定
+	 */
+	public static WorkTimezoneStampSet generateDefault(){
+		WorkTimezoneStampSet domain = new WorkTimezoneStampSet();
+		domain.roundingTime = RoundingTime.generateDefault();
+		domain.prioritySets = new ArrayList<>();
+		domain.prioritySets.add(new PrioritySetting(MultiStampTimePiorityAtr.BEFORE_PIORITY, StampPiorityAtr.GOING_WORK));
+		domain.prioritySets.add(new PrioritySetting(MultiStampTimePiorityAtr.AFTER_PIORITY, StampPiorityAtr.LEAVE_WORK));
+		domain.prioritySets.add(new PrioritySetting(MultiStampTimePiorityAtr.BEFORE_PIORITY, StampPiorityAtr.ENTERING));
+		domain.prioritySets.add(new PrioritySetting(MultiStampTimePiorityAtr.AFTER_PIORITY, StampPiorityAtr.EXIT));
+		domain.prioritySets.add(new PrioritySetting(MultiStampTimePiorityAtr.BEFORE_PIORITY, StampPiorityAtr.PCLOGIN));
+		domain.prioritySets.add(new PrioritySetting(MultiStampTimePiorityAtr.AFTER_PIORITY, StampPiorityAtr.PC_LOGOUT));
+		return domain;
 	}
 }

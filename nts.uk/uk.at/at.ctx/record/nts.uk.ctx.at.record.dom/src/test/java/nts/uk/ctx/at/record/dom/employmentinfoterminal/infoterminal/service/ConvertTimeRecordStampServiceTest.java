@@ -24,11 +24,12 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTermi
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal.EmpInfoTerminalBuilder;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalName;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.IPAddress;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.FullIpAddress;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.MacAddress;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ModelEmpInfoTer;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.MonitorIntervalTime;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.OutPlaceConvert;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.PartialIpAddress;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting.ReqSettingBuilder;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive.StampReceptionData;
@@ -59,14 +60,15 @@ public class ConvertTimeRecordStampServiceTest {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		empInfoTerCode = new EmpInfoTerminalCode(1);
+		empInfoTerCode = new EmpInfoTerminalCode("1");
 		contractCode = new ContractCode("1");
 	}
 
 	@Before
 	public void setUp() throws Exception {
-		empInfoTer = Optional.of(new EmpInfoTerminalBuilder(Optional.of(new IPAddress("192.168.1.1")),
-				new MacAddress("AABBCCDD"), new EmpInfoTerminalCode(1), Optional.of(new EmpInfoTerSerialNo("1")),
+		empInfoTer = Optional.of(new EmpInfoTerminalBuilder(Optional.of(new FullIpAddress(
+				new PartialIpAddress(192), new PartialIpAddress(168), new PartialIpAddress(1), new PartialIpAddress(1))),
+				new MacAddress("AABBCCDD"), new EmpInfoTerminalCode("1"), Optional.of(new EmpInfoTerSerialNo("1")),
 				new EmpInfoTerminalName(""), new ContractCode("1"))
 						.createStampInfo(new CreateStampInfo(new OutPlaceConvert(NotUseAtr.NOT_USE, Optional.empty()),
 								new ConvertEmbossCategory(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE), Optional.empty()))
@@ -90,8 +92,9 @@ public class ConvertTimeRecordStampServiceTest {
 				.overTimeHours("1101").midnightTime("1201").build();
 
 		Optional<EmpInfoTerminal> empInfoTer = Optional
-				.of(new EmpInfoTerminalBuilder(Optional.of(new IPAddress("192.168.1.1")), new MacAddress("AABBCCDD"),
-						new EmpInfoTerminalCode(1), Optional.of(new EmpInfoTerSerialNo("1")),
+				.of(new EmpInfoTerminalBuilder(Optional.of(new FullIpAddress(
+						new PartialIpAddress(192), new PartialIpAddress(168), new PartialIpAddress(1), new PartialIpAddress(1))), new MacAddress("AABBCCDD"),
+						new EmpInfoTerminalCode("1"), Optional.of(new EmpInfoTerSerialNo("1")),
 						new EmpInfoTerminalName(""), new ContractCode("1")).createStampInfo(null)
 								.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1)))
 								.build());

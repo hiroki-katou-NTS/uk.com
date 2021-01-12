@@ -7,7 +7,7 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.VerticalTotalMethodOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.AggregateMethodOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.VacationAddSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.workdays.AggregateAbsenceDays;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.workdays.workdays.AggregateSpcVacationDays;
@@ -75,7 +75,7 @@ public class WorkTypeDaysCountTable {
 	private boolean continuousWorkDay;
 	
 	/** 月別実績の縦計方法 */
-	private Optional<VerticalTotalMethodOfMonthly> verticalTotalMethodOpt;
+	private Optional<AggregateMethodOfMonthly> verticalTotalMethodOpt;
 	
 	/**
 	 * コンストラクタ
@@ -84,7 +84,7 @@ public class WorkTypeDaysCountTable {
 	 * @param verticalTotalMethod 月別実績の縦計方法　（特定日日数の振分用）
 	 */
 	public WorkTypeDaysCountTable(WorkType workType,
-			VacationAddSet vacationAddSet, Optional<VerticalTotalMethodOfMonthly> verticalTotalMethod){
+			VacationAddSet vacationAddSet, Optional<AggregateMethodOfMonthly> verticalTotalMethod){
 		
 		// init
 		this.attendanceDays = new AttendanceDaysMonth(0.0);

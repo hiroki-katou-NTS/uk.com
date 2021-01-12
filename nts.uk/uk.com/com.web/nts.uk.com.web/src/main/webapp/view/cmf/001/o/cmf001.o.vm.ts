@@ -182,15 +182,15 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 //表示するデータがある場合   
                 if (data && data.length) {
                     let _rspList: Array<model.StandardAcceptanceConditionSetting> = _.map(data, rsp => {
-                        return new model.StandardAcceptanceConditionSetting(rsp.systemType, rsp.conditionSettingCode,
-                            rsp.conditionSettingName, rsp.deleteExistData, rsp.acceptMode, rsp.csvDataItemLineNumber,
+                        return new model.StandardAcceptanceConditionSetting(rsp.systemType, rsp.conditionSetCode,
+                            rsp.conditionSetName, rsp.deleteExistData, rsp.acceptMode, rsp.csvDataItemLineNumber,
                             rsp.csvDataStartLine, rsp.characterCode, rsp.deleteExistDataMethod, rsp.categoryId);
                     });
                     self.listCondition(_rspList);
 
                     //取得した設定を「条件設定一覧」に表示する
-                    self.selectedConditionCd(self.listCondition()[0].conditionSettingCode());
-                    self.selectedConditionName(self.listCondition()[0].conditionSettingName());
+                    self.selectedConditionCd(self.listCondition()[0].conditionSetCode());
+                    self.selectedConditionName(self.listCondition()[0].conditionSetName());
                 }
                 //取得データが0件の場合      
                 else {

@@ -6,8 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.screen.at.app.ktgwidget.find.dto.ApprovedAppStatusDetailedSettingDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.ClosureIdPresentClosingPeriodDto;
+import nts.uk.screen.at.app.ktgwidget.find.dto.StatusDetailedSettingDto;
 
 /**
  * UKDesign.UniversalK.就業.KTG_ウィジェット.KTG001_承認すべきデータ.アルゴリズム.承認すべきデータのウィジェットを起動する.承認すべきデータの実行結果
@@ -39,7 +39,7 @@ public class ApprovedDataExecutionResultDto {
 	private Boolean agrDisplayAtr = false;
 
 	// 承認すべき申請状況の詳細設定
-	private List<ApprovedAppStatusDetailedSettingDto> approvedAppStatusDetailedSettings;
+	private List<StatusDetailedSettingDto> approvedAppStatusDetailedSettings;
 
 	// 締めID, 現在の締め期間
 	private List<ClosureIdPresentClosingPeriodDto> closingPeriods;

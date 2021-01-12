@@ -162,15 +162,15 @@ module nts.uk.at.view.kal004.share.model {
     //Command
     export class AddAlarmPatternSettingCommand {
         alarmPatternCD: string;
-        alarmPatterName: string;
+        alarmPatternName: string;
         alarmPerSet: AlarmPermissionSettingCommand;
-        checkConditonList: Array<CheckConditionCommand>;
+        checkConditionList: Array<CheckConditionCommand>;
 
-        constructor(alarmPatternCD: string, alarmPatterName: string, alarmPerSet: AlarmPermissionSettingCommand, checkConditonList: Array<CheckConditionCommand>) {
+        constructor(alarmPatternCD: string, alarmPatternName: string, alarmPerSet: AlarmPermissionSettingCommand, checkConditionList: Array<CheckConditionCommand>) {
             this.alarmPatternCD = alarmPatternCD;
-            this.alarmPatterName = alarmPatterName;
+            this.alarmPatternName = alarmPatternName;
             this.alarmPerSet = alarmPerSet;
-            this.checkConditonList = checkConditonList;
+            this.checkConditionList = checkConditionList;
         }
     }
 

@@ -10,10 +10,13 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BundledBusinessException;
+import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.attendanceitemname.AttendanceItemName;
+import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemDto;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameDomainService;
+import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameService;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceTypeRepository;
-//import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.converter.MonthlyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.function.dom.dailyattendanceitem.FormCanUsedForTime;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
@@ -50,6 +53,10 @@ public class AttendanceIdItemFinder {
 
 	@Inject
 	private MonthlyAttendanceItemRepository monthlyAtRepo;
+	
+	/** The attendance item name service */
+	@Inject
+	private AttendanceItemNameService attendanceItemNameService;
 
 	private static final int DAILY = 1;
 	private static final int USE = 1;
@@ -155,19 +162,42 @@ public class AttendanceIdItemFinder {
 					.sorted(Comparator.comparing(AttendanceItemName::getAttendanceItemId))
 					.map(e -> new AttendanceIdItemDto(e.getAttendanceItemId(), e.getAttendanceItemName(), 0))
 					.collect(Collectors.toList());
-
-			// map attendanceId,attendanceName,ScreenUseItem
-			// attendanceItemList.forEach(attendanceItem -> {
-			// for (AttendanceItemName attendanceName : monthlyAtNameList) {
-			// if (attendanceItem.getAttendanceItemId() ==
-			// attendanceName.getAttendanceItemId())
-			// attendanceItem.setAttendanceItemName(attendanceName.getAttendanceItemName());
-			// }
-			// });
-
-			// return attendanceItemList.stream().filter(e ->
-			// e.getAttendanceItemName() != null)
-			// .collect(Collectors.toList());
 		}
 	}
+	
+	/**
+	 * Get daily attendance item attributes
+	 * @return List attribute of attendance item
+	 */
+	public List<AttendanceItemDto> getDailyAttendanceItemAtrs() {
+		String companyId = AppContexts.user().companyId();
+
+		// 画面で使用可能な日次勤怠項目を取得する
+		List<Integer> attendanceIdList = this.attendanceItemNameService.getDailyAttendanceItemsAvaiable(
+				companyId
+				, FormCanUsedForTime.ATTENDANCE_BOOK
+				, TypeOfItem.Daily);
+		
+		// 日次勤怠項目に対応する名称、属性を取得する 
+		return this.attendanceItemNameService.getDailyAttendanceItemNameAndAttr(companyId, attendanceIdList);
+	}
+	
+	/**
+	 * Get monthly attendance item attributes
+	 * @return List attribute of attendance item
+	 */
+	public List<AttendanceItemDto> getMonthlyAttendanceItemAtrs() {
+		String companyId = AppContexts.user().companyId();
+
+		// 画面で使用可能な日次勤怠項目を取得する
+		List<Integer> attendanceIdList = this.attendanceItemNameService.getMonthlyAttendanceItemsAvaiable(
+				companyId
+				, FormCanUsedForTime.ATTENDANCE_BOOK
+				, TypeOfItem.Monthly);
+
+		// 日次勤怠項目に対応する名称、属性を取得する 
+		return this.attendanceItemNameService.getMonthlyAttendanceItemNameAndAttr(companyId, attendanceIdList);
+		
+	}
+
 }

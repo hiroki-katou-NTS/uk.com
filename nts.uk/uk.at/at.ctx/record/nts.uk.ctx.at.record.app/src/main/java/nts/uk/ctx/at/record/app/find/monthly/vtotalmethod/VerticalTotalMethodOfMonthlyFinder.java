@@ -5,7 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.VerticalTotalMethodOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.AggregateMethodOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.VerticalTotalMethodOfMonthlyRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -29,10 +29,10 @@ public class VerticalTotalMethodOfMonthlyFinder {
 	public VerticalTotalMethodOfMonthlyDto findSetting () {
 		String companyId = AppContexts.user().companyId();
 		
-		Optional<VerticalTotalMethodOfMonthly> optSetting = repository.findByCid(companyId);
+		Optional<AggregateMethodOfMonthly> optSetting = repository.findByCid(companyId);
 		
 		if (optSetting.isPresent()) {
-			VerticalTotalMethodOfMonthly setting = optSetting.get();
+			AggregateMethodOfMonthly setting = optSetting.get();
 			VerticalTotalMethodOfMonthlyDto dto = new VerticalTotalMethodOfMonthlyDto();
 			dto.setAttendanceItemCountingMethod(setting.getTransferAttendanceDays().getTADaysCountCondition().value);
 			return dto;

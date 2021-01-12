@@ -28,9 +28,9 @@ const max = function (value: number | Date, max: number | Date, rule: IRule) {
                     return ['MsgB_39', `${rule.min}`, `${rule.mantissaMaxLength}`];
                 }
             case 'Date':
-                return ['FND_E_INTEGER_MIN', constr];
+                return ['FND_E_DATE_MAX', constr];
             case 'Time':
-                return ['FND_E_INTEGER_MAX', constr];
+                return ['FND_E_TIME_MAX', constr];
             case 'Clock':
                 return ['MsgB_45', TimeWithDay.toString(rule.min as number), TimeWithDay.toString(rule.max as number)];
             case 'TimePoint':

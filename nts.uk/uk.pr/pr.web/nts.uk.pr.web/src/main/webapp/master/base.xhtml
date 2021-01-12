@@ -13,6 +13,13 @@
 	<com:viewcontext />
 	<com:scriptfile set="BASIC" />
 	<ui:insert name="htmlHead" />
+	<com:scriptfile set="BASIC" />
+	<com:scriptfile path="/view/ccg/020/a/ccg020.a.vm.js" of="nts.uk.com.web" />
+	<com:stylefile path="/view/ccg/020/a/ccg020.a.style.css" of="nts.uk.com.web" />
+	<com:scriptfile path="/view/ccg/003/a/ccg003.a.vm.js" of="nts.uk.com.web" />
+	<com:ValidatorScript>
+		nts.uk.ctx.sys.portal.dom.generalsearch.SearchContent
+	</com:ValidatorScript>
 </h:head>
 
 <h:body>
@@ -27,6 +34,7 @@
 									<img src="#{request.contextPath}/master/images/kinjirou.png" />
 								</div>
 								<div id="user-info" class="cf">
+									<ccg020-component></ccg020-component>
 									<div id="company" class="cf"></div>
 									<div id="user" class="cf"></div>
 								</div>

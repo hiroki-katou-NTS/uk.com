@@ -6,6 +6,7 @@ import * as moment from 'moment';
 @component({
     name: 'cmms45componentsapp3',
     template: require('./index.vue'),
+    style: require('./style.scss'),
     validations: {},
     directives: {
         'date': {

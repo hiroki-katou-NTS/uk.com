@@ -68,4 +68,10 @@ public class AnnualPaidLeaveSettingFindDto {
     
     /** The round processing classification. */
     public Integer roundProcessCla;
+    
+    public int  timeOfDayReference;
+    
+    public Integer unifromTime;
+    
+    public Integer contractTimeRound;
 }

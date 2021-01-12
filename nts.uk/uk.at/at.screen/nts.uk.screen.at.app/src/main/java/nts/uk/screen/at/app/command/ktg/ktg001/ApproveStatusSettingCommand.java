@@ -4,12 +4,14 @@ import java.util.List;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.screen.at.app.ktgwidget.find.dto.ApprovedAppStatusDetailedSettingDto;
+import nts.uk.screen.at.app.ktgwidget.find.dto.StatusDetailedSettingDto;
 
 @Data
 @NoArgsConstructor
 public class ApproveStatusSettingCommand {
+	
 	String topPagePartName;
-	List<ApprovedAppStatusDetailedSettingDto> approvedAppStatusDetailedSettings;
+	
+	List<StatusDetailedSettingDto> approvedAppStatusDetailedSettings;
 
 }

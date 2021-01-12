@@ -238,4 +238,11 @@ public class LeaveEarlyTimeOfDaily {
 		}
 		return result;
 	}
+	
+	public void  resetData() {
+		this.leaveEarlyTime = TimeWithCalculation.sameTime(new AttendanceTime(0));
+		this.leaveEarlyDeductionTime = TimeWithCalculation.sameTime(new AttendanceTime(0));
+		this. timePaidUseTime =  TimevacationUseTimeOfDaily.defaultValue();
+		this.intervalTime =  IntervalExemptionTime.defaultValue();
+	}
 }

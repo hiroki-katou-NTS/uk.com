@@ -4,6 +4,7 @@ module nts.uk.at.kaf021.b {
     import common = nts.uk.at.kaf021.common;
     import formatYearMonth = nts.uk.time.formatYearMonth;
     import validation = nts.uk.ui.validation;
+    import parseTime = nts.uk.time.parseTime;
 
     const API = {
         REGISTER_MONTH: 'at/record/monthly/agreement/monthly-result/special-provision/register-month',
@@ -15,6 +16,7 @@ module nts.uk.at.kaf021.b {
         datas: Array<EmployeeAgreementTimeNew> = [];
         appType: common.AppTypeEnum = null;
         processingMonth: number;
+        year: number;
 
         yearTimeValidation = new validation.TimeValidator(this.$i18n("KAF021_18"), "AgreementOneYearTime", { required: true, valueType: "Clock", inputFormat: "hh:mm", outputFormat: "time", mode: "time" });
         reasonsValidation = new validation.StringValidator(this.$i18n("KAF021_19"), "ReasonsForAgreement", { required: true });
@@ -58,14 +60,10 @@ module nts.uk.at.kaf021.b {
 
         loadMGrid() {
             const vm = this;
-            let height = $(window).height() - 90 - 289;
-            let width = $(window).width() + 20 - 1250;
 
             new nts.uk.ui.mgrid.MGrid($("#grid")[0], {
-                width: "1170px",
-                height: "200px",
-                subWidth: width + "px",
-                subHeight: height + "px",
+                subWidth: "60px",
+                subHeight: "290px",
                 headerHeight: '60px',
                 rowHeight: '40px',
                 dataSource: vm.datas,
@@ -75,7 +73,7 @@ module nts.uk.at.kaf021.b {
                 virtualization: true,
                 virtualizationMode: 'continuous',
                 enter: 'right',
-                autoFitWindow: false,
+                autoFitWindow: true,
                 hidePrimaryKey: true,
                 columns: vm.getColumns(),
                 ntsControls: [
@@ -205,6 +203,7 @@ module nts.uk.at.kaf021.b {
 
             let datas: Array<EmployeeAgreementTimeNew> = [];
             _.each(params.datas, (item: any) => {
+                vm.year =  item.year;
                 let data: EmployeeAgreementTimeNew = {
                     employeeId: item.employeeId,
                     wkpName: item.wkpName,
@@ -213,23 +212,14 @@ module nts.uk.at.kaf021.b {
                     monthStr: item["month" + month + "Str"],
                     monthTime: item["month" + month + "Time"],
                     monthMaxTime: item["month" + month + "MaxTime"],
-                    monthUpperLimit: item["month" + month + "UpperLimit"],
-                    monthTimeStr: item["month" + month + "TimeStr"],
-                    monthMaxTimeStr: item["month" + month + "MaxTimeStr"],
-                    monthUpperLimitStr: item["month" + month + "UpperLimitStr"],
                     monthError: item["month" + month + "Error"],
-                    monthAlarm: item["month" + month + "Alarm"],
+                    monthErrorStr: parseTime(item["month" + month + "Error"], true).format(),
 
                     year: item.year,
                     yearStr: item.yearStr,
                     yearTime: item.yearTime,
-                    yearMaxTime: item.yearMaxTime,
-                    yearUpperLimit: item.yearUpperLimit,
-                    yearTimeStr: item.yearTimeStr,
-                    yearMaxTimeStr: item.yearMaxTimeStr,
-                    yearUpperLimitStr: item.yearUpperLimitStr,
                     yearError: item.yearError,
-                    yearAlarm: item.yearAlarm,
+                    yearErrorStr: parseTime(item.yearError, true).format(),
 
                     monthAverage2: item.monthAverage2,
                     monthAverage2Str: item.monthAverage2Str,
@@ -291,9 +281,9 @@ module nts.uk.at.kaf021.b {
                         /** B4_10 */
                         exceededNumber: item.exceededNumber,
                         /** B4_11 */
-                        monthUpperLimit: 0,
+                        monthError: 0,
                         /** B4_11 */
-                        yearUpperLimit: item.yearUpperLimit
+                        yearError: item.yearError
                     };
                     let commandYear: RegisterAppSpecialProvisionYearCommand = {
                         content: content,
@@ -344,9 +334,9 @@ module nts.uk.at.kaf021.b {
                         /** B4_10 */
                         exceededNumber: item.exceededNumber,
                         /** B4_11 */
-                        monthUpperLimit: item.monthUpperLimit,
+                        monthError: item.monthError,
                         /** B4_11 */
-                        yearUpperLimit: 0
+                        yearError: 0
                     };
                     let commandYear: RegisterAppSpecialProvisionMonthCommand = {
                         content: content,
@@ -420,7 +410,7 @@ module nts.uk.at.kaf021.b {
 
         getDate() {
             const vm = this;
-            let date = new Date(formatYearMonth(vm.processingMonth));
+            let date = common.getProcessingDate(vm.processingMonth);
             let month = date.getMonth();
             if (vm.appType == common.AppTypeEnum.NEXT_MONTH) {
                 month = date.getMonth() + 1;
@@ -435,15 +425,17 @@ module nts.uk.at.kaf021.b {
 
         getYear() {
             const vm = this;
-            return Number(moment(vm.getDate()).format("YYYY"));
+            return vm.year;
         }
 
         getCurrentMaxKey() {
             const vm = this;
             if (vm.isYearMode()) {
-                return "yearUpperLimitStr";
+                //return "yearUpperLimitStr";
+                return "yearErrorStr";
             } else {
-                return "monthUpperLimitStr";
+                //return "monthUpperLimitStr";
+                return "monthErrorStr";
             }
         }
 
@@ -476,23 +468,14 @@ module nts.uk.at.kaf021.b {
         monthStr: any;
         monthTime: any;
         monthMaxTime: any;
-        monthUpperLimit: any;
-        monthTimeStr: any;
-        monthMaxTimeStr: any;
-        monthUpperLimitStr: any;
         monthError: any;
-        monthAlarm: any;
+        monthErrorStr: any;
 
         year: any;
         yearStr: any;
         yearTime: any;
-        yearMaxTime: any;
-        yearUpperLimit: any;
-        yearTimeStr: any;
-        yearMaxTimeStr: any;
-        yearUpperLimitStr: any;
         yearError: any;
-        yearAlarm: any;
+        yearErrorStr: any;
 
         monthAverage2: any;
         monthAverage2Str: any;
@@ -562,9 +545,9 @@ module nts.uk.at.kaf021.b {
         /** B4_10 */
         exceededNumber: number;
         /** B4_11 */
-        monthUpperLimit: number;
+        monthError: number;
         /** B4_11 */
-        yearUpperLimit: number;
+        yearError: number;
     }
 
     interface RegisterAppSpecialProvisionMonthCommand {

@@ -1,8 +1,17 @@
 package nts.uk.screen.at.ws.ksm.ksm008.i;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.schedule.app.command.schedule.alarm.consecutivework.i.*;
-import nts.uk.screen.at.app.ksm008.query.i.*;
+import nts.uk.ctx.at.schedule.app.command.schedule.alarm.consecutivework.i.Ksm008ICreateCommand;
+import nts.uk.ctx.at.schedule.app.command.schedule.alarm.consecutivework.i.Ksm008ICreateCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.schedule.alarm.consecutivework.i.Ksm008IDeleteCommand;
+import nts.uk.ctx.at.schedule.app.command.schedule.alarm.consecutivework.i.Ksm008IDeleteCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.schedule.alarm.consecutivework.i.Ksm008IUpdateCommand;
+import nts.uk.ctx.at.schedule.app.command.schedule.alarm.consecutivework.i.Ksm008IUpdateCommandHandler;
+import nts.uk.screen.at.app.ksm008.query.i.Ksm008IStartInfoDto;
+import nts.uk.screen.at.app.ksm008.query.i.Ksm008IStartupInfoScreenQuery;
+import nts.uk.screen.at.app.ksm008.query.i.MaxDaysOfContinuousWorkTimeDto;
+import nts.uk.screen.at.app.ksm008.query.i.MaxDaysOfContinuousWorkTimeListDto;
+import nts.uk.screen.at.app.ksm008.query.i.WorkingHourListScreenQuery;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;

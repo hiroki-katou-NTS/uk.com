@@ -60,6 +60,8 @@ public final class RegistTimeColumn {
 
 	public static final String KMK008_204 = "KMK008_204";
 
+	public static final String KMK008_205 = "KMK008_205";
+
 	public static final String KMK008_162 = "KMK008_162";
 
 	public static final String KMK008_96 = "KMK008_96";

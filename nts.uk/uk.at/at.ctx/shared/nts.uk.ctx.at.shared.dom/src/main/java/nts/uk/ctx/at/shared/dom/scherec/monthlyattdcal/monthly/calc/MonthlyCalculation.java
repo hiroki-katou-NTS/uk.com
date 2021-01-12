@@ -282,7 +282,8 @@ public class MonthlyCalculation implements SerializableWithOptional {
 		// 「締め」 取得
 		this.closureOpt = Optional.ofNullable(companySets.getClosureMap().get(closureId.value));
 
-		val unitSetting = require.usageUnitSetting(companyId).get();
+		val unitSetting = require.usageUnitSetting(companyId).orElse(null);
+		if (unitSetting == null) return;
 		
 		// 通常勤務月別実績集計設定 （基準：期間終了日）
 		if (this.workingSystem == WorkingSystem.REGULAR_WORK) {
@@ -548,7 +549,8 @@ public class MonthlyCalculation implements SerializableWithOptional {
 		// 共有項目を集計する
 		this.aggregateTime.aggregateSharedItem(
 				require, aggrPeriod, this.monthlyCalculatingDailys.getAttendanceTimeOfDailyMap(),
-				this.monthlyCalculatingDailys.getWorkInfoOfDailyMap());
+				this.monthlyCalculatingDailys.getWorkInfoOfDailyMap(),
+				this.monthlyCalculatingDailys.getSnapshots());
 
 		ConcurrentStopwatches.stop("12221:共有項目：");
 

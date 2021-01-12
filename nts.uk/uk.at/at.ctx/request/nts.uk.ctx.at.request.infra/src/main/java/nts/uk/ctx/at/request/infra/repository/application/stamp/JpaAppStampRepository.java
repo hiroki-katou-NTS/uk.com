@@ -12,6 +12,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.DestinationTimeApp;
@@ -23,7 +24,7 @@ import nts.uk.ctx.at.request.dom.application.stamp.TimeStampAppOther;
 import nts.uk.ctx.at.request.dom.application.stamp.TimeZoneStampClassification;
 import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppStamp;
 import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppStampPK;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.com.time.TimeZone;
@@ -343,6 +344,18 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 		}
 
 		return appStamp;
+	}
+
+	@Override
+	public Optional<AppStamp> findByAppID(String companyID, String appID, Application app) {
+		return this.findByAppID(companyID, appID).map(c -> {
+			AppStamp appStamp = new AppStamp(app);
+			appStamp.setListDestinationTimeApp(c.getListDestinationTimeApp());
+			appStamp.setListDestinationTimeZoneApp(c.getListDestinationTimeZoneApp());
+			appStamp.setListTimeStampApp(c.getListTimeStampApp());
+			appStamp.setListTimeStampAppOther(c.getListTimeStampAppOther());
+			return appStamp;
+		});
 	}
 
 }

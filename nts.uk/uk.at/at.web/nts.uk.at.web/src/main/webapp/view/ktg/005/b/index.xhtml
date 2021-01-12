@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 375,
+					height : 320
+				};
+			</script>
+			<com:ValidatorScript>
+               nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartName
+            </com:ValidatorScript>
+			<com:scriptfile path="viewmodel.js" />
+			<com:stylefile path="kdp005.b.style.css" />
+		</ui:define>
+
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div class="row">
+					<!-- B1_1 -->
+					<div class="col_line_1">
+						<div
+							data-bind="ntsFormLabel: {required:true, constraint:['TopPagePartName']}">#{i18n.getText('KTG005_9')}</div>
+					</div>
+					<!-- B1_1 -->
+					<div class="col_line_2">
+						<input
+							data-bind="ntsTextEditor: {option:{width:'200px'},required:true,value: screenData().topPagePartName , name: '#[KTG005_9]', constraint:['TopPagePartName']}" />
+					</div>
+				</div>
+				<div class="div_line" style="margin-top: 10px;">
+					<table id="item_table">
+						<colgroup>
+							<col width="270px" />
+							<col width="80px" />
+						</colgroup>
+						<thead>
+							<tr>
+								<!-- B1_4 -->
+								<th class="ui-widget-header">#{i18n.getText('KTG005_10')}</th>
+								<!-- B1_5 -->
+								<th class="ui-widget-header">#{i18n.getText('KTG005_11')}</th>
+							</tr>
+						</thead>
+						<tbody>
+							<com:ko-foreach bind="screenData().appSettings">
+								<tr>
+									<td data-bind="text:text"></td>
+									<td class="checkbox_cell"><div
+											data-bind="ntsCheckBox: { checked: displayType }"></div></td>
+								</tr>
+							</com:ko-foreach>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<!-- B7_1 -->
+				<button data-bind="click: updateSetting" class="proceed">#{i18n.getText('KTG005_12')}</button>
+
+				<!-- B7_2 -->
+				<button data-bind="click: closeDialog" style="margin-left: 15px;">#{i18n.getText('KTG005_13')}</button>
+			</div>
+		</ui:define>
+
+	</ui:composition>
+</body>
+</html>

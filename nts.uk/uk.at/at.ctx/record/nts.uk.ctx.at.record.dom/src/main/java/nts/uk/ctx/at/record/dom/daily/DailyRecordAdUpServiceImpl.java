@@ -15,9 +15,10 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerforma
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.AttendanceTimeByWorkOfDaily;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.repo.AttendanceTimeByWorkOfDailyRepository;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
+import nts.uk.ctx.at.record.dom.adapter.workschedule.snapshot.DailySnapshotWorkAdapter;
+import nts.uk.ctx.at.record.dom.adapter.workschedule.snapshot.DailySnapshotWorkImport;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
-import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
@@ -51,9 +52,9 @@ import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
-import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -67,9 +68,6 @@ public class DailyRecordAdUpServiceImpl implements DailyRecordAdUpService {
 
 	@Inject
 	private CalAttrOfDailyPerformanceRepository calAttrRepo;
-
-	@Inject
-	private WorkTypeOfDailyPerforRepository workTypeRepo;
 
 	@Inject
 	private TimeLeavingOfDailyPerformanceRepository timeLeavingRepo;
@@ -124,6 +122,9 @@ public class DailyRecordAdUpServiceImpl implements DailyRecordAdUpService {
 	
 	@Inject
 	private IdentityProcessUseSetRepository identityProcessUseRepository;
+	
+	@Inject
+	private DailySnapshotWorkAdapter snapshotAdapter;
 
 	@Override
 	public void adUpWorkInfo(WorkInfoOfDailyPerformance workInfo) {
@@ -145,17 +146,6 @@ public class DailyRecordAdUpServiceImpl implements DailyRecordAdUpService {
 	}
 
 	@Override
-	public void adUpWorkType(Optional<WorkTypeOfDailyPerformance> businessType) {
-		if (!businessType.isPresent())
-			return;
-		if(workTypeRepo.findByKey(businessType.get().getEmployeeId(), businessType.get().getDate()).isPresent()) {
-			workTypeRepo.update(businessType.get());
-		}else {
-			workTypeRepo.add(businessType.get());
-		}
-	}
-
-	@Override
 	public void adUpTimeLeaving(Optional<TimeLeavingOfDailyPerformance> attendanceLeave) {
 		if (!attendanceLeave.isPresent())
 			return;
@@ -168,10 +158,10 @@ public class DailyRecordAdUpServiceImpl implements DailyRecordAdUpService {
 	}
 
 	@Override
-	public void adUpBreakTime(List<BreakTimeOfDailyPerformance> breakTime) {
-		//breakTime.stream().forEach(domain -> {
+	public void adUpBreakTime(BreakTimeOfDailyPerformance breakTime) {
+//		breakTime.ifPresent(domain -> {
 			breakTimeRepo.update(breakTime);
-		//});
+//		});
 
 	}
 
@@ -307,6 +297,11 @@ public class DailyRecordAdUpServiceImpl implements DailyRecordAdUpService {
 			divTimeSysFixedCheckService.removeconfirm(companyId, record.getEmployeeId(),
 					record.getYmd(), record.getEmployeeError(), iPUSOptTemp, approvalSetTemp);
 		});
+	}
+
+	@Override
+	public void adUpSnapshot(String sid, GeneralDate ymd, SnapShot snapshot) {
+		snapshotAdapter.update(DailySnapshotWorkImport.from(sid, ymd, snapshot));
 	}
 
 }

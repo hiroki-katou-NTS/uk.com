@@ -4,6 +4,6 @@ import java.util.Optional;
 
 public interface SendOvertimeNamePub {
 
-	public Optional<SendOvertimeNameExport> send(Integer empInfoTerCode, String contractCode);
+	public Optional<SendOvertimeNameExport> send(String empInfoTerCode, String contractCode);
 
 }

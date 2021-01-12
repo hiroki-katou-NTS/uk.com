@@ -1,6 +1,7 @@
 module nts.uk.at.view.kaf022.a.viewmodel {
     import getText = nts.uk.resource.getText;
     import modal = nts.uk.ui.windows.sub.modal;
+    import setShared = nts.uk.ui.windows.setShared;
     const __viewContext: any = window["__viewContext"] || {};
 
     export class ScreenModelA {
@@ -43,6 +44,7 @@ module nts.uk.at.view.kaf022.a.viewmodel {
 
         /*A21*/
         itemListA21_2: KnockoutObservableArray<ItemModel>;
+        itemListA21_4: KnockoutObservableArray<ItemModel>;
         appReflectCondition: KnockoutObservable<AppReflectExeCondition>;
 
         appTypeLabels = ["KAF022_3", "KAF022_4", "KAF022_5", "KAF022_6", "KAF022_7", "KAF022_8", "KAF022_11", "KAF022_707", "KAF022_10", "KAF022_12", "KAF022_705"];
@@ -161,6 +163,11 @@ module nts.uk.at.view.kaf022.a.viewmodel {
                 new ItemModel(1, getText('KAF022_44')),
                 new ItemModel(0, getText('KAF022_396'))
             ]);
+            self.itemListA21_4 = ko.observableArray([
+                new ItemModel(0, getText('KAF022_781')),
+                new ItemModel(1, getText('KAF022_782')),
+                new ItemModel(2, getText('KAF022_783'))
+            ]);
             self.appReflectCondition = ko.observable(new AppReflectExeCondition(null));
 
             $("#fixed-table-a4").ntsFixedTable({});
@@ -246,7 +253,7 @@ module nts.uk.at.view.kaf022.a.viewmodel {
             self.approvalSetting(new ItemA17(
                 allData.applicationSetting ? allData.applicationSetting.recordDate : 0,
                 allData.approvalSettingDto ? allData.approvalSettingDto.prinFlg : 0,
-                allData.jobAssign ? allData.jobAssign.isConcurrently : false
+                false //allData.jobAssign ? allData.jobAssign.isConcurrently : false
             ));
         }
 
@@ -338,8 +345,9 @@ module nts.uk.at.view.kaf022.a.viewmodel {
         }
 
         openScreenS(): void {
-            let self = this;
-            modal('/view/kaf/022/s/index.xhtml');
+            modal('/view/kaf/022/s/index.xhtml').onClosed(() => {
+                setShared("KAF022S_PARAMS", undefined);
+            });
         }
     }
 

@@ -8,12 +8,12 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.Builder;
-import lombok.Data;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.EmploymentHistShareImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
@@ -22,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
@@ -46,7 +47,7 @@ public class FurikyuMngDataExtractionService {
 	@Inject
 	private ComSubstVacationRepository comSubstVacationRepository;
 	
-	@Inject 
+	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepository;
 	
 	@Inject
@@ -54,14 +55,18 @@ public class FurikyuMngDataExtractionService {
 	
 	@Inject
 	private ClosureRepository closureRepo;
-	
+
+	@Inject
+	private SysWorkplaceAdapter syWorkplaceAdapter;
+
+	@Inject
+	private EmpEmployeeAdapter empEmployeeAdapter;
+
 	public DisplayRemainingNumberDataInformation getFurikyuMngDataExtractionUpdate(String empId, boolean isPeriod) {		
 		String cid = AppContexts.user().companyId();
 		List<PayoutManagementData> payoutManagementData;
 		List<SubstitutionOfHDManagementData> substitutionOfHDManagementData;
-		List<PayoutSubofHDManagement> payoutSubofHDManagementLinkToPayout = new ArrayList<PayoutSubofHDManagement>();	
-		double useDays;
-		ComSubstVacation comSubstVacation;
+		List<PayoutSubofHDManagement> payoutSubofHDManagementLinkToPayout = new ArrayList<PayoutSubofHDManagement>();
 		Integer closureId;
 		// Step 振休管理データを管理するかチェック
 		EmploymentManageDistinctDto emplManage = getEmploymentManageDistinct(cid, empId);
@@ -76,30 +81,36 @@ public class FurikyuMngDataExtractionService {
 				payoutManagementData = payoutManagementDataRepository.getSid(cid, empId);
 				// Step ドメイン「振休管理データ」を取得する
 				substitutionOfHDManagementData = substitutionOfHDManaDataRepository.getBysiD(cid, empId);
-				// select 現在の残数状況
 			} else {
 				// Step ドメイン「振出管理データ」を取得する
 				payoutManagementData = payoutManagementDataRepository.getBySidAndStateAtr(cid, empId);
 				// Step ドメイン「振休管理データ」を取得する
 				substitutionOfHDManagementData = substitutionOfHDManaDataRepository.getBysiDAndAtr(cid, empId);
 			}
-			// Step 取得したデータをチェック
-			if (payoutManagementData.isEmpty() && substitutionOfHDManagementData.isEmpty()) {
-				throw new BusinessException("Msg_725");
-			}
 			// Step ドメイン「振出振休紐付け管理」を取得する
-			if (substitutionOfHDManagementData.isEmpty()) {
+			if (!payoutManagementData.isEmpty()) {
 				List<GeneralDate> listPayoutDate = payoutManagementData.stream().map(x -> x.getPayoutDate().getDayoffDate().orElse(null))
 						.collect(Collectors.toList());
-				payoutSubofHDManagementLinkToPayout = payoutSubofHDManaRepository.getByListOccDate(empId,
-						listPayoutDate);
-			} else {
-				List<GeneralDate> listSubDate = substitutionOfHDManagementData.stream().map(x -> {
-					return x.getHolidayDate().getDayoffDate().get();
-				}).collect(Collectors.toList());
-				payoutSubofHDManagementLinkToPayout = payoutSubofHDManaRepository.getByListDate(empId, listSubDate);
+				payoutSubofHDManagementLinkToPayout.addAll(payoutSubofHDManaRepository.getByListOccDate(empId,
+						listPayoutDate));
 			}
-			
+			if (!substitutionOfHDManagementData.isEmpty()) {
+				List<GeneralDate> listSubDate = substitutionOfHDManagementData.stream().map(x -> {
+					return x.getHolidayDate().getDayoffDate().orElse(null);
+				}).collect(Collectors.toList());
+				payoutSubofHDManagementLinkToPayout.addAll(payoutSubofHDManaRepository.getByListDate(empId, listSubDate));
+			}
+
+			GeneralDate baseDate = GeneralDate.today();
+			Optional<SWkpHistImport> sWkpHistImport = syWorkplaceAdapter.findBySid(empId, baseDate);
+			List<String> employeeIds = new ArrayList<>();
+			employeeIds.add(empId);
+			List<PersonEmpBasicInfoImport> employeeBasicInfo = empEmployeeAdapter.getPerEmpBasicInfo(employeeIds);
+			PersonEmpBasicInfoImport personEmpBasicInfoImport = null;
+			if (!employeeBasicInfo.isEmpty()) {
+				personEmpBasicInfoImport = employeeBasicInfo.get(0);
+			}
+
 			// Step 振休残数データ情報を作成
 			List<RemainInfoData> lstRemainData = this.getRemainInfoData(payoutManagementData, substitutionOfHDManagementData, payoutSubofHDManagementLinkToPayout, empId);
 			List<RemainInfoDto> lstDataRemainDto =  lstRemainData.stream().map(item -> {
@@ -122,88 +133,77 @@ public class FurikyuMngDataExtractionService {
 						.build();
 				return itemData;
 			}).collect(Collectors.toList());
-			// Step 月初の振休残数を取得
-			useDays = getNumberOfRemainingHolidays(empId);
 			// Step 振休管理設定を取得する
-			EmpComSubstVacation substVaca = getClassifiedManagementSetup(cid, emplManage.getEmploymentCode());
-			comSubstVacation = substVaca.getComSubstVacation().orElse(null);
+			ManagementClassificationSetting manageSetting = this.getClassifiedManagementSetup(cid, emplManage.getEmploymentCode());
 			// Step 締めIDを取得する
 			closureId = getClosureId(empId, emplManage.getEmploymentCode());
 			
 			Optional<PresentClosingPeriodExport> closing = this.find(cid, closureId);
 			DisplayRemainingNumberDataInformation result = DisplayRemainingNumberDataInformation.builder()
 					.employeeId(empId)
-					.totalRemainingNumber(useDays)
-					.expirationDate(comSubstVacation != null
-						? comSubstVacation.getSetting().getExpirationDate().value
-						: substVaca.getEmpSubstVacation().get().getSetting().getExpirationDate().value)
+					.totalRemainingNumber(0d)
+					.expirationDate(manageSetting.getSubstVacationSetting() == null
+						? null
+						: manageSetting.getSubstVacationSetting().getExpirationDate().value)
 					.remainingData(lstDataRemainDto)
 					.startDate(closing.get().getClosureStartDate())
 					.endDate(closing.get().getClosureEndDate())
 					.closureId(closureId)
+					.wkHistory(sWkpHistImport.orElse(null))
+					.employeeCode(personEmpBasicInfoImport.getEmployeeCode())
+					.employeeName(personEmpBasicInfoImport.getBusinessName())
 					.build();
-				
-		return result;
+			return result;
 		}
 	}
-	
+
 	// Step 振休管理データを管理するかチェック
 	public EmploymentManageDistinctDto getEmploymentManageDistinct(String compId, String empId) {
 		// Step 管理区分 ＝ 管理しない
 		GeneralDate now = GeneralDate.today();
-		EmploymentManageDistinctDto emplManage = EmploymentManageDistinctDto.builder().build();
-		emplManage.setIsManage(ManageDistinct.NO);
 		// Step 社員IDから全ての雇用履歴を取得
 		List<EmploymentHistShareImport> empHistShrImp = this.shareEmploymentAdapter.findByEmployeeIdOrderByStartDate(empId);
 		// Step 取得した社員の雇用履歴をチェック
 		if (empHistShrImp.isEmpty()) {
 			// Step エラーメッセージ(Msg_1306)を表示する
 			throw new BusinessException("Msg_1306");
-		} else {
-			// Step 取得した社員の雇用履歴をループする
-			for (EmploymentHistShareImport empHist : empHistShrImp) {
-				// Step 管理区分設定を取得する
-				EmpComSubstVacation ecSubstVaca = getClassifiedManagementSetup(compId, empHist.getEmploymentCode());
-				ComSubstVacation comSubstVaca = ecSubstVaca.getComSubstVacation().orElse(null);
-				Optional<EmpSubstVacation> empSubstVacation = ecSubstVaca.getEmpSubstVacation();
-				if (empSubstVacation.isPresent()) {
-					emplManage.setIsManage(empSubstVacation.get().getSetting().getIsManage());
-					emplManage.setEmploymentCode(empSubstVacation.get().getEmpContractTypeCode());
-				}
-				// Step 取得した「振休管理設定」．管理区分をチェック
-				if (comSubstVaca != null && comSubstVaca.getSetting().getIsManage() == ManageDistinct.YES) {
-					// Step 管理区分 ＝ 管理する
-					emplManage.setIsManage(ManageDistinct.YES);
-
-					// Step 雇用コード ＝ 取得した社員の雇用履歴．期間．開始日 ＜＝ システム日付 AND 取得した社員の雇用履歴．期間．終了日 ＞＝システム日付
-					if (empHist.getPeriod().start().beforeOrEquals(now) && empHist.getPeriod().end().afterOrEquals(now)) {
-						emplManage.setEmploymentCode(empHist.getEmploymentCode());
-						return emplManage;
-					}
-					
-					emplManage.setIsManage(ManageDistinct.NO);
-				}
-			}
 		}
-		// Step 管理区分、雇用コードを返す
-		return emplManage;
+		// 取得した社員の雇用履歴をチェック
+		// 雇用コードを取得(雇用コード　＝ 取得した社員の雇用履歴．期間．開始日　＜＝　システム日付 AND　取得した社員の雇用履歴．期間．終了日　＞＝システム日付)
+		Optional<EmploymentHistShareImport> employmentHist = empHistShrImp.stream()
+				.filter(item -> item.getPeriod().start().before(now) && item.getPeriod().end().after(now))
+				.findFirst();
+		ManagementClassificationSetting manageSetting = null;
+		if (employmentHist.isPresent()) {
+			// 管理区分設定を取得する (Get the setup of classified management)
+			manageSetting = this.getClassifiedManagementSetup(compId, employmentHist.get().getEmploymentCode());
+		}
+
+		return EmploymentManageDistinctDto.builder()
+				.employmentCode(employmentHist.map(EmploymentHistShareImport::getEmploymentCode).orElse(null))
+				.isManage(manageSetting.getManageDistinct())
+				.build();
 	}
-	
+
 	// Step 管理区分設定を取得する
-	public EmpComSubstVacation getClassifiedManagementSetup(String compId, String empCode) {
-		Optional<ComSubstVacation> optComSubData = Optional.empty();
+	public ManagementClassificationSetting getClassifiedManagementSetup(String compId, String empCode) {
 		// Step ドメインモデル「雇用振休管理設定」を取得
 		Optional<EmpSubstVacation> optEmpSubData = empSubstVacationRepository.findById(compId, empCode);
-		// Step 取得した「振休管理設定」をチェック
-		if (!optEmpSubData.isPresent()) {
-			// Step ドメインモデル「振休管理設定」を取得
-			optComSubData = comSubstVacationRepository.findById(compId);
+		// Step ドメインモデル「振休管理設定」を取得
+		Optional<ComSubstVacation> optComSubData = comSubstVacationRepository.findById(compId);
+		// ・振休取得・使用方法　＝　取得した「振休管理設定」．振休取得・使用方法
+		SubstVacationSetting substVacationSetting = optComSubData.map(ComSubstVacation::getSetting).orElse(null);
+		ManageDistinct manageDistinct = ManageDistinct.NO;
+		if (optEmpSubData.isPresent()) {
+			manageDistinct = optEmpSubData.get().getManageDistinct();
+		} else {
+			manageDistinct = optComSubData.map(ComSubstVacation::getManageDistinct).orElse(ManageDistinct.NO);
 		}
-		return EmpComSubstVacation.builder()
-				.comSubstVacation(optComSubData)
-				.empSubstVacation(optEmpSubData)
+		return ManagementClassificationSetting.builder()
+				.substVacationSetting(substVacationSetting)
+				.manageDistinct(manageDistinct)
 				.build();
-	}	
+	}
 	
 	// Step 月初の振休残数を取得
 	public double getNumberOfRemainingHolidays(String empId) {
@@ -255,7 +255,7 @@ public class FurikyuMngDataExtractionService {
 		if (empCD != null) {
 			if(empSubstVacationRepository.findById(cid, empCD).isPresent()) {
 				empSubstVacation = empSubstVacationRepository.findById(cid, empCD).get();
-				expirationDate = empSubstVacation.getSetting().getExpirationDate().value;
+			//	expirationDate = empSubstVacation.getSetting().getExpirationDate().value;
 			} else if (comSubstVacationRepository.findById(cid).isPresent()){
 				comSubstVacation = comSubstVacationRepository.findById(cid).get();
 				expirationDate = comSubstVacation.getSetting().getExpirationDate().value;
@@ -294,7 +294,7 @@ public class FurikyuMngDataExtractionService {
 		for (PayoutManagementData itemPayout : payoutManagementData) {
 			// Input.List＜振出振休紐付け管理＞を絞り込みする
 			List<PayoutSubofHDManagement> listPayoutSub = payoutSubofHDManagementLinkToPayout.stream()
-					.filter(item -> item.getAssocialInfo().getOutbreakDay().compareTo(itemPayout.getPayoutDate().getDayoffDate().get()) == 0)
+					.filter(item -> item.getAssocialInfo().getOutbreakDay().equals(itemPayout.getPayoutDate().getDayoffDate().orElse(null)))
 					.collect(Collectors.toList());
 			// 	絞り込みした「振出振休紐付け管理」をチェック
 			if (!listPayoutSub.isEmpty()) {
@@ -303,12 +303,12 @@ public class FurikyuMngDataExtractionService {
 				}).collect(Collectors.toList());
 				// Input．List＜振休管理データ＞を絞り込み
 				 List<SubstitutionOfHDManagementData> listSubstitution = substitutionOfHDManagementData.stream()
-						.filter(item -> lstDateOfUse.contains(item.getHolidayDate().getDayoffDate().get()))
+						.filter(item -> lstDateOfUse.contains(item.getHolidayDate().getDayoffDate().orElse(null)))
 						.collect(Collectors.toList());
-				if(listSubstitution.isEmpty() && !lstDateOfUse.isEmpty()) {
+				if (listSubstitution.isEmpty() && !lstDateOfUse.isEmpty()) {
 					// Step ドメインモデル「振休管理データ」を取得
 					listSubstitution = substitutionOfHDManaDataRepository
-							.getBySidListHoliday(AppContexts.user().companyId(),empId, lstDateOfUse);
+							.getBySidListHoliday(AppContexts.user().companyId(), empId, lstDateOfUse);
 				}
 				for (SubstitutionOfHDManagementData item : listSubstitution) {
 					// 残数データ情報を作成
@@ -317,7 +317,12 @@ public class FurikyuMngDataExtractionService {
 							.deadLine(Optional.of(itemPayout.getExpiredDate()))
 							.occurrenceDay(Optional.of(itemPayout.getOccurredDays().v()))
 							.digestionDay(item.getHolidayDate().getDayoffDate())
-							.digestionDays(Optional.of(item.getRequiredDays().v()))
+							.digestionDays(Optional.of(listPayoutSub.stream()
+									.filter(x -> x.getAssocialInfo().getOutbreakDay()
+											.equals(itemPayout.getPayoutDate().getDayoffDate().get())
+											&& x.getAssocialInfo().getDateOfUse().equals(item.getHolidayDate().getDayoffDate().get()))
+									.findFirst()
+									.map(x -> x.getAssocialInfo().getDayNumberUsed().v()).orElse(null)))
 							.legalDistinction(Optional.of(itemPayout.getLawAtr().value))
 							.occurrenceId(Optional.of(itemPayout.getPayoutId()))
 							.digestionId(Optional.of(item.getSubOfHDID()))
@@ -327,7 +332,8 @@ public class FurikyuMngDataExtractionService {
 							.usedDay(itemPayout.getExpiredDate().afterOrEquals(GeneralDate.today()) ? 0.0
 									: itemPayout.getUnUsedDays().v())
 							.usedTime(0).occurrenceHour(Optional.empty()).digestionTimes(Optional.empty())
-							.remainingHours(Optional.empty()).mergeCell(mergeCell).build();
+							.remainingHours(Optional.empty()).mergeCell(mergeCell)
+							.build();
 					// List＜残数データ情報＞に作成した「残数データ情報＞を追加
 					lstRemainInfoData.add(itemRemainInfo);
 				}
@@ -361,8 +367,9 @@ public class FurikyuMngDataExtractionService {
 		for (SubstitutionOfHDManagementData itemSubstitution : substitutionOfHDManagementData) {
 			// List＜振出振休紐付け管理＞を絞り込みする
 			List<PayoutSubofHDManagement> lstLinkToPayout = payoutSubofHDManagementLinkToPayout.stream()
-					.filter(item -> item.getAssocialInfo().getDateOfUse()
-							.compareTo(itemSubstitution.getHolidayDate().getDayoffDate().get()) == 0)
+					.filter(item -> itemSubstitution.getHolidayDate().getDayoffDate().isPresent()
+							? itemSubstitution.getHolidayDate().getDayoffDate().get().equals(item.getAssocialInfo().getDateOfUse())
+							: false)
 					.collect(Collectors.toList());
 			// 絞り込みした「振出振休紐付け管理」をチェック: あるの場合
 			if (!lstLinkToPayout.isEmpty()) {
@@ -442,9 +449,3 @@ public class FurikyuMngDataExtractionService {
 	}
 }
 
-@Data
-@Builder
-class EmpComSubstVacation {
-	Optional<EmpSubstVacation> empSubstVacation;
-	Optional<ComSubstVacation> comSubstVacation;
-}

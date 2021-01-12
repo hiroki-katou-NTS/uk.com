@@ -140,7 +140,7 @@ module nts.uk.at.kaf021.d {
                 result.employee = result.employeeName;
                 if (result.applicationTime.typeAgreement == common.TypeAgreementApplicationEnum.ONE_MONTH) {
                     let ym = result.applicationTime?.oneMonthTime?.yearMonth.toString();
-                    result.appType = textFormat(vm.$i18n("KAF021_64"), ym.substring(4));
+                    result.appType = textFormat(vm.$i18n("KAF021_64"), Number(ym.substring(4)));
                     result.month = parseTime(result.screenDisplayInfo?.overtime?.overtimeHoursOfMonth, true).format();
                     if (result.screenDisplayInfo?.overtimeIncludingHoliday?.overtimeHoursTargetMonth != null) {
                         result.month += "<br>(" + parseTime(result.screenDisplayInfo?.overtimeIncludingHoliday?.overtimeHoursTargetMonth, true).format() + ")";
@@ -192,14 +192,10 @@ module nts.uk.at.kaf021.d {
 
         loadMGrid() {
             const vm = this;
-            let height = $(window).height() - 90 - 289;
-            let width = $(window).width() + 20 - 1250;
 
             new nts.uk.ui.mgrid.MGrid($("#grid")[0], {
-                width: "1170px",
-                height: "200px",
-                subWidth: width + "px",
-                subHeight: height + "px",
+                subWidth: "60px",
+                subHeight: "280px",
                 headerHeight: '60px',
                 rowHeight: '40px',
                 dataSource: vm.datas,
@@ -209,7 +205,7 @@ module nts.uk.at.kaf021.d {
                 virtualization: true,
                 virtualizationMode: 'continuous',
                 enter: 'right',
-                autoFitWindow: false,
+                autoFitWindow: true,
                 hidePrimaryKey: true,
                 columns: vm.getColumns(),
                 ntsControls: [
@@ -353,12 +349,12 @@ module nts.uk.at.kaf021.d {
             let cellStates: Array<common.CellState> = [];
 
             _.forEach(vm.datas, (data: any) => {
-                if (vm.isApprovedByApprover(data.approvalStatus) && vm.isApprovedByConfirmer(data.confirmStatus)) {
+                if (!vm.isEnableApproval(data.approvalStatus, data.confirmStatus, data.canApprove, data.canConfirm)) {
                     cellStates.push(new common.CellState(data.applicantId, 'approvalChecked', [disableCell]));
+                }
 
-                    if (vm.isDenyByApprover(data.approvalStatus) && vm.isDenyByConfirmer(data.confirmStatus)) {
-                        cellStates.push(new common.CellState(data.applicantId, 'denialChecked', [disableCell]));
-                    }
+                if (!vm.isEnableDeny(data.approvalStatus, data.confirmStatus, data.canApprove, data.canConfirm)) {
+                    cellStates.push(new common.CellState(data.applicantId, 'denialChecked', [disableCell]));
                 }
 
                 if (data.canApprove) {
@@ -540,24 +536,58 @@ module nts.uk.at.kaf021.d {
             return true;
         }
 
-        // ※8
-        isApprovedByApprover(approvalStatus: common.ApprovalStatusEnum) {
-            return approvalStatus == common.ApprovalStatusEnum.APPROVED;
+        // ※13
+        isEnableApproval(approvalStatus: common.ApprovalStatusEnum, confirmStatus: common.ConfirmationStatusEnum,
+            canApprove: boolean, canConfirm: boolean) {
+            if (canApprove && !canConfirm) {
+                if (approvalStatus == common.ApprovalStatusEnum.APPROVED) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+            if (!canApprove && canConfirm) {
+                if (confirmStatus == common.ConfirmationStatusEnum.CONFIRMED) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+            if (canApprove && canConfirm) {
+                if (approvalStatus == common.ApprovalStatusEnum.APPROVED) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+            return false;
         }
 
-        // ※9
-        isDenyByApprover(approvalStatus: common.ApprovalStatusEnum) {
-            return approvalStatus == common.ApprovalStatusEnum.DENY;
-        }
-
-        // ※10
-        isApprovedByConfirmer(confirmStatus: common.ConfirmationStatusEnum) {
-            return confirmStatus == common.ConfirmationStatusEnum.CONFIRMED;
-        }
-
-        // ※11
-        isDenyByConfirmer(confirmStatus: common.ConfirmationStatusEnum) {
-            return confirmStatus == common.ConfirmationStatusEnum.DENY;
+        // ※14
+        isEnableDeny(approvalStatus: common.ApprovalStatusEnum, confirmStatus: common.ConfirmationStatusEnum,
+            canApprove: boolean, canConfirm: boolean) {
+            if (canApprove && !canConfirm) {
+                if (approvalStatus == common.ApprovalStatusEnum.UNAPPROVED) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            if (!canApprove && canConfirm) {
+                if (confirmStatus == common.ConfirmationStatusEnum.UNCONFIRMED) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            if (canApprove && canConfirm) {
+                if (approvalStatus == common.ApprovalStatusEnum.UNAPPROVED) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            return false;
         }
     }
 

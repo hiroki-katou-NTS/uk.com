@@ -687,7 +687,9 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 				+ 		"inner join WWFDT_APPROVAL_PHASE_ST c on a.ROOT_STATE_ID = c.ROOT_STATE_ID and a.PHASE_ORDER = c.PHASE_ORDER "
 				+ 		"and a.APP_DATE >= ?  and a.APP_DATE <= ? " 
 				+ 		"and c.APP_PHASE_ATR IN (" + lstPhase + ") " 
-				+ 		"and a.APPROVAL_ATR IN (" + lstFrame + ") " + "and a.APPROVER_ID IN (" + lstIds + ") )";
+				+ 		"and a.APPROVAL_ATR IN (" + lstFrame + ") " 
+				+ 		"and (a.APPROVER_ID IN (" + lstIds + ") or (a.AGENT_ID = ?)) "
+				+ 	")";
 
 		List<WwfdtFullJoinState> listFullData = new ArrayList<>();
 
@@ -706,6 +708,8 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 			for (int i = 0; i < lstApproverID.size(); i++) {
 				pstatement.setString(i + 3 + lstPhaseStt.size() + lstFrameStt.size(), lstApproverID.get(i));
 			}
+			
+			pstatement.setString(3 + lstPhaseStt.size() + lstFrameStt.size() + lstApproverID.size(), approverID);
 
 			listFullData.addAll(WwfdtFullJoinState.fromResultSet(pstatement.executeQuery()));
 		}
@@ -724,9 +728,10 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		}
 		if(approvalStatus) {
 			List<String> approvalStatusStrLst = listFullData.stream().filter(x -> {
-						return x.getApprovalAtr()==ApprovalBehaviorAtr.APPROVED.value &&
+						return (x.getApprovalAtr()==ApprovalBehaviorAtr.APPROVED.value ||
+								(x.getApprovalAtr()==ApprovalBehaviorAtr.UNAPPROVED.value && x.getAppPhaseAtr()==ApprovalBehaviorAtr.APPROVED.value)) &&
 								(approverID.equals(x.getApproverID()) || 
-								(Strings.isNotBlank(x.getAgentID()) && approverID.equals(x.getAgentID()) ));
+								(Strings.isNotBlank(x.getAgentID()) && approverID.equals(x.getAgentID())));
 					}).map(x -> x.getRootStateID()).collect(Collectors.toList());
 			List<WwfdtFullJoinState> approvalStatusLst = listFullData.stream().filter(x -> approvalStatusStrLst.contains(x.getRootStateID()))
 					.collect(Collectors.toList());
