@@ -1,4 +1,4 @@
-module nts.uk.at.view.kaf007_ref.c.viewmodel {
+module nts.uk.at.view.kaf011.b.viewmodel {
     import PrintContentOfEachAppDto = nts.uk.at.view.kaf000.shr.viewmodel.PrintContentOfEachAppDto;
 	
 	import Kaf000AViewModel = nts.uk.at.view.kaf000.a.viewmodel.Kaf000AViewModel;
@@ -8,20 +8,23 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
 	import AbsenceLeaveApp = nts.uk.at.view.kaf011.AbsenceLeaveApp;
 	import Comment = nts.uk.at.view.kaf011.Comment;
 
-    @component({
-        name: 'kaf011-b',
-        template: '/nts.uk.at.web/view/kaf/011/b/index.xhtml'
-    })
-    class Kaf011BViewModel extends ko.ViewModel {
+    export class Kaf011BViewModel{
 
-        appType: KnockoutObservable<number>;
+        appType: KnockoutObservable<number> = ko.observable(AppType.COMPLEMENT_LEAVE_APPLICATION);
         appDispInfoStartupOutput: any;
         application: KnockoutObservable<Application>;
         approvalReason: KnockoutObservable<string>;
         printContentOfEachAppDto: KnockoutObservable<PrintContentOfEachAppDto>;
 		time: KnockoutObservable<number> = ko.observable(1);
-
-        created(
+		appCombinaSelected = ko.observable(0);
+		recruitmentApp = new RecruitmentApp(0);
+		absenceLeaveApp = new AbsenceLeaveApp(1);
+		comment = new Comment();
+		
+		displayInforWhenStarting = ko.observable(null);
+		
+		
+        constructor(
             params: {
                 appType: any,
                 application: any,

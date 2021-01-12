@@ -21,6 +21,7 @@
 				nts.uk.ctx.at.request.dom.application.overtime.primitivevalue.OvertimeAppPrimitiveTime
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
+			
 			<com:stylefile path="/view/kaf/000/b/component1/kaf000.b.component1.css" />
 			<com:stylefile path="/view/kaf/000/b/component2/kaf000.b.component2.css" />
 			<com:stylefile path="/view/kaf/000/b/component3/kaf000.b.component3.css" />
@@ -81,12 +82,20 @@
 			<com:scriptfile path="/view/kaf/005/shr/work_info/kaf005.shr.work_info.vm.js" />
 			<com:scriptfile path="/view/kaf/005/shr/kaf005.shr.vm.js" />
 			<com:scriptfile path="/view/kaf/005/b/kaf005.b.vm.js" />
-			<com:scriptfile path="/view/kaf/000/b/kaf000.b.vm.js" />
 			<com:scriptfile path="/view/kaf/010/shr/footer/kaf010.shr.footer.vm.js" />
 			<com:scriptfile path="/view/kaf/010/shr/header/kaf010.shr.header.vm.js" />
 			<com:scriptfile path="/view/kaf/010/shr/work_info/kaf010.shr.work_info.vm.js" />
 			<com:scriptfile path="/view/kaf/010/shr/time/kaf010.shr.time.vm.js" />
 			<com:scriptfile path="/view/kaf/010/b/kaf010.b.vm.js" />
+			
+			<!-- KAF011 -->
+			<com:stylefile path="/view/kaf/011/shr/kaf011.shr.css" />
+			<com:stylefile path="/view/kaf/011/b/kaf011.b.css" />
+			<com:scriptfile path="/view/kaf/011/shr/kaf011.shr.vm.js" />
+			<com:scriptfile path="/view/kaf/011/b/kaf011.b.vm.js" />
+			
+			<com:scriptfile path="/view/kaf/000/b/kaf000.b.vm.js" />
+			
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
@@ -263,8 +272,10 @@
 							params: childParam
 						}"></div>
 				</div>
-				<div data-bind="if: ko.unwrap(appType) === getAppType('COMPLEMENT_LEAVE_APPLICATION')">
-					APP TYPE = 10
+				<div data-bind="if: ko.unwrap(appType) === getAppType('COMPLEMENT_LEAVE_APPLICATION') ">
+					<div class="kaf011" data-bind="with: kaf011BViewModel">
+						<ui:include src="../../011/b/index.xhtml" />
+					</div>
 				</div>
 				<div data-bind="if: ko.unwrap(appType) === getAppType('OPTIONAL_ITEM_APPLICATION')">
 					<div data-bind="component: {

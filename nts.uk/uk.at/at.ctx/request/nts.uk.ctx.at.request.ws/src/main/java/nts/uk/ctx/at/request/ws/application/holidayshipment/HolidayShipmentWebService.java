@@ -115,7 +115,11 @@ public class HolidayShipmentWebService extends WebService {
 		return changeValueItemsOnHolidayShipment.changeWorkType(param.workTypeBefore, param.workTypeAfter, Optional.ofNullable(param.workTimeCode == "" ? null: param.workTimeCode), param.leaveComDayOffMana, param.payoutSubofHDManagements);
 	}
 	
-	
+	@POST
+	@Path("startPageBRefactor")
+	public DisplayInforWhenStarting startPageBRefactor(StartScreenBParam param) {
+		return this.screenBFinder.startPageBRefactor(AppContexts.user().companyId(), param.getAppID(), param.getAppDispInfoStartupDto());
+	}
 	
 	
 	
@@ -173,11 +177,7 @@ public class HolidayShipmentWebService extends WebService {
 
 	
 	
-	@POST
-	@Path("startPageBRefactor")
-	public DisplayInforWhenStarting startPageBRefactor(StartScreenBParam param) {
-		return this.screenBFinder.startPageBRefactor(AppContexts.user().companyId(), param.getAppID(), param.getAppDispInfoStartupDto());
-	}
+
 
 	@POST
 	@Path("remove")
