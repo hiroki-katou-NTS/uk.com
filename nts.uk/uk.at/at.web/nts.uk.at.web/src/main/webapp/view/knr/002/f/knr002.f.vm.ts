@@ -51,7 +51,7 @@ module knr002.f {
                 self.lastSuccessDate(sharedData.backupDate);
 
                 //get Share from A
-                let empInfoTerList = getShared('KNR002F_empInfoTerList');
+                let empInfoTerList = getShared('KNR002_empInfoTerList');
                 
                 if(self.modelEmpInfoTer() === undefined || self.modelEmpInfoTer() === 0){
                     self.empInfoTerCode('');

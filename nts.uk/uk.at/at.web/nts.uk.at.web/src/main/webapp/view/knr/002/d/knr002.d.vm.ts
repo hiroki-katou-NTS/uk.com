@@ -44,7 +44,7 @@ module knr002.d {
                             self.bindDestinationCopyList();
                         } else {
                             // get Shared from A
-                            let empInfoTerList = getShared('KNR002D_empInfoTerList');
+                            let empInfoTerList = getShared('KNR002_empInfoTerList');
                             console.log("data: ", empInfoTerList);
                             let desCopyTempList = [];
                             if(empInfoTerList){

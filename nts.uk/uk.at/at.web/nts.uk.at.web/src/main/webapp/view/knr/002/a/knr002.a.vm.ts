@@ -115,7 +115,7 @@ module nts.uk.at.view.knr002.a {
                         }
     
                         vm.gridData(res.listEmpInfoTerminalDto);
-                        setShared('KNR002D_empInfoTerList', res.listEmpInfoTerminalDto);
+                        setShared('KNR002_empInfoTerList', res.listEmpInfoTerminalDto);
                         vm.loadGrid(vm.dataSource().listEmpInfoTerminalDto);
                         //vm.setGridSize();
                         $(window).on('resize', () => {
