@@ -67,8 +67,8 @@ module cmm045.a.viewmodel {
             let self = this;
             $(".popup-panel-cmm045").ntsPopup({
                 position: {
-                    my: "right bottom",
-                    at: "left top",
+                    my: "left bottom",
+                    at: "right top",
                     of: ".hyperlink"
                 },
                 showOnStart: false,
