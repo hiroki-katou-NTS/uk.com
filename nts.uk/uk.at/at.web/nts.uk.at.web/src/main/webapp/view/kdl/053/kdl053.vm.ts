@@ -3,7 +3,6 @@ module nts.uk.at.view.kdl053 {
     import getShared = nts.uk.ui.windows.getShared;
 
     const Paths = {
-        GET_WORK_AVAILABILITY_OF_ONE_DAY: 'screen/at/shift/management/workavailability/getAll',
         GET_ATENDANCENAME_BY_IDS:"at/record/attendanceitem/daily/getattendnamebyids",
         EXPORT_CSV:"screen/at/kdl053/exportCsv"
     };
@@ -16,56 +15,71 @@ module nts.uk.at.view.kdl053 {
         constructor(params: any) {
             super();
             const self = this;
-            self.loadScheduleRegisterErr();            
-            // $('#grid').focus();
-            // $('#grid_scroll').focus();
+            self.loadScheduleRegisterErr(); 
         }
         loadScheduleRegisterErr(): void {
             const self = this;
 
-            let dataAll: Array<any> = [];
-            dataAll = [{employeeCdName:'000001 0110の社員1', date:'2020/07/07', errId: 163, errMsg: '登録に誤りがありました'},
-                    {employeeCdName:'000002 新規　ログ', date:'2020/08/07', errId: 165, errMsg: '登録に誤りがありました'},
-                    {employeeCdName:'000003 承認　者', date:'2020/07/09', errId: 195, errMsg: '登録に誤りがありました'},
-                    {employeeCdName:'000004 別　確認11', date:'2020/08/08', errId: 201, errMsg: '登録に誤りがありました'},
-                    {employeeCdName:'000005 承認者　管理本部', date:'2020/09/07', errId: 205, errMsg: '登録に誤りがありました'},
-                    {employeeCdName:'000006 承認者', date:'2020/09/09', errId: 537, errMsg: '登録に誤りがありました'},                    
-                    {employeeCdName:'000007 申請　１', date:'2020/07/17', errId: 165, errMsg: '登録に誤りがありました'},
-                    {employeeCdName:'000008 日別実績　確認', date:'2020/07/22', errId: 195, errMsg: '登録に誤りがありました'},
-                    {employeeCdName:'000009 日別実績　確認6', date:'2020/07/14', errId: 201, errMsg: '登録に誤りがありました'},
-                    {employeeCdName:'000010 日別実績　テスト', date:'2020/07/15', errId: 205, errMsg: '登録に誤りがありました'},
-                    {employeeCdName:'000011 日別実績　確認', date:'2020/07/19', errId: 537, errMsg: '登録に誤りがありました'},
-                    {employeeCdName:'000012 承認者　課長', date:'2020/07/11', errId: 538, errMsg: '登録に誤りがありました'}
-            ]
-            let listIds: Array<any> = _.map(dataAll, item => { return item.errId });
-            // self.isRegistered(false);
-            self.registrationErrorList(dataAll);
-            
+            let data = getShared('dataShareDialogKDL053');
+            let errorRegistrationList = data.errorRegistrationList;
+            let employeeIds = data.employeeIds;
+            self.isRegistered(data.isRegistered == 1);        
+            _.each(errorRegistrationList, errorLog =>{
+                switch (self.getDayfromDate(errorLog.date)){
+                    case 0: 
+                        errorLog.date = '<span style="color:red">'+ errorLog.date +'(日)' + '</span>';
+                        break;
+                    case 1: 
+                        errorLog.date = '<span>'+ errorLog.date +'(月)'+ '</span>';
+                        break;
+                    case 2: 
+                        errorLog.date = '<span>'+ errorLog.date +'(火)'+ '</span>';
+                        break;
+                    case 3: 
+                        errorLog.date = '<span>'+ errorLog.date +'(水)'+ '</span>';
+                        break;
+                    case 4: 
+                        errorLog.date = '<span>'+ errorLog.date +'(木)'+ '</span>';
+                        break;
+                    case 5: 
+                        errorLog.date = '<span>'+ errorLog.date +'(金)'+ '</span>';
+                        break;
+                    case 6: 
+                        errorLog.date = '<span style="color:blue">'+ errorLog.date +'(土)' + '</span>';
+                        break;                    
+                }
+            })
+            let listIds: Array<any> = _.map(errorRegistrationList, item => { return item.errId });            
+            this.$blockui("invisible");
             self.$ajax(Paths.GET_ATENDANCENAME_BY_IDS,listIds).done((data: Array<any>)=>{
                 if(data && data.length > 0){
-                    let index = 0;
-                    _.each(dataAll, item => {
+                    let index = 0, idx = 0;                   
+                    _.each(errorRegistrationList, item => {
+                        item.id = idx;
+                        idx++;
                         _.each(data, itemName =>{
                             if(item.errId == itemName.attendanceItemId ){
-                                dataAll[index].errName = itemName.attendanceItemName;
+                                errorRegistrationList[index].errName = itemName.attendanceItemName;
                                 index++;
                             }                           
                         })
-                    })                   
+                    })      
+                    self.registrationErrorList(errorRegistrationList);             
                 }                
                 $("#grid").igGrid({
                     width: "780px",
                     height: "330px",
-                    dataSource: dataAll,
+                    dataSource: self.registrationErrorList(),
                     dataSourceType: "json",
-                    primaryKey: "employeeCdName",
+                    primaryKey: "id",
                     autoGenerateColumns: false,                        
                     responseDatakey: "results",
                     columns: [
+                        { headerText: "STT", key: "id", dataType: "number", hidden: true },
                         { headerText: getText('KDL053_5'), key: "employeeCdName", dataType: "string", width: "25%" },                          
-                        { headerText: getText('KDL053_6'), key: "date", dataType: "string", width: "15%" },
-                        { headerText: getText('KDL053_7'), key: "errName", dataType: "string", width: "20%" },
-                        { headerText: getText('KDL053_8'), key: "errMsg" }                                   
+                        { headerText: getText('KDL053_6'), key: "date", dataType: "string", width: "16%" },
+                        { headerText: getText('KDL053_7'), key: "errName", dataType: "string", width: "18%" },
+                        { headerText: getText('KDL053_8'), key: "errMsg", width:"35%" }                                   
                     ],
                     features: [
                         {
@@ -76,11 +90,8 @@ module nts.uk.at.view.kdl053 {
                     ]
                 });
             })
-            .fail(() => {
-
-            })
             .always(() => {
-
+                self.$blockui("clear");
             });
         }
         exportCsv(): void {
@@ -100,6 +111,8 @@ module nts.uk.at.view.kdl053 {
             let date = new Date(fromDate);
             return date.getDay();
         }
+
+        
     }
 
     interface IScheduleRegisterErr {

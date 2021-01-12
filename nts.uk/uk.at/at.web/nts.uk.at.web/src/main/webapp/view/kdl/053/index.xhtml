@@ -23,14 +23,19 @@
 			</div>     
             <div id="content-area" style="overflow:hidden">
                 <div>
-                    <!--A2-1-->
-                    <div data-bind= "if: isRegistered" class="label">#{i18n.getText('KDL053_4')}</div>
+                    <div data-bind= "if: isRegistered">
+                        <!--A2-1-->
+                        <div class="label">#{i18n.getText('KDL053_4')}</div>
 
-                    <!--A2-2-->
-                    <hr class ="line" />
+                        <!--A2-2-->
+                        <hr class ="line" />
+                        <div style="margin-left: 20px;" data-bind="ntsFormLabel:{}">#{i18n.getText('KDL053_9')} </div>
+                    </div>
 
-                    <!--A3-->             
-                    <div style="margin-left: 20px;" data-bind="ntsFormLabel:{}">#{i18n.getText('KDL053_9')} </div>                                   
+                    <div data-bind= "ifnot: isRegistered">
+                        <!--A3-->   
+                        <div style="margin: 15px 0px 0px 20px;" data-bind="ntsFormLabel:{}">#{i18n.getText('KDL053_9')} </div>
+                    </div>                         
                 </div>
 
                 <div tabindex="3" class="container-custom">                     
