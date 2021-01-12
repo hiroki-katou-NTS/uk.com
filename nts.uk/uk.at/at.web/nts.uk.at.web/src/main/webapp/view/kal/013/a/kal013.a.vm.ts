@@ -270,7 +270,7 @@ module nts.uk.at.view.kal013.a {
                                     i.errorAlarmWorkplaceId,
                                     i.no,
                                     i.checkMonthlyItemsType,
-                                    i.useAtr ? 0 : 1,
+                                    i.useAtr ? 1 : 0,
                                     i.monExtracConName,
                                     i.minValue,
                                     i.maxValue,
