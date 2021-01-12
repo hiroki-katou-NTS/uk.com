@@ -49,13 +49,13 @@ public class AddAlarmPatternSettingCommandHandler extends CommandHandler<AddAlar
 			AlarmPermissionSetting alarmPerSet = new AlarmPermissionSetting(c.getAlarmPatternCD(), companyId,
 					c.getAlarmPerSet().isAuthSetting(), c.getAlarmPerSet().getRoleIds());
 
-			List<CheckCondition> checkConList = c.getCheckConditonList().stream()
+			List<CheckCondition> checkConList = c.getCheckConditionList().stream()
 					.map(x -> convertToCheckCondition(x))
 					.collect(Collectors.toList());
 
 			// create domain
 			AlarmPatternSetting domain = new AlarmPatternSetting(checkConList, c.getAlarmPatternCD(), companyId,
-					alarmPerSet, c.getAlarmPatterName());
+					alarmPerSet, c.getAlarmPatternName());
 
 			// check domain logic
 			if (domain.selectedCheckCodition()) {
