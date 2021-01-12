@@ -475,5 +475,5 @@ public interface AbsenceServiceProcess {
      * @param holidayDates
      * @param appAbsenceStartInfoDto
      */
-    public void registerHolidayDates(String companyID, ApplyForLeave newApplyForLeave, ApplyForLeave originApplyForLeave, List<GeneralDate> holidayDates, AppAbsenceStartInfoOutput appAbsenceStartInfoDto);
+    public ProcessResult registerHolidayDates(String companyID, ApplyForLeave newApplyForLeave, ApplyForLeave originApplyForLeave, List<GeneralDate> holidayDates, AppAbsenceStartInfoOutput appAbsenceStartInfoDto);
 }

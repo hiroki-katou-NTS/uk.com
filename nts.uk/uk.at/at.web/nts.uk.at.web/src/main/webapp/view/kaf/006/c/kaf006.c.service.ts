@@ -14,6 +14,6 @@ module nts.uk.at.view.kaf006.c.service {
     }
 
     export function registerHolidayDates(input: any): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.registerHolidayDates. input);
+        return nts.uk.request.ajax("at", paths.registerHolidayDates, input);
     }
 }

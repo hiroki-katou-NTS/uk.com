@@ -604,7 +604,7 @@ public class AppAbsenceFinder {
 	public AppAbsenceStartInfoDto getChangeHolidayDates(String companyID, List<String> holidayDates, AppAbsenceStartInfoDto appAbsenceStartInfoDto) {
 	    AppAbsenceStartInfoOutput appAbsenceStartInfoOutput = absenseProcess.getChangeHolidayDates(
 	            companyID, 
-	            holidayDates.stream().map(x -> GeneralDate.fromString(x, "yyyy-MM-DD")).collect(Collectors.toList()), 
+	            holidayDates.stream().map(x -> GeneralDate.fromString(x, "yyyy-MM-dd")).collect(Collectors.toList()), 
 	            appAbsenceStartInfoDto.toDomain(companyID));
 	    return AppAbsenceStartInfoDto.fromDomain(appAbsenceStartInfoOutput);
 	}
