@@ -10,7 +10,10 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.YearMonth;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.WorkTypeInfomation;
+import nts.uk.screen.at.app.ksu001.processcommon.CorrectWorkTimeHalfDayParam;
 import nts.uk.screen.at.app.ksu001.processcommon.GetListWorkTypeAvailable;
+import nts.uk.screen.at.app.query.ksu.ksu002.a.CorrectWorkTimeHalfDayKSu002;
+import nts.uk.screen.at.app.query.ksu.ksu002.a.CorrectWorkTimeHalfDayOutput;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.GetDataDaily;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.GetScheduleActualOfWorkInfo002;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.ListOfPeriodsClose;
@@ -44,6 +47,12 @@ public class Ksu002AWebService extends WebService {
 //	@Inject
 //	private GetWorkTypeKSU002 getWorkType;
 	
+	
+	//Ver2
+	@Inject
+	private CorrectWorkTimeHalfDayKSu002 correctWorkTimeHalfDay;
+	
+	
 	@POST
 	@Path("getListOfPeriodsClose")
 	public SystemDateDto getListOfPeriodsClose(ListOfPeriodsCloseInput param) {
@@ -71,6 +80,12 @@ public class Ksu002AWebService extends WebService {
 	@Path("getWorkType")
 	public List<WorkTypeInfomation> getWorkType() {
 		return this.getListWorkTypeAvailable.getData();
+	}
+	
+	@POST
+	@Path("correctWorkTimeHalfDay")
+	public CorrectWorkTimeHalfDayOutput correctWorkTimeHalfDay(CorrectWorkTimeHalfDayParam param) {
+		return this.correctWorkTimeHalfDay.get(param);
 	}
 	
 //	@POST
