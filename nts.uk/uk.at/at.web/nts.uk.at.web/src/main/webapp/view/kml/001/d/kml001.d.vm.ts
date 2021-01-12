@@ -51,7 +51,7 @@ module nts.uk.at.view.kml001.d {
                         self.currentPersonCost().premiumSets([]);
                         servicebase.personCostCalculationUpdate(vmbase.ProcessHandler.toObjectPersonCost(self.currentPersonCost()))
                             .done(function (res: Array<any>) {
-                                self.$dialog.info({ messageId: 'Msg_156' }).then(() => {
+                                self.$dialog.info({ messageId: 'Msg_15' }).then(() => {
                                     nts.uk.ui.windows.setShared('isEdited', 0);
                                     nts.uk.ui.block.clear();
                                     nts.uk.ui.windows.close();

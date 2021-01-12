@@ -19,6 +19,7 @@ module nts.uk.at.view.kml001.a {
       langId: KnockoutObservable<string> = ko.observable('ja');
       unitPriceOpt: KnockoutObservableArray<any> = ko.observableArray([]);
       selectedHistory: KnockoutObservable<vmbase.GridPersonCostCalculation> = ko.observable(null);
+      defaultPremiumSettings: KnockoutObservableArray<any> = ko.observableArray([]);
 
       constructor() {
         super();
@@ -66,10 +67,7 @@ module nts.uk.at.view.kml001.a {
           self.getPersonalDetails(newValue);
         });
 
-        /* self.currentPersonCost().calculationSetting.subscribe((newValue) => {
-          //self._calculationSetting(newValue);
-          //console.log(newValue);
-        }); */
+        self.getDefaultPremiumSetting();
       }
 
       /**
@@ -178,9 +176,9 @@ module nts.uk.at.view.kml001.a {
         });
 
         let personCostRoundingSetting: any = {
-          unitPriceRounding: self.currentPersonCost().personCostRoundingSetting().roundingUnitPrice, // 0 -> 2
-          unit: self.currentPersonCost().personCostRoundingSetting().unit, // 1, 10, 100, 1000,
-          rounding: self.currentPersonCost().personCostRoundingSetting().inUnits // 0 -> 9
+          unitPriceRounding: self.currentPersonCost().roundingUnitPrice(), // 0 -> 2
+          unit: self.currentPersonCost().unit(), // 1, 10, 100, 1000,
+          rounding: self.currentPersonCost().inUnits() // 0 -> 9
         };
 
         let startDate = moment.utc(self.currentPersonCost().startDate(), 'YYYY-MM-DD').toISOString();
@@ -267,7 +265,7 @@ module nts.uk.at.view.kml001.a {
                     );
                   }
                 });
-                $("#memo").focus();
+                $("#A4_10").focus();
               } else {
                 if (self.isInsert()) {
                   self.currentPersonCost().premiumSets.removeAll();
@@ -286,10 +284,10 @@ module nts.uk.at.view.kml001.a {
                   self.currentPersonCost().premiumSets().forEach((item, index) => {
                     self.createViewAttendanceItems(item.attendanceItems(), index);
                   });
-                  $("#memo").focus();
+                  $("#A4_10").focus();
                 } else {
                   self.reloadHistoryList();
-                  $("#memo").focus();
+                  $("#A4_10").focus();
                 }
               }
               nts.uk.ui.block.clear();
@@ -483,7 +481,7 @@ module nts.uk.at.view.kml001.a {
 
         let historyItem = [];
         self.gridPersonCostList.removeAll();
-        
+
         if (!_.isNil(dataResource) && dataResource.length > 0) {
           let tempHistory: string = currentHistory;
           dataResource.forEach(function (item, index) {
@@ -530,14 +528,17 @@ module nts.uk.at.view.kml001.a {
                   self.$blockui('hide');
                 }
               }).fail(() => { self.$blockui('hide'); });
-            } else self.$blockui('hide');
+            } else {
+              self.$blockui('hide');
+            }
+
           }).fail(res => { console.log(res); });
 
           self.isInsert(false);
-          $("#memo").focus();
+          $("#A4_10").focus();
 
         } else {
-          $("#memo").focus();
+          $("#A4_10").focus();
           self.isInsert(true);
         }
       }
@@ -548,30 +549,45 @@ module nts.uk.at.view.kml001.a {
         if (!_.isNil(data)) {
 
           let premiumSets: Array<vmbase.PremiumSettingInterface> = [];
-
+          let premiumSetting: vmbase.PremiumSettingInterface = {};
           self.createViewAttendanceItemsDefault(data.premiumSets.length);
-          
-          data.premiumSets.forEach((item, index) => {
-            let attendanceNames: Array<vmbase.AttendanceItem> = [];
-            let listAttendance: Array<string> = [];
+          if (data.premiumSets.length > 0) {
+            data.premiumSets.forEach((item, index) => {
+              let attendanceNames: Array<vmbase.AttendanceItem> = [];
+              let listAttendance: Array<string> = [];
 
-            _.forEach(item.attendanceNames, (item) => {
-              attendanceNames.push(new vmbase.AttendanceItem(item.attendanceItemId, item.attendanceItemName));
+              _.forEach(item.attendanceNames, (item) => {
+                attendanceNames.push(new vmbase.AttendanceItem(item.attendanceItemId, item.attendanceItemName));
+              });
+
+              self.createViewAttendanceItems(attendanceNames, index);
+
+              premiumSetting = {};
+              premiumSetting.companyID = data.companyID;
+              premiumSetting.historyID = data.historyID;
+              premiumSetting.displayNumber = item.id;
+              premiumSetting.rate = item.rate;
+              premiumSetting.name = item.name;
+              premiumSetting.unitPrice = item.unitPrice;
+              premiumSetting.useAtr = item.useAtr;
+              premiumSetting.attendanceItems = attendanceNames;
+              premiumSets.push(premiumSetting);
             });
+          } else {
+            _.forEach(self.defaultPremiumSettings(), (item) => {
+              premiumSetting = {};
+              premiumSetting.companyID = data.companyID;
+              premiumSetting.historyID = data.historyID;
+              premiumSetting.displayNumber = item.displayNumber;
+              premiumSetting.rate = item.rate;
+              premiumSetting.name = item.name;
+              premiumSetting.unitPrice = item.unitPrice;
+              premiumSetting.useAtr = item.useAtr;
+              premiumSetting.attendanceItems = [];
+              premiumSets.push(premiumSetting);
 
-            self.createViewAttendanceItems(attendanceNames, index);
-
-            let premiumSetting: vmbase.PremiumSettingInterface = {};
-            premiumSetting.companyID = data.companyID;
-            premiumSetting.historyID = data.historyID;
-            premiumSetting.displayNumber = item.id;
-            premiumSetting.rate = item.rate;
-            premiumSetting.name = item.name;
-            premiumSetting.unitPrice = item.unitPrice;
-            premiumSetting.useAtr = item.useAtr;
-            premiumSetting.attendanceItems = attendanceNames;
-            premiumSets.push(premiumSetting);
-          });
+            });
+          }
 
           premiumSets = _.orderBy(premiumSets, 'displayNumber', 'asc');
 
@@ -625,6 +641,28 @@ module nts.uk.at.view.kml001.a {
         //self.viewAttendanceItems.removeAll();
         _.forEach(self.viewAttendanceItems(), (x, index) => {
           self.viewAttendanceItems()[index]('');
+        });
+      }
+
+      getDefaultPremiumSetting() {
+        const self = this;
+        var premiumItemSelect = servicebase.premiumItemSelect();
+        $.when(premiumItemSelect).done((data) => {
+          let premiumItemSelectData: any = _.orderBy(data, ['displayNumber'], ['asc']);
+          if (premiumItemSelectData.length > 0) {
+            _.forEach(premiumItemSelectData, (item) => {
+              if (item.useAtr) {
+                self.defaultPremiumSettings.push({
+                  displayNumber: item.displayNumber,
+                  name: item.name,
+                  rate: 100,
+                  unitPrice: 0,
+                  useAtr: item.useAtr,
+                  attendanceItems: []
+                });
+              }
+            });
+          }
         });
       }
     }
