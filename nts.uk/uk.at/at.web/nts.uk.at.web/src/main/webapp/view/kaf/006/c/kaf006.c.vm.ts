@@ -21,6 +21,8 @@ module nts.uk.at.view.kaf006.c.viewmodel {
         appReason: KnockoutObservable<string> = ko.observable(null);
         appDate: KnockoutObservable<string> = ko.observable(null);
         dateRange: KnockoutObservable<DateRange> = ko.observable(new DateRange({ startDate: null, endDate: null }));
+        appDateTmp: KnockoutObservable<string> = ko.observable(null);
+        dateRangeTmp: KnockoutObservable<DateRange> = ko.observable(new DateRange({ startDate: null, endDate: null }));
 
         constructor() {
             super();
@@ -37,12 +39,12 @@ module nts.uk.at.view.kaf006.c.viewmodel {
                 let endDate = vm.application.opAppEndDate;
                 if (startDate === endDate) {
                     vm.dispMultDate(false);
-                    vm.appDate(startDate);
+                    vm.appDateTmp(startDate);
                 } else {
                     vm.dispMultDate(true);
-                    vm.dateRange().startDate = startDate;
-                    vm.dateRange().endDate = endDate;
-                    vm.dateRange.valueHasMutated();
+                    vm.dateRangeTmp().startDate = startDate;
+                    vm.dateRangeTmp().endDate = endDate;
+                    // vm.dateRange.valueHasMutated();
                 }
 
                 vm.appAbsenceStartInfoOutput = params.appAbsenceStartInfoOutput;
@@ -176,6 +178,14 @@ module nts.uk.at.view.kaf006.c.viewmodel {
                         });
                 }
             });
+
+            if (!vm.dispMultDate()) {
+                vm.appDate(vm.appDateTmp());
+            } else {
+                vm.dateRange().startDate = vm.dateRangeTmp().startDate;
+                vm.dateRange().endDate = vm.dateRangeTmp().endDate;
+                vm.dateRange.valueHasMutated();
+            }
         }
 
         startPage(): JQueryPromise<any> {
@@ -213,6 +223,14 @@ module nts.uk.at.view.kaf006.c.viewmodel {
                     holidayDates: holidayAppDates,
                     appAbsenceStartInfoDto: vm.appAbsenceStartInfoOutput
                 };
+                commandCheck.newApplyForLeave.vacationInfo.info.datePeriod = {
+                    startDate: vm.application.opAppStartDate,
+                    endDate: vm.application.opAppEndDate
+                }
+                commandRegister.newApplyForLeave.vacationInfo.info.datePeriod = {
+                    startDate: vm.application.opAppStartDate,
+                    endDate: vm.application.opAppEndDate
+                }
     
                 block.invisible();
                 vm.validate().then((valid) => {
@@ -234,6 +252,13 @@ module nts.uk.at.view.kaf006.c.viewmodel {
                 }).then((data) => {
                     if (data) {
                         return service.registerHolidayDates(commandRegister);
+                    }
+                }).done((result) => {
+                    if (result) {
+                        return vm.$dialog.info({ messageId: "Msg_15"}).then(() => {
+                            vm.closeDialog();
+                            return true;
+                        });	
                     }
                 }).fail((error) => {
                     if (error) {

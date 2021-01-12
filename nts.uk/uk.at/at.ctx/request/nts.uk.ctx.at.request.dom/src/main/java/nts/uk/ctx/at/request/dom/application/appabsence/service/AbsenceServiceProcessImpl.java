@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.application.appabsence.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -2054,15 +2055,23 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
         DatePeriod datePeriod = new DatePeriod(GeneralDate.fromString(startDate, FORMAT_DATE), GeneralDate.fromString(endDate, FORMAT_DATE));
         List<GeneralDate> listDates = datePeriod.datesBetween();
         
-        listDates = listDates.stream().filter(date -> !holidayDates.contains(date)).collect(Collectors.toList());
+        listDates = listDates.stream().filter(date -> !holidayDates.contains(date))
+                .sorted(Comparator.comparing(GeneralDate::localDate))
+                .collect(Collectors.toList());
         
         // INPUT．「休出代休紐付け管理」Listをチェックする
         if (!leaveComDayOffMana.isEmpty()) {
+            leaveComDayOffMana = leaveComDayOffMana.stream()
+                    .sorted(Comparator.comparing(LeaveComDayOffManagement::getAssocialInfo, (item1, item2) -> {
+                        return item1.getDateOfUse().localDate().compareTo(item2.getDateOfUse().localDate());
+                    }))
+                    .collect(Collectors.toList());
             // 作成した「対象年月日リスト」と「休出代休紐付け管理<List>」をチェックする
             if (listDates.size() == leaveComDayOffMana.size()) {
                 // ドメインモデル「休出代休紐付け管理」を更新する
-                for(LeaveComDayOffManagement data : leaveComDayOffMana) {
-                    leaveComDayOffManaRepo.update(data);
+                for (int i = 0; i < leaveComDayOffMana.size(); i++) {
+                    leaveComDayOffMana.get(i).getAssocialInfo().setDateOfUse(listDates.get(i));
+                    leaveComDayOffManaRepo.update(leaveComDayOffMana.get(i));
                 }
             } else {
                 // INPUT．「休出代休紐付け管理」Listを削除する
@@ -2074,11 +2083,17 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
         
         // INPUT．「振出振休紐付け管理」Listをチェックする
         if (!payoutSubofHDManagements.isEmpty()) {
+            payoutSubofHDManagements = payoutSubofHDManagements.stream()
+                    .sorted(Comparator.comparing(PayoutSubofHDManagement::getAssocialInfo, (item1, item2) -> {
+                        return item1.getDateOfUse().localDate().compareTo(item2.getDateOfUse().localDate());
+                    }))
+                    .collect(Collectors.toList());
             // 作成した「対象年月日リスト」と「振出振休紐付け管理<List>」をチェックする
             if (listDates.size() == payoutSubofHDManagements.size()) {
                 // ドメインモデル「振出振休紐付け管理」を更新する
-                for(PayoutSubofHDManagement data : payoutSubofHDManagements) {
-                    payoutHdManaRepo.update(data);
+                for (int i = 0; i < payoutSubofHDManagements.size(); i++) {
+                    payoutSubofHDManagements.get(i).getAssocialInfo().setDateOfUse(listDates.get(i));
+                    payoutHdManaRepo.update(payoutSubofHDManagements.get(i));
                 }
             } else {
                 // INPUT．「振出振休紐付け管理」Listを削除する
