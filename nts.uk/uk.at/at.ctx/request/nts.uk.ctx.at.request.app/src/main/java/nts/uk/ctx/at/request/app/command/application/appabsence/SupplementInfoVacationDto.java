@@ -27,15 +27,13 @@ public class SupplementInfoVacationDto {
     
     public SupplementInfoVacation toDomain() {
         return new SupplementInfoVacation(
-                Optional.ofNullable(datePeriod.toDomain()),
-                applyForSpeLeave == null ? Optional.empty() : Optional.ofNullable(applyForSpeLeave.toDomain()));
+                Optional.ofNullable(datePeriod).flatMap(x -> Optional.ofNullable(x.toDomain())),
+                Optional.ofNullable(applyForSpeLeave).flatMap(x -> Optional.ofNullable(x.toDomain())));
     }
     
     public static SupplementInfoVacationDto fromDomain(SupplementInfoVacation domain) {
         return new SupplementInfoVacationDto(
-                domain.getDatePeriod().isPresent() ? new DatePeriodDto(
-                        domain.getDatePeriod().get().start().toString(), 
-                        domain.getDatePeriod().get().end().toString()) : null, 
-                domain.getApplyForSpeLeaveOptional().isPresent() ? ApplyforSpecialLeaveDto.fromDomain(domain.getApplyForSpeLeaveOptional().get()) : null);
+        		domain.getDatePeriod().map(x -> new DatePeriodDto(x.start().toString(), x.end().toString())).orElse(null), 
+                domain.getApplyForSpeLeaveOptional().map(ApplyforSpecialLeaveDto::fromDomain).orElse(null));
     }
 }

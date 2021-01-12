@@ -38,6 +38,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 		isEnableSwitchBtn: boolean = true;
 		updateMode: boolean = true;
 		dateBeforeChange: KnockoutObservable<string> = ko.observable(null);
+		isDispTime2ByWorkTime: KnockoutObservable<boolean> = ko.observable(false);
 
 		yearRemain: KnockoutObservable<number> = ko.observable();
 		subHdRemain: KnockoutObservable<number> = ko.observable();
@@ -86,7 +87,15 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 		condition22: KnockoutObservable<boolean> = ko.observable(true);
 		condition23: KnockoutObservable<boolean> = ko.observable(true);
 		condition24: KnockoutObservable<boolean> = ko.observable(true);
-		condition1: KnockoutObservable<boolean> = ko.observable(true);
+
+		condition1_0: KnockoutObservable<boolean> = ko.observable(true);
+		condition1_1: KnockoutObservable<boolean> = ko.observable(true);
+		condition1_2: KnockoutObservable<boolean> = ko.observable(true);
+		condition1_3: KnockoutObservable<boolean> = ko.observable(true);
+		condition1_4: KnockoutObservable<boolean> = ko.observable(true);
+		condition1_5: KnockoutObservable<boolean> = ko.observable(true);
+		condition1_6: KnockoutObservable<boolean> = ko.observable(true);
+
 		condition6: KnockoutObservable<boolean> = ko.observable(true);
 		condition7: KnockoutObservable<boolean> = ko.observable(true);
 		condition8: KnockoutObservable<boolean> = ko.observable(true);
@@ -142,7 +151,11 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 				const vm = this;
 
 				if (vm.selectedWorkTimeCD()) {
-					return vm.selectedWorkTimeCD() + " " + vm.selectedWorkTimeName();
+					if (vm.selectedWorkTimeName()) {
+						return vm.selectedWorkTimeCD() + " " + vm.selectedWorkTimeName();
+					} else {
+						return vm.selectedWorkTimeCD() + " " + "マスタ未登録";
+					}
 				}
 
 				return vm.$i18n("KAF006_21");
@@ -164,6 +177,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 						if (vm.specAbsenceDispInfo()) {
 							vm.specAbsenceDispInfo().maxDay = success.maxDayObj.maxDay;
 							vm.specAbsenceDispInfo().dayOfRela = success.maxDayObj.dayOfRela;
+							vm.specAbsenceDispInfo.valueHasMutated();
 						}
 					}
                 }).fail((error) => {
@@ -219,6 +233,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
                 }).then((data) => {
 					if (data) {
 						vm.fetchData(data);
+						vm.appDispInfoStartupOutput(data.appDispInfoStartupOutput);
 						$("#work-type-combobox").focus()
 						return data;
 					}
@@ -371,6 +386,28 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 					}).then((data) => {
 						if (data) {
 							vm.fetchData(data);
+							vm.timeRequired(nts.uk.time.format.byId("Clock_Short_HM", vm.requiredVacationTime()));
+
+							let workTimeLst = data.workTimeLst;
+							if (workTimeLst.length > 0) {
+								if (_.filter(workTimeLst, { 'workNo': 1 }).length > 0) {
+									let workTime1: any = _.filter(workTimeLst, { 'workNo': 1 })[0];
+									vm.startTime1(workTime1.startTime);
+									vm.endTime1(workTime1.endTime);
+								}
+								if (_.filter(workTimeLst, { 'workNo': 2 }).length > 0) {
+									let workTime2: any = _.filter(workTimeLst, { 'workNo': 2 })[0];
+									if (workTime2.useAtr === 0) {
+										vm.isDispTime2ByWorkTime(false);
+									} else {
+										vm.isDispTime2ByWorkTime(true);
+										vm.startTime2(workTime2.startTime);
+										vm.endTime2(workTime2.endTime);
+									}
+								} else {
+									vm.isDispTime2ByWorkTime(false);
+								}
+							}
 							return data;
 						}
 					}).then((data) => {
@@ -403,6 +440,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 			const vm = this;
 			if(vm.appType() === AppType.ABSENCE_APPLICATION) {
 				vm.createParamKAF006();
+				// vm.checkCondition(vm.data);
 			}
         };
 
@@ -490,7 +528,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 					// update 
 					return vm.$ajax('at', API.update, commandUpdate);
 				}
-			}).done((result) => {
+			}).then((result) => {
 				if (result) {
 					return vm.$dialog.info({ messageId: "Msg_15"}).then(() => {
 						return true;
@@ -532,6 +570,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 					// B3_2
 					vm.selectedType(success.applyForLeave.vacationInfo.holidayApplicationType);
 					vm.fetchData(success.appAbsenceStartInfo);
+					vm.appDispInfoStartupOutput(success.appAbsenceStartInfo.appDispInfoStartupOutput);
 					vm.fetchDataAppForLeave(success.applyForLeave);
 					vm.checkCondition32(success.applyForLeave);
 					if (hdAppSetInput && hdAppSetInput.length > 0) {
@@ -542,6 +581,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 						appAbsenceStartInfoOutput: vm.data,
 						applyForLeave: vm.createDataVacationApp()
 			};
+					vm.checkCondition(vm.data);
                 }).fail((error) => {
                     vm.$dialog.error({ messageId: error.messageId, messageParams: error.parameterIds });
                 }).always(() => vm.$blockui('hide'));
@@ -630,7 +670,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 			let workTypesAfter = _.filter(vm.data.workTypeLst, {'workTypeCode': data.selectedWorkTypeCD});
 			vm.workTypeAfter(workTypesAfter.length > 0 ? workTypesAfter[0] : null);
 
-			vm.appDispInfoStartupOutput(data.appDispInfoStartupOutput);
+			// vm.appDispInfoStartupOutput(data.appDispInfoStartupOutput);
 			vm.specAbsenceDispInfo(data.specAbsenceDispInfo);
 
 			if (data.requiredVacationTime) {
@@ -727,10 +767,10 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 					vm.selectedWorkTimeCD(childData.selectedWorkTimeCode);
 					vm.selectedWorkTimeName(childData.selectedWorkTimeName);
 
-					vm.startTime1(childData.first.start);
-					vm.endTime1(childData.first.end);
-					vm.startTime2(childData.second.start);
-					vm.endTime2(childData.second.end);
+					// vm.startTime1(childData.first.start);
+					// vm.endTime1(childData.first.end);
+					// vm.startTime2(childData.second.start);
+					// vm.endTime2(childData.second.end);
                 }
             });
 		};
@@ -805,7 +845,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 			vm.checkCondition22(data);
 			vm.checkCondition23(data);
 			vm.checkCondition24(data);
-			// vm.checkCondition1(data);
+			vm.checkCondition1(data);
 			vm.checkCondition31(data);
 	
 			if (vm.selectedType() === 3) {
@@ -819,6 +859,12 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 		validate() {
 			const vm = this;
 			if (vm.condition11()) {
+				if (vm.isChangeWorkHour()) {
+					if (!vm.checkTimeValid(vm.startTime1) && !vm.checkTimeValid(vm.endTime1)) {
+						vm.$dialog.error({messageId: "Msg_307"});
+						return false;
+					}
+				}
 				if (!vm.checkTimeValid(vm.startTime1) && vm.checkTimeValid(vm.endTime1)) {
 					vm.$dialog.error({messageId: "Msg_307"});
 					return false;
@@ -1047,18 +1093,21 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 						vm.condition19Over60(true);
 					} else {
 						vm.condition19Over60(false);
+						vm.over60H(null);
 					}
 				if (vm.data.vacationApplicationReflect.timeLeaveReflect.substituteLeaveTime === 1 
 					&& vm.data.remainVacationInfo.accumulatedRestManagement.accumulatedManage === 1) {
 						vm.condition19Substitute(true);
 					} else {
 						vm.condition19Substitute(false);
+						vm.timeOff(null);
 					}
 				if (vm.data.vacationApplicationReflect.timeLeaveReflect.annualVacationTime === 1 
 					&& vm.data.remainVacationInfo.annualLeaveManagement.timeAnnualLeaveManage === 1) {
 						vm.condition19Annual(true);
 					} else {
 						vm.condition19Annual(false);
+						vm.annualTime(null);
 					}
 				if (vm.data.vacationApplicationReflect.timeLeaveReflect.childNursing === 1 
 					&& vm.data.remainVacationInfo.nursingCareLeaveManagement.childNursingManagement === 1 
@@ -1066,6 +1115,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 						vm.condition19ChildNursing(true);
 					} else {
 						vm.condition19ChildNursing(false);
+						vm.childNursing(null);
 					}
 				if (vm.data.vacationApplicationReflect.timeLeaveReflect.nursing === 1 
 					&& vm.data.remainVacationInfo.nursingCareLeaveManagement.longTermCareManagement === 1 
@@ -1073,6 +1123,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 						vm.condition19Nursing(true);
 					} else {
 						vm.condition19Nursing(false);
+						vm.nursing(null);
 					}
 			}
 		}
@@ -1101,7 +1152,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 				let dateSpecHdRelationLst = vm.data.specAbsenceDispInfo.dateSpecHdRelationLst;
 				let selectedRela = _.filter(dateSpecHdRelationLst, { 'relationCD': vm.selectedDateSpec() });
 
-				if (vm.selectedDateSpec() && selectedRela.length > 0 && selectedRela.threeParentOrLess) {
+				if (vm.selectedDateSpec() && selectedRela.length > 0 && selectedRela[0].threeParentOrLess) {
 					vm.condition8(true);
 					return true;
 				}
@@ -1209,6 +1260,69 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 			}
 			vm.condition24(false);
 			vm.hdAppSet(_.filter(vm.hdAppSet(), (x) => {return x.holidayAppType !== 4}));
+		}
+
+		checkCondition1(data: any) {
+			const vm = this;
+			if (vm.data && vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.opEmploymentSet && vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.opEmploymentSet.targetWorkTypeByAppLst) {
+				let targetWorkType = _.filter(vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.opEmploymentSet.targetWorkTypeByAppLst, { 'appType': 1 });
+				if (targetWorkType.length > 0) {
+					if (_.filter(targetWorkType, { 'opHolidayAppType': 0 }).length > 0 && _.filter(targetWorkType, { 'opHolidayAppType': 0 })[0].opHolidayTypeUse) {
+						vm.condition1_0(true);
+					} else {
+						vm.condition1_0(false);
+						vm.hdAppSet(_.filter(vm.hdAppSet(), (x) => {return x.holidayAppType !== 0}));
+					}
+
+					if (_.filter(targetWorkType, { 'opHolidayAppType': 1 }).length > 0 && _.filter(targetWorkType, { 'opHolidayAppType': 1 })[0].opHolidayTypeUse) {
+						vm.condition1_1(true);
+					} else {
+						vm.condition1_1(false);
+						vm.hdAppSet(_.filter(vm.hdAppSet(), (x) => {return x.holidayAppType !== 1}));
+					}
+
+					if (_.filter(targetWorkType, { 'opHolidayAppType': 2 }).length > 0 && _.filter(targetWorkType, { 'opHolidayAppType': 2 })[0].opHolidayTypeUse) {
+						vm.condition1_2(true);
+					} else {
+						vm.condition1_2(false);
+						vm.hdAppSet(_.filter(vm.hdAppSet(), (x) => {return x.holidayAppType !== 2}));
+					}
+
+					if (_.filter(targetWorkType, { 'opHolidayAppType': 3 }).length > 0 && _.filter(targetWorkType, { 'opHolidayAppType': 3 })[0].opHolidayTypeUse) {
+						vm.condition1_3(true);
+					} else {
+						vm.condition1_3(false);
+						vm.hdAppSet(_.filter(vm.hdAppSet(), (x) => {return x.holidayAppType !== 3}));
+					}
+
+					if (_.filter(targetWorkType, { 'opHolidayAppType': 4 }).length > 0 && _.filter(targetWorkType, { 'opHolidayAppType': 4 })[0].opHolidayTypeUse) {
+						vm.condition1_4(true);
+					} else {
+						vm.condition1_4(false);
+						vm.hdAppSet(_.filter(vm.hdAppSet(), (x) => {return x.holidayAppType !== 4}));
+					}
+
+					if (_.filter(targetWorkType, { 'opHolidayAppType': 5 }).length > 0 && _.filter(targetWorkType, { 'opHolidayAppType': 5 })[0].opHolidayTypeUse) {
+						vm.condition1_5(true);
+					} else {
+						vm.condition1_5(false);
+						vm.hdAppSet(_.filter(vm.hdAppSet(), (x) => {return x.holidayAppType !== 5}));
+					}
+
+					if (_.filter(targetWorkType, { 'opHolidayAppType': 6 }).length > 0 && _.filter(targetWorkType, { 'opHolidayAppType': 6 })[0].opHolidayTypeUse) {
+						vm.condition1_6(true);
+					} else {
+						vm.condition1_6(false);
+						vm.hdAppSet(_.filter(vm.hdAppSet(), (x) => {return x.holidayAppType !== 6}));
+					}
+
+					// if (targetWorkType.opHolidayTypeUse) {
+					// 	vm.condition1(false);
+					// 	return false;
+					// }
+				}
+			}
+			// vm.condition1(true);
 		}
 
 		checkCondition31(data: any) {

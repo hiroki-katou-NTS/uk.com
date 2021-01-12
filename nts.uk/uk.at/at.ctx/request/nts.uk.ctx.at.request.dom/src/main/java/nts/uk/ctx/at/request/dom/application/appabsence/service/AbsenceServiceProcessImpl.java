@@ -22,6 +22,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
@@ -262,6 +263,9 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	
 	@Inject
     private CompensLeaveComSetRepository compensLeaveComSetRepo;
+	
+	@Inject
+	private ApplicationRepository applicationRepository;
 	
 	private final String FORMAT_DATE = "yyyy/MM/dd";
 	
@@ -1425,7 +1429,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 			// 時間消化のチェック処理
 			/*public void checkTimeDigestProcess(String companyID, TimeDigestApplication timeDigestApplication
 					, RemainVacationInfo remainVacationInfo, String employeeId, GeneralDate baseDate ){*/
-			this.checkTimeDigestProcess(companyID, appAbScene.getReflectFreeTimeApp().getTimeDegestion().get()
+			this.checkTimeDigestProcess(companyID, appAbScene.getReflectFreeTimeApp().getTimeDegestion().orElse(null)
 					, appAbsenceStartInfoOutput.getRemainVacationInfo()
 					, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid()
 					, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getBaseDate());
@@ -1934,6 +1938,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
             AppDispInfoStartupOutput appDispInfoStartupOutput) {
         String companyID = AppContexts.user().companyId();
         Application application = applyForLeave.getApplication();
+        applicationRepository.update(application);
+        
         // ドメインモデル「休暇申請」を更新する
         this.applyForLeaveRepository.update(applyForLeave, companyID, application.getAppID());
         

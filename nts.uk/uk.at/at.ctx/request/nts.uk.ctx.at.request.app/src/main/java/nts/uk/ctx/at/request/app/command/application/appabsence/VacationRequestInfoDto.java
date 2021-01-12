@@ -33,7 +33,7 @@ public class VacationRequestInfoDto {
         return new VacationRequestInfoDto(
                 domain.getHolidayApplicationType().value, 
                 Optional.ofNullable(domain.getInfo())
-                	.map(x -> SupplementInfoVacationDto.fromDomain(domain.getInfo()))
+                	.map(x -> SupplementInfoVacationDto.fromDomain(x))
                 	.orElse(null));
     }
 }

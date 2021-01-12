@@ -430,6 +430,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	public void appConflictCheck(String companyID, EmployeeInfoImport employeeInfo, List<GeneralDate> dateLst,
 			List<String> workTypeLst, List<ActualContentDisplay> actualContentDisplayLst) {
 		// INPUT．対象日リストをループする
+		int count = 0;
 		for(GeneralDate loopDate : dateLst) {
 			// INPUT．表示する実績内容からルールする日の実績詳細を取得する
 			Optional<AchievementDetail> opAchievementDetail = Optional.empty();
@@ -446,7 +447,12 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				return;
 			}
 			// 勤務種類を取得する
-			Optional<WorkType> opWorkTypeFirst = workTypeRepository.findByPK(companyID, workTypeLst.stream().findFirst().orElse(null));
+			Optional<WorkType> opWorkTypeFirst = null;
+			if(workTypeLst.size()  > 1)
+				opWorkTypeFirst = workTypeRepository.findByPK(companyID, workTypeLst.get(count));
+			else
+				opWorkTypeFirst = workTypeRepository.findByPK(companyID, workTypeLst.stream().findFirst().orElse(null));
+			count++;
 			// 勤務種類を取得する
 			String actualWorkTypeCD = opActualContentDisplay.get().getOpAchievementDetail().map(x -> x.getWorkTypeCD()).orElse(null);
 			Optional<WorkType> opWorkTypeActual = workTypeRepository.findByPK(companyID, actualWorkTypeCD);

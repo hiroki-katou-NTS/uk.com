@@ -156,9 +156,11 @@ public class KrqdtAppHd extends ContractUkJpaEntity implements Serializable {
                 new VacationRequestInfo(
                         EnumAdaptor.valueOf(this.holidayAppType, HolidayAppType.class),
                         new SupplementInfoVacation(
-                                Optional.of(new DatePeriod(
-                                        this.hdComStartDate, 
-                                        this.hdComEndDate)),
+                        		(!Optional.ofNullable(this.hdComStartDate).isPresent() || !Optional.ofNullable(this.hdComEndDate).isPresent())
+                                ? Optional.empty() 
+                            	: Optional.of(new DatePeriod(
+                                    this.hdComStartDate, 
+                                    this.hdComEndDate)),
                                 Optional.of(new ApplyforSpecialLeave(
                                         this.mournerFlg != null ? (this.mournerFlg == 1 ? true : false) : false,
                                         this.relationshipCD != null ? Optional.of(new RelationshipCDPrimitive(this.relationshipCD)) : Optional.empty(),

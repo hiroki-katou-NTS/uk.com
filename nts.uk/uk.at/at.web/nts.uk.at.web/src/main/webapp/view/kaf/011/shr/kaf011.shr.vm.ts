@@ -112,6 +112,7 @@ module nts.uk.at.view.kaf011 {
 									(workTime?(workTime.workTimeDisplayName.workTimeName + ' ') : '' )+ 
 									moment(Math.floor(data.startTime / 60),'mm').format('mm') + ":" + moment(data.startTime % 60,'mm').format('mm') + getText('KAF011_37') + moment(Math.floor(data.endTime / 60),'mm').format('mm') + ":" + moment(data.endTime % 60,'mm').format('mm'));	
 			}
+			self.checkDisplay();
 			self.started = true;
 			
 		}
