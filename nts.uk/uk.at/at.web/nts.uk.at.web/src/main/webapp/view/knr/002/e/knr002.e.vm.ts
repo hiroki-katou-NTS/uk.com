@@ -11,25 +11,38 @@ module nts.uk.at.view.knr002.e {
             displayText: String = "hoi cham";
 
             mode: KnockoutObservableArray<any>;
-            selectedMode: KnockoutObservable<number>;
+            selectedMode: KnockoutObservable<number> = ko.observable(MODE.BACKUP);
+
+            initData: KnockoutObservable<InitialDisplayBackupScreenDto> = ko.observable();
+            selectedRow: KnockoutObservable<number> = ko.observable(0);
+            selectedCode: KnockoutObservable<string> = ko.observable();
+            selectedName: KnockoutObservable<string> = ko.observable();
+            settingContentGrid: KnockoutObservableArray<LocationSettingDto> = ko.observableArray([]);
+            instructions: KnockoutObservable<string> = ko.observable();
+            loadTime: number = 0;
     
             constructor() {
                 const vm = this;   
 
                 vm.mode = ko.observableArray([
-                    { code: 1, name: getText("KNR002_116") },
-                    { code: 2, name: getText("KNR002_117") },
+                    { code: MODE.BACKUP, name: getText("KNR002_116") },
+                    { code: MODE.RESTORE, name: getText("KNR002_118") },
                 ]);
-                vm.selectedMode = ko.observable(1);
+                
+                vm.instructions(getText("KNR002_254"));
 
                 vm.selectedMode.subscribe((value: number) => {
                     $("#bak-grid1").ntsGrid("destroy");
-                    vm.loadGridTop(value);
+                    vm.loadInstalledTerminals(value);
                     vm.setLabelCorlor(value);
+                    if (value == MODE.BACKUP) {
+                        vm.instructions(getText("KNR002_254"));
+                    } else {
+                        vm.instructions(getText("KNR002_255"));
+                    }
+                    
                 });
                 
-                vm.loadBakGrid();
-                vm.loadGridTop(1);
             }
 
             private setLabelCorlor(value: number) {
@@ -40,69 +53,55 @@ module nts.uk.at.view.knr002.e {
                 $('.panel.ntsPanel').css('background-color', '#FFEBFF');
             }
 
+
             private loadBakGrid() {
                 const vm = this;
 
-                let dataGrid2 = [{empInfoTerCode: '0001',empInfoTerName: 'string',displayModelEmpInfoTer: 'string',backupDate: '2018/9/14 10:51'},
-                                {empInfoTerCode: '0002',empInfoTerName: 'string',displayModelEmpInfoTer: 'string',backupDate: '2018/9/14 10:51'},
-                                {empInfoTerCode: '0003',empInfoTerName: 'string',displayModelEmpInfoTer: 'string',backupDate: '2018/9/14 10:51'},
-                                {empInfoTerCode: '0004',empInfoTerName: 'string',displayModelEmpInfoTer: 'string',backupDate: '2018/9/14 10:51'},
-                                {empInfoTerCode: '0005',empInfoTerName: 'string',displayModelEmpInfoTer: 'string',backupDate: '2018/9/14 10:51'},
-                                {empInfoTerCode: '0006',empInfoTerName: 'string',displayModelEmpInfoTer: 'string',backupDate: '2018/9/14 10:51'}];
-
-                let detailGridData = [{majorClassification: 'string',smallClassification: 'small1',setValue: '5:00',inputRange: 'string'},
-                                    {majorClassification: 'string',smallClassification: 'small2',setValue: '5:00',inputRange: 'string'},
-                                    {majorClassification: 'string',smallClassification: 'small3',setValue: '5:00',inputRange: 'string'},
-                                    {majorClassification: 'string',smallClassification: 'small4',setValue: '5:00',inputRange: 'string'},
-                                    {majorClassification: 'string',smallClassification: 'small5',setValue: '5:00',inputRange: 'string'},
-                                    {majorClassification: 'string',smallClassification: 'small6',setValue: '5:00',inputRange: 'string'},
-                                    {majorClassification: 'string',smallClassification: 'small7',setValue: '5:00',inputRange: 'string'},
-                                    {majorClassification: 'string',smallClassification: 'small8',setValue: '5:00',inputRange: 'string'},
-                                    {majorClassification: 'string',smallClassification: 'small9',setValue: '5:00',inputRange: 'string'},
-                                    {majorClassification: 'string',smallClassification: 'small10',setValue: '5:00',inputRange: 'string'},
-                                    {majorClassification: 'string',smallClassification: 'small11',setValue: '5:00',inputRange: 'string'},
-                                    {majorClassification: 'string',smallClassification: 'small12',setValue: '5:00',inputRange: 'string'},
-                                    {majorClassification: 'string',smallClassification: 'small13',setValue: '5:00',inputRange: 'string'},
-                                    {majorClassification: 'string',smallClassification: 'small14',setValue: '5:00',inputRange: 'string'},
-                                    {majorClassification: 'string',smallClassification: 'small15',setValue: '5:00',inputRange: 'string'},
-                                    {majorClassification: 'string',smallClassification: 'small16',setValue: '5:00',inputRange: 'string'},
-                                    {majorClassification: 'string',smallClassification: 'small17',setValue: '5:00',inputRange: 'string'},
-                                    {majorClassification: 'string',smallClassification: 'small18',setValue: '5:00',inputRange: 'string'},
-                                    {majorClassification: 'string',smallClassification: 'small19',setValue: '5:00',inputRange: 'string'},
-                                    {majorClassification: 'string',smallClassification: 'small20',setValue: '5:00',inputRange: 'string'},
-                                    {majorClassification: 'string',smallClassification: 'small21',setValue: '5:00',inputRange: 'string'}];
-
                 $('#bak-grid2').ntsGrid({
-                    width: '430px', 
+                    width: '455px', 
                     height: '140px',
-                    dataSource: dataGrid2,
+                    dataSource: vm.initData().listTimeRecordSetFormatBakEDto,
                     primaryKey: 'empInfoTerCode',
                     virtualization: true,
                     virtualizationMode: 'continuous',
                     columns: [
                         { headerText: '端末No', key: 'empInfoTerCode', dataType: 'string', width: '70px'},
                         { headerText: 'Name', key: 'empInfoTerName', dataType: 'string', width: '100px'},
-                        { headerText: 'Type', key: 'displayModelEmpInfoTer', dataType: 'string', width: '80px'},
-                        { headerText: 'Date', key: 'backupDate', dataType: 'string', width: '150px'},
+                        { headerText: 'Type', key: 'displayModelEmpInfoTer', dataType: 'string', width: '95px'},
+                        { headerText: 'Date', key: 'backupDate', dataType: 'string', width: '190px'},
                     ],
                     features: [
                         { 
-                            
+                            name: 'Selection',
+                            mode: 'row',
+                            multipleSelection: false,
+                            rowSelectionChanged: function(event: any, ui: any) {
+                                vm.selectedRow(ui.row.index);
+                                $('#bak-grid1').igGridSelection('selectRow', vm.selectedRow());
+                                vm.selectedCode(ui.row.id);
+                                vm.loadBackupContent(vm.selectedCode());
+                                vm.selectedName(vm.initData().listTimeRecordSetFormatBakEDto[vm.selectedRow()].empInfoTerName);
+                            }
                         }
                     ]
                 });
+                $('#bak-grid2').igGridSelection('selectRow', vm.selectedRow());
+            }
+
+            private loadSettingGrid() {
+                const vm = this;
 
                 $('#detail-grid').ntsGrid({
                     width: '560px', 
                     height: '485px',
-                    dataSource: detailGridData,
+                    dataSource: vm.settingContentGrid(),
                     primaryKey: 'smallClassification',
                     virtualization: true,
                     virtualizationMode: 'continuous',
                     columns: [
                         { headerText: '大項目', key: 'majorClassification', dataType: 'string', width: '110px'},
                         { headerText: '小項目', key: 'smallClassification', dataType: 'string', width: '140px'},
-                        { headerText: '設定値', key: 'setValue', dataType: 'string', width: '90px'},
+                        { headerText: '設定値', key: 'settingValue', dataType: 'string', width: '90px'},
                         { headerText: '入力範囲', key: 'inputRange', dataType: 'string', width: '220px'},
                     ],
                     features: [
@@ -113,7 +112,7 @@ module nts.uk.at.view.knr002.e {
                 })
             }
 
-            private loadGridTop(mode: number) {
+            private loadInstalledTerminals(mode: number) {
                 const vm = this;
                 
                 let gridData: any;
@@ -121,12 +120,7 @@ module nts.uk.at.view.knr002.e {
                 let width: any;
 
                 if (mode === 1) {
-                    gridData = [{empInfoTerCode: '0001',empInfoTerName: 'string',displayModelEmpInfoTer: 'string'},
-                                {empInfoTerCode: '0002',empInfoTerName: 'string',displayModelEmpInfoTer: 'string'},
-                                {empInfoTerCode: '0003',empInfoTerName: 'string',displayModelEmpInfoTer: 'string'},
-                                {empInfoTerCode: '0004',empInfoTerName: 'string',displayModelEmpInfoTer: 'string'},
-                                {empInfoTerCode: '0005',empInfoTerName: 'string',displayModelEmpInfoTer: 'string'},
-                                {empInfoTerCode: '0006',empInfoTerName: 'string',displayModelEmpInfoTer: 'string'}];
+                    gridData = vm.initData().listEmpInfoTerminal;
 
                     columns = [{ headerText: '端末No', key: 'empInfoTerCode', dataType: 'string', width: '70px'},
                                 { headerText: 'Name', key: 'empInfoTerName', dataType: 'string', width: '100px'},
@@ -135,12 +129,12 @@ module nts.uk.at.view.knr002.e {
                     width = '280px';
 
                 } else  {
-                    gridData = [{empInfoTerCode: '0001',empInfoTerName: 'string',displayModelEmpInfoTer: 'string', status: "送信待ち", rawCode: "0001"},
-                                {empInfoTerCode: '0002',empInfoTerName: 'string',displayModelEmpInfoTer: 'string'},
-                                {empInfoTerCode: '0003',empInfoTerName: 'string',displayModelEmpInfoTer: 'string'},
-                                {empInfoTerCode: '0004',empInfoTerName: 'string',displayModelEmpInfoTer: 'string', status: "送信待ち", rawCode: "0001"},
-                                {empInfoTerCode: '0005',empInfoTerName: 'string',displayModelEmpInfoTer: 'string'},
-                                {empInfoTerCode: '0006',empInfoTerName: 'string',displayModelEmpInfoTer: 'string'}];
+                    // gridData = [{empInfoTerCode: '0001',empInfoTerName: 'string',displayModelEmpInfoTer: 'string', status: "送信待ち", rawCode: "0001"},
+                    //             {empInfoTerCode: '0002',empInfoTerName: 'string',displayModelEmpInfoTer: 'string'},
+                    //             {empInfoTerCode: '0003',empInfoTerName: 'string',displayModelEmpInfoTer: 'string'},
+                    //             {empInfoTerCode: '0004',empInfoTerName: 'string',displayModelEmpInfoTer: 'string', status: "送信待ち", rawCode: "0001"},
+                    //             {empInfoTerCode: '0005',empInfoTerName: 'string',displayModelEmpInfoTer: 'string'},
+                    //             {empInfoTerCode: '0006',empInfoTerName: 'string',displayModelEmpInfoTer: 'string'}];
 
                     columns = [{ headerText: '端末No', key: 'empInfoTerCode', dataType: 'string', width: '70px'},
                                 { headerText: 'Name', key: 'empInfoTerName', dataType: 'string', width: '100px'},
@@ -162,39 +156,147 @@ module nts.uk.at.view.knr002.e {
                     columns,
                     features: [
                         { 
-                            
+                            name: 'Selection',
+                            mode: 'row',
+                            multipleSelection: false,
+                            rowSelectionChanged: function(event: any, ui: any) {
+                                vm.selectedRow(ui.row.index);
+                                vm.selectedCode(ui.row.id);
+                                $('#bak-grid2').igGridSelection('selectRow', vm.selectedRow());
+                                vm.loadLocalSettings(vm.selectedCode());
+                                vm.selectedName(vm.initData().listEmpInfoTerminal[vm.selectedRow()].empInfoTerName);
+                            }
                         }
                     ]
+                });
+
+                $('#bak-grid1').igGridSelection('selectRow', vm.selectedRow());
+            }
+
+            private loadLocalSettings(code: string) {
+                const vm = this;
+
+                blockUI.invisible();
+                service.getLocationSetting(code)
+                .done((res: Array<LocationSettingDto>) => {
+                    console.log(res, 'local setting');
+                    if (res) {
+                        vm.settingContentGrid(res);
+                        $("#detail-grid").igGrid("dataSourceObject", vm.settingContentGrid()).igGrid("dataBind");
+                    }
+                })
+                .fail((res: any) => console.log(res))
+                .always(() => blockUI.clear());
+            }
+
+            private loadBackupContent(code: string) {
+                const vm = this;
+
+                blockUI.invisible();
+                service.getBackupContent(code)
+                .done((res: Array<LocationSettingDto>) => {
+                    console.log(res, 'backup content');
+                    if (res) {
+                        vm.settingContentGrid(res);
+                        $("#detail-grid").igGrid("dataSourceObject", vm.settingContentGrid()).igGrid("dataBind");
+                    }
+                })
+                .fail((res: any) => console.log(res))
+                .always(() => blockUI.clear());
+            }
+
+            public backupHandle() {
+                const vm = this;
+                
+                blockUI.invisible();
+                service.getBackup(vm.selectedCode())
+                .done(() => {
+                    // console.log(res, 'bak-button');
+                    let selectedCode : string = vm.selectedCode();
+                    vm.loadInitData();
+                    vm.selectedCode(selectedCode);
+                })
+                .fail((res: any) => console.log(res))
+                .always(() => blockUI.clear());
+            }
+
+            public restoreHandle() {
+                const vm = this;
+
+                let shareData = vm.initData().listTimeRecordSetFormatBakEDto[vm.selectedRow()];
+                console.log(shareData, 'datashare E')
+                setShared('KNR002E_share', shareData);
+                modal('/view/knr/002/f/index.xhtml', { title: 'F_Screen', }).onClosed(() => {
+                   //  nts.uk.ui.windows.close();
                 });
             }
 
             public startPage(): JQueryPromise<void> {
                 const vm = this;
                 var dfd = $.Deferred<void>();
-                vm.loadInitData();
+                vm.loadInitData(vm.loadTime);
                 dfd.resolve();
                 return dfd.promise();
             }
 
-            private loadInitData() {
+            private loadInitData(loadTime?: number) {
                 const vm = this;
                 blockUI.invisible();
 
                 service.getInitData()
                 .done((res: InitialDisplayBackupScreenDto) => {
-                    console.log('done');
+                    console.log('load Init');
                     if (res) {
                         console.log(res);
+                        
+                        vm.setDisplayModelEmpInfoTerminal(res.listEmpInfoTerminal);
+                        vm.setDisplayModelEmpInfoTerminal(res.listTimeRecordSetFormatBakEDto);
+                
+                        vm.initData(res);
+                        if (loadTime == 0) {
+                            vm.selectedCode(vm.initData().listEmpInfoTerminal[0].empInfoTerCode);
+                            loadTime++;
+                        }     
+                        vm.loadLocalSettings(vm.selectedCode());
+                        vm.loadSettingGrid();
+                        vm.loadBakGrid();
+                        vm.loadInstalledTerminals(1);
                     }
                 })
                 .fail(res => console.log(res))
                 .always(() => blockUI.clear());
             }
 
+            private setDisplayModelEmpInfoTerminal(list: any) {
+                const vm = this;
+                for (let empInfoterminal of list) {
+                    if (empInfoterminal.modelEmpInfoTer === 7) {
+                        empInfoterminal.displayModelEmpInfoTer = getText("KNR002_251");
+                    }
+                    if (empInfoterminal.modelEmpInfoTer === 8) {
+                        empInfoterminal.displayModelEmpInfoTer = getText("KNR002_252");
+                    }
+                    if (empInfoterminal.modelEmpInfoTer === 9) {
+                        empInfoterminal.displayModelEmpInfoTer = getText("KNR002_253");
+                    }
+                }
+            }
+
             public closeDialog() {
                 nts.uk.ui.windows.close();
             }
         }
+
+
+        export interface LocationSettingDto {
+            majorNo: number;
+            majorClassification: string;
+            smallNo: number;
+            smallClassification: string;
+            settingValue: string;
+            inputRange: string;
+        }
+        
         export interface BakDataGridTop {
             empInfoTerCode: string; 
             empInfoTerName: string;
@@ -225,6 +327,7 @@ module nts.uk.at.view.knr002.e {
             empInfoTerCode: string;
             empInfoTerName: string;
             modelEmpInfoTer: number;
+            displayModelEmpInfoTer: string;
         }
 
         export interface TimeRecordSetFormatBakEDto {
@@ -232,6 +335,7 @@ module nts.uk.at.view.knr002.e {
             empInfoTerCode: string;
             empInfoTerName: string;
             modelEmpInfoTer: number;
+            displayModelEmpInfoTer: string;
         }
 
         export interface FlagByCode {

@@ -83,7 +83,7 @@ public class InitialDisplayBackupScreen {
 	private InitialDisplayBackupScreenDto toDto(List<EmpInfoTerminal> listEmpInfoTerminal, List<TimeRecordSetFormatBak> listTimeRecordSetFormatBak, Map<EmpInfoTerminalCode, Boolean> mapCodeFlag) {
 			
 			List<EmpInfoTerminalEDto> listEmpDto = listEmpInfoTerminal.stream().map(e -> new EmpInfoTerminalEDto(e.getEmpInfoTerCode().v(), e.getEmpInfoTerName().v(), e.getModelEmpInfoTer().value)).collect(Collectors.toList());
-			List<TimeRecordSetFormatBakEDto> listTimeRecordDto = listTimeRecordSetFormatBak.stream().map(e -> new TimeRecordSetFormatBakEDto(e.getBackupDate(), e.getEmpInfoTerCode().v(), e.getEmpInfoTerName().v(), e.getModelEmpInfoTer().value)).collect(Collectors.toList());
+			List<TimeRecordSetFormatBakEDto> listTimeRecordDto = listTimeRecordSetFormatBak.stream().map(e -> new TimeRecordSetFormatBakEDto(e.getBackupDate().toString(), e.getEmpInfoTerCode().v(), e.getEmpInfoTerName().v(), e.getModelEmpInfoTer().value)).collect(Collectors.toList());
 			List<FlagByCode> listCodeFlag = mapCodeFlag.entrySet().stream().map(e -> new FlagByCode(e.getKey().v(), e.getValue())).collect(Collectors.toList());
 			
 			return new InitialDisplayBackupScreenDto(listEmpDto, listTimeRecordDto, listCodeFlag);

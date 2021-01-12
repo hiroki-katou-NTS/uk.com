@@ -10,7 +10,7 @@ import nts.arc.time.GeneralDateTime;
 @Setter
 public class TimeRecordSetFormatBakEDto {
 
-	private GeneralDateTime backupDate;
+	private String backupDate;
 	
 	private String empInfoTerCode;
 	

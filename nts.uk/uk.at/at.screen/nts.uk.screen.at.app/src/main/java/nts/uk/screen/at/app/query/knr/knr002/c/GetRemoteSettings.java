@@ -15,6 +15,11 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.repo.TimeRecord
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * UKDesign.UniversalK.就業.KNR_就業情報端末.KNR002_就業情報端末の監視.Ｃ：就業情報端末のリモート設定.メニュー別OCD.Ｃ：リモート設定を取得する.Ｃ：リモート設定を取得する
+ * @author dungbn
+ *
+ */
 @Stateless
 public class GetRemoteSettings {
 

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.employmentinfoterminal.infotermina
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -71,7 +72,9 @@ public class JpaTimeRecordSetFormatBakRepository extends JpaRepository implement
 
 	@Override
 	public void delete(TimeRecordSetFormatBak timeRecordSetFormatBak) {
-		this.commandProxy().removeAll(toEntity(timeRecordSetFormatBak));
+		List<KrcdtTrRemoteBackup> listEntity = toEntity(timeRecordSetFormatBak);
+		this.commandProxy().removeAll(KrcdtTrRemoteBackup.class, listEntity.stream().map(e -> e.pk).collect(Collectors.toList()));
+		this.getEntityManager().flush();
 	}
 
 	
@@ -108,7 +111,7 @@ public class JpaTimeRecordSetFormatBakRepository extends JpaRepository implement
 		List<TimeRecordSetFormat> listTimeRecordSetFormat = domain.getListTimeRecordSetFormat();
 		return listTimeRecordSetFormat.stream()
 					.map(e -> new KrcdtTrRemoteBackup(
-							new KrcdtTrRemoteBackupPK(AppContexts.user().companyCode(), Integer.parseInt(domain.getEmpInfoTerCode().v()), e.getVariableName().v()),
+							new KrcdtTrRemoteBackupPK(AppContexts.user().contractCode(), Integer.parseInt(domain.getEmpInfoTerCode().v()), e.getVariableName().v()),
 							domain.getEmpInfoTerName().v(), domain.getRomVersion().v(), domain.getModelEmpInfoTer().value, domain.getBackupDate(),
 							e.getMajorNo().v(), e.getMajorClassification().v(), e.getSmallNo().v(), e.getSmallClassification().v(), e.getType().value,
 							e.getNumberOfDigits().v(), e.getSettingValue().v(), e.getInputRange().v(), e.isRebootFlg() ? 1 : 0, e.getCurrentValue().v()))
@@ -123,6 +126,10 @@ public class JpaTimeRecordSetFormatBakRepository extends JpaRepository implement
 			TimeRecordSetFormatBak timeRecordSetFormatBak = toDomain(e.getValue());
 			listTimeRecordSetFormatBak.add(timeRecordSetFormatBak);
 		});
+		
+		Collections.sort(listTimeRecordSetFormatBak, (TimeRecordSetFormatBak o1, TimeRecordSetFormatBak o2) -> 
+			Integer.parseInt(o1.getEmpInfoTerCode().v()) - Integer.parseInt(o2.getEmpInfoTerCode().v())
+        );
 		return listTimeRecordSetFormatBak;
 	}
 	

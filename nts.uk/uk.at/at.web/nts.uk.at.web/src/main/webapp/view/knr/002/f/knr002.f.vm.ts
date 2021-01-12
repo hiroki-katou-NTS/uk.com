@@ -37,10 +37,19 @@ module knr002.f {
                 var dfd = $.Deferred<void>();
                 blockUI.invisible();
                 // get Shared from E
-                self.empInfoTerCode(getShared('KNR002F_empInfoTerCode'));
-                self.empInfoTerName(getShared('KNR002F_empInfoTerName'));
-                self.modelEmpInfoTer(getShared('KNR002F_modelEmpInfoTer'));
-                self.lastSuccessDate(getShared('KNR002F_lastSuccessDate'));
+                // self.empInfoTerCode(getShared('KNR002F_empInfoTerCode'));
+                // self.empInfoTerName(getShared('KNR002F_empInfoTerName'));
+                // self.modelEmpInfoTer(getShared('KNR002F_modelEmpInfoTer'));
+                // self.lastSuccessDate(getShared('KNR002F_lastSuccessDate'));
+                const sharedData = getShared('KNR002E_share');
+
+                console.log(sharedData, 'shared data F');
+                
+                self.empInfoTerCode(sharedData.empInfoTerCode);
+                self.empInfoTerName(sharedData.empInfoTerName);
+                self.modelEmpInfoTer(sharedData.modelEmpInfoTer);
+                self.lastSuccessDate(sharedData.backupDate);
+
                 //get Share from A
                 let empInfoTerList = getShared('KNR002F_empInfoTerList');
                 

@@ -31,7 +31,7 @@ public class GetLocationSetting {
 		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
 		Optional<TimeRecordSetFormatList> timeRecordSetFormatList = timeRecordSetFormatListRepository.findSetFormat(new EmpInfoTerminalCode(empInfoTerminalCode), contractCode);
 		
-		if (timeRecordSetFormatList.isPresent()) {
+		if (!timeRecordSetFormatList.isPresent()) {
 			return Collections.emptyList();
 		}
 		

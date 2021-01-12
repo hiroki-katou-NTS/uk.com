@@ -23,7 +23,7 @@ public class JudgmentWaitingRequest {
 		
 		// 1: get(契約コード、端末コードList): List<タイムレコード設定フォーマットリス>
 		List<TimeRecordSetFormatList> listTimeRecordSetFormatList = require.getTimeRecordSetFormatList(contractCode, listEmpInfoTerminalCode);
-		Map<EmpInfoTerminalCode, Integer> mapCodeSeveralItem = listTimeRecordSetFormatList.stream().collect(Collectors.toMap(e -> e.getEmpInfoTerCode(), e -> listTimeRecordSetFormatList.size()));
+		Map<EmpInfoTerminalCode, Integer> mapCodeSeveralItem = listTimeRecordSetFormatList.stream().collect(Collectors.toMap(e -> e.getEmpInfoTerCode(), e -> e.getLstTRSetFormat().size()));
 		
 		// 2: get(契約コード、端末コードList): List<タイムレコード設定変更リスト>
 		List<TimeRecordSetUpdateList> listTimeRecordSetUpdateList = require.getTimeRecordUpdateList(contractCode, listEmpInfoTerminalCode);

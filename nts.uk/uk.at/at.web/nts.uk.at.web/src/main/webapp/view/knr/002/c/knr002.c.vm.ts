@@ -166,10 +166,7 @@ module nts.uk.at.view.knr002.c {
 
             public registerAndSubmit() {
                 const vm = this;
-                console.log('mark')
-                nts.uk.ui.dialog.confirm({ messageId: "Msg_2028" })
-                    .ifYes(() => {
-                        let obj: any = {};
+                let obj: any = {};
                         vm.settingData.forEach((item: SettingValue) => {
                             if(obj[item.variableName] === undefined){
                                 obj[item.variableName] = "";
@@ -182,15 +179,12 @@ module nts.uk.at.view.knr002.c {
                             
                         });
 
-                        console.log(obj);
-
                         let listTimeRecordSetUpdateDto = [];
 
                         for (let key in obj) {
                             let timeRecordSetUpdateDto = new TimeRecordSetUpdateDto(key, obj[key]);
                             listTimeRecordSetUpdateDto.push(timeRecordSetUpdateDto); 
                         }      
-                        console.log(listTimeRecordSetUpdateDto, 'alo');
                     
                         const command = {
                             empInfoTerCode: [vm.empInfoTerCode()],
@@ -206,15 +200,19 @@ module nts.uk.at.view.knr002.c {
                         .done((res: any) => {})
                         .fail((err: any) => console.log(err))
                         .always(() => {
-                            setShared('KNR002D_command', command);
+                            blockUI.clear();
+                        });
+
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_2028" })
+                    .ifYes(() => {
+                        setShared('KNR002D_command', command);
                             modal('/view/knr/002/d/index.xhtml', { title: 'D_Screen', }).onClosed(() => {
                                 nts.uk.ui.windows.close();
                                 blockUI.clear();
                              });
-                        });
                     })
                     .ifNo(() => {
-                        console.log('no');
+                        nts.uk.ui.windows.close();
                     })
 
             }
