@@ -661,6 +661,21 @@ export class KafS05Component extends KafS00ShrComponent {
         if (vm.numb == 1 && value == 2) {
             vm.$mask('show');
             let step1 = vm.$refs.step1 as KafS05Step1Component;
+            if (
+                (_.isNumber(_.get(step1, 'workHours2.start')) && !_.isNumber(_.get(step1, 'workHours2.end'))) 
+                || (_.isNumber(_.get(step1, 'workHours2.end') && !_.isNumber(_.get(step1, 'workHours2.start'))))
+            ) {
+
+                vm.$nextTick(() => {
+                    vm.$mask('hide');
+                });
+                vm.$modal.error({ messageId: 'Msg_307'})
+                    .then(() => {
+                        
+                    });
+
+                return;
+            }
             vm.isValidateAll = vm.customValidate(step1);
             step1.$validate();
             window.scrollTo(500, 0);
