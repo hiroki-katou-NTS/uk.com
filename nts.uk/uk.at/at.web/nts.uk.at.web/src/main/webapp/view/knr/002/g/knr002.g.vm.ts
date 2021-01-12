@@ -374,10 +374,11 @@ module knr002.g {
                                           self.timeSetting(),
                                           self.reboot())
                                 .done(() => {
-                                    blockUI.invisible();
-                                    dialog.info({ messageId: "Msg_15" }).then(() => {
-                                        nts.uk.ui.windows.close();
-                                    }); 
+                                    nts.uk.ui.windows.close();
+                                    //  blockUI.invisible();
+                                    // dialog.info({ messageId: "Msg_15" }).then(() => {
+                                    //     nts.uk.ui.windows.close();
+                                    // }); 
                                 }).fail(() => {
                                     console.log("determine false");
                                 }).always(() => {
