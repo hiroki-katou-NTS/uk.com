@@ -224,6 +224,9 @@ class ScreenJComponent extends ko.ViewModel {
 					if (listEmployee.length) {
 						vm.screenData().selected(listEmployee[0].code);
 						$("#year-list").focus();
+						if(listEmployee.length>300){
+							vm.initEmployeeList();
+						}
 					}
 				}
 			};
