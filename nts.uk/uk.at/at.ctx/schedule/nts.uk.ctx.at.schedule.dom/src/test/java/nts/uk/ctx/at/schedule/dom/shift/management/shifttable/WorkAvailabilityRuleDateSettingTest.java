@@ -99,6 +99,7 @@ public class WorkAvailabilityRuleDateSettingTest {
 	}
 	
 	/**
+	 * 勤務希望の指定方法は混在しない
 	 * 勤務希望リストがすべて休日希望 && $休日希望リスト.size == @希望休日の上限
 	 * input: 勤務希望リスト=すべて休日希望  && $休日希望リスト.size = @希望休日の上限 = 3
 	 * output: 休日日数の上限日数を超えているか = false
@@ -121,6 +122,7 @@ public class WorkAvailabilityRuleDateSettingTest {
 	}
 	
 	/**
+	 * 勤務希望の指定方法は混在しない
 	 * 勤務希望リストがすべて休日希望 && $休日希望リスト.size > @希望休日の上限
 	 * input: 勤務希望リスト = すべて休日希望, $休日希望リスト.size = 4, @希望休日の上限 = 3
 	 * output: 休日日数の上限日数を超えているか = true
@@ -143,6 +145,7 @@ public class WorkAvailabilityRuleDateSettingTest {
 	}
 
 	/**
+	 * 勤務希望の指定方法は混在しない
 	 * 勤務希望リストがすべてシフト希望 && $休日希望リスト.size == @希望休日の上限
 	 * 勤務希望リスト
 	 * input: 勤務希望リスト = 5日シフト希望, $休日希望リスト.size = 3, @希望休日の上限 = 3
@@ -189,6 +192,7 @@ public class WorkAvailabilityRuleDateSettingTest {
 	}
 	
 	/**
+	 * 勤務希望の指定方法は混在しない
 	 * 勤務希望リストがすべてシフト希望 && $休日希望リスト.size == @希望休日の上限
 	 * 勤務希望リスト
 	 * input: 勤務希望リスト = 5日シフト希望, $休日希望リスト.size = 4, @希望休日の上限 = 3

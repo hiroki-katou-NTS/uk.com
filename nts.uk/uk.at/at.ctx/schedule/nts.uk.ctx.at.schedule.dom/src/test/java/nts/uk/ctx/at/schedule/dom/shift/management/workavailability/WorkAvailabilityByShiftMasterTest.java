@@ -48,7 +48,7 @@ public class WorkAvailabilityByShiftMasterTest {
 	 * output: false
 	 */
 	@Test
-	@SuppressWarnings("unchecked")
+	
 	public void testIsHolidayAvailability_false() {
 		
 		WorkAvailabilityByShiftMaster shiftExp = WorkAvailabilityByShiftMasterTestHelper.createWithShiftCodes("S01", "S02");
@@ -56,7 +56,10 @@ public class WorkAvailabilityByShiftMasterTest {
 		ShiftMaster shiftMaster2 = WorkAvailabilityByShiftMasterTestHelper.createShiftMasterWithCodeName("S02", "S02-name");
 		new Expectations(shiftMaster1, shiftMaster2) {
 			{
-				require.getShiftMaster((List<ShiftMasterCode>) any);
+				@SuppressWarnings("unchecked")
+				val shiftMasterCodes = (List<ShiftMasterCode>) any;
+				
+				require.getShiftMaster(shiftMasterCodes);
 				result= Arrays.asList(shiftMaster1, shiftMaster2);
 				
 				shiftMaster1.isAttendanceRate(require);
@@ -75,7 +78,6 @@ public class WorkAvailabilityByShiftMasterTest {
 	 * output: false
 	 */
 	@Test
-	@SuppressWarnings("unchecked")
 	public void testIsHolidayAvailability_have_element_true() {
 		
 		WorkAvailabilityByShiftMaster shiftExp = WorkAvailabilityByShiftMasterTestHelper.createWithShiftCodes("S01", "S02");
@@ -83,7 +85,10 @@ public class WorkAvailabilityByShiftMasterTest {
 		ShiftMaster shiftMaster2 = WorkAvailabilityByShiftMasterTestHelper.createShiftMasterWithCodeName("S02", "S02-name");
 		new Expectations(shiftMaster1, shiftMaster2) {
 			{
-				require.getShiftMaster((List<ShiftMasterCode>) any);
+				@SuppressWarnings("unchecked")
+				val shiftMasterCodes = (List<ShiftMasterCode>) any;
+				
+				require.getShiftMaster(shiftMasterCodes);
 				result= Arrays.asList(shiftMaster1, shiftMaster2);
 				
 				shiftMaster1.isAttendanceRate(require);
