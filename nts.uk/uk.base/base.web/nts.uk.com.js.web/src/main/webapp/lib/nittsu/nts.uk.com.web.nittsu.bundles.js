@@ -22190,6 +22190,10 @@ var nts;
                             });
                             var $span = $('<span>').appendTo($label).get(0);
                             ko.applyBindingsToNode($span, { i18n: text }, bindingContext);
+                            if (accessor.dataBind) {
+                                $span.classList.add('button');
+                                ko.applyBindingsToNode($span, accessor.dataBind, bindingContext);
+                            }
                             if ($element.attr('tabindex')) {
                                 var tabindex = $element.attr('tabindex');
                                 $input.attr('tabindex', tabindex);
@@ -22302,7 +22306,8 @@ var nts;
                                         optionText: optionText,
                                         optionValue: optionValue,
                                         tabindex: tabindex !== undefined ? tabindex : $tabindex,
-                                        enable: enable === false ? enable : option.enable !== undefined ? option.enable : enable
+                                        enable: enable === false ? enable : option.enable !== undefined ? option.enable : enable,
+                                        dataBind: option.dataBind
                                     }); });
                                 },
                                 disposeWhenNodeIsRemoved: element
@@ -23774,24 +23779,54 @@ var nts;
                             element.classList.add('tabs-panel');
                             element.removeAttribute('data-bind');
                             var childs = $(element).children();
-                            var tablist = $('<div>', { class: 'tabs-list', html: "<button data-bind=\"tab-item: $data\" />" });
+                            var tablist = $('<div>', { class: 'tabs-list' });
                             tablist
                                 .appendTo(element);
-                            var wrapper = $('<div>', { class: 'tabs-content' });
-                            wrapper
-                                .append(childs)
-                                .appendTo(element);
-                            var buttons = ko.computed({
-                                read: function () {
-                                    var dataSource = ko.unwrap(accessor.dataSource);
-                                    return dataSource
-                                        .map(function (d) { return (__assign(__assign({}, d), { active: active,
-                                        tabindex: tabindex })); });
-                                },
-                                disposeWhenNodeIsRemoved: element
-                            });
-                            ko.applyBindingsToNode(tablist.get(0), { foreach: buttons }, bindingContext);
-                            // ko.applyBindingsToNode(wrapper.get(0), bindingContext);
+                            if (childs.length) {
+                                var wrapper = $('<div>', { class: 'tabs-content' });
+                                wrapper
+                                    .append(childs)
+                                    .appendTo(element);
+                                element.classList.add('has-content');
+                                element.classList.remove('no-content');
+                            }
+                            else {
+                                element.classList.add('no-content');
+                                element.classList.remove('has-content');
+                            }
+                            var bindingData = function (dir) {
+                                var tabs = tablist.get(0);
+                                var ntsRadioBoxGroup = {
+                                    options: ko.computed({
+                                        read: function () {
+                                            var ds = ko.toJS(accessor.dataSource);
+                                            return ds.filter(function (d) { return d.visible !== false; })
+                                                .map(function (d) { return (__assign(__assign({}, d), { active: active,
+                                                tabindex: tabindex, dataBind: 'vertical-link' !== dir ? undefined : {
+                                                    'btn-link': d.title,
+                                                    icon: d.icon || 'CHECKBOX',
+                                                    width: 40,
+                                                    height: 32,
+                                                    state: active,
+                                                    value: d.id,
+                                                    disabled: d.enable === false
+                                                } })); });
+                                        },
+                                        disposeWhenNodeIsRemoved: element
+                                    }),
+                                    optionsText: 'title',
+                                    optionsValue: 'id',
+                                    value: accessor.active,
+                                    tabindex: tabindex,
+                                };
+                                ko.cleanNode(tabs);
+                                tabs.innerHTML = '';
+                                ko.applyBindingsToNode(tabs, { ntsRadioBoxGroup: ntsRadioBoxGroup }, bindingContext);
+                            };
+                            bindingData(ko.toJS(accessor.direction));
+                            if (ko.isObservable(accessor.direction)) {
+                                accessor.direction.subscribe(bindingData);
+                            }
                             return { controlsDescendantBindings: false };
                         };
                         TabPanelBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
@@ -23811,6 +23846,7 @@ var nts;
                             var $contents = $(element).find('.tabs-content').get(0);
                             element.classList.remove('vertical');
                             element.classList.remove('horizontal');
+                            element.classList.remove('vertical-link');
                             element.classList.add(direction);
                             if ($contents) {
                                 if (direction === 'horizontal') {
@@ -23834,59 +23870,6 @@ var nts;
                         return TabPanelBindingHandler;
                     }());
                     tabpanel.TabPanelBindingHandler = TabPanelBindingHandler;
-                    var TabPanelItemBindingHandler = /** @class */ (function () {
-                        function TabPanelItemBindingHandler() {
-                        }
-                        TabPanelItemBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                            var accessor = valueAccessor();
-                            element.removeAttribute('data-bind');
-                            $(element)
-                                .on('click', function () {
-                                if (ko.isObservable(accessor.active)) {
-                                    accessor.active(accessor.id);
-                                }
-                            });
-                            return { controlsDescendantBindings: true };
-                        };
-                        TabPanelItemBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                            var mvm = new ko.ViewModel();
-                            var accessor = valueAccessor();
-                            var title = ko.unwrap(accessor.title);
-                            var active = ko.unwrap(accessor.active);
-                            var enable = ko.unwrap(accessor.enable);
-                            var visible = ko.unwrap(accessor.visible);
-                            var tabindex = ko.unwrap(accessor.tabindex);
-                            element.innerText = mvm.$i18n(title);
-                            element.setAttribute('tabindex', tabindex);
-                            if (enable) {
-                                element.removeAttribute('disabled');
-                            }
-                            else {
-                                element.setAttribute('disabled', 'disabled');
-                            }
-                            if (!visible) {
-                                element.classList.add('hidden');
-                            }
-                            else {
-                                element.classList.remove('hidden');
-                            }
-                            if (active === accessor.id) {
-                                element.classList.add('active');
-                            }
-                            else {
-                                element.classList.remove('active');
-                            }
-                        };
-                        TabPanelItemBindingHandler = __decorate([
-                            handler({
-                                bindingName: 'tab-item',
-                                validatable: true,
-                                virtual: false
-                            })
-                        ], TabPanelItemBindingHandler);
-                        return TabPanelItemBindingHandler;
-                    }());
-                    tabpanel.TabPanelItemBindingHandler = TabPanelItemBindingHandler;
                 })(tabpanel = koExtentions.tabpanel || (koExtentions.tabpanel = {}));
             })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
@@ -51361,7 +51344,7 @@ var nts;
                                 .addClass('link')
                                 .on('mouseup', function () { return vm.active(false); })
                                 .on('mousedown', function () {
-                                if (vm.$el.hasAttribute('disabled')) {
+                                if (vm.$el.hasAttribute('disabled') || ko.unwrap(vm.params.disabled) || vm.$el.tagName !== 'BUTTON') {
                                     return;
                                 }
                                 vm.active(true);
@@ -51388,6 +51371,9 @@ var nts;
                                 }
                             })
                                 .on('click', function () {
+                                if (vm.$el.hasAttribute('disabled') || ko.unwrap(vm.params.disabled) || vm.$el.tagName !== 'BUTTON') {
+                                    return;
+                                }
                                 if (ko.isObservable(params.state)) {
                                     var value_5 = ko.unwrap(params.value);
                                     if (value_5 !== undefined) {
@@ -51645,6 +51631,8 @@ var nts;
             icons.THREE_DOT = "<rect x=\"14\" y=\"7\" width=\"3\" height=\"3\" fill=\"#30CC40\"/>\n        <rect x=\"14\" y=\"13\" width=\"3\" height=\"3\" fill=\"#30CC40\"/>\n        <rect x=\"14\" y=\"19\" width=\"3\" height=\"3\" fill=\"#30CC40\"/>";
             icons.PAINT = "<mask id=\"mask0\" mask-type=\"alpha\" maskUnits=\"userSpaceOnUse\" x=\"3\" y=\"3\" width=\"9\" height=\"10\">\n        <rect width=\"7\" height=\"7\" rx=\"1\" transform=\"matrix(0.842033 0.539426 -0.535035 0.84483 6.48047 3.27661)\" fill=\"#C4C4C4\"/>\n        </mask>\n        <g mask=\"url(#mask0)\">\n        <path d=\"M7.55496 8.12151L12.3747 7.05259L8.62946 12.9664L2.73522 9.19042L7.55496 8.12151Z\" fill=\"#30CC40\"/>\n        </g>\n        <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M8.18265 5.55454L10.9977 7.35793L8.32254 11.5821L4.11237 8.88495L6.78603 4.6632L8.13598 5.52802C8.15123 5.53779 8.16681 5.54662 8.18265 5.55454ZM7.25711 3.7774C7.27923 3.78934 7.30107 3.80219 7.32258 3.81597L11.5327 6.5131C11.9978 6.81102 12.1352 7.43077 11.8397 7.89736L9.16457 12.1215C8.86908 12.5881 8.25254 12.7248 7.7875 12.4269L3.57734 9.72978C3.1123 9.43187 2.97485 8.81211 3.27034 8.34553L5.94399 4.12378L4.87616 3.4397C4.64364 3.29074 4.57492 2.98086 4.72266 2.74757C4.87041 2.51428 5.17867 2.44591 5.4112 2.59487L7.25711 3.7774Z\" fill=\"#30CC40\"/>\n        <path d=\"M14.5448 10.6187C14.7042 11.3376 14.1778 12.0658 13.3691 12.2451C12.5603 12.4245 11.7754 11.9871 11.616 11.2682C11.4565 10.5493 12.503 8.34002 12.503 8.34002C12.503 8.34002 14.3854 9.89974 14.5448 10.6187Z\" fill=\"#30CC40\"/>";
             icons.LIST_PLUS = "<path d=\"M0.5 2C0.5 1.17157 1.17157 0.5 2 0.5H25C25.8284 0.5 26.5 1.17157 26.5 2V3.5H0.5V2Z\" stroke=\"#30CC40\"/>\n        <path d=\"M0.5 2C0.5 1.17157 1.17157 0.5 2 0.5H9.5V3.5H0.5V2Z\" fill=\"#30CC40\" stroke=\"#30CC40\"/>\n        <rect x=\"0.5\" y=\"8.5\" width=\"26\" height=\"3\" stroke=\"#30CC40\"/>\n        <rect x=\"0.5\" y=\"8.5\" width=\"9\" height=\"3\" fill=\"#30CC40\" stroke=\"#30CC40\"/>\n        <rect x=\"0.5\" y=\"16.5\" width=\"26\" height=\"3\" stroke=\"#30CC40\"/>\n        <rect x=\"0.5\" y=\"16.5\" width=\"9\" height=\"3\" fill=\"#30CC40\" stroke=\"#30CC40\"/>\n        <path d=\"M0.5 24.5H26.5V26C26.5 26.8284 25.8284 27.5 25 27.5H2C1.17157 27.5 0.5 26.8284 0.5 26V24.5Z\" stroke=\"#30CC40\"/>\n        <path d=\"M0.5 24.5H9.5V27.5H2C1.17157 27.5 0.5 26.8284 0.5 26V24.5Z\" fill=\"#30CC40\" stroke=\"#30CC40\"/>\n        <rect x=\"33.5\" y=\"31.5\" width=\"17\" height=\"17\" rx=\"1.5\" transform=\"rotate(-180 33.5 31.5)\" fill=\"#30CC40\" stroke=\"#30CC40\"/>\n        <path d=\"M25 19.5173V26.4835\" stroke=\"#F2FFCF\" stroke-linecap=\"round\"/>\n        <path d=\"M21.5168 23L28.4831 23\" stroke=\"#F2FFCF\" stroke-linecap=\"round\"/>";
+            icons.LIST_PLUS_UNSELECT = "<path d=\"M0.5 2C0.5 1.17157 1.17157 0.5 2 0.5H25C25.8284 0.5 26.5 1.17157 26.5 2V3.5H0.5V2Z\" stroke=\"#30CC40\"/>\n        <path d=\"M0.5 2C0.5 1.17157 1.17157 0.5 2 0.5H9.5V3.5H0.5V2Z\" fill=\"#30CC40\" stroke=\"#30CC40\"/>\n        <rect x=\"0.5\" y=\"8.5\" width=\"26\" height=\"3\" stroke=\"#30CC40\"/>\n        <rect x=\"0.5\" y=\"8.5\" width=\"9\" height=\"3\" fill=\"#30CC40\" stroke=\"#30CC40\"/>\n        <rect x=\"0.5\" y=\"16.5\" width=\"26\" height=\"3\" stroke=\"#30CC40\"/>\n        <rect x=\"0.5\" y=\"16.5\" width=\"9\" height=\"3\" fill=\"#30CC40\" stroke=\"#30CC40\"/>\n        <path d=\"M0.5 24.5H26.5V26C26.5 26.8284 25.8284 27.5 25 27.5H2C1.17157 27.5 0.5 26.8284 0.5 26V24.5Z\" stroke=\"#30CC40\"/>\n        <path d=\"M0.5 24.5H9.5V27.5H2C1.17157 27.5 0.5 26.8284 0.5 26V24.5Z\" fill=\"#30CC40\" stroke=\"#30CC40\"/>\n        <rect x=\"33.5\" y=\"31.5\" width=\"17\" height=\"17\" rx=\"1.5\" transform=\"rotate(-180 33.5 31.5)\" fill=\"#30CC40\" stroke=\"#30CC40\"/>\n        <path d=\"M25 19.5173V26.4835\" stroke=\"#F2FFCF\" stroke-linecap=\"round\"/>\n        <path d=\"M21.5168 23L28.4831 23\" stroke=\"#F2FFCF\" stroke-linecap=\"round\"/>";
+            icons.LIST_PLUS_SELECT = "<path d=\"M0.5 2C0.5 1.17157 1.17157 0.5 2 0.5H25C25.8284 0.5 26.5 1.17157 26.5 2V3.5H0.5V2Z\" stroke=\"#FFF\"/>\n        <path d=\"M0.5 2C0.5 1.17157 1.17157 0.5 2 0.5H9.5V3.5H0.5V2Z\" fill=\"#FFF\" stroke=\"#FFF\"/>\n        <rect x=\"0.5\" y=\"8.5\" width=\"26\" height=\"3\" stroke=\"#FFF\"/>\n        <rect x=\"0.5\" y=\"8.5\" width=\"9\" height=\"3\" fill=\"#FFF\" stroke=\"#FFF\"/>\n        <rect x=\"0.5\" y=\"16.5\" width=\"26\" height=\"3\" stroke=\"#FFF\"/>\n        <rect x=\"0.5\" y=\"16.5\" width=\"9\" height=\"3\" fill=\"#FFF\" stroke=\"#FFF\"/>\n        <path d=\"M0.5 24.5H26.5V26C26.5 26.8284 25.8284 27.5 25 27.5H2C1.17157 27.5 0.5 26.8284 0.5 26V24.5Z\" stroke=\"#FFF\"/>\n        <path d=\"M0.5 24.5H9.5V27.5H2C1.17157 27.5 0.5 26.8284 0.5 26V24.5Z\" fill=\"#FFF\" stroke=\"#FFF\"/>\n        <rect x=\"33.5\" y=\"31.5\" width=\"17\" height=\"17\" rx=\"1.5\" transform=\"rotate(-180 33.5 31.5)\" fill=\"#FFF\" stroke=\"#FFF\"/>\n        <path d=\"M25 19.5173V26.4835\" stroke=\"#30CC40\" stroke-linecap=\"round\"/>\n        <path d=\"M21.5168 23L28.4831 23\" stroke=\"#30CC40\" stroke-linecap=\"round\"/>";
             icons.PLUS_SQUARE = "<rect width=\"30\" height=\"30\" rx=\"2\" fill=\"white\"/>\n        <path d=\"M15 10V20\" stroke=\"#44E08C\" stroke-width=\"2\" stroke-linecap=\"square\"/>\n        <path d=\"M10 15L20 15\" stroke=\"#44E08C\" stroke-width=\"2\" stroke-linecap=\"square\"/>";
             icons.LOCATION = "<mask id=\"path-1-outside-1\" maskUnits=\"userSpaceOnUse\" x=\"2\" y=\"0\" width=\"8\" height=\"10\" fill=\"black\">\n        <rect fill=\"white\" x=\"2\" width=\"8\" height=\"10\"/>\n        <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M6 9C6 9 9 6 9 4C9 2.34315 7.65685 1 6 1C4.34315 1 3 2.34315 3 4C3 6 6 9 6 9ZM6 5C5.44772 5 5 4.55228 5 4C5 3.44772 5.44772 3 6 3C6.55228 3 7 3.44772 7 4C7 4.55228 6.55228 5 6 5Z\"/>\n        </mask>\n        <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M6 9C6 9 9 6 9 4C9 2.34315 7.65685 1 6 1C4.34315 1 3 2.34315 3 4C3 6 6 9 6 9ZM6 5C5.44772 5 5 4.55228 5 4C5 3.44772 5.44772 3 6 3C6.55228 3 7 3.44772 7 4C7 4.55228 6.55228 5 6 5Z\" fill=\"#30CC40\"/>\n        <path d=\"M6 9L5.29289 9.70711C5.68342 10.0976 6.31658 10.0976 6.70711 9.70711L6 9ZM8 4C8 4.27342 7.88977 4.67189 7.63682 5.17779C7.39199 5.66745 7.05468 6.1771 6.7 6.65C6.34775 7.11967 5.99309 7.53366 5.72546 7.83104C5.59215 7.97916 5.48168 8.09695 5.40555 8.17671C5.36751 8.21656 5.33813 8.24682 5.31886 8.26653C5.30922 8.27638 5.30212 8.28358 5.29773 8.28802C5.29553 8.29024 5.29402 8.29176 5.2932 8.29258C5.2928 8.29299 5.29257 8.29322 5.29251 8.29327C5.29249 8.2933 5.29251 8.29328 5.29257 8.29322C5.2926 8.29319 5.29268 8.29311 5.2927 8.29309C5.29279 8.293 5.29289 8.29289 6 9C6.70711 9.70711 6.70723 9.70698 6.70737 9.70684C6.70743 9.70678 6.70758 9.70663 6.70771 9.70651C6.70795 9.70626 6.70824 9.70597 6.70858 9.70563C6.70925 9.70496 6.71011 9.7041 6.71114 9.70306C6.71321 9.70098 6.716 9.69817 6.71948 9.69465C6.72645 9.68761 6.73619 9.67772 6.74853 9.66511C6.77319 9.6399 6.80827 9.60375 6.85226 9.55766C6.94019 9.46555 7.0641 9.33334 7.21204 9.16896C7.50691 8.84134 7.90225 8.38033 8.3 7.85C8.69532 7.3229 9.10801 6.70755 9.42568 6.07221C9.73523 5.45311 10 4.72658 10 4H8ZM6 2C7.10457 2 8 2.89543 8 4H10C10 1.79086 8.20914 0 6 0V2ZM4 4C4 2.89543 4.89543 2 6 2V0C3.79086 0 2 1.79086 2 4H4ZM6 9C6.70711 8.29289 6.70721 8.293 6.7073 8.29309C6.70732 8.29311 6.7074 8.29319 6.70743 8.29322C6.70749 8.29328 6.70751 8.2933 6.70749 8.29327C6.70743 8.29322 6.7072 8.29299 6.7068 8.29258C6.70598 8.29176 6.70447 8.29024 6.70227 8.28802C6.69788 8.28358 6.69078 8.27638 6.68114 8.26653C6.66187 8.24682 6.63249 8.21656 6.59445 8.17671C6.51832 8.09695 6.40785 7.97916 6.27454 7.83104C6.00691 7.53366 5.65225 7.11967 5.3 6.65C4.94532 6.1771 4.60801 5.66745 4.36318 5.17779C4.11023 4.67189 4 4.27342 4 4H2C2 4.72658 2.26477 5.45311 2.57432 6.07221C2.89199 6.70755 3.30468 7.3229 3.7 7.85C4.09775 8.38033 4.49309 8.84134 4.78796 9.16896C4.9359 9.33334 5.05981 9.46555 5.14774 9.55766C5.19173 9.60375 5.22681 9.6399 5.25147 9.66511C5.26381 9.67772 5.27355 9.68761 5.28052 9.69465C5.284 9.69817 5.28679 9.70098 5.28886 9.70306C5.28989 9.7041 5.29075 9.70496 5.29142 9.70563C5.29176 9.70597 5.29205 9.70626 5.29229 9.70651C5.29242 9.70663 5.29257 9.70678 5.29263 9.70684C5.29277 9.70698 5.29289 9.70711 6 9ZM4 4C4 5.10457 4.89543 6 6 6V4H4ZM6 2C4.89543 2 4 2.89543 4 4H6V2ZM8 4C8 2.89543 7.10457 2 6 2V4H8ZM6 6C7.10457 6 8 5.10457 8 4H6V6Z\" fill=\"white\" mask=\"url(#path-1-outside-1)\"/>\n        <path d=\"M1 11H11\" stroke=\"#30CC40\" stroke-linecap=\"round\" stroke-dasharray=\"3 3\"/>";
             icons.FILE_PLUS = "<path d=\"M0 1C0 0.734784 0.105357 0.48043 0.292893 0.292893C0.48043 0.105357 0.734784 0 1 0H5C5.1326 2.83187e-05 5.25975 0.0527253 5.3535 0.1465L7.8535 2.6465C7.94728 2.74025 7.99997 2.8674 8 3V9C8 9.26522 7.89464 9.51957 7.70711 9.70711C7.51957 9.89464 7.26522 10 7 10H1C0.734784 10 0.48043 9.89464 0.292893 9.70711C0.105357 9.51957 0 9.26522 0 9V1ZM6.793 3L5 1.207V3H6.793ZM4 1H1V9H7V4H4.5C4.36739 4 4.24021 3.94732 4.14645 3.85355C4.05268 3.75979 4 3.63261 4 3.5V1ZM4 5C4.13261 5 4.25979 5.05268 4.35355 5.14645C4.44732 5.24021 4.5 5.36739 4.5 5.5V6H5C5.13261 6 5.25979 6.05268 5.35355 6.14645C5.44732 6.24021 5.5 6.36739 5.5 6.5C5.5 6.63261 5.44732 6.75979 5.35355 6.85355C5.25979 6.94732 5.13261 7 5 7H4.5V7.5C4.5 7.63261 4.44732 7.75979 4.35355 7.85355C4.25979 7.94732 4.13261 8 4 8C3.86739 8 3.74021 7.94732 3.64645 7.85355C3.55268 7.75979 3.5 7.63261 3.5 7.5V7H3C2.86739 7 2.74021 6.94732 2.64645 6.85355C2.55268 6.75979 2.5 6.63261 2.5 6.5C2.5 6.36739 2.55268 6.24021 2.64645 6.14645C2.74021 6.05268 2.86739 6 3 6H3.5V5.5C3.5 5.36739 3.55268 5.24021 3.64645 5.14645C3.74021 5.05268 3.86739 5 4 5Z\" fill=\"#30CC40\"/>";
