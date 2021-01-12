@@ -3484,6 +3484,22 @@ public class ProgramsManager {
             "/view/ccg/003/c/index.xhtml");
     
     /**
+     * CCG005B
+     */
+    public static final Program CCG005B = new Program(WebAppId.COM, 
+            ProgramIdConsts.CCG005B,
+            "CCG005_28",
+            "/view/ccg/005/b/index.xhtml");
+    
+    /**
+     * CCG005D
+     */
+    public static final Program CCG005D = new Program(WebAppId.COM, 
+            ProgramIdConsts.CCG005D,
+            "CCG005_29",
+            "/view/ccg/005/d/index.xhtml");
+    
+    /**
      * KTG026
      */
     public static final Program KTG026A = new Program(WebAppId.AT, 
