@@ -31,13 +31,8 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 		isCheckMourn: any = ko.observable(false);
 		requiredVacationTime: KnockoutObservable<number> = ko.observable(0);
 		timeRequired: KnockoutObservable<string> = ko.observable();
-
 		leaveComDayOffManas: KnockoutObservableArray<any> = ko.observableArray([]);
-		leaveComDayOffTable: KnockoutObservable<boolean> = ko.observable(false);
-
 		payoutSubofHDManagements: KnockoutObservable<any> = ko.observableArray([]);
-		payoutSubofHDTable: KnockoutObservable<boolean> = ko.observable(false);
-
 		workTypeBefore: KnockoutObservable<any> = ko.observable();
 		workTypeAfter: KnockoutObservable<any> = ko.observable();
 		isEnableSwitchBtn: boolean = true;
@@ -439,18 +434,6 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 
 				return false;
 			});
-
-			//change leaveComDayOffManas
-			vm.leaveComDayOffManas.subscribe((changes) => {
-				if (vm.leaveComDayOffManas().length === 0) vm.leaveComDayOffTable(false);
-				else vm.leaveComDayOffTable(true)
-			}, null, "arrayChange");
-
-			//change payoutSubofHD
-			vm.payoutSubofHDManagements.subscribe((changes) => {
-				if (vm.payoutSubofHDManagements().length === 0) vm.payoutSubofHDTable(false);
-				else vm.payoutSubofHDTable(true)
-			}, null, "arrayChange");
         };
 
         reload() {
