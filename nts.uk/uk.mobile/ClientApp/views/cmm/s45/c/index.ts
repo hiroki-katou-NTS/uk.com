@@ -15,7 +15,8 @@ import {
     CmmS45ShrComponentsApp15Component,
     CmmS45ShrComponentsAppsampleComponent,
     CmmS45ShrComponentsApp0Component,
-    Reason
+    CmmS45ShrComponentsApp10Component,
+    Reason,
 } from 'views/cmm/s45/shr/components';
 
 import { CmmS45ShrComponentsApp1Component } from 'views/cmm/s45/shr/components/app1/index';
@@ -40,6 +41,7 @@ import { CmmS45ShrComponentsApp1Component } from 'views/cmm/s45/shr/components/a
         'app15': CmmS45ShrComponentsApp15Component,
         'app0': CmmS45ShrComponentsApp0Component,
         'app1': CmmS45ShrComponentsApp1Component,
+        'app10': CmmS45ShrComponentsApp10Component,
         'render': {
             template: `<div class="">{{params.id}} {{params.name}}</div>`,
             props: ['params']
@@ -370,6 +372,9 @@ export class CmmS45CComponent extends Vue {
                 break;
             case 1: 
                 self.$goto('kafs06a', self.appTransferData); 
+                break;  
+            case 10: 
+                self.$goto('kafs11a', self.appTransferData); 
                 break;  
             default:
                 break;
