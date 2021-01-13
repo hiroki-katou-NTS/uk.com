@@ -227,7 +227,7 @@ export class KafS10Step1Component extends Vue {
     @Watch('workHours1', {deep: true})
     public changeWorkHours1(data: ValueTime) {
         const self = this;
-        if (_.isNil(_.get(data,'start')) || _.isNil(_.get(data, 'end')) || self.isFirstModeUpdate) {
+        if (_.isNil(_.get(data,'start')) || _.isNil(_.get(data, 'end')) || (self.isFirstModeUpdate && !self.$appContext.modeNew)) {
             self.isFirstModeUpdate = false;
 
             return;
@@ -241,9 +241,7 @@ export class KafS10Step1Component extends Vue {
         command.startTime = self.workHours1.start;
         command.endTime = self.workHours1.end;
         command.appHdWorkDispInfo = parent.model.appHdWorkDispInfo;
-
         parent.getBreakTime(command);
-        
     }
 
     @Watch('workHours2', {deep: true})
