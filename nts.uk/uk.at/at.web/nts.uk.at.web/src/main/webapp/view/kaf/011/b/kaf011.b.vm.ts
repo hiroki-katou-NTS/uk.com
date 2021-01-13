@@ -54,18 +54,20 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 			block.invisible();
 				ajax('at/request/application/holidayshipment/startPageBRefactor',{appID: vm.application().appID(), appDispInfoStartupDto: vm.appDispInfoStartupOutput()}).then((data: any) =>{
 					console.log(data);
+					vm.displayInforWhenStarting(data);
 					if(data.rec && data.abs){
-						vm.recruitmentApp.bindingScreenB(data.rec, data.applicationForWorkingDay.workTypeList, vm.appDispInfoStartupOutput());
-						vm.absenceLeaveApp.bindingScreenB(data.abs, data.applicationForHoliday.workTypeList, vm.appDispInfoStartupOutput());	
+						vm.recruitmentApp.bindingScreenB(data.rec, data.applicationForWorkingDay.workTypeList, data);
+						vm.absenceLeaveApp.bindingScreenB(data.abs, data.applicationForHoliday.workTypeList, data);	
 					}else if(data.rec){
 						vm.appCombinaSelected(1);
-						vm.recruitmentApp.bindingScreenB(data.rec, data.applicationForWorkingDay.workTypeList, vm.appDispInfoStartupOutput());
+						vm.recruitmentApp.bindingScreenB(data.rec, data.applicationForWorkingDay.workTypeList, data);
 					}else if(data.abs){
 						vm.appCombinaSelected(2);
-						vm.absenceLeaveApp.bindingScreenB(data.abs, data.applicationForHoliday.workTypeList, vm.appDispInfoStartupOutput());
+						vm.absenceLeaveApp.bindingScreenB(data.abs, data.applicationForHoliday.workTypeList, data);
 					}
 					
 				}).fail((failData: any) => {
+					
 				}).always(() => {
                     block.clear();
                 });

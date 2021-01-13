@@ -7,7 +7,6 @@ module nts.uk.at.view.kaf011 {
 	/** 振出申請 */
 	export class RecruitmentApp {
 		appType: number; //0: Rec-振出, 1: Abs-振休
-		appID: string;
 		application: Application = new Application();
 		applicationInsert: Application = this.application;
 		applicationUpdate: Application = this.application;
@@ -33,11 +32,12 @@ module nts.uk.at.view.kaf011 {
 		
 		started: boolean = false;
 		
-		isAScreen: KnockoutObservable<boolean> = ko.observable(false); //true: screen A, false: screen B
+		isAScreen: KnockoutObservable<boolean> = ko.observable(true); //true: screen A, false: screen B
+		outputMode: KnockoutObservable<number> = ko.observable(1); //DISPLAYMODE(0),EDITMODE(1);
 		
 		constructor(appType: number, isAScreen?: boolean){
 			let self = this;
-			if(screen != undefined){
+			if(isAScreen != undefined){
 				self.isAScreen(isAScreen);
 			}
 			self.appType = appType;
@@ -124,24 +124,33 @@ module nts.uk.at.view.kaf011 {
 		
 		bindingScreenB(param: any, workTypeList:[], displayInforWhenStarting: any){
 			let self = this;
-			self.appID = param.appID;
 			self.application.update(param.application);
 			self.workTypeList(workTypeList);
 			self.workInformation.update(param.workInformation);
 			self.displayInforWhenStarting = displayInforWhenStarting;
 			
 			let w1 = _.find(self.workingHours(), {'workNo': 1});
-			w1.update(_.find(param.workingHours, { 'workNo': 1}));
-			let w2 = _.find(param.workingHours, { 'workNo': 2});
+			let time1:any = _.find(param.workingHours, { 'workNo': 1});
+			if(time1){
+				w1.update(time1.timeZone);
+			}
+			let w2:any = _.find(param.workingHours, { 'workNo': 2});
 			if(w2) {
 				let tg = new TimeZoneWithWorkNo(2);
-				tg.update(tg)
+				tg.update(w2.timeZone)
 				self.workingHours.push(tg);		
 			}else{
 				self.workingHours.remove(c => {
-			        return c.workNo== 2;
+			        return c.workNo == 2;
 			    });
+			} 
+			if(param.workInformation.workTime != null && time1 != undefined){
+				let workTime: any = _.find(displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst, {'worktimeCode': param.workInformation.workTime});
+				self.workTimeDisplay(param.workInformation.workTime + ' ' + 
+									(workTime?(workTime.workTimeDisplayName.workTimeName + ' ') : '' )+ 
+									moment(Math.floor(time1.timeZone.startTime / 60),'mm').format('mm') + ":" + moment(time1.timeZone.startTime % 60,'mm').format('mm') + getText('KAF011_37') + moment(Math.floor(time1.timeZone.endTime / 60),'mm').format('mm') + ":" + moment(time1.timeZone.endTime % 60,'mm').format('mm'));	
 			}
+			self.checkDisplay();
 			self.started = true;
 		}
 		
@@ -163,7 +172,11 @@ module nts.uk.at.view.kaf011 {
 				self.dk2(self.checkE1Common() || (self.workTypeSelected.workAtr == 1 && self.workTypeSelected.checkE12() && self.displayInforWhenStarting.workInfoAttendanceReflect.reflectWorkHour == 1));
 				// điều kiện hiển thị ※E1-1
 				self.dk3(self.checkE1Common());
+				if(self.displayInforWhenStarting && self.displayInforWhenStarting.appDetailScreenInfo){
+					self.outputMode(self.displayInforWhenStarting.appDetailScreenInfo.outputMode);
+				}
 			}
+			
 		}
 		/**就業時間帯を反映する※1(Phản ánh worktime ※1) 勤務種類：1日の勤務区分//worktype: phân loại đi làm 1 ngày */
 		checkE1Common(): boolean{

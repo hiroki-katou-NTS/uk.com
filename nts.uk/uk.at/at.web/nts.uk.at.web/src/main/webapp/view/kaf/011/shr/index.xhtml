@@ -5,7 +5,7 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">		
 			<div>
-				<com:ko-if bind="appCombinaSelected() != 2">
+				<com:ko-if bind="appCombinaSelected() != 2 &amp;&amp; displayInforWhenStarting">
 					<div class="application work" data-bind="with: recruitmentApp">
 						<div class="name">#{i18n.getText('KAF011_1')}</div>
 						<div class="ruleLine"></div>
@@ -28,14 +28,14 @@
 		                                        value: workInformation.workType,
 		                                        columns: [{ prop: 'workTypeCode', length: 3 },{ prop: 'name', length: 15 }],
 		                                        required: true,
-		                                        enable: isAScreen 
+		                                        enable: outputMode() == 1 
 		                                        }">
 		                    </div>					
 						</div>
 						<div class="row">
 							<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_30')}</div>
 							<div class="ntsControl">
-								<button class="" data-bind="click: openKDL003" tabindex="">#{i18n.getText('KAF011_5')}</button>
+								<button class="" data-bind="click: openKDL003, enable: outputMode() == 1" tabindex="">#{i18n.getText('KAF011_5')}</button>
 								<span data-bind="text: workTimeDisplay"></span>
 							</div>
 						</div>
@@ -46,13 +46,13 @@
 	                                                    constraint:'TimeWithDayAttr',
 	                                                    value: _.find(workingHours(), {'workNo': 1}).timeZone.startTime,
 	                                                    name: '#{i18n.getText('KAF011_32')}',
-	                                                    enable: $parent.displayInforWhenStarting() == null ? false : $parent.displayInforWhenStarting().substituteWorkAppReflect.reflectAttendanceAtr == 1 }" />
+	                                                    enable: $parent.displayInforWhenStarting() == null ? false : $parent.displayInforWhenStarting().substituteWorkAppReflect.reflectAttendanceAtr == 1 &amp;&amp; outputMode() == 1}" />
 	                             #{i18n.getText('KAF011_37')}
 	                             <input class="inputTime" data-bind="ntsTimeWithDayEditor: { 
 	                                                    constraint:'TimeWithDayAttr',
 	                                                    value: _.find(workingHours(), {'workNo': 1}).timeZone.endTime,
 	                                                    name: '#{i18n.getText('KAF011_33')}',
-	                                                    enable: $parent.displayInforWhenStarting() == null ? false : $parent.displayInforWhenStarting().substituteWorkAppReflect.reflectAttendanceAtr == 1 }" />
+	                                                    enable: $parent.displayInforWhenStarting() == null ? false : $parent.displayInforWhenStarting().substituteWorkAppReflect.reflectAttendanceAtr == 1 &amp;&amp; outputMode() == 1}" />
 							</div>
 						</div>
 						<com:ko-if bind="($parent.displayInforWhenStarting() == null ? false : $parent.displayInforWhenStarting().appDispInfoStartup.appDispInfoNoDateOutput.managementMultipleWorkCycles) &amp;&amp; _.find(workingHours(), {'workNo': 2})">
@@ -63,13 +63,13 @@
 		                                                    constraint:'TimeWithDayAttr',
 		                                                    value: _.find(workingHours(), {'workNo': 2}).timeZone.startTime,
 		                                                    name: '#{i18n.getText('KAF011_35')}',
-		                                                    enable: $parent.displayInforWhenStarting() == null ? false : $parent.displayInforWhenStarting().substituteWorkAppReflect.reflectAttendanceAtr == 1 }" />
+		                                                    enable: $parent.displayInforWhenStarting() == null ? false : $parent.displayInforWhenStarting().substituteWorkAppReflect.reflectAttendanceAtr == 1 &amp;&amp; outputMode() == 1 }" />
 		                             #{i18n.getText('KAF011_37')}
 		                             <input class="inputTime" data-bind="ntsTimeWithDayEditor: { 
 		                                                    constraint:'TimeWithDayAttr',
 		                                                    value: _.find(workingHours(), {'workNo': 2}).timeZone.endTime,
 		                                                    name: '#{i18n.getText('KAF011_36')}',
-		                                                    enable: $parent.displayInforWhenStarting() == null ? false : $parent.displayInforWhenStarting().substituteWorkAppReflect.reflectAttendanceAtr == 1 }" />
+		                                                    enable: $parent.displayInforWhenStarting() == null ? false : $parent.displayInforWhenStarting().substituteWorkAppReflect.reflectAttendanceAtr == 1 &amp;&amp; outputMode() == 1 }" />
 								</div>
 							</div>
 						</com:ko-if>
@@ -78,32 +78,34 @@
 								<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_46')}</div>
 								<div class="ntsControl">
 									<div>
-										<button class="" data-bind="click: openKDL036">#{i18n.getText('KAF011_5')}</button>
+										<button class="" data-bind="click: openKDL036, enable: outputMode() == 1 ">#{i18n.getText('KAF011_5')}</button>
 										#{i18n.getText('KAF011_48')}
 									</div>
-									<div>
-										<table class="table">
-											<thead>
-												<tr>
-													<th class="bg-green" style="width: 85px">#{i18n.getText('KAF011_51')}</th>
-													<th class="bg-green" style="width: 43px">#{i18n.getText('KAF011_57')}</th>
-												</tr>
-											</thead>
-		        							<tbody data-bind="foreach: leaveComDayOffMana">
-												<tr>
-													<td data-bind="text: moment(outbreakDay).format('YYYY/MM/DD')"></td>
-													<td data-bind="text: dayNumberUsed"></td>
-												</tr>
-											</tbody>
-										</table>
-									</div>
+									<com:ko-if bind="leaveComDayOffMana().length > 0">
+										<div>
+											<table class="table">
+												<thead>
+													<tr>
+														<th class="bg-green" style="width: 85px">#{i18n.getText('KAF011_51')}</th>
+														<th class="bg-green" style="width: 43px">#{i18n.getText('KAF011_57')}</th>
+													</tr>
+												</thead>
+			        							<tbody data-bind="foreach: leaveComDayOffMana">
+													<tr>
+														<td data-bind="text: moment(outbreakDay).format('YYYY/MM/DD')"></td>
+														<td data-bind="text: dayNumberUsed"></td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</com:ko-if>
 								</div>
 							</div>
 						</com:ko-if>
 						<div class="comment" data-bind="text: $parent.comment.subWorkComment, style: {color: $parent.comment.subWorkColor, 'font-weight': $parent.comment.subWorkBold()? 'bold': ''}"></div>
 					</div>
 				</com:ko-if>
-				<com:ko-if bind="appCombinaSelected() != 1">
+				<com:ko-if bind="appCombinaSelected() != 1 &amp;&amp; displayInforWhenStarting">
 					<div class="application holiday" data-bind="with: absenceLeaveApp">
 						<div class="name">#{i18n.getText('KAF011_2')}</div>
 						<div class="ruleLine"></div>
@@ -126,7 +128,7 @@
 		                                        value: workInformation.workType,
 		                                        columns: [{ prop: 'workTypeCode', length: 3 },{ prop: 'name', length: 15 }],
 		                                        required: true,
-		                                        enable: isAScreen }">
+		                                        enable: outputMode() == 1  }">
 		                    </div>					
 						</div>
 						<div class="holidaySetting">
@@ -136,7 +138,7 @@
 								<div class="row">
 									<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF011_30')}</div>
 									<div class="ntsControl" >
-										<button class="" data-bind="click: openKDL003, enable: workChangeUse" tabindex="">#{i18n.getText('KAF011_5')}</button>
+										<button class="" data-bind="click: openKDL003, enable: workChangeUse() &amp;&amp; outputMode() == 1 " tabindex="">#{i18n.getText('KAF011_5')}</button>
 										<span data-bind="text: workTimeDisplay"></span>
 									</div>
 								</div>
@@ -148,13 +150,13 @@
 				                                                    constraint:'TimeWithDayAttr',
 				                                                    value: _.find(workingHours(), {'workNo': 1}).timeZone.startTime,
 				                                                    name: '#{i18n.getText('KAF011_32')}',
-				                                                    enable: workChangeUse() &amp;&amp; ($parent.displayInforWhenStarting() == null ? false : $parent.displayInforWhenStarting().workInfoAttendanceReflect.reflectAttendance == 1)}" />
+				                                                    enable: workChangeUse() &amp;&amp; ($parent.displayInforWhenStarting() == null ? false : $parent.displayInforWhenStarting().workInfoAttendanceReflect.reflectAttendance == 1 ) &amp;&amp; outputMode() == 1 }" />
 				                             #{i18n.getText('KAF011_37')}
 				                             <input class="inputTime" data-bind="ntsTimeWithDayEditor: { 
 				                                                    constraint:'TimeWithDayAttr',
 				                                                    value: _.find(workingHours(), {'workNo': 1}).timeZone.endTime,
 				                                                    name: '#{i18n.getText('KAF011_33')}',
-				                                                    enable: workChangeUse() &amp;&amp; ($parent.displayInforWhenStarting() == null ? false : $parent.displayInforWhenStarting().workInfoAttendanceReflect.reflectAttendance == 1)}" />
+				                                                    enable: workChangeUse() &amp;&amp; ($parent.displayInforWhenStarting() == null ? false : $parent.displayInforWhenStarting().workInfoAttendanceReflect.reflectAttendance == 1) &amp;&amp; outputMode() == 1 }" />
 										</div>
 									</div>
 								</com:ko-if>
@@ -166,13 +168,13 @@
 				                                                    constraint:'TimeWithDayAttr',
 				                                                    value: _.find(workingHours(), {'workNo': 2}).timeZone.startTime,
 				                                                    name: '#{i18n.getText('KAF011_35')}',
-				                                                    enable: workChangeUse() &amp;&amp; ($parent.displayInforWhenStarting() == null ? false : $parent.displayInforWhenStarting().workInfoAttendanceReflect.reflectAttendance == 1) }" />
+				                                                    enable: workChangeUse() &amp;&amp; ($parent.displayInforWhenStarting() == null ? false : $parent.displayInforWhenStarting().workInfoAttendanceReflect.reflectAttendance == 1) &amp;&amp; outputMode() == 1 }" />
 				                             #{i18n.getText('KAF011_37')}
 				                             <input class="inputTime" data-bind="ntsTimeWithDayEditor: { 
 				                                                    constraint:'TimeWithDayAttr',
 				                                                    value: _.find(workingHours(), {'workNo': 2}).timeZone.endTime,
 				                                                    name: '#{i18n.getText('KAF011_36')}',
-				                                                    enable: workChangeUse() &amp;&amp; ($parent.displayInforWhenStarting() == null ? false : $parent.displayInforWhenStarting().workInfoAttendanceReflect.reflectAttendance == 1) }" />
+				                                                    enable: workChangeUse() &amp;&amp; ($parent.displayInforWhenStarting() == null ? false : $parent.displayInforWhenStarting().workInfoAttendanceReflect.reflectAttendance == 1) &amp;&amp; outputMode() == 1 }" />
 										</div>
 									</div>
 								</com:ko-if>
@@ -182,25 +184,27 @@
 									<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_46')}</div>
 									<div class="ntsControl">
 										<div>
-											<button class="" data-bind="click: openKDL036">#{i18n.getText('KAF011_5')}</button>
+											<button class="" data-bind="click: openKDL036, enable: outputMode() == 1 ">#{i18n.getText('KAF011_5')}</button>
 											#{i18n.getText('KAF011_48')}
 										</div>
-										<div>
-											<table class="table">
-												<thead>
-													<tr>
-														<th class="bg-green" style="width: 85px">#{i18n.getText('KAF011_51')}</th>
-														<th class="bg-green" style="width: 43px">#{i18n.getText('KAF011_57')}</th>
-													</tr>
-												</thead>
-			        							<tbody data-bind="foreach: leaveComDayOffMana">
-													<tr>
-														<td data-bind="text: moment(outbreakDay).format('YYYY/MM/DD')"></td>
-														<td data-bind="text: dayNumberUsed"></td>
-													</tr>
-												</tbody>
-											</table>
-										</div>
+										<com:ko-if bind="leaveComDayOffMana().length > 0">
+											<div>
+												<table class="table">
+													<thead>
+														<tr>
+															<th class="bg-green" style="width: 85px">#{i18n.getText('KAF011_51')}</th>
+															<th class="bg-green" style="width: 43px">#{i18n.getText('KAF011_57')}</th>
+														</tr>
+													</thead>
+				        							<tbody data-bind="foreach: leaveComDayOffMana">
+														<tr>
+															<td data-bind="text: moment(outbreakDay).format('YYYY/MM/DD')"></td>
+															<td data-bind="text: dayNumberUsed"></td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										</com:ko-if>
 									</div>
 								</div>
 							</com:ko-if>
@@ -212,22 +216,24 @@
 											<button class="" data-bind="click: openKDL035">#{i18n.getText('KAF011_5')}</button>
 											#{i18n.getText('KAF011_47')}
 										</div>
-										<div>
-											<table class="table">
-												<thead>
-													<tr>
-														<th class="bg-green" style="width: 85px">#{i18n.getText('KAF011_49')}</th>
-														<th class="bg-green" style="width: 43px">#{i18n.getText('KAF011_57')}</th>
-													</tr>
-												</thead>
-			        							<tbody data-bind="foreach: payoutSubofHDManagements">
-													<tr>
-														<td data-bind="text: moment(outbreakDay).format('YYYY/MM/DD')"></td>
-														<td data-bind="text: dayNumberUsed"></td>
-													</tr>
-												</tbody>
-											</table>
-										</div>
+										<com:ko-if bind="payoutSubofHDManagements().length > 0">
+											<div>
+												<table class="table">
+													<thead>
+														<tr>
+															<th class="bg-green" style="width: 85px">#{i18n.getText('KAF011_49')}</th>
+															<th class="bg-green" style="width: 43px">#{i18n.getText('KAF011_57')}</th>
+														</tr>
+													</thead>
+				        							<tbody data-bind="foreach: payoutSubofHDManagements">
+														<tr>
+															<td data-bind="text: moment(outbreakDay).format('YYYY/MM/DD')"></td>
+															<td data-bind="text: dayNumberUsed"></td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										</com:ko-if>
 									</div>
 								</div>
 							</com:ko-if>

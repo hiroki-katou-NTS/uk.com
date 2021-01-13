@@ -86,6 +86,7 @@ public class HolidayShipmentScreenBFinder {
 	// 1.振休振出申請（詳細）起動処理(đơn xin nghỉ bù làm bù(detail) Xử lý khởi động)
 	public DisplayInforWhenStarting startPageBRefactor(String companyId, String appId, AppDispInfoStartupDto appDispInfoStartup) {
 		DisplayInforWhenStarting result = new DisplayInforWhenStarting();
+		result.appDispInfoStartup = appDispInfoStartup;
 		
 		//ドメインモデル「振休振出申請」を取得する(Lấy domain[đơn xin nghi bu lam bu])
 		Optional<RecruitmentApp> rec = recRepo.findByAppId(appId);
@@ -93,7 +94,7 @@ public class HolidayShipmentScreenBFinder {
 		Optional<AppHdsubRec> appHdsubRec = appHdsubRecRepository.findByAppId(appId);
 		if(appHdsubRec.isPresent() && rec.isPresent()) {
 			abs = absRepo.findByAppId(appHdsubRec.get().getAbsenceLeaveAppID());
-		}else {
+		}else if(appHdsubRec.isPresent()){
 			rec = recRepo.findByAppId(appHdsubRec.get().getRecAppID());
 		}
 		
@@ -120,7 +121,7 @@ public class HolidayShipmentScreenBFinder {
 		if(result.existRec()) {
 			DisplayInformationApplication applicationForWorkingDay = new DisplayInformationApplication();
 			//振出用勤務種類の取得(Lấy worktype làm bù)
-			List<WorkType> workTypeListRec = aFinder.getWorkTypeForHoliday(companyId, appDispInfoStartup.getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode(), result.rec.workInformation.getWorkType());
+			List<WorkType> workTypeListRec = aFinder.getWorkTypeForWorkingDay(companyId, appDispInfoStartup.getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode(), result.rec.workInformation.getWorkType());
 			//振出申請起動時の表示情報．勤務種類リスト=取得した振出用勤務種類(List)/ (DisplayInfo khi khởi động đơn xin làm bù. WorktypeList = worktype làm bù(list đã lấy))
 			applicationForWorkingDay.setWorkTypeList(workTypeListRec.stream().map(c->WorkTypeDto.fromDomain(c)).collect(Collectors.toList()));
 			result.applicationForWorkingDay = applicationForWorkingDay;
