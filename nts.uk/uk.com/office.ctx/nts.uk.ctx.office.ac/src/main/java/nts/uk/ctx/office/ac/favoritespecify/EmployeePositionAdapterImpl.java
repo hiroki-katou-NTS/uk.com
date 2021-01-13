@@ -26,17 +26,22 @@ public class EmployeePositionAdapterImpl implements EmployeePositionAdapter {
 	@Override
 	public Map<String, EmployeeJobHistImport> getPositionBySidsAndBaseDate(List<String> sIds, GeneralDate baseDate) {
 		// $職位Map ＝ new HashMap<>()
-		List<EmployeeJobHistExport> jobHistory = this.jobTitlePub.findSJobHistByListSId(sIds, baseDate).stream()
+		List<EmployeeJobHistExport> jobHistory = this.jobTitlePub.findSJobHistByListSIdV2(sIds, baseDate).stream()
 				.filter(value -> sIds.contains(value.getEmployeeId())).collect(Collectors.toList());
 		if (jobHistory.isEmpty()) {
 			return Collections.emptyMap();
 		}
 		Map<String, EmployeeJobHistImport> jobMap = jobHistory.stream()
 				.collect(Collectors.toMap(x -> x.getEmployeeId(),
-						x -> EmployeeJobHistImport.builder().employeeId(x.getEmployeeId()).jobTitleID(x.getJobTitleID())
-								.jobTitleName(x.getJobTitleName()).startDate(x.getStartDate()).endDate(x.getEndDate())
-								.jobTitleCode(x.getJobTitleCode()).build()));
+						x -> EmployeeJobHistImport.builder()
+							.employeeId(x.getEmployeeId())
+							.jobTitleID(x.getJobTitleID())
+							.sequenceCode(x.getSequenceCode())
+							.jobTitleName(x.getJobTitleName())
+							.startDate(x.getStartDate())
+							.endDate(x.getEndDate())
+							.jobTitleCode(x.getJobTitleCode())
+							.build()));
 		return jobMap;
 	}
-
 }
