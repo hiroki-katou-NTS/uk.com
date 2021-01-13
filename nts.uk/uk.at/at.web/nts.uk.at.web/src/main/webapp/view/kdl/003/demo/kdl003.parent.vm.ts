@@ -17,6 +17,10 @@ module kdl003.parent.viewmodel {
         secondEndTime: KnockoutObservable<number>;
         first: time;
         second: time;
+
+        workPlaceId: KnockoutObservable<string> = ko.observable(null);
+        baseDate: KnockoutObservable<string> = ko.observable(null);
+
         constructor() {
             var self = this;
             //construct codes 
@@ -47,7 +51,9 @@ module kdl003.parent.viewmodel {
                 selectedWorkTypeCode: self.selectWorkTypeCode(),
                 workTimeCodes: workTimeCodes,
                 selectedWorkTimeCode: self.selectSiftCode(),
-                showNone: self.showNone()
+                showNone: self.showNone(),
+                workPlaceId: self.workPlaceId(),
+                baseDate: self.baseDate()
             }, true);
 
             nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function(): any {

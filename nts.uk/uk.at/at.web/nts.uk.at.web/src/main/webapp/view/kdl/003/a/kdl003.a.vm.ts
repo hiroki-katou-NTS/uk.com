@@ -54,8 +54,15 @@ module nts.uk.at.view.kdl003.a {
             // Parameter from caller screen.
             callerParameter: CallerParameter;
             searchCode: KnockoutObservable<string> = ko.observable(null);
-            
-            constructor(parentData: CallerParameter) {  
+
+            isAllCheckStatus: KnockoutObservable<boolean> = ko.observable(false);
+            isCheckStatus: KnockoutObservable<boolean> = ko.observable(false);
+
+            allWorkHours: KnockoutObservableArray<WorkTimeSet> = ko.observableArray([]);
+            selectableWorkHours: KnockoutObservableArray<WorkTimeSet> = ko.observableArray([]);
+            currentWorkHours: KnockoutObservableArray<WorkTimeSet> = ko.observableArray([]);
+
+            constructor(parentData: CallerParameter) {
                 super();
 
                 var self = this;
@@ -101,7 +108,9 @@ module nts.uk.at.view.kdl003.a {
                     { headerText: nts.uk.resource.getText('KDL003_6'), prop: 'name', width: 100 },
                     { headerText: nts.uk.resource.getText('KDL003_7'), prop: 'memo', width: 130 }
                 ]);
-                self.workTimeColumns = ko.observableArray([
+
+                self.workTimeColumns = ko.observableArray([]);
+                /* self.workTimeColumns = ko.observableArray([
                     { headerText: nts.uk.resource.getText('KDL003_5'), prop: 'code', width: 50 },
                     { headerText: nts.uk.resource.getText('KDL003_6'), prop: 'name', width: 100 },
                     { headerText: nts.uk.resource.getText('KDL003_19'), prop: 'workTime1', width: 200 },
@@ -109,6 +118,7 @@ module nts.uk.at.view.kdl003.a {
                     { headerText: nts.uk.resource.getText('KDL003_21'), prop: 'workAtr', width: 130 },
                     { headerText: nts.uk.resource.getText('KDL003_7'), prop: 'remark', template: '<span>${remark}</span>' }
                 ]);
+                */
                 self.breakColumns1 = ko.observableArray([
                     { headerText: nts.uk.resource.getText('KDL003_33'), prop: 'code', width: 30 },
                     { headerText: nts.uk.resource.getText('KDL003_34'), prop: 'name', width: 170 }
@@ -134,6 +144,18 @@ module nts.uk.at.view.kdl003.a {
                     }
                 });
 
+                self.isCheckStatus.subscribe((isChecked) => {
+                    let listTimeWork = [];
+
+                    self.searchCode(null);
+                    self.startTime(null);
+                    self.endTime(null);
+
+                    listTimeWork = (isChecked) ? _.cloneDeep(self.allWorkHours()) : _.cloneDeep(self.selectableWorkHours());
+                    listTimeWork = self.addShowNone(listTimeWork);
+                    self.listWorkTime(listTimeWork);
+                    self.currentWorkHours(listTimeWork);
+                });
                 //parent data
                 self.callerParameter = parentData;
             }
@@ -175,15 +197,15 @@ module nts.uk.at.view.kdl003.a {
                         });
 
                         // Set initial work time list.
-                        self.initialWorkTimeCodes = _.map(self.listWorkTime(), function(item) { return item.code })
-
+                        self.initialWorkTimeCodes = _.map(self.listWorkTime(), function (item) { return item.code })
                         dfd.resolve();
                     })
-                    .fail(function(res) {
+                    .fail(function (res) {
                         nts.uk.ui.dialog.alertError(res);
                     }).always(() => {
                         nts.uk.ui.block.clear();
                     });
+
                 return dfd.promise();
             }
 
@@ -194,10 +216,50 @@ module nts.uk.at.view.kdl003.a {
                 let self = this;
                 let dfd = $.Deferred<void>();
 
+                let params: any = {
+                    baseDate: self.callerParameter.baseDate,
+                    codes: self.callerParameter.workTimeCodes,
+                    workPlaceId: self.callerParameter.workPlaceId
+                }
+
+                service.findAllWorkTimeNew(params)
+                    .done((data: any) => {
+
+                        self.getHeaderWorkTime(data.useATR === 1);
+                        self.isAllCheckStatus(data.allCheckStatus !== 1);
+                        self.isCheckStatus(data.allCheckStatus);
+
+                        let listWorkTime: Array<WorkTimeSet> = [];
+                        if (!nts.uk.util.isNullOrEmpty(code)) {
+                            listWorkTime = data.availableWorkingHours.length > 0 ? data.availableWorkingHours : data.allWorkHours;
+                        } else if (!nts.uk.util.isNullOrEmpty(self.callerParameter.workPlaceId)
+                            && !nts.uk.util.isNullOrEmpty(self.callerParameter.baseDate)) {
+                            listWorkTime = data.workingHoursByWorkplace.length > 0 ? data.workingHoursByWorkplace : data.allWorkHours;
+                        } else {
+                            listWorkTime = data.allWorkHours;
+                        }
+
+                        //backup data 
+                        self.allWorkHours(_.orderBy(data.allWorkHours, 'code', 'asc'));
+
+                        let selectableWorkHours = !nts.uk.util.isNullOrEmpty(code) ? data.availableWorkingHours : data.workingHoursByWorkplace;
+                        self.selectableWorkHours(_.orderBy(selectableWorkHours, 'code', 'asc'));
+
+                        listWorkTime = _.orderBy(listWorkTime, 'code', 'asc');
+                        listWorkTime = self.addShowNone(listWorkTime);
+                        self.currentWorkHours(listWorkTime);
+                        self.listWorkTime(listWorkTime);
+                        dfd.resolve();
+                    })
+                    .fail((error) => {
+                        console.log(error);
+                        dfd.reject();
+                    });
+
                 // Find work time by list code if caller's parameters exist.
-                if (!nts.uk.util.isNullOrEmpty(self.callerParameter.workTimeCodes)) {
+                /* if (!nts.uk.util.isNullOrEmpty(self.callerParameter.workTimeCodes)) {
                     service.findWorkTimeByCodes(self.callerParameter.workTimeCodes)
-                        .done(function(data) {
+                        .done(function (data) {
                             data = _.sortBy(data, item => item.code);
                             self.getTimeBySelectedCode(data, code);
                             if (nts.uk.util.isNullOrUndefined(self.callerParameter.showNone) || self.callerParameter.showNone) {
@@ -209,7 +271,7 @@ module nts.uk.at.view.kdl003.a {
                 } else {
                     // Find all work time
                     service.findAllWorkTime()
-                        .done(function(data) {
+                        .done(function (data) {
                             data = _.sortBy(data, item => item.code);
                             self.getTimeBySelectedCode(data, code);
                             if (nts.uk.util.isNullOrUndefined(self.callerParameter.showNone) || self.callerParameter.showNone) {
@@ -218,7 +280,7 @@ module nts.uk.at.view.kdl003.a {
                             self.listWorkTime(data);
                             dfd.resolve();
                         });
-                }
+                } */
 
                 return dfd.promise();
             }
@@ -233,7 +295,7 @@ module nts.uk.at.view.kdl003.a {
                 // Find work type by list code if caller's parameters exist.
                 if (!nts.uk.util.isNullOrEmpty(self.callerParameter.workTypeCodes)) {
                     service.findWorkTypeByCodes(self.callerParameter.workTypeCodes)
-                        .done(function(workTypeList: Array<WorkType>) {
+                        .done(function (workTypeList: Array<WorkType>) {
                             let workTypes = self.sortbyList(_.uniqBy(workTypeList, 'workTypeCode'));
                             self.listWorkType(workTypes);
                             dfd.resolve();
@@ -241,7 +303,7 @@ module nts.uk.at.view.kdl003.a {
                 } else {
                     // Find all work type.
                     service.findAllWorkType()
-                        .done(function(workTypeList: Array<WorkType>) {
+                        .done(function (workTypeList: Array<WorkType>) {
                             let workTypes = self.sortbyList(_.uniqBy(workTypeList, 'workTypeCode'));
                             self.listWorkType(workTypes);
                             dfd.resolve();
@@ -249,19 +311,19 @@ module nts.uk.at.view.kdl003.a {
                 }
                 return dfd.promise();
             }
-            
+
             /**
          * sort list by:
          * 1. dispOrder
          * 2. Code
          */
-        sortbyList(lstItem: Array<any>): Array<any>{
-            let lwt : Array<any> = [];
-            if (lstItem && !!lstItem.length) {
-                lwt = _.orderBy(lstItem, ['dispOrder', 'workTypeCode'], ['asc', 'asc']);
+            sortbyList(lstItem: Array<any>): Array<any> {
+                let lwt: Array<any> = [];
+                if (lstItem && !!lstItem.length) {
+                    lwt = _.orderBy(lstItem, ['dispOrder', 'workTypeCode'], ['asc', 'asc']);
+                }
+                return lwt;
             }
-            return lwt;
-        }
 
             /**
              * Get Time By Selected Code 
@@ -270,7 +332,7 @@ module nts.uk.at.view.kdl003.a {
                 let self = this;
 
                 //Set Time Zone1 and TimeZone2
-                $.each(data, function(key, value) {
+                $.each(data, function (key, value) {
                     if (data[key].code == code) {
                         //Setting Time Zone1
                         if (!nts.uk.util.isNullOrEmpty(data[key].workTime1)) {
@@ -340,7 +402,7 @@ module nts.uk.at.view.kdl003.a {
                     self.enable1(false);
                 } else {
                     //Find Break By Codes
-                    service.findBreakByCodes(code).done(function(data) {
+                    service.findBreakByCodes(code).done(function (data) {
                         dataBB = data.breakBreakTimeDto;
                         dataB = data.breakTimeDto;
                         if (nts.uk.util.isNullOrEmpty(dataB) && nts.uk.util.isNullOrEmpty(dataBB)) {
@@ -457,8 +519,7 @@ module nts.uk.at.view.kdl003.a {
                     return;
                 }
 
-                if ($('#inputEndTime').ntsError('hasError') ||
-                    $('#inputStartTime').ntsError('hasError')) {
+                if ($('#inputEndTime').ntsError('hasError') || $('#inputStartTime').ntsError('hasError')) {
                     return;
                 }
 
@@ -475,7 +536,7 @@ module nts.uk.at.view.kdl003.a {
 
                 // Search & display data.
                 service.findByTime(command)
-                    .done(function(data) {
+                    .done(function (data) {
                         data = _.sortBy(data, item => item.code);
                         self.listWorkTime([]);
                         self.listWorkTime(data);
@@ -483,7 +544,7 @@ module nts.uk.at.view.kdl003.a {
                             self.selectedWorkTimeCode(data[0].code);
                         }
                     })
-                    .fail(function(res) {
+                    .fail(function (res) {
                         nts.uk.ui.dialog.alertError(res);
                     })
                     .always(() => {
@@ -494,6 +555,36 @@ module nts.uk.at.view.kdl003.a {
                     });
             }
 
+            //ver 13
+            public searchByTime(): void {
+                var self = this;
+                if (nts.uk.util.isNullOrEmpty(self.startTime()) && nts.uk.util.isNullOrEmpty(self.endTime())) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_307" });
+                    return;
+                }
+
+                if ($('#inputEndTime').ntsError('hasError') || $('#inputStartTime').ntsError('hasError')) {
+                    return;
+                }
+
+                self.listWorkTime(_.cloneDeep(self.currentWorkHours()));
+                let afterListWorkTime: Array<WorkTimeSet> = [];
+
+                if (!nts.uk.util.isNullOrEmpty(self.startTime()) && nts.uk.util.isNullOrEmpty(self.endTime())) {
+                    afterListWorkTime = _.filter(self.listWorkTime(), item => { return item.firstStartTime >= self.startTime() });
+                } else if (nts.uk.util.isNullOrEmpty(self.startTime()) && !nts.uk.util.isNullOrEmpty(self.endTime())) {
+                    afterListWorkTime = _.filter(self.listWorkTime(), item => { return item.firstEndTime <= self.endTime() });
+                } else {
+                    afterListWorkTime = _.filter(self.listWorkTime(), item => {
+                        return item.firstStartTime >= self.startTime() && item.firstEndTime <= self.endTime();
+                    });
+                }
+
+                self.listWorkTime.removeAll();
+                afterListWorkTime = self.addShowNone(afterListWorkTime);
+                self.listWorkTime(afterListWorkTime);
+                $("#day-list-tbl").igGrid("container").focus();
+            }
             /**
              * Clear search condition.
              */
@@ -517,7 +608,8 @@ module nts.uk.at.view.kdl003.a {
                 });
 
                 // Set focus.
-                $("[tabindex='10']").focus();
+                //$("#day-list-tbl").igGrid("container").focus();
+                //$("[tabindex='10']").focus();
             }
 
             /**
@@ -547,9 +639,9 @@ module nts.uk.at.view.kdl003.a {
                 }
 
                 // Check pair work type & work time.
-                if (!nts.uk.util.isNullOrEmpty(workTimeCode)){
+                if (!nts.uk.util.isNullOrEmpty(workTimeCode)) {
                     service.checkPairWorkTypeWorkTime(workTypeCode, workTimeCode).done(() => {
-    
+
                         // Set shared data.
                         let workTypeName = self.getWorkTypeName(workTypeCode);
                         let workTimeName = self.getWorkTimeName(workTimeCode);
@@ -562,10 +654,10 @@ module nts.uk.at.view.kdl003.a {
                             second: time2
                         };
                         nts.uk.ui.windows.setShared("childData", returnedData, false);
-    
+
                         // Close dialog.
                         self.closeDialog();
-    
+
                     }).fail(error => {
                         nts.uk.ui.dialog.alertError(error);
                     }).always(() => {
@@ -573,10 +665,10 @@ module nts.uk.at.view.kdl003.a {
                     });
                 } else {
                     service.checkPairWorkTypeWorkTime2(workTypeCode).done(() => {
-    
+
                         workTimeCode = '';
                         time1.start = time1.end = time2.start = time2.end = null;
-    
+
                         // Set shared data.
                         let workTypeName = self.getWorkTypeName(workTypeCode);
                         let workTimeName = '';
@@ -589,10 +681,10 @@ module nts.uk.at.view.kdl003.a {
                             second: time2
                         };
                         nts.uk.ui.windows.setShared("childData", returnedData, false);
-    
+
                         // Close dialog.
                         self.closeDialog();
-    
+
                     }).fail(error => {
                         nts.uk.ui.dialog.alertError(error);
                     }).always(() => {
@@ -637,13 +729,70 @@ module nts.uk.at.view.kdl003.a {
 
             searchByCodeName() {
                 let self = this;
-                if( nts.uk.util.isNullOrEmpty(self.searchCode()) ) {
-                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_2073' }).then(() => { 
-                        $('#A2_6').focus();
-                        nts.uk.ui.block.clear(); 
+                if (nts.uk.util.isNullOrEmpty(self.searchCode())) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_2073' }).then(() => {
+                        $('#A4_20').focus();
+                        nts.uk.ui.block.clear();
                     });
                     return;
                 }
+
+                self.listWorkTime(_.cloneDeep(self.currentWorkHours()));
+                let afterListWorkTime: Array<WorkTimeSet> = [];
+
+                afterListWorkTime = _.filter(self.listWorkTime(), item => {
+                    return item.code.indexOf(self.searchCode()) > -1 || item.name.indexOf(self.searchCode()) > -1;
+                });
+
+                self.listWorkTime.removeAll();
+                afterListWorkTime = self.addShowNone(afterListWorkTime);
+                self.listWorkTime(afterListWorkTime);
+                $("#day-list-tbl").igGrid("container").focus();
+            }
+
+            getHeaderWorkTime(useWorkTime2: boolean) {
+                const self = this;
+                if (useWorkTime2)
+                    self.workTimeColumns([
+                        { headerText: nts.uk.resource.getText('KDL003_5'), prop: 'code', width: 50 },
+                        { headerText: nts.uk.resource.getText('KDL003_6'), prop: 'name', width: 100 },
+                        { headerText: nts.uk.resource.getText('KDL003_19'), prop: 'workTime1', width: 200 },
+                        { headerText: nts.uk.resource.getText('KDL003_20'), prop: 'workTime2', width: 200 },
+                        { headerText: nts.uk.resource.getText('KDL003_21'), prop: 'workAtr', width: 130 },
+                        { headerText: nts.uk.resource.getText('KDL003_7'), prop: 'remark', template: '<span>${remark}</span>' }
+                    ]);
+                else
+                    self.workTimeColumns([
+                        { headerText: nts.uk.resource.getText('KDL003_5'), prop: 'code', width: 50 },
+                        { headerText: nts.uk.resource.getText('KDL003_6'), prop: 'name', width: 100 },
+                        { headerText: nts.uk.resource.getText('KDL003_19'), prop: 'workTime1', width: 200 },
+                        { headerText: nts.uk.resource.getText('KDL003_21'), prop: 'workAtr', width: 130 },
+                        { headerText: nts.uk.resource.getText('KDL003_7'), prop: 'remark', template: '<span>${remark}</span>' }
+                    ]);
+            }
+
+            addShowNone(data: Array<any>): Array<any> {
+                const self = this;
+
+                if (nts.uk.util.isNullOrUndefined(self.callerParameter.showNone) || self.callerParameter.showNone) {
+                    let findItem = _.some(data, (x) => x.code === '');
+                    if( findItem ) return data;
+
+                    data.unshift({
+                        code: "",
+                        name: "なし",
+                        workTime1: "",
+                        workTime2: "",
+                        workAtr: "",
+                        remark: "",
+                        firstStartTime: null,
+                        firstEndTime: null,
+                        secondStartTime: null,
+                        secondEndTime: null
+                    });
+                }
+
+                return data;
             }
         }
 
@@ -680,6 +829,8 @@ module nts.uk.at.view.kdl003.a {
             workTimeCodes: Array<string>;
             selectedWorkTimeCode: string;
             showNone: boolean;
+            workPlaceId: string;
+            baseDate: string;
         }
         interface ReturnedData {
             selectedWorkTypeCode: string;
@@ -688,7 +839,7 @@ module nts.uk.at.view.kdl003.a {
             selectedWorkTimeName: string;
             first: first;
             second: second;
-
+            remark: string;
         }
         interface first {
             start: number;

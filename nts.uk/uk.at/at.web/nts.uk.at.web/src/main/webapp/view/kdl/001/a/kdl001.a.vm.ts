@@ -61,6 +61,11 @@ module nts.uk.at.view.kdl001.a {
                 self.baseDate(nts.uk.ui.windows.getShared('kml001BaseDate'));
 
                 self.isAllCheckShow.subscribe((isCheck) => {
+
+                    self.startTime(null);
+                    self.endTime(null);
+                    self.searchCode('');
+
                     if (isCheck)
                         self.selectAbleItemList(_.cloneDeep(self.workingHoursItemLists()));
                     else
@@ -72,10 +77,6 @@ module nts.uk.at.view.kdl001.a {
                 var self = this;
                 var dfd = $.Deferred();
                 nts.uk.ui.block.grayout();
-                //ver 8 
-                /*if (!_.isEmpty(self.baseDate()) {
-                     self.baseDate(moment.utc(self.baseDate(), 'YYYY-MM-DD').toISOString());
-                 }*/
 
                 const params = {
                     "baseDate": self.baseDate(),
@@ -153,15 +154,9 @@ module nts.uk.at.view.kdl001.a {
                 self.workingHoursItemLists.push(new WorkTimeSet());
 
                 if (self.selectAbleCodeList().length > 0) { //check all                    
-                    if (data.availableWorkingHours.length > 0)
-                        selectAbleItemList = data.availableWorkingHours
-                    else
-                        selectAbleItemList = data.allWorkHours;
-                } else if (!_.isEmpty(self.workPlaceId()) && !_.isEmpty(self.baseDate())) {
-                    if (data.workingHoursByWorkplace.length > 0)
-                        selectAbleItemList = data.workingHoursByWorkplace;
-                    else
-                        selectAbleItemList = data.allWorkHours;
+                    selectAbleItemList = data.availableWorkingHours.length > 0 ? data.availableWorkingHours : data.allWorkHours;
+                } else if (!nts.uk.util.isNullOrEmpty(self.workPlaceId()) && !nts.uk.util.isNullOrEmpty(self.baseDate())) {
+                    selectAbleItemList = data.workingHoursByWorkplace.length > 0 ? data.workingHoursByWorkplace : data.allWorkHours;
                 } else {
                     selectAbleItemList = data.allWorkHours;
                 }
@@ -191,7 +186,7 @@ module nts.uk.at.view.kdl001.a {
                 var self = this;
                 if (nts.uk.util.isNullOrEmpty(self.startTime()) && nts.uk.util.isNullOrEmpty(self.endTime())) {
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_307' }).then(() => {
-                        $('#inputStartTime').focus();
+                        //$('#inputStartTime').focus();
                         nts.uk.ui.block.clear();
                     });
                     return;
@@ -304,11 +299,9 @@ module nts.uk.at.view.kdl001.a {
                 });
 
                 self.selectAbleItemList.removeAll();
-                self.selectAbleItemList(afterFilterSelectAbleItemList);
-                if (afterFilterSelectAbleItemList.length === 0) {
-                    self.selectAbleItemList.unshift(new WorkTimeSet());
-                }
+                self.selectAbleItemList(self.addShowNone(afterFilterSelectAbleItemList));                
                 self.resetConditionSelected();
+                $("#day-list-tbl").igGrid("container").focus();
                 //self.selectAbleItemList(self.selectAbleItemList().concat(_.map(afterFilterSelectAbleItemList, item => { return new WorkTimeSet(item) })));
             }
 
@@ -329,16 +322,22 @@ module nts.uk.at.view.kdl001.a {
 
                 self.selectAbleItemList(_.cloneDeep(self.workingHoursItemLists()));
                 let afterFilterSelectAbleItemList: Array<WorkTimeSet> = [];
-                afterFilterSelectAbleItemList = _.filter(self.selectAbleItemList(), item => {
-                    return item.firstStartTime >= self.startTime() && item.firstEndTime <= self.endTime();
-                });
 
-                self.selectAbleItemList.removeAll();
-                self.selectAbleItemList(afterFilterSelectAbleItemList);
-                if (afterFilterSelectAbleItemList.length === 0) {
-                    self.selectAbleItemList.unshift(new WorkTimeSet());
+                if (!nts.uk.util.isNullOrEmpty(self.startTime()) && nts.uk.util.isNullOrEmpty(self.endTime())) {
+                    afterFilterSelectAbleItemList = _.filter(self.selectAbleItemList(), item => { return item.firstStartTime >= self.startTime() });
+                } else if (nts.uk.util.isNullOrEmpty(self.startTime()) && !nts.uk.util.isNullOrEmpty(self.endTime())) {
+                    afterFilterSelectAbleItemList = _.filter(self.selectAbleItemList(), item => { return item.firstEndTime <= self.endTime() });
+                } else {
+                    afterFilterSelectAbleItemList = _.filter(self.selectAbleItemList(), item => {
+                        return item.firstStartTime >= self.startTime() && item.firstEndTime <= self.endTime();
+                    });
                 }
+
+                self.selectAbleItemList.removeAll();                ;
+                self.selectAbleItemList(self.addShowNone(afterFilterSelectAbleItemList));                
                 self.resetConditionSelected();
+
+                $("#day-list-tbl").igGrid("container").focus();
             }
 
             clearSearch() {
@@ -370,6 +369,17 @@ module nts.uk.at.view.kdl001.a {
                 self.selectedCode(self.selectedCodeBk());
                 self.selectAbleCodeList(_.cloneDeep(self.selectAbleCodeListBk()));
                 self.selectedCodeList(_.cloneDeep(self.selectedCodeListBk()));
+            }
+
+            addShowNone(data: Array<any>): Array<any> {
+                const self = this;
+
+                let findItem = _.some(data, (x) => x.code === '');
+                if (findItem)
+                    return data;
+                else
+                    data.unshift(new WorkTimeSet());
+                return data;
             }
         }
 

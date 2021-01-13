@@ -72,10 +72,10 @@
 												data-bind="ntsTimeWithDayEditor: {name: '#[KDL003_15]', constraint:'TimeWithDayAttr', value: endTime, enable: true, 
 												readonly: false, required: false, option: { width: '70px', timeWithDay: true}}" />
 											<button tabindex="7" class="caret-bottom"
-												data-bind="click: search">#{i18n.getText('KDL003_16')}</button>
+												data-bind="click: searchByTime">#{i18n.getText('KDL003_16')}</button>
 										</div>
 										<div class="cell valign-center">
-											<input tabindex="8"  data-bind="ntsTextEditor: { value: searchCode, name: '#[KMK002_2]',								
+											<input id="A4_20" tabindex="8"  data-bind="ntsTextEditor: { value: searchCode, name: '#[KMK002_2]',								
 											option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
 												placeholder: '#{i18n.getText('KMK002_4')}',	
 												textmode: 'text',								
@@ -84,7 +84,7 @@
 												data-bind="click: searchByCodeName">#{i18n.getText('KDL003_16')}</button>												
 										</div>
 										<div class="cell valign-center">
-											<div tabindex="10"  data-bind="ntsCheckBox: { checked: false, enable: true, text: '#{i18n.getText('KDL003_16')}' }"></div>
+											<div tabindex="10"  data-bind="ntsCheckBox: { checked: isCheckStatus, enable: isAllCheckStatus, text: '#{i18n.getText('KDL003_16')}' }"></div>
 											<button tabindex="11" class="pull-right"
 												data-bind="click: clearSearchCondition">#{i18n.getText('KDL003_17')}</button>
 										</div>
@@ -107,91 +107,7 @@
 							</td>
 						</tr>
 					</table>
-				</div>
-
-				<!-- </div>
-					<div style="margin-left: 10px; margin-top: 30px;">
-						<table style="margin-bottom: 10px;">
-							 <tr>
-								<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL003_24')}</div></td>
-								<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL003_32')}</div></td>
-								<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL003_35')}</div></td>
-							</tr> 
-							<tr>
-								<td style="padding-right: 20px"><hr/></td>
-								<td><hr/></td>
-								<td style="padding-left: 20px"><hr/></td>
-							</tr>
-							<tr>
-								<td style="vertical-align: top; padding-right: 20px;">
-									<div id="search-div" class="control-group valign-center">
-										<span>#{i18n.getText('KDL003_25')}</span>
-										<input id="inputStartBTime" tabindex="11" style="text-align: center !important;"
-											data-bind="ntsTimeWithDayEditor: {name: '#[KDL003_26]', constraint:'TimeWithDayAttr', value: startBTime, 
-												inputFormat: 'time', mode: 'time', option: { width: '50px' }, enable: enable1, readonly: readonly}" />
-										<span>#{i18n.getText('KDL003_27')}</span>
-										<input id="inputEndBTime" tabindex="12"
-											data-bind="ntsTimeWithDayEditor: {name: '#[KDL003_28]', constraint:'TimeWithDayAttr', value: endBTime,
-												 inputFormat: 'time', mode: 'time', option: { width: '50px' }, enable: enable1, readonly: readonly}" />
-									</div>
-									<div id="search-div" class="control-group valign-center">
-										<span>#{i18n.getText('KDL003_29')}</span>
-										<input id="inputStartBBTime" tabindex="13"
-											data-bind="ntsTimeWithDayEditor: {name: '#[KDL003_30]', constraint:'TimeWithDayAttr', value: startBBTime, 
-												inputFormat: 'time', mode: 'time', option: { width: '50px' }, enable: enable2, readonly: readonly}" />
-										<span>#{i18n.getText('KDL003_27')}</span>
-										<input id="inputEndBBTime" tabindex="14"
-											data-bind="ntsTimeWithDayEditor: {name: '#[KDL003_31]', constraint:'TimeWithDayAttr', value: endBBTime,
-												 inputFormat: 'time', mode: 'time', option: { width: '50px' }, enable: enable2, readonly: readonly}" />
-									</div>
-								</td>
-								<td style="vertical-align: top; border-left: solid grey 1px;">
-									<div id="day-list-div" style="display: flex; padding-left: 0px !important;">
-										<table id="list-worktype"
-										data-bind="ntsGridList: {
-											height: 180,
-											options: listTimeBreak1,
-											optionsValue: 'code',
-											columns: breakColumns1,
-											multiple: false,
-											value: currentCode}">
-										</table>
-										<table id="list-worktype"
-										data-bind="ntsGridList: {
-											height: 180,
-											options: listTimeBreak2,
-											optionsValue: 'code',
-											columns: breakColumns2,
-											multiple: false,
-											value: currentCode3}">
-										</table>
-									</div>
-								</td>
-								<td style="vertical-align: top; border-left: solid grey 1px;">
-									<div id="day-list-div" style="display: flex;">
-										<table id="list-worktype"
-										data-bind="ntsGridList: {
-											height: 180,
-											options: listTimeBreakBreak1,
-											optionsValue: 'code',
-											columns: breakBreakColumns1,
-											multiple: false,
-											value: currentCode2}">
-										</table>
-										<table id="list-worktype"
-										data-bind="ntsGridList: {
-											height: 180,
-											options: listTimeBreakBreak2,
-											optionsValue: 'code',
-											columns: breakBreakColumns2,
-											multiple: false,
-											value: currentCode4}">
-										</table>
-									</div>
-								</td> 
-							</tr>
-						</table>
-					</div>-->
+				</div>				
 			</div>
 			<div id="functions-area-bottom">
 				<button class="x-large proceed" tabindex="15"
