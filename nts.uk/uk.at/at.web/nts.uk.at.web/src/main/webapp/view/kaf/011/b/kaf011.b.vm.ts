@@ -14,6 +14,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
     export class Kaf011BViewModel{
 
         appType: KnockoutObservable<number> = ko.observable(AppType.COMPLEMENT_LEAVE_APPLICATION);
+		applicationCommon: KnockoutObservable<Application> = ko.observable(new Application());
         appDispInfoStartupOutput: any;
         application: KnockoutObservable<Application>;
         approvalReason: KnockoutObservable<string>;
@@ -44,7 +45,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 			vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             params.eventUpdate(vm.update.bind(vm));
             params.eventReload(vm.reload.bind(vm));
-			if(vm.application().appID()!= null){
+			if(vm.application().appID()!= null && params.appType() == AppType.COMPLEMENT_LEAVE_APPLICATION){
 				vm.loadData();
 			}			
         }
