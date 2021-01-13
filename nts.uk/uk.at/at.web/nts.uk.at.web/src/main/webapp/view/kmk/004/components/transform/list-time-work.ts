@@ -209,7 +209,7 @@ module nts.uk.at.view.kmk004.components {
 			const empInput = { employmentCode: vm.selectedId(), workType: DEFOR_TYPE, year: vm.selectedYear() };
 			const shaInput = { sId: vm.selectedId(), workType: DEFOR_TYPE, year: vm.selectedYear() };
 
-			if (!vm.selectedId) {
+			if (vm.selectedId() == '') {
 				return;
 			}
 

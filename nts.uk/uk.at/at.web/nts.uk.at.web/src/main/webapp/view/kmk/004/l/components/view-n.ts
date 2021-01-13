@@ -228,9 +228,10 @@ module nts.uk.at.view.kmk004.l {
 
 		getBtnContent() {
 			const vm = this;
-			if(vm.selectedId()) {
+			if (vm.selectedId() == '') {
 				return;
 			}
+			
 			vm.$ajax(KMK004N_API.EMP_GET_BASIC_SETTING + "/" + vm.selectedId()).done((data: any) => {
 				if (data.deforLaborTimeEmpDto != null && data.empDeforLaborMonthActCalSetDto != null) {
 					vm.btn_text('KMK004_341');
