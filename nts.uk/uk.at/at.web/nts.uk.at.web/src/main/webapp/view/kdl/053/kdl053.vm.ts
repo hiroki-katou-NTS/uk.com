@@ -8,10 +8,10 @@ module nts.uk.at.view.kdl053 {
     };
     
     @bean()
-    class Kdl053ViewModel extends ko.ViewModel {		
-        period: string = "";
-        isRegistered: KnockoutObservable<boolean> = ko.observable(true);
+    class Kdl053ViewModel extends ko.ViewModel {
+        hasError: KnockoutObservable<boolean> = ko.observable(true);
         registrationErrorList: KnockoutObservable<any> = ko.observable([]);
+        registrationErrorListCsv: KnockoutObservable<any> = ko.observable([]);
         constructor(params: any) {
             super();
             const self = this;
@@ -19,11 +19,11 @@ module nts.uk.at.view.kdl053 {
         }
         loadScheduleRegisterErr(): void {
             const self = this;
-
-            let data = getShared('dataShareDialogKDL053');
-            let errorRegistrationList: any = [];
+            let data = getShared('dataShareDialogKDL053');           
             let errorRegistrationListTmp = data.errorRegistrationList;
             let employeeIds = data.employeeIds;
+            let errorRegistrationList: any = [], errorRegistrationListCsv: any =[];
+
             _.each(employeeIds, id =>{      
                 let temp: any = [];
                 _.each(errorRegistrationListTmp, err => {
@@ -31,37 +31,38 @@ module nts.uk.at.view.kdl053 {
                         temp.push(err);
                     }
                 })               
-                // _.sortBy(temp, item => item.date);
                 errorRegistrationList = _.union(errorRegistrationList, _.sortBy(temp, item => item.date));
-
             });
-            self.isRegistered(data.isRegistered == 1);        
+
+            self.hasError(data.isRegistered == 1);        
             _.each(errorRegistrationList, errorLog =>{
                 switch (self.getDayfromDate(errorLog.date)){
                     case 0: 
-                        errorLog.date = '<span style="color:red">'+ errorLog.date +'(日)' + '</span>';
+                        errorLog.dateCss = '<span style="color:red">'+ errorLog.date +'(日)' + '</span>';
                         break;
                     case 1: 
-                        errorLog.date = '<span>'+ errorLog.date +'(月)'+ '</span>';
+                        errorLog.dateCss = '<span>'+ errorLog.date +'(月)'+ '</span>';
                         break;
                     case 2: 
-                        errorLog.date = '<span>'+ errorLog.date +'(火)'+ '</span>';
+                        errorLog.dateCss = '<span>'+ errorLog.date +'(火)'+ '</span>';
                         break;
                     case 3: 
-                        errorLog.date = '<span>'+ errorLog.date +'(水)'+ '</span>';
+                        errorLog.dateCss = '<span>'+ errorLog.date +'(水)'+ '</span>';
                         break;
                     case 4: 
-                        errorLog.date = '<span>'+ errorLog.date +'(木)'+ '</span>';
+                        errorLog.dateCss = '<span>'+ errorLog.date +'(木)'+ '</span>';
                         break;
                     case 5: 
-                        errorLog.date = '<span>'+ errorLog.date +'(金)'+ '</span>';
+                        errorLog.dateCss = '<span>'+ errorLog.date +'(金)'+ '</span>';
                         break;
                     case 6: 
-                        errorLog.date = '<span style="color:blue">'+ errorLog.date +'(土)' + '</span>';
+                        errorLog.dateCss = '<span style="color:blue">'+ errorLog.date +'(土)' + '</span>';
                         break;                    
                 }
             })
-            let listIds: Array<any> = _.map(errorRegistrationList, item => { return item.errId });            
+
+            let listIds: Array<any> = _.map(errorRegistrationList, item => { return item.errId }); 
+
             this.$blockui("invisible");
             self.$ajax(Paths.GET_ATENDANCENAME_BY_IDS,listIds).done((data: Array<any>)=>{
                 if(data && data.length > 0){
@@ -76,7 +77,9 @@ module nts.uk.at.view.kdl053 {
                             }                           
                         })
                     })      
-                    self.registrationErrorList(errorRegistrationList);             
+                    self.registrationErrorListCsv(errorRegistrationList);
+                    self.registrationErrorList(errorRegistrationList);          
+
                 }                
                 $("#grid").igGrid({
                     width: "780px",
@@ -89,7 +92,7 @@ module nts.uk.at.view.kdl053 {
                     columns: [
                         { headerText: "STT", key: "id", dataType: "number", hidden: true },
                         { headerText: getText('KDL053_5'), key: "employeeCdName", dataType: "string", width: "25%" },                          
-                        { headerText: getText('KDL053_6'), key: "date", dataType: "string", width: "16%" },
+                        { headerText: getText('KDL053_6'), key: "dateCss", dataType: "string", width: "16%" },
                         { headerText: getText('KDL053_7'), key: "errName", dataType: "string", width: "18%" },
                         { headerText: getText('KDL053_8'), key: "errMsg", width:"35%" }                                   
                     ],
@@ -101,15 +104,16 @@ module nts.uk.at.view.kdl053 {
                         }
                     ]
                 });
+                self.$blockui("hide");
             })
             .always(() => {
-                self.$blockui("clear");
+                self.$blockui("hide");
             });
         }
         exportCsv(): void {
             const self = this;
             self.$blockui("invisible"); 
-            nts.uk.request.exportFile(Paths.EXPORT_CSV, self.registrationErrorList()).always(() => {
+            nts.uk.request.exportFile(Paths.EXPORT_CSV, self.registrationErrorListCsv()).always(() => {
                 self.$blockui("clear");
             });
         }
@@ -125,37 +129,5 @@ module nts.uk.at.view.kdl053 {
         }
 
         
-    }
-
-    interface IScheduleRegisterErr {
-        /** コード／名称*/
-        employeeCdName: string;
-
-        date: string;
-
-        errName: string;
-
-        errMsg: string;
-       
-    }
-
-    class ScheduleRegisterErr{
-        employeeCdName: string;
-        date: string;
-        errName: string;
-        errMsg: string;
-        // constructor(scheduleRegisterErr: IScheduleRegisterErr) {
-        //     this.employeeCdName = scheduleRegisterErr.employeeCdName;
-        //     this.date = scheduleRegisterErr.date;
-        //     this.errName = scheduleRegisterErr.errName;
-        //     this.errMsg = scheduleRegisterErr.errMsg;
-        // }
-
-        constructor(employeeCdName: string, date: string, errName: string, errMsg: string) {
-            this.employeeCdName = employeeCdName;
-            this.date = date;
-            this.errName = errName;
-            this.errMsg = errMsg;
-        }
     }
 }

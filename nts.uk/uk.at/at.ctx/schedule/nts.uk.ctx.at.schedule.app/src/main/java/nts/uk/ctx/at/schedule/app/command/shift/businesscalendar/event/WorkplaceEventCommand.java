@@ -20,4 +20,12 @@ public class WorkplaceEventCommand {
 	public String eventName;
 	
 	public String state;
+
+	public WorkplaceEventCommand(String workplaceId, GeneralDate date, String eventName, String state) {
+		super();
+		this.workplaceId = workplaceId;
+		this.date = date;
+		this.eventName = eventName;
+		this.state = state;
+	}
 }

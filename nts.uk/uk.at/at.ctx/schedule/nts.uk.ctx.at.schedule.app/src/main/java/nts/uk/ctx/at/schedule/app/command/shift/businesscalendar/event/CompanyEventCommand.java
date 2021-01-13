@@ -18,4 +18,13 @@ public class CompanyEventCommand {
 	public String eventName;
 
 	public String state;
+
+	public CompanyEventCommand(GeneralDate date, String eventName, String state) {
+		super();
+		this.date = date;
+		this.eventName = eventName;
+		this.state = state;
+	}
+	
+	
 }

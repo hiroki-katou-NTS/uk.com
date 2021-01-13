@@ -40,7 +40,7 @@ public class RegistrationErrorListExportService extends ExportService<List<Regis
 		}
 		List<String> header = this.getTextHeader();
 		String dateTime = GeneralDateTime.now().toString().replaceAll("[/:\\s]", "");
-		String fileName = "KDL053_" + dateTime + ".csv";
+		String fileName = TextResource.localize("KDL053_1") + "_" + dateTime + ".csv";
 		List<Map<String, Object>> dataSource = errorListDtos.stream()
 				.map(errorLine -> {
 					Map<String, Object> row = new HashMap<>();
