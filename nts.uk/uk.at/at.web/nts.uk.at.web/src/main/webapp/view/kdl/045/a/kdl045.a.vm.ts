@@ -202,7 +202,9 @@ module nts.uk.at.view.kdl045.a {
                     startTime: self.employee().employeeInfo.workScheduleDto != null && self.employee().employeeInfo.workScheduleDto.startTime2 != '' ? self.employee().employeeInfo.workScheduleDto.startTime2  : null, 
                     endTime: self.employee().employeeInfo.workScheduleDto != null && self.employee().employeeInfo.workScheduleDto.endTime2 != '' ? self.employee().employeeInfo.workScheduleDto.endTime2 : null});
                 self.isShowTimeRange2 = (self.employee().targetInfor == 1 ? true : false);
-                if(self.employee().employeeInfo.workScheduleDto == null || (self.employee().employeeInfo.workScheduleDto.startTime2 == 0 || self.employee().employeeInfo.workScheduleDto.endTime2 == 0)){
+                if(self.employee().employeeInfo.workScheduleDto == null || (self.employee().employeeInfo.workScheduleDto.startTime2 == 0 || self.employee().employeeInfo.workScheduleDto.endTime2 == 0)
+					|| (self.employee().employeeInfo.workScheduleDto.startTime2 == null || self.employee().employeeInfo.workScheduleDto.endTime2 == null)
+					){
                     self.isEnableA5_9(false);
                 }
                 
@@ -610,7 +612,9 @@ module nts.uk.at.view.kdl045.a {
                                     }
                                 }
                             });
-                        }
+                        }else{
+							self.workStyle(null);
+						}
                     }
                 });
             }
@@ -957,7 +961,8 @@ module nts.uk.at.view.kdl045.a {
                                 workTypeName : self.workTypeName(),//勤務種類名称
                                 workTimeName : self.workTimeName(), //就業時間帯名称
                                 workType : self.workTimeForm(),//勤務タイプ
-                                fixBreakTime : self.fixBreakTime()
+                                fixBreakTime : self.fixBreakTime(),
+								isHoliday : self.workStyle() == 0 ? true : false
                                 
                             };
                         

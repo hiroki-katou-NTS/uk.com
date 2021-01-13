@@ -109,7 +109,7 @@ public class GetFixedWorkInformation {
 			// 1.5 出勤日区分 == 1日休日系
 			if (dayAttr == AttendanceDayAttr.HOLIDAY) {
 				inforDto = new FixedWorkInforDto(null, null, null, new ArrayList<>(), null, null,
-						type.get().getAbbreviationName().v(), null, null, null, null, null, null);
+						type.get().getAbbreviationName().v(), null, null, null, null, true, false);
 				inforDtos.add(inforDto);
 			} else {
 				lstNo = workInformation.getChangeableWorkingTimezones(impl);
@@ -210,12 +210,12 @@ public class GetFixedWorkInformation {
 					Integer fixBreakTime = brkTime.isPresent() ? brkTime.get().isFixed() == true ? 1 : 0 : null;
 					inforDto = new FixedWorkInforDto(workTimeName, coreStartTime, coreEndTime, lstOverTime, startTimeRange1,
 							endTimeRange1, type.get().getAbbreviationName().v(), startTimeRange2, endTimeRange2,
-							fixBreakTime, timeForm.value,dayAttr.value == 0 ? false : true, workTimeSetting.value == 2 ? false : true);
+							fixBreakTime, timeForm.value,dayAttr.value == 0 ? true : false, workTimeSetting.value == 2 ? false : true);
 					inforDtos.add(inforDto);
 			} else {
 				// 1.7 List<勤務NOごとの変更可能な勤務時間帯>.isEmpty
 				inforDto = new FixedWorkInforDto(null, null, null, new ArrayList<>(), null, null,
-						type.get().getAbbreviationName().v(), null, null, null, null, null, null);
+						type.get().getAbbreviationName().v(), null, null, null, null, dayAttr.value == AttendanceDayAttr.HOLIDAY.value ? true : false, false);
 				inforDtos.add(inforDto);
 			}
 		}

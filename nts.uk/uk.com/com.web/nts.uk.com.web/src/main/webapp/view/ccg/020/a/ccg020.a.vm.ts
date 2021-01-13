@@ -44,7 +44,7 @@ module nts.uk.com.view.ccg020.a {
   </div>
   <div id="message" class="cf">
     <i class="img-ccg020" id="warning-msg" data-bind="ntsIcon: { no: 163, width: 20, height: 20 }, click: addEventClickWarningBtn, visible: isDisplayWarningMsg"></i>
-    <i class="img-ccg020" id="notice-msg" data-bind="ntsIcon: { no: 164, width: 20, height: 20 }"></i>
+    <i class="img-ccg020" id="notice-msg" data-bind="ntsIcon: { no: 164, width: 20, height: 20 }, visible: isEmployee"></i>
     <i class="img-ccg020" id="new-notice-msg" data-bind="ntsIcon: { no: 165, width: 10, height: 10 }, visible: isDisplayNewNotice"></i>
   </div></div>`
   })
@@ -60,6 +60,7 @@ module nts.uk.com.view.ccg020.a {
     isDisplayWarningMsg: KnockoutObservable<boolean> = ko.observable(false);
     isDisplayNewNotice: KnockoutObservable<boolean> = ko.observable(false);
     avatarInfo: KnockoutObservable<AvatarDto> = ko.observable(null);
+    isEmployee: KnockoutComputed<boolean> = ko.computed(() => __viewContext.user.isEmployee);
 
     created() {
       const vm = this;
@@ -317,6 +318,10 @@ module nts.uk.com.view.ccg020.a {
 
     private isDisplayNewNoticeFunc() {
       const vm = this;
+      if (!vm.isEmployee()) {
+        $('#ccg020').width(260);
+        return;
+      }
       vm.$blockui('grayout');
       vm.$ajax('com', API.isDisplayNewNotice)
         .then((response) => {
