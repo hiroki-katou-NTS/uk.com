@@ -156,10 +156,12 @@ module nts.uk.at.view.kaf011 {
 		
 		convertTimeToString(data: any){ 
 			let self = this;
-			if(data.first){
+			if(data.first && data.first.start){
 				self.workTimeDisplay(data.selectedWorkTimeCode + ' ' + 
 									data.selectedWorkTimeName + ' ' + 
 									moment(Math.floor(data.first.start / 60),'mm').format('mm') + ":" + moment(data.first.start % 60,'mm').format('mm') + getText('KAF011_37') + moment(Math.floor(data.first.end / 60),'mm').format('mm') + ":" + moment(data.first.end % 60,'mm').format('mm'));
+			}else{
+				self.workTimeDisplay("");
 			}         
 		}
 		
