@@ -4023,7 +4023,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		public checkTimeInfo(index: any, worktypeCode: any, worktimeCode: any, startTime1: any, startTime2: any, endTime1: any, endTime2: any, columnKey: string): JQueryPromise<any> {
 			let self = this;
 			let dataFilter = self.dataScreen003A().employeeInfo[index];
-			block.invisible();
 			let dfd = $.Deferred<any>(), command: any = {
 				workType: worktypeCode.trim(),
 				workTime: worktimeCode.trim(),
@@ -4038,6 +4037,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				(columnKey === "endTime1" /*&& endTime1 != "" && startTime1 != ""*/) ||
 				(columnKey === "endTime2" /*&& endTime2 != "" && startTime2 != ""*/)) {
 				service.checkTimeIsIncorrect(command).done(function(result) {
+					block.invisible();
 					let errors = [];
 					for (let i = 0; i < result.length; i++) {
 						if (!result[i].check) {
