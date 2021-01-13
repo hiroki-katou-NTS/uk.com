@@ -1289,10 +1289,12 @@ export class KafS06AComponent extends KafS00ShrComponent {
                 }
             })
             .then((res: any) => {
-                let model = {} as Model;
-                model.appAbsenceStartInfoDto = res.data;
-                self.model = model;
-                self.bindOpenWorkTime(); 
+                if (res) {
+                    let model = {} as Model;
+                    model.appAbsenceStartInfoDto = res.data;
+                    self.model = model;
+                    self.bindOpenWorkTime(); 
+                }
             })
             .catch((res: any) => {
                 self.handleErrorCustom(res).then((result) => {
