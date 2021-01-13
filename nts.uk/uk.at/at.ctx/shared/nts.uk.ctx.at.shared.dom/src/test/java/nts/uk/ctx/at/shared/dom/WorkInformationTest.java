@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,8 +29,10 @@ import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo.ClockAreaAtr;
 import nts.uk.ctx.at.shared.dom.worktime.WorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -568,7 +571,7 @@ public class WorkInformationTest {
 			}
 		};
 
-		assertThat(workInformation.getWorkInfoAndTimeZone(require).isPresent()).isFalse();
+		assertThat( workInformation.getWorkInfoAndTimeZone(require) ).isEmpty();
 	}
 
 	@Test
@@ -603,39 +606,57 @@ public class WorkInformationTest {
 			}
 		};
 
-		assertThat(workInformation.getWorkInfoAndTimeZone(require).isPresent()).isFalse();
+		assertThat( workInformation.getWorkInfoAndTimeZone(require) ).isEmpty();
 	}
 
 	@Test
-	public void getWorkInfoAndTimeZone_4() {
+	public void getWorkInfoAndTimeZone_successfully(
+			@Injectable WorkType workType,
+			@Injectable WorkTimeSetting workTimeSetting,
+			@Injectable WorkSetting workSetting,
+			@Injectable PredetemineTimeSetting predetemineTimeSetting) {
 		WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimeCode");
 
-		List<TimezoneUse> listTimezoneUse = new ArrayList<>();
-		listTimezoneUse.add(new TimezoneUse(new TimeWithDayAttr(1), new TimeWithDayAttr(2), UseSetting.USE, 2));
-		listTimezoneUse.add(new TimezoneUse(new TimeWithDayAttr(2), new TimeWithDayAttr(3), UseSetting.USE, 1));
-		listTimezoneUse.add(new TimezoneUse(new TimeWithDayAttr(4), new TimeWithDayAttr(5), UseSetting.NOT_USE, 3));
+		List<TimezoneUse> listTimezoneUse = new ArrayList<>( Arrays.asList(
+				new TimezoneUse(new TimeWithDayAttr(1), new TimeWithDayAttr(2), UseSetting.USE, 1),
+				new TimezoneUse(new TimeWithDayAttr(3), new TimeWithDayAttr(4), UseSetting.USE, 2),
+				new TimezoneUse(new TimeWithDayAttr(5), new TimeWithDayAttr(6), UseSetting.USE, 3)
+				));
+		
 		new Expectations() {
 			{
-				require.getWorkType(workInformation.getWorkTypeCode().v());
-				result = Optional.of(new WorkType());
+				require.getWorkType(anyString);
+				result = Optional.of(workType);
+				
+				workType.chechAttendanceDay();
+				result = AttendanceDayAttr.HALF_TIME_AM;
 
 				require.getWorkTime(anyString);
-				result = Optional.of(new WorkTimeSetting());
-
-				require.getPredeterminedTimezone(anyString, anyString, null).getTimezones();
+				result = Optional.of(workTimeSetting);
+				
+				workTimeSetting.getWorkSetting(require);
+				result = workSetting;
+				
+				workSetting.getPredetermineTimeSetting(require);
+				result = predetemineTimeSetting;
+				
+				predetemineTimeSetting.getTimezoneByAmPmAtr(AmPmAtr.AM);
 				result = listTimezoneUse;
-
 			}
 		};
-		Optional<WorkInfoAndTimeZone>  result = workInformation.getWorkInfoAndTimeZone(require);
-		assertThat(result.isPresent()).isTrue();
-		assertThat(result.get().getTimeZones().size()).isEqualTo(listTimezoneUse.size()-1);
-		//workNo 1
-		assertThat(result.get().getTimeZones().get(0).getStart()).isEqualTo(listTimezoneUse.get(1).getStart());
-		assertThat(result.get().getTimeZones().get(0).getEnd()).isEqualTo(listTimezoneUse.get(1).getEnd());
-		//workNo 2
-		assertThat(result.get().getTimeZones().get(1).getStart()).isEqualTo(listTimezoneUse.get(0).getStart());
-		assertThat(result.get().getTimeZones().get(1).getEnd()).isEqualTo(listTimezoneUse.get(0).getEnd());
+		Optional<WorkInfoAndTimeZone> result = workInformation.getWorkInfoAndTimeZone(require);
+		
+		assertThat( result.get().getWorkType() ).isEqualTo(workType );
+		assertThat( result.get().getWorkTime().get() ).isEqualTo( workTimeSetting );
+		assertThat( result.get().getTimeZones() )
+			.extracting( 
+					d -> d.getStart().v(),
+					d -> d.getEnd().v() )
+			.containsExactly(
+					tuple( 1, 2),
+					tuple( 3, 4),
+					tuple( 5, 6));
+		
 	}
 
 
@@ -1045,6 +1066,51 @@ public class WorkInformationTest {
 		assertThat( result ).isPresent();
 		assertThat( result.get() ).isEqualTo( workSetting );
 
+	}
+	
+	@Test
+	public void testEquals_differentWorkType() {
+		
+		WorkInformation target = new WorkInformation(new WorkTypeCode("k01"), new WorkTimeCode("s01"));
+		WorkInformation otherObject = new WorkInformation(new WorkTypeCode("k02"), new WorkTimeCode("s01"));
+		
+		assertThat( target.isSame(otherObject) ).isFalse();
+	}
+	
+	@Test
+	public void testEquals_sameWorkType_workTimesAllEmpty() {
+		
+		WorkInformation target = new WorkInformation(new WorkTypeCode("k01"), null );
+		WorkInformation otherObject = new WorkInformation(new WorkTypeCode("k01"), null );
+		
+		assertThat( target.isSame(otherObject) ).isTrue();
+	}
+	
+	@Test
+	public void testEquals_sameWorkType_workTimeNotMatch_case1() {
+		
+		WorkInformation target = new WorkInformation(new WorkTypeCode("k01"), new WorkTimeCode("s01") );
+		WorkInformation otherObject = new WorkInformation(new WorkTypeCode("k01"), null );
+		
+		assertThat( target.isSame(otherObject) ).isFalse();
+	}
+	
+	@Test
+	public void testEquals_sameWorkType_workTimeNotMatch_case2() {
+		
+		WorkInformation target = new WorkInformation(new WorkTypeCode("k01"), null );
+		WorkInformation otherObject = new WorkInformation(new WorkTypeCode("k01"), new WorkTimeCode("s01") );
+		
+		assertThat( target.isSame(otherObject) ).isFalse();
+	}
+	
+	@Test
+	public void testEquals_sameWorkType_sameWorkTime() {
+		
+		WorkInformation target = new WorkInformation(new WorkTypeCode("k01"), new WorkTimeCode("s01") );
+		WorkInformation otherObject = new WorkInformation(new WorkTypeCode("k01"), new WorkTimeCode("s01") );
+		
+		assertThat( target.isSame(otherObject) ).isTrue();
 	}
 
 

@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;

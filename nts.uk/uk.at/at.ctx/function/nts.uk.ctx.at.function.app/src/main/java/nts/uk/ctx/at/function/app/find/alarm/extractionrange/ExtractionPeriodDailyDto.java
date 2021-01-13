@@ -9,19 +9,19 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.StartSpecify;
 public class ExtractionPeriodDailyDto {
 
 	private String extractionId;
-	
+
 	private int extractionRange;
-	
+
 	private int strSpecify;
 
 	private Integer strPreviousDay;
-	
+
 	private Integer strMakeToDay;
 
 	private Integer strDay;
 
 	private Integer strPreviousMonth;
-	
+
 	private Integer strCurrentMonth;
 
 	private Integer strMonth;
@@ -29,21 +29,21 @@ public class ExtractionPeriodDailyDto {
 	private int endSpecify;
 
 	private Integer endPreviousDay;
-	
+
 	private Integer endMakeToDay;
 
 	private Integer endDay;
 
 	private Integer endPreviousMonth;
-	
+
 	private Integer endCurrentMonth;
 
 	private Integer endMonth;
-	
-	
+
+
 	public static ExtractionPeriodDailyDto fromDomain(ExtractionPeriodDaily domain){
 		ExtractionPeriodDailyDto dto = new  ExtractionPeriodDailyDto();
-		
+
 		dto.setExtractionId(domain.getExtractionId());
 		dto.setExtractionRange(domain.getExtractionRange().value);
 		//set start date
@@ -68,7 +68,7 @@ public class ExtractionPeriodDailyDto {
 			dto.setEndCurrentMonth(domain.getEndDate().getEndMonth().get().isCurentMonth()==true?1:0);
 			dto.setEndMonth(domain.getEndDate().getEndMonth().get().getMonth());
 		}
-		
+
 		return dto;
 	}
 }

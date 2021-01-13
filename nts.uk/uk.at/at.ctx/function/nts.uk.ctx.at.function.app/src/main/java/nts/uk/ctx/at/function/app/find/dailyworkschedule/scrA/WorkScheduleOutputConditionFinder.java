@@ -89,7 +89,6 @@ public class WorkScheduleOutputConditionFinder {
 		GeneralDate systemDate = GeneralDate.today();
 		String employeeId = AppContexts.user().employeeId();
 		String roleId = AppContexts.user().roles().forAttendance();
-		
 		//「ログイン者が担当者か判断する」で就業担当者かチェックする
 		// 出力項目の設定ボタン(A7_6)の活性制御を行う
 		if (roleExportRepoAdapter.getRoleWhetherLogin().isEmployeeCharge()) {

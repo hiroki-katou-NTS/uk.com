@@ -46,7 +46,7 @@ public class GrantWork {
 	 * 端数処理
 	 * @param annualLeaveSet 年休設定
 	 */
-	public void roundGrantDays(AnnualPaidLeaveSetting annualLeaveSet){
+	public void roundGrantDays(AnnualPaidLeaveSetting annualLeaveSet ,MaxSettingPeriodWork maxSetting){
 
 		// 設定事前チェック
 		val manageAnnualSet = annualLeaveSet.getManageAnnualSetting();
@@ -73,9 +73,9 @@ public class GrantWork {
 		}
 		
 		// 付与日数と付与上限日数を比較
-		if (manageAnnualSet.getMaxGrantDay() != null){
-			if (grantDays > manageAnnualSet.getMaxGrantDay().v()){
-				grantDays = manageAnnualSet.getMaxGrantDay().v();
+		if (maxSetting.getMaxSetting().getMaxDaysCumulation() != null){
+			if (grantDays > maxSetting.getMaxSetting().getMaxDaysCumulation().v()){
+				grantDays = maxSetting.getMaxSetting().getMaxDaysCumulation().v().doubleValue();
 			}
 		}
 		

@@ -141,6 +141,7 @@ module nts.uk.at.ksm008.c {
                                 let lstBanWorkTogether = _.map(banWorkTogether, function (item: any) {
                                     return new ItemModel(item, vm);
                                 });
+                                lstBanWorkTogether = _.sortBy(lstBanWorkTogether, ["code"]);
                                 vm.listBanWorkTogether(lstBanWorkTogether);
                                 vm.selectedProhibitedCode(lstBanWorkTogether[0].code);
                             } else {
@@ -173,6 +174,7 @@ module nts.uk.at.ksm008.c {
                             workplaceName: ''
                         };
                     });
+                    listEmployee = _.orderBy(listEmployee, ['code'],['asc']);
                     vm.selectableEmployeeList(listEmployee);
                     vm.lstEmployeeSelectableBegin(listEmployee);
                 } else {
@@ -191,6 +193,7 @@ module nts.uk.at.ksm008.c {
                     let listBanWork = _.map(res, function (i: any) {
                         return new ItemModel(i, vm);
                     });
+                    listBanWork = _.sortBy(listBanWork, ["code"]);
                     vm.listBanWorkTogether(listBanWork);
                 } else {
                     vm.listBanWorkTogether([]);
@@ -274,14 +277,12 @@ module nts.uk.at.ksm008.c {
             _.each(selectedableCode, function (item: any) {
 
                 let selectedItem = _.filter(currentSelectableList, (i: any) => i.code == item);
-
                 _.remove(currentSelectableList, (i: any) => i.code == item);
-
                 currentTagretList.push(selectedItem[0]);
 
-                vm.selectableEmployeeList(currentSelectableList);
-                vm.targetEmployeeList(currentTagretList);
             });
+            vm.selectableEmployeeList(_.orderBy(currentSelectableList, ['code'],['asc']));
+            vm.targetEmployeeList(currentTagretList);
 
         }
 
@@ -299,14 +300,12 @@ module nts.uk.at.ksm008.c {
             _.each(selectedTargetList, function (item: any) {
 
                 let selectedItem = _.filter(currentTagretList, (i: any) => i.code == item);
-
                 _.remove(currentTagretList, (i: any) => i.code == item);
-
                 currentSelectableList.push(selectedItem[0]);
 
-                vm.selectableEmployeeList(currentSelectableList);
-                vm.targetEmployeeList(currentTagretList)
             });
+            vm.selectableEmployeeList(_.orderBy(currentSelectableList, ['code'],['asc']));
+            vm.targetEmployeeList(currentTagretList);
         }
 
         swithchNewMode() {
@@ -324,7 +323,9 @@ module nts.uk.at.ksm008.c {
             vm.selectableEmployeeList(vm.lstEmployeeSelectableBegin());
             vm.targetSelectedCodes([]);
             vm.selectedableCodes([]);
-            $('#C7_2').focus();
+            vm.$nextTick(() => {
+                $('#C7_2').focus();
+            });
         }
 
         swithchUpdateMode(data: any) {
@@ -351,13 +352,16 @@ module nts.uk.at.ksm008.c {
                         listTarget.push(currentEmployee[0]);
                     }
                 });
-                vm.selectableEmployeeList(listSelectable);
-                vm.targetEmployeeList(listTarget);
+                vm.selectableEmployeeList(_.orderBy(listSelectable, ['code'],['asc']));
+                vm.targetEmployeeList(_.orderBy(listTarget, ['code'],['asc']));
             }
 
             vm.targetSelectedCodes([]);
             vm.selectedableCodes([]);
-            $('#C7_3').focus();
+            vm.$nextTick(() => {
+                $('#C7_3').focus();
+            })
+
         }
 
         register() {
@@ -461,12 +465,13 @@ module nts.uk.at.ksm008.c {
                     };
 
                     let index = _.findIndex(vm.listBanWorkTogether(), i => i.code == vm.selectedProhibitedCode());
+                    const lastIndex = _.findLastIndex(vm.listBanWorkTogether());
 
                     vm.$ajax(API.delete, data).done(() => {
                         vm.$dialog.info({messageId: "Msg_16"}).then(() => {
                             vm.getBanWorkListByCode().then(() => {
                                 if (vm.listBanWorkTogether().length) {
-                                    let newIndex = index == 0 ? 0 : index;
+                                    let newIndex = index == lastIndex ? lastIndex - 1 : index;
                                     vm.selectedProhibitedCode(vm.listBanWorkTogether()[newIndex].code);
                                 } else {
                                     vm.swithchNewMode();

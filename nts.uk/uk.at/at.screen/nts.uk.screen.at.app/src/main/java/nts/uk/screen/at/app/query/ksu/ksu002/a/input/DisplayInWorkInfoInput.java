@@ -20,6 +20,6 @@ public class DisplayInWorkInfoInput {
 	public GeneralDate endDate;
 	
 	public boolean getActualData() {
-		return true;
+		return false;
 	}
 }

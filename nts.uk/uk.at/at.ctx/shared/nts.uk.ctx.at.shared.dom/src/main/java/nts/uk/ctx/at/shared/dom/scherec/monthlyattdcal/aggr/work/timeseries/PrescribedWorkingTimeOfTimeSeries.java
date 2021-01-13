@@ -25,6 +25,9 @@ public class PrescribedWorkingTimeOfTimeSeries implements Serializable{
 	/** 所定労働時間 */
 	private WorkScheduleTimeOfDaily prescribedWorkingTime;
 	
+	/** 計画所定労働時間 */
+	private AttendanceTime schedulePrescribedLaborTime;
+	
 	/**
 	 * コンストラクタ
 	 */
@@ -36,18 +39,20 @@ public class PrescribedWorkingTimeOfTimeSeries implements Serializable{
 						new AttendanceTime(0),
 						new AttendanceTime(0),
 						new AttendanceTime(0)),
-				new AttendanceTime(0),
 				new AttendanceTime(0));
+		this.schedulePrescribedLaborTime = new AttendanceTime(0);
 	}
 
 	/**
 	 * ファクトリー
 	 * @param ymd 年月日
 	 * @param prescribedWorkingTime 日別実績の勤務予定時間
+	 * @param schedulePrescribedLaborTime 計画所定労働時間
 	 * @return 時系列の所定労働時間
 	 */
 	public static PrescribedWorkingTimeOfTimeSeries of(
-			GeneralDate ymd, WorkScheduleTimeOfDaily prescribedWorkingTime){
+			GeneralDate ymd, WorkScheduleTimeOfDaily prescribedWorkingTime,
+			AttendanceTime schedulePrescribedLaborTime){
 		
 		val domain = new PrescribedWorkingTimeOfTimeSeries(ymd);
 		if (prescribedWorkingTime != null){
@@ -66,9 +71,9 @@ public class PrescribedWorkingTimeOfTimeSeries implements Serializable{
 			
 			domain.prescribedWorkingTime = new WorkScheduleTimeOfDaily(
 					workScheduleTime,
-					(prescribedWorkingTime.getSchedulePrescribedLaborTime() != null ? prescribedWorkingTime.getSchedulePrescribedLaborTime() : new AttendanceTime(0)),
 					(prescribedWorkingTime.getRecordPrescribedLaborTime() != null ? prescribedWorkingTime.getRecordPrescribedLaborTime() : new AttendanceTime(0)));
 		}
+		domain.schedulePrescribedLaborTime = schedulePrescribedLaborTime;
 		return domain;
 	}
 }

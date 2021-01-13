@@ -7,21 +7,22 @@ import java.util.List;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecordSetMemento;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateItemAttributes;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.ItemName;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnstAttndRecItem;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutframe;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnmtRptWkAtdOutatd;
+import nts.uk.shr.com.context.AppContexts;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class JpaCalculateAttendanceRecordSetMemento.
  *
  * @author tuannt-nws
  */
 public class JpaCalculateAttendanceRecordSetMemento implements CalculateAttendanceRecordSetMemento {
-	/** The kfnst attnd rec. */
-	private KfnstAttndRec kfnstAttndRec;
+	
+	/** The kfnmt rpt wk atd outframe. */
+	private KfnmtRptWkAtdOutframe kfnmtRptWkAtdOutframe;
 	
 	/** The kfnst attnd rec items. */
-	private List<KfnstAttndRecItem> kfnstAttndRecItems;
+	private List<KfnmtRptWkAtdOutatd> kfnmtRptWkAtdOutatd;
 	
 	/** The add formula type. */
 	private final int ADD_FORMULA_TYPE = 1;
@@ -32,12 +33,12 @@ public class JpaCalculateAttendanceRecordSetMemento implements CalculateAttendan
 	/**
 	 * Instantiates a new jpa calculate attendance record set memento.
 	 *
-	 * @param kfnstAttndRec            the kfnst attnd rec
+	 * @param kfnmtRptWkAtdOutframe            the kfnst attnd rec
 	 */
-	public JpaCalculateAttendanceRecordSetMemento(KfnstAttndRec kfnstAttndRec, List<KfnstAttndRecItem> kfnstAttndRecItems ) {
+	public JpaCalculateAttendanceRecordSetMemento(KfnmtRptWkAtdOutframe kfnmtRptWkAtdOutframe, List<KfnmtRptWkAtdOutatd> kfnmtRptWkAtdOutatd ) {
 		super();
-		this.kfnstAttndRec = kfnstAttndRec;
-		this.kfnstAttndRecItems = kfnstAttndRecItems;
+		this.kfnmtRptWkAtdOutframe = kfnmtRptWkAtdOutframe;
+		this.kfnmtRptWkAtdOutatd = kfnmtRptWkAtdOutatd;
 	}
 
 	/* (non-Javadoc)
@@ -45,7 +46,7 @@ public class JpaCalculateAttendanceRecordSetMemento implements CalculateAttendan
 	 */
 	@Override
 	public void setAttribute(CalculateItemAttributes attribute) {
-		this.kfnstAttndRec.setAttribute(new BigDecimal(attribute.value));
+		this.kfnmtRptWkAtdOutframe.setAttribute(new BigDecimal(attribute.value));
 	}
 
 	/* (non-Javadoc)
@@ -53,7 +54,7 @@ public class JpaCalculateAttendanceRecordSetMemento implements CalculateAttendan
 	 */
 	@Override
 	public void setName(ItemName name) {
-		this.kfnstAttndRec.setItemName(name.v());
+		this.kfnmtRptWkAtdOutframe.setItemName(name.v());
 	}
 
 	/* (non-Javadoc)
@@ -62,18 +63,26 @@ public class JpaCalculateAttendanceRecordSetMemento implements CalculateAttendan
 	@Override
 	public void setAddedItem(List<Integer> idListAdd) {
 		// remove old value
-		this.kfnstAttndRecItems.forEach(e -> {
+		this.kfnmtRptWkAtdOutatd.forEach(e -> {
 			if (e.getFormulaType() == new BigDecimal(ADD_FORMULA_TYPE)) {
-				this.kfnstAttndRecItems.remove(e);
+				this.kfnmtRptWkAtdOutatd.remove(e);
 			}
 		});
 		// add new value
 		idListAdd.forEach(e -> {
 			UID uid = new UID();
-			KfnstAttndRecItem item = new KfnstAttndRecItem(uid.toString(), this.kfnstAttndRec.getId().getCid(),  this.kfnstAttndRec.getId().getColumnIndex(),
-					this.kfnstAttndRec.getId().getExportCd(),  new BigDecimal(ADD_FORMULA_TYPE),  this.kfnstAttndRec.getId().getOutputAtr()
-					,  this.kfnstAttndRec.getId().getPosition(), e);
-			this.kfnstAttndRecItems.add(item);
+			KfnmtRptWkAtdOutatd item = new KfnmtRptWkAtdOutatd();
+			item.setRecordItemId(uid.toString());
+			item.setContractCd(AppContexts.user().contractCode());
+			item.setCid(this.kfnmtRptWkAtdOutframe.getCid());
+			item.setLayoutId(this.kfnmtRptWkAtdOutframe.getId().getLayoutId());
+			item.setColumnIndex(this.kfnmtRptWkAtdOutframe.getId().getColumnIndex());
+			item.setPosition(this.kfnmtRptWkAtdOutframe.getId().getPosition());
+			item.setOutputAtr(this.kfnmtRptWkAtdOutframe.getId().getOutputAtr());
+			item.setTimeItemId(e);
+			item.setFormulaType(new BigDecimal(ADD_FORMULA_TYPE));
+			
+			this.kfnmtRptWkAtdOutatd.add(item);
 		});
 	}
 
@@ -83,18 +92,26 @@ public class JpaCalculateAttendanceRecordSetMemento implements CalculateAttendan
 	@Override
 	public void setSubtractedItem(List<Integer> idListSubtract) {
 		// remove old value
-		this.kfnstAttndRecItems.forEach(e -> {
+		this.kfnmtRptWkAtdOutatd.forEach(e -> {
 			if (e.getFormulaType() == new BigDecimal(SUBTRACT_FORMULA_TYPE)) {
-				this.kfnstAttndRecItems.remove(e);
+				this.kfnmtRptWkAtdOutatd.remove(e);
 			}
 		});
 		// add new value
 		idListSubtract.forEach(e -> {
+			
 			UID uid = new UID();
-			KfnstAttndRecItem item = new KfnstAttndRecItem(uid.toString(), this.kfnstAttndRec.getId().getCid(),  this.kfnstAttndRec.getId().getColumnIndex(),
-					this.kfnstAttndRec.getId().getExportCd(),  new BigDecimal(SUBTRACT_FORMULA_TYPE),  this.kfnstAttndRec.getId().getOutputAtr()
-					,  this.kfnstAttndRec.getId().getPosition(), e);
-			this.kfnstAttndRecItems.add(item);
+			KfnmtRptWkAtdOutatd item = new KfnmtRptWkAtdOutatd();
+			item.setRecordItemId(uid.toString());
+			item.setContractCd(AppContexts.user().contractCode());
+			item.setCid(this.kfnmtRptWkAtdOutframe.getCid());
+			item.setLayoutId(this.kfnmtRptWkAtdOutframe.getId().getLayoutId());
+			item.setColumnIndex(this.kfnmtRptWkAtdOutframe.getId().getColumnIndex());
+			item.setPosition(this.kfnmtRptWkAtdOutframe.getId().getPosition());
+			item.setOutputAtr(this.kfnmtRptWkAtdOutframe.getId().getOutputAtr());
+			item.setTimeItemId(e);
+			item.setFormulaType(new BigDecimal(ADD_FORMULA_TYPE));
+			this.kfnmtRptWkAtdOutatd.add(item);
 		});
 	}
 

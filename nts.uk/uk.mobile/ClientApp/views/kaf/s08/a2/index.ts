@@ -233,6 +233,13 @@ export class KafS08A2Component extends KafS00ShrComponent {
                 endWorkTime: item.opAchievementDetail.opLeaveTime
             };
         });
+        let screenDetails: Array<any> = _.map(vm.businessTripActualContent, function (item: any) {
+            return {
+                date: item.date,
+                workTypeName: item.opAchievementDetail.opWorkTypeName,
+                workTimeName: item.opAchievementDetail.opWorkTimeName
+            };
+        });
         let paramsBusinessTrip = {
             departureTime: vm.derpartureTime,
             returnTime: vm.returnTime,
@@ -242,14 +249,15 @@ export class KafS08A2Component extends KafS00ShrComponent {
         // check before registering application
         vm.$http.post('at', API.checkBeforeApply, {
             businessTripInfoOutputDto: vm.data.businessTripInfoOutput,
-            businessTripDto: paramsBusinessTrip
+            businessTripDto: paramsBusinessTrip,
+            screenDetails
         }).then((res: any) => {
             vm.mode ? vm.registerData() : vm.updateBusinessTrip();
         }).catch((err: any) => {
             vm.$mask('hide');  
             let param;
 
-            if (err.messageId == 'Msg_23' || err.messageId == 'Msg_24' || err.messageId == 'Msg_1912' || err.messageId == 'Msg_1913' ) {
+            if (err.messageId == 'Msg_23' || err.messageId == 'Msg_24' || err.messageId == 'Msg_1912' || err.messageId == 'Msg_1913'  || err.messageId == 'Msg_1685') {
                 err.message = err.parameterIds[0] + err.message;
                 param = err;
 

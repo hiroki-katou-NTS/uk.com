@@ -54,7 +54,6 @@ public class SaveAcquisitionRuleCommandHandler extends CommandHandler<Acquisitio
 				this.vaRepo.update(acquisitionRuleDB);
 			} else {
 				acquisitionRuleCommand.setAnnualHoliday(new AnnualHoliday(false, false, false));
-				acquisitionRuleCommand.setHoursHoliday(new HoursHoliday(false,false));
 				this.vaRepo.create(acquisitionRuleCommand);
 			}
 		} else {

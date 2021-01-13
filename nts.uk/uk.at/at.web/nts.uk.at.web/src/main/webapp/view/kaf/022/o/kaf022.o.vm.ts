@@ -37,9 +37,9 @@ module nts.uk.at.view.kaf022.o.viewmodel {
             self.selectedFlexWorkAtr = ko.observable(0);
 
             self.overtimeAppOptions = ko.observableArray([
-                new ItemModel(OVERTIME.EARLY, "早出残業"),
-                new ItemModel(OVERTIME.NORMAL, "通常残業"),
-                new ItemModel(OVERTIME.EARLY_NORMAL, "早出残業・通常残業")
+                new ItemModel(OVERTIME.EARLY, getText("Enum_APP_OVERTIME_EARLY")),
+                new ItemModel(OVERTIME.NORMAL, getText("Enum_APP_OVERTIME_NORMAL")),
+                new ItemModel(OVERTIME.EARLY_NORMAL, getText("Enum_APP_OVERTIME_EARLY_NORMAL"))
             ]);
             self.selectedOvertimeAppAtr = ko.observable(OVERTIME.EARLY);
 

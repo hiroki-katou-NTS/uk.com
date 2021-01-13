@@ -1,11 +1,15 @@
-module nts.uk.sys.view.ccg013.c.service {
-    var paths: any = {
-        getTitleMenu: "sys/portal/titlemenu/findall",
+module nts.uk.com.view.ccg013.c.service {
+    // Service paths.
+    var servicePath = {
+        findBySystem: "sys/portal/standardmenu/findAllDisplay",
+        getEditMenuBar: "sys/portal/webmenu/edit",
     }
     
-    export function getTitleMenu(): JQueryPromise<Array<any>>{
-        return nts.uk.request.ajax("com", paths.getTitleMenu);
+    export function findBySystem(): JQueryPromise<Array<any>> {
+        return nts.uk.request.ajax(servicePath.findBySystem);
     }
     
-
+    export function getEditMenuBar(): JQueryPromise<EditMenuBarDto> {
+        return nts.uk.request.ajax("com", servicePath.getEditMenuBar);
+    }
 }
