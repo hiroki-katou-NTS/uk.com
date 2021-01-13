@@ -172,8 +172,8 @@ module nts.uk.at.view.kaf011 {
 				self.dk2(self.checkE1Common() || (self.workTypeSelected.workAtr == 1 && self.workTypeSelected.checkE12() && self.displayInforWhenStarting.workInfoAttendanceReflect.reflectWorkHour == 1));
 				// điều kiện hiển thị ※E1-1
 				self.dk3(self.checkE1Common());
-				if(self.displayInforWhenStarting && self.displayInforWhenStarting.appDetailScreenInfo){
-					self.outputMode(self.displayInforWhenStarting.appDetailScreenInfo.outputMode);
+				if(self.displayInforWhenStarting && self.displayInforWhenStarting.appDispInfoStartup.appDetailScreenInfo){
+					self.outputMode(self.displayInforWhenStarting.appDispInfoStartup.appDetailScreenInfo.outputMode);
 				}
 			}
 			

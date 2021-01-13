@@ -133,7 +133,7 @@
 						</div>
 						<div class="holidaySetting">
 							<com:ko-if bind="dk2">	
-								<div data-bind="ntsCheckBox: { checked: workChangeUse }">#{i18n.getText('KAF011_29')}</div>
+								<div data-bind="ntsCheckBox: { checked: workChangeUse, enable: outputMode() == 1 }">#{i18n.getText('KAF011_29')}</div>
 								<div class="ruleLine"></div>
 								<div class="row">
 									<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF011_30')}</div>
@@ -213,7 +213,7 @@
 									<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KAF011_44')}</div>
 									<div class="ntsControl">
 										<div>
-											<button class="" data-bind="click: openKDL035">#{i18n.getText('KAF011_5')}</button>
+											<button class="" data-bind="click: openKDL035, enable: outputMode() == 1 ">#{i18n.getText('KAF011_5')}</button>
 											#{i18n.getText('KAF011_47')}
 										</div>
 										<com:ko-if bind="payoutSubofHDManagements().length > 0">
