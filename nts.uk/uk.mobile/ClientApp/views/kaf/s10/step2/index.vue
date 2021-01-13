@@ -166,8 +166,8 @@
         </div>
     </div>
 
-    <!--A2_8_1-->
     <div class="card card-label">
+      <!--A2_8_1-->
       <button
         type="button"
         class="btn btn-block btn-primary btn-lg"
@@ -175,14 +175,14 @@
       >
         {{($appContext.modeNew ? 'KAFS10_20' : 'KAFS10_21') | i18n}}
       </button>
-      <!-- A2_C1_2 -->
-      <!-- <button
+      <!--A2_8_2-->
+      <button
         type="button"
         class="btn btn-block btn-secondary"
         v-on:click="backStep1"
       >
         {{ "KAFS05_12" | i18n }}
-      </button> -->
+      </button>
     </div>
   </div>
 </template>
