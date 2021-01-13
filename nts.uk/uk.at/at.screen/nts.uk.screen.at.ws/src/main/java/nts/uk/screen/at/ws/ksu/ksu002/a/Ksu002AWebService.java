@@ -16,6 +16,10 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.RegisWorkScheduleCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.WorkInformationDto;
 import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.WorkScheduleSaveCommand;
+import nts.uk.ctx.at.shared.app.workrule.workinghours.CheckTimeIsIncorrect;
+import nts.uk.ctx.at.shared.app.workrule.workinghours.ContainsResultDto;
+import nts.uk.ctx.at.shared.app.workrule.workinghours.TimeOfDayDto;
+import nts.uk.ctx.at.shared.app.workrule.workinghours.TimeZoneDto;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.WorkTypeInfomation;
 import nts.uk.screen.at.app.ksu001.processcommon.CorrectWorkTimeHalfDayParam;
 import nts.uk.screen.at.app.ksu001.processcommon.GetListWorkTypeAvailable;
@@ -51,6 +55,9 @@ public class Ksu002AWebService extends WebService {
 	
 	@Inject
 	private GetDataDaily getDataDaily;
+	
+	@Inject
+	private CheckTimeIsIncorrect checkTimeIsIncorrect;
 	
 //	@Inject
 //	private GetWorkTypeKSU002 getWorkType;
@@ -118,6 +125,18 @@ public class Ksu002AWebService extends WebService {
 		}).collect(Collectors.toList());
 		
 		this.regisWorkSchedule.handle(commands);
+	}
+	
+	@POST
+	@Path("checkTimeIsIncorrect")
+	public List<ContainsResultDto> checkTimeIsIncorrect(CheckTimeIsIncorrectInput param) {
+		return checkTimeIsIncorrect.check(
+				param.getWorkType(),
+				param.getWorkTime(),
+				new TimeZoneDto(
+						new TimeOfDayDto(param.getStartTime(), 0),
+						new TimeOfDayDto(param.getEndTime(), 0)),
+				null);
 	}
 	
 //	@POST
