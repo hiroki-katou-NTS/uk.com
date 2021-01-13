@@ -28,6 +28,7 @@ module nts.uk.at.view.kmk004.b {
         public employmentList: KnockoutObservableArray<IEmployment> = ko.observableArray([]);
         public employment: Employment;
         public isChange: KnockoutObservable<string> = ko.observable('');
+        public selectedClosureId: KnockoutObservable<number> = ko.observable(null);
 
         created(params: Params) {
             const vm = this;
@@ -49,6 +50,11 @@ module nts.uk.at.view.kmk004.b {
             vm.isChange
                 .subscribe(() => {
                     vm.reloadIsCheck();
+                });
+
+            vm.selectedClosureId
+                .subscribe(() => {
+                    vm.reload();
                 });
         }
 
@@ -92,6 +98,7 @@ module nts.uk.at.view.kmk004.b {
                     selectType: SelectType.SELECT_FIRST_ITEM,
                     selectedCode: vm.selectedCode,
                     isDialog: false,
+                    selectedClosureId: vm.selectedClosureId,
                     isShowNoSelectRow: false,
                     alreadySettingList: vm.alreadySettings,
                     isDisplayClosureSelection: true,
