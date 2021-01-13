@@ -134,8 +134,9 @@ export class KafS09AComponent extends KafS00ShrComponent {
                     appDispInfoStartupDto: self.dataOutput ? self.dataOutput.appDispInfoStartup : self.appDispInfoStartupOutput
                 });
             }
-            if (self.appDispInfoStartupOutput) {
+            if (!_.isNil(_.get(self.appDispInfoStartupOutput, 'appDispInfoWithDateOutput.opErrorFlag'))) {
                 if (self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag != 0) {
+
                     return self.$http.post('at', API.startS09, {
                         companyId: self.user.companyId,
                         employeeId: self.user.employeeId,
