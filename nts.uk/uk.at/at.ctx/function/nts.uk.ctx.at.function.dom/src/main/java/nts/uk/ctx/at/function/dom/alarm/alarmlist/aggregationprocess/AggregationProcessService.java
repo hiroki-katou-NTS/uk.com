@@ -35,6 +35,7 @@ import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.AlarmExtraValueWkReDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.agreementprocess.AgreementCheckService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.appapproval.AppApprovalAggregationProcessService;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
@@ -84,6 +85,8 @@ public class AggregationProcessService {
 	private ErAlWorkRecordCheckAdapter erCheckAdapter;
 	@Inject
 	private AppApprovalAggregationProcessService appApprovalAggregationProcessService;
+	@Inject
+	private AgreementCheckService check36Alarm;
 		
 	public List<AlarmExtraValueWkReDto> processAlarmListWorkRecord(GeneralDate baseDate, String companyID, List<EmployeeSearchDto> listEmployee, 
 			String checkPatternCode, List<PeriodByAlarmCategory> periodByCategory) {
@@ -369,6 +372,15 @@ public class AggregationProcessService {
 					break;
 					
 				case AGREEMENT:
+					check36Alarm.get36AlarmCheck(cid,
+							x.getAlarmChkCondAgree36(),
+							lstCategoryPeriod,
+							counter,
+							shouldStop,
+							getWplByListSidAndPeriod,
+							lstSidTmp,
+							lstResultCondition,
+							lstCheckType);
 					break;
 					
 				case MAN_HOUR_CHECK:

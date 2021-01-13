@@ -8,4 +8,6 @@ import java.util.Optional;
  */
 public interface AgreementOperationSettingAdapter {
 	Optional<AgreementOperationSettingImport> find(String cid);
+	
+	Optional<AgreementOperationSettingImport> findForAlarm(String cid);
 }

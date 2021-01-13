@@ -18,6 +18,7 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingAdapter;
@@ -82,7 +83,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				result.add(other);
 				
 			} else if(c.isAgrrement()) {
-				result.addAll(this.getAgreementTime(c, closureId, new YearMonth(processingYm)));
+				result.addAll(this.getAgreementTime(c, closureId, new YearMonth(processingYm), companyId));
 			} else if(c.isAttHoliday() || c.isMasterChk()) {
 				CheckConditionTimeDto attHoliday = new CheckConditionTimeDto(c.getAlarmCategory().value, c.getAlarmCategory().nameId, 0);
 				attHoliday.setTabOrder(7);
@@ -98,7 +99,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 	}
 	
 	//36協定の期間を算出する
-	private List<CheckConditionTimeDto> getAgreementTime(CheckCondition c, int closureId, YearMonth yearMonth){
+	private List<CheckConditionTimeDto> getAgreementTime(CheckCondition c, int closureId, YearMonth yearMonth, String cid){
 		List<CheckConditionTimeDto> result = new ArrayList<CheckConditionTimeDto>();
 		
 		DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
@@ -117,7 +118,8 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				CheckConditionPeriod period  = this.getPeriodDaily(extraction, closureId, yearMonth);
 				startDate = period.getStartDate();
 				endDate = period.getEndDate();
-				CheckConditionTimeDto dailyDto = new CheckConditionTimeDto(c.getAlarmCategory().value, textAgreementTime(1), formatter.format(startDate), formatter.format(endDate), null, null);
+				CheckConditionTimeDto dailyDto = new CheckConditionTimeDto(c.getAlarmCategory().value, 
+						textAgreementTime(1), formatter.format(startDate), formatter.format(endDate), null, null);
 				dailyDto.setTabOrder(1);
 				dailyDto.setPeriod36Agreement(Period.One_Week.value);
 				result.add(dailyDto);
@@ -138,7 +140,8 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				}else {
 					endMonth = yearMonth.addMonths((-1)*extraction.getEndMonth().getEndMonthNo().get().getMonthNo());
 				}
-				CheckConditionTimeDto monthDto = new CheckConditionTimeDto(c.getAlarmCategory().value, textAgreementTime(extraction.getNumberOfMonth().value +2), null, null, startMonth.toString(), endMonth.toString());
+				CheckConditionTimeDto monthDto = new CheckConditionTimeDto(c.getAlarmCategory().value, 
+						textAgreementTime(extraction.getNumberOfMonth().value +2), null, null, startMonth.toString(), endMonth.toString());
 				monthDto.setTabOrder(extraction.getNumberOfMonth().value +2);
 				if (extraction.getNumberOfMonth() == NumberOfMonth.ONE_MONTH) {
 					monthDto.setPeriod36Agreement(Period.One_Month.value);
@@ -152,7 +155,9 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 			//基準月の期間を算出する
 			}else if(extractBase instanceof AverageMonth) {
 				AverageMonth extraction = (AverageMonth) extractBase;
-				CheckConditionTimeDto monthDto = new CheckConditionTimeDto(c.getAlarmCategory().value, TextResource.localize("KAL010_208") + "　" + TextResource.localize("KAL004_120"), null, null, yearMonth.toString(), yearMonth.toString());
+				CheckConditionTimeDto monthDto = new CheckConditionTimeDto(c.getAlarmCategory().value, 
+						TextResource.localize("KAL010_208") + "　" + TextResource.localize("KAL004_120"), null, null, 
+						yearMonth.toString(), yearMonth.toString());
 				if(extraction.getStrMonth() != StandardMonth.CURRENT_MONTH ) {
 					monthDto.setStartMonth(yearMonth.addMonths(-extraction.getStrMonth().value).toString());
 					monthDto.setEndMonth(yearMonth.addMonths(-extraction.getStrMonth().value).toString());
@@ -163,39 +168,43 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				
 			}else if(extractBase instanceof AYear) {
 				AYear extraction = (AYear) extractBase;
-				Optional<AgreementOperationSettingImport> agreementOperationSettingImport =  agreementOperationSettingAdapter.find(AppContexts.user().companyId());
+				Optional<AgreementOperationSettingImport> agreementOperationSettingImport =  agreementOperationSettingAdapter.findForAlarm(cid);
 				int firstMonth = 0;
+				int yearMonthYear = yearMonth.year();
 				if (agreementOperationSettingImport.isPresent()){
 					firstMonth = agreementOperationSettingImport.get().getStartingMonth().value + 1;
-				}
-				int yearMonthYear = yearMonth.year();
-				if(extraction.isToBeThisYear()){
-					if(firstMonth <= yearMonth.month()) {
-						year = yearMonthYear;
+					if(extraction.isToBeThisYear()){
+						if(firstMonth <= yearMonth.month()) {
+							year = yearMonthYear;
+						}else {
+							year = yearMonthYear - 1;
+						}
+						if (firstMonth == 1) {
+							startMonth = YearMonth.of(year, firstMonth);
+							endMonth = YearMonth.of(year, 12);
+						} else {
+							startMonth = YearMonth.of(year, firstMonth);
+							firstMonth = firstMonth - 1;
+							endMonth = YearMonth.of(year + 1, firstMonth);
+						}
+						
 					}else {
-						year = yearMonthYear - 1;
+						year = extraction.getYear();
+						if (firstMonth == 1) {
+							startMonth = YearMonth.of(year, firstMonth);
+							endMonth = YearMonth.of(year, 12);
+						}else{
+							startMonth = YearMonth.of(year, firstMonth);
+							firstMonth = firstMonth - 1;
+							endMonth = YearMonth.of(year + 1, firstMonth);
+						}
 					}
-					if (firstMonth == 1) {
-						startMonth = YearMonth.of(year, firstMonth);
-						endMonth = YearMonth.of(year, 12);
-					} else {
-						startMonth = YearMonth.of(year, firstMonth);
-						firstMonth = firstMonth - 1;
-						endMonth = YearMonth.of(year + 1, firstMonth);
-					}
-					
-				}else {
-					year = extraction.getYear();
-					if (firstMonth == 1) {
-						startMonth = YearMonth.of(year, firstMonth);
-						endMonth = YearMonth.of(year, 12);
-					}else{
-						startMonth = YearMonth.of(year, firstMonth);
-						firstMonth = firstMonth - 1;
-						endMonth = YearMonth.of(year + 1, firstMonth);
-					}
+				} else {
+					startMonth = YearMonth.of(GeneralDate.today().year(), 1);
+					endMonth = YearMonth.of(GeneralDate.today().year(), 12);
 				}
-				CheckConditionTimeDto yearDto = new CheckConditionTimeDto(c.getAlarmCategory().value, textAgreementTime(5), null, null, startMonth.toString(), endMonth.toString(), year );
+				CheckConditionTimeDto yearDto = new CheckConditionTimeDto(c.getAlarmCategory().value,
+						textAgreementTime(5), null, null, startMonth.toString(), endMonth.toString(), year );
 				yearDto.setTabOrder(5);
 				yearDto.setPeriod36Agreement(Period.Yearly.value);
 				result.add(yearDto);

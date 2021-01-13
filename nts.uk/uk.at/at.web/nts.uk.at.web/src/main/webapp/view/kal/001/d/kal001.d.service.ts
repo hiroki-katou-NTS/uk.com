@@ -172,11 +172,11 @@ module nts.uk.at.view.kal001.d.service {
                             this.endDate = nts.uk.time.parseMoment(eDate).momentObject.toISOString() ;    
                                                     
                         } else{
-                            let sDate =p.startDate + '/01';
+                            let sDate =p.startDate + '01';
                             let eDate = p.endDate;
 
                             let lastDay = new Date(Number(eDate.slice(0, 4)), Number(eDate.slice(5, 7)), 0);
-                            eDate = eDate + "/"  +(lastDay.getDate() <10? "0" + lastDay.getDate() : lastDay.getDate());
+                            eDate = eDate + (lastDay.getDate() <10? "0" + lastDay.getDate() : lastDay.getDate());
                                                         
                             this.startDate =nts.uk.time.parseMoment(sDate).momentObject.toISOString() ;
                             this.endDate = nts.uk.time.parseMoment(eDate).momentObject.toISOString() ;                                 

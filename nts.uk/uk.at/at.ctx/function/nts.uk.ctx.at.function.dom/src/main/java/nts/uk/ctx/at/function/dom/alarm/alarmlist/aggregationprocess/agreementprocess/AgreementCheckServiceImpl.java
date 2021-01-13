@@ -1,11 +1,14 @@
 package nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.agreementprocess;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -15,13 +18,19 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import lombok.val;
+import nts.arc.error.BusinessException;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.function.dom.adapter.WorkPlaceHistImport;
 import nts.uk.ctx.at.function.dom.adapter.agreement.CheckRecordAgreementAdapter;
 import nts.uk.ctx.at.function.dom.adapter.agreement.CheckedAgreementResult;
 import nts.uk.ctx.at.function.dom.adapter.agreement.CheckedOvertimeImport;
+import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingAdapter;
 import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingImport;
+import nts.uk.ctx.at.function.dom.adapter.standardtime.StartingMonthTypeImport;
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
@@ -30,13 +39,22 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCate
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeConditionError;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeNameError;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AlarmChkCondAgree36;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.ErrorAlarm;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.IAgreeNameErrorRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.Period;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.UseClassification;
+import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckType;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 
 @Stateless
 public class AgreementCheckServiceImpl implements AgreementCheckService{
@@ -51,7 +69,16 @@ public class AgreementCheckServiceImpl implements AgreementCheckService{
 	private SessionContext scContext;
 	
 	private AgreementCheckService self;
-	
+	@Inject
+	private AgreementOperationSettingAdapter agreementOperationSettingAdapter;
+	@Inject
+	private ClosureRepository closureRepository;
+
+	@Inject
+	private ClosureEmploymentRepository closureEmploymentRepo;
+
+	@Inject
+	private ShareEmploymentAdapter shareEmploymentAdapter;
 	@PostConstruct
 	public void init() {
 		// Get self.
@@ -96,14 +123,14 @@ public class AgreementCheckServiceImpl implements AgreementCheckService{
 										agreeConditionError.getErrorAlarm().value);
 
 								// アルゴリズム「36協定実績をチェックする」を実行する
-								List<CheckedAgreementResult> checkAgreementsResult = checkAgreementAdapter
+								/*List<CheckedAgreementResult> checkAgreementsResult = checkAgreementAdapter
 										.checkArgreementResult(employeeIds,
 												new DatePeriod(periodAlarm.getStartDate(), periodAlarm.getEndDate()),
 												agreeConditionError, agreementSetObj, closureList, empIdToClosureId,objCheckAgreement);
 								if (!CollectionUtil.isEmpty(checkAgreementsResult)) {
 									result.addAll(generationValueExtractAlarm(mapEmployee, checkAgreementsResult,
 											agreeConditionError, optAgreeName));
-								}
+								}*/
 							}
 						});
 
@@ -227,4 +254,170 @@ public class AgreementCheckServiceImpl implements AgreementCheckService{
 			return "0:00";
 		}
 	}
+
+	@Override
+	public void get36AlarmCheck(String cid, AlarmChkCondAgree36 alarmChkCon36,
+			List<PeriodByAlarmCategory> periodAlarms,
+			Consumer<Integer> counter, Supplier<Boolean> shouldStop,
+			List<WorkPlaceHistImport> getWplByListSidAndPeriod, List<String> employeeIds,
+			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckInfor) {
+		//３６協定運用設定
+		Optional<AgreementOperationSettingImport> aggreementSetting = agreementOperationSettingAdapter.findForAlarm(cid);
+		if(!aggreementSetting.isPresent()) {
+			throw new BusinessException("Msg_"); //TODO	
+		}
+		
+		AgreementOperationSettingImport aggSetting = aggreementSetting.get();
+		val cacheCarrier = new CacheCarrier();
+		// 社員(list)に対応する処理締めを取得する
+		Map<String, Closure> mapEmpClosures = ClosureService
+				.getClosureByEmployees(
+						ClosureService.createRequireM7(closureRepository, closureEmploymentRepo,
+								shareEmploymentAdapter),
+						cacheCarrier, employeeIds, GeneralDate.today());
+		List<Closure> lstClosure = mapEmpClosures.values().stream().distinct().collect(Collectors.toList());
+		//Du lam ↓
+		//36協定エラーアラームのチェック条件
+		alarmChkCon36.getListCondError().stream().filter(x -> x.getUseAtr() == UseClassification.Use)
+			.forEach(cond -> {
+				synchronized (this) {
+
+					if (shouldStop.get()) {
+						return;
+					}
+				}
+				//36協定実績をチェックする
+				Period periodCheck = getPeriod(cond);
+				PeriodByAlarmCategory periodSetting = periodAlarms.stream()
+						.filter(x -> x.getPeriod36Agreement() == periodCheck.value).findFirst().get();
+				YearMonthPeriod ymCheck;//抽出対象期間
+				//期間をチェックする
+				if(periodCheck == Period.Months_Average) {//[期間=複数月平均]
+					ymCheck = new YearMonthPeriod(periodSetting.getStartDate().yearMonth(),periodSetting.getStartDate().yearMonth());
+				} else {//期間＝Nヶ月(1ヶ月, 2ヶ月, 3ヶ月),//期間＝年間 (period = yearly)
+					ymCheck = new YearMonthPeriod(periodSetting.getStartDate().yearMonth(), periodSetting.getEndDate().yearMonth());
+				}
+				Map<Integer,DatePeriod> mapClosureIDDatePeriod = new HashMap<>();
+				for (Closure closure : lstClosure) {
+					List<DatePeriod> lstDatePeriod= closure.getPeriodByYearMonth(ymCheck.end());
+					if(!CollectionUtil.isEmpty(lstDatePeriod)){
+						DatePeriod datePeriod = lstDatePeriod.get(lstDatePeriod.size()-1);
+						//取得した期間から締め別基準日を追加する
+						if(!mapClosureIDDatePeriod.containsKey(closure.getClosureId().value))
+						mapClosureIDDatePeriod.put(closure.getClosureId().value, datePeriod);
+					}
+				}				
+				StartingMonthTypeImport startingMonthEnum = aggSetting.getStartingMonth();
+				int startingMonth = startingMonthEnum.value + 1;
+				List<Integer> fiscalYears  = new ArrayList<>();
+				// 開始月と起算月から算出した取得対象年度を追加する
+				Integer tagetYear = calculateTagetYear(ymCheck.start(), startingMonth);
+				if (!fiscalYears.contains(tagetYear)) {
+					fiscalYears.add(tagetYear);
+				}
+				// 終了月と起算月から算出した取得対象年度を追加する
+				tagetYear = calculateTagetYear(ymCheck.end(), startingMonth);
+				if (!fiscalYears.contains(tagetYear)) {
+					fiscalYears.add(tagetYear);
+				}
+				employeeIds.stream().forEach(sid -> {
+					if(cond.getErrorAlarm() == ErrorAlarm.Alarm || cond.getErrorAlarm() == ErrorAlarm.Error) {//エラー or アラームの場合
+						fiscalYears.stream().forEach(y -> {
+							//＜条件＞ TODO: 終了月度は何？？？
+							//・終了月度≧抽出対象期間(年月).開始年月
+							//・開始月度≦抽出対象期間(年月).終了年月
+							
+							//指定期間36協定時間の取得
+							
+						});
+					}
+				});
+				
+				
+			});
+		//Du lam ↑
+		
+		
+		
+			// 36協定のアラームチェック条件			
+			for (PeriodByAlarmCategory periodAlarm : periodAlarms) {
+
+				synchronized (this) {
+
+					if (shouldStop.get()) {
+						return;
+					}
+				}
+				//指定期間36協定時間の取得
+				Object objCheckAgreement = checkAgreementAdapter.getCommonSetting(cid, employeeIds, 
+						new DatePeriod(periodAlarm.getStartDate(), periodAlarm.getEndDate()));
+
+				// 抽出条件に対応する期間を取得する
+				// List<36協定エラーアラームのチェック条件>
+				alarmChkCon36.getListCondError().stream().filter(e -> e.getUseAtr() == UseClassification.Use)
+						.forEach(agreeConditionError -> {
+							Period periodCheck = getPeriod(agreeConditionError);
+							lstCheckInfor.add(new AlarmListCheckInfor(String.valueOf(periodCheck.value), AlarmListCheckType.FixCheck));
+							if (periodAlarm.getPeriod36Agreement() == periodCheck.value) {
+								// ドメインモデル「36協定エラーアラームチェック名称」を取得する
+								Optional<AgreeNameError> optAgreeName = agreeNameRepo.findById(periodCheck.value,
+										agreeConditionError.getErrorAlarm().value);
+
+								// アルゴリズム「36協定実績をチェックする」を実行する
+								List<CheckedAgreementResult> checkAgreementsResult = checkAgreementAdapter
+										.checkArgreementResult(employeeIds,
+												new DatePeriod(periodAlarm.getStartDate(), periodAlarm.getEndDate()),
+												agreeConditionError, aggreementSetting, mapEmpClosures,objCheckAgreement);
+								if (!CollectionUtil.isEmpty(checkAgreementsResult)) {
+									/*result.addAll(generationValueExtractAlarm(mapEmployee, checkAgreementsResult,
+											agreeConditionError, optAgreeName));*/
+									//TODO
+								}
+							}
+						});
+
+				if (Period.Yearly.value == periodAlarm.getPeriod36Agreement()) {
+					List<DatePeriod> periodsYear = new ArrayList<>();
+					periodsYear.add(new DatePeriod(periodAlarm.getStartDate(), periodAlarm.getEndDate()));
+					// アルゴリズム「超過回数チェック」を実行する
+					List<CheckedOvertimeImport> checkOvertimes = checkAgreementAdapter.checkNumberOvertime(employeeIds,
+							periodsYear, alarmChkCon36.getListCondOt());
+					for (CheckedOvertimeImport check : checkOvertimes) {
+
+						String checkedValue = String.valueOf(check.getCountAgreementOneEmp());
+						
+						String hour = check.getOt36().hour() + "";
+						if (hour.length() < 2)
+							hour = "0" + hour;
+						String minute = check.getOt36().minute() + "";
+						if (minute.length() < 2)
+							minute = "0" + minute;
+						String ot36 = hour + ":" + minute;
+						
+						String datePeriod = TextResource.localize("KAL010_906",check.getDatePeriod().start().toString(ErAlConstant.YM_FORMAT),check.getDatePeriod().end().toString(ErAlConstant.YM_FORMAT));
+						/*result.add(new ValueExtractAlarm(mapEmployee.get(check.getEmployeeId()).getWorkplaceId(),
+								check.getEmployeeId(), datePeriod, TextResource.localize("KAL010_208"),
+								//TextResource.localize("KAL010_201")
+								TextResource.localize("KAL010_120",check.getNo()+"")
+								, TextResource.localize("KAL010_202",
+										check.getNo() + "", ot36, check.getExcessNum().v() + ""),
+								check.getMessageDisp().v(),checkedValue));*/
+						//TODO
+					}
+				}
+			}
+		self.countFinishedEmp(counter, employeeIds);
+		
+	}
+	
+	private Integer calculateTagetYear(YearMonth tagetYM, int startingMonth) {
+
+		Integer tagetYear = tagetYM.year();
+		// 対象年月.月＞起算月
+		if (tagetYM.month() < startingMonth) {
+			tagetYear = tagetYM.year() - 1;
+		}
+		return tagetYear;
+	}
+
 }

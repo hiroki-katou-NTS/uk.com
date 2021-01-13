@@ -438,7 +438,7 @@ public class ClosureService {
 			return Collections.emptyList();
 		}
 		
-		List<Integer> closureIds = closureEmploymentList.stream().map(item -> item.getClosureId()).collect(Collectors.toList());
+		List<Integer> closureIds = closureEmploymentList.stream().map(item -> item.getClosureId()).distinct().collect(Collectors.toList());
 		//対応するドメインモデル「締め」を取得する (Lấy về domain model "Hạn định" tương ứng)
 		
 		return require.closure(companyId, closureIds);
