@@ -50,7 +50,7 @@ public class CreateWorkLedgerDisplayContentQuery {
             WorkLedgerOutputItem workLedgerOutputItem,
             List<WorkPlaceInfo> workPlaceInfo) {
 
-        val listSid = employeeInfoList.parallelStream().map(EmployeeInfor::getEmployeeId).distinct().collect(Collectors.toList());
+        val listSid = employeeInfoList.stream().map(EmployeeInfor::getEmployeeId).distinct().collect(Collectors.toList());
         // ① = call() [RQ 588]  社員の指定期間中の所属期間を取得する
         val listEmployeeStatus = require.getAffiliateEmpListDuringPeriod(datePeriod, listSid);
         val cid = AppContexts.user().companyId();
@@ -75,7 +75,7 @@ public class CreateWorkLedgerDisplayContentQuery {
         // ③ 取得する(会社ID)
         val attIds = require.getAggregableMonthlyAttId(cid);
 
-        val listAttIds = monthlyOutputItems.parallelStream().map(AttendanceItemToPrint::getAttendanceId)
+        val listAttIds = monthlyOutputItems.stream().map(AttendanceItemToPrint::getAttendanceId)
                 .distinct().collect(Collectors.toCollection(ArrayList::new));
 
         // 4 月次の勤怠項目を取得する
