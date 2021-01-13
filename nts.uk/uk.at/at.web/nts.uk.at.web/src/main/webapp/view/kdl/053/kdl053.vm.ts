@@ -34,7 +34,7 @@ module nts.uk.at.view.kdl053 {
                 errorRegistrationList = _.union(errorRegistrationList, _.sortBy(temp, item => item.date));
             });
 
-            self.hasError(data.isRegistered == 1);        
+            self.hasError(data.hasError == 1);        
             _.each(errorRegistrationList, errorLog =>{
                 switch (self.getDayfromDate(errorLog.date)){
                     case 0: 
@@ -104,6 +104,7 @@ module nts.uk.at.view.kdl053 {
                         }
                     ]
                 });
+                $('#btnClose').focus();
                 self.$blockui("hide");
             })
             .always(() => {

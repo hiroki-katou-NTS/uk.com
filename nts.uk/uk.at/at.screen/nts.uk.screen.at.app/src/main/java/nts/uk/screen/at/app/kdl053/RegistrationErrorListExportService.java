@@ -51,9 +51,8 @@ public class RegistrationErrorListExportService extends ExportService<List<Regis
 					return row;
 				}).collect(Collectors.toList());
 		
-		CSVFileData dataExport = new CSVFileData(fileName, header, dataSource);
-		
-		this.generator.generate(context.getGeneratorContext(), dataExport);		
+		CSVFileData dataExport = new CSVFileData(fileName, header, dataSource);		
+		this.generator.generate(context.getGeneratorContext(), dataExport);	
 	}
 	
 	private List<String> getTextHeader() {
