@@ -3,51 +3,50 @@
 module nts.uk.ui {
 
     export module toBeResource {
-        export let yes = "はい";
-        export let no = "いいえ";
-        export let cancel = "キャンセル";
-        export let close = "閉じる";
-        export let info = "情報";
-        export let warn = "警告";
-        export let error = "エラー";
-        export let confirm = "確認";
-        export let unset = "未設定";
-        export let errorContent = "エラー内容";
-        export let errorCode = "エラーコード";
-        export let errorList = "エラー一覧";
-        export let errorPoint = "エラー箇所";
-        export let errorDetail = "エラー詳細";
-        export let tab = "タブ";
-        export let plzWait = "お待ちください";
-        export let targetNotFound = "対象データがありません"; // FND_E_SEARCH_NOHITと統合したい
-        export let clear = "解除";
-        export let searchBox = "検索テキストボックス";
-        export let addNewRow = "新規行の追加";
-        export let deleteRow = "行の削除";
-        export let selectMenu = "メニュー選択";
-        export let manual = "マニュアル";
-        export let logout = "ログアウト";
-        export let settingPersonal = "個人情報の設定";
-        export let weekDaysShort = ["日", "月", "火", "水", "木", "金", "土"];
-        export let searchByCodeName = "コード・名称で検索・・・";
-        export let search = "検索";
-        export let filter = "絞り込み";
-        export let code = "コード";
-        export let codeAndName = "コード／名称";
-        export let alphaNumeric = "半角英数字";
-        export let katakana = "カタカナ";
-        export let kana = "カナ";
-        export let otherColors = "その他の色";
-        export let hide = "隠す";
-        export let decide = "確定";
-        export let refer = "参照";
-        export let selectViewArea = "表示エリアを選択する";
-        export let showInsideAreaToMain = "のエリア内をメイン画面に表示します。";
-        export let dragAndDropToChangeArea = "マウスのドラッグ＆ドロップでエリアを変更できます。";
-        export let invalidImageData = "不正な画像データです。";
-        export let legendExample = "凡例";
+        export const yes = "はい";
+        export const no = "いいえ";
+        export const cancel = "キャンセル";
+        export const close = "閉じる";
+        export const info = "情報";
+        export const warn = "警告";
+        export const error = "エラー";
+        export const confirm = "確認";
+        export const unset = "未設定";
+        export const errorContent = "エラー内容";
+        export const errorCode = "エラーコード";
+        export const errorList = "エラー一覧";
+        export const errorPoint = "エラー箇所";
+        export const errorDetail = "エラー詳細";
+        export const tab = "タブ";
+        export const plzWait = "お待ちください";
+        export const targetNotFound = "対象データがありません"; // FND_E_SEARCH_NOHITと統合したい
+        export const clear = "解除";
+        export const searchBox = "検索テキストボックス";
+        export const addNewRow = "新規行の追加";
+        export const deconsteRow = "行の削除";
+        export const selectMenu = "メニュー選択";
+        export const manual = "マニュアル";
+        export const logout = "ログアウト";
+        export const settingPersonal = "個人情報の設定";
+        export const weekDaysShort = ["日", "月", "火", "水", "木", "金", "土"];
+        export const searchByCodeName = "コード・名称で検索・・・";
+        export const search = "検索";
+        export const filter = "絞り込み";
+        export const code = "コード";
+        export const codeAndName = "コード／名称";
+        export const alphaNumeric = "半角英数字";
+        export const katakana = "カタカナ";
+        export const kana = "カナ";
+        export const otherColors = "その他の色";
+        export const hide = "隠す";
+        export const decide = "確定";
+        export const refer = "参照";
+        export const selectViewArea = "表示エリアを選択する";
+        export const showInsideAreaToMain = "のエリア内をメイン画面に表示します。";
+        export const dragAndDropToChangeArea = "マウスのドラッグ＆ドロップでエリアを変更できます。";
+        export const invalidImageData = "不正な画像データです。";
+        export const legendExample = "凡例";
     }
-
 
     export function localize(textId: string): string {
         return textId;
@@ -124,46 +123,25 @@ module nts.uk.ui {
      * Using for blocking UI when action in progress
      */
     export module block {
-
-        export function invisible() {
-            let rect = calcRect();
-
-            (<any>$).blockUI({
-                message: null,
-                overlayCSS: { opacity: 0 },
-                css: {
-                    width: rect.width,
-                    left: rect.left
-                }
-            });
+        export function clear() {
+            const fadeOut = 200;
+            
+            $(document.body).unblock({ fadeOut });
         }
 
         export function grayout() {
-            let rect = calcRect();
+            const fadeIn = 200;
+            const message: string = toBeResource.plzWait;
+            const css = { width: '220px', 'line-height': '32px' };
 
-            (<any>$).blockUI({
-                message: '<div class="block-ui-message">' + toBeResource.plzWait + '</div>',
-                fadeIn: 200,
-                css: {
-                    width: rect.width,
-                    left: rect.left
-                }
-            });
+            $(document.body).block({ message, fadeIn, css });
         }
 
-        export function clear() {
-            (<any>$).unblockUI({
-                fadeOut: 200
-            });
-        }
+        export function invisible() {
+            const message: null = null;
+            const overlayCSS = { opacity: 0 };
 
-        function calcRect() {
-            let width = 220;
-            let left = ($(window).width() - width) / 2;
-            return {
-                width: width,
-                left: left
-            };
+            $(document.body).block({ message, overlayCSS });
         }
     }
 
