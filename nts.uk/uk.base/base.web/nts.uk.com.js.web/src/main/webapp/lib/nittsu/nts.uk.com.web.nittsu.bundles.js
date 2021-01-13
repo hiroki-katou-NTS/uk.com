@@ -1896,7 +1896,7 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
@@ -4490,23 +4490,6 @@ var nts;
                         loadEmployeeCodeConstraints()
                             .always(function () { return _start.apply(__viewContext, [__viewContext]); });
                     }
-                    // Menu
-                    /*if ($(document).find("#header").length > 0) {
-                        menu.request();
-                    } else if (!util.isInFrame() && !__viewContext.noHeader) {
-                        let header = "<div id='header'><div id='menu-header'>"
-                            + "<div id='logo-area' class='cf'>"
-                            + "<div id='logo'>勤次郎</div>"
-                            + "<div id='user-info' class='cf'>"
-                            + "<div id='company' class='cf' />"
-                            + "<div id='user' class='cf' />"
-                            + "</div></div>"
-                            + "<div id='nav-area' class='cf' />"
-                            + "<div id='pg-area' class='cf' />"
-                            + "</div></div>";
-                        $("#master-wrapper").prepend(header);
-                        menu.request();
-                    }*/
                 };
                 var noSessionWebScreens = [
                     "/view/sample/",
@@ -4518,42 +4501,50 @@ var nts;
                     "/view/kdp/003/a/index.xhtml",
                     "/view/kdp/003/f/index.xhtml",
                     "/view/kdp/004/a/index.xhtml",
-                    "/view/kdp/005/a/index.xhtml"
+                    "/view/kdp/005/a/index.xhtml",
+                    "/view/sample/component/editor/text-editor.xhtml"
                 ];
                 var cantCall = function () {
-                    return !_.some(noSessionWebScreens, function (w) { return uk.request.location.current.rawUrl.indexOf(w) > -1; }) || uk.request.location.current.rawUrl.indexOf("/view/sample/component/editor/text-editor.xhtml") > -1;
-                };
-                var getEmployeeSetting = function () {
-                    var EMP_SESSION = 'nts.uk.session.EMPLOYEE_SETTING';
-                    var dfd = $.Deferred(), es = nts.uk.sessionStorage.getItem(EMP_SESSION);
-                    if (es.isPresent()) {
-                        dfd.resolve(JSON.parse(es.get()));
-                    }
-                    else {
-                        uk.request
-                            .ajax("com", "/bs/employee/setting/code/find")
-                            .done(function (constraints) {
-                            nts.uk.sessionStorage.setItemAsJson(EMP_SESSION, constraints);
-                            dfd.resolve(constraints);
-                        });
-                    }
-                    return dfd.promise();
+                    var location = uk.request.location;
+                    var current = location.current;
+                    var rawUrl = current.rawUrl;
+                    return !_.some(noSessionWebScreens, function (w) { return rawUrl.indexOf(w) > -1; });
                 };
                 var loadEmployeeCodeConstraints = function () {
-                    var self = this, dfd = $.Deferred();
-                    getEmployeeSetting().done(function (res) {
+                    var getEmployeeSetting = function () {
+                        var EMP_SESSION = 'nts.uk.session.EMPLOYEE_SETTING';
+                        var dfd = $.Deferred(), es = nts.uk.sessionStorage.getItem(EMP_SESSION);
+                        if (es.isPresent()) {
+                            dfd.resolve(JSON.parse(es.get()));
+                        }
+                        else {
+                            uk.request
+                                .ajax("com", "/bs/employee/setting/code/find")
+                                .done(function (constraints) {
+                                nts.uk.sessionStorage.setItemAsJson(EMP_SESSION, constraints);
+                                dfd.resolve(constraints);
+                            });
+                        }
+                        return dfd.promise();
+                    };
+                    return getEmployeeSetting()
+                        .done(function (res) {
+                        var ceMethodAttr = res.ceMethodAttr, numberOfDigits = res.numberOfDigits;
+                        var primitiveValueConstraints = __viewContext.primitiveValueConstraints;
                         var formatOption = {
-                            autofill: true
+                            autofill: true,
+                            filldirection: '',
+                            fillcharacter: ''
                         };
-                        if (res.ceMethodAttr === 0) {
+                        if (ceMethodAttr === 0) {
                             formatOption.filldirection = "left";
                             formatOption.fillcharacter = "0";
                         }
-                        else if (res.ceMethodAttr === 1) {
+                        else if (ceMethodAttr === 1) {
                             formatOption.filldirection = "right";
                             formatOption.fillcharacter = "0";
                         }
-                        else if (res.ceMethodAttr === 2) {
+                        else if (ceMethodAttr === 2) {
                             formatOption.filldirection = "left";
                             formatOption.fillcharacter = " ";
                         }
@@ -4562,13 +4553,13 @@ var nts;
                             formatOption.fillcharacter = " ";
                         }
                         // if not have primitive, create new
-                        if (!__viewContext.primitiveValueConstraints) {
+                        if (!primitiveValueConstraints) {
                             _.extend(__viewContext, {
                                 primitiveValueConstraints: {
                                     EmployeeCode: {
                                         valueType: "String",
                                         charType: "AlphaNumeric",
-                                        maxLength: res.numberOfDigits,
+                                        maxLength: numberOfDigits,
                                         formatOption: formatOption
                                     }
                                 }
@@ -4576,20 +4567,16 @@ var nts;
                         }
                         else {
                             // extend primitive constraint
-                            _.extend(__viewContext.primitiveValueConstraints, {
+                            _.extend(primitiveValueConstraints, {
                                 EmployeeCode: {
                                     valueType: "String",
                                     charType: "AlphaNumeric",
-                                    maxLength: res.numberOfDigits,
+                                    maxLength: numberOfDigits,
                                     formatOption: formatOption
                                 }
                             });
                         }
-                        dfd.resolve();
-                    }).fail(function (res) {
-                        dfd.reject();
                     });
-                    return dfd.promise();
                 };
                 $(function () {
                     _.extend(__viewContext, {
@@ -4634,501 +4621,8 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var menu;
-            (function (menu) {
-                var DATA_TITLEITEM_PGID = "pgid";
-                var DATA_TITLEITEM_PGNAME = "pgname";
-                var MENU_SET_KEY = "nts.uk.session.MENU_SET";
-                var COMPANY_KEY = "nts.uk.session.COMPANY";
-                var PROGRAM_KEY = "nts.uk.session.PROGRAM";
-                /** Showing item */
-                var showingItem;
-                /**
-                 * Menu item.
-                 */
-                var MenuItem = /** @class */ (function () {
-                    function MenuItem(name, path) {
-                        this.name = name;
-                        this.path = path;
-                    }
-                    return MenuItem;
-                }());
-                /**
-                 * Create menu selection.
-                 */
-                function createMenuSelect($menuNav, menuSet) {
-                    var $cate = $("<li class='category'/>").addClass("menu-select").appendTo($menuNav);
-                    var $cateName = $("<div class='category-name'/>").html("&#9776;").appendTo($cate);
-                    var $menuItems = $("<ul class='menu-items'/>").appendTo($cate);
-                    $menuItems.append($("<li class='menu-item'/>").text(ui.toBeResource.selectMenu));
-                    $menuItems.append($("<hr/>").css({ margin: "5px 0px" }));
-                    _.forEach(menuSet, function (item, i) {
-                        $menuItems.append($("<li class='menu-item'/>")
-                            .data("code", item.companyId + ":" + item.webMenuCode)
-                            .text(item.webMenuName).on(constants.CLICK, function () {
-                            uk.localStorage.setItem(constants.MENU, $(this).data("code"));
-                            $menuNav.find(".category:eq(0)").off();
-                            $menuNav.find(".category:gt(0)").remove();
-                            generate($menuNav, item);
-                            _.defer(function () {
-                                showingItem = undefined;
-                            });
-                        }));
-                    });
-                    $menuItems.append("<br/>");
-                }
-                /**
-                 * Request.
-                 */
-                function request() {
-                    $("#logo").on(constants.CLICK, function () {
-                        uk.request.jumpToTopPage();
-                    });
-                    displayUserInfo();
-                    getMenuSet().done(function (menuSet) {
-                        var $menuNav = $("<ul/>").attr("id", "menu-nav").appendTo($("#nav-area"));
-                        if (!menuSet || menuSet.length === 0)
-                            return;
-                        createMenuSelect($menuNav, menuSet);
-                        var menuCode = uk.localStorage.getItem(constants.MENU);
-                        if (menuCode.isPresent()) {
-                            var parts_1 = menuCode.get().split(":");
-                            var selectedMenu = _.find(menuSet, function (m) {
-                                return m.companyId === parts_1[0] && m.webMenuCode === parts_1[1];
-                            });
-                            !uk.util.isNullOrUndefined(selectedMenu) ? generate($menuNav, selectedMenu)
-                                : generate($menuNav, menuSet[0]);
-                        }
-                        else {
-                            generate($menuNav, menuSet[0]);
-                        }
-                    });
-                    getProgram();
-                }
-                menu.request = request;
-                /**
-                 * Get menu set.
-                 */
-                function getMenuSet() {
-                    var dfd = $.Deferred();
-                    var menuSetOpt = nts.uk.sessionStorage.getItem(MENU_SET_KEY);
-                    if (menuSetOpt.isPresent()) {
-                        dfd.resolve(JSON.parse(menuSetOpt.get()));
-                    }
-                    else {
-                        nts.uk.request.ajax(constants.APP_ID, constants.MenuDataPath).done(function (menuSet) {
-                            nts.uk.sessionStorage.setItemAsJson(MENU_SET_KEY, menuSet);
-                            dfd.resolve(menuSet);
-                        });
-                    }
-                    return dfd.promise();
-                }
-                /**
-                 * Generate.
-                 */
-                function generate($menuNav, menuSet) {
-                    _.forEach(menuSet.menuBar, function (category) {
-                        var $cate = $("<li class='category'/>").appendTo($menuNav);
-                        if (category.selectedAttr === 1) {
-                            $cate.addClass("direct").data("path", category.link).on(constants.CLICK, function () {
-                                uk.request.jumpToMenu(category.link);
-                            });
-                        }
-                        var $cateName = $("<div class='category-name'/>")
-                            .css({ background: category.backgroundColor, color: category.textColor || "#FFF" })
-                            .text(category.menuBarName).appendTo($cate);
-                        var $menuItems = $("<ul class='menu-items'/>").appendTo($cate);
-                        if (category.items && category.items.length > 0) {
-                            _.forEach(category.items, function (item) {
-                                $menuItems.append($("<li class='menu-item' path='" + item.path + "'/>").text(item.name));
-                            });
-                        }
-                        else if (category.titleMenu && category.titleMenu.length > 0) {
-                            titleMenu.createTitles($menuItems, category.titleMenu);
-                        }
-                    });
-                    init();
-                }
-                /**
-                 * Get company.
-                 */
-                function getCompany() {
-                    var dfd = $.Deferred();
-                    var companyOpt = nts.uk.sessionStorage.getItem(COMPANY_KEY);
-                    if (companyOpt.isPresent()) {
-                        dfd.resolve(JSON.parse(companyOpt.get()));
-                    }
-                    else {
-                        nts.uk.request.ajax(constants.APP_ID, constants.Companies).done(function (companies) {
-                            nts.uk.sessionStorage.setItemAsJson(COMPANY_KEY, companies);
-                            dfd.resolve(companies);
-                        });
-                    }
-                    return dfd.promise();
-                }
-                /**
-                 * Display user info.
-                 */
-                function displayUserInfo() {
-                    var $userInfo = $("#user-info");
-                    var $company = $userInfo.find("#company");
-                    var $user = $userInfo.find("#user");
-                    var $userName;
-                    var notThen = function ($container, target, op) {
-                        if (!$container.is(target) && $container.has(target).length === 0) {
-                            op();
-                        }
-                    };
-                    getCompany().done(function (companies) {
-                        if (!companies || companies.length === 0)
-                            return;
-                        var $companyName = $("<span/>").attr("id", "company-name");
-                        nts.uk.request.ajax(constants.APP_ID, constants.Company).done(function (companyId) {
-                            var comp = _.find(companies, function (c) {
-                                return c.companyId === companyId;
-                            });
-                            if (comp)
-                                $companyName.text(comp.companyName).appendTo($company);
-                        });
-                        var $companySelect = $("<div/>").addClass("company-select cf");
-                        $companySelect.appendTo($company);
-                        $("<div/>").addClass("ui-icon ui-icon-caret-1-s").appendTo($companySelect);
-                        var $companyList = $("<ul class='menu-items company-list'/>").appendTo($companySelect);
-                        var listCompany = function (comps) {
-                            _.forEach(comps, function (comp, i) {
-                                var $compItem = $("<li class='menu-item company-item'/>").text(comp.companyName).appendTo($companyList);
-                                $compItem.on(constants.CLICK, function () {
-                                    nts.uk.request.ajax(constants.APP_ID, constants.ChangeCompany, comp.companyId)
-                                        .done(function (data) {
-                                        $companyName.text(comp.companyName);
-                                        $userName.text(data.personName);
-                                        $companyList.css("right", $user.outerWidth() + 30);
-                                        if (!nts.uk.util.isNullOrEmpty(data.msgResult)) {
-                                            nts.uk.ui.dialog.info({ messageId: data.msgResult }).then(function () {
-                                                uk.request.jumpToTopPage();
-                                            });
-                                        }
-                                        else {
-                                            uk.request.jumpToTopPage();
-                                        }
-                                    }).fail(function (msg) {
-                                        nts.uk.ui.dialog.alertError(msg.messageId);
-                                        $companyList.empty();
-                                        nts.uk.request.ajax(constants.APP_ID, constants.Companies).done(function (compList) {
-                                            listCompany(compList);
-                                        });
-                                    });
-                                });
-                            });
-                        };
-                        listCompany(companies);
-                        $companySelect.on(constants.CLICK, function () {
-                            if ($companyList.css("display") === "none") {
-                                $companyList.fadeIn(100);
-                                return;
-                            }
-                            $companyList.fadeOut(100);
-                        });
-                        nts.uk.request.ajax(constants.APP_ID, constants.UserName).done(function (userName) {
-                            var $userImage = $("<div/>").attr("id", "user-image").appendTo($user);
-                            $userImage.css("margin-right", "6px").on(constants.CLICK, function () {
-                                // TODO: Jump to personal profile.
-                            });
-                            $userName = $("<span/>").attr("id", "user-name").text(userName).appendTo($user);
-                            nts.uk.request.ajax(constants.APP_ID, constants.ShowManual).done(function (show) {
-                                var $userSettings = $("<div/>").addClass("user-settings cf").appendTo($user);
-                                $("<div class='ui-icon ui-icon-caret-1-s'/>").appendTo($userSettings);
-                                var userOptions;
-                                if (show)
-                                    userOptions = [new MenuItem(ui.toBeResource.settingPersonal), new MenuItem(ui.toBeResource.manual), new MenuItem(ui.toBeResource.logout)];
-                                else
-                                    userOptions = [new MenuItem(ui.toBeResource.settingPersonal), new MenuItem(ui.toBeResource.logout)];
-                                var $userOptions = $("<ul class='menu-items user-options'/>").appendTo($userSettings);
-                                _.forEach(userOptions, function (option, i) {
-                                    var $li = $("<li class='menu-item'/>").text(option.name);
-                                    $userOptions.append($li);
-                                    if (i === 0) {
-                                        $li.on(constants.CLICK, function () {
-                                            nts.uk.request.jumpToSettingPersonalPage();
-                                        });
-                                        return;
-                                    }
-                                    if (userOptions.length === 3 && i === 1) {
-                                        $li.on(constants.CLICK, function () {
-                                            // jump to index page of manual
-                                            var path = __viewContext.env.pathToManual.replace("{PGID}", "index");
-                                            window.open(path);
-                                        });
-                                        return;
-                                    }
-                                    nts.uk.characteristics.restore("loginMode").done(function (mode) {
-                                        if (mode) {
-                                            $li.remove();
-                                        }
-                                        else {
-                                            $li.on(constants.CLICK, function () {
-                                                // TODO: Jump to login screen and request logout to server
-                                                nts.uk.request.ajax(constants.APP_ID, constants.Logout).done(function () {
-                                                    nts.uk.cookie.remove("nts.uk.sescon", { path: "/" });
-                                                    nts.uk.sessionStorage.removeItem(MENU_SET_KEY);
-                                                    nts.uk.sessionStorage.removeItem(PROGRAM_KEY);
-                                                    nts.uk.sessionStorage.removeItem(COMPANY_KEY);
-                                                    nts.uk.sessionStorage.removeItem("nts.uk.session.EMPLOYEE_SETTING");
-                                                    nts.uk.request.login.jumpToUsedLoginPage();
-                                                });
-                                            });
-                                        }
-                                    });
-                                });
-                                $companyList.css("right", $user.outerWidth() + 30);
-                                $userSettings.on(constants.CLICK, function () {
-                                    if ($userOptions.css("display") === "none") {
-                                        $userOptions.fadeIn(100);
-                                        return;
-                                    }
-                                    $userOptions.fadeOut(100);
-                                });
-                                $(document).on(constants.CLICK, function (evt) {
-                                    notThen($companySelect, evt.target, function () {
-                                        $companyList.fadeOut(100);
-                                    });
-                                    notThen($userSettings, evt.target, function () {
-                                        $userOptions.fadeOut(100);
-                                    });
-                                });
-                            });
-                        });
-                    });
-                }
-                menu.displayUserInfo = displayUserInfo;
-                /**
-                 * Get session program.
-                 */
-                function getSessionProgram() {
-                    var dfd = $.Deferred();
-                    nts.uk.request.ajax(constants.APP_ID, constants.PG).done(function (pg) {
-                        dfd.resolve(pg);
-                    });
-                    return dfd.promise();
-                }
-                /**
-                 * Get program.
-                 */
-                function getProgram() {
-                    initPgArea();
-                    getSessionProgram().done(function (pg) {
-                        var programName = "";
-                        var queryString = __viewContext.program.queryString;
-                        if (queryString) {
-                            var program = _.find(pg, function (p) {
-                                return p.param === queryString;
-                            });
-                            if (program) {
-                                programName = program.name;
-                            }
-                        }
-                        else if (programName === "" && pg && pg.length > 1) {
-                            var pgParam_1 = uk.localStorage.getItem("UKProgramParam");
-                            if (pgParam_1.isPresent()) {
-                                var program = _.find(pg, function (p) {
-                                    return p.param === pgParam_1.get();
-                                });
-                                if (program)
-                                    programName = program.name;
-                                uk.localStorage.removeItem("UKProgramParam");
-                            }
-                        }
-                        else if (pg && pg.length === 1) {
-                            programName = pg[0].name;
-                        }
-                        // show program name on title of browser
-                        if (_.isNil(ui._viewModel)) {
-                            ui.viewModelBuilt.add(function () {
-                                ui._viewModel.kiban.programName(programName);
-                            });
-                        }
-                        else {
-                            ui._viewModel.kiban.programName(programName);
-                        }
-                        $("#pg-name").text(programName);
-                    });
-                }
-                function initPgArea() {
-                    var $pgArea = $("#pg-area");
-                    $("<div/>").attr("id", "pg-name").appendTo($pgArea);
-                    var $manualArea = $("<div/>").attr("id", "manual").appendTo($pgArea);
-                    //            let $manualBtn = $("<button class='manual-button'/>").text("?").appendTo($manualArea);
-                    //            $manualBtn.on(constants.CLICK, function() {
-                    //                var path = __viewContext.env.pathToManual.replace("{PGID}", __viewContext.program.programId);
-                    //                window.open(path);
-                    //            });
-                    var $tglBtn = $("<div class='tgl cf'/>").appendTo($manualArea);
-                    $tglBtn.append($("<div class='ui-icon ui-icon-caret-1-s'/>"));
-                    $tglBtn.on(constants.CLICK, function () {
-                        // TODO
-                    });
-                }
-                /**
-                 * Init.
-                 */
-                function init() {
-                    var $navArea = $("#nav-area");
-                    var $menuItems = $("#menu-nav li.category:not(.direct)");
-                    /**
-                     * Close item.
-                     */
-                    function closeItem() {
-                        var $item = $("#menu-nav li.category:eq(" + showingItem + ")");
-                        $item.find(".category-name").removeClass("opening");
-                        $item.find("ul, div.title-menu").fadeOut(100);
-                    }
-                    /**
-                     * Open item.
-                     */
-                    function openItem($item) {
-                        $item.find(".category-name").addClass("opening");
-                        $item.find("ul, div.title-menu").fadeIn(100);
-                    }
-                    $(document).on(constants.CLICK, function (evt) {
-                        if (!$navArea.is(evt.target) && $navArea.has(evt.target).length === 0
-                            && !uk.util.isNullOrUndefined(showingItem)) {
-                            closeItem();
-                            showingItem = undefined;
-                        }
-                    });
-                    $menuItems.hover(function () {
-                        var $item = $(this);
-                        var ith = $item.index();
-                        if (uk.util.isNullOrUndefined(showingItem) || showingItem === ith)
-                            return;
-                        closeItem();
-                        setTimeout(function () {
-                            openItem($item);
-                        }, 14);
-                        showingItem = ith;
-                    });
-                    $menuItems.on(constants.CLICK, function (event) {
-                        var $item = $(this);
-                        showingItem = $item.index();
-                        if ($item.find(".category-name").hasClass("opening") && showingItem === 0) {
-                            closeItem();
-                            return;
-                        }
-                        openItem($item);
-                    });
-                    $(".menu-item").on(constants.CLICK, function () {
-                        var path = $(this).data('path');
-                        if (path)
-                            nts.uk.request.jump(path);
-                    });
-                }
-                var titleMenu;
-                (function (titleMenu) {
-                    titleMenu.WIDTH = 192;
-                    titleMenu.FR = 20;
-                    /**
-                     * Create titles.
-                     */
-                    function createTitles($category, titles) {
-                        var $title = $("<div/>").addClass("title-menu").appendTo($category);
-                        var width = 0, height, maxHeight = 0;
-                        _.forEach(titles, function (t, i) {
-                            height = 60;
-                            var left = titleMenu.WIDTH * i + 3;
-                            if (i > 0) {
-                                left += titleMenu.FR * i;
-                            }
-                            if (i === titles.length - 1) {
-                                width = left + titleMenu.WIDTH + 7;
-                            }
-                            var $titleDiv = $("<div/>").addClass("title-div").css({ left: left }).appendTo($title);
-                            var $titleName = $("<div/>").addClass("title-name").text(t.titleMenuName)
-                                .css({ background: t.backgroundColor, color: t.textColor }).appendTo($titleDiv);
-                            var $titleImage = $("<img/>").addClass("title-image").hide();
-                            $titleDiv.append($titleImage);
-                            if (!_.isNull(t.imageFile) && !_.isUndefined(t.imageFile) && !_.isEmpty(t.imageFile)) {
-                                var fqpImage = nts.uk.request.file.pathToGet(t.imageFile);
-                                // TODO: Show image
-                                $titleImage.attr("src", fqpImage).show();
-                                //                    $titleImage.attr("src", "../../catalog/images/valentine-bg.jpg").show();
-                                height += 80;
-                            }
-                            if (t.treeMenu && t.treeMenu.length > 0) {
-                                _.forEach(t.treeMenu, function (item, i) {
-                                    if (item.menuAttr === 1) {
-                                        $titleDiv.append($("<hr/>").css({ margin: "14px 0px" }));
-                                        height += 30;
-                                        return;
-                                    }
-                                    var nameToShow = item.displayName || item.defaultName;
-                                    var $item = $("<li class='title-item'/>")
-                                        .data("path", !uk.util.isNullOrUndefined(item.queryString) ? (item.url + "?" + item.queryString) : item.url)
-                                        .data(DATA_TITLEITEM_PGID, item.programId + item.screenId)
-                                        .data(DATA_TITLEITEM_PGNAME, nameToShow)
-                                        .text(nameToShow);
-                                    $item.on(constants.CLICK, function () {
-                                        var path = $(this).data("path");
-                                        if (path && path.indexOf("http") !== 0) {
-                                            uk.request.jumpToMenu(path);
-                                            return;
-                                        }
-                                        window.location.href = path;
-                                    });
-                                    $titleDiv.append($item);
-                                    height += (34 + (Math.ceil($item.text().length / 12) - 1) * 20);
-                                });
-                            }
-                            maxHeight = Math.max(maxHeight, height);
-                        });
-                        maxHeight += 20;
-                        $title.css({ height: maxHeight + "px", width: width + "px" });
-                    }
-                    titleMenu.createTitles = createTitles;
-                })(titleMenu || (titleMenu = {}));
-                $(function () {
-                    var showsName = true;
-                    $(window)
-                        .onkey("down", uk.KeyCodes.Ctrl, function () {
-                        if (!showsName || $(".category-name.opening").length === 0)
-                            return;
-                        $(".title-item").each(function () {
-                            $(this).text($(this).data(DATA_TITLEITEM_PGID));
-                        });
-                        showsName = false;
-                    })
-                        .onkey("up", uk.KeyCodes.Ctrl, function () {
-                        if (showsName)
-                            return;
-                        $(".title-item").each(function () {
-                            $(this).text($(this).data(DATA_TITLEITEM_PGNAME));
-                        });
-                        showsName = true;
-                    });
-                });
-                var constants;
-                (function (constants) {
-                    constants.APP_ID = "com";
-                    constants.MENU = "UK-Menu";
-                    constants.CLICK = "click";
-                    constants.MenuDataPath = "/sys/portal/webmenu/finddetails";
-                    constants.Company = "/sys/portal/webmenu/currentCompany";
-                    constants.Companies = "sys/portal/webmenu/companies";
-                    constants.ChangeCompany = "sys/portal/webmenu/changeCompany";
-                    constants.UserName = "sys/portal/webmenu/username";
-                    constants.ShowManual = "sys/portal/webmenu/showmanual";
-                    constants.Logout = "sys/portal/webmenu/logout";
-                    constants.PG = "sys/portal/webmenu/program";
-                })(constants || (constants = {}));
-            })(menu = ui.menu || (ui.menu = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
+// move to component
+// move to binding
 /// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
@@ -6084,7 +5578,7 @@ var nts;
                 toBeResource.clear = "解除";
                 toBeResource.searchBox = "検索テキストボックス";
                 toBeResource.addNewRow = "新規行の追加";
-                toBeResource.deleteRow = "行の削除";
+                toBeResource.deconsteRow = "行の削除";
                 toBeResource.selectMenu = "メニュー選択";
                 toBeResource.manual = "マニュアル";
                 toBeResource.logout = "ログアウト";
@@ -6181,44 +5675,24 @@ var nts;
              */
             var block;
             (function (block) {
-                function invisible() {
-                    var rect = calcRect();
-                    $.blockUI({
-                        message: null,
-                        overlayCSS: { opacity: 0 },
-                        css: {
-                            width: rect.width,
-                            left: rect.left
-                        }
-                    });
-                }
-                block.invisible = invisible;
-                function grayout() {
-                    var rect = calcRect();
-                    $.blockUI({
-                        message: '<div class="block-ui-message">' + toBeResource.plzWait + '</div>',
-                        fadeIn: 200,
-                        css: {
-                            width: rect.width,
-                            left: rect.left
-                        }
-                    });
-                }
-                block.grayout = grayout;
                 function clear() {
-                    $.unblockUI({
-                        fadeOut: 200
-                    });
+                    var fadeOut = 200;
+                    $(document.body).unblock({ fadeOut: fadeOut });
                 }
                 block.clear = clear;
-                function calcRect() {
-                    var width = 220;
-                    var left = ($(window).width() - width) / 2;
-                    return {
-                        width: width,
-                        left: left
-                    };
+                function grayout() {
+                    var fadeIn = 200;
+                    var message = toBeResource.plzWait;
+                    var css = { width: '220px', 'line-height': '32px' };
+                    $(document.body).block({ message: message, fadeIn: fadeIn, css: css });
                 }
+                block.grayout = grayout;
+                function invisible() {
+                    var message = null;
+                    var overlayCSS = { opacity: 0 };
+                    $(document.body).block({ message: message, overlayCSS: overlayCSS });
+                }
+                block.invisible = invisible;
             })(block = ui.block || (ui.block = {}));
             var DirtyChecker = /** @class */ (function () {
                 function DirtyChecker(targetViewModelObservable) {
@@ -38759,7 +38233,7 @@ var nts;
                             dialog.removeClass("disappear");
                         }, 33);
                     }
-                })(ntsDialogEx || (ntsDialogEx = {}));
+                })(ntsDialogEx = jqueryExtentions.ntsDialogEx || (jqueryExtentions.ntsDialogEx = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -39349,8 +38823,7 @@ var nts;
                         var currentColumns = $grid.igGrid("option", "columns");
                         currentColumns.push({
                             dataType: "bool", columnCssClass: "delete-column", headerText: "test", key: param.deleteField,
-                            width: 60,
-                            formatter: function createButton(deleteField, row) {
+                            width: 60, formatter: function createButton(deleteField, row) {
                                 var primaryKey = $grid.igGrid("option", "primaryKey");
                                 var result = $('<button tabindex="-1" class="small delete-button">Delete</button>');
                                 result.attr("data-value", row[primaryKey]);
@@ -51160,10 +50633,34 @@ var nts;
                         var vm = this;
                         vm.userNameHover(false);
                     };
+                    HeaderViewModel.prototype.manual = function () {
+                        var pathToManual = __viewContext.env.pathToManual;
+                        // jump to index page of manual
+                        window.open(pathToManual.replace(/\{PGID\}/, "index"));
+                    };
+                    HeaderViewModel.prototype.logout = function () {
+                        var vm = this;
+                        var _a = nts.uk, request = _a.request, sessionStorage = _a.sessionStorage;
+                        var COMPANY_KEY = "nts.uk.session.COMPANY";
+                        var PROGRAM_KEY = "nts.uk.session.PROGRAM";
+                        var MENU_SET_KEY = "nts.uk.session.MENU_SET";
+                        var EMPLOYEE_SETTING = 'nts.uk.session.EMPLOYEE_SETTING';
+                        // TODO: Jump to login screen and request logout to server
+                        vm.$ajax('com', '/sys/portal/webmenu/logout')
+                            .then(function () {
+                            sessionStorage.removeItem(COMPANY_KEY);
+                            sessionStorage.removeItem(PROGRAM_KEY);
+                            sessionStorage.removeItem(MENU_SET_KEY);
+                            sessionStorage.removeItem(EMPLOYEE_SETTING);
+                            // cannot remove by flag: htmlOnly
+                            // cookie.remove("nts.uk.sescon", { path: "/" });
+                            request.login.jumpToUsedLoginPage();
+                        });
+                    };
                     HeaderViewModel = __decorate([
                         component({
                             name: 'ui-header',
-                            template: "\n        <div class=\"hamberger\" data-bind=\"\n                event: {\n                    mouseover: $component.hambergerHover,\n                    mouseout: $component.hambergerMouseOut\n                },\n                css: {\n                    'hover': $component.menuSet.hover\n                }\">\n            <svg viewBox=\"0 0 16 14\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n                <rect width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n                <rect y=\"6\" width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n                <rect y=\"12\" width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n            </svg>\n            <div class=\"menu-dropdown menu-hamberger\" data-bind=\"css: { hidden: !$component.menuSet.hover() }\">\n                <div class=\"menu-column\">\n                    <div class=\"menu-header\" data-bind=\"i18n: nts.uk.ui.toBeResource.selectMenu\"></div>\n                    <div class=\"menu-item\" data-bind=\"foreach: $component.menuSet.items\">\n                        <div class=\"item\" data-bind=\"\n                            i18n: $data.webMenuName,\n                            click: function() { $component.selectSet($data) },                        \n                            css: { \n                                selected: $component.menuSet.items() && $data.selected\n                            }\"></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <img class=\"favicon\" src=\"/nts.uk.com.js.web/lib/nittsu/ui/style/images/kinjirou.png\" />\n        <div class=\"menu-groups\" data-bind=\"foreach: { data: $component.menuBars, as: 'bar' }\">\n            <div class=\"item-group\" data-bind=\"\n                    event: {\n                        mouseover: function() { $component.itemBarHover(bar) },\n                        mouseout: function() { $component.itemBarMouseOut(bar) }\n                    },\n                    css: {\n                        'hover': bar.hover() && $component.click()\n                    },\n                    attr: {\n                        'data-column': (bar.titleMenu || []).length\n                    }\">\n                <span class=\"bar-item-title\" data-bind=\"text: bar.menuBarName, click: function() { $component.selectBar(bar) }\"></span>\n                <div class=\"menu-dropdown menu-item\" data-bind=\"css: { hidden: !bar.hover() || !bar.titleMenu.length }, foreach: { data: bar.titleMenu, as: 'title' }\">\n                    <div class=\"menu-column\">\n                        <div class=\"menu-header\" data-bind=\"\n                            i18n: title.titleMenuName,\n                            style: {\n                                'color': title.textColor,\n                                'background-color': title.backgroundColor\n                            }\"></div>\n                        <div class=\"menu-items\" data-bind=\"foreach: title.treeMenu\">\n                            <div class=\"item\" data-bind=\"\n                                i18n: $component.getName($data),\n                                click: function() { $component.selectMenu($data, bar) },                        \n                                css: { \n                                    selected: false,\n                                    'divider': !$data.url || $data.url === '-'\n                                }\"></div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"user-info\">\n            <div class=\"menu-groups\">\n                <div class=\"item-group\">\n                    <span class=\"bar-item-title company\" data-bind=\"text: $component.companyName\"></span>\n                </div>\n                <span class=\"divider\"></span>\n                <div class=\"item-group\" data-bind=\"\n                        event: {\n                            mouseover: $component.userHover,\n                            mouseout: $component.userMouseOut\n                        },\n                        css: {\n                            hover: $component.userNameHover\n                        }\">\n                    <span class=\"bar-item-title user-name\" data-bind=\"text: $component.userName\"></span>\n                    <div class=\"menu-dropdown menu-item\">\n                        <div class=\"menu-column\">\n                            <div class=\"menu-items\" data-bind=\"i18n: nts.uk.ui.toBeResource.manual\"></div>\n                            <div class=\"menu-items divider\"></div>\n                            <div class=\"menu-items\" data-bind=\"i18n: nts.uk.ui.toBeResource.logout\"></div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class=\"avatar notification\"></div>\n        </div>\n        "
+                            template: "\n        <div class=\"hamberger\" data-bind=\"\n                event: {\n                    mouseover: $component.hambergerHover,\n                    mouseout: $component.hambergerMouseOut\n                },\n                css: {\n                    'hover': $component.menuSet.hover\n                }\">\n            <svg viewBox=\"0 0 16 14\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n                <rect width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n                <rect y=\"6\" width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n                <rect y=\"12\" width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n            </svg>\n            <div class=\"menu-dropdown menu-hamberger\" data-bind=\"css: { hidden: !$component.menuSet.hover() }\">\n                <div class=\"menu-column\">\n                    <div class=\"menu-header\" data-bind=\"i18n: nts.uk.ui.toBeResource.selectMenu\"></div>\n                    <div class=\"menu-item\" data-bind=\"foreach: $component.menuSet.items\">\n                        <div class=\"item\" data-bind=\"\n                            i18n: $data.webMenuName,\n                            click: function() { $component.selectSet($data) },                        \n                            css: { \n                                selected: $component.menuSet.items() && $data.selected\n                            }\"></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <img class=\"favicon\" src=\"/nts.uk.com.js.web/lib/nittsu/ui/style/images/kinjirou.png\" />\n        <div class=\"menu-groups\" data-bind=\"foreach: { data: $component.menuBars, as: 'bar' }\">\n            <div class=\"item-group\" data-bind=\"\n                    event: {\n                        mouseover: function() { $component.itemBarHover(bar) },\n                        mouseout: function() { $component.itemBarMouseOut(bar) }\n                    },\n                    css: {\n                        'hover': bar.hover() && $component.click()\n                    },\n                    attr: {\n                        'data-column': (bar.titleMenu || []).length\n                    }\">\n                <span class=\"bar-item-title\" data-bind=\"text: bar.menuBarName, click: function() { $component.selectBar(bar) }\"></span>\n                <div class=\"menu-dropdown menu-item\" data-bind=\"css: { hidden: !bar.hover() || !bar.titleMenu.length }, foreach: { data: bar.titleMenu, as: 'title' }\">\n                    <div class=\"menu-column\">\n                        <div class=\"menu-header\" data-bind=\"\n                            i18n: title.titleMenuName,\n                            style: {\n                                'color': title.textColor,\n                                'background-color': title.backgroundColor\n                            }\"></div>\n                        <div class=\"menu-items\" data-bind=\"foreach: title.treeMenu\">\n                            <div class=\"item\" data-bind=\"\n                                i18n: $component.getName($data),\n                                click: function() { $component.selectMenu($data, bar) },                        \n                                css: { \n                                    selected: false,\n                                    'divider': !$data.url || $data.url === '-'\n                                }\"></div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"user-info\">\n            <div class=\"menu-groups\">\n                <div class=\"item-group\">\n                    <span class=\"bar-item-title company\" data-bind=\"text: $component.companyName\"></span>\n                </div>\n                <span class=\"divider\"></span>\n                <div class=\"item-group\" data-bind=\"\n                        event: {\n                            mouseover: $component.userHover,\n                            mouseout: $component.userMouseOut\n                        },\n                        css: {\n                            hover: $component.userNameHover\n                        }\">\n                    <span class=\"bar-item-title user-name\" data-bind=\"text: $component.userName\"></span>\n                    <div class=\"menu-dropdown menu-item\">\n                        <div class=\"menu-column\">\n                            <div class=\"menu-items\">\n                                <div class=\"item\" data-bind=\"i18n: nts.uk.ui.toBeResource.manual, click: $component.manual\"></div>\n                                <div class=\"item divider\"></div>\n                                <div class=\"item\" data-bind=\"i18n: nts.uk.ui.toBeResource.logout, click: $component.logout\"></div>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class=\"avatar notification\"></div>\n        </div>\n        "
                         })
                     ], HeaderViewModel);
                     return HeaderViewModel;
