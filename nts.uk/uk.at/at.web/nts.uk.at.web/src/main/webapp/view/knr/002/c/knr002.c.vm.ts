@@ -345,7 +345,9 @@ module nts.uk.at.view.knr002.c {
                         res.sort((item1: any, item2: any) => { return item1.majorNo - item2.majorNo; });
                         vm.dataSource(res);
                         vm.bigItemData(_.uniqBy(vm.dataSource(), (item) => item.majorClassification));
-                        vm.currentCode1(vm.bigItemData()[0].majorClassification);
+                        if (vm.bigItemData().length > 0) {
+                            vm.currentCode1(vm.bigItemData()[0].majorClassification);
+                        }
                     }     
                 })
                 .fail(res => console.log('fail roi'))
