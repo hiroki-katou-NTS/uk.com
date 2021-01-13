@@ -102,7 +102,7 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 			this.withEmployeeErrors(domain.getEmployeeError());
 		}
 		this.withOutingTime(employeeId,ymd,domain.getOutingTime().orElse(null));
-		this.withBreakTime(employeeId,ymd,domain.getBreakTime().orElse(null));
+		this.withBreakTime(employeeId,ymd,domain.getBreakTime());
 		this.withAttendanceTime(employeeId,ymd,domain.getAttendanceTimeOfDailyPerformance().orElse(null));
 		this.withTimeLeaving(employeeId,ymd,domain.getAttendanceLeave().orElse(null));
 		this.withShortTime(employeeId,ymd,domain.getShortTime().orElse(null));
@@ -268,8 +268,9 @@ public class DailyRecordToAttendanceItemConverterImpl implements DailyRecordToAt
 	}
 
 	@Override
-	public Optional<BreakTimeOfDailyAttd> breakTime() {
-		return this.dailyRecord.getBreakTime().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()));
+	public BreakTimeOfDailyAttd breakTime() {
+		return this.dailyRecord.getBreakTime().map(d -> d.toDomain(this.dailyRecord.employeeId(), this.dailyRecord.workingDate()))
+				.orElse(new BreakTimeOfDailyAttd());
 	}
 
 	@Override

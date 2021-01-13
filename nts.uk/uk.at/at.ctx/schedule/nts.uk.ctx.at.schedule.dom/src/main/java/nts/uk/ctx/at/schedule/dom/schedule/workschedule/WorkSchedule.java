@@ -69,7 +69,7 @@ public class WorkSchedule implements DomainAggregate {
 	
 	/** 休憩時間帯**/
 	@Getter
-	private Optional<BreakTimeOfDailyAttd> lstBreakTime;
+	private BreakTimeOfDailyAttd lstBreakTime;
 	
 	/** 編集状態 **/
 	private List<EditStateOfDailyAttd> lstEditState;
@@ -91,11 +91,11 @@ public class WorkSchedule implements DomainAggregate {
 	 * 外出時間帯を追加したことによってコンパイルエラーが発生するため、
 	 * 一旦仮で外出時間帯以外を受け付けるコンストラクタを用意。
 	 */
-	public WorkSchedule(String sid, GeneralDate date, ConfirmedATR confirmedAtr
-			, WorkInfoOfDailyAttendance workInfo, AffiliationInforOfDailyAttd affInfo
-			, Optional<BreakTimeOfDailyAttd> breakTime, List<EditStateOfDailyAttd> editState
-			, Optional<TimeLeavingOfDailyAttd> timeLeaving, Optional<AttendanceTimeOfDailyAttendance> attendanceTime
-			, Optional<ShortTimeOfDailyAttd> sortTimeWork) {
+	public WorkSchedule(String sid, GeneralDate date, ConfirmedATR confirmedAtr, 
+			WorkInfoOfDailyAttendance workInfo, AffiliationInforOfDailyAttd affInfo, 
+			BreakTimeOfDailyAttd breakTime, List<EditStateOfDailyAttd> editState, 
+			Optional<TimeLeavingOfDailyAttd> timeLeaving, Optional<AttendanceTimeOfDailyAttendance> attendanceTime,
+			Optional<ShortTimeOfDailyAttd> sortTimeWork) {
 
 		this.employeeID = sid;
 		this.ymd = date;
@@ -141,7 +141,7 @@ public class WorkSchedule implements DomainAggregate {
 						NotUseAttribute.Not_use, 
 						DayOfWeek.convertFromCommonClass(date.dayOfWeekEnum())), 
 				AffiliationInforOfDailyAttd.create(require, employeeId, date), 
-				Optional.empty(), // TODO
+				new BreakTimeOfDailyAttd(),
 				new ArrayList<>(), 
 				Optional.of(TimeLeavingOfDailyAttd.createByPredetermineZone(
 						require, 
@@ -491,8 +491,7 @@ public class WorkSchedule implements DomainAggregate {
 				.collect(Collectors.toList());
 		
 		// update value of BreakTime
-		val newBreakTimeOfDailyAttd = new BreakTimeOfDailyAttd(newBreakTimeSheets);
-		this.lstBreakTime = Optional.of( newBreakTimeOfDailyAttd ); // TODO
+		this.lstBreakTime = new BreakTimeOfDailyAttd(newBreakTimeSheets);
 		
 		// update EditState of BreakTime(1...size)
 		this.lstEditState.removeIf( editState -> WS_AttendanceItem.isBreakTime( editState.getAttendanceItemId() ) );

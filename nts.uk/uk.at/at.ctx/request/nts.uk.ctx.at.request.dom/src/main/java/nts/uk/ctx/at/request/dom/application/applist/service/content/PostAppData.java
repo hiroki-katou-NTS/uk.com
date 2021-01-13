@@ -17,7 +17,7 @@ public class PostAppData {
 	/**
 	 * 開始時刻
 	 */
-	private int startTime;
+	private Integer startTime;
 	
 	/**
 	 * 勤務種類コード
@@ -32,17 +32,17 @@ public class PostAppData {
 	/**
 	 * 計算フレックス
 	 */
-	private int calculationFlex;
+	private Integer calculationFlex;
 	
 	/**
 	 * 計算就業外深夜
 	 */
-	private int calculationMidnightOutsideWork;
+	private Integer calculationMidnightOutsideWork;
 	
 	/**
 	 * 終了時刻
 	 */
-	private int endTime;
+	private Integer endTime;
 	
 	/**
 	 * 就業時間帯コード
