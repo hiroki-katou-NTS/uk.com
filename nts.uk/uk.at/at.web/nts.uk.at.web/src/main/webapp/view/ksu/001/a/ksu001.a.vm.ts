@@ -3565,6 +3565,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 if (userInfor.disPlayFormat === 'time' || userInfor.disPlayFormat === 'shortName') {
                     __viewContext.viewModel.viewAB.workplaceIdKCP013(input.unit == 0 ? input.workplaceId : input.workplaceGroupID);
+                    __viewContext.viewModel.viewAB.check(false);
                     __viewContext.viewModel.viewAB.filter(input.unit == 0 ? true : false);
                 } else {
                     if (input.unit == 0) {
