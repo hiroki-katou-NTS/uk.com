@@ -11,7 +11,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
+import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
 import nts.uk.ctx.at.function.dom.processexecution.updateprocessreexeccondition.refinementprocess.RefinementProcess;
 
 /**
@@ -28,7 +28,7 @@ public class ChangePersionList {
 	private RefinementProcess refinementProcess;
 
 	public ListLeaderOrNotEmp createProcessForChangePerOrWorktype(String companyId, List<String> empIds,
-			GeneralDate startDate, ProcessExecution procExec) {
+			GeneralDate startDate, UpdateProcessAutoExecution procExec) {
 		// 期間を計算
 		// GeneralDate p = this.calculatePeriod(closureId, period, companyId);
 		List<String> newEmpIdList = new ArrayList<>();

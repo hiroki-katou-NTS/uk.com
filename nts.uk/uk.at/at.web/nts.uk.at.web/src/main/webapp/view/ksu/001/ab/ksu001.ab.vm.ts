@@ -175,6 +175,20 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         workHolidayCls: objWorkType[0].workStyle
                     });
                     self.isRedColor = true;
+                } else if (objWorkType[0].workTimeSetting != 2 && objWorkType[0].workStyle == 0) { // HOLIDAY
+                    $("#extable").exTable("stickFields", ["workTypeName", "workTimeName", "startTime", "endTime"]);
+                    // 貼り付けのパターン3
+                    $("#extable").exTable("stickData", {
+                        workTypeCode: objWorkType[0].workTypeCode,
+                        workTypeName: objWorkType[0].abbName,
+                        workTimeCode: (objWorkTime != null) ? (objWorkTime.code) : null,
+                        workTimeName: (objWorkTime != null && objWorkTime.code != '') ? (objWorkTime.nameAb) : null,
+                        startTime: '',
+                        endTime: '',
+                        achievements: false,
+                        workHolidayCls: objWorkType[0].workStyle
+                    });
+                    self.isRedColor = true;
                 } else {
                     $("#extable").exTable("stickFields", ["workTypeName","workTimeName", "startTime", "endTime"]);
 

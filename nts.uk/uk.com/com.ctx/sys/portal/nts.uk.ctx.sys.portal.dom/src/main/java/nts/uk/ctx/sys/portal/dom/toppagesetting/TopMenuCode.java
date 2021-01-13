@@ -6,7 +6,7 @@ import nts.uk.shr.com.primitive.CodePrimitiveValue;
 /**
  * 
  * @author sonnh1
- *
+ *	 トップページコード
  */
 @StringMaxLength(4)
 public class TopMenuCode extends CodePrimitiveValue<TopMenuCode> {

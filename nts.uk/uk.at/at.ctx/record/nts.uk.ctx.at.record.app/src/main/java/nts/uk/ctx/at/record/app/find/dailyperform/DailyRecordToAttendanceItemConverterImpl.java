@@ -88,7 +88,7 @@ public class DailyRecordToAttendanceItemConverterImpl extends AttendanceItemConv
 			this.withEmployeeErrors(domain.getEmployeeError());
 		}
 		this.withOutingTime(domain.getOutingTime().orElse(null));
-		this.withBreakTime(domain.getBreakTime().orElse(null));
+		this.withBreakTime(domain.getBreakTime());
 		this.withAttendanceTime(domain.getAttendanceTimeOfDailyPerformance().orElse(null));
 		this.withTimeLeaving(domain.getAttendanceLeave().orElse(null));
 		this.withShortTime(domain.getShortTime().orElse(null));
@@ -304,9 +304,9 @@ public class DailyRecordToAttendanceItemConverterImpl extends AttendanceItemConv
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public Optional<BreakTimeOfDailyAttd> breakTime() {
+	public BreakTimeOfDailyAttd breakTime() {
 
-		return Optional.ofNullable((BreakTimeOfDailyAttd) getDomain(ItemConst.DAILY_BREAK_TIME_NAME));
+		return Optional.ofNullable((BreakTimeOfDailyAttd) getDomain(ItemConst.DAILY_BREAK_TIME_NAME)).orElse(new BreakTimeOfDailyAttd());
 	}
 
 	@Override

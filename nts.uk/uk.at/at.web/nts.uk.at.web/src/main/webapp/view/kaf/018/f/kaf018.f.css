@@ -39,3 +39,19 @@
 .kaf018-f-column-date {
 	text-align: center;
 }
+
+.kaf018-f-stt-confirmed {
+	background-color: #BFEA60;
+}
+
+.kaf018-f-stt-boss-unconfirmed {
+	color: #FF2D2D;
+}
+
+.kaf018-f-stt-no-target {
+	background-color: #a9a9a9;
+}
+
+.nts-legendbutton-panel {
+	z-index: 10000;
+}

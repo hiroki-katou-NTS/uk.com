@@ -139,6 +139,22 @@ body {
             z-index: 1029;
         }
     }
+    .div-ccgs08 {
+        top: 2px;
+        position: relative;
+        .img-notice {
+            width: 40px;
+        }
+        .img-red-circle {
+            position: relative;
+            bottom: 10px;
+            left: 5px;
+        }
+    }
+    .left-style {
+        left: 17px;
+        position: relative;
+    }
 }
 
 @media (max-width: 557px) {}
