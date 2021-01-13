@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.infra.repository.application.holidayshipment.print;
 
+import javax.ejb.Stateless;
+
 import com.aspose.cells.Cell;
 import com.aspose.cells.Cells;
 import com.aspose.cells.Worksheet;
@@ -7,6 +9,7 @@ import com.aspose.cells.Worksheet;
 import nts.arc.i18n.I18NText;
 import nts.uk.ctx.at.request.dom.application.common.service.print.PrintContentOfApp;
 
+@Stateless
 public class AsposeHolidayShipment {
     private final String EMPTY = "";
     private final String HALF_WIDTH_SPACE = " ";
