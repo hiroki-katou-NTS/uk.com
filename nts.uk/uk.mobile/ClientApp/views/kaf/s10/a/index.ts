@@ -151,7 +151,6 @@ export class KafS10Component extends KafS00ShrComponent {
             let step1 = self.$refs.step1 as KafS10Step1Component;
             step1.loadData(self.model.appHdWorkDispInfo);
             step1.createHoursWorkTime();
-            console.log('alo');
             // エラーメッセージ(Msg_1556)を画面項目「A_A3_1」に表示する
             // 帰ってきた「休日出勤申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係あり)．表示する実績内容．実績詳細」== empty
             let c1 = _.isNil(_.get(self.model, 'appHdWorkDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail'));
@@ -163,10 +162,8 @@ export class KafS10Component extends KafS00ShrComponent {
             // 帰ってきた「休日出勤申請起動時の表示情報．休出申請設定．残業休出申請共通設定．実績超過区分」= チェックする（登録不可）
             let c3 = _.get(self.model, 'appHdWorkDispInfo.holidayWorkAppSet.overtimeLeaveAppCommonSet.performanceExcessAtr') == AppDateContradictionAtr.CHECKNOTREGISTER;
             if ((c1 || c2) && c3) {
-                console.log('true');
                 self.isMsg_1556 = true;
             } else {
-                console.log('false');
                 self.isMsg_1556 = false;
             }
             self.$mask('hide');
