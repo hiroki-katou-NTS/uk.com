@@ -39,7 +39,7 @@
     <div v-if="true" class="card card-label">
       <!--A6_1-->
       <div class="card-header uk-bg-accordion">
-        <span>{{ (true ? 'KAFS06_12' : 'KAFS06_14') | i18n }}</span>
+        <span>{{ (!c9 ? 'KAFS06_12' : 'KAFS06_14') | i18n }}</span>
         <span class="badge badge-warning">必須</span>
       </div>
 
