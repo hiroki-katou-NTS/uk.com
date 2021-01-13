@@ -256,14 +256,14 @@ module nts.uk.at.view.kmk004.l {
 				}
 
 				vm.$ajax(KMK004M_API.REGISTER_WORK_TIME, ko.toJS({ workTimeSetWkps: param })).done(() => {
-					vm.$dialog.info({ messageId: "Msg_15" })
 					_.remove(ko.unwrap(vm.years), ((value) => {
 						return value.year == ko.unwrap(vm.selectedYear) as number;
 					}));
 					vm.years.push(new IYear(ko.unwrap(vm.selectedYear) as number, false));
 					vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
 					vm.getwkpIdList();
-				}).then(() => {
+				}).then(() => vm.$dialog.info({ messageId: "Msg_15" }))
+				.then(() => {
 					$(document).ready(function() {
 						$('.listbox').focus();
 					})
