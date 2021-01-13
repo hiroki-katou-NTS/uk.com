@@ -22,6 +22,7 @@ import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.AnnualWorkLedger
 import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.AnnualWorkLedgerExportDataSource;
 import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.AnnualWorkLedgerOutputSetting;
 import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.CreateAnnualWorkLedgerContentQuery;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.EmployeeInfor;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.StatusOfEmployee;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
@@ -42,6 +43,9 @@ import nts.uk.shr.com.context.AppContexts;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -111,7 +115,7 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
 
         // 1 Call [No.600]社員ID（List）から社員コードと表示名を取得（削除社員考慮）
         List<EmployeeBasicInfoImport> lstEmployeeInfo = empEmployeeAdapter.getEmpInfoLstBySids(lstEmpIds, datePeriod, true, false);
-        Map<String, EmployeeBasicInfoImport> mapEmployeeInfo = lstEmployeeInfo.stream()
+        Map<String, EmployeeBasicInfoImport> mapEmployeeInfo = lstEmployeeInfo.stream().filter(distinctByKey(EmployeeBasicInfoImport::getSid))
                 .collect(Collectors.toMap(EmployeeBasicInfoImport::getSid, i -> i));
 
         // 2 Call 会社を取得する
@@ -123,7 +127,7 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
                 .collect(Collectors.toList());
         // 3.1 Call [No.560]職場IDから職場の情報をすべて取得する
         List<WorkplaceInfor> lstWorkplaceInfo = workplaceConfigInfoAdapter.getWorkplaceInforByWkpIds(companyId, listWorkplaceId, baseDate);
-        Map<String, WorkplaceInfor> mapWorkplaceInfo = lstWorkplaceInfo.stream()
+        Map<String, WorkplaceInfor> mapWorkplaceInfo = lstWorkplaceInfo.stream().filter(distinctByKey(WorkplaceInfor::getWorkplaceId))
                 .collect(Collectors.toMap(WorkplaceInfor::getWorkplaceId, i -> i));
 
         Map<String, WorkplaceInfor> mapEmployeeWorkplace = new HashMap<>();
@@ -136,7 +140,7 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
         RequireClosureDateEmploymentService require1 = new RequireClosureDateEmploymentService(
                 shareEmploymentAdapter, closureRepository, closureEmploymentRepository);
         List<ClosureDateEmployment> lstClosureDateEmployment = GetClosureDateEmploymentDomainService.get(require1, baseDate, lstEmpIds);
-        Map<String, ClosureDateEmployment> mapClosureDateEmployment = lstClosureDateEmployment.stream()
+        Map<String, ClosureDateEmployment> mapClosureDateEmployment = lstClosureDateEmployment.stream().filter(distinctByKey(ClosureDateEmployment::getEmployeeId))
                 .collect(Collectors.toMap(ClosureDateEmployment::getEmployeeId, i -> i));
 
         // 5 Call 年間勤務台帳の出力設定の詳細を取得する
@@ -218,5 +222,11 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
         public Map<String, List<MonthlyRecordValueImport>> getActualMultipleMonth(List<String> employeeIds, YearMonthPeriod period, List<Integer> itemIds) {
             return actualMultipleMonthAdapter.getActualMultipleMonth(employeeIds, period, itemIds);
         }
+    }
+    public static <T> Predicate<T> distinctByKey(
+            Function<? super T, ?> keyExtractor) {
+
+        Map<Object, Boolean> seen = new ConcurrentHashMap<>();
+        return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
 }

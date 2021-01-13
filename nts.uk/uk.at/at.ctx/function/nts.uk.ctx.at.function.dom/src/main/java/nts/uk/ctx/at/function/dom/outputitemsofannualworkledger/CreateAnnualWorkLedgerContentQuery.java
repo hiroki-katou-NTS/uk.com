@@ -23,6 +23,9 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 
 import javax.ejb.Stateless;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -135,7 +138,7 @@ public class CreateAnnualWorkLedgerContentQuery {
         }
         Map<GeneralDate, Map<Integer, AttendanceItemDtoValue>> allValue = listAttendance.stream()
                 .collect(Collectors.toMap(AttendanceResultDto::getWorkingDate,
-                        k -> k.getAttendanceItems().stream()
+                        k -> k.getAttendanceItems().stream().filter(distinctByKey(AttendanceItemDtoValue::getItemId))
                                 .collect(Collectors.toMap(AttendanceItemDtoValue::getItemId, l -> l))));
         // Loop 出力項目 日次
         for (int index = 0; index < dailyOutputItemList.size(); index++) {
@@ -222,7 +225,7 @@ public class CreateAnnualWorkLedgerContentQuery {
         }
         Map<YearMonth, Map<Integer, ItemValue>> allValue = listAttendants.stream()
                 .collect(Collectors.toMap(MonthlyRecordValueImport::getYearMonth,
-                        k -> k.getItemValues().stream()
+                        k -> k.getItemValues().stream().filter(distinctByKey(ItemValue::getItemId))
                                 .collect(Collectors.toMap(ItemValue::getItemId, l -> l))));
         // Loop 出力項目 日次
         for (OutputItem monthlyItem : monthlyOutputItems) {
@@ -270,5 +273,11 @@ public class CreateAnnualWorkLedgerContentQuery {
         Map<String, List<MonthlyRecordValueImport>> getActualMultipleMonth(
                 List<String> employeeIds, YearMonthPeriod period, List<Integer> itemIds);
 
+    }
+    public static <T> Predicate<T> distinctByKey(
+            Function<? super T, ?> keyExtractor) {
+
+        Map<Object, Boolean> seen = new ConcurrentHashMap<>();
+        return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
 }

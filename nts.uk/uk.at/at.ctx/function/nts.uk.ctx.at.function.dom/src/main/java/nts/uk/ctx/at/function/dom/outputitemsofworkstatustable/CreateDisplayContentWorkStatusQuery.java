@@ -15,6 +15,9 @@ import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.OperatorsCo
 
 import javax.ejb.Stateless;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -32,16 +35,16 @@ public class CreateDisplayContentWorkStatusQuery {
         if (outputSettings == null) {
             throw new BusinessException("Msg_1816");
         }
-        val listSid = employeeInfoList.parallelStream().map(EmployeeInfor::getEmployeeId).collect(Collectors.toList());
+        val listSid = employeeInfoList.stream().map(EmployeeInfor::getEmployeeId).distinct().collect(Collectors.toList());
         val listEmployeeStatus = require.getListAffComHistByListSidAndPeriod(listSid, datePeriod);
 
-        val mapSids = employeeInfoList.parallelStream().collect(Collectors.toMap(EmployeeInfor::getEmployeeId, e -> e));
+        val mapSids = employeeInfoList.stream().filter(distinctByKey(EmployeeInfor::getEmployeeId)).collect(Collectors.toMap(EmployeeInfor::getEmployeeId, e -> e));
 
-        val mapWrps = workPlaceInfo.parallelStream().collect(Collectors.toMap(WorkPlaceInfo::getWorkPlaceId, e -> e));
+        val mapWrps =  workPlaceInfo.stream().filter(distinctByKey(WorkPlaceInfo::getWorkPlaceId)).collect(Collectors.toMap(WorkPlaceInfo::getWorkPlaceId, e -> e));
 
         val rs = new ArrayList<DisplayContentWorkStatus>();
 
-        val outputItems = outputSettings.getOutputItem().parallelStream().filter(OutputItem::isPrintTargetFlag)
+        val outputItems = outputSettings.getOutputItem().stream().filter(OutputItem::isPrintTargetFlag)
                 .collect(Collectors.toList());
         if (outputItems.isEmpty()) {
             throw new BusinessException("Msg_1816");
@@ -76,7 +79,7 @@ public class CreateDisplayContentWorkStatusQuery {
             }
             Map<GeneralDate, Map<Integer, AttendanceItemDtoValue>> allValue = listAttendants.stream()
                     .collect(Collectors.toMap(AttendanceResultDto::getWorkingDate,
-                            k -> k.getAttendanceItems().stream()
+                            k -> k.getAttendanceItems().stream().filter(distinctByKey(AttendanceItemDtoValue::getItemId))
                                     .collect(Collectors.toMap(AttendanceItemDtoValue::getItemId, l -> l))));
             val itemOneLines = new ArrayList<OutputItemOneLine>();
             for (val j : outputItems) {
@@ -118,7 +121,7 @@ public class CreateDisplayContentWorkStatusQuery {
 
 
                 });
-                val total = itemValue.parallelStream().filter(q -> q.getActualValue() != null)
+                val total = itemValue.stream().filter(q -> q.getActualValue() != null)
                         .mapToDouble(DailyValue::getActualValue).sum();
                 itemOneLines.add(
                         new OutputItemOneLine(
@@ -143,5 +146,11 @@ public class CreateDisplayContentWorkStatusQuery {
         List<StatusOfEmployee> getListAffComHistByListSidAndPeriod(List<String> sid, DatePeriod datePeriod);
 
         List<AttendanceResultDto> getValueOf(List<String> employeeIds, DatePeriod workingDatePeriod, Collection<Integer> itemIds);
+    }
+    public static <T> Predicate<T> distinctByKey(
+            Function<? super T, ?> keyExtractor) {
+
+        Map<Object, Boolean> seen = new ConcurrentHashMap<>();
+        return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
 }
