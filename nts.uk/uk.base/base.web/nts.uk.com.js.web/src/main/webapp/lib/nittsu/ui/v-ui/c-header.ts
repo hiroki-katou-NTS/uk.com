@@ -84,9 +84,11 @@ module nts.uk.ui.header {
                     <span class="bar-item-title user-name" data-bind="text: $component.userName"></span>
                     <div class="menu-dropdown menu-item">
                         <div class="menu-column">
-                            <div class="menu-items" data-bind="i18n: nts.uk.ui.toBeResource.manual"></div>
-                            <div class="menu-items divider"></div>
-                            <div class="menu-items" data-bind="i18n: nts.uk.ui.toBeResource.logout"></div>
+                            <div class="menu-items">
+                                <div class="item" data-bind="i18n: nts.uk.ui.toBeResource.manual, click: $component.manual"></div>
+                                <div class="item divider"></div>
+                                <div class="item" data-bind="i18n: nts.uk.ui.toBeResource.logout, click: $component.logout"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -143,7 +145,7 @@ module nts.uk.ui.header {
                 read: () => {
                     const [first] = ko.unwrap<any>(vm.companies);
 
-                    if(first) {
+                    if (first) {
                         return first.companyName || '';
                     }
 
@@ -306,7 +308,41 @@ module nts.uk.ui.header {
         userMouseOut() {
             const vm = this;
 
-            vm.userNameHover(false);            
+            vm.userNameHover(false);
+        }
+
+        manual() {
+            const { pathToManual } = __viewContext.env;
+
+            // jump to index page of manual
+            window.open(pathToManual.replace(/\{PGID\}/, "index"));
+        }
+
+        logout() {
+            const vm = this;
+            const { request, sessionStorage } = nts.uk;
+
+            const COMPANY_KEY = "nts.uk.session.COMPANY";
+            const PROGRAM_KEY = "nts.uk.session.PROGRAM";
+
+            const MENU_SET_KEY = "nts.uk.session.MENU_SET";
+            const EMPLOYEE_SETTING = 'nts.uk.session.EMPLOYEE_SETTING';
+
+            // TODO: Jump to login screen and request logout to server
+            vm.$ajax('com', '/sys/portal/webmenu/logout')
+                .then(function () {
+                    sessionStorage.removeItem(COMPANY_KEY);
+                    sessionStorage.removeItem(PROGRAM_KEY);
+
+                    sessionStorage.removeItem(MENU_SET_KEY);
+                    sessionStorage.removeItem(EMPLOYEE_SETTING);
+
+                    // cannot remove by flag: htmlOnly
+                    // cookie.remove("nts.uk.sescon", { path: "/" });
+
+
+                    request.login.jumpToUsedLoginPage();
+                });
         }
     }
 

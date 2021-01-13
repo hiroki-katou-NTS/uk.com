@@ -284,6 +284,29 @@ div#master-wrapper {
 					&>.menu-dropdown {
 						left: auto;
 						right: 16px;
+
+						.menu-items {					
+							&>.item {
+								cursor: pointer;
+								color: #000;
+								padding-left: 10px;
+	
+								&.selected {
+									color: #fff;
+									background-color: #30CC40;
+	
+									&:hover {
+										color: #000;
+										background-color: #F7F7D1;
+									}
+								}
+	
+								&:hover {
+									color: #000;
+									background-color: #F7F7D1;
+								}
+							}
+						}
 					}
 				}
 			}
