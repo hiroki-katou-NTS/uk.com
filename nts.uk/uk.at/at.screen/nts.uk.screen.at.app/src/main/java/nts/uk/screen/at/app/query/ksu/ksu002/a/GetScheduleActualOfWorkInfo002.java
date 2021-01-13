@@ -25,7 +25,7 @@ public class GetScheduleActualOfWorkInfo002 {
 		// lay data Schedule
 		List<WorkScheduleWorkInforDto> listDataSchedule = getScheduleOfWorkInfo002.getDataScheduleOfWorkInfo(param);
 
-		if (param.getActualData()) {
+		if (param.actualData) {
 			// lay data Daily
 			List<WorkScheduleWorkInforDto> listDataDaily = getWorkRecord.getDataActualOfWorkInfo(param);
 			

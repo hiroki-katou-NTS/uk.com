@@ -9,11 +9,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TimeWithCalculationImport {
 	/**
-	 * time
+	 * time 時間
 	 */
 	private Integer time;
 	/**
-	 * calTime
+	 * calTime 計算時間
 	 */
 	private Integer calTime;
 }

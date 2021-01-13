@@ -8,34 +8,41 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 
 /**
+ * Domain アラームリストパターン設定<br>
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.アラーム.アラームリストパターン設定
+ *
  * @author dxthuong
- * アラームリストパターン設定
  */
 @Getter
 public class AlarmPatternSetting  extends AggregateRoot {
 	/**
-	 * list check condition
+	 * list check condition.<br>
+	 * カテゴリ別チェック条件
 	 */
 	private List<CheckCondition> checkConList = new ArrayList<CheckCondition>();
 	/**
-	 * alarm pattern code
+	 * alarm pattern code.<br>
+	 * アラームリストパターンコード
 	 */
 	private AlarmPatternCode alarmPatternCD;
 	/**
-	 * companyId
+	 * companyId.<br>
+	 * 会社ID
 	 */
 	private String companyID;
 	/**
-	 * alarm permission setting
+	 * alarm permission setting.<br>
+	 * アラームリスト権限設定
 	 */
 	private AlarmPermissionSetting alarmPerSet;
 	/**
-	 * alarm pattern name
+	 * alarm pattern name.<br>
+	 * アラームリストパターン名称
 	 */
 	private AlarmPatternName alarmPatternName;
-	
+
 	public AlarmPatternSetting(List<CheckCondition> checkConList, String alarmPatternCD, String companyID,
-			AlarmPermissionSetting alarmPerSet, String alarmPatternName) {
+	                           AlarmPermissionSetting alarmPerSet, String alarmPatternName) {
 		super();
 		this.checkConList = checkConList;
 		this.alarmPatternCD = new AlarmPatternCode(alarmPatternCD);
@@ -43,11 +50,12 @@ public class AlarmPatternSetting  extends AggregateRoot {
 		this.alarmPerSet = alarmPerSet;
 		this.alarmPatternName = new AlarmPatternName(alarmPatternName);
 	}
-	
+
 
 	public boolean selectedCheckCodition() {
-		if(this.checkConList.isEmpty())
+		if(this.checkConList.isEmpty()) {
 			throw new BusinessException("Msg_811");
+		}
 		return true;
 	}
 
@@ -65,7 +73,7 @@ public class AlarmPatternSetting  extends AggregateRoot {
 	public void setAlarmPatternName(String alarmPatternName) {
 		this.alarmPatternName = new AlarmPatternName(alarmPatternName);
 	}
-	
-	
+
+
 
 }

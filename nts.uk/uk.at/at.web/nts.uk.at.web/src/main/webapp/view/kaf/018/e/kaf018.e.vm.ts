@@ -3,6 +3,7 @@
 module nts.uk.at.view.kaf018.e.viewmodel {
 	import EmpInfo = nts.uk.at.view.kaf018.d.viewmodel.EmpInfo;
 	import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
+	import ApprovalPhaseStateImport_New = nts.uk.at.view.kaf018.share.model.ApprovalPhaseStateImport_New;
 
 	@bean()
 	class Kaf018EViewModel extends ko.ViewModel {
@@ -70,12 +71,12 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 					{ headerText: vm.$i18n('KAF018_384'), key: 'prePostAtr', width: 70 },
 					{ headerText: vm.$i18n('KAF018_386'), key: 'content', width: 600 },
 					{ headerText: vm.$i18n('KAF018_387'), key: 'reflectedState', dataType: 'number', width: 150, formatter: (value: number) => vm.getReflectedStateText(value) },
-					{ headerText: vm.$i18n('KAF018_388'), key: 'approvalStatus', width: 150 },
-					{ headerText: vm.$i18n('KAF018_389'), key: 'phase1', width: 250 },
-					{ headerText: vm.$i18n('KAF018_390'), key: 'phase2', width: 250 },
-					{ headerText: vm.$i18n('KAF018_391'), key: 'phase3', width: 250 },
-					{ headerText: vm.$i18n('KAF018_392'), key: 'phase4', width: 250 },
-					{ headerText: vm.$i18n('KAF018_393'), key: 'phase5', width: 267 }
+					{ headerText: vm.$i18n('KAF018_388'), key: 'approvalStatus', width: 150, formatter: vm.createApprovalStatus },
+					{ headerText: vm.$i18n('KAF018_389'), key: 'phase1', width: 400 },
+					{ headerText: vm.$i18n('KAF018_390'), key: 'phase2', width: 400 },
+					{ headerText: vm.$i18n('KAF018_391'), key: 'phase3', width: 400 },
+					{ headerText: vm.$i18n('KAF018_392'), key: 'phase4', width: 400 },
+					{ headerText: vm.$i18n('KAF018_393'), key: 'phase5', width: 417 }
 				],
 				features: [
 					{
@@ -90,6 +91,13 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 					}
 				]
 			});
+		}
+		
+		createApprovalStatus(value: any) {
+			if(value) {
+				return value.replace(/ /g, '&nbsp;');	
+			}
+			return "";
 		}
 		
 		getReflectedStateText(value: number) {
@@ -220,7 +228,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 			} else {
 				this.dateStr = moment(apprSttEmpDateContentDto.application.opAppStartDate,'YYYY/MM/DD').format('M/D(ddd)') + 
 								vm.$i18n('KAF018_394') + 
-								moment(apprSttEmpDateContentDto.application.opAppEndDate,'YYYY/MM/DD').format('M/D (ddd)');
+								moment(apprSttEmpDateContentDto.application.opAppEndDate,'YYYY/MM/DD').format('M/D(ddd)');
 			}
 			switch(apprSttEmpDateContentDto.application.appType) {
 				case AppType.OVER_TIME_APPLICATION:
@@ -436,19 +444,6 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 		DENIAL = 5
 	}
 	
-	enum ApprovalPhaseStateImport_New {
-		/** 0:未承認 */
-		UNAPPROVED = 0,
-		/** 1:承認済 */
-		APPROVED = 1,
-		/** 2:否認 */
-		DENIAL = 2,
-		/** 3:差し戻し */
-		REMAND = 3,
-		/** 4:本人差し戻し */
-		ORIGINAL_REMAND = 4
-	}
-	
 	class CellState {
         rowKey: string;
         columnKey: string;
@@ -461,6 +456,6 @@ module nts.uk.at.view.kaf018.e.viewmodel {
     }
 
 	const API = {
-		getApprSttStartByEmpDate: "at/screen/application/approvalstatus/getApprSttStartByEmpDate",
+		getApprSttStartByEmpDate: "at/request/application/approvalstatus/getApprSttStartByEmpDate",
 	}
 }

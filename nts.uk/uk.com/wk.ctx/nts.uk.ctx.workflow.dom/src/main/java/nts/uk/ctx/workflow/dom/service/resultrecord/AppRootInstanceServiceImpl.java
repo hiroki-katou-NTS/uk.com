@@ -215,6 +215,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 		approvalRootState.setEmployeeID(appRootInstance.getEmployeeID());
 		approvalRootState.setApprovalRecordDate(appRootConfirm.getRecordDate());
 		approvalRootState.setListApprovalPhaseState(new ArrayList<>());
+		approvalRootState.setRootStateID(appRootConfirm.getRootID());
 		// ドメインモデル「承認ルート中間データ」の値をoutput「承認ルートインスタンス」に入れる
 		appRootInstance.getListAppPhase().forEach(appPhaseInstance -> {
 			ApprovalPhaseState approvalPhaseState = new ApprovalPhaseState();
@@ -318,10 +319,10 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 				continue;
 			}
 			approvalPhaseState.getListApprovalFrame().forEach(frameState -> {
-//				if(frameState.getApprovalAtr()!=ApprovalBehaviorAtr.UNAPPROVED){
-//					return;
-//				}
-//				approverIDLst.addAll(frameState.getListApproverState().stream().map(x -> x.getApproverID()).collect(Collectors.toList()));
+				if(frameState.isApproved(approvalPhaseState.getApprovalForm())){
+					return;
+				}
+				approverIDLst.addAll(frameState.getLstApproverInfo().stream().map(x -> x.getApproverID()).collect(Collectors.toList()));
 			});
 		}
 		// アルゴリズム「指定した社員が指定した承認者リストの代行承認者かの判断」を実行する

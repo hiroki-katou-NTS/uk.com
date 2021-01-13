@@ -39,35 +39,35 @@ public class AddAlarmPatternSettingCommandHandler extends CommandHandler<AddAlar
 
 	@Override
 	protected void handle(CommandHandlerContext<AddAlarmPatternSettingCommand> context) {
-		
+
 		AddAlarmPatternSettingCommand c = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		
+
 		// check duplicate code
 		if (!domainService.checkDuplicateCode(c.getAlarmPatternCD())) {
-			
+
 			AlarmPermissionSetting alarmPerSet = new AlarmPermissionSetting(c.getAlarmPatternCD(), companyId,
 					c.getAlarmPerSet().isAuthSetting(), c.getAlarmPerSet().getRoleIds());
 
 			List<CheckCondition> checkConList = c.getCheckConditonList().stream()
 					.map(x -> convertToCheckCondition(x))
 					.collect(Collectors.toList());
-			
+
 			// create domain
 			AlarmPatternSetting domain = new AlarmPatternSetting(checkConList, c.getAlarmPatternCD(), companyId,
 					alarmPerSet, c.getAlarmPatterName());
-			
+
 			// check domain logic
 			if (domain.selectedCheckCodition()) {
 				// アラームリストのパターンを新規登録する (Add pattern of alarm list )
 				repo.create(domain);
 			}
-			
+
 		}else{
 			throw new BusinessException("Msg_3");
 		}
 	}
-	
+
 	public CheckCondition convertToCheckCondition (CheckConditionCommand command) {
 		List<ExtractionRangeBase> extractionList = new ArrayList<>();
 		if (command.getAlarmCategory() == AlarmCategory.DAILY.value
@@ -86,23 +86,23 @@ public class AddAlarmPatternSettingCommandHandler extends CommandHandler<AddAlar
 				extractionList.add(e.toDomain());
 			});
 		} else if(command.getAlarmCategory() == AlarmCategory.AGREEMENT.value) {
-			
+
 			extractionList.add(command.getExtractionPeriodDaily().toDomain());
 			command.getListExtractionMonthly().forEach(e -> {
 				extractionList.add(e.toDomain());
 			});
 			AYear extractYear = command.getExtractionYear().toDomain();
 			extractionList.add(extractYear);
-			
+
 			extractionList.forEach( e-> {
 				e.setExtractionId(extractYear.getExtractionId());
 				e.setExtractionRange(extractYear.getExtractionRange());
 			});
-			
+
 			// Add averageMonth to extractionList
 			AverageMonth averageMonth = command.getExtractionAverMonth().toDomain();
 			extractionList.add(averageMonth);
-			
+
 			// Set ExtractionId & ExtractionRange
 			extractionList.forEach(e -> {
 				e.setExtractionId(averageMonth.getExtractionId());
@@ -111,5 +111,5 @@ public class AddAlarmPatternSettingCommandHandler extends CommandHandler<AddAlar
 		}
 		return new CheckCondition(EnumAdaptor.valueOf(command.getAlarmCategory(), AlarmCategory.class), command.getCheckConditionCodes(), extractionList);
 	}
-	
+
 }
