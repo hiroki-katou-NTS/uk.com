@@ -19,6 +19,8 @@ import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.RemainingHolidayInforDto;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.AppHdsubRec;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.AppHdsubRecRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.paymana.PayoutSubofHDManagementDto;
@@ -78,13 +80,23 @@ public class HolidayShipmentScreenBFinder {
 	@Inject
 	private PayoutSubofHDManaRepository payoutSubofHDManaRepository;
 	
+	@Inject
+	private AppHdsubRecRepository appHdsubRecRepository;
+	
 	// 1.振休振出申請（詳細）起動処理(đơn xin nghỉ bù làm bù(detail) Xử lý khởi động)
 	public DisplayInforWhenStarting startPageBRefactor(String companyId, String appId, AppDispInfoStartupDto appDispInfoStartup) {
 		DisplayInforWhenStarting result = new DisplayInforWhenStarting();
+		result.appDispInfoStartup = appDispInfoStartup;
 		
 		//ドメインモデル「振休振出申請」を取得する(Lấy domain[đơn xin nghi bu lam bu])
 		Optional<RecruitmentApp> rec = recRepo.findByAppId(appId);
 		Optional<AbsenceLeaveApp> abs = absRepo.findByAppId(appId);
+		Optional<AppHdsubRec> appHdsubRec = appHdsubRecRepository.findByAppId(appId);
+		if(appHdsubRec.isPresent() && rec.isPresent()) {
+			abs = absRepo.findByAppId(appHdsubRec.get().getAbsenceLeaveAppID());
+		}else if(appHdsubRec.isPresent()){
+			rec = recRepo.findByAppId(appHdsubRec.get().getRecAppID());
+		}
 		
 		result.setRec(rec.map(c-> RecruitmentAppCmd.fromDomain(c)).orElse(null));
 		result.setAbs(abs.map(c-> AbsenceLeaveAppCmd.fromDomain(c)).orElse(null));
@@ -98,21 +110,22 @@ public class HolidayShipmentScreenBFinder {
 		
 		// 振休振出申請設定の取得(get setting đơn xin nghỉ bù làm bù)
 		aFinder.getWithDrawalReqSet(companyId, result);
-		
-		DisplayInformationApplication applicationForHoliday = new DisplayInformationApplication();
-		//振休用勤務種類の取得(Lấy worktype nghỉ bù)
-		List<WorkType> workTypeListAbs = aFinder.getWorkTypeForHoliday(companyId, appDispInfoStartup.getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode(), result.abs.workInformation.getWorkType());
-		//振休申請起動時の表示情報．勤務種類リスト=取得した振休用勤務種類(List) /(DisplayInfo khi khởi động đơn xin nghỉ bù. WorktypeList= worktype nghỉ bù(List) đã lấy)
-		applicationForHoliday.setWorkTypeList(workTypeListAbs.stream().map(c->WorkTypeDto.fromDomain(c)).collect(Collectors.toList()));
-		result.applicationForHoliday = applicationForHoliday;
-		
-		DisplayInformationApplication applicationForWorkingDay = new DisplayInformationApplication();
-		//振出用勤務種類の取得(Lấy worktype làm bù)
-		List<WorkType> workTypeListRec = aFinder.getWorkTypeForHoliday(companyId, appDispInfoStartup.getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode(), result.rec.workInformation.getWorkType());
-		//振出申請起動時の表示情報．勤務種類リスト=取得した振出用勤務種類(List)/ (DisplayInfo khi khởi động đơn xin làm bù. WorktypeList = worktype làm bù(list đã lấy))
-		applicationForHoliday.setWorkTypeList(workTypeListRec.stream().map(c->WorkTypeDto.fromDomain(c)).collect(Collectors.toList()));
-		result.applicationForWorkingDay = applicationForWorkingDay;
-		
+		if(result.existAbs()) {
+			DisplayInformationApplication applicationForHoliday = new DisplayInformationApplication();
+			//振休用勤務種類の取得(Lấy worktype nghỉ bù)
+			List<WorkType> workTypeListAbs = aFinder.getWorkTypeForHoliday(companyId, appDispInfoStartup.getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode(), result.abs.workInformation.getWorkType());
+			//振休申請起動時の表示情報．勤務種類リスト=取得した振休用勤務種類(List) /(DisplayInfo khi khởi động đơn xin nghỉ bù. WorktypeList= worktype nghỉ bù(List) đã lấy)
+			applicationForHoliday.setWorkTypeList(workTypeListAbs.stream().map(c->WorkTypeDto.fromDomain(c)).collect(Collectors.toList()));
+			result.applicationForHoliday = applicationForHoliday;
+		}
+		if(result.existRec()) {
+			DisplayInformationApplication applicationForWorkingDay = new DisplayInformationApplication();
+			//振出用勤務種類の取得(Lấy worktype làm bù)
+			List<WorkType> workTypeListRec = aFinder.getWorkTypeForWorkingDay(companyId, appDispInfoStartup.getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode(), result.rec.workInformation.getWorkType());
+			//振出申請起動時の表示情報．勤務種類リスト=取得した振出用勤務種類(List)/ (DisplayInfo khi khởi động đơn xin làm bù. WorktypeList = worktype làm bù(list đã lấy))
+			applicationForWorkingDay.setWorkTypeList(workTypeListRec.stream().map(c->WorkTypeDto.fromDomain(c)).collect(Collectors.toList()));
+			result.applicationForWorkingDay = applicationForWorkingDay;
+		}
 		//[No.506]振休残数を取得する ([No.506]Lấy số ngày nghỉ bù còn lại)
 		AbsRecRemainMngOfInPeriod absRecMngRemain = AbsenceReruitmentMngInPeriodQuery.getAbsRecMngRemain(remainNumberTempRequireService.createRequire(), new CacheCarrier(), employeeID, GeneralDate.today());
 		

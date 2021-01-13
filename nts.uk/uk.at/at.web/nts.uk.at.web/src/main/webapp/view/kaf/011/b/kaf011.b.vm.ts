@@ -1,4 +1,4 @@
-module nts.uk.at.view.kaf007_ref.c.viewmodel {
+module nts.uk.at.view.kaf011.b.viewmodel {
     import PrintContentOfEachAppDto = nts.uk.at.view.kaf000.shr.viewmodel.PrintContentOfEachAppDto;
 	
 	import Kaf000AViewModel = nts.uk.at.view.kaf000.a.viewmodel.Kaf000AViewModel;
@@ -7,21 +7,27 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
 	import RecruitmentApp = nts.uk.at.view.kaf011.RecruitmentApp;
 	import AbsenceLeaveApp = nts.uk.at.view.kaf011.AbsenceLeaveApp;
 	import Comment = nts.uk.at.view.kaf011.Comment;
+	import getText = nts.uk.resource.getText;
+	import block = nts.uk.ui.block;
+	import ajax = nts.uk.request.ajax;
 
-    @component({
-        name: 'kaf011-b',
-        template: '/nts.uk.at.web/view/kaf/011/b/index.xhtml'
-    })
-    class Kaf011BViewModel extends ko.ViewModel {
+    export class Kaf011BViewModel{
 
-        appType: KnockoutObservable<number>;
+        appType: KnockoutObservable<number> = ko.observable(AppType.COMPLEMENT_LEAVE_APPLICATION);
+		applicationCommon: KnockoutObservable<Application> = ko.observable(new Application());
         appDispInfoStartupOutput: any;
         application: KnockoutObservable<Application>;
         approvalReason: KnockoutObservable<string>;
         printContentOfEachAppDto: KnockoutObservable<PrintContentOfEachAppDto>;
 		time: KnockoutObservable<number> = ko.observable(1);
-
-        created(
+		appCombinaSelected = ko.observable(0);
+		recruitmentApp = new RecruitmentApp(0, false);
+		absenceLeaveApp = new AbsenceLeaveApp(1, false);
+		comment = new Comment();
+		displayInforWhenStarting = ko.observable(null);
+		remainDays = ko.observable('');
+		
+        constructor(
             params: {
                 appType: any,
                 application: any,
@@ -38,13 +44,37 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
             vm.printContentOfEachAppDto = ko.observable(params.printContentOfEachAppDto);
             vm.approvalReason = params.approvalReason;
 			vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
-            // gui event con ra viewmodel cha
-            // nhớ dùng bind(vm) để ngữ cảnh lúc thực thi
-            // luôn là component
             params.eventUpdate(vm.update.bind(vm));
             params.eventReload(vm.reload.bind(vm));
+			if(vm.application().appID()!= null && params.appType() == AppType.COMPLEMENT_LEAVE_APPLICATION){
+				vm.loadData();
+			}			
         }
-
+		
+		loadData(){
+			const vm = this;
+			block.invisible();
+				ajax('at/request/application/holidayshipment/startPageBRefactor',{appID: vm.application().appID(), appDispInfoStartupDto: vm.appDispInfoStartupOutput()}).then((data: any) =>{
+					console.log(data);
+					vm.displayInforWhenStarting(data);
+					vm.remainDays(data.remainingHolidayInfor.remainDays + '日');
+					if(data.rec && data.abs){
+						vm.recruitmentApp.bindingScreenB(data.rec, data.applicationForWorkingDay.workTypeList, data);
+						vm.absenceLeaveApp.bindingScreenB(data.abs, data.applicationForHoliday.workTypeList, data);	
+					}else if(data.rec){
+						vm.appCombinaSelected(1);
+						vm.recruitmentApp.bindingScreenB(data.rec, data.applicationForWorkingDay.workTypeList, data);
+					}else if(data.abs){
+						vm.appCombinaSelected(2);
+						vm.absenceLeaveApp.bindingScreenB(data.abs, data.applicationForHoliday.workTypeList, data);
+					}
+					
+				}).fail((failData: any) => {
+					
+				}).always(() => {
+                    block.clear();
+                });
+		}
 
         reload() {
             const vm = this;

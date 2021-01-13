@@ -1,6 +1,10 @@
 package nts.uk.ctx.at.request.ws.application.holidayshipment;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -8,10 +12,26 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.ErrorCheckProcessingBeforeRegistrationKAF011;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.HdShipmentMobileCmd;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.PreRegistrationErrorCheck;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.SaveHolidayShipmentCommandHandlerRef5;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.HolidayShipmentScreenAFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.DisplayInforWhenStarting;
+import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.shr.com.context.AppContexts;
 
 @Path("at/request/application/holidayshipment/mobile")
@@ -20,6 +40,18 @@ public class HolidayShipmentMobileWS extends WebService {
 	
 	@Inject
 	private HolidayShipmentScreenAFinder screenAFinder;
+	
+	@Inject
+	private PreRegistrationErrorCheck preRegistrationErrorCheck;
+	
+	@Inject
+	private ErrorCheckProcessingBeforeRegistrationKAF011 errorCheckProcessingBeforeRegistrationKAF011;
+	
+	@Inject
+	private NewBeforeRegister newBeforeRegister;
+	
+	@Inject
+	private SaveHolidayShipmentCommandHandlerRef5 saveHolidayShipmentCommandHandlerRef5;
 	
 	@POST
 	@Path("start")
@@ -39,5 +71,101 @@ public class HolidayShipmentMobileWS extends WebService {
 				param.getDateLst().stream().map(x -> GeneralDate.fromString(x, "YYYY/MM/DD")).collect(Collectors.toList()),
 				param.getAppDispInfoStartupCmd()
 			);
+	}
+	
+	@POST
+	@Path("checkBeforeSubmit")
+	public List<ConfirmMsgOutput> checkBeforeSubmit(HdShipmentMobileCmd command) {
+		// INPUT．「画面モード」をチェックする
+		if(command.isNewMode()) {
+			// 登録前のエラーチェック処理
+			return this.checkBeforeRegister(command);
+		} else {
+			// 振休振出申請（詳細）登録前のチェック
+			return this.checkBeforeUpdate(command);
+		}
+	}
+	
+	private List<ConfirmMsgOutput> checkBeforeRegister(HdShipmentMobileCmd command) {
+		List<ConfirmMsgOutput> result = new ArrayList<>();
+		String companyId = AppContexts.user().companyId();
+		Optional<AbsenceLeaveApp> abs = command.abs == null ? Optional.empty() : Optional.of(command.abs.toDomainInsertAbs());
+		Optional<RecruitmentApp> rec = command.rec == null ? Optional.empty() : Optional.of(command.rec.toDomainInsertRec());
+		DisplayInforWhenStarting displayInforWhenStarting = command.getDisplayInforWhenStarting();
+		AppDispInfoStartupOutput appDispInfoStartup = displayInforWhenStarting.appDispInfoStartup.toDomain();
+		//登録前エラーチェック（新規）(Check error trước khi đăng ký (New)
+		preRegistrationErrorCheck.errorCheck(
+				companyId, 
+				abs, 
+				rec, 
+				appDispInfoStartup.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().orElse(new ArrayList<ActualContentDisplay>()),
+				appDispInfoStartup.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0), 
+				appDispInfoStartup.getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode());
+		//振休残数不足チェック (Check số nghỉ bù thiếu)
+		errorCheckProcessingBeforeRegistrationKAF011.checkForInsufficientNumberOfHolidays(
+				companyId, 
+				appDispInfoStartup.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(), 
+				abs, 
+				rec);
+		
+		if(rec.isPresent()) {
+			List<ConfirmMsgOutput> comfirmLst1 = newBeforeRegister.processBeforeRegister_New(
+					companyId, 
+					EmploymentRootAtr.APPLICATION, 
+					displayInforWhenStarting.isRepresent(), 
+					rec.get(), 
+					null, 
+					appDispInfoStartup.getAppDispInfoWithDateOutput().getOpErrorFlag().orElse(ErrorFlagImport.NO_ERROR), 
+					new ArrayList<>(), 
+					appDispInfoStartup);
+			result.addAll(comfirmLst1);
+		}
+		
+		if(abs.isPresent()) {
+			List<ConfirmMsgOutput> comfirmLst2 = newBeforeRegister.processBeforeRegister_New(
+					companyId, 
+					EmploymentRootAtr.APPLICATION, 
+					displayInforWhenStarting.isRepresent(), 
+					abs.get(), 
+					null, 
+					appDispInfoStartup.getAppDispInfoWithDateOutput().getOpErrorFlag().orElse(ErrorFlagImport.NO_ERROR), 
+					new ArrayList<>(), 
+					appDispInfoStartup);
+			result.addAll(comfirmLst2);
+		}
+		return result;
+	}
+	
+	private List<ConfirmMsgOutput> checkBeforeUpdate(HdShipmentMobileCmd command) {
+		return null;
+	}
+	
+	@POST
+	@Path("submit")
+	public ProcessResult submit(HdShipmentMobileCmd command) {
+		String companyID = AppContexts.user().companyId();
+		Optional<AbsenceLeaveApp> abs = command.abs == null ? Optional.empty() : Optional.of(command.abs.toDomainInsertAbs());
+		Optional<RecruitmentApp> rec = command.rec == null ? Optional.empty() : Optional.of(command.rec.toDomainInsertRec());
+		DisplayInforWhenStarting displayInforWhenStarting = command.getDisplayInforWhenStarting();
+		AppDispInfoStartupOutput appDispInfoStartup = displayInforWhenStarting.appDispInfoStartup.toDomain();
+		// INPUT．「画面モード」をチェックする
+		if(command.isNewMode()) {
+			// 振休振出申請（新規）登録処理
+			 saveHolidayShipmentCommandHandlerRef5.registrationApplicationProcess(
+					companyID,
+					abs,
+					rec,
+					appDispInfoStartup.getAppDispInfoWithDateOutput().getBaseDate(),
+					appDispInfoStartup.getAppDispInfoNoDateOutput().isMailServerSet(),
+					appDispInfoStartup.getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().get(),
+					CollectionUtil.isEmpty(command.getRecHolidayMngLst()) ? Collections.emptyList() : command.getRecHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()),
+					CollectionUtil.isEmpty(command.getAbsHolidayMngLst()) ? Collections.emptyList() : command.getAbsHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()),
+					CollectionUtil.isEmpty(command.getAbsWorkMngLst()) ? Collections.emptyList() : command.getAbsWorkMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()),
+					EnumAdaptor.valueOf(displayInforWhenStarting.holidayManage, ManageDistinct.class),
+					appDispInfoStartup.getAppDispInfoNoDateOutput().getApplicationSetting());
+		} else {
+			// 振休振出申請の更新登録
+		}
+		return new ProcessResult();
 	}
 }
