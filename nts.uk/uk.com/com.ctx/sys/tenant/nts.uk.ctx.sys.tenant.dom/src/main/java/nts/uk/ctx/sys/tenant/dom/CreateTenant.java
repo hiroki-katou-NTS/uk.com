@@ -27,9 +27,6 @@ public class CreateTenant {
 
 		val tenantAuthentication = TenantAuthentication.create(tenantCode, tenantPassword, tenantStartDate);
 		
-		val tenantAdministartor = CreateTenantAdministrator.create(
-				require, tenantCode, administratorLoginId, administratorPassword);
-		
 		return AtomTask.of(() -> {
 
 			require.add(tenantAuthentication);
