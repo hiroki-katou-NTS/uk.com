@@ -10049,7 +10049,7 @@ var nts;
                             //                if (evt.ctrlKey && $.data($exTable, NAMESPACE).determination) return;
                             update.edit($exTable, $cell, options.containerClass);
                         });
-                        $cell.addXEventListener(events.KEY_DOWN, function () {
+                        $cell.addXEventListener(events.KEY_DOWN, function (evt) {
                             var $exTable = helper.closest($cell, "." + NAMESPACE);
                             var $grid = helper.getTable($exTable, options.containerClass);
                             var inputSelecting = $.data($grid, internal.INPUT_SELECTING);
@@ -10058,6 +10058,8 @@ var nts;
                             var moveDir = "prevCellOf";
                             if (event.keyCode === $.ui.keyCode.ENTER || event.keyCode === $.ui.keyCode.TAB
                                 || event.keyCode === $.ui.keyCode.RIGHT || event.keyCode === $.ui.keyCode.LEFT) {
+                                if ($cell.querySelector("." + update.EDITOR_CLS) && event.keyCode !== $.ui.keyCode.ENTER)
+                                    return;
                                 event.preventDefault();
                                 var cell_1;
                                 if (event.keyCode !== $.ui.keyCode.LEFT && !event.shiftKey) {
@@ -10078,6 +10080,20 @@ var nts;
                                     }
                                     $.data($grid, internal.INPUT_SELECTING, { rowIdx: cell_1.rowIndex, columnKey: cell_1.columnKey, innerIdx: cell_1.innerIdx });
                                 });
+                            }
+                            else if (selector.is(evt.target, "." + selection.CELL_SELECTED_CLS)) {
+                                var cellTxt = $cell.innerText;
+                                if (evt.keyCode === 113) {
+                                    update.edit($exTable, $cell, options.containerClass);
+                                    var $input = $cell.querySelector("input");
+                                    if ($input) {
+                                        $input.value = cellTxt;
+                                    }
+                                }
+                                else if (helper.isAlphaNumeric(evt) || helper.isMinusSymbol(evt)
+                                    || (helper.isSemicolon(evt) && evt.shiftKey)) {
+                                    update.edit($exTable, $cell, options.containerClass);
+                                }
                             }
                         });
                     }
@@ -16570,6 +16586,28 @@ var nts;
                     }
                     helper.isRedoKey = isRedoKey;
                     /**
+                     * Is alphanumeric.
+                     */
+                    function isAlphaNumeric(evt) {
+                        return (evt.keyCode >= 48 && evt.keyCode <= 90)
+                            || (evt.keyCode >= 96 && evt.keyCode <= 105);
+                    }
+                    helper.isAlphaNumeric = isAlphaNumeric;
+                    /**
+                     * Is minus symbol.
+                     */
+                    function isMinusSymbol(evt) {
+                        return evt.keyCode === 189 || evt.keyCode === 109;
+                    }
+                    helper.isMinusSymbol = isMinusSymbol;
+                    /**
+                     * Is semicolon.
+                     */
+                    function isSemicolon(evt) {
+                        return evt.keyCode === 186;
+                    }
+                    helper.isSemicolon = isSemicolon;
+                    /**
                      * Is Html.
                      */
                     function isHtml(str) {
@@ -17690,6 +17728,8 @@ var nts;
                     function textOverflow($cell) {
                         $cell.addXEventListener(events.MOUSE_ENTER + ".celloverflow", function (evt) {
                             var $target = $(evt.target);
+                            if ($target.find("." + update.EDITOR_CLS).length > 0)
+                                return;
                             if (!displayFullText($target)) {
                                 var $link = $target.find("a");
                                 if ($link.length > 0) {
