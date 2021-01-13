@@ -12,6 +12,7 @@ import { Kdl001Component } from 'views/kdl/001';
 import { KDL002Component } from 'views/kdl/002';
 import { KdlS35Component } from 'views/kdl/s35';
 import { KdlS36Component } from 'views/kdl/s36';
+import { vmOf } from 'vue/types/umd';
 
 @component({
     name: 'kafs11a',
@@ -19,7 +20,30 @@ import { KdlS36Component } from 'views/kdl/s36';
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
-    validations: {},
+    validations: {
+        prePostAtr: {
+            required: true
+        },
+        complementLeaveAtr: {
+            required: true
+        },
+        complementDate: {
+            required: true
+        },
+        leaveDate: {
+            required: true
+        },
+        complementWorkInfo: {
+            timeRange1: {
+                required: true    
+            }
+        },
+        leaveWorkInfo: {
+            timeRange1: {
+                required: true    
+            }
+        }
+    },
     constraints: [],
     components: {
         'kafs00-a': KafS00AComponent,
@@ -55,6 +79,7 @@ export class KafS11AComponent extends KafS00ShrComponent {
     public opAppReason: string = '';
     public displayInforWhenStarting: any = null;
     public workTimeLstFullData: Array<any> = [];
+    public isValidateAll: boolean = true;
     
     public created() {
         const vm = this;
@@ -105,6 +130,25 @@ export class KafS11AComponent extends KafS00ShrComponent {
             vm.workTimeLstFullData = data.data;
             vm.$mask('hide');
         });
+    }
+
+    @Watch('complementLeaveAtr')
+    public complementLeaveAtrWatcher(value) {
+        const vm = this;
+        switch (value) {
+            case ComplementLeaveAtr.COMPLEMENT:
+                vm.$updateValidator('complementDate', { validate: true });
+                vm.$updateValidator('leaveDate', { validate: false });
+                break;
+            case ComplementLeaveAtr.LEAVE:
+                vm.$updateValidator('complementDate', { validate: false });
+                vm.$updateValidator('leaveDate', { validate: true });
+                break;
+            default:
+                vm.$updateValidator('complementDate', { validate: true });
+                vm.$updateValidator('leaveDate', { validate: true });
+                break;
+        }
     }
 
     private initData() {
@@ -216,12 +260,14 @@ export class KafS11AComponent extends KafS00ShrComponent {
         return vm.displayInforWhenStarting.substituteHdWorkAppSet.simultaneousApplyRequired;
     }
 
-    // ※3-1
     get dispComplementContent() {
         const vm = this;
         if (vm.mode == ScreenMode.DETAIL) {
-            return true;
+            // ※4-1	
+
+            return vm.displayInforWhenStarting.rec;
         }
+        // ※3-1
 
         return vm.complementLeaveAtr == ComplementLeaveAtr.COMPLEMENT_LEAVE || vm.complementLeaveAtr == ComplementLeaveAtr.COMPLEMENT;
     }
@@ -243,7 +289,7 @@ export class KafS11AComponent extends KafS00ShrComponent {
         return vm.displayInforWhenStarting.appDispInfoStartup.appDispInfoNoDateOutput.managementMultipleWorkCycles;
     }
 
-    // ※5-1
+    // ※5-1, ※5-2
     get dispComplementTimeRange2() {
         const vm = this;
 
@@ -272,19 +318,28 @@ export class KafS11AComponent extends KafS00ShrComponent {
         return false;
     }
 
-    // ※6-1
+    // ※7
+    public cdtSubstituteWorkAppReflect() {
+        const vm = this;
+
+        return vm.displayInforWhenStarting.substituteWorkAppReflect.reflectAttendanceAtr == 1;
+    }
+
+    // ※6-1, ※6-2
     get dispLeaveLinkContent1() {
         const vm = this;
 
         return vm.dispComplementContent && vm.cdtSubMngComplementDailyType();
     }
 
-    // ※3-2
     get dispLeaveContent() {
         const vm = this;
         if (vm.mode == ScreenMode.DETAIL) {
-            return true;
+            // ※4-2
+
+            return vm.displayInforWhenStarting.abs;
         }
+        // ※3-2
 
         return vm.complementLeaveAtr == ComplementLeaveAtr.COMPLEMENT_LEAVE || vm.complementLeaveAtr == ComplementLeaveAtr.LEAVE;
     }
@@ -339,14 +394,14 @@ export class KafS11AComponent extends KafS00ShrComponent {
         }
     }
 
-    // ※8-3
+    // ※8-3, ※8-4
     get dispLeaveWorkTime() {
         const vm = this;
 
         return vm.dispLeaveContent && vm.cdtLeaveDailyType(1);
     }
 
-    // ※8-5
+    // ※8-5, ※8-6
     get dispLeaveTimeRange1() {
         const vm = this;
 
@@ -371,7 +426,7 @@ export class KafS11AComponent extends KafS00ShrComponent {
         return vm.displayInforWhenStarting.appDispInfoStartup.appDispInfoNoDateOutput.managementMultipleWorkCycles;
     }
 
-    // ※9-1
+    // ※9-1, ※9-2
     get dispLeaveTimeRange2() {
         const vm = this;
 
@@ -407,7 +462,7 @@ export class KafS11AComponent extends KafS00ShrComponent {
         return false;
     }
 
-    // ※11-1
+    // ※11-1, ※11-2
     get dispLeaveLinkContent2() {
         const vm = this;
 
@@ -436,7 +491,7 @@ export class KafS11AComponent extends KafS00ShrComponent {
         return false;
     }
 
-    // ※12-1
+    // ※12-1, ※12-2
     get dispComplementLinkContent() {
         const vm = this;
 
@@ -453,9 +508,13 @@ export class KafS11AComponent extends KafS00ShrComponent {
         return vm.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr == 1;
     }
 
-    // ※A14
+    
     get enablePrePostAtr() {
         const vm = this;
+        if (vm.mode == ScreenMode.DETAIL) {
+            return false;
+        }
+        // ※A14
         if (!vm.appDispInfoStartupOutput) {
             return false;
         }
@@ -636,13 +695,198 @@ export class KafS11AComponent extends KafS00ShrComponent {
             console.log(result);
         });
     }
+
+    public customValidate(viewModel: any) {
+        const vm = this;
+        let validAllChild = true;
+        for (let child of viewModel.$children) {
+            let validChild = true;
+            if (child.$children) {
+                validChild = vm.customValidate(child); 
+            }
+            child.$validate();
+            if (!child.$valid || !validChild) {
+                validAllChild = false;
+            }
+        }
+
+        return validAllChild;
+    }
+
+    public register() {
+        const vm = this;
+        vm.isValidateAll = vm.customValidate(vm);
+        vm.$validate();
+        if (!vm.$valid || !vm.isValidateAll) {
+
+            return;
+        }
+        vm.$mask('show');
+        let command = vm.getCommandInsert();
+        vm.$http.post('at', API.checkBeforeSubmit, command)
+        .then((result: any) => {
+            if (result) {
+                // xử lý confirmMsg
+                return vm.handleConfirmMessage(result.data);
+            }
+        }).then((result: any) => {
+            if (result) {
+                // đăng kí 
+                return vm.$http.post('at', API.submit, command).then(() => {
+                    return vm.$modal.info({ messageId: 'Msg_15'}).then(() => {
+                        return true;
+                    });	
+                });
+            }
+        }).then((result: any) => {
+            if (result) {
+                // gửi mail sau khi đăng kí
+                // return vm.$ajax('at', API.sendMailAfterRegisterSample);
+                return true;
+            }
+        }).catch((failData) => {
+            // xử lý lỗi nghiệp vụ riêng
+            vm.handleErrorCustom(failData).then((result: any) => {
+                if (result) {
+                    // xử lý lỗi nghiệp vụ chung
+                    vm.handleErrorCommon(failData);
+                }
+            });
+        }).then(() => {
+            vm.$mask('hide');    	
+        });    
+    }
+
+    public handleErrorCustom(failData: any): any {
+        const vm = this;
+
+        return new Promise((resolve) => {
+            if (failData.messageId == 'Msg_26') {
+                vm.$modal.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
+                .then(() => {
+                    vm.$goto('ccg008a');
+                });
+
+                return resolve(false);		
+            }
+
+            return resolve(true);
+        });
+    }
+
+    public handleConfirmMessage(listMes: any): any {
+        const vm = this;
+
+        return new Promise((resolve) => {
+            if (_.isEmpty(listMes)) {
+                return resolve(true);
+            }
+            let msg = listMes[0];
+    
+            return vm.$modal.confirm({ messageId: msg.msgID, messageParams: msg.paramLst })
+            .then((value) => {
+                if (value === 'yes') {
+                    return vm.handleConfirmMessage(_.drop(listMes)).then((result) => {
+                        if (result) {
+                            return resolve(true);    
+                        }
+
+                        return resolve(false);
+                    });
+                }
+                
+                return resolve(false);
+            });
+        });
+    }
+
+    private getCommandInsert() {
+        const vm = this;
+        let cmd: any = {
+            newMode: vm.mode == ScreenMode.NEW,
+            rec: {
+                applicationInsert: {
+                    prePostAtr: vm.prePostAtr,
+                    appType: AppType.COMPLEMENT_LEAVE_APPLICATION,
+                    appDate: moment(vm.complementDate).format('YYYY/MM/DD'),
+                    opAppReason: vm.opAppReason,
+                    opAppStandardReasonCD: vm.opAppStandardReasonCD,
+                    opAppStartDate: moment(vm.complementDate).format('YYYY/MM/DD'),
+                    opAppEndDate: moment(vm.complementDate).format('YYYY/MM/DD')
+                },
+                workInformation: {
+                    workType: vm.complementWorkInfo.workTypeCD,
+                    workTime: vm.complementWorkInfo.workTimeCD
+                },
+                workingHours: []
+            },
+            abs: {
+                applicationInsert: {
+                    prePostAtr: vm.prePostAtr,
+                    appType: AppType.COMPLEMENT_LEAVE_APPLICATION,
+                    appDate: moment(vm.leaveDate).format('YYYY/MM/DD'),
+                    opAppReason: vm.opAppReason,
+                    opAppStandardReasonCD: vm.opAppStandardReasonCD,
+                    opAppStartDate: moment(vm.leaveDate).format('YYYY/MM/DD'),
+                    opAppEndDate: moment(vm.leaveDate).format('YYYY/MM/DD')
+                },
+                workInformation: {
+                    workType: vm.leaveWorkInfo.workTypeCD,
+                    workTime: vm.leaveWorkInfo.workTimeCD
+                },
+                workingHours: [],
+                workChangeUse: false
+            },
+            displayInforWhenStarting: vm.displayInforWhenStarting
+        };
+        if (vm.dispComplementContent) {
+            cmd.rec.workingHours.push({
+                workNo: 1,
+                timeZone: {
+                    startTime: vm.complementWorkInfo.timeRange1.start,
+                    endTime: vm.complementWorkInfo.timeRange1.end
+                }
+            });
+        }
+        if (vm.dispComplementTimeRange2) {
+            cmd.rec.workingHours.push({
+                workNo: 2,
+                timeZone: {
+                    startTime: vm.complementWorkInfo.timeRange2.start,
+                    endTime: vm.complementWorkInfo.timeRange2.end
+                }
+            });
+        }
+        if (vm.dispLeaveTimeRange1) {
+            cmd.abs.workingHours.push({
+                workNo: 1,
+                timeZone: {
+                    startTime: vm.leaveWorkInfo.timeRange1.start,
+                    endTime: vm.leaveWorkInfo.timeRange1.end
+                }
+            });
+        }
+        if (vm.dispLeaveTimeRange2) {
+            cmd.abs.workingHours.push({
+                workNo: 2,
+                timeZone: {
+                    startTime: vm.leaveWorkInfo.timeRange2.start,
+                    endTime: vm.leaveWorkInfo.timeRange2.end
+                }
+            });
+        }
+
+        return cmd;
+    }
 }
 
 const API = {
     start: 'at/request/application/holidayshipment/mobile/start',
     changeRecDate: 'at/request/application/holidayshipment/changeRecDate',
     changeAbsDate: 'at/request/application/holidayshipment/changeAbsDate',
-    getWorkTimeByCDLst: 'at/shared/worktimesetting/get_worktime_by_codes'
+    getWorkTimeByCDLst: 'at/shared/worktimesetting/get_worktime_by_codes',
+    checkBeforeSubmit: 'at/request/application/holidayshipment/mobile/checkBeforeSubmit',
+    submit: 'at/request/application/holidayshipment/mobile/submit'
 };
 
 export interface KAFS11Params {

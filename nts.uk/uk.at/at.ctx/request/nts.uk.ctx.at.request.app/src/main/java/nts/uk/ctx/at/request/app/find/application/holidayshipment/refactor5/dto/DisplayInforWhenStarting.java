@@ -1,8 +1,11 @@
 package nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.dto.AbsenceLeaveAppCmd;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.dto.RecruitmentAppCmd;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
@@ -10,6 +13,7 @@ import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting
 import nts.uk.ctx.at.request.dom.application.holidayshipment.HolidayShipmentOutput;
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflectDto;
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.VacationAppReflectOptionDto;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
 /**
  * @author thanhpv
@@ -61,11 +65,11 @@ public class DisplayInforWhenStarting {
 	            applicationForHoliday.toDomain(), 
 	            remainingHolidayInfor.toDomain(), 
 	            substituteHdWorkAppSet.toDomain(), 
-	            holidayManage, 
-	            substituteManagement, 
+	            EnumAdaptor.valueOf(holidayManage, ManageDistinct.class), 
+	            EnumAdaptor.valueOf(substituteManagement, ManageDistinct.class), 
 	            workInfoAttendanceReflect.toDomain(), 
 	            substituteWorkAppReflect.toDomain(), 
-	            abs.toDomainInsertAbs(), 
-	            rec.toDomainInsertRec());
+	            this.existAbs() ? Optional.of(abs.toDomainInsertAbs()) : Optional.empty(), 
+	            this.existRec() ? Optional.of(rec.toDomainInsertRec()) : Optional.empty());
 	}
 }
