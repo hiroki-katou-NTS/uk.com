@@ -100,6 +100,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		defautData: any = [];
 		checkHoliday : boolean = true;
 		check045003 : boolean = true;
+		timesOfInput : number = 0;
 
 		enableSave: KnockoutObservable<boolean> = ko.observable(false); // ver 2
 		/*checkEnableSave : boolean = true;
@@ -315,7 +316,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					// 勤務種類を変更する (nhập thủ công worktype code)
 					if ((dataCell.originalEvent.detail.columnKey === "worktypeCode" && dataMid.worktypeCode != "")) {
 
-
+						if(self.timesOfInput > 0) {
+							self.timesOfInput = 0;
+						};
 						self.bindTypeTime.push({
 							index: index,
 							value: true
@@ -507,7 +510,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			} else {
 				color = "#cee6ff";
 			}
-
 				self.getChangeWorkType(columnKey, empId, index).done((data) => {
 					self.getEmpWorkFixedWorkInfo(columnKey, empId, index).done(() => {
 				$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeCode", workTimeCode);
@@ -1026,6 +1028,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 					if ((columnKey == "worktimeCode" || (error.messageId != "Msg_434" && columnKey == "worktypeCode")) && self.checkMes != 10) {
 						self.checkMes = 0;
+						if(self.timesOfInput > 0 && columnKey === "worktypeCode") return;
+						if(columnKey === "worktypeCode"){
+							self.timesOfInput += 1;
+						}
 						errorDialog({ messageId: error.messageId }).then(() => {
 							let cssWorkType: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(1)",
 								cssWorkTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(3)";
@@ -1034,8 +1040,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								$(cssWorkType).click();
 								$(cssWorkType).click();
 							}
-
-							if (columnKey == "worktimeCode" && error.messageId != "Msg_29")  {
+							// nhập worktypeCode và show ra mess 29 thì focus vào work time code
+							if (columnKey == "worktypeCode" && error.messageId == "Msg_29") {
+								$(cssWorkTime).click();
+								$(cssWorkTime).click();
+							}
+							
+							if (columnKey == "worktimeCode")  {
 								$(cssWorkTime).click();
 								$(cssWorkTime).click();
 							}
@@ -4350,6 +4361,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						$("#extable-ksu003").exTable("enableCell", "middle", empId, "startTime1");
 						$("#extable-ksu003").exTable("enableCell", "middle", empId, "endTime1");
 						if (self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType != WorkTimeForm.FLEX) {
+							$(cssStartTime2).css("background-color", "#FFFFFF");
+							$(cssEndTime2).css("background-color", "#FFFFFF");
+							$(cssStartTime2).removeClass("xseal");
+							$(cssEndTime2).removeClass("xseal");
 							$("#extable-ksu003").exTable("enableCell", "middle", empId, "startTime2");
 							$("#extable-ksu003").exTable("enableCell", "middle", empId, "endTime2");
 						}
