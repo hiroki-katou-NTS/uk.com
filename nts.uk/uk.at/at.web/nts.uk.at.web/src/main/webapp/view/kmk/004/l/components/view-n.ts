@@ -145,6 +145,7 @@ module nts.uk.at.view.kmk004.l {
 		public yearDelete: KnockoutObservable<number | null> = ko.observable(null);
 		public checkDelete: KnockoutObservable<boolean> = ko.observable(false);
 		public startYM: KnockoutObservable<number> = ko.observable(0);
+		selectedClosureId: KnockoutObservable<number> = ko.observable(null);
 		
 		constructor(private params: IParam) {
 			super();
@@ -164,7 +165,10 @@ module nts.uk.at.view.kmk004.l {
 				isShowNoSelectRow: false,
 				alreadySettingList: vm.alreadySettingList,
 				maxRows: 12,
-				isDisplayClosureSelection: false,
+				isDisplayClosureSelection: true,
+				isDisplayFullClosureOption: true,
+				closureSelectionType: ko.observable(null),
+				selectedClosureId: vm.selectedClosureId,
 			};
 
 			vm.reloadInitData();
@@ -215,11 +219,18 @@ module nts.uk.at.view.kmk004.l {
 
 			$('#empt-list-setting').ntsListComponent(vm.listComponentOption).done(() => {
 				vm.employeeList($('#empt-list-setting').getDataList());
+				
+				vm.selectedClosureId.subscribe(() => {
+				$('#empt-list-setting').ntsListComponent(vm.listComponentOption);
+			});
 			});
 		}
 
 		getBtnContent() {
 			const vm = this;
+			if(vm.selectedId()) {
+				return;
+			}
 			vm.$ajax(KMK004N_API.EMP_GET_BASIC_SETTING + "/" + vm.selectedId()).done((data: any) => {
 				if (data.deforLaborTimeEmpDto != null && data.empDeforLaborMonthActCalSetDto != null) {
 					vm.btn_text('KMK004_341');
@@ -247,14 +258,14 @@ module nts.uk.at.view.kmk004.l {
 				}
 				
 				vm.$ajax(KMK004N_API.REGISTER_WORK_TIME, ko.toJS({ workTimeSetEmps: param })).done(() => {
-					vm.$dialog.info({ messageId: "Msg_15" })
 					_.remove(ko.unwrap(vm.years), ((value) => {
 						return value.year == ko.unwrap(vm.selectedYear) as number;
 					}));
 					vm.years.push(new IYear(ko.unwrap(vm.selectedYear) as number, false));
 					vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
 					vm.reloadInitData();
-				}).then(() => {
+				}).then(() => vm.$dialog.info({ messageId: "Msg_15" }))
+				.then(() => {
 					$(document).ready(function() {
 						$('.listbox').focus();
 					})
