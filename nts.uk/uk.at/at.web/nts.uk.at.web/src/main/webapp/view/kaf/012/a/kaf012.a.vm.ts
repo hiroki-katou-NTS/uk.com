@@ -65,8 +65,8 @@ module nts.uk.at.view.kaf012.a.viewmodel {
             }).then((res: any) => {
                 if(res) {
                     vm.reflectSetting(res.reflectSetting);
-                    vm.timeLeaveManagement(res.timeLeaveManagement);
                     vm.timeLeaveRemaining(res.timeLeaveRemaining);
+                    vm.timeLeaveManagement(res.timeLeaveManagement);
                 }
                 if (!_.isEmpty(params) && !_.isEmpty(params.baseDate)) {
                     vm.handleChangeAppDate(params.baseDate);
@@ -108,9 +108,7 @@ module nts.uk.at.view.kaf012.a.viewmodel {
 
         handleChangeAppDate(value: string) {
             const vm = this;
-            vm.$validate([
-                '#kaf000-a-component4 .nts-input'
-            ]).then((valid: boolean) => {
+            vm.$validate(['#kaf000-a-component4 .nts-input']).then((valid: boolean) => {
                 if (valid) {
                     const command = {
                         appDate: new Date(value).toISOString(),
@@ -118,15 +116,19 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                             appDispInfoStartupOutput: vm.appDispInfoStartupOutput()
                         }
                     };
-                    return vm.$blockui("show").then(() => vm.$ajax(API.changeAppDate, command));
+                    vm.$blockui("show").then(() => {
+                        return vm.$ajax(API.changeAppDate, command);
+                    }).done((res: any) => {
+                        if (res) {
+                            vm.timeLeaveManagement(res.timeLeaveManagement);
+                        }
+                    }).fail((error: any) => {
+                        vm.$dialog.error(error);
+                    }).always(() => {
+                        vm.$blockui("hide")
+                    });
                 }
-            }).done((res: any) => {
-                if (res) {
-                    vm.timeLeaveManagement(res.timeLeaveManagement);
-                }
-            }).fail((error: any) => {
-                vm.$dialog.error(error);
-            }).always(() => vm.$blockui("hide"));
+            });
         }
 
         public handleConfirmMessage(listMes: any, res: any): any {
@@ -223,10 +225,16 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                 }
             });
 
-            vm.$blockui("show");
-            vm.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
-                .then(isValid => {
-                    if (isValid) {
+            vm.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason').then(isValid => {
+                if (isValid) {
+                    vm.$blockui("show").then(() => {
+                        return vm.$ajax(API.changeAppDate, {
+                            appDate: new Date(vm.application().appDate()).toISOString(),
+                            appDisplayInfo: {
+                                appDispInfoStartupOutput: vm.appDispInfoStartupOutput()
+                            }
+                        });
+                    }).then(() => {
                         const params = {
                             timeDigestAppType: vm.leaveType(),
                             applicationNew: ko.toJS(vm.application),
@@ -242,35 +250,31 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                         params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingStart = new Date(params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingStart).toISOString();
                         params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingEnd = new Date(params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingEnd).toISOString();
                         return vm.$ajax(API.checkRegister, params);
-                    }
-                }).then(res => {
-                    if (res == undefined) return;
-                    if (_.isEmpty(res)) {
-                        return vm.registerData(details);
-                    } else {
-                        let listTemp = _.clone(res);
-                        vm.handleConfirmMessage(listTemp, details);
-                    }
-                }).done(result => {
-                    if (result != undefined) {
-                        vm.$dialog.info({messageId: "Msg_15"}).then(() => {
-                            location.reload();
-                        });
-                    }
-                }).fail(err => {
-                    let param;
-                    if (err.message && err.messageId) {
-                        param = {messageId: err.messageId, messageParams: err.parameterIds};
-                    } else {
-
-                        if (err.message) {
-                            param = {message: err.message, messageParams: err.parameterIds};
+                    }).then(res => {
+                        if (res == undefined) return;
+                        if (_.isEmpty(res)) {
+                            return vm.registerData(details);
                         } else {
-                            param = {messageId: err.messageId, messageParams: err.parameterIds};
+                            let listTemp = _.clone(res);
+                            vm.handleConfirmMessage(listTemp, details);
                         }
-                    }
-                    vm.$dialog.error(param);
-                }).always(() => vm.$blockui("hide"));
+                    }).done(result => {
+                        if (result != undefined) {
+                            vm.$dialog.info({messageId: "Msg_15"}).then(() => {
+                                location.reload();
+                            });
+                        }
+                    }).fail(err => {
+                        vm.$dialog.error(err).then(() => {
+                            if (err.messageId == "Msg_1695") {
+                                $(vm.$el).find('#kaf000-a-component4-singleDate').focus();
+                            }
+                        });
+                    }).always(() => {
+                        vm.$blockui("hide")
+                    });
+                }
+            });
         }
 
     }
