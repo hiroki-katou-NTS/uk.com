@@ -58,7 +58,7 @@
       <div v-for="(item, index) in overTimes" v-bind:key="index" :value="index">
         <div v-show="item.visible" class="card-body">
           <div class="row mt-3">
-            <div class="col-4">{{ item.title }}</div>
+            <div class="col-4 textSize">{{ item.title }}</div>
             <div class="col-8.5">
               <div class="row mt-0">
                   <div v-show="$appContext.c4_1" class="col-6">
@@ -99,7 +99,7 @@
       >
         <div v-show="item.visible" class="card-body">
           <div class="row mt-3">
-            <div class="col-4">{{ item.title }}</div>
+            <div class="col-4 textSize">{{ item.title }}</div>
             <div class="col-8.5">
               <div class="row mt-0">
                   <div v-show="$appContext.c4_1" class="col-6">

@@ -65,23 +65,23 @@ module cmm045.a.viewmodel {
 
         constructor() {
             let self = this;
-            $(".popup-panel").ntsPopup({
+            $(".popup-panel-cmm045").ntsPopup({
                 position: {
-                    my: "left top",
-                    at: "left bottom",
+                    my: "left bottom",
+                    at: "right top",
                     of: ".hyperlink"
                 },
                 showOnStart: false,
                 dismissible: false
             });
 
-            $("a.hyperlink").click(() => {$(".popup-panel").ntsPopup("toggle");});
+            $("a.hyperlink").click(() => {$(".popup-panel-cmm045").ntsPopup("toggle");});
             $(window).on("mousedown.popup", function(e) {
-                let control = $(".popup-panel");
+                let control = $(".popup-panel-cmm045");
                 if (!$(e.target).is(control)
                     && control.has(e.target).length === 0
                     && !$(e.target).is($(".hyperlink"))) {
-                    $(".popup-panel").ntsPopup("hide");
+                    $(".popup-panel-cmm045").ntsPopup("hide");
                 }
             });
 
@@ -228,7 +228,7 @@ module cmm045.a.viewmodel {
 							$('.nts-fixed-body-table').width(_.sum(_.values(obj.width)));
 	                    } else {
 	                        if($('.nts-fixed-header-container').width()-812 < 70) {
-								$('col.appContent').width(70);	
+								$('col.appContent').width(70);
 							} else {
 								$('col.appContent').width($('.nts-fixed-header-container').width()-812);
 							}
@@ -244,7 +244,7 @@ module cmm045.a.viewmodel {
 							leftValue = 0;
 						for(let i = 0; i < headerSize; i++) {
 							leftValue += $('.nts-fixed-header-wrapper .ui-widget-header')[i].offsetWidth;
-							$('.resize-handle')[i].style.left = leftValue + 'px';		
+							$('.resize-handle')[i].style.left = leftValue + 'px';
 						}
 	                });
 	            } else {
@@ -285,7 +285,7 @@ module cmm045.a.viewmodel {
 							$('.nts-fixed-body-table').width(_.sum(_.values(obj.width)));
 	                    } else {
 	                        if($('.nts-fixed-header-container').width()-775 < 70) {
-								$('col.appContent').width(70);	
+								$('col.appContent').width(70);
 							} else {
 								$('col.appContent').width($('.nts-fixed-header-container').width()-775);
 							}
@@ -301,7 +301,7 @@ module cmm045.a.viewmodel {
 							leftValue = 0;
 						for(let i = 0; i < headerSize; i++) {
 							leftValue += $('.nts-fixed-header-wrapper .ui-widget-header')[i].offsetWidth;
-							$('.resize-handle')[i].style.left = leftValue + 'px';		
+							$('.resize-handle')[i].style.left = leftValue + 'px';
 						}
 	                });
 				}
@@ -437,14 +437,14 @@ module cmm045.a.viewmodel {
             }
 			if (!self.appListExtractConditionDto.preOutput && !self.appListExtractConditionDto.postOutput) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_1722" }).then(() => {
-                    $(".popup-panel").ntsPopup("toggle");
+                    $(".popup-panel-cmm045").ntsPopup("toggle");
                 });
                 return false;
 			}
 			let selectAppTypeLst = _.filter(self.appListExtractConditionDto.opListOfAppTypes, o => o.choice);
 			if (_.isEmpty(selectAppTypeLst)) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_1723" }).then(() => {
-                    $(".popup-panel").ntsPopup("toggle");
+                    $(".popup-panel-cmm045").ntsPopup("toggle");
                 });
                 return false;
 			}
@@ -2284,13 +2284,25 @@ module cmm045.a.viewmodel {
 					return dfd.resolve(result);
 				});
 			}
-			
+			let appInfo = { appName: ''},
+				appName = "";
+			if(item.opAppTypeDisplay) {
+				appInfo = _.find(self.appListExtractConditionDto.opListOfAppTypes, o => o.appType == item.appType && o.opApplicationTypeDisplay==item.opAppTypeDisplay);
+			} else {
+				appInfo = _.find(self.appListExtractConditionDto.opListOfAppTypes, o => o.appType == item.appType);
+			}
+			if(_.isUndefined(appInfo)) {
+				appName = '';
+			} else {
+				appName = _.escape(appInfo.appName);
+			}
 			nts.uk.ui.windows.setShared("CMM045B_PARAMS", {
 				applicantName: item.applicantName,
-				appName: '',
+				appName,
 				appDate: item.appDate,
 				opBackgroundColor: item.opBackgroundColor,
-				appContent: item.appContent
+				appContent: item.appContent,
+				isMulti: itemLst.length > 1 
 			});
 			nts.uk.ui.windows.sub.modal("/view/cmm/045/b/index.xhtml").onClosed(() => {
 				let result = nts.uk.ui.windows.getShared('CMM045B_RESULT');
