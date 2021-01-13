@@ -157,7 +157,6 @@ export class KafS06AComponent extends KafS00ShrComponent {
 
         return self.$dt.timedr(time);
     }
-    // 【補足資料1】を参照する todo
     // 休暇残数情報．60H超休残時間
     public get A9_5() {
         const self = this;
@@ -179,27 +178,31 @@ export class KafS06AComponent extends KafS00ShrComponent {
     public get A9_9() {
         const self = this;
         let model = self.model as Model;
-        let time = 0;
+        let timeRemain = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.yearRemain') || 0;
+        let timeHourRemain = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.yearHourRemain') || 0;
 
-        return self.$dt.timedr(time);
+        return self.getFormatTime(timeRemain, timeHourRemain);
+
     }
     // 休暇残数情報．子看護残数
     // 休暇残数情報．子看護残時間
     public get A9_11() {
         const self = this;
         let model = self.model as Model;
-        let time = 0;
+        let timeRemain = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.childNursingRemain') || 0;
+        let timeHourRemain = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.childNursingHourRemain') || 0;
 
-        return self.$dt.timedr(time);
+        return self.getFormatTime(timeRemain, timeHourRemain);
     }
     // 休暇残数情報．介護残数
     // 休暇残数情報．介護残時間
     public get A9_13() {
         const self = this;
+        let model = self.model as Model;
+        let timeRemain = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.nursingRemain') || 0;
+        let timeHourRemain = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.nirsingHourRemain') || 0;
 
-        let time = 0;
-
-        return self.$dt.timedr(time);
+        return self.getFormatTime(timeRemain, timeHourRemain);
     }
 
     public get HolidayAppType() {
@@ -1594,6 +1597,25 @@ export class KafS06AComponent extends KafS00ShrComponent {
                     self.linkWithDraw = result.mngDisp;
                 }
             });
+    }
+
+    // 残数表示形式
+    public getFormatTime(timeRemain: number, timeHourRemain: number) {
+        const self = this;
+
+        let time;
+
+        if (timeRemain > 0) {
+            if (timeHourRemain > 0) {
+                time = timeRemain.toString().concat('日と').concat(self.$dt.timedr(timeHourRemain));
+            } else {
+                time = timeRemain.toString().concat('日');
+            }
+        } else {
+            time = self.$dt.timedr(timeHourRemain);
+        } 
+
+        return time;
     }
 
 

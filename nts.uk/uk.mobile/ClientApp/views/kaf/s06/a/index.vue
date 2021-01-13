@@ -129,7 +129,7 @@
             <!--A9_5-->
             <div class="row">
                 <div class="float_left col text-left textSize">{{'Com_ExsessHoliday' | i18n}}</div>
-                <div class="float_right col text-right textSize">{{'KAFS06_22' | i18n([A9_5])}}</div>
+                <div class="float_right col text-right textSize colorHours">{{'KAFS06_22' | i18n([A9_5])}}</div>
             </div>
             <!--A9_4-->
             <div class="card-body">
@@ -147,7 +147,7 @@
             <!--A9_7-->
             <div class="row">
                 <div class="float_left col text-left textSize">{{'KAFS06_20' | i18n}}</div>
-                <div class="float_right col text-right textSize">{{'KAFS06_22' | i18n([A9_7])}}</div>
+                <div class="float_right col text-right textSize colorHours">{{'KAFS06_22' | i18n([A9_7])}}</div>
             </div>
             <!--A9_6-->
             <div class="card-body">
@@ -165,7 +165,7 @@
             <!--A9_9-->
             <div class="row">
                 <div class="float_left col text-left textSize">{{'KAFS06_21' | i18n}}</div>
-                <div class="float_right col text-right textSize">{{'KAFS06_22' | i18n([A9_9])}}</div>
+                <div class="float_right col text-right textSize colorHours">{{'KAFS06_22' | i18n([A9_9])}}</div>
             </div>
             <!--A9_8-->
             <div class="card-body">
@@ -184,7 +184,7 @@
             <!--A9_11-->
             <div class="row">
                 <div class="float_left col text-left textSize">{{'Com_ChildNurseHoliday' | i18n}}</div>
-                <div class="float_right col text-right textSize">{{'KAFS06_22' | i18n([A9_11])}}</div>
+                <div class="float_right col text-right textSize colorHours">{{'KAFS06_22' | i18n([A9_11])}}</div>
             </div>
             <!--A9_10-->
             <div class="card-body">
@@ -203,7 +203,7 @@
             <!--A9_13-->
             <div class="row">
                 <div class="float_left col text-left textSize">{{'Com_CareHoliday' | i18n}}</div>
-                <div class="float_right col text-right textSize">{{'KAFS06_22' | i18n([A9_13])}}</div>
+                <div class="float_right col text-right textSize colorHours">{{'KAFS06_22' | i18n([A9_13])}}</div>
             </div>
             <!--A9_12-->
             <div class="card-body">
