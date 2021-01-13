@@ -227,7 +227,7 @@ module nts.uk.at.view.knr002.e {
                 console.log(shareData, 'datashare E')
                 setShared('KNR002E_share', shareData);
                 modal('/view/knr/002/f/index.xhtml', { title: 'F_Screen', }).onClosed(() => {
-                   //  nts.uk.ui.windows.close();
+                    vm.loadInitData();
                 });
             }
 

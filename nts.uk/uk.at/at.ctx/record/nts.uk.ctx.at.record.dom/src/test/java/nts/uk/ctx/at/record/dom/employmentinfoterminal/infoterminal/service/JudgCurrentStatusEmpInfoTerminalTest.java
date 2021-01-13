@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -44,34 +45,24 @@ public class JudgCurrentStatusEmpInfoTerminalTest {
 	@Injectable
 	private JudgCurrentStatusEmpInfoTerminal.Require require;
 	
+	// $就業情報端末通信状況ListがNOTEmpty
 	@Test
 	public void testJudgCurrentStatusEmpInfoTerminal() {
 		
-		ContractCode contractCode = new ContractCode("1");
-		EmpInfoTerminalCode empInfoTerminalCode = new EmpInfoTerminalCode("1");
-		
-		EmpInfoTerminal empInfoTerminal = new EmpInfoTerminalBuilder(Optional.of(new FullIpAddress(
-				new PartialIpAddress(192), new PartialIpAddress(168), new PartialIpAddress(1), new PartialIpAddress(1))), new MacAddress("AABBCCDD"),
-				empInfoTerminalCode, Optional.of(new EmpInfoTerSerialNo("1")), new EmpInfoTerminalName(""),
-				contractCode)
-						.createStampInfo(new CreateStampInfo(new OutPlaceConvert(NotUseAtr.NOT_USE, Optional.empty()),
-								new ConvertEmbossCategory(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE), Optional.empty()))
-						.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1))).build();
+		EmpInfoTerminal empInfoTerminal = JudgCurrentStatusEmpInfoTerminalTestHelper.createEmpInfoTerminal();
 		
 		List<EmpInfoTerminal> empInfoTerminalList = new ArrayList<EmpInfoTerminal>();
 		empInfoTerminalList.add(empInfoTerminal);
-		List<EmpInfoTerminalCode> listEmpInfoTerminalCode = empInfoTerminalList.stream().map(e -> e.getEmpInfoTerCode()).collect(Collectors.toList());
 		
-		EmpInfoTerminalComStatusImport empInfoTerminalComStatusImport = new EmpInfoTerminalComStatusImport(new ContractCode("1"),
-																		new EmpInfoTerminalCode("1"),
-																		GeneralDateTime.now().addHours(-60));
+		List<EmpInfoTerminalCode> listEmpInfoTerminalCode = empInfoTerminalList.stream().map(e -> e.getEmpInfoTerCode()).collect(Collectors.toList());
+		EmpInfoTerminalComStatusImport empInfoTerminalComStatusImport = JudgCurrentStatusEmpInfoTerminalTestHelper.createEmpInfoTerminalComStatusImport();
 		
 		List<EmpInfoTerminalComStatusImport> listEmpInfoTerminalComStatus = new ArrayList<EmpInfoTerminalComStatusImport>();
 		listEmpInfoTerminalComStatus.add(empInfoTerminalComStatusImport);
 		
 		new Expectations() {
 			{
-				require.get(contractCode, listEmpInfoTerminalCode);
+				require.get(JudgCurrentStatusEmpInfoTerminalTestHelper.contractCode, listEmpInfoTerminalCode);
 				result = listEmpInfoTerminalComStatus;
 			}
 		};
@@ -96,7 +87,7 @@ public class JudgCurrentStatusEmpInfoTerminalTest {
 		listStateCount.add(StateCount.createStateCount(TerminalCurrentState.ABNORMAL, numOfAbnormal));
 		listStateCount.add(StateCount.createStateCount(TerminalCurrentState.NOT_COMMUNICATED, numOfNotCom));
 		
-		val judgCurrentStatusEmpInfoTerminal = JudgCurrentStatusEmpInfoTerminal.judgingTerminalCurrentState(require, contractCode, empInfoTerminalList);
+		val judgCurrentStatusEmpInfoTerminal = JudgCurrentStatusEmpInfoTerminal.judgingTerminalCurrentState(require, JudgCurrentStatusEmpInfoTerminalTestHelper.contractCode, empInfoTerminalList);
 		TerminalComStatus terminalComStatus = TerminalComStatus.createTerminalComStatus(listStateCount, listComstate, totalNumberOfTer);
 		
 		assertThat(judgCurrentStatusEmpInfoTerminal.getTotalNumberOfTer()).isEqualTo(terminalComStatus.getTotalNumberOfTer());
@@ -104,14 +95,52 @@ public class JudgCurrentStatusEmpInfoTerminalTest {
 		assertThat(judgCurrentStatusEmpInfoTerminal.getListStateCount().size()).isEqualTo(terminalComStatus.getListStateCount().size());	
 	}
 	
+	// $就業情報端末通信状況ListがEmpty
+	@Test
+	public void testJudgCurrentStatusEmpInfoTerminal1() {
+		
+		List<EmpInfoTerminal> empInfoTerminalList = new ArrayList<EmpInfoTerminal>();
+		List<EmpInfoTerminalCode> listEmpInfoTerminalCode = empInfoTerminalList.stream().map(e -> e.getEmpInfoTerCode()).collect(Collectors.toList());
+		
+		new Expectations() {
+			{
+				require.get(JudgCurrentStatusEmpInfoTerminalTestHelper.contractCode, listEmpInfoTerminalCode);
+				result = Collections.EMPTY_LIST;
+			}
+		};
+		
+		List<ComState> listComstate = new ArrayList<ComState>();
+		List<StateCount> listStateCount = new ArrayList<StateCount>();
+		
+		int totalNumberOfTer = listEmpInfoTerminalCode.size();
+		int numOfNormal = (int) listComstate.stream()
+					.filter(e -> e.getTerminalCurrentState().value == TerminalCurrentState.NORMAL.value).count();
+		int numOfAbnormal = (int) listComstate.stream()
+					.filter(e -> e.getTerminalCurrentState().value == TerminalCurrentState.ABNORMAL.value).count();
+		int numOfNotCom = (int) listComstate.stream()
+					.filter(e -> e.getTerminalCurrentState().value == TerminalCurrentState.NOT_COMMUNICATED.value).count();
+		
+		listStateCount.add(StateCount.createStateCount(TerminalCurrentState.NORMAL, numOfNormal));
+		listStateCount.add(StateCount.createStateCount(TerminalCurrentState.ABNORMAL, numOfAbnormal));
+		listStateCount.add(StateCount.createStateCount(TerminalCurrentState.NOT_COMMUNICATED, numOfNotCom));
+		
+		val judgCurrentStatusEmpInfoTerminal = JudgCurrentStatusEmpInfoTerminal.judgingTerminalCurrentState(require, JudgCurrentStatusEmpInfoTerminalTestHelper.contractCode, empInfoTerminalList);
+		TerminalComStatus terminalComStatus = TerminalComStatus.createTerminalComStatus(listStateCount, listComstate, totalNumberOfTer);
+		
+		assertThat(judgCurrentStatusEmpInfoTerminal.getTotalNumberOfTer()).isEqualTo(terminalComStatus.getTotalNumberOfTer());
+		assertThat(judgCurrentStatusEmpInfoTerminal.getListComstate().size()).isEqualTo(terminalComStatus.getListComstate().size());
+		assertThat(judgCurrentStatusEmpInfoTerminal.getListStateCount().size()).isEqualTo(terminalComStatus.getListStateCount().size());
+	}
+	
+	
 	@Test
 	public void judgmentComStatus1() {
 		
 		List<EmpInfoTerminalComStatusImport> listEmpInfoTerminalComStatus = Collections.emptyList();
-		EmpInfoTerminalCode empInfoTerCode = new EmpInfoTerminalCode("1111");
+
 		val intervalTime = new MonitorIntervalTime(1);
 		
-		TerminalCurrentState actual = JudgCurrentStatusEmpInfoTerminal.judgmentComStatus(listEmpInfoTerminalComStatus, empInfoTerCode, intervalTime);
+		TerminalCurrentState actual = JudgCurrentStatusEmpInfoTerminal.judgmentComStatus(listEmpInfoTerminalComStatus, JudgCurrentStatusEmpInfoTerminalTestHelper.empInfoTerminalCode, intervalTime);
 		
 		assertThat(actual).isEqualTo(TerminalCurrentState.NOT_COMMUNICATED);
 	}
@@ -121,14 +150,12 @@ public class JudgCurrentStatusEmpInfoTerminalTest {
 	public void judgmentComStatus2() {
 		
 		List<EmpInfoTerminalComStatusImport> listEmpInfoTerminalComStatus = new ArrayList<EmpInfoTerminalComStatusImport>();
-		EmpInfoTerminalComStatusImport empInfoTerminalComStatusImport = new EmpInfoTerminalComStatusImport(new ContractCode("1"),
-																					new EmpInfoTerminalCode("1111"),
-																					GeneralDateTime.now().addHours(-60));
+		EmpInfoTerminalComStatusImport empInfoTerminalComStatusImport = JudgCurrentStatusEmpInfoTerminalTestHelper.createEmpInfoTerminalComStatusImport();
 		listEmpInfoTerminalComStatus.add(empInfoTerminalComStatusImport);
-		EmpInfoTerminalCode empInfoTerCode = new EmpInfoTerminalCode("1111");
+		
 		val intervalTime = new MonitorIntervalTime(1);
 		
-		TerminalCurrentState actual = JudgCurrentStatusEmpInfoTerminal.judgmentComStatus(listEmpInfoTerminalComStatus, empInfoTerCode, intervalTime);
+		TerminalCurrentState actual = JudgCurrentStatusEmpInfoTerminal.judgmentComStatus(listEmpInfoTerminalComStatus, JudgCurrentStatusEmpInfoTerminalTestHelper.empInfoTerminalCode, intervalTime);
 		
 		assertThat(actual).isEqualTo(TerminalCurrentState.ABNORMAL);
 	}
@@ -138,14 +165,12 @@ public class JudgCurrentStatusEmpInfoTerminalTest {
 	public void judgmentComStatus3() {
 		
 		List<EmpInfoTerminalComStatusImport> listEmpInfoTerminalComStatus = new ArrayList<EmpInfoTerminalComStatusImport>();
-		EmpInfoTerminalComStatusImport empInfoTerminalComStatusImport = new EmpInfoTerminalComStatusImport(new ContractCode("1"),
-																					new EmpInfoTerminalCode("1111"),
-																					GeneralDateTime.now().addHours(60));
+		EmpInfoTerminalComStatusImport empInfoTerminalComStatusImport = JudgCurrentStatusEmpInfoTerminalTestHelper.createEmpInfoTerminalComStatusImport1();
 		listEmpInfoTerminalComStatus.add(empInfoTerminalComStatusImport);
-		EmpInfoTerminalCode empInfoTerCode = new EmpInfoTerminalCode("1111");
+
 		val intervalTime = new MonitorIntervalTime(1);
 		
-		TerminalCurrentState actual = JudgCurrentStatusEmpInfoTerminal.judgmentComStatus(listEmpInfoTerminalComStatus, empInfoTerCode, intervalTime);
+		TerminalCurrentState actual = JudgCurrentStatusEmpInfoTerminal.judgmentComStatus(listEmpInfoTerminalComStatus, JudgCurrentStatusEmpInfoTerminalTestHelper.empInfoTerminalCode, intervalTime);
 		
 		assertThat(actual).isEqualTo(TerminalCurrentState.NORMAL);
 	}

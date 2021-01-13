@@ -39,10 +39,10 @@ public class GetRemoteSettings {
 		// 2:タイムレコード設定更新リストを取得する(パラメータ．契約コード、パラメータ．就業情報端末コード): タイムレコード設定更新
 		Optional<TimeRecordSetUpdateList> timeRecordSetUpdateList = timeRecordSetUpdateListRepository.findSettingUpdate(new EmpInfoTerminalCode(empInfoTerminalCode), contractCode);
 		
-		if (!timeRecordSetFormatList.isPresent() || !timeRecordSetUpdateList.isPresent()) {
+		if (!timeRecordSetFormatList.isPresent()) {
 			return Collections.emptyList();
 		}
 		
-		return RemoteSettingsDto.toDto(timeRecordSetFormatList.get(), timeRecordSetUpdateList.get().getLstTRecordSetUpdate());
+		return RemoteSettingsDto.toDto(timeRecordSetFormatList.get(), timeRecordSetUpdateList);
 	}
 }

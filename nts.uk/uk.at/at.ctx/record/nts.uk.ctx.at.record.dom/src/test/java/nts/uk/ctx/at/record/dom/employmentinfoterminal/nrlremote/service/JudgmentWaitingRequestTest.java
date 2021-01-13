@@ -50,53 +50,30 @@ public class JudgmentWaitingRequestTest {
 	
 	@Test
 	public void testJudgmentWaitingRequest() {
-		ContractCode contractCode = new ContractCode("1");
-		EmpInfoTerminalCode empInfoTerminalCode = new EmpInfoTerminalCode("1");
 		
-		EmpInfoTerminal empInfoTerminal = new EmpInfoTerminalBuilder(Optional.of(new FullIpAddress(
-				new PartialIpAddress(192), new PartialIpAddress(168), new PartialIpAddress(1), new PartialIpAddress(1))), new MacAddress("AABBCCDD"),
-				new EmpInfoTerminalCode("1"), Optional.of(new EmpInfoTerSerialNo("1")), new EmpInfoTerminalName(""),
-				contractCode)
-						.createStampInfo(new CreateStampInfo(new OutPlaceConvert(NotUseAtr.NOT_USE, Optional.empty()),
-								new ConvertEmbossCategory(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE), Optional.empty()))
-						.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1))).build();
-		
-		List<EmpInfoTerminal> empInfoTerminalList = new ArrayList<EmpInfoTerminal>();
-		empInfoTerminalList.add(empInfoTerminal);
+		List<EmpInfoTerminal> empInfoTerminalList = JudgmentWaitingRequestTestHelper.createEmpInfoTerminalList();
+
 		List<EmpInfoTerminalCode> listEmpInfoTerminalCode = empInfoTerminalList.stream().map(e -> e.getEmpInfoTerCode()).collect(Collectors.toList());
 		
-		TimeRecordSetFormatList timeRecordSetFormatList = new TimeRecordSetFormatList(
-				new EmpInfoTerminalCode("1"), new EmpInfoTerminalName(""), new NRRomVersion("003"),
-				ModelEmpInfoTer.valueOf(7), Collections.emptyList());
-		
-		List<TimeRecordSetFormatList> listTimeRecordSetFormatList = new ArrayList<TimeRecordSetFormatList>();
-		listTimeRecordSetFormatList.add(timeRecordSetFormatList);
-		
-		TimeRecordSetUpdateList timeRecordSetUpdateList = new TimeRecordSetUpdateList(new EmpInfoTerminalCode("1"),
-				new EmpInfoTerminalName(""), new NRRomVersion("003"), ModelEmpInfoTer.valueOf(7), Collections.emptyList());
-		
-		List<TimeRecordSetUpdateList> listTimeRecordSetUpdateList = new ArrayList<TimeRecordSetUpdateList>();
-		listTimeRecordSetUpdateList.add(timeRecordSetUpdateList);
-		
+		List<TimeRecordSetFormatList> listTimeRecordSetFormatList = JudgmentWaitingRequestTestHelper.createListTimeRecordSetFormatList();
+		List<TimeRecordSetUpdateList> listTimeRecordSetUpdateList = JudgmentWaitingRequestTestHelper.createListTimeRecordSetUpdateList();
+
 		new Expectations() {
 			{
-				require.getTimeRecordSetFormatList(contractCode, listEmpInfoTerminalCode);
+				require.getTimeRecordSetFormatList(JudgmentWaitingRequestTestHelper.contractCode, listEmpInfoTerminalCode);
 				result = listTimeRecordSetFormatList;
-				require.getTimeRecordUpdateList(contractCode, listEmpInfoTerminalCode);
+				require.getTimeRecordUpdateList(JudgmentWaitingRequestTestHelper.contractCode, listEmpInfoTerminalCode);
 				result = listTimeRecordSetUpdateList;
 			}
 		};
 		
-		Map<EmpInfoTerminalCode, Integer> mapCodeSeveralItem = listTimeRecordSetFormatList.stream().collect(Collectors.toMap(e -> e.getEmpInfoTerCode(), e -> listTimeRecordSetFormatList.size()));
+		Map<EmpInfoTerminalCode, Integer> mapCodeSeveralItem = listTimeRecordSetFormatList.stream().collect(Collectors.toMap(e -> e.getEmpInfoTerCode(), e -> e.getLstTRSetFormat().size()));
 		
 		Map<EmpInfoTerminalCode, Boolean> mapCodeFlag = listTimeRecordSetUpdateList.stream()
 				.collect(Collectors.toMap(e -> e.getEmpInfoTerCode(), e -> e.isWaitingReqRecovery(mapCodeSeveralItem.get(e.getEmpInfoTerCode()))));
 		
-		val actual = JudgmentWaitingRequest.judgmentReqWaitingStatus(require, contractCode, empInfoTerminalList);
-		
-//		assertThat(actual).isEqualTo(mapCodeFlag);
-		
-		assertThat(actual.get(empInfoTerminalCode)).isEqualTo(mapCodeFlag.get(empInfoTerminalCode));
+		val actual = JudgmentWaitingRequest.judgmentReqWaitingStatus(require, JudgmentWaitingRequestTestHelper.contractCode, empInfoTerminalList);
+		assertThat(actual.get(JudgmentWaitingRequestTestHelper.empInfoTerminalCode)).isEqualTo(mapCodeFlag.get(JudgmentWaitingRequestTestHelper.empInfoTerminalCode));
 		
 	}
 }

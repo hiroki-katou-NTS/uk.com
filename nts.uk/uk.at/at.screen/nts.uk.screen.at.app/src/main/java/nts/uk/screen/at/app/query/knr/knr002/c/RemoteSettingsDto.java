@@ -43,13 +43,13 @@ public class RemoteSettingsDto {
 	
 	private int modelEmpInfoTer;
 	
-	public static List<RemoteSettingsDto> toDto(TimeRecordSetFormatList timeRecordSetFormatList, List<TimeRecordSetUpdate> lstTRecordSetUpdate) {
+	public static List<RemoteSettingsDto> toDto(TimeRecordSetFormatList timeRecordSetFormatList, Optional<TimeRecordSetUpdateList> timeRecordSetUpdateList) {
 		List<RemoteSettingsDto> listDto = timeRecordSetFormatList.getLstTRSetFormat().stream()
 													.map(e -> new RemoteSettingsDto(e.getMajorNo().v(),
 																e.getMajorClassification().v(), e.getSmallNo().v(), e.getSmallClassification().v(),
 																e.getVariableName().v(), e.getType().value, e.getNumberOfDigits().v(),
 																e.getInputRange().v(), e.getCurrentValue().v(),
-																getUpdateValueByName(e.getVariableName().v(), lstTRecordSetUpdate),
+																getUpdateValueByName(e.getVariableName().v(), timeRecordSetUpdateList),
 																timeRecordSetFormatList.getEmpInfoTerName().v(),
 																timeRecordSetFormatList.getRomVersion().v(),
 																timeRecordSetFormatList.getModelEmpInfoTer().value))
@@ -57,8 +57,11 @@ public class RemoteSettingsDto {
 		return listDto;
 	}
 	
-	public static String getUpdateValueByName(String variableName, List<TimeRecordSetUpdate> lstTRecordSetUpdate) {
-		List<TimeRecordSetUpdate> filteredList = lstTRecordSetUpdate.stream().filter(e -> e.getVariableName().v().equals(variableName)).collect(Collectors.toList());
+	public static String getUpdateValueByName(String variableName, Optional<TimeRecordSetUpdateList> timeRecordSetUpdateList) {
+		if (!timeRecordSetUpdateList.isPresent()) {
+			return "";
+		}
+		List<TimeRecordSetUpdate> filteredList = timeRecordSetUpdateList.get().getLstTRecordSetUpdate().stream().filter(e -> e.getVariableName().v().equals(variableName)).collect(Collectors.toList());
 		if (filteredList.isEmpty()) {
 			return "";
 		}

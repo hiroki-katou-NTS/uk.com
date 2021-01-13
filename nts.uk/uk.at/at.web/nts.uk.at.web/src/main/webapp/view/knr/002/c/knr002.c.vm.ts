@@ -36,10 +36,10 @@ module nts.uk.at.view.knr002.c {
             timeInputRange: KnockoutObservable<string> = ko.observable();
 
             // mode ip
-            ipAddress1: KnockoutObservable<string> = ko.observable('');
-            ipAddress2: KnockoutObservable<string> = ko.observable('');
-            ipAddress3: KnockoutObservable<string> = ko.observable('');
-            ipAddress4: KnockoutObservable<string> = ko.observable('');
+            ipAddress1: KnockoutObservable<number> = ko.observable();
+            ipAddress2: KnockoutObservable<number> = ko.observable();
+            ipAddress3: KnockoutObservable<number> = ko.observable();
+            ipAddress4: KnockoutObservable<number> = ko.observable();
             ipUpdateValue: KnockoutObservable<string>;
 
             // mode selection
@@ -74,7 +74,8 @@ module nts.uk.at.view.knr002.c {
                 });
 
                 vm.currentCode2.subscribe((value) => {
-                    let rowData = ko.toJS(vm.smallItemData).filter((item: RemoteSettingsDto) => item.smallClassification == value)[0]; 
+                    let rowData: RemoteSettingsDto = ko.toJS(vm.smallItemData).filter((item: RemoteSettingsDto) => item.smallClassification == value)[0]; 
+                    vm.smallClassificationName(rowData.smallClassification);
                     vm.rowData(rowData);
                     vm.setInputMode(rowData.inputType);
 
@@ -101,6 +102,13 @@ module nts.uk.at.view.knr002.c {
                         }
                         vm.updateValue(rowData.updateValue);
                         break;
+                    case INPUT_TYPE.LETTER2:
+                        if (rowData.updateValue.length == 0) {
+                            vm.updateValue(rowData.currentValue);
+                            break;
+                        }
+                        vm.updateValue(rowData.updateValue);
+                        break;    
                     case INPUT_TYPE.TIME:
                         vm.timeInputRange(rowData.inputRange);
                         if (rowData.updateValue.length == 0) {
@@ -112,17 +120,17 @@ module nts.uk.at.view.knr002.c {
                     case INPUT_TYPE.IP:
                         if (rowData.updateValue.length == 0) {
                             let ipArr = rowData.currentValue.split('.');
-                            vm.ipAddress1(ipArr[0]);
-                            vm.ipAddress2(ipArr[1]);
-                            vm.ipAddress3(ipArr[2]);
-                            vm.ipAddress4(ipArr[3]);
+                            vm.ipAddress1(parseInt(ipArr[0]));
+                            vm.ipAddress2(parseInt(ipArr[1]));
+                            vm.ipAddress3(parseInt(ipArr[2]));
+                            vm.ipAddress4(parseInt(ipArr[3]));
                             break;
                         }
                         let ipArr = rowData.updateValue.split('.');
-                        vm.ipAddress1(ipArr[0]);
-                        vm.ipAddress2(ipArr[1]);
-                        vm.ipAddress3(ipArr[2]);
-                        vm.ipAddress4(ipArr[3]);
+                        vm.ipAddress1(parseInt(ipArr[0]));
+                        vm.ipAddress2(parseInt(ipArr[1]));
+                        vm.ipAddress3(parseInt(ipArr[2]));
+                        vm.ipAddress4(parseInt(ipArr[3]));
                         break;
                     case INPUT_TYPE.SELECTION:
                         let inputRangeArr = rowData.inputRange.split('/');
@@ -164,6 +172,11 @@ module nts.uk.at.view.knr002.c {
 
             public registerAndSubmit() {
                 const vm = this;
+
+                if (vm.hasError()) {
+                    return;
+                }
+
                 let obj: any = {};
                 vm.settingData.forEach((item: SettingValue) => {
                     if(obj[item.variableName] === undefined){
@@ -174,7 +187,6 @@ module nts.uk.at.view.knr002.c {
                     } else {
                         obj[item.variableName] += item.updateValue;
                     }
-                    
                 });
 
                 let listTimeRecordSetUpdateDto = [];
@@ -228,6 +240,11 @@ module nts.uk.at.view.knr002.c {
 
             public addToSetting() {
                 const vm = this;
+                
+                if (vm.hasError()) {
+                    return;
+                }
+
                 switch(vm.inputMode()) {
                     case INPUT_TYPE.LETTER:
                     case INPUT_TYPE.TIME:  
@@ -235,6 +252,11 @@ module nts.uk.at.view.knr002.c {
                         let item = new SettingValue(Math.random(), vm.rowData().majorClassification, vm.rowData().smallClassification, vm.updateValue(), vm.rowData().inputRange, vm.rowData().variableName);
                         vm.settingData.push(item);     
                         break;
+                    case INPUT_TYPE.LETTER2:  
+                        vm.checkExistBeforeAdd(vm.rowData().smallClassification);
+                        let item6 = new SettingValue(Math.random(), vm.rowData().majorClassification, vm.rowData().smallClassification, vm.updateValue(), '', vm.rowData().variableName);
+                        vm.settingData.push(item6);     
+                        break;    
                     case INPUT_TYPE.IP:
                         vm.checkExistBeforeAdd(vm.rowData().smallClassification);
                         let item2 = new SettingValue(Math.random(), vm.rowData().majorClassification, vm.rowData().smallClassification, vm.ipUpdateValue(), '', vm.rowData().variableName);
@@ -263,7 +285,6 @@ module nts.uk.at.view.knr002.c {
                         map[el.name]+=""+el.index;
                     }
                 })
-                
 
                 $("#grid").igGrid("dataSourceObject", vm.settingData).igGrid("dataBind");
             }
@@ -331,6 +352,39 @@ module nts.uk.at.view.knr002.c {
                 .always(() => blockUI.clear());
             } 
 
+            private hasError() {
+                const vm = this;
+
+                vm.clearError();
+
+                $('#C6_5').ntsEditor("validate");
+
+                if (!vm.checkIpAddress(vm.ipAddress1()) && !vm.checkIpAddress(vm.ipAddress2()) && !vm.checkIpAddress(vm.ipAddress3()) && !vm.checkIpAddress(vm.ipAddress4())) {
+                    if ($('.nts-input').ntsError('hasError')) {
+                        return true;
+                    }
+                    return false;
+                }
+
+                if (!vm.checkIpAddress(vm.ipAddress1()) || !vm.checkIpAddress(vm.ipAddress2()) || !vm.checkIpAddress(vm.ipAddress3()) || !vm.checkIpAddress(vm.ipAddress4())) {
+                    nts.uk.ui.dialog.error({messageId: "Msg_2036"})
+                    return true;
+                }
+
+                return false;
+            }
+
+            private clearError() {
+                $('#C6_5').ntsError('clear');
+                nts.uk.ui.errors.clearAll();
+            }
+
+            private checkIpAddress(ipAddress: number): boolean {
+                if(_.isNil(ipAddress) || ipAddress.toString().length == 0){
+                    return false;    
+                }
+                return true;
+            }
             private loadSmallGrid(majorName: string) {
                 const vm = this;
 
@@ -347,9 +401,11 @@ module nts.uk.at.view.knr002.c {
                     case 0:
                     case 1:
                     case 2:
+                        vm.inputMode(INPUT_TYPE.LETTER);
+                        break;
                     case 3:
                     case 6:
-                        vm.inputMode(INPUT_TYPE.LETTER);
+                        vm.inputMode(INPUT_TYPE.LETTER2);
                         break;
                     case 4: 
                         vm.inputMode(INPUT_TYPE.TIME);
@@ -431,6 +487,7 @@ module nts.uk.at.view.knr002.c {
             IP = 2,
             SELECTION = 3,
             CHECK = 4,
+            LETTER2 = 5
         }
     }
 }

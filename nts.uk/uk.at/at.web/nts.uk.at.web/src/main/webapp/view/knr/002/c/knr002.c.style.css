@@ -4,6 +4,15 @@
     display: flex;
 } */
 
+body > div:nth-child(1) {
+	position: absolute;
+}
+
+body > div:nth-child(2) {
+	padding-top: 100px;
+	padding-left: 160px;
+}
+
 .top-container {
 	padding-left: 5px;
 }
