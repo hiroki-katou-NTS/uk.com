@@ -46,6 +46,19 @@ export class CmmS45ShrComponentsApp10Component extends Vue {
         });
     }
 
+    get absWorkInfoTitle() {
+        const vm = this;
+        if (!vm.params.appDetail) {
+            return '';
+        }
+
+        if (vm.params.appDetail.workInfoAttendanceReflect.reflectWorkHour == 0) {
+            return 'KAFS11_16';
+        } else {
+            return 'KAFS11_15';
+        }
+    }
+
     // ※4-1
     get rec() {
         const vm = this;

@@ -19,9 +19,14 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.ErrorCheckProcessingBeforeRegistrationKAF011;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.HdShipmentMobileCmd;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.PreRegistrationErrorCheck;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.PreUpdateErrorCheck;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.SaveHolidayShipmentCommandHandlerRef5;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.UpdateHolidayShipmentCommandHandlerRef5;
+import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.HolidayShipmentScreenAFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.DisplayInforWhenStarting;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
@@ -52,6 +57,15 @@ public class HolidayShipmentMobileWS extends WebService {
 	
 	@Inject
 	private SaveHolidayShipmentCommandHandlerRef5 saveHolidayShipmentCommandHandlerRef5;
+	
+	@Inject
+	private PreUpdateErrorCheck preUpdateErrorCheck;
+	
+	@Inject
+	private UpdateHolidayShipmentCommandHandlerRef5 updateHolidayShipmentCommandHandlerRef5;
+	
+	@Inject
+	private ApplicationRepository applicationRepository;
 	
 	@POST
 	@Path("start")
@@ -137,20 +151,31 @@ public class HolidayShipmentMobileWS extends WebService {
 	}
 	
 	private List<ConfirmMsgOutput> checkBeforeUpdate(HdShipmentMobileCmd command) {
-		return null;
+		String companyID = AppContexts.user().companyId();
+		Optional<AbsenceLeaveApp> abs = Optional.empty(); 
+		if(command.abs!=null) {
+			abs = Optional.of(command.abs.toDomainUpdateAbs(command.abs.application));
+		}
+		Optional<RecruitmentApp> rec = Optional.empty();
+		if(command.rec!=null) {
+			rec = Optional.of(command.rec.toDomainUpdateRec(command.rec.application));
+		}
+		DisplayInforWhenStarting displayInforWhenStarting = command.getDisplayInforWhenStarting();
+		preUpdateErrorCheck.errorCheck(companyID, abs, rec, displayInforWhenStarting);
+		return Collections.emptyList();
 	}
 	
 	@POST
 	@Path("submit")
 	public ProcessResult submit(HdShipmentMobileCmd command) {
 		String companyID = AppContexts.user().companyId();
-		Optional<AbsenceLeaveApp> abs = command.abs == null ? Optional.empty() : Optional.of(command.abs.toDomainInsertAbs());
-		Optional<RecruitmentApp> rec = command.rec == null ? Optional.empty() : Optional.of(command.rec.toDomainInsertRec());
 		DisplayInforWhenStarting displayInforWhenStarting = command.getDisplayInforWhenStarting();
 		AppDispInfoStartupOutput appDispInfoStartup = displayInforWhenStarting.appDispInfoStartup.toDomain();
 		// INPUT．「画面モード」をチェックする
 		if(command.isNewMode()) {
 			// 振休振出申請（新規）登録処理
+			Optional<AbsenceLeaveApp> abs = command.abs == null ? Optional.empty() : Optional.of(command.abs.toDomainInsertAbs());
+			Optional<RecruitmentApp> rec = command.rec == null ? Optional.empty() : Optional.of(command.rec.toDomainInsertRec());
 			 saveHolidayShipmentCommandHandlerRef5.registrationApplicationProcess(
 					companyID,
 					abs,
@@ -165,6 +190,25 @@ public class HolidayShipmentMobileWS extends WebService {
 					appDispInfoStartup.getAppDispInfoNoDateOutput().getApplicationSetting());
 		} else {
 			// 振休振出申請の更新登録
+			Optional<AbsenceLeaveApp> abs = Optional.empty(); 
+			if(command.abs!=null) {
+				abs = Optional.of(command.abs.toDomainUpdateAbs(command.abs.application));
+			}
+			Optional<RecruitmentApp> rec = Optional.empty();
+			if(command.rec!=null) {
+				rec = Optional.of(command.rec.toDomainUpdateRec(command.rec.application));
+			}
+			updateHolidayShipmentCommandHandlerRef5.updateApplicationProcess(
+					companyID,
+					rec, 
+					abs, 
+					CollectionUtil.isEmpty(command.getRecOldHolidayMngLst()) ? Collections.emptyList() : command.getRecHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+					CollectionUtil.isEmpty(command.getRecHolidayMngLst()) ? Collections.emptyList() : command.getRecHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+					CollectionUtil.isEmpty(command.getAbsOldHolidayMngLst()) ? Collections.emptyList() : command.getAbsHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+					CollectionUtil.isEmpty(command.getAbsOldWorkMngLst()) ? Collections.emptyList() : command.getAbsWorkMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+					CollectionUtil.isEmpty(command.getAbsHolidayMngLst()) ? Collections.emptyList() : command.getAbsHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+					CollectionUtil.isEmpty(command.getAbsWorkMngLst()) ? Collections.emptyList() : command.getAbsWorkMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+					appDispInfoStartup);
 		}
 		return new ProcessResult();
 	}

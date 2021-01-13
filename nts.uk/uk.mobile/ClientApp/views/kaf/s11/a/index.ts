@@ -12,7 +12,6 @@ import { Kdl001Component } from 'views/kdl/001';
 import { KDL002Component } from 'views/kdl/002';
 import { KdlS35Component } from 'views/kdl/s35';
 import { KdlS36Component } from 'views/kdl/s36';
-import { vmOf } from 'vue/types/umd';
 
 @component({
     name: 'kafs11a',
@@ -35,12 +34,20 @@ import { vmOf } from 'vue/types/umd';
         },
         complementWorkInfo: {
             timeRange1: {
+                timeRange: true,
                 required: true    
+            },
+            timeRange2: {
+                timeRange: true
             }
         },
         leaveWorkInfo: {
             timeRange1: {
+                timeRange: true,
                 required: true    
+            },
+            timeRange2: {
+                timeRange: true
             }
         }
     },
@@ -61,8 +68,8 @@ export class KafS11AComponent extends KafS00ShrComponent {
     public complementLeaveAtrResource: Array<Object> = [];
     public prePostAtr: number = null;
     public complementLeaveAtr: number = ComplementLeaveAtr.COMPLEMENT_LEAVE;
-    public complementDate: any = null;
-    public leaveDate: any = null;
+    public complementDate: Date = null;
+    public leaveDate: Date = null;
     public complementWorkInfo: WorkInfo = { 
         workTypeCD: null,
         workTimeCD: null,
@@ -101,97 +108,243 @@ export class KafS11AComponent extends KafS00ShrComponent {
             text: 'KAFS11_7'
         }];
         vm.$mask('show');
-        let user = null;
-        vm.$auth.user.then((userData: any) => {
-            user = userData;
+        if (vm.mode == ScreenMode.NEW) {
+            let user = null;
+            vm.$auth.user.then((userData: any) => {
+                user = userData;
 
-            return vm.loadCommonSetting(AppType.COMPLEMENT_LEAVE_APPLICATION);
-        }).then((data: any) => {
-            vm.updateKaf000_A_Params(user);
-            vm.updateKaf000_C_Params(true);
-            let newMode = vm.mode == ScreenMode.NEW ? true : false,
-                employeeID = user.employeeId,
-                dateLst = [],
-                displayInforWhenStarting = null,
-                appDispInfoStartupCmd = vm.appDispInfoStartupOutput,
-                command = { newMode, employeeID, dateLst, displayInforWhenStarting, appDispInfoStartupCmd };
+                return vm.loadCommonSetting(AppType.COMPLEMENT_LEAVE_APPLICATION);
+            }).then((data: any) => {
+                vm.updateKaf000_A_Params(user);
+                vm.updateKaf000_C_Params(true);
+                let newMode = vm.mode == ScreenMode.NEW ? true : false,
+                    employeeID = user.employeeId,
+                    dateLst = [],
+                    displayInforWhenStarting = null,
+                    appDispInfoStartupCmd = vm.appDispInfoStartupOutput,
+                    command = { newMode, employeeID, dateLst, displayInforWhenStarting, appDispInfoStartupCmd };
 
-            return vm.$http.post('at', API.start, command);
-        }).then((data: any) => {
-            vm.displayInforWhenStarting = data.data;
-            vm.initData();
+                return vm.$http.post('at', API.start, command);
+            }).then((data: any) => {
+                vm.initData(data.data);
+                let wkTimeCodes = [
+                    vm.complementWorkInfo.workTimeCD,
+                    vm.leaveWorkInfo.workTimeCD
+                ];
+
+                return vm.$http.post('at', API.getWorkTimeByCDLst, { wkTimeCodes });
+            }).then((data: any) => {
+                vm.workTimeLstFullData = data.data;
+                vm.$mask('hide');
+            });
+        } else {
+            vm.appDispInfoStartupOutput = vm.params.appDispInfoStartupOutput;
+            vm.initData(vm.params.appDetail);
             let wkTimeCodes = [
                 vm.complementWorkInfo.workTimeCD,
                 vm.leaveWorkInfo.workTimeCD
             ];
-
-            return vm.$http.post('at', API.getWorkTimeByCDLst, { wkTimeCodes });
-        }).then((data: any) => {
-            vm.workTimeLstFullData = data.data;
-            vm.$mask('hide');
-        });
+            vm.$http.post('at', API.getWorkTimeByCDLst, { wkTimeCodes }).then((data: any) => {
+                vm.workTimeLstFullData = data.data;
+                vm.$mask('hide');
+            });
+        }
     }
 
     @Watch('complementLeaveAtr')
     public complementLeaveAtrWatcher(value) {
         const vm = this;
-        switch (value) {
-            case ComplementLeaveAtr.COMPLEMENT:
-                vm.$updateValidator('complementDate', { validate: true });
-                vm.$updateValidator('leaveDate', { validate: false });
-                break;
-            case ComplementLeaveAtr.LEAVE:
-                vm.$updateValidator('complementDate', { validate: false });
-                vm.$updateValidator('leaveDate', { validate: true });
-                break;
-            default:
-                vm.$updateValidator('complementDate', { validate: true });
-                vm.$updateValidator('leaveDate', { validate: true });
-                break;
+        vm.updateValidate();
+    }
+
+    private initData(displayInforWhenStarting: any) {
+        const vm = this;
+        vm.formatDateResult(displayInforWhenStarting);
+        vm.initDataCommon();
+        vm.initDataComplement();
+        vm.initDataLeave();
+        vm.updateValidate();
+    }
+
+    private formatDateResult(displayInforWhenStarting: any) {
+        const vm = this;
+        vm.displayInforWhenStarting = displayInforWhenStarting;
+        if (vm.displayInforWhenStarting.rec) {
+            _.forEach(vm.displayInforWhenStarting.rec.leaveComDayOffMana, (item) => {
+                item.outbreakDay = new Date(item.outbreakDay).toISOString();
+                item.dateOfUse = new Date(item.dateOfUse).toISOString();
+            });
+            _.forEach(vm.displayInforWhenStarting.rec.leaveComDayOffManaOld, (item) => {
+                item.outbreakDay = new Date(item.outbreakDay).toISOString();
+                item.dateOfUse = new Date(item.dateOfUse).toISOString();
+            });
+        }
+        if (vm.displayInforWhenStarting.abs) {
+            _.forEach(vm.displayInforWhenStarting.abs.leaveComDayOffManaOld, (item) => {
+                item.outbreakDay = new Date(item.outbreakDay).toISOString();
+                item.dateOfUse = new Date(item.dateOfUse).toISOString();
+            });
+            _.forEach(vm.displayInforWhenStarting.abs.leaveComDayOffManaOld, (item) => {
+                item.outbreakDay = new Date(item.outbreakDay).toISOString();
+                item.dateOfUse = new Date(item.dateOfUse).toISOString();
+            });
+            _.forEach(vm.displayInforWhenStarting.abs.payoutSubofHDManagements, (item) => {
+                item.outbreakDay = new Date(item.outbreakDay).toISOString();
+                item.dateOfUse = new Date(item.dateOfUse).toISOString();
+            });
+            _.forEach(vm.displayInforWhenStarting.abs.payoutSubofHDManagementsOld, (item) => {
+                item.outbreakDay = new Date(item.outbreakDay).toISOString();
+                item.dateOfUse = new Date(item.dateOfUse).toISOString();
+            });
         }
     }
 
-    private initData() {
+    private initDataCommon() {
         const vm = this;
         vm.prePostAtr = vm.displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.prePostAtr;
-        vm.initDataComplement();
-        vm.initDataLeave();
+        if (vm.mode == ScreenMode.DETAIL) {
+            if (vm.displayInforWhenStarting.rec) {
+                vm.complementDate = new Date(moment(vm.displayInforWhenStarting.rec.application.appDate).format('YYYY/MM/DD'));
+            }
+            if (vm.displayInforWhenStarting.abs) {
+                vm.leaveDate = new Date(moment(vm.displayInforWhenStarting.abs.application.appDate).format('YYYY/MM/DD'));
+            }
+        }
     }
 
     private initDataComplement() {
         const vm = this;
-        if (vm.displayInforWhenStarting.applicationForWorkingDay.workType) {
-            vm.complementWorkInfo.workTypeCD = vm.displayInforWhenStarting.applicationForWorkingDay.workType;
+        if (vm.mode == ScreenMode.NEW) {
+            if (vm.displayInforWhenStarting.applicationForWorkingDay.workType) {
+                vm.complementWorkInfo.workTypeCD = vm.displayInforWhenStarting.applicationForWorkingDay.workType;
+            } else {
+                vm.complementWorkInfo.workTypeCD = (_.head(vm.displayInforWhenStarting.applicationForWorkingDay.workTypeList) as any).workTypeCode;
+            }
+            vm.complementWorkInfo.workTimeCD = vm.displayInforWhenStarting.applicationForWorkingDay.workTime;
+            vm.complementWorkInfo.timeRange1 = {
+                start: vm.displayInforWhenStarting.applicationForWorkingDay.startTime,
+                end: vm.displayInforWhenStarting.applicationForWorkingDay.endTime
+            };
+            vm.complementWorkInfo.timeRange2 = {
+                start: vm.displayInforWhenStarting.applicationForWorkingDay.startTime2,
+                end: vm.displayInforWhenStarting.applicationForWorkingDay.endTime2
+            };
         } else {
-            vm.complementWorkInfo.workTypeCD = (_.head(vm.displayInforWhenStarting.applicationForWorkingDay.workTypeList) as any).workTypeCode;
+            if (vm.displayInforWhenStarting.rec) {
+                vm.complementWorkInfo.workTypeCD = vm.displayInforWhenStarting.rec.workInformation.workType;
+                vm.complementWorkInfo.workTimeCD = vm.displayInforWhenStarting.rec.workInformation.workTime;
+                let timeRange1 = _.find(vm.displayInforWhenStarting.rec.workingHours, (o) => o.workNo == 1);
+                if (timeRange1) {
+                    vm.complementWorkInfo.timeRange1 = {
+                        start: timeRange1.timeZone.startTime,
+                        end: timeRange1.timeZone.endTime
+                    };    
+                }
+                let timeRange2 = _.find(vm.displayInforWhenStarting.rec.workingHours, (o) => o.workNo == 2);
+                if (timeRange2) {
+                    vm.complementWorkInfo.timeRange2 = {
+                        start: timeRange2.timeZone.startTime,
+                        end: timeRange2.timeZone.endTime
+                    };    
+                }
+            }
         }
-        vm.complementWorkInfo.workTimeCD = vm.displayInforWhenStarting.applicationForWorkingDay.workTime;
-        vm.complementWorkInfo.timeRange1 = {
-            start: vm.displayInforWhenStarting.applicationForWorkingDay.startTime,
-            end: vm.displayInforWhenStarting.applicationForWorkingDay.endTime
-        };
-        vm.complementWorkInfo.timeRange2 = {
-            start: vm.displayInforWhenStarting.applicationForWorkingDay.startTime2,
-            end: vm.displayInforWhenStarting.applicationForWorkingDay.endTime2
-        };
     }
 
     private initDataLeave() {
         const vm = this;
-        if (vm.displayInforWhenStarting.applicationForHoliday.workType) {
-            vm.leaveWorkInfo.workTypeCD = vm.displayInforWhenStarting.applicationForHoliday.workType;
+        if (vm.mode == ScreenMode.NEW) {
+            if (vm.displayInforWhenStarting.applicationForHoliday.workType) {
+                vm.leaveWorkInfo.workTypeCD = vm.displayInforWhenStarting.applicationForHoliday.workType;
+            } else {
+                vm.leaveWorkInfo.workTypeCD = (_.head(vm.displayInforWhenStarting.applicationForHoliday.workTypeList) as any).workTypeCode;
+            }
+            vm.leaveWorkInfo.workTimeCD = vm.displayInforWhenStarting.applicationForHoliday.workTime;
+            vm.leaveWorkInfo.timeRange1 = {
+                start: vm.displayInforWhenStarting.applicationForHoliday.startTime,
+                end: vm.displayInforWhenStarting.applicationForHoliday.endTime
+            };
+            vm.leaveWorkInfo.timeRange2 = {
+                start: vm.displayInforWhenStarting.applicationForHoliday.startTime2,
+                end: vm.displayInforWhenStarting.applicationForHoliday.endTime2
+            };
         } else {
-            vm.leaveWorkInfo.workTypeCD = (_.head(vm.displayInforWhenStarting.applicationForHoliday.workTypeList) as any).workTypeCode;
+            if (vm.displayInforWhenStarting.abs) {
+                vm.leaveWorkInfo.workTypeCD = vm.displayInforWhenStarting.abs.workInformation.workType;
+                vm.leaveWorkInfo.workTimeCD = vm.displayInforWhenStarting.abs.workInformation.workTime;
+                let timeRange1 = _.find(vm.displayInforWhenStarting.abs.workingHours, (o) => o.workNo == 1);
+                if (timeRange1) {
+                    vm.leaveWorkInfo.timeRange1 = {
+                        start: timeRange1.timeZone.startTime,
+                        end: timeRange1.timeZone.endTime
+                    };    
+                }
+                let timeRange2 = _.find(vm.displayInforWhenStarting.abs.workingHours, (o) => o.workNo == 2);
+                if (timeRange2) {
+                    vm.leaveWorkInfo.timeRange2 = {
+                        start: timeRange2.timeZone.startTime,
+                        end: timeRange2.timeZone.endTime
+                    };    
+                }
+            }
         }
-        vm.leaveWorkInfo.workTimeCD = vm.displayInforWhenStarting.applicationForHoliday.workTime;
-        vm.leaveWorkInfo.timeRange1 = {
-            start: vm.displayInforWhenStarting.applicationForHoliday.startTime,
-            end: vm.displayInforWhenStarting.applicationForHoliday.endTime
-        };
-        vm.leaveWorkInfo.timeRange2 = {
-            start: vm.displayInforWhenStarting.applicationForHoliday.startTime2,
-            end: vm.displayInforWhenStarting.applicationForHoliday.endTime2
-        };
+    }
+
+    private updateValidate() {
+        const vm = this;
+        if (vm.mode == ScreenMode.NEW) {
+            if (vm.complementLeaveAtr == ComplementLeaveAtr.LEAVE) {
+                vm.$updateValidator('complementDate', { validate: false });
+            } else {
+                vm.$updateValidator('complementDate', { validate: true });
+            }
+            if (vm.complementLeaveAtr == ComplementLeaveAtr.COMPLEMENT) {
+                vm.$updateValidator('leaveDate', { validate: false });
+            } else {
+                vm.$updateValidator('leaveDate', { validate: true });
+            }
+            if (vm.dispComplementContent) {
+                vm.$updateValidator('complementWorkInfo.timeRange1', { validate: true });
+            } else {
+                vm.$updateValidator('complementWorkInfo.timeRange1', { validate: false });
+            }
+            if (vm.dispComplementTimeRange2) {
+                vm.$updateValidator('complementWorkInfo.timeRange2', { validate: true });
+            } else {
+                vm.$updateValidator('complementWorkInfo.timeRange2', { validate: false });
+            }
+            if (vm.dispLeaveTimeRange1) {
+                vm.$updateValidator('leaveWorkInfo.timeRange1', { validate: true });
+            } else {
+                vm.$updateValidator('leaveWorkInfo.timeRange1', { validate: false });
+            }
+            if (vm.dispLeaveTimeRange2) {
+                vm.$updateValidator('leaveWorkInfo.timeRange2', { validate: true });
+            } else {
+                vm.$updateValidator('leaveWorkInfo.timeRange2', { validate: false });
+            }
+        } else {
+            if (vm.dispComplementContent) {
+                vm.$updateValidator('complementWorkInfo.timeRange1', { validate: true });
+            } else {
+                vm.$updateValidator('complementWorkInfo.timeRange1', { validate: false });
+            }
+            if (vm.dispComplementTimeRange2) {
+                vm.$updateValidator('complementWorkInfo.timeRange2', { validate: true });
+            } else {
+                vm.$updateValidator('complementWorkInfo.timeRange2', { validate: false });
+            }
+            if (vm.dispLeaveTimeRange1) {
+                vm.$updateValidator('leaveWorkInfo.timeRange1', { validate: true });
+            } else {
+                vm.$updateValidator('leaveWorkInfo.timeRange1', { validate: false });
+            }
+            if (vm.dispLeaveTimeRange2) {
+                vm.$updateValidator('leaveWorkInfo.timeRange2', { validate: true });
+            } else {
+                vm.$updateValidator('leaveWorkInfo.timeRange2', { validate: false });
+            }
+        }
     }
 
     public getWorkTypeName(workTypeCD: string, isComplement: boolean) {
@@ -201,9 +354,13 @@ export class KafS11AComponent extends KafS00ShrComponent {
         }
         let workTypeLst = [];
         if (isComplement) {
-            workTypeLst = vm.displayInforWhenStarting.applicationForWorkingDay.workTypeList;
+            if (vm.displayInforWhenStarting.applicationForWorkingDay) {
+                workTypeLst = vm.displayInforWhenStarting.applicationForWorkingDay.workTypeList;
+            }
         } else {
-            workTypeLst = vm.displayInforWhenStarting.applicationForHoliday.workTypeList;
+            if (vm.displayInforWhenStarting.applicationForHoliday) {
+                workTypeLst = vm.displayInforWhenStarting.applicationForHoliday.workTypeList;
+            }
         }
         let workType: any = _.find(workTypeLst, (o) => o.workTypeCode == workTypeCD);
         if (workType) {
@@ -233,21 +390,38 @@ export class KafS11AComponent extends KafS00ShrComponent {
         if (!workTimeFull) {
             return '';        
         }
-        let result = '<div class="mb-2">' + workTimeFull.workTime1 + '</div>';
+        let result = '<div>' + workTimeFull.workTime1 + '</div>';
         if (workTimeFull.workTime2) {
-            result += '<div>' + workTimeFull.workTime2 + '</div>';
+            result += '<div class="mt-2">' + workTimeFull.workTime2 + '</div>';
         }
 
         return result;
     }
 
+    get ScreenMode() {
+        return ScreenMode;
+    }
+
     get mode() {
         const vm = this;
-        if (!vm.params.mode) {
+        if (!vm.params.appDetail) {
             return ScreenMode.NEW;
         }
         
-        return vm.params.mode;
+        return ScreenMode.DETAIL;
+    }
+
+    get leaveWorkInfoTitle() {
+        const vm = this;
+        if (!vm.displayInforWhenStarting) {
+            return '';
+        }
+
+        if (vm.displayInforWhenStarting.workInfoAttendanceReflect.reflectWorkHour == 0) {
+            return 'KAFS11_16';
+        } else {
+            return 'KAFS11_15';
+        }
     }
 
     // ※2
@@ -350,8 +524,8 @@ export class KafS11AComponent extends KafS00ShrComponent {
         if (!vm.displayInforWhenStarting) {
             return false;
         }
-        let workType: any = _.find(vm.displayInforWhenStarting.applicationForWorkingDay.workTypeList, 
-            (o) => o.workTypeCode == vm.complementWorkInfo.workTypeCD);
+        let workType: any = _.find(vm.displayInforWhenStarting.applicationForHoliday.workTypeList, 
+            (o) => o.workTypeCode == vm.leaveWorkInfo.workTypeCD);
         if (!workType) {
             return false;
         }
@@ -547,7 +721,7 @@ export class KafS11AComponent extends KafS00ShrComponent {
         };
         vm.$mask('show');
         vm.$http.post('at', API.changeRecDate, command).then((data: any) => {
-            vm.displayInforWhenStarting = data.data;
+            vm.formatDateResult(data.data);
             vm.initDataComplement();
             vm.$mask('hide');
         });
@@ -563,7 +737,7 @@ export class KafS11AComponent extends KafS00ShrComponent {
         };
         vm.$mask('show');
         vm.$http.post('at', API.changeAbsDate, command).then((data: any) => {
-            vm.displayInforWhenStarting = data.data;
+            vm.formatDateResult(data.data);
             vm.initDataLeave();
             vm.$mask('hide');
         });
@@ -744,6 +918,11 @@ export class KafS11AComponent extends KafS00ShrComponent {
                 // return vm.$ajax('at', API.sendMailAfterRegisterSample);
                 return true;
             }
+        }).then((result: any) => {
+            if (result) {
+                // vm.$goto('kafs11a1', { mode: vm.mode, appID: result.data.appID });
+                vm.$goto('kafs11a1', { mode: vm.mode, appID: '' });
+            }
         }).catch((failData) => {
             // xử lý lỗi nghiệp vụ riêng
             vm.handleErrorCustom(failData).then((result: any) => {
@@ -804,41 +983,62 @@ export class KafS11AComponent extends KafS00ShrComponent {
         const vm = this;
         let cmd: any = {
             newMode: vm.mode == ScreenMode.NEW,
-            rec: {
-                applicationInsert: {
-                    prePostAtr: vm.prePostAtr,
-                    appType: AppType.COMPLEMENT_LEAVE_APPLICATION,
-                    appDate: moment(vm.complementDate).format('YYYY/MM/DD'),
-                    opAppReason: vm.opAppReason,
-                    opAppStandardReasonCD: vm.opAppStandardReasonCD,
-                    opAppStartDate: moment(vm.complementDate).format('YYYY/MM/DD'),
-                    opAppEndDate: moment(vm.complementDate).format('YYYY/MM/DD')
-                },
+            displayInforWhenStarting: vm.displayInforWhenStarting
+        };
+        if (vm.complementLeaveAtr == ComplementLeaveAtr.COMPLEMENT_LEAVE || vm.complementLeaveAtr == ComplementLeaveAtr.COMPLEMENT) {
+            cmd.rec = {
                 workInformation: {
                     workType: vm.complementWorkInfo.workTypeCD,
                     workTime: vm.complementWorkInfo.workTimeCD
                 },
                 workingHours: []
-            },
-            abs: {
-                applicationInsert: {
-                    prePostAtr: vm.prePostAtr,
-                    appType: AppType.COMPLEMENT_LEAVE_APPLICATION,
-                    appDate: moment(vm.leaveDate).format('YYYY/MM/DD'),
-                    opAppReason: vm.opAppReason,
-                    opAppStandardReasonCD: vm.opAppStandardReasonCD,
-                    opAppStartDate: moment(vm.leaveDate).format('YYYY/MM/DD'),
-                    opAppEndDate: moment(vm.leaveDate).format('YYYY/MM/DD')
-                },
+            };
+        }
+        if (vm.complementLeaveAtr == ComplementLeaveAtr.COMPLEMENT_LEAVE || vm.complementLeaveAtr == ComplementLeaveAtr.LEAVE) {
+            cmd.abs = {
                 workInformation: {
                     workType: vm.leaveWorkInfo.workTypeCD,
                     workTime: vm.leaveWorkInfo.workTimeCD
                 },
                 workingHours: [],
                 workChangeUse: false
-            },
-            displayInforWhenStarting: vm.displayInforWhenStarting
-        };
+            };
+        }
+        if (vm.mode == ScreenMode.NEW) {
+            cmd.rec.applicationInsert = {
+                prePostAtr: vm.prePostAtr,
+                appType: AppType.COMPLEMENT_LEAVE_APPLICATION,
+                appDate: moment(vm.complementDate).format('YYYY/MM/DD'),
+                opAppReason: vm.opAppReason,
+                opAppStandardReasonCD: vm.opAppStandardReasonCD,
+                opAppStartDate: moment(vm.complementDate).format('YYYY/MM/DD'),
+                opAppEndDate: moment(vm.complementDate).format('YYYY/MM/DD')
+            };
+            cmd.abs.applicationInsert = {
+                prePostAtr: vm.prePostAtr,
+                appType: AppType.COMPLEMENT_LEAVE_APPLICATION,
+                appDate: moment(vm.leaveDate).format('YYYY/MM/DD'),
+                opAppReason: vm.opAppReason,
+                opAppStandardReasonCD: vm.opAppStandardReasonCD,
+                opAppStartDate: moment(vm.leaveDate).format('YYYY/MM/DD'),
+                opAppEndDate: moment(vm.leaveDate).format('YYYY/MM/DD')
+            };
+        } else {
+            if (vm.displayInforWhenStarting.rec) {
+                cmd.rec.application = vm.displayInforWhenStarting.rec.application;
+                cmd.rec.applicationUpdate = {
+                    opAppReason: vm.opAppReason,
+                    opAppStandardReasonCD: vm.opAppStandardReasonCD
+                };
+            }
+            if (vm.displayInforWhenStarting.abs) {
+                cmd.abs.application = vm.displayInforWhenStarting.abs.application;
+                cmd.abs.applicationUpdate = {
+                    opAppReason: vm.opAppReason,
+                    opAppStandardReasonCD: vm.opAppStandardReasonCD
+                };
+            }
+        }
         if (vm.dispComplementContent) {
             cmd.rec.workingHours.push({
                 workNo: 1,
@@ -890,7 +1090,8 @@ const API = {
 };
 
 export interface KAFS11Params {
-    mode: ScreenMode;
+    appDispInfoStartupOutput: any;
+    appDetail: any;
 }
 
 interface WorkInfo {
