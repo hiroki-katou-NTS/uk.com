@@ -12,7 +12,8 @@ module nts.uk.ui.at.ksu002.a {
 	const API = {
 		UNAME: '/sys/portal/webmenu/username',
 		GSCHE: '/screen/ksu/ksu002/displayInWorkInformation',
-		GSCHER: '/screen/ksu/ksu002/getDataDaily'
+		GSCHER: '/screen/ksu/ksu002/getDataDaily',
+		SAVE_DATA: '/screen/ksu/ksu002/regisWorkSchedule',
 	};
 
 	const memento: m.Options = {
@@ -513,6 +514,50 @@ module nts.uk.ui.at.ksu002.a {
 			}
 		}
 
+		saveData() {
+			const vm = this;
+
+			vm.$validate()
+				.then((valid: boolean) => {
+					if (valid) {
+						const sid = vm.$user.employeeId;
+						const registerDates: StorageData[] = [];
+						const command = { sid, registerDates };
+						const schedules = ko.unwrap(vm.schedules);
+
+						_.each(schedules, ({ date, data }) => {
+							const {
+								$raw,
+								wtime,
+								wtype,
+								value,
+								achievement
+							} = data;
+							const {
+								workTypeCode,
+								workTimeCode,
+								startTime,
+								endTime
+							} = ko.unwrap(achievement) ? $raw.achievements : $raw;
+							const start = ko.unwrap(value.begin) as number;
+							const end = ko.unwrap(value.finish) as number;
+							const workTimeCd = ko.unwrap(wtime.code);
+							const workTypeCd = ko.unwrap(wtype.code);
+
+							if (workTypeCd !== workTypeCode || workTimeCd !== workTimeCode || start !== startTime || end !== endTime) {
+								registerDates.push({ date, end, start, workTimeCd, workTypeCd });
+							}
+						});
+
+						vm.$blockui('show')
+							.then(() => vm.$ajax('at', API.SAVE_DATA, command))
+							// reload data
+							.then(() => vm.achievement.valueHasMutated())
+							.always(() => vm.$blockui('clear'));
+					}
+				});
+		}
+
 		// check state & memento data
 		private memento(current: DayDataSave2Memento, preview: DayDataSave2Memento) {
 			const vm = this;
@@ -551,6 +596,14 @@ module nts.uk.ui.at.ksu002.a {
 				state.value.finish(EDIT_STATE.HAND_CORRECTION_MYSELF);
 			}
 		}
+	}
+
+	interface StorageData {
+		date: string | Date;
+		workTypeCd: string;
+		workTimeCd: string;
+		start: number;
+		end: number;
 	}
 
 	interface Achievement {
