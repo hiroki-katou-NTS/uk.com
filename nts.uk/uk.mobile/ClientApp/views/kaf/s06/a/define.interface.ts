@@ -490,6 +490,16 @@ interface RemainVacationInfoDto {
     // 介護残時間
     nirsingHourRemain: number;
 }
+export enum ReflectWorkHourCondition {
+    /** 反映しない. */
+    NOT_REFLECT,
+
+    /** 反映する. */
+    REFLECT,
+
+    /** 半日勤務の場合は反映する. */
+    REFLECT_IF_HALF_DAY
+}
 export interface VacationAppReflectOptionCommand {
 
     // 1日休暇の場合は出退勤を削除
