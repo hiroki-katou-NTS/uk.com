@@ -172,6 +172,9 @@
 	height: 70px !important;
 }
 
+.before::before {
+	content: ":";
+}
 
 
  

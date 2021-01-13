@@ -60,7 +60,7 @@
 										<table id="single-list1" data-bind="ntsGridList: {
 											height: 140,
 											options: smallItemData,
-											optionsValue: 'smallNo',
+											optionsValue: 'smallClassification',
 											columns: columns2,
 											multiple: false,
 											value: currentCode2
@@ -81,7 +81,7 @@
 														<span class="label w-60">#{i18n.getText('KNR002_201')}</span>
 													</div>
 													<div class="current-value">
-														<span class="label" data-bind="text: currentValue"></span>
+														<span class="label " data-bind="text: currentValue"></span>
 													</div>
 												</div>
 												<div class="change-value d-flex">
@@ -92,11 +92,11 @@
 												<div class="letter-pnl">
 													<div>
 														<span class="label">#{i18n.getText('KNR002_204')}</span>
-														<span class="label" data-bind="text: numOfDigits"></span>
+														<span class="label before" data-bind="text: numOfDigits"></span>
 													</div>
 													<div>
 														<span class="label">#{i18n.getText('KNR002_205')}</span>
-														<span class="label" data-bind="text: fromLetter"></span>
+														<span class="label before" data-bind="text: fromLetter"></span>
 														<span class="label">#{i18n.getText('KNR002_206')}</span>
 														<span class="label" data-bind="text: toLetter"></span>
 													</div>
@@ -124,11 +124,11 @@
 												<div class="letter-pnl">
 													<div>
 														<span class="label">#{i18n.getText('KNR002_204')}</span>
-														<span class="label" data-bind="text: numOfDigits"></span>
+														<span class="label before" data-bind="text: numOfDigits"></span>
 													</div>
 													<div>
 														<span class="label">#{i18n.getText('KNR002_205')}</span>
-														<span class="label" data-bind="text: timeInputRange"></span>
+														<span class="label before" data-bind="text: timeInputRange"></span>
 													</div>
 												</div>
 											</div>

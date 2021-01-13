@@ -74,10 +74,9 @@ module nts.uk.at.view.knr002.c {
                 });
 
                 vm.currentCode2.subscribe((value) => {
-                    let rowData = ko.toJS(vm.smallItemData).filter((item: any) => item.smallNo == value)[0]; 
+                    let rowData = ko.toJS(vm.smallItemData).filter((item: RemoteSettingsDto) => item.smallClassification == value)[0]; 
                     vm.rowData(rowData);
                     vm.setInputMode(rowData.inputType);
-                    vm.smallClassificationName(rowData.smallClassification);
 
                     vm.bindDataByType(rowData);
                 })
@@ -91,7 +90,6 @@ module nts.uk.at.view.knr002.c {
                 vm.currentValue(rowData.currentValue);
                 vm.numOfDigits(rowData.numberOfDigits);
                 
-
                 switch(vm.inputMode()) {
                     case INPUT_TYPE.LETTER:
                         let inputRange = rowData.inputRange.split(':');
@@ -167,54 +165,60 @@ module nts.uk.at.view.knr002.c {
             public registerAndSubmit() {
                 const vm = this;
                 let obj: any = {};
-                        vm.settingData.forEach((item: SettingValue) => {
-                            if(obj[item.variableName] === undefined){
-                                obj[item.variableName] = "";
-                            } 
-                            if (item.selectedIndex) {
-                                obj[item.variableName] += item.selectedIndex;
-                            } else {
-                                obj[item.variableName] += item.updateValue;
-                            }
-                            
-                        });
-
-                        let listTimeRecordSetUpdateDto = [];
-
-                        for (let key in obj) {
-                            let timeRecordSetUpdateDto = new TimeRecordSetUpdateDto(key, obj[key]);
-                            listTimeRecordSetUpdateDto.push(timeRecordSetUpdateDto); 
-                        }      
+                vm.settingData.forEach((item: SettingValue) => {
+                    if(obj[item.variableName] === undefined){
+                        obj[item.variableName] = "";
+                    } 
+                    if (item.selectedIndex) {
+                        obj[item.variableName] += item.selectedIndex;
+                    } else {
+                        obj[item.variableName] += item.updateValue;
+                    }
                     
-                        const command = {
-                            empInfoTerCode: [vm.empInfoTerCode()],
-                            empInfoTerName: vm.dataSource()[0].empInfoTerName, 
-                            romVersion: vm.dataSource()[0].romVersion,
-                            modelEmpInfoTer: vm.dataSource()[0].modelEmpInfoTer,
-                            listTimeRecordSetUpdateDto
-                        }
+                });
 
-                        console.log(command, 'command');
-                        blockUI.invisible();
-                        service.register(command)
-                        .done((res: any) => {})
-                        .fail((err: any) => console.log(err))
-                        .always(() => {
-                            blockUI.clear();
-                        });
+                let listTimeRecordSetUpdateDto = [];
 
-                nts.uk.ui.dialog.confirm({ messageId: "Msg_2028" })
-                    .ifYes(() => {
-                        setShared('KNR002D_command', command);
-                            modal('/view/knr/002/d/index.xhtml', { title: 'D_Screen', }).onClosed(() => {
-                                nts.uk.ui.windows.close();
-                                blockUI.clear();
-                             });
-                    })
-                    .ifNo(() => {
-                        nts.uk.ui.windows.close();
-                    })
+                for (let key in obj) {
+                    let timeRecordSetUpdateDto = new TimeRecordSetUpdateDto(key, obj[key]);
+                    listTimeRecordSetUpdateDto.push(timeRecordSetUpdateDto); 
+                }      
+            
+                const command = {
+                    empInfoTerCode: [vm.empInfoTerCode()],
+                    empInfoTerName: vm.dataSource()[0].empInfoTerName, 
+                    romVersion: vm.dataSource()[0].romVersion,
+                    modelEmpInfoTer: vm.dataSource()[0].modelEmpInfoTer,
+                    listTimeRecordSetUpdateDto
+                }
 
+                let status: boolean = true;
+
+                blockUI.invisible();
+                service.register(command)
+                .done((res: any) => {
+                    
+                })
+                .fail((err: any) => { 
+                    nts.uk.ui.dialog.error({ messageId: err.messageId });
+                    status = false;
+                })
+                .always(() => {
+                    blockUI.clear();
+                    if (status) {
+                        nts.uk.ui.dialog.confirm({ messageId: "Msg_2028" })
+                        .ifYes(() => {
+                            setShared('KNR002D_command', command);
+                                modal('/view/knr/002/d/index.xhtml', { title: 'D_Screen', }).onClosed(() => {
+                                    nts.uk.ui.windows.close();
+                                    blockUI.clear();
+                                });
+                        })
+                        .ifNo(() => {
+                            nts.uk.ui.windows.close();
+                        })
+                    }
+                });
             }
 
             private checkExistBeforeAdd(smallName: string) {
@@ -262,8 +266,6 @@ module nts.uk.at.view.knr002.c {
                 
 
                 $("#grid").igGrid("dataSourceObject", vm.settingData).igGrid("dataBind");
-                console.log(vm.settingData, 'setting data');
-
             }
 
             public removeFromSetting() {
@@ -319,7 +321,6 @@ module nts.uk.at.view.knr002.c {
                 service.getAll(data.empInfoTerCode)
                 .done((res) => {
                     if (res) {
-                        console.log(res, 'aaaaaa');
                         res.sort((item1: any, item2: any) => { return item1.majorNo - item2.majorNo; });
                         vm.dataSource(res);
                         vm.bigItemData(_.uniqBy(vm.dataSource(), (item) => item.majorClassification));
@@ -335,7 +336,7 @@ module nts.uk.at.view.knr002.c {
 
                 if (vm.dataSource()) {
                     vm.smallItemData(vm.dataSource().filter((item) => item.majorClassification == majorName));
-                    vm.currentCode2(vm.smallItemData()[0].smallNo);
+                    vm.currentCode2(vm.smallItemData()[0].smallClassification);
                 }
             }
 
@@ -387,7 +388,6 @@ module nts.uk.at.view.knr002.c {
             selectedIndex?: string;
             variableName: string;
             
-
             constructor(id: number, majorName: string, smallName: string, updateValue: string, inputRange: string, variableName: string, selectedIndex?: string) {
                 const vm = this;
                 vm.id = id;
@@ -399,7 +399,6 @@ module nts.uk.at.view.knr002.c {
                 vm.selectedIndex = selectedIndex;         
             }
         }
-
         class TimeRecordSetUpdateDto {
             variableName: string;
             updateValue?: string;
