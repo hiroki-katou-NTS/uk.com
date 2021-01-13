@@ -27,6 +27,10 @@ public class EmployeeJobHistExport {
 	/** The job title name. */
 	// 職位名称
 	private String jobTitleName;
+	
+	/** The sequence code. */
+	// 序列コード
+	private String sequenceCode;
 
 	/** The start date. */
 	// 配属期間 start
