@@ -2,7 +2,7 @@ import { _, Vue, moment } from '@app/provider';
 import { component, Prop, Watch } from '@app/core/component';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/s00';
 import { KafS00ShrComponent, AppType, Application, InitParam } from 'views/kaf/s00/shr';
-import { TimeZoneNewDto, TimeZoneWithWorkNoDto, WorkInformationDto, WorkTypeDto, MaxNumberDayType, AppAbsenceStartInfoDto, StartMobileParam, NotUseAtr, TimeZoneUseDto, HolidayAppTypeDispNameDto, ManageDistinct, TargetWorkTypeByApp, ApplicationType, HolidayAppType, DateSpecHdRelationOutput, ChangeDateParamMobile, SelectWorkTypeHolidayParam, SelectWorkTimeHolidayParam, MaxHolidayDayParamMobile, ApplyForLeaveDto, ReflectFreeTimeAppDto, TimeDigestApplicationDto, VacationRequestInfoDto, SupplementInfoVacationDto, ApplyforSpecialLeaveDto, CheckInsertMobileParam, RegisterAppAbsenceMobileCommand, WorkTypeUnit, MaxDaySpecHdDto, VacationCheckOutputDto, UpdateAppAbsenceMobileCommand, WorkAtr } from '../a/define.interface';
+import { TimeZoneNewDto, ReflectWorkHourCondition, TimeZoneWithWorkNoDto, WorkInformationDto, WorkTypeDto, MaxNumberDayType, AppAbsenceStartInfoDto, StartMobileParam, NotUseAtr, TimeZoneUseDto, HolidayAppTypeDispNameDto, ManageDistinct, TargetWorkTypeByApp, ApplicationType, HolidayAppType, DateSpecHdRelationOutput, ChangeDateParamMobile, SelectWorkTypeHolidayParam, SelectWorkTimeHolidayParam, MaxHolidayDayParamMobile, ApplyForLeaveDto, ReflectFreeTimeAppDto, TimeDigestApplicationDto, VacationRequestInfoDto, SupplementInfoVacationDto, ApplyforSpecialLeaveDto, CheckInsertMobileParam, RegisterAppAbsenceMobileCommand, WorkTypeUnit, MaxDaySpecHdDto, VacationCheckOutputDto, UpdateAppAbsenceMobileCommand, WorkAtr } from '../a/define.interface';
 import { KDL002Component } from '../../../kdl/002';
 import { Kdl001Component } from '../../../kdl/001';
 import { KdlS35Component } from '../../../kdl/s35';
@@ -206,11 +206,19 @@ export class KafS06AComponent extends KafS00ShrComponent {
 
         return HolidayAppType;
     }
+
     // ※2 = ○　OR　※3 = ○　OR　※4 = ○　OR　※5 = ○　
     public get c1() {
         const self = this;
 
         return self.c2 || self.c3 || self.c4 || self.c5;
+    }
+    // 休暇申請起動時の表示情報．休暇申請の反映．勤務情報、出退勤を反映する．就業時間帯を反映する = 反映しない
+    public c2_textResource() {
+        const self = this;
+        let c2 = _.get(self.model, 'appAbsenceStartInfoDto.vacationApplicationReflect.workAttendanceReflect.reflectWorkHour') == ReflectWorkHourCondition.NOT_REFLECT;
+
+        return c2;
     }
     // 休暇申請起動時の表示情報．休暇残数情報．代休管理区分　＝　管理する
     public get c2() {
