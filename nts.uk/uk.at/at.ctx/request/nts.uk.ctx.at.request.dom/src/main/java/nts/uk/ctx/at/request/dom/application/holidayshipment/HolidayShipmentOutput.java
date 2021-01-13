@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.holidayshipment;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
@@ -7,6 +9,7 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.Abs
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.substituteapplicationsetting.SubstituteHdWorkAppSet;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflect;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.VacationAppReflectOption;
 
@@ -25,15 +28,15 @@ public class HolidayShipmentOutput {
     //振休振出申請設定
     public SubstituteHdWorkAppSet substituteHdWorkAppSet;
     //振休紐付け管理区分
-    public Integer holidayManage;
+    public ManageDistinct holidayManage;
     //代休紐付け管理区分
-    public Integer substituteManagement;
+    public ManageDistinct substituteManagement;
     //振休申請の反映
     public VacationAppReflectOption workInfoAttendanceReflect;
     //振出申請の反映
     public SubstituteWorkAppReflect substituteWorkAppReflect;
     //振休申請
-    public AbsenceLeaveApp abs;
+    public Optional<AbsenceLeaveApp> abs;
     //振出申請
-    public RecruitmentApp rec;
+    public Optional<RecruitmentApp> rec;
 }

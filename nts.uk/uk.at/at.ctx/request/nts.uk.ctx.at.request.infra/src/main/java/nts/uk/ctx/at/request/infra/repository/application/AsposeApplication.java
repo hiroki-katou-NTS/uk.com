@@ -114,6 +114,12 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 
 			printPageHeader(worksheet, printContentOfApp);
 			printTopKAF000(worksheet, printContentOfApp);
+			
+			if (!appType.equals(ApplicationType.COMPLEMENT_LEAVE_APPLICATION)) {
+			    printTopKAF000AppDate(worksheet, printContentOfApp);
+			}
+			
+			printTopKAF000PrePost(worksheet, printContentOfApp);
 
 			// AnhNM
 			// condition for mode: KAF002
@@ -282,10 +288,10 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		cellB3.setValue(I18NText.getText("Com_Workplace"));
 		Cell cellB4 = cells.get("B4");
 		cellB4.setValue(I18NText.getText("Com_Person"));
-		Cell cellB6 = cells.get("B6");
-		cellB6.setValue(I18NText.getText("KAF000_49"));
-		Cell cellB7 = cells.get("B7");
-		cellB7.setValue(I18NText.getText("KAF000_46"));
+//		Cell cellB6 = cells.get("B6");
+//		cellB6.setValue(I18NText.getText("KAF000_49"));
+//		Cell cellB7 = cells.get("B7");
+//		cellB7.setValue(I18NText.getText("KAF000_46"));
 		// value
 		Cell cellC3 = cells.get("C3");
 		cellC3.setValue(printContentOfApp.getWorkPlaceName());
@@ -409,22 +415,53 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			sc.get("APPORVAL5").setPrintable(false);
 		}
 
-		Cell cellD6 = cells.get("D6");
-		GeneralDate startDate = printContentOfApp.getAppStartDate();
-		GeneralDate endDate = printContentOfApp.getAppEndDate();
-		if(startDate != null && endDate != null) {
-			if(startDate.equals(endDate)) {
-				cellD6.setValue(printContentOfApp.getAppDate().toString("yyyy年　MM月　dd日　(E)"));
-			} else {
-				String text = startDate.toString("yyyy年　MM月　dd日　(E)") + "～" + endDate.toString("yyyy年　MM月　dd日　(E)");
-				cellD6.setValue(text);
-			}
-		} else {
-			cellD6.setValue(printContentOfApp.getAppDate().toString("yyyy年　MM月　dd日　(E)"));
-		}
+//		Cell cellD6 = cells.get("D6");
+//		GeneralDate startDate = printContentOfApp.getAppStartDate();
+//		GeneralDate endDate = printContentOfApp.getAppEndDate();
+//		if(startDate != null && endDate != null) {
+//			if(startDate.equals(endDate)) {
+//				cellD6.setValue(printContentOfApp.getAppDate().toString("yyyy年　MM月　dd日　(E)"));
+//			} else {
+//				String text = startDate.toString("yyyy年　MM月　dd日　(E)") + "～" + endDate.toString("yyyy年　MM月　dd日　(E)");
+//				cellD6.setValue(text);
+//			}
+//		} else {
+//			cellD6.setValue(printContentOfApp.getAppDate().toString("yyyy年　MM月　dd日　(E)"));
+//		}
 
-		Cell cellD7 = cells.get("D7");
-		cellD7.setValue(printContentOfApp.getPrePostAtr().name);
+//		Cell cellD7 = cells.get("D7");
+//		cellD7.setValue(printContentOfApp.getPrePostAtr().name);
+	}
+	
+	private void printTopKAF000AppDate(Worksheet worksheet, PrintContentOfApp printContentOfApp) {
+        Cells cells = worksheet.getCells();
+        
+        Cell cellB6 = cells.get("B6");
+        cellB6.setValue(I18NText.getText("KAF000_49"));
+        
+        Cell cellD6 = cells.get("D6");
+        GeneralDate startDate = printContentOfApp.getAppStartDate();
+        GeneralDate endDate = printContentOfApp.getAppEndDate();
+        if(startDate != null && endDate != null) {
+            if(startDate.equals(endDate)) {
+                cellD6.setValue(printContentOfApp.getAppDate().toString("yyyy年　MM月　dd日　(E)"));
+            } else {
+                String text = startDate.toString("yyyy年　MM月　dd日　(E)") + "～" + endDate.toString("yyyy年　MM月　dd日　(E)");
+                cellD6.setValue(text);
+            }
+        } else {
+            cellD6.setValue(printContentOfApp.getAppDate().toString("yyyy年　MM月　dd日　(E)"));
+        }
+    }
+	
+	private void printTopKAF000PrePost(Worksheet worksheet, PrintContentOfApp printContentOfApp) {
+	    Cells cells = worksheet.getCells();
+	    
+	    Cell cellB7 = cells.get("B7");
+        cellB7.setValue(I18NText.getText("KAF000_46"));
+        
+        Cell cellD7 = cells.get("D7");
+        cellD7.setValue(printContentOfApp.getPrePostAtr().name);
 	}
 
 	private void printBottomKAF000(Cell reasonLabel, Cell remarkLabel, Cell reasonContent, PrintContentOfApp printContentOfApp) {
