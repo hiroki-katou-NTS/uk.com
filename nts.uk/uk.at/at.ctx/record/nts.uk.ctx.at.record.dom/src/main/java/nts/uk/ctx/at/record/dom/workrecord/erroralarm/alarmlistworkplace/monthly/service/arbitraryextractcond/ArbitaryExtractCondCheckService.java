@@ -61,28 +61,11 @@ public class ArbitaryExtractCondCheckService {
                 List<AttendanceTimeOfMonthly> times = attendanceTimeOfMonthlies.stream().filter(x -> empInfosByWp.getValue().stream()
                         .anyMatch(c -> c.getSid().equals(x.getEmployeeId()))).collect(Collectors.toList());
                 ExtractResultDto result = null;
-//                switch (cond.getCheckMonthlyItemsType()) {
-//                    case AVERAGE_TIME:
-//                        result = averageTimeCheckService.check(empInfosByWp.getKey(), cond, times, empInfosByWp.getValue(), ym);
-//                        break;
-//                    case AVERAGE_NUMBER_DAY:
-//                        result = averageNumDayCheckService.check(cid, empInfosByWp.getKey(), cond, times, empInfosByWp.getValue(), ym);
-//                        break;
-//                    case AVERAGE_NUMBER_TIME:
-//                        result = averageNumTimeCheckService.check(empInfosByWp.getKey(), cond, times, empInfosByWp.getValue(), ym);
-//                        break;
-//                    case AVERAGE_RATIO:
-//                        result = averageRatioCheckService.check(cid, empInfosByWp.getKey(), cond, times, empInfosByWp.getValue(), ym);
-//                        break;
-//                    default:
-//                        break;
-//                }
                 switch (cond.getCheckMonthlyItemsType()) {
                     case AVERAGE_TIME:
                     case AVERAGE_NUMBER_DAY:
                     case AVERAGE_NUMBER_TIME:
-//                        result = averageTimeCheckService.check(empInfosByWp.getKey(), cond, times, empInfosByWp.getValue(), ym);
-                        result = averageShareCheckService.check(empInfosByWp.getKey(), cond, times, empInfosByWp.getValue(), ym, null);
+                        result = averageShareCheckService.check(empInfosByWp.getKey(), cond, times, empInfosByWp.getValue(), ym);
                         break;
                     case AVERAGE_RATIO:
                         result = averageRatioCheckService.check(cid, empInfosByWp.getKey(), cond, times, empInfosByWp.getValue(), ym);

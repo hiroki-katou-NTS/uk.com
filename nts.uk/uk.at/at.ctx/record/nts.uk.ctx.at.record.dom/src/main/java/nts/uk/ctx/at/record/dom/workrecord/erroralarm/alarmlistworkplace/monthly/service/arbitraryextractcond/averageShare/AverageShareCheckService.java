@@ -47,8 +47,7 @@ public class AverageShareCheckService {
                                   ExtractionMonthlyCon condition,
                                   List<AttendanceTimeOfMonthly> times,
                                   List<EmployeeInfoImported> empInfos,
-                                  YearMonth ym,
-                                  List<String> attendaceName) {
+                                  YearMonth ym) {
         Double total = 0.0;
 
         List<Integer> addItems = ((CountableTarget) condition.getCheckedTarget().get())
