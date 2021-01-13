@@ -54,7 +54,7 @@ module nts.uk.at.kal011.d {
                 vm.extractUpdateStatus(ExtractState.SUCCESSFUL_COMPLE);
                 
                 let isEmpty: any = _.find(taskDatas, (task: any) => { return task.key == "isEmptyExtractData" });
-                if (isEmpty) {
+                if (isEmpty.valueAsBoolean) {
                     vm.$dialog.info({messageId: "Msg_835"});
                     vm.setControlStatus(ScreenMode.INTERRUPT);
                 }
