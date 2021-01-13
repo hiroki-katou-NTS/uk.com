@@ -770,6 +770,10 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			, Optional<TimeDigestiveUnit> annualLeaveUnit, Optional<TimeDigestiveUnit> childNursingUnit
 			, Optional<TimeDigestiveUnit> nursingUnit, Optional<TimeDigestiveUnit> pendingUnit) {
 		
+		if (!Optional.ofNullable(timeDigestApplication).isPresent()) {
+			
+			throw new BusinessException("Msg_511");
+		}
 		if (!this.isValidAttendanceTime(timeDigestApplication.getChildTime()) && 
 		        !this.isValidAttendanceTime(timeDigestApplication.getNursingTime()) && 
 		        !this.isValidAttendanceTime(timeDigestApplication.getOvertime60H()) && 
