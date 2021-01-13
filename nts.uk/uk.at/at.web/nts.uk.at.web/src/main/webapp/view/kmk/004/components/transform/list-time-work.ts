@@ -209,10 +209,6 @@ module nts.uk.at.view.kmk004.components {
 			const empInput = { employmentCode: vm.selectedId(), workType: DEFOR_TYPE, year: vm.selectedYear() };
 			const shaInput = { sId: vm.selectedId(), workType: DEFOR_TYPE, year: vm.selectedYear() };
 
-			if (vm.selectedId() == '') {
-				return;
-			}
-
 			if (ko.unwrap(vm.selectedYear) != null) {
 				vm.checkNullYear(true);
 			}
@@ -248,7 +244,7 @@ module nts.uk.at.view.kmk004.components {
 						break;
 
 					case 'Com_Workplace':
-						if (ko.unwrap(vm.selectedId) !== '') {
+						if (ko.unwrap(vm.selectedId) != '') {
 							const exist = _.find(ko.unwrap(vm.workTimeSaves), (m: WorkTimeSaveL) => m.year as number == ko.unwrap(vm.selectedYear) as number);
 							if (exist) {
 								vm.workTimes(exist.worktimes.map(m => new WorkTimeL({ ...m, parent: vm.workTimes })));
@@ -276,7 +272,7 @@ module nts.uk.at.view.kmk004.components {
 						break;
 
 					case 'Com_Employment':
-						if (ko.unwrap(vm.selectedId) !== '') {
+						if (ko.unwrap(vm.selectedId) != '') {
 							const exist = _.find(ko.unwrap(vm.workTimeSaves), (m: WorkTimeSaveL) => m.year as number == ko.unwrap(vm.selectedYear) as number);
 
 							if (exist) {
@@ -303,7 +299,7 @@ module nts.uk.at.view.kmk004.components {
 						break;
 
 					case 'Com_Person':
-						if (ko.unwrap(vm.selectedId) !== '') {
+						if (ko.unwrap(vm.selectedId) != '') {
 							const exist = _.find(ko.unwrap(vm.workTimeSaves), (m: WorkTimeSaveL) => m.year as number == ko.unwrap(vm.selectedYear) as number);
 
 							if (exist) {
@@ -334,7 +330,6 @@ module nts.uk.at.view.kmk004.components {
 			} else {
 				vm.initList();
 			}
-
 		}
 
 		initList() {
