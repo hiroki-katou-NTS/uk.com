@@ -16,7 +16,7 @@ public class GoOutEmployeeInformationCommand implements GoOutEmployeeInformation
 	private String goOutReason;
 
 	// 年月日
-	private GeneralDate gouOutDate;
+	private GeneralDate goOutDate;
 
 	// 戻り時刻
 	private Integer comebackTime;

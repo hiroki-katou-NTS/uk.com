@@ -8,6 +8,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.office.dom.goout.GoOutEmployeeInformation;
 import nts.uk.ctx.office.dom.goout.GoOutEmployeeInformationRepository;
 
+//外出・戻り情報を取得 //TODO link
 public class GoOutInformationScreenQuery {
 
 	@Inject
@@ -15,7 +16,7 @@ public class GoOutInformationScreenQuery {
 
 	public GoOutEmployeeInformationDto getGoOutInformation(String sid, GeneralDate date) {
 		Optional<GoOutEmployeeInformation> domain = repo.getBySidAndDate(sid, date);
-		GoOutEmployeeInformationDto dto = new GoOutEmployeeInformationDto();
+		GoOutEmployeeInformationDto dto = GoOutEmployeeInformationDto.builder().build();
 		domain.ifPresent(goOut -> goOut.setMemento(dto));
 		return dto;
 	}
