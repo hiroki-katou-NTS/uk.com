@@ -129,6 +129,11 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 		opDetailOutput: any;
 
         opOptionalItemOutput: any;
+
+        /**
+         * 振休振出申請の印刷内容
+         */
+        optHolidayShipment: any;
 	}
 	
 	export interface AppInitParam {

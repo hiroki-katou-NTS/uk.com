@@ -56,6 +56,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 			block.invisible();
 				ajax('at/request/application/holidayshipment/startPageBRefactor',{appID: vm.application().appID(), appDispInfoStartupDto: vm.appDispInfoStartupOutput()}).then((data: any) =>{
 					console.log(data);
+					vm.printContentOfEachAppDto().optHolidayShipment = data;
 					vm.displayInforWhenStarting(data);
 					vm.remainDays(data.remainingHolidayInfor.remainDays + '日');
 					if(data.rec && data.abs){
