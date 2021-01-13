@@ -4023,6 +4023,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		public checkTimeInfo(index: any, worktypeCode: any, worktimeCode: any, startTime1: any, startTime2: any, endTime1: any, endTime2: any, columnKey: string): JQueryPromise<any> {
 			let self = this;
 			let dataFilter = self.dataScreen003A().employeeInfo[index];
+			block.invisible();
 			let dfd = $.Deferred<any>(), command: any = {
 				workType: worktypeCode.trim(),
 				workTime: worktimeCode.trim(),
@@ -4066,11 +4067,15 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 					if (errors.length > 0) {
 						let errorsInfo = _.uniqBy(errors, x => { return x.message });
-						bundledErrors({ errors: errorsInfo });
+						bundledErrors({ errors: errorsInfo }).then(() => {
+							block.clear();
+						});
 						// ver 2
 						//self.checkEnableSave = false;
 						//self.checkEnableTime = false;
 						//self.enableSave(false);
+					} else {
+						block.clear();
 					} //else {
 					// ver 2
 					/*self.checkEnableSave = true;
@@ -4086,7 +4091,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				}).fail(function(res: any) {
 					errorDialog({ messageId: res.messageId, messageParams: res.parameterIds });
 				}).always(function() {
-					block.clear();
 				});
 			} else {
 				dfd.resolve();
