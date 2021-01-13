@@ -11,6 +11,7 @@
 					nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.EventName
 				</com:ValidatorScript>
 				<com:scriptfile set="IGNITE" />
+				<script>var dialogSize = { width: 400, height: 350 };</script>
 				<com:stylefile  path="kdl049.a.main.css" />
 				<com:scriptfile path="kdl049.a.service.js" />
 				<com:scriptfile path="kdl049.a.vm.js" />
@@ -33,10 +34,10 @@
 						<!-- A2_1, A2_2  -->
 						<tr data-bind="visible: !isSuperior()">
 							<td>
-								<div data-bind="ntsFormLabel: {constraint: 'EventName'}">#{i18n.getText('KDL049_3')}</div>
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL049_3')}</div>
 							</td>
-							<td>
-								<input tabindex="1" data-bind="ntsTextEditor: {constraint: 'EventName', value: comEventName}" />
+							<td>					
+								<span data-bind="text: comEventName "></span>
 							</td>
 						</tr>
 						<!-- end A2_1, A2_2  -->
@@ -44,14 +45,15 @@
 						<!-- A5_1, A5_2  -->
 						<tr data-bind="visible: isSuperior()">
 							<td>
-								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL049_3')}</div>
+								<div data-bind="ntsFormLabel: {constraint: 'EventName'}">#{i18n.getText('KDL049_3')}</div>
 							</td>
 							<td>
-								<span data-bind="text: comEventName"></span>
+								<input tabindex="1" data-bind="ntsTextEditor: {constraint: 'EventName', value: comEventName}" />
+							
 							</td>
 						</tr>
 						<!-- end A5_1, A5_2  -->
-						<tr data-bind="visible: targetWorkplace().length > 0">
+						<tr data-bind="visible: targetWorkplace() != null">
 							<td>
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL049_4')}</div>
 							</td>
@@ -59,7 +61,7 @@
 								<span data-bind="text: targetWorkplace"></span>
 							</td>
 						</tr>
-						<tr data-bind="visible: targetWorkplace().length > 0">
+						<tr data-bind="visible:  targetWorkplace() != null">
 							<td>
 								<div data-bind="ntsFormLabel: {constraint: 'EventName'}">#{i18n.getText('KDL049_5')}</div>
 							</td>
@@ -70,7 +72,7 @@
 					</table>
 				</div>
 				<div id= "functions-area-bottom">
-				<button class="proceed x-large" id="save" >#{i18n.getText('KDL049_6')}</button>
+				<button class="proceed x-large" id="save" data-bind = " click : submit">#{i18n.getText('KDL049_6')}</button>
 				<button id="cancel" data-bind="click: closeDialog">#{i18n.getText('KDL049_7')}</button>
 			</div>
 			</ui:define>

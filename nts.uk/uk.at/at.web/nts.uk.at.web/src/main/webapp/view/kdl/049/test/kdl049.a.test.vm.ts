@@ -7,7 +7,7 @@ module nts.uk.at.view.kdl049.a.test.viewmodel {
         selectedWorkplaceId: KnockoutObservable<string> = ko.observable("");
         workplaceName: KnockoutObservable<string> = ko.observable("");
         wplDatas: KnockoutObservableArray<any> = ko.observableArray([]);
-    
+        dateSelected: KnockoutObservable<string>;
         constructor() {
             var self = this;
            
@@ -15,7 +15,7 @@ module nts.uk.at.view.kdl049.a.test.viewmodel {
         
         startPage(): JQueryPromise<any> {
             let self = this;
-            
+            self.dateSelected = ko.observable('20200101');
             let dfd = $.Deferred();
             self.treeGrid = {
                     isMultipleUse: true,
@@ -49,9 +49,12 @@ module nts.uk.at.view.kdl049.a.test.viewmodel {
                 self.selectedWorkplaceId(result.id);
                 self.workplaceName(result.name);
             }
-            nts.uk.ui.windows.setShared('KDL049', {date: '', 
+            let param = {
+                dateSelected: self.dateSelected(), 
                 workplace: self.selectedWorkplaceId() != undefined ? 
-                        { workPlaceID: self.selectedWorkplaceId(), workPlaceName: self.workplaceName()} : null});
+                        { workPlaceID: self.selectedWorkplaceId(), targetOrgWorkplaceName: self.workplaceName()} : null
+                }
+            nts.uk.ui.windows.setShared('KDL049', param);
             nts.uk.ui.windows.sub.modal( "/view/kdl/049/a/index.xhtml" );
             }
     }
