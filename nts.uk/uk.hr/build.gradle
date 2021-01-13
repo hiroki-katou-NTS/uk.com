@@ -23,11 +23,6 @@ buildscript {
 		classpath "com.bmuschko:gradle-cargo-plugin:2.2.1"
 		
 		classpath "de.aaschmid.gradle.plugins:gradle-cpd-plugin:0.5"
-		
-		// compile typescript to js  plugin
-		classpath "com.moowork.gradle:gradle-node-plugin:1.2.0"
-		
-		classpath "de.richsource.gradle.plugins:typescript-gradle-plugin:1.8.0"
 	}
 }
 
@@ -431,8 +426,6 @@ project (':hr.file:nts.uk.file.hr.infra') {
 //=====================nts.uk.hr.web=============================
 project (':hr.web:nts.uk.hr.web') {
 	apply plugin: 'war'
-	apply plugin: 'com.moowork.node'
-	apply plugin: 'de.richsource.gradle.plugins.typescript'
 	
 	war {
 		exclude '**/*.ts'
@@ -664,25 +657,13 @@ project (':hr.web:nts.uk.hr.web') {
 		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.infra', version: version
 		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.pub', version: version
 		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.pubimp', version: version
-	}	
-	
-	task tsc(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {
-		target = "ES5"
-		noLib = true
-		watch = false
-		sourcemap = !project.hasProperty('sourceMap') || sourceMap == 'true'
-		include '**/*.ts'
-		source = new File('src/main/webapp/view')
-		outputDir = new File('src/main/webapp/view')
 	}
 	
-	task tscw(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {
-		target = "ES5"
-		noLib = true
-		watch = true
-		sourcemap = !project.hasProperty('sourceMap') || sourceMap == 'true'
-		include '**/*.ts'
-		source = new File('src/main/webapp/view')
-		outputDir = new File('src/main/webapp/view')
+	task tsc(type: Exec) {
+		commandLine 'cmd', '/c', 'tsc'
+	}
+	
+	task tscw(type: Exec) {
+		commandLine 'cmd', '/c', 'tsc'
 	}
 }
