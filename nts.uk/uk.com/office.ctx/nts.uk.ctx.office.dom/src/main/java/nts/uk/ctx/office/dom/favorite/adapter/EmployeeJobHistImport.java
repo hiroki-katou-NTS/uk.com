@@ -16,6 +16,10 @@ public class EmployeeJobHistImport {
 
 	// 職位名称
 	private String jobTitleName;
+	
+    /** The sequence code. */
+    // 序列コード
+    private String sequenceCode;
 
 	// 配属期間 start
 	private GeneralDate startDate;
