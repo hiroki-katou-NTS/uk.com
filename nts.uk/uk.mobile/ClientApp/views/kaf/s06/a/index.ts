@@ -1364,6 +1364,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
                         model.applyForLeaveDto = self.model.applyForLeaveDto;
                         model.appAbsenceStartInfoDto = res.data;
                         self.model = model;
+                        self.appDispInfoStartupOutput.appDispInfoNoDateOutput = model.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoNoDateOutput;
                         self.updateKaf000_C_Params(self.modeNew);
                         self.bindComponent();
                   })
