@@ -136,8 +136,8 @@
       <span>{{ applicant | i18n }}</span> 
       <span v-if="representerDisp" class="uk-text-dark-gray child-font-size">{{ 'CMMS45_22' | i18n(representer) }}</span>
     </div>
-    <div class="row content-div uk-bg-headline border-top uk-border-light-gray">{{'CMMS45_23' | i18n}}</div>
-    <div class="row content-div border-top uk-border-light-gray">
+    <div v-if="appType!=10" class="row content-div uk-bg-headline border-top uk-border-light-gray">{{'CMMS45_23' | i18n}}</div>
+    <div v-if="appType!=10" class="row content-div border-top uk-border-light-gray">
       <div class="col-12">
         <div class="row">{{ appDate | i18n }} {{ appTypeName }} {{'CMMS45_24' | i18n(prePost)}}</div>
         <div class="row uk-text-dark-gray child-font-size">{{'CMMS45_25' | i18n(inputDate)}}</div>
@@ -157,6 +157,7 @@
       <app0 v-if="appType==0" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
       <app0 v-if="appType==6" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
       <app1 v-if="appType==1" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
+      <app10 v-if="appType==10" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
       </div>
     </div>
     <div v-if="comboReasonDisp || textReasonDisp" class="row content-div uk-bg-headline border-top uk-border-light-gray">{{'CMMS45_34' | i18n}}</div>
