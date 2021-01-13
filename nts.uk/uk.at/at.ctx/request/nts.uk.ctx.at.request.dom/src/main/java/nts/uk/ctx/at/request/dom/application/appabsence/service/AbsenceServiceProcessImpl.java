@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.application.appabsence.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -1459,7 +1460,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 				, false // KAF006: -PhuongDV domain fix pending- confirm input
 				, newAbsence.getApplication()
 				, null
-				, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpErrorFlag().orElse(null) // KAF006: -PhuongDV domain fix pending- confirm input
+				, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpErrorFlag().orElse(ErrorFlagImport.NO_ERROR) // KAF006: -PhuongDV domain fix pending- confirm input
 				, lstDates
 				, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput());
 		result.setConfirmMsgLst(lstConfirmMsg);
@@ -1523,6 +1524,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 //				mournerAtr);
 //		result.addAll(confirmMsgLst2);
 		// 「確認メッセージリスト」を返す
+		result.setHolidayDateLst(Collections.emptyList());
 		return result;
 	}
 	
@@ -2010,7 +2012,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
     }
 
     @Override
-    public void registerHolidayDates(String companyID, ApplyForLeave newApplyForLeave,
+    public ProcessResult registerHolidayDates(String companyID, ApplyForLeave newApplyForLeave,
             ApplyForLeave originApplyForLeave, List<GeneralDate> holidayDates,
             AppAbsenceStartInfoOutput appAbsenceStartInfoDto) {
         // 申請の取消処理
@@ -2018,13 +2020,13 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
         
         // 休出代休紐付け管理を更新する
         this.updateLinkManage(
-                newApplyForLeave.getApplication().getOpAppStartDate().get().toString(), 
-                newApplyForLeave.getApplication().getOpAppEndDate().get().toString(), 
+                newApplyForLeave.getApplication().getOpAppStartDate().get().getApplicationDate().toString(FORMAT_DATE), 
+                newApplyForLeave.getApplication().getOpAppEndDate().get().getApplicationDate().toString(FORMAT_DATE), 
                 holidayDates, 
                 appAbsenceStartInfoDto.getLeaveComDayOffManas(), 
                 appAbsenceStartInfoDto.getPayoutSubofHDManagements());
         // 休暇申請（新規）登録処理
-        this.registerAppAbsence(
+        ProcessResult processResult = this.registerAppAbsence(
                 newApplyForLeave, 
                 holidayDates.stream().map(x -> x.toString("yyyy/MM/dd")).collect(Collectors.toList()), 
                 Collections.emptyList(), 
@@ -2032,6 +2034,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
                 appAbsenceStartInfoDto.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isMailServerSet(), 
                 appAbsenceStartInfoDto.getAppDispInfoStartupOutput().getAppDetailScreenInfo().get().getApprovalLst(), 
                 appAbsenceStartInfoDto.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings().get(0));
+        
+        return processResult;
     }
     
     /**
@@ -2051,15 +2055,23 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
         DatePeriod datePeriod = new DatePeriod(GeneralDate.fromString(startDate, FORMAT_DATE), GeneralDate.fromString(endDate, FORMAT_DATE));
         List<GeneralDate> listDates = datePeriod.datesBetween();
         
-        listDates = listDates.stream().filter(date -> !holidayDates.contains(date)).collect(Collectors.toList());
+        listDates = listDates.stream().filter(date -> !holidayDates.contains(date))
+                .sorted(Comparator.comparing(GeneralDate::localDate))
+                .collect(Collectors.toList());
         
         // INPUT．「休出代休紐付け管理」Listをチェックする
         if (!leaveComDayOffMana.isEmpty()) {
+            leaveComDayOffMana = leaveComDayOffMana.stream()
+                    .sorted(Comparator.comparing(LeaveComDayOffManagement::getAssocialInfo, (item1, item2) -> {
+                        return item1.getDateOfUse().localDate().compareTo(item2.getDateOfUse().localDate());
+                    }))
+                    .collect(Collectors.toList());
             // 作成した「対象年月日リスト」と「休出代休紐付け管理<List>」をチェックする
             if (listDates.size() == leaveComDayOffMana.size()) {
                 // ドメインモデル「休出代休紐付け管理」を更新する
-                for(LeaveComDayOffManagement data : leaveComDayOffMana) {
-                    leaveComDayOffManaRepo.update(data);
+                for (int i = 0; i < leaveComDayOffMana.size(); i++) {
+                    leaveComDayOffMana.get(i).getAssocialInfo().setDateOfUse(listDates.get(i));
+                    leaveComDayOffManaRepo.update(leaveComDayOffMana.get(i));
                 }
             } else {
                 // INPUT．「休出代休紐付け管理」Listを削除する
@@ -2071,11 +2083,17 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
         
         // INPUT．「振出振休紐付け管理」Listをチェックする
         if (!payoutSubofHDManagements.isEmpty()) {
+            payoutSubofHDManagements = payoutSubofHDManagements.stream()
+                    .sorted(Comparator.comparing(PayoutSubofHDManagement::getAssocialInfo, (item1, item2) -> {
+                        return item1.getDateOfUse().localDate().compareTo(item2.getDateOfUse().localDate());
+                    }))
+                    .collect(Collectors.toList());
             // 作成した「対象年月日リスト」と「振出振休紐付け管理<List>」をチェックする
             if (listDates.size() == payoutSubofHDManagements.size()) {
                 // ドメインモデル「振出振休紐付け管理」を更新する
-                for(PayoutSubofHDManagement data : payoutSubofHDManagements) {
-                    payoutHdManaRepo.update(data);
+                for (int i = 0; i < payoutSubofHDManagements.size(); i++) {
+                    payoutSubofHDManagements.get(i).getAssocialInfo().setDateOfUse(listDates.get(i));
+                    payoutHdManaRepo.update(payoutSubofHDManagements.get(i));
                 }
             } else {
                 // INPUT．「振出振休紐付け管理」Listを削除する

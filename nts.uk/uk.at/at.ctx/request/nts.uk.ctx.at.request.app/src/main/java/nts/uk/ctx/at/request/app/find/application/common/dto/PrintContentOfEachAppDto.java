@@ -8,6 +8,8 @@ import nts.uk.ctx.at.request.app.command.application.workchange.AppWorkChangeOut
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.ApplyForleaveOutputCmd;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.BusinessTripDto;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.InforGoBackCommonDirectDto;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.DisplayInforWhenStarting;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.DisplayInformationApplication;
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ArrivedLateLeaveEarlyInfoDto;
 import nts.uk.ctx.at.request.app.find.application.optitem.optitemdto.OptionalItemApplicationPrintDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampOutputDto;
@@ -66,6 +68,11 @@ public class PrintContentOfEachAppDto {
 	 * 休日出勤の印刷内容
 	 */
 	public PrintContentOfHolidayWorkCmd opPrintContentOfHolidayWork;
+	
+	/**
+	 * 振休振出申請の印刷内容
+     */
+	public DisplayInforWhenStarting optHolidayShipment;
 
     public PrintContentOfEachApp toDomain() {
         PrintContentOfEachApp printContentOfEachApp = new PrintContentOfEachApp();
@@ -100,6 +107,9 @@ public class PrintContentOfEachAppDto {
 		}
 		if (opPrintContentApplyForLeave != null) {
 		    printContentOfEachApp.setOpPrintContentApplyForLeave(Optional.of(opPrintContentApplyForLeave.toDomain()));
+		}
+		if (optHolidayShipment != null) {
+		    printContentOfEachApp.setOptHolidayShipment(Optional.of(optHolidayShipment.toDomain()));
 		}
         return printContentOfEachApp;
     }

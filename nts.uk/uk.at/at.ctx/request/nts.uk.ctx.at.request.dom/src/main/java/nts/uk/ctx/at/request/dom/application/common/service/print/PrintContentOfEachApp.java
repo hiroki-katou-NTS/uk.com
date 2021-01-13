@@ -7,6 +7,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripPrintContent;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDirectOutput;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.HolidayShipmentOutput;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.ArrivedLateLeaveEarlyInfoOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DetailOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayInfoOverTime;
@@ -65,6 +66,11 @@ public class PrintContentOfEachApp {
 	
 	private Optional<DetailOutput> opDetailOutput;
 	
+	/**
+     * 振休振出申請の印刷内容
+     */
+    private Optional<HolidayShipmentOutput> optHolidayShipment;
+	
 
     /**
      * 任意項目申請の印刷内容
@@ -80,5 +86,6 @@ public class PrintContentOfEachApp {
 		this.opBusinessTrip = Optional.empty();
 		this.opDetailOutput = Optional.empty();
 		this.opOptionalItem = Optional.empty();
+		this.optHolidayShipment = Optional.empty();
 	}
 }

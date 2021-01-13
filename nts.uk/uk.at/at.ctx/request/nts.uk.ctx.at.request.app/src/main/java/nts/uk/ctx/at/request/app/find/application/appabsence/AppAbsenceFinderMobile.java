@@ -196,10 +196,12 @@ public class AppAbsenceFinderMobile {
 	public AbsenceCheckRegisterDto checkBeforeInsert(CheckInsertMobileParam param) {
 		AbsenceCheckRegisterOutput output;
 		ApplyForLeave applyForLeave = param.getApplyForLeave().toDomain();
-		Application application = param.getApplication().toDomain();
-		applyForLeave.setApplication(application);
+		Application application;
+		
 		// INPUT．「画面モード」をチェックする
 		if (param.getMode()) {
+			application = param.getApplication().toDomain();
+			applyForLeave.setApplication(application);
 			// 登録前のエラーチェック処理
 			output = absenceServiceProcess.checkBeforeRegister(
 					param.getCompanyId(),
@@ -208,6 +210,8 @@ public class AppAbsenceFinderMobile {
 					false);
 			
 		} else {
+			application = param.getApplicationUpdate().toDomain(param.getAppAbsenceStartInfoDto().getAppDispInfoStartupOutput().getAppDetailScreenInfo().getApplication());;
+			applyForLeave.setApplication(application);
 			// 更新前のエラーチェック処理
 			output = absenceServiceProcess.checkBeforeUpdate(
 					param.getCompanyId(),

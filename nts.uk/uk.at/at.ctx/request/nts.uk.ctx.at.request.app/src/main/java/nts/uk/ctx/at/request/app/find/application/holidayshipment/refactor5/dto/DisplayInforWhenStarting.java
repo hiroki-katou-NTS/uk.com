@@ -7,6 +7,7 @@ import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.d
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.dto.RecruitmentAppCmd;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.substituteapplicationsetting.SubstituteHdWorkAppSetDto;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.HolidayShipmentOutput;
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflectDto;
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.VacationAppReflectOptionDto;
 
@@ -51,5 +52,20 @@ public class DisplayInforWhenStarting {
 	
 	public boolean existRec() {
 		return this.rec != null;
+	}
+	
+	public HolidayShipmentOutput toDomain() {
+	    return new HolidayShipmentOutput(
+	            applicationForWorkingDay.toDomain(), 
+	            appDispInfoStartup.toDomain(), 
+	            applicationForHoliday.toDomain(), 
+	            remainingHolidayInfor.toDomain(), 
+	            substituteHdWorkAppSet.toDomain(), 
+	            holidayManage, 
+	            substituteManagement, 
+	            workInfoAttendanceReflect.toDomain(), 
+	            substituteWorkAppReflect.toDomain(), 
+	            abs.toDomainInsertAbs(), 
+	            rec.toDomainInsertRec());
 	}
 }

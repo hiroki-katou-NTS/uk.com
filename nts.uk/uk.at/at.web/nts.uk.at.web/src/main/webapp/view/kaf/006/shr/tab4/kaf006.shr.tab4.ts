@@ -91,7 +91,7 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
             <div class="table" style="margin: 10px 0;" data-bind="visible: $parent.condition15">
                 <div class="cell col-1"></div>
                 <div class="cell">
-                    <table>
+                    <table data-bind="visible: $parent.leaveComDayOffManas().length > 0">
                         <thead>
                             <tr class="text-center bg-green">
                                 <th style="width: 100px;" class="py-10" data-bind="text: $i18n('KAF006_53')"></th>
@@ -122,7 +122,7 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
             <div class="table" style="margin: 10px 0;" data-bind="visible: $parent.condition14">
                 <div class="cell col-1"></div>
                 <div class="cell">
-                    <table>
+                    <table data-bind="visible: $parent.payoutSubofHDManagements().length > 0" >
                         <thead>
                             <tr class="bg-green">
                                 <th style="width: 100px;" class="py-10" data-bind="text: $i18n('KAF006_52')"></th>
