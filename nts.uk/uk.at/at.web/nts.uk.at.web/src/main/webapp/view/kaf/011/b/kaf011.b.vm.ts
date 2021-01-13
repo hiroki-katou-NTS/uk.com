@@ -25,6 +25,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 		absenceLeaveApp = new AbsenceLeaveApp(1, false);
 		comment = new Comment();
 		displayInforWhenStarting = ko.observable(null);
+		remainDays = ko.observable('');
 		
         constructor(
             params: {
@@ -56,6 +57,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 				ajax('at/request/application/holidayshipment/startPageBRefactor',{appID: vm.application().appID(), appDispInfoStartupDto: vm.appDispInfoStartupOutput()}).then((data: any) =>{
 					console.log(data);
 					vm.displayInforWhenStarting(data);
+					vm.remainDays(data.remainingHolidayInfor.remainDays + '日');
 					if(data.rec && data.abs){
 						vm.recruitmentApp.bindingScreenB(data.rec, data.applicationForWorkingDay.workTypeList, data);
 						vm.absenceLeaveApp.bindingScreenB(data.abs, data.applicationForHoliday.workTypeList, data);	

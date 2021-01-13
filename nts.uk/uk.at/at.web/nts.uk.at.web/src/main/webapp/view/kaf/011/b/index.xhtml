@@ -25,6 +25,22 @@
                             approvalReason: approvalReason,
                             appDispInfoStartupOutput: appDispInfoStartupOutput
                         } }"></div>
+        <div class="remainInfor">
+			<div class="remainLable">#{i18n.getText('KAF011_64')}</div>
+			<div class="remainNumber">
+				<table class="table">
+					<tr>
+						<th class="bg-green" >#{i18n.getText('KAF011_65')}</th>
+					</tr>
+					<tr>
+						<td data-bind="text:remainDays"></td>
+					</tr>
+				</table>
+			</div>
+			<com:ko-if bind="displayInforWhenStarting() != null &amp;&amp; displayInforWhenStarting().remainingHolidayInfor.closestDueDate">		
+				<span data-bind="text: nts.uk.resource.getText('KAF011_82', [displayInforWhenStarting().remainingHolidayInfor.closestDueDate])"></span>
+			</com:ko-if>
+		</div>
         <div class="table">
 			<div class="cell" style="width: 825px;" data-bind="component: { 
 							name: 'kaf000-b-component4',
@@ -49,5 +65,18 @@
                             appDispInfoStartupOutput: appDispInfoStartupOutput
                         } }"></div>
 		<ui:include src="../shr/index.xhtml" />
+		<div data-bind="component: { 
+						name: 'kaf000-b-component7',
+	                    params: {
+	                        appType: appType,
+	                        application: applicationCommon,
+	                        appDispInfoStartupOutput: appDispInfoStartupOutput
+	                    } }"></div>
+	    <div data-bind="component: { 
+    					name: 'kaf000-b-component8',
+                        params: {
+                            appType: applicationCommon,
+                            appDispInfoStartupOutput: appDispInfoStartupOutput
+                        } }"></div>
 	</div>
 </html>

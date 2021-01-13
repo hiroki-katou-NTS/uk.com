@@ -15,7 +15,7 @@
 								<div id="recAppDate" data-bind="ntsDatePicker: {name: '#{i18n.getText('KAF011_22')}', value: application.appDate, dateFormat: 'YYYY/MM/DD', required: true }"></div>
 							</com:ko-if>
 							<com:ko-if bind="!isAScreen()">
-								<span data-bind="text: application.appDate"></span>
+								<div class="ntsControl" style="padding-top: 10px;" data-bind="text: application.appDate"></div>
 							</com:ko-if>
 						</div>
 						<div class="row">
@@ -115,7 +115,7 @@
 								<div id="absAppDate" data-bind="ntsDatePicker: {name: '#{i18n.getText('KAF011_22')}', value: application.appDate, dateFormat: 'YYYY/MM/DD', required: true }"></div>
 							</com:ko-if>
 							<com:ko-if bind="!isAScreen()">
-								<span data-bind="text: application.appDate"></span>
+								<div class="ntsControl" style="padding-top: 10px;" data-bind="text: application.appDate"></div>
 							</com:ko-if>
 						</div>
 						<div class="row">
