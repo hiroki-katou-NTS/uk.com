@@ -53,8 +53,6 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnualHoli
 import nts.uk.ctx.at.request.dom.application.common.adapter.closure.PresentClosingPeriodImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.closure.RqClosureAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
-import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceConfigInfoAdapter;
-import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.AnnualHolidayGrant;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.AnnualHolidayGrantDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.AnnualHolidayGrantInfor;
@@ -170,8 +168,6 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	private ShareEmploymentAdapter shareEmploymentAdapter;
 	@Inject
 	private SyCompanyRecordAdapter syCompanyRecordAdapter;
-	@Inject
-	private WorkplaceConfigInfoAdapter workplaceConfigInfoAdapter;
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, OutputYearHolidayManagementQuery query) {
@@ -313,12 +309,6 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 			});
 
 		});
-		// [No.560]職場IDから職場の情報をすべて取得する - Get all workplace information from the workplace ID
-		List<WorkplaceInfor> workplaceInforLst = workplaceConfigInfoAdapter.getWorkplaceInforByWkpIds(
-				companyId, 
-				param.getEmployeeIds(), 
-				baseDate);
-
 		// 職場を職場階層コードの順に並び替える ※帳票出力時は、職場階層コード > 社員コード の順に出力する
 
 		// đảo xuống dưới để tiện việc map data
@@ -926,8 +916,6 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	private AnnualHolidayGrantData getJoinLeavingForAnnualLeaveGrantInfo(String employeeId,
 			AnnualHolidayGrantInfor annualHolidayGrantInfor, List<AnnualHolidayGrantDetail> holidayDetailList) {
 		AnnualHolidayGrantData annualHolidayGrantData = new AnnualHolidayGrantData();
-//		List<AnnualHolidayGrant> lstGrantInfor = new ArrayList<AnnualHolidayGrant>();
-//		List<AnnualHolidayGrantDetail> holidayDetails = new ArrayList<AnnualHolidayGrantDetail>();
 		// 指定された社員の全ての所属会社履歴(YMD)を取得する
 		// 社員の指定期間中の所属期間を取得する RQ588
 		DatePeriod workPeriod = new DatePeriod(GeneralDate.ymd(1900, 01, 01), GeneralDate.ymd(9999, 12, 31));
