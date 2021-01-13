@@ -32,6 +32,7 @@ import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.infra.repository.application.appabsence.AsposeApplyForLeave;
 import nts.uk.ctx.at.request.infra.repository.application.businesstrip.AposeBusinessTrip;
 import nts.uk.ctx.at.request.infra.repository.application.gobackdirectly.AsposeGoReturnDirectly;
+import nts.uk.ctx.at.request.infra.repository.application.holidayshipment.print.AsposeHolidayShipment;
 import nts.uk.ctx.at.request.infra.repository.application.holidaywork.AsposeAppHolidayWork;
 import nts.uk.ctx.at.request.infra.repository.application.lateleaveearly.AsposeLateLeaveEarly;
 import nts.uk.ctx.at.request.infra.repository.application.optional.AposeOptionalItem;
@@ -76,6 +77,9 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 	
 	@Inject
 	private AsposeApplyForLeave asposeApplyForLeave;
+	
+	@Inject
+	private AsposeHolidayShipment asposeHolidayShipment;
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, PrintContentOfApp printContentOfApp, ApplicationType appType) {
@@ -125,6 +129,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			designer.processDesigner();
 
 			designer.saveAsPdf(this.createNewFile(generatorContext, this.getReportName(printContentOfApp.getApplicationName() + ".pdf")));
+//			designer.saveAsExcel(this.createNewFile(generatorContext, this.getReportName(printContentOfApp.getApplicationName() + ".xlsx")));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -213,6 +218,11 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			asposeLateLeaveEarly.deleteEmptyRow(worksheet);
 			break;
 		case COMPLEMENT_LEAVE_APPLICATION:
+		    int deleteCntHS = asposeHolidayShipment.printHolidayShipmentContent(worksheet, printContentOfApp);
+		    reasonLabel = worksheet.getCells().get("B" + (18 - deleteCntHS));
+            remarkLabel = worksheet.getCells().get("B" + (21 - deleteCntHS));
+            reasonContent = worksheet.getCells().get("D" + (18 - deleteCntHS));
+            printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
 			break;
 		case OPTIONAL_ITEM_APPLICATION:
 			aposeOptionalItem.printOptionalItem(worksheet, printContentOfApp);

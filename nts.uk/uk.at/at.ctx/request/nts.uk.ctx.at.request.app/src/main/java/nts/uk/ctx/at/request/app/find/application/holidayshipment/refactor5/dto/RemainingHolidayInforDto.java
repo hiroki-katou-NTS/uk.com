@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,4 +53,15 @@ public class RemainingHolidayInforDto {
 		this.carryForwardDays = domain.getCarryForwardDays();
 	}
 
+	public AbsRecRemainMngOfInPeriod toDomain() {
+	    return new AbsRecRemainMngOfInPeriod(
+	            lstAbsRecMng.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+	            remainDays, 
+	            unDigestedDays, 
+	            occurrenceDays, 
+	            useDays, 
+	            carryForwardDays, 
+	            Collections.emptyList(), 
+	            null);
+	}
 }

@@ -1107,7 +1107,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 
         checkCondition12(data: any) {
             const vm = this;
-            if (vm.data && vm.data.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles && vm.isDispTime2ByWorkTime()) {
+            if (vm.data && vm.data.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles && vm.selectedWorkTimeCD() && vm.isDispTime2ByWorkTime()) {
                 vm.condition12(true);
                 return true;
             }

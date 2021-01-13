@@ -1,11 +1,13 @@
 package nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto;
 
 import java.util.List;
-
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.DisplayInformationApplicationRoot;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.paymana.PayoutSubofHDManagementDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.LeaveComDayOffManaDto;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
@@ -38,6 +40,18 @@ public class DisplayInformationApplication {
 	/** 振出振休紐付け管理 --> only AbsApplication <=> 振出申請起動時の表示情報*/ 
 	private List<PayoutSubofHDManagementDto> payoutSubofHDManagements;
 	
+	public DisplayInformationApplicationRoot toDomain() {
+	    return new DisplayInformationApplicationRoot(
+	            workTypeList.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+	            leaveComDayOffMana.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+	            workType == null ? Optional.empty() : Optional.of(workType), 
+	            workTime == null ? Optional.empty() : Optional.of(workTime), 
+	            startTime == null ? Optional.empty() : Optional.of(startTime), 
+	            endTime == null ? Optional.empty() : Optional.of(endTime), 
+	            startTime2 == null ? Optional.empty() : Optional.of(startTime2), 
+	            endTime2 == null ? Optional.empty() : Optional.of(endTime2), 
+	            payoutSubofHDManagements.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
+	}
 }
 
 
