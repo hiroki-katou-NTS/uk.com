@@ -711,7 +711,10 @@ export class KafS06AComponent extends KafS00ShrComponent {
         let commandCheck = {} as CheckInsertMobileParam;
         vm.model.applyForLeaveDto = vm.toApplyForLeave();
         commandCheck.companyId = vm.user.companyId;
-        commandCheck.appAbsenceStartInfoDto = vm.model.appAbsenceStartInfoDto;
+        let appAbsenceStartInfoDto = _.clone(vm.model.appAbsenceStartInfoDto) as AppAbsenceStartInfoDto;
+        vm.changeDateFromList(appAbsenceStartInfoDto.leaveComDayOffManas);
+        vm.changeDateFromList(appAbsenceStartInfoDto.payoutSubofHDManas);
+        commandCheck.appAbsenceStartInfoDto = appAbsenceStartInfoDto;
         commandCheck.applyForLeave = vm.model.applyForLeaveDto;
         commandCheck.mode = vm.modeNew;
         if (vm.modeNew) {
