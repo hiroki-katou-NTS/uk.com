@@ -35,6 +35,12 @@ import { KdlS36Component } from '../../../kdl/s36';
         selectedValueHolidayType: {
             required: true,
             validate: true
+        },
+        workType: {
+            code: {
+                required: true,
+                validate: true
+            }
         }
     },
     constraints: [
