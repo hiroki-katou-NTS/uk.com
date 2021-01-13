@@ -925,7 +925,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime2", "");
 						$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime1", "");
 						$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime2", "");
-						$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", "0:00");
+						$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", "");
 						$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeCode", "");
 						$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeName", getText('KSU003_55'));
 						$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktypeName", (data.workTypeName == null || data.workTypeName == "") ? $("#extable-ksu003").exTable('dataSource', 'middle').body[index].worktypeCode + getText('KSU003_54') : data.workTypeName);
@@ -4322,7 +4322,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						$(cssStartTime2).css("background-color", "#DDDDD2");
 						$(cssEndTime2).css("background-color", "#DDDDD2");
 						
-						$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", "0:00");
+						$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", "");
 						$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeName", getText('KSU003_55'));
 						$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktypeName", self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workTypeName);
 						$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktypeCode", self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.workTypeCode);
@@ -4505,7 +4505,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									$(cssStartTime2).css("background-color", "#DDDDD2");
 									$(cssEndTime2).css("background-color", "#DDDDD2");
 									
-									$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", "0:00");
+									$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", "");
 									$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeName", getText('KSU003_55'));
 									$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktypeName", self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workTypeName);
 									$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktypeCode", self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.workTypeCode);
