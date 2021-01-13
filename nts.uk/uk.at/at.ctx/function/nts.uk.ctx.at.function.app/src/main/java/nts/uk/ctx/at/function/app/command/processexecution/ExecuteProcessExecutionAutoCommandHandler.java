@@ -68,6 +68,7 @@ import nts.uk.ctx.at.function.dom.processexecution.ExecutionScopeClassification;
 import nts.uk.ctx.at.function.dom.processexecution.ExternalOutputConditionCode;
 import nts.uk.ctx.at.function.dom.processexecution.LastExecDateTime;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecType;
+import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionService;
 import nts.uk.ctx.at.function.dom.processexecution.ServerExternalOutputAdapter;
 import nts.uk.ctx.at.function.dom.processexecution.ServerExternalOutputImport;
 import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
@@ -159,7 +160,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
-import nts.uk.shr.com.task.schedule.UkJobScheduler;
 
 @Stateless
 @Slf4j
@@ -253,7 +253,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 	@Inject
 	private OverallErrorProcess overallErrorProcess;
 	@Inject
-	private UkJobScheduler scheduler;
+	private ProcessExecutionService processExecutionService;
 	@Resource
 	private ManagedExecutorService executorService;
 	@Inject
@@ -603,9 +603,8 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		 * 次回実行日時 ＝ 次回実行日時を作成する。 ※補足資料⑤参照
 		 */
 		if (execSetting != null) {
-			String scheduleId = execSetting.getScheduleId();
-			Optional<GeneralDateTime> nextFireTime = this.scheduler.getNextFireTime(scheduleId);
-			execSetting.setNextExecDateTime(nextFireTime);
+			GeneralDateTime nextFireTime = this.processExecutionService.processNextExecDateTimeCreation(execSetting);
+			execSetting.setNextExecDateTime(Optional.ofNullable(nextFireTime));
 			this.execSettingRepo.update(execSetting);
 		}
 
