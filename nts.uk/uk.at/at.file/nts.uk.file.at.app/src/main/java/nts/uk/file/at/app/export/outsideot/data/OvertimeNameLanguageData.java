@@ -30,6 +30,8 @@ public class OvertimeNameLanguageData{
 	/** The language other. */
 	private String languageOther;
 
+	private Boolean occurs;
+
 	/**
 	 * Instantiates a new overtime name language data.
 	 *
