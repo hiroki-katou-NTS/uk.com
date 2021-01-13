@@ -8,8 +8,7 @@ module nts.uk.at.view.kdl053 {
     };
     
     @bean()
-    class Kdl053ViewModel extends ko.ViewModel {		
-        period: string = "";
+    class Kdl053ViewModel extends ko.ViewModel {
         hasError: KnockoutObservable<boolean> = ko.observable(true);
         registrationErrorList: KnockoutObservable<any> = ko.observable([]);
         registrationErrorListCsv: KnockoutObservable<any> = ko.observable([]);
@@ -20,11 +19,11 @@ module nts.uk.at.view.kdl053 {
         }
         loadScheduleRegisterErr(): void {
             const self = this;
-
             let data = getShared('dataShareDialogKDL053');           
             let errorRegistrationListTmp = data.errorRegistrationList;
             let employeeIds = data.employeeIds;
             let errorRegistrationList: any = [], errorRegistrationListCsv: any =[];
+
             _.each(employeeIds, id =>{      
                 let temp: any = [];
                 _.each(errorRegistrationListTmp, err => {
@@ -32,7 +31,6 @@ module nts.uk.at.view.kdl053 {
                         temp.push(err);
                     }
                 })               
-                // _.sortBy(temp, item => item.date);
                 errorRegistrationList = _.union(errorRegistrationList, _.sortBy(temp, item => item.date));
             });
 
@@ -62,7 +60,9 @@ module nts.uk.at.view.kdl053 {
                         break;                    
                 }
             })
-            let listIds: Array<any> = _.map(errorRegistrationList, item => { return item.errId });            
+
+            let listIds: Array<any> = _.map(errorRegistrationList, item => { return item.errId }); 
+
             this.$blockui("invisible");
             self.$ajax(Paths.GET_ATENDANCENAME_BY_IDS,listIds).done((data: Array<any>)=>{
                 if(data && data.length > 0){
@@ -104,9 +104,10 @@ module nts.uk.at.view.kdl053 {
                         }
                     ]
                 });
+                self.$blockui("hide");
             })
             .always(() => {
-                self.$blockui("clear");
+                self.$blockui("hide");
             });
         }
         exportCsv(): void {
@@ -129,36 +130,4 @@ module nts.uk.at.view.kdl053 {
 
         
     }
-
-    // interface IScheduleRegisterErr {
-    //     /** コード／名称*/
-    //     employeeCdName: string;
-
-    //     date: string;
-
-    //     errName: string;
-
-    //     errMsg: string;
-       
-    // }
-
-    // class ScheduleRegisterErr{
-    //     employeeCdName: string;
-    //     date: string;
-    //     errName: string;
-    //     errMsg: string;
-    //     // constructor(scheduleRegisterErr: IScheduleRegisterErr) {
-    //     //     this.employeeCdName = scheduleRegisterErr.employeeCdName;
-    //     //     this.date = scheduleRegisterErr.date;
-    //     //     this.errName = scheduleRegisterErr.errName;
-    //     //     this.errMsg = scheduleRegisterErr.errMsg;
-    //     // }
-
-    //     constructor(employeeCdName: string, date: string, errName: string, errMsg: string) {
-    //         this.employeeCdName = employeeCdName;
-    //         this.date = date;
-    //         this.errName = errName;
-    //         this.errMsg = errMsg;
-    //     }
-    // }
 }
