@@ -1,4 +1,4 @@
-package nts.uk.screen.at.ws.ksu.ksu002.a;
+package nts.uk.screen.at.app.query.ksu.ksu002.a.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,4 +1,6 @@
-package nts.uk.screen.at.ws.ksu.ksu002.a;
+package nts.uk.screen.at.app.query.ksu.ksu002.a.dto;
+
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,10 +15,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class RegisterWorkScheduleInput {
+public class RegisterWorkScheduleInputCommand {
 
 	public String sid;
 	
-	public RegisterDates registerDates;
+	public List<RegisterDates> registerDates;
 	
 }
