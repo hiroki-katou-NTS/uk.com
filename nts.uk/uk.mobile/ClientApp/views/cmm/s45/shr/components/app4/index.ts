@@ -126,7 +126,7 @@ export class CmmS45ComponentsApp4Component extends Vue {
             c2 = params.goBackApplication.isChangedWork == 0;
         }
         
-        return !(c1 || c2);
+        return !(c1 && c2);
         // return true;
 
     }
