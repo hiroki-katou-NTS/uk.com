@@ -152,24 +152,35 @@ module nts.uk.at.view.kdl001.a {
                 self.workingHoursItemLists.removeAll();
                 self.workingHoursItemLists.push(new WorkTimeSet());
 
-                if (self.isAllCheckShow()) { //check all
-                    selectAbleItemList = data.allWorkHours;                    
+                if (self.selectAbleCodeList().length > 0) { //check all                    
+                    if (data.availableWorkingHours.length > 0)
+                        selectAbleItemList = data.availableWorkingHours
+                    else
+                        selectAbleItemList = data.allWorkHours;
+                } else if (!_.isEmpty(self.workPlaceId()) && !_.isEmpty(self.baseDate())) {
+                    if (data.workingHoursByWorkplace.length > 0)
+                        selectAbleItemList = data.workingHoursByWorkplace;
+                    else
+                        selectAbleItemList = data.allWorkHours;
                 } else {
-                    selectAbleItemList = (self.selectAbleCodeList().length > 0) ? data.availableWorkingHours : data.workingHoursByWorkplace;
+                    selectAbleItemList = data.allWorkHours;
                 }
 
                 //to restore
                 if (!nts.uk.util.isNullOrEmpty(data)) {
                     self.workingHoursItemLists(self.workingHoursItemLists().concat(_.map(data.allWorkHours, item => { return new WorkTimeSet(item) })));
+                    self.workingHoursItemLists(_.orderBy(self.workingHoursItemLists(), 'code', 'asc'));
                     //send from parent screen
                     let selectableItemList = (self.selectAbleCodeList().length > 0) ? data.availableWorkingHours : data.workingHoursByWorkplace;
                     self.selectableWorkingHours.removeAll();
                     self.selectableWorkingHours.push(new WorkTimeSet());
                     self.selectableWorkingHours(self.selectableWorkingHours().concat(_.map(selectableItemList, item => { return new WorkTimeSet(item) })));
+                    self.selectableWorkingHours(_.orderBy(self.selectableWorkingHours(), 'code', 'asc'));
                 }
 
                 self.selectAbleItemList.removeAll();
-                self.selectAbleItemList(_.cloneDeep(self.workingHoursItemLists()));
+                selectAbleItemList.unshift(new WorkTimeSet());
+                self.selectAbleItemList(_.orderBy(selectAbleItemList, 'code', 'asc'));
                 // Set initial work time list.
                 self.initialWorkTimeCodes = _.map(self.selectAbleItemList(), function (item) { return item.code })
             }
@@ -336,10 +347,10 @@ module nts.uk.at.view.kdl001.a {
                 self.resetAllData().then(() => {
                     nts.uk.ui.block.clear();
                 });
-                
+
             }
 
-            resetAllData() : JQueryPromise<any> {
+            resetAllData(): JQueryPromise<any> {
                 const self = this;
                 const dfd = $.Deferred();
                 self.selectAbleItemList.removeAll();

@@ -1,6 +1,6 @@
 module nts.uk.at.view.kdl003.a {
     export module viewmodel {
-        export class ScreenModel {
+        export class ScreenModel extends ko.ViewModel {
 
             // Search options.
             startTimeOption: KnockoutObservable<number>;
@@ -56,6 +56,8 @@ module nts.uk.at.view.kdl003.a {
             searchCode: KnockoutObservable<string> = ko.observable(null);
             
             constructor(parentData: CallerParameter) {  
+                super();
+
                 var self = this;
 
                 self.readonly = ko.observable(true);

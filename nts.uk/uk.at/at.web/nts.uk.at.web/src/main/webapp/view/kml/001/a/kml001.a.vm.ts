@@ -501,7 +501,11 @@ module nts.uk.at.view.kml001.a {
           self.gridPersonCostList(_.orderBy(historyItem, 'endDate', 'desc'));
           if (currentHistory === null) {
             self.selectedHistory(_.head(self.gridPersonCostList()));//latest
-            self.currentGridPersonCost(tempHistory);
+            if (self.currentGridPersonCost() === tempHistory) {
+              self.currentGridPersonCost.valueHasMutated();
+            } else
+              self.currentGridPersonCost(tempHistory);
+              
             self.isLastItem(true);
           }
         }
