@@ -19,7 +19,6 @@ import nts.uk.ctx.at.shared.dom.application.lateleaveearly.TimeReportShare;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.common.ReflectApplicationHelper;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.lateleaveearly.ReflectArrivedLateLeaveEarly;
 import nts.uk.ctx.at.shared.dom.application.stamp.AppStampShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.StartEndClassificationShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppShare;
@@ -28,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.Time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.IntervalExemptionTime;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflect;
 
 @RunWith(JMockit.class)
 public class RCReflectArrivedLateLeaveEarlyAppTest {
@@ -50,7 +50,7 @@ public class RCReflectArrivedLateLeaveEarlyAppTest {
 		ArrivedLateLeaveEarlyShare appWorkChange = appWorkChange(1, LateOrEarlyAtrShare.LATE);
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
 				1, true);// no = 1
-		ReflectArrivedLateLeaveEarly reflectApp = new ReflectArrivedLateLeaveEarly("", false);
+		LateEarlyCancelReflect reflectApp = new LateEarlyCancelReflect("", false);
 
 		List<Integer> actualResult = RCReflectArrivedLateLeaveEarlyApp.reflect(appWorkChange, dailyApp, reflectApp);
 
@@ -81,7 +81,7 @@ public class RCReflectArrivedLateLeaveEarlyAppTest {
 		ArrivedLateLeaveEarlyShare appWorkChange = appWorkChange(1, LateOrEarlyAtrShare.EARLY);
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
 				1, true);// no = 1
-		ReflectArrivedLateLeaveEarly reflectApp = new ReflectArrivedLateLeaveEarly("", false);
+		LateEarlyCancelReflect reflectApp = new LateEarlyCancelReflect("", false);
 
 		List<Integer> actualResult = RCReflectArrivedLateLeaveEarlyApp.reflect(appWorkChange, dailyApp, reflectApp);
 

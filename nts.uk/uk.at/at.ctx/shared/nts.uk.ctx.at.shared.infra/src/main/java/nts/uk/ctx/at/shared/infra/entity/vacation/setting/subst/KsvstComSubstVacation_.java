@@ -15,7 +15,11 @@ import javax.persistence.metamodel.StaticMetamodel;
 @Generated(value = "EclipseLink-2.5.2.v20140319-rNA", date = "2017-05-24T11:41:51")
 @StaticMetamodel(KsvstComSubstVacation.class)
 public class KsvstComSubstVacation_ {
-
+	
+	public static volatile SingularAttribute<KsvstComSubstVacation, Short> linkMngAtr;
+	
+	public static volatile SingularAttribute<KsvstComSubstVacation, Short> expDateMngMethod;
+	
 	/** The allow prepaid leave. */
 	public static volatile SingularAttribute<KsvstComSubstVacation, Short> allowPrepaidLeave;
 

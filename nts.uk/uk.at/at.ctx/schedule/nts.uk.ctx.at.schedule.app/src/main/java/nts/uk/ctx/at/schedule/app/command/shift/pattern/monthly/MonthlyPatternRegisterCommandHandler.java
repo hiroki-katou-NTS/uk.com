@@ -117,10 +117,11 @@ public class MonthlyPatternRegisterCommandHandler extends CommandHandler<Monthly
             return workTimeSettingRepository.findByCode(companyId, workTimeCode);
         }
 
-        @Override
-        public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo) {
-            return workTimeSettingService .getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
-        }
+     // fix bug 113211
+//        @Override
+//        public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo) {
+//            return workTimeSettingService .getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
+//        }
 
 		@Override
 		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {

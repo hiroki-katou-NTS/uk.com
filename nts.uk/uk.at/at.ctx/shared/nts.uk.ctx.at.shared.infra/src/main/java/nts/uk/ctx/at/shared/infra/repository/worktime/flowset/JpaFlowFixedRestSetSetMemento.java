@@ -6,10 +6,8 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.flowset;
 
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSetSetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.ScheduleBreakCalculation;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.StampBreakCalculation;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRestSet;
-import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaScheduleBreakCalculationSetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaStampBreakCalculationSetMemento;
 
 /**
@@ -41,19 +39,6 @@ public class JpaFlowFixedRestSetSetMemento implements FlowFixedRestSetSetMemento
 	@Override
 	public void setCalculateMethod(FlowFixedRestCalcMethod method) {
 		this.entity.setFixedRestCalcMethod(method.value);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSetSetMemento#
-	 * setCalculateFromSchedule(nts.uk.ctx.at.shared.dom.worktime.flowset.
-	 * ScheduleBreakCalculation)
-	 */
-	@Override
-	public void setCalculateFromSchedule(ScheduleBreakCalculation val) {
-		val.saveToMemento(new JpaScheduleBreakCalculationSetMemento<KshmtFlowRestSet>(this.entity));
 	}
 
 	/*

@@ -42,7 +42,7 @@ export class CmmS45AComponent extends Vue {
     public appListExtractCondition: AppListExtractCondition;
     public data: ApplicationListDtoMobile = new ApplicationListDtoMobile();
 
-    public arrayAppType = [2, 3, 4, 7, 9, 15];
+    public arrayAppType = [2, 3, 4, 7, 9, 15, 0];
 
     public mounted() {
         const self = this;
@@ -122,6 +122,8 @@ export class CmmS45AComponent extends Vue {
                 return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
             case '10':
                 return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
+            case '15':
+                return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;    
 
             // case '0':
             //     return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;

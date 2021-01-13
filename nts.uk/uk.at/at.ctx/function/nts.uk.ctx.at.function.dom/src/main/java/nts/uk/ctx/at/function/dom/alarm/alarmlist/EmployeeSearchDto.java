@@ -2,9 +2,11 @@ package nts.uk.ctx.at.function.dom.alarm.alarmlist;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class EmployeeSearchDto {
 	/**
 	 * employeeID

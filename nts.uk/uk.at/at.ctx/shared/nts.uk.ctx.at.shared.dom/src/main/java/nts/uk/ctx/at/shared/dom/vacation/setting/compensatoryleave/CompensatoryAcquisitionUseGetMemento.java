@@ -33,4 +33,7 @@ public interface CompensatoryAcquisitionUseGetMemento {
      * @return the deadl check month
      */
     DeadlCheckMonth getDeadlCheckMonth();
+    
+    //期限日の管理方法 
+    TermManagement termManagement();
 }

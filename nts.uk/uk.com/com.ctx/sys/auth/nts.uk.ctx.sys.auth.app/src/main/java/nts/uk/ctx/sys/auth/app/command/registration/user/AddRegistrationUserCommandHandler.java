@@ -85,7 +85,7 @@ public class AddRegistrationUserCommandHandler extends CommandHandlerWithResult<
 		// register user
 		User newUser = User.createFromJavatype(userId, false, hashPW.toString(), command.getLoginID(), contractCode,
 				GeneralDate.fromString(command.getExpirationDate(), "yyyy/MM/dd"), command.isSpecialUser() ? 1 : 0, command.isMultiCompanyConcurrent() ? 1 : 0, command.getMailAddress() == null ? null : command.getMailAddress(),
-				command.getUserName(), command.getAssociatedPersonID() == null ? null : command.getAssociatedPersonID(), 1);
+				command.getUserName(), command.getAssociatedPersonID() == null ? null : command.getAssociatedPersonID(), 1, 0);
 		userRepo.addNewUser(newUser);
 
 		return userId;

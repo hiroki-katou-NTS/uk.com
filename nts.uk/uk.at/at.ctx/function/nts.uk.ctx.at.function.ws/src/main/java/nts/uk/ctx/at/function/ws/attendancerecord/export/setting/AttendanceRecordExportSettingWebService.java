@@ -8,18 +8,24 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import nts.uk.ctx.at.function.app.command.attendancerecord.export.setting.*;
+import nts.uk.ctx.at.function.app.command.attendancerecord.export.setting.AttendanceRecordExportSettingSaveCommand;
+import nts.uk.ctx.at.function.app.command.attendancerecord.export.setting.AttendanceRecordExportSettingSaveCommandHandler;
+import nts.uk.ctx.at.function.app.command.attendancerecord.export.setting.DeleteAttendanceRecordExportSettingCommand;
+import nts.uk.ctx.at.function.app.command.attendancerecord.export.setting.DeleteAttendanceRecordExportSettingCommandHandler;
+import nts.uk.ctx.at.function.app.command.attendancerecord.export.setting.NewAttendanceRecordExportSettingCommand;
+import nts.uk.ctx.at.function.app.command.attendancerecord.export.setting.NewAttendanceRecordExportSettingCommandHandler;
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.setting.AttendaceMonthDto;
+import nts.uk.ctx.at.function.app.find.attendancerecord.export.setting.AttendanceAuthorityOfWorkPerform;
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.setting.AttendanceRecordExportSettingDto;
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.setting.AttendanceRecordExportSettingFinder;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.at.function.app.find.attendancerecord.export.setting.AttendanceRecordExportSettingWrapperDto;
 
 /**
  * The Class AttendanceRecordOutputSettingWebService.
  */
 @Path("com/function/attendancerecord/export/setting")
 @Produces("application/json")
-public class AttendanceRecordExportSettingWebService {
+public class AttendanceRecordExportSettingWebService { 
 
 	/** The attendance ec exp set finder. */
 	@Inject
@@ -38,6 +44,7 @@ public class AttendanceRecordExportSettingWebService {
 
 	@Inject
 	DeleteAttendanceRecordExportSettingCommandHandler delHandler;
+	
 
 	/**
 	 * Gets the all attendance rec out set.
@@ -46,9 +53,8 @@ public class AttendanceRecordExportSettingWebService {
 	 */
 	@POST
 	@Path("getAllAttendanceRecExpSet")
-	public List<AttendanceRecordExportSettingDto> getAllAttendanceRecExpSet() {
-		String companyId = AppContexts.user().companyId();
-		return attendanceEcExpSetFinder.getAllAttendanceRecordExportSetting(companyId);
+	public AttendanceRecordExportSettingWrapperDto getAllAttendanceRecExpSet() {
+		return attendanceEcExpSetFinder.getAllAttendanceRecordExportSetting();
 	}
 
 	/**
@@ -59,10 +65,10 @@ public class AttendanceRecordExportSettingWebService {
 	 * @return the attendance rec out set
 	 */
 	@POST
-	@Path("getAttendanceRecExpSet/{code}")
-	public AttendanceRecordExportSettingDto getAttendanceRecExpSet(@PathParam("code") long code) {
-		String companyId = AppContexts.user().companyId();
-		return attendanceEcExpSetFinder.getAttendanceRecordExportSettingDto(companyId, code);
+	@Path("getAttendanceRecExpSet/{code}/{selectionType}")
+	public AttendanceRecordExportSettingDto getAttendanceRecExpSet(@PathParam("code") String code
+			, @PathParam("selectionType") Integer selectionType) {
+		return attendanceEcExpSetFinder.getAttendanceRecordExportSettingDto(code, selectionType);
 	}
 
 	/**
@@ -109,9 +115,9 @@ public class AttendanceRecordExportSettingWebService {
 	 * @return the seal stamp
 	 */
 	@POST
-	@Path("getSealStamp/{code}")
-	public List<String> getSealStamp(@PathParam("code") long code) {
-		return attendanceEcExpSetFinder.getSealStamp(code);
+	@Path("getSealStamp/{layoutId}")
+	public List<String> getSealStamp(@PathParam("layoutId") String layoutId) {
+		return attendanceEcExpSetFinder.getSealStamp(layoutId);
 	}
 	
 	/**
@@ -129,5 +135,11 @@ public class AttendanceRecordExportSettingWebService {
 	@Path("getClosureMonth")
 	public AttendaceMonthDto getClosureMonth() {
 		return attendanceEcExpSetFinder.getClosureMonth();
+	}
+	
+	@POST 
+	@Path("getAuthorityOfWorkPerformance")
+	public AttendanceAuthorityOfWorkPerform getAuthorityOfWorkPerformance() {
+		return attendanceEcExpSetFinder.getAuthorityOfWorkPerformance();
 	}
 }

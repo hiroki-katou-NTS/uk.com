@@ -1,13 +1,11 @@
 package nts.uk.ctx.at.function.infra.repository.processexecution;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionScopeItem;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ExecutionScopeItemRepository;
 import nts.uk.ctx.at.function.infra.entity.processexecution.KfnmtExecutionScopeItem;
 
@@ -23,30 +21,34 @@ public class JpaExecutionScopeItemRepository extends JpaRepository
 	private static final String SELECT_BY_KEY = SELECT_ALL
 			+ "WHERE esi.kfnmtExecScopeItemPK.companyId = :companyId "
 			+ "AND esi.kfnmtExecScopeItemPK.execItemCd = :execItemCd "
-			+ "AND esi.kfnmtExecScopeItemPK.wkpId = :wkpId ";
-	
+			+ "AND esi.kfnmtExecScopeItemPK.wkpId IN :wkpIds ";
+
 	/**
 	 * insert
 	 */
 	@Override
-	public void insert(String companyId, String execItemCd, List<ProcessExecutionScopeItem> wkpList) {
-		List<KfnmtExecutionScopeItem> list =
-				wkpList.stream()
-						.map(c -> {
-							Optional<KfnmtExecutionScopeItem> opt = 
-							this.queryProxy().query(SELECT_BY_KEY, KfnmtExecutionScopeItem.class)
-								.setParameter("companyId", companyId)
-								.setParameter("execItemCd", execItemCd)
-								.setParameter("wkpId", c.wkpId).getSingle();
-							if (opt.isPresent()) {
-								return null;
-							}
-							KfnmtExecutionScopeItem entity = KfnmtExecutionScopeItem.toEntity(companyId, execItemCd, c.wkpId);
-							return entity;
-						}).collect(Collectors.toList());
-		this.commandProxy().insertAll(list);
+	public void insert(String companyId, String execItemCd, List<String> wkpIds) {
+		// Gets current data have workplace id in wkpIds
+		List<KfnmtExecutionScopeItem> currentEntityList = this.queryProxy().query(SELECT_BY_KEY, KfnmtExecutionScopeItem.class)
+																		   .setParameter("companyId", companyId)
+																		   .setParameter("execItemCd", execItemCd)
+																		   .setParameter("wkpIds", wkpIds)
+																		   .getList();
+		// Converts to current workplace id list
+		List<String> currentWkpIdList = currentEntityList.stream()
+														 .map(KfnmtExecutionScopeItem::getWorkplaceId)
+														 .collect(Collectors.toList());
+		// Filters new data from all input data (wkpList)
+		List<KfnmtExecutionScopeItem> newEntityList = wkpIds.stream()
+															.filter(workplaceId -> !currentWkpIdList.contains(workplaceId))
+															.map(workplaceId -> new KfnmtExecutionScopeItem(companyId,
+																											execItemCd,
+																											workplaceId))
+															.collect(Collectors.toList());
+		// Inserts all new data
+		this.commandProxy().insertAll(newEntityList);
 	}
-	
+
 	/**
 	 * remove all by key
 	 */
