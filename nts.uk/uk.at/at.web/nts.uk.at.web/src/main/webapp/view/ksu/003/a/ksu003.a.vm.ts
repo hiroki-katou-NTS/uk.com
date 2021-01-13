@@ -956,8 +956,14 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						$(cssEndTime2).removeClass("xseal");
 						$(cssStartTime1).css("background-color","#FFFFFF");
 						$(cssEndTime1).css("background-color","#FFFFFF");
+						
+						if($(cssStartTime2).css("background-color") == "rgb(221, 221, 210)")
 						$(cssStartTime2).css("background-color","#FFFFFF");
+						
+						if($(cssEndTime2).css("background-color") == "rgb(221, 221, 210)")
 						$(cssEndTime2).css("background-color","#FFFFFF");
+						
+						if($(cssWorkTime).css("background-color") == "rgb(221, 221, 210)")
 						$(cssWorkTime).css("background-color","#FFFFFF");
 						
 						$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktypeName", (data.workTypeName == null || data.workTypeName == "") ? $("#extable-ksu003").exTable('dataSource', 'middle').body[index].worktypeCode + getText('KSU003_54') : data.workTypeName);
@@ -4174,6 +4180,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			
 			if(self.dataScreen003A().employeeInfo[lineNo].workScheduleDto != null && self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.workTypeCode != null)
 			self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.workTypeCode = $("#extable-ksu003").exTable('dataSource', 'middle').body[lineNo].worktypeCode;
+			
+			if(self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto != null && self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workTimeName != null)
+			self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workTimeName = $("#extable-ksu003").exTable('dataSource', 'middle').body[lineNo].worktimeName;
+			
+			if(self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto != null && self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workTypeName != null)
+			self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workTypeName = $("#extable-ksu003").exTable('dataSource', 'middle').body[lineNo].worktypeName;
+			
 			let dataEmployee = _.filter(self.dataFromA().listEmp, (x: any) => { return x.id === empId; });
 			let dataShare: any = {
 				employeeInfo: self.dataScreen003A().employeeInfo[lineNo],
@@ -4343,20 +4356,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						color = "#cee6ff";
 					}
 
-					$(cssWorkType).css("background-color", color);
-					$(cssWorkTypeName).css("background-color", color);
-					$(cssStartTime1).css("background-color", color);
-					$(cssEndTime1).css("background-color", color);
-					if (self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType != WorkTimeForm.FLEX) {
-						$(cssStartTime2).css("background-color", color);
-					}
-
-					if (self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType != WorkTimeForm.FLEX) {
-						$(cssEndTime2).css("background-color", color);
-					}
+					
 					$(cssWorkTime).css("background-color", color);
 					$(cssWorkTName).css("background-color", color);
-					if (self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.isNeedWorkTime == true) {
+					if (self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.isHoliday == false) {
 						$("#extable-ksu003").exTable("enableCell", "middle", empId, "worktimeCode");
 						$("#extable-ksu003").exTable("enableCell", "middle", empId, "startTime1");
 						$("#extable-ksu003").exTable("enableCell", "middle", empId, "endTime1");
@@ -4374,6 +4377,26 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						$("#extable-ksu003").exTable("disableCell", "middle", empId, "endTime1");
 						$("#extable-ksu003").exTable("disableCell", "middle", empId, "startTime2");
 						$("#extable-ksu003").exTable("disableCell", "middle", empId, "endTime2");
+					}
+					
+					$(cssWorkType).css("background-color", color);
+					$(cssWorkTypeName).css("background-color", color);
+					$(cssStartTime1).css("background-color", color);
+					$(cssEndTime1).css("background-color", color);
+					if (self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType != WorkTimeForm.FLEX) {
+						if(self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.startTime2 != null)
+						$(cssStartTime2).css("background-color", color);
+						
+						if($(cssStartTime2).css("background-color") == "rgb(221, 221, 210)")
+						$(cssStartTime2).css("background-color", color);
+					}
+
+					if (self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workType != WorkTimeForm.FLEX) {
+						if(self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.endTime2 != null)
+						$(cssEndTime2).css("background-color", color);
+						
+						if($(cssEndTime2).css("background-color") == "rgb(221, 221, 210)")
+						$(cssEndTime2).css("background-color", color);
 					}
 					$(".xcell").removeClass("x-error");
 				}
