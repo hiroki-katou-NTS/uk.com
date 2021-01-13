@@ -382,7 +382,7 @@ export class CmmS45AComponent extends Vue {
                         id: app.appID,
                         appDate: self.$dt.fromUTCString(app.appDate, 'YYYY/MM/DD'),
                         appType: app.appType,
-                        appName: self.appTypeName(app.appType, app.application.opStampRequestMode),
+                        appName: self.appTypeName(app.appType, app.opAppTypeDisplay),
                         prePostAtr: app.prePostAtr,
                         reflectStatus: app.reflectionStatus,
                         appStatusNo: self.convertReflectToInt(app.reflectionStatus)
