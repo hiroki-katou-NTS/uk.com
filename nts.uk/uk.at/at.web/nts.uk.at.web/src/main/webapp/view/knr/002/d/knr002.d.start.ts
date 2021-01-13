@@ -3,6 +3,8 @@ module knr002.d {
         var screenModel = new knr002.d.viewmodel.ScreenModel(); 
         screenModel.startPage().done(() => {
             __viewContext.bind(screenModel);
+        }).then(() => {
+            $('#D5_1').focus();	
         });        
     });
 }

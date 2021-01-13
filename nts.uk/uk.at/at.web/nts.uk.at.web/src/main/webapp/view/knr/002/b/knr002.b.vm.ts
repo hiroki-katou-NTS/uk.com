@@ -155,9 +155,9 @@ module knr002.b {
                             self.displayLogList(displayLogListTemp);
                         }    
                     });
-                }
-                $('#B6_1').focus();
-                blockUI.clear();  
+                } 
+                blockUI.clear();
+                $('#B6_1').focus();  
             }
              /**
              * Check Input Errors

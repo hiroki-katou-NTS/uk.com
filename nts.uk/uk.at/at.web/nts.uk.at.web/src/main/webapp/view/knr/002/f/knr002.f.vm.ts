@@ -92,8 +92,8 @@ module knr002.f {
                         self.bindDestinationCopyList(); 
                     });											
                 }
-                $('#F6_1').focus();
-                blockUI.clear(); 																			
+                blockUI.clear(); 
+                $('#F6_1').focus();																			
                 dfd.resolve();											
                 return dfd.promise();
             }

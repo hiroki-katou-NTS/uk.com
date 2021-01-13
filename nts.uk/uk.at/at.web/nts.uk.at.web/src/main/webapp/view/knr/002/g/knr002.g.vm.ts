@@ -135,8 +135,8 @@ module knr002.g {
                         }
                     });
                 }
-                $('#G11_1').focus();
-                blockUI.clear();   																			
+                blockUI.clear();   
+                $('#G11_1').focus();																			
                 dfd.resolve();											
                 return dfd.promise();											
             }
