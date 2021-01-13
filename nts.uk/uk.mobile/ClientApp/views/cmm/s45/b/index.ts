@@ -63,7 +63,7 @@ export class CmmS45BComponent extends Vue {
 
     //Refactor4
     public appStatus: ApplicationStatus;
-    public arrayAppType = [2, 3, 4, 7, 9, 15, 0, 6];
+    public arrayAppType = [2, 3, 4, 7, 9, 15, 0, 6, 1];
 
     @Watch('modeAppr')
     public checkChangeMode(mode: boolean) {

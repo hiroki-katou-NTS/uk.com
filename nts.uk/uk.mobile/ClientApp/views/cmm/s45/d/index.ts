@@ -17,7 +17,7 @@ import {
     CmmS45ShrComponentsApp15Component,
     Reason
 } from 'views/cmm/s45/shr/components';
-
+import { CmmS45ShrComponentsApp1Component } from 'views/cmm/s45/shr/components/app1/index';
 @component({
     name: 'cmms45d',
     style: require('./style.scss'),
@@ -39,6 +39,7 @@ import {
         'app7': CmmS45ShrComponentsApp7Component,
         'app0': CmmS45ShrComponentsApp0Component,
         'app15': CmmS45ShrComponentsApp15Component,
+        'app1': CmmS45ShrComponentsApp1Component,
         'cmms45e': CmmS45EComponent,
         'cmms45f': CmmS45FComponent
     }
