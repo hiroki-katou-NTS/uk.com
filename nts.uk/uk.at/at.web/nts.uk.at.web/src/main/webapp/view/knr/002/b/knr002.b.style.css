@@ -54,6 +54,12 @@
 #functions-area-bottom > button {
 	margin-top: 11px;
 }
+/* popup show unstable position --> override css */
+
+#func-notifier-errors {
+    top: 10px !important;
+    left: 50px !important;
+}
 .testcss {
 	color: green;
 }
