@@ -534,7 +534,10 @@ export class CmmS45ShrComponentsApp6Component extends Vue {
     public bindWorkInfo() {
         const self = this;
         let appHolidayWork = self.dataOutput.appHolidayWork as AppHolidayWork;
-        self.createWorkInfo(_.get(appHolidayWork, 'workInformation.workType'), _.get(appHolidayWork, 'workInformation.workTime'));
+        let appHdWorkDispInfo = self.dataOutput.appHdWorkDispInfo as AppHdWorkDispInfo;
+        let nameType = _.get(appHdWorkDispInfo, 'hdWorkDispInfoWithDateOutput.initWorkTypeName');
+        let nameTime = _.get(appHdWorkDispInfo, 'hdWorkDispInfoWithDateOutput.initWorkTimeName');
+        self.createWorkInfo(_.get(appHolidayWork, 'workInformation.workType'), _.get(appHolidayWork, 'workInformation.workTime'), nameType, nameTime);
     }
 
     public bindWorkHours() {
@@ -604,7 +607,7 @@ export class CmmS45ShrComponentsApp6Component extends Vue {
         } as WorkHours;
     }
 
-    public createWorkInfo(codeType?: string, codeTime?: string) {
+    public createWorkInfo(codeType?: string, codeTime?: string, nameType?: string, nameTime?: string) {
         const self = this;
 
         let workType = {} as Work;
@@ -614,16 +617,22 @@ export class CmmS45ShrComponentsApp6Component extends Vue {
         workTime.code = codeTime || '';
         let appHdWorkDispInfo = _.get(self.dataOutput, 'appHdWorkDispInfo');
         if (appHdWorkDispInfo) {
-            let workTypes = appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.workTypeList;
-            let resultWorkType = 
-                _.find(workTypes, (i: any) => i.workTypeCode == workType.code);
-            workType.name = resultWorkType ? (resultWorkType.name || '')  : self.$i18n('KAFS05_55');
-
-            let workTimes = appHdWorkDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst;
-            let resultWorkTime = 
-                    _.find(workTimes, (i: any) => i.worktimeCode == workTime.code);
-            workTime.name = resultWorkTime ? (_.get(resultWorkTime, 'workTimeDisplayName.workTimeName') || '') : self.$i18n('KAFS05_55');
-  
+            if (nameType) {
+                workType.name = nameType;
+            } else {
+                let workTypes = appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.workTypeList;
+                let resultWorkType = 
+                    _.find(workTypes, (i: any) => i.workTypeCode == workType.code);
+                workType.name = resultWorkType ? (resultWorkType.name || '')  : self.$i18n('KAFS05_55');
+            }
+            if (nameTime) {
+                workTime.name = nameTime;
+            } else {
+                let workTimes = appHdWorkDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst;
+                let resultWorkTime = 
+                        _.find(workTimes, (i: any) => i.worktimeCode == workTime.code);
+                workTime.name = resultWorkTime ? (_.get(resultWorkTime, 'workTimeDisplayName.workTimeName') || '') : self.$i18n('KAFS05_55');
+            }
         }
         let workInfo = {} as WorkInfo;
         workInfo.workType = workType;

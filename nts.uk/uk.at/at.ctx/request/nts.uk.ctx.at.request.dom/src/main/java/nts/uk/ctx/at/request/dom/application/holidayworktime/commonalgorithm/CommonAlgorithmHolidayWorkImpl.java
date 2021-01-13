@@ -728,7 +728,8 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 						} else {
 							//	指定する勤務種類リストから指定する休日区分の勤務種類を取得する
 							Optional<WorkType> specifiedHdWorkType = Optional.empty(); 
-							specifiedHdWorkType = workTypeList.stream().filter(workType -> !workType.getWorkTypeSetList().isEmpty() ? 
+							specifiedHdWorkType = workTypeList.stream().filter(workType -> workType.getWorkTypeSetList() != null && 
+										!workType.getWorkTypeSetList().isEmpty() ? 
 										workType.getWorkTypeSetList().get(0).getHolidayAtr().equals(holidayAtr.orElse(null)) : false).findFirst();
 							if(specifiedHdWorkType.isPresent()) {
 								initWorkTypeCd = Optional.of(specifiedHdWorkType.get().getWorkTypeCode());
