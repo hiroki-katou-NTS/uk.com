@@ -21,8 +21,6 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 		isSendMail = ko.observable(false);
 		remainDays = ko.observable('');
 		comment = new Comment();
-		workTypeListWorkingDay = ko.observableArray([]);
-		workTypeListHoliDay = ko.observableArray([]);
 		
 		appCombinaSelected = ko.observable(0);
 		appCombinaDipslay = ko.observable(false);
@@ -67,8 +65,6 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					vm.displayInforWhenStarting(data);
 					vm.isSendMail(data.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.manualSendMailAtr == 1);
 					vm.remainDays(data.remainingHolidayInfor.remainDays + '日');
-					vm.workTypeListWorkingDay(data.applicationForWorkingDay.workTypeList);
-					vm.workTypeListHoliDay(data.applicationForHoliday.workTypeList);
 					vm.appCombinaDipslay(data.substituteHdWorkAppSet.simultaneousApplyRequired == 1);
 					vm.recruitmentApp.bindingScreenA(data.applicationForWorkingDay, data);
 					vm.absenceLeaveApp.bindingScreenA(data.applicationForHoliday, data);
@@ -106,7 +102,14 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					displayInforWhenStartingdto.rec = null;
 					displayInforWhenStartingdto.abs = null;
 					vm.$ajax('at/request/application/holidayshipment/changeRecDate',{workingDate: moment(value).format('YYYY/MM/DD'), holidayDate: holidayDate, displayInforWhenStarting: displayInforWhenStartingdto}).then((data: any) =>{
-						vm.bindData(data);
+						vm.appDispInfoStartupOutput().appDispInfoWithDateOutput = data.appDispInfoStartup.appDispInfoWithDateOutput;
+						vm.displayInforWhenStarting(data);
+						if(data.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.recordDate == 1){
+							vm.recruitmentApp.workTypeList(data.applicationForWorkingDay.workTypeList);
+							vm.recruitmentApp.workInformation.workTime(data.applicationForWorkingDay.workTime);
+							vm.recruitmentApp.workInformation.workType(data.applicationForWorkingDay.workType);
+						}
+						vm.absenceLeaveApp.workInformation.workType(data.applicationForHoliday.workType);
 					}).always(() => {
 						vm.$blockui("hide"); 
 					});
@@ -121,7 +124,13 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					displayInforWhenStartingdto.abs = null;
 					let workingDate = (vm.appCombinaSelected() != 2 && vm.recruitmentApp.application.appDate() && !$('#recAppDate').ntsError('hasError')) ? moment(vm.recruitmentApp.application.appDate()).format('YYYY/MM/DD'): null;
 					vm.$ajax('at/request/application/holidayshipment/changeAbsDate',{workingDate: workingDate, holidayDate: moment(value).format('YYYY/MM/DD'), displayInforWhenStarting: displayInforWhenStartingdto}).then((data: any) =>{
-						vm.bindData(data);
+						vm.appDispInfoStartupOutput().appDispInfoWithDateOutput = data.appDispInfoStartup.appDispInfoWithDateOutput;
+						vm.displayInforWhenStarting(data);
+						if(data.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.recordDate == 1){
+							vm.recruitmentApp.workTypeList(data.applicationForWorkingDay.workTypeList);
+							vm.recruitmentApp.workInformation.workTime(data.applicationForWorkingDay.workTime);
+							vm.recruitmentApp.workInformation.workType(data.applicationForWorkingDay.workType);
+						}
 					}).always(() => {
 						vm.$blockui("hide"); 
 					});
@@ -136,20 +145,6 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					vm.absenceLeaveApp.application.appDate.valueHasMutated();
 				}
 			});
-		}
-		
-		bindData(data:any){
-			let vm =this;
-			vm.appDispInfoStartupOutput(data.appDispInfoStartup);
-			vm.displayInforWhenStarting(data);
-			vm.isSendMail(data.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.manualSendMailAtr == 1);
-			vm.remainDays(data.remainingHolidayInfor.remainDays + '日');
-			vm.workTypeListWorkingDay(data.applicationForWorkingDay.workTypeList);
-			vm.workTypeListHoliDay(data.applicationForHoliday.workTypeList);
-			vm.appCombinaDipslay(data.substituteHdWorkAppSet.simultaneousApplyRequired == 1);
-			vm.recruitmentApp.bindingScreenA(data.applicationForWorkingDay, data);
-			vm.absenceLeaveApp.bindingScreenA(data.applicationForHoliday, data);
-			vm.comment.update(data.substituteHdWorkAppSet);
 		}
 		
 		mounted(){
