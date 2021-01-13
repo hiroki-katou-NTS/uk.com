@@ -2,7 +2,7 @@ import { _, Vue, moment } from '@app/provider';
 import { component, Prop, Watch } from '@app/core/component';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/s00';
 import { KafS00ShrComponent, AppType, Application, InitParam } from 'views/kaf/s00/shr';
-import { TimeZoneNewDto, TimeZoneWithWorkNoDto, WorkInformationDto, WorkTypeDto, MaxNumberDayType, AppAbsenceStartInfoDto, StartMobileParam, NotUseAtr, TimeZoneUseDto, HolidayAppTypeDispNameDto, ManageDistinct, TargetWorkTypeByApp, ApplicationType, HolidayAppType, DateSpecHdRelationOutput, ChangeDateParamMobile, SelectWorkTypeHolidayParam, SelectWorkTimeHolidayParam, MaxHolidayDayParamMobile, ApplyForLeaveDto, ReflectFreeTimeAppDto, TimeDigestApplicationDto, VacationRequestInfoDto, SupplementInfoVacationDto, ApplyforSpecialLeaveDto, CheckInsertMobileParam, RegisterAppAbsenceMobileCommand, WorkTypeUnit, MaxDaySpecHdDto, VacationCheckOutputDto, UpdateAppAbsenceMobileCommand } from '../a/define.interface';
+import { TimeZoneNewDto, TimeZoneWithWorkNoDto, WorkInformationDto, WorkTypeDto, MaxNumberDayType, AppAbsenceStartInfoDto, StartMobileParam, NotUseAtr, TimeZoneUseDto, HolidayAppTypeDispNameDto, ManageDistinct, TargetWorkTypeByApp, ApplicationType, HolidayAppType, DateSpecHdRelationOutput, ChangeDateParamMobile, SelectWorkTypeHolidayParam, SelectWorkTimeHolidayParam, MaxHolidayDayParamMobile, ApplyForLeaveDto, ReflectFreeTimeAppDto, TimeDigestApplicationDto, VacationRequestInfoDto, SupplementInfoVacationDto, ApplyforSpecialLeaveDto, CheckInsertMobileParam, RegisterAppAbsenceMobileCommand, WorkTypeUnit, MaxDaySpecHdDto, VacationCheckOutputDto, UpdateAppAbsenceMobileCommand, WorkAtr } from '../a/define.interface';
 import { KDL002Component } from '../../../kdl/002';
 import { Kdl001Component } from '../../../kdl/001';
 import { KdlS35Component } from '../../../kdl/s35';
@@ -13,8 +13,41 @@ import { KdlS36Component } from '../../../kdl/s36';
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
-    validations: {},
-    constraints: [],
+    validations: {
+        inputA9_5: {
+            constraint: 'AttendanceTime'
+        },
+        inputA9_7: {
+            constraint: 'AttendanceTime'
+        },
+        inputA9_9: {
+            constraint: 'AttendanceTime'
+        },
+        inputA9_11: {
+            constraint: 'AttendanceTime'
+        },
+        inputA9_13: {
+            constraint: 'AttendanceTime'
+        },
+        relationshipReason: {
+            constraint: 'RelationshipReasonPrimitive'
+        },
+        selectedValueHolidayType: {
+            required: true,
+            validate: true
+        },
+        workType: {
+            code: {
+                required: true,
+                validate: true
+            }
+        }
+    },
+    constraints: [
+        'nts.uk.ctx.at.shared.dom.common.time.AttendanceTime',
+        'nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.RelationshipReasonPrimitive',
+    ],
+
     components: {
         'kafs00-a': KafS00AComponent,
         'kafs00-b': KafS00BComponent,
@@ -34,13 +67,13 @@ export class KafS06AComponent extends KafS00ShrComponent {
     public application: Application = null;
     public workHours1: {start: number, end: number} = null;
     public workHours2: {start: number, end: number} = null;
-    public selectedValueHolidayType = null;
+    public selectedValueHolidayType: any = null;
 
     public isFirstUpdate = false; /// turn off watch while firstly go to update mode
     public maxDaySpecHdDto: MaxDaySpecHdDto;
     public time: number = 0;
     public checkBoxC7: boolean = false;
-    public relationshipReason: null;
+    public relationshipReason: string = '';
     public model: Model = {} as Model;
     public inputA9_5: number = null;
     public inputA9_7: number = null;
@@ -122,7 +155,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
                     (self.c16 ? (self.inputA9_11 || 0) : 0) + 
                     (self.c17 ? (self.inputA9_13 || 0) : 0);
 
-        return self.$dt.timewd(time);
+        return self.$dt.timedr(time);
     }
     // 【補足資料1】を参照する todo
     // 休暇残数情報．60H超休残時間
@@ -131,7 +164,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
         let model = self.model as Model;
         let time = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.over60HHourRemain') || 0;
 
-        return self.$dt.timewd(time);
+        return self.$dt.timedr(time);
     }
     // 休暇残数情報．代休残時間
     public get A9_7() {
@@ -139,7 +172,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
         let model = self.model as Model;
         let time = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.subVacaHourRemain') || 0;
 
-        return self.$dt.timewd(time);
+        return self.$dt.timedr(time);
     }
     // 休暇残数情報．年休残数
     // 休暇残数情報．年休残時間
@@ -148,7 +181,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
         let model = self.model as Model;
         let time = 0;
 
-        return self.$dt.timewd(time);
+        return self.$dt.timedr(time);
     }
     // 休暇残数情報．子看護残数
     // 休暇残数情報．子看護残時間
@@ -157,7 +190,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
         let model = self.model as Model;
         let time = 0;
 
-        return self.$dt.timewd(time);
+        return self.$dt.timedr(time);
     }
     // 休暇残数情報．介護残数
     // 休暇残数情報．介護残時間
@@ -166,7 +199,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
 
         let time = 0;
 
-        return self.$dt.timewd(time);
+        return self.$dt.timedr(time);
     }
 
     public get HolidayAppType() {
@@ -452,11 +485,24 @@ export class KafS06AComponent extends KafS00ShrComponent {
         
         return c21_1;
     }
-    // todo
     public get c21_2() {
         const self = this;
         
-        return true;
+        const workTypeInfo = _.findLast(_.get(self.model, 'appAbsenceStartInfoDto.workTypeLst'),
+            (item: any) => item.worTypeCode === self.workType.code) as WorkTypeDto;
+        const workTypeSet = _.get(workTypeInfo, 'workTypeSets[0]');
+        if (!workTypeInfo || !workTypeSet) {
+            
+            return false;
+        }
+        let workAtr = workTypeInfo.workAtr;
+        if (workAtr == WorkTypeUnit.OneDay) {
+
+            return workTypeSet.workAtr == WorkAtr.OneDay;
+        } else {
+
+            return workTypeSet.workAtr != WorkAtr.OneDay;
+        }
     }
     // ※22-1 = ○　AND　※22-2 = ○
     public get c22() {
@@ -474,11 +520,24 @@ export class KafS06AComponent extends KafS00ShrComponent {
         
         return c22_1;
     }
-    // todo
     public get c22_2() {
         const self = this;
         
-        return true;
+        const workTypeInfo = _.findLast(_.get(self.model, 'appAbsenceStartInfoDto.workTypeLst'),
+            (item: any) => item.worTypeCode === self.workType.code) as WorkTypeDto;
+        const workTypeSet = _.get(workTypeInfo, 'workTypeSets[0]');
+        if (!workTypeInfo || !workTypeSet) {
+            
+            return false;
+        }
+        let workAtr = workTypeInfo.workAtr;
+        if (workAtr == WorkTypeUnit.OneDay) {
+
+            return workTypeSet.workAtr == WorkAtr.OneDay;
+        } else {
+
+            return workTypeSet.workAtr != WorkAtr.OneDay;
+        }
 
     }
 
@@ -658,7 +717,10 @@ export class KafS06AComponent extends KafS00ShrComponent {
         let commandCheck = {} as CheckInsertMobileParam;
         vm.model.applyForLeaveDto = vm.toApplyForLeave();
         commandCheck.companyId = vm.user.companyId;
-        commandCheck.appAbsenceStartInfoDto = vm.model.appAbsenceStartInfoDto;
+        let appAbsenceStartInfoDto = _.clone(vm.model.appAbsenceStartInfoDto) as AppAbsenceStartInfoDto;
+        vm.changeDateFromList(appAbsenceStartInfoDto.leaveComDayOffManas);
+        vm.changeDateFromList(appAbsenceStartInfoDto.payoutSubofHDManas);
+        commandCheck.appAbsenceStartInfoDto = appAbsenceStartInfoDto;
         commandCheck.applyForLeave = vm.model.applyForLeaveDto;
         commandCheck.mode = vm.modeNew;
         if (vm.modeNew) {
@@ -923,7 +985,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
             
         }
         self.mournerFlag = _.get(applyForSpeLeave, 'mournerFlag') || false;
-        self.relationshipReason = _.get(applyForSpeLeave, 'relationshipReason') || null;
+        self.relationshipReason = _.get(applyForSpeLeave, 'relationshipReason') || '';
         const specAbsenceDispInfo = _.get(self.model, 'appAbsenceStartInfoDto.specAbsenceDispInfo');
         if (specAbsenceDispInfo) {
             self.maxDaySpecHdDto = {
