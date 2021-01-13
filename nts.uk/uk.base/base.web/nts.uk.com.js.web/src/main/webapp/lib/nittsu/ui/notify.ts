@@ -1,3 +1,1 @@
-module nts.uk.ui.notify {
-    // move to binding
-}
+// move to binding
