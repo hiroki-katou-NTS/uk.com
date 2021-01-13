@@ -1,9 +1,8 @@
 /// <reference path="../../reference.ts"/>
 
 module nts.uk.ui.jqueryExtentions {
-
-    module ntsDialogEx {
-        $.fn.ntsDialogEx = function(action: string, winContainer): any {
+    export module ntsDialogEx {
+        $.fn.ntsDialogEx = function(action: string, winContainer: any): any {
 
             var $dialog = $(this);
 

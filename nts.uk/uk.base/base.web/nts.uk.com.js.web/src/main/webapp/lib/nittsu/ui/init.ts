@@ -99,13 +99,13 @@ module nts.uk.ui {
                 $(() => {
                     // update title of name
                     kiban.systemName(systemName);
-    
+
                     // update mode of view
                     kiban.mode(!util.isInFrame() ? 'view' : 'modal');
-    
+
                     // update header 
                     kiban.header(!__viewContext.noHeader);
-    
+
                     // update notification
                     kiban.notification(__viewContext.program.operationSetting.message);
 
@@ -163,24 +163,6 @@ module nts.uk.ui {
                 loadEmployeeCodeConstraints()
                     .always(() => _start.apply(__viewContext, [__viewContext]));
             }
-
-            // Menu
-            /*if ($(document).find("#header").length > 0) {
-                menu.request();
-            } else if (!util.isInFrame() && !__viewContext.noHeader) {
-                let header = "<div id='header'><div id='menu-header'>"
-                    + "<div id='logo-area' class='cf'>"
-                    + "<div id='logo'>勤次郎</div>"
-                    + "<div id='user-info' class='cf'>"
-                    + "<div id='company' class='cf' />"
-                    + "<div id='user' class='cf' />"
-                    + "</div></div>"
-                    + "<div id='nav-area' class='cf' />"
-                    + "<div id='pg-area' class='cf' />"
-                    + "</div></div>";
-                $("#master-wrapper").prepend(header);
-                menu.request();
-            }*/
         };
 
         const noSessionWebScreens = [
@@ -193,86 +175,89 @@ module nts.uk.ui {
             "/view/kdp/003/a/index.xhtml",
             "/view/kdp/003/f/index.xhtml",
             "/view/kdp/004/a/index.xhtml",
-            "/view/kdp/005/a/index.xhtml"
+            "/view/kdp/005/a/index.xhtml",
+            "/view/sample/component/editor/text-editor.xhtml"
         ];
 
-        let cantCall = function () {
-            return !_.some(noSessionWebScreens, (w: string) => request.location.current.rawUrl.indexOf(w) > -1) || request.location.current.rawUrl.indexOf("/view/sample/component/editor/text-editor.xhtml") > -1;
+        const cantCall = function () {
+            const { location } = request;
+            const { current } = location;
+            const { rawUrl } = current;
+
+            return !_.some(noSessionWebScreens, (w: string) => rawUrl.indexOf(w) > -1);
         };
 
-        let getEmployeeSetting = function () {
-            const EMP_SESSION = 'nts.uk.session.EMPLOYEE_SETTING';
+        const loadEmployeeCodeConstraints = function () {
+            const getEmployeeSetting = function () {
+                const EMP_SESSION = 'nts.uk.session.EMPLOYEE_SETTING';
 
-            let dfd = $.Deferred(),
-                es = nts.uk.sessionStorage.getItem(EMP_SESSION);
-            if (es.isPresent()) {
-                dfd.resolve(JSON.parse(es.get()));
-            } else {
-                request
-                    .ajax("com", "/bs/employee/setting/code/find")
-                    .done((constraints: any) => {
-                        nts.uk.sessionStorage.setItemAsJson(EMP_SESSION, constraints);
-                        dfd.resolve(constraints);
-                    });
-            }
+                let dfd = $.Deferred(),
+                    es = nts.uk.sessionStorage.getItem(EMP_SESSION);
 
-            return dfd.promise();
-        };
-
-        let loadEmployeeCodeConstraints = function () {
-            let self = this,
-                dfd = $.Deferred();
-
-            getEmployeeSetting().done(res => {
-
-                let formatOption: any = {
-                    autofill: true
-                };
-
-                if (res.ceMethodAttr === 0) {
-                    formatOption.filldirection = "left";
-                    formatOption.fillcharacter = "0";
-                } else if (res.ceMethodAttr === 1) {
-                    formatOption.filldirection = "right";
-                    formatOption.fillcharacter = "0";
-                } else if (res.ceMethodAttr === 2) {
-                    formatOption.filldirection = "left";
-                    formatOption.fillcharacter = " ";
+                if (es.isPresent()) {
+                    dfd.resolve(JSON.parse(es.get()));
                 } else {
-                    formatOption.filldirection = "right";
-                    formatOption.fillcharacter = " ";
+                    request
+                        .ajax("com", "/bs/employee/setting/code/find")
+                        .done((constraints: any) => {
+                            nts.uk.sessionStorage.setItemAsJson(EMP_SESSION, constraints);
+
+                            dfd.resolve(constraints);
+                        });
                 }
 
-                // if not have primitive, create new
-                if (!__viewContext.primitiveValueConstraints) {
-                    _.extend(__viewContext, {
-                        primitiveValueConstraints: {
+                return dfd.promise();
+            };
+
+            return getEmployeeSetting()
+                .done((res: any) => {
+                    const { ceMethodAttr, numberOfDigits } = res;
+                    const { primitiveValueConstraints } = __viewContext;
+
+                    const formatOption: any = {
+                        autofill: true,
+                        filldirection: '',
+                        fillcharacter: ''
+                    };
+
+                    if (ceMethodAttr === 0) {
+                        formatOption.filldirection = "left";
+                        formatOption.fillcharacter = "0";
+                    } else if (ceMethodAttr === 1) {
+                        formatOption.filldirection = "right";
+                        formatOption.fillcharacter = "0";
+                    } else if (ceMethodAttr === 2) {
+                        formatOption.filldirection = "left";
+                        formatOption.fillcharacter = " ";
+                    } else {
+                        formatOption.filldirection = "right";
+                        formatOption.fillcharacter = " ";
+                    }
+
+                    // if not have primitive, create new
+                    if (!primitiveValueConstraints) {
+                        _.extend(__viewContext, {
+                            primitiveValueConstraints: {
+                                EmployeeCode: {
+                                    valueType: "String",
+                                    charType: "AlphaNumeric",
+                                    maxLength: numberOfDigits,
+                                    formatOption
+                                }
+                            }
+                        });
+                    } else {
+                        // extend primitive constraint
+                        _.extend(primitiveValueConstraints, {
                             EmployeeCode: {
                                 valueType: "String",
                                 charType: "AlphaNumeric",
-                                maxLength: res.numberOfDigits,
-                                formatOption: formatOption
+                                maxLength: numberOfDigits,
+                                formatOption
                             }
-                        }
-                    });
-                } else {
-                    // extend primitive constraint
-                    _.extend(__viewContext.primitiveValueConstraints, {
-                        EmployeeCode: {
-                            valueType: "String",
-                            charType: "AlphaNumeric",
-                            maxLength: res.numberOfDigits,
-                            formatOption: formatOption
-                        }
-                    });
-                }
-
-                dfd.resolve();
-            }).fail(res => {
-                dfd.reject();
-            });
-
-            return dfd.promise();
+                        });
+                    }
+                });
         };
 
         $(function () {
