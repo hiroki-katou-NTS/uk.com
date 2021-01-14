@@ -979,14 +979,23 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 				};
 			}
 
-			let applyForSpeLeaveOptional = {};
+			let applyForSpeLeaveOptional = null;
 			if (vm.selectedType() === 3) {
-				applyForSpeLeaveOptional = {
-					mournerFlag: vm.isCheckMourn(),
-					relationshipCD: vm.selectedDateSpec(),
-					relationshipReason: vm.relationshipReason()
-				};
-			}
+                applyForSpeLeaveOptional = {
+                    mournerFlag: null,
+                    relationshipCD: null,
+                    relationshipReason: null
+                };
+                if (vm.condition6()) {
+                    applyForSpeLeaveOptional.relationshipCD = vm.selectedDateSpec();
+                }
+                if (vm.condition7()) {
+                    applyForSpeLeaveOptional.mournerFlag = vm.isCheckMourn();
+                }
+                if (vm.condition8()) {
+                    applyForSpeLeaveOptional.relationshipReason = vm.relationshipReason();
+                }
+            }
 
 
 			let appAbsence = {
