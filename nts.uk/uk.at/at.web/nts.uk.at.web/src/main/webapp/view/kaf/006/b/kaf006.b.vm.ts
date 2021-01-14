@@ -707,6 +707,13 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 					vm.selectedDateSpec(vm.dateSpecHdRelationLst()[0].relationCD);
 				}
 			}
+
+			if (data.leaveComDayOffManas) {
+				vm.leaveComDayOffManas(data.leaveComDayOffManas);
+			}
+			if (data.payoutSubofHDManas) {
+				vm.payoutSubofHDManagements(data.payoutSubofHDManas);
+			}
 		};
 		
 		fetchRemainTime(remainVacationInfo: any) {
