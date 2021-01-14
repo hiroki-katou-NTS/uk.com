@@ -11,6 +11,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.file.storage.FileStorage;
+import nts.arc.task.AsyncTaskInfo;
 import nts.arc.task.AsyncTaskInfoRepository;
 import nts.arc.task.AsyncTaskStatus;
 import nts.arc.time.GeneralDate;
@@ -69,8 +70,21 @@ public class AutoExecutionServerExternalOutputQuery {
 			});
 		});
 		// Check whether errors have occurred or not
+		// Check business exception when perform createExOutTextService
 		List<ExternalOutLog> logList = this.externalOutLogRepository.getExternalOutLogById(cid, execId,
 				ProcessingClassification.ERROR.value);
-		return logList.stream().map(item -> item.getErrorContent().orElse(null)).filter(Objects::nonNull).findAny();
+		Optional<String> msg = logList.stream().map(item -> item.getErrorContent().orElse(null))
+				.filter(Objects::nonNull).findAny();
+		if (msg.isPresent()) {
+			return msg;
+		}
+		// Check runtime exception thrown from AsyncTask
+		if (!taskStatus.equals(AsyncTaskStatus.COMPLETED)) {
+			Optional<AsyncTaskInfo> optInfo = this.asyncTaskInfoRepository.find(taskId);
+			if (optInfo.isPresent()) {
+				return Optional.ofNullable(optInfo.get().getError().getMessage());
+			}
+		}
+		return Optional.empty();
 	}
 }

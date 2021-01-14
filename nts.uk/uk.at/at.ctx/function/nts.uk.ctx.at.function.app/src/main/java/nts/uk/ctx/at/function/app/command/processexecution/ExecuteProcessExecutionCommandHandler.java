@@ -3769,8 +3769,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 
 		// アルゴリズム「自動削除準備」を実行する
 		try {
-			hasError = this.autoExecutionPreparationAdapter.autoStoragePrepare(procExec);
-			errorMessage = "async task error saving";
+			Optional<String> msg = this.autoExecutionPreparationAdapter.autoStoragePrepare(procExec);
+			errorMessage = msg.orElse(null);
+			hasError = msg.isPresent();
 		} catch (Exception e) {
 			hasError = true;
 			errorMessage = e.getMessage();
@@ -3823,8 +3824,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 
 		// アルゴリズム「自動削除準備」を実行する
 		try {
-			hasError = this.autoExecutionPreparationAdapter.autoDeletionPrepare(procExec);
-			errorMessage = "async task error deleting";
+			Optional<String> msg = this.autoExecutionPreparationAdapter.autoDeletionPrepare(procExec);
+			errorMessage = msg.orElse(null);
+			hasError = msg.isPresent();
 		} catch (Exception e) {
 			hasError = true;
 			errorMessage = e.getMessage();
