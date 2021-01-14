@@ -391,6 +391,32 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                     }).then((data) => {
                     if (data) {
                         vm.fetchData(data);
+
+                        let workTimeLst = data.workTimeLst;
+                        if (workTimeLst.length > 0) {
+                            if (_.filter(workTimeLst, {'workNo': 1}).length > 0) {
+                                let workTime1: any = _.filter(workTimeLst, {'workNo': 1})[0];
+                                vm.startTime1(workTime1.startTime);
+                                vm.endTime1(workTime1.endTime);
+                            }
+                            if (_.filter(workTimeLst, {'workNo': 2}).length > 0) {
+                                let workTime2: any = _.filter(workTimeLst, {'workNo': 2})[0];
+                                if (workTime2.useAtr === 0) {
+                                    vm.isDispTime2ByWorkTime(false);
+                                } else {
+                                    vm.isDispTime2ByWorkTime(true);
+                                    vm.startTime2(workTime2.startTime);
+                                    vm.endTime2(workTime2.endTime);
+                                }
+                            } else {
+                                vm.isDispTime2ByWorkTime(false);
+                            }
+                        } else {
+                            vm.startTime1(null);
+                            vm.endTime1(null);
+                            vm.startTime2(null);
+                            vm.endTime2(null);
+                        }
                         return data;
                     }
                 }).then((data) => {
@@ -723,7 +749,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
         validate() {
             const vm = this;
             if (vm.condition11()) {
-                if (vm.isChangeWorkHour()) {
+                if (vm.isChangeWorkHour() && vm.selectedWorkTimeCD()) {
                     if (!vm.checkTimeValid(vm.startTime1) && !vm.checkTimeValid(vm.endTime1)) {
                         vm.$dialog.error({messageId: "Msg_307"});
                         return false;
