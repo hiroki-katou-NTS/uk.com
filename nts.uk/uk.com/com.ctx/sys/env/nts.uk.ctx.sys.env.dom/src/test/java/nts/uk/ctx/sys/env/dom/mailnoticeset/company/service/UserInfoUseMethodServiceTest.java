@@ -78,12 +78,21 @@ public class UserInfoUseMethodServiceTest {
 	
 	/**
 	 * Test 連絡先情報を取得 with result is new ContactInformation()
-	 * $設定.isEmpty() || $設定.プロフィールの利用==しない
+	 * $設定.isEmpty()
 	 */
 	@Test
-	public void testGetMethod() {
-		// $設定.isEmpty()
+	public void testGetMethodSettingNotPresent() {
 		val res = UserInformationUseMethodService.get(require, "mock-companyId-empty", "mock-employeeId", "mock-personalId");
+		
+		assertThat(res).isEqualToComparingFieldByField(new ContactInformation());
+	}
+	
+	/**
+	 * Test 連絡先情報を取得 with result is new ContactInformation()
+	 * $設定.プロフィールの利用==しない
+	 */
+	@Test
+	public void testGetMethodSettingNotUseOfProfile() {
 		UserInformationUseMethod userInformationUseMethod = UserInfoUseMethodServiceTestHelper.initUserInformationUseMethod(2, true, true, 0, true);
 		new Expectations() {
 			{
@@ -92,55 +101,14 @@ public class UserInfoUseMethodServiceTest {
 			}
 		};
 		// $設定.プロフィールの利用==しない
-		val res1 = UserInformationUseMethodService.get(require, "mock-companyId", "mock-employeeId", "mock-personalId");
-		assertThat(res).isEqualToComparingFieldByField(new ContactInformation());
-		assertThat(res1).isEqualToComparingFieldByField(new ContactInformation());
-	}
-	
-	/**
-	 * Test 連絡先情報を取得 with null field of settingContactInfo;
-	 * $設定.連絡先情報の設定.* Null
-	 */
-	@Test
-	public void testGetMethodNullFieldSettingContactInfo() {
-		UserInformationUseMethod userInformationUseMethod = UserInfoUseMethodServiceTestHelper.initUserInformationUseMethod(2, true, true, 1, true);
-		PersonContactImport personContactImport = UserInfoUseMethodServiceTestHelper.initPersonContactImport(true);
-		EmployeeInfoContactImport employeeInfoContactImport = UserInfoUseMethodServiceTestHelper.initEmployeeInfoContactImport();
-		new Expectations() {
-			{
-				require.getUserInfoByCid("mock-companyId");
-				result = Optional.of(userInformationUseMethod);
-			}
-			{
-				require.getByPersonalId("mock-personalId");
-				result = Optional.of(personContactImport);
-			}
-			{
-				require.getByContactInformation("mock-employeeId");
-				result = Optional.of(employeeInfoContactImport);
-			}
-		};
 		val res = UserInformationUseMethodService.get(require, "mock-companyId", "mock-employeeId", "mock-personalId");
-		assertThat(res.getCompanyMobilePhoneNumber()).isEqualTo("");
-		assertThat(res.getSeatDialIn().v()).isEqualTo("");
-		assertThat(res.getSeatExtensionNumber().v()).isEqualTo("");
-		assertThat(res.getCompanyEmailAddress()).isPresent();
-		assertThat(res.getCompanyEmailAddress().get()).isEqualTo("");
-		assertThat(res.getCompanyMobileEmailAddress()).isPresent();
-		assertThat(res.getCompanyMobileEmailAddress().get()).isEqualTo("");
-		
-		assertThat(res.getPersonalMobilePhoneNumber()).isEqualTo("");
-		assertThat(res.getPersonalEmailAddress()).isPresent();
-		assertThat(res.getPersonalEmailAddress().get()).isEqualTo("");
-		assertThat(res.getPersonalMobileEmailAddress()).isPresent();
-		assertThat(res.getPersonalMobileEmailAddress().get()).isEqualTo("");
-		assertThat(res.getEmergencyNumber1()).isEqualTo("");
-		assertThat(res.getEmergencyNumber2()).isEqualTo("");
+		assertThat(res).isEqualToComparingFieldByField(new ContactInformation());
 	}
 	
 	/**
 	 * Test 連絡先情報を取得 with settingContactInfo not present
 	 * $設定.連絡先情報の設定 Empty
+	 * $設定.連絡先情報の設定.* Null
 	 */
 	@Test
 	public void testGetMethodNotPresentSettingContactInfo() {
@@ -223,49 +191,6 @@ public class UserInfoUseMethodServiceTest {
 	}
 	
 	/**
-	 * Test 連絡先情報を取得 with notuse contact;
-	 * 他の連絡先.連絡先利用設定=利用しない
-	 */
-	@Test
-	public void testGetMethodNotUseContact() {
-		UserInformationUseMethod userInformationUseMethod = UserInfoUseMethodServiceTestHelper.initUserInformationUseMethod(0, false, false, 1, true);
-		PersonContactImport personContactImport = UserInfoUseMethodServiceTestHelper.initPersonContactImport(false);
-		EmployeeInfoContactImport employeeInfoContactImport = UserInfoUseMethodServiceTestHelper.initEmployeeInfoContactImport();
-		new Expectations() {
-			{
-				require.getUserInfoByCid("mock-companyId");
-				result = Optional.of(userInformationUseMethod);
-			}
-			{
-				require.getByPersonalId("mock-personalId");
-				result = Optional.of(personContactImport);
-			}
-			{
-				require.getByContactInformation("mock-employeeId");
-				result = Optional.of(employeeInfoContactImport);
-			}
-		};
-		val res = UserInformationUseMethodService.get(require, "mock-companyId", "mock-employeeId", "mock-personalId");
-		
-		assertThat(res.getCompanyMobilePhoneNumber()).isEqualTo("");
-		assertThat(res.getSeatDialIn().v()).isEqualTo("");
-		assertThat(res.getSeatExtensionNumber().v()).isEqualTo("");
-		assertThat(res.getCompanyEmailAddress()).isPresent();
-		assertThat(res.getCompanyEmailAddress().get()).isEqualTo("");
-		assertThat(res.getCompanyMobileEmailAddress()).isPresent();
-		assertThat(res.getCompanyMobileEmailAddress().get()).isEqualTo("");
-		
-		assertThat(res.getPersonalMobilePhoneNumber()).isEqualTo("");
-		assertThat(res.getPersonalEmailAddress()).isPresent();
-		assertThat(res.getPersonalEmailAddress().get()).isEqualTo("");
-		assertThat(res.getPersonalMobileEmailAddress()).isPresent();
-		assertThat(res.getPersonalMobileEmailAddress().get()).isEqualTo("");
-		assertThat(res.getEmergencyNumber1()).isEqualTo("");
-		assertThat(res.getEmergencyNumber2()).isEqualTo("");
-		assertThat(res.getOtherContactsInfomation().size()).isEqualTo(5);
-	}
-	
-	/**
 	 * Test 連絡先情報を取得 with null otherContact;
 	 * 他の連絡先: null
 	 */
@@ -296,11 +221,10 @@ public class UserInfoUseMethodServiceTest {
 	/**
 	 * Test 連絡先情報を取得 with employeeInfoContactImport is not present
 	 * $社員連絡先　Empty
-	 * $個人連絡先　Empty
 	 */
 	@Test
-	public void testGetMethodNotPresentEmpInfoAndPersonContact() {
-		UserInformationUseMethod userInformationUseMethod = UserInfoUseMethodServiceTestHelper.initUserInformationUseMethod(1, false, false, 1, true);
+	public void testGetMethodNotPresentEmpInfo() {
+		UserInformationUseMethod userInformationUseMethod = UserInfoUseMethodServiceTestHelper.initUserInformationUseMethod(0, false, false, 1, true);
 		new Expectations() {
 			{
 				require.getUserInfoByCid("mock-companyId");
@@ -314,6 +238,22 @@ public class UserInfoUseMethodServiceTest {
 		assertThat(res.getSeatExtensionNumber()).isNull();
 		assertThat(res.getCompanyEmailAddress()).isNull();
 		assertThat(res.getCompanyMobileEmailAddress()).isNull();
+	}
+	
+	/**
+	 * Test 連絡先情報を取得 with employeeInfoContactImport is not present
+	 * $個人連絡先　Empty
+	 */
+	@Test
+	public void testGetMethodNotPresentPersonContact() {
+		UserInformationUseMethod userInformationUseMethod = UserInfoUseMethodServiceTestHelper.initUserInformationUseMethod(1, false, false, 1, true);
+		new Expectations() {
+			{
+				require.getUserInfoByCid("mock-companyId");
+				result = Optional.of(userInformationUseMethod);
+			}
+		};
+		val res = UserInformationUseMethodService.get(require, "mock-companyId", "mock-employeeId", "mock-personalId");
 		
 		assertThat(res.getPersonalMobilePhoneNumber()).isNull();
 		assertThat(res.getPersonalEmailAddress()).isNull();

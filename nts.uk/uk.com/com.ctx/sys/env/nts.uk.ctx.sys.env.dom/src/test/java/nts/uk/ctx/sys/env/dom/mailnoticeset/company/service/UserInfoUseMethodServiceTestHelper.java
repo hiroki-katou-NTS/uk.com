@@ -16,6 +16,15 @@ import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PersonContactImport;
 
 public class UserInfoUseMethodServiceTestHelper {
 
+	/**
+	 * Mocked ユーザー情報の使用方法
+	 * @param contactUsageSetting 他の連絡先.連絡先利用設定
+	 * @param nullOtherContact Null他の連絡先 
+	 * @param nullSettingContactInfo NullField連絡先情報の設定
+	 * @param useOfProfile プロフィールの利用
+	 * @param presentSettingContactInfo Present連絡先情報の設定
+	 * @return
+	 */
 	public static UserInformationUseMethod initUserInformationUseMethod(Integer contactUsageSetting, Boolean nullOtherContact
 			, Boolean nullSettingContactInfo, Integer useOfProfile, Boolean presentSettingContactInfo) {
 		List<EmailDestinationFunctionDto> emailDestinationFunctionDtos = new ArrayList<>();
@@ -53,12 +62,12 @@ public class UserInfoUseMethodServiceTestHelper {
                 .build());
         otherContactDtos.add(OtherContactDto.builder()
                 .no(4)
-                .contactUsageSetting(contactUsageSetting)
+                .contactUsageSetting(1)
                 .contactName("")
                 .build());
         otherContactDtos.add(OtherContactDto.builder()
                 .no(5)
-                .contactUsageSetting(contactUsageSetting)
+                .contactUsageSetting(0)
                 .contactName("")
                 .build());
 
@@ -121,6 +130,11 @@ public class UserInfoUseMethodServiceTestHelper {
         return UserInformationUseMethod.createFromMemento(memento);
 	}
 	
+	/**
+	 * Mocked 個人連絡先
+	 * @param nullOtherContact Null他の連絡先 
+	 * @return
+	 */
 	public static PersonContactImport initPersonContactImport(Boolean nullOtherContact) {
 		List<OtherContactDTO> otherContactDtos = new ArrayList<>();
         otherContactDtos.add(OtherContactDTO.builder()
@@ -166,7 +180,7 @@ public class UserInfoUseMethodServiceTestHelper {
 				otherContactDtos
 			);
 	}
-	
+
 	public static EmployeeInfoContactImport initEmployeeInfoContactImport() {
 		return new EmployeeInfoContactImport(
 				"mock-employeeId",
