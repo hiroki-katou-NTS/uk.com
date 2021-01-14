@@ -7,6 +7,7 @@ package nts.uk.file.at.app.export.outsideot;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.RoundingProcessOfExcessOutsideTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.BreakdownItemNo;
@@ -101,6 +102,8 @@ public class OutsideOTSettingExportImpl implements MasterListData {
      * The Constant TABLE_FOUR.
      */
     private static final String TABLE_FOUR = "Table 001";
+
+    private static final String TABLE_ZERO = "Table 005";
 
     /**
      * The Constant START_COL.
@@ -229,16 +232,6 @@ public class OutsideOTSettingExportImpl implements MasterListData {
     private static final String NAME_VALUE_A15_3 = "KMK010_62";
 
     /**
-     * The Constant TRUE_SETTING_RATE.
-     */
-    private static final String TRUE_SETTING_RATE = "休暇発生する";
-
-    /**
-     * The Constant FALSE_SETTING_RATE.
-     */
-    private static final String FALSE_SETTING_RATE = "休暇発生しない";
-
-    /**
      * The start col.
      */
     private int startCol = 0;
@@ -255,18 +248,28 @@ public class OutsideOTSettingExportImpl implements MasterListData {
         List<MasterData> masterDatas = new ArrayList<>();
         val companyId = AppContexts.user().companyId();
         Optional<OutsideOTSetting> optionalSetting = this.getSettingByLogin();
-        Optional<SuperHD60HConMed> optionalSupper = this.superHD60HConMedRepository.findById(companyId);
+        //Optional<SuperHD60HConMed> optionalSupper = this.superHD60HConMedRepository.findById(companyId);
         if (optionalSetting.isPresent()) {
             OutsideOTSetting setting = optionalSetting.get();
 
             Map<String, Object> dataA61 = new HashMap<>();
             dataA61.put(NUMBER_COLS_1, setting.getCalculationMethod().nameId);
             dataA61.put(NUMBER_COLS_2, "");
-            if (optionalSupper.isPresent()) {
-                val supper = optionalSupper.get();
-                dataA61.put(NUMBER_COLS_3, TextResource.localize(supper.getTimeRoundingSetting().getRoundingTime().description));
-                dataA61.put(NUMBER_COLS_4, TextResource.localize(supper.getTimeRoundingSetting().getRounding().description));
+            val roudingUnit = setting.getTimeRoundingOfExcessOutsideTime() != null ?
+                    (setting.getTimeRoundingOfExcessOutsideTime().isPresent() ?
+                            (setting.getTimeRoundingOfExcessOutsideTime().get().getRoundingUnit() != null ?
+                                    (setting.getTimeRoundingOfExcessOutsideTime().get().getRoundingUnit().description) : "") : "") : "";
+            Integer unit = setting.getTimeRoundingOfExcessOutsideTime() != null ?
+                    (setting.getTimeRoundingOfExcessOutsideTime().isPresent() ?
+                            (setting.getTimeRoundingOfExcessOutsideTime().get().getRoundingProcess() != null ?
+                                    (setting.getTimeRoundingOfExcessOutsideTime().get().getRoundingProcess().value) : null) : null) : null;
+
+            if (setting.getTimeRoundingOfExcessOutsideTime() != null) {
+                dataA61.put(NUMBER_COLS_3, TextResource.localize(roudingUnit));
+                dataA61.put(NUMBER_COLS_4, TextResource.localize(toEnumRouding(unit)));
             }
+
+
             masterDatas.add(new MasterData(dataA61, null, ""));
         }
         return masterDatas;
@@ -295,11 +298,13 @@ public class OutsideOTSettingExportImpl implements MasterListData {
      * getExtraMasterData(nts.uk.shr.infra.file.report.masterlist.webservice.
      * MasterListExportQuery)
      */
+
     @Override
     public Map<String, List<MasterData>> getExtraMasterData(MasterListExportQuery query) {
         Map<String, List<MasterData>> mapTableData = new LinkedHashMap<>();
         Optional<OutsideOTSetting> optionalSetting = this.getSettingByLogin();
         if (optionalSetting.isPresent()) {
+            mapTableData.put(TABLE_ZERO, this.getMasterDataZero());
             mapTableData.put(TABLE_ONE, this.getMasterDataOne(query, optionalSetting.get()));
             mapTableData.put(TABLE_TWO, this.getMasterDataTwo(query, optionalSetting.get()));
             mapTableData.put(TABLE_THREE, this.getMasterDataThree(query));
@@ -320,6 +325,7 @@ public class OutsideOTSettingExportImpl implements MasterListData {
     @Override
     public Map<String, List<MasterHeaderColumn>> getExtraHeaderColumn(MasterListExportQuery query) {
         Map<String, List<MasterHeaderColumn>> mapColum = new LinkedHashMap<>();
+        mapColum.put(TABLE_ZERO, this.getHeaderColumnZero(query));
         mapColum.put(TABLE_ONE, this.getHeaderColumnOnes(query));
         mapColum.put(TABLE_TWO, this.getHeaderColumnTwos(query));
         mapColum.put(TABLE_THREE, this.getHeaderColumnThrees(query));
@@ -327,7 +333,35 @@ public class OutsideOTSettingExportImpl implements MasterListData {
         return mapColum;
     }
 
-    ;
+    private List<MasterData> getMasterDataZero() {
+        List<MasterData> masterDatas = new ArrayList<>();
+        val companyId = AppContexts.user().companyId();
+        Optional<OutsideOTSetting> optionalSetting = this.getSettingByLogin();
+        //Optional<SuperHD60HConMed> optionalSupper = this.superHD60HConMedRepository.findById(companyId);
+        if (optionalSetting.isPresent()) {
+            OutsideOTSetting setting = optionalSetting.get();
+
+            Map<String, Object> dataA61 = new HashMap<>();
+
+            val roudingUnit = setting.getTimeRoundingOfExcessOutsideTime() != null ?
+                    (setting.getTimeRoundingOfExcessOutsideTime().isPresent() ?
+                            (setting.getTimeRoundingOfExcessOutsideTime().get().getRoundingUnit() != null ?
+                                    (setting.getTimeRoundingOfExcessOutsideTime().get().getRoundingUnit().description) : "") : "") : "";
+            Integer unit = setting.getTimeRoundingOfExcessOutsideTime() != null ?
+                    (setting.getTimeRoundingOfExcessOutsideTime().isPresent() ?
+                            (setting.getTimeRoundingOfExcessOutsideTime().get().getRoundingProcess() != null ?
+                                    (setting.getTimeRoundingOfExcessOutsideTime().get().getRoundingProcess().value) : null) : null) : null;
+
+            if (setting.getTimeRoundingOfExcessOutsideTime() != null) {
+                dataA61.put(NUMBER_COLS_1, TextResource.localize(roudingUnit));
+                dataA61.put(NUMBER_COLS_2, TextResource.localize(toEnumRouding(unit)));
+            }
+
+
+            masterDatas.add(new MasterData(dataA61, null, ""));
+        }
+        return masterDatas;
+    }
 
     /**
      * Gets the master data one.
@@ -379,9 +413,9 @@ public class OutsideOTSettingExportImpl implements MasterListData {
             dataA71.put(NUMBER_COLS_2, overtimeLanguage.getLanguage());
             dataA71.put(NUMBER_COLS_3, overtimeLanguage.getViewTime());
             dataA71.put(NUMBER_COLS_4, this.toUse(overtimeLanguage.getIsUse()));
-            dataA71.put(NUMBER_COLS_5, overtimeLanguage.getOccurs() != null ? this.toUse(overtimeLanguage.getOccurs()) : "");// todo
+            dataA71.put(NUMBER_COLS_5, overtimeLanguage.getOccurs() != null ? this.toUse(overtimeLanguage.getOccurs()) : "");
             if (overtimeLanguage.getIsUse() && !this.isLanugeJapan(query.getLanguageId())) {
-                dataA71.put(NUMBER_COLS_6, overtimeLanguage.getLanguageOther());
+                dataA71.put(NUMBER_COLS_END, overtimeLanguage.getLanguageOther());
             }
             masterDatas.add(new MasterData(dataA71, null, ""));
         });
@@ -399,7 +433,6 @@ public class OutsideOTSettingExportImpl implements MasterListData {
         return languageId.equals(LANGUAGE_ID_JAPAN);
     }
 
-    // TODO : ADD THÊM 1 COL
 
     /**
      * Gets the master data one.
@@ -478,13 +511,11 @@ public class OutsideOTSettingExportImpl implements MasterListData {
 
         return masterDatas;
     }
-    // TODO : KO SỬA.
 
     /**
      * Gets the master data three.
      *
-     * @param query            the query
-     * @param outsideOTSetting the outside OT setting
+     * @param query the query
      * @return the master data three
      */
     private List<MasterData> getMasterDataThree(MasterListExportQuery query) {
@@ -514,12 +545,10 @@ public class OutsideOTSettingExportImpl implements MasterListData {
 
         return masterDatas;
     }
-    // TODO : KO SỬA
 
     /**
      * Gets the master data four.
      *
-     * @param query the query
      * @return the master data four
      */
     private List<MasterData> getMasterDataFour() {
@@ -548,12 +577,6 @@ public class OutsideOTSettingExportImpl implements MasterListData {
         List<MasterHeaderColumn> columns = new ArrayList<>();
         columns.add(new MasterHeaderColumn(NUMBER_COLS_1, TextResource.localize(NAME_VALUE_A5_1), ColumnTextAlign.LEFT,
                 "", true));
-        columns.add(new MasterHeaderColumn(NUMBER_COLS_2, "", ColumnTextAlign.LEFT,
-                "", true));
-        columns.add(new MasterHeaderColumn(NUMBER_COLS_3, TextResource.localize("KMK010_88"), ColumnTextAlign.LEFT,
-                "", true));
-        columns.add(new MasterHeaderColumn(NUMBER_COLS_4, TextResource.localize("KMK010_89"), ColumnTextAlign.LEFT,
-                "", true));
         return columns;
     }
 
@@ -576,9 +599,19 @@ public class OutsideOTSettingExportImpl implements MasterListData {
         columns.add(new MasterHeaderColumn(NUMBER_COLS_5, TextResource.localize("KMK010_86"), ColumnTextAlign.LEFT,
                 "", true));
         if (!this.isLanugeJapan(query.getLanguageId())) {
-            columns.add(new MasterHeaderColumn(NUMBER_COLS_6, TextResource.localize(NAME_VALUE_A7_5),
+            columns.add(new MasterHeaderColumn(NUMBER_COLS_END, TextResource.localize(NAME_VALUE_A7_5),
                     ColumnTextAlign.LEFT, "", true));
         }
+        return columns;
+    }
+
+    public List<MasterHeaderColumn> getHeaderColumnZero(MasterListExportQuery query) {
+        List<MasterHeaderColumn> columns = new ArrayList<>();
+
+        columns.add(new MasterHeaderColumn(NUMBER_COLS_1, TextResource.localize("KMK010_88"), ColumnTextAlign.LEFT,
+                "", true));
+        columns.add(new MasterHeaderColumn(NUMBER_COLS_2, TextResource.localize("KMK010_89"), ColumnTextAlign.LEFT,
+                "", true));
         return columns;
     }
 
@@ -597,8 +630,8 @@ public class OutsideOTSettingExportImpl implements MasterListData {
                 "", true));
         columns.add(new MasterHeaderColumn(NUMBER_COLS_4, TextResource.localize(NAME_VALUE_A9_4), ColumnTextAlign.LEFT,
                 "", true));
-
-        for (int index = START_COL; index <= TOTA_NUMBER_COLS_A9_5; index++) {
+        val count = getCount();
+        for (int index = START_COL; index <= count; index++) {
             columns.add(new MasterHeaderColumn(NUMBER_COLS + (START_BREAKDOWN_ITEM + index),
                     TextResource.localize(NAME_VALUE_A9_5) + index, ColumnTextAlign.LEFT, "", true));
         }
@@ -655,6 +688,22 @@ public class OutsideOTSettingExportImpl implements MasterListData {
         return percent + "%";
     }
 
+    private String toEnumRouding(Integer rouding) {
+        String rs = "";
+        switch (rouding) {
+            case 0:
+                rs = "Enum_ROUNDING_DOWN";
+                break;
+            case 1:
+                rs = "Enum_ROUNDING_UP";
+                break;
+            case 2:
+                rs = "Enum_FOLLOW_ELEMENTS";
+                break;
+        }
+        return rs;
+    }
+
     /**
      * To use.
      *
@@ -697,5 +746,24 @@ public class OutsideOTSettingExportImpl implements MasterListData {
         }
         return h + ":" + m;
 
+    }
+
+    private int getCount() {
+        Optional<OutsideOTSetting> optionalSetting = this.getSettingByLogin();
+        int count = 0;
+        if (optionalSetting.isPresent()) {
+            val listItem = optionalSetting.get().getBreakdownItems();
+            for (int i = 0; i < listItem.size(); i++) {
+                if (i == 0) {
+                    count = listItem.get(0).getAttendanceItemIds().size();
+                } else {
+                    val listSub = listItem.get(i).getAttendanceItemIds();
+                    if (listSub.size() > count) {
+                        count = listSub.size();
+                    }
+                }
+            }
+        }
+        return count;
     }
 }
