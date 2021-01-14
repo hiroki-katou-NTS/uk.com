@@ -187,7 +187,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						vm.bindOverTime(vm.dataSource, 1);
 						vm.setComboDivergenceReason(vm.dataSource);
 						
-						if (vm.application().prePostAtr() == 0 || vm.mode() == MODE.MULTiPLE_AGENT) {
+						//prePostAtr = 2 when none is selected
+						if (vm.application().prePostAtr() == 0 || vm.mode() == MODE.MULTiPLE_AGENT || vm.application().prePostAtr() == 2) {
 							$('.table-time2 .nts-fixed-header-wrapper').width(224);
 							if (vm.holidayTime().length > 3) {
 								$('.table-time2 .nts-fixed-body-wrapper').width(208);
