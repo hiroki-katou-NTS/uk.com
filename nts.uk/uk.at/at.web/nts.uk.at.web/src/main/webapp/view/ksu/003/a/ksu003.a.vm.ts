@@ -4245,7 +4245,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						schedule = self.dataScreen045A().workScheduleDto,
 						fixed = self.dataScreen045A().fixedWorkInforDto,
 						info = self.dataScreen045A().workInfoDto;
-					if (_.isNull(self.dataScreen003A().employeeInfo[lineNo].workScheduleDto)) {
+					if (_.isNull(schedule)) {
 						self.dataScreen003A().employeeInfo[lineNo].workScheduleDto = {
 							startTime1: schedule.startTime1,
 							startTime1Status: schedule.endTime1,
@@ -4273,7 +4273,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.workTimeCode = schedule.workTimeCode;
 					}
 
-					if (_.isNull(self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto)) {
+					if (_.isNull(fixed)) {
 						self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto = {
 							workTimeName: fixed.workTimeName,
 							coreStartTime: null,
@@ -4580,13 +4580,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								color = "#cee6ff";
 							}
 
-								$(cssStartTime1).css("background-color", color);
-								$(cssEndTime1).css("background-color", color);
-								$(cssStartTime2).css("background-color", color);
-								$(cssEndTime2).css("background-color", color);
-								$(cssWorkTime).css("background-color", color);
-								$(cssWorkTName).css("background-color", color);
-
 							if (self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.isHoliday == true) {
 								$("#extable-ksu003").exTable("disableCell", "middle", empId, "worktimeCode");
 								$("#extable-ksu003").exTable("disableCell", "middle", empId, "startTime1");
@@ -4607,6 +4600,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									$("#extable-ksu003").exTable("enableCell", "middle", empId, "endTime2");
 								}
 							}
+							
+							$(cssStartTime1).css("background-color", color);
+							$(cssEndTime1).css("background-color", color);
+							$(cssStartTime2).css("background-color", color);
+							$(cssEndTime2).css("background-color", color);
+							$(cssWorkTime).css("background-color", color);
+							$(cssWorkTName).css("background-color", color);
 							block.clear();
 						}).fail(function(error) {
 							block.clear();
