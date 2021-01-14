@@ -11,9 +11,8 @@ module nts.uk.at.view.knr002.a {
 
             // switch button
             filterButton: KnockoutObservableArray<any>;
-            selectedFilter: KnockoutObservable<number>;
+            selectedFilter: KnockoutObservable<number> = ko.observable();
             dataSource: KnockoutObservable<ResponseData> = ko.observable();
-            gridData: KnockoutObservableArray<ListEmpInfoTerminalDto> = ko.observableArray([]);
             normalList: Array<ListEmpInfoTerminalDto> = [];
             abNormalList: Array<ListEmpInfoTerminalDto> = [];
             notCommunicatedList: Array<ListEmpInfoTerminalDto> = [];
@@ -34,7 +33,7 @@ module nts.uk.at.view.knr002.a {
                     { code: 1, name: getText("KNR002_23") },
                     { code: 2, name: getText("KNR002_24") }
                 ]);
-                vm.selectedFilter = ko.observable(3);
+                vm.selectedFilter(3);
                 vm.selectedFilter.subscribe(function(value) {
                     switch(value) {
                         case 0:
@@ -61,8 +60,8 @@ module nts.uk.at.view.knr002.a {
                 var vm = this;		
 
                 var dfd = $.Deferred<void>();
-                vm.loadData();
-                setInterval(vm.loadData.bind(vm), 300000);																	
+                vm.loadData(vm.selectedFilter());
+                setInterval(vm.refresh.bind(vm), 300000);																	
                 dfd.resolve();											
                 return dfd.promise();											
             }
@@ -74,7 +73,18 @@ module nts.uk.at.view.knr002.a {
                 $('#grid_headers th:nth-child(10)').addClass('bl-0');
             }
 
-            public loadData() {
+            private refresh() {
+                const vm = this;
+
+                $("#grid").ntsGrid("destroy");
+                vm.normalList = [];
+                vm.abNormalList = [];
+                vm.notCommunicatedList = [];
+  
+                vm.loadData(vm.selectedFilter());
+            }
+
+            public loadData(selectedFilter: number) {
                 let vm = this;
                 blockUI.invisible();
                 
@@ -114,15 +124,30 @@ module nts.uk.at.view.knr002.a {
                             dto.displayFlag = dto.requestFlag ? getText("KNR002_250") : '';   
                         }
     
-                        vm.gridData(res.listEmpInfoTerminalDto);
+                        
                         setShared('KNR002_empInfoTerList', res.listEmpInfoTerminalDto);
-                        vm.loadGrid(vm.dataSource().listEmpInfoTerminalDto);
-                        //vm.setGridSize();
+
+                         switch(selectedFilter) {
+                            case 0:
+                                vm.loadGrid(vm.normalList);
+                                break;
+                            case 1:
+                                vm.loadGrid(vm.abNormalList);
+                                break;
+                            case 2:
+                                vm.loadGrid(vm.notCommunicatedList);
+                                break;
+                            case 3:
+                                vm.loadGrid(vm.dataSource().listEmpInfoTerminalDto);
+                                break;
+                    }
+                        
+                        // vm.loadGrid(vm.dataSource().listEmpInfoTerminalDto);
+                    
                         $(window).on('resize', () => {
                             vm.setGridSize();
                             vm.removeBorder();
                         });
-                        // console.log("in service: " + (performance.now() - start));
                     }
                 })
                 .fail(res => console.log('fail roi'))

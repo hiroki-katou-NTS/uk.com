@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.query.knr.knr002.e;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -85,6 +86,10 @@ public class InitialDisplayBackupScreen {
 			List<EmpInfoTerminalEDto> listEmpDto = listEmpInfoTerminal.stream().map(e -> new EmpInfoTerminalEDto(e.getEmpInfoTerCode().v(), e.getEmpInfoTerName().v(), e.getModelEmpInfoTer().value)).collect(Collectors.toList());
 			List<TimeRecordSetFormatBakEDto> listTimeRecordDto = listTimeRecordSetFormatBak.stream().map(e -> new TimeRecordSetFormatBakEDto(e.getBackupDate().toString(), e.getEmpInfoTerCode().v(), e.getEmpInfoTerName().v(), e.getModelEmpInfoTer().value)).collect(Collectors.toList());
 			List<FlagByCode> listCodeFlag = mapCodeFlag.entrySet().stream().map(e -> new FlagByCode(e.getKey().v(), e.getValue())).collect(Collectors.toList());
+			
+			Collections.sort(listCodeFlag, (FlagByCode o1, FlagByCode o2) -> 
+				Integer.parseInt(o1.getEmpInfoTerminalCode()) - Integer.parseInt(o2.getEmpInfoTerminalCode())
+			);
 			
 			return new InitialDisplayBackupScreenDto(listEmpDto, listTimeRecordDto, listCodeFlag);
 		}
