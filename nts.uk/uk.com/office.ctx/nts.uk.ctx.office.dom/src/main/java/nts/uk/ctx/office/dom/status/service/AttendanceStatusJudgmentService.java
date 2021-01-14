@@ -25,7 +25,7 @@ public class AttendanceStatusJudgmentService {
 	public Optional<GoOutEmployeeInformation> getGoOutEmployeeInformation(String sid, GeneralDate date);
 	
 	/* @param sid  社員ID
-	 * @param date 年月日
+	 * @param date 年月日>:
 	 * @return Optional<ActivityStatus> Optional<在席のステータス>
 	 */
 	public Optional<ActivityStatus> getActivityStatus(String sid, GeneralDate date);

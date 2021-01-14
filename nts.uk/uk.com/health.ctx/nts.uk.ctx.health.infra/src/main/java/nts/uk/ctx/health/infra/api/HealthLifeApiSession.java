@@ -3,7 +3,6 @@ package nts.uk.ctx.health.infra.api;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
 
 import lombok.Data;
 import lombok.Getter;
@@ -18,7 +17,6 @@ import nts.gul.web.communicate.typedapi.RequestDefine;
 import nts.gul.web.communicate.typedapi.ResponseDefine;
 import nts.gul.web.communicate.typedapi.TypedWebAPI;
 import nts.uk.ctx.health.dom.linkage.HealthLifeApiLinkage;
-import nts.uk.ctx.health.dom.linkage.HealthLifeApiLinkageRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -31,8 +29,8 @@ import nts.uk.shr.com.context.AppContexts;
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class HealthLifeApiSession {
 
-	@Inject
-	private HealthLifeApiLinkageRepository linkageRepo;
+//	@Inject
+//	private HealthLifeApiLinkageRepository linkageRepo;
 	
 	public Context begin(String companyId) {
 		
@@ -43,9 +41,10 @@ public class HealthLifeApiSession {
 			throw new RuntimeException("ログイン中の会社以外を指定できません。指定：" + companyId + ", ログイン：" + user.companyId());
 		}
 		
-		val linkage = linkageRepo.find(user.contractCode()).get();
-		
-		return beginSession(linkage, user.companyCode());
+//		val linkage = linkageRepo.find(user.contractCode()).get();
+//		
+//		return beginSession(linkage, user.companyCode());
+		return null;
 	}
 
 	private static Context beginSession(HealthLifeApiLinkage linkage, String companyCode) {
