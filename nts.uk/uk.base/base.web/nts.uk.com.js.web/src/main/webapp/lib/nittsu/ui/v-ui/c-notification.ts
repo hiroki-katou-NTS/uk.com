@@ -46,7 +46,7 @@ module nts.uk.ui.notification {
                     vm.$window
                         .storage(SKEY)
                         .then((old: NotifStorage) => {
-                            if (!notif || (old && notif === old.notif && hidden)) {
+                            if (!notif || (old && notif === old.notif && hidden) || hidden) {
                                 vm.$el.classList.add('hidden');
 
                                 return true;
