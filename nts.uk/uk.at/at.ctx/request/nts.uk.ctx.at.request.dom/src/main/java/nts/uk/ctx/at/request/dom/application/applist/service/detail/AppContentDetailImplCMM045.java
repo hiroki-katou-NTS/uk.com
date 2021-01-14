@@ -1413,14 +1413,17 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 		result += workTypeName;
 		if(applyForLeave.getVacationInfo().getHolidayApplicationType()==HolidayAppType.SPECIAL_HOLIDAY) {
 			// ドメインモデル「特別休暇申請」を取得 ( Lấy domain 「特別休暇申請」)
-			ApplyforSpecialLeave applyforSpecialLeave = applyForLeave.getVacationInfo().getInfo().getApplyForSpeLeaveOptional().get();
-			// imported(就業.Shared)「続柄」を取得する ( Lấy imported(就業.Shared)「relationship」
-			Optional<Relationship> opRelationship = relationshipRepository.findByCode(companyID, applyforSpecialLeave.getRelationshipCD().map(x -> x.v()).orElse(null));
-			// 申請内容　+＝　”　”　+　続柄名称(nội dung đơn xin +＝　”　”　+ tên quan hệ)
-			result += " " + opRelationship.map(x -> x.getRelationshipName().v()).orElse("");
-			if(applyforSpecialLeave.isMournerFlag()) {
-				// 申請内容　+＝　”　”　+　#CMM045_277 ( Nội dung application　+＝　”　”　+　#CMM045_277)
-				result += " " + I18NText.getText("CMM045_277");
+			ApplyforSpecialLeave applyforSpecialLeave = applyForLeave.getVacationInfo().getInfo().getApplyForSpeLeaveOptional().isPresent() ? 
+			        applyForLeave.getVacationInfo().getInfo().getApplyForSpeLeaveOptional().get() : null;
+			if (applyforSpecialLeave != null) {
+			    // imported(就業.Shared)「続柄」を取得する ( Lấy imported(就業.Shared)「relationship」
+			    Optional<Relationship> opRelationship = relationshipRepository.findByCode(companyID, applyforSpecialLeave.getRelationshipCD().map(x -> x.v()).orElse(null));
+			    // 申請内容　+＝　”　”　+　続柄名称(nội dung đơn xin +＝　”　”　+ tên quan hệ)
+			    result += " " + opRelationship.map(x -> x.getRelationshipName().v()).orElse("");
+			    if(applyforSpecialLeave.isMournerFlag()) {
+			        // 申請内容　+＝　”　”　+　#CMM045_277 ( Nội dung application　+＝　”　”　+　#CMM045_277)
+			        result += " " + I18NText.getText("CMM045_277");
+			    }
 			}
 			// 申請内容　+＝　”　”　+　申請．申請日数を取得する　+　#CMM045_278
 			result += " ";
