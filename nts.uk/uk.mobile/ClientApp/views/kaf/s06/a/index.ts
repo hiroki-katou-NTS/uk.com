@@ -1498,6 +1498,9 @@ export class KafS06AComponent extends KafS00ShrComponent {
             applyForSpeLeave.relationshipReason = self.relationshipReason || null;
         }
         if (_.some(applyForSpeLeave) || self.c19) {
+            if (_.isNil(applyForSpeLeave.mournerFlag)) {
+                applyForSpeLeave.mournerFlag = false;
+            }
             info.applyForSpeLeave = applyForSpeLeave;
         }
         vacationInfo.holidayApplicationType = self.selectedValueHolidayType;
