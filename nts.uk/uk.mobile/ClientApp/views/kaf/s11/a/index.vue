@@ -133,7 +133,7 @@
             </div>
             <div class="card-body">
                 <nts-time-range-input v-model="complementWorkInfo.timeRange1"
-                    v-bind:disabled="!cdtSubMngComplementDailyType()"/>
+                    v-bind:disabled="!enableComplementTimeRange"/>
             </div>
         </div>
         <!-- A8 -->
@@ -145,7 +145,7 @@
             </div>
             <div class="card-body">
                 <nts-time-range-input v-model="complementWorkInfo.timeRange2"
-                    v-bind:disabled="!cdtSubMngComplementDailyType()"/>
+                    v-bind:disabled="!enableComplementTimeRange"/>
             </div>
         </div>
     </div>
@@ -238,7 +238,7 @@
             </div>
             <div class="card-body">
                 <nts-time-range-input v-model="leaveWorkInfo.timeRange1"
-                    v-bind:disabled="!enableLeaveTimeRange()"/>
+                    v-bind:disabled="!enableLeaveTimeRange"/>
             </div>
         </div>
         <!-- A12 -->
@@ -250,7 +250,7 @@
             </div>
             <div class="card-body">
                 <nts-time-range-input v-model="leaveWorkInfo.timeRange2"
-                    v-bind:disabled="!enableLeaveTimeRange()"/>
+                    v-bind:disabled="!enableLeaveTimeRange"/>
             </div>
         </div>
     </div>
