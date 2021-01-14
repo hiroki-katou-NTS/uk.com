@@ -692,6 +692,14 @@ export class KafS11AComponent extends KafS00ShrComponent {
         return vm.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr == 1;
     }
 
+    get dispComplementLeaveAtr() {
+        const vm = this;
+        if (vm.mode == ScreenMode.DETAIL) {
+            return false;
+        }
+
+        return true;
+    }
     
     get enablePrePostAtr() {
         const vm = this;
@@ -916,9 +924,9 @@ export class KafS11AComponent extends KafS00ShrComponent {
         }).then((result: any) => {
             if (result) {
                 // đăng kí 
-                return vm.$http.post('at', API.submit, command).then(() => {
+                return vm.$http.post('at', API.submit, command).then((data: any) => {
                     return vm.$modal.info({ messageId: 'Msg_15'}).then(() => {
-                        return true;
+                        return data.data;
                     });	
                 });
             }
@@ -926,12 +934,12 @@ export class KafS11AComponent extends KafS00ShrComponent {
             if (result) {
                 // gửi mail sau khi đăng kí
                 // return vm.$ajax('at', API.sendMailAfterRegisterSample);
-                return true;
+                return result;
             }
         }).then((result: any) => {
             if (result) {
                 // vm.$goto('kafs11a1', { mode: vm.mode, appID: result.data.appID });
-                vm.$goto('kafs11a1', { mode: vm.mode, appID: '' });
+                vm.$goto('kafs11a1', { mode: vm.mode, appID: result.appID });
             }
         }).catch((failData) => {
             // xử lý lỗi nghiệp vụ riêng
