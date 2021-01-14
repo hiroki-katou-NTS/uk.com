@@ -90,7 +90,7 @@ public class ReferContactInformationScreenQuery {
 		RequireImpl require = new RequireImpl(personContactAdapter, employeeInfoContactAdapter, userInformationUseMethodRepository);
 		ContactInformation contactInfo = UserInformationUseMethodService.get(require, AppContexts.user().companyId(), sid, personalId);
 		ContactInformationDTO contactInformation = ContactInformationDTO.builder()
-				.companyMobileEmailAddress(contactInfo.getCompanyEmailAddress() != null ? contactInfo.getCompanyEmailAddress().orElse("") : "")
+				.companyMobileEmailAddress(contactInfo.getCompanyMobileEmailAddress() != null ? contactInfo.getCompanyMobileEmailAddress().orElse("") : "")
 				.personalMobileEmailAddress(contactInfo.getPersonalMobileEmailAddress() != null ? contactInfo.getPersonalMobileEmailAddress().orElse("") : "")
 				.personalEmailAddress(contactInfo.getPersonalEmailAddress() != null ? contactInfo.getPersonalEmailAddress().orElse("") : "")
 				.companyEmailAddress(contactInfo.getCompanyEmailAddress() != null ? contactInfo.getCompanyEmailAddress().orElse("") : "")
