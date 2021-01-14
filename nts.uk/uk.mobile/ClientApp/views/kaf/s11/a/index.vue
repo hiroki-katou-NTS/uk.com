@@ -1,8 +1,10 @@
 <template>
 <div class="kafs11a">
+    <!-- A1 -->
     <div>
         <kafs00-a v-if="kaf000_A_Params != null" v-bind:params="kaf000_A_Params" />
     </div>
+    <!-- A2 -->
     <div class="accordion" style="margin-bottom: 10px;">
         <div class="card">
             <div class="card-header uk-bg-accordion">
@@ -30,12 +32,14 @@
             </div>
         </div>
     </div>
+    <!-- A17_1 -->
     <div v-if="!$valid || !isValidateAll" class="card message-list error top-alert uk-text-danger topError">
         <button class="btn btn-link uk-text-danger">
             <i class="fa fa-exclamation-circle" aria-hidden="true" ></i>
             {{ 'KAFS11_3' | i18n }}
         </button>
     </div>
+    <!-- A3 -->
     <div class="card card-label" v-if="dispPrePostAtr">
         <div class="card-header uk-bg-accordion" style="align-items: center">
             <v-label class="border-0 pl-0 my-n3">
@@ -53,6 +57,7 @@
             </div>
         </div>
     </div>
+    <!-- A4 -->
     <div class="card card-label">
         <div class="card-header uk-bg-accordion" style="align-items: center">
             <v-label class="border-0 pl-0 my-n3">
@@ -71,6 +76,7 @@
         </div>
     </div>
     <div>
+        <!-- A5 -->
         <div class="card card-label" v-if="dispComplementContent">
             <div class="card-header uk-bg-sea-green" style="align-items: center">
                 <v-label class="border-0 pl-0 my-n3">
@@ -78,9 +84,10 @@
                 <span class="badge badge-warning" style="height: 30%">必須</span>
             </div>
             <div class="card-body">
-                <nts-date-input v-model="complementDate"/>
+                <nts-date-input v-model="complementDate" v-bind:disabled="mode==ScreenMode.DETAIL"/>
             </div>
         </div>
+        <!-- A6 -->
         <div class="card card-label" v-if="dispComplementContent">
             <div class="card-header uk-bg-accordion" style="align-items: center">
                 <v-label class="border-0 pl-0 my-n3">
@@ -117,6 +124,7 @@
                 </div>
             </div>
         </div>
+        <!-- A7 -->
         <div class="card card-label" v-if="dispComplementContent">
             <div class="card-header uk-bg-accordion" style="align-items: center">
                 <v-label class="border-0 pl-0 my-n3">
@@ -128,6 +136,7 @@
                     v-bind:disabled="!cdtSubMngComplementDailyType()"/>
             </div>
         </div>
+        <!-- A8 -->
         <div class="card card-label" v-if="dispComplementTimeRange2">
             <div class="card-header uk-bg-accordion" style="align-items: center">
                 <v-label class="border-0 pl-0 my-n3">
@@ -140,6 +149,7 @@
             </div>
         </div>
     </div>
+    <!-- A18 -->
     <div class="card card-label" v-if="dispLeaveLinkContent1">
         <div class="card-header uk-bg-accordion" style="align-items: center">
             <v-label class="border-0 pl-0 my-n3">
@@ -170,6 +180,7 @@
         </div>
     </div>
     <div>
+        <!-- A9 -->
         <div class="card card-label" v-if="dispLeaveContent">
             <div class="card-header uk-bg-sea-green" style="align-items: center">
                 <v-label class="border-0 pl-0 my-n3">
@@ -177,13 +188,15 @@
                 <span class="badge badge-warning" style="height: 30%">必須</span>
             </div>
             <div class="card-body">
-                <nts-date-input v-model="leaveDate"/>
+                <nts-date-input v-model="leaveDate" v-bind:disabled="mode==ScreenMode.DETAIL"/>
             </div>
         </div>
+        <!-- A10 -->
         <div class="card card-label">
             <div class="card-header uk-bg-accordion" style="align-items: center" v-if="dispLeaveContent">
                 <v-label class="border-0 pl-0 my-n3">
-                    {{'KAFS11_16' | i18n}}</v-label>
+                    {{leaveWorkInfoTitle | i18n}}
+                </v-label>
                 <span class="badge badge-warning" style="height: 30%">必須</span>
             </div>
             <div class="card-body mb-3">
@@ -216,6 +229,7 @@
                 </div>
             </div>
         </div>
+        <!-- A11 -->
         <div class="card card-label" v-if="dispLeaveTimeRange1">
             <div class="card-header uk-bg-accordion" style="align-items: center">
                 <v-label class="border-0 pl-0 my-n3">
@@ -227,6 +241,7 @@
                     v-bind:disabled="!enableLeaveTimeRange()"/>
             </div>
         </div>
+        <!-- A12 -->
         <div class="card card-label" v-if="dispLeaveTimeRange2">
             <div class="card-header uk-bg-accordion" style="align-items: center">
                 <v-label class="border-0 pl-0 my-n3">
@@ -239,6 +254,7 @@
             </div>
         </div>
     </div>
+    <!-- A13 -->
     <div class="card card-label" v-if="dispLeaveLinkContent2">
         <div class="card-header uk-bg-accordion" style="align-items: center">
             <v-label class="border-0 pl-0 my-n3">
@@ -268,6 +284,7 @@
             </div>
         </div>
     </div>
+    <!-- A14 -->
     <div class="card card-label" v-if="dispComplementLinkContent">
         <div class="card-header uk-bg-accordion" style="align-items: center">
             <v-label class="border-0 pl-0 my-n3">
@@ -297,14 +314,16 @@
             </div>
         </div>
     </div>
+    <!-- A15 -->
     <div>
         <kafs00-c v-if="kaf000_C_Params != null" v-bind:params="kaf000_C_Params" 
         v-on:kaf000CChangeReasonCD="kaf000CChangeReasonCD"
         v-on:kaf000CChangeAppReason="kaf000CChangeAppReason" />
     </div>
+    <!-- A16 -->
     <div class="mb-3">
         <button class="btn btn-primary w-100" v-on:click="register()">
-            <span v-if="params">{{'KAFS11_30' | i18n}}</span>
+            <span v-if="mode==ScreenMode.DETAIL">{{'KAFS11_30' | i18n}}</span>
             <span v-else>{{'KAFS11_29' | i18n}}</span>
         </button>
     </div>

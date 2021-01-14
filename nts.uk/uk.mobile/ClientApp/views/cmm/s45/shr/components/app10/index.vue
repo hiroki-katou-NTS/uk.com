@@ -80,7 +80,7 @@
     <!-- B6 -->
     <div v-if="abs">
         <div class="row uk-bg-accordion card-header pt-1 pb-1 border-0 header-div">
-            {{'KAFS11_9' | i18n}}
+            {{absWorkInfoTitle | i18n}}
         </div>
         <div class="row pt-1 pb-1 border-0 header-div uk-text-dark-gray" style="font-size: 90%">
             {{'KAFS11_10' | i18n}}

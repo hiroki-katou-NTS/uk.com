@@ -589,7 +589,9 @@ export class KafS06AComponent extends KafS00ShrComponent {
             if (loadData) {
                 vm.updateKaf000_A_Params(vm.user);
                 vm.updateKaf000_B_Params(vm.modeNew);
-                // vm.updateKaf000_C_Params(vm.modeNew);
+                if (!vm.modeNew) {
+                    vm.updateKaf000_C_Params(vm.modeNew);
+                }
                 let command = {
 
                 } as StartMobileParam;
@@ -1480,6 +1482,9 @@ export class KafS06AComponent extends KafS00ShrComponent {
         let vacationInfo =  {} as VacationRequestInfoDto;
         let info = {} as SupplementInfoVacationDto;
         let applyForSpeLeave = {} as ApplyforSpecialLeaveDto;
+        // if (self.c18_1) {
+        //     applyForSpeLeave.mournerFlag = false;
+        // }
         if (self.c18) {
             // A10_2
             applyForSpeLeave.relationshipCD = self.selectedRelationship;
@@ -1487,20 +1492,17 @@ export class KafS06AComponent extends KafS00ShrComponent {
         if (self.c19) {
             // A10_4
             applyForSpeLeave.mournerFlag = self.mournerFlag || false;
-        } else {
-            applyForSpeLeave.mournerFlag = false;
         }
         if (self.c20) {
             // A10_5
-            applyForSpeLeave.relationshipReason = self.relationshipReason;
+            applyForSpeLeave.relationshipReason = self.relationshipReason || null;
         }
-
-        info.applyForSpeLeave = applyForSpeLeave;
-
+        if (_.some(applyForSpeLeave) || self.c19) {
+            info.applyForSpeLeave = applyForSpeLeave;
+        }
         vacationInfo.holidayApplicationType = self.selectedValueHolidayType;
-        if (_.some(info)) {
-            vacationInfo.info = info;
-        }
+        vacationInfo.info = info;
+        
         applyForLeave.vacationInfo = vacationInfo;
         if (_.some(reflectFreeTimeApp)) {
             applyForLeave.reflectFreeTimeApp = reflectFreeTimeApp;
