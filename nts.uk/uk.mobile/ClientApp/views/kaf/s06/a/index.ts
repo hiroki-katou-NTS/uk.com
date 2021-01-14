@@ -1081,7 +1081,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
         const self = this;
 
         const nameTime = '当日';
-        if (!time) {
+        if (!_.isNumber(time)) {
 
             return;
         }
