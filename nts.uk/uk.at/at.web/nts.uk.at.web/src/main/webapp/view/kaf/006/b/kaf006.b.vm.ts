@@ -845,7 +845,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 			
 			// vm.checkCondition10(data);
 			vm.checkCondition11(data);
-			// vm.checkCondition12(data);
+			vm.checkCondition12(data);
 			vm.checkCondition30(data);
 			vm.checkCondition19(data);
 			vm.checkCondition14(data);
@@ -1080,6 +1080,16 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 			vm.condition11(false);
 			return false;
 		}
+
+		checkCondition12(data: any) {
+            const vm = this;
+            if (vm.data && vm.data.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles && vm.selectedWorkTimeCD() && vm.isDispTime2ByWorkTime()) {
+                vm.condition12(true);
+                return true;
+            }
+            vm.condition12(false);
+            return false;
+        }
 
 		checkCondition30(data: any) {
 			const vm = this;

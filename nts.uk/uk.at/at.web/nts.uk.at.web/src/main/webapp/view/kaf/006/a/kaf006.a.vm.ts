@@ -828,7 +828,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 
             let workingHours = [];
 
-            if (startTime1 && endTime1) {
+            if (startTime1 !== null && endTime1 !== null) {
                 workingHours.push({
                     workNo: 1,
                     timeZone: {
@@ -837,7 +837,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                     }
                 });
             }
-            if (startTime2 && endTime2) {
+            if (startTime2 !== null && endTime2 !== null) {
                 workingHours.push({
                     workNo: 2,
                     timeZone: {
