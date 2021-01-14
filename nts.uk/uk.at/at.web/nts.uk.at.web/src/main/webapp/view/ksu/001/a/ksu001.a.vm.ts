@@ -1727,10 +1727,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let dataReg = self.buidDataReg(userInfor.disPlayFormat, cellsGroup);
             service.regWorkSchedule(dataReg).done((rs) => {
                 console.log(rs);
-                if(rs.listErrorInfo.length > 0){
-                    //self.openKDL053(rs);
+                if(rs.hasError == false){
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    nts.uk.ui.block.clear();
+                } else {
+                    self.openKDL053(rs);
                 }
-                nts.uk.ui.block.clear();
             }).fail(function(error) {
                 nts.uk.ui.block.clear();
                 nts.uk.ui.dialog.alertError(error);
@@ -1847,14 +1849,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         openKDL053(dataReg : any) {
             let self = this;
             let param = {
-                sids: self.listSid(),                 // 社員の並び順
-                isRegistered: dataReg.isRegistered,   // 登録されたか
-                listErrorInfo: dataReg.listErrorInfo, // エラー内容リスト
+                employeeIds: self.listSid(),                  // 社員の並び順
+                isRegistered: dataReg.isRegistered == true ? 1 : 0,           // 登録されたか
+                errorRegistrationList: dataReg.listErrorInfo, // エラー内容リスト 
             }
-            setShared('dataShareDialog053', param);
-            nts.uk.ui.windows.sub.modal('/view/kdl/053/a/index.xhtml').onClosed(function(): any {
+            setShared('dataShareDialogKDL053', param);
+            nts.uk.ui.windows.sub.modal('/view/kdl/053/index.xhtml').onClosed(function(): any {
                 console.log('closed');
             });
+            nts.uk.ui.block.clear();
         }
 
         /**
@@ -2167,24 +2170,26 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let index = $(event.target).parent().index();
                 let columnKey = self.detailColumns[index].key;
                 let param = {
-                    dateSelected: moment(columnKey.slice(1)).format('YYYY/MM/DD'),
-                    workPlaceId: userInfor.workplaceId == null ? userInfor.workplaceGroupId : userInfor.workplaceId,
-                    targetOrgName: self.targetOrganizationName(),
+                    dateSelected: moment(columnKey.slice(1)).toISOString(),
+                    workplace: {
+                        workPlaceID: userInfor.workplaceId == null ? userInfor.workplaceGroupId : userInfor.workplaceId,
+                        targetOrgWorkplaceName: self.targetOrganizationName()
+                    }
                 }
-                setShared("dataShareToKDL049", param);
+                setShared("KDL049", param);
                 console.log('Open KDL049');
                 console.log(param);
-                self.updateHeader();
-                /*nts.uk.ui.windows.sub.modal('/view/kdl/049/a/index.xhtml').onClosed(function(): any {
+                nts.uk.ui.windows.sub.modal('/view/kdl/049/a/index.xhtml').onClosed(function(): any {
                     let rs = getShared('dataShareFromKDL049');
                     if (rs.status == 'determined') {
                         let date             = rs.date;
                         let companyEventName = rs.companyEventName;
                         let wkpEventName     = rs.wkpEventName;
                         // update lai header grid
+                        self.updateHeader();
                     }
                     console.log('closed');
-                });*/
+                });
             });
         }
 
@@ -3564,9 +3569,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 uk.localStorage.setItemAsJson(self.KEY, userInfor);
                 
                 if (userInfor.disPlayFormat === 'time' || userInfor.disPlayFormat === 'shortName') {
-                    __viewContext.viewModel.viewAB.workplaceIdKCP013(input.unit == 0 ? input.workplaceId : input.workplaceGroupID);
                     __viewContext.viewModel.viewAB.check(false);
                     __viewContext.viewModel.viewAB.filter(input.unit == 0 ? true : false);
+                    __viewContext.viewModel.viewAB.workplaceIdKCP013(input.unit == 0 ? input.workplaceId : input.workplaceGroupID);
                 } else {
                     if (input.unit == 0) {
                         $($("#Aa1_2 > button")[1]).html(getText('Com_Workplace'));
