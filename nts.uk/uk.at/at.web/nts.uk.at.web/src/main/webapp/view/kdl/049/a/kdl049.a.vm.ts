@@ -72,7 +72,7 @@ module nts.uk.at.view.kdl049.a.viewmodel {
             //                nts.uk.ui.windows.setShared("KDL010workLocation", null, true);
             //            }
             let param = {
-                targetDate: moment(self.targetDate(), "YYYY/MM/DD").utc().toISOString(),
+                targetDate: self.targetDate(),
                 workPlaceID: self.workPlaceID(),
                 eventComName: self.comEventName(),
                 eventWorkplaceName: self.wplEventName()

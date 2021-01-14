@@ -8,7 +8,7 @@ public class AddComAndWorkplaceEventCommand {
 
 		public String workPlaceID;
 		
-		public GeneralDate targetDate;
+		public String targetDate;
 		
 		public String eventComName;
 		
