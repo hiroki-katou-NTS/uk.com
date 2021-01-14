@@ -123,6 +123,8 @@ export class KafS09AComponent extends KafS00ShrComponent {
             if (self.mode) {
                 return self.loadCommonSetting(AppType.GO_RETURN_DIRECTLY_APPLICATION);
             }
+
+            return true;
         }).then((loadData: any) => {
             if (loadData) {
                 return self.$http.post('at', API.startS09, {
@@ -158,14 +160,14 @@ export class KafS09AComponent extends KafS00ShrComponent {
             self.createParamB();
             self.createParamC();
             self.bindStart();
-            self.$mask('hide');
         }).catch((err: any) => {
             self.handleErrorMessage(err).then((res: any) => {
                 if (err.messageId == 'Msg_43') {
                     self.$goto('ccg008a');
                 }
             });
-        });
+        })
+        .then(() => self.$mask('hide'));
     }
 
 
