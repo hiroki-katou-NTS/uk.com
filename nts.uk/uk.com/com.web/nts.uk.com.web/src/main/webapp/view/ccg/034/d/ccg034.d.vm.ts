@@ -1574,20 +1574,10 @@ module nts.uk.com.view.ccg034.d {
         $arrowContent = $("<img>", { 'class': 'part-arrow-content' });
       }
       $arrowContent.attr('src', partData.fileSrc);
-      // Set image scale by original ratio
-      const partRatio = partData.height / partData.width;
-      const imageRatio = 1;
-      if (partRatio > imageRatio) {
-        $arrowContent.css({
-          'width': '100%',
-          'height': 'auto',
-        });
-      } else {
-        $arrowContent.css({
-          'width': 'auto',
-          'height': '100%',
-        });
-      }
+      $arrowContent.css({
+        'width': '100%',
+        'height': '100%',
+      });
       $arrowContent.appendTo($part);
       return $partContainer;
     }
@@ -1720,7 +1710,7 @@ module nts.uk.com.view.ccg034.d {
       switch (partData.partType) {
         case MenuPartType.PART_MENU:
           const partDataMenuModel: PartDataMenuModel = (partData as PartDataMenuModel);
-          const $partMenuHTML: JQuery = $('<a>', { 'href': `${location.origin}${partDataMenuModel.menuUrl}`, 'target': '_blank' })
+          const $partMenuHTML: JQuery = $('<a>', { 'href': `${location.origin}${partDataMenuModel.menuUrl}`, 'target': '_parent' })
             .text(partDataMenuModel.menuName)
             .css({
               'font-size': `${partDataMenuModel.fontSize}px`,
