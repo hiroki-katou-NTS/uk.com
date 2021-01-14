@@ -13,9 +13,13 @@ public class PersonalInfomationObj {
 	// 階層コード
 	private String hierarchyCode;
 	// Optional<並び順>
-	private Optional<String> order;
+	private Optional<Integer> order;
 	// 職位コード
 	private String positionCode;
 	// 社員コード
 	private String employeeCode;
+	
+	public Integer getOrderOptional() {
+		return this.order.orElse(null);
+	}
 }

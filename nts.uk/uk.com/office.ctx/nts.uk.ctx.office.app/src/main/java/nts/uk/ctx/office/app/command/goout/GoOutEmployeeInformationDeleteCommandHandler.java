@@ -1,5 +1,7 @@
 package nts.uk.ctx.office.app.command.goout;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -15,16 +17,15 @@ import nts.uk.ctx.office.dom.goout.GoOutEmployeeInformationRepository;
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class GoOutEmployeeInformationDeleteCommandHandler extends CommandHandler<GoOutEmployeeInformationCommand> {
+public class GoOutEmployeeInformationDeleteCommandHandler extends CommandHandler<GoOutEmployeeInformationDelCommand> {
 
 	@Inject
 	GoOutEmployeeInformationRepository goOutEmployeeInformationRepository;
 
 	@Override
-	protected void handle(CommandHandlerContext<GoOutEmployeeInformationCommand> context) {
-		GoOutEmployeeInformationCommand command = context.getCommand();
-		GoOutEmployeeInformation domain = GoOutEmployeeInformation.createFromMemento(command);
-		goOutEmployeeInformationRepository.delete(domain);
+	protected void handle(CommandHandlerContext<GoOutEmployeeInformationDelCommand> context) {
+		GoOutEmployeeInformationDelCommand command = context.getCommand();
+		Optional<GoOutEmployeeInformation> domain = goOutEmployeeInformationRepository.getBySidAndDate(command.getSid(), command.getGouOutDate());
+		domain.ifPresent(dom -> goOutEmployeeInformationRepository.delete(dom));
 	}
-
 }

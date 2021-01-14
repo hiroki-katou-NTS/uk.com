@@ -97,16 +97,20 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
 
     mounted() {
       const vm = this;
+      let resizeTimer = 0;
       for (let i = 0; i < 5; i++) {
         if ($(`#WG2-${i}`)) {
           $(`#WG2-${i}`).resizable({
             grid: [10000, 1]
           });
           $(`#WG2-${i}`).resize(() => {
-            $(window).trigger('ccg005.resize');
             const wg0 = $(`#WG2-${i}`)[0];
             const wg0Child = wg0.firstElementChild.firstElementChild as any;
             wg0Child.style.height = '100%';
+            if (_.indexOf(wg0Child, 'ccg005') >= 0) {
+              clearTimeout(resizeTimer);
+              resizeTimer = setTimeout(() => $(window).trigger('ccg005.resize'), 100);
+            }
           })
         }
       }
@@ -117,10 +121,13 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
             grid: [10000, 1]
           });
           $(`#WG3-${i}`).resize(() => {
-            $(window).trigger('ccg005.resize');
             const wg0 = $(`#WG3-${i}`)[0];
             const wg0Child = wg0.firstElementChild.firstElementChild as any;
             wg0Child.style.height = '100%';
+            if (wg0Child.getAttribute('id').indexOf('ccg005') >= 0) {
+              clearTimeout(resizeTimer);
+              resizeTimer = setTimeout(() => $(window).trigger('ccg005.resize'), 100);
+            }
           })
         }
       }

@@ -47,8 +47,7 @@
                 </td>
                 <td>
                   <div class="avatar-container" data-bind="click : openDialogE">
-                    <div id="avatar-change">
-                    </div>
+                    <div id="avatar-change"></div>
                     <div class="overlay">
                       <img id="camera-hover" src="./resource/camera.png" />
                     </div>
@@ -61,7 +60,9 @@
                 <td class="profile-title" id="A5_1">
                   #{i18n.getText('CMM048_73')}
                 </td>
-                <td><span id="A5_2" data-bind="text : businessName"></span></td>
+                <td>
+                  <span id="A5_2" data-bind="text : businessName"></span>
+                </td>
               </tr>
               <!-- A5 end -->
               <!-- A6 start -->
@@ -80,19 +81,25 @@
                 <td class="profile-information" id="A6_3">
                   #{i18n.getText('Com_Workplace')}
                 </td>
-                <td><span id="A6_4" data-bind="text : wkpDisplayName"></span></td>
+                <td>
+                  <span id="A6_4" data-bind="text : wkpDisplayName"></span>
+                </td>
               </tr>
               <tr>
                 <td class="profile-information" id="A6_5">
                   #{i18n.getText('Com_Jobtitle')}
                 </td>
-                <td><span id="A6_6" data-bind="text : positionName"></span></td>
+                <td>
+                  <span id="A6_6" data-bind="text : positionName"></span>
+                </td>
               </tr>
               <tr>
                 <td class="profile-information" id="A6_7">
                   #{i18n.getText('CMM048_79')}
                 </td>
-                <td><span id="A6_8" data-bind="text : hireDate">2010/10/07</span></td>
+                <td>
+                  <span id="A6_8" data-bind="text : hireDate">2010/10/07</span>
+                </td>
               </tr>
               <!-- A6 end -->
               <!-- A7 start -->
@@ -440,7 +447,9 @@
                 <!-- B6 start -->
                 <td class="pw" rowspan="3">
                   <div class="password-policy">
-                    <h6 class="pp-context pp-h6">#{i18n.getText('CMM048_11')}</h6>
+                    <h6 class="pp-context pp-h6">
+                      #{i18n.getText('CMM048_11')}
+                    </h6>
                     <table class="pp-table">
                       <tr>
                         <td class="pp-title">
@@ -594,15 +603,13 @@
                                         textalign: 'left'
                                       }
                                     }" />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div class="flex valign-center">
-                              <label id="C2_5">#{i18n.getText('CMM048_60')}</label>
-                              <div
-                                id="combo-box"
-                                data-bind="ntsComboBox: {
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <div class="flex valign-center">
+                            <label id="C2_5">#{i18n.getText('CMM048_60')}</label>
+                            <div id="combo-box" data-bind="ntsComboBox: {
                                         options: $parent.anniverNoticeDayOptions,
                                         optionsValue: 'code',
                                         visibleItemsCount: 8,
@@ -614,48 +621,40 @@
                                         selectFirstIfNull: true,
                                         width: '100px',
                                         columns: [{ prop: 'name', length: 3 }]
-                                      }"
-                              />
-                              <label id="C2_7"
-                                >#{i18n.getText('CMM048_66')}</label
-                              >
-                            </div>
-                          </td>
-                        </tr>
-                      </table>
-                    </td>
-                  </tr>
-                </tbody>
-                <!-- C2 end -->
-              </table>
-              <div
-                class="add-new-anniversary"
-                data-bind="click: addNewAnniversary"
-              >
-                <button class="flex valign-center" id="add-btn-content">
-                  <img src="./resource/plus.png" alt="add" id="C3_2" />
-                  <span>#{i18n.getText('CMM048_62')}</span>
-                </button>
-              </div>
-            </div>
-            <div class="tab-content-4">
-              <table class="tab-language">
-                <!-- D1 start -->
-                <tr>
-                  <td class="language-title" colspan="2">
-                    <span id="D1">#{i18n.getText('CMM048_68')}</span>
+                                      }" />
+                            <label id="C2_7">#{i18n.getText('CMM048_66')}</label>
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
                   </td>
                 </tr>
-                <!-- D1 end -->
-                <!-- D2 start -->
-                <tr>
-                  <td class="language-information" id="D2_1">
-                    #{i18n.getText('CMM048_69')}
-                  </td>
-                  <td id="D2_2">
-                    <div
-                      id="combo-box"
-                      data-bind="ntsComboBox: {
+              </tbody>
+              <!-- C2 end -->
+            </table>
+            <div class="add-new-anniversary" data-bind="click: addNewAnniversary">
+              <button class="flex valign-center" id="add-btn-content">
+                <img src="./resource/plus.png" alt="add" id="C3_2" />
+                <span>#{i18n.getText('CMM048_62')}</span>
+              </button>
+            </div>
+          </div>
+          <div class="tab-content-4">
+            <table class="tab-language">
+              <!-- D1 start -->
+              <tr>
+                <td class="language-title" colspan="2">
+                  <span id="D1">#{i18n.getText('CMM048_68')}</span>
+                </td>
+              </tr>
+              <!-- D1 end -->
+              <!-- D2 start -->
+              <tr>
+                <td class="language-information" id="D2_1">
+                  #{i18n.getText('CMM048_69')}
+                </td>
+                <td id="D2_2">
+                  <div id="combo-box" data-bind="ntsComboBox: {
 									options: languageOptions,
 									optionsValue: 'code',
 									visibleItemsCount: 3,
@@ -666,16 +665,16 @@
 									required: true,
 									selectFirstIfNull: true,
 									columns: [{ prop: 'name', length: 10 }]
-								}"
-                    ></div>
-                  </td>
-                </tr>
-                <!-- D2 end -->
-              </table>
-            </div>
+								}"></div>
+                </td>
+              </tr>
+              <!-- D2 end -->
+            </table>
           </div>
         </div>
-      </ui:define>
-    </ui:composition>
-  </body>
+      </div>
+    </ui:define>
+  </ui:composition>
+</body>
+
 </html>

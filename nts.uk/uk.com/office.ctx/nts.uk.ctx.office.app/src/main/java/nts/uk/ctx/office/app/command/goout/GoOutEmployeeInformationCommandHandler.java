@@ -1,5 +1,7 @@
 package nts.uk.ctx.office.app.command.goout;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -15,7 +17,7 @@ import nts.uk.ctx.office.dom.goout.GoOutEmployeeInformationRepository;
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class GoOutEmployeeInformationInsertCommandHandler extends CommandHandler<GoOutEmployeeInformationCommand> {
+public class GoOutEmployeeInformationCommandHandler extends CommandHandler<GoOutEmployeeInformationCommand> {
 
 	@Inject
 	GoOutEmployeeInformationRepository goOutEmployeeInformationRepository;
@@ -24,7 +26,11 @@ public class GoOutEmployeeInformationInsertCommandHandler extends CommandHandler
 	protected void handle(CommandHandlerContext<GoOutEmployeeInformationCommand> context) {
 		GoOutEmployeeInformationCommand command = context.getCommand();
 		GoOutEmployeeInformation domain = GoOutEmployeeInformation.createFromMemento(command);
-		goOutEmployeeInformationRepository.insert(domain);
+		Optional<GoOutEmployeeInformation> checkDomain = goOutEmployeeInformationRepository.getBySidAndDate(command.getSid(), command.getGoOutDate());
+		if(checkDomain.isPresent()) {
+			goOutEmployeeInformationRepository.update(domain);
+		} else {
+			goOutEmployeeInformationRepository.insert(domain);
+		}
 	}
-
 }

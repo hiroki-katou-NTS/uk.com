@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.office.dom.favorite.adapter.EmployeeJobHistImport;
 import nts.uk.ctx.office.dom.reference.auth.SpecifyAuthInquiry;
-import nts.uk.shr.com.context.AppContexts;
 
 /*
  * Domain service 社員IDリストから参照できるか判断する
@@ -24,11 +23,8 @@ public class DetermineEmpIdListDomainService {
 	 * @param baseDate 基準日
 	 * @return List<String> List<社員ID>
 	 */
-	public static List<String> determineReferenced(Require require, List<String> sids, GeneralDate baseDate) {
+	public static List<String> determineReferenced(Require require, List<String> sids, GeneralDate baseDate, String loginCid, String loginRoleid, String loginSid) {
 		// 在席照会で参照できる権限の指定を取得する
-		String loginCid = AppContexts.user().companyId();
-		String loginRoleid = AppContexts.user().roles().forAttendance();
-		String loginSid = AppContexts.user().employeeId();
 		Optional<SpecifyAuthInquiry> specifyAuthInquiry = require.getByCidAndRoleId(loginCid, loginRoleid);
 		List<String> positionIdSeen = specifyAuthInquiry.map(item -> item.getPositionIdSeen())
 				.orElse(Collections.emptyList());

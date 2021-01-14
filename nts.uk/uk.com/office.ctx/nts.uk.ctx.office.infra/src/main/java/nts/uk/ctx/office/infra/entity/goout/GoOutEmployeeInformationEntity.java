@@ -64,11 +64,11 @@ public class GoOutEmployeeInformationEntity extends UkJpaEntity
 	}
 
 	@Override
-	public void setGouOutDate(GeneralDate gouOutDate) {
+	public void setGoOutDate(GeneralDate gouOutDate) {
 		if (this.pk == null) {
 			this.pk = new GoOutEmployeeInformationEntityPK();
 		}
-		this.pk.setGouOutDate(gouOutDate);
+		this.pk.setGoOutDate(gouOutDate);
 	}
 
 	@Override
@@ -80,8 +80,8 @@ public class GoOutEmployeeInformationEntity extends UkJpaEntity
 	}
 
 	@Override
-	public GeneralDate getGouOutDate() {
-		return this.pk.getGouOutDate();
+	public GeneralDate getGoOutDate() {
+		return this.pk.getGoOutDate();
 	}
 
 	@Override

@@ -41,13 +41,16 @@ public class DisplayInformationScreenQuery {
 
 	//TODO khong biet output la gi
 	private void getDisplayInfoAfterSelect(List<String> wkspIds, GeneralDate baseDate, boolean emojiUseage) {
-		// 1: 社員IDリストを取得する(Require, 職場ID, 年月日): List<社員ID>
+		String loginCid = AppContexts.user().companyId();
+		String loginRoleid = AppContexts.user().roles().forAttendance();
 		String loginSid = AppContexts.user().employeeId();
+
+		// 1: 社員IDリストを取得する(Require, 職場ID, 年月日): List<社員ID>
 		DefaultEmpFromWpDSRequireImpl empLstRequireImpl = new DefaultEmpFromWpDSRequireImpl(empWkspAdapter, empBelongWkspAdapter);
 		List<String> getEmployeeIdList = empLstDs.getEmployeeIdList(empLstRequireImpl, loginSid, wkspIds, baseDate);
 		// 2: 参照できるか判断する(Require, 社員ID, 年月日): List<社員ID>
 		DefaultRequireImpl deterEmpLstDsRequireImpl = new DefaultRequireImpl(specAuthRepo, emplPosAdapter);
-		List<String> getDeterEmployeeIdList = DeterEmpLstDs.determineReferenced(deterEmpLstDsRequireImpl, getEmployeeIdList, baseDate);
+		List<String> getDeterEmployeeIdList = DeterEmpLstDs.determineReferenced(deterEmpLstDsRequireImpl, getEmployeeIdList, baseDate, loginCid, loginRoleid, loginSid);
 		// TODO 3: 個人情報を取得(Require, 社員ID, 年月日): List<個人基本情報>
 		
 		// TODO: 4:在席情報を取得する(社員ID, 年月日, するしない区分): List<在席情報DTO>
