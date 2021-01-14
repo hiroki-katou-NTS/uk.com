@@ -80,7 +80,8 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 
         reload() {
             const vm = this;
-            if (vm.appType() == vm.application().appType) {
+            if (vm.appType() == AppType.COMPLEMENT_LEAVE_APPLICATION) {
+				vm.loadData();
             }
         }
 
@@ -118,7 +119,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 						}); 
 					}
 				console.log(data);	
-				ajax('at/request/application/holidayshipment/update', data).then(() =>{
+				return ajax('at/request/application/holidayshipment/update', data).then(() =>{
 					dialog.info({ messageId: "Msg_15" });
 				}).fail((fail:any) => {
 					dialog.error({ messageId: fail.messageId});
