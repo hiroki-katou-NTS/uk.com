@@ -783,6 +783,7 @@ project (':com.screen:nts.uk.screen.com.ws') {
 project (':com.screen:nts.uk.screen.com.app') {
 	dependencies {
 	 	compile project(':shr:nts.uk.shr.com')
+		compile project(':query:nts.uk.query.pub')
 	 	
 		compile project(':com.ctx:basic:nts.uk.ctx.basic.app')
 		
