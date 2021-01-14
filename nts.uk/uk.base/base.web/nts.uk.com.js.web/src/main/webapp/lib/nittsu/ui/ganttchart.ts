@@ -92,6 +92,11 @@ module nts.uk.ui.chart {
                         || chart.limitEndMin > pDec.end || chart.limitEndMax < pDec.end) return;
                     if (parentChart && ((diff > 0 && pDec.end > parentChart.end) || (diff < 0 && pDec.start < parentChart.start))) return;
                     
+                    if (parentChart && _.find(parentChart.children, (child: GanttChart) => {
+                        return child.id !== chart.id && !child.bePassedThrough 
+                            && ((chart.start >= child.end && pDec.start < child.end) || (chart.end <= child.start && pDec.end > child.start));
+                    })) return;
+                    
                     _.forEach(chart.children, (child: GanttChart) => {
                         let childSlide;
                         if (child.followParent) {
@@ -132,7 +137,7 @@ module nts.uk.ui.chart {
                                         self.chartArea.appendChild(child.html);
                                     }
                                     
-                                    if (!self.slideTrigger.edgeCharts.find(c => c.id === child.id)) {
+                                    if (!_.find(self.slideTrigger.edgeCharts, c => c.id === child.id)) {
                                         self.slideTrigger.edgeCharts.push(child);
                                     }
                                 } else if (nearestLine < child.start) {
@@ -186,7 +191,7 @@ module nts.uk.ui.chart {
                                         self.chartArea.appendChild(child.html);
                                     }
                                     
-                                    if (!self.slideTrigger.edgeCharts.find(c => c.id === child.id)) {
+                                    if (!_.find(self.slideTrigger.edgeCharts, c => c.id === child.id)) {
                                         self.slideTrigger.edgeCharts.push(child);
                                     }
                                 } else if (nearestLine > child.end) {
@@ -606,6 +611,7 @@ module nts.uk.ui.chart {
         lineWidth: number;
         snatchInterval: number;
         drawerSize: number;
+        bePassedThrough: boolean;
         pin: boolean;
         rollup: boolean;
         roundEdge: boolean;
@@ -632,6 +638,7 @@ module nts.uk.ui.chart {
             this.lineWidth = options.lineWidth;
             this.snatchInterval = options.snatchInterval;
             this.drawerSize = options.drawerSize;
+            this.bePassedThrough = options.bePassedThrough;
             this.pin = options.pin;
             this.rollup = options.rollup;
             this.roundEdge = options.roundEdge;
@@ -667,6 +674,7 @@ module nts.uk.ui.chart {
         fixed: CHART_FIXED = CHART_FIXED.NONE;
         drawerSize: number = 3;
         cursor: string;
+        bePassedThrough: boolean = true;
         locked: boolean = false;
         rollup: boolean = false;
         pin: boolean = false;

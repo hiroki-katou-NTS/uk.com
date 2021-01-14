@@ -171,28 +171,19 @@ module nts.uk.at.view.kaf020.b {
                             // vm.dataFetch({applicationContents: ko.observableArray(contents), name: vm.dataFetch().name});
                         }
                     }).fail(err => {
-                        vm.$dialog.error(err);
-                        // vm.handleError(err);
+                        if (err && _.includes(["Msg_1692", "Msg_1693"], err.messageId) && err.parameterIds.length > 1) {
+                            let id = '#' + err.parameterIds[1];
+                            vm.$errors({
+                                [id]: err
+                            });
+                        } else {
+                            vm.$dialog.error(err);
+                        }
                     });
                 }
             });
         }
 
-        handleError(err: any) {
-            const vm = this;
-            let param;
-            if (err.message && err.messageId) {
-                param = {messageId: err.messageId, messageParams: err.parameterIds};
-            } else {
-
-                if (err.message) {
-                    param = {message: err.message, messageParams: err.parameterIds};
-                } else {
-                    param = {messageId: err.messageId, messageParams: err.parameterIds};
-                }
-            }
-            vm.$dialog.error(param);
-        }
     }
 
     interface OptionalItemData {

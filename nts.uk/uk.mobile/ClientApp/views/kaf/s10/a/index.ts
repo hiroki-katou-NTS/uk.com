@@ -1,5 +1,5 @@
 import { _, Vue } from '@app/provider';
-import { PrePostAtr, AppDateContradictionAtr, ParamChangeWorkMobile, OverTimeShiftNight, BreakTime, TimeZoneNew, TimeZoneWithWorkNo, AppOverTime, ParamCalculateMobile, ParamSelectWorkMobile, InfoWithDateApplication, ParamStartMobile, OvertimeAppAtr, Model, NotUseAtr, ApplicationTime, OvertimeApplicationSetting, AttendanceType, HolidayMidNightTime, StaturoryAtrOfHolidayWork, ParamBreakTime, WorkInformation, WorkHoursDto, AppHolidayWork, AppHdWorkDispInfo, HdWorkDispInfoWithDateOutput } from '../a/define.interface';
+import { PrePostAtr, AppDateContradictionAtr, ParamChangeWorkMobile, OverTimeShiftNight, TrackRecordAtr, BreakTime, TimeZoneNew, TimeZoneWithWorkNo, AppOverTime, ParamCalculateMobile, ParamSelectWorkMobile, InfoWithDateApplication, ParamStartMobile, OvertimeAppAtr, Model, NotUseAtr, ApplicationTime, OvertimeApplicationSetting, AttendanceType, HolidayMidNightTime, StaturoryAtrOfHolidayWork, ParamBreakTime, WorkInformation, WorkHoursDto, AppHolidayWork, AppHdWorkDispInfo, HdWorkDispInfoWithDateOutput } from '../a/define.interface';
 import { component, Prop } from '@app/core/component';
 import { StepwizardComponent } from '@app/components';
 import { KafS10Step1Component } from '../step1';
@@ -9,9 +9,11 @@ import { KDL002Component } from '../../../kdl/002';
 import { Kdl001Component } from '../../../kdl/001';
 import { KafS00ShrComponent, AppType, Application, InitParam } from 'views/kaf/s00/shr';
 import { OverTime } from '../step2/index';
+import { OverTimeWorkHoursDto } from '../../s00/sub/p2';
+import { ExcessTimeStatus } from '../../s00/sub/p1';
 
 @component({
-    name: 'kafs10a',
+    name: 'kafs10',
     route: '/kaf/s10/a',
     style: require('./style.scss'),
     template: require('./index.vue'),
@@ -39,12 +41,22 @@ export class KafS10Component extends KafS00ShrComponent {
     public date: string;
 
     public model: Model = {} as Model;
+
+    public isMsg_1556: boolean = false;
+    public isMsg_1557: boolean = false;
     
     @Prop()
     public readonly params: InitParam;
 
     public get step() {
         return `step_${this.numb}`;
+    }
+
+    public get overTimeWorkHoursDto(): OverTimeWorkHoursDto {
+        const self = this;
+        let model = self.model as Model;
+        
+        return _.get(model, 'appHdWorkDispInfo.otWorkHoursForApplication') || null;
     }
 
     public created() {
@@ -101,7 +113,6 @@ export class KafS10Component extends KafS00ShrComponent {
                 return true;
             }
         }).then((result: any) => {
-            console.log(result);
             if (result) {
                 if (vm.modeNew) {
                     let modelClone = {} as Model;
@@ -139,9 +150,34 @@ export class KafS10Component extends KafS00ShrComponent {
             self.model.appHdWorkDispInfo = res.data;
             let step1 = self.$refs.step1 as KafS10Step1Component;
             step1.loadData(self.model.appHdWorkDispInfo);
+            step1.createHoursWorkTime();
+            // エラーメッセージ(Msg_1556)を画面項目「A_A3_1」に表示する
+            // 帰ってきた「休日出勤申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係あり)．表示する実績内容．実績詳細」== empty
+            let c1 = _.isNil(_.get(self.model, 'appHdWorkDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail'));
+            // 帰ってきた「休日出勤申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係あり)．表示する実績内容．実績詳細．実績スケ区分」= スケジュール
+            let c2 = false;
+            if (!c1) {
+                c2 = _.get(self.model, 'appHdWorkDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.trackRecordAtr') == TrackRecordAtr.SCHEDULE;
+            }
+            // 帰ってきた「休日出勤申請起動時の表示情報．休出申請設定．残業休出申請共通設定．実績超過区分」= チェックする（登録不可）
+            let c3 = _.get(self.model, 'appHdWorkDispInfo.holidayWorkAppSet.overtimeLeaveAppCommonSet.performanceExcessAtr') == AppDateContradictionAtr.CHECKNOTREGISTER;
+            if ((c1 || c2) && c3) {
+                self.isMsg_1556 = true;
+            } else {
+                self.isMsg_1556 = false;
+            }
             self.$mask('hide');
         }).catch((res: any) => {
-            self.$mask('hide');
+            self.$nextTick(() => {
+                self.$mask('hide');
+            });
+            // xử lý lỗi nghiệp vụ riêng
+            self.handleErrorCustom(res).then((result: any) => {
+                if (result) {
+                    // xử lý lỗi nghiệp vụ chung
+                    self.handleErrorCommon(res);
+                }
+            });
         });
     }
 
@@ -179,9 +215,11 @@ export class KafS10Component extends KafS00ShrComponent {
                 command
             ).then((res: any) => {
                 vm.model.appHdWorkDispInfo = res.data;
+                vm.isMsg_1557 = _.get(vm.model, 'appHdWorkDispInfo.calculationResult.actualOvertimeStatus.isExistApp');
+                vm.isMsg_1556 = _.get(vm.model, 'appHdWorkDispInfo.calculationResult.actualOvertimeStatus.achivementStatus') == ExcessTimeStatus.ALARM;
                 vm.numb = value;
                 let step2 = vm.$refs.step2 as KafS10Step2Component;
-                // step2.loadAllData();
+                step2.loadAllData();
                 vm.$nextTick(() => {
                     vm.$mask('hide');
                     step2.$forceUpdate();
@@ -277,6 +315,78 @@ export class KafS10Component extends KafS00ShrComponent {
         return appHolidayWork;
     }
 
+    public toAppHolidayWorkForRegister() {
+        const self = this;
+        let appHolidayWork = self.model.appHolidayWork as AppHolidayWork;
+        let step2 = self.$refs.step2 as KafS10Step2Component;
+
+        let overTimes = step2.overTimes as Array<OverTime>;
+        let holidayTimes = step2.holidayTimes as Array<HolidayTime>;
+        let applicationTime = appHolidayWork.applicationTime = {} as ApplicationTime;
+        let applicationTimes = applicationTime.applicationTime = [] as Array<OvertimeApplicationSetting>;
+        _.forEach(overTimes, (item: OverTime) => {
+            // AttendanceType.NORMALOVERTIME
+            if (item.type == AttendanceType.NORMALOVERTIME && item.applicationTime > 0) {
+                let overtimeApplicationSetting = {} as OvertimeApplicationSetting;
+                overtimeApplicationSetting.attendanceType = AttendanceType.NORMALOVERTIME;
+                overtimeApplicationSetting.frameNo = Number(item.frameNo);
+                overtimeApplicationSetting.applicationTime = item.applicationTime;
+                applicationTimes.push(overtimeApplicationSetting);
+            }
+            if (item.type == AttendanceType.MIDNIGHT_OUTSIDE && item.applicationTime > 0) {
+                if (_.isNil(applicationTime.overTimeShiftNight)) {
+                    applicationTime.overTimeShiftNight = {} as OverTimeShiftNight;
+                }
+                applicationTime.overTimeShiftNight.overTimeMidNight = item.applicationTime;
+            }
+        });
+        _.forEach(holidayTimes, (item: HolidayTime) => {
+            // AttendanceType.BREAKTIME
+            if (item.type == AttendanceType.BREAKTIME && item.applicationTime > 0) {
+                let overtimeApplicationSetting = {} as OvertimeApplicationSetting;
+                overtimeApplicationSetting.attendanceType = AttendanceType.BREAKTIME;
+                overtimeApplicationSetting.frameNo = Number(item.frameNo);
+                overtimeApplicationSetting.applicationTime = item.applicationTime;
+                applicationTimes.push(overtimeApplicationSetting);
+            }
+            if (item.type == AttendanceType.MIDDLE_BREAK_TIME && item.applicationTime > 0) {
+                self.toHolidayMidNightTime(item, applicationTime);
+            } else if (item.type == AttendanceType.MIDDLE_EXORBITANT_HOLIDAY && item.applicationTime > 0) {
+                self.toHolidayMidNightTime(item, applicationTime);
+            } else if (item.type == AttendanceType.MIDDLE_HOLIDAY_HOLIDAY && item.applicationTime > 0) {
+                self.toHolidayMidNightTime(item, applicationTime);
+            }
+        });
+        appHolidayWork.applicationTime.reasonDissociation = [step2.getReasonDivergence()];
+        if (!self.modeNew) {
+            appHolidayWork.application.opAppReason = self.application.opAppReason || self.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason as any;
+            appHolidayWork.application.opAppStandardReasonCD = self.application.opAppStandardReasonCD || self.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD as any;
+        }
+        
+        // assign value to overtime and holidaytime
+        return appHolidayWork;
+    }
+
+    public toHolidayMidNightTime(overTime: HolidayTime, applicationTime: ApplicationTime) {
+        if (_.isNil(applicationTime.overTimeShiftNight)) {
+            applicationTime.overTimeShiftNight = {} as OverTimeShiftNight;
+        }
+        if (_.isNil(applicationTime.overTimeShiftNight.midNightHolidayTimes)) {
+            applicationTime.overTimeShiftNight.midNightHolidayTimes = [] as Array<HolidayMidNightTime>;
+        }
+        let holidayMidNightTime = {} as HolidayMidNightTime;
+        if (overTime.type == AttendanceType.MIDDLE_BREAK_TIME) {
+            holidayMidNightTime.legalClf = StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork;
+        } else if (overTime.type == AttendanceType.MIDDLE_EXORBITANT_HOLIDAY) {
+            holidayMidNightTime.legalClf = StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork;
+        } else {
+            holidayMidNightTime.legalClf = StaturoryAtrOfHolidayWork.PublicHolidayWork;
+        }
+        holidayMidNightTime.attendanceTime = overTime.applicationTime;
+
+        return applicationTime.overTimeShiftNight.midNightHolidayTimes.push(holidayMidNightTime);
+    }
+
     public getBreakTime(command: ParamBreakTime) {
         const self = this;
         self.$mask('show');
@@ -294,7 +404,7 @@ export class KafS10Component extends KafS00ShrComponent {
             }
             let step1 = self.$refs.step1 as KafS10Step1Component;
             if (!_.isNil(step1)) {
-                step1.createBreakTime(res.data.timeZones);
+                step1.createBreakTime(appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.breakTimeZoneSettingList.timeZones);
             }
 
         }).catch((res: any) => {
@@ -343,7 +453,7 @@ export class KafS10Component extends KafS00ShrComponent {
                     );
                     let command = {} as ParamChangeWorkMobile;
                     command.companyId = self.user.companyId;
-                    command.appDate = self.application.appDate;
+                    command.appDate = self.modeNew ? self.date : self.appDispInfoStartupOutput.appDetailScreenInfo.application.appDate;
                     command.workTypeCode = step1.workInfo.workType.code;
                     command.workTimeCode = step1.workInfo.workTime.code;
                     // command.startTime = step1.workHours1.start;
@@ -364,15 +474,20 @@ export class KafS10Component extends KafS00ShrComponent {
                     if (!_.isNil(appHdWorkDispInfo)) {
                         appHdWorkDispInfo = res.data;
                         appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.initWorkType = step1.workInfo.workType.code;
+                        appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.initWorkTypeName = step1.workInfo.workType.name;
                         appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.initWorkTime = step1.workInfo.workTime.code;
+                        appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.initWorkTimeName = step1.workInfo.workTime.name;
                     } else {
                         appHdWorkDispInfo = {} as AppHdWorkDispInfo;
                         appHdWorkDispInfo = res.data;
                         appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.initWorkType = step1.workInfo.workType.code;
+                        appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.initWorkTypeName = step1.workInfo.workType.name;
                         appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.initWorkTime = step1.workInfo.workTime.code;
+                        appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.initWorkTimeName = step1.workInfo.workTime.name;
                     }
                     self.model.appHdWorkDispInfo = appHdWorkDispInfo;
                     step1.loadData(self.model.appHdWorkDispInfo, true);
+                    step1.createHoursWorkTime();
                 }).catch((res: any) => {
                     self.handleErrorMessage(res);
                 }).then(() => self.$mask('hide'));
@@ -394,7 +509,7 @@ export class KafS10Component extends KafS00ShrComponent {
 
                     let command = {} as ParamChangeWorkMobile;
                     command.companyId = self.user.companyId;
-                    command.appDate = self.application.appDate;
+                    command.appDate = self.modeNew ? self.date : self.appDispInfoStartupOutput.appDetailScreenInfo.application.appDate;
                     command.workTypeCode = step1.workInfo.workType.code;
                     command.workTimeCode = step1.workInfo.workTime.code;
                     // command.startTime = step1.workHours1.start;
@@ -415,24 +530,87 @@ export class KafS10Component extends KafS00ShrComponent {
                     if (!_.isNil(appHdWorkDispInfo)) {
                         appHdWorkDispInfo = res.data;
                         appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.initWorkType = step1.workInfo.workType.code;
+                        appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.initWorkTypeName = step1.workInfo.workType.name;
                         appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.initWorkTime = step1.workInfo.workTime.code;
+                        appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.initWorkTimeName = step1.workInfo.workTime.name;
                     } else {
                         appHdWorkDispInfo = {} as AppHdWorkDispInfo;
                         appHdWorkDispInfo = res.data;
                         appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.initWorkType = step1.workInfo.workType.code;
+                        appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.initWorkTypeName = step1.workInfo.workType.name;
                         appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.initWorkTime = step1.workInfo.workTime.code;
+                        appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.initWorkTimeName = step1.workInfo.workTime.name;
                     }
                     self.model.appHdWorkDispInfo = appHdWorkDispInfo;
                     step1.loadData(self.model.appHdWorkDispInfo, true);
+                    step1.createHoursWorkTime();
             }).catch((res: any) => {
                     self.handleErrorMessage(res);
             }).then(() => self.$mask('hide'));
         }
     }
 
+    public register() {
+        const vm = this;
+        vm.$mask('show');
+        let step2 = vm.$refs.step2 as KafS10Step2Component;
+        vm.isValidateAll = vm.customValidate(step2);
+        // step2.$validate();
+        if (!step2.$valid || !vm.isValidateAll) {
+            window.scrollTo(500, 0);
+            vm.$nextTick(() => vm.$mask('hide'));
+
+            return;
+        }
+        vm.model.appHolidayWork = vm.toAppHolidayWorkForRegister();
+        vm.$http.post('at', API.checkBeforeRegister, {
+            require: true,
+            mode: vm.modeNew,
+            companyId: vm.user.companyId,
+            appHdWorkDispInfo: vm.model.appHdWorkDispInfo,
+            appHolidayWorkInsert: vm.model.appHolidayWork,
+            appHolidayWorkUpdate: vm.model.appHolidayWork,
+        }).then((result: any) => {
+            if (result) {
+                // xử lý confirmMsg
+                return vm.handleConfirmMessage(result.data.confirmMsgOutputs);
+            }
+        }).then((result: any) => {
+            if (result) {
+                // đăng kí 
+                return vm.$http.post('at', API.register, {
+                    mode: vm.modeNew,
+                    companyId: vm.user.companyId,
+                    appHolidayWorkInsert: vm.model.appHolidayWork,
+                    appHolidayWorkUpdate: vm.model.appHolidayWork,
+                    appTypeSetting: vm.model.appHdWorkDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting[0],
+                    appHdWorkDispInfo: vm.model.appHdWorkDispInfo
+                }).then((result: any) => {
+                    vm.appId = result.data.appID;
+                    vm.toStep(3);
+                });
+            }
+        }).then((result: any) => {
+            if (result) {
+                // gửi mail sau khi đăng kí
+                // return vm.$ajax('at', API.sendMailAfterRegisterSample);
+                return true;
+            }
+        }).catch((failData) => {
+            // xử lý lỗi nghiệp vụ riêng
+            vm.handleErrorCustom(failData).then((result: any) => {
+                if (result) {
+                    // xử lý lỗi nghiệp vụ chung
+                    vm.handleErrorCommon(failData);
+                }
+            });
+        }).then(() => {
+            vm.$nextTick(() => vm.$mask('hide'));
+        });
+    }
+
     public kaf000BChangeDate(objectDate) {
         const self = this;
-        console.log('emit', objectDate);
         if (objectDate.startDate) {
             if (self.modeNew) {
                 self.application.appDate = self.$dt.date(objectDate.startDate, 'YYYY/MM/DD');
@@ -446,19 +624,16 @@ export class KafS10Component extends KafS00ShrComponent {
 
     public kaf000BChangePrePost(prePostAtr) {
         const self = this;
-        console.log('emit', prePostAtr);
         self.application.prePostAtr = prePostAtr;
     }
 
     public kaf000CChangeReasonCD(opAppStandardReasonCD) {
         const self = this;
-        console.log('emit', opAppStandardReasonCD);
         self.application.opAppStandardReasonCD = opAppStandardReasonCD;
     }
 
     public kaf000CChangeAppReason(opAppReason) {
         const self = this;
-        console.log('emit', opAppReason);
         self.application.opAppReason = opAppReason;
     }
 
@@ -481,17 +656,61 @@ export class KafS10Component extends KafS00ShrComponent {
         const vm = this;
 
         return new Promise((resolve) => {
-            if (failData.messageId == 'Msg_26') {
-                vm.$modal.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
+            switch (failData.messageId) {
+                case 'Msg_26':
+                    vm.$modal.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
                     .then(() => {
                         vm.$goto('ccg008a');
                     });
 
-                return resolve(false);
-            }
+                    return resolve(false);
+                case 'Msg_1556':
+                    vm.isMsg_1556 = true;
 
-            return resolve(true);
+                    return resolve(false);
+                default:
+
+                    return resolve(true);
+            }
         });
+    }
+
+    public handleConfirmMessage(listMes: any): any {
+        const vm = this;
+
+        return new Promise((resolve) => {
+            if (_.isEmpty(listMes)) {
+                return resolve(true);
+            }
+            let msg = listMes[0];
+
+            return vm.$modal.confirm({ messageId: msg.msgID, messageParams: msg.paramLst })
+                .then((value) => {
+                    if (value === 'yes') {
+                        return vm.handleConfirmMessage(_.drop(listMes)).then((result) => {
+                            if (result) {
+                                return resolve(true);
+                            }
+
+                            return resolve(false);
+                        });
+                    }
+
+                    return resolve(false);
+                });
+        });
+    }
+
+    public backToStep1(res: InitParam) {
+        const vm = this;
+        vm.toStep(1);
+        vm.modeNew = false;
+        let model = {} as Model;
+        model.appHolidayWork = res.appDetail.appHolidayWork as AppHolidayWork;
+        model.appHdWorkDispInfo = res.appDetail.appHdWorkDispInfo as AppHdWorkDispInfo;
+        vm.appDispInfoStartupOutput = res.appDispInfoStartupOutput;
+        vm.model = model;
+        vm.fetchData();
     }
 
     //  休日出勤申請起動時の表示情報．休出申請設定．残業休出申請共通設定」．時間外表示区分＝表示する
@@ -639,6 +858,13 @@ export class KafS10Component extends KafS00ShrComponent {
         return self.c6 && self.c7 && self.c9;
     }
 
+    //  ※6 = ○　AND　※9 = ○
+    public get c9_3() {
+        const self = this;
+
+        return self.c6 && self.c9;
+    }
+
     //  ＄：休日出勤申請起動時の表示情報
     //  「＄．利用する乖離理由」<> empty
     //  AND 「＄．利用する乖離理由．乖離理由の選択肢を利用する」がtrue 
@@ -646,7 +872,7 @@ export class KafS10Component extends KafS00ShrComponent {
     public get c10() {
         const self = this;
         let model = self.model as Model;
-        if (self.application.prePostAtr == 1) {
+        if (!_.isNil(self.application) && self.application.prePostAtr == 1) {
             if (_.get(model, 'appHdWorkDispInfo.hdWorkOvertimeReflect.holidayWorkAppReflect.after.othersReflect.reflectDivergentReasonAtr') == NotUseAtr.USE && 
                 (_.get(model, 'appHdWorkDispInfo.divergenceReasonInputMethod').length > 0 && _.get(model, 'appHdWorkDispInfo.divergenceReasonInputMethod[0].divergenceReasonSelected'))) {
                 return true;
@@ -663,7 +889,7 @@ export class KafS10Component extends KafS00ShrComponent {
     public get c11() {
         const self = this;
         let model = self.model as Model;
-        if (self.application.prePostAtr == 1) {
+        if (!_.isNil(self.application) && self.application.prePostAtr == 1) {
             if (_.get(model, 'appHdWorkDispInfo.hdWorkOvertimeReflect.holidayWorkAppReflect.after.othersReflect.reflectDivergentReasonAtr') == NotUseAtr.USE && 
                 (_.get(model, 'appHdWorkDispInfo.divergenceReasonInputMethod').length > 0 && _.get(model, 'appHdWorkDispInfo.divergenceReasonInputMethod[0].divergenceReasonInputed'))) {
                 return true;
