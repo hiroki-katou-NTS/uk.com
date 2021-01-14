@@ -12,6 +12,42 @@ import { component, Prop } from '@app/core/component';
 export class KafS00SubP2Component extends Vue {
     @Prop({ default: () => ({}) })
     public params: OverTimeWorkHoursDto;
+
+    get currentMonthTime36() {
+        const vm = this;
+        if (vm.params.isCurrentMonth) {
+            return vm.params.currentTimeMonth.legalMaxTime.threshold.erAlTime.error;
+        } else {
+            return vm.params.currentTimeMonth.agreementTime.threshold.erAlTime.error;
+        }
+    }
+
+    get currentMonthActual() {
+        const vm = this;
+        if (vm.params.isCurrentMonth) {
+            return vm.params.currentTimeMonth.legalMaxTime.agreementTime;
+        } else {
+            return vm.params.currentTimeMonth.agreementTime.agreementTime;
+        }
+    }
+
+    get nextMonthTime36() {
+        const vm = this;
+        if (vm.params.isCurrentMonth) {
+            return vm.params.nextTimeMonth.legalMaxTime.threshold.erAlTime.error;
+        } else {
+            return vm.params.nextTimeMonth.agreementTime.threshold.erAlTime.error;
+        }
+    }
+
+    get nextMonthActual() {
+        const vm = this;
+        if (vm.params.isCurrentMonth) {
+            return vm.params.nextTimeMonth.legalMaxTime.agreementTime;
+        } else {
+            return vm.params.nextTimeMonth.agreementTime.agreementTime;
+        }
+    }
 }
 
 export interface OverTimeWorkHoursDto {
@@ -45,17 +81,23 @@ interface AgreementTimeOfManagePeriodDto {
 }
 
 interface AgreementTimeOfMonthlyDto {
+    /** 対象時間 */
     agreementTime: number;
+    /** 閾値 */
     threshold: OneMonthTimeDto;
 }
 
 interface OneMonthTimeDto {
+    /** エラーアラーム時間 */
     erAlTime: OneMonthErrorAlarmTimeDto;
+    /** 上限時間 */
     upperLimit: number;
 }
 
 interface OneMonthErrorAlarmTimeDto {
+    /** エラー時間 */
     error: number;
+    /** アラーム時間 */ 
     alarm: number;
 }
 
