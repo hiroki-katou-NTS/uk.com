@@ -1226,6 +1226,7 @@ public class ScheduleCreatorExecutionTransaction {
 			if(getMonthlySetting.isPresent()) {
 				return new PrepareWorkOutput(getMonthlySetting.get().getWorkInformation(), null, null, Optional.empty());
 			}
+			return new PrepareWorkOutput(null, null, null, Optional.empty());
 		} else {
 			// 「労働条件項目．月間パターン」をチェックする
 			// Nullでない 場合
