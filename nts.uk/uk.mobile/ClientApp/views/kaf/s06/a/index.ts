@@ -1495,7 +1495,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
         }
         if (self.c20) {
             // A10_5
-            applyForSpeLeave.relationshipReason = self.relationshipReason;
+            applyForSpeLeave.relationshipReason = self.relationshipReason || null;
         }
         if (_.some(applyForSpeLeave) || self.c18_1) {
             info.applyForSpeLeave = applyForSpeLeave;
