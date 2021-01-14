@@ -162,7 +162,7 @@
           <table>
             <tbody data-bind="foreach: otherContact">
               <!-- 項目制御 ※11 -->
-              <tr data-bind="if: !_.isNull($data)">
+              <tr data-bind="if: !_.isNull($data) &amp;&amp; !_.isEmpty($data.contactAddress)">
                 <td class="w-175" data-bind="text: $vm.$i18n('CDL010_14', [contactName])"></td>
                 <td data-bind="text: contactAddress"></td>
               </tr>
