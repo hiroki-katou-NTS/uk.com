@@ -30,7 +30,7 @@ public class PersonalInfomationDomainService {
 	 * @param baseDate 基準日
 	 * @return List<PersonalInfomationObj> List<個人基本情報>
 	 */
-	public List<PersonalInfomationObj> getPersonalInfomation(Require require, List<String> sids, GeneralDate baseDate) {
+	public static List<PersonalInfomationObj> getPersonalInfomation(Require require, List<String> sids, GeneralDate baseDate) {
 		// 社員の職場IDを取得する
 		Map<String, String> employeesWorkplaceId = require.getEmployeesWorkplaceId(sids, baseDate);
 		// 社員の職位を取得する
@@ -53,7 +53,7 @@ public class PersonalInfomationDomainService {
 		Map<String, EmployeeBasicImport> personalInformation = require.getPersonalInformation(sids);
 
 		// Sort
-		List<PersonalInfomationObj> sortedList = this.sortingProcess(sids, workplaceInforSidMap,
+		List<PersonalInfomationObj> sortedList = sortingProcess(sids, workplaceInforSidMap,
 				positionBySidsAndBaseDate, rankOfPosition, personalInformation);
 		return sortedList;
 	}
@@ -70,7 +70,7 @@ public class PersonalInfomationDomainService {
 	 * @param personalInfo  Map<社員ID、個人基本情報>
 	 * @return List<個人基本情報>
 	 */
-	private List<PersonalInfomationObj> sortingProcess(
+	private static List<PersonalInfomationObj> sortingProcess(
 			List<String> sIds,
 			Map<String, WorkplaceInforImport> workplaceInfo, 
 			Map<String, EmployeeJobHistImport> positionId,
@@ -98,7 +98,7 @@ public class PersonalInfomationDomainService {
 		return sortInfomation;
 	}
 
-	private Optional<Integer> getOrder(String sequenceCode, List<SequenceMasterImport> positionOrder) {
+	private static Optional<Integer> getOrder(String sequenceCode, List<SequenceMasterImport> positionOrder) {
 		List<SequenceMasterImport> filterList = positionOrder.stream()
 				.filter(position -> position.getSequenceCode().equalsIgnoreCase(sequenceCode))
 				.collect(Collectors.toList());

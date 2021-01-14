@@ -1,5 +1,6 @@
 package nts.uk.ctx.health.dom.emoji.manage;
 
+import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -7,6 +8,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 /*
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.NittsuSystem.Common (NtsCommons).ヘルスライフ.感情状態管理.感情状態管理.感情状態管理
  */
+@Getter
 public class EmojiStateMng extends AggregateRoot {
 	// 会社ID
 	private String cid;
