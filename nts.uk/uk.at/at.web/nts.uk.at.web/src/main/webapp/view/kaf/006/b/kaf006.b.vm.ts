@@ -1128,7 +1128,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 						vm.over60H(null);
 					}
 				if (vm.data.vacationApplicationReflect.timeLeaveReflect.substituteLeaveTime === 1 
-					&& vm.data.remainVacationInfo.accumulatedRestManagement.accumulatedManage === 1) {
+					&& vm.data.remainVacationInfo.substituteLeaveManagement.substituteLeaveManagement === 1) {
 						vm.condition19Substitute(true);
 					} else {
 						vm.condition19Substitute(false);
