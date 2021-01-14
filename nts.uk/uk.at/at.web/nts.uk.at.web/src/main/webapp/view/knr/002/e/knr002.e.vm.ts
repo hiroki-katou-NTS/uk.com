@@ -83,6 +83,7 @@ module nts.uk.at.view.knr002.e {
                                 vm.selectedCode(ui.row.id);
                                 vm.loadBackupContent(vm.selectedCode());
                                 vm.selectedName(vm.initData().listTimeRecordSetFormatBakEDto[vm.selectedRow()].empInfoTerName);
+                                $('#bak-grid2_container').focus();
                             }
                         }
                     ]
@@ -176,7 +177,9 @@ module nts.uk.at.view.knr002.e {
                                 $('#bak-grid2').igGridSelection('selectRow', vm.selectedRow());
                                 vm.loadLocalSettings(vm.selectedCode());
                                 vm.selectedName(vm.initData().listEmpInfoTerminal[vm.selectedRow()].empInfoTerName);
+                                $('#bak-grid1_container').focus();
                             }
+                            
                         }
                     ]
                 });
@@ -275,6 +278,7 @@ module nts.uk.at.view.knr002.e {
                         vm.loadSettingGrid();
                         vm.loadBakGrid();
                         vm.loadInstalledTerminals(vm.selectedMode());
+                        $('#bak-grid1_container').focus();
                     }
                 })
                 .fail((res: any) => console.log(res))

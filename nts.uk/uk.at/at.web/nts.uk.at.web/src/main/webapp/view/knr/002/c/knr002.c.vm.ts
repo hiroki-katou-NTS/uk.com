@@ -78,7 +78,6 @@ module nts.uk.at.view.knr002.c {
                     vm.smallClassificationName(rowData.smallClassification);
                     vm.rowData(rowData);
                     vm.setInputMode(rowData.inputType);
-
                     vm.bindDataByType(rowData);
                 })
 
@@ -93,6 +92,7 @@ module nts.uk.at.view.knr002.c {
                 
                 switch(vm.inputMode()) {
                     case INPUT_TYPE.LETTER:
+                        $('#C6_5').focus();
                         let inputRange = rowData.inputRange.split(':');
                         vm.fromLetter(inputRange[0]);
                         vm.toLetter(inputRange[1]);
@@ -103,6 +103,7 @@ module nts.uk.at.view.knr002.c {
                         vm.updateValue(rowData.updateValue);
                         break;
                     case INPUT_TYPE.LETTER2:
+                        $('#C6_5').focus();
                         if (rowData.updateValue.length == 0) {
                             vm.updateValue(rowData.currentValue);
                             break;
@@ -110,6 +111,7 @@ module nts.uk.at.view.knr002.c {
                         vm.updateValue(rowData.updateValue);
                         break;    
                     case INPUT_TYPE.TIME:
+                        $('#C7_7').focus();
                         vm.timeInputRange(rowData.inputRange);
                         if (rowData.updateValue.length == 0) {
                             vm.updateValue(rowData.currentValue);
@@ -118,6 +120,7 @@ module nts.uk.at.view.knr002.c {
                         vm.updateValue(rowData.updateValue);
                         break;
                     case INPUT_TYPE.IP:
+                        $('#C8_5').focus();
                         if (rowData.updateValue.length == 0) {
                             let ipArr = rowData.currentValue.split('.');
                             vm.ipAddress1(parseInt(ipArr[0]));
@@ -133,6 +136,7 @@ module nts.uk.at.view.knr002.c {
                         vm.ipAddress4(parseInt(ipArr[3]));
                         break;
                     case INPUT_TYPE.SELECTION:
+                        $('.radio-right').focus();
                         let inputRangeArr = rowData.inputRange.split('/');
                         vm.currentValueList(inputRangeArr.map((item: any) => new BoxModel(item.charAt(0), item.substring(2, item.length -1))));
                         vm.selectedCurrentValue(rowData.currentValue);
@@ -153,9 +157,11 @@ module nts.uk.at.view.knr002.c {
                                 updateValueList.push(data);
                             });
                             vm.updateValueList(updateValueList);
+                            $('.update-check div')[0].focus();
                           break;
                         } 
                         vm.updateValueList(inputRangeArrCheck.map((item: any, index: number) => new BoxModel(item.charAt(0), item.substring(2, item.length -1), rowData.updateValue.indexOf(item.charAt(0)) !== -1 ? true : false)));
+                            $('.update-check div')[0].focus();
                         break;
                 }
             }
@@ -172,6 +178,8 @@ module nts.uk.at.view.knr002.c {
 
             public registerAndSubmit() {
                 const vm = this;
+
+                $('#single-list_container').focus();
 
                 if (vm.hasError()) {
                     return;
