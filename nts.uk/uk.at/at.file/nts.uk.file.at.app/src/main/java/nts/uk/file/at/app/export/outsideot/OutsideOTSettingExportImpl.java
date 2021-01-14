@@ -91,12 +91,12 @@ public class OutsideOTSettingExportImpl implements MasterListData {
     /**
      * The Constant TABLE_TWO.
      */
-    private static final String TABLE_TWO = "Table 002";
+    private static final String TABLE_TWO = "Table 003";
 
     /**
      * The Constant TABLE_THREE.
      */
-    private static final String TABLE_THREE = "Table 003";
+    private static final String TABLE_THREE = "Table 002";
 
     /**
      * The Constant TABLE_FOUR.
