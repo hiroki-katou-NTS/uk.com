@@ -747,6 +747,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
         vm.isValidateAll = vm.customValidate(vm);
         vm.$validate();
         if (!vm.$valid || !vm.isValidateAll) {
+            window.scrollTo(500, 0);
             vm.$nextTick(() => vm.$mask('hide'));
 
             return;
