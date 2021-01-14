@@ -23,7 +23,7 @@ module nts.uk.at.view.kdl049.a.viewmodel {
             var self = this;
 
             let data = nts.uk.ui.windows.getShared('KDL049');
-            if (data.workplace != null) {
+            if (data.workplace != null && data.workplace.workPlaceID != 0) {
                 self.targetWorkplace(data.workplace.targetOrgWorkplaceName);
                 self.workPlaceID(data.workplace.workPlaceID);
             }
@@ -48,7 +48,7 @@ module nts.uk.at.view.kdl049.a.viewmodel {
                 targetDate: data.dateSelected
             }
             service.startUp(param).done(function(result) {
-                self.targetDate(result.optComEvent.date);
+                self.targetDate(moment(data.dateSelected, "YYYY/MM/DD").format("YYYY/MM/DD"));
                 self.comEventName(result.optComEvent.name);
                 self.wplEventName(result.optWorkplaceEvent.name);
                 console.log(result);

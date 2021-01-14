@@ -28,6 +28,7 @@ module nts.uk.at.view.kdl053 {
                 let temp: any = [];
                 _.each(errorRegistrationListTmp, err => {
                     if(err.sid == id) {
+                        err.employeeCdName = err.scd + " " + err.empName;
                         temp.push(err);
                     }
                 })               
@@ -61,7 +62,7 @@ module nts.uk.at.view.kdl053 {
                 }
             })
 
-            let listIds: Array<any> = _.map(errorRegistrationList, item => { return item.errId }); 
+            let listIds: Array<any> = _.map(errorRegistrationList, item => { return item.attendanceItemId }); 
 
             this.$blockui("invisible");
             self.$ajax(Paths.GET_ATENDANCENAME_BY_IDS,listIds).done((data: Array<any>)=>{
@@ -71,8 +72,8 @@ module nts.uk.at.view.kdl053 {
                         item.id = idx;
                         idx++;
                         _.each(data, itemName =>{
-                            if(item.errId == itemName.attendanceItemId ){
-                                errorRegistrationList[index].errName = itemName.attendanceItemName;
+                            if(item.attendanceItemId == itemName.attendanceItemId ){
+                                errorRegistrationList[index].errName = itemName.attendanceItemName;                                
                                 index++;
                             }                           
                         })
@@ -94,7 +95,7 @@ module nts.uk.at.view.kdl053 {
                         { headerText: getText('KDL053_5'), key: "employeeCdName", dataType: "string", width: "25%" },                          
                         { headerText: getText('KDL053_6'), key: "dateCss", dataType: "string", width: "16%" },
                         { headerText: getText('KDL053_7'), key: "errName", dataType: "string", width: "18%" },
-                        { headerText: getText('KDL053_8'), key: "errMsg", width:"35%" }                                   
+                        { headerText: getText('KDL053_8'), key: "errorMessage", width:"35%" }                                   
                     ],
                     features: [
                         {
@@ -104,6 +105,7 @@ module nts.uk.at.view.kdl053 {
                         }
                     ]
                 });
+                $('#btnClose').focus();
                 self.$blockui("hide");
             })
             .always(() => {
