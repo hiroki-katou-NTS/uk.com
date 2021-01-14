@@ -215,7 +215,7 @@ public class GetFixedWorkInformation {
 			} else {
 				// 1.7 List<勤務NOごとの変更可能な勤務時間帯>.isEmpty
 				inforDto = new FixedWorkInforDto(null, null, null, new ArrayList<>(), null, null,
-						type.get().getAbbreviationName().v(), null, null, null, null, dayAttr.value == AttendanceDayAttr.HOLIDAY.value ? true : false, false);
+						type.get().getAbbreviationName().v(), null, null, null, null, dayAttr.value == AttendanceDayAttr.HOLIDAY.value ? true : false, workTimeSetting.value == 2 ? false : true);
 				inforDtos.add(inforDto);
 			}
 		}
