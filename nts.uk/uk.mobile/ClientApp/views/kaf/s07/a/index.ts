@@ -134,7 +134,11 @@ export class KafS07AComponent extends KafS00ShrComponent {
         self.$auth.user.then((usr: any) => {
             self.user = usr;
         }).then(() => {
-            return self.loadCommonSetting(AppType.WORK_CHANGE_APPLICATION);
+            if (self.mode) {
+                return self.loadCommonSetting(AppType.WORK_CHANGE_APPLICATION);
+            }
+
+            return true;
         }).then((loadData: any) => {
             if (loadData) {
                 let param = self.mode ? 
@@ -157,7 +161,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
 
                 return self.$http.post('at', API.startS07, param);
             }
-            if (self.appDispInfoStartupOutput) {
+            if (!_.isNil(_.get(self.appDispInfoStartupOutput, 'appDispInfoWithDateOutput.opErrorFlag'))) {
                 if (self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag != 0) {
                     let param = self.mode ? 
                 {
@@ -191,14 +195,14 @@ export class KafS07AComponent extends KafS00ShrComponent {
             self.createParamC();
             // let appWorkChange = res.data.appWorkChange;
             self.bindStart();
-            self.$mask('hide');
         }).catch((err: any) => {
             self.handleErrorMessage(err).then((res: any) => {
                 if (err.messageId == 'Msg_43') {
                     self.$goto('ccg008a');
                 }
             });
-        });
+        })
+        .then(() => self.$mask('hide'));
     }
 
 

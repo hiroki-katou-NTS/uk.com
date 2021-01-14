@@ -1,15 +1,15 @@
 <template>
-<div class="cmms45shrcomponentsapp0">
+<div class="cmms45shrcomponentsapp6">
     <!-- B1_1 -->
-    <div class="card card-label" v-if="c3">
+    <div class="card card-label">
         <div class="card-header uk-bg-accordion mt-2 headerDiv">
-            <span class="textPosition">{{ "KAFS05_63" | i18n }}</span>
+            <span class="textPosition">{{ "KAFS10_4" | i18n }}</span>
         </div>
     </div>
-    <div v-if="c3">
+    <div>
         <!-- B1_2 -->
         <div class="row mt-1 mb-1">
-            <div class="col-12 pl-3 textSize">{{"KAFS05_64" | i18n}}</div>
+            <div class="col-12 pl-3 textSize">{{"KAFS10_5" | i18n}}</div>
         </div>
         <!-- B1_3 -->
         <div class="row mt-1 mb-1">
@@ -23,7 +23,7 @@
 
         <!-- B1_4 -->
         <div class="row mt-1 mb-1">
-            <div class="col-12 pl-3 textSize"> {{"KAFS05_65" | i18n}} </div>
+            <div class="col-12 pl-3 textSize"> {{"KAFS10_6" | i18n}} </div>
         </div>
         <!-- B1_5 -->
         <div class="row mt-1 mb-1">
@@ -37,13 +37,13 @@
     </div>
 
     <!-- B2_1 -->
-    <div class="card card-label" v-if="c3">
+    <div class="card card-label">
         <div class="card-header uk-bg-accordion mt-2 headerDiv">
-            <span class="textPosition">{{ "KAFS05_66" | i18n }}</span>
+            <span class="textPosition">{{ "KAFS10_7" | i18n }}</span>
         </div>
     </div>
     <!-- B2_2 -->
-    <div v-if="c3">
+    <div>
         <div class="row mt-1 mb-1">
             <div class="col-1.5 pl-3 pr-1 text-left">
                 {{workHours1.start}}
@@ -57,15 +57,14 @@
         </div>
     </div>
 
-
     <!-- B3_1 -->
-    <div class="card card-label" v-if="c3_2">
+    <div class="card card-label" v-if="c3">
         <div class="card-header uk-bg-accordion mt-2 headerDiv">
-            <span class="textPosition">{{ "KAFS05_67" | i18n }}</span>
+            <span class="textPosition">{{ "KAFS10_8" | i18n }}</span>
         </div>
     </div>
     <!-- B3_2 -->
-    <div v-if="c3_2">
+    <div v-if="c3">
         <div class="row mt-1 mb-1">
             <div class="col-1.5 pl-3 pr-1 text-left">
                 {{workHours2.start}}
@@ -79,15 +78,13 @@
         </div>
     </div>
 
-
     <!-- B4_1 -->
-    <div class="card card-label" v-if="c3_1">
+    <div class="card card-label" v-if="c4">
         <div class="card-header uk-bg-accordion mt-2 headerDiv">
-            <span class="textPosition">{{ "KAFS05_68" | i18n }}</span>
+            <span class="textPosition">{{ "KAFS10_9" | i18n }}</span>
         </div>
     </div>
-    <div v-if="c3_1">
-        <div v-if="isEmptyBreakTime">{{'KAFS05_54' | i18n}}</div>
+    <div v-if="c4">
         <div 
         v-for="(item, index) in breakTimes"
         v-bind:key="index"
@@ -113,78 +110,34 @@
     </div>
 
     <!-- B5_1 -->
-    <div class="card card-label" v-if="c4">
+    <div class="card card-label">
         <div class="card-header uk-bg-accordion mt-2 headerDiv">
-            <span class="textPosition">{{ "KAFS05_70" | i18n }}</span>
+            <span class="textPosition">{{ "KAFS10_13" | i18n }}</span>
         </div>
     </div>
-    <div
-    v-for="(item, index) in overTimes"
-    v-bind:key="index"
-    :value="index"
-    >   
-        <div v-if="c4" class="row mt-1 mb-1">
-            <!-- B5_2_1 -->
-            <div class="col pl-4 textSize">
-                {{item.title}}
-            </div>
-            <!-- B5_2_2 -->
-            <div class="col-6">
-                {{$dt.timedr(item.applicationTime)}}  
-            </div>
-        </div>
-
-        <div v-if="c4_1 && c4" class="row mt-1 mb-1">
-            <!-- B5_2_3 -->
-            <div class="col ml-4">
-                <div>
-                      <kafs00subp1 v-bind:params="item.preApp" />
-                </div>
-            </div>
-            <!-- B5_2_4 -->
-            <div class="col-6">
-                <div>
-                      <kafs00subp1 v-bind:params="item.actualApp" />
-                </div>  
-            </div>
-        </div>
-        <hr v-if="index + 1 != overTimes.length" class="row my-0">
-    </div>
-
-
-
-
-    <!-- B6_1 -->
-    <div class="card card-label" v-if="c18">
-        <div class="card-header uk-bg-accordion mt-2 headerDiv">
-            <span class="textPosition">{{ "KAFS05_73" | i18n }}</span>
-        </div>
-    </div>
-    <div v-if="c18">
+    <div>
       <div
       v-for="(item, index) in holidayTimes"
         v-bind:key="index"
         :value="index"
       >  
-        <div class="row mt-1 mb-1">
-            <!-- B6_2_1 -->
+        <div v-show="item.visible" class="row mt-1 mb-1">
+            <!-- B5_2 -->
             <div class="col pl-4 textSize">
                 {{item.title}}
             </div>
-            <!-- B6_2_2 -->
+            <!-- B5_3 -->
             <div class="col-6">
                 {{$dt.timedr(item.applicationTime)}}    
             </div>
         </div>
-
-        <div v-if="c4_1" class="row mt-1 mb-1">
-            <!-- B6_2_3 -->
+        <!-- B5_4 -->
+        <div v-show="item.visible" class="row mt-1 mb-1">
             <div class="col ml-4">
                 <div>
                       <kafs00subp1 v-bind:params="item.preApp" />
                 </div>
             </div>
-            <!-- B6_2_4 -->
             <div class="col-6">
                 <div>
                       <kafs00subp1 v-bind:params="item.actualApp" />
@@ -195,5 +148,41 @@
        </div> 
     </div>
 
+    <!-- B6_1 -->
+    <div class="card card-label" v-if="c13">
+        <div class="card-header uk-bg-accordion mt-2 headerDiv">
+            <span class="textPosition">{{ "KAFS10_17" | i18n }}</span>
+        </div>
+    </div>
+    <div
+    v-for="(item, index) in overTimes"
+    v-bind:key="index"
+    :value="index"
+    >   
+        <div v-if="item.visible" class="row mt-1 mb-1">
+            <!-- B6_2 -->
+            <div class="col pl-4 textSize">
+                {{item.title}}
+            </div>
+            <!-- B6_3 -->
+            <div class="col-6">
+                {{$dt.timedr(item.applicationTime)}}  
+            </div>
+        </div>
+        <!-- B6_4 -->
+        <div v-if="item.visible" class="row mt-1 mb-1">
+            <div class="col ml-4">
+                <div>
+                      <kafs00subp1 v-bind:params="item.preApp" />
+                </div>
+            </div>
+            <div class="col-6">
+                <div>
+                      <kafs00subp1 v-bind:params="item.actualApp" />
+                </div>  
+            </div>
+        </div>
+        <hr v-if="index + 1 != overTimes.length" class="row my-0">
+    </div>
 </div>
 </template>

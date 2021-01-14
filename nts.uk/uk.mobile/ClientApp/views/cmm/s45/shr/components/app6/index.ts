@@ -1,96 +1,176 @@
 import { _, Vue } from '@app/provider';
-import { component } from '@app/core/component';
-import { KafS10Component } from '../a/index';
+import { component, Prop } from '@app/core/component';
+import { KafS00SubP1Component, ExcessTimeStatus } from 'views/kaf/s00/sub/p1';
 import { KafS00SubP3Component } from 'views/kaf/s00/sub/p3';
-import { KafS00SubP1Component } from 'views/kaf/s00/sub/p1';
-import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/s00';
-import { ExcessTimeStatus } from '../../s00/sub/p1';
-import { KafS00SubP2Component } from 'views/kaf/s00/sub/p2';
-import { ReasonDivergence, ExcessStateMidnight, ExcessStateDetail, OutDateApplication, DivergenceReasonSelect, AppOverTime, OvertimeWorkFrame, DivergenceReasonInputMethod, DivergenceTimeRoot, AttendanceType, OvertimeApplicationSetting, HolidayMidNightTime, StaturoryAtrOfHolidayWork, WorkdayoffFrame, AppHolidayWork } from '../a/define.interface';
+import { ExtraTime, OverTime, HolidayTime } from 'views/kaf/s05/step2';
+import { AppHolidayWork, AppHdWorkDispInfo, ExcessStateMidnight, AttendanceType, WorkdayoffFrame, OutDateApplication, ExcessStateDetail, BreakTimeZoneSetting, OvertimeWorkFrame, TimeZoneWithWorkNo, DisplayInfoOverTime, TimeZoneNew, HolidayMidNightTime, NotUseAtr, OvertimeApplicationSetting, StaturoryAtrOfHolidayWork } from 'views/kaf/s10/a/define.interface';
 
 @component({
-    name: 'kafs10step2',
-    route: '/kaf/s10/step2',
+    name: 'cmms45shrcomponentsapp6',
+    route: '/cmm/s45/shr/components/app6',
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
-    validations: {
-        item: {
-            applicationTime: {
-                constraint: 'OvertimeAppPrimitiveTime'
-            }
-        },
-        reason: {
-            reason: {
-                constraint: 'DivergenceReason',
-
-            }
-        },
-        DivergenceReason: {
-            constraint: 'DivergenceReason'
-        }
-    },
-    constraints: [
-        'nts.uk.ctx.at.request.dom.application.AppReason',
-        'nts.uk.shr.com.time.TimeWithDayAttr',
-        'nts.uk.ctx.at.request.dom.application.overtime.primitivevalue.OvertimeAppPrimitiveTime',
-        'nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.DivergenceReason',
-        'nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReasonContent'
-    ],
+    validations: {},
+    constraints: [],
     components: {
         'kafs00subp3': KafS00SubP3Component,
         'kafs00subp1': KafS00SubP1Component,
-        'kafs00subp2': KafS00SubP2Component,
-        'kafs00-a': KafS00AComponent,
-        'kafs00-b': KafS00BComponent,
-        'kafs00-c': KafS00CComponent
     }
 })
-export class KafS10Step2Component extends Vue {
-    public title: string = 'KafS10Step2';
+export class CmmS45ShrComponentsApp6Component extends Vue {
+    public title: string = 'CmmS45ShrComponentsApp6';
 
-    public overTime: number = null;
+    public workInfo: WorkInfo = {} as WorkInfo;
 
-    public overTimes: Array<OverTime> = [];
-    public holidayTimes: Array<HolidayTime> = [];
+    public reasons: Array<Reason> = [];
 
-    public readonly SPACE_STRING = ' ';
+    public workHours1: WorkHours = {
+        start: '',
+        end: ''
+    } as WorkHours;
 
-    public reason: Reason = {
-        title: '',
-        reason: '',
-        selectedValue: '',
-        dropdownList: [{
-            code: '',
-            text: this.$i18n('KAFS10_29')
-        }]
-    } as Reason;
+    public workHours2: WorkHours = {
+        start: '',
+        end: ''
+    } as WorkHours;
 
-    get $appContext(): KafS10Component {
+    public breakTimes: Array<BreakTime> = [];
+
+    public preApp: ExtraTime = {
+        preAppDisp: true,
+        preAppTime: 0,
+        preAppExcess: ExcessTimeStatus.NONE
+    } as ExtraTime;
+
+    public actualApp: ExtraTime = {
+        actualDisp: true,
+        actualTime: 0,
+        actualExcess: ExcessTimeStatus.NONE
+    } as ExtraTime;
+    @Prop({
+        default: () => ({
+            appDispInfoStartupOutput: null,
+            appDetail: null
+        })
+    })
+    public readonly params: {
+        appDispInfoStartupOutput: any,
+        appDetail: any
+    };
+    public user: any;
+    public dataOutput: DataOutput = {} as DataOutput;
+
+    public holidayTimes: Array<HolidayTime> = [
+        {
+            frameNo: '1',
+            title: 'title',
+            visible: true,
+            applicationTime: 0,
+            preTime: 0,
+            actualTime: 0,
+            preApp: {
+                preAppDisp: true,
+                preAppTime: 0,
+                preAppExcess: ExcessTimeStatus.NONE
+            },
+            actualApp: {
+                actualDisp: true,
+                actualTime: 0,
+                actualExcess: ExcessTimeStatus.NONE
+            },
+            type: AttendanceType.NORMALOVERTIME
+        }
+    ];
+    public overTimes: Array<OverTime> = [
+        {
+            frameNo: '1',
+            title: 'title',
+            visible: true,
+            applicationTime: 0,
+            preTime: 0,
+            actualTime: 0,
+            preApp: {
+                preAppDisp: true,
+                preAppTime: 0,
+                preAppExcess: ExcessTimeStatus.NONE
+            },
+            actualApp: {
+                actualDisp: true,
+                actualTime: 0,
+                actualExcess: ExcessTimeStatus.NONE
+            },
+            type: AttendanceType.NORMALOVERTIME
+        },
+        {
+            frameNo: '1',
+            title: 'title',
+            visible: true,
+            applicationTime: 0,
+            preTime: 0,
+            actualTime: 0,
+            preApp: {
+                preAppDisp: true,
+                preAppTime: 0,
+                preAppExcess: ExcessTimeStatus.NONE
+            },
+            actualApp: {
+                actualDisp: true,
+                actualTime: 0,
+                actualExcess: ExcessTimeStatus.NONE
+            },
+            type: AttendanceType.NORMALOVERTIME
+        }
+    ];
+    
+    public mounted() {
         const self = this;
-
-        return self.$parent as KafS10Component;
+        self.$auth.user.then((usr: any) => {
+            self.user = usr;
+        }).then((res: any) => {
+            self.fetchData(self.params);
+        });
+        self.$watch('params.appDispInfoStartupOutput', (newV, oldV) => {
+            self.fetchData(self.params);
+        });
     }
 
     public created() {
         const self = this;
+        self.createWorkInfo();
+        
     }
-    public mounted() {
+     
+    public fetchData(getParams: any) {
         const self = this;
+        self.$http.post('at', API.start, self.commandStart()).then((res: any) => {
+            let data = {} as DataOutput;
+            data.appHdWorkDispInfo = res.data.appHdWorkDispInfoOutput;
+            data.appHolidayWork = res.data.appHolidayWork;
+            self.dataOutput = data;
+            self.params.appDetail = self.dataOutput;
+            self.bindComponent();
+            self.$emit('loading-complete', self.reasons);
+        }).catch((res: any) => {
+            self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+            self.$emit('loading-complete');
+        });
     }
 
-    public loadAllData() {
+    public bindComponent() {
         const self = this;
-        self.bindReasonDivergence();
-        self.bindHolidayTime();
-        self.bindOverTime();
+        self.bindWorkInfo();
+        self.bindWorkHours();
+        self.bindBreakTime();
+        self.bindHolidayTimes();
+        self.bindOverTimes();
+        self.bindReasons();
     }
-
-    public bindHolidayTime() {
+    public bindHolidayTimes() {
         const self = this;
-        let appHdWorkDispInfo = self.$appContext.model.appHdWorkDispInfo;
-        let workdayoffFrameList = _.get(appHdWorkDispInfo, 'workdayoffFrameList') as Array<WorkdayoffFrame>;
         let holidayTimes = [] as Array<HolidayTime>;
+        let appHdWorkDispInfo = self.dataOutput.appHdWorkDispInfo;
+        let workdayoffFrameList = _.get(appHdWorkDispInfo, 'workdayoffFrameList') as Array<WorkdayoffFrame>;
         if (!_.isNil(workdayoffFrameList)) {
             _.forEach(workdayoffFrameList, (item: WorkdayoffFrame) => {
                 let holidayTime = {} as HolidayTime;
@@ -100,19 +180,20 @@ export class KafS10Step2Component extends Vue {
                 holidayTime.visible = true;
                 holidayTime.applicationTime = 0;
                 holidayTime.preApp = {
-                    preAppDisp: self.$appContext.c6,
+                    preAppDisp: self.c12,
                     preAppTime: 0,
                     preAppExcess: ExcessTimeStatus.NONE,
+
                 };
                 holidayTime.actualApp = {
-                    actualDisp: self.$appContext.c6,
+                    actualDisp: self.c12,
                     actualTime: 0,
                     actualExcess: ExcessTimeStatus.NONE
                 };
                 holidayTimes.push(holidayTime);
             });
         }
-        if (self.$appContext.c7) {
+        if (self.c7) {
             _.forEach(_.range(1, 4), (item: any) => {
                 let holidayTime = {} as HolidayTime;
                 holidayTime.frameNo = '11';
@@ -127,32 +208,32 @@ export class KafS10Step2Component extends Vue {
                     holidayTime.type = AttendanceType.MIDDLE_HOLIDAY_HOLIDAY;
                     holidayTime.title = self.$i18n('KAFS10_16');
                 }
-                holidayTime.visible = self.$appContext.c7;
+                holidayTime.visible = self.c7;
                 holidayTime.preApp = {
-                    preAppDisp: self.$appContext.c7_1,
+                    preAppDisp: self.c12_1,
                     preAppTime: 0,
                     preAppExcess: ExcessTimeStatus.NONE,
+
                 };
                 holidayTime.actualApp = {
-                    actualDisp: self.$appContext.c7_1,
+                    actualDisp: self.c12_1,
                     actualTime: 0,
                     actualExcess: ExcessTimeStatus.NONE
                 };
                 holidayTimes.push(holidayTime);
             });
         }
-        let calculationResultOp = appHdWorkDispInfo.calculationResult;
         // bind calculate
         {
             // AttendanceType.BREAKTIME
-            let applicationTime = _.get(calculationResultOp, 'applicationTime.applicationTime') as Array<OvertimeApplicationSetting>;
+            let applicationTime = _.get(self.dataOutput.appHolidayWork, 'applicationTime.applicationTime') as Array<OvertimeApplicationSetting>;
             _.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
                 let findResult = _.findLast(holidayTimes, (i: HolidayTime) => i.type == item.attendanceType && i.frameNo == String(item.frameNo));
                 if (!_.isNil(findResult)) {
                     findResult.applicationTime = item.applicationTime;
                 }
             });
-            let midNightHolidayTimes = _.get(calculationResultOp, 'applicationTime.overTimeShiftNight.midNightHolidayTimes') as Array<HolidayMidNightTime>;
+            let midNightHolidayTimes = _.get(self.dataOutput.appHolidayWork, 'applicationTime.overTimeShiftNight.midNightHolidayTimes') as Array<HolidayMidNightTime>;
             _.forEach(midNightHolidayTimes, (item: HolidayMidNightTime) => {
                 let findResult: HolidayTime;
                 // AttendanceType.MIDDLE_BREAK_TIME
@@ -166,7 +247,9 @@ export class KafS10Step2Component extends Vue {
                 if (!_.isNil(findResult)) {
                     findResult.applicationTime = item.attendanceTime || 0;
                 }
+
             });
+
         }
         // bind advanceApp
         let appHolidayWork = _.get(appHdWorkDispInfo, 'appDispInfoStartupOutput.appDispInfoWithDateOutput.opPreAppContentDispDtoLst[0].appHolidayWork') as AppHolidayWork;
@@ -202,6 +285,7 @@ export class KafS10Step2Component extends Vue {
         }
         // set color advance
         _.forEach(holidayTimes, (item: HolidayTime) => {
+
             if (item.type == AttendanceType.MIDDLE_BREAK_TIME) {
                 let findResult = _.findLast(_.get(advanceExcess, 'excessStateMidnight'), (item: ExcessStateMidnight) => item.legalCfl == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork);
                 if (!_.isNil(findResult) && item.applicationTime > 0) {
@@ -223,7 +307,10 @@ export class KafS10Step2Component extends Vue {
                     item.preApp.preAppExcess = findResult.excessState || ExcessTimeStatus.NONE;
                 }
             }
+
         });
+
+
         // bind archivementApp
         let hdWorkDispInfoWithDateOutput = appHdWorkDispInfo.hdWorkDispInfoWithDateOutput;
         let achivementExcess = _.get(appHdWorkDispInfo, 'calculationResult.actualOvertimeStatus.achivementExcess') as OutDateApplication;
@@ -280,14 +367,15 @@ export class KafS10Step2Component extends Vue {
                 }
             }
         });
+        holidayTimes = _.filter(holidayTimes, (item: HolidayTime) => item.applicationTime > 0);
         self.holidayTimes = holidayTimes;
-    }
 
-    public bindOverTime() {
+    }
+    public bindOverTimes() {
         const self = this;
-        let appHdWorkDispInfo = self.$appContext.model.appHdWorkDispInfo;
+        let overTimes = [] as Array<OverTime>;
+        let appHdWorkDispInfo = self.dataOutput.appHdWorkDispInfo;
         let overtimeFrameList = appHdWorkDispInfo.overtimeFrameList as Array<OvertimeWorkFrame>;
-        let overTimes = [];
         // create overtime object
         _.forEach(overtimeFrameList, (item: OvertimeWorkFrame) => {
             let overTime = {} as OverTime;
@@ -295,44 +383,45 @@ export class KafS10Step2Component extends Vue {
             overTime.frameNo = String(item.overtimeWorkFrNo);
             overTime.title = item.overtimeWorkFrName;
             overTime.applicationTime = 0;
-            overTime.visible = self.$appContext.c9;
+            overTime.visible = self.c13;
             overTime.preApp = {
-                preAppDisp: self.$appContext.c9_3,
+                preAppDisp: self.c13_1,
                 preAppTime: 0,
                 preAppExcess: ExcessTimeStatus.NONE,
+
             };
             overTime.actualApp = {
-                actualDisp: self.$appContext.c9_3,
+                actualDisp: self.c13_1,
                 actualTime: 0,
                 actualExcess: ExcessTimeStatus.NONE
             };
             overTimes.push(overTime);
         });
         // create overtime night
-        if (self.$appContext.c9_1) {
+        if (self.c13_2) {
             let overTime = {} as OverTime;
             overTime.type = AttendanceType.MIDNIGHT_OUTSIDE;
             overTime.frameNo = String(11);
             overTime.title = self.$i18n('KAFS10_18');
             overTime.applicationTime = 0;
-            overTime.visible = self.$appContext.c9_1;
+            overTime.visible = self.c13_2;
             overTime.preApp = {
-                preAppDisp: self.$appContext.c9_2,
+                preAppDisp: self.c13_3,
                 preAppTime: 0,
                 preAppExcess: ExcessTimeStatus.NONE,
+
             };
             overTime.actualApp = {
-                actualDisp: self.$appContext.c9_2,
+                actualDisp: self.c13_3,
                 actualTime: 0,
                 actualExcess: ExcessTimeStatus.NONE
             };
             overTimes.push(overTime);
         }
-        let calculationResultOp = appHdWorkDispInfo.calculationResult;
         // bind calculate 
         {
             // AttendanceType.NORMALOVERTIME
-            let applicationTime = _.get(calculationResultOp, 'applicationTime.applicationTime') as Array<OvertimeApplicationSetting>;
+            let applicationTime = _.get(self.dataOutput.appHolidayWork, 'applicationTime.applicationTime') as Array<OvertimeApplicationSetting>;
             _.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
                 let findResult = _.findLast(overTimes, (i: OverTime) => i.type == item.attendanceType && i.frameNo == String(item.frameNo)) as OverTime;
                 if (!_.isNil(findResult)) {
@@ -341,7 +430,7 @@ export class KafS10Step2Component extends Vue {
             });
             // AttendanceType.MIDNIGHT_OUTSIDE
             {
-                let overTimeMidNight = _.get(calculationResultOp, 'applicationTime.overTimeShiftNight.overTimeMidNight');
+                let overTimeMidNight = _.get(self.dataOutput.appHolidayWork, 'applicationTime.overTimeShiftNight.overTimeMidNight');
                 let findResult = _.findLast(overTimes, (i: OverTime) => i.type == AttendanceType.MIDNIGHT_OUTSIDE) as OverTime;
                 if (!_.isNil(findResult)) {
                     findResult.applicationTime = overTimeMidNight || 0;
@@ -354,7 +443,7 @@ export class KafS10Step2Component extends Vue {
             let advanceExcess = _.get(appHdWorkDispInfo, 'calculationResult.actualOvertimeStatus.advanceExcess') as OutDateApplication;
             // AttendanceType.NORMALOVERTIME
             {
-                let applicationTime = _.get(appHdWorkDispInfo, 'applicationTime.applicationTime') as Array<OvertimeApplicationSetting>;
+                let applicationTime = _.get(appHolidayWork, 'applicationTime.applicationTime') as Array<OvertimeApplicationSetting>;
                 _.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
                     let findResult = _.findLast(overTimes, (i: OverTime) => i.type == item.attendanceType && i.frameNo == String(item.frameNo)) as OverTime;
                     if (!_.isNil(findResult)) {
@@ -411,7 +500,6 @@ export class KafS10Step2Component extends Vue {
                 let findResult = _.findLast(overTimes, (i: OverTime) => i.type == AttendanceType.MIDNIGHT_OUTSIDE) as OverTime;
                 if (!_.isNil(findResult)) {
                     findResult.actualApp.actualTime = overTimeMidNight || 0;
-
                 }
                 if (achivementExcess) {
                     let findResult = _.findLast(overTimes, (item: OverTime) => item.type == AttendanceType.MIDNIGHT_OUTSIDE) as OverTime;
@@ -421,115 +509,283 @@ export class KafS10Step2Component extends Vue {
                 }
             }
         }
+        overTimes = _.filter(overTimes, (item: OverTime) => item.applicationTime > 0);
         self.overTimes = overTimes;
     }
 
-    public bindReasonDivergence() {
+    public bindBreakTime() {
         const self = this;
-        let divergenceTimeRoot = self.$appContext.model.appHdWorkDispInfo.divergenceTimeRoots[0];
-        let divergenceReasonInputMethod = self.$appContext.model.appHdWorkDispInfo.divergenceReasonInputMethod[0];
-
-        //init reason
-        let reason = {} as Reason;
-        reason.title = self.SPACE_STRING;
-        reason.reason = '';
-        reason.selectedValue = '';
-        if (!_.isNil(divergenceTimeRoot)) {
-            reason.title = divergenceTimeRoot.divTimeName;
-        }
-        reason.dropdownList = [] as Array<Object>;
-        reason.dropdownList.push({
-            code: '',
-            text: self.$i18n('KAFS10_29'),
-            defaultValue: false
+        let breakTime = [] as Array<BreakTime>;
+        _.range(1, 10)
+        .forEach((index: number) => {
+            let result = _.findLast(_.get(self.dataOutput, 'appHolidayWork.breakTimeList'), (i: TimeZoneWithWorkNo) => i.workNo == index) as any;
+            let findResult = _.get(result, 'timeZone') as TimeZoneNew;
+            if (!_.isNil(findResult)) {
+                let item = {} as BreakTime;
+                item.frameNo = index;
+                item.title = self.$i18n('KAFS10_10', String(item.frameNo));
+                item.valueHours = {start: self.$dt.timedr(findResult.startTime || 0), end: self.$dt.timedr(findResult.endTime || 0)};
+                breakTime.push(item);
+            }
         });
-        if (!_.isNil(divergenceReasonInputMethod)) {
-            _.forEach(divergenceReasonInputMethod.reasons, (item: DivergenceReasonSelect) => {
-                let code = item.divergenceReasonCode;
-                let text = item.divergenceReasonCode + ' ' + item.reason;
-                reason.dropdownList.push({
-                    code,
-                    text,
-                    defaultValue: false
-                });
+        self.breakTimes = breakTime;
+    }
 
-            });
+    public bindWorkInfo() {
+        const self = this;
+        let appHolidayWork = self.dataOutput.appHolidayWork as AppHolidayWork;
+        let appHdWorkDispInfo = self.dataOutput.appHdWorkDispInfo as AppHdWorkDispInfo;
+        let nameType = _.get(appHdWorkDispInfo, 'hdWorkDispInfoWithDateOutput.initWorkTypeName');
+        let nameTime = _.get(appHdWorkDispInfo, 'hdWorkDispInfoWithDateOutput.initWorkTimeName');
+        self.createWorkInfo(_.get(appHolidayWork, 'workInformation.workType'), _.get(appHolidayWork, 'workInformation.workTime'), nameType, nameTime);
+    }
+
+    public bindWorkHours() {
+        const self = this;
+        let appHolidayWork = self.dataOutput.appHolidayWork as AppHolidayWork; 
+        // 1
+        self.workHours1 = self.createWorkHours(_.get(appHolidayWork, 'workingTimeList[0].timeZone.startTime'),
+        _.get(appHolidayWork, 'workingTimeList[0].timeZone.endTime'));
+        // 2
+        self.workHours2 = self.createWorkHours(_.get(appHolidayWork, 'workingTimeList[1].timeZone.startTime'),
+        _.get(appHolidayWork, 'workingTimeList[1].timeZone.endTime'));
+    }
+
+    public bindReasons() {
+        const self = this;
+        let reasons = [] as Array<Reason>;
+        let appHolidayWork = self.dataOutput.appHolidayWork as AppHolidayWork;
+        let appHdWorkDispInfo = self.dataOutput.appHdWorkDispInfo as AppHdWorkDispInfo;
+        let reasonDissociation = _.get(appHolidayWork, 'applicationTime.reasonDissociation') as any;
+        let no = _.findLast(reasonDissociation, (item: any) => item.diviationTime == 3);
+        let code = _.get(no, 'reasonCode');
+        let divergenceReasonInputMethod = _.findLast(appHdWorkDispInfo.divergenceReasonInputMethod, (item: any) => item.divergenceTimeNo == 3);
+        let findContentByCode = _.findLast(_.get(divergenceReasonInputMethod, 'reasons'), (item: any) => item.divergenceReasonCode == code) as any;
+        let contentByCode= _.get(findContentByCode, 'reason') || (!_.isNil(code) ? self.$i18n('KAFS05_55') : null);
+        let content = _.get(no, 'reason');
+        let title = _.findLast(appHdWorkDispInfo.divergenceTimeRoots, (item: any) => item.divergenceTimeNo == 3);
+        title = _.get(title, 'divTimeName') || '';
+
+        {
+            let item = {} as Reason;
+            item.c1 = self.c11_1;
+            item.c2 = self.c10;
+            item.c3 = self.c11;
+            item.code = code;
+            item.name = contentByCode;
+            item.content = content;
+            item.title = title;
+            reasons.push(item);
         }
 
-        //select reason for mode edit
-        if (!self.$appContext.modeNew) {
-            let findResult = _.findLast(self.$appContext.model.appHolidayWork.applicationTime.reasonDissociation, (item: any) => item.diviationTime == 3);
-            if (findResult) {
-                reason.reason = findResult.reason || '';
-                let code = findResult.reasonCode || null;
-                let isFindCode = _.findLast(reason.dropdownList, (item: any) => item.code == code);
-                if (!isFindCode && code) {
-                    reason.dropdownList.shift();
-                    reason.dropdownList.unshift({
-                        code,
-                        text: code + self.SPACE_STRING + self.$i18n('KAFS05_55')
-                    });
-                    reason.dropdownList.unshift({
-                        code: null,
-                        text: self.$i18n('KAFS10_29'),
-                    });
-                }
-                reason.selectedValue = code || '';
+        self.reasons = reasons;
+    }
+
+    public commandStart() {
+        const self = this;
+
+        return {
+            companyId: self.user.companyId,
+            applicationId: self.params.appDispInfoStartupOutput.appDetailScreenInfo.application.appID,
+            appDispInfoStartup: self.params.appDispInfoStartupOutput
+        };
+    }
+
+    public createWorkHours(start: number, end: number) {
+        const self = this;
+        if (_.isNil(start) || _.isNil(end)) {
+
+            return {
+                start: '',
+                end: ''
+            } as WorkHours;
+        }
+
+        return {
+            start: self.$dt.timedr(start || 0),
+            end: self.$dt.timedr(end || 0)
+        } as WorkHours;
+    }
+
+    public createWorkInfo(codeType?: string, codeTime?: string, nameType?: string, nameTime?: string) {
+        const self = this;
+
+        let workType = {} as Work;
+        workType.code = codeType || '';
+
+        let workTime = {} as Work;
+        workTime.code = codeTime || '';
+        let appHdWorkDispInfo = _.get(self.dataOutput, 'appHdWorkDispInfo');
+        if (appHdWorkDispInfo) {
+            if (nameType) {
+                workType.name = nameType;
+            } else {
+                let workTypes = appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.workTypeList;
+                let resultWorkType = 
+                    _.find(workTypes, (i: any) => i.workTypeCode == workType.code);
+                workType.name = resultWorkType ? (resultWorkType.name || '')  : self.$i18n('KAFS05_55');
+            }
+            if (nameTime) {
+                workTime.name = nameTime;
+            } else {
+                let workTimes = appHdWorkDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst;
+                let resultWorkTime = 
+                        _.find(workTimes, (i: any) => i.worktimeCode == workTime.code);
+                workTime.name = resultWorkTime ? (_.get(resultWorkTime, 'workTimeDisplayName.workTimeName') || '') : self.$i18n('KAFS05_55');
             }
         }
-        self.reason = reason;
+        let workInfo = {} as WorkInfo;
+        workInfo.workType = workType;
+        workInfo.workTime = workTime;
+
+        self.workInfo = workInfo;
     }
 
-    public getReasonDivergence() {
+    //  「休日出勤申請起動時の表示情報．申請表示情報．申請設定（基準日関係なし）．複数回勤務の管理」＝TRUE
+    public get c3() {
         const self = this;
-        let reason = {} as ReasonDivergence;
-        reason.diviationTime = 3;
-        reason.reasonCode = self.reason.selectedValue;
-        reason.reason = self.reason.reason;
 
-        return reason;
+        return _.get(self.dataOutput, 'appHdWorkDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles');
     }
 
-    public backStep1() {
+    //  「休日出勤申請起動時の表示情報．残業休日出勤申請の反映．休日出勤申請の反映．事後休日出勤申請の反映．休憩・外出を申請反映する」．休憩を反映する＝反映する
+    public get c4() {
         const self = this;
-        self.$appContext.toStep(1);
+        let displayAtr = _.get(self.dataOutput, 'appHdWorkDispInfo.hdWorkOvertimeReflect.holidayWorkAppReflect.after.breakLeaveApplication.breakReflectAtr');
+
+        return displayAtr == NotUseAtr.USE;
+    }
+
+    //  「休日出勤申請起動時の表示情報．残業休日出勤申請の反映」．時間外深夜時間を反映する＝反映する
+    public get c7() {
+        const self = this;
+        let displayAtr = _.get(self.dataOutput, 'appHdWorkDispInfo.hdWorkOvertimeReflect.nightOvertimeReflectAtr');
+
+        return displayAtr == NotUseAtr.USE;
+    }
+
+    //  ＄：休日出勤申請起動時の表示情報
+    //  「＄．利用する乖離理由」<> empty
+    //  AND 「＄．利用する乖離理由．乖離理由の選択肢を利用する」がtrue 
+    //  AND 「＄．残業休日出勤申請の反映．休日出勤申請の反映．事後休日出勤申請の反映．その他項目の反映．乖離理由を反映する」が反映する
+    public get c10() {
+        const self = this;
+        if (_.get(self.dataOutput, 'appHdWorkDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.prePostAtr') == 1) {
+            if (_.get(self.dataOutput, 'appHdWorkDispInfo.hdWorkOvertimeReflect.holidayWorkAppReflect.after.othersReflect.reflectDivergentReasonAtr') == NotUseAtr.USE && 
+                (_.get(self.dataOutput, 'appHdWorkDispInfo.divergenceReasonInputMethod').length > 0 && _.get(self.dataOutput, 'appHdWorkDispInfo.divergenceReasonInputMethod[0].divergenceReasonSelected'))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    //  ＄：休日出勤申請起動時の表示情報
+    //  「＄．利用する乖離理由」<> empty
+    //  AND 「＄．利用する乖離理由．乖離理由の入力を利用する」がtrue 
+    //  AND 「＄．残業休日出勤申請の反映．休日出勤申請の反映．事後休日出勤申請の反映．その他項目の反映．乖離理由を反映する」が反映する
+    public get c11() {
+        const self = this;
+        if (_.get(self.dataOutput, 'appHdWorkDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.prePostAtr') == 1) {
+            if (_.get(self.dataOutput, 'appHdWorkDispInfo.hdWorkOvertimeReflect.holidayWorkAppReflect.after.othersReflect.reflectDivergentReasonAtr') == NotUseAtr.USE && 
+                (_.get(self.dataOutput, 'appHdWorkDispInfo.divergenceReasonInputMethod').length > 0 && _.get(self.dataOutput, 'appHdWorkDispInfo.divergenceReasonInputMethod[0].divergenceReasonInputed'))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    //  ※10 = ○　OR　※11 = ○
+    public get c11_1() {
+        const self = this;
+        
+        return self.c10 || self.c11;
+    }
+
+    //  「休日出勤申請起動時の表示情報．申請表示情報．申請詳細画面情報．申請」．事前事後区分=事後
+    public get c12() {
+        const self = this;
+        let displayAtr = _.get(self.dataOutput, 'appHdWorkDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.prePostAtr');
+
+        return displayAtr == PrePostAtr.POST;
+    }
+
+    //  ※7 = ○　AND　※12 = ○
+    public get c12_1() {
+        const self = this;
+
+        return self.c7 && self.c12;
+    }
+
+    //  起動時取得した「休日出勤申請」．申請時間．申請時間．申請時間（Type＝残業時間）に項目がある
+    public get c13() {
+        const self = this;
+        let applicationTimes = _.get(self.dataOutput, 'appHolidayWork.applicationTime.applicationTime') as Array<OvertimeApplicationSetting>;
+        if (!_.isEmpty(applicationTimes)
+            && applicationTimes.filter((applicationTime) => applicationTime.attendanceType == AttendanceType.NORMALOVERTIME && applicationTime.applicationTime > 0).length > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    //  ※12 = ○　AND　※13 = ○
+    public get c13_1() {
+        const self = this;
+
+        return self.c12 && self.c13;
+    }
+
+    //  ※7 = ○　AND　※13 = ○
+    public get c13_2() {
+        const self = this;
+
+        return self.c7 && self.c13;
+    }
+
+    //  ※7 = ○　AND　※12 = ○　AND　※13 = ○
+    public get c13_3() {
+        const self = this;
+
+        return self.c7 && self.c12 && self.c13;
     }
 }
-
-export interface OverTime {
-    frameNo: string;
+const API = {
+    start: 'at/request/application/holidaywork/mobile/getDetail'
+};
+interface WorkInfo {
+    workType: Work;
+    workTime: Work;
+}
+interface Work {
+    code: string;
+    name: string;
+    time?: string;
+}
+interface WorkHours {
+    start: string;
+    end: string;
+}
+interface DataOutput {
+    appHolidayWork: AppHolidayWork;
+    appHdWorkDispInfo: AppHdWorkDispInfo;
+}
+interface BreakTime {
+    valueHours: any;
     title: string;
-    visible: boolean;
-    applicationTime: number;
-    preTime: number;
-    actualTime: number;
-    preApp: ExtraTime;
-    actualApp: ExtraTime;
-    type: AttendanceType;
+    frameNo: number;
 }
-export interface HolidayTime {
-    frameNo: string;
+interface Reason {
+    c1: boolean;
+    c2: boolean;
+    c3: boolean;
     title: string;
-    visible: boolean;
-    applicationTime: number;
-    preTime: number;
-    actualTime: number;
-    preApp: ExtraTime;
-    actualApp: ExtraTime;
-    type: number;
+    code: string;
+    name: string;
+    content: string;
 }
-export interface Reason {
-    title?: string;
-    reason: string;
-    selectedValue: string;
-    titleDrop?: string;
-    dropdownList: Array<Object>;
-}
-export interface ExtraTime {
-    preAppDisp?: boolean;
-    preAppTime?: number;
-    preAppExcess?: ExcessTimeStatus;
-    actualDisp?: boolean;
-    actualTime?: number;
-    actualExcess?: ExcessTimeStatus;
+enum PrePostAtr {
+    PRE,
+    POST
 }
