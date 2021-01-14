@@ -4291,6 +4291,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						schedule = self.dataScreen045A().workScheduleDto,
 						fixed = self.dataScreen045A().fixedWorkInforDto,
 						info = self.dataScreen045A().workInfoDto;
+						
 					if (self.dataScreen003A().employeeInfo[lineNo].workScheduleDto == null) {
 						self.dataScreen003A().employeeInfo[lineNo].workScheduleDto = {
 							startTime1: schedule.startTime1,
@@ -4643,6 +4644,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								color = "#cee6ff";
 							}
 
+
 							if (self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.isHoliday == true) {
 								$("#extable-ksu003").exTable("disableCell", "middle", empId, "worktimeCode");
 								$("#extable-ksu003").exTable("disableCell", "middle", empId, "startTime1");
@@ -4666,6 +4668,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									$(cssEndTime2).css("background-color", "#DDDDD2");
 								}
 							}
+
 							
 							$(cssWorkType).css("background-color", color);
 							$(cssWorkTypeName).css("background-color", color);
@@ -4682,6 +4685,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							$(cssWorkTime).css("background-color", color);
 							$(cssWorkTName).css("background-color", color);
 							$(".xcell").removeClass("x-error");
+
 							block.clear();
 						}).fail(function(error) {
 							block.clear();
