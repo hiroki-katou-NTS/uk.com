@@ -178,22 +178,24 @@ public class AsposeApplyForLeave {
         } else {
             Optional<List<WorkTimeSetting>> opWorkTimeLst = printContentOfApplyForLeave.getAppAbsenceStartInfoOutput()
                     .getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpWorkTimeLst();
-            WorkTimeCode worktimeCode = printContentOfApplyForLeave.getApplyForLeave().getReflectFreeTimeApp().getWorkInfo().getWorkTimeCode();
+            Optional<WorkTimeCode> optWorktimeCode = printContentOfApplyForLeave.getApplyForLeave().getReflectFreeTimeApp().getWorkInfo().getWorkTimeCodeNotNull();
             
-            if (opWorkTimeLst.isPresent()) {
-                List<WorkTimeSetting> workTimeLst = opWorkTimeLst.get();
-                List<WorkTimeSetting> workTimeLstFilter = workTimeLst.stream()
-                        .filter(workTime -> workTime.getWorktimeCode().equals(worktimeCode))
-                        .collect(Collectors.toList());
-                if (workTimeLstFilter.size() == 0) {
-                    workTimeString = worktimeCode.v() + HALF_WIDTH_SPACE + I18NText.getText("KAF006_94");
-                } else {
-                    if (workTimeLstFilter.get(0).getWorkTimeDisplayName() == null 
-                            || workTimeLstFilter.get(0).getWorkTimeDisplayName().getWorkTimeName() == null 
-                            || workTimeLstFilter.get(0).getWorkTimeDisplayName().getWorkTimeName().v().equals(EMPTY)) {
-                        workTimeString = worktimeCode.v() + HALF_WIDTH_SPACE + I18NText.getText("KAF006_94");
+            if (optWorktimeCode.isPresent()) {
+                if (opWorkTimeLst.isPresent()) {
+                    List<WorkTimeSetting> workTimeLst = opWorkTimeLst.get();
+                    List<WorkTimeSetting> workTimeLstFilter = workTimeLst.stream()
+                            .filter(workTime -> workTime.getWorktimeCode().equals(optWorktimeCode.get()))
+                            .collect(Collectors.toList());
+                    if (workTimeLstFilter.size() == 0) {
+                        workTimeString = optWorktimeCode.get().v() + HALF_WIDTH_SPACE + I18NText.getText("KAF006_94");
                     } else {
-                        workTimeString = workTimeLstFilter.get(0).getWorkTimeDisplayName().getWorkTimeName().v();
+                        if (workTimeLstFilter.get(0).getWorkTimeDisplayName() == null 
+                                || workTimeLstFilter.get(0).getWorkTimeDisplayName().getWorkTimeName() == null 
+                                || workTimeLstFilter.get(0).getWorkTimeDisplayName().getWorkTimeName().v().equals(EMPTY)) {
+                            workTimeString = optWorktimeCode.get().v() + HALF_WIDTH_SPACE + I18NText.getText("KAF006_94");
+                        } else {
+                            workTimeString = workTimeLstFilter.get(0).getWorkTimeDisplayName().getWorkTimeName().v();
+                        }
                     }
                 }
             }
