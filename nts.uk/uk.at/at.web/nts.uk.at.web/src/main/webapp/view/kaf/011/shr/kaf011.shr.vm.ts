@@ -156,10 +156,12 @@ module nts.uk.at.view.kaf011 {
 		
 		convertTimeToString(data: any){ 
 			let self = this;
-			if(data.first){
+			if(data.first && data.first.start){
 				self.workTimeDisplay(data.selectedWorkTimeCode + ' ' + 
 									data.selectedWorkTimeName + ' ' + 
 									moment(Math.floor(data.first.start / 60),'mm').format('mm') + ":" + moment(data.first.start % 60,'mm').format('mm') + getText('KAF011_37') + moment(Math.floor(data.first.end / 60),'mm').format('mm') + ":" + moment(data.first.end % 60,'mm').format('mm'));
+			}else{
+				self.workTimeDisplay("");
 			}         
 		}
 		
@@ -359,10 +361,16 @@ module nts.uk.at.view.kaf011 {
 		}
 		update(param: any){
 			let self = this;
-			self.prePostAtr(param.prePostAtr);
-			self.appDate(param.appDate);
-			self.opAppStandardReasonCD(param.opAppStandardReasonCD);
-			self.opAppReason(param.opAppReason);
+			self.appID(param.appID);
+            self.prePostAtr(param.prePostAtr);
+            self.employeeIDLst([param.employeeID]);
+            self.appDate(param.appDate);
+            self.opAppReason(param.opAppReason);
+            self.opAppStandardReasonCD(param.opAppStandardReasonCD);
+            self.opReversionReason(param.opReversionReason);
+            self.opAppStartDate(param.opAppStartDate);
+            self.opAppEndDate(param.opAppEndDate);
+            self.opStampRequestMode(param.opStampRequestMode);
 		}
 	}
 	
