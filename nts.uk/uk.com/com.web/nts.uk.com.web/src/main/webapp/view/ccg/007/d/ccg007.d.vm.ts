@@ -5,7 +5,9 @@ module nts.uk.pr.view.ccg007.d {
         import blockUI = nts.uk.ui.block;
         import CheckChangePassDto = service.CheckChangePassDto;
         import character = nts.uk.characteristics;
-        export class ScreenModel {
+
+        @bean()
+        export class ScreenModel extends ko.ViewModel {
             employeeCode: KnockoutObservable<string>;
             password: KnockoutObservable<string>;
             companyList: KnockoutObservableArray<CompanyItemModel>;
@@ -16,39 +18,51 @@ module nts.uk.pr.view.ccg007.d {
             contractPassword: KnockoutObservable<string>;
             isSignOn: KnockoutObservable<boolean> = ko.observable(false);
             displayLogin: KnockoutObservable<boolean> = ko.observable(false);
+
             constructor() {
-                var self = this;
-                self.employeeCode = ko.observable('');
-                self.password = ko.observable('');
-                self.companyList = ko.observableArray([]);
-                self.selectedCompanyCode = ko.observable('');
-                self.companyName = ko.observable('');
-                self.isSaveLoginInfo = ko.observable(true);
-                self.contractCode = ko.observable('');
-                self.contractPassword = ko.observable('');
+                super();
+
+                const vm = this;
+
+                vm.employeeCode = ko.observable('');
+                vm.password = ko.observable('');
+                vm.companyList = ko.observableArray([]);
+                vm.selectedCompanyCode = ko.observable('');
+                vm.companyName = ko.observable('');
+                vm.isSaveLoginInfo = ko.observable(true);
+                vm.contractCode = ko.observable('');
+                vm.contractPassword = ko.observable('');
                 
-                self.selectedCompanyCode.subscribe(function(code) {
-                    _.each(self.companyList(), function (item, index) {
+                vm.selectedCompanyCode.subscribe(function(code) {
+                    _.each(vm.companyList(), function (item, index) {
                         if ((item.companyCode == code)) {
-                            self.companyName(item.companyName);
+                            vm.companyName(item.companyName);
                         }
                     });
                 });
+
+                // hide menu bar
+                vm.$window.header(false);
             }
-            start(): JQueryPromise<void> {
+
+            created() {
                 var self = this;
                 //get url
                 let url = _.toLower(_.trim(_.trim($(location).attr('href')), '%20'));
                 let isSignOn = url.indexOf('signon=on') >= 0 || url.indexOf('signon=oN') >= 0 || url.indexOf('signon=On') >= 0
                 || url.indexOf('signon=ON') >= 0;
+
                 self.isSignOn(isSignOn);
+                
                 if(!isSignOn){
                     self.displayLogin(true);
                 }
+                
                 var dfd = $.Deferred<void>();
                 let defaultContractCode:string = "000000000000";
                 //get system config
                 blockUI.invisible();
+
                 nts.uk.characteristics.restore("contractInfo").done(function(data:any) {
                     self.contractCode(data ? data.contractCode : "");
                     self.contractPassword(data ? data.contractPassword : "");
@@ -81,9 +95,29 @@ module nts.uk.pr.view.ccg007.d {
                 service.ver().done(data => {
                     $("#ver").html(data.ver);
                 });
+            }
+
+            mounted() {
+                if ($('#contents-area').data('loaded')) {
+                    $('[id=contents-area]:eq(1)').remove();
+                    return;
+                }
+                $('#contents-area').data('loaded', true);
+
                 
-                dfd.resolve();
-                return dfd.promise();
+                nts.uk.characteristics.restore("form3LoginInfo").done(function(loginInfo: any) {
+                    if (!loginInfo || !loginInfo.companyCode) {
+                        $('#company-code-select').focus();
+                    }
+                    else {
+                        if (!loginInfo.employeeCode) {
+                            $('#employee-code-inp').focus();
+                        }
+                        else {
+                            $('#password-input').focus();
+                        }
+                    }
+                });
             }
 
             //when invalid contract 
