@@ -60,6 +60,10 @@ module nts.uk.at.view.knr002.a {
                             filterValue =  getText("KNR002_21");
                             break;
                     }
+                    setTimeout(() => {
+                        $('#grid tr:nth-child(1)').focus();
+                    }, 0);
+                    
                     console.log(filterValue);
                     console.timeEnd('time');
                 });
@@ -149,7 +153,9 @@ module nts.uk.at.view.knr002.a {
                             case 3:
                                 vm.loadGrid(vm.dataSource().listEmpInfoTerminalDto);
                                 break;
-                    }
+                        }
+
+                        $('#grid tr:nth-child(1)').focus();
                         
                         // vm.loadGrid(vm.dataSource().listEmpInfoTerminalDto);
                     
