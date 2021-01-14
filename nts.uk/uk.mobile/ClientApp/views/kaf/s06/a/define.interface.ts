@@ -752,3 +752,61 @@ export enum NotUseAtr {
     Not_USE,
     USE
 }
+export enum WorkTypeClassification {
+    /**
+     * 出勤
+     */
+    Attendance,
+    /**
+     * 休日
+     */
+    Holiday,
+    /**
+     * 年休
+     */
+    AnnualHoliday,
+    /**
+     * 積立年休
+     */
+    YearlyReserved,
+    /**
+     * 特別休暇
+     */
+    SpecialHoliday,
+    /**
+     * 欠勤
+     */
+    Absence,
+    /**
+     * 代休
+     */
+    SubstituteHoliday,
+    /**
+     * 振出
+     */
+    Shooting,
+    /**
+     * 振休
+     */
+    Pause,
+    /**
+     * 時間消化休暇
+     */
+    TimeDigestVacation,
+    /**
+     * 連続勤務
+     */
+    ContinuousWork,
+    /**
+     * 休日出勤       休出
+     */
+    HolidayWork,
+    /**
+     * 休職
+     */
+    LeaveOfAbsence,
+    /**
+     * 休業
+     */
+    Closure
+}

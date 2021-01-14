@@ -2,7 +2,7 @@ import { _, Vue, moment } from '@app/provider';
 import { component, Prop, Watch } from '@app/core/component';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/s00';
 import { KafS00ShrComponent, AppType, Application, InitParam } from 'views/kaf/s00/shr';
-import { TimeZoneNewDto, ReflectWorkHourCondition, TimeZoneWithWorkNoDto, WorkInformationDto, WorkTypeDto, MaxNumberDayType, AppAbsenceStartInfoDto, StartMobileParam, NotUseAtr, TimeZoneUseDto, HolidayAppTypeDispNameDto, ManageDistinct, TargetWorkTypeByApp, ApplicationType, HolidayAppType, DateSpecHdRelationOutput, ChangeDateParamMobile, SelectWorkTypeHolidayParam, SelectWorkTimeHolidayParam, MaxHolidayDayParamMobile, ApplyForLeaveDto, ReflectFreeTimeAppDto, TimeDigestApplicationDto, VacationRequestInfoDto, SupplementInfoVacationDto, ApplyforSpecialLeaveDto, CheckInsertMobileParam, RegisterAppAbsenceMobileCommand, WorkTypeUnit, MaxDaySpecHdDto, VacationCheckOutputDto, UpdateAppAbsenceMobileCommand, WorkAtr } from '../a/define.interface';
+import { TimeZoneNewDto, ReflectWorkHourCondition, TimeZoneWithWorkNoDto, WorkInformationDto, WorkTypeDto, MaxNumberDayType, AppAbsenceStartInfoDto, StartMobileParam, NotUseAtr, TimeZoneUseDto, HolidayAppTypeDispNameDto, ManageDistinct, TargetWorkTypeByApp, ApplicationType, HolidayAppType, DateSpecHdRelationOutput, ChangeDateParamMobile, SelectWorkTypeHolidayParam, SelectWorkTimeHolidayParam, MaxHolidayDayParamMobile, ApplyForLeaveDto, ReflectFreeTimeAppDto, TimeDigestApplicationDto, VacationRequestInfoDto, SupplementInfoVacationDto, ApplyforSpecialLeaveDto, CheckInsertMobileParam, RegisterAppAbsenceMobileCommand, WorkTypeUnit, MaxDaySpecHdDto, VacationCheckOutputDto, UpdateAppAbsenceMobileCommand, WorkAtr, WorkTypeClassification } from '../a/define.interface';
 import { KDL002Component } from '../../../kdl/002';
 import { Kdl001Component } from '../../../kdl/001';
 import { KdlS35Component } from '../../../kdl/s35';
@@ -499,20 +499,21 @@ export class KafS06AComponent extends KafS00ShrComponent {
     public get c21_2() {
         const self = this;
         
+        const workType = self.workType;
         const workTypeInfo = _.findLast(_.get(self.model, 'appAbsenceStartInfoDto.workTypeLst'),
-            (item: any) => item.worTypeCode === self.workType.code) as WorkTypeDto;
-        const workTypeSet = _.get(workTypeInfo, 'workTypeSets[0]');
-        if (!workTypeInfo || !workTypeSet) {
+            (item: any) => item.workTypeCode == workType.code) as WorkTypeDto;
+        // const workTypeSet = _.get(workTypeInfo, 'workTypeSets[0]');
+        if (!workTypeInfo) {
             
             return false;
         }
         let workAtr = workTypeInfo.workAtr;
         if (workAtr == WorkTypeUnit.OneDay) {
 
-            return workTypeSet.workAtr == WorkAtr.OneDay;
+            return workTypeInfo.oneDayCls == WorkTypeClassification.SubstituteHoliday;
         } else {
 
-            return workTypeSet.workAtr != WorkAtr.OneDay;
+            return (workTypeInfo.morningCls == WorkTypeClassification.SubstituteHoliday || workTypeInfo.afternoonCls == WorkTypeClassification.SubstituteHoliday);
         }
     }
     // ※22-1 = ○　AND　※22-2 = ○
@@ -534,20 +535,23 @@ export class KafS06AComponent extends KafS00ShrComponent {
     public get c22_2() {
         const self = this;
         
+        const workType = self.workType;
+        console.log(_.get(self.model, 'appAbsenceStartInfoDto.workTypeLst'));
+        console.log(workType.code);
         const workTypeInfo = _.findLast(_.get(self.model, 'appAbsenceStartInfoDto.workTypeLst'),
-            (item: any) => item.worTypeCode === self.workType.code) as WorkTypeDto;
-        const workTypeSet = _.get(workTypeInfo, 'workTypeSets[0]');
-        if (!workTypeInfo || !workTypeSet) {
+            (item: any) => item.workTypeCode == workType.code) as WorkTypeDto;
+        // const workTypeSet = _.get(workTypeInfo, 'workTypeSets[0]');
+        if (!workTypeInfo) {
             
             return false;
         }
         let workAtr = workTypeInfo.workAtr;
         if (workAtr == WorkTypeUnit.OneDay) {
 
-            return workTypeSet.workAtr == WorkAtr.OneDay;
+            return workTypeInfo.oneDayCls == WorkTypeClassification.SubstituteHoliday;
         } else {
 
-            return workTypeSet.workAtr != WorkAtr.OneDay;
+            return (workTypeInfo.morningCls == WorkTypeClassification.SubstituteHoliday || workTypeInfo.afternoonCls == WorkTypeClassification.SubstituteHoliday);
         }
 
     }
