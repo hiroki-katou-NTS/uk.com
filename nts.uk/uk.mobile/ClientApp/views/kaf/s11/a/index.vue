@@ -165,14 +165,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>20/04/04(日)</td>
-                        <td>3日</td>
+                    <tr v-for="(item, index) in recHolidayMngLst" v-bind:key="index">
+                        <td>{{$dt(new Date(item.outbreakDay), 'YYYY/MM/DD(dd)')}}</td>
+                        <td>{{'KAFS11_31' | i18n(item.dayNumberUsed)}}</td>
                     </tr>
                 </tbody>
             </table>
             <div class="mt-2 mb-2" style="text-align: center">
-                <button class="shadow-none btn rounded-pill btn-info">
+                <button class="shadow-none btn rounded-pill btn-info" v-on:click="openKDLS36Complement()">
                     <span class="ml-3">{{'KAFS11_22' | i18n}}</span>
                     <span class="fas fa-angle-double-right mr-3"></span>
                 </button>
@@ -270,14 +270,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>20/04/04(日)</td>
-                        <td>3日</td>
+                    <tr v-for="(item, index) in absHolidayMngLst" v-bind:key="index">
+                        <td>{{$dt(new Date(item.outbreakDay), 'YYYY/MM/DD(dd)')}}</td>
+                        <td>{{'KAFS11_31' | i18n(item.dayNumberUsed)}}</td>
                     </tr>
                 </tbody>
             </table>
             <div class="mt-2 mb-2" style="text-align: center">
-                <button class="shadow-none btn rounded-pill btn-info">
+                <button class="shadow-none btn rounded-pill btn-info" v-on:click="openKDLS36Leave()">
                     <span class="ml-3">{{'KAFS11_22' | i18n}}</span>
                     <span class="fas fa-angle-double-right mr-3"></span>
                 </button>
@@ -300,14 +300,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>20/04/04(日)</td>
-                        <td>3日</td>
+                    <tr v-for="(item, index) in absWorkMngLst" v-bind:key="index">
+                        <td>{{$dt(new Date(item.outbreakDay), 'YYYY/MM/DD(dd)')}}</td>
+                        <td>{{'KAFS11_31' | i18n(item.dayNumberUsed)}}</td>
                     </tr>
                 </tbody>
             </table>
             <div class="mt-2 mb-2" style="text-align: center">
-                <button class="shadow-none btn rounded-pill btn-info">
+                <button class="shadow-none btn rounded-pill btn-info" v-on:click="openKDLS35Leave()">
                     <span class="ml-3">{{'KAFS11_25' | i18n}}</span>
                     <span class="fas fa-angle-double-right mr-3"></span>
                 </button>
