@@ -88,7 +88,7 @@ module knr002.b {
                 self.modelEmpInfoTer(data.displayModelEmpInfoTer);
                 self.workLocationName(data.workLocationName);
                 self.lastSuccessDate(data.signalLastTime);
-                self.status(data.terminalCurrentState);
+                self.status(data.displayCurrentState);
                 // load List Log in the Period
                 self.loadLogInPeriod(self.empInfoTerCode(), self.sTime(), self.eTime()); 
 
