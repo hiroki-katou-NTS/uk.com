@@ -474,12 +474,16 @@ export class KafS10Component extends KafS00ShrComponent {
                     if (!_.isNil(appHdWorkDispInfo)) {
                         appHdWorkDispInfo = res.data;
                         appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.initWorkType = step1.workInfo.workType.code;
+                        appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.initWorkTypeName = step1.workInfo.workType.name;
                         appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.initWorkTime = step1.workInfo.workTime.code;
+                        appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.initWorkTimeName = step1.workInfo.workTime.name;
                     } else {
                         appHdWorkDispInfo = {} as AppHdWorkDispInfo;
                         appHdWorkDispInfo = res.data;
                         appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.initWorkType = step1.workInfo.workType.code;
+                        appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.initWorkTypeName = step1.workInfo.workType.name;
                         appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.initWorkTime = step1.workInfo.workTime.code;
+                        appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.initWorkTimeName = step1.workInfo.workTime.name;
                     }
                     self.model.appHdWorkDispInfo = appHdWorkDispInfo;
                     step1.loadData(self.model.appHdWorkDispInfo, true);
@@ -526,12 +530,16 @@ export class KafS10Component extends KafS00ShrComponent {
                     if (!_.isNil(appHdWorkDispInfo)) {
                         appHdWorkDispInfo = res.data;
                         appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.initWorkType = step1.workInfo.workType.code;
+                        appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.initWorkTypeName = step1.workInfo.workType.name;
                         appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.initWorkTime = step1.workInfo.workTime.code;
+                        appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.initWorkTimeName = step1.workInfo.workTime.name;
                     } else {
                         appHdWorkDispInfo = {} as AppHdWorkDispInfo;
                         appHdWorkDispInfo = res.data;
                         appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.initWorkType = step1.workInfo.workType.code;
+                        appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.initWorkTypeName = step1.workInfo.workType.name;
                         appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.initWorkTime = step1.workInfo.workTime.code;
+                        appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.initWorkTimeName = step1.workInfo.workTime.name;
                     }
                     self.model.appHdWorkDispInfo = appHdWorkDispInfo;
                     step1.loadData(self.model.appHdWorkDispInfo, true);
