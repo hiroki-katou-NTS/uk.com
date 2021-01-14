@@ -8,6 +8,7 @@ import java.util.Map;
 import org.junit.Test;
 
 import nts.arc.testing.assertion.NtsAssert;
+import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.LaborCostAndTimeType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 public class WorkplaceCounterLaborCostAndTimeTest {

@@ -11,9 +11,9 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.laborcostandtime.LaborCostAndTime;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.laborcostandtime.LaborCostAndTimeType;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.laborcostandtime.WorkplaceCounterLaborCostAndTime;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.laborcostandtime.WorkplaceCounterLaborCostAndTimeRepo;
+import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.LaborCostAndTimeType;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 

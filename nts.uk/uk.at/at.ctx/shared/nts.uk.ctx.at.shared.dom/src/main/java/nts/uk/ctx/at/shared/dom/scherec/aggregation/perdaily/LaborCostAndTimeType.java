@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.aggregation.dom.schedulecounter.laborcostandtime;
+package nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily;
 
 import nts.arc.enums.EnumAdaptor;
 
