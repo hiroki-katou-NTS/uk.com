@@ -17,7 +17,7 @@ module kdl003.parent.viewmodel {
         secondEndTime: KnockoutObservable<number>;
         first: time;
         second: time;
-
+        remark:KnockoutObservable<string>;
         workPlaceId: KnockoutObservable<string> = ko.observable(null);
         baseDate: KnockoutObservable<string> = ko.observable(null);
 
@@ -38,6 +38,7 @@ module kdl003.parent.viewmodel {
             self.firstEndTime = ko.observable(null);
             self.secondStartTime = ko.observable(null);
             self.secondEndTime = ko.observable(null);
+            self.remark = ko.observable(null);
             self.first = <time>{};
             self.second = <time>{};
         }
@@ -68,6 +69,7 @@ module kdl003.parent.viewmodel {
                     self.firstEndTime(childData.first.end);
                     self.secondStartTime(childData.second.start);
                     self.secondEndTime(childData.second.end);
+                    self.remark(childData.remark);
                 }
             })
         }

@@ -26,57 +26,63 @@
         <div id="contents-area">
           <div class="label">#{i18n.getText('KDL001_2')}</div>
           <div class="control-group valign-center">
-            <div id="search-div">
-              <div data-bind="ntsFormLabel: {}">
-                #{i18n.getText('KDL001_3')}
+            <div class="table">
+              <div class="cell">
+                <div id="search-div">
+                  <div data-bind="ntsFormLabel: {}">
+                    #{i18n.getText('KDL001_3')}
+                  </div>
+                  <input
+                    class="inputTime"
+                    id="inputStartTime"
+                    data-bind="ntsTimeWithDayEditor: {name: '#[KDL001_21]', value: startTime, constraint:'TimeWithDayAttr',enable: true, readonly: false, required: false}"
+                  />
+                  <span class="label">～</span>
+                  <input
+                    class="inputTime"
+                    data-bind="ntsTimeWithDayEditor: {name: '#[KDL001_22]', value: endTime, constraint:'TimeWithDayAttr',enable: true, readonly: false, required: false}"
+                  />
+                  <button class="caret-bottom" data-bind="click: searchByTime">
+                    #{i18n.getText('KDL001_10')}
+                  </button>
+                </div>
               </div>
-              <input
-                class="inputTime"
-                id="inputStartTime"
-                data-bind="ntsTimeWithDayEditor: {name: '#[KDL001_21]', value: startTime, constraint:'TimeWithDayAttr',enable: true, readonly: false, required: false}"
-              />
-              <span class="label">～</span>
-              <input
-                class="inputTime"
-                data-bind="ntsTimeWithDayEditor: {name: '#[KDL001_22]', value: endTime, constraint:'TimeWithDayAttr',enable: true, readonly: false, required: false}"
-              />
-              <button class="caret-bottom" data-bind="click: searchByTime">
-                #{i18n.getText('KDL001_10')}
-              </button>
-            </div>
-
-            <div class="table search-by-code">
-              <div class="cell valign-bottom">
-                <input
-                  id="A2_6"
-                  data-bind="ntsTextEditor: { value: searchCode, name: '#[KMK002_2]',								
+              <div class="cell cell-right">
+                <div class="table search-by-code">
+                  <div class="cell valign-bottom">
+                    <input
+                      id="A2_6"
+                      data-bind="ntsTextEditor: { value: searchCode, name: '#[KMK002_2]',								
 									option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
 										placeholder: '#{i18n.getText('KMK002_4')}',	
 										textmode: 'text',								
 									}))}"
-                />
-                <button
-                  class="caret-bottom"
-                  data-bind="click: searchByCodeName"
-                >
-                  #{i18n.getText('KDL001_10')}
-                </button>
-              </div>
-              <div class="cell">
-                <div class="control-group">
-                  <div
-                    data-bind="ntsCheckBox: { checked: isAllCheckShow, enable: isEnableCheckStatus, text: '#{i18n.getText('KDL001_24')}' }"
-                  ></div>
-                  <button data-bind="click: clearSearch">
-                    #{i18n.getText('KDL001_11')}
-                  </button>
+                    />
+                    <button
+                      class="caret-bottom"
+                      data-bind="click: searchByCodeName"
+                    >
+                      #{i18n.getText('KDL001_10')}
+                    </button>
+                  </div>
+                  <div class="cell">
+                    <div class="control-group">
+                      <div
+                        data-bind="ntsCheckBox: { checked: isAllCheckShow, enable: isEnableCheckStatus, text: '#{i18n.getText('KDL001_24')}' }"
+                      ></div>
+                      <button data-bind="click: clearSearch">
+                        #{i18n.getText('KDL001_11')}
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
           <div id="day-list-div">
             <table
-              id="day-list-tbl" tabindex="-1"
+              id="day-list-tbl"
+              tabindex="-1"
               data-bind="ntsGridList: {
 									width: 900,
 									height: gridHeight,

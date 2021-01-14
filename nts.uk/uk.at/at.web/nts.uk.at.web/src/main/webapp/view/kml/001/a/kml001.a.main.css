@@ -58,7 +58,7 @@ input, textarea {
 
 #memo {
 	width: 100%;
-	height: 100px;
+	height: 85px;
 	margin-top: 10px;
 }
 
@@ -131,6 +131,9 @@ input, textarea {
 .cell-help-button {
 	padding-left: 15px;
 }
+#premium-set-div {
+	padding-bottom: 30px;
+}
 .two-columns {
 	max-width: 900px;
 	width: 100%;
@@ -154,14 +157,18 @@ input, textarea {
 	padding-right: 15px;
 }
 .three-columns .cell.column1 {
-	width: 29%;
-	max-width: 174px;
+	width: 18%;
+	max-width: 160px;
+}
+.three-columns .cell.column2 {
+	width: 22%;
 }
 .three-columns .column3 {
 	width: 37%;
+	text-align: left;
 }
 .three-columns .column3 .cell:first-child {
-	width: 50%;
+	width: 45%;
 	padding-right: 15px;
 }
 .three-columns .column2 .radio-wrapper {

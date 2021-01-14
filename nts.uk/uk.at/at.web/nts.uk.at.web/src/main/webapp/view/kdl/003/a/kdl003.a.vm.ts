@@ -641,7 +641,7 @@ module nts.uk.at.view.kdl003.a {
                 // Check pair work type & work time.
                 if (!nts.uk.util.isNullOrEmpty(workTimeCode)) {
                     service.checkPairWorkTypeWorkTime(workTypeCode, workTimeCode).done(() => {
-
+                        let findWorkTime = _.find(self.listWorkTime(), (x) => x.code === workTimeCode);
                         // Set shared data.
                         let workTypeName = self.getWorkTypeName(workTypeCode);
                         let workTimeName = self.getWorkTimeName(workTimeCode);
@@ -651,7 +651,8 @@ module nts.uk.at.view.kdl003.a {
                             selectedWorkTimeCode: workTimeCode,
                             selectedWorkTimeName: workTimeName,
                             first: time1,
-                            second: time2
+                            second: time2,
+                            remark: findWorkTime.remark
                         };
                         nts.uk.ui.windows.setShared("childData", returnedData, false);
 

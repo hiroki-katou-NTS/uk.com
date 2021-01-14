@@ -36,9 +36,9 @@ module nts.uk.at.view.kdl001.a {
                 self.multiSelectMode = nts.uk.ui.windows.getShared('kml001multiSelectMode');
                 self.isSelection = nts.uk.ui.windows.getShared('kml001isSelection');
                 if (!self.multiSelectMode) {
-                    self.gridHeight = 375;
+                    self.gridHeight = 400;
                 } else {
-                    self.gridHeight = 375;
+                    self.gridHeight = 400;
                 }
                 self.selectAbleCodeList = ko.observableArray(<Array<string>>nts.uk.ui.windows.getShared('kml001selectAbleCodeList'));
                 self.selectAbleCodeListBk(_.cloneDeep(self.selectAbleCodeList()));
