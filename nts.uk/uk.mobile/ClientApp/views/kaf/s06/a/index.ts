@@ -589,7 +589,9 @@ export class KafS06AComponent extends KafS00ShrComponent {
             if (loadData) {
                 vm.updateKaf000_A_Params(vm.user);
                 vm.updateKaf000_B_Params(vm.modeNew);
-                // vm.updateKaf000_C_Params(vm.modeNew);
+                if (!vm.modeNew) {
+                    vm.updateKaf000_C_Params(vm.modeNew);
+                }
                 let command = {
 
                 } as StartMobileParam;
