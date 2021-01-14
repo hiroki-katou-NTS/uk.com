@@ -36,26 +36,32 @@ module nts.uk.at.view.knr002.a {
                 vm.selectedFilter(3);
                 
                 vm.selectedFilter.subscribe(function(value) {
-                    console.time('Filter');
+                    let filterValue;
+                    console.time('time');
                     switch(value) {
                         case 0:
                             $("#grid").ntsGrid("destroy");
                             vm.loadGrid(vm.normalList);
+                            filterValue =  getText("KNR002_22");
                             break;
                         case 1:
                             $("#grid").ntsGrid("destroy");
                             vm.loadGrid(vm.abNormalList);
+                            filterValue =  getText("KNR002_23");
                             break;
                         case 2:
                             $("#grid").ntsGrid("destroy");
                             vm.loadGrid(vm.notCommunicatedList);
+                            filterValue =  getText("KNR002_24");
                             break;
                         case 3:
                             $("#grid").ntsGrid("destroy");
                             vm.loadGrid(vm.dataSource().listEmpInfoTerminalDto);
+                            filterValue =  getText("KNR002_21");
                             break;
                     }
-                    console.timeEnd('Filter');
+                    console.log(filterValue);
+                    console.timeEnd('time');
                 });
             }
 
