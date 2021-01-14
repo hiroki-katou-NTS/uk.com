@@ -364,7 +364,7 @@ public class MonthlyRecordToAttendanceItemConverterImpl  extends AttendanceItemC
 			processOnDomain(type, c -> RsvLeaRemNumEachMonthDto.from((RsvLeaRemNumEachMonth) c));
 			break;
 		case ItemConst.MONTHLY_SPECIAL_HOLIDAY_REMAIN_NAME:
-			processOnDomain(type, c -> SpecialHolidayRemainDataDto.from((SpecialHolidayRemainData) c));
+			processOnDomain(type, c -> SpecialHolidayRemainDataDto.from((List<SpecialHolidayRemainData>) c));
 			break;
 		case ItemConst.MONTHLY_OFF_REMAIN_NAME:
 			processOnDomain(type, c -> MonthlyDayoffRemainDataDto.from((MonthlyDayoffRemainData) c));
