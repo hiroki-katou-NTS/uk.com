@@ -548,10 +548,10 @@ export class KafS06AComponent extends KafS00ShrComponent {
         let workAtr = workTypeInfo.workAtr;
         if (workAtr == WorkTypeUnit.OneDay) {
 
-            return workTypeInfo.oneDayCls == WorkTypeClassification.SubstituteHoliday;
+            return workTypeInfo.oneDayCls == WorkTypeClassification.Pause;
         } else {
 
-            return (workTypeInfo.morningCls == WorkTypeClassification.SubstituteHoliday || workTypeInfo.afternoonCls == WorkTypeClassification.SubstituteHoliday);
+            return (workTypeInfo.morningCls == WorkTypeClassification.Pause || workTypeInfo.afternoonCls == WorkTypeClassification.Pause);
         }
 
     }
