@@ -1482,9 +1482,9 @@ export class KafS06AComponent extends KafS00ShrComponent {
         let vacationInfo =  {} as VacationRequestInfoDto;
         let info = {} as SupplementInfoVacationDto;
         let applyForSpeLeave = {} as ApplyforSpecialLeaveDto;
-        if (self.c18_1) {
-            applyForSpeLeave.mournerFlag = false;
-        }
+        // if (self.c18_1) {
+        //     applyForSpeLeave.mournerFlag = false;
+        // }
         if (self.c18) {
             // A10_2
             applyForSpeLeave.relationshipCD = self.selectedRelationship;
@@ -1497,7 +1497,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
             // A10_5
             applyForSpeLeave.relationshipReason = self.relationshipReason || null;
         }
-        if (_.some(applyForSpeLeave) || self.c18_1) {
+        if (_.some(applyForSpeLeave) || self.c19) {
             info.applyForSpeLeave = applyForSpeLeave;
         }
         vacationInfo.holidayApplicationType = self.selectedValueHolidayType;
