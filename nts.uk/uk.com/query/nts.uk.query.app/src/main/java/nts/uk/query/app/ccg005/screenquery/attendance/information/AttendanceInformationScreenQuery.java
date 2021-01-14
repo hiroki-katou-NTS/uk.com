@@ -1,5 +1,6 @@
 package nts.uk.query.app.ccg005.screenquery.attendance.information;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,10 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.bs.person.dom.person.personal.avatar.AvatarRepository;
 import nts.uk.ctx.bs.person.dom.person.personal.avatar.UserAvatar;
 import nts.uk.ctx.health.dom.emoji.employee.EmployeeEmojiState;
@@ -19,6 +24,7 @@ import nts.uk.query.app.ccg005.query.comment.DisplayCommentQuery;
 import nts.uk.query.app.ccg005.query.comment.EmployeeCommentInformationDto;
 import nts.uk.query.app.ccg005.query.work.information.EmployeeWorkInformationDto;
 import nts.uk.query.app.ccg005.query.work.information.WorkInformationQuery;
+import nts.uk.query.app.ccg005.screenquery.attendance.information.dto.EmployeeEmojiStateDto;
 import nts.uk.query.app.ccg005.screenquery.goout.GoOutEmployeeInformationDto;
 
 /*
@@ -27,6 +33,9 @@ import nts.uk.query.app.ccg005.screenquery.goout.GoOutEmployeeInformationDto;
 public class AttendanceInformationScreenQuery {
 
 	private WorkInformationQuery workInforQuery;
+	
+	@Inject
+	private ApplicationRepository appRepo;
 
 	private DisplayCommentQuery commentQuery;
 
@@ -41,9 +50,9 @@ public class AttendanceInformationScreenQuery {
 
 	private List<EmployeeEmojiState> emojiList = Collections.emptyList();
 	
-	public List<AttendanceInformationDto> getAttendanceInformation(List<String> sids, GeneralDate baseDate,
+	public List<AttendanceInformationDto> getAttendanceInformation(List<String> sids, List<String> pids, GeneralDate baseDate,
 			boolean emojiUsage) {
-		// 1: 出退勤・申請情報を取得(Require, 社員ID, 年月日): List<出退勤・申請情報>
+		// 1: 出退勤・申請情報を取得(Require, 社員ID, 年月日): List<出退勤・申請情報> TODO
 		List<EmployeeWorkInformationDto> workInfor = workInforQuery.getWorkInformationQuery(sids, baseDate);
 
 		// TODO 2: 在席のステータスの判断(Require, 社員ID, 年月日, 日別実績の勤務情報, 日別実績の出退勤, 勤務種類):
@@ -51,7 +60,11 @@ public class AttendanceInformationScreenQuery {
 		// AttendanceStatusJudgmentService
 
 		// TODO 3: 申請情報を取得する(社員IDリスト, 期間, 反映状態リスト): Map<社員ID、List<申請>>
-
+		List<Integer> listReflecInfor = new ArrayList<>();
+		listReflecInfor.add(ReflectedState.REFLECTED.value);
+		listReflecInfor.add(ReflectedState.REMAND.value);
+		listReflecInfor.add(ReflectedState.DENIAL.value);
+		Map<String, List<Application>> mapListApplicationNew = appRepo.getMapListApplicationNew(sids, new DatePeriod(baseDate, baseDate), listReflecInfor);
 		// 4: コメントを取得する(社員ID, 年月日): Map<社員ID、社員のコメント情報>
 		Map<String, EmployeeCommentInformationDto> commentData = commentQuery.getComment(sids, baseDate);
 
@@ -63,7 +76,7 @@ public class AttendanceInformationScreenQuery {
 			emojiList = emojiRepo.getByListSidAndDate(sids, baseDate);
 		}
 		// TODO 7: get(個人IDリスト): List<個人の顔写真>
-		List<UserAvatar> avatarList = avatarRepo.getAvatarByPersonalIds(Collections.emptyList()); // TODO pids
+		List<UserAvatar> avatarList = avatarRepo.getAvatarByPersonalIds(pids);
 
 		// TODO 8: create()
 		return sids.stream().map(sid -> {

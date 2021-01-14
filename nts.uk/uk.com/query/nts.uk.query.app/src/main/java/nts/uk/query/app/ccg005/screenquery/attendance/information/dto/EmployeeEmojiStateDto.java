@@ -1,4 +1,4 @@
-package nts.uk.query.app.ccg005.screenquery.attendance.information;
+package nts.uk.query.app.ccg005.screenquery.attendance.information.dto;
 
 import lombok.Builder;
 import lombok.Data;

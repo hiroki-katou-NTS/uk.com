@@ -3,6 +3,7 @@ package nts.uk.query.app.ccg005.screenquery.attendance.information;
 import lombok.Builder;
 import lombok.Data;
 import nts.uk.query.app.ccg005.query.comment.EmployeeCommentInformationDto;
+import nts.uk.query.app.ccg005.screenquery.attendance.information.dto.EmployeeEmojiStateDto;
 import nts.uk.query.app.ccg005.screenquery.goout.GoOutEmployeeInformationDto;
 
 /*
