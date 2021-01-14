@@ -85,9 +85,12 @@ module nts.uk.ui.layout {
     })
     export class MasterUIBindingHandler implements KnockoutBindingHandler {
         init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: nts.uk.ui.vm.ViewModel, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } {
-            element.id = 'master-content';
             element.classList.add('master-content');
             element.removeAttribute('data-bind');
+
+            if (!element.id) {
+                element.id = 'master-content';
+            }
 
             $(element)
                 .find('div[id^=functions-area]')
@@ -138,7 +141,9 @@ module nts.uk.ui.layout {
 
             // top area
             if (!$(element).prev().length && position === 'top') {
-                element.id = "functions-area";
+                if (!element.id) {
+                    element.id = "functions-area";
+                }
 
                 if (title && mode === 'view') {
                     const $title = document.createElement('div');
@@ -185,7 +190,9 @@ module nts.uk.ui.layout {
                     ko.applyBindingsToNode($('<button>').appendTo(element).get(0), { 'c-error': '' }, bindingContext);
                 }
             } else {
-                element.id = "functions-area-bottom";
+                if (!element.id) {
+                    element.id = "functions-area-bottom";
+                }
 
                 ko.applyBindingsToNode(element, null, bindingContext);
 
@@ -207,7 +214,10 @@ module nts.uk.ui.layout {
     })
     export class MasterUIContentBindingHandler implements KnockoutBindingHandler {
         init(element: HTMLElement, valueAccessor: () => number, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: nts.uk.ui.vm.ViewModel, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } {
-            element.id = 'contents-area';
+            if (!element.id) {
+                element.id = 'contents-area';
+            }
+            
             element.classList.add('contents-area');
             element.removeAttribute('data-bind');
 

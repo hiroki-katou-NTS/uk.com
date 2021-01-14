@@ -7,6 +7,10 @@ div#master-wrapper {
 		padding: 0 !important;
 	}
 
+	.margin-0 {
+		margin: 0 !important;
+	}
+
 	.overflow-hidden {
 		overflow: hidden !important;
 	}
@@ -30,15 +34,15 @@ div#master-wrapper {
 		overflow: hidden;
 		box-sizing: border-box;
 
-		div#contents-area {
+		div[id^=contents-area] {
 			padding: 10px;
 			overflow-y: auto;
 			position: relative;
 			box-sizing: border-box;
 		}
 
-		&>div#contents-area,
-		&>div#functions-area {
+		&>div[id^=contents-area],
+		&>div[id^=functions-area] {
 			margin: 0px;
 			background-color: #fff; 
 		}
@@ -54,7 +58,7 @@ div#master-wrapper {
 		&>div.two-panel {
 			overflow: hidden;
 
-			div#contents-area {
+			div[id^=contents-area] {
 				margin-top: 20px;
 				margin-bottom: 20px;
 				background-color: #fff; 
@@ -94,13 +98,13 @@ div#master-wrapper {
 				padding-right: 32px;
 				background-color: #fff;
 				
-				&>div#contents-area {
+				&>div[id^=contents-area] {
 					margin-top: 20px;
 				}
 			}
 		}
 
-		&>div#contents-area {
+		&>div[id^=contents-area] {
 			&:first-child {
 				margin-top: 0px;
 				

@@ -1,7 +1,7 @@
 div#master-wrapper {
 	
 	div#master-content {
-		#functions-area {
+		div[id^=functions-area] {
 			padding: 5px 10px;
 			overflow: hidden;
 			position: relative;
@@ -71,14 +71,14 @@ div#master-wrapper {
 			&>div.one-panel,
 			&>div.once-panel,
 			&>div.single-panel {
-				#functions-area {
+				div[id^=functions-area] {
 					padding-left: 0;
 					padding-right: 0;
 				}
 			}
 		}
 
-		#functions-area-bottom {
+		div[id^=functions-area-bottom] {
 			width: 100%;
 			padding: 10px 0;
 			white-space: nowrap;
@@ -98,13 +98,13 @@ div#master-wrapper {
 			}
 		}
 
-		&>div#functions-area {
+		&>div[id^=functions-area] {
 			border-bottom: solid 1px $frame_border_color;
 		}
 	}
 	
 	&.modal {			
-		&>div#functions-area-bottom {
+		&>div[id^=functions-area-bottom] {
 			text-align: center;
 			border-top: solid 1px $frame_border_color;
 
