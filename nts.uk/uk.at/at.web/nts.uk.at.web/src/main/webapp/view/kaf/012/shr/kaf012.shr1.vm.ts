@@ -215,7 +215,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
             let vm = this;
             const data = {
                 employeeIds: vm.application().employeeIDLst().length == 0 ? [vm.$user.employeeId] : vm.application().employeeIDLst(),
-                baseDate: vm.timeLeaveRemaining().remainingStart.replace(/\//g, '')
+                baseDate: new Date(vm.timeLeaveRemaining().remainingStart).toISOString()
             };
             setShared('KDL020A_PARAM', data);
             if(data.employeeIds.length > 1 ) {
@@ -229,7 +229,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
             let vm = this;
             const data = {
                 employeeIds: vm.application().employeeIDLst().length == 0 ? [vm.$user.employeeId] : vm.application().employeeIDLst(),
-                baseDate: vm.timeLeaveRemaining().remainingStart.replace(/\//g, '')
+                baseDate: new Date(vm.timeLeaveRemaining().remainingStart).toISOString()
             };
             setShared('KDL051A_PARAM', data);
             if(data.employeeIds.length > 1 ) {
@@ -243,7 +243,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
             const vm = this;
             const data = {
                 employeeList: vm.application().employeeIDLst().length == 0 ? [vm.$user.employeeId] : vm.application().employeeIDLst(),
-                baseDate: new Date().toISOString()
+                baseDate: new Date(vm.timeLeaveRemaining().remainingStart).toISOString()
             };
             if (data.employeeList.length > 1) {
                 vm.$window.modal('/view/kdl/052/multi.xhtml', data);
