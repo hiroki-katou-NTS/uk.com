@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.laborcostandtime.LaborCostAndTime;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.laborcostandtime.WorkplaceCounterLaborCostAndTime;
-import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.LaborCostAndTimeType;
+import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AggregateUnitOfLaborCosts;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
@@ -66,9 +66,9 @@ public class KscmtTallyByWkpLaborCost extends ContractUkJpaEntity implements Ser
 
 	public static WorkplaceCounterLaborCostAndTime toDomain(List<KscmtTallyByWkpLaborCost> entities) {
 
-		Map<LaborCostAndTimeType, LaborCostAndTime> laborCostAndTimeList = new HashMap<>();
+		Map<AggregateUnitOfLaborCosts, LaborCostAndTime> laborCostAndTimeList = new HashMap<>();
 		entities.forEach(x -> laborCostAndTimeList.put(
-			EnumAdaptor.valueOf(x.pk.costType, LaborCostAndTimeType.class),
+			EnumAdaptor.valueOf(x.pk.costType, AggregateUnitOfLaborCosts.class),
 			new LaborCostAndTime(
 				NotUseAtr.valueOf(x.useClassification),
 				NotUseAtr.valueOf(x.time),

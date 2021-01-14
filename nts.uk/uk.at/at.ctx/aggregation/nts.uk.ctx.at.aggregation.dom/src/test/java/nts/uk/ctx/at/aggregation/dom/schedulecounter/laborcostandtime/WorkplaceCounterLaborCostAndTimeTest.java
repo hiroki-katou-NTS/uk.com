@@ -8,7 +8,7 @@ import java.util.Map;
 import org.junit.Test;
 
 import nts.arc.testing.assertion.NtsAssert;
-import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.LaborCostAndTimeType;
+import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AggregateUnitOfLaborCosts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 public class WorkplaceCounterLaborCostAndTimeTest {
@@ -16,17 +16,17 @@ public class WorkplaceCounterLaborCostAndTimeTest {
 	@Test
 	public void create_with_businessException () {
 		
-		Map<LaborCostAndTimeType, LaborCostAndTime> list = new HashMap<>();
-		list.put(LaborCostAndTimeType.TOTAL, LaborCostAndTime.createWithBudget(
+		Map<AggregateUnitOfLaborCosts, LaborCostAndTime> list = new HashMap<>();
+		list.put(AggregateUnitOfLaborCosts.TOTAL, LaborCostAndTime.createWithBudget(
 				NotUseAtr.NOT_USE,
 				NotUseAtr.USE,
 				NotUseAtr.NOT_USE,
 				NotUseAtr.NOT_USE));
-		list.put(LaborCostAndTimeType.WORKING_HOURS, LaborCostAndTime.createWithoutBudget(
+		list.put(AggregateUnitOfLaborCosts.WORKING_HOURS, LaborCostAndTime.createWithoutBudget(
 				NotUseAtr.NOT_USE,
 				NotUseAtr.NOT_USE,
 				NotUseAtr.NOT_USE));
-		list.put(LaborCostAndTimeType.OVERTIME, LaborCostAndTime.createWithoutBudget(
+		list.put(AggregateUnitOfLaborCosts.OVERTIME, LaborCostAndTime.createWithoutBudget(
 				NotUseAtr.NOT_USE,
 				NotUseAtr.NOT_USE,
 				NotUseAtr.NOT_USE));
@@ -39,44 +39,44 @@ public class WorkplaceCounterLaborCostAndTimeTest {
 	@Test
 	public void create_successfully () {
 		
-		Map<LaborCostAndTimeType, LaborCostAndTime> list = new HashMap<>();
-		list.put(LaborCostAndTimeType.TOTAL, LaborCostAndTime.createWithBudget(
+		Map<AggregateUnitOfLaborCosts, LaborCostAndTime> list = new HashMap<>();
+		list.put(AggregateUnitOfLaborCosts.TOTAL, LaborCostAndTime.createWithBudget(
 				NotUseAtr.USE,
 				NotUseAtr.USE,
 				NotUseAtr.NOT_USE,
 				NotUseAtr.NOT_USE));
-		list.put(LaborCostAndTimeType.WORKING_HOURS, LaborCostAndTime.createWithoutBudget(
+		list.put(AggregateUnitOfLaborCosts.WORKING_HOURS, LaborCostAndTime.createWithoutBudget(
 				NotUseAtr.NOT_USE,
 				NotUseAtr.NOT_USE,
 				NotUseAtr.NOT_USE));
-		list.put(LaborCostAndTimeType.OVERTIME, LaborCostAndTime.createWithoutBudget(
+		list.put(AggregateUnitOfLaborCosts.OVERTIME, LaborCostAndTime.createWithoutBudget(
 				NotUseAtr.USE,
 				NotUseAtr.USE,
 				NotUseAtr.NOT_USE));
 		
 		WorkplaceCounterLaborCostAndTime result = WorkplaceCounterLaborCostAndTime.create(list);
 		
-		Map<LaborCostAndTimeType, LaborCostAndTime> resultMap = result.getLaborCostAndTimeList();
-		assertThat(resultMap.get(LaborCostAndTimeType.TOTAL).getUseClassification()).isEqualTo(NotUseAtr.USE);
-		assertThat(resultMap.get(LaborCostAndTimeType.WORKING_HOURS).getUseClassification()).isEqualTo(NotUseAtr.NOT_USE);
-		assertThat(resultMap.get(LaborCostAndTimeType.OVERTIME).getUseClassification()).isEqualTo(NotUseAtr.USE);
+		Map<AggregateUnitOfLaborCosts, LaborCostAndTime> resultMap = result.getLaborCostAndTimeList();
+		assertThat(resultMap.get(AggregateUnitOfLaborCosts.TOTAL).getUseClassification()).isEqualTo(NotUseAtr.USE);
+		assertThat(resultMap.get(AggregateUnitOfLaborCosts.WORKING_HOURS).getUseClassification()).isEqualTo(NotUseAtr.NOT_USE);
+		assertThat(resultMap.get(AggregateUnitOfLaborCosts.OVERTIME).getUseClassification()).isEqualTo(NotUseAtr.USE);
 		
 	}
 	
 	@Test
 	public void getters() {
 		
-		Map<LaborCostAndTimeType, LaborCostAndTime> list = new HashMap<>();
-		list.put(LaborCostAndTimeType.TOTAL, LaborCostAndTime.createWithBudget(
+		Map<AggregateUnitOfLaborCosts, LaborCostAndTime> list = new HashMap<>();
+		list.put(AggregateUnitOfLaborCosts.TOTAL, LaborCostAndTime.createWithBudget(
 				NotUseAtr.USE,
 				NotUseAtr.USE,
 				NotUseAtr.NOT_USE,
 				NotUseAtr.NOT_USE));
-		list.put(LaborCostAndTimeType.WORKING_HOURS, LaborCostAndTime.createWithoutBudget(
+		list.put(AggregateUnitOfLaborCosts.WORKING_HOURS, LaborCostAndTime.createWithoutBudget(
 				NotUseAtr.NOT_USE,
 				NotUseAtr.NOT_USE,
 				NotUseAtr.NOT_USE));
-		list.put(LaborCostAndTimeType.OVERTIME, LaborCostAndTime.createWithoutBudget(
+		list.put(AggregateUnitOfLaborCosts.OVERTIME, LaborCostAndTime.createWithoutBudget(
 				NotUseAtr.USE,
 				NotUseAtr.USE,
 				NotUseAtr.NOT_USE));

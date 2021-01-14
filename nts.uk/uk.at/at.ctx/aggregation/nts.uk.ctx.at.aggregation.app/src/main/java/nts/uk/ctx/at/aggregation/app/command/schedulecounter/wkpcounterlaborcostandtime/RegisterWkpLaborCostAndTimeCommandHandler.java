@@ -13,7 +13,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.laborcostandtime.LaborCostAndTime;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.laborcostandtime.WorkplaceCounterLaborCostAndTime;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.laborcostandtime.WorkplaceCounterLaborCostAndTimeRepo;
-import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.LaborCostAndTimeType;
+import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AggregateUnitOfLaborCosts;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -28,9 +28,9 @@ public class RegisterWkpLaborCostAndTimeCommandHandler extends CommandHandler<Re
 	@Override
 	protected void handle(CommandHandlerContext<RegisterWkpLaborCostAndTimeCommand> context) {
 		RegisterWkpLaborCostAndTimeCommand command = context.getCommand();
-		Map<LaborCostAndTimeType, LaborCostAndTime> laborCostAndTimeList = new HashMap<>();
+		Map<AggregateUnitOfLaborCosts, LaborCostAndTime> laborCostAndTimeList = new HashMap<>();
 		command.getLaborCostAndTimes().forEach(x -> laborCostAndTimeList.put(
-			EnumAdaptor.valueOf(x.getLaborCostAndTimeType(), LaborCostAndTimeType.class),
+			EnumAdaptor.valueOf(x.getLaborCostAndTimeType(), AggregateUnitOfLaborCosts.class),
 			new LaborCostAndTime(
 				NotUseAtr.valueOf(x.getUseClassification()),
 				NotUseAtr.valueOf(x.getTime()),
