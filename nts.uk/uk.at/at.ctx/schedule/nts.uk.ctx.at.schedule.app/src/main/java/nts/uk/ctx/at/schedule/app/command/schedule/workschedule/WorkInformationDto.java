@@ -1,6 +1,3 @@
-/**
- * 
- */
 package nts.uk.ctx.at.schedule.app.command.schedule.workschedule;
 
 import lombok.AllArgsConstructor;

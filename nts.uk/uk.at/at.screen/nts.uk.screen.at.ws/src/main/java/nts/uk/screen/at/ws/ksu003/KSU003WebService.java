@@ -14,9 +14,13 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.WorkInformationDto;
 import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.TargetOrgIdenInforDto;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.screen.at.app.ksu003.changeworktype.ChangeWorkTypeSc;
+import nts.uk.screen.at.app.ksu003.changeworktype.CheckWorkType;
+import nts.uk.screen.at.app.ksu003.changeworktype.CheckWorkTypeDto;
 import nts.uk.screen.at.app.ksu003.changeworktype.ChangeWorkTypeDto;
 import nts.uk.screen.at.app.ksu003.getempworkfixedworkkinfo.EmpWorkFixedWorkInfoDto;
 import nts.uk.screen.at.app.ksu003.getempworkfixedworkkinfo.GetEmpWorkFixedWorkInfoSc;
@@ -56,7 +60,11 @@ public class KSU003WebService extends WebService{
 	@Inject
 	private GetEmpWorkFixedWorkInfoSc fixedWorkInfoSc;
 	
-	@Inject ChangeWorkTypeSc changeWorkType;
+	@Inject
+	private CheckWorkType checkWorkType;
+	
+	@Inject 
+	private ChangeWorkTypeSc changeWorkType;
 	
 	@POST
 	@Path("getinfo-initstart")
@@ -102,10 +110,19 @@ public class KSU003WebService extends WebService{
 	
 	@POST
 	@Path("changeWorkType")
-	// 勤務種類を変更する
 	public ChangeWorkTypeDto changeWorkType(WorkInforDto information){
 		ChangeWorkTypeDto data = changeWorkType.changeWorkType(information);
 		return data;
 	}
+	
+	@POST
+	@Path("checkWorkType")
+	// 勤務種類を変更する
+	public CheckWorkTypeDto checkWorkType(WorkInforDto information){
+		String workTimeSetting = checkWorkType.checkWorkType(information.getWorkTypeCode());
+		CheckWorkTypeDto dto = new CheckWorkTypeDto(workTimeSetting); 
+		return dto;
+	}
+	
 	
 }
