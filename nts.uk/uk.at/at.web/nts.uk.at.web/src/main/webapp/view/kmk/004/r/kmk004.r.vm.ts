@@ -130,7 +130,9 @@ module nts.uk.at.kmk004.r {
 			var windowSize = nts.uk.ui.windows.getSelf();
 			windowSize.$dialog.dialog("option", "width", 530);
 			windowSize.$dialog.dialog("option", "height", 570);
-			$('#work-place-list').ntsTreeComponent(wpOption);
+			$('#work-place-list').ntsTreeComponent(wpOption).done(() => {
+				$('#work-place-list  .ntsSearchBox').focus();
+			});
 		}
 
 		initEmployment() {
