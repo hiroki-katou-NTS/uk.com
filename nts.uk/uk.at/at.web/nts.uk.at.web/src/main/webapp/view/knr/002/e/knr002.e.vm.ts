@@ -34,15 +34,17 @@ module nts.uk.at.view.knr002.e {
                 vm.selectedMode.subscribe((value: number) => {
                     $("#bak-grid1").ntsGrid("destroy");
                     vm.loadInstalledTerminals(value);
+                    $('#bak-grid2').igGridSelection('selectRow', 0);
+                    $('#bak-grid1').igGridSelection('selectRow', 0);
                     vm.setLabelCorlor(value);
                     if (value == MODE.BACKUP) {
+                        vm.loadLocalSettings(vm.initData().listEmpInfoTerminal[0].empInfoTerCode);
                         vm.instructions(getText("KNR002_254"));
                     } else {
+                        vm.loadBackupContent(vm.initData().listTimeRecordSetFormatBakEDto[0].empInfoTerCode);
                         vm.instructions(getText("KNR002_255"));
                     }
-                    
-                });
-                
+                }); 
             }
 
             private setLabelCorlor(value: number) {
@@ -232,8 +234,11 @@ module nts.uk.at.view.knr002.e {
                 let shareData = vm.initData().listTimeRecordSetFormatBakEDto[vm.selectedRow()];
                 setShared('KNR002E_share', shareData);
                 modal('/view/knr/002/f/index.xhtml', { title: 'F_Screen', }).onClosed(() => {
-                    console.log('close', 'CLOSE');
-                    vm.loadInitData();
+                    let isCancel = getShared('KNR002E_cancel');
+                    
+                    if (!isCancel) {
+                        vm.loadInitData();
+                    }
                 });
             }
 
@@ -262,7 +267,11 @@ module nts.uk.at.view.knr002.e {
                             vm.selectedCode(vm.initData().listEmpInfoTerminal[0].empInfoTerCode);
                             loadTime++;
                         }     
-                        vm.loadLocalSettings(vm.selectedCode());
+                        if (vm.selectedMode() == MODE.BACKUP) {
+                            vm.loadLocalSettings(vm.selectedCode());
+                        } else {
+                            vm.loadBackupContent(vm.selectedCode());
+                        }
                         vm.loadSettingGrid();
                         vm.loadBakGrid();
                         vm.loadInstalledTerminals(vm.selectedMode());

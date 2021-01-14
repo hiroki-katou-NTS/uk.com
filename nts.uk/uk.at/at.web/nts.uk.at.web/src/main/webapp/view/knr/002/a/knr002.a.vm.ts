@@ -34,7 +34,9 @@ module nts.uk.at.view.knr002.a {
                     { code: 2, name: getText("KNR002_24") }
                 ]);
                 vm.selectedFilter(3);
+                
                 vm.selectedFilter.subscribe(function(value) {
+                    console.time('Filter');
                     switch(value) {
                         case 0:
                             $("#grid").ntsGrid("destroy");
@@ -53,6 +55,7 @@ module nts.uk.at.view.knr002.a {
                             vm.loadGrid(vm.dataSource().listEmpInfoTerminalDto);
                             break;
                     }
+                    console.timeEnd('Filter');
                 });
             }
 

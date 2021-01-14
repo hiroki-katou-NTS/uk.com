@@ -26,7 +26,8 @@ module knr002.f {
                 self.lastSuccessDate = ko.observable("");
                 self.workLocationName = ko.observable("");
                 self.recoveryTargetList = ko.observableArray<EmpInfoTerminal>([]);
-                self.selectedList = [];       
+                self.selectedList = [];    
+                  
             }
             /**
              * Start Page
@@ -37,11 +38,8 @@ module knr002.f {
                 var dfd = $.Deferred<void>();
                 blockUI.invisible();
                 // get Shared from E
-                // self.empInfoTerCode(getShared('KNR002F_empInfoTerCode'));
-                // self.empInfoTerName(getShared('KNR002F_empInfoTerName'));
-                // self.modelEmpInfoTer(getShared('KNR002F_modelEmpInfoTer'));
-                // self.lastSuccessDate(getShared('KNR002F_lastSuccessDate'));
                 const sharedData = getShared('KNR002E_share');
+                
 
                 console.log(sharedData, 'shared data F');
                 
@@ -103,6 +101,7 @@ module knr002.f {
              */
             private bindDestinationCopyList(): void{
                 let self = this;
+                 
                 $("#F4").ntsGrid({
                     height: 169,
                     dataSource: self.recoveryTargetList(),
@@ -129,6 +128,9 @@ module knr002.f {
              * cancel_Dialog
              */
             private cancel_Dialog(): any {
+                const vm = this;
+
+                setShared('KNR002E_cancel', true);
                 nts.uk.ui.windows.close();
             }
             /**
@@ -136,6 +138,8 @@ module knr002.f {
              */
             private recovery(): void {
                 let self = this;
+
+                setShared('KNR002E_cancel', false);
                 self.selectedList = [];             
                 _.forEach(self.recoveryTargetList(), e => {
                     if(e.availability)
