@@ -9,29 +9,14 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import org.apache.commons.lang3.StringUtils;
-
 import lombok.Value;
-import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.app.command.application.holidayshipment.ApproveHolidayShipmentCommandHandler;
-import nts.uk.ctx.at.request.app.command.application.holidayshipment.CancelHolidayShipmentCommandHandler;
-import nts.uk.ctx.at.request.app.command.application.holidayshipment.ChangeAbsDateToHolidayCommandHandler;
-import nts.uk.ctx.at.request.app.command.application.holidayshipment.ConfirmMsgDto;
-import nts.uk.ctx.at.request.app.command.application.holidayshipment.DeleteHolidayShipmentCommandHandler;
-import nts.uk.ctx.at.request.app.command.application.holidayshipment.DenyHolidayShipmentCommandHandler;
-import nts.uk.ctx.at.request.app.command.application.holidayshipment.HolidayShipmentCommand;
-import nts.uk.ctx.at.request.app.command.application.holidayshipment.ReleaseHolidayShipmentCommandHandler;
-import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveChangeAbsDateCommandHandler;
-import nts.uk.ctx.at.request.app.command.application.holidayshipment.SaveHolidayShipmentCommand;
-import nts.uk.ctx.at.request.app.command.application.holidayshipment.UpdateHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.SaveHolidayShipmentCommandHandlerRef5;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.UpdateHolidayShipmentCommandHandlerRef5;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.dto.HolidayShipmentRefactor5Command;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
-import nts.uk.ctx.at.request.app.find.application.holidayshipment.HolidayShipmentScreenCFinder;
-import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.HolidayShipmentDto;
-import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.WorkTimeInfoDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.ChangeValueItemsOnHolidayShipment;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.HolidayShipmentScreenAFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.HolidayShipmentScreenBFinder;
@@ -39,8 +24,6 @@ import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.ChangeWokTypeParam;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.ChangeWorkTypeResultDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.DisplayInforWhenStarting;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApproveProcessResult;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.shr.com.context.AppContexts;
 
 @Path("at/request/application/holidayshipment")
@@ -59,26 +42,9 @@ public class HolidayShipmentWebService extends WebService {
 	@Inject
 	private HolidayShipmentScreenBFinder screenBFinder;
 	
+	@Inject
+	private UpdateHolidayShipmentCommandHandlerRef5 updateHolidayShipment;
 	
-	@Inject
-	private HolidayShipmentScreenCFinder screenCFinder;
-	
-	@Inject
-	private UpdateHolidayShipmentCommandHandler updateHandler;
-	@Inject
-	private DeleteHolidayShipmentCommandHandler deleteHanler;
-	@Inject
-	private CancelHolidayShipmentCommandHandler cancelHanler;
-	@Inject
-	private ChangeAbsDateToHolidayCommandHandler changeDateAbsToHolidayHanler;
-	@Inject
-	private ApproveHolidayShipmentCommandHandler approveHandler;
-	@Inject
-	private DenyHolidayShipmentCommandHandler denyHandler;
-	@Inject
-	private ReleaseHolidayShipmentCommandHandler releaseHandler;
-	@Inject
-	private SaveChangeAbsDateCommandHandler changeAbsDateHander;
 
 	@POST
 	@Path("startPageARefactor")
@@ -121,119 +87,12 @@ public class HolidayShipmentWebService extends WebService {
 		return this.screenBFinder.startPageBRefactor(AppContexts.user().companyId(), param.getAppID(), param.getAppDispInfoStartupDto());
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-
-
 	@POST
 	@Path("update")
-	public void update(SaveHolidayShipmentCommand command) {
-		updateHandler.handle(command);
+	public void update(HolidayShipmentRefactor5Command command) {
+		updateHolidayShipment.update(command);
 	}
 
-	@POST
-	@Path("change_day")
-	public HolidayShipmentDto changeDay(ChangeDateParam param) {
-//		return this.screenAFinder.changeAppDate(param.getTakingOutDate(), param.getHolidayDate(), param.getComType(),
-//				param.getUiType());
-		return null;
-	}
-	
-	@POST
-	@Path("changeWorkingDateRefactor")
-	public DisplayInforWhenStarting changeWorkingDateRefactor() {
-//		return this.screenAFinder.changeWorkingDateRefactor(
-//				param.workingDate == null ? null : GeneralDate.fromString(param.workingDate, "yyyy/MM/dd"), 
-//				param.holidayDate == null ? null : GeneralDate.fromString(param.holidayDate, "yyyy/MM/dd"), 
-//				param.displayInforWhenStarting);
-		return null;
-	}
-	
-
-
-	@POST
-	@Path("get_selected_working_hours")
-	public WorkTimeInfoDto getSelectedWorkingHours(ChangeWokTypeParam param) {
-//		return this.screenAFinder.getSelectedWorkingHours(param.getWkTypeCD(), param.getWkTimeCD());
-		return null;
-	}
-
-	@POST
-	@Path("processBeforeRegister_New")
-	public List<ConfirmMsgDto> processBeforeRegister_New(SaveHolidayShipmentCommand command) {
-		return null;/* saveHandler.handle(command); */
-	}
-	
-
-
-	
-	
-
-
-	@POST
-	@Path("remove")
-	public JavaTypeResult<ProcessResult> remove(HolidayShipmentCommand command) {
-		return new JavaTypeResult<ProcessResult>(this.deleteHanler.handle(command));
-	}
-
-	@POST
-	@Path("cancel")
-	public void cancel(HolidayShipmentCommand command) {
-		this.cancelHanler.handle(command);
-	}
-
-	@POST
-	@Path("approve")
-	public JavaTypeResult<ApproveProcessResult> approve(HolidayShipmentCommand command) {
-		return new JavaTypeResult<ApproveProcessResult>(this.approveHandler.handle(command));
-	}
-
-	@POST
-	@Path("deny")
-	public JavaTypeResult<ProcessResult> deny(HolidayShipmentCommand command) {
-		return new JavaTypeResult<ProcessResult>(this.denyHandler.handle(command));
-	}
-
-	@POST
-	@Path("release")
-	public JavaTypeResult<ProcessResult> release(HolidayShipmentCommand command) {
-		return new JavaTypeResult<ProcessResult>(this.releaseHandler.handle(command));
-	}
-
-	@POST
-	@Path("start_c")
-	public HolidayShipmentDto startPageC(StartScreenCParam param) {
-		return this.screenCFinder.startPage(param.getSID(), param.getAppDate(), param.getUiType());
-	}
-
-	@POST
-	@Path("change_abs_date")
-	public JavaTypeResult<ProcessResult> changeDateC(SaveHolidayShipmentCommand command) {
-		return new JavaTypeResult<ProcessResult>(this.changeAbsDateHander.handle(command));
-	}
-
-	@POST
-	@Path("change_abs_date_to_holiday")
-	public JavaTypeResult<Integer> changeAbsDate(SaveHolidayShipmentCommand command) {
-		return new JavaTypeResult<Integer>(this.changeDateAbsToHolidayHanler.handle(command));
-	}
-
-}
-
-@Value
-class StartScreenAParam {
-	private List<String> sIDs;
-	private GeneralDate appDate;
-	private int uiType;
 }
 
 @Value
@@ -257,27 +116,4 @@ class StartScreenCParam {
 	private String sID;
 	private GeneralDate appDate;
 	private int uiType;
-}
-
-@Value
-class ChangeDateParsam {
-
-	private String holidayDate;
-
-	private String takingOutDate;
-
-	/**
-	 * 申請組み合わせ
-	 */
-	private int comType;
-	private int uiType;
-
-	public GeneralDate getHolidayDate() {
-		return !StringUtils.isEmpty(holidayDate) ? GeneralDate.fromString(holidayDate, "yyyy/MM/dd") : null;
-	}
-
-	public GeneralDate getTakingOutDate() {
-		return !StringUtils.isEmpty(takingOutDate) ? GeneralDate.fromString(takingOutDate, "yyyy/MM/dd") : null;
-	}
-
 }
