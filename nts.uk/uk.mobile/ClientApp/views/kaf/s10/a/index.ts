@@ -453,7 +453,7 @@ export class KafS10Component extends KafS00ShrComponent {
                     );
                     let command = {} as ParamChangeWorkMobile;
                     command.companyId = self.user.companyId;
-                    command.appDate = self.application.appDate;
+                    command.appDate = self.modeNew ? self.date : self.appDispInfoStartupOutput.appDetailScreenInfo.application.appDate;
                     command.workTypeCode = step1.workInfo.workType.code;
                     command.workTimeCode = step1.workInfo.workTime.code;
                     // command.startTime = step1.workHours1.start;
@@ -509,7 +509,7 @@ export class KafS10Component extends KafS00ShrComponent {
 
                     let command = {} as ParamChangeWorkMobile;
                     command.companyId = self.user.companyId;
-                    command.appDate = self.application.appDate;
+                    command.appDate = self.modeNew ? self.date : self.appDispInfoStartupOutput.appDetailScreenInfo.application.appDate;
                     command.workTypeCode = step1.workInfo.workType.code;
                     command.workTimeCode = step1.workInfo.workTime.code;
                     // command.startTime = step1.workHours1.start;
