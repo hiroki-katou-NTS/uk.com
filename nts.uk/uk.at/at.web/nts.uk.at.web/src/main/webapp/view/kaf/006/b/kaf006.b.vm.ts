@@ -845,7 +845,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 			
 			// vm.checkCondition10(data);
 			vm.checkCondition11(data);
-			// vm.checkCondition12(data);
+			vm.checkCondition12(data);
 			vm.checkCondition30(data);
 			vm.checkCondition19(data);
 			vm.checkCondition14(data);
@@ -1081,6 +1081,16 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 			return false;
 		}
 
+		checkCondition12(data: any) {
+            const vm = this;
+            if (vm.data && vm.data.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles && vm.selectedWorkTimeCD() && vm.isDispTime2ByWorkTime()) {
+                vm.condition12(true);
+                return true;
+            }
+            vm.condition12(false);
+            return false;
+        }
+
 		checkCondition30(data: any) {
 			const vm = this;
 			if (vm.data && vm.data.vacationApplicationReflect && vm.data.vacationApplicationReflect.workAttendanceReflect.reflectAttendance === 1) {
@@ -1189,7 +1199,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 				}
 			}
 
-			if (vm.selectedType() === 1 && vm.data && vm.data.remainVacationInfo.substituteLeaveManagement.linkingManagement === 1 && workType) {
+			if (vm.data && vm.data.remainVacationInfo.substituteLeaveManagement.linkingManagement === 1 && workType) {
 				if (workType.workAtr === 0 && workType.oneDayCls === 6) {
 					vm.condition15(true);
 					return true;
@@ -1216,12 +1226,12 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 				}
 			}
 
-			if (vm.selectedType() === 1 && vm.data && vm.data.remainVacationInfo.holidayManagement.linkingManagement === 1 && workType) {
+			if (vm.data && vm.data.remainVacationInfo.holidayManagement.linkingManagement === 1 && workType) {
 				if (workType.workAtr === 0 && workType.oneDayCls === 8) {
 					vm.condition14(true);
 					return true;
 				}
-				if (workType.workAtr === 1 && (workType.morningCls === 6 || workType.afternoonCls === 6)) {
+				if (workType.workAtr === 1 && (workType.morningCls === 8 || workType.afternoonCls === 8)) {
 					vm.condition14(true);
 					return true;
 				}
