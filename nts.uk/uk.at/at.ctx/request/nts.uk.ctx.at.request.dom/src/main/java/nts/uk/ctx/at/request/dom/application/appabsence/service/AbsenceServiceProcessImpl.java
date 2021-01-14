@@ -1423,7 +1423,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 					appAbScene.getOpAppEndDate().get().getApplicationDate(), 
 					lstDate,
 					appAbsenceStartInfoOutput.getSpecAbsenceDispInfo().orElse(null),
-					appAbScene.getVacationInfo().getInfo().getApplyForSpeLeaveOptional().get().isMournerFlag());// // KAF006: -PhuongDV domain fix pending- Xác nhận lại việc check null
+					appAbScene.getVacationInfo().getInfo().getApplyForSpeLeaveOptional().map(x -> x.isMournerFlag()).orElse(false));// // KAF006: -PhuongDV domain fix pending- Xác nhận lại việc check null
 			break;
 		case DIGESTION_TIME:
 			// INPUT．「休暇種類」 = 時間消化
