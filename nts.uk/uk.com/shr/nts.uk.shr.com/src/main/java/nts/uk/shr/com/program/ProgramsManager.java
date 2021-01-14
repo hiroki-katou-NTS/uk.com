@@ -485,6 +485,14 @@ public class ProgramsManager {
      */
     public static final Program KMK011I = new Program(WebAppId.AT, ProgramIdConsts.KMK011I, "KMK011_75",
             "/view/kmk/011/i/index.xhtml");
+
+
+    /**
+     * KMK017A
+     */
+    public static final Program KMK017A = new Program(WebAppId.AT, ProgramIdConsts.KMK017A, "KMK017_1",
+        "/view/kmk/017/a/index.xhtml");
+
     /**
      * KML001A
      */
