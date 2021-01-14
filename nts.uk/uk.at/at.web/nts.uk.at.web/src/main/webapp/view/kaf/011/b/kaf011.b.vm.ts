@@ -60,16 +60,19 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 					if(data.rec && data.abs){
 						vm.recruitmentApp.bindingScreenB(data.rec, data.applicationForWorkingDay.workTypeList, data);
 						vm.absenceLeaveApp.bindingScreenB(data.abs, data.applicationForHoliday.workTypeList, data);	
+						vm.applicationCommon().update(data.rec.application);
 					}else if(data.rec){
 						vm.appCombinaSelected(1);
 						vm.recruitmentApp.bindingScreenB(data.rec, data.applicationForWorkingDay.workTypeList, data);
+						vm.applicationCommon().update(data.rec.application);
 					}else if(data.abs){
 						vm.appCombinaSelected(2);
 						vm.absenceLeaveApp.bindingScreenB(data.abs, data.applicationForHoliday.workTypeList, data);
+						vm.applicationCommon().update(data.abs.application);
 					}
 					vm.displayInforWhenStarting(data);
-				}).fail((failData: any) => {
-					
+				}).fail((fail: any) => {
+					dialog.error({ messageId: fail.messageId});
 				}).always(() => {
                     block.clear();
                 });
@@ -91,23 +94,31 @@ module nts.uk.at.view.kaf011.b.viewmodel {
         update() {
             const vm = this;
 			if(!vm.triggerValidate()) {
-				let data = vm.displayInforWhenStarting();
+				let data: any = {};
+					data.represent = vm.displayInforWhenStarting().represent;
+					data.displayInforWhenStarting = ko.toJS(vm.displayInforWhenStarting);
+					data.displayInforWhenStarting.rec = null;
+					data.displayInforWhenStarting.abs = null;
 					data.rec = vm.appCombinaSelected() != 2 ? ko.toJS(vm.recruitmentApp): null;
 					if(data.rec){
-						data.rec.application.opAppStartDate = data.rec.application.opAppEndDate = data.rec.application.appDate = moment(data.rec.application.appDate).format('YYYY/MM/DD');
+						data.rec.applicationUpdate = vm.displayInforWhenStarting().rec.application;
+						data.rec.applicationUpdate.opAppReason = vm.applicationCommon().opAppReason();
+						data.rec.applicationUpdate.opAppStandardReasonCD = vm.applicationCommon().opAppStandardReasonCD();
 						_.remove(data.rec.workingHours, function(n: any) {
 							return n.timeZone.startTime == undefined || n.timeZone.startTime == undefined;  
 						}); 
 					}
 					data.abs = vm.appCombinaSelected() != 1 ? ko.toJS(vm.absenceLeaveApp): null;
 					if(data.abs){
-						data.abs.application.opAppStartDate = data.abs.application.opAppEndDate = data.abs.application.appDate = moment(data.abs.application.appDate).format('YYYY/MM/DD');
+						data.abs.applicationUpdate = vm.displayInforWhenStarting().abs.application;
+						data.abs.applicationUpdate.opAppReason = vm.applicationCommon().opAppReason();
+						data.abs.applicationUpdate.opAppStandardReasonCD = vm.applicationCommon().opAppStandardReasonCD();
 						_.remove(data.abs.workingHours, function(n: any) {
 							return n.timeZone.startTime == undefined || n.timeZone.startTime == undefined;  
 						}); 
 					}
 				console.log(data);	
-				ajax('at/request/application/holidayshipment/save', data).then(() =>{
+				ajax('at/request/application/holidayshipment/update', data).then(() =>{
 					dialog.info({ messageId: "Msg_15" });
 				}).fail((fail:any) => {
 					dialog.error({ messageId: fail.messageId});
