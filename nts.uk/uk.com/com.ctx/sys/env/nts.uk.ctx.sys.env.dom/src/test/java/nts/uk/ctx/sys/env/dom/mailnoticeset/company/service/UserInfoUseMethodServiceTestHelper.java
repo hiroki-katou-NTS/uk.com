@@ -18,11 +18,11 @@ public class UserInfoUseMethodServiceTestHelper {
 
 	/**
 	 * Mocked ユーザー情報の使用方法
-	 * @param contactUsageSetting 他の連絡先.連絡先利用設定
-	 * @param nullOtherContact Null他の連絡先 
-	 * @param nullSettingContactInfo NullField連絡先情報の設定
-	 * @param useOfProfile プロフィールの利用
-	 * @param presentSettingContactInfo Present連絡先情報の設定
+	 * @param contactUsageSetting 0 - 全て連絡先を利用しない　||　1　-　全て連絡先を利用しする　||　２　－　全て連絡先を利用するかどうか個人が選択
+	 * @param nullOtherContact: true　-　他の連絡先がEmpty　||　false　-　他の連絡先がPresent
+	 * @param nullSettingContactInfo：　true　-　連絡先情報の設定がEmpty　||　false　-　連絡先情報の設定がPresent
+	 * @param useOfProfile：  １　-　プロフィールを利用する　||　0　-　プロフィールを利用しない
+	 * @param presentSettingContactInfo：　 true　-　連絡先情報の設定がPresent　||　false　-　連絡先情報の設定がEmpty
 	 * @return
 	 */
 	public static UserInformationUseMethod initUserInformationUseMethod(Integer contactUsageSetting, Boolean nullOtherContact
