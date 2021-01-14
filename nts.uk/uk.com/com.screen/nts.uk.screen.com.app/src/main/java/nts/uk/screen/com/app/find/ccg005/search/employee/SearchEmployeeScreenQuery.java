@@ -2,10 +2,12 @@ package nts.uk.screen.com.app.find.ccg005.search.employee;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.office.dom.favorite.adapter.EmployeeBasicImport;
 import nts.uk.ctx.office.dom.favorite.adapter.EmployeePositionAdapter;
 import nts.uk.ctx.office.dom.favorite.adapter.EmployeeWorkplaceIdAdapter;
 import nts.uk.ctx.office.dom.favorite.adapter.PersonalInformationAdapter;
@@ -13,7 +15,6 @@ import nts.uk.ctx.office.dom.favorite.adapter.RankOfPositionAdapter;
 import nts.uk.ctx.office.dom.favorite.adapter.WorkplaceInforAdapter;
 import nts.uk.ctx.office.dom.favorite.service.DefaultPersonalInfomationRequireImpl;
 import nts.uk.ctx.office.dom.favorite.service.PersonalInfomationDomainService;
-import nts.uk.ctx.office.dom.favorite.service.PersonalInfomationObj;
 import nts.uk.ctx.office.dom.reference.auth.SpecifyAuthInquiryRepository;
 import nts.uk.ctx.office.dom.reference.auth.service.DefaultRequireImpl;
 import nts.uk.ctx.office.dom.reference.auth.service.DetermineEmpIdListDomainService;
@@ -50,9 +51,7 @@ public class SearchEmployeeScreenQuery {
 	
 	private AttendanceInformationScreenQuery attendanceScreenQuery;
 	
-	private PersonalInfomationDomainService personalInfomationDomainService;
-
-	public void searchForEmployee(String keyWorks, GeneralDate baseDate, boolean emojiUseage) {
+	public SearchEmployeeDto searchForEmployee(String keyWorks, GeneralDate baseDate, boolean emojiUsage) {
 
 		String loginCid = AppContexts.user().companyId();
 		String loginRoleid = AppContexts.user().roles().forAttendance();
@@ -88,11 +87,16 @@ public class SearchEmployeeScreenQuery {
 					employeePositionAdapter, 
 					rankOfPositionAdapter,
 					personalInformationAdapter);
-		List<PersonalInfomationObj> personalInfomation = personalInfomationDomainService
+		List<EmployeeBasicImport> personalInfomation = PersonalInfomationDomainService
 				.getPersonalInfomation(defaultPersonalInfomationRequireImpl, empList, baseDate);
+		List<String> pids = personalInfomation.stream().map(mapper -> mapper.getPersonalId()).collect(Collectors.toList());
 		
-		// TODO 5: 在席情報を取得する(社員ID, 年月日, するしない区分): List<在席情報DTO>
-//		 List<AttendanceInformationDto> list = attendanceScreenQuery.getAttendanceInformation(empList, personalInfomation.get, baseDate, emojiUsage)
-		
+		// 5: 在席情報を取得する(社員ID, 年月日, するしない区分): List<在席情報DTO>
+		 List<AttendanceInformationDto> attendanceInformationDtos = attendanceScreenQuery.getAttendanceInformation(empList, pids, baseDate, emojiUsage);
+		 
+		return SearchEmployeeDto.builder()
+				.personalInfomation(personalInfomation)
+				.attendanceInformationDtos(attendanceInformationDtos)
+				.build();
 	}
 }

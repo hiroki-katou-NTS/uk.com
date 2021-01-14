@@ -1,4 +1,4 @@
-package nts.uk.screen.com.app.find.ccg005.display.information;
+package nts.uk.screen.com.app.find.ccg005.search.employee;
 
 import java.util.List;
 
@@ -9,9 +9,11 @@ import nts.uk.screen.com.app.find.ccg005.attendance.information.AttendanceInform
 
 @Builder
 @Data
-public class DisplayInformationDto {
+public class SearchEmployeeDto {
+
+	// 個人基本情報（List）
+	private List<EmployeeBasicImport> personalInfomation;
+
 	// 在席情報DTO（List）
 	private List<AttendanceInformationDto> attendanceInformationDtos;
-	// 個人基本情報（List）
-	private List<EmployeeBasicImport> listPersonalInfo;
 }

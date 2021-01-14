@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.Builder;
 import lombok.Data;
+import nts.uk.screen.com.app.find.ccg005.attendance.information.AttendanceInformationDto;
 import nts.uk.screen.com.app.find.ccg005.favorite.information.FavoriteSpecifyDto;
 
 /*
@@ -16,6 +17,7 @@ public class DisplayAttendanceDataDto {
 	private List<FavoriteSpecifyDto> favoriteSpecifyDto;
 	
 	//在席情報DTO
+	private List<AttendanceInformationDto> attendanceInformationDtos;
 	
 	//感情状態を利用する
 	private Integer emojiUsage;
@@ -24,7 +26,7 @@ public class DisplayAttendanceDataDto {
 	private boolean isInCharge;
 	
 	//申請名
-	private ApplicationNameDto applicationNameDto;
+	private List<ApplicationNameDto> applicationNameDtos;
 	
 	//自分のビジネスネーム
 	private String bussinessName;

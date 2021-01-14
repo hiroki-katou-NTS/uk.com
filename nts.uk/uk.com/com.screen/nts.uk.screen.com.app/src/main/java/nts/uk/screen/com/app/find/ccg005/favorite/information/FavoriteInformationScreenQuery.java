@@ -24,7 +24,7 @@ public class FavoriteInformationScreenQuery {
 		String sid = AppContexts.user().employeeId();
 		Map<FavoriteSpecifyDto, List<String>> returnMap = new HashMap<>();
 		FavoriteInformationDomainService.get(rq, sid).forEach((key, value) -> {
-			FavoriteSpecifyDto dto = new FavoriteSpecifyDto();
+			FavoriteSpecifyDto dto = FavoriteSpecifyDto.builder().build();
 			key.setMemento(dto);
 			returnMap.put(dto, value);
 		});
