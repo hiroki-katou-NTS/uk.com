@@ -27,7 +27,9 @@ public class WorkInformationDto {
 		if (workTime != null) {
 			workInformation.setWorkTimeCode(new WorkTimeCode(workTime));
 		}
-		workInformation.setWorkTypeCode(new WorkTypeCode(workType));
+		if (workType != null) {
+		    workInformation.setWorkTypeCode(new WorkTypeCode(workType));
+		}
 		return workInformation;
 	}
 }

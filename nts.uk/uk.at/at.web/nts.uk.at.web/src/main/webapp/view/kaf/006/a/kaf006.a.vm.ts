@@ -689,7 +689,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 
 			vm.$blockui("show");
 			// validate chung KAF000
-			vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason', '#kaf000-a-component5-textReason')
+			vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason', '#kaf000-a-component5-textReason', '#work-type-combobox')
 			.then((valid) => {
 				if (valid) {
 					if (vm.selectedType() === 6) {
@@ -1192,7 +1192,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                 }
             }
 
-            if (vm.selectedType() === 1 && vm.data && vm.data.remainVacationInfo.substituteLeaveManagement.linkingManagement === 1 && workType) {
+            if (vm.data && vm.data.remainVacationInfo.substituteLeaveManagement.linkingManagement === 1 && workType) {
                 if (workType.workAtr === 0 && workType.oneDayCls === 6) {
                     vm.condition15(true);
                     return true;
@@ -1219,12 +1219,12 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                 }
             }
 
-            if (vm.selectedType() === 1 && vm.data && vm.data.remainVacationInfo.holidayManagement.linkingManagement === 1 && workType) {
+            if (vm.data && vm.data.remainVacationInfo.holidayManagement.linkingManagement === 1 && workType) {
                 if (workType.workAtr === 0 && workType.oneDayCls === 8) {
                     vm.condition14(true);
                     return true;
                 }
-                if (workType.workAtr === 1 && (workType.morningCls === 6 || workType.afternoonCls === 6)) {
+                if (workType.workAtr === 1 && (workType.morningCls === 8 || workType.afternoonCls === 8)) {
                     vm.condition14(true);
                     return true;
                 }

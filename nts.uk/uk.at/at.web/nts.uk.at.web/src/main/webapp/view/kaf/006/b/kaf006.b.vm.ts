@@ -1199,7 +1199,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 				}
 			}
 
-			if (vm.selectedType() === 1 && vm.data && vm.data.remainVacationInfo.substituteLeaveManagement.linkingManagement === 1 && workType) {
+			if (vm.data && vm.data.remainVacationInfo.substituteLeaveManagement.linkingManagement === 1 && workType) {
 				if (workType.workAtr === 0 && workType.oneDayCls === 6) {
 					vm.condition15(true);
 					return true;
@@ -1226,12 +1226,12 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 				}
 			}
 
-			if (vm.selectedType() === 1 && vm.data && vm.data.remainVacationInfo.holidayManagement.linkingManagement === 1 && workType) {
+			if (vm.data && vm.data.remainVacationInfo.holidayManagement.linkingManagement === 1 && workType) {
 				if (workType.workAtr === 0 && workType.oneDayCls === 8) {
 					vm.condition14(true);
 					return true;
 				}
-				if (workType.workAtr === 1 && (workType.morningCls === 6 || workType.afternoonCls === 6)) {
+				if (workType.workAtr === 1 && (workType.morningCls === 8 || workType.afternoonCls === 8)) {
 					vm.condition14(true);
 					return true;
 				}
