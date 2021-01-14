@@ -2953,13 +2953,10 @@ public class ProgramsManager {
             "/kaf/s04/a");
     public static final Program KAFS05A = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS05A, "KAFS05A",
             "/kaf/s05/a");
-<<<<<<< HEAD
     public static final Program KAFS06A = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS06A, "KAFS06A",
             "/kaf/s06/a");
-=======
     public static final Program KAFS10A = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS10A, "KAFS10A",
             "/kaf/s10/a");
->>>>>>> TeamD/Refactor5/Release_20210115
     public static final Program KAFS07A = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS07A, "KAFS07A",
             "/kaf/s07/a");
     public static final Program KAFS08A = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS08A, "KAFS08A",
