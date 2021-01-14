@@ -155,9 +155,13 @@
       <app9 v-if="appType==9" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
       <app15 v-if="appType==15" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
       <app0 v-if="appType==0" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
+<<<<<<< HEAD
       <app0 v-if="appType==6" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
       <app1 v-if="appType==1" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
       <app10 v-if="appType==10" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
+=======
+      <app6 v-if="appType==6" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
+>>>>>>> TeamD/Refactor5/Release_20210115
       </div>
     </div>
     <div v-if="comboReasonDisp || textReasonDisp" class="row content-div uk-bg-headline border-top uk-border-light-gray">{{'CMMS45_34' | i18n}}</div>
@@ -198,6 +202,23 @@
             </div>
         </div>
         <div v-if="reasons[1].c3">{{reasons[1].content}}</div>
+      </div>
+    </div>
+    <div v-if="appType == 6 && reasons != null">
+      <!--B7_1-->
+      <div class="card card-label" v-if="reasons[0].c1">
+        <div class="card-header uk-bg-accordion mt-2 headerDiv">
+            <span class="textPosition">{{'KAFS10_19' | i18n}}</span>
+        </div>
+        <div v-if="reasons[0].c2" class="row mt-1 mb-1">
+            <div class="col-1.5 pr-2 pl-3">
+                {{reasons[0].code}}
+            </div>
+            <div class="col pl-0">
+                {{reasons[0].name}}
+            </div>
+        </div>
+        <div v-if="reasons[0].c3">{{reasons[0].content}}</div>
       </div>
     </div>
     <div
