@@ -1,11 +1,11 @@
 /// <reference path="../reference.ts"/>
 
 module nts.uk.ui {
-
     export interface WindowSize {
         width: number;
         height: number;
     }
+
     export interface RootViewModel {
         kiban: KibanViewModel;
         content: nts.uk.ui.vm.ViewModel;
@@ -13,8 +13,6 @@ module nts.uk.ui {
             isEmpty: KnockoutComputed<boolean>;
         };
     }
-
-    export let _viewModel!: RootViewModel;
 
     /** Event to notify document ready to initialize UI. */
     export const documentReady = $.Callbacks();
@@ -43,12 +41,12 @@ module nts.uk.ui {
         size: KnockoutObservable<WindowSize> = ko.observable({ width: window.innerWidth, height: window.innerHeight });
 
         // show or hide header
-        header: KnockoutObservable<boolean> = ko.observable(true);
+        header: KnockoutObservable<boolean | null> = ko.observable(null);
 
         // show or hide notification
         notification: KnockoutObservable<string> = ko.observable('');
 
-        constructor(dialogOptions?: any) {
+        constructor() {
             const vm = this;
 
             vm.title = ko.computed({
@@ -58,8 +56,6 @@ module nts.uk.ui {
                     return document.title;
                 }
             });
-
-            vm.errorDialogViewModel = new errors.ErrorsViewModel(dialogOptions);
 
             vm.mode
                 .subscribe((m) => {
@@ -71,44 +67,41 @@ module nts.uk.ui {
                         $('body>div:first-child').removeClass('view');
                     }
                 });
+        }
 
-            vm.header
-                .subscribe((c) => {
-                    if (!c) {
-                        $('body #header').addClass('hidden');
-                    } else {
-                        $('body #header').removeClass('hidden');
-                    }
-                });
+        public initErrorModel(dialogOptions?: any) {
+            const vm = this;
+
+            vm.errorDialogViewModel = new errors.ErrorsViewModel(dialogOptions);
         }
     }
+
+    export const _viewModel: RootViewModel = {
+        kiban: new KibanViewModel(),
+        content: null,
+        errors: null
+    };
 
     export module init {
         let _start: () => void;
 
         _.extend(__viewContext, {
+            transferred: uk.sessionStorage
+                .getItem(uk.request.STORAGE_KEY_TRANSFER_DATA)
+                .map(v => JSON.parse(v)),
             ready: (callback: () => void) => _start = callback,
             bind: function (content: any, dialogOptions?: any) {
+                const { kiban } = _viewModel;
                 const { systemName } = __viewContext.env;
-                const kiban = new KibanViewModel(dialogOptions);
+
+                kiban.initErrorModel(dialogOptions);
+
                 const isEmpty = ko.computed(() => !kiban.errorDialogViewModel.occurs());
 
                 // mock ready function
-                _.extend(nts.uk.ui, { _viewModel: { kiban, content, errors: { isEmpty } } });
+                _.extend(_viewModel, { content, errors: { isEmpty } });
 
                 $(() => {
-                    // update title of name
-                    kiban.systemName(systemName);
-
-                    // update mode of view
-                    kiban.mode(!util.isInFrame() ? 'view' : 'modal');
-
-                    // update header 
-                    kiban.header(!__viewContext.noHeader);
-
-                    // update notification
-                    kiban.notification(__viewContext.program.operationSetting.message);
-
                     viewModelBuilt.fire(_viewModel);
 
                     // bind viewmodel to document body
@@ -116,32 +109,24 @@ module nts.uk.ui {
 
                     viewModelApplied.fire(_viewModel);
 
+                    // update title of name
+                    kiban.systemName(systemName);
+
+                    // update mode of view
+                    kiban.mode(!util.isInFrame() ? 'view' : 'modal');
+
+                    // update header
+                    if (kiban.header() === null) {
+                        kiban.header(!__viewContext.noHeader || (kiban.mode() === 'view'));
+                    }
+
+                    // update notification
+                    kiban.notification(__viewContext.program.operationSetting.message);
+
                     // off event reset for class reset-not-apply
                     $(".reset-not-apply").find(".reset-element").off("reset");
 
                     nts.uk.cookie.remove("startfrommenu", { path: "/" });
-
-                    $('div[id^=functions-area]')
-                        .each((__: number, e: HTMLElement) => {
-                            if (!e.classList.contains('functions-area')) {
-                                ko.applyBindingsToNode(e,
-                                    {
-                                        'ui-function-bar': e.className.match(/bottom$/) ? 'bottom' : 'top',
-                                        title: e.getAttribute('data-title') || true,
-                                        back: e.getAttribute('data-url')
-                                    }, _viewModel);
-
-                                e.removeAttribute('data-url');
-                                e.removeAttribute('data-title');
-                            }
-                        });
-
-                    $('div[id^=contents-area]')
-                        .each((__: number, e: HTMLElement) => {
-                            if (!e.classList.contains('contents-area')) {
-                                ko.applyBindingsToNode(e, { 'ui-contents': 0 }, _viewModel);
-                            }
-                        });
                 });
 
                 // update size
@@ -261,13 +246,6 @@ module nts.uk.ui {
         };
 
         $(function () {
-            _.extend(__viewContext, {
-                noHeader: (__viewContext.noHeader === true) || $("body").hasClass("no-header"),
-                transferred: uk.sessionStorage
-                    .getItem(uk.request.STORAGE_KEY_TRANSFER_DATA)
-                    .map(v => JSON.parse(v))
-            });
-
             documentReady.fire();
 
             if ($(".html-loading").length <= 0) {

@@ -277,7 +277,7 @@ module nts.uk.ui.errors {
      *  Public API
     **/
     export function errorsViewModel(): ErrorsViewModel {
-        return nts.uk.ui._viewModel.kiban.errorDialogViewModel;
+        return nts.uk.ui._viewModel.kiban.errorDialogViewModel || new ErrorsViewModel();
     }
 
     export function show(): void {

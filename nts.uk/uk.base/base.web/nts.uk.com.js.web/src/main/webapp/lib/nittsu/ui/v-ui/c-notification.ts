@@ -1,4 +1,11 @@
 module nts.uk.ui.notification {
+    const SKEY = 'notification';
+
+    type NotifStorage = {
+        hide: boolean;
+        notif: string;
+    } | undefined;
+
     @component({
         name: 'ui-notification',
         template: `<svg width="35" height="30" viewBox="0 0 35 30" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -9,40 +16,59 @@ module nts.uk.ui.notification {
         `
     })
     export class NotificationViewModel extends ko.ViewModel {
+        hidden: KnockoutObservable<boolean> = ko.observable(true);
         notification!: KnockoutObservable<string>;
 
         created() {
             const vm = this;
 
+            // get notification from viewContext
             vm.notification = nts.uk.ui._viewModel.kiban.notification;
+
+            vm.$window
+                .storage(SKEY)
+                .then((old: NotifStorage) => {
+                    if (old) {
+                        vm.hidden(old.hide);
+                    }
+                });
         }
 
         mounted() {
             const vm = this;
+            vm.$el.classList.add('hidden');
 
             ko.computed({
                 read: () => {
+                    const hidden = ko.unwrap<boolean>(vm.hidden);
                     const notif = ko.unwrap<string>(vm.notification);
 
-                    if (!notif) {
-                        vm.$el.classList.add('hidden');
-                    } else {
-                        vm.$el.classList.remove('hidden');
-                    }
+                    vm.$window
+                        .storage(SKEY)
+                        .then((old: NotifStorage) => {
+                            if (!notif || (old && notif === old.notif && hidden)) {
+                                vm.$el.classList.add('hidden');
+
+                                return true;
+                            } else {
+                                vm.$el.classList.remove('hidden');
+
+                                return false;
+                            }
+                        })
+                        .then((hide: boolean) => vm.$window.storage(SKEY, { notif, hide }));
 
                     // update position & size of all relative element
                     $(window).trigger('wd.resize');
                 },
                 disposeWhenNodeIsRemoved: vm.$el
             });
-
-            // query notification via api at here
         }
 
         hide() {
             const vm = this;
 
-            vm.notification('');
+            vm.hidden(true);
         }
     }
 }

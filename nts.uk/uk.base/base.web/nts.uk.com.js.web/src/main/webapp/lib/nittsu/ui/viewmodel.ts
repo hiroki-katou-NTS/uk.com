@@ -421,9 +421,13 @@ module nts.uk.ui.viewmodel {
 
 	BaseViewModel.prototype.$window = Object.defineProperties({}, {
 		mode: {
-			get() {
-				return window === window.top ? 'view' : 'modal';
-			}
+			value: nts.uk.ui._viewModel.kiban.mode
+		},
+		title: {
+			value: nts.uk.ui._viewModel.kiban.title
+		},
+		header: {
+			value: nts.uk.ui._viewModel.kiban.header
 		},
 		size: {
 			value: $size

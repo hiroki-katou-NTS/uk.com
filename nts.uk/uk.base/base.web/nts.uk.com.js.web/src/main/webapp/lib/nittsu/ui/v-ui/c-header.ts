@@ -152,29 +152,42 @@ module nts.uk.ui.header {
                     return '';
                 }
             });
-
-            nts.uk.sessionStorage
-                .getItem(MENU_SET)
-                .ifEmpty(() => {
-                    vm
-                        .$ajax('com', "/sys/portal/webmenu/finddetails")
-                        .then((data: MenuSet[]) => nts.uk.sessionStorage.setItem(MENU_SET, JSON.stringify(data)))
-                        .then(() => vm.loadData());
-                });
-
-            vm
-                .$ajax('com', '/sys/portal/webmenu/username')
-                .then((data: string) => vm.userName(data));
-
-            vm
-                .$ajax('com', '/sys/portal/webmenu/companies')
-                .then((data) => vm.companies(data));
         }
 
         mounted() {
             const vm = this;
 
             vm.loadData();
+
+            ko.computed({
+                read: () => {
+                    const show = ko.unwrap(vm.$window.header);
+
+                    if (show === true) {
+                        vm.$el.classList.remove('hidden');
+
+                        nts.uk.sessionStorage
+                            .getItem(MENU_SET)
+                            .ifEmpty(() => {
+                                vm
+                                    .$ajax('com', "/sys/portal/webmenu/finddetails")
+                                    .then((data: MenuSet[]) => nts.uk.sessionStorage.setItem(MENU_SET, JSON.stringify(data)))
+                                    .then(() => vm.loadData());
+                            });
+
+                        vm
+                            .$ajax('com', '/sys/portal/webmenu/username')
+                            .then((data: string) => vm.userName(data));
+
+                        vm
+                            .$ajax('com', '/sys/portal/webmenu/companies')
+                            .then((data) => vm.companies(data));
+                    } else {
+                        vm.$el.classList.add('hidden');
+                    }
+                },
+                disposeWhenNodeIsRemoved: vm.$el
+            });
 
             $(window)
                 .on('keyup', (evt) => vm.ctrl(evt.ctrlKey))

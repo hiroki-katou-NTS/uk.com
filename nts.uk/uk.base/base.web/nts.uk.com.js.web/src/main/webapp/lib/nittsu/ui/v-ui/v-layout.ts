@@ -38,7 +38,6 @@ module nts.uk.ui.layout {
         }
     }
 
-
     @handler({
         bindingName: 'ui-master-notification',
         validatable: true,
@@ -46,6 +45,7 @@ module nts.uk.ui.layout {
     })
     export class MasterUINotificationBindingHandler implements KnockoutBindingHandler {
         init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: nts.uk.ui.vm.ViewModel, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } {
+            element.classList.add('hidden');
             element.removeAttribute('data-bind');
 
             element.setAttribute('id', 'operation-info');
@@ -65,9 +65,10 @@ module nts.uk.ui.layout {
     })
     export class MasterUIHeaderBindingHandler implements KnockoutBindingHandler {
         init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: nts.uk.ui.vm.ViewModel, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } {
-            element.removeAttribute('data-bind');
             element.id = "header";
             element.classList.add('header');
+            element.classList.add('hidden');
+            element.removeAttribute('data-bind');
 
             if (ko.components.isRegistered('ui-header')) {
                 ko.applyBindingsToNode(element, { component: 'ui-header' });
@@ -84,18 +85,37 @@ module nts.uk.ui.layout {
     })
     export class MasterUIBindingHandler implements KnockoutBindingHandler {
         init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: nts.uk.ui.vm.ViewModel, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } {
-
-            element.removeAttribute('data-bind');
-
             element.id = 'master-content';
             element.classList.add('master-content');
+            element.removeAttribute('data-bind');
 
-            // element.style.height = `calc(100vh - ${element.getBoundingClientRect().top}px)`;
+            $(element)
+                .find('div[id^=functions-area]')
+                .each((__: number, e: HTMLElement) => {
+                    if (!e.classList.contains('functions-area')) {
+                        ko.applyBindingsToNode(e,
+                            {
+                                'ui-function-bar': e.id.match(/bottom$/) ? 'bottom' : 'top',
+                                title: e.getAttribute('data-title') || true,
+                                back: e.getAttribute('data-url')
+                            }, bindingContext);
+
+                        e.removeAttribute('data-url');
+                        e.removeAttribute('data-title');
+                    }
+                });
+
+            $(element)
+                .find('div[id^=contents-area]')
+                .each((__: number, e: HTMLElement) => {
+                    if (!e.classList.contains('contents-area')) {
+                        const oldBinding: string = e.getAttribute('data-bind') || "";
+
+                        ko.applyBindingsToNode(e, { 'ui-contents': 0 }, bindingContext);
+                    }
+                });
 
             return { controlsDescendantBindings: false };
-        }
-        update(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: nts.uk.ui.vm.ViewModel, bindingContext: KnockoutBindingContext) {
-            // update notification at here
         }
     }
 
@@ -187,10 +207,9 @@ module nts.uk.ui.layout {
     })
     export class MasterUIContentBindingHandler implements KnockoutBindingHandler {
         init(element: HTMLElement, valueAccessor: () => number, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: nts.uk.ui.vm.ViewModel, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } {
-            element.removeAttribute('data-bind');
-
             element.id = 'contents-area';
             element.classList.add('contents-area');
+            element.removeAttribute('data-bind');
 
             element.style.height = `calc(100vh - ${element.getBoundingClientRect().top + (valueAccessor() || ($(element).parent().hasClass('master-content') ? 0 : 20))}px)`;
 
@@ -206,6 +225,7 @@ module nts.uk.ui.layout {
                 .then(() => {
                     element.classList.add('padding-0');
                     element.classList.add('overflow-hidden');
+                    element.style.height = '1px';
                 })
                 .then(() => {
                     const mb = $(element).next();
@@ -224,8 +244,11 @@ module nts.uk.ui.layout {
                     }
                 })
                 .always(() => {
+                    element.classList.remove('hidden');
                     element.classList.remove('padding-0');
                     element.classList.remove('overflow-hidden');
+
+                    element.style.display = '';
                 });
         }
     }
