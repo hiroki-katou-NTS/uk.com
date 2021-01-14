@@ -470,7 +470,12 @@ module nts.uk.at.view.kcp006.a {
                 $("#" + currentCalendar + " .td-container img").off();
                 $("#" + currentCalendar + " .td-container img").on('click', function(event) {
                     event.stopPropagation();
-                    nts.uk.ui.windows.setShared('eventData', { date: $(this).attr("data-date"), workplaceId: workplaceId, workplaceName: workplaceName });
+                    nts.uk.ui.windows.setShared('KDL049', { dateSelected: moment($(this).attr("data-date"), "YYYY/MM/DD").utc().toISOString(),
+                     workplace: {
+                         workPlaceID : workplaceId,
+                         targetOrgWorkplaceName: workplaceName
+                         }
+                     });
                     nts.uk.ui.windows.sub.modal("at", "/view/kdl/049/a/index.xhtml", { title: '行事設定', height: 330, width: 425 }).onClosed(function(): any {
                         let fullCalendarRender = new nts.uk.at.view.kcp006.a.FullCalendarRender();
                         _lstHoliday = [];
