@@ -703,7 +703,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 			if (vm.specAbsenceDispInfo()) {
 				vm.dateSpecHdRelationLst(vm.specAbsenceDispInfo().dateSpecHdRelationLst ? vm.specAbsenceDispInfo().dateSpecHdRelationLst : []);
 				
-				if (vm.dateSpecHdRelationLst() && vm.dateSpecHdRelationLst().length > 0) {
+				if (vm.dateSpecHdRelationLst() && vm.dateSpecHdRelationLst().length > 0 && !vm.selectedDateSpec()) {
 					vm.selectedDateSpec(vm.dateSpecHdRelationLst()[0].relationCD);
 				}
 			}
