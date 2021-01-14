@@ -1223,6 +1223,7 @@ public class ProgramIdConsts {
 	//スマホ②
 	public static final String KAFS04A = "KAFS04A";
 	public static final String KAFS05A = "KAFS05A";
+	public static final String KAFS06A = "KAFS06A";
 	public static final String KAFS07A = "KAFS07A";
 	public static final String KAFS08A = "KAFS08A";
 	public static final String KAFS09A = "KAFS09A";
