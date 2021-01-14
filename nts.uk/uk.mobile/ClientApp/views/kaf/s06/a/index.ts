@@ -536,8 +536,6 @@ export class KafS06AComponent extends KafS00ShrComponent {
         const self = this;
         
         const workType = self.workType;
-        console.log(_.get(self.model, 'appAbsenceStartInfoDto.workTypeLst'));
-        console.log(workType.code);
         const workTypeInfo = _.findLast(_.get(self.model, 'appAbsenceStartInfoDto.workTypeLst'),
             (item: any) => item.workTypeCode == workType.code) as WorkTypeDto;
         // const workTypeSet = _.get(workTypeInfo, 'workTypeSets[0]');
@@ -1376,7 +1374,6 @@ export class KafS06AComponent extends KafS00ShrComponent {
 
         self.$http.post('at', API.selectTypeHoliday, command)
                   .then((res: any) => {
-                        console.log(res.data);
                         let model = {} as Model;
                         model.applyForLeaveDto = self.model.applyForLeaveDto;
                         model.appAbsenceStartInfoDto = res.data;
