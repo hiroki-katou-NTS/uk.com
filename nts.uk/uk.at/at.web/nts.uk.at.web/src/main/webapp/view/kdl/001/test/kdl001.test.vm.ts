@@ -50,7 +50,9 @@ module nts.uk.at.view.kdl001.test {
                 nts.uk.ui.windows.setShared('kml001BaseDate', self.baseDate);
 
                 nts.uk.ui.windows.sub.modal("/view/kdl/001/a/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function () {
-                    if (nts.uk.ui.windows.getShared("kml001selectedCodeList").length != 0) {
+                    let kml001selectedCodeList = nts.uk.ui.windows.getShared("kml001selectedCodeList");
+                    console.log(kml001selectedCodeList);
+                    if (kml001selectedCodeList.length != 0) {
                         self.selectedCodeList((<Array<string>>nts.uk.ui.windows.getShared("kml001selectedCodeList")).toString());
                     }
                 });
