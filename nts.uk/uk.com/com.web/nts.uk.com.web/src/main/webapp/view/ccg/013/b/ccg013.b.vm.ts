@@ -70,8 +70,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
                 _.forEach(editMenuBar.listSystem, x => {
                     item1.push(x);
                 })
-
-                self.listSystemSelect(item1);
+                self.listSystemSelect(item1.filter(x => x.value !== 2));
                 _.forEach(editMenuBar.listStandardMenu, (item, index) => {
                     self.allPart.push(new MenuBarDto(
                         index,
@@ -199,20 +198,21 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
         private changeSystem(value: number): void {
             var self = this;
             if (value === 5) {
-                var list001 = _.chain(self.allPart())
+                var newAllPart = _.orderBy(self.allPart(),["newOrder"],["asc"]);
+                var list001 = _.chain(newAllPart)
                     .uniqBy("displayName")
                     .forEach((item, index) => {
                         item.index = index + 1;
                     })
                     .value();
-                self.listStandardMenu(list001);
+                    self.listStandardMenu(list001);
             } else {
-                var standardMenus: any = _.chain(self.allPart())
+                var newAllPart = _.orderBy(self.allPart(),["newOrder"],["asc"]);
+                var standardMenus: any = _.chain(newAllPart)
                     .filter((item: any) => {
                         if (item.system == 0 && item.classification == 8) return true;
                         if (item.system == value) return true;
-                    }).sortBy(['classification', 'code'])
-                    .forEach((item, index) => {
+                    }).forEach((item, index) => {
                         item.index = index + 1;
                     })
                     .value();
@@ -268,6 +268,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
         url: string;
         webMenuSetting: number;
         uniqueCode: string;
+        newOrder:number;
 
         constructor(index: number, afterLoginDisplay: number, classification: number, code: string, companyId: string, displayName: string, displayOrder: number, logSettingDisplay: number, menuAtr: number, system: number, targetItems: string, url: string, webMenuSetting: number) {
             this.index = index;
@@ -283,6 +284,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             this.targetItems = targetItems;
             this.url = url;
             this.webMenuSetting = webMenuSetting;
+            this.newOrder = system + displayOrder + Number(code);
             this.uniqueCode = nts.uk.util.randomId();
         }
     }
