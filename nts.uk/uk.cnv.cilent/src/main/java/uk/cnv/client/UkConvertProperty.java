@@ -8,7 +8,7 @@ import java.util.Properties;
 
 public class UkConvertProperty {
 
-	private static final String INIT_FILE_PATH = "src/main/resources/common.properties";
+	private static final String INIT_FILE_PATH = "common.properties";
 	private static final Properties properties;
 
     static {

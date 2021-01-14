@@ -11,7 +11,7 @@ import uk.cnv.client.infra.repository.base.ErpRepositoryBase;
 public class JmKihonRepositoryImpl extends ErpRepositoryBase implements JmKihonRepository {
 
 	@Override
-	public List<JmKihon> findAll() {
+	public List<JmKihon> findAll() throws SQLException {
 		String sql = "SELECT * FROM jm_kihon t";
 
 		return this.getList(sql, new SelectRequire<JmKihon>() {

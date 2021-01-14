@@ -11,7 +11,7 @@ import uk.cnv.client.infra.repository.base.ErpRepositoryBase;
 public class JinKaisyaMRepositoryImpl extends ErpRepositoryBase implements JinKaisyaMRepository {
 
 	@Override
-	public List<JinKaisyaM> getAll() {
+	public List<JinKaisyaM> getAll() throws SQLException {
 		String sql = "SELECT * FROM jinkaisya_m";
 
 		List<JinKaisyaM> result;

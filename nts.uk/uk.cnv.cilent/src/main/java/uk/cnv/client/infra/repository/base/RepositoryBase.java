@@ -49,18 +49,22 @@ public abstract class RepositoryBase {
 		}
 	}
 
-	public <T> Optional<T> getSingle(String sql, SelectRequire<T> require) {
+	public Connection connection() throws SQLException {
+		if( this.conn == null || this.conn.isClosed()) {
+			this.connect();
+		}
+		return this.conn;
+	}
 
+	public <T> Optional<T> getSingle(PreparedStatement ps, SelectRequire<T> require) throws SQLException {
 		List<T> result = new ArrayList<>();
-		Statement stmt;
 		ResultSet rset = null;
 		try {
 			if(conn == null || conn.isClosed()) {
 				this.connect();
 			}
 
-			stmt = conn.createStatement();
-			rset = stmt.executeQuery(sql);
+			rset = ps.executeQuery();
 			while (rset.next()) {
 
 				T domain = require.toEntity(rset);
@@ -68,7 +72,7 @@ public abstract class RepositoryBase {
 			}
 		}
 		catch (SQLException ex) {
-			System.err.println(ex.getMessage());
+			throw ex;
 		}
 		finally {
 			if(rset != null) {
@@ -85,7 +89,7 @@ public abstract class RepositoryBase {
 		return result.stream().findFirst();
 	}
 
-	public <T> List<T> getList(String sql, SelectRequire<T> require) {
+	public <T> Optional<T> getSingle(String sql, SelectRequire<T> require) throws SQLException {
 
 		List<T> result = new ArrayList<>();
 		Statement stmt;
@@ -104,7 +108,40 @@ public abstract class RepositoryBase {
 			}
 		}
 		catch (SQLException ex) {
-			System.err.println(ex.getMessage());
+			throw ex;
+		}
+		finally {
+			if(rset != null) {
+				try {
+					rset.close();
+				}
+				catch (SQLException ex) {
+					System.err.println(ex.getMessage());
+				}
+			}
+			this.disConnect();
+		}
+
+		return result.stream().findFirst();
+	}
+
+	public <T> List<T> getList(PreparedStatement ps, SelectRequire<T> require) throws SQLException {
+		List<T> result = new ArrayList<>();
+		ResultSet rset = null;
+		try {
+			if(conn == null || conn.isClosed()) {
+				this.connect();
+			}
+
+			rset = ps.executeQuery();
+			while (rset.next()) {
+
+				T domain = require.toEntity(rset);
+				result.add(domain);
+			}
+		}
+		catch (SQLException ex) {
+			throw ex;
 		}
 		finally {
 			if(rset != null) {
@@ -121,7 +158,43 @@ public abstract class RepositoryBase {
 		return result;
 	}
 
-	public <T> void insert(InsertRequire require) {
+	public <T> List<T> getList(String sql, SelectRequire<T> require) throws SQLException {
+
+		List<T> result = new ArrayList<>();
+		Statement stmt;
+		ResultSet rset = null;
+		try {
+			if(conn == null || conn.isClosed()) {
+				this.connect();
+			}
+
+			stmt = conn.createStatement();
+			rset = stmt.executeQuery(sql);
+			while (rset.next()) {
+
+				T domain = require.toEntity(rset);
+				result.add(domain);
+			}
+		}
+		catch (SQLException ex) {
+			throw ex;
+		}
+		finally {
+			if(rset != null) {
+				try {
+					rset.close();
+				}
+				catch (SQLException ex) {
+					System.err.println(ex.getMessage());
+				}
+			}
+			this.disConnect();
+		}
+
+		return result;
+	}
+
+	public <T> void insert(InsertRequire require) throws SQLException {
 		PreparedStatement ps = null;
 		try {
 			if(conn == null || conn.isClosed()) {
@@ -141,7 +214,7 @@ public abstract class RepositoryBase {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-			System.err.println(ex.getMessage());
+			throw ex;
 		}
 		finally {
 			if(ps != null) {

@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,20 +35,33 @@ public class FileImportService {
 	public boolean doWork(Require require) {
 		System.out.println("ファイルの移行 -- 処理開始 --");
 
-		List<JinKaisyaM> companies = require.getAllCompany();
+		List<JinKaisyaM> companies;
+		try {
+			companies = require.getAllCompany();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
 
 		int companyCount = 1;
 		for (JinKaisyaM company : companies) {
 			System.out.printf("%4d/%4d 会社\r\n", companyCount, companies.size());
 
-			List<JmKihon> employees = require.getAllEmployee(company.getCompanyCode());
-			List<JmGenAdd> employeeAddress = require.getAllAddress(company.getCompanyCode());
-			List<JmDaicyo> documents = require.getAllDocuments(company.getCompanyCode());
+			List<JmKihon> employees;
+			List<JmGenAdd> employeeAddress;
+			List<JmDaicyo> documents;
+			try {
+				employees = require.getAllEmployee(company.getCompanyCode());
+				employeeAddress = require.getAllAddress(company.getCompanyCode());
+				documents = require.getAllDocuments(company.getCompanyCode());
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return false;
+			}
 
 			int employeeCount = 1;
 			System.out.print("  0 ％の処理が完了しました。");
 			for (JmKihon employee : employees) {
-				System.out.printf("\r\033 %2d", Math.round(employeeCount/employees.size()) * 100);
 				try {
 					uploadPersonPhoto(require, company, employee);
 
@@ -68,19 +82,23 @@ public class FileImportService {
 					}
 				}
 				catch (Exception e){
-					System.err.println("\r\nファイル移行に失敗しました。処理を中断します。" + e.getMessage());
+					System.out.println("\r\n");
+					e.printStackTrace();
 					return false;
 				}
 				employeeCount++;
+				System.out.printf("\r\033 %2d", Math.round(employeeCount/employees.size()) * 100);
 			}
 			companyCount++;
+			System.out.printf("\r %2d", 100);
+			System.out.println("\r\n");
 		}
-		System.out.print("\r\n");
 		System.out.println("ファイルの移行 -- 正常終了 --");
+
 		return true;
 	}
 
-	private void uploadPersonPhoto(Require require, JinKaisyaM company, JmKihon employee) {
+	private void uploadPersonPhoto(Require require, JinKaisyaM company, JmKihon employee) throws SQLException {
 		Path profilePhotofile = createPath(company.getProfilePhotePath(), employee.getProfilePhotoFileName());
 
 		StoredFileInfo fileInfo = require.store(profilePhotofile, STEREOTYPE_PERSON_PHOTO, "");
@@ -88,7 +106,7 @@ public class FileImportService {
 		require.save(fileInfo, employee, FILE_TYPE_PERSON_PHOTO);
 	}
 
-	private void uploadPersonMap(Require require, JinKaisyaM company, JmKihon employee, JmGenAdd employeeAddress) {
+	private void uploadPersonMap(Require require, JinKaisyaM company, JmKihon employee, JmGenAdd employeeAddress) throws SQLException {
 		Path profilePhotofile = createPath(company.getMapPhotePath(),employeeAddress.getMapFileName());
 
 		StoredFileInfo fileInfo = require.store(profilePhotofile, STEREOTYPE_PERSON_MAP, "");
@@ -97,7 +115,7 @@ public class FileImportService {
 
 	}
 
-	private void uploadDocument(Require require, JinKaisyaM company, JmKihon employee, JmDaicyo jmDaicyo) {
+	private void uploadDocument(Require require, JinKaisyaM company, JmKihon employee, JmDaicyo jmDaicyo) throws SQLException {
 		Path profilePhotofile = createPath(company.getMapPhotePath(), jmDaicyo.getDocFileName());
 
 		StoredFileInfo fileInfo = require.store(profilePhotofile, STEREOTYPE_PERSON_DOC, "");
@@ -123,12 +141,12 @@ public class FileImportService {
 	}
 
 	public interface Require {
-		List<JinKaisyaM> getAllCompany();
-		List<JmKihon> getAllEmployee();
-		List<JmKihon> getAllEmployee(int companyCode);
-		List<JmDaicyo> getAllDocuments(int companyCode);
-		List<JmGenAdd> getAllAddress(int companyCode);
+		List<JinKaisyaM> getAllCompany() throws SQLException;
+		List<JmKihon> getAllEmployee() throws SQLException;
+		List<JmKihon> getAllEmployee(int companyCode) throws SQLException;
+		List<JmDaicyo> getAllDocuments(int companyCode) throws SQLException;
+		List<JmGenAdd> getAllAddress(int companyCode) throws SQLException;
 		StoredFileInfo store(Path path, String stereotype, String type);
-		void save(StoredFileInfo mapptingFile, JmKihon employee, String fileType);
+		void save(StoredFileInfo mapptingFile, JmKihon employee, String fileType) throws SQLException;
 	}
 }

@@ -32,8 +32,8 @@ allprojects {
 	apply plugin: 'eclipse'
 	apply plugin: 'eclipse-wtp'
 
-	sourceCompatibility = 11//"$javaVersion"
-	targetCompatibility = 11//"$javaVersion"
+	sourceCompatibility = "$javaVersion"
+	targetCompatibility = "$javaVersion"
 
 	task cleanandbuildallproject (dependsOn: ['clean', 'build']) { }
 

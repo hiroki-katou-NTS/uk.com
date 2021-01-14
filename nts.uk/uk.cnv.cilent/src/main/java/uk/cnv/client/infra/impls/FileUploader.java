@@ -41,7 +41,8 @@ public class FileUploader{
 		try {
 			retult = callUploadApi(pathToSource, stereotype, fileType);
 		} catch (IOException e) {
-			System.err.println("ファイルアップロードに失敗しました。" + pathToSource.toFile().getPath());
+			System.err.println("\r\n");
+			System.err.println("ファイルアップロードに失敗しました。\r\n" + pathToSource.toFile().getPath() + "\r\n");
 			e.printStackTrace();
 			return null;
 		}

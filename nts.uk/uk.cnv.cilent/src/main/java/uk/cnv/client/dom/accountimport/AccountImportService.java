@@ -1,5 +1,6 @@
 package uk.cnv.client.dom.accountimport;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,17 +13,28 @@ public class AccountImportService {
 	public boolean doWork(Require require) {
 		System.out.println("アカウントの移行 -- 処理開始 --");
 
-		List<JinKaisyaM> companies = require.getAllCompany();
+		List<JinKaisyaM> companies;
+		try {
+			companies = require.getAllCompany();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
 
 		int companyCount = 1;
 		for (JinKaisyaM company : companies) {
 			System.out.printf("%4d/%4d 会社\r\n", companyCount, companies.size());
-			List<JmKihon> employees = require.getAllEmployee(company.getCompanyCode());
+			List<JmKihon> employees;
+			try {
+				employees = require.getAllEmployee(company.getCompanyCode());
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return false;
+			}
 
 			int employeeCount = 1;
 			System.out.print("  0 ％の処理が完了しました。");
 			for (JmKihon employee : employees) {
-				System.out.printf("\r %2d", Math.round(employeeCount/employees.size()) * 100);
 
 				String plainPassword = employee.getPassword();
 				// ユーザIDを新規発行
@@ -30,19 +42,27 @@ public class AccountImportService {
 
 				String newPassHash = PasswordHash.generate(plainPassword, userId);
 
-				require.save(newPassHash, employee, userId);
+				try {
+					require.save(newPassHash, employee, userId);
+				} catch (SQLException e) {
+					e.printStackTrace();
+					return false;
+				}
 				employeeCount++;
+				System.out.printf("\r %2d", Math.round(employeeCount/employees.size()) * 100);
 			}
 			companyCount++;
+			System.out.printf("\r %2d", 100);
+			System.out.println("\r\n");
 		}
-		System.out.print("\r\n");
 		System.out.println("アカウントの移行 -- 正常終了 --");
+
 		return true;
 	}
 
 	public interface Require {
-		List<JinKaisyaM> getAllCompany();
-		List<JmKihon> getAllEmployee(int companyCode);
-		void save(String password, JmKihon employee, String userId);
+		List<JinKaisyaM> getAllCompany() throws SQLException;
+		List<JmKihon> getAllEmployee(int companyCode) throws SQLException;
+		void save(String password, JmKihon employee, String userId) throws SQLException;
 	}
 }
