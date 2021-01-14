@@ -2163,6 +2163,11 @@ public class ProgramsManager {
     public static final Program KAF006A = new Program(WebAppId.AT, ProgramIdConsts.KAF006A, "KAF006_66",
             "/view/kaf/006/a/index.xhtml");
     /**
+     * KAF006C
+     */
+    public static final Program KAF006C = new Program(WebAppId.AT, ProgramIdConsts.KAF006C, "KAF006_96",
+            "/view/kaf/006/c/index.xhtml");
+    /**
      * KAF007A
      */
     public static final Program KAF007A = new Program(WebAppId.AT, ProgramIdConsts.KAF007A, null,
