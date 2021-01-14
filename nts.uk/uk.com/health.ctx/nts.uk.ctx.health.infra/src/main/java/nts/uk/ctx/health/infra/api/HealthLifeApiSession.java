@@ -3,7 +3,6 @@ package nts.uk.ctx.health.infra.api;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
 
 import lombok.Data;
 import lombok.Getter;
@@ -18,14 +17,13 @@ import nts.gul.web.communicate.typedapi.RequestDefine;
 import nts.gul.web.communicate.typedapi.ResponseDefine;
 import nts.gul.web.communicate.typedapi.TypedWebAPI;
 import nts.uk.ctx.health.dom.linkage.HealthLifeApiLinkage;
-import nts.uk.ctx.health.dom.linkage.HealthLifeApiLinkageRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * ヘルスライフのWebAPIを呼び出すためのセッションを確立する
- * HLのWebAPIは、事前に認証・ログインのAPIを呼んだ上で、セッションCookieやCSRFトークンを取得し、
- * それをリクエストの都度送らなければならないという仕様。
- * このクラスはそれらの事前準備を隠蔽するためのもの。
+ * ヘルスライフ�WebAPIを呼び出すため�セヂ�ョンを確立す�
+ * HLのWebAPIは、事前に認証・ログインのAPIを呼んだ上で、セヂ�ョンCookieやCSRFト�クンを取得し�
+ * それをリクエスト�都度送らなければならなぁ�ぁ�仕様�
+ * こ�クラスはそれら�事前準備を隠蔽するためのも��
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -38,13 +36,13 @@ public class HealthLifeApiSession {
 		
 		val user = AppContexts.user();
 		if (!user.companyId().equals(companyId)) {
-			// 現時点ではログイン外の会社の処理は未実装
-			// 必要ならここでDBアクセスしてテナントコードと会社コードを取得する
-			throw new RuntimeException("ログイン中の会社以外を指定できません。指定：" + companyId + ", ログイン：" + user.companyId());
+			// 現時点ではログイン外�会社の処�未実�
+			// 忦�ならここでDBアクセスしてッ�ントコードと会社コードを取得す�
+			throw new RuntimeException("ログイン中の会社以外を挮�できません。指定� + companyId + ", ログイン + user.companyId());
 		}
 		
 //		val linkage = linkageRepo.find(user.contractCode()).get();
-		
+//		
 //		return beginSession(linkage, user.companyCode());
 		return null;
 	}
@@ -70,7 +68,7 @@ public class HealthLifeApiSession {
 		
 		private final String csrfToken;
 		
-		/** HL側の会社コードは整数値 */
+		/** HL側の会社コード�整数値 */
 		@Getter
 		private final int healthLifeCompanyCode;
 		
@@ -115,7 +113,7 @@ public class HealthLifeApiSession {
 			private String linkagePassword;
 			
 			public static Request of(HealthLifeApiLinkage linkage) {
-				// 契約コードと連携IDは同一値
+				// 契紂�ードと連携IDは同一値
 				return new Request(
 						linkage.getTargetContractCode(),
 						linkage.getTargetContractCode(),

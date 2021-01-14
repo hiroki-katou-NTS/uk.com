@@ -3,7 +3,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
   @component({
     name: 'ccg005-component',
-    template: `<div style="display: flex; position: relative; padding: 0 10px 0 10px; overflow-y: auto; height: 465px" id="ccg005-watching">
+    template: `<div style="display: flex; position: relative; overflow-y: auto; height: 580px" id="ccg005-watching">
     <div id="ccg005-content">
       <div class="grade-header-top">
         <!-- A0 -->
@@ -54,6 +54,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
           <!-- A3_1 -->
           <div data-bind="ntsComboBox: {
             options: itemList,
+            editable: true,
             width: '130px',
             visibleItemsCount: 5,
             value: selectedCode,
@@ -83,7 +84,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         </table>
       </div>
       <!-- A5 -->
-      <div class="grade-body-bottom">
+      <div class="grade-body-bottom" style="min-height: 55px; height: 390px;">
         <table style="width: 100%; border-collapse: separate; border-spacing: 0 5px">
           <tr style="background-color: yellow; height: 50px;">
             <td style="padding-right: 5px; width: 30px; background-color: white;">
@@ -148,7 +149,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     </div>
 
     <!-- A3_2 Popup -->
-    <div id="ccg005-star-popup" style="width: 130px;">
+    <div id="ccg005-star-popup" style="width: 120px;">
       <!-- A3_2.1 -->
       <table>
         <tr>
@@ -164,7 +165,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
               enterkey: submit,
               option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                 textmode: 'text',
-                width: '110px',
+                width: '100px',
                 placeholder: $component.placeholder()
               }))
             }"></input>
@@ -372,8 +373,11 @@ module nts.uk.at.view.ccg005.a.screenModel {
           - $('.grade-header-center').height()
           - $('.grade-header-bottom').height()
           - $('.grade-body-top').height()
-          - $('.grade-bottom').height();
+          - $('.grade-bottom').height()
+          - 30;
         _.floor(subHeight/55);
+        $('.grade-body-bottom').height(subHeight);
+        console.log('trigger resize ccg005')
       });
     }
 
