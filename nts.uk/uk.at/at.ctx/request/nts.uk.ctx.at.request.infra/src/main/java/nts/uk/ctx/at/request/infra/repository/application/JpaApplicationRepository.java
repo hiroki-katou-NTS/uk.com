@@ -417,7 +417,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 			+ " WHERE a.pk.companyID =:companyID" + " AND a.employeeID = :employeeID "
 			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate"
 			+ " AND ref.actualReflectStatus IN :listReflecInfor" + " ORDER BY a.appDate ASC," + " a.prePostAtr DESC";
-
+	
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<Application> getByListRefStatus(String companyID, String employeeID, GeneralDate startDate,
@@ -1013,5 +1013,37 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				.paramString("employeeID", employeeID)
 				.paramDate("date", date)
 				.getSingle(rec -> rec.getString("APP_ID"));
+	}
+	
+	//http://192.168.50.4:3000/issues/113816
+	private static final String SELECT_BY_SIDS_DATEPERIOD_REFSTATUS = "SELECT a FROM KrqdtApplication a"
+			+ " JOIN KrqdtAppReflectState ref ON a.pk.companyID = ref.pk.companyID  AND a.pk.appID = ref.pk.appID"
+			+ " WHERE a.employeeID = :sid "
+			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate"
+			+ " AND ref.actualReflectStatus IN :listReflecInfor" 
+			+ " ORDER BY a.appDate ASC," 
+			+ " a.prePostAtr DESC";
+
+	@Override
+	public Map<String, List<Application>> getMapListApplicationNew(List<String> sids, DatePeriod datePeriod,
+			List<Integer> listReflecInfor) {
+		if (listReflecInfor.size() == 0 || sids.size() == 0) {
+			return Collections.emptyMap();
+		}
+		Map<String, List<Application>> returnMap = new HashMap<>();
+		for (String sid : sids) {
+			List<Application> listApplication = new ArrayList<>();
+			CollectionUtil.split(listReflecInfor, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subListReflecInfor -> {
+				listApplication.addAll(this.queryProxy()
+						.query(SELECT_BY_SIDS_DATEPERIOD_REFSTATUS, KrqdtApplication.class)
+						.setParameter("sid", sid)
+						.setParameter("startDate", datePeriod.start())
+						.setParameter("endDate", datePeriod.end())
+						.setParameter("listReflecInfor", subListReflecInfor)
+						.getList(x -> x.toDomain()));
+			});
+			returnMap.put(sid, listApplication);
+		}
+		return returnMap;
 	}
 }

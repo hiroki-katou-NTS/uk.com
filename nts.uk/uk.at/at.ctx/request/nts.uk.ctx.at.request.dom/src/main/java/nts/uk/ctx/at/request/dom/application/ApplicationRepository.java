@@ -206,4 +206,14 @@ public interface ApplicationRepository {
 	
 	public Optional<String> getNewestPreAppIDByEmpDate(String employeeID, GeneralDate date, ApplicationType appType);
 
+	/**
+	 * 申請情報を取得する(社員IDリスト, 期間, 反映状態リスト)
+	 * 
+	 * @param sids            社員IDリスト
+	 * @param datePeriod      期間
+	 * @param listReflecInfor 反映状態リスト
+	 * @return Map<String, List<Application_New>> Map<社員ID、List<申請>>
+	 */
+	public Map<String, List<Application>> getMapListApplicationNew(List<String> sids, DatePeriod datePeriod,
+			List<Integer> listReflecInfor);
 }
