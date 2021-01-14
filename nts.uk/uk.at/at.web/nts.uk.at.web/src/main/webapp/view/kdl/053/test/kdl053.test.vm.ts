@@ -17,18 +17,18 @@ module nts.uk.at.view.kdl053.test {
 			enable: KnockoutObservable<boolean>;
 
 			errorRegistrations = ko.observable( [
-						{id: 0,sid: 'b4496e4d-2c79-4611-85c1-e251a72c8ce8', employeeCdName:'000001 天海　春香',  date:'2020/12/08', errId: 163, errMsg: '開始時刻と終了時刻が逆転してします。'}, 
-                        {id: 1,sid: 'b4496e4d-2c79-4611-85c1-e251a72c8ce8', employeeCdName:'000001 天海　春香', date:'2020/12/09', errId: 195, errMsg: '開始時刻と終了時刻が逆転してします。'}, 
-                        {id: 2,sid: 'b4496e4d-2c79-4611-85c1-e251a72c8ce8', employeeCdName:'000001 天海　春香', date:'2020/12/10', errId: 201, errMsg: '開始時刻と終了時刻が逆転してします。' },
-                        {id: 3,sid: 'b4496e4d-2c79-4611-85c1-e251a72c8ce8',employeeCdName:'000001 天海　春香', date:'2020/12/11', errId: 205, errMsg: '開始時刻と終了時刻が逆転してします。' },
-                        {id: 4,sid: 'b4496e4d-2c79-4611-85c1-e251a72c8ce8',employeeCdName:'000001 天海　春香', date:'2020/12/12', errId: 537, errMsg: '開始時刻と終了時刻が逆転してします。' },                  
-                        {id: 5,sid: 'b4496e4d-2c79-4611-85c1-e251a72c8ce8',employeeCdName:'000001 天海　春香', date:'2020/12/13', errId: 165, errMsg: '開始時刻と終了時刻が逆転してします。' },
-                        {id: 6,sid: '47cd3836-8dd3-4352-ab81-50eb4074e5fc',employeeCdName:'000002 新規　ログ', date:'2020/12/11', errId: 165, errMsg: '開始時刻と終了時刻が逆転してします。'},                        
-                        {id: 7,sid: '47cd3836-8dd3-4352-ab81-50eb4074e5fc',employeeCdName:'000002 新規　ログ', date:'2020/12/12', errId: 195, errMsg: '開始時刻と終了時刻が逆転してします。' },
-                        {id: 8,sid: '47cd3836-8dd3-4352-ab81-50eb4074e5fc',employeeCdName:'000002 新規　ログ', date:'2020/12/13', errId: 201, errMsg: '開始時刻と終了時刻が逆転してします。' },
-                        {id: 9,sid: '1d7a260a-864d-4577-8e1d-4814c04c540f',employeeCdName:'000012 承認者　課長', date:'2020/12/08', errId: 205, errMsg: '開始時刻と終了時刻が逆転してします。' },
-                        {id: 10,sid: '1d7a260a-864d-4577-8e1d-4814c04c540f',employeeCdName:'000012 承認者　課長', date:'2020/12/09', errId: 537, errMsg: '開始時刻と終了時刻が逆転してします。' },
-                        {id: 11,sid: '1d7a260a-864d-4577-8e1d-4814c04c540f',employeeCdName:'000012 承認者　課長', date:'2020/12/13', errId: 537, errMsg: '開始時刻と終了時刻が逆転してします。'}
+						{id: 0,sid: 'b4496e4d-2c79-4611-85c1-e251a72c8ce8', scd:'000001', empName:'天海　春香',  date:'2020/12/08', attendanceItemId: 163, errorMessage: '開始時刻と終了時刻が逆転してします。'}, 
+                        {id: 1,sid: 'b4496e4d-2c79-4611-85c1-e251a72c8ce8', scd:'000001', empName:'天海　春香', date:'2020/12/09', attendanceItemId: 195, errorMessage: '開始時刻と終了時刻が逆転してします。'}, 
+                        {id: 2,sid: 'b4496e4d-2c79-4611-85c1-e251a72c8ce8', scd:'000001', empName:'天海　春香', date:'2020/12/10', attendanceItemId: 201, errorMessage: '開始時刻と終了時刻が逆転してします。' },
+                        {id: 3,sid: 'b4496e4d-2c79-4611-85c1-e251a72c8ce8', scd:'000001', empName:'天海　春香', date:'2020/12/11', attendanceItemId: 205, errorMessage: '開始時刻と終了時刻が逆転してします。' },
+                        {id: 4,sid: 'b4496e4d-2c79-4611-85c1-e251a72c8ce8', scd:'000001', empName:'天海　春香', date:'2020/12/12', attendanceItemId: 537, errorMessage: '開始時刻と終了時刻が逆転してします。' },                  
+                        {id: 5,sid: 'b4496e4d-2c79-4611-85c1-e251a72c8ce8', scd:'000001', empName:'天海　春香', date:'2020/12/13', attendanceItemId: 165, errorMessage: '開始時刻と終了時刻が逆転してします。' },
+                        {id: 6,sid: '47cd3836-8dd3-4352-ab81-50eb4074e5fc',scd:'000002',empName:'新規　ログ', date:'2020/12/11', attendanceItemId: 165, errorMessage: '開始時刻と終了時刻が逆転してします。'},                        
+                        {id: 7,sid: '47cd3836-8dd3-4352-ab81-50eb4074e5fc',scd:'000002',empName:'新規　ログ', date:'2020/12/12', attendanceItemId: 195, errorMessage: '開始時刻と終了時刻が逆転してします。' },
+                        {id: 8,sid: '47cd3836-8dd3-4352-ab81-50eb4074e5fc',scd:'000002',empName:'新規　ログ', date:'2020/12/13', attendanceItemId: 201, errorMessage: '開始時刻と終了時刻が逆転してします。' },
+                        {id: 9,sid: '1d7a260a-864d-4577-8e1d-4814c04c540f',scd:'000012', empName:'承認者　課長', date:'2020/12/08', attendanceItemId: 205, errorMessage: '開始時刻と終了時刻が逆転してします。' },
+                        {id: 10,sid: '1d7a260a-864d-4577-8e1d-4814c04c540f',scd:'000012', empName:'承認者　課長', date:'2020/12/09', attendanceItemId: 537, errorMessage: '開始時刻と終了時刻が逆転してします。' },
+                        {id: 11,sid: '1d7a260a-864d-4577-8e1d-4814c04c540f',scd:'000012', empName:'承認者　課長', date:'2020/12/13', attendanceItemId: 537, errorMessage: '開始時刻と終了時刻が逆転してします。'}
 					]);
 			employeeIds: KnockoutObservableArray<string> = ko.observableArray([
 				'1d7a260a-864d-4577-8e1d-4814c04c540f', 'b4496e4d-2c79-4611-85c1-e251a72c8ce8',
@@ -39,13 +39,14 @@ module nts.uk.at.view.kdl053.test {
 				var self = this;
 				self.columns = ko.observableArray([
 					{ key: 'id',width:20, hidden: true },
-					{ headerText: '社員コード／名称', key: 'code', width: 180 },
+					{ headerText: '社員コード', key: 'code', width: 80 },
+					{ headerText: '社員名称', key: 'name', width: 100 },
 					{ headerText: '日付', key: 'date', width: 150 }, 
-					{ headerText: '項目ID', key: 'errId', width: 80 }, 
+					{ headerText: '項目ID', key: 'attendanceItemId', width: 80 }, 
 					{ headerText: 'メッセージ', key: 'msg', width: 280}					
 				]);
 				_.each(self.errorRegistrations(), err =>{
-					self.items.push(new ItemModel(err.id, err.employeeCdName, err.date, err.errId, err.errMsg));
+					self.items.push(new ItemModel(err.id, err.scd, err.empName, err.date, err.attendanceItemId, err.errorMessage));
 				})	
 
 				self.itemList = ko.observableArray([
@@ -71,7 +72,7 @@ module nts.uk.at.view.kdl053.test {
 				let request: any = {};				
 				let errorRegistrationList: any = [];
 				
-				request.hasError = self.selectedId();
+				request.isRegistered = self.selectedId();
 				request.employeeIds = self.employeeIds();
 				
 				_.each(self.currentCodeList(), id =>{
@@ -85,14 +86,16 @@ module nts.uk.at.view.kdl053.test {
 		class ItemModel {
 			id: number;
 			code: string;
+			name: string;
 			date: string;
-			errId: number;
+			attendanceItemId: number;
 			msg: string;			
-			constructor(id: number, code: string, date: string, errId: number, msg: string) {
+			constructor(id: number, code: string, name: string, date: string, attendanceItemId: number, msg: string) {
 				this.id = id;
 				this.code = code;
+				this.name = name;
 				this.date = date;
-				this.errId = errId;
+				this.attendanceItemId = attendanceItemId;
 				this.msg = msg;				
 			}
 		}
