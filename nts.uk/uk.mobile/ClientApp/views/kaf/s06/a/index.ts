@@ -2,7 +2,7 @@ import { _, Vue, moment } from '@app/provider';
 import { component, Prop, Watch } from '@app/core/component';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/s00';
 import { KafS00ShrComponent, AppType, Application, InitParam } from 'views/kaf/s00/shr';
-import { TimeZoneNewDto, ReflectWorkHourCondition, TimeZoneWithWorkNoDto, WorkInformationDto, WorkTypeDto, MaxNumberDayType, AppAbsenceStartInfoDto, StartMobileParam, NotUseAtr, TimeZoneUseDto, HolidayAppTypeDispNameDto, ManageDistinct, TargetWorkTypeByApp, ApplicationType, HolidayAppType, DateSpecHdRelationOutput, ChangeDateParamMobile, SelectWorkTypeHolidayParam, SelectWorkTimeHolidayParam, MaxHolidayDayParamMobile, ApplyForLeaveDto, ReflectFreeTimeAppDto, TimeDigestApplicationDto, VacationRequestInfoDto, SupplementInfoVacationDto, ApplyforSpecialLeaveDto, CheckInsertMobileParam, RegisterAppAbsenceMobileCommand, WorkTypeUnit, MaxDaySpecHdDto, VacationCheckOutputDto, UpdateAppAbsenceMobileCommand, WorkAtr, WorkTypeClassification } from '../a/define.interface';
+import { RemainVacationInfoDto, TimeZoneNewDto, ReflectWorkHourCondition, TimeZoneWithWorkNoDto, WorkInformationDto, WorkTypeDto, MaxNumberDayType, AppAbsenceStartInfoDto, StartMobileParam, NotUseAtr, TimeZoneUseDto, HolidayAppTypeDispNameDto, ManageDistinct, TargetWorkTypeByApp, ApplicationType, HolidayAppType, DateSpecHdRelationOutput, ChangeDateParamMobile, SelectWorkTypeHolidayParam, SelectWorkTimeHolidayParam, MaxHolidayDayParamMobile, ApplyForLeaveDto, ReflectFreeTimeAppDto, TimeDigestApplicationDto, VacationRequestInfoDto, SupplementInfoVacationDto, ApplyforSpecialLeaveDto, CheckInsertMobileParam, RegisterAppAbsenceMobileCommand, WorkTypeUnit, MaxDaySpecHdDto, VacationCheckOutputDto, UpdateAppAbsenceMobileCommand, WorkAtr, WorkTypeClassification, RemainDaysHoliday } from '../a/define.interface';
 import { KDL002Component } from '../../../kdl/002';
 import { Kdl001Component } from '../../../kdl/001';
 import { KdlS35Component } from '../../../kdl/s35';
@@ -139,6 +139,28 @@ export class KafS06AComponent extends KafS00ShrComponent {
             });
         }
     }
+
+
+    public get remainDays(): Array<RemainDaysHoliday> {
+        const self = this;
+        let model = self.model as Model;
+
+        const remainVacationInfo = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo') as RemainVacationInfoDto;
+        if (_.isNil(remainVacationInfo)) {
+
+            return [];
+        }
+        const {subHdRemain, subVacaRemain, yearRemain, remainingHours} = remainVacationInfo;
+        const remainDaysHoliday = {
+            subHdRemain,
+            subVacaRemain, 
+            yearRemain,
+            remainingHours
+        } as RemainDaysHoliday;
+
+        return [remainDaysHoliday];
+
+    }
     public get A9_2() {
         const self = this;
         let model = self.model as Model;
@@ -223,35 +245,35 @@ export class KafS06AComponent extends KafS00ShrComponent {
 
         return c2;
     }
-    // 休暇申請起動時の表示情報．休暇残数情報．代休管理区分　＝　管理する
+    // 休暇申請起動時の表示情報．休暇残数情報．代休管理. 代休管理区分　＝　管理する
     public get c2() {
         const self = this;
         let model = self.model as Model;
-        let c2 = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.substituteLeaveManagement') == ManageDistinct.YES;
+        let c2 = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.substituteLeaveManagement.substituteLeaveManagement') == ManageDistinct.YES;
         
         return c2;
     }
-    // 休暇申請起動時の表示情報．休暇残数情報．振休管理区分　＝　管理する
+    // 休暇申請起動時の表示情報．休暇残数情報．振休管理. 振休管理区分　＝　管理する
     public get c3() {
         const self = this;
         let model = self.model as Model;
-        let c3 = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.holidayManagement') == ManageDistinct.YES;
+        let c3 = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.holidayManagement.holidayManagement') == ManageDistinct.YES;
 
         return c3;
     }
-    // 休暇申請起動時の表示情報．休暇残数情報．年休管理区分　＝　管理する
+    // 休暇申請起動時の表示情報．休暇残数情報．年休管理. 年休管理区分　＝　管理する
     public get c4() {
         const self = this;
         let model = self.model as Model;
-        let c4 = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.annualLeaveManagement') == ManageDistinct.YES;
+        let c4 = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.annualLeaveManagement.annualLeaveManageDistinct') == ManageDistinct.YES;
 
         return c4;
     }
-    // 休暇申請起動時の表示情報．休暇残数情報．積休管理区分　＝　管理する
+    // 休暇申請起動時の表示情報．休暇残数情報．積休管理. 積休管理区分　＝　管理する
     public get c5() {
         const self = this;
         let model = self.model as Model;
-        let c5 = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.accumulatedRestManagement') == ManageDistinct.YES;
+        let c5 = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.accumulatedRestManagement.accumulatedManage') == ManageDistinct.YES;
 
         return c5;
     }
