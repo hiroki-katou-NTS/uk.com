@@ -307,8 +307,9 @@ public class ExtractAlarmListWorkPlaceFinder {
      */
     public void checkProcessStatus() {
         String cid = AppContexts.user().companyId();
+        String sid = AppContexts.user().employeeId();
         // ドメインモデル「アラームリスト抽出処理状況(職場別)」をチェックする
-        List<AlarmListExtractProcessStatusWorkplace> processes = alarmListExtractProcessStatusWorkplaceRepo.getBy(cid, ExtractState.PROCESSING);
+        List<AlarmListExtractProcessStatusWorkplace> processes = alarmListExtractProcessStatusWorkplaceRepo.getBy(cid, sid,ExtractState.PROCESSING);
         if (!CollectionUtil.isEmpty(processes)) {
             throw new BusinessException("Msg_993");
         }
