@@ -153,6 +153,11 @@ module nts.uk.com.view.cmm048.a {
     employeeId: KnockoutObservable<string> = ko.observable('');
     personId: KnockoutObservable<string> = ko.observable('');
 
+    //#113902
+     isUseOfProfile: KnockoutObservable<boolean> = ko.observable(false);
+     isUseOfPassword: KnockoutObservable<boolean> = ko.observable(false);
+     isUseOfNotice: KnockoutObservable<boolean> = ko.observable(false);
+     isUseOfLanguage: KnockoutObservable<boolean> = ko.observable(false);
     mounted() {
       const vm = this;
       vm.init();
@@ -299,10 +304,10 @@ module nts.uk.com.view.cmm048.a {
       const vm = this;
       vm.isInCharge(data.isInCharge);
 
-      const isUseOfProfile: boolean = data.settingInformation.useOfProfile === IS_USE.USE;
-      const isUseOfPassword: boolean = data.settingInformation.useOfPassword === IS_USE.USE;
-      const isUseOfNotice: boolean = data.settingInformation.useOfNotice === IS_USE.USE;
-      const isUseOfLanguage: boolean = data.settingInformation.useOfLanguage === IS_USE.USE;
+      vm.isUseOfProfile(data.settingInformation.useOfProfile === IS_USE.USE);
+      vm.isUseOfPassword(data.settingInformation.useOfPassword === IS_USE.USE);
+      vm.isUseOfNotice(data.settingInformation.useOfNotice === IS_USE.USE);
+      vm.isUseOfLanguage(data.settingInformation.useOfLanguage === IS_USE.USE);
 
       const displaySetting = data.settingInformation.settingContactInformationDto;
       vm.cPhoneUseable(displaySetting.companyMobilePhone.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
@@ -340,20 +345,20 @@ module nts.uk.com.view.cmm048.a {
       _.map(vm.tabs(), (tab: any) => {
         switch (tab.id) {
           case 'tab-1':
-            tab.enable(isUseOfProfile);
-            tab.visible(isUseOfProfile);
+            tab.enable(vm.isUseOfProfile());
+            tab.visible(vm.isUseOfProfile());
             break;
           case 'tab-2':
-            tab.enable(isUseOfPassword);
-            tab.visible(isUseOfPassword);
+            tab.enable(vm.isUseOfPassword());
+            tab.visible(vm.isUseOfPassword());
             break;
           case 'tab-3':
-            tab.enable(isUseOfNotice);
-            tab.visible(isUseOfNotice);
+            tab.enable(vm.isUseOfNotice());
+            tab.visible(vm.isUseOfNotice());
             break;
           case 'tab-4':
-            tab.enable(isUseOfLanguage);
-            tab.visible(isUseOfLanguage);
+            tab.enable(vm.isUseOfLanguage());
+            tab.visible(vm.isUseOfLanguage());
             break;
           default: break;
         }
@@ -392,7 +397,6 @@ module nts.uk.com.view.cmm048.a {
 
         //condition to show off
         vm.setCondition(data);
-
       })
         .fail((error: any) => {
           vm.$blockui('clear');
@@ -556,16 +560,22 @@ module nts.uk.com.view.cmm048.a {
           const personalCommand = new PersonalCommand({
             avatar: avatar,
             anniversaryNotices: listAnniversary,
-            personalContact: personalContact
+            personalContact: personalContact,
+            useOfProfile: vm.isUseOfProfile(),
+            useOfNotice: vm.isUseOfNotice()
           });
-
+          console.log(personalCommand)
           const contactCommand = new ContactCommand({
-            employeeContact: employeeContact
+            employeeContact: employeeContact,
+            useOfProfile: vm.isUseOfProfile()
           });
-
+          console.log(contactCommand)
           const userChangeCommand = new UserChangeCommand({
-            userChange: userChange
+            userChange: userChange,
+            useOfPassword: vm.isUseOfPassword(),
+            useOfLanguage: vm.isUseOfLanguage(),
           });
+          console.log(userChangeCommand)
           vm.$blockui('grayout');
           $.when(
             vm.$ajax(API.updateEmployeeContact, contactCommand),
@@ -789,6 +799,13 @@ module nts.uk.com.view.cmm048.a {
      * ユーザを変更する
      */
     userChange: UserCommand;
+
+    //fix bug #113902
+    useOfPassword: boolean;
+
+    //fix bug #113902
+    useOfLanguage: boolean;
+
     constructor(init?: Partial<UserChangeCommand>) {
       $.extend(this, init);
     }
@@ -802,6 +819,9 @@ module nts.uk.com.view.cmm048.a {
      * 社員連絡先を登録する
      */
     employeeContact: EmployeeContactCommand;
+
+    //fix bug #113902
+    useOfProfile: boolean;
 
     constructor(init?: Partial<ContactCommand>) {
       $.extend(this, init);
@@ -826,6 +846,12 @@ module nts.uk.com.view.cmm048.a {
      * 個人連絡先を登録する
      */
     personalContact: PersonalContactCommand;
+
+    //fix bug #113902
+    useOfProfile: boolean;
+
+    //fix bug #113902
+    useOfNotice: boolean
 
     constructor(init?: Partial<PersonalCommand>) {
       $.extend(this, init);

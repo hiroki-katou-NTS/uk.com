@@ -42,13 +42,18 @@ public class UserChangeCommandHandler extends CommandHandler<UserChangeCommand> 
 	protected void handle(CommandHandlerContext<UserChangeCommand> commandHandlerContext) {
 
 		UserChangeCommand command = commandHandlerContext.getCommand();
+		//#113902
+		boolean isUseOfPassword = command.getUseOfPassword();
+		boolean isUseOfLanguage = command.getUseOfLanguage();
 		String userId = AppContexts.user().userId();
 
 		// cmd 1 : ユーザを変更する + cmd 2 : ログを記載する
-		if (!this.isPasswordTabNull(command.getUserChange())) {
+		if (!this.isPasswordTabNull(command.getUserChange()) && isUseOfPassword) {
 			this.userChangeHandler(command.getUserChange(), userId);
 		}
-		this.updateLanguage(command.getUserChange().getLanguage(), userId);
+		if (isUseOfLanguage) {
+			this.updateLanguage(command.getUserChange().getLanguage(), userId);
+		}
 	}
 
 	// ユーザを変更する - check is password tab is null

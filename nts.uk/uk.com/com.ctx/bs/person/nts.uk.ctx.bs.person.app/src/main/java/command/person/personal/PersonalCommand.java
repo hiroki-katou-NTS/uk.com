@@ -26,4 +26,11 @@ public class PersonalCommand {
      * 個人連絡先を登録する
      */
     private PersonalContactDto personalContact;
+    
+    //fix bug #113902
+    private Boolean useOfProfile;
+
+    //fix bug #113902
+    private Boolean useOfNotice;
+    
 }
