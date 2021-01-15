@@ -85,7 +85,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 				vm.loadData();
             }
         }
-
+		
 		triggerValidate(): boolean{
 			$('.nts-input').trigger("validate");
 			$('input').trigger("validate");
@@ -126,15 +126,6 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 					dialog.error({ messageId: fail.messageId});
 				});
 	        }
-		}
-		
-		openKAF011C() {
-			let self = this;
-			windows.setShared('KAF011C',self.displayInforWhenStarting);
-			windows.sub.modal( '/view/kaf/011/c/index.xhtml').onClosed(() => {
-				let data = windows.getShared('KAF011C_RESLUT');
-				console.log(data);
-			});
 		}
 		
     }

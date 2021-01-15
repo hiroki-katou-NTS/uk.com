@@ -355,6 +355,17 @@ module nts.uk.at.view.kaf011 {
 				});
 			}
 		}
+		openKAF011C() {
+			let self = this;
+			windows.setShared('KAF011C',self.displayInforWhenStarting);
+			windows.sub.modal( '/view/kaf/011/c/index.xhtml').onClosed(() => {
+				let data = windows.getShared('KAF011C_RESLUT');
+				if(data){
+					self.application.appDate(data);
+				}
+				console.log(data);
+			});
+		}
 	}
 	
 	export class Application extends ApplicationCommon{

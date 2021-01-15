@@ -18,8 +18,7 @@ module nts.uk.at.view.kaf011.c.viewmodel {
 			}
 		}
 		save(){
-			
-			windows.setShared("KAF011C_RESLUT", this.appDate());
+			windows.setShared("KAF011C_RESLUT", moment(this.appDate()).format('YYYY/MM/DD'));
 			this.closeDialog();
 		}
 		closeDialog(){
