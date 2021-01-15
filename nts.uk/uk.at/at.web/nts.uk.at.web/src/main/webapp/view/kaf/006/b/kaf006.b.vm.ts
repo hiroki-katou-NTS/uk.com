@@ -36,7 +36,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 		workTypeBefore: KnockoutObservable<any> = ko.observable();
 		workTypeAfter: KnockoutObservable<any> = ko.observable();
 		isEnableSwitchBtn: boolean = true;
-		updateMode: boolean = true;
+		updateMode: KnockoutObservable<boolean> = ko.observable(true);
 		dateBeforeChange: KnockoutObservable<string> = ko.observable(null);
 		isDispTime2ByWorkTime: KnockoutObservable<boolean> = ko.observable(false);
 
@@ -120,7 +120,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             vm.application = params.application;
 			vm.appType = params.appType;
-			vm.updateMode = vm.appDispInfoStartupOutput().appDetailScreenInfo.outputMode === 0 ? false : true;
+			vm.updateMode(vm.appDispInfoStartupOutput().appDetailScreenInfo.outputMode === 0 ? false : true);
 			vm.createParamKAF006();
             // gui event con ra viewmodel cha
             // nhớ dùng bind(vm) để ngữ cảnh lúc thực thi
@@ -470,6 +470,11 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
         reload() {
 			const vm = this;
 			if(vm.appType() === AppType.ABSENCE_APPLICATION) {
+				vm.updateMode(vm.appDispInfoStartupOutput().appDetailScreenInfo.outputMode === 0 ? false : true);
+				vm.selectedDateSpec.valueHasMutated();
+				vm.selectedType.valueHasMutated();
+				vm.selectedWorkTypeCD.valueHasMutated();
+				vm.selectedWorkTimeCD.valueHasMutated();
 				vm.createParamKAF006();
 				// vm.checkCondition(vm.data);
 			}
