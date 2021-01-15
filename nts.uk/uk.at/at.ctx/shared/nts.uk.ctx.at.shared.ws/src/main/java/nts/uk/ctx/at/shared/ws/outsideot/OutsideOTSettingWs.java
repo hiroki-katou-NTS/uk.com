@@ -18,6 +18,8 @@ import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.app.command.outsideot.setting.OutsideOTSettingSaveCommand;
 import nts.uk.ctx.at.shared.app.command.outsideot.setting.OutsideOTSettingSaveCommandHandler;
+import nts.uk.ctx.at.shared.app.command.outsideot.setting.PremiumExtra60HComand;
+import nts.uk.ctx.at.shared.app.command.outsideot.setting.PremiumExtra60HCommandHandler;
 import nts.uk.ctx.at.shared.app.find.outsideot.OutsideOTSettingFinder;
 import nts.uk.ctx.at.shared.app.find.outsideot.dto.OutsideOTSettingDto;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
@@ -39,6 +41,9 @@ public class OutsideOTSettingWs extends WebService {
 	/** The save. */
 	@Inject
 	private OutsideOTSettingSaveCommandHandler save;
+
+	@Inject
+	private PremiumExtra60HCommandHandler premiumExtra60HCommandHandler;
 
 	/**
 	 * Find all method.
@@ -114,7 +119,6 @@ public class OutsideOTSettingWs extends WebService {
 	
 	/**
 	 * Save.
-	 *
 	 * @param command the command
 	 */
 	@POST
@@ -132,5 +136,23 @@ public class OutsideOTSettingWs extends WebService {
 	@Path("findAll/mothItem")
 	public List<Integer> findAllMonthItem() {
 		return this.finder.getDataKMK013();
+	}
+
+
+	@POST
+	@Path("findAllPremiumExtra60H")
+	public OutsideOTSettingDto findAllPremiumExtra60H(){
+		return this.finder.findById();
+	}
+
+	/**
+	 * Save.
+	 *
+	 * @param command the command
+	 */
+	@POST
+	@Path("save/findAllPremiumExtra60H")
+	public void savePremiumExtra60H(PremiumExtra60HComand command) {
+		this.premiumExtra60HCommandHandler.handle(command);
 	}
 }
