@@ -12,6 +12,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 	import model = nts.uk.at.view.ksu003.a.model;
 	import duration = nts.uk.time.minutesBased.duration; // convert time 
 	import characteristics = nts.uk.characteristics;
+	import alertError = nts.uk.ui.dialog.alertError
 	/**
 	 * ScreenModel
 	 */
@@ -2269,6 +2270,99 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			// set height grid theo localStorage đã lưu
 			self.setPositionButonDownAndHeightGrid();
 		}
+		
+		regSchedule() : JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            block.grayout();
+            let itemLocal : any = localStorage.getItem(self.KEY);
+            let userInfor = JSON.parse(itemLocal.get());
+            let updatedCells = $("#extable").exTable("updatedCells");
+            let viewMode = userInfor.disPlayFormat;
+            let params = [];
+    
+            let cellsGroup = self.groupByRowIndAndColKey(updatedCells, function(cell : any) {
+                return [cell.rowIndex, cell.columnKey];
+            });
+
+            console.log(cellsGroup);
+
+            let dataReg = self.buidDataReg(userInfor.disPlayFormat, cellsGroup);
+            service.regWorkSchedule(dataReg).done((rs : any) => {
+                console.log(rs);
+                if(rs.hasError == false){
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    block.clear();
+                } else {
+                    self.openKDL053(rs);
+                }
+            }).fail(function(error : any) {
+                block.clear();
+                alertError(error);
+                dfd.reject();
+            });
+            return dfd.promise();
+        }
+
+		groupByRowIndAndColKey(array : any, f : any) {
+            let groups = {};
+            array.forEach(function(o : any) {
+                let group : any = JSON.stringify(f(o));
+                groups[group] = groups[group] || [];
+                groups[group].push(o);
+            });
+            return Object.keys(groups).map(function(group) {
+                return groups[group];
+            })
+        }
+
+		buidDataReg(viewMode : any, cellsGroup : any) {
+            let self = this;
+            let dataReg : any = [];
+            if (viewMode == 'time') {
+                _.forEach(cellsGroup, function(cells) {
+                    if (cells.length > 0) {
+                        let cell = cells[0];
+                        let sid = self.lstEmpId[cell.rowIndex];
+                        let ymd = moment(cell.columnKey.slice(1)).format('YYYY/MM/DD');
+
+                        let cellStartTime = _.find(cells, function(cell) { return cell.innerIdx == 2; });
+                        let cellEndTime   = _.find(cells, function(cell) { return cell.innerIdx == 3; });
+
+                        let startTime = null, endTime = null;
+                        let isChangeTime = false;
+                        if (!_.isNil(cellStartTime)) {
+                            isChangeTime = true;
+                            if (!_.isNil(cell.value.startTime)) {
+                                startTime = duration.parseString(cell.value.startTime).toValue();
+                            }else{
+                                startTime = null;
+                            }
+                        }
+                        if (!_.isNil(cellEndTime)) {
+                            isChangeTime = true;
+                            if (!_.isNil(cell.value.endTime)) {
+                                endTime = duration.parseString(cell.value.endTime).toValue();
+                            }else {
+                                endTime = null;
+                            }
+                        }
+                        let dataCell = {
+                            sid: sid,
+                            ymd: ymd,
+                            viewMode: viewMode,
+                            workTypeCd: cell.value.workTypeCode,
+                            workTimeCd: cell.value.workTimeCode,
+                            startTime : startTime,
+                            endTime   : endTime,
+                            isChangeTime: isChangeTime
+                        }
+                        dataReg.push(dataCell);
+                    }
+                });
+            } 
+            console.log(dataReg);
+            return dataReg;
+        }
 
 		/** ADD-CHART-ZONE */
 		addAllChart(datafilter: Array<ITimeGantChart>, i: number, lstBreakTime: any, midData: any, screen: string, lstBrkNew?: any) {
@@ -4238,6 +4332,21 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				});
 			}
 		}
+		
+		// open dialog kdl053
+		 openKDL053(dataReg : any) {
+            let self = this;
+            let param = {
+                employeeIds: self.lstEmpId,                  // 社員の並び順
+                isRegistered: dataReg.isRegistered == true ? 1 : 0,           // 登録されたか
+                errorRegistrationList: dataReg.listErrorInfo, // エラー内容リスト 
+            }
+            setShared('dataShareDialogKDL053', param);
+            nts.uk.ui.windows.sub.modal('/view/kdl/053/index.xhtml').onClosed(function(): any {
+                console.log('closed');
+            });
+           block.clear();
+        }
 
 		// open dialog kdl045
 		public openKdl045Dialog(empId: string) {
@@ -4258,6 +4367,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			
 			if(self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto != null && self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workTypeName != null)
 			self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workTypeName = $("#extable-ksu003").exTable('dataSource', 'middle').body[lineNo].worktypeName;
+			
+			if(self.dataScreen003A().employeeInfo[lineNo].workScheduleDto != null){
+				self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.startTime1 = $("#extable-ksu003").exTable('dataSource', 'middle').body[lineNo].startTime1 == "" ? duration.parseString($("#extable-ksu003").exTable('dataSource', 'middle').body[lineNo].startTime1).toValue() : null;
+				self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.endTime1 = $("#extable-ksu003").exTable('dataSource', 'middle').body[lineNo].endTime1 == "" ? duration.parseString($("#extable-ksu003").exTable('dataSource', 'middle').body[lineNo].endTime1).toValue() : null;
+				self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.startTime2 = $("#extable-ksu003").exTable('dataSource', 'middle').body[lineNo].startTime2 == "" ? duration.parseString($("#extable-ksu003").exTable('dataSource', 'middle').body[lineNo].startTime2).toValue() : null;
+				self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.endTime2 = $("#extable-ksu003").exTable('dataSource', 'middle').body[lineNo].endTime2 == "" ? duration.parseString($("#extable-ksu003").exTable('dataSource', 'middle').body[lineNo].endTime2).toValue() : null;
+			}
 			
 			let dataEmployee = _.filter(self.dataFromA().listEmp, (x: any) => { return x.id === empId; });
 			let dataShare: any = {
