@@ -135,6 +135,7 @@ import kibanTimer = nts.uk.ui.sharedvm.KibanTimer;
                         } else {
                             // focus on close button if has no errors
                             $('#btn-f-close').focus();
+ 							nts.uk.ui.block.clear();
                         }
                     });
                 });
