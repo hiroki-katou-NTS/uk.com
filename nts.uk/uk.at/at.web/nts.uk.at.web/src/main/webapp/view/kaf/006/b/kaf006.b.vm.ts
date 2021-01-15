@@ -963,7 +963,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 					}
 				});
 			}
-			if (startTime1 != null && endTime1 != null) {
+			if (startTime2 != null && endTime2 != null) {
 				workingHours.push({
 					workNo: 2,
 					timeZone: {
