@@ -545,7 +545,7 @@ module nts.uk.ui.at.ksu002.a {
 							const workTypeCd = ko.unwrap(wtype.code);
 
 							if (workTypeCd !== workTypeCode || workTimeCd !== workTimeCode || start !== startTime || end !== endTime) {
-								registerDates.push({ date, end, start, workTimeCd, workTypeCd });
+								registerDates.push({ date, end, start, workTimeCode: workTimeCd, workTypeCode: workTypeCd });
 							}
 						});
 
@@ -600,8 +600,8 @@ module nts.uk.ui.at.ksu002.a {
 
 	interface StorageData {
 		date: string | Date;
-		workTypeCd: string;
-		workTimeCd: string;
+		workTypeCode: string;
+		workTimeCode: string;
 		start: number;
 		end: number;
 	}
