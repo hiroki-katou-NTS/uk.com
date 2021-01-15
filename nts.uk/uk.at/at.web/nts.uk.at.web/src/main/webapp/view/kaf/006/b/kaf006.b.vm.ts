@@ -1147,7 +1147,20 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 		openKAF006C() {
 			const vm = this;
 			nts.uk.ui.windows.setShared('KAF006C_PARAMS', { appAbsenceStartInfoOutput: vm.data, applyForLeave: vm.createDataVacationApp() });
-			nts.uk.ui.windows.sub.modal("/view/kaf/006/c/index.xhtml");
+			nts.uk.ui.windows.sub.modal("/view/kaf/006/c/index.xhtml").onClosed(() => {
+				let result = nts.uk.ui.windows.getShared('KAF006C_RESULT'),
+					viewModel = nts.uk.ui._viewModel.content;
+				if(result) {
+					let cacheLst = __viewContext.transferred.value.listAppMeta,
+						index = _.indexOf(cacheLst, viewModel.currentApp()) + 1,
+					 	preLst = _.slice(cacheLst, 0, index),
+						afterLst = _.slice(cacheLst, index);
+					__viewContext.transferred.value.listAppMeta = _.concat(_.concat(preLst, [result.appID]), afterLst);
+					viewModel.listApp(__viewContext.transferred.value.listAppMeta);
+					viewModel.currentApp(result.appID);
+					viewModel.loadData();
+				}
+			});
 		}
 
 		checkCondition11(data: any) {

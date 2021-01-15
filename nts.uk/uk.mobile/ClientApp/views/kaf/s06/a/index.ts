@@ -1268,6 +1268,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
                         command.companyId = self.user.companyId;
                         command.dates = self.getDates();
                         command.appAbsenceStartInfoOutput = self.model.appAbsenceStartInfoDto;
+                        command.appAbsenceStartInfoOutput.selectedWorkTimeCD = result.selectedWorkTime.code;
                         command.workTypeCodeBeforeOp = workTypeCodeBefore;
                         command.workTypeCodeAfterOp = workTypeCodeAfter;
                         command.holidayAppType = self.selectedValueHolidayType || HolidayAppType.ANNUAL_PAID_LEAVE;                    
