@@ -67,10 +67,10 @@ module nts.uk.at.view.knr002.e {
                     virtualization: true,
                     virtualizationMode: 'continuous',
                     columns: [
-                        { headerText: '端末No', key: 'empInfoTerCode', dataType: 'string', width: '70px'},
-                        { headerText: 'Name', key: 'empInfoTerName', dataType: 'string', width: '100px'},
-                        { headerText: 'Type', key: 'displayModelEmpInfoTer', dataType: 'string', width: '95px'},
-                        { headerText: 'Date', key: 'backupDate', dataType: 'string', width: '190px'},
+                        { headerText: getText("KNR002_131"), key: 'empInfoTerCode', dataType: 'string', width: '70px'},
+                        { headerText: getText("KNR002_132"), key: 'empInfoTerName', dataType: 'string', width: '100px'},
+                        { headerText: getText("KNR002_133"), key: 'displayModelEmpInfoTer', dataType: 'string', width: '95px'},
+                        { headerText: getText("KNR002_134"), key: 'backupDate', dataType: 'string', width: '190px'},
                     ],
                     features: [
                         { 
@@ -102,10 +102,10 @@ module nts.uk.at.view.knr002.e {
                     virtualization: true,
                     virtualizationMode: 'continuous',
                     columns: [
-                        { headerText: '大項目', key: 'majorClassification', dataType: 'string', width: '110px'},
-                        { headerText: '小項目', key: 'smallClassification', dataType: 'string', width: '140px'},
-                        { headerText: '設定値', key: 'settingValue', dataType: 'string', width: '90px'},
-                        { headerText: '入力範囲', key: 'inputRange', dataType: 'string', width: '220px'},
+                        { headerText: getText("KNR002_136"), key: 'majorClassification', dataType: 'string', width: '110px'},
+                        { headerText: getText("KNR002_137"), key: 'smallClassification', dataType: 'string', width: '140px'},
+                        { headerText: getText("KNR002_138"), key: 'settingValue', dataType: 'string', width: '90px'},
+                        { headerText: getText("KNR002_139"), key: 'inputRange', dataType: 'string', width: '220px'},
                     ],
                     features: [
                         { 
@@ -125,9 +125,9 @@ module nts.uk.at.view.knr002.e {
                 if (mode === 1) {
                     gridData = vm.initData().listEmpInfoTerminal;
 
-                    columns = [{ headerText: '端末No', key: 'empInfoTerCode', dataType: 'string', width: '70px'},
-                                { headerText: 'Name', key: 'empInfoTerName', dataType: 'string', width: '100px'},
-                                { headerText: 'Type', key: 'displayModelEmpInfoTer', dataType: 'string', width: '80px'}];
+                    columns = [{ headerText: getText("KNR002_122"), key: 'empInfoTerCode', dataType: 'string', width: '70px'},
+                                { headerText: getText("KNR002_123"), key: 'empInfoTerName', dataType: 'string', width: '100px'},
+                                { headerText: getText("KNR002_124"), key: 'displayModelEmpInfoTer', dataType: 'string', width: '80px'}];
 
                     width = '280px';
                 } else  {
@@ -150,12 +150,12 @@ module nts.uk.at.view.knr002.e {
                         return newItem;
                     });
 
-                    columns = [{ headerText: '端末No', key: 'empInfoTerCode', dataType: 'string', width: '70px'},
-                                { headerText: 'Name', key: 'empInfoTerName', dataType: 'string', width: '100px'},
-                                { headerText: 'Type', key: 'displayModelEmpInfoTer', dataType: 'string', width: '80px'},
-                                { headerText: '状況', key: 'status', dataType: 'string', width: '80px'}];
+                    columns = [{ headerText: getText("KNR002_122"), key: 'empInfoTerCode', dataType: 'string', width: '70px'},
+                                { headerText: getText("KNR002_123"), key: 'empInfoTerName', dataType: 'string', width: '100px'},
+                                { headerText: getText("KNR002_124"), key: 'displayModelEmpInfoTer', dataType: 'string', width: '80px'},
+                                { headerText: getText("KNR002_125"), key: 'status', dataType: 'string', width: '100px'}];
                     
-                    width = '330px';  
+                    width = '350px';  
                 }
 
                 $('#bak-grid1').ntsGrid({
