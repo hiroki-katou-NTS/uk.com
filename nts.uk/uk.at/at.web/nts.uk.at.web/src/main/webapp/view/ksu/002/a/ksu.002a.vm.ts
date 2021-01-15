@@ -551,8 +551,16 @@ module nts.uk.ui.at.ksu002.a {
 
 						vm.$blockui('show')
 							.then(() => vm.$ajax('at', API.SAVE_DATA, command))
+							.then((info: HandlerResult) => {
+								if (!info.listErrorInfo.length) {
+									return vm.$dialog.info({ messageId: 'Msg_15' });
+								} else {
+									// call KDL053
+									return vm.$window.modal('at', '/view/kdl/053/a/index.xhtml', info);
+								}
+							})
 							// reload data
-							.then(() => vm.achievement.valueHasMutated())
+							// .then(() => vm.achievement.valueHasMutated())
 							.always(() => vm.$blockui('clear'));
 					}
 				});
@@ -604,6 +612,22 @@ module nts.uk.ui.at.ksu002.a {
 		workTimeCode: string;
 		start: number;
 		end: number;
+	}
+
+	// 
+	interface HandlerResult {
+		hasError: boolean;
+		listErrorInfo: ErrorInformation[];
+		registered: boolean;
+	}
+
+	interface ErrorInformation {
+		sid: string;
+		scd: string;
+		empName: string;
+		date: Date;
+		attendanceItemId: number | null;
+		errorMessage: string;
 	}
 
 	interface Achievement {
