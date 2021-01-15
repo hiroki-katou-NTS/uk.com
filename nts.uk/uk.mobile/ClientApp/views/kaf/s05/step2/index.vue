@@ -117,6 +117,7 @@
             <nts-time-editor
               v-model="holidayTimes[index].applicationTime"
               name=""
+              v-bind:record-id="index"
               v-bind:disabled="!$appContext.c3_disable"
             />
           </div>
