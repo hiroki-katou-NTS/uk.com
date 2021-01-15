@@ -172,33 +172,30 @@ module nts.uk.at.view.kmk004.components {
 
 			vm.selectedYear
 				.subscribe(() => {
-					vm.mode("New")
-					vm.reloadData();
+					if (ko.unwrap(ko.unwrap(vm.selectedYear) != null)) {
+						vm.mode("New")
+						vm.reloadData();
+					}
 				});
 
 			vm.selectedId
 				.subscribe(() => {
 					vm.workTimeSaves([]);
-					setTimeout(() => {
-						vm.selectedYear.valueHasMutated();
-					}, 200);
+					vm.selectedYear.valueHasMutated();
 				});
 
 			vm.years
 				.subscribe(() => {
-					setTimeout(() => {
-						if (ko.unwrap(vm.years).length == 0) {
-							vm.workTimeSaves([]);
-							vm.initList();
+					if (ko.unwrap(vm.years).length == 0) {
+						vm.workTimeSaves([]);
 
-						} else {
-							if (ko.unwrap(vm.workTimeSaves).length > ko.unwrap(vm.years).length) {
-								_.remove(ko.unwrap(vm.workTimeSaves), ((value) => {
-									return value.year == ko.unwrap(vm.yearDelete);
-								}))
-							}
+					} else {
+						if (ko.unwrap(vm.workTimeSaves).length > ko.unwrap(vm.years).length) {
+							_.remove(ko.unwrap(vm.workTimeSaves), ((value) => {
+								return value.year == ko.unwrap(vm.yearDelete);
+							}))
 						}
-					}, 200);
+					}
 				});
 		}
 
@@ -208,10 +205,6 @@ module nts.uk.at.view.kmk004.components {
 			const wkpInput = { workplaceId: vm.selectedId(), workType: DEFOR_TYPE, year: vm.selectedYear() };
 			const empInput = { employmentCode: vm.selectedId(), workType: DEFOR_TYPE, year: vm.selectedYear() };
 			const shaInput = { sId: vm.selectedId(), workType: DEFOR_TYPE, year: vm.selectedYear() };
-
-			if (ko.unwrap(vm.selectedYear) != null) {
-				vm.checkNullYear(true);
-			}
 
 			const exist = _.find(ko.unwrap(vm.years), (emp: IYear) => emp.year as number == ko.unwrap(vm.selectedYear) as number);
 			if (exist) {
@@ -299,7 +292,7 @@ module nts.uk.at.view.kmk004.components {
 						break;
 
 					case 'Com_Person':
-						if (ko.unwrap(vm.selectedId) != '') {
+						if (ko.unwrap(vm.selectedId) !== '') {
 							const exist = _.find(ko.unwrap(vm.workTimeSaves), (m: WorkTimeSaveL) => m.year as number == ko.unwrap(vm.selectedYear) as number);
 
 							if (exist) {
@@ -310,16 +303,27 @@ module nts.uk.at.view.kmk004.components {
 									.then((data: IWorkTimeL[]) => {
 										if (data.length > 0) {
 											const workTime: IWorkTimeL[] = [];
+											vm.startYM(data[0].yearMonth);
 
-											data.map(m => {
-												const s: IWorkTimeL = { check: true, yearMonth: m.yearMonth, laborTime: m.laborTime };
-												workTime.push(s);
-												vm.startYM(data[0].yearMonth);
-											});
-
+											_.forEach(ko.unwrap(vm.workTimes), ((b) => {
+												const find = _.find(data, (m) => m.yearMonth.toString().substring(4, 6) == ko.unwrap(b.yearMonth).toString().substring(4, 6));
+												if (find) {
+													const s: IWorkTimeL = { check: true, yearMonth: find.yearMonth, laborTime: find.laborTime };
+													workTime.push(s);
+												} else {
+													const s: IWorkTimeL = {
+														check: false,
+														yearMonth: parseInt(ko.unwrap(vm.selectedYear) + ko.unwrap(b.yearMonth).toString().substring(4, 6)),
+														laborTime: null
+													};
+													workTime.push(s);
+												}
+											}));
 											vm.workTimes(workTime.map(m => new WorkTimeL({ ...m, parent: vm.workTimes })));
+										}else {
+											vm.mode('Update');
+											vm.initList();
 										}
-										vm.mode('Update');
 									});
 							}
 
@@ -328,6 +332,7 @@ module nts.uk.at.view.kmk004.components {
 						break;
 				}
 			} else {
+				vm.mode('New');
 				vm.initList();
 			}
 		}
@@ -417,7 +422,7 @@ class WorkTimeL {
 	check: KnockoutObservable<boolean> = ko.observable(false);
 	yearMonth: KnockoutObservable<number | null> = ko.observable(null);
 	nameMonth: KnockoutObservable<string> = ko.observable('');
-	laborTime: KnockoutObservable<number> = ko.observable(0);
+	laborTime: KnockoutObservable<number> = ko.observable(null);
 
 	constructor(params?: IWorkTimeL & { parent: KnockoutObservableArray<WorkTimeL> }) {
 		const md = this;
@@ -431,7 +436,6 @@ class WorkTimeL {
 		const md = this;
 		md.check(param.check);
 		md.yearMonth(param.yearMonth);
-		md.laborTime(param.laborTime);
 
 		if (param.check) {
 			md.laborTime(param.laborTime);

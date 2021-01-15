@@ -205,7 +205,7 @@ module nts.uk.at.view.kmk004.l {
 					vm.params.titleName = vm.selectedItemText();
 					vm.selectedIdParam(data);
 					vm.getBtnContent();
-
+					$('.listbox').focus();
 				});
 
 				vm.selectedId.valueHasMutated();

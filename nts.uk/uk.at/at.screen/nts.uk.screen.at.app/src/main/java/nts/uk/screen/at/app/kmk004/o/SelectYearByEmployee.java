@@ -30,6 +30,10 @@ public class SelectYearByEmployee {
 		List<WorkTimeComDto> result = new ArrayList<>();
 
 		// 社員別年度（変形労働）を選択する
+		// input:
+		// 社員ID＝選択中の社員ID
+		// 勤務区分＝1：変形労働
+		// 年度＝選択中の年度
 		List<DisplayMonthlyWorkingDto> list = getWorkingHoursByEmployee.get(param.getSId(),
 				LaborWorkTypeAttr.DEFOR_LABOR, param.getYear());
 		result = list.stream().map(m -> {

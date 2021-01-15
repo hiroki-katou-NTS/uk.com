@@ -12,7 +12,8 @@ module nts.uk.at.view.kmk004.l {
 		DELETE_WORK_TIME: 'screen/at/kmk004/viewO/monthlyWorkTimeSet/delete',
 		GET_EMPLOYEE_ID: 'screen/at/kmk004/viewO/getEmployeeIds',
 		SHA_GET_BASIC_SETTING: 'screen/at/kmk004/viewO/getBasicSetting',
-		COPY_SETTING: 'screen/at/kmk004/viewO/after-copy'
+		COPY_SETTING: 'screen/at/kmk004/viewO/after-copy',
+		GET_WORK_TIME_BY_COM: 'screen/at/kmk004/viewL/getWorkingHoursByCompany',
 	};
 
 	const template = `
@@ -275,7 +276,7 @@ module nts.uk.at.view.kmk004.l {
 					vm.initBtnEnable(true);
 
 					vm.getBtnContent();
-
+					$('.listbox').focus();
 				});
 			});
 		}
@@ -313,12 +314,42 @@ module nts.uk.at.view.kmk004.l {
 
 		register() {
 			const vm = this;
+			var firstItem = ko.toJS(vm.workTimes()[0]).yearMonth.toString().substring(0, 4);
 
 			let param: IWorkTimeSetCom[] = [];
-
 			_.forEach(ko.unwrap(vm.workTimes), ((value) => {
-				const t: IWorkTimeSetCom = { empId: vm.selectedId(), laborAttr: 1, yearMonth: value.yearMonth(), laborTime: { legalLaborTime: value.laborTime(), withinLaborTime: null, weekAvgTime: null } };
-				param.push(t);
+				if (ko.toJS(value.yearMonth().toString().substring(0, 4)) == firstItem) {
+					const t: IWorkTimeSetCom = {
+						empId: vm.selectedId(),
+						laborAttr: 1,
+						yearMonth: parseInt(ko.unwrap(vm.selectedYear) + value.yearMonth().toString().substring(4, 6)),
+						laborTime: {
+							legalLaborTime: value.laborTime(),
+							withinLaborTime: null,
+							weekAvgTime: null
+						}
+					};
+					if (t.laborTime.legalLaborTime) {
+						param.push(t);
+					}
+
+				} else if (ko.toJS(value.yearMonth().toString().substring(0, 4)) != firstItem) {
+					const t: IWorkTimeSetCom = {
+						empId: vm.selectedId(),
+						laborAttr: 1,
+						yearMonth: parseInt(ko.unwrap(vm.selectedYear) + 1 + value.yearMonth().toString().substring(4, 6)),
+						laborTime: {
+							legalLaborTime: value.laborTime(),
+							withinLaborTime: null,
+							weekAvgTime: null
+						}
+					};
+
+					if (t.laborTime.legalLaborTime) {
+						param.push(t);
+					}
+
+				}
 			}));
 
 			vm.$validate('.nts-editor').then((valid: boolean) => {
@@ -334,15 +365,15 @@ module nts.uk.at.view.kmk004.l {
 					vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
 					vm.getEmployeeIds();
 				}).then(() => vm.$dialog.info({ messageId: "Msg_15" }))
-				.then(() => {
-					$(document).ready(function() {
-						$('.listbox').focus();
-					})
-				}).always(() => {
-					vm.$errors('clear');
-				}).then(() => {
-					vm.selectedYear.valueHasMutated();
-				});
+					.then(() => {
+						$(document).ready(function() {
+							$('.listbox').focus();
+						})
+					}).always(() => {
+						vm.$errors('clear');
+					}).then(() => {
+						vm.selectedYear.valueHasMutated();
+					});
 
 			});
 		}
