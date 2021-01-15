@@ -14,7 +14,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 public class KrcstOptionalItem_ {
 
 	/** The krcst optional item PK. */
-	public static volatile SingularAttribute<KrcmtAnyv, KrcstOptionalItemPK> krcstOptionalItemPK;
+	public static volatile SingularAttribute<KrcmtAnyv, KrcmtAnyvPK> krcmtAnyvPK;
 
 	/** The optional item name. */
 	public static volatile SingularAttribute<KrcmtAnyv, String> optionalItemName;
@@ -32,7 +32,7 @@ public class KrcstOptionalItem_ {
 	public static volatile SingularAttribute<KrcmtAnyv, Integer> empConditionAtr;
 	
 	/** The krcst calc result range. */
-	public static volatile SingularAttribute<KrcmtAnyv, KrcmtAnyfResultRange> krcstCalcResultRange;
+	public static volatile SingularAttribute<KrcmtAnyv, KrcmtCalcResultRange> krcstCalcResultRange;
 
 
 }

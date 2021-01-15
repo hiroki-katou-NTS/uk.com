@@ -10,37 +10,37 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KrcstCalcResultRange_.
  */
-@StaticMetamodel(KrcmtAnyfResultRange.class)
+@StaticMetamodel(KrcmtCalcResultRange.class)
 public class KrcstCalcResultRange_ {
 
 	/** The krcst calc result range PK. */
-	public static volatile SingularAttribute<KrcmtAnyfResultRange, KrcstCalcResultRangePK> krcstCalcResultRangePK;
+	public static volatile SingularAttribute<KrcmtCalcResultRange, KrcmtCalcResultRangePK> krcstCalcResultRangePK;
 
 	/** The emp appl atr. */
-	public static volatile SingularAttribute<KrcmtAnyfResultRange, Integer> empApplAtr;
+	public static volatile SingularAttribute<KrcmtCalcResultRange, Integer> empApplAtr;
 
 	/** The upper limit atr. */
-	public static volatile SingularAttribute<KrcmtAnyfResultRange, Integer> upperLimitAtr;
+	public static volatile SingularAttribute<KrcmtCalcResultRange, Integer> upperLimitAtr;
 
 	/** The lower limit atr. */
-	public static volatile SingularAttribute<KrcmtAnyfResultRange, Integer> lowerLimitAtr;
+	public static volatile SingularAttribute<KrcmtCalcResultRange, Integer> lowerLimitAtr;
 
 	/** The upper time range. */
-	public static volatile SingularAttribute<KrcmtAnyfResultRange, Integer> upperTimeRange;
+	public static volatile SingularAttribute<KrcmtCalcResultRange, Integer> upperTimeRange;
 
 	/** The lower time range. */
-	public static volatile SingularAttribute<KrcmtAnyfResultRange, Integer> lowerTimeRange;
+	public static volatile SingularAttribute<KrcmtCalcResultRange, Integer> lowerTimeRange;
 
 	/** The upper number range. */
-	public static volatile SingularAttribute<KrcmtAnyfResultRange, Double> upperNumberRange;
+	public static volatile SingularAttribute<KrcmtCalcResultRange, Double> upperNumberRange;
 
 	/** The lower number range. */
-	public static volatile SingularAttribute<KrcmtAnyfResultRange, Double> lowerNumberRange;
+	public static volatile SingularAttribute<KrcmtCalcResultRange, Double> lowerNumberRange;
 
 	/** The upper amount range. */
-	public static volatile SingularAttribute<KrcmtAnyfResultRange, Integer> upperAmountRange;
+	public static volatile SingularAttribute<KrcmtCalcResultRange, Integer> upperAmountRange;
 
 	/** The lower amount range. */
-	public static volatile SingularAttribute<KrcmtAnyfResultRange, Integer> lowerAmountRange;
+	public static volatile SingularAttribute<KrcmtCalcResultRange, Integer> lowerAmountRange;
 
 }

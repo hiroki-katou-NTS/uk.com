@@ -85,6 +85,8 @@ public class KshmtHdnursingLeave extends ContractUkJpaEntity implements Serializ
      */
     public KshmtHdnursingLeave() {
     	super();
+    	this.nursingNumPerson = 1;
+    	this.nursingNumPerson2 = 2;
     }
 
     /* (non-Javadoc)

@@ -24,19 +24,19 @@ public class GetApplicationForReflect {
 			return null;
 		case WORK_CHANGE_APPLICATION:
 			// 2：勤務変更申請
-			return require.findAppWorkCg(companyId, appID).orElse(null);
+			return require.findAppWorkCg(companyId, appID, app).orElse(null);
 		case BUSINESS_TRIP_APPLICATION:
 			// 3：出張申請
-			return require.findBusinessTripApp(companyId, appID).orElse(null);
+			return require.findBusinessTripApp(companyId, appID, app).orElse(null);
 		case GO_RETURN_DIRECTLY_APPLICATION:
 			// 4：直行直帰申請
-			return require.findGoBack(companyId, appID).orElse(null);
+			return require.findGoBack(companyId, appID, app).orElse(null);
 		case HOLIDAY_WORK_APPLICATION:
 			// TODO: 6：休日出勤申請
 			return null;
 		case STAMP_APPLICATION:
 			// 7：打刻申請
-			return require.findAppStamp(companyId, appID).orElse(null);
+			return require.findAppStamp(companyId, appID, app).orElse(null);
 		case ANNUAL_HOLIDAY_APPLICATION:
 			// TODO: 8：時間休暇申請
 			return null;
@@ -58,14 +58,14 @@ public class GetApplicationForReflect {
 
 	public static interface Require {
 
-		public Optional<AppWorkChange> findAppWorkCg(String companyId, String appID);
+		public Optional<AppWorkChange> findAppWorkCg(String companyId, String appID, Application app);
 
-		public Optional<GoBackDirectly> findGoBack(String companyId, String appID);
+		public Optional<GoBackDirectly> findGoBack(String companyId, String appID, Application app);
 
-		public Optional<AppStamp> findAppStamp(String companyId, String appID);
+		public Optional<AppStamp> findAppStamp(String companyId, String appID, Application app);
 
 		public Optional<ArrivedLateLeaveEarly> findArrivedLateLeaveEarly(String companyId, String appID, Application application);
 
-		public Optional<BusinessTrip> findBusinessTripApp(String companyId, String appID);
+		public Optional<BusinessTrip> findBusinessTripApp(String companyId, String appID, Application app);
 	}
 }

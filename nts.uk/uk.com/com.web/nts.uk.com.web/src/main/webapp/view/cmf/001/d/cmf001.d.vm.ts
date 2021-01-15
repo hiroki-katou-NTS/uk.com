@@ -153,7 +153,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
             if (selectedIndex >= 0) {
                 let i = self.listAcceptItem().length + 1;
                 let selectedItem = _.find(self.listCategoryItem(), x => { return x.itemNo == self.selectedCategoryItem(); });
-                let item = new model.StandardAcceptItem(null, null, 0, i, selectedItem.itemName, self.stdCondSet().systemType(), self.stdCondSet().conditionSettingCode(), selectedItem.itemNo);
+                let item = new model.StandardAcceptItem(null, null, 0, i, selectedItem.itemName, self.stdCondSet().systemType(), self.stdCondSet().conditionSetCode(), selectedItem.itemNo);
                 self.listAcceptItem.push(item);
                 self.listSelectedCategoryItem.push(selectedItem);
                 self.selectedAcceptItem(self.listAcceptItem().length);
@@ -411,7 +411,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                     self.enableCategory(false);
                     info({ messageId: "Msg_15" }).then(() => {
                         nts.uk.request.jump("/view/cmf/001/b/index.xhtml", {
-                            conditionCode: self.stdCondSet().conditionSettingCode(),
+                            conditionCode: self.stdCondSet().conditionSetCode(),
                             sysType: self.systemType.code
                         });
                     });
@@ -431,7 +431,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
             service.getOneStdData(self.systemType.code, self.stdCondSetCd()).done((cond) => {
                 if (cond) {
                     self.stdCondSet(new model.StandardAcceptanceConditionSetting(cond.systemType, 
-                                                        cond.conditionSettingCode, cond.conditionSettingName, 
+                                                        cond.conditionSetCode, cond.conditionSetName, 
                                                         cond.deleteExistData, cond.acceptMode, 
                                                         cond.csvDataItemLineNumber == null ? 1 : cond.csvDataItemLineNumber, 
                                                         cond.csvDataStartLine == null ? 2 : cond.csvDataStartLine, 
@@ -453,7 +453,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                             } else {
                                 self.selectedCategory(self.listCategory()[0].categoryId);
                             }
-                            service.getAllData(self.systemType.code, self.stdCondSet().conditionSettingCode()).done(function(data: Array<any>) {
+                            service.getAllData(self.systemType.code, self.stdCondSet().conditionSetCode()).done(function(data: Array<any>) {
                                 if (data && data.length) {//co du lieu dang ki
                                     self.loadCategoryItemData(self.stdCondSet().categoryId()).done(() => {
                                         let _rsList: Array<model.StandardAcceptItem> = _.map(data, rs => {

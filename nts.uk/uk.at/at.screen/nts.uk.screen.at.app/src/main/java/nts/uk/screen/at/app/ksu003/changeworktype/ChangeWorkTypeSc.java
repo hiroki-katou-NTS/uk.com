@@ -76,7 +76,7 @@ public class ChangeWorkTypeSc {
 		// 3 .get(会社ID、勤務種類コード):勤務種類
 		Optional<WorkType> workType = workTypeRepo.findByPK(companyId, information.getWorkTypeCode());
 		if(workStyle.isPresent() && workType.isPresent()) {
-			workTypeDto = new ChangeWorkTypeDto(workStyle.get().value != 0 ? false : true, workType.get().getName().v());
+			workTypeDto = new ChangeWorkTypeDto(workStyle.get().value != 0 ? false : true, workType.get().getAbbreviationName().v());
 		}
 		
 		return workTypeDto;
@@ -126,12 +126,13 @@ public class ChangeWorkTypeSc {
 			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
 		}
 
-		@Override
-		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd,
-				Integer workNo) {
-			// đang để tạm vị trí của workTimeCd, workTypeCd - cần sửa lại sau - TQP
-			return workTimeSettingService.getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
-		}
+		// fix bug 113211
+//		@Override
+//		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd,
+//				Integer workNo) {
+//			// đang để tạm vị trí của workTimeCd, workTypeCd - cần sửa lại sau - TQP
+//			return workTimeSettingService.getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
+//		}
 
 		@Override
 		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {

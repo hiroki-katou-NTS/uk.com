@@ -37,6 +37,7 @@ public class GetInformationWS extends WebService {
 				GeneralDate.fromString(command.getBaseDate(), "yyyy/MM/dd"),
 				command.getListTimeVacationAndType(),
 				command.getWorkTimeCode(), 
+				command.getWorkTypeCode(),
 				command.getTargetOrgIdenInforDto());
 		return data;
 	}

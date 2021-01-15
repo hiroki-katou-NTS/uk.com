@@ -16,7 +16,8 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "BPSMT_PERSON_CONTACT")
-public class BpsmtPersonContact  extends ContractUkJpaEntity implements Serializable {/**
+public class BpsmtPersonContact  extends ContractUkJpaEntity implements Serializable {
+	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;

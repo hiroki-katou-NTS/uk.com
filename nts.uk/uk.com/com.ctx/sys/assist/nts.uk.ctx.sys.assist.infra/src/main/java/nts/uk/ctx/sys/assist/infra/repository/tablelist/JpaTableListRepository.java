@@ -14,11 +14,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.Query;
 
-import com.google.common.base.Strings;
-
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.assist.dom.category.TimeStore;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.HistoryDiviSion;
 import nts.uk.ctx.sys.assist.dom.saveprotetion.SaveProtetion;
@@ -127,7 +126,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 
 	private String getFieldAcq(List<String> allColumns, Optional<String> fieldName, String fieldAcqName) {
 		String fieldAcq = fieldName.orElse("");
-		if (!Strings.isNullOrEmpty(fieldAcq)) {
+		if (!StringUtil.isNullOrEmpty(fieldAcq, true)) {
 			if (allColumns.contains(fieldAcq)) {
 				return " t." + fieldAcq + " AS " + fieldAcqName + ", ";
 			} else {
@@ -225,7 +224,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 
 			boolean isFirstOnStatement = true;
 			for (int i = 0; i < parentFields.length; i++) {
-				if (!Strings.isNullOrEmpty(parentFields[i]) && !Strings.isNullOrEmpty(childFields[i])) {
+				if (!StringUtil.isNullOrEmpty(parentFields[i], true) && !StringUtil.isNullOrEmpty(childFields[i], true)) {
 					if (!isFirstOnStatement) {
 						query.append(" AND ");
 					}

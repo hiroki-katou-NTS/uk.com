@@ -646,38 +646,36 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 		}
 
 		private void calc19And21Item(IntegrationOfDaily daily, int preSetAtten01, int preSetLeave01) {
-			if(daily.getWorkInformation().getScheduleInfo().getWorkTimeCode() != null) {
-				daily.getWorkInformation().getScheduleTimeSheet(new WorkNo(1)).ifPresent(scheTimeSheet -> {
-					int scheWorkAtten = scheTimeSheet.getAttendance().valueAsMinutes();
-					int scheWorkLeave = scheTimeSheet.getLeaveWork().valueAsMinutes();
-					
-					if(flag35.get() && have(t -> t.startTime) && preSetAtten01 > scheWorkAtten) {
-						if(startTime.get() >= scheWorkAtten) {
-							flag19.set(flag19.get() + 1);
-						}
-						if(startTime.get() < scheWorkAtten) {
-							flag21.set(flag21.get() + 1);
-						}
+			daily.getWorkInformation().getScheduleTimeSheet(new WorkNo(1)).ifPresent(scheTimeSheet -> {
+				int scheWorkAtten = scheTimeSheet.getAttendance().valueAsMinutes();
+				int scheWorkLeave = scheTimeSheet.getLeaveWork().valueAsMinutes();
+				
+				if(flag35.get() && have(t -> t.startTime) && preSetAtten01 > scheWorkAtten) {
+					if(startTime.get() >= scheWorkAtten) {
+						flag19.set(flag19.get() + 1);
 					}
-					
-					if(flag36.get() && have(t -> t.endTime) && preSetLeave01 < scheWorkLeave) {
-						if(endTime.get() <= scheWorkLeave) {
-							flag19.set(flag19.get() + 1);
-						}
-						if(endTime.get() > scheWorkLeave) {
-							flag21.set(flag21.get() + 1);
-						}
+					if(startTime.get() < scheWorkAtten) {
+						flag21.set(flag21.get() + 1);
 					}
-					/**
-					if (flag35.get() && preSetAtten01 <= scheWorkAtten) {
-						flag37.set(flag37.get() + 1);
+				}
+				
+				if(flag36.get() && have(t -> t.endTime) && preSetLeave01 < scheWorkLeave) {
+					if(endTime.get() <= scheWorkLeave) {
+						flag19.set(flag19.get() + 1);
 					}
-					if(flag36.get() && preSetLeave01 >= scheWorkLeave) {
-						flag37.set(flag37.get() + 1);
+					if(endTime.get() > scheWorkLeave) {
+						flag21.set(flag21.get() + 1);
 					}
-					*/
-				});
-			}
+				}
+				/**
+				if (flag35.get() && preSetAtten01 <= scheWorkAtten) {
+					flag37.set(flag37.get() + 1);
+				}
+				if(flag36.get() && preSetLeave01 >= scheWorkLeave) {
+					flag37.set(flag37.get() + 1);
+				}
+				*/
+			});
 		}
 
 		private int sumActualOvertime(OverTimeFrameTime otf) {

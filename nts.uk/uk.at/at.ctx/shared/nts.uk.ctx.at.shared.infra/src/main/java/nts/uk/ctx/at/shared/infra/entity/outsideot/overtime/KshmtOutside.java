@@ -13,6 +13,12 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.UseClassification;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.Overtime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeName;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeNo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeValue;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -62,7 +68,22 @@ public class KshmtOutside extends ContractUkJpaEntity implements Serializable {
     public KshmtOutside(KshstOverTimePK kshstOverTimePK) {
         this.kshstOverTimePK = kshstOverTimePK;
     }
-
+    
+    public Overtime domain() {
+    	
+    	return new Overtime(this.is60hSuperHd == 1, 
+    			EnumAdaptor.valueOf(this.useAtr, UseClassification.class),
+    			new OvertimeName(this.name), new OvertimeValue(this.overTime),
+    			EnumAdaptor.valueOf(this.kshstOverTimePK.getOverTimeNo(), OvertimeNo.class));
+    }
+    
+    public void update(Overtime domain) {
+    	
+    	this.is60hSuperHd = domain.isSuperHoliday60HOccurs() ? 1 : 0;
+    	this.useAtr = domain.getUseClassification().value;
+    	this.name = domain.getName().v();
+    	this.overTime = domain.getOvertime().valueAsMinutes();
+    }
 
     /* (non-Javadoc)
      * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()

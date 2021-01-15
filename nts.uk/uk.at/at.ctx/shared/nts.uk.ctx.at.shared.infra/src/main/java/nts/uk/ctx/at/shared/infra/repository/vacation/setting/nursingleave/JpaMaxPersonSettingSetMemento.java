@@ -45,7 +45,7 @@ public class JpaMaxPersonSettingSetMemento implements MaxPersonSettingSetMemento
      * MaxPersonSettingSetMemento#setNursingNumberPerson(java.lang.Integer)
      */
     @Override
-    public void setNursingNumberPerson(NumberDayNursing nursingNumberPerson) {
+    public void setNursingNumberLeaveDay2(NumberDayNursing nursingNumberPerson) {
         if(nursingNumberPerson != null) {
             this.entity.setNursingNumPerson(nursingNumberPerson.v());
         }

@@ -24,8 +24,8 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @Setter
 @Getter
-@Table(name = "KSHMT_HDSTK_SET_EMP")
-public class KshmtHdstkSetEmp extends ContractUkJpaEntity implements Serializable {
+@Table(name = "KSHMT_HDSTK_EMP")
+public class KmfmtRetentionEmpCtr extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -33,22 +33,12 @@ public class KshmtHdstkSetEmp extends ContractUkJpaEntity implements Serializabl
 	@EmbeddedId
 	protected KmfmtRetentionEmpCtrPK kmfmtRetentionEmpCtrPK;
 
-	/** The year amount. */
-	@Basic(optional = false)
-	@NotNull
-	@Column(name = "NUMBER_OF_YEAR")
-	private short yearAmount;
 
-	/** The max days retention. */
-	@Basic(optional = false)
-	@NotNull
-	@Column(name = "MAX_NUMBER_OF_DAYS")
-	private short maxDaysRetention;
 
 	/** The management ctr atr. */
 	@Basic(optional = false)
 	@NotNull
-	@Column(name = "MANAGEMENT_CTR_ATR")
+	@Column(name = "MANAGE_ATR")
 	private short managementCtrAtr;
 
 	/*

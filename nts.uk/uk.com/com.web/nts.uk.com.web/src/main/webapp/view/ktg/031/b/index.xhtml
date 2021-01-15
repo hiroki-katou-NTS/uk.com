@@ -1,41 +1,34 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 680, height: 400 };</script>
+			<script>var dialogSize = { width: 640, height: 520 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ktg031.b.style.css" />
-			<com:scriptfile path="ktg031.b.start.js" />
 			<com:scriptfile path="ktg031.b.vm.js" />
-			<com:scriptfile path="ktg031.b.service.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div id="contents-area"> 
-				<label id = "labelTop">#{i18n.getText('KTG031_8')}</label>
-				<div id = "list">
-					<table id="single-list"
-						data-bind="ntsGridList: {		
-								height: 200,						
-								dataSource: listDetail,
-								primaryKey: 'serialNo',
-								columns: columns,
-								multiple: false,
-								value: currentCode,
-								rows: 8
-							}"></table>
+			<div id="contents-area">
+				<div class="table-container">
+					<table id="B1_1" data-bind="ntsGridList: {
+						dataSource: listSetting,
+						primaryKey: 'rowNumber',
+						value: currentRow,
+						columns: columns,
+						multiple: false,
+						rows: 15
+					}"></table>
 				</div>
 			</div>
-
 			<div id="functions-area-bottom">
-			<!-- data-bind="click: closeDialog" -->
-				<button id = "closebtn" data-bind="click: closeDialog">#{i18n.getText('KTG031_7')}</button>
+				<button id="closebtn" data-bind="click: closeDialog">#{i18n.getText('KTG031_24')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>
 </body>
+
 </html>

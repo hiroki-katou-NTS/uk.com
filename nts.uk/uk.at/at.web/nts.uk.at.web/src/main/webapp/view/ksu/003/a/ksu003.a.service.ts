@@ -11,6 +11,7 @@ module nts.uk.at.view.ksu003.a {
 			sortEmployee: "screen/at/schedule/sortEmployee",
 			getEmpWorkFixedWorkInfo: "screen/at/schedule/getEmpWorkFixedWorkInfo",
 			changeWorkType: "screen/at/schedule/changeWorkType",
+			checkWorkType: "screen/at/schedule/checkWorkType",
             checkTimeIsIncorrect: "ctx/at/shared/workrule/workinghours/checkTimeIsIncorrect"
 		};
 		
@@ -58,6 +59,11 @@ module nts.uk.at.view.ksu003.a {
          */
 		export function changeWorkType(command: any): JQueryPromise<any> {
 			return nts.uk.request.ajax(servicePath.changeWorkType, command);
+		}
+		
+		export function checkWorkType(command: any): JQueryPromise<any> {
+			
+			return nts.uk.request.ajax(servicePath.checkWorkType, command);
 		}
 
 

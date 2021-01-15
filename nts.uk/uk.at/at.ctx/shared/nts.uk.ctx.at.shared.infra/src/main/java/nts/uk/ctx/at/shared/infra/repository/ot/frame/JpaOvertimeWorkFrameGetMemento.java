@@ -10,7 +10,8 @@ import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameGetMemento;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameName;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo;
-import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshmtOverFrame;
+import nts.uk.ctx.at.shared.dom.ot.frame.RoleOvertimeWork;
+import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshstOvertimeFrame;
 
 /**
  * The Class JpaOvertimeWorkFrameGetMemento.
@@ -18,14 +19,14 @@ import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshmtOverFrame;
 public class JpaOvertimeWorkFrameGetMemento implements OvertimeWorkFrameGetMemento{
 	
 	/** The kshst overtime frame. */
-	private KshmtOverFrame kshstOvertimeFrame;
+	private KshstOvertimeFrame kshstOvertimeFrame;
 	
 	/**
 	 * Instantiates a new jpa overtime work frame get memento.
 	 *
 	 * @param kshstOvertimeFrame the kshst overtime frame
 	 */
-	public JpaOvertimeWorkFrameGetMemento(KshmtOverFrame kshstOvertimeFrame) {
+	public JpaOvertimeWorkFrameGetMemento(KshstOvertimeFrame kshstOvertimeFrame) {
 		this.kshstOvertimeFrame = kshstOvertimeFrame;
 	}
 
@@ -76,4 +77,13 @@ public class JpaOvertimeWorkFrameGetMemento implements OvertimeWorkFrameGetMemen
 		return new OvertimeWorkFrameName(this.kshstOvertimeFrame.getOtFrName());
 	}
 	
+	@Override
+	public RoleOvertimeWork getRole() {
+		return RoleOvertimeWork.valueOf((int)this.kshstOvertimeFrame.getRole());
+	}
+	
+	@Override
+	public NotUseAtr getTransferAtr() {
+		return NotUseAtr.valueOf((int)this.kshstOvertimeFrame.getTransferAtr());
+	}
 }

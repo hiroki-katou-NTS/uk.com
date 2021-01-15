@@ -81,8 +81,31 @@ export class KdlS36Component extends Vue {
                 .warn({ messageId: 'Msg_1758' })
                 .then(() => {
                     item.checked = false;
+                    item.index = -1;
                 });
+        } else if (item.checked) {
+            item.index = _.filter(holidayWorkInfoList,(item) => item.checked === true ).length;
+        } else {
+            item.index = -1;
         }
+    }
+
+    get itemDecided() {
+        const vm = this;
+        const { daysUnit, substituteHolidayList, holidayWorkInfoList } = vm;
+        const required = substituteHolidayList.length * daysUnit;
+        // tinh lai counted
+        const counted = holidayWorkInfoList
+            .map((m) => m.checked ? m.remainingNumber : 0)
+            .reduce((p, c) => p -= c, required);
+        const lastIndex = holidayWorkInfoList.filter((f) => f.checked).length;
+
+        return holidayWorkInfoList
+            .map((m) => ({
+                ...m,
+                // tinh toan lai gia tri remain cua thang cuoi cung duoc check
+                remainingNumber: counted < 0 && lastIndex === m.index ? m.remainingNumber + counted :  m.remainingNumber
+            }));
     }
 
     public checkRequirementOfDayWithCheck(item: ISubstituteWorkInfo) {
@@ -197,7 +220,7 @@ export class KdlS36Component extends Vue {
             substituteHolidayList: vm.substituteHolidayList
                 .map((m) => new Date(m).toISOString()),
             targetSelectionAtr: vm.targetSelectionAtr,
-            holidayWorkInfoList: vm.holidayWorkInfoList
+            holidayWorkInfoList: vm.itemDecided
                 .filter((item) => item.checked)
                 .map((m) => ({ ...m }))
         };
@@ -299,6 +322,7 @@ interface ISubstituteWorkInfo {
     holidayWorkDate: string;
     checked: boolean;
     enable: boolean;
+    index: number;
 }
 
 enum DataType {

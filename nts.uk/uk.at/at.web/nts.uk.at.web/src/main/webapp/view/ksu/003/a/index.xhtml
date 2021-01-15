@@ -9,7 +9,7 @@
 		<ui:define name="htmlHead">
 		<script>
 				var dialogSize = {
-					width : 1280,
+					width : 1320,
 					height : 768
 				};
 		</script>
@@ -18,26 +18,33 @@
 			<com:scriptfile path="ksu003.a.service.js" />
 			<com:scriptfile path="ksu003.a.vm.js" />
 			<com:scriptfile path="ksu003.a.start.js" />
+			<com:ValidatorScript>
+					nts.uk.shr.com.time.TimeWithDayAttr
+					nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode
+					nts.uk.ctx.at.shared.dom.worktype.WorkTypeName
+					nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeName
+					nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode
+			</com:ValidatorScript>
 		</ui:define>
 
 		<!-- PAGE CONTENT -->
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id="A1_1" class="proceed">#{i18n.getText('KSU003_2')}</button>
-				<button id="A1_2" class=" marginleft15px" data-bind="click: openKdl003Dialog">#{i18n.getText('KSU003_3')}</button>
-				<button id="A1_3" class="create  marginleft15px" data-bind="click: openGDialog">#{i18n.getText('KSU003_4')}</button>
-				<button id="A1_4" class="close" data-bind="click: closeDialog">#{i18n.getText('KSU003_5')}</button>
+				<button tabindex="1" id="A1_1" class="proceed" data-bind="click: saveData, enable: enableSave">#{i18n.getText('KSU003_2')}</button>
+				<button tabindex="2" id="A1_2" class=" marginleft15px" >#{i18n.getText('KSU003_3')}</button>
+				<button tabindex="3" id="A1_3" class="create  marginleft15px" data-bind="click: openGDialog">#{i18n.getText('KSU003_4')}</button>
+				<button tabindex="4" id="A1_4" class="close" data-bind="click: closeDialog">#{i18n.getText('KSU003_5')}</button>
 			</div>
-			<div id="functon-area-row2">
-				<div id="functon-area-row2-left" style="margin-top: 10px">
+			<div  id="functon-area-row2">
+				<div  id="functon-area-row2-left" style="margin-top: 10px">
 					<!-- A2_1 -->
-					<div id="period-setting" class="panel panel-frame">
+					<div tabindex="-1" id="period-setting" class="panel panel-frame">
 						<!-- A2_1_1 -->
 						<div id="prev-button">
-							<button id="prev-all" class="small" data-bind=" click: prevAllDay, enable:checkPrv()">
+							<button tabindex="5" id="prev-all" class="small" data-bind=" click: prevAllDay, enable:checkPrv()">
 								<i id ="icon-prev-all" data-bind="ntsIcon: { no: 57, width: 22, height: 22 }"></i>
 							</button>
-							<button id="prev-one" class="small" data-bind=" click: prevDay, enable:checkPrv()">
+							<button tabindex="6" id="prev-one" class="small" data-bind=" click: prevDay, enable:checkPrv()">
 								<i id ="icon-prev-one" data-bind="ntsIcon: { no: 9 , width: 22, height: 22 }"></i>
 							</button>
 						</div>
@@ -47,16 +54,16 @@
 							<label data-bind="text:targetDateDay"></label>
 						</div>
 						<div id="next-button" style="margin-left: 10px">
-							<button id="next-one" class="small" data-bind=" click: nextDay, enable:checkNext()">
+							<button tabindex="7" id="next-one" class="small" data-bind=" click: nextDay, enable:checkNext()">
 								<i id ="icon-next-one" data-bind="ntsIcon: { no: 10, width: 22, height: 22 }"></i>
 							</button>
-							<button id="next-all" class="small" data-bind=" click: nextAllDay, enable:checkNext()">
+							<button tabindex="8" id="next-all" class="small" data-bind=" click: nextAllDay, enable:checkNext()">
 								<i id ="icon-next-all" data-bind="ntsIcon: { no: 58, width: 22, height: 22 }"></i>
 							</button>
 						</div>
 						<!-- A2_1_6 -->
-						<div class="event-button">
-							<button id="event" title="" style="margin-left: 10px" class="small">#{i18n.getText('KSU003_6')} 
+						<div  class="event-button">
+							<button tabindex="9" id="event" title="" style="margin-left: 10px" class="small">#{i18n.getText('KSU003_6')} 
 							</button>
 						</div>
 					</div>
@@ -70,7 +77,7 @@
 					<!-- A2_5 -->
 					<label id="label-display">#{i18n.getText('KSU003_7')}</label> <label
 						id="hai-cham">#{i18n.getText('KSU003_8')}</label>
-					<div id="display-format" class="cf" style="margin-left: 5px"
+					<div tabindex="10" id="display-format" class="cf" style="margin-left: 5px"
 						data-bind="ntsSwitchButton: {
 										options: [{id: 1, name: '#{i18n.getText('KSU003_10')}'}, {id: 2, name: '#{i18n.getText('KSU003_11')}'}] ,
 										optionsValue: 'id',
@@ -92,14 +99,13 @@
 				<div>
 					<label id="operation-unit">#{i18n.getText('KSU003_12')}</label>
 				</div>
-				<div id="combo-box"
+				<div tabindex="11" id="combo-box"
 					data-bind="ntsComboBox: {
 					name: '#KSU003_12',
 					options: itemList,
 					optionsValue: 'code',
 					value: selectOperationUnit,
 					optionsText: 'name',
-					editable: true,
 					enable: true,
 					columns: [
 						{ prop: 'name', length: 5 },
@@ -108,15 +114,15 @@
 			</div>
 			<div>
 				<!-- A3_3 -->
-				<div id="check-name"
+				<div tabindex="12" id="check-name"
 				data-bind="ntsCheckBox: { checked: checkedName, enable: true}">#{i18n.getText('KSU003_19')}</div>
 			</div>
-				<button id="note-sort" class="small">#{i18n.getText('KSU003_18')}</button>
+				<button tabindex="13" id="note-sort" class="small">#{i18n.getText('KSU003_18')}</button>
 			<div id="contents-area">
 				<div id="side-menu" class="cf"></div>
 				<div id="content" class="cf">
 					<div id = "row-left">
-						<button class="toLeft inline" data-bind="click : toLeft">
+						<button  tabindex="-1"  class="toLeft inline" data-bind="click : toLeft">
 						<com:ko-if bind = "indexBtnToLeft() % 2 == 0">
 						<div id="left-button" ><i data-bind="ntsIcon: { no: 152, width: 22, height: 13 }"></i></div>
 						</com:ko-if>
@@ -128,7 +134,7 @@
 					<div style="clear: left"></div>
 					<!-- <div id="gc" style="position: absolute; border: 1px solid #000; width: 1000px; height: 400px; overflow: scroll;"></div> -->
 					<div style="float: left">
-						<button class="toDown inline" data-bind="click : toDown">
+						<button  tabindex="-1"  class="toDown inline" data-bind="click : toDown">
 						<com:ko-if bind = "indexBtnToDown() % 2 == 0">
 						<div id="down-button"><i data-bind="ntsIcon: { no: 150, width:13, height: 22 }"></i></div>
 						</com:ko-if>
@@ -150,7 +156,6 @@
 					optionsValue: 'code',
 					value: checked,
 					optionsText: 'name',
-					editable: true,
 					enable: true,
 					columns: [
 						{ prop: 'name', length: 5 },
@@ -196,7 +201,7 @@
 						</div>
 					</div>
 				</div>
-
+				<br />
 				<span id="A12_3">#{i18n.getText('KSU003_40')}</span>
 				<hr />
 				<div class="ml-2">
@@ -228,7 +233,7 @@
 						</div>
 					</div>
 				</div>
-
+				<br />
 				<span id="A12_4">#{i18n.getText('KSU003_46')}</span>
 				<hr />
 				<div class="ml-2">
@@ -258,7 +263,7 @@
 						<div class="popup-div">
 							<div id="" class="square"
 								style="background-color: #00ffcc !important;"></div>
-							<span id="A12_4_6">#{i18n.getText('KSU003_52')}</span>
+							<span id="A12_4_6">#{i18n.getText('KSU003_51')}</span>
 						</div>
 						<div class="popup-div">
 							<div id="" class="square"

@@ -15,12 +15,12 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflectleavingw
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflecttemporarystartend.ReflectTemporaryStartEnd;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflectwork.ReflectWork;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectRangeOutput;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * «DomainService» 打刻データを日別勤怠に仮反映する
@@ -55,45 +55,47 @@ public class TemporarilyReflectStampDailyAttd {
 	/**
 	 * 打刻を反映する
 	 */
-	public List<ErrorMessageInfo> reflectStamp(Stamp stamp,StampReflectRangeOutput stampReflectRangeOutput,IntegrationOfDaily integrationOfDaily) {
-		String companyId = AppContexts.user().companyId();
-		ChangeClockArt type = stamp.getType().getChangeClockArt();
+	public List<ErrorMessageInfo> reflectStamp(Stamp stamp, StampReflectRangeOutput stampReflectRangeOutput,
+			IntegrationOfDaily integrationOfDaily, ChangeDailyAttendance changeDailyAtt) {
+		
 		List<ErrorMessageInfo> listErrorMessageInfo = new ArrayList<>();
-		switch( type) {
+		
+		switch(stamp.getType().getChangeClockArt()) {
 		case GOING_TO_WORK: //出勤
 			// 組み合わせ区分＝直行？
 			if (stamp.getType().getSetPreClockArt() != SetPreClockArt.DIRECT) {
 				// 出勤を反映する (Phản ánh 出勤)
-				reflectWork.reflectWork(stamp, stampReflectRangeOutput,
-						integrationOfDaily);
+				reflectWork.reflectWork(stamp, stampReflectRangeOutput, integrationOfDaily);
 				if (!stamp.isReflectedCategory()) {
 					return listErrorMessageInfo;
 				}
 			}else {
+				/** 直行区分=ONにする */
+				integrationOfDaily.getWorkInformation().setGoStraightAtr(NotUseAttribute.Use);
 				//打刻。反映区分＝反映済み
 				stamp.setReflectedCategory(true);
 			}
-			// 勤務情報を反映する
-			listErrorMessageInfo.addAll(reflectWorkInformation.reflect(true, true, companyId, integrationOfDaily.getEmployeeId(),
-					integrationOfDaily.getYmd(), stamp, integrationOfDaily));
-
+			
+			changeDailyAtt.setAttendance(true);
+			
 			break;
 		case WORKING_OUT: // 退勤
 			// 組み合わせ区分＝直帰？
 			if (stamp.getType().getSetPreClockArt() != SetPreClockArt.BOUNCE) {
 				// 退勤を反映する （Phản ánh 退勤）
-				reflectLeavingWork.reflectLeaving(stamp,
-						stampReflectRangeOutput, integrationOfDaily);
+				reflectLeavingWork.reflectLeaving(stamp, stampReflectRangeOutput, integrationOfDaily);
 				if (!stamp.isReflectedCategory()) {
 					return listErrorMessageInfo;
 				}
 			}else {
+				/** 直帰区分=ONにする */
+				integrationOfDaily.getWorkInformation().setBackStraightAtr(NotUseAttribute.Use);
 				//打刻。反映区分＝反映済み
 				stamp.setReflectedCategory(true);
 			}
-			// 勤務情報を反映する
-			listErrorMessageInfo.addAll(reflectWorkInformation.reflect(false, true, companyId, integrationOfDaily.getEmployeeId(),
-					integrationOfDaily.getYmd(), stamp, integrationOfDaily));
+
+			changeDailyAtt.setAttendance(true);
+			
 			break;
 		case GO_OUT://外出 or 戻り
 		case RETURN:
@@ -102,9 +104,6 @@ public class TemporarilyReflectStampDailyAttd {
 			if (!stamp.isReflectedCategory()) {
 				return listErrorMessageInfo;
 			}
-			// 勤務情報を反映する
-			listErrorMessageInfo.addAll(reflectWorkInformation.reflect(false, false, companyId, integrationOfDaily.getEmployeeId(),
-					integrationOfDaily.getYmd(), stamp, integrationOfDaily));
 			break;
 		case TEMPORARY_WORK://臨時開始 or 臨時終了
 		case TEMPORARY_LEAVING:
@@ -112,9 +111,6 @@ public class TemporarilyReflectStampDailyAttd {
 			if (!stamp.isReflectedCategory()) {
 				return listErrorMessageInfo;
 			}
-			// 勤務情報を反映する
-			listErrorMessageInfo.addAll(reflectWorkInformation.reflect(false, false, companyId, integrationOfDaily.getEmployeeId(),
-					integrationOfDaily.getYmd(), stamp, integrationOfDaily));
 			break;
 		case BRARK: //退門Or入門
 		case OVER_TIME:
@@ -122,9 +118,6 @@ public class TemporarilyReflectStampDailyAttd {
 			if (!stamp.isReflectedCategory()) {
 				return listErrorMessageInfo;
 			}
-			// 勤務情報を反映する
-			listErrorMessageInfo.addAll(reflectWorkInformation.reflect(false, false, companyId, integrationOfDaily.getEmployeeId(),
-					integrationOfDaily.getYmd(), stamp, integrationOfDaily));
 			break;
 		case PC_LOG_ON: //PCログオフOrPcログオン
 		case PC_LOG_OFF:
@@ -133,15 +126,15 @@ public class TemporarilyReflectStampDailyAttd {
 			if (!stamp.isReflectedCategory()) {
 				return listErrorMessageInfo;
 			}
-			// 勤務情報を反映する
-			listErrorMessageInfo.addAll(reflectWorkInformation.reflect(false, false, companyId, integrationOfDaily.getEmployeeId(),
-					integrationOfDaily.getYmd(), stamp, integrationOfDaily));
 			break;
 		default :
 			//応援開始 OR 応援終了　OR　応援出勤　OR 臨時+応援出勤
-			//tạm thời không làm
-			break;
+			return listErrorMessageInfo;
 		}
+		
+		// 勤務情報を反映する
+		listErrorMessageInfo.addAll(reflectWorkInformation.reflect(true, true, stamp, integrationOfDaily, changeDailyAtt));
+		
 		return listErrorMessageInfo;
 		
 	}

@@ -92,6 +92,11 @@ module nts.uk.ui.chart {
                         || chart.limitEndMin > pDec.end || chart.limitEndMax < pDec.end) return;
                     if (parentChart && ((diff > 0 && pDec.end > parentChart.end) || (diff < 0 && pDec.start < parentChart.start))) return;
                     
+                    if (parentChart && _.find(parentChart.children, (child: GanttChart) => {
+                        return child.id !== chart.id && !child.bePassedThrough 
+                            && ((chart.start >= child.end && pDec.start < child.end) || (chart.end <= child.start && pDec.end > child.start));
+                    })) return;
+                    
                     _.forEach(chart.children, (child: GanttChart) => {
                         let childSlide;
                         if (child.followParent) {
@@ -131,6 +136,10 @@ module nts.uk.ui.chart {
                                     if (!self.chartArea.contains(child.html)) {
                                         self.chartArea.appendChild(child.html);
                                     }
+                                    
+                                    if (!_.find(self.slideTrigger.edgeCharts, c => c.id === child.id)) {
+                                        self.slideTrigger.edgeCharts.push(child);
+                                    }
                                 } else if (nearestLine < child.start) {
                                     if (!self.chartArea.contains(child.html)) return;
                                     let maxWidth = (Math.min(child.end, chart.end) - child.start) * child.unitToPx - 1,
@@ -138,8 +147,15 @@ module nts.uk.ui.chart {
                                     if (currentWidth !== maxWidth) {
                                         child.reposition({ width: maxWidth, left: parseFloat(child.html.style.left) - parseFloat(maxWidth - currentWidth) });
                                     }
+                                    
+                                    if (self.slideTrigger.edgeCharts.length > 0) {
+                                        _.remove(self.slideTrigger.edgeCharts, c => c.id === child.id);
+                                    }
                                 } else {
                                     child.reposition({ width: 0 });
+                                    if (self.slideTrigger.edgeCharts.length > 0) {
+                                        _.remove(self.slideTrigger.edgeCharts, c => c.id === child.id);
+                                    }
                                 }
                             }                               
                         }  
@@ -174,14 +190,25 @@ module nts.uk.ui.chart {
                                     if (!self.chartArea.contains(child.html)) {
                                         self.chartArea.appendChild(child.html);
                                     }
+                                    
+                                    if (!_.find(self.slideTrigger.edgeCharts, c => c.id === child.id)) {
+                                        self.slideTrigger.edgeCharts.push(child);
+                                    }
                                 } else if (nearestLine > child.end) {
                                     let maxWidth = (child.end - Math.max(child.start, chart.start)) * child.unitToPx - 1,
                                         currentWidth = parseFloat(child.html.style.width);
                                     if (currentWidth !== maxWidth) {
                                         child.reposition({ width: maxWidth });
                                     }
+                                    
+                                    if (self.slideTrigger.edgeCharts.length > 0) {
+                                        _.remove(self.slideTrigger.edgeCharts, c => c.id === child.id);
+                                    }
                                 } else {
                                     child.reposition({ width: 0 });
+                                    if (self.slideTrigger.edgeCharts.length > 0) {
+                                        _.remove(self.slideTrigger.edgeCharts, c => c.id === child.id);
+                                    }
                                 }
                             }                               
                         }
@@ -206,6 +233,13 @@ module nts.uk.ui.chart {
                                 chartLeft = parseFloat(chart.html.style.left) + delta;
                             chart.reposition({ width: chartWidth, left: chartLeft, start: child.end });
                             child.reposition({ width: 0 });
+                            if (self.slideTrigger.edgeCharts.length > 0) {
+                                self.slideTrigger.edgeCharts.forEach((c: GanttChart) => {
+                                    if (c.id === child.id) return;
+                                    c.reposition({ width: parseFloat(c.html.style.width) - delta, left: parseFloat(c.html.style.left) + delta });
+                                });
+                            }
+                            
                             return false;
                         } else if (self.slideTrigger.holdPos === HOLD_POS.END
                             && chart.end > child.start && chart.end < child.end) {
@@ -213,6 +247,13 @@ module nts.uk.ui.chart {
                                 chartWidth = parseFloat(chart.html.style.width) - delta;
                             chart.reposition({ width: chartWidth, end: child.start });
                             child.reposition({ width: 0 });
+                            if (self.slideTrigger.edgeCharts.length > 0) {
+                                self.slideTrigger.edgeCharts.forEach((c: GanttChart) => {
+                                    if (c.id === child.id) return;
+                                    c.reposition({ width: parseFloat(c.html.style.width) - delta });  
+                                });
+                            }
+                            
                             return false;
                         }
                     }
@@ -272,7 +313,8 @@ module nts.uk.ui.chart {
                     length: parseFloat(chart.html.style.width),
                     start: chart.start,
                     end: chart.end,
-                    children: _.map(chart.children, c => ({ id: c.id, start: c.start, end: c.end, length: parseFloat(c.html.style.width), left: parseFloat(c.html.style.left) }))
+                    children: _.map(chart.children, c => ({ id: c.id, start: c.start, end: c.end, length: parseFloat(c.html.style.width), left: parseFloat(c.html.style.left) })),
+                    edgeCharts: []
                 };
                 
                 if (!_.isNil(chart.parent)) {
@@ -569,6 +611,7 @@ module nts.uk.ui.chart {
         lineWidth: number;
         snatchInterval: number;
         drawerSize: number;
+        bePassedThrough: boolean;
         pin: boolean;
         rollup: boolean;
         roundEdge: boolean;
@@ -595,6 +638,7 @@ module nts.uk.ui.chart {
             this.lineWidth = options.lineWidth;
             this.snatchInterval = options.snatchInterval;
             this.drawerSize = options.drawerSize;
+            this.bePassedThrough = options.bePassedThrough;
             this.pin = options.pin;
             this.rollup = options.rollup;
             this.roundEdge = options.roundEdge;
@@ -630,6 +674,7 @@ module nts.uk.ui.chart {
         fixed: CHART_FIXED = CHART_FIXED.NONE;
         drawerSize: number = 3;
         cursor: string;
+        bePassedThrough: boolean = true;
         locked: boolean = false;
         rollup: boolean = false;
         pin: boolean = false;

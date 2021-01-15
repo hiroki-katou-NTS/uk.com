@@ -97,7 +97,8 @@ public class SystemSuspendImpl implements SystemSuspendService {
 
 	//#EA修正.3127
 	//2019.02.22 hoatt
-	private UsageStopOutput checkUsageStop(String contractCD, String companyCD){
+	@Override
+	public UsageStopOutput checkUsageStop(String contractCD, String companyCD){
 		//ドメインモデル「会社単位の利用停止」を取得する
 		Optional<StopByCompany> opStopByCom = stopByCompanyRepository.findByKey(contractCD, companyCD);
 		if(opStopByCom.isPresent()){//取得できる

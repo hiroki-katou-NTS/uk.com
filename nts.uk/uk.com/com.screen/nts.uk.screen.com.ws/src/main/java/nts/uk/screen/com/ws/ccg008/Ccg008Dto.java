@@ -15,12 +15,16 @@ public class Ccg008Dto {
 
 	/** 表示年月 */
 	private int currentOrNextMonth;
+	
+	private String startDate;
+	
+	private String endDate;
 
 	/**
 	 * ビルトインユーザ用のダミーデータ
 	 * @return
 	 */
 	public static Ccg008Dto forBuiltInUser() {
-		return new Ccg008Dto(1, GeneralDate.today().yearMonth().v());
+		return new Ccg008Dto(1, GeneralDate.today().yearMonth().v(), "", "");
 	}
 }

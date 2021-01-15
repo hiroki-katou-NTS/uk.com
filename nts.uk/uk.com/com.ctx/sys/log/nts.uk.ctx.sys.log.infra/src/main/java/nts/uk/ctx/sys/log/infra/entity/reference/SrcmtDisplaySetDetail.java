@@ -75,7 +75,6 @@ public class SrcmtDisplaySetDetail extends ContractUkJpaEntity implements Serial
 		this.srcdtLogSetItemDetailPK = srcdtLogSetItemDetailPK;
 		this.condition = condition;
 		this.symbol = symbol;
-		this.condition = condition;
 		this.cid = cid;
 	}
 }
