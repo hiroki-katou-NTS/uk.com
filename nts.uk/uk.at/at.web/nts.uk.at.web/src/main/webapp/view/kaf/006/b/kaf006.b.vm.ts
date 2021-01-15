@@ -875,7 +875,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 		validate() {
 			const vm = this;
 			if (vm.condition11()) {
-				if (vm.isChangeWorkHour()) {
+				if (vm.isChangeWorkHour() && vm.selectedWorkTimeCD()) {
 					if (!vm.checkTimeValid(vm.startTime1) && !vm.checkTimeValid(vm.endTime1)) {
 						vm.$dialog.error({messageId: "Msg_307"});
 						return false;
