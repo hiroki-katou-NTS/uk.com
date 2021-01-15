@@ -293,7 +293,6 @@ export class KafS05Step2Component extends Vue {
 
         // bind origin array
         self.overTimes = overTimes;
-
         
     }
 
@@ -622,7 +621,6 @@ export class KafS05Step2Component extends Vue {
         self.bindAllReason();
         self.bindOverTime();
         self.bindHolidayTime();
-        self.addConstraint();
         self.checkAlarm();
         self.$updateValidator();
     }
@@ -650,12 +648,6 @@ export class KafS05Step2Component extends Vue {
 
     }
 
-    public addConstraint() {
-        const self = this;
-        // _.forEach(self.overTimes, (overtime: OverTime, index: number) => {
-        //     self.$updateValidator(`overTimes[${index}].applicationTime`, _.get(self.validations, 'item.applicationTime'));
-        // });
-    }
 
     public getReasonDivergence() {
         const self = this;
