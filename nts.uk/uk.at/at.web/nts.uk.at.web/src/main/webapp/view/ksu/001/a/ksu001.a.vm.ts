@@ -1709,8 +1709,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
         }
         
-        regSchedule() : JQueryPromise<any> {
+        saveData() : JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
+            if(self.mode() === 'confirm')
+                return;
             nts.uk.ui.block.grayout();
             let itemLocal = uk.localStorage.getItem(self.KEY);
             let userInfor = JSON.parse(itemLocal.get());
@@ -1725,6 +1727,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             console.log(cellsGroup);
 
             let dataReg = self.buidDataReg(userInfor.disPlayFormat, cellsGroup);
+            
             service.regWorkSchedule(dataReg).done((rs) => {
                 console.log(rs);
                 if(rs.hasError == false){
@@ -1850,14 +1853,19 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             let param = {
                 employeeIds: self.listSid(),                  // 社員の並び順
-                isRegistered: dataReg.isRegistered == true ? 1 : 0,           // 登録されたか
+                isRegistered: dataReg.registered == true ? 1 : 0,           // 登録されたか
                 errorRegistrationList: dataReg.listErrorInfo, // エラー内容リスト 
             }
             setShared('dataShareDialogKDL053', param);
-            nts.uk.ui.windows.sub.modal('/view/kdl/053/index.xhtml').onClosed(function(): any {
+            nts.uk.ui.windows.sub.modeless('/view/kdl/053/index.xhtml').onClosed(function(): any {
                 console.log('closed');
             });
             nts.uk.ui.block.clear();
+        }
+        
+        bindDataAfterSave() {
+            let self = this;
+
         }
 
         /**
@@ -2170,7 +2178,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let index = $(event.target).parent().index();
                 let columnKey = self.detailColumns[index].key;
                 let param = {
-                    dateSelected: moment(columnKey.slice(1)).toISOString(),
+                    dateSelected: moment(columnKey.slice(1)).format('YYYY/MM/DD'),
                     workplace: {
                         workPlaceID: userInfor.workplaceId == null ? userInfor.workplaceGroupId : userInfor.workplaceId,
                         targetOrgWorkplaceName: self.targetOrganizationName()

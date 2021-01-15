@@ -70,6 +70,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
+@SuppressWarnings("rawtypes")
 public class RegisWorkScheduleCommandHandler extends CommandHandlerWithResult<List<WorkScheduleSaveCommand>, ResultRegisWorkSchedule>{
 	
 	@Inject
@@ -113,6 +114,7 @@ public class RegisWorkScheduleCommandHandler extends CommandHandlerWithResult<Li
 	private EmpEmployeeAdapter empAdapter;
 	
 	@Override
+	@SuppressWarnings({ "unchecked" })
 	protected ResultRegisWorkSchedule handle(CommandHandlerContext<List<WorkScheduleSaveCommand>> context) {
 
 		List<WorkScheduleSaveCommand> commands = context.getCommand();
