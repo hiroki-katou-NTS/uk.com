@@ -19,7 +19,7 @@ public class RegisterDates {
 	public GeneralDate date;
 	public String workTypeCd;
 	public String workTimeCd;
-	public int start;
-	public int end;
+	public Integer start;
+	public Integer end;
 	
 }
