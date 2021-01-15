@@ -1,6 +1,6 @@
 import { Vue, _ } from '@app/provider';
 import { component, Prop } from '@app/core/component';
-import { TimeZoneWithWorkNoDto, AppForLeaveStartOutputDto, ManageDistinct, MaxNumberDayType, NotUseAtr, TimeZoneUseDto, HolidayAppType, WorkTypeUnit, WorkAtr, WorkTypeDto, HolidayAppTypeDispNameDto, DateSpecHdRelationOutput } from 'views/kaf/s06/a/define.interface';
+import { TimeZoneWithWorkNoDto, AppForLeaveStartOutputDto, ManageDistinct, MaxNumberDayType, NotUseAtr, TimeZoneUseDto, HolidayAppType, WorkTypeUnit, WorkAtr, WorkTypeDto, HolidayAppTypeDispNameDto, DateSpecHdRelationOutput, WorkTypeClassification } from 'views/kaf/s06/a/define.interface';
 import { isEmpty, isNil, times } from 'lodash';
 
 @component({
@@ -362,24 +362,21 @@ export class CmmS45ShrComponentsApp1Component extends Vue {
     public get c21_2() {
         const self = this;
         
-        const workTypeInfo = _.findLast(
-            _.get(self.dataOutput, 'appAbsenceStartInfoDto.workTypeLst'),
-            (item: any) => item.worTypeCode === _.get(self.dataOutput, 'applyForLeaveDto.reflectFreeTimeApp.workInfo.workType')
-            ) as WorkTypeDto;
-        
-        const workTypeSet = _.get(workTypeInfo, 'workTypeSets[0]');
-
-        if (!workTypeInfo || !workTypeSet) {
+        const workType = self.workInfo.workType;
+        const workTypeInfo = _.findLast(_.get(self.dataOutput, 'appAbsenceStartInfoDto.workTypeLst'),
+            (item: any) => item.workTypeCode == workType.code) as WorkTypeDto;
+        // const workTypeSet = _.get(workTypeInfo, 'workTypeSets[0]');
+        if (!workTypeInfo) {
             
             return false;
         }
         let workAtr = workTypeInfo.workAtr;
         if (workAtr == WorkTypeUnit.OneDay) {
 
-            return workTypeSet.workAtr == WorkAtr.OneDay;
+            return workTypeInfo.oneDayCls == WorkTypeClassification.SubstituteHoliday;
         } else {
 
-            return workTypeSet.workAtr != WorkAtr.OneDay;
+            return (workTypeInfo.morningCls == WorkTypeClassification.SubstituteHoliday || workTypeInfo.afternoonCls == WorkTypeClassification.SubstituteHoliday);
         }
     }
     // ※22-1 = ○　AND　※22-2 = ○
@@ -398,24 +395,21 @@ export class CmmS45ShrComponentsApp1Component extends Vue {
     public get c22_2() {
         const self = this;
         
-        const workTypeInfo = _.findLast(
-            _.get(self.dataOutput, 'appAbsenceStartInfoDto.workTypeLst'),
-            (item: any) => item.worTypeCode === _.get(self.dataOutput, 'applyForLeaveDto.reflectFreeTimeApp.workInfo.workType')
-            ) as WorkTypeDto;
-        
-        const workTypeSet = _.get(workTypeInfo, 'workTypeSets[0]');
-
-        if (!workTypeInfo || !workTypeSet) {
+        const workType = self.workInfo.workType;
+        const workTypeInfo = _.findLast(_.get(self.dataOutput, 'appAbsenceStartInfoDto.workTypeLst'),
+            (item: any) => item.workTypeCode == workType.code) as WorkTypeDto;
+        // const workTypeSet = _.get(workTypeInfo, 'workTypeSets[0]');
+        if (!workTypeInfo) {
             
             return false;
         }
         let workAtr = workTypeInfo.workAtr;
         if (workAtr == WorkTypeUnit.OneDay) {
 
-            return workTypeSet.workAtr == WorkAtr.OneDay;
+            return workTypeInfo.oneDayCls == WorkTypeClassification.Pause;
         } else {
 
-            return workTypeSet.workAtr != WorkAtr.OneDay;
+            return (workTypeInfo.morningCls == WorkTypeClassification.Pause || workTypeInfo.afternoonCls == WorkTypeClassification.Pause);
         }
     }
     public mounted() {
