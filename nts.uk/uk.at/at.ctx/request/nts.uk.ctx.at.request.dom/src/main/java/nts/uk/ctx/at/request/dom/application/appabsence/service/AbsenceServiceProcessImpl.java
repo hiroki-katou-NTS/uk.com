@@ -1824,50 +1824,54 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
         
      // INPUT．「勤務種類」が代休の勤務種類かチェックする
         List<LeaveComDayOffManagement> leaveComDayOffManagements = new ArrayList<LeaveComDayOffManagement>();
-        if (
-                (workType.getDailyWork().getWorkTypeUnit().equals(WorkTypeUnit.OneDay) && 
-                workType.getDailyWork().getOneDay().equals(WorkTypeClassification.SubstituteHoliday)) || 
-             (workType.getDailyWork().getWorkTypeUnit().equals(WorkTypeUnit.MonringAndAfternoon) && 
-                (workType.getDailyWork().getMorning().equals(WorkTypeClassification.SubstituteHoliday) || 
-                        workType.getDailyWork().getAfternoon().equals(WorkTypeClassification.SubstituteHoliday)))
-             ) {
-            // ドメインモデル「休出代休紐付け管理」を取得する
-            leaveComDayOffManagements = this.leaveComDayOffManaRepo.getByListDate(employeeID, listDates);
-            leaveComDayOffManagements = leaveComDayOffManagements.stream().filter(x -> {
-                if (x.getAssocialInfo().getTargetSelectionAtr().equals(TargetSelectionAtr.REQUEST)) {
-                    if (workType.getDailyWork().getWorkTypeUnit().equals(WorkTypeUnit.OneDay)) {
-                        return x.getAssocialInfo().getDayNumberUsed().v() == 1;
-                    } else {
-                        return x.getAssocialInfo().getDayNumberUsed().v() == 0.5;
+        if (workType != null) {
+            if (
+                    (workType.getDailyWork().getWorkTypeUnit().equals(WorkTypeUnit.OneDay) && 
+                            workType.getDailyWork().getOneDay().equals(WorkTypeClassification.SubstituteHoliday)) || 
+                    (workType.getDailyWork().getWorkTypeUnit().equals(WorkTypeUnit.MonringAndAfternoon) && 
+                            (workType.getDailyWork().getMorning().equals(WorkTypeClassification.SubstituteHoliday) || 
+                                    workType.getDailyWork().getAfternoon().equals(WorkTypeClassification.SubstituteHoliday)))
+                    ) {
+                // ドメインモデル「休出代休紐付け管理」を取得する
+                leaveComDayOffManagements = this.leaveComDayOffManaRepo.getByListDate(employeeID, listDates);
+                leaveComDayOffManagements = leaveComDayOffManagements.stream().filter(x -> {
+                    if (x.getAssocialInfo().getTargetSelectionAtr().equals(TargetSelectionAtr.REQUEST)) {
+                        if (workType.getDailyWork().getWorkTypeUnit().equals(WorkTypeUnit.OneDay)) {
+                            return x.getAssocialInfo().getDayNumberUsed().v() == 1;
+                        } else {
+                            return x.getAssocialInfo().getDayNumberUsed().v() == 0.5;
+                        }
                     }
-                }
-                
-                return false;
-            }).collect(Collectors.toList());
+                    
+                    return false;
+                }).collect(Collectors.toList());
+            }
         }
         
         // INPUT．「勤務種類」が振休の勤務種類かチェックする
         List<PayoutSubofHDManagement> payoutSubofHDManagements = new ArrayList<PayoutSubofHDManagement>();
-        if (
-                (workType.getDailyWork().getWorkTypeUnit().equals(WorkTypeUnit.OneDay) && 
-                        workType.getDailyWork().getOneDay().equals(WorkTypeClassification.Pause)) || 
-                (workType.getDailyWork().getWorkTypeUnit().equals(WorkTypeUnit.MonringAndAfternoon) && 
-                        (workType.getDailyWork().getMorning().equals(WorkTypeClassification.Pause)) || 
-                        workType.getDailyWork().getAfternoon().equals(WorkTypeClassification.Pause))
-                ) {
-            // ドメインモデル「振出振休紐付け管理」を取得する
-            payoutSubofHDManagements = this.payoutHdManaRepo.getByListDate(employeeID, listDates);
-            payoutSubofHDManagements = payoutSubofHDManagements.stream().filter(x -> {
-                if (x.getAssocialInfo().getTargetSelectionAtr().equals(TargetSelectionAtr.REQUEST)) {
-                    if (workType.getDailyWork().getWorkTypeUnit().equals(WorkTypeUnit.OneDay)) {
-                        return x.getAssocialInfo().getDayNumberUsed().v() == 1;
-                    } else {
-                        return x.getAssocialInfo().getDayNumberUsed().v() == 0.5;
+        if (workType != null) {
+            if (
+                    (workType.getDailyWork().getWorkTypeUnit().equals(WorkTypeUnit.OneDay) && 
+                            workType.getDailyWork().getOneDay().equals(WorkTypeClassification.Pause)) || 
+                    (workType.getDailyWork().getWorkTypeUnit().equals(WorkTypeUnit.MonringAndAfternoon) && 
+                            (workType.getDailyWork().getMorning().equals(WorkTypeClassification.Pause)) || 
+                            workType.getDailyWork().getAfternoon().equals(WorkTypeClassification.Pause))
+                    ) {
+                // ドメインモデル「振出振休紐付け管理」を取得する
+                payoutSubofHDManagements = this.payoutHdManaRepo.getByListDate(employeeID, listDates);
+                payoutSubofHDManagements = payoutSubofHDManagements.stream().filter(x -> {
+                    if (x.getAssocialInfo().getTargetSelectionAtr().equals(TargetSelectionAtr.REQUEST)) {
+                        if (workType.getDailyWork().getWorkTypeUnit().equals(WorkTypeUnit.OneDay)) {
+                            return x.getAssocialInfo().getDayNumberUsed().v() == 1;
+                        } else {
+                            return x.getAssocialInfo().getDayNumberUsed().v() == 0.5;
+                        }
                     }
-                }
-                
-                return false;
-            }).collect(Collectors.toList());
+                    
+                    return false;
+                }).collect(Collectors.toList());
+            }
         }
         
         // 取得した「休出代休紐付け管理」Listと「振出振休紐付け管理」Listを返す

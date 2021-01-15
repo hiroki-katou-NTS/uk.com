@@ -259,6 +259,10 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 					return;
 				}
 
+				if (_.filter(vm.workTypeLst(), { 'workTypeCode': vm.selectedWorkTimeCD() }).length === 0) {
+					return;
+				}
+
 				// return;
 				let commandCheckTyingManage = {
 					wtBefore: vm.workTypeBefore(),
