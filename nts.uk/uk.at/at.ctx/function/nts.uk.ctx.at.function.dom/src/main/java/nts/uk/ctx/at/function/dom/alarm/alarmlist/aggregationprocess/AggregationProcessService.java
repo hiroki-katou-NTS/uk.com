@@ -301,12 +301,7 @@ public class AggregationProcessService {
 				switch (x.getCategory()) {
 				
 				case SCHEDULE_DAILY:
-					DailyAlarmCondition dailyAlarmCon = (DailyAlarmCondition) x.getExtractionCondition();
-					ConExtractedDaily conExtracDai = dailyAlarmCon.getConExtractedDaily();		
-					
-					extractAlarmService.extractDailyCheckResult(cid, lstSid, datePeriod, 
-							dailyAlarmCon.getDailyAlarmConID(), dailyAlarmCon,
-							getWplByListSidAndPeriod, lstStatusEmp, lstResultCondition, lstCheckType);
+					break;
 					
 				case SCHEDULE_WEEKLY:
 					break;
@@ -330,7 +325,12 @@ public class AggregationProcessService {
 					break;
 					
 				case DAILY:
-					break;
+					DailyAlarmCondition dailyAlarmCon = (DailyAlarmCondition) x.getExtractionCondition();
+					ConExtractedDaily conExtracDai = dailyAlarmCon.getConExtractedDaily();		
+					
+					extractAlarmService.extractDailyCheckResult(cid, lstSid, datePeriod, 
+							dailyAlarmCon.getDailyAlarmConID(), dailyAlarmCon,
+							getWplByListSidAndPeriod, lstStatusEmp, lstResultCondition, lstCheckType);
 					
 				case WEEKLY:
 					break;
