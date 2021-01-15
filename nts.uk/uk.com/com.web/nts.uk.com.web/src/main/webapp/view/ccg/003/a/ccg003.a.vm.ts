@@ -21,7 +21,7 @@ module nts.uk.com.view.ccg003.a {
     <div id="A0-CCG003" class="panel panel-frame panel-ccg003">
       <div class="top-content">
         <!-- A1 対象日 -->
-        <div id="A1"><span data-bind="text: systemDate"></span>
+        <div id="A1"><span data-bind="text: systemDate" style="color: black !important;"></span>
         </div>
         <div class="fw-right">
           <div data-bind="if: roleFlag">
@@ -41,7 +41,7 @@ module nts.uk.com.view.ccg003.a {
           <h3 data-bind="text: $component.$i18n('CCG003_5')" class="inline"></h3>
         </div>
         <div id="body-title" class="bg-accordion-1 no-border-radius pl-10">
-          <div class="row-inline">
+          <div class="row-inline" style="align-items: center;">
             <!-- A4_1 表示期間(ラベル) -->
             <span id="A4_1" class="auto-margin" data-bind="text: $component.$i18n('CCG003_6')"></span>
             <!-- A4_2 表示期間 -->
@@ -105,9 +105,6 @@ module nts.uk.com.view.ccg003.a {
   <style>
     #A0-CCG003 {
       min-height: 150px;
-      position: fixed;
-      right: 0px !important;
-      left: inherit !important;
     }
     #A3-CCG003 {
       cursor: pointer;
@@ -274,11 +271,12 @@ module nts.uk.com.view.ccg003.a {
     mounted() {
       const vm = this;
       const elementId ='#notice-msg';
+      const marginTop = $('#user').height() - $('#notice-msg').height();
       $('#A0-CCG003').ntsPopup({
         trigger: elementId,
         position: {
           my: 'right top',
-          at: 'right bottom',
+          at: `right bottom-${marginTop}`,
           of: $('#user')
         },
         showOnStart: false,
