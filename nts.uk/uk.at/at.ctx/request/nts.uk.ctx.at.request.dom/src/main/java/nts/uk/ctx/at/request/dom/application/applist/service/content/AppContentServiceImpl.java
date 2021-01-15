@@ -22,6 +22,7 @@ import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.ApprovalDevice;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
@@ -32,6 +33,7 @@ import nts.uk.ctx.at.request.dom.application.applist.extractcondition.Applicatio
 import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationTypeDisplay;
 import nts.uk.ctx.at.request.dom.application.applist.service.datacreate.StampAppOutputTmp;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppContentDetailCMM045;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppDetailInfoRepository;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppHolidayWorkDataOutput;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppOvertimeDataOutput;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppStampDataOutput;
@@ -52,7 +54,10 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchieve
 import nts.uk.ctx.at.request.dom.application.common.service.other.PreAppContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
@@ -113,8 +118,14 @@ public class AppContentServiceImpl implements AppContentService {
 	private HolidayWorkAppSetRepository holidayWorkAppSetRepository;
 	
 	@Inject
-	private CollectAchievement collectAchievement;
+	private ApplicationRepository applicationRepository;
 	
+	@Inject
+	private AppOverTimeRepository appOverTimeRepository;
+	
+	@Inject
+	private AppHolidayWorkRepository appHolidayWorkRepository;
+
 	@Inject
 	private OvertimeWorkFrameRepository overtimeWorkFrameRepository;
 	
@@ -125,10 +136,15 @@ public class AppContentServiceImpl implements AppContentService {
 	private AppOverTimeRepository appOverTimeRepo;
 	
 	@Inject
+	private CollectAchievement collectAchievement;
+	
 	private AgreementTimeAdapter agreementTimeAdapter;
 	
 	@Inject
 	private AgreementMonthSettingAdapter agreementMonthSettingAdapter;
+	
+	@Inject
+	private AppDetailInfoRepository appDetailInfoRepo;
 
 	@Override
 	public String getArrivedLateLeaveEarlyContent(AppReason appReason, DisplayAtr appReasonDisAtr, ScreenAtr screenAtr, List<ArrivedLateLeaveEarlyItemContent> itemContentLst,
@@ -386,9 +402,23 @@ public class AppContentServiceImpl implements AppContentService {
 			switch (application.getAppType()) {
 			case COMPLEMENT_LEAVE_APPLICATION:
 				// 振休振出申請データを作成( Tạo data application nghỉ bù làm bù)
+				String contentComplementLeave = appContentDetailCMM045.getContentComplementLeave(
+						application, 
+						companyID, 
+						lstWkType, 
+						approvalListDisplaySetting.getAppReasonDisAtr(), 
+						ScreenAtr.CMM045);
+				listOfApp.setAppContent(contentComplementLeave);
 				break;
 			case ABSENCE_APPLICATION:
 				// 申請一覧リスト取得休暇 (Ngày nghỉ lấy  Application list)
+				String contentApplyForLeave = appContentDetailCMM045.getContentApplyForLeave(
+						application, 
+						companyID, 
+						lstWkType, 
+						approvalListDisplaySetting.getAppReasonDisAtr(),
+						ScreenAtr.CMM045);
+				listOfApp.setAppContent(contentApplyForLeave);
 				break;
 			case GO_RETURN_DIRECTLY_APPLICATION:
 				// 直行直帰申請データを作成 ( Tạo dữ liệu đơn xin đi làm, về nhà thẳng)
@@ -837,7 +867,7 @@ public class AppContentServiceImpl implements AppContentService {
 		String appReasonContent = this.getAppReasonContent(
 				appReasonDisAtr, 
 				appReason, 
-				null, 
+				screenAtr, 
 				application.getOpAppStandardReasonCD().orElse(null), 
 				appType, 
 				Optional.empty());
@@ -1238,5 +1268,70 @@ public class AppContentServiceImpl implements AppContentService {
 		// 社員ID＋年月で保持する(キャッシュ)
 		cache.put(employeeID+yearMonth.v().toString(), Pair.of(excessTime, excessTimeNumber));
 		return Pair.of(excessTime, excessTimeNumber);
+	}
+	
+	@Override
+	public String getComplementLeaveContent(AbsenceLeaveApp absenceLeaveApp, RecruitmentApp recruitmentApp,
+			DisplayAtr appReasonDisAtr, ScreenAtr screenAtr, ComplementLeaveAppLink complementLeaveAppLink,
+			Application application, List<WorkType> workTypeLst) {
+		// 申請内容　＝　String.Empty (Nội dung application = String.Empty)
+		String result = "";
+		if(Strings.isNotBlank(complementLeaveAppLink.getLinkAppID())) {
+			// 申請内容　＝　#CMM045_262　+　”　”　+　振出申請データ．勤務種類名称　+　”　”　+　振出申請データ．開始時刻　+　#CMM045_100　+　　振出申請データ．終了時刻1
+			String recruitmentAppWorkTypeName = appDetailInfoRepo.findWorkTypeName(workTypeLst, recruitmentApp.getWorkInformation().getWorkTypeCode().v());
+			result += I18NText.getText("CMM045_262") + " " + recruitmentAppWorkTypeName + " ";
+			result += recruitmentApp.getWorkingHours().stream().filter(x -> x.getWorkNo().v()==1).findAny().map(x -> x.getTimeZone().getStartTime().getFullText()).orElse("");
+			result += I18NText.getText("CMM045_100");
+			result += recruitmentApp.getWorkingHours().stream().filter(x -> x.getWorkNo().v()==1).findAny().map(x -> x.getTimeZone().getEndTime().getFullText()).orElse("");
+			// 申請内容を改行(xuống dòng nội dung đơn xin)
+			result += "\n";
+			// 申請内容　+＝　#CMM045_263　+　”　”　+　振休申請データ．勤務種類名称　+　”　”　　+　振休申請データ．開始時刻　+　#CMM045_100　+　振休申請データ．終了時刻
+			String absenceLeaveAppWorkTypeName = appDetailInfoRepo.findWorkTypeName(workTypeLst, absenceLeaveApp.getWorkInformation().getWorkTypeCode().v());
+			result += I18NText.getText("CMM045_263") + " " + absenceLeaveAppWorkTypeName + " ";
+			result += absenceLeaveApp.getWorkingHours().stream().filter(x -> x.getWorkNo().v()==1).findAny().map(x -> x.getTimeZone().getStartTime().getFullText()).orElse("");
+			result += I18NText.getText("CMM045_100");
+			result += absenceLeaveApp.getWorkingHours().stream().filter(x -> x.getWorkNo().v()==1).findAny().map(x -> x.getTimeZone().getEndTime().getFullText()).orElse("");
+			// 振休申請.変更元の振休日=empty(Đơn xin nghỉ bù. ngày nghỉ bù của nguồn thay đổi)
+			if(absenceLeaveApp.getChangeSourceHoliday().isPresent()) {
+				// 申請内容　＋＝"　"＋「値」(Nội dung đơn xin ＋＝"　"＋「value」)
+				result += " " + I18NText.getText("CMM045_304", absenceLeaveApp.getChangeSourceHoliday().get().toString("YYYY/MM/DD"));
+			}
+		} else {
+			if(absenceLeaveApp!=null) {
+				// 申請内容　＝　#CMM045_263　+　”　”　+　振休申請データ．勤務種類名称
+				String absenceLeaveAppWorkTypeName = appDetailInfoRepo.findWorkTypeName(workTypeLst, absenceLeaveApp.getWorkInformation().getWorkTypeCode().v());
+				result += I18NText.getText("CMM045_263") + " " + absenceLeaveAppWorkTypeName;
+				// 申請内容　+＝　”　”　+　振休申請データ．開始時刻　+　#CMM045_100　+　　振休申請データ．終了時刻
+				result += " " + absenceLeaveApp.getWorkingHours().stream().filter(x -> x.getWorkNo().v()==1).findAny().map(x -> x.getTimeZone().getStartTime().getFullText()).orElse("");
+				result += I18NText.getText("CMM045_100");
+				result += absenceLeaveApp.getWorkingHours().stream().filter(x -> x.getWorkNo().v()==1).findAny().map(x -> x.getTimeZone().getEndTime().getFullText()).orElse("");
+				// 振休申請.変更元の振休日=empty(đơn xin nghỉ bù. Ngày nghỉ bù của nguồn thay đổi)
+				if(absenceLeaveApp.getChangeSourceHoliday().isPresent()) {
+					// 申請内容　＋＝"　"＋「値」(Nội dung đơn xin ＋＝"　"＋「value」)
+					result += " " + I18NText.getText("CMM045_304", absenceLeaveApp.getChangeSourceHoliday().get().toString("YYYY/MM/DD"));
+				}
+			} if(recruitmentApp != null) {
+				// 申請内容　＝　#CMM045_262　+　”　”　+　振出申請データ．勤務種類名称
+				String recruitmentAppWorkTypeName = appDetailInfoRepo.findWorkTypeName(workTypeLst, recruitmentApp.getWorkInformation().getWorkTypeCode().v());
+				result += I18NText.getText("CMM045_262") + " " + recruitmentAppWorkTypeName;
+				// 申請内容　+＝　”　”　+　振出申請データ．開始時刻　+　#CMM045_100　+　　振出申請データ．終了時刻
+				result += " " + recruitmentApp.getWorkingHours().stream().filter(x -> x.getWorkNo().v()==1).findAny().map(x -> x.getTimeZone().getStartTime().getFullText()).orElse("");
+				result += I18NText.getText("CMM045_100");
+				result += recruitmentApp.getWorkingHours().stream().filter(x -> x.getWorkNo().v()==1).findAny().map(x -> x.getTimeZone().getEndTime().getFullText()).orElse("");
+			}
+		}
+		// 申請理由内容　＝　申請内容の申請理由(Nội dung đơn xin = Lý do đơn xin của nội dung đơn xin)
+		String appReasonContent = this.getAppReasonContent(
+				appReasonDisAtr, 
+				application.getOpAppReason().orElse(null),
+				screenAtr, 
+				application.getOpAppStandardReasonCD().orElse(null), 
+				application.getAppType(), 
+				Optional.empty());
+		// 申請内容を改行 (Xuống dòng nội dung đơn xin)
+		if(Strings.isNotBlank(appReasonContent)) {
+			result += "\n" + appReasonContent;
+		}
+		return result;
 	}
 }

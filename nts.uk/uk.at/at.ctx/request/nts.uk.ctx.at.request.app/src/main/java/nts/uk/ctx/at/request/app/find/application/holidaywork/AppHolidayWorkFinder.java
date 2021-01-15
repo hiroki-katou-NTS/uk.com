@@ -35,6 +35,7 @@ import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamHolidayWo
 import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.ParamHolidayWorkChangeWorkMobile;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.PreAppContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
@@ -50,6 +51,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CheckBe
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdSelectWorkDispInfoOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkDetailOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkCalculationResult;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.ICommonAlgorithmOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkContent;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
@@ -342,7 +344,7 @@ public class AppHolidayWorkFinder {
 				opActualContentDisplayLst.get(0).getOpAchievementDetail() : Optional.empty();
 
 		BreakTimeZoneSetting breakTimeZoneSettingList = commonOverTimeAlgorithm.selectWorkTypeAndTime(param.getCompanyId(), 
-				new WorkTypeCode(param.getWorkTimeCode()), 
+				new WorkTypeCode(param.getWorkTypeCode()), 
 				new WorkTimeCode(param.getWorkTimeCode()),
 				Optional.of(new TimeWithDayAttr(param.getStartTime())), 
 				Optional.of(new TimeWithDayAttr(param.getEndTime())), 
@@ -390,14 +392,35 @@ public class AppHolidayWorkFinder {
 	}
 
 	public CheckBeforeOutputDto checkBeforeRegisterMobile(ParamCheckBeforeRegisterMobile param) {
-		CheckBeforeOutput checkBeforeOutput;
+		CheckBeforeOutput checkBeforeOutput = new CheckBeforeOutput();
+		Application application;
+		AppHolidayWork appHolidayWork;
 		if(param.getMode()) {
-			checkBeforeOutput = holidayWorkService.checkBeforeRegister(param.isRequire(), param.getCompanyId(), 
-					param.getAppHdWorkDispInfo().toDomain(), param.getAppHolidayWork().toDomain(), false);
+			application = param.getAppHolidayWorkInsert().getApplication().toDomain();
+			appHolidayWork = param.getAppHolidayWorkInsert().toDomain();
+			if (appHolidayWork.getAppOvertimeDetail().isPresent()) {
+				appHolidayWork.getAppOvertimeDetail().get().setAppId(application.getAppID());
+			}
+			appHolidayWork.setApplication(application);
+//			checkBeforeOutput = holidayWorkService.checkBeforeRegister(param.isRequire(), param.getCompanyId(), 
+//					param.getAppHdWorkDispInfo().toDomain(), appHolidayWork, false);
 		} else {
-			checkBeforeOutput = holidayWorkService.checkBeforeUpdate(param.isRequire(), param.getCompanyId(), 
-					param.getAppHdWorkDispInfo().toDomain(), param.getAppHolidayWork().toDomain());
+			application = param.getAppHolidayWorkUpdate().getApplication().toDomain(param.getAppHdWorkDispInfo().getAppDispInfoStartupOutput().getAppDetailScreenInfo().getApplication());
+			appHolidayWork = param.getAppHolidayWorkUpdate().toDomain();
+			if (appHolidayWork.getAppOvertimeDetail().isPresent()) {
+				appHolidayWork.getAppOvertimeDetail().get().setAppId(application.getAppID());
+			}
+			appHolidayWork.setApplication(application);
+//			checkBeforeOutput = holidayWorkService.checkBeforeUpdate(param.isRequire(), param.getCompanyId(), 
+//					param.getAppHdWorkDispInfo().toDomain(), appHolidayWork);
 		}
+		
+		List<ConfirmMsgOutput> confirmMsgOutputs = commonHolidayWorkAlgorithm.checkAfterMoveToAppTime(param.isRequire(), param.getCompanyId(), 
+				param.getAppHdWorkDispInfo().toDomain(), appHolidayWork);
+		AppOvertimeDetail appOvertimeDetail = new AppOvertimeDetail();
+		checkBeforeOutput.setConfirmMsgOutputs(confirmMsgOutputs);
+		checkBeforeOutput.setAppOvertimeDetail(appOvertimeDetail);
+		
 		return CheckBeforeOutputDto.fromDomain(checkBeforeOutput);
 	}
 }
