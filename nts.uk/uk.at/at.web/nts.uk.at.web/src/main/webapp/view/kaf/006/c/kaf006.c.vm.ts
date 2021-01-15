@@ -256,7 +256,8 @@ module nts.uk.at.view.kaf006.c.viewmodel {
                 }).done((result) => {
                     if (result) {
                         return vm.$dialog.info({ messageId: "Msg_15"}).then(() => {
-                            vm.closeDialog();
+							nts.uk.ui.windows.setShared('KAF006C_RESULT', { appID: result.appID });
+							vm.closeDialog();
                             return true;
                         });	
                     }
@@ -324,6 +325,7 @@ module nts.uk.at.view.kaf006.c.viewmodel {
                 });
                 return dfd.promise();
             }
+            return dfd.resolve(true);
         }
     }
 

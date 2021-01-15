@@ -82,6 +82,7 @@ import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.ReasonForFixe
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.ReasonTypeItem;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.ScheRecAtr;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
@@ -1250,7 +1251,7 @@ public class AppContentServiceImpl implements AppContentService {
 		AgreementTimeOfManagePeriod agreementTimeOfManagePeriod = agreementTimeAdapter.getAgreementTimeOfManagePeriod(
 				employeeID, 
 				yearMonth, 
-				Collections.emptyList(), 
+				new ArrayList<IntegrationOfDaily>(), 
 				GeneralDate.today(), 
 				ScheRecAtr.SCHEDULE);
 		// [NO.708]社員と年月を指定して３６協定年月設定を取得する
