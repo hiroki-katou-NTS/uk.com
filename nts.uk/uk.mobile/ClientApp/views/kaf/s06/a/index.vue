@@ -271,7 +271,7 @@
         <!--A10_3-->
         <div v-if="c18" class="row">
             <div class="float_left col text-left textSize">{{'KAFS06_24' | i18n}}</div>
-            <div class="float_right col text-right textSize">{{'KAFS06_39' | i18n(A10_3)}}</div>
+            <div class="float_right col text-right textSize colorHours">{{'KAFS06_39' | i18n(A10_3)}}</div>
         </div>
         <!--A10_2-->
         <div v-if="c18" class="mt-1">
