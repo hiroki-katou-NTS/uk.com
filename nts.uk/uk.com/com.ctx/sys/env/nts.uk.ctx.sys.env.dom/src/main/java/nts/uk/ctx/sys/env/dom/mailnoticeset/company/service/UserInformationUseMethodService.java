@@ -200,7 +200,7 @@ public class UserInformationUseMethodService {
 		Optional<PersonContactImport> getByPersonalId(String personalId);
 
 		/**
-		 * [R-3] 社員連絡先を取得する 社員連絡先Repository.取得する(個人ID)
+		 * [R-3] 社員連絡先を取得する 社員連絡先Repository.取得する(社員ID)
 		 * 
 		 * @param employeeId
 		 * @return

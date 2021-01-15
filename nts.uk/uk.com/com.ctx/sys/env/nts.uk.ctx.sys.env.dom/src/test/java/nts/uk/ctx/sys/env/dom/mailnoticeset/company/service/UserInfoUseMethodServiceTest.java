@@ -108,7 +108,6 @@ public class UserInfoUseMethodServiceTest {
 	/**
 	 * Test 連絡先情報を取得 with settingContactInfo not present
 	 * $設定.連絡先情報の設定 Empty
-	 * $設定.連絡先情報の設定.* Null
 	 */
 	@Test
 	public void testGetMethodNotPresentSettingContactInfo() {
@@ -149,7 +148,7 @@ public class UserInfoUseMethodServiceTest {
 	
 	/**
 	 * Test 連絡先情報を取得 with use contact;
-	 * 他の連絡先.連絡先利用設定=利用する
+	 * 全て連絡先を利用しする
 	 */
 	@Test
 	public void testGetMethodUseContact() {
@@ -191,12 +190,12 @@ public class UserInfoUseMethodServiceTest {
 	}
 	
 	/**
-	 * Test 連絡先情報を取得 with null otherContact;
-	 * 他の連絡先: null
+	 * Test 連絡先情報を取得 with not use contact;
+	 * 全て連絡先を利用しない
 	 */
 	@Test
 	public void testGetMethodNullOtherContact() {
-		UserInformationUseMethod userInformationUseMethod = UserInfoUseMethodServiceTestHelper.initUserInformationUseMethod(0, true, false, 1, true);
+		UserInformationUseMethod userInformationUseMethod = UserInfoUseMethodServiceTestHelper.initUserInformationUseMethod(0, false, false, 1, true);
 		PersonContactImport personContactImport = UserInfoUseMethodServiceTestHelper.initPersonContactImport(true);
 		EmployeeInfoContactImport employeeInfoContactImport = UserInfoUseMethodServiceTestHelper.initEmployeeInfoContactImport();
 		new Expectations() {
