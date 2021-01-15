@@ -19,37 +19,39 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 
 @Stateless
-public class RegisterWorkSchedule {
+public class RegisterWorkSchedule<T> {
 	
 	@Inject
-	private RegisWorkScheduleCommandHandler regisWorkSchedule;
+	private RegisWorkScheduleCommandHandler<T> regisWorkSchedule;
 	
 	@Inject
-	private RegisWorkScheduleShiftCmdHandler regisWorkScheduleShift;
+	private RegisWorkScheduleShiftCmdHandler<T> regisWorkScheduleShift;
 
 	private static final String DATE_FORMAT = "yyyy/MM/dd";
 
+	
 	public ResultRegisWorkSchedule handle(List<WorkScheduleCommand> command) {
 		if (command.isEmpty())
 			return null;
 		ResultRegisWorkSchedule rs = null;
 		String viewMode = command.get(0).viewMode;
 		if (viewMode.equals("shift")) {
-			List<WorkScheduleSaveCommand> dataReg = convertParam(command, "shift");
+			List<WorkScheduleSaveCommand<T>> dataReg = convertParam(command, "shift");
 			rs = regisWorkScheduleShift.handle(dataReg);
 		} else {
-			List<WorkScheduleSaveCommand> dataReg = convertParam(command, "other");
+			List<WorkScheduleSaveCommand<T>> dataReg = convertParam(command, "other");
 			rs = regisWorkSchedule.handle(dataReg);
 		}
 		return rs;
 	}
-
-	private List<WorkScheduleSaveCommand> convertParam(List<WorkScheduleCommand> command, String viewMode) {
-		List<WorkScheduleSaveCommand> rs = new ArrayList<WorkScheduleSaveCommand>();
+	
+	@SuppressWarnings({"rawtypes","unchecked"})
+	private List<WorkScheduleSaveCommand<T>> convertParam(List<WorkScheduleCommand> command, String viewMode) {
+		List<WorkScheduleSaveCommand<T>> rs = new ArrayList<WorkScheduleSaveCommand<T>>();
 		if (viewMode == "shift") {
 			for (WorkScheduleCommand wsCmd : command) {
 				GeneralDate ymd = GeneralDate.fromString(wsCmd.ymd, DATE_FORMAT);
-				WorkScheduleSaveCommand ws = new WorkScheduleSaveCommand(wsCmd.sid, ymd, wsCmd.shiftCode);
+				WorkScheduleSaveCommand<T> ws = new WorkScheduleSaveCommand<T>(wsCmd.sid, ymd, wsCmd.shiftCode);
 				rs.add(ws);
 			}
 		} else {
@@ -59,13 +61,16 @@ public class RegisterWorkSchedule {
 				String workTimeCd = wsCmd.workTimeCd;
 				WorkInformationDto workInfor = new WorkInformationDto(workTypeCd, workTimeCd);
 				Map<Integer, TimeWithDayAttr> mapAttendIdWithTime = new HashMap<Integer, TimeWithDayAttr>();
-				TimeWithDayAttr startTime = new TimeWithDayAttr(wsCmd.startTime);
-				TimeWithDayAttr endTime   = new TimeWithDayAttr(wsCmd.endTime);
-				if (wsCmd.workTimeCd != null && wsCmd.startTime != 0 && wsCmd.endTime != 0 ) {
+				if (wsCmd.workTimeCd != null &&  wsCmd.startTime != null && wsCmd.endTime != null && wsCmd.startTime != 0 && wsCmd.endTime != 0) {
+					TimeWithDayAttr startTime = new TimeWithDayAttr(wsCmd.startTime); 
+					TimeWithDayAttr endTime   = new TimeWithDayAttr(wsCmd.endTime);
 					mapAttendIdWithTime.put(31, startTime);
 					mapAttendIdWithTime.put(34, endTime);
+				}else{
+					mapAttendIdWithTime.put(31, null);
+					mapAttendIdWithTime.put(34, null);
 				}
-				WorkScheduleSaveCommand ws = new WorkScheduleSaveCommand(wsCmd.sid, ymd, workInfor, mapAttendIdWithTime, new ArrayList<>(), null);
+				WorkScheduleSaveCommand<T> ws = new WorkScheduleSaveCommand(wsCmd.sid, ymd, workInfor, mapAttendIdWithTime, new ArrayList<>(), null);
 				rs.add(ws);
 			}
 		}

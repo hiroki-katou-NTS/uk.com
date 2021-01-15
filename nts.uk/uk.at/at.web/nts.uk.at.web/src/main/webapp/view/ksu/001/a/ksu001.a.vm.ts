@@ -1711,7 +1711,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         saveData() : JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            if(self.mode() === 'confirm')
+            
+            if(nts.uk.ui.errors.hasError() || self.mode() === 'confirm')
                 return;
             nts.uk.ui.block.grayout();
             let itemLocal = uk.localStorage.getItem(self.KEY);
@@ -1761,7 +1762,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         let isChangeTime = false;
                         if (!_.isNil(cellStartTime)) {
                             isChangeTime = true;
-                            if (!_.isNil(cell.value.startTime)) {
+                            if (!_.isNil(cell.value.startTime) && cell.value.startTime != "") {
                                 startTime = duration.parseString(cell.value.startTime).toValue();
                             }else{
                                 startTime = null;
@@ -1769,9 +1770,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                         if (!_.isNil(cellEndTime)) {
                             isChangeTime = true;
-                            if (!_.isNil(cell.value.endTime)) {
+                            if (!_.isNil(cell.value.endTime) && cell.value.endTime != "") {
                                 endTime = duration.parseString(cell.value.endTime).toValue();
-                            }else {
+                            } else {
                                 endTime = null;
                             }
                         }
