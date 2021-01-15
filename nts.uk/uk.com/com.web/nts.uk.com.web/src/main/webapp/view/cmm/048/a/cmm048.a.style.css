@@ -118,7 +118,6 @@
   padding-top: 10px;
 }
 
-
 #A4_1_no_avatar {
   background-color: #eeeeee;
   font-size: 30px;
@@ -144,7 +143,6 @@
 }
 /* Avatar handle end */
 
-
 /* password-policy start*/
 .password-policy {
   background-color: #dddddd;
@@ -155,12 +153,12 @@
   width: 390px;
 }
 
-.pp-context{
+.pp-context {
   padding-bottom: 5px;
   border-bottom: 1px solid rgb(167, 167, 167);
 }
 
-.pp-table td{
+.pp-table td {
   padding-top: 3px;
   padding-bottom: 3px;
 }
@@ -172,7 +170,8 @@
 /* password-policy end*/
 
 /* tab1 start*/
-.no-cb, .cb {
+.no-cb,
+.cb {
   padding-left: 30px;
 }
 /* tab1 end */
@@ -241,11 +240,20 @@ td#D2_1 {
   padding-bottom: 25px;
 }
 
-/* tab4 end*/
+.container {
+  display: inline-flex;
+}
 
-#btn-open-cmm049{
-  box-shadow: none !important;
-  border: none !important;
-  float: right !important;
-  margin-right: 30px !important;
+/* tab4 end*/
+/*113842*/
+@media only screen and (max-width: 1280px) {
+  #button-setting {
+    margin-left: 77vw;
+  }
+}
+
+@media only screen and (min-width: 1280px) {
+  #button-setting {
+    margin-left: 1000px;
+  }
 }
