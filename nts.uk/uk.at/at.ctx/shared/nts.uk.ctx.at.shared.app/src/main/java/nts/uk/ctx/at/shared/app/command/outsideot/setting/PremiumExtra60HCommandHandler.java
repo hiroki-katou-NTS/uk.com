@@ -4,6 +4,7 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.TimeRoundingOfExcessOutsideTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTCalMed;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSettingRepository;
@@ -21,6 +22,7 @@ import nts.uk.shr.com.context.LoginUserContext;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -62,12 +64,13 @@ public class PremiumExtra60HCommandHandler extends CommandHandler<PremiumExtra60
                             e.getProductNumber(),
                             e.getAttendanceItemIds(),
                             command.getPremiumExtra60HRates()
-                                    .stream().filter(x -> x.getBreakdownItemNo().equals(e.getBreakdownItemNo())).map(j -> new PremiumExtra60HRate(
+                                    .stream().filter(x -> x.getBreakdownItemNo().equals(e.getBreakdownItemNo().value)).map(j -> new PremiumExtra60HRate(
                                     new PremiumRate(j.getPremiumRate()), EnumAdaptor.valueOf(j.getOvertimeNo(), OvertimeNo.class))
                             ).collect(Collectors.toList())
                     )).collect(Collectors.toList());
+            Optional<TimeRoundingOfExcessOutsideTime> timeRoundingOfExcessOutsideTime = domainSetting.getTimeRoundingOfExcessOutsideTime();
 
-            val domainNew = new OutsideOTSetting(companyId, note, breakdownItems, calculationMethod, overtimes);
+            val domainNew = new OutsideOTSetting(companyId, note, breakdownItems, calculationMethod, overtimes, timeRoundingOfExcessOutsideTime);
             this.outsideOTSettingRepository.save(domainNew);
         }
 
