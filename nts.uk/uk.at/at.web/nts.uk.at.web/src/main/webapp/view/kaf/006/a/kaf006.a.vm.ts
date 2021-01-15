@@ -41,7 +41,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
         workTypeAfter: KnockoutObservable<any> = ko.observable();
         isFromOther: boolean = false;
         isEnableSwitchBtn: boolean = true;
-        updateMode: boolean = true;
+        updateMode: KnockoutObservable<boolean> = ko.observable(true);
         isDispTime2ByWorkTime: KnockoutObservable<boolean> = ko.observable(false);
 
         yearRemain: KnockoutObservable<number> = ko.observable();

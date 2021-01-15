@@ -122,6 +122,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 				console.log(data);	
 				return ajax('at/request/application/holidayshipment/update', data).then(() =>{
 					dialog.info({ messageId: "Msg_15" });
+					vm.loadData();
 				}).fail((fail:any) => {
 					dialog.error({ messageId: fail.messageId});
 				});
