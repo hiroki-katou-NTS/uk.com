@@ -1,10 +1,19 @@
+import { _, Vue } from '@app/provider';
 import { component, Prop, Watch } from '@app/core/component';
-import { KafS00ShrComponent, AppType, Application, InitParam } from 'views/kaf/s00/shr';
-import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/s00';
-import { KafS00DComponent } from 'views/kaf/s00/d';
-import { DispInfoOfTimeLeaveRequest, GoBackTime } from '../shr/';
-import { KafS00SubP1Component, ExcessTimeStatus } from 'views/kaf/s00/sub/p1/';
-import { ICondition, IObjectChangeDate,ITimeLeaveAppDispInfo } from '../a/define';
+import { KafS00AComponent, KafS00BComponent } from 'views/kaf/s00';
+import { KafS12AComponent } from '../a';
+import {
+    ReflectSetting,
+    TimeLeaveRemaining,
+    TimeLeaveManagement,
+    LateEarlyTimeZone,
+    OutingTimeZone,
+    TimeLeaveAppDetail,
+    AppTimeType,
+    KafS12LateEarlyComponent,
+    KafS12OutingComponent
+} from '../shr';
+
 @component({
     name: 'kafs12a1',
     route: '/kaf/s12/a1',
@@ -14,302 +23,178 @@ import { ICondition, IObjectChangeDate,ITimeLeaveAppDispInfo } from '../a/define
     components: {
         'kafs00-a': KafS00AComponent,
         'kafs00-b': KafS00BComponent,
-        'kafs00-c': KafS00CComponent,
-        'kafs00-d': KafS00DComponent,
-        'kafs00-p1': KafS00SubP1Component,
+        'kafs12-late-early': KafS12LateEarlyComponent,
+        'kafs12-outing': KafS12OutingComponent,
     },
     validations: {},
     constraints: []
 })
-export class KafS12A1Component extends KafS00ShrComponent {
-    public title: string = 'KafS12A1';
-    public application: Application = null;
-    public user: any = null;
-    public condition: ICondition = null;
+export class KafS12A1Component extends Vue {
+    @Prop({ default: true })
+    public readonly newMode: boolean;
+    @Prop({ default: null })
+    public readonly appDispInfoStartupOutput: any;
+    @Prop({ default: null })
+    public readonly reflectSetting: ReflectSetting;
+    @Prop({ default: null })
+    public readonly timeLeaveManagement: TimeLeaveManagement;
+    @Prop({ default: null })
+    public readonly timeLeaveRemaining: TimeLeaveRemaining;
+    @Prop({ default: null })
+    public readonly application: any;
+    @Prop({ default: [] })
+    public readonly details: Array<TimeLeaveAppDetail>;
+
     public isValidateAll: boolean = true;
-    public timeLeaveAppDispInfo: any = [];
-
-    @Prop({ default: () => ({ mode: true }) })
-    public readonly mode!: boolean;
-
-    //Disp Infomation Time Leave Request Value
-    public DispInfoOfTimeLeaveRequest1 = new DispInfoOfTimeLeaveRequest({
-        header: 'KAFS12_5', frame: 0, attendanceTimeLabel: 'KAFS12_6',
-        attendanceTime: null, titleOfAttendanceTime: 'KAFS12_5',
-        kafS00P1Params: { scheduleDisp: true, scheduleExcess: ExcessTimeStatus.NONE, scheduleTime: null, actualDisp: null, preAppDisp: null },
-        numberOfHoursLeft: null,
-        destination: null,
-    });
-    public DispInfoOfTimeLeaveRequest2 = new DispInfoOfTimeLeaveRequest({
-        header: 'KAFS12_7', frame: 1, attendanceTimeLabel: 'KAFS12_8',
-        attendanceTime: null, titleOfAttendanceTime: 'KAFS12_7',
-        kafS00P1Params: { scheduleDisp: true, scheduleExcess: ExcessTimeStatus.NONE, scheduleTime: null, actualDisp: null, preAppDisp: null },
-        numberOfHoursLeft: null,
-        destination: null,
-    });
-    public DispInfoOfTimeLeaveRequest3 = new DispInfoOfTimeLeaveRequest({
-        header: 'KAFS12_9', frame: 2, attendanceTimeLabel: 'KAFS12_10',
-        attendanceTime: null, titleOfAttendanceTime: 'KAFS12_9',
-        kafS00P1Params: { scheduleDisp: true, scheduleExcess: ExcessTimeStatus.NONE, scheduleTime: null, actualDisp: null, preAppDisp: null },
-        numberOfHoursLeft: null,
-        destination: null,
-    });
-    public DispInfoOfTimeLeaveRequest4 = new DispInfoOfTimeLeaveRequest({
-        header: 'KAFS12_11', frame: 3, attendanceTimeLabel: 'KAFS12_12', attendanceTime: null, titleOfAttendanceTime: 'KAFS12_11',
-        kafS00P1Params: { scheduleDisp: true, scheduleExcess: ExcessTimeStatus.NONE, scheduleTime: null, actualDisp: null, preAppDisp: null },
-        numberOfHoursLeft: null,
-        destination: null,
-    });
-
-    //Dis Information Leave Request List
-    public DispInfoOfTimeLeaveRequestLst = [
-        this.DispInfoOfTimeLeaveRequest1,
-        this.DispInfoOfTimeLeaveRequest2,
-        this.DispInfoOfTimeLeaveRequest3,
-        this.DispInfoOfTimeLeaveRequest4
+    public lateEarlyTimeZones: Array<LateEarlyTimeZone> = [];
+    public outingTimeZones: Array<OutingTimeZone> = [];
+    public outingOptions: Array<any> = [
+        { id: AppTimeType.PRIVATE, name: 'KAFS12_15' },
+        { id: AppTimeType.UNION, name: 'KAFS12_16' }
     ];
-
-    //Go Back Time Value
-    public iGoBackTime1 = new GoBackTime({
-        frame: 0,
-        startTime: null,
-        endTime: null,
-        name: 'KAFS12_18',
-        swtOutClassification: 0,
-    });
-    public iGoBackTime2 = new GoBackTime({
-        frame: 1,
-        startTime: null,
-        endTime: null,
-        name: 'KAFS12_18',
-        swtOutClassification: 0,
-    });
-    public iGoBackTime3 = new GoBackTime({
-        frame: 2,
-        startTime: null,
-        endTime: null,
-        name: 'KAFS12_18',
-        swtOutClassification: 0,
-    });
-
-    public dataSource = [
-        { id: 0, name: 'KAFS12_15' },
-        { id: 1, name: 'KAFS12_16' },
-    ];
-
-    //Go Back Time List
-    public GoBackTimeLst = [
-        this.iGoBackTime1,
-        this.iGoBackTime2,
-        this.iGoBackTime3,
-    ];
-
-    @Prop({ default: () => { } })
-    public readonly params!: InitParam;
 
     public created() {
         const vm = this;
-
-        if (vm.params) {
-            vm.appDispInfoStartupOutput = vm.params.appDispInfoStartupOutput;
+        for (let type = 0; type < 4; type++) {
+            vm.lateEarlyTimeZones.push(new LateEarlyTimeZone(type));
         }
-        if (vm.mode) {
-            vm.application = vm.createApplicationInsert(AppType.ANNUAL_HOLIDAY_APPLICATION);
-        } else {
-            vm.application = vm.createApplicationUpdate(vm.params.appDispInfoStartupOutput.appDetailScreenInfo);
+        for (let no = 1; no <= 10; no++) {
+            vm.outingTimeZones.push(new OutingTimeZone(no, no <= 3));
         }
-        vm.$auth.user
-            .then((user: any) => {
-                vm.user = user;
-            })
-            .then(() => {
-                if (vm.mode) {
+    }
 
-                    return vm.loadCommonSetting(AppType.ANNUAL_HOLIDAY_APPLICATION);
-                }
+    get $appContext(): KafS12AComponent {
+        const self = this;
 
-                return true;
-            })
-            .then((loadData: boolean) => {
-                if (loadData) {
-                    vm.updateKaf000_A_Params(vm.user);
-                    vm.updateKaf000_B_Params(vm.mode);
-                    vm.updateKaf000_C_Params(vm.mode);
-                    vm.kaf000_B_Params.newModeContent.useMultiDaySwitch = false;
-                    if (vm.mode) {
-                        return vm.$http.post('at', API.initAppNew, vm.appDispInfoStartupOutput);
-                    }
+        return self.$parent as KafS12AComponent;
+    }
 
-                    return true;
-                }
-            })
-            .then((result: { data: ITimeLeaveAppDispInfo }) => {
-                if (result) {
-                    const { data } = result;
-                    const { reflectSetting, appDispInfoStartupOutput } = data;
-                    const { appDispInfoNoDateOutput } = appDispInfoStartupOutput;
-                    const { managementMultipleWorkCycles } = appDispInfoNoDateOutput;
-                    const { destination } = reflectSetting;
-                    const { firstAfterWork, firstBeforeWork, privateGoingOut, secondAfterWork, secondBeforeWork, unionGoingOut } = destination;
+    @Watch('newMode')
+    public modeWatcher(value: boolean) {
+        const vm = this;
+        if (!value) {
+            console.log(vm.details);
+        }
+    }
 
-                    vm.condition = {
-                        firstAfterWork,
-                        firstBeforeWork,
-                        privateGoingOut,
-                        secondAfterWork,
-                        secondBeforeWork,
-                        unionGoingOut,
-                        managementMultipleWorkCycles
-                    };
-                    vm.timeLeaveAppDispInfo = data;
-                } else {
+    @Watch('appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst')
+    public appDisplayInfoWatcher(value: Array<any>) {
+        const self = this;
+        self.updateTime(self.application.prePostAtr, value);
+    }
 
-                }
-            })
-            .catch((error: any) => {
-                vm.handleErrorCustom(error)
-                    .then((result) => {
-                        if (result) {
-                            vm.handleErrorCommon(error);
+    public kaf000BChangePrePost(prePostAtr) {
+        const self = this;
+        self.application.prePostAtr = prePostAtr;
+        self.updateTime(prePostAtr, self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst);
+    }
+
+    private updateTime(prePostAtr: number, opActualContentDisplayLst: Array<any>) {
+        const self = this;
+        if (self.newMode && prePostAtr == 1 && opActualContentDisplayLst && opActualContentDisplayLst[0].opAchievementDetail) {
+            self.lateEarlyTimeZones.forEach((i: LateEarlyTimeZone) => {
+                if ((i.appTimeType === 0 && self.condition2)
+                    || (i.appTimeType === 1 && self.condition3)
+                    || (i.appTimeType === 2 && self.condition9)
+                    || (i.appTimeType === 3 && self.condition12)) {
+                    if (i.timeValue == null) {
+                        switch (i.appTimeType) {
+                            case AppTimeType.ATWORK:
+                                i.timeValue = opActualContentDisplayLst[0].opAchievementDetail.opWorkTime;
+                                break;
+                            case AppTimeType.OFFWORK:
+                                i.timeValue = opActualContentDisplayLst[0].opAchievementDetail.opLeaveTime;
+                                break;
+                            case AppTimeType.ATWORK2:
+                                i.timeValue = opActualContentDisplayLst[0].opAchievementDetail.opWorkTime2;
+                                break;
+                            case AppTimeType.OFFWORK2:
+                                i.timeValue = opActualContentDisplayLst[0].opAchievementDetail.opDepartureTime2;
+                                break;
+                            default:
+                                break;
                         }
-                    });
-            })
-            .then(() => {
-                vm.$mask('hide');
+                    }
+                }
             });
+
+            const outingTimes = opActualContentDisplayLst[0].opAchievementDetail.stampRecordOutput.outingTime || [];
+            self.outingTimeZones.forEach((i: OutingTimeZone) => {
+                outingTimes.forEach((time: any) => {
+                    if (time.frameNo == i.workNo && i.timeZone.start == null && i.timeZone.end == null) {
+                        i.timeZone.start = time.opStartTime;
+                        i.timeZone.end = time.opEndTime;
+                        i.appTimeType = time.opGoOutReasonAtr == 3 ? AppTimeType.UNION : AppTimeType.PRIVATE;
+                    }
+                });
+            });
+        }
     }
 
     public nextToStep2() {
         const vm = this;
-
-        vm.isValidateAll = vm.customValidate(vm);
+        vm.isValidateAll = true;
+        for (let child of vm.$children) {
+            child.$validate();
+            if (!child.$valid) {
+                vm.isValidateAll = false;
+            }
+        }
         vm.$validate();
         if (!vm.$valid || !vm.isValidateAll) {
-
-            window.scrollTo(0, 100);
+            window.scrollTo(0, 0);
 
             return;
         }
-        vm.$emit('next-to-step-two', vm.timeLeaveAppDispInfo);
+        vm.$emit('next-to-step-two',
+            vm.lateEarlyTimeZones.filter((i: LateEarlyTimeZone) => i.timeValue != null),
+            vm.outingTimeZones.filter((i: OutingTimeZone) => i.timeZone.start != null && i.timeZone.end != null),
+        );
     }
 
-    public kaf000BChangeDate(objectDate: IObjectChangeDate) {
+    public handleAddOutingTimeZone() {
         const vm = this;
-        if (objectDate.startDate) {
-            if (vm.mode) {
-                vm.application.appDate = vm.$dt.date(objectDate.startDate, 'YYYY/MM/DD');
-                vm.application.opAppStartDate = vm.$dt.date(objectDate.startDate, 'YYYY/MM/DD');
-                vm.application.opAppEndDate = vm.$dt.date(objectDate.endDate, 'YYYY/MM/DD');
-                // console.log('changeDateCustom');
+        for (let no = 1; no <= 10; no++) {
+            if (!vm.outingTimeZones[no].display) {
+                vm.outingTimeZones[no].display = true;
+                break;
             }
         }
-        const { DispInfoOfTimeLeaveRequestLst } = vm;
-        const { appDispInfoStartupOutput } = objectDate;
-        const { appDispInfoWithDateOutput } = appDispInfoStartupOutput;
-        const { opActualContentDisplayLst } = appDispInfoWithDateOutput;
-
-        DispInfoOfTimeLeaveRequestLst.forEach((i) => {
-            const { frame } = i;
-            opActualContentDisplayLst.forEach((f) => {
-                if (f.opAchievementDetail) {
-                    const { opAchievementDetail } = f;
-                    const { opWorkTime, opLeaveTime, opWorkTime2, opDepartureTime2, achievementEarly, stampRecordOutput } = opAchievementDetail;
-                    const { outingTime } = stampRecordOutput;
-                    const { scheAttendanceTime1, scheAttendanceTime2, scheDepartureTime1, scheDepartureTime2 } = achievementEarly;
-
-                    if (frame === 0) {
-                        i.attendanceTime = opWorkTime ? opWorkTime : null;
-                        i.kafS00P1Params.scheduleTime = scheAttendanceTime1;
-                    }
-                    if (frame === 1) {
-                        i.attendanceTime = opLeaveTime ? opLeaveTime : null;
-                        i.kafS00P1Params.scheduleTime = scheDepartureTime1;
-                    }
-                    if (frame === 2) {
-                        i.attendanceTime = opWorkTime2 ? opWorkTime2 : null;
-                        i.kafS00P1Params.scheduleTime = scheAttendanceTime2;
-                    }
-                    if (frame === 3) {
-                        i.attendanceTime = opDepartureTime2 ? opDepartureTime2 : null;
-                        i.kafS00P1Params.scheduleTime = scheDepartureTime2;
-                    }
-
-                    vm.GoBackTimeLst = [];
-
-                    outingTime.forEach((i) => {
-                        vm.GoBackTimeLst.push({
-                            frame: i.frameNo - 1,
-                            goBackTime: {
-                                start: i.opStartTime,
-                                end: i.opEndTime
-                            },
-                            name: 'KAFS12_18',
-                            swtOutClassification: i.opGoOutReasonAtr
-                        });
-                    });
-                } else {
-                    i.kafS00P1Params.scheduleTime = null;
-                    i.attendanceTime = null;
-                    vm.GoBackTimeLst = [this.iGoBackTime1, this.iGoBackTime2, this.iGoBackTime3];
-                }
-            });
-        });
     }
 
+    get displayAddButton() {
+        const vm = this;
+
+        return vm.outingTimeZones.filter((i: OutingTimeZone) => i.display).length < 10;
+    }
 
     // ※2
     get condition2() {
         const vm = this;
 
-        if (vm.condition) {
-            if (vm.condition.firstBeforeWork === 1) {
-
-                return true;
-            }
-
-            return false;
-        }
+        return !!vm.reflectSetting && vm.reflectSetting.destination.firstBeforeWork == 1;
     }
 
     // ※3
     get condition3() {
         const vm = this;
 
-        if (vm.condition) {
-            if (vm.condition.firstAfterWork === 1) {
-
-                return true;
-            }
-
-            return false;
-        }
+        return !!vm.reflectSetting && vm.reflectSetting.destination.firstAfterWork == 1;
     }
 
     //※7
     get condition7() {
         const vm = this;
 
-        if (vm.condition) {
-            if (vm.condition.managementMultipleWorkCycles) {
-                return true;
-            }
-
-            return false;
-        }
+        return !!vm.appDispInfoStartupOutput
+            && vm.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles;
     }
 
     //※8
     get condition8() {
         const vm = this;
 
-        if (vm.condition) {
-            if (vm.condition.secondBeforeWork === 1) {
-
-                return true;
-            }
-
-            return false;
-        }
+        return !!vm.reflectSetting && vm.reflectSetting.destination.secondBeforeWork == 1;
     }
 
     //※9
@@ -323,14 +208,7 @@ export class KafS12A1Component extends KafS00ShrComponent {
     get condition11() {
         const vm = this;
 
-        if (vm.condition) {
-            if (vm.condition.secondAfterWork === 1) {
-
-                return true;
-            }
-
-            return false;
-        }
+        return !!vm.reflectSetting && vm.reflectSetting.destination.secondAfterWork == 1;
     }
 
     //※12
@@ -344,102 +222,16 @@ export class KafS12A1Component extends KafS00ShrComponent {
     get condition15() {
         const vm = this;
 
-        if (vm.condition) {
-            const { condition } = vm;
-            const { unionGoingOut, privateGoingOut } = condition;
-
-            if (unionGoingOut === 1 || privateGoingOut === 1) {
-
-                return true;
-            }
-
-            return false;
-        }
+        return !!vm.reflectSetting
+            && (vm.reflectSetting.destination.privateGoingOut == 1 || vm.reflectSetting.destination.unionGoingOut == 1);
     }
+
     //※16
     get condition16() {
         const vm = this;
 
-        if (vm.condition) {
-            const { condition } = vm;
-            const { unionGoingOut, privateGoingOut } = condition;
-
-            if (unionGoingOut === 1 && privateGoingOut === 1) {
-
-                return true;
-            }
-
-            return false;
-        }
-    }
-
-    public kaf000BChangePrePost(prePostAtr) {
-        const vm = this;
-        vm.application.prePostAtr = prePostAtr;
-    }
-
-    public customValidate(viewModel: any) {
-        const vm = this;
-        let validAllChild = true;
-        for (let child of viewModel.$children) {
-            let validChild = true;
-            if (child.$children) {
-                validChild = vm.customValidate(child);
-            }
-            child.$validate();
-            if (!child.$valid || !validChild) {
-                validAllChild = false;
-            }
-        }
-
-        return validAllChild;
-    }
-
-    public handleErrorCustom(failData: any): any {
-        const vm = this;
-
-        return new Promise((resolve) => {
-            if (failData.messageId == 'Msg_26') {
-                vm.$modal.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
-                    .then(() => {
-                        vm.$goto('ccg008a');
-                    });
-
-                return resolve(false);
-            }
-
-            return resolve(true);
-        });
-    }
-
-    public addNewGoBackTime() {
-        const vm = this;
-
-        let currentFrame = vm.GoBackTimeLst.length;
-
-        if (currentFrame < 10) {
-            let iGoBackTime = new GoBackTime({
-                startTime: null,
-                endTime: null,
-                frame: currentFrame,
-                name: 'KAFS12_18',
-                swtOutClassification: 0
-            });
-            vm.GoBackTimeLst.push(iGoBackTime);
-        }
-    }
-    get showAddButton(): boolean {
-        const vm = this;
-
-        if (vm.GoBackTimeLst && vm.GoBackTimeLst.length === 10) {
-
-            return false;
-        }
-
-        return true;
+        return !!vm.reflectSetting
+            && vm.reflectSetting.destination.privateGoingOut == 1
+            && vm.reflectSetting.destination.unionGoingOut == 1;
     }
 }
-
-const API = {
-    initAppNew: 'at/request/application/timeLeave/initNewApp',
-};

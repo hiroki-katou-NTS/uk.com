@@ -1,10 +1,22 @@
-import { Vue } from '@app/provider';
+import { _ } from '@app/provider';
 import { StepwizardComponent } from '@app/components';
-import { component } from '@app/core/component';
+import { component, Prop } from '@app/core/component';
 import { KafS12A1Component } from '../a1';
 import { KafS12A2Component } from '../a2';
 import { KafS12CComponent } from '../c';
-import {ITimeLeaveAppDispInfo} from './define';
+import { KafS00ShrComponent, AppType, Application, InitParam } from 'views/kaf/s00/shr';
+import {
+    ITimeLeaveAppDispInfo,
+    ReflectSetting,
+    TimeLeaveRemaining,
+    TimeLeaveManagement,
+    TimeLeaveAppDetail,
+    LateEarlyTimeZone,
+    OutingTimeZone,
+    LeaveType,
+    AppTimeType
+} from '../shr';
+
 @component({
     name: 'kafs12a',
     route: '/kaf/s12/a',
@@ -20,21 +32,418 @@ import {ITimeLeaveAppDispInfo} from './define';
     validations: {},
     constraints: []
 })
-export class KafS12AComponent extends Vue {
+export class KafS12AComponent extends KafS00ShrComponent {
+    public title: string = 'KafS12A1';
     public step: string = 'KAFS12_1';
-    public mode: boolean = true;
-    public timeLeaveAppDispInfo: ITimeLeaveAppDispInfo;
+    public newMode: boolean = true;
+    public application: Application;
+    public user: any;
+    public reflectSetting: ReflectSetting = null;
+    public timeLeaveRemaining: TimeLeaveRemaining = null;
+    public timeLeaveManagement: TimeLeaveManagement = null;
+    public details: Array<TimeLeaveAppDetail> = [];
+    public calculatedData: any = null;
+    public appID: string = null;
 
-    public handleNextToStepTwo(data: ITimeLeaveAppDispInfo) {
+    @Prop()
+    public readonly params: InitParam;
+
+    public created() {
         const vm = this;
+        if (!_.isNil(vm.params)) {
+            vm.newMode = false;
+            vm.appDispInfoStartupOutput = vm.params.appDispInfoStartupOutput;
+            console.log(vm.params.appDetail);
+        }
+    }
+    
+    public mounted() {
+        const vm = this;
+        vm.$mask('show');
+        if (vm.newMode) {
+            vm.application = vm.createApplicationInsert(AppType.ANNUAL_HOLIDAY_APPLICATION);
+        } else {
+            vm.application = vm.createApplicationUpdate(vm.appDispInfoStartupOutput.appDetailScreenInfo);
+        }
+        vm.$auth.user.then((user: any) => {
+            vm.user = user;
+        }).then(() => {
+            if (vm.newMode) {
+                return vm.loadCommonSetting(AppType.ANNUAL_HOLIDAY_APPLICATION);
+            }
 
-        vm.timeLeaveAppDispInfo = data;
-        vm.step = 'KAFS12_2';
+            return true;
+        }).then((loadData: any) => {
+            if (loadData) {
+                vm.updateKaf000_A_Params(vm.user);
+                vm.updateKaf000_B_Params(vm.newMode);
+                vm.updateKaf000_C_Params(vm.newMode);
+                if (vm.newMode) {
+                    vm.kaf000_B_Params.newModeContent.useMultiDaySwitch = false;
+                    const initParams = {
+                        appId: null,
+                        appDispInfoStartupOutput: vm.appDispInfoStartupOutput
+                    };
+
+                    return vm.$http.post('at', API.initAppNew, initParams);
+                }
+
+                return true;
+            }
+        }).then((result: {data: ITimeLeaveAppDispInfo}) => {
+            if (result) {
+                vm.reflectSetting = result.data.reflectSetting;
+                vm.timeLeaveRemaining = result.data.timeLeaveRemaining;
+                vm.timeLeaveManagement = result.data.timeLeaveManagement;
+            }
+        }).catch((error: any) => {
+            vm.handleErrorCustom(error).then((result) => {
+                if (result) {
+                    vm.handleErrorCommon(error);
+                }
+            });
+        }).then(() => vm.$mask('hide'));
     }
 
-    public handleNextToStepThree() {
+    get timeLeaveType() {
+        const vm = this;
+        if (vm.reflectSetting) {
+            const timeLeaveTypes: Array<boolean> = [
+                vm.reflectSetting.condition.substituteLeaveTime == 1,
+                vm.reflectSetting.condition.annualVacationTime == 1,
+                vm.reflectSetting.condition.childNursing == 1,
+                vm.reflectSetting.condition.nursing == 1,
+                vm.reflectSetting.condition.superHoliday60H == 1,
+                vm.reflectSetting.condition.specialVacationTime == 1,
+            ];
+            if (timeLeaveTypes.filter((i: boolean) => i).length > 1) {
+                return LeaveType.COMBINATION;
+            } else {
+                return _.findIndex(timeLeaveTypes, (i: boolean) => i);
+            }
+        }
+
+        return null;
+    }
+
+    public kaf000BChangeDate(objectDate) {
+        const vm = this;
+        if (objectDate.startDate) {
+            if (vm.newMode) {
+                vm.application.appDate = vm.$dt.date(objectDate.startDate, 'YYYY/MM/DD');
+                vm.application.opAppStartDate = vm.$dt.date(objectDate.startDate, 'YYYY/MM/DD');
+                vm.application.opAppEndDate = vm.$dt.date(objectDate.endDate, 'YYYY/MM/DD');
+            }
+            vm.$mask('show');
+            vm.handleChangeDate(objectDate.startDate).then((res: any) => {
+                if (res) {
+                    vm.timeLeaveManagement = res.data.timeLeaveManagement;
+                }
+                vm.$mask('hide');
+            }).catch((error: any) => {
+                vm.$modal.error(error).then(() => {
+                    vm.$mask('hide');
+                });
+            });
+        }
+    }
+
+    public kaf000CChangeReasonCD(opAppStandardReasonCD) {
+        const self = this;
+        self.application.opAppStandardReasonCD = opAppStandardReasonCD;
+    }
+
+    public kaf000CChangeAppReason(opAppReason) {
+        const self = this;
+        self.application.opAppReason = opAppReason;
+    }
+
+    public handleErrorCustom(error: any): any {
         const vm = this;
 
-        vm.step = 'KAFS12_3';
+        return new Promise((resolve) => {
+            if (error.messageId == 'Msg_474') {
+                vm.$modal.error(error).then(() => {
+                    vm.$goto('ccg008a');
+                });
+
+                return resolve(false);
+            }
+
+            return resolve(true);
+        });
+    }
+
+    public handleConfirmMessage(listMes: any, res: any) {
+        const self = this;
+        if (!_.isEmpty(listMes)) {
+            let item = listMes.shift();
+            self.$modal.confirm({ messageId: item.messageId }).then((value) => {
+                self.$mask('hide');
+                if (value == 'yes') {
+                    if (_.isEmpty(listMes)) {
+                        self.$mask('show');
+                        self.handleRegisterData(res);
+                    } else {
+                        self.handleConfirmMessage(listMes, res);
+                    }
+
+                }
+            });
+        }
+    }
+
+    public handleChangeDate(date: string) {
+        const vm = this;
+        let command = {
+            appDate: new Date(date).toISOString(),
+            appDisplayInfo: {
+                appDispInfoStartupOutput: vm.appDispInfoStartupOutput
+            }
+        };
+
+        return vm.$http.post('at', API.changeAppDate, command);
+    }
+
+    public handleCalculateTime(lateEarlyTimeZones: Array<LateEarlyTimeZone>, outingTimeZones: Array<OutingTimeZone>) {
+        const vm = this;
+        const params = {
+            timeLeaveType: vm.timeLeaveType,
+            appDate: new Date(vm.application.appDate).toISOString(),
+            appDisplayInfo: {
+                appDispInfoStartupOutput: vm.appDispInfoStartupOutput,
+                timeLeaveManagement: vm.timeLeaveManagement,
+                timeLeaveRemaining: vm.timeLeaveRemaining,
+                reflectSetting: vm.reflectSetting
+            },
+            timeZones: lateEarlyTimeZones.map((i: LateEarlyTimeZone) => ({
+                    workNo: i.workNo,
+                    startTime: i.appTimeType == AppTimeType.ATWORK || i.appTimeType == AppTimeType.ATWORK2 ? i.timeValue : null,
+                    endTime: i.appTimeType == AppTimeType.ATWORK || i.appTimeType == AppTimeType.ATWORK2 ? null : i.timeValue
+                })),
+            outingTimeZones: outingTimeZones.map((i: OutingTimeZone) => ({
+                    frameNo: i.workNo,
+                    outingAtr: i.appTimeType,
+                    startTime: i.timeZone.start,
+                    endTime: i.timeZone.end
+                }))
+        };
+        params.appDisplayInfo.timeLeaveRemaining.remainingStart = new Date(params.appDisplayInfo.timeLeaveRemaining.remainingStart).toISOString();
+        params.appDisplayInfo.timeLeaveRemaining.remainingEnd = new Date(params.appDisplayInfo.timeLeaveRemaining.remainingEnd).toISOString();
+
+        return vm.$http.post('at', API.calculateTime, params);
+    }
+    
+    public handleNextToStepTwo(lateEarlyTimeZones: Array<LateEarlyTimeZone>, outingTimeZones: Array<OutingTimeZone>) {
+        const vm = this;
+        // check date => calculate => set details
+        vm.$mask('show');
+        vm.handleChangeDate(vm.application.appDate).then((res: any) => {
+            if (res) {
+                vm.timeLeaveManagement = res.data.timeLeaveManagement;
+                vm.handleCalculateTime(lateEarlyTimeZones, outingTimeZones).then((res: any) => {
+                    if (res) {
+                        vm.calculatedData = res.data;
+                        // if (vm.details.length == 0) {
+                        vm.createNewDetails(lateEarlyTimeZones, outingTimeZones);
+                        // }
+                        vm.step = 'KAFS12_2';
+                        vm.$nextTick(() => {
+                            window.scrollTo(0, 0);
+                        });
+                    }
+                    vm.$mask('hide');
+                }).catch((error: any) => {
+                    vm.$modal.error(error).then(() => {
+                        vm.$mask('hide');
+                    });
+                });
+            } else {
+                vm.$mask('hide');
+            }
+        }).catch((error: any) => {
+            vm.$modal.error(error).then(() => {
+                vm.$mask('hide');
+            });
+        });
+    }
+
+    public handleNextToStepThree(applyTimeData: Array<any>, specialLeaveFrame: number) {
+        const vm = this;
+        vm.$mask('show');
+        vm.updateDetails(applyTimeData, specialLeaveFrame);
+        const timeLeaveAppDisplayInfo = {
+            appDispInfoStartupOutput: vm.appDispInfoStartupOutput,
+            timeLeaveManagement: vm.timeLeaveManagement,
+            timeLeaveRemaining: vm.timeLeaveRemaining,
+            reflectSetting: vm.reflectSetting
+        };
+        timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingStart = new Date(timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingStart).toISOString();
+        timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingEnd = new Date(timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingEnd).toISOString();
+
+        const checkParams = {
+            timeDigestAppType: vm.timeLeaveType,
+            applicationNew: vm.newMode ? vm.application : null,
+            applicationUpdate: vm.newMode ? null : vm.application,
+            details: vm.details,
+            timeLeaveAppDisplayInfo,
+            agentMode: false
+        };
+        vm.$http.post('at', API.checkBeforeRegister, checkParams).then((res: any) => {
+            if (!_.isEmpty(res)) {
+                const registerCommand = {
+                    timeLeaveAppDisplayInfo,
+                    application: vm.application,
+                    details: vm.details
+                };
+                if (!_.isEmpty(res.data)) {
+                    let listTemp = _.clone(res.data);
+                    vm.handleConfirmMessage(listTemp, registerCommand);
+
+                } else {
+                    vm.handleRegisterData(registerCommand);
+                }
+            } else {
+                vm.$mask('hide');
+            }
+        }).catch((error: any) => {
+            vm.$modal.error(error).then(() => {
+                vm.$mask('hide');
+            });
+        });
+    }
+
+    public handleBackToStepOne(data: any) {
+        const vm = this;
+        if (data) {
+            vm.appDispInfoStartupOutput = data.appDispInfoStartupOutput;
+            vm.reflectSetting = data.appDetail.reflectSetting;
+            vm.timeLeaveRemaining = data.appDetail.timeLeaveRemaining;
+            vm.timeLeaveManagement = data.appDetail.timeLeaveManagement;
+            vm.details = data.appDetail.details;
+            vm.newMode = false;
+            vm.updateKaf000_B_Params(vm.newMode);
+            vm.updateKaf000_C_Params(vm.newMode);
+        }
+        vm.step = 'KAFS12_1';
+    }
+
+    private handleRegisterData(data: any) {
+        const vm = this;
+        if (vm.newMode) {
+            vm.$http.post('at', API.register, data).then((res: any) => {
+                if (res) {
+                    vm.appID = res.data.appID;
+                    vm.step = 'KAFS12_3';
+                }
+                vm.$mask('hide');
+            }).catch((error: any) => {
+                vm.$modal.error(error).then(() => {
+                    vm.$mask('hide');
+                });
+            });
+        } else {
+            vm.$http.post('at', API.update, data).then((res: any) => {
+                if (res) {
+                    vm.appID = res.data.appID;
+                    vm.step = 'KAFS12_3';
+                }
+                vm.$mask('hide');
+            }).catch((error: any) => {
+                vm.$modal.error(error).then(() => {
+                    vm.$mask('hide');
+                });
+            });
+        }
+    }
+
+    private createNewDetails(lateEarlyTimeZones: Array<LateEarlyTimeZone>, outingTimeZones: Array<OutingTimeZone>) {
+        const vm = this;
+        vm.details = [];
+        lateEarlyTimeZones.forEach((i: LateEarlyTimeZone) => {
+            vm.details.push({
+                appTimeType: i.appTimeType,
+                timeZones: [{
+                    workNo: i.workNo,
+                    startTime: i.appTimeType == AppTimeType.ATWORK || i.appTimeType == AppTimeType.ATWORK2 ? i.timeValue : null,
+                    endTime: i.appTimeType == AppTimeType.ATWORK || i.appTimeType == AppTimeType.ATWORK2 ? null : i.timeValue,
+                }],
+                applyTime: {
+                    substituteAppTime: 0,
+                    annualAppTime: 0,
+                    childCareAppTime: 0,
+                    careAppTime: 0,
+                    super60AppTime: 0,
+                    specialAppTime: 0,
+                    specialLeaveFrameNo: 0,
+                }
+            });
+        });
+        const privateOutings = outingTimeZones.filter((i: OutingTimeZone) => i.appTimeType == AppTimeType.PRIVATE);
+        if (privateOutings.length > 0) {
+            vm.details.push({
+                appTimeType: AppTimeType.PRIVATE,
+                timeZones: privateOutings.map((i: OutingTimeZone) => ({
+                    workNo: i.workNo,
+                    startTime: i.timeZone.start,
+                    endTime: i.timeZone.end
+                })),
+                applyTime: {
+                    substituteAppTime: 0,
+                    annualAppTime: 0,
+                    childCareAppTime: 0,
+                    careAppTime: 0,
+                    super60AppTime: 0,
+                    specialAppTime: 0,
+                    specialLeaveFrameNo: 0,
+                }
+            });
+        }
+        const unionOutings = outingTimeZones.filter((i: OutingTimeZone) => i.appTimeType == AppTimeType.UNION);
+        if (unionOutings.length > 0) {
+            vm.details.push({
+                appTimeType: AppTimeType.UNION,
+                timeZones: unionOutings.map((i: OutingTimeZone) => ({
+                    workNo: i.workNo,
+                    startTime: i.timeZone.start,
+                    endTime: i.timeZone.end
+                })),
+                applyTime: {
+                    substituteAppTime: 0,
+                    annualAppTime: 0,
+                    childCareAppTime: 0,
+                    careAppTime: 0,
+                    super60AppTime: 0,
+                    specialAppTime: 0,
+                    specialLeaveFrameNo: 0,
+                }
+            });
+        }
+    }
+
+    private updateDetails(applyTimeData: Array<any>, specialLeaveFrame: number) {
+        const vm = this;
+        vm.details.forEach((detail: TimeLeaveAppDetail) => {
+            applyTimeData.forEach((data: any) => {
+                if (detail.appTimeType == data.appTimeType) {
+                    detail.applyTime.annualAppTime = data.annualAppTime;
+                    detail.applyTime.substituteAppTime = data.substituteAppTime;
+                    detail.applyTime.childCareAppTime = data.childNursingAppTime;
+                    detail.applyTime.careAppTime = data.nursingAppTime;
+                    detail.applyTime.super60AppTime = data.super60AppTime;
+                    detail.applyTime.specialAppTime = data.specialAppTime;
+                    detail.applyTime.specialLeaveFrameNo = data.specialAppTime > 0 ? specialLeaveFrame : null;
+                }
+            });
+        });
     }
 }
+
+const API = {
+    initAppNew: 'at/request/application/timeLeave/init',
+    changeAppDate: 'at/request/application/timeLeave/changeAppDate',
+    calculateTime: 'at/request/application/timeLeave/calculateTime',
+    checkBeforeRegister: 'at/request/application/timeLeave/checkBeforeRegister',
+    register: 'at/request/application/timeLeave/register',
+    update: 'at/request/application/timeLeave/update',
+};

@@ -1,105 +1,172 @@
-import { Vue, _ } from '@app/provider';
-import { KAFS00P1Params } from 'views/kaf/s00/sub/p1';
-import { IAppDispInfoStartupOutput, IOpActualContentDisplayLst } from '../../s04/a/define';
+export * from './comp1';
+export * from './comp2';
+export * from './comp3';
 
-export class DispInfoOfTimeLeaveRequest {
-    public frame: number | null;
-    public header: string;
-    public attendanceTimeLabel: string;
-    public attendanceTime: number | null = null;
-    public titleOfAttendanceTime: string;
-    public kafS00P1Params: KAFS00P1Params;
-    public numberOfHoursLeft: number | null;
-    public destination = {
-        firstAfterWork: 0,
-        firstBeforeWork: 0,
-        privateGoingOut: 0,
-        secondAfterWork: 0,
-        secondBeforeWork: 0,
-        unionGoingOut: 0,
+export enum AppTimeType {
+    ATWORK = 0,
+    OFFWORK = 1,
+    ATWORK2 = 2,
+    OFFWORK2 = 3,
+    PRIVATE = 4,
+    UNION = 5
+}
+
+export enum LeaveType {
+    SUBSTITUTE = 0, // 時間代休
+    ANNUAL = 1, // 時間年休
+    CHILD_NURSING = 2, // 子看護
+    NURSING = 3, // 介護
+    SUPER_60H = 4, // 60H超休
+    SPECIAL = 5, // 時間特別休暇
+    COMBINATION = 6, // 組合せ利用
+}
+
+export interface ReflectSetting {
+    condition: {
+        annualVacationTime: number,
+        childNursing: number,
+        nursing: number,
+        specialVacationTime: number,
+        substituteLeaveTime: number,
+        superHoliday60H: number
     };
-
-    constructor(iDispInfoOfTimeLeaveRequest: IDispInfoOfTimeLeaveRequest) {
-        this.frame = iDispInfoOfTimeLeaveRequest.frame;
-        this.header = iDispInfoOfTimeLeaveRequest.header;
-        this.attendanceTimeLabel = iDispInfoOfTimeLeaveRequest.attendanceTimeLabel;
-        this.attendanceTime = iDispInfoOfTimeLeaveRequest.attendanceTime;
-        this.titleOfAttendanceTime = iDispInfoOfTimeLeaveRequest.titleOfAttendanceTime;
-        this.kafS00P1Params = iDispInfoOfTimeLeaveRequest.kafS00P1Params;
-        this.numberOfHoursLeft = iDispInfoOfTimeLeaveRequest.numberOfHoursLeft;
-        this.destination = iDispInfoOfTimeLeaveRequest.destination;
-    }
-}
-
-export class CalculationResult {
-    public workHeader: string;
-    public requiredTime: number;
-    public applicationTime: number;
-    public frame: number;
-    public appliesTime: IAppliesTime[];
-
-    constructor(iCalculationResult: ICalculationResult) {
-        this.workHeader = iCalculationResult.workHeader;
-        this.requiredTime = iCalculationResult.requiredTime;
-        this.applicationTime = iCalculationResult.applicationTime;
-        this.frame = iCalculationResult.frame;
-        this.appliesTime = iCalculationResult.appliesTime;
-    }
-}
-
-export class GoBackTime {
-    public frame: number;
-    public name: string;
-    public swtOutClassification: number;
-    public goBackTime = { start: null, end: null };
-
-    constructor(iGoBackTime: IGoBackTime) {
-        this.frame = iGoBackTime.frame;
-        this.goBackTime.start = iGoBackTime.startTime;
-        this.goBackTime.end = iGoBackTime.endTime;
-        this.name = iGoBackTime.name;
-        this.swtOutClassification = iGoBackTime.swtOutClassification;
-    }
-}
-
-//時間休暇申請の表示情報
-export interface IDispInfoOfTimeLeaveRequest {
-    frame: number | null;
-    header: string;
-    attendanceTimeLabel: string;
-    attendanceTime: number | null;
-    titleOfAttendanceTime: string;
-    kafS00P1Params: KAFS00P1Params;
-    numberOfHoursLeft: number | null;
     destination: {
-        firstAfterWork: number;
-        firstBeforeWork: number;
-        privateGoingOut: number;
-        secondAfterWork: number;
-        secondBeforeWork: number;
-        unionGoingOut: number;
+        firstAfterWork: number,
+        firstBeforeWork: number,
+        privateGoingOut: number,
+        secondAfterWork: number,
+        secondBeforeWork: number,
+        unionGoingOut: number
+    };
+    reflectActualTimeZone: number;
+}
+
+export interface TimeLeaveManagement {
+    nursingLeaveMng: {
+        timeCareLeaveMngAtr: boolean,
+        timeCareLeaveUnit: number,
+        timeChildCareLeaveMngAtr: boolean,
+        timeChildCareLeaveUnit: number,
+    };
+    super60HLeaveMng: {
+        super60HLeaveMngAtr: boolean,
+        super60HLeaveUnit: number,
+    };
+    timeAnnualLeaveMng: {
+        timeAnnualLeaveMngAtr: boolean,
+        timeAnnualLeaveUnit: number,
+    };
+    timeSpecialLeaveMng: {
+        listSpecialFrame: Array<any>,
+        timeSpecialLeaveMngAtr: boolean,
+        timeSpecialLeaveUnit: number
+    };
+    timeSubstituteLeaveMng: {
+        timeSubstituteLeaveMngAtr: boolean,
+        timeSubstituteLeaveUnit: number,
     };
 }
 
-export interface IGoBackTime {
-    frame: number;
-    name: string;
-    swtOutClassification: number;
-    startTime: number;
-    endTime: number;
-}
-export interface ICalculationResult {
-    frame: number;
-    workHeader: string;
-    requiredTime: number;
-    applicationTime: number;
-    appliesTime: IAppliesTime[];
-}
-
-export interface IAppliesTime {
-    title: string;
-    hoursOfWorkType: number | string | null;
-    frame: number;
+export interface TimeLeaveRemaining {
+    annualTimeLeaveRemainingDays: number;
+    annualTimeLeaveRemainingTime: number;
+    careRemainingDays: number;
+    careRemainingTime: number;
+    childCareRemainingDays: number;
+    childCareRemainingTime: number;
+    specialTimeFrames: Array<any>;
+    subTimeLeaveRemainingTime: number;
+    super60HRemainingTime: number;
+    remainingStart: string;
+    remainingEnd: string;
 }
 
+export interface ITimeLeaveAppDispInfo {
+    appDispInfoStartupOutput: any;
+    reflectSetting: ReflectSetting;
+    timeLeaveManagement: TimeLeaveManagement;
+    timeLeaveRemaining: TimeLeaveRemaining;
+}
 
+export interface TimeLeaveAppDetail {
+    appTimeType: number;
+    timeZones: Array<{
+        workNo: number,
+        startTime: number,
+        endTime: number
+    }>;
+    applyTime: {
+        substituteAppTime: number,
+        annualAppTime: number,
+        childCareAppTime: number,
+        careAppTime: number,
+        super60AppTime: number,
+        specialAppTime: number,
+        specialLeaveFrameNo: number,
+    };
+}
+
+export class LateEarlyTimeZone {
+    public appTimeType: number;
+    public workNo: number;
+    public title: string;
+    public description: string;
+    public name: string;
+    public timeValue: number;
+
+    constructor(type: number, params?: TimeLeaveAppDetail) {
+        const self = this;
+        self.appTimeType = type;
+        self.workNo = type == AppTimeType.ATWORK || AppTimeType.OFFWORK ? 1 : 2;
+        switch (type) {
+            case AppTimeType.ATWORK:
+                self.title = 'KAFS12_5';
+                self.description = 'KAFS12_6';
+                self.name = 'KAFS12_5';
+                break;
+            case AppTimeType.OFFWORK:
+                self.title = 'KAFS12_7';
+                self.description = 'KAFS12_8';
+                self.name = 'KAFS12_7';
+                break;
+            case AppTimeType.ATWORK2:
+                self.title = 'KAFS12_9';
+                self.description = 'KAFS12_10';
+                self.name = 'KAFS12_9';
+                break;
+            case AppTimeType.OFFWORK2:
+                self.title = 'KAFS12_11';
+                self.description = 'KAFS12_12';
+                self.name = 'KAFS12_11';
+                break;
+            default:
+                break;
+        }
+        if (params) {
+            self.timeValue = type == AppTimeType.ATWORK || AppTimeType.ATWORK ? params.timeZones[0].startTime : params.timeZones[0].endTime;
+        } else {
+            self.timeValue = null;
+        }
+    }
+}
+
+export class OutingTimeZone {
+    public appTimeType: number;
+    public workNo: number;
+    public timeZone: {
+        start: number,
+        end: number
+    };
+    public display: boolean;
+
+    constructor(no: number, display: boolean, params?: any) {
+        const self = this;
+        self.appTimeType = AppTimeType.PRIVATE;
+        self.workNo = no;
+        self.timeZone = {
+            start: null,
+            end: null
+        };
+        self.display = display;
+    }
+}

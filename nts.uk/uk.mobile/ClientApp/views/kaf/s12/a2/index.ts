@@ -1,288 +1,110 @@
-import { Vue } from '@app/provider';
+import { _, Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
-import { CalculationResult } from '../shr';
 import { KafS00CComponent } from 'views/kaf/s00/c';
-import { KafS00ShrComponent, AppType, Application } from 'views/kaf/s00/shr';
-import {ITimeLeaveAppDispInfo} from '../a/define';
+import { KafS12AComponent } from 'views/kaf/s12/a';
+import { ReflectSetting, TimeLeaveManagement, TimeLeaveRemaining, KafS12ApplyTimeComponent } from '../shr';
+
 @component({
     name: 'kafs12a2',
     route: '/kaf/s12/a2',
     style: require('./style.scss'),
     template: require('./index.vue'),
     components: {
-        'kafs00c': KafS00CComponent
+        'kafs00c': KafS00CComponent,
+        'kafs12-apply-time': KafS12ApplyTimeComponent,
     },
     resource: require('./resources.json'),
     validations: {},
     constraints: []
 })
-export class KafS12A2Component extends KafS00ShrComponent {
-    public application: Application = null;
-    public hoursOfWorkTypeFromA1: number = null;
-    public hoursOfWorkTypeFromA12: number = null;
+export class KafS12A2Component extends Vue {
+    @Prop({ default: true })
+    public readonly newMode: boolean;
+    @Prop({ default: null })
+    public readonly appDispInfoStartupOutput: any;
+    @Prop({ default: null })
+    public readonly reflectSetting: ReflectSetting;
+    @Prop({ default: null })
+    public readonly timeLeaveManagement: TimeLeaveManagement;
+    @Prop({ default: null })
+    public readonly timeLeaveRemaining: TimeLeaveRemaining;
 
-    @Prop({ default: () => ({ mode: true }) })
-    public readonly mode!: boolean;
-
-    @Prop({ default: (): ITimeLeaveAppDispInfo => ({
-        appDispInfoStartupOutput: null,
-        reflectSetting: null,
-        timeLeaveManagement: null,
-        timeLeaveRemaining: null,
-        workingConditionItem: null,
-    })})
-    public readonly timeLeaveAppDispInfo!: ITimeLeaveAppDispInfo;
-
-    //Calculate result value
-    public calculateResult1 = new CalculationResult({
-        frame: 0,
-        workHeader: 'KAFS12_20',
-        requiredTime: 1,
-        applicationTime: 2,
-        appliesTime: [
-            {
-                frame: 0,
-                hoursOfWorkType: null,
-                title: 'Com_ExsessHoliday'
-            },
-            {
-                frame: 1,
-                hoursOfWorkType: null,
-                title: 'KAFS12_24'
-            },
-            {
-                frame: 2,
-                hoursOfWorkType: null,
-                title: 'KAFS12_25'
-            },
-            {
-                frame: 3,
-                hoursOfWorkType: null,
-                title: 'Com_ChildNurseHoliday'
-            },
-            {
-                frame: 4,
-                hoursOfWorkType: null,
-                title: 'Com_CareHoliday'
-            }
-        ]
-    });
-    public calculateResult2 = new CalculationResult({
-        frame: 1,
-        workHeader: 'KAFS12_20',
-        requiredTime: 1,
-        applicationTime: 2,
-        appliesTime: [
-            {
-                frame: 0,
-                hoursOfWorkType: null,
-                title: 'Com_ExsessHoliday'
-            },
-            {
-                frame: 1,
-                hoursOfWorkType: null,
-                title: 'KAFS12_24'
-            },
-            {
-                frame: 2,
-                hoursOfWorkType: null,
-                title: 'KAFS12_25'
-            },
-            {
-                frame: 3,
-                hoursOfWorkType: null,
-                title: 'Com_ChildNurseHoliday'
-            },
-            {
-                frame: 4,
-                hoursOfWorkType: null,
-                title: 'Com_CareHoliday'
-            },
-        ]
-    });
-    public calculateResult3 = new CalculationResult({
-        frame: 2,
-        workHeader: 'KAFS12_20',
-        requiredTime: 1,
-        applicationTime: 2,
-        appliesTime: [
-            {
-                frame: 0,
-                hoursOfWorkType: null,
-                title: 'Com_ExsessHoliday'
-            },
-            {
-                frame: 1,
-                hoursOfWorkType: null,
-                title: 'KAFS12_24'
-            },
-            {
-                frame: 2,
-                hoursOfWorkType: null,
-                title: 'KAFS12_25'
-            },
-            {
-                frame: 3,
-                hoursOfWorkType: null,
-                title: 'Com_ChildNurseHoliday'
-            },
-            {
-                frame: 4,
-                hoursOfWorkType: null,
-                title: 'Com_CareHoliday'
-            }
-        ]
-    });
-    public calculateResult4 = new CalculationResult({
-        frame: 3,
-        workHeader: 'KAFS12_20',
-        requiredTime: 1,
-        applicationTime: 2,
-        appliesTime: [
-            {
-                frame: 0,
-                hoursOfWorkType: null,
-                title: 'Com_ExsessHoliday'
-            },
-            {
-                frame: 1,
-                hoursOfWorkType: null,
-                title: 'KAFS12_24'
-            },
-            {
-                frame: 2,
-                hoursOfWorkType: null,
-                title: 'KAFS12_25'
-            },
-            {
-                frame: 3,
-                hoursOfWorkType: null,
-                title: 'Com_ChildNurseHoliday'
-            },
-            {
-                frame: 4,
-                hoursOfWorkType: null,
-                title: 'Com_CareHoliday'
-            }
-        ]
-    });
-    public calculateResult5 = new CalculationResult({
-        frame: 4,
-        workHeader: 'KAFS12_20',
-        requiredTime: 1,
-        applicationTime: 2,
-        appliesTime: [
-            {
-                frame: 0,
-                hoursOfWorkType: null,
-                title: 'Com_ExsessHoliday'
-            },
-            {
-                frame: 1,
-                hoursOfWorkType: null,
-                title: 'KAFS12_24'
-            },
-            {
-                frame: 2,
-                hoursOfWorkType: null,
-                title: 'KAFS12_25'
-            },
-            {
-                frame: 3,
-                hoursOfWorkType: null,
-                title: 'Com_ChildNurseHoliday'
-            },
-            {
-                frame: 4,
-                hoursOfWorkType: null,
-                title: 'Com_CareHoliday'
-            }
-        ]
-    });
-    public calculateResult6 = new CalculationResult({
-        frame: 5,
-        workHeader: 'KAFS12_20',
-        requiredTime: 1,
-        applicationTime: 2,
-        appliesTime: [
-            {
-                frame: 0,
-                hoursOfWorkType: null,
-                title: 'Com_ExsessHoliday'
-            },
-            {
-                frame: 1,
-                hoursOfWorkType: null,
-                title: 'KAFS12_24'
-            },
-            {
-                frame: 2,
-                hoursOfWorkType: null,
-                title: 'KAFS12_25'
-            },
-            {
-                frame: 3,
-                hoursOfWorkType: null,
-                title: 'Com_ChildNurseHoliday'
-            },
-            {
-                frame: 4,
-                hoursOfWorkType: null,
-                title: 'Com_CareHoliday'
-            }
-        ]
-    });
-
-    public calculateResultLst = [
-        this.calculateResult1,
-        this.calculateResult2,
-        this.calculateResult3,
-        this.calculateResult4,
-        this.calculateResult5,
-        this.calculateResult6,
-    ];
-
-    public dropDownList: any[] = [{
-        code: 1,
-        name: 'Test 1'
-    }, {
-        code: 2,
-        name: 'Test 2'
-    }, {
-        code: 3,
-        name: 'Test 3'
-    }];
+    public isValidateAll: boolean = true;
+    public applyTimeData: Array<any> = [];
+    public specialLeaveFrame: number = null;
 
     public created() {
         const vm = this;
-
-        vm.application = vm.createApplicationInsert(AppType.ANNUAL_HOLIDAY_APPLICATION);
-        vm.$auth.user
-            .then((user: any) => { })
-            .then(() => {
-
-                return vm.loadCommonSetting(AppType.ANNUAL_HOLIDAY_APPLICATION);
-            })
-            .then((loadData: boolean) => {
-                if (loadData) {
-                    vm.updateKaf000_C_Params(true);
-                }
+        const appTimeTypeNames = ['KAFS12_20', 'KAFS12_26', 'KAFS12_27', 'KAFS12_28', 'KAFS12_29', 'KAFS12_30'];
+        for (let i = 0; i < 6; i ++) {
+            vm.applyTimeData.push({
+                appTimeType: i,
+                appTimeTypeName: appTimeTypeNames[i],
+                substituteAppTime: 0,
+                annualAppTime:  0,
+                childNursingAppTime: 0,
+                nursingAppTime: 0,
+                super60AppTime: 0,
+                specialAppTime: 0,
             });
+        }
+    }
+
+    get $appContext(): KafS12AComponent {
+        const self = this;
+
+        return self.$parent as KafS12AComponent;
+    }
+
+    public handleChangeSpecialLeaveFrame(value: number) {
+        const vm = this;
+        vm.specialLeaveFrame = value;
+        vm.$mask('show');
+        const params = {
+            specialLeaveFrameNo: value,
+            timeLeaveAppDisplayInfo: {
+                appDispInfoStartupOutput: vm.appDispInfoStartupOutput,
+                timeLeaveManagement: vm.timeLeaveManagement,
+                timeLeaveRemaining: vm.timeLeaveRemaining,
+                reflectSetting: vm.reflectSetting
+            }
+        };
+        params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingStart = new Date(params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingStart).toISOString();
+        params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingEnd = new Date(params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingEnd).toISOString();
+        vm.$http.post('at', API.changeSpecialFrame, params).then((res: any) => {
+            if (res) {
+                vm.timeLeaveRemaining.specialTimeFrames = res.data.timeLeaveRemaining.specialTimeFrames;
+            }
+            vm.$mask('hide');
+        }).catch((error: any) => {
+            vm.$modal.error(error).then(() => {
+                vm.$mask('hide');
+            });
+        });
     }
 
     public nextToStep3() {
         const vm = this;
-
-        vm.$emit('next-to-step-three', {});
+        vm.isValidateAll = true;
+        for (let child of vm.$children) {
+            child.$validate();
+            if (!child.$valid) {
+                vm.isValidateAll = false;
+            }
+        }
+        vm.$validate();
+        if (!vm.$valid || !vm.isValidateAll) {
+            return;
+        }
+        vm.$emit('next-to-step-three', vm.applyTimeData, vm.specialLeaveFrame);
     }
 
-    public kaf000CChangeReasonCD(opAppStandardReasonCD) {
+    public backToStepOne() {
         const vm = this;
-        vm.application.opAppStandardReasonCD = opAppStandardReasonCD;
-    }
-
-    public kaf000CChangeAppReason(opAppReason) {
-        const vm = this;
-        vm.application.opAppReason = opAppReason;
+        vm.$emit('back-to-step-one');
     }
 }
+
+const API = {
+    changeSpecialFrame: 'at/request/application/timeLeave/changeSpecialFrame',
+};
