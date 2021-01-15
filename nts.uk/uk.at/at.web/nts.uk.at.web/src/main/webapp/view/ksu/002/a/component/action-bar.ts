@@ -4,6 +4,10 @@ module nts.uk.ui.at.ksu002.a {
 	import c = nts.uk.ui.calendar;
 	import k = nts.uk.ui.at.kcp013.shared;
 
+	const AB_API = {
+		CR_WT_HD: '/screen/ksu/ksu002/correctWorkTimeHalfDay'
+	};
+
 	const template = `
 	<div class="btn-action">
 		<div class="cf">
@@ -340,34 +344,54 @@ module nts.uk.ui.at.ksu002.a {
 						} else {
 							const noD = ['none', 'deferred'].indexOf(wtimec) > -1;
 
-							vm.$window
-								.storage(c.KSU_USER_DATA)
-								.then((v: undefined | c.StorageData) => {
-									if (v === undefined) {
-										vm.$window.storage(c.KSU_USER_DATA, { wtypec, wtimec });
-									} else {
-										const { fdate } = v;
+							$.Deferred()
+								.resolve(wtype.style)
+								.then((wt: WORK_STYLE) => {
+									// 勤務種類の出勤休日区分 == 午前出勤系 or 午後出勤系
+									if ([WORK_STYLE.MORNING, WORK_STYLE.AFTERNOON].indexOf(wt) !== -1) {
+										const workTypeCode = wtypec;
+										const workTimeCode = noD ? null : wtimec;
+										const command = { workTimeCode, workTypeCode };
 
-										vm.$window.storage(c.KSU_USER_DATA, { fdate, wtypec, wtimec });
+										return vm.$blockui('invisible')
+											.then(() => vm.$ajax('at', AB_API.CR_WT_HD, command));
 									}
-								});
 
-							data.selected({
-								wtype: {
-									code: wtypec,
-									name: wtype.abbName,
-									type: wtype.type,
-									style: wtype.style
-								},
-								wtime: {
-									code: hwt ? wtimec : null,
-									name: hwt ? wtime.nameAb : null,
-									value: {
-										begin: !hwt || noD || wtype.style === WORK_STYLE.HOLIDAY ? null : wtime.tzStart1,
-										finish: !hwt || noD || wtype.style === WORK_STYLE.HOLIDAY ? null : wtime.tzEnd1
-									}
-								}
-							});
+									return null;
+								})
+								.then((wtp: WorkTimePassedValue) => {
+									debugger;
+
+									vm.$window
+										.storage(c.KSU_USER_DATA)
+										.then((v: undefined | c.StorageData) => {
+											if (v === undefined) {
+												vm.$window.storage(c.KSU_USER_DATA, { wtypec, wtimec });
+											} else {
+												const { fdate } = v;
+
+												vm.$window.storage(c.KSU_USER_DATA, { fdate, wtypec, wtimec });
+											}
+										});
+
+									data.selected({
+										wtype: {
+											code: wtypec,
+											name: wtype.abbName,
+											type: wtype.type,
+											style: wtype.style
+										},
+										wtime: {
+											code: hwt ? wtimec : null,
+											name: hwt ? wtime.nameAb : null,
+											value: {
+												begin: !hwt || noD || wtype.style === WORK_STYLE.HOLIDAY ? null : (wtp ? wtp.startTime : wtime.tzStart1),
+												finish: !hwt || noD || wtype.style === WORK_STYLE.HOLIDAY ? null : (wtp ? wtp.endTime : wtime.tzEnd1)
+											}
+										}
+									});
+								})
+								.always(() => vm.$blockui('clear'));
 						}
 					}
 				},
@@ -407,6 +431,8 @@ module nts.uk.ui.at.ksu002.a {
 
 	export type EDIT_MODE = 'edit' | 'copy';
 	export type WTIME_CODE = 'none' | 'deferred' | string;
+
+	type WorkTimePassedValue = { startTime: number | null; endTime: number | null; } | null;
 
 	interface Parameter {
 		selected: KnockoutObservable<null | WorkData>;
