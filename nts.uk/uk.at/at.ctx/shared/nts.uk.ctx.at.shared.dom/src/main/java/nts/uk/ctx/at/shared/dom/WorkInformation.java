@@ -372,6 +372,16 @@ public class WorkInformation {
 		return this.workTimeCode.equals( otherObject.getWorkTimeCodeNotNull());
 	}
 
+	/** 
+	 * 出勤系か
+	 * @param require
+	 * @return
+	 */
+	public boolean isAttendanceRate(Require require) {
+		Optional<WorkStyle> workStyle = this.getWorkStyle(require);
+		return workStyle.isPresent() && !(workStyle.get() == WorkStyle.ONE_DAY_REST);
+	}
+
 	public static interface Require
 		extends	WorkTimeSetting.Require
 			,	WorkSetting.Require

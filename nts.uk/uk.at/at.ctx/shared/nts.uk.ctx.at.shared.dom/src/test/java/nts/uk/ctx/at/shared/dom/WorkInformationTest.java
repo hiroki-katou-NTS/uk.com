@@ -1163,5 +1163,57 @@ public class WorkInformationTest {
 		assertThat( target.isSame(otherObject) ).isTrue();
 	}
 
+	/**
+	 * input: workStyle != 1日休日系
+	 * output: true
+	 */
+	@Test
+	public void isAttendanceRate_True() {
+		val workInfo = new WorkInformation("01", "01");
+		new Expectations(workInfo) {
+			{				
+				workInfo.getWorkStyle(require);
+				result = Optional.of(WorkStyle.ONE_DAY_WORK);
+			}
+		};
+		
+		assertThat(workInfo.isAttendanceRate(require)).isTrue();
 
+	}
+	
+	/**
+	 * input: workStyle = 1日休日系
+	 * output: false
+	 */
+	@Test
+	public void isAttendanceRate_False() {
+		val workInfo = new WorkInformation("01", "01");
+		new Expectations(workInfo) {
+			{
+				workInfo.getWorkStyle(require);
+				result = Optional.of(WorkStyle.ONE_DAY_REST);
+			}
+		};
+		
+		assertThat(workInfo.isAttendanceRate(require)).isFalse();
+
+	}
+	
+	/**
+	 * input: workStyle = empty
+	 * output: false
+	 */
+	@Test
+	public void isAttendanceRate_workStyle_Empty() {
+		val workInfo = new WorkInformation("01", "01");
+		new Expectations(workInfo) {
+			{
+				workInfo.getWorkStyle(require);
+			}
+		};
+		
+		assertThat(workInfo.isAttendanceRate(require)).isFalse();
+
+	}
+	
 }

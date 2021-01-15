@@ -5,7 +5,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -111,12 +114,12 @@ public class WorkAvailabilityOfOneDayTest {
 		
 		new Expectations(workAvailability.getWorkAvailability()) {
             {
-            	workAvailability.getWorkAvailability().isHolidayAvailability();
+            	workAvailability.getWorkAvailability().isHolidayAvailability(require);
             	result = true;
             }
         };
         
-        boolean result = workAvailability.isHolidayAvailability();
+        boolean result = workAvailability.isHolidayAvailability(require);
         
         assertThat(result).isTrue();
 	}
@@ -128,12 +131,12 @@ public class WorkAvailabilityOfOneDayTest {
 		
 		new Expectations(workAvailability.getWorkAvailability()) {
             {
-            	workAvailability.getWorkAvailability().isHolidayAvailability();
+            	workAvailability.getWorkAvailability().isHolidayAvailability(require);
             	result = false;
             }
         };
         
-        boolean result = workAvailability.isHolidayAvailability();
+        boolean result = workAvailability.isHolidayAvailability(require);
         
         assertThat(result).isFalse();
 	}
@@ -183,6 +186,7 @@ public class WorkAvailabilityOfOneDayTest {
         assertThat(result).isFalse();
 	}
 	
+	@SuppressWarnings("serial")
 	@Test
 	public void testGetDisplayInformation() {
 		
@@ -204,9 +208,13 @@ public class WorkAvailabilityOfOneDayTest {
 						shiftCodes, 
 						Collections.emptyList());
 		
+		Map<ShiftMasterCode, Optional<String>> shiftList = new HashMap<ShiftMasterCode, Optional<String>>() {{
+	        put(new ShiftMasterCode("S01"), Optional.of("S01_name"));
+	    }};
+		
 		WorkAvailabilityDisplayInfo displayInfo = new WorkAvailabilityDisplayInfo(
 				AssignmentMethod.SHIFT, 
-				Arrays.asList("S01"), 
+				shiftList, 
 				new ArrayList<TimeSpanForCalc>());
 		
 		new Expectations(workAvailability.getWorkAvailability()) {
