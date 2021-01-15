@@ -861,14 +861,16 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 	}
 
 	@Override
-	public List<ErrorAlarmWorkRecord> findByListErrorAlamByIdUse(List<String> listCd, boolean useAtr) {
+	public List<ErrorAlarmWorkRecord> findByListErrorAlamByIdUse(List<String> listCd, int useAtr) {
 		
-		List<KwrmtErAlWorkRecord> entity = this.queryProxy()
-												.query(FIND_BY_CODE_USE, KwrmtErAlWorkRecord.class)
-												.setParameter("listCode", listCd)
-												.setParameter("useAtr", useAtr)
-												.getList();
-		
+		List<KwrmtErAlWorkRecord> entity = new ArrayList<>();
+		CollectionUtil.split(listCd, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
+			this.queryProxy()
+			.query(FIND_BY_CODE_USE, KwrmtErAlWorkRecord.class)
+			.setParameter("listCode", listCd)
+			.setParameter("useAtr", useAtr)
+			.getList();
+		});
 		return entity.stream().map(x -> KwrmtErAlWorkRecord.toDomain(x)).collect(Collectors.toList());
 	}
 	

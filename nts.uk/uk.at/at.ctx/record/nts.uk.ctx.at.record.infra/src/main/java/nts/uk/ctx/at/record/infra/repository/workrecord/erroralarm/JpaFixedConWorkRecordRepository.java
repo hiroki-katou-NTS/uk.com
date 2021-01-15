@@ -26,7 +26,7 @@ public class JpaFixedConWorkRecordRepository extends JpaRepository implements  F
 			+ " WHERE c.krcmtFixedConditionWorkRecordPK.dailyAlarmConID = :dailyAlarmConID ";
 	
 	private static final String SELECT_FIXED_CON_BY_ALARM_ID_USE = SELECT_FIXED_CON_BY_ALARM_ID 
-			+ " AND c.useAtr = useAtr ";
+			+ " AND c.useAtr = :useAtr ";
 			
 	
 	@Override
@@ -95,10 +95,8 @@ public class JpaFixedConWorkRecordRepository extends JpaRepository implements  F
 		return data;
 	}
 
-
-
 	@Override
-	public List<FixedConditionWorkRecord> getFixConWorkRecordByIdUse(String dailyAlarmConID, boolean use) {
+	public List<FixedConditionWorkRecord> getFixConWorkRecordByIdUse (String dailyAlarmConID, int use) {
 		List<FixedConditionWorkRecord> data = this.queryProxy().query(SELECT_FIXED_CON_BY_ALARM_ID_USE, KrcmtFixedConditionWorkRecord.class)
 				.setParameter("dailyAlarmConID", dailyAlarmConID)
 				.setParameter("useAtr", use)

@@ -77,12 +77,15 @@ public class JpaWorkRecorExtraConRepository extends JpaRepository implements Wor
 
 	@Override
 	public List<WorkRecordExtractingCondition> getAllWorkRecordExtraConByIdAndUse(List<String> listErrorAlarmID,
-			boolean use) {
+			int use) {
 		
-		List<WorkRecordExtractingCondition> workRecord = this.queryProxy().query(SELECT_FROM_WORK_RECORD_BY_ID_USE, KrcmtWorkRecordExtraCon.class)
-															.setParameter("listErrorAlarmID", listErrorAlarmID)
-															.setParameter("useAtr", use)
-															.getList(c->c.toDomain()); 
+		List<WorkRecordExtractingCondition> workRecord = new ArrayList<>();
+		CollectionUtil.split(listErrorAlarmID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList ->{
+			workRecord.addAll(this.queryProxy().query(SELECT_FROM_WORK_RECORD_BY_ID_USE, KrcmtWorkRecordExtraCon.class)
+					.setParameter("listErrorAlarmID", listErrorAlarmID)
+					.setParameter("useAtr", use)
+					.getList(c->c.toDomain()));
+		});
 		
 		return workRecord;
 	}
