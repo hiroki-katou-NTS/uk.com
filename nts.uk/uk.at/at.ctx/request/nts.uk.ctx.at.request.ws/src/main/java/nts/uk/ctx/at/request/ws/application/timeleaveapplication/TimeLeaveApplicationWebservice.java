@@ -56,8 +56,8 @@ public class TimeLeaveApplicationWebservice extends WebService {
                 params.getTimeLeaveType(),
                 params.getAppDate(),
                 params.getAppDisplayInfo(),
-                Collections.emptyList(),
-                Collections.emptyList()
+                params.getTimeZones(),
+                params.getOutingTimeZones()
         );
     }
 

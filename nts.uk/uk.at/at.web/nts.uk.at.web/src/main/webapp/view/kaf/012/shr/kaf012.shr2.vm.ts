@@ -856,7 +856,8 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                 }
             });
             this.lateTimeLabel = ko.computed(() => {
-                if (appDispInfoStartupOutput
+                if (application().prePostAtr() == 1
+                    && appDispInfoStartupOutput
                     && appDispInfoStartupOutput()
                     && !_.isEmpty(appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst)
                     && appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail) {
@@ -876,7 +877,8 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                 return "";
             });
             this.lateTime = ko.computed(() => {
-                if (appDispInfoStartupOutput
+                if (application().prePostAtr() == 1
+                    && appDispInfoStartupOutput
                     && appDispInfoStartupOutput()
                     && !_.isEmpty(appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst)
                     && appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail) {
@@ -897,7 +899,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                         default:
                             break;
                     }
-                    return value == null ? "" : nts.uk.time.format.byId("Clock_Short_HM", value);
+                    return value > 0 ? "" : nts.uk.time.format.byId("Clock_Short_HM", value);
                 }
                 return "";
             });

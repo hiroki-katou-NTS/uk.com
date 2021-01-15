@@ -359,6 +359,7 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
         if (specialFrameNo.isPresent()) {
             // ドメインモデル「特別休暇」を取得する
             List<SpecialHoliday> specialHolidayList = specialHolidayRepository.findByCompanyId(companyId);
+            System.out.println(specialHolidayList.toString());
             Optional<SpecialHoliday> specialHoliday = specialHolidayList.stream().filter(i -> i.getTargetItem().getFrameNo().contains(specialFrameNo.get())).findFirst();
             if (!specialHoliday.isPresent())
                 return timeLeaveAppOutput;
@@ -384,11 +385,11 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
                                     interimSpecialHolidayMngRepo, interimRemainRepo, specialLeaveBasicInfoRepo),
                             new CacheCarrier(), param)
                     .getAggSpecialLeaveResult();
-            // TODO: cannot map with design
+            // TODO: cannot map with design, wait for new code from jp
 
-            timeLeaveAppOutput.getTimeVacationRemaining().getSpecialTimeFrames().add(new TimeSpecialVacationRemaining(
-                    10, 10, specialFrameNo.get()
-            ));
+            timeLeaveAppOutput.getTimeVacationRemaining().getSpecialTimeFrames().add(
+                    new TimeSpecialVacationRemaining(10, 10, specialFrameNo.get())
+            );
         }
         return timeLeaveAppOutput;
     }

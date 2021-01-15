@@ -182,22 +182,38 @@ public class TimeLeaveApplicationFinder {
     /**
      * KAF012 : 申請時間を計算する
      */
-    public CalculationResultDto calculateApplicationTime(Integer timeLeaveType, GeneralDate baseDate, TimeLeaveAppDisplayInfoDto info, List<TimeZoneWithWorkNo> lstTimeZone, List<TimeZoneWithWorkNo> lstOutingTimeZone) {
+    public CalculationResultDto calculateApplicationTime(Integer timeLeaveType, GeneralDate baseDate, TimeLeaveAppDisplayInfoDto info, List<TimeZoneDto> lstTimeZone, List<OutingTimeZoneDto> lstOutingTimeZone) {
         String employeeId = info.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid();
         AchievementDetailDto achievementDetailDto = info.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().
                 getOpActualContentDisplayLst().get(0).getOpAchievementDetail();
 
-        //1日分の勤怠時間を仮計算
-        //TODO wait for requestlist
+        // 1日分の勤怠時間を仮計算
+        // TODO: wait for requestlist from team C
+        // create dummy data
+        int timeBeforeWork1 = 0, timeAfterWork1 = 0, timeBeforeWork2 = 0, timeAfterWork2 = 0, timePrivateOuting = 0, timeUnionOuting = 0;
+        for (TimeZoneDto tz : lstTimeZone) {
+            if (tz.getWorkNo() == 1) {
+                if (tz.getStartTime() != null) timeBeforeWork1 = tz.getStartTime();
+                if (tz.getEndTime() != null) timeAfterWork1 = tz.getEndTime();
+            }
+            if (tz.getWorkNo() == 2) {
+                if (tz.getStartTime() != null) timeBeforeWork2 = tz.getStartTime();
+                if (tz.getEndTime() != null) timeAfterWork2 = tz.getEndTime();
+            }
+        }
+        for (OutingTimeZoneDto outing : lstOutingTimeZone) {
+            if (outing.getOutingAtr() == 4) timePrivateOuting += (outing.getEndTime() - outing.getStartTime());
+            if (outing.getOutingAtr() == 5) timeUnionOuting += (outing.getEndTime() - outing.getStartTime());
+        }
 
         // 取得した「日別勤怠の勤怠時間」をOUTPUTにセットする
         CalculationResultDto calculationResult = new CalculationResultDto();
-        calculationResult.setTimeBeforeWork1(10);
-        calculationResult.setTimeAfterWork1(10);
-        calculationResult.setTimeBeforeWork2(10);
-        calculationResult.setTimeAfterWork2(10);
-        calculationResult.setPrivateOutingTime(10);
-        calculationResult.setUnionOutingTime(10);
+        calculationResult.setTimeBeforeWork1(timeBeforeWork1);
+        calculationResult.setTimeAfterWork1(timeAfterWork1);
+        calculationResult.setTimeBeforeWork2(timeBeforeWork2);
+        calculationResult.setTimeAfterWork2(timeAfterWork2);
+        calculationResult.setPrivateOutingTime(timePrivateOuting);
+        calculationResult.setUnionOutingTime(timeUnionOuting);
 
         TimeDigestAppType leaveType = EnumAdaptor.valueOf(timeLeaveType, TimeDigestAppType.class);
         if (leaveType == TimeDigestAppType.USE_COMBINATION)
@@ -299,80 +315,80 @@ public class TimeLeaveApplicationFinder {
     /**
      * KAFS12 : 申請時間を計算する
      */
-    public TimeLeaveCalculateDto calculateApplicationTimeMobile(CalculateAppTimeMobileParams param) {
-        String sid = AppContexts.user().employeeId();
-        TimeLeaveApplicationOutput output = TimeLeaveAppDisplayInfoDto.mappingData(param.getTimeLeaveAppDisplayInfo());
-        ApplicationDto applicationDto = param.getApplication();
-        List<ConfirmMsgOutput> confirmMsgOutputs = new ArrayList<>();
-
-        if (param.isScreenMode()) {
-            Application application = Application.createFromNew(
-                EnumAdaptor.valueOf(applicationDto.getPrePostAtr(), PrePostAtr.class),
-                sid,
-                EnumAdaptor.valueOf(applicationDto.getAppType(), ApplicationType.class),
-                new ApplicationDate(GeneralDate.fromString(applicationDto.getAppDate(), "yyyy/MM/dd")),
-                sid,
-                Optional.empty(),
-                Optional.empty(),
-                Optional.of(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppStartDate(), "yyyy/MM/dd"))),
-                Optional.of(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppEndDate(), "yyyy/MM/dd"))),
-                applicationDto.getOpAppReason() == null ? Optional.empty() : Optional.of(new AppReason(applicationDto.getOpAppReason())),
-                applicationDto.getOpAppStandardReasonCD() == null ? Optional.empty() : Optional.of(new AppStandardReasonCode(applicationDto.getOpAppStandardReasonCD())
-                )
-            );
-
-            // 2-1.新規画面登録前の処理
-            confirmMsgOutputs = processBeforeRegister.processBeforeRegister_New(
-                AppContexts.user().companyId(),
-                EmploymentRootAtr.APPLICATION,
-                true,
-                application,
-                null,
-                output.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpErrorFlag().get(),
-                Collections.emptyList(),
-                output.getAppDispInfoStartup()
-            );
-        }
-
-        int timeDigestAppType = 0;
-        if (param.getTimeLeaveAppDisplayInfo().getReflectSetting().getCondition().checkTypeCombination() >= 2) {
-            timeDigestAppType = TimeDigestAppType.USE_COMBINATION.value;
-        } else if (param.getTimeLeaveAppDisplayInfo().getReflectSetting().getCondition().getSuperHoliday60H() == NotUseAtr.USE.value) {
-            timeDigestAppType = TimeDigestAppType.SIXTY_H_OVERTIME.value;
-        } else if (param.getTimeLeaveAppDisplayInfo().getReflectSetting().getCondition().getSubstituteLeaveTime() == NotUseAtr.USE.value) {
-            timeDigestAppType = TimeDigestAppType.TIME_OFF.value;
-        } else if (param.getTimeLeaveAppDisplayInfo().getReflectSetting().getCondition().getAnnualVacationTime() == NotUseAtr.USE.value) {
-            timeDigestAppType = TimeDigestAppType.TIME_ANNUAL_LEAVE.value;
-        } else if (param.getTimeLeaveAppDisplayInfo().getReflectSetting().getCondition().getChildNursing() == NotUseAtr.USE.value) {
-            timeDigestAppType = TimeDigestAppType.CHILD_NURSING_TIME.value;
-        } else if (param.getTimeLeaveAppDisplayInfo().getReflectSetting().getCondition().getNursing() == NotUseAtr.USE.value) {
-            timeDigestAppType = TimeDigestAppType.NURSING_TIME.value;
-        } else if (param.getTimeLeaveAppDisplayInfo().getReflectSetting().getCondition().getSpecialVacationTime() == NotUseAtr.USE.value) {
-            timeDigestAppType = TimeDigestAppType.TIME_SPECIAL_VACATION.value;
-        }
-
-        //時間帯<List>
-        List<TimeZoneWithWorkNo> lstTimeZone = new ArrayList<>();
-        //外出時間帯<List>
-        List<TimeZoneWithWorkNo> lstOutingTimeZone = new ArrayList<>();
-
-        param.getDetails().forEach(x -> {
-            if (x.getAppTimeType() == AppTimeType.ATWORK.value || x.getAppTimeType() == AppTimeType.OFFWORK.value) {
-                lstTimeZone.addAll(x.getTimeZones().stream().map(i -> new TimeZoneWithWorkNo(1, i.getStartTime(), i.getEndTime())).collect(Collectors.toList()));
-            } else if (x.getAppTimeType() == AppTimeType.ATWORK2.value || x.getAppTimeType() == AppTimeType.OFFWORK2.value) {
-                lstTimeZone.addAll(x.getTimeZones().stream().map(i -> new TimeZoneWithWorkNo(2, i.getStartTime(), i.getEndTime())).collect(Collectors.toList()));
-            } else if (x.getAppTimeType() == AppTimeType.PRIVATE.value || x.getAppTimeType() == AppTimeType.UNION.value) {
-                lstOutingTimeZone.addAll(x.getTimeZones().stream().map(i -> new TimeZoneWithWorkNo(i.getWorkNo(), i.getStartTime(), i.getEndTime())).collect(Collectors.toList()));
-            }
-        });
-
-        //1日分の勤怠時間を仮計算
-        CalculationResultDto calculationResult = calculateApplicationTime(0, GeneralDate.fromString(applicationDto.getAppDate(), "yyyy/MM/dd"),
-            param.getTimeLeaveAppDisplayInfo(), lstTimeZone, lstOutingTimeZone);
-
-        //取得した「計算結果」を返す
-        return new TimeLeaveCalculateDto(timeDigestAppType, calculationResult, confirmMsgOutputs);
-    }
+//    public TimeLeaveCalculateDto calculateApplicationTimeMobile(CalculateAppTimeMobileParams param) {
+//        String sid = AppContexts.user().employeeId();
+//        TimeLeaveApplicationOutput output = TimeLeaveAppDisplayInfoDto.mappingData(param.getTimeLeaveAppDisplayInfo());
+//        ApplicationDto applicationDto = param.getApplication();
+//        List<ConfirmMsgOutput> confirmMsgOutputs = new ArrayList<>();
+//
+//        if (param.isScreenMode()) {
+//            Application application = Application.createFromNew(
+//                EnumAdaptor.valueOf(applicationDto.getPrePostAtr(), PrePostAtr.class),
+//                sid,
+//                EnumAdaptor.valueOf(applicationDto.getAppType(), ApplicationType.class),
+//                new ApplicationDate(GeneralDate.fromString(applicationDto.getAppDate(), "yyyy/MM/dd")),
+//                sid,
+//                Optional.empty(),
+//                Optional.empty(),
+//                Optional.of(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppStartDate(), "yyyy/MM/dd"))),
+//                Optional.of(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppEndDate(), "yyyy/MM/dd"))),
+//                applicationDto.getOpAppReason() == null ? Optional.empty() : Optional.of(new AppReason(applicationDto.getOpAppReason())),
+//                applicationDto.getOpAppStandardReasonCD() == null ? Optional.empty() : Optional.of(new AppStandardReasonCode(applicationDto.getOpAppStandardReasonCD())
+//                )
+//            );
+//
+//            // 2-1.新規画面登録前の処理
+//            confirmMsgOutputs = processBeforeRegister.processBeforeRegister_New(
+//                AppContexts.user().companyId(),
+//                EmploymentRootAtr.APPLICATION,
+//                true,
+//                application,
+//                null,
+//                output.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpErrorFlag().get(),
+//                Collections.emptyList(),
+//                output.getAppDispInfoStartup()
+//            );
+//        }
+//
+//        int timeDigestAppType = 0;
+//        if (param.getTimeLeaveAppDisplayInfo().getReflectSetting().getCondition().checkTypeCombination() >= 2) {
+//            timeDigestAppType = TimeDigestAppType.USE_COMBINATION.value;
+//        } else if (param.getTimeLeaveAppDisplayInfo().getReflectSetting().getCondition().getSuperHoliday60H() == NotUseAtr.USE.value) {
+//            timeDigestAppType = TimeDigestAppType.SIXTY_H_OVERTIME.value;
+//        } else if (param.getTimeLeaveAppDisplayInfo().getReflectSetting().getCondition().getSubstituteLeaveTime() == NotUseAtr.USE.value) {
+//            timeDigestAppType = TimeDigestAppType.TIME_OFF.value;
+//        } else if (param.getTimeLeaveAppDisplayInfo().getReflectSetting().getCondition().getAnnualVacationTime() == NotUseAtr.USE.value) {
+//            timeDigestAppType = TimeDigestAppType.TIME_ANNUAL_LEAVE.value;
+//        } else if (param.getTimeLeaveAppDisplayInfo().getReflectSetting().getCondition().getChildNursing() == NotUseAtr.USE.value) {
+//            timeDigestAppType = TimeDigestAppType.CHILD_NURSING_TIME.value;
+//        } else if (param.getTimeLeaveAppDisplayInfo().getReflectSetting().getCondition().getNursing() == NotUseAtr.USE.value) {
+//            timeDigestAppType = TimeDigestAppType.NURSING_TIME.value;
+//        } else if (param.getTimeLeaveAppDisplayInfo().getReflectSetting().getCondition().getSpecialVacationTime() == NotUseAtr.USE.value) {
+//            timeDigestAppType = TimeDigestAppType.TIME_SPECIAL_VACATION.value;
+//        }
+//
+//        //時間帯<List>
+//        List<TimeZoneWithWorkNo> lstTimeZone = new ArrayList<>();
+//        //外出時間帯<List>
+//        List<TimeZoneWithWorkNo> lstOutingTimeZone = new ArrayList<>();
+//
+//        param.getDetails().forEach(x -> {
+//            if (x.getAppTimeType() == AppTimeType.ATWORK.value || x.getAppTimeType() == AppTimeType.OFFWORK.value) {
+//                lstTimeZone.addAll(x.getTimeZones().stream().map(i -> new TimeZoneWithWorkNo(1, i.getStartTime(), i.getEndTime())).collect(Collectors.toList()));
+//            } else if (x.getAppTimeType() == AppTimeType.ATWORK2.value || x.getAppTimeType() == AppTimeType.OFFWORK2.value) {
+//                lstTimeZone.addAll(x.getTimeZones().stream().map(i -> new TimeZoneWithWorkNo(2, i.getStartTime(), i.getEndTime())).collect(Collectors.toList()));
+//            } else if (x.getAppTimeType() == AppTimeType.PRIVATE.value || x.getAppTimeType() == AppTimeType.UNION.value) {
+//                lstOutingTimeZone.addAll(x.getTimeZones().stream().map(i -> new TimeZoneWithWorkNo(i.getWorkNo(), i.getStartTime(), i.getEndTime())).collect(Collectors.toList()));
+//            }
+//        });
+//
+//        //1日分の勤怠時間を仮計算
+//        CalculationResultDto calculationResult = calculateApplicationTime(0, GeneralDate.fromString(applicationDto.getAppDate(), "yyyy/MM/dd"),
+//            param.getTimeLeaveAppDisplayInfo(), lstTimeZone, lstOutingTimeZone);
+//
+//        //取得した「計算結果」を返す
+//        return new TimeLeaveCalculateDto(timeDigestAppType, calculationResult, confirmMsgOutputs);
+//    }
 
     /**
      * 登録前チェック

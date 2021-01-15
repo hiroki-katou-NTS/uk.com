@@ -89,7 +89,7 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                 vm.handleChangeAppDate(value);
             });
             vm.appDispInfoStartupOutput.subscribe(value => {
-                if (value) {
+                if (vm.application().prePostAtr() == 1 && value) {
                     if (value.appDispInfoWithDateOutput.opActualContentDisplayLst && value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail) {
                         vm.applyTimeData()[AppTimeType.ATWORK].timeZones[0].startTime(value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opWorkTime);
                         vm.applyTimeData()[AppTimeType.OFFWORK].timeZones[0].startTime(value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opLeaveTime);
