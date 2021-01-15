@@ -624,7 +624,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 					
 					vm.printContentOfEachAppDto().opPrintContentApplyForLeave = {
 						appAbsenceStartInfoOutput: vm.data,
-						applyForLeave: vm.createDataVacationApp()
+						applyForLeave: success.applyForLeave
 			};
 					vm.checkCondition(vm.data);
                 }).fail((error) => {
