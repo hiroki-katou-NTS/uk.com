@@ -563,7 +563,7 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
             totalAnnualHoliday += detail.getTimeDigestApplication().getTimeSpecialVacation().v();
         }
         if (totalAnnualHoliday > workingConditionItem.getContractTime().v()) {
-            throw new BusinessException("Msg_1760");
+            throw new BusinessException("Msg_1706");
         }
     }
 
