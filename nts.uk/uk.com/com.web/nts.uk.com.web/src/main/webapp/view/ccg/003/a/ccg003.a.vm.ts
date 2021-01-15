@@ -307,6 +307,7 @@ module nts.uk.com.view.ccg003.a {
           $('#A4').css('border-bottom', '1px groove');
         }
       });
+      $('#A0-CCG003').css('z-index', '9999999999');
     }
 
     /**
