@@ -113,6 +113,8 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	private static final int PRINT_DATE_COL = 9;
 	/** The Constant PRINT_EXT_CONDITION_COL. */
 	private static final int PRINT_EXT_CONDITION_COL = 15;
+	/** The Constant PRINT_EXT_TEXT. */
+	private static final int PRINT_EXT_TEXT = 18;
 	/** The Constant EMP_CODE_COL. */
 	private static final int EMP_CODE_COL = 0;
 	/** The Constant EMP_NAME_COL. */
@@ -184,7 +186,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 					.getCompanyName();
 			reportContext.setHeader(0, "&9&\"MS ゴシック\"" + companyName);
 			reportContext.setHeader(1, "&16&\"MS ゴシック\"" + TextResource.localize("KDR002_10"));
-			DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm", Locale.JAPAN);
+			DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/mm/dd  HH:mm", Locale.JAPAN);
 			reportContext.setHeader(2,
 					"&9&\"MS ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage&P ");
 			String exportTime = query.getExportTime().toString();
@@ -854,6 +856,8 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		cells.get(DES_ROW, 0).setValue(TextResource.localize("KDR002_11"));
 		cells.get(DES_ROW, PRINT_DATE_COL).setValue(this.genDateText(query));
 		cells.get(DES_ROW, PRINT_EXT_CONDITION_COL).setValue(this.generateExtractionCondition(query));
+		cells.get(DES_ROW, PRINT_EXT_TEXT).setValue(TextResource.localize("KDR002_68"));
+		
 		cells.get(HEADER_ROW, 0).setValue(TextResource.localize("KDR002_12"));
 		cells.get(HEADER_ROW, 2).setValue(TextResource.localize("KDR002_13"));
 		cells.get(HEADER_ROW, 3).setValue(TextResource.localize("KDR002_56"));
@@ -989,12 +993,9 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		if (query.isExtCondition()) {
 			ExtractionConditionSetting extCondition = query.getExtractionCondtionSetting().get();
 			result = TextResource.localize("KDR002_66") + extCondition.getDays() + " "
-					+ TextResource.localize("KDR002_67");
-			result = result
-					+ (EnumAdaptor.valueOf(extCondition.getComparisonConditions().value, ComparisonConditions.class)
+					+ TextResource.localize("KDR002_67") + (EnumAdaptor.valueOf(extCondition.getComparisonConditions().value, ComparisonConditions.class)
 							.equals(ComparisonConditions.UNDER) ? TextResource.localize("KDR002_47")
-									: TextResource.localize("KDR002_48"))
-					+ TextResource.localize("KDR002_68");
+									: TextResource.localize("KDR002_48"));
 		}
 		return result;
 	}
