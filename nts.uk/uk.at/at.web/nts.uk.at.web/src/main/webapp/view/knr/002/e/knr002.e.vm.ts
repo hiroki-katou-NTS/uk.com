@@ -101,6 +101,7 @@ module nts.uk.at.view.knr002.e {
                     primaryKey: 'smallClassification',
                     virtualization: true,
                     virtualizationMode: 'continuous',
+                    rowVirtualization: true,
                     columns: [
                         { headerText: getText("KNR002_136"), key: 'majorClassification', dataType: 'string', width: '110px'},
                         { headerText: getText("KNR002_137"), key: 'smallClassification', dataType: 'string', width: '140px'},
@@ -227,7 +228,7 @@ module nts.uk.at.view.knr002.e {
                     vm.loadInitData();
                     vm.selectedCode(selectedCode);
                 })
-                .fail((res: any) => console.log(res))
+                .fail((err: any) => nts.uk.ui.dialog.error({ messageId: err.messageId }))
                 .always(() => blockUI.clear());
             }
 

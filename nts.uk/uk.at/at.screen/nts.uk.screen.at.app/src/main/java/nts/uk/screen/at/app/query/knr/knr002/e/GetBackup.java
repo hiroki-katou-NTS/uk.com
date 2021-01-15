@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.record.app.command.knr.knr002.e.WriteToBackupCommand;
 import nts.uk.ctx.at.record.app.command.knr.knr002.e.WriteToBackupCommandHandler;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.TimeRecordSetFormatList;
@@ -37,6 +38,10 @@ public class GetBackup {
 		
 		// 1:get*（契約コード、就業情報端末コード）：タイムレコード設定フォーマットリスト
 		Optional<TimeRecordSetFormatList> timeRecordSetFormatList = repository.findSetFormat(empInfoTerCode, contractCode);
+		
+		if (!timeRecordSetFormatList.isPresent()) {
+			throw new BusinessException("Msg_2113");
+		}
 		
 		WriteToBackupCommand command = new WriteToBackupCommand(timeRecordSetFormatList.get(), empInfoTerCode, contractCode);
 		
