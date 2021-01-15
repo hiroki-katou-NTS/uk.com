@@ -4383,7 +4383,7 @@ var nts;
             ui.viewModelApplied = $.Callbacks();
             // Kiban ViewModel
             var KibanViewModel = /** @class */ (function () {
-                function KibanViewModel(dialogOptions) {
+                function KibanViewModel() {
                     this.systemName = ko.observable("");
                     this.programName = ko.observable("");
                     // set page as view or modal
@@ -4391,7 +4391,7 @@ var nts;
                     // subscriber windows size
                     this.size = ko.observable({ width: window.innerWidth, height: window.innerHeight });
                     // show or hide header
-                    this.header = ko.observable(true);
+                    this.header = ko.observable(null);
                     // show or hide notification
                     this.notification = ko.observable('');
                     var vm = this;
@@ -4401,7 +4401,6 @@ var nts;
                             return document.title;
                         }
                     });
-                    vm.errorDialogViewModel = new ui.errors.ErrorsViewModel(dialogOptions);
                     vm.mode
                         .subscribe(function (m) {
                         if (m === 'view') {
@@ -4413,63 +4412,51 @@ var nts;
                             $('body>div:first-child').removeClass('view');
                         }
                     });
-                    vm.header
-                        .subscribe(function (c) {
-                        if (!c) {
-                            $('body #header').addClass('hidden');
-                        }
-                        else {
-                            $('body #header').removeClass('hidden');
-                        }
-                    });
                 }
+                KibanViewModel.prototype.initErrorModel = function (dialogOptions) {
+                    var vm = this;
+                    vm.errorDialogViewModel = new ui.errors.ErrorsViewModel(dialogOptions);
+                };
                 return KibanViewModel;
             }());
+            ui._viewModel = {
+                kiban: new KibanViewModel(),
+                content: null,
+                errors: null
+            };
             var init;
             (function (init) {
                 var _start;
                 _.extend(__viewContext, {
+                    transferred: uk.sessionStorage
+                        .getItem(uk.request.STORAGE_KEY_TRANSFER_DATA)
+                        .map(function (v) { return JSON.parse(v); }),
                     ready: function (callback) { return _start = callback; },
                     bind: function (content, dialogOptions) {
+                        var kiban = ui._viewModel.kiban;
                         var systemName = __viewContext.env.systemName;
-                        var kiban = new KibanViewModel(dialogOptions);
+                        kiban.initErrorModel(dialogOptions);
                         var isEmpty = ko.computed(function () { return !kiban.errorDialogViewModel.occurs(); });
                         // mock ready function
-                        _.extend(nts.uk.ui, { _viewModel: { kiban: kiban, content: content, errors: { isEmpty: isEmpty } } });
+                        _.extend(ui._viewModel, { content: content, errors: { isEmpty: isEmpty } });
                         $(function () {
-                            // update title of name
-                            kiban.systemName(systemName);
-                            // update mode of view
-                            kiban.mode(!uk.util.isInFrame() ? 'view' : 'modal');
-                            // update header 
-                            kiban.header(!__viewContext.noHeader);
-                            // update notification
-                            kiban.notification(__viewContext.program.operationSetting.message);
                             ui.viewModelBuilt.fire(ui._viewModel);
                             // bind viewmodel to document body
                             ko.applyBindings(ui._viewModel, document.body);
                             ui.viewModelApplied.fire(ui._viewModel);
+                            // update title of name
+                            kiban.systemName(systemName);
+                            // update mode of view
+                            kiban.mode(!uk.util.isInFrame() ? 'view' : 'modal');
+                            // update header
+                            if (kiban.header() === null) {
+                                kiban.header(!__viewContext.noHeader || (kiban.mode() === 'view'));
+                            }
+                            // update notification
+                            kiban.notification(__viewContext.program.operationSetting.message);
                             // off event reset for class reset-not-apply
                             $(".reset-not-apply").find(".reset-element").off("reset");
                             nts.uk.cookie.remove("startfrommenu", { path: "/" });
-                            $('div[id^=functions-area]')
-                                .each(function (__, e) {
-                                if (!e.classList.contains('functions-area')) {
-                                    ko.applyBindingsToNode(e, {
-                                        'ui-function-bar': e.className.match(/bottom$/) ? 'bottom' : 'top',
-                                        title: e.getAttribute('data-title') || true,
-                                        back: e.getAttribute('data-url')
-                                    }, ui._viewModel);
-                                    e.removeAttribute('data-url');
-                                    e.removeAttribute('data-title');
-                                }
-                            });
-                            $('div[id^=contents-area]')
-                                .each(function (__, e) {
-                                if (!e.classList.contains('contents-area')) {
-                                    ko.applyBindingsToNode(e, { 'ui-contents': 0 }, ui._viewModel);
-                                }
-                            });
                         });
                         // update size
                         $(window)
@@ -4579,12 +4566,6 @@ var nts;
                     });
                 };
                 $(function () {
-                    _.extend(__viewContext, {
-                        noHeader: (__viewContext.noHeader === true) || $("body").hasClass("no-header"),
-                        transferred: uk.sessionStorage
-                            .getItem(uk.request.STORAGE_KEY_TRANSFER_DATA)
-                            .map(function (v) { return JSON.parse(v); })
-                    });
                     ui.documentReady.fire();
                     if ($(".html-loading").length <= 0) {
                         startP();
@@ -5469,7 +5450,7 @@ var nts;
                  *  Public API
                 **/
                 function errorsViewModel() {
-                    return nts.uk.ui._viewModel.kiban.errorDialogViewModel;
+                    return nts.uk.ui._viewModel.kiban.errorDialogViewModel || new ErrorsViewModel();
                 }
                 errors_1.errorsViewModel = errorsViewModel;
                 function show() {
@@ -37066,9 +37047,13 @@ var nts;
                 });
                 BaseViewModel.prototype.$window = Object.defineProperties({}, {
                     mode: {
-                        get: function () {
-                            return window === window.top ? 'view' : 'modal';
-                        }
+                        value: nts.uk.ui._viewModel.kiban.mode
+                    },
+                    title: {
+                        value: nts.uk.ui._viewModel.kiban.title
+                    },
+                    header: {
+                        value: nts.uk.ui._viewModel.kiban.header
                     },
                     size: {
                         value: $size
@@ -50513,24 +50498,36 @@ var nts;
                                 return '';
                             }
                         });
-                        nts.uk.sessionStorage
-                            .getItem(MENU_SET)
-                            .ifEmpty(function () {
-                            vm
-                                .$ajax('com', "/sys/portal/webmenu/finddetails")
-                                .then(function (data) { return nts.uk.sessionStorage.setItem(MENU_SET, JSON.stringify(data)); })
-                                .then(function () { return vm.loadData(); });
-                        });
-                        vm
-                            .$ajax('com', '/sys/portal/webmenu/username')
-                            .then(function (data) { return vm.userName(data); });
-                        vm
-                            .$ajax('com', '/sys/portal/webmenu/companies')
-                            .then(function (data) { return vm.companies(data); });
                     };
                     HeaderViewModel.prototype.mounted = function () {
                         var vm = this;
                         vm.loadData();
+                        ko.computed({
+                            read: function () {
+                                var show = ko.unwrap(vm.$window.header);
+                                if (show === true) {
+                                    vm.$el.classList.remove('hidden');
+                                    nts.uk.sessionStorage
+                                        .getItem(MENU_SET)
+                                        .ifEmpty(function () {
+                                        vm
+                                            .$ajax('com', "/sys/portal/webmenu/finddetails")
+                                            .then(function (data) { return nts.uk.sessionStorage.setItem(MENU_SET, JSON.stringify(data)); })
+                                            .then(function () { return vm.loadData(); });
+                                    });
+                                    vm
+                                        .$ajax('com', '/sys/portal/webmenu/username')
+                                        .then(function (data) { return vm.userName(data); });
+                                    vm
+                                        .$ajax('com', '/sys/portal/webmenu/companies')
+                                        .then(function (data) { return vm.companies(data); });
+                                }
+                                else {
+                                    vm.$el.classList.add('hidden');
+                                }
+                            },
+                            disposeWhenNodeIsRemoved: vm.$el
+                        });
                         $(window)
                             .on('keyup', function (evt) { return vm.ctrl(evt.ctrlKey); })
                             .on('keydown', function (evt) { return vm.ctrl(evt.ctrlKey); });
@@ -50678,36 +50675,55 @@ var nts;
         (function (ui) {
             var notification;
             (function (notification) {
+                var SKEY = 'notification';
                 var NotificationViewModel = /** @class */ (function (_super) {
                     __extends(NotificationViewModel, _super);
                     function NotificationViewModel() {
-                        return _super !== null && _super.apply(this, arguments) || this;
+                        var _this = _super !== null && _super.apply(this, arguments) || this;
+                        _this.hidden = ko.observable(true);
+                        return _this;
                     }
                     NotificationViewModel.prototype.created = function () {
                         var vm = this;
+                        // get notification from viewContext
                         vm.notification = nts.uk.ui._viewModel.kiban.notification;
+                        vm.$window
+                            .storage(SKEY)
+                            .then(function (old) {
+                            if (old) {
+                                vm.hidden(old.hide);
+                            }
+                        });
                     };
                     NotificationViewModel.prototype.mounted = function () {
                         var vm = this;
+                        vm.$el.classList.add('hidden');
                         ko.computed({
                             read: function () {
+                                var hidden = ko.unwrap(vm.hidden);
                                 var notif = ko.unwrap(vm.notification);
-                                if (!notif) {
-                                    vm.$el.classList.add('hidden');
-                                }
-                                else {
-                                    vm.$el.classList.remove('hidden');
-                                }
+                                vm.$window
+                                    .storage(SKEY)
+                                    .then(function (old) {
+                                    if (!notif || (old && notif === old.notif && hidden) || hidden) {
+                                        vm.$el.classList.add('hidden');
+                                        return true;
+                                    }
+                                    else {
+                                        vm.$el.classList.remove('hidden');
+                                        return false;
+                                    }
+                                })
+                                    .then(function (hide) { return vm.$window.storage(SKEY, { notif: notif, hide: hide }); });
                                 // update position & size of all relative element
                                 $(window).trigger('wd.resize');
                             },
                             disposeWhenNodeIsRemoved: vm.$el
                         });
-                        // query notification via api at here
                     };
                     NotificationViewModel.prototype.hide = function () {
                         var vm = this;
-                        vm.notification('');
+                        vm.hidden(true);
                     };
                     NotificationViewModel = __decorate([
                         component({
@@ -51198,6 +51214,7 @@ var nts;
                     function MasterUINotificationBindingHandler() {
                     }
                     MasterUINotificationBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        element.classList.add('hidden');
                         element.removeAttribute('data-bind');
                         element.setAttribute('id', 'operation-info');
                         if (ko.components.isRegistered('ui-notification')) {
@@ -51219,9 +51236,10 @@ var nts;
                     function MasterUIHeaderBindingHandler() {
                     }
                     MasterUIHeaderBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        element.removeAttribute('data-bind');
                         element.id = "header";
                         element.classList.add('header');
+                        element.classList.add('hidden');
+                        element.removeAttribute('data-bind');
                         if (ko.components.isRegistered('ui-header')) {
                             ko.applyBindingsToNode(element, { component: 'ui-header' });
                         }
@@ -51241,14 +51259,33 @@ var nts;
                     function MasterUIBindingHandler() {
                     }
                     MasterUIBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        element.removeAttribute('data-bind');
-                        element.id = 'master-content';
                         element.classList.add('master-content');
-                        // element.style.height = `calc(100vh - ${element.getBoundingClientRect().top}px)`;
+                        element.removeAttribute('data-bind');
+                        if (!element.id) {
+                            element.id = 'master-content';
+                        }
+                        $(element)
+                            .find('div[id^=functions-area]')
+                            .each(function (__, e) {
+                            if (!e.classList.contains('functions-area')) {
+                                ko.applyBindingsToNode(e, {
+                                    'ui-function-bar': e.id.match(/bottom$/) ? 'bottom' : 'top',
+                                    title: e.getAttribute('data-title') || true,
+                                    back: e.getAttribute('data-url')
+                                }, bindingContext);
+                                e.removeAttribute('data-url');
+                                e.removeAttribute('data-title');
+                            }
+                        });
+                        $(element)
+                            .find('div[id^=contents-area]')
+                            .each(function (__, e) {
+                            if (!e.classList.contains('contents-area')) {
+                                var oldBinding = e.getAttribute('data-bind') || "";
+                                ko.applyBindingsToNode(e, { 'ui-contents': 0 }, bindingContext);
+                            }
+                        });
                         return { controlsDescendantBindings: false };
-                    };
-                    MasterUIBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        // update notification at here
                     };
                     MasterUIBindingHandler = __decorate([
                         handler({
@@ -51274,7 +51311,9 @@ var nts;
                         element.classList.add('functions-area');
                         // top area
                         if (!$(element).prev().length && position === 'top') {
-                            element.id = "functions-area";
+                            if (!element.id) {
+                                element.id = "functions-area";
+                            }
                             if (title && mode === 'view') {
                                 var $title = document.createElement('div');
                                 $title.classList.add('pg-name');
@@ -51309,7 +51348,9 @@ var nts;
                             }
                         }
                         else {
-                            element.id = "functions-area-bottom";
+                            if (!element.id) {
+                                element.id = "functions-area-bottom";
+                            }
                             ko.applyBindingsToNode(element, null, bindingContext);
                             // button error in function bar
                             ko.applyBindingsToNode($('<button>').prependTo(element).get(0), { 'c-error': '' }, bindingContext);
@@ -51331,9 +51372,11 @@ var nts;
                     function MasterUIContentBindingHandler() {
                     }
                     MasterUIContentBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        element.removeAttribute('data-bind');
-                        element.id = 'contents-area';
+                        if (!element.id) {
+                            element.id = 'contents-area';
+                        }
                         element.classList.add('contents-area');
+                        element.removeAttribute('data-bind');
                         element.style.height = "calc(100vh - " + (element.getBoundingClientRect().top + (valueAccessor() || ($(element).parent().hasClass('master-content') ? 0 : 20))) + "px)";
                         return { controlsDescendantBindings: false };
                     };
@@ -51346,6 +51389,7 @@ var nts;
                             .then(function () {
                             element.classList.add('padding-0');
                             element.classList.add('overflow-hidden');
+                            element.style.height = '1px';
                         })
                             .then(function () {
                             var mb = $(element).next();
@@ -51362,8 +51406,10 @@ var nts;
                             }
                         })
                             .always(function () {
+                            element.classList.remove('hidden');
                             element.classList.remove('padding-0');
                             element.classList.remove('overflow-hidden');
+                            element.style.display = '';
                         });
                     };
                     MasterUIContentBindingHandler = __decorate([
