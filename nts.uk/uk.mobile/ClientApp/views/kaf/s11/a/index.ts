@@ -87,6 +87,10 @@ export class KafS11AComponent extends KafS00ShrComponent {
     public displayInforWhenStarting: any = null;
     public workTimeLstFullData: Array<any> = [];
     public isValidateAll: boolean = true;
+    public user: any = null;
+    public recHolidayMngLst: Array<any> = [];
+    public absHolidayMngLst: Array<any> = [];
+    public absWorkMngLst: Array<any> = [];
     
     public created() {
         const vm = this;
@@ -109,16 +113,15 @@ export class KafS11AComponent extends KafS00ShrComponent {
         }];
         vm.$mask('show');
         if (vm.mode == ScreenMode.NEW) {
-            let user = null;
             vm.$auth.user.then((userData: any) => {
-                user = userData;
+                vm.user = userData;
 
                 return vm.loadCommonSetting(AppType.COMPLEMENT_LEAVE_APPLICATION);
             }).then((data: any) => {
-                vm.updateKaf000_A_Params(user);
+                vm.updateKaf000_A_Params(vm.user);
                 vm.updateKaf000_C_Params(true);
                 let newMode = vm.mode == ScreenMode.NEW ? true : false,
-                    employeeID = user.employeeId,
+                    employeeID = vm.user.employeeId,
                     dateLst = [],
                     displayInforWhenStarting = null,
                     appDispInfoStartupCmd = vm.appDispInfoStartupOutput,
@@ -180,7 +183,7 @@ export class KafS11AComponent extends KafS00ShrComponent {
             });
         }
         if (vm.displayInforWhenStarting.abs) {
-            _.forEach(vm.displayInforWhenStarting.abs.leaveComDayOffManaOld, (item) => {
+            _.forEach(vm.displayInforWhenStarting.abs.leaveComDayOffMana, (item) => {
                 item.outbreakDay = new Date(item.outbreakDay).toISOString();
                 item.dateOfUse = new Date(item.dateOfUse).toISOString();
             });
@@ -247,6 +250,7 @@ export class KafS11AComponent extends KafS00ShrComponent {
                         end: timeRange2.timeZone.endTime
                     };    
                 }
+                vm.recHolidayMngLst = vm.displayInforWhenStarting.rec.leaveComDayOffMana;
             }
         }
     }
@@ -286,6 +290,8 @@ export class KafS11AComponent extends KafS00ShrComponent {
                         end: timeRange2.timeZone.endTime
                     };    
                 }
+                vm.absHolidayMngLst = vm.displayInforWhenStarting.abs.leaveComDayOffMana;
+                vm.absWorkMngLst = vm.displayInforWhenStarting.abs.payoutSubofHDManagements;
             }
         }
     }
@@ -692,6 +698,14 @@ export class KafS11AComponent extends KafS00ShrComponent {
         return vm.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr == 1;
     }
 
+    get dispComplementLeaveAtr() {
+        const vm = this;
+        if (vm.mode == ScreenMode.DETAIL) {
+            return false;
+        }
+
+        return true;
+    }
     
     get enablePrePostAtr() {
         const vm = this;
@@ -825,10 +839,13 @@ export class KafS11AComponent extends KafS00ShrComponent {
 
     public openKDLS36Complement() {
         const vm = this;
-        let param: any = {
+        let actualContentDispList = vm.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst,
+            param: any = {
+                employeeId: vm.user.employeeId,
+                period: { startDate: null, endDate: null },
                 targetSelectionAtr: 1,
-                actualContentDisplayList: vm.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst,
-                managementData: [],
+                actualContentDisplayList: actualContentDispList ? actualContentDispList : [],
+                managementData: vm.recHolidayMngLst,
             },
             workType: any = _.find(vm.displayInforWhenStarting.applicationForWorkingDay.workTypeList, 
             (o) => o.workTypeCode == vm.complementWorkInfo.workTypeCD);
@@ -838,16 +855,20 @@ export class KafS11AComponent extends KafS00ShrComponent {
             param.daysUnit = 0.5;
         }
         vm.$modal('kdls36', param).then((result: any) => {
-            console.log(result);
+            vm.recHolidayMngLst = result.mngDisp;
+            vm.formatMngLst();
         });
     }
 
     public openKDLS36Leave() {
         const vm = this;
-        let param: any = {
+        let actualContentDispList = vm.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst,
+            param: any = {
+                employeeId: vm.user.employeeId,
+                period: { startDate: null, endDate: null },
                 targetSelectionAtr: 1,
-                actualContentDisplayList: vm.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst,
-                managementData: [],
+                actualContentDisplayList: actualContentDispList ? actualContentDispList : [],
+                managementData: vm.absHolidayMngLst,
             },
             workType: any = _.find(vm.displayInforWhenStarting.applicationForHoliday.workTypeList, 
             (o) => o.workTypeCode == vm.leaveWorkInfo.workTypeCD);
@@ -857,16 +878,20 @@ export class KafS11AComponent extends KafS00ShrComponent {
             param.daysUnit = 0.5;
         }
         vm.$modal('kdls36', param).then((result: any) => {
-            console.log(result);
+            vm.absHolidayMngLst = result.mngDisp;
+            vm.formatMngLst();
         });
     }
 
     public openKDLS35Leave() {
         const vm = this;
-        let param: any = {
+        let actualContentDispList = vm.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst,
+            param: any = {
+                employeeId: vm.user.employeeId,
+                period: { startDate: null, endDate: null },
                 targetSelectionAtr: 1,
-                actualContentDisplayList: vm.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst,
-                managementData: [],
+                actualContentDisplayList: actualContentDispList ? actualContentDispList : [],
+                managementData: vm.absWorkMngLst,
             },
             workType: any = _.find(vm.displayInforWhenStarting.applicationForHoliday.workTypeList, 
             (o) => o.workTypeCode == vm.leaveWorkInfo.workTypeCD);
@@ -876,7 +901,24 @@ export class KafS11AComponent extends KafS00ShrComponent {
             param.daysUnit = 0.5;
         }
         vm.$modal('kdls35', param).then((result: any) => {
-            console.log(result);
+            vm.absWorkMngLst = result.mngDisp;
+            vm.formatMngLst();
+        });
+    }
+
+    private formatMngLst() {
+        const vm = this;
+        _.forEach(vm.recHolidayMngLst, (item) => {
+            item.outbreakDay = new Date(item.outbreakDay).toISOString();
+            item.dateOfUse = new Date(item.dateOfUse).toISOString();
+        });
+        _.forEach(vm.absHolidayMngLst, (item) => {
+            item.outbreakDay = new Date(item.outbreakDay).toISOString();
+            item.dateOfUse = new Date(item.dateOfUse).toISOString();
+        });
+        _.forEach(vm.absWorkMngLst, (item) => {
+            item.outbreakDay = new Date(item.outbreakDay).toISOString();
+            item.dateOfUse = new Date(item.dateOfUse).toISOString();
         });
     }
 
@@ -916,9 +958,9 @@ export class KafS11AComponent extends KafS00ShrComponent {
         }).then((result: any) => {
             if (result) {
                 // đăng kí 
-                return vm.$http.post('at', API.submit, command).then(() => {
+                return vm.$http.post('at', API.submit, command).then((data: any) => {
                     return vm.$modal.info({ messageId: 'Msg_15'}).then(() => {
-                        return true;
+                        return data.data;
                     });	
                 });
             }
@@ -926,12 +968,12 @@ export class KafS11AComponent extends KafS00ShrComponent {
             if (result) {
                 // gửi mail sau khi đăng kí
                 // return vm.$ajax('at', API.sendMailAfterRegisterSample);
-                return true;
+                return result;
             }
         }).then((result: any) => {
             if (result) {
                 // vm.$goto('kafs11a1', { mode: vm.mode, appID: result.data.appID });
-                vm.$goto('kafs11a1', { mode: vm.mode, appID: '' });
+                vm.$goto('kafs11a1', { mode: vm.mode, appID: result.appID });
             }
         }).catch((failData) => {
             // xử lý lỗi nghiệp vụ riêng
@@ -993,7 +1035,10 @@ export class KafS11AComponent extends KafS00ShrComponent {
         const vm = this;
         let cmd: any = {
             newMode: vm.mode == ScreenMode.NEW,
-            displayInforWhenStarting: vm.displayInforWhenStarting
+            displayInforWhenStarting: vm.displayInforWhenStarting,
+            recHolidayMngLst: vm.recHolidayMngLst,
+            absHolidayMngLst: vm.absHolidayMngLst,
+            absWorkMngLst: vm.absWorkMngLst
         };
         if (vm.complementLeaveAtr == ComplementLeaveAtr.COMPLEMENT_LEAVE || vm.complementLeaveAtr == ComplementLeaveAtr.COMPLEMENT) {
             cmd.rec = {
@@ -1040,6 +1085,7 @@ export class KafS11AComponent extends KafS00ShrComponent {
                     opAppReason: vm.opAppReason,
                     opAppStandardReasonCD: vm.opAppStandardReasonCD
                 };
+                cmd.recOldHolidayMngLst = [];
             }
             if (vm.displayInforWhenStarting.abs) {
                 cmd.abs.application = vm.displayInforWhenStarting.abs.application;
@@ -1047,6 +1093,8 @@ export class KafS11AComponent extends KafS00ShrComponent {
                     opAppReason: vm.opAppReason,
                     opAppStandardReasonCD: vm.opAppStandardReasonCD
                 };
+                cmd.absOldHolidayMngLst = [];
+                cmd.absOldWorkMngLst = [];
             }
         }
         if (vm.dispComplementContent) {
