@@ -1,9 +1,10 @@
 import { _, Vue } from '@app/provider';
 import { component, Watch } from '@app/core/component';
-import { KafS00SubP3Component } from 'views/kaf/s00/sub/p3';
 import { KafS00SubP1Component } from 'views/kaf/s00/sub/p1';
+import { KafS00SubP2Component } from 'views/kaf/s00/sub/p2';
+import { KafS00SubP3Component } from 'views/kaf/s00/sub/p3';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/s00';
-import { TimeZoneWithWorkNo, BreakTime, TimeZoneNew, WorkHoursDto, AppHolidayWork, InfoWithDateApplication, AppHdWorkDispInfo , TimeZone, ParamBreakTime, BreakTimeZoneSetting} from '../a/define.interface';
+import { TimeZoneWithWorkNo, BreakTime, TimeZoneNew, WorkHoursDto, AppHdWorkDispInfo, ParamBreakTime } from '../a/define.interface';
 import { KafS10Component} from '../a/index';
 
 @component({
@@ -18,14 +19,18 @@ import { KafS10Component} from '../a/index';
         //         timeRange: true,
         //     }
         // },
-        // workInfo: {
-        //     workType: {
-        //         required: true,
-        //     },
-        //     workTime: {
-        //         required: true,
-        //     }
-        // },
+        workInfo: {
+            workType: {
+                code: {
+                    required: true,
+                }
+            },
+            workTime: {
+                code: {
+                    required: true,
+                }
+            }
+        },
         workHours1: {
             required: true,
             timeRange: true,
@@ -37,8 +42,9 @@ import { KafS10Component} from '../a/index';
     },
     constraints: [],
     components: {
-        'kafs00subp3': KafS00SubP3Component,
         'kafs00subp1': KafS00SubP1Component,
+        'kafs00subp2': KafS00SubP2Component,
+        'kafs00subp3': KafS00SubP3Component,
         'kafs00-a': KafS00AComponent,
         'kafs00-b': KafS00BComponent,
         'kafs00-c': KafS00CComponent
@@ -86,7 +92,9 @@ export class KafS10Step1Component extends Vue {
 
             if (!self.$appContext.modeNew && !inputByUser) { // bind from appovertime within update mode
                 let appHolidayWork = self.$appContext.model.appHolidayWork;
-                self.createWorkInfo(_.get(appHolidayWork, 'workInformation.workType'), _.get(appHolidayWork, 'workInformation.workTime'));
+                let nameType = _.get(appHdWorkDispInfo, 'hdWorkDispInfoWithDateOutput.initWorkTypeName');
+                let nameTime = _.get(appHdWorkDispInfo, 'hdWorkDispInfoWithDateOutput.initWorkTimeName');
+                self.createWorkInfo(_.get(appHolidayWork, 'workInformation.workType'), _.get(appHolidayWork, 'workInformation.workTime'), nameType, nameTime);
                 self.createBreakTime(_.map(_.get(appHolidayWork, 'breakTimeList'), (x: any) => {
                     
                     return {
@@ -100,7 +108,9 @@ export class KafS10Step1Component extends Vue {
             }
             let codeType = _.get(appHdWorkDispInfo, 'hdWorkDispInfoWithDateOutput.initWorkType');
             let codeTime = _.get(appHdWorkDispInfo, 'hdWorkDispInfoWithDateOutput.initWorkTime');
-            self.createWorkInfo(codeType, codeTime);
+            let nameType = _.get(appHdWorkDispInfo, 'hdWorkDispInfoWithDateOutput.initWorkTypeName');
+            let nameTime = _.get(appHdWorkDispInfo, 'hdWorkDispInfoWithDateOutput.initWorkTimeName');
+            self.createWorkInfo(codeType, codeTime, nameType, nameTime);
             self.createBreakTime(_.get(appHdWorkDispInfo, 'hdWorkDispInfoWithDateOutput.breakTimeZoneSettingList.timeZones'));
 
             // load work hours
@@ -180,7 +190,7 @@ export class KafS10Step1Component extends Vue {
 
     }
 
-    public createWorkInfo(codeType?: string, codeTime?: string) {
+    public createWorkInfo(codeType?: string, codeTime?: string, nameType?: string, nameTime?: string) {
         const self = this;
 
         let workType = {} as Work;
@@ -190,17 +200,22 @@ export class KafS10Step1Component extends Vue {
         workTime.code = codeTime || '';
         let appHdWorkDispInfo = self.$appContext.model.appHdWorkDispInfo;
         if (appHdWorkDispInfo) {
-            let workTypes = appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.workTypeList;
-            let resultWorkType = 
-                _.find(workTypes, (i: any) => i.workTypeCode == workType.code);
-            workType.name = resultWorkType ? (resultWorkType.name || '')  : self.$i18n('KAFS05_55');
-
-            let workTimes = appHdWorkDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst;
-            let resultWorkTime = 
-                    _.find(workTimes, (i: any) => i.worktimeCode == workTime.code);
-            console.log(resultWorkTime);
-            workTime.name = resultWorkTime ? (_.get(resultWorkTime, 'workTimeDisplayName.workTimeName') || '') : self.$i18n('KAFS05_55');
-  
+            if (nameType) {
+                workType.name = nameType;
+            } else {
+                let workTypes = appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.workTypeList;
+                let resultWorkType = 
+                    _.find(workTypes, (i: any) => i.workTypeCode == workType.code);
+                workType.name = resultWorkType ? (resultWorkType.name || '')  : self.$i18n('KAFS05_55');
+            }
+            if (nameTime) {
+                workTime.name = nameTime;
+            } else {
+                let workTimes = appHdWorkDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst;
+                let resultWorkTime = 
+                        _.find(workTimes, (i: any) => i.worktimeCode == workTime.code);
+                workTime.name = resultWorkTime ? (_.get(resultWorkTime, 'workTimeDisplayName.workTimeName') || '') : self.$i18n('KAFS05_55');
+            }
         }
         let workInfo = {} as WorkInfo;
         workInfo.workType = workType;
@@ -212,7 +227,7 @@ export class KafS10Step1Component extends Vue {
     @Watch('workHours1', {deep: true})
     public changeWorkHours1(data: ValueTime) {
         const self = this;
-        if (_.isNil(_.get(data,'start')) || _.isNil(_.get(data, 'end')) || self.isFirstModeUpdate) {
+        if (_.isNil(_.get(data,'start')) || _.isNil(_.get(data, 'end')) || (self.isFirstModeUpdate && !self.$appContext.modeNew)) {
             self.isFirstModeUpdate = false;
 
             return;
@@ -226,14 +241,31 @@ export class KafS10Step1Component extends Vue {
         command.startTime = self.workHours1.start;
         command.endTime = self.workHours1.end;
         command.appHdWorkDispInfo = parent.model.appHdWorkDispInfo;
-
         parent.getBreakTime(command);
-        
     }
 
     @Watch('workHours2', {deep: true})
     public changeWorkHours2(data: any) {
         console.log(data);
+    }
+
+    // bind when change date, select worktype or worktime
+    public createHoursWorkTime() {
+        const self = this;
+        if (!_.isNil(self.workHours1)) {
+            self.workInfo.workTime.time = self.handleTimeWithDay(self.workHours1.start) + '～' + self.handleTimeWithDay(self.workHours1.end);
+        }
+    }
+
+    public handleTimeWithDay(time: number) {
+        const self = this;
+        const nameTime = '当日';
+        if (!time) {
+
+            return;
+        }
+
+        return (0 <= time && time < 1440) ? nameTime + self.$dt.timewd(time) : self.$dt.timewd(time);
     }
 
     public getWorkHours1() {

@@ -16,5 +16,9 @@ public class AcquireWorkingHoursDto {
 	private List<WorkTimeSetting> listWorkTime;
 
 	private List<PredetemineTimeSetting> predetemineTimeSettings;
+	
+	private boolean hasWorkTimeInModeWorkPlace;
+	
+	private boolean modeCompany; // company or workplace
 
 }
