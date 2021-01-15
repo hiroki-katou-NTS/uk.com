@@ -25,6 +25,14 @@ export class CmmS45ShrComponentsApp10Component extends Vue {
 
     public created() {
         const vm = this;
+        vm.init();
+        vm.$watch('params.appDispInfoStartupOutput', (newV, oldV) => {
+            vm.init();
+        });
+    }
+
+    private init() {
+        const vm = this;
         let command = {
             appID: vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application.appID,
             appDispInfoStartupDto: vm.params.appDispInfoStartupOutput
@@ -148,7 +156,7 @@ export class CmmS45ShrComponentsApp10Component extends Vue {
     }
 
     // ※15
-    private cdtLeaveDailyType(conditionType: number) {
+    public cdtLeaveDailyType(conditionType: number) {
         const vm = this;
         if (!vm.params.appDetail) {
             return false;

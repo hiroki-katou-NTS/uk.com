@@ -141,6 +141,7 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 			ApplicationSetting applicationSetting) {
 		if(rec.isPresent() && abs.isPresent()) {
 			//振休申請・振出申請の同時登録(đăng ký đồng thời đơn xin nghỉ bù/ đơn xin làm bù)
+			leaveComDayOffMana_Rec.addAll(leaveComDayOffMana_Abs);
 			this.registerRecAndAbs(companyId, baseDate, rec, abs, mailServerSet, approvalLst, leaveComDayOffMana_Rec, holidayManage, applicationSetting);
 		}else if(rec.isPresent()){
 			//振出申請の登録(đăng ký đơn xin làm bù)

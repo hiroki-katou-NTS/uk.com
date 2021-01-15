@@ -4,6 +4,8 @@ module nts.uk.at.view.kaf011 {
 	import getText = nts.uk.resource.getText;
 	import block = nts.uk.ui.block;
 	import ajax = nts.uk.request.ajax;
+	import windows = nts.uk.ui.windows;
+	
 	/** 振出申請 */
 	export class RecruitmentApp {
 		appType: number; //0: Rec-振出, 1: Abs-振休
@@ -190,13 +192,13 @@ module nts.uk.at.view.kaf011 {
 				
 		openKDL003() {
 			let self = this;
-			nts.uk.ui.windows.setShared('parentCodes',{
+			windows.setShared('parentCodes',{
 										workTypeCodes: _.map(self.workTypeList(),'workTypeCode'),
 										selectedWorkTypeCode: self.workInformation.workType(), 
 										selectedWorkTimeCode: self.workInformation.workTime()
 									});
-			nts.uk.ui.windows.sub.modal( '/view/kdl/003/a/index.xhtml').onClosed(() => {
-				let data = nts.uk.ui.windows.getShared('childData');
+			windows.sub.modal( '/view/kdl/003/a/index.xhtml').onClosed(() => {
+				let data = windows.getShared('childData');
 					if(data){
 						
 						self.workInformation.workType(data.selectedWorkTypeCode);
@@ -233,7 +235,7 @@ module nts.uk.at.view.kaf011 {
 					$("#absAppDate").trigger("validate");	
 				}
 			}else{
-				nts.uk.ui.windows.setShared('KDL036_PARAMS', {
+				windows.setShared('KDL036_PARAMS', {
 					employeeId: self.application.employeeIDLst()[0],
 					period: {
 						startDate: moment(self.application.appDate()).format('YYYY/MM/DD'),
@@ -244,8 +246,8 @@ module nts.uk.at.view.kaf011 {
 					actualContentDisplayList: self.displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst,
 					managementData: self.leaveComDayOffMana()
 				});
-				nts.uk.ui.windows.sub.modal( '/view/kdl/036/a/index.xhtml').onClosed(() => {
-					let data = nts.uk.ui.windows.getShared('KDL036_RESULT');
+				windows.sub.modal( '/view/kdl/036/a/index.xhtml').onClosed(() => {
+					let data = windows.getShared('KDL036_RESULT');
 					if(data){
 						let tg: SubWorkSubHolidayLinkingMng[] = [];
 						_.forEach(data, item =>{
@@ -330,7 +332,7 @@ module nts.uk.at.view.kaf011 {
 			if(self.application.appDate() == "" ){
 				$("#absAppDate").trigger("validate");	
 			}else{
-				nts.uk.ui.windows.setShared('KDL035_PARAMS', {
+				windows.setShared('KDL035_PARAMS', {
 					employeeId: self.application.employeeIDLst()[0],
 					period: {
 						startDate: moment(self.application.appDate()).format('YYYY/MM/DD'),
@@ -341,8 +343,8 @@ module nts.uk.at.view.kaf011 {
 					actualContentDisplayList: self.displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst,
 					managementData: self.payoutSubofHDManagements()
 				});
-				nts.uk.ui.windows.sub.modal( '/view/kdl/035/a/index.xhtml').onClosed(() => {
-					let data = nts.uk.ui.windows.getShared('KDL035_RESULT');
+				windows.sub.modal( '/view/kdl/035/a/index.xhtml').onClosed(() => {
+					let data = windows.getShared('KDL035_RESULT');
 					if(data){
 						let tg: SubWorkSubHolidayLinkingMng[] = [];
 						_.forEach(data, item =>{

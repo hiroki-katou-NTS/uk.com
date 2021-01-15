@@ -161,16 +161,15 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 		register() {
 			const vm = this;
 			if(!vm.triggerValidate()){
-				let self = this;
-				let data = self.displayInforWhenStarting();
-					data.rec = self.appCombinaSelected() != 2 ? ko.toJS(self.recruitmentApp): null;
+				let data = vm.displayInforWhenStarting();
+					data.rec = vm.appCombinaSelected() != 2 ? ko.toJS(vm.recruitmentApp): null;
 					if(data.rec){
 						data.rec.application.opAppStartDate = data.rec.application.opAppEndDate = data.rec.application.appDate = moment(data.rec.application.appDate).format('YYYY/MM/DD');
 						_.remove(data.rec.workingHours, function(n: any) {
 							return n.timeZone.startTime == undefined || n.timeZone.startTime == undefined;  
 						}); 
 					}
-					data.abs = self.appCombinaSelected() != 1 ? ko.toJS(self.absenceLeaveApp): null;
+					data.abs = vm.appCombinaSelected() != 1 ? ko.toJS(vm.absenceLeaveApp): null;
 					if(data.abs){
 						data.abs.application.opAppStartDate = data.abs.application.opAppEndDate = data.abs.application.appDate = moment(data.abs.application.appDate).format('YYYY/MM/DD');
 						_.remove(data.abs.workingHours, function(n: any) {

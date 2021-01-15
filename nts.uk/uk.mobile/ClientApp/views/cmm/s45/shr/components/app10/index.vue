@@ -62,7 +62,7 @@
         <div v-for="(item, index) in params.appDetail.applicationForWorkingDay.leaveComDayOffMana" v-bind:key="index" 
             class="row pt-1 pb-1 border-bottom header-div">
             <div class="col-8">{{$dt(new Date(item.outbreakDay), 'YYYY/MM/DD(dd)')}}</div>
-            <div class="col-3">{{$dt(new Date(item.dayNumberUsed), 'YYYY/MM/DD(dd)')}}</div>
+            <div class="col-3">{{'KAFS11_31' | i18n(item.dayNumberUsed)}}</div>
         </div>
     </div>
     <!-- B5 -->
@@ -87,7 +87,7 @@
         </div>
         <div class="row pt-1 pb-1 border-0 header-div pl-0 pr-0">
             <div class="col-2">{{abs.workInformation.workType | i18n}}</div>
-            <div class="col-10">{{getWorkTypeName(abs.workInformation.workType, true) | i18n}}</div>
+            <div class="col-10">{{getWorkTypeName(abs.workInformation.workType, false) | i18n}}</div>
         </div>
         <div class="row pt-1 pb-1 border-0 header-div uk-text-dark-gray" style="font-size: 90%" v-if="cdtLeaveDailyType(1)">
             {{'KAFS11_11' | i18n}}
@@ -127,7 +127,7 @@
         <div v-for="(item, index) in params.appDetail.applicationForHoliday.leaveComDayOffMana" v-bind:key="index" 
             class="row pt-1 pb-1 border-bottom header-div">
             <div class="col-8">{{$dt(new Date(item.outbreakDay), 'YYYY/MM/DD(dd)')}}</div>
-            <div class="col-3">{{$dt(new Date(item.dayNumberUsed), 'YYYY/MM/DD(dd)')}}</div>
+            <div class="col-3">{{'KAFS11_31' | i18n(item.dayNumberUsed)}}</div>
         </div>
     </div>
     <!-- B10 -->
@@ -142,7 +142,7 @@
         <div v-for="(item, index) in params.appDetail.applicationForHoliday.payoutSubofHDManagements" v-bind:key="index" 
             class="row pt-1 pb-1 border-bottom header-div">
             <div class="col-8">{{$dt(new Date(item.outbreakDay), 'YYYY/MM/DD(dd)')}}</div>
-            <div class="col-3">{{$dt(new Date(item.dayNumberUsed), 'YYYY/MM/DD(dd)')}}</div>
+            <div class="col-3">{{'KAFS11_31' | i18n(item.dayNumberUsed)}}</div>
         </div>
     </div>
 </div>

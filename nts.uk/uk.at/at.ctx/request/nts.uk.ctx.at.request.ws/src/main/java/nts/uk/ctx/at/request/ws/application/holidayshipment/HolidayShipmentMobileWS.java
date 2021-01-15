@@ -22,11 +22,8 @@ import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.P
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.PreUpdateErrorCheck;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.SaveHolidayShipmentCommandHandlerRef5;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.UpdateHolidayShipmentCommandHandlerRef5;
-import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.HolidayShipmentScreenAFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.DisplayInforWhenStarting;
-import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
@@ -63,9 +60,6 @@ public class HolidayShipmentMobileWS extends WebService {
 	
 	@Inject
 	private UpdateHolidayShipmentCommandHandlerRef5 updateHolidayShipmentCommandHandlerRef5;
-	
-	@Inject
-	private ApplicationRepository applicationRepository;
 	
 	@POST
 	@Path("start")
@@ -168,6 +162,7 @@ public class HolidayShipmentMobileWS extends WebService {
 	@POST
 	@Path("submit")
 	public ProcessResult submit(HdShipmentMobileCmd command) {
+		ProcessResult processResult = new ProcessResult();
 		String companyID = AppContexts.user().companyId();
 		DisplayInforWhenStarting displayInforWhenStarting = command.getDisplayInforWhenStarting();
 		AppDispInfoStartupOutput appDispInfoStartup = displayInforWhenStarting.appDispInfoStartup.toDomain();
@@ -176,18 +171,24 @@ public class HolidayShipmentMobileWS extends WebService {
 			// 振休振出申請（新規）登録処理
 			Optional<AbsenceLeaveApp> abs = command.abs == null ? Optional.empty() : Optional.of(command.abs.toDomainInsertAbs());
 			Optional<RecruitmentApp> rec = command.rec == null ? Optional.empty() : Optional.of(command.rec.toDomainInsertRec());
-			 saveHolidayShipmentCommandHandlerRef5.registrationApplicationProcess(
-					companyID,
-					abs,
-					rec,
-					appDispInfoStartup.getAppDispInfoWithDateOutput().getBaseDate(),
-					appDispInfoStartup.getAppDispInfoNoDateOutput().isMailServerSet(),
-					appDispInfoStartup.getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().get(),
-					CollectionUtil.isEmpty(command.getRecHolidayMngLst()) ? Collections.emptyList() : command.getRecHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()),
-					CollectionUtil.isEmpty(command.getAbsHolidayMngLst()) ? Collections.emptyList() : command.getAbsHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()),
-					CollectionUtil.isEmpty(command.getAbsWorkMngLst()) ? Collections.emptyList() : command.getAbsWorkMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()),
-					EnumAdaptor.valueOf(displayInforWhenStarting.holidayManage, ManageDistinct.class),
-					appDispInfoStartup.getAppDispInfoNoDateOutput().getApplicationSetting());
+			saveHolidayShipmentCommandHandlerRef5.registrationApplicationProcess(
+				companyID,
+				abs,
+				rec,
+				appDispInfoStartup.getAppDispInfoWithDateOutput().getBaseDate(),
+				appDispInfoStartup.getAppDispInfoNoDateOutput().isMailServerSet(),
+				appDispInfoStartup.getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().get(),
+				CollectionUtil.isEmpty(command.getRecHolidayMngLst()) ? Collections.emptyList() : command.getRecHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()),
+				CollectionUtil.isEmpty(command.getAbsHolidayMngLst()) ? Collections.emptyList() : command.getAbsHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()),
+				CollectionUtil.isEmpty(command.getAbsWorkMngLst()) ? Collections.emptyList() : command.getAbsWorkMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()),
+				EnumAdaptor.valueOf(displayInforWhenStarting.holidayManage, ManageDistinct.class),
+				appDispInfoStartup.getAppDispInfoNoDateOutput().getApplicationSetting());
+			if(abs.isPresent()) {
+				processResult.setAppID(abs.get().getAppID());
+			}
+			if(rec.isPresent()) {
+				processResult.setAppID(rec.get().getAppID());
+			}
 		} else {
 			// 振休振出申請の更新登録
 			Optional<AbsenceLeaveApp> abs = Optional.empty(); 
@@ -209,7 +210,13 @@ public class HolidayShipmentMobileWS extends WebService {
 					CollectionUtil.isEmpty(command.getAbsHolidayMngLst()) ? Collections.emptyList() : command.getAbsHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
 					CollectionUtil.isEmpty(command.getAbsWorkMngLst()) ? Collections.emptyList() : command.getAbsWorkMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
 					appDispInfoStartup);
+			if(abs.isPresent()) {
+				processResult.setAppID(abs.get().getAppID());
+			}
+			if(rec.isPresent()) {
+				processResult.setAppID(rec.get().getAppID());
+			}
 		}
-		return new ProcessResult();
+		return processResult;
 	}
 }
