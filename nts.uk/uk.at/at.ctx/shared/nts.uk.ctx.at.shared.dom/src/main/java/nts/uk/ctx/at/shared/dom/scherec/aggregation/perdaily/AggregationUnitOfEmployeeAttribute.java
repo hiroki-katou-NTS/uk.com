@@ -32,18 +32,29 @@ public enum AggregationUnitOfEmployeeAttribute {
 	 * @return 社員属性
 	 */
 	// TODO 総称型
-	public String getAttribute(AffiliationInforOfDailyAttd affInfo) {
+	public AggregationKey<?> getAttribute(AffiliationInforOfDailyAttd affInfo) {
 
 		switch( this ) {
 			case EMPLOYMENT:		// 雇用：雇用コード
-				return affInfo.getEmploymentCode().v();
+				return new AggregationKey<>( affInfo.getEmploymentCode() );
 			case CLASSIFICATION:	// 分類：分類コード
-				return affInfo.getClsCode().v();
+				return new AggregationKey<>( affInfo.getClsCode() );
 			case JOB_TITLE:			// 職位：職位ID
-				return affInfo.getJobTitleID();
+				return new AggregationKey<>( affInfo.getJobTitleID() );
 			default:
 				throw new RuntimeException("Value is out of range.");
 		}
+
+//		switch( this ) {
+//			case EMPLOYMENT:		// 雇用：雇用コード
+//				return affInfo.getEmploymentCode().v();
+//			case CLASSIFICATION:	// 分類：分類コード
+//				return affInfo.getClsCode().v();
+//			case JOB_TITLE:			// 職位：職位ID
+//				return affInfo.getJobTitleID();
+//			default:
+//				throw new RuntimeException("Value is out of range.");
+//		}
 
 	}
 

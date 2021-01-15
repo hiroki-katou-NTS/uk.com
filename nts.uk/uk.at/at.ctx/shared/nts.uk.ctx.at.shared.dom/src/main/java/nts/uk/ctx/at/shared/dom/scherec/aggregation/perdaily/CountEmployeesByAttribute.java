@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.inject.Inject;
+import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
@@ -17,12 +17,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared(勤務予定、勤務実績).集計処理.日単位集計.社員属性別の人数を集計する
  * @author kumiko_otake
  */
+@Stateless
 public class CountEmployeesByAttribute {
-
-	/** 種類ごとに値を集計する **/
-	@Inject
-	AggregateValuesByType aggregateValuesByType;
-
 
 	/**
 	 * 集計する
@@ -32,7 +28,7 @@ public class CountEmployeesByAttribute {
 	 * @return
 	 */
 	// TODO 総称型
-	public Map<String, BigDecimal> count(
+	public static Map<String, BigDecimal> count(
 				Require require
 			,	AggregationUnitOfEmployeeAttribute unit
 			,	List<WorkInfoWithAffiliationInfo> values
@@ -46,12 +42,12 @@ public class CountEmployeesByAttribute {
 				.collect(Collectors.toList());
 
 		// 集計(カウント)
-		return this.aggregateValuesByType.count(attributes);
+		return AggregateValuesByType.count(attributes);
 
 	}
 
 
-	public interface Require extends WorkInfoOfDailyAttendance.Require {
+	public static interface Require extends WorkInfoOfDailyAttendance.Require {
 	}
 
 }

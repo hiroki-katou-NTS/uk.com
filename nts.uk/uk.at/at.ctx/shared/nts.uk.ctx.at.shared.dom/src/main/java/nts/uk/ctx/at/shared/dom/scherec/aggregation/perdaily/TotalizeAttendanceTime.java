@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.inject.Inject;
+import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.AggregateValuesByType;
@@ -16,12 +16,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.At
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared(勤務予定、勤務実績).集計処理.日単位集計.勤怠時間を集計する
  * @author kumiko_otake
  */
+@Stateless
 public class TotalizeAttendanceTime {
-
-	/** 種類ごとに値を集計する **/
-	@Inject
-	AggregateValuesByType aggregateValuesByType;
-
 
 	/**
 	 * 集計する
@@ -29,17 +25,17 @@ public class TotalizeAttendanceTime {
 	 * @param values 勤怠時間リスト
 	 * @return 集計結果
 	 */
-	public Map<AttendanceTimesForAggregation, BigDecimal> totalize(
+	public static Map<AttendanceTimesForAggregation, BigDecimal> totalize(
 				List<AttendanceTimesForAggregation> targets
 			,	List<AttendanceTimeOfDailyAttendance> values
 	) {
 
 		// 値を取得
 		val times = values.stream()
-						.map( e -> this.getTargetTimes(targets, e) )
+						.map( e -> TotalizeAttendanceTime.getTargetTimes(targets, e) )
 						.collect(Collectors.toList());
 		// 集計(合計)
-		return this.aggregateValuesByType.totalize(times);
+		return AggregateValuesByType.totalize(times);
 
 	}
 
@@ -49,7 +45,7 @@ public class TotalizeAttendanceTime {
 	 * @param value 勤怠時間
 	 * @return 集計対象の値
 	 */
-	private Map<AttendanceTimesForAggregation, BigDecimal> getTargetTimes(
+	private static Map<AttendanceTimesForAggregation, BigDecimal> getTargetTimes(
 				List<AttendanceTimesForAggregation> targets
 			,	AttendanceTimeOfDailyAttendance value
 	) {

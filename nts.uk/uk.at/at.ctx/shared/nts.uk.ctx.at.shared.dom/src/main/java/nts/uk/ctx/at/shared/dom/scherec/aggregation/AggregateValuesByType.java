@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
+
 import lombok.val;
 
 /**
@@ -12,6 +14,7 @@ import lombok.val;
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared(勤務予定、勤務実績).集計処理.種類ごとに値を集計する
  * @author kumiko_otake
  */
+@Stateless
 public class AggregateValuesByType {
 
 	/**
@@ -19,7 +22,7 @@ public class AggregateValuesByType {
 	 * @param values 値リスト
 	 * @return 種類ごとの合計結果
 	 */
-	public <T> Map<T, BigDecimal> totalize(List<Map<T, BigDecimal>> values) {
+	public static <T> Map<T, BigDecimal> totalize(List<Map<T, BigDecimal>> values) {
 
 		return values.stream()
 				.flatMap( e -> e.entrySet().stream() )
@@ -37,13 +40,13 @@ public class AggregateValuesByType {
 	 * @param values 値リスト
 	 * @return 種類ごとの合計結果(集計対象のみ)
 	 */
-	public <T> Map<T, BigDecimal> totalize(List<T> targets, List<Map<T, BigDecimal>> values) {
+	public static <T> Map<T, BigDecimal> totalize(List<T> targets, List<Map<T, BigDecimal>> values) {
 
 		// 集計対象のみ合計する
 		val filterdValues = values.stream()
 				.filter( e -> targets.contains( e ) )
 				.collect(Collectors.toList());
-		val results = this.totalize(filterdValues);
+		val results = AggregateValuesByType.totalize(filterdValues);
 
 		// 集計対象に対する合計値を返す
 		return targets.stream()
@@ -57,7 +60,7 @@ public class AggregateValuesByType {
 	 * @param values 値リスト
 	 * @return 種類ごとのカウント結果
 	 */
-	public <T> Map<T, BigDecimal> count(List<T> values) {
+	public static <T> Map<T, BigDecimal> count(List<T> values) {
 
 		return values.stream()
 					.collect(Collectors.groupingBy( e -> e, Collectors.counting() )).entrySet().stream()
