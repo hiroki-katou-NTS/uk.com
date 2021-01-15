@@ -28,14 +28,14 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class RegisterWorkSceduleCommandHandler extends CommandHandlerWithResult<RegisterWorkScheduleInputCommand, ResultRegisWorkSchedule> {
 
 	@Inject
-	private RegisWorkScheduleCommandHandler regisWorkSchedule;
+	private RegisWorkScheduleCommandHandler<TimeWithDayAttr> regisWorkSchedule;
 
 	@Override
 	protected ResultRegisWorkSchedule handle(CommandHandlerContext<RegisterWorkScheduleInputCommand> context) {
 		RegisterWorkScheduleInputCommand param = context.getCommand();
 		String sid = param.sid;
 
-		List<WorkScheduleSaveCommand> commands = param.registerDates.stream().map(m -> {
+		List<WorkScheduleSaveCommand<TimeWithDayAttr>> commands = param.registerDates.stream().map(m -> {
 			Map<Integer, TimeWithDayAttr> map = new HashMap<Integer, TimeWithDayAttr>();
 			if(m.getStart() != null){
 			map.put(31, new TimeWithDayAttr(m.getStart()));
