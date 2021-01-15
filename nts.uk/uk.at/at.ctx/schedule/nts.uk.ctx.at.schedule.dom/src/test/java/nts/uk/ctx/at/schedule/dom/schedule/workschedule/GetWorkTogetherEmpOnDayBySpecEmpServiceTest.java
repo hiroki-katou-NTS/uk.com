@@ -99,7 +99,7 @@ public class GetWorkTogetherEmpOnDayBySpecEmpServiceTest {
 		public static WorkSchedule createWorkSchedule(String sid, GeneralDate date, WorkInfoOfDailyAttendance workInfo) {
 			return new WorkSchedule(sid, date, ConfirmedATR.CONFIRMED
 					, workInfo, null
-					, Optional.empty()
+					, null
 					, Collections.emptyList()
 					, Optional.empty()
 					, Optional.empty()
