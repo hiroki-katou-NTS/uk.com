@@ -16,10 +16,12 @@ public class ShiftMasterDisInforTest {
 	public void validate() {
 		ShiftMasterName name = new ShiftMasterName("name");// dummy
 		ColorCodeChar6 color = new ColorCodeChar6("color");// dummy
+		ColorCodeChar6 colorsp = new ColorCodeChar6("colorsp");// dummy
 		Remarks remarks = null;
-		ShiftMasterDisInfor displayInfor = new ShiftMasterDisInfor(name, color, remarks);
+		ShiftMasterDisInfor displayInfor = new ShiftMasterDisInfor(name, color,colorsp, remarks);
 		assertThat(displayInfor.getName()).isEqualTo(name);
 		assertThat(displayInfor.getColor()).isEqualTo(color);
+		assertThat(displayInfor.getColorSmartPhone()).isEqualTo(colorsp);
 		assertThat(displayInfor.getRemarks().isPresent()).isFalse();
 	}
 
@@ -28,10 +30,12 @@ public class ShiftMasterDisInforTest {
 	public void validate2() {
 		ShiftMasterName name = new ShiftMasterName("name");// dummy
 		ColorCodeChar6 color = new ColorCodeChar6("color");// dummy
+		ColorCodeChar6 colorsp = new ColorCodeChar6("colorsp");// dummy
 		Remarks remarks = new Remarks("remarks");
-		ShiftMasterDisInfor displayInfor = new ShiftMasterDisInfor(name, color, remarks);
+		ShiftMasterDisInfor displayInfor = new ShiftMasterDisInfor(name, color,colorsp, remarks);
 		assertThat(displayInfor.getName()).isEqualTo(name);
 		assertThat(displayInfor.getColor()).isEqualTo(color);
+		assertThat(displayInfor.getColorSmartPhone()).isEqualTo(colorsp);
 		assertThat(displayInfor.getRemarks().isPresent()).isTrue();
 	}
 

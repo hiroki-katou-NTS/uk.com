@@ -10,6 +10,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEvent;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEventRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.WorkplaceEvent;
@@ -36,12 +37,13 @@ public class AddComAndWorkplaceEventCommandHandler extends CommandHandler<AddCom
 	@Override
 	protected void handle(CommandHandlerContext<AddComAndWorkplaceEventCommand> context) {
 		AddComAndWorkplaceEventCommand command = context.getCommand();
-		CompanyEventCommand comCommand = new CompanyEventCommand(command.getTargetDate(), command.eventComName, "ADD");	
-		WorkplaceEventCommand workCommand = new WorkplaceEventCommand(command.getWorkPlaceID(), command.getTargetDate(), command.eventWorkplaceName, "ADD");
+		GeneralDate targetDate = GeneralDate.fromString(command.targetDate, "yyyy/MM/dd");
+		CompanyEventCommand comCommand = new CompanyEventCommand(targetDate, command.eventComName, "ADD");	
+		WorkplaceEventCommand workCommand = new WorkplaceEventCommand(command.getWorkPlaceID(), targetDate, command.eventWorkplaceName, "ADD");
 		if(command.eventComName != null){
 			command.setState("ADD");
 			
-			if (this.companyEventRepository.findByPK(AppContexts.user().companyId(), command.getTargetDate()).isPresent()) {
+			if (this.companyEventRepository.findByPK(AppContexts.user().companyId(), targetDate).isPresent()) {
 				this.companyEventRepository.updateEvent(toDomainCom(comCommand));
 			} else {
 				this.companyEventRepository.addEvent(toDomainCom(comCommand));
@@ -50,7 +52,7 @@ public class AddComAndWorkplaceEventCommandHandler extends CommandHandler<AddCom
 			this.companyEventRepository.removeEvent(toDomainCom(comCommand));
 		}
 		if(command.eventWorkplaceName != null && command.getWorkPlaceID() != null){
-			if (this.workplaceEventRepository.findByPK(command.getWorkPlaceID(), command.getTargetDate()).isPresent()) {
+			if (this.workplaceEventRepository.findByPK(command.getWorkPlaceID(), targetDate).isPresent()) {
 				this.workplaceEventRepository.updateEvent(toDomain(workCommand));
 			} else {
 				this.workplaceEventRepository.addEvent(toDomain(workCommand));

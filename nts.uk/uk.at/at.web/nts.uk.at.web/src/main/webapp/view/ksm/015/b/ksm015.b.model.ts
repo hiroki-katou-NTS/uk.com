@@ -46,6 +46,7 @@ class RegistrationForm {
        selectedCode: KnockoutObservable<String>;
        shiftMasterName: KnockoutObservable<String>;
        color: KnockoutObservable<String>;
+       colorSmartphone: KnockoutObservable<String>;
        note: KnockoutObservable<String>;
        newMode: KnockoutObservable<Boolean>;
        workTypeCd: KnockoutObservable<String>;
@@ -66,6 +67,7 @@ class RegistrationForm {
                      self.shiftMasterName($.trim(self.shiftMasterName()));
               });
               self.color = ko.observable("#FFFFFF");
+              self.colorSmartphone = ko.observable("#FFFFFF");
               self.note = ko.observable("");
               self.newMode = ko.observable(false);
               self.workTypeCd = ko.observable('');
@@ -144,6 +146,7 @@ class RegisterShiftMasterDto {
        shiftMasterName: String;
        shiftMasterCode: String;
        color: String;
+       colorSmartphone: String;
        remark: String;
        workTypeCd: String;
        workTimeSetCd: String;
@@ -152,6 +155,7 @@ class RegisterShiftMasterDto {
               this.shiftMasterName = form.shiftMasterName();
               this.shiftMasterCode = form.selectedCode();
               this.color = form.color().replace('#', '');
+              this.colorSmartphone = form.color().replace('#', ''); // Hien tai bang vs color
               this.remark = form.note();
               this.workTypeCd = form.workTypeCd();
               this.workTimeSetCd = form.workTimeSetCd();

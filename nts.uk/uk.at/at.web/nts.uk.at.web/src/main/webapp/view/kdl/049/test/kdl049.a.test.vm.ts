@@ -50,7 +50,7 @@ module nts.uk.at.view.kdl049.a.test.viewmodel {
                 self.workplaceName(result.name);
             }
             let param = {
-                dateSelected: self.dateSelected(), 
+                dateSelected: moment(self.dateSelected()).format('YYYY/MM/DD'), 
                 workplace: self.selectedWorkplaceId() != undefined ? 
                         { workPlaceID: self.selectedWorkplaceId(), targetOrgWorkplaceName: self.workplaceName()} : null
                 }

@@ -5,7 +5,7 @@ import nts.uk.ctx.at.shared.dom.WorkInformation;
 public class ShiftMasterInstanceHelper {
 	public static ShiftMaster getShiftMaterEmpty() {
 		return new ShiftMaster("companyId", new ShiftMasterCode("smc"), 
-				new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"), null), 
+				new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), null), 
 				"workTypeCode", "workTimeCode");
 	}
 	
@@ -15,7 +15,7 @@ public class ShiftMasterInstanceHelper {
 	}
 	
 	public static ShiftMasterDisInfor getShiftMasterDisInforEmpty() {
-		return new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"), null);
+		return new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), null);
 	}
 	
 	public static boolean checkExist(boolean param){
@@ -24,7 +24,7 @@ public class ShiftMasterInstanceHelper {
 	
 	public static ShiftMaster getShiftMaterWorkTimeIsNull() {
 		return new ShiftMaster("companyId", new ShiftMasterCode("smc"), 
-				new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"), null), 
+				new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"),new ColorCodeChar6("color"), null), 
 				"workTypeCode", null);
 	}
 	
