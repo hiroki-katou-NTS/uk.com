@@ -911,8 +911,8 @@ export class KafS06AComponent extends KafS00ShrComponent {
             name: workTimeName,
             time: workTimeTime
         } as WorkInfo;
-
-        self.bindWorkHours();
+        // change by user 
+        self.bindWorkHours(true);
     }
     public bindComponent(vacationCheckOutputDto?: VacationCheckOutputDto) {
         const self = this;
