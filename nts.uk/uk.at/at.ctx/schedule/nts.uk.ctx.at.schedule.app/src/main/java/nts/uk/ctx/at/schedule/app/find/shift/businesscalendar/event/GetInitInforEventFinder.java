@@ -27,19 +27,20 @@ public class GetInitInforEventFinder {
 	@Inject
 	private WorkplaceEventRepository workplaceEventRepo;
 
-	public KDL049Dto getInitInforEvent(String workplaceID, GeneralDate targetDate) {
+	public KDL049Dto getInitInforEvent(String workplaceID, String targetDate) {
+		GeneralDate date = GeneralDate.fromString(targetDate, "yyyy/MM/dd");
 		String companyID = AppContexts.user().companyId();
-		WorkplaceEventDto optWorkplaceEvent  = new WorkplaceEventDto();;
+		WorkplaceEventDto optWorkplaceEvent = new WorkplaceEventDto();
 		CompanyEventDto optCompantEvent = new CompanyEventDto();
-		
+
 		// get 会社行事を取得する : getCompanyevent
-		Optional<CompanyEvent> compantEvent = companyEventRepo.findByPK(companyID, targetDate);
+		Optional<CompanyEvent> compantEvent = companyEventRepo.findByPK(companyID, date);
 		if(compantEvent.isPresent()){	
 		optCompantEvent = CompanyEventDto.fromDomain(compantEvent.get());
 		}
 		// get Optional<職場行事> : getWorkplaceEvent
 		if (workplaceID != null) {
-			Optional<WorkplaceEvent>workplaceEvent = workplaceEventRepo.findByPK(workplaceID, targetDate);
+			Optional<WorkplaceEvent>workplaceEvent = workplaceEventRepo.findByPK(workplaceID, date);
 			if(workplaceEvent.isPresent()){
 				optWorkplaceEvent = WorkplaceEventDto.fromDomain(workplaceEvent.get());
 			}
