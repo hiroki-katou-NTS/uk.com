@@ -4369,10 +4369,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			self.dataScreen003A().employeeInfo[lineNo].fixedWorkInforDto.workTypeName = $("#extable-ksu003").exTable('dataSource', 'middle').body[lineNo].worktypeName;
 			
 			if(self.dataScreen003A().employeeInfo[lineNo].workScheduleDto != null){
-				self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.startTime1 = $("#extable-ksu003").exTable('dataSource', 'middle').body[lineNo].startTime1 == "" ? duration.parseString($("#extable-ksu003").exTable('dataSource', 'middle').body[lineNo].startTime1).toValue() : null;
-				self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.endTime1 = $("#extable-ksu003").exTable('dataSource', 'middle').body[lineNo].endTime1 == "" ? duration.parseString($("#extable-ksu003").exTable('dataSource', 'middle').body[lineNo].endTime1).toValue() : null;
-				self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.startTime2 = $("#extable-ksu003").exTable('dataSource', 'middle').body[lineNo].startTime2 == "" ? duration.parseString($("#extable-ksu003").exTable('dataSource', 'middle').body[lineNo].startTime2).toValue() : null;
-				self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.endTime2 = $("#extable-ksu003").exTable('dataSource', 'middle').body[lineNo].endTime2 == "" ? duration.parseString($("#extable-ksu003").exTable('dataSource', 'middle').body[lineNo].endTime2).toValue() : null;
+				self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.startTime1 = $("#extable-ksu003").exTable('dataSource', 'middle').body[lineNo].startTime1 != "" ? duration.parseString($("#extable-ksu003").exTable('dataSource', 'middle').body[lineNo].startTime1).toValue() : null;
+				self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.endTime1 = $("#extable-ksu003").exTable('dataSource', 'middle').body[lineNo].endTime1 != "" ? duration.parseString($("#extable-ksu003").exTable('dataSource', 'middle').body[lineNo].endTime1).toValue() : null;
+				self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.startTime2 = $("#extable-ksu003").exTable('dataSource', 'middle').body[lineNo].startTime2 != "" ? duration.parseString($("#extable-ksu003").exTable('dataSource', 'middle').body[lineNo].startTime2).toValue() : null;
+				self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.endTime2 = $("#extable-ksu003").exTable('dataSource', 'middle').body[lineNo].endTime2 != "" ? duration.parseString($("#extable-ksu003").exTable('dataSource', 'middle').body[lineNo].endTime2).toValue() : null;
 			}
 			
 			let dataEmployee = _.filter(self.dataFromA().listEmp, (x: any) => { return x.id === empId; });
