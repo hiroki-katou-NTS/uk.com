@@ -205,7 +205,7 @@
                           <div class="table">
 														<div class="cell">
 															<button
-															tabindex="9"
+															tabindex="8"
 															data-bind="click: openDialogDailyAttendanceItems"
 														>
 															#{i18n.getText('KMK010_19')}
@@ -249,7 +249,7 @@
 										<div data-bind="ntsFormLabel: {required: false }">
 											<label>#{i18n.getText('KMK010_83')}</label>											
 										</div><!-- A7_2-->
-										<button data-bind="ntsHelpButton: {image: 'img/IMG_KMK010_1.png', position: 'right center', enable: true }">?</button>
+										<button tabindex="-1" data-bind="ntsHelpButton: {image: 'img/IMG_KMK010_1.png', position: 'right bottom', enable: true }">?</button>
 									</div>
 									<com:ko tag="if" bind="$parent.isManage">
 										<div class="row-2">
@@ -258,7 +258,7 @@
 												<div class="cell">											
 													<!-- A7_4-->
 													<div
-														class="selectUnit"
+														class="selectUnit" tabindex="9"
 														data-bind="ntsComboBox: {
 															name: '#[KMK010_84]',
 															options: $parent.lstUnit,
@@ -278,7 +278,7 @@
 												<div class="cell">												
 													<!-- A7_6-->
 													<div
-														class="selectRounding"
+														class="selectRounding" tabindex="10"
 														data-bind="ntsComboBox: {
 															name: '#[KMK010_85]',
 															options: $parent.lstRoundingSet,
