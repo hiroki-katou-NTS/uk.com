@@ -158,6 +158,17 @@ module nts.uk.com.view.cmm048.a {
      isUseOfPassword: KnockoutObservable<boolean> = ko.observable(false);
      isUseOfNotice: KnockoutObservable<boolean> = ko.observable(false);
      isUseOfLanguage: KnockoutObservable<boolean> = ko.observable(false);
+
+     //#113841
+     passwordPolicyVisible: KnockoutObservable<boolean> = ko.observable(false);
+     passPolicyLowestDigitsVisible: KnockoutObservable<boolean> = ko.observable(false);
+     passPolicyDigitVisible: KnockoutObservable<boolean> = ko.observable(false);
+     passPolicyAlphabetDigitVisible: KnockoutObservable<boolean> = ko.observable(false);
+     passPolicyNumberOfDigitsVisible: KnockoutObservable<boolean> = ko.observable(false);
+     passPolicySymbolCharactersVisible: KnockoutObservable<boolean> = ko.observable(true);
+     passPolicyHistoryCountVisible: KnockoutObservable<boolean> = ko.observable(false);
+     passPolicyValidityPeriodVisible: KnockoutObservable<boolean> = ko.observable(false);
+
     mounted() {
       const vm = this;
       vm.init();
@@ -267,12 +278,29 @@ module nts.uk.com.view.cmm048.a {
         vm.passChangeLog(vm.$i18n('CMM048_98'));
       }
       //validityPeriod
-      vm.passPolicyLowestDigits(vm.$i18n('CMM048_13', [String(data.passwordPolicy.lowestDigits)]));
-      vm.passPolicyAlphabetDigit(vm.$i18n('CMM048_15', [String(data.passwordPolicy.alphabetDigit)]));
-      vm.passPolicyNumberOfDigits(vm.$i18n('CMM048_16', [String(data.passwordPolicy.numberOfDigits)]));
-      vm.passPolicySymbolCharacters(vm.$i18n('CMM048_17', [String(data.passwordPolicy.symbolCharacters)]));
-      vm.passPolicyHistoryCount(vm.$i18n('CMM048_19', [String(data.passwordPolicy.historyCount)]));
-      vm.passPolicyValidityPeriod(vm.$i18n('CMM048_21', [String(data.passwordPolicy.validityPeriod)]));
+      const lowestDigits = data.passwordPolicy.lowestDigits;
+      const alphabetDigit = data.passwordPolicy.alphabetDigit;
+      const numberOfDigits = data.passwordPolicy.numberOfDigits;
+      const symbolCharacters = data.passwordPolicy.symbolCharacters;
+      const historyCount = data.passwordPolicy.historyCount;
+      const validityPeriod = data.passwordPolicy.validityPeriod;
+
+      vm.passPolicyLowestDigits(vm.$i18n('CMM048_13', [String(lowestDigits)]));
+      vm.passPolicyAlphabetDigit(vm.$i18n('CMM048_15', [String(alphabetDigit)]));
+      vm.passPolicyNumberOfDigits(vm.$i18n('CMM048_16', [String(numberOfDigits)]));
+      vm.passPolicySymbolCharacters(vm.$i18n('CMM048_17', [String(symbolCharacters)]));
+      vm.passPolicyHistoryCount(vm.$i18n('CMM048_19', [String(historyCount)]));
+      vm.passPolicyValidityPeriod(vm.$i18n('CMM048_21', [String(validityPeriod)]));
+
+       //#113841
+       vm.passwordPolicyVisible(data.passwordPolicy.isUse);
+       vm.passPolicyLowestDigitsVisible(lowestDigits > 0);
+       vm.passPolicyDigitVisible((alphabetDigit > 0) || (numberOfDigits > 0) || (symbolCharacters > 0));
+       vm.passPolicyAlphabetDigitVisible(alphabetDigit > 0);
+       vm.passPolicyNumberOfDigitsVisible(numberOfDigits > 0);
+       vm.passPolicySymbolCharactersVisible(symbolCharacters > 0);
+       vm.passPolicyHistoryCountVisible(historyCount > 0);
+       vm.passPolicyValidityPeriodVisible(validityPeriod > 0);
     }
 
     private setDataTabC(data: UserInformationDto) {
@@ -564,18 +592,15 @@ module nts.uk.com.view.cmm048.a {
             useOfProfile: vm.isUseOfProfile(),
             useOfNotice: vm.isUseOfNotice()
           });
-          console.log(personalCommand)
           const contactCommand = new ContactCommand({
             employeeContact: employeeContact,
             useOfProfile: vm.isUseOfProfile()
           });
-          console.log(contactCommand)
           const userChangeCommand = new UserChangeCommand({
             userChange: userChange,
             useOfPassword: vm.isUseOfPassword(),
             useOfLanguage: vm.isUseOfLanguage(),
           });
-          console.log(userChangeCommand)
           vm.$blockui('grayout');
           $.when(
             vm.$ajax(API.updateEmployeeContact, contactCommand),

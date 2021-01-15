@@ -439,53 +439,64 @@
                 </td>
                 <!-- B6 start -->
                 <td class="pw" rowspan="3">
-                  <div class="password-policy">
-                    <h6 class="pp-context pp-h6">#{i18n.getText('CMM048_11')}</h6>
-                    <table class="pp-table">
-                      <tr>
+                  <span data-bind="if: passwordPolicyVisible">
+                  <div class="password-policy" id="B6">
+                    <h6 class="pp-context pp-h6" id="B6_1">#{i18n.getText('CMM048_11')}</h6>
+                    <table class="pp-table"  id="B6_2">
+                      <tr data-bind="if: passPolicyLowestDigitsVisible">
+                          <td class="pp-title">
+                            <h6 class="pp-h6" id="B6_3">#{i18n.getText('CMM048_12')}</h6>
+                          </td>
+                          <td>
+                            <h6 class="pp-h6" id="B6_4" data-bind="text : passPolicyLowestDigits"></h6>
+                          </td>
+                      </tr>
+
+                      <tr data-bind="if: passPolicyDigitVisible">
                         <td class="pp-title">
-                          <h6 class="pp-h6">#{i18n.getText('CMM048_12')}</h6>
+                          <h6 class="pp-h6" id="B6_5">#{i18n.getText('CMM048_14')}</h6>
                         </td>
                         <td>
-                          <h6 class="pp-h6" data-bind="text : passPolicyLowestDigits"></h6>
+                          <table>
+                            <tr data-bind="if: passPolicyAlphabetDigitVisible()">
+                              <td>
+                                <h6 class="pp-h6" id="B6_6" data-bind="text : passPolicyAlphabetDigit"></h6>
+                              </td>
+                            </tr>
+                            <tr data-bind="if: passPolicyNumberOfDigitsVisible">
+                              <td>
+                                <h6 class="pp-h6" id="B6_7" data-bind="text : passPolicyNumberOfDigits"></h6>
+                              </td>
+                            </tr>
+                            <tr data-bind="if: passPolicySymbolCharactersVisible">
+                              <td>
+                                <h6 class="pp-h6" id="B6_8" data-bind="text : passPolicySymbolCharacters"></h6>
+                              </td>
+                            </tr>
+                          </table>
                         </td>
                       </tr>
-                      <tr>
-                        <td rowspan="3" class="pp-title">
-                          <h6 class="pp-h6">#{i18n.getText('CMM048_14')}</h6>
-                        </td>
-                        <td>
-                          <h6 class="pp-h6" data-bind="text : passPolicyAlphabetDigit"></h6>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <h6 class="pp-h6" data-bind="text : passPolicyNumberOfDigits"></h6>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <h6 class="pp-h6" data-bind="text : passPolicySymbolCharacters"></h6>
-                        </td>
-                      </tr>
-                      <tr>
+
+                      <tr data-bind="if: passPolicyHistoryCountVisible">
                         <td class="pp-title">
-                          <h6 class="pp-h6">#{i18n.getText('CMM048_18')}</h6>
+                          <h6 class="pp-h6" id="B6_9">#{i18n.getText('CMM048_18')}</h6>
                         </td>
                         <td>
-                          <h6 class="pp-h6" data-bind="text : passPolicyHistoryCount"></h6>
+                          <h6 class="pp-h6" id="B6_10" data-bind="text : passPolicyHistoryCount"></h6>
                         </td>
                       </tr>
-                      <tr>
+                      
+                      <tr data-bind="if: passPolicyValidityPeriodVisible">
                         <td class="pp-title">
-                          <h6 class="pp-h6">#{i18n.getText('CMM048_20')}</h6>
+                          <h6 class="pp-h6" id="B6_11">#{i18n.getText('CMM048_20')}</h6>
                         </td>
                         <td>
-                          <h6 class="pp-h6" data-bind="text : passPolicyValidityPeriod"></h6>
+                          <h6 class="pp-h6" id="B6_12" data-bind="text : passPolicyValidityPeriod"></h6>
                         </td>
                       </tr>
                     </table>
                   </div>
+                </span>
                 </td>
                 <!-- B6 end -->
               </tr>
