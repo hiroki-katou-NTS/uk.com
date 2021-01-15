@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
@@ -60,6 +61,11 @@ public class KrqdtAppRecruitment extends ContractUkJpaEntity implements Serializ
 	
 	@PrePersist
     private void setInsertingContractInfo() {
+		this.contractCd = AppContexts.user().contractCode();
+	}
+	
+	@PreUpdate
+    private void setUpdateContractInfo() {
 		this.contractCd = AppContexts.user().contractCode();
 	}
 

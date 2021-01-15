@@ -18,6 +18,8 @@ import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyReposi
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.brkoffsupchangemng.BrkOffSupChangeMng;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.brkoffsupchangemng.BrkOffSupChangeMngRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.AppHdsubRec;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.AppHdsubRecRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository_Old;
@@ -86,6 +88,9 @@ public class ApplicationApprovalImpl implements ApplicationApprovalService {
 
 	@Inject
 	private OptionalItemApplicationRepository optionalItemApplicationRepo;
+	
+	@Inject
+	private AppHdsubRecRepository appHdsubRecRepository;
 
 	@Override
 	public void delete(String appID) {
@@ -128,8 +133,15 @@ public class ApplicationApprovalImpl implements ApplicationApprovalService {
 			}
 			break;
 		case COMPLEMENT_LEAVE_APPLICATION:
-			absRepo.remove(appID);
-			recRepo.remove(appID);
+			Optional<AppHdsubRec> appHdsubRec = appHdsubRecRepository.findByAppId(appID);
+			if(appHdsubRec.isPresent()) {
+				absRepo.remove(appHdsubRec.get().getAbsenceLeaveAppID());
+				recRepo.remove(appHdsubRec.get().getRecAppID());
+				appHdsubRecRepository.remove(appHdsubRec.get().getAbsenceLeaveAppID(), appHdsubRec.get().getRecAppID());
+			}else {
+				absRepo.remove(appID);
+				recRepo.remove(appID);
+			}
 			break;
 		case ABSENCE_APPLICATION:
 			appAbsenceRepository.delete(companyID, appID);
