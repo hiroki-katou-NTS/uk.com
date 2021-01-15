@@ -25,9 +25,9 @@
 			<div class="fixed-flex-layout" id="contents-area">
 				<!-- column 1 -->
 				<div class="column-1">
-				<div id="B1-panel" class="panel panel-frame div_line"
+					<div id="B1-panel" class="panel panel-frame div_line"
 						style="height: 116px; display: inline-table; width: 295px;">
-						<div class="div_line">
+						<!-- <div class="div_line">
 							<div id="B1_1" class="label itemLabel ilb">#{i18n.getText('KNR002_60')}</div>
 							<div id="B2_1" class="label ilb" style="width: 15px;">#{i18n.getText('KNR002_66')}</div>
 							<div id="B3_1" class="ilb" data-bind="text: empInfoTerCode"></div>
@@ -56,7 +56,44 @@
 							<div id="B1_6" class="label itemLabel ilb">#{i18n.getText('KNR002_65')}</div>
 							<div id="B2_6" class="label ilb" style="width: 15px;">#{i18n.getText('KNR002_66')}</div>
 							<div id="B3_6" class="ilb" data-bind="text: status"></div>
-						</div>
+						</div> -->
+						<table class="terminalInfo">
+							<colgroup>
+								<col width="95" />
+								<col width="20" />
+								<col width="195" />
+							</colgroup>
+							<tr>
+								<td id="B1_1">#{i18n.getText('KNR002_60')}</td>
+								<td id="B2_1" style="width: 15px;">#{i18n.getText('KNR002_66')}</td>
+								<td id="B3_1" data-bind="text: empInfoTerCode"></td>
+							</tr>
+							<tr>
+								<td id="B1_2">#{i18n.getText('KNR002_61')}</td>
+								<td id="B2_2" style="width: 15px;">#{i18n.getText('KNR002_66')}</td>
+								<td id="B3_2" data-bind="text: empInfoTerName"></td>
+							</tr>
+							<tr>
+								<td id="B1_3">#{i18n.getText('KNR002_62')}</td>
+								<td id="B2_3" style="width: 15px;">#{i18n.getText('KNR002_66')}</td>
+								<td id="B3_3" data-bind="text: modelEmpInfoTer"></td>
+							</tr>
+							<tr>
+								<td id="B1_4">#{i18n.getText('KNR002_63')}</td>
+								<td id="B2_4" style="width: 15px;">#{i18n.getText('KNR002_66')}</td>
+								<td id="B3_4" data-bind="text: workLocationName"></td>
+							</tr>
+							<tr>
+								<td id="B1_5">#{i18n.getText('KNR002_64')}</td>
+								<td id="B2_5" style="width: 15px;">#{i18n.getText('KNR002_66')}</td>
+								<td id="B3_5" data-bind="text: lastSuccessDate"></td>
+							</tr>
+							<tr>
+								<td id="B1_6">#{i18n.getText('KNR002_65')}</td>
+								<td id="B2_6" style="width: 15px;">#{i18n.getText('KNR002_66')}</td>
+								<td id="B3_6" data-bind="text: status"></td>
+							</tr>
+						</table>
 					</div>
 				</div>
 				<!-- Log in the Period -->
@@ -74,7 +111,8 @@
 									required: true, 	
 									enable: true, 	
 									readonly: true}" />
-						<button id="B4_3" tabindex="2" style="margin-left: 15px; width: 90px;"
+						<button id="B4_3" tabindex="2"
+							style="margin-left: 15px; width: 90px;"
 							data-bind="click: extract">#{i18n.getText('KNR002_69')}</button>
 					</div>
 					<div class="div_line" style="margin-left: 50px;">
@@ -104,8 +142,7 @@
 			</div>
 			<!-- function area bottom -->
 			<div id="functions-area-bottom">
-				<button id="B6_1" tabindex="3"
-					data-bind="click: cancel_Dialog">#{i18n.getText('KNR002_72')}</button>
+				<button id="B6_1" tabindex="3" data-bind="click: cancel_Dialog">#{i18n.getText('KNR002_72')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>
