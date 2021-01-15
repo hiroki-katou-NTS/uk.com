@@ -14,8 +14,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.arc.task.schedule.ScheduledJobUserData;
 import nts.arc.task.schedule.cron.CronSchedule;
+import nts.arc.task.schedule.job.jobdata.ScheduledJobUserData;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ExecutionTaskSettingDto;
@@ -71,10 +71,9 @@ public class ChangeExecutionTaskSettingCommandHandler
 				// 「実行中」以外の場合
 				executionTaskSetting = command.toDomain();
 				// バッチのスケジュールを削除する
-				this.scheduler.unscheduleOnCurrentCompany(SortingProcessScheduleJob.class, command.getScheduleId());
+				this.scheduler.unscheduleOnCurrentCompany(command.getScheduleId());
 				if (command.getEndScheduleId() != null) {
-					this.scheduler.unscheduleOnCurrentCompany(SortingProcessEndScheduleJob.class,
-							command.getEndScheduleId());
+					this.scheduler.unscheduleOnCurrentCompany(command.getEndScheduleId());
 				}
 				// 次回実行日時作成処理（実行タスク設定）
 				List<String> cronList = saveExecutionTaskSettingCommandHandler.getCron(saveCommand);

@@ -4,7 +4,7 @@ package nts.uk.query.app.user.information.password.policy;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicy;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy;
 
 import java.math.BigDecimal;
 
@@ -79,11 +79,11 @@ public class PasswordPolicyDto {
                 domain.isInitialPasswordChange(),
                 domain.isUse(),
                 domain.getHistoryCount() == null ? null : domain.getHistoryCount().v(),
-                domain.getLowestDigits() == null ? null : domain.getLowestDigits().v(),
+                domain.getComplexityRequirement().getMinimumLength() == null ? null : new BigDecimal(domain.getComplexityRequirement().getMinimumLength().v()),
                 domain.getValidityPeriod() == null ? null : domain.getValidityPeriod().v(),
-                domain.getNumberOfDigits() == null ? null : domain.getNumberOfDigits().v(),
-                domain.getSymbolCharacters() == null ? null : domain.getSymbolCharacters().v(),
-                domain.getAlphabetDigit() == null ? null : domain.getAlphabetDigit().v()
+                domain.getComplexityRequirement().getNumeralDigits() == null ? null : new BigDecimal(domain.getComplexityRequirement().getNumeralDigits().v()),
+                domain.getComplexityRequirement().getSymbolDigits() == null ? null : new BigDecimal(domain.getComplexityRequirement().getSymbolDigits().v()),
+                domain.getComplexityRequirement().getAlphabetDigits() == null ? null : new BigDecimal(domain.getComplexityRequirement().getAlphabetDigits().v())
         );
     }
 }

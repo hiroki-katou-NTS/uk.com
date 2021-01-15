@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.retentionyearly;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearlySettingSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.UpperLimitSetting;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KshmtHdstkSetCom;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KmfmtRetentionYearly;
 
 /**
  * The Class JpaRetentionYearlySetMemento.
@@ -15,14 +15,14 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.KshmtHdstkSetCom;
 public class JpaRetentionYearlySetMemento implements RetentionYearlySettingSetMemento {
 
 	/** The type value. */
-	private KshmtHdstkSetCom typeValue;
+	private KmfmtRetentionYearly typeValue;
 	
 	/**
 	 * Instantiates a new jpa retention yearly set memento.
 	 *
 	 * @param typeValue the type value
 	 */
-	public JpaRetentionYearlySetMemento(KshmtHdstkSetCom typeValue) {
+	public JpaRetentionYearlySetMemento(KmfmtRetentionYearly typeValue) {
 		this.typeValue = typeValue;
 	}
 	

@@ -69,10 +69,10 @@ public class KmfmtRetentionYearly extends ContractUkJpaEntity  implements Serial
      */
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof KshmtHdstkSetCom)) {
+        if (!(object instanceof KmfmtRetentionYearly)) {
             return false;
         }
-        KshmtHdstkSetCom other = (KshmtHdstkSetCom) object;
+        KmfmtRetentionYearly other = (KmfmtRetentionYearly) object;
         if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
             return false;
         }

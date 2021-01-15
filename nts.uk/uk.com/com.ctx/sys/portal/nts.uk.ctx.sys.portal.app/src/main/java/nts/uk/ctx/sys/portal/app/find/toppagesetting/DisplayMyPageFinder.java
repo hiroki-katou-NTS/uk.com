@@ -71,8 +71,6 @@ public class DisplayMyPageFinder {
 			Optional<String> displayCode = this.getTopPageDisplay(param.getFromScreen(), param.getTopPageSetting());
 			if(!displayCode.isPresent()) {
 				return null;
-		}
-		
 			}
 			if(param.getFromScreen().equals(IS_LOGIN)) {
 				//	標準メニューの場合

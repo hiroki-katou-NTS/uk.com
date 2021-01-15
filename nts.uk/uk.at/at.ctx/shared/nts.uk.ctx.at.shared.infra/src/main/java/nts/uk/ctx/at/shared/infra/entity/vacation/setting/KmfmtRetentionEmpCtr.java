@@ -60,10 +60,10 @@ public class KmfmtRetentionEmpCtr extends ContractUkJpaEntity implements Seriali
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof KshmtHdstkSetEmp)) {
+		if (!(object instanceof KmfmtRetentionEmpCtr)) {
 			return false;
 		}
-		KshmtHdstkSetEmp other = (KshmtHdstkSetEmp) object;
+		KmfmtRetentionEmpCtr other = (KmfmtRetentionEmpCtr) object;
 		if ((this.kmfmtRetentionEmpCtrPK == null && other.kmfmtRetentionEmpCtrPK != null)
 				|| (this.kmfmtRetentionEmpCtrPK != null
 						&& !this.kmfmtRetentionEmpCtrPK.equals(other.kmfmtRetentionEmpCtrPK))) {

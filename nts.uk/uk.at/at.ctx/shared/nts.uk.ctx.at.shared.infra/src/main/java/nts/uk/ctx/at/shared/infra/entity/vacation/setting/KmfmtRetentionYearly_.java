@@ -10,19 +10,19 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KmfmtRetentionYearly_.
  */
-@StaticMetamodel(KshmtHdstkSetCom.class)
+@StaticMetamodel(KmfmtRetentionYearly.class)
 public class KmfmtRetentionYearly_ {
 
 	/** The year amount. */
-	public static volatile SingularAttribute<KshmtHdstkSetCom, Short> yearAmount;
+	public static volatile SingularAttribute<KmfmtRetentionYearly, Short> yearAmount;
 	
 	/** The max days retention. */
-	public static volatile SingularAttribute<KshmtHdstkSetCom, Short> maxDaysRetention;
+	public static volatile SingularAttribute<KmfmtRetentionYearly, Short> maxDaysRetention;
 	
 	/** The cid. */
-	public static volatile SingularAttribute<KshmtHdstkSetCom, String> cid;
+	public static volatile SingularAttribute<KmfmtRetentionYearly, String> cid;
 	
 	/** The leave as work days. */
-	public static volatile SingularAttribute<KshmtHdstkSetCom, Short> leaveAsWorkDays;
+	public static volatile SingularAttribute<KmfmtRetentionYearly, Short> leaveAsWorkDays;
 
 }
