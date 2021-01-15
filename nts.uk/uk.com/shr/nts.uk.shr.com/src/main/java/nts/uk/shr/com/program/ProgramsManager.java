@@ -2644,8 +2644,6 @@ public class ProgramsManager {
     /**
      * KAF012
      */
-    public static final Program KAFS12A = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS12A, null,
-            "/kaf/s12/a/index.xhtml");
     public static final Program KAFS12B = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS12B, null,
             "/kaf/S12/b/index.xhtml");
 

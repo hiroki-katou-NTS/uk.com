@@ -1114,7 +1114,6 @@ public class ProgramIdConsts {
 	/**
 	 * KAFS12
 	 */
-	public static final String KAFS12A = "KAFS12A";
 	public static final String KAFS12B = "KAFS12B";
 
 	/**
