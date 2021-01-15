@@ -37,12 +37,13 @@ public class RegisterWorkSceduleCommandHandler extends CommandHandlerWithResult<
 
 		List<WorkScheduleSaveCommand<TimeWithDayAttr>> commands = param.registerDates.stream().map(m -> {
 			Map<Integer, TimeWithDayAttr> map = new HashMap<Integer, TimeWithDayAttr>();
-			if(m.getStart() != null){
-			map.put(31, new TimeWithDayAttr(m.getStart()));
+
+			if (m.getStart() != null) {
+				map.put(31, new TimeWithDayAttr(m.getStart()));
 			}
-			
-			if(m.getEnd() != null) {
-				map.put(34, new TimeWithDayAttr(m.getEnd()));	
+
+			if (m.getEnd() != null) {
+				map.put(34, new TimeWithDayAttr(m.getEnd()));
 			}
 			
 			WorkInformationDto wif = new WorkInformationDto(m.getWorkTypeCode(), m.getWorkTimeCode());

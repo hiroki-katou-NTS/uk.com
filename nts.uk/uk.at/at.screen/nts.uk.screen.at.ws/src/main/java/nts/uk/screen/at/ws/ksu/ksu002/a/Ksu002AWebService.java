@@ -9,6 +9,7 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.ResultRegisWorkSchedule;
 import nts.uk.ctx.at.shared.app.workrule.workinghours.CheckTimeIsIncorrect;
 import nts.uk.ctx.at.shared.app.workrule.workinghours.ContainsResultDto;
 import nts.uk.ctx.at.shared.app.workrule.workinghours.TimeOfDayDto;
@@ -92,18 +93,21 @@ public class Ksu002AWebService extends WebService {
 		return this.getListWorkTypeAvailable.getData();
 	}
 
+	// ScreenQuery : 半日勤務の勤務時間帯を補正する
 	@POST
 	@Path("correctWorkTimeHalfDay")
 	public CorrectWorkTimeHalfDayOutput correctWorkTimeHalfDay(CorrectWorkTimeHalfDayParam param) {
 		return this.correctWorkTimeHalfDay.get(param);
 	}
 
+	// <<Command>> 勤務予定を登録する
 	@POST
 	@Path("regisWorkSchedule")
-	public void regisWorkSchedule(RegisterWorkScheduleInputCommand param) {
-		this.regisWorkSchedule.handle(param);
+	public ResultRegisWorkSchedule regisWorkSchedule(RegisterWorkScheduleInputCommand param) {
+		return this.regisWorkSchedule.handle(param);
 	}
 
+	// «Query» 時刻が不正かチェックする
 	@POST
 	@Path("checkTimeIsIncorrect")
 	public List<ContainsResultDto> checkTimeIsIncorrect(CheckTimeIsIncorrectInput param) {
