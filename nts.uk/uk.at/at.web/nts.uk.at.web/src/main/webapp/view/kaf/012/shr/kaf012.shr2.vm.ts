@@ -66,7 +66,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                     <input class="time-input"
                                                             data-bind="ntsTimeEditor: {
                                                                             name: $parent.appTimeType < 4 ? $parent.appTimeTypeName : $vm.$i18n('KAF012_29'), 
-                                                                            constraint: 'AttendanceClock', 
+                                                                            constraint: 'AttendanceTime', 
                                                                             value: startTime, 
                                                                             inputFormat: 'time', 
                                                                             mode: 'time',
@@ -80,7 +80,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                     <input class="time-input"
                                                             data-bind="ntsTimeEditor: {
                                                                             name: $parent.appTimeType < 4 ? $parent.appTimeTypeName : $vm.$i18n('KAF012_29'), 
-                                                                            constraint: 'AttendanceClock', 
+                                                                            constraint: 'AttendanceTime', 
                                                                             value: startTime, 
                                                                             inputFormat: 'time', 
                                                                             mode: 'time',
@@ -91,7 +91,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                     <input class="time-input"
                                                             data-bind="ntsTimeEditor: {
                                                                             name: $parent.appTimeType < 4 ? $parent.appTimeTypeName : $vm.$i18n('KAF012_31'), 
-                                                                            constraint: 'AttendanceClock', 
+                                                                            constraint: 'AttendanceTime', 
                                                                             value: endTime, 
                                                                             inputFormat: 'time', 
                                                                             mode: 'time',
@@ -174,7 +174,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                         <input class="time-input"
                                                 data-bind="ntsTimeEditor: {
                                                                 name: inputName, 
-                                                                constraint: 'AttendanceClock', 
+                                                                constraint: 'AttendanceTime', 
                                                                 value: substituteAppTime, 
                                                                 inputFormat: 'time', 
                                                                 mode: 'time',
@@ -189,7 +189,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                         <input class="time-input"
                                                 data-bind="ntsTimeEditor: {
                                                                 name: inputName, 
-                                                                constraint: 'AttendanceClock', 
+                                                                constraint: 'AttendanceTime', 
                                                                 value: annualAppTime, 
                                                                 inputFormat: 'time', 
                                                                 mode: 'time',
@@ -204,7 +204,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                         <input class="time-input"
                                                 data-bind="ntsTimeEditor: {
                                                                 name: inputName, 
-                                                                constraint: 'AttendanceClock', 
+                                                                constraint: 'AttendanceTime', 
                                                                 value: childCareAppTime, 
                                                                 inputFormat: 'time', 
                                                                 mode: 'time',
@@ -219,7 +219,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                         <input class="time-input"
                                                 data-bind="ntsTimeEditor: {
                                                                 name: inputName, 
-                                                                constraint: 'AttendanceClock', 
+                                                                constraint: 'AttendanceTime', 
                                                                 value: careAppTime, 
                                                                 inputFormat: 'time', 
                                                                 mode: 'time',
@@ -234,7 +234,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                         <input class="time-input"
                                                 data-bind="ntsTimeEditor: {
                                                                 name: inputName, 
-                                                                constraint: 'AttendanceClock', 
+                                                                constraint: 'AttendanceTime', 
                                                                 value: super60AppTime, 
                                                                 inputFormat: 'time', 
                                                                 mode: 'time',
@@ -249,7 +249,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                         <input class="time-input"
                                                 data-bind="ntsTimeEditor: {
                                                                 name: inputName, 
-                                                                constraint: 'AttendanceClock', 
+                                                                constraint: 'AttendanceTime', 
                                                                 value: specialAppTime, 
                                                                 inputFormat: 'time', 
                                                                 mode: 'time',
