@@ -407,22 +407,6 @@ public class WorkInformation {
 		 * @return
 		 */
 		SetupType checkNeededOfWorkTimeSetting(String workTypeCode);
-
-		/**
-		 * 所定時間帯を取得する - WorkTimeSettingService
-		 * @param workTypeCd 勤務種類コード
-		 * @param workTimeCd 就業時間帯コード
-		 * @param workNo 勤務NO
-		 * @return 計算用所定時間設定
-		 *
-		 * WORNING!!
-		 * WorkTimeSettingService．getPredeterminedTimezoneメソッドは、引数に誤りがあり、
-		 * String workTimeCd(就業時間帯コード), String workTypeCd(勤務種類コード)
-		 * になっています。
-		 * このメソッドとは引数の順番が違うため、implementsして実装する際には十分気をつけてください。
-		 */
-		//PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo);
-
 	}
 
 }
