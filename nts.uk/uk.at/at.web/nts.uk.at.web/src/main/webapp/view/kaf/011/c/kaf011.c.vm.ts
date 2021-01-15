@@ -10,13 +10,14 @@ module nts.uk.at.view.kaf011.c.viewmodel {
 		appStandardReasonCD: KnockoutObservable<number> = ko.observable();
 		appReason: KnockoutObservable<string> = ko.observable("");
 		constructor(dataTransfer: any){
-			this.displayInforWhenStarting = dataTransfer;
+			let self = this;
+			self.displayInforWhenStarting = dataTransfer;
 			let appReasonStandardLst: any = _.find(dataTransfer.appDispInfoStartup.appDispInfoNoDateOutput.appReasonStandardLst, {'applicationType':10});
-			this.appDate(dataTransfer.abs.application.appDate);
+			self.appDate(dataTransfer.abs.application.appDate);
 			if(appReasonStandardLst){
-				this.reasonTypeItemLst(appReasonStandardLst.reasonTypeItemLst);	
+				self.reasonTypeItemLst(appReasonStandardLst.reasonTypeItemLst);	
 			}
-			this.appDate.subscribe((value:any) => {
+			self.appDate.subscribe((value:any) => {
 				
 			});
 		}
