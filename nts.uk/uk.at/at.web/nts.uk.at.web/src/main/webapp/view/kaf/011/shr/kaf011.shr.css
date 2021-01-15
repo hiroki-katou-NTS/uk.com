@@ -12,3 +12,6 @@
 .kaf011 .application .inputTime{width:70px}
 .kaf011 .holidaySetting{margin-left:40px}
 .kaf011 .application .comment{margin-bottom: 15px;}
+
+.kaf011 .dailogC{margin: 10px;}
+.kaf011 .dailogC .row>div:nth-child(1){min-width:100px; vertical-align: top;}
