@@ -1196,10 +1196,11 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 			// 背景色　＝　取得したデータ．背景色
 			backgroundColor = overtimeHolidayWorkActual==null ? "" : overtimeHolidayWorkActual.getBackgroundColor();
 			// アルゴリズム「申請一覧36協定時間の取得」を実行する
-			Pair<Integer, Integer> pair = appContentService.getAgreementTime36(
-					application.getEmployeeID(), 
-					new YearMonth(Integer.valueOf(application.getAppDate().getApplicationDate().toString("YYYYMM"))), 
-					cacheTime36);
+//			Pair<Integer, Integer> pair = appContentService.getAgreementTime36(
+//					application.getEmployeeID(), 
+//					new YearMonth(Integer.valueOf(application.getAppDate().getApplicationDate().toString("YYYYMM"))), 
+//					cacheTime36);
+			Pair<Integer, Integer> pair = Pair.of(0, 0);
 			excessTimeNumber = pair.getRight();
 			excessTime = pair.getLeft();
 		}
@@ -1289,10 +1290,11 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 			// 背景色　＝　取得したデータ．背景色
 			backgroundColor = overtimeHolidayWorkActual==null ? "" : overtimeHolidayWorkActual.getBackgroundColor();
 			// アルゴリズム「申請一覧36協定時間の取得」を実行する
-			Pair<Integer, Integer> pair = appContentService.getAgreementTime36(
-					application.getEmployeeID(), 
-					new YearMonth(Integer.valueOf(application.getAppDate().getApplicationDate().toString("YYYYMM"))), 
-					cacheTime36);
+//			Pair<Integer, Integer> pair = appContentService.getAgreementTime36(
+//					application.getEmployeeID(), 
+//					new YearMonth(Integer.valueOf(application.getAppDate().getApplicationDate().toString("YYYYMM"))), 
+//					cacheTime36);
+			Pair<Integer, Integer> pair = Pair.of(0, 0);
 			excessTimeNumber = pair.getRight();
 			excessTime = pair.getLeft();
 		}
