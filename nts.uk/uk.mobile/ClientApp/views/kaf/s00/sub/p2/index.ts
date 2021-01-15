@@ -48,6 +48,42 @@ export class KafS00SubP2Component extends Vue {
             return vm.params.nextTimeMonth.agreementTime.agreementTime;
         }
     }
+
+    get currentMonthIcon() {
+        const vm = this;
+
+        return vm.getIcon(vm.params.currentTimeMonth.status);
+    }
+
+    get nextMonthIcon() {
+        const vm = this;
+
+        return vm.getIcon(vm.params.nextTimeMonth.status);
+    }
+
+    private getIcon(status: AgreementTimeStatusOfMonthly) {
+        switch (status) {
+            /** 正常 */
+            case AgreementTimeStatusOfMonthly.NORMAL: return '<i class="fa fa-exclamation-circle invisible"></i>';
+            /** 限度エラー時間超過 */
+            case AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR: return '<i class="fa fa-exclamation-circle" aria-hidden="true"></i>';
+            /** 限度アラーム時間超過 */
+            case AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM: return '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>';
+            /** 特例限度エラー時間超過 */
+            case AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR: return '<i class="fa fa-exclamation-circle" aria-hidden="true"></i>';
+            /** 特例限度アラーム時間超過 */
+            case AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM: return '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>';
+            /** 正常（特例あり） */
+            case AgreementTimeStatusOfMonthly.NORMAL_SPECIAL: return '<i class="fa fa-exclamation-circle invisible"></i>';
+            /** 限度エラー時間超過（特例あり） */
+            case AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP: return '<i class="fa fa-exclamation-circle invisible"></i>';
+            /** 限度アラーム時間超過（特例あり） */
+            case AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP: return '<i class="fa fa-exclamation-circle invisible"></i>';
+            /** 特別条項の上限時間超過 */
+            case AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY: return '<i class="fa fa-exclamation-circle invisible"></i>';
+            default: return '';
+        }
+    }
 }
 
 export interface OverTimeWorkHoursDto {
@@ -71,7 +107,7 @@ interface AgreementTimeOfManagePeriodDto {
     // 社員ID
     sid: string;
     // 状態
-    status: number;
+    status: AgreementTimeStatusOfMonthly;
     // 内訳
     agreementTimeBreakDown: AgreementTimeBreakdownDto;
     // 年月
@@ -126,4 +162,25 @@ interface AgreementTimeBreakdownDto {
     monthlyPremiumTime: number;
     /** 臨時時間 */
     temporaryTime: number;
+}
+
+enum AgreementTimeStatusOfMonthly {
+    /** 正常 */
+    NORMAL = 0,
+    /** 限度エラー時間超過 */
+    EXCESS_LIMIT_ERROR = 1,
+    /** 限度アラーム時間超過 */
+    EXCESS_LIMIT_ALARM = 2,
+    /** 特例限度エラー時間超過 */
+    EXCESS_EXCEPTION_LIMIT_ERROR = 3,
+    /** 特例限度アラーム時間超過 */
+    EXCESS_EXCEPTION_LIMIT_ALARM = 4,
+    /** 正常（特例あり） */
+    NORMAL_SPECIAL = 5,
+    /** 限度エラー時間超過（特例あり） */
+    EXCESS_LIMIT_ERROR_SP = 6,
+    /** 限度アラーム時間超過（特例あり） */
+    EXCESS_LIMIT_ALARM_SP = 7,
+    /** 特別条項の上限時間超過 */
+    EXCESS_BG_GRAY = 8
 }
