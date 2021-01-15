@@ -441,13 +441,11 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 			// Consider joining / leaving the company for annual leave grant information and details of annual leave usage
 			AnnualHolidayGrantInfor annalInforJoinLeaving = holidayInfo.isPresent() ? holidayInfo.get() : null;
 			AnnualHolidayGrantData holidayGrantData = this.getJoinLeavingForAnnualLeaveGrantInfo(employee.getEmployeeId(), annalInforJoinLeaving, holidayDetails);
-//			holidayGrantData.setAnnualHolidayGrantInfor(holidayInfo);
 			List<AnnualHolidayGrantDetail> holidayDetailsSort   = holidayGrantData.getHolidayDetails();
 			if (!holidayGrantData.getHolidayDetails().isEmpty()) {
 				holidayDetailsSort = holidayGrantData.getHolidayDetails().stream()
 						.sorted((a, b) -> a.getYmd().compareTo(b.getYmd())).collect(Collectors.toList());
 			}
-//			holidayGrantData.setHolidayDetails(holidayDetails);
 			employee.setHolidayInfo(holidayGrantData.getAnnualHolidayGrantInfor());
 			employee.setHolidayDetails(holidayDetailsSort);
 		});
@@ -468,7 +466,6 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 				.sorted((o1, o2) -> o1.getKey().getHierarchyCode().compareTo(o2.getKey().getHierarchyCode()))
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue,
 						LinkedHashMap::new));
-
 		return resultmap.values().stream().flatMap(x -> x.stream()).collect(Collectors.toList());
 	}
 
@@ -612,7 +609,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 					// case time 年休取得日の印字方法  = 月日
 					if(query.getPrintAnnualLeaveDate() == AnnualLeaveAcquisitionDate.TIME) {
 						cells.get(holidayDetailRow, holidayDetailCol).setValue(this.genHolidayText(detail));
-						cells.get(holidayDetailRow + 1, holidayDetailCol).setValue(this.generateTimeText(detail));
+//						cells.get(holidayDetailRow + 1, holidayDetailCol).setValue(this.generateTimeText(detail));
 					}
 					
 					if (holidayDetailCol == MAX_GRANT_DETAIL_COL) {
@@ -789,15 +786,12 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	 * @return text của ngày nghỉ
 	 */
 	private String genHolidayText(AnnualHolidayGrantDetail detail) {
-		String result = detail.getYmd().toString("MM/dd");
+		String result = detail.getYmd().toString("yy/MM/dd");
 		if (detail.getAmPmAtr() == AmPmAtr.AM) {
 			result += "A";
 		}
 		if (detail.getAmPmAtr() == AmPmAtr.PM) {
 			result += "P";
-		}
-		if (!(detail.getUseDays() % 1 == 0)) {
-			result = "▲" + result;
 		}
 		if (detail.getReferenceAtr().equals(ReferenceAtr.APP_AND_SCHE)) {
 			result = "(" + result + ")";
@@ -944,7 +938,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 					? annualHolidayGrantInfor.getDoubleTrackStartDate().get() : annualHolidayGrantInfor.getPeriod().start();
 			
 			DatePeriod overlapPeriod = new DatePeriod(overlapStartDate, annualHolidayGrantInfor.getPeriod().end());
-			List<StatusOfEmployeeExport> overlapSttEmp = syCompanyRecordAdapter
+			List<StatusOfEmployeeExport> overlapSttEmp = this.syCompanyRecordAdapter
 					.getListAffComHistByListSidAndPeriod(Arrays.asList(employeeId), overlapPeriod);
 			// 重複期間が０件
 			if(overlapSttEmp.isEmpty()) {
@@ -968,7 +962,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		
 			// 指定する期間(YMD)と所属会社履歴の期間(YMD)が重複する場合、そのオリジナルの所属会社履歴を取得する
 			// RequestList211
-			List<AffCompanyHistImport> listAffCompanyHistImport = syCompanyRecordAdapter
+			List<AffCompanyHistImport> listAffCompanyHistImport = this.syCompanyRecordAdapter
 					.getAffCompanyHistByEmployee(Arrays.asList(employeeId), new DatePeriod(overlapStartDate, GeneralDate.today()));
 			for (AffCompanyHistImport affCompany : listAffCompanyHistImport) {
 				// 年休付与(i)．付与日～期限日と取得した所属期間(List)の重なりをチェックする
