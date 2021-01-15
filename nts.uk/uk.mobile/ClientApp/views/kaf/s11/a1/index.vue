@@ -1,3 +1,3 @@
 <template>
-    <kafs00d v-bind:params="kaf000_D_Params"  />
+    <kafs00d v-bind:params="params"  />
 </template>
