@@ -280,7 +280,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             self.inputExtraction(screenInfo.extConditionSettingDay);
             self.optionExtractionValue(screenInfo.extConditionSettingCoparison);
             self.doubleTrack(screenInfo.doubleTrack);
-            self.printAnnualLeaveDateSelect(screenInfo.printAnnualLeaveDate);
+            self.printAnnualLeaveDateSelect(_.isNil(screenInfo.printAnnualLeaveDate) ? 1 : screenInfo.printAnnualLeaveDate );
             if (screenInfo.printDate) {
                 //指定月 ≠ null
                 //取得したデータを画面に表示する
