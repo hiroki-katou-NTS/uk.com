@@ -62,7 +62,7 @@ public class OutsideOTSetting extends AggregateRoot implements Serializable{
 
 	//TODO QA 39234
 	/** 丸め */
-	private Optional<TimeRoundingOfExcessOutsideTime> timeRoundingOfExcessOutsideTime;
+	private Optional<TimeRoundingOfExcessOutsideTime> timeRoundingOfExcessOutsideTime = Optional.empty();
 	
 	/**
 	 * Instantiates a new overtime setting.

@@ -20,6 +20,7 @@ import nts.uk.ctx.at.shared.app.command.outsideot.setting.OutsideOTSettingSaveCo
 import nts.uk.ctx.at.shared.app.command.outsideot.setting.OutsideOTSettingSaveCommandHandler;
 import nts.uk.ctx.at.shared.app.command.outsideot.setting.PremiumExtra60HComand;
 import nts.uk.ctx.at.shared.app.command.outsideot.setting.PremiumExtra60HCommandHandler;
+import nts.uk.ctx.at.shared.app.find.outsideot.OutsideOTDto;
 import nts.uk.ctx.at.shared.app.find.outsideot.OutsideOTSettingFinder;
 import nts.uk.ctx.at.shared.app.find.outsideot.dto.OutsideOTSettingDto;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
@@ -141,8 +142,8 @@ public class OutsideOTSettingWs extends WebService {
 
 	@POST
 	@Path("findAllPremiumExtra60H")
-	public OutsideOTSettingDto findAllPremiumExtra60H(){
-		return this.finder.findById();
+	public OutsideOTDto findAllPremiumExtra60H(){
+		return this.finder.findByIdNew();
 	}
 
 	/**
@@ -151,7 +152,7 @@ public class OutsideOTSettingWs extends WebService {
 	 * @param command the command
 	 */
 	@POST
-	@Path("save/findAllPremiumExtra60H")
+	@Path("save/allPremiumExtra60H")
 	public void savePremiumExtra60H(PremiumExtra60HComand command) {
 		this.premiumExtra60HCommandHandler.handle(command);
 	}
