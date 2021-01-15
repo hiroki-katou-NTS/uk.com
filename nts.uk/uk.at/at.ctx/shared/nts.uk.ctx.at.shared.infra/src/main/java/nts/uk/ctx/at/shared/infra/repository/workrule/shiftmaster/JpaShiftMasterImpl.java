@@ -104,6 +104,7 @@ public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepo
 						new ShiftMasterCode(rec.getString("CD")),
 						new ShiftMasterDisInfor(new ShiftMasterName(rec.getString("NAME")),
 												new ColorCodeChar6(rec.getString("COLOR")),
+												new ColorCodeChar6(rec.getString("COLOR_MOBILE")),
 													rec.getString("NOTE") == null ? null : new Remarks(rec.getString("NOTE"))),
 													rec.getString("WORKTYPE_CD"),
 													rec.getString("WORKTIME_CD"));
@@ -152,6 +153,7 @@ public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepo
 				.setParameter("shiftMaterCode", shiftMater.getShiftMasterCode()).getSingle().get();
 		KshmtShiftMater newData = KshmtShiftMater.toEntity(shiftMater);
 		oldData.name = newData.name;
+		oldData.color = newData.color;
 		oldData.color = newData.color;
 		oldData.remarks = newData.remarks;
 		oldData.workTypeCd = newData.workTypeCd;
