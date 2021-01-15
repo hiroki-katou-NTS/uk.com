@@ -107,7 +107,7 @@ public class Ksu002AWebService extends WebService {
 	@POST
 	@Path("checkTimeIsIncorrect")
 	public List<ContainsResultDto> checkTimeIsIncorrect(CheckTimeIsIncorrectInput param) {
-		return checkTimeIsIncorrect.check(param.getWorkType(), param.getWorkTime(),
+		return checkTimeIsIncorrect.check(param.getWorkTypeCode(), param.getWorkTimeCode(),
 				new TimeZoneDto(new TimeOfDayDto(param.getStartTime(), 0), new TimeOfDayDto(param.getEndTime(), 0)),
 				null);
 	}

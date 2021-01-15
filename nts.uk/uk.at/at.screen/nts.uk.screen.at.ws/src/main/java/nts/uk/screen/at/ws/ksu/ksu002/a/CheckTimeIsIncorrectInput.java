@@ -15,8 +15,8 @@ import lombok.NoArgsConstructor;
 @Data
 public class CheckTimeIsIncorrectInput {
 
-	public String workType;
-	public String workTime;
+	public String workTypeCode;
+	public String workTimeCode;
 	public Integer startTime;
 	public Integer endTime;
 }

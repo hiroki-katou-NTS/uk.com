@@ -17,8 +17,8 @@ import nts.arc.time.GeneralDate;
 public class RegisterDates {
 
 	public GeneralDate date;
-	public String workTypeCd;
-	public String workTimeCd;
+	public String workTypeCode;
+	public String workTimeCode;
 	public Integer start;
 	public Integer end;
 	

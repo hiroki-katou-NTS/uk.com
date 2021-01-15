@@ -30,22 +30,6 @@ public class RegisterWorkSceduleCommandHandler extends CommandHandlerWithResult<
 	@Inject
 	private RegisWorkScheduleCommandHandler regisWorkSchedule;
 
-	public ResultRegisWorkSchedule add(RegisterWorkScheduleInputCommand param) {
-		String sid = param.sid;
-
-		List<WorkScheduleSaveCommand> commands = param.registerDates.stream().map(m -> {
-			Map<Integer, TimeWithDayAttr> map = new HashMap<Integer, TimeWithDayAttr>();
-			map.put(31, new TimeWithDayAttr(m.getStart()));
-			map.put(34, new TimeWithDayAttr(m.getEnd()));
-			
-			WorkInformationDto wif = new WorkInformationDto(m.getWorkTypeCd(), m.getWorkTimeCd());
-
-			return new WorkScheduleSaveCommand(sid, m.getDate(), wif, map, new ArrayList<>());
-		}).collect(Collectors.toList());
-		
-		return this.regisWorkSchedule.handle(commands);
-	}
-
 	@Override
 	protected ResultRegisWorkSchedule handle(CommandHandlerContext<RegisterWorkScheduleInputCommand> context) {
 		RegisterWorkScheduleInputCommand param = context.getCommand();
@@ -61,10 +45,11 @@ public class RegisterWorkSceduleCommandHandler extends CommandHandlerWithResult<
 				map.put(34, new TimeWithDayAttr(m.getEnd()));	
 			}
 			
-			WorkInformationDto wif = new WorkInformationDto(m.getWorkTypeCd(), m.getWorkTimeCd());
+			WorkInformationDto wif = new WorkInformationDto(m.getWorkTypeCode(), m.getWorkTimeCode());
 
-			return new WorkScheduleSaveCommand(sid, m.getDate(), wif, map, new ArrayList<>());
+			return new WorkScheduleSaveCommand<TimeWithDayAttr>(sid, m.getDate(), wif, map, new ArrayList<>());
 		}).collect(Collectors.toList());
+		
 		
 		return this.regisWorkSchedule.handle(commands);
 	}
