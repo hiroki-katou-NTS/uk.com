@@ -156,6 +156,12 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
                 && reflectSetting.getCondition().getNursing() == NotUseAtr.NOT_USE
                 && reflectSetting.getCondition().getSpecialVacationTime() == NotUseAtr.NOT_USE
                 && reflectSetting.getCondition().getSubstituteLeaveTime() == NotUseAtr.NOT_USE)
+                || (reflectSetting.getDestination().getFirstBeforeWork() == NotUseAtr.NOT_USE
+                && reflectSetting.getDestination().getFirstAfterWork() == NotUseAtr.NOT_USE
+                && reflectSetting.getDestination().getSecondBeforeWork() == NotUseAtr.NOT_USE
+                && reflectSetting.getDestination().getSecondAfterWork() == NotUseAtr.NOT_USE
+                && reflectSetting.getDestination().getPrivateGoingOut() == NotUseAtr.NOT_USE
+                && reflectSetting.getDestination().getUnionGoingOut() == NotUseAtr.NOT_USE)
                 ) {
             throw new BusinessException("Msg_474");
         }
@@ -392,6 +398,10 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
      */
     @Override
     public void checkBeforeRegister(String companyId, TimeDigestAppType timeLeaveType, TimeLeaveApplication timeLeaveApplication, TimeLeaveApplicationOutput output) {
+        // 申請時間をチェック
+        if (timeLeaveApplication.getLeaveApplicationDetails().isEmpty())
+            throw new BusinessException("Msg_1654");
+
         //特別休暇枠をチェックする
         if (timeLeaveApplication.getLeaveApplicationDetails()
                 .stream()

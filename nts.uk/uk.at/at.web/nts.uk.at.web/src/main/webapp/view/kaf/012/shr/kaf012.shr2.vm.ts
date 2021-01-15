@@ -769,7 +769,10 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                     this.timeZones = [new TimeZone(AppTimeType.ATWORK2, 1)];
                     this.applyTime = [new ApplyTime(AppTimeType.ATWORK2)];
                     this.display = ko.computed(() => {
-                        return reflectSetting() && reflectSetting().destination.secondBeforeWork == 1;
+                        return appDispInfoStartupOutput()
+                            && appDispInfoStartupOutput().appDispInfoNoDateOutput.managementMultipleWorkCycles
+                            && reflectSetting()
+                            && reflectSetting().destination.secondBeforeWork == 1;
                     });
                     this.displayShowMore = ko.observable(false);
                     break;
@@ -779,7 +782,10 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                     this.timeZones = [new TimeZone(AppTimeType.OFFWORK2, 1)];
                     this.applyTime = [new ApplyTime(AppTimeType.OFFWORK2)];
                     this.display = ko.computed(() => {
-                        return reflectSetting() && reflectSetting().destination.secondAfterWork == 1;
+                        return appDispInfoStartupOutput()
+                            && appDispInfoStartupOutput().appDispInfoNoDateOutput.managementMultipleWorkCycles
+                            && reflectSetting()
+                            && reflectSetting().destination.secondAfterWork == 1;
                     });
                     this.displayShowMore = ko.observable(false);
                     break;
