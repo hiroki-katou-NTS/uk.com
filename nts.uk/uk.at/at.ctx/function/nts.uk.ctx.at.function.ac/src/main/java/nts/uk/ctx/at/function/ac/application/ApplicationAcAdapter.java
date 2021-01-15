@@ -47,7 +47,7 @@ public class ApplicationAcAdapter implements ApplicationAdapter {
 		
 		return applicationPub.getApplicationBySID(empIds, period.start(), period.end()).stream()
 				.map(a -> new ApplicationStateImport(a.getAppDate(), a.getAppType(), a.getEmployeeID(), 
-						a.getAppTypeName(), a.getReflectState()))
+						a.getAppTypeName(), a.getReflectState(), a.getPrePostAtr()))
 				.collect(Collectors.toList());
 	}
 

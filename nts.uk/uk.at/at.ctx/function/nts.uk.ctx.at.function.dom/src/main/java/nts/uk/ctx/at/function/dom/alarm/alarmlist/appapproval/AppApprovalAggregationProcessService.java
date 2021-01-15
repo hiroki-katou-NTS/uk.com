@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.dom.alarm.alarmlist.appapproval;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -15,6 +16,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.task.parallel.ManagedParallelWithContext;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
@@ -174,6 +176,7 @@ public class AppApprovalAggregationProcessService {
 		List<AgentApprovalImport> lstAgent;
 		//承認者未指定
 		Map<String, List<String>> mapAppRootUnregister;
+		
 		public DataCheck(String cid, List<String> lstSid, DatePeriod period, String erAlCheckIds) {
 			this.lstExtractCond =  fixedExtractConditionRepo.findById(erAlCheckIds, true);
 			if(this.lstExtractCond.isEmpty()) return;
@@ -192,7 +195,9 @@ public class AppApprovalAggregationProcessService {
 				if(this.lstApp == null &&
 						(x.getNo() == AppApprovalFixedCheckItem.NOT_APPROVED_COND_NOT_SATISFY
 						|| x.getNo() == AppApprovalFixedCheckItem.DISAPPROVE
-						|| x.getNo() == AppApprovalFixedCheckItem.NOT_REFLECT)) {
+						|| x.getNo() == AppApprovalFixedCheckItem.NOT_REFLECT
+						|| x.getNo() == AppApprovalFixedCheckItem.MISS_OT_APP
+						|| x.getNo() == AppApprovalFixedCheckItem.MISS_WORK_IN_HOLIDAY_APP)) {
 					// [No.423]社員、日付リスト一致する申請を取得する
 					this.lstApp = applicationAdapter.findByEmployeesAndDates(lstSid, period);
 				}
@@ -275,16 +280,84 @@ public class AppApprovalAggregationProcessService {
 								data);
 						break;
 					case MISS_OT_APP:
-						missAfterApp();
+						checkMissJigo(empList,
+								period,
+								fixedCond,
+								lstWplHist,
+								lstResultCondition,
+								data,
+								0);
 						break;
 					case MISS_WORK_IN_HOLIDAY_APP:
-						missAfterApp();
+						checkMissJigo(empList,
+								period,
+								fixedCond,
+								lstWplHist,
+								lstResultCondition,
+								data,
+								6);
 						break;
 				}
 			});
 			
 		});
 	}
+	/**
+	 * 事後申請提出漏れチェック
+	 * @param empIds
+	 * @param period
+	 * @param fixedExtractCond
+	 * @param lstWplHist
+	 * @param lstResultCondition
+	 * @param data
+	 * @param appType: 0: "残業申請", 6: "休出時間申請"
+	 */
+	private void checkMissJigo(List<String> empIds, DatePeriod period, AppApprovalFixedExtractCondition fixedExtractCond,
+			 List<WorkPlaceHistImport> lstWplHist,
+			List<ResultOfEachCondition> lstResultCondition, DataCheck data, int appType) {
+		if(data.lstApp == null || data.lstApp.isEmpty()) return;
+		
+		List<ApplicationStateImport> lstAppJizen = new ArrayList<>();
+		List<ApplicationStateImport> lstAppJigo = new ArrayList<>();
+		//事前申請 反映状態が「否認」「差し戻し」「取消済」ではない
+		lstAppJizen = data.lstApp.stream()
+				.filter(x -> x.getAppType() == appType && x.getPrePostAtr() == 0 
+					&& (x.getReflectState() != 5 || x.getReflectState() != 4 || x.getReflectState() != 3))
+				.collect(Collectors.toList());
+		if(lstAppJizen.isEmpty()) return;
+		//事後申請 
+		lstAppJigo = data.lstApp.stream()
+				.filter(x -> x.getAppType() == appType && x.getPrePostAtr() == 1)
+				.collect(Collectors.toList());
+		Map<String, List<GeneralDate>> mapSidDateNoJigo = new HashMap<>();
+		for(ApplicationStateImport jizenApp: lstAppJizen) {
+			List<ApplicationStateImport> jigoApp = lstAppJigo.stream().filter(x -> x.getAppDate().equals(jizenApp.getAppDate())
+					&& x.getEmployeeID().equals(jizenApp.getEmployeeID()))
+					.collect(Collectors.toList());
+			if(jigoApp.isEmpty()) {
+				if(!mapSidDateNoJigo.containsKey(jizenApp.getEmployeeID())) {
+					List<GeneralDate> lstDate = new ArrayList<>();
+					lstDate.add(jizenApp.getAppDate());
+					mapSidDateNoJigo.put(jizenApp.getEmployeeID(), lstDate);
+				} else {
+					mapSidDateNoJigo.get(jizenApp.getEmployeeID()).add(jizenApp.getAppDate());
+				}
+			}
+		}
+		AppApprovalFixedExtractItem item = data.lstExtractItem.stream().filter(x -> x.getNo().equals(fixedExtractCond.getNo()))
+				.collect(Collectors.toList()).get(0);
+		mapSidDateNoJigo.forEach((sid, lstDate) -> {
+			lstDate.stream().distinct().forEach(x -> {
+				ExtractionAlarmPeriodDate pDate = new ExtractionAlarmPeriodDate(Optional.ofNullable(x), Optional.empty());
+				
+				setAlarmResult(fixedExtractCond,lstWplHist, lstResultCondition,
+						item, sid, period, pDate,
+						appType == 0 ? TextResource.localize("KAL010_519") : TextResource.localize("KAL010_521"),
+						TextResource.localize("KAL010_530", x.toString()));
+			});
+		}); 
+	}
+	
 	/**
 	 * 未承認
 	 * @param empId
@@ -333,7 +406,7 @@ public class AppApprovalAggregationProcessService {
 				fixedExtractCond.getMessage().isPresent() ? Optional.ofNullable(fixedExtractCond.getMessage().get().v()) : Optional.empty(),
 				Optional.ofNullable(alarmTaget));
 		List<ResultOfEachCondition> result = lstResultCondition.stream()
-				.filter(x -> x.getCheckType() == AlarmListCheckType.FreeCheck && x.getNo().equals(String.valueOf(fixedExtractCond.getNo().value)))
+				.filter(x -> x.getCheckType() == AlarmListCheckType.FixCheck && x.getNo().equals(String.valueOf(fixedExtractCond.getNo().value)))
 				.collect(Collectors.toList());
 		if(result.isEmpty()) {
 			ResultOfEachCondition resultCon = new ResultOfEachCondition(AlarmListCheckType.FixCheck,
