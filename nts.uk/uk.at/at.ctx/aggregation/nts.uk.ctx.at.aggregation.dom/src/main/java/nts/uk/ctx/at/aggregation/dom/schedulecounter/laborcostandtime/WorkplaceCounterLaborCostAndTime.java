@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
-import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AggregateUnitOfLaborCosts;
+import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AggregationUnitOfLaborCosts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -22,13 +22,13 @@ public class WorkplaceCounterLaborCostAndTime implements DomainAggregate{
 	 * 人件費・時間リスト
 	 */
 	@Getter
-	private Map<AggregateUnitOfLaborCosts, LaborCostAndTime> laborCostAndTimeList;
+	private Map<AggregationUnitOfLaborCosts, LaborCostAndTime> laborCostAndTimeList;
 	
 	/**
 	 * @param list
 	 * @return
 	 */
-	public static WorkplaceCounterLaborCostAndTime create(Map<AggregateUnitOfLaborCosts, LaborCostAndTime> list) {
+	public static WorkplaceCounterLaborCostAndTime create(Map<AggregationUnitOfLaborCosts, LaborCostAndTime> list) {
 		
 		if ( list.isEmpty()) {
 			throw new RuntimeException("invalid data");

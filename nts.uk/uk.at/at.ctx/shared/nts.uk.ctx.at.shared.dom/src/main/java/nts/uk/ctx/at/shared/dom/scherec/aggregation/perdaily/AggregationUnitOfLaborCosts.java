@@ -10,24 +10,24 @@ import nts.arc.enums.EnumAdaptor;
  *
  */
 @RequiredArgsConstructor
-public enum AggregateUnitOfLaborCosts {
+public enum AggregationUnitOfLaborCosts {
 
 	/** 合計 **/
 	TOTAL( 0 ),
 
 	/** 就業時間 **/
-	WORKING_HOURS( 1 ),
+	WITHIN( 1 ),
 
 	/** 時間外時間 **/
-	OVERTIME( 2 ),
+	EXTRA( 2 ),
 	;
 
 
 	public final int value;
 
 
-	public static AggregateUnitOfLaborCosts of(int value) {
-		return EnumAdaptor.valueOf(value, AggregateUnitOfLaborCosts.class);
+	public static AggregationUnitOfLaborCosts of(int value) {
+		return EnumAdaptor.valueOf(value, AggregationUnitOfLaborCosts.class);
 	}
 
 }
