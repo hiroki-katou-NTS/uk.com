@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.request.infra.repository.application;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -82,6 +84,8 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 	
 	@Inject
 	private AsposeHolidayShipment asposeHolidayShipment;
+	
+	private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy年 MM月 dd日 (E)", Locale.JAPAN);
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, PrintContentOfApp printContentOfApp, ApplicationType appType) {
@@ -446,13 +450,13 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
         GeneralDate endDate = printContentOfApp.getAppEndDate();
         if(startDate != null && endDate != null) {
             if(startDate.equals(endDate)) {
-                cellD6.setValue(printContentOfApp.getAppDate().toString("yyyy年　MM月　dd日　(E)"));
+                cellD6.setValue(dateTimeFormatter.format(printContentOfApp.getAppDate().localDate()));
             } else {
-                String text = startDate.toString("yyyy年　MM月　dd日　(E)") + "～" + endDate.toString("yyyy年　MM月　dd日　(E)");
+                String text = dateTimeFormatter.format(startDate.localDate()) + "～" + dateTimeFormatter.format(endDate.localDate());
                 cellD6.setValue(text);
             }
         } else {
-            cellD6.setValue(printContentOfApp.getAppDate().toString("yyyy年　MM月　dd日　(E)"));
+            cellD6.setValue(dateTimeFormatter.format(printContentOfApp.getAppDate().localDate()));
         }
     }
 	

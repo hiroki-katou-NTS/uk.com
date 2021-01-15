@@ -324,6 +324,7 @@ module nts.uk.at.view.kaf006.c.viewmodel {
                 });
                 return dfd.promise();
             }
+            return dfd.resolve(true);
         }
     }
 
