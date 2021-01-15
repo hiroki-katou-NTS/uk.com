@@ -103,6 +103,37 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 			return domain;
 	}
 
+	/**
+	 * ファクトリー
+	 * @param cid 会社ID
+	 * @param employeeId 社員ID
+	 * @param grantDate 付与日
+	 * @param deadline 期限日
+	 * @param expirationStatus 期限切れ状態
+	 * @param registerType 登録種別
+	 * @param details 明細
+	 * @return 休暇付与残数データ　
+	 */
+	public static LeaveGrantRemainingData of(
+			String cid,
+			String employeeId,
+			GeneralDate grantDate,
+			GeneralDate deadline,
+			LeaveExpirationStatus expirationStatus,
+			GrantRemainRegisterType registerType,
+			LeaveNumberInfo details) {
+
+		LeaveGrantRemainingData domain = new LeaveGrantRemainingData();
+		domain.cid = cid;
+		domain.employeeId = employeeId;
+		domain.grantDate = grantDate;
+		domain.deadline = deadline;
+		domain.expirationStatus = expirationStatus;
+		domain.registerType = registerType;
+		domain.details = details;
+		return domain;
+	}
+
 
 	/**
 	 * 休暇残数を指定使用数消化する

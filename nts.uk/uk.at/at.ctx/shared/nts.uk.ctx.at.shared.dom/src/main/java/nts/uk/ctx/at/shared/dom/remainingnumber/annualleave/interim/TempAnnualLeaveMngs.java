@@ -22,16 +22,16 @@ public class TempAnnualLeaveMngs extends InterimRemain{
 	/** 勤務種類 */
 	private WorkTypeCode workTypeCode;
 	/** 年休使用数 */
-	private LeaveUsedNumber usedNumber;// AnnualLeaveUsedNumber // 要確認
+	private LeaveUsedNumber usedNumber;
 	/** 時間休暇種類 */
 	private  Optional<AppTimeType> appTimeType;
 
 	/**
 	 * コンストラクタ
 	 */
-	public TempAnnualLeaveMngs(String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr, RemainType remainType, RemainAtr remainAtr){
+	public TempAnnualLeaveMngs(){
 		super();
-		this.workTypeCode = new WorkTypeCode("");// 要確認
+		this.workTypeCode = new WorkTypeCode("");
 		this.usedNumber = new LeaveUsedNumber();
 		this.appTimeType = Optional.empty();
 	}
@@ -47,11 +47,10 @@ public class TempAnnualLeaveMngs extends InterimRemain{
 	public static TempAnnualLeaveMngs of(
 			String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr, RemainType remainType, RemainAtr remainAtr,
 			WorkTypeCode workTypeCode,
-			// AnnualLeaveUsedNumber usedNumber,
 			LeaveUsedNumber usedNumber,
 			Optional<AppTimeType>  appTimeType) {
 
-		TempAnnualLeaveMngs domain = new TempAnnualLeaveMngs(remainManaID, sID ,ymd, creatorAtr, remainType, remainAtr);
+		TempAnnualLeaveMngs domain = new TempAnnualLeaveMngs();
 		domain.workTypeCode = workTypeCode;
 		domain.usedNumber = usedNumber;
 		domain.appTimeType = appTimeType;

@@ -3,9 +3,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingda
 import java.util.Optional;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
 
 /**
  * 休暇付与数
@@ -29,6 +27,22 @@ public class LeaveGrantNumber {
 	public LeaveGrantNumber() {
 		days = new LeaveGrantDayNumber(0.0);
 		minutes = Optional.empty();
+	}
+
+	/**
+	 * ファクトリー
+	 * @param days 日数
+	 * @param minutes 時間
+	 * @return 休暇付与数
+	 */
+	public static LeaveGrantNumber of(
+			LeaveGrantDayNumber days,
+			Optional<LeaveGrantTime> minutes) {
+
+		LeaveGrantNumber domain = new LeaveGrantNumber();
+		domain.days = days;
+		domain.minutes = minutes;
+		return domain;
 	}
 
 	@Override

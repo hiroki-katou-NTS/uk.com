@@ -33,6 +33,22 @@ public class LeaveOverNumber {
 		return new LeaveOverNumber(days, minutes);
 	}
 
+	/**
+	 * ファクトリー
+	 * @param numberOverDays 日数
+	 * @param timeOver　時間
+	 * @return LeaveUsedNumber 休暇上限超過消滅数
+	*/
+	public static LeaveOverNumber of(
+			DayNumberOver numberOverDays,
+			Optional<TimeOver> timeOver) {
+
+		LeaveOverNumber domain = new LeaveOverNumber(numberOverDays, timeOver);
+		domain.numberOverDays = numberOverDays;
+		domain.timeOver = timeOver;
+		return domain;
+	}
+
 	@Override
 	public LeaveOverNumber clone() {
 

@@ -78,6 +78,22 @@ public class LeaveRemainingNumber {
 	}
 
 	/**
+	 * ファクトリー
+	 * @param days 日数
+	 * @param minutes 時間
+	 * @return 休暇残数
+	 */
+	public static LeaveRemainingNumber of(
+			LeaveRemainingDayNumber days,
+			Optional<LeaveRemainingTime> minutes) {
+
+		LeaveRemainingNumber domain = new LeaveRemainingNumber();
+		domain.days = days;
+		domain.minutes = minutes;
+		return domain;
+	}
+
+	/**
 	 * 残数を加算
 	 * @param aLeaveRemainingNumber
 	 */

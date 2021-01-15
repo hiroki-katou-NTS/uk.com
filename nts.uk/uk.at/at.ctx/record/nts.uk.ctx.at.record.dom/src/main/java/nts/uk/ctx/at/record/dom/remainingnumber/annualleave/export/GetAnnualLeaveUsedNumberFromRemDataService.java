@@ -36,8 +36,7 @@ public class GetAnnualLeaveUsedNumberFromRemDataService {
 
 		// 暫定年休管理データ
 		List<TempAnnualLeaveMngs> tempAnnualLeaveMngs = new ArrayList<>();
-		// 休暇残数シフトリストWORK
-		RemNumShiftListWork remNumShiftListWork = new RemNumShiftListWork();
+
 
 		// 使用数を暫定年休管理データに変換する
 		tempAnnualLeaveMngs = GetTempAnnualLeaveMngsFromUsedNumberService.tempAnnualLeaveMngs(employeeId, usedNumber);
@@ -45,6 +44,9 @@ public class GetAnnualLeaveUsedNumberFromRemDataService {
 		// 暫定年休管理データの件数ループ
 		for (int idx = 0; idx < tempAnnualLeaveMngs.size(); idx++){
 			val currentProcess = tempAnnualLeaveMngs.get(idx);
+
+			// 休暇残数シフトリストWORK
+			RemNumShiftListWork remNumShiftListWork = new RemNumShiftListWork();
 
 			// 年休消化する(休暇残数を指定使用数消化する)
 			//			社員ID←パラメータ「社員ID」

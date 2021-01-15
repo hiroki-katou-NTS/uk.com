@@ -4,12 +4,6 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.grantnumber.SpecialLeaveGrantNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.SpecialLeaveOverNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.SpecialLeaveUsedNumber;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveRemainingNumber;
 
 /**
  * 休暇使用数
@@ -40,6 +34,27 @@ public class LeaveUsedNumber{
 	 */
 	public Optional<LeaveOverNumber> leaveOverLimitNumber;
 
+	/**
+	 * ファクトリー
+	 * @param days 日数
+	 * @param minutes　時間
+	 * @param stowageDays 積み崩し日数
+	 * @param leaveOverLimitNumber 上限超過消滅日数
+	 * @return LeaveUsedNumber 休暇使用数
+	*/
+	public static LeaveUsedNumber of(
+			LeaveUsedDayNumber days,
+			Optional<LeaveUsedTime> minutes,
+			Optional<LeaveUsedDayNumber> stowageDays,
+			Optional<LeaveOverNumber> leaveOverLimitNumber) {
+
+		LeaveUsedNumber domain = new LeaveUsedNumber();
+		domain.days = days;
+		domain.minutes = minutes;
+		domain.stowageDays = stowageDays;
+		domain.leaveOverLimitNumber = leaveOverLimitNumber;
+		return domain;
+	}
 
 	/**
 	 * 日数、時間ともに０のときはTrue,それ以外はfalseを返す

@@ -5,12 +5,12 @@ import java.util.List;
 import javax.ejb.Stateless;
 
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetTempAnnualLeaveMngsFromUsedNumberService;
-import nts.uk.ctx.at.record.pub.monthly.vacation.annualleave.GetTempAnnualLeaveMngsFromUsedNumber;
+import nts.uk.ctx.at.record.pub.monthly.vacation.annualleave.GetTempAnnualLeaveMngsFromUsedNumberPub;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
 
 @Stateless
-public class GetTempAnnualLeaveMngsFromUsedNumberImpl implements GetTempAnnualLeaveMngsFromUsedNumber{
+public class GetTempAnnualLeaveMngsFromUsedNumberPubImpl implements GetTempAnnualLeaveMngsFromUsedNumberPub{
 
 	/**
 	 * 使用数を暫定年休管理データに変換する

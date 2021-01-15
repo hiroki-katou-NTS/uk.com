@@ -9,8 +9,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 /**
  * 付与残数データから使用数を消化する
  */
-public interface GetAnnualLeaveUsedNumberFromRemData {
-
+public interface GetAnnualLeaveUsedNumberFromRemDataPub {
 
 	/**
 	 * 付与残数データから使用数を消化する

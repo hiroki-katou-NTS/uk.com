@@ -7,7 +7,6 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
 
 /**
  * 休暇数情報（明細）
@@ -47,6 +46,28 @@ public class LeaveNumberInfo implements Cloneable {
 		usedNumber = new LeaveUsedNumber();
 		remainingNumber = new LeaveRemainingNumber();
 		usedPercent = new LeaveUsedPercent(new BigDecimal(0.0));
+	}
+
+	/**
+	 * ファクトリー
+	 * @param grantNumber 付与数
+	 * @param usedNumber 使用数
+	 * @param remainingNumber 残数
+	 * @param usedPercent 使用率
+	 * @return  休暇数情報（明細）
+	 */
+	public static LeaveNumberInfo of(
+			LeaveGrantNumber grantNumber,
+			LeaveUsedNumber usedNumber,
+			LeaveRemainingNumber remainingNumber,
+			LeaveUsedPercent usedPercent) {
+
+		LeaveNumberInfo domain = new LeaveNumberInfo();
+		domain.grantNumber = grantNumber;
+		domain.usedNumber = usedNumber;
+		domain.remainingNumber = remainingNumber;
+		domain.usedPercent = usedPercent;
+		return domain;
 	}
 
 	/**
