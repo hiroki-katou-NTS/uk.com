@@ -1,6 +1,5 @@
 package nts.uk.ctx.sys.auth.app.command.user.information;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -12,7 +11,6 @@ import nts.uk.ctx.sys.auth.dom.adapter.checkpassword.CheckBeforePasswordAdapter;
 import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLog;
 import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLogRepository;
 import nts.uk.ctx.sys.auth.dom.user.HashPassword;
-import nts.uk.ctx.sys.auth.dom.user.Language;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -44,15 +42,11 @@ public class UserChangeCommandHandler extends CommandHandler<UserChangeCommand> 
 		UserChangeCommand command = commandHandlerContext.getCommand();
 		//#113902
 		boolean isUseOfPassword = command.getUseOfPassword();
-		boolean isUseOfLanguage = command.getUseOfLanguage();
 		String userId = AppContexts.user().userId();
 
 		// cmd 1 : ユーザを変更する + cmd 2 : ログを記載する
 		if (!this.isPasswordTabNull(command.getUserChange()) && isUseOfPassword) {
 			this.userChangeHandler(command.getUserChange(), userId);
-		}
-		if (isUseOfLanguage) {
-			this.updateLanguage(command.getUserChange().getLanguage(), userId);
 		}
 	}
 
@@ -60,15 +54,6 @@ public class UserChangeCommandHandler extends CommandHandler<UserChangeCommand> 
 	private boolean isPasswordTabNull(UserDto user) {
 		return (user.getCurrentPassword().trim().length() == 0 && user.getNewPassword().trim().length() == 0
 				&& user.getConfirmPassword().trim().length() == 0);
-	}
-
-	//  ユーザを変更する - update language only
-	private void updateLanguage(int language, String userId) {
-		Optional<User> currentUser = userRepository.getByUserID(userId);
-        currentUser.ifPresent(current -> {
-           current.setLanguage(EnumAdaptor.valueOf(language, Language.class));
-            userRepository.update(current);
-        });
 	}
 
 	// ユーザを変更する
