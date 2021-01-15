@@ -91,6 +91,6 @@ public class KfnmtAlstPtn extends ContractUkJpaEntity implements Serializable {
 	}
 	
 	public List<CheckCondition> toCheckCondition() {
-		return this.checkConList.stream().map(KfnmtCheckCondition::toDomain).collect(Collectors.toList());
+		return this.checkConList.stream().map(KfnmtAlstPtnDeftm::toDomain).collect(Collectors.toList());
 	}
 }

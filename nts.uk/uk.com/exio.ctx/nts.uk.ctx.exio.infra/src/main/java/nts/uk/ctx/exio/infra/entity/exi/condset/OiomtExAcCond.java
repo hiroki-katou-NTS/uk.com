@@ -14,9 +14,9 @@ import java.io.Serializable;
  */
 @Data
 @Entity
-@Table(name = "OIOMT_STD_ACCEPT_COND_SET")
+@Table(name = "OIOMT_EX_AC_COND")
 @EqualsAndHashCode(callSuper = true)
-public class OiomtStdAcceptCondSet extends ContractUkJpaEntity
+public class OiomtExAcCond extends ContractUkJpaEntity
 		implements StdAcceptCondSet.MementoGetter, StdAcceptCondSet.MementoSetter, Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -102,7 +102,7 @@ public class OiomtStdAcceptCondSet extends ContractUkJpaEntity
 	/**
 	 * No args constructor.
 	 */
-	protected OiomtStdAcceptCondSet() {
+	protected OiomtExAcCond() {
 	}
 
 	/**
@@ -110,7 +110,7 @@ public class OiomtStdAcceptCondSet extends ContractUkJpaEntity
 	 *
 	 * @param domain the domain require <code>not null</code>
 	 */
-	public OiomtStdAcceptCondSet(@NonNull StdAcceptCondSet domain) {
+	public OiomtExAcCond(@NonNull StdAcceptCondSet domain) {
 		domain.setMemento(this);
 	}
 

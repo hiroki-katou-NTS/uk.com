@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRQDT_HOLIDAY_WORK_INPUT")
+@Table(name = "KRQDT_APP_HD_WORK_TIME")
 public class KrqdtHolidayWorkInput_Old extends UkJpaEntity implements Serializable {
 private static final long serialVersionUID = 1L;
 	

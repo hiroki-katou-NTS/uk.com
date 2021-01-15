@@ -1,7 +1,5 @@
 package nts.uk.ctx.sys.log.infra.entity.datacorrectionlog;
 
-import java.math.BigDecimal;
-
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,7 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
-
 /**
  * 
  * @author HungTT
@@ -21,28 +18,27 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 
 @Entity
-@Table(name = "SRCDT_DECIMAL_RAW_VALUE")
+@Table(name = "SRCDT_RAW__NVARCHAR_VALUE")
 @NoArgsConstructor
 @AllArgsConstructor
-public class SrcdtDecimalRawValue extends ContractUkJpaEntity {
+public class SrcdtRawNvarcharValue extends ContractUkJpaEntity {
 
 	@Id
 	@Column(name = "ID")
 	public String id;
-	
+
 	@Column(name = "VALUE")
 	@Basic(optional = false)
-	public BigDecimal value;
+	public String value;
 
-	@OneToOne(mappedBy = "rawDecimalValueBefore")
+	@OneToOne(mappedBy = "rawNvarcharValueBefore")
 	public SrcdtDataCorrection beforeLog;
 
-	@OneToOne(mappedBy = "rawDecimalValueAfter")
+	@OneToOne(mappedBy = "rawNvarcharValueAfter")
 	public SrcdtDataCorrection afterLog;
 
 	@Override
 	protected Object getKey() {
 		return this.id;
 	}
-
 }

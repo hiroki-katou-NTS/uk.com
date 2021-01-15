@@ -27,7 +27,7 @@ public class JpaDivergenceReasonSelectGetMemento implements DivergenceReasonSele
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaDivergenceReasonSelectGetMemento(KrcstDvgcReason entity) {
+	public JpaDivergenceReasonSelectGetMemento(KrcmtDvgcReason entity) {
 		this.entity = entity;
 	}
 

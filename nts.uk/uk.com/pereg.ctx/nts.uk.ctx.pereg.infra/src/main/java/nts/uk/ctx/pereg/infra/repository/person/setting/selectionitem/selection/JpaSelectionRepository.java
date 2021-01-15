@@ -44,7 +44,7 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 	// selection for company
 	private static final String SEL_ALL_BY_SEL_ID_PERSON_TYPE_BY_CID = " SELECT se , item.selectionName FROM PpemtSelectionDef item"
 			+ " INNER JOIN PpemtSelectionHist his ON item.selectionId.selectionId = his.selectionItemId" 
-			+ " INNER JOIN PpemtSelectionItem se ON his.histidPK.histId = se.histId" 
+			+ " INNER JOIN PpemtSelectionDef se ON his.histidPK.histId = se.histId" 
 			+ " INNER JOIN PpemtSelectionItemSort order ON his.histidPK.histId = order.histId"
 			+ " AND se.selectionId.selectionId = order.selectionIdPK.selectionId " 
 			+ " WHERE his.startDate <= :baseDate AND his.endDate >= :baseDate " 
@@ -54,7 +54,7 @@ public class JpaSelectionRepository extends JpaRepository implements SelectionRe
 	
 	private static final String SEL_ALL_BY_SEL_ID = " SELECT se FROM PpemtSelectionDef  item"
 			+ " INNER JOIN PpemtSelectionHist his "
-			+ " ON item.selectionId.selectionId = his.selectionItemId" + " INNER JOIN PpemtSelectionItem se"
+			+ " ON item.selectionId.selectionId = his.selectionItemId" + " INNER JOIN PpemtSelectionDef se"
 			+ " ON his.histidPK.histId = se.histId" + " INNER JOIN PpemtSelectionItemSort order"
 			+ " ON his.histidPK.histId = order.histId "
 			+ " AND se.selectionId.selectionId = order.selectionIdPK.selectionId " + " WHERE his.startDate <= :baseDate"

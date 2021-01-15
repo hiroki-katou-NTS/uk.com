@@ -30,7 +30,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Table(name = "KRQDT_APP_HD_WORK_INPUT")
-public class KrqdtHolidayWorkInput extends ContractUkJpaEntity implements Serializable {
+public class KrqdtAppHdWorkTime extends ContractUkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -45,7 +45,7 @@ public class KrqdtHolidayWorkInput extends ContractUkJpaEntity implements Serial
     	@PrimaryKeyJoinColumn(name="CID", referencedColumnName="CID"),
     	@PrimaryKeyJoinColumn(name="APP_ID", referencedColumnName="APP_ID")
     })
-	public KrqdtAppHolidayWork appHolidayWork;
+	public KrqdtAppHdWork appHolidayWork;
 	
 	@Override
 	protected Object getKey() {

@@ -77,27 +77,27 @@ public class SrcdtDataCorrection extends ContractUkJpaEntity {
 
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "RAW_VALUE_BEFORE_ID", insertable = false, updatable = false)
-	public SrcdtDecimalRawValue rawDecimalValueBefore;
+	public SrcdtRawDecimalvalue rawDecimalValueBefore;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "RAW_VALUE_AFTER_ID", insertable = false, updatable = false)
-	public SrcdtDecimalRawValue rawDecimalValueAfter;
+	public SrcdtRawDecimalvalue rawDecimalValueAfter;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "RAW_VALUE_BEFORE_ID", insertable = false, updatable = false)
-	public SrcdtVarcharRawValue rawVarcharValueBefore;
+	public SrcdtRawVarcharValue rawVarcharValueBefore;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "RAW_VALUE_AFTER_ID", insertable = false, updatable = false)
-	public SrcdtVarcharRawValue rawVarcharValueAfter;
+	public SrcdtRawVarcharValue rawVarcharValueAfter;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "RAW_VALUE_BEFORE_ID", insertable = false, updatable = false)
-	public SrcdtNvarcharRawValue rawNvarcharValueBefore;
+	public SrcdtRawNvarcharValue rawNvarcharValueBefore;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "RAW_VALUE_AFTER_ID", insertable = false, updatable = false)
-	public SrcdtNvarcharRawValue rawNvarcharValueAfter;
+	public SrcdtRawNvarcharValue rawNvarcharValueAfter;
 
 	@Column(name = "VALUE_DATA_TYPE")
 	public Integer valueType;

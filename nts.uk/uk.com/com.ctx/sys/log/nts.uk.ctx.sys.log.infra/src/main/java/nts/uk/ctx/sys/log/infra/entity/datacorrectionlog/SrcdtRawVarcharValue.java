@@ -18,10 +18,10 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 
 @Entity
-@Table(name = "SRCDT_VARCHAR_RAW_VALUE")
+@Table(name = "SRCDT_RAW_VARCHAR_VALUE")
 @NoArgsConstructor
 @AllArgsConstructor
-public class SrcdtVarcharRawValue extends ContractUkJpaEntity {
+public class SrcdtRawVarcharValue extends ContractUkJpaEntity {
 
 	@Id
 	@Column(name = "ID")

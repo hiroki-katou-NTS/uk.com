@@ -43,7 +43,7 @@ public class JpaDivergenceReasonInputMethodRepository extends JpaRepository
 
 	static {
 		StringBuilder builderString = new StringBuilder();
-		builderString.append("SELECT d FROM KrcstDvgcTime d ");
+		builderString.append("SELECT d FROM KrcmtDvgcTime d ");
 		builderString.append("WHERE d.id.cid = :cid ");
 		builderString.append("AND d.id.no IN :no ");
 		FIND_DVGC_TIME_V2 = builderString.toString();
@@ -159,7 +159,7 @@ public class JpaDivergenceReasonInputMethodRepository extends JpaRepository
 
 	@Override
 	public List<DivergenceReasonInputMethod> getByCidAndLstTimeInfo(String companyId, List<Integer> divTimeNos) {
-		return this.queryProxy().query(FIND_DVGC_TIME_V2, KrcstDvgcTime.class)
+		return this.queryProxy().query(FIND_DVGC_TIME_V2, KrcmtDvgcTime.class)
 				.setParameter("cid", companyId)
 				.setParameter("no", divTimeNos)
 				.getList(t -> toDomain(t));

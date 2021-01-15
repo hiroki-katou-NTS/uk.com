@@ -93,12 +93,12 @@ public class JpaAppHolidayWorkRepository_Old extends JpaRepository implements Ap
 	}
 	@Override
 	public Optional<AppHolidayWork_Old> getFullAppHolidayWork(String companyID, String appID) {
-//		Optional<KrqdtAppHolidayWork> opKrqdtAppHolidayWork = this.queryProxy().find(new KrqdtAppHolidayWorkPK(companyID, appID), KrqdtAppHolidayWork.class);
+//		Optional<KrqdtAppHdWork> opKrqdtAppHolidayWork = this.queryProxy().find(new KrqdtAppHolidayWorkPK(companyID, appID), KrqdtAppHdWork.class);
 //		Optional<KrqdtApplication_New> opKafdtApplication = this.queryProxy().find(new KrqdpApplicationPK_New(companyID, appID), KrqdtApplication_New.class);
 //		if(!opKrqdtAppHolidayWork.isPresent()||!opKafdtApplication.isPresent()){
 //			return Optional.ofNullable(null);
 //		}
-//		KrqdtAppHolidayWork krqdtAppHolidaWork = opKrqdtAppHolidayWork.get();
+//		KrqdtAppHdWork krqdtAppHolidaWork = opKrqdtAppHolidayWork.get();
 //		KrqdtApplication_New kafdtApplication = opKafdtApplication.get();
 //		AppHolidayWork appHolidayWork = krqdtAppHolidaWork.toOvertimeAppSetDomain();
 //		appHolidayWork.setApplication(kafdtApplication.toOvertimeAppSetDomain());

@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_TALLY_TOTAL_TIMES")
+@Table(name = "KAGMT_TALLY_TOTAL_TIMES")
 public class KscmtTallyTotalTime extends ContractUkJpaEntity implements Serializable {
 
 	@EmbeddedId

@@ -29,54 +29,54 @@ public class JpaStdOutputCondSetRepository extends JpaRepository implements StdO
 	@Override
 	public List<StdOutputCondSet> getAllStdOutputCondSet() {
 		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, OiomtExOutCond.class)
-				.getList((OiomtStdOutputCondSet entity) -> StdOutputCondSet.createFromMemento(entity.getCompanyId(), entity));
+				.getList((OiomtExOutCond entity) -> StdOutputCondSet.createFromMemento(entity.getCompanyId(), entity));
 	}
 
 	@Override
 	public Optional<StdOutputCondSet> getStdOutputCondSetByCid(String cid) {
-		return this.queryProxy().query(SELECT_BY_CID, OiomtStdOutputCondSet.class)
+		return this.queryProxy().query(SELECT_BY_CID, OiomtExOutCond.class)
 				.setParameter("cid", cid)
-				.getSingle((OiomtStdOutputCondSet entity) -> StdOutputCondSet.createFromMemento(entity.getCompanyId(), entity));
+				.getSingle((OiomtExOutCond entity) -> StdOutputCondSet.createFromMemento(entity.getCompanyId(), entity));
 	}
 
 	@Override
 	public List<StdOutputCondSet> getStdOutCondSetByCid(String cid) {
-		return this.queryProxy().query(SELECT_BY_CID, OiomtStdOutputCondSet.class)
+		return this.queryProxy().query(SELECT_BY_CID, OiomtExOutCond.class)
 				.setParameter("cid", cid)
-				.getList((OiomtStdOutputCondSet entity) -> StdOutputCondSet.createFromMemento(entity.getCompanyId(), entity));
+				.getList((OiomtExOutCond entity) -> StdOutputCondSet.createFromMemento(entity.getCompanyId(), entity));
 	}
 
 	@Override
 	public Optional<StdOutputCondSet> getStdOutputCondSetById(String cid, String conditionSetCd) {
-		return this.queryProxy().query(SELECT_BY_KEY_STRING, OiomtStdOutputCondSet.class)
+		return this.queryProxy().query(SELECT_BY_KEY_STRING, OiomtExOutCond.class)
 				.setParameter("cid", cid)
 				.setParameter("conditionSetCd", conditionSetCd)
-				.getSingle((OiomtStdOutputCondSet entity) -> StdOutputCondSet.createFromMemento(entity.getCompanyId(), entity));
+				.getSingle((OiomtExOutCond entity) -> StdOutputCondSet.createFromMemento(entity.getCompanyId(), entity));
 	}
 
 	@Override
 	public List<StdOutputCondSet> getStdOutputCondSetById(String cid, Optional<String> conditionSetCd) {
 		if (conditionSetCd.isPresent()) {
-			return this.queryProxy().query(SELECT_BY_KEY_STRING, OiomtStdOutputCondSet.class)
+			return this.queryProxy().query(SELECT_BY_KEY_STRING, OiomtExOutCond.class)
 					.setParameter("cid", cid)
 					.setParameter("conditionSetCd", conditionSetCd.get())
-					.getList((OiomtStdOutputCondSet entity) -> StdOutputCondSet.createFromMemento(entity.getCompanyId(), entity));
+					.getList((OiomtExOutCond entity) -> StdOutputCondSet.createFromMemento(entity.getCompanyId(), entity));
 		}
 		return this.getStdOutCondSetByCid(cid);
 	}
 
 	@Override
 	public void add(StdOutputCondSet domain) {
-		this.commandProxy().insert(new OiomtStdOutputCondSet(domain));
+		this.commandProxy().insert(new OiomtExOutCond(domain));
 	}
 
 	@Override
 	public void update(StdOutputCondSet domain) {
-		OiomtStdOutputCondSet newStdOutputCondSet = new OiomtStdOutputCondSet(domain);
-		Optional<OiomtStdOutputCondSet> updateStdOutputCondSet = this.queryProxy().find(newStdOutputCondSet.getStdOutputCondSetPk(),
-																						OiomtStdOutputCondSet.class);
+		OiomtExOutCond newStdOutputCondSet = new OiomtExOutCond(domain);
+		Optional<OiomtExOutCond> updateStdOutputCondSet = this.queryProxy().find(newStdOutputCondSet.getStdOutputCondSetPk(),
+																						OiomtExOutCond.class);
 		if (updateStdOutputCondSet.isPresent()) {
-			OiomtStdOutputCondSet entity = updateStdOutputCondSet.get();
+			OiomtExOutCond entity = updateStdOutputCondSet.get();
 			entity.setCategoryId(newStdOutputCondSet.getCategoryId());
 			entity.setDelimiter(newStdOutputCondSet.getDelimiter());
 			entity.setItemOutputName(newStdOutputCondSet.getItemOutputName());

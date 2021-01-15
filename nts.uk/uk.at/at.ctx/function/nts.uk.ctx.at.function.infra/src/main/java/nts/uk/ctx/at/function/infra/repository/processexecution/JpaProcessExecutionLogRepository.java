@@ -262,7 +262,7 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 	
 	private Optional<KfnmtProcessExecutionLog> getProcessExecutionLog(String companyId,String execItemCd){
 //		List<KfnmtProcessExecutionLog> data = new ArrayList<>();
-//		String selectData = " SELECT * FROM KFNMT_PROC_EXEC_LOG "
+//		String selectData = " SELECT * FROM KFNDT_AUTOEXEC_LOG "
 //				+ " WHERE CID = ? AND EXEC_ITEM_CD = ? ";
 //		try (PreparedStatement statement = this.connection().prepareStatement(selectData)) {
 //			statement.setString(1, companyId);

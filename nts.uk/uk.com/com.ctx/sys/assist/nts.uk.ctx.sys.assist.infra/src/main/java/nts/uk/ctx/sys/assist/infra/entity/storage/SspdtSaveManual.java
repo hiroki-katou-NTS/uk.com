@@ -20,8 +20,8 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "SSPMT_MANUAL_SET_OF_DATA_SAVE")
-public class SspmtManualSetOfDataSave extends ContractUkJpaEntity implements Serializable {
+@Table(name = "SSPDT_SAVE_MANUAL")
+public class SspdtSaveManual extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**

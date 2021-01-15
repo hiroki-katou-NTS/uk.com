@@ -6,21 +6,21 @@ package nts.uk.ctx.at.schedule.infra.repository.pattern.monthly.setting;
 
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.setting.MonthlyPatternSettingSetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.monthly.setting.KscmtMonthPatternSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.monthly.setting.KscmtRank;
 
 /**
  * The Class JpaMonthlyPatternSettingSetMemento.
  */
 public class JpaMonthlyPatternSettingSetMemento implements MonthlyPatternSettingSetMemento{
 
-	private KscmtMonthPatternSet monthlyPatternSeting;
+	private KscmtRank monthlyPatternSeting;
 	
 	/**
 	 * Instantiates a new jpa monthly pattern setting set memento.
 	 *
 	 * @param monthlyPatternSeting the monthly pattern seting
 	 */
-	public JpaMonthlyPatternSettingSetMemento(KscmtMonthPatternSet monthlyPatternSeting) {
+	public JpaMonthlyPatternSettingSetMemento(KscmtRank monthlyPatternSeting) {
 		this.monthlyPatternSeting = monthlyPatternSeting;
 	}
 	/*

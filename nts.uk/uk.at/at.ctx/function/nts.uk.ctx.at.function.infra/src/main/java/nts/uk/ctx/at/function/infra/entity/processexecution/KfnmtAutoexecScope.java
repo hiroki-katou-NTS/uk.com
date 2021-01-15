@@ -15,9 +15,9 @@ import java.util.stream.Collectors;
  * Entity 実行範囲
  */
 @Entity
-@Table(name = "KFNMT_EXECUTION_SCOPE")
+@Table(name = "KFNMT_AUTOEXEC_SCOPE")
 @NoArgsConstructor
-public class KfnmtExecutionScope extends ContractUkJpaEntity implements Serializable {
+public class KfnmtAutoexecScope extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -41,7 +41,7 @@ public class KfnmtExecutionScope extends ContractUkJpaEntity implements Serializ
 	public KfnmtProcessExecution procExec;
 
 	@OneToMany(mappedBy = "execScope", cascade = CascadeType.ALL)
-	@JoinTable(name = "KFNMT_EXEC_SCOPE_ITEM")
+	@JoinTable(name = "KFNMT_AUTOEXEC_SCOPE_ITEM")
 	public List<KfnmtExecutionScopeItem> workplaceIdList;
 
 	/**
@@ -54,7 +54,7 @@ public class KfnmtExecutionScope extends ContractUkJpaEntity implements Serializ
 		return this.kfnmtExecScopePK;
 	}
 
-	public KfnmtExecutionScope(KfnmtExecutionScopePK kfnmtExecScopePK,
+	public KfnmtAutoexecScope(KfnmtExecutionScopePK kfnmtExecScopePK,
 							   int execScopeCls,
 							   GeneralDate refDate,
 							   List<KfnmtExecutionScopeItem> workplaceIdList) {
@@ -73,7 +73,7 @@ public class KfnmtExecutionScope extends ContractUkJpaEntity implements Serializ
 	 * @param domain       the domain
 	 * @return the entity kfnmt execution scope
 	 */
-	public static KfnmtExecutionScope createFromDomain(String companyId,
+	public static KfnmtAutoexecScope createFromDomain(String companyId,
 													   String execItemCode,
 													   ProcessExecutionScope domain) {
 		if (StringUtils.isEmpty(companyId) || StringUtils.isEmpty(execItemCode) || domain == null) {
@@ -85,7 +85,7 @@ public class KfnmtExecutionScope extends ContractUkJpaEntity implements Serializ
 																											  execItemCode,
 																											  workplaceId))
 															  .collect(Collectors.toList());
-		return new KfnmtExecutionScope(new KfnmtExecutionScopePK(companyId, execItemCode),
+		return new KfnmtAutoexecScope(new KfnmtExecutionScopePK(companyId, execItemCode),
 									   domain.getExecScopeCls().value,
 									   domain.getRefDate().orElse(null),
 									   workplaceIdList);

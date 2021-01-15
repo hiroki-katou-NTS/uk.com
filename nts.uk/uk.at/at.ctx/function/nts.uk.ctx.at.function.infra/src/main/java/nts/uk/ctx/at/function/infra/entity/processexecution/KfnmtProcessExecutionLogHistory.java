@@ -33,7 +33,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @Data
 @EqualsAndHashCode(callSuper = false)
-@Table(name = "KFNMT_PROC_EXEC_LOG_HIST")
+@Table(name = "KFNDT_AUTOEXEC_LOG_HIST")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KfnmtProcessExecutionLogHistory extends ContractUkJpaEntity implements ProcessExecutionLogHistory.MementoGetter, ProcessExecutionLogHistory.MementoSetter, Serializable {

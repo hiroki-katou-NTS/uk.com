@@ -182,7 +182,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		try {
 			Statement statementI = con.createStatement();
 			for(BreakTimeSheet breakTimeSheet : breakTimes.getTimeZone().getBreakTimeSheets()){
-				String insertTableSQL = "INSERT INTO KRCDT_DAI_BREAK_TIME_TS (SID, YMD, BREAK_FRAME_NO, STR_STAMP_TIME, END_STAMP_TIME) "
+				String insertTableSQL = "INSERT INTO KRCDT_DAY_TS_BREAKTIME (SID, YMD, BREAK_FRAME_NO, STR_STAMP_TIME, END_STAMP_TIME) "
 						+ "VALUES( '" + breakTimes.getEmployeeId() + "' , '"
 						+ breakTimes.getYmd() + "' , "
 //						+ breakTimes.getTimeZone().getBreakType().value + " , "
@@ -251,7 +251,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 	@SneakyThrows
 	private List<BreakTimeOfDailyPerformance> internalQuery(DatePeriod baseDate, List<String> empIds) {
 		String subEmp = NtsStatement.In.createParamsString(empIds);
-		StringBuilder query = new StringBuilder("SELECT YMD, SID, BREAK_FRAME_NO, STR_STAMP_TIME, END_STAMP_TIME FROM KRCDT_DAI_BREAK_TIME_TS  ");
+		StringBuilder query = new StringBuilder("SELECT YMD, SID, BREAK_FRAME_NO, STR_STAMP_TIME, END_STAMP_TIME FROM KRCDT_DAY_TS_BREAKTIME  ");
 		query.append(" WHERE YMD <= ? AND YMD >= ? ");
 		query.append(" AND SID IN (" + subEmp + ")");
 		try (val stmt = this.connection().prepareStatement(query.toString())){
@@ -343,7 +343,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
     	String subEmp = NtsStatement.In.createParamsString(subList);
     	String subInDate = NtsStatement.In.createParamsString(subListDate);
     	
-		StringBuilder query = new StringBuilder("SELECT YMD, SID, BREAK_FRAME_NO, STR_STAMP_TIME, END_STAMP_TIME FROM KRCDT_DAI_BREAK_TIME_TS  ");
+		StringBuilder query = new StringBuilder("SELECT YMD, SID, BREAK_FRAME_NO, STR_STAMP_TIME, END_STAMP_TIME FROM KRCDT_DAY_TS_BREAKTIME  ");
 		query.append(" WHERE SID IN (" + subEmp + ")");
 		query.append(" AND YMD IN (" + subInDate + ")");
 		try (val stmt = this.connection().prepareStatement(query.toString())){

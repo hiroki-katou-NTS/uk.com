@@ -108,7 +108,7 @@ public class JpaAppAbsenceRepository extends JpaRepository implements AppAbsence
 //		return Optional.of(appAbsence);
 		return Optional.empty();
 	}
-	private AppForSpecLeave_Old toDomain(KrqdtAppForSpecLeave entity){
+	private AppForSpecLeave_Old toDomain(KrqdtAppHdSp entity){
 		return AppForSpecLeave_Old.createFromJavaType(entity.getKrqdtAppForSpecLeavePK().getAppId(),
 				entity.isMournerFlg(),
 				entity.getRelationshipCD(),

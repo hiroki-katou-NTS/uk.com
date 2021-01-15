@@ -6,7 +6,7 @@ package nts.uk.ctx.at.schedule.infra.repository.pattern.monthly.setting;
 
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.setting.MonthlyPatternSettingGetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.monthly.setting.KscmtMonthPatternSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.monthly.setting.KscmtRank;
 
 /**
  * The Class JpaMonthlyPatternSettingGetMemento.
@@ -14,14 +14,14 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.monthly.setting.KscmtMo
 public class JpaMonthlyPatternSettingGetMemento implements MonthlyPatternSettingGetMemento{
 
 	/** The monthly pattern seting. */
-	private KscmtMonthPatternSet monthlyPatternSeting;
+	private KscmtRank monthlyPatternSeting;
 	
 	/**
 	 * Instantiates a new jpa monthly pattern setting get memento.
 	 *
 	 * @param monthlyPatternSeting the monthly pattern seting
 	 */
-	public JpaMonthlyPatternSettingGetMemento(KscmtMonthPatternSet monthlyPatternSeting) {
+	public JpaMonthlyPatternSettingGetMemento(KscmtRank monthlyPatternSeting) {
 		this.monthlyPatternSeting = monthlyPatternSeting;
 	}
 	

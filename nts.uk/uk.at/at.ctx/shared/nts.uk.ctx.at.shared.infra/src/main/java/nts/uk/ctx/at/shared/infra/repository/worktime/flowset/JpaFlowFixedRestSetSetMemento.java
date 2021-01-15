@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.flowset;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSetSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.StampBreakCalculation;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRestSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFlAll;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaStampBreakCalculationSetMemento;
 
 /**

@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @Table(name = "OIOMT_EX_OUT_CND")
 @EqualsAndHashCode(callSuper = true)
-public class OiomtStdOutputCondSet extends ContractUkJpaEntity
+public class OiomtExOutCond extends ContractUkJpaEntity
 		implements StdOutputCondSet.MementoGetter, StdOutputCondSet.MementoSetter, Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -89,7 +89,7 @@ public class OiomtStdOutputCondSet extends ContractUkJpaEntity
 	/**
 	 * No args constructor.
 	 */
-	protected OiomtStdOutputCondSet() {
+	protected OiomtExOutCond() {
 	}
 
 	/**
@@ -97,7 +97,7 @@ public class OiomtStdOutputCondSet extends ContractUkJpaEntity
 	 *
 	 * @param domain the domain require <code>not null</code>
 	 */
-	public OiomtStdOutputCondSet(@NonNull StdOutputCondSet domain) {
+	public OiomtExOutCond(@NonNull StdOutputCondSet domain) {
 		domain.setMemento(this);
 	}
 

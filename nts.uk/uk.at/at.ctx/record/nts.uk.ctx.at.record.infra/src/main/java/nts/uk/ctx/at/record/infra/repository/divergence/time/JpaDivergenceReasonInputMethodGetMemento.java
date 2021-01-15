@@ -9,7 +9,7 @@ import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonInputMethodGetMe
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelect;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelectGetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelectRepository;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcmtDvgcTime;
 import nts.uk.ctx.at.record.infra.repository.divergence.time.reason.JpaDivergenceReasonSelectGetMemento;
 import nts.uk.ctx.at.record.infra.repository.divergence.time.reason.JpaDivergenceReasonSelectRepository;
 

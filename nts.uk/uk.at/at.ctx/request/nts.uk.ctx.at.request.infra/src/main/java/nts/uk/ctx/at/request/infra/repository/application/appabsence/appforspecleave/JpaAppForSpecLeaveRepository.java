@@ -27,7 +27,7 @@ public class JpaAppForSpecLeaveRepository extends JpaRepository implements AppFo
 				.map(c->toDomain(c));
 	}
 
-	private AppForSpecLeave_Old toDomain(KrqdtAppForSpecLeave entity){
+	private AppForSpecLeave_Old toDomain(KrqdtAppHdSp entity){
 		return AppForSpecLeave_Old.createFromJavaType(entity.getKrqdtAppForSpecLeavePK().getAppId(),
 				entity.isMournerFlg(),
 				entity.getRelationshipCD(),
@@ -39,8 +39,8 @@ public class JpaAppForSpecLeaveRepository extends JpaRepository implements AppFo
 		this.commandProxy().insert(toEntity(specHd));
 		
 	}
-	private KrqdtAppForSpecLeave toEntity(AppForSpecLeave_Old domain){
-		val entity = new KrqdtAppForSpecLeave();
+	private KrqdtAppHdSp toEntity(AppForSpecLeave_Old domain){
+		val entity = new KrqdtAppHdSp();
 		entity.setKrqdtAppForSpecLeavePK(new KrqdtAppForSpecLeavePK(AppContexts.user().companyId(), domain.getAppID()));
 		entity.setVersion(new Long(0L));
 		entity.setMournerFlg(domain.isMournerFlag());;

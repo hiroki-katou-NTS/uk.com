@@ -27,8 +27,8 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHST_PREMIUM_EXT60H_RATE")
-public class KshstPremiumExt60hRate extends ContractUkJpaEntity implements Serializable {
+@Table(name = "KSHMT_HD60H_PREMIUM_RATE")
+public class KshmtHd60hPremiumRate extends ContractUkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -64,7 +64,7 @@ public class KshstPremiumExt60hRate extends ContractUkJpaEntity implements Seria
      * @param kshstPremiumExt60hRatePK the kshst premium ext 60 h rate PK
      * @param premiumRate the premium rate
      */
-    public KshstPremiumExt60hRate(KshstPremiumExt60hRatePK kshstPremiumExt60hRatePK, int premiumRate) {
+    public KshmtHd60hPremiumRate(KshstPremiumExt60hRatePK kshstPremiumExt60hRatePK, int premiumRate) {
         this.pk = kshstPremiumExt60hRatePK;
         this.premiumRate = premiumRate;
     }
@@ -76,7 +76,7 @@ public class KshstPremiumExt60hRate extends ContractUkJpaEntity implements Seria
      * @param brdItemNo the brd item no
      * @param overTimeNo the over time no
      */
-    public KshstPremiumExt60hRate(String cid, int brdItemNo, int overTimeNo, int rate) {
+    public KshmtHd60hPremiumRate(String cid, int brdItemNo, int overTimeNo, int rate) {
         this.pk = new KshstPremiumExt60hRatePK(cid, brdItemNo, overTimeNo);
         this.premiumRate = rate;
     }
@@ -129,7 +129,7 @@ public class KshstPremiumExt60hRate extends ContractUkJpaEntity implements Seria
 	 */
 	@Override
 	public String toString() {
-		return "entity.KshstPremiumExt60hRate[ kshstPremiumExt60hRatePK=" + pk
+		return "entity.KshmtHd60hPremiumRate[ kshstPremiumExt60hRatePK=" + pk
 				+ " ]";
 	}
 

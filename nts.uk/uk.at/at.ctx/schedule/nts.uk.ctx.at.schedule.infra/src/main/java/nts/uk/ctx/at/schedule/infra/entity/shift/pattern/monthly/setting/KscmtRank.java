@@ -16,13 +16,13 @@ import lombok.Setter;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
- * The Class KscmtMonthPatternSet.
+ * The Class KscmtRank.
  */
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCMT_MONTH_PATTERN_SET")
-public class KscmtMonthPatternSet extends ContractUkJpaEntity implements Serializable {
+@Table(name = "KSCMT_RANK")
+public class KscmtRank extends ContractUkJpaEntity implements Serializable {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -39,7 +39,7 @@ public class KscmtMonthPatternSet extends ContractUkJpaEntity implements Seriali
     /**
      * Instantiates a new kscmt month pattern set.
      */
-    public KscmtMonthPatternSet() {
+    public KscmtRank() {
     	super();
     }
 
@@ -74,7 +74,7 @@ public class KscmtMonthPatternSet extends ContractUkJpaEntity implements Seriali
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		KscmtMonthPatternSet other = (KscmtMonthPatternSet) obj;
+		KscmtRank other = (KscmtRank) obj;
 		if (mPatternCd == null) {
 			if (other.mPatternCd != null)
 				return false;

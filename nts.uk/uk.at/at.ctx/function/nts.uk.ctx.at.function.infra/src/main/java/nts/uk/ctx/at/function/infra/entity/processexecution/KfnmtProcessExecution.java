@@ -55,8 +55,8 @@ public class KfnmtProcessExecution extends ContractUkJpaEntity
 	private String execItemName;
 
 	@OneToOne(mappedBy = "procExec", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinTable(name = "KFNMT_EXECUTION_SCOPE")
-	private KfnmtExecutionScope execScope;
+	@JoinTable(name = "KFNMT_AUTOEXEC_SCOPE")
+	private KfnmtAutoexecScope execScope;
 
 	@OneToOne(mappedBy = "procExec", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinTable(name = "KFNMT_AUTOEXEC_SETTEING")
@@ -129,7 +129,7 @@ public class KfnmtProcessExecution extends ContractUkJpaEntity
 	 */
 	@Override
 	public void setExecScope(ProcessExecutionScope execScope) {
-		this.execScope = KfnmtExecutionScope.createFromDomain(this.getCompanyId(), this.getExecItemCode(), execScope);
+		this.execScope = KfnmtAutoexecScope.createFromDomain(this.getCompanyId(), this.getExecItemCode(), execScope);
 	}
 
 	/**

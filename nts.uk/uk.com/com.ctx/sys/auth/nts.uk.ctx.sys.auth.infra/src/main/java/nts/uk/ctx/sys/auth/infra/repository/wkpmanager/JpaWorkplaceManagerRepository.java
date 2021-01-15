@@ -36,10 +36,10 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 	private static final String SELECT_ALL_BY_SID_BASE_DATE = "SELECT wm FROM SacmtWkpManager wm"
 			+ " WHERE wm.employeeId = :employeeId AND wm.startDate <= :baseDate AND wm.endDate >= :baseDate";
 	
-	private static final String SELECT_ALL_BY_WIDS_BASE_DATE = "SELECT wm FROM SacmtWorkplaceManager wm"
+	private static final String SELECT_ALL_BY_WIDS_BASE_DATE = "SELECT wm FROM SacmtWkpManager wm"
 			+ " WHERE wm.workplaceId IN :wkpIds AND wm.startDate <= :baseDate AND wm.endDate >= :baseDate";
 	
-	private static final String FIND_BY_WKP_DATE_MANAGER = "SELECT wm FROM SacmtWorkplaceManager wm"
+	private static final String FIND_BY_WKP_DATE_MANAGER = "SELECT wm FROM SacmtWkpManager wm"
 			+ " WHERE wm.workplaceId = :workplaceId" + " AND wm.startDate <= :baseDate AND wm.endDate >= :baseDate"
 			+ " AND wm.kacmtWorkplaceManagerPK.workplaceManagerId IN :wkpManagerLst";
 
@@ -143,7 +143,7 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 	
 	@Override
 	public List<WorkplaceManager> findListWkpManagerByWkpIdsAndBaseDate(List<String> wkpIDLst, GeneralDate baseDate) {
-		return this.queryProxy().query(SELECT_ALL_BY_WIDS_BASE_DATE, SacmtWorkplaceManager.class)
+		return this.queryProxy().query(SELECT_ALL_BY_WIDS_BASE_DATE, SacmtWkpManager.class)
 				.setParameter("wkpIds", wkpIDLst).setParameter("baseDate", baseDate).getList(c -> c.toDomain());
 	}
 

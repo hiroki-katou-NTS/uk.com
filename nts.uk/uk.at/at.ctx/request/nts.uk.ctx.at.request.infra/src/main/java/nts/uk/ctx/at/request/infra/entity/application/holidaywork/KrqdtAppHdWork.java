@@ -50,7 +50,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrqdtAppHolidayWork extends ContractUkJpaEntity implements Serializable{
+public class KrqdtAppHdWork extends ContractUkJpaEntity implements Serializable{
 
 	private static final long serialVersionUID = 1L;
     @EmbeddedId
@@ -168,9 +168,9 @@ public class KrqdtAppHolidayWork extends ContractUkJpaEntity implements Serializ
 	@Column(name = "BREAK_TIME_END10")
 	public Integer breakTimeEnd10;
 	
-	@OneToMany(targetEntity = KrqdtHolidayWorkInput.class, mappedBy = "appHolidayWork", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(targetEntity = KrqdtAppHdWorkTime.class, mappedBy = "appHolidayWork", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinTable(name = "KRQDT_APP_HD_WORK_INPUT")
-	public List<KrqdtHolidayWorkInput> holidayWorkInputs;
+	public List<KrqdtAppHdWorkTime> holidayWorkInputs;
 	
 	@OneToOne(targetEntity = KrqdtAppOvertimeDetail.class, mappedBy = "appHolidayWork", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinTable(name = "KRQDT_APP_OVERTIME_DETAIL")

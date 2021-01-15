@@ -8,7 +8,7 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 //import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.WorkTypeClassification;
-import nts.uk.ctx.at.record.infra.entity.monthly.vtotalmethod.KrcstVertMonMethod;
+import nts.uk.ctx.at.record.infra.entity.monthly.vtotalmethod.KrcmtCalcMAgg;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.AggregateMethodOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.SpecCountNotCalcSubject;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.SpecTotalCountMonthly;
@@ -52,7 +52,7 @@ public class JpaVerticalTotalMethodOfMonthly extends JpaRepository implements Ve
 	 * @param lstVertical the lst vertical
 	 * @return the vertical total method of monthly
 	 */
-	public AggregateMethodOfMonthly toDomain(KrcstVertMonMethod entity) {
+	public AggregateMethodOfMonthly toDomain(KrcmtCalcMAgg entity) {
 		
 		return AggregateMethodOfMonthly.of(entity.cid, 
 				TADaysCountOfMonthlyAggr.of(
@@ -70,8 +70,8 @@ public class JpaVerticalTotalMethodOfMonthly extends JpaRepository implements Ve
 	 * @param setting the setting
 	 * @return the krcst vert mon method
 	 */
-	public KrcstVertMonMethod toDbType(AggregateMethodOfMonthly setting) {
-		KrcstVertMonMethod entity = new KrcstVertMonMethod();
+	public KrcmtCalcMAgg toDbType(AggregateMethodOfMonthly setting) {
+		KrcmtCalcMAgg entity = new KrcmtCalcMAgg();
 		entity.cid = setting.getCompanyId();
 		entity.transAttendDay = setting.getTransferAttendanceDays().getTADaysCountCondition().value;
 		entity.calcTargetOutCountCondition = setting.getSpecTotalCountMonthly().getSpecCount().value;

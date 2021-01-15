@@ -2336,12 +2336,12 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 		return krcdtDayLateTime == null ? new ArrayList<>() : krcdtDayLateTime;
 	}
 	
-	public static AttendanceTimeOfDailyPerformance toDomain(KrcdtDayTime entity,
-												   			KrcdtDayPremiumTime krcdtDayPremiumTime,
+	public static AttendanceTimeOfDailyPerformance toDomain(KrcdtDayTimeAtd entity,
+												   			KrcdtDayTimePremium krcdtDayPremiumTime,
 												   			List<KrcdtDayLeaveEarlyTime> krcdtDayLeaveEarlyTime,
 												   			List<KrcdtDayLateTime> krcdtDayLateTime,
 												   			List<KrcdtDayShorttime> krcdtDayShorttime
-												   			,List<KrcdtDayOutingTime> krcdtDayOutingTime) {
+												   			,List<KrcdtDayTimeGoout> krcdtDayOutingTime) {
 		
 		/*日別実績の休憩時間*/
 		val breakTime = createBreakTime(entity);
@@ -2391,7 +2391,7 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 		List<BonusPayTime> specBonusPayTime = createBonusSpecTime(entity);
 		
 		List<OutingTimeOfDaily> outingOfDaily = new ArrayList<>();
-		for(KrcdtDayOutingTime outingTime : krcdtDayOutingTime) {
+		for(KrcdtDayTimeGoout outingTime : krcdtDayOutingTime) {
 			outingOfDaily.add(outingTime.toDomain());
 		}
 		
@@ -2449,7 +2449,7 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 		return domain;
 	}
 
-	private static List<BonusPayTime> createBonusSpecTime(KrcdtDayTime entity) {
+	private static List<BonusPayTime> createBonusSpecTime(KrcdtDayTimeAtd entity) {
 		List<BonusPayTime> specBonusPayTime = new ArrayList<>();
 		specBonusPayTime.add(new BonusPayTime(1, new AttendanceTime(entity.spRaiseSalaryTime1), TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.spRaiseSalaryInTime1), new AttendanceTime(0)), 
 																								TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.spRaiseSalaryOutTime1), new AttendanceTime(0))));
@@ -2474,7 +2474,7 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 		return specBonusPayTime;
 	}
 
-	private static List<BonusPayTime> createBonusTime(KrcdtDayTime entity) {
+	private static List<BonusPayTime> createBonusTime(KrcdtDayTimeAtd entity) {
 		List<BonusPayTime> bonusPayTime = new ArrayList<>();
 		bonusPayTime.add(new BonusPayTime(1, new AttendanceTime(entity.raiseSalaryTime1), TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.raiseSalaryInTime1), new AttendanceTime(0)), 
 																   						  TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.raiseSalaryOutTime1), new AttendanceTime(0))));
@@ -2536,7 +2536,7 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 		return shortTime;
 	}
 	
-	private static DivergenceTimeOfDaily createDivergence(KrcdtDayTime entity) {
+	private static DivergenceTimeOfDaily createDivergence(KrcdtDayTimeAtd entity) {
 		List<DivergenceTime> divergenceTimeList = new ArrayList<>();
 		divergenceTimeList.add(new DivergenceTime(new AttendanceTimeOfExistMinus(entity.afterDeductionTime1),
 												  new AttendanceTimeOfExistMinus(entity.deductionTime1),
@@ -2603,7 +2603,7 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 		return new DivergenceTimeOfDaily(divergenceTimeList);
 	}
 	
-	private static OverTimeOfDaily createOverTime(KrcdtDayTime entity) {
+	private static OverTimeOfDaily createOverTime(KrcdtDayTimeAtd entity) {
 		
 		/*日別実績の残業時間帯*/
 		List<OverTimeFrameTimeSheet> timeSheet = createOverTimeTimeSheet(entity);
@@ -2620,7 +2620,7 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 				   						   new AttendanceTime(entity.overTimeBindTime));
 	}
 
-	private static List<OverTimeFrameTime> createOverTimeFrame(KrcdtDayTime entity) {
+	private static List<OverTimeFrameTime> createOverTimeFrame(KrcdtDayTimeAtd entity) {
 		List<OverTimeFrameTime> list = new ArrayList<>();
 		
 		list.add(new OverTimeFrameTime(new OverTimeFrameNo(1),
@@ -2686,7 +2686,7 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 		return list;
 	}
 	
-	private static List<OverTimeFrameTimeSheet> createOverTimeTimeSheet(KrcdtDayTime entity) {
+	private static List<OverTimeFrameTimeSheet> createOverTimeTimeSheet(KrcdtDayTimeAtd entity) {
 		List<OverTimeFrameTimeSheet> timeSheet = new ArrayList<>();
 		
 		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(entity.overTime1StrClc),new TimeWithDayAttr(entity.overTime1EndClc)),new OverTimeFrameNo(1)));
@@ -2703,7 +2703,7 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 		return timeSheet;
 	}
 
-	private static HolidayOfDaily createHoliday(KrcdtDayTime entity) {
+	private static HolidayOfDaily createHoliday(KrcdtDayTimeAtd entity) {
 		return new HolidayOfDaily(new AbsenceOfDaily(new AttendanceTime(entity.absenceTime)),
 				  new TimeDigestOfDaily(new AttendanceTime(entity.tdvTime),new AttendanceTime(entity.tdvShortageTime)),
 				  new YearlyReservedOfDaily(new AttendanceTime(entity.retentionYearlyTime)),
@@ -2714,7 +2714,7 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 				  new TransferHolidayOfDaily(new AttendanceTime(entity.transferHolidayTime)));
 	}
 	
-	private static List<HolidayWorkFrameTimeSheet> createHolidayWorkTimeSheet(KrcdtDayTime entity) {
+	private static List<HolidayWorkFrameTimeSheet> createHolidayWorkTimeSheet(KrcdtDayTimeAtd entity) {
 		List<HolidayWorkFrameTimeSheet> holidayWOrkTimeTS = new ArrayList<>();
 		
 		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(1)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork1StrClc),new TimeWithDayAttr(entity.holiWork1EndClc))));
@@ -2731,7 +2731,7 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 		return holidayWOrkTimeTS;
 	}
 	
-	private static List<HolidayWorkMidNightTime> createHolidayWorkMidNightTime(KrcdtDayTime entity) {
+	private static List<HolidayWorkMidNightTime> createHolidayWorkMidNightTime(KrcdtDayTimeAtd entity) {
 		List<HolidayWorkMidNightTime> holidayWorkMidNightTimeList = new ArrayList<>();
 		
 		holidayWorkMidNightTimeList.add(new HolidayWorkMidNightTime(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.legHoliWorkMidn),new AttendanceTime(entity.calcLegHoliWorkMidn)),
@@ -2744,7 +2744,7 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 		return holidayWorkMidNightTimeList;
 	}
 	
-	private static List<HolidayWorkFrameTime> createHolidayWorkTime(KrcdtDayTime entity) {
+	private static List<HolidayWorkFrameTime> createHolidayWorkTime(KrcdtDayTimeAtd entity) {
 		
 		List<HolidayWorkFrameTime> holiWorkFrameTimeList = new ArrayList<>();
 		
@@ -2792,7 +2792,7 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 		return holiWorkFrameTimeList;
 	}
 
-	private static WithinStatutoryTimeOfDaily createWithinStatutoryTime(KrcdtDayTime entity) {
+	private static WithinStatutoryTimeOfDaily createWithinStatutoryTime(KrcdtDayTimeAtd entity) {
 		return WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(new AttendanceTime(entity.workTime),
 				   																  new AttendanceTime(entity.pefomWorkTime),
 				   																  new AttendanceTime(entity.prsIncldPrmimTime),
@@ -2801,7 +2801,7 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 				   																  new AttendanceTime(entity.vactnAddTime));
 	}
 
-	private static WorkScheduleTimeOfDaily createScheduleWorkTime(KrcdtDayTime entity) {
+	private static WorkScheduleTimeOfDaily createScheduleWorkTime(KrcdtDayTimeAtd entity) {
 		return new WorkScheduleTimeOfDaily(new WorkScheduleTime(new AttendanceTime(entity.workScheduleTime),
 						   																				   new AttendanceTime(0),
 						   																				   new AttendanceTime(0)),
@@ -2809,7 +2809,7 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 				   																	  new AttendanceTime(entity.recorePreLaborTime));
 	}
 
-	private static BreakTimeOfDaily createBreakTime(KrcdtDayTime entity) {
+	private static BreakTimeOfDaily createBreakTime(KrcdtDayTimeAtd entity) {
 		return new BreakTimeOfDaily(DeductionTotalTime.of(TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.toRecordTotalTime), new AttendanceTime(entity.calToRecordTotalTime)),
 				  			                       TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.toRecordInTime), new AttendanceTime(entity.calToRecordInTime)),
 				  								   TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(entity.toRecordOutTime), new AttendanceTime(entity.calToRecordOutTime))), 

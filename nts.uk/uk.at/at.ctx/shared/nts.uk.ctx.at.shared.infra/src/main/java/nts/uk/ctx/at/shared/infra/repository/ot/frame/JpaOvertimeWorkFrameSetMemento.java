@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameName;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameSetMemento;
 import nts.uk.ctx.at.shared.dom.ot.frame.RoleOvertimeWork;
-import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshstOvertimeFrame;
+import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshmtOverFrame;
 import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshstOvertimeFramePK;
 
 /**

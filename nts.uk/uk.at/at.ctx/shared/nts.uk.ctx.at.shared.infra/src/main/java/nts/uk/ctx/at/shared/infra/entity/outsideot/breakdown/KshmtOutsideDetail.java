@@ -27,9 +27,9 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.Break
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.BreakdownItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.OutsideOTBRDItem;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.ProductNumber;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.attendance.KshstOutsideOtBrdAten;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.attendance.KshmtOutsideAtd;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.attendance.KshstOutsideOtBrdAtenPK;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshstPremiumExt60hRate;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshmtHd60hPremiumRate;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -72,7 +72,7 @@ public class KshmtOutsideDetail extends ContractUkJpaEntity implements Serializa
 		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
 		@JoinColumn(name = "BRD_ITEM_NO", referencedColumnName = "BRD_ITEM_NO", insertable = true, updatable = true) })
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	private List<KshstPremiumExt60hRate> lstPremiumExtRates;
+	private List<KshmtHd60hPremiumRate> lstPremiumExtRates;
 
     /**
      * Instantiates a new kshst over time brd.
@@ -169,11 +169,11 @@ public class KshmtOutsideDetail extends ContractUkJpaEntity implements Serializa
 		this.useAtr = domain.getUseClassification().value;
 		this.name = domain.getName().v();
 		this.productNumber = domain.getProductNumber().value;
-		this.lstOutsideOtBrdAten = domain.getAttendanceItemIds().stream().map(c -> new KshstOutsideOtBrdAten(new KshstOutsideOtBrdAtenPK(cid, 
+		this.lstOutsideOtBrdAten = domain.getAttendanceItemIds().stream().map(c -> new KshmtOutsideAtd(new KshstOutsideOtBrdAtenPK(cid, 
 																																		domain.getBreakdownItemNo().value, 
 																																		c)))
 												.collect(Collectors.toList());
-		this.lstPremiumExtRates = domain.getPremiumExtra60HRates().stream().map(c -> new KshstPremiumExt60hRate(cid, 
+		this.lstPremiumExtRates = domain.getPremiumExtra60HRates().stream().map(c -> new KshmtHd60hPremiumRate(cid, 
 																												domain.getBreakdownItemNo().value, 
 																												c.getOvertimeNo().value, 
 																												c.getPremiumRate().v()))

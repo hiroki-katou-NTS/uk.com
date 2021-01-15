@@ -14,7 +14,7 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcmtDvgcTime;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -48,7 +48,7 @@ public class KrcmtDvgcReason extends ContractUkJpaEntity implements Serializable
     	@PrimaryKeyJoinColumn(name="CID", referencedColumnName="CID"),
     	@PrimaryKeyJoinColumn(name="[NO]", referencedColumnName="[NO]")
     })
-	public KrcstDvgcTime krcstDvgcTime;
+	public KrcmtDvgcTime krcstDvgcTime;
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
 	 */

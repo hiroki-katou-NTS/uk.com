@@ -16,7 +16,7 @@ import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryResult;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryResultRepository;
 import nts.uk.ctx.sys.assist.dom.storage.SaveStatus;
 import nts.uk.ctx.sys.assist.dom.storage.StorageClassification;
-import nts.uk.ctx.sys.assist.infra.entity.datarestoration.SspmtDataRecoverResult;
+import nts.uk.ctx.sys.assist.infra.entity.datarestoration.SspdtRecoverResult;
 
 @Stateless
 public class JpaDataRecoverResultRepository extends JpaRepository implements DataRecoveryResultRepository {
