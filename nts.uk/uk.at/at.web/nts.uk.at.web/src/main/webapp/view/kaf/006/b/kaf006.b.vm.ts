@@ -646,6 +646,13 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 						applyForLeave: success.applyForLeave
 					};
 					vm.checkCondition(vm.data);
+
+					if (vm.data.workTypeNotRegister) {
+						vm.workTypeLst().push(new WorkType({workTypeCode: vm.data.selectedWorkTypeCD, name: vm.data.selectedWorkTypeCD + ' マスタ未登録'}))
+						vm.workTypeLst(_.sortBy(vm.workTypeLst(), ['workTypeCode']));
+						vm.selectedWorkTypeCD(vm.data.selectedWorkTypeCD);
+					}
+
 					vm.isInit(false);
                 }).fail((error) => {
                     vm.$dialog.error({ messageId: error.messageId, messageParams: error.parameterIds });
