@@ -703,9 +703,16 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 			if (vm.specAbsenceDispInfo()) {
 				vm.dateSpecHdRelationLst(vm.specAbsenceDispInfo().dateSpecHdRelationLst ? vm.specAbsenceDispInfo().dateSpecHdRelationLst : []);
 				
-				if (vm.dateSpecHdRelationLst() && vm.dateSpecHdRelationLst().length > 0) {
+				if (vm.dateSpecHdRelationLst() && vm.dateSpecHdRelationLst().length > 0 && !vm.selectedDateSpec()) {
 					vm.selectedDateSpec(vm.dateSpecHdRelationLst()[0].relationCD);
 				}
+			}
+
+			if (data.leaveComDayOffManas) {
+				vm.leaveComDayOffManas(data.leaveComDayOffManas);
+			}
+			if (data.payoutSubofHDManas) {
+				vm.payoutSubofHDManagements(data.payoutSubofHDManas);
 			}
 		};
 		
@@ -947,7 +954,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 
 			let workingHours = [];
 
-			if (startTime1 && endTime1) {
+			if (startTime1 != null && endTime1 != null) {
 				workingHours.push({
 					workNo: 1,
 					timeZone: {
@@ -956,7 +963,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 					}
 				});
 			}
-			if (startTime2 && endTime2) {
+			if (startTime1 != null && endTime1 != null) {
 				workingHours.push({
 					workNo: 2,
 					timeZone: {
@@ -979,14 +986,23 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 				};
 			}
 
-			let applyForSpeLeaveOptional = {};
+			let applyForSpeLeaveOptional = null;
 			if (vm.selectedType() === 3) {
-				applyForSpeLeaveOptional = {
-					mournerFlag: vm.isCheckMourn(),
-					relationshipCD: vm.selectedDateSpec(),
-					relationshipReason: vm.relationshipReason()
-				};
-			}
+                applyForSpeLeaveOptional = {
+                    mournerFlag: null,
+                    relationshipCD: null,
+                    relationshipReason: null
+                };
+                if (vm.condition6()) {
+                    applyForSpeLeaveOptional.relationshipCD = vm.selectedDateSpec();
+                }
+                if (vm.condition7()) {
+                    applyForSpeLeaveOptional.mournerFlag = vm.isCheckMourn();
+                }
+                if (vm.condition8()) {
+                    applyForSpeLeaveOptional.relationshipReason = vm.relationshipReason();
+                }
+            }
 
 
 			let appAbsence = {
@@ -1112,7 +1128,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 						vm.over60H(null);
 					}
 				if (vm.data.vacationApplicationReflect.timeLeaveReflect.substituteLeaveTime === 1 
-					&& vm.data.remainVacationInfo.accumulatedRestManagement.accumulatedManage === 1) {
+					&& vm.data.remainVacationInfo.substituteLeaveManagement.substituteLeaveManagement === 1) {
 						vm.condition19Substitute(true);
 					} else {
 						vm.condition19Substitute(false);

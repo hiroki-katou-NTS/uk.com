@@ -6,6 +6,47 @@
         v-bind:params="kaf000_A_Params"
       />
     </div>
+    <!--A2_1-->
+    <div class="accordion mb-2" v-if="c1">
+          <div class="card" v-if="true">
+            <div class="card-header uk-bg-accordion">
+              <button class="btn btn-link" type="button">
+                  {{'KAFS06_1' | i18n}}
+              </button>
+            </div>
+            <div class="collapse">
+              <!--A2_2-->
+              <table class="table mt-2">
+                  <thead>
+                    <tr>
+                      <!--A2_3-->
+                      <th v-if="c2" scope="col" class="bg-grey-200 px-1 text-center">{{'KAFS06_2' | i18n}}</th>
+                      <!--A2_5-->
+                      <th v-if="c3" scope="col" class="bg-grey-200 px-1 text-center">{{'KAFS06_3' | i18n}}</th>
+                      <!--A2_7-->
+                      <th v-if="c4" scope="col" class="bg-grey-200 px-1 text-center">{{'KAFS06_4' | i18n}}</th>
+                      <!--A2_9-->
+                      <th v-if="c5" scope="col" class="bg-grey-200 px-1 text-center">{{'KAFS06_5' | i18n}}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr 
+                      v-for="(item, index) in remainDays"
+                      v-bind:key="index"
+                      :value="index"
+                    >
+                      <td class="text-center" v-if="c2">{{'KAFS06_40' | i18n([item.subHdRemain])}}</td>
+                      <td class="text-center" v-if="c3">{{'KAFS06_40' | i18n([item.subVacaRemain])}}</td>
+                      <td class="text-center" v-if="c4">{{'KAFS06_40' | i18n([item.yearRemain])}}</td>
+                      <td class="text-center" v-if="c5">{{'KAFS06_40' | i18n([item.remainingHours])}}</td>
+                    </tr>
+                    
+                  </tbody>
+              </table>    
+            </div>
+          </div>
+    </div>
+
     <div v-if="!$valid || !isValidateAll" class="card bg-danger top-alert uk-text-danger topError">
               <button class="btn btn-link uk-text-danger">
                 <i class="fa fa-exclamation-circle" aria-hidden="true" ></i>
@@ -275,9 +316,9 @@
         <table class="table">
           <thead>
             <tr>
-              <th scope="col" class="bg-grey-200">{{'KAFS06_29' | i18n}}</th>
-              <th scope="col" class="bg-grey-200">{{'KAFS06_30' | i18n}}</th>
-              <th scope="col" class="bg-grey-200">{{'KAFS06_31' | i18n}}</th>
+              <th scope="col" class="bg-grey-200 px-1 text-center">{{'KAFS06_29' | i18n}}</th>
+              <th scope="col" class="bg-grey-200 px-1 text-center">{{'KAFS06_30' | i18n}}</th>
+              <th scope="col" class="bg-grey-200 px-1 text-center">{{'KAFS06_31' | i18n}}</th>
             </tr>
           </thead>
           <tbody>
@@ -286,9 +327,9 @@
               v-bind:key="index"
               :value="index"
             > 
-              <td>{{item.outbreakDay}}</td>
-              <td>{{item.dateOfUse}}</td>
-              <td>{{item.dayNumberUsed}}</td>
+              <td class="text-center">{{item.outbreakDay}}</td>
+              <td class="text-center">{{item.dateOfUse}}</td>
+              <td class="text-center">{{item.dayNumberUsed}}</td>
             </tr>
           </tbody>
         </table>
@@ -324,9 +365,9 @@
         <table class="table">
           <thead>
             <tr>
-              <th scope="col" class="bg-grey-200">{{'KAFS06_34' | i18n}}</th>
-              <th scope="col" class="bg-grey-200">{{'KAFS06_35' | i18n}}</th>
-              <th scope="col" class="bg-grey-200">{{'KAFS06_31' | i18n}}</th>
+              <th scope="col" class="bg-grey-200 px-1 text-center">{{'KAFS06_34' | i18n}}</th>
+              <th scope="col" class="bg-grey-200 px-1 text-center">{{'KAFS06_35' | i18n}}</th>
+              <th scope="col" class="bg-grey-200 px-1 text-center">{{'KAFS06_31' | i18n}}</th>
             </tr>
           </thead>
           <tbody>
@@ -335,9 +376,9 @@
               v-bind:key="index"
               :value="index"
             >
-              <td>{{item.outbreakDay}}</td>
-              <td>{{item.dateOfUse}}</td>
-              <td>{{item.dayNumberUsed}}</td>
+              <td class="text-center">{{item.outbreakDay}}</td>
+              <td class="text-center">{{item.dateOfUse}}</td>
+              <td class="text-center">{{item.dayNumberUsed}}</td>
             </tr>
             
           </tbody>

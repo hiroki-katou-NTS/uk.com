@@ -27,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
 public class AsposeApplyForLeave {
@@ -113,7 +114,7 @@ public class AsposeApplyForLeave {
             if (over60H != null && over60H.v() > 0) {
                 timeString += new StringBuilder(I18NText.getText("Com_ExsessHoliday"))
                         .append(HALF_WIDTH_SPACE)
-                        .append(over60H.v())
+                        .append(new TimeWithDayAttr(over60H.v()).getInDayTimeWithFormat())
                         .append(fULL_WIDTH_SPACE)
                         .append(fULL_WIDTH_SPACE)
                         .toString();
@@ -124,7 +125,7 @@ public class AsposeApplyForLeave {
             if (timeOff != null && timeOff.v() > 0) {
                 timeString += new StringBuilder(I18NText.getText("KAF006_30"))
                         .append(HALF_WIDTH_SPACE)
-                        .append(timeOff.v())
+                        .append(new TimeWithDayAttr(timeOff.v()).getInDayTimeWithFormat())
                         .append(fULL_WIDTH_SPACE)
                         .append(fULL_WIDTH_SPACE)
                         .toString();
@@ -135,7 +136,7 @@ public class AsposeApplyForLeave {
             if (timeAnualLeave != null && timeAnualLeave.v() > 0) {
                 timeString += new StringBuilder(I18NText.getText("KAF006_29"))
                         .append(HALF_WIDTH_SPACE)
-                        .append(timeAnualLeave.v())
+                        .append(new TimeWithDayAttr(timeAnualLeave.v()).getInDayTimeWithFormat())
                         .append(fULL_WIDTH_SPACE)
                         .append(fULL_WIDTH_SPACE)
                         .toString();
@@ -146,7 +147,7 @@ public class AsposeApplyForLeave {
             if (childNursingTime != null && childNursingTime.v() > 0) {
                 timeString += new StringBuilder(I18NText.getText("Com_ChildNurseHoliday"))
                         .append(HALF_WIDTH_SPACE)
-                        .append(childNursingTime.v())
+                        .append(new TimeWithDayAttr(childNursingTime.v()).getInDayTimeWithFormat())
                         .append(fULL_WIDTH_SPACE)
                         .append(fULL_WIDTH_SPACE)
                         .toString();
@@ -157,7 +158,7 @@ public class AsposeApplyForLeave {
             if (nursingTime != null && nursingTime.v() > 0) {
                 timeString += new StringBuilder(I18NText.getText("Com_CareHoliday"))
                         .append(HALF_WIDTH_SPACE)
-                        .append(nursingTime.v())
+                        .append(new TimeWithDayAttr(nursingTime.v()).getInDayTimeWithFormat())
                         .append(fULL_WIDTH_SPACE)
                         .append(fULL_WIDTH_SPACE)
                         .toString();
@@ -178,22 +179,24 @@ public class AsposeApplyForLeave {
         } else {
             Optional<List<WorkTimeSetting>> opWorkTimeLst = printContentOfApplyForLeave.getAppAbsenceStartInfoOutput()
                     .getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpWorkTimeLst();
-            WorkTimeCode worktimeCode = printContentOfApplyForLeave.getApplyForLeave().getReflectFreeTimeApp().getWorkInfo().getWorkTimeCode();
+            Optional<WorkTimeCode> optWorktimeCode = printContentOfApplyForLeave.getApplyForLeave().getReflectFreeTimeApp().getWorkInfo().getWorkTimeCodeNotNull();
             
-            if (opWorkTimeLst.isPresent()) {
-                List<WorkTimeSetting> workTimeLst = opWorkTimeLst.get();
-                List<WorkTimeSetting> workTimeLstFilter = workTimeLst.stream()
-                        .filter(workTime -> workTime.getWorktimeCode().equals(worktimeCode))
-                        .collect(Collectors.toList());
-                if (workTimeLstFilter.size() == 0) {
-                    workTimeString = worktimeCode.v() + HALF_WIDTH_SPACE + I18NText.getText("KAF006_94");
-                } else {
-                    if (workTimeLstFilter.get(0).getWorkTimeDisplayName() == null 
-                            || workTimeLstFilter.get(0).getWorkTimeDisplayName().getWorkTimeName() == null 
-                            || workTimeLstFilter.get(0).getWorkTimeDisplayName().getWorkTimeName().v().equals(EMPTY)) {
-                        workTimeString = worktimeCode.v() + HALF_WIDTH_SPACE + I18NText.getText("KAF006_94");
+            if (optWorktimeCode.isPresent()) {
+                if (opWorkTimeLst.isPresent()) {
+                    List<WorkTimeSetting> workTimeLst = opWorkTimeLst.get();
+                    List<WorkTimeSetting> workTimeLstFilter = workTimeLst.stream()
+                            .filter(workTime -> workTime.getWorktimeCode().equals(optWorktimeCode.get()))
+                            .collect(Collectors.toList());
+                    if (workTimeLstFilter.size() == 0) {
+                        workTimeString = optWorktimeCode.get().v() + HALF_WIDTH_SPACE + I18NText.getText("KAF006_94");
                     } else {
-                        workTimeString = workTimeLstFilter.get(0).getWorkTimeDisplayName().getWorkTimeName().v();
+                        if (workTimeLstFilter.get(0).getWorkTimeDisplayName() == null 
+                                || workTimeLstFilter.get(0).getWorkTimeDisplayName().getWorkTimeName() == null 
+                                || workTimeLstFilter.get(0).getWorkTimeDisplayName().getWorkTimeName().v().equals(EMPTY)) {
+                            workTimeString = optWorktimeCode.get().v() + HALF_WIDTH_SPACE + I18NText.getText("KAF006_94");
+                        } else {
+                            workTimeString = workTimeLstFilter.get(0).getWorkTimeDisplayName().getWorkTimeName().v();
+                        }
                     }
                 }
             }
@@ -315,33 +318,31 @@ public class AsposeApplyForLeave {
                 .equals(HolidayAppType.SPECIAL_HOLIDAY) 
                 && printContentOfApplyForLeave.getAppAbsenceStartInfoOutput().getSpecAbsenceDispInfo().isPresent()
                 && printContentOfApplyForLeave.getAppAbsenceStartInfoOutput().getSpecAbsenceDispInfo().get().isSpecHdForEventFlag())) {
-            cells.deleteRow(15);
-            deleteCnt++;
             cells.deleteRow(14);
             deleteCnt++;
-        }
-        if (!printContentOfApplyForLeave.getAppAbsenceStartInfoOutput().getSpecAbsenceDispInfo().isPresent()) {
-            cells.deleteRow(15);
-            deleteCnt++;
-            cells.deleteRow(14);
+            cells.deleteRow(13);
             deleteCnt++;
         }
+//        if (!printContentOfApplyForLeave.getAppAbsenceStartInfoOutput().getSpecAbsenceDispInfo().isPresent()) {
+//            cells.deleteRow(14);
+//            deleteCnt++;
+//            cells.deleteRow(13);
+//            deleteCnt++;
+//        }
         
         if (!printContentOfApplyForLeave.getAppAbsenceStartInfoOutput().isWorkHoursDisp()) {
             if (!printContentOfApplyForLeave.getAppAbsenceStartInfoOutput().getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles()) {
-                cells.deleteRow(13);
+                cells.deleteRow(12);
                 deleteCnt++;
             }
-            cells.deleteRow(12);
-            deleteCnt++;
             cells.deleteRow(11);
+            deleteCnt++;
+            cells.deleteRow(10);
             deleteCnt++;
         }
         
         if (!printContentOfApplyForLeave.getApplyForLeave().getVacationInfo().getHolidayApplicationType()
                 .equals(HolidayAppType.DIGESTION_TIME)) {
-            cells.deleteRow(10);
-            deleteCnt++;
             cells.deleteRow(9);
             deleteCnt++;
         }

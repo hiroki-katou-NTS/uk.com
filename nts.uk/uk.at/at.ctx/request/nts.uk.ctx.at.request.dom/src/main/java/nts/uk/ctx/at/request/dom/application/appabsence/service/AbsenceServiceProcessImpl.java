@@ -1714,8 +1714,10 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
         this.applyForLeaveRepository.insert(applyForLeave, companyId, applyForLeave.getApplication().getAppID());;
         this.applicationService.insertApp(applyForLeave.getApplication(), approvalRoot);
         
+        Application appNew = this.applicationRepository.findByID(applyForLeave.getApplication().getAppID()).get();
+        
         // アルゴリズム「新規画面登録時承認反映情報の整理」を実行する
-        this.registerApproveReflectInfoService.newScreenRegisterAtApproveInfoReflect(applyForLeave.getApplication().getEmployeeID(), applyForLeave.getApplication());
+        this.registerApproveReflectInfoService.newScreenRegisterAtApproveInfoReflect(applyForLeave.getApplication().getEmployeeID(), appNew);
         
         // 休暇紐付け管理を登録する
         this.registerVacationLinkManage(leaveComDayOffMana, payoutSubofHDManagements);

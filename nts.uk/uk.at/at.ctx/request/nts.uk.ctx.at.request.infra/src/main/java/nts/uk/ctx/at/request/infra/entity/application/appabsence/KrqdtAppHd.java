@@ -161,6 +161,7 @@ public class KrqdtAppHd extends ContractUkJpaEntity implements Serializable {
                             	: Optional.of(new DatePeriod(
                                     this.hdComStartDate, 
                                     this.hdComEndDate)),
+                            	(this.mournerFlg == null && this.relationshipCD == null && this.relationshipReason == null) ? Optional.empty() :
                                 Optional.of(new ApplyforSpecialLeave(
                                         this.mournerFlg != null ? (this.mournerFlg == 1 ? true : false) : false,
                                         this.relationshipCD != null ? Optional.of(new RelationshipCDPrimitive(this.relationshipCD)) : Optional.empty(),

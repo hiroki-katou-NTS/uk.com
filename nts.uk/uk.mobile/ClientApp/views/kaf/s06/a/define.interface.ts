@@ -438,7 +438,18 @@ export interface HolidayManagementDto {
     // 振休管理区分
     holidayManagement: number;
 }
-interface RemainVacationInfoDto {
+export interface RemainDaysHoliday {
+    // 代休残数
+    subHdRemain: number;
+    // 振休残数
+    subVacaRemain: number;
+    // 年休残数
+    yearRemain: number;
+    // 積休残数
+    remainingHours: number;
+}
+
+export interface RemainVacationInfoDto {
     // 年休管理
     annualLeaveManagement: AnualLeaveManagementDto;
 
