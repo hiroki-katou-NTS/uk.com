@@ -216,10 +216,10 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 		List<ErrorAlarmCondition> listErrorAlarmCon = errorConRep.findConditionByListErrorAlamCheckId(extractConditionWorkRecord);
 		
 		//ドメインモデル「勤務実績の抽出条件」を取得する
-		List<WorkRecordExtractingCondition> workRecordCond = workRep.getAllWorkRecordExtraConByIdAndUse(extractConditionWorkRecord, true);
+		List<WorkRecordExtractingCondition> workRecordCond = workRep.getAllWorkRecordExtraConByIdAndUse(extractConditionWorkRecord, 1);
 		
 		//ドメインモデル「日別実績のエラーアラーム」を取得する
-		List<ErrorAlarmWorkRecord> listError = errorAlarmRep.findByListErrorAlamByIdUse(errorDailyCheckCd, true);
+		List<ErrorAlarmWorkRecord> listError = errorAlarmRep.findByListErrorAlamByIdUse(errorDailyCheckCd, 1);
 		
 		//日次の固定抽出条件のデータを取得する
 		DataFixExtracCon dataforDailyFix = this.getDataForDailyFix(lstSid, dPeriod, errorDailyCheckId);
@@ -247,7 +247,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 		List<WorkingCondition> listWkConItem = new ArrayList<>();
 		
 		// ドメインモデル「勤務実績の固定抽出条件」を取得する
-		List<FixedConditionWorkRecord> workRecordExtract = fixCondReRep.getFixConWorkRecordByIdUse(errorDailyCheckId, true);
+		List<FixedConditionWorkRecord> workRecordExtract = fixCondReRep.getFixConWorkRecordByIdUse(errorDailyCheckId, 1);
 		if(!workRecordExtract.isEmpty()) {
 			
 			for(FixedConditionWorkRecord item : workRecordExtract) {
