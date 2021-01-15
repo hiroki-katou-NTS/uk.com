@@ -106,7 +106,7 @@ public class SaveUpdateProcessAutoExecutionCommandHandler
 				// Update 実行タスク設定
 				this.updateExecutionTaskSetting(cid, execItemCd, enabledSetting, execTaskSetting);
 				// ドメインモデル「更新処理自動実行管理」を更新する
-				logManage.setCurrentStatus(execTaskSetting.isEnabledSetting() ? CurrentExecutionStatus.WAITING
+				logManage.setCurrentStatus(enabledSetting ? CurrentExecutionStatus.WAITING
 						: CurrentExecutionStatus.INVALID);
 				this.processExecutionLogManageRepository.update(logManage);
 			});

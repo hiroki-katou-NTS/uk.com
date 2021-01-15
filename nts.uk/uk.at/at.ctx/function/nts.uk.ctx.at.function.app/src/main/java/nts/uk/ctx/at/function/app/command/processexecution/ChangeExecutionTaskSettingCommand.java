@@ -74,6 +74,9 @@ public class ChangeExecutionTaskSettingCommand {
 	/* スケジュールID */
 	private String scheduleId;
 
+	/* 1日の繰り返しスケジュールID */
+	private String repeatScheduleId;
+
 	/* 終了処理スケジュールID */
 	private String endScheduleId;
 
@@ -143,21 +146,24 @@ public class ChangeExecutionTaskSettingCommand {
 				september, october, november, december);
 		return ExecutionTaskSetting.builder().companyId(companyId)
 				.content(EnumAdaptor.valueOf(repeatContent, RepeatContentItem.class))
-				.detailSetting(
-						new RepeatDetailSetting(
-								Optional.ofNullable(new RepeatDetailSettingWeekly(new RepeatWeekDaysSelect(monday, tuesday, wednesday,
-										thursday, friday, saturday, sunday))),
-								Optional.ofNullable(new RepeatDetailSettingMonthly(days, months))))
+				.detailSetting(new RepeatDetailSetting(
+						Optional.ofNullable(new RepeatDetailSettingWeekly(new RepeatWeekDaysSelect(monday, tuesday,
+								wednesday, thursday, friday, saturday, sunday))),
+						Optional.ofNullable(new RepeatDetailSettingMonthly(days, months))))
 				.enabledSetting(enabledSetting)
-				.endDate(new TaskEndDate(EnumAdaptor.valueOf(endDateCls, EndDateClassification.class), Optional.ofNullable(endDate)))
+				.endDate(new TaskEndDate(EnumAdaptor.valueOf(endDateCls, EndDateClassification.class),
+						Optional.ofNullable(endDate)))
 				.endScheduleId(Optional.ofNullable(endScheduleId))
 				.endTime(new TaskEndTime(EnumAdaptor.valueOf(endTimeCls, EndTimeClassification.class),
 						Optional.ofNullable(endTime).map(EndTime::new)))
-				.execItemCd(new ExecutionCode(execItemCd)).nextExecDateTime(
-						Optional.empty())
+				.execItemCd(
+						new ExecutionCode(execItemCd))
+				.nextExecDateTime(Optional.empty())
 				.oneDayRepInr(new OneDayRepeatInterval(
-						Optional.ofNullable(oneDayRepInterval).map(data -> EnumAdaptor.valueOf(data, OneDayRepeatIntervalDetail.class)),
+						Optional.ofNullable(oneDayRepInterval)
+								.map(data -> EnumAdaptor.valueOf(data, OneDayRepeatIntervalDetail.class)),
 						EnumAdaptor.valueOf(oneDayRepClassification, OneDayRepeatClassification.class)))
+				.repeatScheduleId(Optional.ofNullable(repeatScheduleId))
 				.scheduleId(scheduleId).startDate(startDate).startTime(new StartTime(startTime)).build();
 	}
 
@@ -168,8 +174,8 @@ public class ChangeExecutionTaskSettingCommand {
 				.february(february).friday(friday).january(january).july(july).june(june).march(march).may(may)
 				.monday(monday).newMode(false).november(november).october(october).oneDayRepCls(oneDayRepClassification)
 				.oneDayRepInterval(oneDayRepInterval).repeatCls(true).repeatContent(repeatContent)
-				.repeatMonthDateList(repeatMonthDateList).saturday(saturday).scheduleId(endScheduleId)
-				.september(september).startDate(startDate).startTime(startTime).sunday(sunday).thursday(thursday)
-				.tuesday(tuesday).wednesday(wednesday).build();
+				.repeatMonthDateList(repeatMonthDateList).repeatScheduleId(repeatScheduleId).saturday(saturday)
+				.scheduleId(endScheduleId).september(september).startDate(startDate).startTime(startTime).sunday(sunday)
+				.thursday(thursday).tuesday(tuesday).wednesday(wednesday).build();
 	}
 }
