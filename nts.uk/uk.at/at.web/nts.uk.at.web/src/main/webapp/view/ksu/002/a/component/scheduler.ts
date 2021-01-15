@@ -83,6 +83,8 @@ module nts.uk.ui.at.ksu002.a {
 
     const COMPONENT_NAME = 'scheduler';
 
+    const API_VALID = '/screen/ksu/ksu002/checkTimeIsIncorrect';
+
     @handler({
         bindingName: COMPONENT_NAME,
         validatable: true,
@@ -793,24 +795,48 @@ module nts.uk.ui.at.ksu002.a {
 
             initValidate() {
                 const vm = this;
-                const { model, enable } = vm;
+                const { model, enable, data } = vm;
+
+                if (!data || !data.dayData || !data.dayData.data) {
+                    return;
+                }
+
+                const { wtype, wtime } = data.dayData.data;
+
                 const $join = $(vm.$el).find('.work-time div.join');
                 const $begin = $(vm.$el).find('.work-time input.begin');
 
                 const $leave = $(vm.$el).find('.work-time div.leave');
                 const $finish = $(vm.$el).find('.work-time input.finish');
+
                 const validate = () => {
                     const b = ko.unwrap(model.begin);
                     const f = ko.unwrap(model.finish);
+                    const workTypeCode = ko.unwrap(wtype.code);
+                    const workTimeCode = ko.unwrap(wtime.code);
 
                     if (ko.unwrap(enable)) {
-                        if (_.isNumber(b) && _.isNumber(f) && b >= f) {
-                            if (!$begin.ntsError('hasError')) {
-                                $begin.ntsError('set', { messageId: MSG_1811 });
-                            }
+                        if (_.isNumber(b) && _.isNumber(f)) {
+                            if (b >= f) {
+                                if (!$begin.ntsError('hasError')) {
+                                    $begin.ntsError('set', { messageId: MSG_1811 });
+                                }
 
-                            if (!$finish.ntsError('hasError')) {
-                                $finish.ntsError('set', { messageId: MSG_1811 });
+                                if (!$finish.ntsError('hasError')) {
+                                    $finish.ntsError('set', { messageId: MSG_1811 });
+                                }
+                            } else {
+                                const command = {
+                                    workTypeCode,
+                                    workTimeCode,
+                                    startTime: b,
+                                    endTime: f
+                                };
+
+                                vm.$ajax(API_VALID, command)
+                                    .then((resp: ContaintError[]) => {
+                                        debugger;
+                                    });
                             }
                         } else {
                             $begin.ntsError(CLBC, MSG_1811);
@@ -1149,6 +1175,19 @@ module nts.uk.ui.at.ksu002.a {
             $change: Function,
             $tabindex: string | number;
             $editable: KnockoutReadonlyComputed<boolean>;
+        }
+
+        interface ContaintError {
+            check: boolean;
+            nameError: string;
+            timeInput: string;
+            timeSpan: {
+                startTime: number;
+                endTime: number;
+            };
+            endTime: number;
+            startTime: number;
+            workNo1: boolean;
         }
     }
 }
