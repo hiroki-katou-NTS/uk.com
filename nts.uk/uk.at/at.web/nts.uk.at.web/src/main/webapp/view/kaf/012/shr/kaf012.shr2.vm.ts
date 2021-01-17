@@ -14,7 +14,8 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
     <div id="kaf012-share-component2">
         <div class="control-group valign-center">
             <div data-bind="ntsFormLabel: {required:true , text: $i18n('KAF012_46')}"></div>
-            <div data-bind="ntsSwitchButton: {
+            <div id="leave-type-switch"
+                data-bind="ntsSwitchButton: {
 						name: $i18n('KAF012_5'),
 						options: switchOptions,
 						optionsValue: 'code',
@@ -164,7 +165,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                     <div data-bind="if: display, attr: {class: appTimeType < 4 || !display() ? '' : 'control-group'}">
                                         <span style="display: flex; padding-bottom: 5px;" data-bind="text: appTimeType == 4 ? $vm.$i18n('KAF012_33') : $vm.$i18n('KAF012_34'), 
                                                         css: {hidden: appTimeType < 4}"/>
-                                        <span style="display: block; padding-bottom: 4px;" data-bind="text: calculatedTime"/>
+                                        <span style="display: block; padding-bottom: 4px;" data-bind="text: calculatedTimeDisplay"/>
                                     </div>
                                 </td>
                                 <td data-bind="style: {'vertical-align': appTimeType < 4 ? 'middle' : 'initial'}, css: {hidden: $parent.leaveType() != 0 &amp;&amp; $parent.leaveType() != 6}, foreach: applyTime">
@@ -178,7 +179,8 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                                 value: substituteAppTime, 
                                                                 inputFormat: 'time', 
                                                                 mode: 'time',
-                                                                enable: !$parents[1].viewMode()
+                                                                option: {defaultValue: '0:00'},
+                                                                enable: !$parents[1].viewMode() &amp;&amp; calculatedTime() > 0
                                                             }"/>
                                     </div>
                                 </td>
@@ -193,7 +195,8 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                                 value: annualAppTime, 
                                                                 inputFormat: 'time', 
                                                                 mode: 'time',
-                                                                enable: !$parents[1].viewMode()
+                                                                option: {defaultValue: '0:00'},
+                                                                enable: !$parents[1].viewMode() &amp;&amp; calculatedTime() > 0
                                                             }"/>
                                     </div>
                                 </td>
@@ -208,7 +211,8 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                                 value: childCareAppTime, 
                                                                 inputFormat: 'time', 
                                                                 mode: 'time',
-                                                                enable: !$parents[1].viewMode()
+                                                                option: {defaultValue: '0:00'},
+                                                                enable: !$parents[1].viewMode() &amp;&amp; calculatedTime() > 0
                                                             }"/>
                                     </div>
                                 </td>
@@ -223,7 +227,8 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                                 value: careAppTime, 
                                                                 inputFormat: 'time', 
                                                                 mode: 'time',
-                                                                enable: !$parents[1].viewMode()
+                                                                option: {defaultValue: '0:00'},
+                                                                enable: !$parents[1].viewMode() &amp;&amp; calculatedTime() > 0
                                                             }"/>
                                     </div>
                                 </td>
@@ -238,7 +243,8 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                                 value: super60AppTime, 
                                                                 inputFormat: 'time', 
                                                                 mode: 'time',
-                                                                enable: !$parents[1].viewMode()
+                                                                option: {defaultValue: '0:00'},
+                                                                enable: !$parents[1].viewMode() &amp;&amp; calculatedTime() > 0
                                                             }"/>
                                     </div>
                                 </td>
@@ -253,7 +259,8 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                                 value: specialAppTime, 
                                                                 inputFormat: 'time', 
                                                                 mode: 'time',
-                                                                enable: !$parents[1].viewMode()
+                                                                option: {defaultValue: '0:00'},
+                                                                enable: !$parents[1].viewMode() &amp;&amp; calculatedTime() > 0
                                                             }"/>
                                     </div>
                                 </td>
@@ -412,9 +419,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
 
         handleCalculate() {
             const vm = this;
-            vm.$validate([
-                '#kaf000-a-component4 .nts-input'
-            ]).then((valid: boolean) => {
+            vm.$validate(['#kaf000-a-component4 .nts-input', '#kaf012-share-component2 .nts-input']).then((valid: boolean) => {
                 if (valid) {
                     const command = {
                         timeLeaveType: vm.leaveType(),
@@ -425,8 +430,19 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                             timeLeaveRemaining: vm.timeLeaveRemaining(),
                             reflectSetting: vm.reflectSetting()
                         },
-                        timeZones: [],
-                        outingTimeZones: []
+                        timeZones: vm.applyTimeData().filter(i => i.appTimeType < 4 && i.display() && (i.timeZones[0].startTime() != null || i.timeZones[0].endTime() != null))
+                            .map(i => ({
+                                workNo: i.timeZones[0].workNo,
+                                startTime: i.appTimeType == AppTimeType.ATWORK || i.appTimeType == AppTimeType.ATWORK2 ? i.timeZones[0].startTime() : null,
+                                endTime: i.appTimeType == AppTimeType.ATWORK || i.appTimeType == AppTimeType.ATWORK2 ? null : i.timeZones[0].startTime()
+                            })),
+                        outingTimeZones: vm.applyTimeData()[4].display() ? vm.applyTimeData()[4].timeZones.filter(i => i.startTime() != null && i.endTime() != null)
+                            .map(i => ({
+                                frameNo: i.workNo,
+                                outingAtr: i.appTimeType(),
+                                startTime: i.startTime(),
+                                endTime: i.endTime()
+                            })) : []
                     };
                     command.appDisplayInfo.timeLeaveRemaining.remainingStart = new Date(command.appDisplayInfo.timeLeaveRemaining.remainingStart).toISOString();
                     command.appDisplayInfo.timeLeaveRemaining.remainingEnd = new Date(command.appDisplayInfo.timeLeaveRemaining.remainingEnd).toISOString();
@@ -567,27 +583,25 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                             break;
                                     }
                                     break;
-                                case LeaveType.COMBINATION:
-                                    switch (row.appTimeType) {
-                                        case 0:
-                                            row.applyTime[0].calculatedTime(nts.uk.time.format.byId("Clock_Short_HM", data.timeBeforeWork1));
-                                            break;
-                                        case 1:
-                                            row.applyTime[0].calculatedTime(nts.uk.time.format.byId("Clock_Short_HM", data.timeAfterWork1));
-                                            break;
-                                        case 2:
-                                            row.applyTime[0].calculatedTime(nts.uk.time.format.byId("Clock_Short_HM", data.timeBeforeWork2));
-                                            break;
-                                        case 3:
-                                            row.applyTime[0].calculatedTime(nts.uk.time.format.byId("Clock_Short_HM", data.timeAfterWork2));
-                                            break;
-                                        case 4:
-                                            row.applyTime[0].calculatedTime(nts.uk.time.format.byId("Clock_Short_HM", data.privateOutingTime));
-                                            row.applyTime[1].calculatedTime(nts.uk.time.format.byId("Clock_Short_HM", data.unionOutingTime));
-                                            break;
-                                        default:
-                                            break;
-                                    }
+                                default:
+                                    break;
+                            }
+                            switch (row.appTimeType) {
+                                case 0:
+                                    row.applyTime[0].calculatedTime(data.timeBeforeWork1);
+                                    break;
+                                case 1:
+                                    row.applyTime[0].calculatedTime(data.timeAfterWork1);
+                                    break;
+                                case 2:
+                                    row.applyTime[0].calculatedTime(data.timeBeforeWork2);
+                                    break;
+                                case 3:
+                                    row.applyTime[0].calculatedTime(data.timeAfterWork2);
+                                    break;
+                                case 4:
+                                    row.applyTime[0].calculatedTime(data.privateOutingTime);
+                                    row.applyTime[1].calculatedTime(data.unionOutingTime);
                                     break;
                                 default:
                                     break;
@@ -674,7 +688,8 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
         appTimeType: number;
         inputName: string;
         display: KnockoutObservable<boolean>;
-        calculatedTime: KnockoutObservable<string>;
+        calculatedTime: KnockoutObservable<number>;
+        calculatedTimeDisplay: KnockoutObservable<string>;
         substituteAppTime: KnockoutObservable<number>;
         annualAppTime: KnockoutObservable<number>;
         childCareAppTime: KnockoutObservable<number>;
@@ -682,9 +697,13 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
         super60AppTime: KnockoutObservable<number>;
         specialAppTime: KnockoutObservable<number>;
 
-        constructor(appTimeType: number, reflectSetting?: KnockoutObservable<ReflectSetting>) {
+        constructor(appTimeType: number, reflectSetting?: KnockoutObservable<ReflectSetting>, timeZones?: Array<TimeZone>) {
             this.appTimeType = appTimeType;
-            this.calculatedTime = ko.observable("0:00");
+            this.calculatedTime = ko.observable(0);
+            this.calculatedTimeDisplay = ko.computed(() => {
+                if (this.calculatedTime()) return nts.uk.time.format.byId("Clock_Short_HM", this.calculatedTime());
+                return "0:00";
+            });
             this.substituteAppTime = ko.observable(0);
             this.annualAppTime = ko.observable(0);
             this.childCareAppTime = ko.observable(0);
@@ -716,10 +735,18 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
             }
             this.display = ko.computed(() => {
                 if (appTimeType >= 4) {
-                    if (appTimeType == AppTimeType.PRIVATE && reflectSetting && reflectSetting() && reflectSetting().destination.privateGoingOut == 1)
-                        return true;
-                    else if (appTimeType == AppTimeType.UNION && reflectSetting && reflectSetting() && reflectSetting().destination.unionGoingOut == 1)
-                        return true;
+                    if (appTimeType == AppTimeType.PRIVATE)
+                        return (!!reflectSetting
+                            && !!reflectSetting()
+                            && reflectSetting().destination.privateGoingOut == 1
+                            && reflectSetting().destination.unionGoingOut != 1)
+                            || timeZones.filter(i => i.appTimeType() == AppTimeType.PRIVATE).length > 0;
+                    else if (appTimeType == AppTimeType.UNION)
+                        return  (!!reflectSetting
+                            && !!reflectSetting()
+                            && reflectSetting().destination.unionGoingOut == 1
+                            && reflectSetting().destination.privateGoingOut != 1)
+                            || timeZones.filter(i => i.appTimeType() == AppTimeType.UNION).length > 0;
                     else return false;
                 }
                 return true;
@@ -766,7 +793,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                 case AppTimeType.ATWORK2:
                     this.appTimeTypeName = getText('KAF012_21');
                     this.scheduledTimeLabel = getText("KAF012_10");
-                    this.timeZones = [new TimeZone(AppTimeType.ATWORK2, 1)];
+                    this.timeZones = [new TimeZone(AppTimeType.ATWORK2, 2)];
                     this.applyTime = [new ApplyTime(AppTimeType.ATWORK2)];
                     this.display = ko.computed(() => {
                         return appDispInfoStartupOutput()
@@ -779,7 +806,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                 case AppTimeType.OFFWORK2:
                     this.appTimeTypeName = getText('KAF012_24');
                     this.scheduledTimeLabel = getText("KAF012_16");
-                    this.timeZones = [new TimeZone(AppTimeType.OFFWORK2, 1)];
+                    this.timeZones = [new TimeZone(AppTimeType.OFFWORK2, 2)];
                     this.applyTime = [new ApplyTime(AppTimeType.OFFWORK2)];
                     this.display = ko.computed(() => {
                         return appDispInfoStartupOutput()
@@ -797,8 +824,8 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                         this.timeZones.push(new TimeZone(AppTimeType.PRIVATE, i, reflectSetting));
                     }
                     this.applyTime = [
-                        new ApplyTime(AppTimeType.PRIVATE, reflectSetting),
-                        new ApplyTime(AppTimeType.UNION, reflectSetting)
+                        new ApplyTime(AppTimeType.PRIVATE, reflectSetting, this.timeZones),
+                        new ApplyTime(AppTimeType.UNION, reflectSetting, this.timeZones)
                     ];
                     this.display = ko.computed(() => {
                         return reflectSetting() && reflectSetting().destination.privateGoingOut == 1

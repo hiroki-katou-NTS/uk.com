@@ -269,6 +269,9 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                             if (err.messageId == "Msg_1695") {
                                 $(vm.$el).find('#kaf000-a-component4-singleDate').focus();
                             }
+                            if (err.messageId == "Msg_1687") {
+                                $(vm.$el).find('leave-type-switch').focus();
+                            }
                         });
                     }).always(() => {
                         vm.$blockui("hide")

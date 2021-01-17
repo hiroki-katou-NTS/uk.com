@@ -460,6 +460,17 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 			case 'Msg_1715':
 			case 'Msg_1521':
 			case 'Msg_1648':
+            case 'Msg_474':
+            case 'Msg_430':
+            case 'Msg_1687':
+            case 'Msg_1409':
+            case 'Msg_511':
+            case 'Msg_476':
+            case 'Msg_477':
+            case 'Msg_478':
+            case 'Msg_1686':
+            case 'Msg_1760':
+            case 'Msg_1983':
 				vm.$dialog.error({ messageId: res.messageId, messageParams: res.parameterIds });
 				break;
             default:

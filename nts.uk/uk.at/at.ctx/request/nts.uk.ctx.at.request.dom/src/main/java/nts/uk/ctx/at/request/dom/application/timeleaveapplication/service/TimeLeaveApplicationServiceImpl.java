@@ -359,7 +359,6 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
         if (specialFrameNo.isPresent()) {
             // ドメインモデル「特別休暇」を取得する
             List<SpecialHoliday> specialHolidayList = specialHolidayRepository.findByCompanyId(companyId);
-            System.out.println(specialHolidayList.toString());
             Optional<SpecialHoliday> specialHoliday = specialHolidayList.stream().filter(i -> i.getTargetItem().getFrameNo().contains(specialFrameNo.get())).findFirst();
             if (!specialHoliday.isPresent())
                 return timeLeaveAppOutput;

@@ -59,7 +59,7 @@ public class TimeLeaveRemaining {
             dto.childCareRemainingDays,
             dto.childCareRemainingTime,
             dto.subTimeLeaveRemainingTime,
-            dto.careRemainingDays,
+            dto.annualTimeLeaveRemainingDays,
             dto.annualTimeLeaveRemainingTime,
             dto.specialTimeFrames,
             new DatePeriod(dto.remainingStart, dto.remainingEnd)

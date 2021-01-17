@@ -182,6 +182,14 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                         vm.applyTimeData()[index1].applyTime[index2].careAppTime(detail.applyTime.careAppTime);
                         vm.applyTimeData()[index1].applyTime[index2].super60AppTime(detail.applyTime.super60AppTime);
                         vm.applyTimeData()[index1].applyTime[index2].specialAppTime(detail.applyTime.specialAppTime);
+                        vm.applyTimeData()[index1].applyTime[index2].calculatedTime(
+                            detail.applyTime.substituteAppTime
+                            + detail.applyTime.annualAppTime
+                            + detail.applyTime.childCareAppTime
+                            + detail.applyTime.careAppTime
+                            + detail.applyTime.super60AppTime
+                            + detail.applyTime.specialAppTime
+                        );
                         totalAppTime[LeaveType.SUBSTITUTE] += detail.applyTime.substituteAppTime;
                         totalAppTime[LeaveType.ANNUAL] += detail.applyTime.annualAppTime;
                         totalAppTime[LeaveType.CHILD_NURSING] += detail.applyTime.childCareAppTime;
@@ -309,7 +317,10 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                         vm.$dialog.info( { messageId: "Msg_15" } );
                     }
                 }).fail(err => {
-                    vm.handleError(err);
+                    // vm.handleError(err);
+                    if (err.messageId == "Msg_1687") {
+                        $(vm.$el).find('leave-type-switch').focus();
+                    }
                 }).always(() => vm.$blockui("hide"));
         }
 
@@ -347,24 +358,24 @@ module nts.uk.at.view.kaf012.b.viewmodel {
             return vm.$ajax(API.updateApplication, paramsRegister);
         }
 
-        public handleError(err: any) {
-            const vm = this;
-            let param;
-            if (err.message && err.messageId) {
-                param = {messageId: err.messageId, messageParams: err.parameterIds};
-            } else {
-                if (err.message) {
-                    param = {message: err.message, messageParams: err.parameterIds};
-                } else {
-                    param = {messageId: err.messageId, messageParams: err.parameterIds};
-                }
-            }
-            vm.$dialog.error(param).then((err: any) => {
-                if (err.messageId == 'Msg_197') {
-                	ko.contextFor($('#contents-area')[0]).$vm.loadData();
-                }
-            });
-        }
+        // public handleError(err: any) {
+        //     const vm = this;
+        //     let param;
+        //     if (err.message && err.messageId) {
+        //         param = {messageId: err.messageId, messageParams: err.parameterIds};
+        //     } else {
+        //         if (err.message) {
+        //             param = {message: err.message, messageParams: err.parameterIds};
+        //         } else {
+        //             param = {messageId: err.messageId, messageParams: err.parameterIds};
+        //         }
+        //     }
+        //     vm.$dialog.error(param).then((err: any) => {
+        //         if (err.messageId == 'Msg_197') {
+        //         	ko.contextFor($('#contents-area')[0]).$vm.loadData();
+        //         }
+        //     });
+        // }
 
         getChildCalcEvent(evt: () => void) {
             const vm = this;
