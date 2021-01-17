@@ -183,6 +183,11 @@ module nts.uk.at.view.kaf022.p.viewmodel {
             });
         }
 
+        afterMoveLeft() {
+            const self = this;
+            self.optionalItems(_.cloneDeep(self.optionalItemsBak));
+        }
+
     }
 
     interface IOptionalItemAppSet {
