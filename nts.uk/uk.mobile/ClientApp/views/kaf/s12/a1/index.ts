@@ -61,20 +61,25 @@ export class KafS12A1Component extends Vue {
         for (let no = 1; no <= 10; no++) {
             vm.outingTimeZones.push(new OutingTimeZone(no, no <= 3));
         }
+        if (!_.isEmpty(vm.details)) {
+            vm.details.forEach((i) => {
+                if (i.appTimeType < 4) {
+                    vm.lateEarlyTimeZones[i.appTimeType].timeValue = i.appTimeType == AppTimeType.ATWORK || i.appTimeType == AppTimeType.ATWORK2 ? i.timeZones[0].startTime : i.timeZones[0].endTime;
+                } else {
+                    i.timeZones.forEach((j) => {
+                        vm.outingTimeZones[j.workNo - 1].appTimeType = i.appTimeType;
+                        vm.outingTimeZones[j.workNo - 1].timeZone.start = j.startTime;
+                        vm.outingTimeZones[j.workNo - 1].timeZone.end = j.endTime;
+                    });
+                }
+            });
+        }
     }
 
     get $appContext(): KafS12AComponent {
         const self = this;
 
         return self.$parent as KafS12AComponent;
-    }
-
-    @Watch('newMode')
-    public modeWatcher(value: boolean) {
-        const vm = this;
-        if (!value) {
-            console.log(vm.details);
-        }
     }
 
     @Watch('appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst')

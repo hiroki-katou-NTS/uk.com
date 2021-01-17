@@ -28,7 +28,7 @@
                     v-bind:appDispInfoStartupOutput="appDispInfoStartupOutput"/>
         </div>
         <!-- A_A9_1 -->
-        <div v-if="condition15" class="mb-3">
+        <div v-if="condition15" class="mb-2">
             <div class="card card-label">
                 <div class="card-header uk-bg-accordion">
                     <span>{{ "KAFS12_13" | i18n }}</span>
@@ -47,7 +47,7 @@
                             v-bind:displaySwitch="condition16"/>
                 </div>
             </div>
-            <div v-if="displayAddButton" class="mb-2">
+            <div v-if="displayAddButton">
                 <div class="text-center position-relative" style="height: 35px">
                     <!-- A_A9_6 -->
                     <div class="position-absolute w-100">

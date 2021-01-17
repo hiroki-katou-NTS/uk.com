@@ -53,7 +53,10 @@ export class KafS12AComponent extends KafS00ShrComponent {
         if (!_.isNil(vm.params)) {
             vm.newMode = false;
             vm.appDispInfoStartupOutput = vm.params.appDispInfoStartupOutput;
-            console.log(vm.params.appDetail);
+            vm.reflectSetting = vm.params.appDetail.reflectSetting;
+            vm.timeLeaveRemaining = vm.params.appDetail.timeLeaveRemaining;
+            vm.timeLeaveManagement = vm.params.appDetail.timeLeaveManagement;
+            vm.details = vm.params.appDetail.details;
         }
     }
     

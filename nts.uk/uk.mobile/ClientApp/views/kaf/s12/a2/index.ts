@@ -2,7 +2,7 @@ import { _, Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import { KafS00CComponent } from 'views/kaf/s00/c';
 import { KafS12AComponent } from 'views/kaf/s12/a';
-import { ReflectSetting, TimeLeaveManagement, TimeLeaveRemaining, KafS12ApplyTimeComponent } from '../shr';
+import { ReflectSetting, TimeLeaveManagement, TimeLeaveRemaining, KafS12ApplyTimeComponent, TimeLeaveAppDetail } from '../shr';
 
 @component({
     name: 'kafs12a2',
@@ -28,6 +28,8 @@ export class KafS12A2Component extends Vue {
     public readonly timeLeaveManagement: TimeLeaveManagement;
     @Prop({ default: null })
     public readonly timeLeaveRemaining: TimeLeaveRemaining;
+    @Prop({ default: [] })
+    public readonly details: Array<TimeLeaveAppDetail>;
 
     public isValidateAll: boolean = true;
     public applyTimeData: Array<any> = [];
@@ -46,6 +48,17 @@ export class KafS12A2Component extends Vue {
                 nursingAppTime: 0,
                 super60AppTime: 0,
                 specialAppTime: 0,
+            });
+        }
+        if (!_.isEmpty(vm.details)) {
+            vm.details.forEach((i) => {
+                vm.specialLeaveFrame = vm.specialLeaveFrame || i.applyTime.specialLeaveFrameNo;
+                vm.applyTimeData[i.appTimeType].substituteAppTime = i.applyTime.substituteAppTime;
+                vm.applyTimeData[i.appTimeType].annualAppTime = i.applyTime.annualAppTime;
+                vm.applyTimeData[i.appTimeType].childNursingAppTime = i.applyTime.childCareAppTime;
+                vm.applyTimeData[i.appTimeType].nursingAppTime = i.applyTime.careAppTime;
+                vm.applyTimeData[i.appTimeType].super60AppTime = i.applyTime.super60AppTime;
+                vm.applyTimeData[i.appTimeType].specialAppTime = i.applyTime.specialAppTime;
             });
         }
     }

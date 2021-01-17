@@ -27,12 +27,6 @@ export class KafS12ApplyTimeComponent extends Vue {
     @Prop({ default: null })
     public readonly calculatedData: any;
 
-    public substituteAppTime: number = 0;
-    public annualAppTime: number = 0;
-    public childNursingAppTime: number = 0;
-    public nursingAppTime: number = 0;
-    public super60AppTime: number = 0;
-    public specialAppTime: number = 0;
     public comboBoxValue: number = null;
 
     public created() {
@@ -45,120 +39,17 @@ export class KafS12ApplyTimeComponent extends Vue {
         return self.timeLeaveManagement ? self.timeLeaveManagement.timeSpecialLeaveMng.listSpecialFrame : [];
     }
 
-    // @Watch('params')
-    // public paramsWatcher(value: any) {
-    //     const self = this;
-    //     if (value) {
-    //         self.substituteAppTime = value.substituteAppTime;
-    //         self.annualAppTime = value.annualAppTime;
-    //         self.childNursingAppTime = value.childNursingAppTime;
-    //         self.nursingAppTime = value.nursingAppTime;
-    //         self.super60AppTime = value.super60AppTime;
-    //         self.specialAppTime = value.specialAppTime;
-    //     }
-    // }
-
-    // @Watch('specialLeaveFrame')
-    // public specialLeaveFrameWatcher(value: number) {
-    //     const self = this;
-    //     self.comboBoxValue = value;
-    // }
-
     @Watch('comboBoxValue')
-    public specialLeaveFrameNoWatcher(value: number) {
+    public comboBoxValueWatcher(value: number) {
         const self = this;
         self.$emit('changeSpecialLeaveFrame', value);
     }
 
-    // @Watch('substituteAppTime')
-    // public subTimeWatcher(value: number) {
-    //     const self = this;
-    //     const { annualAppTime, childNursingAppTime, nursingAppTime, super60AppTime, specialAppTime } = self;
-    //     self.$emit('changeAppTime', {
-    //         appTimeType: self.params.appTimeType,
-    //         substituteAppTime: value,
-    //         annualAppTime,
-    //         childNursingAppTime,
-    //         nursingAppTime,
-    //         super60AppTime,
-    //         specialAppTime
-    //     });
-    // }
-    //
-    // @Watch('annualAppTime')
-    // public annTimeWatcher(value: number) {
-    //     const self = this;
-    //     const { substituteAppTime, childNursingAppTime, nursingAppTime, super60AppTime, specialAppTime } = self;
-    //     self.$emit('changeAppTime', {
-    //         appTimeType: self.params.appTimeType,
-    //         substituteAppTime,
-    //         annualAppTime: value,
-    //         childNursingAppTime,
-    //         nursingAppTime,
-    //         super60AppTime,
-    //         specialAppTime
-    //     });
-    // }
-    //
-    // @Watch('childNursingAppTime')
-    // public childTimeWatcher(value: number) {
-    //     const self = this;
-    //     const { substituteAppTime, annualAppTime, nursingAppTime, super60AppTime, specialAppTime } = self;
-    //     self.$emit('changeAppTime', {
-    //         appTimeType: self.params.appTimeType,
-    //         substituteAppTime,
-    //         annualAppTime,
-    //         childNursingAppTime: value,
-    //         nursingAppTime,
-    //         super60AppTime,
-    //         specialAppTime
-    //     });
-    // }
-    //
-    // @Watch('nursingAppTime')
-    // public nurTimeWatcher(value: number) {
-    //     const self = this;
-    //     const { substituteAppTime, annualAppTime, childNursingAppTime, super60AppTime, specialAppTime } = self;
-    //     self.$emit('changeAppTime', {
-    //         appTimeType: self.params.appTimeType,
-    //         substituteAppTime,
-    //         annualAppTime,
-    //         childNursingAppTime,
-    //         nursingAppTime: value,
-    //         super60AppTime,
-    //         specialAppTime
-    //     });
-    // }
-    //
-    // @Watch('super60AppTime')
-    // public supTimeWatcher(value: number) {
-    //     const self = this;
-    //     const { substituteAppTime, annualAppTime, childNursingAppTime, nursingAppTime, specialAppTime } = self;
-    //     self.$emit('changeAppTime', {
-    //         appTimeType: self.params.appTimeType,
-    //         substituteAppTime,
-    //         annualAppTime,
-    //         childNursingAppTime,
-    //         nursingAppTime,
-    //         super60AppTime: value,
-    //         specialAppTime
-    //     });
-    // }
-    //
-    // @Watch('specialAppTime')
-    // public speTimeWatcher(value: number) {
-    //     const self = this;
-    //     const { substituteAppTime, annualAppTime, childNursingAppTime, nursingAppTime, super60AppTime } = self;
-    //     self.$emit('changeAppTime', {
-    //         appTimeType: self.params.appTimeType,
-    //         substituteAppTime,
-    //         annualAppTime,
-    //         childNursingAppTime,
-    //         nursingAppTime,
-    //         super60AppTime,
-    //         specialAppTime: value
-    //     });
-    // }
+    @Watch('specialLeaveFrame')
+    public specialLeaveFrameWatcher(value: number) {
+        const self = this;
+        self.comboBoxValue = value;
+    }
 
     get requiredAppTime() {
         const self = this;
@@ -187,12 +78,12 @@ export class KafS12ApplyTimeComponent extends Vue {
     get totalAppTime() {
         const self = this;
 
-        return self.$dt.timept(self.substituteAppTime
-            + self.annualAppTime
-            + self.childNursingAppTime
-            + self.nursingAppTime
-            + self.super60AppTime
-            + self.specialAppTime);
+        return self.$dt.timept(self.params.substituteAppTime
+            + self.params.annualAppTime
+            + self.params.childNursingAppTime
+            + self.params.nursingAppTime
+            + self.params.super60AppTime
+            + self.params.specialAppTime);
     }
 
     get super60HRemaining() {
