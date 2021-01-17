@@ -126,7 +126,9 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                     </table>
                 </div>
                 <div style="width: 100px; text-align: center; margin: auto auto" class="pull-left">
-                    <button id="time-calc-button" class="proceed caret-right" data-bind="text: $i18n('KAF012_38'), click: handleCalculate, enable: !viewMode()"/>
+                    <button id="time-calc-button" 
+                            class="proceed caret-right" 
+                            data-bind="text: $i18n('KAF012_38'), click: handleCalculate, enable: !viewMode(), style: {height: calcButtonHeight() + 'px'}"/>
                 </div>
                 <div class="pull-left">
                     <table id="kaf012-calc-table">
@@ -293,6 +295,8 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
 
         applyTimeData: KnockoutObservableArray<DataModel>;
 
+        calcButtonHeight: KnockoutObservable<number>;
+
         created(params: Params) {
             const vm = this;
             vm.reflectSetting = params.reflectSetting;
@@ -320,6 +324,24 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
             vm.applyTimeData = params.applyTimeData;
             if (params.eventCalc)
                 params.eventCalc(vm.handleCalculate.bind(vm));
+
+            vm.calcButtonHeight = ko.computed(() => {
+                let h = 100;
+                if (vm.applyTimeData().filter(i => i.appTimeType < 4 && i.display()).length > 0)
+                    h = h + (vm.applyTimeData().filter(i => i.display()).length - 1) * 60;
+                if (vm.applyTimeData()[4].display()) {
+                    if (vm.applyTimeData()[4].displayShowMore()) {
+                        if (vm.applyTimeData().filter(i => i.appTimeType < 4 && i.display()).length > 0) {
+                            h += 120;
+                        } else {
+                            h += 80;
+                        }
+                    } else {
+                        h += 300;
+                    }
+                }
+                return h;
+            });
         }
 
         mounted() {

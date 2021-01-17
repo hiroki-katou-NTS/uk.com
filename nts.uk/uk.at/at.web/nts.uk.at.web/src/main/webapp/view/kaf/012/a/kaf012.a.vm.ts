@@ -71,6 +71,11 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                 if (!_.isEmpty(params) && !_.isEmpty(params.baseDate)) {
                     vm.handleChangeAppDate(params.baseDate);
                 }
+                if (vm.applyTimeData().filter(i => i.display()).length == 0) {
+                    vm.$dialog.error({messageId: "Msg_474"}).then(() => {
+                        nts.uk.request.jumpToTopPage();
+                    });
+                }
             }).fail((error: any) => {
                 vm.$dialog.error(error).then(() => {
                     if (error.messageId == "Msg_474") {
