@@ -36,10 +36,7 @@ module nts.uk.at.view.cdl010.a.screenModel {
       .fail(() => vm.$blockui('clear'))
       .always(() => {
         const contentHeight = $('#content-cdl010').height();
-        if (545 > contentHeight) {
-          const subHeight = 545 - contentHeight;
-          nts.uk.ui.windows.getSelf().setHeight(650 - subHeight);
-        }
+        nts.uk.ui.windows.getSelf().setHeight(contentHeight + 110);
         vm.$blockui('clear');
       });
     }

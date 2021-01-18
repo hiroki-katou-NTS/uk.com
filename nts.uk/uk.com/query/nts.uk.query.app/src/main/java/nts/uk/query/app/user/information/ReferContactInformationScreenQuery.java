@@ -16,10 +16,6 @@ import nts.uk.ctx.bs.employee.dom.employee.service.EmpBasicInfo;
 import nts.uk.ctx.bs.employee.dom.employee.service.SearchEmployeeService;
 import nts.uk.ctx.bs.employee.dom.employment.Employment;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
-import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
-import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
-import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
 import nts.uk.ctx.bs.employee.pub.generalinfo.EmployeeGeneralInfoDto;
 import nts.uk.ctx.bs.employee.pub.generalinfo.EmployeeGeneralInfoPub;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.adapter.EmployeeInfoContactAdapter;
@@ -30,9 +26,18 @@ import nts.uk.ctx.sys.env.dom.mailnoticeset.company.service.ContactInformation;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.service.UserInformationUseMethodService;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.EmployeeInfoContactImport;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PersonContactImport;
+import nts.uk.ctx.workflow.dom.adapter.bs.SyJobTitleAdapter;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.JobTitleImport;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WkpDepInfo;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
+/**
+ * UKDesign.UniversalK.共通.CDL_共通ダイアログ.CDL010_連絡先の参照.メニュー別OCD.連絡先情報を取得する
+ * @author DungDV
+ *
+ */
 @Stateless
 public class ReferContactInformationScreenQuery {
 	@Inject
@@ -46,12 +51,6 @@ public class ReferContactInformationScreenQuery {
 
 	@Inject
 	private ClassificationRepository classificationRepository;
-
-	@Inject
-	private JobTitleInfoRepository jobTitleInfoRepository;
-
-	@Inject
-	private WorkplaceInformationRepository wplInfoRepository;
 	
 	@Inject
 	private PersonContactAdapter personContactAdapter;
@@ -61,6 +60,12 @@ public class ReferContactInformationScreenQuery {
 	
 	@Inject
 	private UserInformationUseMethodRepository userInformationUseMethodRepository;
+	
+	@Inject
+	private WorkplaceApproverAdapter workplaceApproverAdapter;
+	
+	@Inject
+	private SyJobTitleAdapter syJobTitleAdapter;
 
 	/**
 	 * 
@@ -76,7 +81,7 @@ public class ReferContactInformationScreenQuery {
 		String employmentCode = "";
 		String classificationCode = "";
 		String jobTitleCode = "";
-		String workplaceCode = "";
+		String wkpId = "";
 		// step 1: <call> 社員IDから個人社員基本情報を取得
 		EmpBasicInfo empBasicInfo = new EmpBasicInfo();
 
@@ -128,21 +133,21 @@ public class ReferContactInformationScreenQuery {
 				&& !employeeGeneralInfoImport.getJobTitleDto().get(0).getJobTitleItems().isEmpty()) {
 			jobTitleCode = employeeGeneralInfoImport.getJobTitleDto().get(0).getJobTitleItems().get(0).getJobTitleId();
 		}
-		Optional<JobTitleInfo> jobTitleInfo = this.jobTitleInfoRepository.findByJobCode(cid, jobTitleCode);
+		JobTitleImport jobTitleInfo = syJobTitleAdapter.findJobTitleByPositionId(cid, jobTitleCode, baseDate);
 
 		// step 7 : get*(ログイン会社ID、職場ID) - get domain 職場情報
 		if (!employeeGeneralInfoImport.getWorkplaceDto().isEmpty()
 				&& !employeeGeneralInfoImport.getWorkplaceDto().get(0).getWorkplaceItems().isEmpty()) {
-			workplaceCode = employeeGeneralInfoImport.getWorkplaceDto().get(0).getWorkplaceItems().get(0)
+			wkpId = employeeGeneralInfoImport.getWorkplaceDto().get(0).getWorkplaceItems().get(0)
 					.getWorkplaceId();
 		}
-		List<WorkplaceInformation> workplaceInfo = this.wplInfoRepository.getAllWorkplaceByCompany(cid, workplaceCode);
+		Optional<WkpDepInfo> workplaceInfo = this.workplaceApproverAdapter.findByWkpIdNEW(cid, wkpId, baseDate);
 		return ReferContactInformationDto.builder()
 				.businessName(empBasicInfo.getBusinessName().isEmpty() ? TextResource.localize("CDL010_19") : empBasicInfo.getBusinessName())
-				.employmentName(employment.isPresent() ? employment.get().getEmploymentName().v() : TextResource.localize("CDL010_19"))
-				.workplaceName(!workplaceInfo.isEmpty() ? workplaceInfo.get(0).getWorkplaceName().v() : TextResource.localize("CDL010_19"))
-				.jobTitleName(jobTitleInfo.isPresent() ? jobTitleInfo.get().getJobTitleName().v() : TextResource.localize("CDL010_19"))
-				.classificationName(classification.isPresent() ? classification.get().getClassificationName().v() : TextResource.localize("CDL010_19"))
+				.employmentName(employment.map(mapper -> mapper.getEmploymentName().v()).orElse(TextResource.localize("CDL010_19")))
+				.workplaceName(workplaceInfo.map(mapper -> mapper.getName()).orElse(TextResource.localize("CDL010_19")))
+				.jobTitleName(jobTitleInfo != null ? jobTitleInfo.getPositionName() : TextResource.localize("CDL010_19"))
+				.classificationName(classification.map(mapper -> mapper.getClassificationName().v()).orElse(TextResource.localize("CDL010_19")))
 				.contactInformation(contactInformation)
 				.build();
 	}
