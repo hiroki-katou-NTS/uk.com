@@ -47,11 +47,11 @@ module nts.uk.at.view.kmk004.f {
         public checkEmployment: KnockoutObservable<boolean> = ko.observable(true);
         public checkEmployee: KnockoutObservable<boolean> = ko.observable(true);
         public attendance: KnockoutObservable<boolean> = ko.observable(false);
+        public nameSynthetic:KnockoutObservable<string> = ko.observable('    ');
 
 
         public type = '';
         public selectId = '';
-        public nameSynthetic = '';
 
         public model: Model = new Model();
 
@@ -62,7 +62,7 @@ module nts.uk.at.view.kmk004.f {
                 .then(() => {
                     vm.type = params.type;
                     vm.selectId = params.selectId;
-                    vm.nameSynthetic = params.nameSynthetic;
+                    vm.nameSynthetic(params.nameSynthetic);
                     vm.attendance(params.isSetting);
 
                     vm.init();
