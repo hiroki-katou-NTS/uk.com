@@ -465,14 +465,32 @@ module nts.uk.ui.at.ksu002.a {
 										data.wtime.code(null);
 										data.wtime.name(null);
 
-										data.value.begin(null);
-										data.value.finish(null);
+										if (data.value.begin() !== null) {
+											data.value.begin(null);
+										} else {
+											data.value.begin.valueHasMutated();
+										}
+
+										if (data.value.finish() !== null) {
+											data.value.finish(null);
+										} else {
+											data.value.finish.valueHasMutated();
+										}
 									} else if (wtime.code !== 'deferred') {
 										data.wtime.code(wtime.code);
 										data.wtime.name(wtime.name);
 
-										data.value.begin(wtime.value.begin);
-										data.value.finish(wtime.value.finish);
+										if (data.value.begin() !== wtime.value.begin) {
+											data.value.begin(wtime.value.begin);
+										} else {
+											data.value.begin.valueHasMutated();
+										}
+
+										if (data.value.finish() !== wtime.value.finish) {
+											data.value.finish(wtime.value.finish);
+										} else {
+											data.value.finish.valueHasMutated();
+										}
 									}
 								})
 								.then(() => vm.compare(cloned, current))
