@@ -35,6 +35,10 @@ export class CmmS45ShrComponentsApp6Component extends Vue {
         end: ''
     } as WorkHours;
 
+    public goWorkAtr?: boolean = false;
+
+    public backHomeAtr?: boolean = false;
+
     public breakTimes: Array<BreakTime> = [];
 
     public preApp: ExtraTime = {
@@ -161,11 +165,13 @@ export class CmmS45ShrComponentsApp6Component extends Vue {
         const self = this;
         self.bindWorkInfo();
         self.bindWorkHours();
+        self.bindGoWorkBackHomeAtr();
         self.bindBreakTime();
         self.bindHolidayTimes();
         self.bindOverTimes();
         self.bindReasons();
     }
+
     public bindHolidayTimes() {
         const self = this;
         let holidayTimes = [] as Array<HolidayTime>;
@@ -513,6 +519,14 @@ export class CmmS45ShrComponentsApp6Component extends Vue {
         self.overTimes = overTimes;
     }
 
+    public bindGoWorkBackHomeAtr() {
+        const self = this;
+        if (self.c14) {
+            self.goWorkAtr = _.get(self.dataOutput, 'appHolidayWork.goWorkAtr');
+            self.backHomeAtr = _.get(self.dataOutput, 'appHolidayWork.backHomeAtr');
+        }
+    }
+
     public bindBreakTime() {
         const self = this;
         let breakTime = [] as Array<BreakTime>;
@@ -749,6 +763,16 @@ export class CmmS45ShrComponentsApp6Component extends Vue {
         const self = this;
 
         return self.c7 && self.c12 && self.c13;
+    }
+
+    //  「休日出勤申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係なし)．申請承認設定のOutputを利用
+    //  「休出申請設定」．直行直帰の機能の利用設定 == true AND 「申請詳細設定．時刻計算利用区分」が利用する
+    public get c14() {
+        const self = this;
+        let useDirectBounceFunction = _.get(self.dataOutput, 'appHdWorkDispInfo.holidayWorkAppSet.useDirectBounceFunction');
+        let timeCalUse = _.get(self.dataOutput, 'appHdWorkDispInfo.holidayWorkAppSet.applicationDetailSetting.timeCalUse');
+
+        return useDirectBounceFunction == NotUseAtr.USE && timeCalUse == NotUseAtr.USE;
     }
 }
 const API = {

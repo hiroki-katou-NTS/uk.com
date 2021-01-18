@@ -102,6 +102,32 @@
       </div>
     </div>
 
+    <!-- GoWork BackHome SwitchBox -->
+    <div class="card card-label" v-if="$appContext.c14">
+        <!-- A1_9_1 -->
+        <div class="card-header uk-bg-accordion" style="align-items: center">
+            <v-label class="border-0 pl-0 my-n3">
+                {{'KAFS07_5' | i18n}}</v-label>
+            <span class="badge badge-warning" style="height: 30%">必須</span>
+        </div>
+        <div class="card-body">
+            <div style="width: 100%" id="isGoWorkSelect">
+                <nts-switchbox v-for="(option, optionIndex) in isGoWorkResource" v-bind:key="optionIndex"
+                    v-model="goWorkAtr"
+                    v-bind:value="option.code">
+                        {{option.text | i18n}}
+                </nts-switchbox>
+            </div>
+            <div style="width: 100%" id="isBackHomeSelect">
+                <nts-switchbox v-for="(option, optionIndex) in isBackHomeResource" v-bind:key="optionIndex"
+                    v-model="backHomeAtr"
+                    v-bind:value="option.code">
+                        {{option.text | i18n}}
+                </nts-switchbox>
+            </div>
+        </div>
+    </div>    
+
     <!-- Break -->
     <div v-if="$appContext.c4" class="card card-label">
       <!--A1_7_1-->
