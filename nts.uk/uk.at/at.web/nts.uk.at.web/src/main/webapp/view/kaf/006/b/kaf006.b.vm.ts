@@ -396,6 +396,10 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 
 			// Subscribe work time after change
 			vm.selectedWorkTimeCD.subscribe(() => {
+				if (vm.isInit()) {
+					return;
+				}
+				
 				if (_.isNil(vm.selectedWorkTimeCD())) {
 					return;
 				}
@@ -912,18 +916,20 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 
 		checkCondition(data: any) {
 			const vm = this;
-			
-			// vm.checkCondition10(data);
-			vm.checkCondition11(data);
-			vm.checkCondition12(data);
-			vm.checkCondition30(data);
-			vm.checkCondition19(data);
-			vm.checkCondition14(data);
-			vm.checkCondition15(data);
+
 			vm.checkCondition21(data);
 			vm.checkCondition22(data);
 			vm.checkCondition23(data);
 			vm.checkCondition24(data);
+			
+			vm.checkCondition19(data);
+			vm.checkCondition11(data);
+			vm.checkCondition12(data);
+			vm.checkCondition14(data);
+			vm.checkCondition15(data);
+
+
+			vm.checkCondition30(data);
 			vm.checkCondition1(data);
 			vm.checkCondition31(data);
 	
