@@ -58,7 +58,6 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository implemen
 	private static KfnmtProcessExecutionLogHistory toEntity(ProcessExecutionLogHistory domain) {
 		KfnmtProcessExecutionLogHistory entity = new KfnmtProcessExecutionLogHistory();
 		domain.setMemento(entity);
-		entity.contractCode = AppContexts.user().contractCode();
 		return entity;
 	}
 

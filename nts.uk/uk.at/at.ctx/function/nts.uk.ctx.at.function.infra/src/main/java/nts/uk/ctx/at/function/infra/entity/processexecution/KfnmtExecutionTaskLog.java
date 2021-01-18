@@ -50,10 +50,6 @@ public class KfnmtExecutionTaskLog extends ContractUkJpaEntity implements Serial
 	@Column(name = "EXCLUS_VER")
 	private Long exclusVer;
 
-	/** The Contract Code. */
-	@Column(name = "CONTRACT_CD")
-	public String contractCode;
-
 	/* 終了状態 */
 	@Column(name = "STATUS")
 	public Integer status;
@@ -98,7 +94,6 @@ public class KfnmtExecutionTaskLog extends ContractUkJpaEntity implements Serial
 	public static KfnmtExecutionTaskLog toEntity(String companyId, String execItemCd, String execId, ExecutionTaskLog domain) {
 		return KfnmtExecutionTaskLog.builder()
 				.kfnmtExecTaskLogPK(new KfnmtExecutionTaskLogPK(companyId, execItemCd, execId, domain.getProcExecTask().value))
-				.contractCode(AppContexts.user().contractCode())
 				.errorBusiness(domain.getErrorBusiness().map(value -> value ? 1 : 0).orElse(null))
 				.errorSystem(domain.getErrorSystem().map(value -> value ? 1 : 0).orElse(null))
 				.errorSystemDetail(domain.getSystemErrorDetails().orElse(null))

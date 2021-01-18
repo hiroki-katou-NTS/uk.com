@@ -36,13 +36,6 @@ public class KfnmtProcessExecution extends ContractUkJpaEntity
 	private long version;
 
 	/**
-	 * The contract code<br>
-	 * Column 契約コード
-	 */
-	@Column(name = "CONTRACT_CD")
-	private String contractCode;
-
-	/**
 	 * The primary key
 	 */
 	@EmbeddedId
@@ -92,8 +85,6 @@ public class KfnmtProcessExecution extends ContractUkJpaEntity
 	 */
 	public KfnmtProcessExecution(@NonNull String contractCode, @NonNull UpdateProcessAutoExecution domain) {
 		domain.setMemento(this);
-		this.execSetting.contractCode = contractCode;
-		this.contractCode = contractCode;
 	}
 
 	/**
@@ -141,7 +132,7 @@ public class KfnmtProcessExecution extends ContractUkJpaEntity
 	public void setExecSetting(ProcessExecutionSetting execSetting) {
 		this.execSetting = KfnmtProcessExecutionSetting.createFromDomain(this.getCompanyId(),
 																		 this.getExecItemCode(),
-																		 this.contractCode,
+																		 this.contractCd,
 																		 execSetting);
 	}
 

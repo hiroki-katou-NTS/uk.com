@@ -47,12 +47,6 @@ public class KfnmtProcessExecutionLogHistory extends ContractUkJpaEntity impleme
     @Column(name = "EXCLUS_VER")
     private Long exclusVer;
 
-    /**
-     * The Contract Code.
-     */
-    @Column(name = "CONTRACT_CD")
-    public String contractCode;
-
     /* 主キー */
     @EmbeddedId
     public KfnmtProcessExecutionLogHistoryPK kfnmtProcExecLogHstPK;

@@ -10,13 +10,13 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KscmtMonthPatternSet_.
  */
-@StaticMetamodel(KscmtRank.class)
+@StaticMetamodel(KscmtMonthPatternSet.class)
 public class KscmtMonthPatternSet_ {
 
 	/** The sid. */
-	public static volatile SingularAttribute<KscmtRank, String> sid;
+	public static volatile SingularAttribute<KscmtMonthPatternSet, String> sid;
 	
 	/** The m pattern cd. */
-	public static volatile SingularAttribute<KscmtRank, String> mPatternCd;
+	public static volatile SingularAttribute<KscmtMonthPatternSet, String> mPatternCd;
 	
 }

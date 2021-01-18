@@ -41,10 +41,6 @@ public class KfnmtProcessExecutionLogManage extends ContractUkJpaEntity {
 	@Column(name = "EXCLUS_VER")
 	private Long exclusVer;
 
-	/** The Contract Code. */
-	@Column(name = "CONTRACT_CD")
-	public String contractCode;
-
 	/* 現在の実行状態 */
 	@Basic(optional = true)
 	@Column(name = "CURRENT_STATUS")
@@ -88,7 +84,7 @@ public class KfnmtProcessExecutionLogManage extends ContractUkJpaEntity {
 		try { 
 			return new KfnmtProcessExecutionLogManage(
 					new KfnmtProcessExecutionLogManagePK(domain.getCompanyId(), domain.getExecItemCd().v()),
-					domain.getVersion(), AppContexts.user().contractCode(),
+					domain.getVersion(),
 					domain.getCurrentStatus().map(item -> item.value).orElse(null),
 					domain.getOverallStatus().map(item -> item.value).orElse(null),
 					domain.getOverallError().map(item -> item.value).orElse(null),

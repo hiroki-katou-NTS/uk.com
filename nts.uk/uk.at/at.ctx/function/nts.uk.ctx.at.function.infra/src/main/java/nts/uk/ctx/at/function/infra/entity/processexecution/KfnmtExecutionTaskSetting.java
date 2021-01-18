@@ -59,10 +59,6 @@ public class KfnmtExecutionTaskSetting extends ContractUkJpaEntity implements Se
 	@Version
 	@Column(name = "EXCLUS_VER")
 	private Long exclusVer;
-
-	/** The Contract Code. */
-	@Column(name = "CONTRACT_CD")
-	public String contractCode;
 	
 	/* 開始日 */
 	@Column(name = "START_DATE")
@@ -281,7 +277,6 @@ public class KfnmtExecutionTaskSetting extends ContractUkJpaEntity implements Se
 						domain.getCompanyId(), 
 						domain.getExecItemCd().v()),
 				domain.getVersion(),
-				AppContexts.user().contractCode(),
 				domain.getStartDate(),
 				domain.getStartTime().v(),
 				domain.getEndTime().getEndTimeCls().value,

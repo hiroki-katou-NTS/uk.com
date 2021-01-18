@@ -71,12 +71,6 @@ public class KfnmtProcessExecutionSetting extends ContractUkJpaEntity implements
 	public KfnmtProcessExecutionSettingPK kfnmtProcExecSetPK;
 
 	/**
-	 * The contract code.
-	 */
-	@Column(name = "CONTRACT_CD")
-	public String contractCode;
-
-	/**
 	 * The personal schedule creation classification.<br>
 	 * 個人スケジュール作成区分
 	 */
@@ -359,7 +353,6 @@ public class KfnmtProcessExecutionSetting extends ContractUkJpaEntity implements
 	                                    int recreateTransfer, int recreateLeaveSya, int indexReorgArt, int updStatisticsArt) {
 		super();
 		this.kfnmtProcExecSetPK = kfnmtProcExecSetPK;
-		this.contractCode = contractCode;
 		this.perScheduleCls = perScheduleCls;
 		this.targetMonth = targetMonth;
 		this.targetDate = targetDate;
@@ -415,7 +408,6 @@ public class KfnmtProcessExecutionSetting extends ContractUkJpaEntity implements
 		}
 		KfnmtProcessExecutionSetting entity = new KfnmtProcessExecutionSetting();
 		entity.kfnmtProcExecSetPK = new KfnmtProcessExecutionSettingPK(companyId, execItemCode);
-		entity.contractCode = contractCode;
 		entity.perScheduleCls = domain.getPerScheduleCreation().getPerScheduleCls().value;
 		entity.targetMonth = domain.getPerScheduleCreation().getPerSchedulePeriod().getTargetMonth().value;
 		entity.targetDate = domain.getPerScheduleCreation().getPerSchedulePeriod().getTargetDate()

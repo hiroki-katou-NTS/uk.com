@@ -47,10 +47,6 @@ public class KfnmtProcessExecutionLog extends ContractUkJpaEntity implements Ser
 	@Version
 	@Column(name = "EXCLUS_VER")
 	private Long exclusVer;
-
-	/** The Contract Code. */
-	@Column(name = "CONTRACT_CD")
-	public String contractCode;
 	
 	/* 実行ID */
 	@Column(name = "EXEC_ID")
@@ -240,7 +236,6 @@ public class KfnmtProcessExecutionLog extends ContractUkJpaEntity implements Ser
 		return new KfnmtProcessExecutionLog(
 				new KfnmtProcessExecutionLogPK(domain.getCompanyId(), domain.getExecItemCd().v()),
 				domain.getVersion(),
-				AppContexts.user().contractCode(),
 				domain.getExecId(),
 				schCreateStart, schCreateEnd, dailyCreateStart, dailyCreateEnd, dailyCalcStart, dailyCalcEnd,
 				reflectApprovalResultStart, reflectApprovalResultEnd, taskLogList);
