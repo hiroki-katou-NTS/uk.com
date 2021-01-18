@@ -115,8 +115,9 @@ module nts.uk.com.view.ccg020.a {
         .always(() => vm.$blockui('clear'));
     }
 
-    private addEventClickWarningBtn() {
-      nts.uk.ui.dialog.alertError(__viewContext.program.operationSetting.message);
+    public addEventClickWarningBtn() {
+      const msgWarning = __viewContext.program.operationSetting.message;
+      this.$dialog.error(_.replace(msgWarning, '<br/><br/>', '\n\n'));
     }
 
     /* Screen CCG002 */
