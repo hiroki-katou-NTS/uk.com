@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -31,6 +32,10 @@ public class JudgmentWaitingRequest {
 		// 3: 復旧時リクエスト待ちか(項目の数件: int): boolean
 		Map<EmpInfoTerminalCode, Boolean> mapCodeFlag = listTimeRecordSetUpdateList.stream()
 				.collect(Collectors.toMap(e -> e.getEmpInfoTerCode(), e -> e.isWaitingReqRecovery(mapCodeSeveralItem.get(e.getEmpInfoTerCode()) != null ? mapCodeSeveralItem.get(e.getEmpInfoTerCode()) : -1)));
+		
+		if (listTimeRecordSetUpdateList.isEmpty()) {
+			return new HashMap<EmpInfoTerminalCode, Boolean>();
+		}
 		
 		return mapCodeFlag;
 	}

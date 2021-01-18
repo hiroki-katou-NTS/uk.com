@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -25,6 +26,9 @@ public class DeterminingReqStatusTerminal {
 		List<TimeRecordReqSetting> empInfoTerRequestList = require.get(contractCode, empInfoTerminalCodeList);
 		
 		// 2: 端末のリクエスト状態の判断(): boolean
+		if (empInfoTerRequestList.isEmpty()) {
+			return new HashMap<EmpInfoTerminalCode, Boolean>();
+		}
 		return empInfoTerRequestList.stream().collect(Collectors.toMap(e -> e.getTerminalCode(), e -> e.determiningReqStatusTerminal()));
 	}
 

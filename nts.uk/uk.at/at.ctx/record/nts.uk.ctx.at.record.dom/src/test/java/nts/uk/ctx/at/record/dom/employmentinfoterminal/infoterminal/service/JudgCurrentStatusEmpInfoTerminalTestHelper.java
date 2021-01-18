@@ -50,4 +50,9 @@ public class JudgCurrentStatusEmpInfoTerminalTestHelper {
 		return new EmpInfoTerminalComStatusImport(contractCode, empInfoTerminalCode,
 				GeneralDateTime.now().addHours(60));
 	}
+	
+	public static EmpInfoTerminalComStatusImport createEmpInfoTerminalComStatusImport2() {
+		return new EmpInfoTerminalComStatusImport(contractCode, empInfoTerminalCode,
+				GeneralDateTime.now());
+	}
 }

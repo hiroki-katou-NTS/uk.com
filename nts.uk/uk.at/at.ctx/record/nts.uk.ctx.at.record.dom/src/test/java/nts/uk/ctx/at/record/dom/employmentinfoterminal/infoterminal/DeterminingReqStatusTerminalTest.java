@@ -45,7 +45,7 @@ public class DeterminingReqStatusTerminalTest {
 		
 		val actual = DeterminingReqStatusTerminal.determiningReqStatusTerminal(require, DeterminingReqStatusTerminalTestHelper.contractCode, empInfoTerminalList);
 		assertThat(actual.get(DeterminingReqStatusTerminalTestHelper.empInfoTerminalCode)).isFalse();
-	}
+	}	
 	
 	// リクエストFlag： true
 	@Test
@@ -64,5 +64,23 @@ public class DeterminingReqStatusTerminalTest {
 		val actual = DeterminingReqStatusTerminal.determiningReqStatusTerminal(require, DeterminingReqStatusTerminalTestHelper.contractCode, empInfoTerminalList);
 		assertThat(actual.get(DeterminingReqStatusTerminalTestHelper.empInfoTerminalCode)).isTrue();
 	}
+	
+	// listTimeRecordReqSetting emptyList
+		@Test
+		public void testDeterminingReqStatusTerminal2() {
+			
+			List<EmpInfoTerminal> empInfoTerminalList = new ArrayList<EmpInfoTerminal>();
+			List<EmpInfoTerminalCode> listEmpInfoTerminalCode = empInfoTerminalList.stream().map(e -> e.getEmpInfoTerCode()).collect(Collectors.toList());
+			
+			new Expectations() {
+				{
+					require.get(DeterminingReqStatusTerminalTestHelper.contractCode, listEmpInfoTerminalCode);
+					result = Collections.EMPTY_LIST;
+				}
+			};
+			
+			val actual = DeterminingReqStatusTerminal.determiningReqStatusTerminal(require, DeterminingReqStatusTerminalTestHelper.contractCode, empInfoTerminalList);
+			assertThat(actual.isEmpty()).isTrue();
+		}
 	
 }

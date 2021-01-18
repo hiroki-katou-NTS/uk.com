@@ -160,7 +160,7 @@ public class JudgCurrentStatusEmpInfoTerminalTest {
 		assertThat(actual).isEqualTo(TerminalCurrentState.ABNORMAL);
 	}
 	
-	// 通信異常があったか判断する(監視間隔時間): false
+	// 通信異常があったか判断する(監視間隔時間): false　最終通信日時　+ 監視間隔時間　＞　日時。今
 	@Test
 	public void judgmentComStatus3() {
 		
@@ -174,6 +174,21 @@ public class JudgCurrentStatusEmpInfoTerminalTest {
 		
 		assertThat(actual).isEqualTo(TerminalCurrentState.NORMAL);
 	}
+	
+	// 通信異常があったか判断する(監視間隔時間): false　最終通信日時　+ 監視間隔時間　＝　日時。今
+		@Test
+		public void judgmentComStatus4() {
+			
+			List<EmpInfoTerminalComStatusImport> listEmpInfoTerminalComStatus = new ArrayList<EmpInfoTerminalComStatusImport>();
+			EmpInfoTerminalComStatusImport empInfoTerminalComStatusImport = JudgCurrentStatusEmpInfoTerminalTestHelper.createEmpInfoTerminalComStatusImport2();
+			listEmpInfoTerminalComStatus.add(empInfoTerminalComStatusImport);
+
+			val intervalTime = new MonitorIntervalTime(0);
+			
+			TerminalCurrentState actual = JudgCurrentStatusEmpInfoTerminal.judgmentComStatus(listEmpInfoTerminalComStatus, JudgCurrentStatusEmpInfoTerminalTestHelper.empInfoTerminalCode, intervalTime);
+			
+			assertThat(actual).isEqualTo(TerminalCurrentState.NORMAL);
+		}
 	
 	
 }

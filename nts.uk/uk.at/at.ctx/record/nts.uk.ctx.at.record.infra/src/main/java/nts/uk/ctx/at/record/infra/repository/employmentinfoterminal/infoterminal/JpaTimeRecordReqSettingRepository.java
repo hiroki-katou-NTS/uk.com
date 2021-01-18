@@ -169,6 +169,9 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 											.setParameter("contractCode", contractCode.v())
 											.setParameter("listCode", listCode)
 											.getList();
+		if (listEntity.isEmpty()) {
+			return Collections.EMPTY_LIST;
+		}
 		results = listEntity.stream().map(e -> new TimeRecordReqSetting.ReqSettingBuilder(
 												new EmpInfoTerminalCode(e.pk.timeRecordCode),
 												new ContractCode(e.pk.contractCode), new CompanyId(e.cid),

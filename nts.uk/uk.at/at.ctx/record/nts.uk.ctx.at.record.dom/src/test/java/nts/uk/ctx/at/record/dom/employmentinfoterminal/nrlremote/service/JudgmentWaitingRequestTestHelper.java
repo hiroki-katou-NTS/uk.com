@@ -28,6 +28,7 @@ public class JudgmentWaitingRequestTestHelper {
 
 	public static final ContractCode contractCode = new ContractCode("1");
 	public static final EmpInfoTerminalCode empInfoTerminalCode = new EmpInfoTerminalCode("1");
+	public static final EmpInfoTerminalCode empInfoTerminalCode2 = new EmpInfoTerminalCode("2");
 	
 	public static List<EmpInfoTerminal> createEmpInfoTerminalList() {
 		
@@ -39,8 +40,17 @@ public class JudgmentWaitingRequestTestHelper {
 								new ConvertEmbossCategory(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE), Optional.empty()))
 						.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1))).build();
 		
+		EmpInfoTerminal empInfoTerminal2 = new EmpInfoTerminalBuilder(Optional.of(new FullIpAddress(
+				new PartialIpAddress(192), new PartialIpAddress(168), new PartialIpAddress(1), new PartialIpAddress(1))), new MacAddress("AABBCCDD"),
+				empInfoTerminalCode2, Optional.of(new EmpInfoTerSerialNo("1")), new EmpInfoTerminalName(""),
+				contractCode)
+						.createStampInfo(new CreateStampInfo(new OutPlaceConvert(NotUseAtr.NOT_USE, Optional.empty()),
+								new ConvertEmbossCategory(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE), Optional.empty()))
+						.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1))).build();
+		
 		List<EmpInfoTerminal> empInfoTerminalList = new ArrayList<EmpInfoTerminal>();
 		empInfoTerminalList.add(empInfoTerminal);
+		empInfoTerminalList.add(empInfoTerminal2);
 		
 		return empInfoTerminalList;
 	}
@@ -69,4 +79,24 @@ public class JudgmentWaitingRequestTestHelper {
 		
 		return listTimeRecordSetUpdateList;
 	}
+	
+	public static List<TimeRecordSetUpdateList> createListTimeRecordSetUpdateList1() {
+		
+		TimeRecordSetUpdateList timeRecordSetUpdateList = new TimeRecordSetUpdateList(empInfoTerminalCode,
+															new EmpInfoTerminalName(""), new NRRomVersion("003"),
+															ModelEmpInfoTer.valueOf(7), Collections.emptyList());
+		
+		TimeRecordSetUpdateList timeRecordSetUpdateList2 = new TimeRecordSetUpdateList(empInfoTerminalCode2,
+				new EmpInfoTerminalName(""), new NRRomVersion("003"),
+				ModelEmpInfoTer.valueOf(7), Collections.emptyList());
+		
+		List<TimeRecordSetUpdateList> listTimeRecordSetUpdateList = new ArrayList<TimeRecordSetUpdateList>();
+		listTimeRecordSetUpdateList.add(timeRecordSetUpdateList);
+		listTimeRecordSetUpdateList.add(timeRecordSetUpdateList2);
+		
+		
+		return listTimeRecordSetUpdateList;
+	}
+	
+
 }
