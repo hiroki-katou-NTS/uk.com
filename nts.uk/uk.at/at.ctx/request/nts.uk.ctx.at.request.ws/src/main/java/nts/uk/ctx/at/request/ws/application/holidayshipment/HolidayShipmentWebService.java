@@ -100,8 +100,8 @@ public class HolidayShipmentWebService extends WebService {
 	
 	@POST
 	@Path("changeDateScreenC")
-	public void changeDateScreenC(RegisterWhenChangeDateCommand command) {
-		changeValueItemsOnHolidayShipment.changeDateCScreen(command.appDateNew, command.displayInforWhenStarting);
+	public DisplayInforWhenStarting changeDateScreenC(RegisterWhenChangeDateCommand command) {
+		return changeValueItemsOnHolidayShipment.changeDateCScreen(command.appDateNew, command.displayInforWhenStarting);
 	}
 	
 	@POST
