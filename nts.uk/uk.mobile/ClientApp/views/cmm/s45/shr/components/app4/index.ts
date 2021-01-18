@@ -117,14 +117,16 @@ export class CmmS45ComponentsApp4Component extends Vue {
         // return true;
 
     }
+    // 直行直帰申請起動時の表示情報.直行直帰申請.勤務を変更するがNOT Empty AND 直行直帰申請.勤務を変更する = false
+    // #112366
     public isDisplay3(params: any) {
         let c1 = params.goBackApplication.isChangedWork != null;
         let c2 = false;
         if (c1) {
-            params.goBackApplication.isChangedWork == 0;
+            c2 = params.goBackApplication.isChangedWork == 0;
         }
         
-        return !(c1 || c2);
+        return !(c1 && c2);
         // return true;
 
     }

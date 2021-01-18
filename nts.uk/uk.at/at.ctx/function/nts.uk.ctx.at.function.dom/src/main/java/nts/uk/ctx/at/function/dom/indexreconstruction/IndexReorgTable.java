@@ -1,16 +1,17 @@
 package nts.uk.ctx.at.function.dom.indexreconstruction;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.function.dom.processexecution.IndexReconstructionCategoryNO;
-
-import java.math.BigDecimal;
 
 /**
  * Domain インデックス再構成テーブル<br>
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.更新処理自動実行.インデックス再構成.インデックス再構成
  */
 @Getter
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class IndexReorgTable extends AggregateRoot {
 
 	/**
@@ -27,12 +28,6 @@ public class IndexReorgTable extends AggregateRoot {
 	 * テーブル物理名
 	 */
 	private TableName tablePhysName;
-
-	/**
-	 * No args constructor.
-	 */
-	private IndexReorgTable() {
-	}
 
 	/**
 	 * Creates domain from memento.

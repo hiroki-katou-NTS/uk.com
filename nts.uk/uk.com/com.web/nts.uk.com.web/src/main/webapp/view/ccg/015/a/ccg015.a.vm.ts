@@ -4,6 +4,7 @@ module nts.uk.com.view.ccg015.a {
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
+    textButton: KnockoutComputed<string> = ko.computed(() => _.replace(this.$i18n('CCG015_49'), '\n', '<br/>'));
 
     openScreenCCG034() {
       const vm = this;
