@@ -20,8 +20,8 @@ import nts.uk.ctx.bs.company.dom.company.primitive.ContractCd;
 @Stateless
 public class CreateDefaultCompanyService {
 
-	public static AtomTask create(Require require,String contractCd, String companyCd, String companyName) {
-		Company company = new Company(new CompanyCode(companyCd),
+	public static AtomTask create(Require require,String contractCode, String companyCode, String companyName) {
+		Company company = new Company(new CompanyCode(companyCode),
 																	new Name(companyName),
 																	MonthStr.FOUR,
 																	AbolitionAtr.NOT_ABOLITION,
@@ -29,7 +29,7 @@ public class CreateDefaultCompanyService {
 																	Optional.empty(),
 																	Optional.empty(),
 																	Optional.empty(),
-																	new ContractCd(contractCd),
+																	new ContractCd(contractCode),
 																	Optional.empty(),
 																	Optional.empty());
 		return AtomTask.of(() ->{
