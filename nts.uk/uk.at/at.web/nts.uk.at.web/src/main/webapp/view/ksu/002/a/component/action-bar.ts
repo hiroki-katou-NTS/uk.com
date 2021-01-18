@@ -294,7 +294,7 @@ module nts.uk.ui.at.ksu002.a {
 						const wplace = ko.unwrap(data.workplaceId);
 						const wtype = _.find(wtyped, w => w.workTypeCode === wtypec);
 
-						return vm.data.mode() === 'edit' || !wplace || !wtype || wtype.type === WORKTYPE_SETTING.NOT_REQUIRED;
+						return vm.data.mode() === 'edit' || !wplace || !wtype || wtype.type === WORKTIME_SETTING.NOT_REQUIRED || wtype.style === WORK_STYLE.HOLIDAY;
 					},
 					owner: vm
 				}),
@@ -305,7 +305,7 @@ module nts.uk.ui.at.ksu002.a {
 					const wtyped = ko.unwrap(dataSourcesWtype);
 					const wtype = _.find(wtyped, w => w.workTypeCode === wtypec);
 
-					if (wtype && wtype.type === WORKTYPE_SETTING.NOT_REQUIRED) {
+					if (wtype && wtype.type === WORKTIME_SETTING.NOT_REQUIRED) {
 						vm.$window
 							.storage(c.KSU_USER_DATA)
 							.then((stg: undefined | c.StorageData) => {
@@ -448,7 +448,7 @@ module nts.uk.ui.at.ksu002.a {
 
 	interface WorkTypeResponse {
 		workStyle: WORK_STYLE;
-		workTimeSetting: WORKTYPE_SETTING;
+		workTimeSetting: WORKTIME_SETTING;
 		workTypeDto: WorkType;
 	}
 
@@ -461,11 +461,11 @@ module nts.uk.ui.at.ksu002.a {
 
 	interface WorkTypeModel extends WorkType {
 		style: WORK_STYLE;
-		type: WORKTYPE_SETTING;
+		type: WORKTIME_SETTING;
 		memo: string;
 	}
 
-	export enum WORKTYPE_SETTING {
+	export enum WORKTIME_SETTING {
 		REQUIRED = 0,
 		OPTIONAL = 1,
 		NOT_REQUIRED = 2
@@ -476,7 +476,7 @@ module nts.uk.ui.at.ksu002.a {
 			code: string;
 			name: string;
 			style: WORK_STYLE;
-			type: WORKTYPE_SETTING;
+			type: WORKTIME_SETTING;
 		};
 		wtime: {
 			code: WTIME_CODE;

@@ -41,7 +41,7 @@ module nts.uk.ui.at.ksu002.a {
             begin: KnockoutObservable<string | number | null>;
             finish: KnockoutObservable<string | number | null>;
             validate: KnockoutObservable<boolean>;
-            required: KnockoutObservable<WORKTYPE_SETTING>;
+            required: KnockoutObservable<WORKTIME_SETTING>;
         };
         state: StateEdit;
         confirmed: KnockoutObservable<boolean>;
@@ -672,7 +672,7 @@ module nts.uk.ui.at.ksu002.a {
                             && !!dayData.data.wtime.code()
                             && !(dayData.data.confirmed() || dayData.data.achievement() || !dayData.data.need2Work())
                             && dayData.data.classification() !== WORK_STYLE.HOLIDAY
-                            && dayData.data.value.required() === WORKTYPE_SETTING.REQUIRED;
+                            && dayData.data.value.required() === WORKTIME_SETTING.REQUIRED;
                     },
                     owner: this
                 });
@@ -693,7 +693,7 @@ module nts.uk.ui.at.ksu002.a {
 
                     ko.computed({
                         read: () => {
-                            model.required(ko.unwrap(value.required) === WORKTYPE_SETTING.REQUIRED || !!ko.unwrap(wtime.code));
+                            model.required(ko.unwrap(value.required) === WORKTIME_SETTING.REQUIRED || !!ko.unwrap(wtime.code));
                         },
                         owner: vm
                     });

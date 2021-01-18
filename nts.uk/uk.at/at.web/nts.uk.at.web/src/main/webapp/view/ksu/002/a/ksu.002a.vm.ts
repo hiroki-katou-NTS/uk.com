@@ -165,7 +165,7 @@ module nts.uk.ui.at.ksu002.a {
 											begin: ko.observable(startTime),
 											finish: ko.observable(endTime),
 											validate: ko.observable(true),
-											required: ko.observable(needToWork ? WORKTYPE_SETTING.REQUIRED : WORKTYPE_SETTING.OPTIONAL)
+											required: ko.observable(needToWork ? WORKTIME_SETTING.REQUIRED : WORKTIME_SETTING.OPTIONAL)
 										},
 										holiday: ko.observable(null),
 										event: ko.observable(null),
@@ -430,7 +430,7 @@ module nts.uk.ui.at.ksu002.a {
 		clickDayCell(type: c.CLICK_CELL, dayData: DayDataRawObsv) {
 			const vm = this;
 			const mode = ko.unwrap(vm.mode);
-			const { REQUIRED } = WORKTYPE_SETTING;
+			const { REQUIRED } = WORKTIME_SETTING;
 			const workData = ko.unwrap(vm.workData);
 			const preview: DayData = ko.toJS(dayData);
 
