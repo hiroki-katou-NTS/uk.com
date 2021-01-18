@@ -8,6 +8,7 @@ import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameS
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.DailyMonthlyClassification;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.TypesMasterRelatedDailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
@@ -18,7 +19,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -47,11 +52,18 @@ public class GetAttendanceItemInfo {
             val listAttdanceIdOfDaily = getAttendanceIdByFormNumberQuery.getAttendanceId(DailyMonthlyClassification.DAILY, formNumberDisplay);
             //  「使用不可の勤怠項目を除く」
             val listAttId = this.attendanceItemNameService.getAvaiableAttendanceItem(cid, TypeOfItem.Daily, listAttdanceIdOfDaily);
+
+            // 会社の月次項目を取得する
+            val dailyItemContainName = dailyItemService.getDailyItems(cid, roleId, listAttId, null);
+            Map<Integer, AttItemName> mapdailyItemContainName = dailyItemContainName.stream().filter(distinctByKey(AttItemName::getAttendanceItemId))
+                    .collect(Collectors.toMap(AttItemName::getAttendanceItemId, i -> i));
+
             //勤怠項目の種類　（1:日次）-- 日次の勤怠項目を取得する Nhận daily Attendance items
-            val itemDailys = dailyItemService.findByAttendanceItems(cid, listAttId);
-            rs.addAll(itemDailys.stream().map(e -> new AttItemDto(
+            val dailyItemContainAttribute = dailyItemService.findByAttendanceItems(cid, listAttId);
+
+            rs.addAll(dailyItemContainAttribute.stream().map(e -> new AttItemDto(
                     e.getTimeId(),
-                    e.getName(),
+                    mapdailyItemContainName.getOrDefault(e.getTimeId(), null) != null ? mapdailyItemContainName.get(e.getTimeId()).getAttendanceItemName() : null,
                     e.getDisplayNumber(),
                     null,
                     convertDailyToAttForms(e.getAttribute(), e.getMasterType()),
@@ -64,12 +76,21 @@ public class GetAttendanceItemInfo {
             //  （2:月次）
             val listAttdanceIdOfMonthly = getAttendanceIdByFormNumberQuery.getAttendanceId(DailyMonthlyClassification.MONTHLY, formNumberDisplay);
             //  「使用不可の勤怠項目を除く」
-            val listAttId = this.attendanceItemNameService.getAvaiableAttendanceItem(cid, TypeOfItem.Monthly, listAttdanceIdOfMonthly);
+            val listAttIdForMonthly = this.attendanceItemNameService.getAvaiableAttendanceItem(cid, TypeOfItem.Monthly, listAttdanceIdOfMonthly);
+            val listAttIdforPeriod = this.attendanceItemNameService.getAvaiableAttendanceItem(cid, TypeOfItem.AnyPeriod, listAttdanceIdOfMonthly);
+            List<Integer> listAttId = new ArrayList<>();
+            listAttId.addAll(listAttIdForMonthly);
+            listAttId.addAll(listAttIdforPeriod);
+
+            val itemMonthlyContainName = monthlyItemService.getMonthlyItems(cid, roleId, listAttId, null);
+            Map<Integer, AttItemName> mapMonthlyItemContainName = itemMonthlyContainName.stream().filter(distinctByKey(AttItemName::getAttendanceItemId))
+                    .collect(Collectors.toMap(AttItemName::getAttendanceItemId, i -> i));
+
             // 勤怠項目の種類　（2:月次）
-            val itemMonthlys = this.attendanceItemNameService.getMonthlyAttendanceItemNameAndAttr(cid, listAttId);
-            rs.addAll(itemMonthlys.stream().map(e -> new AttItemDto(
+            val itemMonthlyContainAttribute = this.attendanceItemNameService.getMonthlyAttendanceItemNameAndAttr(cid, listAttId);
+            rs.addAll(itemMonthlyContainAttribute.stream().map(e -> new AttItemDto(
                     e.getAttendanceItemId(),
-                    e.getAttendanceItemName(),
+                    mapMonthlyItemContainName.getOrDefault(e.getAttendanceItemId(), null) != null ? mapMonthlyItemContainName.get(e.getAttendanceItemId()).getAttendanceItemName() : null,
                     e.getDisplayNumbers(),
                     null,
                     convertMonthlyToAttForms(e.getAttendanceAtr()),
@@ -81,39 +102,90 @@ public class GetAttendanceItemInfo {
     }
 
     private Integer convertDailyToAttForms(Integer typeOfAttendanceItem, Integer masterType) {
+        // ・属性：コード　＋　マスタの種類：勤務種類　→　勤務種類
         if (typeOfAttendanceItem.equals(DailyAttendanceAtr.Code.value)
-                && masterType.equals(TypesMasterRelatedDailyAttendanceItem.WORK_TYPE.value)
-                ) {
+                && masterType.equals(TypesMasterRelatedDailyAttendanceItem.WORK_TYPE.value)) {
             return CommonAttributesOfForms.WORK_TYPE.value;
+            // ・属性：コード　＋　マスタの種類：就業時間帯　→　就業時間帯
         } else if (typeOfAttendanceItem.equals(DailyAttendanceAtr.Code.value)
-                && masterType.equals(TypesMasterRelatedDailyAttendanceItem.WORKING_HOURS.value)
-                ) {
+                && masterType.equals(TypesMasterRelatedDailyAttendanceItem.WORKING_HOURS.value)) {
             return CommonAttributesOfForms.WORKING_HOURS.value;
+            // ・属性：コード(上記除く)　→　なし(その他_文字数値)
+        } else if (typeOfAttendanceItem.equals(DailyAttendanceAtr.Code.value)) {
+            return CommonAttributesOfForms.OTHER_CHARACTER_NUMBER.value;
+            // ・マスタを参照する　→　なし(その他_文字数値)
+        } else if (typeOfAttendanceItem.equals(DailyAttendanceAtr.ReferToMaster.value)) {
+            return CommonAttributesOfForms.OTHER_CHARACTER_NUMBER.value;
+            // ・回数　→　回数
         } else if (typeOfAttendanceItem.equals(DailyAttendanceAtr.NumberOfTime.value)) {
             return CommonAttributesOfForms.NUMBER_OF_TIMES.value;
+            // ・金額　→　金額
         } else if (typeOfAttendanceItem.equals(DailyAttendanceAtr.AmountOfMoney.value)) {
             return CommonAttributesOfForms.AMOUNT_OF_MONEY.value;
+            // ・区分　→　なし(その他_数値)
+        } else if (typeOfAttendanceItem.equals(DailyAttendanceAtr.Classification.value)) {
+            return CommonAttributesOfForms.OTHER_NUMERICAL_VALUE.value;
+            // ・時間　→　時間
         } else if (typeOfAttendanceItem.equals(DailyAttendanceAtr.Time.value)) {
             return CommonAttributesOfForms.TIME.value;
+            // ・時刻　→　時刻
         } else if (typeOfAttendanceItem.equals(DailyAttendanceAtr.TimeOfDay.value)) {
             return CommonAttributesOfForms.TIME_OF_DAY.value;
-        } else if (typeOfAttendanceItem.equals(DailyAttendanceAtr.AmountOfMoney.value)) {
-            return CommonAttributesOfForms.AMOUNT_OF_MONEY.value;
+            // ・文字　→　なし(その他_文字)
+        } else if (typeOfAttendanceItem.equals(DailyAttendanceAtr.Charater.value)) {
+            return CommonAttributesOfForms.OTHER_CHARACTERS.value;
+            // ・申請　→　なし(その他_数値)
+        } else if (typeOfAttendanceItem.equals(DailyAttendanceAtr.Application.value)) {
+            return CommonAttributesOfForms.OTHER_NUMERICAL_VALUE.value;
         }
         return null;
     }
 
     private Integer convertMonthlyToAttForms(Integer typeOfAttendanceItem) {
+        //・時間　→　時間
         if (typeOfAttendanceItem.equals(MonthlyAttendanceItemAtr.TIME.value)) {
             return CommonAttributesOfForms.TIME.value;
-        } else if (typeOfAttendanceItem.equals(MonthlyAttendanceItemAtr.NUMBER.value)) {
+        }
+        // ・回数　→　回数
+        else if (typeOfAttendanceItem.equals(MonthlyAttendanceItemAtr.NUMBER.value)) {
             return CommonAttributesOfForms.NUMBER_OF_TIMES.value;
+        // ・日数　→　日数
         } else if (typeOfAttendanceItem.equals(MonthlyAttendanceItemAtr.DAYS.value)) {
             return CommonAttributesOfForms.DAYS.value;
-        } else if (typeOfAttendanceItem.equals(MonthlyAttendanceItemAtr.AMOUNT.value)) {
+        }
+        // ・金額　→　金額
+        else if (typeOfAttendanceItem.equals(MonthlyAttendanceItemAtr.AMOUNT.value)) {
             return CommonAttributesOfForms.AMOUNT_OF_MONEY.value;
-        } else
+        }
+        // ・マスタを参照する　→　なし(その他_文字数値)
+        else if (typeOfAttendanceItem.equals(MonthlyAttendanceItemAtr.REFER_TO_MASTER.value)) {
+            return CommonAttributesOfForms.OTHER_CHARACTER_NUMBER.value;
+        }
+        //・コード　→　なし(その他_文字数値)
+        else if (typeOfAttendanceItem.equals(MonthlyAttendanceItemAtr.CODE.value)) {
+            return CommonAttributesOfForms.OTHER_CHARACTER_NUMBER.value;
+        }
+        // 区分　→　なし(その他_数値)
+        else if (typeOfAttendanceItem.equals(MonthlyAttendanceItemAtr.CLASSIFICATION.value)) {
+            return CommonAttributesOfForms.OTHER_NUMERICAL_VALUE.value;
+        }
+        // ・比率　→　なし(その他_数値)
+        else if (typeOfAttendanceItem.equals(MonthlyAttendanceItemAtr.RATIO.value)) {
+            return CommonAttributesOfForms.OTHER_NUMERICAL_VALUE.value;
+        }
+        // ・文字　→　なし(その他_文字)
+        else if (typeOfAttendanceItem.equals(MonthlyAttendanceItemAtr.CHARACTER.value)) {
+            return CommonAttributesOfForms.OTHER_CHARACTERS.value;
+        }
+        else
             return null;
+    }
+
+    private static <T> Predicate<T> distinctByKey(
+            Function<? super T, ?> keyExtractor) {
+
+        Map<Object, Boolean> seen = new ConcurrentHashMap<>();
+        return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
 
 }

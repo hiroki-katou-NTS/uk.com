@@ -185,6 +185,16 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
             case WORKING_HOURS:
                 rs = valueString;
                 break;
+            case OTHER_CHARACTER_NUMBER:
+                rs = valueString;
+                break;
+            case OTHER_CHARACTERS:
+                rs = valueString;
+                break;
+            case OTHER_NUMERICAL_VALUE:
+                rs = valueString;
+                break;
+
             case TIME_OF_DAY:
                 if(valueDouble!=null){
                     rs = convertToTime((int) valueDouble.intValue());
