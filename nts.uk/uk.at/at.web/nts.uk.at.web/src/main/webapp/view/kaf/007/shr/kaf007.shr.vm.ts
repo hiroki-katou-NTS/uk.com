@@ -76,7 +76,7 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
                     <span class="label comment2" data-bind="text: $vm.comment2"></span>
                 </div>
             </div>
-            <div class="table" style="margin-top: 5px;" data-bind="visible: $vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.managementMultipleWorkCycles">
+            <div class="table" style="margin-top: 5px;" data-bind="visible: $vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.managementMultipleWorkCycles && reflectWorkChange.whetherReflectAttendance() == 1">
                 <div class="cell col-1">
                     <!-- A8 -->
                     <div class="cell valign-center" data-bind="ntsFormLabel: {required:false}, text: $i18n('KAF007_20')"></div>
