@@ -437,12 +437,15 @@ project (':cloud.operate:nts.uk.ctx.cloud.operate.ws') {
 
 project (':cloud.operate:nts.uk.ctx.cloud.operate.dom') {
 	dependencies {
+		compile group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.dom', version: version
+		compile group: 'com.sys.tenant', name: 'nts.uk.ctx.sys.tenant.dom', version: version
 	}
 }
 
 project (':cloud.operate:nts.uk.ctx.cloud.operate.app') {
 	dependencies {
 		compile group: 'com.shr', name: 'nts.uk.shr.find', version: version
+		compile group: 'com.sys.gateway', name: 'nts.uk.ctx.sys.gateway.dom', version: version
 		compile project(':cloud.operate:nts.uk.ctx.cloud.operate.dom')
 	}
 }
@@ -450,11 +453,14 @@ project (':cloud.operate:nts.uk.ctx.cloud.operate.app') {
 project (':cloud.operate:nts.uk.ctx.cloud.operate.infra') {
 	dependencies {
 		compile project(':cloud.operate:nts.uk.ctx.cloud.operate.dom')
+		
 	}
 }
 
 project (':cloud.operate:nts.uk.ctx.cloud.operate.ac') {
 	dependencies {
+		compile project(':cloud.operate:nts.uk.ctx.cloud.operate.app')
+		compile project(':cloud.operate:nts.uk.ctx.cloud.operate.dom')
 		compile group: 'at.function', name: 'nts.uk.ctx.at.function.pub', version: version
 	}
 }

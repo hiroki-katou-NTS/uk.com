@@ -26,11 +26,11 @@ public class CreateInitialOptionsService {
 
 		// TODO:
 		return AtomTask.of(() -> {
-			require.add(optionLicensePurchaseState);
+			require.saveInitialOption(optionLicensePurchaseState);
 		});
 	}
 
 	public static interface Require {
-		void add(OptionLicensePurchaseState optionLicensePurchaseState);
+		void saveInitialOption(OptionLicensePurchaseState optionLicensePurchaseState);
 	}
 }
