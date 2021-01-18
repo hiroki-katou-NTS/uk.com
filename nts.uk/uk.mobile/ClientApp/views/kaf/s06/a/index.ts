@@ -919,7 +919,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
 
         self.bindHolidayType();
         self.bindWorkInfo(true);
-        self.bindWorkHours();
+        self.bindWorkHours(true);
         self.bindRelationship();
         self.bindLinkWithVacation(vacationCheckOutputDto);
     }
@@ -1047,18 +1047,35 @@ export class KafS06AComponent extends KafS00ShrComponent {
         let result1 = _.find(workTimeLst, (item: TimeZoneUseDto) => item.workNo == 1) as any;
         let result2 = _.find(workTimeLst, (item: TimeZoneUseDto) => item.workNo == 2 && (!mode || item.useAtr == NotUseAtr.USE)) as any;
 
+        let start1 = null;
+        let end1 = null;
+        let start2 = null;
+        let end2 = null;
         if (!_.isNil(result1)) {
-            self.workHours1 = {
-                    start: mode ? result1.startTime : result1.timeZone.startTime,
-                    end: mode ? result1.endTime : result1.timeZone.endTime
-                };
+            start1 = mode ? result1.startTime : result1.timeZone.startTime;
+            end1 = mode ? result1.endTime : result1.timeZone.endTime;
         }
-        if (!_.isNil(result2)) {
-            self.workHours2 = {
-                start: mode ? result2.startTime : result2.timeZone.startTime,
-                end: mode ? result2.endTime : result2.timeZone.endTime
+        if (_.isNil(self.workHours1)) {
+            self.workHours1 = {
+                start: null,
+                end: null
             };
         }
+        self.workHours1.start = start1;
+        self.workHours1.end = end1;
+        if (!_.isNil(result2)) {
+            start2 = mode ? result2.startTime : result2.timeZone.startTime;
+            end2 = mode ? result2.endTime : result2.timeZone.endTime;
+            
+        }
+        if (_.isNil(self.workHours2)) {
+            self.workHours2 = {
+                start: null,
+                end: null
+            };
+        }
+        self.workHours2.start = start2;
+        self.workHours2.end = end2;
 
     } 
 
