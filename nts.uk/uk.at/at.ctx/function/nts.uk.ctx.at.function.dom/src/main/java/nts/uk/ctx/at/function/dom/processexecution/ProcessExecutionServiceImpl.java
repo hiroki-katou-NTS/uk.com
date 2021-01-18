@@ -72,7 +72,7 @@ public class ProcessExecutionServiceImpl implements ProcessExecutionService {
 		long epochSeconds = now.localDateTime().atZone(ZoneId.systemDefault()).toEpochSecond();
 		now = GeneralDateTime.ofEpochSecond(epochSeconds, ZoneOffset.ofHours(9));
 		// 取得できなかった場合
-		if (!oNextExecRepScheduleDateTime.isPresent() && !oNextExecEndScheduleDateTime.isPresent()) {
+		if (!oNextExecRepScheduleDateTime.isPresent()) {
 			// 次回実行日時（スケジュールID）を次回実行日時とする
 			nextExecDateTime = nextExecScheduleDateTime;
 		}
