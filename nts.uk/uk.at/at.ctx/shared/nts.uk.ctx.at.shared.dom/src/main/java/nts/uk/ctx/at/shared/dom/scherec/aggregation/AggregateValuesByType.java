@@ -44,8 +44,12 @@ public class AggregateValuesByType {
 
 		// 集計対象のみ合計する
 		val filterdValues = values.stream()
-				.filter( e -> targets.contains( e ) )
-				.collect(Collectors.toList());
+			.map( m -> {
+				return m.entrySet().stream()
+					.filter( e -> targets.contains( e.getKey() ) )
+					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+			} ).filter( m -> !m.isEmpty() )
+			.collect(Collectors.toList());
 		val results = AggregateValuesByType.totalize(filterdValues);
 
 		// 集計対象に対する合計値を返す
@@ -63,8 +67,8 @@ public class AggregateValuesByType {
 	public static <T> Map<T, BigDecimal> count(List<T> values) {
 
 		return values.stream()
-					.collect(Collectors.groupingBy( e -> e, Collectors.counting() )).entrySet().stream()
-					.collect(Collectors.toMap( Map.Entry::getKey, e -> BigDecimal.valueOf( e.getValue() ) ));
+				.collect(Collectors.groupingBy( e -> e, Collectors.counting() )).entrySet().stream()
+				.collect(Collectors.toMap( Map.Entry::getKey, e -> BigDecimal.valueOf( e.getValue() ) ));
 
 	}
 }
