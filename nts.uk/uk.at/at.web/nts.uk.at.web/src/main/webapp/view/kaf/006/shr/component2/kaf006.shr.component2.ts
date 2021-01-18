@@ -14,7 +14,8 @@ module nts.uk.at.view.kaf006.shr.component2.viewmodel {
                         options: hdAppSet,
                         optionsValue: 'holidayAppType',
                         optionsText: 'displayName',
-                        value: selectedType
+                        value: selectedType, 
+                        enable: $parent.updateMode
                     }"></div>
                 </div>
             </div>
@@ -39,8 +40,10 @@ module nts.uk.at.view.kaf006.shr.component2.viewmodel {
             const vm = this;
 
             vm.hdAppSet.subscribe(() => {
-                if (vm.hdAppSet().length > 0) {
-                    vm.selectedType(vm.hdAppSet()[0].holidayAppType);
+                if (!vm.selectedType()) {
+                    if (vm.hdAppSet().length > 0) {
+                        vm.selectedType(vm.hdAppSet()[0].holidayAppType);
+                    }
                 }
             });
         }

@@ -35,7 +35,14 @@ public class ApplyforSpecialLeaveDto {
     public ApplyforSpecialLeave toDomain() {
         return new ApplyforSpecialLeave(
                 mournerFlag, 
-                Optional.ofNullable(new RelationshipCDPrimitive(relationshipCD)), 
-                Optional.ofNullable(new RelationshipReasonPrimitive(relationshipReason)));
+                Optional.ofNullable(relationshipCD).flatMap(x -> Optional.of(new RelationshipCDPrimitive(x))), 
+                Optional.ofNullable(relationshipReason).flatMap(x -> Optional.of(new RelationshipReasonPrimitive(x))));
+    }
+    
+    public static ApplyforSpecialLeaveDto fromDomain(ApplyforSpecialLeave domain) {
+        return new ApplyforSpecialLeaveDto(
+                domain.isMournerFlag(), 
+                domain.getRelationshipCD().map(x -> x.v()).orElse(null), 
+                domain.getRelationshipReason().map(x -> x.v()).orElse(null));
     }
 }

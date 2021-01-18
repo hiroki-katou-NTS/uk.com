@@ -217,7 +217,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			// 基準申請日の決定
 			GeneralDate recDate = dateLst.size() >= 1 ? dateLst.get(0) : null;
 			GeneralDate absDate = dateLst.size() >= 2 ? dateLst.get(1) : null;
-			targetDate = Optional.of(holidayShipmentService.detRefDate(recDate, absDate));
+			targetDate = holidayShipmentService.detRefDate(Optional.ofNullable(recDate), Optional.ofNullable(absDate));
 		}
 		// 基準日として扱う日の取得
 		GeneralDate baseDate = appDispInfoNoDateOutput.getApplicationSetting().getBaseDate(targetDate);
@@ -430,6 +430,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	public void appConflictCheck(String companyID, EmployeeInfoImport employeeInfo, List<GeneralDate> dateLst,
 			List<String> workTypeLst, List<ActualContentDisplay> actualContentDisplayLst) {
 		// INPUT．対象日リストをループする
+		int count = 0;
 		for(GeneralDate loopDate : dateLst) {
 			// INPUT．表示する実績内容からルールする日の実績詳細を取得する
 			Optional<AchievementDetail> opAchievementDetail = Optional.empty();
@@ -446,7 +447,12 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				return;
 			}
 			// 勤務種類を取得する
-			Optional<WorkType> opWorkTypeFirst = workTypeRepository.findByPK(companyID, workTypeLst.stream().findFirst().orElse(null));
+			Optional<WorkType> opWorkTypeFirst = null;
+			if(workTypeLst.size()  > 1)
+				opWorkTypeFirst = workTypeRepository.findByPK(companyID, workTypeLst.get(count));
+			else
+				opWorkTypeFirst = workTypeRepository.findByPK(companyID, workTypeLst.stream().findFirst().orElse(null));
+			count++;
 			// 勤務種類を取得する
 			String actualWorkTypeCD = opActualContentDisplay.get().getOpAchievementDetail().map(x -> x.getWorkTypeCD()).orElse(null);
 			Optional<WorkType> opWorkTypeActual = workTypeRepository.findByPK(companyID, actualWorkTypeCD);
@@ -764,6 +770,10 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			, Optional<TimeDigestiveUnit> annualLeaveUnit, Optional<TimeDigestiveUnit> childNursingUnit
 			, Optional<TimeDigestiveUnit> nursingUnit, Optional<TimeDigestiveUnit> pendingUnit) {
 		
+		if (!Optional.ofNullable(timeDigestApplication).isPresent()) {
+			
+			throw new BusinessException("Msg_511");
+		}
 		if (!this.isValidAttendanceTime(timeDigestApplication.getChildTime()) && 
 		        !this.isValidAttendanceTime(timeDigestApplication.getNursingTime()) && 
 		        !this.isValidAttendanceTime(timeDigestApplication.getOvertime60H()) && 

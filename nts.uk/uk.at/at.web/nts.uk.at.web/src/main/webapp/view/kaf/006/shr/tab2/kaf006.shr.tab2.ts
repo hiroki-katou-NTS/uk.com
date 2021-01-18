@@ -6,52 +6,61 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
         <div id="kaf006tab2">
             <div class="table" style="margin-top: 5px;">
                 <div class="cell col-1">
-                    <div class="cell valign-center" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_28')"></div>
+                    <div class="cell valign-center" data-bind="ntsFormLabel:{ required: true }, text: $i18n('KAF006_28')"></div>
                 </div>
                 <div class="cell">
-                    <div class="table" style="padding-bottom: 5px;">
+                    <div class="table" style="padding-bottom: 5px;" data-bind="visible: $parent.condition19Over60">
                         <div class="cell col-1" data-bind="text: $i18n('Com_ExsessHoliday')"></div>
-                        <input style="width: 50px;" class="cell" data-bind="ntsTimeEditor: {
+                        <input id="over60H" style="width: 50px;" class="cell" data-bind="ntsTimeEditor: {
                             name: $i18n('Com_ExsessHoliday'),
                             value: $parent.over60H,
                             constraint: 'TimeOffPrimitive',
-                            mode: 'time'
+                            mode: 'time',
+                            enable: $parent.updateMode, 
+                            requỉed: true
                         }" />
                     </div>
-                    <div class="table" style="padding-bottom: 5px;">
+                    <div class="table" style="padding-bottom: 5px;" data-bind="visible: $parent.condition19Substitute">
                         <div class="cell col-1" data-bind="text: $i18n('KAF006_30')"></div>
-                        <input style="width: 50px;" class="cell" data-bind="ntsTimeEditor: {
+                        <input id="timeOff" style="width: 50px;" class="cell" data-bind="ntsTimeEditor: {
                             name: $i18n('KAF006_30'),
                             value: $parent.timeOff,
                             constraint: 'TimeOffPrimitive',
-                            mode: 'time'
+                            mode: 'time',
+                            enable: $parent.updateMode
                         }" />
                     </div>
-                    <div class="table" style="padding-bottom: 5px;">
+                    <div class="table" style="padding-bottom: 5px;" data-bind="visible: $parent.condition19Annual">
                         <div class="cell col-1" data-bind="text: $i18n('KAF006_29')"></div>
-                        <input style="width: 50px;" class="cell" data-bind="ntsTimeEditor: {
+                        <input id="annualTime" style="width: 50px;" class="cell" data-bind="ntsTimeEditor: {
                             name: $i18n('KAF006_29'),
                             value: $parent.annualTime,
                             constraint: 'TimeOffPrimitive',
-                            mode: 'time'
+                            mode: 'time',
+                            enable: $parent.updateMode, 
+                            requỉed: true
                         }" />
                     </div>
-                    <div class="table" style="padding-bottom: 5px;">
+                    <div class="table" style="padding-bottom: 5px;" data-bind="visible: $parent.condition19ChildNursing">
                         <div class="cell col-1" data-bind="text: $i18n('Com_ChildNurseHoliday')"></div>
-                        <input style="width: 50px;" class="cell" data-bind="ntsTimeEditor: {
+                        <input id="childNursing" style="width: 50px;" class="cell" data-bind="ntsTimeEditor: {
                             name: $i18n('Com_ChildNurseHoliday'),
                             value: $parent.childNursing,
                             constraint: 'TimeOffPrimitive',
-                            mode: 'time'
+                            mode: 'time',
+                            enable: $parent.updateMode, 
+                            requỉed: true
                         }" />
                     </div>
-                    <div class="table" style="padding-bottom: 5px;">
+                    <div class="table" style="padding-bottom: 5px;" data-bind="visible: $parent.condition19Nursing">
                         <div class="cell col-1" data-bind="text: $i18n('Com_CareHoliday')"></div>
-                        <input style="width: 50px;" class="cell" data-bind="ntsTimeEditor: {
+                        <input id="nursing" style="width: 50px;" class="cell" data-bind="ntsTimeEditor: {
                             name: $i18n('Com_CareHoliday'),
                             value: $parent.nursing,
                             constraint: 'TimeOffPrimitive',
-                            mode: 'time'
+                            mode: 'time',
+                            enable: $parent.updateMode, 
+                            requỉed: true
                         }" />
                     </div>
                     <hr style="width: 250px; margin-inline-start: initial;"/>
@@ -66,9 +75,12 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
             <div data-bind="visible: $parent.condition11">
                 <div style="margin-top: 10px;" data-bind="ntsCheckBox: {
                     checked: isChangeWorkHour,
-                    text: $i18n('KAF006_18')
+                    text: $i18n('KAF006_18'),
+                    enable: $parent.updateMode
                 }"></div>
-                <hr style="width: 700px; margin-inline-start: initial;" />
+                <div style="width: 700px;">
+                    <hr data-bind="visible: $parent.condition11" />
+                </div>
                 <div class="table">
                     <div class="cell col-1"></div>
                     <div class="cell">
@@ -77,9 +89,9 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                                 <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_19')"></div>
                             </div>
                             <div class="cell">
-                                <button style="margin-right: 5px;" data-bind="text: $i18n('KAF006_20'), enable: $parent.isChangeWorkHour"></button>
+                                <button style="margin-right: 5px;" data-bind="text: $i18n('KAF006_20'), enable: $parent.isChangeWorkHour() && $parent.updateMode(), click: openKDL003"></button>
                             </div>
-                            <div class="cell" data-bind="text: $i18n('KAF006_21')"></div>
+                            <div class="cell" data-bind="text: $parent.selectedWorkTimeDisp"></div>
                         </div>
                         <div style="padding-bottom: 5px;">
                             <div class="cell col-1">
@@ -93,8 +105,8 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                                     options: {
                                         timeWithDay: true,
                                         width: '120'
-                                    }
-                                }, enable: $parent.checkCondition30" />
+                                    }, enable: $parent.condition30() && $parent.updateMode()
+                                }" />
                                 <span data-bind="text: $i18n('KAF006_47')"></span>
                                 <input style="width: 120px;" data-bind="ntsTimeWithDayEditor: {
                                     name: $i18n('KAF006_59'),
@@ -103,8 +115,8 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                                     options: {
                                         timeWithDay: true,
                                         width: '120'
-                                    }
-                                }, enable: $parent.checkCondition30" />
+                                    }, enable: $parent.condition30() && $parent.updateMode()
+                                }" />
                             </div>
                         </div>
                         <div style="padding-bottom: 5px;" data-bind="visible: $parent.condition12">
@@ -119,8 +131,8 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                                     options: {
                                         timeWithDay: true,
                                         width: '120'
-                                    }
-                                }, enable: $parent.checkCondition30" />
+                                    }, enable: $parent.condition30() && $parent.updateMode()
+                                }" />
                                 <span data-bind="text: $i18n('KAF006_47')"></span>
                                 <input style="width: 120px;" data-bind="ntsTimeWithDayEditor: {
                                     name: $i18n('KAF006_61'),
@@ -129,11 +141,72 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
                                     options: {
                                         timeWithDay: true,
                                         width: '120'
-                                    }
-                                }, enable: $parent.checkCondition30" />
+                                    }, enable: $parent.condition30() && $parent.updateMode()
+                                }" />
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="table" data-bind="visible: $parent.condition15">
+                <div class="cell col-1">
+                    <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_88')"></div>
+                </div>
+                <div class="cell valign-center">
+                    <button style="width: 60px; margin-right: 5px;" data-bind="text: $i18n('KAF006_50'), enable: !_.isEmpty($parent.application().appDate()) && $parent.updateMode(), click: openKDL036"></button>
+                    <div style="display: inline-block" data-bind="text: $i18n('KAF006_89')"></div>
+                </div>
+            </div>
+            <div class="table" style="margin: 10px 0;" data-bind="visible: $parent.condition15">
+                <div class="cell col-1"></div>
+                <div class="cell">
+                    <table data-bind="visible: $parent.leaveComDayOffManas().length > 0">
+                        <thead>
+                            <tr class="text-center bg-green">
+                                <th style="width: 100px;" class="py-10" data-bind="text: $i18n('KAF006_53')"></th>
+                                <th style="width: 100px;" class="py-10" data-bind="text: $i18n('KAF006_87')"></th>
+                                <th style="width: 100px;" class="py-10" data-bind="text: $i18n('KAF006_55')"></th>
+                            </tr>
+                        </thead>
+                        <tbody data-bind="foreach: ko.toJS($parent.leaveComDayOffManas)">
+                            <tr>
+                                <td class="py-10" data-bind="text: nts.uk.time.formatDate(new Date(outbreakDay), 'yyyy/MM/ddD')"></td>
+                                <td class="py-10" data-bind="text: nts.uk.time.formatDate(new Date(dateOfUse), 'yyyy/MM/ddD')"></td>
+                                <td class="py-10" data-bind="text: nts.uk.resource.getText('KAF006_46', [dayNumberUsed])"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="table" data-bind="visible: $parent.condition14">
+                <div class="cell col-1">
+                    <div class="valign-center cell" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_48')"></div>
+                </div>
+                <div class="cell valign-center">
+                    <button style="width: 60px; margin-right: 5px;" data-bind="text: $i18n('KAF006_50'), enable: !_.isEmpty($parent.application().appDate()) && $parent.updateMode(), click: openKDL035"></button>
+                    <div style="display: inline-block" data-bind="text: $i18n('KAF006_81')"></div>
+                </div>
+            </div>
+            <div class="table" style="margin: 10px 0;" data-bind="visible: $parent.condition14">
+                <div class="cell col-1"></div>
+                <div class="cell">
+                    <table data-bind="visible: $parent.payoutSubofHDManagements().length > 0" >
+                        <thead>
+                            <tr class="bg-green">
+                                <th style="width: 100px;" class="py-10" data-bind="text: $i18n('KAF006_52')"></th>
+                                <th style="width: 100px;" class="py-10" data-bind="text: $i18n('KAF006_95')"></th>
+                                <th style="width: 100px;" class="py-10" data-bind="text: $i18n('KAF006_55')"></th>
+                            </tr>
+                        </thead>
+                        <tbody data-bind="foreach: ko.toJS($parent.payoutSubofHDManagements)">
+                            <tr>
+                                <td class="py-10" data-bind="text: nts.uk.time.formatDate(new Date(outbreakDay), 'yyyy/MM/ddD')"></td>
+                                <td class="py-10" data-bind="text: nts.uk.time.formatDate(new Date(dateOfUse), 'yyyy/MM/ddD')"></td>
+                                <td class="py-10" data-bind="text: nts.uk.resource.getText('KAF006_46', [dayNumberUsed])"></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
             
@@ -183,6 +256,18 @@ module nts.uk.at.view.kaf006.shr.tab2.viewmodel {
 
         mounted() {
 
+        }
+
+        public openKDL036() {
+            ko.contextFor(this.$el).$data.openKDL036();
+        }
+
+        public openKDL035() {
+            ko.contextFor(this.$el).$data.openKDL035();
+        }
+
+        public openKDL003() {
+            ko.contextFor(this.$el).$data.openKDL003();
         }
     }
 }

@@ -103,10 +103,10 @@ public class KrqdtAppHd extends ContractUkJpaEntity implements Serializable {
     public String relationshipReason;
     
     @Column(name = "HDCOM_START_DATE")
-    public String hdComStartDate;
+    public GeneralDate hdComStartDate;
     
     @Column(name = "HDCOM_END_DATE")
-    public String hdComEndDate;
+    public GeneralDate hdComEndDate;
 
     @Override
     protected Object getKey() {
@@ -141,12 +141,12 @@ public class KrqdtAppHd extends ContractUkJpaEntity implements Serializable {
                 new ReflectFreeTimeApp(
                         workingHours.isEmpty() ? Optional.empty() : Optional.of(workingHours),
                         Optional.of(new TimeDigestApplication(
-                                new AttendanceTime(this.hourOfSixtyOvertime), 
-                                new AttendanceTime(this.hourOfCare), 
-                                new AttendanceTime(this.hourOfChildCare), 
-                                new AttendanceTime(this.hourOfHdCom), 
-                                new AttendanceTime(this.hourOfHdsp), 
-                                new AttendanceTime(this.hourOfHdPaid), 
+                                this.hourOfSixtyOvertime == null ? null : new AttendanceTime(this.hourOfSixtyOvertime), 
+                                this.hourOfCare == null ? null : new AttendanceTime(this.hourOfCare), 
+                                this.hourOfChildCare == null ? null : new AttendanceTime(this.hourOfChildCare), 
+                                this.hourOfHdCom == null ? null : new AttendanceTime(this.hourOfHdCom), 
+                                this.hourOfHdsp == null ? null : new AttendanceTime(this.hourOfHdsp), 
+                                this.hourOfHdPaid == null ? null : new AttendanceTime(this.hourOfHdPaid), 
                                 this.frameNoOfHdsp == null ? Optional.empty() : Optional.of(this.frameNoOfHdsp))),
                         new WorkInformation(
                                 this.workTypeCd, 
@@ -155,9 +155,12 @@ public class KrqdtAppHd extends ContractUkJpaEntity implements Serializable {
                 new VacationRequestInfo(
                         EnumAdaptor.valueOf(this.holidayAppType, HolidayAppType.class),
                         new SupplementInfoVacation(
-                                Optional.ofNullable(new DatePeriod(
-                                        GeneralDate.fromString(this.hdComStartDate, "yyyy/MM/dd"), 
-                                        GeneralDate.fromString(this.hdComEndDate, "yyyy/MM/dd"))),
+                        		(!Optional.ofNullable(this.hdComStartDate).isPresent() || !Optional.ofNullable(this.hdComEndDate).isPresent())
+                                ? Optional.empty() 
+                            	: Optional.of(new DatePeriod(
+                                    this.hdComStartDate, 
+                                    this.hdComEndDate)),
+                            	(this.mournerFlg == null && this.relationshipCD == null && this.relationshipReason == null) ? Optional.empty() :
                                 Optional.of(new ApplyforSpecialLeave(
                                         this.mournerFlg != null ? (this.mournerFlg == 1 ? true : false) : false,
                                         this.relationshipCD != null ? Optional.of(new RelationshipCDPrimitive(this.relationshipCD)) : Optional.empty(),
@@ -217,8 +220,8 @@ public class KrqdtAppHd extends ContractUkJpaEntity implements Serializable {
         entity.setHolidayAppType(vacationRequestInfo.getHolidayApplicationType().value);
         
         if (vacationRequestInfo.getInfo().getDatePeriod().isPresent()) {
-            entity.setHdComStartDate(vacationRequestInfo.getInfo().getDatePeriod().get().start().toString());
-            entity.setHdComEndDate(vacationRequestInfo.getInfo().getDatePeriod().get().end().toString());
+            entity.setHdComStartDate(vacationRequestInfo.getInfo().getDatePeriod().get().start());
+            entity.setHdComEndDate(vacationRequestInfo.getInfo().getDatePeriod().get().end());
         }
         
         if (vacationRequestInfo.getInfo().getApplyForSpeLeaveOptional().isPresent()) {

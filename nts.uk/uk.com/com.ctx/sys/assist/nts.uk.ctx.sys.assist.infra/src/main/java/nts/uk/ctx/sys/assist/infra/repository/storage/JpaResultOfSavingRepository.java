@@ -75,6 +75,7 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 			data.fileId = fileId;
 			data.deletedFiles = deletedFiles.value;
 			data.saveFileName = compressedFileName;
+			data.saveEndDatetime = GeneralDateTime.now();
 			this.commandProxy().update(data);
 		});
 	}
@@ -85,6 +86,7 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 		resultOfSavingOpt.ifPresent(data -> {
 			data.setTargetNumberPeople(targetNumberPeople);
 			data.setSaveStatus(saveStatus);
+			data.setSaveEndDatetime(Optional.of(GeneralDateTime.now()));
 			this.commandProxy().update(SspmtResultOfSaving.toEntity(data));
 		});
 	}
