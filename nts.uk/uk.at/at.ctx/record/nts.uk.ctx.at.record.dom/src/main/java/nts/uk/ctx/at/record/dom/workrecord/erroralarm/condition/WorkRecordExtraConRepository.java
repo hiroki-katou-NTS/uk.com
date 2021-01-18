@@ -15,7 +15,7 @@ public interface WorkRecordExtraConRepository {
 	List<WorkRecordExtractingCondition> getAllWorkRecordExtraConByListID(List<String> listErrorAlarmID );
 	
 	// get 勤務実績の抽出条件 WorkRecordExtractingCondition by ID and useAtr
-	List<WorkRecordExtractingCondition> getAllWorkRecordExtraConByIdAndUse(List<String> listErrorAlarmID, boolean use);
+	List<WorkRecordExtractingCondition> getAllWorkRecordExtraConByIdAndUse(List<String> listErrorAlarmID, int use);
 	
 	Optional<WorkRecordExtractingCondition> getWorkRecordExtraConById(String errorAlarmCheckID);
 	

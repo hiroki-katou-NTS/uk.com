@@ -35,11 +35,14 @@ import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.AlarmExtraValueWkReDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.agreementprocess.AgreementCheckService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.appapproval.AppApprovalAggregationProcessService;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.attendanceholiday.TotalProcessAnnualHoliday;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckTargetCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.AnnualHolidayAlarmCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.AppApprovalAlarmCheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.ConExtractedDaily;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
@@ -84,6 +87,10 @@ public class AggregationProcessService {
 	private ErAlWorkRecordCheckAdapter erCheckAdapter;
 	@Inject
 	private AppApprovalAggregationProcessService appApprovalAggregationProcessService;
+	@Inject
+	private AgreementCheckService check36Alarm;
+	@Inject
+	private TotalProcessAnnualHoliday annualHolidayService;
 		
 	public List<AlarmExtraValueWkReDto> processAlarmListWorkRecord(GeneralDate baseDate, String companyID, List<EmployeeSearchDto> listEmployee, 
 			String checkPatternCode, List<PeriodByAlarmCategory> periodByCategory) {
@@ -294,12 +301,7 @@ public class AggregationProcessService {
 				switch (x.getCategory()) {
 				
 				case SCHEDULE_DAILY:
-					DailyAlarmCondition dailyAlarmCon = (DailyAlarmCondition) x.getExtractionCondition();
-					ConExtractedDaily conExtracDai = dailyAlarmCon.getConExtractedDaily();		
-					
-					extractAlarmService.extractDailyCheckResult(cid, lstSid, datePeriod, 
-							dailyAlarmCon.getDailyAlarmConID(), dailyAlarmCon,
-							getWplByListSidAndPeriod, lstStatusEmp, lstResultCondition, lstCheckType);
+					break;
 					
 				case SCHEDULE_WEEKLY:
 					break;
@@ -323,7 +325,12 @@ public class AggregationProcessService {
 					break;
 					
 				case DAILY:
-					break;
+					DailyAlarmCondition dailyAlarmCon = (DailyAlarmCondition) x.getExtractionCondition();
+					ConExtractedDaily conExtracDai = dailyAlarmCon.getConExtractedDaily();		
+					
+					extractAlarmService.extractDailyCheckResult(cid, lstSid, datePeriod, 
+							dailyAlarmCon.getDailyAlarmConID(), dailyAlarmCon,
+							getWplByListSidAndPeriod, lstStatusEmp, lstResultCondition, lstCheckType);
 					
 				case WEEKLY:
 					break;
@@ -366,9 +373,28 @@ public class AggregationProcessService {
 					break;
 					
 				case ATTENDANCE_RATE_FOR_HOLIDAY:
+					AnnualHolidayAlarmCondition yearHolidayCheck = (AnnualHolidayAlarmCondition) x.getExtractionCondition();
+					annualHolidayService.checkAnnualHolidayAlarm(cid,
+							yearHolidayCheck,
+							lstSidTmp,
+							counter,
+							shouldStop,
+							getWplByListSidAndPeriod,
+							lstStatusEmp,
+							lstResultCondition,
+							lstCheckType);
 					break;
 					
 				case AGREEMENT:
+					check36Alarm.get36AlarmCheck(cid,
+							x.getAlarmChkCondAgree36(),
+							lstCategoryPeriod,
+							counter,
+							shouldStop,
+							getWplByListSidAndPeriod,
+							lstSidTmp,
+							lstResultCondition,
+							lstCheckType);
 					break;
 					
 				case MAN_HOUR_CHECK:

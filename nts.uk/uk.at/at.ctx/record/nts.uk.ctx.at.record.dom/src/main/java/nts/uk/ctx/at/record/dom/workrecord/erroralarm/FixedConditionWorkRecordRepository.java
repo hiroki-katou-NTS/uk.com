@@ -48,6 +48,6 @@ public interface FixedConditionWorkRecordRepository {
 	 * @param use
 	 * @return
 	 */
-	List<FixedConditionWorkRecord> getFixConWorkRecordByIdUse(String dailyAlarmConID, boolean use);
+	List<FixedConditionWorkRecord> getFixConWorkRecordByIdUse (String dailyAlarmConID, int use);
 	
 }

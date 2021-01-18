@@ -246,9 +246,13 @@ module nts.uk.com.view.ccg003.a {
     roleFlag: KnockoutObservable<boolean> = ko.observable(false);
     role: KnockoutObservable<Role> = ko.observable(new Role());
     isShow: KnockoutObservable<boolean> = ko.observable(true);
+    isEmployee: KnockoutComputed<boolean> = ko.computed(() => __viewContext.user.isEmployee);
 
     created() {
       const vm = this;
+      if (!vm.isEmployee()) {
+        return;
+      }
       vm.$blockui('show');
       vm.$ajax('com', API.getEmployeeNotification)
         .then((response: EmployeeNotification) => {

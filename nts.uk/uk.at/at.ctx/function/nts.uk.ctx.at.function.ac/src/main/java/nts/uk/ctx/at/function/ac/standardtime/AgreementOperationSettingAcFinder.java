@@ -7,6 +7,8 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingAdapter;
 import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingImport;
+import nts.uk.ctx.at.function.dom.adapter.standardtime.ClosingDateAtrImport;
+import nts.uk.ctx.at.function.dom.adapter.standardtime.TargetSettingAtrImport;
 import nts.uk.ctx.at.record.pub.standardtime.AgreementOperationSettingPub;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
 
@@ -29,6 +31,18 @@ public class AgreementOperationSettingAcFinder implements AgreementOperationSett
 //			return Optional.of(new AgreementOperationSettingImport(data.getStartingMonth().value,
 //					data.getNumberTimesOverLimitType().value, data.getClosingDateType().value,
 //					data.getClosingDateAtr().value, data.getYearlyWorkTableAtr().value, data.getAlarmListAtr().value));
+		}
+		return Optional.empty();
+	}
+	
+	public Optional<AgreementOperationSettingImport> findForAlarm(String cid) {
+		Optional<AgreementOperationSetting> dataOpt = agreementOperationSettingPub.find(cid);
+		if (dataOpt.isPresent()) {
+			/** TODO: 36協定時間対応により、コメントアウトされた */
+			AgreementOperationSetting data = dataOpt.get();
+			return Optional.of(new AgreementOperationSettingImport(data.getStartingMonth().value, 
+					data.getStartingMonth().value, data.getClosureDate().getClosureDay().v() - 1,
+					ClosingDateAtrImport.DESIGNATEDATE.value, TargetSettingAtrImport.MONTHLY_ACTUAL_DATA.value, TargetSettingAtrImport.MONTHLY_ACTUAL_DATA.value));
 		}
 		return Optional.empty();
 	}

@@ -149,12 +149,12 @@ public class AgreementProcessService {
 						Object objCheckAgreement = checkAgreementAdapter.getCommonSetting(comId, employeeIds,period);
 						//アルゴリズム「エラーアラームチェック」を実行する
 						// アルゴリズム「36協定実績をチェックする」を実行する
-						List<CheckedAgreementResult> checkAgreementsResult = checkAgreementAdapter.checkArgreementResult(employeeIds,
+						/*List<CheckedAgreementResult> checkAgreementsResult = checkAgreementAdapter.checkArgreementResult(employeeIds,
 								period, agreeConditionError, agreementSetObj,closureList,mapEmpIdClosureID,objCheckAgreement);
 						if(!CollectionUtil.isEmpty(checkAgreementsResult)){
 							result.addAll(generationValueExtractAlarm(mapEmployee,checkAgreementsResult,agreeConditionError,optAgreeName,periodCheck,
 									period.start()));	
-						}
+						}*/
 					}
 				}
 			}

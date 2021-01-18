@@ -2354,7 +2354,7 @@ public class ProgramsManager {
     public static final Program KTG001A = new Program(WebAppId.AT, ProgramIdConsts.KTG001A, "KTG001_1",
             "/view/ktg/001/a/index.xhtml");
     public static final Program KTG001B = new Program(WebAppId.AT, ProgramIdConsts.KTG001B, "KTG004_24",
-            "/view/ktg/001/b/index_ver4.xhtml");
+            "/view/ktg/001/b/index.xhtml");
     /**     * KTG002     **/
     public static final Program KTG002A = new Program(WebAppId.AT, ProgramIdConsts.KTG002A, "KTG002_1",
             "/view/ktg/002/a/index.xhtml");

@@ -28,9 +28,7 @@ public class WhetherToCheck {
 	 * @param alCheckConByCategory
 	 * @return
 	 */
-	public boolean whetherToCheck(String companyId,String employeeId,AlarmCheckConditionByCategory alCheckConByCategory) {
-		//ドメインモデル「年休アラームチェック対象者条件」を取得する
-		AnnualHolidayAlarmCondition annualHolidayAlarmCondition = (AnnualHolidayAlarmCondition) alCheckConByCategory.getExtractionCondition();
+	public boolean whetherToCheck(String companyId,String employeeId,AnnualHolidayAlarmCondition annualHolidayAlarmCondition) {
 		
 		//前回年休付与日数の条件で絞り込む
 		GeneralDate baseDate = GeneralDate.today();

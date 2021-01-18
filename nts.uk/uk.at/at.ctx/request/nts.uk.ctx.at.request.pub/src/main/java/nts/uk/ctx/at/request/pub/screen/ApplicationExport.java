@@ -4,7 +4,6 @@ import lombok.Data;
 import nts.arc.time.GeneralDate;
 
 @Data
-
 public class ApplicationExport {
 	private String appID;
 	/**
@@ -28,4 +27,9 @@ public class ApplicationExport {
 	 * 反映状態
 	 */
 	private Integer reflectState;
+	
+	/**
+	 * 事前事後区分: 0: "事前", 1: "事後"
+	 */
+	private Integer prePostAtr;
 }
