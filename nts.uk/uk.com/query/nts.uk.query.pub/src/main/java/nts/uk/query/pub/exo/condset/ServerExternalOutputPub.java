@@ -1,5 +1,7 @@
 package nts.uk.query.pub.exo.condset;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -13,6 +15,6 @@ public interface ServerExternalOutputPub {
 
 	ServerExternalOutputExport findExternalOutput(String cid, String conditionCd);
 
-	void processAutoExecution(String conditionCd, DatePeriod period, GeneralDate baseDate,
+	Optional<String> processAutoExecution(String cid, String conditionCd, DatePeriod period, GeneralDate baseDate,
 			Integer categoryId, String execId);
 }
