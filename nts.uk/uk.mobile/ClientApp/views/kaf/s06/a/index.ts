@@ -1045,7 +1045,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
         }
         
         let result1 = _.find(workTimeLst, (item: TimeZoneUseDto) => item.workNo == 1) as any;
-        let result2 = _.find(workTimeLst, (item: TimeZoneUseDto) => item.workNo == 2 && item.useAtr == NotUseAtr.USE) as any;
+        let result2 = _.find(workTimeLst, (item: TimeZoneUseDto) => item.workNo == 2 && (!mode || item.useAtr == NotUseAtr.USE)) as any;
 
         if (!_.isNil(result1)) {
             self.workHours1 = {
@@ -1268,7 +1268,9 @@ export class KafS06AComponent extends KafS00ShrComponent {
                         command.companyId = self.user.companyId;
                         command.dates = self.getDates();
                         command.appAbsenceStartInfoOutput = self.model.appAbsenceStartInfoDto;
-                        command.appAbsenceStartInfoOutput.selectedWorkTimeCD = result.selectedWorkTime.code;
+                        if (result.selectedWorkTime) {
+                            command.appAbsenceStartInfoOutput.selectedWorkTimeCD = result.selectedWorkTime.code;
+                        }
                         command.workTypeCodeBeforeOp = workTypeCodeBefore;
                         command.workTypeCodeAfterOp = workTypeCodeAfter;
                         command.holidayAppType = self.selectedValueHolidayType || HolidayAppType.ANNUAL_PAID_LEAVE;                    
