@@ -253,7 +253,9 @@ public class CreateAnnualWorkLedgerContentQuery {
             if (subItem == null) continue;
             val rawValue = subItem.getValue();
             if (monthlyItem.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ||
-                    monthlyItem.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS) {
+                    monthlyItem.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS ||
+                    monthlyItem.getItemDetailAttributes()== CommonAttributesOfForms.OTHER_CHARACTERS ||
+                    monthlyItem.getItemDetailAttributes() == CommonAttributesOfForms.OTHER_CHARACTER_NUMBER) {
                 character.append(rawValue);
             } else {
                 Double value = rawValue == null ? 0 : Double.parseDouble(rawValue);
