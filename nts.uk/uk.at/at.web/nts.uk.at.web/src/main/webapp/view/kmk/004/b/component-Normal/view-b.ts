@@ -138,7 +138,9 @@ module nts.uk.at.view.kmk004.b {
 			}));
 			const input = { yearMonth: yearMonth, laborTime: times };
 
-			vm.validate()
+			vm.$blockui('invisible')
+			.then(() => {
+				vm.validate()
 				.then((valid: boolean) => {
 					if (valid) {
 
@@ -155,12 +157,16 @@ module nts.uk.at.view.kmk004.b {
 								vm.$errors('clear');
 							}).then(() => {
 								vm.selectedYear.valueHasMutated();
-								$(document).ready(function () {
-									$('.listbox').focus();
-								});
 							});
 					}
 				});
+			})
+			.always(() => {
+				vm.$blockui('clear');
+				$(document).ready(function () {
+					$('.listbox').focus();
+				});
+			});
 		}
 
 		remote() {

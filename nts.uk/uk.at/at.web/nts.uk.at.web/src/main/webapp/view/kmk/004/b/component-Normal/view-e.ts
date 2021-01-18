@@ -207,29 +207,38 @@ module nts.uk.at.view.kmk004.b {
 			}));
 			const input = { sid: ko.unwrap(vm.model.id), yearMonth: yearMonth, laborTime: times };
 
-			vm.validate()
-				.then((valid: boolean) => {
-					if (valid) {
+			vm.$blockui('invisible')
+				.then(() => {
+					vm.validate()
+						.then((valid: boolean) => {
+							if (valid) {
 
-						vm.$ajax(API.ADD_WORK_TIME, input)
-							.done(() => {
-								vm.$dialog.info({ messageId: 'Msg_15' });
-								_.remove(ko.unwrap(vm.years), ((value) => {
-									return value.year == ko.unwrap(vm.selectedYear) as number;
-								}));
-								vm.years.push(new IYear(ko.unwrap(vm.selectedYear) as number, false));
-								vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
-							}).then(() => {
-								vm.selectedYear.valueHasMutated();
-								vm.change.valueHasMutated();
-							})
-							.then(() => {
-								vm.$errors('clear');
-								$(document).ready(function () {
-									$('.listbox').focus();
-								});
-							});
-					}
+								vm.$ajax(API.ADD_WORK_TIME, input)
+									.done(() => {
+										vm.$dialog.info({ messageId: 'Msg_15' });
+										_.remove(ko.unwrap(vm.years), ((value) => {
+											return value.year == ko.unwrap(vm.selectedYear) as number;
+										}));
+										vm.years.push(new IYear(ko.unwrap(vm.selectedYear) as number, false));
+										vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
+									}).then(() => {
+										vm.selectedYear.valueHasMutated();
+										vm.change.valueHasMutated();
+									})
+									.then(() => {
+										vm.$errors('clear');
+										$(document).ready(function () {
+											$('.listbox').focus();
+										});
+									});
+							}
+						});
+				})
+				.always(() => {
+					vm.$blockui('clear');
+					$(document).ready(function () {
+						$('.listbox').focus();
+					});
 				});
 		}
 
@@ -243,14 +252,14 @@ module nts.uk.at.view.kmk004.b {
 				year: ko.unwrap(vm.model.code),
 				laborAttr: 0,
 			})
-			.then(() => {
-				vm.change.valueHasMutated();
-			})
-			.then(() => {
-				$(document).ready(function () {
-					$('.listbox').focus();
+				.then(() => {
+					vm.change.valueHasMutated();
+				})
+				.then(() => {
+					$(document).ready(function () {
+						$('.listbox').focus();
+					});
 				});
-			});
 		}
 
 		openDialogF() {

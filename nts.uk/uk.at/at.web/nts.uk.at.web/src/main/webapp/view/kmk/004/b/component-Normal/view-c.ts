@@ -155,37 +155,43 @@ module nts.uk.at.view.kmk004.b {
 			const vm = this;
 			const times = _.map(ko.unwrap(vm.workTimes), ((value) => {
 				return ko.unwrap(value.laborTime);
-			}));			
+			}));
 
 			const yearMonth = _.map(ko.unwrap(vm.workTimes), ((value) => {
 				return ko.unwrap(value.yearMonth);
 			}));
 			const input = { workPlaceId: ko.unwrap(vm.selectedId), yearMonth: yearMonth, laborTime: times };
 
-			vm.validate()
-				.then((valid: boolean) => {
-					if (valid) {
+			vm.$blockui('invisible')
+				.then(() => {
+					vm.validate()
+						.then((valid: boolean) => {
+							if (valid) {
 
-						vm.$ajax(API.ADD_WORK_TIME, input)
-							.done(() => {
-								vm.$dialog.info({ messageId: 'Msg_15' });
-								_.remove(ko.unwrap(vm.years), ((value) => {
-									return value.year == ko.unwrap(vm.selectedYear) as number;
-								}));
-								vm.years.push(new IYear(ko.unwrap(vm.selectedYear) as number, false));
-								vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
-							})
-							.then(() => {
-								vm.selectedYear.valueHasMutated();
-								vm.change.valueHasMutated();
-								$(document).ready(function () {
-									$('.listbox').focus();
-								});
-							})
-							.then(() => {
-								vm.$errors('clear');
-							});
-					}
+								vm.$ajax(API.ADD_WORK_TIME, input)
+									.done(() => {
+										vm.$dialog.info({ messageId: 'Msg_15' });
+										_.remove(ko.unwrap(vm.years), ((value) => {
+											return value.year == ko.unwrap(vm.selectedYear) as number;
+										}));
+										vm.years.push(new IYear(ko.unwrap(vm.selectedYear) as number, false));
+										vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
+									})
+									.then(() => {
+										vm.selectedYear.valueHasMutated();
+										vm.change.valueHasMutated();
+									})
+									.then(() => {
+										vm.$errors('clear');
+									});
+							}
+						});
+				})
+				.always(() => {
+					vm.$blockui('clear');
+					$(document).ready(function () {
+						$('.listbox').focus();
+					});
 				});
 		}
 
@@ -199,14 +205,14 @@ module nts.uk.at.view.kmk004.b {
 				year: ko.unwrap(vm.selectedYear),
 				laborAttr: 0,
 			})
-			.then(() => {
-				vm.change.valueHasMutated();
-			})
-			.then(() => {
-				$(document).ready(function () {
-					$('.listbox').focus();
+				.then(() => {
+					vm.change.valueHasMutated();
+				})
+				.then(() => {
+					$(document).ready(function () {
+						$('.listbox').focus();
+					});
 				});
-			});
 		}
 
 		remote() {
@@ -267,16 +273,16 @@ module nts.uk.at.view.kmk004.b {
 			const vm = this;
 			const param = { startDate: ko.unwrap(vm.startDate), years: ko.unwrap(vm.years).map((m: IYear) => m.year) };
 			vm.$window.modal('/view/kmk/004/q/index.xhtml', param)
-			.then((result) => {
-				if (result) {
-					vm.years.push(new IYear(parseInt(result.year), true));
-					vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
-					vm.selectedYear(ko.unwrap(vm.years)[0].year);
-				}
-			})
-			.then(() => {
-				vm.selectedYear.valueHasMutated();
-			});
+				.then((result) => {
+					if (result) {
+						vm.years.push(new IYear(parseInt(result.year), true));
+						vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
+						vm.selectedYear(ko.unwrap(vm.years)[0].year);
+					}
+				})
+				.then(() => {
+					vm.selectedYear.valueHasMutated();
+				});
 		}
 
 		public validate(action: 'clear' | undefined = undefined) {

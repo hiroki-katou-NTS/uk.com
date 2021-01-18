@@ -9,6 +9,7 @@ module nts.uk.at.view.kmk004.b {
         emloyment: Employment;
         alreadySettings: KnockoutObservableArray<AlreadySettingEmployment>;
         isChange: KnockoutObservable<string>;
+        years: KnockoutObservableArray<IYear>;
     }
 
     const API = {
@@ -29,11 +30,13 @@ module nts.uk.at.view.kmk004.b {
         public employment: Employment;
         public isChange: KnockoutObservable<string> = ko.observable('');
         public selectedClosureId: KnockoutObservable<number> = ko.observable(null);
+        public itemList: KnockoutObservableArray<IYear> = ko.observableArray([]);
 
         created(params: Params) {
             const vm = this;
             vm.employment = params.emloyment;
             vm.isChange = params.isChange;
+            vm.itemList = params.years;
 
             vm.reload();
 
@@ -54,6 +57,7 @@ module nts.uk.at.view.kmk004.b {
 
             vm.selectedClosureId
                 .subscribe(() => {
+                    vm.itemList([]);
                     vm.reload();
                 });
         }

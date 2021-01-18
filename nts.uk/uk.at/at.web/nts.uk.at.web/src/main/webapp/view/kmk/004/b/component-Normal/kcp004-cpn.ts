@@ -43,11 +43,6 @@ module nts.uk.at.view.kmk004.b {
                 .subscribe(() => {
                     vm.reloadIsCheck();
                 });
-
-            // vm.selectedId
-            //     .subscribe(() =>{
-            //         vm.reloadData();
-            //     });
         }
 
         reloadIsCheck() {
