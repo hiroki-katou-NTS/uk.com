@@ -79,6 +79,7 @@ module nts.uk.com.view.ccg034.f {
           vm.menuName(item.name);
           vm.menuCode(item.code);
           vm.menuClassification(item.menuClassification);
+          vm.menuSystemType(item.systemType);
           if (nts.uk.text.isNullOrEmpty(item.queryString)) {
             vm.menuUrl(item.url);
           } else {
