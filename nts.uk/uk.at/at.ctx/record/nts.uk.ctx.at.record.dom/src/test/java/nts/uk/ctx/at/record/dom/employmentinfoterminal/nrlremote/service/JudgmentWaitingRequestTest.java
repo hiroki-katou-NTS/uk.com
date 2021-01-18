@@ -68,11 +68,6 @@ public class JudgmentWaitingRequestTest {
 			}
 		};
 		
-		Map<EmpInfoTerminalCode, Integer> mapCodeSeveralItem = listTimeRecordSetFormatList.stream().collect(Collectors.toMap(e -> e.getEmpInfoTerCode(), e -> e.getLstTRSetFormat().size()));
-		
-		Map<EmpInfoTerminalCode, Boolean> mapCodeFlag = listTimeRecordSetUpdateList.stream()
-				.collect(Collectors.toMap(e -> e.getEmpInfoTerCode(), e -> e.isWaitingReqRecovery(mapCodeSeveralItem.get(e.getEmpInfoTerCode()))));
-		
 		val actual = JudgmentWaitingRequest.judgmentReqWaitingStatus(require, JudgmentWaitingRequestTestHelper.contractCode, empInfoTerminalList);
 		assertThat(actual.get(JudgmentWaitingRequestTestHelper.empInfoTerminalCode)).isTrue();
 		
@@ -97,12 +92,7 @@ public class JudgmentWaitingRequestTest {
 				result = listTimeRecordSetUpdateList;
 			}
 		};
-		
-		Map<EmpInfoTerminalCode, Integer> mapCodeSeveralItem = listTimeRecordSetFormatList.stream().collect(Collectors.toMap(e -> e.getEmpInfoTerCode(), e -> e.getLstTRSetFormat().size()));
-		
-		Map<EmpInfoTerminalCode, Boolean> mapCodeFlag = listTimeRecordSetUpdateList.stream()
-				.collect(Collectors.toMap(e -> e.getEmpInfoTerCode(), e -> e.isWaitingReqRecovery(mapCodeSeveralItem.get(e.getEmpInfoTerCode()) != null ? mapCodeSeveralItem.get(e.getEmpInfoTerCode()) : -1)));
-		
+
 		val actual = JudgmentWaitingRequest.judgmentReqWaitingStatus(require, JudgmentWaitingRequestTestHelper.contractCode, empInfoTerminalList);
 		assertThat(actual.get(JudgmentWaitingRequestTestHelper.empInfoTerminalCode2)).isFalse();
 	}
@@ -111,12 +101,12 @@ public class JudgmentWaitingRequestTest {
 		@Test
 		public void testJudgmentWaitingRequest2() {
 			
-			List<EmpInfoTerminal> empInfoTerminalList = Collections.EMPTY_LIST;
+			List<EmpInfoTerminal> empInfoTerminalList = new ArrayList<EmpInfoTerminal>();
 
 			List<EmpInfoTerminalCode> listEmpInfoTerminalCode = empInfoTerminalList.stream().map(e -> e.getEmpInfoTerCode()).collect(Collectors.toList());
 			
-			List<TimeRecordSetFormatList> listTimeRecordSetFormatList = Collections.EMPTY_LIST;
-			List<TimeRecordSetUpdateList> listTimeRecordSetUpdateList = Collections.EMPTY_LIST;
+			List<TimeRecordSetFormatList> listTimeRecordSetFormatList = new ArrayList<TimeRecordSetFormatList>();
+			List<TimeRecordSetUpdateList> listTimeRecordSetUpdateList = new ArrayList<TimeRecordSetUpdateList>();
 
 			new Expectations() {
 				{
@@ -126,11 +116,6 @@ public class JudgmentWaitingRequestTest {
 					result = listTimeRecordSetUpdateList;
 				}
 			};
-			
-			Map<EmpInfoTerminalCode, Integer> mapCodeSeveralItem = listTimeRecordSetFormatList.stream().collect(Collectors.toMap(e -> e.getEmpInfoTerCode(), e -> e.getLstTRSetFormat().size()));
-			
-			Map<EmpInfoTerminalCode, Boolean> mapCodeFlag = listTimeRecordSetUpdateList.stream()
-					.collect(Collectors.toMap(e -> e.getEmpInfoTerCode(), e -> e.isWaitingReqRecovery(mapCodeSeveralItem.get(e.getEmpInfoTerCode()) != null ? mapCodeSeveralItem.get(e.getEmpInfoTerCode()) : -1)));
 			
 			val actual = JudgmentWaitingRequest.judgmentReqWaitingStatus(require, JudgmentWaitingRequestTestHelper.contractCode, empInfoTerminalList);
 			assertThat(actual.isEmpty()).isTrue();
