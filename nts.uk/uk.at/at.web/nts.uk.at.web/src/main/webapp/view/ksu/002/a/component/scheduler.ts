@@ -843,51 +843,56 @@ module nts.uk.ui.at.ksu002.a {
                                     .then((resp: ContaintError[]) => {
                                         const [start, end] = resp;
 
-                                        $begin
-                                            .ntsError(CLBC, MSG_439)
-                                            .ntsError(CLBC, MSG_1772)
-                                            .ntsError(CLBC, MSG_2058);
+                                        $.Deferred()
+                                            .resolve(true)
+                                            .then(() => {
+                                                $begin
+                                                    .ntsError(CLBC, MSG_439)
+                                                    .ntsError(CLBC, MSG_1772)
+                                                    .ntsError(CLBC, MSG_2058);
 
-                                        $finish
-                                            .ntsError(CLBC, MSG_439)
-                                            .ntsError(CLBC, MSG_1772)
-                                            .ntsError(CLBC, MSG_2058);
+                                                $finish
+                                                    .ntsError(CLBC, MSG_439)
+                                                    .ntsError(CLBC, MSG_1772)
+                                                    .ntsError(CLBC, MSG_2058);
+                                            })
+                                            .then(() => {
+                                                if (start) {
+                                                    const { check, timeSpan } = start;
 
-                                        if (start) {
-                                            const { check, timeSpan } = start;
+                                                    if (!check) {
+                                                        if (!timeSpan) {
+                                                            $begin.ntsError('set', { messageId: MSG_439, messageParams: [] });
+                                                        } else {
+                                                            const { endTime, startTime } = timeSpan;
 
-                                            if (!check) {
-                                                if (!timeSpan) {
-                                                    $begin.ntsError('set', { messageId: MSG_439, messageParams: [] });
-                                                } else {
-                                                    const { endTime, startTime } = timeSpan;
-
-                                                    if (startTime === endTime) {
-                                                        $begin.ntsError('set', { messageId: MSG_2058, messageParams: [vm.$i18n('KSU001_17')] });
-                                                    } else {
-                                                        $begin.ntsError('set', { messageId: MSG_1772, messageParams: [vm.$i18n('KSU001_17'), twd(startTime).fullText, twd(endTime).fullText] });
+                                                            if (startTime === endTime) {
+                                                                $begin.ntsError('set', { messageId: MSG_2058, messageParams: [vm.$i18n('KSU001_17')] });
+                                                            } else {
+                                                                $begin.ntsError('set', { messageId: MSG_1772, messageParams: [vm.$i18n('KSU001_17'), twd(startTime).fullText, twd(endTime).fullText] });
+                                                            }
+                                                        }
                                                     }
                                                 }
-                                            }
-                                        }
 
-                                        if (end) {
-                                            const { check, timeSpan } = end;
+                                                if (end) {
+                                                    const { check, timeSpan } = end;
 
-                                            if (!check) {
-                                                if (!timeSpan) {
-                                                    $finish.ntsError('set', { messageId: MSG_439, messageParams: [] });
-                                                } else {
-                                                    const { endTime, startTime } = timeSpan;
+                                                    if (!check) {
+                                                        if (!timeSpan) {
+                                                            $finish.ntsError('set', { messageId: MSG_439, messageParams: [] });
+                                                        } else {
+                                                            const { endTime, startTime } = timeSpan;
 
-                                                    if (startTime === endTime) {
-                                                        $finish.ntsError('set', { messageId: MSG_2058, messageParams: [vm.$i18n('KSU001_18')] });
-                                                    } else {
-                                                        $finish.ntsError('set', { messageId: MSG_1772, messageParams: [vm.$i18n('KSU001_18'), twd(startTime).fullText, twd(endTime).fullText] });
+                                                            if (startTime === endTime) {
+                                                                $finish.ntsError('set', { messageId: MSG_2058, messageParams: [vm.$i18n('KSU001_18')] });
+                                                            } else {
+                                                                $finish.ntsError('set', { messageId: MSG_1772, messageParams: [vm.$i18n('KSU001_18'), twd(startTime).fullText, twd(endTime).fullText] });
+                                                            }
+                                                        }
                                                     }
                                                 }
-                                            }
-                                        }
+                                            });
                                     });
                             }
                         } else {
