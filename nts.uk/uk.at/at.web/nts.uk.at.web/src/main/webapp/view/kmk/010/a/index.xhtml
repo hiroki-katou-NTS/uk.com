@@ -168,13 +168,14 @@
                         <td>#{i18n.getText('KMK010_16')}</td>
                         <td>#{i18n.getText('KMK010_17')}</td>
                         <td>#{i18n.getText('KMK010_18')}</td>
-                        <!-- A5_1	<com:ko tag="if" bind="$parent.isManage()">
-											<com:ko tag="foreach" bind="overtimes">
-												<td tabindex="-1"><label tabindex="-1"
-													class="overtimeName tooltip-label"
-													data-bind="text: languageName"></label></td>
-											</com:ko>
-										</com:ko> -->
+												<!-- A5_1	
+												<com:ko tag="if" bind="$parent.isManage()">
+													<com:ko tag="foreach" bind="overtimes">
+														<td tabindex="-1"><label tabindex="-1"
+															class="overtimeName tooltip-label"
+															data-bind="text: languageName"></label></td>
+													</com:ko>
+												</com:ko> -->
                       </tr>
                     </thead>
                     <!-- A5_1 <tr class="bg-dark-green">
@@ -192,9 +193,10 @@
 									<tbody>
                     <com:ko tag="foreach" bind="breakdownItems">
                       <tr>
-                        <!-- A4_6	<td class="tdno">
-												<div data-bind="text: breakdownItemNo"></div>
-											</td> -->
+												<!-- A4_6
+												<td class="tdno">
+													<div data-bind="text: breakdownItemNo"></div>
+												</td> -->
                         <td class="tdname">
                           <label
                             class="tooltip-label"
@@ -220,23 +222,24 @@
                         <td class="tdname">
                           <div data-bind="text: productNumber"></div>
                         </td>
-                        <!-- A5_1 <com:ko tag="if" bind="$parents[1].isManage()">
-												<com:ko tag="foreach" bind="rateBRDItems">
-													<td class="tdbreakdown">
-														<div>
-															<input class="rate" data-bind="attr: {  'data-tab': tabIndex }, 
-																ntsNumberEditor: {name: '#[KMK010_21]',
-																value: premiumRate,
-																constraint: 'PremiumRate',
-																option: { defaultValue: 0},
-																enable: enableInput,
-																required: true
-																}" />
-															<label>#{i18n.getText('KMK010_22')}</label>
-														</div>
-													</td>
-												</com:ko>
-											</com:ko> -->
+												<!-- A5_1 
+												<com:ko tag="if" bind="$parents[1].isManage()">
+													<com:ko tag="foreach" bind="rateBRDItems">
+														<td class="tdbreakdown">
+															<div>
+																<input class="rate" data-bind="attr: {  'data-tab': tabIndex }, 
+																	ntsNumberEditor: {name: '#[KMK010_21]',
+																	value: premiumRate,
+																	constraint: 'PremiumRate',
+																	option: { defaultValue: 0},
+																	enable: enableInput,
+																	required: true
+																	}" />
+																<label>#{i18n.getText('KMK010_22')}</label>
+															</div>
+														</td>
+													</com:ko>
+												</com:ko> -->
                       </tr>
                     </com:ko>
 									</tbody>
@@ -298,90 +301,8 @@
 										</div>
 									</com:ko>
 								</div>
-              <!-- <com:ko tag="if" bind="$parent.isManage">
-                <div class="rateBotton60H" tabindex="-1"></div>
-                <div class="overtimeRate60H" tabindex="-1">
-                  <div class="oneOvertimeRate" tabindex="-1">
-                    <div class="labelOneRate" tabindex="-1">
-                      <label>#{i18n.getText('KMK010_23')}</label>
-                    </div>
-                    <div class="labelTwoRate" tabindex="-1">
-                      <label>#{i18n.getText('KMK010_24')}</label>
-                    </div>
-                    <div class="labelThreeRate">
-                      <label>#{i18n.getText('KMK010_25')}</label>
-                      <label>#{i18n.getText('KMK010_26')}</label>
-                      <label>#{i18n.getText('KMK010_27')}</label>
-                      <label class="labelTwoRate"
-                        >#{i18n.getText('KMK010_28')}</label
-                      >
-                    </div>
-                    <div class="lableFourRate">
-                      <div
-                        class="selectUnit"
-                        data-bind="ntsComboBox: {
-											options: $parent.lstUnit,
-											optionsValue: 'value',
-											visibleItemsCount: 10,
-											value: $parent.superHD60HConMedModel.roundingTime,
-											optionsText: 'localizedName',
-											editable: false,
-											enable: true,
-											dropDownAttachedToBody: true, 
-											columns: [
-												{ prop: 'localizedName', length: 2 },
-											]}"
-                      ></div>
-
-                      <div
-                        class="selectRounding"
-                        data-bind="ntsComboBox: {
-											options: $parent.lstRoundingSet,
-											optionsValue: 'value',
-											visibleItemsCount: 10,
-											value: $parent.superHD60HConMedModel.rounding,
-											optionsText: 'localizedName',
-											editable: false,
-											enable: true,
-											dropDownAttachedToBody: true,
-											columns: [
-												{ prop: 'localizedName', length: 10 },
-											]}"
-                      ></div>
-                    </div>
-                  </div>
-                  <div class="overtimeRate60H2">
-                    <div class="labelOneRate">
-                      <label>#{i18n.getText('KMK010_29')}</label>
-                    </div>
-                  </div>
-                  <div class="overtimeRate60H3">
-                    <div class="labelOneRate">
-                      <label>#{i18n.getText('KMK010_30')}</label>
-                      <input
-                        class="overtimeSelect"
-                        data-bind="ntsTimeEditor: {name: '#[KMK010_31]',
-											value: $parent.superHD60HConMedModel.superHolidayOccurrenceUnit,
-											constraint: 'SuperHDOccUnit',
-											mode: 'time',
-											option: { inputFormat: 'time', defaultValue: '01:00'},
-											required: true
-											}"
-                      />
-                    </div>
-                    <div class="labelTwoRate">
-                      <label>#{i18n.getText('KMK010_32')}</label>
-                      <label>#{i18n.getText('KMK010_33')}</label>
-                    </div>
-                    <div class="labelFiveRate">
-                      <label>#{i18n.getText('KMK010_34')}</label>
-                    </div>
-                  </div>
-                </div>
-              </com:ko> -->
             </div>
-          </div>
-          <div class="fixed-flex-layout-right"></div>
+          </div>          
         </div>
       </ui:define>
     </ui:composition>
