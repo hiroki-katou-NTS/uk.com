@@ -761,6 +761,45 @@ public class WorkInformationTest {
 		assertThat( result ).isEmpty();
 
 	}
+	
+	/**
+	 * Target	: getChangeableWorkingTimezones
+	 * Pattern	: 出勤日区分 == 休日
+	 * Result	: Output -> List.empty
+	 */
+	@Test
+	public void getChangeableWorkingTimezones_checkAttendanceDay_holiday(
+			@Injectable WorkType workType, 
+			@Injectable WorkTimeSetting workTime, 
+			@Injectable WorkSetting workSetting) {
+
+		// 勤務情報
+		val instance = new WorkInformation( "WorkTypeCode", "WorkTimeCode" );
+
+		new Expectations() {{
+			// 勤務種類を取得する
+			require.getWorkType( anyString );
+			result = Optional.of(workType);
+
+			// 就業時間帯を取得する
+			require.getWorkTime( anyString );
+			result = Optional.of(workTime);
+			// 勤務設定を取得する
+			workTime.getWorkSetting( require );
+			result = workSetting;
+			
+			// 出勤日区分を取得する
+			workType.chechAttendanceDay();
+			result = AttendanceDayAttr.HOLIDAY;
+		}};
+
+		// Execute
+		val result = instance.getChangeableWorkingTimezones(require);
+
+		// Assertion
+		assertThat( result ).isEmpty();
+
+	}
 
 	/**
 	 * Target	: getChangeableWorkingTimezones

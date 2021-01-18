@@ -20,7 +20,6 @@ import nts.uk.ctx.at.shared.dom.worktime.WorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktype.AttendanceDayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -235,7 +234,7 @@ public class WorkInformation {
 		val workSetting = workTimeSetting.get().getWorkSetting(require);
 		val predetermineTimeSetting = workSetting.getPredetermineTimeSetting(require);
 		val attendanceDayAttr = workType.get().chechAttendanceDay();
-		if ( attendanceDayAttr == AttendanceDayAttr.HOLIDAY ) {
+		if ( attendanceDayAttr.isHoliday() ) {
 			return Optional.of(WorkInfoAndTimeZone.createWithoutPredetermineTimeZone( workType.get(), workTimeSetting.get() ));
 		}
 		
@@ -272,6 +271,11 @@ public class WorkInformation {
 
 		// 出勤日区分を取得する
 		val atdDayAtr = workType.get().chechAttendanceDay();
+		
+		if ( atdDayAtr.isHoliday() ) {
+			return Collections.emptyList();
+		}
+		
 		// 出勤日区分による変更可能な時間帯を取得する
 		return workSetting.get().getChangeableWorkingTimeZone(require).getByAtr( atdDayAtr );
 
