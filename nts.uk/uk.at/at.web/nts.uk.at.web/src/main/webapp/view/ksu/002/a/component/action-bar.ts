@@ -360,8 +360,6 @@ module nts.uk.ui.at.ksu002.a {
 									return null;
 								})
 								.then((wtp: WorkTimePassedValue) => {
-									debugger;
-
 									vm.$window
 										.storage(c.KSU_USER_DATA)
 										.then((v: undefined | c.StorageData) => {

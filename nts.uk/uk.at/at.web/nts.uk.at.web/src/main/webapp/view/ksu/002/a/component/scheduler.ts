@@ -13,6 +13,7 @@ declare module nts {
 module nts.uk.ui.at.ksu002.a {
     import c = nts.uk.ui.calendar;
     import b = nts.uk.util.browser;
+    import t = nts.uk.time;
 
     interface WData<T = string> {
         code: T;
@@ -373,7 +374,10 @@ module nts.uk.ui.at.ksu002.a {
 
     export module controls {
         const CLBC = 'clearByCode';
+        const MSG_439 = 'Msg_439';
         const MSG_1811 = 'Msg_1811';
+        const MSG_1772 = 'Msg_1772';
+        const MSG_2058 = 'MSG_2058';
         const VALIDATE = 'validate';
         const COMPONENT_NAME = 'scheduler-data-info';
 
@@ -796,6 +800,8 @@ module nts.uk.ui.at.ksu002.a {
             initValidate() {
                 const vm = this;
                 const { model, enable, data } = vm;
+                // get fullText of TimeWithDay
+                const twd = (t as any).minutesBased.clock.dayattr.create;
 
                 if (!data || !data.dayData || !data.dayData.data) {
                     return;
@@ -835,7 +841,53 @@ module nts.uk.ui.at.ksu002.a {
 
                                 vm.$ajax(API_VALID, command)
                                     .then((resp: ContaintError[]) => {
-                                        debugger;
+                                        const [start, end] = resp;
+
+                                        $begin
+                                            .ntsError(CLBC, MSG_439)
+                                            .ntsError(CLBC, MSG_1772)
+                                            .ntsError(CLBC, MSG_2058);
+
+                                        $finish
+                                            .ntsError(CLBC, MSG_439)
+                                            .ntsError(CLBC, MSG_1772)
+                                            .ntsError(CLBC, MSG_2058);
+
+                                        if (start) {
+                                            const { check, timeSpan } = start;
+
+                                            if (!check) {
+                                                if (!timeSpan) {
+                                                    $begin.ntsError('set', { messageId: MSG_439, messageParams: [] });
+                                                } else {
+                                                    const { endTime, startTime } = timeSpan;
+
+                                                    if (startTime === endTime) {
+                                                        $begin.ntsError('set', { messageId: MSG_2058, messageParams: [vm.$i18n('KSU001_17')] });
+                                                    } else {
+                                                        $begin.ntsError('set', { messageId: MSG_1772, messageParams: [vm.$i18n('KSU001_17'), twd(startTime).fullText, twd(endTime).fullText] });
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        if (end) {
+                                            const { check, timeSpan } = end;
+
+                                            if (!check) {
+                                                if (!timeSpan) {
+                                                    $finish.ntsError('set', { messageId: MSG_439, messageParams: [] });
+                                                } else {
+                                                    const { endTime, startTime } = timeSpan;
+
+                                                    if (startTime === endTime) {
+                                                        $finish.ntsError('set', { messageId: MSG_2058, messageParams: [vm.$i18n('KSU001_18')] });
+                                                    } else {
+                                                        $finish.ntsError('set', { messageId: MSG_1772, messageParams: [vm.$i18n('KSU001_18'), twd(startTime).fullText, twd(endTime).fullText] });
+                                                    }
+                                                }
+                                            }
+                                        }
                                     });
                             }
                         } else {
@@ -1178,9 +1230,11 @@ module nts.uk.ui.at.ksu002.a {
         }
 
         interface ContaintError {
+            // 含まれているか
             check: boolean;
             nameError: string;
             timeInput: string;
+            // 時間帯
             timeSpan: {
                 startTime: number;
                 endTime: number;
