@@ -131,7 +131,10 @@ public class CreateWorkLedgerDisplayContentQuery {
                     if (attribute == null) continue;
                     allValue.forEach((key, values) -> {
                         val valueSub = values.getOrDefault(att.getAttendanceId(), null);
-                        boolean isCharacter = attribute == CommonAttributesOfForms.WORK_TYPE || attribute == CommonAttributesOfForms.WORKING_HOURS;
+                        boolean isCharacter = attribute == CommonAttributesOfForms.WORK_TYPE
+                                || attribute == CommonAttributesOfForms.WORKING_HOURS ||
+                                attribute == CommonAttributesOfForms.OTHER_CHARACTERS ||
+                                attribute == CommonAttributesOfForms.OTHER_CHARACTER_NUMBER;
                         if (valueSub != null) {
                             monthlyValues.add(new MonthlyValue(
                                     valueSub.itemId(),
