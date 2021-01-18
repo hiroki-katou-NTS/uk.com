@@ -60,9 +60,11 @@ public class CalFormulasItemImpl implements CalFormulasItemRepository {
 	      exportSQL.append("          IIF(RESULT_FINAL.ROW_NUMBER = 1, RESULT_FINAL.UPPER_RANGE_MON, NULL) AS UPPER_RANGE_MON,");
 	      exportSQL.append("          IIF(RESULT_FINAL.ROW_NUMBER = 1, RESULT_FINAL.LOWER_LIMIT_ATR, NULL) AS LOWER_LIMIT_ATR,");
 	      exportSQL.append("          IIF(RESULT_FINAL.ROW_NUMBER = 1, RESULT_FINAL.LOWER_RANGE_DAY, NULL) AS LOWER_RANGE_DAY,");
-	      exportSQL.append("          IIF(RESULT_FINAL.ROW_NUMBER = 1, RESULT_FINAL.LOWER_RANGE_MON, NULL) AS LOWER_RANGE_MON");
-	      exportSQL.append("          ,RESULT_FINAL.ITEM_DESCRIP");
-	      exportSQL.append("          ,RESULT_FINAL.ITEM_NOTE");
+	      exportSQL.append("          IIF(RESULT_FINAL.ROW_NUMBER = 1, RESULT_FINAL.LOWER_RANGE_MON, NULL) AS LOWER_RANGE_MON,");
+          exportSQL.append("          IIF(RESULT_FINAL.ROW_NUMBER = 1, RESULT_FINAL.ITEM_DESCRIP, NULL) AS ITEM_DESCRIP,");
+          exportSQL.append("          IIF(RESULT_FINAL.ROW_NUMBER = 1, RESULT_FINAL.ITEM_NOTE, NULL) AS ITEM_NOTE");
+//	      exportSQL.append("          ,RESULT_FINAL.ITEM_DESCRIP");
+//	      exportSQL.append("          ,RESULT_FINAL.ITEM_NOTE");
 	      exportSQL.append("          ,RESULT_FINAL.SYMBOL");
 	      exportSQL.append("          ,RESULT_FINAL.FORMULA_ATR");
 	      exportSQL.append("          ,RESULT_FINAL.FORMULA_NAME");
