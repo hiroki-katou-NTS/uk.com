@@ -210,8 +210,8 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                     self.setDataWhenStart(closure);
 
                     //  取得した「締め.当月」の前月を指定年月へ移送
-                    let currentMonth = moment(closure.closureMonth.toString()).format('YYYYMM');
-                    let closureDay = closure.closureHistories[0].closureDate.closureDay;
+                    let currentMonth: string  = moment(closure.closureMonth.toString(), 'YYYYMMDD').format('YYYYMMDD');
+                    let closureDay: string = closure.closureHistories[0].closureDate.closureDay;
                     let startDateRange: any;
                     let endDateRange: any;
                     // 締め日:末日 - if closure date is last day of month
