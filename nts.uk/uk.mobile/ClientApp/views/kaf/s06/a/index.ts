@@ -324,7 +324,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
         let model = self.model as Model;
         let c11 = _.get(model, 'appAbsenceStartInfoDto.vacationApplicationReflect.workAttendanceReflect.reflectAttendance') == NotUseAtr.USE;
         
-        return self.c7 || c11;
+        return self.c7 && c11;
     }
     // 「A4_3」が「時間消化」を選択している
     public get c12() {
