@@ -1,0 +1,17 @@
+.kaf011 button.nts-switch-button{width:92px}
+.kaf011 .remainInfor .remainLable{display:inline-block;vertical-align:top;color:red;min-width:115px}
+.kaf011 .remainInfor .remainNumber{display:inline-block}
+.kaf011 table.table td, table.table th{border:1px solid #000;text-align:center;height:25px;padding:0 10px}
+.kaf011 .application{margin-top:15px;max-width:800px}
+.kaf011 .application .name{margin-left:10px}
+.kaf011 .application .ruleLine{border-bottom:1px solid #999;margin:10px 0}
+.kaf011 .row{min-height:47px}
+.kaf011 .application .row div{vertical-align:top}
+.kaf011 .row>div:nth-child(1){min-width:115px}
+.kaf011 .application .row.tableRelase table{margin:10px 0}
+.kaf011 .application .inputTime{width:70px}
+.kaf011 .holidaySetting{margin-left:40px}
+.kaf011 .application .comment{margin-bottom: 15px;}
+
+.kaf011 .dailogC{margin: 10px;}
+.kaf011 .dailogC .row>div:nth-child(1){min-width:100px; vertical-align: top;}

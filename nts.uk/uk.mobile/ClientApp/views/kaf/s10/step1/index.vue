@@ -5,14 +5,28 @@
         v-if="$appContext.kaf000_A_Params != null"
         v-bind:params="$appContext.kaf000_A_Params"
       />
+      <div class="accordion mb-2" v-if="$appContext.overTimeWorkHoursDto != null">
+          <div class="card" v-if="true">
+            <div class="card-header uk-bg-accordion">
+              <button class="btn btn-link" type="button">
+                  {{'KAFS00_4' | i18n}}
+              </button>
+            </div>
+            <div class="collapse">
+              <div class="card-body">
+                  <kafs00subp2 v-bind:params="$appContext.overTimeWorkHoursDto" />      
+              </div>
+            </div>
+          </div>
+      </div>
     </div>
     <div
-      v-if="!$appContext.$valid || !$appContext.isValidateAll"
-      class="card bg-danger top-alert uk-text-danger topError"
+      v-if="!$appContext.$valid || !$appContext.isValidateAll || $appContext.isMsg_1556"
+      class="card bg-danger top-alert uk-text-danger topError" style="margin-bottom: 10px"
     >
       <button class="btn btn-link uk-text-danger">
         <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
-        {{ "KAFS07_1" | i18n }}
+        {{ ($appContext.isMsg_1556 ? "Msg_1556" : "KAFS07_1") | i18n($appContext.isMsg_1556 ? $appContext.date : '') }}
       </button>
     </div>
     <div>

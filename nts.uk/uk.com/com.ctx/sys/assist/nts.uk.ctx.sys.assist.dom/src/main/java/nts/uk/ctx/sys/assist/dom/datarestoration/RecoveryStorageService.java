@@ -182,6 +182,10 @@ public class RecoveryStorageService {
 			dataRecoveryResultRepository.updateEndDateTimeExecutionResult(dataRecoveryProcessId,
 					DataRecoveryOperatingCondition.DONE);
 		} else {
+			if (condition.equals(DataRecoveryOperatingCondition.INTERRUPTION_END)) {
+				this.saveLogDataRecoverServices.saveErrorLogDataRecover(dataRecoveryProcessId, "", "", 
+						null, TextResource.localize("CMF003_645"), "");
+			}
 			dataRecoveryMngRepository.updateByOperatingCondition(dataRecoveryProcessId, condition);
 			dataRecoveryResultRepository.updateEndDateTimeExecutionResult(dataRecoveryProcessId, condition);
 		}

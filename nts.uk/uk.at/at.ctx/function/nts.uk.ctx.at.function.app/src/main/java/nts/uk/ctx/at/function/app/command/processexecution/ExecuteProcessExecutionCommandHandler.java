@@ -73,6 +73,7 @@ import nts.uk.ctx.at.function.dom.processexecution.ExecutionScopeClassification;
 import nts.uk.ctx.at.function.dom.processexecution.ExternalOutputConditionCode;
 import nts.uk.ctx.at.function.dom.processexecution.LastExecDateTime;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecType;
+import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionService;
 import nts.uk.ctx.at.function.dom.processexecution.ServerExternalOutputAdapter;
 import nts.uk.ctx.at.function.dom.processexecution.ServerExternalOutputImport;
 import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
@@ -166,7 +167,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
-import nts.uk.shr.com.task.schedule.UkJobScheduler;
 
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
@@ -236,7 +236,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 //	@Inject
 //	private EmployeeManageAdapter employeeManageAdapter;
     @Inject
-    private UkJobScheduler scheduler;
+    private ProcessExecutionService processExecutionService;
     @Inject
     private AppReflectManagerAdapter appReflectManagerAdapter;
     @Inject
@@ -618,10 +618,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
          * 次回実行日時 ＝ 次回実行日時を作成する。 ※補足資料⑤参照
          */
         if (execSetting != null) {
-            // execSetting.setNextExecDateTime();
-            String scheduleId = execSetting.getScheduleId();
-            Optional<GeneralDateTime> nextFireTime = this.scheduler.getNextFireTime(scheduleId);
-            execSetting.setNextExecDateTime(nextFireTime);
+        	GeneralDateTime nextFireTime = this.processExecutionService
+        			.processNextExecDateTimeCreation(execSetting);
+            execSetting.setNextExecDateTime(Optional.ofNullable(nextFireTime));
             this.execSettingRepo.update(execSetting);
         }
 
@@ -3697,28 +3696,34 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		}
 		// するの場合
 		// 実行条件ごとにループする
-		try {
-			for (ExternalOutputConditionCode conditionCd : procExec.getExecSetting().getExternalOutput()
-					.getExtOutCondCodeList()) {
-				// サーバ外部出力実行時引数処理
-				ServerExternalOutputImport output = this.serverExternalOutputAdapter.findExternalOutput(companyId,
-						conditionCd.v());
+		for (ExternalOutputConditionCode conditionCd : procExec.getExecSetting().getExternalOutput()
+				.getExtOutCondCodeList()) {
+			// サーバ外部出力実行時引数処理
+			Optional<ServerExternalOutputImport> optOutput = this.serverExternalOutputAdapter
+					.findExternalOutput(companyId, conditionCd.v());
+			if (optOutput.isPresent()) {
+				ServerExternalOutputImport output = optOutput.get();
 				// 実行結果を確認する
-				if (output != null && output.isExecutionResult()) {
+				if (output.isExecutionResult()) {
 					// アルゴリズム「サーバ外部出力自動実行」を実行する
-					this.serverExternalOutputAdapter.processAutoExecution(conditionCd.v(), output.getPeriod(),
-							output.getBaseDate(), execId);
+					Optional<String> optErrMessage = this.serverExternalOutputAdapter.processAutoExecution(
+							procExec.getExecScope(), companyId, execId, output.getPeriod(), output.getBaseDate(),
+							conditionCd.v());
+					if (optErrMessage.isPresent()) {
+						hasError = true;
+						errorMessage = optErrMessage.get();
+					}
 				} else {
 					hasError = true;
 					errorMessage = output != null ? output.getErrorMessage() : null;
 				}
+			} else {
+				hasError = true;
 			}
-		} catch (Exception e) {
-			hasError = true;
 		}
 		// ドメインモデル「更新処理自動実行ログ」を取得しチェックする
-		Optional<ProcessExecutionLog> optLog = this.procExecLogRepo
-				.getLogByCIdAndExecCd(companyId, procExec.getExecItemCode().v(), execId);
+		Optional<ProcessExecutionLog> optLog = this.procExecLogRepo.getLogByCIdAndExecCd(companyId,
+				procExec.getExecItemCode().v(), execId);
 		if (optLog.isPresent()) {
 			ProcessExecutionLog log = optLog.get();
 			EndStatus status = log.getTaskLogList().stream()
@@ -3764,10 +3769,12 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 
 		// アルゴリズム「自動削除準備」を実行する
 		try {
-			hasError = this.autoExecutionPreparationAdapter.autoStoragePrepare(procExec);
-			errorMessage = "async task error saving";
+			Optional<String> msg = this.autoExecutionPreparationAdapter.autoStoragePrepare(procExec);
+			errorMessage = msg.orElse(null);
+			hasError = msg.isPresent();
 		} catch (Exception e) {
 			hasError = true;
+			errorMessage = e.getMessage();
 		}
 		// ドメインモデル「更新処理自動実行ログ」を取得しチェックする（中断されている場合は更新されているため、最新の情報を取得する）
 		Optional<ProcessExecutionLog> optLog = this.procExecLogRepo.getLogByCIdAndExecCd(companyId,
@@ -3817,10 +3824,12 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 
 		// アルゴリズム「自動削除準備」を実行する
 		try {
-			hasError = this.autoExecutionPreparationAdapter.autoDeletionPrepare(procExec);
-			errorMessage = "async task error deleting";
+			Optional<String> msg = this.autoExecutionPreparationAdapter.autoDeletionPrepare(procExec);
+			errorMessage = msg.orElse(null);
+			hasError = msg.isPresent();
 		} catch (Exception e) {
 			hasError = true;
+			errorMessage = e.getMessage();
 		}
 		// ドメインモデル「更新処理自動実行ログ」を取得しチェックする（中断されている場合は更新されているため、最新の情報を取得する）
 		Optional<ProcessExecutionLog> optLog = this.procExecLogRepo

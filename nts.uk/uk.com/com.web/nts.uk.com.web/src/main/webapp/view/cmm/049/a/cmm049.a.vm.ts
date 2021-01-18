@@ -21,7 +21,7 @@ module nts.uk.com.view.cmm049.a {
     public noticeSelectedId: KnockoutObservable<number> = ko.observable(1);
 
     public speechCheckList: KnockoutObservableArray<CheckboxModel> = ko.observableArray([]);
-    public speechSelectedId: KnockoutObservable<number> = ko.observable(1);
+    public speechSelectedId: KnockoutObservable<number> = ko.observable(2); //#113760
 
     // A4
     public contactName1: KnockoutObservable<string> = ko.observable("");
@@ -165,8 +165,8 @@ module nts.uk.com.view.cmm049.a {
           id: "tab-4",
           title: vm.$i18n("CMM049_27"),
           content: "#A7",
-          enable: ko.observable(true),
-          visible: ko.observable(true),
+          enable: ko.observable(false), //#113760
+          visible: ko.observable(false), //#113760
         },
         {
           id: "tab-5",
@@ -650,7 +650,7 @@ module nts.uk.com.view.cmm049.a {
       vm.profileSelectedId(response.userInformationUseMethodDto.useOfProfile === 1 ? 1 : 2);
       vm.passwordSelectedId(response.userInformationUseMethodDto.useOfPassword === 1 ? 1 : 2);
       vm.noticeSelectedId(response.userInformationUseMethodDto.useOfNotice === 1 ? 1 : 2);
-      vm.speechSelectedId(response.userInformationUseMethodDto.useOfLanguage === 1 ? 1 : 2);
+      vm.speechSelectedId(2); //#113760
     }
 
     public setContactNameInput(response: UserInformationSettingDto): void {
