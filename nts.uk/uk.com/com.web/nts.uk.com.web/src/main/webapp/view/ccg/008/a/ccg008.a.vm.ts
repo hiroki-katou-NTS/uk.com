@@ -153,7 +153,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
 
     getToppage(data: DataTopPage) {
       const vm = this;
-      if (data.displayTopPage && data.displayTopPage.layoutDisplayType !== 0 && data.displayTopPage.layout2) {
+      if (data.displayTopPage && data.displayTopPage.layoutDisplayType !== 0 && data.displayTopPage.layout2 !== []) {
         vm.isShowButtonRefresh(true);
       }
       const transferData = __viewContext.transferred.value;
