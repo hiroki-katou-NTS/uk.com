@@ -14,7 +14,6 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class DeterminingReqStatusTerminalTestHelper {
 
 	public static final ContractCode contractCode = new ContractCode("1");
-//	public static final ContractCode contractCode2 = new ContractCode("a");
 	public static final EmpInfoTerminalCode empInfoTerminalCode = new EmpInfoTerminalCode("1");
 	
 	public static List<EmpInfoTerminal> createEmpInfoTerminalList() {
@@ -33,11 +32,7 @@ public class DeterminingReqStatusTerminalTestHelper {
 		return empInfoTerminalList;
 	}
 	
-	public static List<EmpInfoTerminal> createEmptyList() {
-		
-		return Collections.EMPTY_LIST;
-	}
-	
+	// root = true 
 	public static List<TimeRecordReqSetting> createListTimeRecordReqSetting() {
 		
 		TimeRecordReqSetting timeRecordReqSetting = new ReqSettingBuilder(new EmpInfoTerminalCode("1"), new ContractCode("1"),
@@ -54,6 +49,7 @@ public class DeterminingReqStatusTerminalTestHelper {
 		return listTimeRecordReqSetting;
 	}
 
+	// reboot = false
 	public static List<TimeRecordReqSetting> createListTimeRecordReqSetting1() {
 		
 		TimeRecordReqSetting timeRecordReqSetting = new ReqSettingBuilder(new EmpInfoTerminalCode("1"), new ContractCode("1"),

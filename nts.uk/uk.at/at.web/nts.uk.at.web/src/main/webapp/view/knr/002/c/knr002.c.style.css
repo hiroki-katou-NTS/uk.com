@@ -185,6 +185,10 @@ body > div:nth-child(2) {
 	content: ":";
 }
 
+.ui-iggrid-tablebody {
+	white-space: nowrap;
+}
+
 
  
 

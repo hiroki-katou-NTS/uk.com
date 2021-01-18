@@ -47,7 +47,7 @@ public class RemoteSettingsDto {
 		List<RemoteSettingsDto> listDto = timeRecordSetFormatList.getLstTRSetFormat().stream()
 													.map(e -> new RemoteSettingsDto(e.getMajorNo().v(),
 																e.getMajorClassification().v(), e.getSmallNo().v(), e.getSmallClassification().v(),
-																e.getVariableName().v(), e.getType().value, e.getNumberOfDigits() == null ? 0 : e.getNumberOfDigits().v(),
+																e.getVariableName().v(), e.getType().value, e.getNumberOfDigits().v() == null ? 0 : e.getNumberOfDigits().v(),
 																e.getInputRange().v(), e.getCurrentValue().v(),
 																getUpdateValueByName(e.getVariableName().v(), timeRecordSetUpdateList),
 																timeRecordSetFormatList.getEmpInfoTerName().v(),

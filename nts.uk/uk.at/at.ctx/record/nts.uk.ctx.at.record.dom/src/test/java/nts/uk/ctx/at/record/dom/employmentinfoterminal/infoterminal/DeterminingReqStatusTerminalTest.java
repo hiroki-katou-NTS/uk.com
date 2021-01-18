@@ -59,7 +59,7 @@ public class DeterminingReqStatusTerminalTest {
 		assertThat(actual.get(DeterminingReqStatusTerminalTestHelper.empInfoTerminalCode)).isTrue();
 	}
 	
-	// listTimeRecordReqSetting emptyList
+	// 就業情報端末のリクエスト一覧 Empty
 		@Test
 		public void testDeterminingReqStatusTerminal2() {
 			
