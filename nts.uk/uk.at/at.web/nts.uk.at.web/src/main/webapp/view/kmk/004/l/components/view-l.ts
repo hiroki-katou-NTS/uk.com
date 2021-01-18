@@ -196,6 +196,7 @@ module nts.uk.at.view.kmk004.l {
 								vm.selectedYear(ko.unwrap(vm.years)[old_index].year);
 							}
 						})
+						.then(() => {vm.selectedYear.valueHasMutated();})
 						.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
 						.then(() => {
 							$(document).ready(function() {
@@ -203,13 +204,13 @@ module nts.uk.at.view.kmk004.l {
 							});
 						}).then(() => {
 							vm.$errors('clear');
-						})
-						.then(() => {
-							vm.selectedYear.valueHasMutated();
-						})
-						.always(() => vm.$blockui("clear"));
+						}).always(() => vm.$blockui("clear"));
 
-				});
+				}).ifNo(function() {
+                    $(document).ready(function() {
+						$('.listbox').focus();
+					});
+                });
 		}
 
 		openViewP() {

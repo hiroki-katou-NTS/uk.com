@@ -149,7 +149,6 @@ module nts.uk.at.view.kmk004.l {
 		
 		constructor(private params: IParam) {
 			super();
-
 		}
 
 		created() {
@@ -223,9 +222,6 @@ module nts.uk.at.view.kmk004.l {
 
 				vm.selectedClosureId.subscribe(() => {
 					$('#empt-list-setting').ntsListComponent(vm.listComponentOption);
-					/*setTimeout(() => {
-						vm.selectedId.valueHasMutated();
-					}, 1000);*/
 				});
 			});
 		}
@@ -306,6 +302,7 @@ module nts.uk.at.view.kmk004.l {
 							}
 							vm.reloadInitData();
 						})
+						.then(() => {vm.selectedYear.valueHasMutated();})
 						.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
 						.then(() => {
 							$(document).ready(function() {
@@ -313,11 +310,12 @@ module nts.uk.at.view.kmk004.l {
 							});
 						}).then(() => {
 							vm.$errors('clear');
-						}).then(() => {
-							vm.selectedYear.valueHasMutated();
-						})
-						.always(() => vm.$blockui("clear"));
-				})
+						}).always(() => vm.$blockui("clear"));
+				}).ifNo(function() {
+                    $(document).ready(function() {
+						$('.listbox').focus();
+					});
+                });
 		}
 
 
