@@ -904,23 +904,17 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
         }
 
         public showConfirmResult(messages: Array<any>, vm: any) {
-			return new Promise((resolve: any) => {
+
 				if(_.isEmpty(messages)) {
-					resolve(true);
+					return $.Deferred().resolve(true);
 				}
 				let msg = messages[0].value,
 					type = messages[0].type;
 				return vm.$dialog.confirm(msg).then((result: 'no' | 'yes' | 'cancel') => {
 					if (result === 'yes') {
-		            	return vm.showConfirmResult(_.slice(messages, 1), vm);
+		            	return $.Deferred().resolve(vm.showConfirmResult(_.slice(messages, 1), vm));
 		            }
-					resolve();
-	        	});	
-            }).then((data: any) => {
-				if(data) {
-
-                }		
-			});
+	        	});
 		}
     }
 
