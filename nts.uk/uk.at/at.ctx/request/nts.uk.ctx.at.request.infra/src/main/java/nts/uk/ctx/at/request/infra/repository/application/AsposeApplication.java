@@ -228,7 +228,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			reasonLabel = worksheet.getCells().get("B15");
 			remarkLabel = worksheet.getCells().get("B18");
 			reasonContent = worksheet.getCells().get("D15");
-			printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
+			printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp, appType);
 			break;
 		case EARLY_LEAVE_CANCEL_APPLICATION:
 			asposeLateLeaveEarly.printLateEarlyContent(worksheet, printContentOfApp);

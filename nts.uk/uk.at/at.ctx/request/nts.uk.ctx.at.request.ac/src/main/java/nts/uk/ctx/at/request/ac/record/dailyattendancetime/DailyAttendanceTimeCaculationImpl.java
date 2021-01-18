@@ -72,7 +72,14 @@ public class DailyAttendanceTimeCaculationImpl implements DailyAttendanceTimeCac
 				convert(dailyAttendanceTimePubExport.getMidNightTime()),
 				dailyAttendanceTimePubExport.getTimeOutSideMidnight(),
 				dailyAttendanceTimePubExport.getCalOvertimeMidnight(),
-				getCalHolidayMidnight(dailyAttendanceTimePubExport.getCalHolidayMidnight()));
+				getCalHolidayMidnight(dailyAttendanceTimePubExport.getCalHolidayMidnight()),
+				dailyAttendanceTimePubExport.getLateTime1(),
+				dailyAttendanceTimePubExport.getEarlyLeaveTime1(),
+				dailyAttendanceTimePubExport.getLateTime2(),
+				dailyAttendanceTimePubExport.getEarlyLeaveTime2(),
+				dailyAttendanceTimePubExport.getPrivateOutingTime(),
+				dailyAttendanceTimePubExport.getUnionOutingTime()
+		);
 		return dailyAttendanceTimeCaculationImport;
 	}
 	
