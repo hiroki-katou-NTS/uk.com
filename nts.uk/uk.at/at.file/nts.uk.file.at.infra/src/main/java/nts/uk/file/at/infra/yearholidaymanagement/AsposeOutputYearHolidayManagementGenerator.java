@@ -316,10 +316,6 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		// đảo xuống dưới để tiện việc map data
 		// 社員分ループ
 
-		// employeeExports.forEach(employee -> {
-		// getHolidayData(selectedDateType, employee, query, baseDate,
-		// companyId);
-		// });
 
 		List<EmployeeHolidayInformationExport> itemValuesSyncs = Collections
 				.synchronizedList(new ArrayList<EmployeeHolidayInformationExport>(employeeExports));

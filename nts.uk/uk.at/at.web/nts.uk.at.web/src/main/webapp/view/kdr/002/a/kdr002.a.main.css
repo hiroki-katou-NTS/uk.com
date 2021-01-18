@@ -152,3 +152,17 @@
     margin-top: 10px;
     height: 620px;
 }
+
+
+@media screen and (min-width: 728px) {
+	.holidayAction {
+		margin-left: 15px;
+		margin-top: 20px;
+		display: inline-block;
+		min-width: 450px;
+	}
+
+	.ml-40 {
+		margin-left: 20px;
+	}
+}
