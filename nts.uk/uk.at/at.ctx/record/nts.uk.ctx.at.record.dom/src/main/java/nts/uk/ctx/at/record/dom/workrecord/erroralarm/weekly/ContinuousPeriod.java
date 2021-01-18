@@ -1,7 +1,7 @@
 /**
  * 10:24:32 AM Jan 19, 2018
  */
-package nts.uk.ctx.at.schedule.dom.schedule.alarmsetting.alarmlist.weekly;
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;

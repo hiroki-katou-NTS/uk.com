@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.schedule.alarmsetting.alarmlist.weekly;
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly;
 
 import lombok.AllArgsConstructor;
 

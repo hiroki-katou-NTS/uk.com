@@ -1,17 +1,17 @@
-package nts.uk.ctx.at.schedule.dom.schedule.alarmsetting.alarmlist.weekly;
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.schedule.dom.schedule.alarmsetting.alarmlist.daily.ErrorAlarmMessage;
-import nts.uk.ctx.at.schedule.dom.schedule.alarmsetting.alarmlist.daily.NameAlarmExtractCond;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmMessage;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordName;
 import nts.uk.ctx.at.shared.dom.workrecord.alarm.attendanceitemconditions.CheckConditions;
 
 import java.util.Optional;
 
 /**
- * スケジュール年間の任意抽出条件
+ * 週別実績の任意抽出条件
  */
 @AllArgsConstructor
 @NoArgsConstructor
@@ -34,7 +34,7 @@ public class ExtractionCondScheduleWeekly extends AggregateRoot {
     private boolean isUse;
 
     // 名称
-    private NameAlarmExtractCond name;
+    private ErrorAlarmWorkRecordName name;
 
     // メッセージ
     private Optional<ErrorAlarmMessage> errorAlarmMessage;
