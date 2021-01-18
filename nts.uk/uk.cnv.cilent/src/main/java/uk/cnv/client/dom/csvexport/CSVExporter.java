@@ -1,15 +1,137 @@
 package uk.cnv.client.dom.csvexport;
 
-//import lombok.val;
-//import uk.cnv.client.dom.execute.CommandExecutor;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+
+import lombok.val;
+import uk.cnv.client.LogManager;
+import uk.cnv.client.dom.execute.CommandExecutor;
+import uk.cnv.client.dom.execute.CommandResult;
+import uk.cnv.client.infra.query.GetAllUkWorkTablesQueryRepositoryImpl;
+import uk.cnv.client.infra.repository.UkWorkTableDto;
 
 public class CSVExporter {
+	private static final String CSV_FOLDER = "csv";
+	private static final int QUERY_MAX_LENGTH = 8191;
 
-	public boolean doWork() {
-		//val executor = new CommandExecutor();
+	private GetAllUkWorkTablesQueryRepositoryImpl repo;
 
-		// TODO
-		return false;
+	public CSVExporter() {
+		repo = new GetAllUkWorkTablesQueryRepositoryImpl();
 	}
 
+	public CommandResult doWork() {
+		val executor = new CommandExecutor();
+
+		File csvFolder = new File(CSV_FOLDER);
+		csvFolder.mkdir();
+
+		Map<String, String> queryList = null;
+		try {
+			queryList = createQuery();
+		} catch (SQLException e) {
+			LogManager.err(e);
+			return new CommandResult(e);
+		}
+
+		for(String table: queryList.keySet()) {
+			String csvFile = CSV_FOLDER + "\\" + table + ".csv";
+			String query = queryList.get(table);
+
+			CommandResult result;
+			if(query.length() > QUERY_MAX_LENGTH) {
+				result = executor.bcpExecute("SELECT * FROM " + table, csvFile);
+			}
+			else {
+				result = executor.bcpExecute(query, csvFile);
+			}
+
+			if(result.isError()) return result;
+
+			if(query.length() > QUERY_MAX_LENGTH) {
+				convertZeroLengthString(csvFile);
+			}
+
+		}
+
+		return new CommandResult();
+	}
+
+	/** bcpコマンド準備
+	 * @throws SQLException **/
+	private Map<String, String> createQuery() throws SQLException {
+
+		Map<String, String> result = new TreeMap<String, String>();
+		List<UkWorkTableDto> tables = null;
+		// テーブル一覧取得
+		tables = repo.find();
+
+		Map<String, List<UkWorkTableDto>> tableMap = tables.stream()
+			.collect(Collectors.groupingBy(UkWorkTableDto::getTableName));
+
+		for(String tableName : tableMap.keySet()) {
+			List<String> columns = tableMap.get(tableName).stream()
+				.map(col -> "NULLIF("+ col.getColumnName() + ",SPACE(0))")
+				.collect(Collectors.toList());
+			result.put(tableName, selectQuery(tableName, columns));
+		}
+
+		return result;
+	}
+
+	private String selectQuery(String table, List<String> columns) {
+		String query = "SELECT "
+				+ String.join(",", columns)
+				+ " FROM "
+				+ table;
+
+		return query;
+	}
+
+	private void convertZeroLengthString(String csvFile) {
+		// 長さ0文字列が0x00で出力されてしまうため、取り除く処理
+		String renamedFileName = csvFile.replace(".csv", "_bak.csv");
+		BufferedReader br = null;
+		BufferedWriter bw = null;
+		try {
+			File originalFile = new File(csvFile);
+			File renamedFile = new File(renamedFileName);
+			originalFile.renameTo(renamedFile);
+
+			br = new BufferedReader(new FileReader(renamedFileName));
+			bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(csvFile, false),"UTF-8"));
+
+			String rowData = br.readLine();
+			rowData = rowData.replace(Integer.toString(0x00), "");
+
+			bw.write(rowData);
+			bw.newLine();
+		}
+		catch(Exception e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				if(br != null) {
+					br.close();
+				}
+				if(bw != null) {
+					bw.flush();
+					bw.close();
+				}
+			} catch (IOException e) {
+			}
+		}
+	}
 }

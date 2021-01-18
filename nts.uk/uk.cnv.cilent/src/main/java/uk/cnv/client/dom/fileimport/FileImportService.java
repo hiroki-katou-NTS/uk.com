@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.layer.app.file.storage.StoredFileInfo;
+import uk.cnv.client.LogManager;
 import uk.cnv.client.UkConvertProperty;
 import uk.cnv.client.infra.entity.JinKaisyaM;
 import uk.cnv.client.infra.entity.JmDaicyo;
@@ -33,13 +34,13 @@ public class FileImportService {
 
 
 	public boolean doWork(Require require) {
-		System.out.println("ファイルの移行 -- 処理開始 --");
+		LogManager.out("ファイルの移行 -- 処理開始 --");
 
 		List<JinKaisyaM> companies;
 		try {
 			companies = require.getAllCompany();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			LogManager.err(e);
 			return false;
 		}
 
@@ -55,7 +56,7 @@ public class FileImportService {
 				employeeAddress = require.getAllAddress(company.getCompanyCode());
 				documents = require.getAllDocuments(company.getCompanyCode());
 			} catch (SQLException e) {
-				e.printStackTrace();
+				LogManager.err(e);
 				return false;
 			}
 
@@ -83,7 +84,7 @@ public class FileImportService {
 				}
 				catch (Exception e){
 					System.out.println("\r\n");
-					e.printStackTrace();
+					LogManager.err(e);
 					return false;
 				}
 				employeeCount++;
@@ -93,7 +94,7 @@ public class FileImportService {
 			System.out.printf("\r %2d", 100);
 			System.out.println("\r\n");
 		}
-		System.out.println("ファイルの移行 -- 正常終了 --");
+		LogManager.out("ファイルの移行 -- 正常終了 --");
 
 		return true;
 	}
@@ -129,8 +130,8 @@ public class FileImportService {
 			URL url = new URL(folder + "/" +fileName);
 			uri = url.toURI();
 		} catch (MalformedURLException | URISyntaxException e) {
-			System.err.println("ファイルのパスが不正です。ファイル名=" + folder + "/" + fileName);
-			e.printStackTrace();
+			LogManager.err("ファイルのパスが不正です。ファイル名=" + folder + "/" + fileName);
+			LogManager.err(e);
 		}
 
 		String pathString = UkConvertProperty.getProperty("ErpWwwrootPath")

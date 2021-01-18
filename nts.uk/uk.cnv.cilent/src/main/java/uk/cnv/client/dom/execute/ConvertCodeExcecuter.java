@@ -7,7 +7,7 @@ public class ConvertCodeExcecuter {
 
 	private static final String CONVERT_CODE_FILE = "convertCodeFile";
 
-	public boolean doWork() {
+	public CommandResult doWork() {
 		String sqlFileName = UkConvertProperty.getProperty(CONVERT_CODE_FILE);
 		val executor = new CommandExecutor();
 

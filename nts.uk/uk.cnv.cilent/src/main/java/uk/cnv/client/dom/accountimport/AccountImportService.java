@@ -5,19 +5,20 @@ import java.util.List;
 import java.util.UUID;
 
 import nts.gul.security.hash.password.PasswordHash;
+import uk.cnv.client.LogManager;
 import uk.cnv.client.infra.entity.JinKaisyaM;
 import uk.cnv.client.infra.entity.JmKihon;
 
 public class AccountImportService {
 
 	public boolean doWork(Require require) {
-		System.out.println("アカウントの移行 -- 処理開始 --");
+		LogManager.out("アカウントの移行 -- 処理開始 --");
 
 		List<JinKaisyaM> companies;
 		try {
 			companies = require.getAllCompany();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			LogManager.err(e);
 			return false;
 		}
 
@@ -28,7 +29,7 @@ public class AccountImportService {
 			try {
 				employees = require.getAllEmployee(company.getCompanyCode());
 			} catch (SQLException e) {
-				e.printStackTrace();
+				LogManager.err(e);
 				return false;
 			}
 
@@ -45,7 +46,7 @@ public class AccountImportService {
 				try {
 					require.save(newPassHash, employee, userId);
 				} catch (SQLException e) {
-					e.printStackTrace();
+					LogManager.err(e);
 					return false;
 				}
 				employeeCount++;
@@ -55,7 +56,7 @@ public class AccountImportService {
 			System.out.printf("\r %2d", 100);
 			System.out.println("\r\n");
 		}
-		System.out.println("アカウントの移行 -- 正常終了 --");
+		LogManager.out("アカウントの移行 -- 正常終了 --");
 
 		return true;
 	}

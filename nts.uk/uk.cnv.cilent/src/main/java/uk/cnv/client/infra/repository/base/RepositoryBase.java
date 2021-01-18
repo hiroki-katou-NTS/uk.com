@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import uk.cnv.client.LogManager;
 import uk.cnv.client.UkConvertProperty;
 
 public abstract class RepositoryBase {
@@ -36,7 +37,8 @@ public abstract class RepositoryBase {
 			this.conn = DriverManager.getConnection(this.connectionString);
 		}
 		catch (SQLException e) {
-			System.err.println("DB接続に失敗しました。" + e.getMessage());
+			LogManager.err("DB接続に失敗しました。");
+			LogManager.err(e);
 			throw e;
 		}
 	}
@@ -45,7 +47,8 @@ public abstract class RepositoryBase {
 			if(this.conn == null || this.conn.isClosed()) return;
 			this.conn.close();
 		} catch (SQLException e) {
-			System.err.println("DB接続の切断に失敗しました。" + e.getMessage());
+			LogManager.err("DB接続の切断に失敗しました。");
+			LogManager.err(e);
 		}
 	}
 
@@ -212,7 +215,7 @@ public abstract class RepositoryBase {
 			try {
 				conn.rollback();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				LogManager.err(e);
 			}
 			throw ex;
 		}
@@ -221,7 +224,7 @@ public abstract class RepositoryBase {
 				try {
 					ps.close();
 				} catch (SQLException e) {
-					e.printStackTrace();
+					LogManager.err(e);
 				}
 			}
 			this.disConnect();

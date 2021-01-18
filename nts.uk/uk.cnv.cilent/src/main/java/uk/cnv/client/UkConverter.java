@@ -10,17 +10,14 @@ import java.util.stream.Collectors;
 
 import lombok.val;
 import nts.arc.layer.app.file.storage.StoredFileInfo;
-import uk.cnv.client.dom.JinKaisyaMRepository;
-import uk.cnv.client.dom.JmKihonRepository;
 //import nts.uk.shr.infra.file.storage.UkFileStorage;
 import uk.cnv.client.dom.accountimport.AccountImportService;
-import uk.cnv.client.dom.accountimport.MappingPasswordRepository;
 import uk.cnv.client.dom.csvexport.CSVExporter;
+import uk.cnv.client.dom.execute.ConvertCodeExcecuter;
 import uk.cnv.client.dom.execute.CreateConvertDBService;
 import uk.cnv.client.dom.fileimport.FileImportService;
 import uk.cnv.client.dom.fileimport.JmDaicyoRepository;
 import uk.cnv.client.dom.fileimport.JmGenAddRepository;
-import uk.cnv.client.dom.fileimport.MappingFileIdRepository;
 import uk.cnv.client.infra.entity.JinKaisyaM;
 import uk.cnv.client.infra.entity.JmDaicyo;
 import uk.cnv.client.infra.entity.JmGenAdd;
@@ -42,51 +39,36 @@ public class UkConverter {
 
 		// コンバート一時環境構築
 		val createConvertDBService = new CreateConvertDBService();
-		if(!createConvertDBService.doWork()) {
-			System.err.println("移行環境構築に失敗しました。処理を中断します。");
+		if(createConvertDBService.doWork().isError()) {
+			LogManager.err("移行環境構築に失敗しました。処理を中断します。");
 			return;
 		}
-
-		try{
-            System.in.read();
-        }catch(Exception e){
-        }
 
 		// ファイル移行
 		val fileImporter = new FileImportService();
 		val FileImportServiceRequire = new FileImportServiceRequireImpl();
 
 		if (!fileImporter.doWork(FileImportServiceRequire)) {
-			System.err.println("ファイル移行に失敗しました。処理を中断します。");
+			LogManager.err("ファイル移行に失敗しました。処理を中断します。");
 			return;
 		}
-
-		try{
-            System.in.read();
-        }catch(Exception e){
-        }
 
 		// アカウント移行
 		val accountImporter = new AccountImportService();
 		val accountImportServiceRequire = new AccountImportServiceRequireImpl();
 		accountImporter.doWork(accountImportServiceRequire);
 
-		try{
-            System.in.read();
-        }catch(Exception e){
-        }
-
 		// コンバートコード実行
-		val convertCodeExcecutor = new CreateConvertDBService();
-		if(!convertCodeExcecutor.doWork()) {
-			System.err.println("コンバートコードの実行時にエラーが発生しました。処理を中断します");
+		val convertCodeExcecutor = new ConvertCodeExcecuter();
+		if(convertCodeExcecutor.doWork().isError()) {
+			LogManager.err("コンバートコードの実行時にエラーが発生しました。処理を中断します");
 			return;
 		}
 
 		// CSVファイルの出力
 		val csvExporter = new CSVExporter();
-		if(csvExporter.doWork()) {
-			System.err.println("CSVのエクスポート時にエラーが発生しました。処理を中断します");
+		if(csvExporter.doWork().isError()) {
+			LogManager.err("CSVのエクスポート時にエラーが発生しました。処理を中断します");
 			return;
 		}
 
@@ -96,9 +78,9 @@ public class UkConverter {
 	}
 
 	private class FileImportServiceRequireImpl implements FileImportService.Require{
-		private JinKaisyaMRepository jinKaisyaRepo;
-		private JmKihonRepository jmKihonRepo;
-		private MappingFileIdRepository mappingRepo;
+		private JinKaisyaMRepositoryImpl jinKaisyaRepo;
+		private JmKihonRepositoryImpl jmKihonRepo;
+		private MappingFileIdRepositoryImpl mappingRepo;
 		private FileUploader uploader;
 		private JmGenAddRepository genAddRepo;
 		private JmDaicyoRepository daicyoRepo;
@@ -164,9 +146,9 @@ public class UkConverter {
 	}
 
 	private class AccountImportServiceRequireImpl implements AccountImportService.Require{
-		private JinKaisyaMRepository jinKaisyaRepo;
-		private JmKihonRepository jmKihonRepo;
-		private MappingPasswordRepository mappingPasswordRepo;
+		private JinKaisyaMRepositoryImpl jinKaisyaRepo;
+		private JmKihonRepositoryImpl jmKihonRepo;
+		private MappingPasswordRepositoryImpl mappingPasswordRepo;
 
 		private Map<Integer, List<JmKihon>> cache;
 

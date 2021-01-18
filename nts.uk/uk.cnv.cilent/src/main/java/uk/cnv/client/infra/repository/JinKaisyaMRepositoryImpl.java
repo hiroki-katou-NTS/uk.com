@@ -4,13 +4,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import uk.cnv.client.dom.JinKaisyaMRepository;
 import uk.cnv.client.infra.entity.JinKaisyaM;
 import uk.cnv.client.infra.repository.base.ErpRepositoryBase;
 
-public class JinKaisyaMRepositoryImpl extends ErpRepositoryBase implements JinKaisyaMRepository {
+public class JinKaisyaMRepositoryImpl extends ErpRepositoryBase {
 
-	@Override
 	public List<JinKaisyaM> getAll() throws SQLException {
 		String sql = "SELECT * FROM jinkaisya_m";
 

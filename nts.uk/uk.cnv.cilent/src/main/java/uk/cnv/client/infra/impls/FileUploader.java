@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import nts.arc.layer.app.file.storage.StoredFileInfo;
+import uk.cnv.client.LogManager;
 import uk.cnv.client.UkConvertProperty;
 
 
@@ -41,9 +42,9 @@ public class FileUploader{
 		try {
 			retult = callUploadApi(pathToSource, stereotype, fileType);
 		} catch (IOException e) {
-			System.err.println("\r\n");
-			System.err.println("ファイルアップロードに失敗しました。\r\n" + pathToSource.toFile().getPath() + "\r\n");
-			e.printStackTrace();
+			LogManager.err("\r\n");
+			LogManager.err("ファイルアップロードに失敗しました。\r\n" + pathToSource.toFile().getPath() + "\r\n");
+			LogManager.err(e);
 			return null;
 		}
 
@@ -83,7 +84,7 @@ public class FileUploader{
 		try {
 			url = new URL(serverUrl + "nts.uk.com.web/webapi/ctx/sys/gateway/login/password");
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			LogManager.err(e);
 		}
 
 		String companyCode = UkConvertProperty.getProperty("UkCompanyCode");

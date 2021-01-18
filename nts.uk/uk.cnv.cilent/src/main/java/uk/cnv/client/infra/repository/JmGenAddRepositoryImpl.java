@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import uk.cnv.client.LogManager;
 import uk.cnv.client.dom.fileimport.JmGenAddRepository;
 import uk.cnv.client.infra.entity.JmGenAdd;
 import uk.cnv.client.infra.repository.base.ErpRepositoryBase;
@@ -20,7 +21,7 @@ public class JmGenAddRepositoryImpl extends ErpRepositoryBase implements JmGenAd
 			ps = this.connection().prepareStatement(sql);
 			ps.setInt(1, companyCode);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			LogManager.err(e);
 		}
 
 		return this.getList(ps, new SelectRequire<JmGenAdd>() {
