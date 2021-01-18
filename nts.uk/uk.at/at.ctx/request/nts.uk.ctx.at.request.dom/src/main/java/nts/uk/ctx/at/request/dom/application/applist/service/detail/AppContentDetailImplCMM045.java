@@ -1333,7 +1333,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 	}
 
 	@Override
-	public String getContentComplementLeave(Application application, String companyID, List<WorkType> workTypeLst, DisplayAtr appReasonDisAtr,
+	public CompLeaveAppDataOutput getContentComplementLeave(Application application, String companyID, List<WorkType> workTypeLst, DisplayAtr appReasonDisAtr,
 			ScreenAtr screenAtr) {
 		// 振休振出申請紐付けを取得 (Lấy đơn liên kết nghỉ bù làm bù)
 		LinkComplementLeaveOutput linkComplementLeaveOutput = this.getLinkComplementLeave(application.getAppID(), workTypeLst, companyID);
@@ -1349,7 +1349,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 			complementLeaveAppLink.setLinkAppDate(applicationLink.getAppDate().getApplicationDate());
 		}
 		// 申請内容　＝　振休振出申請内容 ( appContent = appContetn của đơn xin nghỉ làm bù)
-		return appContentService.getComplementLeaveContent(
+		String content = appContentService.getComplementLeaveContent(
 				linkComplementLeaveOutput.getAbsenceLeaveApp(), 
 				linkComplementLeaveOutput.getRecruitmentApp(), 
 				appReasonDisAtr, 
@@ -1357,6 +1357,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 				complementLeaveAppLink, 
 				application,
 				workTypeLst);
+		return new CompLeaveAppDataOutput(content, complementLeaveAppLink);
 	}
 
 	@Override
@@ -1372,7 +1373,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 			}
 			// ドメインモデル「振出申請」を取得 ( Lấy domain model 「振出申請」)
 			RecruitmentApp recruitmentApp = recruitmentAppRepository.findByID(opCompltLeaveSimMng.get().getRecAppID()).get();
-			return new LinkComplementLeaveOutput(appID, TypeApplicationHolidays.Rec, absenceLeaveApp, recruitmentApp);
+			return new LinkComplementLeaveOutput(recruitmentApp.getAppID(), TypeApplicationHolidays.Rec, absenceLeaveApp, recruitmentApp);
 		} else {
 			// ドメインモデル「振出申請」を取得 (Lấy domain model 「振出申請」)
 			RecruitmentApp recruitmentApp = recruitmentAppRepository.findByID(appID).get();
@@ -1383,7 +1384,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 			}
 			// ドメインモデル「振休申請」を取得 ( Lấy domain model 「振休申請」)
 			AbsenceLeaveApp absenceLeaveApp = absenceLeaveAppRepository.findByID(opCompltLeaveSimMng.get().getAbsenceLeaveAppID()).get();
-			return new LinkComplementLeaveOutput(appID, TypeApplicationHolidays.Abs, absenceLeaveApp, recruitmentApp);
+			return new LinkComplementLeaveOutput(absenceLeaveApp.getAppID(), TypeApplicationHolidays.Abs, absenceLeaveApp, recruitmentApp);
 		}
 	}
 	

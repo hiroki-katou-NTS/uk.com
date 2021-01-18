@@ -37,6 +37,7 @@ import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppDetailInf
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppHolidayWorkDataOutput;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppOvertimeDataOutput;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppStampDataOutput;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.CompLeaveAppDataOutput;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.ScreenAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AttendanceNameItem;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
@@ -402,13 +403,14 @@ public class AppContentServiceImpl implements AppContentService {
 			switch (application.getAppType()) {
 			case COMPLEMENT_LEAVE_APPLICATION:
 				// 振休振出申請データを作成( Tạo data application nghỉ bù làm bù)
-				String contentComplementLeave = appContentDetailCMM045.getContentComplementLeave(
+				CompLeaveAppDataOutput compLeaveAppDataOutput = appContentDetailCMM045.getContentComplementLeave(
 						application, 
 						companyID, 
 						lstWkType, 
 						approvalListDisplaySetting.getAppReasonDisAtr(), 
 						ScreenAtr.CMM045);
-				listOfApp.setAppContent(contentComplementLeave);
+				listOfApp.setAppContent(compLeaveAppDataOutput.getContent());
+				listOfApp.setOpComplementLeaveApp(Optional.of(compLeaveAppDataOutput.getComplementLeaveAppLink()));
 				break;
 			case ABSENCE_APPLICATION:
 				// 申請一覧リスト取得休暇 (Ngày nghỉ lấy  Application list)
