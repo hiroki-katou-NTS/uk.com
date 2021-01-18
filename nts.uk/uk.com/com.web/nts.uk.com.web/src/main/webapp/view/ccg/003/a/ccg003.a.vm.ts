@@ -21,12 +21,12 @@ module nts.uk.com.view.ccg003.a {
     <div id="A0-CCG003" class="panel panel-frame panel-ccg003">
       <div class="top-content">
         <!-- A1 対象日 -->
-        <div id="A1"><span data-bind="text: systemDate" style="color: black !important;"></span>
+        <div><span data-bind="text: systemDate" style="color: black !important;"></span>
         </div>
         <div class="fw-right">
           <div data-bind="if: roleFlag">
             <!-- A2 メッセージ入力 -->
-            <a id="A2" class="ccg003-a2" class="mr-5" href="#" data-bind="click: openScreenB, text: $component.$i18n('CCG003_4')"></a>
+            <a class="ccg003-a2" class="mr-5" href="#" data-bind="click: openScreenB, text: $component.$i18n('CCG003_4')"></a>
           </div>
           <div>
             <!-- A3 ☓アイコン -->
@@ -35,17 +35,17 @@ module nts.uk.com.view.ccg003.a {
         </div>
       </div>
       <!-- A4 絞り込み -->
-      <div id="A4" class="w-490" data-bind="ntsAccordion: {}">
-        <div id="top-title" class="bg-schedule-focus bg-accordion-1">
+      <div id="A4-CCG003" class="w-490" data-bind="ntsAccordion: {}">
+        <div id="top-title-ccg003" class="bg-schedule-focus bg-accordion-1">
           <!-- ヘッダテキスト -->
           <h3 data-bind="text: $component.$i18n('CCG003_5')" class="inline"></h3>
         </div>
-        <div id="body-title" class="bg-accordion-1 no-border-radius pl-10">
+        <div id="body-title-ccg003" class="bg-accordion-1 no-border-radius pl-10">
           <div class="row-inline" style="align-items: center;">
             <!-- A4_1 表示期間(ラベル) -->
-            <span id="A4_1" class="auto-margin" data-bind="text: $component.$i18n('CCG003_6')"></span>
+            <span class="auto-margin" data-bind="text: $component.$i18n('CCG003_6')"></span>
             <!-- A4_2 表示期間 -->
-            <div id="daterangepicker" tabindex="1" class="ml-10" data-bind="ntsDateRangePicker: {
+            <div tabindex="1" class="ml-10" data-bind="ntsDateRangePicker: {
               required: false,
               enable: true,
               showNextPrevious: false,
@@ -53,7 +53,7 @@ module nts.uk.com.view.ccg003.a {
               maxRange: 'oneMonth'}"
             />
             <!-- A4_3 絞込 -->
-            <button id="A4_3" tabindex="2" class="small pl-10 pr-10 ml-90" data-bind="click: onClickFilter, text: $component.$i18n('CCG003_7')"></button>
+            <button tabindex="2" class="small pl-10 pr-10 ml-90" data-bind="click: onClickFilter, text: $component.$i18n('CCG003_7')"></button>
           </div>
         </div>
       </div>
@@ -109,7 +109,7 @@ module nts.uk.com.view.ccg003.a {
     #A3-CCG003 {
       cursor: pointer;
     }
-    #body-title {
+    #body-title-ccg003 {
       border-bottom: 0;
     }
     .ccg003-a2 {
@@ -291,9 +291,9 @@ module nts.uk.com.view.ccg003.a {
         }
         vm.isShow(!vm.isShow());
       });
-      $('#top-title').dblclick(e => e.preventDefault());
-      $('#top-title').click(() => {
-        $('#top-title').css('border-bottom', 'none');
+      $('#top-title-ccg003').dblclick(e => e.preventDefault());
+      $('#top-title-ccg003').click(() => {
+        $('#top-title-ccg003').css('border-bottom', 'none');
         const maxHeight = $('.auto-overflow').css('max-height');
         if (maxHeight === '320px') {
           $('.auto-overflow').css('max-height', '385px');
@@ -302,9 +302,9 @@ module nts.uk.com.view.ccg003.a {
         }
 
         if (!_.isEmpty(vm.anniversaries()) || !_.isEmpty(vm.msgNotices())) {
-          $('#A4').css('border-bottom', 'unset');
+          $('#A4-CCG003').css('border-bottom', 'unset');
         } else {
-          $('#A4').css('border-bottom', '1px groove');
+          $('#A4-CCG003').css('border-bottom', '1px groove');
         }
       });
     }
@@ -338,7 +338,7 @@ module nts.uk.com.view.ccg003.a {
             vm.msgNotices(msgNotices);
 
             if (!_.isEmpty(response.anniversaryNotices || !_.isEmpty(response.msgNotices))) {
-              $('#A4').css('border-bottom', 'unset');
+              $('#A4-CCG003').css('border-bottom', 'unset');
             }
           }
         })
