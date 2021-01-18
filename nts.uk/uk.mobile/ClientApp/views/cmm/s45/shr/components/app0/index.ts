@@ -815,12 +815,14 @@ export class CmmS45ShrComponentsApp0Component extends Vue {
     public bindWorkHours() {
         const self = this;
         let appOverTime = self.dataOutput.appOverTime as AppOverTime; 
+        let workHours1 = _.findLast(_.get(appOverTime, 'workHoursOp'), (item: any) => item.workNo == 1);
+        let workHours2 = _.findLast(_.get(appOverTime, 'workHoursOp'), (item: any) => item.workNo == 2);
         // 1
-        self.workHours1 = self.createWorkHours(_.get(appOverTime, 'workHoursOp[0].timeZone.startTime'),
-        _.get(appOverTime, 'workHoursOp[0].timeZone.endTime'));
+        self.workHours1 = self.createWorkHours(_.get(workHours1, 'timeZone.startTime'),
+                _.get(workHours1, 'timeZone.endTime'));
         // 2
-        self.workHours2 = self.createWorkHours(_.get(appOverTime, 'workHoursOp[1].timeZone.startTime'),
-        _.get(appOverTime, 'workHoursOp[1].timeZone.endTime'));
+        self.workHours2 = self.createWorkHours(_.get(workHours2, 'timeZone.startTime'),
+                _.get(workHours2, 'timeZone.endTime'));
     }
     public commandStart() {
         const self = this;

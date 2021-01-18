@@ -418,7 +418,7 @@ export class CmmS45BComponent extends Vue {
                     id: app.appID,
                     appDate: self.$dt.fromUTCString(app.appDate, 'YYYY/MM/DD'),
                     appType: app.appType,
-                    appName: self.appTypeName(app.appType, app.application.opStampRequestMode),
+                    appName: self.appTypeName(app.appType, app.opAppTypeDisplay),
                     prePostAtr: app.prePostAtr,
                     reflectStatus: app.reflectionStatus,
                     appStatusNo: self.convertReflectToInt(app.reflectionStatus),
@@ -464,14 +464,12 @@ export class CmmS45BComponent extends Vue {
     private appTypeName(appType: number, opAppTypeDisplay?: any) {
         const self = this;
         if (_.isNil(opAppTypeDisplay)) {
-            // return 'AppName';
 
             return (_.find(self.data.appListExtractConditionDto.opListOfAppTypes, (item) => item.appType === appType) || { appName: '' }).appName;
         } else {
 
             return (_.find(self.data.appListExtractConditionDto.opListOfAppTypes, (item: any) => ((item.appType === appType) || { appName: '' }) && opAppTypeDisplay == item.opApplicationTypeDisplay)).appName;
         }
-        // return (_.find(self.data.appListExtractConditionDto.opListOfAppTypes, (item) => item.appType === appType) || { appName: '' }).appName;
     }
 
     // check app7 with mode 0 and 1
