@@ -12,7 +12,7 @@ import javax.persistence.Table;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "KSCDT_SCHE_ANY_COND_MONTH")
+@Table(name = "KSCDT_SCHE_ANY_COND_DAY")
 public class KscdtScheAnyCondDay extends ContractUkJpaEntity {
     @EmbeddedId
     public KscdtScheAnyCondDayPk pk;
