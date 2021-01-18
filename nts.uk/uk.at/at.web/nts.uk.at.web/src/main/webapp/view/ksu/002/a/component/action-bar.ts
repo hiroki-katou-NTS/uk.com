@@ -294,7 +294,7 @@ module nts.uk.ui.at.ksu002.a {
 						const wplace = ko.unwrap(data.workplaceId);
 						const wtype = _.find(wtyped, w => w.workTypeCode === wtypec);
 
-						return vm.data.mode() === 'edit' || !wplace || !wtype || wtype.type === WORKTIME_SETTING.NOT_REQUIRED || wtype.style === WORK_STYLE.HOLIDAY;
+						return vm.data.mode() === 'edit' || !wplace || !wtype || wtype.type === WORKTIME_SETTING.NOT_REQUIRED; // || wtype.style === WORK_STYLE.HOLIDAY;
 					},
 					owner: vm
 				}),
