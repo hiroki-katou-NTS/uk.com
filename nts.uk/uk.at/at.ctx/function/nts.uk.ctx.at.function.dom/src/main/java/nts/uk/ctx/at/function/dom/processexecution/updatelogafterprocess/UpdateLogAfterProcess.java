@@ -153,6 +153,8 @@ public class UpdateLogAfterProcess {
 						task.setErrorSystem(true);
 						task.setErrorBusiness(true);
 						task.setStatus(isStopExec ? EndStatus.FORCE_END : EndStatus.SUCCESS);
+						task.setSystemErrorDetails(StringUtil.cutOffAsLengthHalf(
+								TextResource.localize(errorMessage), 2000));
 					}
 				});
 				this.procExecLogRepo.update(procExecLog);
@@ -180,6 +182,8 @@ public class UpdateLogAfterProcess {
 						task.setErrorSystem(true);
 						task.setErrorBusiness(false);
 						task.setStatus(isStopExec ? EndStatus.FORCE_END : EndStatus.SUCCESS);
+						task.setSystemErrorDetails(StringUtil.cutOffAsLengthHalf(
+								TextResource.localize(errorMessage), 2000));
 					}
 				});
 				this.procExecLogRepo.update(procExecLog);

@@ -174,7 +174,7 @@ public class LogDataResultFinder {
 						Integer status = resultOfDeletion.getStatus();
 						Integer targetNumberPeople = resultOfDeletion.getNumberEmployees();
 						String setCode = resultOfDeletion.getDelCode();
-						int isDeletedFilesFlg = -1;
+						int isDeletedFilesFlg = resultOfDeletion.getIsDeletedFilesFlg();
 						List<LogResultDto> logResults = resultOfDeletion.getListResultLogDeletions().stream()
 								.map(resultLogDeletion -> {
 									int logNumber = resultLogDeletion.getSeqId();
