@@ -11,8 +11,10 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ContainsResultDto {
 
+	// 含まれているか true:含まれている/false:含まれていない
 	private boolean check;
 	
+	// 時間帯
 	private TimeSpanForCalcSharedDto timeSpan;
 	
 	private String nameError;
