@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.request.app.command.application.holidayshipment;
 
 import lombok.Getter;
-import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.DisplayInforWhenStarting;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.DisplayInforWhenStarting;
 
 @Getter
 public class SaveHolidayShipmentCommand {
@@ -14,7 +14,7 @@ public class SaveHolidayShipmentCommand {
 	/**
 	 * 振休
 	 */
-	private AbsenceLeaveAppCommand absCmd;
+//	private AbsenceLeaveAppCmd absCmd;
 
 	/**
 	 * 申請組み合わせ

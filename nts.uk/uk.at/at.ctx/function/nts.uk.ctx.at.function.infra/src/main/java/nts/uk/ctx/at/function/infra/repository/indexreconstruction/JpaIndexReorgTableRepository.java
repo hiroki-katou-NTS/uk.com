@@ -118,8 +118,11 @@ public class JpaIndexReorgTableRepository extends JpaRepository implements Index
 				+ " , NULL) AS a" + " INNER JOIN sys.indexes AS b" + " ON a.object_id = b.object_id"
 				+ " AND a.index_id = b.index_id;";
 		try (PreparedStatement stmt = this.connection().prepareStatement(QUERY_CACULATE_FRAG_RATE_TEST)) {
+			// Get current DB name via standalone.xml
 			File file = new File(System.getProperty("jboss.server.config.dir") + "/standalone.xml");
-			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance(
+					"com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl",
+					ClassLoader.getSystemClassLoader());
 			factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
 			factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
 			Document prop = factory.newDocumentBuilder().parse(file);

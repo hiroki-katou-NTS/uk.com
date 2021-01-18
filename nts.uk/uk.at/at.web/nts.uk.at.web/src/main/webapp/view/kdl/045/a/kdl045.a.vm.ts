@@ -997,8 +997,8 @@ module nts.uk.at.view.kdl045.a {
                             workTypeName : self.workTypeName(),//勤務種類名称
                             workTimeName : null, //就業時間帯名称
                             workType : null,//勤務タイプ
-                            fixBreakTime : false
-                            
+                            fixBreakTime : false,
+                            isHoliday : self.workStyle() == 0 ? true : false
                         };
                     
                     let resultKdl045 = {

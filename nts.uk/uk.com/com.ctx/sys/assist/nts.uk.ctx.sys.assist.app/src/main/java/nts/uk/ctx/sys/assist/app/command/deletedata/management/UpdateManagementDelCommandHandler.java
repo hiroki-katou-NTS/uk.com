@@ -27,7 +27,7 @@ public class UpdateManagementDelCommandHandler extends CommandHandler<Management
 				OperatingCondition.valueOf(updateCommand.getOperatingCondition()));
 
 		// ドメインモデル「データ削除の結果ログ」へ追加する
-		saveErrorLogDeleteResult.saveErrorWhenInterruptProcessing(updateCommand.getDelId(), AppContexts.user().companyId());
+//		saveErrorLogDeleteResult.saveErrorWhenInterruptProcessing(updateCommand.getDelId(), AppContexts.user().companyId());
 		// ドメインモデル「データ削除の保存結果」を更新する
 		saveErrorLogDeleteResult.saveEndResultDelInterrupt(updateCommand.getDelId());
 	}
