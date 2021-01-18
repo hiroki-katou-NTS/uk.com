@@ -169,6 +169,12 @@ export class KafS06AComponent extends KafS00ShrComponent {
         return self.$dt.timewd(time);
     }
 
+    public get KAFS06_27() {
+        const self = this;
+
+        return self.$i18n('KAFS06_27'); 
+    }
+
     public get A9_3() {
         const self = this;
         let time = (self.c13 ? (self.inputA9_5 || 0) : 0) + 
