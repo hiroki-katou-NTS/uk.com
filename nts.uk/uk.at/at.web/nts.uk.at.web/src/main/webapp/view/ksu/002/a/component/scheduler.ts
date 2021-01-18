@@ -849,11 +849,13 @@ module nts.uk.ui.at.ksu002.a {
                                                 $begin
                                                     .ntsError(CLBC, MSG_439)
                                                     .ntsError(CLBC, MSG_1772)
+                                                    .ntsError(CLBC, MSG_1811)
                                                     .ntsError(CLBC, MSG_2058);
 
                                                 $finish
                                                     .ntsError(CLBC, MSG_439)
                                                     .ntsError(CLBC, MSG_1772)
+                                                    .ntsError(CLBC, MSG_1811)
                                                     .ntsError(CLBC, MSG_2058);
                                             })
                                             .then(() => {
