@@ -102,7 +102,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					displayInforWhenStartingdto.rec = null;
 					displayInforWhenStartingdto.abs = null;
 					vm.$ajax('at/request/application/holidayshipment/changeRecDate',{workingDate: moment(value).format('YYYY/MM/DD'), holidayDate: holidayDate, displayInforWhenStarting: displayInforWhenStartingdto}).then((data: any) =>{
-						vm.appDispInfoStartupOutput().appDispInfoWithDateOutput = data.appDispInfoStartup.appDispInfoWithDateOutput;
+						vm.appDispInfoStartupOutput(data.appDispInfoStartup);
 						vm.displayInforWhenStarting(data);
 						if(data.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.recordDate == 1){
 							vm.recruitmentApp.workTypeList(data.applicationForWorkingDay.workTypeList);
@@ -124,7 +124,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					displayInforWhenStartingdto.abs = null;
 					let workingDate = (vm.appCombinaSelected() != 2 && vm.recruitmentApp.application.appDate() && !$('#recAppDate').ntsError('hasError')) ? moment(vm.recruitmentApp.application.appDate()).format('YYYY/MM/DD'): null;
 					vm.$ajax('at/request/application/holidayshipment/changeAbsDate',{workingDate: workingDate, holidayDate: moment(value).format('YYYY/MM/DD'), displayInforWhenStarting: displayInforWhenStartingdto}).then((data: any) =>{
-						vm.appDispInfoStartupOutput().appDispInfoWithDateOutput = data.appDispInfoStartup.appDispInfoWithDateOutput;
+						vm.appDispInfoStartupOutput(data.appDispInfoStartup)
 						vm.displayInforWhenStarting(data);
 						if(data.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.recordDate == 1){
 							vm.absenceLeaveApp.workTypeList(data.applicationForWorkingDay.workTypeList);
