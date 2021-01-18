@@ -86,11 +86,11 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
         List<AnnualWorkLedgerContent> lstAnnualWorkLedgerContent = dataSource.getLstAnnualWorkLedgerContent();
         for (int i = 0; i < lstAnnualWorkLedgerContent.size(); i++) {
             AnnualWorkLedgerContent empInfo = lstAnnualWorkLedgerContent.get(i);
-            int firstRow = (i ) * NUMBER_ROW_OF_PAGE;
-            if(i>=1){
+            int firstRow = (i) * NUMBER_ROW_OF_PAGE;
+            if (i >= 1) {
                 pageBreaks.add(firstRow);
                 cells.copyRows(cells, 0, firstRow, NUMBER_ROW_OF_PAGE);
-                cells.clearContents(firstRow ,0,cells.getMaxRow(),cells.getMaxColumn());
+                cells.clearContents(firstRow, 0, cells.getMaxRow(), cells.getMaxColumn());
             }
             this.printEmployeeInfor(worksheet, firstRow, dataSource, empInfo);
             this.printData(worksheet, firstRow, dataSource, empInfo);
@@ -151,14 +151,14 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
                 try {
                     val date = GeneralDate.ymd(yearMonth.year(), yearMonth.month(), day);
                     val leftData = dailyData.getLstLeftValue().stream().filter(x -> x.getDate().compareTo(date) == 0).findFirst();
-                    if (leftData.isPresent() && dailyData.getLeftAttribute()!=null) {
+                    if (leftData.isPresent() && dailyData.getLeftAttribute() != null) {
                         // D2_1
                         cells.get(firstRow + 6 + di, 2 + mi * 2)
                                 .setValue(this.formatValue(leftData.get().getActualValue(), leftData.get().getCharacterValue(), dailyData.getLeftAttribute(), dataSource.isZeroDisplay()));
                     }
 
                     val rightData = dailyData.getLstRightValue().stream().filter(x -> x.getDate().compareTo(date) == 0).findFirst();
-                    if (rightData.isPresent()&& dailyData.getRightAttribute()!= null) {
+                    if (rightData.isPresent() && dailyData.getRightAttribute() != null) {
                         cells.get(firstRow + 6 + di, 3 + mi * 2)
                                 .setValue(this.formatValue(rightData.get().getActualValue(), rightData.get().getCharacterValue(), dailyData.getRightAttribute(), dataSource.isZeroDisplay()));
                     }
@@ -181,7 +181,7 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
                 // F1_1
                 cells.get(rowIndex, 0).setValue(dataRow.getOutputItemName());
                 val monthlyData = dataRow.getLstMonthlyValue().stream().filter(x -> x.getDate().compareTo(yearMonth) == 0).findFirst();
-                if (monthlyData.isPresent()&& dataRow.getAttribute()!= null) {
+                if (monthlyData.isPresent() && dataRow.getAttribute() != null) {
                     // F2_1
                     cells.get(rowIndex, 2 + mi * 2)
                             .setValue(this.formatValue(monthlyData.get().getActualValue(), monthlyData.get().getCharacterValue(), dataRow.getAttribute(), dataSource.isZeroDisplay()));
@@ -211,13 +211,22 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
             case WORKING_HOURS:
                 rs = valueString;
                 break;
+            case OTHER_CHARACTER_NUMBER:
+                rs = valueString;
+                break;
+            case OTHER_CHARACTERS:
+                rs = valueString;
+                break;
+            case OTHER_NUMERICAL_VALUE:
+                rs = valueString;
+                break;
             case TIME_OF_DAY:
-                if(valueDouble!=null){
+                if (valueDouble != null) {
                     rs = convertToTime((int) valueDouble.intValue());
                 }
                 break;
             case TIME:
-                if(valueDouble!=null){
+                if (valueDouble != null) {
                     val minute = (int) valueDouble.intValue();
                     if (minute != 0 || isZeroDisplay) {
                         rs = convertToTime(minute);
@@ -225,23 +234,23 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
                 }
                 break;
             case DAYS:
-                if(valueDouble!=null){
+                if (valueDouble != null) {
                     if (valueDouble != 0 || isZeroDisplay) {
                         DecimalFormat formatter2 = new DecimalFormat("#.#");
-                        rs = formatter2.format(valueDouble) +  TextResource.localize("KWR_1");
+                        rs = formatter2.format(valueDouble) + TextResource.localize("KWR_1");
                     }
                 }
                 break;
             case AMOUNT_OF_MONEY:
-                if(valueDouble!=null){
+                if (valueDouble != null) {
                     if (valueDouble != 0 || isZeroDisplay) {
                         DecimalFormat formatter3 = new DecimalFormat("#,###");
-                        rs = formatter3.format((int) valueDouble.intValue()) +  TextResource.localize("KWR_3");
+                        rs = formatter3.format((int) valueDouble.intValue()) + TextResource.localize("KWR_3");
                     }
                 }
                 break;
             case NUMBER_OF_TIMES:
-                if(valueDouble!=null){
+                if (valueDouble != null) {
                     if (valueDouble != 0 || isZeroDisplay) {
                         DecimalFormat formatter1 = new DecimalFormat("#.#");
                         rs = formatter1.format(valueDouble) + TextResource.localize("KWR_2");

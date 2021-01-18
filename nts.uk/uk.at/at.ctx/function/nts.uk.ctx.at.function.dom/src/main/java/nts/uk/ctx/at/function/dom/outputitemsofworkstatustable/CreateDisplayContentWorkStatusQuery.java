@@ -90,7 +90,9 @@ public class CreateDisplayContentWorkStatusQuery {
                     Double actualValue = 0D;
                     boolean alwayNull = true;
                     if (j.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ||
-                            j.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS) {
+                            j.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS
+                            ||j.getItemDetailAttributes() == CommonAttributesOfForms.OTHER_CHARACTER_NUMBER
+                             || j.getItemDetailAttributes() == CommonAttributesOfForms.OTHER_CHARACTERS) {
                         for (val d : listAtId) {
                             val sub = value1.getOrDefault(d.getAttendanceItemId(), null);
                             if (sub == null || sub.getValue() == null) continue;

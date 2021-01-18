@@ -155,7 +155,9 @@ public class CreateAnnualWorkLedgerContentQuery {
                 Double actualValue = 0D;
                 boolean alwayNull = true;
                 if (item.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ||
-                        item.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS) {
+                        item.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS ||
+                        item.getItemDetailAttributes() == CommonAttributesOfForms.OTHER_CHARACTERS ||
+                        item.getItemDetailAttributes() == CommonAttributesOfForms.OTHER_CHARACTER_NUMBER) {
                     for (val d : listAtId) {
                         val sub = value1.getOrDefault(d.getAttendanceItemId(), null);
                         if (sub == null || sub.getValue() == null) continue;

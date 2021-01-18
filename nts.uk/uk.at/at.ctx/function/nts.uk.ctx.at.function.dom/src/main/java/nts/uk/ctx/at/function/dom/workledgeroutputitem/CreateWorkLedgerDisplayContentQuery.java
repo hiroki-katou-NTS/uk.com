@@ -188,14 +188,40 @@ public class CreateWorkLedgerDisplayContentQuery {
     }
 
     private static CommonAttributesOfForms convertMonthlyToAttForms(Integer typeOfAttendanceItem) {
-        if (typeOfAttendanceItem == MonthlyAttendanceItemAtr.TIME.value) {
+        //・時間　→　時間
+        if (typeOfAttendanceItem.equals(MonthlyAttendanceItemAtr.TIME.value)) {
             return CommonAttributesOfForms.TIME;
-        } else if (typeOfAttendanceItem == MonthlyAttendanceItemAtr.NUMBER.value) {
+        }
+        // ・回数　→　回数
+        else if (typeOfAttendanceItem.equals(MonthlyAttendanceItemAtr.NUMBER.value)) {
             return CommonAttributesOfForms.NUMBER_OF_TIMES;
-        } else if (typeOfAttendanceItem == MonthlyAttendanceItemAtr.AMOUNT.value) {
-            return CommonAttributesOfForms.AMOUNT_OF_MONEY;
-        } else if (typeOfAttendanceItem == MonthlyAttendanceItemAtr.DAYS.value) {
+            // ・日数　→　日数
+        } else if (typeOfAttendanceItem.equals(MonthlyAttendanceItemAtr.DAYS.value)) {
             return CommonAttributesOfForms.DAYS;
+        }
+        // ・金額　→　金額
+        else if (typeOfAttendanceItem.equals(MonthlyAttendanceItemAtr.AMOUNT.value)) {
+            return CommonAttributesOfForms.AMOUNT_OF_MONEY;
+        }
+        // ・マスタを参照する　→　なし(その他_文字数値)
+        else if (typeOfAttendanceItem.equals(MonthlyAttendanceItemAtr.REFER_TO_MASTER.value)) {
+            return CommonAttributesOfForms.OTHER_CHARACTER_NUMBER;
+        }
+        //・コード　→　なし(その他_文字数値)
+        else if (typeOfAttendanceItem.equals(MonthlyAttendanceItemAtr.CODE.value)) {
+            return CommonAttributesOfForms.OTHER_CHARACTER_NUMBER;
+        }
+        // 区分　→　なし(その他_数値)
+        else if (typeOfAttendanceItem.equals(MonthlyAttendanceItemAtr.CLASSIFICATION.value)) {
+            return CommonAttributesOfForms.OTHER_NUMERICAL_VALUE;
+        }
+        // ・比率　→　なし(その他_数値)
+        else if (typeOfAttendanceItem.equals(MonthlyAttendanceItemAtr.RATIO.value)) {
+            return CommonAttributesOfForms.OTHER_NUMERICAL_VALUE;
+        }
+        // ・文字　→　なし(その他_文字)
+        else if (typeOfAttendanceItem.equals(MonthlyAttendanceItemAtr.CHARACTER.value)) {
+            return CommonAttributesOfForms.OTHER_CHARACTERS;
         } else
             return null;
     }
