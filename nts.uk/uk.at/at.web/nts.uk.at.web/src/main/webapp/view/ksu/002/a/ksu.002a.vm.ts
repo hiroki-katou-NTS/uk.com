@@ -605,11 +605,16 @@ module nts.uk.ui.at.ksu002.a {
 
 			if (changed.data.wtype.code !== cloned.data.wtype.code) {
 				state.wtype(EDIT_STATE.HAND_CORRECTION_MYSELF);
+				// if change time code, change all state
+				state.wtime(EDIT_STATE.HAND_CORRECTION_MYSELF);
+				state.value.begin(EDIT_STATE.HAND_CORRECTION_MYSELF);
+				state.value.finish(EDIT_STATE.HAND_CORRECTION_MYSELF);
 			}
 
 			if (changed.data.wtime.code !== cloned.data.wtime.code) {
 				state.wtime(EDIT_STATE.HAND_CORRECTION_MYSELF);
-				// if change time code, change time value state
+				// if change time code, change all state
+				state.wtype(EDIT_STATE.HAND_CORRECTION_MYSELF);
 				state.value.begin(EDIT_STATE.HAND_CORRECTION_MYSELF);
 				state.value.finish(EDIT_STATE.HAND_CORRECTION_MYSELF);
 			}
