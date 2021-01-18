@@ -220,7 +220,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                         endDateRange = moment(startDateRange).add(1, 'year').subtract(1, 'day').format("YYYYMMDD");
                     } else {
                         // 締め日: n 日
-                        startDateRange = moment(currentMonth).add(closureDay + 1 , 'day').format("YYYYMMDD");
+                        startDateRange = moment(currentMonth).add(closureDay, 'day').subtract(1, 'month').format("YYYYMMDD");
                         endDateRange = moment(startDateRange).add(1, 'year').subtract(1, 'day').format("YYYYMMDD");
                     }
 
