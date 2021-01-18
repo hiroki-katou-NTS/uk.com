@@ -1045,7 +1045,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
         }
         
         let result1 = _.find(workTimeLst, (item: TimeZoneUseDto) => item.workNo == 1) as any;
-        let result2 = _.find(workTimeLst, (item: TimeZoneUseDto) => item.workNo == 2 && item.useAtr == NotUseAtr.USE) as any;
+        let result2 = _.find(workTimeLst, (item: TimeZoneUseDto) => item.workNo == 2 && (!mode || item.useAtr == NotUseAtr.USE)) as any;
 
         if (!_.isNil(result1)) {
             self.workHours1 = {
