@@ -10,6 +10,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 	import ajax = nts.uk.request.ajax;
 	import dialog = nts.uk.ui.dialog;
 	import windows = nts.uk.ui.windows;
+	import DisplayInforWhenStarting = nts.uk.at.view.kaf011.DisplayInforWhenStarting;
 
     export class Kaf011BViewModel{
 
@@ -24,7 +25,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 		recruitmentApp = new RecruitmentApp(0, false);
 		absenceLeaveApp = new AbsenceLeaveApp(1, false);
 		comment = new Comment();
-		displayInforWhenStarting = ko.observable(null);
+		displayInforWhenStarting: KnockoutObservable<DisplayInforWhenStarting> = ko.observable(null);
 		remainDays = ko.observable('');
 		
         constructor(
@@ -71,7 +72,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 						vm.absenceLeaveApp.bindingScreenB(data.abs, data.applicationForHoliday.workTypeList, data);
 						vm.applicationCommon().update(data.abs.application);
 					}
-					vm.displayInforWhenStarting(data);
+					vm.displayInforWhenStarting(new DisplayInforWhenStarting(data));
 				}).fail((fail: any) => {
 					dialog.error({ messageId: fail.messageId});
 				}).always(() => {

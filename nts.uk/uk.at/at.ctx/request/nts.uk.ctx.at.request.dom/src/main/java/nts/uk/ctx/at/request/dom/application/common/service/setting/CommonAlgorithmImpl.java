@@ -844,7 +844,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		if (timeDigestApplication.getTimeAnnualLeave() != null && timeDigestApplication.getTimeAnnualLeave().v() > 0) {
 		    int remainAnnual = 0;
 		    if (annualLeaveUnit.isPresent()) {
-		        switch (substituteHoliday.get()) {
+		        switch (annualLeaveUnit.get()) {
                 case OneMinute:
                     remainAnnual = timeDigestApplication.getTimeAnnualLeave().v() % 1;
                     break;
@@ -873,7 +873,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		if (timeDigestApplication.getChildTime() != null && timeDigestApplication.getChildTime().v() > 0) {
 		    int childTimeRemain = 0;
 		    if (childNursingUnit.isPresent()) {
-		        switch (substituteHoliday.get()) {
+		        switch (childNursingUnit.get()) {
                 case OneMinute:
                     childTimeRemain = timeDigestApplication.getChildTime().v() % 1;
                     break;
@@ -902,7 +902,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		if (timeDigestApplication.getNursingTime() != null && timeDigestApplication.getNursingTime().v() > 0) {
 		    int nursingRemain = 0;
 		    if (nursingUnit.isPresent()) {
-		        switch (substituteHoliday.get()) {
+		        switch (nursingUnit.get()) {
                 case OneMinute:
                     nursingRemain = timeDigestApplication.getNursingTime().v() % 1;
                     break;
@@ -931,7 +931,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		if (timeDigestApplication.getTimeSpecialVacation() != null && timeDigestApplication.getTimeSpecialVacation().v() > 0) {
 		    int timeSpecialRemain = 0;
 		    if (pendingUnit.isPresent()) {
-		        switch (substituteHoliday.get()) {
+		        switch (pendingUnit.get()) {
 		        case OneMinute:
 		            timeSpecialRemain = timeDigestApplication.getTimeSpecialVacation().v() % 1;
 		            break;
