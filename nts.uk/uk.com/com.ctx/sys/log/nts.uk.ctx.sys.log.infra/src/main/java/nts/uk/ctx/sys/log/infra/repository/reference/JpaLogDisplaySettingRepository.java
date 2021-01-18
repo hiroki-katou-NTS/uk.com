@@ -67,12 +67,11 @@ public class JpaLogDisplaySettingRepository extends JpaRepository implements Log
 				.getQuery().getResultList();	
 		return objects.stream().map(x -> {
 			Object[] values = (Object[])x;
-			LogDisplaySetting logDisplaySetting = new LogDisplaySetting(String.valueOf(values[0]), String.valueOf(values[1]),
+			return new LogDisplaySetting(String.valueOf(values[0]), String.valueOf(values[1]),
 					 new LogSettingCode(String.valueOf(values[2])), new LogSettingName(String.valueOf(values[3]))
 							 ,Objects.isNull(values[4])?null:DataTypeEnum.valueOf(Integer.valueOf(String.valueOf(values[4]) ))
 							 ,RecordTypeEnum.valueOf(Integer.valueOf(String.valueOf(values[5])))
 							 ,SystemTypeEnum.valueOf(Integer.valueOf(String.valueOf(values[6]))));			
-			return logDisplaySetting;
 		}).collect(Collectors.toList());
 		
 		
@@ -89,12 +88,11 @@ public class JpaLogDisplaySettingRepository extends JpaRepository implements Log
 				.getQuery().getResultList();	
 		return objects.stream().map(x -> {
 			Object[] values = (Object[])x;
-			LogDisplaySetting logDisplaySetting = new LogDisplaySetting(String.valueOf(values[0]), String.valueOf(values[1]),
+			return new LogDisplaySetting(String.valueOf(values[0]), String.valueOf(values[1]),
 					 new LogSettingCode(String.valueOf(values[2])), new LogSettingName(String.valueOf(values[3]))
 							 ,Objects.isNull(values[4])?null:DataTypeEnum.valueOf(Integer.valueOf(String.valueOf(values[4]) ))
 							 ,RecordTypeEnum.valueOf(Integer.valueOf(String.valueOf(values[5])))
 							 ,SystemTypeEnum.valueOf(Integer.valueOf(String.valueOf(values[6]))));			
-			return logDisplaySetting;
 		}).collect(Collectors.toList());
 	}
 

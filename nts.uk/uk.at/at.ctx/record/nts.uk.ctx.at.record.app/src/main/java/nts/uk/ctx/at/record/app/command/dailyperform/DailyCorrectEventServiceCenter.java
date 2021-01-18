@@ -103,7 +103,7 @@ public class DailyCorrectEventServiceCenter {
 		List<EditStateOfDailyPerformance> editState = domain.getEditState().stream()
 				.map(c -> new EditStateOfDailyPerformance(updated.getEmployeeId(), updated.getDate(), c))
 				.collect(Collectors.toList());	
-		TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance = new TimeLeavingOfDailyPerformance(updated.getEmployeeId(), updated.getDate(), domain.getAttendanceLeave().isPresent()?domain.getAttendanceLeave().get():null);
+		TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance = new TimeLeavingOfDailyPerformance(updated.getEmployeeId(), updated.getDate(), domain.getAttendanceLeave().orElse(null));
 		triggerTimeLeave(companyId, workType, workCondition, 
 				eventBus, triggerBus, wi, editState,
 				timeLeavingOfDailyPerformance!=null?Optional.of(timeLeavingOfDailyPerformance):Optional.empty(), e -> {

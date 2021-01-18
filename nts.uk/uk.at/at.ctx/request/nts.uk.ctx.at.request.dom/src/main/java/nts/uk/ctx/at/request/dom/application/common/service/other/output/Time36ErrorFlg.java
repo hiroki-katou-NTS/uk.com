@@ -8,7 +8,9 @@ public enum Time36ErrorFlg {
 	/** 上限月間時間エラー*/
 	MAX_MONTH(2,"上限月間時間エラー"),
 	/** 上限複数月平均時間エラー*/
-	AVERAGE_MONTH(3,"上限複数月平均時間エラー");
+	AVERAGE_MONTH(3,"上限複数月平均時間エラー"),
+	/**	上限年間時間エラー*/
+	MAX_YEAR(4,"上限年間時間エラー");
 	 
 	public int value;
 	

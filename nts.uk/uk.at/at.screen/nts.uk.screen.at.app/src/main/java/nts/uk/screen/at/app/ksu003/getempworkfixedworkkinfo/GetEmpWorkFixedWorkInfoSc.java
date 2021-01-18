@@ -135,12 +135,12 @@ public class GetEmpWorkFixedWorkInfoSc {
 		Integer startTime1 = null, startTime2 = null;
 		Integer endTime1 = null, endTime2 = null;
 		
-		if(listTimeZone.get(0) != null) {
+		if(!listTimeZone.isEmpty() && listTimeZone.get(0) != null) {
 			startTime1 = listTimeZone.get(0).getStart().v();
 			endTime1 = listTimeZone.get(0).getEnd().v();
 		}
 		
-		if(listTimeZone.size() > 1) {
+		if(!listTimeZone.isEmpty() && listTimeZone.size() > 1) {
 			startTime2 = listTimeZone.get(1).getStart().v();
 			endTime2 = listTimeZone.get(1).getEnd().v();
 		}
@@ -198,11 +198,12 @@ public class GetEmpWorkFixedWorkInfoSc {
 			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
 		}
 
-		@Override
-		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd,
-				Integer workNo) {
-			return workTimeSettingService.getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
-		}
+		// fix bug 113211
+//		@Override
+//		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd,
+//				Integer workNo) {
+//			return workTimeSettingService.getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
+//		}
 
 		@Override
 		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {

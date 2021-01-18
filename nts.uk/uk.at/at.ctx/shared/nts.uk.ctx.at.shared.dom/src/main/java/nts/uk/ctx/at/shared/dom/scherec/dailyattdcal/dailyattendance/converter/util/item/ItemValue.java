@@ -3,37 +3,47 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.
 import java.time.format.DateTimeFormatter;
 //import java.time.format.DateTimeFormatterBuilder;
 
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
+//@AllArgsConstructor
+//@NoArgsConstructor
+//@Getter
 @EqualsAndHashCode(of = {"itemId", "valueType", "value"})
-public class ItemValue {
+public class ItemValue implements Cloneable {
 	
+	@Override
+	public ItemValue clone() {
+		return new ItemValue(value, valueType, layoutCode, itemId, pathLink, false);
+	}
+
 	private static final String DATE_FORMAT = "yyyyMMdd";
 
+	@Getter
 	private String value;
 
+	@Getter
 	private ValueType valueType;
 
+	@Getter
 	private String layoutCode;
-	
+
+	@Getter
 	private int itemId;
-	
+
+	@Getter
 	private String pathLink;
+	
+	private boolean isFixed;
 	
 	private ItemValue(int itemId, String path){
 		this.itemId = itemId;
 		this.pathLink = path;
 	}
 	
-	public ItemValue(Object value, ValueType valueType, String layoutCode, Integer itemId){
-		this(valueType, layoutCode, itemId, value);
+	public ItemValue(Object value, ValueType valueType, String layoutCode, int itemId){
+		this(value, valueType, layoutCode, itemId, "", false);
 	}
 	
 	public ItemValue(ValueType valueType, String layoutCode, Integer itemId, Object value){
@@ -41,6 +51,31 @@ public class ItemValue {
 		this.layoutCode = layoutCode;
 		this.itemId = itemId;
 		value(value);
+	}
+	
+	public ItemValue() {
+	}
+	
+	public ItemValue(Object value, ValueType valueType, String layoutCode, int itemId, String path){
+		this(value, valueType, layoutCode, itemId, path, false);
+	}
+	
+	private ItemValue(Object value, ValueType valueType, String layoutCode, int itemId, String pathLink, boolean isFixed){
+		this.valueType = valueType;
+		this.layoutCode = layoutCode;
+		this.itemId = itemId;
+		this.pathLink = pathLink;
+		this.isFixed = isFixed;
+		value(value);
+	}
+	
+	public ItemValue beFixedItem() {
+		this.isFixed = true;
+		return this;
+	}
+	
+	public ValueType type() {
+		return this.valueType;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -116,12 +151,15 @@ public class ItemValue {
 	
 	public <T> T valueOrDefault(T defaultVal) {
 		if(!isHaveValue()){
-			return defaultVal; 
+			return defaultVal;
 		}
 		return value();
 	}
 	
-	public ItemValue value(Object value){
+	public ItemValue value(Object value) {
+		if (this.isFixed) {
+			return this;
+		}
 		this.value = value == null ? null : toValue(value);
 		return this;
 	}
@@ -138,21 +176,33 @@ public class ItemValue {
 	}
 	
 	public ItemValue withPath(String path){
+		if (this.isFixed) {
+			return this;
+		}
 		this.pathLink = path;
 		return this;
 	}
 	
 	public ItemValue valueType(ValueType type){
+		if (this.isFixed) {
+			return this;
+		}
 		this.valueType = type;
 		return this;
 	}
 	
 	public ItemValue layout(String layoutCode){
+		if (this.isFixed) {
+			return this;
+		}
 		this.layoutCode = layoutCode;
 		return this;
 	}
 	
 	public ItemValue itemId(int itemId){
+		if (this.isFixed) {
+			return this;
+		}
 		this.itemId = itemId;
 		return this;
 	}

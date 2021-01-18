@@ -53,11 +53,14 @@ public class PaidHolidayDuringPeriodSetting {
 		} else {
 
 			// 逐次発生の休暇設定に雇用の代休管理設定を移送する
-			return new TimeLapseVacationSetting(empHist.getPeriod(), comLeavEmp.getIsManaged().value == 1,
+			/*return new TimeLapseVacationSetting(empHist.getPeriod(), comLeavEmp.getIsManaged().value == 1,
 					comLeavEmp.getCompensatoryAcquisitionUse().getExpirationTime().value,
 					comLeavEmp.getCompensatoryAcquisitionUse().getPreemptionPermit().value == 1,
 					Optional.of(comLeavEmp.getCompensatoryDigestiveTimeUnit().getIsManageByTime().value == 1),
-					Optional.of(comLeavEmp.getCompensatoryDigestiveTimeUnit().getDigestiveUnit().value));
+					Optional.of(comLeavEmp.getCompensatoryDigestiveTimeUnit().getDigestiveUnit().value));*/
+			return null;
+			
+			
 		}
 	}
 

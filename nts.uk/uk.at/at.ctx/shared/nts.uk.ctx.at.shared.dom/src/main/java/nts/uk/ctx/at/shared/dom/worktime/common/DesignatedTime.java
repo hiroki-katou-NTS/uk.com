@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 public class DesignatedTime extends WorkTimeDomainObject implements Cloneable{
 
 	/** The one day time. */
-	// 1日の時間
+	// 一日の時間
 	private OneDayTime oneDayTime;
 
 	/** The half day time. */

@@ -29,7 +29,7 @@ import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeColor
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorCheck;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IOvertimePreProcess;
@@ -232,7 +232,7 @@ public class CheckConvertPrePost {
 		result.setResultLst(preActualColorResult.resultLst);
 		return result;
 	}
-	private void convertOverTimeDto(String companyID,PreAppOvertimeDto preAppOvertimeDto, OverTimeDto result,AppOverTime appOvertime){
+	private void convertOverTimeDto(String companyID,PreAppOvertimeDto preAppOvertimeDto, OverTimeDto result,AppOverTime_Old appOvertime){
 		if(appOvertime.getApplication() != null){
 			if(appOvertime.getApplication().getAppDate() != null){
 				preAppOvertimeDto.setAppDatePre(appOvertime.getApplication().getAppDate().getApplicationDate().toString(DATE_FORMAT));

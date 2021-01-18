@@ -32,9 +32,15 @@ module cmm044.c.viewmodel {
             const self = this;
             nts.uk.ui.block.invisible();
             service.sendMail({ approverId: self.approverId(), emailContent: self.emailContent() }).then(() => {
-                // nts.uk.ui.windows.close();
+                nts.uk.ui.dialog.info({messageId: "Msg_792"}).then(() => {
+                    nts.uk.ui.windows.close();
+                });
             }).fail(error => {
-                nts.uk.ui.dialog.alert(error);
+                nts.uk.ui.dialog.alert(error).then(() => {
+                    if (error.messageId == "Msg_1057") {
+                        nts.uk.ui.windows.close();
+                    }
+                });
             }).always(() => {
                 nts.uk.ui.block.clear();
             });
