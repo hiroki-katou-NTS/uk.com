@@ -152,11 +152,13 @@ public class AsposeWorkChange {
                 valueD13 = I18NText.getText("KAF007_83");
             }
             
-            if(!appDisp.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles() && valueD11 == "") {
+            if(!appDisp.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles() 
+                    || !appDisp.getReflectWorkChangeApp().getWhetherReflectAttendance().equals(NotUseAtr.NOT_USE) 
+                    || valueD11.equals("")) {
                 cells.deleteRow(10);
                 deleteCnt++;
             }
-            if(valueD10 == "") {
+            if(valueD10.equals("")) {
                 cells.deleteRow(9);
                 deleteCnt++;
             }
