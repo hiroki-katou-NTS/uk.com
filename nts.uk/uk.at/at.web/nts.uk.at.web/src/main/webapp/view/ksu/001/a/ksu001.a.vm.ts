@@ -1708,7 +1708,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
             });
         }
-        
+        // 9999
         saveData() : JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             
@@ -1761,19 +1761,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         let startTime = null, endTime = null;
                         let isChangeTime = false;
                         if (!_.isNil(cellStartTime)) {
-                            isChangeTime = true;
                             if (!_.isNil(cell.value.startTime) && cell.value.startTime != "") {
                                 startTime = duration.parseString(cell.value.startTime).toValue();
-                            }else{
-                                startTime = null;
+                                isChangeTime = true;
                             }
                         }
                         if (!_.isNil(cellEndTime)) {
-                            isChangeTime = true;
                             if (!_.isNil(cell.value.endTime) && cell.value.endTime != "") {
                                 endTime = duration.parseString(cell.value.endTime).toValue();
-                            } else {
-                                endTime = null;
+                                isChangeTime = true;
                             }
                         }
                         let dataCell = {
