@@ -237,6 +237,9 @@ export class KafS10Component extends KafS00ShrComponent {
                 });
             });
         } else if (vm.numb == 2 && value == 1) { // step 2 -> step 1
+            let step2 = vm.$refs.step2 as KafS10Step2Component;
+            step2.holidayTimes = [];
+            step2.overTimes = [];
             vm.numb = value;
         } else if (vm.numb == 2 && value == 3) {
             let step3 = vm.$refs.step3 as KafS10Step3Component;

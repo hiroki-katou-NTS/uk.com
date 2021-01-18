@@ -516,7 +516,7 @@ export class CmmS45ShrComponentsApp6Component extends Vue {
     public bindBreakTime() {
         const self = this;
         let breakTime = [] as Array<BreakTime>;
-        _.range(1, 10)
+        _.range(1, 11)
         .forEach((index: number) => {
             let result = _.findLast(_.get(self.dataOutput, 'appHolidayWork.breakTimeList'), (i: TimeZoneWithWorkNo) => i.workNo == index) as any;
             let findResult = _.get(result, 'timeZone') as TimeZoneNew;

@@ -9,7 +9,7 @@
           <div class="card" v-if="true">
             <div class="card-header uk-bg-accordion">
               <button class="btn btn-link" type="button">
-                  {{'KAFS00_4' | i18n}}
+                  {{'KAFS05_41' | i18n}}
               </button>
             </div>
             <div class="collapse">
@@ -26,7 +26,7 @@
     >
       <button class="btn btn-link uk-text-danger">
         <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
-        {{ ($appContext.isMsg_1556 ? "Msg_1556" : "KAFS07_1") | i18n($appContext.isMsg_1556 ? $appContext.date : '') }}
+        {{ ($appContext.isMsg_1556 ? "Msg_1556" : "KAFS07_1") | i18n($appContext.isMsg_1556 ? ($appContext.modeNew ? $appContext.date : $appContext.appDispInfoStartupOutput.appDetailScreenInfo.application.appDate) : '') }}
       </button>
     </div>
     <div>
