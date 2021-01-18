@@ -56,14 +56,15 @@ module nts.uk.com.view.ccg013.k.viewmodel {
             self.list([]);
             for (let i = 0; i < self.listStandardMenu().length; i++) {
                 if (value === 5) {
-                    self.list.push(new StandardMenu(i + 1, self.id(), self.listStandardMenu()[i].code, self.listStandardMenu()[i].targetItems, self.listStandardMenu()[i].displayName, self.listStandardMenu()[i].system, self.listStandardMenu()[i].classification));
+                    self.list.push(new StandardMenu(i + 1, self.id(),self.listStandardMenu()[i].order, self.listStandardMenu()[i].code, self.listStandardMenu()[i].targetItems, self.listStandardMenu()[i].displayName, self.listStandardMenu()[i].system, self.listStandardMenu()[i].classification));
                     self.id(self.id()+1);
                 } else if (self.listStandardMenu()[i].system == value){
-                    self.list.push(new StandardMenu(i + 1, self.id(), self.listStandardMenu()[i].code, self.listStandardMenu()[i].targetItems, self.listStandardMenu()[i].displayName, self.listStandardMenu()[i].system, self.listStandardMenu()[i].classification));
+                    self.list.push(new StandardMenu(i + 1, self.id(),self.listStandardMenu()[i].order, self.listStandardMenu()[i].code, self.listStandardMenu()[i].targetItems, self.listStandardMenu()[i].displayName, self.listStandardMenu()[i].system, self.listStandardMenu()[i].classification));
                     self.id(self.id()+1);
                 }
             }
-            const list001 = _.forEach(self.list(), (item, index) => {
+            const listOrder = _.orderBy(self.list(), ["newOrder"],["asc"]);
+            const list001 = _.forEach(listOrder, (item, index) => {
                 item.index = index + 1;
             })
             self.list(list001);
@@ -91,7 +92,7 @@ module nts.uk.com.view.ccg013.k.viewmodel {
             service.getAllStandardMenu().done(function(listStandardMenu: Array<viewmodel.StandardMenu>) {
                 listStandardMenu = _.orderBy(listStandardMenu, ["code"], ["asc"]);
                 _.each(listStandardMenu, function(obj: viewmodel.StandardMenu, index) {
-                    self.listStandardMenu.push(new StandardMenu(index + 1, self.id(), obj.code, obj.targetItems, obj.displayName, obj.system, obj.classification));
+                    self.listStandardMenu.push(new StandardMenu(index + 1, self.id(), obj.order, obj.code, obj.targetItems, obj.displayName, obj.system, obj.classification));
                     self.id(self.id()+1);
                 });
                 
@@ -115,7 +116,7 @@ module nts.uk.com.view.ccg013.k.viewmodel {
                 _.forEach(editMenuBar.listSystem, function(item) {
                    newItemList.push(new ItemModel(item.value, item.localizedName));
                 });
-                self.itemList(newItemList);
+                self.itemList(newItemList.filter(x => x.code !== 2));
                 dfd.resolve();
             }).fail(function(error) {
                 dfd.reject();
@@ -255,14 +256,18 @@ module nts.uk.com.view.ccg013.k.viewmodel {
         displayName: string;
         system: number;
         classification: number;
-        constructor(index: number, id: number, code: string, targetItems: string, displayName: string, system: number, classification: number) {
+        newOrder: number;
+        order:number;
+        constructor(index: number, id: number, order: number, code: string, targetItems: string, displayName: string, system: number, classification: number) {
             this.index = index;
             this.id = id;
+            this.order = order;
             this.code = code;
             this.targetItems = targetItems;
             this.displayName = displayName;
             this.system = system;
             this.classification = classification;
+            this.newOrder = system  + Number(code);
         }
     }
 }

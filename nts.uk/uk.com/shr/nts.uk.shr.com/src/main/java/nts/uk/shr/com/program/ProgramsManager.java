@@ -2166,6 +2166,11 @@ public class ProgramsManager {
     public static final Program KAF006A = new Program(WebAppId.AT, ProgramIdConsts.KAF006A, "KAF006_66",
             "/view/kaf/006/a/index.xhtml");
     /**
+     * KAF006C
+     */
+    public static final Program KAF006C = new Program(WebAppId.AT, ProgramIdConsts.KAF006C, "KAF006_96",
+            "/view/kaf/006/c/index.xhtml");
+    /**
      * KAF007A
      */
     public static final Program KAF007A = new Program(WebAppId.AT, ProgramIdConsts.KAF007A, null,
@@ -2951,6 +2956,10 @@ public class ProgramsManager {
             "/kaf/s04/a");
     public static final Program KAFS05A = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS05A, "KAFS05A",
             "/kaf/s05/a");
+    public static final Program KAFS06A = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS06A, "KAFS06A",
+            "/kaf/s06/a");
+    public static final Program KAFS10A = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS10A, "KAFS10A",
+            "/kaf/s10/a");
     public static final Program KAFS07A = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS07A, "KAFS07A",
             "/kaf/s07/a");
     public static final Program KAFS08A = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS08A, "KAFS08A",
@@ -2961,6 +2970,8 @@ public class ProgramsManager {
             "/kaf/s12/a");
     public static final Program KAFS05B = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS05B, "KAFS05B",
             "/kaf/s05/b");
+    public static final Program KAFS10B = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS10B, "KAFS10B",
+            "/kaf/s10/b");
     public static final Program KAFS20A = new Program(WebAppId.MOBI,ProgramIdConsts.KAFS20A,"KAFS20A",
             "/kaf/s20/a");
     public static final Program CMMS45B = new Program(WebAppId.MOBI, ProgramIdConsts.CMMS45B, "CMMS45B",

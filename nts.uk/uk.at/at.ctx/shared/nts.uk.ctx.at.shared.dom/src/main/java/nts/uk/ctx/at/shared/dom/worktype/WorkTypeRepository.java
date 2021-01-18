@@ -255,7 +255,7 @@ public interface WorkTypeRepository {
 	
 	/**
 	 * Find by deprecated.
-	 *
+	 * <<Public>> 指定した勤務種類をすべて取得する
 	 * @param companyId the company id
 	 * @param workTypeCd the work type cd
 	 * @return the optional

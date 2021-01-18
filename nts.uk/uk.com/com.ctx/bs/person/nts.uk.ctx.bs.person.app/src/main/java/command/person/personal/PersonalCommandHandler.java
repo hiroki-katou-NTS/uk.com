@@ -44,21 +44,25 @@ public class PersonalCommandHandler extends CommandHandler<PersonalCommand> {
     @Override
     protected void handle(CommandHandlerContext<PersonalCommand> commandHandlerContext) {
         PersonalCommand command = commandHandlerContext.getCommand();
+        //#113902
+        boolean isUseOfProfile = command.getUseOfProfile();
+        boolean isUseOfNotice = command.getUseOfNotice();
         String personalId = AppContexts.user().personId();
-
-        // cmd 3 : 個人の顔写真を登録する
-        String fileId = command.getAvatar().getFileId();
-        if (fileId != null) {
-            this.updateAvatar(command.getAvatar());
-        }
-
-        // cmd 4+5 : 記念日を削除する + 個人の記念日情報を登録する
-        this.updateAnniversary(command.getAnniversaryNotices(), personalId);
-
-        // cmd 7 : 社員連絡先を登録する
-        this.updatePersonalContact(command.getPersonalContact(), personalId);
-
-    }
+        
+		// cmd 3 : 個人の顔写真を登録する
+		if (isUseOfProfile) {
+			String fileId = command.getAvatar().getFileId();
+			if (fileId != null) {
+				this.updateAvatar(command.getAvatar());
+			}
+			// cmd 7 : 社員連絡先を登録する
+			this.updatePersonalContact(command.getPersonalContact(), personalId);
+		}
+		if (isUseOfNotice) {
+			// cmd 4+5 : 記念日を削除する + 個人の記念日情報を登録する
+			this.updateAnniversary(command.getAnniversaryNotices(), personalId);
+		}
+	}
 
     // 個人の顔写真を登録する
     private void updateAvatar(UserAvatarDto userAvatarDto) {
