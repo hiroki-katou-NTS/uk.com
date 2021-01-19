@@ -42,6 +42,10 @@ import { KdlS36Component } from '../../../kdl/s36';
                 required: true,
                 validate: true
             }
+        }, 
+        workHours1: {
+            required: true,
+            timeRange: true
         }
     },
     constraints: [
@@ -105,8 +109,11 @@ export class KafS06AComponent extends KafS00ShrComponent {
 
         if (data) {
             self.$updateValidator('workHours1', {
-                required: true,
-                timeRange: true
+                validate: false
+            });
+        } else {
+            self.$updateValidator('workHours1', {
+                validate: true
             });
         }
     }
@@ -324,7 +331,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
     public get isValidateWorkHours1() {
         const self = this;
 
-        return self.c9 && self.c11;
+        return self.c9 && !self.c11;
     }
 
     // 休暇申請起動時の表示情報．就業時間帯表示フラグ = true
@@ -627,6 +634,26 @@ export class KafS06AComponent extends KafS00ShrComponent {
     public mounted() {
         const self = this;
         self.fetchData();
+        if (!self.modeNew) {
+            if (self.isValidateWorkHours1) {
+                self.$updateValidator('workHours1', {
+                    validate: false
+                });
+            } else {
+                self.$updateValidator('workHours1', {
+                    validate: true
+                });
+            }
+            if (self.c20) {
+                self.$updateValidator('relationshipReason', {
+                    validate: true
+                });
+            } else {
+                self.$updateValidator('relationshipReason', {
+                    validate: false
+                });
+            }
+        }
     }
     public fetchData() {
         const vm = this;
