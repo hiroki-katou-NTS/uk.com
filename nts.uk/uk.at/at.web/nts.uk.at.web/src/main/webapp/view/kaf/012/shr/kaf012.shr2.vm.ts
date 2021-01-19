@@ -138,7 +138,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                 <th colspan="6" class="bg-green" data-bind="text: $i18n('KAF012_8')"/>
                             </tr>
                             <tr>
-                                <th class="bg-green" data-bind="css: {hidden: leaveType() != 6}">
+                                <th class="bg-yellow" data-bind="css: {hidden: leaveType() != 6}">
                                     <span data-bind="text: $i18n('KAF012_40')"/>
                                 </th>
                                 <th class="bg-green" data-bind="css: {hidden: leaveType() != 0 &amp;&amp; leaveType() != 6}">

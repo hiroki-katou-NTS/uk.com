@@ -67,10 +67,12 @@ public class ChildNursingLeaveFinder {
 				.absenceWork(childNursingLeave.getWorkAbsence().orElse(0))
 				.build();
 		//	/取得したデータを返す。
+		// fix open dialog KDL051
+		String nextStartMonthDay = childNursingLeave.getNextStartMonthDay(baseDate) == null ? "" : childNursingLeave.getNextStartMonthDay(baseDate).toString();
 		return ManagementClassificationByEmployeeDto.builder()
 		.lstEmp(lstEmpRs)
 		.nursingLeaveSt(childNursingLeaveDt)
-		.nextStartMonthDay(childNursingLeave.getNextStartMonthDay(baseDate).toString())
+		.nextStartMonthDay(nextStartMonthDay)
 		.build();
 	}
 	
