@@ -788,11 +788,15 @@ export class KafS10Component extends KafS00ShrComponent {
         let model = self.model as Model;
         //  「休日出勤申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係なし)．申請承認設定．申請設定．申請表示設定」．事前事後区分表示＝表示する
         let displayAtr = _.get(model, 'appHdWorkDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr');
-        if (displayAtr == NotUseAtr.USE) {
-            //「事後」を選択
-            return self.application.prePostAtr == PrePostAtr.POST;
+        if (self.modeNew) {
+            if (displayAtr == NotUseAtr.USE) {
+                //「事後」を選択
+                return self.application.prePostAtr == PrePostAtr.POST;
+            } else {
+                //「休日出勤申請起動時の表示情報．申請表示情報．申請設定（基準日関係あり）」．事前事後区分＝事後
+                return _.get(model, 'appHdWorkDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.prePostAtr') == PrePostAtr.POST;
+            }
         } else {
-            //「休日出勤申請起動時の表示情報．申請表示情報．申請設定（基準日関係あり）」．事前事後区分＝事後
             return _.get(model, 'appHdWorkDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.prePostAtr') == PrePostAtr.POST;
         }
     }
