@@ -23,11 +23,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 /**
  * ScreenQuery : 勤怠項目情報を取得する
@@ -193,13 +189,6 @@ public class GetAttendanceItemInfo {
             return CommonAttributesOfForms.OTHER_CHARACTERS.value;
         } else
             return null;
-    }
-
-    private static <T> Predicate<T> distinctByKey(
-            Function<? super T, ?> keyExtractor) {
-
-        Map<Object, Boolean> seen = new ConcurrentHashMap<>();
-        return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
 
 }
