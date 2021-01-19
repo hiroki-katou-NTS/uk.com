@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.OvertimeDeclaration;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
@@ -100,7 +101,7 @@ public class WithActualTimeStampDto implements ItemConst, AttendanceItemDataGate
 	public TimeActualStamp toDomain(){
 		return new TimeActualStamp(TimeStampDto.toDomain(actualTime), TimeStampDto.toDomain(time), numberOfReflectionStamp,
 				overtime == null ? null : new OvertimeDeclaration(new AttendanceTime(overtime), new AttendanceTime(overLateNightTime)),
-				timeZoneStart == null ? null : new TimeZone(new TimeWithDayAttr(timeZoneStart), new TimeWithDayAttr(timeZoneEnd)));
+				timeZoneStart == null ? null : new TimeSpanForCalc(new TimeWithDayAttr(timeZoneStart), new TimeWithDayAttr(timeZoneEnd)));
 	}
 	
 }

@@ -35,6 +35,7 @@ import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDaiLeavingWorkPK;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtTimeLeavingWork;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtTimeLeavingWorkPK;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.OvertimeDeclaration;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
@@ -205,7 +206,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 					krcdtTimeLeavingWork.atdLateNightOvertime = null;
 				}
 				//set 時間休暇時間帯
-				TimeZone timeZone = attendanceStamp.getTimeVacation().orElse(null);
+				TimeSpanForCalc timeZone = attendanceStamp.getTimeVacation().orElse(null);
 				if (timeZone != null) {
 					krcdtTimeLeavingWork.atdBreakStart = timeZone.getStart() == null?null:timeZone.getStart().valueAsMinutes();
 					krcdtTimeLeavingWork.atdBreakEnd = timeZone.getEnd() == null?null:timeZone.getEnd().valueAsMinutes();;
@@ -255,7 +256,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 					krcdtTimeLeavingWork.lwkLateNightOvertime = null;
 				}
 				//set 時間休暇時間帯
-				TimeZone timeZone = ls.getTimeVacation().orElse(null);
+				TimeSpanForCalc timeZone = ls.getTimeVacation().orElse(null);
 				if (timeZone != null) {
 					krcdtTimeLeavingWork.lwkBreakStart = timeZone.getStart() == null?null:timeZone.getStart().valueAsMinutes();
 					krcdtTimeLeavingWork.lwkBreakEnd = timeZone.getEnd() == null?null:timeZone.getEnd().valueAsMinutes();;
@@ -652,8 +653,8 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 				overTime == null ? null : new AttendanceTime(overTime),
 				overLateNightTime == null ? null : new AttendanceTime(overLateNightTime));
 	}
-	private TimeZone getTimeZone(Integer breakStart, Integer breakEnd) {
-		return new TimeZone(
+	private TimeSpanForCalc getTimeZone(Integer breakStart, Integer breakEnd) {
+		return new TimeSpanForCalc(
 				breakStart == null ? null : new TimeWithDayAttr(breakStart),
 				breakEnd == null ? null : new TimeWithDayAttr(breakEnd));
 	}

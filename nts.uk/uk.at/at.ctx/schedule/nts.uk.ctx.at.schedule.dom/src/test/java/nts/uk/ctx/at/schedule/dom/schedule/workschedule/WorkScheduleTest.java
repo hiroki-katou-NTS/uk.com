@@ -86,7 +86,7 @@ public class WorkScheduleTest {
 	public void getters() {
 		WorkSchedule data = new WorkSchedule("employeeID",
 				GeneralDate.today(), ConfirmedATR.CONFIRMED, null, null, new BreakTimeOfDailyAttd(),
-				new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty());
+				new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty(),Optional.empty());
 		NtsAssert.invokeGetters(data);
 	}
 	

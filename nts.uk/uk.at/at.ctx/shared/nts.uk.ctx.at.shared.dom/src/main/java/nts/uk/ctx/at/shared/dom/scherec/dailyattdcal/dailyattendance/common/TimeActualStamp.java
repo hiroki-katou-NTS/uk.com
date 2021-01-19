@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.OvertimeDeclaration;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
@@ -36,7 +37,7 @@ public class TimeActualStamp {
 	
 	//時間休暇時間帯
 	@Setter
-	private Optional<TimeZone> timeVacation = Optional.empty();
+	private Optional<TimeSpanForCalc> timeVacation = Optional.empty();
 	
 	/**
 	 * 打刻時間を指定時間分経過させた勤怠打刻を返す
@@ -113,6 +114,12 @@ public class TimeActualStamp {
 		this.stamp = Optional.ofNullable(stamp);
 		this.numberOfReflectionStamp = numberOfReflectionStamp;
 	}
+	public TimeActualStamp(Optional<WorkStamp> actualStamp, Optional<WorkStamp> stamp, Integer numberOfReflectionStamp) {
+		super();
+		this.actualStamp = actualStamp;
+		this.stamp = stamp;
+		this.numberOfReflectionStamp = numberOfReflectionStamp;
+	}
 	public void setPropertyTimeActualStamp(Optional<WorkStamp> actualStamp, Optional<WorkStamp> stamp, Integer numberOfReflectionStamp){
 		this.actualStamp = actualStamp == null ? Optional.empty() : actualStamp;
 		this.stamp = stamp == null ? Optional.empty() : stamp;
@@ -155,7 +162,7 @@ public class TimeActualStamp {
 		return false;
 	}
 	public TimeActualStamp(WorkStamp actualStamp,WorkStamp stamp, Integer numberOfReflectionStamp,
-			OvertimeDeclaration overtimeDeclaration, TimeZone timeVacation) {
+			OvertimeDeclaration overtimeDeclaration, TimeSpanForCalc timeVacation) {
 		super();
 		this.actualStamp =  Optional.ofNullable(actualStamp);
 		this.stamp = Optional.ofNullable(stamp);
@@ -172,7 +179,7 @@ public class TimeActualStamp {
 	 * @param timeVacation 時間休暇時間帯
 	 */
 	public TimeActualStamp(Optional<WorkStamp> actualStamp, Optional<WorkStamp> stamp, Integer numberOfReflectionStamp,
-			Optional<OvertimeDeclaration> overtimeDeclaration, Optional<TimeZone> timeVacation) {
+			Optional<OvertimeDeclaration> overtimeDeclaration, Optional<TimeSpanForCalc> timeVacation) {
 		super();
 		this.actualStamp = actualStamp;
 		this.stamp = stamp;

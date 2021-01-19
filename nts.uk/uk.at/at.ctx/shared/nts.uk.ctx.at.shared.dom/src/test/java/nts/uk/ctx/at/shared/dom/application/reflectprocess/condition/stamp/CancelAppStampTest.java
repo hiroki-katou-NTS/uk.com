@@ -192,16 +192,16 @@ public class CancelAppStampTest {
 
 		// compare 時刻
 		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getGoOut().get()
-				.getStamp().get().getTimeDay().getTimeWithDay()).isEqualTo(Optional.empty());
+				.getTimeDay().getTimeWithDay()).isEqualTo(Optional.empty());
 
 		// compare 時刻変更手段
 		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getGoOut().get()
-				.getStamp().get().getTimeDay().getReasonTimeChange().getTimeChangeMeans())
+				.getTimeDay().getReasonTimeChange().getTimeChangeMeans())
 						.isEqualTo(TimeChangeMeans.APPLICATION);
 
 		// compare 場所コード
 		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getGoOut().get()
-				.getStamp().get().getLocationCode()).isEqualTo(Optional.empty());
+				.getLocationCode()).isEqualTo(Optional.empty());
 
 		// compare 丸め後の時刻
 		/************************************************************************************************/
@@ -219,15 +219,15 @@ public class CancelAppStampTest {
 		assertThat(actualResult2).isEqualTo(Arrays.asList(91, 90));
 
 		// compare 時刻
-		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getGoOut().get().getStamp().get()
+		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getGoOut().get()
 				.getTimeDay().getTimeWithDay()).isEqualTo(Optional.empty());
 
 		// compare 時刻変更手段
-		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getGoOut().get().getStamp().get()
+		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getGoOut().get()
 				.getTimeDay().getReasonTimeChange().getTimeChangeMeans()).isEqualTo(TimeChangeMeans.APPLICATION);
 
 		// compare 場所コード
-		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getGoOut().get().getStamp().get()
+		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getGoOut().get()
 				.getLocationCode()).isEqualTo(Optional.empty());
 
 		// 開始終了区分が終了

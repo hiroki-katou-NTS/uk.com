@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeStampDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.WithActualTimeStampDto;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
@@ -22,10 +23,10 @@ public class OutingTimeZoneDto implements ItemConst, AttendanceItemDataGate {
 	private int no;
 
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = GO_OUT)
-	private WithActualTimeStampDto outing;
+	private TimeStampDto outing;
 
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = BACK)
-	private WithActualTimeStampDto comeBack;
+	private TimeStampDto comeBack;
 
 	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = REASON)
 	@AttendanceItemValue(type = ValueType.ATTR)
@@ -71,10 +72,10 @@ public class OutingTimeZoneDto implements ItemConst, AttendanceItemDataGate {
 	public void set(String path, AttendanceItemDataGate value) {
 		switch (path) {
 		case GO_OUT:
-			outing = (WithActualTimeStampDto) value;
+			outing = (TimeStampDto) value;
 			break;
 		case BACK:
-			comeBack = (WithActualTimeStampDto) value;
+			comeBack = (TimeStampDto) value;
 			break;
 		default:
 			break;

@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.app.find.dailyperform.common.TimeStampDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.WithActualTimeStampDto;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -21,13 +22,13 @@ import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 @NoArgsConstructor
 public class GoOutTimeDto implements ItemConst, AttendanceItemDataGate {
 
-	/** 戻り: 勤怠打刻(実打刻付き) */
+	/** 戻り: 勤怠打刻 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = BACK)
-	private WithActualTimeStampDto comeBack;
+	private TimeStampDto comeBack;
 
-	/** 外出: 勤怠打刻(実打刻付き) */
+	/** 外出: 勤怠打刻 */
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = GO_OUT)
-	private WithActualTimeStampDto outing;
+	private TimeStampDto outing;
 
 	/** 外出時間: 勤怠時間 */
 	private Integer outingTime;
@@ -67,10 +68,10 @@ public class GoOutTimeDto implements ItemConst, AttendanceItemDataGate {
 	public void set(String path, AttendanceItemDataGate value) {
 		switch (path) {
 		case (BACK):
-			comeBack = (WithActualTimeStampDto) value;
+			comeBack = (TimeStampDto) value;
 			break;
 		case (GO_OUT):
-			outing = (WithActualTimeStampDto) value;
+			outing = (TimeStampDto) value;
 			break;
 		default:
 		}
@@ -78,8 +79,8 @@ public class GoOutTimeDto implements ItemConst, AttendanceItemDataGate {
 	
 	public static GoOutTimeDto toDto(OutingTimeSheet domain){
 		return domain == null ? null : new GoOutTimeDto(
-										WithActualTimeStampDto.toWithActualTimeStamp(domain.getComeBack().orElse(null)), 
-										WithActualTimeStampDto.toWithActualTimeStamp(domain.getGoOut().orElse(null)),
+										TimeStampDto.createTimeStamp(domain.getComeBack().orElse(null)),
+										TimeStampDto.createTimeStamp(domain.getGoOut().orElse(null)),
 										domain.getOutingTime() == null ? null : domain.getOutingTime().valueAsMinutes(), 
 										domain.getOutingTimeCalculation() == null ? null : domain.getOutingTimeCalculation().valueAsMinutes(), 
 										domain.getOutingFrameNo().v(), 
@@ -94,15 +95,15 @@ public class GoOutTimeDto implements ItemConst, AttendanceItemDataGate {
 	}
 	
 	public OutingTimeSheet toDomain(){
-		return new OutingTimeSheet(new OutingFrameNo(no), createTimeActual(outing), 
+		return new OutingTimeSheet(
+				new OutingFrameNo(no),
+				outing == null ? Optional.empty() : Optional.of(TimeStampDto.toDomain(outing)),
 				outingTimeCalc == null ? AttendanceTime.ZERO : new AttendanceTime(outingTimeCalc),
 				outingTime == null ? AttendanceTime.ZERO : new AttendanceTime(outingTime), 
-				reason(), createTimeActual(comeBack));
+				reason(), 
+				comeBack == null ? Optional.empty() : Optional.of(TimeStampDto.toDomain(comeBack)));
 	}
 	
-	private Optional<TimeActualStamp> createTimeActual(WithActualTimeStampDto c) {
-		return c == null ? Optional.empty() : Optional.of(c.toDomain());
-	}
 	
 	public GoingOutReason reason() {
 		switch (outingReason) {

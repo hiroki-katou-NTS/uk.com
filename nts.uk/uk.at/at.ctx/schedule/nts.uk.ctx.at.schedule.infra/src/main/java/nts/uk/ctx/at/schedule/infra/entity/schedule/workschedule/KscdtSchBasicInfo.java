@@ -247,7 +247,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		}
 		optSortTimeWork = new ShortTimeOfDailyAttd(shortWorkingTimeSheets);
 		return new WorkSchedule(sID, yMD, EnumAdaptor.valueOf(confirmedATR ? 1 : 0, ConfirmedATR.class), 
-				workInfo, affInfo, dailyAttd, lstEditState, Optional.ofNullable(optTimeLeaving), Optional.ofNullable(attendance), Optional.ofNullable(optSortTimeWork));
+				workInfo, affInfo, dailyAttd, lstEditState, Optional.ofNullable(optTimeLeaving), Optional.ofNullable(attendance), Optional.ofNullable(optSortTimeWork),Optional.empty());
 	}
 
 	@Override

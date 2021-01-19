@@ -59,8 +59,7 @@ public class GoingOutStampLeakageChecking {
 				if ((outingTimeSheet.getGoOut() != null && outingTimeSheet.getGoOut().isPresent())
 						|| (outingTimeSheet.getComeBack() != null && outingTimeSheet.getComeBack().isPresent())) {
 
-					if (outingTimeSheet.getGoOut() == null || !outingTimeSheet.getGoOut().isPresent()
-							|| !outingTimeSheet.getGoOut().get().getStamp().isPresent()) {
+					if (outingTimeSheet.getGoOut() == null || !outingTimeSheet.getGoOut().isPresent()) {
 
 						List<Integer> attendanceItemIDList = new ArrayList<>();
 
@@ -105,8 +104,7 @@ public class GoingOutStampLeakageChecking {
 						}
 					}
 
-					if (outingTimeSheet.getComeBack() == null || !outingTimeSheet.getComeBack().isPresent()
-							|| !outingTimeSheet.getComeBack().get().getStamp().isPresent()) {
+					if (outingTimeSheet.getComeBack() == null || !outingTimeSheet.getComeBack().isPresent()) {
 
 						List<Integer> newAttendanceItemIDList = new ArrayList<>();
 
@@ -184,7 +182,7 @@ public class GoingOutStampLeakageChecking {
 	}
 
 	private WorkStamp leakageCorrection(String companyId, String employeeID, GeneralDate processingDate,
-			Optional<TimeActualStamp> comeBack) {
+			Optional<WorkStamp> comeBack) {
 		// 漏れ補正打刻をクリア
 		WorkStamp stamp = null;
 
@@ -202,15 +200,14 @@ public class GoingOutStampLeakageChecking {
 							&& (timeLeavingWork.getLeaveStamp().get().getStamp() != null
 									&& timeLeavingWork.getLeaveStamp().get().getStamp().isPresent())
 							&& timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
-						if ((comeBack != null && comeBack.isPresent() && comeBack.get().getStamp() != null
-								&& comeBack.get().getStamp().isPresent()
+						if ((comeBack != null && comeBack.isPresent() 
 								&& timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get()
-										.lessThanOrEqualTo(comeBack.get().getStamp().get().getTimeDay().getTimeWithDay().get())
+										.lessThanOrEqualTo(comeBack.get().getTimeDay().getTimeWithDay().get())
 								&& timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get()
-										.greaterThanOrEqualTo(comeBack.get().getStamp().get().getTimeDay().getTimeWithDay().get()))
+										.greaterThanOrEqualTo(comeBack.get().getTimeDay().getTimeWithDay().get()))
 								|| comeBack == null || !comeBack.isPresent()
-								|| (comeBack.isPresent() && comeBack.get().getStamp() == null)
-								|| (comeBack.isPresent() && !comeBack.get().getStamp().isPresent())) {
+								|| (comeBack.isPresent() && comeBack == null)
+								|| (comeBack.isPresent() && !comeBack.isPresent())) {
 							if (timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay()
 									.getReasonTimeChange().getTimeChangeMeans() == TimeChangeMeans.DIRECT_BOUNCE
 									|| timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay()
@@ -246,16 +243,15 @@ public class GoingOutStampLeakageChecking {
 							&& leavingWork.getLeaveStamp().get().getStamp() != null
 							&& leavingWork.getLeaveStamp().get().getStamp().isPresent()
 							&& leavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()
-							&& comeBack.get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
-						if ((comeBack != null && comeBack.isPresent() && comeBack.get().getStamp() != null
-								&& comeBack.get().getStamp().isPresent()
+							&& comeBack.get().getTimeDay().getTimeWithDay().isPresent()) {
+						if ((comeBack != null && comeBack.isPresent() 
 								&& leavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get()
-										.lessThanOrEqualTo(comeBack.get().getStamp().get().getTimeDay().getTimeWithDay().get())
+										.lessThanOrEqualTo(comeBack.get().getTimeDay().getTimeWithDay().get())
 								&& leavingWork.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get()
-										.greaterThanOrEqualTo(comeBack.get().getStamp().get().getTimeDay().getTimeWithDay().get()))
+										.greaterThanOrEqualTo(comeBack.get().getTimeDay().getTimeWithDay().get()))
 								|| comeBack == null || !comeBack.isPresent()
-								|| (comeBack.isPresent() && comeBack.get().getStamp() == null)
-								|| (comeBack.isPresent() && !comeBack.get().getStamp().isPresent())) {
+								|| (comeBack.isPresent() && comeBack.get() == null)
+								|| (comeBack.isPresent() && !comeBack.isPresent())) {
 							if (leavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay()
 									.getReasonTimeChange().getTimeChangeMeans() == TimeChangeMeans.DIRECT_BOUNCE
 									|| leavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay()
@@ -305,7 +301,7 @@ public class GoingOutStampLeakageChecking {
 	}
 
 	private WorkStamp leaveWorkLeakageCorrection(String companyId, String employeeID, GeneralDate processingDate,
-			Optional<TimeActualStamp> goOut) {
+			Optional<WorkStamp> goOut) {
 		// 漏れ補正打刻をクリア
 		WorkStamp stamp = null;
 
@@ -321,15 +317,14 @@ public class GoingOutStampLeakageChecking {
 						&& (timeLeavingWork.getLeaveStamp().get().getStamp() != null
 								&& timeLeavingWork.getLeaveStamp().get().getStamp().isPresent()
 								&& timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent())) {
-					if ((goOut != null && goOut.isPresent() && goOut.get().getStamp() != null
-							&& goOut.get().getStamp().isPresent()
+					if ((goOut != null && goOut.isPresent() 
 							&& timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get()
-									.lessThanOrEqualTo(goOut.get().getStamp().get().getTimeDay().getTimeWithDay().get())
+									.lessThanOrEqualTo(goOut.get().getTimeDay().getTimeWithDay().get())
 							&& timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get()
-									.greaterThanOrEqualTo(goOut.get().getStamp().get().getTimeDay().getTimeWithDay().get()))
+									.greaterThanOrEqualTo(goOut.get().getTimeDay().getTimeWithDay().get()))
 							|| goOut == null || !goOut.isPresent()
-							|| (goOut.isPresent() && goOut.get().getStamp() == null)
-							|| (goOut.isPresent() && !goOut.get().getStamp().isPresent())) {
+							|| (goOut.isPresent() && goOut == null)
+							|| (goOut.isPresent() && !goOut.isPresent())) {
 						if (timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay()
 						.getReasonTimeChange().getTimeChangeMeans() == TimeChangeMeans.DIRECT_BOUNCE
 								|| timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay()
@@ -363,15 +358,14 @@ public class GoingOutStampLeakageChecking {
 							&& leavingWork.getLeaveStamp().get().getStamp() != null
 							&& leavingWork.getLeaveStamp().get().getStamp().isPresent()
 							&& leavingWork.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
-						if ((goOut != null && goOut.isPresent() && goOut.get().getStamp() != null
-								&& goOut.get().getStamp().isPresent()
+						if ((goOut != null && goOut.isPresent() 
 								&& leavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get()
-										.lessThanOrEqualTo(goOut.get().getStamp().get().getTimeDay().getTimeWithDay().get())
+										.lessThanOrEqualTo(goOut.get().getTimeDay().getTimeWithDay().get())
 								&& leavingWork.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get()
-										.greaterThanOrEqualTo(goOut.get().getStamp().get().getTimeDay().getTimeWithDay().get()))
+										.greaterThanOrEqualTo(goOut.get().getTimeDay().getTimeWithDay().get()))
 								|| goOut == null || !goOut.isPresent()
-								|| (goOut.isPresent() && goOut.get().getStamp() == null)
-								|| (goOut.isPresent() && !goOut.get().getStamp().isPresent())) {
+								|| (goOut.isPresent() && goOut == null)
+								|| (goOut.isPresent() && !goOut.isPresent())) {
 							if (leavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay()
 									.getReasonTimeChange().getTimeChangeMeans() == TimeChangeMeans.DIRECT_BOUNCE
 									|| leavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay()

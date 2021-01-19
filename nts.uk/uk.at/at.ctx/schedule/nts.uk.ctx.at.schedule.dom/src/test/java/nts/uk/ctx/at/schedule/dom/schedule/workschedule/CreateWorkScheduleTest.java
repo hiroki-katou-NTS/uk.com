@@ -279,6 +279,7 @@ public class CreateWorkScheduleTest {
 				new BreakTimeOfDailyAttd(), 
 				new ArrayList<>(), 
 				Optional.empty(), 
+				Optional.empty(),
 				Optional.empty(), 
 				Optional.empty());
 		

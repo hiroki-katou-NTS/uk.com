@@ -113,7 +113,7 @@ public class WorkScheManaStatusServiceTest {
 		DatePeriod period = new DatePeriod(GeneralDate.today(), GeneralDate.today());
 		WorkSchedule workSchedule = new WorkSchedule("employeeID",
 				GeneralDate.today(), ConfirmedATR.CONFIRMED, null, null, new BreakTimeOfDailyAttd(),
-				new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty());
+				new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty(),Optional.empty());
 
 		ScheManaStatuTempo scheManaStatuTempo = new ScheManaStatuTempo("emp1", GeneralDate.today(),
 				ScheManaStatus.ON_LEAVE, Optional.empty(), Optional.empty());

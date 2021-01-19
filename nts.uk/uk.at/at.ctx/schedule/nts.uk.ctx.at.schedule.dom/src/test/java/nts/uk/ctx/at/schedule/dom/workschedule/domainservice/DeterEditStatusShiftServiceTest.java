@@ -26,7 +26,7 @@ public class DeterEditStatusShiftServiceTest {
 	public void testToDecide() {
 		WorkSchedule workSchedule = new WorkSchedule("employeeID",
 				GeneralDate.today(), ConfirmedATR.CONFIRMED, null, null, new BreakTimeOfDailyAttd(),
-				new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty());
+				new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty(),Optional.empty());
 		ShiftEditState shiftEditState = DeterEditStatusShiftService.toDecide(workSchedule);
 		assertThat(shiftEditState.getEmployeeID()).as("employeeID").isEqualTo(shiftEditState.getEmployeeID());
 		assertThat(shiftEditState.getDate()).as("date").isEqualTo(GeneralDate.today());
@@ -44,7 +44,7 @@ public class DeterEditStatusShiftServiceTest {
 		List<EditStateOfDailyAttd> lstEditState = Arrays.asList(new EditStateOfDailyAttd(27, EditStateSetting.REFLECT_APPLICATION));
 		WorkSchedule workSchedule = new WorkSchedule("employeeID",
 				GeneralDate.today(), ConfirmedATR.CONFIRMED, null, null, new BreakTimeOfDailyAttd(),
-				lstEditState, Optional.empty(), Optional.empty(), Optional.empty());
+				lstEditState, Optional.empty(), Optional.empty(), Optional.empty(),Optional.empty());
 		
 		ShiftEditState shiftEditState = DeterEditStatusShiftService.toDecide(workSchedule);
 		assertThat(shiftEditState.getEmployeeID()).as("employeeID").isEqualTo(shiftEditState.getEmployeeID());
@@ -63,7 +63,7 @@ public class DeterEditStatusShiftServiceTest {
 		List<EditStateOfDailyAttd> lstEditState = Arrays.asList(new EditStateOfDailyAttd(29, EditStateSetting.IMPRINT));
 		WorkSchedule workSchedule = new WorkSchedule("employeeID",
 				GeneralDate.today(), ConfirmedATR.CONFIRMED, null, null, new BreakTimeOfDailyAttd(),
-				lstEditState, Optional.empty(), Optional.empty(), Optional.empty());
+				lstEditState, Optional.empty(), Optional.empty(), Optional.empty(),Optional.empty());
 		
 		ShiftEditState shiftEditState = DeterEditStatusShiftService.toDecide(workSchedule);
 		assertThat(shiftEditState.getEmployeeID()).as("employeeID").isEqualTo(shiftEditState.getEmployeeID());
@@ -83,7 +83,7 @@ public class DeterEditStatusShiftServiceTest {
 		List<EditStateOfDailyAttd> lstEditState = Arrays.asList(new EditStateOfDailyAttd(28, EditStateSetting.IMPRINT));
 		WorkSchedule workSchedule = new WorkSchedule("employeeID",
 				GeneralDate.today(), ConfirmedATR.CONFIRMED, null, null, new BreakTimeOfDailyAttd(),
-				lstEditState, Optional.empty(), Optional.empty(), Optional.empty());
+				lstEditState, Optional.empty(), Optional.empty(), Optional.empty(),Optional.empty());
 		
 		ShiftEditState shiftEditState = DeterEditStatusShiftService.toDecide(workSchedule);
 		assertThat(shiftEditState.getEmployeeID()).as("employeeID").isEqualTo(shiftEditState.getEmployeeID());
@@ -104,7 +104,7 @@ public class DeterEditStatusShiftServiceTest {
 				new EditStateOfDailyAttd(29, EditStateSetting.IMPRINT));
 		WorkSchedule workSchedule = new WorkSchedule("employeeID",
 				GeneralDate.today(), ConfirmedATR.CONFIRMED, null, null, new BreakTimeOfDailyAttd(),
-				lstEditState, Optional.empty(), Optional.empty(), Optional.empty());
+				lstEditState, Optional.empty(), Optional.empty(), Optional.empty(),Optional.empty());
 		
 		ShiftEditState shiftEditState = DeterEditStatusShiftService.toDecide(workSchedule);
 		assertThat(shiftEditState.getEmployeeID()).as("employeeID").isEqualTo(shiftEditState.getEmployeeID());
@@ -125,7 +125,7 @@ public class DeterEditStatusShiftServiceTest {
 				new EditStateOfDailyAttd(29, EditStateSetting.REFLECT_APPLICATION));
 		WorkSchedule workSchedule = new WorkSchedule("employeeID",
 				GeneralDate.today(), ConfirmedATR.CONFIRMED, null, null, new BreakTimeOfDailyAttd(),
-				lstEditState, Optional.empty(), Optional.empty(), Optional.empty());
+				lstEditState, Optional.empty(), Optional.empty(), Optional.empty(),Optional.empty());
 		
 		ShiftEditState shiftEditState = DeterEditStatusShiftService.toDecide(workSchedule);
 		assertThat(shiftEditState.getEmployeeID()).as("employeeID").isEqualTo(shiftEditState.getEmployeeID());
@@ -147,7 +147,7 @@ public class DeterEditStatusShiftServiceTest {
 				new EditStateOfDailyAttd(29, EditStateSetting.IMPRINT));
 		WorkSchedule workSchedule = new WorkSchedule("employeeID",
 				GeneralDate.today(), ConfirmedATR.CONFIRMED, null, null, new BreakTimeOfDailyAttd(),
-				lstEditState, Optional.empty(), Optional.empty(), Optional.empty());
+				lstEditState, Optional.empty(), Optional.empty(), Optional.empty(),Optional.empty());
 		
 		ShiftEditState shiftEditState = DeterEditStatusShiftService.toDecide(workSchedule);
 		assertThat(shiftEditState.getEmployeeID()).as("employeeID").isEqualTo(shiftEditState.getEmployeeID());
@@ -169,7 +169,7 @@ public class DeterEditStatusShiftServiceTest {
 				new EditStateOfDailyAttd(29, EditStateSetting.HAND_CORRECTION_OTHER));
 		WorkSchedule workSchedule = new WorkSchedule("employeeID",
 				GeneralDate.today(), ConfirmedATR.CONFIRMED, null, null, new BreakTimeOfDailyAttd(),
-				lstEditState, Optional.empty(), Optional.empty(), Optional.empty());
+				lstEditState, Optional.empty(), Optional.empty(), Optional.empty(),Optional.empty());
 		
 		ShiftEditState shiftEditState = DeterEditStatusShiftService.toDecide(workSchedule);
 		assertThat(shiftEditState.getEmployeeID()).as("employeeID").isEqualTo(shiftEditState.getEmployeeID());
@@ -191,7 +191,7 @@ public class DeterEditStatusShiftServiceTest {
 				new EditStateOfDailyAttd(29, EditStateSetting.IMPRINT));
 		WorkSchedule workSchedule = new WorkSchedule("employeeID",
 				GeneralDate.today(), ConfirmedATR.CONFIRMED, null, null, new BreakTimeOfDailyAttd(),
-				lstEditState, Optional.empty(), Optional.empty(), Optional.empty());
+				lstEditState, Optional.empty(), Optional.empty(), Optional.empty(),Optional.empty());
 		
 		ShiftEditState shiftEditState = DeterEditStatusShiftService.toDecide(workSchedule);
 		assertThat(shiftEditState.getEmployeeID()).as("employeeID").isEqualTo(shiftEditState.getEmployeeID());
@@ -213,7 +213,7 @@ public class DeterEditStatusShiftServiceTest {
 				new EditStateOfDailyAttd(29, EditStateSetting.HAND_CORRECTION_MYSELF));
 		WorkSchedule workSchedule = new WorkSchedule("employeeID",
 				GeneralDate.today(), ConfirmedATR.CONFIRMED, null, null, new BreakTimeOfDailyAttd(),
-				lstEditState, Optional.empty(), Optional.empty(), Optional.empty());
+				lstEditState, Optional.empty(), Optional.empty(), Optional.empty(),Optional.empty());
 		
 		ShiftEditState shiftEditState = DeterEditStatusShiftService.toDecide(workSchedule);
 		assertThat(shiftEditState.getEmployeeID()).as("employeeID").isEqualTo(shiftEditState.getEmployeeID());
@@ -234,7 +234,7 @@ public class DeterEditStatusShiftServiceTest {
 		List<EditStateOfDailyAttd> lstEditState = Arrays.asList(new EditStateOfDailyAttd(29, EditStateSetting.REFLECT_APPLICATION));
 		WorkSchedule workSchedule = new WorkSchedule("employeeID",
 				GeneralDate.today(), ConfirmedATR.CONFIRMED, null, null, new BreakTimeOfDailyAttd(),
-				lstEditState, Optional.empty(), Optional.empty(), Optional.empty());
+				lstEditState, Optional.empty(), Optional.empty(), Optional.empty(),Optional.empty());
 		
 		ShiftEditState shiftEditState = DeterEditStatusShiftService.toDecide(workSchedule);
 		assertThat(shiftEditState.getEmployeeID()).as("employeeID").isEqualTo(shiftEditState.getEmployeeID());
@@ -255,7 +255,7 @@ public class DeterEditStatusShiftServiceTest {
 		List<EditStateOfDailyAttd> lstEditState = Arrays.asList(new EditStateOfDailyAttd(29, EditStateSetting.HAND_CORRECTION_MYSELF));
 		WorkSchedule workSchedule = new WorkSchedule("employeeID",
 				GeneralDate.today(), ConfirmedATR.CONFIRMED, null, null, new BreakTimeOfDailyAttd(),
-				lstEditState, Optional.empty(), Optional.empty(), Optional.empty());
+				lstEditState, Optional.empty(), Optional.empty(), Optional.empty(),Optional.empty());
 		
 		ShiftEditState shiftEditState = DeterEditStatusShiftService.toDecide(workSchedule);
 		assertThat(shiftEditState.getEmployeeID()).as("employeeID").isEqualTo(shiftEditState.getEmployeeID());
@@ -276,7 +276,7 @@ public class DeterEditStatusShiftServiceTest {
 		List<EditStateOfDailyAttd> lstEditState = Arrays.asList(new EditStateOfDailyAttd(29, EditStateSetting.HAND_CORRECTION_OTHER));
 		WorkSchedule workSchedule = new WorkSchedule("employeeID",
 				GeneralDate.today(), ConfirmedATR.CONFIRMED, null, null, new BreakTimeOfDailyAttd(),
-				lstEditState, Optional.empty(), Optional.empty(), Optional.empty());
+				lstEditState, Optional.empty(), Optional.empty(), Optional.empty(),Optional.empty());
 		
 		ShiftEditState shiftEditState = DeterEditStatusShiftService.toDecide(workSchedule);
 		assertThat(shiftEditState.getEmployeeID()).as("employeeID").isEqualTo(shiftEditState.getEmployeeID());
@@ -297,7 +297,7 @@ public class DeterEditStatusShiftServiceTest {
 		List<EditStateOfDailyAttd> lstEditState = Arrays.asList(new EditStateOfDailyAttd(28, EditStateSetting.REFLECT_APPLICATION));
 		WorkSchedule workSchedule = new WorkSchedule("employeeID",
 				GeneralDate.today(), ConfirmedATR.CONFIRMED, null, null, new BreakTimeOfDailyAttd(),
-				lstEditState, Optional.empty(), Optional.empty(), Optional.empty());
+				lstEditState, Optional.empty(), Optional.empty(), Optional.empty(),Optional.empty());
 		
 		ShiftEditState shiftEditState = DeterEditStatusShiftService.toDecide(workSchedule);
 		assertThat(shiftEditState.getEmployeeID()).as("employeeID").isEqualTo(shiftEditState.getEmployeeID());
@@ -318,7 +318,7 @@ public class DeterEditStatusShiftServiceTest {
 		List<EditStateOfDailyAttd> lstEditState = Arrays.asList(new EditStateOfDailyAttd(28, EditStateSetting.HAND_CORRECTION_MYSELF));
 		WorkSchedule workSchedule = new WorkSchedule("employeeID",
 				GeneralDate.today(), ConfirmedATR.CONFIRMED, null, null, new BreakTimeOfDailyAttd(),
-				lstEditState, Optional.empty(), Optional.empty(), Optional.empty());
+				lstEditState, Optional.empty(), Optional.empty(), Optional.empty(),Optional.empty());
 		
 		ShiftEditState shiftEditState = DeterEditStatusShiftService.toDecide(workSchedule);
 		assertThat(shiftEditState.getEmployeeID()).as("employeeID").isEqualTo(shiftEditState.getEmployeeID());
@@ -339,7 +339,7 @@ public class DeterEditStatusShiftServiceTest {
 		List<EditStateOfDailyAttd> lstEditState = Arrays.asList(new EditStateOfDailyAttd(28, EditStateSetting.HAND_CORRECTION_OTHER));
 		WorkSchedule workSchedule = new WorkSchedule("employeeID",
 				GeneralDate.today(), ConfirmedATR.CONFIRMED, null, null, new BreakTimeOfDailyAttd(),
-				lstEditState, Optional.empty(), Optional.empty(), Optional.empty());
+				lstEditState, Optional.empty(), Optional.empty(), Optional.empty(),Optional.empty());
 		
 		ShiftEditState shiftEditState = DeterEditStatusShiftService.toDecide(workSchedule);
 		assertThat(shiftEditState.getEmployeeID()).as("employeeID").isEqualTo(shiftEditState.getEmployeeID());
@@ -361,7 +361,7 @@ public class DeterEditStatusShiftServiceTest {
 				new EditStateOfDailyAttd(29, EditStateSetting.IMPRINT));
 		WorkSchedule workSchedule = new WorkSchedule("employeeID",
 				GeneralDate.today(), ConfirmedATR.CONFIRMED, null, null, new BreakTimeOfDailyAttd(),
-				lstEditState, Optional.empty(), Optional.empty(), Optional.empty());
+				lstEditState, Optional.empty(), Optional.empty(), Optional.empty(),Optional.empty());
 		
 		ShiftEditState shiftEditState = DeterEditStatusShiftService.toDecide(workSchedule);
 		assertThat(shiftEditState.getEmployeeID()).as("employeeID").isEqualTo(shiftEditState.getEmployeeID());

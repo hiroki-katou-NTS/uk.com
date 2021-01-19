@@ -141,7 +141,7 @@ public class SCReflectApplicationHelper {
 				new WorkInfoOfDailyAttendance(new WorkInformation("001", "001"),
 						CalculationState.No_Calculated, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
 						DayOfWeek.FRIDAY, new ArrayList<>()),
-				null, breakTime, new ArrayList<>(), attendanceLeave, attTimeOpt, shortTime);
+				null, breakTime, new ArrayList<>(), attendanceLeave, attTimeOpt, shortTime,Optional.empty());
 	}
 
 	public static StampAppReflect createReflectAppSet() {

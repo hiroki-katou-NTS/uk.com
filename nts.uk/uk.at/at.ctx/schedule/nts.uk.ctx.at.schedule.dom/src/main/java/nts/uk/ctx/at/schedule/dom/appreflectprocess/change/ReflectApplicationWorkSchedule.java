@@ -107,7 +107,7 @@ public class ReflectApplicationWorkSchedule {
 			WorkSchedule workScheduleReflect = new WorkSchedule(dailyRecordApp.getEmployeeId(), dailyRecordApp.getYmd(),
 					ConfirmedATR.UNSETTLED, dailyRecordApp.getWorkInformation(), dailyRecordApp.getAffiliationInfor(),
 					dailyRecordApp.getBreakTime(), dailyRecordApp.getEditState(), dailyRecordApp.getAttendanceLeave(),
-					dailyRecordApp.getAttendanceTimeOfDailyPerformance(), dailyRecordApp.getShortTime());
+					dailyRecordApp.getAttendanceTimeOfDailyPerformance(), dailyRecordApp.getShortTime(),dailyRecordApp.getOutingTime());
 			require.insertSchedule(workScheduleReflect);
 
 			// 申請反映履歴を作成する

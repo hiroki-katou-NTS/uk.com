@@ -17,8 +17,6 @@ import mockit.Expectations;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.OvertimeDeclaration;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStampTest;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
@@ -186,13 +184,8 @@ public class OutingTimeSheetTest {
 		 * @param stamp
 		 * @return
 		 */
-		public static TimeActualStamp createTimeAcutualStamp (TimeWithDayAttr stamp) {
-			return new TimeActualStamp(
-					Helper.createStamp(new TimeWithDayAttr(1000))
-					, Helper.createStamp(stamp)
-					, 1
-					, new OvertimeDeclaration(new AttendanceTime(100), new AttendanceTime(0))
-					, null);
+		public static WorkStamp createTimeAcutualStamp (TimeWithDayAttr stamp) {
+			return  Helper.createStamp(stamp);
 		}
 
 		/**
@@ -202,7 +195,7 @@ public class OutingTimeSheetTest {
 		 * @param comeBack
 		 * @return
 		 */
-		public static OutingTimeSheet createOutingTime(Optional<TimeActualStamp> goOut, Optional<TimeActualStamp> comeBack) {
+		public static OutingTimeSheet createOutingTime(Optional<WorkStamp> goOut, Optional<WorkStamp> comeBack) {
 			return new OutingTimeSheet(
 					new OutingFrameNo(1)
 					, goOut
