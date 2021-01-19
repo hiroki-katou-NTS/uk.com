@@ -99,6 +99,32 @@ export class KafS06AComponent extends KafS00ShrComponent {
         time: ''
     } as WorkInfo;
 
+    @Watch('isValidateWorkHours1', {deep: true})
+    public updateValidateWorkHours1(data: boolean) {
+        const self = this;
+
+        if (data) {
+            self.$updateValidator('workHours1', {
+                required: true,
+                timeRange: true
+            });
+        }
+    }
+    @Watch('c20', {deep: true})
+    public updateValidateRelationshipReason(data: boolean) {
+        const self = this;
+
+        if (data) {
+            self.$updateValidator('relationshipReason', {
+                validate: true
+            });
+        } else {
+            self.$updateValidator('relationshipReason', {
+                validate: false
+            });
+        }
+    }
+
     @Watch('selectedValueHolidayType', {deep: true})
     public watchSelectHolidayType(data: any) {
         const self = this;
@@ -130,16 +156,16 @@ export class KafS06AComponent extends KafS00ShrComponent {
 
     @Prop() 
     public readonly params: InitParam;
-    @Watch('c9') 
-    public updateValidate(data: boolean) {
-        const self = this;
-        if (data) {
-            self.$updateValidator('workHours1', {
-                required: true,
-                timeRange: true
-            });
-        }
-    }
+    // @Watch('c9') 
+    // public updateValidate(data: boolean) {
+    //     const self = this;
+    //     if (data) {
+    //         self.$updateValidator('workHours1', {
+    //             required: true,
+    //             timeRange: true
+    //         });
+    //     }
+    // }
 
 
     public get remainDays(): Array<RemainDaysHoliday> {
@@ -295,6 +321,12 @@ export class KafS06AComponent extends KafS00ShrComponent {
 
         return self.checkBoxC7 || false;
     }
+    public get isValidateWorkHours1() {
+        const self = this;
+
+        return self.c9 && self.c11;
+    }
+
     // 休暇申請起動時の表示情報．就業時間帯表示フラグ = true
     public get c9() {
         const self = this;
@@ -675,7 +707,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
 
         self.changeDateFromList(appAbsenceStartInfoDtoClone.leaveComDayOffManas);
         self.changeDateFromList(appAbsenceStartInfoDtoClone.payoutSubofHDManas);
-        
+
         return appAbsenceStartInfoDtoClone;
     }
 
@@ -1494,7 +1526,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
         let workInfo = {} as WorkInformationDto;
         workInfo.workType = self.workType.code;
         let workingHours = [] as Array<TimeZoneWithWorkNoDto>;
-        if (self.c9) {
+        if (self.c9 && self.c11) {
             workInfo.workTime = self.workTime.code;
             let timeZoneWithWorkNoDto = {} as TimeZoneWithWorkNoDto;
             timeZoneWithWorkNoDto.workNo = 1;
