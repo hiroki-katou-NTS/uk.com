@@ -56,7 +56,7 @@
     top: 10px !important;
     left: 50px !important;
 }
-.terminalInfo table, th, td{
+.terminalInfo table, tr, td{
 	vertical-align: top;
 }
 .testcss {
