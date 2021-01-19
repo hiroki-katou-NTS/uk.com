@@ -176,7 +176,7 @@
             tabindex="5"
             id="btn_001"
             class="x-large proceed"
-            data-bind="click: saveData"
+            data-bind="click: saveData, enable: $root.errors.isEmpty"
           >
             #{i18n.getText('KMK010_80')}
           </button>

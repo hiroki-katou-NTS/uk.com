@@ -14,7 +14,7 @@ module nts.uk.at.view.kmk010.d {
 
     breakdownItems: KnockoutObservableArray<any> = ko.observableArray([]);
     overTimeHeader: KnockoutObservableArray<any> = ko.observableArray([]);
-    columnSpan: KnockoutObservable<number> = ko.observable(5);
+    columnSpan: KnockoutObservable<number> = ko.observable(0);
     lstUnit: KnockoutObservableArray<IEnumConstantDto> = ko.observableArray([]);
     lstRounding: KnockoutObservableArray<IEnumConstantDto> = ko.observableArray([]);
     lstRoundingBk: KnockoutObservableArray<IEnumConstantDto> = ko.observableArray([]);
@@ -29,14 +29,14 @@ module nts.uk.at.view.kmk010.d {
       vm.getEnumConstant().done(() => {
         vm.getVacationConversionList();
 
-        vm.vacationConversion().unit.subscribe((newValue) => {          
-          if (newValue !== 4 && newValue !== 6) {            
+        vm.vacationConversion().unit.subscribe((newValue) => {
+          if (newValue !== 4 && newValue !== 6) {
             vm.lstRounding(_.filter(vm.lstRounding(), (item) => item.value !== 2));
-          } else {            
+          } else {
             vm.lstRounding(_.cloneDeep(vm.lstRoundingBk()));
           }
         });
-      });      
+      });
     }
 
     created(params: any) {
@@ -45,6 +45,10 @@ module nts.uk.at.view.kmk010.d {
 
     mounted() {
       const vm = this;
+      vm.focusControl();
+    }
+
+    focusControl() {
       $('.premium-rate').each(function (index) {
         $(this).attr('id', 'PremiumRate-' + index);
       });
@@ -59,8 +63,8 @@ module nts.uk.at.view.kmk010.d {
       _.forEach(vm.vacationConversion().conversionRate(), (x, row) => {
         _.forEach(x.premiumExtra60HRates(), (o: any) => {
           outputPremiumRate.push({
-            premiumRate: parseInt(o.premiumRate()), 
-            breakdownItemNo: row + 1, 
+            premiumRate: parseInt(o.premiumRate()),
+            breakdownItemNo: row + 1,
             overtimeNo: o.overtimeNo
           });
         });
@@ -75,10 +79,10 @@ module nts.uk.at.view.kmk010.d {
       
       vm.$blockui('grayout');
       vm.$ajax(PATH.saveAllPremiumExtra60H, params).done(() => {
-        vm.$dialog.info({ messageId: 'Msg_15'}).then(() => {
-          //vm.$window.close();
+        vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
+          vm.$window.close();
           vm.$blockui('hide');
-        });        
+        });
       }).fail((error) => { console.log(error); vm.$blockui('hide'); });
     }
 
@@ -87,7 +91,7 @@ module nts.uk.at.view.kmk010.d {
       vm.$window.close();
     }
 
-    getEnumConstant() : JQueryPromise<any> {
+    getEnumConstant(): JQueryPromise<any> {
       const vm = this;
       const def = $.Deferred();
       // find all unit
@@ -107,33 +111,34 @@ module nts.uk.at.view.kmk010.d {
 
     getVacationConversionList() {
       const vm = this;
-      let columnHeader: Array<number> = [];
 
       vm.breakdownItems.removeAll();
       vm.$blockui('grayout');
 
       vm.$ajax(PATH.findAllPremiumExtra60H).done((data) => {
+
         if (data.overtimes.length > 0) {
+          //60H超休が発生する＝trueの超過時間のみ表示                    
+          data.overtimes = _.filter(data.overtimes, (e: any) => { return e.superHoliday60HOccurs === true });
           vm.overTimeHeader(_.orderBy(data.overtimes, 'overtimeNo', 'asc'));
-          vm.columnSpan(vm.overTimeHeader().length);
-
-          _.forEach(vm.overTimeHeader(), (x) => {
-            columnHeader.push(x.overtimeNo);
-          });
+          vm.columnSpan(vm.overTimeHeader().length);       
         }
-
+        
         if (data.breakdownItems.length > 0) {
+          //使用区分＝trueの内訳項目のみ表示        
+          //data.breakdownItems = _.filter(data.breakdownItems, (e: any) => { return e.useClassification === true });
           _.forEach(data.breakdownItems, (item, row: number) => {
             let premiumExtra60HRates: Array<PremiumItem> = [];
             if (item.premiumExtra60HRates.length === 0) {
               _.forEach(vm.overTimeHeader(), (x, index) => {
                 premiumExtra60HRates.push(new PremiumItem(row + 1, 0, index + 1));
               })
-            } else {
-              item.premiumExtra60HRates = _.filter(item.premiumExtra60HRates, (o: any) => _.includes(columnHeader, o.overtimeNo));
-              _.forEach(item.premiumExtra60HRates, (x, index) => {
-                premiumExtra60HRates.push(new PremiumItem(row + 1, x.premiumRate, x.overtimeNo));
-              })
+            } else {          
+              _.forEach(vm.overTimeHeader(), (col: any, index) => {
+                const findPremiumItem = _.find(item.premiumExtra60HRates, (o: any) => { return o.overtimeNo === col.overtimeNo });
+                const premiumRate: number = (findPremiumItem) ? findPremiumItem.premiumRate : 0;
+                premiumExtra60HRates.push(new PremiumItem(row + 1, premiumRate, col.overtimeNo));
+              });
             }
 
             let breakdownItem: BreakdownItem = new BreakdownItem(
@@ -151,11 +156,14 @@ module nts.uk.at.view.kmk010.d {
           data.rounding,
           data.superHolidayOccurrenceUnit,
         );
-        
-        if( data.roundingTime === 4 || data.roundingTime === 6) {
+
+        if (data.roundingTime === 4 || data.roundingTime === 6) {
           vm.vacationConversion().unit.valueHasMutated();
         }
+
+        vm.focusControl();
         vm.$blockui('hide');
+
       }).fail((error) => { console.log(error); vm.$blockui('hide'); });
 
     }

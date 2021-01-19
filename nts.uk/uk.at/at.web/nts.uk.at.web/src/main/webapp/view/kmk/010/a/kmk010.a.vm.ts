@@ -376,7 +376,7 @@ module nts.uk.at.view.kmk010.a {
                 this.overtime(dto.overtime);
                 this.overtimeNo(dto.overtimeNo);
                 this.useClassification(dto.useClassification);
-                this.superHoliday60HOccurs(dto.superHoliday60HOccurs);
+                this.superHoliday60HOccurs(dto.superHoliday60HOccurs && dto.useClassification);
             }
             updateEnableCheck(enableCheckbox: boolean) : void{
                 this.requiredText(this.useClassification() && enableCheckbox);
@@ -386,9 +386,11 @@ module nts.uk.at.view.kmk010.a {
                 var self = this;
                 self.useClassification.subscribe(function(use: boolean) {
                     self.requiredText(use && enableCheckbox);
+                    self.superHoliday60HOccurs(use && self.superHoliday60HOccurs());
                 });
                 self.requiredText.subscribe(function(use: boolean) {
                     $('#overtimeNo_' + self.overtimeNo()).ntsError("clear");
+                    $('#overtimeNum_' + self.overtimeNo()).ntsError("clear");
                 });
             }
 
@@ -524,12 +526,16 @@ module nts.uk.at.view.kmk010.a {
             calculationMethod: KnockoutObservable<number>;
             overtimes: KnockoutObservableArray<OvertimeModel>;
             breakdownItems: KnockoutObservableArray<OutsideOTBRDItemModel>;
+            roundingUnit:  KnockoutObservable<number>;
+            roundingProcess:  KnockoutObservable<number>; 
 
             constructor() {
                 this.note = ko.observable('');
                 this.calculationMethod = ko.observable(0);
                 this.overtimes = ko.observableArray([]);
                 this.breakdownItems = ko.observableArray([]);
+                this.roundingUnit = ko.observable(0);
+                this.roundingProcess = ko.observable(0);
             }
 
             updateData(dto: OutsideOTSettingDto) {
@@ -550,6 +556,8 @@ module nts.uk.at.view.kmk010.a {
                     dataBreakdownItemModel.push(modelBRD);
                 }
                 this.breakdownItems(dataBreakdownItemModel);
+                this.roundingUnit(dto.roundingUnit);
+                this.roundingProcess(dto.roundingProcess);
 
             }
 
@@ -569,7 +577,9 @@ module nts.uk.at.view.kmk010.a {
                     note: this.note(),
                     calculationMethod: this.calculationMethod(),
                     breakdownItems: breakdownItems,
-                    overtimes: overtimes
+                    overtimes: overtimes,
+                    roundingUnit: this.roundingUnit(),
+                    roundingProcess: this.roundingProcess() 
                 };
 
                 return dto;

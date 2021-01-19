@@ -21,6 +21,7 @@
         <com:scriptfile path="kmk010.b.vm.js" />
         <com:ValidatorScript>
           nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeName
+          nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeValue
         </com:ValidatorScript>
       </ui:define>
       <ui:define name="content">
@@ -58,9 +59,12 @@
                     </td>
                     <td>
                       <input
-                        tabindex="1"
-												data-bind="attr: {'id': 'overtimeNo_' + overtimeNo()}, 
-												ntsTextEditor: {value: overtime, constraint: 'OvertimeName',  required: requiredText, name: $parent.switchNameResource()}"
+                      tabindex="1"
+                      data-bind="attr: {'id': 'overtimeNum_' + overtimeNo()}, 
+                        ntsTimeEditor: { value: overtime, 
+                        inputFormat: 'time', mode: 'time',
+                        enable: true, constraint: 'OvertimeValue',
+                        name: '#[KMK010_13]'}"
                       /><label>#{i18n.getText('KMK010_14')}</label>
                     </td>
                     <td>
@@ -85,7 +89,7 @@
               tabindex="2"
               id="btnSaveOvertime"
               class="x-large proceed"
-              data-bind="click: saveOvertime"
+              data-bind="click: saveOvertime, enable: $root.errors.isEmpty"
             >
               #{i18n.getText('KMK010_40')}
             </button>
