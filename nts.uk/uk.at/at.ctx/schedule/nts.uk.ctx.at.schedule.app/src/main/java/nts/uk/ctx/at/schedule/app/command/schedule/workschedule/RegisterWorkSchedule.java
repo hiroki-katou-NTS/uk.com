@@ -61,16 +61,13 @@ public class RegisterWorkSchedule<T> {
 				String workTimeCd = wsCmd.workTimeCd;
 				WorkInformationDto workInfor = new WorkInformationDto(workTypeCd, workTimeCd);
 				Map<Integer, TimeWithDayAttr> mapAttendIdWithTime = new HashMap<Integer, TimeWithDayAttr>();
-				if (wsCmd.workTimeCd != null &&  wsCmd.startTime != null && wsCmd.endTime != null && wsCmd.startTime != 0 && wsCmd.endTime != 0) {
+				if (wsCmd.isChangeTime) {
 					TimeWithDayAttr startTime = new TimeWithDayAttr(wsCmd.startTime); 
 					TimeWithDayAttr endTime   = new TimeWithDayAttr(wsCmd.endTime);
 					mapAttendIdWithTime.put(31, startTime);
 					mapAttendIdWithTime.put(34, endTime);
-				}else{
-					mapAttendIdWithTime.put(31, null);
-					mapAttendIdWithTime.put(34, null);
-				}
-				WorkScheduleSaveCommand<T> ws = new WorkScheduleSaveCommand(wsCmd.sid, ymd, workInfor, mapAttendIdWithTime, new ArrayList<>(), null);
+				} 
+				WorkScheduleSaveCommand<T> ws = new WorkScheduleSaveCommand(wsCmd.sid, ymd, workInfor, mapAttendIdWithTime, new ArrayList<>());
 				rs.add(ws);
 			}
 		}
