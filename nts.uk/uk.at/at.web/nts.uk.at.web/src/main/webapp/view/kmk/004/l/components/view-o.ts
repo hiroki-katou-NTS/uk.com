@@ -270,9 +270,9 @@ module nts.uk.at.view.kmk004.l {
 				vm.selectedCode.subscribe((newValue) => {
 					let selectedItem: UnitModel = _.find(vm.employeeList(), ['code', newValue]);
 					vm.currentItemName(selectedItem.code + " " + selectedItem.name);
-					vm.params.empId(newValue);
+					vm.params.empId(selectedItem.id);
 					vm.params.titleName = vm.currentItemName();
-					vm.selectedId(newValue);
+					vm.selectedId(selectedItem.id);
 					vm.initBtnEnable(true);
 
 					vm.getBtnContent();
