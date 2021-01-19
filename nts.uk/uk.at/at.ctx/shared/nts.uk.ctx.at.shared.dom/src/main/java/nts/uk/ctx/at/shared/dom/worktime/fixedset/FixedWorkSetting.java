@@ -21,6 +21,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanDuplication;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -71,6 +72,7 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 
 	/** The common setting. */
 	// 共通設定
+	@Setter
 	private WorkTimezoneCommonSet commonSetting;
 
 	/** The use half day shift. */
@@ -311,8 +313,8 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 	 */
 	public List<OverTimeOfTimeZoneSet> getOverTimeOfTimeZoneSet(WorkType workType) {
 		return this.getFixHalfDayWorkTimezone(workType.getAttendanceHolidayAttr()).isPresent()
-					?this.getFixHalfDayWorkTimezone(workType.getAttendanceHolidayAttr()).get().getWorkTimezone().getLstOTTimezone()
-					:Collections.emptyList();
+					? this.getFixHalfDayWorkTimezone(workType.getAttendanceHolidayAttr()).get().getWorkTimezone().getLstOTTimezone()
+					: Collections.emptyList();
 	}
 
 	/**
@@ -321,7 +323,7 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 	 * @param attendanceHolidayAttr 出勤休日区分
 	 * @return 固定勤務の平日出勤用勤務時間帯(List)
 	 */
-	private Optional<FixHalfDayWorkTimezone> getFixHalfDayWorkTimezone(AttendanceHolidayAttr attendanceHolidayAttr) {
+	public Optional<FixHalfDayWorkTimezone> getFixHalfDayWorkTimezone(AttendanceHolidayAttr attendanceHolidayAttr) {
 		switch(attendanceHolidayAttr) {
 			case FULL_TIME:	return this.getFixHalfDayWorkTimezone(AmPmAtr.ONE_DAY);
 			case MORNING:	return this.getFixHalfDayWorkTimezone(AmPmAtr.AM);
@@ -388,7 +390,7 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 	 * @param atr 午前午後区分
 	 * @return 残業時間帯リスト(午前午後区分指定)
 	 */
-	private List<TimeSpanForCalc> getTimeZoneOfOvertimeWorkByAmPmAtr(AmPmAtr atr) {
+	public List<TimeSpanForCalc> getTimeZoneOfOvertimeWorkByAmPmAtr(AmPmAtr atr) {
 
 		// 勤務時間帯設定を取得する
 		// ※半日用シフトを使用しない場合は1日を利用する
@@ -421,7 +423,7 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 					.findFirst();
 			// 勤務開始時刻より早い残業時間帯がある⇒開始時刻：最初の残業の開始時刻
 			if (ovtWrkBeforeStart.isPresent()) {
-				timespan.shiftOnlyStart( ovtWrkBeforeStart.get().getStart() );
+				return timespan.shiftOnlyStart( ovtWrkBeforeStart.get().getStart() );
 			}
 		}
 
@@ -445,17 +447,17 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 			/* 最終勤務 */
 			// 勤務終了時刻より遅い残業時間帯を取得する
 			val ovtWrkAfterEnd = overtimes.stream()
-					.filter( e -> e.getEnd().lessThan( timespan.getEnd() ) )
+					.filter( e -> e.getEnd().greaterThan( timespan.getEnd() ) )
 					.sorted(Comparator.comparing( e -> ((TimeSpanForCalc)e).getEnd() ).reversed())
 					.findFirst();
 			if (ovtWrkAfterEnd.isPresent()) {
 				// 終了時刻：最後の残業の終了時刻
-				timespan.shiftOnlyEnd( ovtWrkAfterEnd.get().getEnd() );
+				return timespan.shiftOnlyEnd( ovtWrkAfterEnd.get().getEnd() );
 			}
 		} else {
 			/* 次回勤務あり */
 			// 終了時刻：次回勤務の開始時刻
-			timespan.shiftOnlyEnd( workings.get(index + 1).getStart() );
+			return timespan.shiftOnlyEnd( workings.get(index + 1).getStart() );
 		}
 
 		return timespan;

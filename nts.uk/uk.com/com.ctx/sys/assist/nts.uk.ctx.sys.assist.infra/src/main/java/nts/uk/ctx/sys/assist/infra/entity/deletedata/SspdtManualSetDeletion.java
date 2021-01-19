@@ -191,7 +191,7 @@ public class SspdtManualSetDeletion extends UkJpaEntity implements Serializable 
 				endMonthly.isPresent() ? endMonthly.get() : null, 
 				manualSetting.getStartYearOfMonthly().isPresent() ? manualSetting.getStartYearOfMonthly().get() : null, 
 				manualSetting.getEndYearOfMonthly().isPresent() ? manualSetting.getEndYearOfMonthly().get() : null,
-				manualSetting.executeClassification.value,
+				manualSetting.getExecuteClassification().value,
 				manualSetting.getDelPattern().v(),
 				manualSetting.getCategories().stream().map(SspdtCategoryDeletion::toEntity).collect(Collectors.toList()));
 	}

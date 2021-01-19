@@ -41,12 +41,6 @@ public interface TimeAnnualSettingGetMemento {
      */
     TimeAnnualMaxDay getMaxYearDayLeave();
 
-    /**
-     * Checks if is enough time one day.
-     *
-     * @return true, if is enough time one day
-     */
-    boolean isEnoughTimeOneDay();
     
     /**
      * Checks RoundProcessClassific.
@@ -54,4 +48,6 @@ public interface TimeAnnualSettingGetMemento {
      * @return RoundProcessClassific
      */
     TimeAnnualRoundProcesCla GetRoundProcessClassific();
+    
+    TimeAnnualLeaveTimeDay getTimeAnnualLeaveTimeDay();
 }

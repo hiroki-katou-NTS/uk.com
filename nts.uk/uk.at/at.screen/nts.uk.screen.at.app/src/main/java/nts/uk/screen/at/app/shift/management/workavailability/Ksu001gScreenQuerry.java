@@ -102,14 +102,18 @@ public class Ksu001gScreenQuerry {
 					method = TextResource.localize("KSU001_4036");
 				}
 
-				if (x.getDisplayInfo().getNameList().size() >= 1) {
-					for (int i = 0; i < x.getDisplayInfo().getNameList().size(); i++) {
+				List<String> shiftNameList = x.getDisplayInfo().getShiftList().values().stream()
+						.filter(c -> c.isPresent())
+						.map(c -> c.get())
+						.collect(Collectors.toList());
+				if (shiftNameList.size() >= 1) {
+					for (int i = 0; i < shiftNameList.size(); i++) {
 						if (x.getDisplayInfo().getTimeZoneList().size() >= 1) {
 							for (int j = 0; j < x.getDisplayInfo().getTimeZoneList().size(); j++) {
 								dtos.add(new WorkAvailabilityInfoDto(x.getAvailabilityDate().toString("yyyy/MM/dd"),
 										syEmployeePub.getEmpBasicBySId(x.getEmployeeId()).getEmployeeCode() + " "
 												+ syEmployeePub.getEmpBasicBySId(x.getEmployeeId()).getBusinessName(),
-										method, x.getDisplayInfo().getNameList().get(i),
+										method, shiftNameList.get(i),
 										x.getDisplayInfo().getTimeZoneList().get(j).getStart().getInDayTimeWithFormat()
 												+ TextResource.localize("KSU001_4055") + x.getDisplayInfo().getTimeZoneList().get(j).getEnd()
 														.getInDayTimeWithFormat(),
@@ -119,7 +123,7 @@ public class Ksu001gScreenQuerry {
 							dtos.add(new WorkAvailabilityInfoDto(x.getAvailabilityDate().toString("yyyy/MM/dd"),
 									syEmployeePub.getEmpBasicBySId(x.getEmployeeId()).getEmployeeCode() + " "
 											+ syEmployeePub.getEmpBasicBySId(x.getEmployeeId()).getBusinessName(),
-									method, x.getDisplayInfo().getNameList().get(i),
+									method, shiftNameList.get(i),
 									"",
 									x.getMemo().v()));
 						}
@@ -178,11 +182,12 @@ public class Ksu001gScreenQuerry {
 			return basicService.checkNeededOfWorkTimeSetting(workTypeCode);
 		}
 
-		@Override
-		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo) {
-			return workTimeService.getPredeterminedTimezone(AppContexts.user().companyId(), workTimeCd, workTypeCd,
-					workNo);
-		}
+		// fix bug 113211
+//		@Override
+//		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo) {
+//			return workTimeService.getPredeterminedTimezone(AppContexts.user().companyId(), workTimeCd, workTypeCd,
+//					workNo);
+//		}
 
 		@Override
 		public Optional<ShiftMaster> getShiftMasterByWorkInformation(WorkTypeCode workTypeCode,
@@ -220,5 +225,12 @@ public class Ksu001gScreenQuerry {
 			// TODO 自動生成されたメソッド・スタブ
 			return null;
 		}
+
+		@Override
+		public boolean shiftMasterIsExist(ShiftMasterCode shiftMasterCode) {
+			// TODO 自動生成されたメソッド・スタブ
+			return false;
+		}
+		
 	}
 }

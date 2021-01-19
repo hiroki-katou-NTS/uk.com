@@ -15,10 +15,10 @@ public class ExternalBudgetDto {
 
 	private int budgetAtr;
 
-//	private int unitAtr;
+	private int unitAtr;
 
 	public static ExternalBudgetDto fromDomain(ExternalBudget domain) {
 		return new ExternalBudgetDto(domain.getExternalBudgetCd().v(), domain.getExternalBudgetName().v(),
-				domain.getBudgetAtr().value);
+			domain.getBudgetAtr().value, domain.getUnitAtr().value);
 	}
 }

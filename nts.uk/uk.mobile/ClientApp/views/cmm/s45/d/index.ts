@@ -8,14 +8,17 @@ import { CmmS45FComponent } from 'views/cmm/s45/f';
 import { AppType, AppTypeName } from 'views/kaf/s00/shr';
 
 import {
-    CmmS45ComponentsApp1Component,
     CmmS45ComponentsApp2Component,
     CmmS45ComponentsApp3Component,
     CmmS45ComponentsApp4Component,
     CmmS45ComponentsApp5Component,
-    CmmS45ShrComponentsApp7Component
+    CmmS45ShrComponentsApp7Component,
+    CmmS45ShrComponentsApp0Component,
+    CmmS45ShrComponentsApp15Component,
+    Reason,
+    CmmS45ShrComponentsApp10Component
 } from 'views/cmm/s45/shr/components';
-
+import { CmmS45ShrComponentsApp1Component } from 'views/cmm/s45/shr/components/app1/index';
 @component({
     name: 'cmms45d',
     style: require('./style.scss'),
@@ -30,12 +33,15 @@ import {
     components: {
         // khai báo virtual tag name
         'approved': ApprovedComponent,
-        'app1': CmmS45ComponentsApp1Component,
         'app2': CmmS45ComponentsApp2Component,
         'app3': CmmS45ComponentsApp3Component,
         'app4': CmmS45ComponentsApp4Component,
         'app5': CmmS45ComponentsApp5Component,
         'app7': CmmS45ShrComponentsApp7Component,
+        'app0': CmmS45ShrComponentsApp0Component,
+        'app15': CmmS45ShrComponentsApp15Component,
+        'app1': CmmS45ShrComponentsApp1Component,
+        'app10': CmmS45ShrComponentsApp10Component,
         'cmms45e': CmmS45EComponent,
         'cmms45f': CmmS45FComponent
     }
@@ -72,6 +78,7 @@ export class CmmS45DComponent extends Vue {
     public commentDis: boolean = false;
     public commentColor: string = '';
     public isLoadingComplete = false;
+    public reasons: Array<Reason> = null;
 
     public created() {
         let self = this;
@@ -127,8 +134,9 @@ export class CmmS45DComponent extends Vue {
         self.$mask('show');
         self.initData();
     }
-    public loadingComplete() {
+    public loadingComplete(reason?: any) {
         const self = this;
+        self.reasons = reason;
         self.$nextTick(() => {
             self.$mask('hide');
             self.isLoadingComplete = true;

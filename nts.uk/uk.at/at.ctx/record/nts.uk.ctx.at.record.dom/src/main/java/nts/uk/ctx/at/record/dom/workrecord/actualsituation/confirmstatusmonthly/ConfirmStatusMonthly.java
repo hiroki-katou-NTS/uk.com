@@ -41,8 +41,11 @@ public class ConfirmStatusMonthly {
 	@Inject
 	private ApprovalProcessingUseSettingRepository approvalProcessingUseSettingRepository;
 
-	public Optional<StatusConfirmMonthDto> getConfirmStatusMonthly(String companyId, List<String> listEmployeeId, YearMonth yearmonthInput, Integer clsId, boolean clearState) {
-		if(clearState) iFindDataDCRecord.clearAllStateless();
+	public Optional<StatusConfirmMonthDto> getConfirmStatusMonthly(String companyId, List<String> listEmployeeId,
+			YearMonth yearmonthInput, Integer clsId, boolean clearState,
+			Optional<MonthlyPerformaceLockStatus> lockData) {
+		if (clearState)
+			iFindDataDCRecord.clearAllStateless();
 		// ドメインモデル「本人確認処理の利用設定」を取得する
 		Optional<IdentityProcessUseSet> identityProcessUseSet = identityProcessUseSetRepo.findByKey(companyId);
 		if (!identityProcessUseSet.isPresent())
@@ -62,14 +65,25 @@ public class ConfirmStatusMonthly {
 		}
 		// チェック処理（月の確認）
 		Optional<StatusConfirmMonthDto> result = this.checkProcessMonthConfirm(listEmployeeId, confirmInfoResults,
-				optApprovalUse, identityProcessUseSet.get(), clsId);
+				optApprovalUse, identityProcessUseSet.get(), clsId, lockData);
 
 		return result;
 	}
-
+	
 	public Optional<StatusConfirmMonthDto> getConfirmStatusMonthly(String companyId, List<String> listEmployeeId, YearMonth yearmonthInput, Integer clsId) {
-		return getConfirmStatusMonthly(companyId, listEmployeeId, yearmonthInput, clsId, true);
+		return getConfirmStatusMonthly(companyId, listEmployeeId, yearmonthInput, clsId, true, Optional.empty());
 	}
+	
+	public Optional<StatusConfirmMonthDto> getConfirmStatusMonthly(String companyId, List<String> listEmployeeId,
+			YearMonth yearmonthInput, Integer clsId, boolean clearState) {
+		return getConfirmStatusMonthly(companyId, listEmployeeId, yearmonthInput, clsId, clearState, Optional.empty());
+	}
+	
+	public Optional<StatusConfirmMonthDto> getConfirmStatusMonthly(String companyId, List<String> listEmployeeId,
+			YearMonth yearmonthInput, Integer clsId, Optional<MonthlyPerformaceLockStatus> lockData) {
+		return getConfirmStatusMonthly(companyId, listEmployeeId, yearmonthInput, clsId, true, lockData);
+	}
+	
 	/**
 	 * チェック処理（月の確認）
 	 * 
@@ -81,7 +95,7 @@ public class ConfirmStatusMonthly {
 	 */
 	private Optional<StatusConfirmMonthDto> checkProcessMonthConfirm(List<String> listEmployeeId,
 			List<ConfirmInfoResult> confirmInfoResults, Optional<ApprovalProcessingUseSetting> optApprovalUse,
-			IdentityProcessUseSet identityProcessUseSet, Integer clsId) {
+			IdentityProcessUseSet identityProcessUseSet, Integer clsId, Optional<MonthlyPerformaceLockStatus> lockData) {
 		List<ConfirmStatusResult> confirmStatusResults = new ArrayList<>();
 		// 取得している「承認処理の利用設定．月の承認者確認を利用する」をチェックする- k can cho vao vong loop
 		boolean useMonthApproverConfirm = (optApprovalUse.isPresent()
@@ -140,6 +154,11 @@ public class ConfirmStatusMonthly {
 
 				// Input「ロック状態」をチェックする - Theo nhu Thanhnx thi da lam o xu ly ngoai
 				// パラメータ「月の実績の確認状況」をセットする
+				if (lockData.map(x -> x.disableState(confirmStatusResult.getEmployeeId())).orElse(false)) {
+					confirmStatusResult.setImplementaPropriety(AvailabilityAtr.CAN_NOT_RELEASE);
+					confirmStatusResult.setWhetherToRelease(ReleasedAtr.CAN_NOT_RELEASE);
+				}
+				
 				confirmStatusResults.add(confirmStatusResult);
 			}
 		}

@@ -8,8 +8,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.YearMonth;
 import nts.uk.screen.at.app.ksu001.displayinworkinformation.WorkTypeInfomation;
 import nts.uk.screen.at.app.ksu001.processcommon.GetListWorkTypeAvailable;
+import nts.uk.screen.at.app.query.ksu.ksu002.a.GetDataDaily;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.GetScheduleActualOfWorkInfo002;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.ListOfPeriodsClose;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.TheInitialDisplayDate;
@@ -36,6 +38,9 @@ public class Ksu002AWebService extends WebService {
 	@Inject
 	private GetListWorkTypeAvailable getListWorkTypeAvailable;
 	
+	@Inject
+	private GetDataDaily getDataDaily;
+	
 //	@Inject
 //	private GetWorkTypeKSU002 getWorkType;
 	
@@ -43,7 +48,8 @@ public class Ksu002AWebService extends WebService {
 	@Path("getListOfPeriodsClose")
 	public SystemDateDto getListOfPeriodsClose(ListOfPeriodsCloseInput param) {
 		if (param == null) {
-			param = new ListOfPeriodsCloseInput(theInitialDisplayDate.getInitialDisplayDate().getYearMonth());
+			int ym = theInitialDisplayDate.getInitialDisplayDate().getYearMonth();
+			param = new ListOfPeriodsCloseInput(YearMonth.of(ym));
 		}
 		
 		return this.listOfPeriodsClose.get(param);
@@ -53,6 +59,12 @@ public class Ksu002AWebService extends WebService {
 	@Path("displayInWorkInformation")
 	public List<WorkScheduleWorkInforDto> getScheduleActualOfWorkInfo(DisplayInWorkInfoInput param) {		
 		return this.getScheduleActualOfWorkInfo002.getDataScheduleAndAactualOfWorkInfo(param);
+	}
+	
+	@POST
+	@Path("getDataDaily")
+	public List<WorkScheduleWorkInforDto.Achievement> getDataDaily(DisplayInWorkInfoInput param) {		
+		return this.getDataDaily.getDataDaily(param);
 	}
 	
 	@POST

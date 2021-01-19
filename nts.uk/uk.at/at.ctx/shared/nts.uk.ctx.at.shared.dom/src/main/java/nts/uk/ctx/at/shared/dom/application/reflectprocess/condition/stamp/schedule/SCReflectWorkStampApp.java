@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.stamp.CancelAppStamp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.stamp.CancelTimeZoneApplication;
-import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.stamp.ReflectAppStamp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.stamp.ReflectAttendanceLeav;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.stamp.ReflectBreakTime;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.stamp.ReflectOutingTimeZone;
@@ -17,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.stamp.Refle
 import nts.uk.ctx.at.shared.dom.application.stamp.AppStampShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppEnumShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.TimeZoneStampClassificationShare;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -27,12 +27,12 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class SCReflectWorkStampApp {
 
 	public static Collection<Integer> reflect(Require require, AppStampShare application,
-			DailyRecordOfApplication dailyApp, ReflectAppStamp reflectApp) {
+			DailyRecordOfApplication dailyApp, StampAppReflect reflectApp) {
 
 		Set<Integer> lstItemId = new HashSet<>();
 		// [出退勤を反映する]をチェック
 
-		if (reflectApp.getReflectAttLeav() == NotUseAtr.USE) {
+		if (reflectApp.getWorkReflectAtr() == NotUseAtr.USE) {
 			// 出退勤の反映
 			lstItemId.addAll(ReflectAttendanceLeav.reflect(dailyApp,
 					application.getListTimeStampApp().stream()
@@ -49,7 +49,7 @@ public class SCReflectWorkStampApp {
 
 		// [臨時出退勤を反映する]をチェック
 
-		if (reflectApp.getReflectTemporary() == NotUseAtr.USE) {
+		if (reflectApp.getExtraWorkReflectAtr() == NotUseAtr.USE) {
 			// 臨時出退勤の反映
 			ReflectTemporaryAttLeav.reflect(dailyApp,
 					application.getListTimeStampApp().stream().filter(
@@ -66,7 +66,7 @@ public class SCReflectWorkStampApp {
 
 		// [育児時間帯を反映する]をチェック
 
-		if (reflectApp.getReflectChildCare() == NotUseAtr.USE) {
+		if (reflectApp.getChildCareReflectAtr() == NotUseAtr.USE) {
 			// 短時間勤務時間帯の反映
 			lstItemId
 					.addAll(ReflectShortTime.reflect(dailyApp,
@@ -83,7 +83,7 @@ public class SCReflectWorkStampApp {
 
 		// [介護時間帯を反映する]をチェック
 
-		if (reflectApp.getReflectCare() == NotUseAtr.USE) {
+		if (reflectApp.getCareReflectAtr() == NotUseAtr.USE) {
 			// 短時間勤務時間帯の反映
 			lstItemId.addAll(ReflectShortTime.reflect(dailyApp,
 					application.getListTimeStampAppOther().stream()
@@ -100,7 +100,7 @@ public class SCReflectWorkStampApp {
 
 		// [外出時間帯を反映する]をチェック
 
-		if (reflectApp.getReflectGoOut() == NotUseAtr.USE) {
+		if (reflectApp.getGoOutReflectAtr() == NotUseAtr.USE) {
 			// 外出時間帯の反映
 			lstItemId.addAll(ReflectOutingTimeZone.process(dailyApp, application.getListTimeStampApp().stream().filter(
 					x -> x.getDestinationTimeApp().getTimeStampAppEnum() == TimeStampAppEnumShare.GOOUT_RETURNING)
@@ -115,7 +115,7 @@ public class SCReflectWorkStampApp {
 
 		// [休憩時間帯を反映する]をチェック
 
-		if (reflectApp.getReflectBreakTime() == NotUseAtr.USE) {
+		if (reflectApp.getBreakReflectAtr() == NotUseAtr.USE) {
 			// 休憩時間帯の反映
 			lstItemId.addAll(ReflectBreakTime.reflect(dailyApp,
 					application.getListTimeStampAppOther().stream()

@@ -16,12 +16,6 @@ public interface ManageAnnualSettingSetMemento {
      */
     void setCompanyId(String companyId);
     
-    /**
-     * Sets the max grant day.
-     *
-     * @param maxGrantDay the new max grant day
-     */
-    void setMaxGrantDay(AnnualLeaveGrantDay maxGrantDay);
 
     /**
      * Sets the half day manage.
@@ -44,12 +38,6 @@ public interface ManageAnnualSettingSetMemento {
      */
     void setRemainingNumberSetting(RemainingNumberSetting remainingNumberSetting);
 
-    /**
-     * Sets the display setting.
-     *
-     * @param displaySetting the new display setting
-     */
-    void setDisplaySetting(DisplaySetting displaySetting);
     
     /**
      * Sets the yearly of day.

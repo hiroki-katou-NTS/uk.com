@@ -148,8 +148,7 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 			+ " LEFT JOIN KshmtWorkTypeOrder o "
 			+ " ON c.kshmtWorkTypePK.companyId = o.kshmtWorkTypeDispOrderPk.companyId AND c.kshmtWorkTypePK.workTypeCode = o.kshmtWorkTypeDispOrderPk.workTypeCode "
 			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId AND c.deprecateAtr = 0 "
-			+ " ORDER BY CASE WHEN o.dispOrder IS NULL THEN 1 ELSE 0 END, o.dispOrder ASC ";
-	
+			+ " ORDER BY CASE WHEN o.dispOrder IS NULL THEN 2147483647 ELSE o.dispOrder END, o.dispOrder ASC , c.kshmtWorkTypePK.workTypeCode ASC ";
 	
 	// findWorkType(java.lang.String, java.lang.Integer, java.util.List,
 	// java.util.List)
@@ -815,10 +814,7 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 		KshmtWorkType entity = (KshmtWorkType) object[0];
 		Integer order = object[1] != null ? Integer.valueOf(object[1].toString()) : null;
 		
-		WorkType domain = WorkType.createSimpleFromJavaType(entity.kshmtWorkTypePK.companyId,
-				entity.kshmtWorkTypePK.workTypeCode, entity.symbolicName, entity.name, entity.abbreviationName,
-				entity.memo, entity.worktypeAtr, entity.oneDayAtr, entity.morningAtr, entity.afternoonAtr,
-				entity.deprecateAtr, entity.calculatorMethod);
+		WorkType domain = toDomain(entity);
 		if (order != null) {
 			domain.setDisplayOrder(order);
 		}
@@ -889,7 +885,7 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 
 	private static final String SELECT_ALL_WORKTYPE_BY_LIST_CODE = SELECT_FROM_WORKTYPE
 			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId "
-			+ "AND c.kshmtWorkTypeSetPK.workTypeCode IN :workTypeCodes ";
+			+ "AND c.kshmtWorkTypePK.workTypeCode IN :workTypeCodes ";
 	
 	@Override
 	public List<WorkType> findByCidAndWorkTypeCodes(String companyId, List<String> workTypeCodes) {

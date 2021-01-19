@@ -26,6 +26,7 @@ import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameGetMemento;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameName;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo;
+import nts.uk.ctx.at.shared.dom.ot.frame.RoleOvertimeWork;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameGetMemento;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameName;
@@ -94,6 +95,16 @@ public class SendOvertimeNameServiceTest {
 	private OvertimeWorkFrameGetMemento createOvertime(int no) {
 		return new OvertimeWorkFrameGetMemento() {
 
+			@Override
+			public NotUseAtr getTransferAtr() {
+				return NotUseAtr.USE;
+			}
+			
+			@Override
+			public RoleOvertimeWork getRole() {
+				return RoleOvertimeWork.OUT_OVERTIME_STATUTORY;
+			}
+			
 			@Override
 			public NotUseAtr getUseClassification() {
 				return NotUseAtr.USE;

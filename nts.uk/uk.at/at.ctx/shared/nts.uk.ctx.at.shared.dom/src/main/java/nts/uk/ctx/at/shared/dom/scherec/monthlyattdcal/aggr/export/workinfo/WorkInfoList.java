@@ -63,25 +63,6 @@ public class WorkInfoList {
 	}
 	
 	/**
-	 * 予定の勤務情報を取得する
-	 * @param ymd 年月日
-	 * @return 勤務情報
-	 */
-	public Optional<WorkInformation> getSchedule(GeneralDate ymd) {
-		if (!this.workInfoOfDailyMap.containsKey(ymd)) {
-			return Optional.empty();
-		}
-
-		WorkInformation schedule = this.workInfoOfDailyMap.get(ymd).getScheduleInfo();
-
-		if (schedule == null) {
-			return Optional.empty();
-		}
-
-		return Optional.of(schedule.clone());
-	}
-	
-	/**
 	 * 実績の勤務情報を取得する
 	 * @return 勤務情報マップ
 	 */
@@ -91,20 +72,6 @@ public class WorkInfoList {
 		for (val entry : this.workInfoOfDailyMap.entrySet()){
 			if (entry.getValue().getRecordInfo() == null) continue;
 			results.put(entry.getKey(), entry.getValue().getRecordInfo());
-		}
-		return results;
-	}
-	
-	/**
-	 * 予定の勤務情報を取得する
-	 * @return 勤務情報マップ
-	 */
-	public Map<GeneralDate, WorkInformation> getScheduleMap() {
-		
-		Map<GeneralDate, WorkInformation> results = new HashMap<>();
-		for (val entry : this.workInfoOfDailyMap.entrySet()){
-			if (entry.getValue().getScheduleInfo() == null) continue;
-			results.put(entry.getKey(), entry.getValue().getScheduleInfo());
 		}
 		return results;
 	}

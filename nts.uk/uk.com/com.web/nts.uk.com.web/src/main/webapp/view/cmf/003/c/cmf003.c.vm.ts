@@ -190,7 +190,7 @@ module nts.uk.com.view.cmf003.c {
     });
 
     //Category list
-    categoriesDefault: KnockoutObservableArray<Category> = ko.observableArray([]);
+    readonly categoriesDefault: KnockoutObservableArray<Category> = ko.observableArray([]);
     categoriesFiltered: KnockoutObservableArray<Category> = ko.observableArray([]);
     leftColumns: KnockoutObservableArray<NtsGridListColumn> = ko.observableArray([
       { headerText: '', key: 'id', hidden: true },
@@ -257,11 +257,16 @@ module nts.uk.com.view.cmf003.c {
 
       vm.selectedSystemType.subscribe(value => {
         if (Number(value) !== 0) {
-          vm.categoriesFiltered(_.filter(vm.categoriesDefault(), category => category.systemType === Number(value) - 1));
-          vm.categoriesFiltered(_.orderBy(vm.categoriesFiltered(), ["categoryId"], ["asc"]));
+          vm.categoriesFiltered(_.chain(vm.categoriesDefault())
+            .filter(item => !_.includes(vm.currentCateSelected(), item))
+            .filter({ systemType: Number(value) - 1 })
+            .sortBy("categoryId")
+            .value());
         } else {
-          vm.categoriesFiltered([]);
-          _.forEach(vm.categoriesDefault(), item => vm.categoriesFiltered().push(item));
+          vm.categoriesFiltered(_.chain(vm.categoriesDefault())
+            .filter(item => !_.find(vm.currentCateSelected(), { categoryId: item.categoryId }))
+            .sortBy("categoryId")
+            .value());
         };
         vm.categoriesFiltered.valueHasMutated();
       });

@@ -11,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.application.stamp.EngraveShareAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.OutputTimeReflectForWorkinfo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectRangeOutput;
@@ -26,7 +27,7 @@ public class ReflectGoOutReturn {
 
 	public static ReflectTimeStampResult process(Require require, DailyRecordOfApplication dailyRecordApp,
 			OutputTimeReflectForWorkinfo timeReflectWork, AttendanceClock attendanceTime,
-			EngraveShareAtr appStampComAtr, Optional<Stamp> stamp) {
+			EngraveShareAtr appStampComAtr, Optional<Stamp> stamp, ChangeDailyAttendance changeDailyAtt) {
 		DailyRecordToAttendanceItemConverter converter = require.createDailyConverter();
 
 		// 反映前の日別勤怠(work）.外出時間帯を保持する
@@ -44,7 +45,7 @@ public class ReflectGoOutReturn {
 		IntegrationOfDaily dailyCopy = converter.setData(dailyRecordApp.getDomain()).toDomain();
 
 		// 打刻を反映する
-		require.reflectStamp(stamp.get(), timeReflectWork.getStampReflectRangeOutput(), dailyCopy);
+		require.reflectStamp(stamp.get(), timeReflectWork.getStampReflectRangeOutput(), dailyCopy, changeDailyAtt);
 
 		// 日別勤怠(work）に日別勤怠(計算用work）の外出時間帯をコピーする
 		converter = require.createDailyConverter();
@@ -68,6 +69,6 @@ public class ReflectGoOutReturn {
 
 		// TemporarilyReflectStampDailyAttd
 		List<ErrorMessageInfo> reflectStamp(Stamp stamp, StampReflectRangeOutput stampReflectRangeOutput,
-				IntegrationOfDaily integrationOfDaily);
+				IntegrationOfDaily integrationOfDaily, ChangeDailyAttendance changeDailyAtt);
 	}
 }

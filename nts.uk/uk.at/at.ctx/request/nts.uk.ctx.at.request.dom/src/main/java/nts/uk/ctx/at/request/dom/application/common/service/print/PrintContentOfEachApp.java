@@ -7,7 +7,11 @@ import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripPrintContent;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDirectOutput;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.HolidayShipmentOutput;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.ArrivedLateLeaveEarlyInfoOutput;
+import nts.uk.ctx.at.request.dom.application.overtime.service.DetailOutput;
+import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayInfoOverTime;
+import nts.uk.ctx.at.request.dom.application.optional.OptionalItemPrintContent;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
 
 /**
@@ -19,25 +23,31 @@ import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
 @Setter
 @Getter
 public class PrintContentOfEachApp {
-	
+
 	/**
 	 * 休暇申請の印刷内容
 	 */
+    private Optional<PrintContentOfApplyForLeave> opPrintContentApplyForLeave;
+
+	/**
+	 * 休日出勤の印刷内容
+	 */
+	private Optional<PrintContentOfHolidayWork> opPrintContentOfHolidayWork;
 	
 	/**
 	 * 勤務変更申請の印刷内容
 	 */
 	private Optional<PrintContentOfWorkChange> opPrintContentOfWorkChange;
-	
+
 	/**
 	 * 時間休暇申請の印刷内容
 	 */
-	
+
 	/**
 	 * 打刻申請の印刷内容
 	 */
 	private Optional<AppStampOutput> opAppStampOutput;
-	
+
 	/**
 	 * 遅刻早退取消申請の印刷内容
 	 */
@@ -48,16 +58,34 @@ public class PrintContentOfEachApp {
 	 */
 	private Optional<InforGoBackCommonDirectOutput> opInforGoBackCommonDirectOutput;
 
-	/*
+	/**
 	 * 出張申請の印刷内容
 	 */
 	private Optional<BusinessTripPrintContent> opBusinessTrip;
 	
+	
+	private Optional<DetailOutput> opDetailOutput;
+	
+	/**
+     * 振休振出申請の印刷内容
+     */
+    private Optional<HolidayShipmentOutput> optHolidayShipment;
+	
+
+    /**
+     * 任意項目申請の印刷内容
+     */
+	private Optional<OptionalItemPrintContent> opOptionalItem;
+
 	public PrintContentOfEachApp() {
+		this.opPrintContentOfHolidayWork = Optional.empty();
 		this.opPrintContentOfWorkChange = Optional.empty();
 		this.opAppStampOutput = Optional.empty();
 		this.opArrivedLateLeaveEarlyInfo = Optional.empty();
 		this.opInforGoBackCommonDirectOutput = Optional.empty();
 		this.opBusinessTrip = Optional.empty();
+		this.opDetailOutput = Optional.empty();
+		this.opOptionalItem = Optional.empty();
+		this.optHolidayShipment = Optional.empty();
 	}
 }

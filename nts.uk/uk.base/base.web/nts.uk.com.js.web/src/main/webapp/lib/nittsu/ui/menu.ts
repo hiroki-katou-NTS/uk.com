@@ -1,4 +1,5 @@
 module nts.uk.ui.menu {
+    import getText = nts.uk.resource.getText;
     
     const DATA_TITLEITEM_PGID = "pgid";
     const DATA_TITLEITEM_PGNAME = "pgname";
@@ -28,7 +29,7 @@ module nts.uk.ui.menu {
         let $cate = $("<li class='category'/>").addClass("menu-select").appendTo($menuNav);
         let $cateName = $("<div class='category-name'/>").html("&#9776;").appendTo($cate);
         let $menuItems = $("<ul class='menu-items'/>").appendTo($cate);
-        $menuItems.append($("<li class='menu-item'/>").text(toBeResource.selectMenu));
+        $menuItems.append($("<li class='menu-item'/>").text(getText('CCG020_1')));
         $menuItems.append($("<hr/>").css({ margin: "5px 0px" }));
         _.forEach(menuSet, function(item, i) {
             $menuItems.append($("<li class='menu-item'/>")
@@ -205,7 +206,7 @@ module nts.uk.ui.menu {
             });
             
             nts.uk.request.ajax(constants.APP_ID, constants.UserName).done(function(userName: any) {
-                let $userImage = $("<div/>").attr("id", "user-image").addClass("ui-icon ui-icon-person").appendTo($user);
+                let $userImage = $("<div/>").attr("id", "user-image").appendTo($user);
                 $userImage.css("margin-right", "6px").on(constants.CLICK, function() {
                     // TODO: Jump to personal profile.
                 });
@@ -215,19 +216,22 @@ module nts.uk.ui.menu {
                     let $userSettings = $("<div/>").addClass("user-settings cf").appendTo($user);
                     $("<div class='ui-icon ui-icon-caret-1-s'/>").appendTo($userSettings);
                     let userOptions;
-                    if (show) userOptions = [ /*new MenuItem(toBeResource.settingPersonal),*/ new MenuItem(toBeResource.manual), new MenuItem(toBeResource.logout) ];
-                    else userOptions = [ /*new MenuItem(toBeResource.settingPersonal),*/ new MenuItem(toBeResource.logout) ];
+                    if (show) userOptions = [ new MenuItem(getText('CCG020_5')), new MenuItem(getText('CCG020_4')), new MenuItem(getText('CCG020_3')) ];
+                    else userOptions = [ new MenuItem(getText('CCG020_5')), new MenuItem(getText('CCG020_3')) ];
+                    if (!__viewContext.user.isEmployee) {
+                        userOptions.shift();
+                    }
                     let $userOptions = $("<ul class='menu-items user-options'/>").appendTo($userSettings);
                     _.forEach(userOptions, function(option: any, i: number) {
                         let $li = $("<li class='menu-item'/>").text(option.name);
                         $userOptions.append($li);
-//                        if (i === 0) {
-//                            $li.on(constants.CLICK, function() {
-//                                // TODO: Jump to personal information settings.
-//                            });
-//                            return;
-//                        }
-                        if (userOptions.length === 2 && i === 0) {
+                       if (i === 0) {
+                            $li.on(constants.CLICK, function() {
+                                nts.uk.request.jumpToSettingPersonalPage();
+                            });
+                            return;
+                        }
+                        if (userOptions.length === 3 && i === 1) {
                             $li.on(constants.CLICK, function () {
                                 // jump to index page of manual
                                 var path = __viewContext.env.pathToManual.replace("{PGID}", "index");

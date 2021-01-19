@@ -12,6 +12,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.DestinationTimeApp;
@@ -343,6 +344,18 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 		}
 
 		return appStamp;
+	}
+
+	@Override
+	public Optional<AppStamp> findByAppID(String companyID, String appID, Application app) {
+		return this.findByAppID(companyID, appID).map(c -> {
+			AppStamp appStamp = new AppStamp(app);
+			appStamp.setListDestinationTimeApp(c.getListDestinationTimeApp());
+			appStamp.setListDestinationTimeZoneApp(c.getListDestinationTimeZoneApp());
+			appStamp.setListTimeStampApp(c.getListTimeStampApp());
+			appStamp.setListTimeStampAppOther(c.getListTimeStampAppOther());
+			return appStamp;
+		});
 	}
 
 }
