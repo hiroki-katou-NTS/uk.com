@@ -219,11 +219,18 @@ export class KafS12AComponent extends KafS00ShrComponent {
                 timeLeaveRemaining: vm.timeLeaveRemaining,
                 reflectSetting: vm.reflectSetting
             },
-            timeZones: lateEarlyTimeZones.map((i: LateEarlyTimeZone) => ({
-                    workNo: i.workNo,
-                    startTime: i.appTimeType == AppTimeType.ATWORK || i.appTimeType == AppTimeType.ATWORK2 ? i.timeValue : null,
-                    endTime: i.appTimeType == AppTimeType.ATWORK || i.appTimeType == AppTimeType.ATWORK2 ? null : i.timeValue
-                })),
+            timeZones: [
+                {
+                    workNo: 1,
+                    startTime: lateEarlyTimeZones[0].timeValue || vm.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheAttendanceTime1,
+                    endTime: lateEarlyTimeZones[1].timeValue || vm.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheDepartureTime1
+                },
+                {
+                    workNo: 2,
+                    startTime: lateEarlyTimeZones[2].timeValue || vm.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheAttendanceTime2,
+                    endTime: lateEarlyTimeZones[3].timeValue || vm.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheDepartureTime2
+                }
+            ],
             outingTimeZones: outingTimeZones.map((i: OutingTimeZone) => ({
                     frameNo: i.workNo,
                     outingAtr: i.appTimeType,

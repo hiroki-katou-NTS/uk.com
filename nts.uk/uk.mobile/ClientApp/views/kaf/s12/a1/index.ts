@@ -152,7 +152,7 @@ export class KafS12A1Component extends Vue {
             return;
         }
         vm.$emit('next-to-step-two',
-            vm.lateEarlyTimeZones.filter((i: LateEarlyTimeZone) => i.timeValue != null),
+            vm.lateEarlyTimeZones,
             vm.outingTimeZones.filter((i: OutingTimeZone) => i.timeZone.start != null && i.timeZone.end != null),
         );
     }

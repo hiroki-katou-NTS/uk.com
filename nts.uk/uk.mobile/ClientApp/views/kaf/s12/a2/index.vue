@@ -28,6 +28,6 @@
                 v-if="!newMode">{{ "KAFS12_32" | i18n }}</button>
         <button type="button"
                 class="btn btn-secondary btn-lg btn-block mb-3"
-                @click="backToStepOne()">{{'KAFS08_40' | i18n}}</button>
+                @click="backToStepOne()">{{'KAFS12_48' | i18n}}</button>
     </div>
 </template>

@@ -823,7 +823,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                     this.applyTime = [new ApplyTime(AppTimeType.ATWORK2)];
                     this.display = ko.computed(() => {
                         return appDispInfoStartupOutput()
-                            // && appDispInfoStartupOutput().appDispInfoNoDateOutput.managementMultipleWorkCycles
+                            && appDispInfoStartupOutput().appDispInfoNoDateOutput.managementMultipleWorkCycles
                             && reflectSetting()
                             && reflectSetting().destination.secondBeforeWork == 1;
                     });
@@ -835,7 +835,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                     this.applyTime = [new ApplyTime(AppTimeType.OFFWORK2)];
                     this.display = ko.computed(() => {
                         return appDispInfoStartupOutput()
-                            // && appDispInfoStartupOutput().appDispInfoNoDateOutput.managementMultipleWorkCycles
+                            && appDispInfoStartupOutput().appDispInfoNoDateOutput.managementMultipleWorkCycles
                             && reflectSetting()
                             && reflectSetting().destination.secondAfterWork == 1;
                     });
