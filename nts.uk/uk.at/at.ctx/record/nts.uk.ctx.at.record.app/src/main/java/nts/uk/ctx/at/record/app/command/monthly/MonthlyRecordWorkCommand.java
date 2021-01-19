@@ -119,7 +119,7 @@ public class MonthlyRecordWorkCommand extends MonthlyWorkCommonCommand {
 		this.anyItem.setRecords(fullDto.getAnyItem());
 		this.annualLeave.setRecords(fullDto.getAnnLeave());
 		this.reserveLeave.setRecords(fullDto.getRsvLeave());
-		this.specialHoliday.setRecords(fullDto.getSpecialHoliday());
+		fullDto.getSpecialHoliday().forEach(x -> this.specialHoliday.setRecords(x));
 		this.dayOff.setRecords(fullDto.getDayOff());
 		this.absence.setRecords(fullDto.getAbsenceLeave());
 		this.remarks.setRecords(fullDto.getRemarks());

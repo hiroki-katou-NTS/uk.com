@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -12,6 +13,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate.PropType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
@@ -73,7 +75,7 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 
 	/** 特別休暇月別残数データ: 特別休暇残数月別データ */
 	@AttendanceItemLayout(jpPropertyName = MONTHLY_SPECIAL_HOLIDAY_REMAIN_NAME, layout = MONTHLY_SPECIAL_HOLIDAY_REMAIN_CODE)
-	private SpecialHolidayRemainDataDto specialHoliday;
+	private List<SpecialHolidayRemainDataDto> specialHoliday;
 
 	/** 代休月別残数データ: 代休月別残数データ */
 	@AttendanceItemLayout(jpPropertyName = MONTHLY_OFF_REMAIN_NAME, layout = MONTHLY_OFF_REMAIN_CODE)
@@ -158,7 +160,7 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 		return this;
 	}
 	
-	public MonthlyRecordWorkDto withSpecialHoliday(SpecialHolidayRemainDataDto specialHoliday){
+	public MonthlyRecordWorkDto withSpecialHoliday(List<SpecialHolidayRemainDataDto> specialHoliday){
 		this.specialHoliday = specialHoliday;
 		return this;
 	}
@@ -218,7 +220,7 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 	}
 	
 	public List<SpecialHolidayRemainData> toSpecialHoliday(){
-		return this.specialHoliday.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate());
+		return this.specialHoliday.stream().map(x -> x.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate())).collect(Collectors.toList());
 	}
 	
 	public MonthlyDayoffRemainData toDayOff(){
@@ -240,6 +242,8 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 	public MonChildHdRemain toMonChildCare(){
 		return this.childCare == null ? null :  this.childCare.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate());
 	}
+	
+	
 
 	@Override
 	public IntegrationOfMonthly toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate) {
@@ -253,7 +257,9 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 				Optional.ofNullable(this.rsvLeave == null ? null : this.rsvLeave.toDomain(employeeId, ym, closureID, closureDate)),
 				Optional.ofNullable(this.absenceLeave == null ? null : this.absenceLeave.toDomain(employeeId, ym, closureID, closureDate)),
 				Optional.ofNullable(this.dayOff == null ? null : this.dayOff.toDomain(employeeId, ym, closureID, closureDate)),
-				this.specialHoliday == null ? new ArrayList<>() : this.specialHoliday.toDomain(employeeId, ym, closureID, closureDate),
+				this.specialHoliday == null ? new ArrayList<>()
+						: this.specialHoliday.stream().map(x -> x.toDomain(employeeId, ym, closureID, closureDate))
+								.collect(Collectors.toList()),
 				this.remarks == null ? new ArrayList<>(): this.remarks.toDomain(employeeId, ym, closureID, closureDate),
 				Optional.ofNullable(this.care == null ? null : this.care.toDomain(employeeId, ym, closureID, closureDate)),
 				Optional.ofNullable(this.childCare == null ? null : this.childCare.toDomain(employeeId, ym, closureID, closureDate)));
@@ -281,7 +287,8 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 			dto.setDayOff(MonthlyDayoffRemainDataDto.from(domain.getMonthlyDayoffRemain().orElse(null)));
 			dto.setRemarks(MonthlyRemarksDto.from(domain.getRemarks()));
 			dto.setRsvLeave(RsvLeaRemNumEachMonthDto.from(domain.getReserveLeaveRemain().orElse(null)));
-			dto.setSpecialHoliday(SpecialHolidayRemainDataDto.from(domain.getSpecialLeaveRemainList()));
+			dto.setSpecialHoliday(domain.getSpecialLeaveRemainList().stream()
+					.map(sp -> SpecialHolidayRemainDataDto.from(sp)).collect(Collectors.toList()));
 			domain.getAffiliationInfo().ifPresent(aff -> {
 				dto.setAffiliation(AffiliationInfoOfMonthlyDto.from(aff));
 				dto.setYearMonth(aff.getYearMonth());
@@ -307,8 +314,8 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 			return Optional.ofNullable(this.annLeave);
 		case MONTHLY_RESERVE_LEAVING_REMAIN_NAME:
 			return Optional.ofNullable(this.rsvLeave);
-		case MONTHLY_SPECIAL_HOLIDAY_REMAIN_NAME:
-			return Optional.ofNullable(this.specialHoliday);
+//		case MONTHLY_SPECIAL_HOLIDAY_REMAIN_NAME:
+//			return Optional.ofNullable(this.specialHoliday);
 		case MONTHLY_OFF_REMAIN_NAME:
 			return Optional.ofNullable(this.dayOff);
 		case MONTHLY_ABSENCE_LEAVE_REMAIN_NAME:
@@ -325,7 +332,41 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 			return Optional.empty();
 		}
 	}
+	
+	@Override
+	public int size(String path) {
+		if (MONTHLY_SPECIAL_HOLIDAY_REMAIN_NAME.equals(path)) {
+			return this.specialHoliday.size();
+		}
+		return super.size(path);
+	}
+	
+	@Override
+	public PropType typeOf(String path) {
+		if (MONTHLY_SPECIAL_HOLIDAY_REMAIN_NAME.equals(path)) {
+			return PropType.IDX_LIST;
+		}
+		return super.typeOf(path);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
 
+		if (path.equals(MONTHLY_SPECIAL_HOLIDAY_REMAIN_NAME))
+			return (List<T>) this.specialHoliday;
+		return new ArrayList<>();
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		
+		if (path.equals(MONTHLY_SPECIAL_HOLIDAY_REMAIN_NAME)) {
+			this.specialHoliday = (List<SpecialHolidayRemainDataDto>) value;
+		}
+	}
+	
 	@Override
 	public void set(String path, AttendanceItemDataGate value) {
 		switch (path) {
@@ -344,9 +385,9 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 		case MONTHLY_RESERVE_LEAVING_REMAIN_NAME:
 			this.rsvLeave = (RsvLeaRemNumEachMonthDto) value;
 			break;
-		case MONTHLY_SPECIAL_HOLIDAY_REMAIN_NAME:
-			this.specialHoliday = (SpecialHolidayRemainDataDto) value;
-			break;
+//		case MONTHLY_SPECIAL_HOLIDAY_REMAIN_NAME:
+//			this.specialHoliday = (SpecialHolidayRemainDataDto) value;
+//			break;
 		case MONTHLY_OFF_REMAIN_NAME:
 			this.dayOff = (MonthlyDayoffRemainDataDto) value;
 			break;

@@ -3573,7 +3573,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 				dataNo, 
 				SpecialLeave.of(SpecialLeaveUsedInfo.of(SpecialLeaveUseNumber.of(factUseDays, factUseMinutes), 
 														SpecialLeaveUseNumber.of(beforeFactUseDays, beforeFactUseMinutes), 
-														new UsedTimes(factUseTimes), 
+														factUseTimes == null ? new UsedTimes(0) : new UsedTimes(factUseTimes), 
 														new UsedTimes(0), 
 														afterFactUseDays == null && afterFactUseMinutes == null ? Optional.empty() : Optional.of(SpecialLeaveUseNumber.of(afterFactUseDays, afterFactUseMinutes))),
 								SpecialLeaveRemainingNumberInfo.of(
@@ -3582,7 +3582,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 														afterFactRemainDays == null && afterFactRemainMinutes == null ? Optional.empty() : Optional.of(SpecialLeaveRemainingNumber.createFromJavaType(afterFactRemainDays, afterFactRemainMinutes)))),
 				SpecialLeave.of(SpecialLeaveUsedInfo.of(SpecialLeaveUseNumber.of(useDays, useMinutes), 
 														SpecialLeaveUseNumber.of(beforeUseDays, beforeUseMinutes), 
-														new UsedTimes(useTimes), 
+														useTimes == null ? new UsedTimes(0) : new UsedTimes(useTimes), 
 														new UsedTimes(0), 
 														afterUseDays == null && afterUseMinutes == null ? Optional.empty() : Optional.of(SpecialLeaveUseNumber.of(afterUseDays, afterUseMinutes))),
 								SpecialLeaveRemainingNumberInfo.of(

@@ -9,10 +9,7 @@ import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveRemainNoMinus;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.ClosureStatus;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
@@ -76,18 +73,10 @@ public class SpecialHolidayRemainData extends AggregateRoot {
 	 */
 	private Optional<SpecialLeaveGrantUseDay> grantDays;
 
-	public SpecialHolidayRemainData(
-			String sid,
-			YearMonth ym,
-			int closureId,
-			ClosureDate closureDate,
-			DatePeriod closurePeriod,
-			ClosureStatus closureStatus,
-			int specialHolidayCd,
-			SpecialLeave actualSpecial,
-			SpecialLeave specialLeave,
-			Optional<SpecialLeaveGrantUseDay> grantDays,
-			boolean grantAtr) {
+	public SpecialHolidayRemainData(String sid, YearMonth ym, int closureId, ClosureDate closureDate,
+			DatePeriod closurePeriod, ClosureStatus closureStatus, int specialHolidayCd, SpecialLeave actualSpecial,
+			SpecialLeave specialLeave, Optional<SpecialLeaveGrantUseDay> grantDays, boolean grantAtr,
+			SpecialLeaveUnDigestion unDegestionNumber) {
 		super();
 		this.sid = sid;
 		this.ym = ym;
@@ -100,5 +89,6 @@ public class SpecialHolidayRemainData extends AggregateRoot {
 		this.specialLeave = specialLeave;
 		this.grantAtr = grantAtr;
 		this.grantDays = grantDays;
+		this.unDegestionNumber = unDegestionNumber;
 	}
 }

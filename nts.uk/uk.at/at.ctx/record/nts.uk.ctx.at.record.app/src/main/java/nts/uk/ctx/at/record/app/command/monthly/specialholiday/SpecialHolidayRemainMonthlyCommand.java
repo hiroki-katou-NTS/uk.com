@@ -13,24 +13,34 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialh
 public class SpecialHolidayRemainMonthlyCommand extends MonthlyWorkCommonCommand{
 
 	@Getter
-	private SpecialHolidayRemainDataDto data;
+	private List<SpecialHolidayRemainDataDto> data = new ArrayList<>();
 	
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
 		if(item != null && item.isHaveData()){
-			this.data= (SpecialHolidayRemainDataDto) item;
+			updateData(item);
 		}
 	}
 
+	
 	@Override
 	public void updateData(Object data) {
-		// TODO Auto-generated method stub
-		
+		SpecialHolidayRemainDataDto d = (SpecialHolidayRemainDataDto) data;
+		if (data != null) {
+			this.data.removeIf(br -> br.employeeId().equals(d.getEmployeeId()) && br.getClosureID() == d.getClosureID()
+					&& br.getClosureDate().getClosureDay() == d.getClosureDate().getClosureDay()
+					&& br.getClosureDate().getLastDayOfMonth().booleanValue() == d.getClosureDate().getLastDayOfMonth()
+							.booleanValue() && br.getNo() == d.getNo());
+			this.data.add(d);
+		}
+
 	}
 
 	@Override
 	public List<SpecialHolidayRemainData> toDomain() {
-		return data == null ? new ArrayList<>() : data.toDomain(getEmployeeId(), getYearMonth(), getClosureId(), getClosureDate());
+		return data == null ? new ArrayList<>()
+				: data.stream().map(x -> x.toDomain(getEmployeeId(), getYearMonth(), getClosureId(), getClosureDate()))
+						.collect(Collectors.toList());
 	}
 	
 	
