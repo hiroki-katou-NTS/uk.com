@@ -480,7 +480,7 @@ export class CmmS45ShrComponentsApp1Component extends Vue {
         workType.code = codeType || '';
 
         let workTime = {} as Work;
-        workTime.code = codeTime || (self.isChangeWork ? self.$i18n('KAFS06_51') : self.$i18n('KAF006_55'));
+        workTime.code = codeTime || (self.isChangeWork ? self.$i18n('KAFS06_51') : self.$i18n('KAFS06_55'));
         let workTypes = _.get(self.dataOutput, 'appAbsenceStartInfoDto.workTypeLst');
 
         let resultWorkType = 
