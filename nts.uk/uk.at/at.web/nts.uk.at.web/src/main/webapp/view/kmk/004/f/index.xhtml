@@ -10,9 +10,9 @@
             <com:scriptfile set="IGNITE" />
 
             <com:ValidatorScript>
-					nts.uk.ctx.at.shared.dom.common.DailyTime
-					nts.uk.ctx.at.shared.dom.common.WeeklyTime
-   			</com:ValidatorScript>
+                nts.uk.ctx.at.shared.dom.common.DailyTime
+                nts.uk.ctx.at.shared.dom.common.WeeklyTime
+            </com:ValidatorScript>
 
             <script>var dialogSize = { width: 450, height: 610 };</script>
             <com:stylefile path="./style.css" />
@@ -45,6 +45,7 @@
                                 inputFormat: 'time',
                                 name: '#[KMK004_240]',
                                 mode: 'time',
+                                required: true, 
                                 option: {
                                     width: '60px',
                                     textalign: 'center'}, 
@@ -54,6 +55,7 @@
                                 inputFormat: 'time',
                                 name:'#[KMK004_241]',
                                 mode: 'time',
+                                required: true, 
                                 option: {
                                     width: '60px',
                                     textalign: 'center'},
@@ -99,7 +101,8 @@
                 <button tabindex="9" class="proceed large button1" data-bind="i18n: 'KMK004_234', click: add"></button>
                 <button tabindex="10" data-bind="i18n: 'KMK004_235', click: closeDialog"></button>
                 <com:ko-if bind="!checkCompany()">
-                    <button tabindex="11" class="danger button3"  data-bind="i18n: 'KMK004_236', click: remote, enable: !attendance()"></button>
+                    <button tabindex="11" class="danger button3"
+                        data-bind="i18n: 'KMK004_236', click: remote, enable: !attendance()"></button>
                 </com:ko-if>
             </div>
         </ui:define>
