@@ -668,6 +668,16 @@ export class KafS06AComponent extends KafS00ShrComponent {
             } as Model;
         }
     }
+    public cloneappAbsenceStartInfoDto(appAbsenceStartInfoDto: AppAbsenceStartInfoDto) {
+        const self = this;
+
+        let appAbsenceStartInfoDtoClone = _.cloneDeep(appAbsenceStartInfoDto);
+
+        self.changeDateFromList(appAbsenceStartInfoDtoClone.leaveComDayOffManas);
+        self.changeDateFromList(appAbsenceStartInfoDtoClone.payoutSubofHDManas);
+        
+        return appAbsenceStartInfoDtoClone;
+    }
 
     public changeDate() {
         const self = this;
@@ -676,7 +686,8 @@ export class KafS06AComponent extends KafS00ShrComponent {
         let command = {} as ChangeDateParamMobile;
         command.companyId = self.user.companyId;
         command.dates = self.getDates();
-        command.appAbsenceStartInfoDto = self.model.appAbsenceStartInfoDto;
+        command.appAbsenceStartInfoDto = self.cloneappAbsenceStartInfoDto(self.model.appAbsenceStartInfoDto);
+
         command.applyForLeaveDto = self.model.applyForLeaveDto;
         let holidayAppType = self.selectedValueHolidayType || HolidayAppType.ANNUAL_PAID_LEAVE;
         command.appHolidayType = Number(holidayAppType);
@@ -762,10 +773,8 @@ export class KafS06AComponent extends KafS00ShrComponent {
         let commandCheck = {} as CheckInsertMobileParam;
         vm.model.applyForLeaveDto = vm.toApplyForLeave();
         commandCheck.companyId = vm.user.companyId;
-        let appAbsenceStartInfoDto = _.clone(vm.model.appAbsenceStartInfoDto) as AppAbsenceStartInfoDto;
-        vm.changeDateFromList(appAbsenceStartInfoDto.leaveComDayOffManas);
-        vm.changeDateFromList(appAbsenceStartInfoDto.payoutSubofHDManas);
-        commandCheck.appAbsenceStartInfoDto = appAbsenceStartInfoDto;
+        
+        commandCheck.appAbsenceStartInfoDto = vm.cloneappAbsenceStartInfoDto(vm.model.appAbsenceStartInfoDto);
         commandCheck.applyForLeave = vm.model.applyForLeaveDto;
         commandCheck.mode = vm.modeNew;
         if (vm.modeNew) {
@@ -804,13 +813,13 @@ export class KafS06AComponent extends KafS00ShrComponent {
                     commandUpdate.applyForLeave = commandCheck.applyForLeave;
                     commandUpdate.appDispInfoStartupOutput = vm.appDispInfoStartupOutput;
                     commandUpdate.holidayAppDates = vm.getDates();
-                    let leaveComDayOffManaDto = vm.model.appAbsenceStartInfoDto.leaveComDayOffManas;
+                    let leaveComDayOffManaDto = _.cloneDeep(vm.model.appAbsenceStartInfoDto.leaveComDayOffManas);
                     vm.changeDateFromList(leaveComDayOffManaDto);
-                    let payoutSubofHDManagementDto = vm.model.appAbsenceStartInfoDto.payoutSubofHDManas;
+                    let payoutSubofHDManagementDto = _.cloneDeep(vm.model.appAbsenceStartInfoDto.payoutSubofHDManas);
                     vm.changeDateFromList(payoutSubofHDManagementDto);
-                    let leaveComDayOffMana = vm.linkWithVacation;
+                    let leaveComDayOffMana = _.cloneDeep(vm.linkWithVacation);
                     vm.changeDateFromList(leaveComDayOffMana);
-                    let payoutSubofHDManagements = vm.linkWithDraw;
+                    let payoutSubofHDManagements = _.cloneDeep(vm.linkWithDraw);
                     vm.changeDateFromList(payoutSubofHDManagements);
                     commandUpdate.leaveComDayOffManaDto = leaveComDayOffManaDto;
                     commandUpdate.payoutSubofHDManagementDto = payoutSubofHDManagementDto;
@@ -1291,7 +1300,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
                         let command = {} as SelectWorkTypeHolidayParam;
                         command.companyId = self.user.companyId;
                         command.dates = self.getDates();
-                        command.appAbsenceStartInfoOutput = self.model.appAbsenceStartInfoDto;
+                        command.appAbsenceStartInfoOutput = self.cloneappAbsenceStartInfoDto(self.model.appAbsenceStartInfoDto);
                         if (result.selectedWorkTime) {
                             command.appAbsenceStartInfoOutput.selectedWorkTimeCD = result.selectedWorkTime.code;
                         }
@@ -1343,7 +1352,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
 
                     let command = {} as SelectWorkTimeHolidayParam;
                     command.companyId = self.user.companyId;
-                    command.appAbsenceStartInfoDto = self.model.appAbsenceStartInfoDto;
+                    command.appAbsenceStartInfoDto = self.cloneappAbsenceStartInfoDto(self.model.appAbsenceStartInfoDto);
                     command.workTypeCode = self.workType.code;
                     command.workTimeCodeOp = self.workTime.code;
                     command.employeeId = self.user.employeeId;
@@ -1418,7 +1427,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
         let command = {
             companyId: self.user.companyId,
             dates: self.getDates(),
-            appAbsenceStartInfoDto: self.model.appAbsenceStartInfoDto,
+            appAbsenceStartInfoDto: self.cloneappAbsenceStartInfoDto(self.model.appAbsenceStartInfoDto),
             holidayAppType: Number(data)
         } as any;
 
