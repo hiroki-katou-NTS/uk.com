@@ -127,6 +127,7 @@ export class KafS10Step1Component extends Vue {
                 self.createWorkHours(false);
                 self.goWorkAtr = appHolidayWork.goWorkAtr;
                 self.backHomeAtr = appHolidayWork.backHomeAtr;
+                self.createHoursWorkTime();
                 
                 return;
             }
