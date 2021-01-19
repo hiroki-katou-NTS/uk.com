@@ -13,6 +13,11 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.WorkInformationDto;
+import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.RegisterWorkSchedule;
+import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.RegisterWorkScheduleKsu003;
+import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.ResultRegisWorkSchedule;
+import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.WorkScheduleCommand;
+import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.WorkScheduleParam;
 import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.TargetOrgIdenInforDto;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
@@ -65,6 +70,9 @@ public class KSU003WebService extends WebService{
 	
 	@Inject 
 	private ChangeWorkTypeSc changeWorkType;
+	
+	@Inject
+	private RegisterWorkScheduleKsu003 regWorkSchedule;
 	
 	@POST
 	@Path("getinfo-initstart")
@@ -122,6 +130,14 @@ public class KSU003WebService extends WebService{
 		String workTimeSetting = checkWorkType.checkWorkType(information.getWorkTypeCode());
 		CheckWorkTypeDto dto = new CheckWorkTypeDto(workTimeSetting); 
 		return dto;
+	}
+	
+	@POST
+	@Path("registerKSU003")
+	// 勤務予定を登録する
+	public ResultRegisWorkSchedule registerWorkSchedule (List<WorkScheduleParam> param){
+		ResultRegisWorkSchedule rs = regWorkSchedule.handle(param);
+		return rs;
 	}
 	
 	
