@@ -119,9 +119,15 @@ export class KafS06AComponent extends KafS00ShrComponent {
             self.$updateValidator('workHours1', {
                 validate: false
             });
+            self.$updateValidator('workHours2', {
+                timeRange: false
+            });
         } else {
             self.$updateValidator('workHours1', {
                 validate: true
+            });
+            self.$updateValidator('workHours2', {
+                timeRange: true
             });
         }
     }
@@ -146,6 +152,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
 
         if (data && !self.isFirstUpdate) {
             self.selectedHolidayType(data);
+            self.$validate('selectedValueHolidayType');
         }
     }
     // 続柄・喪主を選択する
@@ -829,6 +836,23 @@ export class KafS06AComponent extends KafS00ShrComponent {
         const vm = this;
 
         vm.$mask('show');
+
+        if (
+            vm.c11 &&
+            ((_.isNumber(_.get(vm.workHours2, 'start')) && !_.isNumber(_.get(vm.workHours2, 'end'))) 
+            || (_.isNumber(_.get(vm.workHours2, 'end') && !_.isNumber(_.get(vm.workHours2, 'start')))))
+        ) {
+
+            vm.$nextTick(() => {
+                vm.$mask('hide');
+            });
+            vm.$modal.error({ messageId: 'Msg_307'})
+                .then(() => {
+                    
+                });
+
+            return;
+        }
         vm.isValidateAll = vm.customValidate(vm);
         vm.$validate();
         if (!vm.$valid || !vm.isValidateAll) {
@@ -1238,7 +1262,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
             text: '--- 選択してください ---'
         });
         self.dropdownList = dropDownList;
-        self.selectedValueHolidayType = self.getSelectedValue();
+        self.selectedValueHolidayType = String(self.getSelectedValue());
         // 
 
     }
@@ -1676,7 +1700,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
             actualContentDisplayList,
 
             // List<振出振休紐付け管理>
-            managementData: self.linkWithVacation,
+            managementData: self.linkWithVacation || [],
         };
         self.$modal('kdls36', params)
             .then((result: any) => {
