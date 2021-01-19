@@ -399,10 +399,8 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 			companyCommonSetting.setShareContainer(shareContainer);
 		}
 		
-		//ichioka見直し
 		companyCommonSetting.setPersonnelCostSettings(personCostCalculationRepository.findByCompanyID(comanyId));
 		
-
 		/***会社共通処理***/
 		List<ManageCalcStateAndResult> returnList = new ArrayList<>();
 		

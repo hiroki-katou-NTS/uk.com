@@ -33,6 +33,8 @@ import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavi
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
+import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerformRepo;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AdTimeAndAnyItemAdUpService;
@@ -122,6 +124,9 @@ public class DailyRecordAdUpServiceImpl implements DailyRecordAdUpService {
 	
 	@Inject
 	private IdentityProcessUseSetRepository identityProcessUseRepository;
+	
+	@Inject
+	private OuenWorkTimeOfDailyRepo ouenWorkTimeOfDailyRepo;
 	
 	@Inject
 	private DailySnapshotWorkAdapter snapshotAdapter;
@@ -304,4 +309,10 @@ public class DailyRecordAdUpServiceImpl implements DailyRecordAdUpService {
 		snapshotAdapter.update(DailySnapshotWorkImport.from(sid, ymd, snapshot));
 	}
 
+	@Override
+	public void adUpOuenWorkTime(Optional<OuenWorkTimeOfDaily> ouen) {
+		if (!ouen.isPresent())
+			return ;
+		ouenWorkTimeOfDailyRepo.update(ouen.get());
+	}
 }

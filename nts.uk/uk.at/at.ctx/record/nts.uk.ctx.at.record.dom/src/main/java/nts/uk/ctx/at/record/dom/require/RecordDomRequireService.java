@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.require;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,7 @@ import nts.uk.ctx.at.record.dom.adapter.workschedule.snapshot.DailySnapshotWorkA
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
+import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDailyRepo;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.IntegrationOfDailyGetter;
@@ -2135,9 +2137,11 @@ public class RecordDomRequireService {
 
 		@Override
 		public List<OuenWorkTimeOfDailyAttendance> ouenWorkTimeOfDailyAttendance(String empId, GeneralDate ymd) {
-
-			return ouenWorkTimeOfDailyRepo.find(empId, ymd)
-					.stream().map(c -> c.getOuenTime()).collect(Collectors.toList());
+			Optional<OuenWorkTimeOfDaily> daily = ouenWorkTimeOfDailyRepo.find(empId, ymd);
+			if(!daily.isPresent()) {
+				return new ArrayList<>();
+			}
+			return daily.get().getOuenTime();
 		}
 
 		@Override

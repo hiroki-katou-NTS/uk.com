@@ -8,7 +8,7 @@ import java.util.Optional;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PriceUnit;
 
@@ -47,14 +47,14 @@ public class IncentiveUnitPriceService {
 	 * @param ouenWorkTimeSheets
 	 * @return
 	 */
-	public static Map<OuenFrameNo, PriceUnit> getIncentiveUnitPrice(
+	public static Map<WorkFrameNo, PriceUnit> getIncentiveUnitPrice(
 			RequireM1 require,
 			CacheCarrier cacheCarrier,
 			GeneralDate baseDate,
 			String companyId,
 			List<OuenWorkTimeSheetOfDailyAttendance> ouenWorkTimeSheets) {
 		
-		Map<OuenFrameNo, PriceUnit> unitPrices = new HashMap<>();
+		Map<WorkFrameNo, PriceUnit> unitPrices = new HashMap<>();
 		
 		for(OuenWorkTimeSheetOfDailyAttendance timeSheet : ouenWorkTimeSheets) {
 			//作業別インセンティブ単価の設定を取得する

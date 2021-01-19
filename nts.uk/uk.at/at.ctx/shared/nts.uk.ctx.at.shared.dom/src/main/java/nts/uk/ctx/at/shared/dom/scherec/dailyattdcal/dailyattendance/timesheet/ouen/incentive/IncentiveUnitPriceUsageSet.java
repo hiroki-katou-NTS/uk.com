@@ -45,7 +45,6 @@ public class IncentiveUnitPriceUsageSet extends AggregateRoot {
 		
 		public final int value;
 		
-		//ichioka見直し
 		public boolean isCompany() {
 			return this.equals(COMPANY);
 		}

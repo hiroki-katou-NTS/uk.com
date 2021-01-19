@@ -19,6 +19,7 @@ import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
+import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
@@ -81,6 +82,9 @@ public interface DailyRecordAdUpService {
 
 	// ドメインモデル「日別実績の備考」を更新する
 	public void adUpRemark(List<RemarksOfDailyPerform> remarks);
+	
+	// ドメインモデル「日別実績の応援作業別勤怠時間」を更新する
+	public void adUpOuenWorkTime(Optional<OuenWorkTimeOfDaily> ouen);
 
 	//ドメインモデル「スナップショット」を更新する
 	public void adUpSnapshot(String sid, GeneralDate ymd, SnapShot snapshot);
@@ -153,6 +157,9 @@ public interface DailyRecordAdUpService {
 		adUpRemark(domain.getRemarks().stream()
 				.map(x -> new RemarksOfDailyPerform(domain.getEmployeeId(), domain.getYmd(), x))
 				.collect(Collectors.toList()));
+
+		// ドメインモデル「日別実績の応援作業別勤怠時間」を更新する
+		adUpOuenWorkTime(Optional.of(OuenWorkTimeOfDaily.create(domain.getEmployeeId(), domain.getYmd(), domain.getOuenTime())));
 
 		adUpEmpError(domain.getEmployeeError(), new ArrayList<>(), false);
 

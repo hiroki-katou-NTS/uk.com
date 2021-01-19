@@ -82,7 +82,7 @@ public class OuenMovementTimeEachTimeSheet implements DomainObject {
 		Optional<TimeSpanForDailyCalc> moveTimeSheet = getMoveTimeSheet(processingTimeSheet, allTimeSheets, SupportWorkSetting.defaultValue());
 		
 		if(!moveTimeSheet.isPresent() || moveTimeSheet.get().lengthAsMinutes() < 0)
-			return OuenMovementTimeEachTimeSheet.createEmpty();
+			return OuenMovementTimeEachTimeSheet.createAllZero();
 		
 		//日別実績(Work)の退避
 		IntegrationOfDaily copyIntegrationOfDaily = converter.setData(recordReGetClass.getIntegrationOfDaily()).toDomain();
@@ -115,17 +115,17 @@ public class OuenMovementTimeEachTimeSheet implements DomainObject {
 				recordReGetClass);
 		
 		if(!result.getAttendanceTimeOfDailyPerformance().isPresent())
-			return OuenMovementTimeEachTimeSheet.createEmpty();
+			return OuenMovementTimeEachTimeSheet.createAllZero();
 		
 		//項目移送
 		return valueOf(result.getAttendanceTimeOfDailyPerformance().get());
 	}
 	
 	/**
-	 * 空で作成する
+	 * 全て0で作成する
 	 * @return 応援別勤務の移動時間
 	 */
-	public static OuenMovementTimeEachTimeSheet createEmpty() {
+	public static OuenMovementTimeEachTimeSheet createAllZero() {
 		return new OuenMovementTimeEachTimeSheet(AttendanceTime.ZERO, AttendanceTime.ZERO, AttendanceTime.ZERO, Collections.emptyList());
 	}
 	

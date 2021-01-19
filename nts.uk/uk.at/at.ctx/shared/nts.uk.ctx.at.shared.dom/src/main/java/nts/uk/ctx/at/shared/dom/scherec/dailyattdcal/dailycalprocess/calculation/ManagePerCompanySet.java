@@ -74,7 +74,6 @@ public class ManagePerCompanySet {
 	
 	/** 人件費計算設定 */
 	@Setter
-	//List<PersonnelCostSettingImport> personnelCostSettings;
 	List<PersonCostCalculation> personnelCostSettings;
 
 	@Setter

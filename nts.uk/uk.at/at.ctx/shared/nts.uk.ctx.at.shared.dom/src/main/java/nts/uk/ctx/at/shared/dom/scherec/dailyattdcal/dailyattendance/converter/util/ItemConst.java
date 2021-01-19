@@ -21,6 +21,7 @@ public interface ItemConst extends Cloneable {
 	public final String DEFAULT_GET_TYPE = "getValueType";
 	public final String DEFAULT_SET_VALUE = "value";
 	public final String FAKED = "FAKED";
+	public final String IDX_WITH_ENUM_REG = "[0-9](_[0-9])*(-[^0-9]*[0-9]*)+$";
 	
 	public final String E_WORK_REF = "就業時間帯から参照";
 	public final String E_SCHEDULE_REF = "スケジュールから参照";
@@ -318,4 +319,6 @@ public interface ItemConst extends Cloneable {
 	public final String CHILD_CARE = "子の看護";
 	public final String CARE = "介護";
 	public final String SUPER_60 = "60H超休";
+	public final String DAY_SHIFT = "常勤";
+	public final String NIGHT_SHIFT = "夜勤";
 }

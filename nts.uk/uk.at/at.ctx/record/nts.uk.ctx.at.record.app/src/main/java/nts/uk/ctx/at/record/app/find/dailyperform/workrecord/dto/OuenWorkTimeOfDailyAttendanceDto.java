@@ -1,14 +1,21 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate.PropType;
 import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenAttendanceTimeEachTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenMovementTimeEachTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PriceUnit;
 
@@ -16,7 +23,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PriceUnit;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OuenWorkTimeOfDailyAttendanceDto implements ItemConst {
+public class OuenWorkTimeOfDailyAttendanceDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 応援勤務枠NO: 応援勤務枠NO */
 	private int no;
@@ -32,20 +39,20 @@ public class OuenWorkTimeOfDailyAttendanceDto implements ItemConst {
 	/** 金額: 勤怠日別金額 */
 	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = AMOUNT)
 	@AttendanceItemValue(type = ValueType.AMOUNT_NUM)
-	private int amount;
+	private Integer amount;
 	
 	/** 単価: 単価 */
 	@AttendanceItemLayout(layout = LAYOUT_D, jpPropertyName = PRICE_UNIT)
 	@AttendanceItemValue(type = ValueType.AMOUNT_NUM)
-	private int priceUnit;
+	private Integer priceUnit;
 	
 	public OuenWorkTimeOfDailyAttendance toDomain() {
 		return OuenWorkTimeOfDailyAttendance.create(
-				OuenFrameNo.of(this.no),
-				this.workTime.toDomain(),
-				this.moveTime.toDomain(),
-				new AttendanceAmountDaily(this.amount),
-				new PriceUnit(this.priceUnit));
+				WorkFrameNo.of(this.no),
+				this.workTime == null ? OuenAttendanceTimeEachTimeSheet.createAllZero() : this.workTime.toDomain(),
+				this.moveTime == null ? OuenMovementTimeEachTimeSheet.createAllZero() : this.moveTime.toDomain(),
+				this.amount == null ? AttendanceAmountDaily.ZERO : new AttendanceAmountDaily(this.amount),
+				this.priceUnit == null ? PriceUnit.ZERO : new PriceUnit(this.priceUnit));
 	}
 	
 	public static OuenWorkTimeOfDailyAttendanceDto valueOf(OuenWorkTimeOfDailyAttendance domain) {
@@ -55,5 +62,78 @@ public class OuenWorkTimeOfDailyAttendanceDto implements ItemConst {
 				OuenMovementTimeEachTimeSheetDto.valueOf(domain.getMoveTime()),
 				domain.getAmount().v(),
 				domain.getPriceUnit().v());
+	}
+	
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case AMOUNT:
+		case PRICE_UNIT:
+			return PropType.VALUE;
+		default:
+			return PropType.OBJECT;
+		}
+	}
+	
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case (WORKING_TIME + TIME):
+			return new OuenAttendanceTimeEachTimeSheetDto();
+		case (MOVE + TIME):
+			return new OuenMovementTimeEachTimeSheetDto();
+		default:
+			return null;
+		}
+	}
+	
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case (WORKING_TIME + TIME):
+			return Optional.ofNullable(this.workTime);
+		case (MOVE + TIME):
+			return Optional.ofNullable(this.moveTime);
+		default:
+			return Optional.empty();
+		}
+	}
+	
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case (WORKING_TIME + TIME):
+			this.workTime = (OuenAttendanceTimeEachTimeSheetDto) value;
+			break;
+		case (MOVE + TIME):
+			this.moveTime = (OuenMovementTimeEachTimeSheetDto) value;
+			break;
+		}
+	}
+	
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case AMOUNT:
+			return Optional.of(ItemValue.builder().value(this.amount).valueType(ValueType.AMOUNT_NUM));
+		case PRICE_UNIT:
+			return Optional.of(ItemValue.builder().value(this.priceUnit).valueType(ValueType.AMOUNT_NUM));
+		default:
+			return Optional.empty();
+		}
+	}
+	
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case AMOUNT:
+			this.amount = value.valueOrDefault(0);
+			break;
+		case PRICE_UNIT:
+			this.priceUnit = value.valueOrDefault(0);
+			break;
+		default:
+			break;
+		}
 	}
 }

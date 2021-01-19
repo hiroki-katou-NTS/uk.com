@@ -124,7 +124,7 @@ public class KrcdtDayPremiumTime extends UkJpaEntity implements Serializable {
 		//値のセットループ
 		for(int loopNumber = 1 ; loopNumber <= 10 ; loopNumber++) {
 			Optional<PremiumTime> premiumTime = domain.getPremiumTime(loopNumber);
-			//自分自身の値セット先(フィールド)取得
+			//自分自身の値セット先(フィールド)取得 [割増時間]
 			Field field = FieldReflection.getField(this.getClass(), "premiumTime" + loopNumber);		
 			if(premiumTime.isPresent()&&premiumTime.get().getPremitumTime()!=null) {
 				//値セット
@@ -132,6 +132,15 @@ public class KrcdtDayPremiumTime extends UkJpaEntity implements Serializable {
 			}else {
 				//値セット
 				FieldReflection.setField(field, this, 0);
+			}
+			//自分自身の値セット先(フィールド)取得 [割増金額]
+			Field amount = FieldReflection.getField(this.getClass(), "premiumAmount" + loopNumber);
+			if(premiumTime.isPresent()&&premiumTime.get().getPremiumAmount()!=null) {
+				//値セット
+				FieldReflection.setField(amount, this, premiumTime.get().getPremiumAmount().v());
+			}else {
+				//値セット
+				FieldReflection.setField(amount, this, 0);
 			}
 		}
 	}

@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.error.BusinessException;
@@ -48,7 +47,6 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Getter
-@AllArgsConstructor
 public class IntegrationOfDaily {
 	//社員ID
 	@Setter
@@ -159,8 +157,6 @@ public class IntegrationOfDaily {
 	//備考: 日別勤怠の備考
 	@Setter
 	private List<RemarksOfDailyAttd> remarks;
-	
-	//応援時刻: 日別勤怠の応援作業時間帯 
 	
 	/**日別実績の勤務種別*/ 
 //	private Optional<WorkTypeOfDailyPerformance> businessType;

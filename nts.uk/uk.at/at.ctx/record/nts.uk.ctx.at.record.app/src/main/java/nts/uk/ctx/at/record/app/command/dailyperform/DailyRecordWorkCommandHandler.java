@@ -49,6 +49,8 @@ import nts.uk.ctx.at.record.app.command.dailyperform.month.UpdateMonthAfterProce
 import nts.uk.ctx.at.record.app.command.dailyperform.month.UpdateMonthDailyParam;
 import nts.uk.ctx.at.record.app.command.dailyperform.optionalitem.OptionalItemOfDailyPerformCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.optionalitem.OptionalItemOfDailyPerformCommandUpdateHandler;
+import nts.uk.ctx.at.record.app.command.dailyperform.ouen.OuenWorkTimeOfDailyCommandAddHandler;
+import nts.uk.ctx.at.record.app.command.dailyperform.ouen.OuenWorkTimeOfDailyCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.remark.RemarkOfDailyCommandAddHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.remark.RemarkOfDailyCommandUpdateHandler;
 import nts.uk.ctx.at.record.app.command.dailyperform.shorttimework.ShortTimeOfDailyCommandAddHandler;
@@ -228,6 +230,14 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	@Inject
 	@AttendanceItemLayout(layout = DAILY_REMARKS_CODE, jpPropertyName = DAILY_REMARKS_NAME, index = 17)
 	private RemarkOfDailyCommandUpdateHandler remarksUpdateHandler;
+	
+	/** 日別実績の応援作業別勤怠時間 */
+	@Inject
+	@AttendanceItemLayout(layout = DAILY_SUPPORT_TIME_CODE, jpPropertyName = DAILY_SUPPORT_TIME_NAME, index = 18)
+	private OuenWorkTimeOfDailyCommandAddHandler ouenWorkTimeAddHandler;
+	@Inject
+	@AttendanceItemLayout(layout = DAILY_SUPPORT_TIME_CODE, jpPropertyName = DAILY_SUPPORT_TIME_NAME, index = 18)
+	private OuenWorkTimeOfDailyCommandUpdateHandler ouenWorkTimeUpdateHandler;
 
 	@Inject
 	private CalculateDailyRecordServiceCenter calcService;
@@ -664,6 +674,8 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 			return isUpdate ? this.pcLogInfoUpdateHandler : this.pcLogInfoAddHandler;
 		case DAILY_REMARKS_NAME:
 			return isUpdate ? this.remarksUpdateHandler : this.remarksAddHandler;
+		case DAILY_SUPPORT_TIME_NAME:
+			return isUpdate ? this.ouenWorkTimeUpdateHandler : this.ouenWorkTimeAddHandler;
 		default:
 			return null;
 		}

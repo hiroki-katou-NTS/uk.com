@@ -60,7 +60,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworkti
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.TimeSheetOfAttendanceEachOuenSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkContent;
@@ -199,7 +199,7 @@ public class ReflectApplicationHelper {
 
 		// 日別勤怠の応援作業時間帯
 		List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheet = new ArrayList<>();
-		ouenTimeSheet.add(OuenWorkTimeSheetOfDailyAttendance.create(OuenFrameNo.of(no),
+		ouenTimeSheet.add(OuenWorkTimeSheetOfDailyAttendance.create(WorkFrameNo.of(no),
 				WorkContent.create("1", WorkplaceOfWorkEachOuen.create("11111", new WorkLocationCD("AAAA")),
 						Optional.empty()),
 				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(no),

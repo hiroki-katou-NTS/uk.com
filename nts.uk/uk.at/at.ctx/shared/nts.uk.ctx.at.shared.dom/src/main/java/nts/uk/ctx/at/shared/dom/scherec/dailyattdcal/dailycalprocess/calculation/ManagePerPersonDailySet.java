@@ -7,7 +7,7 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BonusPaySetting;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PriceUnit;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -34,7 +34,7 @@ public class ManagePerPersonDailySet {
 	private Optional<BonusPaySetting> bonusPaySetting;
 	
 	/** インセンティブ単価 <応援勤務枠No, 単価> */
-	private Map<OuenFrameNo, PriceUnit> incentiveUnitPrice = new HashMap<>();
+	private Map<WorkFrameNo, PriceUnit> incentiveUnitPrice = new HashMap<>();
 	
 	/** 平日時の所定時間設定
 	 *年休、欠勤の場合に実績に就業時間帯が埋まっていない時に使用する。
@@ -54,7 +54,7 @@ public class ManagePerPersonDailySet {
 			AddSetting addSetting,
 			Optional<BonusPaySetting> bonusPaySetting,
 			PredetermineTimeSetForCalc predetermineTimeSetByPersonWeekDay,
-			Map<OuenFrameNo, PriceUnit> incentiveUnitPrice) {
+			Map<WorkFrameNo, PriceUnit> incentiveUnitPrice) {
 		super();
 		this.personInfo = personInfo;
 		this.dailyUnit = dailyUnit;
@@ -69,7 +69,7 @@ public class ManagePerPersonDailySet {
 	 * @param no
 	 * @return インセンティブ単価
 	 */
-	public PriceUnit getIncentiveUnitPrice(OuenFrameNo no) {
+	public PriceUnit getIncentiveUnitPrice(WorkFrameNo no) {
 		return Optional.ofNullable(this.incentiveUnitPrice.get(no)).orElse(PriceUnit.ZERO);
 	}
 }

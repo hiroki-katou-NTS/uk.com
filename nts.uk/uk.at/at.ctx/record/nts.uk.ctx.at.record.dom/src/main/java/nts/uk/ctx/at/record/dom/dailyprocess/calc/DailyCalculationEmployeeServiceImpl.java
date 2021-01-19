@@ -298,14 +298,12 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 					? Optional.of(new AnyItemValueOfDaily(value.getEmployeeId(), value.getYmd(),
 							value.getAnyItemValue().get()))
 					: Optional.empty();
-			List<OuenWorkTimeOfDaily> ouenTimes = new ArrayList<>();
+			Optional<OuenWorkTimeOfDaily> ouenTime = Optional.empty();
 			if(!value.getOuenTime().isEmpty()) {
-				ouenTimes = value.getOuenTime().stream()
-						.map(o-> OuenWorkTimeOfDaily.create(value.getEmployeeId(), value.getYmd(), o))
-						.collect(Collectors.toList());
+				ouenTime = Optional.of(OuenWorkTimeOfDaily.create(value.getEmployeeId(), value.getYmd(), value.getOuenTime()));
 			}
 			this.registAttendanceTime(value.getEmployeeId(),value.getYmd(),
-					attdTimeOfDailyPer,anyItem,ouenTimes);
+					attdTimeOfDailyPer,anyItem,ouenTime);
 		}
 		
 		if(value.getAffiliationInfor() != null) {
@@ -429,8 +427,8 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	 * @param attendanceTime 日別実績の勤怠時間
 	 */
 	private void registAttendanceTime(String empId,GeneralDate ymd,AttendanceTimeOfDailyPerformance attendanceTime,
-			Optional<AnyItemValueOfDaily> anyItem, List<OuenWorkTimeOfDaily> ouenTimes){
-		adTimeAndAnyItemAdUpService.addAndUpdate(empId,ymd,Optional.of(attendanceTime), anyItem, ouenTimes);	
+			Optional<AnyItemValueOfDaily> anyItem, Optional<OuenWorkTimeOfDaily> ouenTime){
+		adTimeAndAnyItemAdUpService.addAndUpdate(empId,ymd,Optional.of(attendanceTime), anyItem, ouenTime);	
 	}
 	
 	

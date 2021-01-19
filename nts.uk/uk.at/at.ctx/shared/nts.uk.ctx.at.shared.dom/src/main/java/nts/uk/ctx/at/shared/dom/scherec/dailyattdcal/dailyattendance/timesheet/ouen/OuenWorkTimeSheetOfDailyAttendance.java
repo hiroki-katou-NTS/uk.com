@@ -12,7 +12,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class OuenWorkTimeSheetOfDailyAttendance implements DomainObject {
 
 	/** 応援勤務枠No: 応援勤務枠No */
-	private OuenFrameNo workNo;
+	private WorkFrameNo workNo;
 
 	/** 作業内容: 作業内容 */
 	private WorkContent workContent;
@@ -20,7 +20,7 @@ public class OuenWorkTimeSheetOfDailyAttendance implements DomainObject {
 	/** 時間帯: 時間帯別勤怠の時間帯 */
 	private TimeSheetOfAttendanceEachOuenSheet timeSheet;
 
-	private OuenWorkTimeSheetOfDailyAttendance(OuenFrameNo workNo, WorkContent workContent, 
+	private OuenWorkTimeSheetOfDailyAttendance(WorkFrameNo workNo, WorkContent workContent, 
 			TimeSheetOfAttendanceEachOuenSheet timeSheet) {
 		super();
 		this.workNo = workNo;
@@ -28,14 +28,14 @@ public class OuenWorkTimeSheetOfDailyAttendance implements DomainObject {
 		this.timeSheet = timeSheet;
 	}
 	
-	public static OuenWorkTimeSheetOfDailyAttendance create(OuenFrameNo workNo, WorkContent workContent, 
+	public static OuenWorkTimeSheetOfDailyAttendance create(WorkFrameNo workNo, WorkContent workContent, 
 			TimeSheetOfAttendanceEachOuenSheet timeSheet) {
 		
 		return new OuenWorkTimeSheetOfDailyAttendance(workNo, workContent, timeSheet);
 	}
 	
 	/**
-	 * 作業時間帯の開始終了を取得する
+	 * 開始終了を取得する
 	 * @return 開始～終了
 	 */
 	public Optional<TimeSpanForDailyCalc> getStartAndEnd() {

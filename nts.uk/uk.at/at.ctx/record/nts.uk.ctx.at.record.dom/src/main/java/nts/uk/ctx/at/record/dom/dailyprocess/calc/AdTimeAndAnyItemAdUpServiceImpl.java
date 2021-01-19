@@ -66,7 +66,7 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 	
 	@Override
 	public void addAndUpdate(String empId ,GeneralDate ymd,
-							Optional<AttendanceTimeOfDailyPerformance> attendanceTime, Optional<AnyItemValueOfDaily> anyItem, List<OuenWorkTimeOfDaily> ouenTimes) {
+							Optional<AttendanceTimeOfDailyPerformance> attendanceTime, Optional<AnyItemValueOfDaily> anyItem, Optional<OuenWorkTimeOfDaily> ouenTime) {
 		workInfo.find(empId, ymd).ifPresent(wi -> {
 			Optional<PCLogOnInfoOfDaily> pc = pcLogon.find(empId, ymd);
 			Optional<AttendanceLeavingGateOfDaily> al = attendanceGate.find(empId, ymd);
@@ -91,7 +91,7 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 					new ArrayList<>(),//editState
 					Optional.empty(), //tempTime
 					new ArrayList<>(),//remarks
-					ouenTimes.stream().map(o->o.getOuenTime()).collect(Collectors.toList()),//ouenTime
+					ouenTime.isPresent() ? ouenTime.get().getOuenTime() : new ArrayList<>(),//ouenTime
 					new ArrayList<>(),//ouenTimeSheet
 					Optional.empty());//snapshot
 			addAndUpdate(daily);
@@ -124,9 +124,7 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 			});
 			//応援作業別勤怠時間更新
 			if(!d.getOuenTime().isEmpty()) {
-				ouenWorkTimeOfDailyRepo.update(d.getOuenTime().stream()
-						.map(o-> OuenWorkTimeOfDaily.create(d.getEmployeeId(), d.getYmd(), o))
-						.collect(Collectors.toList()));
+				ouenWorkTimeOfDailyRepo.update(OuenWorkTimeOfDaily.create(d.getEmployeeId(), d.getYmd(), d.getOuenTime()));
 			}
 			Optional<AttendanceTimeOfDailyPerformance> attdTimeOfDailyPer = d
 					.getAttendanceTimeOfDailyPerformance().isPresent()

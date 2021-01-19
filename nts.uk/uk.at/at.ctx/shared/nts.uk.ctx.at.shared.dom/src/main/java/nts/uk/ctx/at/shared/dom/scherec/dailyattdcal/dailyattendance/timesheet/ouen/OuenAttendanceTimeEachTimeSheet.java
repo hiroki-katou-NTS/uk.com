@@ -85,7 +85,7 @@ public class OuenAttendanceTimeEachTimeSheet implements DomainObject {
 		Optional<TimeSpanForDailyCalc> startEnd = ouenWorkTimeSheet.getStartAndEnd();
 		
 		if(!startEnd.isPresent())
-			return OuenAttendanceTimeEachTimeSheet.createEmpty();
+			return OuenAttendanceTimeEachTimeSheet.createAllZero();
 		
 		//日別実績(Work)の退避
 		IntegrationOfDaily copyIntegrationOfDaily = converter.setData(recordReGetClass.getIntegrationOfDaily()).toDomain();
@@ -118,17 +118,17 @@ public class OuenAttendanceTimeEachTimeSheet implements DomainObject {
 				recordReGetClass);
 		
 		if(!result.getAttendanceTimeOfDailyPerformance().isPresent())
-			return OuenAttendanceTimeEachTimeSheet.createEmpty();
+			return OuenAttendanceTimeEachTimeSheet.createAllZero();
 		
 		//項目移送
 		return valueOf(result.getAttendanceTimeOfDailyPerformance().get());
 	}
 	
 	/**
-	 * 空で作成する
+	 * 全て0で作成する
 	 * @return
 	 */
-	public static OuenAttendanceTimeEachTimeSheet createEmpty() {
+	public static OuenAttendanceTimeEachTimeSheet createAllZero() {
 		return new OuenAttendanceTimeEachTimeSheet(AttendanceTime.ZERO, AttendanceTime.ZERO, AttendanceTime.ZERO,
 				Collections.emptyList(), Collections.emptyList());
 	}
@@ -137,7 +137,7 @@ public class OuenAttendanceTimeEachTimeSheet implements DomainObject {
 	 * 割増時間を合計する
 	 * @return 割増時間の合計
 	 */
-	public AttendanceTime calcTotalPremiumTime() {
+	public AttendanceTime getTotalPremiumTime() {
 		return new AttendanceTime(this.premiumTime.stream().mapToInt(time -> time.getPremitumTime().valueAsMinutes()).sum());
 	}
 	
@@ -152,7 +152,7 @@ public class OuenAttendanceTimeEachTimeSheet implements DomainObject {
 				attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getBreakTimeOfDaily().getToRecordTotalTime().getTotalTime().getTime(),
 				attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getWithinStatutoryTimeOfDaily().getActualWorkTime().addMinutes(
 						attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getWithinStatutoryTimeOfDaily().getActualWithinPremiumTime().minute()),
-				MedicalCareTimeEachTimeSheet.defaultValue(),//様式9が未実装の為、全て0
+				MedicalCareTimeEachTimeSheet.createAllZero(),//様式9が未実装の為、全て0
 				attendanceTime.getActualWorkingTimeOfDaily().getPremiumTimeOfDailyPerformance().getPremiumTimes());
 	}
 }

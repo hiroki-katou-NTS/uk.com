@@ -32,7 +32,7 @@ public class PremiumTimeDto implements ItemConst, AttendanceItemDataGate {
 	private Integer premiumAmount;
 
 	/** 割増時間NO: 割増時間NO */
-	private Integer no;
+	private int no;
 
 	@Override
 	public PremiumTimeDto clone() {
@@ -41,31 +41,46 @@ public class PremiumTimeDto implements ItemConst, AttendanceItemDataGate {
 
 	@Override
 	public Optional<ItemValue> valueOf(String path) {
-		if (PREMIUM.equals(path)) {
+		switch(path) {
+		case PREMIUM:
 			return Optional.of(ItemValue.builder().value(premitumTime).valueType(ValueType.TIME));
+		case (PREMIUM + AMOUNT):
+			return Optional.of(ItemValue.builder().value(premiumAmount).valueType(ValueType.TIME));
+		default:
+			return AttendanceItemDataGate.super.valueOf(path);
 		}
-		return AttendanceItemDataGate.super.valueOf(path);
 	}
 
 	@Override
 	public void set(String path, ItemValue value) {
-		if (PREMIUM.equals(path)) {
-			this.premitumTime = value.valueOrDefault(null);
+		switch(path) {
+		case PREMIUM:
+			this.premitumTime = value.valueOrDefault(0);
+			break;
+		case (PREMIUM + AMOUNT):
+			this.premiumAmount = value.valueOrDefault(0);
+			break;
+		default:
+			break;
 		}
 	}
 	
 	@Override
 	public PropType typeOf(String path) {
-		if (PREMIUM.equals(path)) {
+		switch(path) {
+		case PREMIUM:
+		case (PREMIUM + AMOUNT):
 			return PropType.VALUE;
+		default:
+			return PropType.OBJECT;
 		}
-		return PropType.OBJECT;
 	}
 	
-	
-	
 	public PremiumTime toDomain() {
-		return new PremiumTime(this.no, new AttendanceTime(this.premitumTime), new AttendanceAmountDaily(this.premiumAmount));
+		return new PremiumTime(
+				this.no,
+				this.premitumTime == null ? AttendanceTime.ZERO : new AttendanceTime(this.premitumTime),
+				this.premiumAmount == null ? AttendanceAmountDaily.ZERO : new AttendanceAmountDaily(this.premiumAmount));
 	}
 	
 	public static PremiumTimeDto valueOf(PremiumTime domain) {

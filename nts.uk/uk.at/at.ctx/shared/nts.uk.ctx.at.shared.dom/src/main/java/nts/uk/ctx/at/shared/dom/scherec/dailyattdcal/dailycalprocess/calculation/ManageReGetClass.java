@@ -267,7 +267,7 @@ public class ManageReGetClass {
 	 */
 	public DeductLeaveEarly getLeaveLateSet() {
 		if(!this.getHolidayCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent())
-			return DeductLeaveEarly.defaultValue();
+			return DeductLeaveEarly.createAllTrue();
 			
 		return this.getHolidayCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly();
 	}

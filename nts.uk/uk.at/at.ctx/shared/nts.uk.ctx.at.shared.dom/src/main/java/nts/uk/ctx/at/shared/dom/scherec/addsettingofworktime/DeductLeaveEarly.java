@@ -41,7 +41,11 @@ public class DeductLeaveEarly extends DomainObject implements Serializable{
 	
 	private static final int TRUE_CONST = 1;
 	
-	public static DeductLeaveEarly defaultValue() {
+	/**
+	 * 全てtrueで作成する
+	 * @return
+	 */
+	public static DeductLeaveEarly createAllTrue() {
 		return new DeductLeaveEarly(TRUE_CONST, TRUE_CONST);
 	}
 	

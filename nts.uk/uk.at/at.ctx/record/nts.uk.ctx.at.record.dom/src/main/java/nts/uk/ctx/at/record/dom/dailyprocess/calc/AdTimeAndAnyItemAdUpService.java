@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 public interface AdTimeAndAnyItemAdUpService {
 
 	void addAndUpdate(String empId, GeneralDate ymd, Optional<AttendanceTimeOfDailyPerformance> attendanceTime,
-			Optional<AnyItemValueOfDaily> anyItem,List<OuenWorkTimeOfDaily> ouenTime);
+			Optional<AnyItemValueOfDaily> anyItem, Optional<OuenWorkTimeOfDaily> ouenTime);
 	
 	List<IntegrationOfDaily> addAndUpdate(List<IntegrationOfDaily> daily);
 	
