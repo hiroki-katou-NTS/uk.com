@@ -729,8 +729,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		}
 		// fix bug #113874
 		if (!optEmpHistItem.isPresent()) {
-			//return new StateAndValueDatePeriod(dateBeforeCorrection, false);
-			throw new BusinessException("社員の所属雇用履歴がありません");
+			return new StateAndValueDatePeriod(dateBeforeCorrection, false);
 		}
 
 		// ドメインモデル「雇用に紐づく就業締め」を取得
