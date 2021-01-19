@@ -64,8 +64,8 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
           name = "";
           break;
         case 1:
-          url = "/nts.uk.at.web/view/ktg/001/a/index.xhtml";
-          name = "";
+          url = "/view/ktg/001/a/ktg001.a.component.js";
+          name = "kgt-001-a";
           break;
         case 2:
           url = "/nts.uk.at.web/view/ktg/004/a/index.xhtml";
