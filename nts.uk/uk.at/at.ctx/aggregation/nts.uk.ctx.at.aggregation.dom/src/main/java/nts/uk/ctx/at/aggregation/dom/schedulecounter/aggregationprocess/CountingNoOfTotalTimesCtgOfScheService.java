@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
 /**
  * スケジュール集計の回数集計カテゴリを集計する
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.予実集計.スケジュール集計.集計処理.スケジュール集計の回数集計カテゴリを集計する
  * @author lan_lt
  *
  */
