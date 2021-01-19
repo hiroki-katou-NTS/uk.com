@@ -96,7 +96,7 @@ public class ReflectApplicationWorkSchedule {
 		dailyRecordApp.setDomain(domainCorrect);
 
 		// 日別実績の修正からの計算
-		List<IntegrationOfDaily> lstAfterCalc = require.calculateForSchedule(type, CalculateOption.asDefault(),
+		List<IntegrationOfDaily> lstAfterCalc = require.calculateForSchedule(ExecutionType.NORMAL_EXECUTION, CalculateOption.asDefault(),
 				Arrays.asList(domainCorrect));
 		if (!lstAfterCalc.isEmpty()) {
 			dailyRecordApp.setDomain(lstAfterCalc.get(0));

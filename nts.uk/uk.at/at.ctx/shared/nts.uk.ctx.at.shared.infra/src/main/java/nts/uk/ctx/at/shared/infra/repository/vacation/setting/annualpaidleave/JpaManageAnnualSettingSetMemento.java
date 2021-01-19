@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.annualpaidleave;
 
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualLeaveGrantDay;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.DisplaySetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.HalfDayManage;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ManageAnnualSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RemainingNumberSetting;
@@ -47,12 +45,12 @@ public class JpaManageAnnualSettingSetMemento implements ManageAnnualSettingSetM
      * ManageAnnualSettingSetMemento#setMaxGrantDay(nts.uk.ctx.at.shared.dom.
      * vacation.setting.annualpaidleave.AnnualLeaveGrantDay)
      */
-    @Override
-    public void setMaxGrantDay(AnnualLeaveGrantDay maxGrantDay) {
-        if (maxGrantDay != null) {
-//            this.entity.setHalfMaxGrantDay(maxGrantDay.v());
-        }
-    }
+//    @Override
+//    public void setMaxGrantDay(AnnualLeaveGrantDay maxGrantDay) {
+//        if (maxGrantDay != null) {
+////            this.entity.setHalfMaxGrantDay(maxGrantDay.v());
+//        }
+//    }
 
     /*
      * (non-Javadoc)
@@ -63,7 +61,6 @@ public class JpaManageAnnualSettingSetMemento implements ManageAnnualSettingSetM
      */
     @Override
     public void setHalfDayManage(HalfDayManage halfDayManage) {
-//        this.entity.setHalfMaxDayYear(halfDayManage.maxDayOfYear);
         this.entity.setHalfManageAtr(halfDayManage.manageType.value);
         this.entity.setHalfMaxReference(halfDayManage.reference.value);
         this.entity.setHalfMaxUniformComp(halfDayManage.maxNumberUniformCompany.v());
@@ -91,30 +88,8 @@ public class JpaManageAnnualSettingSetMemento implements ManageAnnualSettingSetM
     @Override
     public void setRemainingNumberSetting(RemainingNumberSetting remainingNumberSetting) {
         this.entity.setRetentionYear(remainingNumberSetting.retentionYear.v());
-//        if (remainingNumberSetting.remainingDayMaxNumber != null) {
-//            this.entity.setRemainingMaxDay(remainingNumberSetting.remainingDayMaxNumber.v());
-//        }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
-     * ManageAnnualSettingSetMemento#setDisplaySetting(nts.uk.ctx.at.shared.dom.
-     * vacation.setting.annualpaidleave.DisplaySetting)
-     */
-    @Override
-    public void setDisplaySetting(DisplaySetting displaySetting) {
-//        this.entity.setNextGrantDayDispAtr(displaySetting.nextGrantDayDisplay.value);
-//        this.entity.setRemainingNumDispAtr(displaySetting.remainingNumberDisplay.value);
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
-     * ManageAnnualSettingSetMemento#setYearLyOfDays
-     * (nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.YearLyOfNumberDays)
-     */
 	@Override
 	public void setYearLyOfDays(YearLyOfNumberDays yearLyOfNumberDays) {
 //		 if (yearLyOfNumberDays != null) {

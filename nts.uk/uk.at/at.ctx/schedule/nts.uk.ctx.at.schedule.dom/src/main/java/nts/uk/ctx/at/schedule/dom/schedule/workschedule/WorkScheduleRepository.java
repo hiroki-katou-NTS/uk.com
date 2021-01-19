@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
@@ -46,6 +45,9 @@ public interface WorkScheduleRepository {
 	 * @param sid
 	 * @param datePeriod
 	 */
+	
+	void update(WorkSchedule workSchedule);
+	
 	void delete(String sid, DatePeriod datePeriod);
 	
 	/** Delete (勤務予定) **/

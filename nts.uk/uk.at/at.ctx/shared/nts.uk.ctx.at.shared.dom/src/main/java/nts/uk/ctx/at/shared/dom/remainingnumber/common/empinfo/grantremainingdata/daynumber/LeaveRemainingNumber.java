@@ -284,7 +284,7 @@ public class LeaveRemainingNumber {
 				// 丸め処理
 				if ( contractTime.isPresent()){
 					// 取得した契約時間を1時間単位で切り上げる
-					if ( annualTimePerDay.getContractTimeRound().equals(ContractTimeRound.RoundUpTo1Hour) ){
+					if ( annualTimePerDay.getContractTimeRound().equals(ContractTimeRound.Round_up_to_1_hour) ){
 							contractTime = Optional.of(contractTime.get().roundUp1Hour());
 					}
 				}

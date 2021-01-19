@@ -55,4 +55,6 @@ public interface TimeAnnualSettingGetMemento {
      * @return RoundProcessClassific
      */
     TimeAnnualRoundProcesCla GetRoundProcessClassific();
+    
+    TimeAnnualLeaveTimeDay getTimeAnnualLeaveTimeDay();
 }

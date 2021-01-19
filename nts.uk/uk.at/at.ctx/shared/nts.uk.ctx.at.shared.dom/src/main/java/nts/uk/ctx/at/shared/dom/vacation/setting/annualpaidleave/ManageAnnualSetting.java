@@ -55,7 +55,6 @@ public class ManageAnnualSetting extends DomainObject implements Serializable{
         this.halfDayManage = memento.getHalfDayManage();
         this.isWorkDayCalculate = memento.getIsWorkDayCalculate();
         this.remainingNumberSetting = memento.getRemainingNumberSetting();
-        this.displaySetting = memento.getDisplaySetting();
         this.yearlyOfNumberDays = memento.getYearLyOfDays();
     }
 
@@ -65,11 +64,9 @@ public class ManageAnnualSetting extends DomainObject implements Serializable{
      * @param memento the memento
      */
     public void saveToMemento(ManageAnnualSettingSetMemento memento) {
-        memento.setMaxGrantDay(this.maxGrantDay);
         memento.setHalfDayManage(this.halfDayManage);
         memento.setWorkDayCalculate(this.isWorkDayCalculate);
         memento.setRemainingNumberSetting(this.remainingNumberSetting);
-        memento.setDisplaySetting(this.displaySetting);
         memento.setYearLyOfDays(this.yearlyOfNumberDays);
     }
 }

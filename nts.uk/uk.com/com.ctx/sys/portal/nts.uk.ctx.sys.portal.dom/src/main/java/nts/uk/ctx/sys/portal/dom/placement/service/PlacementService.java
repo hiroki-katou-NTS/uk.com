@@ -1,7 +1,5 @@
 package nts.uk.ctx.sys.portal.dom.placement.service;
 
-import java.util.List;
-
 /**
  * @author LamDT
  */
@@ -15,13 +13,6 @@ public interface PlacementService {
 	 */
 	boolean isExist(String placementID);
 	
-	/**
-	 * Copy List Placement from Source Layout to Target Layout
-	 * 
-	 * @param
-	 * @return Copied List placement ID
-	 */
-	List<String> copyPlacementByLayout(String sourceLayoutID, String targetLayoutID);
 
 	/**
 	 * Copy Placement with given ID to Target Layout

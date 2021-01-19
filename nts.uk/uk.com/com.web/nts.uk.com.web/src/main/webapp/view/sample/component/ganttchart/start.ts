@@ -102,8 +102,8 @@ __viewContext.ready(function() {
             };
             
             let middleColumns = [
-                { headerText: "コード", key: "code", width: "50px", handlerType: "input", dataType: "text" },
-                { headerText: "開始1", key: "startTime1", width: "60px", handlerType: "input", dataType: "time" },
+                { headerText: "コード", key: "code", width: "50px", handlerType: "input", dataType: "text", primitiveValue: "WorkTypeCode", control: "link", handler: (o) => { alert(o); } },
+                { headerText: "開始1", key: "startTime1", width: "60px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr" },
                 { headerText: "終了1", key: "endTime1", width: "60px", handlerType: "input", dataType: "time" },
                 { headerText: "開始2", key: "startTime2", width: "60px", handlerType: "input", dataType: "time" },
                 { headerText: "終了2", key: "endTime2", width: "60px", handlerType: "input", dataType: "time" }
@@ -448,8 +448,8 @@ __viewContext.ready(function() {
                     
                     this.ruler.addChartWithType("Changeable", {
                         id: `rgc${i}`,
-                        start: 102,
-                        end: 210,
+                        start: 86,//102,
+                        end: 224,//210,
                         lineNo: i,
                         limitStartMin: 84,
                         limitStartMax: 264,
@@ -457,16 +457,16 @@ __viewContext.ready(function() {
                         title: "流動勤務"
                     });
                     
-                    this.ruler.addChartWithType("BreakTime", {
-                        id: `rgc${i}_0`,
-                        parent: `rgc${i}`,
-                        lineNo: i,
-                        start: 144,
-                        end: 156,
-                        limitStartMin: 102,
-                        limitStartMax: 210,
-                        limitEndMax: 210
-                    });
+//                    this.ruler.addChartWithType("BreakTime", {
+//                        id: `rgc${i}_0`,
+//                        parent: `rgc${i}`,
+//                        lineNo: i,
+//                        start: 144,
+//                        end: 156,
+//                        limitStartMin: 102,
+//                        limitStartMax: 210,
+//                        limitEndMax: 210
+//                    });
                     
                     this.ruler.addChartWithType("OT", {
                         id: `rgc${i}_1`,
@@ -482,6 +482,17 @@ __viewContext.ready(function() {
                         lineNo: i,
                         start: 210,
                         end: 264
+                    });
+                    
+                    this.ruler.addChartWithType("BreakTime", {
+                        id: `rgc${i}_0`,
+                        parent: `rgc${i}`,
+                        lineNo: i,
+                        start: 90,//215,
+                        end: 96,//222,
+                        limitStartMin: 84,
+                        limitStartMax: 264,
+                        limitEndMax: 264
                     });
                 }
                 

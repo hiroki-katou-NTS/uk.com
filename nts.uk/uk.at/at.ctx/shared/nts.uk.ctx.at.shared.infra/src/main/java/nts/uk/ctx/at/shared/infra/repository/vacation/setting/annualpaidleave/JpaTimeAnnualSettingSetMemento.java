@@ -8,6 +8,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualLeaveTimeDay;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualMaxDay;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KtvmtTimeAnnualSet;
 
@@ -27,7 +28,6 @@ public class JpaTimeAnnualSettingSetMemento implements TimeAnnualSettingSetMemen
     public JpaTimeAnnualSettingSetMemento(KtvmtTimeAnnualSet entity) {
         this.entity = entity;
     }
-
     /*
      * (non-Javadoc)
      *
@@ -46,6 +46,7 @@ public class JpaTimeAnnualSettingSetMemento implements TimeAnnualSettingSetMemen
      * TimeVacationSettingSetMemento#setTimeManageType(nts.uk.ctx.at.shared.dom.
      * vacation.setting.ManageDistinct)
      */
+    
     @Override
     public void setTimeManageType(ManageDistinct timeManageType) {
         this.entity.setTimeManageAtr(timeManageType.value);
@@ -97,5 +98,13 @@ public class JpaTimeAnnualSettingSetMemento implements TimeAnnualSettingSetMemen
 	@Override
 	public void setRoundProcessClassific(TimeAnnualRoundProcesCla timeAnnualRoundProcesCla) {
 		this.entity.setRoundProcessCla(timeAnnualRoundProcesCla.value);
+	}
+
+	@Override
+	public void setTimeAnnualLeaveTimeDay(TimeAnnualLeaveTimeDay timeAnnualLeaveTimeDay) {
+		this.entity.setTimeOfDayRef(timeAnnualLeaveTimeDay.getTimeOfDayReference().value);
+		this.entity.setUniformTime(timeAnnualLeaveTimeDay.getUniformTime().isPresent() ? timeAnnualLeaveTimeDay.getUniformTime().get().v() : null );
+		this.entity.setContractTimeRound(timeAnnualLeaveTimeDay.getContractTimeRound().isPresent() ? timeAnnualLeaveTimeDay.getContractTimeRound().get().value : null );
+		
 	}
 }

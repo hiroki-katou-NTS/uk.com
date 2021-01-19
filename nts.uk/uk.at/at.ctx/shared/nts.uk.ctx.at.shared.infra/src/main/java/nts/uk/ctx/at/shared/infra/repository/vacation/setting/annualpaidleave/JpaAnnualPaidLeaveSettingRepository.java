@@ -53,10 +53,22 @@ public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implement
 
     /*
      * (non-Javadoc)
+<<<<<<< HEAD
      *
+=======
+     * 
+     * 
+     * 
+     * ROUND_PROC
+		ROUND_PROC_CLA
+     * 
+     * 
+     * 
+>>>>>>> pj/at/jp_dev/nabe_team/develop
      * @see nts.uk.ctx.pr.core.dom.vacation.setting.annualpaidleave.
      * AnnualPaidLeaveSettingRepository#findByCompanyId(java.lang.String)
      */
+    
     @SneakyThrows
     @Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -79,7 +91,6 @@ public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implement
 					.getSingle(rec -> {
 						KmamtMngAnnualSet kmamtMngAnnualSet = new KmamtMngAnnualSet();
 						kmamtMngAnnualSet.setCid(rec.getString("CID"));
-//						kmamtMngAnnualSet.setHalfMaxGrantDay(rec.getDouble("HALF_MAX_GRANT_DAY"));
 						kmamtMngAnnualSet.setHalfManageAtr(rec.getInt("HALF_MANAGE_ATR"));
 						kmamtMngAnnualSet.setHalfMaxReference(rec.getInt("HALF_MAX_REFERENCE"));
 						kmamtMngAnnualSet
@@ -95,22 +106,12 @@ public class JpaAnnualPaidLeaveSettingRepository extends JpaRepository implement
 //								.setRemainingNumDispAtr(rec.getInt("REMAINING_NUM_DISP_ATR"));
 //						kmamtMngAnnualSet.setYearlyOfDays(rec.getDouble("YEARLY_OF_DAYS"));
 //						kmamtMngAnnualSet.setRoundProcessCla(rec.getInt("KMASROUND_PRO_CLA"));
-
 						KtvmtTimeAnnualSet ktvmtTimeVacationSet = new KtvmtTimeAnnualSet();
 						ktvmtTimeVacationSet.setCid(rec.getString("CID"));
-						ktvmtTimeVacationSet.setTimeManageAtr(rec.getInt("TIME_MANAGE_ATR"));
-						ktvmtTimeVacationSet.setTimeUnit(rec.getInt("TIME_UNIT"));
-						ktvmtTimeVacationSet
-								.setTimeMaxDayManageAtr(rec.getInt("TIME_MAX_DAY_MANAGE_ATR"));
-						ktvmtTimeVacationSet
-								.setTimeMaxDayReference(rec.getInt("TIME_MAX_DAY_REFERENCE"));
-						ktvmtTimeVacationSet
-								.setTimeMaxDayUnifComp(rec.getInt("TIME_MAX_DAY_UNIF_COMP"));
 						ktvmtTimeVacationSet.setRoundProcessCla(rec.getInt("KTASROUND_PRO_CLA"));
-						ktvmtTimeVacationSet.setTimeOfDayReference(rec.getInt("KTASTIME_OF_DAY_REFERENCE"));
+						ktvmtTimeVacationSet.setTimeOfDayRef(rec.getInt("KTASTIME_OF_DAY_REFERENCE"));
 						ktvmtTimeVacationSet.setUniformTime(rec.getInt("KTASUNIFORM_TIME"));
 						ktvmtTimeVacationSet.setContractTimeRound(rec.getInt("KTASCONTRACT_TIME_ROUND"));
-
 						KalmtAnnualPaidLeave entity = new KalmtAnnualPaidLeave();
 						entity.setCid(rec.getString("CID"));
 						entity.setPriorityType(rec.getInt("PRIORITY_TYPE"));

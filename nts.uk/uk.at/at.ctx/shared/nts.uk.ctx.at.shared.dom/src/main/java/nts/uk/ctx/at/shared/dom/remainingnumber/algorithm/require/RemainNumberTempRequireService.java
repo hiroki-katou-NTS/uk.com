@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +22,6 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmployment
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyDto;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisAdapter;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
@@ -32,7 +32,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffPeriod
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
@@ -47,11 +46,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfoRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InforSpecialLeaveOfEmployeeSevice;
 //import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
@@ -60,6 +57,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffMana
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByApplicationData;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.service.OutsideOTSettingService;
@@ -87,7 +85,6 @@ import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYear;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYearRepository;
-import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateCode;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTbl;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTblRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
@@ -234,7 +231,14 @@ public class RemainNumberTempRequireService {
 	protected DeforLaborTimeShaRepo deforLaborTimeShaRepo;
 	@Inject
 	protected SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter;
-
+	
+	private Optional<OutsideOTSetting> outsideOTSettingCache = Optional.empty();
+	private HashMap<String, Optional<FlowWorkSetting>>  flowWorkSetMap = new HashMap<String, Optional<FlowWorkSetting>>();
+	private HashMap<String, Optional<FlexWorkSetting>>  flexWorkSetMap = new HashMap<String, Optional<FlexWorkSetting>>();
+	private HashMap<String, Optional<FixedWorkSetting>>  fixedWorkSetMap = new HashMap<String, Optional<FixedWorkSetting>>();
+	private HashMap<String, Optional<WorkTimeSetting>>  workTimeSetMap = new HashMap<String, Optional<WorkTimeSetting>>();
+	private HashMap<String, Optional<WorkType>>  workTypeMap = new HashMap<String, Optional<WorkType>>();
+	private HashMap<Integer, Optional<Closure>> closureMap = new HashMap<Integer, Optional<Closure>>(); 
 	public static interface Require
 			extends InterimRemainOffPeriodCreateData.RequireM4, BreakDayOffMngInPeriodQuery.RequireM10,
 			AbsenceReruitmentMngInPeriodQuery.RequireM10,
@@ -260,9 +264,10 @@ public class RemainNumberTempRequireService {
 				compensLeaveEmSetRepo, employmentSettingRepo, retentionYearlySettingRepo,
 				annualPaidLeaveSettingRepo, outsideOTSettingRepo, workdayoffFrameRepo,
 				yearHolidayRepo, usageUnitSettingRepo, regularLaborTimeComRepo, deforLaborTimeComRepo,
-				regularLaborTimeWkpRepo, deforLaborTimeWkpRepo, regularLaborTimeEmpRepo,
-				deforLaborTimeEmpRepo, regularLaborTimeShaRepo, deforLaborTimeShaRepo,
-				sharedAffWorkPlaceHisAdapter);
+				regularLaborTimeWkpRepo, deforLaborTimeWkpRepo, regularLaborTimeEmpRepo, 
+				deforLaborTimeEmpRepo, regularLaborTimeShaRepo, deforLaborTimeShaRepo, 
+				sharedAffWorkPlaceHisAdapter, outsideOTSettingCache, flowWorkSetMap, flexWorkSetMap,
+				fixedWorkSetMap, workTimeSetMap, workTypeMap, closureMap);
 	}
 
 	@AllArgsConstructor
@@ -365,6 +370,21 @@ public class RemainNumberTempRequireService {
 		protected DeforLaborTimeShaRepo deforLaborTimeShaRepo;
 
 		protected SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter;
+		
+		private Optional<OutsideOTSetting> outsideOTSettingCache;
+		
+		private HashMap<String, Optional<FlowWorkSetting>>  flowWorkSetMap;
+		
+		private HashMap<String, Optional<FlexWorkSetting>>  flexWorkSetMap;
+		
+		private HashMap<String, Optional<FixedWorkSetting>>  fixedWorkSetMap;
+		
+		private HashMap<String, Optional<WorkTimeSetting>>  workTimeSetMap;
+		
+		private HashMap<String, Optional<WorkType>>  workTypeMap;
+		
+		private HashMap<Integer, Optional<Closure>> closureMap;
+		
 
 		@Override
 		public Optional<GrantDateTbl> grantDateTbl(
@@ -480,19 +500,35 @@ public class RemainNumberTempRequireService {
 			return workingConditionRepo.getBySidAndStandardDate(companyId, employeeId, baseDate);
 		}
 
+	
 		@Override
 		public Optional<FlowWorkSetting> flowWorkSetting(String companyId, String workTimeCode) {
-			return flowWorkSettingRepo.find(companyId, workTimeCode);
+			if(flowWorkSetMap.containsKey(workTimeCode)) {
+				return flowWorkSetMap.get(workTimeCode);
+			}
+			Optional<FlowWorkSetting> item = flowWorkSettingRepo.find(companyId, workTimeCode);
+			flowWorkSetMap.put(workTimeCode, item);
+			return item;
 		}
 
 		@Override
 		public Optional<FlexWorkSetting> flexWorkSetting(String companyId, String workTimeCode) {
-			return flexWorkSettingRepo.find(companyId, workTimeCode);
+			if(flexWorkSetMap.containsKey(workTimeCode)) {
+				return flexWorkSetMap.get(workTimeCode);
+			}
+			Optional<FlexWorkSetting> item = flexWorkSettingRepo.find(companyId, workTimeCode);
+			flexWorkSetMap.put(workTimeCode, item);
+			return item;
 		}
 
 		@Override
 		public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, String workTimeCode) {
-			return fixedWorkSettingRepo.findByKey(companyId, workTimeCode);
+			if(fixedWorkSetMap.containsKey(workTimeCode)) {
+				return fixedWorkSetMap.get(workTimeCode);
+			}
+			Optional<FixedWorkSetting> item = fixedWorkSettingRepo.findByKey(companyId, workTimeCode);
+			fixedWorkSetMap.put(workTimeCode, item);
+			return item;
 		}
 
 		@Override
@@ -502,7 +538,12 @@ public class RemainNumberTempRequireService {
 
 		@Override
 		public Optional<WorkTimeSetting> workTimeSetting(String companyId, String workTimeCode) {
-			return workTimeSettingRepo.findByCode(companyId, workTimeCode);
+			if(workTimeSetMap.containsKey(workTimeCode)) {
+				return workTimeSetMap.get(workTimeCode);
+			}
+			Optional<WorkTimeSetting> item = workTimeSettingRepo.findByCode(companyId, workTimeCode);
+			workTimeSetMap.put(workTimeCode, item);
+			return item;
 		}
 
 		@Override
@@ -532,7 +573,12 @@ public class RemainNumberTempRequireService {
 
 		@Override
 		public Optional<Closure> closure(String companyId, int closureId) {
-			return closureRepo.findById(companyId, closureId);
+			if(closureMap.containsKey(closureId)) {
+				return closureMap.get(closureId);
+			}
+			Optional<Closure> item = closureRepo.findById(companyId, closureId);
+			closureMap.put(closureId, item);
+			return item;
 		}
 
 		@Override
@@ -542,7 +588,12 @@ public class RemainNumberTempRequireService {
 
 		@Override
 		public Optional<WorkType> workType(String companyId, String workTypeCd) {
-			return workTypeRepo.findByPK(companyId, workTypeCd);
+			if(workTypeMap.containsKey(workTypeCd)) {
+				return workTypeMap.get(workTypeCd);
+			}
+			Optional<WorkType> item = workTypeRepo.findByPK(companyId, workTypeCd);
+			workTypeMap.put(workTypeCd, item);
+			return item;
 		}
 
 		@Override
@@ -589,7 +640,11 @@ public class RemainNumberTempRequireService {
 
 		@Override
 		public Optional<OutsideOTSetting> outsideOTSetting(String companyId) {
-			return outsideOTSettingRepo.findById(companyId);
+			if(outsideOTSettingCache.isPresent()) {
+				return outsideOTSettingCache;
+			}
+			outsideOTSettingCache = outsideOTSettingRepo.findById(companyId);
+			return outsideOTSettingCache;
 		}
 
 		@Override

@@ -27,11 +27,6 @@ public interface TimeAnnualSettingSetMemento {
      */
     void setTimeManageType(ManageDistinct timeManageType);
 
-    /**
-     * Sets the time unit.
-     *
-     * @param timeUnit the new time unit
-     */
     void setTimeUnit(TimeDigestiveUnit timeUnit);
 
     /**
@@ -54,4 +49,6 @@ public interface TimeAnnualSettingSetMemento {
      * @param timeAnnualRoundProcesCla
      */
     void setRoundProcessClassific(TimeAnnualRoundProcesCla timeAnnualRoundProcesCla);
+    
+    void setTimeAnnualLeaveTimeDay(TimeAnnualLeaveTimeDay timeAnnualLeaveTimeDay);
 }

@@ -136,6 +136,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
         mode: number = Mode.New;
         enableInput: KnockoutObservable<boolean> = ko.observable(true);
         isCodeChangedFromKDL: KnockoutObservable<boolean> = ko.observable(false);
+        isTimeChangedFromKDL: KnockoutObservable<boolean> = ko.observable(false);
 
         created(params: any) {
             const vm = this;
@@ -173,9 +174,9 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                         });
                     }
 
-                    let checkContent = _.filter(tripOutput.businessTripActualContent, i => i.opAchievementDetail == null);
+                    let checkContent = _.filter(tripOutput.businessTripActualContent, (i: any) => i.opAchievementDetail == null);
                     if (_.isEmpty(checkContent)) {
-                        let lstContent = _.map(tripOutput.businessTripActualContent, function (content, index) {
+                        let lstContent = _.map(tripOutput.businessTripActualContent, function (content: any, index) {
                             let eachContent = new TripContentDisp(
                                 content.date,
                                 content.opAchievementDetail.workTypeCD,
@@ -186,20 +187,23 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                                 content.opAchievementDetail.opLeaveTime
                             );
                             eachContent.wkTypeCd.subscribe(code => {
-                                if (vm.checkValueChanged(code)) {
+                                if (vm.checkValueChanged(code, true)) {
                                     vm.changeWorkTypeCode(tripOutput, content, code, index);
                                 }
 
                             });
                             eachContent.wkTimeCd.subscribe(code => {
-                                if (vm.checkValueChanged(code)) {
+                                if (vm.checkValueChanged(code, false)) {
                                     vm.changeWorkTimeCode(tripOutput, content, code, index);
                                 }
                             });
                             eachContent.start.subscribe(startValue => {
+                                vm.clearWorkTimeErrorByDate(content.date);
                                 content.opAchievementDetail.opWorkTime = startValue;
+
                             });
                             eachContent.end.subscribe(endValue => {
+                                vm.clearWorkTimeErrorByDate(content.date);
                                 content.opAchievementDetail.opLeaveTime = endValue;
                             });
                             return eachContent;
@@ -235,7 +239,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                         });
                     }
 
-                    const contentDisp = _.map(tripContent.tripInfos, function (data, index) {
+                    const contentDisp = _.map(tripContent.tripInfos, function (data: any, index) {
 
                         let contentTrip = new TripContentDisp(
                             data.date,
@@ -248,19 +252,21 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                         );
 
                         contentTrip.wkTypeCd.subscribe(code => {
-                            if (vm.checkValueChanged(code)) {
+                            if (vm.checkValueChanged(code, true)) {
                                 vm.changeTypeCodeScreenB(tripOutput, data, code, index);
                             }
                         });
                         contentTrip.wkTimeCd.subscribe(code => {
-                            if (vm.checkValueChanged(code)) {
+                            if (vm.checkValueChanged(code, false)) {
                                 vm.changeWorkTimeCodeScreenB(tripOutput, data, code, index);
                             }
                         });
                         contentTrip.start.subscribe(startValue => {
+                            vm.clearWorkTimeErrorByDate(data.date);
                             data.startWorkTime = startValue;
                         });
                         contentTrip.end.subscribe(endValue => {
+                            vm.clearWorkTimeErrorByDate(data.date);
                             data.endWorkTime = endValue;
                         });
                         return contentTrip;
@@ -360,7 +366,13 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                 }
 
                 if (res.msg) {
-                    vm.$dialog.error({messageId: res.msg}).then(() => $('#' + date.replace(/\//g, "")).focus());
+                    const err = {
+                        messageId: res.msg
+                    };
+                    let id: string = '#' + command.date.replace(/\//g, "") + '-tmCode';
+                    vm.$errors({
+                        [id]: err
+                    });
                 } else {
                     $('#' + date.replace(/\//g, "")).focus();
                 }
@@ -449,10 +461,18 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                 } else {
                     contentChanged.wkTimeCd = "";
                     contentChanged.wkTimeName = "なし";
+                    vm.items()[index].wkTimeCd("");
+                    vm.items()[index].wkTimeName("なし");
                 }
 
                 if (res.msg) {
-                    vm.$dialog.error({messageId: res.msg}).then(() => $('#' + command.date.replace(/\//g, "")).focus());
+                    const err = {
+                        messageId: res.msg
+                    };
+                    let id: string = '#' + command.date.replace(/\//g, "") + '-tmCode';
+                    vm.$errors({
+                        [id]: err
+                    });
                 } else {
                     $('#' + command.date.replace(/\//g, "")).focus();
                 }
@@ -480,7 +500,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             let selectedIndex = _.findIndex(ko.toJS(vm.items), {date: data.date});
 
             let listWkTime = vm.businessTripOutput().appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst;
-            let listWkTimeCd = _.map(listWkTime, function (obj) {
+            let listWkTimeCd = _.map(listWkTime, function (obj: any) {
                 return obj.worktimeCode
             });
 
@@ -495,11 +515,11 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                 dispFlag = res;
             }).then(() => {
                 if (dispFlag) {
-                    listWorkCode = _.map(vm.workTypeCds(), function (obj) {
+                    listWorkCode = _.map(vm.workTypeCds(), function (obj: any) {
                         return obj.workTypeCode
                     });
                 } else {
-                    listWorkCode = _.map(vm.holidayTypeCds(), function (obj) {
+                    listWorkCode = _.map(vm.holidayTypeCds(), function (obj: any) {
                         return obj.workTypeCode
                     });
                 }
@@ -528,6 +548,11 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                         vm.clearWorkTypeErrorByDate(selectedDate);
                         vm.clearWorkTimeErrorByDate(selectedDate);
                         vm.isCodeChangedFromKDL(true);
+                        vm.isTimeChangedFromKDL(true);
+                        if (!rs.selectedWorkTimeCode) {
+                            rs.selectedWorkTimeName = "なし";
+                        }
+                        rs.selectedWorkTimeName = rs.selectedWorkTimeName ? rs.selectedWorkTimeName : "なし";
 
                         let currentRow;
                         if (vm.mode == Mode.New) {
@@ -580,6 +605,8 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                     break;
                 }
 
+                case "Msg_1912":
+                case "Msg_1913":
                 case "Msg_1685":
                 case "Msg_23":
                 case "Msg_24": {
@@ -625,10 +652,14 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             $('#' + date.replace(/\//g, "") + '-tmCode').focus();
         }
 
-        checkValueChanged(code: any) {
+        checkValueChanged(code: any, isWorkCode: boolean) {
             const vm = this;
-            if (vm.isCodeChangedFromKDL()) {
+            if (vm.isCodeChangedFromKDL() && isWorkCode) {
                 vm.isCodeChangedFromKDL(false);
+                return false;
+            }
+            else if (vm.isTimeChangedFromKDL()) {
+                vm.isTimeChangedFromKDL(false);
                 return false;
             }
             if (code && code.length < 3) {

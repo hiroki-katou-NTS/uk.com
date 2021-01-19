@@ -15,7 +15,7 @@ public interface ManageAnnualSettingGetMemento {
      * @return the company id
      */
     String getCompanyId();
-
+    
 //    /**
 //     * Gets the maximum day vacation.
 //     *

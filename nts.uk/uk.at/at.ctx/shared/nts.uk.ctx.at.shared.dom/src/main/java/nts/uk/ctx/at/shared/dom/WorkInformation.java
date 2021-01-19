@@ -360,7 +360,19 @@ public class WorkInformation implements Serializable{
 
 	}
 
-
+	/**
+	 * 同一か
+	 * @param otherObject 比較対象
+	 * @return true if they are same workType and same workTime
+	 */
+	public boolean isSame(WorkInformation otherObject) {
+		
+		if ( ! this.workTypeCode.v().equals(otherObject.getWorkTypeCode().v()) ) {
+			return false;
+		}
+		
+		return this.workTimeCode.equals( otherObject.getWorkTimeCodeNotNull());
+	}
 
 	public static interface Require
 		extends	WorkTimeSetting.Require
@@ -401,7 +413,7 @@ public class WorkInformation implements Serializable{
 		 * になっています。
 		 * このメソッドとは引数の順番が違うため、implementsして実装する際には十分気をつけてください。
 		 */
-		PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo);
+		//PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo);
 
 	}
 

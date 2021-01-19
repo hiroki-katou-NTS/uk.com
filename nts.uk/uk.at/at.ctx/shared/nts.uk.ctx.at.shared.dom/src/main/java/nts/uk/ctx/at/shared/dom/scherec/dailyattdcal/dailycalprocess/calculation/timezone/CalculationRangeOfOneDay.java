@@ -618,7 +618,10 @@ public class CalculationRangeOfOneDay {
 		}
 		
 		//出退勤を取得
-		List<TimeLeavingWork> timeLeavingWorks = integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks();
+		List<TimeLeavingWork> timeLeavingWorks = new ArrayList<>();
+		if (integrationOfDaily.getAttendanceLeave().isPresent()){
+			timeLeavingWorks = integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks();
+		}
 		
 		//空の就業時間内時間帯を作成。これを遅刻早退と就内の処理で編集していく。
 		WithinWorkTimeSheet creatingWithinWorkTimeSheet = new WithinWorkTimeSheet(new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty());
@@ -869,6 +872,7 @@ public class CalculationRangeOfOneDay {
 			IntegrationOfWorkTime workTime, IntegrationOfDaily integrationOfDaily) {
 		
 		/** 控除時間帯の取得 */
+		if (!integrationOfDaily.getAttendanceLeave().isPresent()) return new ArrayList<>();
 		val deductionTimeSheet = provisionalDeterminationOfDeductionTimeSheet(
 						workType, workTime, integrationOfDaily, this.oneDayOfRange, 
 						integrationOfDaily.getAttendanceLeave().get(), this.predetermineTimeSetForCalc, 
