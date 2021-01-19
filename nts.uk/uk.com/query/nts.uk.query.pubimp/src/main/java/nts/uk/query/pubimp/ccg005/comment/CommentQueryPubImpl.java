@@ -4,12 +4,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.ejb.Stateless;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.query.app.ccg005.query.comment.DisplayCommentQuery;
 import nts.uk.query.app.ccg005.query.comment.EmployeeCommentInformationDto;
 import nts.uk.query.pub.ccg005.comment.CommentQueryExport;
 import nts.uk.query.pub.ccg005.comment.CommentQueryPub;
 
+@Stateless
 public class CommentQueryPubImpl implements CommentQueryPub {
 
 	private DisplayCommentQuery query;

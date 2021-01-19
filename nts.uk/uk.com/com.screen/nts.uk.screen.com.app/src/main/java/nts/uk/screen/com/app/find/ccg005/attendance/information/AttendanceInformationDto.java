@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.Builder;
 import lombok.Data;
 import nts.uk.screen.com.app.find.ccg005.attendance.information.dto.ApplicationDto;
+import nts.uk.screen.com.app.find.ccg005.attendance.information.dto.AttendanceDetailDto;
 import nts.uk.screen.com.app.find.ccg005.attendance.information.dto.EmployeeCommentInformationDto;
 import nts.uk.screen.com.app.find.ccg005.attendance.information.dto.EmployeeEmojiStateDto;
 import nts.uk.screen.com.app.find.ccg005.attendance.information.dto.UserAvatarDto;
@@ -17,13 +18,13 @@ import nts.uk.screen.com.app.find.ccg005.goout.GoOutEmployeeInformationDto;
 @Data
 public class AttendanceInformationDto {
 	//申請
-	private List<ApplicationDto> applicationDto;
+	private List<ApplicationDto> applicationDtos;
 	
 	//社員ID
 	private String sid;
 	
 	//詳細出退勤
-	
+	private AttendanceDetailDto attendanceDetailDto;
 	
 	//個人の顔写真
 	private UserAvatarDto avatarDto;

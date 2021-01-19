@@ -8,11 +8,11 @@ import nts.uk.ctx.office.dom.status.ActivityStatus;
 
 public class AttendanceStatusJudgmentService {
 
-	public Optional<ActivityStatus> getActivityStatus(Required required, String sId,  GeneralDate date) {
+	public static Optional<ActivityStatus> getActivityStatus(Required required, String sId,  GeneralDate date) {
 		//WorkInfoOfDailyPerformance WorkInformationRepository
 		//TimeLeavingOfDailyPerformance
 		//WorkType
-		return null;
+		return Optional.empty();
 	}
 	
 	public interface Required {
