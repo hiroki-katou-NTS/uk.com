@@ -29,10 +29,8 @@ public class CreateArbitraryScheduleDomainService {
         val employeeId = AppContexts.user().employeeId();
         boolean checkResult = false;
         if (settingCategory == SettingClassificationCommon.STANDARD_SELECTION) {
-            // 定型選択の重複をチェックする(コード, ログイン会社ID)
             checkResult = require.standardCheck(code);
         } else if (settingCategory == SettingClassificationCommon.FREE_SETTING) {
-            // 自由設定の重複をチェックする(出力項目設定コード, 会社ID, 社員ID)
             checkResult = require.freeCheck(code, employeeId);
         }
 

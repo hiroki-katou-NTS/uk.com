@@ -31,7 +31,7 @@ public class UpdateArbitraryScheduleDomainService {
 
         val outputSettingOld = require.getOutputSetting(settingId);
         if (!outputSettingOld.isPresent()) {
-            throw new BusinessException(" Msg_1914");
+            throw new BusinessException("Msg_1914");
         }
         val employeeId = AppContexts.user().employeeId();
         OutputSettingOfArbitrary outputSettingOfArbitrary = new OutputSettingOfArbitrary(
