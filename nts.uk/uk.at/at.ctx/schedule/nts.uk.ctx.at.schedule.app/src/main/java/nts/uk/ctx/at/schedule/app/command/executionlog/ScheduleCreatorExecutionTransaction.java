@@ -346,8 +346,10 @@ public class ScheduleCreatorExecutionTransaction {
 			this.managedParallelWithContext.forEach(ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL),
 					result.getListError(), error -> {
 						// エラーを登録する
-						error.setExecutionId(command.getExecutionId());
-						this.scheduleErrorLogRepository.addByTransaction(error);
+						if (error != null) {
+							error.setExecutionId(command.getExecutionId());
+							this.scheduleErrorLogRepository.addByTransaction(error);
+						}
 					});
 
 			// }
