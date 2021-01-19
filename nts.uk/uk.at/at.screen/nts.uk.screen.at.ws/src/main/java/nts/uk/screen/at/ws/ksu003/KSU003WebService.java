@@ -46,7 +46,7 @@ import nts.uk.screen.at.app.ksu003.start.dto.WorkInforDto;
  * @author phongtq
  *
  */
-
+@SuppressWarnings({"rawtypes","unchecked"})
 @Path("screen/at/schedule")
 @Produces("application/json")
 public class KSU003WebService extends WebService{
