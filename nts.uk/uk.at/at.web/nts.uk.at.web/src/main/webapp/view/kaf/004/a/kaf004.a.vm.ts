@@ -32,6 +32,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
         isEnable3: KnockoutObservable<Boolean> = ko.observable(false);
         isEnable4: KnockoutObservable<Boolean> = ko.observable(false);
         cancalAppDispSet: boolean = true;
+        cancelAtr: KnockoutObservable<number>;
 		isFromOther: boolean = false;
 
         created(params: AppInitParam) {
@@ -96,6 +97,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                         }
 
                         vm.cancalAppDispSet = successData.lateEarlyCancelAppSet.cancelAtr !== 0;
+                        vm.cancelAtr = ko.observable(successData.lateEarlyCancelAppSet.cancelAtr);
 
                         vm.arrivedLateLeaveEarlyInfo(successData);
                         vm.appDispInfoStartupOutput(successData.appDispInfoStartupOutput);
@@ -460,28 +462,28 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                     if(vm.workManagementTemp.workTime() !== null && vm.workManagementTemp.workTime() !== "") {
                         vm.isEnable1(true);
                         vm.lateOrEarlyInfo1().isActive(true);
-                        vm.lateOrEarlyInfo1().isCheck(true);
+                        vm.lateOrEarlyInfo1().isCheck(vm.cancelAtr() === 2);
                     } else {
                         vm.isEnable1(false)
                     }
                     if(vm.workManagementTemp.leaveTime() !== null && vm.workManagementTemp.leaveTime() !== "") {
                         vm.isEnable2(true);
                         vm.lateOrEarlyInfo2().isActive(true);
-                        vm.lateOrEarlyInfo2().isCheck(true);
+                        vm.lateOrEarlyInfo2().isCheck(vm.cancelAtr() === 2);
                     } else {
                         vm.isEnable2(false)
                     }
                     if(vm.workManagementTemp.workTime2() !== null && vm.workManagementTemp.workTime2() !== "") {
                         vm.isEnable3(true);
                         vm.lateOrEarlyInfo3().isActive(true);
-                        vm.lateOrEarlyInfo3().isCheck(true);
+                        vm.lateOrEarlyInfo3().isCheck(vm.cancelAtr() === 2);
                     } else {
                         vm.isEnable3(false)
                     }
                     if(vm.workManagementTemp.leaveTime2() !== null && vm.workManagementTemp.leaveTime2() !== "") {
                         vm.isEnable4(true);
                         vm.lateOrEarlyInfo4().isActive(true);
-                        vm.lateOrEarlyInfo4().isCheck(true);
+                        vm.lateOrEarlyInfo4().isCheck(vm.cancelAtr() === 2);
                     } else {
                         vm.isEnable4(false)
                     }
