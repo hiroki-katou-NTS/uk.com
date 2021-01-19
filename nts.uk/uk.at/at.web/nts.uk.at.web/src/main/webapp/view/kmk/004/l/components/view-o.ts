@@ -198,7 +198,7 @@ module nts.uk.at.view.kmk004.l {
 						}));
 
 					vm.employeeList(employees);
-
+					vm.getEmployeeIds();
 					if (employees.length) {
 						vm.selectedCode(employees[0].code);
 						$('.listbox').focus();
@@ -212,8 +212,6 @@ module nts.uk.at.view.kmk004.l {
 
 			//KCP005
 			vm.currentItemName = ko.observable('');
-
-			vm.getEmployeeIds();
 
 			vm.params = { isLoadData: vm.isLoadData, sidebarType: "Com_Person", wkpId: ko.observable(''), empCode: ko.observable(''), empId: ko.observable(''), titleName: '', deforLaborTimeComDto: null, settingDto: null };
 			vm.years
@@ -253,8 +251,12 @@ module nts.uk.at.view.kmk004.l {
 				.done((data: any) => {
 					let settings: UnitAlreadySettingModel[] = [];
 					_.forEach(data, ((value) => {
-						let s: UnitAlreadySettingModel = { code: value.employeeId, isAlreadySetting: true };
-						settings.push(s);
+						const setting : UnitModel = _.find(ko.unwrap(vm.employeeList), e => e.id === value.employeeId);
+						
+						if (setting){
+							let s: UnitAlreadySettingModel = { code: setting.code, isAlreadySetting: true };
+							settings.push(s);
+						}
 
 					}));
 					vm.alreadySettingList(settings);
@@ -431,12 +433,18 @@ module nts.uk.at.view.kmk004.l {
 			vm.$window.modal('at', '/view/kmk/004/r/index.xhtml', {
 				data: vm.employeeList(),
 				screenMode: vm.type,
-				selected: vm.selectedId(),
+				selected: vm.selectedCode(),
 				year: vm.selectedYear(),
 				laborAttr: 1
 			}).then(() => {
 				vm.$ajax(KMK004O_API.COPY_SETTING).done((data) => {
-					vm.alreadySettingList(_.map(data, (item: string) => { return { code: item, isAlreadySetting: true } }));
+					vm.alreadySettingList(_.map(data, (item: string) => {
+						let emp: any = _.find(vm.employeeList(), ['id', item]);
+						if (!emp) {
+							return { code: null, isAlreadySetting: false };
+							}
+						return { code: emp.code, isAlreadySetting: true } 
+					}));
 				}).always(() => { vm.$blockui("clear"); });
 			});
 		}

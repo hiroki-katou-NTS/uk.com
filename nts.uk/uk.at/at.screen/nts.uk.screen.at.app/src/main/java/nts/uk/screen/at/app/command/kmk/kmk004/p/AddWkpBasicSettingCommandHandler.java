@@ -61,18 +61,18 @@ public class AddWkpBasicSettingCommandHandler extends CommandHandler<WkpBasicSet
 
 		ExcessOutsideTimeSetReg aggregateTimeSet = new ExcessOutsideTimeSetReg(
 				command.getSettingDto().getAggregateTimeSet().isLegalOverTimeWork(),
-				command.getSettingDto().getAggregateTimeSet().isLegalHoliday(), false, false);
+				command.getSettingDto().getAggregateTimeSet().isLegalHoliday(), true, true);
 
 		ExcessOutsideTimeSetReg excessOutsideTimeSet = new ExcessOutsideTimeSetReg(
 				command.getSettingDto().getExcessOutsideTimeSet().isLegalOverTimeWork(),
-				command.getSettingDto().getExcessOutsideTimeSet().isLegalHoliday(), false, false);
+				command.getSettingDto().getExcessOutsideTimeSet().isLegalHoliday(), true, true);
 
 		DeforLaborSettlementPeriod settlementPeriod = new DeforLaborSettlementPeriod(
 				new Month(command.getSettingDto().getSettlementPeriod().getStartMonth()),
 				new Month(command.getSettingDto().getSettlementPeriod().getPeriod()),
 				command.getSettingDto().getSettlementPeriod().isRepeatAtr());
 
-		DeforLaborCalSetting deforLaborCalSetting = new DeforLaborCalSetting(false);
+		DeforLaborCalSetting deforLaborCalSetting = new DeforLaborCalSetting(true);
 
 		return WkpDeforLaborMonthActCalSet.of(command.getWkpId(), cId, aggregateTimeSet, excessOutsideTimeSet,
 				deforLaborCalSetting, settlementPeriod);
