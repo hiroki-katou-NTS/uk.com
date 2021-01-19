@@ -52,15 +52,15 @@
                     <td>
                       <input
                         tabindex="1"
-												data-bind="attr: {'id': 'overtimeNo_'+overtimeNo()}, 
+												data-bind="attr: {'id': 'overtimeNo_' + overtimeNo()}, 
 												ntsTextEditor: {value: name, constraint: 'OvertimeName',  required: requiredText, name: $parent.switchNameResource()}"
                       />
                     </td>
                     <td>
                       <input
                         tabindex="1"
-												data-bind="attr: {'id': 'overtimeNo_'+overtimeNo()}, 
-												ntsTextEditor: {value: name, constraint: 'OvertimeName',  required: requiredText, name: $parent.switchNameResource()}"
+												data-bind="attr: {'id': 'overtimeNo_' + overtimeNo()}, 
+												ntsTextEditor: {value: overtime, constraint: 'OvertimeName',  required: requiredText, name: $parent.switchNameResource()}"
                       /><label>#{i18n.getText('KMK010_14')}</label>
                     </td>
                     <td>
@@ -72,7 +72,7 @@
                     <td>
                       <div
                         tabindex="1"
-                        data-bind="ntsCheckBox: { checked: useClassification, enable: useClassification }"
+                        data-bind="ntsCheckBox: { checked: superHoliday60HOccurs, enable: useClassification }"
                       ></div>
                     </td>
                   </tr>

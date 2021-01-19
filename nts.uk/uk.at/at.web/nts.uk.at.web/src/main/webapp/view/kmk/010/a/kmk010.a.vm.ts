@@ -10,7 +10,7 @@ module nts.uk.at.view.kmk010.a {
 
     export module viewmodel {
 
-        export class ScreenModel {
+        export class ScreenModel extends ko.ViewModel {
             calculationMethods: KnockoutObservableArray<EnumConstantDto>;
             outsideOTSettingModel: OutsideOTSettingModel;
             superHD60HConMedModel: SuperHD60HConMedModel;
@@ -26,6 +26,8 @@ module nts.uk.at.view.kmk010.a {
             tabFinalArray: KnockoutObservable<number>;
             
             constructor() {
+                super();
+
                 var self = this;
                 self.calculationMethods = ko.observableArray<EnumConstantDto>([]);
                 self.outsideOTSettingModel = new OutsideOTSettingModel();
@@ -338,6 +340,16 @@ module nts.uk.at.view.kmk010.a {
                     self.lstRoundingSet(self.lstRoundingSub);
                 }
             }
+
+            /**
+             * function on click button open dialog vacation conversion settings
+             */
+            private openDialogVCSettings(): void {
+                var self = this;
+                //nts.uk.ui.windows.setShared("languageId", self.languageId);
+                self.$window.modal("/view/kmk/010/d/index.xhtml").then((data) => {                  
+                });
+            }
         }
         export class OvertimeModel {
             name: KnockoutObservable<string>;
@@ -389,8 +401,7 @@ module nts.uk.at.view.kmk010.a {
                     superHoliday60HOccurs: this.superHoliday60HOccurs()
                 };
                 return dto;
-            }
-            
+            }            
         }
         
 
