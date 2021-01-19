@@ -1,6 +1,6 @@
 import { Vue, _ } from '@app/provider';
 import { component, Prop } from '@app/core/component';
-import { TimeZoneWithWorkNoDto, AppForLeaveStartOutputDto, ManageDistinct, MaxNumberDayType, NotUseAtr, TimeZoneUseDto, HolidayAppType, WorkTypeUnit, WorkAtr, WorkTypeDto, HolidayAppTypeDispNameDto, DateSpecHdRelationOutput, WorkTypeClassification } from 'views/kaf/s06/a/define.interface';
+import { TimeZoneWithWorkNoDto, AppForLeaveStartOutputDto, ManageDistinct, MaxNumberDayType, NotUseAtr, TimeZoneUseDto, HolidayAppType, WorkTypeUnit, WorkAtr, WorkTypeDto, HolidayAppTypeDispNameDto, DateSpecHdRelationOutput, WorkTypeClassification, ReflectWorkHourCondition } from 'views/kaf/s06/a/define.interface';
 import { isEmpty, isNil, times } from 'lodash';
 
 @component({
@@ -149,10 +149,10 @@ export class CmmS45ShrComponentsApp1Component extends Vue {
     public get _() {
         return _;
     }
-    // 休暇申請起動時の表示情報．休暇申請設定．就業時間帯利用区分 = 利用しない
+    // 休暇申請起動時の表示情報．休暇申請の反映．勤務情報、出退勤を反映する．就業時間帯を反映する = 反映しない
     public get c2() {
         const self = this;
-        let c2 = true;
+        let c2 = _.get(self.dataOutput, 'appAbsenceStartInfoDto.vacationApplicationReflect.workAttendanceReflect.reflectWorkHour') == ReflectWorkHourCondition.NOT_REFLECT;
 
         return c2;
     }
