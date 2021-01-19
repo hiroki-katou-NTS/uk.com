@@ -71,12 +71,11 @@
                         </div>
                         <div class="list-check-box">
                             <div tabindex="4" data-bind="ntsCheckBox: { checked: model.deforWorkSurchargeWeekMonth,
-                                     enable: valueInsurrance() == 1}">
-                                #{i18n.getText('KMK004_246')}
+                                     enable: valueInsurrance() == 1}, i18n: 'KMK004_246'">
                             </div>
                             <div tabindex="5" data-bind="ntsCheckBox: { checked: model.deforWorkLegalHoliday, 
-                                    enable: valueInsurrance() == 1}">
-                                #{i18n.getText('KMK004_247')}</div>
+                                    enable: valueInsurrance() == 1},i18n: 'KMK004_247'">
+                                </div>
                         </div>
                         <div data-bind="ntsFormLabel: { inline: true}, i18n: 'KMK004_248'"></div>
                         <div tabindex="6" class="content-change" data-bind="ntsSwitchButton: {
@@ -87,12 +86,11 @@
                         </div>
                         <div class="list-check-box">
                             <div tabindex="7" data-bind="ntsCheckBox: { checked: model.outsideSurchargeWeekMonth, 
-                                    enable: valueSurcharges() == 1}">
-                                #{i18n.getText('KMK004_252')}
+                                    enable: valueSurcharges() == 1}, i18n: 'KMK004_252'">
                             </div>
                             <div tabindex="8" data-bind="ntsCheckBox: { checked: model.outsidedeforWorkLegalHoliday, 
-                                    enable: valueSurcharges() == 1}">
-                                #{i18n.getText('KMK004_253')}</div>
+                                    enable: valueSurcharges() == 1}, i18n: 'KMK004_253'">
+                                </div>
                         </div>
                     </div>
                 </div>

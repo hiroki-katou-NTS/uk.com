@@ -47,7 +47,7 @@ module nts.uk.at.view.kmk004.f {
         public checkEmployment: KnockoutObservable<boolean> = ko.observable(true);
         public checkEmployee: KnockoutObservable<boolean> = ko.observable(true);
         public attendance: KnockoutObservable<boolean> = ko.observable(false);
-        public nameSynthetic:KnockoutObservable<string> = ko.observable('    ');
+        public nameSynthetic: KnockoutObservable<string> = ko.observable('    ');
 
 
         public type = '';
@@ -137,33 +137,42 @@ module nts.uk.at.view.kmk004.f {
                 handlerCommon: input
             }
 
-            switch (vm.type) {
-                case 'Com_Company':
-                    vm.$ajax(API.ADD_OR_UPDATE_COM, input)
-                        .then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
-                        .then(vm.$window.close);
-                    break;
-                case 'Com_Workplace':
-                    vm.$ajax(API.ADD_OR_UPDATE_WORKPLACE, inputById)
-                        .then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
-                        .then(vm.$window.close);
-                    break;
-                case 'Com_Employment':
-                    vm.$ajax(API.ADD_OR_UPDATE_EMPLOYMENT, inputById)
-                        .then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
-                        .then(vm.$window.close);
-                    break;
-                case 'Com_Person':
-                    vm.$ajax(API.ADD_OR_UPDATE_EMPLOYEE, inputById)
-                        .then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
-                        .then(vm.$window.close);
-                    break;
-            }
+            vm.$blockui('invisible')
+                .then(() => {
+                    vm.validate()
+                        .then((valid: boolean) => {
+                            if (valid) {
+
+                                switch (vm.type) {
+                                    case 'Com_Company':
+                                        vm.$ajax(API.ADD_OR_UPDATE_COM, input)
+                                            .then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
+                                            .then(vm.$window.close);
+                                        break;
+                                    case 'Com_Workplace':
+                                        vm.$ajax(API.ADD_OR_UPDATE_WORKPLACE, inputById)
+                                            .then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
+                                            .then(vm.$window.close);
+                                        break;
+                                    case 'Com_Employment':
+                                        vm.$ajax(API.ADD_OR_UPDATE_EMPLOYMENT, inputById)
+                                            .then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
+                                            .then(vm.$window.close);
+                                        break;
+                                    case 'Com_Person':
+                                        vm.$ajax(API.ADD_OR_UPDATE_EMPLOYEE, inputById)
+                                            .then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
+                                            .then(vm.$window.close);
+                                        break;
+                                }
+                            }
+                        });
+                })
+                .always(() => vm.$blockui('clear'));
         }
 
         remote() {
             const vm = this;
-
             const inputByIdDelete = {
                 id: ko.unwrap(vm.selectId)
             }
@@ -175,21 +184,18 @@ module nts.uk.at.view.kmk004.f {
                             switch (vm.type) {
                                 case 'Com_Workplace':
                                     vm.$ajax(API.DELETE_WORKPLACE, inputByIdDelete)
-                                        .done(() => {
-                                            vm.$window.close();
-                                        })
+                                        .then(() => vm.$dialog.info({ messageId: 'Msg_16' }))
+                                        .then(vm.$window.close);
                                     break;
                                 case 'Com_Employment':
                                     vm.$ajax(API.DELETE_EMPLOYMENT, inputByIdDelete)
-                                        .done(() => {
-                                            vm.$window.close();
-                                        })
+                                        .then(() => vm.$dialog.info({ messageId: 'Msg_16' }))
+                                        .then(vm.$window.close);
                                     break;
                                 case 'Com_Person':
                                     vm.$ajax(API.DELETE_EMPLOYEE, inputByIdDelete)
-                                        .done(() => {
-                                            vm.$window.close();
-                                        })
+                                        .then(() => vm.$dialog.info({ messageId: 'Msg_16' }))
+                                        .then(vm.$window.close);
                                     break;
                             }
                         })
@@ -257,6 +263,17 @@ module nts.uk.at.view.kmk004.f {
                             .then(() => vm.$blockui('clear'));
                     }
                     break;
+            }
+        }
+
+        public validate(action: 'clear' | undefined = undefined) {
+            if (action === 'clear') {
+                return $.Deferred().resolve()
+                    .then(() => $('.nts-input').ntsError('clear'));
+            } else {
+                return $.Deferred().resolve()
+                    .then(() => $('.nts-input').trigger("validate"))
+                    .then(() => !$('.nts-input').ntsError('hasError'));
             }
         }
     }
