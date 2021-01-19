@@ -10,6 +10,7 @@ module nts.uk.at.view.kmk004.b {
         selectedCode: KnockoutObservable<string>;
         employees: KnockoutObservableArray<IEmployee>;
         isChange: KnockoutObservable<string>;
+        isReload: KnockoutObservable<string>;
         model: Employee;
     }
 
@@ -30,6 +31,7 @@ module nts.uk.at.view.kmk004.b {
         public alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
         public isChange: KnockoutObservable<string> = ko.observable('');
         public model: Employee = new Employee();
+        public isReload: KnockoutObservable<string> = ko.observable('');
 
         created(params: ParamsKcp005) {
             const vm = this;
@@ -37,6 +39,7 @@ module nts.uk.at.view.kmk004.b {
             vm.employees = params.employees;
             vm.isChange = params.isChange;
             vm.model = params.model;
+            vm.isReload = params.isReload;
 
             vm.reload();
 
@@ -55,6 +58,12 @@ module nts.uk.at.view.kmk004.b {
                 .subscribe(() => {
                     vm.reloadIsCheck();
                 });
+
+            vm.isReload
+                .subscribe(() => {
+                    const vm = this;
+                    vm.reload();
+                })
         }
 
         reloadIsCheck() {

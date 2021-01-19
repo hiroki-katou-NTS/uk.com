@@ -59,7 +59,7 @@ public class JpaGetKMK004WorkPlaceExportData extends JpaRepository implements Ge
 	     exportSQL.append("             KRCST_WKP_REG_M_CAL_SET.INCLUDE_EXTRA_OT,   ");
 	     exportSQL.append("             IIF (KRCST_WKP_REG_M_CAL_SET.INCLUDE_EXTRA_OT != 0, KRCST_WKP_REG_M_CAL_SET.INCLUDE_LEGAL_OT, NULL) AS INCLUDE_LEGAL_OT,   ");
 	     exportSQL.append("             IIF (KRCST_WKP_REG_M_CAL_SET.INCLUDE_EXTRA_OT != 0, KRCST_WKP_REG_M_CAL_SET.INCLUDE_HOLIDAY_OT, NULL) AS INCLUDE_HOLIDAY_OT,   ");
-	     exportSQL.append("             KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME,   ");
+	     exportSQL.append("             KRCMT_CALC_M_SET_FLE_COM.REFERENCE_PRED_TIME,   ");
 	     exportSQL.append("             KRCST_WKP_FLEX_M_CAL_SET.AGGR_METHOD,   ");
 	     exportSQL.append("             KRCST_WKP_FLEX_M_CAL_SET.SETTLE_PERIOD_MON,   ");
 	     exportSQL.append("             KRCST_WKP_FLEX_M_CAL_SET.SETTLE_PERIOD,   ");
@@ -90,7 +90,7 @@ public class JpaGetKMK004WorkPlaceExportData extends JpaRepository implements Ge
 	     exportSQL.append("               AND BSYMT_WKP_INFO.WKP_ID = KRCST_WKP_REG_M_CAL_SET.WKPID   ");
 	     exportSQL.append("              LEFT JOIN (SELECT *, ROW_NUMBER() OVER ( PARTITION BY CID ORDER BY END_DATE DESC ) AS RN FROM BSYMT_WKP_CONFIG_2) AS BSYMT_WKP_CONFIG  ");
 	     exportSQL.append("             ON BSYMT_WKP_INFO.CID = BSYMT_WKP_CONFIG.CID AND BSYMT_WKP_CONFIG.RN = 1  ");
-	     exportSQL.append("              LEFT JOIN KSHST_FLX_GET_PRWK_TIME ON BSYMT_WKP_INFO.CID = KSHST_FLX_GET_PRWK_TIME.CID   ");
+	     exportSQL.append("              LEFT JOIN KRCMT_CALC_M_SET_FLE_COM ON BSYMT_WKP_INFO.CID = KRCMT_CALC_M_SET_FLE_COM.CID   ");
 	     exportSQL.append("              LEFT JOIN KSHST_WKP_TRANS_LAB_TIME ON BSYMT_WKP_INFO.CID = KSHST_WKP_TRANS_LAB_TIME.CID   ");
 	     exportSQL.append("              AND BSYMT_WKP_INFO.WKP_ID = KSHST_WKP_TRANS_LAB_TIME.WKP_ID   ");
 	     exportSQL.append("             WHERE BSYMT_WKP_INFO.CID = ?  ");

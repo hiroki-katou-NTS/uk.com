@@ -11,7 +11,8 @@
 .view-c-kmk004 {
 	padding: 10px 20px;
 	height: calc(100vh - 163px);
-    overflow-y: scroll;
+	overflow-y: scroll;
+	display: flex;
 }
 
 .view-c-kmk004 .left-content {
@@ -67,7 +68,8 @@
 .view-d-kmk004 {
 	padding: 10px 20px;
 	height: calc(100vh - 163px);
-    overflow-y: scroll;
+	overflow-y: scroll;
+	display: flex;
 }
 
 .view-d-kmk004 .left-content {
@@ -119,7 +121,8 @@
 .view-e-kmk004 {
 	padding: 10px 20px;
 	height: calc(100vh - 163px);
-    overflow-y: scroll;
+	overflow-y: scroll;
+	display: flex;
 }
 
 .view-e-kmk004 .left-content {
@@ -254,7 +257,7 @@
 .view-b {
 	padding: 10px 20px;
 	height: calc(100vh - 163px);
-    overflow-y: scroll;
+	overflow-y: scroll;
 }
 
 /* .view-b .child {

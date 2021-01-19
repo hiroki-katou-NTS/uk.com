@@ -35,8 +35,7 @@ module nts.uk.at.kmk004.q {
 			vm.paramYears = params.years;
 			vm.year((params && params.years.length) ? String(_.max(params.years) + 1) : moment().format("YYYY"));
 			//vm.startYear = vm.year();
-			vm.endYear = vm.defEnyear(params.startDate);;
-
+			vm.endYear = vm.defEnyear(params.startDate);
 		}
 
 		defEnyear(startDate: number) {

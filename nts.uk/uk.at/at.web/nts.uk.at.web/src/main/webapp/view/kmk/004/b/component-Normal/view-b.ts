@@ -139,34 +139,34 @@ module nts.uk.at.view.kmk004.b {
 			const input = { yearMonth: yearMonth, laborTime: times };
 
 			vm.$blockui('invisible')
-			.then(() => {
-				vm.validate()
-				.then((valid: boolean) => {
-					if (valid) {
+				.then(() => {
+					vm.validate()
+						.then((valid: boolean) => {
+							if (valid) {
 
-						vm.$ajax(API.ADD_WORK_TIME, input)
-							.done(() => {
-								vm.$dialog.info({ messageId: 'Msg_15' });
-								_.remove(ko.unwrap(vm.years), ((value) => {
-									return value.year == ko.unwrap(vm.selectedYear) as number;
-								}));
-								vm.years.push(new IYear(ko.unwrap(vm.selectedYear) as number, false));
-								vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
-							})
-							.then(() => {
-								vm.$errors('clear');
-							}).then(() => {
-								vm.selectedYear.valueHasMutated();
-							});
-					}
+								vm.$ajax(API.ADD_WORK_TIME, input)
+									.done(() => {
+										vm.$dialog.info({ messageId: 'Msg_15' });
+										_.remove(ko.unwrap(vm.years), ((value) => {
+											return value.year == ko.unwrap(vm.selectedYear) as number;
+										}));
+										vm.years.push(new IYear(ko.unwrap(vm.selectedYear) as number, false));
+										vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
+									})
+									.then(() => {
+										vm.$errors('clear');
+									}).then(() => {
+										vm.selectedYear.valueHasMutated();
+									});
+							}
+						});
+				})
+				.always(() => {
+					vm.$blockui('clear');
+					$(document).ready(function () {
+						$('.listbox').focus();
+					});
 				});
-			})
-			.always(() => {
-				vm.$blockui('clear');
-				$(document).ready(function () {
-					$('.listbox').focus();
-				});
-			});
 		}
 
 		remote() {
@@ -187,8 +187,10 @@ module nts.uk.at.view.kmk004.b {
 							_.remove(ko.unwrap(vm.years), ((value) => {
 								return value.year == ko.unwrap(vm.selectedYear);
 							}));
-							vm.years(ko.unwrap(vm.years));
-							vm.selectedYear(ko.unwrap(vm.years)[old_index].year);
+							if (ko.unwrap(vm.years).length > 0) {
+								vm.years(ko.unwrap(vm.years));
+								vm.selectedYear(ko.unwrap(vm.years)[old_index].year);
+							}
 						})
 						.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
 						.then(() => {
