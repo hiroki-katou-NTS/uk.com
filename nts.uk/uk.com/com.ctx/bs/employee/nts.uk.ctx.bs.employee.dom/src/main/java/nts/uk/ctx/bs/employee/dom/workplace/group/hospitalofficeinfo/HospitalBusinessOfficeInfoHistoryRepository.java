@@ -1,6 +1,5 @@
 package nts.uk.ctx.bs.employee.dom.workplace.group.hospitalofficeinfo;
 
-import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -20,11 +19,11 @@ public interface HospitalBusinessOfficeInfoHistoryRepository {
 	Optional<HospitalBusinessOfficeInfo> get(String workplaceGroupId, GeneralDate baseDate);
 	
 	/**
-	 * getAll(職場グルーブID)
+	 * 職場グループID指定して病棟・事業所情報履歴を取得する(職場グルーブID)
 	 * @param workplaceGroupId 職場グルーブID
 	 * @return
 	 */
-	List<HospitalBusinessOfficeInfoHistory> getAll(String workplaceGroupId);
+	Optional<HospitalBusinessOfficeInfoHistory> getHospitalBusinessOfficeInfoHistory(String workplaceGroupId);
 	
 	/**
 	 * get(履歴ID)
@@ -58,7 +57,6 @@ public interface HospitalBusinessOfficeInfoHistoryRepository {
 	 * update(病棟・事業所情報)
 	 * @param hospitalInfo 病棟・事業所情報
 	 */
-	void updateHospitalInfo(HospitalBusinessOfficeInfo hospitalInfo);
 	
 	/**
 	 * delete(職場グルーブID, 履歴ID)
@@ -67,11 +65,4 @@ public interface HospitalBusinessOfficeInfoHistoryRepository {
 	 */
 	void delete(String workplaceGroupId, String historyId);
 	
-	/**
-	 * 病棟・事業所情報履歴を取得する(職場グルーブID, 基準日)
-	 * @param workplaceGroupId 職場グルーブID
-	 * @param baseDate 基準日
-	 * @return
-	 */
-	Optional<HospitalBusinessOfficeInfoHistory> getHospitalBusinessOfficeInfoHistory(String workplaceGroupId, GeneralDate baseDate);
 }

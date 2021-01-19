@@ -8,7 +8,7 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.shr.com.history.strategic.PersistentResidentHistory;
+import nts.uk.shr.com.history.strategic.PersistentHistory;
 /**
  * 病棟・事業所情報履歴
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.基幹.社員.職場.職場グループ.病棟・事業所情報.病棟・事業所情報履歴
@@ -17,7 +17,7 @@ import nts.uk.shr.com.history.strategic.PersistentResidentHistory;
  */
 @Getter
 @AllArgsConstructor
-public class HospitalBusinessOfficeInfoHistory implements DomainAggregate, PersistentResidentHistory<DateHistoryItem, DatePeriod, GeneralDate> {
+public class HospitalBusinessOfficeInfoHistory implements DomainAggregate, PersistentHistory<DateHistoryItem, DatePeriod, GeneralDate> {
 	/** 職場グルーブID　*/
 	private final String workplaceGroupId;
 	
