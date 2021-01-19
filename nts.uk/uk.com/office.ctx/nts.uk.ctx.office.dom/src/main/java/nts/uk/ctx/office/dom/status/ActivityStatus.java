@@ -1,6 +1,7 @@
 package nts.uk.ctx.office.dom.status;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
@@ -9,6 +10,7 @@ import nts.arc.time.GeneralDate;
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.オフィス支援.在席照会.在席照会.在席のステータス
  */
 @Getter
+@Setter
 public class ActivityStatus extends AggregateRoot {
 
 	// ステータス分類
@@ -20,7 +22,7 @@ public class ActivityStatus extends AggregateRoot {
 	// 社員ID
 	private String sid;
 
-	private ActivityStatus() {
+	public ActivityStatus() {
 	}
 
 	public static ActivityStatus createFromMemento(MementoGetter memento) {
