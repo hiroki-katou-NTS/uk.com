@@ -30,7 +30,8 @@ import { KdlS36Component } from '../../../kdl/s36';
             constraint: 'AttendanceTime'
         },
         relationshipReason: {
-            constraint: 'RelationshipReasonPrimitive'
+            constraint: 'RelationshipReasonPrimitive',
+            required: true
         },
         selectedValueHolidayType: {
             required: true,
@@ -98,6 +99,32 @@ export class KafS06AComponent extends KafS00ShrComponent {
         time: ''
     } as WorkInfo;
 
+    @Watch('isValidateWorkHours1', {deep: true})
+    public updateValidateWorkHours1(data: boolean) {
+        const self = this;
+
+        if (data) {
+            self.$updateValidator('workHours1', {
+                required: true,
+                timeRange: true
+            });
+        }
+    }
+    @Watch('c20', {deep: true})
+    public updateValidateRelationshipReason(data: boolean) {
+        const self = this;
+
+        if (data) {
+            self.$updateValidator('relationshipReason', {
+                validate: true
+            });
+        } else {
+            self.$updateValidator('relationshipReason', {
+                validate: false
+            });
+        }
+    }
+
     @Watch('selectedValueHolidayType', {deep: true})
     public watchSelectHolidayType(data: any) {
         const self = this;
@@ -129,16 +156,16 @@ export class KafS06AComponent extends KafS00ShrComponent {
 
     @Prop() 
     public readonly params: InitParam;
-    @Watch('c9') 
-    public updateValidate(data: boolean) {
-        const self = this;
-        if (data) {
-            self.$updateValidator('workHours1', {
-                required: true,
-                timeRange: true
-            });
-        }
-    }
+    // @Watch('c9') 
+    // public updateValidate(data: boolean) {
+    //     const self = this;
+    //     if (data) {
+    //         self.$updateValidator('workHours1', {
+    //             required: true,
+    //             timeRange: true
+    //         });
+    //     }
+    // }
 
 
     public get remainDays(): Array<RemainDaysHoliday> {
@@ -167,6 +194,12 @@ export class KafS06AComponent extends KafS00ShrComponent {
         let time = _.get(model, 'appAbsenceStartInfoDto.requiredVacationTime') || 0;
 
         return self.$dt.timewd(time);
+    }
+
+    public get KAFS06_27() {
+        const self = this;
+
+        return self.$i18n('KAFS06_27'); 
     }
 
     public get A9_3() {
@@ -288,6 +321,12 @@ export class KafS06AComponent extends KafS00ShrComponent {
 
         return self.checkBoxC7 || false;
     }
+    public get isValidateWorkHours1() {
+        const self = this;
+
+        return self.c9 && self.c11;
+    }
+
     // 休暇申請起動時の表示情報．就業時間帯表示フラグ = true
     public get c9() {
         const self = this;
@@ -324,7 +363,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
         let model = self.model as Model;
         let c11 = _.get(model, 'appAbsenceStartInfoDto.vacationApplicationReflect.workAttendanceReflect.reflectAttendance') == NotUseAtr.USE;
         
-        return self.c7 || c11;
+        return self.c7 && c11;
     }
     // 「A4_3」が「時間消化」を選択している
     public get c12() {
@@ -661,6 +700,16 @@ export class KafS06AComponent extends KafS00ShrComponent {
             } as Model;
         }
     }
+    public cloneappAbsenceStartInfoDto(appAbsenceStartInfoDto: AppAbsenceStartInfoDto) {
+        const self = this;
+
+        let appAbsenceStartInfoDtoClone = _.cloneDeep(appAbsenceStartInfoDto);
+
+        self.changeDateFromList(appAbsenceStartInfoDtoClone.leaveComDayOffManas);
+        self.changeDateFromList(appAbsenceStartInfoDtoClone.payoutSubofHDManas);
+
+        return appAbsenceStartInfoDtoClone;
+    }
 
     public changeDate() {
         const self = this;
@@ -669,7 +718,8 @@ export class KafS06AComponent extends KafS00ShrComponent {
         let command = {} as ChangeDateParamMobile;
         command.companyId = self.user.companyId;
         command.dates = self.getDates();
-        command.appAbsenceStartInfoDto = self.model.appAbsenceStartInfoDto;
+        command.appAbsenceStartInfoDto = self.cloneappAbsenceStartInfoDto(self.model.appAbsenceStartInfoDto);
+
         command.applyForLeaveDto = self.model.applyForLeaveDto;
         let holidayAppType = self.selectedValueHolidayType || HolidayAppType.ANNUAL_PAID_LEAVE;
         command.appHolidayType = Number(holidayAppType);
@@ -755,10 +805,8 @@ export class KafS06AComponent extends KafS00ShrComponent {
         let commandCheck = {} as CheckInsertMobileParam;
         vm.model.applyForLeaveDto = vm.toApplyForLeave();
         commandCheck.companyId = vm.user.companyId;
-        let appAbsenceStartInfoDto = _.clone(vm.model.appAbsenceStartInfoDto) as AppAbsenceStartInfoDto;
-        vm.changeDateFromList(appAbsenceStartInfoDto.leaveComDayOffManas);
-        vm.changeDateFromList(appAbsenceStartInfoDto.payoutSubofHDManas);
-        commandCheck.appAbsenceStartInfoDto = appAbsenceStartInfoDto;
+        
+        commandCheck.appAbsenceStartInfoDto = vm.cloneappAbsenceStartInfoDto(vm.model.appAbsenceStartInfoDto);
         commandCheck.applyForLeave = vm.model.applyForLeaveDto;
         commandCheck.mode = vm.modeNew;
         if (vm.modeNew) {
@@ -797,13 +845,13 @@ export class KafS06AComponent extends KafS00ShrComponent {
                     commandUpdate.applyForLeave = commandCheck.applyForLeave;
                     commandUpdate.appDispInfoStartupOutput = vm.appDispInfoStartupOutput;
                     commandUpdate.holidayAppDates = vm.getDates();
-                    let leaveComDayOffManaDto = vm.model.appAbsenceStartInfoDto.leaveComDayOffManas;
+                    let leaveComDayOffManaDto = _.cloneDeep(vm.model.appAbsenceStartInfoDto.leaveComDayOffManas);
                     vm.changeDateFromList(leaveComDayOffManaDto);
-                    let payoutSubofHDManagementDto = vm.model.appAbsenceStartInfoDto.payoutSubofHDManas;
+                    let payoutSubofHDManagementDto = _.cloneDeep(vm.model.appAbsenceStartInfoDto.payoutSubofHDManas);
                     vm.changeDateFromList(payoutSubofHDManagementDto);
-                    let leaveComDayOffMana = vm.linkWithVacation;
+                    let leaveComDayOffMana = _.cloneDeep(vm.linkWithVacation);
                     vm.changeDateFromList(leaveComDayOffMana);
-                    let payoutSubofHDManagements = vm.linkWithDraw;
+                    let payoutSubofHDManagements = _.cloneDeep(vm.linkWithDraw);
                     vm.changeDateFromList(payoutSubofHDManagements);
                     commandUpdate.leaveComDayOffManaDto = leaveComDayOffManaDto;
                     commandUpdate.payoutSubofHDManagementDto = payoutSubofHDManagementDto;
@@ -919,7 +967,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
 
         self.bindHolidayType();
         self.bindWorkInfo(true);
-        self.bindWorkHours();
+        self.bindWorkHours(true);
         self.bindRelationship();
         self.bindLinkWithVacation(vacationCheckOutputDto);
     }
@@ -1045,20 +1093,37 @@ export class KafS06AComponent extends KafS00ShrComponent {
         }
         
         let result1 = _.find(workTimeLst, (item: TimeZoneUseDto) => item.workNo == 1) as any;
-        let result2 = _.find(workTimeLst, (item: TimeZoneUseDto) => item.workNo == 2 && item.useAtr == NotUseAtr.USE) as any;
+        let result2 = _.find(workTimeLst, (item: TimeZoneUseDto) => item.workNo == 2 && (!mode || item.useAtr == NotUseAtr.USE)) as any;
 
+        let start1 = null;
+        let end1 = null;
+        let start2 = null;
+        let end2 = null;
         if (!_.isNil(result1)) {
-            self.workHours1 = {
-                    start: mode ? result1.startTime : result1.timeZone.startTime,
-                    end: mode ? result1.endTime : result1.timeZone.endTime
-                };
+            start1 = mode ? result1.startTime : result1.timeZone.startTime;
+            end1 = mode ? result1.endTime : result1.timeZone.endTime;
         }
-        if (!_.isNil(result2)) {
-            self.workHours2 = {
-                start: mode ? result2.startTime : result2.timeZone.startTime,
-                end: mode ? result2.endTime : result2.timeZone.endTime
+        if (_.isNil(self.workHours1)) {
+            self.workHours1 = {
+                start: null,
+                end: null
             };
         }
+        self.workHours1.start = start1;
+        self.workHours1.end = end1;
+        if (!_.isNil(result2)) {
+            start2 = mode ? result2.startTime : result2.timeZone.startTime;
+            end2 = mode ? result2.endTime : result2.timeZone.endTime;
+            
+        }
+        if (_.isNil(self.workHours2)) {
+            self.workHours2 = {
+                start: null,
+                end: null
+            };
+        }
+        self.workHours2.start = start2;
+        self.workHours2.end = end2;
 
     } 
 
@@ -1267,8 +1332,10 @@ export class KafS06AComponent extends KafS00ShrComponent {
                         let command = {} as SelectWorkTypeHolidayParam;
                         command.companyId = self.user.companyId;
                         command.dates = self.getDates();
-                        command.appAbsenceStartInfoOutput = self.model.appAbsenceStartInfoDto;
-                        command.appAbsenceStartInfoOutput.selectedWorkTimeCD = result.selectedWorkTime.code;
+                        command.appAbsenceStartInfoOutput = self.cloneappAbsenceStartInfoDto(self.model.appAbsenceStartInfoDto);
+                        if (result.selectedWorkTime) {
+                            command.appAbsenceStartInfoOutput.selectedWorkTimeCD = result.selectedWorkTime.code;
+                        }
                         command.workTypeCodeBeforeOp = workTypeCodeBefore;
                         command.workTypeCodeAfterOp = workTypeCodeAfter;
                         command.holidayAppType = self.selectedValueHolidayType || HolidayAppType.ANNUAL_PAID_LEAVE;                    
@@ -1317,7 +1384,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
 
                     let command = {} as SelectWorkTimeHolidayParam;
                     command.companyId = self.user.companyId;
-                    command.appAbsenceStartInfoDto = self.model.appAbsenceStartInfoDto;
+                    command.appAbsenceStartInfoDto = self.cloneappAbsenceStartInfoDto(self.model.appAbsenceStartInfoDto);
                     command.workTypeCode = self.workType.code;
                     command.workTimeCodeOp = self.workTime.code;
                     command.employeeId = self.user.employeeId;
@@ -1392,7 +1459,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
         let command = {
             companyId: self.user.companyId,
             dates: self.getDates(),
-            appAbsenceStartInfoDto: self.model.appAbsenceStartInfoDto,
+            appAbsenceStartInfoDto: self.cloneappAbsenceStartInfoDto(self.model.appAbsenceStartInfoDto),
             holidayAppType: Number(data)
         } as any;
 
@@ -1459,7 +1526,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
         let workInfo = {} as WorkInformationDto;
         workInfo.workType = self.workType.code;
         let workingHours = [] as Array<TimeZoneWithWorkNoDto>;
-        if (self.c9) {
+        if (self.c9 && self.c11) {
             workInfo.workTime = self.workTime.code;
             let timeZoneWithWorkNoDto = {} as TimeZoneWithWorkNoDto;
             timeZoneWithWorkNoDto.workNo = 1;
