@@ -236,9 +236,10 @@ module nts.uk.at.view.kmk004.components.transform {
 			
 			vm.$window.modal('/view/kmk/004/q/index.xhtml', param).then((result) => {
 				if (result) {
+					let year = Number(result.year);
 					vm.itemList.push(new IYear(parseInt(result.year), true));
 					vm.itemList(_.orderBy(ko.unwrap(vm.itemList), ['year'], ['desc']));
-					vm.selectedYear(ko.unwrap(vm.itemList)[0].year);
+					vm.selectedYear(year);
 					vm.selectedYear.valueHasMutated();
 				}
 			});
