@@ -851,25 +851,42 @@ export class KafS10Component extends KafS00ShrComponent {
         return false;
     }
 
+    //  「休日出勤の計算結果(従業員)」．申請時間．申請時間．申請時間（type = 残業時間）に項目がある
+    public get c9_appHolidayWork() {
+        const self = this;
+        let model = self.model as Model;
+        if (!_.isNil(_.get(model, 'appHolidayWork'))) {
+            if (!_.isNil(_.get(model, 'appHolidayWork.applicationTime'))) {
+                let applicationTimes = _.get(model, 'appHolidayWork.applicationTime.applicationTime');
+                if (!_.isEmpty(applicationTimes)
+                 && applicationTimes.filter((applicationTime) => applicationTime.attendanceType == AttendanceType.NORMALOVERTIME && applicationTime.applicationTime > 0).length > 0) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+
     //  ※7 = ○　AND　※9 = ○
     public get c9_1() {
         const self = this;
 
-        return self.c7 && self.c9;
+        return self.c7 && (self.c9 || self.c9_appHolidayWork);
     }
 
     //  ※6 = ○　AND　※7 = ○　AND　※9 = ○
     public get c9_2() {
         const self = this;
 
-        return self.c6 && self.c7 && self.c9;
+        return self.c6 && self.c7 && (self.c9 || self.c9_appHolidayWork);
     }
 
     //  ※6 = ○　AND　※9 = ○
     public get c9_3() {
         const self = this;
 
-        return self.c6 && self.c9;
+        return self.c6 && (self.c9 || self.c9_appHolidayWork);
     }
 
     //  ＄：休日出勤申請起動時の表示情報
