@@ -30,28 +30,73 @@ public class RsvLeaveRemainingNumberInfoDto implements ItemConst, AttendanceItem
 
 	public static RsvLeaveRemainingNumberInfoDto from(ReserveLeaveRemainingInfo domain) {
 
-		return domain == null ? null : new RsvLeaveRemainingNumberInfoDto(
-				RsvLeaveRemainingNumberDto.from(domain.getRemainingNumber()),
-				RsvLeaveRemainingNumberDto.from(domain.getRemainingNumberBeforeGrant()),
-				domain.getRemainingNumberAfterGrantOpt().map(c -> RsvLeaveRemainingNumberDto.from(c)).orElse(null));
+		return domain == null ? null
+				: new RsvLeaveRemainingNumberInfoDto(RsvLeaveRemainingNumberDto.from(domain.getRemainingNumber()),
+						RsvLeaveRemainingNumberDto.from(domain.getRemainingNumberBeforeGrant()),
+						domain.getRemainingNumberAfterGrantOpt().map(c -> RsvLeaveRemainingNumberDto.from(c))
+								.orElse(null));
 	}
-
-//	public static RsvLeaveRemainingNumberInfoDto from(ReserveLeaveRemainingNumber domain) {
-//
-//		return domain == null ? null : new RsvLeaveRemainingNumberInfoDto(
-//				RsvLeaveRemainingNumberDto.from(domain.getTotalRemainingDays().v()),
-//				RsvLeaveRemainingNumberDto.from(domain.getReserveLeaveWithMinus().getRemainingNumberInfo().getRemainingNumberBeforeGrant()),
-//				RsvLeaveRemainingNumberDto.from(domain.getReserveLeaveWithMinus().getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().orElse(null)));
-//
-//
-//
-//	}
 
 	public ReserveLeaveRemainingInfo toReserveDomain() {
 
-		return ReserveLeaveRemainingInfo.of(
-					totalRemainingDays.toReserveDomain(),
-					before.toReserveDomain(),
-					Optional.ofNullable(after == null ? null : after.toReserveDomain()));
+		return ReserveLeaveRemainingInfo.of(totalRemainingDays.toReserveDomain(), before.toReserveDomain(),
+				Optional.ofNullable(after == null ? null : after.toReserveDomain()));
+	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case DAYS:
+		case BEFORE:
+		case AFTER:
+			return new RsvLeaveRemainingNumberDto();
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.newInstanceOf(path);
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case DAYS:
+			return Optional.ofNullable(totalRemainingDays);
+		case BEFORE:
+			return Optional.ofNullable(before);
+		case AFTER:
+			return Optional.ofNullable(after);
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.get(path);
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case DAYS:
+		case BEFORE:
+		case AFTER:
+			return PropType.OBJECT;
+		default:
+			return AttendanceItemDataGate.super.typeOf(path);
+		}
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case DAYS:
+			totalRemainingDays = (RsvLeaveRemainingNumberDto) value;
+			break;
+		case BEFORE:
+			before = (RsvLeaveRemainingNumberDto) value;
+			break;
+		case AFTER:
+			after = (RsvLeaveRemainingNumberDto) value;
+			break;
+		default:
+			break;
+		}
 	}
 }

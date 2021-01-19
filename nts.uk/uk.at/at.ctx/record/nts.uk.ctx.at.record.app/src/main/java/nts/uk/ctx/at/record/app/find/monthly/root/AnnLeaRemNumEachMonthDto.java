@@ -112,7 +112,7 @@ public class AnnLeaRemNumEachMonthDto extends MonthlyItemCommon {
 	private boolean grantAtr;
 
 	/** 未消化 */
-	@AttendanceItemLayout(jpPropertyName = NOT_DIGESTION, layout = LAYOUT_K)
+	@AttendanceItemLayout(jpPropertyName = NOT_DIGESTION, layout = LAYOUT_L)
 	private AnnualLeaveUndigestedNumberDto undigestedNumber;
 
 	@Override
@@ -213,6 +213,8 @@ public class AnnLeaRemNumEachMonthDto extends MonthlyItemCommon {
 			return new TimeUsedNumberDto();
 		case (ATTENDANCE + RATE):
 			return new AnnualLeaveAttdRateDaysDto();
+		case NOT_DIGESTION:
+			return new AnnualLeaveUndigestedNumberDto();
 		default:
 			break;
 		}
@@ -240,6 +242,8 @@ public class AnnLeaRemNumEachMonthDto extends MonthlyItemCommon {
 			return Optional.ofNullable(realMaxRemainingTime);
 		case (ATTENDANCE + RATE):
 			return Optional.ofNullable(attendanceRateDays);
+		case NOT_DIGESTION:
+			return Optional.ofNullable(undigestedNumber);
 		default:
 			break;
 		}
@@ -291,6 +295,8 @@ public class AnnLeaRemNumEachMonthDto extends MonthlyItemCommon {
 			(realMaxRemainingTime) = (TimeUsedNumberDto) value; break;
 		case (ATTENDANCE + RATE):
 			(attendanceRateDays) = (AnnualLeaveAttdRateDaysDto) value; break;
+		case NOT_DIGESTION:
+			(undigestedNumber) = (AnnualLeaveUndigestedNumberDto) value; break;
 		default:
 			break;
 		}

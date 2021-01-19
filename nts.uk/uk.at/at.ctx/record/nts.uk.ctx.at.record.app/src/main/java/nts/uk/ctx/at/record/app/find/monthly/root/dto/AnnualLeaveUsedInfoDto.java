@@ -10,6 +10,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Used
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedInfo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedNumber;
@@ -56,4 +57,79 @@ public class AnnualLeaveUsedInfoDto implements ItemConst, AttendanceItemDataGate
 										new UsedTimes(annualLeaveUsedTimes), new UsedTimes(annualLeaveUsedDayTimes),
 										usedNumberAfterGrantOpt == null ? Optional.empty() : Optional.of(usedNumberAfterGrantOpt.toDomain()));
 	}
+	
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		if ((GRANT + BEFORE).equals(path) || (GRANT + AFTER).equals(path) || (TOTAL).equals(path)) {
+			return new AnnualLeaveUsedNumberDto();
+		} 
+		return null;
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+
+		if ((GRANT + BEFORE).equals(path)) {
+			return Optional.of(this.usedNumberBeforeGrant);
+		} else if ((GRANT + AFTER).equals(path)) {
+			return Optional.of(this.usedNumberAfterGrantOpt);
+		} else if (TOTAL.equals(path)) {
+			return Optional.of(this.usedNumber);
+		}
+		return Optional.empty();
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		if ((GRANT + BEFORE).equals(path)) {
+			this.usedNumberBeforeGrant = (AnnualLeaveUsedNumberDto) value;
+		} else if ((GRANT + AFTER).equals(path)) {
+			this.usedNumberAfterGrantOpt = (AnnualLeaveUsedNumberDto) value;
+		} else if (TOTAL.equals(path)) {
+			this.usedNumber = (AnnualLeaveUsedNumberDto) value;
+		}
+	}
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case USAGE + COUNT:
+			return Optional.of(ItemValue.builder().value(annualLeaveUsedTimes).valueType(ValueType.COUNT));
+		case USAGE + DAYS:
+			return Optional.of(ItemValue.builder().value(annualLeaveUsedDayTimes).valueType(ValueType.COUNT));
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case USAGE + COUNT:
+			annualLeaveUsedTimes = value.valueOrDefault(0);
+			break;
+		case USAGE + DAYS:
+			annualLeaveUsedDayTimes = value.valueOrDefault(0);
+			break;
+		default:
+			break;
+		}
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+
+		switch (path) {
+		case USAGE + COUNT:
+		case USAGE + DAYS:
+			return PropType.VALUE;
+		case GRANT + BEFORE:
+		case GRANT + AFTER:
+		case TOTAL:
+			return PropType.OBJECT;
+		default:
+			return PropType.OBJECT;
+		}
+	}
+
 }

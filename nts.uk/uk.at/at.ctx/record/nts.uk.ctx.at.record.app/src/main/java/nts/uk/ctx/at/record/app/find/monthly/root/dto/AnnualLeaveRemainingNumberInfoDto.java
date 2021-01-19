@@ -41,4 +41,45 @@ public class AnnualLeaveRemainingNumberInfoDto implements ItemConst, AttendanceI
 													before == null ? new AnnualLeaveRemainingNumber() : before.toDomain(),
 													after == null ? Optional.empty() : Optional.of(after.toDomain()));
 	}
+	
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case TOTAL:
+		case BEFORE:
+		case AFTER:
+			return new CommonLeaveRemainingNumberDto();
+		default:
+			return AttendanceItemDataGate.super.newInstanceOf(path);
+		}
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case TOTAL:
+			return Optional.ofNullable(remainingNumber);
+		case BEFORE:
+			return Optional.ofNullable(before);
+		case AFTER:
+			return Optional.ofNullable(after);
+		default:
+			return AttendanceItemDataGate.super.get(path);
+		}
+	
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case TOTAL:
+			remainingNumber = (CommonLeaveRemainingNumberDto) value; break;
+		case BEFORE:
+			before = (CommonLeaveRemainingNumberDto) value; break;
+		case AFTER:
+			after = (CommonLeaveRemainingNumberDto) value; break;
+		default:
+			break;
+		}
+	}
 }

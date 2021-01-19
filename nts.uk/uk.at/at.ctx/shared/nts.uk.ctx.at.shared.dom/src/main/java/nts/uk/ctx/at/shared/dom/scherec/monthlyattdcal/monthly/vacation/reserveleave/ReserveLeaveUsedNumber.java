@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremain
 @Setter
 public class ReserveLeaveUsedNumber implements Cloneable {
 
-	/** 使用日数 */
+	/** 合計 */
 	private ReserveLeaveUsedDayNumber usedDays;
 	/** 使用日数付与前 */
 	private ReserveLeaveUsedDayNumber usedDaysBeforeGrant;

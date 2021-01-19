@@ -49,11 +49,11 @@ public class AnnualLeaveUsedDaysDto implements ItemConst, AttendanceItemDataGate
 	public Optional<ItemValue> valueOf(String path) {
 		switch (path) {
 		case DAYS:
-			return Optional.of(ItemValue.builder().value(usedDays).valueType(ValueType.TIME));
+			return Optional.of(ItemValue.builder().value(usedDays).valueType(ValueType.DAYS));
 		case GRANT + BEFORE:
-			return Optional.of(ItemValue.builder().value(usedDaysBeforeGrant).valueType(ValueType.TIME));
+			return Optional.of(ItemValue.builder().value(usedDaysBeforeGrant).valueType(ValueType.DAYS));
 		case GRANT + AFTER:
-			return Optional.of(ItemValue.builder().value(usedDaysAfterGrant).valueType(ValueType.TIME));
+			return Optional.of(ItemValue.builder().value(usedDaysAfterGrant).valueType(ValueType.DAYS));
 		default:
 			return Optional.empty();
 		}
