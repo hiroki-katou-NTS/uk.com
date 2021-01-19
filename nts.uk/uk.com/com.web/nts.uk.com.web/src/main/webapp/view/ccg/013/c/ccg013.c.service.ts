@@ -1,7 +1,7 @@
 module nts.uk.com.view.ccg013.c.service {
     // Service paths.
     var servicePath = {
-        findBySystem: "sys/portal/standardmenu/findAllDisplay",
+        findBySystem: "sys/portal/standardmenu/findAll",
         getEditMenuBar: "sys/portal/webmenu/edit",
     }
     
