@@ -75,6 +75,38 @@ module nts.uk.ui.at.ksu002.a {
 				}
 			}
 		},
+		softReset: function (dayDatas: DayDataRawObsv[]) {
+			dayDatas
+				.forEach(({ data }) => {
+					const {
+						$raw,
+						wtime,
+						wtype,
+						value,
+						achievement
+					} = data;
+
+					if (ko.unwrap(achievement)) {
+						$raw.achievements.workTypeCode = ko.unwrap(wtype.code);
+						$raw.achievements.workTypeName = ko.unwrap(wtype.name);
+
+						$raw.achievements.workTimeCode = ko.unwrap(wtime.code);
+						$raw.achievements.workTimeName = ko.unwrap(wtime.name);
+
+						$raw.achievements.startTime = ko.unwrap(value.begin);
+						$raw.achievements.endTime = ko.unwrap(value.finish);
+					} else {
+						$raw.workTypeCode = ko.unwrap(wtype.code);
+						$raw.workTypeName = ko.unwrap(wtype.name);
+
+						$raw.workTimeCode = ko.unwrap(wtime.code);
+						$raw.workTimeName = ko.unwrap(wtime.name);
+
+						$raw.startTime = ko.unwrap(value.begin);
+						$raw.endTime = ko.unwrap(value.finish);
+					}
+				});
+		},
 		hasChange: function (dayDatas: DayDataRawObsv[]) {
 			const changeds = dayDatas
 				.map(({ data }) => {
@@ -603,7 +635,7 @@ module nts.uk.ui.at.ksu002.a {
 							.then(() => vm.$ajax('at', API.SAVE_DATA, command))
 							.then((info: HandlerResult) => {
 								if (!info.listErrorInfo.length) {
-									return vm.$dialog.info({ messageId: 'Msg_15' });
+									return vm.$dialog.info({ messageId: 'Msg_15' }).then(() => vm.schedules.reset(true));
 								} else {
 									// call KDL053
 									return vm.$window.modal('at', '/view/kdl/053/a/index.xhtml', info);
