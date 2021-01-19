@@ -300,7 +300,7 @@ public class DailyCorrectEventServiceCenter {
 					});
 			
 			triggerBreakTime(companyId, workTypes.get(wi.getWorkInformation().getRecordInfo().getWorkTypeCode()), eventTriggerBus, c.getValue(), wi,
-					dailyRecord.getEditState().getData(), dailyRecord.getBreakTime().getData().get(), dailyRecord.getTimeLeaving().getData(), e -> {
+					dailyRecord.getEditState().getData(), dailyRecord.getBreakTime().getData(), dailyRecord.getTimeLeaving().getData(), e -> {
 						if(e.getAction() == EventHandleAction.DELETE){
 							dailyRecord.getBreakTime().updateDataO(Optional.empty());
 							dailyRecord.getBreakTime().shouldDeleteIfNull();
