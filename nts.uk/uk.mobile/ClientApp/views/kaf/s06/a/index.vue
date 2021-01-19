@@ -141,7 +141,7 @@
       </div>
       <!-- A8_2 -->
       <div class="card-body">
-        <nts-time-range-input v-model="workHours2" v-bind:disabled="c11" />
+        <nts-time-range-input v-model="workHours2" v-bind:disabled="!c11" />
       </div>
     </div>
 
