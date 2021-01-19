@@ -1265,7 +1265,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
             text: '--- 選択してください ---'
         });
         self.dropdownList = dropDownList;
-        self.selectedValueHolidayType = self.getSelectedValue() ?  String(self.getSelectedValue()) : null;
+        self.selectedValueHolidayType = !_.isNil(self.getSelectedValue()) ?  String(self.getSelectedValue()) : null;
         // 
 
     }
