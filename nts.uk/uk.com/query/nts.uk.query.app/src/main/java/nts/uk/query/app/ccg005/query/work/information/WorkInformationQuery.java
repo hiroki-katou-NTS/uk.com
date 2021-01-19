@@ -16,12 +16,9 @@ import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.uk.query.app.ccg005.query.work.information.dto.EmployeeDailyPerErrorDto;
-import nts.uk.query.app.ccg005.query.work.information.dto.TimeLeavingOfDailyPerformanceDto;
-import nts.uk.query.app.ccg005.query.work.information.dto.WorkInfoOfDailyPerformanceDto;
-import nts.uk.query.app.ccg005.query.work.information.dto.WorkScheduleDto;
-import nts.uk.query.app.ccg005.query.work.information.dto.WorkTypeDto;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.office.dom.dto.EmployeeDailyPerErrorDto;
+import nts.uk.ctx.office.dom.dto.WorkTypeDto;
 
 /*
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.オフィス支援.在席照会.ステータス.勤務情報の取得.勤務情報の取得
@@ -74,7 +71,7 @@ public class WorkInformationQuery {
 			TimeLeavingOfDailyPerformance timeLeave = timeLeaveList.stream().filter(tl -> tl.getEmployeeId().equalsIgnoreCase(sid)).findFirst().orElse(null);
 			List<EmployeeDailyPerErrorDto> employeeDailyErrors = employeeDailyErrorList.stream()
 					.filter(tl -> tl.getEmployeeID().equalsIgnoreCase(sid))
-					.map(mapper -> EmployeeDailyPerErrorDto.getDto(mapper))
+					.map(mapper -> EmployeeWorkInformationDto.employeeDailyPerErrorToDto(mapper))
 					.collect(Collectors.toList());
 			WorkTypeDto workTypeDto = WorkTypeDto.builder().build();
 			
@@ -82,20 +79,20 @@ public class WorkInformationQuery {
 			if(workInfo != null) {
 				String workTypeCode = workInfo.getWorkInformation().getRecordInfo().getWorkTypeCode().v();
 				WorkType workType = workTypeList.stream().filter(wt -> (wt.getWorkTypeCode().v()).equalsIgnoreCase(workTypeCode)).findFirst().orElse(null);
-				workTypeDto = WorkTypeDto.toDto(workType);
+				workTypeDto = EmployeeWorkInformationDto.workTypeToDto(workType);
 				
 			//日別実績の勤務情報がない場合：勤務予定.勤務情報.勤務情報.勤務種類コード　＝　「勤務種類」.コード
 			} else {
 				String workTypeCode = workSchedule.getWorkInfo().getRecordInfo().getWorkTypeCode().v();
 				WorkType workType = workTypeList.stream().filter(wt -> (wt.getWorkTypeCode().v()).equalsIgnoreCase(workTypeCode)).findFirst().orElse(null);
-				workTypeDto = WorkTypeDto.toDto(workType);
+				workTypeDto = EmployeeWorkInformationDto.workTypeToDto(workType);
 			}
 			return EmployeeWorkInformationDto.builder()
 					.sid(sid)
-					.workScheduleDto(WorkScheduleDto.toDto(workSchedule))
+					.workScheduleDto(EmployeeWorkInformationDto.workScheduleToDto(workSchedule))
 					.workTypeDto(workTypeDto)
-					.timeLeavingOfDailyPerformanceDto(TimeLeavingOfDailyPerformanceDto.toDto(timeLeave))
-					.workPerformanceDto(WorkInfoOfDailyPerformanceDto.toDto(workInfo))
+					.timeLeavingOfDailyPerformanceDto(EmployeeWorkInformationDto.timeLeavingOfDailyPerformanceToDto(timeLeave))
+					.workPerformanceDto(EmployeeWorkInformationDto.workInfoOfDailyPerformanceToDto(workInfo))
 					.employeeDailyPerErrorDtos(employeeDailyErrors)
 					.build();
 		}).collect(Collectors.toList());

@@ -17,13 +17,13 @@ public class AttendanceDetailDto {
 	private Integer checkOutColor;
 
 	// 終了時刻
-	private Integer checkOutTime;
+	private String checkOutTime;
 
 	// 開始の色
 	private Integer checkInColor;
 
 	// 開始時刻
-	private Integer checkInTime;
+	private String checkInTime;
 
 	// 勤務区分
 	private Integer workDivision;

@@ -19,6 +19,7 @@ import nts.gul.web.communicate.typedapi.ResponseDefine;
 import nts.gul.web.communicate.typedapi.TypedWebAPI;
 import nts.uk.ctx.health.dom.linkage.HealthLifeApiLinkage;
 import nts.uk.ctx.health.dom.linkage.HealthLifeApiLinkageRepository;
+import nts.uk.shr.com.company.CompanyId;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -34,28 +35,18 @@ public class HealthLifeApiSession {
 	@Inject
 	private HealthLifeApiLinkageRepository linkageRepo;
 	
-	public Context begin(String companyId) {
+	public Context begin(String companyIdString) {
 		
-		val user = AppContexts.user();
-		if (!user.companyId().equals(companyId)) {
-			// 現時点ではログイン外の会社の処理は未実装
-			// 必要ならここでDBアクセスしてテナントコードと会社コードを取得する
-			throw new RuntimeException("ログイン中の会社以外を指定できません。指定：" + companyId + ", ログイン：" + user.companyId());
-		}
+		val comapnyId = new CompanyId(companyIdString);
 		
-		val linkage = linkageRepo.find(user.contractCode()).get();
-		
-		return beginSession(linkage, user.companyCode());
-	}
-
-	private static Context beginSession(HealthLifeApiLinkage linkage, String companyCode) {
+		val linkage = linkageRepo.find(comapnyId.tenantCode()).get();
 		
 		val httpClient = DefaultNtsHttpClient.createDefault();
 		
 		val authen = httpClient.fetch(Authenticate.api(linkage), Authenticate.Request.of(linkage));
 		val login = httpClient.fetch(Login.api(linkage), Login.Request.of(authen));
 		
-		int healthLifeCompanyCode = Integer.parseInt(companyCode);
+		int healthLifeCompanyCode = Integer.parseInt(comapnyId.companyCode());
 		
 		return new Context(linkage, httpClient, login.getCsrfToken(), healthLifeCompanyCode);
 	}
