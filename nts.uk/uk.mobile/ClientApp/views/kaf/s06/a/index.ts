@@ -1265,7 +1265,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
             text: '--- 選択してください ---'
         });
         self.dropdownList = dropDownList;
-        self.selectedValueHolidayType = String(self.getSelectedValue());
+        self.selectedValueHolidayType = self.getSelectedValue() ?  String(self.getSelectedValue()) : null;
         // 
 
     }
@@ -1275,7 +1275,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
 
         if (!self.model.appAbsenceStartInfoDto || !_.isNil(self.selectedValueHolidayType)) {
 
-            return self.selectedValueHolidayType || HolidayAppType.ANNUAL_PAID_LEAVE;
+            return self.selectedValueHolidayType || null;
         }
         // 休暇申請起動時の表示情報．休暇残数情報．年休管理区分　＝　管理する
         let c1_1 = self.model.appAbsenceStartInfoDto.remainVacationInfo.annualLeaveManagement.annualLeaveManageDistinct == ManageDistinct.YES;
@@ -1361,7 +1361,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
             return HolidayAppType.DIGESTION_TIME;
         }
 
-        return HolidayAppType.ANNUAL_PAID_LEAVE;
+        return null;
     }
 
     public openKDL002(type?: string) {
