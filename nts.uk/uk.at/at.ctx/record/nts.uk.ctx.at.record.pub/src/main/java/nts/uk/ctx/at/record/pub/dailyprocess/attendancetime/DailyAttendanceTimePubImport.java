@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
@@ -49,4 +51,12 @@ public class DailyAttendanceTimePubImport {
 	
 	//休憩終了時刻
 	List<AttendanceTime> breakEndTime = Collections.emptyList();
+	
+	// add params (redmine #113606)
+	//外出時間帯(List)(time đi ra ngoai)
+	List<OutingTimeSheet> outingTimeSheets = Collections.emptyList();
+	//育児時間帯(List)(time chăm soc trẻ)
+	List<ShortWorkingTimeSheet> shortWorkingTimeSheets = Collections.emptyList();
+	
+	
 }

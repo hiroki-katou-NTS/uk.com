@@ -181,6 +181,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
                 if (res) {
                     vm.printContentOfEachAppDto().opDetailOutput = res;
 					vm.appOverTime = res.appOverTime;
+					ko.contextFor(vm.$el).$parent.content.getAppNameForAppOverTime(vm.appOverTime.overTimeClf);
 					vm.dataSource = res.displayInfoOverTime;
 					vm.visibleModel = vm.createVisibleModel(vm.dataSource);
 					vm.bindOverTimeWorks(vm.dataSource);
@@ -237,6 +238,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			// validate chung KAF000
 			 vm.$validate(
 				'#kaf000-a-component4 .nts-input',
+				'#kaf000-a-component5 .nts-input', 
 				'#kaf000-a-component3-prePost',
 			 	'#kaf000-a-component5-comboReason',
 				'#inpStartTime1',
@@ -1228,14 +1230,20 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			let restTimeArray = self.restTime() as Array<RestTime>;
 			if (mode == 0) {
 				let breakTimes = self.appOverTime.breakTimeOp;
-				if (_.isEmpty(breakTimes)) {
-					_.forEach(restTimeArray, (i: RestTime) => {
-						i.start(null);
-						i.end(null);
-					});
-					
-					return;
-				}
+				/**
+					if (_.isEmpty(breakTimes)) {
+						_.forEach(restTimeArray, (i: RestTime) => {
+							i.start(null);
+							i.end(null);
+						});
+						
+						return;
+					}
+								
+				 */
+				
+				self.createRestTime(self.restTime);
+				restTimeArray = self.restTime()  as Array<RestTime>;
 				_.forEach(breakTimes, (i: TimeZoneWithWorkNo) => {
 					if (i.workNo <= 10) {
 						let restItem = restTimeArray[i.workNo - 1] as RestTime;

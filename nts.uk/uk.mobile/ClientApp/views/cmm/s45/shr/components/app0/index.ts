@@ -23,6 +23,10 @@ export class CmmS45ShrComponentsApp0Component extends Vue {
 
     public workInfo: WorkInfo = {} as WorkInfo;
 
+    public reasons: Array<Reason> = [];
+
+    public isEmptyBreakTime: boolean = false;
+
     public workHours1: WorkHours = {
         start: '',
         end: ''
@@ -121,13 +125,13 @@ export class CmmS45ShrComponentsApp0Component extends Vue {
         }
     ];
 
-    // !「残業申請の表示情報．基準日に関係しない情報．残業申請設定．申請詳細設定．時刻計算利用区分」＝する
+    // 「残業申請の表示情報．基準日に関係しない情報．残業申請設定．申請詳細設定．時刻計算利用区分」＝する
     public get c3() {
         const self = this;
 
         let c3 = _.get(self.dataOutput, 'displayInfoOverTime.infoNoBaseDate.overTimeAppSet.applicationDetailSetting.timeCalUse');
 
-        return c3 != NotUseAtr.USE;
+        return c3 == NotUseAtr.USE;
     }
     // ※表3 = ○　OR　※表3-1-1 = ○
     public get c3_1() {
@@ -142,14 +146,14 @@ export class CmmS45ShrComponentsApp0Component extends Vue {
         let value1 = _.get(self.dataOutput, 'displayInfoOverTime.infoNoBaseDate.overTimeReflect.overtimeWorkAppReflect.reflectBeforeBreak');
         let value2 = _.get(self.dataOutput, 'displayInfoOverTime.infoNoBaseDate.overTimeReflect.overtimeWorkAppReflect.reflectBreakOuting');
 
-        return (value1 == NotUseAtr.USE || value2 == NotUseAtr.USE); 
+        return ((!self.c15 && value1 == NotUseAtr.USE) || (self.c15 && value2 == NotUseAtr.USE)); 
     }
     // c3 ＝ ○ AND「残業申請の表示情報．申請表示情報．申請表示情報(基準日関係なし)．複数回勤務の管理」＝true"
     public get c3_2() {
         const self = this;
         let c3_2 = _.get(self.dataOutput, 'displayInfoOverTime.appDispInfoStartup.appDispInfoNoDateOutput.managementMultipleWorkCycles');
 
-        return self.c3 || c3_2;
+        return self.c3 && c3_2;
     }
     // 「残業申請の表示情報．基準日に関する情報．残業申請で利用する残業枠．残業枠一覧」 <> empty
     public get c4() {
@@ -179,17 +183,12 @@ export class CmmS45ShrComponentsApp0Component extends Vue {
         
         return c6;
     }
-    public get c12() {
-        const self = this;
-
-        return self.c13 || self.c14;
-    }
     public get c13() {
         const self = this;
         let findResult = _.find(_.get(self.dataOutput, 'displayInfoOverTime.infoNoBaseDate.divergenceReasonInputMethod'), { divergenceTimeNo: 1 });
         let c13_1 = !_.isNil(findResult);
         let c13_2 = c13_1 ? findResult.divergenceReasonSelected : false;
-
+        
         return c13_1 && c13_2;
     }
     public get c14() {
@@ -197,8 +196,19 @@ export class CmmS45ShrComponentsApp0Component extends Vue {
         let findResult = _.find(_.get(self.dataOutput, 'displayInfoOverTime.infoNoBaseDate.divergenceReasonInputMethod'), { divergenceTimeNo: 1 });
         let c14_1 = !_.isNil(findResult);
         let c14_2 = c14_1 ? findResult.divergenceReasonInputed : false;
-
+        
         return c14_1 && c14_2;
+    }
+
+    public get c15 () {
+        const self = this;
+
+        return _.get(self.dataOutput, 'displayInfoOverTime.appDispInfoStartup.appDetailScreenInfo.application.prePostAtr') == 1;
+    }
+    public get c12() {
+        const self = this;
+
+        return self.c13 || self.c14;
     }
     // 「残業申請．申請時間．申請時間．Type」= 休出時間 があるの場合
     public get c18_1() {
@@ -283,11 +293,62 @@ export class CmmS45ShrComponentsApp0Component extends Vue {
             self.dataOutput = res.data;
             self.params.appDetail = self.dataOutput;
             self.bindComponent();
-            self.$emit('loading-complete');
+            self.$emit('loading-complete', self.reasons);
         }).catch((res: any) => {
             self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
             self.$emit('loading-complete');
         });
+    }
+
+    public bindReasons() {
+        const self = this;
+        let reasons = [] as Array<Reason>;
+        let appOverTime = self.dataOutput.appOverTime as AppOverTime;
+        let displayInfoOverTime = self.dataOutput.displayInfoOverTime as DisplayInfoOverTime;
+        let reasonDissociation = _.get(appOverTime, 'applicationTime.reasonDissociation') as any;
+        let no1 = _.findLast(reasonDissociation, (item: any) => item.diviationTime == 1);
+        let code1 = _.get(no1, 'reasonCode');
+        let divergenceReasonInputMethod1 = _.findLast(displayInfoOverTime.infoNoBaseDate.divergenceReasonInputMethod, (item: any) => item.divergenceTimeNo == 1);
+        let findContentByCode1 = _.findLast(_.get(divergenceReasonInputMethod1, 'reasons'), (item: any) => item.divergenceReasonCode == code1) as any;
+        let contentByCode1= _.get(findContentByCode1, 'reason') || (!_.isNil(code1) ? self.$i18n('KAFS05_55') : null);
+        let content1 = _.get(no1, 'reason');
+        let title1 = _.findLast(displayInfoOverTime.infoNoBaseDate.divergenceTimeRoot, (item: any) => item.divergenceTimeNo == 1);
+        title1 = _.get(title1, 'divTimeName') || '';
+
+        let no2 = _.findLast(reasonDissociation, (item: any) => item.diviationTime == 2);
+        let code2 = _.get(no2, 'reasonCode');
+        let divergenceReasonInputMethod2 = _.findLast(displayInfoOverTime.infoNoBaseDate.divergenceReasonInputMethod, (item: any) => item.divergenceTimeNo == 2);
+        let findContentByCode2 = _.findLast(_.get(divergenceReasonInputMethod2, 'reasons'), (item: any) => item.divergenceReasonCode == code2) as any;
+        let contentByCode2 = _.get(findContentByCode2, 'reason') || (!_.isNil(code2) ? self.$i18n('KAFS05_55') : null);
+        let content2 = _.get(no2, 'reason');
+        let title2 = _.findLast(displayInfoOverTime.infoNoBaseDate.divergenceTimeRoot, (item: any) => item.divergenceTimeNo == 2);
+        title2 = _.get(title2, 'divTimeName') || '';
+        {
+            let item = {} as Reason;
+            item.c1 = self.c12;
+            item.c2 = self.c13;
+            item.c3 = self.c14;
+            item.code = code1;
+            item.name = contentByCode1;
+            item.content = content1;
+            item.title = title1;
+            reasons.push(item);
+        }
+
+        {
+            let item = {} as Reason;
+            item.c1 = self.c19;
+            item.c2 = self.c20;
+            item.c3 = self.c21;
+            item.code = code2;
+            item.name = contentByCode2;
+            item.content = content2;
+            item.title = title2;
+            reasons.push(item);
+        }
+
+        self.reasons = reasons;
+
     }
     public bindComponent() {
         const self = this;
@@ -296,6 +357,7 @@ export class CmmS45ShrComponentsApp0Component extends Vue {
         self.bindBreakTime();
         self.bindOverTimes();
         self.bindHolidayTimes();
+        self.bindReasons();
     }
     public bindHolidayTimes() {
         const self = this;
@@ -722,6 +784,7 @@ export class CmmS45ShrComponentsApp0Component extends Vue {
     public bindBreakTime() {
         const self = this;
         let breakTime = [] as Array<BreakTime>;
+        let countBreakTime = 0;
         _.range(1, 10)
         .forEach((index: number) => {
             let result = _.findLast(_.get(self.dataOutput, 'appOverTime.breakTimeOp'), (i: TimeZoneWithWorkNo) => i.workNo == index) as any;
@@ -732,8 +795,12 @@ export class CmmS45ShrComponentsApp0Component extends Vue {
                 item.title = self.$i18n('KAFS05_69', String(item.frameNo));
                 item.valueHours = {start: self.$dt.timedr(findResult.startTime || 0), end: self.$dt.timedr(findResult.endTime || 0)};
                 breakTime.push(item);
+                countBreakTime++;
             }
         });
+        if (countBreakTime === 0) {
+            self.isEmptyBreakTime = true;
+        }
         self.breakTimes = breakTime;
 
     }
@@ -748,12 +815,14 @@ export class CmmS45ShrComponentsApp0Component extends Vue {
     public bindWorkHours() {
         const self = this;
         let appOverTime = self.dataOutput.appOverTime as AppOverTime; 
+        let workHours1 = _.findLast(_.get(appOverTime, 'workHoursOp'), (item: any) => item.workNo == 1);
+        let workHours2 = _.findLast(_.get(appOverTime, 'workHoursOp'), (item: any) => item.workNo == 2);
         // 1
-        self.workHours1 = self.createWorkHours(_.get(appOverTime, 'workHoursOp[0].timeZone.startTime'),
-        _.get(appOverTime, 'workHoursOp[0].timeZone.endTime'));
+        self.workHours1 = self.createWorkHours(_.get(workHours1, 'timeZone.startTime'),
+                _.get(workHours1, 'timeZone.endTime'));
         // 2
-        self.workHours2 = self.createWorkHours(_.get(appOverTime, 'workHoursOp[1].timeZone.startTime'),
-        _.get(appOverTime, 'workHoursOp[1].timeZone.endTime'));
+        self.workHours2 = self.createWorkHours(_.get(workHours2, 'timeZone.startTime'),
+                _.get(workHours2, 'timeZone.endTime'));
     }
     public commandStart() {
         const self = this;
@@ -766,10 +835,10 @@ export class CmmS45ShrComponentsApp0Component extends Vue {
     }
     public createWorkHours(start: number, end: number) {
         const self = this;
-        if (_.isNil(start) || _.isNil(end)) {
+        if (!_.isNumber(start) || !_.isNumber(end)) {
 
             return {
-                start: '',
+                start: self.$i18n('KAFS05_54'),
                 end: ''
             } as WorkHours;
         }
@@ -786,7 +855,7 @@ export class CmmS45ShrComponentsApp0Component extends Vue {
         workType.code = codeType || '';
 
         let workTime = {} as Work;
-        workTime.code = codeTime || '';
+        workTime.code = codeTime || self.$i18n('KAFS07_9');
         let displayInfoOverTime = _.get(self.dataOutput, 'displayInfoOverTime');
         if (displayInfoOverTime) {
             let workTypes = displayInfoOverTime.infoBaseDateOutput.worktypes;
@@ -795,9 +864,11 @@ export class CmmS45ShrComponentsApp0Component extends Vue {
             workType.name = resultWorkType ? (resultWorkType.name || '')  : self.$i18n('KAFS05_55');
 
             let workTimes = displayInfoOverTime.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst;
-            let resultWorkTime = 
-                    _.find(workTimes, (i: any) => i.worktimeCode == workTime.code);
-            workTime.name = resultWorkTime ? (_.get(resultWorkTime, 'workTimeDisplayName.workTimeName') || '') : self.$i18n('KAFS05_55');
+            if (codeTime) {
+                let resultWorkTime = 
+                        _.find(workTimes, (i: any) => i.worktimeCode == workTime.code);
+                workTime.name = resultWorkTime ? (_.get(resultWorkTime, 'workTimeDisplayName.workTimeName') || '') : self.$i18n('KAFS05_55');
+            }
   
         }
         let workInfo = {} as WorkInfo;
@@ -831,4 +902,13 @@ interface BreakTime {
     valueHours: any;
     title: string;
     frameNo: number;
+}
+export interface Reason {
+    c1: boolean;
+    c2: boolean;
+    c3: boolean;
+    title: string;
+    code: string;
+    name: string;
+    content: string;
 }
