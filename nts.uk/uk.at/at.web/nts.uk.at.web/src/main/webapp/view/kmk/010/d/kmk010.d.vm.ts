@@ -76,11 +76,11 @@ module nts.uk.at.view.kmk010.d {
         superHolidayOccurrenceUnit: vm.vacationConversion().unitForVacation(),
         premiumExtra60HRates: outputPremiumRate
       }
-      
+
       vm.$blockui('grayout');
       vm.$ajax(PATH.saveAllPremiumExtra60H, params).done(() => {
         vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
-          vm.$window.close();
+          vm.$window.close({ isSave: true });
           vm.$blockui('hide');
         });
       }).fail((error) => { console.log(error); vm.$blockui('hide'); });
@@ -88,7 +88,7 @@ module nts.uk.at.view.kmk010.d {
 
     closeDialog() {
       const vm = this;
-      vm.$window.close();
+      vm.$window.close({ isSave: false });
     }
 
     getEnumConstant(): JQueryPromise<any> {
@@ -121,9 +121,9 @@ module nts.uk.at.view.kmk010.d {
           //60H超休が発生する＝trueの超過時間のみ表示                    
           data.overtimes = _.filter(data.overtimes, (e: any) => { return e.superHoliday60HOccurs === true });
           vm.overTimeHeader(_.orderBy(data.overtimes, 'overtimeNo', 'asc'));
-          vm.columnSpan(vm.overTimeHeader().length);       
+          vm.columnSpan(vm.overTimeHeader().length);
         }
-        
+
         if (data.breakdownItems.length > 0) {
           //使用区分＝trueの内訳項目のみ表示        
           //data.breakdownItems = _.filter(data.breakdownItems, (e: any) => { return e.useClassification === true });
@@ -133,7 +133,7 @@ module nts.uk.at.view.kmk010.d {
               _.forEach(vm.overTimeHeader(), (x, index) => {
                 premiumExtra60HRates.push(new PremiumItem(row + 1, 0, index + 1));
               })
-            } else {          
+            } else {
               _.forEach(vm.overTimeHeader(), (col: any, index) => {
                 const findPremiumItem = _.find(item.premiumExtra60HRates, (o: any) => { return o.overtimeNo === col.overtimeNo });
                 const premiumRate: number = (findPremiumItem) ? findPremiumItem.premiumRate : 0;

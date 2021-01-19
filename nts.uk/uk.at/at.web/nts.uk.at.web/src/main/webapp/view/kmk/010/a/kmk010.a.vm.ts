@@ -52,7 +52,7 @@ module nts.uk.at.view.kmk010.a {
              */
             startPage(): JQueryPromise<any> {
                 var self = this;
-                nts.uk.ui.block.invisible();
+                nts.uk.ui.block.grayout();
                 var dfd = $.Deferred();
 
                 // find all unit
@@ -347,7 +347,13 @@ module nts.uk.at.view.kmk010.a {
             private openDialogVCSettings(): void {
                 var self = this;
                 //nts.uk.ui.windows.setShared("languageId", self.languageId);
-                self.$window.modal("/view/kmk/010/d/index.xhtml").then((data) => {                  
+                self.$window.modal("/view/kmk/010/d/index.xhtml").then((data) => {                         
+                    if (data && data.isSave) {
+                        nts.uk.ui.errors.clearAll();
+                        self.startPage().done(() => {
+                            service.initTooltip();
+                        });
+                    }             
                 });
             }
         }
