@@ -3210,11 +3210,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         // neu cell dc stick ma khong co workTime se alertError 435
                         let dataSource = $("#extable").exTable('dataSource', 'detail').body;
                         let cellData = dataSource[rowIdx][key];
-                        if (_.isNil(cellData.workTimeName)) {
+                        if (_.isNil(cellData.workTimeName) && _.isNil(cellData.workTypeName)) {
                             nts.uk.ui.dialog.alertError({ messageId: 'Msg_435' });
                             dfd.resolve(false);
                         } else {
-                            dfd.resolve(true);
+                            dfd.resolve(false);
                         }
                     } else {
                         dfd.resolve(true);

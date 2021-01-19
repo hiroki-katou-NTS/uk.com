@@ -100,9 +100,9 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
 
                 let itemSelected;
                 if(wkpTimeCd === 'none'){
-                    itemSelected = _.find(ds, f => f.code === '');
+                    itemSelected = _.find(ds, f => f.id === 'none');
                 }else if(wkpTimeCd === 'deferred'){
-                    itemSelected = _.find(ds, f => f.code === ' ');
+                    itemSelected = _.find(ds, f => f.id === 'deferred');
                 }else{
                     itemSelected = _.find(ds, f => f.code === wkpTimeCd);
                 }
