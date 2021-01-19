@@ -72,7 +72,6 @@ import nts.uk.shr.com.context.AppContexts;
 @Transactional
 public class RegisWorkScheduleCommandHandler<T> extends CommandHandlerWithResult<List<WorkScheduleSaveCommand<T>>, ResultRegisWorkSchedule>{
 	
-	
 	@Inject
 	private BasicScheduleService basicScheduleService;
 	@Inject
