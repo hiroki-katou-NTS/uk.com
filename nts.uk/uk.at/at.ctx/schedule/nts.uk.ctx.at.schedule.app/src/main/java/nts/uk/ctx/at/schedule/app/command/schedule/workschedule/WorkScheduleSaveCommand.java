@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 @AllArgsConstructor
 public class WorkScheduleSaveCommand<T> {
 
+	
 	// 社員ID
 	public String sid;
 	// 年月日
