@@ -771,14 +771,17 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 		if(workHours != null) {
 			timeZoneNo1 = new TimeZone(hdWorkDispInfoWithDateOutput.getWorkHours().getStartTimeOp1().orElse(null),
 					hdWorkDispInfoWithDateOutput.getWorkHours().getEndTimeOp1().orElse(null));
-			timeZoneNo2 = new TimeZone(hdWorkDispInfoWithDateOutput.getWorkHours().getStartTimeOp2().orElse(null),
-					hdWorkDispInfoWithDateOutput.getWorkHours().getEndTimeOp2().orElse(null));
+			if(hdWorkDispInfoWithDateOutput.getWorkHours().getStartTimeOp2().isPresent() && 
+					hdWorkDispInfoWithDateOutput.getWorkHours().getEndTimeOp2().isPresent()) {
+				timeZoneNo2 = new TimeZone(hdWorkDispInfoWithDateOutput.getWorkHours().getStartTimeOp2().get(),
+						hdWorkDispInfoWithDateOutput.getWorkHours().getEndTimeOp2().get());
+			}	
 		}
 		List<TimeZone> timeZones = new ArrayList<TimeZone>();
-		if(timeZoneNo1.getStart() != null && timeZoneNo1.getStart().v() > 0 && timeZoneNo1.getEnd() != null && timeZoneNo1.getEnd().v() > 0) {
+		if(timeZoneNo1.getStart() != null && timeZoneNo1.getEnd() != null) {
 			timeZones.add(timeZoneNo1);
 		}
-		if(timeZoneNo2.getStart() != null && timeZoneNo2.getStart().v() > 0 && timeZoneNo2.getEnd() != null && timeZoneNo2.getEnd().v() > 0) {
+		if(timeZoneNo2.getStart() != null && timeZoneNo2.getEnd() != null) {
 			timeZones.add(timeZoneNo2);
 		}
 		workContent.setTimeZones(timeZones);
