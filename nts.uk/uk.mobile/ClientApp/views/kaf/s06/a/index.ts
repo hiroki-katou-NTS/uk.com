@@ -129,6 +129,9 @@ export class KafS06AComponent extends KafS00ShrComponent {
             self.$updateValidator('workHours2', {
                 timeRange: true
             });
+            self.$validate('workHours1');
+            self.$validate('workHours2');
+
         }
     }
     @Watch('c20', {deep: true})
