@@ -10,8 +10,6 @@ import lombok.EqualsAndHashCode;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.GeneralDate;
-
-import java.util.Optional;
 /**
  * The class Process execution scope.<br>
  * Domain 実行範囲
