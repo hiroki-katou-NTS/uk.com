@@ -237,6 +237,9 @@ export class KafS10Component extends KafS00ShrComponent {
                 });
             });
         } else if (vm.numb == 2 && value == 1) { // step 2 -> step 1
+            let step2 = vm.$refs.step2 as KafS10Step2Component;
+            step2.holidayTimes = [];
+            step2.overTimes = [];
             vm.numb = value;
         } else if (vm.numb == 2 && value == 3) {
             let step3 = vm.$refs.step3 as KafS10Step3Component;
@@ -267,8 +270,8 @@ export class KafS10Component extends KafS00ShrComponent {
                 appHolidayWork.workInformation.workType = step1.getWorkType();
                 appHolidayWork.workInformation.workTime = step1.getWorkTime();
             }
-            appHolidayWork.goWorkAtr = false;
-            appHolidayWork.backHomeAtr = false;
+            appHolidayWork.goWorkAtr = step1.goWorkAtr;
+            appHolidayWork.backHomeAtr = step1.backHomeAtr;
             appHolidayWork.workingTimeList = [] as Array<TimeZoneWithWorkNo>;
             {   
                 let start = _.get(step1.getWorkHours1(), 'start');
@@ -958,6 +961,17 @@ export class KafS10Component extends KafS00ShrComponent {
         const self = this;
 
         return self.c7 && self.c12 && self.c13;
+    }
+
+    //  「休日出勤申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係なし)．申請承認設定のOutputを利用
+    //  「休出申請設定」．直行直帰の機能の利用設定 == true AND 「申請詳細設定．時刻計算利用区分」が利用する
+    public get c14() {
+        const self = this;
+        let model = self.model as Model;
+        let useDirectBounceFunction = _.get(model, 'appHdWorkDispInfo.holidayWorkAppSet.useDirectBounceFunction');
+        let timeCalUse = _.get(model, 'appHdWorkDispInfo.holidayWorkAppSet.applicationDetailSetting.timeCalUse');
+
+        return useDirectBounceFunction == NotUseAtr.USE && timeCalUse == NotUseAtr.USE;
     }
 }
 

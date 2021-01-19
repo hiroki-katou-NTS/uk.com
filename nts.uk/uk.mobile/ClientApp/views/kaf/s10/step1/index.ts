@@ -59,6 +59,14 @@ export class KafS10Step1Component extends Vue {
 
     public workHours2?: ValueTime = null;
 
+    public goWorkAtr?: boolean = false;
+
+    public backHomeAtr?: boolean = false;
+
+    public isGoWorkResource?: Array<Object> = [];
+
+    public isBackHomeResource?: Array<Object> = [];
+
     public breakTimes: Array<BreakTime> = [];
 
     public displayNumberBreakTime = 3;
@@ -73,6 +81,20 @@ export class KafS10Step1Component extends Vue {
 
     public created() {
         const self = this;  
+        self.isGoWorkResource = [{
+            code: true,
+            text: 'KAFS07_11'
+        }, {
+            code: false,
+            text: 'KAFS07_12'
+        }];
+        self.isBackHomeResource = [{
+            code: true,
+            text: 'KAFS07_13'
+        }, {
+            code: false,
+            text: 'KAFS07_14'
+        }];
         self.loadData();
     }
 
@@ -103,7 +125,9 @@ export class KafS10Step1Component extends Vue {
                     };
                 }));
                 self.createWorkHours(false);
-
+                self.goWorkAtr = appHolidayWork.goWorkAtr;
+                self.backHomeAtr = appHolidayWork.backHomeAtr;
+                
                 return;
             }
             let codeType = _.get(appHdWorkDispInfo, 'hdWorkDispInfoWithDateOutput.initWorkType');
