@@ -328,9 +328,9 @@
               v-bind:key="index"
               :value="index"
             > 
-              <td class="text-center">{{$dt(new Date(item.outbreakDay), 'YYYY/MM/DD(dd)')}}</td>
-              <td class="text-center">{{$dt(new Date(item.dateOfUse), 'YYYY/MM/DD(dd)')}}</td>
-              <td class="text-center">{{item.dayNumberUsed}}</td>
+              <td class="text-center px-0">{{$dt(new Date(item.outbreakDay), 'YYYY/MM/DD(dd)')}}</td>
+              <td class="text-center px-0">{{$dt(new Date(item.dateOfUse), 'YYYY/MM/DD(dd)')}}</td>
+              <td class="text-center px-0">{{item.dayNumberUsed}}</td>
             </tr>
           </tbody>
         </table>
@@ -377,9 +377,9 @@
               v-bind:key="index"
               :value="index"
             >
-              <td class="text-center">{{$dt(new Date(item.outbreakDay), 'YYYY/MM/DD(dd)')}}</td>
-              <td class="text-center">{{$dt(new Date(item.dateOfUse), 'YYYY/MM/DD(dd)')}}</td>
-              <td class="text-center">{{item.dayNumberUsed}}</td>
+              <td class="text-center px-0">{{$dt(new Date(item.outbreakDay), 'YYYY/MM/DD(dd)')}}</td>
+              <td class="text-center px-0">{{$dt(new Date(item.dateOfUse), 'YYYY/MM/DD(dd)')}}</td>
+              <td class="text-center px-0">{{item.dayNumberUsed}}</td>
             </tr>
             
           </tbody>
