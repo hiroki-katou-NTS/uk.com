@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.dto;
+package nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.command;
 
 import lombok.NoArgsConstructor;
 import lombok.Setter;

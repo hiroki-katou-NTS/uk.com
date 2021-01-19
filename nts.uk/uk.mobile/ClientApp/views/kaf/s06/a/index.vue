@@ -88,7 +88,7 @@
         <!--A6_2-->
         <span class="textSize uk-text-dark-gray">{{ "KAFS06_12" | i18n }}</span>
         <button
-          v-bind:enable="true"
+          v-bind:disabled="false"
           v-on:click="openKDL002('worktype')"
           type="button"
           class="btn btn-selection mt-2 mb-2"
@@ -108,7 +108,7 @@
           type="button"
           v-on:click="openKDL002('worktime')"
           v-if="c9"
-          v-bind:enable="true"
+          v-bind:disabled="false"
           class="btn btn-selection mt-2 mb-2"
         >
           <span class="badge badge-secondary">{{workTime.code}}</span>
@@ -130,7 +130,7 @@
       </div>
       <!-- A7_2 -->
       <div class="card-body">
-        <nts-time-range-input v-model="workHours1" v-bind:enable="c11" />
+        <nts-time-range-input v-model="workHours1" v-bind:disabled="!c11" />
       </div>
     </div>
     <div v-if="c10" class="card card-label">
@@ -141,7 +141,7 @@
       </div>
       <!-- A8_2 -->
       <div class="card-body">
-        <nts-time-range-input v-model="workHours2" v-bind:enable="c11" />
+        <nts-time-range-input v-model="workHours2" v-bind:disabled="!c11" />
       </div>
     </div>
 
@@ -178,7 +178,7 @@
                     v-model="inputA9_5"
                     name="'Com_ExsessHoliday'"
                     showTitle="false"
-                    v-bind:enable="true"
+                    v-bind:disabled="false"
                     time-input-type="time-duration"
                 />
             </div>
@@ -196,7 +196,7 @@
                     v-model="inputA9_7"
                     name="'KAFS06_20'"
                     showTitle="false"
-                    v-bind:enable="true"
+                    v-bind:disabled="false"
                     time-input-type="time-duration"
                 />
             </div>
@@ -214,7 +214,7 @@
                     v-model="inputA9_9"
                     name="'KAFS06_21'"
                     showTitle="false"
-                    v-bind:enable="true"
+                    v-bind:disabled="false"
                     time-input-type="time-duration"
                 />
             </div>
@@ -233,7 +233,7 @@
                     v-model="inputA9_11"
                     name="'Com_ChildNurseHoliday'"
                     showTitle="false"
-                    v-bind:enable="true"
+                    v-bind:disabled="false"
                     time-input-type="time-duration"
                 />
             </div>
@@ -252,7 +252,7 @@
                     v-model="inputA9_13"
                     name="'Com_CareHoliday'"
                     showTitle="false"
-                    v-bind:enable="true"
+                    v-bind:disabled="false"
                     time-input-type="time-duration"
                 />
             </div>
@@ -291,13 +291,14 @@
       <!--A10_5-->
       <div v-if="c20">
         <div class="row">
-            <div class="float_left col text-left textSize">{{'KAFS06_24' | i18n}}</div>
+            <div class="float_left col text-left textSize">{{'KAFS06_26' | i18n}}</div>
         </div>
         <div class="mt-1">
             <nts-text-editor
               v-model="relationshipReason"
               name='relationshipReason' 
               showTitle="false"
+              v-bind:placeholder="KAFS06_27"
             />
 
         </div>
@@ -327,9 +328,9 @@
               v-bind:key="index"
               :value="index"
             > 
-              <td class="text-center">{{$dt(new Date(item.outbreakDay), 'YYYY/MM/DD(dd)')}}</td>
-              <td class="text-center">{{$dt(new Date(item.dateOfUse), 'YYYY/MM/DD(dd)')}}</td>
-              <td class="text-center">{{item.dayNumberUsed}}</td>
+              <td class="text-center px-0">{{$dt(new Date(item.outbreakDay), 'YYYY/MM/DD(dd)')}}</td>
+              <td class="text-center px-0">{{$dt(new Date(item.dateOfUse), 'YYYY/MM/DD(dd)')}}</td>
+              <td class="text-center px-0">{{item.dayNumberUsed}}</td>
             </tr>
           </tbody>
         </table>
@@ -376,9 +377,9 @@
               v-bind:key="index"
               :value="index"
             >
-              <td class="text-center">{{$dt(new Date(item.outbreakDay), 'YYYY/MM/DD(dd)')}}</td>
-              <td class="text-center">{{$dt(new Date(item.dateOfUse), 'YYYY/MM/DD(dd)')}}</td>
-              <td class="text-center">{{item.dayNumberUsed}}</td>
+              <td class="text-center px-0">{{$dt(new Date(item.outbreakDay), 'YYYY/MM/DD(dd)')}}</td>
+              <td class="text-center px-0">{{$dt(new Date(item.dateOfUse), 'YYYY/MM/DD(dd)')}}</td>
+              <td class="text-center px-0">{{item.dayNumberUsed}}</td>
             </tr>
             
           </tbody>
