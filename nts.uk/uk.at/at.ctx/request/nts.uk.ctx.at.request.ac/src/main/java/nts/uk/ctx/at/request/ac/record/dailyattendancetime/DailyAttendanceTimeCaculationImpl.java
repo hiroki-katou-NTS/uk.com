@@ -18,11 +18,10 @@ import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyAttendanceTimeP
 import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyAttendanceTimePubExport;
 import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyAttendanceTimePubImport;
 import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyAttendanceTimePubLateLeaveExport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttenTimeLateLeaveImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttenTimeParam;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculationImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.TimeWithCalculationImport;
+import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.importparam.ChildCareTimeZoneImport;
+import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.importparam.OutingTimeZoneImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.*;
+import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
@@ -48,8 +47,8 @@ public class DailyAttendanceTimeCaculationImpl implements DailyAttendanceTimeCac
 			List<TimeZone> lstTimeZone,
 			List<Integer> breakStartTimes,
 			List<Integer> breakEndTime,
-			List<OutingTimeSheet> outingTimeSheets,
-			List<ShortWorkingTimeSheet> shortWorkingTimeSheets) {
+			List<OutingTimeZoneExport> outingTimeSheets,
+			List<ChildCareTimeZoneExport> shortWorkingTimeSheets) {
 		DailyAttendanceTimePubImport dailyAttendanceTimePubImport = new DailyAttendanceTimePubImport();
 		dailyAttendanceTimePubImport.setEmployeeid(employeeID);
 		dailyAttendanceTimePubImport.setYmd(ymd);
@@ -58,8 +57,8 @@ public class DailyAttendanceTimeCaculationImpl implements DailyAttendanceTimeCac
 		dailyAttendanceTimePubImport.setLstTimeZone(lstTimeZone);
 		dailyAttendanceTimePubImport.setBreakStartTime(getTimes(breakStartTimes));
 		dailyAttendanceTimePubImport.setBreakEndTime(getTimes(breakEndTime));
-		dailyAttendanceTimePubImport.setOutingTimeSheets(outingTimeSheets);
-		dailyAttendanceTimePubImport.setShortWorkingTimeSheets(shortWorkingTimeSheets);
+		dailyAttendanceTimePubImport.setOutingTimeSheets(outingTimeSheets.stream().map(i -> new OutingTimeZoneImport(i.getGoingOutReason(), i.getTimeZone())).collect(Collectors.toList()));
+		dailyAttendanceTimePubImport.setShortWorkingTimeSheets(shortWorkingTimeSheets.stream().map(i -> new ChildCareTimeZoneImport(i.getChildCareAtr(), i.getTimeZone())).collect(Collectors.toList()));
 		//1日分の勤怠時間を仮計算
 		DailyAttendanceTimePubExport dailyAttendanceTimePubExport = dailyAttendanceTimePub.calcDailyAttendance(dailyAttendanceTimePubImport);
 		

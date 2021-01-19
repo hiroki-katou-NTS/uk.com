@@ -101,11 +101,12 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                         vm.applyTimeData()[AppTimeType.ATWORK2].timeZones[0].startTime(value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opWorkTime2);
                         vm.applyTimeData()[AppTimeType.OFFWORK2].timeZones[0].startTime(value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opDepartureTime2);
                         const outingTimes = value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.stampRecordOutput.outingTime || [];
-                        outingTimes.forEach((time: any) => {
-                            vm.applyTimeData()[4].timeZones[time.frameNo - 1].startTime(time.opStartTime);
-                            vm.applyTimeData()[4].timeZones[time.frameNo - 1].endTime(time.opEndTime);
-                            vm.applyTimeData()[4].timeZones[time.frameNo - 1].appTimeType(time.opGoOutReasonAtr == 3 ? AppTimeType.UNION : AppTimeType.PRIVATE);
-                        });
+                        outingTimes.filter((time: any) => time.opGoOutReasonAtr == 0 || time.opGoOutReasonAtr == 3)
+                            .forEach((time: any) => {
+                                vm.applyTimeData()[4].timeZones[time.frameNo - 1].startTime(time.opStartTime);
+                                vm.applyTimeData()[4].timeZones[time.frameNo - 1].endTime(time.opEndTime);
+                                vm.applyTimeData()[4].timeZones[time.frameNo - 1].appTimeType(time.opGoOutReasonAtr == 3 ? AppTimeType.UNION : AppTimeType.PRIVATE);
+                            });
                     }
                 }
             });

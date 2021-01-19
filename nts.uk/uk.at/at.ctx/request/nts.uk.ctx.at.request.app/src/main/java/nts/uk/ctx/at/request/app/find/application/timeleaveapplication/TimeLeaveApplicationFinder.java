@@ -7,8 +7,10 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.common.service.other.output.AchievementDetailDto;
 import nts.uk.ctx.at.request.app.find.application.timeleaveapplication.dto.*;
 import nts.uk.ctx.at.request.dom.application.*;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.ChildCareTimeZoneExport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculationImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.OutingTimeZoneExport;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
@@ -22,11 +24,13 @@ import nts.uk.ctx.at.request.dom.application.timeleaveapplication.service.TimeLe
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.RecordDate;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectDto;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -199,17 +203,24 @@ public class TimeLeaveApplicationFinder {
                 )).collect(Collectors.toList()),
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Collections.emptyList(), // TODO: cannot mapping OutingTimeSheet
-                achievementDetailDto.getShortWorkTimeLst().stream().map(i -> i.toDomain()).collect(Collectors.toList())
+                lstOutingTimeZone.stream().map(i -> new OutingTimeZoneExport(
+                        i.getOutingAtr() == 4 ? GoingOutReason.PRIVATE.value : GoingOutReason.UNION.value,
+                        i.getStartTime(),
+                        i.getEndTime()
+                )).collect(Collectors.toList()),
+                achievementDetailDto.getShortWorkTimeLst().stream().map(i -> new ChildCareTimeZoneExport(
+                        i.getChildCareAttr(),
+                        i.getStartTime(),
+                        i.getEndTime()
+                )).collect(Collectors.toList())
         );
 
-        // fake output
+        // TODO: fake output because outing time calculation not update yet
         int privateOutingTime = 0, unionOutingTime = 0;
         for (OutingTimeZoneDto i : lstOutingTimeZone) {
-            if (i.getOutingAtr() == 4) {
+            if (i.getOutingAtr() == AppTimeType.PRIVATE.value) {
                 privateOutingTime = privateOutingTime + (i.getEndTime() - i.getStartTime());
-            }
-            if (i.getOutingAtr() == 5) {
+            } else if (i.getOutingAtr() == AppTimeType.UNION.value) {
                 unionOutingTime = unionOutingTime + (i.getEndTime() - i.getStartTime());
             }
         }

@@ -211,7 +211,7 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                     }
                 }
             }).fail(err => {
-                vm.handleError(err);
+                vm.$dialog.error(err);
             }).always(() => vm.$blockui('hide'));
         }
 
