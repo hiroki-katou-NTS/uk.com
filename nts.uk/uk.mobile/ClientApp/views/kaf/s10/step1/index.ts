@@ -201,7 +201,6 @@ export class KafS10Step1Component extends Vue {
             _.sortBy(self.$appContext.model.appHolidayWork.workingTimeList, (i: TimeZoneWithWorkNo) => i.workNo);
             let workHoursOp1 = _.get(self.$appContext.model.appHolidayWork, 'workingTimeList[0].timeZone') as TimeZoneNew;
             let workHoursOp2 = _.get(self.$appContext.model.appHolidayWork, 'workingTimeList[1].timeZone') as TimeZoneNew;
-
             workHours1.start = workHoursOp1 ? workHoursOp1.startTime : null;
             workHours1.end = workHoursOp1 ? workHoursOp1.endTime : null;
 
@@ -209,8 +208,8 @@ export class KafS10Step1Component extends Vue {
             workHours2.end = workHoursOp2 ? workHoursOp2.endTime : null;
 
         }
-        self.workHours1 = workHours1.start ?  workHours1 : null;
-        self.workHours2 = workHours2.start ?  workHours2 : null;
+        self.workHours1 = _.isNumber(workHours1.start) ?  workHours1 : null;
+        self.workHours2 = _.isNumber(workHours1.start) ?  workHours2 : null;
 
     }
 
