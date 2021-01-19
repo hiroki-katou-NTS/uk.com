@@ -291,13 +291,14 @@
       <!--A10_5-->
       <div v-if="c20">
         <div class="row">
-            <div class="float_left col text-left textSize">{{'KAFS06_24' | i18n}}</div>
+            <div class="float_left col text-left textSize">{{'KAFS06_26' | i18n}}</div>
         </div>
         <div class="mt-1">
             <nts-text-editor
               v-model="relationshipReason"
               name='relationshipReason' 
               showTitle="false"
+              v-bind:placeholder="KAFS06_27"
             />
 
         </div>
