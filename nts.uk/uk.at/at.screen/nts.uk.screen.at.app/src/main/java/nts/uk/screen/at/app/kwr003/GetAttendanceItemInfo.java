@@ -7,10 +7,14 @@ import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameService;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.DailyMonthlyClassification;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.TypesMasterRelatedDailyAttendanceItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.service.CompanyMonthlyItemService;
 import nts.uk.shr.com.context.AppContexts;
@@ -19,12 +23,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 /**
  * ScreenQuery : 勤怠項目情報を取得する
@@ -42,6 +41,10 @@ public class GetAttendanceItemInfo {
     private AttendanceItemNameService attendanceItemNameService;
     @Inject
     private GetAttendanceIdByFormNumberQuery getAttendanceIdByFormNumberQuery;
+    @Inject
+    private MonthlyAttendanceItemRepository monthlyAttendanceItemRepository;
+    @Inject
+    private DailyAttendanceItemRepository dailyAttendanceItemRepository;
 
     public List<AttItemDto> getAttendanceItemInfo(DailyMonthlyClassification classification, int formNumberDisplay) {
         val cid = AppContexts.user().companyId();
@@ -55,20 +58,29 @@ public class GetAttendanceItemInfo {
 
             // 会社の月次項目を取得する
             val dailyItemContainName = dailyItemService.getDailyItems(cid, roleId, listAttId, null);
-            Map<Integer, AttItemName> mapdailyItemContainName = dailyItemContainName.stream().filter(distinctByKey(AttItemName::getAttendanceItemId))
-                    .collect(Collectors.toMap(AttItemName::getAttendanceItemId, i -> i));
 
-            //勤怠項目の種類　（1:日次）-- 日次の勤怠項目を取得する Nhận daily Attendance items
-            val dailyItemContainAttribute = dailyItemService.findByAttendanceItems(cid, listAttId);
+            // 日次の勤怠項目を取得する Nhận daily Attendance items
+            List<DailyAttendanceItem> dailyAttendanceItems = this.dailyAttendanceItemRepository
+                    .findByADailyAttendanceItems(listAttId, cid);
 
-            rs.addAll(dailyItemContainAttribute.stream().map(e -> new AttItemDto(
-                    e.getTimeId(),
-                    mapdailyItemContainName.getOrDefault(e.getTimeId(), null) != null ? mapdailyItemContainName.get(e.getTimeId()).getAttendanceItemName() : null,
-                    e.getDisplayNumber(),
-                    null,
-                    convertDailyToAttForms(e.getAttribute(), e.getMasterType()),
-                    e.getMasterType()))
-                    .collect(Collectors.toCollection(ArrayList::new)));
+            dailyAttendanceItems
+                    .forEach((DailyAttendanceItem item) -> {
+                        Optional<AttItemName> attendance = dailyItemContainName.stream()
+                                .filter(attd -> attd.getAttendanceItemId() == item.getAttendanceItemId())
+                                .findFirst();
+
+                        attendance.ifPresent(attItemName -> {
+                            Integer masterType = item.getMasterType().isPresent() ? item.getMasterType().get().value : null;
+                            rs.add(new AttItemDto(
+                                    item.getAttendanceItemId(),
+                                    attItemName.getAttendanceItemName(),
+                                    item.getDisplayNumber(),
+                                    null,
+                                    convertDailyToAttForms(item.getDailyAttendanceAtr().value, masterType),
+                                    masterType));
+                        });
+                    });
+
             return rs;
         }
 
@@ -77,25 +89,24 @@ public class GetAttendanceItemInfo {
             val listAttdanceIdOfMonthly = getAttendanceIdByFormNumberQuery.getAttendanceId(DailyMonthlyClassification.MONTHLY, formNumberDisplay);
             //  「使用不可の勤怠項目を除く」
             val listAttIdForMonthly = this.attendanceItemNameService.getAvaiableAttendanceItem(cid, TypeOfItem.Monthly, listAttdanceIdOfMonthly);
-            val listAttIdforPeriod = this.attendanceItemNameService.getAvaiableAttendanceItem(cid, TypeOfItem.AnyPeriod, listAttdanceIdOfMonthly);
-            List<Integer> listAttId = new ArrayList<>();
-            listAttId.addAll(listAttIdForMonthly);
-            listAttId.addAll(listAttIdforPeriod);
 
-            val itemMonthlyContainName = monthlyItemService.getMonthlyItems(cid, roleId, listAttId, null);
-            Map<Integer, AttItemName> mapMonthlyItemContainName = itemMonthlyContainName.stream().filter(distinctByKey(AttItemName::getAttendanceItemId))
-                    .collect(Collectors.toMap(AttItemName::getAttendanceItemId, i -> i));
+            val itemMonthlyContainName = monthlyItemService.getMonthlyItems(cid, roleId, listAttIdForMonthly, null);
+            // 月次の勤怠項目を取得する Nhận Monthly attendance items
+            List<MonthlyAttendanceItem> monthlyAttendanceItemList = this.monthlyAttendanceItemRepository.findByAttendanceItemId(cid, listAttIdForMonthly);
+            monthlyAttendanceItemList
+                    .forEach(item -> {
+                        Optional<AttItemName> attendance = itemMonthlyContainName.stream()
+                                .filter(attd -> attd.getAttendanceItemId() == item.getAttendanceItemId())
+                                .findFirst();
+                        attendance.ifPresent(attItemName -> rs.add(new AttItemDto(
+                                item.getAttendanceItemId(),
+                                attItemName.getAttendanceItemName(),
+                                item.getDisplayNumber(),
+                                null,
+                                convertMonthlyToAttForms(item.getMonthlyAttendanceAtr().value),
+                                null)));
+                    });
 
-            // 勤怠項目の種類　（2:月次）
-            val itemMonthlyContainAttribute = this.attendanceItemNameService.getMonthlyAttendanceItemNameAndAttr(cid, listAttId);
-            rs.addAll(itemMonthlyContainAttribute.stream().map(e -> new AttItemDto(
-                    e.getAttendanceItemId(),
-                    mapMonthlyItemContainName.getOrDefault(e.getAttendanceItemId(), null) != null ? mapMonthlyItemContainName.get(e.getAttendanceItemId()).getAttendanceItemName() : null,
-                    e.getDisplayNumbers(),
-                    null,
-                    convertMonthlyToAttForms(e.getAttendanceAtr()),
-                    e.getMasterType()))
-                    .collect(Collectors.toCollection(ArrayList::new)));
             return rs;
         }
         return rs;
@@ -149,7 +160,7 @@ public class GetAttendanceItemInfo {
         // ・回数　→　回数
         else if (typeOfAttendanceItem.equals(MonthlyAttendanceItemAtr.NUMBER.value)) {
             return CommonAttributesOfForms.NUMBER_OF_TIMES.value;
-        // ・日数　→　日数
+            // ・日数　→　日数
         } else if (typeOfAttendanceItem.equals(MonthlyAttendanceItemAtr.DAYS.value)) {
             return CommonAttributesOfForms.DAYS.value;
         }
@@ -176,16 +187,8 @@ public class GetAttendanceItemInfo {
         // ・文字　→　なし(その他_文字)
         else if (typeOfAttendanceItem.equals(MonthlyAttendanceItemAtr.CHARACTER.value)) {
             return CommonAttributesOfForms.OTHER_CHARACTERS.value;
-        }
-        else
+        } else
             return null;
-    }
-
-    private static <T> Predicate<T> distinctByKey(
-            Function<? super T, ?> keyExtractor) {
-
-        Map<Object, Boolean> seen = new ConcurrentHashMap<>();
-        return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
 
 }
