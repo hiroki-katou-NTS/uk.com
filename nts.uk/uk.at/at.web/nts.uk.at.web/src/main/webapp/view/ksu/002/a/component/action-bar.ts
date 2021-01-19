@@ -424,6 +424,22 @@ module nts.uk.ui.at.ksu002.a {
 						}
 					}
 				});
+
+			$(window)
+				.on('zur.keydown', (__: JQueryEventObject, evt2: JQueryEventObject) => {
+					if (evt2 && evt2.ctrlKey) {
+						if (evt2.keyCode === 90) {
+							$('.action-bar button.btn-undo').trigger('click');
+						} else if (evt2.keyCode === 89) {
+							$('.action-bar button.btn-redo').trigger('click');
+						}
+					}
+				})
+				.on('keydown', (evt) => $(window).trigger('zur.keydown', [evt]));
+		}
+
+		destroyed() {
+			$(window).off('zur.keydown');
 		}
 	}
 
