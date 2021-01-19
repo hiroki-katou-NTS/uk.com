@@ -426,12 +426,13 @@ module nts.uk.ui.at.ksu002.a {
 				});
 
 			$(window)
+				// undo, redo by hot key
 				.on('zur.keydown', (__: JQueryEventObject, evt2: JQueryEventObject) => {
 					if (evt2 && evt2.ctrlKey) {
 						if (evt2.keyCode === 90) {
-							$('.action-bar button.btn-undo').trigger('click');
+							// $('.action-bar button.btn-undo').trigger('click');
 						} else if (evt2.keyCode === 89) {
-							$('.action-bar button.btn-redo').trigger('click');
+							// $('.action-bar button.btn-redo').trigger('click');
 						}
 					}
 				})

@@ -75,12 +75,12 @@ module nts.uk.ui.memento {
 		// extends memento methods to observable
 		_.extend(target, {
 			reset: function $$reset(soft: boolean = false) {
-				if (!soft) {
-					$memento.undo([]);
-					$memento.redo([]);
-				} else {
-					options.softReset.apply(target, [ko.unwrap(target)]);
-				}
+				// if (!soft) {
+				$memento.undo([]);
+				$memento.redo([]);
+				// } else {
+				options.softReset.apply(target, [ko.unwrap(target)]);
+				// }
 
 				hasChange(options.hasChange.apply(target, [ko.unwrap(target)]));
 			},
