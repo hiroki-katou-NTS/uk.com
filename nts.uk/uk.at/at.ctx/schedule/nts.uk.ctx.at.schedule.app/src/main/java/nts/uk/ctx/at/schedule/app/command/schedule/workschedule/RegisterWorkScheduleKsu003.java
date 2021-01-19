@@ -34,6 +34,7 @@ public class RegisterWorkScheduleKsu003<T> {
 		return rs;
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private List<WorkScheduleSaveCommand<T>> convertParam(List<WorkScheduleParam> command, String viewMode) {
 		List<WorkScheduleSaveCommand<T>> rs = new ArrayList<WorkScheduleSaveCommand<T>>();
 
@@ -84,7 +85,6 @@ public class RegisterWorkScheduleKsu003<T> {
 				}
 				List<TimeSpanForCalc> breakTimeList = wsCmd.listBreakTime.stream().map(i -> new TimeSpanForCalc(new TimeWithDayAttr(i.getStart()), new TimeWithDayAttr(i.getEnd())))
 				.collect(Collectors.toList());
-				@SuppressWarnings("unchecked")
 				WorkScheduleSaveCommand<T> ws = new WorkScheduleSaveCommand(wsCmd.sid, ymd, workInfor, mapAttendIdWithTime, breakTimeList, null);
 				rs.add(ws);
 			}
