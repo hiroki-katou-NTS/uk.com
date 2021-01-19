@@ -160,11 +160,12 @@ class MonthlyWorkingHours extends ko.ViewModel {
 		const vm = this;
 		vm.$window.modal('/view/kmk/004/q/index.xhtml', { startDate: vm.startYM(), years: _.map(vm.screenData().yearList(), (yearItem: YearItem) => { return yearItem.year; }) }).then((result) => {
 			if (result) {
-				let yearList = vm.screenData().yearList();
-				yearList.push(new YearItem(Number(result.year), true));
+				let yearList = vm.screenData().yearList(),
+					year = Number(result.year);
+				yearList.push(new YearItem(Number(year), true));
 				vm.screenData().yearList(_.orderBy(yearList, ['year'], ['desc']));
-				vm.screenData().setNewYear(vm.startYM(), vm.screenData().yearList()[0].year);
-				vm.screenData().selectedYear(vm.screenData().yearList()[0].year);
+				vm.screenData().setNewYear(vm.startYM(), year);
+				vm.screenData().selectedYear(year);
 			}
 		});
 	}
