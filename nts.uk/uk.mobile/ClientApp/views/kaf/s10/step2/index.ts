@@ -31,7 +31,7 @@ import { ReasonDivergence, ExcessStateMidnight, ExcessStateDetail, OutDateApplic
         },
         reason: {
             reason: {
-                constraint: 'DivergenceReason',
+                constraint: 'DivergenceReasonContent',
 
             }
         },
