@@ -32,15 +32,47 @@ module nts.uk.ui.at.ksu002.a {
 				data.wtype.code(wtype.code);
 				data.wtype.name(wtype.name);
 
-				data.value.begin(value.begin);
-				data.value.finish(value.finish);
+				if (data.value.begin() !== value.begin) {
+					data.value.begin(value.begin);
+				} else {
+					data.value.begin.valueHasMutated();
+				}
 
-				data.state.wtype(state.wtype);
-				data.state.wtime(state.wtime);
-				data.classification(classification);
+				if (data.value.finish() !== value.finish) {
+					data.value.finish(value.finish);
+				} else {
+					data.value.finish.valueHasMutated();
+				}
 
-				data.state.value.begin(state.value.begin);
-				data.state.value.finish(state.value.finish);
+				if (data.state.wtype() !== state.wtype) {
+					data.state.wtype(state.wtype);
+				} else {
+					data.state.wtype.valueHasMutated();
+				}
+
+				if (data.state.wtime() !== state.wtime) {
+					data.state.wtime(state.wtime);
+				} else {
+					data.state.wtime.valueHasMutated();
+				}
+
+				if (data.classification() !== classification) {
+					data.classification(classification);
+				} else {
+					data.classification.valueHasMutated();
+				}
+
+				if (data.state.value.begin() !== state.value.begin) {
+					data.state.value.begin(state.value.begin);
+				} else {
+					data.state.value.begin.valueHasMutated();
+				}
+
+				if (data.state.value.finish() !== state.value.finish) {
+					data.state.value.finish(state.value.finish);
+				} else {
+					data.state.value.finish.valueHasMutated();
+				}
 			}
 		},
 		hasChange: function (dayDatas: DayDataRawObsv[]) {

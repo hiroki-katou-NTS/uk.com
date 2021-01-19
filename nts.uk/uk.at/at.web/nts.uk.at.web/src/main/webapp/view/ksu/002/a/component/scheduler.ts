@@ -710,7 +710,15 @@ module nts.uk.ui.at.ksu002.a {
                             $.Deferred()
                                 .resolve(true)
                                 .then(() => $begin.ntsError('clear'))
-                                .then(() => model.begin(b))
+                                .then(() => {
+                                    if (model.begin() !== b) {
+                                        model.begin(b)
+                                    } else {
+                                        model.begin.valueHasMutated();
+                                    }
+
+                                    cache.begin = b;
+                                })
                                 .then(() => $begin.trigger(VALIDATE))
                                 .then(() => {
                                     if ($finish.ntsError('hasError')) {
@@ -739,7 +747,15 @@ module nts.uk.ui.at.ksu002.a {
                             $.Deferred()
                                 .resolve(true)
                                 .then(() => $finish.ntsError('clear'))
-                                .then(() => model.finish(f))
+                                .then(() => {
+                                    if (model.finish() !== f) {
+                                        model.finish(f);
+                                    } else {
+                                        model.finish.valueHasMutated();
+                                    }
+
+                                    cache.finish = f;
+                                })
                                 .then(() => $finish.trigger(VALIDATE))
                                 .then(() => {
                                     if ($begin.ntsError('hasError')) {
