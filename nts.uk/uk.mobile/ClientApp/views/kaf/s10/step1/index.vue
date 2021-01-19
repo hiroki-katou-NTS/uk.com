@@ -5,14 +5,28 @@
         v-if="$appContext.kaf000_A_Params != null"
         v-bind:params="$appContext.kaf000_A_Params"
       />
+      <div class="accordion mb-2" v-if="$appContext.overTimeWorkHoursDto != null">
+          <div class="card" v-if="true">
+            <div class="card-header uk-bg-accordion">
+              <button class="btn btn-link" type="button">
+                  {{'KAFS05_41' | i18n}}
+              </button>
+            </div>
+            <div class="collapse">
+              <div class="card-body">
+                  <kafs00subp2 v-bind:params="$appContext.overTimeWorkHoursDto" />      
+              </div>
+            </div>
+          </div>
+      </div>
     </div>
     <div
-      v-if="!$appContext.$valid || !$appContext.isValidateAll"
-      class="card bg-danger top-alert uk-text-danger topError"
+      v-if="!$appContext.$valid || !$appContext.isValidateAll || $appContext.isMsg_1556"
+      class="card bg-danger top-alert uk-text-danger topError" style="margin-bottom: 10px"
     >
       <button class="btn btn-link uk-text-danger">
         <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
-        {{ "KAFS07_1" | i18n }}
+        {{ ($appContext.isMsg_1556 ? "Msg_1556" : "KAFS07_1") | i18n($appContext.isMsg_1556 ? ($appContext.modeNew ? $appContext.date : $appContext.appDispInfoStartupOutput.appDetailScreenInfo.application.appDate) : '') }}
       </button>
     </div>
     <div>
@@ -87,6 +101,32 @@
         <nts-time-range-input v-model="workHours2" />
       </div>
     </div>
+
+    <!-- GoWork BackHome SwitchBox -->
+    <div class="card card-label" v-if="$appContext.c14">
+        <!-- A1_9_1 -->
+        <div class="card-header uk-bg-accordion" style="align-items: center">
+            <v-label class="border-0 pl-0 my-n3">
+                {{'KAFS07_5' | i18n}}</v-label>
+            <span class="badge badge-warning" style="height: 30%">必須</span>
+        </div>
+        <div class="card-body">
+            <div style="width: 100%" id="isGoWorkSelect">
+                <nts-switchbox v-for="(option, optionIndex) in isGoWorkResource" v-bind:key="optionIndex"
+                    v-model="goWorkAtr"
+                    v-bind:value="option.code">
+                        {{option.text | i18n}}
+                </nts-switchbox>
+            </div>
+            <div style="width: 100%" id="isBackHomeSelect">
+                <nts-switchbox v-for="(option, optionIndex) in isBackHomeResource" v-bind:key="optionIndex"
+                    v-model="backHomeAtr"
+                    v-bind:value="option.code">
+                        {{option.text | i18n}}
+                </nts-switchbox>
+            </div>
+        </div>
+    </div>    
 
     <!-- Break -->
     <div v-if="$appContext.c4" class="card card-label">

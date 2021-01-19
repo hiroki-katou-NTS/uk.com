@@ -85,10 +85,6 @@ public class SacmtUser extends UkJpaEntity implements Serializable {
     @Column(name = "PASS_STATUS")
     public int passStatus;
     
-    // column 言語
-    @Column(name = "LANGUAGE")
-    public Integer language;
-    
 	@Override
 	protected Object getKey() {
 		return sacmtUserPK;
@@ -108,8 +104,8 @@ public class SacmtUser extends UkJpaEntity implements Serializable {
 				this.mailAdd, 
 				this.userName, 
 				this.associatedPersonID,
-				this.passStatus,
-				this.language);
+				this.passStatus
+				);
 	}
 
 	public static SacmtUser toEntity(User user) {
@@ -120,7 +116,8 @@ public class SacmtUser extends UkJpaEntity implements Serializable {
 				user.getMailAddress().isPresent() ? user.getMailAddress().get().v():null,
 				user.getUserName().isPresent() ? user.getUserName().get().v() : null,
 				user.getAssociatedPersonID().isPresent() ? user.getAssociatedPersonID().get() : null,
-				user.getPassStatus().value, user.getLanguage().value);
+				user.getPassStatus().value
+				);
 	}
 	
 }

@@ -93,7 +93,6 @@ module nts.uk.com.view.ccg020.a {
     private getAvatar() {
       const vm = this;
       const $userImage = $('#user-image');
-      vm.$blockui('grayout');
       vm.$ajax('com', API.getAvatar)
         .then((data) => {
           vm.avatarInfo(data);
@@ -112,11 +111,11 @@ module nts.uk.com.view.ccg020.a {
             });
           }
         })
-        .always(() => vm.$blockui('clear'));
     }
 
-    private addEventClickWarningBtn() {
-      nts.uk.ui.dialog.alertError(__viewContext.program.operationSetting.message);
+    public addEventClickWarningBtn() {
+      const msgWarning = __viewContext.program.operationSetting.message;
+      this.$dialog.error(_.replace(msgWarning, '<br/><br/>', '\n\n'));
     }
 
     /* Screen CCG002 */
@@ -225,34 +224,28 @@ module nts.uk.com.view.ccg020.a {
 
     private addHistoryResult() {
       const vm = this;
-      vm.$blockui('grayout');
       const command: GeneralSearchHistoryCommand = new GeneralSearchHistoryCommand({
         searchCategory: vm.searchCategory(),
         contents: vm.valueSearch()
       });
       vm.$ajax('com', API.saveHistorySearch, command)
         .then(() => vm.get10LastResults())
-        .always(() => vm.$blockui('clear'));
     }
 
     private removeHistoryResult(command: GeneralSearchHistoryCommand) {
       const vm = this;
-      vm.$blockui('grayout');
       vm.$ajax('com', API.removeHistorySearch, command)
         .then(() => vm.get10LastResults())
-        .always(() => vm.$blockui('clear'));
     }
 
     private get10LastResults() {
       const vm = this;
       $('#list-box-search').remove();
-      vm.$blockui('grayout');
       vm.$ajax('com', `${API.get10LastResults}/${vm.searchCategory()}`)
         .then((response) => {
           vm.dataDisplay(response);
           vm.displayResultSearchHistory();
         })
-        .always(() => vm.$blockui('clear'));
     }
 
     private displayResultSearchHistory() {
@@ -307,13 +300,10 @@ module nts.uk.com.view.ccg020.a {
 
     private isDisplayWarning() {
       const vm = this;
-      vm.$blockui('grayout');
       vm.$ajax('com', API.isDisplayWarning)
         .then((response) => {
-          vm.$blockui('clear');
           vm.isDisplayWarningMsg(response);
         })
-        .always(() => vm.$blockui('clear'));
     }
 
     private isDisplayNewNoticeFunc() {
@@ -322,21 +312,16 @@ module nts.uk.com.view.ccg020.a {
         $('#ccg020').width(260);
         return;
       }
-      vm.$blockui('grayout');
       vm.$ajax('com', API.isDisplayNewNotice)
         .then((response) => {
-          vm.$blockui('clear');
           vm.isDisplayNewNotice(response);
         })
-        .always(() => vm.$blockui('clear'));
     }
 
     private checkCanSearchManual() {
       const vm = this;
-      vm.$blockui('grayout');
       vm.$ajax('com', API.checkSearchManual)
         .then((response) => {
-          vm.$blockui('clear');
           if (response) {
             vm.searchCategoryList([
               { id: 0, name: vm.$i18n('CCG002_2') },
@@ -346,7 +331,6 @@ module nts.uk.com.view.ccg020.a {
             vm.searchCategoryList([{ id: 0, name: vm.$i18n('CCG002_2') }]);
           }
         })
-        .always(() => vm.$blockui('clear'));
     }
   }
 

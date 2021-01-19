@@ -4685,6 +4685,7 @@ var nts;
         (function (ui) {
             var menu;
             (function (menu) {
+                var getText = nts.uk.resource.getText;
                 var DATA_TITLEITEM_PGID = "pgid";
                 var DATA_TITLEITEM_PGNAME = "pgname";
                 var MENU_SET_KEY = "nts.uk.session.MENU_SET";
@@ -4709,7 +4710,7 @@ var nts;
                     var $cate = $("<li class='category'/>").addClass("menu-select").appendTo($menuNav);
                     var $cateName = $("<div class='category-name'/>").html("&#9776;").appendTo($cate);
                     var $menuItems = $("<ul class='menu-items'/>").appendTo($cate);
-                    $menuItems.append($("<li class='menu-item'/>").text(ui.toBeResource.selectMenu));
+                    $menuItems.append($("<li class='menu-item'/>").text(getText('CCG020_1')));
                     $menuItems.append($("<hr/>").css({ margin: "5px 0px" }));
                     _.forEach(menuSet, function (item, i) {
                         $menuItems.append($("<li class='menu-item'/>")
@@ -4889,9 +4890,12 @@ var nts;
                                 $("<div class='ui-icon ui-icon-caret-1-s'/>").appendTo($userSettings);
                                 var userOptions;
                                 if (show)
-                                    userOptions = [new MenuItem(ui.toBeResource.settingPersonal), new MenuItem(ui.toBeResource.manual), new MenuItem(ui.toBeResource.logout)];
+                                    userOptions = [new MenuItem(getText('CCG020_5')), new MenuItem(getText('CCG020_4')), new MenuItem(getText('CCG020_3'))];
                                 else
-                                    userOptions = [new MenuItem(ui.toBeResource.settingPersonal), new MenuItem(ui.toBeResource.logout)];
+                                    userOptions = [new MenuItem(getText('CCG020_5')), new MenuItem(getText('CCG020_3'))];
+                                if (!__viewContext.user.isEmployee) {
+                                    userOptions.shift();
+                                }
                                 var $userOptions = $("<ul class='menu-items user-options'/>").appendTo($userSettings);
                                 _.forEach(userOptions, function (option, i) {
                                     var $li = $("<li class='menu-item'/>").text(option.name);

@@ -28,7 +28,7 @@ public class AutoExecutionPreparationAdapterImpl implements AutoExecutionPrepara
 	private ListEmpAutoExec listEmpAutoExec;
 
 	@Override
-	public boolean autoStoragePrepare(UpdateProcessAutoExecution domain) {
+	public Optional<String> autoStoragePrepare(UpdateProcessAutoExecution domain) {
 		String patternCode = domain.getExecSetting().getSaveData().getPatternCode().map(AuxiliaryPatternCode::v).orElse(null);
 		AutoPrepareDataExport data = this.pub.autoStoragePrepare(patternCode);
 		String storeProcessingId = data.getProcessingId();
@@ -41,7 +41,7 @@ public class AutoExecutionPreparationAdapterImpl implements AutoExecutionPrepara
 	}
 
 	@Override
-	public boolean autoDeletionPrepare(UpdateProcessAutoExecution domain) {
+	public Optional<String> autoDeletionPrepare(UpdateProcessAutoExecution domain) {
 		AutoPrepareDataExport data = this.pub.autoDeletionPrepare(
 				domain.getExecSetting().getDeleteData().getPatternCode().map(AuxiliaryPatternCode::v).orElse(null));
 		String delId = data.getProcessingId();

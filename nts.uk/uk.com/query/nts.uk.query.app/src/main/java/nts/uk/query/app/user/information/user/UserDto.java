@@ -74,11 +74,6 @@ public class UserDto {
      */
     private int passStatus;
 
-    /**
-     * 言語
-     */
-    private int language;
-
     public static UserDto toDto(User domain) {
         return new UserDto(
                 domain.getUserID(),
@@ -92,8 +87,7 @@ public class UserDto {
                 domain.getMailAddress().isPresent() ? domain.getMailAddress().get().v() : null,
                 domain.getUserName().isPresent() ? domain.getUserName().get().v() : null,
                 domain.getAssociatedPersonID().isPresent() ? domain.getAssociatedPersonID().get() : null,
-                domain.getPassStatus() == null ? null : domain.getPassStatus().value,
-                domain.getLanguage() == null ? null : domain.getLanguage().value
+                domain.getPassStatus() == null ? null : domain.getPassStatus().value
         );
     }
 
@@ -110,8 +104,7 @@ public class UserDto {
                 mailAddress,
                 userName,
                 associatedPersonID,
-                passStatus,
-                language
+                passStatus
         );
     }
 }
