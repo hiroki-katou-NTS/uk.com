@@ -193,12 +193,26 @@ public class TimeLeaveApplicationFinder {
                 baseDate,
                 achievementDetailDto.getWorkTypeCD(),
                 achievementDetailDto.getWorkTimeCD(),
-                lstTimeZone.stream().map(i -> new TimeZone(new TimeWithDayAttr(i.getStartTime()), new TimeWithDayAttr(i.getEndTime()))).collect(Collectors.toList()),
+                lstTimeZone.stream().map(i -> new TimeZone(
+                        i.getStartTime() == null ? null : new TimeWithDayAttr(i.getStartTime()),
+                        i.getEndTime() == null ? null : new TimeWithDayAttr(i.getEndTime())
+                )).collect(Collectors.toList()),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 Collections.emptyList(), // TODO: cannot mapping OutingTimeSheet
                 achievementDetailDto.getShortWorkTimeLst().stream().map(i -> i.toDomain()).collect(Collectors.toList())
         );
+
+        // fake output
+        int privateOutingTime = 0, unionOutingTime = 0;
+        for (OutingTimeZoneDto i : lstOutingTimeZone) {
+            if (i.getOutingAtr() == 4) {
+                privateOutingTime += (i.getEndTime() - i.getStartTime());
+            }
+            if (i.getOutingAtr() == 5) {
+                unionOutingTime += (i.getEndTime() - i.getStartTime());
+            }
+        }
 
         // 取得した「日別勤怠の勤怠時間」をOUTPUTにセットする
         CalculationResultDto calculationResult = new CalculationResultDto();
@@ -206,8 +220,8 @@ public class TimeLeaveApplicationFinder {
         calculationResult.setTimeAfterWork1(calcImport.getEarlyLeaveTime1().v());
         calculationResult.setTimeBeforeWork2(calcImport.getLateTime2().v());
         calculationResult.setTimeAfterWork2(calcImport.getEarlyLeaveTime2().v());
-        calculationResult.setPrivateOutingTime(calcImport.getPrivateOutingTime().v());
-        calculationResult.setUnionOutingTime(calcImport.getUnionOutingTime().v());
+        calculationResult.setPrivateOutingTime(privateOutingTime);
+        calculationResult.setUnionOutingTime(unionOutingTime);
 
         TimeDigestAppType leaveType = EnumAdaptor.valueOf(timeLeaveType, TimeDigestAppType.class);
         if (leaveType == TimeDigestAppType.USE_COMBINATION)
