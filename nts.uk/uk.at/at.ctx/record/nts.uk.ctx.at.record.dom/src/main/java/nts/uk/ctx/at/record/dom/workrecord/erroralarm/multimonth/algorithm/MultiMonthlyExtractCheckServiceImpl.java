@@ -241,6 +241,7 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 							|| anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.NUMBER_TIME) {
 						startValue = timeToString(Integer.valueOf(startValue));
 						endValue = endValue == null ? null : timeToString(Integer.valueOf(endValue));
+						checkValue = timeToString((int) checkedValue);
 					}
 					
 					List<Integer> lstAddSub = erCondition.getCountableTarget().getAddSubAttendanceItems().getAdditionAttendanceItems();
@@ -291,7 +292,7 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 										compareOperatorText.getCompareright(), endValue);
 							}
 						}
-						checkValue = TextResource.localize("KAL010_284", nameItem, String.valueOf(checkedValue));
+						checkValue = TextResource.localize("KAL010_284", nameItem, checkValue.isEmpty() ? String.valueOf(checkedValue) : checkValue);
 						if(anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.TIME) checkValue = checkValue + TextResource.localize("KAL010_285");
 						if(anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.TIMES) checkValue = checkValue + TextResource.localize("KAL010_286");
 						if(anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.AMOUNT) checkValue = checkValue + TextResource.localize("KAL010_287");

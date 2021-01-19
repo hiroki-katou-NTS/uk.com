@@ -862,102 +862,134 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 					alarmDescription = TextResource.localize("KAL010_276",
 							nameErrorAlarm,
 							compareOperatorText.getCompareLeft(),
-							startValueTime);
+							startValueTime,
+							TextResource.localize("KAL010_291"));
 				}else {
 					endValueTime = this.timeToString(endValue.intValue());
 					if(compare>5 && compare<=7) {
-						alarmDescription = TextResource.localize("KAL010_277",startValueTime,
+						alarmDescription = TextResource.localize("KAL010_277",
+								startValueTime + TextResource.localize("KAL010_291"),
 								compareOperatorText.getCompareLeft(),
 								nameErrorAlarm,
 								compareOperatorText.getCompareright()+
-								endValueTime
+								endValueTime + TextResource.localize("KAL010_291")
 								);	
 					}else {
 						alarmDescription = TextResource.localize("KAL010_277",
 								nameErrorAlarm,
 								compareOperatorText.getCompareLeft(),
-								startValueTime + ","+endValueTime,
+								startValueTime + TextResource.localize("KAL010_291") + "," +endValueTime + TextResource.localize("KAL010_291"),
 								compareOperatorText.getCompareright()+
 								nameErrorAlarm
 								);
 					}
 				}
-				checkedValue = this.timeToString(Double.valueOf(checkedValue).intValue());
+				checkedValue = TextResource.localize("KAL010_295",
+						nameErrorAlarm,
+						this.timeToString(Double.valueOf(checkedValue).intValue()),
+						TextResource.localize("KAL010_291"));
 				break;
 			case DAYS:
 				String startValueDays = String.valueOf(startValue.intValue());
 				String endValueDays = "";
 				if(compare<=5) {
-					alarmDescription = TextResource.localize("KAL010_276",nameErrorAlarm,compareOperatorText.getCompareLeft(),startValueDays);
+					alarmDescription = TextResource.localize("KAL010_276",
+							nameErrorAlarm,
+							compareOperatorText.getCompareLeft(),
+							startValueDays,
+							TextResource.localize("KAL010_292"));
 				}else {
 					endValueDays = String.valueOf(endValue.intValue());
 					if(compare>5 && compare<=7) {
-						alarmDescription = TextResource.localize("KAL010_277",startValueDays,
+						alarmDescription = TextResource.localize("KAL010_277",
+								startValueDays + TextResource.localize("KAL010_292"),
 								compareOperatorText.getCompareLeft(),
 								nameErrorAlarm,
 								compareOperatorText.getCompareright(),
-								endValueDays
+								endValueDays + TextResource.localize("KAL010_292")
 								);	
 					}else {
 						alarmDescription = TextResource.localize("KAL010_277",
 								nameErrorAlarm,
 								compareOperatorText.getCompareLeft(),
-								startValueDays + "," + endValueDays,
+								startValueDays + TextResource.localize("KAL010_292") + "," + endValueDays + TextResource.localize("KAL010_292"),
 								compareOperatorText.getCompareright(),
 								nameErrorAlarm
 								);
 					}
 				}
+				checkedValue = TextResource.localize("KAL010_295",
+						nameErrorAlarm,
+						checkedValue,
+						TextResource.localize("KAL010_292"));
 				break;
 			case TIMES:
 				String startValueTimes = String.valueOf(startValue.intValue());
 				String endValueTimes = "";
 				if(compare<=5) {
-					alarmDescription = TextResource.localize("KAL010_276",nameErrorAlarm,compareOperatorText.getCompareLeft(),startValueTimes);
+					alarmDescription = TextResource.localize("KAL010_276",
+							nameErrorAlarm,
+							compareOperatorText.getCompareLeft(),
+							startValueTimes,
+							TextResource.localize("KAL010_293"));
 				}else {
 					endValueTimes = String.valueOf(endValue.intValue());
 					if(compare>5 && compare<=7) {
-						alarmDescription = TextResource.localize("KAL010_277",startValueTimes,
+						alarmDescription = TextResource.localize("KAL010_277",
+								startValueTimes + TextResource.localize("KAL010_293"),
 								compareOperatorText.getCompareLeft(),
 								nameErrorAlarm,
 								compareOperatorText.getCompareright()+
-								endValueTimes
+								endValueTimes + TextResource.localize("KAL010_293")
 								);	
 					}else {
 						alarmDescription = TextResource.localize("KAL010_277",
 								nameErrorAlarm,
 								compareOperatorText.getCompareLeft(),
-								startValueTimes + "," + endValueTimes,
+								startValueTimes + TextResource.localize("KAL010_293") + "," + endValueTimes + TextResource.localize("KAL010_293"),
 								compareOperatorText.getCompareright()+
 								nameErrorAlarm
 								);
 					}
 				}
+				checkedValue = TextResource.localize("KAL010_295",
+						nameErrorAlarm,
+						checkedValue,
+						TextResource.localize("KAL010_293"));
 				break;
 			case AMOUNT_OF_MONEY:
 				String startValueMoney = String.valueOf(startValue.intValue());
 				String endValueMoney = "";
 				if(compare<=5) {
-					alarmDescription = TextResource.localize("KAL010_276",nameErrorAlarm,compareOperatorText.getCompareLeft(),startValueMoney);
+					alarmDescription = TextResource.localize("KAL010_276",
+							nameErrorAlarm,
+							compareOperatorText.getCompareLeft(),
+							startValueMoney,
+							TextResource.localize("KAL010_294"));
 				}else {
 					endValueMoney = String.valueOf(endValue.intValue());
 					if(compare>5 && compare<=7) {
-						alarmDescription = TextResource.localize("KAL010_277",startValueMoney,
+						alarmDescription = TextResource.localize("KAL010_277",
+								startValueMoney + TextResource.localize("KAL010_294"),
 								compareOperatorText.getCompareLeft(),
 								nameErrorAlarm,
 								compareOperatorText.getCompareright()+
-								endValueMoney
+								endValueMoney + TextResource.localize("KAL010_294")
 								);	
 					}else {
 						alarmDescription = TextResource.localize("KAL010_277",
 								nameErrorAlarm,
 								compareOperatorText.getCompareLeft(),
-								startValueMoney + "," + endValueMoney,
+								startValueMoney + TextResource.localize("KAL010_294")+ "," + endValueMoney + TextResource.localize("KAL010_294"),
 								compareOperatorText.getCompareright()+
 								nameErrorAlarm
 								);
 					}
 				}
+				checkedValue = TextResource.localize("KAL010_295",
+						nameErrorAlarm,
+						checkedValue,
+						TextResource.localize("KAL010_294"));
 				break;
 			default:
 				break;
@@ -965,29 +997,13 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 		ExtractionAlarmPeriodDate periodDate = new ExtractionAlarmPeriodDate();
 		periodDate.setStartDate(Optional.ofNullable(GeneralDate.ymd(yearMonth.year(), yearMonth.month(), 1)));
 		periodDate.setEndDate(Optional.empty());
-		ExtractionResultDetail detail = new ExtractionResultDetail(sid,
-				periodDate,
-				anyCond.getNameAlarmExtraCon().v(),
-				alarmDescription,
-				GeneralDateTime.now(),
-				Optional.ofNullable(workplaceId),
-				anyCond.getDisplayMessage().isPresent() ? Optional.ofNullable(anyCond.getDisplayMessage().get().v()) : Optional.empty(),
-				Optional.ofNullable(checkedValue));
-		List<ResultOfEachCondition> result = lstResultCondition.stream()
-				.filter(x -> x.getCheckType() == AlarmListCheckType.FreeCheck && x.getNo().equals(String.valueOf(anyCond.getSortBy())))
-				.collect(Collectors.toList());
-		if(result.isEmpty()) {
-			ResultOfEachCondition resultCon = new ResultOfEachCondition(AlarmListCheckType.FreeCheck,
-					String.valueOf(anyCond.getSortBy()),
-					new ArrayList<>());
-			resultCon.getLstResultDetail().add(detail);
-			lstResultCondition.add(resultCon);
-		} else {
-			ResultOfEachCondition ex = result.get(0);
-			lstResultCondition.remove(ex);
-			ex.getLstResultDetail().add(detail);
-			lstResultCondition.add(ex);
-		}
+		setExtractAlarm(anyCond,
+				lstResultCondition,
+				sid, 
+				workplaceId,
+				checkedValue,
+				anyCond.getDisplayMessage().isPresent() ? anyCond.getDisplayMessage().get().v() : "",
+						periodDate);
 	}
 	private String getNameErrorAlarm(List<MonthlyAttendanceItemNameDto> attendanceItemNames ,int type,String nameErrorAlarm){
 		if(!CollectionUtil.isEmpty(attendanceItemNames)) {
