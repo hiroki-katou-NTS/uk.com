@@ -84,12 +84,14 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
             }
             vm.loadData(empLst, dateLst, vm.appType())
                 .then((loadDataFlag: any) => {
-					vm.application().employeeIDLst(empLst);
-                    let appType = vm.appType,
-                        appDates = dates,
-                        appDispInfoStartupDto = ko.toJS(vm.appDispInfoStartupOutput),
-                        command = { appType, appDates, appDispInfoStartupDto };
-                    return vm.$ajax(API.initPage, command);
+                    if (loadDataFlag) {
+                        vm.application().employeeIDLst(empLst);
+                        let appType = vm.appType,
+                            appDates = dates,
+                            appDispInfoStartupDto = ko.toJS(vm.appDispInfoStartupOutput),
+                            command = { appType, appDates, appDispInfoStartupDto };
+                        return vm.$ajax(API.initPage, command);
+                    }
                 }).then((successData: any) => {
                     if (successData) {
                         if (successData.info) {
@@ -242,7 +244,12 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
 					}
                 }).fail((failData: any) => {
                     console.log(failData);
+                    if (failData.messageId === "Msg_43") {
+						vm.$dialog.error(failData).then(() => { vm.$jump("com", "/view/ccg/008/a/index.xhtml"); });
 
+					} else {
+						vm.$dialog.error(failData);
+					}
                 }).always(() => vm.$blockui("hide"));
 
             vm.application().appDate.subscribe(() => {
