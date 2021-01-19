@@ -127,9 +127,14 @@ module nts.uk.at.kmk004.r {
 				tabindex: 1,
 				systemType: 2
 			};
-			var windowSize = nts.uk.ui.windows.getSelf();
+			let windowSize = nts.uk.ui.windows.getSelf();
 			windowSize.$dialog.dialog("option", "width", 530);
 			windowSize.$dialog.dialog("option", "height", 570);
+			$(window).resize(function() {
+				let windowSize = nts.uk.ui.windows.getSelf();
+				windowSize.$dialog.dialog("option", "width", 530);
+				windowSize.$dialog.dialog("option", "height", 570);
+			});
 			$('#work-place-list').ntsTreeComponent(wpOption).done(() => {
 				$('#work-place-list  .ntsSearchBox').focus();
 			});
@@ -170,9 +175,14 @@ module nts.uk.at.kmk004.r {
 				};
 
 			$('#employee-list').ntsListComponent(employeeOption);
-			var windowSize = nts.uk.ui.windows.getSelf();
+			let windowSize = nts.uk.ui.windows.getSelf();
 			windowSize.$dialog.dialog("option", "width", 430);
 			windowSize.$dialog.dialog("option", "height", 530);
+			$(window).resize(function() {
+				let windowSize = nts.uk.ui.windows.getSelf();
+				windowSize.$dialog.dialog("option", "width", 430);
+				windowSize.$dialog.dialog("option", "height", 530);
+			});
 
 		}
 	}
