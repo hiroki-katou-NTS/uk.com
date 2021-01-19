@@ -38,6 +38,7 @@ module nts.uk.at.view.kal013.b {
         dailyTimeControl: Array<number> = [2];
         dailyTimeControlB : Array<number> = [2, 5, 8];
         dailyContraint: Map<number,string> =new Map([
+            [0,"Comparison"],
             [1, "NumberOfPeople"],
             [2, "Time"],
             [3, "Amount"],
@@ -85,11 +86,11 @@ module nts.uk.at.view.kal013.b {
                     return;
                 }
                 nts.uk.ui.errors.clearAll();
-                vm.pattern().clearCheckCodB();
+                //vm.pattern().clearCheckCodB();
                 //Kind of control
                 vm.checkKindOfConrol(value,false);
                 // Constraint
-                vm.createConstraint(value,false);
+                //vm.createConstraint(value,false);
             })
 
 
@@ -236,17 +237,17 @@ module nts.uk.at.view.kal013.b {
                 // 月次 - 平均時間 ||  スケジュール／日次 - 時間対比
                 if ((vm.category() == WorkplaceCategory.MONTHLY && _.indexOf(vm.monthlyTimeControl,value) != -1)
                     || (vm.category() == WorkplaceCategory.SCHEDULE_DAILY
-                        && (_.indexOf(vm.dailyTimeControl,value) != -1
-                            || _.indexOf(vm.dailyTimeControlB, vm.pattern().checkCondB()) != -1))){
+                        && (_.indexOf(vm.dailyTimeControl,value) != -1))){
+                            // || _.indexOf(vm.dailyTimeControlB, vm.pattern().checkCondB()) != -1))
                     vm.timeControl(true);
                 } else{
                     vm.timeControl(false);
                 }
             } else if (vm.category() == WorkplaceCategory.SCHEDULE_DAILY ) {
                 vm.timeControl(false);
-                if (_.indexOf(vm.dailyTimeControlB, value) != -1) {
-                    vm.timeControl(true);
-                }
+                // if (_.indexOf(vm.dailyTimeControlB, value) != -1) {
+                //     vm.timeControl(true);
+                // }
             }
         }
 
@@ -254,20 +255,20 @@ module nts.uk.at.view.kal013.b {
             const vm = this;
             // Contraint
             if (vm.category() == WorkplaceCategory.SCHEDULE_DAILY){
-                vm.constraint(_.isNil(vm.dailyContraint.get(value))? vm.dailyContraint.get(1) : vm.dailyContraint.get(value));
+                vm.constraint(_.isNil(vm.dailyContraint.get(value))? vm.dailyContraint.get(0) : vm.dailyContraint.get(value));
             } else{
                 vm.constraint(vm.monthlyContraint.get(value));
             }
 
-            if (!isPatternA && vm.category() == WorkplaceCategory.SCHEDULE_DAILY){
-                if (_.indexOf([1, 4, 7], value) != -1) {
-                    vm.constraint(vm.dailyContraint.get(1));
-                } else if (_.indexOf(vm.dailyTimeControlB, value) != -1) {
-                    vm.constraint(vm.dailyContraint.get(2));
-                } else if (_.indexOf([3, 6, 9], value) != -1) {
-                    vm.constraint(vm.dailyContraint.get(3));
-                }
-            }
+            // if (!isPatternA && vm.category() == WorkplaceCategory.SCHEDULE_DAILY){
+            //     if (_.indexOf([1, 4, 7], value) != -1) {
+            //         vm.constraint(vm.dailyContraint.get(1));
+            //     } else if (_.indexOf(vm.dailyTimeControlB, value) != -1) {
+            //         vm.constraint(vm.dailyContraint.get(2));
+            //     } else if (_.indexOf([3, 6, 9], value) != -1) {
+            //         vm.constraint(vm.dailyContraint.get(3));
+            //     }
+            // }
 
         }
         mounted() {
