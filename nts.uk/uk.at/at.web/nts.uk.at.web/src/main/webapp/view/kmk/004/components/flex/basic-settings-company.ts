@@ -145,15 +145,19 @@ class BasicSettingsCompany extends ko.ViewModel {
 			vm.setAlreadySettingList(setting.alreadySettings);
 			vm.screenData().comFlexMonthActCalSet(setting.flexMonthActCalSet);
 			if (_.has(setting, 'flexPredWorkTime.reference')) {
-				if (vm.screenData().getFlexPredWorkTime().reference != _.get(setting, 'flexPredWorkTime.reference')) {
-					if (setting.flexPredWorkTime.reference == 1) {
-						_.forEach(vm.screenData().monthlyWorkTimeSetComs(), (item) => {
-							item.laborTime().withinLaborTime(null);
-						});
-					} else {
-						_.forEach(vm.screenData().monthlyWorkTimeSetComs(), (item) => {
-							item.laborTime().withinLaborTime(0);
-						});
+				if (vm.screenData().getFlexPredWorkTime() == null) {
+					vm.screenData().getFlexPredWorkTime(setting.flexPredWorkTime);
+				} else {
+					if (vm.screenData().getFlexPredWorkTime().reference != _.get(setting, 'flexPredWorkTime.reference')) {
+						if (setting.flexPredWorkTime.reference == 1) {
+							_.forEach(vm.screenData().monthlyWorkTimeSetComs(), (item) => {
+								item.laborTime().withinLaborTime(null);
+							});
+						} else {
+							_.forEach(vm.screenData().monthlyWorkTimeSetComs(), (item) => {
+								item.laborTime().withinLaborTime(0);
+							});
+						}
 					}
 				}
 				vm.screenData().getFlexPredWorkTime(setting.flexPredWorkTime);
