@@ -471,7 +471,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                     vm.$blockui("show").then(() => {
                         return vm.$ajax(API.calculateTime, command);
                     }).done((data: any) => {
-                        vm.applyTimeData().forEach(row => {
+                        vm.applyTimeData().filter(row => row.display()).forEach(row => {
                             switch (vm.leaveType()) {
                                 case LeaveType.SUBSTITUTE:
                                     switch (row.appTimeType) {
@@ -542,20 +542,20 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                 case LeaveType.NURSING:
                                     switch (row.appTimeType) {
                                         case 0:
-                                            row.applyTime[0].childCareAppTime(data.timeBeforeWork1);
+                                            row.applyTime[0].careAppTime(data.timeBeforeWork1);
                                             break;
                                         case 1:
-                                            row.applyTime[0].childCareAppTime(data.timeAfterWork1);
+                                            row.applyTime[0].careAppTime(data.timeAfterWork1);
                                             break;
                                         case 2:
-                                            row.applyTime[0].childCareAppTime(data.timeBeforeWork2);
+                                            row.applyTime[0].careAppTime(data.timeBeforeWork2);
                                             break;
                                         case 3:
-                                            row.applyTime[0].childCareAppTime(data.timeAfterWork2);
+                                            row.applyTime[0].careAppTime(data.timeAfterWork2);
                                             break;
                                         case 4:
-                                            row.applyTime[0].childCareAppTime(data.privateOutingTime);
-                                            row.applyTime[1].childCareAppTime(data.unionOutingTime);
+                                            row.applyTime[0].careAppTime(data.privateOutingTime);
+                                            row.applyTime[1].careAppTime(data.unionOutingTime);
                                             break;
                                         default:
                                             break;

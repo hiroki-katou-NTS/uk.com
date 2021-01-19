@@ -207,10 +207,10 @@ public class TimeLeaveApplicationFinder {
         int privateOutingTime = 0, unionOutingTime = 0;
         for (OutingTimeZoneDto i : lstOutingTimeZone) {
             if (i.getOutingAtr() == 4) {
-                privateOutingTime += (i.getEndTime() - i.getStartTime());
+                privateOutingTime = privateOutingTime + (i.getEndTime() - i.getStartTime());
             }
             if (i.getOutingAtr() == 5) {
-                unionOutingTime += (i.getEndTime() - i.getStartTime());
+                unionOutingTime = unionOutingTime + (i.getEndTime() - i.getStartTime());
             }
         }
 
