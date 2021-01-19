@@ -177,7 +177,7 @@ public class PreRegistrationErrorCheck {
 		// Imported（就業.shared.組織管理.社員情報.所属雇用履歴)「所属雇用履歴」を取得する
 		GeneralDate calExpDateFromRecDate = this.calExpDateFromRecDate(cId, recDate, manageDeadline, expirationDate, employmentCode);
 		if(absDate.after(calExpDateFromRecDate)) {
-			throw new BusinessException("Msg_1361");
+			throw new BusinessException("Msg_1361", calExpDateFromRecDate.toString());
 		}
 	}
 	
