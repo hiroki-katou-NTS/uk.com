@@ -49,6 +49,7 @@ module nts.uk.at.view.kmk004.b {
                             <!-- ko if: $parent.checkEmployee -->
                                 <input class="lable-input" 
                                     data-bind="ntsTimeEditor: {
+                                        name:'#[KMK004_222]',
                                         value: $data.laborTime,
                                         enable: $data.check,
                                         inputFormat: 'time',
