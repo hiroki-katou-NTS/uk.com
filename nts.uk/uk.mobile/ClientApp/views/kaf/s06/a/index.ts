@@ -129,8 +129,8 @@ export class KafS06AComponent extends KafS00ShrComponent {
             self.$updateValidator('workHours2', {
                 timeRange: true
             });
-            self.$validate('workHours1');
-            self.$validate('workHours2');
+            // self.$validate('workHours1');
+            // self.$validate('workHours2');
 
         }
     }
@@ -1275,7 +1275,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
 
         if (!self.model.appAbsenceStartInfoDto || !_.isNil(self.selectedValueHolidayType)) {
 
-            return self.selectedValueHolidayType;
+            return self.selectedValueHolidayType || HolidayAppType.ANNUAL_PAID_LEAVE;
         }
         // 休暇申請起動時の表示情報．休暇残数情報．年休管理区分　＝　管理する
         let c1_1 = self.model.appAbsenceStartInfoDto.remainVacationInfo.annualLeaveManagement.annualLeaveManageDistinct == ManageDistinct.YES;
@@ -1360,6 +1360,8 @@ export class KafS06AComponent extends KafS00ShrComponent {
 
             return HolidayAppType.DIGESTION_TIME;
         }
+
+        return HolidayAppType.ANNUAL_PAID_LEAVE;
     }
 
     public openKDL002(type?: string) {
