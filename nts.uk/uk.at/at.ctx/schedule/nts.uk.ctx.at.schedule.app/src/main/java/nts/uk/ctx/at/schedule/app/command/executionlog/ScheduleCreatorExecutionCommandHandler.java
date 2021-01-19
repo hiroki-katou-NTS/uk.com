@@ -19,6 +19,7 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import lombok.val;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -726,9 +727,10 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 			optEmpHistItem = listEmpHistItem.stream()
 					.filter(empHistItem -> empHistItem.getPeriod().contains(dateBeforeCorrection.end())).findFirst();
 		}
-
+		// fix bug #113874
 		if (!optEmpHistItem.isPresent()) {
-			return new StateAndValueDatePeriod(dateBeforeCorrection, false);
+			//return new StateAndValueDatePeriod(dateBeforeCorrection, false);
+			throw new BusinessException("社員の所属雇用履歴がありません");
 		}
 
 		// ドメインモデル「雇用に紐づく就業締め」を取得
