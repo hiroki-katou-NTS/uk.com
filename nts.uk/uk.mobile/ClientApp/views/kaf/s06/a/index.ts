@@ -46,6 +46,10 @@ import { KdlS36Component } from '../../../kdl/s36';
         workHours1: {
             required: true,
             timeRange: true
+        },
+        workHours2: {
+            required: false,
+            timeRange: true
         }
     },
     constraints: [
@@ -102,7 +106,11 @@ export class KafS06AComponent extends KafS00ShrComponent {
         name: '',
         time: ''
     } as WorkInfo;
-
+    @Watch('workHours2', {deep: true})
+    public validateWorkHours2(data: any) {
+        const self = this;
+        
+    }
     @Watch('isValidateWorkHours1', {deep: true})
     public updateValidateWorkHours1(data: boolean) {
         const self = this;
@@ -1564,7 +1572,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
             workingHours.push(timeZoneWithWorkNoDto);
 
         }
-        if (self.c10 && _.isNumber(_.get(self.workHours2, 'start')) && _.get(self.workHours2, 'end')) {
+        if (self.c10 && _.isNumber(_.get(self.workHours2, 'start')) && _.get(self.workHours2, 'end') && self.c11) {
             let timeZoneWithWorkNoDto = {} as TimeZoneWithWorkNoDto;
             timeZoneWithWorkNoDto.workNo = 2;
             timeZoneWithWorkNoDto.timeZone = {
