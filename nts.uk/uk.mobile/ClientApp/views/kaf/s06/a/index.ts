@@ -42,6 +42,14 @@ import { KdlS36Component } from '../../../kdl/s36';
                 required: true,
                 validate: true
             }
+        }, 
+        workHours1: {
+            required: true,
+            timeRange: true
+        },
+        workHours2: {
+            required: false,
+            timeRange: true
         }
     },
     constraints: [
@@ -98,16 +106,32 @@ export class KafS06AComponent extends KafS00ShrComponent {
         name: '',
         time: ''
     } as WorkInfo;
-
+    @Watch('workHours2', {deep: true})
+    public validateWorkHours2(data: any) {
+        const self = this;
+        
+    }
     @Watch('isValidateWorkHours1', {deep: true})
     public updateValidateWorkHours1(data: boolean) {
         const self = this;
 
         if (data) {
             self.$updateValidator('workHours1', {
-                required: true,
+                validate: false
+            });
+            self.$updateValidator('workHours2', {
+                timeRange: false
+            });
+        } else {
+            self.$updateValidator('workHours1', {
+                validate: true
+            });
+            self.$updateValidator('workHours2', {
                 timeRange: true
             });
+            self.$validate('workHours1');
+            self.$validate('workHours2');
+
         }
     }
     @Watch('c20', {deep: true})
@@ -131,6 +155,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
 
         if (data && !self.isFirstUpdate) {
             self.selectedHolidayType(data);
+            self.$validate('selectedValueHolidayType');
         }
     }
     // 続柄・喪主を選択する
@@ -324,7 +349,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
     public get isValidateWorkHours1() {
         const self = this;
 
-        return self.c9 && self.c11;
+        return self.c9 && !self.c11;
     }
 
     // 休暇申請起動時の表示情報．就業時間帯表示フラグ = true
@@ -627,6 +652,26 @@ export class KafS06AComponent extends KafS00ShrComponent {
     public mounted() {
         const self = this;
         self.fetchData();
+        if (!self.modeNew) {
+            if (self.isValidateWorkHours1) {
+                self.$updateValidator('workHours1', {
+                    validate: false
+                });
+            } else {
+                self.$updateValidator('workHours1', {
+                    validate: true
+                });
+            }
+            if (self.c20) {
+                self.$updateValidator('relationshipReason', {
+                    validate: true
+                });
+            } else {
+                self.$updateValidator('relationshipReason', {
+                    validate: false
+                });
+            }
+        }
     }
     public fetchData() {
         const vm = this;
@@ -794,6 +839,23 @@ export class KafS06AComponent extends KafS00ShrComponent {
         const vm = this;
 
         vm.$mask('show');
+
+        if (
+            vm.c11 &&
+            ((_.isNumber(_.get(vm.workHours2, 'start')) && !_.isNumber(_.get(vm.workHours2, 'end'))) 
+            || (_.isNumber(_.get(vm.workHours2, 'end') && !_.isNumber(_.get(vm.workHours2, 'start')))))
+        ) {
+
+            vm.$nextTick(() => {
+                vm.$mask('hide');
+            });
+            vm.$modal.error({ messageId: 'Msg_307'})
+                .then(() => {
+                    
+                });
+
+            return;
+        }
         vm.isValidateAll = vm.customValidate(vm);
         vm.$validate();
         if (!vm.$valid || !vm.isValidateAll) {
@@ -1203,7 +1265,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
             text: '--- 選択してください ---'
         });
         self.dropdownList = dropDownList;
-        self.selectedValueHolidayType = self.getSelectedValue();
+        self.selectedValueHolidayType = String(self.getSelectedValue());
         // 
 
     }
@@ -1537,7 +1599,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
             workingHours.push(timeZoneWithWorkNoDto);
 
         }
-        if (self.c10 && _.isNumber(_.get(self.workHours2, 'start')) && _.get(self.workHours2, 'end')) {
+        if (self.c10 && _.isNumber(_.get(self.workHours2, 'start')) && _.get(self.workHours2, 'end') && self.c11) {
             let timeZoneWithWorkNoDto = {} as TimeZoneWithWorkNoDto;
             timeZoneWithWorkNoDto.workNo = 2;
             timeZoneWithWorkNoDto.timeZone = {
@@ -1641,7 +1703,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
             actualContentDisplayList,
 
             // List<振出振休紐付け管理>
-            managementData: self.linkWithVacation,
+            managementData: self.linkWithVacation || [],
         };
         self.$modal('kdls36', params)
             .then((result: any) => {
