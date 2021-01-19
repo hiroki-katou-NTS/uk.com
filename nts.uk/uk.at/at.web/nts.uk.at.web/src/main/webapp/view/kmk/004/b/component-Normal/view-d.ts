@@ -172,12 +172,8 @@ module nts.uk.at.view.kmk004.b {
 										vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
 										vm.$dialog.info({ messageId: 'Msg_15' });
 									}).then(() => {
+										vm.change.valueHasMutated();
 										vm.selectedYear.valueHasMutated();
-									})
-									.then(() => {
-										$(document).ready(function () {
-											$('.listbox').focus();
-										});
 									});
 							}
 						});
