@@ -5,13 +5,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import org.assertj.core.groups.Tuple;
 import org.junit.Test;
 
 import lombok.val;
+import mockit.Expectations;
+import mockit.Injectable;
+import mockit.Mock;
+import mockit.MockUp;
 import nts.arc.testing.assertion.NtsAssert;
+import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
@@ -23,9 +30,14 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 public class TimeLeavingOfDailyAttdTest {
+	
+	@Injectable
+	TimeLeavingOfDailyAttd.Require require;
 	
 	@Test
 	public void getters() {
@@ -88,7 +100,7 @@ public class TimeLeavingOfDailyAttdTest {
 	 */
 	@Test
 	public void getStartTimeVacations_not_existed_work_no() {
-		val vacation = new TimeZone(new TimeWithDayAttr(1100), new TimeWithDayAttr(1200));
+		val vacation = new TimeSpanForCalc(new TimeWithDayAttr(1100), new TimeWithDayAttr(1200));
 		val timeLeavingDaily = Helper.createTimeLeavingOfDailyAttd(new WorkNo(1), vacation);
 		
 		val actual = timeLeavingDaily.getStartTimeVacations(new WorkNo(3));
@@ -103,7 +115,7 @@ public class TimeLeavingOfDailyAttdTest {
 	 */
 	@Test
 	public void getStartTimeVacations_vacation_is_empty() {
-		TimeZone vacation = null;
+		TimeSpanForCalc vacation = null;
 		val timeLeavingDaily = Helper.createTimeLeavingOfDailyAttd(new WorkNo(1), vacation);
 		
 		val actual = timeLeavingDaily.getStartTimeVacations(new WorkNo(1));
@@ -118,7 +130,7 @@ public class TimeLeavingOfDailyAttdTest {
 	 */
 	@Test
 	public void getStartTimeVacations_vacation_not_empty() {
-        val vacation  = new TimeZone(new TimeWithDayAttr(1200), new TimeWithDayAttr(1300));
+        val vacation  = new TimeSpanForCalc(new TimeWithDayAttr(1200), new TimeWithDayAttr(1300));
         val timeLeavingDaily = Helper.createTimeLeavingOfDailyAttd(new WorkNo(1), vacation);
 		val actual = timeLeavingDaily.getStartTimeVacations(new WorkNo(1));
 		
@@ -146,7 +158,7 @@ public class TimeLeavingOfDailyAttdTest {
 	 */
 	@Test
 	public void getEndTimeVacations_not_existed_work_no() {
-        val vacation = new TimeZone(new TimeWithDayAttr(1200), new TimeWithDayAttr(1300));
+        val vacation = new TimeSpanForCalc(new TimeWithDayAttr(1200), new TimeWithDayAttr(1300));
         val timeLeavingDaily = Helper.createTimeLeavingOfDailyAttd(new WorkNo(1), vacation);
         
 		val actual = timeLeavingDaily.getEndTimeVacations(new WorkNo(3));
@@ -162,7 +174,7 @@ public class TimeLeavingOfDailyAttdTest {
 	 */
 	@Test
 	public void getEndTimeVacations_vacation_empty() {
-		TimeZone vacation = null;
+		TimeSpanForCalc vacation = null;
 		val timeLeavingDaily = Helper.createTimeLeavingOfDailyAttd(new WorkNo(1), vacation);
 		
 		val actual = timeLeavingDaily.getEndTimeVacations(new WorkNo(1));
@@ -177,7 +189,7 @@ public class TimeLeavingOfDailyAttdTest {
 	 */
 	@Test
 	public void getEndTimeVacations_vacation_not_empty() {
-        val vacation = new TimeZone(new TimeWithDayAttr(1200), new TimeWithDayAttr(1300));
+        val vacation = new TimeSpanForCalc(new TimeWithDayAttr(1200), new TimeWithDayAttr(1300));
         val timeLeavingDaily = Helper.createTimeLeavingOfDailyAttd(new WorkNo(1), vacation);
 		
 		val actual = timeLeavingDaily.getEndTimeVacations(new WorkNo(1));
@@ -185,11 +197,67 @@ public class TimeLeavingOfDailyAttdTest {
 		assertThat(actual.get().getEnd()).isEqualTo(vacation.getEnd());
 	}
 	
+	@Test
+	public void testCreateByPredetermineZone_exception( @Injectable WorkInformation workInformation ) {
+		
+		// Arrange
+		new Expectations() { {
+			
+			workInformation.getWorkInfoAndTimeZone(require);
+			// result = empty
+			
+		}};
+		
+		NtsAssert.systemError( () -> TimeLeavingOfDailyAttd.createByPredetermineZone(require, workInformation));
+	}
+	
+	@Test
+	public void testCreateByPredetermineZone_success( 
+			@Injectable WorkInformation workInformation,
+			@Injectable WorkType workType,
+			@Injectable WorkTimeSetting workTime,
+			@Injectable TimeWithDayAttr start1,
+			@Injectable TimeWithDayAttr end1,
+			@Injectable TimeWithDayAttr start2,
+			@Injectable TimeWithDayAttr end2) {
+		
+		// Arrange
+		List<TimeZone> timeZoneList = Arrays.asList( 
+				new TimeZone(start1, end1), 
+				new TimeZone(start2, end2));
+		WorkInfoAndTimeZone workInforAndTimezone = WorkInfoAndTimeZone.create(workType, workTime, timeZoneList);
+		
+		// Expectation
+		new Expectations() { {
+			
+			workInformation.getWorkInfoAndTimeZone(require);
+			result = Optional.of(workInforAndTimezone);
+		}};
+		
+		// Mock-up
+		TimeLeavingWork timeLeavingWork1 = TimeLeavingWork.createFromTimeSpan(new WorkNo(1), new TimeSpanForCalc(start1, end1));
+		TimeLeavingWork timeLeavingWork2 = TimeLeavingWork.createFromTimeSpan(new WorkNo(2), new TimeSpanForCalc(start2, end2));
+		new MockUp<TimeLeavingWork>() {
+			
+			@Mock
+			public TimeLeavingWork createFromTimeSpan(WorkNo workNo, TimeSpanForCalc timeSpan) {
+				return workNo.v() == 1 ? timeLeavingWork1 : timeLeavingWork2;
+			}
+		};
+		
+		// Action
+		TimeLeavingOfDailyAttd target = TimeLeavingOfDailyAttd.createByPredetermineZone(require, workInformation);
+		
+		// Assert
+		assertThat(target.getWorkTimes().v()).isEqualTo( timeZoneList.size() );
+		assertThat(target.getTimeLeavingWorks()).containsExactly( timeLeavingWork1, timeLeavingWork2 );
+	}
+	
 	
 	static class Helper {
 		
 		public static TimeLeavingWork createTimeLeavingWork(WorkNo workNo) {
-			val vacations  = new TimeZone(new TimeWithDayAttr(1100), new TimeWithDayAttr(1200));
+			val vacations  = new TimeSpanForCalc(new TimeWithDayAttr(1100), new TimeWithDayAttr(1200));
 			return new TimeLeavingWork(
 					    new WorkNo(1), Optional.of(Helper.createTimeStampforVacation(new TimeWithDayAttr(480), vacations))
 					  , Optional.of(Helper.createTimeStampforVacation(new TimeWithDayAttr(1020), vacations)), true, true);
@@ -220,7 +288,7 @@ public class TimeLeavingOfDailyAttdTest {
 		 * @param vacation　休憩時間
 		 * @return
 		 */
-		public static TimeLeavingOfDailyAttd createTimeLeavingOfDailyAttd(WorkNo workNo, TimeZone vacation) {
+		public static TimeLeavingOfDailyAttd createTimeLeavingOfDailyAttd(WorkNo workNo, TimeSpanForCalc vacation) {
 			val startTimeWork = Helper.createTimeStampforVacation(new TimeWithDayAttr(480), vacation);
 			val endTimeWork = Helper.createTimeStampforVacation(new TimeWithDayAttr(1020), vacation);
 			val timeLeavingWork = new TimeLeavingWork(
@@ -239,7 +307,7 @@ public class TimeLeavingOfDailyAttdTest {
 		 * @param vacation　休暇時間
 		 * @return
 		 */
-		private static TimeActualStamp createTimeStampforVacation(TimeWithDayAttr time, TimeZone vacation) {
+		private static TimeActualStamp createTimeStampforVacation(TimeWithDayAttr time, TimeSpanForCalc vacation) {
 			TimeActualStamp timeStamp = Helper.createTimeStamp(time);
 			timeStamp.setTimeVacation(Optional.ofNullable(vacation));
 			return timeStamp;

@@ -12,7 +12,6 @@ import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApprovalPhaseStateForAppDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationTypeDisplay;
-import nts.uk.ctx.at.request.dom.application.applist.service.param.ComplementLeaveAppConnect;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
 
 /**
@@ -110,7 +109,7 @@ public class ListOfApplicationCmd {
 	/**
 	 * 振休振出申請
 	 */
-	private ComplementLeaveAppConnect opComplementLeaveApp;
+	private ComplementLeaveAppLinkCmd opComplementLeaveApp;
 	
 	/**
 	 * 申請開始日
@@ -140,7 +139,7 @@ public class ListOfApplicationCmd {
 	/**
 	 * 背景色
 	 */
-	private Integer opBackgroundColor;
+	private String opBackgroundColor;
 	
 	/**
 	 * 表示行数超
@@ -170,7 +169,7 @@ public class ListOfApplicationCmd {
 		lstApp.setOpApprovalPhaseLst(opApprovalPhaseLst == null ? Optional.empty() : Optional.of(opApprovalPhaseLst.stream().map(x -> x.toDomain()).collect(Collectors.toList())));
 		lstApp.setOpApprovalStatusInquiry(opApprovalStatusInquiry == null ? Optional.empty() : Optional.of(opApprovalStatusInquiry));
 		lstApp.setOpApprovalFrameStatus(opApprovalFrameStatus == null ? Optional.empty() : Optional.of(opApprovalFrameStatus));
-		lstApp.setOpComplementLeaveApp(opComplementLeaveApp == null ? Optional.empty() : Optional.of(opComplementLeaveApp));
+		lstApp.setOpComplementLeaveApp(opComplementLeaveApp == null ? Optional.empty() : Optional.of(opComplementLeaveApp.toDomain()));
 		lstApp.setOpAppStartDate(opAppStartDate == null ? Optional.empty() : Optional.of(GeneralDate.fromString(opAppStartDate, "yyyy/MM/dd")));
 		lstApp.setOpAppTypeDisplay(opAppTypeDisplay == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(opAppTypeDisplay, ApplicationTypeDisplay.class)));
 		lstApp.setOpAppEndDate(opAppEndDate == null ? Optional.empty() : Optional.of(GeneralDate.fromString(opAppEndDate, "yyyy/MM/dd")));

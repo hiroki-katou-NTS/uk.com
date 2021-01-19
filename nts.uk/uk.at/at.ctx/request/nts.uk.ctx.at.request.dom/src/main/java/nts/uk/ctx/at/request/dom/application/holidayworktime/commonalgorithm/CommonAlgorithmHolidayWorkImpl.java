@@ -66,6 +66,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngCh
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.Time36ErrorInforList;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcessCommon;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SubstitutionHolidayOutput;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
@@ -292,35 +293,46 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
         
         AppOvertimeDetail appOvertimeDetail = new AppOvertimeDetail();
         
-        //18.３６時間の上限チェック(新規登録)_NEW   huytodo wait update common method 18.３６時間の上限チェック(新規登録)
-        Time36UpperLimitCheckResult time36UpperLimitCheckResult = time36UpperLimitCheck.checkRegister(companyId, appHolidayWork.getApplication().getEmployeeID(), 
-        		appHolidayWork.getApplication().getAppDate().getApplicationDate(),
-        		ApplicationType.HOLIDAY_WORK_APPLICATION, Collections.emptyList());
-        time36UpperLimitCheckResult.getErrorFlg().forEach(error -> {
-        	switch(error.errorFlg) {
-	        	case MONTH:
-	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1535", 
-	        				Arrays.asList(error.realTime, error.limitTime)));
-	        		break;
-	        	case YEAR:
-	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1536", 
-	        				Arrays.asList(error.realTime, error.limitTime)));
-	        		break;
-	        	case MAX_MONTH:
-	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1537", 
-	        				Arrays.asList(error.realTime, error.limitTime)));
-	        		break;
-	        	case MAX_YEAR:
-	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_2056", 
-	        				Arrays.asList(error.realTime, error.limitTime)));
-	        		break;
-	        	case AVERAGE_MONTH:
-	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1538", 
-	        				Arrays.asList(error.yearMonthStart, error.yearMonthEnd, error.realTime, error.limitTime)));
-	        		break;
-	        		default: break;
-        	}
-        });
+//        //18.３６時間の上限チェック(新規登録)_NEW
+//        Time36ErrorInforList time36UpperLimitCheckResult = time36UpperLimitCheck.checkRegister(companyId, 
+//        		appHolidayWork.getApplication().getEmployeeID(), 
+//        		appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode(), 
+//        		appHolidayWork.getApplication(),
+//        		Optional.empty(), 
+//        		Optional.of(appHolidayWork),
+//        		appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet().getExtratimeExcessAtr(), 
+//        		appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet().getExtratimeDisplayAtr());
+//        if(!time36UpperLimitCheckResult.getTime36AgreementErrorLst().isEmpty()) {
+//        	time36UpperLimitCheckResult.getTime36AgreementErrorLst().forEach(error -> {
+//            	switch(error.getTime36AgreementErrorAtr()) {
+//    	        	case MONTH_ERROR:
+//    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1535", 
+//    	        				Arrays.asList(this.convertTime(error.getAgreementTime()), this.convertTime(error.getThreshold()))));
+//    	        		break;
+//    	        	case YEAR_ERROR:
+//    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1536", 
+//    	        				Arrays.asList(this.convertTime(error.getAgreementTime()), this.convertTime(error.getThreshold()))));
+//    	        		break;
+//    	        	case MAX_MONTH_ERROR:
+//    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1537", 
+//    	        				Arrays.asList(this.convertTime(error.getAgreementTime()), this.convertTime(error.getThreshold()))));
+//    	        		break;
+//    	        	case MAX_YEAR_ERROR:
+//    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_2056", 
+//    	        				Arrays.asList(this.convertTime(error.getAgreementTime()), this.convertTime(error.getThreshold()))));
+//    	        		break;
+//    	        	case MAX_MONTH_AVERAGE_ERROR:
+//    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1538", 
+//    	        				Arrays.asList(
+//    	        						this.convertTime(error.getOpYearMonthPeriod().isPresent() ? error.getOpYearMonthPeriod().get().start().v() : null), 
+//    	        						this.convertTime(error.getOpYearMonthPeriod().isPresent() ? error.getOpYearMonthPeriod().get().end().v() : null),
+//    	        						this.convertTime(error.getAgreementTime()), 
+//    	        						this.convertTime(error.getThreshold()))));
+//    	        		break;
+//    	        		default: break;
+//            	}
+//            });
+//        }
         
     	//	申請の矛盾チェック
     	commonAlgorithm.appConflictCheck(companyId, appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0), 
@@ -385,8 +397,8 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 
 			//	事前申請・実績超過チェック
 			List<ConfirmMsgOutput> confirmMsgOutputs = this.checkExcess(empAppHdWorkDispInfoOutput, empAppHolidayWork);
-			if(employeeInfo.isPresent()) {
-				confirmMsgOutputMap.put(employeeInfo.get().getBussinessName(), confirmMsgOutputs);
+			if(employeeInfo.isPresent() && confirmMsgOutputs.size() > 0) {
+				confirmMsgOutputMap.put(employeeInfo.get().getBussinessName(), this.toMultiMessage(confirmMsgOutputs));
 			}
 			
 			//	申請時の乖離時間をチェックする
@@ -414,27 +426,46 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 	        Optional<EmploymentHistoryImported> empHist = employmentAdapter.getEmpHistBySid(companyId, empId, 
 	        		empAppHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getBaseDate());
 	        
-	        //18.３６時間の上限チェック(新規登録)_NEW   huytodo wait update common method 18.３６時間の上限チェック(新規登録)
-	        Time36UpperLimitCheckResult time36UpperLimitCheckResult = time36UpperLimitCheck.checkRegister(companyId, appHolidayWork.getApplication().getEmployeeID(), 
-	        		appHolidayWork.getApplication().getAppDate().getApplicationDate(),
-	        		ApplicationType.HOLIDAY_WORK_APPLICATION, Collections.emptyList());
-	        if(!time36UpperLimitCheckResult.getErrorFlg().isEmpty()){
-	        	time36UpperLimitCheckResult.getErrorFlg().forEach(error -> {
-	            	switch(error.errorFlg) {
-	    	        	case MONTH:
-	    	        		throw new BusinessException("Msg_1535", error.realTime, error.limitTime);
-	    	        	case YEAR:
-	    	        		throw new BusinessException("Msg_1536", error.realTime, error.limitTime);
-	    	        	case MAX_MONTH:
-	    	        		throw new BusinessException("Msg_1537", error.realTime, error.limitTime);
-	    	        	case MAX_YEAR:
-	    	        		throw new BusinessException("Msg_2056", error.realTime, error.limitTime);
-	    	        	case AVERAGE_MONTH:
-	    	        		throw new BusinessException("Msg_1538", error.yearMonthStart, error.yearMonthEnd, error.realTime, error.limitTime);
-	    	        		default: break;
-	            	}
-	            });
-	        }
+//	        //18.３６時間の上限チェック(新規登録)_NEW
+//	        Time36ErrorInforList time36UpperLimitCheckResult = time36UpperLimitCheck.checkRegister(companyId, 
+//	        		appHolidayWork.getApplication().getEmployeeID(), 
+//	        		appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode(), 
+//	        		appHolidayWork.getApplication(),
+//	        		Optional.empty(), 
+//	        		Optional.of(appHolidayWork),
+//	        		appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet().getExtratimeExcessAtr(), 
+//	        		appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet().getExtratimeDisplayAtr());
+//	        if(!time36UpperLimitCheckResult.getTime36AgreementErrorLst().isEmpty()) {
+//	        	time36UpperLimitCheckResult.getTime36AgreementErrorLst().forEach(error -> {
+//	            	switch(error.getTime36AgreementErrorAtr()) {
+//	    	        	case MONTH_ERROR:
+//	    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1535", 
+//	    	        				Arrays.asList(this.convertTime(error.getAgreementTime()), this.convertTime(error.getThreshold()))));
+//	    	        		break;
+//	    	        	case YEAR_ERROR:
+//	    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1536", 
+//	    	        				Arrays.asList(this.convertTime(error.getAgreementTime()), this.convertTime(error.getThreshold()))));
+//	    	        		break;
+//	    	        	case MAX_MONTH_ERROR:
+//	    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1537", 
+//	    	        				Arrays.asList(this.convertTime(error.getAgreementTime()), this.convertTime(error.getThreshold()))));
+//	    	        		break;
+//	    	        	case MAX_YEAR_ERROR:
+//	    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_2056", 
+//	    	        				Arrays.asList(this.convertTime(error.getAgreementTime()), this.convertTime(error.getThreshold()))));
+//	    	        		break;
+//	    	        	case MAX_MONTH_AVERAGE_ERROR:
+//	    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1538", 
+//	    	        				Arrays.asList(
+//	    	        						this.convertTime(error.getOpYearMonthPeriod().isPresent() ? error.getOpYearMonthPeriod().get().start().v() : null), 
+//	    	        						this.convertTime(error.getOpYearMonthPeriod().isPresent() ? error.getOpYearMonthPeriod().get().end().v() : null),
+//	    	        						this.convertTime(error.getAgreementTime()), 
+//	    	        						this.convertTime(error.getThreshold()))));
+//	    	        		break;
+//	    	        		default: break;
+//	            	}
+//	            });
+//	        }
 	        
 	    	//	申請の矛盾チェック
 	    	commonAlgorithm.appConflictCheck(companyId, employeeInfo.orElse(null), 
@@ -444,6 +475,39 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 	        
 		});
 		return confirmMsgOutputMap;
+	}
+	
+	private List<ConfirmMsgOutput> toMultiMessage(List<ConfirmMsgOutput> confirmMsgOutputs){
+		List<ConfirmMsgOutput> confirmMsgOutputsMulti = confirmMsgOutputs.stream().map(confirmMsg -> {
+				switch(confirmMsg.getMsgID()) {
+					case "Msg_235": confirmMsg.setMsgID("Msg_1995"); break;
+					case "Msg_391": confirmMsg.setMsgID("Msg_1996"); break;
+					case "Msg_323": confirmMsg.setMsgID("Msg_1997"); break;
+					case "Msg_1134": confirmMsg.setMsgID("Msg_1998"); break;
+					case "Msg_1518": confirmMsg.setMsgID("Msg_1999"); break;
+					case "Msg_236": confirmMsg.setMsgID("Msg_2000"); break;
+					case "Msg_327": confirmMsg.setMsgID("Msg_2001"); break;
+					case "Msg_448": confirmMsg.setMsgID("Msg_2002"); break;
+					case "Msg_449": confirmMsg.setMsgID("Msg_2003"); break;
+					case "Msg_450": confirmMsg.setMsgID("Msg_2004"); break;
+					case "Msg_451": confirmMsg.setMsgID("Msg_2005"); break;
+					case "Msg_324": confirmMsg.setMsgID("Msg_2008"); break;
+					case "Msg_237": confirmMsg.setMsgID("Msg_2009"); break;
+					case "Msg_238": confirmMsg.setMsgID("Msg_2010"); break;
+					case "Msg_1409": confirmMsg.setMsgID("Msg_2011"); break;
+					case "Msg_1535": confirmMsg.setMsgID("Msg_2012"); break;
+					case "Msg_1536": confirmMsg.setMsgID("Msg_2013"); break;
+					case "Msg_1537": confirmMsg.setMsgID("Msg_2014"); break;
+					case "Msg_1538": confirmMsg.setMsgID("Msg_2015"); break;
+					case "Msg_1508": confirmMsg.setMsgID("Msg_2019"); break;
+					case "Msg_2056": confirmMsg.setMsgID("Msg_2057"); break;
+					default:
+						confirmMsg.setMsgID(confirmMsg.getMsgID());
+						break;
+				}
+				return confirmMsg;
+			}).collect(Collectors.toList());
+		return confirmMsgOutputsMulti;
 	}
 	
 	@Override
@@ -569,13 +633,12 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 					default: break;
 			}
 		});
-		
 		if(excessState.equals(outDateApplication.getFlex())) {
-			messageContentList.add(TextResource.localize("KAF005_63"));
+			messageContentList.add(TextResource.localize("KAF005_65"));
 		}
 		
 		if(excessState.equals(outDateApplication.getOverTimeLate())) {
-			messageContentList.add(TextResource.localize("KAF005_65"));
+			messageContentList.add(TextResource.localize("KAF005_63"));
 		}
 		
 		if(!messageContentList.isEmpty()) {
@@ -665,7 +728,8 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 						} else {
 							//	指定する勤務種類リストから指定する休日区分の勤務種類を取得する
 							Optional<WorkType> specifiedHdWorkType = Optional.empty(); 
-							specifiedHdWorkType = workTypeList.stream().filter(workType -> !workType.getWorkTypeSetList().isEmpty() ? 
+							specifiedHdWorkType = workTypeList.stream().filter(workType -> workType.getWorkTypeSetList() != null && 
+										!workType.getWorkTypeSetList().isEmpty() ? 
 										workType.getWorkTypeSetList().get(0).getHolidayAtr().equals(holidayAtr.orElse(null)) : false).findFirst();
 							if(specifiedHdWorkType.isPresent()) {
 								initWorkTypeCd = Optional.of(specifiedHdWorkType.get().getWorkTypeCode());
@@ -707,8 +771,11 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 		if(workHours != null) {
 			timeZoneNo1 = new TimeZone(hdWorkDispInfoWithDateOutput.getWorkHours().getStartTimeOp1().orElse(null),
 					hdWorkDispInfoWithDateOutput.getWorkHours().getEndTimeOp1().orElse(null));
-			timeZoneNo2 = new TimeZone(hdWorkDispInfoWithDateOutput.getWorkHours().getStartTimeOp2().orElse(null),
-					hdWorkDispInfoWithDateOutput.getWorkHours().getEndTimeOp2().orElse(null));
+			if(hdWorkDispInfoWithDateOutput.getWorkHours().getStartTimeOp2().isPresent() && 
+					hdWorkDispInfoWithDateOutput.getWorkHours().getEndTimeOp2().isPresent()) {
+				timeZoneNo2 = new TimeZone(hdWorkDispInfoWithDateOutput.getWorkHours().getStartTimeOp2().get(),
+						hdWorkDispInfoWithDateOutput.getWorkHours().getEndTimeOp2().get());
+			}	
 		}
 		List<TimeZone> timeZones = new ArrayList<TimeZone>();
 		if(timeZoneNo1.getStart() != null && timeZoneNo1.getEnd() != null) {
@@ -821,5 +888,87 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
     			Arrays.asList(appHolidayWork.getApplication().getAppDate().getApplicationDate()), 
     			Arrays.asList(appHolidayWork.getWorkInformation().getWorkTypeCode().v()), 
     			appHdWorkDispInfo.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().orElse(Collections.emptyList()));
+	}
+	
+	@Override
+	public List<ConfirmMsgOutput> checkAfterMoveToAppTime(boolean require, String companyId, AppHdWorkDispInfoOutput appHdWorkDispInfo,
+			AppHolidayWork appHolidayWork) {
+
+			//	休出時間のチェック
+			this.checkHdWorkTime(appHolidayWork.getApplicationTime());
+			
+			//	事前申請・実績超過チェック
+			List<ConfirmMsgOutput> confirmMsgOutputs = this.checkExcess(appHdWorkDispInfo, appHolidayWork);
+			
+			//	申請時の乖離時間をチェックする
+			overtimeService.checkDivergenceTime(require, ApplicationType.HOLIDAY_WORK_APPLICATION, 
+					Optional.empty(), Optional.of(appHolidayWork), appHdWorkDispInfo.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet());
+			
+			//	社員に対応する締め期間を取得する
+			val requireM3 = requireService.createRequire();
+	        val cacheCarrier = new CacheCarrier();
+	        DatePeriod closingPeriod = ClosureService.findClosurePeriod(requireM3, cacheCarrier, appHolidayWork.getApplication().getEmployeeID(), 
+	        		appHdWorkDispInfo.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getBaseDate());
+	        
+	        //	登録時の残数チェック    pending
+//	        InterimRemainCheckInputParam checkRegisterParam = new InterimRemainCheckInputParam(companyId, appHolidayWork.getApplication().getEmployeeID(), 
+//	        		new DatePeriod(closingPeriod.start(), closingPeriod.end().addYears(1).addDays(-1)), false, appHolidayWork.getApplication().getAppDate().getApplicationDate(), 
+//	        		new DatePeriod(appHolidayWork.getApplication().getAppDate().getApplicationDate(), appHolidayWork.getApplication().getAppDate().getApplicationDate()), 
+//	        		true, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
+//	        		true, false, false, false, false, false, false);
+//	        EarchInterimRemainCheck earchInterimRemainCheck = checkRegister.checkRegister(checkRegisterParam);
+//	        if(earchInterimRemainCheck.isChkSubHoliday()) {
+//	        	confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1409", Collections.emptyList())); //missing param
+//	        }
+	        
+//	        //18.３６時間の上限チェック(新規登録)_NEW
+//	        Time36ErrorInforList time36UpperLimitCheckResult = time36UpperLimitCheck.checkRegister(companyId, 
+//	        		appHolidayWork.getApplication().getEmployeeID(), 
+//	        		appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode(), 
+//	        		appHolidayWork.getApplication(),
+//	        		Optional.empty(), 
+//	        		Optional.of(appHolidayWork),
+//	        		appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet().getExtratimeExcessAtr(), 
+//	        		appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet().getExtratimeDisplayAtr());
+//	        if(!time36UpperLimitCheckResult.getTime36AgreementErrorLst().isEmpty()) {
+//	        	time36UpperLimitCheckResult.getTime36AgreementErrorLst().forEach(error -> {
+//	            	switch(error.getTime36AgreementErrorAtr()) {
+//	    	        	case MONTH_ERROR:
+//	    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1535", 
+//	    	        				Arrays.asList(this.convertTime(error.getAgreementTime()), this.convertTime(error.getThreshold()))));
+//	    	        		break;
+//	    	        	case YEAR_ERROR:
+//	    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1536", 
+//	    	        				Arrays.asList(this.convertTime(error.getAgreementTime()), this.convertTime(error.getThreshold()))));
+//	    	        		break;
+//	    	        	case MAX_MONTH_ERROR:
+//	    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1537", 
+//	    	        				Arrays.asList(this.convertTime(error.getAgreementTime()), this.convertTime(error.getThreshold()))));
+//	    	        		break;
+//	    	        	case MAX_YEAR_ERROR:
+//	    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_2056", 
+//	    	        				Arrays.asList(this.convertTime(error.getAgreementTime()), this.convertTime(error.getThreshold()))));
+//	    	        		break;
+//	    	        	case MAX_MONTH_AVERAGE_ERROR:
+//	    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1538", 
+//	    	        				Arrays.asList(
+//	    	        						this.convertTime(error.getOpYearMonthPeriod().isPresent() ? error.getOpYearMonthPeriod().get().start().v() : null), 
+//	    	        						this.convertTime(error.getOpYearMonthPeriod().isPresent() ? error.getOpYearMonthPeriod().get().end().v() : null),
+//	    	        						this.convertTime(error.getAgreementTime()), 
+//	    	        						this.convertTime(error.getThreshold()))));
+//	    	        		break;
+//	    	        		default: break;
+//	            	}
+//	            });
+//	        }
+		return confirmMsgOutputs;
+	}
+	
+	private String convertTime(Integer time) {
+		if (time == null) {
+			return "";
+		}
+		TimeWithDayAttr timeConvert = new TimeWithDayAttr(time);
+		return timeConvert.getInDayTimeWithFormat();
 	}
 }

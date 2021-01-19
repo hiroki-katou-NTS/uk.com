@@ -6,7 +6,36 @@
         v-if="$appContext.kaf000_A_Params != null"
         v-bind:params="$appContext.kaf000_A_Params"
       />
+      <div class="accordion mb-2" v-if="$appContext.overTimeWorkHoursDto != null">
+          <div class="card" v-if="true">
+            <div class="card-header uk-bg-accordion">
+              <button class="btn btn-link" type="button">
+                  {{'KAFS05_41' | i18n}}
+              </button>
+            </div>
+            <div class="collapse">
+              <div class="card-body">
+                  <kafs00subp2 v-bind:params="$appContext.overTimeWorkHoursDto" />      
+              </div>
+            </div>
+          </div>
+      </div>
     </div>
+
+    <div>
+        <div class="border border-warning rounded p-1 mt-2 alarm-message" role="alert" style="display:block;"
+            v-if="isMsg_1557 || isMsg_1556">
+            <div v-if="isMsg_1557" style="display:flex;">
+                <fa-font icon="exclamation-triangle" class="text-danger m-2" />
+                <span style="align-self:center">{{ 'Msg_1557' | i18n($appContext.date) }}</span>
+            </div>
+            <div v-if="isMsg_1556" style="display:flex;">
+                <fa-font icon="exclamation-triangle" class="text-danger m-2" />
+                <span style="align-self:center">{{ 'Msg_1556' | i18n($dt($appContext.date)) }}</span>
+            </div>
+        </div>
+    </div>
+
 
     <!-- A2_B1 -->
     <div class="card card-label">
@@ -17,8 +46,8 @@
       </div>
       <!--A2_B1_5-->
       <div
-       v-if="$appContext.isMsg_1562" 
-      class="card bg-danger top-alert uk-text-danger topError"
+       v-if="!$valid || !$appContext.isValidateAll" 
+      class="card bg-danger top-alert uk-text-danger topError mt-2"
       >
         <button class="btn btn-link uk-text-danger">
           <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
@@ -29,7 +58,7 @@
       <div v-for="(item, index) in overTimes" v-bind:key="index" :value="index">
         <div v-show="item.visible" class="card-body">
           <div class="row mt-3">
-            <div class="col-4">{{ item.title }}</div>
+            <div class="col-4 textSize">{{ item.title }}</div>
             <div class="col-8.5">
               <div class="row mt-0">
                   <div v-show="$appContext.c4_1" class="col-6">
@@ -45,10 +74,10 @@
           </div>
           <div v-show="item.visible" class="card-body">
             <nts-time-editor
-              v-model="item.applicationTime"
+              v-model="overTimes[index].applicationTime"
               name=""
-              v-bind:enable="$appContext.c3"
-              time-input-type="time-duration"
+              v-bind:record-id="index"
+              v-bind:disabled="!$appContext.c3_disable"
             />
           </div>
         </div>
@@ -68,9 +97,9 @@
         v-bind:key="index"
         :value="index"
       >
-        <div class="card-body">
+        <div v-show="item.visible" class="card-body">
           <div class="row mt-3">
-            <div class="col-4">{{ item.title }}</div>
+            <div class="col-4 textSize">{{ item.title }}</div>
             <div class="col-8.5">
               <div class="row mt-0">
                   <div v-show="$appContext.c4_1" class="col-6">
@@ -86,10 +115,10 @@
           </div>
           <div class="card-body">
             <nts-time-editor
-              v-model="item.applicationTime"
+              v-model="holidayTimes[index].applicationTime"
               name=""
-              v-bind:enable="$appContext.c3"
-              time-input-type="time-duration"
+              v-bind:record-id="index"
+              v-bind:disabled="!$appContext.c3_disable"
             />
           </div>
         </div>
@@ -110,7 +139,7 @@
     <div class="card card-label" v-if="$appContext.c12">
         <!--A2_B5_1-->
         <div class="card-header uk-bg-accordion" style="align-items: center">
-            <v-label class="border-0 pl-0 my-n1">
+            <v-label class="border-0 pl-0 my-n1" v-bind:constraint="validations.DivergenceReason">
                 {{'KAFS05_78' | i18n(reason1.title)}}</v-label>
             <span class="badge badge-info">任意</span>
         </div>
@@ -134,7 +163,7 @@
                         <span class="small-header">{{'KAFS05_80' | i18n(reason1.title)}}</span>
                   </div>
                   <div>
-                        <nts-text-area　v-model="reason1.reason" />
+                        <nts-text-area v-model="reason1.reason" />
                   </div>
             </div>
         </div>
@@ -145,7 +174,7 @@
     <div class="card card-label" v-if="$appContext.c19">
         <!--A2_B6_1-->
         <div class="card-header uk-bg-accordion" style="align-items: center">
-            <v-label class="border-0 pl-0 my-n1">
+            <v-label class="border-0 pl-0 my-n1" v-bind:constraint="validations.DivergenceReason">
                 {{'KAFS05_78' | i18n(reason2.title)}}</v-label>
             <span class="badge badge-info">任意</span>
         </div>
@@ -169,7 +198,7 @@
                         <span class="small-header">{{'KAFS05_80' | i18n(reason2.title)}}</span>
                   </div>
                   <div>
-                        <nts-text-area　v-model="reason2.reason" />
+                        <nts-text-area v-model="reason2.reason" />
                   </div>
             </div>
         </div>

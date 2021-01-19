@@ -22,7 +22,7 @@ module nts.uk.com.view.ccg034.a {
     selectedFlowMenuId: KnockoutObservable<string> = ko.observable('');
     selectedFlowMenu: KnockoutObservable<FlowMenuModel> = ko.observable(null);
     isNewMode: KnockoutObservable<boolean> = ko.observable(true).extend({
-      notify: 'always' 
+      notify: 'always'
     });
     enablePreview: KnockoutObservable<boolean> = ko.computed(() => {
       const vm = this;
@@ -138,6 +138,8 @@ module nts.uk.com.view.ccg034.a {
         flowMenuData: vm.selectedFlowMenu(),
       };
       vm.$window.modal('/view/ccg/034/d/index.xhtml', params, {
+        minWidth: 800,
+        minHeight: 500,
         width: Math.round(Number(window.innerWidth) * 80 / 100),
         height: Math.round(Number(window.innerHeight) * 80 / 100),
         resizable: true,

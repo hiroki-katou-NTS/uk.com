@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.commons.lang3.tuple.Pair;
+
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -12,11 +15,15 @@ import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
+import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationTypeDisplay;
 import nts.uk.ctx.at.request.dom.application.applist.service.datacreate.StampAppOutputTmp;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.ScreenAtr;
+import nts.uk.ctx.at.request.dom.application.applist.service.param.AttendanceNameItem;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
@@ -24,7 +31,6 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appr
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.optionalitemappsetting.OptionalItemApplicationTypeName;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.ReasonForFixedForm;
-import nts.uk.ctx.at.shared.dom.attendance.AttendanceItem;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -126,7 +132,7 @@ public interface AppContentService {
 	 * @param companyID 会社ID
 	 * @param lstWkTime 就業時間帯リスト
 	 * @param lstWkType 勤務種類リスト
-	 * @param attendanceItemLst 勤怠項目リスト
+	 * @param attendanceNameItemLst 勤怠項目リスト
 	 * @param mode モード
 	 * @param approvalListDisplaySetting 承認一覧表示設定
 	 * @param listOfApp 申請一覧
@@ -136,8 +142,9 @@ public interface AppContentService {
 	 * @return
 	 */
 	public ListOfApplication createEachAppData(Application application, String companyID, List<WorkTimeSetting> lstWkTime, List<WorkType> lstWkType, 
-			List<AttendanceItem> attendanceItemLst, ApplicationListAtr mode, ApprovalListDisplaySetting approvalListDisplaySetting, ListOfApplication listOfApp, 
-			Map<String,List<ApprovalPhaseStateImport_New>> mapApproval, int device, AppListExtractCondition appListExtractCondition, List<String> agentLst);
+			List<AttendanceNameItem> attendanceNameItemLst, ApplicationListAtr mode, ApprovalListDisplaySetting approvalListDisplaySetting, ListOfApplication listOfApp, 
+			Map<String,List<ApprovalPhaseStateImport_New>> mapApproval, int device, AppListExtractCondition appListExtractCondition, List<String> agentLst,
+			Map<String, Pair<Integer, Integer>> cacheTime36);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面.アルゴリズム.各申請データを作成.承認状況照会内容.承認状況照会内容
@@ -193,5 +200,46 @@ public interface AppContentService {
 	 * @param application
 	 * @return
 	 */
-	public OvertimeHolidayWorkActual getOvertimeHolidayWorkActual(String companyID, Application application, WorkTypeCode workType, WorkTimeCode workTime);
+	public OvertimeHolidayWorkActual getOvertimeHolidayWorkActual(String companyID, Application application, 
+			List<WorkType> workTypeLst, List<WorkTimeSetting> workTimeSettingLst, List<AttendanceNameItem> attendanceNameItemLst,
+			AppOverTime appOverTime, AppHolidayWork appHolidayWork, WorkTypeCode workType, WorkTimeCode workTime);
+	
+	/**
+	 * Refactor4  各申請データを作成（スマホ）
+	 * UKDesign.UniversalK.就業.KAF_申請.CMMS45_申請一覧・承認一覧（スマホ）.A：申請一覧.アルゴリズム.各申請データを作成（スマホ）
+	 * @param application
+	 * @param listOfApplication
+	 * @return
+	 */
+	public Optional<ApplicationTypeDisplay> getAppDisplayByMobile(Application application, ListOfApplication listOfApplication);
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面ver4.アルゴリズム.申請一覧リストのデータを作成.勤怠名称を取得.勤怠名称を取得
+	 * @param companyID
+	 * @return
+	 */
+	public List<AttendanceNameItem> getAttendanceNameItemLst(String companyID);
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面ver4.アルゴリズム.各申請データを作成.申請一覧36協定時間の取得.申請一覧36協定時間の取得
+	 * @param employeeID
+	 * @param yearMonth
+	 * @param cache
+	 * @return
+	 * pair left: 超過時間
+	 * pair right: 超過回数
+	 */
+	public Pair<Integer, Integer> getAgreementTime36(String employeeID, YearMonth yearMonth, Map<String, Pair<Integer, Integer>> cache);
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面ver4.アルゴリズム.各申請データを作成.振休振出申請データを作成.振休振出申請内容.振休振出申請内容
+	 * @param absenceLeaveApp 振休申請データ
+	 * @param recruitmentApp 振出申請データ
+	 * @param appReasonDisAtr 申請理由内容区分
+	 * @param screenAtr ScreenID
+	 * @param complementLeaveAppLink 振休振出申請紐付け
+	 * @param application 申請
+	 */
+	public String getComplementLeaveContent(AbsenceLeaveApp absenceLeaveApp, RecruitmentApp recruitmentApp, DisplayAtr appReasonDisAtr,
+			ScreenAtr screenAtr, ComplementLeaveAppLink complementLeaveAppLink, Application application, List<WorkType> workTypeLst);
 }

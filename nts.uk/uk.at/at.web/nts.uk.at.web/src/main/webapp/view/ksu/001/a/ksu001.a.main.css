@@ -173,7 +173,7 @@
 	width: fit-content;
 }
 
-#A1_12_1, #A4_1,#A1_7_1, #A5_1, #A16 {
+#A1_12_1, #A4_1_popup,#A1_7_1, #A5_1, #A16 {
 	border: solid 6px #fff !important;
 	border-radius: 3.5px !important;
 	box-shadow: 1px 1px 5px 2px #888 !important;
@@ -195,7 +195,7 @@
 	margin-left: 7px;
 }
 
-#A4_1 {
+#A4_1_popup {
 	width: 350px
 }
 

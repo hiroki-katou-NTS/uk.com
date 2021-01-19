@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class AcquireWorkingHoursRequest {
 
-	private boolean fillter;
+	private boolean check;
 
 	private String workPlaceId;
 }

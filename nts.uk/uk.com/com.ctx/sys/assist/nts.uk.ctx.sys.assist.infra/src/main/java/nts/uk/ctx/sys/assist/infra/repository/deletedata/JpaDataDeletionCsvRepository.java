@@ -25,6 +25,7 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.assist.dom.category.TimeStore;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.HistoryDiviSion;
 import nts.uk.ctx.sys.assist.dom.deletedata.DataDeletionCsvRepository;
+import nts.uk.ctx.sys.assist.dom.deletedata.DeleteDataException;
 import nts.uk.ctx.sys.assist.dom.deletedata.EmployeeDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.TableDeletionDataCsv;
 import nts.uk.shr.com.context.AppContexts;
@@ -598,7 +599,7 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 		}
 	}
 	
-	public void delelteDataDynamic(TableDeletionDataCsv tableList, List<String> targetEmployeesSid) {
+	public void delelteDataDynamic(TableDeletionDataCsv tableList, List<String> targetEmployeesSid) throws Exception {
 		StringBuffer query = new StringBuffer("");
 		// All Column
 		List<String> columns = getAllColumnName(tableList.getTableEnglishName());
@@ -863,7 +864,7 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 				try {
 					queryString.executeUpdate();
 				} catch (Exception e) {
-					throw e;
+					throw new DeleteDataException(e.getMessage(), sid);
 				}
 			}
 		}else {
@@ -929,7 +930,7 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 	 * 
 	 */
 	@Override
-	public void deleteData(TableDeletionDataCsv tableDelData, List<EmployeeDeletion> employeeDeletions) {
+	public void deleteData(TableDeletionDataCsv tableDelData, List<EmployeeDeletion> employeeDeletions) throws Exception {
 		List<String> targetEmployeesSid = employeeDeletions.stream().map(emp -> emp.getEmployeeId()).collect(Collectors.toList());
 		try {
 			delelteDataDynamic(tableDelData, targetEmployeesSid);

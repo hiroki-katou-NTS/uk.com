@@ -9,6 +9,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import nts.arc.task.AsyncTaskInfo;
 import nts.arc.task.AsyncTaskInfoRepository;
 import nts.arc.task.AsyncTaskStatus;
 import nts.uk.ctx.sys.assist.app.command.autosetting.deletion.AutoDeletionPreparationCommandHandler;
@@ -73,7 +74,7 @@ public class AutoExecutionPreparationPubImpl implements AutoExecutionPreparation
 
 	@Inject
 	private ManualSetDeletionService manualSetDeletionService;
-	
+
 	@Inject
 	private ResultOfSavingHandler resultOfSavingHandler;
 
@@ -88,7 +89,7 @@ public class AutoExecutionPreparationPubImpl implements AutoExecutionPreparation
 	}
 
 	@Override
-	public boolean updateTargetEmployee(String storeProcessId, String patternCode, List<String> empIds) {
+	public Optional<String> updateTargetEmployee(String storeProcessId, String patternCode, List<String> empIds) {
 		// 更新処理自動実行の実行対象社員リストを取得する
 		List<TargetEmployees> targetEmployees = this.empBasicInfoAdapter
 				.getEmpBasicInfo(AppContexts.user().companyId(), empIds).stream()
@@ -99,8 +100,7 @@ public class AutoExecutionPreparationPubImpl implements AutoExecutionPreparation
 		ManualSetOfDataSave manualSet = this.manualSetOfDataSaveRepository.getManualSetOfDataSaveById(storeProcessId)
 				.orElse(null);
 		String storeProcessingId = manualSet.getStoreProcessingId();
-		manualSet
-				.setCategory(this.targetCategoryRepository.getTargetCategoryListById(storeProcessingId));
+		manualSet.setCategory(this.targetCategoryRepository.getTargetCategoryListById(storeProcessingId));
 		manualSet.setEmployees(targetEmployees);
 		this.targetEmployeesRepository.addAll(targetEmployees);
 		// アルゴリズム「サーバー手動保存処理」を実行する
@@ -120,7 +120,14 @@ public class AutoExecutionPreparationPubImpl implements AutoExecutionPreparation
 			});
 		});
 		// Return whether errors have occured or not
-		return !taskStatus.equals(AsyncTaskStatus.COMPLETED);
+		// Check runtime exception thrown from AsyncTask
+		if (!taskStatus.equals(AsyncTaskStatus.COMPLETED)) {
+			Optional<AsyncTaskInfo> optInfo = this.asyncTaskInfoRepository.find(taskId);
+			if (optInfo.isPresent()) {
+				return Optional.ofNullable(optInfo.get().getError().getMessage());
+			}
+		}
+		return Optional.empty();
 	}
 
 	@Override
@@ -134,7 +141,7 @@ public class AutoExecutionPreparationPubImpl implements AutoExecutionPreparation
 	}
 
 	@Override
-	public boolean updateEmployeeDeletion(String delId, List<String> empIds) {
+	public Optional<String> updateEmployeeDeletion(String delId, List<String> empIds) {
 		// 取得できた社員IDを社員ID（List）とする
 		List<EmployeeDeletion> targetEmployees = this.empBasicInfoAdapter
 				.getEmpBasicInfo(AppContexts.user().companyId(), empIds).stream()
@@ -153,6 +160,13 @@ public class AutoExecutionPreparationPubImpl implements AutoExecutionPreparation
 			taskStatus = this.asyncTaskInfoRepository.getStatus(taskId);
 		} while (taskStatus.equals(AsyncTaskStatus.PENDING) || taskStatus.equals(AsyncTaskStatus.RUNNING));
 		// Return whether errors have occured or not
-		return !taskStatus.equals(AsyncTaskStatus.COMPLETED);
+		// Check runtime exception thrown from AsyncTask
+		if (!taskStatus.equals(AsyncTaskStatus.COMPLETED)) {
+			Optional<AsyncTaskInfo> optInfo = this.asyncTaskInfoRepository.find(taskId);
+			if (optInfo.isPresent()) {
+				return Optional.ofNullable(optInfo.get().getError().getMessage());
+			}
+		}
+		return Optional.empty();
 	}
 }

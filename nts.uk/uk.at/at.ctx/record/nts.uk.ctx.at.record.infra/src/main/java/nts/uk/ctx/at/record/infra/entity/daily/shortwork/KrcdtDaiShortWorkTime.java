@@ -69,14 +69,14 @@ public class KrcdtDaiShortWorkTime extends UkJpaEntity implements Serializable {
     @NotNull
     @Column(name = "CHILD_CARE_ATR")
     public int childCareAtr;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "TIME")
-    public int time;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "DEDUCTION_TIME")
-    public int deductionTime;
+//    @Basic(optional = false)
+//    @NotNull
+//    @Column(name = "TIME")
+//    public int time;
+//    @Basic(optional = false)
+//    @NotNull
+//    @Column(name = "DEDUCTION_TIME")
+//    public int deductionTime;
     
 //    @ManyToOne
 //	@JoinColumns(value = {
@@ -97,13 +97,11 @@ public class KrcdtDaiShortWorkTime extends UkJpaEntity implements Serializable {
         this.krcdtDaiShortWorkTimePK = krcdtDaiShortWorkTimePK;
     }
 
-    public KrcdtDaiShortWorkTime(KrcdtDaiShortWorkTimePK krcdtDaiShortWorkTimePK, int startTime, int endTime, int childCareAtr, int time, int deductionTime) {
+    public KrcdtDaiShortWorkTime(KrcdtDaiShortWorkTimePK krcdtDaiShortWorkTimePK, int startTime, int endTime, int childCareAtr) {
         this.krcdtDaiShortWorkTimePK = krcdtDaiShortWorkTimePK;
         this.startTime = startTime;
         this.endTime = endTime;
         this.childCareAtr = childCareAtr;
-        this.deductionTime = deductionTime;
-        this.time = time;
     }
 
     public KrcdtDaiShortWorkTime(String sid, GeneralDate ymd, int shortWorkTimeFrameNo) {
