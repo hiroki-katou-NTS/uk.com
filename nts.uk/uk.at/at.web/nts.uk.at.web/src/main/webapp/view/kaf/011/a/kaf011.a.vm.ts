@@ -74,7 +74,8 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					$('#functions-area').css({'opacity': ''});
 					vm.$blockui("hide"); 
 				}).fail((failData: any) => {
-					vm.$dialog.error(failData).then(() => { vm.$jump("com", "/view/ccg/008/a/index.xhtml"); });
+					vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds }).then(() => { vm.$jump("com", "/view/ccg/008/a/index.xhtml"); });
+					
 				}).always(() => {
 					
 				});
@@ -83,7 +84,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 				if (failData.messageId === "Msg_43") {
 					vm.$dialog.error(failData).then(() => { vm.$jump("com", "/view/ccg/008/a/index.xhtml"); });
 				} else {
-					vm.$dialog.error(failData);
+					vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds });
 				}
 				vm.$blockui("hide"); 
 			});

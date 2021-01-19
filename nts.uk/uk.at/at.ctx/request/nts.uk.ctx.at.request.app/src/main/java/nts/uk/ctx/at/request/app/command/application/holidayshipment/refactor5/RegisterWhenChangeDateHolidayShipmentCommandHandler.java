@@ -135,7 +135,7 @@ public class RegisterWhenChangeDateHolidayShipmentCommandHandler {
 		saveHolidayShipmentCommandHandlerRef5.registrationApplicationProcess(companyId, Optional.of(absNew), rec, 
 				displayInforWhenStarting.appDispInfoStartup.getAppDispInfoWithDateOutput().toDomain().getBaseDate(), 
 				displayInforWhenStarting.appDispInfoStartup.getAppDispInfoNoDateOutput().isMailServerSet(), 
-				displayInforWhenStarting.appDispInfoStartup.toDomain().getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().get(), 
+				displayInforWhenStarting.appDispInfoStartup.toDomain().getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().orElse(new ArrayList<>()), 
 				displayInforWhenStarting.existRec() ? displayInforWhenStarting.rec.leaveComDayOffMana.stream().map(c->c.toDomain()).collect(Collectors.toList()) : new ArrayList<>(), 
 				linkingManagementInfor.absLeaveComDayOffMana.stream().map(c->c.toDomain()).collect(Collectors.toList()), 
 				linkingManagementInfor.absPayoutSubofHDManagements.stream().map(c->c.toDomain()).collect(Collectors.toList()), 
