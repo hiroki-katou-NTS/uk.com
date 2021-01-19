@@ -15,7 +15,8 @@ module nts.uk.at.view.kmk004.b {
 				name: 'ccg001',
 				params:{
 					employees: employees,
-					selectedCode: selectedCode
+					selectedCode: selectedCode,
+					isReload: isReload
 				}
 			}"></div>
 	<div class="view-e-kmk004">
@@ -25,7 +26,8 @@ module nts.uk.at.view.kmk004.b {
 				params:{
 					selectedCode: selectedCode,
 					employees: employees,
-					isChange: change
+					isChange: change,
+					isReload: isReload
 				}
 			}"></div>
 		</div>
@@ -121,6 +123,7 @@ module nts.uk.at.view.kmk004.b {
 		public yearDelete: KnockoutObservable<number | null> = ko.observable(null);
 		public checkSeting: KnockoutObservable<boolean> = ko.observable(false);
 		public startDate: KnockoutObservable<number> = ko.observable(2020);
+		public isReload: KnockoutObservable<string> = ko.observable('');
 
 		created(params: Params) {
 			const vm = this;

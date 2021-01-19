@@ -11,6 +11,7 @@ module nts.uk.at.view.kmk004.b {
 	interface Params {
 		selectedCode: KnockoutObservable<string>;
 		employees: KnockoutObservableArray<IEmployee>;
+		isReload: KnockoutObservable<string>;
 	}
 
 	@component({
@@ -22,11 +23,13 @@ module nts.uk.at.view.kmk004.b {
 
 		public params!: Params;
 		public selectedCode: KnockoutObservable<string> = ko.observable('');
+		public isReload: KnockoutObservable<string> = ko.observable('');
 
 		created(params: Params) {
 			const vm = this;
 			vm.params = params;
 			vm.selectedCode = params.selectedCode;
+			vm.isReload = params.isReload;
 
 			$('#com-ccg001')
 				.ntsGroupComponent({
@@ -87,6 +90,12 @@ module nts.uk.at.view.kmk004.b {
 						vm.params.employees(employees);
 
 						vm.selectedCode(data.listEmployee[0].employeeCode);
+						if (employees.length > 300) {
+							setTimeout(() => {
+								vm.isReload.valueHasMutated();
+							}, 100);
+						}
+
 					}
 				});
 		}
