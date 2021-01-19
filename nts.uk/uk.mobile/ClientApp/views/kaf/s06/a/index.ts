@@ -30,7 +30,8 @@ import { KdlS36Component } from '../../../kdl/s36';
             constraint: 'AttendanceTime'
         },
         relationshipReason: {
-            constraint: 'RelationshipReasonPrimitive'
+            constraint: 'RelationshipReasonPrimitive',
+            required: true
         },
         selectedValueHolidayType: {
             required: true,
