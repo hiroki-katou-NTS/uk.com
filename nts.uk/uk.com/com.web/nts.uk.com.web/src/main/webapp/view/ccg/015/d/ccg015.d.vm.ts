@@ -56,10 +56,22 @@ module nts.uk.com.view.ccg015.d {
               vm.contentFlowMenu(true);
               vm.contentTopPagePart(false);
               vm.contentUrl(false);
+              const flowMenuChoose = _.findIndex(vm.listFlowMenu(), (item: FlowMenuItem) => { return item.flowCode === vm.flowMenuSelectedCode() });
+              const fileIdChoose: string = vm.listFlowMenu()[flowMenuChoose].fileId;
+              vm.$blockui('grayout');
+              vm.$ajax('sys/portal/createflowmenu/extract/' + fileIdChoose).then((item: any) => {
+              if (!_.isEmpty(item)) {
+                vm.renderHTML(item.htmlContent, 'frame1');
+              }
+        }).always(() => vm.$blockui('clear'));
             } else if (value === LayoutType.FLOW_MENU_UPLOAD) {
               vm.contentFlowMenu(false);
               vm.contentTopPagePart(true);
               vm.contentUrl(false);
+              const topPagePartChoose = _.findIndex(vm.listTopPagePart(), (item: TopPagePartItem) => { return item.flowCode ===  vm.toppageSelectedCode()});
+              const fileIdChoose: string = vm.listTopPagePart()[topPagePartChoose].fileId;
+              vm.fileID(fileIdChoose);
+              vm.filePath(ntsFile.liveViewUrl(fileIdChoose, 'index.htm'));
             } else {
               vm.contentFlowMenu(false);
               vm.contentTopPagePart(false);
