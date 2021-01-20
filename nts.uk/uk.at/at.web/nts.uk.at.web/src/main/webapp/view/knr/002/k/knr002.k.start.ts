@@ -3,6 +3,8 @@ module knr002.k {
         var screenModel = new knr002.k.viewmodel.ScreenModel(); 
         screenModel.startPage().done(() => {
             __viewContext.bind(screenModel);
+        }).then(() => {
+            $('#multi-list > tbody > tr:nth-child(1)').focus();
         });        
     });
 }

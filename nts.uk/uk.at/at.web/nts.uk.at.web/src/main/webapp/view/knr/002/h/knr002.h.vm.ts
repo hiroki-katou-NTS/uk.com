@@ -109,6 +109,8 @@ module knr002.h {
                     self.employeeSearchedList = ko.observableArray<ExportEmployeeSearchDto >([]);
                     self.searchByEmploymentType([]);
                     // Load employee list component
+                }).then(() => {
+                    $('#ccg001-btn-search-drawer').focus();
                 });
 
                 service.getEmployees(self.empInfoTerCode).done(data => {
@@ -132,9 +134,9 @@ module knr002.h {
                     }
                     dfd.resolve();
                 });
-                setTimeout(() => {
-                    $('#ccg001-btn-search-drawer > div > div').focus();
-                }, 0);
+                // setTimeout(() => {
+                //     $('#ccg001-btn-search-drawer').focus();
+                // }, 0);
                 blockUI.clear();
                 return dfd.promise();
             }
