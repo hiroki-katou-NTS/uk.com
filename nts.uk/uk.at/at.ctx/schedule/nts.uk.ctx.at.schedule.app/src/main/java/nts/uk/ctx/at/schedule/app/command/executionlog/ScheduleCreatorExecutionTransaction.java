@@ -330,9 +330,10 @@ public class ScheduleCreatorExecutionTransaction {
 			OutputCreateSchedule result = this.createScheduleBasedPersonWithMultiThread(command, scheduleCreator,
 					scheduleExecutionLog, context, period, masterCache, listBasicSchedule, registrationListDateSchedule,
 					carrier);
-
+			List<GeneralDate> dates = result.listWorkSchedule.stream().map(x -> x.getYmd()).collect(Collectors.toList());
 			// 勤務予定を登録する
-			this.deleteSchedule(scheduleCreator.getEmployeeId(), period);
+			//this.deleteSchedule(scheduleCreator.getEmployeeId(), period);
+			workScheduleRepository.deleteListDate(scheduleCreator.getEmployeeId(), dates);
 			this.workScheduleRepository.insertAll(companyId, result.getListWorkSchedule());
 			
 			// Outputの勤務種類一覧を繰り返す

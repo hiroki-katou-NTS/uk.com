@@ -1298,7 +1298,7 @@ module nts.uk.com.view.ccg034.d {
           const part: PartDataModel = vm.mapPartData[partClientId];
           if (part.partType === MenuPartType.PART_MENU) {
             const menuPart: PartDataMenuModel = part as PartDataMenuModel;
-            const chosenMenu: any = _.find(data, { 'code': menuPart.menuCode, 'displayName': menuPart.menuName, 'classification': menuPart.menuClassification });
+            const chosenMenu: any = _.find(data, { 'code': menuPart.menuCode, 'system': menuPart.systemType, 'classification': menuPart.menuClassification });
             if (chosenMenu) {
               if (nts.uk.text.isNullOrEmpty(chosenMenu.queryString)) {
                 menuPart.menuUrl = `${chosenMenu.url}`;

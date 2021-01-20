@@ -531,7 +531,7 @@ public class AppAbsenceFinder {
 		//if(checkSpecHd.isSpecHdForEventFlag()){
 			//指定する特休枠の上限日数を取得する
 		maxDay = specHdEventAlg.getMaxDaySpecHd(companyId, specAbsenceParam.frameNo,
-				specAbsenceParam.specHdEvent.toDomain(), Optional.of(specAbsenceParam.relationCD));
+				specAbsenceParam.specHdEvent.toDomain(), Optional.ofNullable(specAbsenceParam.relationCD));
 		//}
 		return new ChangeRelationShipDto(maxDay);
 	};

@@ -142,7 +142,7 @@
         </div>
     </div>
 
-    <div v-if="c20" class="mt-2 mb-2">
+    <div v-if="c20" class="mt-2">
         <!--B6_6-->
         <div class="textSize">
             {{'KAFS06_26' | i18n}}
@@ -156,7 +156,7 @@
 
     <!--B7_1-->
     <div class="card card-label" v-if="c21">
-        <div class="card-header uk-bg-accordion mt-2 headerDiv">
+        <div class="card-header uk-bg-accordion mt-2 headerDiv mt-2">
             <span class="textPosition">{{ "KAFS06_48" | i18n }}</span>
         </div>
     </div>
