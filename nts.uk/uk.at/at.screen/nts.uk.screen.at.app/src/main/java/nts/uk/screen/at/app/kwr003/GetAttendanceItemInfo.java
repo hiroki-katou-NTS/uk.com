@@ -53,15 +53,15 @@ public class GetAttendanceItemInfo {
         //  （1:日次）
         val listId = getAttendanceIdByFormNumberQuery.getAttendanceId(typeOfItem, formNumberDisplay);
         //  「使用不可の勤怠項目を除く」
-        val listAttIdBeforeRemove = this.attendanceItemNameService.getAvaiableAttendanceItem(cid, typeOfItem, listId);
+        val listAttIdAfterRemove = this.attendanceItemNameService.getAvaiableAttendanceItem(cid, typeOfItem, listId);
         if (typeOfItem == TypeOfItem.Daily) {
 
             // 会社の月次項目を取得する
-            val dailyItemContainName = dailyItemService.getDailyItems(cid, roleId, listAttIdBeforeRemove, null);
+            val dailyItemContainName = dailyItemService.getDailyItems(cid, roleId, listAttIdAfterRemove, null);
 
             // 日次の勤怠項目を取得する Nhận daily Attendance items
             List<DailyAttendanceItem> dailyAttendanceItems = this.dailyAttendanceItemRepository
-                    .findByADailyAttendanceItems(listAttIdBeforeRemove, cid);
+                    .findByADailyAttendanceItems(listAttIdAfterRemove, cid);
 
             dailyAttendanceItems
                     .forEach((DailyAttendanceItem item) -> {
@@ -84,9 +84,9 @@ public class GetAttendanceItemInfo {
             return rs;
         }
         if (typeOfItem == TypeOfItem.Monthly||typeOfItem == TypeOfItem.AnyPeriod) {
-            val itemMonthlyContainName = monthlyItemService.getMonthlyItems(cid, roleId, listAttIdBeforeRemove, null);
+            val itemMonthlyContainName = monthlyItemService.getMonthlyItems(cid, roleId, listAttIdAfterRemove, null);
             // 月次の勤怠項目を取得する Nhận Monthly attendance items
-            List<MonthlyAttendanceItem> monthlyAttendanceItemList = this.monthlyAttendanceItemRepository.findByAttendanceItemId(cid, listAttIdBeforeRemove);
+            List<MonthlyAttendanceItem> monthlyAttendanceItemList = this.monthlyAttendanceItemRepository.findByAttendanceItemId(cid, listAttIdAfterRemove);
             monthlyAttendanceItemList
                     .forEach(item -> {
                         Optional<AttItemName> attendance = itemMonthlyContainName.stream()
