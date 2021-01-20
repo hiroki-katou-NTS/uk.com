@@ -442,16 +442,6 @@ export class KafS11AComponent extends KafS00ShrComponent {
         }
     }
 
-    // ※2
-    get dispcomplementLeaveAtr() {
-        const vm = this;
-        if (!vm.displayInforWhenStarting) {
-            return false;
-        }
-
-        return vm.displayInforWhenStarting.substituteHdWorkAppSet.simultaneousApplyRequired;
-    }
-
     get dispComplementContent() {
         const vm = this;
         if (vm.mode == ScreenMode.DETAIL) {
@@ -715,8 +705,12 @@ export class KafS11AComponent extends KafS00ShrComponent {
         if (vm.mode == ScreenMode.DETAIL) {
             return false;
         }
+        // ※2
+        if (!vm.displayInforWhenStarting) {
+            return false;
+        }
 
-        return true;
+        return vm.displayInforWhenStarting.substituteHdWorkAppSet.simultaneousApplyRequired == 1 ? false : true;
     }
     
     get enablePrePostAtr() {

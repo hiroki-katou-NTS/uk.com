@@ -65,7 +65,7 @@
             <span class="badge badge-warning" style="height: 30%">必須</span>
         </div>
         <div class="card-body">
-            <div style="width: 100%" id="prePostSelect">
+            <div style="width: 100%">
                 <nts-switchbox v-for="(option, optionIndex) in complementLeaveAtrResource" v-bind:key="optionIndex"
                     v-bind:disabled="!dispComplementLeaveAtr"
                     v-model="complementLeaveAtr"
