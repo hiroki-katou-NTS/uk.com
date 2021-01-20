@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.app.find.worktype;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -54,7 +55,7 @@ public class WorkTypeDto {
 				workType.getDailyWork().getAfternoon().value, 
 				workType.getCalculateMethod() == null ? 0 : workType.getCalculateMethod().value,
 				workType.getDispOrder(), 
-				null);
+				workType.getWorkTypeSetList().stream().map(c-> WorkTypeSetDto.fromDomain(c)).collect(Collectors.toList()));
 	}
 
 	public WorkTypeDto(String companyId, String workTypeCode, String name, String abbreviationName) {

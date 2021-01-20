@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.holidayshipment;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 
 import nts.arc.time.GeneralDate;
@@ -8,15 +10,13 @@ import nts.arc.time.GeneralDate;
 public class HolidayShipmentServiceImpl implements HolidayShipmentService {
 
 	@Override
-	public GeneralDate detRefDate(GeneralDate recDate, GeneralDate absDate) {
-		boolean isBothDateNotNull = absDate != null && recDate != null;
-		//// INPUT.振出日＝設定なし かつ INPUT.振休日＝設定なし
-		GeneralDate resultDate = null;
+	public Optional<GeneralDate> detRefDate(Optional<GeneralDate> recDate, Optional<GeneralDate> absDate) {
+		Optional<GeneralDate> resultDate = Optional.empty();
 		// 日付の組み合わせをチェックする
 
-		if (isBothDateNotNull) {
+		if (recDate.isPresent() && absDate.isPresent()) {
 			// INPUT.振出日＝設定あり または INPUT.振休日＝設定あり
-			boolean isRecDateAfterAbsDate = recDate.after(absDate);
+			boolean isRecDateAfterAbsDate = recDate.get().after(absDate.get());
 			if (isRecDateAfterAbsDate) {
 				resultDate = absDate;
 			} else {
@@ -24,11 +24,11 @@ public class HolidayShipmentServiceImpl implements HolidayShipmentService {
 			}
 		} else {
 
-			if (recDate != null) {
+			if (recDate.isPresent()) {
 				// INPUT.振出日＝設定なし
 				resultDate = recDate;
 			}
-			if (absDate != null) {
+			if (absDate.isPresent()) {
 				// INPUT.振休日＝設定なし
 				resultDate = absDate;
 			}

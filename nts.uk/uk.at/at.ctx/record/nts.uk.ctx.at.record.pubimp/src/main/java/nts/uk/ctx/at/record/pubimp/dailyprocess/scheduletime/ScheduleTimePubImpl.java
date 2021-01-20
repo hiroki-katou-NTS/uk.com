@@ -202,9 +202,7 @@ public class ScheduleTimePubImpl implements ScheduleTimePub{
 				returnList.add(new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(shortTimeStamp), 
 													 ChildCareAttribute.CHILD_CARE,
 													 new TimeWithDayAttr(childCareStartTime.get(shortTimeStamp - 1).intValue()),
-													 new TimeWithDayAttr(childCareEndTime.get(shortTimeStamp - 1).intValue()),
-													 new AttendanceTime(0),
-													 new AttendanceTime(0)));
+													 new TimeWithDayAttr(childCareEndTime.get(shortTimeStamp - 1).intValue())));
 			}
 		}
 		return returnList;

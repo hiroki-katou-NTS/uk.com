@@ -14,8 +14,6 @@
       v-on:kaf000BChangeDate="kaf000BChangeDate"
       v-on:kaf000BChangePrePost="kaf000BChangePrePost"/>
     </div>
-
-
     <div v-if="C1" class="card card-label">
       <div class="card-header uk-bg-accordion">
         <span>{{'KAFS09_22' | i18n}}</span>
@@ -26,7 +24,7 @@
         <nts-switchbox v-model="model.changeWork" v-bind:value="2">{{'KAFS09_24' | i18n}}</nts-switchbox>
       </div>
     </div>
-    <div v-if="C2 && model.changeWork == 1" class="card card-label">
+    <div v-if="C2 && c3" class="card card-label">
       <!-- A4 -->
       <div class="card-header uk-bg-accordion">
         <span>{{'KAFS09_3' | i18n}}</span>

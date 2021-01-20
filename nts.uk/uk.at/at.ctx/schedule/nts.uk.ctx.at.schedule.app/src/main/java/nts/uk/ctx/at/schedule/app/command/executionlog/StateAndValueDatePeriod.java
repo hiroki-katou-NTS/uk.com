@@ -13,5 +13,5 @@ import nts.arc.time.calendar.period.DatePeriod;
 @Getter
 public class StateAndValueDatePeriod {
 	public DatePeriod value;
-	public boolean state;
+	public StateValueDate state;
 }
