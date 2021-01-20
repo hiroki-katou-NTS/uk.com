@@ -970,7 +970,7 @@ export class KafS11AComponent extends KafS00ShrComponent {
             return;
         }
         vm.$mask('show');
-        let command = vm.getCommandInsert();
+        let command = vm.getCommandSubmit();
         vm.$http.post('at', API.checkBeforeSubmit, command)
         .then((result: any) => {
             if (result) {
@@ -1053,7 +1053,7 @@ export class KafS11AComponent extends KafS00ShrComponent {
         });
     }
 
-    private getCommandInsert() {
+    private getCommandSubmit() {
         const vm = this;
         let cmd: any = {
             newMode: vm.mode == ScreenMode.NEW,
@@ -1062,44 +1062,44 @@ export class KafS11AComponent extends KafS00ShrComponent {
             absHolidayMngLst: vm.absHolidayMngLst,
             absWorkMngLst: vm.absWorkMngLst
         };
-        if (vm.complementLeaveAtr == ComplementLeaveAtr.COMPLEMENT_LEAVE || vm.complementLeaveAtr == ComplementLeaveAtr.COMPLEMENT) {
-            cmd.rec = {
-                workInformation: {
-                    workType: vm.complementWorkInfo.workTypeCD,
-                    workTime: vm.complementWorkInfo.workTimeCD
-                },
-                workingHours: []
-            };
-        }
-        if (vm.complementLeaveAtr == ComplementLeaveAtr.COMPLEMENT_LEAVE || vm.complementLeaveAtr == ComplementLeaveAtr.LEAVE) {
-            cmd.abs = {
-                workInformation: {
-                    workType: vm.leaveWorkInfo.workTypeCD,
-                    workTime: vm.leaveWorkInfo.workTimeCD
-                },
-                workingHours: [],
-                workChangeUse: false
-            };
-        }
         if (vm.mode == ScreenMode.NEW) {
-            cmd.rec.applicationInsert = {
-                prePostAtr: vm.prePostAtr,
-                appType: AppType.COMPLEMENT_LEAVE_APPLICATION,
-                appDate: moment(vm.complementDate).format('YYYY/MM/DD'),
-                opAppReason: vm.opAppReason,
-                opAppStandardReasonCD: vm.opAppStandardReasonCD,
-                opAppStartDate: moment(vm.complementDate).format('YYYY/MM/DD'),
-                opAppEndDate: moment(vm.complementDate).format('YYYY/MM/DD')
-            };
-            cmd.abs.applicationInsert = {
-                prePostAtr: vm.prePostAtr,
-                appType: AppType.COMPLEMENT_LEAVE_APPLICATION,
-                appDate: moment(vm.leaveDate).format('YYYY/MM/DD'),
-                opAppReason: vm.opAppReason,
-                opAppStandardReasonCD: vm.opAppStandardReasonCD,
-                opAppStartDate: moment(vm.leaveDate).format('YYYY/MM/DD'),
-                opAppEndDate: moment(vm.leaveDate).format('YYYY/MM/DD')
-            };
+            if (vm.complementLeaveAtr == ComplementLeaveAtr.COMPLEMENT_LEAVE || vm.complementLeaveAtr == ComplementLeaveAtr.COMPLEMENT) {
+                cmd.rec = {
+                    applicationInsert: {
+                        prePostAtr: vm.prePostAtr,
+                        appType: AppType.COMPLEMENT_LEAVE_APPLICATION,
+                        appDate: moment(vm.complementDate).format('YYYY/MM/DD'),
+                        opAppReason: vm.opAppReason,
+                        opAppStandardReasonCD: vm.opAppStandardReasonCD,
+                        opAppStartDate: moment(vm.complementDate).format('YYYY/MM/DD'),
+                        opAppEndDate: moment(vm.complementDate).format('YYYY/MM/DD')
+                    },
+                    workInformation: {
+                        workType: vm.complementWorkInfo.workTypeCD,
+                        workTime: vm.complementWorkInfo.workTimeCD
+                    },
+                    workingHours: []
+                };
+            }
+            if (vm.complementLeaveAtr == ComplementLeaveAtr.COMPLEMENT_LEAVE || vm.complementLeaveAtr == ComplementLeaveAtr.LEAVE) {
+                cmd.abs = {
+                    applicationInsert: {
+                        prePostAtr: vm.prePostAtr,
+                        appType: AppType.COMPLEMENT_LEAVE_APPLICATION,
+                        appDate: moment(vm.leaveDate).format('YYYY/MM/DD'),
+                        opAppReason: vm.opAppReason,
+                        opAppStandardReasonCD: vm.opAppStandardReasonCD,
+                        opAppStartDate: moment(vm.leaveDate).format('YYYY/MM/DD'),
+                        opAppEndDate: moment(vm.leaveDate).format('YYYY/MM/DD')
+                    },
+                    workInformation: {
+                        workType: vm.leaveWorkInfo.workTypeCD,
+                        workTime: vm.leaveWorkInfo.workTimeCD
+                    },
+                    workingHours: [],
+                    workChangeUse: false
+                };
+            }
         } else {
             if (vm.displayInforWhenStarting.rec) {
                 cmd.rec.application = vm.displayInforWhenStarting.rec.application;
@@ -1107,6 +1107,11 @@ export class KafS11AComponent extends KafS00ShrComponent {
                     opAppReason: vm.opAppReason,
                     opAppStandardReasonCD: vm.opAppStandardReasonCD
                 };
+                cmd.rec.workInformation = {
+                    workType: vm.complementWorkInfo.workTypeCD,
+                    workTime: vm.complementWorkInfo.workTimeCD
+                };
+                cmd.rec.workingHours = [];
                 cmd.recOldHolidayMngLst = [];
             }
             if (vm.displayInforWhenStarting.abs) {
@@ -1115,6 +1120,12 @@ export class KafS11AComponent extends KafS00ShrComponent {
                     opAppReason: vm.opAppReason,
                     opAppStandardReasonCD: vm.opAppStandardReasonCD
                 };
+                cmd.abs.workInformation = {
+                    workType: vm.leaveWorkInfo.workTypeCD,
+                    workTime: vm.leaveWorkInfo.workTimeCD
+                };
+                cmd.abs.workingHours = [];
+                cmd.abs.workChangeUse = false;
                 cmd.absOldHolidayMngLst = [];
                 cmd.absOldWorkMngLst = [];
             }
