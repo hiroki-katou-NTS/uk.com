@@ -2185,8 +2185,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 console.log('Open KDL049');
                 console.log(param);
                 nts.uk.ui.windows.sub.modal('/view/kdl/049/a/index.xhtml').onClosed(function(): any {
-                    let rs = getShared('dataShareFromKDL049');
-                    if (rs.status == 'determined') {
+                    let rs = getShared('DataKDL049');
+                    if (!_.isNil(rs)) {
                         let date             = rs.date;
                         let companyEventName = rs.companyEventName;
                         let wkpEventName     = rs.wkpEventName;
