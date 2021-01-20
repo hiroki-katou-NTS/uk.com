@@ -64,10 +64,10 @@ public class MedicalCareTimeEachTimeSheet implements DomainObject {
 	}
 	
 	/**
-	 * デフォルト値で作成する
+	 * 全て0で作成する
 	 * @return 時間帯別勤怠の医療時間(List)
 	 */
-	public static List<MedicalCareTimeEachTimeSheet> defaultValue() {
+	public static List<MedicalCareTimeEachTimeSheet> createAllZero() {
 		List<MedicalCareTimeEachTimeSheet> medicalCareTime = new ArrayList<MedicalCareTimeEachTimeSheet>();
 		medicalCareTime.add(new MedicalCareTimeEachTimeSheet(
 				FullTimeNightShiftAttr.DAY_SHIFT, AttendanceTime.ZERO, AttendanceTime.ZERO, AttendanceTime.ZERO));
