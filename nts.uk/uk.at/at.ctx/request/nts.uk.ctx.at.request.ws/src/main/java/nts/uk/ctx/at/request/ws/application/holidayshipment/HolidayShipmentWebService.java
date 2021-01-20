@@ -10,6 +10,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import lombok.Value;
+import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -106,8 +107,8 @@ public class HolidayShipmentWebService extends WebService {
 	
 	@POST
 	@Path("saveChangeDateScreenC")
-	public void update(RegisterWhenChangeDateCommand command) {
-		registerWhenChangeDateHolidayShipmentCommandHandler.register(command.displayInforWhenStarting, command.appDateNew, command.appReason, command.appStandardReasonCD);
+	public JavaTypeResult<String> update(RegisterWhenChangeDateCommand command) {
+		return new JavaTypeResult<String>(registerWhenChangeDateHolidayShipmentCommandHandler.register(command.displayInforWhenStarting, command.appDateNew, command.appReason, command.appStandardReasonCD));
 	}
 	
 }

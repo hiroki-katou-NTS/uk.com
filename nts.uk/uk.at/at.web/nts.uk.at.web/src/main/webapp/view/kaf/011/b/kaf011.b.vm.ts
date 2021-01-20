@@ -121,8 +121,13 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 						}); 
 					}
 				console.log(data);	
-				return ajax('at/request/application/holidayshipment/update', data).done(() =>{
+				block.invisible();
+				ajax('at/request/application/holidayshipment/update', data).done(() =>{
 					dialog.info({ messageId: "Msg_15" });
+				}).fail((res:any)=>{
+					dialog.error({ messageId: res.messageId, messageParams: res.parameterIds });
+				}).alway(()=>{
+					block.clear();
 				});
 	        }
 		}
