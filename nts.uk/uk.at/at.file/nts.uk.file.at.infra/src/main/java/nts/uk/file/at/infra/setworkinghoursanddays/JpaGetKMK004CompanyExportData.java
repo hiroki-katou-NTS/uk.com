@@ -16,6 +16,8 @@ import nts.arc.i18n.I18NText;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
+import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
 import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagement;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshmtLegalTimeMCom;
@@ -84,16 +86,21 @@ public class JpaGetKMK004CompanyExportData extends JpaRepository implements GetK
 		List<MasterData> datas = new ArrayList<>();
 
 		String startOfWeek = getStartOfWeek(cid);
-
+		
+		int month = this.month();
+		
+		YearMonthPeriod ymPeriod = new YearMonthPeriod(YearMonth.of(startDate, month), YearMonth.of(endDate, month).nextYear().previousMonth());
+		
+		
 		val legalTimes = this.queryProxy().query(LEGAL_TIME_COM, KshmtLegalTimeMCom.class).setParameter("cid", cid)
-				.setParameter("start", startDate * 100 + 1).setParameter("end", endDate * 100 + 12).getList();
+				.setParameter("start", ymPeriod.start().v()).setParameter("end", ymPeriod.end().v()).getList();
 
 		try (PreparedStatement stmt = this.connection().prepareStatement(GET_EXPORT_EXCEL.toString())) {
 //			stmt.setInt(1, startDate);
 //			stmt.setInt(2, endDate);
 			stmt.setString(1, cid);
 			NtsResultSet result = new NtsResultSet(stmt.executeQuery());
-			int month = this.month();
+			
 			result.forEach(i -> {
 				datas.addAll(buildCompanyRow(i, legalTimes, startDate, endDate, month, startOfWeek));
 			});
@@ -308,95 +315,100 @@ public class JpaGetKMK004CompanyExportData extends JpaRepository implements GetK
 					null));
 			
 			// buil month remain
-			for (int i = 1; i < 11; i++) {
-				int m = (month + i) % 12 + 1;
-				int currentYm = y *100 + m;
+			
+			YearMonthPeriod ymPeriod = new YearMonthPeriod(YearMonth.of(startDate, month), YearMonth.of(endDate, month).nextYear().previousMonth());
+			
+			List<YearMonth> yms = ymPeriod.yearMonthsBetween();
+
+			yms.remove(0);
+			yms.remove(0);
+			yms.forEach(currentYm -> {
+
+				int m = currentYm.v() % 100;
 				val normalC = legals.stream()
-						.filter(l -> l.pk.ym == currentYm && l.pk.type == LaborWorkTypeAttr.REGULAR_LABOR.value)
+						.filter(l -> l.pk.ym == currentYm.v() && l.pk.type == LaborWorkTypeAttr.REGULAR_LABOR.value)
 						.findFirst();
 				val deforC = legals.stream()
-						.filter(l -> l.pk.ym == currentYm && l.pk.type == LaborWorkTypeAttr.DEFOR_LABOR.value)
+						.filter(l -> l.pk.ym == currentYm.v() && l.pk.type == LaborWorkTypeAttr.DEFOR_LABOR.value)
 						.findFirst();
 				val flexC = legals.stream()
-						.filter(l -> l.pk.ym == currentYm && l.pk.type == LaborWorkTypeAttr.FLEX.value)
-						.findFirst();
+						.filter(l -> l.pk.ym == currentYm.v() && l.pk.type == LaborWorkTypeAttr.FLEX.value).findFirst();
 				datas.add(buildARow(
-						//R8_3
-						null, 
-						//R8_4
+						// R8_3
+						null,
+						// R8_4
 						(m) + I18NText.getText("KMK004_401"),
-						//R8_5
+						// R8_5
 						KMK004PrintCommon.convertTime(normalC.isPresent() ? normalC.get().legalTime : 0),
-						//R8_6
+						// R8_6
 						null,
-						//R8_7
+						// R8_7
 						null,
-						//R8_8
+						// R8_8
 						null,
-						//R8_9
+						// R8_9
 						null,
-						//R8_10
+						// R8_10
 						null,
-						//R8_11
-						null,		
-						//R8_12
+						// R8_11
 						null,
-						//R8_13
+						// R8_12
 						null,
-						//R8_14
+						// R8_13
 						null,
-						//R8_15
+						// R8_14
+						null,
+						// R8_15
 						(m) + I18NText.getText("KMK004_401"),
-						//R8_16
+						// R8_16
 						KMK004PrintCommon.convertTime(flexC.isPresent() ? flexC.get().withinTime : 0),
-						//R8_17
+						// R8_17
 						KMK004PrintCommon.convertTime(flexC.isPresent() ? flexC.get().legalTime : 0),
-						//R8_18
+						// R8_18
 						KMK004PrintCommon.convertTime(flexC.isPresent() ? flexC.get().weekAvgTime : 0),
-						//R8_19
+						// R8_19
 						null,
-						//R8_20
+						// R8_20
 						null,
-						//R8_21
+						// R8_21
 						null,
-						//R8_22
+						// R8_22
 						null,
-						//R8_23
+						// R8_23
 						null,
-						//R8_24
+						// R8_24
 						null,
-						//R8_25
+						// R8_25
 						null,
-						//R8_26
+						// R8_26
 						null,
-						//R8_27		
+						// R8_27
 						(m) + I18NText.getText("KMK004_401"),
-						//R8_28
+						// R8_28
 						KMK004PrintCommon.convertTime(deforC.isPresent() ? deforC.get().legalTime : 0),
-						//R8_29
+						// R8_29
 						null,
-						//R8_30
-						null, 
-						//R8_31
+						// R8_30
 						null,
-						//R8_32
+						// R8_31
 						null,
-						//R8_33
+						// R8_32
 						null,
-						//R8_34
+						// R8_33
 						null,
-						//R8_35
+						// R8_34
 						null,
-						//R8_36
+						// R8_35
+						null,
+						// R8_36
 						null,
 						// R8_37
 						null,
 						// R8_38
 						null,
 						// R8_39
-						null
-						));
-			}
+						null));
+			});
 		}
 		return datas;
 	}
