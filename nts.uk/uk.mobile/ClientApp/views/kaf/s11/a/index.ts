@@ -566,14 +566,14 @@ export class KafS11AComponent extends KafS00ShrComponent {
         if (!workType) {
             return false;
         }
-        if (vm.displayInforWhenStarting.workInfoAttendanceReflect.reflectWorkHour == 1) {
+        if (vm.displayInforWhenStarting.workInfoAttendanceReflect.reflectWorkHour == 2) {
             if (workType.workAtr == 0) {
                 return false;
             }
 
             return vm.cdtHalfDay(workType.morningCls, workType.afternoonCls, true);
         }
-        if (vm.displayInforWhenStarting.workInfoAttendanceReflect.reflectWorkHour == 2) {
+        if (vm.displayInforWhenStarting.workInfoAttendanceReflect.reflectWorkHour == 1) {
             if (workType.workAtr == 0) {
                 return false;
             }
