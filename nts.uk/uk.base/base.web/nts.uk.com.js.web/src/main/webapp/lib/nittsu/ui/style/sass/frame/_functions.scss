@@ -62,8 +62,11 @@ div#master-wrapper {
 				}
 
 				button {
-					min-width: 90px;
 					vertical-align: middle;
+
+					&:not(.functional) {
+						min-width: 90px;
+					}
 				}
 			}
 		}
