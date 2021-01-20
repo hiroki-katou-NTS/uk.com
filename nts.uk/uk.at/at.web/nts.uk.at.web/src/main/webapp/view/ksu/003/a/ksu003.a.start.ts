@@ -8,9 +8,6 @@ module nts.uk.at.view.ksu003.a {
 				$(window).resize(function() {
 					screenModel.setPositionButonDownAndHeightGrid();
 				});
-				setTimeout(() => {
-					$('#period-setting').focus();
-				}, 0.5);
 			});
 			initEvent();
 			initEvent2();

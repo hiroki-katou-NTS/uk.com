@@ -15,7 +15,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class WorkScheduleSaveCommand {
+public class WorkScheduleSaveCommand<T> {
 
 	// 社員ID
 	public String sid;
