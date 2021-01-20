@@ -316,7 +316,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                     printQuery.endDate = new Date(self.period().endDate);
                 }
                 printQuery.mode = 0;
-                if (printQuery.selectedDateType == 2) {
+                if (printQuery.selectedDateType == 2 || printQuery.selectedDateType == 1) {
                     if (!isNoError) {
                         alError({ messageId: "Msg_1500" });
                         return;
@@ -355,7 +355,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                     printQuery.endDate = new Date(self.period().endDate);
                 }
                 printQuery.mode = 1;
-                if (printQuery.selectedDateType == 2) {
+                if (printQuery.selectedDateType == 2 || printQuery.selectedDateType == 1) {
                     if (!isNoError) {
                         alError({ messageId: "Msg_1500" });
                         return;

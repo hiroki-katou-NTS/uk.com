@@ -433,9 +433,9 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 						Optional.of(dateOfPrint));
 			}
 			// ❻入社退職の考慮
+			AnnualHolidayGrantInfor annalInforJoinLeaving = holidayInfo.isPresent() ? holidayInfo.get() : null;
 			// 年休付与情報、年休使用詳細について、入社・退職の考慮を行う
 			// Consider joining / leaving the company for annual leave grant information and details of annual leave usage
-			AnnualHolidayGrantInfor annalInforJoinLeaving = holidayInfo.isPresent() ? holidayInfo.get() : null;
 			AnnualHolidayGrantData holidayGrantData = this.getJoinLeavingForAnnualLeaveGrantInfo(employee.getEmployeeId(), annalInforJoinLeaving, holidayDetails);
 			List<AnnualHolidayGrantDetail> holidayDetailsSort   = holidayGrantData.getHolidayDetails();
 			if (!holidayGrantData.getHolidayDetails().isEmpty()) {
@@ -459,6 +459,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 				.collect(Collectors.groupingBy(o -> o.getWorkplace()));
 
 		resultmap = resultmap.entrySet().stream()
+				.filter(f -> f.getKey().getHierarchyCode() != null)
 				.sorted((o1, o2) -> o1.getKey().getHierarchyCode().compareTo(o2.getKey().getHierarchyCode()))
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue,
 						LinkedHashMap::new));

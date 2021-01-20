@@ -16,7 +16,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 @Setter
 @Getter
 public class AnnualHolidayGrantInfor {
-	/**付与	 */
+	/**付与	: 年休付与 (List) */
 	private List<AnnualHolidayGrant> lstGrantInfor;
 	/**取得した期間	 */
 	private DatePeriod period;
