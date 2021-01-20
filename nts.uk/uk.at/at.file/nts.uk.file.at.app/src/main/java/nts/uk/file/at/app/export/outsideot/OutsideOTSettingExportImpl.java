@@ -690,6 +690,7 @@ public class OutsideOTSettingExportImpl implements MasterListData {
 
     private String toEnumRouding(Integer rouding) {
         String rs = "";
+        if(rouding != null)
         switch (rouding) {
             case 0:
                 rs = "Enum_ROUNDING_DOWN";
