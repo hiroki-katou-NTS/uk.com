@@ -73,15 +73,21 @@ module nts.uk.at.view.kmk010.b {
                 }
 
                 //check duplicate overtime
-                let duplicateOverTime = []
+                let duplicateOverTime = [];
+                let isDuplicateOverTime = false;
+
                 _.forEach(self.lstOvertimeModel, (item, index) => {
                     //check null overtime
-                    if (_.isNull(item.overtime())) self.lstOvertimeModel[index].overtime(0);
+                    if (_.isNull(item.overtime()) && !item.useClassification()) self.lstOvertimeModel[index].overtime(0);
 
-                    if (!_.includes(duplicateOverTime, item.overtime())) duplicateOverTime.push(item.overtime());
+                    if( item.useClassification()) {
+                        if(!_.includes(duplicateOverTime, item.overtime())) {
+                            duplicateOverTime.push(item.overtime());
+                        } else isDuplicateOverTime = true;
+                    }
                 });
 
-                if (self.lstOvertimeModel.length !== duplicateOverTime.length) {
+                if (isDuplicateOverTime) {
                     nts.uk.ui.dialog.alert({ messageId: "Msg_486" }).then(() => { });
                     return;
                 }

@@ -24,7 +24,8 @@ module nts.uk.at.view.kmk010.a {
             isManage : KnockoutObservable<boolean>;
             static LANGUAGE_ID_JAPAN = 'ja';
             tabFinalArray: KnockoutObservable<number>;
-            
+            isEnableSettingOverTime: KnockoutObservable<boolean> = ko.observable(true);
+
             constructor() {
                 super();
 
@@ -88,6 +89,12 @@ module nts.uk.at.view.kmk010.a {
                         }
                         brdItem.updateRateData(rateBRDItems);
                     }
+
+                    //ドメインモデル「60H超休管理設定」の「管理区分」＝Falseの場合は非活性, 休暇発生＝trueが0件に場合も非活性
+                    //A1_6
+                    let overTimeCol = _.filter(self.outsideOTSettingModel.overtimes(), (item: any)  => item.superHoliday60HOccurs() === true );                                        
+                    self.isEnableSettingOverTime(overTimeCol.length > 0 && self.isManage());
+
                     service.findAllOvertimeCalculationMethod().done(function(dataMethod) {
                         self.calculationMethods(dataMethod);
                         var tabIndex = 11;
@@ -489,6 +496,9 @@ module nts.uk.at.view.kmk010.a {
              */
             public openDialogDailyAttendanceItems(): void {
                 var self = this;
+
+                nts.uk.ui.block.grayout();  
+
                 nts.uk.at.view.kmk010.a.service.findAllMonthlyAttendanceItem().done(function(dataAllItem){
                     // Map to model
                     nts.uk.at.view.kmk010.a.service.findAllAttendanceItemOvertime().done(function(dataCanSelecte: any) {
@@ -519,6 +529,8 @@ module nts.uk.at.view.kmk010.a {
                                 self.attendanceItemName(selectedName.join(' + '));
                                 service.initTooltip();
                             }
+                            
+                            nts.uk.ui.block.clear();
                         });
                     });
                 }).fail(function(error){
