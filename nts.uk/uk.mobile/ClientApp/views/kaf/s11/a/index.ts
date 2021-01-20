@@ -446,6 +446,9 @@ export class KafS11AComponent extends KafS00ShrComponent {
         const vm = this;
         if (vm.mode == ScreenMode.DETAIL) {
             // ※4-1	
+            if (!vm.displayInforWhenStarting) {
+                return false;
+            }
 
             return vm.displayInforWhenStarting.rec;
         }
@@ -528,6 +531,9 @@ export class KafS11AComponent extends KafS00ShrComponent {
         const vm = this;
         if (vm.mode == ScreenMode.DETAIL) {
             // ※4-2
+            if (!vm.displayInforWhenStarting) {
+                return false;
+            }
 
             return vm.displayInforWhenStarting.abs;
         }
@@ -1094,30 +1100,34 @@ export class KafS11AComponent extends KafS00ShrComponent {
             }
         } else {
             if (vm.displayInforWhenStarting.rec) {
-                cmd.rec.application = vm.displayInforWhenStarting.rec.application;
-                cmd.rec.applicationUpdate = {
-                    opAppReason: vm.opAppReason,
-                    opAppStandardReasonCD: vm.opAppStandardReasonCD
+                cmd.rec = {
+                    application: vm.displayInforWhenStarting.rec.application,
+                    applicationUpdate: {
+                        opAppReason: vm.opAppReason,
+                        opAppStandardReasonCD: vm.opAppStandardReasonCD
+                    },
+                    workInformation: {
+                        workType: vm.complementWorkInfo.workTypeCD,
+                        workTime: vm.complementWorkInfo.workTimeCD
+                    },
+                    workingHours: []
                 };
-                cmd.rec.workInformation = {
-                    workType: vm.complementWorkInfo.workTypeCD,
-                    workTime: vm.complementWorkInfo.workTimeCD
-                };
-                cmd.rec.workingHours = [];
                 cmd.recOldHolidayMngLst = [];
             }
             if (vm.displayInforWhenStarting.abs) {
-                cmd.abs.application = vm.displayInforWhenStarting.abs.application;
-                cmd.abs.applicationUpdate = {
-                    opAppReason: vm.opAppReason,
-                    opAppStandardReasonCD: vm.opAppStandardReasonCD
+                cmd.abs = {
+                    application: vm.displayInforWhenStarting.abs.application,
+                    applicationUpdate: {
+                        opAppReason: vm.opAppReason,
+                        opAppStandardReasonCD: vm.opAppStandardReasonCD
+                    },
+                    workInformation: {
+                        workType: vm.leaveWorkInfo.workTypeCD,
+                        workTime: vm.leaveWorkInfo.workTimeCD
+                    },
+                    workingHours: [],
+                    workChangeUse: false
                 };
-                cmd.abs.workInformation = {
-                    workType: vm.leaveWorkInfo.workTypeCD,
-                    workTime: vm.leaveWorkInfo.workTimeCD
-                };
-                cmd.abs.workingHours = [];
-                cmd.abs.workChangeUse = false;
                 cmd.absOldHolidayMngLst = [];
                 cmd.absOldWorkMngLst = [];
             }
