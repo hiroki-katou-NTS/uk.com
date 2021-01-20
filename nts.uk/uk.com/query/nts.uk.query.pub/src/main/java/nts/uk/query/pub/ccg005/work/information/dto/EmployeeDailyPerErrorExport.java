@@ -10,7 +10,7 @@ import nts.arc.time.GeneralDate;
 
 @Builder
 @Data
-public class EmployeeDailyPerErrorDto {
+public class EmployeeDailyPerErrorExport {
 
 	// 社員ID
 	private String sid;
