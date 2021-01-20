@@ -172,14 +172,14 @@ export class CmmS45ShrComponentsApp10Component extends Vue {
         if (!workType) {
             return false;
         }
-        if (vm.params.appDetail.workInfoAttendanceReflect.reflectWorkHour == 1) {
+        if (vm.params.appDetail.workInfoAttendanceReflect.reflectWorkHour == 2) {
             if (workType.workAtr == 0) {
                 return false;
             }
 
             return vm.cdtHalfDay(workType.morningCls, workType.afternoonCls, true);
         }
-        if (vm.params.appDetail.workInfoAttendanceReflect.reflectWorkHour == 2) {
+        if (vm.params.appDetail.workInfoAttendanceReflect.reflectWorkHour == 1) {
             if (workType.workAtr == 0) {
                 return false;
             }
