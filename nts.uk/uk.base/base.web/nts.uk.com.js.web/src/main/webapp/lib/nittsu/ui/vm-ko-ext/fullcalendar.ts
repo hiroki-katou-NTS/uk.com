@@ -647,7 +647,7 @@ module nts.uk.ui.components.fullcalendar {
             const $el = $(vm.$el);
             const $dg = $el.find('div.fc-events').get(0);
             const $fc = $el.find('div.fc-calendar').get(0);
-            const FC: FullCalendar.FullCalendar | null = _.get(window, 'FullCalendar') || null;
+            const FC: FullCalendar.FullCalendar | null = _.get(window, 'FullCalendar', null);
             const updateActive = () => {
                 $el
                     .find('.fc-header-toolbar button')
