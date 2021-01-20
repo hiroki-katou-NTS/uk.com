@@ -4,7 +4,7 @@ package nts.uk.ctx.at.function.ws.arbitraryperiodsummarytable;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.function.app.command.workledgeroutputitem.*;
+import nts.uk.ctx.at.function.app.command.arbitraryperiodsummarytable.*;
 import nts.uk.ctx.at.function.app.query.arbitraryperiodsummarytable.GetOutputSettingDetailArbitraryQuery;
 import nts.uk.ctx.at.function.app.query.arbitraryperiodsummarytable.GetOutputSettingListArbitraryQuery;
 import nts.uk.ctx.at.function.app.query.arbitraryperiodsummarytable.OutputSettingArbitraryDto;
@@ -24,29 +24,29 @@ import java.util.List;
 @Produces("application/json")
 public class OutputSettingListArbitraryWebService extends WebService {
     @Inject
-    private GetOutputSettingListArbitraryQuery arbitraryQuery; //B - OK
+    private GetOutputSettingListArbitraryQuery arbitraryQuery;
 
     @Inject
-    private GetOutputSettingDetailArbitraryQuery detailArbitraryQuery;// b-ok
+    private GetOutputSettingDetailArbitraryQuery detailArbitraryQuery;
 
     @Inject
-    private CreateWorkLedgerSettingCommandHandler createWorkLedgerSettingCommandHandler;
+    private CreateOutputSettingCommandHandler createOutputSettingCommandHandler;
 
     @Inject
-    private UpdateWorkLedgerSettingCommandHandler updateWorkLedgerSettingCommandHandler;
+    private UpdateOutputSettingCommandHandle updateOutputSettingCommandHandle;
 
     @Inject
-    private DuplicateWorkLedgerSettingCommandHandler duplicateCommandHandler;
+    private DuplicateOutputSettingCommandHandler duplicateCommandHandler;
 
     @Inject
-    private DeleteWorkLedgerSettingCommandHandler deleteCommandHandler;
+    private DeleteOutputSettingCommandHandler deleteCommandHandler;
 
     @Inject
     private GetBeginMonthOfCompanyQuery getBeginMonthOfCompanyQuery;
 
 
     @POST
-    @Path("007/a/listoutputsetting")// ok
+    @Path("007/a/listoutputsetting")
     public List<OutputSettingArbitraryDto> getListWorkStatus(SettingParams params) {
         return arbitraryQuery.getListOutputSetting(EnumAdaptor.valueOf(params.getSetting(), SettingClassificationCommon.class));
     }
@@ -58,7 +58,7 @@ public class OutputSettingListArbitraryWebService extends WebService {
     }
 
     @POST
-    @Path("007/b/detailoutputsetting")// OK
+    @Path("007/b/detailoutputsetting")
     public OutputSettingDetailArbitraryDto getDetail(SettingIdParams params) {
         val domain = detailArbitraryQuery.getDetail(params.getSettingId());
         if (domain != null) {
@@ -75,26 +75,26 @@ public class OutputSettingListArbitraryWebService extends WebService {
     }
 
     @POST
-    @Path("005/b/create")
-    public void create(CreateWorkLedgerSettingCommand dto) {
-        createWorkLedgerSettingCommandHandler.handle(dto);
+    @Path("007/b/create")
+    public void create(CreateOutputSettingCommand dto) {
+        createOutputSettingCommandHandler.handle(dto);
     }
 
     @POST
-    @Path("005/b/update")
-    public void update(UpdateWorkLedgerSettingCommand dto) {
-        updateWorkLedgerSettingCommandHandler.handle(dto);
+    @Path("007/b/update")
+    public void update(UpdateOutputSettingCommand dto) {
+        updateOutputSettingCommandHandle.handle(dto);
     }
 
     @POST
-    @Path("005/b/delete")
-    public void delete(DeleteWorkLedgerSettingCommand dto) {
+    @Path("007/b/delete")
+    public void delete(DeleteOutputSettingCommand dto) {
         deleteCommandHandler.handle(dto);
     }
 
     @POST
-    @Path("005/c/duplicate")
-    public void duplicate(DuplicateWorkLedgerSettingCommand dto) {
+    @Path("007/c/duplicate")
+    public void duplicate(DuplicateOutputSettingCommand dto) {
         duplicateCommandHandler.handle(dto);
     }
 }

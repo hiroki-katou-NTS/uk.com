@@ -48,7 +48,7 @@ public class UpdateArbitraryScheduleDomainService {
         });
     }
 
-    public interface Require extends OutputSettingOfArbitrary.Require {
+    public interface Require  {
         /**
          * [1] 出力設定の詳細を取得する
          * 任意期間集計表の出力設定Repository.出力設定の詳細を取得する(ログイン会社ID,設定ID)

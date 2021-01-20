@@ -47,7 +47,7 @@ public class DuplicateArbitraryScheduleDomainService {
         });
     }
 
-    public interface Require extends OutputSettingOfArbitrary.Require {
+    public interface Require  {
         /**
          * [1] 出力設定の詳細を取得する
          * 任意期間集計表の出力項目Repository.出力設定の詳細を取得する(会社ID, 設定ID)
