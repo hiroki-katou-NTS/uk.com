@@ -111,6 +111,10 @@ export class KafS11AComponent extends KafS00ShrComponent {
             code: 2,
             text: 'KAFS11_7'
         }];
+    }
+
+    public mounted() {
+        const vm = this;
         vm.$mask('show');
         if (vm.mode == ScreenMode.NEW) {
             vm.$auth.user.then((userData: any) => {
@@ -353,6 +357,14 @@ export class KafS11AComponent extends KafS00ShrComponent {
         }
     }
 
+    public getCDFormat(workTypeCD: string) {
+        if (workTypeCD) {
+            return workTypeCD;
+        }
+        
+        return '';
+    }
+
     public getWorkTypeName(workTypeCD: string, isComplement: boolean) {
         const vm = this;
         if (!vm.displayInforWhenStarting) {
@@ -373,7 +385,7 @@ export class KafS11AComponent extends KafS00ShrComponent {
             return workType.name;
         }
 
-        return workTypeCD + ' ' + vm.$i18n('KAFS11_32');
+        return vm.getCDFormat(workTypeCD) + ' ' + vm.$i18n('KAFS11_32');
     }
 
     public getWorkTimeName(workTimeCD: string) {
@@ -791,10 +803,12 @@ export class KafS11AComponent extends KafS00ShrComponent {
             };
         }
         vm.$modal('kdls02', param).then((result: any) => {
-            if (isComplement) {
-                vm.complementWorkInfo.workTypeCD = result.selectedWorkType.workTypeCode;            
-            } else {
-                vm.leaveWorkInfo.workTypeCD = result.selectedWorkType.workTypeCode; 
+            if (result) {
+                if (isComplement) {
+                    vm.complementWorkInfo.workTypeCD = result.selectedWorkType.workTypeCode;            
+                } else {
+                    vm.leaveWorkInfo.workTypeCD = result.selectedWorkType.workTypeCode; 
+                }
             }
         });
     }
@@ -819,21 +833,23 @@ export class KafS11AComponent extends KafS00ShrComponent {
             };
         }
         vm.$modal('kdls01', param).then((result: any) => {
-            if (isComplement) {
-                vm.complementWorkInfo.workTimeCD = result.selectedWorkTime.code;            
-            } else {
-                vm.leaveWorkInfo.workTimeCD = result.selectedWorkTime.code; 
+            if (result) {
+                if (isComplement) {
+                    vm.complementWorkInfo.workTimeCD = result.selectedWorkTime.code;            
+                } else {
+                    vm.leaveWorkInfo.workTimeCD = result.selectedWorkTime.code; 
+                }
+                let wkTimeCodes = [
+                    vm.complementWorkInfo.workTimeCD,
+                    vm.leaveWorkInfo.workTimeCD
+                ];
+                vm.$mask('show');
+    
+                return vm.$http.post('at', API.getWorkTimeByCDLst, { wkTimeCodes }).then((data: any) => {
+                    vm.workTimeLstFullData = data.data;
+                    vm.$mask('hide');
+                });
             }
-            let wkTimeCodes = [
-                vm.complementWorkInfo.workTimeCD,
-                vm.leaveWorkInfo.workTimeCD
-            ];
-            vm.$mask('show');
-
-            return vm.$http.post('at', API.getWorkTimeByCDLst, { wkTimeCodes }).then((data: any) => {
-                vm.workTimeLstFullData = data.data;
-                vm.$mask('hide');
-            });
         });
     }
 
@@ -855,8 +871,10 @@ export class KafS11AComponent extends KafS00ShrComponent {
             param.daysUnit = 0.5;
         }
         vm.$modal('kdls36', param).then((result: any) => {
-            vm.recHolidayMngLst = result.mngDisp;
-            vm.formatMngLst();
+            if (result) {
+                vm.recHolidayMngLst = result.mngDisp;
+                vm.formatMngLst();
+            }
         });
     }
 
@@ -878,8 +896,10 @@ export class KafS11AComponent extends KafS00ShrComponent {
             param.daysUnit = 0.5;
         }
         vm.$modal('kdls36', param).then((result: any) => {
-            vm.absHolidayMngLst = result.mngDisp;
-            vm.formatMngLst();
+            if (result) {
+                vm.absHolidayMngLst = result.mngDisp;
+                vm.formatMngLst();
+            }
         });
     }
 
@@ -901,8 +921,10 @@ export class KafS11AComponent extends KafS00ShrComponent {
             param.daysUnit = 0.5;
         }
         vm.$modal('kdls35', param).then((result: any) => {
-            vm.absWorkMngLst = result.mngDisp;
-            vm.formatMngLst();
+            if (result) {
+                vm.absWorkMngLst = result.mngDisp;
+                vm.formatMngLst();
+            }
         });
     }
 
@@ -948,7 +970,7 @@ export class KafS11AComponent extends KafS00ShrComponent {
             return;
         }
         vm.$mask('show');
-        let command = vm.getCommandInsert();
+        let command = vm.getCommandSubmit();
         vm.$http.post('at', API.checkBeforeSubmit, command)
         .then((result: any) => {
             if (result) {
@@ -959,9 +981,7 @@ export class KafS11AComponent extends KafS00ShrComponent {
             if (result) {
                 // đăng kí 
                 return vm.$http.post('at', API.submit, command).then((data: any) => {
-                    return vm.$modal.info({ messageId: 'Msg_15'}).then(() => {
-                        return data.data;
-                    });	
+                    return data.data;
                 });
             }
         }).then((result: any) => {
@@ -1031,7 +1051,7 @@ export class KafS11AComponent extends KafS00ShrComponent {
         });
     }
 
-    private getCommandInsert() {
+    private getCommandSubmit() {
         const vm = this;
         let cmd: any = {
             newMode: vm.mode == ScreenMode.NEW,
@@ -1040,44 +1060,44 @@ export class KafS11AComponent extends KafS00ShrComponent {
             absHolidayMngLst: vm.absHolidayMngLst,
             absWorkMngLst: vm.absWorkMngLst
         };
-        if (vm.complementLeaveAtr == ComplementLeaveAtr.COMPLEMENT_LEAVE || vm.complementLeaveAtr == ComplementLeaveAtr.COMPLEMENT) {
-            cmd.rec = {
-                workInformation: {
-                    workType: vm.complementWorkInfo.workTypeCD,
-                    workTime: vm.complementWorkInfo.workTimeCD
-                },
-                workingHours: []
-            };
-        }
-        if (vm.complementLeaveAtr == ComplementLeaveAtr.COMPLEMENT_LEAVE || vm.complementLeaveAtr == ComplementLeaveAtr.LEAVE) {
-            cmd.abs = {
-                workInformation: {
-                    workType: vm.leaveWorkInfo.workTypeCD,
-                    workTime: vm.leaveWorkInfo.workTimeCD
-                },
-                workingHours: [],
-                workChangeUse: false
-            };
-        }
         if (vm.mode == ScreenMode.NEW) {
-            cmd.rec.applicationInsert = {
-                prePostAtr: vm.prePostAtr,
-                appType: AppType.COMPLEMENT_LEAVE_APPLICATION,
-                appDate: moment(vm.complementDate).format('YYYY/MM/DD'),
-                opAppReason: vm.opAppReason,
-                opAppStandardReasonCD: vm.opAppStandardReasonCD,
-                opAppStartDate: moment(vm.complementDate).format('YYYY/MM/DD'),
-                opAppEndDate: moment(vm.complementDate).format('YYYY/MM/DD')
-            };
-            cmd.abs.applicationInsert = {
-                prePostAtr: vm.prePostAtr,
-                appType: AppType.COMPLEMENT_LEAVE_APPLICATION,
-                appDate: moment(vm.leaveDate).format('YYYY/MM/DD'),
-                opAppReason: vm.opAppReason,
-                opAppStandardReasonCD: vm.opAppStandardReasonCD,
-                opAppStartDate: moment(vm.leaveDate).format('YYYY/MM/DD'),
-                opAppEndDate: moment(vm.leaveDate).format('YYYY/MM/DD')
-            };
+            if (vm.complementLeaveAtr == ComplementLeaveAtr.COMPLEMENT_LEAVE || vm.complementLeaveAtr == ComplementLeaveAtr.COMPLEMENT) {
+                cmd.rec = {
+                    applicationInsert: {
+                        prePostAtr: vm.prePostAtr,
+                        appType: AppType.COMPLEMENT_LEAVE_APPLICATION,
+                        appDate: moment(vm.complementDate).format('YYYY/MM/DD'),
+                        opAppReason: vm.opAppReason,
+                        opAppStandardReasonCD: vm.opAppStandardReasonCD,
+                        opAppStartDate: moment(vm.complementDate).format('YYYY/MM/DD'),
+                        opAppEndDate: moment(vm.complementDate).format('YYYY/MM/DD')
+                    },
+                    workInformation: {
+                        workType: vm.complementWorkInfo.workTypeCD,
+                        workTime: vm.complementWorkInfo.workTimeCD
+                    },
+                    workingHours: []
+                };
+            }
+            if (vm.complementLeaveAtr == ComplementLeaveAtr.COMPLEMENT_LEAVE || vm.complementLeaveAtr == ComplementLeaveAtr.LEAVE) {
+                cmd.abs = {
+                    applicationInsert: {
+                        prePostAtr: vm.prePostAtr,
+                        appType: AppType.COMPLEMENT_LEAVE_APPLICATION,
+                        appDate: moment(vm.leaveDate).format('YYYY/MM/DD'),
+                        opAppReason: vm.opAppReason,
+                        opAppStandardReasonCD: vm.opAppStandardReasonCD,
+                        opAppStartDate: moment(vm.leaveDate).format('YYYY/MM/DD'),
+                        opAppEndDate: moment(vm.leaveDate).format('YYYY/MM/DD')
+                    },
+                    workInformation: {
+                        workType: vm.leaveWorkInfo.workTypeCD,
+                        workTime: vm.leaveWorkInfo.workTimeCD
+                    },
+                    workingHours: [],
+                    workChangeUse: false
+                };
+            }
         } else {
             if (vm.displayInforWhenStarting.rec) {
                 cmd.rec.application = vm.displayInforWhenStarting.rec.application;
@@ -1085,6 +1105,11 @@ export class KafS11AComponent extends KafS00ShrComponent {
                     opAppReason: vm.opAppReason,
                     opAppStandardReasonCD: vm.opAppStandardReasonCD
                 };
+                cmd.rec.workInformation = {
+                    workType: vm.complementWorkInfo.workTypeCD,
+                    workTime: vm.complementWorkInfo.workTimeCD
+                };
+                cmd.rec.workingHours = [];
                 cmd.recOldHolidayMngLst = [];
             }
             if (vm.displayInforWhenStarting.abs) {
@@ -1093,6 +1118,12 @@ export class KafS11AComponent extends KafS00ShrComponent {
                     opAppReason: vm.opAppReason,
                     opAppStandardReasonCD: vm.opAppStandardReasonCD
                 };
+                cmd.abs.workInformation = {
+                    workType: vm.leaveWorkInfo.workTypeCD,
+                    workTime: vm.leaveWorkInfo.workTimeCD
+                };
+                cmd.abs.workingHours = [];
+                cmd.abs.workChangeUse = false;
                 cmd.absOldHolidayMngLst = [];
                 cmd.absOldWorkMngLst = [];
             }
