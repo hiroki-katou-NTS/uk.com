@@ -315,6 +315,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                     printQuery.startDate = new Date(self.period().startDate);
                     printQuery.endDate = new Date(self.period().endDate);
                 }
+                // set mode print excel
                 printQuery.mode = 0;
                 if (printQuery.selectedDateType == 2 || printQuery.selectedDateType == 1) {
                     if (!isNoError) {
@@ -354,6 +355,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                     printQuery.startDate = new Date(self.period().startDate);
                     printQuery.endDate = new Date(self.period().endDate);
                 }
+                // set mode print PDF
                 printQuery.mode = 1;
                 if (printQuery.selectedDateType == 2 || printQuery.selectedDateType == 1) {
                     if (!isNoError) {
@@ -387,6 +389,12 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                 closureId = self.closureId(),
                 isNotError = true,
                 dfd = $.Deferred();
+            //with the case of After_1_year
+            if (self.selectedDateType() === 1) {
+                let datePeriodValidate = moment(self.period().startDate).format("YYYYMM"); 
+                self.printDate(parseInt(datePeriodValidate));
+            }
+
             service.findClosureById(closureId).done((closureData) => {
 
                 //①社員範囲選択の就業締め日 ≠ 全締め　&参照区分 = 過去 & 就業締め日の当月 <= 指定月→ 出力エラー　(#Msg_1500)
