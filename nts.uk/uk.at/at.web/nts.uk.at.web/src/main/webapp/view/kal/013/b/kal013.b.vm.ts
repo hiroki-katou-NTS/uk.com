@@ -32,11 +32,9 @@ module nts.uk.at.view.kal013.b {
             decimallength: 0,
             placeholder: ''
         }));
-        listZeroDecimalNum: Array<string> = ["NumberOfPeople","Amount","RatioComparison","AverageNumberTimes","AverageRatio"];
         listOneDecimalNum: Array<string> = ["AverageNumberDays"];
         monthlyTimeControl: Array<number> = [1,5];
         dailyTimeControl: Array<number> = [2];
-        dailyTimeControlB : Array<number> = [2, 5, 8];
         dailyContraint: Map<number,string> =new Map([
             [0,"Comparison"],
             [1, "NumberOfPeople"],
@@ -77,7 +75,6 @@ module nts.uk.at.view.kal013.b {
                vm.createConstraint(value);
 
                 // Change pattern
-
                 vm.createcontrastList(vm.category(), value);
             });
 
@@ -86,14 +83,9 @@ module nts.uk.at.view.kal013.b {
                     return;
                 }
                 nts.uk.ui.errors.clearAll();
-                //vm.pattern().clearCheckCodB();
                 //Kind of control
                 vm.checkKindOfConrol(value,false);
-                // Constraint
-                //vm.createConstraint(value,false);
             })
-
-
 
             vm.constraint.subscribe((value)=>{
                 const vm = this;
@@ -245,9 +237,6 @@ module nts.uk.at.view.kal013.b {
                 }
             } else if (vm.category() == WorkplaceCategory.SCHEDULE_DAILY ) {
                 vm.timeControl(false);
-                // if (_.indexOf(vm.dailyTimeControlB, value) != -1) {
-                //     vm.timeControl(true);
-                // }
             }
         }
 
@@ -259,16 +248,6 @@ module nts.uk.at.view.kal013.b {
             } else{
                 vm.constraint(vm.monthlyContraint.get(value));
             }
-
-            // if (!isPatternA && vm.category() == WorkplaceCategory.SCHEDULE_DAILY){
-            //     if (_.indexOf([1, 4, 7], value) != -1) {
-            //         vm.constraint(vm.dailyContraint.get(1));
-            //     } else if (_.indexOf(vm.dailyTimeControlB, value) != -1) {
-            //         vm.constraint(vm.dailyContraint.get(2));
-            //     } else if (_.indexOf([3, 6, 9], value) != -1) {
-            //         vm.constraint(vm.dailyContraint.get(3));
-            //     }
-            // }
 
         }
         mounted() {
