@@ -297,12 +297,18 @@ module nts.uk.at.view.knr002.c {
 
             public removeFromSetting() {
                 const vm = this;
-                // console.log(vm.selectedRowIndex(), 'selectedRowIndex');
+                console.log(vm.selectedRowIndex(), 'selectedRowIndex');
                 if (vm.selectedRowIndex() == -1) {
                     return;
                 }
                 vm.settingData.splice(vm.selectedRowIndex(), 1);
+                
                 $("#grid").igGrid("dataSourceObject", vm.settingData).igGrid("dataBind");  
+                console.log(vm.settingData, 'setting data');
+                if (vm.selectedRowIndex() == vm.settingData.length) {
+                    vm.selectedRowIndex(vm.selectedRowIndex() - 1);
+                }
+                $('#grid').igGridSelection('selectRow', vm.selectedRowIndex());
             }
 
             private loadSettingGrid() {
