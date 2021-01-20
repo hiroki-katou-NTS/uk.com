@@ -17,7 +17,6 @@ import nts.uk.ctx.bs.company.dom.company.primitive.ContractCd;
  * @author keisuke_hoshina
  *
  */
-@Stateless
 public class CreateDefaultCompanyService {
 
 	public static AtomTask create(Require require,String contractCode, String companyCode, String companyName) {
