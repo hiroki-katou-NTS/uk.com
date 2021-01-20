@@ -88,9 +88,9 @@
     </div>
 
     <!-- OverTime -->
-    <div v-show="$appContext.c9" class="card card-label">
+    <div v-show="$appContext.c9 || $appContext.c9_appHolidayWork" class="card card-label">
       <!--A2_5_1-->
-      <div v-show="$appContext.c9" class="card-header uk-bg-accordion mt-2">
+      <div v-show="$appContext.c9 || $appContext.c9_appHolidayWork" class="card-header uk-bg-accordion mt-2">
         <span>{{ "KAFS10_17" | i18n }}</span>
         <span class="badge badge-info">任意</span>
       </div>
