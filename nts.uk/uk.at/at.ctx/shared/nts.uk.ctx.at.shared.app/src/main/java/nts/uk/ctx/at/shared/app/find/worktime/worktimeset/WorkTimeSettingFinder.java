@@ -27,8 +27,6 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingCondition;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -363,7 +361,6 @@ public class WorkTimeSettingFinder {
 
         Integer allCheckStatus = null;
         String companyID = AppContexts.user().companyId();
-        List<WorkTimeDto> allWorkHours = new ArrayList<>();
         List<WorkTimeDto> workingHoursByWorkplace = new ArrayList<>();
         List<WorkTimeDto> selectableWorkingHours = new ArrayList<>();
         String cid = null;
@@ -374,19 +371,23 @@ public class WorkTimeSettingFinder {
             cid = optWorkMultiple.get().getCompanyID();
             useATR = optWorkMultiple.get().getUseATR().value;
         }
-
         // 会社で使用できる就業時間帯を全件を取得する
+        List<WorkTimeSetting> listWorkTime = workTimeSettingRepository.findByCompanyId(companyID).stream()
+                .filter(x -> x.getAbolishAtr() == AbolishAtr.NOT_ABOLISH)
+                .sorted(Comparator.comparing(x -> x.getWorktimeCode().v())).collect(Collectors.toList());
+        List<PredetemineTimeSetting> workTimeSetItems = this.predetemineTimeSettingRepository
+                .findByCompanyID(companyID);
+        // 全件の就業時間帯: AllWorkHours
+        List<WorkTimeDto> allWorkHours = new ArrayList<>(getWorkTimeDtos(listWorkTime, workTimeSetItems));
+
         if (!codes.isEmpty()) {
-            List<WorkTimeSetting> listWorkTime = workTimeSettingRepository.findByCompanyId(companyID).stream()
-                    .filter(x -> x.getAbolishAtr() == AbolishAtr.NOT_ABOLISH)
-                    .sorted(Comparator.comparing(x -> x.getWorktimeCode().v())).collect(Collectors.toList());
-            List<PredetemineTimeSetting> workTimeSetItems = this.predetemineTimeSettingRepository
-                    .findByCompanyID(companyID);
-            allWorkHours.addAll(getWorkTimeDtos(listWorkTime, workTimeSetItems));
+            // 選択可能な就業時間帯＝上記取得した全件のList＜就業時間帯の設定＞からパラメータ「選択可能な就業時間帯コード」と一致する「就業時間帯の設定」
             List<WorkTimeSetting> workTimeItems = this.workTimeSettingRepository.findByCodes(companyID, codes);
             List<PredetemineTimeSetting> workTimeSetItem = this.predetemineTimeSettingRepository
                     .findByCodeList(companyID, codes);
-            selectableWorkingHours.addAll(getWorkTimeDtos(workTimeItems, workTimeSetItem));
+            val rss = getWorkTimeDtos(workTimeItems, workTimeSetItem);
+            // 選択可能な就業時間帯 : SelectableWorkingHours
+            selectableWorkingHours.addAll(rss);
             if (codes.size() == allWorkHours.size()) {
                 allCheckStatus = 1;
             } else {
@@ -394,9 +395,9 @@ public class WorkTimeSettingFinder {
             }
 
         } else {
-            //職場で利用できる就業時間帯を取得する(上位職場も参照)
-            // 職場IDと基準日から上位職場を取得する
             if (date != null) {
+                // 職場で利用できる就業時間帯を取得する(上位職場も参照)
+                // 職場IDと基準日から上位職場を取得する
                 GeneralDate baseDate = GeneralDate.fromString(date, "yyyy/MM/dd");
                 List<String> workPlaceIdList = this.affWorkplaceAdapter.getUpperWorkplace(companyID,
                         workPlaceId, baseDate);
@@ -405,25 +406,21 @@ public class WorkTimeSettingFinder {
                 List<WorkTimeSetting> workTimeSettingList = new ArrayList<>();
                 for (String wkpID : workPlaceIdList) {
                     // アルゴリズム「職場IDから職場別就業時間帯を取得」を実行する
-                    List<WorkTimeSetting> listWorkTime = workTimeWorkplaceRepo.getWorkTimeWorkplaceById(companyID, wkpID);
-                    workTimeSettingList.addAll(listWorkTime);
+                    List<WorkTimeSetting> listWorkTimeItem = workTimeWorkplaceRepo.getWorkTimeWorkplaceById(companyID, wkpID);
+                    workTimeSettingList.addAll(listWorkTimeItem);
                 }
-                List<PredetemineTimeSetting> workTimeSetItems = this.predetemineTimeSettingRepository
+                List<PredetemineTimeSetting> predetemineTimeSettingList = this.predetemineTimeSettingRepository
                         .findByCompanyID(companyID);
-                val rs = getWorkTimeDtos(workTimeSettingList, workTimeSetItems);
+                val rs = getWorkTimeDtos(workTimeSettingList, predetemineTimeSettingList);
+                // 選択可能な就業時間帯＝上記取得した職場別のList＜就業時間帯の設定＞
+                // 職場別の就業時間帯
                 workingHoursByWorkplace.addAll(rs);
 
                 if (!workTimeSettingList.isEmpty()) {
                     allCheckStatus = 0;
-                    allWorkHours.addAll(rs);
-
                 } else {
                     allCheckStatus = 1;
-                    List<WorkTimeSetting> listWorkTime = workTimeSettingRepository.findByCompanyId(companyID).stream()
-                            .filter(x -> x.getAbolishAtr() == AbolishAtr.NOT_ABOLISH)
-                            .sorted(Comparator.comparing(x -> x.getWorktimeCode().v())).collect(Collectors.toList());
-                    allWorkHours.addAll(getWorkTimeDtos(listWorkTime, workTimeSetItems));
-
+                    workingHoursByWorkplace.addAll(allWorkHours);
                 }
             }
 
