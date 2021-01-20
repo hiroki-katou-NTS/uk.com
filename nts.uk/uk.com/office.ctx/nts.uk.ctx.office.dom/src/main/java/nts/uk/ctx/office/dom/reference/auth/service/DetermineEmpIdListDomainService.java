@@ -15,6 +15,8 @@ import nts.uk.ctx.office.dom.reference.auth.SpecifyAuthInquiry;
  */
 public class DetermineEmpIdListDomainService {
 
+	private DetermineEmpIdListDomainService() {}
+	
 	/**
 	 * [1] 参照できるか判断する
 	 * 
@@ -35,8 +37,8 @@ public class DetermineEmpIdListDomainService {
 		Map<String, EmployeeJobHistImport> map = require.getPositionBySidsAndBaseDate(sids, baseDate);
 		return sids.stream()
 				.filter(
-					item -> !item.equalsIgnoreCase(loginSid) && 
-					positionIdSeen.contains(map.get(item).getJobTitleID()))
+					sid -> !sid.equalsIgnoreCase(loginSid) && 
+					positionIdSeen.contains(map.get(sid).getJobTitleID()))
 				.collect(Collectors.toList());
 	}
 
