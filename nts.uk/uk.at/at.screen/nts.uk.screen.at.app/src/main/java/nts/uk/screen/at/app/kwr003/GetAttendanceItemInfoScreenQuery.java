@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.kwr003;
 
 import lombok.val;
+import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.DailyMonthlyClassification;
 
 import javax.ejb.Stateless;
@@ -13,7 +14,7 @@ public class GetAttendanceItemInfoScreenQuery {
     private GetAttendanceItemInfo getAttendanceItemInfo;
 
     public AttendanceItemInfoDto getInfo(AttendanceItemInfoPrams prams) {
-        val listDaily = getAttendanceItemInfo.getAttendanceItemInfo(DailyMonthlyClassification.DAILY, prams.getFormNumberDisplay());
+        val listDaily = getAttendanceItemInfo.getAttendanceItemInfo(TypeOfItem.Daily, prams.getFormNumberDisplay());
         return new AttendanceItemInfoDto(listDaily, Collections.emptyList());
     }
 }

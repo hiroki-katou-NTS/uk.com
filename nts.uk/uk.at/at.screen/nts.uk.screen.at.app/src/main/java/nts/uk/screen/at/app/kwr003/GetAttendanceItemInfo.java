@@ -6,7 +6,6 @@ import nts.uk.ctx.at.function.app.query.outputworkstatustable.GetAttendanceIdByF
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameService;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.DailyMonthlyClassification;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
@@ -46,22 +45,23 @@ public class GetAttendanceItemInfo {
     @Inject
     private DailyAttendanceItemRepository dailyAttendanceItemRepository;
 
-    public List<AttItemDto> getAttendanceItemInfo(DailyMonthlyClassification classification, int formNumberDisplay) {
+    public List<AttItemDto> getAttendanceItemInfo(TypeOfItem typeOfItem, int formNumberDisplay) {
         val cid = AppContexts.user().companyId();
         val roleId = Optional.ofNullable(AppContexts.user().roles().forAttendance());
         List<AttItemDto> rs = new ArrayList<AttItemDto>();
-        if (classification == DailyMonthlyClassification.DAILY) {
-            //  （1:日次）
-            val listAttdanceIdOfDaily = getAttendanceIdByFormNumberQuery.getAttendanceId(DailyMonthlyClassification.DAILY, formNumberDisplay);
-            //  「使用不可の勤怠項目を除く」
-            val listAttId = this.attendanceItemNameService.getAvaiableAttendanceItem(cid, TypeOfItem.Daily, listAttdanceIdOfDaily);
+
+        //  （1:日次）
+        val listId = getAttendanceIdByFormNumberQuery.getAttendanceId(typeOfItem, formNumberDisplay);
+        //  「使用不可の勤怠項目を除く」
+        val listAttIdAfterRemove = this.attendanceItemNameService.getAvaiableAttendanceItem(cid, typeOfItem, listId);
+        if (typeOfItem == TypeOfItem.Daily) {
 
             // 会社の月次項目を取得する
-            val dailyItemContainName = dailyItemService.getDailyItems(cid, roleId, listAttId, null);
+            val dailyItemContainName = dailyItemService.getDailyItems(cid, roleId, listAttIdAfterRemove, null);
 
             // 日次の勤怠項目を取得する Nhận daily Attendance items
             List<DailyAttendanceItem> dailyAttendanceItems = this.dailyAttendanceItemRepository
-                    .findByADailyAttendanceItems(listAttId, cid);
+                    .findByADailyAttendanceItems(listAttIdAfterRemove, cid);
 
             dailyAttendanceItems
                     .forEach((DailyAttendanceItem item) -> {
@@ -75,7 +75,7 @@ public class GetAttendanceItemInfo {
                                     item.getAttendanceItemId(),
                                     attItemName.getAttendanceItemName(),
                                     item.getDisplayNumber(),
-                                    null,
+                                    attItemName.getTypeOfAttendanceItem(),
                                     convertDailyToAttForms(item.getDailyAttendanceAtr().value, masterType),
                                     masterType));
                         });
@@ -83,16 +83,10 @@ public class GetAttendanceItemInfo {
 
             return rs;
         }
-
-        if (classification == DailyMonthlyClassification.MONTHLY) {
-            //  （2:月次）
-            val listAttdanceIdOfMonthly = getAttendanceIdByFormNumberQuery.getAttendanceId(DailyMonthlyClassification.MONTHLY, formNumberDisplay);
-            //  「使用不可の勤怠項目を除く」
-            val listAttIdForMonthly = this.attendanceItemNameService.getAvaiableAttendanceItem(cid, TypeOfItem.Monthly, listAttdanceIdOfMonthly);
-
-            val itemMonthlyContainName = monthlyItemService.getMonthlyItems(cid, roleId, listAttIdForMonthly, null);
+        if (typeOfItem == TypeOfItem.Monthly||typeOfItem == TypeOfItem.AnyPeriod) {
+            val itemMonthlyContainName = monthlyItemService.getMonthlyItems(cid, roleId, listAttIdAfterRemove, null);
             // 月次の勤怠項目を取得する Nhận Monthly attendance items
-            List<MonthlyAttendanceItem> monthlyAttendanceItemList = this.monthlyAttendanceItemRepository.findByAttendanceItemId(cid, listAttIdForMonthly);
+            List<MonthlyAttendanceItem> monthlyAttendanceItemList = this.monthlyAttendanceItemRepository.findByAttendanceItemId(cid, listAttIdAfterRemove);
             monthlyAttendanceItemList
                     .forEach(item -> {
                         Optional<AttItemName> attendance = itemMonthlyContainName.stream()
@@ -102,7 +96,7 @@ public class GetAttendanceItemInfo {
                                 item.getAttendanceItemId(),
                                 attItemName.getAttendanceItemName(),
                                 item.getDisplayNumber(),
-                                null,
+                                attItemName.getTypeOfAttendanceItem(),
                                 convertMonthlyToAttForms(item.getMonthlyAttendanceAtr().value),
                                 null)));
                     });
