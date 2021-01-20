@@ -250,7 +250,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         achievements: false,
                         workHolidayCls: objWorkType[0].workStyle
                     });
-                    self.isRedColor = true;
+                    self.isRedColor = false;
                 } else {
                     $("#extable").exTable("stickFields", ["workTypeName", "workTimeName"]);
                     $("#extable").exTable("stickData", {
