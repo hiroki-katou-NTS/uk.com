@@ -36,7 +36,8 @@ module nts.uk.at.view.kmk010.a {
                 self.languageId = 'ja';
                 self.isManage = ko.observable(true);
                 self.checkRounding = ko.observable(0);
-                self.superHD60HConMedModel.roundingTime.subscribe(function(selectUnit: number) {         
+                //self.superHD60HConMedModel.roundingTime.subscribe(function(selectUnit: number) {         
+                self.outsideOTSettingModel.roundingUnit.subscribe(function(selectUnit: number) {         
                         self.updateSelectUnitRounding(selectUnit);
                 });
                 self.tabFinalArray = ko.observable(12);
@@ -106,6 +107,9 @@ module nts.uk.at.view.kmk010.a {
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error);
                 });
+
+                $('#selectMethodOutsideOT').focus();
+
                 return dfd.promise();
             }
             /**

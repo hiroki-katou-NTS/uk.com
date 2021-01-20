@@ -71,8 +71,20 @@ module nts.uk.at.view.kmk010.b {
                 if (self.validateDomainSave()) {
                     return;
                 }
+
+                //check duplicate overtime
+                let duplicateOverTime = []
+                _.forEach(self.lstOvertimeModel, (item, index) => { 
+                    if(!_.includes(duplicateOverTime, item.overtime())) duplicateOverTime.push(item.overtime());
+                });
+                
+                if( self.lstOvertimeModel.length !== duplicateOverTime.length) {
+                    nts.uk.ui.dialog.alert({ messageId: "Msg_486" }).then(() => {});
+                    return;
+                }
+
                 // block ui.
-                nts.uk.ui.block.invisible();
+                nts.uk.ui.block.invisible();               
                 if (self.languageId === ScreenModel.LANGUAGE_ID_JAPAN) {
                     // convert model to dto
                     var overtimes: OvertimeDto[] = [];
@@ -131,6 +143,7 @@ module nts.uk.at.view.kmk010.b {
                         return true;
                     }
                 }
+                
                 return false;
 
             }
