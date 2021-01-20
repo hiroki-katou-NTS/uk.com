@@ -195,7 +195,7 @@ public class PreRegistrationErrorCheck {
 		switch (expirationDate) {
 		case END_OF_YEAR:
 			Integer startMonth = companyAdapter.getFirstMonth(cId).getStartMonth();
-			resultDate = GeneralDate.ymd(recDate.month() < startMonth ? recDate.month() : recDate.month() + 1, startMonth, 1);
+			resultDate = GeneralDate.ymd(recDate.month() < startMonth ? recDate.year() : recDate.year() + 1, startMonth, 1);
 			resultDate.addDays(-1);
 			break;
 		case UNLIMITED:
