@@ -150,13 +150,18 @@ export class KafS11AComponent extends KafS00ShrComponent {
                 });
             }).then(() => vm.$mask('hide'));
         } else {
-            vm.appDispInfoStartupOutput = vm.params.appDispInfoStartupOutput;
-            vm.initData(vm.params.appDetail);
-            let wkTimeCodes = [
-                vm.complementWorkInfo.workTimeCD,
-                vm.leaveWorkInfo.workTimeCD
-            ];
-            vm.$http.post('at', API.getWorkTimeByCDLst, { wkTimeCodes }).then((data: any) => {
+            vm.$auth.user.then((userData: any) => {
+                vm.user = userData;
+            }).then(() => {
+                vm.appDispInfoStartupOutput = vm.params.appDispInfoStartupOutput;
+                vm.initData(vm.params.appDetail);
+                let wkTimeCodes = [
+                    vm.complementWorkInfo.workTimeCD,
+                    vm.leaveWorkInfo.workTimeCD
+                ];
+                
+                return vm.$http.post('at', API.getWorkTimeByCDLst, { wkTimeCodes });
+            }).then((data: any) => {
                 vm.workTimeLstFullData = data.data;
             }).catch((error: any) => {
                 vm.handleErrorCustom(error).then((result) => {
@@ -1125,7 +1130,7 @@ export class KafS11AComponent extends KafS00ShrComponent {
                     },
                     workingHours: []
                 };
-                cmd.recOldHolidayMngLst = [];
+                cmd.recOldHolidayMngLst = vm.displayInforWhenStarting.rec.leaveComDayOffMana;
             }
             if (vm.displayInforWhenStarting.abs) {
                 cmd.abs = {
@@ -1141,8 +1146,8 @@ export class KafS11AComponent extends KafS00ShrComponent {
                     workingHours: [],
                     workChangeUse: false
                 };
-                cmd.absOldHolidayMngLst = [];
-                cmd.absOldWorkMngLst = [];
+                cmd.absOldHolidayMngLst = vm.displayInforWhenStarting.abs.leaveComDayOffMana;
+                cmd.absOldWorkMngLst = vm.displayInforWhenStarting.abs.payoutSubofHDManagements;
             }
         }
         if (vm.dispComplementContent) {
