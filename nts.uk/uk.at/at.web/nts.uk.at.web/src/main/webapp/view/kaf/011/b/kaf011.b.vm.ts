@@ -126,7 +126,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 					dialog.info({ messageId: "Msg_15" });
 				}).fail((res:any)=>{
 					dialog.error({ messageId: res.messageId, messageParams: res.parameterIds });
-				}).alway(()=>{
+				}).always(()=>{
 					block.clear();
 				});
 	        }
