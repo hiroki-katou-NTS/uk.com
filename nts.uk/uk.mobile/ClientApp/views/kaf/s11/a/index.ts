@@ -357,6 +357,14 @@ export class KafS11AComponent extends KafS00ShrComponent {
         }
     }
 
+    public getCDFormat(workTypeCD: string) {
+        if (workTypeCD) {
+            return workTypeCD;
+        }
+        
+        return '';
+    }
+
     public getWorkTypeName(workTypeCD: string, isComplement: boolean) {
         const vm = this;
         if (!vm.displayInforWhenStarting) {
@@ -377,7 +385,7 @@ export class KafS11AComponent extends KafS00ShrComponent {
             return workType.name;
         }
 
-        return workTypeCD + ' ' + vm.$i18n('KAFS11_32');
+        return vm.getCDFormat(workTypeCD) + ' ' + vm.$i18n('KAFS11_32');
     }
 
     public getWorkTimeName(workTimeCD: string) {
@@ -795,10 +803,12 @@ export class KafS11AComponent extends KafS00ShrComponent {
             };
         }
         vm.$modal('kdls02', param).then((result: any) => {
-            if (isComplement) {
-                vm.complementWorkInfo.workTypeCD = result.selectedWorkType.workTypeCode;            
-            } else {
-                vm.leaveWorkInfo.workTypeCD = result.selectedWorkType.workTypeCode; 
+            if (result) {
+                if (isComplement) {
+                    vm.complementWorkInfo.workTypeCD = result.selectedWorkType.workTypeCode;            
+                } else {
+                    vm.leaveWorkInfo.workTypeCD = result.selectedWorkType.workTypeCode; 
+                }
             }
         });
     }
@@ -823,21 +833,23 @@ export class KafS11AComponent extends KafS00ShrComponent {
             };
         }
         vm.$modal('kdls01', param).then((result: any) => {
-            if (isComplement) {
-                vm.complementWorkInfo.workTimeCD = result.selectedWorkTime.code;            
-            } else {
-                vm.leaveWorkInfo.workTimeCD = result.selectedWorkTime.code; 
+            if (result) {
+                if (isComplement) {
+                    vm.complementWorkInfo.workTimeCD = result.selectedWorkTime.code;            
+                } else {
+                    vm.leaveWorkInfo.workTimeCD = result.selectedWorkTime.code; 
+                }
+                let wkTimeCodes = [
+                    vm.complementWorkInfo.workTimeCD,
+                    vm.leaveWorkInfo.workTimeCD
+                ];
+                vm.$mask('show');
+    
+                return vm.$http.post('at', API.getWorkTimeByCDLst, { wkTimeCodes }).then((data: any) => {
+                    vm.workTimeLstFullData = data.data;
+                    vm.$mask('hide');
+                });
             }
-            let wkTimeCodes = [
-                vm.complementWorkInfo.workTimeCD,
-                vm.leaveWorkInfo.workTimeCD
-            ];
-            vm.$mask('show');
-
-            return vm.$http.post('at', API.getWorkTimeByCDLst, { wkTimeCodes }).then((data: any) => {
-                vm.workTimeLstFullData = data.data;
-                vm.$mask('hide');
-            });
         });
     }
 
@@ -859,8 +871,10 @@ export class KafS11AComponent extends KafS00ShrComponent {
             param.daysUnit = 0.5;
         }
         vm.$modal('kdls36', param).then((result: any) => {
-            vm.recHolidayMngLst = result.mngDisp;
-            vm.formatMngLst();
+            if (result) {
+                vm.recHolidayMngLst = result.mngDisp;
+                vm.formatMngLst();
+            }
         });
     }
 
@@ -882,8 +896,10 @@ export class KafS11AComponent extends KafS00ShrComponent {
             param.daysUnit = 0.5;
         }
         vm.$modal('kdls36', param).then((result: any) => {
-            vm.absHolidayMngLst = result.mngDisp;
-            vm.formatMngLst();
+            if (result) {
+                vm.absHolidayMngLst = result.mngDisp;
+                vm.formatMngLst();
+            }
         });
     }
 
@@ -905,8 +921,10 @@ export class KafS11AComponent extends KafS00ShrComponent {
             param.daysUnit = 0.5;
         }
         vm.$modal('kdls35', param).then((result: any) => {
-            vm.absWorkMngLst = result.mngDisp;
-            vm.formatMngLst();
+            if (result) {
+                vm.absWorkMngLst = result.mngDisp;
+                vm.formatMngLst();
+            }
         });
     }
 

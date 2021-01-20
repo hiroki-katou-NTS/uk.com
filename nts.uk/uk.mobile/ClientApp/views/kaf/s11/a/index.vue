@@ -102,7 +102,7 @@
                 </div>
                 <div>
                     <span class="uk-text-dark-gray ml-3" style="font-size: 90%">
-                        <span class="font-weight-bold mr-3">{{ complementWorkInfo.workTypeCD | i18n }}</span>
+                        <span class="font-weight-bold mr-3">{{ getCDFormat(complementWorkInfo.workTypeCD) | i18n }}</span>
                         <span>{{ getWorkTypeName(complementWorkInfo.workTypeCD, true) }}</span>
                     </span>       
                 </div>
@@ -113,7 +113,7 @@
                 </div>
                 <div>
                     <span class="uk-text-dark-gray ml-3" style="font-size: 90%">
-                        <span class="font-weight-bold mr-3">{{ complementWorkInfo.workTimeCD | i18n }}</span>
+                        <span class="font-weight-bold mr-3">{{ getCDFormat(complementWorkInfo.workTimeCD) | i18n }}</span>
                         <span>{{ getWorkTimeName(complementWorkInfo.workTimeCD) }}</span>
                     </span>    
                 </div>
@@ -207,7 +207,7 @@
                 </div>
                 <div v-if="dispLeaveContent">
                     <span class="uk-text-dark-gray ml-3" style="font-size: 90%">
-                        <span class="font-weight-bold mr-3">{{ leaveWorkInfo.workTypeCD | i18n }}</span>
+                        <span class="font-weight-bold mr-3">{{ getCDFormat(leaveWorkInfo.workTypeCD) | i18n }}</span>
                         <span>{{ getWorkTypeName(leaveWorkInfo.workTypeCD, false) }}</span>
                     </span>       
                 </div>
@@ -218,7 +218,7 @@
                 </div>
                 <div v-if="dispLeaveWorkTime">
                     <span class="uk-text-dark-gray ml-3" style="font-size: 90%">
-                        <span class="font-weight-bold mr-3">{{ leaveWorkInfo.workTimeCD | i18n }}</span>
+                        <span class="font-weight-bold mr-3">{{ getCDFormat(leaveWorkInfo.workTimeCD) | i18n }}</span>
                         <span>{{ getWorkTimeName(leaveWorkInfo.workTimeCD) }}</span>
                     </span>    
                 </div>
