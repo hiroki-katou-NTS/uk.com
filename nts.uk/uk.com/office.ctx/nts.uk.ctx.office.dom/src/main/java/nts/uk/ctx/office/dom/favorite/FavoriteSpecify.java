@@ -45,15 +45,13 @@ public class FavoriteSpecify extends AggregateRoot {
 	 * @return List<String>
 	 */
 	public List<String> passingTargetInfoName(Require require) {
-		switch (this.targetSelection) {
-		case AFFILIATION_WORKPLACE:
+		if (this.targetSelection == TargetSelection.AFFILIATION_WORKPLACE) {
 			return Collections.emptyList();
-		case WORKPLACE:
+		} else {
 			List<String> list = new ArrayList<>();
-			require.getWrkspDispName(this.workplaceId, GeneralDate.today()).forEach((key, value) -> list.add(value.getWorkplaceDisplayName()));
+			require.getWrkspDispName(this.workplaceId, GeneralDate.today())
+				.forEach((key, value) -> list.add(value.getWorkplaceDisplayName()));
 			return list;
-		default:
-			return Collections.emptyList();
 		}
 	}
 

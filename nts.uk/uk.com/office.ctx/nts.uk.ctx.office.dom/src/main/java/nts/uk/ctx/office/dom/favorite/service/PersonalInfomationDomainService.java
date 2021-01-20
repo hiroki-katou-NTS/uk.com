@@ -1,5 +1,6 @@
 package nts.uk.ctx.office.dom.favorite.service;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -38,9 +39,9 @@ public class PersonalInfomationDomainService {
 				baseDate);
 		// 職位の序列を取得する
 		List<SequenceMasterImport> rankOfPosition = require.getRankOfPosition();
-
-		List<String> workSplaceId = (List<String>) employeesWorkplaceId.values();
-		workSplaceId.stream().distinct().collect(Collectors.toList());
+		
+		Collection<String> workSplaceIdCollect = employeesWorkplaceId.values();
+		List<String> workSplaceId = workSplaceIdCollect.stream().distinct().collect(Collectors.toList());
 
 		// 職場情報を取得する
 		Map<String, WorkplaceInforImport> workplaceInfor = require.getWorkplaceInfor(workSplaceId, baseDate);
@@ -101,10 +102,11 @@ public class PersonalInfomationDomainService {
 	}
 
 	private static Optional<Integer> getOrder(String sequenceCode, List<SequenceMasterImport> positionOrder) {
-		List<SequenceMasterImport> filterList = positionOrder.stream()
+		return positionOrder.stream()
 				.filter(position -> position.getSequenceCode().equalsIgnoreCase(sequenceCode))
-				.collect(Collectors.toList());
-		return filterList.isEmpty() ? Optional.empty() : Optional.ofNullable(filterList.get(0).getOrder());
+				.findFirst()
+					.map(item -> Optional.ofNullable(item.getOrder()))
+					.orElse(Optional.empty());
 	}
 
 	public static interface Require {

@@ -16,6 +16,7 @@ import javax.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /*
@@ -27,6 +28,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "OFIMT_FAVORITE_DETAIL")
 public class FavoriteSpecifyEntityDetail extends UkJpaEntity implements Serializable {
 	/**
@@ -50,8 +52,8 @@ public class FavoriteSpecifyEntityDetail extends UkJpaEntity implements Serializ
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumns({ 
-		@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = true, updatable = true),
-		@JoinColumn(name = "INPUT_DATE", referencedColumnName = "INPUT_DATE", insertable = true, updatable = true)
+		@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
+		@JoinColumn(name = "INPUT_DATE", referencedColumnName = "INPUT_DATE", insertable = false, updatable = false)
 		})
 	public FavoriteSpecifyEntity favoriteSpecifyEntity;
 
