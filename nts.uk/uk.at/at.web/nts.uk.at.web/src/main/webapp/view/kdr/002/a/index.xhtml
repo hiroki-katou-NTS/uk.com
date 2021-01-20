@@ -5,9 +5,7 @@
 
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
-		<com:ValidatorScript>
-			nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.NumberDayAward
-		</com:ValidatorScript>
+		
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kdr002.a.main.css" />
@@ -20,6 +18,10 @@
 			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 
+			<com:ValidatorScript>
+				nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.NumberDayAward
+			</com:ValidatorScript>
+			
 		</ui:define>
 
 
@@ -37,7 +39,7 @@
 				<!-- A2_1  CCG001-->
 				<div id="ccgcomponent"></div>
 
-				<div class="drag-panel min-width-layout-1" style="margin-left: 75px; margin-top: 10px; height: 620px;">
+				<div class="drag-panel min-width-layout-1" style="margin-left: 75px; margin-top: 10px; height: 620px; width: 530px;">
 					<!-- A2_2  -->
 					<div class="employeeInfoSearch">
 						<div >
@@ -161,8 +163,8 @@
 											constraint: 'NumberDayAward',
 											name: '#[KDR002_58]',
 											value: inputExtraction,
-											required: isExtraction(),
-											enable: isExtraction(),
+											required: requiredInputExtraction,
+											enable: requiredInputExtraction,
 											option: {
 												width : '65px',
 												unitID: 'DAYS'

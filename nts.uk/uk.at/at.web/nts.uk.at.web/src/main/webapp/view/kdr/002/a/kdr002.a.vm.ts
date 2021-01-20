@@ -105,13 +105,19 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         isExtraction: KnockoutObservable<boolean> = ko.observable(false);
         // A5_2
         inputExtraction: KnockoutObservable<number> = ko.observable(null);
-        numbereditor: any;
+        requiredInputExtraction: KnockoutObservable<boolean>;
         // A5_3
         optionExtractionValue: KnockoutObservable<number> = ko.observable(0);
 
 
         constructor() {
             let self = this;
+            
+            self.requiredInputExtraction = ko.computed(function() {
+                nts.uk.ui.errors.clearAll();
+                return self.isExtraction();
+            });
+
 
             //_____CCG001________
             self.ccgcomponent = {
