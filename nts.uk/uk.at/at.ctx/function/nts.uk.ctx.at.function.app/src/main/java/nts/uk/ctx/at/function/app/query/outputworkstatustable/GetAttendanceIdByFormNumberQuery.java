@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.app.query.outputworkstatustable;
 
 
 import lombok.val;
+import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.DailyValue;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.DailyMonthlyClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemUsedRepository;
@@ -31,9 +32,9 @@ public class GetAttendanceIdByFormNumberQuery {
     @Inject
     private MonthlyAttendanceItemUsedRepository monthlyRepository;
 
-    public List<Integer> getAttendanceId(DailyMonthlyClassification classification, int screenNumber) {
+    public List<Integer> getAttendanceId(TypeOfItem typeOfItem, int screenNumber) {
         val cid = AppContexts.user().companyId();
-        if (classification == DailyMonthlyClassification.DAILY) {
+        if (typeOfItem == TypeOfItem.Daily) {
 
             return dailyRepository.getAllDailyItemId(cid, BigDecimal.valueOf(screenNumber));
         } else

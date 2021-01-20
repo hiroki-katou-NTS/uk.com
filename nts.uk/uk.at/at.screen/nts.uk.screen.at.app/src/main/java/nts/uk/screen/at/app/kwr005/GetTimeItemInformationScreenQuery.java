@@ -2,7 +2,7 @@ package nts.uk.screen.at.app.kwr005;
 
 
 import lombok.val;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.DailyMonthlyClassification;
+import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.screen.at.app.kwr003.AttendanceItemInfoDto;
 import nts.uk.screen.at.app.kwr003.GetAttendanceItemInfo;
 
@@ -19,7 +19,7 @@ public class GetTimeItemInformationScreenQuery {
     private GetAttendanceItemInfo getAttendanceItemInfo;
 
     public AttendanceItemInfoDto geInfo(int formNumberDisplay) {
-        val listMonthly = getAttendanceItemInfo.getAttendanceItemInfo(DailyMonthlyClassification.MONTHLY, formNumberDisplay);
+        val listMonthly = getAttendanceItemInfo.getAttendanceItemInfo(TypeOfItem.Monthly, formNumberDisplay);
         return new AttendanceItemInfoDto(Collections.emptyList(),listMonthly);
     }
 
