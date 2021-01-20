@@ -475,7 +475,7 @@ module nts.ui.controls.buttons {
                                 if (selected.length) {
                                     const prev = selected.prev();
 
-                                    if (prev) {
+                                    if (prev.length) {
                                         prev.addClass('selected');
                                         selected.removeClass('selected');
                                     }
@@ -486,7 +486,7 @@ module nts.ui.controls.buttons {
                                 if (selected.length) {
                                     const next = selected.next();
 
-                                    if (next) {
+                                    if (next.length) {
                                         next.addClass('selected');
                                         selected.removeClass('selected');
                                     }
@@ -550,7 +550,12 @@ module nts.ui.controls.buttons {
                     })
                     .on('click', (evt) => {
                         $(window).trigger('dr.click', [evt]);
-                    })
+                    });
+
+                $($el)
+                    .removeAttr('data-bind')
+                    .find('[data-bind]')
+                    .removeAttr('data-bind');
             }
 
             // hook for remove dropdown on body
