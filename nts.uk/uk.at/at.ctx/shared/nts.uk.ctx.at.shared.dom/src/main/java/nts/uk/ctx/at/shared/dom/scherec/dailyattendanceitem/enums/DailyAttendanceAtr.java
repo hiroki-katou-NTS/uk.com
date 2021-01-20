@@ -20,8 +20,10 @@ public enum DailyAttendanceAtr {
 	/* 時刻*/
 	TimeOfDay(6),
 	/* 文字 */
-	Charater(7);
-	
+	Charater(7),
+
+	/*申請*/
+	Application(8);
 	public final int value;
 	
 }
