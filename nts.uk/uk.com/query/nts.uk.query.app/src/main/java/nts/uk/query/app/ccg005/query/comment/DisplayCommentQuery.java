@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.office.dom.comment.EmployeeCommentInformation;
@@ -12,6 +14,7 @@ import nts.uk.ctx.office.dom.comment.EmployeeCommentInformationRepository;
 /*
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.オフィス支援.在席照会.コメント.在席照会に表示コメントを取得.在席照会に表示コメントを取得
  */
+@Stateless
 public class DisplayCommentQuery {
 
 	@Inject

@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -46,9 +48,8 @@ import nts.uk.shr.com.i18n.TextResource;
 /*
  * UKDesign.UniversalK.共通.CCG_メニュートップページ.CCG005_ミニ在席照会.A:ミニ在席照会.メニュー別OCD.在席情報を取得.在席情報を取得
  */
+@Stateless
 public class AttendanceInformationScreenQuery {
-
-//	private WorkInformationQuery workInforQuery;
 
 	@Inject
 	private ApplicationRepository appRepo;

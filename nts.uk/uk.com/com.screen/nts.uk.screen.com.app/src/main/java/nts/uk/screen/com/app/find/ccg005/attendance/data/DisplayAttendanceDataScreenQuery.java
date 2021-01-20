@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -25,6 +26,7 @@ import nts.uk.shr.com.context.AppContexts;
 /*
  * UKDesign.UniversalK.共通.CCG_メニュートップページ.CCG005_ミニ在席照会.A:ミニ在席照会.メニュー別OCD.表示初期の在席データ.表示初期の在席データ
  */
+@Stateless
 public class DisplayAttendanceDataScreenQuery {
 
 	@Inject
@@ -42,7 +44,9 @@ public class DisplayAttendanceDataScreenQuery {
 	@Inject
 	private RoleExportRepo roleExportRepo;
 
+	@Inject
 	private AttendanceInformationScreenQuery attendanceInfoScreenQuery;
+	
 	public DisplayAttendanceDataDto getDisplayAttendanceData() {
 		String loginSid = AppContexts.user().employeeId();
 		String loginCid = AppContexts.user().companyId();

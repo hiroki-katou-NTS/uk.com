@@ -18,7 +18,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class FavoriteSpecifyRepositoryImpl extends JpaRepository implements FavoriteSpecifyRepository {
 
 	// select by Sid
-	private static final String SELECT_BY_SID = "SELECT m FROM FavoriteSpecifyEntity m WHERE m.pk.sid = :sid";
+	private static final String SELECT_BY_SID = "SELECT m FROM FavoriteSpecifyEntity m WHERE m.pk.creatorId = :sid";
 
 	private static FavoriteSpecifyEntity toEntity(FavoriteSpecify domain) {
 		FavoriteSpecifyEntity entity = new FavoriteSpecifyEntity();
