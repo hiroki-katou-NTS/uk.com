@@ -49,9 +49,12 @@ div.nts-column{
 #contents-area{
 	overflow: hidden !important;
 }
-.inputTime{
+.inputTime {
 	width: 100px;
-    text-align: center !important;
+  text-align: center !important;
+}
+#search-div .inputTime {
+	width: 65px;
 }
 /* .label{
 	margin-left: 10px;
@@ -62,7 +65,7 @@ div.nts-column{
 }
 
 .table .cell.cell-right {
-	width: 55%;
+	width: 63%;
 	text-align: right;
 }
 .search-by-code .cell:last-child {
