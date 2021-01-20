@@ -22,10 +22,17 @@ module nts.uk.ui.sample.layout.a {
             vm.listbox(items);
         }
 
+        show: KnockoutObservable<boolean> = ko.observable(true);
+
         click() {
             const vm = this;
 
-            vm.$dialog.error({ messageId: 'MsgB_1', messageParams: [vm.text()] });
+            vm.show(!vm.show());
+            // vm.$dialog.error({ messageId: 'MsgB_1', messageParams: [vm.text()] });
+        }
+
+        selectDropdown(item: string) {
+            console.log(item);
         }
     }
 
