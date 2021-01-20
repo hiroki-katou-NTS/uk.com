@@ -418,9 +418,12 @@ export class KafS11AComponent extends KafS00ShrComponent {
         if (!workTimeFull) {
             return '';        
         }
-        let result = '<div>' + workTimeFull.workTime1 + '</div>';
+        let result = '';
         if (workTimeFull.workTime2) {
-            result += '<div class="mt-2">' + workTimeFull.workTime2 + '</div>';
+            result = '<div>' + workTimeFull.workTime2 + '</div>';
+        }
+        if (workTimeFull.workTime1) {
+            result = '<div>' + workTimeFull.workTime1 + '</div>';
         }
 
         return result;
