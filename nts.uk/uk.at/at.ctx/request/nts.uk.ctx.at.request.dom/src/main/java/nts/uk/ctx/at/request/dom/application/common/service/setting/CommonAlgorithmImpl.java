@@ -952,7 +952,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		        }
 		        
 		        if (timeSpecialRemain != 0) {
-		            throw new BusinessException("Msg_1686", "#KAFS12_46", pendingUnit.get().description);
+		            throw new BusinessException("Msg_1686", "KAFS12_46", pendingUnit.get().description);
 		        }
 		    }
 		}

@@ -160,8 +160,8 @@ module nts.uk.at.view.kaf012.b.viewmodel {
             }).done(res => {
                 if (res) {
                     vm.reflectSetting(res.reflectSetting);
-                    vm.timeLeaveManagement(res.timeLeaveManagement);
                     vm.timeLeaveRemaining(res.timeLeaveRemaining);
+                    vm.timeLeaveManagement(res.timeLeaveManagement);
                     let totalAppTime: Array<number> = [0, 0, 0, 0, 0, 0], specialFrame: number = null;
                     res.details.forEach((detail: TimeLeaveAppDetail) => {
                         detail.timeZones.forEach(z => {

@@ -267,8 +267,12 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
         if (timeLeaveManagement.getTimeAnnualLeaveManagement().isTimeAnnualManagement()) {
             // 基準日時点の年休残数を取得する
             ReNumAnnLeaReferenceDateImport reNumAnnLeave = leaveAdapter.getReferDateAnnualLeaveRemainNumber(employeeId, baseDate);
-            timeLeaveRemaining.setAnnualTimeLeaveRemainingDays(reNumAnnLeave.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantDay());
-            timeLeaveRemaining.setAnnualTimeLeaveRemainingTime(reNumAnnLeave.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantTime());
+            if (reNumAnnLeave != null && reNumAnnLeave.getAnnualLeaveRemainNumberExport() != null) {
+                if (reNumAnnLeave.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantDay() != null)
+                    timeLeaveRemaining.setAnnualTimeLeaveRemainingDays(reNumAnnLeave.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantDay());
+                if (reNumAnnLeave.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantTime() != null)
+                    timeLeaveRemaining.setAnnualTimeLeaveRemainingTime(reNumAnnLeave.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantTime());
+            }
         }
 
         if (timeLeaveManagement.getTimeAllowanceManagement().isTimeBaseManagementClass()) {
@@ -302,7 +306,11 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
                     Optional.empty(),
                     Optional.empty()
             );
-            timeLeaveRemaining.setSuper60HRemainingTime(aggrResultOfHolidayOver60h.getAsOfPeriodEnd().getRemainingNumber().getRemainingTimeWithMinus().v());
+            if (aggrResultOfHolidayOver60h != null
+                    && aggrResultOfHolidayOver60h.getAsOfPeriodEnd()!= null
+                    && aggrResultOfHolidayOver60h.getAsOfPeriodEnd().getRemainingNumber()!= null
+                    && aggrResultOfHolidayOver60h.getAsOfPeriodEnd().getRemainingNumber().getRemainingTimeWithMinus()!= null)
+                timeLeaveRemaining.setSuper60HRemainingTime(aggrResultOfHolidayOver60h.getAsOfPeriodEnd().getRemainingNumber().getRemainingTimeWithMinus().v());
         }
 
         if (timeLeaveManagement.getChildNursingManagement().isTimeChildManagementClass()) {

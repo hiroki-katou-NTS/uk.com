@@ -475,7 +475,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             case 'Msg_477':
             case 'Msg_478':
             case 'Msg_1686':
-            case 'Msg_1760':
+            case 'Msg_1706':
             case 'Msg_1983':
 				vm.$dialog.error({ messageId: res.messageId, messageParams: res.parameterIds });
 				break;
