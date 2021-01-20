@@ -40,8 +40,10 @@ module nts.uk.at.view.kaf011.c.viewmodel {
 				self.displayInforWhenStarting.abs.applicationInsert = self.displayInforWhenStarting.abs.applicationUpdate = self.displayInforWhenStarting.abs.application;
 			}
 			ajax('at/request/application/holidayshipment/saveChangeDateScreenC',{appDateNew: new Date(self.appDate()), displayInforWhenStarting: self.displayInforWhenStarting, appReason: self.appReason(), appStandardReasonCD: self.appStandardReasonCD()}).then((data: any) =>{
-				dialog.info({ messageId: "Msg_15"});
-				windows.setShared("KAF011C_RESLUT", moment(this.appDate()).format('YYYY/MM/DD'));
+				windows.setShared("KAF011C_RESLUT", {appID: data});
+				dialog.info({ messageId: "Msg_15"}).then(()=>{
+					self.closeDialog();
+				});
 			}).fail((fail: any) => {
 				dialog.error({ messageId: fail.messageId, messageParams: fail.parameterIds});
 			}).always(() => {
