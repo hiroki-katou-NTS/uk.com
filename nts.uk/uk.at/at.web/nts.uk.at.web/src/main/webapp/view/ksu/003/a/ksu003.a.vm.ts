@@ -129,7 +129,15 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			if (self.targetDate() === (self.dataFromA().endDate)) {
 				self.checkNext(false);
 			}
-			self.targetDateDay(self.targetDate() + moment(self.targetDate()).format('(ddd)'));
+			
+			 let shortW = moment(self.targetDate()).format('(ddd)');
+                if (shortW == "(土)") {
+                    shortW = "<span style='color:#0000ff;'>" + shortW + "</span>";
+                } else if (shortW == "(日)") {
+                    shortW = "<span style='color:#ff0000;'>" + shortW + "</span>";
+                } 
+			
+			self.targetDateDay(self.targetDate() + shortW);
 			self.tooltip = getShared("dataTooltip");
 			self.itemList = ko.observableArray([
 				new ItemModel('0', getText('KSU003_13')),
@@ -803,8 +811,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		public getData(): JQueryPromise<any> {
 			let self = this, dfd = $.Deferred<any>();
 			let canModified = 0;
-			// 修正可能 - Check ngày có thể chỉnh sửa 
-			if ((self.dataFromA().dayEdit <= self.targetDate())) {
+			// 修正可能 - Check ngày có thể chỉnh sửa
+			// 対象年月日(A2_1_3)>＝パラメータ.いつから編集可能か.修正可能年月日 
+			if ((self.targetDate() >= self.dataFromA().dayEdit)) {
 				canModified = 1;
 			}
 			let data003A: model.DataScreenA = {
@@ -4099,7 +4108,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			if (checkSort.length > 0) {
 				dialog.confirm({ messageId: "Msg_447" }).ifYes(() => {
 					self.nextDayImpl();
-				}).ifNo(() => { return; });
+				}).ifNo(() => { self.nextDayImpl(); });
 			} else {
 				self.nextDayImpl();
 			}
@@ -4131,7 +4140,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			if (checkSort.length > 0) {
 				dialog.confirm({ messageId: "Msg_447" }).ifYes(() => {
 					self.nextAllDayImpl(i, nextDay);
-				}).ifNo(() => { return; });
+				}).ifNo(() => { self.nextAllDayImpl(i, nextDay); });
 			} else {
 				self.nextAllDayImpl(i, nextDay);
 			}
@@ -4166,7 +4175,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			if (checkSort.length > 0) {
 				dialog.confirm({ messageId: "Msg_447" }).ifYes(() => {
 					self.prevDayImpl();
-				}).ifNo(() => { return; });
+				}).ifNo(() => { self.prevDayImpl(); });
 			} else {
 				self.prevDayImpl();
 			}
@@ -4197,7 +4206,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			if (checkSort.length > 0) {
 				dialog.confirm({ messageId: "Msg_447" }).ifYes(() => {
 					self.prevAllDayImpl(i, prvDay);
-				}).ifNo(() => { return; });
+				}).ifNo(() => { self.prevAllDayImpl(i, prvDay) });
 			} else {
 				self.prevAllDayImpl(i, prvDay);
 			}
@@ -4233,7 +4242,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				let time: any = moment(moment(self.targetDate()).subtract(index, 'd').format('YYYY/MM/DD'));
 				self.targetDate(time._i);
 			}
-			self.targetDateDay(self.targetDate() + moment(self.targetDate()).format('(ddd)'));
+			let shortW = moment(self.targetDate()).format('(ddd)');
+                if (shortW == "(土)") {
+                    shortW = "<span style='color:#0000ff;'>" + shortW + "</span>";
+                } else if (shortW == "(日)") {
+                    shortW = "<span style='color:#ff0000;'>" + shortW + "</span>";
+                }
+			self.targetDateDay(self.targetDate() + shortW);
 		}
 
 		public checkTimeInfo(index: any, worktypeCode: any, worktimeCode: any, startTime1: any, startTime2: any, endTime1: any, endTime2: any, columnKey: string): JQueryPromise<any> {
@@ -4414,10 +4429,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		public openKdl045Dialog(empId: string) {
 			let self = this, lineNo = _.findIndex(self.lstEmpId, (x) => { return x.empId === empId; });
 			block.grayout();
-			if (self.dataScreen003A().employeeInfo[lineNo].workInfoDto.isConfirmed == 1) {
+			/*if (self.dataScreen003A().employeeInfo[lineNo].workInfoDto.isConfirmed == 1) {
 				block.clear();
 				return;
-			}
+			}*/
 			if(self.dataScreen003A().employeeInfo[lineNo].workScheduleDto != null && self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.workTimeCode != null)
 			self.dataScreen003A().employeeInfo[lineNo].workScheduleDto.workTimeCode = $("#extable-ksu003").exTable('dataSource', 'middle').body[lineNo].worktimeCode;
 			
