@@ -10,7 +10,6 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.app.command.application.appabsence.CreatAppAbsenceCommand;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AbsenceCheckRegisterDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppAbsenceStartInfoDto;
 import nts.uk.ctx.at.request.app.find.application.appabsence.dto.AppForLeaveStartOutputDto;

@@ -10,7 +10,7 @@
           <div class="card" v-if="true">
             <div class="card-header uk-bg-accordion">
               <button class="btn btn-link" type="button">
-                  {{'KAFS00_4' | i18n}}
+                  {{'KAFS05_41' | i18n}}
               </button>
             </div>
             <div class="collapse">
@@ -23,18 +23,27 @@
     </div>
 
     <div
+       v-if="!$valid || !$appContext.isValidateAll" 
+      class="card bg-danger top-alert uk-text-danger topError mt-2"
+      >
+      <button class="btn btn-link uk-text-danger">
+        <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+        {{ "Msg_1562" | i18n }}
+      </button>
+    </div>
+    <div
       v-if="$appContext.isMsg_1556 || $appContext.isMsg_1557"
       class="card topAlarm" style="margin-bottom: 10px"
     >
       <button class="btn btn-link">
         <div v-if="$appContext.isMsg_1556">
           <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-          {{ "Msg_1556" | i18n($appContext.date) }}
+          {{ "Msg_1556" | i18n($appContext.modeNew ? $appContext.date : $appContext.appDispInfoStartupOutput.appDetailScreenInfo.application.appDate) }}
           <br/>
         </div>
         <div v-if="$appContext.isMsg_1557">
           <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-          {{ "Msg_1557" | i18n($appContext.date) }}
+          {{ "Msg_1557" | i18n($appContext.modeNew ? $appContext.date : $appContext.appDispInfoStartupOutput.appDetailScreenInfo.application.appDate) }}
           <br/>
         </div>
       </button>
@@ -67,9 +76,10 @@
             </div>
           </div>
           <div class="card-body">
-            <nts-time-editor
-              v-model="item.applicationTime"
+             <nts-time-editor
+              v-model="holidayTimes[index].applicationTime"
               name=""
+              v-bind:record-id="index"
               v-bind:enable="$appContext.c8"
             />
           </div>
@@ -78,9 +88,9 @@
     </div>
 
     <!-- OverTime -->
-    <div v-show="$appContext.c9" class="card card-label">
+    <div v-show="$appContext.c9 || $appContext.c9_appHolidayWork" class="card card-label">
       <!--A2_5_1-->
-      <div v-show="$appContext.c9" class="card-header uk-bg-accordion mt-2">
+      <div v-show="$appContext.c9 || $appContext.c9_appHolidayWork" class="card-header uk-bg-accordion mt-2">
         <span>{{ "KAFS10_17" | i18n }}</span>
         <span class="badge badge-info">任意</span>
       </div>
@@ -113,9 +123,10 @@
             
           </div>
           <div v-show="item.visible" class="card-body">
-            <nts-time-editor
-              v-model="item.applicationTime"
+             <nts-time-editor
+              v-model="overTimes[index].applicationTime"
               name=""
+              v-bind:record-id="index"
               v-bind:enable="$appContext.c8"
             />
           </div>
@@ -144,7 +155,7 @@
             <!--A2_7_2-->
             <div v-if="$appContext.c10">
                   <div class="mb-1">
-                        <span class="small-header">{{'KAFS05_90' | i18n(reason.title)}}</span>
+                        <span class="small-header">{{'KAF005_90' | i18n(reason.title)}}</span>
                   </div>
                   <div>
                         <nts-dropdown v-model="reason.selectedValue">
@@ -157,7 +168,7 @@
             <!--A2_7_3-->
             <div v-if="$appContext.c11">
                   <div class="mb-1">
-                        <span class="small-header">{{'KAFS05_92' | i18n(reason.title)}}</span>
+                        <span class="small-header">{{'KAF005_92' | i18n(reason.title)}}</span>
                   </div>
                   <div>
                         <nts-text-area v-model="reason.reason" />

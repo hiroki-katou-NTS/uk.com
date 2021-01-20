@@ -21,10 +21,9 @@ public interface WorkAvailability {
 	
 	/**
 	 * 休日の勤務希望である
+	 * @param require
 	 */
-	public default boolean isHolidayAvailability(){ 
-		return this.getAssignmentMethod() == AssignmentMethod.HOLIDAY;
-    } 
+	public boolean isHolidayAvailability(Require require);
 	
 	/**
 	 * 希望に沿っているか

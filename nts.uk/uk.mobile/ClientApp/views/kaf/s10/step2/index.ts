@@ -6,7 +6,7 @@ import { KafS00SubP1Component } from 'views/kaf/s00/sub/p1';
 import { KafS00AComponent, KafS00BComponent, KafS00CComponent } from 'views/kaf/s00';
 import { ExcessTimeStatus } from '../../s00/sub/p1';
 import { KafS00SubP2Component } from 'views/kaf/s00/sub/p2';
-import { ReasonDivergence, ExcessStateMidnight, ExcessStateDetail, OutDateApplication, DivergenceReasonSelect, AppOverTime, OvertimeWorkFrame, DivergenceReasonInputMethod, DivergenceTimeRoot, AttendanceType, OvertimeApplicationSetting, HolidayMidNightTime, StaturoryAtrOfHolidayWork, WorkdayoffFrame, AppHolidayWork } from '../a/define.interface';
+import { ReasonDivergence, ExcessStateMidnight, ExcessStateDetail, OutDateApplication, DivergenceReasonSelect, AppOverTime, OvertimeWorkFrame, DivergenceReasonInputMethod, DivergenceTimeRoot, AttendanceType, OvertimeApplicationSetting, HolidayMidNightTime, StaturoryAtrOfHolidayWork, WorkdayoffFrame, AppHolidayWork, NotUseAtr } from '../a/define.interface';
 
 @component({
     name: 'kafs10step2',
@@ -15,14 +15,23 @@ import { ReasonDivergence, ExcessStateMidnight, ExcessStateDetail, OutDateApplic
     template: require('./index.vue'),
     resource: require('./resources.json'),
     validations: {
-        item: {
+        overTimes: {
             applicationTime: {
-                constraint: 'OvertimeAppPrimitiveTime'
+                loop: true,
+                constraint: 'OvertimeAppPrimitiveTime',
+                validate: true
+            }
+        },
+        holidayTimes: {
+            applicationTime: {
+                loop: true,
+                constraint: 'OvertimeAppPrimitiveTime',
+                validate: true
             }
         },
         reason: {
             reason: {
-                constraint: 'DivergenceReason',
+                constraint: 'DivergenceReasonContent',
 
             }
         },
@@ -84,6 +93,7 @@ export class KafS10Step2Component extends Vue {
         self.bindReasonDivergence();
         self.bindHolidayTime();
         self.bindOverTime();
+        self.$updateValidator();
     }
 
     public bindHolidayTime() {
@@ -146,6 +156,14 @@ export class KafS10Step2Component extends Vue {
         {
             // AttendanceType.BREAKTIME
             let applicationTime = _.get(calculationResultOp, 'applicationTime.applicationTime') as Array<OvertimeApplicationSetting>;
+            //  （申請一覧から起動する　）場合
+            if (!self.$appContext.modeNew) {
+                // 休日出勤申請起動時の表示情報．休出申請設定．申請詳細設定．時刻計算利用区分＝しない
+                if (_.get(appHdWorkDispInfo, 'holidayWorkAppSet.applicationDetailSetting.timeCalUse') == NotUseAtr.Not_USE) {
+                    let appHolidayWork = self.$appContext.model.appHolidayWork;
+                    applicationTime = _.get(appHolidayWork, 'applicationTime.applicationTime');
+                }
+            }
             _.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
                 let findResult = _.findLast(holidayTimes, (i: HolidayTime) => i.type == item.attendanceType && i.frameNo == String(item.frameNo));
                 if (!_.isNil(findResult)) {
@@ -153,6 +171,14 @@ export class KafS10Step2Component extends Vue {
                 }
             });
             let midNightHolidayTimes = _.get(calculationResultOp, 'applicationTime.overTimeShiftNight.midNightHolidayTimes') as Array<HolidayMidNightTime>;
+            //  （申請一覧から起動する　）場合
+            if (!self.$appContext.modeNew) {
+                // 休日出勤申請起動時の表示情報．休出申請設定．申請詳細設定．時刻計算利用区分＝しない
+                if (_.get(appHdWorkDispInfo, 'holidayWorkAppSet.applicationDetailSetting.timeCalUse') == NotUseAtr.Not_USE) {
+                    let appHolidayWork = self.$appContext.model.appHolidayWork;
+                    midNightHolidayTimes = _.get(appHolidayWork, 'applicationTime.overTimeShiftNight.midNightHolidayTimes');
+                }
+            }
             _.forEach(midNightHolidayTimes, (item: HolidayMidNightTime) => {
                 let findResult: HolidayTime;
                 // AttendanceType.MIDDLE_BREAK_TIME
@@ -230,7 +256,7 @@ export class KafS10Step2Component extends Vue {
         if (!_.isNil(hdWorkDispInfoWithDateOutput)) {
             // AttendanceType.BREAKTIME
             {
-                let applicationTime = _.get(hdWorkDispInfoWithDateOutput, 'applicationTime.applicationTime') as Array<OvertimeApplicationSetting>;
+                let applicationTime = _.get(hdWorkDispInfoWithDateOutput, 'actualApplicationTime.applicationTime') as Array<OvertimeApplicationSetting>;
                 _.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
                     let findResult = _.findLast(holidayTimes, (i: OverTime) => i.type == item.attendanceType && i.frameNo == String(item.frameNo)) as HolidayTime;
                     if (!_.isNil(findResult)) {
@@ -239,7 +265,7 @@ export class KafS10Step2Component extends Vue {
                 });
             }
             {
-                let midNightHolidayTimes = _.get(hdWorkDispInfoWithDateOutput, 'applicationTime.overTimeShiftNight.midNightHolidayTimes') as Array<HolidayMidNightTime>;
+                let midNightHolidayTimes = _.get(hdWorkDispInfoWithDateOutput, 'actualApplicationTime.overTimeShiftNight.midNightHolidayTimes') as Array<HolidayMidNightTime>;
                 _.forEach(midNightHolidayTimes, (item: HolidayMidNightTime) => {
                     let findResult: HolidayTime;
                     // AttendanceType.MIDDLE_BREAK_TIME
@@ -295,7 +321,7 @@ export class KafS10Step2Component extends Vue {
             overTime.frameNo = String(item.overtimeWorkFrNo);
             overTime.title = item.overtimeWorkFrName;
             overTime.applicationTime = 0;
-            overTime.visible = self.$appContext.c9;
+            overTime.visible = self.$appContext.c9 || self.$appContext.c9_appHolidayWork;
             overTime.preApp = {
                 preAppDisp: self.$appContext.c9_3,
                 preAppTime: 0,
@@ -333,6 +359,14 @@ export class KafS10Step2Component extends Vue {
         {
             // AttendanceType.NORMALOVERTIME
             let applicationTime = _.get(calculationResultOp, 'applicationTime.applicationTime') as Array<OvertimeApplicationSetting>;
+            //  （申請一覧から起動する　）場合
+            if (!self.$appContext.modeNew) {
+                // 休日出勤申請起動時の表示情報．休出申請設定．申請詳細設定．時刻計算利用区分＝しない
+                if (_.get(appHdWorkDispInfo, 'holidayWorkAppSet.applicationDetailSetting.timeCalUse') == NotUseAtr.Not_USE) {
+                    let appHolidayWork = self.$appContext.model.appHolidayWork;
+                    applicationTime = _.get(appHolidayWork, 'applicationTime.applicationTime');
+                }
+            }
             _.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
                 let findResult = _.findLast(overTimes, (i: OverTime) => i.type == item.attendanceType && i.frameNo == String(item.frameNo)) as OverTime;
                 if (!_.isNil(findResult)) {
@@ -342,6 +376,14 @@ export class KafS10Step2Component extends Vue {
             // AttendanceType.MIDNIGHT_OUTSIDE
             {
                 let overTimeMidNight = _.get(calculationResultOp, 'applicationTime.overTimeShiftNight.overTimeMidNight');
+                //  （申請一覧から起動する　）場合
+                if (!self.$appContext.modeNew) {
+                    // 休日出勤申請起動時の表示情報．休出申請設定．申請詳細設定．時刻計算利用区分＝しない
+                    if (_.get(appHdWorkDispInfo, 'holidayWorkAppSet.applicationDetailSetting.timeCalUse') == NotUseAtr.Not_USE) {
+                        let appHolidayWork = self.$appContext.model.appHolidayWork;
+                        overTimeMidNight = _.get(appHolidayWork, 'applicationTime.overTimeShiftNight.overTimeMidNight');
+                    }
+                }
                 let findResult = _.findLast(overTimes, (i: OverTime) => i.type == AttendanceType.MIDNIGHT_OUTSIDE) as OverTime;
                 if (!_.isNil(findResult)) {
                     findResult.applicationTime = overTimeMidNight || 0;
@@ -390,7 +432,7 @@ export class KafS10Step2Component extends Vue {
             let achivementExcess = _.get(appHdWorkDispInfo, 'calculationResult.actualOvertimeStatus.achivementExcess') as OutDateApplication;
             // AttendanceType.NORMALOVERTIME
             {
-                let applicationTime = _.get(hdWorkDispInfoWithDateOutput, 'applicationTime.applicationTime') as Array<OvertimeApplicationSetting>;
+                let applicationTime = _.get(hdWorkDispInfoWithDateOutput, 'actualApplicationTime.applicationTime') as Array<OvertimeApplicationSetting>;
                 _.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
                     let findResult = _.findLast(overTimes, (i: OverTime) => i.type == item.attendanceType && i.frameNo == String(item.frameNo)) as OverTime;
                     if (!_.isNil(findResult)) {
@@ -407,7 +449,7 @@ export class KafS10Step2Component extends Vue {
             }
             // AttendanceType.MIDNIGHT_OUTSIDE
             {
-                let overTimeMidNight = _.get(hdWorkDispInfoWithDateOutput, 'applicationTime.overTimeShiftNight.overTimeMidNight');
+                let overTimeMidNight = _.get(hdWorkDispInfoWithDateOutput, 'actualApplicationTime.overTimeShiftNight.overTimeMidNight');
                 let findResult = _.findLast(overTimes, (i: OverTime) => i.type == AttendanceType.MIDNIGHT_OUTSIDE) as OverTime;
                 if (!_.isNil(findResult)) {
                     findResult.actualApp.actualTime = overTimeMidNight || 0;
