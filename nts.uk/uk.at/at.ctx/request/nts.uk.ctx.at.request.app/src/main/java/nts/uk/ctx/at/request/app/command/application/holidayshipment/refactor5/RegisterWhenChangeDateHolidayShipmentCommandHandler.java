@@ -63,12 +63,14 @@ public class RegisterWhenChangeDateHolidayShipmentCommandHandler {
 	/**
 	 * @name 登録する
 	 */
-	public void register(DisplayInforWhenStarting command, GeneralDate appDateNew, String appReason, Integer appStandardReasonCD){
+	public String register(DisplayInforWhenStarting command, GeneralDate appDateNew, String appReason, Integer appStandardReasonCD){
 		String companyId = AppContexts.user().companyId();
 		
 		AbsenceLeaveApp absNew = this.errorCheckWhenChangingHolidays(companyId, command, appDateNew, appReason, appStandardReasonCD);
 		
 		this.registerProcess(companyId, command, absNew);
+		
+		return absNew.getAppID();
 	}
 	
 	/**
@@ -132,7 +134,7 @@ public class RegisterWhenChangeDateHolidayShipmentCommandHandler {
 		//振出振休紐付け管理を作り直す
 		LinkingManagementInforDto linkingManagementInfor = this.recreateTheTieUpManagement(absNew.getAppDate().getApplicationDate(), displayInforWhenStarting.substituteManagement, displayInforWhenStarting.holidayManage, displayInforWhenStarting.abs.leaveComDayOffMana, displayInforWhenStarting.abs.payoutSubofHDManagements);
 		//振休振出申請（新規）登録処理
-		saveHolidayShipmentCommandHandlerRef5.registrationApplicationProcess(companyId, Optional.of(absNew), rec, 
+		saveHolidayShipmentCommandHandlerRef5.registrationApplicationProcess(companyId, Optional.of(absNew), Optional.ofNullable(displayInforWhenStarting.existRec()?displayInforWhenStarting.rec.toDomainInsertRec():null), 
 				displayInforWhenStarting.appDispInfoStartup.getAppDispInfoWithDateOutput().toDomain().getBaseDate(), 
 				displayInforWhenStarting.appDispInfoStartup.getAppDispInfoNoDateOutput().isMailServerSet(), 
 				displayInforWhenStarting.appDispInfoStartup.toDomain().getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().orElse(new ArrayList<>()), 
