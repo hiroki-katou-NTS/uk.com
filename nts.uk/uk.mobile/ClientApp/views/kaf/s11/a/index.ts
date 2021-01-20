@@ -981,9 +981,7 @@ export class KafS11AComponent extends KafS00ShrComponent {
             if (result) {
                 // đăng kí 
                 return vm.$http.post('at', API.submit, command).then((data: any) => {
-                    return vm.$modal.info({ messageId: 'Msg_15'}).then(() => {
-                        return data.data;
-                    });	
+                    return data.data;
                 });
             }
         }).then((result: any) => {
