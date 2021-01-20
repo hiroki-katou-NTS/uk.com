@@ -357,40 +357,55 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 					}
 				}
 
-				// アルゴリズム「対象期間を締め開始日以降に補正する」を実行する
-				StateAndValueDatePeriod stateAndValueDatePeriod = this.correctTargetPeriodAfterClosingStartDate(
-						command.getCompanyId(), scheduleCreator.getEmployeeId(), period,
-						masterCache.getEmpGeneralInfo());
+			// アルゴリズム「対象期間を締め開始日以降に補正する」を実行する
+			StateAndValueDatePeriod stateAndValueDatePeriod = this.correctTargetPeriodAfterClosingStartDate(
+					command.getCompanyId(), scheduleCreator.getEmployeeId(), period,
+					masterCache.getEmpGeneralInfo());
 
-				// 対象期間あり の場合
-				if (stateAndValueDatePeriod.state) {
-					DatePeriod dateAfterCorrection = stateAndValueDatePeriod.getValue();
+			// 対象期間あり　の場合
+			if (stateAndValueDatePeriod.state == StateValueDate.TARGET_PERIOD ) {
+				DatePeriod dateAfterCorrection = stateAndValueDatePeriod.getValue();
 
-					// process each by 2 months to make transaction small for performance
-					final int unitMonthsOfTransaction = 2;
-					dateAfterCorrection.forEachByMonths(unitMonthsOfTransaction, subPeriod -> {
+				// process each by 2 months to make transaction small for performance
+				final int unitMonthsOfTransaction = 2;
+				dateAfterCorrection.forEachByMonths(unitMonthsOfTransaction, subPeriod -> {
 
-						List<BasicSchedule> listBasicSchedule = this.basicScheduleRepository
-								.findSomePropertyWithJDBC(Arrays.asList(scheduleCreator.getEmployeeId()),
-										subPeriod);
+					List<BasicSchedule> listBasicSchedule = this.basicScheduleRepository.findSomePropertyWithJDBC(
+							Arrays.asList(scheduleCreator.getEmployeeId()), subPeriod);
 
-						// 勤務予定作成する
-						this.transaction.execute(command, scheduleExecutionLog, context, companyId, exeId,
-								subPeriod, masterCache, listBasicSchedule, asyncTask, companySetting,
-								scheduleCreator, carrier);
-					});
-				} else {
-					String errorContent = this.internationalization.localize("Msg_1509").get();
-					// ドメインモデル「スケジュール作成エラーログ」を登録する
-					ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(errorContent, command.getExecutionId(),
-							stateAndValueDatePeriod.value.end(), scheduleCreator.getEmployeeId());
-					this.scheduleErrorLogRepository.add(scheduleErrorLog);
-
-					scheduleCreator.updateToCreated();
-					this.scheduleCreatorRepository.update(scheduleCreator);
-				}
-			});
+					// 勤務予定作成する
+					this.transaction.execute(
+							command,
+							scheduleExecutionLog,
+							context,
+							companyId,
+							exeId,
+							subPeriod,
+							masterCache,
+							listBasicSchedule,
+							asyncTask,
+							companySetting,
+							scheduleCreator,
+							carrier);
+				});
+			} else {
+				String errorContent = null;
 				
+				if(stateAndValueDatePeriod.state == StateValueDate.NO_TARGET_PERIOD)
+				errorContent = this.internationalization.localize("Msg_1509").get();
+				
+				if(stateAndValueDatePeriod.state == StateValueDate.NO_EMPLOYMENT_HIST)
+				errorContent = this.internationalization.localize("Msg_426").get();
+				
+				// ドメインモデル「スケジュール作成エラーログ」を登録する
+				ScheduleErrorLog scheduleErrorLog = new ScheduleErrorLog(errorContent, command.getExecutionId(),
+						stateAndValueDatePeriod.value.end(), scheduleCreator.getEmployeeId());
+				this.scheduleErrorLogRepository.add(scheduleErrorLog);
+
+				scheduleCreator.updateToCreated();
+				this.scheduleCreatorRepository.update(scheduleCreator);
+			}
+		});
 		scTimeAdapter.clearCompanySettingShareContainer(companySetting);
 
 		if (scheduleExecutionLog.getExeAtr() == ExecutionAtr.AUTOMATIC) {
@@ -678,19 +693,19 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		}
 		// fix bug #113874
 		if (!optEmpHistItem.isPresent()) {
-			return new StateAndValueDatePeriod(dateBeforeCorrection, false);
+			return new StateAndValueDatePeriod(dateBeforeCorrection, StateValueDate.NO_EMPLOYMENT_HIST); // false
 		}
 
 		// ドメインモデル「雇用に紐づく就業締め」を取得
 		Optional<ClosureEmployment> optionalClosureEmployment = this.closureEmployment.findByEmploymentCD(companyId,
 				optEmpHistItem.get().getEmploymentCode());
 		if (!optionalClosureEmployment.isPresent())
-			return new StateAndValueDatePeriod(dateBeforeCorrection, false);
+			return new StateAndValueDatePeriod(dateBeforeCorrection, StateValueDate.NO_TARGET_PERIOD); // false
 		// ドメインモデル「締め」を取得
 		Optional<Closure> optionalClosure = this.closureRepository.findById(companyId,
 				optionalClosureEmployment.get().getClosureId());
 		if (!optionalClosure.isPresent())
-			return new StateAndValueDatePeriod(dateBeforeCorrection, false);
+			return new StateAndValueDatePeriod(dateBeforeCorrection, StateValueDate.NO_TARGET_PERIOD); // false
 		// アルゴリズム「当月の期間を算出する」を実行
 		DatePeriod dateP = ClosureService.getClosurePeriod(optionalClosure.get().getClosureId().value,
 				optionalClosure.get().getClosureMonth().getProcessingYm(), optionalClosure);
@@ -703,10 +718,10 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		if (dateAfterCorrection.start().beforeOrEquals(dateBeforeCorrection.end())) {
 			// Out「対象終了日(補正後)」に、Input「対象終了日」を設定する
 			dateAfterCorrection = dateAfterCorrection.cutOffWithNewEnd(dateBeforeCorrection.end());
-			return new StateAndValueDatePeriod(dateAfterCorrection, true);
+			return new StateAndValueDatePeriod(dateAfterCorrection, StateValueDate.TARGET_PERIOD); // true
 		}
 
-		return new StateAndValueDatePeriod(dateAfterCorrection, false);
+		return new StateAndValueDatePeriod(dateAfterCorrection, StateValueDate.NO_TARGET_PERIOD); // false
 	}
 
 	@AllArgsConstructor
