@@ -119,7 +119,8 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                     const command = {
                         appDate: new Date(value).toISOString(),
                         appDisplayInfo: {
-                            appDispInfoStartupOutput: vm.appDispInfoStartupOutput()
+                            appDispInfoStartupOutput: vm.appDispInfoStartupOutput(),
+                            timeLeaveManagement: vm.timeLeaveManagement()
                         }
                     };
                     vm.$blockui("show").then(() => {

@@ -201,7 +201,8 @@ export class KafS12AComponent extends KafS00ShrComponent {
         let command = {
             appDate: new Date(date).toISOString(),
             appDisplayInfo: {
-                appDispInfoStartupOutput: vm.appDispInfoStartupOutput
+                appDispInfoStartupOutput: vm.appDispInfoStartupOutput,
+                timeLeaveManagement: vm.timeLeaveManagement
             }
         };
 
