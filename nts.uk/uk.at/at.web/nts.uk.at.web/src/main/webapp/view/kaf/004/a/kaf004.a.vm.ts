@@ -373,7 +373,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                         vm.isEnable1(false);
                     } else {
                         vm.lateOrEarlyInfo1().isActive(true);
-                        vm.isEnable1(true);
+                        vm.isEnable1(vm.cancelAtr() === 2);
                     }
                     if (vm.workManagement.leaveTime() === null || vm.workManagement.leaveTime() === "") {
                         vm.lateOrEarlyInfo2().isIndicated(true);
@@ -382,7 +382,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                         vm.isEnable2(false);
                     } else {
                         vm.lateOrEarlyInfo2().isActive(true);
-                        vm.isEnable2(true);
+                        vm.isEnable2(vm.cancelAtr() === 2);
                     }
                     if (vm.workManagement.workTime2() === null || vm.workManagement.workTime2() === "") {
                         vm.lateOrEarlyInfo3().isIndicated(true);
@@ -391,7 +391,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                         vm.isEnable3(false);
                     } else {
                         vm.lateOrEarlyInfo3().isActive(true);
-                        vm.isEnable3(true);
+                        vm.isEnable3(vm.cancelAtr() === 2);
                     }
                     if (vm.workManagement.leaveTime2() === null || vm.workManagement.leaveTime2() === "") {
                         vm.lateOrEarlyInfo4().isIndicated(true);
@@ -400,7 +400,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                         vm.isEnable4(false);
                     } else {
                         vm.lateOrEarlyInfo4().isActive(true);
-                        vm.isEnable4(true);
+                        vm.isEnable4(vm.cancelAtr() === 2);
                     }
 
                 }).fail((error: any) => {
@@ -467,28 +467,28 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                     vm.workManagement.leaveTime2(vm.workManagementTemp.leaveTime2());
 
                     if(vm.workManagementTemp.workTime() !== null && vm.workManagementTemp.workTime() !== "") {
-                        vm.isEnable1(true);
+                        vm.isEnable1(vm.cancelAtr() === 2);
                         vm.lateOrEarlyInfo1().isActive(true);
                         vm.lateOrEarlyInfo1().isCheck(vm.cancelAtr() === 2);
                     } else {
                         vm.isEnable1(false)
                     }
                     if(vm.workManagementTemp.leaveTime() !== null && vm.workManagementTemp.leaveTime() !== "") {
-                        vm.isEnable2(true);
+                        vm.isEnable2(vm.cancelAtr() === 2);
                         vm.lateOrEarlyInfo2().isActive(true);
                         vm.lateOrEarlyInfo2().isCheck(vm.cancelAtr() === 2);
                     } else {
                         vm.isEnable2(false)
                     }
                     if(vm.workManagementTemp.workTime2() !== null && vm.workManagementTemp.workTime2() !== "") {
-                        vm.isEnable3(true);
+                        vm.isEnable3(vm.cancelAtr() === 2);
                         vm.lateOrEarlyInfo3().isActive(true);
                         vm.lateOrEarlyInfo3().isCheck(vm.cancelAtr() === 2);
                     } else {
                         vm.isEnable3(false)
                     }
                     if(vm.workManagementTemp.leaveTime2() !== null && vm.workManagementTemp.leaveTime2() !== "") {
-                        vm.isEnable4(true);
+                        vm.isEnable4(vm.cancelAtr() === 2);
                         vm.lateOrEarlyInfo4().isActive(true);
                         vm.lateOrEarlyInfo4().isCheck(vm.cancelAtr() === 2);
                     } else {
