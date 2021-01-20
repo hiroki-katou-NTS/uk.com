@@ -111,6 +111,10 @@ export class KafS11AComponent extends KafS00ShrComponent {
             code: 2,
             text: 'KAFS11_7'
         }];
+    }
+
+    public mounted() {
+        const vm = this;
         vm.$mask('show');
         if (vm.mode == ScreenMode.NEW) {
             vm.$auth.user.then((userData: any) => {
