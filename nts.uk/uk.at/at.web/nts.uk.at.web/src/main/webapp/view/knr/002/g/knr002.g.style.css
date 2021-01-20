@@ -64,7 +64,7 @@
     top: 10px !important;
     left: 50px !important;
 }
-.terminalInfo table, tr, td{
+table.terminalInfo tr td{
 	vertical-align: top;
 	border: 0px !important; 
 }
