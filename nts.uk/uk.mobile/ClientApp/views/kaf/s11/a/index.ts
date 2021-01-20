@@ -142,8 +142,13 @@ export class KafS11AComponent extends KafS00ShrComponent {
                 return vm.$http.post('at', API.getWorkTimeByCDLst, { wkTimeCodes });
             }).then((data: any) => {
                 vm.workTimeLstFullData = data.data;
-                vm.$mask('hide');
-            });
+            }).catch((error: any) => {
+                vm.handleErrorCustom(error).then((result) => {
+                    if (result) {
+                        vm.handleErrorCommon(error);
+                    }
+                });
+            }).then(() => vm.$mask('hide'));
         } else {
             vm.appDispInfoStartupOutput = vm.params.appDispInfoStartupOutput;
             vm.initData(vm.params.appDetail);
@@ -153,8 +158,13 @@ export class KafS11AComponent extends KafS00ShrComponent {
             ];
             vm.$http.post('at', API.getWorkTimeByCDLst, { wkTimeCodes }).then((data: any) => {
                 vm.workTimeLstFullData = data.data;
-                vm.$mask('hide');
-            });
+            }).catch((error: any) => {
+                vm.handleErrorCustom(error).then((result) => {
+                    if (result) {
+                        vm.handleErrorCommon(error);
+                    }
+                });
+            }).then(() => vm.$mask('hide'));
         }
     }
 
@@ -1012,7 +1022,7 @@ export class KafS11AComponent extends KafS00ShrComponent {
         const vm = this;
 
         return new Promise((resolve) => {
-            if (failData.messageId == 'Msg_26') {
+            if (failData.messageId == 'Msg_323') {
                 vm.$modal.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
                 .then(() => {
                     vm.$goto('ccg008a');
