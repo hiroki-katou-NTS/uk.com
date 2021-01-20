@@ -3201,6 +3201,17 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     }
                     let workType = self.dataCell.objWorkType;
                     let workTime = self.dataCell.objWorkTime;
+                    
+                    // enable | disable cell startTime,endtime
+                    if (userInfor.disPlayFormat == 'time') {
+                        if (data.workHolidayCls == 0) {
+                            $("#extable").exTable('disableCell', 'detail', rowIdx + '', key + '', '2');
+                            $("#extable").exTable('disableCell', 'detail', rowIdx + '', key + '', '3');
+                        } else {
+                            $("#extable").exTable('enableCell', 'detail', rowIdx + '', key + '', '2');
+                            $("#extable").exTable('enableCell', 'detail', rowIdx + '', key + '', '3');
+                        }
+                    }
                     // truong hop chon workType = required va workTime = 選択なし 
                     if ((workType.workTimeSetting == 0 && workTime.code == '')) {
                         nts.uk.ui.dialog.alertError({ messageId: 'Msg_435' });
