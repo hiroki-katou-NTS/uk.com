@@ -1,7 +1,7 @@
 div#master-wrapper {
 	height: 100vh;
 	overflow: hidden;
-	background-color: #F1FDFB;
+	background-color: #f1fdfb;
 
 	.padding-0 {
 		padding: 0 !important;
@@ -14,57 +14,60 @@ div#master-wrapper {
 	.overflow-hidden {
 		overflow: hidden !important;
 	}
-	
+
 	.fixed-flex-layout {
 		display: flex;
-		
+
 		> .fixed-flex-layout-left {
 			margin-right: 30px;
-			
+
 			/* specify width each screens */
 		}
-		
+
 		> .fixed-flex-layout-right {
 			flex: 1;
 		}
 	}
-	
-	
+
 	div#master-content {
 		overflow: hidden;
 		box-sizing: border-box;
 
-		div[id^=contents-area] {
+		div[id^="contents-area"] {
 			padding: 10px;
 			overflow-y: auto;
 			position: relative;
 			box-sizing: border-box;
+
+			.form-group {
+				margin-bottom: 15px;
+			}
 		}
 
-		&>div[id^=contents-area],
-		&>div[id^=functions-area] {
+		& > div[id^="contents-area"],
+		& > div[id^="functions-area"] {
 			margin: 0px;
-			background-color: #fff; 
+			background-color: #fff;
 		}
 
-		&>div.one-panel,
-		&>div.once-panel,
-		&>div.single-panel {
+		& > div.one-panel,
+		& > div.once-panel,
+		& > div.single-panel {
 			overflow: hidden;
-			padding-left: 80px;			
+			padding-left: 80px;
 			padding-right: 80px;
 		}
 
-		&>div.two-panel {
+		& > div.two-panel {
 			overflow: hidden;
 
-			div[id^=contents-area] {
+			div[id^="contents-area"] {
 				margin-top: 20px;
 				margin-bottom: 20px;
-				background-color: #fff; 
+				background-color: #fff;
 			}
 
-			&>div.left-panel {
+			& > div.left-panel {
 				float: left;
 				box-sizing: border-box;
 				overflow: hidden;
@@ -73,16 +76,20 @@ div#master-wrapper {
 				padding-right: 16px;
 			}
 
-			&>div.right-panel {
+			& > div.right-panel {
 				box-sizing: border-box;
 				overflow: hidden;
 				padding-left: 16px;
 				padding-right: 32px;
+
+				div[id^="contents-area"] {
+					padding: 30px;
+				}
 			}
 		}
 
-		&>div.toppage-panel {
-			&>div.left-panel {
+		& > div.toppage-panel {
+			& > div.left-panel {
 				float: left;
 				box-sizing: border-box;
 				width: calc(100vw - 375px);
@@ -91,23 +98,23 @@ div#master-wrapper {
 				padding-right: 16px;
 			}
 
-			&>div.right-panel {
+			& > div.right-panel {
 				box-sizing: border-box;
 				overflow: hidden;
 				padding-left: 16px;
 				padding-right: 32px;
 				background-color: #fff;
-				
-				&>div[id^=contents-area] {
+
+				& > div[id^="contents-area"] {
 					margin-top: 20px;
 				}
 			}
 		}
 
-		&>div[id^=contents-area] {
+		& > div[id^="contents-area"] {
 			&:first-child {
 				margin-top: 0px;
-				
+
 				&:last-child {
 					padding: 10px;
 					margin-left: 0px;
@@ -123,7 +130,7 @@ div#master-wrapper {
 
 	&.modal {
 		background-color: #fff;
-		&>#master-content {
+		& > #master-content {
 			height: 100vh;
 		}
 	}
