@@ -132,7 +132,9 @@ module knr002.h {
                     }
                     dfd.resolve();
                 });
-
+                setTimeout(() => {
+                    $('#ccg001-btn-search-drawer > div > div').focus();
+                }, 0);
                 blockUI.clear();
                 return dfd.promise();
             }
