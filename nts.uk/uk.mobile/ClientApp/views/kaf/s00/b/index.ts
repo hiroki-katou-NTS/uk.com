@@ -333,6 +333,12 @@ export class KafS00BComponent extends Vue {
         
         return true;
     }
+
+    @Watch('$errors')
+    public errorWatcher() {
+        const self = this;
+        self.$emit('kafs00BValid', self.$valid);
+    }
 }
 
 // 画面モード
