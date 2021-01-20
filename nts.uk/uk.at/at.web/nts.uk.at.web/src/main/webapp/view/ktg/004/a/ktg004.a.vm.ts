@@ -17,8 +17,6 @@ module nts.uk.at.view.ktg004.a.viewmodel {
 		remainingNumberInfor = new RemainingNumberInfor();
 		detailedWorkStatusSettings = ko.observable(false);
 		specialHolidaysRemainings: KnockoutObservableArray<SpecialHolidaysRemainings> = ko.observableArray([]);
-		        
-        constructor() {}
 
         public startPage(): JQueryPromise<any> {
             var self = this;

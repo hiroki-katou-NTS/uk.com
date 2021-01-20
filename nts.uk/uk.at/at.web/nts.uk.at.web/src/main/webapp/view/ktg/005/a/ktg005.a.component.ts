@@ -1,17 +1,55 @@
-/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+module nts.uk.ui.ktg005.a {
 
-
-module nts.uk.at.ktg005.a {
-
-	const requestUrl = {
+    const requestUrl = {
 		startScreenA: 'screen/at/ktg/ktg005/start_screen_a',
 		getOptionalWidgetDisplay: "screen/at/OptionalWidget/getOptionalWidgetDisplay"
 	}
+    @component({
+        name: 'ktg-005-a',
+        template: `
+		<div>
+			<div id="top_title">
+			<!-- A1_1 -->
 
-	@bean()
-	export class ViewModel extends ko.ViewModel {
+				<div class="limited-label"
+					style="display: inline-block; margin-left: 7px; vertical-align: middle; line-height: 45px; width: 135px;"
+					data-bind="text:executionAppResult().topPagePartName"></div>
 
-		executionAppResult: KnockoutObservable<IExecutionAppResult> = ko.observable({
+
+				<div class="col_line_2">
+					<!-- A1_2 -->
+					<button style="margin: 8px 10px 0px 0px;" class="button-group"
+						data-bind="icon: 85 ,click:jumpToCmm045"></button>
+					<!-- A1_3 -->
+					<div
+						style="display: inline-block; margin-right: 15px; vertical-align: middle; line-height: 45px;" data-bind="text: $i18n('KTG005_1')"></div>
+					<!-- A1_4 -->
+
+					<button style="margin-top: 8px" class="button-group"
+						data-bind="icon: 5, click:openScreenB ,visible:executionAppResult().employeeCharge == true"></button>
+				</div>
+			</div>
+			<div id="content" data-bind="with:executionAppResult"
+				style="padding: 0px 10px">
+				<!-- ko foreach: appSettings -->
+					<div class="div_line border">
+						<div class="col_line_1">
+							<!-- A2_1 -->
+							<div class="label" data-bind="text: $component.getLabel(item)"></div>
+						</div>
+						<div class="col_line_2">
+							<!-- A2_2 -->
+							<div class="label" data-bind="text: $component.getText(item)"></div>
+						</div>
+					</div>
+				<!-- /ko -->
+			</div>
+		</div>
+		`
+    })
+    export class KTG005AComponent extends ko.ViewModel {
+
+        executionAppResult: KnockoutObservable<IExecutionAppResult> = ko.observable({
 			topPagePartName: '',
 			numberApprovals: 0,
 			numberNotApprovals: 0,
@@ -33,17 +71,20 @@ module nts.uk.at.ktg005.a {
 			let vm = this;
 
 			vm.loadData();
-		}
+        }
+        
+        mounted() {
+            const vm = this;
+            vm.$el.classList.add('chung-dep-trai')
+        }
 
 		loadData() {
 
 			let vm = this,
 				cache = nts.uk.ui.windows.getShared('cache'),
-				topPagePartCode = $(location).attr('search').split('=')[1];
+                topPagePartCode = $(location).attr('search').split('=')[1];
 
-				debugger;
-
-			vm.$ajax(requestUrl.getOptionalWidgetDisplay, topPagePartCode).done((widDisplay: IOptionalWidgetDisplay) => {
+			vm.$ajax('at', requestUrl.getOptionalWidgetDisplay, topPagePartCode).done((widDisplay: IOptionalWidgetDisplay) => {
 				let
 					query = cache ? {
 						companyId: vm.$user.companyId,
@@ -59,7 +100,7 @@ module nts.uk.at.ktg005.a {
 						}
 					;
 				vm.$blockui("invisible");
-				vm.$ajax(requestUrl.startScreenA, query).done((setting: IExecutionAppResult) => {
+				vm.$ajax('at',requestUrl.startScreenA, query).done((setting: IExecutionAppResult) => {
 					setting.appSettings = _.chain(setting.appSettings).sortBy(['item']).filter(['displayType', 1]).value();
 					vm.executionAppResult(setting);
 				}).fail((error) => {
@@ -124,10 +165,9 @@ module nts.uk.at.ktg005.a {
 				vm.loadData();
 			});
 		}
+    }
 
-	}
-
-	export interface IOptionalWidgetDisplay {
+    export interface IOptionalWidgetDisplay {
 		datePeriodDto: IDatePeriodDto;
 		optionalWidgetImport: IOptionalWidgetImport;
 	}
@@ -197,7 +237,4 @@ module nts.uk.at.ktg005.a {
 		ApplicationDeadlineForThisMonth = 4
 
 	}
-
-
 }
-
