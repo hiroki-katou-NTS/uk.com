@@ -124,7 +124,8 @@ public class UpdateHolidayShipmentCommandHandlerRef5 {
 			//休暇紐付け管理を更新する 
 			absenceServiceProcess.updateVacationLinkManage(leaveComDayOffMana_Rec_Old, new ArrayList<>(), leaveComDayOffMana_Rec, new ArrayList<>());
 			//暫定データの登録(đăng ký data tạm thời)
-			interimRemainDataMngRegisterDateChange.registerDateChange(companyId, rec.get().getEmployeeID(), Arrays.asList(rec.get().getAppDate().getApplicationDate()));
+			//anh phượng bảo comment lại. chờ đội team B đối ứng xong 
+			//interimRemainDataMngRegisterDateChange.registerDateChange(companyId, rec.get().getEmployeeID(), Arrays.asList(rec.get().getAppDate().getApplicationDate()));
 			//アルゴリズム「詳細画面登録後の処理」を実行する
 			detailAfterUpdate.processAfterDetailScreenRegistration(companyId, rec.get().getAppID(), appDispInfoStartup);
 			
@@ -143,7 +144,8 @@ public class UpdateHolidayShipmentCommandHandlerRef5 {
 				absenceServiceProcess.updateVacationLinkManage(leaveComDayOffMana_Abs_Old, payoutSubofHDManagement_Abs_Old, leaveComDayOffMana_Abs, payoutSubofHDManagement_Abs_New);
 			}
 			//暫定データの登録(đăng ký data tạm thời)
-			interimRemainDataMngRegisterDateChange.registerDateChange(companyId, abs.get().getEmployeeID(), Arrays.asList(abs.get().getAppDate().getApplicationDate()));
+			//anh phượng bảo comment lại. chờ đội team B đối ứng xong 
+			//interimRemainDataMngRegisterDateChange.registerDateChange(companyId, abs.get().getEmployeeID(), Arrays.asList(abs.get().getAppDate().getApplicationDate()));
 			//アルゴリズム「詳細画面登録後の処理」を実行する
 			detailAfterUpdate.processAfterDetailScreenRegistration(companyId, abs.get().getAppID(), appDispInfoStartup);
 			
