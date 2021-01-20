@@ -274,6 +274,9 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 				let wtAfter = _.filter(vm.data.workTypeLst, { 'workTypeCode': vm.selectedWorkTypeCD() }).length > 0 ? 
 					_.filter(vm.data.workTypeLst, { 'workTypeCode': vm.selectedWorkTypeCD() })[0] : null;
 
+				if (wtAfter === null) {
+					return;
+				}
 				// return;
 				let commandCheckTyingManage = {
 					wtBefore: vm.workTypeBefore(),
@@ -486,10 +489,10 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 			const vm = this;
 			if(vm.appType() === AppType.ABSENCE_APPLICATION) {
 				vm.updateMode(vm.appDispInfoStartupOutput().appDetailScreenInfo.outputMode === 0 ? false : true);
-				vm.selectedDateSpec.valueHasMutated();
-				vm.selectedType.valueHasMutated();
-				vm.selectedWorkTypeCD.valueHasMutated();
-				vm.selectedWorkTimeCD.valueHasMutated();
+				// vm.selectedDateSpec.valueHasMutated();
+				// vm.selectedType.valueHasMutated();
+				// vm.selectedWorkTypeCD.valueHasMutated();
+				// vm.selectedWorkTimeCD.valueHasMutated();
 				vm.createParamKAF006();
 				// vm.checkCondition(vm.data);
 			}
@@ -625,6 +628,8 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
         private createParamKAF006() {
             const vm = this;
 
+			
+			vm.isInit = ko.observable(true);
             let command = {
 				appID: vm.application().appID(),
 				appDispInfoStartupOutput: vm.appDispInfoStartupOutput()
