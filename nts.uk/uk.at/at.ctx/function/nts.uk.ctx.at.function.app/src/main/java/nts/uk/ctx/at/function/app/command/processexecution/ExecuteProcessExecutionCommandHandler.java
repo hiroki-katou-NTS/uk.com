@@ -921,7 +921,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 			boolean checkCreateEmployee = procExec.getExecSetting().getPerScheduleCreation().getCreateNewEmpSched().equals(NotUseAtr.USE);
             // 期間の計算
             DatePeriod calculateSchedulePeriod = this.calculateSchedulePeriod(procExec, procExecLog,
-                    checkCreateEmployee);
+                    checkCreateEmployee, companyId);
 
             /*
              * 対象社員を取得
@@ -1752,7 +1752,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
      * @return 期間
      */
 	private DatePeriod calculateSchedulePeriod(UpdateProcessAutoExecution procExec, ProcessExecutionLog procExecLog,
-	                                           boolean checkCreateEmployee) {
+	                                           boolean checkCreateEmployee, String companyId) {
 
         GeneralDate today = GeneralDate.today();
 		int targetMonth = procExec.getExecSetting().getPerScheduleCreation().getPerSchedulePeriod().getTargetMonth().value;
@@ -1824,7 +1824,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
         if (checkCreateEmployee) {
             // 全締めから一番早い期間.開始日を取得する
             // 開始日を取得した開始日に置き換える
-            startDate = getMinPeriodFromStartDate(AppContexts.user().companyId()).start();
+            startDate = getMinPeriodFromStartDate(companyId).start();
         }
 
         if (procExecLog.getEachProcPeriod() == null || procExecLog.getEachProcPeriod().isPresent()) {

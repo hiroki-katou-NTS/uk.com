@@ -1206,7 +1206,6 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 			UpdateProcessAutoExecution procExec, DatePeriod calculateSchedulePeriod,
 			List<String> empIds, String companyId, String execItemCd) {
 		ScheduleCreatorExecutionCommand scheduleCommand = new ScheduleCreatorExecutionCommand();
-//		scheduleCommand.setConfirm(false);
 		scheduleCommand.setExecutionId(execId);
 		scheduleCommand.setAutomatic(true);
 		scheduleCommand.setEmployeeIds(empIds);
@@ -1231,7 +1230,6 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 			UpdateProcessAutoExecution procExec, DatePeriod calculateSchedulePeriod,
 			List<String> empIds, String cid, String execItemCd) {
 		ScheduleCreatorExecutionCommand scheduleCommand = new ScheduleCreatorExecutionCommand();
-//		scheduleCommand.setConfirm(false);
 		scheduleCommand.setAutomatic(true);
 		scheduleCommand.setEmployeeIds(empIds);
 		// 1-実行ID ＝ 取得した実行ID
