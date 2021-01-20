@@ -75,9 +75,14 @@
 									<div class="pnl-top">#{i18n.getText('KNR002_82')}</div>
 									<div class="pnl-body">
 										<div class="pnl-container">
-											<span class="label w-60">#{i18n.getText('KNR002_83')}</span>
-											<span class="label" data-bind="text: smallClassificationName"></span>
-
+											<div class="d-flex">
+												<div>
+													<span class="label w-60">#{i18n.getText('KNR002_83')}</span>
+												</div>
+												<div class="small_name">
+													<span class="label" data-bind="text: smallClassificationName"></span>
+												</div>
+											</div>
 											<!-- Letter mode -->
 											<div class="letter-mode" data-bind="visible: inputMode() == 0 || inputMode() == 5">
 												<div class="d-flex">

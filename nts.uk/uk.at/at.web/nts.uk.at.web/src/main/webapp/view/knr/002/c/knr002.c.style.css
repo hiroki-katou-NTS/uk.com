@@ -189,6 +189,10 @@ body > div:nth-child(2) {
 	white-space: nowrap;
 }
 
+.small_name {
+	width: 184px;
+}
+
 
  
 

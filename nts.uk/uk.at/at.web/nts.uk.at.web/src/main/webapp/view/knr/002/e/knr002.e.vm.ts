@@ -77,6 +77,12 @@ module nts.uk.at.view.knr002.e {
                             name: 'Selection',
                             mode: 'row',
                             multipleSelection: false,
+                            rowSelectionChanging: function() { 
+                                if (vm.selectedMode() == MODE.BACKUP) {
+                                    return false;
+                                }
+                                return true; 
+                            },
                             rowSelectionChanged: function(event: any, ui: any) {
                                 vm.selectedRow(ui.row.index);
                                 $('#bak-grid1').igGridSelection('selectRow', vm.selectedRow());
@@ -172,6 +178,12 @@ module nts.uk.at.view.knr002.e {
                             name: 'Selection',
                             mode: 'row',
                             multipleSelection: false,
+                            rowSelectionChanging: function() { 
+                                if (vm.selectedMode() == MODE.RESTORE) {
+                                    return false;
+                                }
+                                return true; 
+                            },
                             rowSelectionChanged: function(event: any, ui: any) {
                                 vm.selectedRow(ui.row.index);
                                 vm.selectedCode(ui.row.id);

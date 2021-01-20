@@ -52,7 +52,7 @@ module nts.uk.at.view.knr002.c {
 
             // grid setting data
             settingData: Array<SettingValue> = [];
-            selectedRowIndex: KnockoutObservable<number> = ko.observable();
+            selectedRowIndex: KnockoutObservable<number> = ko.observable(-1);
 
             constructor() {
                 const vm = this;   
@@ -141,6 +141,7 @@ module nts.uk.at.view.knr002.c {
                         vm.currentValueList(inputRangeArr.map((item: any) => new BoxModel(item.charAt(0), item.substring(2, item.length -1))));
                         vm.selectedCurrentValue(rowData.currentValue);
                         vm.updateValueList(inputRangeArr.map((item: any) => new BoxModel(item.charAt(0), item.substring(2, item.length -1))));
+                        console.log(vm.updateValueList(), 'update value list');
                         if (rowData.updateValue.length == 0) {
                           vm.selectedUpdateValue(rowData.currentValue);  
                           break;
@@ -272,7 +273,10 @@ module nts.uk.at.view.knr002.c {
                         break;
                     case INPUT_TYPE.SELECTION:
                         vm.checkExistBeforeAdd(vm.rowData().smallClassification);
-                        let newRow = new SettingValue(Math.random(), vm.rowData().majorClassification, vm.rowData().smallClassification, 'yes', '⦿' + vm.updateValueList()[parseInt(vm.selectedUpdateValue())].name, vm.rowData().variableName, vm.selectedUpdateValue());
+                        let indexInputRange = _.findIndex(vm.updateValueList(), (item) => vm.selectedUpdateValue() ==  item.id);
+                        console.log(indexInputRange, 'index input range');
+                        let newRow = new SettingValue(Math.random(), vm.rowData().majorClassification, vm.rowData().smallClassification, 'yes', '⦿' + vm.updateValueList()[indexInputRange].name, vm.rowData().variableName, vm.selectedUpdateValue());
+                        console.log(newRow, 'row');
                         vm.settingData.push(newRow);
                         break;
                     case INPUT_TYPE.CHECK:
@@ -286,19 +290,17 @@ module nts.uk.at.view.knr002.c {
                         break;
                 }
 
-                let map = {} as any;
-                let list = [] as any;
-                list.map((el: any)=>{
-                    if(el.index){
-                        map[el.name]+=""+el.index;
-                    }
-                })
-
+                vm.selectedRowIndex(-1)
+                $('#grid').igGridSelection('selectRow', vm.selectedRowIndex());
                 $("#grid").igGrid("dataSourceObject", vm.settingData).igGrid("dataBind");
             }
 
             public removeFromSetting() {
                 const vm = this;
+                // console.log(vm.selectedRowIndex(), 'selectedRowIndex');
+                if (vm.selectedRowIndex() == -1) {
+                    return;
+                }
                 vm.settingData.splice(vm.selectedRowIndex(), 1);
                 $("#grid").igGrid("dataSourceObject", vm.settingData).igGrid("dataBind");  
             }
