@@ -369,6 +369,7 @@ module nts.uk.at.view.kmk010.a {
             useClassification: KnockoutObservable<boolean>;
             superHoliday60HOccurs: KnockoutObservable<boolean>;
             requiredText: KnockoutObservable<boolean>;
+            requiredOverTime: KnockoutObservable<boolean>;
 
             constructor() {
                 this.name = ko.observable('');
@@ -378,6 +379,7 @@ module nts.uk.at.view.kmk010.a {
                 this.useClassification = ko.observable(true);
                 this.superHoliday60HOccurs = ko.observable(true);
                 this.requiredText = ko.observable(true);
+                this.requiredOverTime = ko.observable(true);                
             }
 
             updateData(dto: OvertimeDto) {
@@ -388,8 +390,10 @@ module nts.uk.at.view.kmk010.a {
                 this.useClassification(dto.useClassification);
                 this.superHoliday60HOccurs(dto.superHoliday60HOccurs && dto.useClassification);
             }
+
             updateEnableCheck(enableCheckbox: boolean) : void{
                 this.requiredText(this.useClassification() && enableCheckbox);
+                this.requiredOverTime(this.useClassification() && enableCheckbox);
             }
             
             setUpdateData(enableCheckbox: boolean): void {
@@ -397,6 +401,10 @@ module nts.uk.at.view.kmk010.a {
                 self.useClassification.subscribe(function(use: boolean) {
                     self.requiredText(use && enableCheckbox);
                     self.superHoliday60HOccurs(use && self.superHoliday60HOccurs());
+                    self.requiredOverTime(use && enableCheckbox);
+                    if( !use && enableCheckbox && self.overtime.length === 0 ) {
+                        self.overtime(0); //default in DB
+                    }
                 });
                 self.requiredText.subscribe(function(use: boolean) {
                     $('#overtimeNo_' + self.overtimeNo()).ntsError("clear");

@@ -52,18 +52,19 @@
                     </td>
                     <td>
                       <input
-                        tabindex="1"
+                        tabindex="1" class="overtimeNo"
 												data-bind="attr: {'id': 'overtimeNo_' + overtimeNo()}, 
 												ntsTextEditor: {value: name, constraint: 'OvertimeName',  required: requiredText, name: $parent.switchNameResource()}"
                       />
                     </td>
                     <td>
                       <input
-                      tabindex="1"
+                      tabindex="1" class="overtimeNum"
                       data-bind="attr: {'id': 'overtimeNum_' + overtimeNo()}, 
                         ntsTimeEditor: { value: overtime, 
                         inputFormat: 'time', mode: 'time',
-                        enable: true, constraint: 'OvertimeValue',
+                        enable: true,
+                        required: requiredOverTime, constraint: 'OvertimeValue',
                         name: '#[KMK010_13]'}"
                       /><label>#{i18n.getText('KMK010_14')}</label>
                     </td>
