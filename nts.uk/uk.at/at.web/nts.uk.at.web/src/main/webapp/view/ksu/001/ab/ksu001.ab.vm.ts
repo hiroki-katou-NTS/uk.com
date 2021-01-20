@@ -174,7 +174,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         achievements: false,
                         workHolidayCls: objWorkType[0].workStyle
                     });
-                    self.isRedColor = true;
+                    self.isRedColor = false;
                 } else if (objWorkType[0].workTimeSetting != 2 && objWorkType[0].workStyle == 0) { // HOLIDAY
                     $("#extable").exTable("stickFields", ["workTypeName", "workTimeName", "startTime", "endTime"]);
                     // 貼り付けのパターン3
