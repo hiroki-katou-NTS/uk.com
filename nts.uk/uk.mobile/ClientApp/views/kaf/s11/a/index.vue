@@ -192,7 +192,7 @@
             </div>
         </div>
         <!-- A10 -->
-        <div class="card card-label">
+        <div class="card card-label" v-if="dispLeaveContent">
             <div class="card-header uk-bg-accordion" style="align-items: center" v-if="dispLeaveContent">
                 <v-label class="border-0 pl-0 my-n3">
                     {{leaveWorkInfoTitle | i18n}}
