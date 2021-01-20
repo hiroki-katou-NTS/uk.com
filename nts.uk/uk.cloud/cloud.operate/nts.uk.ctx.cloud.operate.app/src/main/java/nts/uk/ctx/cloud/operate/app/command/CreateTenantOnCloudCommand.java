@@ -15,6 +15,5 @@ public class CreateTenantOnCloudCommand {
 
 	String optionCode;
 	
-	String companyCode;
 	String companyName;
 }

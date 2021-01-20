@@ -124,7 +124,7 @@ module nts.uk.cloud.view.cld001.a {
                 command.administratorLoginId = self.tenantManagerID();
                 command.administratorPassword = self.tenantManagerPassword();
                 command.optionCode = self.optionCode();
-
+				command.companyName = self.companyName();
                 service.registTenant(command).done(function() {
 
                 });

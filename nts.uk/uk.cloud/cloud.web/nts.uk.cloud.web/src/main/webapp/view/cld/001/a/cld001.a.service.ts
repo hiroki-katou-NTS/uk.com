@@ -24,6 +24,7 @@ module nts.uk.cloud.view.cld001.a {
         	administratorLoginId: string;
         	administratorPassword: string;
         	optionCode: string;
+			companyName: string;
         }
     }
 }

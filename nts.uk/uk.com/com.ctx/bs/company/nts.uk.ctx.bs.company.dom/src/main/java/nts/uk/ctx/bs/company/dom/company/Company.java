@@ -69,6 +69,7 @@ public class Company extends AggregateRoot {
 			AbolitionAtr isAbolition, Optional<RepName> repname, Optional<RepJob> repjob, Optional<KNName> comNameKana,
 			Optional<ABName> shortComName, ContractCd contractCd, Optional<TaxNo> taxNo, Optional<AddInfor> addInfor) {
 		super();
+		this.contractCd = contractCd;
 		this.companyCode = companyCode;
 		this.companyName = companyName;
 		this.companyId = createCompanyId(this.companyCode.v(), this.contractCd.v());
@@ -78,7 +79,6 @@ public class Company extends AggregateRoot {
 		this.repjob = repjob;
 		this.comNameKana = comNameKana;
 		this.shortComName = shortComName;
-		this.contractCd = contractCd;
 		this.taxNo = taxNo;
 		this.addInfor = addInfor;
 	}
