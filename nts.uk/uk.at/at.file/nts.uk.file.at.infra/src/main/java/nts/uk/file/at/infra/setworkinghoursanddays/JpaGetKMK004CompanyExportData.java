@@ -244,7 +244,7 @@ public class JpaGetKMK004CompanyExportData extends JpaRepository implements GetK
 					//R8_4
 					((month - 1) % 12 + 2) + I18NText.getText("KMK004_401"),
 					//R8_5
-					KMK004PrintCommon.convertTime(normalN.isPresent() ? normalN.get().legalTime : 0),
+					KMK004PrintCommon.convertTime(normalN.isPresent() ? normalN.get().legalTime : null),
 					//R8_6
 					null,
 					//R8_7
@@ -266,11 +266,11 @@ public class JpaGetKMK004CompanyExportData extends JpaRepository implements GetK
 					//R8_15
 					((month - 1) % 12 + 2) + I18NText.getText("KMK004_401"),
 					//R8_16
-					KMK004PrintCommon.convertTime(flexN.isPresent() ? flexN.get().withinTime : 0),
+					KMK004PrintCommon.convertTime(flexN.isPresent() ? flexN.get().withinTime : null),
 					//R8_17
-					KMK004PrintCommon.convertTime(flexN.isPresent() ? flexN.get().legalTime : 0),
+					KMK004PrintCommon.convertTime(flexN.isPresent() ? flexN.get().legalTime : null),
 					//R8_18
-					KMK004PrintCommon.convertTime(flexN.isPresent() ? flexN.get().weekAvgTime : 0),
+					KMK004PrintCommon.convertTime(flexN.isPresent() ? flexN.get().weekAvgTime : null),
 					//R8_19
 					null,
 					//R8_20
@@ -290,7 +290,7 @@ public class JpaGetKMK004CompanyExportData extends JpaRepository implements GetK
 					//R8_27		
 					((month - 1) % 12 + 2) + I18NText.getText("KMK004_401"),
 					//R8_28
-					KMK004PrintCommon.convertTime(deforN.isPresent() ? deforN.get().legalTime : 0),
+					KMK004PrintCommon.convertTime(deforN.isPresent() ? deforN.get().legalTime : null),
 					//R8_29
 					null,
 					//R8_30
@@ -316,7 +316,7 @@ public class JpaGetKMK004CompanyExportData extends JpaRepository implements GetK
 			
 			// buil month remain
 			
-			YearMonthPeriod ymPeriod = new YearMonthPeriod(YearMonth.of(startDate, month), YearMonth.of(endDate, month).nextYear().previousMonth());
+			YearMonthPeriod ymPeriod = new YearMonthPeriod(YearMonth.of(y, month), YearMonth.of(y, month).nextYear().previousMonth());
 			
 			List<YearMonth> yms = ymPeriod.yearMonthsBetween();
 
@@ -339,7 +339,7 @@ public class JpaGetKMK004CompanyExportData extends JpaRepository implements GetK
 						// R8_4
 						(m) + I18NText.getText("KMK004_401"),
 						// R8_5
-						KMK004PrintCommon.convertTime(normalC.isPresent() ? normalC.get().legalTime : 0),
+						KMK004PrintCommon.convertTime(normalC.isPresent() ? normalC.get().legalTime : null),
 						// R8_6
 						null,
 						// R8_7
@@ -361,11 +361,11 @@ public class JpaGetKMK004CompanyExportData extends JpaRepository implements GetK
 						// R8_15
 						(m) + I18NText.getText("KMK004_401"),
 						// R8_16
-						KMK004PrintCommon.convertTime(flexC.isPresent() ? flexC.get().withinTime : 0),
+						KMK004PrintCommon.convertTime(flexC.isPresent() ? flexC.get().withinTime : null),
 						// R8_17
-						KMK004PrintCommon.convertTime(flexC.isPresent() ? flexC.get().legalTime : 0),
+						KMK004PrintCommon.convertTime(flexC.isPresent() ? flexC.get().legalTime : null),
 						// R8_18
-						KMK004PrintCommon.convertTime(flexC.isPresent() ? flexC.get().weekAvgTime : 0),
+						KMK004PrintCommon.convertTime(flexC.isPresent() ? flexC.get().weekAvgTime : null),
 						// R8_19
 						null,
 						// R8_20
@@ -385,7 +385,7 @@ public class JpaGetKMK004CompanyExportData extends JpaRepository implements GetK
 						// R8_27
 						(m) + I18NText.getText("KMK004_401"),
 						// R8_28
-						KMK004PrintCommon.convertTime(deforC.isPresent() ? deforC.get().legalTime : 0),
+						KMK004PrintCommon.convertTime(deforC.isPresent() ? deforC.get().legalTime : null),
 						// R8_29
 						null,
 						// R8_30
