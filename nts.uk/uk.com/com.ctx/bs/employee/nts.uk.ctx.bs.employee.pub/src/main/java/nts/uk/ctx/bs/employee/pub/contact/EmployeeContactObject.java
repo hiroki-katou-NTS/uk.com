@@ -20,7 +20,7 @@ public class EmployeeContactObject {
     /**
      * メールアドレスが在席照会に表示するか
      */
-    private boolean isMailAddressDisplay;
+    private boolean isMailAddressDisplay; 
 	
 	//座席ダイヤルイン
 	private String seatDialIn;
