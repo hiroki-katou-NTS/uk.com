@@ -21,7 +21,7 @@ public class AttendanceStatusJudgmentService {
 					Optional<WorkTypeDto>  workType) {
 		Optional<GoOutEmployeeInformation> goOutInfo = required.getGoOutEmployeeInformation(sId, baseDate);	//	外出情報
 		Optional<ActivityStatus> status = required.getActivityStatus(sId, baseDate);	//	ステータス
-		Optional<Integer> attendanceTime = Optional.empty();;	//	出勤時刻
+		Optional<Integer> attendanceTime = Optional.empty();	//	出勤時刻
 		Optional<Integer> leaveTime = Optional.empty();	//	退勤時刻
 		Optional<Integer> goStraightAtr= Optional.empty();	//	直行区分
 		Optional<Integer> workDivision = Optional.empty(); 	//	勤務区分
@@ -39,7 +39,9 @@ public class AttendanceStatusJudgmentService {
 		notIn.add(11);	//	休日出勤
 		notIn.add(7);	//	振出
 		notIn.add(10);	//	連続勤務
-		if (workType.get().getDailyWork().getOneDay() != null && 
+		if (!workType.isPresent()) {
+			workDivision = Optional.empty();
+		} else if (workType.isPresent() && workType.get().getDailyWork().getOneDay() != null && 
 				!notIn.contains(workType.get().getDailyWork().getOneDay())) {
 			workDivision = Optional.of(1); 	//	休み
 		} else {
@@ -48,7 +50,7 @@ public class AttendanceStatusJudgmentService {
 		
 		Integer timeNow = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
 		
-		if (baseDate != GeneralDate.today()) {
+		if (!baseDate.equals(GeneralDate.today())) {
 			return Optional.empty();
 		}
 
@@ -89,7 +91,8 @@ public class AttendanceStatusJudgmentService {
 		}
 		
 		if (workDivision.isPresent() && workDivision.get() == 1
-				&& leaveTime.isPresent() && leaveTime.get() <= timeNow) {
+				&& attendanceTime.isPresent() && leaveTime.isPresent() 
+				&& leaveTime.get() <= timeNow) {
 			activityStatus.setActivity(StatusClassfication.GO_HOME);
 			return Optional.of(activityStatus);
 		}
@@ -108,18 +111,19 @@ public class AttendanceStatusJudgmentService {
 		}
 		
 		if (workDivision.isPresent() && workDivision.get() == 1 
-				&& !leaveTime.isPresent()) {
+				&& !leaveTime.isPresent() && !status.isPresent()) {
 			activityStatus.setActivity(StatusClassfication.HOLIDAY);
 			return Optional.of(activityStatus);
 		}
 		
 		if (workDivision.isPresent() && workDivision.get() == 1  
-				&& status.isPresent()) {
+				&& status.isPresent() && attendanceTime.isPresent()) {
 			activityStatus.setActivity(status.get().getActivity());
 			return Optional.of(activityStatus);
 		}
 		
-		if (workDivision.isPresent() && workDivision.get() == 1) {
+		if (workDivision.isPresent() && workDivision.get() == 1
+				&& attendanceTime.isPresent() && leaveTime.isPresent()) {
 			activityStatus.setActivity(StatusClassfication.PRESENT);
 			return Optional.of(activityStatus);
 		}
@@ -140,7 +144,7 @@ public class AttendanceStatusJudgmentService {
 		
 		if (workDivision.isPresent() && workDivision.get() == 0 
 				&& leaveTime.isPresent() && leaveTime.get() <= timeNow) {
-			activityStatus.setActivity(StatusClassfication.NOT_PRESENT);
+			activityStatus.setActivity(StatusClassfication.GO_HOME);
 			return Optional.of(activityStatus);
 		}
 		
@@ -150,24 +154,10 @@ public class AttendanceStatusJudgmentService {
 			activityStatus.setActivity(StatusClassfication.GO_OUT);
 			return Optional.of(activityStatus);
 		}
-		
+				
 		if (workDivision.isPresent() && workDivision.get() == 0 
 				&& attendanceTime.isPresent() && attendanceTime.get() <= timeNow
-				&& goStraightAtr.isPresent() && goStraightAtr.get() == 1) {
-			activityStatus.setActivity(StatusClassfication.GO_OUT);
-			return Optional.of(activityStatus);
-		}
-		
-		if (workDivision.isPresent() && workDivision.get() == 0 
-				&& attendanceTime.isPresent() && attendanceTime.get() <= timeNow
-				&& goStraightAtr.isPresent() && goStraightAtr.get() != 1) {
-			activityStatus.setActivity(StatusClassfication.NOT_PRESENT);
-			return Optional.of(activityStatus);
-		}
-		
-		if (workDivision.isPresent() && workDivision.get() == 0 
-				&& attendanceTime.isPresent() && attendanceTime.get() <= timeNow
-				&& !goStraightAtr.isPresent()) {
+				) {
 			activityStatus.setActivity(StatusClassfication.NOT_PRESENT);
 			return Optional.of(activityStatus);
 		}
@@ -179,18 +169,14 @@ public class AttendanceStatusJudgmentService {
 		}
 		
 		if (workDivision.isPresent() && workDivision.get() == 0 
-				&& goStraightAtr.isPresent() && goStraightAtr.get() == 1) {
+				&& goStraightAtr.isPresent() && goStraightAtr.get() == 1 
+				&& !status.isPresent() && attendanceTime.isPresent()) {
 			activityStatus.setActivity(StatusClassfication.GO_OUT);
 			return Optional.of(activityStatus);
 		}
 		
-		if (workDivision.isPresent() && workDivision.get() == 0 
-				&& goStraightAtr.isPresent() && goStraightAtr.get() == 1) {
-			activityStatus.setActivity(StatusClassfication.GO_OUT);
-			return Optional.of(activityStatus);
-		}
 		
-		if (workDivision.isPresent() && workDivision.get() == 0 ) {
+		if (workDivision.isPresent() && workDivision.get() == 0 && goStraightAtr.get() != 1 ) {
 			activityStatus.setActivity(StatusClassfication.PRESENT);
 			return Optional.of(activityStatus);
 		}
