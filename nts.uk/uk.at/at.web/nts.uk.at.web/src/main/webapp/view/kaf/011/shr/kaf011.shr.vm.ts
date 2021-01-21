@@ -130,6 +130,7 @@ module nts.uk.at.view.kaf011 {
 			self.workTypeList(workTypeList);
 			self.workInformation.update(param.workInformation);
 			self.leaveComDayOffMana(_.map(param.leaveComDayOffMana, (c) =>new SubWorkSubHolidayLinkingMng(c)));
+			self.leaveComDayOffManaOld(self.leaveComDayOffMana());
 			
 			self.displayInforWhenStarting = displayInforWhenStarting;
 			
@@ -326,6 +327,7 @@ module nts.uk.at.view.kaf011 {
 			let self = this;
 			super.bindingScreenB(param, workTypeList, displayInforWhenStarting);
 			self.payoutSubofHDManagements(_.map(param.payoutSubofHDManagements, (c) =>new SubWorkSubHolidayLinkingMng(c)));
+			self.payoutSubofHDManagementsOld(self.payoutSubofHDManagements());
 			self.workChangeUse(param.workChangeUse);
 			self.changeSourceHoliday(param.changeSourceHoliday);
 		}
