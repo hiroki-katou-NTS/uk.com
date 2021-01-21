@@ -192,31 +192,48 @@ public class TimeLeaveApplicationFinder {
                 getOpActualContentDisplayLst().get(0).getOpAchievementDetail();
 
         // 1日分の勤怠時間を仮計算
-        DailyAttendanceTimeCaculationImport calcImport = dailyAttendanceTimeCaculation.getCalculation(
-                employeeId,
-                baseDate,
-                achievementDetailDto.getWorkTypeCD(),
-                achievementDetailDto.getWorkTimeCD(),
-                lstTimeZone.stream().map(i -> new TimeZone(
-                        i.getStartTime() == null ? null : new TimeWithDayAttr(i.getStartTime()),
-                        i.getEndTime() == null ? null : new TimeWithDayAttr(i.getEndTime())
-                )).collect(Collectors.toList()),
-                Collections.emptyList(),
-                Collections.emptyList(),
-                lstOutingTimeZone.stream().map(i -> new OutingTimeZoneExport(
-                        i.getOutingAtr() == 4 ? GoingOutReason.PRIVATE.value : GoingOutReason.UNION.value,
-                        i.getStartTime(),
-                        i.getEndTime()
-                )).collect(Collectors.toList()),
-                achievementDetailDto.getShortWorkTimeLst().stream().map(i -> new ChildCareTimeZoneExport(
-                        i.getChildCareAttr(),
-                        i.getStartTime(),
-                        i.getEndTime()
-                )).collect(Collectors.toList())
-        );
+//        DailyAttendanceTimeCaculationImport calcImport = dailyAttendanceTimeCaculation.getCalculation(
+//                employeeId,
+//                baseDate,
+//                achievementDetailDto.getWorkTypeCD(),
+//                achievementDetailDto.getWorkTimeCD(),
+//                lstTimeZone.stream().map(i -> new TimeZone(
+//                        i.getStartTime() == null ? null : new TimeWithDayAttr(i.getStartTime()),
+//                        i.getEndTime() == null ? null : new TimeWithDayAttr(i.getEndTime())
+//                )).collect(Collectors.toList()),
+//                Collections.emptyList(),
+//                Collections.emptyList(),
+//                lstOutingTimeZone.stream().map(i -> new OutingTimeZoneExport(
+//                        i.getOutingAtr() == 4 ? GoingOutReason.PRIVATE.value : GoingOutReason.UNION.value,
+//                        i.getStartTime(),
+//                        i.getEndTime()
+//                )).collect(Collectors.toList()),
+//                achievementDetailDto.getShortWorkTimeLst().stream().map(i -> new ChildCareTimeZoneExport(
+//                        i.getChildCareAttr(),
+//                        i.getStartTime(),
+//                        i.getEndTime()
+//                )).collect(Collectors.toList())
+//        );
 
-        // TODO: fake output because outing time calculation not update yet
-        int privateOutingTime = 0, unionOutingTime = 0;
+        // 取得した「日別勤怠の勤怠時間」をOUTPUTにセットする
+//        CalculationResultDto calculationResult = new CalculationResultDto();
+//        calculationResult.setTimeBeforeWork1(calcImport.getLateTime1().v());
+//        calculationResult.setTimeAfterWork1(calcImport.getEarlyLeaveTime1().v());
+//        calculationResult.setTimeBeforeWork2(calcImport.getLateTime2().v());
+//        calculationResult.setTimeAfterWork2(calcImport.getEarlyLeaveTime2().v());
+//        calculationResult.setPrivateOutingTime(privateOutingTime);
+//        calculationResult.setUnionOutingTime(unionOutingTime);
+
+        // TODO: fake output because time calculation not update yet
+        int lateTime1 = 0, lateTime2 = 0, leaveEarly1 = 0, leaveEarly2 = 0, privateOutingTime = 0, unionOutingTime = 0;
+        if (lstTimeZone.get(0).getStartTime() != null && achievementDetailDto.getOpWorkTime() != null)
+            lateTime1 = Math.abs(lstTimeZone.get(0).getStartTime() - achievementDetailDto.getOpWorkTime());
+        if (lstTimeZone.get(0).getEndTime() != null && achievementDetailDto.getOpLeaveTime() != null)
+            leaveEarly1 = Math.abs(achievementDetailDto.getOpLeaveTime() - lstTimeZone.get(0).getEndTime());
+        if (lstTimeZone.get(1).getStartTime() != null && achievementDetailDto.getOpWorkTime2() != null)
+            lateTime1 = Math.abs(lstTimeZone.get(0).getStartTime() - achievementDetailDto.getOpWorkTime2());
+        if (lstTimeZone.get(1).getEndTime() != null && achievementDetailDto.getOpDepartureTime2() != null)
+            leaveEarly1 = Math.abs(achievementDetailDto.getOpDepartureTime2() - lstTimeZone.get(0).getEndTime());
         for (OutingTimeZoneDto i : lstOutingTimeZone) {
             if (i.getOutingAtr() == AppTimeType.PRIVATE.value) {
                 privateOutingTime = privateOutingTime + (i.getEndTime() - i.getStartTime());
@@ -224,13 +241,11 @@ public class TimeLeaveApplicationFinder {
                 unionOutingTime = unionOutingTime + (i.getEndTime() - i.getStartTime());
             }
         }
-
-        // 取得した「日別勤怠の勤怠時間」をOUTPUTにセットする
         CalculationResultDto calculationResult = new CalculationResultDto();
-        calculationResult.setTimeBeforeWork1(calcImport.getLateTime1().v());
-        calculationResult.setTimeAfterWork1(calcImport.getEarlyLeaveTime1().v());
-        calculationResult.setTimeBeforeWork2(calcImport.getLateTime2().v());
-        calculationResult.setTimeAfterWork2(calcImport.getEarlyLeaveTime2().v());
+        calculationResult.setTimeBeforeWork1(lateTime1);
+        calculationResult.setTimeAfterWork1(leaveEarly1);
+        calculationResult.setTimeBeforeWork2(lateTime2);
+        calculationResult.setTimeAfterWork2(leaveEarly2);
         calculationResult.setPrivateOutingTime(privateOutingTime);
         calculationResult.setUnionOutingTime(unionOutingTime);
 
