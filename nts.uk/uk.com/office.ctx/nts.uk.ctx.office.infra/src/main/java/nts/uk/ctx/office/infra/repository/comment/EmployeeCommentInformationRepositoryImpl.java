@@ -31,7 +31,7 @@ public class EmployeeCommentInformationRepositoryImpl extends JpaRepository
 	private static final String SELECT_BY_SID_AND_DATE = "SELECT m FROM EmployeeCommentInformationEntity m WHERE m.pk.sid = :sid AND m.pk.date = :date";
 
 	// select TOP 1 by Sid
-	private static final String SELECT_TOP_1_BY_SID = "SELECT TOP 1 m FROM EmployeeCommentInformationEntity m WHERE m.pk.sid = :sid ORDER BY m.pk.date DESC";
+	private static final String SELECT_TOP_1_BY_SID = "SELECT m FROM EmployeeCommentInformationEntity m WHERE m.pk.sid = :sid ORDER BY m.pk.date DESC";
 
 	private static EmployeeCommentInformationEntity toEntity(EmployeeCommentInformation domain) {
 		EmployeeCommentInformationEntity entity = new EmployeeCommentInformationEntity();
@@ -88,7 +88,8 @@ public class EmployeeCommentInformationRepositoryImpl extends JpaRepository
 	@Override
 	public Optional<EmployeeCommentInformation> getTop1BySid(String sid) {
 		return this.queryProxy().query(SELECT_TOP_1_BY_SID, EmployeeCommentInformationEntity.class)
-				.setParameter("sid", sid).getSingle(EmployeeCommentInformation::createFromMemento);
+				.setParameter("sid", sid)
+				.getSingle(EmployeeCommentInformation::createFromMemento);
 	}
 
 }

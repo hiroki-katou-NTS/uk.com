@@ -86,7 +86,7 @@ public class WorkInformationQuery {
 				
 			//日別実績の勤務情報がない場合：勤務予定.勤務情報.勤務情報.勤務種類コード　＝　「勤務種類」.コード
 			} else {
-				String workTypeCode = workSchedule.getWorkInfo().getRecordInfo().getWorkTypeCode().v();
+				String workTypeCode = workSchedule == null ? null : workSchedule.getWorkInfo().getRecordInfo().getWorkTypeCode().v();
 				WorkType workType = workTypeList.stream().filter(wt -> (wt.getWorkTypeCode().v()).equalsIgnoreCase(workTypeCode)).findFirst().orElse(null);
 				workTypeDto = EmployeeWorkInformationDto.workTypeToDto(workType);
 			}

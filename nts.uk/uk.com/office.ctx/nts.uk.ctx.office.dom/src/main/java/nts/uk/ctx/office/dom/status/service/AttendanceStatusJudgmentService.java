@@ -3,7 +3,6 @@ package nts.uk.ctx.office.dom.status.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.office.dom.dto.TimeLeavingOfDailyPerformanceDto;
@@ -33,7 +32,7 @@ public class AttendanceStatusJudgmentService {
 			leaveTime = Optional.ofNullable(timeLeave.get().getLeaveTime());
 		}
 		//	直行区分　＝　日別実績の勤務情報.isPrensent　？　日別実績の勤務情報.直行区分　：　しない
-		goStraightAtr = workInfo.isPresent() ? Optional.of(workInfo.get().getBackStraightAtr()) : Optional.empty();
+		goStraightAtr = workInfo.isPresent() ? Optional.ofNullable(workInfo.get().getBackStraightAtr()) : Optional.empty();
 		List<Integer> notIn = new ArrayList<>();
 		notIn.add(0);	//	出勤
 		notIn.add(11);	//	休日出勤

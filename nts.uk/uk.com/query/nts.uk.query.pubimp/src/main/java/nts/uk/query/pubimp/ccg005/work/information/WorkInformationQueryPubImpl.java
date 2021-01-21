@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.query.app.ccg005.query.work.information.EmployeeWorkInformationDto;
@@ -21,6 +22,7 @@ import nts.uk.query.pub.ccg005.work.information.dto.WorkTypeExport;
 @Stateless
 public class WorkInformationQueryPubImpl implements WorkInformationQueryPub {
 
+	@Inject
 	private WorkInformationQuery query;
 
 	@Override
@@ -36,6 +38,7 @@ public class WorkInformationQueryPubImpl implements WorkInformationQueryPub {
 
 			WorkTypeExport workTypeDto = WorkTypeExport.builder()
 					.dailyWork(
+							item.getWorkTypeDto().getDailyWork() == null ? DailyWorkExport.builder().build() :
 							DailyWorkExport.builder().workTypeUnit(item.getWorkTypeDto().getDailyWork().getWorkTypeUnit())
 									.oneDay(item.getWorkTypeDto().getDailyWork().getOneDay())
 									.morning(item.getWorkTypeDto().getDailyWork().getMorning())

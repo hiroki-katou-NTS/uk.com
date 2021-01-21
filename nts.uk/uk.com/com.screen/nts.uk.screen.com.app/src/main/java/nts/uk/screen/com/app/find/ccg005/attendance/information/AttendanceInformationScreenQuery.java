@@ -110,15 +110,15 @@ public class AttendanceInformationScreenQuery {
 		List<UserAvatar> avatarList = avatarRepo.getAvatarByPersonalIds(pids);
 
 		// 8: create()
-		return sids.stream().map(sid -> {
+		return empIds.stream().map(empId -> {
 			// ApplicationDto
-			List<Application> applications = mapListApplication.get(sid);
+			List<Application> applications = mapListApplication.get(empId.getSid());
 			List<ApplicationDto> applicationDtos = applications.stream().map(item -> ApplicationDto.toDto(item))
 					.collect(Collectors.toList());
 
 			// AttendanceDetailDto
 			Optional<EmployeeWorkInformationExport> workInformation = workInfoList.stream()
-					.filter(wi -> wi.getSid().equalsIgnoreCase(sid)).findFirst();
+					.filter(wi -> wi.getSid().equalsIgnoreCase(empId.getSid())).findFirst();
 			AttendanceDetailDto attendanceDetailDto = AttendanceDetailDto.builder().build();
 			ActivityStatusDto activityStatusDto = ActivityStatusDto.builder().build();
 			workInformation.ifPresent(workInfo -> {
@@ -158,16 +158,16 @@ public class AttendanceInformationScreenQuery {
 				// 4. 開始時刻 AND 開始の色
 				String checkInTime;
 				Integer checkInColor;
-				Integer actualAttendance = workInfo.getTimeLeavingOfDailyPerformanceDto() != null
+				Integer actualAttendance = workInfo.getTimeLeavingOfDailyPerformanceDto().getAttendanceTime() != null
 						? workInfo.getTimeLeavingOfDailyPerformanceDto().getAttendanceTime()
 						: null;
-				boolean actualStraight = workInfo.getWorkPerformanceDto() != null
+				boolean actualStraight = workInfo.getWorkPerformanceDto().getGoStraightAtr() != null
 						? workInfo.getWorkPerformanceDto().getGoStraightAtr() == 1
 						: false;
-				Integer futureAttendance = workInfo.getWorkScheduleDto() != null
+				Integer futureAttendance = workInfo.getWorkScheduleDto().getAttendanceTime() != null
 						? workInfo.getWorkScheduleDto().getAttendanceTime()
 						: null;
-				boolean futureStraight = workInfo.getWorkScheduleDto() != null
+				boolean futureStraight = workInfo.getWorkScheduleDto().getGoStraightAtr() != null
 						? workInfo.getWorkScheduleDto().getGoStraightAtr() == 1
 						: false;
 
@@ -184,16 +184,16 @@ public class AttendanceInformationScreenQuery {
 				// ５．終了時刻 AND 終了の色
 				String checkOutTime;
 				Integer checkOutColor;
-				Integer actualLeave = workInfo.getTimeLeavingOfDailyPerformanceDto() != null
+				Integer actualLeave = workInfo.getTimeLeavingOfDailyPerformanceDto().getLeaveTime() != null
 						? workInfo.getTimeLeavingOfDailyPerformanceDto().getLeaveTime()
 						: null;
-				boolean actualLeaveStraight = workInfo.getWorkPerformanceDto() != null
+				boolean actualLeaveStraight = workInfo.getWorkPerformanceDto().getBackStraightAtr() != null
 						? workInfo.getWorkPerformanceDto().getBackStraightAtr() == 1
 						: false;
-				Integer futureLeave = workInfo.getWorkScheduleDto() != null
+				Integer futureLeave = workInfo.getWorkScheduleDto().getLeaveTime() != null
 						? workInfo.getWorkScheduleDto().getLeaveTime()
 						: null;
-				boolean futureLeaveStraight = workInfo.getWorkScheduleDto() != null
+				boolean futureLeaveStraight = workInfo.getWorkScheduleDto().getBackStraightAtr() != null
 						? workInfo.getWorkScheduleDto().getBackStraightAtr() == 1
 						: false;
 
@@ -229,7 +229,7 @@ public class AttendanceInformationScreenQuery {
 				
 				// 2: 在席のステータスの判断(Require, 社員ID, 年月日, 日別実績の勤務情報, 日別実績の出退勤, 勤務種類):
 				Optional<ActivityStatus> activityStatus = AttendanceStatusJudgmentService.getActivityStatus(
-						rq, sid, baseDate, 
+						rq, empId.getSid(), baseDate, 
 						this.getWorkInfoOfDailyPerformanceDto(workInfo.getWorkPerformanceDto()),
 						this.getTimeLeavingOfDailyPerformanceDto(workInfo.getTimeLeavingOfDailyPerformanceDto()),
 						this.getWorkTypeDto(workInfo.getWorkTypeDto())
@@ -239,35 +239,29 @@ public class AttendanceInformationScreenQuery {
 			
 			// UserAvatarDto
 			UserAvatarDto avatarDto = UserAvatarDto.builder().build();
-			String mappingPid = empIds.stream().
-					filter(id -> id.getSid() == sid)
-					.findFirst()
-						.map(param -> param.getPid()).orElse(null);
-			if (mappingPid != null) {
-				avatarList.stream().filter(ava -> ava.getPersonalId() == mappingPid).findAny()
-						.ifPresent(ava -> ava.setMemento(avatarDto));
-			}
+			avatarList.stream().filter(ava -> ava.getPersonalId() == empId.getPid()).findAny()
+			.ifPresent(ava -> ava.setMemento(avatarDto));
 			
 			// commentDto
-			CommentQueryExport commentExp = commentData.get(sid);
+			CommentQueryExport commentExp = commentData.get(empId.getSid());
 			EmployeeCommentInformationDto commentDto = EmployeeCommentInformationDto.builder()
 					.comment(commentExp.getComment()).date(commentExp.getDate()).sid(commentExp.getSid()).build();
 
 			// goOutDto
-			Optional<GoOutEmployeeInformation> goOutDomain = goOutList.stream().filter(goOut -> goOut.getSid() == sid)
+			Optional<GoOutEmployeeInformation> goOutDomain = goOutList.stream().filter(goOut -> goOut.getSid() == empId.getSid())
 					.findAny();
 			GoOutEmployeeInformationDto goOutDto = GoOutEmployeeInformationDto.builder().build();
 			goOutDomain.ifPresent(item -> item.setMemento(goOutDto));
 
 			// emojiDto
-			Optional<EmployeeEmojiState> emojiDomain = emojiList.stream().filter(emoji -> emoji.getSid() == sid)
+			Optional<EmployeeEmojiState> emojiDomain = emojiList.stream().filter(emoji -> emoji.getSid() == empId.getSid())
 					.findAny();
 			EmployeeEmojiStateDto emojiDto = EmployeeEmojiStateDto.builder().build();
 			emojiDomain.ifPresent(consumer -> consumer.setMemento(emojiDto));
 
 			return AttendanceInformationDto.builder()
 					.applicationDtos(applicationDtos)
-					.sid(sid)
+					.sid(empId.getSid())
 					.attendanceDetailDto(attendanceDetailDto)
 					.avatarDto(avatarDto)
 					.activityStatusDto(activityStatusDto)
