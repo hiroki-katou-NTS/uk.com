@@ -218,6 +218,7 @@ module nts.uk.at.view.kmk004.l {
 				.subscribe(() => {
 					if (ko.unwrap(vm.years).length > 0) {
 						vm.existYear(true);
+						vm.checkDelete(true);
 					} else {
 						vm.existYear(false);
 						vm.checkDelete(false);
