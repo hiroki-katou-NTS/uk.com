@@ -717,7 +717,9 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 
 			if (vm.selectedType() === 3) {
 				// B9_2
-				vm.selectedDateSpec(param.vacationInfo.info.applyForSpeLeave.relationshipCD);
+				if (param.vacationInfo.info.applyForSpeLeave.relationshipCD !== null) {
+					vm.selectedDateSpec(param.vacationInfo.info.applyForSpeLeave.relationshipCD);
+				}
 				// B9_3
 				vm.isCheckMourn(param.vacationInfo.info.applyForSpeLeave.mournerFlag);
 				// B9_5

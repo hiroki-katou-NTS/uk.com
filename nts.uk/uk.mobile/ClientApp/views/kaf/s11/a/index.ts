@@ -154,6 +154,8 @@ export class KafS11AComponent extends KafS00ShrComponent {
                 vm.user = userData;
             }).then(() => {
                 vm.appDispInfoStartupOutput = vm.params.appDispInfoStartupOutput;
+                vm.updateKaf000_A_Params(vm.user);
+                vm.updateKaf000_C_Params(false);
                 vm.initData(vm.params.appDetail);
                 let wkTimeCodes = [
                     vm.complementWorkInfo.workTimeCD,
@@ -822,6 +824,7 @@ export class KafS11AComponent extends KafS00ShrComponent {
         vm.$http.post('at', API.changeRecDate, command).then((data: any) => {
             vm.formatDateResult(data.data);
             vm.initDataComplement();
+            vm.updateValidate();
             vm.$mask('hide');
         });
     }
@@ -841,6 +844,7 @@ export class KafS11AComponent extends KafS00ShrComponent {
         vm.$http.post('at', API.changeAbsDate, command).then((data: any) => {
             vm.formatDateResult(data.data);
             vm.initDataLeave();
+            vm.updateValidate();
             vm.$mask('hide');
         });
     }
@@ -1205,7 +1209,7 @@ export class KafS11AComponent extends KafS00ShrComponent {
                 cmd.absOldWorkMngLst = vm.displayInforWhenStarting.abs.payoutSubofHDManagements;
             }
         }
-        if (vm.dispComplementContent) {
+        if (!_.isNull(vm.complementWorkInfo.timeRange1.start) && !_.isNull(vm.complementWorkInfo.timeRange1.end)) {
             cmd.rec.workingHours.push({
                 workNo: 1,
                 timeZone: {
@@ -1214,7 +1218,7 @@ export class KafS11AComponent extends KafS00ShrComponent {
                 }
             });
         }
-        if (vm.dispComplementTimeRange2) {
+        if (!_.isNull(vm.complementWorkInfo.timeRange2.start) && !_.isNull(vm.complementWorkInfo.timeRange2.end)) {
             cmd.rec.workingHours.push({
                 workNo: 2,
                 timeZone: {
@@ -1223,23 +1227,25 @@ export class KafS11AComponent extends KafS00ShrComponent {
                 }
             });
         }
-        if (vm.dispLeaveTimeRange1) {
-            cmd.abs.workingHours.push({
-                workNo: 1,
-                timeZone: {
-                    startTime: vm.leaveWorkInfo.timeRange1.start,
-                    endTime: vm.leaveWorkInfo.timeRange1.end
-                }
-            });
-        }
-        if (vm.dispLeaveTimeRange2) {
-            cmd.abs.workingHours.push({
-                workNo: 2,
-                timeZone: {
-                    startTime: vm.leaveWorkInfo.timeRange2.start,
-                    endTime: vm.leaveWorkInfo.timeRange2.end
-                }
-            });
+        if (cmd.abs.workChangeUse) {
+            if (!_.isNull(vm.leaveWorkInfo.timeRange1.start) && !_.isNull(vm.leaveWorkInfo.timeRange1.end)) {
+                cmd.abs.workingHours.push({
+                    workNo: 1,
+                    timeZone: {
+                        startTime: vm.leaveWorkInfo.timeRange1.start,
+                        endTime: vm.leaveWorkInfo.timeRange1.end
+                    }
+                });
+            }
+            if (!_.isNull(vm.leaveWorkInfo.timeRange2.start) && !_.isNull(vm.leaveWorkInfo.timeRange2.end)) {
+                cmd.abs.workingHours.push({
+                    workNo: 2,
+                    timeZone: {
+                        startTime: vm.leaveWorkInfo.timeRange2.start,
+                        endTime: vm.leaveWorkInfo.timeRange2.end
+                    }
+                });
+            }
         }
 
         return cmd;
