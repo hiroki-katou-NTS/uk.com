@@ -154,6 +154,8 @@ export class KafS11AComponent extends KafS00ShrComponent {
                 vm.user = userData;
             }).then(() => {
                 vm.appDispInfoStartupOutput = vm.params.appDispInfoStartupOutput;
+                vm.updateKaf000_A_Params(vm.user);
+                vm.updateKaf000_C_Params(false);
                 vm.initData(vm.params.appDetail);
                 let wkTimeCodes = [
                     vm.complementWorkInfo.workTimeCD,
