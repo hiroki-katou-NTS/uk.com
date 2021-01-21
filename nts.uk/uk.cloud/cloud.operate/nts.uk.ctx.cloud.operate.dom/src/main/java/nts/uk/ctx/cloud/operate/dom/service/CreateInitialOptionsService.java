@@ -14,7 +14,6 @@ import nts.uk.shr.com.license.option.purchasestate.OptionType;
  * @author ai_muto
  *
  */
-@Stateless
 public class CreateInitialOptionsService {
 
 	public static AtomTask create(Require require, String tenantCode, String optionCodeString) {
