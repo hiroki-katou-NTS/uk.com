@@ -853,10 +853,15 @@ export class KafS11AComponent extends KafS00ShrComponent {
         vm.$modal('kdls01', param).then((result: any) => {
             if (result) {
                 if (isComplement) {
-                    vm.complementWorkInfo.workTimeCD = result.selectedWorkTime.code;            
+                    vm.complementWorkInfo.workTimeCD = result.selectedWorkTime.code;
+                    vm.complementWorkInfo.timeRange1 = { start: result.selectedWorkTime.firstStartTime, end: result.selectedWorkTime.firstEndTime };
+                    vm.complementWorkInfo.timeRange2 = { start: result.selectedWorkTime.secondStartTime, end: result.selectedWorkTime.secondEndTime };              
                 } else {
-                    vm.leaveWorkInfo.workTimeCD = result.selectedWorkTime.code; 
+                    vm.leaveWorkInfo.workTimeCD = result.selectedWorkTime.code;
+                    vm.leaveWorkInfo.timeRange1 = { start: result.selectedWorkTime.firstStartTime, end: result.selectedWorkTime.firstEndTime };
+                    vm.leaveWorkInfo.timeRange2 = { start: result.selectedWorkTime.secondStartTime, end: result.selectedWorkTime.secondEndTime };
                 }
+
                 let wkTimeCodes = [
                     vm.complementWorkInfo.workTimeCD,
                     vm.leaveWorkInfo.workTimeCD
