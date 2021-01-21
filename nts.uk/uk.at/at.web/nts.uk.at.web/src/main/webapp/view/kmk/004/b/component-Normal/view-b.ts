@@ -195,6 +195,7 @@ module nts.uk.at.view.kmk004.b {
 						.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
 						.then(() => {
 							vm.$errors('clear');
+							vm.years.valueHasMutated();
 						})
 						.then(() => {
 							vm.selectedYear.valueHasMutated();
