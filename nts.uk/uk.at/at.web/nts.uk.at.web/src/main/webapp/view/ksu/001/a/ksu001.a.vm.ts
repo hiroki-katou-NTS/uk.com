@@ -1323,6 +1323,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             startTime    = '';
                             endTime      = '';
                         }
+                        
+                        if(cell.startTime == 0 && cell.endTime == 0){
+                            startTime    = '';
+                            endTime      = '';
+                        }
+                        
                         objDetailContentDs['_' + ymd] = new ExCell(workTypeCode, workTypeName, workTimeCode, workTimeName, startTime, endTime, '', '', cell.confirmed , cell.achievements, cell.workHolidayCls);
                         // set Deco background
                         // A10_color⑤ 勤務略名表示の背景色 (Màu nền hiển thị "chuyên cần, tên viết tắt")
@@ -1709,10 +1715,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
         }
         // 9999
-        saveData() : JQueryPromise<any> {
+        saveData(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            
-            if(nts.uk.ui.errors.hasError() || self.mode() === 'confirm')
+
+            if (nts.uk.ui.errors.hasError() || self.mode() === 'confirm')
                 return;
             nts.uk.ui.block.grayout();
             let itemLocal = uk.localStorage.getItem(self.KEY);
@@ -1720,7 +1726,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let updatedCells = $("#extable").exTable("updatedCells");
             let viewMode = userInfor.disPlayFormat;
             let params = [];
-    
+
             let cellsGroup = self.groupByRowIndAndColKey(updatedCells, function(cell) {
                 return [cell.rowIndex, cell.columnKey];
             });
@@ -1728,13 +1734,26 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             console.log(cellsGroup);
 
             let dataReg = self.buidDataReg(userInfor.disPlayFormat, cellsGroup);
-            
+
             service.regWorkSchedule(dataReg).done((rs) => {
                 console.log(rs);
-                if(rs.hasError == false){
+                if (rs.hasError == false) {
+
+                    let $grid = $('div.ex-body-detail');
+                    self.updateAfterSaveData($grid[0]);
+                    
+                    let updatedCells = $("#extable").exTable("updatedCells");
+                    console.log(updatedCells);
+
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     nts.uk.ui.block.clear();
                 } else {
+                    let $grid = $('div.ex-body-detail');
+                    self.updateAfterSaveData($grid[0]);
+
+                    let updatedCells = $("#extable").exTable("updatedCells");
+                    console.log(updatedCells);
+
                     self.openKDL053(rs);
                 }
             }).fail(function(error) {
@@ -1743,6 +1762,28 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 dfd.reject();
             });
             return dfd.promise();
+        }
+        
+        // 8888   8470 Clear states 
+        // update grid sau khi dang ky data
+        updateAfterSaveData($grid: HTMLElement) {
+            let self = this;
+            nts.uk.ui.block.grayout();
+            
+            $.data($grid, "copy-history", null);
+            $.data($grid, "redo-stack", null);
+            $.data($grid, "edit-history", null);
+            $.data($grid, "edit-redo-stack", null);
+            $.data($grid, "stick-history", null);
+            $.data($grid, "stick-redo-stack", null);
+            
+            $('#extable').data('extable').modifications = null;
+            
+            self.enableBtnReg(false);
+            self.enableBtnUndo(false);
+            self.enableBtnRedo(false);
+
+            nts.uk.ui.block.clear();
         }
 
         buidDataReg(viewMode, cellsGroup) {
@@ -2197,7 +2238,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 });
             });
         }
-
+        
         // update grid header after closed dialog kdl049
         updateHeader(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
