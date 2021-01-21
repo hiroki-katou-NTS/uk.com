@@ -71,29 +71,31 @@ export class KafS12A2Component extends Vue {
 
     public handleChangeSpecialLeaveFrame(value: number) {
         const vm = this;
-        vm.specialLeaveFrame = value;
-        vm.$mask('show');
-        const params = {
-            specialLeaveFrameNo: value,
-            timeLeaveAppDisplayInfo: {
-                appDispInfoStartupOutput: vm.appDispInfoStartupOutput,
-                timeLeaveManagement: vm.timeLeaveManagement,
-                timeLeaveRemaining: vm.timeLeaveRemaining,
-                reflectSetting: vm.reflectSetting
-            }
-        };
-        params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingStart = new Date(params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingStart).toISOString();
-        params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingEnd = new Date(params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingEnd).toISOString();
-        vm.$http.post('at', API.changeSpecialFrame, params).then((res: any) => {
-            if (res) {
-                vm.timeLeaveRemaining.specialTimeFrames = res.data.timeLeaveRemaining.specialTimeFrames;
-            }
-            vm.$mask('hide');
-        }).catch((error: any) => {
-            vm.$modal.error(error).then(() => {
+        if (vm.specialLeaveFrame !== value) {
+            vm.specialLeaveFrame = value;
+            vm.$mask('show');
+            const params = {
+                specialLeaveFrameNo: value,
+                timeLeaveAppDisplayInfo: {
+                    appDispInfoStartupOutput: vm.appDispInfoStartupOutput,
+                    timeLeaveManagement: vm.timeLeaveManagement,
+                    timeLeaveRemaining: vm.timeLeaveRemaining,
+                    reflectSetting: vm.reflectSetting
+                }
+            };
+            params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingStart = new Date(params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingStart).toISOString();
+            params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingEnd = new Date(params.timeLeaveAppDisplayInfo.timeLeaveRemaining.remainingEnd).toISOString();
+            vm.$http.post('at', API.changeSpecialFrame, params).then((res: any) => {
+                if (res) {
+                    vm.timeLeaveRemaining.specialTimeFrames = res.data.timeLeaveRemaining.specialTimeFrames;
+                }
                 vm.$mask('hide');
+            }).catch((error: any) => {
+                vm.$modal.error(error).then(() => {
+                    vm.$mask('hide');
+                });
             });
-        });
+        }
     }
 
     public nextToStep3() {

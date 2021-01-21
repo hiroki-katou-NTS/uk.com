@@ -256,7 +256,7 @@ export class KafS12AComponent extends KafS00ShrComponent {
                     if (res) {
                         vm.calculatedData = res.data;
                         // if (vm.details.length == 0) {
-                        vm.createNewDetails(lateEarlyTimeZones, outingTimeZones);
+                        vm.createNewDetails(lateEarlyTimeZones.filter((i: LateEarlyTimeZone) => i.timeValue != null), outingTimeZones);
                         // }
                         vm.step = 'KAFS12_2';
                         vm.$nextTick(() => {

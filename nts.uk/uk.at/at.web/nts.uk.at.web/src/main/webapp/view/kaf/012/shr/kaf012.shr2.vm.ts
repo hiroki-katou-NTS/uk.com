@@ -930,13 +930,13 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                     && appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail) {
                     switch (appTimeType) {
                         case AppTimeType.ATWORK:
-                            return appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.timeContentOutput.lateTime > 0 && application().prePostAtr() == 1 ? getText("KAF012_13") : "";
+                            return appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.timeContentOutput.lateTime > 0 ? getText("KAF012_13") : "";
                         case AppTimeType.OFFWORK:
-                            return appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.timeContentOutput.earlyLeaveTime > 0 && application().prePostAtr() == 1 ? getText("KAF012_19") : "";
+                            return appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.timeContentOutput.earlyLeaveTime > 0 ? getText("KAF012_19") : "";
                         case AppTimeType.ATWORK2:
-                            return appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.timeContentOutput.lateTime2 > 0 && application().prePostAtr() == 1 ? getText("KAF012_22") : "";
+                            return appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.timeContentOutput.lateTime2 > 0 ? getText("KAF012_22") : "";
                         case AppTimeType.OFFWORK2:
-                            return appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.timeContentOutput.earlyLeaveTime2 > 0 && application().prePostAtr() == 1 ? getText("KAF012_25") : "";
+                            return appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.timeContentOutput.earlyLeaveTime2 > 0 ? getText("KAF012_25") : "";
                         default:
                             break;
                     }

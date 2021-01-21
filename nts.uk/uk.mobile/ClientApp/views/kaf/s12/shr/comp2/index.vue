@@ -1,5 +1,5 @@
 <template>
-    <div class="card-body mb-n3">
+    <div class="card-body mb-n3 position-relative">
         <nts-time-range-input
                 v-model="params.timeZone"
                 v-bind:showTile="true"

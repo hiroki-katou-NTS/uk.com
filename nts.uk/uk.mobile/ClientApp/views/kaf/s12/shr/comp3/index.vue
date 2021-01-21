@@ -61,14 +61,16 @@
             </nts-time-editor>
             <span class="numberOfHoursLeft position-absolute" v-if="displayNursingRemaining">{{'KAFS12_23' | i18n(nursingRemaining)}}</span>
         </div>
-        <nts-dropdown
-                v-if="displaySpecial"
-                v-bind:name="'KAFS12_44' | i18n"
-                v-model="comboBoxValue">
+        <div class="position-relative">
+            <nts-dropdown
+                    v-if="displaySpecial"
+                    v-bind:name="'KAFS12_44' | i18n"
+                    v-model="comboBoxValue">
                 <option v-for="item in comboBoxOptions" v-bind:key="item.specialHdFrameNo" v-bind:value="item.specialHdFrameNo">
-                        {{ item.specialHdFrameName }}
+                    {{ item.specialHdFrameName }}
                 </option>
-        </nts-dropdown>
+            </nts-dropdown>
+        </div>
         <div class="position-relative" style="padding-top: 15px;" v-if="displaySpecial">
             <nts-time-editor
                     v-model="params.specialAppTime"

@@ -35,7 +35,7 @@
                     <span class="badge badge-info">任意</span>
                 </div>
                 <!-- A_A9_2 -->
-                <span class="uk-text-dark-gray ml-1">{{ "KAFS12_14" | i18n }}</span>
+                <span class="ml-1">{{ "KAFS12_14" | i18n }}</span>
                 <!-- A_A9_3 -->
                 <div v-for="timeZone in outingTimeZones"
                      v-bind:key="timeZone.workNo">

@@ -95,21 +95,31 @@ module nts.uk.at.view.kaf012.a.viewmodel {
             });
             vm.appDispInfoStartupOutput.subscribe(value => {
                 if (vm.application().prePostAtr() == 1 && value) {
-                    if (value.appDispInfoWithDateOutput.opActualContentDisplayLst && value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail) {
-                        vm.applyTimeData()[AppTimeType.ATWORK].timeZones[0].startTime(value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opWorkTime);
-                        vm.applyTimeData()[AppTimeType.OFFWORK].timeZones[0].startTime(value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opLeaveTime);
-                        vm.applyTimeData()[AppTimeType.ATWORK2].timeZones[0].startTime(value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opWorkTime2);
-                        vm.applyTimeData()[AppTimeType.OFFWORK2].timeZones[0].startTime(value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opDepartureTime2);
-                        const outingTimes = value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.stampRecordOutput.outingTime || [];
-                        outingTimes.filter((time: any) => time.opGoOutReasonAtr == 0 || time.opGoOutReasonAtr == 3)
-                            .forEach((time: any) => {
-                                vm.applyTimeData()[4].timeZones[time.frameNo - 1].startTime(time.opStartTime);
-                                vm.applyTimeData()[4].timeZones[time.frameNo - 1].endTime(time.opEndTime);
-                                vm.applyTimeData()[4].timeZones[time.frameNo - 1].appTimeType(time.opGoOutReasonAtr == 3 ? AppTimeType.UNION : AppTimeType.PRIVATE);
-                            });
-                    }
+                    vm.updateInputTime(value);
                 }
             });
+            vm.application().prePostAtr.subscribe(value => {
+                if (value == 1 && vm.appDispInfoStartupOutput()) {
+                    vm.updateInputTime(vm.appDispInfoStartupOutput());
+                }
+            });
+        }
+
+        updateInputTime(value: any) {
+            const vm = this;
+            if (value.appDispInfoWithDateOutput.opActualContentDisplayLst && value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail) {
+                vm.applyTimeData()[AppTimeType.ATWORK].timeZones[0].startTime(value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opWorkTime);
+                vm.applyTimeData()[AppTimeType.OFFWORK].timeZones[0].startTime(value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opLeaveTime);
+                vm.applyTimeData()[AppTimeType.ATWORK2].timeZones[0].startTime(value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opWorkTime2);
+                vm.applyTimeData()[AppTimeType.OFFWORK2].timeZones[0].startTime(value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opDepartureTime2);
+                const outingTimes = value.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.stampRecordOutput.outingTime || [];
+                outingTimes.filter((time: any) => time.opGoOutReasonAtr == 0 || time.opGoOutReasonAtr == 3)
+                    .forEach((time: any) => {
+                        vm.applyTimeData()[4].timeZones[time.frameNo - 1].startTime(time.opStartTime);
+                        vm.applyTimeData()[4].timeZones[time.frameNo - 1].endTime(time.opEndTime);
+                        vm.applyTimeData()[4].timeZones[time.frameNo - 1].appTimeType(time.opGoOutReasonAtr == 3 ? AppTimeType.UNION : AppTimeType.PRIVATE);
+                    });
+            }
         }
 
         handleChangeAppDate(value: string) {
@@ -277,7 +287,7 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                                 $(vm.$el).find('#kaf000-a-component4-singleDate').focus();
                             }
                             if (err.messageId == "Msg_1687") {
-                                $(vm.$el).find('leave-type-switch').focus();
+                                $(vm.$el).find('#leave-type-switch').focus();
                             }
                         });
                     }).always(() => {

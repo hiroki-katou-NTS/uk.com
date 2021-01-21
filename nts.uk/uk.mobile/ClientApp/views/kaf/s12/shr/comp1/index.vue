@@ -7,7 +7,7 @@
             </div>
         </div>
         <!-- A_A5_2 -->
-        <span class="uk-text-dark-gray ml-1">{{ params.description | i18n }}</span>
+        <span class="ml-1">{{ params.description | i18n }}</span>
         <!-- A_A5_3 -->
         <div class="position-relative">
             <nts-time-editor
