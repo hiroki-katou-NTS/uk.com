@@ -110,7 +110,7 @@ module knr002.f {
                     hidePrimaryKey: false,
                     columns: [
                         { headerText: '', key: 'availability', dataType: 'boolean', width: ' 35px', ntsControl: 'Checkbox' },
-                        { headerText: getText('KNR002_238'), key: 'empInfoTerCode', dataType: 'string', width: 60},
+                        { headerText: getText('KNR002_238'), key: 'empInfoTerCode', dataType: 'string', width: 65},
                         { headerText: getText('KNR002_239'), key: 'empInfoTerName', dataType: 'string', width: 200},
                         { headerText: getText('KNR002_240'), key: 'modelEmpInfoTerName', dataType: 'string', width: 120},
                         { headerText: getText('KNR002_241'), key: 'workLocationName', dataType: 'string', width: 200},
