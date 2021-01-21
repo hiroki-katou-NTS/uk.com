@@ -1168,7 +1168,7 @@ export class KafS11AComponent extends KafS00ShrComponent {
                         workTime: vm.leaveWorkInfo.workTimeCD
                     },
                     workingHours: [],
-                    workChangeUse: false
+                    workChangeUse: _.isEmpty(vm.leaveWorkInfo.workTimeCD) ? false : true
                 };
             }
         } else {
@@ -1199,7 +1199,7 @@ export class KafS11AComponent extends KafS00ShrComponent {
                         workTime: vm.leaveWorkInfo.workTimeCD
                     },
                     workingHours: [],
-                    workChangeUse: false
+                    workChangeUse: _.isEmpty(vm.leaveWorkInfo.workTimeCD) ? false : true
                 };
                 cmd.absOldHolidayMngLst = vm.displayInforWhenStarting.abs.leaveComDayOffMana;
                 cmd.absOldWorkMngLst = vm.displayInforWhenStarting.abs.payoutSubofHDManagements;
