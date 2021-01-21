@@ -53,7 +53,6 @@ module nts.uk.at.view.kmk004.components.transform {
 			vm.itemList = params.years;
 			vm.startYM = params.startYM;
 			
-			
 			if (vm.type != 'Com_Person') {
 				vm.initBtnEnable(true);
 			}
@@ -168,10 +167,14 @@ module nts.uk.at.view.kmk004.components.transform {
 							})
 							.then(() => {
 								if (ko.unwrap(vm.itemList) != []) {
-									vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
-								} else {
-									vm.selectedYear(null);
-								}
+									 if (ko.unwrap(vm.itemList)[selectedIndex]) {
+                                        vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
+                                    } else {
+                                        vm.selectedYear(null);
+                                    }
+                                } else {
+                                    vm.selectedYear(null);
+                                }
 							});
 					}
 					break;
@@ -190,10 +193,14 @@ module nts.uk.at.view.kmk004.components.transform {
 							})
 							.then(() => {
 								if (ko.unwrap(vm.itemList) != []) {
-									vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
-								} else {
-									vm.selectedYear(null);
-								}
+									 if (ko.unwrap(vm.itemList)[selectedIndex]) {
+                                        vm.selectedYear(ko.unwrap(vm.itemList)[selectedIndex].year);
+                                    } else {
+                                        vm.selectedYear(null);
+                                    }
+                                } else {
+                                    vm.selectedYear(null);
+                                }
 							});
 					}
 					break;

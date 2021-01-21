@@ -191,6 +191,7 @@ module nts.uk.at.view.kmk004.components {
 				.subscribe(() => {
 					if (ko.unwrap(vm.years).length == 0) {
 						vm.workTimeSaves([]);
+						vm.initList();
 
 					} else {
 						if (ko.unwrap(vm.workTimeSaves).length > ko.unwrap(vm.years).length) {
