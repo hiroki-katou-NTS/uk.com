@@ -1,6 +1,8 @@
 package nts.uk.ctx.bs.person.infra.repository.personal.avatar;
 
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.person.dom.person.personal.avatar.AvatarRepository;
 import nts.uk.ctx.bs.person.dom.person.personal.avatar.UserAvatar;
 import nts.uk.ctx.bs.person.infra.entity.person.avatar.BpsdtPsAvatar;
@@ -8,6 +10,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,9 +66,14 @@ public class JpaAvatarRepository extends JpaRepository implements AvatarReposito
 
 	@Override
 	public List<UserAvatar> getAvatarByPersonalIds(List<String> pids) {
-		 return this.queryProxy()
-	                .query(SELECT_BY_PERSONAL_IDS, BpsdtPsAvatar.class)
-	                .setParameter("personalIds", pids)
-	                .getList(UserAvatar::createFromMemento);
+		List<UserAvatar> list = new ArrayList<>();
+		CollectionUtil.split(pids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subPids -> {
+			List<UserAvatar> subList = this.queryProxy()
+					.query(SELECT_BY_PERSONAL_IDS, BpsdtPsAvatar.class)
+					.setParameter("personalIds", pids)
+					.getList(UserAvatar::createFromMemento);
+			list.addAll(subList);
+		});
+		return list;
 	}
 }

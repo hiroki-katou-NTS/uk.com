@@ -21,11 +21,11 @@ import nts.uk.shr.com.context.AppContexts;
 public class SpecifyAuthInquiryRepositoryImpl extends JpaRepository implements SpecifyAuthInquiryRepository{
 
 	private static final String FIND_BY_CID_ROLEID = String.join(" ",
-			"SELECT s FROM SpecifyAuthInquiryEntity",
+			"SELECT s FROM SpecifyAuthInquiryEntity s",
 			"WHERE s.pk.cid = :cid AND s.pk.employmentRoleId = :roleId");
 	
 	private static final String FIND_BY_CID = String.join(" ",
-			"SELECT s FROM SpecifyAuthInquiryEntity",
+			"SELECT s FROM SpecifyAuthInquiryEntity s",
 			"WHERE s.pk.cid = :cid");
 	
 	@Override

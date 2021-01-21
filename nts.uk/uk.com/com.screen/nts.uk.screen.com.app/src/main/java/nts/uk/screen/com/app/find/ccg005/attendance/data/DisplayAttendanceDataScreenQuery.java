@@ -116,7 +116,7 @@ public class DisplayAttendanceDataScreenQuery {
 	}
 	
 	private StandardMenuNameQueryImport createMenu(String programId, String screenId) {
-		return new StandardMenuNameQueryImport(programId, screenId, Optional.ofNullable(null));
+		return new StandardMenuNameQueryImport(programId, screenId, Optional.empty());
 	}
 	
 	private Integer getAppType(String programId, String screenId) {

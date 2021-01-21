@@ -20,9 +20,36 @@ module nts.uk.at.view.ccg005.e.screenModel {
     
     created() {
       const vm = this;
-      vm.$ajax(API.getDisplayAttendanceData).then((data) => {
-        console.log(data);
+      ////
+      vm.$ajax(API.getDisplayAttendanceData);
+      ////
+      vm.$ajax(API.getAttendanceInformation, {
+        empIds: [
+          {
+            sid: "e49f9bde-02a6-4559-852a-cb7b5f14502b",
+            pid: "a0dcdd3e-71c7-4fe7-93db-6ea11dc128cf"
+          }
+        ],
+        baseDate: moment.utc(),
+        emojiUsage: true
       });
+      ////
+      vm.$ajax(API.getDisplayInfoAfterSelect, {
+        wkspIds: ["1b8b003e-8348-44bc-8cca-54aecb1a74ef","77628222-087c-43c0-8dd7-a34de161bf7d","4865aea2-48cb-43ed-b1c5-150e24f7fa99"],
+        baseDate: moment.utc(),
+        emojiUsage: true
+      });
+     ////
+     vm.$ajax(API.searchForEmployee, {
+      keyWorks: "稲熊", // 	稲熊　０１ 000001
+      baseDate: moment.utc(),
+      emojiUsage: true
+    });
+     ////
+     vm.$ajax(API.getGoOutInformation, {
+      sid: "e49f9bde-02a6-4559-852a-cb7b5f14502b", 
+      date: moment.utc(),
+    });
     }
 
     public closeDialog() {
