@@ -221,7 +221,7 @@ module nts.uk.at.view.knr002.a {
 
                 var stateTable: any = [];
                 
-                vm.dataSource().listEmpInfoTerminalDto.forEach((e, index) => {
+                data.forEach((e: any, index: any) => {
                     if (e.terminalCurrentState !== 1)  return;
                     [ "empInfoTerCode", "terminalCurrentState", "empInfoTerName", "displayModelEmpInfoTer",
                         "workLocationName",  "signalLastTime", "displayCurrentState", "open", "open1", "open2", "displayFlag" ].forEach(column => {
@@ -274,8 +274,12 @@ module nts.uk.at.view.knr002.a {
                     ],
                 });
 
-				// console.log("load grid;;: " + (performance.now() - start));
-                //vm.filterHandle(vm.selectedFilter());
+                data.forEach((item: any) => {
+                    if (item.terminalCurrentState == 2) {
+                        $("#grid").ntsGrid("disableNtsControlAt", item.empInfoTerCode, "open1", 'Button')
+                    }
+                });
+                
                 vm.removeBorder();
             }
         }
