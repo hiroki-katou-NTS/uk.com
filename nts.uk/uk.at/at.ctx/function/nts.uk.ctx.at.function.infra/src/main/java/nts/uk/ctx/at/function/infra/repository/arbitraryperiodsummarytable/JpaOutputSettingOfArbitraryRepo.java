@@ -12,7 +12,7 @@ import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
 import nts.uk.ctx.at.function.infra.entity.arbitraryperiodsummarytable.KfnmtRptWkAnpOut;
-import nts.uk.ctx.at.function.infra.entity.arbitraryperiodsummarytable.KfnmtRptWkAnpOutatd;
+import nts.uk.ctx.at.function.infra.entity.arbitraryperiodsummarytable.KfnmtRptWkAnpOutAtd;
 import nts.uk.ctx.at.function.infra.entity.arbitraryperiodsummarytable.KfnmtRptWkAnpOutatdPk;
 
 import javax.ejb.Stateless;
@@ -41,7 +41,7 @@ public class JpaOutputSettingOfArbitraryRepo extends JpaRepository implements Ou
     static {
         StringBuilder builderString = new StringBuilder();
         builderString.append("SELECT a ");
-        builderString.append("FROM KfnmtRptWkAnpOutatd a ");
+        builderString.append("FROM KfnmtRptWkAnpOut a ");
         builderString.append("WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.settingType  =:settingType ");
         builderString.append(" ORDER BY  a.exportCd ");
@@ -49,7 +49,7 @@ public class JpaOutputSettingOfArbitraryRepo extends JpaRepository implements Ou
 
         builderString = new StringBuilder();
         builderString.append("SELECT a ");
-        builderString.append("FROM KfnmtRptWkAnpOutatd a ");
+        builderString.append("FROM KfnmtRptWkAnpOut a ");
         builderString.append("WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.settingType  =:settingType ");
         builderString.append(" AND  a.sid  =:employeeId ");
@@ -58,7 +58,7 @@ public class JpaOutputSettingOfArbitraryRepo extends JpaRepository implements Ou
 
         builderString = new StringBuilder();
         builderString.append("SELECT a ");
-        builderString.append("FROM KfnmtRptWkAnpOut a ");
+        builderString.append("FROM KfnmtRptWkAnpOutAtd a ");
         builderString.append("WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.pk.layOutId  =:settingId ");
         builderString.append(" ORDER BY  a.atdItemId");
@@ -67,30 +67,30 @@ public class JpaOutputSettingOfArbitraryRepo extends JpaRepository implements Ou
 
         builderString = new StringBuilder();
         builderString.append("SELECT a ");
-        builderString.append("FROM KfnmtRptWkAnpOutatd a ");
+        builderString.append("FROM KfnmtRptWkAnpOut a ");
         builderString.append("WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.layOutId  =:settingId ");
-        builderString.append(" ORDER BY  a.atdItemId ");
+        builderString.append(" ORDER BY  a.exportCd ");
         FIND_ANP_OUT_ITEM_SETTING = builderString.toString();
 
         builderString = new StringBuilder();
         builderString.append("SELECT a ");
-        builderString.append("FROM KfnmtRptWkAnpOutatd a ");
+        builderString.append("FROM KfnmtRptWkAnpOut a ");
         builderString.append("WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.layOutId  =:settingId ");
-        builderString.append(" ORDER BY  a.displayCode ");
+        builderString.append(" ORDER BY  a.exportCd ");
         FIND_ANP_OUT_ITEM_SETTING_FOR_DUP = builderString.toString();
 
 
         builderString = new StringBuilder();
         builderString.append("SELECT a ");
-        builderString.append("FROM KfnmtRptWkAnpOut a ");
+        builderString.append("FROM KfnmtRptWkAnpOutAtd a ");
         builderString.append(" WHERE  a.pk.layOutId  =:settingId ");
         FIND_DELETE_ANP_OUT_CONST = builderString.toString();
 
         builderString = new StringBuilder();
         builderString.append("SELECT a ");
-        builderString.append("FROM KfnmtRptWkAnpOutatd a ");
+        builderString.append("FROM KfnmtRptWkAnpOut a ");
         builderString.append("WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.exportCd  =:displayCode ");
         builderString.append(" AND  a.settingType  =:settingType ");
@@ -98,7 +98,7 @@ public class JpaOutputSettingOfArbitraryRepo extends JpaRepository implements Ou
 
         builderString = new StringBuilder();
         builderString.append("SELECT a ");
-        builderString.append("FROM KfnmtRptWkAnpOutatd a ");
+        builderString.append("FROM KfnmtRptWkAnpOut a ");
         builderString.append("WHERE a.companyId  =:cid ");
         builderString.append(" AND  a.sid  =:employeeId ");
         builderString.append(" AND  a.exportCd  =:displayCode ");
@@ -108,7 +108,7 @@ public class JpaOutputSettingOfArbitraryRepo extends JpaRepository implements Ou
 
     @Override
     public List<OutputSettingOfArbitrary> getlistForStandard(String cid, SettingClassificationCommon settingClassic) {
-        return this.queryProxy().query(FIND_ANP_OUT_ITEM, KfnmtRptWkAnpOutatd.class)
+        return this.queryProxy().query(FIND_ANP_OUT_ITEM, KfnmtRptWkAnpOut.class)
                 .setParameter("cid", cid)
                 .setParameter("settingType", settingClassic.value)
                 .getList(JpaOutputSettingOfArbitraryRepo::toDomain);
@@ -117,7 +117,7 @@ public class JpaOutputSettingOfArbitraryRepo extends JpaRepository implements Ou
     @Override
     public List<OutputSettingOfArbitrary> getListOfFreely(String cid, SettingClassificationCommon settingClassification,
                                                           String employeeId) {
-        return this.queryProxy().query(FIND_LIST_FREELY, KfnmtRptWkAnpOutatd.class)
+        return this.queryProxy().query(FIND_LIST_FREELY, KfnmtRptWkAnpOut.class)
                 .setParameter("cid", cid)
                 .setParameter("employeeId", employeeId)
                 .setParameter("settingType", settingClassification.value)
@@ -127,12 +127,12 @@ public class JpaOutputSettingOfArbitraryRepo extends JpaRepository implements Ou
     @Override
     public OutputSettingOfArbitrary getOutputSettingOfArbitrary(String cid, String settingId) {
 
-        val outputItem = this.queryProxy().query(FIND_ANP_OUT_ITEMS, KfnmtRptWkAnpOut.class)
+        val outputItem = this.queryProxy().query(FIND_ANP_OUT_ITEMS, KfnmtRptWkAnpOutAtd.class)
                 .setParameter("cid", cid)
                 .setParameter("settingId", settingId)
                 .getList(JpaOutputSettingOfArbitraryRepo::toDomain);
 
-        val result = this.queryProxy().query(FIND_ANP_OUT_ITEM_SETTING, KfnmtRptWkAnpOutatd.class)
+        val result = this.queryProxy().query(FIND_ANP_OUT_ITEM_SETTING, KfnmtRptWkAnpOut.class)
                 .setParameter("cid", cid)
                 .setParameter("settingId", settingId).getSingle(e -> JpaOutputSettingOfArbitraryRepo.toDomain(e, outputItem));
         return result.orElse(null);
@@ -141,10 +141,10 @@ public class JpaOutputSettingOfArbitraryRepo extends JpaRepository implements Ou
 
     @Override
     public void createNew(String cid, OutputSettingOfArbitrary outputSetting) {
-        val entitySetting = KfnmtRptWkAnpOutatd.fromDomain(outputSetting, cid);
+        val entitySetting = KfnmtRptWkAnpOut.fromDomain(outputSetting, cid);
         this.commandProxy().insert(entitySetting);
 
-        val listEntityCont = KfnmtRptWkAnpOut.fromDomain(outputSetting);
+        val listEntityCont = KfnmtRptWkAnpOutAtd.fromDomain(outputSetting);
         if (!listEntityCont.isEmpty()) {
             this.commandProxy().insertAll(listEntityCont);
         }
@@ -153,20 +153,20 @@ public class JpaOutputSettingOfArbitraryRepo extends JpaRepository implements Ou
 
     @Override
     public void update(String cid, String settingId, OutputSettingOfArbitrary outputSetting) {
-        this.commandProxy().update(KfnmtRptWkAnpOutatd.fromDomain(outputSetting, cid));
-        val entity = this.queryProxy().query(FIND_DELETE_ANP_OUT_CONST, KfnmtRptWkAnpOut.class)
+        this.commandProxy().update(KfnmtRptWkAnpOut.fromDomain(outputSetting, cid));
+        val entity = this.queryProxy().query(FIND_DELETE_ANP_OUT_CONST, KfnmtRptWkAnpOutAtd.class)
                 .setParameter("settingId", settingId).getList();
         if (!CollectionUtil.isEmpty(entity)) {
             this.commandProxy().removeAll(entity);
             this.getEntityManager().flush();
         }
-        this.commandProxy().insertAll(KfnmtRptWkAnpOut.fromDomain(outputSetting));
+        this.commandProxy().insertAll(KfnmtRptWkAnpOutAtd.fromDomain(outputSetting));
     }
 
     @Override
     public void delete(String settingId) {
-        this.commandProxy().remove(KfnmtRptWkAnpOutatd.class, settingId);
-        val entityConst = this.queryProxy().query(FIND_DELETE_ANP_OUT_CONST, KfnmtRptWkAnpOut.class)
+        this.commandProxy().remove(KfnmtRptWkAnpOut.class, settingId);
+        val entityConst = this.queryProxy().query(FIND_DELETE_ANP_OUT_CONST, KfnmtRptWkAnpOutAtd.class)
                 .setParameter("settingId", settingId).getList();
         if (!CollectionUtil.isEmpty(entityConst)) {
             this.commandProxy().removeAll(entityConst);
@@ -175,12 +175,12 @@ public class JpaOutputSettingOfArbitraryRepo extends JpaRepository implements Ou
 
     @Override
     public void duplicateConfigDetails(String cid, String replicationSourceSettingId, String replicationDestinationSettingId, OutputItemSettingCode duplicateCode, OutputItemSettingName copyDestinationName) {
-        val optEntitySetting = this.queryProxy().query(FIND_ANP_OUT_ITEM_SETTING_FOR_DUP, KfnmtRptWkAnpOutatd.class)
+        val optEntitySetting = this.queryProxy().query(FIND_ANP_OUT_ITEM_SETTING_FOR_DUP, KfnmtRptWkAnpOut.class)
                 .setParameter("cid", cid)
                 .setParameter("settingId", replicationSourceSettingId).getSingle();
         if (optEntitySetting.isPresent()) {
-            KfnmtRptWkAnpOutatd entitySetting = optEntitySetting.get();
-            val entity = new KfnmtRptWkAnpOutatd(
+            KfnmtRptWkAnpOut entitySetting = optEntitySetting.get();
+            val entity = new KfnmtRptWkAnpOut(
                     replicationDestinationSettingId,
                     entitySetting.contractCd,
                     entitySetting.companyId,
@@ -192,11 +192,11 @@ public class JpaOutputSettingOfArbitraryRepo extends JpaRepository implements Ou
             this.commandProxy().insert(entity);
         }
 
-        val optEntityConst = this.queryProxy().query(FIND_ANP_OUT_ITEMS, KfnmtRptWkAnpOut.class)
+        val optEntityConst = this.queryProxy().query(FIND_ANP_OUT_ITEMS, KfnmtRptWkAnpOutAtd.class)
                 .setParameter("cid", cid)
                 .setParameter("settingId", replicationSourceSettingId).getList();
         if (!optEntityConst.isEmpty()) {
-            val listItem = optEntityConst.stream().map(e -> new KfnmtRptWkAnpOut(
+            val listItem = optEntityConst.stream().map(e -> new KfnmtRptWkAnpOutAtd(
                     new KfnmtRptWkAnpOutatdPk(replicationDestinationSettingId, e.pk.printPosition),
                     e.getContractCd(),
                     e.getCompanyId(),
@@ -210,7 +210,7 @@ public class JpaOutputSettingOfArbitraryRepo extends JpaRepository implements Ou
     public boolean exist(OutputItemSettingCode code, String cid) {
         val displayCode = Integer.parseInt(code.v());
         val settingType = SettingClassificationCommon.STANDARD_SELECTION;
-        val rs = this.queryProxy().query(FIND_ANP_OUT_ITEM_SETTING_BY_CODE, KfnmtRptWkAnpOutatd.class)
+        val rs = this.queryProxy().query(FIND_ANP_OUT_ITEM_SETTING_BY_CODE, KfnmtRptWkAnpOut.class)
                 .setParameter("cid", cid)
                 .setParameter("displayCode", displayCode)
                 .setParameter("settingType", settingType.value)
@@ -222,7 +222,7 @@ public class JpaOutputSettingOfArbitraryRepo extends JpaRepository implements Ou
     public boolean exist(OutputItemSettingCode code, String cid, String employeeId) {
         val displayCode = Integer.parseInt(code.v());
         val settingType = SettingClassificationCommon.FREE_SETTING;
-        val rs = this.queryProxy().query(FIND_ANP_OUT_ITEM_BY_CODE_EMPLOYEE, KfnmtRptWkAnpOutatd.class)
+        val rs = this.queryProxy().query(FIND_ANP_OUT_ITEM_BY_CODE_EMPLOYEE, KfnmtRptWkAnpOut.class)
                 .setParameter("cid", cid)
                 .setParameter("employeeId", employeeId)
                 .setParameter("displayCode", displayCode)
@@ -231,7 +231,7 @@ public class JpaOutputSettingOfArbitraryRepo extends JpaRepository implements Ou
         return rs != null && rs.size() != 0;
     }
 
-    private static OutputSettingOfArbitrary toDomain(KfnmtRptWkAnpOutatd entity) {
+    private static OutputSettingOfArbitrary toDomain(KfnmtRptWkAnpOut entity) {
 
         return new OutputSettingOfArbitrary(
                 entity.layOutId,
@@ -244,7 +244,7 @@ public class JpaOutputSettingOfArbitraryRepo extends JpaRepository implements Ou
         );
     }
 
-    private static OutputSettingOfArbitrary toDomain(KfnmtRptWkAnpOutatd entity, List<AttendanceItemToPrint> outputItemList) {
+    private static OutputSettingOfArbitrary toDomain(KfnmtRptWkAnpOut entity, List<AttendanceItemToPrint> outputItemList) {
 
         return new OutputSettingOfArbitrary(
                 entity.layOutId,
@@ -257,7 +257,7 @@ public class JpaOutputSettingOfArbitraryRepo extends JpaRepository implements Ou
         );
     }
 
-    private static AttendanceItemToPrint toDomain(KfnmtRptWkAnpOut entity) {
+    private static AttendanceItemToPrint toDomain(KfnmtRptWkAnpOutAtd entity) {
 
         return new AttendanceItemToPrint(
                 entity.atdItemId,
