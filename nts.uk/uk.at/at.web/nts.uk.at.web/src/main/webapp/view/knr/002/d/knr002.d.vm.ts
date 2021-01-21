@@ -32,7 +32,7 @@ module knr002.d {
                 // get shared from C
                 self.command = getShared('KNR002D_command');
                 self.empInfoTerCode(self.command.empInfoTerCode);
-                self.empInfoTerName(self.command.empInfoTerName);
+                self.empInfoTerName(self.command.displayName);
                 if(self.empInfoTerCode() === undefined || self.empInfoTerCode() === '' || self.empInfoTerCode().length <= 0){
                     self.destinationCopyList([]);
                     self.selectableCodeList = [];
@@ -163,6 +163,7 @@ module knr002.d {
              * register and submit changes(call C screen Api)
              */
             private call_C_Api(command: any): any{
+                delete command.displayName;
                 service.registerAndSubmitChanges(command).done(() => { 
                     nts.uk.ui.windows.close();
                 }).fail(err => {

@@ -203,9 +203,11 @@ module nts.uk.at.view.knr002.c {
                 for (let key in obj) {
                     let timeRecordSetUpdateDto = new TimeRecordSetUpdateDto(key, obj[key]);
                     listTimeRecordSetUpdateDto.push(timeRecordSetUpdateDto); 
-                }      
+                }   
+                
+                console.log(vm.dataSource(), 'dataSource');
             
-                const command = {
+                let command: any = {
                     empInfoTerCode: [vm.empInfoTerCode()],
                     empInfoTerName: vm.dataSource()[0].empInfoTerName, 
                     romVersion: vm.dataSource()[0].romVersion,
@@ -227,8 +229,10 @@ module nts.uk.at.view.knr002.c {
                 .always(() => {
                     blockUI.clear();
                     if (status) {
+                        console.log(command, 'command: ') ;
                         nts.uk.ui.dialog.confirm({ messageId: "Msg_2028" })
                         .ifYes(() => {
+                            command.displayName = vm.empInfoTerName();
                             setShared('KNR002D_command', command);
                                 modal('/view/knr/002/d/index.xhtml', { title: 'D_Screen', }).onClosed(() => {
                                     nts.uk.ui.windows.close();
