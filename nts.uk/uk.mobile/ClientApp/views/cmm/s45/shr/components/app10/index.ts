@@ -87,6 +87,33 @@ export class CmmS45ShrComponentsApp10Component extends Vue {
         return vm.params.appDetail.abs;
     }
 
+    get recLeaveComDayOffMana() {
+        const vm = this;
+        if (vm.rec) {
+            return vm.rec.leaveComDayOffMana;
+        }
+
+        return [];
+    }
+
+    get absLeaveComDayOffMana() {
+        const vm = this;
+        if (vm.abs) {
+            return vm.abs.leaveComDayOffMana;
+        }
+
+        return [];
+    }
+
+    get absPayoutSubofHDManagements() {
+        const vm = this;
+        if (vm.abs) {
+            return vm.abs.payoutSubofHDManagements;
+        }
+
+        return [];
+    }
+
     // ※13, ※16
     public cdtTimeRange2(isRec: boolean) {
         const vm = this;

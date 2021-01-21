@@ -166,7 +166,7 @@
                 </thead>
                 <tbody>
                     <tr v-for="(item, index) in recHolidayMngLst" v-bind:key="index">
-                        <td>{{$dt(new Date(item.outbreakDay), 'YYYY/MM/DD(dd)')}}</td>
+                        <td>{{$dt(new Date(item.outbreakDay), 'YY/MM/DD(dd)')}}</td>
                         <td>{{'KAFS11_31' | i18n(item.dayNumberUsed)}}</td>
                     </tr>
                 </tbody>
@@ -271,7 +271,7 @@
                 </thead>
                 <tbody>
                     <tr v-for="(item, index) in absHolidayMngLst" v-bind:key="index">
-                        <td>{{$dt(new Date(item.outbreakDay), 'YYYY/MM/DD(dd)')}}</td>
+                        <td>{{$dt(new Date(item.outbreakDay), 'YY/MM/DD(dd)')}}</td>
                         <td>{{'KAFS11_31' | i18n(item.dayNumberUsed)}}</td>
                     </tr>
                 </tbody>
@@ -301,7 +301,7 @@
                 </thead>
                 <tbody>
                     <tr v-for="(item, index) in absWorkMngLst" v-bind:key="index">
-                        <td>{{$dt(new Date(item.outbreakDay), 'YYYY/MM/DD(dd)')}}</td>
+                        <td>{{$dt(new Date(item.outbreakDay), 'YY/MM/DD(dd)')}}</td>
                         <td>{{'KAFS11_31' | i18n(item.dayNumberUsed)}}</td>
                     </tr>
                 </tbody>
