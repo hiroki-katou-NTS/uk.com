@@ -12,6 +12,7 @@ module knr002.f {
 			empInfoTerCode: KnockoutObservable<string>;
             empInfoTerName: KnockoutObservable<string>;
             modelEmpInfoTer: KnockoutObservable<number>;
+            modelEmpInfoTerName: KnockoutObservable<string>;
             lastSuccessDate: KnockoutObservable<string>;
             workLocationName: KnockoutObservable<string>;
             recoveryTargetList: KnockoutObservableArray<any>;
@@ -23,6 +24,7 @@ module knr002.f {
                 self.empInfoTerCode = ko.observable("");
                 self.empInfoTerName = ko.observable("");
                 self.modelEmpInfoTer = ko.observable(0);
+                self.modelEmpInfoTerName = ko.observable("");
                 self.lastSuccessDate = ko.observable("");
                 self.workLocationName = ko.observable("");
                 self.recoveryTargetList = ko.observableArray<EmpInfoTerminal>([]);
@@ -38,14 +40,11 @@ module knr002.f {
                 var dfd = $.Deferred<void>();
                 blockUI.invisible();
                 // get Shared from E
-                const sharedData = getShared('KNR002E_share');
-                
-
-                console.log(sharedData, 'shared data F');
-                
+                const sharedData = getShared('KNR002E_share');               
                 self.empInfoTerCode(sharedData.empInfoTerCode);
                 self.empInfoTerName(sharedData.empInfoTerName);
                 self.modelEmpInfoTer(sharedData.modelEmpInfoTer);
+                self.modelEmpInfoTerName(self.getModelName(self.modelEmpInfoTer()));
                 self.lastSuccessDate(sharedData.backupDate);
 
                 //get Share from A
