@@ -22,6 +22,7 @@ import nts.uk.ctx.office.dom.reference.auth.service.DetermineEmpIdListDomainServ
 import nts.uk.query.pub.employee.SearchEmployeePub;
 import nts.uk.screen.com.app.find.ccg005.attendance.information.AttendanceInformationDto;
 import nts.uk.screen.com.app.find.ccg005.attendance.information.AttendanceInformationScreenQuery;
+import nts.uk.screen.com.app.find.ccg005.attendance.information.EmpIdParam;
 import nts.uk.shr.com.context.AppContexts;
 
 /*
@@ -92,10 +93,15 @@ public class SearchEmployeeScreenQuery {
 					personalInformationAdapter);
 		List<EmployeeBasicImport> personalInfomation = PersonalInfomationDomainService
 				.getPersonalInfomation(defaultPersonalInfomationRequireImpl, empList, baseDate);
-		List<String> pids = personalInfomation.stream().map(mapper -> mapper.getPersonalId()).collect(Collectors.toList());
+		List<EmpIdParam> empIds = personalInfomation.stream()
+				.map(item -> EmpIdParam.builder()
+						.sid(item.getEmployeeId())
+						.pid(item.getPersonalId())
+						.build())
+				.collect(Collectors.toList());
 		
 		// 5: 在席情報を取得する(社員ID, 年月日, するしない区分): List<在席情報DTO>
-		 List<AttendanceInformationDto> attendanceInformationDtos = attendanceScreenQuery.getAttendanceInformation(empList, pids, baseDate, emojiUsage);
+		 List<AttendanceInformationDto> attendanceInformationDtos = attendanceScreenQuery.getAttendanceInformation(empIds, baseDate, emojiUsage);
 		 
 		return SearchEmployeeDto.builder()
 				.personalInfomation(personalInfomation)

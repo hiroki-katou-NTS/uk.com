@@ -74,10 +74,11 @@ public class AttendanceInformationScreenQuery {
 
 	private List<EmployeeEmojiState> emojiList = Collections.emptyList();
 
-	public List<AttendanceInformationDto> getAttendanceInformation(List<String> sids, List<String> pids,
+	public List<AttendanceInformationDto> getAttendanceInformation( List<EmpIdParam> empIds,
 			GeneralDate baseDate, boolean emojiUsage) {
 
 		// 1: 出退勤・申請情報を取得( 社員ID, 年月日): List<出退勤・申請情報>
+		List<String> sids = empIds.stream().map(empId -> empId.getSid()).collect(Collectors.toList());
 		List<EmployeeWorkInformationExport> workInfoList = workInfoQueryPub.getWorkInformationQuery(sids, baseDate);
 
 		// 2: 在席のステータスの判断(Require, 社員ID, 年月日, 日別実績の勤務情報, 日別実績の出退勤, 勤務種類):
@@ -105,6 +106,7 @@ public class AttendanceInformationScreenQuery {
 		}
 
 		// 7: get(個人IDリスト): List<個人の顔写真>
+		List<String> pids = empIds.stream().map(empId -> empId.getPid()).collect(Collectors.toList());
 		List<UserAvatar> avatarList = avatarRepo.getAvatarByPersonalIds(pids);
 
 		// 8: create()
@@ -234,10 +236,18 @@ public class AttendanceInformationScreenQuery {
 						);
 				activityStatus.ifPresent(domain -> domain.setMemento(activityStatusDto));
 			});
-			// UserAvatarDto TODO
-			Optional<UserAvatar> avatarDomain = avatarList.stream().filter(ava -> ava.getPersonalId() == sid).findAny();
+			
+			// UserAvatarDto
 			UserAvatarDto avatarDto = UserAvatarDto.builder().build();
-
+			String mappingPid = empIds.stream().
+					filter(id -> id.getSid() == sid)
+					.findFirst()
+						.map(param -> param.getPid()).orElse(null);
+			if (mappingPid != null) {
+				avatarList.stream().filter(ava -> ava.getPersonalId() == mappingPid).findAny()
+						.ifPresent(ava -> ava.setMemento(avatarDto));
+			}
+			
 			// commentDto
 			CommentQueryExport commentExp = commentData.get(sid);
 			EmployeeCommentInformationDto commentDto = EmployeeCommentInformationDto.builder()

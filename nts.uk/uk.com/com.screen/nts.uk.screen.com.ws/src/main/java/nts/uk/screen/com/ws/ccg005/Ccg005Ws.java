@@ -51,8 +51,7 @@ public class Ccg005Ws {
 	@Path("get-attendance-information")
 	public List<AttendanceInformationDto> getAttendanceInformation(AttendanceInformationParam params) {
 	 	return attendaceInfoSq.getAttendanceInformation(
-	 			params.getSids(),
-	 			params.getPids(),
+	 			params.getEmpIds(),
 	 			params.getBaseDate(),
 	 			params.isEmojiUsage()
 	 			);

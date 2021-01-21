@@ -4,13 +4,13 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
+import nts.uk.screen.com.app.find.ccg005.attendance.information.EmpIdParam;
 
 @Getter
 public class AttendanceInformationParam {
-	private List<String> sids;
 	
-	private List<String> pids;
-	
+	private List<EmpIdParam> empIds;
+
 	private GeneralDate baseDate;
 	
 	private boolean emojiUsage;
