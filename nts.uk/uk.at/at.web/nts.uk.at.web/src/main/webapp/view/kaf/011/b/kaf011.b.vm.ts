@@ -124,11 +124,13 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 				console.log(data);	
 				block.invisible();
 				ajax('at/request/application/holidayshipment/update', data).done(() =>{
-					dialog.info({ messageId: "Msg_15" });
-					dfd.resolve(true);
+					dialog.info({ messageId: "Msg_15" }).then(()=>{
+						dfd.resolve(true);	
+					});
 				}).fail((res:any)=>{
-					dialog.error({ messageId: res.messageId, messageParams: res.parameterIds });
-					dfd.resolve(false);
+					dialog.error({ messageId: res.messageId, messageParams: res.parameterIds }).then(()=>{
+						dfd.resolve(false);	
+					});
 				}).always(()=>{
 					block.clear();
 				});
