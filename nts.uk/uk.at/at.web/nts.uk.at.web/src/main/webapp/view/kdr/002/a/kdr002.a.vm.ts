@@ -109,7 +109,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         inputExtraction: KnockoutObservable<number> = ko.observable(null);
         requiredInputExtraction: KnockoutObservable<boolean>;
         // A5_3
-        optionExtractionValue: KnockoutObservable<number> = ko.observable(0);
+        optionExtractionValue: KnockoutObservable<number> = ko.observable(1);
 
 
         constructor() {
