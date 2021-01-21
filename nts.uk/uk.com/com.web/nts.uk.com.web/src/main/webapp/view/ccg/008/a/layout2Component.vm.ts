@@ -10,7 +10,7 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
           </span>
           <span data-bind="if: url.indexOf('.js') > -1">
             <div data-bind="attr:{ id: 'WG2-' + $index() }">
-              <div data-bind="component: { name: name }" style="margin-bottom: 10px; height:100%;" ></div>
+              <div data-bind="component: { name: name }" ></div>
             </div>
           </span>
         </div>
@@ -23,7 +23,7 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
           </span>
           <span data-bind="if: url.indexOf('.js') > -1">
             <div data-bind="attr:{ id: 'WG3-' + $index() }">
-              <div data-bind="component: { name: name  }" style="margin-bottom: 10px; height:100%;" ></div>
+              <div data-bind="component: { name: name  }" ></div>
             </div>
           </span>
         </div>
