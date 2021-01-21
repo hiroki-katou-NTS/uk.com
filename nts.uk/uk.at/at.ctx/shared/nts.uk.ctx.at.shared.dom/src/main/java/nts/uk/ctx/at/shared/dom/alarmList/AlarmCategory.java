@@ -31,7 +31,7 @@ public enum AlarmCategory {
 	/**
 	 * 日次
 	 */
-	DAILY(5,  I18NText.getText("KAL010_001")),
+	DAILY(5,  I18NText.getText("KAL010_1")),
 	/**
 	 * 週次
 	 */
