@@ -28,6 +28,19 @@ module nts.uk.at.view.kdr002.a {
             return ajax("at", path.findAllClosure);
         }
 
+
+        export function saveCharacteristic(companyId: string, userId: string, obj: any): void {
+            nts.uk.characteristics.save("screenInfo"
+                                    + "_companyId_" + companyId
+                                    + "_userId_" + userId, obj);
+        }
+
+        export function restoreCharacteristic(companyId: string, userId: string): JQueryPromise<any> {
+            return nts.uk.characteristics.restore("screenInfo"
+                                    + "_companyId_" + companyId
+                                    + "_userId_" + userId);
+        }
+
         export module model {
 
             // Data class

@@ -15,6 +15,8 @@ module nts.uk.at.view.kdr002.a.viewmodel {
     import Closure = service.model.Closure;
     import char = nts.uk.characteristics;
 
+    const companyId: string = __viewContext.user.companyId;
+    const userId: string = __viewContext.user.employeeId;
     export class ScreenModel {
         selectedImplementAtrCode: KnockoutObservable<number>;
         resetWorkingHours: KnockoutObservable<boolean>;
@@ -263,7 +265,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
 
         setDataWhenStart(closure: any) {
             let self = this;
-            char.restore("screenInfo").done((screenInfo: IScreenInfo) => {
+            service.restoreCharacteristic(companyId,userId).done((screenInfo: IScreenInfo) => {
                 //ユーザー固有情報「年休管理表の出力条件」をチェックする
                 if (screenInfo) {
                     //データあり
@@ -387,7 +389,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                 block.clear();
                 alError({ messageId: res.messageId || res.message });
             });
-            char.save('screenInfo', printQuery.toScreenInfo());
+            service.saveCharacteristic(companyId, userId, printQuery.toScreenInfo());
         }
 
         public checkClosureDate(): JQueryPromise<any> {
