@@ -34,6 +34,7 @@
 				                                        optionsValue: 'appStandardReasonCD',
 				                                        optionsText: 'reasonForFixedForm',
 				                                        value: appStandardReasonCD,
+				                                        required: displayInforWhenStarting.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appLimitSetting.requiredAppReason,
 				                                        columns: [{ prop: 'reasonForFixedForm', length: 5 }],
 				                                        }">
 								</div>
@@ -46,6 +47,7 @@
 											name:'#{i18n.getText('KAF011_17')}',
 											constraint: 'AppReason'
 											value: appReason,
+											required: displayInforWhenStarting.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appLimitSetting.standardReasonRequired,
 		                                    option: {
 		                                        resizeable: false,
 		                                        width: '445',

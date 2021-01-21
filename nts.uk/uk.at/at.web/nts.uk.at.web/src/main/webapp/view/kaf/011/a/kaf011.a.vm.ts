@@ -107,9 +107,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 						vm.appDispInfoStartupOutput(data.appDispInfoStartup);
 						vm.displayInforWhenStarting(data);
 						if(data.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.recordDate == 1){
-							vm.recruitmentApp.workTypeList(data.applicationForWorkingDay.workTypeList);
-							vm.recruitmentApp.workInformation.workTime(data.applicationForWorkingDay.workTime);
-							vm.recruitmentApp.workInformation.workType(data.applicationForWorkingDay.workType);
+							vm.recruitmentApp.bindingScreenA(data.applicationForWorkingDay, data);					
 						}
 						vm.absenceLeaveApp.workInformation.workType(data.applicationForHoliday.workType);
 					}).always(() => {
@@ -129,9 +127,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 						vm.appDispInfoStartupOutput(data.appDispInfoStartup)
 						vm.displayInforWhenStarting(data);
 						if(data.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.recordDate == 1){
-							vm.absenceLeaveApp.workTypeList(data.applicationForHoliday.workTypeList);
-							vm.absenceLeaveApp.workInformation.workTime(data.applicationForHoliday.workTime);
-							vm.absenceLeaveApp.workInformation.workType(data.applicationForHoliday.workType);
+							vm.absenceLeaveApp.bindingScreenA(data.applicationForHoliday, data);
 						}
 					}).always(() => {
 						vm.$blockui("hide"); 
