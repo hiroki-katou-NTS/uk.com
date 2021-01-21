@@ -1,9 +1,12 @@
 package nts.uk.ctx.at.function.app.command.arbitraryperiodsummarytable;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 
-@Data
+@AllArgsConstructor
+@Getter
 public class DuplicateOutputSettingCommand {
     private int settingCategory;
     private String dupSrcId;

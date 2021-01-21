@@ -11,6 +11,7 @@ import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
 import nts.uk.shr.com.context.AppContexts;
 
+import javax.ejb.Stateless;
 import java.util.List;
 
 /**
@@ -18,6 +19,7 @@ import java.util.List;
  *
  * @author : chinh.hm
  */
+@Stateless
 public class CreateArbitraryScheduleDomainService {
 
     public static AtomTask createSchedule(Require require,
