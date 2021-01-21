@@ -169,8 +169,3 @@ div#operation-info {
   position: absolute;
   left: 30px;
 }
-@media screen\0 {
-  .ccg020-warning {
-    max-width: 630px !important;
-  }
-}
