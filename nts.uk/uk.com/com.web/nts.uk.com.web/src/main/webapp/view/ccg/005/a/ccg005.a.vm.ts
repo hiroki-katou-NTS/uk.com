@@ -1,240 +1,249 @@
 /// <reference path='../../../../lib/nittsu/viewcontext.d.ts' />
 module nts.uk.at.view.ccg005.a.screenModel {
+  import object = nts.uk.at.view.ccg005.a.object;
+
+  const API = {
+    getDisplayAttendanceData: 'screen/com/ccg005/getDisplayAttendanceData',
+  };
 
   @component({
     name: 'ccg005-component',
-    template: `<div style="display: flex; position: relative; overflow-y: auto; height: 580px" id="ccg005-watching">
+    template: `<div style="display: flex; position: relative; overflow-x: hidden; overflow-y: auto; height: 580px" id="ccg005-watching">
     <div id="ccg005-content">
-      <div class="grade-header-top">
-        <!-- A0 -->
-        <span data-bind="i18n: 'CCG005_1'" class="ccg005-bold"></span>
-        <!-- A1_5 -->
-        <i data-bind="ntsIcon: {no: 5, width: 25, height: 25}, click: $component.openScreenCCG005B"></i>
-        <!-- A1_6 -->
-        <img width="25px" height="25px" src="${__viewContext.rootPath}/view/ccg/005/resource/reload.png"/>
+      <div style="margin: 10px;">
+        <div class="grade-header-top">
+          <!-- A0 -->
+          <span data-bind="i18n: 'CCG005_1'" class="ccg005-bold"></span>
+          <!-- A1_5 -->
+          <i data-bind="ntsIcon: {no: 5, width: 25, height: 25}, click: $component.openScreenCCG005B"></i>
+          <!-- A1_6 -->
+          <i data-bind="ntsIcon: {no: 194, width: 25, height: 25}"></i>
+        </div>
+        <div class="grade-header-center">
+          <table>
+            <tr>
+              <td>
+                <!-- A1_1 -->
+                <img width="40px" height="40px" style="border-radius: 50%;" data-bind="attr:{src: $component.avatarPath()}"/>
+              </td>
+              <td style="padding-left: 5px; width: 370px;">
+                <!-- A1_2 -->
+                <span class="ccg005-bold" data-bind="text: $component.bussinessName()"></span>
+                <div class="ccg005-flex">
+                  <!-- A1_3 -->
+                  <i data-bind="ntsIcon: {no: $component.emoji(), width: 20, height: 20}"></i>
+                  <!-- A1_4 -->
+                  <span data-bind="text: $component.goOutReason()"></span>
+                </div>
+              </td>
+              <td>
+                <!-- A1_7 -->
+                <img class="ccg005-status-img" width="25px" height="25px" src="${__viewContext.rootPath}/view/ccg/005/resource/AVERAGE.png"/>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="grade-header-bottom ccg005-flex" style="position: relative;">
+          <!-- A2_3 -->
+          <div data-bind="ntsDatePicker: {
+            name: '#[CCG005_36]',
+            value: date,
+            dateFormat: 'YYYY/MM/DD',
+            fiscalMonthsMode: true,
+            showJumpButtons: true
+          }"></div>
+          <!-- A2_1 -->
+          <button id="ccg005-legends" style="margin-left: 5px;" data-bind="ntsLegendButton: legendOptions"></button>
+          <div style="right: 0; position: absolute; display: flex; align-items: center;">
+            <!-- A3_2 -->
+            <i id="ccg005-star-img" style="margin-right: 5px;" data-bind="ntsIcon: {no: 184, width: 20, height: 20}"></i>
+            <!-- A3_1 -->
+            <div data-bind="ntsComboBox: {
+              width: '100px',
+              options: itemList,
+              editable: true,
+              visibleItemsCount: 5,
+              value: selectedCode,
+              optionsValue: 'code',
+              optionsText: 'name',
+              required: true,
+              columns: [
+                { prop: 'name' }
+              ]}"></div>
+          </div>
+        </div>
+        <div class="grade-body-top">
+          <table style="width: 100%;">
+            <tr>
+              <td style="width: 35px;"></td>
+              <!-- A2_5 -->
+              <td class="ccg005-w100 ccg005-pl-5">
+                <span class="ccg005-bold" data-bind="i18n: 'CCG005_41'"></span>
+              </td>
+              <!-- A2_6 -->
+              <td class="ccg005-w100 ccg005-pl-5">
+                <span class="ccg005-bold" data-bind="i18n: 'CCG005_42'"></span>
+              </td>
+              <td></td>
+              <td></td>
+            </tr>
+          </table>
+        </div>
+        <!-- A5 -->
+        <div class="grade-body-bottom" style="min-height: 55px; height: 390px;">
+          <table style="width: 100%; border-collapse: separate; border-spacing: 0 5px">
+            <tr style="background-color: yellow; height: 50px;">
+              <td style="padding-right: 5px; width: 30px; background-color: white;">
+                <!-- A4_1 -->
+                <img style="border-radius: 50%; border: 1px groove;" width="25px" height="25px" src="${__viewContext.rootPath}/view/ccg/005/resource/AVERAGE.png"/>
+              </td>
+              <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset">
+                <!-- A4_8 -->
+                <div>text 1</div>
+                <!-- A4_5 -->
+                <div>emoji 1</div>
+              </td>
+              <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
+                <div>
+                  <!-- A4_2 -->
+                  <span>text 2</span>
+                  <!-- A4_4 -->
+                  <i data-bind="ntsIcon: {no: 190, width: 13, height: 13}"></i>
+                </div>
+                <!-- A4_3 -->
+                <div>emoji 1</div>
+              </td>
+              <td class="ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
+                <!-- A4_7 -->
+                <span class="ccg005-flex">
+                  <img class="ccg005-status-img" width="25px" height="25px" src="${__viewContext.rootPath}/view/ccg/005/resource/AVERAGE.png"/>
+                </span>
+              </td>
+              <td class="ccg005-pl-5 ccg005-border-groove ccg005-left-unset">
+                <!-- A4_6 time -->
+                <div>10:25 - 15:45</div>
+                <!-- A4_6 text -->
+                <div>急に用事があるの</div>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="grade-bottom ccg005-flex" style="width: 100%; align-items: center; position: relative; margin-top: 10px; margin-bottom: 10px;">
+          <table style="width: 100%;">
+            <tr>
+              <td>
+                <div class="ccg005-pagination ccg005-flex" style="align-items: center;">
+                  <!-- A5_1 -->
+                  <i class="ccg005-pagination-btn" data-bind="ntsIcon: {no: 193, width: 15, height: 20}, click: $component.previousPage"></i>
+                  <!-- A5_2 -->
+                  <span style="white-space: nowrap;" data-bind="text: $component.paginationText()"></span>
+                  <!-- A5_3 -->
+                  <i class="ccg005-pagination-btn" data-bind="ntsIcon: {no: 192, width: 15, height: 20}, click: $component.nextPage"></i>
+                </div>
+              </td>
+              <td style="width: 100%">
+                <div class="ccg005-switch-btn" style="float: right;">
+                  <!-- A5_4 -->
+                  <div class="cf" data-bind="ntsSwitchButton: {
+                    options: contentSelections,
+                    optionsValue: 'code',
+                    optionsText: 'name',
+                    value: contentSelected }"></div>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
       </div>
-      <div class="grade-header-center">
+
+      <!-- A3_2 Popup -->
+      <div id="ccg005-star-popup" style="width: 120px;">
+        <!-- A3_2.1 -->
+        <table>
+          <tr>
+            <td style="text-align: right;">
+              <a style="color: blue; text-decoration: underline;" data-bind="i18n: 'CCG005_34', click: $component.openScreenCCG005D"></a>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding-top: 10px;">
+              <!-- A3_2.2 -->
+              <input data-bind="ntsTextEditor: {
+                value: searchValue,
+                enterkey: submit,
+                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+                  textmode: 'text',
+                  width: '100px',
+                  placeholder: $component.placeholder()
+                }))
+              }"></input>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding-top: 10px;">
+              <!-- A3_2.3 -->
+              <button data-bind="i18n: 'CCG005_32'"></button>
+              <!-- A3_2.4 -->
+              <span data-bind="text: label3_2"></span>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <!-- A1_7 & A4_7 Popup -->
+      <div id="ccg005-status-popup">
         <table>
           <tr>
             <td>
-              <!-- A1_1 -->
-              <img width="40px" height="40px" style="border-radius: 50%;" src="${__viewContext.rootPath}/view/ccg/005/resource/AVERAGE.png"/>
+              <i data-bind="ntsIcon: {no: 78, width: 15, height: 25}"></i>
             </td>
-            <td style="padding-left: 5px; width: 370px;">
-              <!-- A1_2 -->
-              <span class="ccg005-bold" data-bind="text: initPresenceData().businessName"></span>
-              <div class="ccg005-flex">
-                <!-- A1_3 -->
-                <img width="20px" height="20px" src="${__viewContext.rootPath}/view/ccg/005/resource/AVERAGE.png"/>
-                <!-- A1_4 -->
-                <span>bb</span>
-              </div>
-            </td>
+            <!-- A1_7.1 -->
             <td>
-              <!-- A1_7 -->
-              <img class="ccg005-status-img" width="25px" height="25px" src="${__viewContext.rootPath}/view/ccg/005/resource/AVERAGE.png"/>
+              <i data-bind="ntsIcon: {no: 196, width: 25, height: 25}"></i>
             </td>
+            <td data-bind="i18n: 'CCG005_43'"></td>
           </tr>
-        </table>
-      </div>
-      <div class="grade-header-bottom ccg005-flex" style="position: relative;">
-        <!-- A2_3 -->
-        <div data-bind="ntsDatePicker: {
-          name: '#[CCG005_36]',
-          value: date,
-          dateFormat: 'YYYY/MM/DD',
-          fiscalMonthsMode: true,
-          showJumpButtons: true
-        }"></div>
-        <!-- A2_1 -->
-        <button id="ccg005-legends" style="margin-left: 5px;" data-bind="ntsLegendButton: legendOptions"></button>
-        <div style="right: 0; position: absolute; display: flex; align-items: center;">
-          <!-- A3_2 -->
-          <img id="ccg005-star-img" style="margin-right: 5px;" width="20px" height="20px" src="${__viewContext.rootPath}/view/ccg/005/resource/favorite.png"/>
-          <!-- A3_1 -->
-          <div data-bind="ntsComboBox: {
-            options: itemList,
-            editable: true,
-            width: '130px',
-            visibleItemsCount: 5,
-            value: selectedCode,
-            optionsValue: 'code',
-            optionsText: 'name',
-            required: true,
-            columns: [
-              { prop: 'name' }
-            ]}"></div>
-        </div>
-      </div>
-      <div class="grade-body-top">
-        <table style="width: 100%;">
-          <tr>
-            <td style="width: 35px;"></td>
-            <!-- A2_5 -->
-            <td class="ccg005-w100 ccg005-pl-5">
-              <span class="ccg005-bold" data-bind="i18n: 'CCG005_41'"></span>
-            </td>
-            <!-- A2_6 -->
-            <td class="ccg005-w100 ccg005-pl-5">
-              <span class="ccg005-bold" data-bind="i18n: 'CCG005_42'"></span>
-            </td>
-            <td></td>
-            <td></td>
-          </tr>
-        </table>
-      </div>
-      <!-- A5 -->
-      <div class="grade-body-bottom" style="min-height: 55px; height: 390px;">
-        <table style="width: 100%; border-collapse: separate; border-spacing: 0 5px">
-          <tr style="background-color: yellow; height: 50px;">
-            <td style="padding-right: 5px; width: 30px; background-color: white;">
-              <!-- A4_1 -->
-              <img style="border-radius: 50%; border: 1px groove;" width="25px" height="25px" src="${__viewContext.rootPath}/view/ccg/005/resource/AVERAGE.png"/>
-            </td>
-            <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset">
-              <!-- A4_8 -->
-              <div>text 1</div>
-              <!-- A4_5 -->
-              <div>emoji 1</div>
-            </td>
-            <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
-              <div>
-                <!-- A4_2 -->
-                <span>text 2</span>
-                <!-- A4_4 -->
-                <img width="13px" height="13px" src="${__viewContext.rootPath}/view/ccg/005/resource/application.png" />
-              </div>
-              <!-- A4_3 -->
-              <div>emoji 1</div>
-            </td>
-            <td class="ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
-              <!-- A4_7 -->
-              <span class="ccg005-flex"><img class="ccg005-status-img" width="25px" height="25px" src="${__viewContext.rootPath}/view/ccg/005/resource/AVERAGE.png"/></span>
-            </td>
-            <td class="ccg005-pl-5 ccg005-border-groove ccg005-left-unset">
-              <!-- A4_6 time -->
-              <div>10:25 - 15:45</div>
-              <!-- A4_6 text -->
-              <div>急に用事があるの</div>
-            </td>
-          </tr>
-        </table>
-      </div>
-      <div class="grade-bottom ccg005-flex" style="width: 100%; align-items: center; position: relative; margin-top: 10px; margin-bottom: 10px;">
-        <table style="width: 100%;">
           <tr>
             <td>
-              <div class="ccg005-pagination ccg005-flex" style="align-items: center;">
-                <!-- A5_1 -->
-                <img width="15px" class="ccg005-pagination-btn" height="20px" src="${__viewContext.rootPath}/view/ccg/005/resource/previous.png" data-bind="click: $component.previousPage"/>
-                <!-- A5_2 -->
-                <span style="white-space: nowrap;" data-bind="text: $component.paginationText()"></span>
-                <!-- A5_3 -->
-                <img width="15px" height="20px" class="ccg005-pagination-btn" src="${__viewContext.rootPath}/view/ccg/005/resource/next.png" data-bind="click: $component.nextPage"/>
-              </div>
+              <i data-bind="ntsIcon: {no: 78, width: 15, height: 25}"></i>
             </td>
-            <td style="width: 100%">
-              <div class="ccg005-switch-btn" style="float: right;">
-                <!-- A5_4 -->
-                <div class="cf" data-bind="ntsSwitchButton: {
-                  options: contentSelections,
-                  optionsValue: 'code',
-                  optionsText: 'name',
-                  value: contentSelected }"></div>
-              </div>
+            <!-- A1_7.2 -->
+            <td>
+            <i data-bind="ntsIcon: {no: 195, width: 25, height: 25}"></i>
             </td>
+            <td data-bind="i18n: 'CCG005_44'"></td>
+          </tr>
+          <tr data-bind="click: $component.openScreenCCG005E">
+            <td>
+              <i data-bind="ntsIcon: {no: 78, width: 15, height: 25}"></i>
+            </td>
+            <!-- A1_7.3 -->
+            <td>
+            <i data-bind="ntsIcon: {no: 191, width: 25, height: 25}"></i>
+            </td>
+            <td data-bind="i18n: 'CCG005_39'"></td>
+          </tr>
+          <tr>
+            <td>
+              <i data-bind="ntsIcon: {no: 78, width: 15, height: 25}"></i>
+            </td>
+            <!-- A1_7.4 -->
+            <td>
+            <i data-bind="ntsIcon: {no: 196, width: 25, height: 25}"></i>
+            </td>
+            <td data-bind="i18n: 'CCG005_44'"></td>
+          </tr>
+          <tr>
+            <td>
+              <i data-bind="ntsIcon: {no: 78, width: 15, height: 25}"></i>
+            </td>
+            <!-- A1_7.5 -->
+            <td>
+            <i data-bind="ntsIcon: {no: 197, width: 25, height: 25}"></i>
+            </td>
+            <td data-bind="i18n: 'CCG005_40'"></td>
           </tr>
         </table>
       </div>
-    </div>
-
-    <!-- A3_2 Popup -->
-    <div id="ccg005-star-popup" style="width: 120px;">
-      <!-- A3_2.1 -->
-      <table>
-        <tr>
-          <td style="text-align: right;">
-            <a style="color: blue; text-decoration: underline;" data-bind="i18n: 'CCG005_34', click: $component.openScreenCCG005D"></a>
-          </td>
-        </tr>
-        <tr>
-          <td style="padding-top: 10px;">
-            <!-- A3_2.2 -->
-            <input data-bind="ntsTextEditor: {
-              value: searchValue,
-              enterkey: submit,
-              option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                textmode: 'text',
-                width: '100px',
-                placeholder: $component.placeholder()
-              }))
-            }"></input>
-          </td>
-        </tr>
-        <tr>
-          <td style="padding-top: 10px;">
-            <!-- A3_2.3 -->
-            <button data-bind="i18n: 'CCG005_32'"></button>
-            <!-- A3_2.4 -->
-            <span data-bind="text: label3_2"></span>
-          </td>
-        </tr>
-      </table>
-    </div>
-    <!-- A1_7 & A4_7 Popup -->
-    <div id="ccg005-status-popup">
-      <table>
-        <tr>
-          <td>
-            <i data-bind="ntsIcon: {no: 78, width: 15, height: 25}"></i>
-          </td>
-          <!-- A1_7.1 -->
-          <td>
-            <img width="25px" height="25px" src="${__viewContext.rootPath}/view/ccg/005/resource/stt_notpresent.png" />
-          </td>
-          <td data-bind="i18n: 'CCG005_43'"></td>
-        </tr>
-        <tr>
-          <td>
-            <i data-bind="ntsIcon: {no: 78, width: 15, height: 25}"></i>
-          </td>
-          <!-- A1_7.2 -->
-          <td>
-            <img width="25px" height="25px" src="${__viewContext.rootPath}/view/ccg/005/resource/stt_present.png" />
-          </td>
-          <td data-bind="i18n: 'CCG005_44'"></td>
-        </tr>
-        <tr data-bind="click: $component.openScreenCCG005E">
-          <td>
-            <i data-bind="ntsIcon: {no: 78, width: 15, height: 25}"></i>
-          </td>
-          <!-- A1_7.3 -->
-          <td>
-            <img width="25px" height="25px" src="${__viewContext.rootPath}/view/ccg/005/resource/stt_goout.png" />
-          </td>
-          <td data-bind="i18n: 'CCG005_39'"></td>
-        </tr>
-        <tr>
-          <td>
-            <i data-bind="ntsIcon: {no: 78, width: 15, height: 25}"></i>
-          </td>
-          <!-- A1_7.4 -->
-          <td>
-            <img width="25px" height="25px" src="${__viewContext.rootPath}/view/ccg/005/resource/stt_gohome.png" />
-          </td>
-          <td data-bind="i18n: 'CCG005_44'"></td>
-        </tr>
-        <tr>
-          <td>
-            <i data-bind="ntsIcon: {no: 78, width: 15, height: 25}"></i>
-          </td>
-          <!-- A1_7.5 -->
-          <td>
-            <img width="25px" height="25px" src="${__viewContext.rootPath}/view/ccg/005/resource/stt_holiday.png" />
-          </td>
-          <td data-bind="i18n: 'CCG005_40'"></td>
-        </tr>
-      </table>
     </div>
   </div>
   <style>
@@ -279,7 +288,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
       background-color: #D9D9D9
     }
     #ccg005-content {
-      padding: 5px;
       width: calc(100% - 5px);
       border: 1px groove black;
     }
@@ -310,9 +318,8 @@ module nts.uk.at.view.ccg005.a.screenModel {
     itemList: KnockoutObservableArray<ItemModel> = ko.observableArray([
       new ItemModel('1', '基本給'),
       new ItemModel('2', '役職手当'),
-      new ItemModel('3', '基本給ながい文字列ながい文字列ながい文字列')
+      new ItemModel('3', '基本給な')
     ]);
-    initPresenceData: KnockoutObservable<InitPresenceData>;
 
     placeholder: KnockoutObservable<string> = ko.observable(this.$i18n('CCG005_45'));
     height: KnockoutObservable<number> = ko.observable(465);
@@ -330,30 +337,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
     created() {
       const vm = this;
-      const favoriteSpecify: FavoriteSpecify = {
-        creatorId: 'mock-creatorId',
-        favoriteName: 'mock-favoriteName',
-        inputDate: 'mock-inputDate',
-        order: 1,
-        targetSelection: 1,
-        workplaceId: ['mock-workplaceId']
-      };
-      const attendanceInfor: AttendanceInfor = {
-        activityStatus: 1,
-        applicationInfor: 1,
-        attendance: 1,
-        employeeCommentInfo: 1,
-        employeeEmojiState: 1,
-        employeeId: 'mock-employeeId',
-        goOutEmployeeInfo: 1,
-        userAvatar: 1
-      };
-      const initPresenceData: InitPresenceData = {
-        attendanceInfor: attendanceInfor,
-        businessName: 'Duli Đàm',
-        favoriteSpecify: favoriteSpecify
-      }
-      vm.initPresenceData = ko.observable(initPresenceData);
     }
 
     mounted() {
@@ -456,6 +439,80 @@ module nts.uk.at.view.ccg005.a.screenModel {
       const vm = this;
       vm.$window.modal('/view/ccg/005/e/index.xhtml', {});
     }
+
+
+
+
+    fileId: KnockoutObservable<string> = ko.observable('');
+    activityStatus: KnockoutObservable<ActivityStatus> = ko.observable(new ActivityStatus());
+    bussinessName: KnockoutObservable<string> = ko.observable('');
+    emoji: KnockoutObservable<number> = ko.observable();
+    goOutReason: KnockoutObservable<string> = ko.observable('');
+    avatarPath: KnockoutComputed<string> = ko.computed(() => nts.uk.request.liveView(this.fileId()));
+
+    private toStartScreen() {
+      const vm = this;
+      const loginSid = __viewContext.user.employeeId;
+      vm.$blockui('grayout');
+      vm.$ajax('com', API.getDisplayAttendanceData).then((response: object.DisplayAttendanceDataDto) => {
+        // A1_1
+        if (response && response.attendanceInformationDtos) {
+          // 条件：在席情報DTO.社員ID＝ログイン社員ID
+          const atdInfo = _.find(response.attendanceInformationDtos, item => item.sid === loginSid);
+          if (!atdInfo) {
+            return;
+          }
+          if (atdInfo.avatarDto) {
+            // 表示初期の在席データDTO.在席情報DTO.個人の顔写真.顔写真ファイルID
+            vm.fileId(atdInfo.avatarDto.fileId);
+          }
+          if (atdInfo.activityStatusDto) {
+            // 表示初期の在席データDTO.在席情報DTO.在席のステータス
+            vm.activityStatus(new ActivityStatus({
+              activity: atdInfo.activityStatusDto.activity,
+              date: atdInfo.activityStatusDto.date,
+              sid: atdInfo.activityStatusDto.sid
+            }));
+          }
+          // A1_3
+          if (atdInfo.emojiDto) {
+            // 表示初期の在席データDTO.在席情報DTO.社員の外出情報.感情種類
+            vm.initEmojiType(atdInfo.emojiDto.emojiType);
+          }
+          // A1_4
+          if (atdInfo.goOutDto) {
+            vm.goOutReason(atdInfo.goOutDto.goOutReason);
+          }
+        }
+        // A1_2 表示初期の在席データDTO.自分のビジネスネーム
+        vm.bussinessName(response.bussinessName);
+      }).always(() => vm.$blockui('clear'));
+    }
+
+    initEmojiType(emojiType: number) {
+      const vm = this;
+      switch(emojiType) {
+        case EmojiType.WEARY:
+          vm.emoji(189);
+          break;
+        case EmojiType.SAD:
+          vm.emoji(188);
+          break;
+        case EmojiType.AVERAGE:
+          vm.emoji(187);
+          break;
+        case EmojiType.GOOD:
+          vm.emoji(186);
+          break;
+        case EmojiType.HAPPY:
+          vm.emoji(185);
+          break;
+      }
+    }
+
+    initActivityStatus(activity: number) {
+
+    }
   }
 
   class ItemModel {
@@ -468,29 +525,21 @@ module nts.uk.at.view.ccg005.a.screenModel {
     }
   }
 
-  class InitPresenceData {
-    favoriteSpecify: FavoriteSpecify;
-    attendanceInfor: AttendanceInfor;
-    businessName: string;
-  }
+  class ActivityStatus {
+    activity: number;
+    date: any;
+    sid: string;
 
-  class FavoriteSpecify {
-	  favoriteName: string;
-	  creatorId: string;
-	  inputDate: any;
-	  targetSelection: number;
-	  workplaceId: string[];
-	  order: number;
+    constructor(init?: ActivityStatus) {
+      $.extend(this, init);
+    }
   }
-
-  class AttendanceInfor {
-    userAvatar: any;
-    activityStatus: any;
-    applicationInfor: any;
-    employeeId: string;
-    employeeCommentInfo: any;
-    goOutEmployeeInfo: any;
-    employeeEmojiState: any;
-    attendance: any;
+  
+  enum EmojiType {
+    WEARY = 0, // どんより
+    SAD = 1, // ゆううつ
+    AVERAGE = 2, // 普通
+    GOOD = 3, // ぼちぼち
+    HAPPY = 4 // いい感じ
   }
 }

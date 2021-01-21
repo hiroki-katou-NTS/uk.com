@@ -107,9 +107,8 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
             const wg0 = $(`#WG2-${i}`)[0];
             const wg0Child = wg0.firstElementChild.firstElementChild as any;
             wg0Child.style.height = '100%';
-            if (_.indexOf(wg0Child, 'ccg005') >= 0) {
-              clearTimeout(resizeTimer);
-              resizeTimer = setTimeout(() => $(window).trigger('ccg005.resize'), 100);
+            if (wg0Child.getAttribute('id').indexOf('ccg005') >= 0) {
+              $(window).trigger('ccg005.resize');
             }
           })
         }
@@ -125,8 +124,7 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
             const wg0Child = wg0.firstElementChild.firstElementChild as any;
             wg0Child.style.height = '100%';
             if (wg0Child.getAttribute('id').indexOf('ccg005') >= 0) {
-              clearTimeout(resizeTimer);
-              resizeTimer = setTimeout(() => $(window).trigger('ccg005.resize'), 100);
+              $(window).trigger('ccg005.resize');
             }
           })
         }
