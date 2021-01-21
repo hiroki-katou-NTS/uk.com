@@ -270,7 +270,7 @@ public class OutsideWorkTimeSheet {
 	}
 	
 	/**
-	 * 就業時間外時間帯を指定した時間帯に絞り込む
+	 * 指定した時間帯に絞り込む
 	 * @param timeSpan 時間帯
 	 */
 	public void reduceRange(TimeSpanForDailyCalc timeSpan) {

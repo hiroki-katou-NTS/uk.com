@@ -108,7 +108,7 @@ public class OuenMovementTimeEachTimeSheet implements DomainObject {
 				.collect(Collectors.toList());
 		
 		//手修正後の再計算
-		IntegrationOfDaily result = AttendanceTimeOfDailyAttendance.reCalcForOuen(
+		IntegrationOfDaily result = AttendanceTimeOfDailyAttendance.reCalcForSupport(
 				copyIntegrationOfDaily,
 				converter,
 				attendanceItemIdList,
@@ -172,16 +172,16 @@ public class OuenMovementTimeEachTimeSheet implements DomainObject {
 			.filter(t->t.getWorkNo().v().equals(processingTimeSheet.getWorkNo().v() - 1))
 			.findFirst();
 		
-		if(!previous.isPresent() || !previous.get().getEndTimeWithDayAttr().isPresent())
+		if(!previous.isPresent() || !previous.get().getTimeSheet().getEndTimeWithDayAttr().isPresent())
 			return Optional.empty();
 		
-		if(!processingTimeSheet.getStartTimeWithDayAttr().isPresent())
+		if(!processingTimeSheet.getTimeSheet().getStartTimeWithDayAttr().isPresent())
 			return Optional.empty();
 		
 		//取得した時刻～処理中の時間帯．開始．時刻を移動時間帯とする
 		return Optional.of(new TimeSpanForDailyCalc(
-				previous.get().getEndTimeWithDayAttr().get(),
-				processingTimeSheet.getStartTimeWithDayAttr().get()));
+				previous.get().getTimeSheet().getEndTimeWithDayAttr().get(),
+				processingTimeSheet.getTimeSheet().getStartTimeWithDayAttr().get()));
 	}
 	
 	/**
@@ -198,16 +198,16 @@ public class OuenMovementTimeEachTimeSheet implements DomainObject {
 			.filter(t->t.getWorkNo().v().equals(processingTimeSheet.getWorkNo().v() + 1))
 			.findFirst();
 		
-		if(!next.isPresent() || !next.get().getStartTimeWithDayAttr().isPresent())
+		if(!next.isPresent() || !next.get().getTimeSheet().getStartTimeWithDayAttr().isPresent())
 			return Optional.empty();
 		
-		if(!processingTimeSheet.getEndTimeWithDayAttr().isPresent())
+		if(!processingTimeSheet.getTimeSheet().getEndTimeWithDayAttr().isPresent())
 			return Optional.empty();
 		
 		//処理中の時間帯．終了．時刻～取得した時刻を移動時間帯とする
 		return Optional.of(new TimeSpanForDailyCalc(
-				processingTimeSheet.getEndTimeWithDayAttr().get(),
-				next.get().getStartTimeWithDayAttr().get()));
+				processingTimeSheet.getTimeSheet().getEndTimeWithDayAttr().get(),
+				next.get().getTimeSheet().getStartTimeWithDayAttr().get()));
 	}
 	
 	/**
@@ -215,7 +215,7 @@ public class OuenMovementTimeEachTimeSheet implements DomainObject {
 	 * @param attendanceTime 日別勤怠の勤怠時間
 	 * @return 応援別勤務の移動時間
 	 */
-	private static OuenMovementTimeEachTimeSheet valueOf(AttendanceTimeOfDailyAttendance attendanceTime) {
+	public static OuenMovementTimeEachTimeSheet valueOf(AttendanceTimeOfDailyAttendance attendanceTime) {
 		return new OuenMovementTimeEachTimeSheet(
 				attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getTotalTime(),
 				attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getWithinStatutoryTimeOfDaily().getActualWorkTime().addMinutes(

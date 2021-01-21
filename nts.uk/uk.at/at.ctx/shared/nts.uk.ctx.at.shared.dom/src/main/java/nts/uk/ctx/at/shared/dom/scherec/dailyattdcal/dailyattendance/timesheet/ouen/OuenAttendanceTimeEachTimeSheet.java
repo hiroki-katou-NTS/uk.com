@@ -82,7 +82,7 @@ public class OuenAttendanceTimeEachTimeSheet implements DomainObject {
 			OuenWorkTimeSheetOfDailyAttendance ouenWorkTimeSheet) {
 		
 		//作業時間帯の開始終了を取得する
-		Optional<TimeSpanForDailyCalc> startEnd = ouenWorkTimeSheet.getStartAndEnd();
+		Optional<TimeSpanForDailyCalc> startEnd = ouenWorkTimeSheet.getTimeSheet().getStartAndEnd();
 		
 		if(!startEnd.isPresent())
 			return OuenAttendanceTimeEachTimeSheet.createAllZero();
@@ -111,7 +111,7 @@ public class OuenAttendanceTimeEachTimeSheet implements DomainObject {
 				.collect(Collectors.toList());
 
 		//手修正項目を戻した後の計算処理
-		IntegrationOfDaily result = AttendanceTimeOfDailyAttendance.reCalcForOuen(
+		IntegrationOfDaily result = AttendanceTimeOfDailyAttendance.reCalcForSupport(
 				copyIntegrationOfDaily,
 				converter,
 				attendanceItemIdList,

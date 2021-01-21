@@ -58,7 +58,7 @@ public class PremiumTimeOfDailyPerformance {
 	 * @param dailyRecordDto 日別勤怠コンバーター
 	 * @return 日別勤怠の割増時間
 	 */
-	public static PremiumTimeOfDailyPerformance calcPremiumTimeForOuen(PersonCostCalculation personCostCalculation,
+	public static PremiumTimeOfDailyPerformance calcPremiumTimeForSupport(PersonCostCalculation personCostCalculation,
 																		DailyRecordToAttendanceItemConverter dailyRecordDto) {
 		//個人時間単価を取得する
 		//2020.8.24 ichioka ドメインが未確定の為、未実装。
@@ -66,7 +66,7 @@ public class PremiumTimeOfDailyPerformance {
 		
 		//割増時間
 		List<PremiumTime> times = personCostCalculation.getPremiumSettings().stream()
-			.map(pcc -> PremiumTime.createForOuen(dailyRecordDto, priceUnit, personCostCalculation.getRoundingSet(), pcc))
+			.map(pcc -> PremiumTime.createForSupport(dailyRecordDto, priceUnit, personCostCalculation.getRoundingSet(), pcc))
 			.collect(Collectors.toList());
 
 		return new PremiumTimeOfDailyPerformance(times);

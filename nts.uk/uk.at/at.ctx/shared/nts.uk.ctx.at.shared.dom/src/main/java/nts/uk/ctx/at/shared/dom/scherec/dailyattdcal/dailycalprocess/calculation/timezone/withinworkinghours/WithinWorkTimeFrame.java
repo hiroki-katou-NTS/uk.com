@@ -1042,7 +1042,7 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 	}
 	
 	/**
-	 * 就業時間内時間枠を指定した時間帯に絞り込む
+	 * 指定した時間帯に絞り込む
 	 * @param timeSpan 時間帯
 	 */
 	public void reduceRange(TimeSpanForDailyCalc timeSpan) {
@@ -1069,7 +1069,7 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 		if(this.leaveEarlyTimeSheet.isPresent())
 			this.leaveEarlyTimeSheet.get().reduceRange(duplicates.get());
 		
-		//所定内割増時間帯．時間帯←パラメータ「時間帯」
+		//所定内時間帯を指定した時間帯に絞り込む
 		if(this.premiumTimeSheetInPredetermined.isPresent())
 			this.premiumTimeSheetInPredetermined.get().reduceRange(duplicates.get());
 		

@@ -255,12 +255,12 @@ public class ActualWorkingTimeOfDaily {
 		return PremiumTimeOfDailyPerformance.calcPremiumTime(personCostCalculation.get(), dailyRecordDto);
 	}
 	
-	public static PremiumTimeOfDailyPerformance createPremiumTimeOfDailyPerformanceForOuen(Optional<PersonCostCalculation> personCostCalculation,
+	public static PremiumTimeOfDailyPerformance createPremiumTimeOfDailyPerformanceForSupport(Optional<PersonCostCalculation> personCostCalculation,
 				DailyRecordToAttendanceItemConverter dailyRecordDto) {
 		if(!personCostCalculation.isPresent()) {
 			return PremiumTimeOfDailyPerformance.createEmpty();
 		}
-		return PremiumTimeOfDailyPerformance.calcPremiumTimeForOuen(personCostCalculation.get(), dailyRecordDto);
+		return PremiumTimeOfDailyPerformance.calcPremiumTimeForSupport(personCostCalculation.get(), dailyRecordDto);
 	}
 	
 	public static DivergenceTimeOfDaily createDivergenceTimeOfDaily(

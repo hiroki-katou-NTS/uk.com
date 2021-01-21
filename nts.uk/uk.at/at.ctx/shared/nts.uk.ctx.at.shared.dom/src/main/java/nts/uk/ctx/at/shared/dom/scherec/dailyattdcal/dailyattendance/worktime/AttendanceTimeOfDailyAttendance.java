@@ -492,7 +492,7 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 	 * @param recordReGetClass
 	 * @return 日別勤怠(WORK)
 	 */
-	public static IntegrationOfDaily reCalcForOuen(
+	public static IntegrationOfDaily reCalcForSupport(
 			IntegrationOfDaily calcResultIntegrationOfDaily,
 			DailyRecordToAttendanceItemConverter converter,
 			List<Integer> attendanceItemIdList,
@@ -539,7 +539,7 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 
 		// 割増時間の計算
 		PremiumTimeOfDailyPerformance premiumTimeOfDailyPerformance = 
-				ActualWorkingTimeOfDaily.createPremiumTimeOfDailyPerformanceForOuen(
+				ActualWorkingTimeOfDaily.createPremiumTimeOfDailyPerformanceForSupport(
 						recordReGetClass.getCompanyCommonSetting().getPersonCostCalculation(recordReGetClass.getIntegrationOfDaily().getYmd()),
 						forCalcDivergenceDto);
 		
