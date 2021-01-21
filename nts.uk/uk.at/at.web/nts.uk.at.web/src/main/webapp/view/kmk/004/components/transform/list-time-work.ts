@@ -146,13 +146,16 @@ module nts.uk.at.view.kmk004.components {
 
 					if (ko.unwrap(vm.years).length > 0) {
 						if (ko.unwrap(vm.mode) === 'Update') {
-							if (!ko.unwrap(vm.years)[index].isNew) {
-								_.remove(ko.unwrap(vm.years), ((value) => {
-									return value.year == ko.unwrap(vm.selectedYear);
-								}));
-								vm.years.push(new IYear(ko.unwrap(vm.selectedYear), true));
-								vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
+							if (ko.unwrap(vm.years)[index]) {
+								if (!ko.unwrap(vm.years)[index].isNew) {
+									_.remove(ko.unwrap(vm.years), ((value) => {
+										return value.year == ko.unwrap(vm.selectedYear);
+									}));
+									vm.years.push(new IYear(ko.unwrap(vm.selectedYear), true));
+									vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
+								}
 							}
+							
 						}
 					}
 					vm.updateListSave();
@@ -320,10 +323,11 @@ module nts.uk.at.view.kmk004.components {
 												}
 											}));
 											vm.workTimes(workTime.map(m => new WorkTimeL({ ...m, parent: vm.workTimes })));
-										}else {
-											vm.mode('Update');
+										} else {
+											//vm.mode('Update');
 											vm.initList();
 										}
+										vm.mode('Update');
 									});
 							}
 
