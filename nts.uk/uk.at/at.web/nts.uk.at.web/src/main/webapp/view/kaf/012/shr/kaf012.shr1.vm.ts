@@ -201,7 +201,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
             const vm = this;
             var param: any = {
                 employeeIds: vm.application().employeeIDLst().length == 0 ? [vm.$user.employeeId] : vm.application().employeeIDLst(),
-                baseDate: vm.timeLeaveRemaining().remainingStart.replace(/\//g, '')
+                baseDate: nts.uk.time.formatDate(new Date(vm.timeLeaveRemaining().remainingStart), "yyyyMMdd")
             };
             setShared('KDL005_DATA', param);
             if(param.employeeIds.length > 1) {
@@ -256,7 +256,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
             const vm = this;
             const data = {
                 employeeIds: vm.application().employeeIDLst().length == 0 ? [vm.$user.employeeId] : vm.application().employeeIDLst(),
-                baseDate: vm.timeLeaveRemaining().remainingStart.replace(/\//g, '')
+                baseDate: nts.uk.time.formatDate(new Date(vm.timeLeaveRemaining().remainingStart), "yyyyMMdd")
             };
             nts.uk.ui.windows.setShared('KDL017_PARAM', data);
             if(data.employeeIds.length > 1) {

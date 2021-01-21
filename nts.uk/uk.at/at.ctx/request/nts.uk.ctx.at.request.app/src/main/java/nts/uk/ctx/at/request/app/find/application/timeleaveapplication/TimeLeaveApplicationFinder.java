@@ -231,9 +231,9 @@ public class TimeLeaveApplicationFinder {
         if (lstTimeZone.get(0).getEndTime() != null && achievementDetailDto.getOpLeaveTime() != null)
             leaveEarly1 = Math.abs(achievementDetailDto.getOpLeaveTime() - lstTimeZone.get(0).getEndTime());
         if (lstTimeZone.get(1).getStartTime() != null && achievementDetailDto.getOpWorkTime2() != null)
-            lateTime1 = Math.abs(lstTimeZone.get(0).getStartTime() - achievementDetailDto.getOpWorkTime2());
+            lateTime2 = Math.abs(lstTimeZone.get(0).getStartTime() - achievementDetailDto.getOpWorkTime2());
         if (lstTimeZone.get(1).getEndTime() != null && achievementDetailDto.getOpDepartureTime2() != null)
-            leaveEarly1 = Math.abs(achievementDetailDto.getOpDepartureTime2() - lstTimeZone.get(0).getEndTime());
+            leaveEarly2 = Math.abs(achievementDetailDto.getOpDepartureTime2() - lstTimeZone.get(0).getEndTime());
         for (OutingTimeZoneDto i : lstOutingTimeZone) {
             if (i.getOutingAtr() == AppTimeType.PRIVATE.value) {
                 privateOutingTime = privateOutingTime + (i.getEndTime() - i.getStartTime());
