@@ -11,14 +11,14 @@ var nts;
                     get: function () {
                         return !this.landscapse;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "landscapse", {
                     get: function () {
                         return window.innerWidth > window.innerHeight;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "mobile", {
@@ -31,7 +31,7 @@ var nts;
                         })(navigator.userAgent || navigator.vendor || window.opera);
                         return check;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "tablet", {
@@ -44,7 +44,7 @@ var nts;
                         })(navigator.userAgent || navigator.vendor || window.opera);
                         return check;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "mp", {
@@ -54,7 +54,7 @@ var nts;
                     get: function () {
                         return this.mobile && this.portrait;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "ml", {
@@ -64,28 +64,28 @@ var nts;
                     get: function () {
                         return this.mobile && this.landscapse;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "ios", {
                     get: function () {
                         return /iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "width", {
                     get: function () {
                         return window.innerWidth;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "height", {
                     get: function () {
                         return window.innerHeight;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "version", {
@@ -108,7 +108,7 @@ var nts;
                         }
                         return M.join(' ');
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "private", {
@@ -177,7 +177,7 @@ var nts;
                         not();
                         return d.promise();
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 return browser;
@@ -1893,12 +1893,9 @@ var nts;
 })(nts || (nts = {}));
 /// <reference path="reference.ts"/>
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -4435,6 +4432,10 @@ var nts;
                     bind: function (content, dialogOptions) {
                         var kiban = ui._viewModel.kiban;
                         var systemName = __viewContext.env.systemName;
+                        // update title of name
+                        kiban.systemName(systemName);
+                        // update mode of view
+                        kiban.mode(!uk.util.isInFrame() ? 'view' : 'modal');
                         kiban.initErrorModel(dialogOptions);
                         var isEmpty = ko.computed(function () { return !kiban.errorDialogViewModel.occurs(); });
                         // mock ready function
@@ -4444,10 +4445,6 @@ var nts;
                             // bind viewmodel to document body
                             ko.applyBindings(ui._viewModel, document.body);
                             ui.viewModelApplied.fire(ui._viewModel);
-                            // update title of name
-                            kiban.systemName(systemName);
-                            // update mode of view
-                            kiban.mode(!uk.util.isInFrame() ? 'view' : 'modal');
                             // update header
                             if (kiban.header() === null) {
                                 kiban.header(!__viewContext.noHeader || (kiban.mode() === 'view'));
@@ -7275,7 +7272,8 @@ var nts;
                         self.$container.tabIndex = -1;
                         $.data(self.$container, NAMESPACE, self);
                         var pTable = $.data(self.$container, NAMESPACE);
-                        pTable.owner = { headers: [], bodies: [], find: function (name, where) {
+                        pTable.owner = { headers: [], bodies: [],
+                            find: function (name, where) {
                                 var o = this;
                                 var elm = o[where].filter(function (e, i) { return e.classList.contains(name); });
                                 if (!elm || elm.length === 0)
@@ -7975,7 +7973,7 @@ var nts;
                                 }
                                 else if (!column.control) {
                                     tdStyle += " text-overflow: ellipsis; -ms-text-overflow: ellipsis;";
-                                    td.innerText = data;
+                                    td.innerText = _.isNil(data) ? "" : data;
                                 }
                                 controls.check(td, column, data, helper.call(column.handler, rData, rowIdx, key));
                                 //                    cellHandler.rClick(td, column, helper.call(column.rightClick, rData, rowIdx, key));
@@ -8609,11 +8607,12 @@ var nts;
                                             $c.style.backgroundColor = null;
                                         }
                                     }
-                                    if (fieldArr_1) {
-                                        fields = [fieldArr_1[i]];
-                                    }
+                                    // Compare each inner separately to color
+                                    //                        if (fieldArr) {
+                                    //                            fields = [ fieldArr[i] ];
+                                    //                        }
                                     var cellObj = new selection.Cell(rowIdx, columnKey, valueObj, i);
-                                    var mTouch = trace(origDs, $c, cellObj, fields, x.manipulatorId, x.manipulatorKey);
+                                    var mTouch = trace(origDs, $c, cellObj, fieldArr_1, x.manipulatorId, x.manipulatorKey);
                                     //                        if (innerIdx === - 1 || _.isNil(innerIdx)) {
                                     if ((!touched || (touched && !touched.dirty)) && mTouch && mTouch.dirty) {
                                         touched = mTouch;
@@ -8791,11 +8790,12 @@ var nts;
                                                 if (updateMode === EDIT) {
                                                     validation.validate($exTable, $grid, $c, rowIdx, key, i, d);
                                                 }
-                                                if (fieldArr_2) {
-                                                    fields = [fieldArr_2[i]];
-                                                }
+                                                // Compare each inner separately to color
+                                                //                                    if (fieldArr) {
+                                                //                                        fields = [ fieldArr[i] ];
+                                                //                                    }
                                                 cellObj_1 = new selection.Cell(rowIdx, key, data[key], i);
-                                                var mTouch = trace(origDs, $c, cellObj_1, fields, x.manipulatorId, x.manipulatorKey);
+                                                var mTouch = trace(origDs, $c, cellObj_1, fieldArr_2, x.manipulatorId, x.manipulatorKey);
                                                 if ((!touched || (touched && !touched.dirty)) && mTouch && mTouch.dirty) {
                                                     touched = mTouch;
                                                 }
@@ -9422,7 +9422,7 @@ var nts;
                                         errPopup.innerHTML = errMsg;
                                         var offset = selector.offset($cell);
                                         var bodyRowHeight = parseFloat($.data($exTable, NAMESPACE).bodyRowHeight);
-                                        var offsetHeight = !_.isNil($cell.style.height) ? parseFloat($cell.style.height)
+                                        var offsetHeight = !_.isNil($cell.style.height) && $cell.style.height !== "" ? parseFloat($cell.style.height)
                                             : (isNaN(bodyRowHeight) ? 50 : bodyRowHeight);
                                         errPopup.style.top = offset.top + offsetHeight + 2 + "px";
                                         errPopup.style.left = offset.left + "px";
@@ -9433,14 +9433,23 @@ var nts;
                             //                if (evt.ctrlKey && $.data($exTable, NAMESPACE).determination) return;
                             update.edit($exTable, $cell, options.containerClass);
                         });
-                        $cell.addXEventListener(events.KEY_UP, function () {
+                        $cell.addXEventListener(events.KEY_DOWN, function (evt) {
                             var $exTable = helper.closest($cell, "." + NAMESPACE);
                             var $grid = helper.getTable($exTable, options.containerClass);
                             var inputSelecting = $.data($grid, internal.INPUT_SELECTING);
                             if (!inputSelecting)
                                 return;
-                            if (event.keyCode === $.ui.keyCode.ENTER) {
-                                var cell_1 = helper.nextCellOf($grid, new selection.Cell(inputSelecting.rowIdx, inputSelecting.columnKey, null, inputSelecting.innerIdx));
+                            var moveDir = "prevCellOf";
+                            if (event.keyCode === $.ui.keyCode.ENTER || event.keyCode === $.ui.keyCode.TAB
+                                || event.keyCode === $.ui.keyCode.RIGHT || event.keyCode === $.ui.keyCode.LEFT) {
+                                if ($cell.querySelector("." + update.EDITOR_CLS) && event.keyCode !== $.ui.keyCode.ENTER)
+                                    return;
+                                event.preventDefault();
+                                var cell_1;
+                                if (event.keyCode !== $.ui.keyCode.LEFT && !event.shiftKey) {
+                                    moveDir = "nextCellOf";
+                                }
+                                cell_1 = helper[moveDir]($grid, new selection.Cell(inputSelecting.rowIdx, inputSelecting.columnKey, null, inputSelecting.innerIdx));
                                 selection.clearInnerCell($grid, inputSelecting.rowIdx, inputSelecting.columnKey, inputSelecting.innerIdx);
                                 $.data($grid, internal.INPUT_SELECTING, null);
                                 internal.getGem($grid).rollTo(cell_1);
@@ -9455,6 +9464,20 @@ var nts;
                                     }
                                     $.data($grid, internal.INPUT_SELECTING, { rowIdx: cell_1.rowIndex, columnKey: cell_1.columnKey, innerIdx: cell_1.innerIdx });
                                 });
+                            }
+                            else if (selector.is(evt.target, "." + selection.CELL_SELECTED_CLS)) {
+                                var cellTxt = $cell.innerText;
+                                if (evt.keyCode === 113) {
+                                    update.edit($exTable, $cell, options.containerClass);
+                                    var $input = $cell.querySelector("input");
+                                    if ($input) {
+                                        $input.value = cellTxt;
+                                    }
+                                }
+                                else if (helper.isAlphaNumeric(evt) || helper.isMinusSymbol(evt)
+                                    || (helper.isSemicolon(evt) && evt.shiftKey)) {
+                                    update.edit($exTable, $cell, options.containerClass);
+                                }
                             }
                         });
                     }
@@ -9693,8 +9716,8 @@ var nts;
                      */
                     function editing($exTable, $editor, land) {
                         var $input = $editor.querySelector("input");
-                        $input.removeXEventListener(events.KEY_UP);
-                        $input.addXEventListener(events.KEY_UP, function (evt) {
+                        $input.removeXEventListener(events.KEY_DOWN);
+                        $input.addXEventListener(events.KEY_DOWN, function (evt) {
                             var value = $input.value;
                             if (evt.keyCode === $.ui.keyCode.ENTER) {
                                 var $grid_1;
@@ -9783,14 +9806,14 @@ var nts;
                                     });
                                 }
                             }
-                            else {
-                                var editor = $.data($exTable, update.EDITOR);
-                                if (uk.util.isNullOrUndefined(editor))
-                                    return;
-                                editor.value = value;
-                                var $grid = !editor.land ? helper.getMainTable($exTable) : helper.getTable($exTable, editor.land);
-                                validation.validate($grid, helper.closest(editor.$editor, "." + update.EDIT_CELL_CLS), editor.rowIdx, editor.columnKey, editor.innerIdx, editor.value);
-                            }
+                        });
+                        $input.addXEventListener(events.KEY_UP, function (evt) {
+                            var editor = $.data($exTable, update.EDITOR);
+                            if (uk.util.isNullOrUndefined(editor))
+                                return;
+                            editor.value = $input.value;
+                            var $grid = !editor.land ? helper.getMainTable($exTable) : helper.getTable($exTable, editor.land);
+                            validation.validate($grid, helper.closest(editor.$editor, "." + update.EDIT_CELL_CLS), editor.rowIdx, editor.columnKey, editor.innerIdx, editor.value);
                         });
                     }
                     /**
@@ -15947,6 +15970,28 @@ var nts;
                     }
                     helper.isRedoKey = isRedoKey;
                     /**
+                     * Is alphanumeric.
+                     */
+                    function isAlphaNumeric(evt) {
+                        return (evt.keyCode >= 48 && evt.keyCode <= 90)
+                            || (evt.keyCode >= 96 && evt.keyCode <= 105);
+                    }
+                    helper.isAlphaNumeric = isAlphaNumeric;
+                    /**
+                     * Is minus symbol.
+                     */
+                    function isMinusSymbol(evt) {
+                        return evt.keyCode === 189 || evt.keyCode === 109;
+                    }
+                    helper.isMinusSymbol = isMinusSymbol;
+                    /**
+                     * Is semicolon.
+                     */
+                    function isSemicolon(evt) {
+                        return evt.keyCode === 186;
+                    }
+                    helper.isSemicolon = isSemicolon;
+                    /**
                      * Is Html.
                      */
                     function isHtml(str) {
@@ -16209,6 +16254,85 @@ var nts;
                         return new selection.Cell(rowIndex, key, undefined, innerIdx);
                     }
                     helper.nextCellOf = nextCellOf;
+                    /**
+                     * Prev key.
+                     */
+                    function prevKeyOf(columnIndex, visibleColumns) {
+                        if (columnIndex == 0)
+                            return;
+                        return visibleColumns[columnIndex - 1].key;
+                    }
+                    helper.prevKeyOf = prevKeyOf;
+                    /**
+                     * Prev cell.
+                     */
+                    function prevCellOf($grid, cell) {
+                        var key, rowIndex, innerIdx;
+                        var gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
+                        if (!gen)
+                            return;
+                        var visibleColumns = gen.painter.visibleColumns;
+                        var innerTypes = [];
+                        _(gen.painter.options.columns).forEach(function (c) {
+                            if (c.dataType) {
+                                innerTypes = c.dataType.split('/');
+                                return false;
+                            }
+                        });
+                        var firstTextIndex = _.findIndex(innerTypes, function (t) { return t !== controls.LABEL.toLowerCase(); });
+                        var prevInnerIdx = function (idx) {
+                            if (idx === firstTextIndex || idx === -1)
+                                return;
+                            for (var i = idx - 1; i >= 0; i--) {
+                                if (innerTypes[i] !== controls.LABEL.toLowerCase()) {
+                                    return i;
+                                }
+                            }
+                        };
+                        innerIdx = prevInnerIdx(cell.innerIdx);
+                        if (!_.isNil(innerIdx)) {
+                            return new selection.Cell(cell.rowIndex, cell.columnKey, null, innerIdx);
+                        }
+                        key = prevKeyOf(indexOf(cell.columnKey, visibleColumns), visibleColumns);
+                        if (key) {
+                            if (innerTypes.length === 1) {
+                                innerIdx = -1;
+                            }
+                            else {
+                                innerIdx = _.findLastIndex(innerTypes, function (t) { return t !== controls.LABEL.toLowerCase(); });
+                            }
+                            return new selection.Cell(cell.rowIndex, key, null, innerIdx);
+                        }
+                        key = visibleColumns[visibleColumns.length - 1].key;
+                        if (cell.rowIndex === 0) {
+                            if (cell.innerIdx === -1) {
+                                rowIndex = gen.dataSource.length - 1;
+                                innerIdx = -1;
+                            }
+                            else if (!_.isNil(innerIdx = prevInnerIdx(cell.innerIdx))) {
+                                rowIndex = Number(cell.rowIndex);
+                            }
+                            else {
+                                rowIndex = gen.dataSource.length - 1;
+                                innerIdx = _.findLastIndex(innerTypes, function (t) { return t !== controls.LABEL.toLowerCase(); });
+                            }
+                        }
+                        else {
+                            if (cell.innerIdx === -1) {
+                                rowIndex = Number(cell.rowIndex) - 1;
+                                innerIdx = -1;
+                            }
+                            else if (!_.isNil(innerIdx = prevInnerIdx(cell.innerIdx))) {
+                                rowIndex = Number(cell.rowIndex);
+                            }
+                            else {
+                                rowIndex = Number(cell.rowIndex) - 1;
+                                innerIdx = _.findLastIndex(innerTypes, function (t) { return t !== controls.LABEL.toLowerCase(); });
+                            }
+                        }
+                        return new selection.Cell(rowIndex, key, null, innerIdx);
+                    }
+                    helper.prevCellOf = prevCellOf;
                     /**
                      * Call.
                      */
@@ -16988,6 +17112,8 @@ var nts;
                     function textOverflow($cell) {
                         $cell.addXEventListener(events.MOUSE_ENTER + ".celloverflow", function (evt) {
                             var $target = $(evt.target);
+                            if ($target.find("." + update.EDITOR_CLS).length > 0)
+                                return;
                             if (!displayFullText($target)) {
                                 var $link = $target.find("a");
                                 if ($link.length > 0) {
@@ -17223,13 +17349,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-};
 var nts;
 (function (nts) {
     var uk;
@@ -17282,7 +17401,7 @@ var nts;
                                         else {
                                             var exist = _.find(checkeds, function (c) { return _.isEqual(c, ko.toJS(value_1)); });
                                             if (!exist) {
-                                                accessor.checked(__spreadArrays(checkeds, [value_1]));
+                                                accessor.checked(checkeds.concat([value_1]));
                                             }
                                             else {
                                                 _.remove(checkeds, function (c) { return _.isEqual(c, ko.toJS(value_1)); });
@@ -21100,7 +21219,7 @@ var nts;
                         get: function () {
                             return this.model;
                         },
-                        enumerable: false,
+                        enumerable: true,
                         configurable: true
                     });
                     SwapHandler.prototype.handle = function (value) {
@@ -22541,7 +22660,7 @@ var nts;
                         get: function () {
                             return this.model;
                         },
-                        enumerable: false,
+                        enumerable: true,
                         configurable: true
                     });
                     SwapHandler.prototype.handle = function (parts, value) {
@@ -23206,16 +23325,13 @@ var nts;
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 /// <reference path="../../reference.ts"/>
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
 };
 var nts;
 (function (nts) {
@@ -23260,7 +23376,7 @@ var nts;
                                         read: function () {
                                             var ds = ko.toJS(accessor.dataSource);
                                             return ds.filter(function (d) { return d.visible !== false; })
-                                                .map(function (d) { return (__assign(__assign({}, d), { active: active,
+                                                .map(function (d) { return (__assign({}, d, { active: active,
                                                 tabindex: tabindex, dataBind: 'vertical-link' !== dir ? undefined : {
                                                     'btn-link': d.title,
                                                     icon: d.icon || 'CHECKBOX',
@@ -23599,7 +23715,8 @@ var nts;
                             $treegrid.addClass("row-limited");
                         }
                         if (isFilter) {
-                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100, dataFiltered: function (evt, ui) {
+                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100,
+                                dataFiltered: function (evt, ui) {
                                     var disabled = $treegrid.data("rowDisabled");
                                     if (!_.isEmpty(disabled)) {
                                         $treegrid.ntsTreeView("disableRows", disabled);
@@ -33678,7 +33795,8 @@ var nts;
                                 var txt = td.querySelector(".mgrid-refer-text");
                                 if (!txt)
                                     return;
-                                var args = { value: $.data(td, v.DATA), rowId: data.rowId, rowValue: data.rowObj, itemList: data.controlDef.pattern[data.controlDef.list[data.rowId]], relatedItemList: function (nama) {
+                                var args = { value: $.data(td, v.DATA), rowId: data.rowId, rowValue: data.rowObj, itemList: data.controlDef.pattern[data.controlDef.list[data.rowId]],
+                                    relatedItemList: function (nama) {
                                         var ctrl = _mafollicle[SheetDef][_currentSheet].controlMap && _mafollicle[SheetDef][_currentSheet].controlMap[nama];
                                         if (ctrl && ctrl.pattern && ctrl.list) {
                                             return ctrl.pattern[ctrl.list[data.rowId]];
@@ -35906,6 +36024,11 @@ var nts;
                                     return;
                                 if (parentChart && ((diff > 0 && pDec_1.end > parentChart.end) || (diff < 0 && pDec_1.start < parentChart.start)))
                                     return;
+                                if (parentChart && _.find(parentChart.children, function (child) {
+                                    return child.id !== chart.id && !child.bePassedThrough
+                                        && ((chart.start >= child.end && pDec_1.start < child.end) || (chart.end <= child.start && pDec_1.end > child.start));
+                                }))
+                                    return;
                                 _.forEach(chart.children, function (child) {
                                     var childSlide;
                                     if (child.followParent) {
@@ -35954,7 +36077,7 @@ var nts;
                                                 if (!self.chartArea.contains(child.html)) {
                                                     self.chartArea.appendChild(child.html);
                                                 }
-                                                if (!self.slideTrigger.edgeCharts.find(function (c) { return c.id === child.id; })) {
+                                                if (!_.find(self.slideTrigger.edgeCharts, function (c) { return c.id === child.id; })) {
                                                     self.slideTrigger.edgeCharts.push(child);
                                                 }
                                             }
@@ -36009,7 +36132,7 @@ var nts;
                                                 if (!self.chartArea.contains(child.html)) {
                                                     self.chartArea.appendChild(child.html);
                                                 }
-                                                if (!self.slideTrigger.edgeCharts.find(function (c) { return c.id === child.id; })) {
+                                                if (!_.find(self.slideTrigger.edgeCharts, function (c) { return c.id === child.id; })) {
                                                     self.slideTrigger.edgeCharts.push(child);
                                                 }
                                             }
@@ -36424,6 +36547,7 @@ var nts;
                         this.lineWidth = options.lineWidth;
                         this.snatchInterval = options.snatchInterval;
                         this.drawerSize = options.drawerSize;
+                        this.bePassedThrough = options.bePassedThrough;
                         this.pin = options.pin;
                         this.rollup = options.rollup;
                         this.roundEdge = options.roundEdge;
@@ -36449,6 +36573,7 @@ var nts;
                         this.followParent = false;
                         this.fixed = CHART_FIXED.NONE;
                         this.drawerSize = 3;
+                        this.bePassedThrough = true;
                         this.locked = false;
                         this.rollup = false;
                         this.pin = false;
@@ -37009,7 +37134,7 @@ var nts;
                 Object.defineProperties($jump, {
                     self: {
                         value: function $to() {
-                            $jump.apply(null, __spreadArrays(Array.prototype.slice.apply(arguments, [])));
+                            $jump.apply(null, Array.prototype.slice.apply(arguments, []).slice());
                         }
                     },
                     blank: {
@@ -46456,7 +46581,8 @@ var nts;
                             $treegrid.addClass("row-limited");
                         }
                         if (isFilter) {
-                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100, dataFiltered: function (evt, ui) {
+                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100,
+                                dataFiltered: function (evt, ui) {
                                     var disabled = $treegrid.data("rowDisabled");
                                     if (!_.isEmpty(disabled)) {
                                         $treegrid.ntsTreeView("disableRows", disabled);
@@ -46851,8 +46977,7 @@ var nts;
                                             if ($tree.data("igTreeGrid") !== null) {
                                                 $tree.data("igTreeGridUpdating").deleteRow(rowId);
                                             }
-                                        },
-                                        initValue: value,
+                                        }, initValue: value,
                                         rowObj: rowObj,
                                         showHeaderCheckbox: col.showHeaderCheckbox,
                                         enable: isRowEnable,
@@ -51080,6 +51205,177 @@ var nts;
                     }(ko.ViewModel));
                     schedules.ButtonScheduleViewModel = ButtonScheduleViewModel;
                 })(schedules = buttons.schedules || (buttons.schedules = {}));
+                var functional;
+                (function (functional) {
+                    var COMPONENT_NAME = 'btn-functional';
+                    var FunctionalBindingHandler = /** @class */ (function () {
+                        function FunctionalBindingHandler() {
+                        }
+                        FunctionalBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                            if (element.tagName !== 'BUTTON') {
+                                element.innerText = 'Please use binding with [button] element';
+                                return;
+                            }
+                            element.classList.add('functional');
+                            element.classList.add('transparent');
+                            var data = valueAccessor();
+                            var show = ko.observable(false);
+                            var dropdown = document.createElement('div');
+                            dropdown.classList.add('functional-dropdown');
+                            if (element.id) {
+                                dropdown.setAttribute('for', element.id);
+                            }
+                            document.body.appendChild(dropdown);
+                            show.subscribe(function (s) {
+                                if (s) {
+                                    dropdown.classList.add('show');
+                                }
+                                else {
+                                    dropdown.classList.remove('show');
+                                }
+                            });
+                            ko.applyBindingsToNode(dropdown, { component: { name: 'dropdown-content', params: { data: data, viewModel: viewModel } } });
+                            // render template
+                            ko.applyBindingsToNode(element, { component: { name: COMPONENT_NAME, params: { show: show, dropdown: dropdown } } });
+                            $(element)
+                                .on('click', function () {
+                                show(true);
+                                var bound = element.getBoundingClientRect();
+                                dropdown.style.top = bound.bottom + 10 + 'px';
+                                dropdown.style.left = (bound.left + bound.width + 3 - dropdown.offsetWidth) + 'px';
+                            })
+                                .on('keydown', function (evt) {
+                                if (evt.keyCode === 9) {
+                                    show(false);
+                                }
+                                else {
+                                    var selected = $(dropdown).find('li.selected');
+                                    if (evt.keyCode === 38) {
+                                        if (selected.length) {
+                                            var prev = selected.prev();
+                                            if (prev.length) {
+                                                prev.addClass('selected');
+                                                selected.removeClass('selected');
+                                            }
+                                        }
+                                        else {
+                                            $(dropdown).find('li').last().addClass('selected');
+                                        }
+                                    }
+                                    else if (evt.keyCode === 40) {
+                                        if (selected.length) {
+                                            var next = selected.next();
+                                            if (next.length) {
+                                                next.addClass('selected');
+                                                selected.removeClass('selected');
+                                            }
+                                        }
+                                        else {
+                                            $(dropdown).find('li').first().addClass('selected');
+                                        }
+                                    }
+                                    else if (evt.keyCode === 13) {
+                                        show(!show());
+                                        if (show() === false) {
+                                            selected.trigger('click');
+                                        }
+                                        $(dropdown).find('li').removeClass('selected');
+                                        evt.preventDefault();
+                                    }
+                                }
+                            });
+                            ko.utils.domData.set(element, '__DROPDOWN__', dropdown);
+                            return { controlsDescendantBindings: true };
+                        };
+                        FunctionalBindingHandler = __decorate([
+                            handler({
+                                bindingName: COMPONENT_NAME,
+                                validatable: true,
+                                virtual: false
+                            })
+                        ], FunctionalBindingHandler);
+                        return FunctionalBindingHandler;
+                    }());
+                    functional.FunctionalBindingHandler = FunctionalBindingHandler;
+                    var FunctionalButtonViewModel = /** @class */ (function (_super) {
+                        __extends(FunctionalButtonViewModel, _super);
+                        function FunctionalButtonViewModel(params) {
+                            var _this = _super.call(this) || this;
+                            _this.params = params;
+                            return _this;
+                        }
+                        FunctionalButtonViewModel.prototype.mounted = function () {
+                            var vm = this;
+                            var $el = vm.$el, params = vm.params;
+                            var show = params.show;
+                            $(window)
+                                .on('dr.click', function (__, evt) {
+                                var tg = $(evt.target);
+                                if (tg.is($el) || tg.closest('button').is($el)) {
+                                    show(true);
+                                }
+                                else {
+                                    show(false);
+                                }
+                            })
+                                .on('click', function (evt) {
+                                $(window).trigger('dr.click', [evt]);
+                            });
+                            $($el)
+                                .removeAttr('data-bind')
+                                .find('[data-bind]')
+                                .removeAttr('data-bind');
+                        };
+                        // hook for remove dropdown on body
+                        FunctionalButtonViewModel.prototype.destroyed = function () {
+                            var vm = this;
+                            var dropdown = ko.utils.domData.get(vm.$el, '__DROPDOWN__');
+                            if (dropdown) {
+                                dropdown.remove();
+                            }
+                            $(window).of('dr.click');
+                        };
+                        FunctionalButtonViewModel = __decorate([
+                            component({
+                                name: COMPONENT_NAME,
+                                template: "\n            <svg width=\"3\" height=\"15\" viewBox=\"0 0 3 15\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n                <rect width=\"3\" height=\"3\" fill=\"#30CC40\" />\n                <rect y=\"6\" width=\"3\" height=\"3\" fill=\"#30CC40\" />\n                <rect y=\"12\" width=\"3\" height=\"3\" fill=\"#30CC40\" />\n            </svg>\n            "
+                            })
+                        ], FunctionalButtonViewModel);
+                        return FunctionalButtonViewModel;
+                    }(ko.ViewModel));
+                    functional.FunctionalButtonViewModel = FunctionalButtonViewModel;
+                    var DropdownContentViewModel = /** @class */ (function (_super) {
+                        __extends(DropdownContentViewModel, _super);
+                        function DropdownContentViewModel(params) {
+                            var _this = _super.call(this) || this;
+                            _this.params = params;
+                            _this.items = params.data ? (params.data.items || []) : [];
+                            return _this;
+                        }
+                        DropdownContentViewModel.prototype.mounted = function () {
+                            var vm = this;
+                            vm.$el.removeAttribute('data-bind');
+                            vm.$el.querySelectorAll('[data-bind]')
+                                .forEach(function (c) { return c.removeAttribute('data-bind'); });
+                        };
+                        DropdownContentViewModel.prototype.select = function (key) {
+                            var vm = this;
+                            var params = vm.params;
+                            var data = params.data, viewModel = params.viewModel;
+                            if (data && typeof data.select === 'function') {
+                                data.select.apply(viewModel, [key]);
+                            }
+                        };
+                        DropdownContentViewModel = __decorate([
+                            component({
+                                name: 'dropdown-content',
+                                template: "<div>\n                <ul data-bind=\"foreach: $component.items\">\n                    <li data-bind=\"i18n: $data, click: function() { $component.select($data) }\"></li>\n                </ul>\n            </div>"
+                            })
+                        ], DropdownContentViewModel);
+                        return DropdownContentViewModel;
+                    }(ko.ViewModel));
+                    functional.DropdownContentViewModel = DropdownContentViewModel;
+                })(functional = buttons.functional || (buttons.functional = {}));
             })(buttons = controls.buttons || (controls.buttons = {}));
         })(controls = ui.controls || (ui.controls = {}));
     })(ui = nts.ui || (nts.ui = {}));
