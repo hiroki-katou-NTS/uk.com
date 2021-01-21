@@ -48,6 +48,7 @@ public class JpaPayoutSubofHDManaRepository extends JpaRepository implements Pay
 	@Override
 	public void add(PayoutSubofHDManagement domain) {
 		this.commandProxy().insert(toEntity(domain));
+		this.getEntityManager().flush();
 	}
 
 	@Override
@@ -66,6 +67,7 @@ public class JpaPayoutSubofHDManaRepository extends JpaRepository implements Pay
 		Optional<KrcmtPayoutSubOfHDMana> existed = this.queryProxy().find(key, KrcmtPayoutSubOfHDMana.class);
 		if (existed.isPresent()) {
 			this.commandProxy().remove(KrcmtPayoutSubOfHDMana.class, key);
+			this.getEntityManager().flush();
 		}
 
 	}
