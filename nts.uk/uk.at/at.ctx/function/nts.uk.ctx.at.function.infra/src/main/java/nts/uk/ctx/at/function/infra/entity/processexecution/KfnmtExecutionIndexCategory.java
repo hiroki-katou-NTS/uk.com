@@ -18,27 +18,22 @@ import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * The Class KfnctExecutionIndexCategory.
+ * The Class KfnmtExecutionIndexCategory.
  * Entity 実行設定のインデックス再構成カテゴリ
  */
 @Entity
-@Table(name="KFNCT_EXEC_INDEX_CAT")
+@Table(name="KFNMT_EXEC_INDEX_CAT")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class KfnctExecutionIndexCategory extends UkJpaEntity implements Serializable {
+public class KfnmtExecutionIndexCategory extends UkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/** The pk. */
 	@EmbeddedId
-	public KfnctExecutionIndexCategoryPk pk;
-	
-//	/** The exclus ver. */
-//	@Version
-//    @Column(name = "EXCLUS_VER")
-//    private int exclusVer;
+	public KfnmtExecutionIndexCategoryPk pk;
     
     /** The Contract Code. */
     @Column(name = "CONTRACT_CD")
