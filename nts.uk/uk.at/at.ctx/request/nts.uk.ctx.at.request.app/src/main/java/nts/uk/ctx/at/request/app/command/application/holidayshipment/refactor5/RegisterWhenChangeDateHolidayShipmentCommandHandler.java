@@ -92,12 +92,12 @@ public class RegisterWhenChangeDateHolidayShipmentCommandHandler {
 		}
 		
 		AbsenceLeaveAppCmd absNew = displayInforWhenStarting.abs; 
+		absNew.changeSourceHoliday = displayInforWhenStarting.abs.application.getAppDate();
 		absNew.application.setAppID(IdentifierUtil.randomUniqueId());
-		absNew.applicationInsert = new ApplicationInsertCmd(absNew.application.toDomain());
-		absNew.changeSourceHoliday = displayInforWhenStarting.abs.application.getAppDate(); 
 		absNew.application.setAppDate(appDate.toString());
 		absNew.application.setOpAppStandardReasonCD(appStandardReasonCD);
 		absNew.application.setOpAppReason(appReason);
+		absNew.applicationInsert = new ApplicationInsertCmd(absNew.application.toDomain());
 	
 		AbsenceLeaveApp abs = absNew.toDomainInsertAbs();
 		Optional<RecruitmentApp> rec = Optional.empty();
