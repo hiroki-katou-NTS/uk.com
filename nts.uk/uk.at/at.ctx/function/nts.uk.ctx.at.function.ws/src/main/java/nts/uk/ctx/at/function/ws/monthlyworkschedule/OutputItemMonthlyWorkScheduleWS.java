@@ -14,10 +14,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.arc.enums.EnumAdaptor;
-import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.function.app.command.monthlyworkschedule.OutputItemMonthlyWorkScheduleCommand;
+import nts.uk.ctx.at.function.app.command.monthlyworkschedule.OutputItemMonthlyWorkScheduleCopyCommand;
+import nts.uk.ctx.at.function.app.command.monthlyworkschedule.OutputItemMonthlyWorkScheduleDeleteCommand;
 import nts.uk.ctx.at.function.app.command.monthlyworkschedule.OutputItemMonthlyWorkScheduleDeleteHandler;
 import nts.uk.ctx.at.function.app.command.monthlyworkschedule.OutputItemMonthlyWorkScheduleSaveHandler;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.PeriodDto;
@@ -27,8 +27,6 @@ import nts.uk.ctx.at.function.app.find.monthlyworkschedule.MonthlyPerformanceDat
 import nts.uk.ctx.at.function.app.find.monthlyworkschedule.MonthlyReturnItemDto;
 import nts.uk.ctx.at.function.app.find.monthlyworkschedule.OutputItemMonthlyWorkScheduleDto;
 import nts.uk.ctx.at.function.app.find.monthlyworkschedule.OutputItemMonthlyWorkScheduleFinder;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarkInputContent;
-import nts.uk.ctx.at.function.dom.monthlyworkschedule.PrintSettingRemarksColumn;
 
 /**
  * The Class OutputItemMonthlyWorkScheduleWS.
@@ -69,10 +67,10 @@ public class OutputItemMonthlyWorkScheduleWS extends WebService {
 	 *
 	 * @return the map
 	 */
-	@Path("find")
+	@Path("find/{itemType}")
 	@POST
-	public Map<String, Object> find() {
-		return this.outputItemMonthlyWorkScheduleFinder.findByCid();
+	public Map<String, Object> find(@PathParam("itemType") int itemType) {
+		return this.outputItemMonthlyWorkScheduleFinder.findBySelectionAndCidAndSid(itemType);
 	}
 
 	/**
@@ -80,10 +78,10 @@ public class OutputItemMonthlyWorkScheduleWS extends WebService {
 	 *
 	 * @return the list
 	 */
-	@Path("findall")
+	@Path("findall/{itemType}")
 	@POST
-	public List<OutputItemMonthlyWorkScheduleDto> findAll() {
-		return this.outputItemMonthlyWorkScheduleFinder.findAll();
+	public List<OutputItemMonthlyWorkScheduleDto> findAll(@PathParam("itemType") int itemType) {
+		return this.outputItemMonthlyWorkScheduleFinder.findAll(itemType);
 	}
 
 	/**
@@ -101,24 +99,13 @@ public class OutputItemMonthlyWorkScheduleWS extends WebService {
 	/**
 	 * Delete.
 	 *
-	 * @param code
-	 *            the code
+	 * @param command
+	 *            the command
 	 */
-	@Path("delete/{code}")
+	@Path("delete")
 	@POST
-	public void delete(@PathParam("code") String code) {
-		this.outputItemMonthlyWorkScheduleDeleteHandler.delete(code);
-	}
-
-	/**
-	 * Gets the enum setting print.
-	 *
-	 * @return the enum setting print
-	 */
-	@Path("enumSettingPrint")
-	@POST
-	public List<EnumConstant> getEnumSettingPrint() {
-		return EnumAdaptor.convertToValueNameList(PrintSettingRemarksColumn.class);
+	public void delete(OutputItemMonthlyWorkScheduleDeleteCommand command) {
+		this.outputItemMonthlyWorkScheduleDeleteHandler.handle(command);
 	}
 
 	/**
@@ -132,38 +119,28 @@ public class OutputItemMonthlyWorkScheduleWS extends WebService {
 		return this.outputItemMonthlyWorkScheduleFinder.getFormatMonthlyPerformance();
 	}
 
+
 	/**
-	 * Execute copy.
-	 *
-	 * @param codeCopy
-	 *            the code copy
-	 * @param codeSourceSerivce
-	 *            the code source serivce
-	 * @param lstCommandCopy
-	 *            the lst command copy
-	 * @return the list
+	 * @param command
+	 *            the command
+	 * @return
 	 */
-	@Path("executeCopy/{codeCopy}/{codeSourceSerivce}")
+	@Path("executeCopy")
 	@POST
-	public MonthlyReturnItemDto executeCopy(@PathParam("codeCopy") String codeCopy,
-			@PathParam("codeSourceSerivce") String codeSourceSerivce) {
-		return this.outputItemMonthlyWorkScheduleFinder.executeCopy(codeCopy, codeSourceSerivce);
-	}
-	
-	/**
-	 * Gets the enum remark input content.
-	 *
-	 * @return the enum remark input content
-	 */
-	@Path("enumRemarkInputContent")
-	@POST
-	public List<EnumConstant> getEnumRemarkInputContent(){
-		return EnumAdaptor.convertToValueNameList(RemarkInputContent.class);
+	public MonthlyReturnItemDto executeCopy(OutputItemMonthlyWorkScheduleCopyCommand copy) {
+		return this.outputItemMonthlyWorkScheduleFinder.executeCopy(copy);
 	}
 
 	@Path("get/monthlyPeriod")
 	@POST
 	public PeriodDto getList() {
 		return this.outputItemMonthlyWorkScheduleFinder.getPeriod();
+	}
+
+	@Path("get/freeSettingAuthority")
+	@POST
+	public FreeSettingAuthorityDto getFreeSettingAuthority() {
+		return new FreeSettingAuthorityDto(this.outputItemMonthlyWorkScheduleFinder.checkAuthority());
+		
 	}
 }

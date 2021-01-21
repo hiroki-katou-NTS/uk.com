@@ -1,0 +1,13 @@
+.cmm045-div-table {
+	margin-bottom: 25px;
+	margin-left: 20px;
+}
+
+#content-table {
+	width: 760px;
+	height: 140px;
+}
+
+#content-table tr {
+	border: 1px solid black;
+}

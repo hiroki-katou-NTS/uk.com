@@ -104,7 +104,6 @@ public class OptionalItemHeaderDto implements OptionalItemSetMemento {
 	public void setOptionalItemUsageAtr(OptionalItemUsageAtr optionalItemUsageClassification) {
 		this.usageAtr = optionalItemUsageClassification.value;
 	}
-	
 	/*
 	 * (non-Javadoc)
 	 * 

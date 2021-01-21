@@ -19,7 +19,6 @@ import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.adapter.personnelcostsetting.PersonnelCostSettingAdapter;
 import nts.uk.ctx.at.record.dom.attendanceitem.StoredProcdureProcess;
-import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.CalcDefaultValue;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.CalculationErrorCheckService;
@@ -53,8 +52,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
@@ -326,8 +323,6 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				workType,
 				integrationOfWorkTime,
 				schedule);
-		// ※　エラーアラームチェックのため、日別実績(Work)に保存
-		integrationOfDaily.setDeclareCalcRange(declare.getDeclareCalcRange());
 		
 		ManageReGetClass scheduleManageReGetClass = new ManageReGetClass(
 				schedule.get().getCalculationRangeOfOneDay(),
@@ -798,7 +793,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		/** 休憩時間帯取得 */
 		val correcedBreakTime = BreakTimeSheetGetter.get(createBreakRequire(workTime, workType), personDailySetting, integrationOfDaily, true);
 		
-		integrationOfDaily.setBreakTime(Optional.of(new BreakTimeOfDailyAttd(correcedBreakTime)));
+		integrationOfDaily.setBreakTime(new BreakTimeOfDailyAttd(correcedBreakTime));
 		
 		return integrationOfDaily;
 	}
@@ -1321,7 +1316,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 		// 申告エラーチェック
 		if (declareSet.checkError(declareCalcRange.isHolidayWork(), declareCalcRange.getAttdLeave())) return result;
 		// 残業休出枠設定を調整する
-		declareSet.adjustOvertimeHolidayWorkFrameSet(itgOfWorkTimeForDeclare, declareCalcRange, workType);
+		declareSet.adjustOvertimeHolidayWorkFrameSet(
+				itgOfWorkTimeForDeclare, itgOfDailyForDeclare.getCalAttr(), declareCalcRange, workType);
 		// 出退勤時刻を申告処理用に調整する
 		if (itgOfDailyForDeclare.getAttendanceLeave().isPresent()){
 			declareCalcRange.adjustAttdLeaveClock(

@@ -76,14 +76,15 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;
 	
-	@Inject
-	private CalculationErrorCheckService calculationErrorCheckService;
-	
 	@Inject 
 	private RecordDomRequireService requireService;
 	
 	@Inject
 	private FactoryManagePerPersonDailySet factoryManagePerPersonDailySet;
+
+	/** 申告エラーチェックサービス */
+	@Inject
+	private DeclareErrorCheckService declareErrorCheckService;
 	
 	@Override
 	public IntegrationOfDaily errorCheck(IntegrationOfDaily integrationOfDaily, ManagePerPersonDailySet personCommonSetting, ManagePerCompanySet master) {
@@ -282,7 +283,7 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 				return dailyRecordCreateErrorAlermService.doubleStampAlgorithm(integrationOfDaily);
 			//申告
 			case DECLARE:
-				return integrationOfDaily.getDeclareErrorList(fixedErrorAlarmCode.get());
+				return this.declareErrorCheckService.errorCheck(integrationOfDaily, fixedErrorAlarmCode.get());
 			//それ以外ルート
 			default:
 				return Collections.emptyList();

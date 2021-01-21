@@ -161,11 +161,13 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		//日別修正の出退勤時刻に応じて休憩を消したり入れたりする処理の為。
 		List<TimeSheetOfDeductionItem> breakTimeFromMaster = new ArrayList<>();
 		if (OOtsukaMode) {
-			breakTimeFromMaster = WithinWorkTimeSheet.devideBreakTimeSheetForOOtsuka(
-					integrationOfWorkTime.getBreakTimeList(todayWorkType).stream()
-							.map(lstTimeZone -> TimeSheetOfDeductionItem.createFromDeductionTimeSheet(lstTimeZone))
-							.collect(Collectors.toList()),
-					integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks());
+			if (integrationOfDaily.getAttendanceLeave().isPresent()){
+				breakTimeFromMaster = WithinWorkTimeSheet.devideBreakTimeSheetForOOtsuka(
+						integrationOfWorkTime.getBreakTimeList(todayWorkType).stream()
+								.map(lstTimeZone -> TimeSheetOfDeductionItem.createFromDeductionTimeSheet(lstTimeZone))
+								.collect(Collectors.toList()),
+						integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks());
+			}
 		}
 		
 		//遅刻判断時刻を求める

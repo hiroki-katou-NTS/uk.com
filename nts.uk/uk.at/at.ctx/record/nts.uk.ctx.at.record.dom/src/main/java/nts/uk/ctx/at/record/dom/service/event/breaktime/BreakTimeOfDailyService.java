@@ -71,8 +71,7 @@ public class BreakTimeOfDailyService {
 			return EventHandleResult.withResult(EventHandleAction.ABORT, working);
 		}
 
-		BreakTimeOfDailyAttd dailyAttd = working.getBreakTime().orElse(null);
-
+		BreakTimeOfDailyAttd dailyAttd = working.getBreakTime();
 		BreakTimeOfDailyPerformance dailyPerformance = new BreakTimeOfDailyPerformance(working.getEmployeeId(), working.getYmd(), dailyAttd);
 		BreakTimeOfDailyPerformance breakTimeRecord = getWithDefaul(Optional.ofNullable(dailyPerformance),
 							() -> getBreakTimeDefault(wi.getEmployeeId(), wi.getYmd()));
@@ -104,7 +103,7 @@ public class BreakTimeOfDailyService {
 			DailyRecordToAttendanceItemConverter converter, List<ItemValue> beforeCorrectItemValues,
 			BreakTimeOfDailyPerformance breakTime) {
 		/** 「日別実績の休憩時間帯」を更新する */
-		working.setBreakTime(Optional.of(breakTime.getTimeZone()));
+		working.setBreakTime(breakTime.getTimeZone());
 		
 		List<ItemValue> afterCorrectItemValues = converter.withBreakTime(breakTime.getTimeZone()).convert(CorrectEventConts.BREAK_TIME_ITEMS);
 		
@@ -132,7 +131,7 @@ public class BreakTimeOfDailyService {
 			return updateBreakTime(working, directToDB, converter, beforeCorrectItemValues, deleted);
 		}
 		
-		working.setBreakTime(Optional.empty());
+		working.setBreakTime(new BreakTimeOfDailyAttd());
 		working.getEditState().removeIf(es -> canBeUpdatedItemIds.contains(es.getAttendanceItemId()));
 		
 		/** 「日別実績の休憩時間帯」を削除する */
@@ -188,7 +187,7 @@ public class BreakTimeOfDailyService {
 			
 			converter.merge(ipByHandValues);
 
-			return new BreakTimeOfDailyPerformance(empId, targetDate, converter.breakTime().get());
+			return new BreakTimeOfDailyPerformance(empId, targetDate, converter.breakTime());
 		}
 
 		return breakTime;

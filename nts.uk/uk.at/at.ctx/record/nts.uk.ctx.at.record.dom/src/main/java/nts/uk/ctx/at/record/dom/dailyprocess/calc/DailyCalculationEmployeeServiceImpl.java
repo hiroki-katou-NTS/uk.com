@@ -36,6 +36,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.checkproce
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.checkprocessed.OutputCheckProcessed;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.checkprocessed.StatusOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.IntegrationOfDailyGetter;
+import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.organization.EmploymentHistoryImported;
 import nts.uk.ctx.at.record.dom.organization.adapter.EmploymentAdapter;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
@@ -56,6 +57,7 @@ import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagementRep
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.CommonCompanySettingForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
@@ -311,6 +313,16 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 					value.getYmd());
 			//計算から呼ぶ場合はtrueでいいらしい。保科⇒thanh
 			this.dailyRecordAdUpService.adUpEmpError(value.getEmployeeError(), Arrays.asList(pair), true);			
+		}
+		
+		// 編集状態更新
+		if (value.getEditState().size() > 0){
+			List<EditStateOfDailyPerformance> editStateList = new ArrayList<>();
+			for (EditStateOfDailyAttd editState : value.getEditState()){
+				editStateList.add(new EditStateOfDailyPerformance(value.getEmployeeId(), value.getYmd(), editState));
+			}
+			this.dailyRecordAdUpService.adUpEditState(editStateList);
+			this.dailyRecordAdUpService.clearExcludeEditState(editStateList);
 		}
 	}
 	

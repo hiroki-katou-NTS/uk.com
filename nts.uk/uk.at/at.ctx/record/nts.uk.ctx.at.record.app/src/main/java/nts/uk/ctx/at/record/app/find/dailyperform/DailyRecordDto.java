@@ -35,6 +35,7 @@ import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.AttendanceTimeB
 import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.OuenWorkTimeOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.TimeLeavingOfDailyPerformanceDto;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.AttendanceItemCommon;
@@ -172,7 +173,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 				dto.setErrors(domain.getEmployeeError().stream().map(x -> EmployeeDailyPerErrorDto.getDto(x)).collect(Collectors.toList()));
 			}
 			dto.setOutingTime(domain.getOutingTime().map(o -> OutingTimeOfDailyPerformanceDto.getDto(employeeId,ymd,o)));
-			dto.setBreakTime(domain.getBreakTime().map(b -> BreakTimeDailyDto.getDto(employeeId,ymd,b)));
+			dto.setBreakTime(Optional.of(BreakTimeDailyDto.getDto(employeeId,ymd, domain.getBreakTime())));
 			dto.setAttendanceTime(domain.getAttendanceTimeOfDailyPerformance().map(a -> AttendanceTimeDailyPerformDto.getDto(employeeId,ymd,a)));
 //			dto.setAttendanceTimeByWork(domain.getAttendancetimeByWork().map(a -> AttendanceTimeByWorkOfDailyDto.getDto(a)));
 			dto.setTimeLeaving(domain.getAttendanceLeave().map(a -> TimeLeavingOfDailyPerformanceDto.getDto(employeeId,ymd,a)));
@@ -209,7 +210,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 				dto.setErrors(domain.getEmployeeError().stream().map(x -> EmployeeDailyPerErrorDto.getDto(x)).collect(Collectors.toList()));
 			}
 			dto.setOutingTime(domain.getOutingTime().map(o -> OutingTimeOfDailyPerformanceDto.getDto(employeeId,ymd,o)));
-			dto.setBreakTime(domain.getBreakTime().map(b -> BreakTimeDailyDto.getDto(employeeId,ymd,b)));
+			dto.setBreakTime(Optional.of(BreakTimeDailyDto.getDto(employeeId,ymd, domain.getBreakTime())));
 			dto.setAttendanceTime(domain.getAttendanceTimeOfDailyPerformance().map(a -> AttendanceTimeDailyPerformDto.getDto(employeeId,ymd,a)));
 //			dto.setAttendanceTimeByWork(domain.getAttendancetimeByWork().map(a -> AttendanceTimeByWorkOfDailyDto.getDto(a)));
 			dto.setTimeLeaving(domain.getAttendanceLeave().map(a -> TimeLeavingOfDailyPerformanceDto.getDto(employeeId,ymd,a)));
@@ -442,7 +443,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 				this.pcLogInfo.map(pc -> pc.toDomain(employeeId, date)),
 				this.errors == null ? new ArrayList<>() : this.errors.stream().map(x -> x.toDomain(employeeId, date)).collect(Collectors.toList()),
 				this.outingTime.map(ot -> ot.toDomain(employeeId, date)),
-				this.breakTime.map(bt -> bt.toDomain(employeeId, date)),
+				this.breakTime.map(bt -> bt.toDomain(employeeId, date)).orElse(new BreakTimeOfDailyAttd()),
 				this.attendanceTime.map(at -> at.toDomain(employeeId, date)),
 				this.timeLeaving.map(tl -> tl.toDomain(employeeId, date)),
 				this.shortWorkTime.map(swt -> swt.toDomain(employeeId, date)),

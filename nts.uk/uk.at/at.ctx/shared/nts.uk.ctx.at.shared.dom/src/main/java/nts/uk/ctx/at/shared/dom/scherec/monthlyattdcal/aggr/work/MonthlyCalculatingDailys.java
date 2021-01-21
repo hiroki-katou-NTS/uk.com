@@ -20,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.WithinStatu
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.PCLogOnInfoOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
@@ -101,7 +102,7 @@ public class MonthlyCalculatingDailys {
 			return new IntegrationOfDaily(sid, wi.getKey(), wi.getValue(), 
 					null, affiInfoOfDailyMap.get(wi.getKey()), 
 					Optional.ofNullable(pcLogonInfoMap.get(wi.getKey())), new ArrayList<>(), 
-					Optional.empty(), Optional.empty(), 
+					Optional.empty(), new BreakTimeOfDailyAttd(new ArrayList<>()), 
 					Optional.ofNullable(attendanceTimeOfDailyMap.get(wi.getKey())), 
 					Optional.ofNullable(timeLeaveOfDailyMap.get(wi.getKey())), Optional.empty(), 
 					Optional.ofNullable(specificDateAttrOfDailyMap.get(wi.getKey())), 
