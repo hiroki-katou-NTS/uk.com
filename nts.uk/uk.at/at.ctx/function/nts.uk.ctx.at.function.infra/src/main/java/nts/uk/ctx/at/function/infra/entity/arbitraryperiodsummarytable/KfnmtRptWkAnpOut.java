@@ -2,33 +2,32 @@ package nts.uk.ctx.at.function.infra.entity.arbitraryperiodsummarytable;
 
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.arbitraryperiodsummarytable.OutputSettingOfArbitrary;
-import nts.uk.ctx.at.function.dom.workledgeroutputitem.WorkLedgerOutputItem;
-import nts.uk.ctx.at.function.infra.entity.outputitemofworkledger.KfnmtRptRecDispCont;
-import nts.uk.ctx.at.function.infra.entity.outputitemofworkledger.KfnmtRptRecDispContPk;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
+/**
+ * 任意期間集計表の出力勤怠項目
+ */
 @Entity
 @Table(name = "KFNMT_RPT_WK_ANP_OUT")
-@AllArgsConstructor
 @NoArgsConstructor
-@Getter
+@AllArgsConstructor
 public class KfnmtRptWkAnpOut extends UkJpaEntity implements Serializable {
 
-    @EmbeddedId
-    public KfnmtRptWkAnpOutatdPk pk;
+    public static final long serialVersionUID = 1L;
+
+    /**
+     * 設定ID -> 	任意期間集計表の出力設定.設定ID
+     */
+    @Id
+    @Column(name = "LAYOUT_ID")
+    public String layOutId;
+
     /**
      * 契約コード
      */
@@ -42,23 +41,44 @@ public class KfnmtRptWkAnpOut extends UkJpaEntity implements Serializable {
     public String companyId;
 
     /**
-     * 	勤怠項目ID -> 印刷する勤怠項目.勤怠項目ID
+     * 設定コード : 任意期間集計表の出力設定.設定表示コード
      */
-    @Column(name = "ATD_ITEM_ID")
-    public int atdItemId;
+    @Column(name = "EXPORT_CD")
+    public int exportCd;
 
+    /**
+     * 名称 : 任意期間集計表の出力設定.	設定名称
+     */
+    @Column(name = "NAME")
+    public String name;
+
+
+    /**
+     * 社員ID : 任意期間集計表の出力設定.社員ID
+     */
+    @Column(name = "SID")
+    public String sid;
+
+    /**
+     * 定型自由区分: 任意期間集計表の出力設定.定型自由区分
+     */
+    @Column(name = "SETTING_TYPE")
+    public int settingType;
 
     @Override
     protected Object getKey() {
-        return pk;
+        return layOutId;
     }
 
-    public static List<KfnmtRptWkAnpOut> fromDomain(OutputSettingOfArbitrary outputSetting) {
-        return outputSetting.getOutputItemList().stream().map(e -> new KfnmtRptWkAnpOut(
-                new KfnmtRptWkAnpOutatdPk(outputSetting.getSettingId(), e.getRanking()),
+    public static KfnmtRptWkAnpOut fromDomain(OutputSettingOfArbitrary domain, String cid){
+        return new KfnmtRptWkAnpOut(
+                domain.getSettingId(),
                 AppContexts.user().contractCode(),
-                AppContexts.user().companyId(),
-                e.getAttendanceId()
-        )).collect(Collectors.toCollection(ArrayList::new));
+                cid,
+                Integer.parseInt(domain.getCode().v()),
+                domain.getName().v(),
+                domain.getEmployeeId(),
+                domain.getStandardFreeClassification().value
+        );
     }
 }
