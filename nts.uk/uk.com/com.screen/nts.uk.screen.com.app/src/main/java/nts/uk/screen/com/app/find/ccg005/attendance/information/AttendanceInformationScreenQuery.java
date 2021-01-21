@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
@@ -19,6 +19,10 @@ import nts.uk.ctx.bs.person.dom.person.personal.avatar.AvatarRepository;
 import nts.uk.ctx.bs.person.dom.person.personal.avatar.UserAvatar;
 import nts.uk.ctx.health.dom.emoji.employee.EmployeeEmojiState;
 import nts.uk.ctx.health.dom.emoji.employee.EmployeeEmojiStateRepository;
+import nts.uk.ctx.office.dom.dto.DailyWorkDto;
+import nts.uk.ctx.office.dom.dto.TimeLeavingOfDailyPerformanceDto;
+import nts.uk.ctx.office.dom.dto.WorkInfoOfDailyPerformanceDto;
+import nts.uk.ctx.office.dom.dto.WorkTypeDto;
 import nts.uk.ctx.office.dom.goout.GoOutEmployeeInformation;
 import nts.uk.ctx.office.dom.goout.GoOutEmployeeInformationRepository;
 import nts.uk.ctx.office.dom.status.ActivityStatus;
@@ -28,7 +32,10 @@ import nts.uk.ctx.office.dom.status.service.AttendanceStatusJudgmentServiceRequi
 import nts.uk.query.pub.ccg005.comment.CommentQueryExport;
 import nts.uk.query.pub.ccg005.comment.CommentQueryPub;
 import nts.uk.query.pub.ccg005.work.information.WorkInformationQueryPub;
-import nts.uk.query.pub.ccg005.work.information.dto.EmployeeDailyPerErrorDto;
+import nts.uk.query.pub.ccg005.work.information.dto.EmployeeDailyPerErrorExport;
+import nts.uk.query.pub.ccg005.work.information.dto.TimeLeavingOfDailyPerformanceExport;
+import nts.uk.query.pub.ccg005.work.information.dto.WorkInfoOfDailyPerformanceExport;
+import nts.uk.query.pub.ccg005.work.information.dto.WorkTypeExport;
 import nts.uk.query.pub.ccg005.work.information.EmployeeWorkInformationExport;
 import nts.uk.screen.com.app.find.ccg005.attendance.information.dto.ApplicationDto;
 import nts.uk.screen.com.app.find.ccg005.attendance.information.dto.AttendanceDetailDto;
@@ -41,9 +48,8 @@ import nts.uk.shr.com.i18n.TextResource;
 /*
  * UKDesign.UniversalK.共通.CCG_メニュートップページ.CCG005_ミニ在席照会.A:ミニ在席照会.メニュー別OCD.在席情報を取得.在席情報を取得
  */
+@Stateless
 public class AttendanceInformationScreenQuery {
-
-//	private WorkInformationQuery workInforQuery;
 
 	@Inject
 	private ApplicationRepository appRepo;
@@ -112,6 +118,7 @@ public class AttendanceInformationScreenQuery {
 			Optional<EmployeeWorkInformationExport> workInformation = workInfoList.stream()
 					.filter(wi -> wi.getSid().equalsIgnoreCase(sid)).findFirst();
 			AttendanceDetailDto attendanceDetailDto = AttendanceDetailDto.builder().build();
+			ActivityStatusDto activityStatusDto = ActivityStatusDto.builder().build();
 			workInformation.ifPresent(workInfo -> {
 				// １．勤務区分
 				Integer workDivision = null;
@@ -199,9 +206,9 @@ public class AttendanceInformationScreenQuery {
 				}
 
 				// ６．アラーム色
-				List<EmployeeDailyPerErrorDto> list007 = workInfo.getEmployeeDailyPerErrorDtos().stream()
+				List<EmployeeDailyPerErrorExport> list007 = workInfo.getEmployeeDailyPerErrorDtos().stream()
 						.filter(i -> i.getErrorAlarmWorkRecordCode().equalsIgnoreCase("007")).collect(Collectors.toList());
-				List<EmployeeDailyPerErrorDto> list008 = workInfo.getEmployeeDailyPerErrorDtos().stream()
+				List<EmployeeDailyPerErrorExport> list008 = workInfo.getEmployeeDailyPerErrorDtos().stream()
 						.filter(i -> i.getErrorAlarmWorkRecordCode().equalsIgnoreCase("008")).collect(Collectors.toList());
 				if (workInfo.getEmployeeDailyPerErrorDtos().size() > 0 && list007.size() > 0) {
 					checkInColor = DisplayColor.ALARM.value;
@@ -217,16 +224,20 @@ public class AttendanceInformationScreenQuery {
 				attendanceDetailDto.setCheckInColor(checkInColor);
 				attendanceDetailDto.setCheckInTime(checkInTime);
 				attendanceDetailDto.setWorkDivision(workDivision);
+				
+				// 2: 在席のステータスの判断(Require, 社員ID, 年月日, 日別実績の勤務情報, 日別実績の出退勤, 勤務種類):
+				Optional<ActivityStatus> activityStatus = AttendanceStatusJudgmentService.getActivityStatus(
+						rq, sid, baseDate, 
+						this.getWorkInfoOfDailyPerformanceDto(workInfo.getWorkPerformanceDto()),
+						this.getTimeLeavingOfDailyPerformanceDto(workInfo.getTimeLeavingOfDailyPerformanceDto()),
+						this.getWorkTypeDto(workInfo.getWorkTypeDto())
+						);
+				activityStatus.ifPresent(domain -> domain.setMemento(activityStatusDto));
 			});
 			// UserAvatarDto TODO
 			Optional<UserAvatar> avatarDomain = avatarList.stream().filter(ava -> ava.getPersonalId() == sid).findAny();
 			UserAvatarDto avatarDto = UserAvatarDto.builder().build();
-			
-			// TODO 2: 在席のステータスの判断(Require, 社員ID, 年月日, 日別実績の勤務情報, 日別実績の出退勤, 勤務種類):
-			Optional<ActivityStatus> activityStatus = AttendanceStatusJudgmentService.getActivityStatus(rq, sid, baseDate);
-			ActivityStatusDto activityStatusDto = ActivityStatusDto.builder().build();
-			activityStatus.ifPresent(domain -> domain.setMemento(activityStatusDto));
-			
+
 			// commentDto
 			CommentQueryExport commentExp = commentData.get(sid);
 			EmployeeCommentInformationDto commentDto = EmployeeCommentInformationDto.builder()
@@ -255,6 +266,37 @@ public class AttendanceInformationScreenQuery {
 					.emojiDto(emojiDto)
 					.build();
 		}).collect(Collectors.toList());
+	}
+	
+	private Optional<WorkInfoOfDailyPerformanceDto> getWorkInfoOfDailyPerformanceDto(WorkInfoOfDailyPerformanceExport pubExport) {
+		return Optional.ofNullable(WorkInfoOfDailyPerformanceDto.builder()
+				.sid(pubExport.getSid())
+				.ymd(pubExport.getYmd())
+				.goStraightAtr(pubExport.getGoStraightAtr())
+				.backStraightAtr(pubExport.getBackStraightAtr())
+				.build());
+	}
+
+	private Optional<TimeLeavingOfDailyPerformanceDto> getTimeLeavingOfDailyPerformanceDto(TimeLeavingOfDailyPerformanceExport pubExport) {
+		return Optional.ofNullable(TimeLeavingOfDailyPerformanceDto.builder()
+				.ymd(pubExport.getYmd())
+				.sid(pubExport.getSid())
+				.attendanceTime(pubExport.getAttendanceTime())
+				.leaveTime(pubExport.getLeaveTime())
+				.build());
+	}
+
+	private Optional<WorkTypeDto> getWorkTypeDto(WorkTypeExport pubExport) {
+		return Optional.ofNullable(WorkTypeDto.builder()
+				.dailyWork(DailyWorkDto.builder()
+						.workTypeUnit(pubExport.getDailyWork().getWorkTypeUnit())
+						.oneDay(pubExport.getDailyWork().getOneDay())
+						.morning(pubExport.getDailyWork().getMorning())
+						.afternoon(pubExport.getDailyWork().getAfternoon())
+						.build())
+				.code(pubExport.getCode())
+				.displayName(pubExport.getDisplayName())
+				.build());
 	}
 
 	// 勤務区分

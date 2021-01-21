@@ -2,18 +2,21 @@ package nts.uk.ctx.office.dom.favorite;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
-
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.Test;
-
+import org.junit.runner.RunWith;
 import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
+import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.office.dom.favorite.FavoriteSpecify.Require;
+import nts.uk.ctx.office.dom.favorite.adapter.WorkplaceInforImport;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@RunWith(JMockit.class)
 public class FavoriteSpecifyTest {
 	
 	@Injectable
@@ -27,7 +30,7 @@ public class FavoriteSpecifyTest {
 		// when
 		FavoriteSpecify domain = FavoriteSpecify.createFromMemento(mockDto);
 
-		// then
+		// then 
 		NtsAssert.invokeGetters(domain);
 	}
 
@@ -36,8 +39,7 @@ public class FavoriteSpecifyTest {
 	 * domain sẽ có 3 hàm phát sinh (createFromMemento, getMemento, setMemento)
 	 * Chính vì thế, để đảm bảo coverage, chúng tôi phải test cả 3 hàm này.
 	 * 
-	 * get /set
-	 * mementoメカニズムに従ってドメインを設計しているため、ドメインには3つの生成関数（createFromMemento、getMemento、setMemento）があります。
+	 * get /set mementoメカニズムに従ってドメインを設計しているため、ドメインには3つの生成関数（createFromMemento、getMemento、setMemento）があります。
 	 * 0カバレッジのために、3つの機能すべてをテストする必要があります。
 	 */
 	@Test
@@ -57,16 +59,10 @@ public class FavoriteSpecifyTest {
 	@Test
 	public void passingTargetInfoNameTest1() {
 		//given
-		FavoriteSpecifyDto mockDto = new FavoriteSpecifyDto("favoriteName", "creatorId", null, 0, // 0 is AFFILIATION_WORKPLACE
+		FavoriteSpecifyDto mockDto = new FavoriteSpecifyDto("favoriteName", "creatorId", null, 1, // 1 is AFFILIATION_WORKPLACE
 				Collections.emptyList(), 0);
 		FavoriteSpecify domain = FavoriteSpecify.createFromMemento(mockDto);
-		new Expectations() {
-			{
-				require.getWrkspDispName(Arrays.asList("string"), GeneralDate.today());
-				result = Collections.emptyMap();
-			}
-		};
-		
+
 		//when
 		val list = domain.passingTargetInfoName(require);
 		
@@ -78,13 +74,24 @@ public class FavoriteSpecifyTest {
 	@Test
 	public void passingTargetInfoNameTest2() {
 		//given
-		FavoriteSpecifyDto mockDto = new FavoriteSpecifyDto("favoriteName", "creatorId", null, 1, //1 is WORKPLACE
-				Collections.emptyList(), 0);
+		FavoriteSpecifyDto mockDto = new FavoriteSpecifyDto("favoriteName", "creatorId", null, 0, //0 is WORKPLACE
+				Arrays.asList("string"), 0);
 		FavoriteSpecify domain = FavoriteSpecify.createFromMemento(mockDto);
+		WorkplaceInforImport info = new WorkplaceInforImport(
+				"workplaceId",
+				"hierarchyCode",
+				"workplaceCode",
+				"workplaceName",
+				"workplaceDisplayName",
+				"workplaceGenericName",
+				"workplaceExternalCode"
+				);
+		Map<String, WorkplaceInforImport> resultMap = new HashMap<>();
+		resultMap.put("key",info);
 		new Expectations() {
 			{
-				require.getWrkspDispName(Arrays.asList("string"), GeneralDate.today());
-				result = any;
+				require.getWrkspDispName(Arrays.asList("string"), (GeneralDate) any);
+				result = resultMap;
 			}
 		};
 		
@@ -93,26 +100,5 @@ public class FavoriteSpecifyTest {
 		
 		//then
 		assertThat(list).isNotEmpty();
-	}
-
-	//targetSelection = none of those
-	@Test
-	public void passingTargetInfoNameTest3() {
-		//given 
-		FavoriteSpecifyDto mockDto = new FavoriteSpecifyDto("favoriteName", "creatorId", null, 2, //2 is none of those
-				Collections.emptyList(), 0);
-		FavoriteSpecify domain = FavoriteSpecify.createFromMemento(mockDto);
-		new Expectations() {
-			{
-				require.getWrkspDispName(Arrays.asList("string"), GeneralDate.today());
-				result = Collections.emptyMap();
-			}
-		};
-		
-		//when
-		List<String> list = domain.passingTargetInfoName(require);
-		
-		//then
-		assertThat(list).isEmpty();
 	}
 }

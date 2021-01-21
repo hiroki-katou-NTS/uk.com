@@ -8,10 +8,10 @@ import lombok.Data;
  */
 @Data
 @Builder
-public class WorkTypeDto {
+public class WorkTypeExport {
 
 	//1日の勤務
-	private DailyWorkDto dailyWork;
+	private DailyWorkExport dailyWork;
 	
 	//コード
 	private String code;

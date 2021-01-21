@@ -11,7 +11,7 @@ import nts.arc.time.GeneralDate;
 
 @Builder
 @Data
-public class TimeLeavingOfDailyPerformanceDto {
+public class TimeLeavingOfDailyPerformanceExport {
 	
 	//年月日
 	private GeneralDate ymd;

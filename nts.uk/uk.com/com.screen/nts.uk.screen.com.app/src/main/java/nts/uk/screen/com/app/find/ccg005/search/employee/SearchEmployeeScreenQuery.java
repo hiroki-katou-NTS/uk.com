@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -26,6 +27,7 @@ import nts.uk.shr.com.context.AppContexts;
 /*
  * UKDesign.UniversalK.共通.CCG_メニュートップページ.CCG005_ミニ在席照会.A:ミニ在席照会.メニュー別OCD.社員を検索する.社員を検索する
  */
+@Stateless
 public class SearchEmployeeScreenQuery {
 
 	@Inject
@@ -49,6 +51,7 @@ public class SearchEmployeeScreenQuery {
 	@Inject
 	private PersonalInformationAdapter personalInformationAdapter;
 	
+	@Inject
 	private AttendanceInformationScreenQuery attendanceScreenQuery;
 	
 	public SearchEmployeeDto searchForEmployee(String keyWorks, GeneralDate baseDate, boolean emojiUsage) {

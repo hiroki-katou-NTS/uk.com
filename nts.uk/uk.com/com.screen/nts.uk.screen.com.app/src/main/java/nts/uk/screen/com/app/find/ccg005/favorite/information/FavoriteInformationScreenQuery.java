@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.office.dom.favorite.FavoriteSpecifyRepository;
@@ -14,6 +15,7 @@ import nts.uk.shr.com.context.AppContexts;
 /*
  * UKDesign.UniversalK.共通.CCG_メニュートップページ.CCG005_ミニ在席照会.D：お気に入り.メニュー別OCD.お気に入り情報を取得.お気に入り情報を取得
  */
+@Stateless
 public class FavoriteInformationScreenQuery {
 
 	@Inject

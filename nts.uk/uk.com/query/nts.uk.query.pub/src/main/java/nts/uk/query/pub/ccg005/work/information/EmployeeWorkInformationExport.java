@@ -4,11 +4,11 @@ import java.util.List;
 
 import lombok.Builder;
 import lombok.Data;
-import nts.uk.query.pub.ccg005.work.information.dto.EmployeeDailyPerErrorDto;
-import nts.uk.query.pub.ccg005.work.information.dto.TimeLeavingOfDailyPerformanceDto;
-import nts.uk.query.pub.ccg005.work.information.dto.WorkInfoOfDailyPerformanceDto;
-import nts.uk.query.pub.ccg005.work.information.dto.WorkScheduleDto;
-import nts.uk.query.pub.ccg005.work.information.dto.WorkTypeDto;
+import nts.uk.query.pub.ccg005.work.information.dto.EmployeeDailyPerErrorExport;
+import nts.uk.query.pub.ccg005.work.information.dto.TimeLeavingOfDailyPerformanceExport;
+import nts.uk.query.pub.ccg005.work.information.dto.WorkInfoOfDailyPerformanceExport;
+import nts.uk.query.pub.ccg005.work.information.dto.WorkScheduleExport;
+import nts.uk.query.pub.ccg005.work.information.dto.WorkTypeExport;
 
 /*
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.オフィス支援.在席照会.ステータス.勤務情報の取得.社員の勤務情報
@@ -21,17 +21,17 @@ public class EmployeeWorkInformationExport {
 	private String sid;
 	
 	//勤務予定
-	private WorkScheduleDto workScheduleDto;
+	private WorkScheduleExport workScheduleDto;
 	
 	//勤務種類
-	private WorkTypeDto workTypeDto;
+	private WorkTypeExport workTypeDto;
 	
 	//日別実績の出退勤
-	private TimeLeavingOfDailyPerformanceDto timeLeavingOfDailyPerformanceDto;
+	private TimeLeavingOfDailyPerformanceExport timeLeavingOfDailyPerformanceDto;
 	
 	//日別実績の勤務情報
-	private WorkInfoOfDailyPerformanceDto workPerformanceDto;
+	private WorkInfoOfDailyPerformanceExport workPerformanceDto;
 	
 	//社員の日別実績エラー一覧
-	private List<EmployeeDailyPerErrorDto> employeeDailyPerErrorDtos;
+	private List<EmployeeDailyPerErrorExport> employeeDailyPerErrorDtos;
 }

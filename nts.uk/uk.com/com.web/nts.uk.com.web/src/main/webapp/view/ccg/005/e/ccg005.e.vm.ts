@@ -2,6 +2,13 @@
 
 module nts.uk.at.view.ccg005.e.screenModel {
 
+  const API = {
+    getDisplayAttendanceData: "screen/com/ccg005/get-display-attendance-data",
+    getAttendanceInformation: "screen/com/ccg005/get-attendance-information",
+    getDisplayInfoAfterSelect: "screen/com/ccg005/get-information-after-select",
+    searchForEmployee: "screen/com/ccg005/get-employee-search",
+    getGoOutInformation: "screen/com/ccg005/get-go-out-information"
+  };
   @bean()
   export class ViewModel extends ko.ViewModel {
     goOutDate: KnockoutObservable<string> = ko.observable(moment().utc().format("YYYY/MM/DD"));
@@ -11,6 +18,13 @@ module nts.uk.at.view.ccg005.e.screenModel {
     sid: KnockoutObservable<string> = ko.observable();
     employeeName: KnockoutObservable<string> = ko.observable("Dong Den");
     
+    created() {
+      const vm = this;
+      vm.$ajax(API.getDisplayAttendanceData).then((data) => {
+        console.log(data);
+      });
+    }
+
     public closeDialog() {
       const vm = this;
       vm.$window.close();

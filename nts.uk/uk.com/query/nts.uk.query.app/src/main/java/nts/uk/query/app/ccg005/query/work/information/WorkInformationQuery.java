@@ -3,6 +3,8 @@ package nts.uk.query.app.ccg005.query.work.information;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -23,6 +25,7 @@ import nts.uk.ctx.office.dom.dto.WorkTypeDto;
 /*
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.オフィス支援.在席照会.ステータス.勤務情報の取得.勤務情報の取得
  */
+@Stateless
 public class WorkInformationQuery {
 
 	@Inject

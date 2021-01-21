@@ -3,6 +3,7 @@ package nts.uk.screen.com.app.find.ccg005.display.information;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -27,6 +28,7 @@ import nts.uk.shr.com.context.AppContexts;
 /*
  * UKDesign.UniversalK.共通.CCG_メニュートップページ.CCG005_ミニ在席照会.A:ミニ在席照会.メニュー別OCD.選択した後の表示情報を取得
  */
+@Stateless
 public class DisplayInformationScreenQuery {
 
 	@Inject
@@ -56,6 +58,7 @@ public class DisplayInformationScreenQuery {
 	@Inject
 	private PersonalInformationAdapter personalInformationAdapter;
 	
+	@Inject
 	private AttendanceInformationScreenQuery attendanceScreenQuery;
 
 	public DisplayInformationDto getDisplayInfoAfterSelect(List<String> wkspIds, GeneralDate baseDate, boolean emojiUsage) {
