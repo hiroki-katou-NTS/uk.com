@@ -228,27 +228,27 @@ public class BpsmtContactAddrPs extends UkJpaEntity implements PersonalContact.M
             case 1:
                 this.address1 = otherContact.getAddress().v();
                 isDisplay = otherContact.getIsDisplay().orElse(null);
-                this.isDisplay1 = isDisplay == null ? null : isDisplay ? 1 : 0;
+                this.isDisplay1 = isDisplay == null ? null : (isDisplay ? 1 : 0);
                 return true;
             case 2:
                 this.address2 = otherContact.getAddress().v();
                 isDisplay = otherContact.getIsDisplay().orElse(null);
-                this.isDisplay2 = isDisplay ? 1 : 0;
+                this.isDisplay2 = isDisplay == null ? null : (isDisplay ? 1 : 0);
                 return true;
             case 3:
                 this.address3 = otherContact.getAddress().v();
                 isDisplay = otherContact.getIsDisplay().orElse(null);
-                this.isDisplay3 = isDisplay ? 1 : 0;
+                this.isDisplay3 = isDisplay == null ? null : (isDisplay ? 1 : 0);
                 return true;
             case 4:
                 this.address4 = otherContact.getAddress().v();
                 isDisplay = otherContact.getIsDisplay().orElse(null);
-                this.isDisplay4 = isDisplay ? 1 : 0;
+                this.isDisplay4 = isDisplay == null ? null : (isDisplay ? 1 : 0);
                 return true;
             case 5:
                 this.address5 = otherContact.getAddress().v();
                 isDisplay = otherContact.getIsDisplay().orElse(null);
-                this.isDisplay5 = isDisplay ? 1 : 0;
+                this.isDisplay5 = isDisplay == null ? null : (isDisplay ? 1 : 0);
                 return true;
             default:
                 return false;
