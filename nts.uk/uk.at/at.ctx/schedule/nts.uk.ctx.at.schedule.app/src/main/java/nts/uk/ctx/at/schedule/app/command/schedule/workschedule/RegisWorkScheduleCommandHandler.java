@@ -17,7 +17,6 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import lombok.AllArgsConstructor;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
@@ -71,7 +70,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class RegisWorkScheduleCommandHandler extends CommandHandlerWithResult<List<WorkScheduleSaveCommand>, ResultRegisWorkSchedule>{
+public class RegisWorkScheduleCommandHandler<T> extends CommandHandlerWithResult<List<WorkScheduleSaveCommand<T>>, ResultRegisWorkSchedule>{
 	
 	@Inject
 	private BasicScheduleService basicScheduleService;
@@ -114,11 +113,11 @@ public class RegisWorkScheduleCommandHandler extends CommandHandlerWithResult<Li
 	private EmpEmployeeAdapter empAdapter;
 	
 	@Override
-	protected ResultRegisWorkSchedule handle(CommandHandlerContext<List<WorkScheduleSaveCommand>> context) {
+	protected ResultRegisWorkSchedule handle(CommandHandlerContext<List<WorkScheduleSaveCommand<T>>> context) {
 
-		List<WorkScheduleSaveCommand> commands = context.getCommand();
+		List<WorkScheduleSaveCommand<T>> commands = context.getCommand();
 
-		Map<String, List<WorkScheduleSaveCommand>> mapBySid = commands.stream().collect(Collectors.groupingBy(item -> item.getSid()));
+		Map<String, List<WorkScheduleSaveCommand<T>>> mapBySid = commands.stream().collect(Collectors.groupingBy(item -> item.getSid()));
 		
 		RequireImpl requireImpl = new RequireImpl(basicScheduleService, workTypeRepo, workTimeSettingRepository,
 				fixedWorkSet, flowWorkSet, flexWorkSet, predetemineTimeSet, workScheduleRepo, correctWorkSchedule,
@@ -130,9 +129,9 @@ public class RegisWorkScheduleCommandHandler extends CommandHandlerWithResult<Li
 		// loop:社員ID in 社員IDリスト
 		mapBySid.forEach((k, v) -> {
 			String sid = k;
-			List<WorkScheduleSaveCommand> scheduleOfEmps = v;
+			List<WorkScheduleSaveCommand<T>> scheduleOfEmps = v;
 			// loop:年月日 in 年月日リスト
-			for (WorkScheduleSaveCommand data : scheduleOfEmps) {
+			for (WorkScheduleSaveCommand<T> data : scheduleOfEmps) {
 				WorkInformation workInfo = new WorkInformation(data.workInfor.workTypeCd, data.workInfor.workTimeCd);
 				// step 1.1
 				ResultOfRegisteringWorkSchedule rsOfRegisteringWorkSchedule = CreateWorkSchedule.create(requireImpl, sid, data.ymd,
@@ -177,7 +176,7 @@ public class RegisWorkScheduleCommandHandler extends CommandHandlerWithResult<Li
 			
 			for (int k = 0; k < lstEmpInfo.size(); k++) {
 				EmployeeImport empImport = lstEmpInfo.get(k);
-				List<ErrorInfoOfWorkSchedule> errorInforOfEmp = errorInformations.stream().filter(i -> i.getEmployeeId() == empImport.getEmployeeId()).collect(Collectors.toList());
+				List<ErrorInfoOfWorkSchedule> errorInforOfEmp = errorInformations.stream().filter(i -> i.getEmployeeId().equals(empImport.getEmployeeId())).collect(Collectors.toList());
 				for (int h = 0; h < errorInforOfEmp.size(); h++) {
 					ErrorInfomation errorInfomation = new ErrorInfomation(
 							empImport.getEmployeeId(),

@@ -1,17 +1,16 @@
 package nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistory;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
-import nts.uk.shr.com.context.AppContexts;
-import org.eclipse.persistence.internal.xr.ValueObject;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import org.eclipse.persistence.internal.xr.ValueObject;
+
+import lombok.Getter;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistory;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 
 /**
  * 社員の絞り込み条件.

@@ -535,11 +535,31 @@ module nts.uk.at.view.kaf011 {
 		//振出申請の反映
 		substituteWorkAppReflect: any;
 		//振休申請
-		absApp: any;
+		abs: any;
 		//振出申請
-		recApp: any;
-		constructor(){
-			
+		rec: any;
+		represent: boolean;
+		constructor(param: any){
+			let self = this;
+			self.applicationForWorkingDay = param.applicationForWorkingDay;
+			self.appDispInfoStartup = param.appDispInfoStartup;
+			self.applicationForHoliday = param.applicationForHoliday;
+			self.remainingHolidayInfor = param.remainingHolidayInfor;
+			self.substituteHdWorkAppSet = param.substituteHdWorkAppSet;
+			self.holidayManage = param.holidayManage;
+			self.substituteManagement = param.substituteManagement;
+			self.workInfoAttendanceReflect = param.workInfoAttendanceReflect;
+			self.substituteWorkAppReflect = param.substituteWorkAppReflect;
+			self.abs = param.abs;
+			self.rec = param.rec;
+			self.represent = param.represent;
+			if(param.abs){
+				self.abs.leaveComDayOffMana = _.map(param.abs.leaveComDayOffMana, (c) => new SubWorkSubHolidayLinkingMng(c));
+				self.abs.payoutSubofHDManagements = _.map(param.abs.payoutSubofHDManagements, (c) => new SubWorkSubHolidayLinkingMng(c));	
+			}
+			if(param.rec){
+				self.rec.leaveComDayOffMana = _.map(param.rec.leaveComDayOffMana, (c) =>new SubWorkSubHolidayLinkingMng(c));
+			}
 		}
 	}
 

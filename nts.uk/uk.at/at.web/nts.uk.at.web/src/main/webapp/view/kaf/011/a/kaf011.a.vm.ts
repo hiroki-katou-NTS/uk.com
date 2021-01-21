@@ -74,7 +74,8 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					$('#functions-area').css({'opacity': ''});
 					vm.$blockui("hide"); 
 				}).fail((failData: any) => {
-					vm.$dialog.error(failData).then(() => { vm.$jump("com", "/view/ccg/008/a/index.xhtml"); });
+					vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds }).then(() => { vm.$jump("com", "/view/ccg/008/a/index.xhtml"); });
+					
 				}).always(() => {
 					
 				});
@@ -83,7 +84,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 				if (failData.messageId === "Msg_43") {
 					vm.$dialog.error(failData).then(() => { vm.$jump("com", "/view/ccg/008/a/index.xhtml"); });
 				} else {
-					vm.$dialog.error(failData);
+					vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds });
 				}
 				vm.$blockui("hide"); 
 			});
@@ -102,7 +103,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					displayInforWhenStartingdto.rec = null;
 					displayInforWhenStartingdto.abs = null;
 					vm.$ajax('at/request/application/holidayshipment/changeRecDate',{workingDate: moment(value).format('YYYY/MM/DD'), holidayDate: holidayDate, displayInforWhenStarting: displayInforWhenStartingdto}).then((data: any) =>{
-						vm.appDispInfoStartupOutput().appDispInfoWithDateOutput = data.appDispInfoStartup.appDispInfoWithDateOutput;
+						vm.appDispInfoStartupOutput(data.appDispInfoStartup);
 						vm.displayInforWhenStarting(data);
 						if(data.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.recordDate == 1){
 							vm.recruitmentApp.workTypeList(data.applicationForWorkingDay.workTypeList);
@@ -124,7 +125,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					displayInforWhenStartingdto.abs = null;
 					let workingDate = (vm.appCombinaSelected() != 2 && vm.recruitmentApp.application.appDate() && !$('#recAppDate').ntsError('hasError')) ? moment(vm.recruitmentApp.application.appDate()).format('YYYY/MM/DD'): null;
 					vm.$ajax('at/request/application/holidayshipment/changeAbsDate',{workingDate: workingDate, holidayDate: moment(value).format('YYYY/MM/DD'), displayInforWhenStarting: displayInforWhenStartingdto}).then((data: any) =>{
-						vm.appDispInfoStartupOutput().appDispInfoWithDateOutput = data.appDispInfoStartup.appDispInfoWithDateOutput;
+						vm.appDispInfoStartupOutput(data.appDispInfoStartup)
 						vm.displayInforWhenStarting(data);
 						if(data.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.recordDate == 1){
 							vm.absenceLeaveApp.workTypeList(data.applicationForWorkingDay.workTypeList);
