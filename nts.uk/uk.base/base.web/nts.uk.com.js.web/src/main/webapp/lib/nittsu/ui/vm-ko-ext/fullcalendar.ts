@@ -1417,8 +1417,10 @@ module nts.uk.ui.components.fullcalendar {
                         }
                     });
 
-                    // emit data out
-                    mutatedEvents();
+                    // emit data out if event isn't new
+                    if (event.title && event.extendedProps.status !== 'new') {
+                        mutatedEvents();
+                    }
                 },
                 eventReceive: (info: FullCalendar.EventReceiveLeaveArg) => {
                     const { event } = info;
