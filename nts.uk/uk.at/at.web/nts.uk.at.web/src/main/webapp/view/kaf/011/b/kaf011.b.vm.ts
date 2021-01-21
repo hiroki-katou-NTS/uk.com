@@ -60,7 +60,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 					vm.remainDays(data.remainingHolidayInfor.remainDays + '日');
 					if(data.rec && data.abs){
 						vm.recruitmentApp.bindingScreenB(data.rec, data.applicationForWorkingDay.workTypeList, data);
-						vm.absenceLeaveApp.bindingScreenB(data.abs, data.applicationForHoliday.workTypeList, data);	
+						vm.absenceLeaveApp.bindingScreenBAbs(data.abs, data.applicationForHoliday.workTypeList, data);	
 						vm.applicationCommon().update(data.rec.application);
 					}else if(data.rec){
 						vm.appCombinaSelected(1);
@@ -68,7 +68,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 						vm.applicationCommon().update(data.rec.application);
 					}else if(data.abs){
 						vm.appCombinaSelected(2);
-						vm.absenceLeaveApp.bindingScreenB(data.abs, data.applicationForHoliday.workTypeList, data);
+						vm.absenceLeaveApp.bindingScreenBAbs(data.abs, data.applicationForHoliday.workTypeList, data);
 						vm.applicationCommon().update(data.abs.application);
 					}
 					vm.displayInforWhenStarting(new DisplayInforWhenStarting(data));
