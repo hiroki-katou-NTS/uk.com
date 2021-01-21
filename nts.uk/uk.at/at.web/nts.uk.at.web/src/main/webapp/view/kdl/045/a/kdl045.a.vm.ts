@@ -173,7 +173,9 @@ module nts.uk.at.view.kdl045.a {
 						let tempBreakTime : any = breakTimeNo[i];
 						self.dataSourceTime().push({ range1: ko.observable({ startTime: !_.isNil(tempBreakTime.startTime) ? tempBreakTime.startTime : tempBreakTime.start, 
 																	endTime: !_.isNil(tempBreakTime.endTime) ? tempBreakTime.endTime : tempBreakTime.end, breakFrameNo: i + 1,
-																			 name : self.showTimeByPeriod(tempBreakTime.startTime,tempBreakTime.endTime)
+																			 name : self.showTimeByPeriod(
+                                                                             !_.isNil(tempBreakTime.startTime) ? tempBreakTime.startTime : tempBreakTime.start,
+                                                                             !_.isNil(tempBreakTime.endTime) ? tempBreakTime.endTime : tempBreakTime.end)
 						}) });
 					}
 				}
@@ -208,6 +210,14 @@ module nts.uk.at.view.kdl045.a {
                     self.isEnableA5_9(false);
                 }
                 
+                self.timeRange1Value.subscribe(value => {
+                    console.log("TU");
+
+                });
+                self.timeRange2Value.subscribe(value => {
+                    console.log("TU2");
+
+                });
                 
                 //A10_1,A10_2
                 self.timeA10_1(self.showTimeByPeriod(self.employee().employeeInfo.workScheduleDto != null ? self.employee().employeeInfo.workScheduleDto.startTime1 : null, 
@@ -235,11 +245,11 @@ module nts.uk.at.view.kdl045.a {
                 //A1_5
                 let shortW = moment(self.employee().employeeInfo.workInfoDto.date).format("dd");
                 if (shortW == "土") {
-                    shortW = "<span style='color:#0000ff;'>" + getText('KDL045_64') + shortW + getText('KDL045_65') + "</span>";
+                    shortW = "<span style='color:#0000ff;'>（"  + shortW + "）</span>";
                 } else if (shortW == "日") {
-                    shortW = "<span style='color:#ff0000;'>" + getText('KDL045_64') + shortW + getText('KDL045_65') + "</span>";
+                    shortW = "<span style='color:#ff0000;'>（" + shortW + "）</span>";
                 } else {
-                    shortW = getText('KDL045_64') + shortW + getText('KDL045_65');
+                    shortW = 　"（" + shortW + "）" ;
                 }
                 self.basedate(self.employee().employeeInfo.workInfoDto.date + shortW);
 
@@ -325,7 +335,7 @@ module nts.uk.at.view.kdl045.a {
                     if (listTimeVacationAndType[i].typeVacation == shareModelData.TimeVacationType.PRIVATE) {
                         let listPrivateTime :any = [];
                         for(let k = 0;k< listTimeVacationAndType[i].timeVacation.timeZone.length;k++){
-                            let tempData = getText('KDL045_49')+ self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[k].startTime.time, listTimeVacationAndType[i].timeVacation.timeZone[k].endTime.time)
+                            let tempData = self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[k].startTime.time, listTimeVacationAndType[i].timeVacation.timeZone[k].endTime.time)
                             listPrivateTime.push(tempData);
                         }
                         self.listPrivateTime = listPrivateTime;
@@ -345,7 +355,7 @@ module nts.uk.at.view.kdl045.a {
                     if (listTimeVacationAndType[i].typeVacation == shareModelData.TimeVacationType.UNION) {
                         let listUnionTime :any = [];
                         for(let k = 0;k< listTimeVacationAndType[i].timeVacation.timeZone.length;k++){
-                            let tempData = getText('KDL045_49')+ self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[k].startTime.time, listTimeVacationAndType[i].timeVacation.timeZone[k].endTime.time)
+                            let tempData = self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[k].startTime.time, listTimeVacationAndType[i].timeVacation.timeZone[k].endTime.time)
                             listUnionTime.push(tempData);
                         }
                         self.listUnionTime = listUnionTime;
@@ -471,12 +481,14 @@ module nts.uk.at.view.kdl045.a {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+                nts.uk.ui.block.grayout();
                 $.when(self.getInformationStartup()).done(function() {
                     self.displayInformationStartup();
                     if(self.workStyle() !=null && self.workStyle() !=0){
                         self.workTime.valueHasMutated();
                         self.displayByIncludingWorkType(self.includingWorkType());
                     }
+                    nts.uk.ui.block.clear();
                     dfd.resolve();
                 });
 
@@ -566,7 +578,7 @@ module nts.uk.at.view.kdl045.a {
                     workTimeCodes: [],
                     selectedWorkTimeCode: self.workTime()
                 }, true);
-
+                nts.uk.ui.block.grayout();
                 nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function(): any {
                     //view all code of selected item 
                     let childData = nts.uk.ui.windows.getShared('childData');
@@ -611,9 +623,11 @@ module nts.uk.at.view.kdl045.a {
                                         } 
                                     }
                                 }
+                               nts.uk.ui.block.clear(); 
                             });
                         }else{
 							self.workStyle(null);
+                            nts.uk.ui.block.clear();
 						}
                     }
                 });
@@ -871,13 +885,13 @@ module nts.uk.at.view.kdl045.a {
                         self.assignmentMethodName(getText('KDL045_47'));
                         let nameList = self.informationStartup.workAvaiOfOneDayDto.workAvaiByHolidayDto.nameList;
                         for (let i = 0; i < nameList.length; i++) {
-                            self.listDetail.push(getText('KDL045_49') + nameList[i]);
+                            self.listDetail.push(nameList[i]);
                         }
                     }else if (assignmentMethod == shareModelData.AssignmentMethod.TIME_ZONE) {
                         self.assignmentMethodName(getText('KDL045_48'));
                         let timeZoneList = self.informationStartup.workAvaiOfOneDayDto.workAvaiByHolidayDto.timeZoneList;
                         for (let i = 0; i < timeZoneList.length; i++) {
-                            self.listDetail.push(getText('KDL045_49') + self.showTimeByPeriod(timeZoneList[i].start, timeZoneList[i].end));
+                            self.listDetail.push(self.showTimeByPeriod(timeZoneList[i].start, timeZoneList[i].end));
                         }
                     } 
                     self.listDetail();
@@ -1018,7 +1032,6 @@ module nts.uk.at.view.kdl045.a {
                 if(self.isShowTimeRange2){
                     if(self.isEnableA5_9() && self.timeRange2Value().startTime <= self.timeRange1Value().endTime && self.timeRange2Value().endTime > self.timeRange1Value().startTime ){
                         $('#a5-5').ntsError('set',{ messageId: 'Msg_515', messageParams: [getText('KDL045_12')] });
-                        $('#a5-5').focus();
                         checkError =  true;
                     }
                 
