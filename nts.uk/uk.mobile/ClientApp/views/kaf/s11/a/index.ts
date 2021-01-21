@@ -1209,42 +1209,46 @@ export class KafS11AComponent extends KafS00ShrComponent {
                 cmd.absOldWorkMngLst = vm.displayInforWhenStarting.abs.payoutSubofHDManagements;
             }
         }
-        if (!_.isNull(vm.complementWorkInfo.timeRange1.start) && !_.isNull(vm.complementWorkInfo.timeRange1.end)) {
-            cmd.rec.workingHours.push({
-                workNo: 1,
-                timeZone: {
-                    startTime: vm.complementWorkInfo.timeRange1.start,
-                    endTime: vm.complementWorkInfo.timeRange1.end
-                }
-            });
-        }
-        if (!_.isNull(vm.complementWorkInfo.timeRange2.start) && !_.isNull(vm.complementWorkInfo.timeRange2.end)) {
-            cmd.rec.workingHours.push({
-                workNo: 2,
-                timeZone: {
-                    startTime: vm.complementWorkInfo.timeRange2.start,
-                    endTime: vm.complementWorkInfo.timeRange2.end
-                }
-            });
-        }
-        if (cmd.abs.workChangeUse) {
-            if (!_.isNull(vm.leaveWorkInfo.timeRange1.start) && !_.isNull(vm.leaveWorkInfo.timeRange1.end)) {
-                cmd.abs.workingHours.push({
+        if (cmd.rec) {
+            if (!_.isNull(vm.complementWorkInfo.timeRange1.start) && !_.isNull(vm.complementWorkInfo.timeRange1.end)) {
+                cmd.rec.workingHours.push({
                     workNo: 1,
                     timeZone: {
-                        startTime: vm.leaveWorkInfo.timeRange1.start,
-                        endTime: vm.leaveWorkInfo.timeRange1.end
+                        startTime: vm.complementWorkInfo.timeRange1.start,
+                        endTime: vm.complementWorkInfo.timeRange1.end
                     }
                 });
             }
-            if (!_.isNull(vm.leaveWorkInfo.timeRange2.start) && !_.isNull(vm.leaveWorkInfo.timeRange2.end)) {
-                cmd.abs.workingHours.push({
+            if (!_.isNull(vm.complementWorkInfo.timeRange2.start) && !_.isNull(vm.complementWorkInfo.timeRange2.end)) {
+                cmd.rec.workingHours.push({
                     workNo: 2,
                     timeZone: {
-                        startTime: vm.leaveWorkInfo.timeRange2.start,
-                        endTime: vm.leaveWorkInfo.timeRange2.end
+                        startTime: vm.complementWorkInfo.timeRange2.start,
+                        endTime: vm.complementWorkInfo.timeRange2.end
                     }
                 });
+            }
+        }
+        if (cmd.abs) {
+            if (cmd.abs.workChangeUse) {
+                if (!_.isNull(vm.leaveWorkInfo.timeRange1.start) && !_.isNull(vm.leaveWorkInfo.timeRange1.end)) {
+                    cmd.abs.workingHours.push({
+                        workNo: 1,
+                        timeZone: {
+                            startTime: vm.leaveWorkInfo.timeRange1.start,
+                            endTime: vm.leaveWorkInfo.timeRange1.end
+                        }
+                    });
+                }
+                if (!_.isNull(vm.leaveWorkInfo.timeRange2.start) && !_.isNull(vm.leaveWorkInfo.timeRange2.end)) {
+                    cmd.abs.workingHours.push({
+                        workNo: 2,
+                        timeZone: {
+                            startTime: vm.leaveWorkInfo.timeRange2.start,
+                            endTime: vm.leaveWorkInfo.timeRange2.end
+                        }
+                    });
+                }
             }
         }
 
