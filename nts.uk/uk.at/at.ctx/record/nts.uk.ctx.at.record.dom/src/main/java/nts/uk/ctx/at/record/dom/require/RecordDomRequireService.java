@@ -881,7 +881,7 @@ public class RecordDomRequireService {
 				BentoMenuRepository bentoMenuRepo, IntegrationOfDailyGetter integrationOfDailyGetter,
 				WeekRuleManagementRepo weekRuleManagementRepo, SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter,
 				GetProcessingDate getProcessingDate, IncentiveUnitPriceSetRepo incentiveUnitPriceSetRepo,
-				GetProcessingDate getProcessingDate, RoleOfOpenPeriodRepository roleOfOpenPeriodRepo,
+				RoleOfOpenPeriodRepository roleOfOpenPeriodRepo,
 				Optional<OutsideOTSetting> outsideOTSettingCache,
 				HashMap<String, Optional<FlowWorkSetting>>  flowWorkSetMap,
 				HashMap<String, Optional<FlexWorkSetting>>  flexWorkSetMap,
