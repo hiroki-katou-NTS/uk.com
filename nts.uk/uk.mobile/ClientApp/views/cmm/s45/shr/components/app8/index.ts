@@ -49,17 +49,45 @@ export class CmmS45ShrComponentsApp8Component extends Vue {
         vm.$http.post('at', API.init, initParams).then((res: any) => {
             if (res) {
                 vm.params.appDetail = res.data;
+                const timeZones = [
+                    {workNo: 1, startTime: null, endTime: null},
+                    {workNo: 2, startTime: null, endTime: null}
+                ];
                 const outingTimeZones = [];
-                res.data.details.filter((i) => i.appTimeType >= 4).forEach((i) => {
-                    i.timeZones.forEach((j) => {
-                        outingTimeZones.push({
-                            frameNo: j.workNo,
-                            outingAtr: i.appTimeType,
-                            startTime: j.startTime,
-                            endTime: j.endTime
+                res.data.details.forEach((i) => {
+                    if (i.appTimeType < 4) {
+                        if (i.appTimeType == 0) {
+                            timeZones[0].startTime = i.timeZones[0].startTime;
+                        } else if (i.appTimeType == 1) {
+                            timeZones[0].endTime = i.timeZones[0].endTime;
+                        } else if (i.appTimeType == 2) {
+                            timeZones[1].startTime = i.timeZones[0].startTime;
+                        } else if (i.appTimeType == 3) {
+                            timeZones[1].endTime = i.timeZones[0].endTime;
+                        }
+                    } else {
+                        i.timeZones.forEach((j) => {
+                            outingTimeZones.push({
+                                frameNo: j.workNo,
+                                outingAtr: i.appTimeType,
+                                startTime: j.startTime,
+                                endTime: j.endTime
+                            });
                         });
-                    });
+                    }
                 });
+                if (timeZones[0].startTime == null) {
+                    timeZones[0].startTime = vm.params.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheAttendanceTime1;
+                }
+                if (timeZones[0].endTime == null) {
+                    timeZones[0].endTime = vm.params.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheDepartureTime1;
+                }
+                if (timeZones[1].startTime == null) {
+                    timeZones[1].startTime = vm.params.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheAttendanceTime2;
+                }
+                if (timeZones[1].endTime == null) {
+                    timeZones[1].endTime = vm.params.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheDepartureTime2;
+                }
                 const params = {
                     timeLeaveType: 6, // COMBINATION = 6, // 組合せ利用
                     appDate: new Date(appDispInfoStartupOutput.appDetailScreenInfo.application.appDate).toISOString(),
@@ -69,7 +97,7 @@ export class CmmS45ShrComponentsApp8Component extends Vue {
                         timeLeaveRemaining: res.data.timeLeaveRemaining,
                         reflectSetting: res.data.reflectSetting
                     },
-                    timeZones: res.data.details.filter((i) => i.appTimeType < 4).map((i) => i.timeZones[0]),
+                    timeZones,
                     outingTimeZones
                 };
                 params.appDisplayInfo.timeLeaveRemaining.remainingStart = new Date(params.appDisplayInfo.timeLeaveRemaining.remainingStart).toISOString();

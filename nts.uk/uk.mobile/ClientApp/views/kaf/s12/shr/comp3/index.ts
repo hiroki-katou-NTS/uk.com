@@ -1,4 +1,4 @@
-import { Vue } from '@app/provider';
+import { Vue, _ } from '@app/provider';
 import { component, Prop, Watch } from '@app/core/component';
 import { AppTimeType, ReflectSetting, TimeLeaveManagement, TimeLeaveRemaining } from '../';
 
@@ -49,6 +49,54 @@ export class KafS12ApplyTimeComponent extends Vue {
     public specialLeaveFrameWatcher(value: number) {
         const self = this;
         self.comboBoxValue = value;
+    }
+
+    @Watch('params.super60AppTime')
+    public valueWatcher1(value: number) {
+        const self = this;
+        if (_.isNil(value)) {
+            self.params.super60AppTime = 0;
+        }
+    }
+
+    @Watch('params.substituteAppTime')
+    public valueWatcher2(value: number) {
+        const self = this;
+        if (_.isNil(value)) {
+            self.params.substituteAppTime = 0;
+        }
+    }
+
+    @Watch('params.annualAppTime')
+    public valueWatcher3(value: number) {
+        const self = this;
+        if (_.isNil(value)) {
+            self.params.annualAppTime = 0;
+        }
+    }
+
+    @Watch('params.childNursingAppTime')
+    public valueWatcher4(value: number) {
+        const self = this;
+        if (_.isNil(value)) {
+            self.params.childNursingAppTime = 0;
+        }
+    }
+
+    @Watch('params.nursingAppTime')
+    public valueWatcher5(value: number) {
+        const self = this;
+        if (_.isNil(value)) {
+            self.params.nursingAppTime = 0;
+        }
+    }
+
+    @Watch('params.specialAppTime')
+    public valueWatcher6(value: number) {
+        const self = this;
+        if (_.isNil(value)) {
+            self.params.specialAppTime = 0;
+        }
     }
 
     get requiredAppTime() {

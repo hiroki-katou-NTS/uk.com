@@ -10,6 +10,8 @@ import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.care.Ge
 import nts.uk.ctx.at.request.dom.adapter.monthly.vacation.childcarenurse.childcare.GetRemainingNumberChildCareNurseAdapter;
 import nts.uk.ctx.at.request.dom.adapter.record.remainingnumber.holidayover60h.AggrResultOfHolidayOver60hImport;
 import nts.uk.ctx.at.request.dom.adapter.record.remainingnumber.holidayover60h.GetHolidayOver60hRemNumWithinPeriodAdapter;
+import nts.uk.ctx.at.request.dom.adapter.record.remainingnumber.specialholiday.GetSpecialRemainingWithinPeriodAdapter;
+import nts.uk.ctx.at.request.dom.adapter.record.remainingnumber.specialholiday.TotalResultOfSpecialLeaveImport;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.AnnLeaveRemainNumberAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaReferenceDateImport;
@@ -146,6 +148,9 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
     @Inject
     private WorkingConditionRepository workingConditionRepo;
 
+    @Inject
+    private GetSpecialRemainingWithinPeriodAdapter getSpecialRemainingWithinPeriodAdapter;
+
     @Override
     public TimeLeaveApplicationReflect getTimeLeaveAppReflectSetting(String companyId) {
         TimeLeaveApplicationReflect reflectSetting = timeLeaveAppReflectRepo.findByCompany(companyId).orElse(null);
@@ -251,8 +256,10 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
         RemainNumberTempRequireService.Require require = requireService.createRequire();
         CacheCarrier cache = new CacheCarrier();
 
-        // 各時間休暇の残数を取得する
         TimeVacationRemainingOutput timeLeaveRemaining = new TimeVacationRemainingOutput();
+        timeLeaveRemaining.setRemainingPeriod(DatePeriod.oneDay(baseDate));
+
+        // INPUT「時間休暇管理」をチェックする
         if (!timeLeaveManagement.getTimeAnnualLeaveManagement().isTimeAnnualManagement()
                 && !timeLeaveManagement.getTimeAllowanceManagement().isTimeBaseManagementClass()
                 && !timeLeaveManagement.getSupHolidayManagement().isOverrest60HManagement()
@@ -280,7 +287,7 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
             BreakDayOffRemainMngParam remainParam = new BreakDayOffRemainMngParam(
                     companyId,
                     employeeId,
-                    new DatePeriod(closingPeriod.start(), closingPeriod.end().addYears(1).addDays(-1)),
+                    new DatePeriod(closingPeriod.start(), closingPeriod.start().addYears(1).addDays(-1)),
                     false,
                     baseDate,
                     false,
@@ -299,7 +306,7 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
             AggrResultOfHolidayOver60hImport aggrResultOfHolidayOver60h = this.getHolidayOver60hRemNumWithinPeriodAdapter.algorithm(
                     companyId,
                     employeeId,
-                    new DatePeriod(closingPeriod.start(), closingPeriod.end().addYears(1).addDays(-1)),
+                    new DatePeriod(closingPeriod.start(), closingPeriod.start().addYears(1).addDays(-1)),
                     InterimRemainMngMode.OTHER,
                     baseDate,
                     Optional.of(false),
@@ -317,7 +324,7 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
             // [NO.206]期間中の子の看護休暇残数を取得
             ChildCareNursePeriodImport resultOfChildCareNurse = this.getRemainingNumberChildCareNurseAdapter.getChildCareNurseRemNumWithinPeriod(
                     employeeId,
-                    new DatePeriod(closingPeriod.start(), closingPeriod.end().addYears(1).addDays(-1)),
+                    new DatePeriod(closingPeriod.start(), closingPeriod.start().addYears(1).addDays(-1)),
                     InterimRemainMngMode.OTHER,
                     baseDate,
                     Optional.of(false),
@@ -336,7 +343,7 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
             // [NO.207]期間中の介護休暇残数を取得
             ChildCareNursePeriodImport childCareNursePeriodImport = getRemainingNumberCareAdapter.getCareRemNumWithinPeriod(
                     employeeId,
-                    new DatePeriod(closingPeriod.start(), closingPeriod.end().addYears(1).addDays(-1)),
+                    new DatePeriod(closingPeriod.start(), closingPeriod.start().addYears(1).addDays(-1)),
                     InterimRemainMngMode.OTHER,
                     baseDate,
                     Optional.of(false),
@@ -351,7 +358,7 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
             });
         }
 
-        timeLeaveRemaining.setRemainingPeriod(new DatePeriod(closingPeriod.start(), closingPeriod.end().addYears(1).addDays(-1)));
+        timeLeaveRemaining.setRemainingPeriod(new DatePeriod(closingPeriod.start(), closingPeriod.start().addYears(1).addDays(-1)));
         return timeLeaveRemaining;
     }
 
@@ -372,27 +379,17 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
                 return timeLeaveAppOutput;
 
             // [NO.273]期間中の特別休暇残数を取得
-            ComplileInPeriodOfSpecialLeaveParam param = new ComplileInPeriodOfSpecialLeaveParam(
+            TotalResultOfSpecialLeaveImport result = getSpecialRemainingWithinPeriodAdapter.algorithm(
                     companyId,
                     timeLeaveAppOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(),
                     timeLeaveAppOutput.getTimeVacationRemaining().getRemainingPeriod(),
                     false,
                     timeLeaveAppOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getBaseDate(),
                     specialHoliday.get().getSpecialHolidayCode().v(),
-                    false,
-                    false,
-                    new ArrayList<>(),
-                    new ArrayList<>(),
+                    Optional.of(false),
+                    Optional.empty(),
                     Optional.empty()
             );
-            InPeriodOfSpecialLeave specialLeave = SpecialLeaveManagementService
-                    .complileInPeriodOfSpecialLeave(
-                            SpecialLeaveManagementService.createRequireM5(specialLeaveGrantRepo, shareEmploymentAdapter,
-                                    empEmployeeAdapter, grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepository,
-                                    interimSpecialHolidayMngRepo, interimRemainRepo, specialLeaveBasicInfoRepo),
-                            new CacheCarrier(), param)
-                    .getAggSpecialLeaveResult();
-            // TODO: cannot map with design, wait for new code from jp
 
             timeLeaveAppOutput.getTimeVacationRemaining().getSpecialTimeFrames().add(
                     new TimeSpecialVacationRemaining(10, 10, specialFrameNo.get())
