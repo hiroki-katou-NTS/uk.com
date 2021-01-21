@@ -365,6 +365,16 @@ export class KafS11AComponent extends KafS00ShrComponent {
                 vm.$updateValidator('leaveWorkInfo.timeRange2', { validate: false });
             }
         } else {
+            if (vm.displayInforWhenStarting.rec) {
+                vm.$updateValidator('complementDate', { validate: true });
+            } else {
+                vm.$updateValidator('complementDate', { validate: false });
+            }
+            if (vm.displayInforWhenStarting.abs) {
+                vm.$updateValidator('leaveDate', { validate: true });
+            } else {
+                vm.$updateValidator('leaveDate', { validate: false });
+            }
             if (vm.dispComplementContent) {
                 if (vm.enableComplementTimeRange) {
                     vm.$updateValidator('complementWorkInfo.timeRange1', { validate: true });
