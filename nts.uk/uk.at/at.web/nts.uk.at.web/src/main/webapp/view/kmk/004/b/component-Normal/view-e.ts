@@ -144,6 +144,10 @@ module nts.uk.at.view.kmk004.b {
 						vm.selectedYear.valueHasMutated();
 					}
 					vm.updateCheck();
+
+					$(document).ready(function () {
+						$('.listbox').focus();
+					});
 				});
 
 			vm.employees
@@ -194,8 +198,12 @@ module nts.uk.at.view.kmk004.b {
 		mounted() {
 			const vm = this;
 
+			// $(document).ready(function () {
+			// 	$('.listbox').focus();
+			// });
+
 			$(document).ready(function () {
-				$('.listbox').focus();
+				$('#cpn-ccg001').focus();
 			});
 		}
 
@@ -247,12 +255,11 @@ module nts.uk.at.view.kmk004.b {
 
 		copy() {
 			const vm = this;
-			console.log(ko.unwrap(vm.employees));
 			vm.$window.modal('/view/kmk/004/r/index.xhtml', {
 				screenMode: vm.type,
 				data: ko.unwrap(vm.employees),
-				selected: ko.unwrap(vm.employees),
-				year: ko.unwrap(vm.model.code),
+				selected: ko.unwrap(vm.model.code),
+				year: ko.unwrap(vm.selectedYear),
 				laborAttr: 0,
 			})
 				.then(() => {
