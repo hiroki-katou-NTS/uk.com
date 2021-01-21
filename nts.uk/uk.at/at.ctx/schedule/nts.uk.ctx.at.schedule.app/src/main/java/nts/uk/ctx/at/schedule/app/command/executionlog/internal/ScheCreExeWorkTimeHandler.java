@@ -371,7 +371,11 @@ public class ScheCreExeWorkTimeHandler {
 	 * @return
 	 */
 	private String getWorkTimeCodeBySingleDaySchedule(Optional<SingleDaySchedule> optionalSingleDaySchedule) {
+		if( optionalSingleDaySchedule.isPresent()){
 		return optionalSingleDaySchedule.get().getWorkTimeCode().get().v();
+		} else{
+			return null;
+		}
 	}
 
 	/**
@@ -481,7 +485,7 @@ public class ScheCreExeWorkTimeHandler {
 					// check exist work time
 					if (this.checkExistWorkTimeCodeBySingleDaySchedule(
 							workingConditionItem.getWorkCategory().getPublicHolidayWork())) {
-						return this.getWorkTimeCodeBySingleDaySchedule(
+						return this.getWorkTimeCodeBySingleDaySchedule (
 								workingConditionItem.getWorkCategory().getPublicHolidayWork());
 					}
 				}
@@ -496,25 +500,49 @@ public class ScheCreExeWorkTimeHandler {
 					case STATUTORY_HOLIDAYS:
 						if (this.checkExistWorkTimeCodeBySingleDaySchedule(
 								workingConditionItem.getWorkCategory().getInLawBreakTime())) {
-							return this.getWorkTimeCodeBySingleDaySchedule(
-									workingConditionItem.getWorkCategory().getInLawBreakTime());
+							/*return this.getWorkTimeCodeBySingleDaySchedule(
+									workingConditionItem.getWorkCategory().getInLawBreakTime());*/
+							if(!this.getWorkTimeCodeBySingleDaySchedule(
+									workingConditionItem.getWorkCategory().getInLawBreakTime()).isEmpty()){
+								return this.getWorkTimeCodeBySingleDaySchedule(
+										workingConditionItem.getWorkCategory().getInLawBreakTime());
+							}
+							else{
+								return command.getWorkingCode();
+							}
 						}
 
 						break;
+						
 					// case 法定外休日
 					case NON_STATUTORY_HOLIDAYS:
 						if (this.checkExistWorkTimeCodeBySingleDaySchedule(
 								workingConditionItem.getWorkCategory().getOutsideLawBreakTime())) {
-							return this.getWorkTimeCodeBySingleDaySchedule(
-									workingConditionItem.getWorkCategory().getOutsideLawBreakTime());
+						/*	return this.getWorkTimeCodeBySingleDaySchedule(
+									workingConditionItem.getWorkCategory().getOutsideLawBreakTime());*/
+							if(!this.getWorkTimeCodeBySingleDaySchedule(
+									workingConditionItem.getWorkCategory().getOutsideLawBreakTime()).isEmpty()){
+								return this.getWorkTimeCodeBySingleDaySchedule(
+										workingConditionItem.getWorkCategory().getOutsideLawBreakTime());	
+							}else{
+								return command.getWorkingCode();
+							}
+							
 						}
 						break;
 					// case 祝日
 					default:
 						if (this.checkExistWorkTimeCodeBySingleDaySchedule(
 								workingConditionItem.getWorkCategory().getHolidayAttendanceTime())) {
-							return this.getWorkTimeCodeBySingleDaySchedule(
-									workingConditionItem.getWorkCategory().getHolidayAttendanceTime());
+							/*return this.getWorkTimeCodeBySingleDaySchedule(
+									workingConditionItem.getWorkCategory().getHolidayAttendanceTime());*/
+							if(!this.getWorkTimeCodeBySingleDaySchedule(
+									workingConditionItem.getWorkCategory().getHolidayAttendanceTime()).isEmpty()){
+								return this.getWorkTimeCodeBySingleDaySchedule(
+										workingConditionItem.getWorkCategory().getHolidayAttendanceTime());
+							}else{
+								return command.getWorkingCode();
+							}
 						}
 						break;
 					}

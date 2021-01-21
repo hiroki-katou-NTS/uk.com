@@ -129,6 +129,7 @@ public class ProcessExecutionLogFinder {
 
 			// 作成した「実行項目情報．実行タスク設定．更新処理
 			ExecutionTaskSettingDto execTaskSetDto = dto.getExecutionTaskSetting();
+			// 作成した「実行項目情報．実行タスク設定．更新処理有効設定」を確認する
 			if (execTaskSetDto != null && execTaskSetDto.isEnabledSetting()) {
 				// 次回実行日時作成処理
 				GeneralDateTime nextExecDateTime = this.processExecutionService
