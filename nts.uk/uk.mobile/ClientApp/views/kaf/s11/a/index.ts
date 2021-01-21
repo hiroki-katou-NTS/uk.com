@@ -768,6 +768,9 @@ export class KafS11AComponent extends KafS00ShrComponent {
     @Watch('complementDate')
     public complementDateWatcher(value) {
         const vm = this;
+        if (vm.mode == ScreenMode.DETAIL) {
+            return;
+        }
         let command = {
             workingDate: moment(value).format('YYYY/MM/DD'),
             holidayDate: vm.leaveDate ? moment(vm.leaveDate).format('YYYY/MM/DD') : null,
@@ -784,6 +787,9 @@ export class KafS11AComponent extends KafS00ShrComponent {
     @Watch('leaveDate')
     public leaveDateWatcher(value) {
         const vm = this;
+        if (vm.mode == ScreenMode.DETAIL) {
+            return;
+        }
         let command = {
             workingDate: vm.complementDate ? moment(vm.complementDate).format('YYYY/MM/DD') : null,
             holidayDate: moment(value).format('YYYY/MM/DD'),
