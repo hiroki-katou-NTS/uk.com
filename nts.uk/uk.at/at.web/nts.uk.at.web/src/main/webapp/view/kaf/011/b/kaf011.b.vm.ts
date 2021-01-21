@@ -96,6 +96,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
         // event update cần gọi lại ở button của view cha
         update() {
             const vm = this;
+			let dfd = $.Deferred();
 			if(!vm.triggerValidate()) {
 				let data: any = {};
 					data.represent = vm.displayInforWhenStarting().represent;
@@ -123,13 +124,20 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 				console.log(data);	
 				block.invisible();
 				ajax('at/request/application/holidayshipment/update', data).done(() =>{
-					dialog.info({ messageId: "Msg_15" });
+					dialog.info({ messageId: "Msg_15" }).then(()=>{
+						dfd.resolve(true);	
+					});
 				}).fail((res:any)=>{
-					dialog.error({ messageId: res.messageId, messageParams: res.parameterIds });
+					dialog.error({ messageId: res.messageId, messageParams: res.parameterIds }).then(()=>{
+						dfd.resolve(false);	
+					});
 				}).always(()=>{
 					block.clear();
 				});
-	        }
+	        }else{
+				dfd.resolve(false);
+			}
+			return dfd.promise();
 		}
 		
     }
