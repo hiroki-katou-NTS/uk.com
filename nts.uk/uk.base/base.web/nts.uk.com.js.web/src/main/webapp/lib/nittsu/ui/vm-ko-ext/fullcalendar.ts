@@ -1089,6 +1089,14 @@ module nts.uk.ui.components.fullcalendar {
 
                 vm.selectedEvents = [];
             };
+            const removeNewEvent = (event: EventApi) => {
+                _.each(vm.calendar.getEvents(), (e: EventApi) => {
+                    // remove new event (no save)
+                    if (!e.title && e.extendedProps.status === 'new' && e.id !== event.id) {
+                        e.remove();
+                    }
+                });
+            }
 
             const dragger = new FC.Draggable($dg, {
                 itemSelector: '.title',
@@ -1252,12 +1260,7 @@ module nts.uk.ui.components.fullcalendar {
                      */
 
                     // remove new event (with no data) & background event
-                    _.each(vm.calendar.getEvents(), (e: EventApi) => {
-                        // remove new event (no save)
-                        if (!e.title && e.extendedProps.status === 'new' && e.id !== event.id) {
-                            e.remove();
-                        }
-                    });
+                    removeNewEvent(event);
 
                     // get all event with border is black
                     const seletions = () => _.filter(vm.calendar.getEvents(), (e: EventApi) => e.borderColor === BLACK);
@@ -1301,6 +1304,9 @@ module nts.uk.ui.components.fullcalendar {
                     }
                 },
                 eventDragStart: (arg: FullCalendar.EventDragStartArg) => {
+                    // remove new event (with no data) & background event
+                    removeNewEvent(arg.event);
+
                     // copy event by drag
                     if (ko.unwrap<boolean>(dataEvent.shift)) {
                         updateEvents();
@@ -1343,6 +1349,9 @@ module nts.uk.ui.components.fullcalendar {
                     }
                 },
                 eventResizeStart: (arg: FullCalendar.EventResizeStartArg) => {
+                    // remove new event (with no data) & background event
+                    removeNewEvent(arg.event);
+
                     vm.selectedEvents = [];
 
                     // clear all oll selection
@@ -1420,6 +1429,8 @@ module nts.uk.ui.components.fullcalendar {
                     // emit data out if event isn't new
                     if (event.title && event.extendedProps.status !== 'new') {
                         mutatedEvents();
+                    } else if (!event.title && event.extendedProps.status === 'new') {
+                        $caches.new(null);
                     }
                 },
                 eventReceive: (info: FullCalendar.EventReceiveLeaveArg) => {
