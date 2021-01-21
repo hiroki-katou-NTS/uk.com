@@ -2,8 +2,6 @@ package nts.uk.ctx.cloud.operate.dom.service;
 
 import java.util.Optional;
 
-import javax.ejb.Stateless;
-
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.bs.company.dom.company.AbolitionAtr;
 import nts.uk.ctx.bs.company.dom.company.Company;
@@ -19,8 +17,8 @@ import nts.uk.ctx.bs.company.dom.company.primitive.ContractCd;
  */
 public class CreateDefaultCompanyService {
 
-	public static AtomTask create(Require require,String contractCode, String companyCode, String companyName) {
-		Company company = new Company(new CompanyCode(companyCode),
+	public static AtomTask create(Require require,String contractCode, String companyName) {
+		Company company = new Company(new CompanyCode("0001"),
 																	new Name(companyName),
 																	MonthStr.FOUR,
 																	AbolitionAtr.NOT_ABOLITION,
