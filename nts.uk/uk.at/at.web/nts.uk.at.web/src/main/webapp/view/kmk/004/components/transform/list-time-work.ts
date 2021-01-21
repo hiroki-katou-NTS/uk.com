@@ -324,7 +324,6 @@ module nts.uk.at.view.kmk004.components {
 											}));
 											vm.workTimes(workTime.map(m => new WorkTimeL({ ...m, parent: vm.workTimes })));
 										} else {
-											//vm.mode('Update');
 											vm.initList();
 										}
 										vm.mode('Update');
