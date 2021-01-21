@@ -120,6 +120,9 @@ module nts.uk.at.view.knr002.e {
                         }
                     ]
                 })
+
+                
+                
             }
 
             private loadInstalledTerminals(mode: number) {
@@ -207,6 +210,8 @@ module nts.uk.at.view.knr002.e {
                 service.getLocationSetting(code)
                 .done((res: Array<LocationSettingDto>) => {
                     if (res) {
+                        let selectedObject = _.find(vm.initData().listEmpInfoTerminal, (item) => { return item.empInfoTerCode == code; });
+                        vm.selectedName(selectedObject.empInfoTerName);
                         vm.settingContentGrid(res);
                         $("#detail-grid").igGrid("dataSourceObject", vm.settingContentGrid()).igGrid("dataBind");
                     }
@@ -222,6 +227,8 @@ module nts.uk.at.view.knr002.e {
                 service.getBackupContent(code)
                 .done((res: Array<LocationSettingDto>) => {
                     if (res) {
+                        let selectedObject = _.find(vm.initData().listTimeRecordSetFormatBakEDto, (item) => { return item.empInfoTerCode == code; });
+                        vm.selectedName(selectedObject.empInfoTerName);
                         vm.settingContentGrid(res);
                         $("#detail-grid").igGrid("dataSourceObject", vm.settingContentGrid()).igGrid("dataBind");
                     }

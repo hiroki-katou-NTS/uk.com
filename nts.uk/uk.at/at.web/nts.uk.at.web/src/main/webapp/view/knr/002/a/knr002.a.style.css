@@ -82,3 +82,7 @@
     justify-content: flex-end;
     width: 45px;
 }
+
+.ui-iggrid-tablebody {
+	white-space: nowrap;
+}
