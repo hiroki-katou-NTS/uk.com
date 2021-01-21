@@ -38,7 +38,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 		isEnableSwitchBtn: boolean = true;
 		updateMode: KnockoutObservable<boolean> = ko.observable(true);
 		dateBeforeChange: KnockoutObservable<string> = ko.observable(null);
-		isDispTime2ByWorkTime: KnockoutObservable<boolean> = ko.observable(false);
+		isDispTime2ByWorkTime: KnockoutObservable<boolean> = ko.observable(true);
 		isInit: KnockoutObservable<boolean> = ko.observable(true);
 
 		yearRemain: KnockoutObservable<number> = ko.observable();
@@ -1186,7 +1186,8 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 
 		checkCondition12(data: any) {
             const vm = this;
-            if (vm.data && vm.data.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles && vm.selectedWorkTimeCD() && vm.isDispTime2ByWorkTime()) {
+			let isDisplayWorkTime2 = _.filter(vm.data.workTimeLst, { 'workNo': 2 }).length > 0;
+            if (vm.data && vm.data.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles && vm.selectedWorkTimeCD() && vm.isDispTime2ByWorkTime() && isDisplayWorkTime2) {
                 vm.condition12(true);
                 return true;
             }
@@ -1196,6 +1197,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 
 		checkCondition30(data: any) {
 			const vm = this;
+
 			if (vm.data && vm.data.vacationApplicationReflect && vm.data.vacationApplicationReflect.workAttendanceReflect.reflectAttendance === 1) {
 				vm.condition30(true);
 				return true;
