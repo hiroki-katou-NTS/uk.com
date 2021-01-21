@@ -19,11 +19,11 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLog;
 import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLogRepository;
-import nts.uk.ctx.sys.auth.dom.user.HashPassword;
 import nts.uk.ctx.sys.auth.infra.entity.password.changelog.SacdtPasswordChangeLog;
 import nts.uk.ctx.sys.auth.infra.entity.password.changelog.SacdtPasswordChangeLogPK;
 import nts.uk.ctx.sys.auth.infra.entity.password.changelog.SacdtPasswordChangeLogPK_;
 import nts.uk.ctx.sys.auth.infra.entity.password.changelog.SacdtPasswordChangeLog_;
+import nts.uk.ctx.sys.shared.dom.user.password.HashPassword;
 
 /**
  * The Class JpaPasswordChangeLogRepository.

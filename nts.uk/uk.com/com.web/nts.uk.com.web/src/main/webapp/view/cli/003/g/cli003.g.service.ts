@@ -9,7 +9,7 @@ module nts.uk.com.view.cli003.g {
             addLogDisplaySet: "ctx/sys/log/app/add-log-display-set",
             updateLogDisplaySet: "ctx/sys/log/app/update-log-display-set",
             deleteLogDisplaySet: "ctx/sys/log/app/delete-log-display-set",
-            getLogOutputItemByRecordType: "ctx/sys/log/app/get-log-output-item-by-record-type"
+            getLogOutputItemByRecordType: "ctx/sys/log/app/get-log-output-item-by-record-type",
         }
 
         export function getAllLogDisplaySet(): JQueryPromise<any> {

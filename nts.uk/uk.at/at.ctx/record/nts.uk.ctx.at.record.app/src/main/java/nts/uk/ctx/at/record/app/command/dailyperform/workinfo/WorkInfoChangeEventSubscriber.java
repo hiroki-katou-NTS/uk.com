@@ -5,8 +5,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.dom.event.DomainEventSubscriber;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInfoChangeEvent;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeaveUpdateEvent;
+import nts.uk.ctx.at.shared.dom.workinformation.WorkInfoChangeEvent;
 
 /** <<Event>> 実績の就業時間帯が変更された */
 /** <<Event>> 実績の勤務種類が変更された */

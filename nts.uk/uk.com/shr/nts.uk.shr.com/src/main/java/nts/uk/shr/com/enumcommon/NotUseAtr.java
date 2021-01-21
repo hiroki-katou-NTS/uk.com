@@ -17,7 +17,7 @@ public enum NotUseAtr {
 
 	/** The Constant values. */
 	private final static NotUseAtr[] values = NotUseAtr.values();
-
+	
 	/**
 	 * Instantiates a new rounding.
 	 *
@@ -53,5 +53,33 @@ public enum NotUseAtr {
 
 		// Not found.
 		return null;
+	}
+	
+	public static NotUseAtr valueOf(Boolean value) {
+		// Invalid object.
+		if (value == null) {
+			return null;
+		}
+		if (value) {
+			return NotUseAtr.USE;
+		} else {
+			return NotUseAtr.NOT_USE;
+		}
+	}
+	
+	/**
+	 * 使用するか判定する
+	 * @return　boolean
+	 */
+	public boolean isUse() {
+		return USE.equals(this);
+	}
+	
+	/**
+	 * 使用しないか判定する
+	 * @return　boolean
+	 */
+	public boolean isNotUse() {
+		return NOT_USE.equals(this);
 	}
 }

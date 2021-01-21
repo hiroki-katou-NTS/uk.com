@@ -9,13 +9,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "KRCMT_LEAVE_DAYOFF_MANA")
+@Table(name = "KRCDT_HDWK_HD_COM_MNG")
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrcmtLeaveDayOffMana extends UkJpaEntity implements Serializable{
+public class KrcmtLeaveDayOffMana extends ContractUkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 
@@ -25,10 +25,6 @@ public class KrcmtLeaveDayOffMana extends UkJpaEntity implements Serializable{
 	// 使用日数
 	@Column(name = "USED_DAYS")
 	public Double usedDays;
-		
-	// 使用時間数
-	@Column(name = "USED_HOURS")
-	public int usedHours;
 		
 	// 対象選択区分
 	@Column(name = "TARGET_SELECTION_ATR")

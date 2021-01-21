@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.daily.holidayworktime.HolidayWorkFrameTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;

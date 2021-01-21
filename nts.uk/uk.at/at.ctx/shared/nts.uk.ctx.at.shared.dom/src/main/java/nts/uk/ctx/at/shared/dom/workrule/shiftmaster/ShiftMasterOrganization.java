@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.management.RuntimeErrorException;
-
 import lombok.Getter;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 

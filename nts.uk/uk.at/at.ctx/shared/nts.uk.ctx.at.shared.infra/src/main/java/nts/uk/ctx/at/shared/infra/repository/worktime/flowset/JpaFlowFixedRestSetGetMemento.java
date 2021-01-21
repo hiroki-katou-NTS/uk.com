@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSetGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.ScheduleBreakCalculation;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.StampBreakCalculation;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRestSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFlAll;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaScheduleBreakCalculationGetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaStampBreakCalculationGetMemento;
 
@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaStampBreakCalcul
 public class JpaFlowFixedRestSetGetMemento implements FlowFixedRestSetGetMemento {
 
 	/** The entity. */
-	KshmtFlowRestSet entity;
+	KshmtWtFloBrFlAll entity;
 
 	/**
 	 * Instantiates a new jpa flow fixed rest set get memento.
@@ -26,7 +26,7 @@ public class JpaFlowFixedRestSetGetMemento implements FlowFixedRestSetGetMemento
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaFlowFixedRestSetGetMemento(KshmtFlowRestSet entity) {
+	public JpaFlowFixedRestSetGetMemento(KshmtWtFloBrFlAll entity) {
 		super();
 		this.entity = entity;
 	}
@@ -51,7 +51,7 @@ public class JpaFlowFixedRestSetGetMemento implements FlowFixedRestSetGetMemento
 	 */
 	@Override
 	public ScheduleBreakCalculation getCalculateFromSchedule() {
-		return new ScheduleBreakCalculation(new JpaScheduleBreakCalculationGetMemento<KshmtFlowRestSet>(this.entity));
+		return new ScheduleBreakCalculation(new JpaScheduleBreakCalculationGetMemento<KshmtWtFloBrFlAll>(this.entity));
 	}
 
 	/*
@@ -63,7 +63,7 @@ public class JpaFlowFixedRestSetGetMemento implements FlowFixedRestSetGetMemento
 	 */
 	@Override
 	public StampBreakCalculation getCalculateFromStamp() {
-		return new StampBreakCalculation(new JpaStampBreakCalculationGetMemento<KshmtFlowRestSet>(this.entity));
+		return new StampBreakCalculation(new JpaStampBreakCalculationGetMemento<KshmtWtFloBrFlAll>(this.entity));
 	}
 
 }

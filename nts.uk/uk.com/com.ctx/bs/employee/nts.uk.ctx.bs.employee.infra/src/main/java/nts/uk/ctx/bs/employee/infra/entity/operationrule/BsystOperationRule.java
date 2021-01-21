@@ -8,7 +8,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.bs.employee.dom.operationrule.OperationRule;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "BSYST_OPERATION_RULE")
-public class BsystOperationRule extends UkJpaEntity {
+public class BsystOperationRule extends ContractUkJpaEntity {
 
 	@Id
 	@Column(name = "CID")

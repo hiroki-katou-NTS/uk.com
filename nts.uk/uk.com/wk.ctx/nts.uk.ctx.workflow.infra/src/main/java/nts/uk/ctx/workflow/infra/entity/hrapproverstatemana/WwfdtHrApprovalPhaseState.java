@@ -25,7 +25,7 @@ import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.hrapproverstatemana.ApprovalFrameHr;
 import nts.uk.ctx.workflow.dom.hrapproverstatemana.ApprovalPhaseStateHr;
 import nts.uk.ctx.workflow.dom.hrapproverstatemana.ApproverInforHr;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * 人事承認フェーズインスタンス
  * @author hoatt
@@ -36,7 +36,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name="WWFDT_HR_APPROVAL_PHASE_ST")
 @Builder
-public class WwfdtHrApprovalPhaseState extends UkJpaEntity {
+public class WwfdtHrApprovalPhaseState extends ContractUkJpaEntity {
 	/**主キー*/
 	@EmbeddedId
 	public WwfdtHrApprovalPhaseStatePK wwfdpHrApprovalPhaseStatePK;

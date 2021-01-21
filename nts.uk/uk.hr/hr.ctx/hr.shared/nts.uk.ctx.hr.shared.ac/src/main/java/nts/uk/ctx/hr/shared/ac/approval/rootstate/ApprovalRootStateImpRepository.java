@@ -12,6 +12,7 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.hr.shared.dom.approval.rootstate.ApprovalBehaviorAtrHrExport;
 import nts.uk.ctx.hr.shared.dom.approval.rootstate.ApprovalFormHrExport;
 import nts.uk.ctx.hr.shared.dom.approval.rootstate.ApprovalFrameHrExport;
@@ -115,7 +116,7 @@ public class ApprovalRootStateImpRepository implements ApprovalRootStateHrReposi
 								approverStateHrExportOutput.setApproverName(approverStateExportInput.getApproverName());
 								approverStateHrExportOutput.setRepresenterID(approverStateExportInput.getRepresenterID());
 								approverStateHrExportOutput.setRepresenterName(approverStateExportInput.getRepresenterName());
-								approverStateHrExportOutput.setApprovalDate(approverStateExportInput.getApprovalDate());
+								approverStateHrExportOutput.setApprovalDate(GeneralDate.localDate(approverStateExportInput.getApprovalDate().toLocalDate()));
 								approverStateHrExportOutput.setApprovalReason(approverStateExportInput.getApprovalReason());
 								
 								listApproverOutput.add(approverStateHrExportOutput);

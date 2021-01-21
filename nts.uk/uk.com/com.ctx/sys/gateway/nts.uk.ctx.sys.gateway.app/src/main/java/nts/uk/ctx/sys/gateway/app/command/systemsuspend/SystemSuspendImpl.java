@@ -9,10 +9,10 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
-import nts.uk.ctx.sys.gateway.app.command.login.LoginRecordRegistService;
-import nts.uk.ctx.sys.gateway.app.command.login.dto.LoginRecordInput;
-import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleAdapter;
-import nts.uk.ctx.sys.gateway.dom.login.service.CollectCompanyList;
+import nts.uk.ctx.sys.gateway.app.command.loginold.LoginRecordRegistService;
+import nts.uk.ctx.sys.gateway.app.command.loginold.dto.LoginRecordInput;
+import nts.uk.ctx.sys.gateway.dom.loginold.adapter.RoleAdapter;
+import nts.uk.ctx.sys.gateway.dom.loginold.service.CollectCompanyList;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopByCompany;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopByCompanyRepository;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopModeType;

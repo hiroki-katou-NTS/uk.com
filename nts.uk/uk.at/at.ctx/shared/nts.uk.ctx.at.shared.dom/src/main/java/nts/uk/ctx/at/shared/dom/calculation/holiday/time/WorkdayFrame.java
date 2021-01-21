@@ -6,8 +6,6 @@ package nts.uk.ctx.at.shared.dom.calculation.holiday.time;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.TransferFrameName;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkdayFrameName;
 
 /**
  * The Class WorkdayFrame.

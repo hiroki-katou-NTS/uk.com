@@ -25,6 +25,7 @@ import nts.uk.ctx.sys.assist.dom.datarestoration.common.ServerUploadProcessingSe
 import nts.uk.ctx.sys.assist.dom.datarestoration.common.TableItemValidation;
 import nts.uk.ctx.sys.assist.dom.datarestoration.common.TableListRestorationService;
 import nts.uk.ctx.sys.assist.dom.datarestoration.common.ThresholdConfigurationCheck;
+import nts.uk.ctx.sys.assist.dom.storage.DataObservable;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -57,6 +58,8 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 	private EmployeeRestoration employeeRestoration;
 
 	private static final String STATUS = "status";
+	private static final String DATA_STORAGE_PROCESS_ID = "dataStorageProcessId";
+	public static final DataObservable OBSERVABLE = new DataObservable();
 	
 
 	@SuppressWarnings("unchecked")
@@ -140,6 +143,9 @@ public class SyncServerUploadProcessingCommandHandler extends AsyncCommandHandle
 		serverPrepareMng = employeeRestoration.restoreTargerEmployee(serverPrepareMng, performDataRecovery, tableList);
 		setter.updateData(STATUS, convertToStatus(serverPrepareMng));
 		serverPrepareMngRepository.update(serverPrepareMng);
+		if (!tableList.isEmpty()) {
+			setter.setData(DATA_STORAGE_PROCESS_ID, tableList.get(0).getDataStorageProcessingId());
+		}
 	}
 
 	private String convertToStatus(ServerPrepareMng serverPrepareMng) {

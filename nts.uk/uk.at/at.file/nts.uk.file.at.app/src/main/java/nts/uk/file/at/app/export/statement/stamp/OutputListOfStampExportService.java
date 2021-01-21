@@ -93,6 +93,7 @@ public class OutputListOfStampExportService extends ExportService<ConditionListO
 					stampList.setMethod(i.getAuthcMethod());
 					stampList.setInsLocation(i.getInstallPlace());
 					stampList.setLocationInfor(i.getLocalInfor());
+					stampList.setAddress(i.isAddress());
 					stampList.setSupportCard(i.getSupportCard());
 					stampList.setWorkingHour(i.getWorkTimeDisplayName());
 					stampList.setOvertimeHour(i.getOvertimeHours());
@@ -124,6 +125,7 @@ public class OutputListOfStampExportService extends ExportService<ConditionListO
 					stampList.setCardNo(TextResource.localize("KDP011_34") + "　" + i.getCardNo());
 					stampList.setInsLocation(i.getInstallPlace());
 					stampList.setLocationInfor(i.getLocalInfor());
+					stampList.setAddress(i.isAddress());
 					stampList.setSupportCard(i.getSupportCard());
 					stampList.setWorkingHour(i.getWorkTimeDisplayName());
 					stampList.setOvertimeHour(i.getOvertimeHours());

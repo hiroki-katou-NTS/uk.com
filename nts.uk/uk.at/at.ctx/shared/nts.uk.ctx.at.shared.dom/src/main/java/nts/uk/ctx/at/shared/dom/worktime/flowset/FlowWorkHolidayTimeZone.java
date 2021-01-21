@@ -5,8 +5,10 @@
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
+import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 
 /**
  * The Class FlowWorkHolidayTimeZone.
@@ -19,7 +21,8 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
  * @return the flow time setting
  */
 @Getter
-public class FlowWorkHolidayTimeZone extends WorkTimeDomainObject {
+@NoArgsConstructor
+public class FlowWorkHolidayTimeZone extends WorkTimeDomainObject implements Cloneable{
 
 	/** The worktime no. */
 	// 就業時間帯NO
@@ -85,5 +88,43 @@ public class FlowWorkHolidayTimeZone extends WorkTimeDomainObject {
 		memento.setUseOutLegalPubHolRestrictTime(this.useOutLegalPubHolRestrictTime);
 		memento.setOutLegalPubHolFrameNo(this.outLegalPubHolFrameNo);
 		memento.setFlowTimeSetting(this.flowTimeSetting);
+	}
+	
+	@Override
+	public FlowWorkHolidayTimeZone clone() {
+		FlowWorkHolidayTimeZone cloned = new FlowWorkHolidayTimeZone();
+		try {
+			cloned.worktimeNo = this.worktimeNo;
+			cloned.useInLegalBreakRestrictTime = this.useInLegalBreakRestrictTime ? true : false;
+			cloned.inLegalBreakFrameNo = new BreakFrameNo(this.inLegalBreakFrameNo.v());
+			cloned.useOutLegalBreakRestrictTime = this.useOutLegalBreakRestrictTime ? true : false;
+			cloned.outLegalBreakFrameNo = new BreakFrameNo(this.outLegalBreakFrameNo.v());
+			cloned.useOutLegalPubHolRestrictTime = this.useOutLegalPubHolRestrictTime ? true : false;
+			cloned.outLegalPubHolFrameNo = new BreakFrameNo(this.outLegalPubHolFrameNo.v());
+			cloned.flowTimeSetting = this.flowTimeSetting.clone();
+
+		}
+		catch (Exception e){
+			throw new RuntimeException("FlowWorkHolidayTimeZone clone error.");
+		}
+		return cloned;
+	}
+	
+	/**
+	 * 休日区分から対応する休出枠Noを取得する
+	 * @param atr 休日区分
+	 * @return 休出枠No
+	 */
+	public BreakFrameNo getBreakFrameNoToHolidayAtr(HolidayAtr atr) {
+		switch(atr) {
+			case STATUTORY_HOLIDAYS:
+				return this.inLegalBreakFrameNo;
+			case NON_STATUTORY_HOLIDAYS:
+				return this.outLegalBreakFrameNo;
+			case PUBLIC_HOLIDAY:
+				return this.outLegalPubHolFrameNo;
+			default:
+				throw new RuntimeException("unknown holidayAtr:"+atr);
+		}
 	}
 }

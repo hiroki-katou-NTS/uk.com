@@ -13,9 +13,8 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.sys.env.pub.maildestination.IMailDestinationPub;
 import nts.uk.ctx.sys.env.pub.maildestination.MailDestination;
-//import nts.uk.ctx.sys.env.pub.maildestination.MailDestination;
-import nts.uk.ctx.sys.gateway.dom.login.adapter.MailDestinationAdapter;
-import nts.uk.ctx.sys.gateway.dom.login.dto.MailDestinationImport;
+import nts.uk.ctx.sys.gateway.dom.loginold.adapter.MailDestinationAdapter;
+import nts.uk.ctx.sys.gateway.dom.loginold.dto.MailDestinationImport;
 
 /**
  * The Class MailDestinationAdapterImpl.

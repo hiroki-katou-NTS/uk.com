@@ -12,7 +12,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 表示可能勤務種類制御
@@ -23,8 +23,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCST_WORKTYPE_DISPLAY")
-public class KscstWorkTypeDisplay extends UkJpaEntity implements Serializable {
+@Table(name = "KSCMT_DISP_WKTP_USE")
+public class KscstWorkTypeDisplay extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

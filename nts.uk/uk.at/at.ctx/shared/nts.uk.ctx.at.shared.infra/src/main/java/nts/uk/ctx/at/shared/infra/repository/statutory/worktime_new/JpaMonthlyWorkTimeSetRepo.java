@@ -12,12 +12,12 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetCom;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetEmp;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetRepo;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetSha;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetWkp;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetCom;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetEmp;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetRepo;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetSha;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetWkp;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshmtLegalTimeMCom;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshmtLegalTimeMComPK;
@@ -83,8 +83,8 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 		return this.queryProxy().query(SELECT_YEAR_COM, KshmtLegalTimeMCom.class)
 				.setParameter("cid", cid)
 				.setParameter("type", laborAttr.value)
-				.setParameter("start", year * 1000 + 01)
-				.setParameter("end", year * 1000 + 12)
+				.setParameter("start", year * 100 + 01)
+				.setParameter("end", year * 100 + 12)
 				.getList(c -> MonthlyWorkTimeSetCom.of(cid, laborAttr, new YearMonth(c.pk.ym), c.domain()));
 	}
 
@@ -94,8 +94,8 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 		return this.queryProxy().query(SELECT_YEAR_EMP, KshmtLegalTimeMEmp.class)
 				.setParameter("cid", cid)
 				.setParameter("type", laborAttr.value)
-				.setParameter("start", year * 1000 + 01)
-				.setParameter("end", year * 1000 + 12)
+				.setParameter("start", year * 100 + 01)
+				.setParameter("end", year * 100 + 12)
 				.setParameter("empCD", empCode)
 				.getList(c -> MonthlyWorkTimeSetEmp.of(cid, new EmploymentCode(empCode), laborAttr, new YearMonth(c.pk.ym), c.domain()));
 	}
@@ -105,8 +105,8 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 		return this.queryProxy().query(SELECT_YEAR_SYA, KshmtLegalTimeMSya.class)
 				.setParameter("cid", cid)
 				.setParameter("type", laborAttr.value)
-				.setParameter("start", year * 1000 + 01)
-				.setParameter("end", year * 1000 + 12)
+				.setParameter("start", year * 100 + 01)
+				.setParameter("end", year * 100 + 12)
 				.setParameter("sid", sid)
 				.getList(c -> MonthlyWorkTimeSetSha.of(cid, sid, laborAttr, new YearMonth(c.pk.ym), c.domain()));
 	}
@@ -117,8 +117,8 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 		return this.queryProxy().query(SELECT_YEAR_WKP, KshmtLegalTimeMWkp.class)
 				.setParameter("cid", cid)
 				.setParameter("type", laborAttr.value)
-				.setParameter("start", year * 1000 + 01)
-				.setParameter("end", year * 1000 + 12)
+				.setParameter("start", year * 100 + 01)
+				.setParameter("end", year * 100 + 12)
 				.setParameter("wkpId", workplaceId)
 				.getList(c -> MonthlyWorkTimeSetWkp.of(cid, workplaceId, laborAttr, new YearMonth(c.pk.ym), c.domain()));
 	}
@@ -210,8 +210,8 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 			+ "WHERE x.pk.cid = :cid  AND x.pk.ym >= :start "
 			+ "AND x.pk.ym <= :end", KshmtLegalTimeMEmp.class)
 				.setParameter("cid", cid)
-				.setParameter("start", year * 1000 + 01)
-				.setParameter("end", year * 1000 + 12)
+				.setParameter("start", year * 100 + 01)
+				.setParameter("end", year * 100 + 12)
 				.getList(c -> c.pk.empCD);
 	}
 
@@ -222,8 +222,8 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 			+ "WHERE x.pk.cid = :cid  AND x.pk.ym >= :start "
 			+ "AND x.pk.ym <= :end", KshmtLegalTimeMWkp.class)
 				.setParameter("cid", cid)
-				.setParameter("start", year * 1000 + 01)
-				.setParameter("end", year * 1000 + 12)
+				.setParameter("start", year * 100 + 01)
+				.setParameter("end", year * 100 + 12)
 				.getList(c -> c.pk.wkpId);
 	}
 
@@ -233,8 +233,8 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 				+ "WHERE x.pk.cid = :cid  AND x.pk.ym >= :start "
 				+ "AND x.pk.ym <= :end", KshmtLegalTimeMCom.class)
 					.setParameter("cid", cid)
-					.setParameter("start", year * 1000 + 01)
-					.setParameter("end", year * 1000 + 12)
+					.setParameter("start", year * 100 + 01)
+					.setParameter("end", year * 100 + 12)
 					.getList().forEach(c -> commandProxy().remove(cid));
 	}
 
@@ -278,8 +278,8 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 				+ "AND x.pk.ym <= :end AND x.pk.sid = :sid", KshmtLegalTimeMSya.class)
 					.setParameter("cid", cid)
 					.setParameter("sid", sid)
-					.setParameter("start", year * 1000 + 01)
-					.setParameter("end", year * 1000 + 12)
+					.setParameter("start", year * 100 + 01)
+					.setParameter("end", year * 100 + 12)
 					.getList().forEach(c -> commandProxy().remove(cid));
 	}
 
@@ -290,8 +290,8 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 				+ "AND x.pk.ym <= :end AND c.pk.empCD = :empCD", KshmtLegalTimeMEmp.class)
 					.setParameter("cid", cid)
 					.setParameter("empCD", empCD)
-					.setParameter("start", year * 1000 + 01)
-					.setParameter("end", year * 1000 + 12)
+					.setParameter("start", year * 100 + 01)
+					.setParameter("end", year * 100 + 12)
 					.getList().forEach(c -> commandProxy().remove(cid));
 	}
 
@@ -302,8 +302,8 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 				+ "AND x.pk.ym <= :end AND c.pk.wkpId = :wkpId", KshmtLegalTimeMWkp.class)
 					.setParameter("cid", cid)
 					.setParameter("wkpId", wkpId)
-					.setParameter("start", year * 1000 + 01)
-					.setParameter("end", year * 1000 + 12)
+					.setParameter("start", year * 100 + 01)
+					.setParameter("end", year * 100 + 12)
 					.getList().forEach(c -> commandProxy().remove(cid));
 	}
 }

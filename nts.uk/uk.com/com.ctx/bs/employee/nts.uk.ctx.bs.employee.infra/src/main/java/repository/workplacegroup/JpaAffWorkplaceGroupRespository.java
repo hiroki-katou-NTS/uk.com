@@ -46,10 +46,11 @@ public class JpaAffWorkplaceGroupRespository extends JpaRepository implements Af
 			+ " LEFT JOIN BsymtWorkplaceGroup wpg ON c.pk.WKPGRPID = wpg.pk.WKPGRPID" + " WHERE wpg.pk.CID = :CID"
 			+ " AND wpg.WKPGRPCode = :WKPGRPCode" + " ORDER BY wpg.WKPGRPCode ASC, c.pk.WKPID ASC";
 
-	private static final String SELECT_WORKPLACE_GROUP = "SELECT wpg FROM BsymtWorkplaceGroup c "
+	private static final String SELECT_WORKPLACE_GROUP = "SELECT wpg FROM BsymtWorkplaceGroup wpg "
 			+ " LEFT JOIN BsymtAffWorkPlaceGroup atc ON wpg.pk.WKPGRPID = atc.pk.WKPGRPID" + " WHERE wpg.pk.CID = :CID"
-			+ " AND atc.pk.WKPID = :WPID";
+			+ " AND atc.pk.WKPID = :WKPID";
 
+	
 	private static final String CHECK_WORKPLACE_GROUP = "SELECT c.pk.WKPID FROM BsymtAffWorkPlaceGroup c "
 			+ " LEFT JOIN BsymtWorkplaceGroup wpg ON c.pk.WKPGRPID = wpg.pk.WKPGRPID" + " WHERE wpg.pk.CID = :CID"
 			+ " AND c.pk.WKPID = :WKPID";

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.ws.application.approvalstatus;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -13,6 +14,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.ApprovalStatusMailTempCommand;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.RegisterApprovalStatusMailTempCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApplicationListDto;
+import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttSpecDeadlineDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusActivityData;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusByIdDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusFinder;
@@ -20,6 +22,13 @@ import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusM
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusPeriorDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalSttRequestContentDis;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.UnAppMailTransmisDto;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprSttEmpParam;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprSttExecutionParam;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprovalStatusService;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprovalSttScreenRepository;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmp;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmpDateContent;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttExecutionOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttByEmpListOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
@@ -39,6 +48,12 @@ public class ApprovalStatusWebservice extends WebService {
 	/** The finder. */
 	@Inject
 	private ApprovalStatusFinder finder;
+	
+	@Inject
+	private ApprovalStatusService approvalStatusService;
+	
+	@Inject
+	private ApprovalSttScreenRepository approvalSttScreenRepository;
 
 	@POST
 	@Path("getMailTemp")
@@ -124,5 +139,49 @@ public class ApprovalStatusWebservice extends WebService {
 	@Path("checkSendUnConfirMail")
 	public boolean checkSendMailUnConf(List<UnConfrSendMailParam> listWkp){
 		return finder.checkSendUnConfMail(listWkp);
+	}
+	
+	// refactor 5
+	@POST
+	@Path("getApprovalStatusActivation")
+	public ApprSttSpecDeadlineDto getApprovalStatusActivation(Integer selectClosureId){
+		return finder.getApprovalStatusActivation(selectClosureId);
+	}
+	
+	@POST
+	@Path("getStatusExecution")
+	public List<ApprSttExecutionOutput> getStatusExecution(ApprSttExecutionParam param){
+		return approvalStatusService.getStatusExecution(param);
+	}
+	
+	@POST
+	@Path("deleteTmpTable")
+	public void deleteTmpTable(){
+		approvalSttScreenRepository.deleteTemporaryTable();
+	}
+	
+	@POST
+	@Path("getApprSttStartByEmp")
+	public List<ApprSttEmp> getApprSttStartByEmp(ApprSttEmpParam param){
+		return approvalStatusService.getApprSttStartByEmp(param);
+	}
+	
+	@POST
+	@Path("getApprSttStartByEmpDate")
+	public List<ApprSttEmpDateContent> getApprSttStartByEmpDate(ApprSttEmpParam param) throws InterruptedException{
+		// return approvalStatusService.getApprSttStartByEmpDate(param);
+		Thread.sleep(3000);
+		return Arrays.asList(new ApprSttEmpDateContent(
+				"dateStr", 
+				0, 
+				0, 
+				"content", 
+				"reflectedState", 
+				"approvalStatus", 
+				"phase1", 
+				"phase2", 
+				"phase3", 
+				"phase4", 
+				"phase5"));
 	}
 }

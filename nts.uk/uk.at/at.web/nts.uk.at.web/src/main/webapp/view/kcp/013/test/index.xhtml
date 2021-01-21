@@ -30,6 +30,8 @@
 						<div
 							data-bind="ntsCheckBox: { checked: fillter, text: 'Fillter' }"></div>
 						|
+                        <div data-bind="ntsCheckBox: { checked: disabled }">Disable</div>
+						|
 						<div
 							data-bind="ntsCheckBox: { checked: showNone, text: 'ShowNone' }"></div>
 						|
@@ -37,6 +39,8 @@
 							data-bind="ntsCheckBox: { checked: showDeferred, text: 'ShowDeferred' }"></div>
 						| <input data-bind="ntsTextEditor: {value: initiallySelected}" />Initially
 						Selected Code
+						| <input data-bind="ntsNumberEditor: {value: widthValue, option: option}" />
+						Width(px)
 					</div>
 					<div id="tree-grid"
 						style="width: 460px; margin-left: 50px; margin-top: 20px;">

@@ -1,24 +1,19 @@
 module nts.uk.at.view.kaf022.s.service {
     import ajax = nts.uk.request.ajax;
-    import format = nts.uk.text.format;
 
-    let paths: any = {
-        update: 'at/request/application-reason/update',
-        insert: 'at/request/application-reason/insert',
-        deleteReason: 'at/request/application-reason/delete',
-    }
+    const paths: any = {
+        getReasons: 'at/request/setting/company/appreasonstd/all',
+        saveReason: 'at/request/setting/company/appreasonstd/item/save',
+        deleteReason: 'at/request/setting/company/appreasonstd/item/delete',
+    };
         
-    export function getReason(appType: number) {
-        return ajax(`at/request/application-reason/find/reason/${appType}`);
+    export function getReason() {
+        return ajax("at", paths.getReasons);
     }
-    export function insert(command): JQueryPromise<void>{
-        return ajax("at", paths.insert, command);
+    export function saveReason(command): JQueryPromise<void>{
+        return ajax("at", paths.saveReason, command);
     }        
-        
-     export function deleteReason(command): JQueryPromise<void>{
+    export function deleteReason(command): JQueryPromise<void>{
         return ajax("at", paths.deleteReason, command);
-    }  
-    export function update(command): JQueryPromise<void>{
-        return ajax("at", paths.update, command);  
     }
 }

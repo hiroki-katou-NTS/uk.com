@@ -25,6 +25,6 @@ public interface CollectApprovalRootPatternService {
 	 * @param appDate 基準日
 	 * @return
 	 */
-	public ApprovalRootContentImport_New getgetApprovalRootPatternNew(String companyID, String employeeID, 
+	public ApprovalRootContentImport_New getApprovalRootPatternNew(String companyID, String employeeID, 
 			EmploymentRootAtr rootAtr, ApplicationType appType, GeneralDate appDate);
 }

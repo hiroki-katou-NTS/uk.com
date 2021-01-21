@@ -15,7 +15,7 @@ import nts.arc.layer.dom.AggregateRoot;
 @Setter
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public abstract class AggregateTableEntity extends UkJpaEntity {
+public abstract class AggregateTableEntity extends ContractUkJpaEntity {
     
     /**
      * version

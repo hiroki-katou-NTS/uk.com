@@ -26,8 +26,8 @@ public class UnbalanceVacation extends LeaveOccurrDetail {
 	private AttendanceTime timeHalfDay;
 
 	public UnbalanceVacation(GeneralDate deadline, DigestionAtr digestionCate, Optional<GeneralDate> extinctionDate,
-			AttendanceTime timeOneDay, AttendanceTime timeHalfDay) {
-		super(deadline, digestionCate, extinctionDate);
+			AccumulationAbsenceDetail detail, AttendanceTime timeOneDay, AttendanceTime timeHalfDay) {
+		super(detail, deadline, digestionCate, extinctionDate);
 		this.timeOneDay = timeOneDay;
 		this.timeHalfDay = timeHalfDay;
 	}

@@ -10,14 +10,14 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalHolidayWorkTransferOrder;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalHolidayWorkTransferOrderOfAggrMonthly;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalOverTimeTransferOrder;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalOverTimeTransferOrderOfAggrMonthly;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthly;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthlyRepository;
-import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.legaltransferorder.KrcstMonsetLglTrnsSet;
+import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.legaltransferorder.KrcmtCalcMTrnsSort;
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.legaltransferorder.KrcstMonsetLglTrnsSetPK;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.legaltransferorder.LegalHolidayWorkTransferOrder;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.legaltransferorder.LegalHolidayWorkTransferOrderOfAggrMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.legaltransferorder.LegalOverTimeTransferOrder;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.legaltransferorder.LegalOverTimeTransferOrderOfAggrMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 
@@ -32,7 +32,7 @@ public class JpaLegalTransferOrderSetOfAggrMonthly extends JpaRepository impleme
 	@Override
 	public Optional<LegalTransferOrderSetOfAggrMonthly> find(String companyId) {
 		return this.queryProxy()
-				.find(new KrcstMonsetLglTrnsSetPK(companyId), KrcstMonsetLglTrnsSet.class)
+				.find(new KrcstMonsetLglTrnsSetPK(companyId), KrcmtCalcMTrnsSort.class)
 				.map(c -> toDomain(c));
 	}
 	
@@ -41,7 +41,7 @@ public class JpaLegalTransferOrderSetOfAggrMonthly extends JpaRepository impleme
 	 * @param entity エンティティ：月別実績の法定内振替順設定
 	 * @return ドメイン：月別実績の法定内振替順設定
 	 */
-	private static LegalTransferOrderSetOfAggrMonthly toDomain(KrcstMonsetLglTrnsSet entity){
+	private static LegalTransferOrderSetOfAggrMonthly toDomain(KrcmtCalcMTrnsSort entity){
 		
 		// 残業・休出並び順の再構成
 		Map<Integer, Integer> overTimeOrderMap = new HashMap<Integer, Integer>(){
@@ -116,10 +116,10 @@ public class JpaLegalTransferOrderSetOfAggrMonthly extends JpaRepository impleme
 
 		// 登録・更新を判断　および　キー値設定
 		boolean isNeedPersist = false;
-		KrcstMonsetLglTrnsSet entity = this.getEntityManager().find(KrcstMonsetLglTrnsSet.class, key);
+		KrcmtCalcMTrnsSort entity = this.getEntityManager().find(KrcmtCalcMTrnsSort.class, key);
 		if (entity == null){
 			isNeedPersist = true;
-			entity = new KrcstMonsetLglTrnsSet();
+			entity = new KrcmtCalcMTrnsSort();
 			entity.PK = key;
 		}
 		
@@ -201,6 +201,6 @@ public class JpaLegalTransferOrderSetOfAggrMonthly extends JpaRepository impleme
 	/** 削除 */
 	@Override
 	public void remove(String companyId) {
-		this.commandProxy().remove(KrcstMonsetLglTrnsSet.class, new KrcstMonsetLglTrnsSetPK(companyId));
+		this.commandProxy().remove(KrcmtCalcMTrnsSort.class, new KrcstMonsetLglTrnsSetPK(companyId));
 	}
 }

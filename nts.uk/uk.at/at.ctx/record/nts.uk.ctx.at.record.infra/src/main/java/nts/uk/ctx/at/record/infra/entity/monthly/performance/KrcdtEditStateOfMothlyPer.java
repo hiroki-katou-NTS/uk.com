@@ -13,23 +13,23 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.monthly.performance.EditStateOfMonthlyPerformance;
-import nts.uk.ctx.at.record.dom.monthly.performance.enums.StateOfEditMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.editstate.EditStateOfMonthlyPerformance;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.editstate.StateOfEditMonthly;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * エンティティ：月別実績の編集状態
  * @author shuichu_ishida
  */
 @Entity
-@Table(name = "KRCDT_EDIT_STATE_MONTH")
+@Table(name = "KRCDT_MON_EDIT_STATE")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class KrcdtEditStateOfMothlyPer extends UkJpaEntity implements Serializable {
+public class KrcdtEditStateOfMothlyPer extends ContractUkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 

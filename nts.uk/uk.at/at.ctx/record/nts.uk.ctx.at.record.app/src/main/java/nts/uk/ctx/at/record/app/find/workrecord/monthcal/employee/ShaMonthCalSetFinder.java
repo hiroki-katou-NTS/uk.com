@@ -3,9 +3,9 @@ package nts.uk.ctx.at.record.app.find.workrecord.monthcal.employee;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.sha.ShaFlexMonthActCalSetRepo;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.sha.ShaDeforLaborMonthActCalSetRepo;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.sha.ShaRegulaMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.sha.ShaFlexMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.sha.ShaDeforLaborMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.sha.ShaRegulaMonthActCalSetRepo;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

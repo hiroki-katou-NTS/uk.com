@@ -5,7 +5,7 @@ import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily_New;
+import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 @AllArgsConstructor
@@ -19,7 +19,7 @@ public class OvertimeAppParameter {
 	/**
 	 * 反映不可理由
 	 */
-	private ReasonNotReflectDaily_New reasonNotReflect;
+	private ReasonNotReflectDaily reasonNotReflect;
 	/**
 	 * 勤務種類コード
 	 */

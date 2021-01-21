@@ -3,7 +3,7 @@ package nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.Application;
 
 @AllArgsConstructor
 @Setter
@@ -21,5 +21,5 @@ public class ReflectRecordInfor {
 	/**
 	 *　申請情報 
 	 */
-	private Application_New appInfor;
+	private Application appInfor;
 }

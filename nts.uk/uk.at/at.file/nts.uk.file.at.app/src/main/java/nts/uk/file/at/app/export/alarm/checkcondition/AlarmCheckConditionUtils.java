@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import nts.arc.i18n.I18NText;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceNameDivergenceDto;
+import nts.uk.ctx.at.record.dom.divergence.time.service.attendance.AttendanceNameDivergenceDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.RangeCompareType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.SingleValueCompareType;

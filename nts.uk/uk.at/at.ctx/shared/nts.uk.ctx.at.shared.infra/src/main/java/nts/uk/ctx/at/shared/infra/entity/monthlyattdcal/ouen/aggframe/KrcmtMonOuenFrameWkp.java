@@ -9,16 +9,16 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.ouen.aggframe.AggregateFrameName;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.ouen.aggframe.AggregateFrameTargetWorkplace;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.ouen.aggframe.OuenAggregateFrameOfMonthly;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.ouen.aggframe.AggregateFrameName;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.ouen.aggframe.AggregateFrameTargetWorkplace;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.ouen.aggframe.OuenAggregateFrameOfMonthly;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @NoArgsConstructor
 @Table(name = "KRCMT_MON_SUP_FRAME_WKP")
 @AllArgsConstructor
-public class KrcmtMonOuenFrameWkp extends UkJpaEntity implements Serializable {
+public class KrcmtMonOuenFrameWkp extends ContractUkJpaEntity implements Serializable {
 
 	/***/
 	private static final long serialVersionUID = 1L;

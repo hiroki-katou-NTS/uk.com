@@ -9,7 +9,7 @@ import lombok.Getter;
 import nts.uk.ctx.at.record.app.find.dailyperform.remark.dto.RemarksOfDailyDto;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ConvertibleAttendanceItem;
 
 public class RemarkOfDailyCommand extends DailyWorkCommonCommand {
 
@@ -27,7 +27,7 @@ public class RemarkOfDailyCommand extends DailyWorkCommonCommand {
 	public void updateData(Object data) {
 		if(data != null){
 			RemarksOfDailyPerform d = (RemarksOfDailyPerform) data;
-			this.data.removeIf(br -> br.getRemarkNo() == d.getRemarkNo());
+			this.data.removeIf(br -> br.getRemarks().getRemarkNo() == d.getRemarks().getRemarkNo());
 			this.data.add(d);
 		}
 	}

@@ -11,12 +11,13 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.app.find.calculationsetting.StampReflectionManagementDto;
 import nts.uk.ctx.at.record.app.find.calculationsetting.StampReflectionManagementFinder;
 import nts.uk.ctx.at.record.app.find.dailyperform.midnight.MidnightTimeSheetDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.midnight.MidnightTimeSheetFinder;
-import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemSetFinder;
+import nts.uk.ctx.at.record.app.find.divergence.time.DivergenceAttendanceItemFinder;
 import nts.uk.ctx.at.record.app.find.holiday.roundingmonth.RoundingMonthDto;
 import nts.uk.ctx.at.record.app.find.holiday.roundingmonth.RoundingMonthFinder;
 import nts.uk.ctx.at.record.app.find.holiday.roundingmonth.TimeRoundingOfExcessOutsideTimeDto;
@@ -31,9 +32,7 @@ import nts.uk.ctx.at.record.app.find.workrecord.temporarywork.ManageWorkTemporar
 import nts.uk.ctx.at.record.app.find.workrecord.temporarywork.ManageWorkTemporaryFinder;
 import nts.uk.ctx.at.record.app.find.workrule.specific.SpecificWorkRuleDto;
 import nts.uk.ctx.at.record.app.find.workrule.specific.SpecificWorkRuleFinder;
-import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceNameDivergenceDto;
-import nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository;
-import nts.uk.ctx.at.record.dom.workrule.specific.TimeOffVacationPriorityOrder;
+import nts.uk.ctx.at.record.dom.divergence.time.service.attendance.AttendanceNameDivergenceDto;
 import nts.uk.ctx.at.shared.app.find.calculation.holiday.HolidayAddtionDto;
 import nts.uk.ctx.at.shared.app.find.calculation.holiday.HolidayAddtionFinder;
 import nts.uk.ctx.at.shared.app.find.calculation.holiday.flex.FlexSetDto;
@@ -60,6 +59,21 @@ import nts.uk.ctx.at.shared.app.find.workrecord.monthlyresults.roleopenperiod.Ro
 import nts.uk.ctx.at.shared.app.find.workrule.func.SelectFunctionDto;
 import nts.uk.ctx.at.shared.app.find.workrule.func.SelectFunctionFinder;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeFinder;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
+import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleofovertimework.RoleOvertimeWorkEnum;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleopenperiod.RoleOfOpenPeriodEnum;
+import nts.uk.ctx.at.shared.dom.workrule.deformed.AggDeformedLaborSetting;
+import nts.uk.ctx.at.shared.dom.workrule.deformed.AggDeformedLaborSettingRepository;
+import nts.uk.ctx.at.shared.dom.workrule.specific.SpecificWorkRuleRepository;
+import nts.uk.ctx.at.shared.dom.workrule.specific.TimeOffVacationPriorityOrder;
+import nts.uk.ctx.at.shared.dom.workrule.workform.FlexWorkMntSetRepository;
+import nts.uk.ctx.at.shared.dom.workrule.workform.FlexWorkSet;
+import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManage;
+import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManageRepository;
+import nts.uk.screen.at.app.worktype.WorkTypeDto;
+import nts.uk.screen.at.app.worktype.WorkTypeProcessor;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -74,19 +88,6 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
 import nts.uk.shr.infra.file.report.masterlist.data.SheetData;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListMode;
-import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
-import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
-import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
-import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWorkEnum;
-import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriodEnum;
-import nts.uk.ctx.at.shared.dom.workrule.deformed.AggDeformedLaborSetting;
-import nts.uk.ctx.at.shared.dom.workrule.deformed.AggDeformedLaborSettingRepository;
-import nts.uk.ctx.at.shared.dom.workrule.workform.FlexWorkMntSetRepository;
-import nts.uk.ctx.at.shared.dom.workrule.workform.FlexWorkSet;
-import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManage;
-import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManageRepository;
-import nts.uk.screen.at.app.worktype.WorkTypeDto;
-import nts.uk.screen.at.app.worktype.WorkTypeProcessor;
 
 @Stateless
 @DomainID(value = "CalculationSetting")
@@ -138,7 +139,7 @@ public class CalculationSettingExportImpl implements MasterListData {
 	@Inject
 	private RoundingMonthFinder roundingMonthFinder;
 	@Inject
-	private DivergenceItemSetFinder divergenceItemSetFinder;
+	private DivergenceAttendanceItemFinder divergenceItemSetFinder;
 
 	@Inject
 	private OutsideOtSetRepository outsideOtSetRepositoryFinder;
@@ -1994,9 +1995,9 @@ public class CalculationSettingExportImpl implements MasterListData {
 			data1.put(column1Sheet6, TextResource.localize("KMK013_306"));
 			data1.put(column2Sheet6, TextResource.localize("KMK013_307"));
 			if (!Objects.isNull(deformLaborOTDto.getLegalOtCalc())) {
-				if (deformLaborOTDto.getLegalOtCalc().intValue() == 1) {
+				if (deformLaborOTDto.getLegalOtCalc().equals(NotUseAtr.USE)) {
 					data1.put(column3Sheet6, TextResource.localize("KMK013_209"));
-				} else if (deformLaborOTDto.getLegalOtCalc().intValue() == 0) {
+				} else if (deformLaborOTDto.getLegalOtCalc().equals(NotUseAtr.NOT_USE)) {
 					data1.put(column3Sheet6, TextResource.localize("KMK013_210"));
 				} else {
 					data1.put(column3Sheet6, "");

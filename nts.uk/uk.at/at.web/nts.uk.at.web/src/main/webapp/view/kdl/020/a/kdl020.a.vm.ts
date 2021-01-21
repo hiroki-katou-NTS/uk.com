@@ -18,8 +18,11 @@ module nts.uk.at.view.kdl020.a.screenModel {
 
         listComponentOption: any;
         selectedCode: KnockoutObservable<string>;
+        selectedName: KnockoutObservable<string>;
         multiSelectedCode: KnockoutObservableArray<string>;
         isShowAlreadySet: KnockoutObservable<boolean>;
+        annualLeaveManagementFg: KnockoutObservable<boolean>;
+        closingPeriod: KnockoutObservable<string>;
         alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
         isDialog: KnockoutObservable<boolean>;
         isShowNoSelectRow: KnockoutObservable<boolean>;
@@ -32,7 +35,6 @@ module nts.uk.at.view.kdl020.a.screenModel {
         displayAnnualLeaveGrant: KnockoutObservable<DisplayAnnualLeaveGrant> = ko.observable(new DisplayAnnualLeaveGrant());
         attendNextHoliday: KnockoutObservable<AttendRateAtNextHoliday> = ko.observable(new AttendRateAtNextHoliday());
         annualSet: KnockoutObservable<any> = ko.observable(null);
-        isShowEmployeeList: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this;
             self.selectedCode = ko.observable('');
@@ -42,6 +44,8 @@ module nts.uk.at.view.kdl020.a.screenModel {
                 { code: '1', isAlreadySetting: true },
                 { code: '2', isAlreadySetting: true }
             ]);
+            self.annualLeaveManagementFg = ko.observable(false);
+            self.closingPeriod = ko.observable('');
             self.isDialog = ko.observable(false);
             self.isShowNoSelectRow = ko.observable(false);
             self.isMultiSelect = ko.observable(false);
@@ -60,6 +64,7 @@ module nts.uk.at.view.kdl020.a.screenModel {
                 isShowWorkPlaceName: self.isShowWorkPlaceName(),
                 isShowSelectAllButton: self.isShowSelectAllButton()
             };
+
             self.selectedCode.subscribe((newCode) => {
                 let self = this;
                 if (newCode) {
@@ -76,16 +81,15 @@ module nts.uk.at.view.kdl020.a.screenModel {
                         dialog({ messageId: error.messageId });
                     }).always(() => {
                         block.clear();
-                    });;
-
+                    });
                 }
-
             });
 
-            $("#holiday-info_table").ntsFixedTable({ height: 120, width: 600 });
-            $("#holiday-use_table").ntsFixedTable({ height: 148, width: 360 });
+            $("#holiday-info_table").ntsFixedTable({ height: 120, width: 526 });
+            $("#holiday-use_table").ntsFixedTable({ height: 110, width: 335 });
         }
-        start(): JQueryPromise<any> {
+
+        start(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
             let data: any = getShared('KDL020A_PARAM');
@@ -107,7 +111,6 @@ module nts.uk.at.view.kdl020.a.screenModel {
                     self.changeData(data);
                     self.annualSet(data.annualSet);
                     if (self.employeeList().length > 1) {
-                        self.isShowEmployeeList(true);
                         nts.uk.ui.windows.getSelf().$dialog.closest(".ui-dialog").width(1080);
                     }
                 }
@@ -148,6 +151,18 @@ module nts.uk.at.view.kdl020.a.screenModel {
 
             return self.genDateText(daysUsedNo) + "&nbsp;" + self.genTime(usedMinutes);
         }
+
+        // format data to A11_3
+        public genGrantDate(grantDate: string, deadline: string, expiredInCurrentMonthFg: boolean) {
+            if (!grantDate && !deadline) {
+                return '';
+            }
+            if (expiredInCurrentMonthFg) {
+                return grantDate + nts.uk.resource.getText("KDL005_38", [deadline]);
+            }
+            return grantDate + nts.uk.resource.getText("KDL005_37", [deadline]);
+        }
+
         genUsedNo(daysUsedNo, usedMinutes) {
             let self = this;
             if (daysUsedNo != null) {
@@ -159,16 +174,18 @@ module nts.uk.at.view.kdl020.a.screenModel {
 
             return '';
         }
+
         genTime(data) {
             if (data == null) {
                 return '';
             }
             return formatById("Clock_Short_HM", data);
         }
+
         genScheduleRecordText(scheduleRecordAtr) {
-           
             return CreateAtr[scheduleRecordAtr];
         }
+
         genAttendanceRate(attendanceRate) {
             if (attendanceRate == null) {
                 return '';
@@ -176,6 +193,7 @@ module nts.uk.at.view.kdl020.a.screenModel {
             return attendanceRate + text('KDL020_27');
 
         }
+
         genNextHolidayGrantDate(nextHolidayGrantDate) {
             if (nextHolidayGrantDate == null) {
                 return '';
@@ -183,12 +201,14 @@ module nts.uk.at.view.kdl020.a.screenModel {
             }
             return nextHolidayGrantDate + text('KDL020_29');
         }
+
         changeData(data: IAnnualHoliday) {
             let self = this;
             self.reNumAnnLeave(new ReNumAnnLeaReferenceDate(data.reNumAnnLeave));
             self.displayAnnualLeaveGrant(new DisplayAnnualLeaveGrant(data.annualLeaveGrant[0]));
             self.attendNextHoliday(new AttendRateAtNextHoliday(data.attendNextHoliday));
-
+            self.annualLeaveManagementFg(data.annualLeaveManagementFg);
+            self.closingPeriod(data.closingPeriod);
             self.setTotal();
         }
 
@@ -221,21 +241,22 @@ module nts.uk.at.view.kdl020.a.screenModel {
 
         close() {
             nts.uk.ui.windows.close();
-        }    }
+        }
+    }
 
     export class DisplayAnnualLeaveGrant {
         /** 付与年月日 */
         grantDate: KnockoutObservable<String> = ko.observable("");
         /** 付与日数 */
-        grantDays: number = ko.observable(null);
+        grantDays: KnockoutObservable<number> = ko.observable(null);
         /** 回数 */
-        times: number = ko.observable(null);
+        times: KnockoutObservable<number> = ko.observable(null);
         /** 時間年休上限日数 */
-        timeAnnualLeaveMaxDays: number = ko.observable(null);
+        timeAnnualLeaveMaxDays: KnockoutObservable<number> = ko.observable(null);
         /** 時間年休上限時間 */
-        timeAnnualLeaveMaxTime: number = ko.observable(null);
+        timeAnnualLeaveMaxTime: KnockoutObservable<number> = ko.observable(null);
         /** 半日年休上限回数 */
-        halfDayAnnualLeaveMaxTimes: number = ko.observable(null);
+        halfDayAnnualLeaveMaxTimes: KnockoutObservable<number> = ko.observable(null);
         constructor(data?) {
             if (data) {
                 this.grantDate(data.grantDate);
@@ -251,7 +272,6 @@ module nts.uk.at.view.kdl020.a.screenModel {
     }
 
     export class ReNumAnnLeaReferenceDate {
-
         /** 年休残数(仮)*/
         annualLeaveRemainNumber: KnockoutObservable<AnnualLeaveRemainingNumber> = ko.observable(new AnnualLeaveRemainingNumber());
 
@@ -260,7 +280,6 @@ module nts.uk.at.view.kdl020.a.screenModel {
 
         /** 年休管理情報(仮)*/
         annualLeaveManageInfors: KnockoutObservableArray<AnnualLeaveManageInfor> = ko.observableArray([]);
-
         constructor(data?) {
             if (data) {
                 this.annualLeaveRemainNumber(new AnnualLeaveRemainingNumber(data.annualLeaveRemainNumberExport));
@@ -325,7 +344,7 @@ module nts.uk.at.view.kdl020.a.screenModel {
 
     export class AnnualLeaveGrant {
         /*付与日 */
-        grantDate: KnockoutObservable<String> = ko.observable("");
+        grantDate: KnockoutObservable<string> = ko.observable("");
         /* 付与数*/
         grantNumber: KnockoutObservable<number> = ko.observable(0);
         /* 使用日数 */
@@ -338,6 +357,8 @@ module nts.uk.at.view.kdl020.a.screenModel {
         remainMinutes: KnockoutObservable<number> = ko.observable(0);
         /* 期限*/
         deadline: KnockoutObservable<String> = ko.observable("");
+        // で期限切れ
+        expiredInCurrentMonthFg: KnockoutObservable<Boolean> = ko.observable(false);
         constructor(data?) {
             if (data) {
                 this.grantDate(data.grantDate);
@@ -347,6 +368,7 @@ module nts.uk.at.view.kdl020.a.screenModel {
                 this.remainDays(data.remainDays);
                 this.remainMinutes(data.remainMinutes);
                 this.deadline(data.deadline);
+                this.expiredInCurrentMonthFg(data.expiredInCurrentMonthFg);
             }
 
         }
@@ -376,6 +398,8 @@ module nts.uk.at.view.kdl020.a.screenModel {
         attendNextHoliday: any;
         reNumAnnLeave: IReNumAnnLeaReferenceDateImport;
         annualSet: any;
+        annualLeaveManagementFg: boolean;
+        closingPeriod: string;
     }
 
     export class AttendRateAtNextHoliday {
@@ -404,7 +428,6 @@ module nts.uk.at.view.kdl020.a.screenModel {
         }
 
     }
-
 
     export interface IReNumAnnLeaReferenceDateImport {
 
@@ -453,7 +476,8 @@ module nts.uk.at.view.kdl020.a.screenModel {
         remainMinutes: number;
         /* 期限 */
         deadline: Date;
-
+        // で期限切れ
+        expiredInCurrentMonthFg: boolean;
     }
 
     export interface IAnnualLeaveManageInforImport {
@@ -467,7 +491,7 @@ module nts.uk.at.view.kdl020.a.screenModel {
         scheduleRecordAtr: number;
         /* 勤務種類*/
         workTypeCode: string;
-        
+
         workTypeName: string;
     }
 
@@ -477,7 +501,7 @@ module nts.uk.at.view.kdl020.a.screenModel {
         static JOB_TITLE = 3;
         static EMPLOYEE = 4;
     }
-    
+
     export enum CreateAtr {
         /** 予定 */
         "予定",
@@ -493,6 +517,7 @@ module nts.uk.at.view.kdl020.a.screenModel {
 
     export interface UnitModel {
         code: string;
+        id: string;
         name?: string;
         workplaceName?: string;
         isAlreadySetting?: boolean;

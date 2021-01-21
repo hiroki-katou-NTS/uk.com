@@ -7,12 +7,12 @@ import javax.persistence.metamodel.StaticMetamodel;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstDrtPK;
 
 @Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2018-03-27T23:12:35")
-@StaticMetamodel(KrcstDrt.class)
+@StaticMetamodel(KrcmtDvgcRefTime.class)
 public class KrcstDrt_ { 
 
-    public static volatile SingularAttribute<KrcstDrt, BigDecimal> errorTime;
-    public static volatile SingularAttribute<KrcstDrt, BigDecimal> dvgcTimeUseSet;
-    public static volatile SingularAttribute<KrcstDrt, BigDecimal> alarmTime;
-    public static volatile SingularAttribute<KrcstDrt, KrcstDrtPK> id;
+    public static volatile SingularAttribute<KrcmtDvgcRefTime, BigDecimal> errorTime;
+    public static volatile SingularAttribute<KrcmtDvgcRefTime, BigDecimal> dvgcTimeUseSet;
+    public static volatile SingularAttribute<KrcmtDvgcRefTime, BigDecimal> alarmTime;
+    public static volatile SingularAttribute<KrcmtDvgcRefTime, KrcstDrtPK> id;
 
 }

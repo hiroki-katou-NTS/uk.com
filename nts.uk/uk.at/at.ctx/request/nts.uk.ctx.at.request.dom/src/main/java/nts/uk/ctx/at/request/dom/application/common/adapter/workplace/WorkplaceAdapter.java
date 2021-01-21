@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.WorkplaceInforExport;
 /**
  * 
  * @author hoatt
@@ -41,4 +42,7 @@ public interface WorkplaceAdapter {
 	public List<String> findListWpkIDParentDesc(String companyId, String workplaceId, GeneralDate date);
 	
 	public List<String> getUpperWorkplaceRQ569(String companyId, String workplaceId, GeneralDate date);
+	
+	public List<WorkplaceInforExport> getWorkplaceInforByWkpIds(String companyId, List<String> listWorkplaceId,
+			GeneralDate baseDate);
 }

@@ -1,5 +1,5 @@
 #contents-area {
-	margin-left: 25px
+	margin-left: 20px
 }
 
 #time-edit1, #time-edit2 {
@@ -29,28 +29,6 @@
 	margin-bottom: 10px
 }
 
-#table-date {
-	margin-bottom: 10px;
-	margin-left: 104px;
-}
-
-#table-date table, #table-date th, #table-date td {
-	border: 1px solid #ccc;
-	border-collapse: collapse;
-	width: 930px;
-	height: 26px;
-	text-align: center;
-	min-width: 25px;
-}
-
-#table-date th {
-	background-color: #EDFAC2
-}
-
-#table-date td {
-	font-size: 14px;
-}
-
 #pairPatternName {
 	vertical-align: middle;
 }
@@ -62,6 +40,73 @@
 #combo-box2 {
 	min-width: 770px !important
 }
-div.label{
-	margin-bottom:5px;
+
+div.label {
+    margin-bottom: 20px;
+}
+.table-calendar {
+	display: flex;
+	flex-wrap: wrap;
+	padding: 20px 0px 0px 25px;
+	width: 875px;
+	margin-top: 5px;
+}
+.table-border{
+	border: 1px solid #777;
+	width: 920px;
+	height: 420px;
+	margin-top: 30px;
+}
+.table-calendar .day-item {
+	position: relative;
+	border: 1px solid #777;
+	width: 85px;
+	margin: 0 10px 25px 25px;
+}
+
+.table-calendar .day-box {
+	display: flex;
+	flex-direction: column;
+}
+.table-calendar .day-item:after {
+	content: '';
+	position: absolute;
+	top: 0;
+	right: 100%;
+	border: 7px solid transparent;
+	border-left-color: #97D155;
+	margin: 20px 5px 0px 5px;
+}
+.table-calendar .day-item:first-child:after { visibility: hidden; }
+.table-calendar .day-header {
+	background-color: #97D155;
+	border-bottom: 1px solid #777;
+	font-size: 12px;
+	line-height: 12px;
+	font-weight: 500;
+	padding: 5px 0px 5px 15px;
+}
+.table-calendar .day-content {
+	text-align: center;
+	padding: 5px 0;
+}
+.table-calendar .day-delete {
+	position: absolute;
+	top: 1px;
+	right: 6px;
+	color: #666;
+	cursor: pointer;
+}
+.table-calendar .button-add-day {
+	position: relative;
+	width: 75px;
+	margin-top: 12px;
+	margin-bottom: 25px;
+}
+.table-calendar .day-arrow {
+	content: '';
+	border: 7px solid transparent;
+	border-left-color: #97D155;
+	margin: 20px 5px 0px 5px;
+	height: 1px;
 }

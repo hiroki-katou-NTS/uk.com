@@ -15,7 +15,7 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KmfmtWorkType.
@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Entity
 @Table(name = "KNLMT_NURSING_WORK_TYPE")
-public class KnlmtNursingWorkType extends UkJpaEntity implements Serializable {
+public class KnlmtNursingWorkType extends ContractUkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -40,9 +40,9 @@ public class KnlmtNursingWorkType extends UkJpaEntity implements Serializable {
     /** The knlmt nursing leave set. */
     @ManyToOne
     @JoinColumns({
-        @JoinColumn(name = "CID", referencedColumnName = "KNLMT_NURSING_LEAVE_SET.CID", insertable = false, updatable = false),
-        @JoinColumn(name = "NURSING_TYPE", referencedColumnName = "KNLMT_NURSING_LEAVE_SET.NURSING_TYPE", insertable = false, updatable = false)})
-    private KnlmtNursingLeaveSet knlmtNursingLeaveSet;
+        @JoinColumn(name = "CID", referencedColumnName = "KSHMT_HDNURSING_LEAVE.CID", insertable = false, updatable = false),
+        @JoinColumn(name = "NURSING_TYPE", referencedColumnName = "KSHMT_HDNURSING_LEAVE.NURSING_TYPE", insertable = false, updatable = false)})
+    private KshmtHdnursingLeave knlmtNursingLeaveSet;
 
     /**
      * Instantiates a new kmfmt work type.

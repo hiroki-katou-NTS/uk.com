@@ -20,6 +20,7 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WeeklyWorkSetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WeeklyWorkSettingRepository;
+import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.WeeklyWorkDayPattern;
 import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KscmtWeeklyWorkSet;
 import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KscmtWeeklyWorkSetPK;
 import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KscmtWeeklyWorkSetPK_;
@@ -32,7 +33,13 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KscmtWeeklyWorkSet
 public class JpaWeeklyWorkSettingRepository extends JpaRepository
 		implements WeeklyWorkSettingRepository {
 
-	
+	/**
+	 * select a KscmtWeeklyWorkSet ALL
+	 */
+	private static final String SELECT_ALL = "SELECT w FROM KscmtWeeklyWorkSet w";
+
+	private static final String GET_BY_COMPANY_ID = SELECT_ALL + " WHERE w.kscmtWeeklyWorkSetPK.cid = :companyId";
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -98,6 +105,26 @@ public class JpaWeeklyWorkSettingRepository extends JpaRepository
 		return query.getResultList().stream().map(entity -> this.toDomain(entity))
 				.collect(Collectors.toList());
 
+	}
+
+	@Override
+	public WeeklyWorkDayPattern getWeeklyWorkDayPatternByCompanyId(String companyId) {
+		List<KscmtWeeklyWorkSet> kscmtWeeklyWorkSets = this.queryProxy().query(
+				GET_BY_COMPANY_ID, KscmtWeeklyWorkSet.class)
+				.setParameter("companyId", companyId)
+				.getList();
+		WeeklyWorkDayPattern weeklyWorkDayPattern = KscmtWeeklyWorkSet.listEntitytoDomain(kscmtWeeklyWorkSets);
+		return weeklyWorkDayPattern;
+	}
+
+	@Override
+	public void addWeeklyWorkDayPattern(WeeklyWorkDayPattern weeklyWorkDayPattern) {
+		KscmtWeeklyWorkSet.toEntity(weeklyWorkDayPattern).forEach(item -> this.commandProxy().insert(item));
+	}
+
+	@Override
+	public void updateWeeklyWorkDayPattern(WeeklyWorkDayPattern weeklyWorkDayPattern) {
+		KscmtWeeklyWorkSet.toEntity(weeklyWorkDayPattern).forEach(item -> this.commandProxy().update(item));
 	}
 
 }

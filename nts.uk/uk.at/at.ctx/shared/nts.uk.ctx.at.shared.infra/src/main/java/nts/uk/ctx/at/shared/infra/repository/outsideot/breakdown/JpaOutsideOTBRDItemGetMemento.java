@@ -7,12 +7,12 @@ package nts.uk.ctx.at.shared.infra.repository.outsideot.breakdown;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
-import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemName;
-import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemNo;
-import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItemGetMemento;
-import nts.uk.ctx.at.shared.dom.outsideot.breakdown.ProductNumber;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOutsideOtBrd;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.UseClassification;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.BreakdownItemName;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.BreakdownItemNo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.OutsideOTBRDItemGetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.ProductNumber;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshmtOutsideDetail;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOutsideOtBrdPK;
 
 /**
@@ -21,7 +21,7 @@ import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOutsideOtBrdPK
 public class JpaOutsideOTBRDItemGetMemento implements OutsideOTBRDItemGetMemento {
 	
 	/** The entity. */
-	private KshstOutsideOtBrd entity;
+	private KshmtOutsideDetail entity;
 	
 	/**
 	 * Instantiates a new jpa overtime BRD item get memento.
@@ -29,7 +29,7 @@ public class JpaOutsideOTBRDItemGetMemento implements OutsideOTBRDItemGetMemento
 	 * @param entity the entity
 	 * @param entityAtens the entity atens
 	 */
-	public JpaOutsideOTBRDItemGetMemento(KshstOutsideOtBrd entity) {
+	public JpaOutsideOTBRDItemGetMemento(KshmtOutsideDetail entity) {
 		if (entity.getKshstOutsideOtBrdPK() == null) {
 			entity.setKshstOutsideOtBrdPK(new KshstOutsideOtBrdPK());
 		}

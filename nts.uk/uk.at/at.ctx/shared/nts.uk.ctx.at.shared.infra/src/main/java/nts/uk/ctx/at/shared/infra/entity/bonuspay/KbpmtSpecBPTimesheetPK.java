@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.infra.data.query.DBCharPaddingAs;
-import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 @Setter
 @Getter
 @Embeddable

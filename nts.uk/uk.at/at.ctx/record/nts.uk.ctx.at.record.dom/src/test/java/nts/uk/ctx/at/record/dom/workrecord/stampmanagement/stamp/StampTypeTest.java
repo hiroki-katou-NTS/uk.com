@@ -11,11 +11,11 @@ import mockit.MockUp;
 import mockit.Mocked;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
-import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeCalArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 import nts.uk.shr.com.i18n.TextResource;
 /**
  * 
@@ -99,8 +99,8 @@ public class StampTypeTest {
 	public void testCreateStampTypeDisplay_3(@Mocked final TextResource tr) {
 		new Expectations() {
             {
-            	TextResource.localize("KDP011_37");
-            	result =  "KDP011_37";
+            	TextResource.localize("KDP011_39");
+            	result =  "KDP011_39";
             }
         };
 		StampType stampType = StampHelper.getStampTypeHaveInput(
@@ -109,7 +109,7 @@ public class StampTypeTest {
         		SetPreClockArt.valueOf(0),
         		ChangeClockArt.valueOf(3), //dummy
         		ChangeCalArt.valueOf(1));
-		assertThat(stampType.createStampTypeDisplay()).isEqualTo(TextResource.localize("KDP011_37"));
+		assertThat(stampType.createStampTypeDisplay()).isEqualTo("退門(公用)+早出+KDP011_39");
 	}
 	/**
 	 * setPreClockArt == SetPreClockArt.NONE
@@ -350,7 +350,7 @@ public class StampTypeTest {
 	 * setPreClockArt == SetPreClockArt.NONE
 	 * 
 	 * changeClockArt != ChangeClockArt.GOING_TO_WORK
-	 * changeClockArt != ChangeClockArt.FIX  
+	 * changeClockArt != ChangeClockArt.START_OF_SUPPORT  
 	 * changeCalArt != ChangeCalArt.NONE
 	 * changeCalArt != ChangeCalArt.EARLY_APPEARANCE
 	 */
@@ -402,7 +402,7 @@ public class StampTypeTest {
 	 * changeHalfDay == false;
 	 * setPreClockArt == SetPreClockArt.NONE
 	 * 
-	 * changeClockArt == ChangeClockArt.FIX 
+	 * changeClockArt == ChangeClockArt.START_OF_SUPPORT 
 	 * changeCalArt == ChangeCalArt.EARLY_APPEARANCE
 	 */
 	@Test
@@ -419,7 +419,7 @@ public class StampTypeTest {
 	 * changeHalfDay == false;
 	 * setPreClockArt == SetPreClockArt.NONE
 	 * 
-	 * changeClockArt == ChangeClockArt.FIX 
+	 * changeClockArt == ChangeClockArt.START_OF_SUPPORT 
 	 * changeCalArt != ChangeCalArt.EARLY_APPEARANCE
 	 */
 	@Test

@@ -1,0 +1,65 @@
+.ui-iggrid-pagesizedropdowncontainerabove {
+	padding-bottom: 0px !important;
+	background-color: inherit;
+	border: none;
+}
+
+.ui-iggrid-pagesizedropdowncontainerabove > .ui-iggrid-results {
+	width: 100px;
+}
+
+.ui-iggrid-pagesizelabel {
+	width: 100px;
+	padding: 0px !important;
+}
+
+.ui-iggrid-pagesizedropdown {
+	margin-left: 10px;
+}
+
+.kaf018-b-header-wkpName {
+	text-align: center !important;
+	vertical-align: middle !important;
+}
+
+.kaf018-b-column-wkpName {
+	vertical-align: middle !important;
+}
+
+.kaf018-b-header-countEmp {
+	text-align: center !important;
+	vertical-align: middle !important;
+	white-space: inherit !important;
+}
+
+.kaf018-b-column-countEmp {
+	text-align: center;
+}
+
+.kaf018-b-column-countEmp.cell-selected {
+	background-color: inherit;
+}
+
+.kaf018-b-header-countUnApprApp {
+	text-align: center !important;
+	vertical-align: middle !important;
+	white-space: inherit !important;
+}
+
+.kaf018-b-column-countUnApprApp {
+	text-align: center;
+	color: #0066CC;
+	text-decoration: underline;
+}
+
+.kaf018-b-header-mailButton {
+	vertical-align: middle !important;
+	height: 33px;
+	text-align: inherit !important;
+}
+
+.kaf018-b-mailButton {
+	height: inherit;
+	padding: 0;
+	width: 70px;
+}

@@ -1,5 +1,6 @@
 package nts.uk.ctx.bs.employee.pub.employee;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import nts.arc.time.GeneralDateTime;
@@ -7,6 +8,7 @@ import nts.arc.time.GeneralDateTime;
 //社員データ管理情報 <export>
 @Data
 @Builder
+@AllArgsConstructor
 public class EmployeeDataMngInfoExport {
 
 	/** 会社ID */

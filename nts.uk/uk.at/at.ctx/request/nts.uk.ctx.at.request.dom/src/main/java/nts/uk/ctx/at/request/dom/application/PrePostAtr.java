@@ -1,30 +1,27 @@
 package nts.uk.ctx.at.request.dom.application;
+
+import lombok.AllArgsConstructor;
+
 /**
- * 事前事後区分
- * @author tutk
+ * refactor 4
+ * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.申請.事前事後区分
+ * @author Doan Duy Hung
  *
  */
+@AllArgsConstructor
 public enum PrePostAtr {
-
-	/**
-	 * 0: 事前の受付制限
-	 */
-	PREDICT(0),
-	/**
-	 * 1: 事後の受付制限
-	 */
-	POSTERIOR(1),
 	
 	/**
-	 * 2: 選択なし
+	 * 0: 事前
 	 */
-	NONE(2);
+	PREDICT(0, "事前"),
+	/**
+	 * 1: 事後
+	 */
+	POSTERIOR(1, "事後");
 	
 	public int value;
 	
-	PrePostAtr(int type){
-		this.value = type;
-	}
-	
+	public String name;
 	
 }

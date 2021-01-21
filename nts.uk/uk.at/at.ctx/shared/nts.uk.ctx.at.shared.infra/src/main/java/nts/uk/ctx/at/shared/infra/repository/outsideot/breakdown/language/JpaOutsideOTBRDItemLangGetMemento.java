@@ -5,11 +5,11 @@
 package nts.uk.ctx.at.shared.infra.repository.outsideot.breakdown.language;
 
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemName;
-import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemNo;
-import nts.uk.ctx.at.shared.dom.outsideot.breakdown.language.OutsideOTBRDItemLangGetMemento;
-import nts.uk.ctx.at.shared.dom.outsideot.overtime.language.LanguageId;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.language.KshstOutsideOtBrdLang;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.BreakdownItemName;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.BreakdownItemNo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.language.OutsideOTBRDItemLangGetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.language.LanguageId;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.language.KshmtOutsideDetailLang;
 
 /**
  * The Class JpaOutsideOTBRDItemLangGetMemento.
@@ -18,14 +18,14 @@ public class JpaOutsideOTBRDItemLangGetMemento implements OutsideOTBRDItemLangGe
 
 	
 	/** The entity. */
-	private KshstOutsideOtBrdLang entity;
+	private KshmtOutsideDetailLang entity;
 	
 	/**
 	 * Instantiates a new jpa overtime lang BRD item get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaOutsideOTBRDItemLangGetMemento(KshstOutsideOtBrdLang entity) {
+	public JpaOutsideOTBRDItemLangGetMemento(KshmtOutsideDetailLang entity) {
 		this.entity = entity;
 	}
 

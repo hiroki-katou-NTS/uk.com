@@ -12,10 +12,10 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.byperiod.AttendanceTimeOfAnyPeriodKey;
-import nts.uk.ctx.at.record.dom.byperiod.ExcessOutsideItemByPeriod;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.ctx.at.shared.dom.scherec.byperiod.AttendanceTimeOfAnyPeriodKey;
+import nts.uk.ctx.at.shared.dom.scherec.byperiod.ExcessOutsideItemByPeriod;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * エンティティ：期間別の時間外超過項目
@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KRCDT_ANP_EXCOUT_TIME")
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrcdtAnpExcoutTime extends UkJpaEntity implements Serializable {
+public class KrcdtAnpExcoutTime extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

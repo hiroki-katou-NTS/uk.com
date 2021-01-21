@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeSetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTimeValue;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstDrt;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcmtDvgcRefTime;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -14,7 +14,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class JpaCompanyDivergenceReferenceTimeSetMemento implements CompanyDivergenceReferenceTimeSetMemento {
 
 	/** The entity. */
-	private KrcstDrt entity;
+	private KrcmtDvgcRefTime entity;
 
 	/**
 	 * Instantiates a new jpa company divergence reference time set memento.
@@ -28,7 +28,7 @@ public class JpaCompanyDivergenceReferenceTimeSetMemento implements CompanyDiver
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaCompanyDivergenceReferenceTimeSetMemento(KrcstDrt entity) {
+	public JpaCompanyDivergenceReferenceTimeSetMemento(KrcmtDvgcRefTime entity) {
 		this.entity = entity;
 	}
 

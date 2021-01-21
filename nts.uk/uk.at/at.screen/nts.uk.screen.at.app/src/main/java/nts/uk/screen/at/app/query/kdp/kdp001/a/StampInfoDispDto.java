@@ -21,6 +21,9 @@ public class StampInfoDispDto {
 	@Getter
 	private final GeneralDateTime stampDatetime;
 
+	@Getter
+	private final String stampStringDatetime;
+
 	/**
 	 * 打刻区分
 	 */
@@ -32,11 +35,12 @@ public class StampInfoDispDto {
 	 */
 	@Getter
 	private final StampInfoDto stamp;
-	
+
 	public static StampInfoDispDto fromDomain(StampInfoDisp domain) {
-		
+
 		return new StampInfoDispDto(domain.getStampNumber() != null ? domain.getStampNumber().v() : null,
-				domain.getStampDatetime(), domain.getStampAtr(),
+				domain.getStampDatetime(), domain.getStampDatetime().toString("yyyy/MM/dd HH:mm:ss"),
+				domain.getStampAtr(),
 				!domain.getStamp().isEmpty() ? StampInfoDto.fromDomain(domain.getStamp().get(0)) : null);
 	}
 }

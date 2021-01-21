@@ -3,14 +3,18 @@ package nts.uk.ctx.sys.assist.dom.deletedata;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.sys.assist.dom.storage.PatternCode;
+import nts.uk.ctx.sys.assist.dom.storage.StorageClassification;
 
 @Getter
 @Setter
@@ -27,10 +31,6 @@ public class ManualSetDeletion extends AggregateRoot {
 	// 会社ID
 	/** The company Id. */
 	private String companyId;
-
-	// システム種類
-	/** The system type. */
-	private int systemType;
 
 	// 削除名称
 	/** The deletion name. */
@@ -92,13 +92,28 @@ public class ManualSetDeletion extends AggregateRoot {
 	/** The end year of monthly. */
 	private Optional<Integer> endYearOfMonthly;
 	
+	/**
+	 * 実行区分
+	 */
+	public StorageClassification executeClassification;
+	
+	/**
+	 * 削除パターン
+	 */
+	public PatternCode delPattern;
+	
+	/**
+	 * 対象カテゴリ
+	 */
+	private List<CategoryDeletion> categories;
 
-	public static ManualSetDeletion createFromJavatype(String delId, String companyId, int systemType, String delName,
+	public static ManualSetDeletion createFromJavatype(String delId, String companyId, String delName,
 			boolean isSaveBeforeDeleteFlg, boolean isExistCompressPassFlg, String passwordCompressFileEncrypt,
 			boolean haveEmployeeSpecifiedFlg, String sId, String supplementExplanation, GeneralDate referenceDate,
 			GeneralDateTime executionDateTime, GeneralDate startDateOfDaily, GeneralDate endDateOfDaily,
-			Integer startMonthOfMonthly, Integer endMonthOfMonthly, Integer startYearOfMonthly, Integer endYearOfMonthly) {
-		return new ManualSetDeletion(delId, companyId, systemType, new DelName(delName), isSaveBeforeDeleteFlg,
+			Integer startMonthOfMonthly, Integer endMonthOfMonthly, Integer startYearOfMonthly, Integer endYearOfMonthly,
+			int executeClassification, String delPattern, List<CategoryDeletion> categories) {
+		return new ManualSetDeletion(delId, companyId, new DelName(delName), isSaveBeforeDeleteFlg,
 				isExistCompressPassFlg, 
 				Optional.ofNullable(new PasswordCompressFileEncrypt(passwordCompressFileEncrypt)),
 				haveEmployeeSpecifiedFlg, sId, Optional.ofNullable(new  SupplementExplanation(supplementExplanation)), 
@@ -107,7 +122,9 @@ public class ManualSetDeletion extends AggregateRoot {
 				Optional.ofNullable(startDateOfDaily), Optional.ofNullable(endDateOfDaily), 
 				convertIntToYearStartMonth(Optional.ofNullable(startMonthOfMonthly)), 
 				convertIntToYearStartMonth(Optional.ofNullable(endMonthOfMonthly)), 
-				Optional.ofNullable(startYearOfMonthly), Optional.ofNullable(endYearOfMonthly));
+				Optional.ofNullable(startYearOfMonthly), Optional.ofNullable(endYearOfMonthly),
+				EnumAdaptor.valueOf(executeClassification, StorageClassification.class),
+				new PatternCode(delPattern), categories);
 	}
 	public static Optional<Integer> convertYearMonthToInt(Optional<GeneralDate> yearMonth) {
 		if (yearMonth.isPresent()) {

@@ -9,10 +9,10 @@ import javax.persistence.metamodel.StaticMetamodel;
  * @author hoangdd
  *
  */
-@StaticMetamodel(KrcstOutManage.class)
+@StaticMetamodel(KrcmtGooutMng.class)
 public class KrcstOutManage_ {
-	public static volatile SingularAttribute<KrcstOutManage, String> cid;
-    public static volatile SingularAttribute<KrcstOutManage, BigDecimal> initValueReasonGoOut;
-    public static volatile SingularAttribute<KrcstOutManage, BigDecimal> maxUsage;
+	public static volatile SingularAttribute<KrcmtGooutMng, String> cid;
+    public static volatile SingularAttribute<KrcmtGooutMng, BigDecimal> initValueReasonGoOut;
+    public static volatile SingularAttribute<KrcmtGooutMng, BigDecimal> maxUsage;
 }
 

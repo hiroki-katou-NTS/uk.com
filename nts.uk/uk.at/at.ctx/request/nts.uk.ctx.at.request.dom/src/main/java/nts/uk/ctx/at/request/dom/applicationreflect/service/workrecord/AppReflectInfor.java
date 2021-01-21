@@ -3,7 +3,7 @@ package nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 @AllArgsConstructor
 @Setter
 @Getter
@@ -20,10 +20,10 @@ public class AppReflectInfor {
 	/**
 	 * 実績反映状態
 	 */
-	private ReflectedState_New stateReflection;
+	private ReflectedState stateReflection;
 	/**
 	 * 予定反映状態
 	 */
-	private ReflectedState_New stateReflectionReal;
+	private ReflectedState stateReflectionReal;
 	
 }

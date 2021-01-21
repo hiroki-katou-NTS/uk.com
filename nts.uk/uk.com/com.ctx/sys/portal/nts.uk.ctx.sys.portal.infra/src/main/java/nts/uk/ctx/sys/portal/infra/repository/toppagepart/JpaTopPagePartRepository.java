@@ -110,7 +110,7 @@ public class JpaTopPagePartRepository extends JpaRepository implements TopPagePa
 	/**
 	 * Convert entity to domain
 	 * 
-	 * @param entity CcgmtPlacement
+	 * @param entity SptmtPlacement
 	 * @return TopPagePart instance
 	 */
 	private TopPagePart toDomain(CcgmtTopPagePart entity) {

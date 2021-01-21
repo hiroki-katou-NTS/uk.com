@@ -3,37 +3,31 @@ package nts.uk.ctx.at.record.app.attendanceitem;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
-import nts.gul.reflection.ReflectionUtil;
-import nts.gul.reflection.ReflectionUtil.Condition;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
-import nts.uk.ctx.at.record.app.find.dailyperform.common.WithActualTimeStampDto;
-import nts.uk.ctx.at.record.app.find.dailyperform.dto.ActualWorkTimeDailyPerformDto;
-import nts.uk.ctx.at.record.app.find.dailyperform.dto.AttendanceTimeDailyPerformDto;
-import nts.uk.ctx.at.record.app.find.dailyperform.dto.BreakTimeSheetDailyPerformDto;
-import nts.uk.ctx.at.record.app.find.dailyperform.dto.CalcAttachTimeDto;
-import nts.uk.ctx.at.record.app.find.dailyperform.dto.TotalDeductionTimeDto;
-import nts.uk.ctx.at.record.app.find.dailyperform.dto.TotalWorkingTimeDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.workinfo.dto.WorkInfoDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.workinfo.dto.WorkInformationOfDailyDto;
+import nts.uk.ctx.at.record.app.find.monthly.root.AttendanceTimeOfMonthlyDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 
 public class AttendanceItemRecordTest {
 
 	@Test
 	public void test_toAttendanceItemDto() {
-		List<Integer> itemIds = Arrays.asList(535
+		
+//		List<Integer> itemIds = IntStream.range(2079, 2194).boxed().collect(Collectors.toList());
+		
+		List<Integer> itemIds = Arrays.asList(2193, 2194, 2195, 2196, 2197, 2198
 //				1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
 //				22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47,
 //				48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73,
@@ -73,22 +67,26 @@ public class AttendanceItemRecordTest {
 //				800, 801, 802, 803, 804, 805, 806, 807, 808, 809, 810, 811, 812, 813, 814, 815, 816, 817, 818, 819, 820,
 //				821, 822, 823, 824, 825, 826, 827, 828, 829, 830, 831, 832, 833, 834, 835, 836, 837
 				);
-		ReflectionUtil.getStreamOfFieldsAnnotated(WithActualTimeStampDto.class, Condition.ALL, AttendanceItemLayout.class).forEach(c -> {
-			Logger.getLogger(this.getClass()).info(c.getAnnotation(AttendanceItemLayout.class).jpPropertyName());
-		});;
-		DailyRecordDto dto = new DailyRecordDto();
-		dto.setAttendanceTime(Optional.of(new AttendanceTimeDailyPerformDto()));
-		dto.getAttendanceTime().get().setActualWorkTime(new ActualWorkTimeDailyPerformDto(null, null, null, null, 
-				new TotalWorkingTimeDto(null, null, null, null, null, null, null, null, 
-						new BreakTimeSheetDailyPerformDto(
-								new TotalDeductionTimeDto(null, null, new CalcAttachTimeDto(60, 60)), 
-								null, null, null, null), null, null, null, null, null, null), null));
-		List<ItemValue> items = AttendanceItemUtil.toItemValues(dto, itemIds).stream()
-				.sorted((c1, c2) -> c1.itemId() - c2.itemId()).collect(Collectors.toList());
+		
+
+		List<ItemValue> items = AttendanceItemUtil.toItemValues(new MonthlyRecordWorkDto(), itemIds, AttendanceItemType.MONTHLY_ITEM);
+		
+//		ReflectionUtil.getStreamOfFieldsAnnotated(WithActualTimeStampDto.class, Condition.ALL, AttendanceItemLayout.class).forEach(c -> {
+//			Logger.getLogger(this.getClass()).info(c.getAnnotation(AttendanceItemLayout.class).jpPropertyName());
+//		});;
+//		DailyRecordDto dto = new DailyRecordDto();
+//		dto.setAttendanceTime(Optional.of(new AttendanceTimeDailyPerformDto()));
+//		dto.getAttendanceTime().get().setActualWorkTime(new ActualWorkTimeDailyPerformDto(null, null, null, null, 
+//				new TotalWorkingTimeDto(null, null, null, null, null, null, null, null, 
+//						new BreakTimeSheetDailyPerformDto(
+//								new TotalDeductionTimeDto(null, null, new CalcAttachTimeDto(60, 60)), 
+//								null, null, null, null), null, null, null, null, null, null), null));
+//		List<ItemValue> items = AttendanceItemUtil.toItemValues(dto, itemIds).stream()
+//				.sorted((c1, c2) -> c1.itemId() - c2.itemId()).collect(Collectors.toList());
 		items.stream().forEach(c -> {
-			Logger.getLogger(this.getClass()).info(c.getItemId() + ":" + c.getLayoutCode() + ":" + c.value());
+			Logger.getLogger(this.getClass()).info(c.getItemId() + " : " + c.getPathLink() + " : " + c.value());
 		});
-		Assert.assertEquals(items.size(), itemIds.size());
+//		Assert.assertEquals(items.size(), itemIds.size());
 	}
 	
 //	@Test

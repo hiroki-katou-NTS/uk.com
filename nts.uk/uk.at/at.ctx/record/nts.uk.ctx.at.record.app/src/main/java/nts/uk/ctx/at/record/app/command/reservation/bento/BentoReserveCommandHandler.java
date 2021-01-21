@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.app.command.reservation.bento;
 
 import java.util.Arrays;
+import java.util.Map;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -13,16 +15,13 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReserveService;
-import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
-import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
+import nts.uk.ctx.at.record.app.query.stamp.GetStampCardQuery;
+import nts.uk.ctx.at.record.dom.reservation.bento.*;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
-import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -37,17 +36,23 @@ public class BentoReserveCommandHandler extends CommandHandler<BentoReserveComma
 	
 	@Inject
 	private BentoReservationRepository bentoReservationRepository;
-	
+
+	@Inject
+	private GetStampCardQuery getStampCardQuery;
+
 	@Override
 	protected void handle(CommandHandlerContext<BentoReserveCommand> context) {
-		
+
 		BentoReserveCommand command = context.getCommand();
-		
-		StampCard stampCard = stampCardRepository.getLstStampCardByLstSidAndContractCd(
-				Arrays.asList(AppContexts.user().employeeId()),
-				AppContexts.user().contractCode()).get(0);
-		
-		ReservationRegisterInfo reservationRegisterInfo = new ReservationRegisterInfo(stampCard.getStampNumber().toString());
+
+ 		Optional<WorkLocationCode> workLocationCode = command.getWorkLocationCode() != null?
+				Optional.of(new WorkLocationCode(command.getWorkLocationCode())): Optional.empty();
+
+		String employeeId = AppContexts.user().employeeId();
+		Map<String, StampNumber> stampCards = getStampCardQuery.getStampNumberBy(Arrays.asList(employeeId));
+		if (!stampCards.containsKey(employeeId)) throw new RuntimeException("Invalid Stamp Number");
+		StampNumber stampNumber = stampCards.get(employeeId);
+		ReservationRegisterInfo reservationRegisterInfo = new ReservationRegisterInfo(stampNumber.toString());
 		
 		RequireImpl require = new RequireImpl(bentoMenuRepository, bentoReservationRepository);
 		
@@ -60,7 +65,8 @@ public class BentoReserveCommandHandler extends CommandHandler<BentoReserveComma
 						reservationRegisterInfo, 
 						new ReservationDate(command.getDate(), ReservationClosingTimeFrame.FRAME1), 
 						datetime,
-						command.getFrame1Bentos());
+						command.getFrame1Bentos(),
+						workLocationCode);
 				persist1.run();
 			}
 			
@@ -70,7 +76,8 @@ public class BentoReserveCommandHandler extends CommandHandler<BentoReserveComma
 						reservationRegisterInfo, 
 						new ReservationDate(command.getDate(), ReservationClosingTimeFrame.FRAME2), 
 						datetime,
-						command.getFrame2Bentos());
+						command.getFrame2Bentos(),
+						workLocationCode);
 				persist2.run();
 			}
 		});
@@ -85,9 +92,9 @@ public class BentoReserveCommandHandler extends CommandHandler<BentoReserveComma
 		private final BentoReservationRepository bentoReservationRepository;
 		
 		@Override
-		public BentoMenu getBentoMenu(ReservationDate reservationDate) {
+		public BentoMenu getBentoMenu(ReservationDate reservationDate,Optional<WorkLocationCode> workLocationCode) {
 			String companyID = AppContexts.user().companyId();
-			return bentoMenuRepository.getBentoMenu(companyID, reservationDate.getDate());
+			return bentoMenuRepository.getBentoMenu(companyID, reservationDate.getDate(),workLocationCode);
 		}
 
 		@Override

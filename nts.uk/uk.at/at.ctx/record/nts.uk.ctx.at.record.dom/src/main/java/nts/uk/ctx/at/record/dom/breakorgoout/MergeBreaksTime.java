@@ -7,6 +7,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 
 /**
  * @author ThanhNX
@@ -23,9 +24,9 @@ public class MergeBreaksTime {
 	// 休憩時間帯をマージする
 	public static void merge(List<EditStateOfDailyPerformance> state, BreakTimeOfDailyPerformance breakTime) {
 		// 時間帯を取得する
-		List<BreakTimeSheet> breakTimeSheet = breakTime.getBreakTimeSheets();
+		List<BreakTimeSheet> breakTimeSheet = breakTime.getTimeZone().getBreakTimeSheets();
 
-		List<Integer> lstIdEdit = state.stream().map(x -> x.getAttendanceItemId()).collect(Collectors.toList());
+		List<Integer> lstIdEdit = state.stream().map(x -> x.getEditState().getAttendanceItemId()).collect(Collectors.toList());
 
 		// 該当する編集状態が存在するかどうか確認する
 		List<Integer> lstEditInBreakTime = Stream.concat(BREAKTIME_START_ID.stream(), BREAKTIME_END_ID.stream())

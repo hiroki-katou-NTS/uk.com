@@ -12,6 +12,7 @@ import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternGetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternName;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class MonthlyPatternAddCommand.
@@ -44,6 +45,9 @@ public class MonthlyPatternAddCommand {
 		
 		/** The company id. */
 		private String companyId;
+
+		/** The contract code. */
+		private String contractCd = AppContexts.user().contractCode();
 		
 		public MonthlyPatternGetMementoImpl(MonthlyPatternAddCommand command, String companyId) {
 			this.command = command;
@@ -81,7 +85,12 @@ public class MonthlyPatternAddCommand {
 		public MonthlyPatternName getMonthlyPatternName() {
 			return new MonthlyPatternName(this.command.dto.getName());
 		}
-		
+
+		@Override
+		public String getContractCd() {
+			return this.contractCd;
+		}
+
 	}
 	
 }

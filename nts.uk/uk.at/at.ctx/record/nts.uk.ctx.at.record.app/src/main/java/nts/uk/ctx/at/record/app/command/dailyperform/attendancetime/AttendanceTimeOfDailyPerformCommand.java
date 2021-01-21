@@ -6,7 +6,7 @@ import lombok.Getter;
 import nts.uk.ctx.at.record.app.find.dailyperform.dto.AttendanceTimeDailyPerformDto;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ConvertibleAttendanceItem;
 
 public class AttendanceTimeOfDailyPerformCommand extends DailyWorkCommonCommand {
 
@@ -15,8 +15,15 @@ public class AttendanceTimeOfDailyPerformCommand extends DailyWorkCommonCommand 
 
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
+		if (item == null) {
+			this.data = Optional.empty();
+			return;
+		}
+		AttendanceTimeOfDailyPerformance attendanceTimeOfDailyPerformance = (item !=null ? new AttendanceTimeOfDailyPerformance(
+				getEmployeeId(), getWorkDate(),
+				((AttendanceTimeDailyPerformDto) item).toDomain(getEmployeeId(), getWorkDate())):null);
 		this.data = item == null || !item.isHaveData() ? Optional.empty() 
-				: Optional.of(((AttendanceTimeDailyPerformDto) item).toDomain(getEmployeeId(), getWorkDate()));
+				: Optional.ofNullable(attendanceTimeOfDailyPerformance);
 	}
 
 	@Override

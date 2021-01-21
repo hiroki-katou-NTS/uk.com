@@ -1,0 +1,56 @@
+#oViewModel #label, #oViewModel  #listWorkType, #oViewModel  #group-button,
+	#oViewModel  #set-work-type, #oViewModel #set-work-time {
+	float: left;
+}
+
+#oViewModel  #set-work-type, #oViewModel #set-work-time {
+	position: absolute;
+}
+
+#oViewModel{
+	top: 29px;
+}
+
+#set-work-time {
+	top: 32px;
+}
+
+#oViewModel #time-edit1 {
+	text-align: center !important;
+	width: 43px !important;
+	margin-left: 16px
+}
+
+#oViewModel #time-edit2 {
+	text-align: center !important;
+	width: 43px !important;
+}
+
+#oViewModel .reserved {
+	margin-left: 10px;
+}
+
+#oViewModel #switch-o {
+	margin-left: 10px;
+}
+
+#oViewModel #group-button {
+	margin-left: 170px;
+}
+
+#oViewModel #image100 {
+	margin-left: 280px;
+	vertical-align: middle;
+	background: url(../image/image100.png) no-repeat center;
+	background-size: 20px 20px;
+	height: 24px;
+	width: 24px;
+}
+
+#oViewModel div.form-label {
+	height: 27px
+}
+
+#oViewModel label {
+	line-height: 27px;
+}

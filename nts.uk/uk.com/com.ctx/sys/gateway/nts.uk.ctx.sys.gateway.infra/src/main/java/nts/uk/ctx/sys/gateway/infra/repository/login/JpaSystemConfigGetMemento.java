@@ -4,8 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.infra.repository.login;
 
-import nts.uk.ctx.sys.gateway.dom.login.InstallForm;
-import nts.uk.ctx.sys.gateway.dom.login.SystemConfigGetMemento;
+import nts.uk.ctx.sys.gateway.dom.loginold.InstallForm;
+import nts.uk.ctx.sys.gateway.dom.loginold.SystemConfigGetMemento;
 import nts.uk.ctx.sys.gateway.infra.entity.login.SgwstSystemConfig;
 
 /**

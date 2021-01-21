@@ -12,6 +12,7 @@ public interface StampCardtemRepository {
 	 * @return
 	 */
 	List<StampCardItem> findByEmployeeID(String employeeID);
+	
 	/**
 	 * Get List Card by List employee ID
 	 * @param lstEmployeeID

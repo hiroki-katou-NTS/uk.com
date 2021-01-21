@@ -7,6 +7,7 @@ import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.UnbalanceVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SettingSubstituteHolidayProcess;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SubstitutionHolidayOutput;
 
@@ -41,13 +42,11 @@ public class TotalRemainUndigestNumber {
 				continue;
 			}
 
-			if (!accuAbsence.getUnbalanceVacation().isPresent()) {
-				continue;
-			}
+			UnbalanceVacation vacation = (UnbalanceVacation) accuAbsence;
 
 			// isMode = true => 月次
-			if ((isMode && accuAbsence.getUnbalanceVacation().get().getDeadline().beforeOrEquals(baseDate))
-					|| (!isMode && accuAbsence.getUnbalanceVacation().get().getDeadline().before(baseDate))) {
+			if ((isMode && vacation.getDeadline().beforeOrEquals(baseDate))
+					|| (!isMode && vacation.getDeadline().before(baseDate))) {
 				if (substitutionHolidayOutput == null)
 					continue;
 				// 時間代休管理区分がtrue
@@ -62,13 +61,13 @@ public class TotalRemainUndigestNumber {
 					undigestDay += accuAbsence.getUnbalanceNumber().getDay().v();
 					if (accuAbsence.getUnbalanceNumber().getDay().v() == 1) {
 						// 未消化時間 += ループ中の「休出の未使用」．１日相当時間
-						undigestTime += accuAbsence.getUnbalanceVacation().get().getTimeOneDay().v();
+						undigestTime += vacation.getTimeOneDay().v();
 						continue;
 					}
 
 					if (accuAbsence.getUnbalanceNumber().getDay().v() == 0.5d) {
 						// 未消化時間 += ループ中の「休出の未使用」．半日相当時間
-						undigestTime += accuAbsence.getUnbalanceVacation().get().getTimeHalfDay().v();
+						undigestTime += vacation.getTimeHalfDay().v();
 						continue;
 					}
 				}

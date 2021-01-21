@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AbsenceCheckRegisterOutput;
@@ -23,7 +23,7 @@ public interface AbsenceServiceProcess {
 	 */
 	public SpecialLeaveInfor getSpecialLeaveInfor(String workTypeCode);
 	
-	void createAbsence(AppAbsence domain, Application_New newApp, ApprovalRootStateImport_New approvalRootState);
+	void createAbsence(AppAbsence domain, Application newApp, ApprovalRootStateImport_New approvalRootState);
 	/**
 	 * @author hoatt
 	 * 13.計画年休上限チェック
@@ -171,7 +171,7 @@ public interface AbsenceServiceProcess {
 	 * @param mourningAtr 喪主区分<Optional>
 	 * @return
 	 */
-	public AbsenceCheckRegisterOutput checkBeforeRegister(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, Application_New application,
+	public AbsenceCheckRegisterOutput checkBeforeRegister(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, Application application,
 			AppAbsence appAbsence, Integer alldayHalfDay, boolean agentAtr, Optional<Boolean> mourningAtr);
 	
 	/**
@@ -317,6 +317,6 @@ public interface AbsenceServiceProcess {
 	 * @param mourningAtr 喪主区分<Optional>
 	 * @return
 	 */
-	public AbsenceCheckRegisterOutput checkBeforeUpdate(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, Application_New application,
+	public AbsenceCheckRegisterOutput checkBeforeUpdate(String companyID, AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, Application application,
 			AppAbsence appAbsence, Integer alldayHalfDay, boolean agentAtr, Optional<Boolean> mourningAtr);
 }

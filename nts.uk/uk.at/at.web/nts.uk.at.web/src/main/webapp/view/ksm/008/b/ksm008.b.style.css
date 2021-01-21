@@ -1,0 +1,13 @@
+.ksm008-left-content{
+    display: inline-block;
+    float: left;
+}
+.ksm008-right-content{
+    display: inline-block;
+    float: left;
+    margin-left: 90px;
+}
+
+#kcp005-select div {
+    padding: 0 !important;
+}

@@ -4,19 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.scherec.totaltimes.dto;
 
-import java.util.Optional;
-
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.CountAtr;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.SummaryAtr;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.SummaryList;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalCondition;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesABName;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesName;
-import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesSetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.memento.TotalTimesSetMemento;
 
 /**
  * The Class TotalTimesDetailDto.
@@ -44,7 +41,7 @@ public class TotalTimesItemDto implements TotalTimesSetMemento {
 	 * setCompanyId(nts.uk.ctx.at.shared.dom.common.CompanyId)
 	 */
 	@Override
-	public void setCompanyId(CompanyId setCompanyId) {
+	public void setCompanyId(String setCompanyId) {
 		// Do nothing.
 	}
 
@@ -132,7 +129,7 @@ public class TotalTimesItemDto implements TotalTimesSetMemento {
 	 * @see nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesSetMemento#setSummaryList(java.util.Optional)
 	 */
 	@Override
-	public void setSummaryList(Optional<SummaryList> summaryList) {
+	public void setSummaryList(SummaryList summaryList) {
 		// Do nothing
 	}
 

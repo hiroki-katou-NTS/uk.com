@@ -15,7 +15,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * @author HungTT
@@ -24,8 +24,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCST_ERAL_INPUT_CHECK")
-public class KrcstErAlInputCheck extends UkJpaEntity implements Serializable {
+@Table(name = "KRCMT_ERALST_CNDEXPSGL")
+public class KrcstErAlInputCheck extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -39,7 +39,7 @@ public class KrcstErAlInputCheck extends UkJpaEntity implements Serializable {
 	@JoinColumns({
 		@JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "CONDITION_GROUP_ID", insertable = false, updatable = false),
 		@JoinColumn(name = "ATD_ITEM_CON_NO", referencedColumnName = "ATD_ITEM_CON_NO", insertable = false, updatable = false) })
-	public KrcmtErAlAtdItemCon krcmtErAlAtdItemCon;
+	public KrcmtEralstCndgrp krcmtErAlAtdItemCon;
     
 	@Override
 	protected Object getKey() {

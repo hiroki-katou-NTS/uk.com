@@ -7,8 +7,8 @@ package nts.uk.ctx.sys.gateway.ac.find.login;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.sys.gateway.dom.login.adapter.loginrecord.LoginRecordAdapter;
-import nts.uk.ctx.sys.gateway.dom.login.adapter.loginrecord.LoginRecordInfor;
+import nts.uk.ctx.sys.gateway.dom.loginold.adapter.loginrecord.LoginRecordAdapter;
+import nts.uk.ctx.sys.gateway.dom.loginold.adapter.loginrecord.LoginRecordInfor;
 import nts.uk.ctx.sys.log.pub.loginrecord.LoginRecordDto;
 import nts.uk.ctx.sys.log.pub.loginrecord.LoginRecordPublisher;
 

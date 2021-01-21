@@ -80,7 +80,7 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 	public List<ApprovalPhase> getAllIncludeApprovers(String approvalId) {
 		List<ApprovalPhase> result = new ArrayList<>();
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		String query = "SELECT phase.APPROVAL_ID, phase.PHASE_ORDER, phase.BRANCH_ID, phase.APPROVAL_FORM, phase.BROWSING_PHASE, phase.APPROVAL_ATR as PHASE_ATR, " +
+		String query = "SELECT phase.APPROVAL_ID, phase.PHASE_ORDER, phase.APPROVAL_FORM, phase.BROWSING_PHASE, phase.APPROVAL_ATR as PHASE_ATR, " +
 						"approver.APPROVER_G_CD, approver.SID, approver.APPROVER_ORDER, approver.APPROVAL_ATR, approver.CONFIRM_PERSON, approver.SPEC_WKP_ID " +
 						"FROM WWFMT_APPROVAL_PHASE phase " +
 						"LEFT JOIN WWFMT_APPROVER approver " +
@@ -169,7 +169,7 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 		val domain = ApprovalPhase.createSimpleFromJavaType(
 				entity.wwfmtApprovalPhasePK.approvalId,
 				entity.wwfmtApprovalPhasePK.phaseOrder,
-				entity.branchId,
+				// entity.branchId,
 				entity.approvalForm,
 				entity.browsingPhase,
 				entity.approvalAtr,
@@ -185,7 +185,7 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 	private WwfmtApprovalPhase toEntityAppPhase(ApprovalPhase domain){
 		val entity = new WwfmtApprovalPhase();
 		entity.wwfmtApprovalPhasePK = new WwfmtApprovalPhasePK(domain.getApprovalId(), domain.getPhaseOrder());
-		entity.branchId = domain.getBranchId();
+		// entity.branchId = domain.getBranchId();
 		entity.approvalForm = domain.getApprovalForm().value;
 		entity.browsingPhase = domain.getBrowsingPhase();
 		entity.approvalAtr = domain.getApprovalAtr().value;
@@ -207,7 +207,7 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 			listFullData.add(new FullJoinWwfmtApprovalPhase(
 					rs.getString("APPROVAL_ID"), 
 					rs.getInt("PHASE_ORDER"),
-					rs.getString("BRANCH_ID"), 
+					// rs.getString("BRANCH_ID"), 
 					rs.getInt("APPROVAL_FORM"), 
 					rs.getInt("BROWSING_PHASE"),
 					rs.getInt("PHASE_ATR"),
@@ -228,7 +228,7 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 					FullJoinWwfmtApprovalPhase first = x.getValue().get(0);
 					String approvalId = first.approvalId;
 					int phaseOrder = first.phaseOrder;
-					String branchId = first.branchId;
+					// String branchId = first.branchId;
 					int phaseAtr = first.phaseAtr;
 					ApprovalForm approvalForm = EnumAdaptor.valueOf(first.approvalForm, ApprovalForm.class);
 					int browsingPhase = first.browsingPhase;
@@ -239,7 +239,10 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 								y.employeeId, 
 								EnumAdaptor.valueOf(y.confirmPerson, ConfirmPerson.class),
 								y.specWkpID)).collect(Collectors.toList());
-					return new ApprovalPhase(approvalId, phaseOrder, branchId, approvalForm,
+					return new ApprovalPhase(approvalId, 
+							phaseOrder, 
+							// branchId, 
+							approvalForm,
 							browsingPhase, EnumAdaptor.valueOf(phaseAtr, ApprovalAtr.class), approvers);
 				}).collect(Collectors.toList());
 	}

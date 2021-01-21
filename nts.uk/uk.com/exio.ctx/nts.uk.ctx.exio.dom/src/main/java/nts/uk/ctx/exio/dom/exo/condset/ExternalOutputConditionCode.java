@@ -9,7 +9,7 @@ import nts.uk.shr.com.primitive.ZeroPaddedCode;
 /**
  * 外部出力条件コード
  */
-@StringMaxLength(3)
+@StringMaxLength(5)
 @StringCharType(CharType.NUMERIC)
 @ZeroPaddedCode
 public class ExternalOutputConditionCode extends CodePrimitiveValue<ExternalOutputConditionCode> {

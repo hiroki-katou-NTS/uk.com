@@ -15,7 +15,7 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KshmtPerDayOfWeek.
@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KSHMT_PER_DAY_OF_WEEK")
-public class KshmtPerDayOfWeek extends UkJpaEntity implements Serializable {
+public class KshmtPerDayOfWeek extends ContractUkJpaEntity implements Serializable {
 	
 	 /** The Constant DEFAULT_TIME. */
     public static final int DEFAULT_TIME = 0;

@@ -9,8 +9,8 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.PSBonusPaySettingRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.PersonalBonusPaySetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.PSBonusPaySettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.PersonalBonusPaySetting;
 import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstPersonalBPSetting;
 import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstPersonalBPSettingPK;
 

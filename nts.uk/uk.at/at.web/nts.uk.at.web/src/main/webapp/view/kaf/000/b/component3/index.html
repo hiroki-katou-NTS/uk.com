@@ -1,0 +1,20 @@
+<div id="kaf000-b-component3">
+	<div class="table" data-bind="if: dispApprovalReason">
+		<div class="cell col-1">
+			<div class="cell valign-center" data-bind="ntsFormLabel: {}, text: $i18n('KAF000_28')"></div>
+		</div>
+		<div class="cell valign-center">
+			<textarea style="height: 80px;" id="inpReasonTextarea"
+				data-bind="ntsMultilineEditor: {
+							name: $i18n('KAF000_28'),
+							value: approvalReason,
+							option: {
+								resizeable: false,
+		                    	width: '450',
+		                    	textalign: 'left'
+		                   	},
+             				required : false,
+             				enable: enableApprovalReason }" />
+		</div>
+	</div>
+</div>

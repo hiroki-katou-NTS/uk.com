@@ -8,10 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.file.com.app.personselection.PersonSelectionItemColumn;
 import nts.uk.file.com.app.personselection.PersonSelectionItemRepository;
@@ -22,9 +21,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 
 @Stateless
-public class PersonSelectionItemImpl implements PersonSelectionItemRepository {
-	@PersistenceContext
-	private EntityManager entityManager;
+public class PersonSelectionItemImpl extends JpaRepository implements PersonSelectionItemRepository {
 
 	// Export Data table
 
@@ -58,13 +55,13 @@ public class PersonSelectionItemImpl implements PersonSelectionItemRepository {
 				+ " ss.MEMO,"
 				+ " ROW_NUMBER () OVER ( PARTITION BY si.SELECTION_ITEM_NAME ORDER BY si.SELECTION_ITEM_NAME, so.DISPORDER ASC , hs.START_DATE DESC) AS ROW_NUMBER, so.DISPORDER"
 				+ " FROM" 
-				+ " PPEMT_SELECTION_ITEM si"
-				+ " INNER JOIN PPEMT_HISTORY_SELECTION hs ON si.SELECTION_ITEM_ID = hs.SELECTION_ITEM_ID"
+				+ " PPEMT_SELECTION_DEF si"
+				+ " INNER JOIN PPEMT_SELECTION_HIST hs ON si.SELECTION_ITEM_ID = hs.SELECTION_ITEM_ID"
 				+ " AND hs.START_DATE <= CONVERT ( DATETIME, ?date, 111 )" 
 				+ " AND hs.CID = ?companyId"
 				+ " AND CONVERT ( DATETIME, ?date, 111 ) <= hs.END_DATE"
-				+ " INNER JOIN PPEMT_SEL_ITEM_ORDER so ON hs.HIST_ID = so.HIST_ID"
-				+ " INNER JOIN PPEMT_SELECTION ss ON so.HIST_ID = ss.HIST_ID" 
+				+ " INNER JOIN PPEMT_SELECTION_ITEM_SORT so ON hs.HIST_ID = so.HIST_ID"
+				+ " INNER JOIN PPEMT_SELECTION_DEF ss ON so.HIST_ID = ss.HIST_ID" 
 				+ " AND so.SELECTION_ID = ss.SELECTION_ID"
 				+ " WHERE" 
 				+ " si.CONTRACT_CD = ?contractCd" 
@@ -75,7 +72,7 @@ public class PersonSelectionItemImpl implements PersonSelectionItemRepository {
 
 		String companyId = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
-		Query query = entityManager.createNativeQuery(GET_EXPORT_EXCEL.toString())
+		Query query = getEntityManager().createNativeQuery(GET_EXPORT_EXCEL.toString())
 				.setParameter("contractCd", contractCd).setParameter("companyId", companyId).setParameter("date", date);
 		@SuppressWarnings("unchecked")
 		List<Object[]> data = query.getResultList();

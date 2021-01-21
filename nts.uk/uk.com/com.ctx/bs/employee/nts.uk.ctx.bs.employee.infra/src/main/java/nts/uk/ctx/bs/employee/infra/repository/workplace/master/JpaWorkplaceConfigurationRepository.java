@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
@@ -73,6 +74,7 @@ public class JpaWorkplaceConfigurationRepository extends JpaRepository implement
 	}
 
 	@Override
+	@SneakyThrows
 	public Optional<WorkplaceConfiguration> findByDate(String companyID, GeneralDate date) {
 		String sql = FIND_BY_DATE;
 		sql = sql.replaceAll("date", date.toString("yyyy-MM-dd"));
@@ -86,12 +88,11 @@ public class JpaWorkplaceConfigurationRepository extends JpaRepository implement
 							new DatePeriod(
 									x.getGeneralDate("START_DATE"), 
 									x.getGeneralDate("END_DATE"))))));
-		} catch (Exception e) {
-			throw new RuntimeException("setting error: workplace config");
 		}
 	}
 	
 	@Override
+	@SneakyThrows
 	public Optional<WorkplaceConfiguration> findByHistId(String companyID, String histId) {
 		String sql = FIND_BY_HISID;
 		sql = sql.replaceAll("histId", histId);
@@ -105,8 +106,6 @@ public class JpaWorkplaceConfigurationRepository extends JpaRepository implement
 							new DatePeriod(
 									x.getGeneralDate("START_DATE"), 
 									x.getGeneralDate("END_DATE"))))));
-		} catch (Exception e) {
-			throw new RuntimeException("setting error: workplace config");
 		}
 	}
 	
@@ -123,6 +122,7 @@ public class JpaWorkplaceConfigurationRepository extends JpaRepository implement
 	}
 	
 	@Override
+	@SneakyThrows
 	public Optional<WorkplaceConfiguration> findByStartDate(String companyID, GeneralDate startDate) {
 		String sql = FIND_BY_START_DATE;
 		sql = sql.replaceAll("date", startDate.toString("yyyy-MM-dd"));
@@ -136,8 +136,6 @@ public class JpaWorkplaceConfigurationRepository extends JpaRepository implement
 							new DatePeriod(
 									x.getGeneralDate("START_DATE"), 
 									x.getGeneralDate("END_DATE"))))));
-		} catch (Exception e) {
-			throw new RuntimeException("setting error: workplace config");
 		}
 	}
 

@@ -31,6 +31,11 @@
 	overflow: auto;
 }
 
+.box-list {
+  width: 70%;
+  margin-left: 20px;
+}
+
 .contentAll {
 	display: flex;
 }
@@ -48,6 +53,10 @@
 .tableContentL {
 	border-spacing: 10px;
 	border-collapse: separate;
+}
+
+#B3_3 {
+  margin-top: 10px;
 }
 
 #B3_5{

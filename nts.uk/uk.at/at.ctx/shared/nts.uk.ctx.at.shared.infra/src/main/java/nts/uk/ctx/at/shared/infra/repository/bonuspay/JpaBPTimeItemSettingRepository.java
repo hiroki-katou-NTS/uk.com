@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimeItemSettingRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BPTimeItemSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPTimeItemSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.timeitem.BPTimeItemSetting;
 import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstBPTimeItemSetting;
 import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstBPTimeItemSettingPK;
 

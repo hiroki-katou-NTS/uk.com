@@ -21,6 +21,7 @@ public interface CollectApprovalRootService {
 	
 	/**
 	 * 1.社員の対象申請の承認ルートを取得する
+	 * Refactor5 UKDesign.ドメインモデル.NittsuSystem.UniversalK.ワークフロー.Export.[No.309]承認ルートを取得する.1.社員の対象申請の承認ルートを取得する(getApprovalRootOfSubjectRequest)
 	 * @param companyID 会社ID
 	 * @param employeeID 社員ID
 	 * @param rootAtr 承認ルート区分

@@ -1,9 +1,9 @@
 package nts.uk.ctx.at.shared.infra.repository.ot.autocalsetting;
 
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSettingGetMemento;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalAtrOvertime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalFlexOvertimeSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.KshmtAutoCalSet;
 
 public class JpaAutoCalFlexOvertimeSettingGetMemento implements AutoCalFlexOvertimeSettingGetMemento {

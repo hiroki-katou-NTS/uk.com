@@ -18,7 +18,7 @@ import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * @author hungnm
@@ -27,8 +27,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCST_ERAL_SINGLE_ATD")
-public class KrcstErAlSingleAtd extends UkJpaEntity implements Serializable {
+@Table(name = "KRCMT_ERALST_CNDEXPSGLATD")
+public class KrcstErAlSingleAtd extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
@@ -41,7 +41,7 @@ public class KrcstErAlSingleAtd extends UkJpaEntity implements Serializable {
 	@ManyToOne( cascade = {CascadeType.PERSIST, CascadeType.MERGE} )
 	@JoinColumns({ @JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "CONDITION_GROUP_ID", insertable = false, updatable = false),
 			@JoinColumn(name = "ATD_ITEM_CON_NO", referencedColumnName = "ATD_ITEM_CON_NO", insertable = false, updatable = false) })
-	public KrcmtErAlAtdItemCon krcmtErAlAtdItemCon;
+	public KrcmtEralstCndgrp krcmtErAlAtdItemCon;
 	
 	@Override
 	protected Object getKey() {

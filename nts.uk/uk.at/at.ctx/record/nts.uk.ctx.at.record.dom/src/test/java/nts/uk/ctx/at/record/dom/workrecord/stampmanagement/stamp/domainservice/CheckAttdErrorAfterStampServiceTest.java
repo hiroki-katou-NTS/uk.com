@@ -14,6 +14,7 @@ import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.CheckAttdErrorAfterStampService.Require;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonPositionNo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PageNo;
@@ -50,7 +51,9 @@ public class CheckAttdErrorAfterStampServiceTest {
 			}
 		};
 		
-		assertThat(CheckAttdErrorAfterStampService.get(require, employeeId, stampButton).isEmpty()).isTrue();
+		assertThat(
+				CheckAttdErrorAfterStampService.get(require, employeeId, StampMeans.INDIVITION, stampButton).isEmpty())
+						.isTrue();
 	}
 	
 	/**
@@ -73,7 +76,7 @@ public class CheckAttdErrorAfterStampServiceTest {
 			}
 		};
 		
-		assertThat(CheckAttdErrorAfterStampService.get(require, employeeId, stampButton).isEmpty()).isTrue();
+		assertThat(CheckAttdErrorAfterStampService.get(require, employeeId, StampMeans.INDIVITION, stampButton).isEmpty()).isTrue();
 	}
 	
 	/**
@@ -104,7 +107,7 @@ public class CheckAttdErrorAfterStampServiceTest {
 			}
 		};
 		
-		assertThat(CheckAttdErrorAfterStampService.get(require, employeeId, stampButton).isEmpty()).isTrue();
+		assertThat(CheckAttdErrorAfterStampService.get(require, employeeId, StampMeans.INDIVITION, stampButton).isEmpty()).isTrue();
 	}
 	
 	/**
@@ -143,7 +146,7 @@ public class CheckAttdErrorAfterStampServiceTest {
 			}
 		};
 		
-		assertThat(CheckAttdErrorAfterStampService.get(require, employeeId, stampButton).isEmpty()).isTrue();
+		assertThat(CheckAttdErrorAfterStampService.get(require, employeeId, StampMeans.INDIVITION, stampButton).isEmpty()).isTrue();
 	}
 	
 	/**
@@ -179,7 +182,7 @@ public class CheckAttdErrorAfterStampServiceTest {
 			}
 		};
 		
-		assertThat(CheckAttdErrorAfterStampService.get(require, employeeId, stampButton).isEmpty()).isFalse();
+		assertThat(CheckAttdErrorAfterStampService.get(require, employeeId, StampMeans.INDIVITION, stampButton).isEmpty()).isFalse();
 	}
 	
 	/**
@@ -215,7 +218,7 @@ public class CheckAttdErrorAfterStampServiceTest {
 			}
 		};
 		
-		assertThat(CheckAttdErrorAfterStampService.get(require, employeeId, stampButton).isEmpty()).isTrue();
+		assertThat(CheckAttdErrorAfterStampService.get(require, employeeId, StampMeans.INDIVITION, stampButton).isEmpty()).isTrue();
 	}
 	
 	/**
@@ -256,7 +259,7 @@ public class CheckAttdErrorAfterStampServiceTest {
 			}
 		};
 		
-		assertThat(CheckAttdErrorAfterStampService.get(require, employeeId, stampButton).isEmpty()).isFalse();
+		assertThat(CheckAttdErrorAfterStampService.get(require, employeeId, StampMeans.INDIVITION, stampButton).isEmpty()).isFalse();
 	}
 
 }

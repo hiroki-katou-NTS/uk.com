@@ -9,10 +9,10 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMerge;
-import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainData;
-import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainDataRepository;
 import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMerge;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainData;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainDataRepository;
 
 @Stateless
 public class SpecialHolidayRemainDataSeviceImpl implements SpecialHolidayRemainDataSevice{
@@ -245,7 +245,7 @@ public class SpecialHolidayRemainDataSeviceImpl implements SpecialHolidayRemainD
 			//ドメインモデル「特別休暇月別残数データ」を取得
 			List<SpecialHolidayRemainData> lstRemainData = new ArrayList<>();
 			for(RemainMerge speMer : entry.getValue()){
-				lstRemainData.addAll(speMer.getSpecialHolidayRemainList());
+				lstRemainData.addAll(speMer.getSpecialHolidayRemainData());
 			}
 			YearMonth month = entry.getKey();
 			for (SpecialHolidayRemainData remainData : lstRemainData) {

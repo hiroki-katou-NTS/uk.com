@@ -53,17 +53,17 @@ public class SubstitutionTempDataDeleting {
 		
 	}
 
-	private static interface RequireM2 extends RequireM0 {
+	public static interface RequireM2 extends RequireM0 {
 		
 		void deleteInterimRecMng(List<String> listRecId);
 	}
 
-	private static interface RequireM1 extends RequireM0 {  
+	public static interface RequireM1 extends RequireM0 {  
 		
 		void deleteInterimAbsMng(List<String> listAbsMngId);
 	}
 
-	private static interface RequireM0 {
+	public static interface RequireM0 {
 		
 		List<InterimRemain> interimRemain(String employeeId, DatePeriod dateData, RemainType remainType);
 	}

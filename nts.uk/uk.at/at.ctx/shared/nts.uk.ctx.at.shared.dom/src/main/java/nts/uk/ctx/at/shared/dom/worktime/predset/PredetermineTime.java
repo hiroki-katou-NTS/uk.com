@@ -4,10 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.predset;
 
+import java.util.Optional;
 import java.io.Serializable;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
@@ -93,6 +96,24 @@ public class PredetermineTime extends WorkTimeDomainObject implements Cloneable,
 		if (screenMode == ScreenMode.SIMPLE) {
 			// Simple mode
 		} 		
+	}
+	
+	/**
+	 * 所定時間を変動させる（流動勤務）
+	 * @param fluctuationTime 変動させる時間
+	 */
+	public void fluctuationPredeterminedTimeForFlow(AttendanceTimeOfExistMinus fluctuationTime) {
+		this.predTime.setAllTime(
+				Optional.of(this.predTime.getOneDay().addMinutes(fluctuationTime.v())),
+				Optional.of(this.predTime.getMorning().addMinutes(fluctuationTime.v())),
+				Optional.of(this.predTime.getAfternoon().addMinutes(fluctuationTime.v())));
+		this.addTime.setAllTime(
+				Optional.of(this.addTime.getOneDay().addMinutes(fluctuationTime.v())),
+				Optional.empty(),
+				Optional.empty());
+		
+		this.predTime.negativeToZero();
+		this.addTime.negativeToZero();
 	}
 	
 	@Override

@@ -11,47 +11,52 @@
 			<com:ValidatorScript>
 				nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber
 			</com:ValidatorScript>
-			
+
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
-			
+
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js"
+				of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
-			
+
 			<com:stylefile path="./kmp001.main.css" />
-			<com:scriptfile path="./components/tab-panel.js" />
 			<com:scriptfile path="./components/view-a.js" />
 			<com:scriptfile path="./components/view-b.js" />
 			<com:scriptfile path="./components/view-c.js" />
+			<com:scriptfile path="./components/view-e.js" />
+			<com:scriptfile path="./components/view-h.js" />
 			<com:scriptfile path="./components/right-panel-component.js" />
 			<com:scriptfile path="./components/card-list-component.js" />
+			<com:scriptfile path="./components/ccg001.js" />
 			<com:scriptfile path="./kmp001.vm.js" />
 
 		</ui:define>
 
 		<ui:define name="content">
-			<div data-bind="let: { selected: ko.observable('KMP001_1') }">
-				<div id="sidebar-area" style="height: calc(100vh - 142px); float: left" data-bind="component: {
-						name: 'ko-panel',
-						params:{ 
-							model: selected,
-							tabs: tabs
-						}
-					}"></div>
-				<div data-bind="if: selected() === 'KMP001_1'">
+			<div data-bind="component: { name: 'view-a', params: {} }"></div>
+			<!-- <div data-bind="let: { selected: ko.observable('KMP001_H') }">
+
+				<div data-bind="if: selected() === 'KMP001_A'">
 					<div data-bind="component: { name: 'view-a', params: {} }"></div>
 				</div>
-				<div data-bind="if: selected() === 'KMP001_2'">
+				<div data-bind="if: selected() === 'KMP001_B'">
 					<div data-bind="component: { name: 'view-b', params: {} }"></div>
 				</div>
-				<div data-bind="if: selected() === 'KMP001_3'">
+				<div data-bind="if: selected() === 'KMP001_C'">
 					<div data-bind="component: { name: 'view-c', params: {} }"></div>
 				</div>
+				<div data-bind="if: selected() === 'KMP001_E'">
+					<div data-bind="component: { name: 'view-e', params: {} }"></div>
+				</div>
+				<div data-bind="if: selected() === 'KMP001_H'">
+					<div
+						data-bind="component: { name: 'view-h', params: { model: selected } }"></div>
+				</div>
 				<div class="cf"></div>
-			</div>
+			</div> -->
 		</ui:define>
 
 	</ui:composition>

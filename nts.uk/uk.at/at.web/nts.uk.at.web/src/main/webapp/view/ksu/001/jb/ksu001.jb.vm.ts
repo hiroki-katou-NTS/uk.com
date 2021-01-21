@@ -23,6 +23,7 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
         dataWorkPairSet: KnockoutObservableArray<any> = ko.observableArray([]);
         source: KnockoutObservableArray<any> = ko.observableArray([]);
         isDeleteEnable: KnockoutObservable<boolean> = ko.observable(true);
+        isCopy: KnockoutObservable<boolean> = ko.observable(true);
         currentObject: KnockoutObservable<any> = ko.observable(null);
         isAllowCheckChanged: boolean = false;
         sourceEmpty: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
@@ -67,18 +68,23 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             if (self.selectedTab() === 'company') {
                 self.isVisibleWkpName(false);
                 $.when(self.getDataComPattern()).done(() => {
-                    self.Jb2_1Name (nts.uk.resource.getText("Com_Company"));
+                    self.Jb2_1Name(nts.uk.resource.getText("Com_Company"));
                     self.clickLinkButton(null, self.selectedLinkButton);
                     var test = _.map(data, "groupName")
 
 
+
                 });
-            } else {
+            } else if (self.selectedTab() === 'workplace') {
                 self.isVisibleWkpName(true);
-                $.when(self.getDataWkpPattern()).done(() => {
-                    self.Jb2_1Name (nts.uk.resource.getText("Com_Workplace"));
+                $.when(self.getDataWkpPattern()).done((data) => {
                     self.clickLinkButton(null, self.selectedLinkButton);
-                    self.workplaceName();
+                    // nts.uk.ui.windows.getSelf().setSize(400, 845);
+                });
+            } else if (self.selectedTab() === 'workplaceGroup') {
+                self.isVisibleWkpName(true);
+                $.when(self.getDataWkpGrPattern()).done(() => {
+                    self.clickLinkButton(null, self.selectedLinkButton);
                     // nts.uk.ui.windows.getSelf().setSize(400, 845);
                 });
             }
@@ -93,17 +99,18 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                 workplaceId: '',
                 workplaceGroupId: ''
             }
-            if (self.selectedTab == 'company') {
+            if (self.selectedTab() == 'company') {
                 taisho.targetUnit = null;
                 taisho.workplaceId = null;
                 taisho.workplaceGroupId = null;
             }
-            if (self.selectedTab == 'workplace') {
+            if (self.selectedTab() == 'workplace') {
                 taisho.workplaceId = self.workplaceId;
                 taisho.targetUnit = 0
             }
-            if (self.selectedTab == 'groupworkplace') {
-                taisho.workplaceId = '';
+            if (self.selectedTab() == 'workplaceGroup') {
+                taisho.workplaceGroupId = self.workplaceId;
+                taisho.targetUnit = 1
             }
 
             service.getShiftMasterWorkInfo(taisho).done((data) => {
@@ -123,19 +130,13 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             let self = this, index: number = param();
 
             self.selectedLinkButton(index);
-            //             if (self.isAllowCheckChanged && self.isChanged()) {
-            //                 nts.uk.ui.dialog.confirm({ messageId: "Msg_447" }).ifYes(() => {
-            //                     $.when(self.saveData()).done(() => {
-            //                         self.handleClickButton(index);
-            //                     });
-            //                 }).ifNo(() => {
-            //                     self.handleClickButton(index);
-            //                 });
-            //             } else {
-            //                 self.handleClickButton(index);
-            //            } 
             self.handleClickButton(index);
             self.isAllowCheckChanged = true;
+            if (self.dataSource()[self.selectedLinkButton()] == null) {
+                self.isCopy(false);
+            } else {
+                self.isCopy(true);
+            }
         }
 
         /**
@@ -216,6 +217,9 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             self.textName(data ? data.text : null);
             self.tooltip(data ? data.tooltip : null);
 
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
             setShared("dataForJC", {
                 text: self.textName(),
                 data: data ? data.data : null,
@@ -236,6 +240,33 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             });
 
             return dfd.promise();
+        }
+
+        openJD(): void {
+            let self = this;
+
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
+            let targetUnit = 2;
+            if (self.selectedTab() == 'workplace') {
+                targetUnit = 0;
+            }
+            if (self.selectedTab() == 'workplaceGroup') {
+                targetUnit = 1;
+            }
+            setShared("dataForJD", {
+                target: targetUnit,
+                targetID: self.workplaceId,
+                pageNumber: self.selectedLinkButton() + 1
+            });
+            nts.uk.ui.windows.sub.modal("/view/ksu/001/jd/index.xhtml").onClosed(() => {
+                let dataFromJD = getShared("dataFromJD");
+                if (dataFromJD) {
+                    self.selectedLinkButton(dataFromJD.page - 1);
+                    self.init();
+                }
+            });
         }
 
         saveData(): JQueryPromise<any> {
@@ -288,7 +319,15 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                 }
             }
 
+            let unitTarget = 2;
+            if (self.selectedTab() == 'workplace') {
+                unitTarget = 0;
+            }
+            if (self.selectedTab() == 'workplaceGroup') {
+                unitTarget = 1;
+            }
             let obj = {
+                unit: unitTarget,
                 workplaceId: self.workplaceId,
                 groupNo: self.currentObject().groupNo,
                 groupName: self.groupName(),
@@ -301,11 +340,12 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                 nts.uk.ui.block.clear();
             } else {
                 service.registerWorkPairPattern(obj).done(function() {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                    self.isAllowCheckChanged = false;
-                    self.handleAfterChangeData();
-                    self.isDeleteEnable(true);
-                    dfd.resolve();
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        self.isAllowCheckChanged = false;
+                        self.handleAfterChangeData();
+                        self.isDeleteEnable(true);
+                        dfd.resolve();
+                    });
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError({ messageId: error.messageId });
                     dfd.reject();
@@ -326,10 +366,12 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                 }
 
                 service.deleteWorkPairPattern(obj).done(function() {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                    self.handleAfterChangeData();
-                    self.isDeleteEnable(false);
-                    dfd.resolve();
+                    nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
+                        self.handleAfterChangeData();
+                        self.isDeleteEnable(false);
+                        $('input#textName').focus();
+                        dfd.resolve();
+                    });
                 }).fail(function() {
                     dfd.reject();
                 });
@@ -349,8 +391,12 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                 $.when(self.getDataComPattern()).done(() => {
                     self.clickLinkButton(null, self.selectedLinkButton);
                 });
-            } else {
+            } else if (self.selectedTab() == 'workplace') {
                 $.when(self.getDataWkpPattern()).done(() => {
+                    self.clickLinkButton(null, self.selectedLinkButton);
+                });
+            } else if (self.selectedTab() == 'workplaceGroup') {
+                $.when(self.getDataWkpGrPattern()).done(() => {
                     self.clickLinkButton(null, self.selectedLinkButton);
                 });
             }
@@ -405,8 +451,25 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
         getDataWkpPattern(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             service.getDataWkpPattern(self.workplaceId).done((data) => {
-                self.listPattern(data);
+                self.listPattern(data.listShiftPalletsOrgDto);
+                self.Jb2_1Name(data.displayName);
                 self.handleAfterGetData(self.listPattern());
+                dfd.resolve();
+            }).fail(function() {
+                dfd.reject();
+            });
+
+            return dfd.promise();
+        }
+
+        /** get data form WKPGR_PATTERN */
+        getDataWkpGrPattern(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            service.getDataWkpGrPattern(self.workplaceId).done((data) => {
+                self.listPattern(data.listShiftPalletsOrgDto);
+                self.Jb2_1Name(data.displayName);
+                self.handleAfterGetData(self.listPattern());
+                self.Jb2_1Name(data.displayName);
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();
@@ -447,11 +510,12 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                         let matchShiftWork = _.find(self.listShiftWork, ["shiftMasterCode", wPSet.shiftCode != null ? wPSet.shiftCode : wPSet.workTypeCode]);
                         let value = "";
                         if (self.selectedTab() === 'company') {
-                            let shortName = (matchShiftWork != null) ? '[' + matchShiftWork.shiftMasterName + ']' : '[' + wPSet.shiftCode + 'マスタ未登録]';
+                            //let shortName = (matchShiftWork != null) ? '[' + matchShiftWork.shiftMasterName + ']' : '[' + wPSet.shiftCode + 'マスタ未登録]';
+                            let shortName = (matchShiftWork != null) ? matchShiftWork.shiftMasterName : wPSet.shiftCode + 'マスタ未登録';
                             value = shortName;
                             arrPairShortName.push(shortName);
                         } else {
-                            let shortName = (matchShiftWork != null) ? '[' + matchShiftWork.shiftMasterName + ']' : '[' + wPSet.workTypeCode + 'マスタ未登録]';
+                            let shortName = (matchShiftWork != null) ? matchShiftWork.shiftMasterName : wPSet.workTypeCode + 'マスタ未登録';
                             value = shortName;
                             arrPairShortName.push(shortName);
                         }

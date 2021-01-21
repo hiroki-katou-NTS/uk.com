@@ -63,7 +63,7 @@ public class GetAnnLeaUsedDaysImpl implements GetAnnLeaUsedDays {
 		
 		// 期間内の年休使用明細を取得する
 		val domReferenceAtr = EnumAdaptor.valueOf(referenceAtr.value,
-				nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.ReferenceAtr.class);
+				nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.ReferenceAtr.class);
 		val dailyInterimRemainMngDatas = this.getAnnualHolidayGrantInfor.lstRemainData(
 				AppContexts.user().companyId(), employeeId, period, domReferenceAtr);
 		
@@ -136,7 +136,7 @@ public class GetAnnLeaUsedDaysImpl implements GetAnnLeaUsedDays {
 		
 		// 期間内の年休使用明細を取得する
 		val domReferenceAtr = EnumAdaptor.valueOf(referenceAtr.value,
-				nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.ReferenceAtr.class);
+				nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.ReferenceAtr.class);
 		val dailyInterimRemainMngDatas = this.getAnnualHolidayGrantInfor.lstRemainData(
 				AppContexts.user().companyId(), employeeId, usedPeriod, domReferenceAtr);
 

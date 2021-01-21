@@ -52,7 +52,8 @@ module test.viewmodel {
             self.listSelectionType = ko.observableArray([
                 { code: 2, name: 'Select all', enable: self.isMultipleTreeGrid },
                 { code: 1, name: 'Select first item', enable: self.enable },
-                { code: 0, name: 'No select', enable: self.enable }
+                { code: 0, name: 'No select', enable: self.enable },
+                { code: 3, name: 'Select follow ID', enable: self.enable }
             ]);
             self.listTreeType = ko.observableArray([
                 { code: 0, name: 'Single tree select grid' },

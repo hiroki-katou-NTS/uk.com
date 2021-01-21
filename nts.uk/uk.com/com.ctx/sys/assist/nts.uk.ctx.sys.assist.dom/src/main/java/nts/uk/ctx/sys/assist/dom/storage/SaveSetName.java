@@ -7,13 +7,9 @@ import nts.arc.primitive.constraint.StringMaxLength;
 @StringMaxLength(30)
 public class SaveSetName extends StringPrimitiveValue<SaveSetName>{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	public SaveSetName(String rawValue) {
 		super(rawValue);
-		// TODO Auto-generated constructor stub
 	}
 }

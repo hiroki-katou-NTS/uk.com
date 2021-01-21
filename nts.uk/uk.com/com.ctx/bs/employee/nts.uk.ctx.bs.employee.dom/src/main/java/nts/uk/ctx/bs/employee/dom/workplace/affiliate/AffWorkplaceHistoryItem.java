@@ -1,5 +1,7 @@
 package nts.uk.ctx.bs.employee.dom.workplace.affiliate;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,10 +32,26 @@ public class AffWorkplaceHistoryItem {
 	/** The normalWorkplaceCode. */
 	// 通常職場コード
 	private String  normalWorkplaceId;
+
+	private Optional<WorkLocationCD> workLocationCode;
 	
 	public static AffWorkplaceHistoryItem createFromJavaType(String histId, String employeeId, String workplaceId, String normalWorkplaceId){
 		return new AffWorkplaceHistoryItem(histId,employeeId, workplaceId, normalWorkplaceId);
 
 	}
-	
+
+//	public static AffWorkplaceHistoryItem createFromJavaTypeNew(String histId, String employeeId, String workplaceId,
+//																String normalWorkplaceId, String workLocation){
+//		return new AffWorkplaceHistoryItem(histId,employeeId, workplaceId, normalWorkplaceId,
+//				workLocation == null? Optional.empty(): Optional.of(new WorkLocationCD((workLocation))));
+//
+//	}
+
+	public AffWorkplaceHistoryItem(String historyId, String employeeId, String workplaceId, String normalWorkplaceId) {
+		this.historyId = historyId;
+		this.employeeId = employeeId;
+		this.workplaceId = workplaceId;
+		this.normalWorkplaceId = normalWorkplaceId;
+		this.workLocationCode = Optional.empty();
+	}
 }

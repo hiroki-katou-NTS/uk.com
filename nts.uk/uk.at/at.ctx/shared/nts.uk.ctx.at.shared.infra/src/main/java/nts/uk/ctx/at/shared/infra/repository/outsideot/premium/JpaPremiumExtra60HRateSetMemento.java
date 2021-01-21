@@ -4,11 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.outsideot.premium;
 
-import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemNo;
-import nts.uk.ctx.at.shared.dom.outsideot.holiday.PremiumExtra60HRateSetMemento;
-import nts.uk.ctx.at.shared.dom.outsideot.holiday.PremiumRate;
-import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeNo;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshstPremiumExt60hRate;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.BreakdownItemNo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.PremiumExtra60HRateSetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.PremiumRate;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeNo;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshmtHd60hPremiumRate;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshstPremiumExt60hRatePK;
 
 /**
@@ -18,7 +18,7 @@ public class JpaPremiumExtra60HRateSetMemento implements PremiumExtra60HRateSetM
 
 	
 	/** The entity. */
-	private KshstPremiumExt60hRate entity;
+	private KshmtHd60hPremiumRate entity;
 	
 	/**
 	 * Instantiates a new jpa premium extra 60 H rate set memento.
@@ -26,7 +26,7 @@ public class JpaPremiumExtra60HRateSetMemento implements PremiumExtra60HRateSetM
 	 * @param entity the entity
 	 * @param companyId the company id
 	 */
-	public JpaPremiumExtra60HRateSetMemento(KshstPremiumExt60hRate entity, String companyId) {
+	public JpaPremiumExtra60HRateSetMemento(KshmtHd60hPremiumRate entity, String companyId) {
 		if(entity.getKshstPremiumExt60hRatePK() ==null){
 			entity.setKshstPremiumExt60hRatePK(new KshstPremiumExt60hRatePK());
 		}

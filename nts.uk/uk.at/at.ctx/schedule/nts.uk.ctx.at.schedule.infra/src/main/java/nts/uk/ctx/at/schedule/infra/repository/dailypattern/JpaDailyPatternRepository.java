@@ -1,25 +1,18 @@
 package nts.uk.ctx.at.schedule.infra.repository.dailypattern;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.daily.DailyPattern;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.daily.DailyPatternRepository;
+import nts.uk.ctx.at.schedule.dom.shift.workcycle.DailyPatternRepository;
+import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
 import nts.uk.ctx.at.schedule.infra.entity.dailypattern.KdpstDailyPatternSet;
 import nts.uk.ctx.at.schedule.infra.entity.dailypattern.KdpstDailyPatternSetPK;
-import nts.uk.ctx.at.schedule.infra.entity.dailypattern.KdpstDailyPatternSetPK_;
-import nts.uk.ctx.at.schedule.infra.entity.dailypattern.KdpstDailyPatternSet_;
+import nts.uk.ctx.at.schedule.infra.entity.dailypattern.KdpstDailyPatternVal;
 
 /**
  * The Class JpaDailyPatternRepository.
@@ -32,131 +25,122 @@ public class JpaDailyPatternRepository extends JpaRepository implements DailyPat
 
 	/** The Constant FIRST_LENGTH. */
 	public static final int FIRST_LENGTH = 1;
+	private static final String SELECT_ALL = "SELECT f from KdpstDailyPatternSet f ";
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.patterncalendar.PatternCalendarRepository#
-	 * getAllPattCalendar(java.lang.String)
+	private static final String GET_ALL_BY_CID = SELECT_ALL + "WHERE f.kdpstDailyPatternSetPK.cid = :cid ORDER BY f.kdpstDailyPatternSetPK.patternCd ASC";
+
+	private static final String GET_BY_CID_AND_CODE = SELECT_ALL + "WHERE f.kdpstDailyPatternSetPK.cid = :cid AND f.kdpstDailyPatternSetPK.patternCd = :code";
+
+	private static final String GET_INFO_BY_CID_AND_CODE = "SELECT f FROM KdpstDailyPatternVal f WHERE f.kdpstDailyPatternValPK.cid = :cid and f.kdpstDailyPatternValPK.patternCd = :code";
+
+	private static final String DELETE_ALL_INFO_BY_CODE = "DELETE FROM KdpstDailyPatternVal f WHERE f.kdpstDailyPatternValPK.cid = :cid and f.kdpstDailyPatternValPK.patternCd = :code";
+
+
+	/**
+	 * [1] insert（勤務サイクル）
+	 * @param item
 	 */
 	@Override
-	public List<DailyPattern> getAllPattCalendar(String companyId) {
-		EntityManager em = this.getEntityManager();
-
-		CriteriaBuilder builder = em.getCriteriaBuilder();
-
-		CriteriaQuery<KdpstDailyPatternSet> query = builder.createQuery(KdpstDailyPatternSet.class);
-		Root<KdpstDailyPatternSet> root = query.from(KdpstDailyPatternSet.class);
-
-		List<Predicate> predicateList = new ArrayList<>();
-
-		predicateList.add(builder.equal(root.get(KdpstDailyPatternSet_.kdpstDailyPatternSetPK)
-				.get(KdpstDailyPatternSetPK_.cid), companyId));
-
-		query.where(predicateList.toArray(new Predicate[] {}));
-
-		// order by closure id asc
-		query.orderBy(builder.asc(root.get(KdpstDailyPatternSet_.kdpstDailyPatternSetPK)
-				.get(KdpstDailyPatternSetPK_.patternCd)));
-
-		List<KdpstDailyPatternSet> result = em.createQuery(query).getResultList();
-
-		if (result.isEmpty()) {
-			return Collections.emptyList();
-		}
-
-		return result.stream().map(entity -> {
-			return new DailyPattern(new JpaDailyPatternGetMemento(entity));
-		}).collect(Collectors.toList());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.patterncalendar.PatternCalendarRepository#
-	 * findByCompanyId(java.lang.String)
-	 */
-	@Override
-	public Optional<DailyPattern> findByCode(String companyId, String patternCd) {
-
-		EntityManager em = this.getEntityManager();
-
-		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<KdpstDailyPatternSet> query = builder.createQuery(KdpstDailyPatternSet.class);
-		Root<KdpstDailyPatternSet> root = query.from(KdpstDailyPatternSet.class);
-
-		List<Predicate> predicateList = new ArrayList<>();
-
-		predicateList.add(builder.equal(root.get(KdpstDailyPatternSet_.kdpstDailyPatternSetPK)
-				.get(KdpstDailyPatternSetPK_.cid), companyId));
-		predicateList.add(builder.equal(root.get(KdpstDailyPatternSet_.kdpstDailyPatternSetPK)
-				.get(KdpstDailyPatternSetPK_.patternCd), patternCd));
-
-		query.where(predicateList.toArray(new Predicate[] {}));
-
-		List<KdpstDailyPatternSet> result = em.createQuery(query).getResultList();
-		if (result.isEmpty()) {
-			return Optional.empty();
-		}
-
-		return Optional.of(new DailyPattern(new JpaDailyPatternGetMemento(result.get(FIRST_DATA))));
+	public void add(WorkCycle item) {
+		// Add work cycle
+		this.commandProxy().insert(KdpstDailyPatternSet.toEntity(item));
+		// Add work cycle detail
+		List<KdpstDailyPatternVal> infos = KdpstDailyPatternVal.toEntity(item);
+		infos.stream().forEach(i -> {
+			this.commandProxy().insert(i);
+		});
 	}
 
 	/**
-	 * To entity.
-	 *
-	 * @param setting
-	 *            the setting
-	 * @return the kdpst daily pattern set
+	 * [2] update（勤務サイクル）
+	 * @param item
 	 */
-	private KdpstDailyPatternSet toEntity(DailyPattern setting) {
-		Optional<KdpstDailyPatternSet> optinal = this.queryProxy()
-				.find(new KdpstDailyPatternSetPK(setting.getCompanyId().v(),
-						setting.getPatternCode().v()), KdpstDailyPatternSet.class);
-		KdpstDailyPatternSet entity = null;
-		if (optinal.isPresent()) {
-			entity = optinal.get();
-		} else {
-			entity = new KdpstDailyPatternSet();
+	@Override
+	public void update(WorkCycle item) {
+		val oldItem = this.getEntityManager().find(KdpstDailyPatternSet.class,new KdpstDailyPatternSetPK(item.getCid(),item.getCode().v()) );
+		this.commandProxy().update(oldItem.updateEntity(item));
+		// Delete detail
+		deleteDetail(item.getCid(),item.getCode().v());
+		// Update detail
+		List<KdpstDailyPatternVal> infos = KdpstDailyPatternVal.toEntity(item);
+		infos.stream().forEach(i -> {
+			this.commandProxy().insert(i);
+		});
+	}
+
+	private void deleteDetail(String cid, String code) {
+		this.getEntityManager().createQuery(DELETE_ALL_INFO_BY_CODE, KdpstDailyPatternVal.class)
+				.setParameter("cid", cid)
+				.setParameter("code", code).executeUpdate();
+		this.getEntityManager().flush();
+	}
+	/**
+	 * [3] get
+	 * @param cid
+	 * @param code
+	 * @return
+	 */
+	@Override
+	public Optional<WorkCycle> getByCidAndCode(String cid, String code) {
+		val workCycle = this.queryProxy().query(GET_BY_CID_AND_CODE, KdpstDailyPatternSet.class)
+				.setParameter("cid", cid)
+				.setParameter("code", code)
+				.getSingle();
+		if (workCycle.isPresent()) {
+			val workCycleInfos =  this.queryProxy()
+					.query(GET_INFO_BY_CID_AND_CODE, KdpstDailyPatternVal.class)
+					.setParameter("cid", cid)
+					.setParameter("code", workCycle.get().getKdpstDailyPatternSetPK().patternCd)
+					.getList();
+			return Optional.of(KdpstDailyPatternSet.toDomainGet(workCycle.get(), workCycleInfos));
 		}
-		JpaDailyPatternSetMemento memento = new JpaDailyPatternSetMemento(entity);
-		setting.saveToMemento(memento);
-		return entity;
+		return Optional.empty();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.patterncalendar.PatternCalendarRepository#add(
-	 * nts.uk.ctx.at.shared.dom.patterncalendar.PatternCalendar)
+	/**
+	 * [4] 会社の勤務サイクルリストを取得する
+	 * @param cid
+	 * @return
 	 */
 	@Override
-	public void add(DailyPattern patternCalendar) {
-		this.commandProxy().insert(this.toEntity(patternCalendar));
-		this.getEntityManager().flush();
-
+	public List<WorkCycle> getByCid(String cid) {
+		List<WorkCycle> result = new ArrayList<>();
+		val workCycles = this.queryProxy().query(GET_ALL_BY_CID, KdpstDailyPatternSet.class).setParameter("cid", cid).getList();
+		if (!workCycles.isEmpty()) {
+			workCycles.stream().forEach(i -> {
+				val workCycleInfos = this.queryProxy().query(GET_INFO_BY_CID_AND_CODE, KdpstDailyPatternVal.class).setParameter("cid", cid).setParameter("code", i.getKdpstDailyPatternSetPK().patternCd).getList();
+				result.add(KdpstDailyPatternSet.toDomainGet(i, workCycleInfos));
+			});
+		}
+		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.patterncalendar.PatternCalendarRepository#update
-	 * (nts.uk.ctx.at.shared.dom.patterncalendar.PatternCalendar)
+	/**
+	 * [5] exists（会社ID, 勤務サイクルコード)
+	 * @param cid
+	 * @param code
+	 * @return
 	 */
 	@Override
-	public void update(DailyPattern patternCalendar) {
-		this.commandProxy().update(this.toEntity(patternCalendar));
-		this.getEntityManager().flush();
-
+	public boolean exists(String cid, String code) {
+		val result = this.queryProxy().query(GET_BY_CID_AND_CODE, KdpstDailyPatternSet.class)
+				.setParameter("cid", cid)
+				.setParameter("code", code)
+				.getSingle();
+		if (result.isPresent())
+			return true;
+		return false;
 	}
 
 	@Override
-	public void delete(String cid, String patternCd) {
-		this.commandProxy().remove(KdpstDailyPatternSet.class,
-				new KdpstDailyPatternSetPK(cid, patternCd));
+	public void delete(String cid, String code) {
+		KdpstDailyPatternSetPK key = new KdpstDailyPatternSetPK(cid, code);
+		this.commandProxy().remove(KdpstDailyPatternSet.class, key);
 
+		this.getEntityManager().createQuery(DELETE_ALL_INFO_BY_CODE, KdpstDailyPatternVal.class)
+				.setParameter("cid", cid)
+				.setParameter("code", code).executeUpdate();
 	}
+
 
 }

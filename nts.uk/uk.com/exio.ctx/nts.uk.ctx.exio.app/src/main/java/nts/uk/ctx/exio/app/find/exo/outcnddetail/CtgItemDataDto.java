@@ -42,10 +42,21 @@ public class CtgItemDataDto {
 	 */
 	private String searchValueCd;
 
+	/**
+	 * 予約語区分
+	 */
+	private Integer keywordAtr;
+
 	public static CtgItemDataDto fromDomain(CtgItemData domain) {
-		CtgItemDataDto dto = new CtgItemDataDto(domain.getCategoryId().v(), domain.getItemNo().v(),
-				domain.getTableName(), domain.getDisplayTableName(), domain.getItemName().v(), domain.getDataType().value,
-				domain.getSearchValueCd().orElse(null));
+		CtgItemDataDto dto = new CtgItemDataDto(
+				domain.getCategoryId().v(), 
+				domain.getItemNo().v(),
+				domain.getTableName(), 
+				domain.getDisplayTableName(), 
+				domain.getItemName().v(), 
+				domain.getDataType().value,
+				domain.getSearchValueCd().orElse(null),
+				domain.getKeywordAtr().value);
 		return dto;
 	}
 }

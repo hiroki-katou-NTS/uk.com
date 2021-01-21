@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.toppagealarm;
 
+import java.util.Optional;
+
 import nts.arc.time.GeneralDate;
 
 /**
@@ -27,5 +29,5 @@ public interface TopPageAlarmStampingRepository {
 	 * @param employeeId
 	 * @param date
 	 */
-	public void get(String employeeId, GeneralDate date);
+	public Optional<TopPageAlarmStamping> get(String employeeId, GeneralDate date);
 }

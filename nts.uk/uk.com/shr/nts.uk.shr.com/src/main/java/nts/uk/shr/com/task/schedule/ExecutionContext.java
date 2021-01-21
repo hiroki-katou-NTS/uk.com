@@ -2,8 +2,8 @@ package nts.uk.shr.com.task.schedule;
 
 import lombok.RequiredArgsConstructor;
 import nts.arc.task.data.TaskDataSetter;
-import nts.arc.task.schedule.ScheduledJobExecutionContext;
-import nts.arc.task.schedule.ScheduledJobUserData;
+import nts.arc.task.schedule.job.ScheduledJobExecutionContext;
+import nts.arc.task.schedule.job.jobdata.ScheduledJobUserData;
 import nts.arc.time.GeneralDateTime;
 
 @RequiredArgsConstructor

@@ -20,8 +20,7 @@ public class ShiftMasterOrganizationTest {
 
 	@Test
 	public void ShiftMasterOrganization_inv1_emptyList() {
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, "workplaceId",
-				"workplaceGroupId");
+		TargetOrgIdenInfor targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplace("workplaceId") ;
 
 		NtsAssert.systemError(() -> {
 
@@ -37,8 +36,7 @@ public class ShiftMasterOrganizationTest {
 		listShiftMaterCode.add("123");// dummy
 		listShiftMaterCode.add("123");// dummy
 
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, "workplaceId",
-				"workplaceGroupId");
+		TargetOrgIdenInfor targetOrgIdenInfor =TargetOrgIdenInfor.creatIdentifiWorkplace("workplaceId") ;
 		NtsAssert.systemError(() -> {
 			new ShiftMasterOrganization(null, // dummy
 					targetOrgIdenInfor, // dummy
@@ -51,8 +49,7 @@ public class ShiftMasterOrganizationTest {
 		List<String> listShiftMaterCode = new ArrayList<>();
 		listShiftMaterCode.add("123");// dummy
 		listShiftMaterCode.add("124");// dummy
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, "workplaceId",
-				"workplaceGroupId");
+		TargetOrgIdenInfor targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplace("workplaceId") ;
 		ShiftMasterOrganization shiftMasterOrg = new ShiftMasterOrganization("companyId", targetOrgIdenInfor,
 				Arrays.asList("123"));
 		shiftMasterOrg.change(listShiftMaterCode);
@@ -61,16 +58,13 @@ public class ShiftMasterOrganizationTest {
 
 	@Test
 	public void testCopy() {
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, "workplaceId",
-				"workplaceGroupId");
+		TargetOrgIdenInfor targetOrgIdenInfor =TargetOrgIdenInfor.creatIdentifiWorkplace("workplaceId") ;
 		List<String> listData = new ArrayList<>();
 		listData.add("123");
 		listData.add("abc");
 		ShiftMasterOrganization shiftMasterOrg = new ShiftMasterOrganization("companyId", targetOrgIdenInfor,
 				listData);
-		TargetOrgIdenInfor targetOrgIdenInforNew = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE_GROUP, // dummy
-				"workplaceId", // dummy
-				"workplaceGroupId");// dummy
+		TargetOrgIdenInfor targetOrgIdenInforNew = TargetOrgIdenInfor.creatIdentifiWorkplaceGroup("workplaceGroupId");
 		ShiftMasterOrganization newShiftMasterOrganization = shiftMasterOrg.copy(targetOrgIdenInforNew);
 		assertThat(newShiftMasterOrganization.getCompanyId()).isEqualTo(shiftMasterOrg.getCompanyId());
 		
@@ -82,8 +76,7 @@ public class ShiftMasterOrganizationTest {
 
 	@Test
 	public void getters() {
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, "workplaceId",
-				"workplaceGroupId");
+		TargetOrgIdenInfor targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplace("workplaceId") ;
 		ShiftMasterOrganization shiftMasterOrg = new ShiftMasterOrganization("companyId", targetOrgIdenInfor,
 				Arrays.asList("123"));
 		NtsAssert.invokeGetters(shiftMasterOrg);

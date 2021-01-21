@@ -15,33 +15,29 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.AddSetManageWorkHour;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.HourlyPaymentAdditionSet;
-//import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
-//import nts.uk.ctx.at.shared.dom.calculation.holiday.HourlyPaymentAdditionSet;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.LeaveSetAdded;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.ReferEmployeeInformation;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.ReferWorkRecord;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.ReferenceDestinationAbsenceWorkingHours;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.TimeHolidayAddingMethod;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.TimeHolidayAdditionSet;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.VacationSpecifiedTimeRefer;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkClassOfTimeHolidaySet;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkDeformedLaborAdditionSet;
-//import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
-//import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.DeductLeaveEarly;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.EmploymentCalcDetailedSetIncludeVacationAmount;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.IncludeHolidaysPremiumCalcDetailSet;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.PremiumCalcMethodDetailOfHoliday;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.PremiumHolidayCalcMethod;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.WorkTimeCalcMethodDetailOfHoliday;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.WorkTimeHolidayCalcMethod;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetManageWorkHour;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.DeductLeaveEarly;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.EmploymentCalcDetailedSetIncludeVacationAmount;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionRepository;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HourlyPaymentAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.IncludeHolidaysPremiumCalcDetailSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.LeaveSetAdded;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.PremiumCalcMethodDetailOfHoliday;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.PremiumHolidayCalcMethod;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.ReferEmployeeInformation;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.ReferWorkRecord;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.ReferenceDestinationAbsenceWorkingHours;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.TimeHolidayAddingMethod;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.TimeHolidayAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.VacationSpecifiedTimeRefer;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkClassOfTimeHolidaySet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkDeformedLaborAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkFlexAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkRegularAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkTimeCalcMethodDetailOfHoliday;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkTimeHolidayCalcMethod;
 import nts.uk.ctx.at.shared.dom.workingcondition.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstAddSetManWKHour;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstAddSetManWKHourPK;
@@ -51,9 +47,9 @@ import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstHourPayAaddSet
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstHourPayAaddSetPK;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWorkDepLaborSet;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWorkDepLaborSetPK;
-import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWorkFlexSet;
+import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshmtCalcCAddHdFle;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWorkFlexSetPK;
-import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWorkRegularSet;
+import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshmtCalcCAddHdReg;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWorkRegularSetPK;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -144,14 +140,14 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 	 * @param regularWork
 	 * @return
 	 */
-	protected KshstWorkRegularSet convertToDbTypeRegularWork(WorkRegularAdditionSet regularWork) {
+	protected KshmtCalcCAddHdReg convertToDbTypeRegularWork(WorkRegularAdditionSet regularWork) {
 		KshstWorkRegularSetPK kshstRegularWorkSetPK = new KshstWorkRegularSetPK(regularWork.getCompanyId());
-		KshstWorkRegularSet kshstRegularWorkSet;
-		Optional<KshstWorkRegularSet> optKshstWorkRegularSet = this.queryProxy().find(kshstRegularWorkSetPK,KshstWorkRegularSet.class);
+		KshmtCalcCAddHdReg kshstRegularWorkSet;
+		Optional<KshmtCalcCAddHdReg> optKshstWorkRegularSet = this.queryProxy().find(kshstRegularWorkSetPK,KshmtCalcCAddHdReg.class);
 		if (optKshstWorkRegularSet.isPresent()) {
 			kshstRegularWorkSet = optKshstWorkRegularSet.get();
 		} else {
-			kshstRegularWorkSet = new KshstWorkRegularSet();
+			kshstRegularWorkSet = new KshmtCalcCAddHdReg();
 		}
 		
 		PremiumHolidayCalcMethod premiumHolidayCalcMethod = regularWork.getVacationCalcMethodSet().getPremiumCalcMethodOfHoliday();
@@ -211,7 +207,7 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 	 * @param flexWorkSet
 	 * @return
 	 */
-	protected WorkFlexAdditionSet convertToDomainFlexWork(KshstWorkFlexSet flexWorkSet) {
+	protected WorkFlexAdditionSet convertToDomainFlexWork(KshmtCalcCAddHdFle flexWorkSet) {
 		if (flexWorkSet != null) {
 			WorkFlexAdditionSet flexWork = WorkFlexAdditionSet.createFromJavaType(flexWorkSet.kshstFlexWorkSetPK.companyId, 
 					flexWorkSet.calcActualOperation1, 
@@ -239,7 +235,7 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 	 * @param regularWorkSet
 	 * @return
 	 */
-	protected WorkRegularAdditionSet convertToDomainRegularWork(KshstWorkRegularSet regularWorkSet) {
+	protected WorkRegularAdditionSet convertToDomainRegularWork(KshmtCalcCAddHdReg regularWorkSet) {
 		if (regularWorkSet != null) {
 			WorkRegularAdditionSet regularWork = WorkRegularAdditionSet.createFromJavaType(regularWorkSet.kshstRegularWorkSetPK.companyId, 
 					regularWorkSet.calcActualOperation1, 
@@ -396,14 +392,14 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 	 * @param flexWork the flex work
 	 * @return the kshst work flex set
 	 */
-	private KshstWorkFlexSet convertToDbTypeFlexWork(WorkFlexAdditionSet flexWork) {
+	private KshmtCalcCAddHdFle convertToDbTypeFlexWork(WorkFlexAdditionSet flexWork) {
 		KshstWorkFlexSetPK kshstFlexWorkSetPK = new KshstWorkFlexSetPK(flexWork.getCompanyId());
-		KshstWorkFlexSet kshstFlexWorkSet;
-		Optional<KshstWorkFlexSet> optKshstWorkFlexSet = this.queryProxy().find(kshstFlexWorkSetPK,KshstWorkFlexSet.class);
+		KshmtCalcCAddHdFle kshstFlexWorkSet;
+		Optional<KshmtCalcCAddHdFle> optKshstWorkFlexSet = this.queryProxy().find(kshstFlexWorkSetPK,KshmtCalcCAddHdFle.class);
 		if (optKshstWorkFlexSet.isPresent()) {
 			kshstFlexWorkSet = optKshstWorkFlexSet.get();
 		} else {
-			kshstFlexWorkSet = new KshstWorkFlexSet();
+			kshstFlexWorkSet = new KshmtCalcCAddHdFle();
 		}
 			
 		PremiumHolidayCalcMethod premiumHolidayCalcMethod = flexWork.getVacationCalcMethodSet().getPremiumCalcMethodOfHoliday();

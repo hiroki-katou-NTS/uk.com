@@ -22,7 +22,7 @@
             <div class="row pl-3">
               <nts-checkbox class="col-4" v-model="checkeds" v-bind:value="2">{{'CMMS45_8' | i18n}}</nts-checkbox>
               <nts-checkbox class="col-4" v-model="checkeds" v-bind:value="3">{{'CMMS45_11' | i18n}}</nts-checkbox>
-              <nts-checkbox class="col-4" v-model="checkeds" v-bind:value="6">{{'CMMS45_10' | i18n}}</nts-checkbox>
+              <!-- <nts-checkbox class="col-4" v-model="checkeds" v-bind:value="6">{{'CMMS45_10' | i18n}}</nts-checkbox> -->
             </div>
             <div class="row pl-3">
               <nts-checkbox v-model="checkeds" v-bind:value="4" >{{'CMMS45_53' | i18n}}</nts-checkbox>
@@ -47,8 +47,8 @@
     <div class="accordion accordion-mn3 pt-2">
         <div
             class="card show border border-left-0 border-right-0"
-            v-for="emp in filterByAppType"
-            v-bind:key="emp.empCD"
+            v-for="(emp, index) in filterByAppType"
+            v-bind:key="index"
             :value="emp.empCD"
         >
         <!-- Emp Name -->
@@ -61,8 +61,8 @@
             <ul class="list-group list-group-flush"  v-bind:class="{'list-group-selection': !modeAppr, 'ml-n3 mr-n3': modeAppr}" >
               <li
                 class="list-group-item mb-0"
-                v-for="item in emp.lstApp"
-                v-bind:key="item.id"
+                v-for="(item, index) in emp.lstApp"
+                v-bind:key="index"
                 :value="item.id"
                 v-on:click="() => goToDetail(item)"
               >
@@ -75,7 +75,7 @@
                   </div>
                   <!-- Reflect status -->
                   <div class="col-3 pl-2 pr-0">
-                    <span v-bind:class="item.reflectCssAppr" class="p-2 d-block">{{item.reflectStatus}}</span>
+                    <span v-bind:class="item.reflectCssAppr" class="p-2 d-block">{{item.reflectStatus | i18n}}</span>
                   </div>
                   <!-- App content -->
                   <div class="p-0" v-bind:class="{ 'col-9': !modeAppr, 'col-8': modeAppr }">
@@ -85,7 +85,7 @@
                     >{{ item.appDate | date('MM/DD (ddd)')}}</div>
                     <div
                       class="pt-2 pb-2 d-inline-block"
-                    >{{appContent(item.appName, item.prePostName)}}</div>
+                    >{{appContent(item.appName, item.prePostAtr)}}</div>
                   </div>
                 </div>
               </li>
@@ -98,7 +98,7 @@
     </div>
     <!-- Button Approve B2_4 -->
     <div class="fixed-bottom px-2 py-1" v-if="modeAppr" v-bind:class="{'bg-white': disableB24}">
-      <button v-bind:disabled = "disableB24" class = 'btn btn-primary btn-block' 
+      <button v-bind:disabled ="disableB24" class = 'btn btn-primary btn-block' 
         v-on:click="processAppr" >{{lstAppr.length == 0 ? 'CMMS45_56' : 'CMMS45_57' | i18n(`${lstAppr.length}`)}}</button>
     </div>
     <div v-if="displayB513 == 1" class="py-3" v-html="getHtmlNone()">

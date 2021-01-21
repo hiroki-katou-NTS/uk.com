@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.setting.company.request.stamp;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.Comment;
 
 /**
  * 申請コメント設定

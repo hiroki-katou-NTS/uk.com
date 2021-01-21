@@ -11,8 +11,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyRequest;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyRequest_Old;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * TanLV
@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Setter
 @Table(name = "KRQST_LATE_EARLY_REQUESET")
-public class KrqstLateEarlyRequest extends UkJpaEntity implements Serializable {
+public class KrqstLateEarlyRequest extends ContractUkJpaEntity implements Serializable {
 	public static final long serialVersionUID = 1L;
 	
 	/** * 会社ID */
@@ -46,8 +46,8 @@ public class KrqstLateEarlyRequest extends UkJpaEntity implements Serializable {
 	 * To Domain
 	 * @return
 	 */
-	public LateEarlyRequest toDomain(){
-		return new LateEarlyRequest(
+	public LateEarlyRequest_Old toDomain(){
+		return new LateEarlyRequest_Old(
 				this.companyId,
 				this.showResult);
 	}

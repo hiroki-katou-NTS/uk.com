@@ -1,47 +1,42 @@
 package nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
-import lombok.Value;
+import lombok.Getter;
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
- * 
+ * refactor 4
  * @author Doan Duy Hung
  *
  */
-@Value
 @AllArgsConstructor
+@Getter
 public class ScBasicScheduleImport {
-	
-	/** The employee id. */
 	// 社員ID
 	private String employeeId;
-
-	/** The date. */
 	// 年月日
 	private GeneralDate date;
-
-	/** The work type code. */
-	// 勤務種類
+	// 勤務種類コード
 	private String workTypeCode;
 
-	/** The work time code. */
-	// 就業時間帯
-	private String workTimeCode;
-	
-	/** The schedule start clock. */
-	// 予定開始時刻1
-	private int scheduleStartClock1;
+	// 就業時間帯コード
+	private Optional<String> workTimeCode;
+	// 開始時刻1
+	private TimeWithDayAttr scheduleStartClock1;
+	// 終了時刻1
+	private TimeWithDayAttr scheduleEndClock1;
+	// 開始時刻2
+	private Optional<TimeWithDayAttr> scheduleStartClock2;
+	// 終了時刻2
+	private Optional<TimeWithDayAttr> scheduleEndClock2;
+	// 育児時間
+	private Integer childTime;
+	// 短時間勤務時間帯
+	private List<ShortWorkingTimeSheetImport> listShortWorkingTimeSheetExport = new ArrayList<>();
 
-	/** The schedule end clock. */
-	// 予定終了時刻1
-	private int scheduleEndClock1;
-	
-	/** The schedule start clock. */
-	// 予定開始時刻2
-	private int scheduleStartClock2;
-
-	/** The schedule end clock. */
-	// 予定終了時刻2
-	private int scheduleEndClock2;
 }

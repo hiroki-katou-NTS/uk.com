@@ -4,18 +4,18 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.infra.repository.optitem;
 
-import nts.uk.ctx.at.record.dom.optitem.CalcResultRange;
-import nts.uk.ctx.at.record.dom.optitem.EmpConditionAtr;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemName;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemSetMemento;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemUsageAtr;
-import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
-import nts.uk.ctx.at.record.dom.optitem.UnitOfOptionalItem;
-import nts.uk.ctx.at.record.infra.entity.optitem.KrcstCalcResultRange;
-import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItem;
+import nts.uk.ctx.at.record.infra.entity.optitem.KrcmtAnyfResultRange;
+import nts.uk.ctx.at.record.infra.entity.optitem.KrcmtAnyv;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcResultRange;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.EmpConditionAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemName;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNo;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemSetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemUsageAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.PerformanceAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.UnitOfOptionalItem;
 
 /**
  * The Class JpaOptionalItemSetMemento.
@@ -23,14 +23,14 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 public class JpaOptionalItemSetMemento implements OptionalItemSetMemento {
 
 	/** The type value. */
-	private KrcstOptionalItem entity;
+	private KrcmtAnyv entity;
 
 	/**
 	 * Instantiates a new jpa optional item set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaOptionalItemSetMemento(KrcstOptionalItem entity) {
+	public JpaOptionalItemSetMemento(KrcmtAnyv entity) {
 		this.entity = entity;
 	}
 
@@ -124,7 +124,7 @@ public class JpaOptionalItemSetMemento implements OptionalItemSetMemento {
 	 */
 	@Override
 	public void setCalculationResultRange(CalcResultRange calculationResultRange) {
-		KrcstCalcResultRange entityRange = this.entity.getKrcstCalcResultRange();
+		KrcmtAnyfResultRange entityRange = this.entity.getKrcstCalcResultRange();
 		calculationResultRange.saveToMemento(new JpaCalcResultRangeSetMemento(entityRange));
 		this.entity.setKrcstCalcResultRange(entityRange);
 	}

@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeHistorySetMemento;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstComDrtHist;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcmtDvgcRefHistCom;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 
@@ -16,7 +16,7 @@ public class JpaCompanyDivergenceReferenceTimeHistorySetMemento
 		implements CompanyDivergenceReferenceTimeHistorySetMemento {
 
 	/** The entities. */
-	private List<KrcstComDrtHist> entities;
+	private List<KrcmtDvgcRefHistCom> entities;
 
 	/**
 	 * Instantiates a new jpa company divergence reference time history set memento.
@@ -30,7 +30,7 @@ public class JpaCompanyDivergenceReferenceTimeHistorySetMemento
 	 * @param entities
 	 *            the entities
 	 */
-	public JpaCompanyDivergenceReferenceTimeHistorySetMemento(List<KrcstComDrtHist> entities) {
+	public JpaCompanyDivergenceReferenceTimeHistorySetMemento(List<KrcmtDvgcRefHistCom> entities) {
 		this.entities = entities;
 	}
 
@@ -73,7 +73,7 @@ public class JpaCompanyDivergenceReferenceTimeHistorySetMemento
 
 		// If history is not exist in DB, create new
 		historyMap.forEach((k, v) -> {
-			KrcstComDrtHist comDrtHist = new KrcstComDrtHist();
+			KrcmtDvgcRefHistCom comDrtHist = new KrcmtDvgcRefHistCom();
 			comDrtHist.setHistId(k);
 			comDrtHist.setCid(AppContexts.user().companyId());
 			comDrtHist.setStrD(v.start());

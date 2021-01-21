@@ -6,10 +6,10 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemNameOther;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemNameOtherRepository;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItemNameOther;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItemNameOtherPK;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNameOther;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNameOtherRepository;
 
 @Stateless
 public class JpaOptionalItemNameOtherRepository extends JpaRepository implements OptionalItemNameOtherRepository{

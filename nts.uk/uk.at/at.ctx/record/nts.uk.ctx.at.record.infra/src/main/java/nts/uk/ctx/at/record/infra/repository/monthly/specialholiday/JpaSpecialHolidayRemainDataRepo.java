@@ -10,9 +10,9 @@ import javax.inject.Inject;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMergeRepository;
-import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
-import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainData;
-import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainDataRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.ClosureStatus;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainData;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainDataRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
@@ -27,7 +27,7 @@ public class JpaSpecialHolidayRemainDataRepo extends JpaRepository implements Sp
 	public List<SpecialHolidayRemainData> getByYmStatus(String sid, YearMonth ym, ClosureStatus status) {
 		
 		return this.remainRepo.getByYmStatus(sid, ym, status).stream()
-								.map(c -> c.getSpecialHolidayRemainList())
+								.map(c -> c.getSpecialHolidayRemainData())
 								.flatMap(List::stream)
 								.collect(Collectors.toList());
 	}
@@ -36,7 +36,7 @@ public class JpaSpecialHolidayRemainDataRepo extends JpaRepository implements Sp
 	public List<SpecialHolidayRemainData> getByYmStatus(String sid, YearMonth ym, ClosureStatus status, int speCode) {
 		
 		return this.remainRepo.getByYmStatus(sid, ym, status).stream()
-				.map(c -> c.getSpecialHolidayRemainList().stream()
+				.map(c -> c.getSpecialHolidayRemainData().stream()
 								.filter(sh -> sh.getSpecialHolidayCd() == speCode).findFirst().orElse(null))
 				.filter(c -> c != null)
 				.collect(Collectors.toList());
@@ -49,7 +49,7 @@ public class JpaSpecialHolidayRemainDataRepo extends JpaRepository implements Sp
 			ClosureDate closureDate) {
 		
 		return this.remainRepo.find(employeeId, yearMonth, closureId, closureDate)
-								.map(c -> c.getSpecialHolidayRemainList())
+								.map(c -> c.getSpecialHolidayRemainData())
 								.orElse(new ArrayList<>());
 	}
 	
@@ -59,7 +59,7 @@ public class JpaSpecialHolidayRemainDataRepo extends JpaRepository implements Sp
 	public List<SpecialHolidayRemainData> findByYearMonthOrderByStartYmd(String employeeId, YearMonth yearMonth) {
 		
 		return this.remainRepo.findByYearMonthOrderByStartYmd(employeeId, yearMonth)
-								.stream().map(c -> c.getSpecialHolidayRemainList())
+								.stream().map(c -> c.getSpecialHolidayRemainData())
 								.flatMap(List::stream)
 								.collect(Collectors.toList());
 	}
@@ -67,7 +67,7 @@ public class JpaSpecialHolidayRemainDataRepo extends JpaRepository implements Sp
 	@Override
 	public List<SpecialHolidayRemainData> getByYmCode(String sid, YearMonth ym, int speCode) {
 		return this.remainRepo.findByYearMonthOrderByStartYmd(sid, ym)
-								.stream().map(c -> c.getSpecialHolidayRemainList().stream()
+								.stream().map(c -> c.getSpecialHolidayRemainData().stream()
 										.filter(sh -> sh.getSpecialHolidayCd() == speCode).findFirst().orElse(null))
 								.filter(c -> c != null)
 								.collect(Collectors.toList());
@@ -79,7 +79,7 @@ public class JpaSpecialHolidayRemainDataRepo extends JpaRepository implements Sp
 	public List<SpecialHolidayRemainData> findBySidsAndYearMonths(List<String> employeeIds, List<YearMonth> yearMonths) {
 		
 		return this.remainRepo.findBySidsAndYearMonths(employeeIds, yearMonths)
-								.stream().map(c -> c.getSpecialHolidayRemainList())
+								.stream().map(c -> c.getSpecialHolidayRemainData())
 								.flatMap(List::stream)
 								.collect(Collectors.toList());
 	}

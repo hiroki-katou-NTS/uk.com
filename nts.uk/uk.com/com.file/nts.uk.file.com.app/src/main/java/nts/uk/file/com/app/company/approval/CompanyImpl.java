@@ -11,18 +11,15 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.company.dom.company.AddInfor;
 import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 import nts.uk.ctx.bs.company.dom.company.MonthStr;
-import nts.uk.ctx.bs.employee.dom.workplace.differinfor.DivWorkDifferInfor;
-import nts.uk.ctx.bs.employee.dom.workplace.differinfor.DivWorkDifferInforRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.differinfor.RegWorkDiv;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.bs.employee.dom.operationrule.DepartmentWorkplaceSynchronizationAtr;
+import nts.uk.ctx.bs.employee.dom.operationrule.OperationRule;
+import nts.uk.ctx.bs.employee.dom.operationrule.OperationRuleRepository;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.uk.shr.com.primitive.PostCode;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
 import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
@@ -48,16 +45,13 @@ public class CompanyImpl implements MasterListData{
 	private CompanyRepository companyRepository;
 
 	@Inject
-	private DivWorkDifferInforRepository divRep;
+	private OperationRuleRepository operationRuleRep;
 	
 	@Inject
 	private SysUsageExportRepository sysRep;
 	
 	@Override
 	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
-		// TODO Auto-generated method stub
-		String companyId = AppContexts.user().companyId();
-		
 		List<MasterData> datas = new ArrayList<>();
 		
 		List<CompanyData> listCompany = companyExportRepository.findAll();
@@ -76,7 +70,7 @@ public class CompanyImpl implements MasterListData{
 				
 				Optional<Company> listFind = companyRepository.find(c.getCompanyId());
 				
-				Optional<DivWorkDifferInfor> findDivWorks = divRep.findDivWork(c.getCompanyId());
+				Optional<OperationRule> findOperationRule = operationRuleRep.findOperationRule(c.getCompanyId());
 				
 				Optional<SysUsageSetData> findUsageSets = sysRep.findUsageSet(c.getCompanyId());
 				
@@ -101,23 +95,21 @@ public class CompanyImpl implements MasterListData{
 					
 					data.put("会社代表者職位", company.getRepjob());
 					
-					AddInfor addInFor = company.getAddInfor();
-					
-					if(addInFor != null){
-						data.put("郵便番号", ""+addInFor.getPostCd());
+					company.getAddInfor().ifPresent(value ->{
+						data.put("郵便番号", ""+value.getPostCd());
 						
-						data.put("住所 市区町村・番地", ""+addInFor.getAdd_1());
+						data.put("住所 市区町村・番地", ""+value.getAdd_1());
 						
-						data.put("住所 建物名など", addInFor.getAdd_2());
+						data.put("住所 建物名など", value.getAdd_2());
 						
-						data.put("住所カナ 市区町村・番地", addInFor.getAddKana_1());
+						data.put("住所カナ 市区町村・番地", value.getAddKana_1());
 						
-						data.put("住所カナ 建物名など", addInFor.getAddKana_2());
+						data.put("住所カナ 建物名など", value.getAddKana_2());
 						
-						data.put("電話番号", ""+addInFor.getPhoneNum());
+						data.put("電話番号", ""+value.getPhoneNum());
 						
-						data.put("FAX", ""+addInFor.getFaxNum());
-					}
+						data.put("FAX", ""+value.getFaxNum());
+					});
 				}
 				
 				if(findUsageSets.get().getJinji()== 1){
@@ -138,7 +130,7 @@ public class CompanyImpl implements MasterListData{
 					data.put("給与システム", "利用しない");
 				}
 				
-				if(findDivWorks.get().getRegWorkDiv() == RegWorkDiv.NotDistinguish){
+				if(findOperationRule.get().getDepWkpSynchAtr() == DepartmentWorkplaceSynchronizationAtr.NOT_SYNCHRONIZED){
 					data.put("職場と部門", "区別しない");
 				}else{
 					data.put("職場と部門", "区別する ");

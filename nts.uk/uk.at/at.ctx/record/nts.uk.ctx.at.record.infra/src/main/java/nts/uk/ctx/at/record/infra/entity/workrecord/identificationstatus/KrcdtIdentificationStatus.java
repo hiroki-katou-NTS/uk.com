@@ -11,7 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -22,8 +22,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_CONFIRMATION_DAY")
-public class KrcdtIdentificationStatus extends UkJpaEntity implements Serializable {
+@Table(name = "KRCDT_DAY_SELF_CHECK")
+public class KrcdtIdentificationStatus extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

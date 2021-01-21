@@ -8,8 +8,8 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimeItemRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPTimeItemRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class BPTimeItemUpdateCommandhandler extends CommandHandler<List<BPTimeItemUpdateCommand>> {

@@ -15,10 +15,12 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.WeeklyWorkSettingFinder;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.WeeklyWorkSettingDto;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
@@ -26,8 +28,11 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPattern;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternRepository;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WeeklyWorkSetting;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WeeklyWorkSettingRepository;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingRepository;
+import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.WeeklyWorkDayPattern;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -60,6 +65,9 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 	@Inject
 	private BasicScheduleService basicScheduleService;
 
+	@Inject
+	private WeeklyWorkSettingRepository weeklyWorkSettingRepository;
+
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
 	 */
@@ -75,7 +83,10 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 		
 		// get command
 		MonthlyPatternSettingBatchSaveCommand command = context.getCommand();
-		
+
+		if (command.getSettingWorkDays() == null){
+			throw new BusinessException("Msg_151");
+		}
 
 		// check pair work days
 		basicScheduleService.checkPairWorkTypeWorkTime(command.getSettingWorkDays().getWorkTypeCode(),
@@ -92,9 +103,11 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 				command.getSettingNoneStatutoryHolidays().getWorkingCode());
 
 		// check pair public holiday
-		basicScheduleService.checkPairWorkTypeWorkTime(
-				command.getSettingPublicHolidays().getWorkTypeCode(),
-				command.getSettingPublicHolidays().getWorkingCode());
+		if (command.getSettingPublicHolidays() != null){
+			basicScheduleService.checkPairWorkTypeWorkTime(
+					command.getSettingPublicHolidays().getWorkTypeCode(),
+					command.getSettingPublicHolidays().getWorkingCode());
+		}
 
 		// find by id monthly pattern code
 		Optional<MonthlyPattern> opMonthlyPattern = this.monthlyPatternRepository
@@ -117,8 +130,9 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 		
 		// data insert setting batch
 		List<WorkMonthlySetting> addWorkMonthlySettings = new ArrayList<>();
-		
-		
+
+		WeeklyWorkDayPattern dto = this.weeklyWorkSettingRepository.getWeeklyWorkDayPatternByCompanyId(companyId);
+
 		// check by next day of begin end
 		while (toStartDate.yearMonth().v() <= command.getEndYearMonth()) {
 			
@@ -134,30 +148,28 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 
 				// data public holiday setting
 				WorkMonthlySetting dataPublic = command.toDomainPublicHolidays(companyId, toStartDate);
-				
-				// check exist data
-				if (!workMonthlySetting.isPresent()) {
-					addWorkMonthlySettings.add(dataPublic);
-				} else if (command.isOverwrite()) {
-					updateWorkMonthlySettings.add(dataPublic);
+				if (dataPublic != null) {
+					// check exist data
+					if (!workMonthlySetting.isPresent()) {
+						addWorkMonthlySettings.add(dataPublic);
+					} else if (command.isOverwrite()) {
+						updateWorkMonthlySettings.add(dataPublic);
+					}
 				}
 			} else {
-				WeeklyWorkSettingDto dto = this.weeklyWorkSettingFinder
-						.checkWeeklyWorkSetting(toStartDate);
-				
 				// is work day
-				switch (EnumAdaptor.valueOf(dto.getWorkdayDivision(), WorkdayDivision.class)) {
+				switch (EnumAdaptor.valueOf(dto.getWorkingDayCtgOfTagertDay(toStartDate).value, WorkdayDivision.class)) {
 				case WORKINGDAYS:
 					// data working day setting
 					WorkMonthlySetting dataWorking = command.toDomainWorkDays(companyId, toStartDate);
-					
-					// check exist data
-					if (!workMonthlySetting.isPresent()) {
-						addWorkMonthlySettings.add(dataWorking);
-					} else if (command.isOverwrite()) {
-						updateWorkMonthlySettings.add(dataWorking);
+					if (dataWorking != null) {
+						// check exist data
+						if (!workMonthlySetting.isPresent()) {
+							addWorkMonthlySettings.add(dataWorking);
+						} else if (command.isOverwrite()) {
+							updateWorkMonthlySettings.add(dataWorking);
+						}
 					}
-					
 					break;
 					
 					// is none statutory holiday
@@ -166,14 +178,14 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 					// data none statutory holiday setting
 					WorkMonthlySetting dataNoneStatutory = command
 							.toDomainNoneStatutoryHolidays(companyId, toStartDate);
-					
-					// check exist data
-					if (!workMonthlySetting.isPresent()) {
-						addWorkMonthlySettings.add(dataNoneStatutory);
-					} else if (command.isOverwrite()) {
-						updateWorkMonthlySettings.add(dataNoneStatutory);
+					if (dataNoneStatutory != null) {
+						// check exist data
+						if (!workMonthlySetting.isPresent()) {
+							addWorkMonthlySettings.add(dataNoneStatutory);
+						} else if (command.isOverwrite()) {
+							updateWorkMonthlySettings.add(dataNoneStatutory);
+						}
 					}
-					
 					break;
 					
 					// is statutory holiday
@@ -182,14 +194,14 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 					// data none statutory holiday setting
 					WorkMonthlySetting dataStatutory = command.toDomainStatutoryHolidays(companyId,
 							toStartDate);
-					
-					// check exist data
-					if (!workMonthlySetting.isPresent()) {
-						addWorkMonthlySettings.add(dataStatutory);
-					} else if (command.isOverwrite()) {
-						updateWorkMonthlySettings.add(dataStatutory);
+					if (dataStatutory != null) {
+						// check exist data
+						if (!workMonthlySetting.isPresent()) {
+							addWorkMonthlySettings.add(dataStatutory);
+						} else if (command.isOverwrite()) {
+							updateWorkMonthlySettings.add(dataStatutory);
+						}
 					}
-					
 					break;
 				}
 			}
@@ -280,10 +292,6 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 	
 	/**
 	 * To date.
-	 *
-	 * @param year the year
-	 * @param month the month
-	 * @param day the day
 	 * @return the date
 	 */
 	public Date toDate(int yearMonthDate) {

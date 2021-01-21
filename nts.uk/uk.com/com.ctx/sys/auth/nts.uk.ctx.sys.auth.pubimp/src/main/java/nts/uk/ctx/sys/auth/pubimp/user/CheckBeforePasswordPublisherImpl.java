@@ -16,12 +16,12 @@ import nts.uk.ctx.sys.auth.dom.adapter.securitypolicy.PasswordPolicyAdapter;
 import nts.uk.ctx.sys.auth.dom.adapter.securitypolicy.PasswordPolicyImport;
 import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLog;
 import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLogRepository;
-import nts.uk.ctx.sys.auth.dom.user.User;
-import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.ctx.sys.auth.pub.user.CheckBeforeChangePassOutput;
 import nts.uk.ctx.sys.auth.pub.user.CheckBeforePasswordPublisher;
 import nts.uk.ctx.sys.auth.pub.user.PasswordMessageObject;
 import nts.uk.ctx.sys.auth.pub.user.PasswordSplitObject;
+import nts.uk.ctx.sys.shared.dom.user.User;
+import nts.uk.ctx.sys.shared.dom.user.UserRepository;
 
 /**
  * The Class CheckBeforePasswordPublisherImpl.

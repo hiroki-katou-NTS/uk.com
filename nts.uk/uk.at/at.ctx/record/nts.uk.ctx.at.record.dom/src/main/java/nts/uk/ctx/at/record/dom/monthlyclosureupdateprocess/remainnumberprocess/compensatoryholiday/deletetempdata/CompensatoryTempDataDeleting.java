@@ -54,17 +54,17 @@ public class CompensatoryTempDataDeleting {
 		
 	}
 	
-	private static interface RequireM2 extends RequireM0 {
+	public static interface RequireM2 extends RequireM0 {
 		
 		void deleteInterimBreakMng(List<String> listBreakId);
 	}
 	
-	private static interface RequireM1 extends RequireM0 {
+	public static interface RequireM1 extends RequireM0 {
 		
 		void deleteInterimDayOffMng(List<String> mngIds);
 	}
 	
-	private static interface RequireM0 {
+	public static interface RequireM0 {
 		
 		List<InterimRemain> interimRemain(String employeeId, DatePeriod dateData, RemainType remainType);
 	}

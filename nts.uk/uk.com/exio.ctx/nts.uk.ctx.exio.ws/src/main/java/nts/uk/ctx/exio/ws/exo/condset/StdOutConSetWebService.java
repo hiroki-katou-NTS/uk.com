@@ -14,11 +14,15 @@ import nts.uk.ctx.exio.app.command.exo.condset.CopyOutputCondSetCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.condset.ExcuteCopyOutCondSetCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.condset.RegisterStdOutputCondSetCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.condset.RemoveStdOutputCondSetCommandHandler;
+import nts.uk.ctx.exio.app.command.exo.condset.SaveOutputPeriodSetCommand;
+import nts.uk.ctx.exio.app.command.exo.condset.SaveOutputPeriodSetCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.condset.StdOutputCondSetCommand;
 import nts.uk.ctx.exio.app.find.exo.category.ExOutCtgDto;
 import nts.uk.ctx.exio.app.find.exo.categoryitemdata.CtgItemDataDto;
 import nts.uk.ctx.exio.app.find.exo.categoryitemdata.CtgItemDataFinder;
 import nts.uk.ctx.exio.app.find.exo.condset.CondSetDto;
+import nts.uk.ctx.exio.app.find.exo.condset.OutputPeriodSettingDto;
+import nts.uk.ctx.exio.app.find.exo.condset.OutputPeriodSettingFinder;
 import nts.uk.ctx.exio.app.find.exo.condset.StdOutputCondSetDto;
 import nts.uk.ctx.exio.app.find.exo.condset.StdOutputCondSetFinder;
 import nts.uk.ctx.exio.app.find.exo.item.StdOutItemDto;
@@ -47,6 +51,11 @@ public class StdOutConSetWebService extends WebService {
 	@Inject
 	private CopyOutputCondSetCommandHandler copyOutputCondSetCommandHandler;
 	
+	@Inject
+	private OutputPeriodSettingFinder outputPeriodSettingFinder;
+	
+	@Inject
+	private SaveOutputPeriodSetCommandHandler saveOutputPeriodSettingCommandHandler;
 
 	@POST
 	@Path("excuteCopy")
@@ -110,6 +119,18 @@ public class StdOutConSetWebService extends WebService {
 	public List<StdOutItemDto> outSetContent(@PathParam("cndSetCd") String cndSetCd,
 	        @PathParam("standType") int standType) {
 		return stdOutputCondSetFinder.getOutItem(cndSetCd, standType);
+	}
+
+	@POST
+	@Path("findOutputPeriodSetting/{conditionSetCode}")
+	public OutputPeriodSettingDto findOutputPeriodSetting(@PathParam("conditionSetCode") String conditionSetCode) {
+		return this.outputPeriodSettingFinder.findByConditionSetCode(conditionSetCode);
+	}
+	
+	@POST
+	@Path("saveOutputPeriodSetting")
+	public void saveOutputPeriodSetting(SaveOutputPeriodSetCommand command) {
+		this.saveOutputPeriodSettingCommandHandler.handle(command);
 	}
 
 }

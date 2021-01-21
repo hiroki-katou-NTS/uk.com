@@ -4,7 +4,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeHolSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDifHolTs;
 
 /**
  * The Class JpaDayOffTimezoneSettingSetMemento.
@@ -12,9 +12,9 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeHolSe
 public class JpaDayOffTimezoneSettingSetMemento implements HDWorkTimeSheetSettingSetMemento {
 
 	/** The entity. */
-	private KshmtDiffTimeHolSet entity;
+	private KshmtWtDifHolTs entity;
 
-	public JpaDayOffTimezoneSettingSetMemento(KshmtDiffTimeHolSet entity) {
+	public JpaDayOffTimezoneSettingSetMemento(KshmtWtDifHolTs entity) {
 		this.entity = entity;
 	}
 

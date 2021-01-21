@@ -4,13 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.infra.repository.optitem.calculation;
 
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
-import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaId;
-import nts.uk.ctx.at.record.dom.optitem.calculation.disporder.DispOrder;
-import nts.uk.ctx.at.record.dom.optitem.calculation.disporder.FormulaDispOrderSetMemento;
-import nts.uk.ctx.at.record.infra.entity.optitem.calculation.disporder.KrcstFormulaDisporder;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.disporder.KrcmtAnyfSort;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.disporder.KrcstFormulaDisporderPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNo;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaId;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.disporder.DispOrder;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.disporder.FormulaDispOrderSetMemento;
 
 /**
  * The Class JpaFormulaDispOrderSetMemento.
@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 public class JpaFormulaDispOrderSetMemento implements FormulaDispOrderSetMemento {
 
 	/** The type value. */
-	private KrcstFormulaDisporder typeValue;
+	private KrcmtAnyfSort typeValue;
 
 	/**
 	 * Instantiates a new jpa formula disp order set memento.
@@ -26,7 +26,7 @@ public class JpaFormulaDispOrderSetMemento implements FormulaDispOrderSetMemento
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaFormulaDispOrderSetMemento(KrcstFormulaDisporder typeValue) {
+	public JpaFormulaDispOrderSetMemento(KrcmtAnyfSort typeValue) {
 		KrcstFormulaDisporderPK krcstFormulaDisporderPK = typeValue.getKrcstFormulaDisporderPK();
 
 		// Check PK exist

@@ -1,9 +1,9 @@
 package nts.uk.ctx.at.shared.app.command.workrecord.monthlyresults.roleofovertimework;
 
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.OverTimeFrameNo;
-import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWorkEnum;
-import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWorkGetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleofovertimework.OverTimeFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleofovertimework.RoleOvertimeWorkEnum;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleofovertimework.RoleOvertimeWorkGetMemento;
 
 // TODO: Auto-generated Javadoc
 /**

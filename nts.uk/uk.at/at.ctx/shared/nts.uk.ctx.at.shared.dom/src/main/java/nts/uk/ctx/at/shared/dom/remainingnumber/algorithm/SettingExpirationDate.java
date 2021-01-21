@@ -30,7 +30,7 @@ public class SettingExpirationDate {
 		if (expirationTime == ExpirationTime.END_OF_YEAR) {
 			// 次の期首月の前日を設定
 			int month = tightSettingResult.get().getStartMonth(), year;
-			if (dateOccuDigest.month() > month) {
+			if (dateOccuDigest.month() >= month) {
 				year = dateOccuDigest.year() + 1;
 			} else {
 				year = dateOccuDigest.year();

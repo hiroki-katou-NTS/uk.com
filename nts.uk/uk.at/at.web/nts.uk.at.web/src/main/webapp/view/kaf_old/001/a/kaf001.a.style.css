@@ -1,0 +1,8 @@
+.button-control {
+	width: 200px;
+	text-align: left;
+}
+
+button.caret-right:after {
+	color: #2FCC71 !important;
+}

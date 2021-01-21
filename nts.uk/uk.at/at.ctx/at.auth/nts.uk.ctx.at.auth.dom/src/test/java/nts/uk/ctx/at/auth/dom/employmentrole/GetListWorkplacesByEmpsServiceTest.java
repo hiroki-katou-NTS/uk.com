@@ -3,6 +3,7 @@ package nts.uk.ctx.at.auth.dom.employmentrole;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.Test;
@@ -11,11 +12,13 @@ import org.junit.runner.RunWith;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
-import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.auth.dom.adapter.workplace.AffWorkplaceHistoryItemImport;
 import nts.uk.ctx.at.auth.dom.employmentrole.GetListWorkplacesByEmpsService.Require;
+import nts.uk.ctx.at.auth.dom.employmentrole.dto.ClosureInformation;
 import nts.uk.ctx.at.auth.dom.employmentrole.dto.ClosureTime;
+import nts.uk.ctx.at.auth.dom.employmentrole.dto.WorkplaceManagerDto;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureName;
@@ -31,12 +34,6 @@ public class GetListWorkplacesByEmpsServiceTest {
 
 	@Injectable
 	private Require require;
-	
-	@Test
-	public void gettes() {
-		GetListWorkplacesByEmpsService getListWorkplacesByEmpsService = new GetListWorkplacesByEmpsService();
-		NtsAssert.invokeGetters(getListWorkplacesByEmpsService);
-	}
 	
 	/**
 	 *  [prv-1] 全締から職場確定できる職場を取得する
@@ -113,17 +110,27 @@ public class GetListWorkplacesByEmpsServiceTest {
 	public void testGetListWorkplacesByEmpsServiceTest_4() {
 		String companyId = "companyId";   // dummy
 		String employeeId = "employeeId"; // dummy
+		String workplaceId = "workplaceId";
 		Optional<Integer> closureId = Optional.of(ClosureId.RegularEmployee.value); // dummy
+		DatePeriod date = new DatePeriod(GeneralDate.ymd(1900, 01, 01), GeneralDate.ymd(9000, 12, 31));
 		
 		new Expectations() {
 			{
 				require.getCurrentMonthPeriod(closureId.get());
-				result = Optional.of(new ClosureTime(GeneralDate.ymd(1900, 01, 01), GeneralDate.ymd(9999, 12, 31)));
+				result = Optional.of(date);
+				
+				require.getAffiliatedEmployees(workplaceId, date.end());
+				result = Arrays.asList(new AffWorkplaceHistoryItemImport("historyId", employeeId, workplaceId, "normalWorkplaceId"));
+				
+				require.getWorkplaceManager(employeeId, GeneralDate.ymd(9000, 12, 31));
+				result = new WorkplaceManagerDto("workplaceManagerId", employeeId, workplaceId, date);
+				
+				require.getProcessCloseCorrespondToEmps(Arrays.asList(employeeId), date.end());
+				result = Arrays.asList(new ClosureInformation(employeeId, closureId.get()));
 			}
 		};
 		
-		assertThat(GetListWorkplacesByEmpsService.get(require, companyId, employeeId, closureId).isEmpty()).isTrue();
+		List<String> s = GetListWorkplacesByEmpsService.get(require, companyId, employeeId, closureId);
+		assertThat(s).isNotEmpty();
 	}
-	
-
 }

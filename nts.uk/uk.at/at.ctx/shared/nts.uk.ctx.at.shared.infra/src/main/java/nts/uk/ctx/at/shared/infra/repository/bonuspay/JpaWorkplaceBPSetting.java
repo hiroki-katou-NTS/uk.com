@@ -9,9 +9,9 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.WPBonusPaySettingRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.WorkplaceBonusPaySetting;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.WPBonusPaySettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.WorkplaceBonusPaySetting;
 import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstWPBonusPaySetting;
 import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpstWPBonusPaySettingPK;
 

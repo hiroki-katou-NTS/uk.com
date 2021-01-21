@@ -15,7 +15,7 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.Man
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.SubDigestion;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.SubTargetDigestion;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.WorkTime;
-import nts.uk.ctx.at.request.infra.entity.application.holidayshipment.absenceleaveapp.KrqdtAbsenceLeaveApp;
+import nts.uk.ctx.at.request.infra.entity.application.holidayshipment.absenceleaveapp.KrqdtAppHdSub;
 import nts.uk.ctx.at.request.infra.entity.application.holidayshipment.subdigestion.KrqdtSubDigestion;
 import nts.uk.ctx.at.request.infra.entity.application.holidayshipment.subtargetdigestion.KrqdtSubTargetDigestion;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
@@ -45,7 +45,7 @@ public class JpaAbsenceLeaveAppRepository extends JpaRepository implements Absen
 
 	@Override
 	public Optional<AbsenceLeaveApp> findByID(String applicationID) {
-		return this.queryProxy().find(applicationID, KrqdtAbsenceLeaveApp.class).map(x -> toDomain(x));
+		return this.queryProxy().find(applicationID, KrqdtAppHdSub.class).map(x -> toDomain(x));
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public class JpaAbsenceLeaveAppRepository extends JpaRepository implements Absen
 
 	}
 
-	private AbsenceLeaveApp toDomain(KrqdtAbsenceLeaveApp entity) {
+	private AbsenceLeaveApp toDomain(KrqdtAppHdSub entity) {
 		AbsenceLeaveWorkingHour WorkTime1 = new AbsenceLeaveWorkingHour(new WorkTime(entity.getStartWorkTime1()),
 				new WorkTime(entity.getEndWorkTime1()));
 		AbsenceLeaveWorkingHour WorkTime2 = new AbsenceLeaveWorkingHour(new WorkTime(entity.getStartWorkTime2()),
@@ -95,8 +95,8 @@ public class JpaAbsenceLeaveAppRepository extends JpaRepository implements Absen
 				domain.getUnknownDate());
 	}
 
-	private KrqdtAbsenceLeaveApp toEntity(AbsenceLeaveApp absApp) {
-		KrqdtAbsenceLeaveApp entity = new KrqdtAbsenceLeaveApp();
+	private KrqdtAppHdSub toEntity(AbsenceLeaveApp absApp) {
+		KrqdtAppHdSub entity = new KrqdtAppHdSub();
 		entity.setAppID(absApp.getAppID());
 		entity.setWorkTypeCD(absApp.getWorkTypeCD().v());
 		entity.setChangeWorkHoursAtr(absApp.getChangeWorkHoursType().value);
@@ -118,9 +118,9 @@ public class JpaAbsenceLeaveAppRepository extends JpaRepository implements Absen
 
 	@Override
 	public void remove(String appID) {
-		Optional<KrqdtAbsenceLeaveApp> entityOpt = this.queryProxy().find(appID, KrqdtAbsenceLeaveApp.class);
+		Optional<KrqdtAppHdSub> entityOpt = this.queryProxy().find(appID, KrqdtAppHdSub.class);
 		if (entityOpt.isPresent()) {
-			this.commandProxy().remove(KrqdtAbsenceLeaveApp.class, appID);
+			this.commandProxy().remove(KrqdtAppHdSub.class, appID);
 		}
 
 	}
@@ -134,7 +134,7 @@ public class JpaAbsenceLeaveAppRepository extends JpaRepository implements Absen
 	 */
 	@Override
 	public Optional<AbsenceLeaveApp> findByAppId(String applicationID) {
-		return this.queryProxy().find(applicationID, KrqdtAbsenceLeaveApp.class).map(x -> toDomainMain(x));
+		return this.queryProxy().find(applicationID, KrqdtAppHdSub.class).map(x -> toDomainMain(x));
 	}
 
 	/**
@@ -144,7 +144,7 @@ public class JpaAbsenceLeaveAppRepository extends JpaRepository implements Absen
 	 * @param entity
 	 * @return
 	 */
-	private AbsenceLeaveApp toDomainMain(KrqdtAbsenceLeaveApp entity) {
+	private AbsenceLeaveApp toDomainMain(KrqdtAppHdSub entity) {
 		AbsenceLeaveWorkingHour WorkTime1 = new AbsenceLeaveWorkingHour(new WorkTime(entity.getStartWorkTime1()),
 				new WorkTime(entity.getEndWorkTime1()));
 		AbsenceLeaveWorkingHour WorkTime2 = new AbsenceLeaveWorkingHour(new WorkTime(entity.getStartWorkTime2()),

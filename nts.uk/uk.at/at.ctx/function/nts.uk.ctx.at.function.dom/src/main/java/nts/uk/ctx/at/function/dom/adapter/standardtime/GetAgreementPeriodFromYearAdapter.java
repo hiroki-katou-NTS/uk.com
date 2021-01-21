@@ -2,8 +2,8 @@ package nts.uk.ctx.at.function.dom.adapter.standardtime;
 
 import java.util.Optional;
 
-import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.arc.time.calendar.Year;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**

@@ -13,9 +13,9 @@ import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.app.find.outsideot.dto.OutsideOTBRDItemDto;
-import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
-import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemNo;
-import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.BreakdownItemNo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.OutsideOTBRDItem;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="base.xhtml">
+    <ui:define name="title">
+        <span class="title" data-bind="text: vm.$i18n('KSM008_133')"></span>
+    </ui:define>
+
+    <ui:define name="table-content">
+        <tr>
+            <td>
+                <div data-bind="ntsFormLabel: {required: true, text: vm.$i18n('KSM008_141')}"></div>
+            </td>
+            <td>
+                <button id="H1_2" tabindex="5" data-bind="click: openDiaglog, text: vm.$i18n('KSM008_142')"></button>
+            </td>
+            <td>
+                <div class="labelWorkplace">
+                    <span class="label" data-bind="text: orgCode"></span>
+                    <span class="label" data-bind="text: displayName"></span>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div data-bind="ntsFormLabel: { constraint: 'ConsecutiveNumberOfDays', required: true, text: vm.$i18n('KSM008_143') }"></div>
+            </td>
+            <td>
+                <input class="cons-day" tabindex="7" data-bind="ntsNumberEditor: {
+                    name: '#{i18n.getText('KSM008_144')}',
+                    value: maxConsDaysOrg,
+                    constraint: 'ConsecutiveNumberOfDays',
+                    required: true}"
+                />
+            </td>
+            <td>
+                <div class="labelWorkplace">
+                    <span class="label" data-bind="text: vm.$i18n('KSM008_145')"></span>
+                </div>
+            </td>
+        </tr>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

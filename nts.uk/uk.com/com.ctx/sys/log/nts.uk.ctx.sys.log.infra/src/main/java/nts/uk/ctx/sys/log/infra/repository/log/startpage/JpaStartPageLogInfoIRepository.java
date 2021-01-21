@@ -16,7 +16,7 @@ import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.sys.log.infra.entity.log.startpage.SrcdtStartPageLogInfo;
+import nts.uk.ctx.sys.log.infra.entity.log.startpage.SrcdtStartPageInfo;
 import nts.uk.shr.com.security.audittrail.start.StartPageLog;
 import nts.uk.shr.com.security.audittrail.start.StartPageLogRepository;
 import nts.uk.shr.com.security.audittrail.start.StartPageLogStorageRepository;
@@ -28,7 +28,7 @@ public class JpaStartPageLogInfoIRepository extends JpaRepository
 
 	@Override
 	public Optional<StartPageLog> find(String operationId) {
-		return this.queryProxy().find(operationId, SrcdtStartPageLogInfo.class).map(e -> e.toDomain());
+		return this.queryProxy().find(operationId, SrcdtStartPageInfo.class).map(e -> e.toDomain());
 	}
 
 	@Override
@@ -36,8 +36,8 @@ public class JpaStartPageLogInfoIRepository extends JpaRepository
 		List<StartPageLog> res = new ArrayList<>();
 		
 		CollectionUtil.split(operationId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, sub -> {
-			res.addAll(this.queryProxy().query("SELECT l FROM SrcdtStartPageLogInfo l WHERE l.operationId IN :operationId",
-											SrcdtStartPageLogInfo.class)
+			res.addAll(this.queryProxy().query("SELECT l FROM SrcdtStartPageInfo l WHERE l.operationId IN :operationId",
+											SrcdtStartPageInfo.class)
 									.setParameter("operationId", sub).getList(r -> r.toDomain()));
 		});
 		
@@ -47,7 +47,7 @@ public class JpaStartPageLogInfoIRepository extends JpaRepository
 	@Override
 	public List<StartPageLog> finds(String companyId) {
 		return this.queryProxy()
-				.query("SELECT l FROM SrcdtStartPageLogInfo l WHERE l.companyId = :cid", SrcdtStartPageLogInfo.class)
+				.query("SELECT l FROM SrcdtStartPageInfo l WHERE l.companyId = :cid", SrcdtStartPageInfo.class)
 				.setParameter("cid", companyId).getList(r -> r.toDomain());
 	}
 
@@ -58,8 +58,8 @@ public class JpaStartPageLogInfoIRepository extends JpaRepository
 		int dayOfMonth = targetDate.day();
 		GeneralDateTime startDate = GeneralDateTime.ymdhms(year, month, dayOfMonth, 0, 0, 0);
 		GeneralDateTime endDate = GeneralDateTime.ymdhms(year, month, dayOfMonth, 23, 59, 59);
-		String sql = "SELECT l FROM SrcdtStartPageLogInfo l WHERE l.startDateTime >= :startDate AND l.startDateTime <= :endDate";
-		return this.queryProxy().query(sql, SrcdtStartPageLogInfo.class)
+		String sql = "SELECT l FROM SrcdtStartPageInfo l WHERE l.startDateTime >= :startDate AND l.startDateTime <= :endDate";
+		return this.queryProxy().query(sql, SrcdtStartPageInfo.class)
 									.setParameter("startDate", startDate)
 									.setParameter("endDate", endDate)
 									.getList(r -> r.toDomain());
@@ -69,8 +69,8 @@ public class JpaStartPageLogInfoIRepository extends JpaRepository
 	public List<StartPageLog> finds(DatePeriod targetDate) {
 		GeneralDateTime startDate = GeneralDateTime.ymdhms(targetDate.start().year(), targetDate.start().month(), targetDate.start().day(), 0, 0, 0);
 		GeneralDateTime endDate = GeneralDateTime.ymdhms(targetDate.end().year(), targetDate.end().month(), targetDate.end().day(), 23, 59, 59);
-		String sql = "SELECT l FROM SrcdtStartPageLogInfo l WHERE l.startDateTime >= :startDate AND l.startDateTime <= :endDate";
-		return this.queryProxy().query(sql, SrcdtStartPageLogInfo.class)
+		String sql = "SELECT l FROM SrcdtStartPageInfo l WHERE l.startDateTime >= :startDate AND l.startDateTime <= :endDate";
+		return this.queryProxy().query(sql, SrcdtStartPageInfo.class)
 									.setParameter("startDate", startDate)
 									.setParameter("endDate", endDate)
 									.getList(r -> r.toDomain());
@@ -79,7 +79,7 @@ public class JpaStartPageLogInfoIRepository extends JpaRepository
 	@Override
 	public List<StartPageLog> findBySid(String sId) {
 		return this.queryProxy()
-				.query("SELECT l FROM SrcdtStartPageLogInfo l WHERE l.employeeId = :sId", SrcdtStartPageLogInfo.class)
+				.query("SELECT l FROM SrcdtStartPageInfo l WHERE l.employeeId = :sId", SrcdtStartPageInfo.class)
 				.setParameter("sId", sId).getList(r -> r.toDomain());
 	}
 
@@ -88,8 +88,8 @@ public class JpaStartPageLogInfoIRepository extends JpaRepository
 		List<StartPageLog> res = new ArrayList<>();
 		
 		CollectionUtil.split(sIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, sub -> {
-			res.addAll(this.queryProxy().query("SELECT l FROM SrcdtStartPageLogInfo l WHERE l.employeeId IN :employeeIds",
-											SrcdtStartPageLogInfo.class)
+			res.addAll(this.queryProxy().query("SELECT l FROM SrcdtStartPageInfo l WHERE l.employeeId IN :employeeIds",
+											SrcdtStartPageInfo.class)
 									.setParameter("employeeIds", sub).getList(r -> r.toDomain()));
 		});
 		
@@ -105,7 +105,7 @@ public class JpaStartPageLogInfoIRepository extends JpaRepository
 		}
 		List<StartPageLog> result = new ArrayList<>();
 		CollectionUtil.split(listEmployeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM SRCDT_START_PAGE_LOG_INFO  WHERE "
+			String sql = "SELECT * FROM SRCDT_START_PAGE_INFO  WHERE "
 					
 					+ " START_DT >= ?"
 					+ " AND START_DT <= ?"
@@ -123,7 +123,7 @@ public class JpaStartPageLogInfoIRepository extends JpaRepository
 				}
 				List<StartPageLog> startLog  = new NtsResultSet(stmt.executeQuery())
 						.getList(r -> {
-							SrcdtStartPageLogInfo entity = new SrcdtStartPageLogInfo(r.getString("OPERATION_ID"),
+							SrcdtStartPageInfo entity = new SrcdtStartPageInfo(r.getString("OPERATION_ID"),
 									r.getString("START_BEFORE_PGID"), r.getString("START_BEFORE_SCREEN_ID"),
 									r.getString("START_BEFORE_QUERY_STRING"), r.getString("CID"),
 									r.getString("USER_ID"), r.getString("USER_NAME"),
@@ -154,7 +154,7 @@ public class JpaStartPageLogInfoIRepository extends JpaRepository
 	public List<StartPageLog> findBy(String companyId, GeneralDateTime start, GeneralDateTime end, int offset, int limit) {
 		this.getEntityManager().clear();
 			List<StartPageLog> result = new ArrayList<>();
-			String sql = "SELECT * FROM SRCDT_START_PAGE_LOG_INFO  WHERE "
+			String sql = "SELECT * FROM SRCDT_START_PAGE_INFO  WHERE "
 					+ " CID = ?"
 					+ " AND START_DT >= ?"
 					+ " AND START_DT <= ?"
@@ -168,7 +168,7 @@ public class JpaStartPageLogInfoIRepository extends JpaRepository
 				stmt.setTimestamp(3,  Timestamp.valueOf(end.localDateTime()));
 				List<StartPageLog> startLog  = new NtsResultSet(stmt.executeQuery())
 						.getList(r -> {
-							SrcdtStartPageLogInfo entity = new SrcdtStartPageLogInfo(r.getString("OPERATION_ID"),
+							SrcdtStartPageInfo entity = new SrcdtStartPageInfo(r.getString("OPERATION_ID"),
 									r.getString("START_BEFORE_PGID"), r.getString("START_BEFORE_SCREEN_ID"),
 									r.getString("START_BEFORE_QUERY_STRING"), r.getString("CID"),
 									r.getString("USER_ID"), r.getString("USER_NAME"),
@@ -193,10 +193,10 @@ public class JpaStartPageLogInfoIRepository extends JpaRepository
 			}	
 			return result;
 //		this.getEntityManager().clear();
-//		String sql1 = "SELECT l FROM SrcdtStartPageLogInfo l "
+//		String sql1 = "SELECT l FROM SrcdtStartPageInfo l "
 //				+ " WHERE l.companyId =:cid AND l.startDateTime >=:startDateTime AND l.startDateTime <=:endDateTime"
 //				+ "　ORDER BY　l.employeeId, 　l.startDateTime DESC";
-//		List<Object> startLog = this.getEntityManager().createQuery(sql1, SrcdtStartPageLogInfo.class)
+//		List<Object> startLog = this.getEntityManager().createQuery(sql1, SrcdtStartPageInfo.class)
 //				.setParameter("cid", companyId).setParameter("startDateTime", start).setParameter("endDateTime", end)
 //				.setFirstResult(offset).setMaxResults(limit).getResultList().stream().map(c -> {return c;}).collect(Collectors.toList());
 //		return startLog;
@@ -204,12 +204,12 @@ public class JpaStartPageLogInfoIRepository extends JpaRepository
 
 	@Override
 	public void save(StartPageLog log) {
-		this.commandProxy().insert(SrcdtStartPageLogInfo.from(log));
+		this.commandProxy().insert(SrcdtStartPageInfo.from(log));
 	}
 
 	@Override
 	public void delete(String operationId) {
-		this.queryProxy().find(operationId, SrcdtStartPageLogInfo.class).ifPresent(e -> {
+		this.queryProxy().find(operationId, SrcdtStartPageInfo.class).ifPresent(e -> {
 			this.commandProxy().remove(e);
 		});
 	}
@@ -222,7 +222,7 @@ public class JpaStartPageLogInfoIRepository extends JpaRepository
 		}
 		List<StartPageLog> result = new ArrayList<>();
 		CollectionUtil.split(listEmployeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT TOP 1000 * FROM SRCDT_START_PAGE_LOG_INFO  WHERE "
+			String sql = "SELECT TOP 1000 * FROM SRCDT_START_PAGE_INFO  WHERE "
 					+ " CID = ?"
 					+ " AND START_DT >= ?"
 					+ " AND START_DT <= ?"
@@ -238,7 +238,7 @@ public class JpaStartPageLogInfoIRepository extends JpaRepository
 				
 				List<StartPageLog> startLog  = new NtsResultSet(stmt.executeQuery())
 						.getList(r -> {
-							SrcdtStartPageLogInfo entity = new SrcdtStartPageLogInfo(r.getString("OPERATION_ID"),
+							SrcdtStartPageInfo entity = new SrcdtStartPageInfo(r.getString("OPERATION_ID"),
 									r.getString("START_BEFORE_PGID"), r.getString("START_BEFORE_SCREEN_ID"),
 									r.getString("START_BEFORE_QUERY_STRING"), r.getString("CID"),
 									r.getString("USER_ID"), r.getString("USER_NAME"),
@@ -268,7 +268,7 @@ public class JpaStartPageLogInfoIRepository extends JpaRepository
 	@Override
 	public List<StartPageLog> findByScreenF(String companyId, GeneralDateTime start, GeneralDateTime end) {
 		List<StartPageLog> result = new ArrayList<>();
-		String sql = "SELECT TOP 1000 * FROM SRCDT_START_PAGE_LOG_INFO  WHERE "
+		String sql = "SELECT TOP 1000 * FROM SRCDT_START_PAGE_INFO  WHERE "
 				+ " CID = ?"
 				+ " AND START_DT >= ?"
 				+ " AND START_DT <= ?";
@@ -278,7 +278,7 @@ public class JpaStartPageLogInfoIRepository extends JpaRepository
 			stmt.setTimestamp(3,  java.sql.Timestamp.valueOf(end.localDateTime()));
 			List<StartPageLog> startLog  = new NtsResultSet(stmt.executeQuery())
 					.getList(r -> {
-						SrcdtStartPageLogInfo entity = new SrcdtStartPageLogInfo(r.getString("OPERATION_ID"),
+						SrcdtStartPageInfo entity = new SrcdtStartPageInfo(r.getString("OPERATION_ID"),
 								r.getString("START_BEFORE_PGID"), r.getString("START_BEFORE_SCREEN_ID"),
 								r.getString("START_BEFORE_QUERY_STRING"), r.getString("CID"),
 								r.getString("USER_ID"), r.getString("USER_NAME"),

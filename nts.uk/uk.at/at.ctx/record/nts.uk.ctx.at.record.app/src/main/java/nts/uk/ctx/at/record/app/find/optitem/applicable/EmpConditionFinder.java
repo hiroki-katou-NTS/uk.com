@@ -11,11 +11,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.dom.optitem.applicable.EmpApplicableAtr;
-import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
-import nts.uk.ctx.at.record.dom.optitem.applicable.EmpConditionRepository;
 import nts.uk.ctx.at.record.dom.organization.EmploymentImported;
 import nts.uk.ctx.at.record.dom.organization.adapter.EmploymentAdapter;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpApplicableAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpCondition;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpConditionRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

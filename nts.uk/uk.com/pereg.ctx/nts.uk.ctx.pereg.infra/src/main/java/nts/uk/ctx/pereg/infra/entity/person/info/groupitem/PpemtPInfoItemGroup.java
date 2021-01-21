@@ -13,15 +13,20 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
+import nts.uk.ctx.pereg.infra.repository.mastercopy.helper.IdContainer;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "PPEMT_PINFO_ITEM_GROUP")
-public class PpemtPInfoItemGroup extends UkJpaEntity implements Serializable {
+@Table(name = "PPEMT_GROUP_ITEM")
+public class PpemtPInfoItemGroup extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
+	public static final JpaEntityMapper<PpemtPInfoItemGroup> MAPPER = new JpaEntityMapper<>(PpemtPInfoItemGroup.class);
+	
 	@EmbeddedId
 	public PpemtPInfoItemGroupPk ppemtPinfoItemGroupPk;
 
@@ -40,5 +45,16 @@ public class PpemtPInfoItemGroup extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {
 		return this.ppemtPinfoItemGroupPk;
+	}
+	
+	public PpemtPInfoItemGroup copy(String companyId, IdContainer.IdGenerator groupItemIds) {
+		
+		String copiedGroupItemId = groupItemIds.generateFor(ppemtPinfoItemGroupPk.groupItemId);
+		
+		return new PpemtPInfoItemGroup(
+				new PpemtPInfoItemGroupPk(copiedGroupItemId),
+				companyId,
+				groupName,
+				dispOrder);
 	}
 }

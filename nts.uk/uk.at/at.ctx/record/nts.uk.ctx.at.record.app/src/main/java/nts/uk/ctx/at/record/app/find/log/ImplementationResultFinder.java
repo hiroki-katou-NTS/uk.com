@@ -16,13 +16,13 @@ import nts.uk.ctx.at.record.app.find.log.dto.PersonInfoErrMessageLogResultDto;
 import nts.uk.ctx.at.record.app.find.log.dto.ScreenImplementationResultDto;
 import nts.uk.ctx.at.record.dom.adapter.person.EmpBasicInfoImport;
 import nts.uk.ctx.at.record.dom.adapter.person.PersonInfoAdapter;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
 import nts.uk.ctx.at.record.dom.adapter.workrule.closure.ClosureAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workrule.closure.PresentClosingPeriodImport;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLock;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockRepository;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.shr.com.context.AppContexts;
 

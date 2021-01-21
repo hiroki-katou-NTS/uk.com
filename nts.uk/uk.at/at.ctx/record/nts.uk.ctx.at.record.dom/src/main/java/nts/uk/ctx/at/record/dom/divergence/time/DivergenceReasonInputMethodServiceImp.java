@@ -10,7 +10,7 @@ import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceInputRequired;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonCode;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelect;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelectRepository;
-import nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceReasonContent;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

@@ -6,6 +6,7 @@ import static nts.arc.time.GeneralDateTime.now;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +30,7 @@ public class BentoReserveServiceTest {
 	public void atomTask() {
 		
 		ReservationRegisterInfo regInfo = Helper.Reservation.RegInfo.DUMMY;
+		Optional<WorkLocationCode> workLocationCode = Helper.Reservation.WorkLocationCodeReg.DUMMY;
 		ReservationDate date = Helper.Reservation.Date.of(today());
 		GeneralDateTime now = now();
 		Map<Integer, BentoReservationCount> details = Collections.singletonMap(1, Helper.count(1));
@@ -37,14 +39,14 @@ public class BentoReserveServiceTest {
 				"historyId",
 				Arrays.asList(Helper.Menu.Item.bentoReserveFrame(1, true, true)),
 				ClosingTime.UNLIMITED);
-		
+
 		new Expectations() {{
-			require.getBentoMenu(date);
+			require.getBentoMenu(date,workLocationCode);
 			result = menu;
 		}};
 		
 		NtsAssert.atomTask(
-				() -> BentoReserveService.reserve(require, regInfo, date, now, details),
+				() -> BentoReserveService.reserve(require, regInfo, date, now, details,workLocationCode),
 				any -> require.reserve(any.get()));
 	}
 

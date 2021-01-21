@@ -29,13 +29,13 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.ExecutionTaskLog
 //import nts.uk.ctx.at.function.dom.processexecution.executionlog.OverallErrorDetail;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLog;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "KFNMT_PROC_EXEC_LOG")
+@Table(name = "KFNDT_AUTOEXEC_LOG")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KfnmtProcessExecutionLog extends UkJpaEntity implements Serializable {
+public class KfnmtProcessExecutionLog extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/* 主キー */
 	@EmbeddedId
@@ -74,7 +74,7 @@ public class KfnmtProcessExecutionLog extends UkJpaEntity implements Serializabl
 	public GeneralDate reflectApprovalResultEnd;
 
 	@OneToMany(mappedBy = "procExecLogItem", cascade = CascadeType.ALL)
-	@JoinTable(name = "KFNMT_EXEC_TASK_LOG")
+	@JoinTable(name = "KFNDT_AUTOEXEC_TASK_LOG")
 	public List<KfnmtExecutionTaskLog> taskLogList;
 
 	@Override

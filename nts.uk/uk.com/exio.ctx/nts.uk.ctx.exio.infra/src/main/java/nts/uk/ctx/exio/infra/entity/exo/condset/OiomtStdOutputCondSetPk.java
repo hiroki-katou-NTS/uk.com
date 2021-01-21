@@ -31,7 +31,7 @@ public class OiomtStdOutputCondSetPk implements Serializable {
 	 * 外部出力条件コード
 	 */
 	@Basic(optional = false)
-	@Column(name = "CONDITION_SET_CD")
+	@Column(name = "CND_SET_CD")
 	public String conditionSetCd;
 
 }

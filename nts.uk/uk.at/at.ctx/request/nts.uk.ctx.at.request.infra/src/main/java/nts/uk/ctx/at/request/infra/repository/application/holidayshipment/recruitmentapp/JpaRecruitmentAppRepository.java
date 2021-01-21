@@ -14,7 +14,7 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.Wor
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentWorkingHour;
-import nts.uk.ctx.at.request.infra.entity.application.holidayshipment.recruitmentapp.KrqdtRecruitmentApp;
+import nts.uk.ctx.at.request.infra.entity.application.holidayshipment.recruitmentapp.KrqdtAppRecruitment;
 import nts.uk.ctx.at.request.infra.entity.application.holidayshipment.subtargetdigestion.KrqdtSubTargetDigestion;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -35,10 +35,10 @@ public class JpaRecruitmentAppRepository extends JpaRepository implements Recrui
 
 	@Override
 	public Optional<RecruitmentApp> findByID(String applicationID) {
-		return this.queryProxy().find(applicationID, KrqdtRecruitmentApp.class).map(x -> toDomain(x));
+		return this.queryProxy().find(applicationID, KrqdtAppRecruitment.class).map(x -> toDomain(x));
 	}
 
-	private RecruitmentApp toDomain(KrqdtRecruitmentApp entity) {
+	private RecruitmentApp toDomain(KrqdtAppRecruitment entity) {
 		RecruitmentWorkingHour workTime1 = new RecruitmentWorkingHour(new WorkTime(entity.getStartWorkTime1()),
 				EnumAdaptor.valueOf(entity.getStartUseAtr1(), NotUseAtr.class), new WorkTime(entity.getEndWorkTime1()),
 				EnumAdaptor.valueOf(entity.getEndUseAtr1(), NotUseAtr.class));
@@ -60,8 +60,8 @@ public class JpaRecruitmentAppRepository extends JpaRepository implements Recrui
 				entity.getUnknownDate());
 	}
 
-	private KrqdtRecruitmentApp toEntity(RecruitmentApp recApp) {
-		KrqdtRecruitmentApp entity = new KrqdtRecruitmentApp();
+	private KrqdtAppRecruitment toEntity(RecruitmentApp recApp) {
+		KrqdtAppRecruitment entity = new KrqdtAppRecruitment();
 		entity.setAppID(recApp.getAppID());
 		entity.setWorkTypeCD(recApp.getWorkTypeCD().v());
 		entity.setWorkTimeCD(recApp.getWorkTimeCD().v());
@@ -98,9 +98,9 @@ public class JpaRecruitmentAppRepository extends JpaRepository implements Recrui
 
 	@Override
 	public void remove(String appID) {
-		Optional<KrqdtRecruitmentApp> entityOpt = this.queryProxy().find(appID, KrqdtRecruitmentApp.class);
+		Optional<KrqdtAppRecruitment> entityOpt = this.queryProxy().find(appID, KrqdtAppRecruitment.class);
 		if (entityOpt.isPresent()) {
-			this.commandProxy().remove(KrqdtRecruitmentApp.class, appID);
+			this.commandProxy().remove(KrqdtAppRecruitment.class, appID);
 		}
 
 	}
@@ -114,7 +114,7 @@ public class JpaRecruitmentAppRepository extends JpaRepository implements Recrui
 	 */
 	@Override
 	public Optional<RecruitmentApp> findByAppId(String appId) {
-		return this.queryProxy().find(appId, KrqdtRecruitmentApp.class).map(x -> toDomainMain(x));
+		return this.queryProxy().find(appId, KrqdtAppRecruitment.class).map(x -> toDomainMain(x));
 	}
 
 	/**
@@ -124,7 +124,7 @@ public class JpaRecruitmentAppRepository extends JpaRepository implements Recrui
 	 * @param entity
 	 * @return
 	 */
-	private RecruitmentApp toDomainMain(KrqdtRecruitmentApp entity) {
+	private RecruitmentApp toDomainMain(KrqdtAppRecruitment entity) {
 		RecruitmentWorkingHour workTime1 = new RecruitmentWorkingHour(new WorkTime(entity.getStartWorkTime1()),
 				EnumAdaptor.valueOf(entity.getStartUseAtr1(), NotUseAtr.class), new WorkTime(entity.getEndWorkTime1()),
 				EnumAdaptor.valueOf(entity.getEndUseAtr1(), NotUseAtr.class));

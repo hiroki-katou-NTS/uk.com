@@ -20,13 +20,13 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDaiTemporaryTime;
+import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDayTsTemporary;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDaiTemporaryTimePK;
-import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtTimeLeavingWork;
+import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDayTsAtdStmp;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtTimeLeavingWorkPK;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.arc.time.calendar.period.DatePeriod;
 
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -41,14 +41,14 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("DELETE ");
-		builderString.append("FROM KrcdtDaiTemporaryTime a ");
+		builderString.append("FROM KrcdtDayTsTemporary a ");
 		builderString.append("WHERE a.krcdtDaiTemporaryTimePK.employeeId IN :employeeIds ");
 		builderString.append("AND a.krcdtDaiTemporaryTimePK.ymd IN :ymds ");
 		DEL_BY_LIST_KEY = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
-		builderString.append("FROM KrcdtDaiTemporaryTime a ");
+		builderString.append("FROM KrcdtDayTsTemporary a ");
 		builderString.append("WHERE a.krcdtDaiTemporaryTimePK.employeeId = :employeeId ");
 		builderString.append("AND a.krcdtDaiTemporaryTimePK.ymd = :ymd ");
 		FIND_BY_KEY = builderString.toString();
@@ -59,8 +59,8 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 	public void delete(String employeeId, GeneralDate ymd) {
 		
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		String sqlQuery = "Delete From KRCDT_TIME_LEAVING_WORK Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" + "and TIME_LEAVING_TYPE = 1" ;
-		String daiLeavingWorkQuery = "Delete From KRCDT_DAI_TEMPORARY_TIME Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
+		String sqlQuery = "Delete From KRCDT_DAY_TS_ATD_STMP Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" + "and TIME_LEAVING_TYPE = 1" ;
+		String daiLeavingWorkQuery = "Delete From KRCDT_DAY_TS_TEMPORARY Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
 		try {
 			con.createStatement().executeUpdate(sqlQuery);
 			con.createStatement().executeUpdate(daiLeavingWorkQuery);
@@ -78,7 +78,7 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public Optional<TemporaryTimeOfDailyPerformance> findByKey(String employeeId, GeneralDate ymd) {
-		return this.queryProxy().query(FIND_BY_KEY, KrcdtDaiTemporaryTime.class).setParameter("employeeId", employeeId)
+		return this.queryProxy().query(FIND_BY_KEY, KrcdtDayTsTemporary.class).setParameter("employeeId", employeeId)
 				.setParameter("ymd", ymd).getSingle(f -> f.toDomain());
 	}
 	
@@ -88,17 +88,17 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 			return;
 		}
 		
-		KrcdtDaiTemporaryTime krcdtDaiTemporaryTime = getDailyTemporary(domain.getEmployeeId(), domain.getYmd());
+		KrcdtDayTsTemporary krcdtDaiTemporaryTime = getDailyTemporary(domain.getEmployeeId(), domain.getYmd());
 		
-		List<KrcdtTimeLeavingWork> timeWorks = krcdtDaiTemporaryTime.timeLeavingWorks;
- 		krcdtDaiTemporaryTime.workTimes = domain.getWorkTimes().v();
- 		domain.getTimeLeavingWorks().stream().forEach(c -> {
- 			KrcdtTimeLeavingWork krcdtTimeLeavingWork = timeWorks.stream()
+		List<KrcdtDayTsAtdStmp> timeWorks = krcdtDaiTemporaryTime.timeLeavingWorks;
+ 		krcdtDaiTemporaryTime.workTimes = domain.getAttendance().getWorkTimes().v();
+ 		domain.getAttendance().getTimeLeavingWorks().stream().forEach(c -> {
+ 			KrcdtDayTsAtdStmp krcdtTimeLeavingWork = timeWorks.stream()
  					.filter(x -> x.krcdtTimeLeavingWorkPK.workNo == c.getWorkNo().v()
  								&& x.krcdtTimeLeavingWorkPK.timeLeavingType == 1).findFirst().orElse(null);
  			boolean isNew = krcdtTimeLeavingWork == null;
  			if(isNew){
- 				krcdtTimeLeavingWork = new KrcdtTimeLeavingWork();
+ 				krcdtTimeLeavingWork = new KrcdtDayTsAtdStmp();
  				krcdtTimeLeavingWork.krcdtTimeLeavingWorkPK = new KrcdtTimeLeavingWorkPK(domain.getEmployeeId(), c.getWorkNo().v(), domain.getYmd(), 1);
  			}
  			if(c.getAttendanceStamp().isPresent()){
@@ -108,22 +108,22 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
  				if(attendActualStamp != null){
  					krcdtTimeLeavingWork.attendanceActualRoudingTime = attendActualStamp.getAfterRoundingTime() == null 
  							? null : attendActualStamp.getAfterRoundingTime().valueAsMinutes();
- 	 				krcdtTimeLeavingWork.attendanceActualTime = attendActualStamp.getTimeWithDay() == null 
- 	 						? null : attendActualStamp.getTimeWithDay().valueAsMinutes();
+ 	 				krcdtTimeLeavingWork.attendanceActualTime = attendActualStamp.getTimeDay().getTimeWithDay().isPresent() 
+ 	 						? attendActualStamp.getTimeDay().getTimeWithDay().get().valueAsMinutes() : null;
  	 				krcdtTimeLeavingWork.attendanceActualPlaceCode = !attendActualStamp.getLocationCode().isPresent() ? null 
  	 						: attendActualStamp.getLocationCode().get().v();
- 	 				krcdtTimeLeavingWork.attendanceActualSourceInfo = attendActualStamp.getStampSourceInfo() == null ? 0 
- 	 						: attendActualStamp.getStampSourceInfo().value;
+ 	 				krcdtTimeLeavingWork.attendanceActualSourceInfo = attendActualStamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == null ? 0 
+ 	 						: attendActualStamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value;
  				}
  				if(attendStamp != null){
  					krcdtTimeLeavingWork.attendanceStampRoudingTime = attendStamp.getAfterRoundingTime() == null 
  							? null : attendStamp.getAfterRoundingTime().valueAsMinutes();
- 	 				krcdtTimeLeavingWork.attendanceStampTime= attendStamp.getTimeWithDay() == null 
- 	 						? null : attendStamp.getTimeWithDay().valueAsMinutes();
+ 	 				krcdtTimeLeavingWork.attendanceStampTime= attendStamp.getTimeDay().getTimeWithDay().isPresent() 
+ 	 						? attendStamp.getTimeDay().getTimeWithDay().get().valueAsMinutes() : null;
  	 				krcdtTimeLeavingWork.attendanceStampPlaceCode = !attendStamp.getLocationCode().isPresent() ? null 
  	 						: attendStamp.getLocationCode().get().v();
- 	 				krcdtTimeLeavingWork.attendanceStampSourceInfo = attendStamp.getStampSourceInfo() == null ? 0 
- 	 						: attendStamp.getStampSourceInfo().value;
+ 	 				krcdtTimeLeavingWork.attendanceStampSourceInfo = attendStamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == null ? 0 
+ 	 						: attendStamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value;
  				}
  				krcdtTimeLeavingWork.attendanceNumberStamp = attendanceStamp.getNumberOfReflectionStamp();
  			}
@@ -133,22 +133,22 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
  				if(leaveActualStamp != null){
  					krcdtTimeLeavingWork.leaveWorkActualRoundingTime = leaveActualStamp.getAfterRoundingTime() == null 
  							? null : leaveActualStamp.getAfterRoundingTime().valueAsMinutes();
- 	 				krcdtTimeLeavingWork.leaveWorkActualTime = leaveActualStamp.getTimeWithDay() == null 
- 	 						? null : leaveActualStamp.getTimeWithDay().valueAsMinutes();
+ 	 				krcdtTimeLeavingWork.leaveWorkActualTime = leaveActualStamp.getTimeDay().getTimeWithDay().isPresent() 
+ 	 						? leaveActualStamp.getTimeDay().getTimeWithDay().get().valueAsMinutes() : null;
  	 				krcdtTimeLeavingWork.leaveWorkActualPlaceCode = !leaveActualStamp.getLocationCode().isPresent() ? null 
  	 						: leaveActualStamp.getLocationCode().get().v();
- 	 				krcdtTimeLeavingWork.leaveActualSourceInfo = leaveActualStamp.getStampSourceInfo() == null ? 0 
- 	 						: leaveActualStamp.getStampSourceInfo().value;
+ 	 				krcdtTimeLeavingWork.leaveActualSourceInfo = leaveActualStamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == null ? 0 
+ 	 						: leaveActualStamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value;
  				}
  				if(leaveStamp != null){
  					krcdtTimeLeavingWork.leaveWorkStampRoundingTime = leaveStamp.getAfterRoundingTime() == null 
  							? null : leaveStamp.getAfterRoundingTime().valueAsMinutes();
- 	 				krcdtTimeLeavingWork.leaveWorkStampTime= leaveStamp.getTimeWithDay() == null 
- 	 						? null : leaveStamp.getTimeWithDay().valueAsMinutes();
+ 	 				krcdtTimeLeavingWork.leaveWorkStampTime= leaveStamp.getTimeDay().getTimeWithDay().isPresent() 
+ 	 						? leaveStamp.getTimeDay().getTimeWithDay().get().valueAsMinutes() : null;
  	 				krcdtTimeLeavingWork.leaveWorkStampPlaceCode = !leaveStamp.getLocationCode().isPresent() ? null 
  	 						: leaveStamp.getLocationCode().get().v();
- 	 				krcdtTimeLeavingWork.leaveWorkStampSourceInfo = leaveStamp.getStampSourceInfo() == null ? 0 
- 	 						: leaveStamp.getStampSourceInfo().value;
+ 	 				krcdtTimeLeavingWork.leaveWorkStampSourceInfo = leaveStamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == null ? 0 
+ 	 						: leaveStamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value;
  				}
  				krcdtTimeLeavingWork.leaveWorkNumberStamp = c.getLeaveStamp().get().getNumberOfReflectionStamp();
  			}
@@ -167,12 +167,12 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 	 	
 	}
 
-	private KrcdtDaiTemporaryTime getDailyTemporary(String employee, GeneralDate date) {
-		KrcdtDaiTemporaryTime krcdtDaiTemporaryTime = this.queryProxy().query(FIND_BY_KEY, KrcdtDaiTemporaryTime.class)
+	private KrcdtDayTsTemporary getDailyTemporary(String employee, GeneralDate date) {
+		KrcdtDayTsTemporary krcdtDaiTemporaryTime = this.queryProxy().query(FIND_BY_KEY, KrcdtDayTsTemporary.class)
 				.setParameter("employeeId", employee)
 			.setParameter("ymd", date).getSingle().orElse(null);
 		if(krcdtDaiTemporaryTime == null){
-			krcdtDaiTemporaryTime = new KrcdtDaiTemporaryTime();
+			krcdtDaiTemporaryTime = new KrcdtDayTsTemporary();
 			krcdtDaiTemporaryTime.krcdtDaiTemporaryTimePK = new KrcdtDaiTemporaryTimePK(employee, date);
 			krcdtDaiTemporaryTime.timeLeavingWorks = new ArrayList<>();
 		}
@@ -184,13 +184,13 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 		if(temporaryTimeOfDailyPerformance==null){
 			return;
 		}
-		this.commandProxy().insert(KrcdtDaiTemporaryTime.toEntity(temporaryTimeOfDailyPerformance));
+		this.commandProxy().insert(KrcdtDayTsTemporary.toEntity(temporaryTimeOfDailyPerformance));
 		this.getEntityManager().flush();
 	}
 
 	@Override
 	public void add(TemporaryTimeOfDailyPerformance temporaryTime) {
-		KrcdtDaiTemporaryTime entity = KrcdtDaiTemporaryTime.toEntity(temporaryTime);
+		KrcdtDayTsTemporary entity = KrcdtDayTsTemporary.toEntity(temporaryTime);
 		commandProxy().insert(entity);
 		commandProxy().insertAll(entity.timeLeavingWorks);
 	}
@@ -199,12 +199,12 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 	@Override
 	public List<TemporaryTimeOfDailyPerformance> findbyPeriodOrderByYmd(String employeeId, DatePeriod datePeriod) {
 		StringBuilder query = new StringBuilder();
-		query.append("SELECT a FROM KrcdtDaiTemporaryTime a ");
+		query.append("SELECT a FROM KrcdtDayTsTemporary a ");
 		query.append("WHERE a.krcdtDaiTemporaryTimePK.employeeId = :employeeId ");
 		query.append("AND a.krcdtDaiTemporaryTimePK.ymd >= :start ");
 		query.append("AND a.krcdtDaiTemporaryTimePK.ymd <= :end ");
 		query.append("ORDER BY a.krcdtDaiTemporaryTimePK.ymd ");
-		return queryProxy().query(query.toString(), KrcdtDaiTemporaryTime.class)
+		return queryProxy().query(query.toString(), KrcdtDayTsTemporary.class)
 				.setParameter("employeeId", employeeId)
 				.setParameter("start", datePeriod.start())
 				.setParameter("end", datePeriod.end())
@@ -216,7 +216,7 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 	@Override
 	public List<TemporaryTimeOfDailyPerformance> finds(List<String> employeeId, DatePeriod ymd) {
 		List<Object[]> result = new ArrayList<>();
-		StringBuilder query = new StringBuilder("SELECT a, c from KrcdtDaiTemporaryTime a LEFT JOIN a.timeLeavingWorks c ");
+		StringBuilder query = new StringBuilder("SELECT a, c from KrcdtDayTsTemporary a LEFT JOIN a.timeLeavingWorks c ");
 		query.append(" WHERE a.krcdtDaiTemporaryTimePK.employeeId IN :employeeId ");
 		query.append(" AND a.krcdtDaiTemporaryTimePK.ymd <= :end AND a.krcdtDaiTemporaryTimePK.ymd >= :start");
 		TypedQueryWrapper<Object[]> tQuery=  this.queryProxy().query(query.toString(), Object[].class);
@@ -233,7 +233,7 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 	@Override
 	public List<TemporaryTimeOfDailyPerformance> finds(Map<String, List<GeneralDate>> param) {
 		List<Object[]> result = new ArrayList<>();
-		StringBuilder query = new StringBuilder("SELECT a, c from KrcdtDaiTemporaryTime a LEFT JOIN a.timeLeavingWorks c ");
+		StringBuilder query = new StringBuilder("SELECT a, c from KrcdtDayTsTemporary a LEFT JOIN a.timeLeavingWorks c ");
 		query.append(" WHERE a.krcdtDaiTemporaryTimePK.employeeId IN :employeeId ");
 		query.append(" AND a.krcdtDaiTemporaryTimePK.ymd IN :date");
 		TypedQueryWrapper<Object[]> tQuery=  this.queryProxy().query(query.toString(), Object[].class);
@@ -242,7 +242,7 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 					.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
 					.getList().stream()
 					.filter(c -> {
-						KrcdtDaiTemporaryTime af = (KrcdtDaiTemporaryTime) c[0];
+						KrcdtDayTsTemporary af = (KrcdtDayTsTemporary) c[0];
 						return p.get(af.krcdtDaiTemporaryTimePK.employeeId).contains(af.krcdtDaiTemporaryTimePK.ymd);
 					}).collect(Collectors.toList()));
 		});
@@ -251,14 +251,14 @@ public class JpaTemporaryTimeOfDailyPerformanceRepository extends JpaRepository
 
 	private List<TemporaryTimeOfDailyPerformance> toDomainFromJoin(List<Object[]> result) {
 		return result.stream().collect(Collectors.groupingBy(c1 -> c1[0], Collectors.collectingAndThen(Collectors.toList(), 
-					list -> list.stream().filter(c -> c[1] != null).map(c -> (KrcdtTimeLeavingWork) c[1]).collect(Collectors.toList()))))
-				.entrySet().stream().map(e -> KrcdtDaiTemporaryTime.toDomain((KrcdtDaiTemporaryTime) e.getKey(), e.getValue()))
+					list -> list.stream().filter(c -> c[1] != null).map(c -> (KrcdtDayTsAtdStmp) c[1]).collect(Collectors.toList()))))
+				.entrySet().stream().map(e -> KrcdtDayTsTemporary.toDomain((KrcdtDayTsTemporary) e.getKey(), e.getValue()))
 				.collect(Collectors.toList());
 	}
 
 //	@Override
 //	public void update(TemporaryTimeOfDailyPerformance temporaryTime) {
-//		KrcdtDaiTemporaryTime entity = KrcdtDaiTemporaryTime.toEntity(temporaryTime);
+//		KrcdtDayTsTemporary entity = KrcdtDayTsTemporary.toEntity(temporaryTime);
 //		commandProxy().update(entity);
 //		commandProxy().updateAll(entity.timeLeavingWorks);
 //	}

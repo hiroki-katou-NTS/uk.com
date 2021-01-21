@@ -86,6 +86,16 @@ public interface SyEmployeePub {
 	Optional<EmployeeDataMngInfoExport> getSdataMngInfo(String sid);
 	
 	/**
+	 * 
+	 * Gets the sdata mng info.
+	 * 
+	 * @param companyId
+	 * @param employeeCode
+	 * @return
+	 */
+	Optional<EmployeeDataMngInfoExport> getSdataMngInfoByEmployeeCode(String companyId, String employeeCode);
+	
+	/**
 	 * Find by emp ids.
 	 * 社員ID（List）から社員コードと表示名を取得
 	 * @param sIds the sids

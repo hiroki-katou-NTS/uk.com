@@ -7,11 +7,11 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /*
@@ -31,8 +31,8 @@ public class MissingOfTemporaryStampChecking {
 		// processingDate);
 
 		if (temporaryTimeOfDailyPerformance != null
-				&& !temporaryTimeOfDailyPerformance.getTimeLeavingWorks().isEmpty()) {
-			List<TimeLeavingWork> timeLeavingWorks = temporaryTimeOfDailyPerformance.getTimeLeavingWorks();
+				&& !temporaryTimeOfDailyPerformance.getAttendance().getTimeLeavingWorks().isEmpty()) {
+			List<TimeLeavingWork> timeLeavingWorks = temporaryTimeOfDailyPerformance.getAttendance().getTimeLeavingWorks();
 
 			List<Integer> attendanceItemIds = new ArrayList<>();
 
@@ -51,7 +51,7 @@ public class MissingOfTemporaryStampChecking {
 								attendanceItemIds.add(67);
 							}
 						} else {
-							TimeWithDayAttr attendanceTimeWithDay = attendanceWorkStamp.get().getTimeWithDay();
+							TimeWithDayAttr attendanceTimeWithDay =attendanceWorkStamp.get().getTimeDay().getTimeWithDay().isPresent()? attendanceWorkStamp.get().getTimeDay().getTimeWithDay().get():null;
 							if (attendanceTimeWithDay == null) {
 								if (timeLeavingWork.getWorkNo().v().intValue() == 1) {
 									attendanceItemIds.add(51);
@@ -75,7 +75,7 @@ public class MissingOfTemporaryStampChecking {
 								attendanceItemIds.add(69);
 							}
 						} else {
-							TimeWithDayAttr leaveTimeWithDay = leaveWorkStamp.get().getTimeWithDay();
+							TimeWithDayAttr leaveTimeWithDay =leaveWorkStamp.get().getTimeDay().getTimeWithDay().isPresent()? leaveWorkStamp.get().getTimeDay().getTimeWithDay().get():null;
 							if (leaveTimeWithDay == null) {
 								if (timeLeavingWork.getWorkNo().v().intValue() == 1) {
 									attendanceItemIds.add(53);

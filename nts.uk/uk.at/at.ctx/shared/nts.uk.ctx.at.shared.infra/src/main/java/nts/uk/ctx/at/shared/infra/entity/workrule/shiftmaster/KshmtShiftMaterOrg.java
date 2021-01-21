@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.infra.entity.workrule.shiftmaster;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -33,14 +34,14 @@ public class KshmtShiftMaterOrg extends ContractUkJpaEntity {
 	public ShiftMasterOrganization toDomain() {
 		KshmtShiftMaterOrgPK key = this.kshmtShiftMaterOrgPK;
 		TargetOrganizationUnit unit = TargetOrganizationUnit.valueOf(key.targetUnit);
-		TargetOrgIdenInfor targetinfo = new TargetOrgIdenInfor(unit, key.targetId, key.targetId);
+		TargetOrgIdenInfor targetinfo = new TargetOrgIdenInfor(unit,unit.value ==0? Optional.of(key.targetId):Optional.empty(), unit.value ==0?Optional.empty(): Optional.of(key.targetId));
 		return new ShiftMasterOrganization(key.companyId, targetinfo, Arrays.asList(key.shiftMaterCode));
 	}
 	
 	public ShiftMasterOrganization toDomain(List<String> shiftMasterCodes) {
 		KshmtShiftMaterOrgPK key = this.kshmtShiftMaterOrgPK;
 		TargetOrganizationUnit unit = TargetOrganizationUnit.valueOf(key.targetUnit);
-		TargetOrgIdenInfor targetinfo = new TargetOrgIdenInfor(unit, key.targetId, key.targetId);
+		TargetOrgIdenInfor targetinfo = new TargetOrgIdenInfor(unit,unit.value ==0? Optional.of(key.targetId):Optional.empty(), unit.value ==0?Optional.empty(): Optional.of(key.targetId));
 		return new ShiftMasterOrganization(key.companyId, targetinfo, shiftMasterCodes);
 	}
 

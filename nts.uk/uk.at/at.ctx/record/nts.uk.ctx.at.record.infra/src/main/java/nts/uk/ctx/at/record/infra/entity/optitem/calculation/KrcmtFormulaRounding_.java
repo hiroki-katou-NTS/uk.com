@@ -10,28 +10,28 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KrcmtFormulaRounding_.
  */
-@StaticMetamodel(KrcmtFormulaRounding.class)
+@StaticMetamodel(KrcmtAnyfRound.class)
 public class KrcmtFormulaRounding_ {
 
 	/** The krcmt formula rounding PK. */
-	public static volatile SingularAttribute<KrcmtFormulaRounding, KrcmtFormulaRoundingPK> krcmtFormulaRoundingPK;
+	public static volatile SingularAttribute<KrcmtAnyfRound, KrcmtFormulaRoundingPK> krcmtFormulaRoundingPK;
 
 	/** The number rounding. */
-	public static volatile SingularAttribute<KrcmtFormulaRounding, Integer> numberRounding;
+	public static volatile SingularAttribute<KrcmtAnyfRound, Integer> numberRounding;
 
 	/** The time rounding. */
-	public static volatile SingularAttribute<KrcmtFormulaRounding, Integer> timeRounding;
+	public static volatile SingularAttribute<KrcmtAnyfRound, Integer> timeRounding;
 
 	/** The amount rounding. */
-	public static volatile SingularAttribute<KrcmtFormulaRounding, Integer> amountRounding;
+	public static volatile SingularAttribute<KrcmtAnyfRound, Integer> amountRounding;
 
 	/** The number rounding unit. */
-	public static volatile SingularAttribute<KrcmtFormulaRounding, Integer> numberRoundingUnit;
+	public static volatile SingularAttribute<KrcmtAnyfRound, Integer> numberRoundingUnit;
 
 	/** The time rounding unit. */
-	public static volatile SingularAttribute<KrcmtFormulaRounding, Integer> timeRoundingUnit;
+	public static volatile SingularAttribute<KrcmtAnyfRound, Integer> timeRoundingUnit;
 
 	/** The amount rounding unit. */
-	public static volatile SingularAttribute<KrcmtFormulaRounding, Integer> amountRoundingUnit;
+	public static volatile SingularAttribute<KrcmtAnyfRound, Integer> amountRoundingUnit;
 
 }

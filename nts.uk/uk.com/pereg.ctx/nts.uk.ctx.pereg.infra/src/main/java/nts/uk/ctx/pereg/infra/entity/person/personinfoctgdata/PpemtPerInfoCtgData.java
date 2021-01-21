@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * @author danpv
@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "PPEMT_PER_INFO_CTG_DATA")
-public class PpemtPerInfoCtgData extends UkJpaEntity{
+public class PpemtPerInfoCtgData extends ContractUkJpaEntity{
 
 	@Id
 	@Column(name = "RECORD_ID")

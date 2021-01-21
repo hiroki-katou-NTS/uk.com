@@ -15,13 +15,12 @@ import nts.uk.ctx.at.function.dom.attendanceitemframelinking.AttendanceItemLinki
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.FrameCategory;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.primitivevalue.FrameNo;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
 @Table(name = "KFNMT_ATTENDANCE_LINK")
 @NoArgsConstructor
 @Setter
-public class KfnmtAttendanceLink extends UkJpaEntity implements Serializable {
+public class KfnmtAttendanceLink implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	/*主キー*/
@@ -31,11 +30,6 @@ public class KfnmtAttendanceLink extends UkJpaEntity implements Serializable {
 	@Column(name = "PRELIMINARY_FRAME_NO", nullable = true)
 	public Integer preliminaryFrameNO;
 	
-	@Override
-	protected Object getKey() {
-		return kfnmtAttendanceLinkPK;
-	}
-
 	public KfnmtAttendanceLink(KfnmtAttendanceLinkPK kfnmtAttendanceLinkPK) {
 		super();
 		this.kfnmtAttendanceLinkPK = kfnmtAttendanceLinkPK;

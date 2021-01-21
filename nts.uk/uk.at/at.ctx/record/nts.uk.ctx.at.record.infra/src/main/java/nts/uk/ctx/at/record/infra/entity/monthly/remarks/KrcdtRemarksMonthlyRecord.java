@@ -14,25 +14,24 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 //import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-//import nts.uk.ctx.at.record.dom.monthly.information.care.MonCareHdRemain;
-import nts.uk.ctx.at.record.dom.monthly.remarks.RecordRemarks;
-import nts.uk.ctx.at.record.dom.monthly.remarks.RemarksMonthlyRecord;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remarks.RecordRemarks;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remarks.RemarksMonthlyRecord;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 //import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * 
  * @author phongtq
  *
  */
 @Entity
-@Table(name = "KRCDT_REMARK_MONTHRECORD")
+@Table(name = "KRCDT_MON_REMARKS")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class KrcdtRemarksMonthlyRecord extends UkJpaEntity implements Serializable{
+public class KrcdtRemarksMonthlyRecord extends ContractUkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	

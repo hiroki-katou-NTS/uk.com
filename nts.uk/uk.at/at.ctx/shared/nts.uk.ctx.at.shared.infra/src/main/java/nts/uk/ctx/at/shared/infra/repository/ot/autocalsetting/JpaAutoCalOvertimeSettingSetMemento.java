@@ -4,8 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.ot.autocalsetting;
 
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSettingSetMemento;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalOvertimeSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.KshmtAutoCalSet;
 
 /**

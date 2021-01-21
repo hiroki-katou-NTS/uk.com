@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.RootType;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * 
  * @author Doan Duy Hung
@@ -29,7 +29,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name="WWFDT_APPROVAL_ROOT_DAY")
 @Builder
-public class WwfdtApprovalRootDay extends UkJpaEntity {
+public class WwfdtApprovalRootDay extends ContractUkJpaEntity {
 	
 	@EmbeddedId
 	public WwfdpApprovalRootDayPK wwfdpApprovalRootDayPK;

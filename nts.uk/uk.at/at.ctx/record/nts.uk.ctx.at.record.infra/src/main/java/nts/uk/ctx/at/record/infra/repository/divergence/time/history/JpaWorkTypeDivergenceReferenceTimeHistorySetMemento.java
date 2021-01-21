@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.divergence.time.history.WorkTypeDivergenceReferenceTimeHistorySetMemento;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstWorktypeDrtHist;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcmtDvgcRefHistBus;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 
@@ -19,7 +19,7 @@ public class JpaWorkTypeDivergenceReferenceTimeHistorySetMemento
 		implements WorkTypeDivergenceReferenceTimeHistorySetMemento {
 
 	/** The entities. */
-	private List<KrcstWorktypeDrtHist> entities;
+	private List<KrcmtDvgcRefHistBus> entities;
 
 	/**
 	 * Instantiates a new jpa work type divergence reference time history get
@@ -35,7 +35,7 @@ public class JpaWorkTypeDivergenceReferenceTimeHistorySetMemento
 	 * @param entities
 	 *            the entities
 	 */
-	public JpaWorkTypeDivergenceReferenceTimeHistorySetMemento(List<KrcstWorktypeDrtHist> entities) {
+	public JpaWorkTypeDivergenceReferenceTimeHistorySetMemento(List<KrcmtDvgcRefHistBus> entities) {
 		this.entities = entities;
 	}
 
@@ -61,7 +61,7 @@ public class JpaWorkTypeDivergenceReferenceTimeHistorySetMemento
 	@Override
 	public void setWorkTypeCode(BusinessTypeCode workTypeCode) {
 		if (this.entities.isEmpty()) {
-			KrcstWorktypeDrtHist worktypeDrtHist = new KrcstWorktypeDrtHist();
+			KrcmtDvgcRefHistBus worktypeDrtHist = new KrcmtDvgcRefHistBus();
 			worktypeDrtHist.setWorktypeCd(workTypeCode.v());
 
 			this.entities.add(worktypeDrtHist);
@@ -95,7 +95,7 @@ public class JpaWorkTypeDivergenceReferenceTimeHistorySetMemento
 
 		// If history is not exist in DB, create new
 		historyMap.forEach((k, v) -> {
-			KrcstWorktypeDrtHist worktypeDrtHist = new KrcstWorktypeDrtHist();
+			KrcmtDvgcRefHistBus worktypeDrtHist = new KrcmtDvgcRefHistBus();
 			worktypeDrtHist.setHistId(k);
 			worktypeDrtHist.setWorktypeCd(this.entities.get(0).getWorktypeCd());
 			worktypeDrtHist.setCid(AppContexts.user().companyId());

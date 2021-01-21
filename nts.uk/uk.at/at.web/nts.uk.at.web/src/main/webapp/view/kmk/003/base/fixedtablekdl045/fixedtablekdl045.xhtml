@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	
+	<style type="text/css">
+		.kmk003-table-component .ntsHelpButton {
+			float: right;
+		}
+		.table-fixed-kmk003 tbody tr{
+			height: 33px;
+		}
+	</style>
+
+	<div class="ui-iggrid kmk003-table-component" data-bind="attr: {tabindex: tabindex}">
+		<div class="fixed-table-button" data-bind="style: {width: width + 'px', 'margin-bottom': '10px'}" >
+		<com:ko tag="if" bind="isShowButton">
+			<button data-bind="click: addRowItem, enable: isEnaleAddButton, attr: {tabindex: tabindex}">#{i18n.getText('KDL045_27')}</button>
+			<button class="danger" data-bind="click: removeItem, enable: isEnaleRemoveButton, attr: {tabindex: tabindex}">#{i18n.getText('KDL045_28')}</button>
+		</com:ko>
+		<com:ko tag="if" bind="helpImageUrl">
+			<button class="fixed-table-help"
+				data-bind="ntsHelpButton: {image: helpImageUrl, position: 'right top'}, attr: {tabindex: tabindex}">?</button>
+		</com:ko>
+		</div>
+
+
+		<!-- BEGIN CONTENT AREA -->
+		<div>
+			<!-- BEGIN BINDING HEADER -->
+			<table id="fixed-table-custom"
+				class="table-fixed-kmk003">
+				<colgroup>
+					<com:ko tag="if" bind="isVisibleSelectAll &amp;&amp; isMultipleSelect">
+						<col width="36"></col>
+					</com:ko>
+					<com:ko-foreach bind="columns">
+						<col data-bind="attr: {width: width}"></col>
+					</com:ko-foreach>
+				</colgroup>
+				<thead>
+					<tr style="height: 30px;">
+						<com:ko tag="if" bind="isVisibleSelectAll &amp;&amp; isMultipleSelect">
+							<th style="text-align: center;" class="ui-widget-header"><div
+									data-bind="attr: {tabindex: tabindex}, ntsCheckBox: { checked: isSelectAll,
+											enable: true, text:''}"></div>
+							</th>
+						</com:ko>
+
+						<com:ko-foreach bind="columns">
+							<th style="text-align: center;" class="ui-widget-header"
+								data-bind="text: headerText"></th>
+						</com:ko-foreach>
+					</tr>
+				</thead>
+			</table>
+			<!-- END BINDING HEADER -->
+
+			<!-- BEGIN BINDING CONTENT -->
+<!-- 			<table id="fixed-table-custom" -->
+<!-- 				style="overflow: auto; display: inline-block;"> -->
+<!-- 				<colgroup> -->
+<!-- 					<col width="36"></col> -->
+<!-- 					<com:ko-foreach bind="columns"> -->
+<!-- 						<col data-bind="attr: {width: width}"></col> -->
+<!-- 					</com:ko-foreach> -->
+<!-- 				</colgroup> -->
+<!-- 			</table> -->
+			<!-- END BINDING CONTENT -->
+		</div><!-- END CONTENT AREA -->
+	</div>
+	
+</ui:composition>

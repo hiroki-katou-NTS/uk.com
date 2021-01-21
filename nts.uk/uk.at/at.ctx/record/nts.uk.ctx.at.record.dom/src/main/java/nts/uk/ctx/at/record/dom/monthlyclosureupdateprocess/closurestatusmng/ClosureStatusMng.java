@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.closurestatusmng;
 
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
-import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
+import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 
 /**
  * 

@@ -45,7 +45,7 @@ public class OiomtCtgItemPk implements Serializable {
 	 * 条件設定コード
 	 */
 	@Basic(optional = false)
-	@Column(name = "COND_SET_CD")
+	@Column(name = "CND_SET_CD")
 	public String condSetCd;
 	
 	/**

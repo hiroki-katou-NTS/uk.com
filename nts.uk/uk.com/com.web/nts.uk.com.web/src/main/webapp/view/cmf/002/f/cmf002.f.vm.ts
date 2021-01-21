@@ -50,6 +50,14 @@ module nts.uk.com.view.cmf002.f.viewmodel {
             })
             service.getCtgData(self.categoryId()).done(function(data: Array<any>) {
                 if (data && data.length) {
+                    data = _.map(data, item => {
+                        // [ver62] ドメインモデル「外部出力カテゴリ項目データ.予約語区分」の値から予約語に変換するかどうか判断する
+                        const itemName: string = item.keywordAtr === 1
+                            ? self.reverseWord(item.itemName)
+                            : item.itemName;
+                        item.itemName = itemName;
+                        return item;
+                    })
                     let listcategoryItemData = _.map(data, x => {
                         x.itemNo = x.itemNo.toString();
                         return x;
@@ -149,6 +157,42 @@ module nts.uk.com.view.cmf002.f.viewmodel {
             var dfd = $.Deferred();
             dfd.resolve();
             return dfd.promise();
+        }
+
+        // Reverse word
+        private reverseWord(word: string): string {
+            const mapReveseWord = {
+                employment: '雇用呼称',
+                department: '部門呼称',
+                class: '分類呼称',
+                jobTitle: '職位呼称',
+                person: '社員呼称',
+                office: '事業所呼称',
+                work: '作業呼称',
+                workPlace: '職場呼称',
+                project: 'プロジェクト',
+                adHocWork: '臨時勤務',
+                substituteHoliday: '振休',
+                substituteWork: '振出',
+                compensationHoliday: '代休',
+                exsessHoliday: '60H超過休暇',
+                bindingTime: '拘束時間',
+                payAbsenseDays: '給与欠勤日数',
+                payAttendanceDays: '給与出勤日数',
+                import: '取込',
+                toppage: 'トップページ',
+                code: 'コード',
+                name: '名称',
+            };
+            const keyword: string = word.substring(
+                word.lastIndexOf("{#") + 2,
+                word.lastIndexOf("#}")
+            );
+            const reveseWord: string = mapReveseWord[keyword];
+            if (!reveseWord) {
+                return word;
+            }
+            return word.replace(`{#${keyword}#}`, reveseWord);
         }
     }
 

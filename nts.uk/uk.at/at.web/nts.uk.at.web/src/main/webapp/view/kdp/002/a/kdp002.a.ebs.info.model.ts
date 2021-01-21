@@ -39,64 +39,22 @@ class EmbossGridInfo {
 
 	setTimeStampType(stampData) {
 
-		const {
-			WORK,
-			WORK_STRAIGHT,
-			WORK_EARLY,
-			WORK_BREAK,
-			DEPARTURE,
-			DEPARTURE_BOUNCE,
-			DEPARTURE_OVERTIME,
-			OUT,
-			RETURN,
-			GETTING_STARTED,
-			DEPAR,
-			TEMPORARY_WORK,
-			TEMPORARY_LEAVING,
-			START_SUPPORT,
-			END_SUPPORT,
-			WORK_SUPPORT,
-			START_SUPPORT_EARLY_APPEARANCE,
-			START_SUPPORT_BREAK,
-			RESERVATION,
-			CANCEL_RESERVATION
-		} = ContentsStampType;
+		let value = stampData.buttonValueType;
+		if (ButtonType.GOING_TO_WORK == value || ButtonType.RESERVATION_SYSTEM == value) {
 
-		const LEFT_ALIGNS = [
-			WORK,
-			WORK_STRAIGHT,
-			WORK_EARLY,
-			WORK_BREAK,
-			GETTING_STARTED,
-			TEMPORARY_WORK,
-			START_SUPPORT,
-			WORK_SUPPORT,
-			START_SUPPORT_EARLY_APPEARANCE,
-			START_SUPPORT_BREAK,
-			RESERVATION,
-			CANCEL_RESERVATION
-		];
-
-		const RIGHT_ALIGNS = [
-			DEPARTURE,
-			DEPARTURE_BOUNCE,
-			DEPARTURE_OVERTIME,
-			DEPAR,
-			TEMPORARY_LEAVING,
-			END_SUPPORT
-		];
-
-
-		if (LEFT_ALIGNS.indexOf(stampData.correctTimeStampValue) > -1) {
 			stampData.timeStampType = `<div class='full-width' style='text-align: left'>` + stampData.stampArtName + '</div>';
 			return;
+
 		}
-		if (RIGHT_ALIGNS.indexOf(stampData.correctTimeStampValue) > -1) {
+
+		if (ButtonType.WORKING_OUT == value) {
+
 			stampData.timeStampType = `<div class='full-width' style='text-align: right'>` + stampData.stampArtName + '</div>';
 			return;
-		} else {
-			stampData.timeStampType = stampData.stampArtName ? `<div class='full-width' style='text-align: center'>` + stampData.stampArtName + '</div>' : '';
+
 		}
+
+		stampData.timeStampType = stampData.stampArtName ? `<div class='full-width' style='text-align: center'>` + stampData.stampArtName + '</div>' : '';
 
 	}
 
@@ -148,66 +106,22 @@ class EmbossGridInfo {
 
 }
 
-enum ContentsStampType {
-	/** 1: 出勤 */
-	WORK = 1,
+enum ButtonType {
+	// 系
 
-	/** 2: 出勤＋直行 */
-	WORK_STRAIGHT = 2,
+	GOING_TO_WORK = 1,
+	// 系
 
-	/** 3: 出勤＋早出 */
-	WORK_EARLY = 3,
+	WORKING_OUT = 2,
+	// "外出系"
 
-	/** 4: 出勤＋休出 */
-	WORK_BREAK = 4,
+	GO_OUT = 3,
+	// 戻り系
 
-	/** 5: 退勤 */
-	DEPARTURE = 5,
+	RETURN = 4,
+	// 予約系
 
-	/** 6: 退勤＋直帰 */
-	DEPARTURE_BOUNCE = 6,
-
-	/** 7: 退勤＋残業 */
-	DEPARTURE_OVERTIME = 7,
-
-	/** 8: 外出 */
-	OUT = 8,
-
-	/** 9: 戻り */
-	RETURN = 9,
-
-	/** 10: 入門 */
-	GETTING_STARTED = 10,
-
-	/** 11: 退門 */
-	DEPAR = 11,
-
-	/** 12: 臨時出勤 */
-	TEMPORARY_WORK = 12,
-
-	/** 13: 臨時退勤 */
-	TEMPORARY_LEAVING = 13,
-
-	/** 14: 応援開始 */
-	START_SUPPORT = 14,
-
-	/** 15: 応援終了 */
-	END_SUPPORT = 15,
-
-	/** 16: 出勤＋応援 */
-	WORK_SUPPORT = 16,
-
-	/** 17: 応援開始＋早出 */
-	START_SUPPORT_EARLY_APPEARANCE = 17,
-
-	/** 18: 応援開始＋休出 */
-	START_SUPPORT_BREAK = 18,
-
-	/** 19: 予約 */
-	RESERVATION = 19,
-
-	/** 20: 予約取消  */
-	CANCEL_RESERVATION = 20
+	RESERVATION_SYSTEM = 5
 }
 
 interface IStartPage {

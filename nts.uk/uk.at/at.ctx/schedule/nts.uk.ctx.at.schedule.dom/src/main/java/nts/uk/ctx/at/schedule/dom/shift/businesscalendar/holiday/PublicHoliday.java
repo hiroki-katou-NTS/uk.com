@@ -10,6 +10,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 
 /**
+ * 祝日
  * @author hungnm
  *
  */

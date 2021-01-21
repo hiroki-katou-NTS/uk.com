@@ -148,7 +148,87 @@ public interface EmploymentHistoryRepository {
      * @return
      */
     List<DateHistoryItem> getByEmployeeId(String employeeId);
-    
+    /**
+     * [0] insert ( 雇用履歴, 雇用履歴項目 )
+     * @param employmentHistory
+     * @param employmentHistoryItem
+     */
+	void insert(EmploymentHistory employmentHistory , EmploymentHistoryItem employmentHistoryItem );
+	/**
+	 * [1] update ( 雇用履歴, 雇用履歴項目 )
+	 * @param employmentHistory
+	 * @param employmentHistoryItem
+	 */
+	void update(EmploymentHistory employmentHistory , EmploymentHistoryItem employmentHistoryItem );
+	/**
+	 * [2-1] delete ( 会社ID, 社員ID, 履歴ID )
+	 * @param companyId
+	 * @param empId
+	 * @param histId
+	 */
+	void delete (String companyId , String empId , String histId);
+	/**
+	 * [2-2] delete ( 会社ID, 社員ID )
+	 * @param companyId
+	 * @param empId
+	 */
+	void delete (String companyId , String empId);
+	/**
+	 * [3-1] 社員IDを指定して履歴を取得する ( 会社ID, 社員ID )
+	 * @param companyId
+	 * @param empId
+	 * @return
+	 */
+	Optional<EmploymentHistory> getByCidAndEmpID(String companyId , String empId);
+	/**
+	 * [3-2] *社員IDを指定して履歴を取得する ( 会社ID, List<社員ID> )
+	 * @param companyId
+	 * @param empId
+	 * @return
+	 */
+	List<EmploymentHistory> getByCidAndListEmpID(String companyId , List<String> empIds);
+	/**
+	 * [4-1] 履歴IDを指定して履歴項目を取得する ( 履歴ID )
+	 * @param histId
+	 * @return
+	 */
+	Optional<EmploymentHistoryItem> getEmploymentHistoryItem(String histId);
+	/**
+	 * [4-2] *履歴IDを指定して履歴項目を取得する ( List<履歴ID> )
+	 * @param listHistId
+	 * @return
+	 */
+	List<EmploymentHistoryItem> getAllEmploymentHistoryItem(List<String> listHistId);
+	/**
+	 * [5] 年月日時点の履歴項目を取得する
+	 * @param companyId
+	 * @param ymd
+	 * @return
+	 */
+	List<EmploymentHistoryItem> getEmploymentHistoryItemByDate(String companyId , GeneralDate ymd);
+	/**
+	 * [6-1] 社員を指定して年月日時点の履歴項目を取得する ( 会社ID, 年月日, 社員ID )
+	 * @param companyId
+	 * @param ymd
+	 * @param empId
+	 * @return
+	 */
+	Optional<EmploymentHistoryItem> getByEmpIdAndDate (String companyId ,GeneralDate ymd, String empId);
+	/**
+	 * [6-2] *社員を指定して年月日時点の履歴項目を取得する ( 会社ID, 年月日, List<社員ID> )
+	 * @param companyId
+	 * @param ymd
+	 * @param listEmpId
+	 * @return
+	 */
+	List<EmploymentHistoryItem> getByListEmpIdAndDate (String companyId ,GeneralDate ymd, List<String> listEmpId);
+	/**
+	 * [7] 期間付き履歴項目を取得する
+	 * @param companyId
+	 * @param lstEmpId
+	 * @param ymd
+	 * @return
+	 */
+	List<EmploymentHistoryTerm> getEmploymentHistoryTerm (String companyId , List<String> lstEmpId , DatePeriod datePeriod ); 
 	
-
 }

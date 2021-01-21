@@ -6,11 +6,11 @@ package nts.uk.ctx.at.shared.app.command.ot.autocalsetting.wkpjob;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSettingGetMemento;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalAtrOvertime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalRestTimeSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalRestTimeSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.TimeLimitUpperLimitSetting;
 
 /**
  * The Class AutoCalRestTimeSettingDto.

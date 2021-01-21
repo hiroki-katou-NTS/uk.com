@@ -9,15 +9,15 @@ import java.util.Optional;
 public interface IAppWorkChangeSetRepository
 {
 
-    List<AppWorkChangeSet> getAllAppWorkChangeSet();
+    List<AppWorkChangeSet_Old> getAllAppWorkChangeSet();
     
-    Optional<AppWorkChangeSet> findWorkChangeSetByID(String cid);
+    Optional<AppWorkChangeSet_Old> findWorkChangeSetByID(String cid);
     
-    void add(AppWorkChangeSet domain);
+    void add(AppWorkChangeSet_Old domain);
 
-    void update(AppWorkChangeSet domain);
+    void update(AppWorkChangeSet_Old domain);
 
-    void remove(AppWorkChangeSet domain);
+    void remove(AppWorkChangeSet_Old domain);
     
     void remove(String key);
 }

@@ -7,6 +7,7 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 /**
+ * 会社行事
  * @author hungnm
  *
  */

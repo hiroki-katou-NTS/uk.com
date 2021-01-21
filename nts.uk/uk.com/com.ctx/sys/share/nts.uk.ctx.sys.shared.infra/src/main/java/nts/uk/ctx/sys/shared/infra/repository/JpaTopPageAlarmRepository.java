@@ -11,14 +11,14 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.shared.dom.toppagealarm.TopPageAlarm;
 import nts.uk.ctx.sys.shared.dom.toppagealarm.TopPageAlarmDetail;
 import nts.uk.ctx.sys.shared.dom.toppagealarm.TopPageAlarmRepository;
-import nts.uk.ctx.sys.shared.infra.entity.KrcstToppageAlarm;
+import nts.uk.ctx.sys.shared.infra.entity.SshdtToppagealarm;
 import nts.uk.ctx.sys.shared.infra.entity.KrcstToppageAlarmDetail;
 import nts.uk.ctx.sys.shared.infra.entity.KrcstToppageAlarmDetailPK;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JpaTopPageAlarmRepository extends JpaRepository implements TopPageAlarmRepository{
 	// toppage alarm table
-	private static final String SELECT_BYCOM = "SELECT c FROM KrcstToppageAlarm c WHERE c.companyId = :companyId ";
+	private static final String SELECT_BYCOM = "SELECT c FROM SshdtToppagealarm c WHERE c.companyId = :companyId ";
 	private static final String SELECT_BYEMP = SELECT_BYCOM + "AND c.managerId = :managerId ";
 	private static final String SELECT_ROGER = SELECT_BYEMP + "AND c.rogerFlag = :rogerFlag ";
 	private static final String SELECT_BYDATE = SELECT_ROGER + "AND c.finishDateTime BETWEEN :dateStart AND :dateEnd ";
@@ -30,7 +30,7 @@ public class JpaTopPageAlarmRepository extends JpaRepository implements TopPageA
 	private static final String SELECT_SORT = SELECT_BYLOGID + "ORDER BY c.krcstToppageAlarmDetailPK.serialNo, c.targerEmployee ASC";
 	
 	// convert from entity to toppage alarm domain
-	private TopPageAlarm toDomain(KrcstToppageAlarm entity){
+	private TopPageAlarm toDomain(SshdtToppagealarm entity){
 		return TopPageAlarm.createFromJavaType(entity.companyId, entity.executionLogId, 
 												entity.managerId, entity.finishDateTime, 
 												entity.executionContent, entity.existenceError, 
@@ -38,8 +38,8 @@ public class JpaTopPageAlarmRepository extends JpaRepository implements TopPageA
 	}
 	
 	// convert from domain to entity, this function created for request list No.477
-	private KrcstToppageAlarm toEntity(String executionLogId, String managerId, int executionContent, int isCancelled, int existenceError){
-		val entity = new KrcstToppageAlarm();
+	private SshdtToppagealarm toEntity(String executionLogId, String managerId, int executionContent, int isCancelled, int existenceError){
+		val entity = new SshdtToppagealarm();
 		entity.executionLogId = executionLogId;
 		entity.companyId = AppContexts.user().companyId();
 		entity.managerId = managerId;
@@ -80,7 +80,7 @@ public class JpaTopPageAlarmRepository extends JpaRepository implements TopPageA
 	public List<TopPageAlarm> findToppage(String companyId, String managerId, int rogerFlag, int month) {
 		GeneralDateTime dateEnd = GeneralDateTime.now();
 		GeneralDateTime dateStart = dateEnd.addDays(-month);
-		return this.queryProxy().query(SELECT_BYDATE, KrcstToppageAlarm.class)
+		return this.queryProxy().query(SELECT_BYDATE, SshdtToppagealarm.class)
 								.setParameter("companyId", companyId)
 								.setParameter("managerId", managerId)
 								.setParameter("rogerFlag", rogerFlag)
@@ -100,7 +100,7 @@ public class JpaTopPageAlarmRepository extends JpaRepository implements TopPageA
 	// update roger Flag
 	@Override
 	public void updateRoger(String executionLogId, int rogerFlag) {
-		Optional<KrcstToppageAlarm> find = this.queryProxy().find(executionLogId, KrcstToppageAlarm.class);
+		Optional<SshdtToppagealarm> find = this.queryProxy().find(executionLogId, SshdtToppagealarm.class);
 		if(find != null){
 			find.get().setRogerFlag(rogerFlag);
 			this.commandProxy().update(find.get());
@@ -111,7 +111,7 @@ public class JpaTopPageAlarmRepository extends JpaRepository implements TopPageA
 	public List<TopPageAlarm> findAllToppage(String companyId, String managerId, int month) {
 		GeneralDateTime dateEnd = GeneralDateTime.now();
 		GeneralDateTime dateStart = dateEnd.addDays(-month);
-		return this.queryProxy().query(SELECT_EMP_DATE, KrcstToppageAlarm.class)
+		return this.queryProxy().query(SELECT_EMP_DATE, SshdtToppagealarm.class)
 								.setParameter("companyId", companyId)
 								.setParameter("managerId", managerId)
 								.setParameter("dateStart", dateStart)
@@ -122,7 +122,7 @@ public class JpaTopPageAlarmRepository extends JpaRepository implements TopPageA
 	// find toppage alarm by companyId and executionContent for request list 477
 	@Override
 	public List<TopPageAlarm> findByExecutionContent(String companyId, int executionContent) {
-		return this.queryProxy().query(SELECT_EXECUTIONCONTENT, KrcstToppageAlarm.class)
+		return this.queryProxy().query(SELECT_EXECUTIONCONTENT, SshdtToppagealarm.class)
 								.setParameter("companyId", companyId)
 								.setParameter("executionContent", executionContent)
 								.getList(c -> toDomain(c));
@@ -131,7 +131,7 @@ public class JpaTopPageAlarmRepository extends JpaRepository implements TopPageA
 	// function insert for request list 477
 	@Override
 	public void insertTopPage(String executionLogId, String managerId, int executionContent, int isCancelled, int existenceError) {
-		KrcstToppageAlarm entity = toEntity(executionLogId, managerId, executionContent, isCancelled, existenceError);
+		SshdtToppagealarm entity = toEntity(executionLogId, managerId, executionContent, isCancelled, existenceError);
 		this.commandProxy().insert(entity);
 	}
 

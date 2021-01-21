@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveTimeRemainingHistory;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * 
  * @author phongtq
@@ -19,8 +19,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_ANNLEA_TIME_RM_HIST")
-public class KrcdtAnnLeaTimeRemainHist extends UkJpaEntity implements Serializable{
+@Table(name = "KRCDT_HDPAID_REM_HIST_GRA")
+public class KrcdtAnnLeaTimeRemainHist extends ContractUkJpaEntity implements Serializable{
 	
 	@EmbeddedId
 	public KrcdtAnnLeaTimeRemainHistPK  krcdtAnnLeaTimeRemainHistPK;  

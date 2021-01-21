@@ -7,13 +7,13 @@ package nts.uk.ctx.at.shared.infra.repository.ot.autocalsetting.com;
 import nts.uk.ctx.at.shared.dom.calculationattribute.AutoCalcSetOfDivergenceTime;
 import nts.uk.ctx.at.shared.dom.calculationattribute.enums.DivergenceTimeAttr;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalcOfLeaveEarlySetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.com.ComAutoCalSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalFlexOvertimeSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalOvertimeSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalRestTimeSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalcOfLeaveEarlySetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.com.ComAutoCalSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
-import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.com.KshmtAutoComCalSet;
+import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.com.KrcmtCalcSetCom;
 import nts.uk.ctx.at.shared.infra.repository.ot.autocalsetting.JpaAutoCalFlexOvertimeSettingGetMemento;
 import nts.uk.ctx.at.shared.infra.repository.ot.autocalsetting.JpaAutoCalOvertimeSettingGetMemento;
 import nts.uk.ctx.at.shared.infra.repository.ot.autocalsetting.JpaAutoCalRestTimeSettingGetMemento;
@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.infra.repository.ot.autocalsetting.JpaAutoCalRestTim
 public class JpaComAutoCalSettingGetMemento implements ComAutoCalSettingGetMemento {
 
 	/** The entity. */
-	private KshmtAutoComCalSet entity;
+	private KrcmtCalcSetCom entity;
 
 	/**
 	 * Instantiates a new jpa com auto cal setting get memento.
@@ -32,7 +32,7 @@ public class JpaComAutoCalSettingGetMemento implements ComAutoCalSettingGetMemen
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaComAutoCalSettingGetMemento(KshmtAutoComCalSet entity) {
+	public JpaComAutoCalSettingGetMemento(KrcmtCalcSetCom entity) {
 		this.entity = entity;
 	}
 

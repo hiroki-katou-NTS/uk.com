@@ -9,15 +9,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name="KRCMT_CHILD_CARE_HD_DATA")
+@Table(name="KRCDT_CHILDCARE_HD_REMAIN")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrcmtChildCareHDData extends UkJpaEntity{
+public class KrcmtChildCareHDData extends ContractUkJpaEntity{
 	
 	//社員ID
 	@Id

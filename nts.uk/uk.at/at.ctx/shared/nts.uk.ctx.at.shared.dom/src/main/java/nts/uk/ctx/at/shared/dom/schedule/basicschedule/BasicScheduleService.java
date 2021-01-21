@@ -100,4 +100,7 @@ public interface BasicScheduleService {
 	 * @return true is reverse
 	 */
 	boolean isReverseStartAndEndTime(TimeWithDayAttr scheduleStartClock, TimeWithDayAttr scheduleEndClock);
+	
+	// 廃止されていない勤務種類をすべて取得する
+	List<WorkType> getAllWorkTypeNotAbolished(String companyId);
 }

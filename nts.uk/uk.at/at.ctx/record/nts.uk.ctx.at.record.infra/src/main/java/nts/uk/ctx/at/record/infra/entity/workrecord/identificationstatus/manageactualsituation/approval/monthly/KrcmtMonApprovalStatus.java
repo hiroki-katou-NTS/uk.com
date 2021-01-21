@@ -13,12 +13,12 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.manageactualsituation.approval.monthly.ApprovalStatusMonthlyResult;
 import nts.uk.ctx.at.shared.dom.common.Day;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCMT_MON_APPROVAL")
-public class KrcmtMonApprovalStatus extends UkJpaEntity implements Serializable {
+public class KrcmtMonApprovalStatus extends ContractUkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 

@@ -275,8 +275,8 @@ module nts.uk.at.view.kdp004.a {
 									if (redirect === "loginPass") {
 										return self.openScreenF({
 											mode: 'fingerVein',
-											companyId: vm.$user.companyId,
-											employee: { id: vm.$user.employeeId, code: self.loginInfo.employeeCode },
+											companyId: self.loginInfo.companyId,
+											employee: { id: self.loginInfo.employeeId, code: self.loginInfo.employeeCode },
 											passwordRequired: true
 										});
 									}
@@ -427,7 +427,7 @@ module nts.uk.at.view.kdp004.a {
 					//phat nhac
 					self.playAudio(button.audioType);
 
-					if (self.stampResultDisplay().notUseAttr == 1 && (button.changeClockArt == 1 || button.changeClockArt == 9)) {
+					if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1 ) {
 						self.openScreenC(button, layout, loginInfo.em);
 					} else {
 						self.openScreenB(button, layout, loginInfo.em);
@@ -455,8 +455,6 @@ module nts.uk.at.view.kdp004.a {
 				});
 
 				modal('/view/kdp/002/b/index.xhtml').onClosed(() => {
-
-					self.openKDP002T(button, layout);
 				});
 			}
 
@@ -472,29 +470,6 @@ module nts.uk.at.view.kdp004.a {
 				});
 
 				modal('/view/kdp/002/c/index.xhtml').onClosed(function(): any {
-					self.openKDP002T(button, layout);
-				});
-			}
-
-			public openKDP002T(button: ButtonSetting, layout) {
-				let data = {
-					pageNo: layout.pageNo,
-					buttonDisNo: button.btnPositionNo
-				}
-				service.getError(data).done((res) => {
-					if (res && res.dailyAttdErrorInfos && res.dailyAttdErrorInfos.length > 0) {
-						setShared('KDP010_2T', res, true);
-						modal('/view/kdp/002/t/index.xhtml').onClosed(function(): any {
-							let returnData = getShared('KDP010_T');
-							if (!returnData.isClose && returnData.errorDate) {
-								console.log(returnData);
-								// T1	打刻結果の取得対象項目の追加
-								// 残業申請（早出）
-								let transfer = returnData.btn.transfer;
-								jump(returnData.btn.screen, transfer);
-							}
-						});
-					}
 				});
 			}
 

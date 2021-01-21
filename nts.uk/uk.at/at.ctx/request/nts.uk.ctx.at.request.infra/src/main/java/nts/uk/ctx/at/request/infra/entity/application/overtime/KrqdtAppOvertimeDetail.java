@@ -19,6 +19,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.NumberOfMonth;
 import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36Agree;
@@ -28,13 +29,12 @@ import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLim
 import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLimitAverage;
 import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLimitMonth;
 import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLimitPerMonth;
-import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtAppHolidayWork;
+import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtAppHdWork;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneYear;
-import nts.arc.time.calendar.period.YearMonthPeriod;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 時間外時間の詳細
@@ -43,7 +43,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRQDT_APP_OVERTIME_DETAIL")
-public class KrqdtAppOvertimeDetail extends UkJpaEntity implements Serializable {
+public class KrqdtAppOvertimeDetail extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -158,7 +158,7 @@ public class KrqdtAppOvertimeDetail extends UkJpaEntity implements Serializable 
 	@OneToOne
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
 			@PrimaryKeyJoinColumn(name = "APP_ID", referencedColumnName = "APP_ID") })
-	public KrqdtAppHolidayWork appHolidayWork;
+	public KrqdtAppHdWork appHolidayWork;
 
 	@Override
 	protected Object getKey() {
@@ -169,27 +169,27 @@ public class KrqdtAppOvertimeDetail extends UkJpaEntity implements Serializable 
 		return new AppOvertimeDetail(appOvertimeDetailPk.cid, appOvertimeDetailPk.appId, new YearMonth(yearMonth),
 				new Time36Agree(new AttendanceTimeMonth(appTimeAgree),
 						new Time36AgreeMonth(new AttendanceTimeMonth(actualTimeMonth),
-								new LimitOneMonth(limitAlarmTime), new LimitOneMonth(limitErrorTime),
+								new AgreementOneMonthTime(limitAlarmTime), new AgreementOneMonthTime(limitErrorTime),
 								new NumberOfMonth(numOfYear36Over),
 								year36OverMonth.stream().map(x -> new YearMonth(x.year36OverMonthPk.overMonth))
 										.collect(Collectors.toList()),
 								exceptionLimitAlarmTime == null ? Optional.empty()
-										: Optional.of(new LimitOneMonth(exceptionLimitAlarmTime)),
+										: Optional.of(new AgreementOneMonthTime(exceptionLimitAlarmTime)),
 								exceptionLimitErrorTime == null ? Optional.empty()
-										: Optional.of(new LimitOneMonth(exceptionLimitErrorTime))),
+										: Optional.of(new AgreementOneMonthTime(exceptionLimitErrorTime))),
 						new Time36AgreeAnnual(new AttendanceTimeYear(actualTimeAnnual),
-								new LimitOneYear(limitTime))),
+								new AgreementOneYearTime(limitTime))),
 				new Time36AgreeUpperLimit(
 						new AttendanceTimeMonth(
 								appTimeAgreeUpperLimit),
 						new Time36AgreeUpperLimitMonth(new AttendanceTimeMonth(overTime),
-								new LimitOneMonth(upperLimitTimeMonth)),
+								new AgreementOneMonthTime(upperLimitTimeMonth)),
 						new Time36AgreeUpperLimitAverage(averageTimeLst.stream()
 								.map(x -> new Time36AgreeUpperLimitPerMonth(
 										new YearMonthPeriod(new YearMonth(x.pk.periodYearStart),
 												new YearMonth(x.pk.periodYearEnd)),
 										new AttendanceTimeMonth(x.averageTime), new AttendanceTimeYear(x.totalTime)))
-								.collect(Collectors.toList()), new LimitOneMonth(upperLimitTimeAverage))));
+								.collect(Collectors.toList()), new AgreementOneMonthTime(upperLimitTimeAverage))));
 	}
 
 	public static KrqdtAppOvertimeDetail toEntity(Optional<AppOvertimeDetail> domainOtp) {

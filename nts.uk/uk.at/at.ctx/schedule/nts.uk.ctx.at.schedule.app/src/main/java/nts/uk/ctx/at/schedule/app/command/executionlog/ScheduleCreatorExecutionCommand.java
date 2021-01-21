@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheduleErrorLogGeterCommand;
+import nts.uk.ctx.at.schedule.dom.executionlog.CreationMethodClassification;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContent;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
 
@@ -30,6 +31,9 @@ public class ScheduleCreatorExecutionCommand {
 	
 	/** The content. */
 	private ScheduleCreateContent content;
+	
+	/** 作成方法区分 - đang để tạm*/
+	private CreationMethodClassification classification;
 	
 	/** The is confirm. */
 	private Boolean confirm; 
@@ -56,7 +60,15 @@ public class ScheduleCreatorExecutionCommand {
 	@Setter
 	@Getter
 	private Object companySetting;
-
+	
+	// 「更新処理自動実行」.実行種別
+	private Boolean isReExecution; 
+	
+	// 「更新処理自動実行」.再実行条件.異動者を再作成する
+	private Boolean recreateTransfer;
+	
+	// 「更新処理自動実行」.実行種別.休職者・休業者を再作成
+ 
 	public String getEmployeeId() {
 		return employeeId;
 	}
@@ -81,6 +93,16 @@ public class ScheduleCreatorExecutionCommand {
 
 
 
+	public CreationMethodClassification getClassification() {
+		return classification;
+	}
+
+
+
+	public void setClassification(CreationMethodClassification classification) {
+		this.classification = classification;
+	}
+	
 	public String getCompanyId() {
 		return companyId;
 	}
@@ -113,7 +135,6 @@ public class ScheduleCreatorExecutionCommand {
 	public void setConfirm(Boolean confirm) {
 		this.confirm = confirm;
 	}
-
 
 
 //	public Boolean getIsDeleteBeforInsert() {
@@ -174,7 +195,21 @@ public class ScheduleCreatorExecutionCommand {
 		this.employeeIds = employeeIds;
 	}
 
+	public void setIsReExecution(Boolean isReExecution) {
+		this.isReExecution = isReExecution;
+	}
+	
+	public boolean getIsReExecution() {
+		return this.isReExecution;
+	}
 
+	public void setRecreateTransfer(Boolean recreateTransfer) {
+		this.recreateTransfer = recreateTransfer;
+	}
+	
+	public boolean getRecreateTransfer() {
+		return this.recreateTransfer;
+	}
 
 	/**
 	 * To base command.

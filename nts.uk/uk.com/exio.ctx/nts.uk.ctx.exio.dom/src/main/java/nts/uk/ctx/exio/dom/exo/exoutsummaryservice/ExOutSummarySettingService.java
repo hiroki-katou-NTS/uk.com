@@ -142,7 +142,12 @@ public class ExOutSummarySettingService {
 				cond.append(outCndDetailItem.getConditionSymbol().nameId);
 			}
 
-			ctgItemDataCustomList.add(new CtgItemDataCustom(outCndDetailItem.getSeriNum(), ctgItemData.get().getItemName().v(), cond.toString(), dataType));
+			ctgItemDataCustomList.add(new CtgItemDataCustom(
+					outCndDetailItem.getSeriNum(), 
+					ctgItemData.get().getItemName().v(), 
+					cond.toString(), 
+					dataType,
+					ctgItemData.get().getDisplayClassfication().value));
 		}
 
 		return ctgItemDataCustomList;

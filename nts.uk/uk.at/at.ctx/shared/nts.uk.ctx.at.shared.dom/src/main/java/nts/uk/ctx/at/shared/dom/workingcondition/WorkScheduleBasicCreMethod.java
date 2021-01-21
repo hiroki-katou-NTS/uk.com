@@ -6,12 +6,15 @@ package nts.uk.ctx.at.shared.dom.workingcondition;
  */
 public enum WorkScheduleBasicCreMethod {
 	
+	/** 営業日カレンダー */
 	/** The business day calendar. */
 	BUSINESS_DAY_CALENDAR(0, "Enum_WorkScheduleBasicCreMethod_BusinessDayCalendar"),
 
+	/** 月間パターン */
 	/** The monthly pattern. */
 	MONTHLY_PATTERN(1, "Enum_WorkScheduleBasicCreMethod_MonthlyPattern"),
 
+	/** 個人曜日別 */
 	/** The personal day of week. */
 	PERSONAL_DAY_OF_WEEK(2, "Enum_WorkScheduleBasicCreMethod_PersonalDayOfWeek");
 

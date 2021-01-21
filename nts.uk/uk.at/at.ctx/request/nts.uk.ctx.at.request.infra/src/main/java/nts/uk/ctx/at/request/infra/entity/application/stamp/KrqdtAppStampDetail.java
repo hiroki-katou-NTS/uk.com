@@ -12,7 +12,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * 
  * @author Doan Duy Hung
@@ -21,9 +21,9 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="KRQDT_APP_STAMP_DETAILS")
+@Table(name="KRQDT_APP_STAMP_DETAIL")
 @Builder
-public class KrqdtAppStampDetail extends UkJpaEntity {
+public class KrqdtAppStampDetail extends ContractUkJpaEntity {
 	
 	@EmbeddedId
 	public KrqdpAppStampDetail krqdpAppStampDetailsPK;
@@ -57,7 +57,7 @@ public class KrqdtAppStampDetail extends UkJpaEntity {
 		@PrimaryKeyJoinColumn(name="CID",referencedColumnName="CID"), 
 		@PrimaryKeyJoinColumn(name="APP_ID",referencedColumnName="APP_ID")
 	})
-	private KrqdtAppStamp krqdtAppStamp;
+	private KrqdtAppStamp_Old krqdtAppStamp;
 	
 	@Override
 	protected Object getKey() {

@@ -6,7 +6,7 @@ import lombok.Getter;
 import nts.uk.ctx.at.record.app.find.dailyperform.calculationattribute.dto.CalcAttrOfDailyPerformanceDto;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ConvertibleAttendanceItem;
 
 public class CalcAttrOfDailyPerformanceCommand extends DailyWorkCommonCommand {
 
@@ -15,7 +15,8 @@ public class CalcAttrOfDailyPerformanceCommand extends DailyWorkCommonCommand {
 
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
-		this.data = item == null || !item.isHaveData() ? null : ((CalcAttrOfDailyPerformanceDto) item).toDomain(getEmployeeId(), getWorkDate());
+		CalAttrOfDailyPerformance CalAttrOfDailyPerformance = new CalAttrOfDailyPerformance(getEmployeeId(), getWorkDate(), ((CalcAttrOfDailyPerformanceDto) item).toDomain(getEmployeeId(), getWorkDate()));
+		this.data = item == null || !item.isHaveData() ? null :CalAttrOfDailyPerformance ;
 	}
 
 	@Override

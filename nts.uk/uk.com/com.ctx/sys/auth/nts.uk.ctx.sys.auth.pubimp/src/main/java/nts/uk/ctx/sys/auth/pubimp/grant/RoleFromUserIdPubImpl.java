@@ -36,8 +36,10 @@ public class RoleFromUserIdPubImpl implements RoleFromUserIdPub{
     public Optional <RoleInfoExport> getRoleInfoFromUserId(String userId, int roleType, GeneralDate baseDate, String companyId) {
 		if (roleType == RoleType.SYSTEM_MANAGER.value || roleType == RoleType.GROUP_COMAPNY_MANAGER.value)
 			companyId = "000000000000-0000";
+		
     // 個人付与ロールを取得
     val roleIndOpt = roleIndRepo.findByUserCompanyRoleTypeDate(userId, companyId, roleType, baseDate);
+    
     // 取得できれば、担当ロールとして取得できたロールIDを返す
     if (roleIndOpt.isPresent()) {
         return Optional.of(RoleInfoExport.asInCharge(roleIndOpt.get().getRoleId()));
@@ -46,8 +48,8 @@ public class RoleFromUserIdPubImpl implements RoleFromUserIdPub{
     val roleOpt = roleSetService.getRoleSetFromUserId(userId, baseDate, companyId);
     val roleId = roleOpt.map(roleSet -> roleSet.getRoleIDByRoleType(RoleType.valueOf(roleType)))
             .orElse("");
-    //取得できれば、一般ロールとして取得できたロールIDを返す
 
+    //取得できれば、一般ロールとして取得できたロールIDを返す
     if(!roleId.isEmpty()) {
         return Optional.of(RoleInfoExport.asGeneral(roleId));
     }

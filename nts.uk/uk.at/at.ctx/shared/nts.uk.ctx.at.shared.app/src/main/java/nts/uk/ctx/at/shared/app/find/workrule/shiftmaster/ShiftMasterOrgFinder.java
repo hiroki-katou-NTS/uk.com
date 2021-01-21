@@ -95,13 +95,15 @@ public class ShiftMasterOrgFinder {
 		List<WorkTimeDto> workTimeInfos = workTimeFinder.findByCodes(workTimeCodes);
 		
 		shiftMasters.forEach(shiftMaster -> {
+			shiftMaster.setWorkTime1(shiftMaster.getWorkTime1().replace('~', '～'));
+			shiftMaster.setWorkTime2(shiftMaster.getWorkTime2().replace('~', '～'));
 			if(!StringUtils.isEmpty(shiftMaster.getWorkTimeCd())) {
 				Optional<WorkTimeDto> oWorkTime = workTimeInfos.stream().filter(wkt -> shiftMaster.getWorkTimeCd().equalsIgnoreCase(wkt.code)).findFirst();
 				
 				if(oWorkTime.isPresent()) {
 					WorkTimeDto worktime = oWorkTime.get();
-					shiftMaster.setWorkTime1(!StringUtils.isEmpty(worktime.workTime1) ? worktime.workTime1 : "");
-					shiftMaster.setWorkTime2(!StringUtils.isEmpty(worktime.workTime2) ? worktime.workTime2 : "");
+					shiftMaster.setWorkTime1(!StringUtils.isEmpty(worktime.workTime1) ? worktime.workTime1.replace('~', '～') : "");
+					shiftMaster.setWorkTime2(!StringUtils.isEmpty(worktime.workTime2) ? worktime.workTime2.replace('~', '～') : "");
 				}	
 			}
 		});
@@ -142,8 +144,8 @@ public class ShiftMasterOrgFinder {
 				
 				if(oWorkTime.isPresent()) {
 					WorkTimeDto worktime = oWorkTime.get();
-					shiftMaster.setWorkTime1(!StringUtils.isEmpty(worktime.workTime1) ? worktime.workTime1 : "");
-					shiftMaster.setWorkTime2(!StringUtils.isEmpty(worktime.workTime2) ? worktime.workTime2 : "");
+					shiftMaster.setWorkTime1(!StringUtils.isEmpty(worktime.workTime1) ? worktime.workTime1.replace('~', '～') : "");
+					shiftMaster.setWorkTime2(!StringUtils.isEmpty(worktime.workTime2) ? worktime.workTime2.replace('~', '～') : "");
 				}	
 			}
 		});

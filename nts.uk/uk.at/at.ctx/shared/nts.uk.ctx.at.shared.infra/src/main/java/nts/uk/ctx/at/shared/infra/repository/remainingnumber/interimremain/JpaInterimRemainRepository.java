@@ -26,28 +26,28 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepos
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.interimremain.KrcmtInterimRemainMng;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.interimremain.KrcdtInterimRemainMng;
 import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class JpaInterimRemainRepository extends JpaRepository  implements InterimRemainRepository{
-	private static final String DELETE_BY_SID_PRIOD_TYPE = "DELETE FROM KrcmtInterimRemainMng c"
+	private static final String DELETE_BY_SID_PRIOD_TYPE = "DELETE FROM KrcdtInterimRemainMng c"
 			+ " WHERE c.sId = :employeeId"
 			+ " AND c.ymd >= :startDate"
 			+ " AND c.ymd <= :endDate"
 			+ " AND c.remainType = :remainType";
-	private static final String DELETE_BY_SID_PRIOD = "DELETE FROM KrcmtInterimRemainMng c"
+	private static final String DELETE_BY_SID_PRIOD = "DELETE FROM KrcdtInterimRemainMng c"
 			+ " WHERE c.sId = :employeeId"
 			+ " AND c.ymd >= :startDate"
 			+ " AND c.ymd <= :endDate";
-	private static final String DELETE_BY_ID = "DELETE FROM KrcmtInterimRemainMng c"
+	private static final String DELETE_BY_ID = "DELETE FROM KrcdtInterimRemainMng c"
 			+ " WHERE c.remainMngId = :remainMngId";
 
 	@SneakyThrows
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<InterimRemain> getRemainBySidPriod(String employeeId, DatePeriod dateData, RemainType remainType) {
-		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_INTERIM_REMAIN_MNG"
+		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCDT_INTERIM_REMAIN_MNG"
 						+ " WHERE SID = ?"
 						+ " AND YMD >= ?"
 						+ " AND YMD <= ?"
@@ -74,7 +74,7 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 				record.getEnum("REMAIN_ATR", RemainAtr.class));
 	}
 	
-	private InterimRemain convertToDomainSet(KrcmtInterimRemainMng c) {		
+	private InterimRemain convertToDomainSet(KrcdtInterimRemainMng c) {		
 		return new InterimRemain(c.remainMngId, 
 				c.sId, 
 				c.ymd, 
@@ -85,7 +85,7 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 	
 	@Override
 	public Optional<InterimRemain> getById(String remainId) {
-		return this.queryProxy().find(remainId, KrcmtInterimRemainMng.class)
+		return this.queryProxy().find(remainId, KrcdtInterimRemainMng.class)
 				.map(x -> convertToDomainSet(x));
 	}
 
@@ -96,9 +96,9 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 		val key = domain.getRemainManaID();
 		
 		// 登録・更新
-		KrcmtInterimRemainMng entity = this.getEntityManager().find(KrcmtInterimRemainMng.class, key);
+		KrcdtInterimRemainMng entity = this.getEntityManager().find(KrcdtInterimRemainMng.class, key);
 		if (entity == null){
-			entity = new KrcmtInterimRemainMng();
+			entity = new KrcdtInterimRemainMng();
 			entity.remainMngId = domain.getRemainManaID();
 			entity.sId = domain.getSID();
 			entity.ymd = domain.getYmd();
@@ -147,7 +147,7 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 	public List<InterimRemain> getDataBySidDates(String sid, List<GeneralDate> baseDates) {
 		List<InterimRemain> resultList = new ArrayList<>();
 		CollectionUtil.split(baseDates, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_INTERIM_REMAIN_MNG"
+			try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCDT_INTERIM_REMAIN_MNG"
 							+ " WHERE SID = ?"
 							+ " AND YMD  IN ("
 							+ NtsStatement.In.createParamsString(subList) + ")");
@@ -175,8 +175,8 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 		/** 検索 */
 		@Override
 		public Optional<InterimRemain> find(String sId, GeneralDate ymd) {
-			String QUERY_BY_ID = "SELECT s FROM KrcmtInterimRemainMng s WHERE s.sId = :sId" + " s.ymd = :ymd";
-			Optional<KrcmtInterimRemainMng> entity = this.queryProxy().query(QUERY_BY_ID, KrcmtInterimRemainMng.class)
+			String QUERY_BY_ID = "SELECT s FROM KrcdtInterimRemainMng s WHERE s.sId = :sId" + " s.ymd = :ymd";
+			Optional<KrcdtInterimRemainMng> entity = this.queryProxy().query(QUERY_BY_ID, KrcdtInterimRemainMng.class)
 					.setParameter("sId", sId).setParameter("ymd", ymd).getSingle();
 			if (entity.isPresent()) {
 				return Optional.ofNullable(convertToDomainSet(entity.get()));
@@ -190,7 +190,7 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 		@Override
 		@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 		public List<InterimRemain> findByPeriodOrderByYmd(String employeeId, DatePeriod period) {
-			try (PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_INTERIM_REMAIN_MNG"
+			try (PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCDT_INTERIM_REMAIN_MNG"
 					+ " WHERE SID = ?" + " AND YMD >= ?" + " AND YMD <= ?" + " ORDER BY YMD");) {
 				sql.setString(1, employeeId);
 				sql.setDate(2, Date.valueOf(period.start().localDate()));
@@ -207,7 +207,7 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 		/** 削除 */
 		@Override
 		public void remove(String sId, GeneralDate ymd) {
-			String sql = "delete  from KrcmtInterimRemainMng c WHERE c.sId = :sId" + " AND c.ymd >= :ymd";
+			String sql = "delete  from KrcdtInterimRemainMng c WHERE c.sId = :sId" + " AND c.ymd >= :ymd";
 			this.getEntityManager().createQuery(sql).setParameter("sId", sId).setParameter("ymd", ymd).executeUpdate();
 		}
 
@@ -215,7 +215,7 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 		/** 削除 （期間） */
 		@Override
 		public void removeByPeriod(String sId, DatePeriod period) {
-			String sql = "delete  from KrcmtInterimRemainMng c WHERE c.sId = :sId" + " AND c.ymd >= :startYmd"
+			String sql = "delete  from KrcdtInterimRemainMng c WHERE c.sId = :sId" + " AND c.ymd >= :startYmd"
 					+ " AND c.ymd <= :endYmd";
 			this.getEntityManager().createQuery(sql).setParameter("sId", sId).setParameter("startYmd", period.start())
 					.setParameter("endYmd", period.end()).executeUpdate();
@@ -225,7 +225,7 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 		/** 削除 （基準日以前） */
 		@Override
 		public void removePastYmd(String sId, GeneralDate criteriaDate) {
-			String sql = "delete  from KrcmtInterimRemainMng c WHERE c.sId = :sId" + " AND c.ymd <= :criteriaDate";
+			String sql = "delete  from KrcdtInterimRemainMng c WHERE c.sId = :sId" + " AND c.ymd <= :criteriaDate";
 			this.getEntityManager().createQuery(sql).setParameter("sId", sId).setParameter("criteriaDate", criteriaDate)
 					.executeUpdate();
 		}
@@ -236,7 +236,7 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 		@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 		public List<InterimRemain> findBySidWorkTypePeriod(String sId, String workTypeCode, DatePeriod period) {
 			try (PreparedStatement sql = this.connection().prepareStatement(
-					"SELECT * FROM KRCMT_INTERIM_REMAIN_MNG a1" + " INNER JOIN KRCMT_INTERIM_ANNUAL_MNG a2 "
+					"SELECT * FROM KRCDT_INTERIM_REMAIN_MNG a1" + " INNER JOIN KRCDT_HDPAID_TEMP a2 "
 							+ " ON a1.REMAIN_MNG_ID = a2.ANNUAL_MNG_ID" + " WHERE a1.SID = ? " + " AND a2.WORKTYPE_CODE = ?"
 							+ " AND a1.YMD >= ?" + " AND a1.YMD <= ?" + " ORDER BY YMD");) {
 				sql.setString(1, sId);
@@ -256,7 +256,7 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 		@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 		public List<InterimRemain> findByEmployeeID(String sId) {
 			try (PreparedStatement sql = this.connection()
-					.prepareStatement("SELECT * FROM KRCMT_INTERIM_REMAIN_MNG a1" + " WHERE SID = ?");) {
+					.prepareStatement("SELECT * FROM KRCDT_INTERIM_REMAIN_MNG a1" + " WHERE SID = ?");) {
 				sql.setString(1, sId);
 				List<InterimRemain> entities = new NtsResultSet(sql.executeQuery()).getList(x -> toDomain(x));
 				if (entities.isEmpty()) {

@@ -80,22 +80,11 @@ public class TopPageServiceImpl implements TopPageService {
 			standardMenuRepo.updateStandardMenu(standardMenuUpdate);
 		}else {
 			int maxOrder = standardMenuRepo.maxOrderStandardMenu(cID, system, classification);
-			StandardMenu standardMenuUpdate = new StandardMenu(
-					cID, 
-					new MenuCode(topPage.getTopPageCode().v()), 
-					topPage.getTopPageName().v(), 
-					new MenuDisplayName(topPage.getTopPageName().v()), 
-					maxOrder + 1, 
-					MenuAtr.Menu, 
-					"/nts.uk.com.web/view/ccg/008/a/index.xhtml", 
-					System.valueOf(system), 
-					MenuClassification.valueOf(classification), 
-					WebMenuSetting.Display, 
-					0, 
-					1, 
-					"CCG008", 
-					"A", 
-					"toppagecode ="+topPage.getTopPageCode().v());
+			StandardMenu standardMenuUpdate = new StandardMenu(cID, new MenuCode(topPage.getTopPageCode().v()),
+					topPage.getTopPageName().v(), new MenuDisplayName(topPage.getTopPageName().v()), maxOrder + 1,
+					MenuAtr.Menu, "/nts.uk.com.web/view/ccg/008/a/index.xhtml", System.valueOf(system),
+					MenuClassification.valueOf(classification), WebMenuSetting.Display, 0, "CCG008", "A",
+					"toppagecode =" + topPage.getTopPageCode().v(), 1, 1, 1);
 			standardMenuRepo.insertStandardMenu(standardMenuUpdate);
 		}
 	}

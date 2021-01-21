@@ -9,8 +9,8 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.affiliationinformation.WorkTypeOfDailyPerformance;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -20,8 +20,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_DAI_WORKTYPE")
-public class KrcdtDaiWorkType extends UkJpaEntity implements Serializable {
+@Table(name = "KRCDT_DAY_INFO_BUS")
+public class KrcdtDaiWorkType extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

@@ -11,12 +11,12 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
 import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
 import nts.uk.ctx.sys.auth.dom.algorithm.AcquireUserIDFromEmpIDService;
-import nts.uk.ctx.sys.auth.dom.user.User;
-import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.ctx.sys.auth.pub.user.UserDto;
 import nts.uk.ctx.sys.auth.pub.user.UserExport;
 import nts.uk.ctx.sys.auth.pub.user.UserInforEx;
 import nts.uk.ctx.sys.auth.pub.user.UserPublisher;
+import nts.uk.ctx.sys.shared.dom.user.User;
+import nts.uk.ctx.sys.shared.dom.user.UserRepository;
 
 @Stateless
 public class UserPublisherImpl implements UserPublisher {

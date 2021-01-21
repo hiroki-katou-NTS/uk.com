@@ -17,7 +17,7 @@ module nts.uk.com.view.cmf003.a {
              */
             autoSave(): void {
                 let self = this;
-                nts.uk.request.jump("/view/cmf/003/g/index.xhtml");
+                nts.uk.request.jump("/view/cmf/003/c/index.xhtml");
             }
             
             /**
@@ -25,7 +25,7 @@ module nts.uk.com.view.cmf003.a {
              */
             referenceHistoryScreen(): void {
                 let self = this;
-               nts.uk.request.jump("/view/cmf/002/h/index.xhtml");
+               nts.uk.request.jump("/view/cmf/003/i/index.xhtml");
             }
         }
     }

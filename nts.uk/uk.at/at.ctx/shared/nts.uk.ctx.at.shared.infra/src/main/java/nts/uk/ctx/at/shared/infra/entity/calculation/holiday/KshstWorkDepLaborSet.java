@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * @author phongtq
  * 変形労働勤務の加算設定
@@ -19,8 +19,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHST_WORK_DEF_LABOR_SET")
-public class KshstWorkDepLaborSet  extends UkJpaEntity implements Serializable{
+@Table(name = "KSHMT_CALC_C_ADD_HD_DEF")
+public class KshstWorkDepLaborSet  extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/** 主キー */
 	@EmbeddedId

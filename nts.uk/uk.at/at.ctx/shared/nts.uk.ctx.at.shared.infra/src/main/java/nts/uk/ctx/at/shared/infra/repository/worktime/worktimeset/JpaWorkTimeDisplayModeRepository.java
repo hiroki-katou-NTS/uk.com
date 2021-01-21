@@ -11,7 +11,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.WorkTimeDisplayMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.WorkTimeDisplayModeRepository;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorktimeDispMode;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWtComDispMode;
 import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorktimeDispModePK;
 
 /**
@@ -29,7 +29,7 @@ public class JpaWorkTimeDisplayModeRepository extends JpaRepository implements W
 	 */
 	@Override
 	public void add(WorkTimeDisplayMode domain) {
-		KshmtWorktimeDispMode entity = new KshmtWorktimeDispMode();
+		KshmtWtComDispMode entity = new KshmtWtComDispMode();
 		domain.saveToMemento(new JpaWorkTimeDisplayModeSetMemento(entity));
 		this.commandProxy().insert(entity);
 	}
@@ -45,9 +45,9 @@ public class JpaWorkTimeDisplayModeRepository extends JpaRepository implements W
 	public void update(WorkTimeDisplayMode domain) {
 		KshmtWorktimeDispModePK pk = new KshmtWorktimeDispModePK(domain.getCompanyId(), domain.getWorktimeCode().v());
 
-		Optional<KshmtWorktimeDispMode> op = this.queryProxy().find(pk, KshmtWorktimeDispMode.class);
+		Optional<KshmtWtComDispMode> op = this.queryProxy().find(pk, KshmtWtComDispMode.class);
 		if (op.isPresent()) {
-			KshmtWorktimeDispMode entity = op.get();
+			KshmtWtComDispMode entity = op.get();
 			domain.saveToMemento(new JpaWorkTimeDisplayModeSetMemento(entity));
 			this.commandProxy().update(entity);
 		} else {
@@ -63,7 +63,7 @@ public class JpaWorkTimeDisplayModeRepository extends JpaRepository implements W
 	 */
 	@Override
 	public void remove(String companyId, String workTimeCode) {
-		this.commandProxy().remove(KshmtWorktimeDispMode.class, new KshmtWorktimeDispModePK(companyId, workTimeCode));
+		this.commandProxy().remove(KshmtWtComDispMode.class, new KshmtWorktimeDispModePK(companyId, workTimeCode));
 	}
 
 	/*
@@ -76,7 +76,7 @@ public class JpaWorkTimeDisplayModeRepository extends JpaRepository implements W
 	@Override
 	public Optional<WorkTimeDisplayMode> findByKey(String companyId, String workTimeCode) {
 		KshmtWorktimeDispModePK pk = new KshmtWorktimeDispModePK(companyId, workTimeCode);
-		Optional<KshmtWorktimeDispMode> entity = this.queryProxy().find(pk, KshmtWorktimeDispMode.class);
+		Optional<KshmtWtComDispMode> entity = this.queryProxy().find(pk, KshmtWtComDispMode.class);
 		return entity.isPresent()
 				? Optional.of(new WorkTimeDisplayMode(new JpaWorkTimeDisplayModeGetMemento(entity.get())))
 				: Optional.empty();

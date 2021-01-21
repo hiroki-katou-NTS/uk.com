@@ -5,8 +5,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPUnitUseSettingRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.BPUnitUseSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPUnitUseSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BPUnitUseSetting;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

@@ -11,7 +11,7 @@
 			<script>
 				var dialogSize = {
 					width : 500,
-					height : 360
+					height : 370
 				};
 			</script>
 
@@ -24,61 +24,64 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<table style="margin: 20px;">
-					<col width="130"></col>
-					<col width="100"></col>
-					<col width="200"></col>
-
-					<!-- BEGIN A1_1 ~ A1_3 -->
-					<tr>
-						<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('CDL023_2')}</div></td>
-						<td><div style="width: 120px; word-wrap: break-word;">
+					<colgroup>
+						<col width="130"></col>
+						<col width="100"></col>
+						<col width="200"></col>
+					</colgroup>
+					<tbody>
+						<!-- BEGIN A1_1 ~ A1_3 -->
+						<tr>
+							<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('CDL023_2')}</div></td>
+							<td><div style="width: 120px; word-wrap: break-word;">
 								<span data-bind="text: code"></span>
 							</div></td>
-						<td><div
-								style="width: 180px; word-wrap: break-word; margin-left: 10px;">
+							<td><div
+									style="width: 180px; word-wrap: break-word; margin-left: 10px;">
 								<span data-bind="text: name"></span>
 							</div></td>
-					</tr>
-					<!-- END A1_1 ~ A1_3 -->
+						</tr>
+						<!-- END A1_1 ~ A1_3 -->
 
-					<!-- BEGIN A1_4 -->
-					<tr>
-						<td colspan="3" class='td-hr'><hr /></td>
-					</tr>
-					<!-- END A1_4 -->
-					<!-- BEGIN A1_5 -->
-					<tr>
-						<td></td>
-						<td class='td-carret'><span class="caret-bottom outline"
-							style="font-size: 3rem"></span></td>
-						<td></td>
-					</tr>
-					<!-- END A1_5 -->
+						<!-- BEGIN A1_4 -->
+						<tr>
+							<td colspan="3" class='td-hr'><hr /></td>
+						</tr>
+						<!-- END A1_4 -->
+						<!-- BEGIN A1_5 -->
+						<tr>
+							<td></td>
+							<td class='td-carret'><span class="caret-bottom outline"
+														style="font-size: 3rem"></span></td>
+							<td></td>
+						</tr>
+						<!-- END A1_5 -->
 
-					<!-- BEGIN A2_1 ~ A2_3 -->
-					<tr>
-						<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('CDL023_3')}</div></td>
-						<td><button id="btn-config" style="width: 70px;"
-								data-bind="click: openDialog">
+						<!-- BEGIN A2_1 ~ A2_3 -->
+						<tr>
+							<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('CDL023_3')}</div></td>
+							<td><button id="btn-config" style="width: 70px;"
+										data-bind="click: openDialog">
 								#{i18n.getText('CDL023_4')}</button></td>
-						<td><span style="margin-left: 10px;"
-							data-bind="text: totalSelectionDisp"></span></td>
-					</tr>
-					<!-- END A2_1 ~ A2_3 -->
+							<td><span style="margin-left: 10px;"
+									  data-bind="text: totalSelectionDisp"></span></td>
+						</tr>
+						<!-- END A2_1 ~ A2_3 -->
 
-					<!-- BEGIN A2_4 -->
-					<tr>
-						<td colspan="3" class='td-hr'><hr /></td>
-					</tr>
-					<!-- END A2_4 -->
+						<!-- BEGIN A2_4 -->
+						<tr>
+							<td colspan="3" class='td-hr'><hr /></td>
+						</tr>
+						<!-- END A2_4 -->
 
-					<!-- BEGIN A4_1 -->
-					<tr>
-						<td colspan="3" style="padding: 10px 0px 0px 35px;"><div
-								data-bind="ntsCheckBox: {checked: isOverride}">#{i18n.getText('CDL023_6')}</div>
-						</td>
-					</tr>
-					<!-- END A4_1 -->
+						<!-- BEGIN A4_1 -->
+						<tr>
+							<td colspan="3" style="padding: 10px 0px 0px 35px;"><div
+									data-bind="ntsCheckBox: {checked: isOverride}">#{i18n.getText('CDL023_6')}</div>
+							</td>
+						</tr>
+						<!-- END A4_1 -->
+					</tbody>
 				</table>
 			</div>
 

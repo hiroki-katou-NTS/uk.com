@@ -15,16 +15,16 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.exio.dom.exo.outputitem.ConditionSettingCode;
 import nts.uk.ctx.exio.dom.exo.outputitemorder.OutputItemCode;
 import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrder;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
- * 出力項目並び順(定型)
+ * 外部出力出力項目並び順(定型)
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_STD_OUT_ITEM_ORDER")
-public class OiomtStdOutItemOrder extends UkJpaEntity implements Serializable {
+@Table(name = "OIOMT_EX_OUT_ITEM_SORT")
+public class OiomtStdOutItemOrder extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**

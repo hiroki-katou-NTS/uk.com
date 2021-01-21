@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDays;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ScheduleRecordAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.TimeHoliday;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * エンティティ：暫定年休管理データ
@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KRCDT_ANNLEA_MNG_TEMP")
 @NoArgsConstructor
-public class KrcdtAnnleaMngTemp extends UkJpaEntity implements Serializable {
+public class KrcdtAnnleaMngTemp extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

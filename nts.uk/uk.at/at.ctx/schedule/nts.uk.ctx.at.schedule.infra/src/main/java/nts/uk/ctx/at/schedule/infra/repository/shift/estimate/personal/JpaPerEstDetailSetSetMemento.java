@@ -10,9 +10,9 @@ import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateDetailSettingSetMemento
 import nts.uk.ctx.at.schedule.dom.shift.estimate.numberofday.EstimateNumberOfDay;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.price.EstimatedPriceSetting;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.time.EstimateTimeSetting;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstDaysPerSet;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstPricePerSet;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstTimePerSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstDaysSya;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstPriceSya;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstTimeSya;
 
 /**
  * The Class JpaEstimateDetailSettingPersonalSetMemento.
@@ -20,13 +20,13 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstTimeP
 public class JpaPerEstDetailSetSetMemento implements EstimateDetailSettingSetMemento{
 	
 	/** The estimate time Personals. */
-	private List<KscmtEstTimePerSet> estimateTimePersonals;
+	private List<KscmtEstTimeSya> estimateTimePersonals;
 	
 	/** The estimate price Personals. */
-	private List<KscmtEstPricePerSet> estimatePricePersonals;
+	private List<KscmtEstPriceSya> estimatePricePersonals;
 	
 	/** The estimate days Personals. */
-	private List<KscmtEstDaysPerSet> estimateDaysPersonals;
+	private List<KscmtEstDaysSya> estimateDaysPersonals;
 
 	
 	/**
@@ -35,8 +35,8 @@ public class JpaPerEstDetailSetSetMemento implements EstimateDetailSettingSetMem
 	 * @param estimateTimePersonals the estimate time Personals
 	 * @param estimatePricePersonals the estimate price Personals
 	 */
-	public JpaPerEstDetailSetSetMemento(List<KscmtEstTimePerSet> estimateTimePersonals,
-			List<KscmtEstPricePerSet> estimatePricePersonals,List<KscmtEstDaysPerSet> estimateDaysPersonals) {
+	public JpaPerEstDetailSetSetMemento(List<KscmtEstTimeSya> estimateTimePersonals,
+			List<KscmtEstPriceSya> estimatePricePersonals,List<KscmtEstDaysSya> estimateDaysPersonals) {
 		this.estimateTimePersonals = estimateTimePersonals;
 		this.estimatePricePersonals = estimatePricePersonals;
 		this.estimateDaysPersonals = estimateDaysPersonals;

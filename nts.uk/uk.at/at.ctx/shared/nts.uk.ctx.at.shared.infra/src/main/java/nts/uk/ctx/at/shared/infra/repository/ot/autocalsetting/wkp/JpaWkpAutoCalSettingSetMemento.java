@@ -7,13 +7,13 @@ package nts.uk.ctx.at.shared.infra.repository.ot.autocalsetting.wkp;
 import nts.uk.ctx.at.shared.dom.calculationattribute.AutoCalcSetOfDivergenceTime;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalcOfLeaveEarlySetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkp.WkpAutoCalSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalFlexOvertimeSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalOvertimeSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalRestTimeSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalcOfLeaveEarlySetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.wkp.WkpAutoCalSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
-import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KshmtAutoWkpCalSet;
+import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KrcmtCalcSetWkp;
 import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KshmtAutoWkpCalSetPK;
 
 /**
@@ -22,14 +22,14 @@ import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KshmtAutoWkpCalSe
 public class JpaWkpAutoCalSettingSetMemento implements WkpAutoCalSettingSetMemento {
 
 	/** The entity. */
-	private KshmtAutoWkpCalSet entity;
+	private KrcmtCalcSetWkp entity;
 
 	/**
 	 * Instantiates a new jpa wkp auto cal setting set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaWkpAutoCalSettingSetMemento(KshmtAutoWkpCalSet entity) {
+	public JpaWkpAutoCalSettingSetMemento(KrcmtCalcSetWkp entity) {
 		if (entity.getKshmtAutoWkpCalSetPK() == null) {
 			entity.setKshmtAutoWkpCalSetPK(new KshmtAutoWkpCalSetPK());
 		}

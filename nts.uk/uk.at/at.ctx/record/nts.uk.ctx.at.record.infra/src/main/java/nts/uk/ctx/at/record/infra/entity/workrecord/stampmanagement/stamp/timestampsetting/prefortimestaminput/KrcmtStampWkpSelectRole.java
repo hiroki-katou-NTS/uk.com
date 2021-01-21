@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 職場選択を利用できる権限
@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @NoArgsConstructor
 @Table(name = "KRCMT_STAMP_WKP_SELECT_ROLE")
-public class KrcmtStampWkpSelectRole extends UkJpaEntity implements Serializable {
+public class KrcmtStampWkpSelectRole extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId

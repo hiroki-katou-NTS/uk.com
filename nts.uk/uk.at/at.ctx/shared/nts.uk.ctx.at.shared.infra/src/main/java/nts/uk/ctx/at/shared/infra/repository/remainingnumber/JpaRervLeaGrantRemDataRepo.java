@@ -138,7 +138,7 @@ public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLea
 		List<ReserveLeaveGrantRemainingData> result = new ArrayList<>();
 
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM KRCMT_RVSLEA_REMAIN WHERE CID = ? AND SID IN ("
+			String sql = "SELECT * FROM KRCDT_HDSTK_REM WHERE CID = ? AND SID IN ("
 					+ NtsStatement.In.createParamsString(subList) + ")"
 					+ " AND EXP_STATUS = 1  ORDER BY GRANT_DATE DESC";
 
@@ -169,7 +169,7 @@ public class JpaRervLeaGrantRemDataRepo extends JpaRepository implements RervLea
 
 	@Override
 	public void addAll(String cid, List<ReserveLeaveGrantRemainingData> domains) {
-		String INS_SQL = "INSERT INTO KRCMT_RVSLEA_REMAIN (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
+		String INS_SQL = "INSERT INTO KRCDT_HDSTK_REM (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
 				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
 				+ " RVSLEA_ID, SID, CID, GRANT_DATE, DEADLINE, EXP_STATUS, REGISTER_TYPE, GRANT_DAYS, USED_DAYS, OVER_LIMIT_DAYS, REMAINING_DAYS)"
 				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"

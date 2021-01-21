@@ -456,7 +456,7 @@ public class ScheCreExeWorkTimeHandler {
 	 * @param listWorkingConItem
 	 * @return
 	 */
-	private String getWorkTimeZoneCodeInOffice(WorkTimeConvertCommand command,
+	public String getWorkTimeZoneCodeInOffice(WorkTimeConvertCommand command,
 			List<WorkCondItemDto> listWorkingConItem) {
 
 		// find work type by id
@@ -599,7 +599,7 @@ public class ScheCreExeWorkTimeHandler {
 	 * @param listWorkingConItem
 	 * @return
 	 */
-	private String getWorkTimeZoneCodeInOfficeDayOfWeek(WorkTimeConvertCommand command,
+	public String getWorkTimeZoneCodeInOfficeDayOfWeek(WorkTimeConvertCommand command,
 			List<WorkCondItemDto> listWorkingConItem) {
 
 		// check default work time code by basic work setting

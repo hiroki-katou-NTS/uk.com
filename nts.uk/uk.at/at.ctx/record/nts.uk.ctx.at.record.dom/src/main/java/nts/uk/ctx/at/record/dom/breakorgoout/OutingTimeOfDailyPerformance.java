@@ -5,19 +5,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 //import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
-//import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
-//import nts.uk.ctx.at.record.dom.dailyprocess.calc.AcquisitionConditionsAtr;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.BreakClassification;
-//import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationRangeOfOneDay;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionAtr;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionClassification;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.BreakClassification;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionClassification;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSet;
 //import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestCalcMethod;
 //import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSet;
@@ -32,16 +30,22 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
  *
  */
 @Getter
-@AllArgsConstructor
 public class OutingTimeOfDailyPerformance extends AggregateRoot {
-	
+	//社員ID
 	private String employeeId;
-	
+	//年月日
 	private GeneralDate ymd;
-	
-	private List<OutingTimeSheet> outingTimeSheets;
+	//時間帯
+	private OutingTimeOfDailyAttd outingTime;
 	
 
+	public OutingTimeOfDailyPerformance(String employeeId, GeneralDate ymd, List<OutingTimeSheet> outingTimeSheets) {
+		super();
+		this.employeeId = employeeId;
+		this.ymd = ymd;
+		this.outingTime = new OutingTimeOfDailyAttd(outingTimeSheets);
+	}
+	
 	
 	
 //	/**
@@ -80,13 +84,13 @@ public class OutingTimeOfDailyPerformance extends AggregateRoot {
 	public List<TimeSheetOfDeductionItem> removeUnuseItemBaseOnAtr(DeductionAtr dedAtr ,WorkTimeMethodSet workTimeMethodSet,Optional<FlowWorkRestTimezone> fluRestTime,Optional<FlowWorkRestSettingDetail> flowDetail) {
 		List<TimeSheetOfDeductionItem> returnList = (dedAtr.isDeduction())?
 														//控除用の時は、外出理由 = 私用or組合のみの時間帯に絞る(他の2つは消す)
-														this.outingTimeSheets.stream()
+														this.outingTime.getOutingTimeSheets().stream()
 																			 .filter(tc->tc.getReasonForGoOut().isPrivateOrUnion())
 																			 .filter(ts -> ts.isCalcState())
 																			 .map(tc -> tc.toTimeSheetOfDeductionItem())
 																			 .collect(Collectors.toList()):
 														//全ての時は、全外出時間帯が対象
-														this.outingTimeSheets.stream()
+														this.outingTime.getOutingTimeSheets().stream()
 																			 .filter(ts -> ts.isCalcState())
 																			 .map(tc -> tc.toTimeSheetOfDeductionItem())
 																			 .collect(Collectors.toList());
@@ -114,12 +118,9 @@ public class OutingTimeOfDailyPerformance extends AggregateRoot {
 			if((fluidprefixBreakTimeSet.isUsePrivateGoOutRest() && deductionItem.getGoOutReason().get().isPrivate())
 				||(fluidprefixBreakTimeSet.isUseAssoGoOutRest() && deductionItem.getGoOutReason().get().isUnion())) {
 				returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(deductionItem.getTimeSheet(),
-																							  deductionItem.getCalcrange(),
+																							  deductionItem.getRounding(),
 																							  deductionItem.getRecordedTimeSheet(),
 																							  deductionItem.getDeductionTimeSheet(),
-																							  deductionItem.getBonusPayTimeSheet(),
-																							  deductionItem.getSpecBonusPayTimesheet(),
-																							  deductionItem.getMidNightTimeSheet(),
 																							  deductionItem.getWorkingBreakAtr(),
 																							  deductionItem.getGoOutReason(),
 																							  Finally.of(BreakClassification.BREAK_STAMP),
@@ -139,9 +140,18 @@ public class OutingTimeOfDailyPerformance extends AggregateRoot {
 	 * @return
 	 */
 	public List<TimeSheetOfDeductionItem> changeAllTimeSheetToDeductionItem(){
-		return this.outingTimeSheets.stream()
+		return this.outingTime.getOutingTimeSheets().stream()
 									.filter(ts -> ts.isCalcState())
 									.map(tc -> tc.toTimeSheetOfDeductionItem())
 									.collect(Collectors.toList());
+	}
+
+
+
+	public OutingTimeOfDailyPerformance(String employeeId, GeneralDate ymd, OutingTimeOfDailyAttd outingTime) {
+		super();
+		this.employeeId = employeeId;
+		this.ymd = ymd;
+		this.outingTime = outingTime;
 	}
 }

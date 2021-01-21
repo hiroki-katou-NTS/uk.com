@@ -8,16 +8,16 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * エンティティ：時間外超過の時間丸め
  * @author shuichu_ishida
  */
 @Entity
-@Table(name = "KRCST_MON_EXCOUT_ROUND")
+@Table(name = "KRCMT_CALC_M_OUTSIDE_RND")
 @NoArgsConstructor
-public class KrcstMonExcOutRound extends UkJpaEntity implements Serializable {
+public class KrcstMonExcOutRound extends ContractUkJpaEntity implements Serializable {
 
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;

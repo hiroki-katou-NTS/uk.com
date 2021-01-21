@@ -3,6 +3,8 @@
  */
 package nts.uk.ctx.at.record.dom.workrecord.goout;
 
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
+
 /**
  * The Interface OutManageGetMemento.
  *

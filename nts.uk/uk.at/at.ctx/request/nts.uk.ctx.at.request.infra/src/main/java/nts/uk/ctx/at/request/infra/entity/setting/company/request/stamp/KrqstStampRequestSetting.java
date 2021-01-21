@@ -8,20 +8,20 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.Comment;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.displaysetting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.request.stamp.AppCommentSetting;
-import nts.uk.ctx.at.request.dom.setting.company.request.stamp.Comment;
 import nts.uk.ctx.at.request.dom.setting.company.request.stamp.GoOutTypeDisplayControl;
 import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampDisplayControl;
-import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSetting_Old;
 import nts.uk.ctx.at.request.dom.setting.company.request.stamp.SupportFrameDispNumber;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name="KRQST_STAMP_REQUEST_SET")
-public class KrqstStampRequestSetting extends UkJpaEntity {
+public class KrqstStampRequestSetting extends ContractUkJpaEntity {
 	
 	@Id
 	@Column(name="CID")
@@ -86,8 +86,8 @@ public class KrqstStampRequestSetting extends UkJpaEntity {
 		return companyID;
 	}
 	
-	public StampRequestSetting toDomain(){
-		return new StampRequestSetting(
+	public StampRequestSetting_Old toDomain(){
+		return new StampRequestSetting_Old(
 				this.companyID, 
 				new AppCommentSetting(
 						new Comment(this.topComment), 

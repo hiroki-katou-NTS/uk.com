@@ -57,7 +57,7 @@ public class UpdateShiftMasterServiceTest {
 		String shiftMasterCode = "shiftMasterCode";
 		String workTypeCode = "workTypeCode";
 		ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"), null);
-		WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
+		WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimeCode");
 
 		new Expectations() {
 			{
@@ -80,7 +80,7 @@ public class UpdateShiftMasterServiceTest {
 		String shiftMasterCode = "shiftMasterCode";
 		String workTypeCode = "workTypeCode";
 		ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"), null);
-		WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
+		WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimeCode");
 
 		new Expectations() {
 			{
@@ -106,7 +106,7 @@ public class UpdateShiftMasterServiceTest {
 
 	@Test
 	public void testUpdateShiftMater_throw_Msg_435() {
-		WorkInformation workInformation = new WorkInformation(null, "workTypeCode");
+		WorkInformation workInformation = new WorkInformation("workTypeCode", null);
 		String shiftMasterCode = "shiftMasterCode";
 		String workTypeCode = "workTypeCode";
 		ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"), null);
@@ -135,7 +135,7 @@ public class UpdateShiftMasterServiceTest {
 		String shiftMasterCode = "shiftMasterCode";
 		String workTypeCode = "workTypeCode";
 		ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"), null);
-		WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
+		WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimeCode");
 
 		new Expectations() {
 			{
@@ -163,7 +163,7 @@ public class UpdateShiftMasterServiceTest {
 		String shiftMasterCode = "shiftMasterCode";
 		String workTypeCode = "workTypeCode";
 		ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"), null);
-		WorkInformation workInformation = new WorkInformation(null, "workTypeCode");
+		WorkInformation workInformation = new WorkInformation("workTypeCode", null);
 		ShiftMaster shiftMaster = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode, null);
 		new Expectations() {
 			{

@@ -10,6 +10,8 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.PreBeforeApplicationService;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -19,15 +21,21 @@ public class CopyAppEmploymentSetCommandHandler extends CommandHandler<CopyAppEm
 
 	@Inject
 	private PreBeforeApplicationService service;
+
+//	@Inject
+//	AppEmploymentSettingRepository employmentSetting;
+
+	// refactor 4
 	@Inject
-	AppEmploymentSettingRepository employmentSetting;
+	private AppEmploymentSetRepository appEmploymentSetRepo;
+
 	@Override
 	protected void handle(CommandHandlerContext<CopyAppEmploymentSetCommand> context) {
 		CopyAppEmploymentSetCommand command = context.getCommand();
 		// 会社ID
 		String companyId = AppContexts.user().companyId();
-		Optional<AppEmploymentSetting> sourceData1 = employmentSetting.getEmploymentSetting(companyId, command.getEmploymentCode());
-		service.copyEmploymentSettingNew(companyId, sourceData1, command.getTargetEmploymentCodes(), command.isOveride());
+		Optional<AppEmploymentSet> sourceData1 = appEmploymentSetRepo.findByCompanyIDAndEmploymentCD(companyId, command.getEmploymentCode());
+		service.copyAppEmploymentSet_New(companyId, sourceData1, command.getTargetEmploymentCodes());
 	}
 
 }

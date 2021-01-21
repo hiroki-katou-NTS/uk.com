@@ -4,8 +4,8 @@ import java.util.List;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualHolidayGrantDetail;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.ReferenceAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.AnnualHolidayGrantDetail;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.ReferenceAtr;
 
 public interface AnnualHolidayGrantDetailInfor {
 	/**

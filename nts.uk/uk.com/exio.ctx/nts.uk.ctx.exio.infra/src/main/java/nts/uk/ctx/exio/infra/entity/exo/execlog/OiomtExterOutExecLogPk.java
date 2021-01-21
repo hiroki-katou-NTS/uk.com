@@ -31,7 +31,7 @@ public class OiomtExterOutExecLogPk implements Serializable {
 	 * 外部出力処理ID
 	 */
 	@Basic(optional = false)
-	@Column(name = "OUT_PROCESS_ID")
+	@Column(name = "PRO_ID")
 	public String outProcessId;
 
 }

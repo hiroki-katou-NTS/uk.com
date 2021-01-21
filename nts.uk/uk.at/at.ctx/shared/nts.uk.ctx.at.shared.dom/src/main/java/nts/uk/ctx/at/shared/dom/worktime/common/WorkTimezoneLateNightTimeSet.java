@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**

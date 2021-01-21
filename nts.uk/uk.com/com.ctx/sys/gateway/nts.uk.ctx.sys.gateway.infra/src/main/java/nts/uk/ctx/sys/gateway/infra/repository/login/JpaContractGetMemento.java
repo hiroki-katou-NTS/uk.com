@@ -5,10 +5,10 @@
 package nts.uk.ctx.sys.gateway.infra.repository.login;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
-import nts.uk.ctx.sys.gateway.dom.login.ContractGetMemento;
-import nts.uk.ctx.sys.gateway.dom.login.HashPassword;
-import nts.uk.ctx.sys.gateway.infra.entity.login.SgwdtContract;
+import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
+import nts.uk.ctx.sys.gateway.dom.loginold.ContractGetMemento;
+import nts.uk.ctx.sys.gateway.dom.loginold.HashPassword;
+import nts.uk.ctx.sys.gateway.infra.entity.login.SgwmtContract;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
@@ -17,14 +17,14 @@ import nts.arc.time.calendar.period.DatePeriod;
 public class JpaContractGetMemento implements ContractGetMemento {
 
 	/** The entity. */
-	private SgwdtContract entity;
+	private SgwmtContract entity;
 
 	/**
 	 * Instantiates a new jpa contract get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaContractGetMemento(SgwdtContract entity) {
+	public JpaContractGetMemento(SgwmtContract entity) {
 		this.entity = entity;
 	}
 

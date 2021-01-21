@@ -9,10 +9,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.apptimedigest.AppTimeDigest;
-import nts.uk.ctx.at.request.dom.application.common.service.other.AppDetailContent;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.SubDigestion;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.SubTargetDigestion;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -28,11 +27,11 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AppAbsence extends AggregateRoot implements AppDetailContent {
+public class AppAbsence extends AggregateRoot {
 	/**
 	 * application
 	 */
-	private Application_New application;
+	private Application application;
 	/**
 	 * 会社ID
 	 */

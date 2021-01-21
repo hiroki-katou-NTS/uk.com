@@ -22,15 +22,15 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemAmount;
-import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemNo;
-import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemTime;
-import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemTimes;
-import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValue;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
 import nts.uk.ctx.at.record.infra.entity.daily.anyitem.KrcdtDayAnyItemValueMerge;
 import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTimePK;
+import nts.uk.ctx.at.shared.dom.scherec.anyitem.AnyItemNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemAmount;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTimes;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValue;
 import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -104,7 +104,7 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
 		List<AnyItemValueOfDaily> result = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds ->{
 			try (PreparedStatement stmt = this.connection().prepareStatement(
-						"SELECT * FROM KRCDT_DAY_ANYITEMVALUE_MERGE op" 
+						"SELECT * FROM KRCDT_DAY_TIME_ANYITEM op" 
 						+" WHERE YMD >= ?"
 						+" AND YMD <= ?"
 						+" AND SID IN (" + empIds.stream().map(s -> "?").collect(Collectors.joining(",")) + ")")
@@ -147,7 +147,7 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
     	
 		CollectionUtil.split(subList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds ->{
 			try (PreparedStatement stmt = this.connection().prepareStatement(
-						"SELECT * FROM KRCDT_DAY_ANYITEMVALUE_MERGE op" 
+						"SELECT * FROM KRCDT_DAY_TIME_ANYITEM op" 
 						+" WHERE SID IN (" + empIds.stream().map(s -> "?").collect(Collectors.joining(",")) + ")"
 					    +" AND YMD IN (" + subListDate.stream().map(z -> "?").collect(Collectors.joining(",")) + ")")
 				) {
@@ -238,7 +238,7 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
 	@SneakyThrows
 	private void removeWithJdbc(String employeeId, GeneralDate baseDate) {
 		try (val statement = this.connection().prepareStatement(
-				"DELETE FROM KRCDT_DAY_ANYITEMVALUE_MERGE"
+				"DELETE FROM KRCDT_DAY_TIME_ANYITEM"
 				+ " WHERE SID = ? AND YMD = ?")) {
 			statement.setString(1, employeeId);
 			statement.setDate(2, Date.valueOf(baseDate.localDate()));
@@ -261,7 +261,7 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
 	public void deleteAnyItemValueOfDaily(String employeeId, GeneralDate ymd) {
 		
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		String sqlQuery = "Delete From KRCDT_DAY_ANYITEMVALUE_MERGE Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
+		String sqlQuery = "Delete From KRCDT_DAY_TIME_ANYITEM Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
 		try {
 			con.createStatement().executeUpdate(sqlQuery);
 		} catch (SQLException e) {

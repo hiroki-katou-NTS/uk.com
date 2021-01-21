@@ -10,20 +10,16 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
-import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.daily.DailyRecordAdUpService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectBreakTimeOfDailyDomainService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.AdTimeAndAnyItemAdUpService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateOption;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.service.event.breaktime.BreakTimeOfDailyService;
@@ -32,17 +28,26 @@ import nts.uk.ctx.at.record.dom.service.event.overtime.OvertimeOfDailyService;
 import nts.uk.ctx.at.record.dom.service.event.schetimeleave.ScheTimeLeavingOfDailyService;
 import nts.uk.ctx.at.record.dom.service.event.timeleave.TimeLeavingOfDailyService;
 import nts.uk.ctx.at.record.dom.service.event.worktime.WorkTimeOfDailyService;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageResource;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
+import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
+import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeIsFluidWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -152,7 +157,7 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 			//2019.02.26　渡邉から
 			//残業申請の場合は、自動打刻セットの処理を呼ばない（大塚リリースの時はこの条件で実装する（製品版では、実績の勤務種類、就業時間帯を変更した場合に自動打刻セットを実行するように修正する事（渡邉）
 			if(commonPara.getAppType() != ApplicationType.OVER_TIME_APPLICATION) {
-				List<EditStateOfDailyPerformance> lstTime = commonPara.getIntegrationOfDaily().getEditState().stream()
+				List<EditStateOfDailyAttd> lstTime = commonPara.getIntegrationOfDaily().getEditState().stream()
 						.filter(x -> CorrectEventConts.LEAVE_ITEMS.contains(x.getAttendanceItemId()) 
 								|| CorrectEventConts.ATTENDANCE_ITEMS.contains(x.getAttendanceItemId()))
 						.collect(Collectors.toList());
@@ -188,12 +193,13 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 		if(commonPara.getIntegrationOfDaily().getBreakTime().isEmpty()) {
 			breakTimeRepo.delete(commonPara.getSid(), commonPara.getYmd());
 		} else {
-			breakTimeRepo.update(commonPara.getIntegrationOfDaily().getBreakTime());	
+			breakTimeRepo.update(commonPara.getIntegrationOfDaily().getBreakTime()
+					.stream().map(mapper-> new BreakTimeOfDailyPerformance(commonPara.getSid(), commonPara.getYmd(), mapper)).collect(Collectors.toList()));	
 		}
-		commonPara.getIntegrationOfDaily().getAttendanceLeave().ifPresent(a -> timeLeavingOfDaily.updateFlush(a));
-		workRepository.updateByKeyFlush(x.getWorkInformation());
+		commonPara.getIntegrationOfDaily().getAttendanceLeave().ifPresent(a -> timeLeavingOfDaily.updateFlush(new TimeLeavingOfDailyPerformance(commonPara.getSid(), commonPara.getYmd(), a)));
+		workRepository.updateByKeyFlush(new WorkInfoOfDailyPerformance(commonPara.getSid(), commonPara.getYmd(), x.getWorkInformation()));
 		timeAndAnyItemUpService.addAndUpdate(lstCal);
-		dailyReposiroty.addAndUpdate(commonPara.getIntegrationOfDaily().getEditState());
+		dailyReposiroty.addAndUpdate(commonPara.getIntegrationOfDaily().getEditState().stream().map(mapper-> new EditStateOfDailyPerformance(commonPara.getSid(), commonPara.getYmd(), mapper)).collect(Collectors.toList()));
 		Map<String, List<GeneralDate>> param = new HashMap<>();
 		param.put(commonPara.getSid(), Arrays.asList(commonPara.getYmd()));		
 		employeeError.removeNotOTK(param);
@@ -211,18 +217,20 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 			ApplicationType appType) {
 		//日別実績の休憩時間帯
 		BreakTimeOfDailyPerformance breakTimeInfor = null; 
+		TimeLeavingOfDailyPerformance leavingOfDailyPerformance = new TimeLeavingOfDailyPerformance(sid, ymd, integrationOfDaily.getAttendanceLeave().get());
+		WorkInfoOfDailyPerformance infoOfDailyPerformance = new WorkInfoOfDailyPerformance(sid, ymd, integrationOfDaily.getWorkInformation());
 		if(integrationOfDaily.getAttendanceLeave().isPresent()) {
 			breakTimeInfor = breaktimeSevice.reflectBreakTime(companyId, 
 					sid, 
 					ymd, 
 					null,
-					integrationOfDaily.getAttendanceLeave().get(), 
-					integrationOfDaily.getWorkInformation());
+					leavingOfDailyPerformance, 
+					infoOfDailyPerformance);
 		}
 				
-		List<EditStateOfDailyPerformance> lstEditState = integrationOfDaily.getEditState();
-		List<BreakTimeOfDailyPerformance> lstBeforeBreakTimeInfor = integrationOfDaily.getBreakTime();
-		List<BreakTimeOfDailyPerformance> beforeBreakTime = lstBeforeBreakTimeInfor.stream().filter(x -> x.getBreakType() == BreakType.REFER_WORK_TIME)
+		List<EditStateOfDailyAttd> lstEditState = integrationOfDaily.getEditState();
+		List<BreakTimeOfDailyAttd> lstBeforeBreakTimeInfor = integrationOfDaily.getBreakTime();
+		List<BreakTimeOfDailyAttd> beforeBreakTime = lstBeforeBreakTimeInfor.stream().filter(x -> x.getBreakType() == BreakType.REFER_WORK_TIME)
 				.collect(Collectors.toList());
 		if(integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTypeCode() != null) {
 			Optional<WorkType> workTypeInfor = worktypeRepo.findByPK(companyId, integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
@@ -230,10 +238,10 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 			if(appType == ApplicationType.BREAK_TIME_APPLICATION
 					&& workTypeInfor.isPresent() && workTypeInfor.get().getDailyWork().isHolidayWork()) {
 				if(beforeBreakTime.isEmpty()) {
-					integrationOfDaily.getBreakTime().add(breakTimeInfor);
+					integrationOfDaily.getBreakTime().add(breakTimeInfor.getTimeZone());
 				} else {
 					integrationOfDaily.getBreakTime().removeAll(beforeBreakTime);
-					integrationOfDaily.getBreakTime().add(breakTimeInfor);
+					integrationOfDaily.getBreakTime().add(breakTimeInfor.getTimeZone());
 				}
 				return integrationOfDaily;
 			}
@@ -241,13 +249,13 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 		
 		BreakTimeOfDailyPerformance beforBTWork = new BreakTimeOfDailyPerformance(sid, BreakType.REFER_WORK_TIME, new ArrayList<>(), ymd);
 		if(!beforeBreakTime.isEmpty()) {
-			beforBTWork = beforeBreakTime.get(0);
+			beforBTWork = new BreakTimeOfDailyPerformance(sid, BreakType.REFER_WORK_TIME, beforeBreakTime.get(0).getBreakTimeSheets(), ymd);
 			lstBeforeBreakTimeInfor.remove(beforBTWork);
 		} 
-		List<BreakTimeSheet> breakTimeSheetsTmp = beforBTWork.getBreakTimeSheets();
+		List<BreakTimeSheet> breakTimeSheetsTmp = beforBTWork.getTimeZone().getBreakTimeSheets();
 		List<BreakTimeSheet> lstBreak = new ArrayList<>();
 		if(breakTimeInfor != null) {
-			lstBreak = breakTimeInfor.getBreakTimeSheets();
+			lstBreak = breakTimeInfor.getTimeZone().getBreakTimeSheets();
 		}
 				
 		List<BreakTimeSheet> lstBreakOutput = new ArrayList<>();			
@@ -256,7 +264,7 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 			int num_2 = num_1 + 2;
 			int count = i + 1;
 			
-			List<EditStateOfDailyPerformance> lstEditCheck = lstEditState.stream()
+			List<EditStateOfDailyAttd> lstEditCheck = lstEditState.stream()
 					.filter(x -> x.getAttendanceItemId() == num_1 || x.getAttendanceItemId() == num_2)
 					.collect(Collectors.toList());
 			if(!lstEditCheck.isEmpty() && lstEditCheck.size() == 2
@@ -289,13 +297,13 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 				}
 			}
 		}
-		lstBeforeBreakTimeInfor.add(beforBTWork);
+		lstBeforeBreakTimeInfor.add(beforBTWork.getTimeZone());
 		if(!beforeBreakTime.isEmpty()) {
 			integrationOfDaily.setBreakTime(lstBeforeBreakTimeInfor);
 		} else {
 			integrationOfDaily.setBreakTime(integrationOfDaily.getBreakTime().stream().map(x -> {
 				if(x.getBreakType() == BreakType.REFER_WORK_TIME) {
-					return new BreakTimeOfDailyPerformance(x.getEmployeeId(), x.getBreakType(), lstBreakOutput, x.getYmd());
+					return new BreakTimeOfDailyAttd(x.getBreakType(), x.getBreakTimeSheets());
 				}
 				return x;
 			}).collect(Collectors.toList()));
@@ -305,11 +313,11 @@ public class CommonProcessCheckServiceImpl implements CommonProcessCheckService{
 
 	private boolean isReflectBreakTime(List<EditStateOfDailyPerformance> lstEditState) {
 		List<EditStateOfDailyPerformance> lstEditReflect = lstEditState.stream()
-				.filter(x -> (workTimeUpdate.lstBreakStartTime().contains(x.getAttendanceItemId()) 
-							|| workTimeUpdate.lstBreakEndTime().contains(x.getAttendanceItemId())                            
-							|| workTimeUpdate.lstScheBreakStartTime().contains(x.getAttendanceItemId())
-                            || workTimeUpdate.lstScheBreakEndTime().contains(x.getAttendanceItemId()))
-						&& x.getEditStateSetting() == EditStateSetting.REFLECT_APPLICATION)
+				.filter(x -> (workTimeUpdate.lstBreakStartTime().contains(x.getEditState().getAttendanceItemId()) 
+							|| workTimeUpdate.lstBreakEndTime().contains(x.getEditState().getAttendanceItemId())                            
+							|| workTimeUpdate.lstScheBreakStartTime().contains(x.getEditState().getAttendanceItemId())
+                            || workTimeUpdate.lstScheBreakEndTime().contains(x.getEditState().getAttendanceItemId()))
+						&& x.getEditState().getEditStateSetting() == EditStateSetting.REFLECT_APPLICATION)
 				.collect(Collectors.toList());
 		return lstEditReflect.isEmpty() ? false : true;
 	}

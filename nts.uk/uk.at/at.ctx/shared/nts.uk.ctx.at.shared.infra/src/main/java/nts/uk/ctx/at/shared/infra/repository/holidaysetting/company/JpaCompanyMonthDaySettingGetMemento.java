@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.MonthlyNu
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.PublicHolidayMonthSetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.company.CompanyMonthDaySettingGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.company.KshmtComMonthDaySet;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.company.KshmtHdpubDPerMCom;
 
 
 /**
@@ -17,14 +17,14 @@ import nts.uk.ctx.at.shared.infra.entity.holidaysetting.company.KshmtComMonthDay
 public class JpaCompanyMonthDaySettingGetMemento implements CompanyMonthDaySettingGetMemento {
 	
 	/** The list kshmt com month day set. */
-	private List<KshmtComMonthDaySet> listKshmtComMonthDaySet;
+	private List<KshmtHdpubDPerMCom> listKshmtComMonthDaySet;
 	
 	/**
 	 * Instantiates a new jpa company month day setting get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaCompanyMonthDaySettingGetMemento(List<KshmtComMonthDaySet> entities){
+	public JpaCompanyMonthDaySettingGetMemento(List<KshmtHdpubDPerMCom> entities){
 		this.listKshmtComMonthDaySet = entities;
 	}
 

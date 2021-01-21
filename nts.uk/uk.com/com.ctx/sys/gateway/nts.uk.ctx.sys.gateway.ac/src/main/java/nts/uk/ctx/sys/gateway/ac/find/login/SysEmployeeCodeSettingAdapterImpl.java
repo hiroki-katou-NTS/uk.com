@@ -11,8 +11,8 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.setting.code.EmployeeCodeEditSettingExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.setting.code.IEmployeeCESettingPub;
-import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeCodeSettingAdapter;
-import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeCodeSettingImport;
+import nts.uk.ctx.sys.gateway.dom.loginold.adapter.SysEmployeeCodeSettingAdapter;
+import nts.uk.ctx.sys.gateway.dom.loginold.dto.EmployeeCodeSettingImport;
 
 /**
  * The Class EmployeeCodeSettingAdapterImpl.

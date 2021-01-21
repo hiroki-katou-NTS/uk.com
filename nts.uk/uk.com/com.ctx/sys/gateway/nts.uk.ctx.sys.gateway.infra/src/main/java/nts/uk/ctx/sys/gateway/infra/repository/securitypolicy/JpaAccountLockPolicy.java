@@ -6,9 +6,9 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.AccountLockPolicy;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.AccountLockPolicyRepository;
+import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicyRepository;
 import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.SgwstAccountLockPolicy;
 
 /**
@@ -18,7 +18,7 @@ import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.SgwstAccountLockPolicy
 public class JpaAccountLockPolicy extends JpaRepository implements AccountLockPolicyRepository {
 	
 	/** The select by contract code. */
-	private static final String SELECT_BY_CONTRACT_CODE = "SELECT c FROM SgwstAccountLockPolicy c WHERE c.contractCode = :contractCode";
+	private static final String SELECT_BY_CONTRACT_CODE = "SELECT c FROM SgwstAccountLockPolicy c WHERE c.contractCd = :contractCd";
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.gateway.dom.securitypolicy.AccountLockPolicyRepository#getAccountLockPolicy(nts.uk.ctx.sys.gateway.dom.login.ContractCode)
@@ -27,7 +27,7 @@ public class JpaAccountLockPolicy extends JpaRepository implements AccountLockPo
 	public Optional<AccountLockPolicy> getAccountLockPolicy(ContractCode contractCode) {
 		Optional<SgwstAccountLockPolicy> sgwstAccountLockPolicyOptional = this.queryProxy()
 				.query(SELECT_BY_CONTRACT_CODE, SgwstAccountLockPolicy.class)
-				.setParameter("contractCode", contractCode, ContractCode.class).getSingle();
+				.setParameter("contractCd", contractCode, ContractCode.class).getSingle();
 		if (sgwstAccountLockPolicyOptional.isPresent()) {
 			return Optional.ofNullable(this.toDomain(sgwstAccountLockPolicyOptional.get()));
 		}
@@ -60,7 +60,8 @@ public class JpaAccountLockPolicy extends JpaRepository implements AccountLockPo
 			if (accountLockPolicy.isUse()) {
 				this.commandProxy().insert(this.toEntity(accountLockPolicy));
 			} else {
-				this.commandProxy().insert(new SgwstAccountLockPolicy(accountLockPolicy.getContractCode().v(),
+				this.commandProxy().insert(new SgwstAccountLockPolicy(
+						accountLockPolicy.getContractCode().v(),
 						new BigDecimal(1), new BigDecimal(0), "　", new BigDecimal(0)));
 			}
 		}
@@ -73,7 +74,7 @@ public class JpaAccountLockPolicy extends JpaRepository implements AccountLockPo
 	 * @return the account lock policy
 	 */
 	private AccountLockPolicy toDomain(SgwstAccountLockPolicy sgwstAccountLockPolicy) {
-		return AccountLockPolicy.createFromJavaType(sgwstAccountLockPolicy.contractCode,
+		return AccountLockPolicy.createFromJavaType(sgwstAccountLockPolicy.contractCd,
 				sgwstAccountLockPolicy.errorCount.intValue(), sgwstAccountLockPolicy.lockInterval.intValue(),
 				sgwstAccountLockPolicy.lockOutMessage, sgwstAccountLockPolicy.isUse.intValue() == 1 ? true : false);
 	}
@@ -85,7 +86,8 @@ public class JpaAccountLockPolicy extends JpaRepository implements AccountLockPo
 	 * @return the sgwst account lock policy
 	 */
 	private SgwstAccountLockPolicy toEntity(AccountLockPolicy accountLockPolicy) {
-		return new SgwstAccountLockPolicy(accountLockPolicy.getContractCode().v(),
+		return new SgwstAccountLockPolicy(
+				accountLockPolicy.getContractCode().v(),
 				accountLockPolicy.getErrorCount().v(), new BigDecimal(accountLockPolicy.getLockInterval().v()),
 				accountLockPolicy.getLockOutMessage().v() == "" ? "　" : accountLockPolicy.getLockOutMessage().v(),
 				new BigDecimal(accountLockPolicy.isUse() ? 1 : 0));

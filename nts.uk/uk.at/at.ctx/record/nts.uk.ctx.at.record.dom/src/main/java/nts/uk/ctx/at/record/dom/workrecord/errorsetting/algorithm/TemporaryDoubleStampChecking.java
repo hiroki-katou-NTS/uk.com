@@ -6,11 +6,11 @@ import java.util.List;
 import javax.ejb.Stateless;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 
 /*
  * 臨時系二重打刻をチェックする
@@ -31,15 +31,15 @@ public class TemporaryDoubleStampChecking {
 		// .findByKey(employeeID, processingDate);
 
 		if (temporaryTimeOfDailyPerformance != null
-				&& !temporaryTimeOfDailyPerformance.getTimeLeavingWorks().isEmpty()) {
-			List<TimeLeavingWork> timeLeavingWorks = temporaryTimeOfDailyPerformance.getTimeLeavingWorks();
+				&& !temporaryTimeOfDailyPerformance.getAttendance().getTimeLeavingWorks().isEmpty()) {
+			List<TimeLeavingWork> timeLeavingWorks = temporaryTimeOfDailyPerformance.getAttendance().getTimeLeavingWorks();
 			for (TimeLeavingWork timeLeavingWork : timeLeavingWorks) {
 				if ((timeLeavingWork.getAttendanceStamp() != null && timeLeavingWork.getAttendanceStamp().isPresent())
 						|| (timeLeavingWork.getLeaveStamp() != null && timeLeavingWork.getLeaveStamp().isPresent())) {
 
 					if (timeLeavingWork.getAttendanceStamp() != null
 							&& timeLeavingWork.getAttendanceStamp().isPresent()) {
-						if (timeLeavingWork.getAttendanceStamp().get().getNumberOfReflectionStamp() >= 2) {
+						if (timeLeavingWork.getAttendanceStamp().get().getNumberOfReflectionStamp() != null && timeLeavingWork.getAttendanceStamp().get().getNumberOfReflectionStamp() >= 2) {
 							if (timeLeavingWork.getWorkNo().equals(new WorkNo((1)))) {
 								attendanceItemIDList.add(51);
 							} else if (timeLeavingWork.getWorkNo().equals(new WorkNo((2)))) {
@@ -50,7 +50,7 @@ public class TemporaryDoubleStampChecking {
 						}
 					}
 					if (timeLeavingWork.getLeaveStamp() != null && timeLeavingWork.getLeaveStamp().isPresent()) {
-						if (timeLeavingWork.getLeaveStamp().get().getNumberOfReflectionStamp() >= 2) {
+						if (timeLeavingWork.getLeaveStamp().get().getNumberOfReflectionStamp()!= null && timeLeavingWork.getLeaveStamp().get().getNumberOfReflectionStamp() >= 2) {
 							if (timeLeavingWork.getWorkNo().equals(new WorkNo((1)))) {
 								attendanceItemIDList.add(53);
 							} else if (timeLeavingWork.getWorkNo().equals(new WorkNo((2)))) {

@@ -4,79 +4,60 @@
 		<span class="title">#{i18n.getText('KDM001_150')}</span>
 		<!-- B1_1 新規 -->
 		<div>
-			<button id ="B1_1" tabindex="6" data-bind="click: function(){ openNewSubstituteData()}, enable: !isHaveError()">#{i18n.getText('KDM001_1')}</button>
+			<button id="B1_1" tabindex="6"
+				data-bind="click: function(){ openNewSubstituteData()}, enable: !isHaveError()" >#{i18n.getText('KDM001_1')}</button>
 		</div>
 		<!-- B1_2 「代休確認表」出力画面へ遷移する -->
 		<div style="margin-left: auto;">
-<!-- 			<a id = "B1_2" tabindex="7" class="goout" -->
-<!-- 				data-bind="ntsLinkButton: {}, click: function(){ openConfirmScreen()}, hidden: true">#{i18n.getText('KDM001_32')}</a> -->
-		</div> 
-	
+		</div>
+
 	</div>
 	<div class="contents-area">
 		<!-- B2 -->
 		<div class="div-table">
 			<!-- KCP009  対象者  -->
-			<div class = "emp-component-size">
-			<div tabindex="1" id="emp-component"></div>
+			<div class="emp-component-size">
+				<div tabindex="1" id="emp-component"></div>
 			</div>
 			<!-- B3 -->
 			<div class="div-table-row">
 				<div class="div-table-col">
 					<!-- B3_1  期間設定  -->
-					<div class="div-table-row-1"
-						data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KDM001_3')}</div>
+					<div class="div-table-row-1" data-bind="ntsFormLabel: { required: false }">
+						#{i18n.getText('KDM001_3')}</div>
 				</div>
 				<div class="div-table-col-medium">
 					<!-- B3_2  現在の残数状況 -->
 					<div class="div-table-row-1">
-						<div id = "B3_2" tabindex="2" class="cell"
-							data-bind="ntsRadioButton: {checked: selectedPeriodItem, option: periodOptionItem()[0], optionValue: 'value', optionText: 'name', group: 'periodOption'}"></div>
+						<div id="B3_2" tabindex="2" class="cell"
+							data-bind="ntsRadioButton: {checked: selectedPeriodItem, option: periodOptionItem()[0], optionValue: 'value', optionText: 'name', group: 'periodOption'}">
+						</div>
 					</div>
-	
+
 					<!-- B3_3  過去の結果 -->
 					<div class="div-table-row-2">
-						<div id ="B3_3" class="cell" tabindex="3"
-							data-bind="ntsRadioButton: {checked: selectedPeriodItem, option: periodOptionItem()[1], optionValue: 'value', optionText: 'name', group: 'periodOption'}"></div>
-					</div>
-				</div>
-				<div class="div-table-col-big">
-					<div class="div-table-row-1"></div>
-					<!-- B3_4  期間範囲 -->
-					<div class="div-table-row-2" id="daterangepicker" tabindex="4"
-						data-bind="ntsDateRangePicker: { 
-							required: selectedPeriodItem()==1,
-						 	enable: selectedPeriodItem()==1,
-							showNextPrevious: true,
-						    value: dateValue,
-						    name: '#[KDM001_6]'}" />
-				</div>
-				<div class="div-table-col-big">
-					<div class="div-table-row-1"></div>
-					<!-- B3_5  抽出 -->
-					<div class="div-table-row-2">
-						<button id ="B3_5" tabindex="5"
-							data-bind="click: function(){filterByPeriod()}">#{i18n.getText('KDM001_7')}</button>
+						<div id="B3_3" class="cell" tabindex="3"
+							data-bind="ntsRadioButton: {checked: selectedPeriodItem, option: periodOptionItem()[1], optionValue: 'value', optionText: 'name', group: 'periodOption'}">
+						</div>
 					</div>
 				</div>
 			</div>
 			<!-- B4  表 -->
 			<div class="div-table-row">
-				<label style="line-height: 35px;">#{i18n.getText('KDM001_123')}</label>
+				<!-- A4_3  凡例 -->
+				<button class="margin-bottom-15" data-bind="ntsLegendButton: legendOptions"></button>
 				<!-- B4_1  説明 -->
-				<table tabindex = "8" id="substituteDataGrid"></table>
+				<table tabindex="8" id="substituteDataGrid"></table>
 			</div>
 		</div>
 		<!-- B5 -->
-		<div
-			class=" panel panel-frame person-info-panel flex valign-center">
-			<div data-bind="if: selectedPeriodItem() == 0">
-				<label>#{i18n.getText('KDM001_38')}</label> <label
-					data-bind="text: dispTotalRemainHours"></label>
+		<div class=" panel panel-frame person-info-panel flex valign-center width-790">
+			<!-- <div data-bind="if: selectedPeriodItem() == 0"> -->
+			<div>
+				<label>#{i18n.getText('KDM001_38')}</label> <label data-bind="text: dispTotalRemainHours"></label>
 			</div>
 			<div style="margin-left: auto;">
-				<label>#{i18n.getText('KDM001_40')}</label> <label
-					data-bind="text: dispExpiredDate"></label>
+				<label>#{i18n.getText('KDM001_40')}</label> <label data-bind="text: dispExpiredDate"></label>
 			</div>
 		</div>
 	</div>

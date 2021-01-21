@@ -545,7 +545,8 @@ public class LogBasicInformationFinder {
 					}).collect(Collectors.toList()),
 					c.getLstLogOutputItemDto(), 
 					c.getMenuName(), c.getNote(),
-					c.getMethodName(), c.getLoginStatus());
+					c.getMethodName(), c.getLoginStatus(),
+					c.getProgramId());
 		}).collect(Collectors.toList()); 
 		
 		LogParams logParams = new LogParams(param.getLogParams().getRecordType(), param.getLstHeaderDto(), param.getLstSubHeaderDto(),  lstLogBasicInfoDto);
@@ -723,6 +724,7 @@ public class LogBasicInformationFinder {
         private String methodName;
         private String loginStatus;
         private String processAttr;
+        private String programId;
         private List<DataCorrectLogModel> lstLogDataCorrectRecordRefeDto = new ArrayList<>();
         private List<LogOutputItemDto> lstLogOutputItemDto = new ArrayList<>();
         private List<PerCateCorrectRecordModel> lstLogPerCateCorrectRecordDto = new ArrayList<>();

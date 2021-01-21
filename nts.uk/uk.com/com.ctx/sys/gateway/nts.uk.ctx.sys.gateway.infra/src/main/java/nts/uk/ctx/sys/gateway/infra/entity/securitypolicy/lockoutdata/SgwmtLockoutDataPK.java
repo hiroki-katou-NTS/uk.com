@@ -12,7 +12,7 @@ import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
 import nts.arc.time.GeneralDateTime;
 
 /**
- * The primary key class for the SGWMT_LOCKOUT_DATA database table.
+ * The primary key class for the SGWDT_LOCKOUT database table.
  * 
  */
 @Embeddable

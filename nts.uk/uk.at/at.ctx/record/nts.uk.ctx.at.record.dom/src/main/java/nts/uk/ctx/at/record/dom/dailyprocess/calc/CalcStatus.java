@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 
 /**
  * 計算結果のステータスを管理するためのクラス

@@ -9,7 +9,7 @@
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = { width: 300, height: 410 };</script>
+			<script>var dialogSize = { width: 330, height: 430 };</script>
 			<com:stylefile path="./kmp001.d.main.css" />
 			<com:scriptfile path="./kmp001.d.vm.js" />
 
@@ -58,8 +58,8 @@
 				<hr></hr>
 				<div class="view-button">
 					<div>
-						<button id="button_decide" class="proceed" data-bind="text: $i18n('KMP001_46'), click: addSetting"></button>
-						<button data-bind="text: $i18n('KMP001_47'), click: closeDialog"></button>
+						<button class="proceed x-large" data-bind="text: $i18n('KMP001_46'), click: addSetting"></button>
+						<button class="large" data-bind="text: $i18n('KMP001_47'), click: closeDialog"></button>
 					</div>
 				</div>
 			</div>

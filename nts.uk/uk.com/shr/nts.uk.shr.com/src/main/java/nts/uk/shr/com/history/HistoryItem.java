@@ -51,7 +51,7 @@ public abstract class HistoryItem<S extends GeneralPeriod<S, D>, D extends Compa
 	 * @param spanToBeAccepted
 	 */
 	public void shortenStartToAccept(S spanToBeAccepted) {
-		val newSpan = this.span().cutOffWithNewStart(spanToBeAccepted.endNext(true));
+		val newSpan = this.span().newSpan(spanToBeAccepted.endNext(true), this.span().end());
 		this.changeSpan(newSpan);
 	}
 	
@@ -60,7 +60,7 @@ public abstract class HistoryItem<S extends GeneralPeriod<S, D>, D extends Compa
 	 * @param spanToBeAccepted
 	 */
 	public void shortenEndToAccept(S spanToBeAccepted) {
-		val newSpan = this.span().cutOffWithNewEnd(spanToBeAccepted.startNext(false));
+		val newSpan = this.span().newSpan(this.span().start(), spanToBeAccepted.startNext(false));
 		this.changeSpan(newSpan);
 	}
 

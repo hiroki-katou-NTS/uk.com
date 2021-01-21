@@ -45,7 +45,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class RegisterSmartPhoneStampCommandHandler
 		extends CommandHandlerWithResult<RegisterSmartPhoneStampCommand, GeneralDate> {
-	
+
 	@Inject
 	private StampCardRepository stampCardRepo;
 
@@ -66,7 +66,7 @@ public class RegisterSmartPhoneStampCommandHandler
 
 	@Inject
 	private CreateDailyResultDomainService createDailyResultDomainSv;
-	
+
 	@Inject
 	private SettingsSmartphoneStampRepository getSettingRepo;
 
@@ -131,7 +131,7 @@ public class RegisterSmartPhoneStampCommandHandler
 
 		@Inject
 		private CreateDailyResultDomainService createDailyResultDomainSv;
-		
+
 		@Inject
 		private SettingsSmartphoneStampRepository getSettingRepo;
 
@@ -177,9 +177,9 @@ public class RegisterSmartPhoneStampCommandHandler
 		}
 
 		@Override
-		public ProcessState createDailyResult(@SuppressWarnings("rawtypes") AsyncCommandHandlerContext asyncContext, List<String> emloyeeIds,
-				DatePeriod periodTime, ExecutionAttr executionAttr, String companyId, String empCalAndSumExecLogID,
-				Optional<ExecutionLog> executionLog) {
+		public ProcessState createDailyResult(@SuppressWarnings("rawtypes") AsyncCommandHandlerContext asyncContext,
+				List<String> emloyeeIds, DatePeriod periodTime, ExecutionAttr executionAttr, String companyId,
+				String empCalAndSumExecLogID, Optional<ExecutionLog> executionLog) {
 			return this.createDailyResultDomainSv.createDailyResult(asyncContext, emloyeeIds, periodTime, executionAttr,
 					companyId, empCalAndSumExecLogID, executionLog);
 		}
@@ -188,7 +188,6 @@ public class RegisterSmartPhoneStampCommandHandler
 		public Optional<SettingsSmartphoneStamp> getSmartphoneStampSetting() {
 			return this.getSettingRepo.get(AppContexts.user().companyId());
 		}
-
 
 	}
 

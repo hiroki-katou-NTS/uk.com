@@ -8,6 +8,8 @@ import nts.arc.time.GeneralDate;
  */
 public interface RecordWorkInfoAdapter {
 	
-	public RecordWorkInfoImport getRecordWorkInfo(String employeeId, GeneralDate ymd);
+	public RecordWorkInfoImport_Old getRecordWorkInfo(String employeeId, GeneralDate ymd);
+	
+	public RecordWorkInfoImport getRecordWorkInfoRefactor(String employeeId, GeneralDate ymd);
 
 }

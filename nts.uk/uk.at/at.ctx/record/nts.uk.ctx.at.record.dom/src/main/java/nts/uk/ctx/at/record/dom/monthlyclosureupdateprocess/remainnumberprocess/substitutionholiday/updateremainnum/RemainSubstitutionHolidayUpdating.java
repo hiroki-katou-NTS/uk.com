@@ -177,7 +177,7 @@ public class RemainSubstitutionHolidayUpdating {
 		void deleteSubstitutionOfHDManagementData(List<String> subOfHDID);
 	}
 	
-	private static interface RequireM2 {
+	public static interface RequireM2 {
 		
 		Optional<PayoutManagementData> payoutManagementData(String Id);
 		
@@ -186,7 +186,7 @@ public class RemainSubstitutionHolidayUpdating {
 		void createPayoutManagementData(PayoutManagementData domain);
 	}
 	
-	private static interface RequireM1 {
+	public static interface RequireM1 {
 		
 		Optional<SubstitutionOfHDManagementData> substitutionOfHDManagementData(String Id);
 		

@@ -3,7 +3,6 @@ package nts.uk.ctx.workflow.dom.approvermanagement.setting;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 /**
  * 承認設定
@@ -18,11 +17,16 @@ public class ApprovalSetting extends AggregateRoot {
 	 * 会社ID
 	 */
 	private String companyId;
+	
+	// 承認単位の利用設定
+	private ApproverRegisterSet approverRegsterSet;
+	
 	/**
 	 * 本人による承認
 	 */
-	private PrincipalApprovalFlg prinFlg;
-	public static ApprovalSetting createFromJavaType(String companyId, int prinFlg){
-		return new ApprovalSetting(companyId, EnumAdaptor.valueOf(prinFlg, PrincipalApprovalFlg.class));
+	private Boolean prinFlg;
+	
+	public static ApprovalSetting createFromJavaType(String companyId,ApproverRegisterSet approverRegsterSet,  Boolean prinFlg){
+		return new ApprovalSetting(companyId, approverRegsterSet, prinFlg);
 	}
 }

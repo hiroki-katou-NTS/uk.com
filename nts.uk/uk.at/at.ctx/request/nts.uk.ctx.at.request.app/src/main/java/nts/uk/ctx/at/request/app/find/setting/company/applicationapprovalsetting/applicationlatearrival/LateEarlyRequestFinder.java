@@ -5,7 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyRequest;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyRequest_Old;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyRequestRepository;
 
 /**
@@ -22,7 +22,7 @@ public class LateEarlyRequestFinder {
 	 * @return
 	 */
 	public LateEarlyRequestDto findByCompanyID() {
-		Optional<LateEarlyRequest> data = repository.getLateEarlyRequest();
+		Optional<LateEarlyRequest_Old> data = repository.getLateEarlyRequest();
 		
 		if(data.isPresent()){
 			return LateEarlyRequestDto.fromDomain(data.get());

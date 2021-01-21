@@ -13,12 +13,12 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.medicaltime.MedicalTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeeklyKey;
 import nts.uk.ctx.at.record.infra.entity.weekly.KrcdtWekAttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.medicaltime.MedicalTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeeklyKey;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 月別実績の医療時間
@@ -28,7 +28,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KRCDT_WEK_MEDICAL_TIME")
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrcdtWekMedicalTime extends UkJpaEntity implements Serializable {
+public class KrcdtWekMedicalTime extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

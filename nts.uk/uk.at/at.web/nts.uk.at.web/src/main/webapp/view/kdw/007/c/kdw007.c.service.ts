@@ -1,7 +1,7 @@
 module nts.uk.at.view.kdw007.c.service {
     var paths = {
-        getDailyAttendanceItemByCodes: "at/record/divergencetime/AttendanceDivergenceName",
-        getMonthlyAttendanceItemByCodes: "at/record/divergencetime/getMonthlyAttendanceDivergenceName"
+        getDailyAttendanceItemByCodes: "at/record/divergencetime/setting/AttendanceDivergenceName",
+        getMonthlyAttendanceItemByCodes: "at/record/divergencetime/setting/getMonthlyAttendanceDivergenceName"
     }
     
     export function getDailyAttendanceItemByCodes(codes) {

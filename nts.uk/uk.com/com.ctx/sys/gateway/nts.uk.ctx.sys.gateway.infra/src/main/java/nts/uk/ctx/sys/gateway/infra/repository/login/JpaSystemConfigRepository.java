@@ -14,8 +14,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.sys.gateway.dom.login.SystemConfig;
-import nts.uk.ctx.sys.gateway.dom.login.SystemConfigRepository;
+import nts.uk.ctx.sys.gateway.dom.loginold.SystemConfig;
+import nts.uk.ctx.sys.gateway.dom.loginold.SystemConfigRepository;
 import nts.uk.ctx.sys.gateway.infra.entity.login.SgwstSystemConfig;
 
 /**

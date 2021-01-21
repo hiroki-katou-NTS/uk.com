@@ -13,8 +13,8 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText;
 import nts.gul.mail.send.MailContents;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.EnvAdapter;
@@ -43,7 +43,7 @@ public class CheckTranmissionImpl implements CheckTransmission {
 	private MailSender mailSender;
 
 	@Inject
-	private ApplicationRepository_New applicationRepository;
+	private ApplicationRepository applicationRepository;
 
 	@Inject
 	private RegisterEmbededURL registerEmbededURL;
@@ -63,7 +63,7 @@ public class CheckTranmissionImpl implements CheckTransmission {
 	public MailSenderResult doCheckTranmission(String appId, int appType, int prePostAtr, List<String> employeeIdList,
 			String mailTitle, String mailBody, List<String> fileId, String appDate, String applicantID, boolean sendMailApplicaint) {
 		String cid = AppContexts.user().companyId();
-		Application_New application = applicationRepository.findByID(cid, appId).get();
+		Application application = applicationRepository.findByID(cid, appId).get();
 		Optional<UrlEmbedded> urlEmbedded = urlEmbeddedRepo.getUrlEmbeddedById(cid);
 		List<String> successList = new ArrayList<>();
 		List<String> errorList = new ArrayList<>();

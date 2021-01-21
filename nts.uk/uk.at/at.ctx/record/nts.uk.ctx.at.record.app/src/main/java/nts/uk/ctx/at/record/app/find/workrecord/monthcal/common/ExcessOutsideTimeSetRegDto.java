@@ -7,7 +7,7 @@ package nts.uk.ctx.at.record.app.find.workrecord.monthcal.common;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.ExcessOutsideTimeSetReg;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.ExcessOutsideTimeSetReg;
 
 /**
  * The Class ExcessOutsideTimeSetReg.

@@ -36,7 +36,9 @@ module nts.uk.at.view.kdp010.i {
             
 			public save() {
 				let self = this;
-                if($root.errors.isEmpty){
+                if(nts.uk.ui.errors.hasError()){
+                    return;
+                }else{
                     block.grayout();
                     service.save(ko.toJS(self.stampPageLayout())).done(function() {
                         self.isDel(true);

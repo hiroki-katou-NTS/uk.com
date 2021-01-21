@@ -3,7 +3,9 @@
 module nts.uk.at.view.kdp.share {
 	const tabButtonTempate = `
 		<!-- ko if: ko.unwrap(filteredTabs).length -->
-		<div id="stamp-desc" data-bind="text: ko.unwrap(currentTab).stampPageComment"></div>
+		<div id="stamp-desc" data-bind="let: { $tab: ko.toJS(currentTab) }">
+			<div data-bind="html: $tab.stampPageComment, style: { color: $tab.stampPageCommentColor }"></div>
+		</div>
 		<div id="tab-button-group" class="ui-tabs ui-corner-all ui-widget ui-widget-content horizontal">
 			<ul class="ui-tabs-nav ui-corner-all ui-helper-reset ui-helper-clearfix ui-widget-header" data-bind="foreach: filteredTabs">
 				<li class="ui-tabs-tab ui-corner-top ui-state-default ui-tab"
@@ -55,7 +57,8 @@ module nts.uk.at.view.kdp.share {
 				.css({
 					'color': data.btnTextColor,
 					'background-color': data.btnBackGroundColor,
-					'visibility': data.btnPositionNo === -1 ? 'hidden' : 'visible'
+					'visibility': data.btnPositionNo === -1 ? 'hidden' : 'visible',
+					'height': data.height + 'px'
 				});
 		}
 	}
@@ -88,6 +91,8 @@ module nts.uk.at.view.kdp.share {
 
 		filteredTabs!: KnockoutComputed<PageLayout[]>;
 
+		buttonSize: KnockoutObservable<number> = ko.observable(0);
+
 		constructor(public params: StampParam) {
 			super();
 
@@ -108,6 +113,10 @@ module nts.uk.at.view.kdp.share {
 					goingToWork: false,
 					turnBack: false
 				});
+			}
+
+			if (!params.marginBottom) {
+				params.marginBottom = ko.observable(0);
 			}
 
 			ko.computed({
@@ -134,9 +143,10 @@ module nts.uk.at.view.kdp.share {
 						$el
 							.find('button')
 							.attr('tabindex', $el.data('tabindex'));
-					})
+					});
+					const exist = _.find(filteredTabs, (d) => d.pageNo === selected);
 
-					return _.find(filteredTabs, (d) => d.pageNo === selected) || {
+					const currentTab = _.clone(exist) || {
 						pageNo: -1,
 						buttonLayoutType: -1,
 						buttonSettings: [],
@@ -144,12 +154,18 @@ module nts.uk.at.view.kdp.share {
 						stampPageCommentColor: '',
 						stampPageName: ''
 					};
+
+					// escape html and replace new line chars to break tag
+					currentTab.stampPageComment = _.escape(currentTab.stampPageComment).replace(/(\r|\n)/g, '<br />');
+
+					return currentTab;
 				}
 			});
 
 			vm.filteredTabs = ko.computed({
 				read: () => {
 					const data = ko.unwrap(params.tabs);
+					const buttonSize = ko.unwrap(vm.buttonSize);
 					const setting: StampToSuppress = ko.unwrap(params.stampToSuppress as any) || {
 						goingToWork: false,
 						departure: false,
@@ -164,8 +180,9 @@ module nts.uk.at.view.kdp.share {
 						if (tab) {
 							const cloned = _.cloneDeep(tab);
 							const buttons: ButtonSetting[] = [];
-							const { buttonSettings } = cloned;
-							const size = (cloned.buttonLayoutType === LAYOUT_TYPE.LARGE_2_SMALL_4) ? 6 : 8;
+							const { buttonSettings, buttonLayoutType } = cloned;
+							const { SMALL_8, LARGE_2_SMALL_4 } = LAYOUT_TYPE;
+							const size = (buttonLayoutType === LARGE_2_SMALL_4) ? 6 : 8;
 
 							for (let j = 1; j <= size; j++) {
 								const btn = _.find(buttonSettings, (btn) => btn.btnPositionNo === j);
@@ -195,10 +212,14 @@ module nts.uk.at.view.kdp.share {
 											break
 									}
 
+									const constance = ((buttonLayoutType === LARGE_2_SMALL_4 && j < 3) || buttonLayoutType === SMALL_8) ? 2 : 1;
+
+									btn.height = Math.max(buttonSize, 42) * constance + (buttonLayoutType === SMALL_8 ? 7 : 0);
+
 									buttons.push(btn);
 								} else {
 									buttons.push({
-										audioType: -1,
+										audioType: 0,
 										btnBackGroundColor: '',
 										btnDisplayType: -1,
 										btnName: '',
@@ -210,7 +231,8 @@ module nts.uk.at.view.kdp.share {
 										changeHalfDay: -1,
 										goOutArt: -1,
 										setPreClockArt: -1,
-										usrArt: -1
+										usrArt: -1,
+										height: buttonSize
 									});
 								}
 							}
@@ -256,6 +278,22 @@ module nts.uk.at.view.kdp.share {
 			}
 
 			vm.selected.valueHasMutated();
+
+			$(window)
+				.on('resize', () => {
+					if (vm.$el) {
+						const marginBottom = ko.toJS(vm.params.marginBottom);
+						const tabs = vm.$el.querySelector('#tab-button-group');
+
+						if (tabs) {
+							const bound = tabs.getBoundingClientRect();
+							const height = Math.floor((window.innerHeight - bound.top - 110 - marginBottom) / 4);
+
+							vm.buttonSize(height);
+						}
+					}
+				})
+				.trigger('resize');
 		}
 	}
 
@@ -268,6 +306,7 @@ module nts.uk.at.view.kdp.share {
 		click: () => void;
 		tabs: KnockoutObservableArray<PageLayout>;
 		stampToSuppress: KnockoutObservable<StampToSuppress>;
+		marginBottom: KnockoutObservable<number>;
 	}
 
 	export interface StampToSuppress {
@@ -300,6 +339,7 @@ module nts.uk.at.view.kdp.share {
 		goOutArt: number;
 		setPreClockArt: number;
 		usrArt: NotUseAtr;
+		height: number;
 	}
 
 	export enum NotUseAtr {

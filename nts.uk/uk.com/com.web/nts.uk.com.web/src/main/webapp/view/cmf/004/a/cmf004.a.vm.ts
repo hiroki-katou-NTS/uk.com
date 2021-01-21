@@ -17,7 +17,7 @@ module nts.uk.com.view.cmf004.a {
              */
             autoSave(): void {
                 let self = this;
-                nts.uk.request.jump("/view/cmf/004/g/index.xhtml");
+                nts.uk.request.jump("/view/cmf/004/j/index.xhtml");
             }
             
             /**

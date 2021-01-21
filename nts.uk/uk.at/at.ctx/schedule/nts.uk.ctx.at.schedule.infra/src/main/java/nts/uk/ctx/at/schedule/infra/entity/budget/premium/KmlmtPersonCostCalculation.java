@@ -14,7 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -26,8 +26,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Setter
 @Entity
-@Table(name="KMLMT_COST_CALC_SET")
-public class KmlmtPersonCostCalculation extends UkJpaEntity{
+@Table(name="KSCMT_PER_COST_CALC")
+public class KmlmtPersonCostCalculation extends ContractUkJpaEntity{
 	@EmbeddedId
 	public KmlmpPersonCostCalculationPK kmlmpPersonCostCalculationPK;
 	
@@ -43,9 +43,9 @@ public class KmlmtPersonCostCalculation extends UkJpaEntity{
 	@Column(name="MEMO")
 	public String memo;
 	
-	@OneToMany(targetEntity=KmlstPremiumSet.class, cascade = CascadeType.ALL, mappedBy = "kmlmtPersonCostCalculation", orphanRemoval = true)
-	@JoinTable(name = "KMLST_PREMIUM_SET")
-	public List<KmlstPremiumSet> kmlstPremiumSets;
+	@OneToMany(targetEntity=KscmtPerCostPremiRate.class, cascade = CascadeType.ALL, mappedBy = "kmlmtPersonCostCalculation", orphanRemoval = true)
+	@JoinTable(name = "KSCMT_PER_COST_PREMI_RATE")
+	public List<KscmtPerCostPremiRate> kmlstPremiumSets;
 
 	@Override
 	protected Object getKey() {

@@ -29,10 +29,10 @@ public class SubscribeRegisImpl extends JpaRepository implements SubscribeRegisR
     		+"		TABLE_RESULT.START_DATE, TABLE_RESULT.END_DATE, TABLE_RESULT.PersonName, TABLE_RESULT.AGENT_APP_TYPE2, TABLE_RESULT.AGENT_APP_TYPE3, TABLE_RESULT.AGENT_APP_TYPE4 	"
     		+"FROM ("
     		+"			SELECT emp.SCD, p.BUSINESS_NAME, ag.START_DATE, ag.END_DATE, ag.BUSINESS_NAME as PersonName, ag.AGENT_APP_TYPE2, ag.AGENT_APP_TYPE3, ag.AGENT_APP_TYPE4 , ROW_NUMBER() OVER" +"(PARTITION BY emp.SCD ORDER BY emp.SCD) AS ROW_NUMBER"
-    		+"									 FROM BSYMT_EMP_DTA_MNG_INFO emp JOIN BPSMT_PERSON p ON emp.PID = p.PID  "
+    		+"									 FROM BSYMT_SYAIN emp JOIN BPSMT_PERSON p ON emp.PID = p.PID  "
     		+"									INNER JOIN  "
     		+"									(Select cag.SID,  cag.START_DATE, cag.END_DATE, cag.AGENT_SID1, cag.AGENT_APP_TYPE1, cag.AGENT_SID2, cag.AGENT_APP_TYPE2, cag.AGENT_SID3," +"cag.AGENT_APP_TYPE3, cag.AGENT_SID4, cag.AGENT_APP_TYPE4,  empp.SCD, pp.BUSINESS_NAME  "
-    		+"									FROM CMMMT_AGENT cag  JOIN BSYMT_EMP_DTA_MNG_INFO empp ON cag.AGENT_SID1 = empp.SID  "
+    		+"									FROM WWFMT_AGENT cag  JOIN BSYMT_SYAIN empp ON cag.AGENT_SID1 = empp.SID  "
     		+"									JOIN BPSMT_PERSON pp  ON empp.PID = pp.PID) ag ON emp.SID = ag.SID  "
     		+"									WHERE emp.SID IN ('%s') AND emp.CID =  ? ) TABLE_RESULT"
     		+" ORDER BY TABLE_RESULT.SCD , TABLE_RESULT.END_DATE DESC ";

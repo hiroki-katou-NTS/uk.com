@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSettingDetailGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFl;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexFlowFixedRestSetGetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexFlowRestSetGetMemento;
 
@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexFlowRestSetG
 public class JpaFlexFlowWorkRestSettingDetailGetMemento implements FlowWorkRestSettingDetailGetMemento {
 
 	/** The entity. */
-	private KshmtFlexRestSet entity;
+	private KshmtWtFleBrFl entity;
 
 	/**
 	 * Instantiates a new jpa flex flow work rest setting detail get memento.
@@ -27,7 +27,7 @@ public class JpaFlexFlowWorkRestSettingDetailGetMemento implements FlowWorkRestS
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaFlexFlowWorkRestSettingDetailGetMemento(KshmtFlexRestSet entity) {
+	public JpaFlexFlowWorkRestSettingDetailGetMemento(KshmtWtFleBrFl entity) {
 		super();
 		this.entity = entity;
 	}

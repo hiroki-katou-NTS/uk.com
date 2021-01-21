@@ -43,8 +43,8 @@ public class JpaAppRootConfirmQueryRepository
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subEmpIds -> {
 			//long startTime = System.currentTimeMillis();
 			String sql = "select r.ROOT_ID, r.EMPLOYEE_ID, r.START_DATE, r.END_DATE, MAX(p.PHASE_ORDER) as FINAL_PHASE_ORDER" 
-					+ " from WWFDT_APP_ROOT_INSTANCE r"
-					+ " inner join WWFDT_APP_PHASE_INSTANCE p"
+					+ " from WWFDT_INST_ROUTE r"
+					+ " inner join WWFDT_INST_PHASE p"
 					+ " on r.ROOT_ID = p.ROOT_ID"
 					+ " where r.EMPLOYEE_ID in (" + NtsStatement.In.createParamsString(subEmpIds) + ")"
 					+ " and r.START_DATE <= ?"
@@ -98,8 +98,8 @@ public class JpaAppRootConfirmQueryRepository
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subEmpIds -> {
 			
 			String sql = "select r.ROOT_ID, r.EMPLOYEE_ID, r.RECORD_DATE, p.PHASE_ORDER, p.APP_PHASE_ATR"
-					+ " from WWFDT_APP_ROOT_CONFIRM r"
-					+ " left join WWFDT_APP_PHASE_CONFIRM p"
+					+ " from WWFDT_CONF_ROUTE r"
+					+ " left join WWFDT_CONF_PHASE p"
 					+ " on r.ROOT_ID = p.ROOT_ID"
 					+ " where r.EMPLOYEE_ID in (" + NtsStatement.In.createParamsString(subEmpIds) + ")"
 					+ " and r.RECORD_DATE between ? and ?"

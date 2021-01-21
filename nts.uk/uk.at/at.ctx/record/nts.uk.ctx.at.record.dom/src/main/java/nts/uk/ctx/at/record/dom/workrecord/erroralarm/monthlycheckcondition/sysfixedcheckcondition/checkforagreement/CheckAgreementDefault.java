@@ -8,11 +8,11 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.fixedcheckitem.checkprincipalunconfirm.ValueExtractAlarmWR;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
@@ -33,8 +33,9 @@ public class CheckAgreementDefault implements CheckAgreementService {
 		if(!attdTimeOfMonthly.isPresent())
 			return Optional.empty();
 		//パラメータ．「36協定エラー状態」をチェックする
-		AgreementTimeOfMonthly agreementTimeOfMonthly = attdTimeOfMonthly.get().getMonthlyCalculation().getAgreementTime();
-		AgreementTimeStatusOfMonthly status = agreementTimeOfMonthly.getStatus();
+		/** TODO: 36協定時間対応により、コメントアウトされた */
+//		AgreementTimeOfMonthly agreementTimeOfMonthly = attdTimeOfMonthly.get().getMonthlyCalculation().getAgreementTime();
+		AgreementTimeStatusOfMonthly status = AgreementTimeStatusOfMonthly.NORMAL;//agreementTimeOfMonthly.getStatus();
 		
 		GeneralDate date = GeneralDate.ymd(ym.year(), ym.month(), 1);
 		

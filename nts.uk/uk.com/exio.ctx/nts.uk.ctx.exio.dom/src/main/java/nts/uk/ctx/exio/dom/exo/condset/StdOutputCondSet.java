@@ -55,7 +55,7 @@ public class StdOutputCondSet extends AggregateRoot {
 	/**
 	 * 文字列形式
 	 */
-	private StringFormat stringFormat;
+	private StringFormat stringFormat; 
 
 	public StdOutputCondSet(String cid, String conditionSetCode, int categoryId, int delimiter, int itemOutputName,
 			int autoExecution, String conditionSetName, int conditionOutputName, int stringFormat) {

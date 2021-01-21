@@ -4,8 +4,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.record.dom.monthly.remarks.RemarksMonthlyRecordRepository;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remarks.RemarksMonthlyRecordRepository;
 
 @Stateless
 public class MonthlyRemarksCommandHandler extends CommandFacade<MonthlyRemarksCommand> {

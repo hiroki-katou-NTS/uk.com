@@ -3,7 +3,7 @@ package nts.uk.ctx.workflow.pub.service.export;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 
 /**
  * 
@@ -28,7 +28,7 @@ public class ApproverStateExport {
 	@Setter
 	private String representerName;
 	
-	private GeneralDate approvalDate;
+	private GeneralDateTime approvalDate;
 	
 	private String approvalReason;
 	
@@ -37,7 +37,7 @@ public class ApproverStateExport {
 	public static ApproverStateExport fixData(Integer order){
 		ApproverStateExport approver = null;
 		ApprovalBehaviorAtrExport approvalAtr = ApprovalBehaviorAtrExport.UNAPPROVED;
-		GeneralDate approvalDate = null;
+		GeneralDateTime approvalDate = null;
 		String approvalReason = "";
 		switch(order){
 			case 1://'000001

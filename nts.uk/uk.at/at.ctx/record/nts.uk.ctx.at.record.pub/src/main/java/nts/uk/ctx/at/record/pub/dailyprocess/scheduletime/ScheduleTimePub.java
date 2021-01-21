@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.pub.dailyprocess.scheduletime;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerCompanySet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 
 
 /**

@@ -9,12 +9,12 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeIsFluidWork;
 @Stateless
 public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
@@ -60,10 +60,10 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 		//取得した勤務種類コード ≠ INPUT．勤務種類コード OR
 		//取得した就業時間帯コード ≠ INPUT．就業時間帯コード
 		
-		if(dailyInfo.getRecordInfo().getWorkTimeCode() == null
-				|| dailyInfo.getRecordInfo().getWorkTypeCode() == null
-				|| !dailyInfo.getRecordInfo().getWorkTimeCode().v().equals(para.getOvertimePara().getWorkTimeCode())
-				||!dailyInfo.getRecordInfo().getWorkTypeCode().v().equals(para.getOvertimePara().getWorkTypeCode())){
+		if(dailyInfo.getWorkInformation().getRecordInfo().getWorkTimeCode() == null
+				|| dailyInfo.getWorkInformation().getRecordInfo().getWorkTypeCode() == null
+				|| !dailyInfo.getWorkInformation().getRecordInfo().getWorkTimeCode().v().equals(para.getOvertimePara().getWorkTimeCode())
+				||!dailyInfo.getWorkInformation().getRecordInfo().getWorkTypeCode().v().equals(para.getOvertimePara().getWorkTypeCode())){
 			ischeck = true;
 		} 
 		//勤種・就時の反映
@@ -79,8 +79,9 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 	@Override
 	public void startAndEndTimeReflectSche(OvertimeParameter para, boolean changeFlg,
 			IntegrationOfDaily dailyData) {
+		WorkInfoOfDailyPerformance dailyPerformance = new WorkInfoOfDailyPerformance(para.getEmployeeId(), para.getDateInfo(), dailyData.getWorkInformation());
 		//設定による予定開始終了時刻を反映できるかチェックする
-		if(!this.timeReflectCheck(para, changeFlg, dailyData.getWorkInformation())) {
+		if(!this.timeReflectCheck(para, changeFlg, dailyPerformance)) {
 			return;
 		}
 		//予定開始終了時刻の反映(事前事後共通部分)
@@ -124,8 +125,8 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 			return null;
 		}
 		WorkInfoOfDailyPerformance dailyPerfor = optDailyPerfor.get();
-		WorkTimeTypeOutput dataOut = new WorkTimeTypeOutput(dailyPerfor.getScheduleInfo().getWorkTimeCode() == null ? null : dailyPerfor.getScheduleInfo().getWorkTimeCode().v(),
-				dailyPerfor.getScheduleInfo().getWorkTypeCode() == null ? null : dailyPerfor.getScheduleInfo().getWorkTypeCode().v());
+		WorkTimeTypeOutput dataOut = new WorkTimeTypeOutput(dailyPerfor.getWorkInformation().getScheduleInfo().getWorkTimeCode() == null ? null : dailyPerfor.getWorkInformation().getScheduleInfo().getWorkTimeCode().v(),
+				dailyPerfor.getWorkInformation().getScheduleInfo().getWorkTypeCode() == null ? null : dailyPerfor.getWorkInformation().getScheduleInfo().getWorkTypeCode().v());
 		return dataOut;
 	}
 
@@ -136,8 +137,8 @@ public class PreOvertimeReflectProcessImpl implements PreOvertimeReflectProcess{
 			return null;
 		}
 		WorkInfoOfDailyPerformance dailyPerfor = optDailyPerfor.get();
-		WorkTimeTypeOutput dataOut = new WorkTimeTypeOutput(dailyPerfor.getRecordInfo().getWorkTimeCode() == null ? null : dailyPerfor.getRecordInfo().getWorkTimeCode().v(),
-				dailyPerfor.getRecordInfo().getWorkTypeCode() == null ? null : dailyPerfor.getRecordInfo().getWorkTypeCode().v());
+		WorkTimeTypeOutput dataOut = new WorkTimeTypeOutput(dailyPerfor.getWorkInformation().getRecordInfo().getWorkTimeCode() == null ? null : dailyPerfor.getWorkInformation().getRecordInfo().getWorkTimeCode().v(),
+				dailyPerfor.getWorkInformation().getRecordInfo().getWorkTypeCode() == null ? null : dailyPerfor.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
 		return dataOut;
 	}
 

@@ -12,7 +12,7 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkD
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkInstruction;
 import nts.uk.ctx.at.shared.app.command.worktime.common.dto.DeductionTimeDto;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 
 public class HdWorkDispInfoWithDateCmd {

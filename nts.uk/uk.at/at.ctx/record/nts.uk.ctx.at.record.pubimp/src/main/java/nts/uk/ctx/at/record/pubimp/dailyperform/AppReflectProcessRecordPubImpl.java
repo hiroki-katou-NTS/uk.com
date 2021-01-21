@@ -113,7 +113,7 @@ public class AppReflectProcessRecordPubImpl implements AppReflectProcessRecordPu
 	public ScheAndRecordIsReflectPub appReflectProcess(AppCommonPara para, ExecutionType executionType,Boolean isCalWhenLock) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
-		
+
 		ScheAndRecordIsReflectPub output = new ScheAndRecordIsReflectPub(true, true);
 		ScheRemainCreateInfor scheInfor = null;
 		Closure closureData = ClosureService.getClosureDataByEmployee(require, cacheCarrier, para.getSid(), para.getYmd());

@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.MonthlyNu
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.PublicHolidayMonthSetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.workplace.WorkplaceMonthDaySettingGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.workplace.KshmtWkpMonthDaySet;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.workplace.KshmtHdpubDPerMWkp;
 
 /**
  * The Class JpaWorkplaceMonthDaySettingGetMemento.
@@ -16,14 +16,14 @@ import nts.uk.ctx.at.shared.infra.entity.holidaysetting.workplace.KshmtWkpMonthD
 public class JpaWorkplaceMonthDaySettingGetMemento implements WorkplaceMonthDaySettingGetMemento {
 	
 	/** The list kshmt wkp month day set. */
-	private List<KshmtWkpMonthDaySet> listKshmtWkpMonthDaySet;
+	private List<KshmtHdpubDPerMWkp> listKshmtWkpMonthDaySet;
 	
 	/**
 	 * Instantiates a new jpa workplace month day setting get memento.
 	 *
 	 * @param entities the entities
 	 */
-	public JpaWorkplaceMonthDaySettingGetMemento(List<KshmtWkpMonthDaySet> entities){
+	public JpaWorkplaceMonthDaySettingGetMemento(List<KshmtHdpubDPerMWkp> entities){
 		this.listKshmtWkpMonthDaySet = entities;
 	}
 

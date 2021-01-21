@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetermineTime;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
-import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtPredTimeSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtWtComPredTime;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -19,7 +19,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class JpaPredetemineTimeSettingGetMemento implements PredetemineTimeSettingGetMemento {
 
 	/** The kwtst work time set. */
-	private KshmtPredTimeSet entity;
+	private KshmtWtComPredTime entity;
 
 	/**
 	 * Instantiates a new jpa predetemine time setting get memento.
@@ -27,7 +27,7 @@ public class JpaPredetemineTimeSettingGetMemento implements PredetemineTimeSetti
 	 * @param entity the entity
 	 * @param lstEntityTime the lst entity time
 	 */
-	public JpaPredetemineTimeSettingGetMemento(KshmtPredTimeSet entity) {
+	public JpaPredetemineTimeSettingGetMemento(KshmtWtComPredTime entity) {
 		super();
 		this.entity = entity;
 	}

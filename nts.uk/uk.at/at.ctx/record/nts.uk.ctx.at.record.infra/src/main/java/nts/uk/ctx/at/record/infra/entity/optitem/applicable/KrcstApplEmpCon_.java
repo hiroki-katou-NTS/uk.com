@@ -10,13 +10,13 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KrcstApplEmpConPK_.
  */
-@StaticMetamodel(KrcstApplEmpCon.class)
+@StaticMetamodel(KrcmtAnyfCondEmp.class)
 public class KrcstApplEmpCon_ {
 
 	/** The krcst appl emp con PK. */
-	public static volatile SingularAttribute<KrcstApplEmpCon, KrcstApplEmpConPK> krcstApplEmpConPK;
+	public static volatile SingularAttribute<KrcmtAnyfCondEmp, KrcstApplEmpConPK> krcstApplEmpConPK;
 
 	/** The emp appl atr. */
-	public static volatile SingularAttribute<KrcstApplEmpCon, Integer> empApplAtr;
+	public static volatile SingularAttribute<KrcmtAnyfCondEmp, Integer> empApplAtr;
 
 }

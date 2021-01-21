@@ -8,3 +8,11 @@
 .lableCDL {
 	margin-left: 20px;
 }
+
+#combo-box {
+	max-width: 190px;
+}
+
+.clear-btn.ntsSearchBox_Component {
+	vertical-align: middle!important;
+}

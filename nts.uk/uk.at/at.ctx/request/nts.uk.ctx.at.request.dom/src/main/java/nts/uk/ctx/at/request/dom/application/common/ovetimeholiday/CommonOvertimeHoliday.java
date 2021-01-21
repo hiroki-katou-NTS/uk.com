@@ -21,13 +21,10 @@ import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayPrePost;
-import nts.uk.ctx.at.request.dom.application.overtime.service.output.RecordWorkOutput;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AppDateContradictionAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppDateContradictionAtr;
 import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
-import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
-import nts.uk.ctx.at.request.dom.setting.workplace.AtWorkAtr;
-import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -131,8 +128,8 @@ public interface CommonOvertimeHoliday {
 	 * @param endTime Opitonal＜終了時刻＞
 	 * @return
 	 */
-	public RecordWorkOutput getWorkingHours(String companyID, String employeeID, GeneralDate appDate, UseAtr timeCalUse, AtWorkAtr atworkTimeBeginDisp,
-			ApplicationType appType, String workTimeCD, Optional<Integer> startTime, Optional<Integer> endTime, ApprovalFunctionSetting approvalFunctionSetting);
+//	public RecordWorkOutput getWorkingHours(String companyID, String employeeID, GeneralDate appDate, UseAtr timeCalUse, AtWorkAtr atworkTimeBeginDisp,
+//			ApplicationType appType, String workTimeCD, Optional<Integer> startTime, Optional<Integer> endTime, ApprovalFunctionSetting approvalFunctionSetting);
 	
 	/**
 	 * 03-01_事前申請超過チェック
@@ -213,12 +210,12 @@ public interface CommonOvertimeHoliday {
 	 * @param overTimeInputs
 	 * @param overtimeInputCaculations
 	 */
-	public List<CaculationTime> checkDisplayColor(List<CaculationTime> overTimeInputs,
-			List<OvertimeInputCaculation> overtimeInputCaculations,int prePostAtr,GeneralDateTime inputDate,GeneralDate appDate,int appType,String employeeID,String companyID,ApprovalFunctionSetting approvalFunctionSetting,String siftCD);
-	
-	public ColorConfirmResult checkDisplayColorCF(List<CaculationTime> overTimeInputs,
-			List<OvertimeInputCaculation> overtimeInputCaculations,int prePostAtr,GeneralDateTime inputDate,GeneralDate appDate,int appType,String employeeID,String companyID,ApprovalFunctionSetting approvalFunctionSetting,String siftCD);
-	
+//	public List<CaculationTime> checkDisplayColor(List<CaculationTime> overTimeInputs,
+//			List<OvertimeInputCaculation> overtimeInputCaculations,int prePostAtr,GeneralDateTime inputDate,GeneralDate appDate,int appType,String employeeID,String companyID,ApprovalFunctionSetting approvalFunctionSetting,String siftCD);
+//	
+//	public ColorConfirmResult checkDisplayColorCF(List<CaculationTime> overTimeInputs,
+//			List<OvertimeInputCaculation> overtimeInputCaculations,int prePostAtr,GeneralDateTime inputDate,GeneralDate appDate,int appType,String employeeID,String companyID,ApprovalFunctionSetting approvalFunctionSetting,String siftCD);
+//	
 	/**
 	 * 06-01_色表示チェック
 	 * @param breakTimeInputs

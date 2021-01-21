@@ -22,15 +22,14 @@ public enum ScopeReferWorkplaceGroup {
 	public static ScopeReferWorkplaceGroup of(int value) {
 		return EnumAdaptor.valueOf(value, ScopeReferWorkplaceGroup.class);
 	}
-	
-	public  ScopeReferWorkplaceGroup determineTheReferenceRange(EmployeeReferenceRangeImport employeeReferenceRange){
-		if(employeeReferenceRange== EmployeeReferenceRangeImport.ONLY_MYSELF){
-			return EnumAdaptor.valueOf(ScopeReferWorkplaceGroup.ONLY_ME.value, ScopeReferWorkplaceGroup.class);
+
+	public static ScopeReferWorkplaceGroup determineTheReferenceRange(EmployeeReferenceRangeImport employeeReferenceRange){
+		if(employeeReferenceRange== EmployeeReferenceRangeImport.ONLY_MYSELF) {
+			return ScopeReferWorkplaceGroup.ONLY_ME;
 		}
 		else {
-			//Tao QA xasc nhan 
-			return EnumAdaptor.valueOf(ScopeReferWorkplaceGroup.ALL_EMPLOYEE.value, ScopeReferWorkplaceGroup.class);
+			//Tao QA xasc nhan
+			return ScopeReferWorkplaceGroup.ALL_EMPLOYEE;
 		}
-		
 	}
 }

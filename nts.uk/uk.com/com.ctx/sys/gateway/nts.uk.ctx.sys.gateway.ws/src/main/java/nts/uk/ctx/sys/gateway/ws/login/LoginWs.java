@@ -21,25 +21,27 @@ import javax.ws.rs.core.Context;
 import nts.arc.layer.ws.WebService;
 import nts.arc.security.csrf.CsrfToken;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.sys.gateway.app.command.login.LocalContractFormCommand;
-import nts.uk.ctx.sys.gateway.app.command.login.LocalContractFormCommandHandler;
-import nts.uk.ctx.sys.gateway.app.command.login.MobileLoginCommand;
-import nts.uk.ctx.sys.gateway.app.command.login.MobileLoginCommandHandler;
-import nts.uk.ctx.sys.gateway.app.command.login.MobileLoginWithNoChangePassCommandHandler;
-import nts.uk.ctx.sys.gateway.app.command.login.SubmitContractFormCommand;
-import nts.uk.ctx.sys.gateway.app.command.login.SubmitContractFormCommandHandler;
-import nts.uk.ctx.sys.gateway.app.command.login.SubmitLoginFormOneCommand;
-import nts.uk.ctx.sys.gateway.app.command.login.SubmitLoginFormOneCommandHandler;
-import nts.uk.ctx.sys.gateway.app.command.login.SubmitLoginFormThreeCommand;
-import nts.uk.ctx.sys.gateway.app.command.login.SubmitLoginFormThreeCommandHandler;
-import nts.uk.ctx.sys.gateway.app.command.login.SubmitLoginFormTwoCommand;
-import nts.uk.ctx.sys.gateway.app.command.login.SubmitLoginFormTwoCommandHandler;
-import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckChangePassDto;
-import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckContractDto;
+import nts.uk.ctx.sys.gateway.app.command.login.password.CheckChangePassDto;
+import nts.uk.ctx.sys.gateway.app.command.login.password.PasswordAuthenticateCommand;
+import nts.uk.ctx.sys.gateway.app.command.login.password.PasswordAuthenticateCommandHandler;
+import nts.uk.ctx.sys.gateway.app.command.loginold.LocalContractFormCommand;
+import nts.uk.ctx.sys.gateway.app.command.loginold.LocalContractFormCommandHandler;
+import nts.uk.ctx.sys.gateway.app.command.loginold.MobileLoginCommand;
+import nts.uk.ctx.sys.gateway.app.command.loginold.MobileLoginCommandHandler;
+import nts.uk.ctx.sys.gateway.app.command.loginold.MobileLoginWithNoChangePassCommandHandler;
+import nts.uk.ctx.sys.gateway.app.command.loginold.SubmitContractFormCommand;
+import nts.uk.ctx.sys.gateway.app.command.loginold.SubmitContractFormCommandHandler;
+import nts.uk.ctx.sys.gateway.app.command.loginold.SubmitLoginFormOneCommand;
+import nts.uk.ctx.sys.gateway.app.command.loginold.SubmitLoginFormOneCommandHandler;
+import nts.uk.ctx.sys.gateway.app.command.loginold.SubmitLoginFormThreeCommand;
+import nts.uk.ctx.sys.gateway.app.command.loginold.SubmitLoginFormThreeCommandHandler;
+import nts.uk.ctx.sys.gateway.app.command.loginold.SubmitLoginFormTwoCommand;
+import nts.uk.ctx.sys.gateway.app.command.loginold.SubmitLoginFormTwoCommandHandler;
+import nts.uk.ctx.sys.gateway.app.command.loginold.dto.CheckContractDto;
 import nts.uk.ctx.sys.gateway.app.find.login.CompanyInformationFinder;
 import nts.uk.ctx.sys.gateway.app.find.login.EmployeeLoginSettingFinder;
 import nts.uk.ctx.sys.gateway.app.find.login.dto.EmployeeLoginSettingDto;
-import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInformationImport;
+import nts.uk.ctx.sys.shared.dom.company.CompanyInformationImport;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.application.auth.WindowsAccount;
 
@@ -84,6 +86,9 @@ public class LoginWs extends WebService {
 	@Inject
 	private MobileLoginWithNoChangePassCommandHandler mobileLoginNoChangePassHandler;
 
+	@Inject
+	private PasswordAuthenticateCommandHandler passwordAuthenticateCommandHandler;
+	
 	/** The Constant SIGN_ON. */
 	private static final String SIGN_ON = "on";
 	/**
@@ -262,4 +267,17 @@ public class LoginWs extends WebService {
 		return VerDto.builder().ver(GeneralDateTime.legacyDateTime(new Date(file.lastModified()))
 				.toString("yyyy/MM/dd HH:mm")).build();
 	}
+	
+	/**
+	 * Gets the company infor by code.
+	 *
+	 * @param companyId the company id
+	 * @return the company infor by code
+	 */
+	@POST
+	@Path("password")
+	public CheckChangePassDto loginOnPasswordAuthenticate(@Context HttpServletRequest request,PasswordAuthenticateCommand command) {
+		return passwordAuthenticateCommandHandler.handle(command);
+	}
+
 }

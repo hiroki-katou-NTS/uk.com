@@ -88,15 +88,16 @@ import nts.uk.ctx.at.function.dom.statement.EmployeeGeneralInfoAdapter;
 import nts.uk.ctx.at.function.dom.statement.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.record.dom.adapter.company.AffComHistItemImport;
 import nts.uk.ctx.at.record.dom.adapter.company.SyCompanyRecordAdapter;
-import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistItemImport;
 import nts.uk.ctx.at.record.dom.affiliationinformation.wkplaceinfochangeperiod.WkplaceInfoChangePeriod;
 import nts.uk.ctx.at.record.dom.affiliationinformation.wktypeinfochangeperiod.WkTypeInfoChangePeriod;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultEmployeeDomainService;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.CreateDailyResultDomainServiceNew;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyResult;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DailyCalculationEmployeeService;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationEmployeeService;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationEmployeeService.AggregationResult;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.getprocessingdate.GetProcessingDate;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.CalExeSettingInfor;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
@@ -112,29 +113,27 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enu
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.DailyRecreateClassification;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ErrorPresent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutedMenu;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionStatus;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommandHandler;
-import nts.uk.ctx.at.schedule.dom.executionlog.CreateMethodAtr;
-import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionAtr;
+import nts.uk.ctx.at.schedule.dom.executionlog.CreationMethod;
 import nts.uk.ctx.at.schedule.dom.executionlog.ImplementAtr;
-import nts.uk.ctx.at.schedule.dom.executionlog.ProcessExecutionAtr;
-import nts.uk.ctx.at.schedule.dom.executionlog.ReCreateAtr;
-import nts.uk.ctx.at.schedule.dom.executionlog.ReCreateContent;
-import nts.uk.ctx.at.schedule.dom.executionlog.RebuildTargetAtr;
-import nts.uk.ctx.at.schedule.dom.executionlog.RebuildTargetDetailsAtr;
-import nts.uk.ctx.at.schedule.dom.executionlog.ResetAtr;
+import nts.uk.ctx.at.schedule.dom.executionlog.RecreateCondition;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContent;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
+import nts.uk.ctx.at.schedule.dom.executionlog.SpecifyCreation;
 //import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
+import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistItemImport;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpHisAdaptor;
+import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.ConditionEmployee;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.getprocessingdate.GetProcessingDate;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -206,8 +205,6 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	@Inject
 	private ProcessExecutionLogManageRepository processExecLogManaRepo;
 	@Inject
-	private CreateDailyResultEmployeeDomainService createDailyService;
-	@Inject
 	private DailyCalculationEmployeeService dailyCalculationEmployeeService;
 	@Inject
 	private SyCompanyRecordAdapter syCompanyRecordAdapter;
@@ -278,25 +275,19 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	@Inject
 	private CalPeriodTransferAndWorktype calPeriodTransferAndWorktype;
 	
+	@Inject
+	private RecordDomRequireService requireService;
+
+	@Inject
+    private CreateDailyResultDomainServiceNew createDailyResultDomainServiceNew;
     
     @Inject
     private GetProcessingDate getProcessingDate;
-	
-	@Inject
-	private RecordDomRequireService requireService;
 	
 	public static int MAX_DELAY_PARALLEL = 0;
 
 	/**
 	 * 更新処理を開始する
-	 * 
-	 * @param execType
-	 *            実行タイプ
-	 * @param execId
-	 *            実行ID
-	 * @param execItemCd
-	 *            更新処理自動実行項目コード
-	 * @param companyId
 	 *            会社ID
 	 */
 	// 実行処理
@@ -548,7 +539,6 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	 *            実行ID
 	 * @param procExec
 	 *            更新処理自動実行
-	 * @param execSetting
 	 *            実行タスク設定
 	 * @param procExecLog
 	 *            更新処理自動実行ログ
@@ -779,7 +769,6 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	 *            実行ID
 	 * @param procExec
 	 *            更新処理自動実行
-	 * @param execSetting
 	 *            実行タスク設定
 	 * @param procExecLog
 	 *            更新処理自動実行ログ
@@ -796,6 +785,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, null);
 		String companyId = context.getCommand().getCompanyId();
 		String execItemCd = context.getCommand().getExecItemCd();
+
 		List<ExecutionTaskLog> taskLogList = this.execTaskLogRepo.getAllByCidExecCdExecId(companyId, execItemCd,
 				execId);
 		if (CollectionUtil.isEmpty(taskLogList)) {
@@ -852,7 +842,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				// 対象社員を取得 -
 
 				ScheduleCreatorExecutionCommand scheduleCommand = getScheduleCreatorExecutionAllEmp(execId, procExec,
-						loginContext, calculateSchedulePeriod, listEmp);
+						loginContext, calculateSchedulePeriod, listEmp,companyId,execItemCd);
 
 				try {
 //					AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctx = new AsyncCommandHandlerContext<>(scheduleCommand);
@@ -862,9 +852,14 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 					AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
 							.build(() -> {
 								scheduleCommand.setCountDownLatch(countDownLatch);
-									AsyncTaskInfo handle1 = this.scheduleExecution.handle(scheduleCommand);
-									dataToAsyn.setHandle(handle1);
-								
+								scheduleCommand.setIsReExecution(procExec.getProcessExecType().equals(ProcessExecType.RE_CREATE));
+								scheduleCommand.setRecreateTransfer(procExec
+										.getExecSetting()
+										.getDailyPerf()
+										.getTargetGroupClassification()
+										.isRecreateTransfer());
+								AsyncTaskInfo handle1 = this.scheduleExecution.handle(scheduleCommand);
+								dataToAsyn.setHandle(handle1);
 							});
 					try {
 						executorService.submit(task).get();
@@ -923,7 +918,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 						try {
 							ScheduleCreatorExecutionCommand scheduleCreatorExecutionOneEmp2 = this
 									.getScheduleCreatorExecutionOneEmp(execId, procExec, loginContext,
-											calculateSchedulePeriod, newEmployeeList);
+											calculateSchedulePeriod, newEmployeeList,companyId,execItemCd);
 							// AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctxNew = new
 							// AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>(scheduleCreatorExecutionOneEmp);
 							// ctxNew.setTaskId(context.asAsync().getTaskId());
@@ -933,9 +928,14 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 							AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
 									.build(() -> {
 										scheduleCreatorExecutionOneEmp2.setCountDownLatch(countDownLatch);
-											AsyncTaskInfo handle1 = this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp2);
-											dataToAsyn.setHandle(handle1);
-										
+										scheduleCreatorExecutionOneEmp2.setIsReExecution(procExec.getProcessExecType().equals(ProcessExecType.RE_CREATE));
+										scheduleCreatorExecutionOneEmp2.setRecreateTransfer(procExec
+												.getExecSetting()
+												.getDailyPerf()
+												.getTargetGroupClassification()
+												.isRecreateTransfer());
+										AsyncTaskInfo handle1 = this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp2);
+										dataToAsyn.setHandle(handle1);
 									});
 							try {
 								executorService.submit(task).get();
@@ -958,7 +958,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 							}
 							ScheduleCreatorExecutionCommand scheduleCreatorExecutionOneEmp3 = this
 									.getScheduleCreatorExecutionOneEmp(execId, procExec, loginContext,
-											calculateSchedulePeriod, temporaryEmployeeList);
+											calculateSchedulePeriod, temporaryEmployeeList,companyId,execItemCd);
 							if (checkStop(execId)) {
 								log.info("更新処理自動実行_個人スケジュール作成_END_" + context.getCommand().getExecItemCd() + "_"
 										+ GeneralDateTime.now());
@@ -971,9 +971,14 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 								AsyncTask task1 = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
 										.build(() -> {
 											scheduleCreatorExecutionOneEmp3.setCountDownLatch(countDownLatch1);
-												AsyncTaskInfo handle1 = this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp3);
-												dataToAsyn.setHandle(handle1);
-											
+											scheduleCreatorExecutionOneEmp3.setIsReExecution(procExec.getProcessExecType().equals(ProcessExecType.RE_CREATE));
+											scheduleCreatorExecutionOneEmp3.setRecreateTransfer(procExec
+													.getExecSetting()
+													.getDailyPerf()
+													.getTargetGroupClassification()
+													.isRecreateTransfer());
+											AsyncTaskInfo handle1 = this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp3);
+											dataToAsyn.setHandle(handle1);
 										});
 								try {
 									executorService.submit(task1).get();
@@ -1021,7 +1026,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 							DatePeriod periodDate = this.getMinPeriodFromStartDate(companyId);
 							ScheduleCreatorExecutionCommand scheduleCreatorExecutionOneEmp1 = this
 									.getScheduleCreatorExecutionOneEmp(execId, procExec, loginContext,
-											calculateSchedulePeriod, reEmployeeList);
+											calculateSchedulePeriod, reEmployeeList,companyId,execItemCd);
 							scheduleCreatorExecutionOneEmp1.getScheduleExecutionLog()
 									.setPeriod(new DatePeriod(periodDate.start(), endDate));
 
@@ -1233,7 +1238,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	}
 
 	private ScheduleCreatorExecutionCommand getScheduleCreatorExecutionAllEmp(String execId, ProcessExecution procExec,
-			LoginUserContext loginContext, DatePeriod calculateSchedulePeriod, List<String> empIds) {
+			LoginUserContext loginContext, DatePeriod calculateSchedulePeriod, List<String> empIds,String companyId,String execItemCd) {
 		ScheduleCreatorExecutionCommand scheduleCommand = new ScheduleCreatorExecutionCommand();
 		scheduleCommand.setConfirm(false);
 		scheduleCommand.setExecutionId(execId);
@@ -1251,40 +1256,40 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		scheduleExecutionLog.setExecutionId(execId);
 		// 【ドメインモデル「作成対象詳細設定」．異動者を再作成する = "する" or ドメインモデル「作成対象詳細設定」．勤務種別変更者を再作成 = "する"
 		// の場合】
-		boolean recreateTransfer = procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting()
-				.isRecreateTransfer();
-		boolean recreateWorkType = procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting()
-				.isRecreateWorkType();
-		ScheduleCreateContent s = new ScheduleCreateContent();
+//		boolean recreateTransfer = procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting()
+//				.isRecreateTransfer();
+//		boolean recreateWorkType = procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting()
+//				.isRecreateWorkType();
+		ScheduleCreateContent s = createContent(execId,companyId,execItemCd);
+		//ScheduleCreateContent s = new ScheduleCreateContent();
 		// 1-実行ID ＝ 取得した実行ID
 		// execId
-		s.setExecutionId(execId);
-		ReCreateContent reCreateContent = new ReCreateContent();
-		if (recreateTransfer || recreateWorkType) {
+		//s.setExecutionId(execId);
+		//ReCreateContent reCreateContent = new ReCreateContent();
+		//if (recreateTransfer || recreateWorkType) {
 			// 6-実施区分 → 再作成 とする
-			s.setImplementAtr(ImplementAtr.RECREATE);
+			s.setImplementAtr(ImplementAtr.CREATE_WORK_SCHEDULE);
 			// 7-再作成区分 → 未確定データのみ とする
-			reCreateContent.setReCreateAtr(ReCreateAtr.ONLY_UNCONFIRM);
+		//	reCreateContent.setReCreateAtr(ReCreateAtr.ONLY_UNCONFIRM);
 			// 8-処理実行区分 → もう一度作り直す とする
-			reCreateContent.setProcessExecutionAtr(ProcessExecutionAtr.REBUILD);
-		} else {
+		//	reCreateContent.setProcessExecutionAtr(ProcessExecutionAtr.REBUILD);
+		//} else {
 			// #107055
 			// ・実施区分 → 通常作成
-			s.setImplementAtr(ImplementAtr.GENERALLY_CREATED);
+			s.setImplementAtr(ImplementAtr.CREATE_NEW_ONLY);
 			// ・再作成区分 → 全件 とする
-			reCreateContent.setReCreateAtr(ReCreateAtr.ALL_CASE);
+		//	reCreateContent.setReCreateAtr(ReCreateAtr.ALL_CASE);
 			// ・処理実行区分 → もう一度作り直す とする
-			reCreateContent.setProcessExecutionAtr(ProcessExecutionAtr.REBUILD);
-		}
-		// ・9-マスタ情報再設定 → falseとする
-		ResetAtr r = new ResetAtr();
-		r.setResetMasterInfo(false);
+		//	reCreateContent.setProcessExecutionAtr(ProcessExecutionAtr.REBUILD);
+		//// ・9-マスタ情報再設定 → falseとする
+		//ResetAtr r = new ResetAtr();
+		//r.setResetMasterInfo(false);
 		// 10-申し送り時間再設定 → falseとする
-		r.setResetTimeAssignment(false);
+		//r.setResetTimeAssignment(false);
 		// ・11-作成時に確定済みにする → falseとする
-		s.setConfirm(false);
+		//s.setConfirm(false);
 		// ・12-作成方法区分 → 個人情報とする
-		s.setCreateMethodAtr(CreateMethodAtr.PERSONAL_INFO);
+		//s.setCreateMethodAtr(CreateMethodAtr.PERSONAL_INFO);
 		// 13-コピー開始日 → nullとする
 
 		// 14-パターンコード → nullとする
@@ -1306,51 +1311,51 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		// 22-祝日勤務種類 → nullとする
 
 		// 23-実行区分 ＝ 自動
-		scheduleExecutionLog.setExeAtr(ExecutionAtr.AUTOMATIC);
-		RebuildTargetDetailsAtr rebuildTargetDetailsAtr = new RebuildTargetDetailsAtr();
-		if (recreateTransfer) {
+		//scheduleExecutionLog.setExeAtr(ExecutionAtr.AUTOMATIC);
+		//RebuildTargetDetailsAtr rebuildTargetDetailsAtr = new RebuildTargetDetailsAtr();
+		//if (recreateTransfer) {
 			// 24-異動者を再作成 → true
-			rebuildTargetDetailsAtr.setRecreateConverter(true);
+		//	rebuildTargetDetailsAtr.setRecreateConverter(true);
 
-		} else {
+		//} else {
 			// 異動者を再作成 → false
-			rebuildTargetDetailsAtr.setRecreateConverter(false);
-		}
-		if (recreateWorkType) {
+		//	rebuildTargetDetailsAtr.setRecreateConverter(false);
+		//}
+		//if (recreateWorkType) {
 			// 25-・勤務種別変更者を再作成 → true
-			rebuildTargetDetailsAtr.setRecreateWorkTypeChange(true);
-		} else {
+		//	rebuildTargetDetailsAtr.setRecreateWorkTypeChange(true);
+		//} else {
 			// ・勤務種別変更者を再作成 → false
-			rebuildTargetDetailsAtr.setRecreateWorkTypeChange(false);
-		}
+		//	rebuildTargetDetailsAtr.setRecreateWorkTypeChange(false);
+		//}
 		// 【ドメインモデル「作成対象詳細設定」．手修正を保護する = "する" 】
-		boolean manualCorrection = procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting()
-				.isManualCorrection();
-		if (manualCorrection) {
+		//boolean manualCorrection = procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting()
+		//		.isManualCorrection();
+		//if (manualCorrection) {
 			// 26-・手修正を保護 → true
-			rebuildTargetDetailsAtr.setProtectHandCorrection(true);
-		} else {
+		//	rebuildTargetDetailsAtr.setProtectHandCorrection(true);
+		//} else {
 			// 手修正を保護 → false
-			rebuildTargetDetailsAtr.setProtectHandCorrection(false);
-		}
+		//		rebuildTargetDetailsAtr.setProtectHandCorrection(false);
+		//}
 
 		// 27-再作成対象区分 → 対象者のみ
-		reCreateContent.setRebuildTargetAtr(RebuildTargetAtr.TARGET_ONLY);
+		//reCreateContent.setRebuildTargetAtr(RebuildTargetAtr.TARGET_ONLY);
 		// 28-休職休業者を再作成 → falseとする
-		rebuildTargetDetailsAtr.setRecreateEmployeeOffWork(false);
+		//rebuildTargetDetailsAtr.setRecreateEmployeeOffWork(false);
 		// 29-・直行直帰者を再作成 → falseとする
-		rebuildTargetDetailsAtr.setRecreateDirectBouncer(false);
+		//rebuildTargetDetailsAtr.setRecreateDirectBouncer(false);
 		// 30短時間勤務者を再作成 → falseとする
-		rebuildTargetDetailsAtr.setRecreateShortTermEmployee(false);
+		//rebuildTargetDetailsAtr.setRecreateShortTermEmployee(false);
 		// 31勤務開始・終了時刻を再設定 → falseとする
-		r.setResetWorkingHours(false);
+		//r.setResetWorkingHours(false);
 		// 32休憩開始・終了時刻を再設定 → falseとする
-		r.setResetStartEndTime(false);
+		//r.setResetStartEndTime(false);
 
-		reCreateContent.setRebuildTargetDetailsAtr(rebuildTargetDetailsAtr);
-		reCreateContent.setResetAtr(r);
-		s.setReCreateContent(reCreateContent);
-		scheduleCommand.setScheduleExecutionLog(scheduleExecutionLog);
+		//reCreateContent.setRebuildTargetDetailsAtr(rebuildTargetDetailsAtr);
+		//reCreateContent.setResetAtr(r);
+		//s.setReCreateContent(reCreateContent);
+		//scheduleCommand.setScheduleExecutionLog(scheduleExecutionLog);
 		scheduleCommand.setContent(s);
 		return scheduleCommand;
 	}
@@ -1364,7 +1369,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	 * @return
 	 */
 	private ScheduleCreatorExecutionCommand getScheduleCreatorExecutionOneEmp(String execId, ProcessExecution procExec,
-			LoginUserContext loginContext, DatePeriod calculateSchedulePeriod, List<String> empIds) {
+			LoginUserContext loginContext, DatePeriod calculateSchedulePeriod, List<String> empIds,String cid, String execItemCd) {
 		ScheduleCreatorExecutionCommand scheduleCommand = new ScheduleCreatorExecutionCommand();
 		scheduleCommand.setConfirm(false);
 		scheduleCommand.setAutomatic(true);
@@ -1384,38 +1389,39 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		scheduleExecutionLog.setExecutionId(execId);
 		// 【ドメインモデル「作成対象詳細設定」．異動者を再作成する = "する" or ドメインモデル「作成対象詳細設定」．勤務種別変更者を再作成 = "する"
 		// の場合】
-		boolean recreateTransfer = procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting()
-				.isRecreateTransfer();
-		boolean recreateWorkType = procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting()
-				.isRecreateWorkType();
-		ScheduleCreateContent s = new ScheduleCreateContent();
-		s.setExecutionId(execId);
-		ReCreateContent reCreateContent = new ReCreateContent();
-		if (recreateTransfer || recreateWorkType) {
+//		boolean recreateTransfer = procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting()
+//				.isRecreateTransfer();
+//		boolean recreateWorkType = procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting()
+//				.isRecreateWorkType();
+		ScheduleCreateContent s = createContent(execId,cid,execItemCd);
+		//ScheduleCreateContent s = new ScheduleCreateContent();
+		//s.setExecutionId(execId);
+		//ReCreateContent reCreateContent = new ReCreateContent();
+		//if (recreateTransfer || recreateWorkType) {
 			// 6-実施区分 → 再作成 とする
-			s.setImplementAtr(ImplementAtr.RECREATE);
+			s.setImplementAtr(ImplementAtr.CREATE_WORK_SCHEDULE);
 			// 7-再作成区分 → 未確定データのみ とする
 
-			reCreateContent.setReCreateAtr(ReCreateAtr.ONLY_UNCONFIRM);
+		//	reCreateContent.setReCreateAtr(ReCreateAtr.ONLY_UNCONFIRM);
 			// 8-処理実行区分 → もう一度作り直す とする
-			reCreateContent.setProcessExecutionAtr(ProcessExecutionAtr.REBUILD);
-		} else {
+		//	reCreateContent.setProcessExecutionAtr(ProcessExecutionAtr.REBUILD);
+		//} else {
 			// ・実施区分 → 再作成 とする
-			s.setImplementAtr(ImplementAtr.RECREATE);
+			s.setImplementAtr(ImplementAtr.CREATE_WORK_SCHEDULE);
 			// ・再作成区分 → 全件 とする
-			reCreateContent.setReCreateAtr(ReCreateAtr.ALL_CASE);
+		//	reCreateContent.setReCreateAtr(ReCreateAtr.ALL_CASE);
 			// ・処理実行区分 → もう一度作り直す とする
-			reCreateContent.setProcessExecutionAtr(ProcessExecutionAtr.REBUILD);
-		}
+		//	reCreateContent.setProcessExecutionAtr(ProcessExecutionAtr.REBUILD);
+		//}
 		// ・9-マスタ情報再設定 → falseとする
-		ResetAtr r = new ResetAtr();
-		r.setResetMasterInfo(false);
+		//ResetAtr r = new ResetAtr();
+		//r.setResetMasterInfo(false);
 		// 10-申し送り時間再設定 → falseとする
-		r.setResetTimeAssignment(false);
+		//r.setResetTimeAssignment(false);
 		// ・11-作成時に確定済みにする → falseとする
-		s.setConfirm(false);
+		//s.setConfirm(false);
 		// ・12-作成方法区分 → 個人情報とする
-		s.setCreateMethodAtr(CreateMethodAtr.PERSONAL_INFO);
+		//s.setCreateMethodAtr(CreateMethodAtr.PERSONAL_INFO);
 		// 13-コピー開始日 → nullとする
 
 		// 14-パターンコード → nullとする
@@ -1437,55 +1443,106 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		// 22-祝日勤務種類 → nullとする
 
 		// 23-実行区分 ＝ 自動
-		scheduleExecutionLog.setExeAtr(ExecutionAtr.AUTOMATIC);
+		//scheduleExecutionLog.setExeAtr(ExecutionAtr.AUTOMATIC);
 
-		RebuildTargetDetailsAtr rebuildTargetDetailsAtr = new RebuildTargetDetailsAtr();
-		if (recreateTransfer) {
+		//RebuildTargetDetailsAtr rebuildTargetDetailsAtr = new RebuildTargetDetailsAtr();
+		//if (recreateTransfer) {
 			// 24-異動者を再作成 → true
-			rebuildTargetDetailsAtr.setRecreateConverter(true);
+		//	rebuildTargetDetailsAtr.setRecreateConverter(true);
 
-		} else {
+		//} else {
 			// 異動者を再作成 → false
-			rebuildTargetDetailsAtr.setRecreateConverter(false);
-		}
-		if (recreateWorkType) {
+		//	rebuildTargetDetailsAtr.setRecreateConverter(false);
+		//}
+		//if (recreateWorkType) {
 			// 25-・勤務種別変更者を再作成 → true
-			rebuildTargetDetailsAtr.setRecreateWorkTypeChange(true);
-		} else {
+		//	rebuildTargetDetailsAtr.setRecreateWorkTypeChange(true);
+		//} else {
 			// ・勤務種別変更者を再作成 → false
-			rebuildTargetDetailsAtr.setRecreateWorkTypeChange(false);
-		}
+		//	rebuildTargetDetailsAtr.setRecreateWorkTypeChange(false);
+		//}
 		// 【ドメインモデル「作成対象詳細設定」．手修正を保護する = "する" 】
-		boolean manualCorrection = procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting()
-				.isManualCorrection();
-		if (manualCorrection) {
+		//boolean manualCorrection = procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting()
+		//		.isManualCorrection();
+		//if (manualCorrection) {
 			// 26-・手修正を保護 → true
-			rebuildTargetDetailsAtr.setProtectHandCorrection(true);
-		} else {
+		//	rebuildTargetDetailsAtr.setProtectHandCorrection(true);
+		//} else {
 			// 手修正を保護 → false
-			rebuildTargetDetailsAtr.setProtectHandCorrection(false);
-		}
+		//	rebuildTargetDetailsAtr.setProtectHandCorrection(false);
+		//}
 
 		// 27-再作成対象区分 → 対象者のみ
-		reCreateContent.setRebuildTargetAtr(RebuildTargetAtr.TARGET_ONLY);
+		//reCreateContent.setRebuildTargetAtr(RebuildTargetAtr.TARGET_ONLY);
 		// 28-休職休業者を再作成 → falseとする
-		rebuildTargetDetailsAtr.setRecreateEmployeeOffWork(false);
+		//rebuildTargetDetailsAtr.setRecreateEmployeeOffWork(false);
 		// 29-・直行直帰者を再作成 → falseとする
-		rebuildTargetDetailsAtr.setRecreateDirectBouncer(false);
+		//rebuildTargetDetailsAtr.setRecreateDirectBouncer(false);
 		// 30短時間勤務者を再作成 → falseとする
-		rebuildTargetDetailsAtr.setRecreateShortTermEmployee(false);
+		//rebuildTargetDetailsAtr.setRecreateShortTermEmployee(false);
 		// 31勤務開始・終了時刻を再設定 → falseとする
-		r.setResetWorkingHours(false);
+		//r.setResetWorkingHours(false);
 		// 32休憩開始・終了時刻を再設定 → falseとする
-		r.setResetStartEndTime(false);
+		//r.setResetStartEndTime(false);
 
-		reCreateContent.setRebuildTargetDetailsAtr(rebuildTargetDetailsAtr);
-		reCreateContent.setResetAtr(r);
-		;
-		s.setReCreateContent(reCreateContent);
-		scheduleCommand.setScheduleExecutionLog(scheduleExecutionLog);
+		//reCreateContent.setRebuildTargetDetailsAtr(rebuildTargetDetailsAtr);
+		//reCreateContent.setResetAtr(r);
+		//s.setReCreateContent(reCreateContent);
+		//scheduleCommand.setScheduleExecutionLog(scheduleExecutionLog);
 		scheduleCommand.setContent(s);
 		return scheduleCommand;
+	}
+	private  ScheduleCreateContent createContent(String execId,String companyId,String execItemCd){
+		ScheduleCreateContent s = new ScheduleCreateContent();
+		// 1-実行ID ＝ 取得した実行ID
+		// execId
+		s.setExecutionId(execId);
+		// 確定済みにする←false
+		s.setConfirm(false);
+		//作成種類←"新規作成"
+
+		s.setImplementAtr(ImplementAtr.CREATE_NEW_ONLY);
+		//作成方法の指定 {
+        //・作成方法←"個人情報"
+        //・コピー開始日←optional.empty
+        //・マスタ参照先←optional.empty
+        //・月間パターンコード←optional.empty
+		//}
+		s.setSpecifyCreation(new SpecifyCreation(CreationMethod.PERSONAL_INFO,Optional.empty(),Optional.empty(),Optional.empty()));
+		// ドメインモデル「更新処理自動実行」を取得する
+		ProcessExecution procExec;
+		Optional<ProcessExecution> procExecOpt = this.procExecRepo.getProcessExecutionByCidAndExecCd(companyId,
+				execItemCd);
+		if (procExecOpt.isPresent()) {
+			procExec = procExecOpt.get();
+			val checkReTarget = procExec.getProcessExecType().value;
+			 //・再作成条件{
+			 //・対象者を限定する←{
+             //ドメインモデル「更新処理自動実行」.実行種別="再実行" →true
+			 // }
+			if (checkReTarget == ProcessExecType.NORMAL_EXECUTION.value) {
+				val reTargetAtr = false;
+				val narrowing = new ConditionEmployee(false, false, false, false);
+				//・確定済みも対象とする←false
+                //・手修正・申請反映も対象とする←false
+				RecreateCondition recreateCondition = new RecreateCondition(reTargetAtr, false, false, Optional.of(narrowing));
+				s.setRecreateCondition(Optional.of(recreateCondition));
+			} else if (checkReTarget == ProcessExecType.RE_CREATE.value) {
+				val reTargetAtr = true;
+				//・対象者の条件{
+				// ・異動者←false
+				//・休職休業者←false
+				//・短時間勤務者←false
+				//・労働条件変更者←false
+				//}
+				val narrowing = new ConditionEmployee(false, false, false, false);
+				//・確定済みも対象とする←false
+				//・手修正・申請反映も対象とする←false
+				RecreateCondition recreateCondition = new RecreateCondition(reTargetAtr, false, false, Optional.of(narrowing));
+				s.setRecreateCondition(Optional.of(recreateCondition));
+			}
+		}
+		return s;
 	}
 
 	/**
@@ -1506,8 +1563,6 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	 * @param execId
 	 *            実行ID
 	 * @param procExec
-	 *            更新処理自動実行
-	 * @param execSetting
 	 *            実行タスク設定
 	 * @param procExecLog
 	 *            更新処理自動実行ログ
@@ -2553,11 +2608,14 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 					val require = requireService.createRequire();
 					this.managedParallelWithContext.forEach(ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL),
 						lstRegulationInfoEmployeeNew, item -> {
+
+							val cacheCarrier = new CacheCarrier();
+
                             Optional<GeneralDate> date = getProcessingDate.getProcessingDate(item, GeneralDate.legacyDate(now.date()));
                             if(!date.isPresent()) {
                                 return;
                             }
-							val cacheCarrier = new CacheCarrier();
+							
 							AsyncCommandHandlerContext<ExecuteProcessExecutionCommand> asyContext = (AsyncCommandHandlerContext<ExecuteProcessExecutionCommand>) context;
 							AggregationResult result = MonthlyAggregationEmployeeService.aggregate(require, cacheCarrier, asyContext, companyId,
 									item,
@@ -3087,11 +3145,25 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		if ("日別作成".equals(typeExecution)) {
 			try {
 				// ⑤社員の日別実績を作成する
-				processState = this.createDailyService.createDailyResultEmployeeWithNoInfoImport(asyContext, employeeId,
-						period, empCalAndSumExeLog.getCompanyID(), empCalAndSumExeLog.getEmpCalAndSumExecLogID(),
-						Optional.ofNullable(dailyCreateLog), processExecution.getExecSetting().getDailyPerf()
-								.getTargetGroupClassification().isRecreateTypeChangePerson() ? true : false,
-						false, false, null);
+//				processState = this.createDailyService.createDailyResultEmployeeWithNoInfoImport(asyContext, employeeId,
+//						period, empCalAndSumExeLog.getCompanyID(), empCalAndSumExeLog.getEmpCalAndSumExecLogID(),
+//						Optional.ofNullable(dailyCreateLog), processExecution.getExecSetting().getDailyPerf()
+//								.getTargetGroupClassification().isRecreateTypeChangePerson() ? true : false,
+//						false, false, null);
+				ExecutionTypeDaily executionTypeDaily = ExecutionTypeDaily.CREATE;
+				if(dailyCreateLog.getDailyCreationSetInfo().isPresent() && dailyCreateLog.getDailyCreationSetInfo().get().getExecutionType() == ExecutionType.RERUN  ) {
+					executionTypeDaily = ExecutionTypeDaily.DELETE_ACHIEVEMENTS;
+				}
+				OutputCreateDailyResult status = createDailyResultDomainServiceNew.createDataNewWithNoImport(
+						asyContext, 
+						employeeId, 
+						period,
+						ExecutionAttr.AUTO, 
+						companyId,
+						executionTypeDaily,
+						Optional.of(empCalAndSumExeLog), 
+						Optional.empty());
+				processState = (status.getProcessState().value == 0 ? ProcessState.INTERRUPTION : ProcessState.SUCCESS);
 			} catch (Exception e) {
 				throw new CreateDailyException(e);
 			}
@@ -3132,69 +3204,6 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	@Inject
 	private RecordWorkInfoFunAdapter recordWorkInfoFunAdapter;
 
-	// 再作成処理
-	// private boolean
-	// recreateProcess(CommandHandlerContext<ExecuteProcessExecutionCommand>
-	// context, int closureId,
-	// EmpCalAndSumExeLog empCalAndSumExeLog, DatePeriod period, List<String>
-	// workPlaceIds, List<String> empIdList,
-	// String companyId, ProcessExecutionLog procExecLog, ProcessExecution
-	// processExecution,
-	// ExecutionLog dailyCreateLog) throws CreateDailyException,
-	// DailyCalculateException {
-	// // 期間を計算
-	// GeneralDate calculateDate = this.calculatePeriod(closureId, period,
-	// companyId);
-	//
-	// //// 勤務種別の絞り込み
-	// List<String> newEmpIdList = this.refineWorkType(companyId, empIdList,
-	// calculateDate);
-	//
-	// boolean isHasInterrupt = false;
-	// // 日別実績処理の再実行
-	// int size = newEmpIdList.size();
-	// for (int i = 0; i < size; i++) {
-	// String empId = newEmpIdList.get(i);
-	// // ドメインモデル「日別実績の勤務情報」を取得する
-	// // 「作成した開始日」～「取得した日別実績の勤務情報.年月日」を対象期間とする
-	// List<WorkInfoOfDailyPerFnImport> listWorkInfo =
-	// recordWorkInfoFunAdapter.findByPeriodOrderByYmd(empId);
-	// if (listWorkInfo.isEmpty())
-	// continue;
-	// GeneralDate maxDate = listWorkInfo.stream().map(u ->
-	// u.getYmd()).max(GeneralDate::compareTo).get();
-	// isHasInterrupt = this.RedoDailyPerformanceProcessing(context, companyId,
-	// empId,
-	// new DatePeriod(calculateDate, maxDate),
-	// empCalAndSumExeLog.getEmpCalAndSumExecLogID(),
-	// dailyCreateLog,processExecution);
-	// if (isHasInterrupt) {
-	// break;
-	// }
-	// }
-	// return isHasInterrupt;
-	// }	
-
-	// 承認結果の反映の実行ログを作成
-	// private void createExecLogReflecAppResult(String execId, String companyId,
-	// ProcessExecutionLog procExecLog) {
-	// List<Closure> findAll = this.closureRepo.findAll(companyId);
-	// DatePeriod period = this.findClosurePeriodMinDate(companyId, findAll);
-	// // ドメインモデル「実行ログ」を新規登録する
-	// // ドメインモデル「実行ログ」を新規登録する
-	// ExecutionLog exeLog = new ExecutionLog(execId,
-	// ExecutionContent.REFLRCT_APPROVAL_RESULT, ErrorPresent.NO_ERROR,
-	// new ExecutionTime(GeneralDateTime.now(), GeneralDateTime.now()),
-	// ExecutionStatus.INCOMPLETE,
-	// new ObjectPeriod(period.start(), period.end()));
-	// exeLog.setReflectApprovalSetInfo(new
-	// SetInforReflAprResult(ExecutionContent.REFLRCT_APPROVAL_RESULT,
-	// ExecutionType.NORMAL_EXECUTION, IdentifierUtil.randomUniqueId(), true));
-	// this.executionLogRepository.addExecutionLog(exeLog);
-	// // ドメインモデル「更新処理自動実行ログ」を更新する
-	// procExecLog.getEachProcPeriod().get().setReflectApprovalResult(period);
-	// this.procExecLogRepo.update(procExecLog);
-	// }
 
 	// 期間を計算
 	private GeneralDate calculatePeriod(int closureId, DatePeriod period, String companyId) {
@@ -3208,28 +3217,6 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		return period.start();
 	}
 
-	// 勤務種別の絞り込み
-//	private List<String> refineWorkType(String companyId, List<String> empIdList, GeneralDate startDate) {
-//		List<String> newEmpIdList = new ArrayList<String>();
-//		for (String empId : empIdList) {
-//			// ドメインモデル「社員の勤務種別の履歴」を取得する
-//			Optional<BusinessTypeOfEmployeeHistory> businessTypeOpt = this.typeEmployeeOfHistoryRepos
-//					.findByEmployeeDesc(AppContexts.user().companyId(), empId);
-//			if (businessTypeOpt.isPresent()) {
-//				BusinessTypeOfEmployeeHistory businessTypeOfEmployeeHistory = businessTypeOpt.get();
-//				List<DateHistoryItem> lstDate = businessTypeOfEmployeeHistory.getHistory();
-//				int size = lstDate.size();
-//				for (int i = 0; i < size; i++) {
-//					DateHistoryItem dateHistoryItem = lstDate.get(i);
-//					if (dateHistoryItem.start().compareTo(startDate) >= 0) {
-//						newEmpIdList.add(empId);
-//						break;
-//					}
-//				}
-//			}
-//		}
-//		return newEmpIdList;
-//	}
 
 	private boolean RedoDailyPerformanceProcessing(CommandHandlerContext<ExecuteProcessExecutionCommand> context,
 			String companyId, String empId, DatePeriod period, String empCalAndSumExeLogId, ExecutionLog dailyCreateLog,
@@ -3237,19 +3224,18 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		AsyncCommandHandlerContext<ExecuteProcessExecutionCommand> asyncContext = (AsyncCommandHandlerContext<ExecuteProcessExecutionCommand>) context;
 		ProcessState processState1;
 		try {
-			// 実行設定.日別実績の作成・計算.対象者区分.勤務種別者を再作成
-			boolean reCreateWorkType = procExec.getExecSetting().getDailyPerf().getTargetGroupClassification()
-					.isRecreateTypeChangePerson();
-			// 実行設定.日別実績の作成・計算.対象者区分.異動者を再作成する
-			boolean reCreateWorkPlace = procExec.getExecSetting().getDailyPerf().getTargetGroupClassification()
-					.isRecreateTransfer();
-			// 実行設定.日別実績の作成・計算.対象者区分.休職者・休業者を再作成
-
-			boolean reCreateRestTime = false; // TODO : chua lam
 			// ⑤社員の日別実績を作成する
-			processState1 = this.createDailyService.createDailyResultEmployeeWithNoInfoImport(asyncContext, empId,
-					period, companyId, empCalAndSumExeLogId, Optional.ofNullable(dailyCreateLog), reCreateWorkType,
-					reCreateWorkPlace, reCreateRestTime, null);
+			Optional<EmpCalAndSumExeLog> oEmpCalAndSumExeLog = this.empCalSumRepo.getByEmpCalAndSumExecLogID(empCalAndSumExeLogId);
+			OutputCreateDailyResult status = this.createDailyResultDomainServiceNew.createDataNewWithNoImport(
+					asyncContext, 
+					empId, 
+					period,
+					ExecutionAttr.MANUAL, 
+					companyId,
+					ExecutionTypeDaily.CREATE,
+					oEmpCalAndSumExeLog, 
+					Optional.empty());
+			processState1 = (status.getProcessState().value == 0 ? ProcessState.INTERRUPTION : ProcessState.SUCCESS);
 		} catch (Exception e) {
 			throw new CreateDailyException(e);
 		}

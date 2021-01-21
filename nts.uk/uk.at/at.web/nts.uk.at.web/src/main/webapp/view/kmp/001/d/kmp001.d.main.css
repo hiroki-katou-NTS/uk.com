@@ -17,8 +17,10 @@
 }
 
 .view-dialog .view-button {
-	padding-left: 70px;
+	padding-left: 60px;
 	float: left;
+	margin-top: 9px;
+    margin-left: 7px;
 }
 
 #button_decide {

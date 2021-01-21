@@ -58,6 +58,13 @@ public interface LoginUserRoles {
 	
 	boolean isInChargePersonalInfo();
 	
+	default boolean isInChargeAny() {
+		return isInChargeAttendance()
+				|| isInChargePayroll()
+				|| isInChargePersonnel()
+				|| isInChargePersonalInfo();
+	}
+	
 	
 	/**
 	 * Check if user has role for ...
@@ -70,7 +77,7 @@ public interface LoginUserRoles {
 	public static class HavingRole {
 		private final LoginUserRoles roles;
 		
-		HavingRole(LoginUserRoles roles) {
+		public HavingRole(LoginUserRoles roles) {
 			this.roles = roles;
 		}
 		

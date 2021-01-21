@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSettingDetail;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSettingGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFl;
 import nts.uk.ctx.at.shared.infra.repository.worktime.flexset.JpaFlexFlowWorkRestSettingDetailGetMemento;
 
 /**
@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.infra.repository.worktime.flexset.JpaFlexFlowWorkRes
 public class JpaFlexFWRestSettingGetMemento implements FlowWorkRestSettingGetMemento{
 	
 	/** The entity. */
-	private KshmtFlexRestSet entity;
+	private KshmtWtFleBrFl entity;
 	
 
 	/**
@@ -24,7 +24,7 @@ public class JpaFlexFWRestSettingGetMemento implements FlowWorkRestSettingGetMem
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlexFWRestSettingGetMemento(KshmtFlexRestSet entity) {
+	public JpaFlexFWRestSettingGetMemento(KshmtWtFleBrFl entity) {
 		super();
 		this.entity = entity;
 	}

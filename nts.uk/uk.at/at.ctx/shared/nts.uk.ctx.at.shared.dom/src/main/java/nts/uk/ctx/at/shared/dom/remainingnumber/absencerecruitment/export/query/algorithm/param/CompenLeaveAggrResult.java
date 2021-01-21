@@ -2,14 +2,12 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.PauseError;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SeqVacationAssociationInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.VacationDetails;
@@ -57,10 +55,4 @@ public class CompenLeaveAggrResult {
 		this.lstSeqVacation = new ArrayList<>();
 	}
 
-	public AbsRecRemainMngOfInPeriod convert() {
-		return new AbsRecRemainMngOfInPeriod(
-				vacationDetails.getLstAcctAbsenDetail().stream().map(x -> x.convertDefaultAbs())
-						.collect(Collectors.toList()),
-				remainDay.v(), unusedDay.v(), occurrenceDay.v(), dayUse.v(), carryoverDay.v(), pError, nextDay);
-	}
 }

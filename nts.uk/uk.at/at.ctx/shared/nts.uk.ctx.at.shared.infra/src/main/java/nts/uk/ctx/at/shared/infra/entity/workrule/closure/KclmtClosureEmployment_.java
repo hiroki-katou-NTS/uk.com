@@ -10,12 +10,12 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KclmtClosureEmployment_.
  */
-@StaticMetamodel(KclmtClosureEmployment.class)
+@StaticMetamodel(KshmtClosureEmp.class)
 public class KclmtClosureEmployment_ {
 
 	/** The kclmp closure employment PK. */
-	public static volatile SingularAttribute<KclmtClosureEmployment, KclmpClosureEmploymentPK> kclmpClosureEmploymentPK;
+	public static volatile SingularAttribute<KshmtClosureEmp, KclmpClosureEmploymentPK> kclmpClosureEmploymentPK;
 	
 	/** The closure id. */
-	public static volatile SingularAttribute<KclmtClosureEmployment, Integer> closureId;
+	public static volatile SingularAttribute<KshmtClosureEmp, Integer> closureId;
 }

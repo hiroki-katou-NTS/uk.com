@@ -1,0 +1,29 @@
+input {
+	text-align: center !important;
+}
+.adjustWidth {
+	width: 160px !important;
+}
+.inlineBlockFirst {
+	display: inline-block;
+}
+.labelFirst {
+	float: left;
+	padding-top: 10px !important;
+}
+.blockSecond {
+	display: block;
+	margin-top: 10px;
+	margin-left: 40px;
+}
+.inputBlockSecond {
+	text-align: center !important; 
+	margin-left: 80px; 
+	float: left; 
+	width: 50px;
+}
+.dropListBlockSecond {
+	height: 30px; 
+	margin-left: 25px;
+	width: 100px;
+}

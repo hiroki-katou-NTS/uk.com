@@ -26,21 +26,9 @@ module nts.uk.at.view.kdp002.t {
 				self.buttonInfo(lstButton);
 				if (!self.share) {
 					self.dataShare = {
-						messageContent: '個人の打刻入力で利用する設定です',
-						messageColor: '#0033cc',
-						listRequired: [{
-							buttonName: ko.observable('個人の打')
-						}, {
-							buttonName: ko.observable('個人の打')
-						}, {
-							buttonName: ko.observable('個人の打')
-						}, {
-							buttonName: ko.observable('個人の打')
-						}, {
-							buttonName: ko.observable('個人の打')
-						}, {
-							buttonName: ko.observable('個人の打')
-						}]
+						messageContent: '',
+						messageColor: '',
+						listRequired: []
 					}
 				} else {
 					self.share.dailyAttdErrorInfos = _.orderBy(self.share.dailyAttdErrorInfos, ['lastDateError'], ['desc']);
@@ -52,7 +40,10 @@ module nts.uk.at.view.kdp002.t {
 					let listRequired = [];
 					let length = error.listRequired.length > 6 ? 6 : error.listRequired.length;
 					for (let idx = 0; idx < length; idx++) {
-						listRequired.push(self.getBtn(error.listRequired[idx]));
+						let btn = self.getBtn(error.listRequired[idx]);
+						if (btn) {
+							listRequired.push(btn);
+						}
 					}
 					self.dataShare = {
 						listRequired: listRequired
@@ -68,6 +59,9 @@ module nts.uk.at.view.kdp002.t {
 				let btn = {};
 				let transfer = { appDate: self.errorDate() };
 				let app = _.find(self.share.appDispNames, (app) => { return app.appType === errorType });
+				if (!app) {
+					return null;
+				}
 				btn.buttonName = app ? ko.observable(app.dispName) : ko.observable('');
 				btn.appType = app.appType;
 				btn.screen = app.url;

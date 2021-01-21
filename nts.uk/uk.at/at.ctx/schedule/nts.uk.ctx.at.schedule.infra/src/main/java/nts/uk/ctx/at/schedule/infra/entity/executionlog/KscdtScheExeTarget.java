@@ -15,29 +15,44 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KscdtScheExeTarget.
  */
+// Entity: スケジュール作成対象者
+
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCDT_SCHE_EXE_TARGET")
-public class KscdtScheExeTarget extends UkJpaEntity implements Serializable {
-    
-    /** The Constant serialVersionUID. */
+@Table(name = "KSCDT_BATCH_TARGET_SYA")
+public class KscdtScheExeTarget extends ContractUkJpaEntity implements Serializable {
+
+    /**
+     * The Constant serialVersionUID.
+     */
     private static final long serialVersionUID = 1L;
-    
-    /** The kscdt sche exe target PK. */
+
+    /**
+     * The kscdt sche exe target PK.
+     */
     @EmbeddedId
     protected KscdtScheExeTargetPK kscdtScheExeTargetPK;
-    
-    /** The exe status. */
+
+    /**
+     * The exe status.
+     */
     @Basic(optional = false)
     @NotNull
     @Column(name = "EXE_STATUS")
     private int exeStatus;
+
+    /**
+     * The cid.
+     */
+    @NotNull
+    @Column(name = "CID")
+    private String cid;
 
     /**
      * Instantiates a new kscmt sch creator.
@@ -69,19 +84,19 @@ public class KscdtScheExeTarget extends UkJpaEntity implements Serializable {
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
-	public boolean equals(Object object) {
-		// not set
-		if (!(object instanceof KscdtScheExeTarget)) {
-			return false;
-		}
-		KscdtScheExeTarget other = (KscdtScheExeTarget) object;
-		if ((this.kscdtScheExeTargetPK == null && other.kscdtScheExeTargetPK != null)
-				|| (this.kscdtScheExeTargetPK != null
-						&& !this.kscdtScheExeTargetPK.equals(other.kscdtScheExeTargetPK))) {
-			return false;
-		}
-		return true;
-	}
+    public boolean equals(Object object) {
+        // not set
+        if (!(object instanceof KscdtScheExeTarget)) {
+            return false;
+        }
+        KscdtScheExeTarget other = (KscdtScheExeTarget) object;
+        if ((this.kscdtScheExeTargetPK == null && other.kscdtScheExeTargetPK != null)
+                || (this.kscdtScheExeTargetPK != null
+                && !this.kscdtScheExeTargetPK.equals(other.kscdtScheExeTargetPK))) {
+            return false;
+        }
+        return true;
+    }
 
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
@@ -91,13 +106,13 @@ public class KscdtScheExeTarget extends UkJpaEntity implements Serializable {
         return "entity.KscmtSchCreator[ kscmtSchCreatorPK=" + kscdtScheExeTargetPK + " ]";
     }
 
-	/* (non-Javadoc)
-	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
-	 */
-	@Override
-	protected Object getKey() {
-		return this.kscdtScheExeTargetPK;
-	}
-    
-    
+    /* (non-Javadoc)
+     * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+     */
+    @Override
+    protected Object getKey() {
+        return this.kscdtScheExeTargetPK;
+    }
+
+
 }

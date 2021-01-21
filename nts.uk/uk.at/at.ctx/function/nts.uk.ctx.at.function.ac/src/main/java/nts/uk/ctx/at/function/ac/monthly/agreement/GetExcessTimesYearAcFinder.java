@@ -9,9 +9,9 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import nts.arc.time.calendar.Year;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.GetExcessTimesYearAdapter;
 import nts.uk.ctx.at.record.pub.monthly.agreement.GetExcessTimesYearPub;
-import nts.uk.ctx.at.shared.dom.common.Year;
 
 /**
  * @author dat.lh

@@ -1,69 +1,65 @@
 package nts.uk.ctx.at.request.app.find.application.stamp.dto;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import lombok.NoArgsConstructor;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
-/**
- * 
- * @author Doan Duy Hung
- *
- */
-@Data
 @AllArgsConstructor
-public class AppStampDto {
-	
-	private Long version;
-    
-	private String appID;
-    
-    private String applicationDate;
-    
-    private String detailReason;
-    
-    private String employeeID;
-    
-    private String inputEmpID;
-	
-	private Integer stampRequestMode;
-	
-	private List<AppStampGoOutPermitDto> appStampGoOutPermitCmds;
-	
-	private List<AppStampWorkDto> appStampWorkCmds;
-	
-	private List<AppStampCancelDto> appStampCancelCmds;
-	
-	private AppStampOnlineRecordDto appStampOnlineRecordCmd;
-	
-	private String employeeName;
-	
-	private String inputEmpName;
-	
-	private String inputDate;
-	
-	private Boolean reflected;
-	
-	public static AppStampDto convertToDto(AppStamp appStamp, String employeeName, String inputEmpName){
-		if(appStamp == null) return null;
-		return new AppStampDto(
-				appStamp.getVersion(),
-				appStamp.getApplication_New().getAppID(), 
-				appStamp.getApplication_New().getAppDate().toString("yyyy/MM/dd"), 
-				appStamp.getApplication_New().getAppReason().v(), 
-				appStamp.getApplication_New().getEmployeeID(), 
-				appStamp.getApplication_New().getEnteredPersonID(), 
-				appStamp.getStampRequestMode().value, 
-				appStamp.getAppStampGoOutPermits().stream().map(x -> AppStampGoOutPermitDto.convertToDto(x)).collect(Collectors.toList()), 
-				appStamp.getAppStampWorks().stream().map(x -> AppStampWorkDto.convertToDto(x)).collect(Collectors.toList()), 
-				appStamp.getAppStampCancels().stream().map(x -> AppStampCancelDto.convertToDto(x)).collect(Collectors.toList()), 
-				AppStampOnlineRecordDto.convertToDto(appStamp.getAppStampOnlineRecord().orElse(null)),
-				employeeName,
-				inputEmpName,
-				appStamp.getApplication_New().getInputDate().toString("yyyy/MM/dd"),
-				appStamp.getApplication_New().getReflectionInformation().getStateReflectionReal()==ReflectedState_New.REFLECTED?true:false);
-	}
-}
+@NoArgsConstructor
+//打刻申請
+public class AppStampDto extends ApplicationDto {	
+//	時刻
+	public List<TimeStampAppDto> listTimeStampApp;	
+//	時刻の取消
+	public List<DestinationTimeAppDto> listDestinationTimeApp;
+//	時間帯
+	public List<TimeStampAppOtherDto> listTimeStampAppOther;
+//	時間帯の取消
+	public List<DestinationTimeZoneAppDto> listDestinationTimeZoneApp;
 
+	
+	public static AppStampDto fromDomain(AppStamp appStamp) {
+		return new AppStampDto(
+				!CollectionUtil.isEmpty(appStamp.getListTimeStampApp()) ? appStamp.getListTimeStampApp().stream()
+						.map(x -> TimeStampAppDto.fromDomain(x)).collect(Collectors.toList()) : Collections.emptyList(),
+
+				!CollectionUtil.isEmpty(appStamp.getListDestinationTimeApp()) ? appStamp.getListDestinationTimeApp()
+						.stream().map(x -> DestinationTimeAppDto.fromDomain(x)).collect(Collectors.toList())
+						: Collections.emptyList(),
+
+				!CollectionUtil.isEmpty(appStamp.getListTimeStampAppOther()) ? appStamp.getListTimeStampAppOther()
+						.stream().map(x -> TimeStampAppOtherDto.fromDomain(x)).collect(Collectors.toList())
+						: Collections.emptyList(),
+
+				!CollectionUtil.isEmpty(appStamp.getListDestinationTimeZoneApp())
+						? appStamp.getListDestinationTimeZoneApp().stream()
+								.map(x -> DestinationTimeZoneAppDto.fromDomain(x)).collect(Collectors.toList())
+						: Collections.emptyList());
+	}
+	
+	
+	public AppStamp toDomain() {
+		return new AppStamp(
+				!CollectionUtil.isEmpty(listTimeStampApp)
+						? listTimeStampApp.stream().map(x -> x.toDomain()).collect(Collectors.toList())
+						: Collections.emptyList(),
+
+				!CollectionUtil.isEmpty(listDestinationTimeApp)
+						? listDestinationTimeApp.stream().map(x -> x.toDomain()).collect(Collectors.toList())
+						: Collections.emptyList(),
+
+				!CollectionUtil.isEmpty(listTimeStampAppOther)
+						? listTimeStampAppOther.stream().map(x -> x.toDomain()).collect(Collectors.toList())
+						: Collections.emptyList(),
+
+				!CollectionUtil.isEmpty(listDestinationTimeZoneApp)
+						? listDestinationTimeZoneApp.stream().map(x -> x.toDomain()).collect(Collectors.toList())
+						: Collections.emptyList());
+	}
+
+}

@@ -12,4 +12,6 @@ public class EmployeeStampData {
 	private String employeeCode;
 	
 	private String employeeName;
+	
+	private String employeeNameKana;
 }

@@ -5,19 +5,19 @@ import javax.ejb.Stateless;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.calculationattribute.AutoCalcSetOfDivergenceTime;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.calculationattribute.enums.DivergenceTimeAttr;
+import nts.uk.ctx.at.shared.dom.calculationattribute.enums.DivergenceTimeAttr;
 import nts.uk.ctx.at.record.dom.calculationattribute.repo.NCalAttrOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.infra.entity.daily.calculationattribute.KrcdtDayCalSet;
 import nts.uk.ctx.at.record.infra.entity.daily.calculationattribute.KrcdtDayCalSetPK;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalcOfLeaveEarlySetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalAtrOvertime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalFlexOvertimeSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalOvertimeSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalRestTimeSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalcOfLeaveEarlySetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.TimeLimitUpperLimitSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.deviationtime.AutoCalcSetOfDivergenceTime;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 @Stateless
 public class JpaCalAttrOfDaily extends JpaRepository implements NCalAttrOfDailyPerformanceRepository{
@@ -49,23 +49,23 @@ public class JpaCalAttrOfDaily extends JpaRepository implements NCalAttrOfDailyP
 		if(krcdtDayCalSet==null){
 			this.add(domain);
 		}else{
-			if (domain.getRasingSalarySetting() != null) {
-				krcdtDayCalSet.bonusPayNormalCalSet = domain.getRasingSalarySetting().isRaisingSalaryCalcAtr() ? 1 : 0;
-				krcdtDayCalSet.bonusPaySpeCalSet = domain.getRasingSalarySetting().isSpecificRaisingSalaryCalcAtr() ? 1 : 0;
+			if (domain.getCalcategory().getRasingSalarySetting() != null) {
+				krcdtDayCalSet.bonusPayNormalCalSet = domain.getCalcategory().getRasingSalarySetting().isRaisingSalaryCalcAtr() ? 1 : 0;
+				krcdtDayCalSet.bonusPaySpeCalSet = domain.getCalcategory().getRasingSalarySetting().isSpecificRaisingSalaryCalcAtr() ? 1 : 0;
 			}
-			if (domain.getDivergenceTime() != null) {
-				krcdtDayCalSet.divergenceTime = domain.getDivergenceTime().getDivergenceTime().value;
+			if (domain.getCalcategory().getDivergenceTime() != null) {
+				krcdtDayCalSet.divergenceTime = domain.getCalcategory().getDivergenceTime().getDivergenceTime().value;
 			}
-			if (domain.getLeaveEarlySetting() != null) {
-				krcdtDayCalSet.leaveEarlySet = domain.getLeaveEarlySetting().isLate() ? 1 : 0;
-				krcdtDayCalSet.leaveLateSet = domain.getLeaveEarlySetting().isLeaveEarly() ? 1 : 0;
+			if (domain.getCalcategory().getLeaveEarlySetting() != null) {
+				krcdtDayCalSet.leaveEarlySet = domain.getCalcategory().getLeaveEarlySetting().isLate() ? 1 : 0;
+				krcdtDayCalSet.leaveLateSet = domain.getCalcategory().getLeaveEarlySetting().isLeaveEarly() ? 1 : 0;
 			}
-			AutoCalSetting autoCalSetting = domain.getFlexExcessTime().getFlexOtTime();
+			AutoCalSetting autoCalSetting = domain.getCalcategory().getFlexExcessTime().getFlexOtTime();
 			if (autoCalSetting != null) {
 				krcdtDayCalSet.flexExcessLimitSet = autoCalSetting.getUpLimitORtSet() == null ? 0 : autoCalSetting.getUpLimitORtSet().value;
 				krcdtDayCalSet.flexExcessTimeCalAtr = autoCalSetting.getCalAtr() == null ? 0 : autoCalSetting.getCalAtr().value;
 			}
-			AutoCalRestTimeSetting holidayTimeSetting = domain.getHolidayTimeSetting();
+			AutoCalRestTimeSetting holidayTimeSetting = domain.getCalcategory().getHolidayTimeSetting();
 			if (holidayTimeSetting != null) {
 				krcdtDayCalSet.holWorkTimeCalAtr = holidayTimeSetting.getRestTime() == null ? 0 : holidayTimeSetting.getRestTime().getCalAtr().value;
 				krcdtDayCalSet.holWorkTimeLimitSet = holidayTimeSetting.getRestTime() == null ? 0
@@ -75,7 +75,7 @@ public class JpaCalAttrOfDaily extends JpaRepository implements NCalAttrOfDailyP
 				krcdtDayCalSet.lateNightTimeLimitSet = holidayTimeSetting.getLateNightTime() == null ? 0
 						: holidayTimeSetting.getLateNightTime().getUpLimitORtSet().value;
 			}
-			AutoCalOvertimeSetting autoCalOvertimeSetting = domain.getOvertimeSetting();
+			AutoCalOvertimeSetting autoCalOvertimeSetting = domain.getCalcategory().getOvertimeSetting();
 			if(autoCalOvertimeSetting!=null){
 				krcdtDayCalSet.earlyMidOtCalAtr = autoCalOvertimeSetting.getEarlyMidOtTime() == null ? 0
 						: autoCalOvertimeSetting.getEarlyMidOtTime().getCalAtr().value;
@@ -114,25 +114,25 @@ public class JpaCalAttrOfDaily extends JpaRepository implements NCalAttrOfDailyP
 		int divergenceTime=0;
 		int leaveEarlySet=0;
 		int leaveLateSet=0;
-		if (domain.getRasingSalarySetting() != null) {
-		 bonusPayNormalCalSet = domain.getRasingSalarySetting().isRaisingSalaryCalcAtr() ? 1 : 0;
-		 bonusPaySpeCalSet = domain.getRasingSalarySetting().isSpecificRaisingSalaryCalcAtr() ? 1 : 0;
+		if (domain.getCalcategory().getRasingSalarySetting() != null) {
+		 bonusPayNormalCalSet = domain.getCalcategory().getRasingSalarySetting().isRaisingSalaryCalcAtr() ? 1 : 0;
+		 bonusPaySpeCalSet = domain.getCalcategory().getRasingSalarySetting().isSpecificRaisingSalaryCalcAtr() ? 1 : 0;
 		}
-		if (domain.getDivergenceTime() != null) {
-			divergenceTime = domain.getDivergenceTime().getDivergenceTime().value;
+		if (domain.getCalcategory().getDivergenceTime() != null) {
+			divergenceTime = domain.getCalcategory().getDivergenceTime().getDivergenceTime().value;
 		}
-		if (domain.getLeaveEarlySetting() != null) {
-			leaveEarlySet = domain.getLeaveEarlySetting().isLate() ? 1 : 0;
-			leaveLateSet = domain.getLeaveEarlySetting().isLeaveEarly() ? 1 : 0;
+		if (domain.getCalcategory().getLeaveEarlySetting() != null) {
+			leaveEarlySet = domain.getCalcategory().getLeaveEarlySetting().isLate() ? 1 : 0;
+			leaveLateSet = domain.getCalcategory().getLeaveEarlySetting().isLeaveEarly() ? 1 : 0;
 		}
-		AutoCalSetting autoCalSetting = domain.getFlexExcessTime().getFlexOtTime();
+		AutoCalSetting autoCalSetting = domain.getCalcategory().getFlexExcessTime().getFlexOtTime();
 		int flexExcessLimitSet=0;
 		int flexExcessTimeCalAtr=0;
 		if(autoCalSetting!=null){
 			flexExcessLimitSet = autoCalSetting.getUpLimitORtSet() == null ? 0 : autoCalSetting.getUpLimitORtSet().value;
 			flexExcessTimeCalAtr = autoCalSetting.getCalAtr() == null ? 0 : autoCalSetting.getCalAtr().value;
 		}
-		AutoCalRestTimeSetting autoCalRestTimeSetting = domain.getHolidayTimeSetting();
+		AutoCalRestTimeSetting autoCalRestTimeSetting = domain.getCalcategory().getHolidayTimeSetting();
 		int holWorkTimeCalAtr=0;
 		int holWorkTimeLimitSet=0;
 		int lateNightTimeCalAtr=0;
@@ -159,7 +159,7 @@ public class JpaCalAttrOfDaily extends JpaRepository implements NCalAttrOfDailyP
 		int normalOverTimeCalAtr=0;
 		int normalOverTimeLimitSet=0;
 		
-		AutoCalOvertimeSetting autoCalOvertimeSetting = domain.getOvertimeSetting();
+		AutoCalOvertimeSetting autoCalOvertimeSetting = domain.getCalcategory().getOvertimeSetting();
 		if(autoCalOvertimeSetting!=null){
 			earlyMidOtCalAtr = autoCalOvertimeSetting.getEarlyMidOtTime() == null ? 0
 					: autoCalOvertimeSetting.getEarlyMidOtTime().getCalAtr().value;

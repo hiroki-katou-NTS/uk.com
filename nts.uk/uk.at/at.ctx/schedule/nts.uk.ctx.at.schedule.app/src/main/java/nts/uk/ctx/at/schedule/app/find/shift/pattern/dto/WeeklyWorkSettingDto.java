@@ -7,8 +7,8 @@ package nts.uk.ctx.at.schedule.app.find.shift.pattern.dto;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.work.DayOfWeek;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WeeklyWorkSettingSetMemento;
+import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -49,6 +49,10 @@ public class WeeklyWorkSettingDto implements WeeklyWorkSettingSetMemento{
 		this.dayOfWeek = dayOfWeek.value;
 	}
 
+	public void setDayOfWeek(int dayOfWeek) {
+		this.dayOfWeek = dayOfWeek;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -61,5 +65,10 @@ public class WeeklyWorkSettingDto implements WeeklyWorkSettingSetMemento{
 	public void setWorkdayDivision(WorkdayDivision workdayDivision) {
 		this.workdayDivision = workdayDivision.value;
 		
+	}
+
+	@Override
+	public void setContractCode(String constractCode) {
+
 	}
 }

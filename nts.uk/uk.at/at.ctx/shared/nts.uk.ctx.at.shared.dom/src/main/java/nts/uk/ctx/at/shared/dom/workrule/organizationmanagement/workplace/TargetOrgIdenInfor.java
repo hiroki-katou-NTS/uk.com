@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapte
 
 /**
  * VO : 対象組織識別情報
+ * 
  * @author tutk
  *
  */
@@ -26,26 +27,20 @@ public class TargetOrgIdenInfor implements DomainValue {
 	 */
 	@Getter
 	private final TargetOrganizationUnit unit;
-	
+
 	/**
 	 * 職場ID
 	 */
 	@Getter
 	private final Optional<String> workplaceId;
-	
+
 	/**
 	 * 職場グループID
 	 */
 	@Getter
 	private final Optional<String> workplaceGroupId;
 
-	public TargetOrgIdenInfor(TargetOrganizationUnit unit, String workplaceId, String workplaceGroupId) {
-		super();
-		this.unit = unit;
-		this.workplaceId = Optional.ofNullable(workplaceId);
-		this.workplaceGroupId = Optional.ofNullable(workplaceGroupId);
-	}
-
+	
 	public TargetOrgIdenInfor(TargetOrganizationUnit unit, Optional<String> workplaceId,
 			Optional<String> workplaceGroupId) {
 		super();
@@ -53,6 +48,7 @@ public class TargetOrgIdenInfor implements DomainValue {
 		this.workplaceId = workplaceId;
 		this.workplaceGroupId = workplaceGroupId;
 	}
+
 	/**
 	 * [C-1] 職場グループを指定して識別情報を作成する
 	 * 
@@ -72,6 +68,24 @@ public class TargetOrgIdenInfor implements DomainValue {
 	 */
 	public static TargetOrgIdenInfor creatIdentifiWorkplace(String workplaceId) {
 		return new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE,Optional.ofNullable( workplaceId), Optional.empty());
+	}
+	
+	/**
+	 * [C-3] 単位と対象IDを指定して識別情報を作成する
+	 * @param unit
+	 * @param targetId
+	 * @return
+	 */
+	public static TargetOrgIdenInfor createFromTargetUnit(TargetOrganizationUnit unit, String targetId) {
+		
+		switch (unit) {
+			case WORKPLACE_GROUP:
+				return creatIdentifiWorkplaceGroup(targetId);
+			case WORKPLACE:
+				return creatIdentifiWorkplace(targetId);
+		}
+		
+		throw new RuntimeException("unit out of range."); 
 	}
 
 	// [1] 組織の表示情報を取得する
@@ -119,7 +133,15 @@ public class TargetOrgIdenInfor implements DomainValue {
 		result.addAll(require.getWKPID(this.workplaceGroupId.get()));
 		return result;
 	}
-
+	
+	/**
+	 * [3] 対象IDを返す
+	 * @return unit = 職場 : 職場ID, unit = 職場グループ :  職場グループID
+	 */
+	public String getTargetId () {
+		return this.unit == TargetOrganizationUnit.WORKPLACE ? 
+				this.workplaceId.orElse(null) : this.workplaceGroupId.orElse(null);
+	}
 	
 
 	public static interface Require {
@@ -153,8 +175,5 @@ public class TargetOrgIdenInfor implements DomainValue {
 		List<String> getWKPID( String WKPGRPID);
 
 	}
-	
-	
-	
-	
+
 }

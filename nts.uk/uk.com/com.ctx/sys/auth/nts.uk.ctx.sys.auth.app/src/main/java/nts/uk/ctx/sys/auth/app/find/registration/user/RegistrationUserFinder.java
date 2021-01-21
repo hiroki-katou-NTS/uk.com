@@ -10,7 +10,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.adapter.company.CompanyAdapter;
 import nts.uk.ctx.sys.auth.dom.adapter.company.CompanyImport;
-import nts.uk.ctx.sys.auth.dom.user.UserRepository;
+import nts.uk.ctx.sys.shared.dom.user.UserRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 

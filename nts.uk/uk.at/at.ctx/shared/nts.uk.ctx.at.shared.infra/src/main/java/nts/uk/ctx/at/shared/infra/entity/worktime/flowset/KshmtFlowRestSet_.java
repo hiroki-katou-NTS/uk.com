@@ -7,20 +7,20 @@ import javax.persistence.metamodel.StaticMetamodel;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRestSetPK;
 
 @Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2017-12-23T17:16:06")
-@StaticMetamodel(KshmtFlowRestSet.class)
+@StaticMetamodel(KshmtWtFloBrFlAll.class)
 public class KshmtFlowRestSet_ { 
 
-    public static volatile SingularAttribute<KshmtFlowRestSet, Integer> fixedRestCalcMethod;
-    public static volatile SingularAttribute<KshmtFlowRestSet, Integer> usePluralWorkRestTime;
-    public static volatile SingularAttribute<KshmtFlowRestSet, Integer> commonCalculateMethod;
-    public static volatile SingularAttribute<KshmtFlowRestSet, Integer> fixedCalculateMethod;
-    public static volatile SingularAttribute<KshmtFlowRestSet, Integer> useStampCalcMethod;
-    public static volatile SingularAttribute<KshmtFlowRestSet, Integer> isReferRestTime;
-    public static volatile SingularAttribute<KshmtFlowRestSet, Integer> timeManagerSetAtr;
-    public static volatile SingularAttribute<KshmtFlowRestSet, Integer> useStamp;
-    public static volatile SingularAttribute<KshmtFlowRestSet, Integer> userPrivateGoOutRest;
-    public static volatile SingularAttribute<KshmtFlowRestSet, Integer> exclusVer;
-    public static volatile SingularAttribute<KshmtFlowRestSet, KshmtFlowRestSetPK> kshmtFlowRestSetPK;
-    public static volatile SingularAttribute<KshmtFlowRestSet, Integer> userAssoGoOutRest;
+    public static volatile SingularAttribute<KshmtWtFloBrFlAll, Integer> fixedRestCalcMethod;
+    public static volatile SingularAttribute<KshmtWtFloBrFlAll, Integer> usePluralWorkRestTime;
+    public static volatile SingularAttribute<KshmtWtFloBrFlAll, Integer> commonCalculateMethod;
+    public static volatile SingularAttribute<KshmtWtFloBrFlAll, Integer> fixedCalculateMethod;
+    public static volatile SingularAttribute<KshmtWtFloBrFlAll, Integer> useStampCalcMethod;
+    public static volatile SingularAttribute<KshmtWtFloBrFlAll, Integer> isReferRestTime;
+    public static volatile SingularAttribute<KshmtWtFloBrFlAll, Integer> timeManagerSetAtr;
+    public static volatile SingularAttribute<KshmtWtFloBrFlAll, Integer> useStamp;
+    public static volatile SingularAttribute<KshmtWtFloBrFlAll, Integer> userPrivateGoOutRest;
+    public static volatile SingularAttribute<KshmtWtFloBrFlAll, Integer> exclusVer;
+    public static volatile SingularAttribute<KshmtWtFloBrFlAll, KshmtFlowRestSetPK> kshmtFlowRestSetPK;
+    public static volatile SingularAttribute<KshmtWtFloBrFlAll, Integer> userAssoGoOutRest;
 
 }

@@ -144,6 +144,7 @@ public class EnterStampFromPortalServiceTest {
 		TimeStampInputResult timeStampInputResult = EnterStampFromPortalService.create(require, contractCode,
 				employeeId, dateTime, buttonPositionNo, null);
 		
-		assertThat(timeStampInputResult.getStampDataReflectResult().getReflectDate()).isEmpty();
+		assertThat(timeStampInputResult.at).isNotEmpty();
+		assertThat(timeStampInputResult.stampDataReflectResult.getAtomTask()).isNotNull();
 	}
 }

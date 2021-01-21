@@ -7,8 +7,8 @@ package nts.uk.ctx.at.shared.infra.repository.calculation.holiday;
 import java.util.Optional;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.AddSetManageWorkHour;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.AddSetManageWorkHourRepository;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetManageWorkHour;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetManageWorkHourRepository;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstAddSetManWKHour;
 
 /**

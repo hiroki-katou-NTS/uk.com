@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.app.command.workrecord.monthlyresults.roleopenperiod
 import nts.uk.ctx.at.shared.app.command.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriodSaveCommandHandler;
 import nts.uk.ctx.at.shared.app.find.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriodDto;
 import nts.uk.ctx.at.shared.app.find.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriodFinder;
-import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriodEnum;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleopenperiod.RoleOfOpenPeriodEnum;
 
 /**
  * The Class RoleOfOpenPeriodWS.

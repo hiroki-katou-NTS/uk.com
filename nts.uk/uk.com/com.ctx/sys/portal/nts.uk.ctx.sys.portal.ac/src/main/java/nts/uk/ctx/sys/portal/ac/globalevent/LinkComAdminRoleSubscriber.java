@@ -9,7 +9,7 @@ import nts.uk.ctx.sys.auth.pub.event.RoleByRoleTiesGlobalEvent;
 import nts.uk.ctx.sys.portal.dom.webmenu.WebMenuCode;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleByRoleTies;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleByRoleTiesRepository;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.constants.DefaultSettingKeys;
 @Stateless
 public class LinkComAdminRoleSubscriber implements DomainEventSubscriber<RoleByRoleTiesGlobalEvent> {
 	@Inject
@@ -23,7 +23,7 @@ public class LinkComAdminRoleSubscriber implements DomainEventSubscriber<RoleByR
 	@Override
 	public void handle(RoleByRoleTiesGlobalEvent domainEvent) {
 		val roleTies = new RoleByRoleTies(domainEvent.getRoleId(), new WebMenuCode("001"),
-				AppContexts.user().zeroCompanyIdInContract());
+				DefaultSettingKeys.COMPANY_ID);
 		this.roleTiesRepo.insertRoleByRoleTies(roleTies);
 	}
 }

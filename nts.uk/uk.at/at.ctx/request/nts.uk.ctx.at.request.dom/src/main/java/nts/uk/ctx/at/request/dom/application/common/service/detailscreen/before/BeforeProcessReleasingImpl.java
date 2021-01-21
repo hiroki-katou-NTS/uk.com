@@ -14,7 +14,7 @@ public class BeforeProcessReleasingImpl implements BeforeProcessReleasing {
 	private DetailBeforeUpdate detailBeforeProcessRegisterRepo;
 
 	@Override
-	public void detailScreenProcessBeforeReleasing(String companyId, String appId, Long version) {
+	public void detailScreenProcessBeforeReleasing(String companyId, String appId, int version) {
 		detailBeforeProcessRegisterRepo.exclusiveCheck(companyId, appId, version);		
 	}
 }

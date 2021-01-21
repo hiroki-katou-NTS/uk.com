@@ -10,21 +10,21 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KrcdtActualLockHist_.
  */
-@StaticMetamodel(KrcdtActualLockHist.class)
+@StaticMetamodel(KrcdtAtdActuallockHist.class)
 public class KrcdtActualLockHist_ {
 
 	/** The krcmt actual lock PK. */
-	public static volatile SingularAttribute<KrcdtActualLockHist, KrcdtActualLockHistPK> krcdtActualLockHistPK;
+	public static volatile SingularAttribute<KrcdtAtdActuallockHist, KrcdtActualLockHistPK> krcdtActualLockHistPK;
 	
 	/** The target month. */
-	public static volatile SingularAttribute<KrcdtActualLockHist, Integer> targetMonth;
+	public static volatile SingularAttribute<KrcdtAtdActuallockHist, Integer> targetMonth;
 	
 	/** The updator. */
-	public static volatile SingularAttribute<KrcdtActualLockHist, String> updator;
+	public static volatile SingularAttribute<KrcdtAtdActuallockHist, String> updator;
 	
 	/** The d lock state. */
-	public static volatile SingularAttribute<KrcdtActualLockHist, Integer> dLockState;
+	public static volatile SingularAttribute<KrcdtAtdActuallockHist, Integer> dLockState;
 	
 	/** The m lock state. */
-	public static volatile SingularAttribute<KrcdtActualLockHist, Integer> mLockState;
+	public static volatile SingularAttribute<KrcdtAtdActuallockHist, Integer> mLockState;
 }

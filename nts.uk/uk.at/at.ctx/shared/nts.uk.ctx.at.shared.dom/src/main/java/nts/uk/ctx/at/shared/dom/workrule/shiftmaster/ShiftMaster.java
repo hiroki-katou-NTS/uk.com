@@ -41,7 +41,7 @@ public class ShiftMaster extends WorkInformation implements DomainAggregate {
 
 	public ShiftMaster(String companyId, ShiftMasterCode shiftMaterCode, ShiftMasterDisInfor displayInfor,
 			String workTypeCode, String workTimeCode) {
-		super(workTimeCode, workTypeCode);
+		super(workTypeCode,workTimeCode);
 		this.companyId = companyId;
 		this.shiftMasterCode = shiftMaterCode;
 		this.displayInfor = displayInfor;

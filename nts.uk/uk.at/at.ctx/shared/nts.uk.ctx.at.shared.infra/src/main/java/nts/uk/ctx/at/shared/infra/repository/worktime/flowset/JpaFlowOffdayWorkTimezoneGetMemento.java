@@ -12,7 +12,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOffdayWtzGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkHolidayTimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFlo;
 
 /**
  * The Class JpaFlowOffdayWorkTimezoneGetMemento.
@@ -20,14 +20,14 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSet;
 public class JpaFlowOffdayWorkTimezoneGetMemento implements FlowOffdayWtzGetMemento {
 
 	/** The entity. */
-	private KshmtFlowWorkSet entity;
+	private KshmtWtFlo entity;
 	
 	/**
 	 * Instantiates a new jpa flow offday work timezone get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlowOffdayWorkTimezoneGetMemento(KshmtFlowWorkSet entity) {
+	public JpaFlowOffdayWorkTimezoneGetMemento(KshmtWtFlo entity) {
 		super();
 		this.entity = entity;
 		if (CollectionUtil.isEmpty(this.entity.getLstKshmtFworkHolidayTime())) {

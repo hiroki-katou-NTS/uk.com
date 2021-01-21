@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverInfor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * 
  * @author Doan Duy Hung
@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name="WWFDT_APPROVER_DAY")
 @Builder
-public class WwfdtApproverDay extends UkJpaEntity {
+public class WwfdtApproverDay extends ContractUkJpaEntity {
 	
 	@EmbeddedId
 	public WwfdpApproverDayPK wwfdpApproverDayPK;

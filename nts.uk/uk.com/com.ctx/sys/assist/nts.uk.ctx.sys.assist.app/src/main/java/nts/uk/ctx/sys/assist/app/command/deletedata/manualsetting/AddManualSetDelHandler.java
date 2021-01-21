@@ -56,7 +56,7 @@ public class AddManualSetDelHandler extends CommandHandlerWithResult<ManualSetDe
         LoginUserContext loginUserContext = AppContexts.user();
          // get company id
         String cid = loginUserContext .companyId();
-        String sid = loginUserContext.userId();
+        String sid = loginUserContext.employeeId();
         manualSetCmd.setExecutionDateAndTime(GeneralDateTime.now());
         
 		ManualSetDeletion domain = manualSetCmd.toDomain(delId, cid, sid);
@@ -75,7 +75,8 @@ public class AddManualSetDelHandler extends CommandHandlerWithResult<ManualSetDe
 			repoEmp.addAll(lstEmpDelAll);
 		}
 		
-		repoCate.addAll(manualSetCmd.getCategories(delId));
+//		repoCate.addAll(manualSetCmd.getCategories(delId));
+		domain.setCategories(manualSetCmd.getCategories(domain.getDelId()));
 		repo.addManualSetting(domain);
 		
 		try {

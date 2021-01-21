@@ -5,11 +5,11 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.calendar.Year;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.standardtime.GetAgreementPeriodFromYearAdapter;
 import nts.uk.ctx.at.record.pub.standardtime.GetAgreementPeriodFromYearPub;
-import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.arc.time.calendar.period.DatePeriod;
 
 
 /**
@@ -23,7 +23,7 @@ public class GetAgreementPeriodFromYearAcFinder implements GetAgreementPeriodFro
 
 	@Override
 	public Optional<DatePeriod> algorithm(Year year, Closure closure) {
-		return getAgreementPeriodFromYearPub.algorithm(year, closure);
+		return getAgreementPeriodFromYearPub.algorithm(year);
 	}
 
 }

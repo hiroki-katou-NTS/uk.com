@@ -3,6 +3,7 @@ package nts.uk.ctx.at.schedule.dom.employeeinfo.rank;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 
@@ -19,4 +20,12 @@ public class RankHelper {
 						new RankCode("02"), 
 						new RankCode("03")));
 	}
+	
+	public static class EmployeeRankInfor {
+		public static EmpRankInfor get() {
+			return new EmpRankInfor("sid", Optional.empty(), Optional.empty());
+		}
+	}
+
 }
+

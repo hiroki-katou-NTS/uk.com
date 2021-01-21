@@ -11,8 +11,8 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimezoneRoundingSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.TotalRoundingSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSetGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtSpecialRoundOut;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeGoOutSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComGooutRound;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComGoout;
 
 /**
  * The Class JpaWorkTimezoneGoOutSetGetMemento.
@@ -20,10 +20,10 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeGoOutSet;
 public class JpaWorkTimezoneGoOutSetGetMemento implements WorkTimezoneGoOutSetGetMemento {
 
 	/** The kshmt worktime go out set. */
-	private KshmtWorktimeGoOutSet kshmtWorktimeGoOutSet;
+	private KshmtWtComGoout kshmtWorktimeGoOutSet;
 
 	/** The kshmt other late early. */
-	private List<KshmtSpecialRoundOut> kshmtSpecialRoundOuts;
+	private List<KshmtWtComGooutRound> kshmtSpecialRoundOuts;
 
 	/**
 	 * Instantiates a new jpa work timezone go out set get memento.
@@ -33,8 +33,8 @@ public class JpaWorkTimezoneGoOutSetGetMemento implements WorkTimezoneGoOutSetGe
 	 * @param kshmtOtherLateEarly
 	 *            the kshmt other late early
 	 */
-	public JpaWorkTimezoneGoOutSetGetMemento(KshmtWorktimeGoOutSet kshmtWorktimeGoOutSet,
-			List<KshmtSpecialRoundOut> kshmtSpecialRoundOuts) {
+	public JpaWorkTimezoneGoOutSetGetMemento(KshmtWtComGoout kshmtWorktimeGoOutSet,
+			List<KshmtWtComGooutRound> kshmtSpecialRoundOuts) {
 		super();
 		this.kshmtWorktimeGoOutSet = kshmtWorktimeGoOutSet;
 		this.kshmtSpecialRoundOuts = kshmtSpecialRoundOuts;

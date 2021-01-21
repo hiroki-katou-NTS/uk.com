@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime;
 
-import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.ENUM.CalcurationByActualTimeAtr;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.CalcurationByActualTimeAtr;
 
 /**
  * 休暇加算区分

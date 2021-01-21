@@ -91,7 +91,13 @@ public class Kmk007WebService {
 	public List<WorkTypeDto> findOtKaf022(){
 		return workTypeProcessor.findOtKaf022();
 	}
-	
+
+	@POST
+	@Path("find-business-trip-kaf022")
+	public List<WorkTypeDto> findBusinessTripKaf022(List<Integer> oneDayAtrs) {
+		return workTypeProcessor.findBusinessTripKaf022(oneDayAtrs);
+	}
+
 	/**
 	 * Find all.
 	 *

@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.EmpInfoTerminalCode;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 /**

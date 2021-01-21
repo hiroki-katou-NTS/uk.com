@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.i18n.I18NText;
@@ -29,9 +27,6 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 
 @Stateless
 public class IndivigrantImpl  extends JpaRepository implements IndivigrantRepository {
-
-	@PersistenceContext
-	private EntityManager entityManager;
 
 	private static final String GET_EXPORT_EXCEL = 
 			"SELECT" 						

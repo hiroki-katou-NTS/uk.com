@@ -4,19 +4,14 @@ module nts.uk.ui.koExtentions {
     /**
      * FormLabel
      */
-    class NtsFormLabelBindingHandler implements KnockoutBindingHandler {
-
-        /**
-         * Init.
-         */
-        init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            element.classList.add('form-label');
-        }
-
+    @handler({
+        bindingName: 'ntsFormLabel'
+    })
+    export class NtsFormLabelBindingHandler implements KnockoutBindingHandler {
         /**
          * Update
          */
-        update(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+        update = (element: HTMLElement, valueAccessor: () => any, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, _bindingContext: KnockoutBindingContext): void => {
             let accessor: any = valueAccessor(),
                 label = element.querySelector('label'),
                 constraint = element.querySelector('i'),
@@ -84,9 +79,9 @@ module nts.uk.ui.koExtentions {
                 // append constraint
                 element.appendChild(constraint);
                 if (_.isArray(primitive)) {
-                    let miss = _.map(primitive, p => __viewContext.primitiveValueConstraints[p]);
+                    let miss = _.map(primitive, (p: string) => __viewContext.primitiveValueConstraints[p]);
 
-                    if (miss.indexOf(false) > -1) {
+                    if (miss.indexOf(undefined) > -1) {
                         constraint.innerHTML = 'UNKNOW_PRIMITIVE';
                     } else {
                         constraint.innerHTML = util.getConstraintMes(primitive);
@@ -101,6 +96,4 @@ module nts.uk.ui.koExtentions {
             }
         }
     }
-
-    ko.bindingHandlers['ntsFormLabel'] = new NtsFormLabelBindingHandler();
 }

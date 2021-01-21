@@ -6,13 +6,13 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.performance;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.perfomance.AmPmWorkTimezoneGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDtHalfRestTime;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDtHolRestTime;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHalfRestSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHolRestSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowFixedRtSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDifBrWekTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDifBrHolTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixBrWekTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixBrHolTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFiAllTs;
 import nts.uk.shr.com.time.TimeWithDayAttr;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class JpaFixedRestTZDeductionTimeGetMemento.
@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * @param <T>
  *            the generic type
  */
-public class JpaAmPmWorkTimezoneGetMemento<T extends UkJpaEntity>
+public class JpaAmPmWorkTimezoneGetMemento<T extends ContractUkJpaEntity>
 		implements AmPmWorkTimezoneGetMemento {
 
 	/** The entity. */
@@ -46,20 +46,20 @@ public class JpaAmPmWorkTimezoneGetMemento<T extends UkJpaEntity>
 	 */
 	@Override
 	public TimeWithDayAttr getStart() {
-		if (this.entity instanceof KshmtFixedHalfRestSet) {
-			return new TimeWithDayAttr(((KshmtFixedHalfRestSet) this.entity).getStartTime());
+		if (this.entity instanceof KshmtWtFixBrWekTs) {
+			return new TimeWithDayAttr(((KshmtWtFixBrWekTs) this.entity).getStartTime());
 		}
-		if (this.entity instanceof KshmtFixedHolRestSet) {
-			return new TimeWithDayAttr(((KshmtFixedHolRestSet) this.entity).getStartTime());
+		if (this.entity instanceof KshmtWtFixBrHolTs) {
+			return new TimeWithDayAttr(((KshmtWtFixBrHolTs) this.entity).getStartTime());
 		}
-		if (this.entity instanceof KshmtDtHolRestTime) {
-			return new TimeWithDayAttr(((KshmtDtHolRestTime) this.entity).getStartTime());
+		if (this.entity instanceof KshmtWtDifBrHolTs) {
+			return new TimeWithDayAttr(((KshmtWtDifBrHolTs) this.entity).getStartTime());
 		}
-		if (this.entity instanceof KshmtDtHalfRestTime) {
-			return new TimeWithDayAttr(((KshmtDtHalfRestTime) this.entity).getStartTime());
+		if (this.entity instanceof KshmtWtDifBrWekTs) {
+			return new TimeWithDayAttr(((KshmtWtDifBrWekTs) this.entity).getStartTime());
 		}
-		if (this.entity instanceof KshmtFlowFixedRtSet) {
-			return new TimeWithDayAttr(((KshmtFlowFixedRtSet) this.entity).getStrDay());
+		if (this.entity instanceof KshmtWtFloBrFiAllTs) {
+			return new TimeWithDayAttr(((KshmtWtFloBrFiAllTs) this.entity).getStrDay());
 		}
 
 		throw new IllegalStateException("entity type is not valid");
@@ -73,20 +73,20 @@ public class JpaAmPmWorkTimezoneGetMemento<T extends UkJpaEntity>
 	 */
 	@Override
 	public TimeWithDayAttr getEnd() {
-		if (this.entity instanceof KshmtFixedHalfRestSet) {
-			return new TimeWithDayAttr(((KshmtFixedHalfRestSet) this.entity).getEndTime());
+		if (this.entity instanceof KshmtWtFixBrWekTs) {
+			return new TimeWithDayAttr(((KshmtWtFixBrWekTs) this.entity).getEndTime());
 		}
-		if (this.entity instanceof KshmtFixedHolRestSet) {
-			return new TimeWithDayAttr(((KshmtFixedHolRestSet) this.entity).getEndTime());
+		if (this.entity instanceof KshmtWtFixBrHolTs) {
+			return new TimeWithDayAttr(((KshmtWtFixBrHolTs) this.entity).getEndTime());
 		}
-		if (this.entity instanceof KshmtDtHolRestTime) {
-			return new TimeWithDayAttr(((KshmtDtHolRestTime) this.entity).getEndTime());
+		if (this.entity instanceof KshmtWtDifBrHolTs) {
+			return new TimeWithDayAttr(((KshmtWtDifBrHolTs) this.entity).getEndTime());
 		}
-		if (this.entity instanceof KshmtDtHalfRestTime) {
-			return new TimeWithDayAttr(((KshmtDtHalfRestTime) this.entity).getEndTime());
+		if (this.entity instanceof KshmtWtDifBrWekTs) {
+			return new TimeWithDayAttr(((KshmtWtDifBrWekTs) this.entity).getEndTime());
 		}
-		if (this.entity instanceof KshmtFlowFixedRtSet) {
-			return new TimeWithDayAttr(((KshmtFlowFixedRtSet) this.entity).getEndDay());
+		if (this.entity instanceof KshmtWtFloBrFiAllTs) {
+			return new TimeWithDayAttr(((KshmtWtFloBrFiAllTs) this.entity).getEndDay());
 		}
 
 		throw new IllegalStateException("entity type is not valid");
@@ -101,21 +101,21 @@ public class JpaAmPmWorkTimezoneGetMemento<T extends UkJpaEntity>
 	 */
 	@Override
 	public AmPmAtr getAmPmAtr() {
-		if (this.entity instanceof KshmtFixedHalfRestSet) {
-			return AmPmAtr.valueOf(((KshmtFixedHalfRestSet) this.entity)
+		if (this.entity instanceof KshmtWtFixBrWekTs) {
+			return AmPmAtr.valueOf(((KshmtWtFixBrWekTs) this.entity)
 					.getKshmtFixedHalfRestSetPK().getAmPmAtr());
 		}
-		if (this.entity instanceof KshmtFixedHolRestSet) {
+		if (this.entity instanceof KshmtWtFixBrHolTs) {
 			return null;
 		}
-		if (this.entity instanceof KshmtDtHolRestTime) {
+		if (this.entity instanceof KshmtWtDifBrHolTs) {
 			return null;
 		}
-		if (this.entity instanceof KshmtDtHalfRestTime) {
-			return AmPmAtr.valueOf(((KshmtDtHalfRestTime) this.entity)
+		if (this.entity instanceof KshmtWtDifBrWekTs) {
+			return AmPmAtr.valueOf(((KshmtWtDifBrWekTs) this.entity)
 					.getKshmtDtHalfRestTimePK().getAmPmAtr());
 		}
-		if (this.entity instanceof KshmtFlowFixedRtSet) {
+		if (this.entity instanceof KshmtWtFloBrFiAllTs) {
 			return null;
 		}
 

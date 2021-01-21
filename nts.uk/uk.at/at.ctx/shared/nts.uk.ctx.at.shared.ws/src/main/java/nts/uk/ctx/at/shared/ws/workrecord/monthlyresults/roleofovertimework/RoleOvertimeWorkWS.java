@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.app.command.workrecord.monthlyresults.roleofovertime
 import nts.uk.ctx.at.shared.app.command.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWorkSaveCommandHandler;
 import nts.uk.ctx.at.shared.app.find.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWorkDto;
 import nts.uk.ctx.at.shared.app.find.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWorkFinder;
-import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWorkEnum;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleofovertimework.RoleOvertimeWorkEnum;
 
 /**
  * The Class RoleOvertimeWorkWS.

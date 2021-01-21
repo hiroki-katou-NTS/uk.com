@@ -26,7 +26,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverInfor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -38,7 +38,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name="WWFDT_APPROVAL_FRAME_MONTH")
 @Builder
-public class WwfdtApprovalFrameMonth extends UkJpaEntity {
+public class WwfdtApprovalFrameMonth extends ContractUkJpaEntity {
 	
 	@EmbeddedId
 	public WwfdpApprovalFrameMonthPK wwfdpApprovalFrameMonthPK;
@@ -89,7 +89,6 @@ public class WwfdtApprovalFrameMonth extends UkJpaEntity {
 				.confirmAtr(frame.getConfirmAtr().value)
 				.approverID(approver.getApprovalAtr().value == 1 && Strings.isNullOrEmpty(approver.getAgentID()) ? approver.getApproverID() : "")
 				.representerID(approver.getAgentID())
-				.approvalDate(approver.getApprovalDate())
 				.approvalReason(approver.getApprovalReason())
 				.listWwfdtApproverMonth(Arrays.asList(WwfdtApproverMonth.fromDomain(companyID, rootId, phaseOrder, frame, approver)))
 				.build();

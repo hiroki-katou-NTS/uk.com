@@ -17,8 +17,8 @@ import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepositor
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
-import nts.uk.ctx.sys.auth.dom.user.User;
-import nts.uk.ctx.sys.auth.dom.user.UserRepository;
+import nts.uk.ctx.sys.shared.dom.user.User;
+import nts.uk.ctx.sys.shared.dom.user.UserRepository;
 
 @Stateless
 public class CreateSysRoleIndividualGrantCommandHandler extends CommandHandlerWithResult<CreateRoleIndividualGrantCommand, CreateRoleIndividualGrantCommandResult> {

@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employment.EmploymentMonthDaySetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employment.EmploymentMonthDaySettingRepository;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.employment.KshmtEmpMonthDaySet;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.employment.KshmtHdpubMonthdaysEmp;
 import nts.uk.ctx.at.shared.infra.entity.holidaysetting.employment.KshmtEmpMonthDaySetPK_;
 import nts.uk.ctx.at.shared.infra.entity.holidaysetting.employment.KshmtEmpMonthDaySet_;
 
@@ -37,7 +37,7 @@ public class JpaEmploymentMonthDaySettingRepository extends JpaRepository implem
 	 */
 	@Override
 	public Optional<EmploymentMonthDaySetting> findByYear(CompanyId companyId, String empCd, Year year) {
-		List<KshmtEmpMonthDaySet> result = this.findBy(companyId, empCd, year, null);
+		List<KshmtHdpubMonthdaysEmp> result = this.findBy(companyId, empCd, year, null);
 		
 		// Check exist
 		if (result.isEmpty()) {
@@ -54,7 +54,7 @@ public class JpaEmploymentMonthDaySettingRepository extends JpaRepository implem
 	 */
 	@Override
 	public void add(EmploymentMonthDaySetting domain) {
-		List<KshmtEmpMonthDaySet> entities = new ArrayList<>();
+		List<KshmtHdpubMonthdaysEmp> entities = new ArrayList<>();
 		domain.saveToMemento(new JpaEmploymentMonthDaySettingSetMemento(entities));
 		this.commandProxy().insertAll(entities);
 	}
@@ -64,7 +64,7 @@ public class JpaEmploymentMonthDaySettingRepository extends JpaRepository implem
 	 */
 	@Override
 	public void update(EmploymentMonthDaySetting domain) {
-		List<KshmtEmpMonthDaySet> entities = this.findBy(domain.getCompanyId(), domain.getEmploymentCode(),
+		List<KshmtHdpubMonthdaysEmp> entities = this.findBy(domain.getCompanyId(), domain.getEmploymentCode(),
 				domain.getManagementYear(), null);
 		domain.saveToMemento(new JpaEmploymentMonthDaySettingSetMemento(entities));
 		this.commandProxy().updateAll(entities);
@@ -75,7 +75,7 @@ public class JpaEmploymentMonthDaySettingRepository extends JpaRepository implem
 	 */
 	@Override
 	public void remove(CompanyId companyId, String empCd, Year year) {
-		List<KshmtEmpMonthDaySet> result = this.findBy(companyId, empCd, year, null);
+		List<KshmtHdpubMonthdaysEmp> result = this.findBy(companyId, empCd, year, null);
 		this.commandProxy().removeAll(result);
 	}
 	
@@ -88,15 +88,15 @@ public class JpaEmploymentMonthDaySettingRepository extends JpaRepository implem
 	 * @param month the month
 	 * @return the list
 	 */
-	private List<KshmtEmpMonthDaySet> findBy(CompanyId companyId, String empCd, Year year, Integer month) {
+	private List<KshmtHdpubMonthdaysEmp> findBy(CompanyId companyId, String empCd, Year year, Integer month) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		CriteriaQuery<KshmtEmpMonthDaySet> cq = criteriaBuilder.createQuery(KshmtEmpMonthDaySet.class);
+		CriteriaQuery<KshmtHdpubMonthdaysEmp> cq = criteriaBuilder.createQuery(KshmtHdpubMonthdaysEmp.class);
 
 		// root data
-		Root<KshmtEmpMonthDaySet> root = cq.from(KshmtEmpMonthDaySet.class);
+		Root<KshmtHdpubMonthdaysEmp> root = cq.from(KshmtHdpubMonthdaysEmp.class);
 
 		// select root
 		cq.select(root);
@@ -133,7 +133,7 @@ public class JpaEmploymentMonthDaySettingRepository extends JpaRepository implem
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// creat query
-		TypedQuery<KshmtEmpMonthDaySet> query = em.createQuery(cq);
+		TypedQuery<KshmtHdpubMonthdaysEmp> query = em.createQuery(cq);
 
 		return query.getResultList();
 	}
@@ -143,7 +143,7 @@ public class JpaEmploymentMonthDaySettingRepository extends JpaRepository implem
 	 */
 	@Override
 	public List<String> findAllEmpRegister(CompanyId companyId, Year year) {
-		 List<KshmtEmpMonthDaySet> result = this.findBy(companyId, null, year, null);
+		 List<KshmtHdpubMonthdaysEmp> result = this.findBy(companyId, null, year, null);
 		
 		// Check exist
 		if (result != null && !result.isEmpty()) {

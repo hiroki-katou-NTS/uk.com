@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_TEM_WORK_MANAGE")
-public class KrcdtTemporaryWorkManage extends UkJpaEntity implements Serializable {
+public class KrcdtTemporaryWorkManage extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

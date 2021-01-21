@@ -6,13 +6,13 @@ package nts.uk.ctx.at.shared.infra.repository.ot.autocalsetting.com;
 
 import nts.uk.ctx.at.shared.dom.calculationattribute.AutoCalcSetOfDivergenceTime;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalcOfLeaveEarlySetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.com.ComAutoCalSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalFlexOvertimeSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalOvertimeSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalRestTimeSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalcOfLeaveEarlySetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.com.ComAutoCalSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
-import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.com.KshmtAutoComCalSet;
+import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.com.KrcmtCalcSetCom;
 
 /**
  * The Class JpaComAutoCalSettingSetMemento.
@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.com.KshmtAutoComCalSe
 public class JpaComAutoCalSettingSetMemento implements ComAutoCalSettingSetMemento {
 
 	/** The entity. */
-	private KshmtAutoComCalSet entity;
+	private KrcmtCalcSetCom entity;
 
 	/**
 	 * Instantiates a new jpa com auto cal setting set memento.
@@ -30,7 +30,7 @@ public class JpaComAutoCalSettingSetMemento implements ComAutoCalSettingSetMemen
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaComAutoCalSettingSetMemento(KshmtAutoComCalSet entity) {
+	public JpaComAutoCalSettingSetMemento(KrcmtCalcSetCom entity) {
 		this.entity = entity;
 	}
 

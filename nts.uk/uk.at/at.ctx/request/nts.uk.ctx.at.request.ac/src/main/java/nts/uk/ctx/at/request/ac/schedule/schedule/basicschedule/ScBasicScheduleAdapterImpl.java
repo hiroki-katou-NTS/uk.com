@@ -10,12 +10,15 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport_Old;
+import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ShortWorkingTimeSheetImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.WorkScheduleTimeZoneImport;
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScBasicScheduleExport;
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScBasicSchedulePub;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScWorkScheduleExport_New;
 /**
  * 
  * @author Doan Duy Hung
@@ -29,35 +32,55 @@ public class ScBasicScheduleAdapterImpl implements ScBasicScheduleAdapter {
 	private ScBasicSchedulePub scBasicSchedulePub;
 	
 	@Override
-	public Optional<ScBasicScheduleImport> findByID(String employeeID, GeneralDate date) {
+	public Optional<ScBasicScheduleImport_Old> findByID(String employeeID, GeneralDate date) {
 		return scBasicSchedulePub.findById(employeeID, date)
 				.map(x -> convertTo(x));
 	}
 
-	private ScBasicScheduleImport convertTo(ScBasicScheduleExport x) {
-		WorkScheduleTimeZoneImport workScheduleTimeZoneImport1 = x.getWorkScheduleTimeZones().stream()
-			.filter(y -> y.getScheduleCnt()==1).findAny()
-			.map(z -> new WorkScheduleTimeZoneImport(z.getScheduleStartClock(), z.getScheduleEndClock()))
-			.orElse(new WorkScheduleTimeZoneImport(-1, -1));
-		WorkScheduleTimeZoneImport workScheduleTimeZoneImport2 = x.getWorkScheduleTimeZones().stream()
-				.filter(y -> y.getScheduleCnt()==2).findAny()
-				.map(z -> new WorkScheduleTimeZoneImport(z.getScheduleStartClock(), z.getScheduleEndClock()))
-				.orElse(new WorkScheduleTimeZoneImport(-1, -1));
-		return new ScBasicScheduleImport(
+	private ScBasicScheduleImport_Old convertTo(ScBasicScheduleExport x) {
+		return new ScBasicScheduleImport_Old(
 				x.getEmployeeId(), 
 				x.getDate(), 
 				x.getWorkTypeCode(), 
 				x.getWorkTimeCode(), 
-				workScheduleTimeZoneImport1.getScheduleStartClock(), 
-				workScheduleTimeZoneImport1.getScheduleEndClock(), 
-				workScheduleTimeZoneImport2.getScheduleStartClock(), 
-				workScheduleTimeZoneImport2.getScheduleEndClock());
+				x.getWorkScheduleTimeZones().stream().map(y -> new WorkScheduleTimeZoneImport(
+						y.getScheduleCnt(), 
+						y.getScheduleStartClock(), 
+						y.getScheduleEndClock(), 
+						y.getBounceAtr()))
+				.collect(Collectors.toList()));
 	}
 
 	@Override
-	public List<ScBasicScheduleImport> findByID(List<String> employeeID, DatePeriod date) {
+	public List<ScBasicScheduleImport_Old> findByID(List<String> employeeID, DatePeriod date) {
 		
 		return scBasicSchedulePub.findById(employeeID, date).stream().map(x -> convertTo(x)).collect(Collectors.toList());
+	}
+
+	@Override
+	public ScBasicScheduleImport findByIDRefactor(String employeeID, GeneralDate date) {
+		ScWorkScheduleExport_New scWorkScheduleExport = scBasicSchedulePub.findByIdNewV2(employeeID, date);
+		return fromExport(scWorkScheduleExport);
+	}
+	
+	private ScBasicScheduleImport fromExport(ScWorkScheduleExport_New scWorkScheduleExport) {
+		return new ScBasicScheduleImport(
+				scWorkScheduleExport.getEmployeeId(), 
+				scWorkScheduleExport.getDate(), 
+				scWorkScheduleExport.getWorkTypeCode(), 
+				scWorkScheduleExport.getWorkTimeCode(), 
+				scWorkScheduleExport.getScheduleStartClock1(), 
+				scWorkScheduleExport.getScheduleEndClock1(), 
+				scWorkScheduleExport.getScheduleStartClock2(), 
+				scWorkScheduleExport.getScheduleEndClock2(), 
+				scWorkScheduleExport.getChildTime(), 
+				scWorkScheduleExport.getListShortWorkingTimeSheetExport().stream().map(x -> new ShortWorkingTimeSheetImport(
+						x.getShortWorkTimeFrameNo(), 
+						x.getChildCareAttr(), 
+						x.getStartTime(), 
+						x.getEndTime(), 
+						x.getDeductionTime(), 
+						x.getShortTime())).collect(Collectors.toList()));
 	}
 
 }

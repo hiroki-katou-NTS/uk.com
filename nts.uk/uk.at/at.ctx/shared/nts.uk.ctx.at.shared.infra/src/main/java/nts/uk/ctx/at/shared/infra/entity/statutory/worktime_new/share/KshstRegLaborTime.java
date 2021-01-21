@@ -11,16 +11,16 @@ import javax.persistence.MappedSuperclass;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
- * The Class KshstComRegLaborTime.
+ * The Class KshmtLegaltimeDRegCom.
  */
 @Setter
 @Getter
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public abstract class KshstRegLaborTime extends UkJpaEntity {
+public abstract class KshstRegLaborTime extends ContractUkJpaEntity {
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")
@@ -30,12 +30,14 @@ public abstract class KshstRegLaborTime extends UkJpaEntity {
 	@Column(name = "WEEKLY_TIME")
 	private int weeklyTime;
 
-	/** The week str. */
-	@Column(name = "WEEK_STR")
-	private int weekStr;
-
 	/** The daily time. */
 	@Column(name = "DAILY_TIME")
 	private int dailyTime;
+	
+	public void setWeekStr(int w) {}
+	
+	public int getWeekStr() {
+		return 0;
+	}
 
 }

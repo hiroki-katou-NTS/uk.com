@@ -1,6 +1,7 @@
 package nts.uk.ctx.exio.infra.entity.exo.cdconvert;
 
 import java.io.Serializable;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -12,16 +13,16 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
-* コード変換詳細
+* 外部出力コード変換詳細
 */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_CD_CONVERT_DETAIL")
-public class OiomtCdConvertDetail extends UkJpaEntity implements Serializable
+@Table(name = "OIOMT_EX_OUT_CD_CONV_DTL")
+public class OiomtCdConvertDetail extends ContractUkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
     

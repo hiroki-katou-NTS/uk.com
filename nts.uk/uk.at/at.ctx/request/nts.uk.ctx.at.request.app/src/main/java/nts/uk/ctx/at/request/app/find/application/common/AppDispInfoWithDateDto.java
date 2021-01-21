@@ -1,21 +1,22 @@
 package nts.uk.ctx.at.request.app.find.application.common;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.app.find.application.common.dto.AchievementDto;
-import nts.uk.ctx.at.request.app.find.application.common.dto.AppEmploymentSettingDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApprovalPhaseStateForAppDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.SEmpHistImportDto;
-import nts.uk.ctx.at.request.app.find.setting.workplace.ApprovalFunctionSettingDto;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
+import nts.uk.ctx.at.request.app.find.application.common.service.other.output.ActualContentDisplayDto;
+import nts.uk.ctx.at.request.app.find.setting.employment.appemploymentsetting.AppEmploymentSetDto;
+import nts.uk.ctx.at.request.app.find.setting.workplace.appuseset.ApprovalFunctionSetDto;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
-import nts.uk.ctx.at.request.dom.application.common.service.other.AppDetailContent;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.WorkTimeDisplayNameDto;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.WorkTimeDivisionDto;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.WorkTimeSettingDto;
@@ -31,77 +32,98 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeName;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeNote;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSymbol;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.primitive.Memo;
 
+/**
+ * refactor 4
+ * @author Doan Duy Hung
+ *
+ */
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class AppDispInfoWithDateDto {
 	/**
 	 * 申請承認機能設定
 	 */
-	public ApprovalFunctionSettingDto approvalFunctionSet;
-	
-	/**
-	 * 雇用別申請承認設定
-	 */
-	public AppEmploymentSettingDto employmentSet;
-	
-	/**
-	 * 就業時間帯の設定
-	 */
-	public List<WorkTimeSettingDto> workTimeLst;
-	
-	/**
-	 * 承認ルート
-	 */
-	public List<ApprovalPhaseStateForAppDto> listApprovalPhaseState;
-	
-	/**
-	 * 承認ルートエラー情報
-	 */
-	public int errorFlag;
+	private ApprovalFunctionSetDto approvalFunctionSet;
 	
 	/**
 	 * 事前事後区分
 	 */
-	public int prePostAtr;
+	private int prePostAtr;
 	
 	/**
 	 * 基準日
 	 */
-	public String baseDate;
-	
-	/**
-	 * 表示する実績内容
-	 */
-	public List<AchievementDto> achievementOutputLst;
-	
-	/**
-	 * 表示する事前申請内容
-	 */
-	public List<AppDetailContent> appDetailContentLst;
+	private String baseDate;
 	
 	/**
 	 * 社員所属雇用履歴を取得
 	 */
-	public SEmpHistImportDto empHistImport;
+	private SEmpHistImportDto empHistImport;
+	
+	/**
+	 * 申請締め切り日利用区分
+	 */
+	private int appDeadlineUseCategory;
+	
+	/**
+	 * 雇用別申請承認設定
+	 */
+	private AppEmploymentSetDto opEmploymentSet;
+	
+	/**
+	 * 承認ルート
+	 */
+	private List<ApprovalPhaseStateForAppDto> opListApprovalPhaseState;
+	
+	/**
+	 * 承認ルートエラー情報
+	 */
+	private Integer opErrorFlag;
+	
+	/**
+	 * 表示する実績内容
+	 */
+	private List<ActualContentDisplayDto> opActualContentDisplayLst;
+	
+	/**
+	 * 表示する事前申請内容
+	 */
+	private List<PreAppContentDispDto> opPreAppContentDispDtoLst;
+	
+	/**
+	 * 申請締め切り日
+	 */
+	private String opAppDeadline;
+	
+	/**
+	 * 就業時間帯の設定
+	 */
+	private List<WorkTimeSettingDto> opWorkTimeLst;
 	
 	public static AppDispInfoWithDateDto fromDomain(AppDispInfoWithDateOutput appDispInfoWithDateOutput) {
-		AppDispInfoWithDateDto appDispInfoWithDateDto = new AppDispInfoWithDateDto();
-		appDispInfoWithDateDto.approvalFunctionSet = ApprovalFunctionSettingDto.convertToDto(appDispInfoWithDateOutput.getApprovalFunctionSet());
-		appDispInfoWithDateDto.employmentSet = AppEmploymentSettingDto.fromDomain(appDispInfoWithDateOutput.getEmploymentSet());
-		appDispInfoWithDateDto.workTimeLst = appDispInfoWithDateOutput.getWorkTimeLst().stream()
-				.map(x -> AppDispInfoWithDateDto.fromDomainWorkTime(x)).collect(Collectors.toList());
-		appDispInfoWithDateDto.listApprovalPhaseState = appDispInfoWithDateOutput.getApprovalRootState() == null ? Collections.emptyList() : 
-			appDispInfoWithDateOutput.getApprovalRootState().getListApprovalPhaseState().stream().map(x -> ApprovalPhaseStateForAppDto.fromApprovalPhaseStateImport(x)).collect(Collectors.toList());
-		appDispInfoWithDateDto.errorFlag = appDispInfoWithDateOutput.getErrorFlag().value;
-		appDispInfoWithDateDto.prePostAtr = appDispInfoWithDateOutput.getPrePostAtr().value;
-		appDispInfoWithDateDto.baseDate = appDispInfoWithDateOutput.getBaseDate().toString("yyyy/MM/dd");
-		appDispInfoWithDateDto.achievementOutputLst = appDispInfoWithDateOutput.getAchievementOutputLst().stream().map(x -> AchievementDto.convertFromAchievementOutput(x)).collect(Collectors.toList());
-		appDispInfoWithDateDto.appDetailContentLst = appDispInfoWithDateOutput.getAppDetailContentLst();
-		appDispInfoWithDateDto.empHistImport = SEmpHistImportDto.fromDomain(appDispInfoWithDateOutput.getEmpHistImport());
-		return appDispInfoWithDateDto;
+		return new AppDispInfoWithDateDto(
+				ApprovalFunctionSetDto.fromDomain(appDispInfoWithDateOutput.getApprovalFunctionSet()), 
+				appDispInfoWithDateOutput.getPrePostAtr().value, 
+				appDispInfoWithDateOutput.getBaseDate().toString(), 
+				SEmpHistImportDto.fromDomain(appDispInfoWithDateOutput.getEmpHistImport()), 
+				appDispInfoWithDateOutput.getAppDeadlineUseCategory().value, 
+				appDispInfoWithDateOutput.getOpEmploymentSet().map(x -> AppEmploymentSetDto.fromDomain(x)).orElse(null), 
+				appDispInfoWithDateOutput.getOpListApprovalPhaseState()
+					.map(x -> x.stream().map(y -> ApprovalPhaseStateForAppDto.fromApprovalPhaseStateImport(y)).collect(Collectors.toList())).orElse(null), 
+				appDispInfoWithDateOutput.getOpErrorFlag().map(x -> x.value).orElse(null), 
+				appDispInfoWithDateOutput.getOpActualContentDisplayLst()
+					.map(x -> x.stream().map(y -> ActualContentDisplayDto.fromDomain(y)).collect(Collectors.toList())).orElse(null),
+				appDispInfoWithDateOutput.getOpPreAppContentDisplayLst().map(x -> x.stream().map(y -> PreAppContentDispDto.fromDomain(y)).collect(Collectors.toList())).orElse(null), 
+				appDispInfoWithDateOutput.getOpAppDeadline().map(x -> x.toString()).orElse(null), 
+				appDispInfoWithDateOutput.getOpWorkTimeLst().map(x -> x.stream()
+					.map(y -> AppDispInfoWithDateDto.fromDomainWorkTime(y)).collect(Collectors.toList())).orElse(null));
 	}
 	
-	public static WorkTimeSettingDto fromDomainWorkTime(WorkTimeSetting workTimeSetting) {
+	private static WorkTimeSettingDto fromDomainWorkTime(WorkTimeSetting workTimeSetting) {
 		WorkTimeSettingDto workTimeSettingDto = new WorkTimeSettingDto();
 		workTimeSettingDto.companyId = workTimeSetting.getCompanyId();
 		workTimeSettingDto.worktimeCode = workTimeSetting.getWorktimeCode().v();
@@ -122,22 +144,37 @@ public class AppDispInfoWithDateDto {
 	}
 	
 	public AppDispInfoWithDateOutput toDomain() {
-		AppDispInfoWithDateOutput output = new AppDispInfoWithDateOutput();
-		output.setApprovalFunctionSet(ApprovalFunctionSettingDto.createFromJavaType(approvalFunctionSet));
-		output.setEmploymentSet(employmentSet == null ? null : employmentSet.toDomain());
-		output.setWorkTimeLst(workTimeLst.stream().map(x -> AppDispInfoWithDateDto.toDomainWorkTime(x)).collect(Collectors.toList()));
-		output.setApprovalRootState(new ApprovalRootStateImport_New(
-				listApprovalPhaseState.stream().map(x -> x.toDomain()).collect(Collectors.toList())));
-		output.setErrorFlag(EnumAdaptor.valueOf(errorFlag, ErrorFlagImport.class));
-		output.setPrePostAtr(EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class));
-		output.setBaseDate(GeneralDate.fromString(baseDate, "yyyy/MM/dd"));
-		output.setAchievementOutputLst(achievementOutputLst.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
-		output.setAppDetailContentLst(appDetailContentLst);
-		output.setEmpHistImport(empHistImport.toDomain());
-		return output;
+		AppDispInfoWithDateOutput appDispInfoWithDateOutput = new AppDispInfoWithDateOutput(
+				approvalFunctionSet.toDomain(), 
+				EnumAdaptor.valueOf(prePostAtr, PrePostInitAtr.class), 
+				GeneralDate.fromString(baseDate, "yyyy/MM/dd"), 
+				empHistImport.toDomain(), 
+				EnumAdaptor.valueOf(appDeadlineUseCategory, NotUseAtr.class));
+		if(opEmploymentSet != null) {
+			appDispInfoWithDateOutput.setOpEmploymentSet(Optional.of(opEmploymentSet.toDomain()));
+		}
+		if(opListApprovalPhaseState != null) {
+			appDispInfoWithDateOutput.setOpListApprovalPhaseState(Optional.of(opListApprovalPhaseState.stream().map(x -> x.toDomain()).collect(Collectors.toList())));
+		}
+		if(opErrorFlag != null) {
+			appDispInfoWithDateOutput.setOpErrorFlag(Optional.of(EnumAdaptor.valueOf(opErrorFlag, ErrorFlagImport.class)));
+		}
+		if(opActualContentDisplayLst != null) {
+			appDispInfoWithDateOutput.setOpActualContentDisplayLst(Optional.of(opActualContentDisplayLst.stream().map(x -> x.toDomain()).collect(Collectors.toList())));
+		}
+		if(opPreAppContentDispDtoLst != null) {
+			appDispInfoWithDateOutput.setOpPreAppContentDisplayLst(Optional.of(opPreAppContentDispDtoLst.stream().map(x -> x.toDomain()).collect(Collectors.toList())));
+		}
+		if(opAppDeadline != null) {
+			appDispInfoWithDateOutput.setOpAppDeadline(Optional.of(GeneralDate.fromString(opAppDeadline, "yyyy/MM/dd")));
+		}
+		if(opWorkTimeLst != null) {
+			appDispInfoWithDateOutput.setOpWorkTimeLst(Optional.of(opWorkTimeLst.stream().map(x -> AppDispInfoWithDateDto.toDomainWorkTime(x)).collect(Collectors.toList())));
+		}
+		return appDispInfoWithDateOutput;
 	}
 	
-	public static WorkTimeSetting toDomainWorkTime(WorkTimeSettingDto workTimeSetting) {
+	private static WorkTimeSetting toDomainWorkTime(WorkTimeSettingDto workTimeSetting) {
 		return new WorkTimeSetting(
 				workTimeSetting.companyId, 
 				new WorkTimeCode(workTimeSetting.worktimeCode), 

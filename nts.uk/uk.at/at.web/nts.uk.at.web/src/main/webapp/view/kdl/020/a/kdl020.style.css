@@ -6,7 +6,7 @@
 
 #content-right {
 	float: left;
-	margin-left: 25px;
+	margin-left: 20px;
 }
 
 #holiday-info_table tr, #holiday-use_table tr {
@@ -17,21 +17,26 @@
 	border: 1px solid #CCC;
 	margin-top: 1px;
 	padding: 0 2px;
-	width: 596px;
+	width: 520px;
 	height: 20px;
 }
 
 #total-number {
-	margin-left: 333px;
+	margin-left: 395px;
 }
 
-
+.line_1 {
+	display: inline-block;
+}
+.column1 {
+	width: 145px;
+}
 
 #title, #employeeInfo label {
 	font-size: 1.1em;
 	font-weight: bold;
 }
-#employeeInfo{
+#employeeInfo {
 	margin-top: 0px;
 }
 
@@ -41,7 +46,7 @@
 }
 
 #component-items-list {
-	margin-top: 55px;
+  margin-top: -10px;
 }
 
 #content-right_bottom_left, #content-right_bottom_right {
@@ -49,7 +54,7 @@
 }
 
 #content-right_bottom_right {
-	margin-left: 10px;
+	margin-left: 20px;
 	vertical-align: top;
 }
 
@@ -57,10 +62,13 @@
 	display: inline-block;
 	margin-top: 0px;
 }
-#functions-area-bottom button{
+#functions-area-bottom button {
 	margin-left: 0px;
 }
+#functions-area-bottom {
+  height: 45px;
+}
 
-.div_line{
-	margin-top: 13px;
+.div_line {
+	margin-top: 10px;
 }

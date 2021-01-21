@@ -12,10 +12,10 @@
 //import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
 //import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 //import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTimeSetMemento;
-//import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexHolSet;
-//import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaFixRest;
+//import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWtFleHolTs;
+//import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFiWekTs;
 //import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaRestTime;
-//import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdRestSet;
+//import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlHolTs;
 //import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexOffdayFlWRestTzSetMemento;
 //import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexOffdayHDWTSheetSetMemento;
 //
@@ -25,16 +25,16 @@
 //public class JpaFlexOffdayWorkTimeSetMemento implements FlexOffdayWorkTimeSetMemento{
 //	
 //	/** The entity worktimezones. */
-//	private List<KshmtFlexHolSet> entityWorktimezones;
+//	private List<KshmtWtFleHolTs> entityWorktimezones;
 //	
 //	/** The entity. */
 //	private KshmtFlexHaRestTime entity;
 //	
 //	/** The entity fixed rests. */
-//	private List<KshmtFlexHaFixRest> entityFixedRests;
+//	private List<KshmtWtFleBrFiWekTs> entityFixedRests;
 //	
 //	/** The entity flow rests. */
-//	private List<KshmtFlexOdRestSet> entityFlowRests;
+//	private List<KshmtWtFleBrFlHolTs> entityFlowRests;
 //	
 //
 //	/**
@@ -45,8 +45,8 @@
 //	 * @param entityFixedRests the entity fixed rests
 //	 * @param entityFlowRests the entity flow rests
 //	 */
-//	public JpaFlexOffdayWorkTimeSetMemento(List<KshmtFlexHolSet> entityWorktimezones, KshmtFlexHaRestTime entity,
-//			List<KshmtFlexHaFixRest> entityFixedRests, List<KshmtFlexOdRestSet> entityFlowRests) {
+//	public JpaFlexOffdayWorkTimeSetMemento(List<KshmtWtFleHolTs> entityWorktimezones, KshmtFlexHaRestTime entity,
+//			List<KshmtWtFleBrFiWekTs> entityFixedRests, List<KshmtWtFleBrFlHolTs> entityFlowRests) {
 //		super();
 //		this.entityWorktimezones = entityWorktimezones;
 //		this.entity = entity;
@@ -64,7 +64,7 @@
 //		}
 //		else {
 //			this.entityWorktimezones = lstWorkTimezone.stream().map(domain -> {
-//				KshmtFlexHolSet entity = new KshmtFlexHolSet();
+//				KshmtWtFleHolTs entity = new KshmtWtFleHolTs();
 //				domain.saveToMemento(new JpaFlexOffdayHDWTSheetSetMemento(entity));
 //				return entity;
 //			}).collect(Collectors.toList());

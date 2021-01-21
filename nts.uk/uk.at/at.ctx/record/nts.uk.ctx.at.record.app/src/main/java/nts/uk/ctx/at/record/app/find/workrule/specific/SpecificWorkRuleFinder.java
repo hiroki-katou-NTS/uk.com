@@ -5,10 +5,10 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.dom.workrule.specific.CalculateOfTotalConstraintTime;
-import nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository;
-import nts.uk.ctx.at.record.dom.workrule.specific.TimeOffVacationPriorityOrder;
-import nts.uk.ctx.at.record.dom.workrule.specific.UpperLimitTotalWorkingHour;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
+import nts.uk.ctx.at.shared.dom.workrule.specific.SpecificWorkRuleRepository;
+import nts.uk.ctx.at.shared.dom.workrule.specific.TimeOffVacationPriorityOrder;
+import nts.uk.ctx.at.shared.dom.workrule.specific.UpperLimitTotalWorkingHour;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

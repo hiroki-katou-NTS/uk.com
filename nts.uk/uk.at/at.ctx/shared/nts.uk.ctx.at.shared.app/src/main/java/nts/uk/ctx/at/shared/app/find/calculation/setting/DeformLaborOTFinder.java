@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.calculation.setting.DeformLaborOT;
-import nts.uk.ctx.at.shared.dom.calculation.setting.DeformLaborOTRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.defor.DeformLaborOT;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.defor.DeformLaborOTRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

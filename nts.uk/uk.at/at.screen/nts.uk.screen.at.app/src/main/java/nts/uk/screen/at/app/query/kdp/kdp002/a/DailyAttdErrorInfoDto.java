@@ -2,6 +2,7 @@ package nts.uk.screen.at.app.query.kdp.kdp002.a;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Data;
 import lombok.Getter;
@@ -10,21 +11,24 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.D
 
 /**
  * @author anhdt
- *
+ * 
+ *         日別勤怠エラー情報
+ * 
+ *         class này đã bị trải phẳng , không đúng với cấu trúc của domain nữa
  */
 @Data
 public class DailyAttdErrorInfoDto {
-	
+
 	private List<DailyAttdErrorInfoTemp> dailyAttdErrorInfos = new ArrayList<>();
 	private List<AppDispNameExp> appDispNames;
-	
-	public DailyAttdErrorInfoDto(List<DailyAttdErrorInfo> list,List<AppDispNameExp> appDispNames) {
+
+	public DailyAttdErrorInfoDto(List<DailyAttdErrorInfo> list, List<AppDispNameExp> appDispNames) {
 		for (DailyAttdErrorInfo e : list) {
 			this.dailyAttdErrorInfos.add(new DailyAttdErrorInfoTemp(e));
 		}
-		this.appDispNames= appDispNames;
+		this.appDispNames = appDispNames;
 	}
-	
+
 	@Getter
 	class DailyAttdErrorInfoTemp {
 		private Integer checkErrorType;
@@ -32,14 +36,15 @@ public class DailyAttdErrorInfoDto {
 		private String messageColor;
 		private String lastDateError;
 		private List<Integer> listRequired;
-		
+
 		public DailyAttdErrorInfoTemp(DailyAttdErrorInfo dom) {
 			this.checkErrorType = dom.getCheckErrorType().value;
 			this.messageContent = dom.getPromptingMessage().getMessageContent().v();
 			this.messageColor = dom.getPromptingMessage().getMessageColor().v();
 			this.lastDateError = dom.getLastDateError().toString();
-			this.listRequired  = dom.getListRequired();
+			//sắp xếp nó
+			this.listRequired = dom.getListRequired().stream().sorted().collect(Collectors.toList());
 		}
 	}
-	
+
 }

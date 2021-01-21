@@ -5,9 +5,9 @@ import javax.persistence.metamodel.StaticMetamodel;
 
 import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.KrcstRegMCalSet_;
 
-@StaticMetamodel(KrcstComRegMCalSet.class)
+@StaticMetamodel(KrcmtCalcMSetRegCom.class)
 public class KrcstComRegMCalSet_ extends KrcstRegMCalSet_ {
 
-    public static volatile SingularAttribute<KrcstComRegMCalSet, String> cid;
+    public static volatile SingularAttribute<KrcmtCalcMSetRegCom, String> cid;
 
 }

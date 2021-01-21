@@ -15,4 +15,12 @@ public class LayoutAllDto {
 	private boolean checkMyPage;
 	/**check top page co duoc setting khong*/
 	private boolean checkTopPage;
+	
+	/**
+	 * ビルトインユーザ用
+	 * @return
+	 */
+	public static LayoutAllDto forBuiltInUser() {
+		return new LayoutAllDto(null, null, false, false, false);
+	}
 }

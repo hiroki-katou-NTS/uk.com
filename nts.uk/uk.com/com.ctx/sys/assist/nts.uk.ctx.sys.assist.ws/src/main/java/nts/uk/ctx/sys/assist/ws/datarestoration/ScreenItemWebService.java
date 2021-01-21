@@ -3,10 +3,10 @@ package nts.uk.ctx.sys.assist.ws.datarestoration;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import nts.uk.ctx.sys.assist.app.find.datarestoration.ScreenItemDto;
+import nts.uk.ctx.sys.assist.app.command.datarestoration.EmployeeSelection;
+import nts.uk.ctx.sys.assist.app.command.datarestoration.FindScreenItemCommand;
 import nts.uk.ctx.sys.assist.app.find.datarestoration.ScreenItemFinder;
 
 @Path("ctx/sys/assist/datarestoration")
@@ -16,8 +16,8 @@ public class ScreenItemWebService {
 	private ScreenItemFinder screenItemFinder;
 
 	@POST
-	@Path("findPerformDataRecover/{dataRecoveryProcessId}")
-	public ScreenItemDto findPerformDataRecover(@PathParam("dataRecoveryProcessId") String dataRecoveryProcessId) {
-		return screenItemFinder.getTargetById(dataRecoveryProcessId);
+	@Path("findPerformDataRecover")
+	public EmployeeSelection findPerformDataRecover(FindScreenItemCommand command) {
+		return screenItemFinder.getTargetById(command);
 	}
 }

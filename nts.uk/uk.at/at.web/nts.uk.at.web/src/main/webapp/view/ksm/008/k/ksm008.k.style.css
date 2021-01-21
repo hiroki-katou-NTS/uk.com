@@ -1,0 +1,17 @@
+
+.custom-class {
+    padding: 5px 15px 15px 15px;
+}
+.class-padding-btm-5{
+    padding-bottom: 5px;
+}
+
+.width-180{
+    width: 180px;
+}
+.custom-header{
+    padding-bottom: 15px;
+}
+.panel.ntsPanel {
+    padding: 15px;
+}

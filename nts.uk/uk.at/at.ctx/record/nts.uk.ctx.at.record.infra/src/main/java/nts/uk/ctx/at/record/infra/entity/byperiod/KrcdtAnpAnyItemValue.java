@@ -11,12 +11,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.byperiod.AttendanceTimeOfAnyPeriodKey;
-import nts.uk.ctx.at.record.dom.monthly.anyitem.AggregateAnyItem;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyAmountMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.ctx.at.shared.dom.scherec.byperiod.AttendanceTimeOfAnyPeriodKey;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.AggregateAnyItem;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * エンティティ：集計任意項目
@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KRCDT_ANP_ANYITEMVALUE")
 @NoArgsConstructor
-public class KrcdtAnpAnyItemValue extends UkJpaEntity implements Serializable {
+public class KrcdtAnpAnyItemValue extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

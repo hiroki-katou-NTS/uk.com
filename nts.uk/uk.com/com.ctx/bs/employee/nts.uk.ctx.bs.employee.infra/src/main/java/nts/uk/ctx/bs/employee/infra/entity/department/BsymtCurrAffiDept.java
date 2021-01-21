@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class bsymt current affiliation department
@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "BSYMT_CURR_AFFI_DEPT")
-public class BsymtCurrAffiDept extends UkJpaEntity implements Serializable {
+public class BsymtCurrAffiDept extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

@@ -2,6 +2,8 @@ package nts.uk.ctx.at.schedule.dom.shift.management;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
 
@@ -9,6 +11,15 @@ import org.junit.Test;
 
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsHelper.ShiftPalletsComHelper;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.Combinations;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftCombinationName;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPalette;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteCombinations;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteDisplayInfor;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteName;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteCom;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftRemarks;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -22,21 +33,21 @@ public class ShiftPalletsComTest {
 	public void create_shiftPalletsCom_0page_fail() {
 
 		NtsAssert.businessException("Msg_1615", () -> {
-			new ShiftPalletsCom(
+			ShiftPaletteCom.create(
 					"000000000000-0001", // dummy
 					0, 
-					new ShiftPallet(
-							new ShiftPalletDisplayInfor(
-									new ShiftPalletName("shpaName"), // dummy
+					new ShiftPalette(
+							new ShiftPaletteDisplayInfor(
+									new ShiftPaletteName("shpaName"), // dummy
 									NotUseAtr.USE, // dummy
 									new ShiftRemarks("shRemar")), // dummy
 							Arrays.asList( 
-									new ShiftPalletCombinations(
+									new ShiftPaletteCombinations(
 											2, // dummy
 											new ShiftCombinationName("combiName"),// dummy
 											Arrays.asList(new Combinations(
 													1, // dummy
-													new ShiftPalletCode("0000001"))))))); // dummy
+													new ShiftMasterCode("0000001"))))))); // dummy
 		});
 	}
 
@@ -44,54 +55,54 @@ public class ShiftPalletsComTest {
 	public void create_shiftPalletsCom_11pages_fail() {
 
 		NtsAssert.businessException("Msg_1615", () -> {
-			new ShiftPalletsCom(
+			ShiftPaletteCom.create(
 					"000000000000-0001", // dummy
 					11, 
-					new ShiftPallet(
-							new ShiftPalletDisplayInfor(
-									new ShiftPalletName("shpaName"), // dummy
+					new ShiftPalette(
+							new ShiftPaletteDisplayInfor(
+									new ShiftPaletteName("shpaName"), // dummy
 									NotUseAtr.USE, // dummy
 									new ShiftRemarks("shRemar")), // dummy
 							Arrays.asList( 
-									new ShiftPalletCombinations(
+									new ShiftPaletteCombinations(
 											2, // dummy
 											new ShiftCombinationName("combiName"),// dummy
 											Arrays.asList(new Combinations(
 													1, // dummy
-													new ShiftPalletCode("0000001"))))))); // dummy
+													new ShiftMasterCode("0000001"))))))); // dummy
 		});
 	}
 	
 	@Test
 	public void create_shiftPalletsCom_sort() {
 
-		ShiftPalletsCom target = new ShiftPalletsCom(
+		ShiftPaletteCom target = ShiftPaletteCom.create(
 					"000000000000-0001", // dummy
 					1, // dummy
-					new ShiftPallet(
-							new ShiftPalletDisplayInfor(
-									new ShiftPalletName("shpaName"), // dummy
+					new ShiftPalette(
+							new ShiftPaletteDisplayInfor(
+									new ShiftPaletteName("shpaName"), // dummy
 									NotUseAtr.USE, // dummy
 									new ShiftRemarks("shRemar")), // dummy
 							Arrays.asList(
-								new ShiftPalletCombinations(
+								new ShiftPaletteCombinations(
 										2, 
 										new ShiftCombinationName("combiName2"), // dummy
 										Arrays.asList(new Combinations(
 												1, // dummy
-												new ShiftPalletCode("0000001")))), // dummy
-								new ShiftPalletCombinations(
+												new ShiftMasterCode("0000001")))), // dummy
+								new ShiftPaletteCombinations(
 										3, 
 										new ShiftCombinationName("combiName3"), // dummy
 										Arrays.asList(new Combinations(
 												1, // dummy
-												new ShiftPalletCode("0000001")))), // dummy
-								new ShiftPalletCombinations(
+												new ShiftMasterCode("0000001")))), // dummy
+								new ShiftPaletteCombinations(
 										1, 
 										new ShiftCombinationName("combiName1"), // dummy
 										Arrays.asList(new Combinations(
 												1, // dummy
-												new ShiftPalletCode("0000001"))))))); // dummy
+												new ShiftMasterCode("0000001"))))))); // dummy
 		
 		assertThat(target.getShiftPallet().getCombinations())
 			.extracting(d->d.getPositionNumber(), d->d.getCombinationName().v())
@@ -101,21 +112,21 @@ public class ShiftPalletsComTest {
 	@Test
 	public void create_shiftPalletsCom_1page_success() {
 
-		ShiftPalletsCom target = new ShiftPalletsCom(
+		ShiftPaletteCom target = new ShiftPaletteCom(
 				"000000000000-0001",
 				1, 
-				new ShiftPallet(
-						new ShiftPalletDisplayInfor(
-								new ShiftPalletName("shpaName"), 
+				new ShiftPalette(
+						new ShiftPaletteDisplayInfor(
+								new ShiftPaletteName("shpaName"), 
 								NotUseAtr.USE, 
 								new ShiftRemarks("shRemar")), 
 						Arrays.asList( 
-								new ShiftPalletCombinations(
+								new ShiftPaletteCombinations(
 										2, 
 										new ShiftCombinationName("combiName"),
 										Arrays.asList(new Combinations(
 												1, 
-												new ShiftPalletCode("0000001")))))));
+												new ShiftMasterCode("0000001")))))));
 		
 		assertThat(target)
 			.extracting(
@@ -143,21 +154,21 @@ public class ShiftPalletsComTest {
 	@Test
 	public void create_shiftPalletsCom_10pages_success() {
 
-		ShiftPalletsCom target = new ShiftPalletsCom(
+		ShiftPaletteCom target = new ShiftPaletteCom(
 				"000000000000-0001",
 				10, 
-				new ShiftPallet(
-						new ShiftPalletDisplayInfor(
-								new ShiftPalletName("shpaName"), 
+				new ShiftPalette(
+						new ShiftPaletteDisplayInfor(
+								new ShiftPaletteName("shpaName"), 
 								NotUseAtr.USE, 
 								new ShiftRemarks("shRemar")), 
 						Arrays.asList( 
-								new ShiftPalletCombinations(
+								new ShiftPaletteCombinations(
 										2, 
 										new ShiftCombinationName("combiName"),
 										Arrays.asList(new Combinations(
 												1, 
-												new ShiftPalletCode("0000001")))))));
+												new ShiftMasterCode("0000001")))))));
 		
 		assertThat(target)
 			.extracting(
@@ -185,46 +196,46 @@ public class ShiftPalletsComTest {
 	@Test
 	public void modifyShiftPalletsCom_success() {
 
-		ShiftPalletsCom shiftPalletsCom = new ShiftPalletsCom(
+		ShiftPaletteCom shiftPalletsCom = new ShiftPaletteCom(
 					"000000000000-0001", 
 					1, 
-					new ShiftPallet(
-							new ShiftPalletDisplayInfor(
-									new ShiftPalletName("shpaName"), 
+					new ShiftPalette(
+							new ShiftPaletteDisplayInfor(
+									new ShiftPaletteName("shpaName"), 
 									NotUseAtr.USE, 
 									new ShiftRemarks("shRemar")),
 							Arrays.asList( 
-									new ShiftPalletCombinations(
+									new ShiftPaletteCombinations(
 											2, 
 											new ShiftCombinationName("combiName"),
 											Arrays.asList(new Combinations(
 													1, 
-													new ShiftPalletCode("0000001")))))));
+													new ShiftMasterCode("0000001")))))));
 
-		ShiftPallet shiftPallet = new ShiftPallet(
-				new ShiftPalletDisplayInfor(
-						new ShiftPalletName("shpaName"), 
+		ShiftPalette shiftPallet = new ShiftPalette(
+				new ShiftPaletteDisplayInfor(
+						new ShiftPaletteName("shpaName"), 
 						NotUseAtr.USE, 
 						new ShiftRemarks("shRemar")),
 				Arrays.asList(
-						new ShiftPalletCombinations(
+						new ShiftPaletteCombinations(
 								7, 
 								new ShiftCombinationName("name07"), 
 								Arrays.asList(new Combinations(
 										1, 
-										new ShiftPalletCode("0000001")))),
-						new ShiftPalletCombinations(
+										new ShiftMasterCode("0000001")))),
+						new ShiftPaletteCombinations(
 								4, 
 								new ShiftCombinationName("name04"), 
 								Arrays.asList(new Combinations(
 										1, 
-										new ShiftPalletCode("0000001")))),
-						new ShiftPalletCombinations(
+										new ShiftMasterCode("0000001")))),
+						new ShiftPaletteCombinations(
 								5, 
 								new ShiftCombinationName("name05"), 
 								Arrays.asList(new Combinations(
 										1, 
-										new ShiftPalletCode("0000001"))))));
+										new ShiftMasterCode("0000001"))))));
 		
 		shiftPalletsCom.modifyShiftPallets(shiftPallet);
 		
@@ -232,10 +243,39 @@ public class ShiftPalletsComTest {
 			.extracting(d -> d.getPositionNumber(), d->d.getCombinationName().v())
 			.containsExactly(tuple(4,"name04") , tuple(5,"name05"), tuple(7,"name07"));
 	}
+	
+	@Test
+	public void testReproduct() {
+
+		ShiftPaletteCom shiftPalletsCom = new ShiftPaletteCom(
+					"000000000000-0001", 
+					1, 
+					new ShiftPalette(
+							new ShiftPaletteDisplayInfor(
+									new ShiftPaletteName("shpaName"), 
+									NotUseAtr.USE, 
+									new ShiftRemarks("shRemar")),
+							Arrays.asList( 
+									new ShiftPaletteCombinations(
+											2, 
+											new ShiftCombinationName("combiName"),
+											Arrays.asList(new Combinations(
+													1, 
+													new ShiftMasterCode("0000001")))))));
+		ShiftPaletteName shiftPalletName = new ShiftPaletteName("shiftPalletNameNew");
+		ShiftPaletteCom shiftPalletsComNew = shiftPalletsCom.reproduct(2, shiftPalletName);
+		
+		assertThat(shiftPalletsComNew.getShiftPallet().getDisplayInfor().getShiftPalletName().v()).isEqualTo(shiftPalletName.v());
+		assertThat(shiftPalletsComNew.getPage()).isEqualTo(2);
+		assertThat(shiftPalletsComNew.getCompanyId()).isEqualTo("000000000000-0001");
+		
+	}
+
+
 
 	@Test
 	public void getters() {
-		ShiftPalletsCom target = ShiftPalletsComHelper.DUMMY;
+		ShiftPaletteCom target = ShiftPalletsComHelper.DUMMY;
 		NtsAssert.invokeGetters(target);
 	}
 

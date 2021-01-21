@@ -1,0 +1,18 @@
+.list{
+	margin: 15px 0 0 15px;
+}
+.listIP{
+	margin-top: 25px;
+}
+.details{
+	margin: 74px 0 0 35px;
+}
+.ipAddress{
+	margin: 23px 0;
+}
+.ipAddress>.form-label{
+    margin-right: 18px;
+}
+.ipAddress input{
+    width: 25px;
+}

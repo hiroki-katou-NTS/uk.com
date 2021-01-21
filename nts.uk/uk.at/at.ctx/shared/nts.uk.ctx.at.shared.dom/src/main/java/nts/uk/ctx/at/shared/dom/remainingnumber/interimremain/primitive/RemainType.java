@@ -25,10 +25,21 @@ public enum RemainType {
 	 * 振出
 	 */
 	PICKINGUP(6,"振出"),
-	/**
-	 * 休出
-	 */	
-	BREAK(7,"休出");
+	
+	/** 休出. */	
+	BREAK(7,"休出"),
+
+	/** 60H超休 */
+	SIXTY_OVER_BREAK(8, "60H超休"),
+
+	/** 公休 */
+	CLOSED(9, "公休"),
+
+	/** The nursing child. */
+	NURSING_CHILD(10, "子の看護"),
+
+	/** The nursing. */
+	NURSING(11, "介護");
 	
 	public final Integer value;
 	

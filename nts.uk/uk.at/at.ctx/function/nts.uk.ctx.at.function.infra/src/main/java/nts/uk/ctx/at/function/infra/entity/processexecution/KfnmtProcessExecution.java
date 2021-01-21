@@ -40,13 +40,13 @@ import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetMonth;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetSetting;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.shr.com.time.calendar.MonthDay;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "KFNMT_PROC_EXEC")
+@Table(name = "KFNMT_AUTOEXEC")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KfnmtProcessExecution extends UkJpaEntity implements Serializable {
+public class KfnmtProcessExecution extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/* 主キー */
 	@EmbeddedId
@@ -57,11 +57,11 @@ public class KfnmtProcessExecution extends UkJpaEntity implements Serializable {
 	public String execItemName;
 
 	@OneToOne(mappedBy = "procExec", cascade = CascadeType.ALL)
-	@JoinTable(name = "KFNMT_EXECUTION_SCOPE")
-	public KfnmtExecutionScope execScope;
+	@JoinTable(name = "KFNMT_AUTOEXEC_SCOPE")
+	public KfnmtAutoexecScope execScope;
 
 	@OneToOne(mappedBy = "procExec", cascade = CascadeType.ALL)
-	@JoinTable(name = "KFNMT_PROC_EXEC_SETTING")
+	@JoinTable(name = "KFNMT_AUTOEXEC_SETTEING")
 	public KfnmtProcessExecutionSetting execSetting;
 
 	/* 実行種別 */
@@ -137,7 +137,7 @@ public class KfnmtProcessExecution extends UkJpaEntity implements Serializable {
 		List<KfnmtExecutionScopeItem> wkpList = domain.getExecScope().getWorkplaceIdList().stream()
 				.map(x -> KfnmtExecutionScopeItem.toEntity(x.getCompanyId(), x.getExecItemCd(), x.getWkpId()))
 				.collect(Collectors.toList());
-		KfnmtExecutionScope execScope = new KfnmtExecutionScope(
+		KfnmtAutoexecScope execScope = new KfnmtAutoexecScope(
 				new KfnmtExecutionScopePK(domain.getCompanyId(), domain.getExecItemCd().v()),
 				domain.getExecScope().getExecScopeCls().value, domain.getExecScope().getRefDate(), wkpList);
 		KfnmtProcessExecutionSetting execSetting = new KfnmtProcessExecutionSetting(

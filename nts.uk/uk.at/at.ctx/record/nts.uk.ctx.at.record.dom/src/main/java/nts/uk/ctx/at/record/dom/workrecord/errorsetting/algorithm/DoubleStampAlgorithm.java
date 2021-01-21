@@ -7,11 +7,11 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
-import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 
 /**
  * 
@@ -28,9 +28,9 @@ public class DoubleStampAlgorithm {
 
 		List<Integer> attendanceItemIDs = new ArrayList<>();
 
-		if (timeLeavingOfDailyPerformance != null && !timeLeavingOfDailyPerformance.getTimeLeavingWorks().isEmpty()) {
+		if (timeLeavingOfDailyPerformance != null && !timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().isEmpty()) {
 
-			List<TimeLeavingWork> timeLeavingWorks = timeLeavingOfDailyPerformance.getTimeLeavingWorks();
+			List<TimeLeavingWork> timeLeavingWorks = timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks();
 
 			for (TimeLeavingWork timeLeavingWork : timeLeavingWorks) {
 				// 出勤の二重打刻チェック処理

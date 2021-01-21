@@ -7,10 +7,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
-import nts.uk.ctx.at.record.dom.workinformation.ScheduleTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
@@ -49,8 +50,9 @@ public class ScheTimeLeavingOfDailyService {
 		//勤務種類を取得する
 		Optional<WorkType> workTypeInfor = worktypeRepo.findByPK(cid, workTypeCd);
 		//キャッシュ「日別実績（Edit）．日別実績（Work)．編集状態」をチェックする
-		List<EditStateOfDailyPerformance> lstScheTime = dailyInfor.getEditState().stream().filter(x -> (x.getAttendanceItemId() == 3 || x.getAttendanceItemId() == 4) 
+		List<EditStateOfDailyAttd> lstScheTimeAttds = dailyInfor.getEditState().stream().filter(x -> (x.getAttendanceItemId() == 3 || x.getAttendanceItemId() == 4) 
 				&& x.getEditStateSetting() != EditStateSetting.REFLECT_APPLICATION).collect(Collectors.toList());
+		List<EditStateOfDailyPerformance> lstScheTime = lstScheTimeAttds.stream().map(mapper-> new EditStateOfDailyPerformance(dailyInfor.getEmployeeId(), dailyInfor.getYmd(), mapper)).collect(Collectors.toList());
 		if(!lstScheTime.isEmpty()) {
 			return;
 		}
@@ -90,23 +92,26 @@ public class ScheTimeLeavingOfDailyService {
 			dailyInfor.getWorkInformation().setScheduleTimeSheets(scheduleTimeSheets);	
 		}
 		//マージした出退勤時刻の「編集状態」を更新するする
-		List<EditStateOfDailyPerformance> lstEditScheStartTime = dailyInfor.getEditState().stream()
+		List<EditStateOfDailyAttd> lstStartTimeAttds = dailyInfor.getEditState().stream()
 				.filter(x -> x.getAttendanceItemId() == 3)
 				.collect(Collectors.toList());
+		List<EditStateOfDailyPerformance> lstEditScheStartTime = lstStartTimeAttds.stream().map(mapper-> new EditStateOfDailyPerformance(dailyInfor.getEmployeeId(), dailyInfor.getYmd(), mapper)).collect(Collectors.toList());
 		if(lstEditScheStartTime.isEmpty()) {
-			EditStateOfDailyPerformance editScheStartTime = new EditStateOfDailyPerformance(dailyInfor.getWorkInformation().getEmployeeId(),
-					3, dailyInfor.getWorkInformation().getYmd(),
+			EditStateOfDailyPerformance editScheStartTime = new EditStateOfDailyPerformance(dailyInfor.getEmployeeId(),
+					3, dailyInfor.getYmd(),
 					EditStateSetting.REFLECT_APPLICATION);
-			dailyInfor.getEditState().add(editScheStartTime);
+			dailyInfor.getEditState().add(editScheStartTime.getEditState());
 		}
-		List<EditStateOfDailyPerformance> lstEditScheEndTime = dailyInfor.getEditState().stream()
+		
+		List<EditStateOfDailyAttd> lstEndTimeAttds = dailyInfor.getEditState().stream()
 				.filter(x -> x.getAttendanceItemId() == 4)
 				.collect(Collectors.toList());
+		List<EditStateOfDailyPerformance> lstEditScheEndTime = lstEndTimeAttds.stream().map(mapper-> new EditStateOfDailyPerformance(dailyInfor.getEmployeeId(), dailyInfor.getYmd(), mapper)).collect(Collectors.toList());
 		if(lstEditScheEndTime.isEmpty()) {
-			EditStateOfDailyPerformance editScheEndTime = new EditStateOfDailyPerformance(dailyInfor.getWorkInformation().getEmployeeId(),
-					4, dailyInfor.getWorkInformation().getYmd(),
+			EditStateOfDailyPerformance editScheEndTime = new EditStateOfDailyPerformance(dailyInfor.getEmployeeId(),
+					4, dailyInfor.getYmd(),
 					EditStateSetting.REFLECT_APPLICATION);
-			dailyInfor.getEditState().add(editScheEndTime);
+			dailyInfor.getEditState().add(editScheEndTime.getEditState());
 		}
 	}
 }

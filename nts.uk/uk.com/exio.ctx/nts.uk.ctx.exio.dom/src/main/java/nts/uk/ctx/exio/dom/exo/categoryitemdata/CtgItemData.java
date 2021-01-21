@@ -86,10 +86,15 @@ public class CtgItemData extends AggregateRoot {
 	 * 検索値コード
 	 */
 	private Optional<String> searchValueCd;
+	
+	/**
+	 * 予約語区分
+	 */
+	private NotUseAtr keywordAtr;
 
 	public CtgItemData(String tblAlias, int dataType, String tableName, String fieldName, int primarykeyClassfication,
 			String dateClassfication, int specialItem, String displayTableName, int displayClassfication,
-			String itemName, int requiredCategory, String searchValueCd) {
+			String itemName, int requiredCategory, String searchValueCd, int keywordAtr) {
 		super();
 		this.tblAlias = tblAlias;
 		this.dataType = EnumAdaptor.valueOf(dataType, DataType.class);
@@ -104,11 +109,12 @@ public class CtgItemData extends AggregateRoot {
 		this.itemName = new OutputItemName(itemName);
 		this.requiredCategory = EnumAdaptor.valueOf(requiredCategory, NotUseAtr.class);
 		this.searchValueCd = Optional.ofNullable(searchValueCd);
+		this.keywordAtr = EnumAdaptor.valueOf(keywordAtr, NotUseAtr.class);
 	}
 
 	public CtgItemData(String tblAlias, int categoryId, int dataType, String tableName, String fieldName,
 			int primarykeyClassfication, String dateClassfication, int specialItem, String displayTableName,
-			int displayClassfication, int itemNo, String itemName, int requiredCategory, String searchValueCd) {
+			int displayClassfication, int itemNo, String itemName, int requiredCategory, String searchValueCd, int keywordAtr) {
 		super();
 		this.tblAlias = tblAlias;
 		this.categoryId = new CategoryCd(categoryId);
@@ -125,6 +131,7 @@ public class CtgItemData extends AggregateRoot {
 		this.itemName = new OutputItemName(itemName);
 		this.requiredCategory = EnumAdaptor.valueOf(requiredCategory, NotUseAtr.class);
 		this.searchValueCd = Optional.ofNullable(searchValueCd);
+		this.keywordAtr = EnumAdaptor.valueOf(keywordAtr, NotUseAtr.class);
 	}
 
 }

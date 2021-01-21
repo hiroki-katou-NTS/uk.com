@@ -13,17 +13,17 @@ import javax.persistence.MappedSuperclass;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
- * The Class KshmtAutoComCalSet.
+ * The Class KrcmtCalcSetCom.
  */
 
 @Setter
 @Getter
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public abstract class KshmtAutoCalSet extends UkJpaEntity implements Serializable {
+public abstract class KshmtAutoCalSet extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

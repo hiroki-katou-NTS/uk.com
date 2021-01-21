@@ -12,9 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatus;
-import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeColorCheck;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
@@ -32,7 +30,7 @@ public class AppOverTime extends AggregateRoot{
 	/**
 	 * application
 	 */
-	private Application_New application;
+	private Application application;
 	/**
 	 * 会社ID
 	 * companyID

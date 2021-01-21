@@ -1,0 +1,196 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:com="http://xmlns.jcp.org/jsf/component"
+				xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<table id="fixed-table-c1">
+		<colgroup>
+			<col width="270px"/>
+			<col width="650px"/>
+		</colgroup>
+		<thead>
+			<tr>
+				<th class="ui-widget-header" colspan="2">#{i18n.getText('KAF022_148')}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="inline-radio">
+				<td class="color-header">#{i18n.getText('KAF022_149')}</td>
+				<td class="three-radio">
+					<div id="c27" data-bind="ntsRadioBoxGroup: {
+								options: itemListC27,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: reflectWorkHour,
+								enable: true}">
+					</div>
+				</td>
+			</tr>
+			<tr class="inline-radio">
+				<td class="color-header">#{i18n.getText('KAF022_168')}</td>
+				<td class="two-radio">
+					<div data-bind="ntsRadioBoxGroup: {
+								options: itemListC48,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: reflectAttendance,
+								enable: true}">
+					</div>
+				</td>
+			</tr>
+			<tr class="inline-radio">
+				<td class="color-header" id="c15">#{i18n.getText('KAF022_158')}</td>
+				<td class="two-radio">
+					<div id="c38" data-bind="ntsRadioBoxGroup: {
+								options: itemListC51,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: annualVacationTime,
+								enable: true}">
+					</div>
+				</td>
+			</tr>
+			<tr class="inline-radio">
+				<td class="color-header" id="c16">#{i18n.getText('KAF022_159')}</td>
+				<td class="two-radio">
+					<div id="c39" data-bind="ntsRadioBoxGroup: {
+								options: itemListC51,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: superHoliday60H,
+								enable: true}">
+					</div>
+				</td>
+			</tr>
+			<tr class="inline-radio">
+				<td class="color-header" id="c17">#{i18n.getText('KAF022_160')}</td>
+				<td class="two-radio">
+					<div class="blockrow" id="c40" data-bind="ntsRadioBoxGroup: {
+								options: itemListC51,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: substituteLeaveTime,
+								enable: true}">
+					</div>
+				</td>
+			</tr>
+			<tr class="inline-radio">
+				<td class="color-header" id="c181">#{i18n.getText('KAF022_726')}</td>
+				<td class="two-radio">
+					<div id="c182" data-bind="ntsRadioBoxGroup: {
+								options: itemListC51,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: nursing,
+								enable: true}">
+					</div>
+				</td>
+			</tr>
+			<tr class="inline-radio">
+				<td class="color-header">#{i18n.getText('KAF022_727')}</td>
+				<td class="two-radio">
+					<div data-bind="ntsRadioBoxGroup: {
+								options: itemListC51,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: childNursing,
+								enable: true}">
+					</div>
+				</td>
+			</tr>
+			<tr class="inline-radio">
+				<td class="color-header">#{i18n.getText('KAF022_676')}</td>
+				<td class="two-radio">
+					<div data-bind="ntsRadioBoxGroup: {
+								options: itemListC51,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: specialVacationTime,
+								enable: true}">
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<table id="fixed-table-c2">
+		<colgroup>
+			<col width="270px"/>
+			<col width="650px"/>
+		</colgroup>
+		<thead>
+			<tr>
+				<th class="ui-widget-header" colspan="2">#{i18n.getText('KAF022_143')}</th>
+			</tr>
+		</thead>
+		<tbody>
+		<tr class="inline-radio">
+			<td class="color-header" id="c4">#{i18n.getText('KAF022_154')}</td>
+			<td class="two-radio">
+				<div data-bind="ntsRadioBoxGroup: {
+                            options: itemListC28,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: halfDayAnnualLeaveUsageLimitCheck,
+                            enable: true}">
+				</div>
+			</td>
+		</tr>
+		</tbody>
+	</table>
+
+	<table id="fixed-table-c3">
+		<colgroup>
+			<col width="270px"/>
+			<col width="650px"/>
+		</colgroup>
+		<thead>
+			<tr>
+				<th class="ui-widget-header" colspan="2">#{i18n.getText('KAF022_144')}</th>
+			</tr>
+		</thead>
+		<tbody data-bind="foreach: holidayAppTypeDispNames">
+			<tr>
+				<td class="color-header">
+					<div data-bind="ntsFormLabel: { constraint: 'ObstacleName', inline: true, text: holidayAppTypeLabel }"/>
+				</td>
+				<td>
+					<div class="control-group valign-center">
+						<input data-bind="ntsTextEditor: {
+								name: '#[KAF022_177]',
+								value: displayName,
+								constraint: 'ObstacleName',
+								required: true,
+								enable: true
+							}" />
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+    <table id="fixed-table-c4">
+        <colgroup>
+            <col width="270px"/>
+            <col width="650px"/>
+        </colgroup>
+        <thead>
+			<tr>
+				<th class="ui-widget-header" colspan="2">#{i18n.getText('KAF022_693')}</th>
+			</tr>
+        </thead>
+        <tbody>
+			<tr class="inline-radio">
+				<td class="color-header">#{i18n.getText('KAF022_728')}</td>
+				<td class="two-radio">
+					<div data-bind="ntsRadioBoxGroup: {
+								options: itemListCC1,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: oneDayLeaveDeleteAttendance,
+								enable: true}">
+					</div>
+				</td>
+			</tr>
+        </tbody>
+    </table>
+</ui:composition>

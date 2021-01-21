@@ -1,10 +1,10 @@
 package nts.uk.ctx.bs.employee.dom.workplace.affiliate;
 
-import java.util.List;
-import java.util.Optional;
-
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+
+import java.util.List;
+import java.util.Optional;
 
 public interface AffWorkplaceHistoryItemRepository {
 	/**
@@ -59,4 +59,9 @@ public interface AffWorkplaceHistoryItemRepository {
 	List<String> getHistIdLstBySidAndPeriod(String sid, DatePeriod period);
 	
 	List<String> getHistIdLstByWorkplaceIdsAndPeriod(List<String> workplaceIds, DatePeriod period);
+
+	List<String> getSIDByListWklocationId(List<String> workLocationCDS);
+
+	//for file query : 注文情報を作る
+	List<String> getSIDByListWklocationCode(List<String> workLocationCode);
 }

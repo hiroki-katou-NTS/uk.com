@@ -6,9 +6,9 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KshstTotalCondition_.
  */
-@StaticMetamodel(KshstTotalCondition.class)
+@StaticMetamodel(KshmtTotalCondition.class)
 public class KshstTotalCondition_ {
 	
 	/** The KshstTotalConditionPK. */
-    public static volatile SingularAttribute<KshstTotalCondition, KshstTotalConditionPK> kshstTotalConditionPK;
+    public static volatile SingularAttribute<KshmtTotalCondition, KshstTotalConditionPK> kshstTotalConditionPK;
 }

@@ -2,7 +2,7 @@ package nts.uk.ctx.at.schedule.app.find.shift.shiftpalletsorg;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.schedule.dom.shift.management.Combinations;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.Combinations;
 
 @Data
 

@@ -21,7 +21,6 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordHelper;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.GetStampTypeToSuppressService.Require;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -41,6 +40,12 @@ public class GetStampTypeToSuppressServiceTest {
 	public void testGetStampTypeToSuppressService_1() {
 		String employeeId = "employeeId";//dummy
 		StampMeans stampMeans = StampMeans.PORTAL;
+		new Expectations() {
+			{
+				require.getPotalSettings();
+				result = Optional.empty();
+			}
+		};
 		StampToSuppress stampToSuppress = GetStampTypeToSuppressService.get(require, employeeId, stampMeans);
 		assertThat(stampToSuppress.isGoingToWork()).isFalse();
 		assertThat(stampToSuppress.isDeparture()).isFalse();
@@ -56,12 +61,11 @@ public class GetStampTypeToSuppressServiceTest {
 	public void testGetStampTypeToSuppressService_2() {
 		String employeeId = "employeeId";//dummy
 		StampMeans stampMeans = StampMeans.INDIVITION;
-		String companyId = AppContexts.user().companyId();
 		new Expectations() {
 			{
-				require.getStampSet(companyId);
+				require.getStampSet();
 			}
-		};
+		};	
 		StampToSuppress stampToSuppress = GetStampTypeToSuppressService.get(require, employeeId, stampMeans);
 		assertThat(stampToSuppress.isGoingToWork()).isFalse();
 		assertThat(stampToSuppress.isDeparture()).isFalse();
@@ -79,10 +83,9 @@ public class GetStampTypeToSuppressServiceTest {
 	public void testGetStampTypeToSuppressService_3() {
 		String employeeId = "employeeId";//dummy
 		StampMeans stampMeans = StampMeans.INDIVITION;
-		String companyId = AppContexts.user().companyId();
 		new Expectations() {
 			{
-				require.getStampSet(companyId);
+				require.getStampSet();
 				result = Optional.of(StampSettingPersonHelper.DUMMY_buttonEmphasisArt_false);
 			}
 		};
@@ -107,10 +110,9 @@ public class GetStampTypeToSuppressServiceTest {
 	public void testGetStampTypeToSuppressService_4() {
 		String employeeId = "employeeId";//dummy
 		StampMeans stampMeans = StampMeans.INDIVITION;
-		String companyId = AppContexts.user().companyId();
 		new Expectations() {
 			{
-				require.getStampSet(companyId);
+				require.getStampSet();
 				result = Optional.of(StampSettingPersonHelper.DUMMY);
 				
 				require.findWorkConditionByEmployee(anyString,
@@ -133,10 +135,9 @@ public class GetStampTypeToSuppressServiceTest {
 	public void testGetStampTypeToSuppressService_5() {
 		String employeeId = "employeeId";//dummy
 		StampMeans stampMeans = StampMeans.INDIVITION;
-		String companyId = AppContexts.user().companyId();
 		new Expectations() {
 			{
-				require.getStampSet(companyId);
+				require.getStampSet();
 				result = Optional.of(StampSettingPersonHelper.DUMMY);
 				
 				require.findWorkConditionByEmployee(anyString,
@@ -164,10 +165,9 @@ public class GetStampTypeToSuppressServiceTest {
 	public void testGetStampTypeToSuppressService_6() {
 		String employeeId = "employeeId";//dummy
 		StampMeans stampMeans = StampMeans.INDIVITION;
-		String companyId = AppContexts.user().companyId();
 		new Expectations() {
 			{
-				require.getStampSet(companyId);
+				require.getStampSet();
 				result = Optional.of(StampSettingPersonHelper.DUMMY);
 				
 				require.findWorkConditionByEmployee(anyString,
@@ -199,10 +199,9 @@ public class GetStampTypeToSuppressServiceTest {
 	public void testGetStampTypeToSuppressService_7() {
 		String employeeId = "employeeId";//dummy
 		StampMeans stampMeans = StampMeans.INDIVITION;
-		String companyId = AppContexts.user().companyId();
 		new Expectations() {
 			{
-				require.getStampSet(companyId);
+				require.getStampSet();
 				result = Optional.of(StampSettingPersonHelper.DUMMY);
 				
 				require.findWorkConditionByEmployee(anyString,
@@ -239,10 +238,9 @@ public class GetStampTypeToSuppressServiceTest {
 	public void testGetStampTypeToSuppressService_8() {
 		String employeeId = "employeeId";//dummy
 		StampMeans stampMeans = StampMeans.INDIVITION;
-		String companyId = AppContexts.user().companyId();
 		new Expectations() {
 			{
-				require.getStampSet(companyId);
+				require.getStampSet();
 				result = Optional.of(StampSettingPersonHelper.DUMMY);
 				
 				require.findWorkConditionByEmployee(anyString,
@@ -283,10 +281,9 @@ public class GetStampTypeToSuppressServiceTest {
 	public void testGetStampTypeToSuppressService_9() {
 		String employeeId = "employeeId";//dummy
 		StampMeans stampMeans = StampMeans.INDIVITION;
-		String companyId = AppContexts.user().companyId();
 		new Expectations() {
 			{
-				require.getStampSet(companyId);
+				require.getStampSet();
 				result = Optional.of(StampSettingPersonHelper.DUMMY);
 				
 				require.findWorkConditionByEmployee(anyString,
@@ -314,11 +311,13 @@ public class GetStampTypeToSuppressServiceTest {
 				
 			}
 		};
+		
 		StampToSuppress stampToSuppress = GetStampTypeToSuppressService.get(require, employeeId, stampMeans);
+		
 		assertThat(stampToSuppress.isGoingToWork()).isTrue();
 		assertThat(stampToSuppress.isDeparture()).isFalse();
-		assertThat(stampToSuppress.isGoOut()).isTrue();
-		assertThat(stampToSuppress.isTurnBack()).isFalse();
+		assertThat(stampToSuppress.isGoOut()).isFalse();
+		assertThat(stampToSuppress.isTurnBack()).isTrue();
 	}
 	/**
 	 * stampMeans == StampMeans.INDIVITION;
@@ -342,10 +341,9 @@ public class GetStampTypeToSuppressServiceTest {
 	public void testGetStampTypeToSuppressService_10() {
 		String employeeId = "employeeId";//dummy
 		StampMeans stampMeans = StampMeans.INDIVITION;
-		String companyId = AppContexts.user().companyId();
 		new Expectations() {
 			{
-				require.getStampSet(companyId);
+				require.getStampSet();
 				result = Optional.of(StampSettingPersonHelper.DUMMY);
 				
 				require.findWorkConditionByEmployee(anyString,
@@ -375,8 +373,8 @@ public class GetStampTypeToSuppressServiceTest {
 		StampToSuppress stampToSuppress = GetStampTypeToSuppressService.get(require, employeeId, stampMeans);
 		assertThat(stampToSuppress.isGoingToWork()).isTrue();
 		assertThat(stampToSuppress.isDeparture()).isFalse();
-		assertThat(stampToSuppress.isGoOut()).isTrue();
-		assertThat(stampToSuppress.isTurnBack()).isFalse();
+		assertThat(stampToSuppress.isGoOut()).isFalse();
+		assertThat(stampToSuppress.isTurnBack()).isTrue();
 	}
 	/**
 	 * stampMeans == StampMeans.INDIVITION;
@@ -399,10 +397,9 @@ public class GetStampTypeToSuppressServiceTest {
 	public void testGetStampTypeToSuppressService_11() {
 		String employeeId = "employeeId";//dummy
 		StampMeans stampMeans = StampMeans.INDIVITION;
-		String companyId = AppContexts.user().companyId();
 		new Expectations() {
 			{
-				require.getStampSet(companyId);
+				require.getStampSet();
 				result = Optional.of(StampSettingPersonHelper.DUMMY);
 				
 				require.findWorkConditionByEmployee(anyString,
@@ -430,10 +427,10 @@ public class GetStampTypeToSuppressServiceTest {
 			}
 		};
 		StampToSuppress stampToSuppress = GetStampTypeToSuppressService.get(require, employeeId, stampMeans);
-		assertThat(stampToSuppress.isGoingToWork()).isFalse();
+		assertThat(stampToSuppress.isGoingToWork()).isTrue();
 		assertThat(stampToSuppress.isDeparture()).isTrue();
 		assertThat(stampToSuppress.isGoOut()).isTrue();
-		assertThat(stampToSuppress.isTurnBack()).isTrue();
+		assertThat(stampToSuppress.isTurnBack()).isFalse();
 	}
 	/**
 	 * stampMeans == StampMeans.INDIVITION;
@@ -456,10 +453,9 @@ public class GetStampTypeToSuppressServiceTest {
 	public void testGetStampTypeToSuppressService_12() {
 		String employeeId = "employeeId";//dummy
 		StampMeans stampMeans = StampMeans.INDIVITION;
-		String companyId = AppContexts.user().companyId();
 		new Expectations() {
 			{
-				require.getStampSet(companyId);
+				require.getStampSet();
 				result = Optional.of(StampSettingPersonHelper.DUMMY);
 				
 				require.findWorkConditionByEmployee(anyString,
@@ -513,10 +509,9 @@ public class GetStampTypeToSuppressServiceTest {
 	public void testGetStampTypeToSuppressService_13() {
 		String employeeId = "employeeId";//dummy
 		StampMeans stampMeans = StampMeans.INDIVITION;
-		String companyId = AppContexts.user().companyId();
 		new Expectations() {
 			{
-				require.getStampSet(companyId);
+				require.getStampSet();
 				result = Optional.of(StampSettingPersonHelper.DUMMY);
 				
 				require.findWorkConditionByEmployee(anyString,

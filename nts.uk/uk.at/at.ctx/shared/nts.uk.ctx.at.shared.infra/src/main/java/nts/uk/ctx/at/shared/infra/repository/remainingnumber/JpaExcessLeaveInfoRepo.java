@@ -19,7 +19,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.excessleave.ExcessLeaveInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.excessleave.ExcessLeaveInfoRepository;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.excessleave.KrcmtExcessLeaveInfo;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.excessleave.KrcmtHd60hBasic;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -30,7 +30,7 @@ public class JpaExcessLeaveInfoRepo extends JpaRepository  implements ExcessLeav
 	 * @param entity
 	 * @return
 	 */
-	private ExcessLeaveInfo toDomain(KrcmtExcessLeaveInfo entity){
+	private ExcessLeaveInfo toDomain(KrcmtHd60hBasic entity){
 		return new ExcessLeaveInfo(entity.cID, entity.employeeId, entity.useAtr, entity.occurrenceUnit, entity.paymentMethod);
 	}
 	
@@ -39,8 +39,8 @@ public class JpaExcessLeaveInfoRepo extends JpaRepository  implements ExcessLeav
 	 * @param domain
 	 * @return
 	 */
-	private KrcmtExcessLeaveInfo toEntity(ExcessLeaveInfo domain){
-		KrcmtExcessLeaveInfo entity = new KrcmtExcessLeaveInfo();
+	private KrcmtHd60hBasic toEntity(ExcessLeaveInfo domain){
+		KrcmtHd60hBasic entity = new KrcmtHd60hBasic();
 		entity.cID = domain.getCid();
 		entity.employeeId = domain.getSID();
 		entity.useAtr = domain.getUseAtr().value;
@@ -50,7 +50,7 @@ public class JpaExcessLeaveInfoRepo extends JpaRepository  implements ExcessLeav
 	}
 	@Override
 	public Optional<ExcessLeaveInfo> get(String sid) {
-		Optional<KrcmtExcessLeaveInfo> leaveInfo = this.queryProxy().find(sid, KrcmtExcessLeaveInfo.class);
+		Optional<KrcmtHd60hBasic> leaveInfo = this.queryProxy().find(sid, KrcmtHd60hBasic.class);
 		if (leaveInfo.isPresent()){
 			return Optional.of(toDomain(leaveInfo.get()));
 		}
@@ -70,7 +70,7 @@ public class JpaExcessLeaveInfoRepo extends JpaRepository  implements ExcessLeav
 
 	@Override
 	public void delete(String sid) {
-		this.commandProxy().remove(KrcmtExcessLeaveInfo.class, sid);
+		this.commandProxy().remove(KrcmtHd60hBasic.class, sid);
  	}
 
 	/* (non-Javadoc)
@@ -78,17 +78,17 @@ public class JpaExcessLeaveInfoRepo extends JpaRepository  implements ExcessLeav
 	 */
 	@Override
 	public List<ExcessLeaveInfo> getAll(List<String> sids, String cid) {
-		List<KrcmtExcessLeaveInfo> entities = new ArrayList<>();
+		List<KrcmtHd60hBasic> entities = new ArrayList<>();
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM KRCMT_EXCESS_LEAVE_INFO WHERE  CID = ? AND SID IN ("
+			String sql = "SELECT * FROM KRCMT_HD60H_BASIC WHERE  CID = ? AND SID IN ("
 					+ NtsStatement.In.createParamsString(subList) + ")";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString(1, cid);
 				for (int i = 0; i < subList.size(); i++) {
 					stmt.setString(2 + i, subList.get(i));
 				}
-				List<KrcmtExcessLeaveInfo> result = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
-					KrcmtExcessLeaveInfo entity = new KrcmtExcessLeaveInfo();
+				List<KrcmtHd60hBasic> result = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+					KrcmtHd60hBasic entity = new KrcmtHd60hBasic();
 					entity.cID = rec.getString("CID");
 					entity.employeeId = rec.getString("SID");
 					entity.useAtr = rec.getInt("USE_ATR");
@@ -114,17 +114,17 @@ public class JpaExcessLeaveInfoRepo extends JpaRepository  implements ExcessLeav
 	
 	@Override
 	public List<ExcessLeaveInfo> getAllForCPS013(List<String> sids, String cid, Map<String, Object> enums) {
-		List<KrcmtExcessLeaveInfo> entities = new ArrayList<>();
+		List<KrcmtHd60hBasic> entities = new ArrayList<>();
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM KRCMT_EXCESS_LEAVE_INFO WHERE  CID = ? AND SID IN ("
+			String sql = "SELECT * FROM KRCMT_HD60H_BASIC WHERE  CID = ? AND SID IN ("
 					+ NtsStatement.In.createParamsString(subList) + ")";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString(1, cid);
 				for (int i = 0; i < subList.size(); i++) {
 					stmt.setString(2 + i, subList.get(i));
 				}
-				List<KrcmtExcessLeaveInfo> result = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
-					KrcmtExcessLeaveInfo entity = new KrcmtExcessLeaveInfo();
+				List<KrcmtHd60hBasic> result = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+					KrcmtHd60hBasic entity = new KrcmtHd60hBasic();
 					entity.cID = rec.getString("CID");
 					entity.employeeId = rec.getString("SID");
 					entity.useAtr = rec.getInt("USE_ATR");
@@ -153,7 +153,7 @@ public class JpaExcessLeaveInfoRepo extends JpaRepository  implements ExcessLeav
 
 	@Override
 	public void addAll(List<ExcessLeaveInfo> domains) {
-		String INS_SQL = "INSERT INTO KRCMT_EXCESS_LEAVE_INFO (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
+		String INS_SQL = "INSERT INTO KRCMT_HD60H_BASIC (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
 				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
 				+ " CID, SID, USE_ATR, OCCURRENCE_UNIT, PAYMENT_METHOD)"
 				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
@@ -196,7 +196,7 @@ public class JpaExcessLeaveInfoRepo extends JpaRepository  implements ExcessLeav
 
 	@Override
 	public void updateAll(List<ExcessLeaveInfo> domains) {
-		String UP_SQL = "UPDATE KRCMT_EXCESS_LEAVE_INFO SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
+		String UP_SQL = "UPDATE KRCMT_HD60H_BASIC SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
 				+ " USE_ATR = VAL_USE_ATR , OCCURRENCE_UNIT = OCCURRENCE_UNIT_VAL, PAYMENT_METHOD = PAYMENT_METHOD_VAL"
 				+ " WHERE SID = SID_VAL AND CID = CID_VAL;";
 		String updCcd = AppContexts.user().companyCode();

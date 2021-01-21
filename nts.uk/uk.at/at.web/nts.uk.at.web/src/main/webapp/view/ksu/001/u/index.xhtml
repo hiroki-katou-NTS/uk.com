@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+    <ui:composition template="../../../../master/dialog.xhtml">
+        <ui:define name="htmlHead">
+            <script>var dialogSize = { width: 600, height: 760 };</script>
+
+            <com:scriptfile set="IGNITE" />            
+            <com:stylefile path="/view/kcp/006/a/fullcalendar-lib/nts-calendar.css" of="/nts.uk.at.web" />
+            <com:stylefile path="/view/kcp/006/a/fullcalendar-lib/fullcalendar.min.css" of="/nts.uk.at.web" />
+            <com:scriptfile path="/view/kcp/006/a/kcp006.a.service.js" of="/nts.uk.at.web" />
+            <com:scriptfile path="/view/kcp/006/a/fullcalendar-lib/fullcalendar.min.js" of="/nts.uk.at.web" />
+            <com:scriptfile path="/view/kcp/006/a/fullcalendar-lib/calendar-ko-ext.js" of="/nts.uk.at.web" />
+            <com:scriptfile path="/view/kcp/006/a/fullcalendar-lib/locale-all.js" of="/nts.uk.at.web" />            
+            <com:scriptfile path="ksu001.u.vm.js" />
+            <com:stylefile path="ksu001.u.style.css" />
+        </ui:define>
+
+        <ui:define name="content">
+            <div id="functions-area">
+                <button tabindex="1" class="proceed" data-bind="click: registerShiftTable">#{i18n.getText('KSU001_4001')}</button>
+                <button tabindex="2" data-bind="click: closeDialog">#{i18n.getText('KSU001_4002')}</button>
+            </div>
+            <div id="content-area">
+                <div style="margin-left: 6%; margin-top: 10px;" data-bind="text: workplaceName"></div>
+                <hr id="line" />
+                <div class="container-custom">
+                    <button id="prev-btn" tabindex="4" class="auto-height" data-bind="click: Prev, enable: isEnableBtn">
+                        <div class="flex valign-center btn-extra" ><img src="img/prev.png" /> #{i18n.getText('KSU001_4008')}</div>
+                    </button>
+                    <div tabindex="5" data-bind="ntsPanel:{width: '140px', height: '16px', direction: 'bottom', showIcon: false, visible: true}"
+                        style="margin: 0px 10px;">
+                        <div style="margin-top: -10px; margin-left: 14px;" data-bind="ntsSwitchButton:{
+                                                                name:'#[KSU001_4009]',
+                                                                options: $vm.lstStep,
+                                                                optionsValue: 'code',
+                                                                optionsText: 'name',
+                                                                value:  $vm.stepSelected,
+                                                                required: true,
+                                                                enable: true  }">
+                        </div>
+                    </div>
+                    <button id="next-btn" tabindex="6" class="auto-height" data-bind="click: Forward, enable: isEnableBtn">
+                        <div class="flex valign-center btn-extra">#{i18n.getText('KSU001_4012')} <img src="img/next.png" /></div>
+                    </button>
+                </div>
+                
+                <div class="container-custom-btn">
+                    <button tabindex="8" data-bind="click: clearBtn" >#{i18n.getText('KSU001_4013')}</button>
+                </div>
+                <div class="container-custom"> 
+                    <div class="nts-calendar-container " tabindex="7">
+                        <com:ko-if bind="showCalendarHeader">
+                            <div class="nts-calendar-header">
+                                <div data-bind="ntsDatePicker: {
+                                value: yearMonthPicked, 
+                                required: true,
+                                dateFormat: 'yearmonth', 
+                                valueFormat: 'YYYYMM', 
+                                cssRanger: cssRangerYM,
+                                defaultClass: 'round-orange',
+                                showJumpButtons: true}"></div>
+                            </div>
+                        </com:ko-if>
+                        <div id="calendar" style="width: 500px;" data-bind="ntsCalendar: {
+                            optionDates: optionDates, 
+                            yearMonth: yearMonthPicked, 
+                            firstDay: firstDay, 
+                            startDate: startDate, 
+                            endDate: endDate,
+                            workplaceId: workplaceId,
+                            workplaceName: workplaceName,
+                            eventDisplay: eventDisplay,
+                            eventUpdatable: eventUpdatable,
+                            holidayDisplay: holidayDisplay,
+                            cellButtonDisplay: cellButtonDisplay}"></div>
+                    </div>
+                </div>  
+            </div>            
+
+        </ui:define>
+    </ui:composition>
+</body>
+
+</html>

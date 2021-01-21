@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.app.command.outsideot.holiday;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.outsideot.holiday.SuperHD60HConMed;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD60HConMed;
 
 /**
  * The Class SuperHD60HConMedSaveCommand.

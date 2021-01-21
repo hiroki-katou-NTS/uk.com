@@ -6,5 +6,5 @@ import lombok.Value;
 public class AppVersion {
 
 	private String appID;
-	private Long version;
+	private int version;
 }

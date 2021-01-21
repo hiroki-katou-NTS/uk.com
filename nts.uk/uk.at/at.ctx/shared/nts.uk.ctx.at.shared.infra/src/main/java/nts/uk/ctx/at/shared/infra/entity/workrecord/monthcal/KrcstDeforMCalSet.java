@@ -12,12 +12,12 @@ import javax.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.Month;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.DeforLaborCalSetting;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.DeforLaborSettlementPeriod;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.DeforWorkTimeAggrSet;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.ExcessOutsideTimeSetReg;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.DeforLaborCalSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.DeforLaborSettlementPeriod;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.DeforWorkTimeAggrSet;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.ExcessOutsideTimeSetReg;
 import nts.uk.ctx.at.shared.infra.repository.workrecord.monthcal.BooleanGetAtr;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KrcstDeforMCalSet.
@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public abstract class KrcstDeforMCalSet extends UkJpaEntity {
+public abstract class KrcstDeforMCalSet extends ContractUkJpaEntity {
 
 	/** The include legal ot. */
 	@Column(name = "INCLUDE_LEGAL_OT")

@@ -17,6 +17,7 @@ import command.person.info.UpdatePersonCommand;
 import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.AddBusinessWokrTypeOfHistoryCommand;
 import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.DeleteBusinessWorkTypeOfHistoryCommand;
 import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.UpdateBusinessWorkTypeOfHistoryCommand;
+import nts.uk.ctx.at.record.app.command.stamp.card.stampcard.delete.DeleteStampCardCommand;
 import nts.uk.ctx.at.record.app.command.stamp.card.stampcard.add.AddStampCardCommand;
 import nts.uk.ctx.at.record.app.command.stamp.card.stampcard.update.UpdateStampCardCommand;
 import nts.uk.ctx.at.shared.app.command.remainingnumber.annleagrtremnum.AddAnnLeaGrantRemnNumPeregCommand;
@@ -508,6 +509,8 @@ public class PeregCommandHandlerCollectorImpl implements PeregCommandHandlerColl
 			//CS00035	その他休暇情報
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteOtherHolidayInfoCommand>>() {
 			},
+			//CS00069 打刻カード番号
+			new TypeLiteral<PeregDeleteCommandHandler<DeleteStampCardCommand>>(){},
 			//CS00075
 			new TypeLiteral<PeregDeleteCommandHandler<DeleteEmpCorpHealthOffHisCommand>>() {
 			},

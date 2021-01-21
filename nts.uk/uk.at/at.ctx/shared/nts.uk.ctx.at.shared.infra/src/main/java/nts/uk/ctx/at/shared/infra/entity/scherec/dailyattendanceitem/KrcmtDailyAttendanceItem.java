@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -21,8 +21,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_DAI_ATTENDANCE_ITEM")
-public class KrcmtDailyAttendanceItem extends UkJpaEntity implements Serializable {
+@Table(name = "KRCMT_DAY_ATTENDANCE_ITEM")
+public class KrcmtDailyAttendanceItem extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

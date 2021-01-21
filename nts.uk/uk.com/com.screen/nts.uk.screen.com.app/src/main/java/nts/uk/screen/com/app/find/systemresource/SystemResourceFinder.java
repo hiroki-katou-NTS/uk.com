@@ -44,7 +44,8 @@ public class SystemResourceFinder {
 				  "Com_Contract", "Com_User", "Com_Project", "Com_AdHocWork",
 				  "Com_BindingTime", "Com_AttendanceDays", "Com_AbsenceDays", "Com_PaidHoliday",
 				  "Com_FundedPaidHoliday", "Com_SubstituteWork", "Com_CompensationHoliday", "Com_ExsessHoliday",
-				  "Com_PlanedPaidHoliday","Com_SubstituteHoliday");
+				  "Com_PlanedPaidHoliday", "Com_SubstituteHoliday", "Workplace_Group",
+				  "Work_Name", "Work_Name1", "Work_Name2", "Work_Name3", "Work_Name4", "Work_Name5");
 		
 		ArrayList<SystemResourceData> resultFinal = new ArrayList<SystemResourceData>();
 		

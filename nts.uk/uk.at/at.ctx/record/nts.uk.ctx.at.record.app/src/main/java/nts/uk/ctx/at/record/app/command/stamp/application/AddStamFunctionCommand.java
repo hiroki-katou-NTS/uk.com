@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplay;
@@ -16,6 +17,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  */
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 public class AddStamFunctionCommand {
 
 	

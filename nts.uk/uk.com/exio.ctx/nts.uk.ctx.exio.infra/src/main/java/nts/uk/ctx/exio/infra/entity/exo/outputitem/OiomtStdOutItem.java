@@ -19,16 +19,16 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.exio.dom.exo.outputitem.CategoryItem;
 import nts.uk.ctx.exio.dom.exo.outputitem.StandardOutputItem;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
- * 出力項目(定型)
+ * 外部出力出力項目(定型)
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_STD_OUT_ITEM")
-public class OiomtStdOutItem extends UkJpaEntity implements Serializable {
+@Table(name = "OIOMT_EX_OUT_ITEM")
+public class OiomtStdOutItem extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -55,7 +55,7 @@ public class OiomtStdOutItem extends UkJpaEntity implements Serializable {
 	 * カテゴリ項目
 	 */
 	@OneToMany(targetEntity = OiomtCtgItem.class, cascade = CascadeType.ALL, mappedBy = "oiomtStdOutItem", orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinTable(name = "OIOMT_CTG_ITEM")
+	@JoinTable(name = "OIOMT_EX_OUT_CTG_ITEM")
 	public List<OiomtCtgItem> oiomtCtgItems;
 
 	@Override

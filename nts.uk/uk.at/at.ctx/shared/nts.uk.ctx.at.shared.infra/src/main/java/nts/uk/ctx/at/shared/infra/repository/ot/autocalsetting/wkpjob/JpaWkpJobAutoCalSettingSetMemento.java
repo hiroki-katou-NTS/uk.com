@@ -7,14 +7,14 @@ package nts.uk.ctx.at.shared.infra.repository.ot.autocalsetting.wkpjob;
 import nts.uk.ctx.at.shared.dom.calculationattribute.AutoCalcSetOfDivergenceTime;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalcOfLeaveEarlySetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkpjob.WkpJobAutoCalSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalFlexOvertimeSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalOvertimeSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalRestTimeSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalcOfLeaveEarlySetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.JobTitleId;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.wkpjob.WkpJobAutoCalSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
-import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkpjob.KshmtAutoWkpJobCal;
+import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkpjob.KrcmtCalcSetWkpJob;
 import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkpjob.KshmtAutoWkpJobCalPK;
 
 /**
@@ -23,14 +23,14 @@ import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkpjob.KshmtAutoWkpJo
 public class JpaWkpJobAutoCalSettingSetMemento implements WkpJobAutoCalSettingSetMemento {
 	
 	/** The entity. */
-	private KshmtAutoWkpJobCal entity;
+	private KrcmtCalcSetWkpJob entity;
 
 	/**
 	 * Instantiates a new jpa wkp job auto cal setting set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaWkpJobAutoCalSettingSetMemento(KshmtAutoWkpJobCal entity) {
+	public JpaWkpJobAutoCalSettingSetMemento(KrcmtCalcSetWkpJob entity) {
 		if (entity.getKshmtAutoWkpJobCalPK() == null) {
 			entity.setKshmtAutoWkpJobCalPK(new KshmtAutoWkpJobCalPK());
 		}

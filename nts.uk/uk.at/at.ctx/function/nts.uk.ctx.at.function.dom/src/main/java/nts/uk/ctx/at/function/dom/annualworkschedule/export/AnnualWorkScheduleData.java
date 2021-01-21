@@ -16,8 +16,8 @@ import nts.uk.ctx.at.function.dom.adapter.monthlyattendanceitem.MonthlyAttendanc
 import nts.uk.ctx.at.function.dom.annualworkschedule.CalcFormulaItem;
 import nts.uk.ctx.at.function.dom.annualworkschedule.ItemOutTblBook;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.ValueOuputFormat;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.PeriodAtrOfAgreement;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.PeriodAtrOfAgreement;
 
 @Setter
 @Getter

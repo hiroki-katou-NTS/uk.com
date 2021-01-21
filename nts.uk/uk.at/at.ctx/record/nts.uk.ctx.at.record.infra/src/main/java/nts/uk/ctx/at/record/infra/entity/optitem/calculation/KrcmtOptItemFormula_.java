@@ -10,22 +10,22 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KrcmtOptItemFormula_.
  */
-@StaticMetamodel(KrcmtOptItemFormula.class)
+@StaticMetamodel(KrcmtAnyf.class)
 public class KrcmtOptItemFormula_ {
 
 	/** The krcmt opt item formula PK. */
-	public static volatile SingularAttribute<KrcmtOptItemFormula, KrcmtOptItemFormulaPK> krcmtOptItemFormulaPK;
+	public static volatile SingularAttribute<KrcmtAnyf, KrcmtOptItemFormulaPK> krcmtOptItemFormulaPK;
 
 	/** The formula name. */
-	public static volatile SingularAttribute<KrcmtOptItemFormula, String> formulaName;
+	public static volatile SingularAttribute<KrcmtAnyf, String> formulaName;
 
 	/** The formula atr. */
-	public static volatile SingularAttribute<KrcmtOptItemFormula, Integer> formulaAtr;
+	public static volatile SingularAttribute<KrcmtAnyf, Integer> formulaAtr;
 
 	/** The calc atr. */
-	public static volatile SingularAttribute<KrcmtOptItemFormula, Integer> calcAtr;
+	public static volatile SingularAttribute<KrcmtAnyf, Integer> calcAtr;
 
 	/** The symbol. */
-	public static volatile SingularAttribute<KrcmtOptItemFormula, String> symbol;
+	public static volatile SingularAttribute<KrcmtAnyf, String> symbol;
 
 }

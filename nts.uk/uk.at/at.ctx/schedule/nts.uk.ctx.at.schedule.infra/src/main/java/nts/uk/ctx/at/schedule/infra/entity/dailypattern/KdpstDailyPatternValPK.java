@@ -28,11 +28,11 @@ public class KdpstDailyPatternValPK implements Serializable {
 	private String cid;
 
 	/** The pattern cd. */
-	@Column(name = "PATTERN_CD")
+	@Column(name = "CD")
 	private String patternCd;
 
 	/** The disp order. */
-	@Column(name = "DISP_ORDER")
+	@Column(name = "CYCLE_ORDER")
 	private Integer dispOrder;
 
 	/**

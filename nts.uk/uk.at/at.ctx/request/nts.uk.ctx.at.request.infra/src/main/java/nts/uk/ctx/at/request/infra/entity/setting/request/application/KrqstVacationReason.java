@@ -7,13 +7,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "KRQST_VACATION_REASON")
-public class KrqstVacationReason extends UkJpaEntity {
+public class KrqstVacationReason extends ContractUkJpaEntity {
 
 	@EmbeddedId
 	private KrqstVacationReasonPK krqstVacationReasonPK;

@@ -15,15 +15,17 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.closurestatus.ClosureStatusManagementRequestImport;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.ExeStateOfCalAndSumImport;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.ExecutionLogRequestImport;
@@ -34,7 +36,6 @@ import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymont
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.uk.ctx.at.request.dom.setting.company.request.RequestSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRecord {
@@ -47,7 +48,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 	@Inject
 	private ClosureStatusManagementRequestImport closureStatusImport;
 	@Inject
-	private ApplicationRepository_New applicationRepo;
+	private ApplicationRepository applicationRepo;
 	@Inject
 	private AppReflectManager appRefMng;
 	@Inject
@@ -56,7 +57,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 	private ManagedParallelWithContext managedParallelWithContext;
 
 	@Inject
-	private ApplicationRepository_New repoApp;
+	private ApplicationRepository repoApp;
 
 	@SuppressWarnings("rawtypes")
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -147,12 +148,12 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 	@Override
 	public void reflectAppOfAppDate(String workId, String sid, ExecutionTypeExImport refAppResult,
 			InformationSettingOfEachApp reflectSetting, DatePeriod appDatePeriod) {
-		List<Application_New> lstApp = this.getApps(sid, appDatePeriod, refAppResult);
-		List<Application_New> lstAppTmp = new ArrayList<>(lstApp);
+		List<Application> lstApp = this.getApps(sid, appDatePeriod, refAppResult);
+		List<Application> lstAppTmp = new ArrayList<>(lstApp);
 		if(!lstAppTmp.isEmpty()) {
-			for (Application_New x : lstAppTmp) {
-				if(!x.getStartDate().get().equals(x.getEndDate().get())) {
-					this.getAppByManyDay(lstApp, sid, new DatePeriod(x.getStartDate().get(), x.getEndDate().get()), refAppResult);
+			for (Application x : lstAppTmp) {
+				if(!x.getOpAppStartDate().get().equals(x.getOpAppEndDate().get())) {
+					this.getAppByManyDay(lstApp, sid, new DatePeriod(x.getOpAppStartDate().get().getApplicationDate(), x.getOpAppEndDate().get().getApplicationDate()), refAppResult);
 				}
 			}
 		}				
@@ -162,12 +163,12 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		});
 	}
 	
-	private void getAppByManyDay(List<Application_New> lstApp, String sid, DatePeriod appDate, ExecutionTypeExImport refAppResult) {
-		List<Application_New> lstTmp = this.getApps(sid, appDate, refAppResult);
+	private void getAppByManyDay(List<Application> lstApp, String sid, DatePeriod appDate, ExecutionTypeExImport refAppResult) {
+		List<Application> lstTmp = this.getApps(sid, appDate, refAppResult);
 		boolean isAdd = false;
 		if(!lstTmp.isEmpty()) {
-			for (Application_New a : lstTmp) {
-				List<Application_New> tmp = lstApp.stream().filter(b -> b.getAppID().equals(a.getAppID())).collect(Collectors.toList());
+			for (Application a : lstTmp) {
+				List<Application> tmp = lstApp.stream().filter(b -> b.getAppID().equals(a.getAppID())).collect(Collectors.toList());
 				if(tmp.isEmpty()) {
 					lstApp.add(a);
 					isAdd = true;
@@ -176,37 +177,37 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		}
 		if(isAdd) {
 			lstTmp.stream().forEach(x -> {
-				if(!x.getStartDate().get().equals(x.getEndDate().get())) {
-					this.getAppByManyDay(lstApp, sid, new DatePeriod(x.getStartDate().get(), x.getEndDate().get()), refAppResult);
+				if(!x.getOpAppStartDate().get().equals(x.getOpAppEndDate().get())) {
+					this.getAppByManyDay(lstApp, sid, new DatePeriod(x.getOpAppStartDate().get().getApplicationDate(), x.getOpAppEndDate().get().getApplicationDate()), refAppResult);
 				}
 			});	
 		}
 	}
 	
 	@Override
-	public List<Application_New> getApps(String sid, DatePeriod datePeriod, ExecutionTypeExImport exeType) {
+	public List<Application> getApps(String sid, DatePeriod datePeriod, ExecutionTypeExImport exeType) {
 		List<Integer> lstApptype = new ArrayList<>();
 		lstApptype.add(ApplicationType.ABSENCE_APPLICATION.value);
 		lstApptype.add(ApplicationType.OVER_TIME_APPLICATION.value);
 		lstApptype.add(ApplicationType.STAMP_APPLICATION.value);
-		lstApptype.add(ApplicationType.BREAK_TIME_APPLICATION.value);
+		lstApptype.add(ApplicationType.HOLIDAY_WORK_APPLICATION.value);
 		lstApptype.add(ApplicationType.WORK_CHANGE_APPLICATION.value);
 		lstApptype.add(ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value);
 		lstApptype.add(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value);
 		List<Integer> lstRecordStatus = new ArrayList<>();
 		List<Integer> lstScheStatus = new ArrayList<>();
-		List<Application_New> lstApp = new ArrayList<>();
+		List<Application> lstApp = new ArrayList<>();
 		// 実行種別を確認
 		if(exeType == ExecutionTypeExImport.NORMAL_EXECUTION) {
 			//反映待ちの申請を取得
-			lstRecordStatus.add(ReflectedState_New.WAITREFLECTION.value);
-			lstScheStatus.add(ReflectedState_New.WAITREFLECTION.value);			 
+			lstRecordStatus.add(ReflectedState.WAITREFLECTION.value);
+			lstScheStatus.add(ReflectedState.WAITREFLECTION.value);			 
 		} else {
 			//反映済みも含めて申請を取得
-			lstRecordStatus.add(ReflectedState_New.WAITREFLECTION.value);
-			lstRecordStatus.add(ReflectedState_New.REFLECTED.value);
-			lstScheStatus.add(ReflectedState_New.WAITREFLECTION.value);
-			lstScheStatus.add(ReflectedState_New.REFLECTED.value);
+			lstRecordStatus.add(ReflectedState.WAITREFLECTION.value);
+			lstRecordStatus.add(ReflectedState.REFLECTED.value);
+			lstScheStatus.add(ReflectedState.WAITREFLECTION.value);
+			lstScheStatus.add(ReflectedState.REFLECTED.value);
 		}
 		lstApp = applicationRepo.getAppForReflect(sid, datePeriod, lstRecordStatus, lstScheStatus, lstApptype);
 		//申請日でソートする		
@@ -237,34 +238,34 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 	}
 	@Override
 	public void reflectApplication(List<String> lstID) {
-		List<Application_New> lstApplication = repoApp.findByListID(AppContexts.user().companyId(), lstID);	
+		List<Application> lstApplication = repoApp.findByListID(AppContexts.user().companyId(), lstID);	
 		InformationSettingOfEachApp reflectSetting = appSetting.getSettingOfEachApp();
-		Map<String, List<Application_New>> appForSid = new HashMap<>();		
+		Map<String, List<Application>> appForSid = new HashMap<>();		
 		List<String> lstSid = new ArrayList<>();
 		lstApplication.stream().forEach(x -> {
 			if(appForSid.containsKey(x.getEmployeeID())) {
 				appForSid.get(x.getEmployeeID()).add(x);
 			} else {
 				lstSid.add(x.getEmployeeID());
-				List<Application_New> tmp = new ArrayList<>();
+				List<Application> tmp = new ArrayList<>();
 				tmp.add(x);
 				appForSid.put(x.getEmployeeID(), tmp);
 			}
 		});
 		this.managedParallelWithContext.forEach(lstSid, sid -> {
-			List<Application_New> lstApp = appForSid.get(sid);
+			List<Application> lstApp = appForSid.get(sid);
 			lstApp = lstApp.stream().sorted((a,b) -> a.getInputDate().compareTo(b.getInputDate())).collect(Collectors.toList());
 			lstApp.stream().forEach(app -> {
 				if((app.getPrePostAtr().equals(PrePostAtr.PREDICT)&&
 						app.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION)
-					|| app.getAppType().equals(ApplicationType.BREAK_TIME_APPLICATION))
+					|| app.getAppType().equals(ApplicationType.HOLIDAY_WORK_APPLICATION))
 					|| app.getAppType().equals(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION)
 					|| app.getAppType().equals(ApplicationType.WORK_CHANGE_APPLICATION)
 					|| app.getAppType().equals(ApplicationType.ABSENCE_APPLICATION)
 					|| app.getAppType().equals(ApplicationType.COMPLEMENT_LEAVE_APPLICATION)){
 					
-					GeneralDate startDate = app.getStartDate().isPresent() ? app.getStartDate().get() : app.getAppDate();
-					GeneralDate endDate = app.getEndDate().isPresent() ? app.getEndDate().get() : app.getAppDate();
+					GeneralDate startDate = app.getOpAppStartDate().isPresent() ? app.getOpAppStartDate().get().getApplicationDate() : app.getAppDate().getApplicationDate();
+					GeneralDate endDate = app.getOpAppEndDate().isPresent() ? app.getOpAppEndDate().get().getApplicationDate() : app.getAppDate().getApplicationDate();
 					this.reflectAppOfAppDate("",
 							app.getEmployeeID(),
 							ExecutionTypeExImport.RERUN,

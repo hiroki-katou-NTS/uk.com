@@ -13,8 +13,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriod;
-import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriodRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleopenperiod.RoleOfOpenPeriod;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleopenperiod.RoleOfOpenPeriodRepository;
 import nts.uk.ctx.at.shared.infra.entity.workrecord.monthlyresults.roleopenperiod.KrcstRoleOfOpenPeriod;
 import nts.uk.ctx.at.shared.infra.entity.workrecord.monthlyresults.roleopenperiod.KrcstRoleOfOpenPeriodPK_;
 import nts.uk.ctx.at.shared.infra.entity.workrecord.monthlyresults.roleopenperiod.KrcstRoleOfOpenPeriod_;

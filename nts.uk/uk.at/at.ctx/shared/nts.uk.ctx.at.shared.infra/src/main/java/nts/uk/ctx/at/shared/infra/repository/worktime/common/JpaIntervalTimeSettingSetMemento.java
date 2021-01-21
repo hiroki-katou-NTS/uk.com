@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.IntervalTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.IntervalTimeSettingSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
 
 /**
  * The Class JpaIntervalTimeSettingSetMemento.
@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
 public class JpaIntervalTimeSettingSetMemento implements IntervalTimeSettingSetMemento {
 
 	/** The entity. */
-	private KshmtWorktimeCommonSet entity;
+	private KshmtWtCom entity;
 
 	/**
 	 * Instantiates a new jpa interval time setting set memento.
@@ -24,7 +24,7 @@ public class JpaIntervalTimeSettingSetMemento implements IntervalTimeSettingSetM
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaIntervalTimeSettingSetMemento(KshmtWorktimeCommonSet entity) {
+	public JpaIntervalTimeSettingSetMemento(KshmtWtCom entity) {
 		super();
 		this.entity = entity;
 	}

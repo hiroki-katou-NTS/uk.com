@@ -14,7 +14,7 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Getter
 @Setter
@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * Instantiates a new sgwst system config.
  */
 @NoArgsConstructor
-public class SgwstSystemConfig extends UkJpaEntity implements Serializable {
+public class SgwstSystemConfig extends ContractUkJpaEntity implements Serializable {
 	
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;

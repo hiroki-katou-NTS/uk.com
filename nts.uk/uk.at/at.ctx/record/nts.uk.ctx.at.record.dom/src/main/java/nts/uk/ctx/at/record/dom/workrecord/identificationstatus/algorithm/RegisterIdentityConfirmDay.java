@@ -11,7 +11,6 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
@@ -19,6 +18,7 @@ import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessU
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.enums.SelfConfirmError;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentityProcessUseSetRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

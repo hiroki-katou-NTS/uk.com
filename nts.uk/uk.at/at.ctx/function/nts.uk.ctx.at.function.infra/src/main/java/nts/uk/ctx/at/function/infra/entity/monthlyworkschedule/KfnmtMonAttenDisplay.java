@@ -6,7 +6,7 @@ import javax.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 import java.math.BigDecimal;
 
@@ -36,7 +36,7 @@ import java.math.BigDecimal;
  */
 @Setter
 @Table(name = "KFNMT_MON_ATTEN_DISPLAY")
-public class KfnmtMonAttenDisplay extends UkJpaEntity implements Serializable {
+public class KfnmtMonAttenDisplay extends ContractUkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

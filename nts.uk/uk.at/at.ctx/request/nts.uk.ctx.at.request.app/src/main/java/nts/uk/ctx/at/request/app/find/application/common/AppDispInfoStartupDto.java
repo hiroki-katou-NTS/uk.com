@@ -3,43 +3,48 @@ package nts.uk.ctx.at.request.app.find.application.common;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 
+/**
+ * refactor 4
+ * @author Doan Duy Hung
+ *
+ */
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class AppDispInfoStartupDto {
-	
 	/**
 	 * 申請設定（基準日関係なし）
 	 */
-	public AppDispInfoNoDateDto appDispInfoNoDateOutput;
+	private AppDispInfoNoDateDto appDispInfoNoDateOutput;
 	
 	/**
 	 * 申請設定（基準日関係あり）
 	 */
-	public AppDispInfoWithDateDto appDispInfoWithDateOutput;
+	private AppDispInfoWithDateDto appDispInfoWithDateOutput;
 	
 	/**
 	 * 申請詳細画面情報
 	 */
-	public AppDetailScreenInfoDto appDetailScreenInfo;
+	private AppDetailScreenInfoDto appDetailScreenInfo;
 	
 	public static AppDispInfoStartupDto fromDomain(AppDispInfoStartupOutput appDispInfoStartupOutput) {
-		AppDispInfoStartupDto result = new AppDispInfoStartupDto();
-		result.appDispInfoNoDateOutput = AppDispInfoNoDateDto.fromDomain(appDispInfoStartupOutput.getAppDispInfoNoDateOutput());
-		result.appDispInfoWithDateOutput = AppDispInfoWithDateDto.fromDomain(appDispInfoStartupOutput.getAppDispInfoWithDateOutput());
-		result.appDetailScreenInfo = appDispInfoStartupOutput.getAppDetailScreenInfo().map(x -> AppDetailScreenInfoDto.fromDomain(x)).orElse(null);
-		return result;
+		return new AppDispInfoStartupDto(
+				AppDispInfoNoDateDto.fromDomain(appDispInfoStartupOutput.getAppDispInfoNoDateOutput()), 
+				AppDispInfoWithDateDto.fromDomain(appDispInfoStartupOutput.getAppDispInfoWithDateOutput()), 
+				appDispInfoStartupOutput.getAppDetailScreenInfo().map(x -> AppDetailScreenInfoDto.fromDomain(x)).orElse(null));
 	}
 	
 	public AppDispInfoStartupOutput toDomain() {
-		AppDispInfoStartupOutput output = new AppDispInfoStartupOutput();
-		output.setAppDispInfoNoDateOutput(appDispInfoNoDateOutput.toDomain());
-		
-		return new AppDispInfoStartupOutput(
+		AppDispInfoStartupOutput appDispInfoStartupOutput = new AppDispInfoStartupOutput(
 				appDispInfoNoDateOutput.toDomain(), 
-				appDispInfoWithDateOutput.toDomain(), 
-				appDetailScreenInfo == null ? Optional.empty() : Optional.of(appDetailScreenInfo.toDomain()));
+				appDispInfoWithDateOutput.toDomain());
+		if(appDetailScreenInfo != null) {
+			appDispInfoStartupOutput.setAppDetailScreenInfo(Optional.of(appDetailScreenInfo.toDomain()));
+		}
+		return appDispInfoStartupOutput;
 	}
 }

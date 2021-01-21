@@ -10,15 +10,15 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KrcstActualLock_.
  */
-@StaticMetamodel(KrcstActualLock.class)
+@StaticMetamodel(KrcdtAtdActualLock.class)
 public class KrcstActualLock_ {
 
 	/** The krcmt actual lock PK. */
-	public static volatile SingularAttribute<KrcstActualLock, KrcstActualLockPK> krcstActualLockPK;
+	public static volatile SingularAttribute<KrcdtAtdActualLock, KrcstActualLockPK> krcstActualLockPK;
 	
 	/** The d lock state. */
-	public static volatile SingularAttribute<KrcstActualLock, Integer> dLockState;
+	public static volatile SingularAttribute<KrcdtAtdActualLock, Integer> dLockState;
 	
 	/** The m lock state. */
-	public static volatile SingularAttribute<KrcstActualLock, Integer> mLockState;
+	public static volatile SingularAttribute<KrcdtAtdActualLock, Integer> mLockState;
 }

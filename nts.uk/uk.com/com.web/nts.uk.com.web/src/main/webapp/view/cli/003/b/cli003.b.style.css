@@ -1,180 +1,64 @@
-
-#ex_accept_wizard>.steps {
-	width: 250px;	
-}
-
-#ex_accept_wizard>.content {
-	width: auto;
-	height: 590px;
-	background: none;
-	margin-left: 5px;
-	margin-right: 0px;
-	display: inline-table;
-	min-height: 33em;
-}
-
-#ex_accept_wizard>.content>.body {
-	padding-top: 0;
-}
-
-#ex_accept_wizard, #ex_accept_wizard .content {
-	overflow: visible;
-}
-
-.contentF {
-	margin-left: 20px;
-	display: inline-block;
-	height: calc(100% - 25px);
-	width :965px;
-}
-
-#lable {
-	width: 500px;
-}
-
-#tableLog {
-	border-spacing: 10px;
-    border-collapse: separate;
-}
-.contentB {
-	margin: 10px;
-	display: inline-block;
-	width: 500px;
-}
-#list-box_b_grid_container {
-	height: 95px !important;
-	width: 153px !important;
-}
-#list-box_b_grid_scrollContainer {
-	overflow-y: hidden !important ;
-    overflow-x: hidden !important;
-}
-#title_b {
-	margin-bottom: 15px;
+#contents-area {
+	overflow: auto;
 	margin-left: 20px;
 }
-.listbox-wrapper {
-    margin-left: 20px;
-    float: left;
+.contentR {
+	width: 900px;
+	padding-left: 20px;
 }
-#list-box_b_grid_displayContainer {
-	height: 231px !important;
-}
-
-#F2 {
-	width: 100%;
-	height: 100%;
-	
-}
-#F2_2 {
-	height:20px;
-	font-size :14px;
-	width: 450px;
+.contentR-grid-table {
+	margin-left: 20px;
 }
 
-#F3_1 {
-	width: 150px;
-	margin-top: 2px;
-}
-.ui-iggrid-filterrow.ui-widget > td {
-	border-width: 1px !important;
-}
- #ccgcomponent{
-	display:none; 
-	margin-left: 252px;
-} 
-
-#igGridLog {
-	white-space: nowrap;
+.table {
+	margin-left: 20px;
+	margin-top: 20px;
 }
 
-  div#tab-2.ui-tabs-panel.ui-corner-bottom.ui-widget-content{
-	/* height: 340px !important; */
-	
-	max-height:	calc(100% - 120px) !important;
-}
-div#tab-3.ui-tabs-panel.ui-corner-bottom.ui-widget-content{
-	max-height: calc(100% - 120px) !important;
-} 
-
-
-input.ntsSearchBox.nts-editor.ntsSearchBox_Component{
-	max-width: 330px !important;
+#bottom #title {
+	padding-right: 70px;
 }
 
-div#list-box_b1 {
-    float: left;
-    height: 71px;
-    width: 153px;
-}
-#caret{
-	 float: left;
-	 margin-top: 6px;
-	 margin-left: 30px;
-}
-#list-box_b1_grid_scrollContainer {
-	overflow-y: hidden !important ;
-    overflow-x: hidden !important;
+#B2_9 {
+	margin-left: 20px;
 }
 
-#ccg001-part-g {
-	overflow-x: hidden !important;
-}
-#title_dataType {
-	margin-bottom: 30px;
+.table2 {
+	margin-left: 35px;
+	margin-bottom: 13px;
 }
 
-.ui-iggrid-expandcolumn{
-	height: 26px !important;	
+.inline{
+	display: inline-flex;
 }
-.ui-iggrid-headertext{
-	font-weight: normal;
-	text-overflow : ellipsis;
-}
-
-.ui-iggrid-childarea{
-	overflow :visible !important;
-}
-.ui-iggrid-header.ui-widget-header{
-	overflow :hidden;
-	text-overflow : ellipsis;
+.contentR-grid-table td{
+	padding: 0 20px 6px 0;
 }
 
- .default-overflow{
-	overflow :auto hidden !important;
+#B1-panel {
+	margin: 10px 0 10px 0;
 }
 
-.overflow-show{
-	overflow :visible !important;
+#B7-td {
+	text-align: right;
+}
+#B7{
+	margin-right: -55px;
 }
 
-#igGridLog_tooltips.ui-tooltip {
-	border: none;
-	background: none;
-	box-shadow: none;
-	width: auto !important;
-	max-width: 800px !important;
+.nts-switch-button, #B4_3, #B6_3{
+	width: 110px;
 }
 
-    overflow-y: hidden !important;
-#igGridLog_tooltips.ui-tooltip .ui-tooltip-content {
-	white-space: nowrap;
-	background: #ffc;
-	border: solid 1px #b85;
-	padding: 5px;
-	width: auto !important;
-	max-width: 800px !important;
+.time-editor, .ntsDatepicker {
+	text-align: center !important;
+    width: 85px !important;
 }
 
-.ui-igedit-dropdown.ui-widget.ui-igedit-dropdown-orientation-bottom{
-	z-index: 99999999;
+#B3_2, #B4_2, #B4_3, #B5_2, #B6_2, #B6_3{
+	margin-left: 50px;
 }
 
-#ui-iggrid-headertext{
-	font-weight: normal;
-	text-overflow : ellipsis;
-}
-
-#help-button-id{
-	overflow: visible;
+#B4_4, #B6_4 {
+	margin-left: 20px;
 }

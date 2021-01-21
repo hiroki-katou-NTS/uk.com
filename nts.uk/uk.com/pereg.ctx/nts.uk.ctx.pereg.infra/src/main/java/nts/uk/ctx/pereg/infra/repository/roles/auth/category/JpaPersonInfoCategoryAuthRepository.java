@@ -24,13 +24,13 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 	"SELECT DISTINCT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName, ",
 	"cm.categoryType, p.allowPersonRef, p.allowOtherRef, cm.personEmployeeType,",
 	"CASE WHEN p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId IS NOT NULL  THEN 'True' ELSE 'False' END AS IsConfig,",
-	"(select count(ii) from PpemtPerInfoItem ii where ii.perInfoCtgId=c.ppemtPerInfoCtgPK.perInfoCtgId and  ii.abolitionAtr =0) as count_i ,",
-	"(select count(ia) from PpemtPersonItemAuth ia where ia.ppemtPersonItemAuthPk.personInfoCategoryAuthId=c.ppemtPerInfoCtgPK.perInfoCtgId and ia.ppemtPersonItemAuthPk.roleId=p.ppemtPersonCategoryAuthPk.roleId) as count_ia",
-	"FROM PpemtPerInfoCtg c" + " INNER JOIN PpemtPerInfoCtgCm cm",
+	"(select count(ii) from PpemtItem ii where ii.perInfoCtgId=c.ppemtPerInfoCtgPK.perInfoCtgId and  ii.abolitionAtr =0) as count_i ,",
+	"(select count(ia) from PpemtRoleItemAuth ia where ia.ppemtPersonItemAuthPk.personInfoCategoryAuthId=c.ppemtPerInfoCtgPK.perInfoCtgId and ia.ppemtPersonItemAuthPk.roleId=p.ppemtPersonCategoryAuthPk.roleId) as count_ia",
+	"FROM PpemtCtg c" + " INNER JOIN PpemtCtgCommon cm",
 	"ON c.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd",
-	"AND cm.ppemtPerInfoCtgCmPK.contractCd = :contractCd", "INNER JOIN PpemtPerInfoCtgOrder co",
+	"AND cm.ppemtPerInfoCtgCmPK.contractCd = :contractCd", "INNER JOIN PpemtCtgSort co",
 	"ON c.ppemtPerInfoCtgPK.perInfoCtgId = co.ppemtPerInfoCtgPK.perInfoCtgId",
-	"INNER JOIN PpemtPerInfoItem i" + " ON  c.ppemtPerInfoCtgPK.perInfoCtgId = i.perInfoCtgId",
+	"INNER JOIN PpemtItem i" + " ON  c.ppemtPerInfoCtgPK.perInfoCtgId = i.perInfoCtgId",
 	"LEFT JOIN PpemtPersonCategoryAuth p ",
 	"ON p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId  = c.ppemtPerInfoCtgPK.perInfoCtgId",
 	"AND p.ppemtPersonCategoryAuthPk.roleId = :roleId" + " WHERE c.cid = :companyId", "AND c.abolitionAtr = 0",
@@ -39,29 +39,29 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 	"ORDER BY co.disporder");
 
 	private static final String SELECT_CATEGORY_BY_CATEGORY_LIST_ID_QUERY = "SELECT DISTINCT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName, cm.categoryType "
-			+ " FROM PpemtPerInfoCtg c" + " INNER JOIN PpemtPerInfoCtgCm cm"
-			+ " ON c.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd" + " INNER JOIN PpemtPerInfoCtgOrder co"
+			+ " FROM PpemtCtg c" + " INNER JOIN PpemtCtgCommon cm"
+			+ " ON c.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd" + " INNER JOIN PpemtCtgSort co"
 			+ "	ON c.ppemtPerInfoCtgPK.perInfoCtgId = co.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " INNER JOIN PpemtPerInfoItem i" + " ON  c.ppemtPerInfoCtgPK.perInfoCtgId = i.perInfoCtgId"
+			+ " INNER JOIN PpemtItem i" + " ON  c.ppemtPerInfoCtgPK.perInfoCtgId = i.perInfoCtgId"
 			+ " INNER JOIN PpemtPersonCategoryAuth p "
 			+ " ON p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId  = c.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " INNER JOIN SacmtPersonRole pr" + " ON pr.roleId = p.ppemtPersonCategoryAuthPk.roleId"
+			+ " INNER JOIN SacmtRolePerson pr" + " ON pr.roleId = p.ppemtPersonCategoryAuthPk.roleId"
 			+ " WHERE c.cid = :companyId" + " AND c.abolitionAtr = 0" + " AND p.allowOtherRef = 1"
 			+ "	AND c.ppemtPerInfoCtgPK.perInfoCtgId IN :perInfoCtgIdlst" + "	ORDER BY co.disporder ";
 
 	private static final String SEL_CATEGORY_BY_ROLEID = "SELECT c FROM PpemtPersonCategoryAuth c  WHERE c.ppemtPersonCategoryAuthPk.roleId =:roleId ";
 
 	private static final String SEL_CATEGORY_BY_ABOLITION_ATR = "SELECT  c.perInfoCtgId, d.categoryCd, d.categoryName, d.abolitionAtr, c.abolitionAtr, c.requiredAtr, cm.personEmployeeType , "
-			+ "CASE WHEN c.perInfoCtgId IS NULL THEN 'False' ELSE 'True' END AS IsConfig" + " FROM PpemtPerInfoCtg d "
-			+ " INNER JOIN   PpemtPerInfoItem c " + " ON  d.ppemtPerInfoCtgPK.perInfoCtgId = c.perInfoCtgId"
+			+ "CASE WHEN c.perInfoCtgId IS NULL THEN 'False' ELSE 'True' END AS IsConfig" + " FROM PpemtCtg d "
+			+ " INNER JOIN   PpemtItem c " + " ON  d.ppemtPerInfoCtgPK.perInfoCtgId = c.perInfoCtgId"
 			+ " WHERE d.cid = :CID  AND d.abolitionAtr = 0 AND c.abolitionAtr = 0";
 
 	private static final String SEL_ALL_CATEGORY = "SELECT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName, "
 			+ " cm.categoryType, p.allowPersonRef, p.allowOtherRef, cm.personEmployeeType ,"
 			+ "CASE WHEN p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId IS NULL THEN 'False' ELSE 'True' END AS IsConfig"
-			+ " FROM PpemtPerInfoCtg c LEFT JOIN PpemtPersonCategoryAuth p "
+			+ " FROM PpemtCtg c LEFT JOIN PpemtPersonCategoryAuth p "
 			+ " ON p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId  = c.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " AND p.ppemtPersonCategoryAuthPk.roleId = :roleId" + " LEFT JOIN PpemtPerInfoCtgCm cm"
+			+ " AND p.ppemtPersonCategoryAuthPk.roleId = :roleId" + " LEFT JOIN PpemtCtgCommon cm"
 			+ " ON c.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd " + " WHERE c.cid = :CID";
 
 	private static final String SEE_BY_ROLEID_AND_CTG_ID_LIST = "SELECT ctgAuth FROM PpemtPersonCategoryAuth ctgAuth"

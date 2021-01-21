@@ -88,7 +88,7 @@ public class Ksu001Webservice extends WebService {
 		return this.workScheduleStateScreenProces.getByListSidAndDateAndScheId(params);
 	}
 	
-	@POST
+	@POST 
 	@Path("getDataSpecDateAndHoliday")
 	public SpecificDateAndPublicHolidayScreenDto getDataSpecDateAndHoliday(WorkplaceIdAndDateScreenParams params) {
 		return new SpecificDateAndPublicHolidayScreenDto(

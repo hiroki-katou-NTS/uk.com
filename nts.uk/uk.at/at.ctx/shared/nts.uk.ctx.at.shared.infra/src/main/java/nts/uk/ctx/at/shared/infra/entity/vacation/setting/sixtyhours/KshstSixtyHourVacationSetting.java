@@ -11,13 +11,13 @@ import javax.persistence.MappedSuperclass;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Getter
 @Setter
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public abstract class KshstSixtyHourVacationSetting extends UkJpaEntity {
+public abstract class KshstSixtyHourVacationSetting extends ContractUkJpaEntity {
 	/** The manage distinct. */
 	@Column(name = "IS_MANAGE")
 	private int manageDistinct;

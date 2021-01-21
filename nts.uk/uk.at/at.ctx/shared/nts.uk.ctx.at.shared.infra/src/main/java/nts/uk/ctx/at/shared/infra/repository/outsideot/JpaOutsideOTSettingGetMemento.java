@@ -8,15 +8,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTCalMed;
-import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingGetMemento;
-import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
-import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
-import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeNote;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.KshstOutsideOtSet;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOutsideOtBrd;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTCalMed;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.OutsideOTBRDItem;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.Overtime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeNote;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.KshmtOutsideSet;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshmtOutsideDetail;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOutsideOtBrdPK;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.overtime.KshstOverTime;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.overtime.KshmtOutside;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.overtime.KshstOverTimePK;
 import nts.uk.ctx.at.shared.infra.repository.outsideot.breakdown.JpaOutsideOTBRDItemGetMemento;
 import nts.uk.ctx.at.shared.infra.repository.outsideot.overtime.JpaOvertimeGetMemento;
@@ -27,13 +27,13 @@ import nts.uk.ctx.at.shared.infra.repository.outsideot.overtime.JpaOvertimeGetMe
 public class JpaOutsideOTSettingGetMemento implements OutsideOTSettingGetMemento{
 	
 	/** The entity overtimes. */
-	private List<KshstOverTime> entityOvertimes;
+	private List<KshmtOutside> entityOvertimes;
 	
 	/** The entity overtime BRD items. */
-	private List<KshstOutsideOtBrd> entityOvertimeBRDItems;
+	private List<KshmtOutsideDetail> entityOvertimeBRDItems;
 	
 	/** The entity. */
-	private KshstOutsideOtSet entity;
+	private KshmtOutsideSet entity;
 	
 
 	/**
@@ -42,8 +42,8 @@ public class JpaOutsideOTSettingGetMemento implements OutsideOTSettingGetMemento
 	 * @param entity the entity
 	 * @param entityOvertimes the entity overtimes
 	 */
-	public JpaOutsideOTSettingGetMemento(KshstOutsideOtSet entity,
-			List<KshstOutsideOtBrd> entityOvertimeBRDItems, List<KshstOverTime> entityOvertimes) {
+	public JpaOutsideOTSettingGetMemento(KshmtOutsideSet entity,
+			List<KshmtOutsideDetail> entityOvertimeBRDItems, List<KshmtOutside> entityOvertimes) {
 		entityOvertimeBRDItems.forEach(entityItem -> {
 			if (entityItem.getKshstOutsideOtBrdPK() == null) {
 				entityItem.setKshstOutsideOtBrdPK(new KshstOutsideOtBrdPK());

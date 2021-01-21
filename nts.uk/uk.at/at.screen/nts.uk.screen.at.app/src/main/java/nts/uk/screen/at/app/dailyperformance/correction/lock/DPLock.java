@@ -26,7 +26,7 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootOfEmpl
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalActionByEmpl;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
-import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.UseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;

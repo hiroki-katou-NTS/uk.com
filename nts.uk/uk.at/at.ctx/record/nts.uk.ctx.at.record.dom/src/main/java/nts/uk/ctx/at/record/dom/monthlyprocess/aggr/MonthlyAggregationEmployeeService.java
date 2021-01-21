@@ -23,27 +23,27 @@ import nts.gul.error.ThrowableAnalyzer;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.AggregateMonthlyRecordService;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.AggregateMonthlyRecordValue;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
+import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLock;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
-import nts.uk.ctx.at.record.dom.workrecord.actuallock.PerformanceType;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageResource;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ErrorPresent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExeStateOfCalAndSum;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
+import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeaveResultInfor;
-import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordService;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordValue;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.MonthlyAggregationErrorInfo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrEmployeeSettings;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
-import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
@@ -160,13 +160,6 @@ public class MonthlyAggregationEmployeeService {
 		
 		ConcurrentStopwatches.stop("11000:集計期間の判断：");
 		
-		Closure closureData = ClosureService.getClosureDataByEmployee(require, cacheCarrier, employeeId, criteriaDate);
-        Boolean isCalWhenLock = null;
-        Optional<ExecutionLog> executionLog =  require.executionLog(empCalAndSumExecLogID, 3);
-        if(executionLog.isPresent()) {
-            isCalWhenLock = executionLog.get().getIsCalWhenLock();
-        }
-		
 		List<AtomTask> atomTasks = new ArrayList<>();
 		
 		for (val aggrPeriod : aggrPeriods){
@@ -203,20 +196,9 @@ public class MonthlyAggregationEmployeeService {
 			}
 			
 			// アルゴリズム「実績ロックされているか判定する」を実行する
-//			if (companySets.getDetermineActualLocked(datePeriod.end(), closureId.value) == LockStatus.LOCK){
-//				continue;
-//			}
-			
-			LockStatus lockStatus = LockStatus.UNLOCK;
-            //「ロック中の計算/集計する」の値をチェックする
-            if(isCalWhenLock ==null || isCalWhenLock ==false) {
-                //
-                lockStatus = require.lockStatus(companyId, 
-                		datePeriod.end(), closureData.getClosureId().value, PerformanceType.MONTHLY);
-            }
-            if(lockStatus == LockStatus.LOCK) {
-                continue;
-            }
+			if (getDetermineActualLocked(require, companySets, datePeriod.end(), closureId.value) == LockStatus.LOCK){
+				continue;
+			}
 			
 			// 再実行の場合
 			if (executionType == ExecutionType.RERUN){
@@ -294,6 +276,41 @@ public class MonthlyAggregationEmployeeService {
 			//ConcurrentStopwatches.stop("12000:集計期間ごと：" + aggrPeriod.getYearMonth().toString());
 		}
 		return AggregationResult.build(status, atomTasks);
+	}
+	
+	/**
+	 * 実績ロックされているか判定する　（月別用）
+	 * @param baseDate 基準日
+	 * @param closureId 締めID
+	 * @return 実績のロック状態　（ロックorアンロック）
+	 */
+	public static LockStatus getDetermineActualLocked(RequireM4 require, 
+			MonAggrCompanySettings comSettings, 
+			GeneralDate baseDate, Integer closureId){
+		// 実績ロック
+		val actualLock = require.actualLock(AppContexts.user().companyId(), closureId);
+		
+		LockStatus currentLockStatus = LockStatus.UNLOCK;
+		
+		// 「実績ロック」を取得する
+		if (!actualLock.isPresent()) return currentLockStatus;
+		
+		// 月のロック状態を判定する
+		currentLockStatus = actualLock.get().getMonthlyLockState();
+		
+		// ロック状態をチェックする
+		if (currentLockStatus == LockStatus.UNLOCK) return LockStatus.UNLOCK;
+		
+		// 基準日が当月に含まれているかチェックする
+		if (!comSettings.getCurrentMonthPeriodMap().containsKey(closureId)) return LockStatus.UNLOCK;
+		DatePeriod currentPeriod = comSettings.getCurrentMonthPeriodMap().get(closureId);
+		if (currentPeriod == null) return LockStatus.UNLOCK;
+		if (currentPeriod.contains(baseDate)) {
+			// 基準日が締め期間に含まれている
+			return LockStatus.LOCK;
+		}
+		//基準日が締め期間に含まれていない
+		return LockStatus.UNLOCK;
 	}
 	
 	private static AtomTask mergeMonth(RequireM3 require, List<IntegrationOfMonthly> domains, GeneralDate targetDate) {
@@ -420,16 +437,18 @@ public class MonthlyAggregationEmployeeService {
 		}
 	}
 	
+	public static interface RequireM4 {
+		Optional<ActualLock> actualLock(String comId, int closureId);
+		
+	}
+	
 	public static interface RequireM2 extends MonthlyAggregationErrorService.RequireM1 {}
 	
-	public static interface RequireM1 extends MonAggrEmployeeSettings.RequireM2, GetClosurePeriod.RequireM1,
-		AggregateMonthlyRecordService.RequireM2, RequireM2, RequireM3, MonAggrCompanySettings.RequireM6 { 
+	public static interface RequireM1 extends MonAggrEmployeeSettings.RequireM2,
+		GetClosurePeriod.RequireM1, AggregateMonthlyRecordService.RequireM2,
+		RequireM2, RequireM3, RequireM4, MonAggrCompanySettings.RequireM6 { 
 		
 		Optional<EmpCalAndSumExeLog> calAndSumExeLog (String empCalAndSumExecLogID);
-		
-		Optional<ExecutionLog> executionLog(String empCalAndSumExecLogID, int executionContent);
-		
-		LockStatus lockStatus(String companyId, GeneralDate baseDate, Integer closureId, PerformanceType type);
 		
 		void removeMonthEditState(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate);
 		

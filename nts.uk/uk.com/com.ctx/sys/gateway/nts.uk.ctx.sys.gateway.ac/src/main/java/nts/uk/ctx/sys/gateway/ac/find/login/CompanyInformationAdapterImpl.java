@@ -13,9 +13,9 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.bs.company.pub.company.CompanyExport;
 import nts.uk.ctx.bs.company.pub.company.ICompanyPub;
-import nts.uk.ctx.sys.gateway.dom.login.adapter.CompanyInformationAdapter;
-import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInforImport;
-import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInformationImport;
+import nts.uk.ctx.sys.shared.dom.company.CompanyInforImport;
+import nts.uk.ctx.sys.shared.dom.company.CompanyInformationAdapter;
+import nts.uk.ctx.sys.shared.dom.company.CompanyInformationImport;
 
 /**
  * The Class CompanyInformationAdapterImpl.
@@ -25,6 +25,11 @@ public class CompanyInformationAdapterImpl implements CompanyInformationAdapter 
 
 	@Inject
 	private ICompanyPub iCompanyPub;
+
+	@Override
+	public String createCompanyId(String tenantCode, String companyCode) {
+		return iCompanyPub.createCompanyId(companyCode, tenantCode);
+	}
 
 	/*
 	 * (non-Javadoc)

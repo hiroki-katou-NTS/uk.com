@@ -6,16 +6,16 @@ import java.util.Optional;
 
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
-import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.PeriodInMasterList;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.organization.EmploymentHistoryImported;
-import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
+import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
+import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
+import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.PeriodInMasterList;
+import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 
@@ -43,7 +43,8 @@ public interface CreateDailyResultEmployeeDomainService {
 			Map<String, Map<String, DateHistoryItem>> mapDateHistoryItem,
 			Optional<EmploymentHistoryImported> employmentHisOptional, String employmentCode,
 			PeriodInMasterList periodInMasterList, Optional<ClosureStatusManagement> closureStatusManagement);
-
+	
+	
 	/**
 	 * create method for kbt002 call
 	 * 

@@ -14,11 +14,11 @@ import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.gul.reflection.FieldReflection;
 import nts.gul.reflection.ReflectionUtil;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.monthly.AttendanceAmountMonth;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.ouen.OuenTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.ouen.OuenWorkAggregateDetail;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.ouen.OuenWorkAggregateFrameDetail;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceAmountMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.ouen.OuenTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.ouen.OuenWorkAggregateDetail;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.ouen.OuenWorkAggregateFrameDetail;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 月別実績の応援時間
@@ -28,12 +28,12 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_MON_TIME_SUP")
-public class KrcdtMonTimeSup extends UkJpaEntity implements Serializable {
+public class KrcdtMonTimeSup extends ContractUkJpaEntity implements Serializable {
 
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
 	
-	public static final JpaEntityMapper<KrcdtMonMerge> MAPPER = new JpaEntityMapper<>(KrcdtMonMerge.class);
+	public static final JpaEntityMapper<KrcdtMonTimeAtd> MAPPER = new JpaEntityMapper<>(KrcdtMonTimeAtd.class);
 
 	@EmbeddedId
 	public KrcdtMonMergePk id;

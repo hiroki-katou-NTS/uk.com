@@ -1,0 +1,11 @@
+#kaf000-b-component2 {
+	background-color: #f8efd4;
+	width: 800px;
+	margin-top: 5px;
+	margin-bottom: 5px;	
+}
+
+#kaf000-b-component2 #opReversionReason {
+	padding-left: 12px;
+	width: 95px;
+}

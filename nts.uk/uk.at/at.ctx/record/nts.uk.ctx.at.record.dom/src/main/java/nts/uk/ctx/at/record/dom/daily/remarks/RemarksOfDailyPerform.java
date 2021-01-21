@@ -1,8 +1,9 @@
 package nts.uk.ctx.at.record.dom.daily.remarks;
 
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.remarks.RecordRemarks;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.remarks.RemarksOfDailyAttd;
 
 /** 日別実績の備考 */
 @Getter
@@ -14,22 +15,27 @@ public class RemarksOfDailyPerform {
 	/** 年月日: 年月日 */
 	private GeneralDate ymd;
 	
-	/** 備考: 日別実績の備考 */
-	@Setter
-	private RecordRemarks remarks;
+	/** 備考 */
+	private RemarksOfDailyAttd remarks;
 	
-	/** 備考欄NO: int */
-	private int remarkNo;
 
 	public RemarksOfDailyPerform(String employeeId, GeneralDate ymd, RecordRemarks remarks, int remarkNo) {
 		super();
 		this.employeeId = employeeId;
 		this.ymd = ymd;
-		this.remarks = remarks;
-		this.remarkNo = remarkNo;
+		this.remarks = new RemarksOfDailyAttd(remarks, remarkNo);
 	}
 
-	public RemarksOfDailyPerform() {
+	public RemarksOfDailyPerform() {	
 		super();
 	}
+
+	public RemarksOfDailyPerform(String employeeId, GeneralDate ymd, RemarksOfDailyAttd remarks) {
+		super();
+		this.employeeId = employeeId;
+		this.ymd = ymd;
+		this.remarks = remarks;
+	}
+	
+	
 }

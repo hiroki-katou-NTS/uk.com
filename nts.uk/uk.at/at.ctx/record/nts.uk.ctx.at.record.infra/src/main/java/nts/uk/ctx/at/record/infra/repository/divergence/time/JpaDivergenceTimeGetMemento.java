@@ -4,13 +4,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeErrorCancelMethod;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeGetMemento;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeName;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeUseSet;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceType;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcAttendance;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcmtDvgcAttendance;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcmtDvgcTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeErrorCancelMethod;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeGetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeName;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeUseSet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceType;
 
 /**
  * The Class JpaDivergenceTimeRepositoryGetMemento.
@@ -18,10 +18,10 @@ import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime;
 public class JpaDivergenceTimeGetMemento implements DivergenceTimeGetMemento {
 
 	/** The entityDvgcTime. */
-	private KrcstDvgcTime entityDvgcTime;
+	private KrcmtDvgcTime entityDvgcTime;
 
 	/** The entity dvgc attendance. */
-	private List<KrcstDvgcAttendance> entityDvgcAttendance;
+	private List<KrcmtDvgcAttendance> entityDvgcAttendance;
 
 	/**
 	 * Instantiates a new jpa divergence time repository get memento.
@@ -31,7 +31,7 @@ public class JpaDivergenceTimeGetMemento implements DivergenceTimeGetMemento {
 	 * @param entityDvgcAttendance
 	 *            the entity dvgc attendance
 	 */
-	public JpaDivergenceTimeGetMemento(KrcstDvgcTime entityDvgcTime, List<KrcstDvgcAttendance> entityDvgcAttendance) {
+	public JpaDivergenceTimeGetMemento(KrcmtDvgcTime entityDvgcTime, List<KrcmtDvgcAttendance> entityDvgcAttendance) {
 
 		this.entityDvgcTime = entityDvgcTime;
 		this.entityDvgcAttendance = entityDvgcAttendance;
@@ -100,8 +100,8 @@ public class JpaDivergenceTimeGetMemento implements DivergenceTimeGetMemento {
 	 */
 	@Override
 	public DivergenceTimeErrorCancelMethod getErrorCancelMedthod() {
-		return new DivergenceTimeErrorCancelMethod(this.entityDvgcTime.getReasonInputCanceled().intValue(),
-				this.entityDvgcTime.getReasonSelectCanceled().intValue());
+		return new DivergenceTimeErrorCancelMethod(this.entityDvgcTime.isReasonInputCanceled(),
+				this.entityDvgcTime.isReasonSelectCanceled());
 	}
 
 	/*

@@ -3,6 +3,8 @@ package nts.uk.ctx.at.record.dom.divergence.time;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
+
 /**
  * The Interface DivergenceTimeRepository.
  */
@@ -18,7 +20,7 @@ public interface DivergenceTimeRepository {
 	 * @param companyId the company id
 	 * @return the all div time
 	 */
-	List<DivergenceTime> getAllDivTime(String companyId);
+	List<DivergenceTimeRoot> getAllDivTime(String companyId);
 
 	/**
 	 * Gets the div time list by no.
@@ -28,7 +30,7 @@ public interface DivergenceTimeRepository {
 	 * @return the div time list by no
 	 */
 	// Pls don't use this method, will be removed
-	List<DivergenceTime> getDivTimeListByNo(String companyId,List<Integer> divTimeNo);
+	List<DivergenceTimeRoot> getDivTimeListByNo(String companyId,List<Integer> divTimeNo);
 
 	/**
 	 * Gets the div time info.
@@ -37,7 +39,7 @@ public interface DivergenceTimeRepository {
 	 * @param divTimeNo the div time no
 	 * @return the div time info
 	 */
-	Optional<DivergenceTime> getDivTimeInfo(String companyId, int divTimeNo);
+	Optional<DivergenceTimeRoot> getDivTimeInfo(String companyId, int divTimeNo);
 
 	/**
 	 * Find attendance id.
@@ -53,7 +55,7 @@ public interface DivergenceTimeRepository {
 	 *
 	 * @param divTimeDomain the div time domain
 	 */
-	void update (DivergenceTime divTimeDomain);
+	void update (DivergenceTimeRoot divTimeDomain);
 	
 	/* 使用している乖離時間を取得する */
 	/**
@@ -62,7 +64,7 @@ public interface DivergenceTimeRepository {
 	 * @param companyId
 	 * @return div time list
 	 */
-	List<DivergenceTime> getDivTimeListByUseSet(String companyId);
+	List<DivergenceTimeRoot> getDivTimeListByUseSet(String companyId);
 	
 	/**
 	 * Gets the div time list by no.
@@ -71,7 +73,7 @@ public interface DivergenceTimeRepository {
 	 * @param divTimeNo the div time no
 	 * @return the div time list by no
 	 */
-	List<DivergenceTime> getUsedDivTimeListByNoV2(String companyId, List<Integer> divTimeNo);
+	List<DivergenceTimeRoot> getUsedDivTimeListByNoV2(String companyId, List<Integer> divTimeNo);
 	
 	/**
 	 * Gets all the div time list by no.
@@ -80,6 +82,6 @@ public interface DivergenceTimeRepository {
 	 * @param divTimeNo the div time no
 	 * @return the div time list by no
 	 */
-	List<DivergenceTime> getUsedDivTimeListByNoV3(String companyId, List<Integer> divTimeNo);
+	List<DivergenceTimeRoot> getUsedDivTimeListByNoV3(String companyId, List<Integer> divTimeNo);
 
 }

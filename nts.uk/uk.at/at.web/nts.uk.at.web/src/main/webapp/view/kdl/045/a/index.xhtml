@@ -1,0 +1,366 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 850, height: 720 };</script>
+			<com:ValidatorScript>
+				nts.uk.shr.com.time.TimeWithDayAttr
+				nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration
+ 			</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kmk/003/base/fixedtablekdl045/fixedtablekdl045.js" of="/nts.uk.at.web"/>
+			<com:scriptfile path="/view/kmk/003/base/timerange/timerange.js" of="/nts.uk.at.web"/>
+			<com:stylefile path="kdl045.a.main.css" />
+			<com:scriptfile path="kdl045.a.service.js" />
+			<com:scriptfile path="kdl045.a.vm.js" />
+			<com:scriptfile path="kdl045.a.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			 <div id="contents-area">
+			 	<TABLE id = "table1" width="830px">
+			 		<tr >
+			 			<td>
+			 				<!-- A1_1 -->
+			 				<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL045_2')}</div>
+			 			</td>
+			 			<td>
+			 				<!-- A1_2 -->
+			 				<div>A00000000011</div>
+			 			</td>
+			 			<td>
+			 				<!-- A1_3 -->
+			 				<div>日通　純一郎</div>
+			 			</td>
+			 			<td></td>
+			 			<td></td>
+			 			<td></td>
+			 		</tr>
+			 		<tr style="border-bottom: 1px solid #ccc;">
+			 			<td>
+			 				<!-- A1_4 -->
+			 				<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL045_3')}</div>
+			 			</td>
+			 			<td colspan="2">
+			 				<!-- A1_5 -->
+			 				<div>2020/4/19 (日)</div>
+			 			</td>
+			 			<td>
+			 				<!-- A1_6 -->
+			 				<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL045_4')}</div>
+			 			</td>
+			 			<td>
+			 				<!-- A1_7 -->
+			 				<div>時間帯</div>
+			 			</td>
+			 			<td>
+			 				<!-- A1_8 -->
+			 				<button data-bind="ntsHelpButton: {textId: 'KDL045_5', textParams:['{#KTG027_7}', '{#KTG027_8}', '{#KTG027_1}', '{#KTG027_9}'], position: 'bottom center' }">#{i18n.getText('KDL045_5')}</button>
+			 			</td>
+			 		</tr>
+			 	</TABLE>
+					<div id="tab-panel"
+							data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab, height : 530}">
+							<div class="tab-content-1" >
+								<table id ="table2" >
+									<tr>
+										<td rowspan="2">
+											<!-- A4_1 -->
+											<div data-bind="ntsFormLabel: { constraint: '', required: true }">#{i18n.getText('KDL045_8')}</div>
+										</td>
+										<td rowspan="2">
+											<!-- A4_2 -->
+											<button >#{i18n.getText('KDL045_9')}</button>
+										</td>
+										<td >
+											<!-- A4_3 -->
+											<div>#{i18n.getText('KDL045_10')}</div>
+										</td>
+										<td >
+											<!-- A4_4 --> <!-- A4_5 -->
+											<div>001　　勤務表示名称</div>
+										</td>
+									</tr>
+									<tr>
+										<td >
+											<!-- A4_6 -->
+											<div>#{i18n.getText('KDL045_11')}</div>
+										</td>
+										<td >
+											<!-- A4_7 --> <!-- A4_8 -->
+											<div>001　　就業時間帯名</div>
+										</td>
+									</tr>
+								</table>
+								<!-- A5 -->
+								<div class="panel panel-frame" style="width:745px; height: 330px">
+									<div class="block-left" >
+										<table id="table-3" width="360px">
+											<tr>
+												<td>
+													<!-- A5_1 -->
+													<div data-bind="ntsFormLabel: { constraint: '', required: true }">#{i18n.getText('KDL045_12')}</div>
+												</td>
+												<td>
+													<!-- A5_2 -->
+													<div data-bind="ntsCheckBox: { checked: true, text: '#{i18n.getText('KDL045_13')}' }"></div>
+												</td>
+												<td>
+													<!-- A5_3 -->
+													<div data-bind="ntsCheckBox: { checked: true, text: '#{i18n.getText('KDL045_14')}' }"></div>
+												</td>
+											</tr>
+											<tr>
+												<td colspan="3" class ="table-left-td ">
+													<table>
+														<tr>
+															<td>
+																<!-- A5_4 -->
+																<div style="float: left;"> #{i18n.getText('KDL045_15')}</div> 
+															</td>
+															<td style="padding-left: 15px">
+																<!-- A5_5 --><!-- A5_6 --> <!-- A5_7 -->
+																<div data-bind="ntsTimeRangeEditor: {required: true,
+																	enable: false,
+										                            inputFormat: 'time',
+										                            startTimeNameId: '#[KDL045_17]',
+										                            endTimeNameId: '#[KDL045_18]',
+										                            startConstraint: 'TimeWithDayAttr',
+										                            endConstraint: 'TimeWithDayAttr',
+										                            paramId: 'KDL045_16',
+										                            value: timeRange1Value
+										                                }
+										                            "/>
+															</td>
+														</tr>
+													</table>
+												</td>
+											</tr>
+											<tr>
+												<td colspan="3" class ="table-left-td ">
+													<table>
+														<tr>
+															<td>
+																<!-- A5_8 --> 
+																<div style="float: left;"> #{i18n.getText('KDL045_19')}</div>  
+															</td>
+															<td style="padding-left: 15px">
+																<!-- A5_9 --><!-- A5_10 --> <!-- A5_11 -->
+																<div data-bind="ntsTimeRangeEditor: {required: true,
+																	enable: false,
+										                            inputFormat: 'time',
+										                            startTimeNameId: '#[KDL045_21]',
+										                            endTimeNameId: '#[KDL045_22]',
+										                            startConstraint: 'TimeWithDayAttr',
+										                            endConstraint: 'TimeWithDayAttr',
+										                            paramId: 'KDL045_20',
+										                            value: timeRange2Value
+										                                }
+										                            "/>
+															</td>
+														</tr>
+													</table>
+												</td>
+											</tr>
+											<tr>
+												<!-- A5_12 --> 
+												<td colspan="3">
+													<div data-bind="ntsFormLabel: {}"> #{i18n.getText('KDL045_23')}</div>
+												</td>
+											</tr>
+											<tr>
+												<!-- A5_13 --> <!-- A5_14 -->
+												<td colspan="3" class ="table-left-td ">
+													<div  style="float: left;"> #{i18n.getText('KDL045_24')}</div> 
+													<div style="padding-left: 130px;" > 0:00 </div>
+												</td>
+											</tr>
+											<tr>
+												<!-- A5_15 --> <!-- A5_16 -->
+												<td colspan="3" class ="table-left-td ">
+													<div style="float: left;"> #{i18n.getText('KDL045_25')}</div> 
+													<div style="padding-left: 130px;" > 0:31 </div>
+												</td>
+											</tr>
+										</table>
+									</div>
+									<div class="block-right" >
+										<table>
+											<tr>
+												<td>
+													<!-- A5_18 -->
+													<div data-bind="ntsFormLabel: {}"> #{i18n.getText('KDL045_26')}</div>
+												</td>
+											</tr>
+											<tr>
+												<td style="padding-left: 30px;">
+													<!-- A5_19 ~ A5_25 -->
+													<div data-bind="ntsFixTableCustomKdl045: {option: timeRange }"></div>
+												</td>
+											</tr>
+											<tr>
+												<td style="padding-left: 30px;">
+													<!-- A5_26 -->
+													<div > #{i18n.getText('KDL045_34')}</div>
+												</td>
+											</tr>
+											
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="tab-content-2"  height ="530px">
+								<div class ="block-left-2">
+									<table id="table4" width="460px">
+										<tr>
+											<td>
+												<!-- A8_1 -->
+												<div data-bind="ntsFormLabel: {}"> #{i18n.getText('KDL045_36')}</div>
+											</td>
+										</tr>
+										<tr>
+											<td id ="table6-fixsize">
+												<table id= "table6" width="420px" >
+													<tr>
+														<td class ="color-grid"></td>
+														<!-- A8_3 -->
+														<td class ="color-grid" style="font-weight: bold;"> #{i18n.getText('KDL045_38')}</td>
+														<!-- A8_4 -->
+														<td class ="color-grid" style="font-weight: bold;"> #{i18n.getText('KDL045_39')}</td>
+													</tr>
+													<tr>
+														<!-- A8_5_1 -->
+														<td class ="color-grid">#{i18n.getText('KDL045_51')}</td>
+														<!-- A8_6_1 -->
+														<td> 8:30 ~ 9:00</td>
+														<!-- A8_7_1 -->
+														<td> 
+															<div class="size-a87">0:30</div><div><button data-bind="ntsHelpButton: {textId: 'KTG027_11', textParams:['{#KTG027_7}', '{#KTG027_8}', '{#KTG027_1}', '{#KTG027_9}'], position: 'right center' }"><i data-bind="ntsIcon: { no: 16, width: 20, height: 20 }"></i></button></div>
+														</td>
+													</tr>
+													<tr>
+														<!-- A8_5_2 -->
+														<td class ="color-grid">#{i18n.getText('KDL045_52')}</td>
+														<!-- A8_6_2 -->
+														<td> 8:30 ~ 9:00</td>
+														<!-- A8_7_2 -->
+														<td> 
+															<div class="size-a87">0:30</div><div><button data-bind="ntsHelpButton: {textId: 'KTG027_11', textParams:['{#KTG027_7}', '{#KTG027_8}', '{#KTG027_1}', '{#KTG027_9}'], position: 'right center' }"><i data-bind="ntsIcon: { no: 16, width: 20, height: 20 }"></i></button></div>
+														</td>
+													</tr>
+													<tr>
+														<!-- A8_5_3 -->
+														<td class ="color-grid">#{i18n.getText('KDL045_53')}</td>
+														<!-- A8_6_3 -->
+														<td> 8:30 ~ 9:00</td>
+														<!-- A8_7_3 -->
+														<td> 
+															<div class="size-a87">0:30</div><div><button data-bind="ntsHelpButton: {textId: 'KTG027_11', textParams:['{#KTG027_7}', '{#KTG027_8}', '{#KTG027_1}', '{#KTG027_9}'], position: 'right center' }"><i data-bind="ntsIcon: { no: 16, width: 20, height: 20 }"></i></button></div>
+														</td>
+													</tr>
+													<tr>
+														<!-- A8_5_4 -->
+														<td class ="color-grid">#{i18n.getText('KDL045_54')}</td>
+														<!-- A8_6_4 -->
+														<td> 8:30 ~ 9:00</td>
+														<!-- A8_7_4 -->
+														<td> 
+															<div class="size-a87">0:30</div><div><button data-bind="ntsHelpButton: {textId: 'KTG027_11', textParams:['{#KTG027_7}', '{#KTG027_8}', '{#KTG027_1}', '{#KTG027_9}'], position: 'right center' }"><i data-bind="ntsIcon: { no: 16, width: 20, height: 20 }"></i></button></div>
+														</td>
+													</tr>
+													<tr>
+														<!-- A8_5_5 -->
+														<td class ="color-grid">#{i18n.getText('KDL045_55')}</td>
+														<!-- A8_6_5 -->
+														<td>
+															<div class="size-a86"> 8:30 ~ 9:00</div><div> <button data-bind="ntsHelpButton: {textId: 'KTG027_11', textParams:['{#KTG027_7}', '{#KTG027_8}', '{#KTG027_1}', '{#KTG027_9}'], position: 'bottom center' }"><img src="icon15.png" /></button></div>
+														</td>
+														<!-- A8_7_5 -->
+														<td> 
+															<div class="size-a87">0:30</div><div><button data-bind="ntsHelpButton: {textId: 'KTG027_11', textParams:['{#KTG027_7}', '{#KTG027_8}', '{#KTG027_1}', '{#KTG027_9}'], position: 'right center' }"><i data-bind="ntsIcon: { no: 16, width: 20, height: 20 }"></i></button></div>
+														</td>
+													</tr>
+													<tr>
+														<!-- A8_5_6 -->
+														<td class ="color-grid">#{i18n.getText('KDL045_56')}</td>
+														<!-- A8_6_6 -->
+														<td>
+															<div class="size-a86"> 8:30 ~ 9:00</div><div> <button data-bind="ntsHelpButton: {textId: 'KTG027_11', textParams:['{#KTG027_7}', '{#KTG027_8}', '{#KTG027_1}', '{#KTG027_9}'], position: 'bottom center' }"><img src="icon15.png" /></button></div>
+														</td>
+														<!-- A8_7_6 -->
+														<td> 
+															<div class="size-a87">0:30</div><div><button data-bind="ntsHelpButton: {textId: 'KTG027_11', textParams:['{#KTG027_7}', '{#KTG027_8}', '{#KTG027_1}', '{#KTG027_9}'], position: 'right center' }"><i data-bind="ntsIcon: { no: 16, width: 20, height: 20 }"></i></button></div>
+														</td>
+													</tr>
+												</table>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<!-- A8_9 -->
+												<div id="size-a89"> #{i18n.getText('KDL045_40')}</div>
+											</td>
+										</tr>
+									</table>
+								</div>
+								<div class ="block-right-2">
+									<table id="table5" width="260px">
+										<tr>
+											<td>
+												<!-- A8_11 -->
+												<div data-bind="ntsFormLabel: {}">
+													#{i18n.getText('KDL045_41')}</div>
+											</td>
+										</tr>
+										<tr>
+												<!-- A8_12 --> <!-- A8_13 -->
+												<td class ="table-left-td ">
+													<div  style="float: left;"> #{i18n.getText('KDL045_15')}</div> 
+													<div style="padding-left: 70px;" > 9:00 ~ 10:30 </div>
+												</td>
+											</tr>
+											<tr>
+												<!-- A8_14 --> <!-- A8_15 -->
+												<td class ="table-left-td ">
+													<div style="float: left;"> #{i18n.getText('KDL045_19')}</div> 
+													<div style="padding-left: 70px;" > 15:30 ~ 17:30 </div>
+												</td>
+											</tr>
+									</table>
+								</div>
+							</div> 
+						</div>
+				<!-- <div id="content">
+					<div
+						data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'shiftMasterCode',comId: 'multi-list', 
+	                              items: listShifuto, selectedKey: 'shiftMasterCode', 
+								  fields: gridFields, 
+								  selected: selectedCodes,
+	               				  placeHolder: placeHolders, mode: 'igGrid'}" />
+					<table id="multi-list" tabindex="0"
+						data-bind="ntsGridList: {	
+								name: '#[KDL044_11]',  
+								height: 450,
+								options: listShifuto,
+								optionsValue: 'shiftMasterCode',
+								columns: columns,
+								multiple: isMultiSelect(),								
+								value: selectedCodes,
+								rows: 10
+						}">  
+					</table>
+				</div> -->
+			</div>
+			<div id="functions-area-bottom">
+				<button tabindex="0" class="x-large proceed" >#{i18n.getText('KDL045_43')}</button>
+				<button tabindex="0" data-bind="click: closeDialog">#{i18n.getText('KDL045_44')}</button>
+			</div>
+		</ui:define> 
+	</ui:composition>
+</body>
+</html>

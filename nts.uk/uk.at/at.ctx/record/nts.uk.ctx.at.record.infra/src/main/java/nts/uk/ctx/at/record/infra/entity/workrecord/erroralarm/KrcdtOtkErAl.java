@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -27,10 +27,10 @@ public class KrcdtOtkErAl extends KrcdtEmpErAlCommon implements Serializable {
 
 //	@Getter
 //	@OneToMany(mappedBy = "erOtk", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-//	public List<KrcdtErAttendanceItem> erAttendanceItem;
+//	public List<KrcdtDaySyaErrorAtd> erAttendanceItem;
 
 	public KrcdtOtkErAl(String id, String errorCode, String employeeId, GeneralDate processingDate, String companyID,
-			String errorAlarmMessage, String contractCode, List<KrcdtErAttendanceItem> erAttendanceItem) {
+			String errorAlarmMessage, String contractCode, List<KrcdtDaySyaErrorAtd> erAttendanceItem) {
 		super(id, errorCode, employeeId, processingDate, companyID, errorAlarmMessage, contractCode, erAttendanceItem);
 		
 		this.erAttendanceItem = erAttendanceItem;
@@ -45,7 +45,7 @@ public class KrcdtOtkErAl extends KrcdtEmpErAlCommon implements Serializable {
 				er.getCompanyID(),
 				er.getErrorAlarmMessage().map(c -> c.v()).orElse(null), ccd, 
 				er.getAttendanceItemList().stream()
-						.map(item -> KrcdtErAttendanceItem.toEntity(id, item, 
+						.map(item -> KrcdtDaySyaErrorAtd.toEntity(id, item, 
 									er.getCompanyID(), er.getEmployeeID(), ccd, er.getDate()))
 						.collect(Collectors.toList())
 				);

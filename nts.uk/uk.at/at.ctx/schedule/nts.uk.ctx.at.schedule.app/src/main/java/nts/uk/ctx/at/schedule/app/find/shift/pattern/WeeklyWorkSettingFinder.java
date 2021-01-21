@@ -14,9 +14,9 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.WeeklyWorkSettingAllDto;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.WeeklyWorkSettingDto;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.work.DayOfWeek;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WeeklyWorkSetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WeeklyWorkSettingRepository;
+import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.DayOfWeek;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 

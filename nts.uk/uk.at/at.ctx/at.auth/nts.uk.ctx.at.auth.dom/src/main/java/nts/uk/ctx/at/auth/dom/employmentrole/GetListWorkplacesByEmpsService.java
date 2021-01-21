@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.auth.dom.employmentrole.dto.ClosureTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
 
 /**
@@ -74,9 +74,9 @@ public class GetListWorkplacesByEmpsService {
 		List<String> listWplId = new ArrayList<>();
 		
 		// 	$基準日 = require.当月期間を取得する(締めID) map $.終了年月日
-		Optional<ClosureTime> closureTime = require.getCurrentMonthPeriod(closureId);
+		Optional<DatePeriod> closureTime = require.getCurrentMonthPeriod(closureId);
 		if (closureTime.isPresent()) {
-			GeneralDate endDate = closureTime.get().getEnd();
+			GeneralDate endDate = closureTime.get().end();
 			listWplId = GetListOfWorkplacesService.get(require, companyId, closureId, employeeId, endDate);
 		}
 		return listWplId;
@@ -92,7 +92,7 @@ public class GetListWorkplacesByEmpsService {
 		/**
 		 * [R-2] 当月期間を取得する
 		 */
-		Optional<ClosureTime> getCurrentMonthPeriod(Integer closureId);
+		Optional<DatePeriod> getCurrentMonthPeriod(Integer closureId);
 		
 	}
 	

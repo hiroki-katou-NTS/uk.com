@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPerson;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "SACMT_ROLESET_PERSON")
-public class SacmtRoleSetGrantedPerson extends UkJpaEntity implements Serializable{
+public class SacmtRoleSetGrantedPerson extends ContractUkJpaEntity implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 

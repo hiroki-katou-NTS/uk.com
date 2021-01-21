@@ -1,0 +1,7 @@
+include 'cloud.web:nts.uk.cloud.web'
+
+include 'cloud.operate:nts.uk.ctx.cloud.operate.ac'
+include 'cloud.operate:nts.uk.ctx.cloud.operate.app'
+include 'cloud.operate:nts.uk.ctx.cloud.operate.dom'
+include 'cloud.operate:nts.uk.ctx.cloud.operate.infra'
+include 'cloud.operate:nts.uk.ctx.cloud.operate.ws'

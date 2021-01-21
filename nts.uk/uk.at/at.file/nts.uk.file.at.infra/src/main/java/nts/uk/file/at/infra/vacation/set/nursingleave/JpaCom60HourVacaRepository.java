@@ -25,7 +25,7 @@ public class JpaCom60HourVacaRepository extends JpaRepository implements Com60Ho
                     " HV.IS_MANAGE, " +
                     " HV.SIXTY_HOUR_EXTRA, " +
                     " HV.DIGESTIVE_UNIT " +
-                    "FROM KSHST_COM_60H_VACATION HV " +
+                    "FROM KSHMT_HD60H_COM HV " +
                     "WHERE HV.CID = ? ";
 
 

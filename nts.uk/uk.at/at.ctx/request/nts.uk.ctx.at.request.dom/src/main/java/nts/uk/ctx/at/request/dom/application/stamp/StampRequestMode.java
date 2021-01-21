@@ -1,65 +1,27 @@
 package nts.uk.ctx.at.request.dom.application.stamp;
 
+import lombok.AllArgsConstructor;
+
 /**
- * 
+ * refactor 4
+ * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.申請.打刻申請.打刻申請モード
  * @author Doan Duy Hung
- *	
- */
-/**
- * 
- * 打刻申請モード
  *
  */
+@AllArgsConstructor
 public enum StampRequestMode {
 	
 	/**
-	 * 外出許可
+	 * 打刻申請
 	 */
-	STAMP_GO_OUT_PERMIT(0,"外出許可"),
+	STAMP_ADDITIONAL(0,"打刻申請"),
 	
 	/**
-	 * 出退勤漏れ
+	 * レコーダイメージ申請
 	 */
-	STAMP_WORK(1,"出退勤漏れ"),
-	
-	/**
-	 * 打刻取消
-	 */
-	STAMP_CANCEL(2,"打刻取消"),
-	
-	/**
-	 * レコーダイメージ
-	 */
-	STAMP_ONLINE_RECORD(3,"レコーダイメージ"),
-	
-	/**
-	 * その他
-	 */
-	OTHER(4,"その他");
+	STAMP_ONLINE_RECORD(1,"レコーダイメージ申請");
 	
 	public final int value;
 	
 	public final String name;
-	
-	StampRequestMode(int value, String name){
-		this.value = value;
-		this.name = name;
-	}
-	
-	public static StampRequestMode valueOf(Integer value) {
-		// Invalid object.
-		if (value == null) {
-			return null;
-		}
-
-		// Find value.
-		for (StampRequestMode val : StampRequestMode.values()) {
-			if (val.value == value) {
-				return val;
-			}
-		}
-
-		// Not found.
-		return null;
-	}
 }

@@ -20,12 +20,7 @@ import nts.arc.layer.ws.WebService;
 import nts.arc.task.AsyncTaskInfo;
 import nts.arc.task.AsyncTaskInfoRepository;
 import nts.gul.util.value.MutableValue;
-import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand;
-import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommandHandler;
-import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionRespone;
-import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleExecutionLogAddCommand;
-import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleExecutionLogAddCommandHandler;
-import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleExecutionLogSaveRespone;
+import nts.uk.ctx.at.schedule.app.command.executionlog.*;
 import nts.uk.ctx.at.schedule.app.export.executionlog.ExeErrorLogExportService;
 import nts.uk.ctx.at.schedule.app.find.executionlog.ScheduleCreateContentFinder;
 import nts.uk.ctx.at.schedule.app.find.executionlog.ScheduleCreatorFinder;
@@ -66,8 +61,7 @@ public class ScheduleExecutionLogWs extends WebService {
 	
 	/** The add. */
 	@Inject
-	private ScheduleExecutionLogAddCommandHandler add;
-	
+	private ScheduleExecutionAddCommandHandler addNew;
 	/** The execution. */
 	@Inject
 	private ScheduleCreatorExecutionCommandHandler execution;
@@ -172,8 +166,8 @@ public class ScheduleExecutionLogWs extends WebService {
 	@POST
 	@Path("add")
 	public JavaTypeResult<ScheduleExecutionLogSaveRespone> add(
-			ScheduleExecutionLogAddCommand command) {
-		return new JavaTypeResult<ScheduleExecutionLogSaveRespone>(this.add.handle(command));
+			ScheduleExecutionAddCommand command) {
+		return new JavaTypeResult<ScheduleExecutionLogSaveRespone>(this.addNew.handle(command));
 	}
 	
 	/**

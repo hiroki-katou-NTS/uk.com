@@ -8,13 +8,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.TargetSelectionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.DayOffManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.DaysOffMana;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.shr.com.context.AppContexts;
@@ -69,8 +67,8 @@ public class DayOffManagementService {
 
 		if (response.isEmpty()) {
 
-			List<LeaveComDayOffManagement> leavesComDay = leaveComDayOffManaRepository
-					.getByLeaveID(dayOffManagementData.getLeaveId());
+//			List<LeaveComDayOffManagement> leavesComDay = leaveComDayOffManaRepository
+//					.getByLeaveID(dayOffManagementData.getLeaveId());
 
 			List<CompensatoryDayOffManaData> daysOffMana = this.comDayOffManaDataRepository
 					.getBySidComDayOffIdWithReDay(companyId, dayOffManagementData.getEmployeeId(),
@@ -79,31 +77,31 @@ public class DayOffManagementService {
 					.collect(Collectors.toList());
 
 			// delete List LeaveComDayOff
-			if (leavesComDay.size() >= 1) {
-				leaveComDayOffManaRepository.deleteByLeaveId(dayOffManagementData.getLeaveId());
-			}
+//			if (leavesComDay.size() >= 1) {
+//				leaveComDayOffManaRepository.deleteByLeaveId(dayOffManagementData.getLeaveId());
+//			}
 
 			// update remainDays by current selected
-			Boolean check = false;
-			if (!currentComDaySelect.isEmpty()) {
-				for (String item : currentComDaySelect) {
-					List<LeaveComDayOffManagement> leaveCom = leaveComDayOffManaRepository.getBycomDayOffID(item);
-					if (leaveCom.isEmpty()) {
-						check = true;
-					}
-					comDayOffManaDataRepository.updateReDayReqByComDayId(item, check);
-					check = false;
-				}
-
-			}
+//			Boolean check = false;
+//			if (!currentComDaySelect.isEmpty()) {
+//				for (String item : currentComDaySelect) {
+//					List<LeaveComDayOffManagement> leaveCom = leaveComDayOffManaRepository.getBycomDayOffID(item);
+//					if (leaveCom.isEmpty()) {
+//						check = true;
+//					}
+//					comDayOffManaDataRepository.updateReDayReqByComDayId(item, check);
+//					check = false;
+//				}
+//
+//			}
 
 			// insert List LeaveComDayOff
 			List<DaysOffMana> daysOff = dayOffManagementData.getDaysOffMana();
-			List<LeaveComDayOffManagement> entitiesLeave = daysOff.stream()
-					.map(item -> new LeaveComDayOffManagement(dayOffManagementData.getLeaveId(), item.getComDayOffID(),
-							Double.valueOf(item.getRemainDays()), 0, TargetSelectionAtr.MANUAL.value))
-					.collect(Collectors.toList());
-			leaveComDayOffManaRepository.insertAll(entitiesLeave);
+//			List<LeaveComDayOffManagement> entitiesLeave = daysOff.stream()
+//					.map(item -> new LeaveComDayOffManagement(dayOffManagementData.getLeaveId(), item.getComDayOffID(),
+//							Double.valueOf(item.getRemainDays()), 0, TargetSelectionAtr.MANUAL.value))
+//					.collect(Collectors.toList());
+//			leaveComDayOffManaRepository.insertAll(entitiesLeave);
 
 			List<String> comDayIds = daysOff.stream().map(DaysOffMana::getComDayOffID).collect(Collectors.toList());
 			// update remainDays by new ComDayOff

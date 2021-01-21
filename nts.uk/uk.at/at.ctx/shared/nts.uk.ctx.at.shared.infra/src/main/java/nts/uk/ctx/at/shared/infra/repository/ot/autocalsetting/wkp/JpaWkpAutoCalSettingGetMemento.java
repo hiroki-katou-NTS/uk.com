@@ -8,13 +8,13 @@ import nts.uk.ctx.at.shared.dom.calculationattribute.AutoCalcSetOfDivergenceTime
 import nts.uk.ctx.at.shared.dom.calculationattribute.enums.DivergenceTimeAttr;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalcOfLeaveEarlySetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkp.WkpAutoCalSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalFlexOvertimeSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalOvertimeSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalRestTimeSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalcOfLeaveEarlySetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.wkp.WkpAutoCalSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
-import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KshmtAutoWkpCalSet;
+import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkp.KrcmtCalcSetWkp;
 import nts.uk.ctx.at.shared.infra.repository.ot.autocalsetting.JpaAutoCalFlexOvertimeSettingGetMemento;
 import nts.uk.ctx.at.shared.infra.repository.ot.autocalsetting.JpaAutoCalOvertimeSettingGetMemento;
 import nts.uk.ctx.at.shared.infra.repository.ot.autocalsetting.JpaAutoCalRestTimeSettingGetMemento;
@@ -26,14 +26,14 @@ public class JpaWkpAutoCalSettingGetMemento implements WkpAutoCalSettingGetMemen
 
 
 	/** The entity. */
-	private KshmtAutoWkpCalSet  entity;
+	private KrcmtCalcSetWkp  entity;
 
 	/**
 	 * Instantiates a new jpa wkp auto cal setting get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaWkpAutoCalSettingGetMemento(KshmtAutoWkpCalSet entity) {
+	public JpaWkpAutoCalSettingGetMemento(KrcmtCalcSetWkp entity) {
 		this.entity = entity;
 	}
 	

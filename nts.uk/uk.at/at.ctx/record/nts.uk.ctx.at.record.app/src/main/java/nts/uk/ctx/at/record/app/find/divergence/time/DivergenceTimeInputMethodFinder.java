@@ -11,9 +11,9 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonInputMethod;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonInputMethodRepository;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceType;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -110,11 +110,11 @@ public class DivergenceTimeInputMethodFinder {
 		String companyId = AppContexts.user().companyId();
 
 		// Get divergence time
-		Optional<DivergenceTime> optionalDivTimeInfo = divTimeRepo.getDivTimeInfo(companyId, divTimeNo);
+		Optional<DivergenceTimeRoot> optionalDivTimeInfo = divTimeRepo.getDivTimeInfo(companyId, divTimeNo);
 
 		// Convert to Dto and return
 		if (optionalDivTimeInfo.isPresent()) {
-			DivergenceTime divTimeInfo = optionalDivTimeInfo.get();
+			DivergenceTimeRoot divTimeInfo = optionalDivTimeInfo.get();
 			DivergenceTimeDto divTimeDto = new DivergenceTimeDto();
 			divTimeInfo.saveToMemento(divTimeDto);
 			return divTimeDto;
@@ -175,7 +175,7 @@ public class DivergenceTimeInputMethodFinder {
 		String companyId = AppContexts.user().companyId();
 
 		// Get divergence time list
-		List<DivergenceTime> listDivTime = this.divTimeRepo.getAllDivTime(companyId);
+		List<DivergenceTimeRoot> listDivTime = this.divTimeRepo.getAllDivTime(companyId);
 
 		// Check list empty
 		if (listDivTime.isEmpty()) {

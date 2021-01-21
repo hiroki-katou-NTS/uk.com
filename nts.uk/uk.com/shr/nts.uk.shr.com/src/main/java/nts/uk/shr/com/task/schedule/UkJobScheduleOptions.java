@@ -4,9 +4,9 @@ import java.util.Optional;
 
 import lombok.Value;
 import nts.arc.primitive.TimeClockPrimitiveValue;
-import nts.arc.task.schedule.ScheduledJob;
-import nts.arc.task.schedule.ScheduledJobUserData;
 import nts.arc.task.schedule.SchedulingMethod;
+import nts.arc.task.schedule.job.ScheduledJob;
+import nts.arc.task.schedule.job.jobdata.ScheduledJobUserData;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 
@@ -15,7 +15,6 @@ public class UkJobScheduleOptions {
 
 	private final Class<? extends ScheduledJob> jobClass;
 	private final Optional<Class<? extends ScheduledJob>> cleanupJobClass;
-	private final String scheduleId;
 	private final SchedulingMethod schedulingMethod;
 	private final ScheduledJobUserData userData;
 	private final Optional<GeneralDate> startDate;
@@ -47,7 +46,6 @@ public class UkJobScheduleOptions {
 	
 	public static class Builder {
 		final Class<? extends ScheduledJob> jobClass;
-		final String scheduleId;
 		final SchedulingMethod schedulingMethod;
 		final ScheduledJobUserData userData = new ScheduledJobUserData();
 		Class<? extends ScheduledJob> cleanupJobClass;
@@ -58,7 +56,6 @@ public class UkJobScheduleOptions {
 		
 		public Builder(Class<? extends ScheduledJob> jobClass, String scheduleId, SchedulingMethod schedulingMethod) {
 			this.jobClass = jobClass;
-			this.scheduleId = scheduleId;
 			this.schedulingMethod = schedulingMethod;
 		}
 		
@@ -96,7 +93,6 @@ public class UkJobScheduleOptions {
 			return new UkJobScheduleOptions(
 					jobClass,
 					Optional.ofNullable(cleanupJobClass),
-					scheduleId,
 					schedulingMethod,
 					userData,
 					Optional.ofNullable(startDate),

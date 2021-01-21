@@ -21,7 +21,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockHistory;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockHistoryRepository;
-import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcdtActualLockHist;
+import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcdtAtdActuallockHist;
 import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcdtActualLockHistPK;
 import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcdtActualLockHistPK_;
 import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcdtActualLockHist_;
@@ -41,7 +41,7 @@ public class JpaActualLockHistRepository extends JpaRepository implements Actual
 	 */
 	@Override
 	public void add(ActualLockHistory actualLockHistory) {
-		KrcdtActualLockHist entity = new KrcdtActualLockHist();
+		KrcdtAtdActuallockHist entity = new KrcdtAtdActuallockHist();
 		actualLockHistory.saveToMemento(new JpaActualLockHistSetMemento(entity));
 		this.commandProxy().insert(entity);
 	}
@@ -55,11 +55,11 @@ public class JpaActualLockHistRepository extends JpaRepository implements Actual
 	 */
 	@Override
 	public void update(ActualLockHistory actualLockHistory) {
-		Optional<KrcdtActualLockHist> optional = this.queryProxy()
+		Optional<KrcdtAtdActuallockHist> optional = this.queryProxy()
 				.find(new KrcdtActualLockHistPK(actualLockHistory.getCompanyId(),
 						actualLockHistory.getClosureId().value, actualLockHistory.getLockDateTime()),
-						KrcdtActualLockHist.class);
-		KrcdtActualLockHist entity = new KrcdtActualLockHist();
+						KrcdtAtdActuallockHist.class);
+		KrcdtAtdActuallockHist entity = new KrcdtAtdActuallockHist();
 		if (optional.isPresent()) {
 			entity = optional.get();
 		}
@@ -78,10 +78,10 @@ public class JpaActualLockHistRepository extends JpaRepository implements Actual
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder bd = em.getCriteriaBuilder();
-		CriteriaQuery<KrcdtActualLockHist> cq = bd.createQuery(KrcdtActualLockHist.class);
+		CriteriaQuery<KrcdtAtdActuallockHist> cq = bd.createQuery(KrcdtAtdActuallockHist.class);
 
 		// Root
-		Root<KrcdtActualLockHist> root = cq.from(KrcdtActualLockHist.class);
+		Root<KrcdtAtdActuallockHist> root = cq.from(KrcdtAtdActuallockHist.class);
 		cq.select(root);
 
 		// Predicate where clause
@@ -93,7 +93,7 @@ public class JpaActualLockHistRepository extends JpaRepository implements Actual
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
 		// Create Query
-		TypedQuery<KrcdtActualLockHist> query = em.createQuery(cq);
+		TypedQuery<KrcdtAtdActuallockHist> query = em.createQuery(cq);
 
 		return query.getResultList().stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
 	}
@@ -109,10 +109,10 @@ public class JpaActualLockHistRepository extends JpaRepository implements Actual
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<KrcdtActualLockHist> cq = cb.createQuery(KrcdtActualLockHist.class);
+		CriteriaQuery<KrcdtAtdActuallockHist> cq = cb.createQuery(KrcdtAtdActuallockHist.class);
 
 		// Root
-		Root<KrcdtActualLockHist> root = cq.from(KrcdtActualLockHist.class);
+		Root<KrcdtAtdActuallockHist> root = cq.from(KrcdtAtdActuallockHist.class);
 		cq.select(root);
 
 		// Predicate where clause
@@ -132,7 +132,7 @@ public class JpaActualLockHistRepository extends JpaRepository implements Actual
 		cq.orderBy(cb.desc(root.get(KrcdtActualLockHist_.krcdtActualLockHistPK).get(KrcdtActualLockHistPK_.lockDate)));
 
 		// Create Query
-		TypedQuery<KrcdtActualLockHist> query = em.createQuery(cq);
+		TypedQuery<KrcdtAtdActuallockHist> query = em.createQuery(cq);
 
 		return query.getResultList().stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
 	}
@@ -147,7 +147,7 @@ public class JpaActualLockHistRepository extends JpaRepository implements Actual
 	@Override
 	public Optional<ActualLockHistory> findByLockDate(String companyId, int closureId, GeneralDateTime lockDate) {
 		return this.queryProxy()
-				.find(new KrcdtActualLockHistPK(companyId, closureId, lockDate), KrcdtActualLockHist.class)
+				.find(new KrcdtActualLockHistPK(companyId, closureId, lockDate), KrcdtAtdActuallockHist.class)
 				.map(c -> this.toDomain(c));
 	}
 
@@ -162,10 +162,10 @@ public class JpaActualLockHistRepository extends JpaRepository implements Actual
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<KrcdtActualLockHist> cq = cb.createQuery(KrcdtActualLockHist.class);
+		CriteriaQuery<KrcdtAtdActuallockHist> cq = cb.createQuery(KrcdtAtdActuallockHist.class);
 
 		// Root
-		Root<KrcdtActualLockHist> root = cq.from(KrcdtActualLockHist.class);
+		Root<KrcdtAtdActuallockHist> root = cq.from(KrcdtAtdActuallockHist.class);
 		cq.select(root);
 
 		// Predicate where clause
@@ -187,7 +187,7 @@ public class JpaActualLockHistRepository extends JpaRepository implements Actual
 		cq.orderBy(cb.desc(root.get(KrcdtActualLockHist_.krcdtActualLockHistPK).get(KrcdtActualLockHistPK_.lockDate)));
 
 		// Create Query
-		TypedQuery<KrcdtActualLockHist> query = em.createQuery(cq);
+		TypedQuery<KrcdtAtdActuallockHist> query = em.createQuery(cq);
 
 		return query.getResultList().stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
 	}
@@ -201,7 +201,7 @@ public class JpaActualLockHistRepository extends JpaRepository implements Actual
 	 */
 	@Override
 	public void remove(String companyId, int closureId, GeneralDateTime lockDate) {
-		this.commandProxy().remove(KrcdtActualLockHist.class,
+		this.commandProxy().remove(KrcdtAtdActuallockHist.class,
 				new KrcdtActualLockHistPK(companyId, closureId, lockDate));
 	}
 
@@ -212,7 +212,7 @@ public class JpaActualLockHistRepository extends JpaRepository implements Actual
 	 *            the entity
 	 * @return the actual lock history
 	 */
-	private ActualLockHistory toDomain(KrcdtActualLockHist entity) {
+	private ActualLockHistory toDomain(KrcdtAtdActuallockHist entity) {
 		return new ActualLockHistory(new JpaActualLockHistGetMemento(entity));
 
 	}

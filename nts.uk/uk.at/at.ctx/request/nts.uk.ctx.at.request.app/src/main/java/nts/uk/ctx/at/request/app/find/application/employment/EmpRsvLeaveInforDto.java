@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.rsvimport.RsvLeaManagerImport;
+
 @Getter
 @AllArgsConstructor
 public class EmpRsvLeaveInforDto {
@@ -14,11 +14,15 @@ public class EmpRsvLeaveInforDto {
 	 */
 	private List<EmployeeInfoImport> employeeInfors;
 	
-	private RsvLeaManagerImport rsvLeaManaImport;
+	private RsvLeaManagerImportDto rsvLeaManaImport;
 	
 	private String employeeCode;
 	
 	private String employeeName;
+	
 	//積立年休名称
 	private String yearResigName;
+	
+	// 積立年休管理区分
+	private boolean retentionManage;
 }

@@ -5,9 +5,9 @@ import java.util.Map;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
-import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeSheet;
-import nts.uk.ctx.at.record.dom.shorttimework.ShortWorkingTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;

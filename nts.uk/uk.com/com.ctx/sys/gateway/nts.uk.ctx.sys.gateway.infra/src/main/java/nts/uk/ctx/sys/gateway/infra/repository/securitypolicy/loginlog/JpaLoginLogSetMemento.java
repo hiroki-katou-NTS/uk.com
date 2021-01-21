@@ -1,11 +1,11 @@
 package nts.uk.ctx.sys.gateway.infra.repository.securitypolicy.loginlog;
 
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
+import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.LoginLogSetMemento;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.OperationSection;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.SuccessFailureClassification;
-import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.loginlog.SgwmtLoginLog;
+import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.loginlog.SgwdtLoginLog;
 
 /**
  * The Class JpaLoginLogSetMemento.
@@ -13,14 +13,14 @@ import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.loginlog.SgwmtLoginLog
 public class JpaLoginLogSetMemento implements LoginLogSetMemento {
 	
 	/** The sgwmt login log. */
-	private SgwmtLoginLog sgwmtLoginLog;
+	private SgwdtLoginLog sgwmtLoginLog;
 	
 	/**
 	 * Instantiates a new jpa login log set memento.
 	 *
 	 * @param sgwmtLoginLog the sgwmt login log
 	 */
-	public JpaLoginLogSetMemento(SgwmtLoginLog sgwmtLoginLog) {
+	public JpaLoginLogSetMemento(SgwdtLoginLog sgwmtLoginLog) {
 		this.sgwmtLoginLog = sgwmtLoginLog;
 	}
 

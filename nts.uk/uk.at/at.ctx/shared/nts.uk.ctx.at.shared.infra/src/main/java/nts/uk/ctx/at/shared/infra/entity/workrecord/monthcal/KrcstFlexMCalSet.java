@@ -13,16 +13,16 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.common.Month;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.AggregateSetting;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.AggregateTimeSetting;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.CarryforwardSetInShortageFlex;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.FlexAggregateMethod;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.FlexMonthWorkTimeAggrSet;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.FlexTimeHandle;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.SettlePeriod;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.SettlePeriodMonths;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.ShortageFlexSetting;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.AggregateSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.AggregateTimeSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.CarryforwardSetInShortageFlex;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.FlexAggregateMethod;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.FlexMonthWorkTimeAggrSet;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.FlexTimeHandle;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.SettlePeriod;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.SettlePeriodMonths;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.ShortageFlexSetting;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KrcstFlexMCalSet.
@@ -31,7 +31,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public abstract class KrcstFlexMCalSet extends UkJpaEntity {
+public abstract class KrcstFlexMCalSet extends ContractUkJpaEntity {
 
 	/** 不足設定.繰越設定 */
 	@Column(name = "INSUFFIC_SET")

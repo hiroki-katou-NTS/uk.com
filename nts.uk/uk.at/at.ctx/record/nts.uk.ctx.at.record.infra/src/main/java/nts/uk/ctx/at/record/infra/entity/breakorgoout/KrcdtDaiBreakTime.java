@@ -14,7 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -24,8 +24,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_DAI_BREAK_TIME_TS")
-public class KrcdtDaiBreakTime extends UkJpaEntity implements Serializable {
+@Table(name = "KRCDT_DAY_TS_BREAKTIME")
+public class KrcdtDaiBreakTime extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -66,10 +66,10 @@ public class KrcdtDaiBreakTime extends UkJpaEntity implements Serializable {
 
 	public static List<KrcdtDaiBreakTime> toEntity(BreakTimeOfDailyPerformance breakTime) {
 		if (breakTime == null) return new ArrayList<>();
-		return breakTime.getBreakTimeSheets().stream()
+		return breakTime.getTimeZone().getBreakTimeSheets().stream()
 				.map(c -> new KrcdtDaiBreakTime(
 						new KrcdtDaiBreakTimePK(breakTime.getEmployeeId(), breakTime.getYmd(),
-								breakTime.getBreakType().value, c.getBreakFrameNo().v()),
+								breakTime.getTimeZone().getBreakType().value, c.getBreakFrameNo().v()),
 						c.getStartTime() == null ? null : c.getStartTime().valueAsMinutes(),
 						c.getEndTime() == null ? null : c.getEndTime().valueAsMinutes()))
 				.collect(Collectors.toList());

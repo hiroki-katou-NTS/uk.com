@@ -6,11 +6,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.ot.zerotime.HdFromHd;
-import nts.uk.ctx.at.shared.dom.ot.zerotime.HdFromWeekday;
-import nts.uk.ctx.at.shared.dom.ot.zerotime.WeekdayHoliday;
-import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTime;
-import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTimeRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.zerotime.HdFromHd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.zerotime.HdFromWeekday;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.zerotime.WeekdayHoliday;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.zerotime.ZeroTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.zerotime.ZeroTimeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

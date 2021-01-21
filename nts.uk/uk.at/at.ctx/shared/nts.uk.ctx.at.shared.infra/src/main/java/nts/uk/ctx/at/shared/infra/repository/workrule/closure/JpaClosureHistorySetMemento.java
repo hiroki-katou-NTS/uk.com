@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistorySetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureName;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CompanyId;
-import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosureHist;
+import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KshmtClosureHist;
 import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosureHistPK;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
@@ -19,7 +19,7 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
 public class JpaClosureHistorySetMemento implements ClosureHistorySetMemento {
 
 	/** The kclmt closure hist. */
-	private KclmtClosureHist kclmtClosureHist;
+	private KshmtClosureHist kclmtClosureHist;
 
 	/**
 	 * Instantiates a new jpa closure history set memento.
@@ -27,7 +27,7 @@ public class JpaClosureHistorySetMemento implements ClosureHistorySetMemento {
 	 * @param kclmtClosureHist
 	 *            the kclmt closure hist
 	 */
-	public JpaClosureHistorySetMemento(KclmtClosureHist kclmtClosureHist) {
+	public JpaClosureHistorySetMemento(KshmtClosureHist kclmtClosureHist) {
 		if (kclmtClosureHist.getKclmtClosureHistPK() == null) {
 			kclmtClosureHist.setKclmtClosureHistPK(new KclmtClosureHistPK());
 		}

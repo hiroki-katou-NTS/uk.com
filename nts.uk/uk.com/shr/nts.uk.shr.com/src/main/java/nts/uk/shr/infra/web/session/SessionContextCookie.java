@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.function.UnaryOperator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,32 +40,40 @@ public class SessionContextCookie {
 				.findFirst();
 	}
 
+	/**
+	 * CookieのSessionContext情報を更新する
+	 * WebAPI(JAX-RS)のレスポンスではヘッダの追記ができない
+	 * xhtmlへのリクエスト専用
+	 * @param response
+	 */
 	public static void updateCookie(HttpServletResponse response) {
-		
-		createNewCookieFromSession().ifPresent(cookie -> {
-			response.addHeader("Set-Cookie", cookie);
-		});
+		response.addHeader("Set-Cookie", createNewCookieFromSession());
 	}
 	
+	/**
+	 * CookieのSessionContext情報を更新する
+	 * JAX-RS用
+	 * @param responseContext
+	 */
 	public static void updateCookie(ContainerResponseContext responseContext) {
 		
-		createNewCookieFromSession().ifPresent(cookie -> {
-			// responseContext.getCookies().put()は使えない。
-			// getCookiesの内容は既に確定済みなので、書き換えても反映されないように見える。
-			// その代わり、以下のように直接ヘッダを追加することは有効だった。
-			
-			responseContext.getHeaders().add("Set-Cookie", cookie);
-		});
+		// responseContext.getCookies().put()は使えない模様。
+		// getCookiesの内容は既に確定済みであり、書き換えても反映されないように見える。
+		// その代わり、以下のように直接ヘッダを追加することは有効だった。
+		responseContext.getHeaders().add("Set-Cookie", createNewCookieFromSession());
 	}
 
-	public static Optional<String> createNewCookieFromSession() {
+	private static String createNewCookieFromSession() {
 		val session = SingletonBeansSoftCache.get(SessionLowLayer.class);
 		
 		if (!session.isLoggedIn()) {
-			return Optional.of(buildSetCookieHeaderValue(0));
+			// 「ログインしていない」と「ログアウトした」の区別は、ここではできない
+			// いずれにせよCookieを無効化する
+			return buildDeleteCookieHeaderValue();
 		}
 		
-		return Optional.of(buildSetCookieHeaderValue(session.secondsSessionTimeout()));
+		// WildflyのHTTPセッションと同じ期限
+		return buildSetCookieHeaderValue(session.secondsSessionTimeout());
 	}
 	
 	public static void restoreSessionFromCookie(HttpServletRequest httpRequest, boolean isLoggedIn) {
@@ -98,24 +107,45 @@ public class SessionContextCookie {
 			return;
 		}
 		
-		SingletonBeansSoftCache.get(LoginUserContextManager.class).restoreBase64(parts[0]);
-		CsrfToken.setToSession(parts[1]);
+		try {
+			SingletonBeansSoftCache.get(LoginUserContextManager.class).restoreBase64(parts[0]);
+			CsrfToken.setToSession(parts[1]);
+		} catch (Exception ex) {
+			// 何らかの理由で破損したCookieから復元しようとした場合は、復元せずにスルー（エラーは起こさないようにしておく）
+			// 一応、ログには出力しておく
+			log.error("SessionContextCookieの復元に失敗", ex);
+			return;
+		}
 	}
 	
 	private static String buildSetCookieHeaderValue(int secondsSessionTimeout) {
 
+		return buildSetCookieHeaderValue(
+				t -> t.plusSeconds(secondsSessionTimeout),
+				createStringSessionContext());
+	}
+	
+	private static String buildDeleteCookieHeaderValue() {
+		
+		// Expires属性でCookieを削除するには、過去の日付を指定する
+		return buildSetCookieHeaderValue(
+				t -> t.minusYears(1), // いつでもいいが、とりあえず１年前
+				"none"); // ダミーの値
+	}
+	
+	private static String buildSetCookieHeaderValue(UnaryOperator<OffsetDateTime> shiftFromNow, String value) {
+		
 		// IE11のバージョンによって、Max-Age属性が機能しないため、Expires属性を使う必要がある。
 		// ただ、標準のCookieクラスはsetMaxAgeしかないので、やむを得ずSet-Cookieヘッダを直接書き出している
 		
-		String expiresFormat = OffsetDateTime.now(ZoneOffset.UTC)
-				.plusSeconds(secondsSessionTimeout)
+		String expiresFormat = shiftFromNow.apply(OffsetDateTime.now(ZoneOffset.UTC))
 				.format(DateTimeFormatter.ofPattern("EEE, d MMM uuuu kk:mm:ss", Locale.ENGLISH))
 				+ " GMT";
 		
 		return new StringBuilder()
 				.append(COOKIE_SESSION_CONTEXT)
 				.append("=")
-				.append(createStringSessionContext())
+				.append(value)
 				.append("; Path=/; HttpOnly; Expires=")
 				.append(expiresFormat)
 				.toString();

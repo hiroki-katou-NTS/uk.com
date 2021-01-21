@@ -15,8 +15,8 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.exio.dom.exi.dataformat.ItemType;
 import nts.uk.ctx.exio.dom.exi.dataformat.TimeDataFormatSet;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
-import nts.uk.ctx.exio.infra.entity.exi.item.OiomtStdAcceptItem;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.ctx.exio.infra.entity.exi.item.OiomtExAcItem;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 時間型データ形式設定
@@ -24,8 +24,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_TIME_DAT_FM_SET")
-public class OiomtTimeDataFmSet extends UkJpaEntity implements Serializable {
+@Table(name = "OIOMT_EX_AC_FM_TI")
+public class OiomtTimeDataFmSet extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -109,7 +109,7 @@ public class OiomtTimeDataFmSet extends UkJpaEntity implements Serializable {
 			@JoinColumn(name = "SYSTEM_TYPE", referencedColumnName = "SYSTEM_TYPE", insertable = false, updatable = false),
 			@JoinColumn(name = "CONDITION_SET_CD", referencedColumnName = "CONDITION_SET_CD", insertable = false, updatable = false),
 			@JoinColumn(name = "ACCEPT_ITEM_NUM", referencedColumnName = "ACCEPT_ITEM_NUMBER", insertable = false, updatable = false) })
-	public OiomtStdAcceptItem acceptItem;
+	public OiomtExAcItem acceptItem;
 
 	@Override
 	protected Object getKey() {

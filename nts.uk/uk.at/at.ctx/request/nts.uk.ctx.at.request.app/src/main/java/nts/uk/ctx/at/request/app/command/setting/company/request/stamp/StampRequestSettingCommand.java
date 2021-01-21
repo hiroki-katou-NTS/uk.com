@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.app.command.setting.company.request.stamp;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSetting_Old;
 
 /**
  * Stamp Request Setting Command
@@ -45,8 +45,8 @@ public class StampRequestSettingCommand {
 	
 	public Integer stampGoOutAtr_Union_Disp;
 	
-	public StampRequestSetting toDomain(String companyId){
-		StampRequestSetting stampRequest = StampRequestSetting.createFromJavaType(companyId, this.getTopComment(), 
+	public StampRequestSetting_Old toDomain(String companyId){
+		StampRequestSetting_Old stampRequest = StampRequestSetting_Old.createFromJavaType(companyId, this.getTopComment(), 
 								this.getTopCommentFontColor(), this.getTopCommentFontWeight(), this.getBottomComment(), 
 								this.getBottomCommentFontColor(), this.getBottomCommentFontWeight(), this.getResultDisp(), 
 								this.getSupFrameDispNO(), 0, this.getStampAtr_Work_Disp(), 

@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.command.dailyperform.breaktime;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -10,13 +11,16 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.service.event.breaktime.BreakTimeOfDailyService;
 import nts.uk.ctx.at.record.dom.service.event.common.EventHandleResult;
 import nts.uk.ctx.at.record.dom.service.event.common.EventHandleResult.EventHandleAction;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
+import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.shr.com.context.AppContexts;
 
 /** Event：休憩時間帯を補正する */
@@ -41,15 +45,29 @@ public class UpdateBreakTimeByTimeLeaveChangeHandler extends
 		}
 
 		String companyId = getWithDefaul(command.companyId, () -> AppContexts.user().companyId());
-
-		IntegrationOfDaily working = new IntegrationOfDaily(wi, null, null, Optional.empty(), Optional.empty(),
-				new ArrayList<>(), Optional.empty(), new ArrayList<>(), Optional.empty(), Optional.empty(),
-				command.cachedTimeLeave, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
-				command.cachedEditState.isPresent() ? command.cachedEditState.get() : new ArrayList<>(),
-				Optional.empty(), new ArrayList<>());
-
+		Optional<TimeLeavingOfDailyPerformance> timeLeavingOfDailyPerformance =command.cachedTimeLeave;
+		Optional<TimeLeavingOfDailyAttd> timeLeavingOfDailyAttd = timeLeavingOfDailyPerformance.isPresent()?Optional.ofNullable(timeLeavingOfDailyPerformance.get().getAttendance()):Optional.empty();
+		IntegrationOfDaily working = new IntegrationOfDaily(
+				command.employeeId,
+				command.targetDate,
+				wi.getWorkInformation(), //workInformation
+				null, //calAttr
+				null, //affiliationInfor
+				Optional.empty(), //pcLogOnInfo
+				new ArrayList<>(), //employeeError
+				Optional.empty(), //outingTime
+				new ArrayList<>(), //breakTime
+				Optional.empty(), //attendanceTimeOfDailyPerformance
+				timeLeavingOfDailyAttd, //attendanceLeave
+				Optional.empty(), //shortTime
+				Optional.empty(), //specDateAttr
+				Optional.empty(), //attendanceLeavingGate
+				Optional.empty(), //anyItemValue
+				command.cachedEditState.isPresent() ? command.cachedEditState.get().stream().map(c->c.getEditState()).collect(Collectors.toList()) : new ArrayList<>(),
+				Optional.empty(),//tempTime
+				new ArrayList<>());//remarks
 		command.cachedBreackTime.ifPresent(b -> {
-			working.getBreakTime().add(b);
+			working.getBreakTime().add(b.getTimeZone());
 		});
 
 		EventHandleResult<IntegrationOfDaily> result = eventService.correct(companyId, working, command.cachedWorkType, !command.actionOnCache);
@@ -61,9 +79,9 @@ public class UpdateBreakTimeByTimeLeaveChangeHandler extends
 
 		/** 「日別実績の休憩時間帯」を更新する */
 		if (result.getAction() == EventHandleAction.UPDATE || result.getAction() == EventHandleAction.INSERT) {
-			BreakTimeOfDailyPerformance breakTime = result.getData().getBreakTime().stream()
+			BreakTimeOfDailyAttd breakTime = result.getData().getBreakTime().stream()
 					.filter(b -> b.getBreakType() == BreakType.REFER_WORK_TIME).findFirst().orElse(null);
-			return EventHandleResult.withResult(EventHandleAction.UPDATE, breakTime);
+			return EventHandleResult.withResult(EventHandleAction.UPDATE, new BreakTimeOfDailyPerformance(command.employeeId,command.targetDate, breakTime) );
 		}
 		return EventHandleResult.onFail();
 	}

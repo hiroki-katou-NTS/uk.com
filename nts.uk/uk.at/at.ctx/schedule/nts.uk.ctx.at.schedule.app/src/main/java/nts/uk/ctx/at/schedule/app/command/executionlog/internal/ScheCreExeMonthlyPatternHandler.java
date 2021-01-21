@@ -79,6 +79,7 @@ public class ScheCreExeMonthlyPatternHandler {
 				workingConditionItem.getMonthlyPattern().get().v(), dateInPeriod);
 
 		// パラメータ．月間パターンをチェックする, 対象日の「月間勤務就業設定」があるかチェックする
+		
 		if (!checkMonthlyPattern(command, dateInPeriod, workingConditionItem, workMonthlySetOpt)) {
 			return;
 		}
@@ -92,7 +93,7 @@ public class ScheCreExeMonthlyPatternHandler {
 		if (basicScheOpt.isPresent()) {
 			BasicSchedule basicSche = basicScheOpt.get();
 			// 入力パラメータ「実施区分」を判断(kiểm tra parameter 「実施区分」)
-			if (ImplementAtr.GENERALLY_CREATED == command.getContent().getImplementAtr()) {
+			if (ImplementAtr.CREATE_NEW_ONLY == command.getContent().getImplementAtr()) {
 				// 通常作成
 				return;
 			}
@@ -121,7 +122,7 @@ public class ScheCreExeMonthlyPatternHandler {
 			// 入力パラメータ「実施区分」を判断
 			ScheMasterInfo scheMasterInfo = new ScheMasterInfo(null);
 			BasicSchedule basicSche = new BasicSchedule(null, scheMasterInfo);
-			if (ImplementAtr.RECREATE == command.getContent().getImplementAtr()
+			if (ImplementAtr.CREATE_WORK_SCHEDULE == command.getContent().getImplementAtr()
 					&& !this.scheduleCreationDeterminationProcess(command, dateInPeriod, basicSche, employmentInfo,
 							workingConditionItem, masterCache)) {
 				return;
@@ -202,10 +203,10 @@ public class ScheCreExeMonthlyPatternHandler {
 
 		// set working code to command
 		commandWorkTypeEmploymentStatus
-				.setWorkingCode(workMonthlySet.getWorkingCode() == null ? null : workMonthlySet.getWorkingCode().v());
+				.setWorkingCode(workMonthlySet.getWorkInformation().getWorkTimeCode() == null ? null : workMonthlySet.getWorkInformation().getWorkTimeCode().v());
 
 		// set work type code to command
-		commandWorkTypeEmploymentStatus.setWorkTypeCode(workMonthlySet.getWorkTypeCode().v());
+		commandWorkTypeEmploymentStatus.setWorkTypeCode(workMonthlySet.getWorkInformation().getWorkTypeCode().v());
 
 		return this.scheCreExeWorkTypeHandler.getWorkTypeByEmploymentStatus(commandWorkTypeEmploymentStatus, masterCache);
 	}
@@ -223,9 +224,9 @@ public class ScheCreExeMonthlyPatternHandler {
 			CreateScheduleMasterCache masterCache) {
 		WorkTimeGetterCommand workTimeGetterCommand = commandWorktypeGetter.toWorkTime();
 		WorkTimeZoneGetterCommand commandGetter = workTimeGetterCommand.toWorkTimeZone();
-		commandGetter.setWorkTypeCode(workMonthlySet.getWorkTypeCode().v());
+		commandGetter.setWorkTypeCode(workMonthlySet.getWorkInformation().getWorkTypeCode().v());
 		commandGetter
-				.setWorkingCode(workMonthlySet.getWorkingCode() == null ? null : workMonthlySet.getWorkingCode().v());
+				.setWorkingCode(workMonthlySet.getWorkInformation().getWorkTimeCode() == null ? null : workMonthlySet.getWorkInformation().getWorkTimeCode().v());
 		if (StringUtil.isNullOrEmpty(commandGetter.getWorkingCode(), true)) {
 			commandGetter.setWorkingCode(null);
 		}

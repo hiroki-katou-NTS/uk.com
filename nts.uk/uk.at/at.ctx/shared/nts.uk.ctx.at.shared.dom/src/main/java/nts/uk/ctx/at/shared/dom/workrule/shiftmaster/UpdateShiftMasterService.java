@@ -21,7 +21,7 @@ public class UpdateShiftMasterService {
 		shiftMaterOpt.get().checkError(requireWorkInfo);
 		Optional<ShiftMaster> shiftMaterByWorkTypeAndWorkTime = require.getByWorkTypeAndWorkTime(//truyen cid tư app
 				workInformation.getWorkTypeCode().v(),
-				workInformation.getWorkTimeCode() == null ? null : workInformation.getWorkTimeCode().v());
+				workInformation.getWorkTimeCodeNotNull().map(m -> m.v()).orElse(null));
 		if (shiftMaterByWorkTypeAndWorkTime.isPresent()
 				&& !shiftMaterByWorkTypeAndWorkTime.get().getShiftMasterCode().v().equals(shiftMaterCode)) {
 			throw new BusinessException("Msg_1610");

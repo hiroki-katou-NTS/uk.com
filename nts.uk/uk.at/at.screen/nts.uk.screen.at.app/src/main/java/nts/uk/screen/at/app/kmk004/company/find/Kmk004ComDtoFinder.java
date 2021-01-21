@@ -12,8 +12,8 @@ import javax.transaction.Transactional;
 
 import nts.uk.ctx.at.record.app.find.workrecord.monthcal.company.ComMonthCalSetFinder;
 import nts.uk.ctx.at.shared.app.find.statutory.worktime.companyNew.ComStatWorkTimeSetFinder;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.flex.GetFlexPredWorkTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.flex.GetFlexPredWorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTime;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTimeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

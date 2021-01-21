@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="base.xhtml">
+    <ui:define name="title">
+        <span class="title" data-bind="text: vm.$i18n('Com_Company')"></span>
+    </ui:define>
+
+    <ui:define name="table-content">
+        <tr>
+            <td>
+                <div data-bind="ntsFormLabel: {constraint: 'ConsecutiveNumberOfDays', required: true, text: vm.$i18n('KSM008_138')}"></div>
+            </td>
+            <td>
+                <input class="cons-day" tabindex="5" data-bind="ntsNumberEditor: {
+                    name: '#{i18n.getText('KSM008_139')}',
+                    value: maxConsDaysCom,
+                    constraint: 'ConsecutiveNumberOfDays',
+                    required: true}"
+                />
+            </td>
+            <td>
+                <div class="labelWorkplace">
+                    <span class="label" data-bind="text: vm.$i18n('KSM008_140')"></span>
+                </div>
+            </td>
+        </tr>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

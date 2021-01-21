@@ -11,16 +11,12 @@ import javax.ejb.Stateless;
 
 import lombok.SneakyThrows;
 import lombok.val;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfWorkPlace;
-import nts.uk.ctx.at.record.dom.standardtime.UpperAgreementSetting;
-import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AgreementOneMonthTime;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfWorkPlaceRepository;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementTimeWorkPlace;
-import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementTimeWorkPlacePK;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfWorkPlace;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
 
 @Stateless
 public class JpaAgreementTimeOfWorkPlaceRepository extends JpaRepository implements AgreementTimeOfWorkPlaceRepository {
@@ -72,9 +68,11 @@ public class JpaAgreementTimeOfWorkPlaceRepository extends JpaRepository impleme
 
 	@Override
 	public List<String> findWorkPlaceSetting(LaborSystemtAtr laborSystemAtr) {
-		return this.queryProxy().query(FIND_WORKPLACE_SETTING, KmkmtAgeementTimeWorkPlace.class)
-				.setParameter("laborSystemAtr", laborSystemAtr.value)
-				.getList(f -> f.kmkmtAgeementTimeWorkPlacePK.workPlaceId);
+//		return this.queryProxy().query(FIND_WORKPLACE_SETTING, KmkmtAgeementTimeWorkPlace.class)
+//				.setParameter("laborSystemAtr", laborSystemAtr.value)
+//				.getList(f -> f.kmkmtAgeementTimeWorkPlacePK.workPlaceId);
+
+		return new ArrayList<>();
 	}
 
 	@Override
@@ -82,7 +80,7 @@ public class JpaAgreementTimeOfWorkPlaceRepository extends JpaRepository impleme
 	public Optional<String> find(String workplaceId, LaborSystemtAtr laborSystemAtr) {
 
 		try (PreparedStatement statement = this.connection().prepareStatement(
-				" select * from KMKMT_AGREEMENTTIME_WPL " + " where WKPCD = ? " + " and LABOR_SYSTEM_ATR = ? ")) {
+				" select * from KRCMT_36AGR_TIME_WKP " + " where WKPCD = ? " + " and LABOR_SYSTEM_ATR = ? ")) {
 
 			statement.setString(1, workplaceId);
 			statement.setBigDecimal(2, new BigDecimal(laborSystemAtr.value));
@@ -108,40 +106,45 @@ public class JpaAgreementTimeOfWorkPlaceRepository extends JpaRepository impleme
 		if(workplaceId.isEmpty()){
 			return new ArrayList<>();
 		}
-		String query = "select WKPCD, BASIC_SETTING_ID, LABOR_SYSTEM_ATR, UPPER_MONTH_AVERAGE, UPPER_MONTH from KMKMT_AGREEMENTTIME_WPL where WKPCD IN (" + workplaceId.stream().map(s -> "?").collect(Collectors.joining(",")) +" )";
+		String query = "select WKPCD, BASIC_SETTING_ID, LABOR_SYSTEM_ATR, UPPER_MONTH_AVERAGE, UPPER_MONTH from KRCMT_36AGR_TIME_WKP where WKPCD IN (" + workplaceId.stream().map(s -> "?").collect(Collectors.joining(",")) +" )";
 		try (PreparedStatement statement = this.connection().prepareStatement(query)) {
 			for(int i = 0; i < workplaceId.size(); i++){
 				statement.setString(i + 1, workplaceId.get(i));
 			}
 
-			return new NtsResultSet(statement.executeQuery()).getList(rec -> {
-				return new AgreementTimeOfWorkPlace(rec.getString(1), rec.getString(2), 
-													EnumAdaptor.valueOf(rec.getInt(3), LaborSystemtAtr.class), 
-													new UpperAgreementSetting(new AgreementOneMonthTime(rec.getInt(5)), 
-																				new AgreementOneMonthTime(rec.getInt(4))));
-			});
+			/** TODO: 36協定時間対応により、コメントアウトされた */
+			return new ArrayList<>();
+//			return new NtsResultSet(statement.executeQuery()).getList(rec -> {
+//				return new AgreementTimeOfWorkPlace(rec.getString(1), rec.getString(2), 
+//													EnumAdaptor.valueOf(rec.getInt(3), LaborSystemtAtr.class), 
+//													new UpperAgreementSetting(new AgreementOneMonthTime(rec.getInt(5)), 
+//																				new AgreementOneMonthTime(rec.getInt(4))));
+//			});
 		}
 	}
 
 	private KmkmtAgeementTimeWorkPlace toEntity(AgreementTimeOfWorkPlace agreementTimeOfWorkPlace) {
 		val entity = new KmkmtAgeementTimeWorkPlace();
 
-		entity.kmkmtAgeementTimeWorkPlacePK = new KmkmtAgeementTimeWorkPlacePK();
-		entity.kmkmtAgeementTimeWorkPlacePK.basicSettingId = agreementTimeOfWorkPlace.getBasicSettingId();
-		entity.kmkmtAgeementTimeWorkPlacePK.workPlaceId = agreementTimeOfWorkPlace.getWorkplaceId();
-		entity.laborSystemAtr = agreementTimeOfWorkPlace.getLaborSystemAtr().value;
-		entity.upperMonth = agreementTimeOfWorkPlace.getUpperAgreementSetting().getUpperMonth().valueAsMinutes();
-		entity.upperMonthAverage = agreementTimeOfWorkPlace.getUpperAgreementSetting().getUpperMonthAverage().valueAsMinutes();
+		/** TODO: 36協定時間対応により、コメントアウトされた */
+//		entity.kmkmtAgeementTimeWorkPlacePK = new KmkmtAgeementTimeWorkPlacePK();
+//		entity.kmkmtAgeementTimeWorkPlacePK.basicSettingId = agreementTimeOfWorkPlace.getBasicSettingId();
+//		entity.kmkmtAgeementTimeWorkPlacePK.workPlaceId = agreementTimeOfWorkPlace.getWorkplaceId();
+//		entity.laborSystemAtr = agreementTimeOfWorkPlace.getLaborSystemAtr().value;
+//		entity.upperMonth = agreementTimeOfWorkPlace.getUpperAgreementSetting().getUpperMonth().valueAsMinutes();
+//		entity.upperMonthAverage = agreementTimeOfWorkPlace.getUpperAgreementSetting().getUpperMonthAverage().valueAsMinutes();
 
 		return entity;
 	}
 
 	private static AgreementTimeOfWorkPlace toDomain(KmkmtAgeementTimeWorkPlace kmkmtAgeementTimeWorkPlace) {
-		AgreementTimeOfWorkPlace agreementTimeOfWorkPlace = AgreementTimeOfWorkPlace.createJavaType(
-				kmkmtAgeementTimeWorkPlace.kmkmtAgeementTimeWorkPlacePK.workPlaceId,
-				kmkmtAgeementTimeWorkPlace.kmkmtAgeementTimeWorkPlacePK.basicSettingId,
-				kmkmtAgeementTimeWorkPlace.laborSystemAtr,
-				kmkmtAgeementTimeWorkPlace.upperMonth, kmkmtAgeementTimeWorkPlace.upperMonthAverage);
-		return agreementTimeOfWorkPlace;
+		/** TODO: 36協定時間対応により、コメントアウトされた */
+		return null;
+//		AgreementTimeOfWorkPlace agreementTimeOfWorkPlace = AgreementTimeOfWorkPlace.createJavaType(
+//				kmkmtAgeementTimeWorkPlace.kmkmtAgeementTimeWorkPlacePK.workPlaceId,
+//				kmkmtAgeementTimeWorkPlace.kmkmtAgeementTimeWorkPlacePK.basicSettingId,
+//				kmkmtAgeementTimeWorkPlace.laborSystemAtr,
+//				kmkmtAgeementTimeWorkPlace.upperMonth, kmkmtAgeementTimeWorkPlace.upperMonthAverage);
+//		return agreementTimeOfWorkPlace;
 	}
 }

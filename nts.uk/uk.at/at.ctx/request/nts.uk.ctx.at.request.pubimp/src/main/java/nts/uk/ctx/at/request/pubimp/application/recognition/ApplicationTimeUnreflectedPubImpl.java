@@ -17,11 +17,11 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.pub.application.recognition.ApplicationOvertimeExport;
@@ -31,7 +31,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class ApplicationTimeUnreflectedPubImpl implements ApplicationTimeUnreflectedPub {
 	@Inject
-	private ApplicationRepository_New repoApplication;
+	private ApplicationRepository repoApplication;
 	
 	@Inject
 	private OvertimeRepository repoOvertime;
@@ -46,16 +46,16 @@ public class ApplicationTimeUnreflectedPubImpl implements ApplicationTimeUnrefle
 		String companyId = AppContexts.user().companyId();
 		Map<String, AppOverTime> mapOt = new HashMap<>();
 		List<ApplicationOvertimeExport> results = new ArrayList<>();
-		List<Application_New> appHd = repoApplication.getListAppByType(companyId, sId, startDate, endDate, PrePostAtr.POSTERIOR.value, 
-				ApplicationType.OVER_TIME_APPLICATION.value, Arrays.asList(ReflectedState_New.NOTREFLECTED.value,ReflectedState_New.WAITREFLECTION.value));
+		List<Application> appHd = repoApplication.getListAppByType(companyId, sId, startDate, endDate, PrePostAtr.POSTERIOR.value, 
+				ApplicationType.OVER_TIME_APPLICATION.value, Arrays.asList(ReflectedState.NOTREFLECTED.value,ReflectedState.WAITREFLECTION.value));
 		List<String> lstId = new ArrayList<>();
 		Map<GeneralDate, String> mapApp = new HashMap<>();
 		//※同じ申請日の残業申請が２件あった場合、入力日が後のもの（latest）だけSetする
-		for (Application_New app : appHd) {
-			if(mapApp.containsKey(app.getAppDate())){
+		for (Application app : appHd) {
+			if(mapApp.containsKey(app.getAppDate().getApplicationDate())){
 				continue;
 			}
-			mapApp.put(app.getAppDate(), app.getAppID());
+			mapApp.put(app.getAppDate().getApplicationDate(), app.getAppID());
 			lstId.add(app.getAppID());
 		}
 		mapOt = repoOvertime.getListAppOvertimeFrame(companyId, lstId);

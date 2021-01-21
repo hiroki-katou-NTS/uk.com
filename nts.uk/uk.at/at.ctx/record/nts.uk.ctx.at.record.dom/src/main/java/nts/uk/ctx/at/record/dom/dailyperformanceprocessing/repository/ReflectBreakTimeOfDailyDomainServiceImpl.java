@@ -13,33 +13,35 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeSheet;
-import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
-import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.BreakFrameNo;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.BreakTimeZoneSettingOutPut;
-import nts.uk.ctx.at.record.dom.workinformation.ScheduleTimeSheet;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageResource;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.caltimediff.CalculateTimeDiffService;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicateStateAtr;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.DuplicationStatusOfTimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.RangeOfDayTimeZoneService;
-import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -106,7 +108,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 	@Override
 	public BreakTimeOfDailyPerformance reflectBreakTimeZone(String companyId, String employeeID,
 			GeneralDate processingDate, String empCalAndSumExecLogID,
-			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance, WorkInfoOfDailyPerformance WorkInfo) {
+			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance, WorkInfoOfDailyPerformance workInfo) {
 		Optional<BreakTimeOfDailyPerformance> breakOpt = this.breakTimeOfDailyPerformanceRepo.find(employeeID,
 				processingDate, 0);
 		if (breakOpt.isPresent()) {
@@ -114,15 +116,15 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 		}
 		// 休憩時間帯設定を確認する
 		List<TimeLeavingWork> timeLeavingWorks = null;
-		if (timeLeavingOfDailyPerformance != null && timeLeavingOfDailyPerformance.getTimeLeavingWorks() != null
-				&& !timeLeavingOfDailyPerformance.getTimeLeavingWorks().isEmpty()) {
-			timeLeavingWorks = timeLeavingOfDailyPerformance.getTimeLeavingWorks();
+		if (timeLeavingOfDailyPerformance != null && timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks() != null
+				&& !timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().isEmpty()) {
+			timeLeavingWorks = timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks();
 		} else {
 			Optional<TimeLeavingOfDailyPerformance> TimeLeavingOptional = this.timeLeavingRepo.findByKey(employeeID,
 					processingDate);
 			if (TimeLeavingOptional.isPresent()) {
 				TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance2 = TimeLeavingOptional.get();
-				List<TimeLeavingWork> timeLeavingWorks2 = timeLeavingOfDailyPerformance2.getTimeLeavingWorks();
+				List<TimeLeavingWork> timeLeavingWorks2 = timeLeavingOfDailyPerformance2.getAttendance().getTimeLeavingWorks();
 				if (timeLeavingWorks2 != null && !timeLeavingWorks2.isEmpty()) {
 					timeLeavingWorks = timeLeavingWorks2;
 				}
@@ -131,8 +133,10 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 		if (timeLeavingWorks == null) {
 			return null;
 		}
+		TimeLeavingOfDailyPerformance ofDailyPerformance = new TimeLeavingOfDailyPerformance(employeeID, processingDate, timeLeavingOfDailyPerformance.getAttendance());
+		WorkInfoOfDailyPerformance dailyPerformance = new WorkInfoOfDailyPerformance(employeeID, processingDate, workInfo.getWorkInformation());
 		return this.reflectBreakTime(companyId, employeeID, processingDate, empCalAndSumExecLogID,
-				timeLeavingOfDailyPerformance, WorkInfo);
+				ofDailyPerformance, dailyPerformance);
 	}
 
 	@Override
@@ -142,8 +146,8 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 		BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut = new BreakTimeZoneSettingOutPut();
 		// 休憩時間帯設定を確認する
 		List<TimeLeavingWork> timeLeavingWorks = null;
-		if (timeLeavingOfDailyPerformance != null && !timeLeavingOfDailyPerformance.getTimeLeavingWorks().isEmpty()) {
-			timeLeavingWorks = timeLeavingOfDailyPerformance.getTimeLeavingWorks();
+		if (timeLeavingOfDailyPerformance != null && !timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().isEmpty()) {
+			timeLeavingWorks = timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks();
 		}
 
 		if (timeLeavingWorks == null) {
@@ -190,20 +194,20 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 				if (o2 == null || o2.getAttendanceStamp() == null || !o2.getAttendanceStamp().isPresent()
 						|| o2.getAttendanceStamp().get().getStamp() == null
 						|| !o2.getAttendanceStamp().get().getStamp().isPresent()
-						|| o2.getAttendanceStamp().get().getStamp().get().getTimeWithDay() == null) {
+						|| o2.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay() == null) {
 					return 1;
 				}
 				if (o1 == null || o1.getAttendanceStamp() == null || !o1.getAttendanceStamp().isPresent()
 						|| o1.getAttendanceStamp().get().getStamp() == null
 						|| !o1.getAttendanceStamp().get().getStamp().isPresent()
-						|| o1.getAttendanceStamp().get().getStamp().get().getTimeWithDay() == null) {
+						|| o1.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay() == null) {
 					return -1;
 				}
 				// 高須の応急処置
-				int t1 = o1.getAttendanceStamp().get().getStamp().get().getTimeWithDay() != null
-						? o1.getAttendanceStamp().get().getStamp().get().getTimeWithDay().v().intValue() : 0;
-				int t2 = o2.getAttendanceStamp().get().getStamp().get().getTimeWithDay() != null
-						? o2.getAttendanceStamp().get().getStamp().get().getTimeWithDay().v().intValue() : 0;
+				int t1 = o1.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay() != null
+						? o1.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v().intValue() : 0;
+				int t2 = o2.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay() != null
+						? o2.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v().intValue() : 0;
 				// int t1 =
 				// o1.getAttendanceStamp().get().getStamp().get().getTimeWithDay().v().intValue();
 				// int t2 =
@@ -226,15 +230,15 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 			if (timeLeavingWork.getAttendanceStamp() != null && timeLeavingWork.getAttendanceStamp().isPresent()
 					&& timeLeavingWork.getAttendanceStamp().get().getStamp() != null
 					&& timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent()
-					&& timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay() != null) {
-				startDate2 = timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeWithDay();
+					&& timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay() != null) {
+				startDate2 = timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get();
 			}
 
 			if (timeLeavingWork.getLeaveStamp() != null && timeLeavingWork.getLeaveStamp().isPresent()
 					&& timeLeavingWork.getLeaveStamp().get().getStamp() != null
 					&& timeLeavingWork.getLeaveStamp().get().getStamp().isPresent()
-					&& timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay() != null) {
-				endDate2 = timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeWithDay();
+					&& timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay() != null) {
+				endDate2 = timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get();
 			}
 
 			// TimeWithDayAttr startDate2 =
@@ -266,7 +270,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 		// fixed thieu reset breaktime
 		boolean checkReflect = false;
 		Optional<WorkType> workTypeOpt = workTypeRepo.findByPK(companyId,
-				WorkInfo.getRecordInfo().getWorkTypeCode().v());
+				WorkInfo.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
 		// 1日半日出勤・1日休日系の判定
 		WorkStyle checkWorkDay = this.basicScheduleService.checkWorkDay(workTypeOpt);
 		// 1日休日系
@@ -275,8 +279,8 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 		} else {
 			// 休出かどうかの判断
 			int weekdayHolidayClassification = this.checkHolidayOrNot(workTypeOpt);
-			if (WorkInfo.getRecordInfo().getWorkTimeCode() != null) {	
-				String workTimeCode = WorkInfo.getRecordInfo().getWorkTimeCode().v();
+			if (WorkInfo.getWorkInformation().getRecordInfo().getWorkTimeCode() != null) {	
+				String workTimeCode = WorkInfo.getWorkInformation().getRecordInfo().getWorkTimeCode().v();
 				Optional<WorkTimeSetting> WorkTimeSettingOptional = this.workTimeSettingRepo.findByCode(companyId,
 						workTimeCode);
 				WorkTimeSetting workTimeSetting = WorkTimeSettingOptional.get();
@@ -326,7 +330,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 			Optional<WorkTimeSetting> workTime) {
 		// fixed thieu reset breaktime
 		Optional<WorkType> workTypeOpt = workTypeRepo.findByPK(companyId,
-				WorkInfo.getRecordInfo().getWorkTypeCode().v());
+				WorkInfo.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
 		// 1日半日出勤・1日休日系の判定
 		WorkStyle checkWorkDay = this.basicScheduleService.checkWorkDay(workTypeOpt);
 		// 1日休日系
@@ -337,8 +341,8 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 		// 休出かどうかの判断
 		int weekdayHolidayClassification = this.checkHolidayOrNot(workTypeOpt);
 
-		if (WorkInfo.getRecordInfo().getWorkTimeCode() != null) {
-			String workTimeCode = WorkInfo.getRecordInfo().getWorkTimeCode().v();
+		if (WorkInfo.getWorkInformation().getRecordInfo().getWorkTimeCode() != null) {
+			String workTimeCode = WorkInfo.getWorkInformation().getRecordInfo().getWorkTimeCode().v();
 			WorkTimeSetting wts = workTime
 					.orElseGet(() -> this.workTimeSettingRepo.findByCode(companyId, workTimeCode).get());
 			// WorkTimeDailyAtr = 通常勤務・変形労働用
@@ -445,10 +449,10 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 			WorkInfoOfDailyPerformance WorkInfo, BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut,
 			WorkStyle checkWorkDay) {
 
-		if (WorkInfo != null && !WorkInfo.getScheduleTimeSheets().isEmpty()) {
+		if (WorkInfo != null && !WorkInfo.getWorkInformation().getScheduleTimeSheets().isEmpty()) {
 			TimeWithDayAttr attendance = null;
 			boolean workNoIsOne = false;
-			List<ScheduleTimeSheet> scheduleTimeSheets = WorkInfo.getScheduleTimeSheets();
+			List<ScheduleTimeSheet> scheduleTimeSheets = WorkInfo.getWorkInformation().getScheduleTimeSheets();
 			int size = scheduleTimeSheets.size();
 			for (int i = 0; i < size; i++) {
 				ScheduleTimeSheet scheduleTimeSheet = scheduleTimeSheets.get(i);
@@ -459,14 +463,14 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 					break;
 				}
 			}
-			WorkTypeCode workTypeCode = WorkInfo.getRecordInfo().getWorkTypeCode();
+			WorkTypeCode workTypeCode = WorkInfo.getWorkInformation().getRecordInfo().getWorkTypeCode();
 			DailyWork dailyWork = null;
 			Optional<WorkType> findByPK = this.workTypeRepo.findByPK(companyId, workTypeCode.v());
 			if (findByPK.isPresent()) {
 				// 勤務種類．1日の勤務
 				dailyWork = findByPK.get().getDailyWork();
 			}
-			WorkTimeCode workTimeCode = WorkInfo.getRecordInfo().getWorkTimeCode();
+			WorkTimeCode workTimeCode = WorkInfo.getWorkInformation().getRecordInfo().getWorkTimeCode();
 			Optional<PredetemineTimeSetting> findByWorkTimeCode = this.predetemineTimeSettingRepo
 					.findByWorkTimeCode(companyId, workTimeCode.v());
 			PrescribedTimezoneSetting prescribedTimezoneSetting = null;
@@ -510,7 +514,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 					return false;
 				} else {
 					DiffTimeWorkSetting diffTimeWorkSetting = this.diffTimeWorkSettingRepo
-							.find(companyId, WorkInfo.getRecordInfo().getWorkTimeCode().v()).get();
+							.find(companyId, WorkInfo.getWorkInformation().getRecordInfo().getWorkTimeCode().v()).get();
 					List<DiffTimeHalfDayWorkTimezone> lstHalfDayWorkTimezones = diffTimeWorkSetting
 							.getHalfDayWorkTimezones();
 					List<DeductionTime> timezones = null;
@@ -601,11 +605,11 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 			WorkInfoOfDailyPerformance workInfo, BreakTimeZoneSettingOutPut breakTimeZoneSettingOutPut,
 			WorkStyle checkWorkDay, Optional<WorkType> findByPK, List<ErrorAlarmWorkRecord> errorMaster) {
 
-		if (workInfo == null || workInfo.getScheduleTimeSheets().isEmpty()) {
+		if (workInfo == null || workInfo.getWorkInformation().getScheduleTimeSheets().isEmpty()) {
 			return false;
 		}
 
-		TimeWithDayAttr attendance = workInfo.getScheduleTimeSheets().stream()
+		TimeWithDayAttr attendance = workInfo.getWorkInformation().getScheduleTimeSheets().stream()
 				.filter(c -> c.getWorkNo().compareTo(1) == 0).map(c -> c.getAttendance()).findFirst().orElse(null);
 		if (attendance == null) {
 			return false;
@@ -615,7 +619,7 @@ public class ReflectBreakTimeOfDailyDomainServiceImpl implements ReflectBreakTim
 			return false;
 		}
 
-		String workTimeCode = workInfo.getRecordInfo().getWorkTimeCode().v();
+		String workTimeCode = workInfo.getWorkInformation().getRecordInfo().getWorkTimeCode().v();
 		Optional<PredetemineTimeSetting> ptts = this.predetemineTimeSettingRepo.findByWorkTimeCode(companyId,
 				workTimeCode);
 		if (!ptts.isPresent() || ptts.get().getPrescribedTimezoneSetting() == null) {

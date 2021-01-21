@@ -15,16 +15,17 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KscmtMonthPattern.
  */
+
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCMT_MONTH_PATTERN")
-public class KscmtMonthPattern extends UkJpaEntity implements Serializable {
+@Table(name = "KSCMT_MONTHLY_PATTERN")
+public class KscmtMonthPattern extends ContractUkJpaEntity implements Serializable {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -36,7 +37,7 @@ public class KscmtMonthPattern extends UkJpaEntity implements Serializable {
     /** The m pattern name. */
     @Basic(optional = false)
     @NotNull
-    @Column(name = "M_PATTERN_NAME")
+    @Column(name = "NAME")
     private String mPatternName;
 
     /**

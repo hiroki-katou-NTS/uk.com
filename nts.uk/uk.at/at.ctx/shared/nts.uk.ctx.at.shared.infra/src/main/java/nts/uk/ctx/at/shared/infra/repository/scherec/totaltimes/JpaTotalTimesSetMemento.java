@@ -6,23 +6,21 @@ package nts.uk.ctx.at.shared.infra.repository.scherec.totaltimes;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.CountAtr;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.SummaryAtr;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.SummaryList;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalCondition;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesABName;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesName;
-import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesSetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.WorkTypeAtr;
-import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalCondition;
-import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalSubjects;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.memento.TotalTimesSetMemento;
+import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshmtTotalCondition;
+import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshmtTotalSubjects;
 import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalSubjectsPK;
-import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalTimes;
+import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshmtTotalTimes;
 import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalTimesPK;
 
 /**
@@ -31,7 +29,7 @@ import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalTimesPK;
 public class JpaTotalTimesSetMemento implements TotalTimesSetMemento {
 
 	/** The entity. */
-	private KshstTotalTimes entity;
+	private KshmtTotalTimes entity;
 	
 	/**
 	 * Instantiates a new jpa total times set memento.
@@ -39,7 +37,7 @@ public class JpaTotalTimesSetMemento implements TotalTimesSetMemento {
 	 * @param totalTimes
 	 *            the total times
 	 */
-	public JpaTotalTimesSetMemento(KshstTotalTimes totalTimes) {
+	public JpaTotalTimesSetMemento(KshmtTotalTimes totalTimes) {
 		this.entity = totalTimes;
 	}
 
@@ -50,9 +48,9 @@ public class JpaTotalTimesSetMemento implements TotalTimesSetMemento {
 	 * setCompanyId(nts.uk.ctx.at.shared.dom.common.CompanyId)
 	 */
 	@Override
-	public void setCompanyId(CompanyId companyId) {
+	public void setCompanyId(String companyId) {
 		KshstTotalTimesPK pk = entity.getKshstTotalTimesPK();
-		pk.setCid(companyId.v());
+		pk.setCid(companyId);
 		this.entity.setKshstTotalTimesPK(pk);
 	}
 
@@ -135,7 +133,7 @@ public class JpaTotalTimesSetMemento implements TotalTimesSetMemento {
 	 */
 	@Override
 	public void setTotalCondition(TotalCondition totalCondition) {
-		KshstTotalCondition kshstTotalCondition = this.entity.getTotalCondition();
+		KshmtTotalCondition kshstTotalCondition = this.entity.getTotalCondition();
 		totalCondition.saveToMemento(
 				new JpaTotalConditionSetMemento(this.entity.getKshstTotalTimesPK().getCid(),
 						this.entity.getKshstTotalTimesPK().getTotalTimesNo(), kshstTotalCondition));
@@ -149,47 +147,45 @@ public class JpaTotalTimesSetMemento implements TotalTimesSetMemento {
 	 * setTotalSubjects(java.util.List)
 	 */
 	@Override
-	public void setSummaryList(Optional<SummaryList> summaryList) {
+	public void setSummaryList(SummaryList summaryList) {
 		String companyId = this.entity.getKshstTotalTimesPK().getCid();
 		int totalTimeNo = this.entity.getKshstTotalTimesPK().getTotalTimesNo();
 		
-		List<KshstTotalSubjects> lstTotalSubjectCommand = new ArrayList<>();
+		List<KshmtTotalSubjects> lstTotalSubjectCommand = new ArrayList<>();
 		
-		List<KshstTotalSubjects> lstTotalSubjectDB = this.entity.listTotalSubjects;
+		List<KshmtTotalSubjects> lstTotalSubjectDB = this.entity.listTotalSubjects;
 		
-		summaryList.ifPresent(item -> {
-			if (!CollectionUtil.isEmpty(item.getWorkTimeCodes())) {
-				item.getWorkTimeCodes().stream().forEach(workTimeCode -> {
-					// find entity existed
-					KshstTotalSubjects entityTotal = lstTotalSubjectDB.stream().filter(entity -> {
-						KshstTotalSubjectsPK pk = entity.getKshstTotalSubjectsPK();
-						return pk.getCid().equals(companyId) && pk.getTotalTimesNo() == totalTimeNo
-								&& pk.getWorkTypeAtr() == WorkTypeAtr.WORKINGTIME.value
-								&& pk.getWorkTypeCd().equals(workTimeCode);
-					}).findFirst().orElse(new KshstTotalSubjects(new KshstTotalSubjectsPK(companyId,
-							totalTimeNo, WorkTypeAtr.WORKINGTIME.value, workTimeCode)));
+		if (!CollectionUtil.isEmpty(summaryList.getWorkTimeCodes())) {
+			summaryList.getWorkTimeCodes().stream().forEach(workTimeCode -> {
+				// find entity existed
+				KshmtTotalSubjects entityTotal = lstTotalSubjectDB.stream().filter(entity -> {
+					KshstTotalSubjectsPK pk = entity.getKshstTotalSubjectsPK();
+					return pk.getCid().equals(companyId) && pk.getTotalTimesNo() == totalTimeNo
+							&& pk.getWorkTypeAtr() == WorkTypeAtr.WORKINGTIME.value
+							&& pk.getWorkTypeCd().equals(workTimeCode);
+				}).findFirst().orElse(new KshmtTotalSubjects(new KshstTotalSubjectsPK(companyId,
+						totalTimeNo, WorkTypeAtr.WORKINGTIME.value, workTimeCode)));
 
-					// add list total subjects
-					lstTotalSubjectCommand.add(entityTotal);
-				});
-			}
+				// add list total subjects
+				lstTotalSubjectCommand.add(entityTotal);
+			});
+		}
 
-			if (!CollectionUtil.isEmpty(item.getWorkTypeCodes())) {
-				item.getWorkTypeCodes().stream().forEach(workTypeCode -> {
-					// find entity existed
-					KshstTotalSubjects entityTotal = lstTotalSubjectDB.stream().filter(entity -> {
-						KshstTotalSubjectsPK pk = entity.getKshstTotalSubjectsPK();
-						return pk.getCid().equals(companyId) && pk.getTotalTimesNo() == totalTimeNo
-								&& pk.getWorkTypeAtr() == WorkTypeAtr.WORKTYPE.value
-								&& pk.getWorkTypeCd().equals(workTypeCode);
-					}).findFirst().orElse(new KshstTotalSubjects(new KshstTotalSubjectsPK(companyId,
-							totalTimeNo, WorkTypeAtr.WORKTYPE.value, workTypeCode)));
+		if (!CollectionUtil.isEmpty(summaryList.getWorkTypeCodes())) {
+			summaryList.getWorkTypeCodes().stream().forEach(workTypeCode -> {
+				// find entity existed
+				KshmtTotalSubjects entityTotal = lstTotalSubjectDB.stream().filter(entity -> {
+					KshstTotalSubjectsPK pk = entity.getKshstTotalSubjectsPK();
+					return pk.getCid().equals(companyId) && pk.getTotalTimesNo() == totalTimeNo
+							&& pk.getWorkTypeAtr() == WorkTypeAtr.WORKTYPE.value
+							&& pk.getWorkTypeCd().equals(workTypeCode);
+				}).findFirst().orElse(new KshmtTotalSubjects(new KshstTotalSubjectsPK(companyId,
+						totalTimeNo, WorkTypeAtr.WORKTYPE.value, workTypeCode)));
 
-					// add list total subjects
-					lstTotalSubjectCommand.add(entityTotal);
-				});
-			}
-		});
+				// add list total subjects
+				lstTotalSubjectCommand.add(entityTotal);
+			});
+		}
 		
 		this.entity.setListTotalSubjects(lstTotalSubjectCommand);
 	}

@@ -6,7 +6,7 @@ package nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.EmployeeExecutionStatus;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 
 /**
  * @author danpv

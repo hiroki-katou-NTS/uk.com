@@ -12,19 +12,19 @@ import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.monthly.erroralarm.EmployeeMonthlyPerError;
-import nts.uk.ctx.at.record.dom.monthly.erroralarm.ErrorType;
-import nts.uk.ctx.at.record.dom.monthly.erroralarm.Flex;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveError;
-import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.ReserveLeaveError;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.AnnualLeaveError;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.EmployeeMonthlyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.ErrorType;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.Flex;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.ReserveLeaveError;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_MONTH_PER_ERR")
-public class KrcdtEmployeeMonthlyPerError extends UkJpaEntity implements Serializable {
+@Table(name = "KRCDT_MON_SYA_ERROR")
+public class KrcdtEmployeeMonthlyPerError extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	

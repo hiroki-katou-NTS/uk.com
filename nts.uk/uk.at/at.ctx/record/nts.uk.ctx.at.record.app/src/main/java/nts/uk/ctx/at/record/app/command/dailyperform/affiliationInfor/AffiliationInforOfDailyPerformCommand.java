@@ -6,7 +6,7 @@ import lombok.Getter;
 import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto.AffiliationInforOfDailyPerforDto;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ConvertibleAttendanceItem;
 
 public class AffiliationInforOfDailyPerformCommand extends DailyWorkCommonCommand {
 
@@ -15,7 +15,7 @@ public class AffiliationInforOfDailyPerformCommand extends DailyWorkCommonComman
 
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
-		this.data = item == null || !item.isHaveData() ? null : ((AffiliationInforOfDailyPerforDto) item).toDomain(getEmployeeId(), getWorkDate());
+		this.data = item == null || !item.isHaveData() ? null : new AffiliationInforOfDailyPerfor(getEmployeeId(), getWorkDate(),  ((AffiliationInforOfDailyPerforDto) item).toDomain(getEmployeeId(), getWorkDate()));
 	}
 
 	@Override

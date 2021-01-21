@@ -7,24 +7,17 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
-import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeInputRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
-import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 @Stateless
 public class OvertimeSixProcessImpl implements OvertimeSixProcess{
@@ -32,7 +25,7 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 	@Inject
 	private OvertimeRestAppCommonSetRepository overtimeRestAppCommonSetRepository;
 	@Inject
-	private ApplicationRepository_New applicationRepository;
+	private ApplicationRepository applicationRepository;
 	@Inject
 	private OvertimeRepository overtimeRepository;
 	@Inject
@@ -51,36 +44,36 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 	 *  06-04_計算実績超過チェック
 	 * @see nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeSixProcess#checkCaculationActualExcess(int, int, java.lang.String, java.lang.String, nts.uk.ctx.at.request.dom.setting.requestofeach.RequestAppDetailSetting)
 	 */
-	@Override
-	public CaculationTime checkCaculationActualExcess(int prePostAtr,int appType,String employeeID,String companyID,ApprovalFunctionSetting approvalFunctionSetting,GeneralDate appDate, List<CaculationTime> overTimeInputs,String siftCD,List<OvertimeInputCaculation> overtimeInputCaculations) {
-		boolean condition = checkCondition(prePostAtr,appType,companyID);
-		if(condition){
-			//Imported(申請承認)「勤務実績」を取得する
-			RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID,appDate);
-			Optional<PredetemineTimeSetting> workTimeSetOtp = workTimeSetRepository.findByWorkTimeCode(companyID, siftCD);
-			if (workTimeSetOtp.isPresent()) {
-				PredetemineTimeSetting workTimeSet = workTimeSetOtp.get();
-				
-				if(overtimePreProcess.checkTimeDay(appDate.toString("yyyy/MM/dd"),workTimeSet)){
-					// 06-04-3_当日の場合
-					overTimeInputs = checkDuringTheDay(companyID, employeeID, appDate.toString("yyyy/MM/dd"), approvalFunctionSetting, siftCD, overTimeInputs,recordWorkInfoImport,overtimeInputCaculations);
-				}else{
-					// 06-04-2_当日以外の場合
-					overTimeInputs = this.checkOutSideTimeTheDay(companyID, employeeID, appDate.toString("yyyy/MM/dd"), approvalFunctionSetting, siftCD, overTimeInputs,recordWorkInfoImport,overtimeInputCaculations);
-				}
-			}
-		}
-		return new CaculationTime(overTimeInputs.get(0).getCompanyID(),
-				overTimeInputs.get(0).getAppID(),
-				overTimeInputs.get(0).getAttendanceID(),
-				overTimeInputs.get(0).getFrameNo(),
-				overTimeInputs.get(0).getTimeItemTypeAtr(),
-				overTimeInputs.get(0).getFrameName(), 
-				overTimeInputs.get(0).getApplicationTime(),
-				overTimeInputs.get(0).getPreAppTime(),
-				overTimeInputs.get(0).getCaculationTime(),
-				overTimeInputs.get(0).getErrorCode(),true, false, false);
-	}
+//	@Override
+//	public CaculationTime checkCaculationActualExcess(int prePostAtr,int appType,String employeeID,String companyID,ApprovalFunctionSetting approvalFunctionSetting,GeneralDate appDate, List<CaculationTime> overTimeInputs,String siftCD,List<OvertimeInputCaculation> overtimeInputCaculations) {
+//		boolean condition = checkCondition(prePostAtr,appType,companyID);
+//		if(condition){
+//			//Imported(申請承認)「勤務実績」を取得する
+//			RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID,appDate);
+//			Optional<PredetemineTimeSetting> workTimeSetOtp = workTimeSetRepository.findByWorkTimeCode(companyID, siftCD);
+//			if (workTimeSetOtp.isPresent()) {
+//				PredetemineTimeSetting workTimeSet = workTimeSetOtp.get();
+//				
+//				if(overtimePreProcess.checkTimeDay(appDate.toString("yyyy/MM/dd"),workTimeSet)){
+//					// 06-04-3_当日の場合
+//					overTimeInputs = checkDuringTheDay(companyID, employeeID, appDate.toString("yyyy/MM/dd"), approvalFunctionSetting, siftCD, overTimeInputs,recordWorkInfoImport,overtimeInputCaculations);
+//				}else{
+//					// 06-04-2_当日以外の場合
+//					overTimeInputs = this.checkOutSideTimeTheDay(companyID, employeeID, appDate.toString("yyyy/MM/dd"), approvalFunctionSetting, siftCD, overTimeInputs,recordWorkInfoImport,overtimeInputCaculations);
+//				}
+//			}
+//		}
+//		return new CaculationTime(overTimeInputs.get(0).getCompanyID(),
+//				overTimeInputs.get(0).getAppID(),
+//				overTimeInputs.get(0).getAttendanceID(),
+//				overTimeInputs.get(0).getFrameNo(),
+//				overTimeInputs.get(0).getTimeItemTypeAtr(),
+//				overTimeInputs.get(0).getFrameName(), 
+//				overTimeInputs.get(0).getApplicationTime(),
+//				overTimeInputs.get(0).getPreAppTime(),
+//				overTimeInputs.get(0).getCaculationTime(),
+//				overTimeInputs.get(0).getErrorCode(),true, false, false);
+//	}
 	/* 
 	 * 06-04-1_チェック条件
 	 * @see nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeSixProcess#checkCondition(int, int, java.lang.String)
@@ -128,14 +121,14 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSetting = overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, appType);
 		if(overtimeRestAppCommonSetting.isPresent()){
 			if(overtimeRestAppCommonSetting.get().getPreDisplayAtr().value == UseAtr.USE.value){
-				List<Application_New> application = this.applicationRepository.getApp(employeeId,  GeneralDate.fromString(appDate, DATE_FORMAT), PrePostAtr.PREDICT.value, appType);
-				if(application.size() > 0){
-					Optional<AppOverTime> appOvertime = this.overtimeRepository.getAppOvertime(application.get(0).getCompanyID(), application.get(0).getAppID());
-					if(appOvertime.isPresent()){
-						List<OverTimeInput> overtimeInputs = overtimeInputRepository.getOvertimeInputByAttendanceId(appOvertime.get().getCompanyID(), appOvertime.get().getAppID(),AttendanceType.NORMALOVERTIME.value);
-						overtimeHours = convertCaculation(overtimeInputs,overtimeHours);
-					}
-				}
+//				List<Application_New> application = this.applicationRepository.getApp(employeeId,  GeneralDate.fromString(appDate, DATE_FORMAT), PrePostAtr.PREDICT.value, appType);
+//				if(application.size() > 0){
+//					Optional<AppOverTime> appOvertime = this.overtimeRepository.getAppOvertime(application.get(0).getCompanyID(), application.get(0).getAppID());
+//					if(appOvertime.isPresent()){
+//						List<OverTimeInput> overtimeInputs = overtimeInputRepository.getOvertimeInputByAttendanceId(appOvertime.get().getCompanyID(), appOvertime.get().getAppID(),AttendanceType.NORMALOVERTIME.value);
+//						overtimeHours = convertCaculation(overtimeInputs,overtimeHours);
+//					}
+//				}
 			}
 		}
 		return overtimeHours;
@@ -151,75 +144,75 @@ public class OvertimeSixProcessImpl implements OvertimeSixProcess{
 		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSetting = overtimeRestAppCommonSetRepository.getOvertimeRestAppCommonSetting(companyID, appType);
 		if(overtimeRestAppCommonSetting.isPresent()){
 			if(overtimeRestAppCommonSetting.get().getBonusTimeDisplayAtr().value == UseAtr.USE.value){
-				List<Application_New> application = this.applicationRepository.getApp(employeeId,  GeneralDate.fromString(appDate, DATE_FORMAT), PrePostAtr.PREDICT.value, appType);
-				if(application.size() > 0){
-					Optional<AppOverTime> appOvertime = this.overtimeRepository.getAppOvertime(application.get(0).getCompanyID(), application.get(0).getAppID());
-					if(appOvertime.isPresent()){
-						List<OverTimeInput> overtimeInputs = overtimeInputRepository.getOvertimeInputByAttendanceId(appOvertime.get().getCompanyID(), appOvertime.get().getAppID(),AttendanceType.BONUSPAYTIME.value);
-						caculationTimes = convertCaculation(overtimeInputs,caculationTimes);
-					}
-				}
+//				List<Application_New> application = this.applicationRepository.getApp(employeeId,  GeneralDate.fromString(appDate, DATE_FORMAT), PrePostAtr.PREDICT.value, appType);
+//				if(application.size() > 0){
+//					Optional<AppOverTime> appOvertime = this.overtimeRepository.getAppOvertime(application.get(0).getCompanyID(), application.get(0).getAppID());
+//					if(appOvertime.isPresent()){
+//						List<OverTimeInput> overtimeInputs = overtimeInputRepository.getOvertimeInputByAttendanceId(appOvertime.get().getCompanyID(), appOvertime.get().getAppID(),AttendanceType.BONUSPAYTIME.value);
+//						caculationTimes = convertCaculation(overtimeInputs,caculationTimes);
+//					}
+//				}
 			}
 		}
 		return caculationTimes;
 	}
 	
 	/* 06-04-2_当日以外の場合 */
-	@Override
-	public List<CaculationTime> checkOutSideTimeTheDay(String companyID, String employeeID, String appDate,
-			ApprovalFunctionSetting approvalFunctionSetting, String siftCD,List<CaculationTime> overtimeHours,RecordWorkInfoImport recordWorkInfoImport,List<OvertimeInputCaculation> overtimeInputCaculations) {
-		
-		
-		List<OvertimeInputCaculation> overtimeCal = new ArrayList<>();
-		if(recordWorkInfoImport.getAttendanceStampTimeFirst() != null && recordWorkInfoImport.getLeaveStampTimeFirst() != null){
-			// 打刻あり
-			if(siftCD != null && !siftCD.equals(recordWorkInfoImport.getWorkTimeCode())){
-				overtimeCal = overtimeInputCaculations;
-				// Imported(申請承認)「実績内容」.就業時間帯コード != 画面上の就業時間帯
-				overtimeHours = printColor(overtimeHours,overtimeCal);
-			}else{
-				// Imported(申請承認)「実績内容」.就業時間帯コード = 画面上の就業時間帯
-				overtimeCal = recordWorkInfoImport.getOvertimeCaculation();
-				OvertimeInputCaculation overtimeInputCaculationShiftNight = new OvertimeInputCaculation(1, 11, recordWorkInfoImport.getShiftNightCaculation());
-				OvertimeInputCaculation overtimeInputCaculationFlex = new OvertimeInputCaculation(1, 12, recordWorkInfoImport.getFlexCaculation());
-				overtimeCal.add(overtimeInputCaculationShiftNight);
-				overtimeCal.add(overtimeInputCaculationFlex);
-				overtimeHours = printColor(overtimeHours,overtimeCal);
-			}
-		}else{
-			// 出勤または退勤打刻なし
-			for(CaculationTime caculationTime : overtimeHours){
-				if(caculationTime.getApplicationTime()!= null && caculationTime.getApplicationTime() >= 0){
-					caculationTime.setErrorCode(2);
-				}
-			}
-		}
-		return overtimeHours;
-	}
+//	@Override
+//	public List<CaculationTime> checkOutSideTimeTheDay(String companyID, String employeeID, String appDate,
+//			ApprovalFunctionSetting approvalFunctionSetting, String siftCD,List<CaculationTime> overtimeHours,RecordWorkInfoImport recordWorkInfoImport,List<OvertimeInputCaculation> overtimeInputCaculations) {
+//		
+//		
+//		List<OvertimeInputCaculation> overtimeCal = new ArrayList<>();
+//		if(recordWorkInfoImport.getAttendanceStampTimeFirst() != null && recordWorkInfoImport.getLeaveStampTimeFirst() != null){
+//			// 打刻あり
+//			if(siftCD != null && !siftCD.equals(recordWorkInfoImport.getWorkTimeCode())){
+//				overtimeCal = overtimeInputCaculations;
+//				// Imported(申請承認)「実績内容」.就業時間帯コード != 画面上の就業時間帯
+//				overtimeHours = printColor(overtimeHours,overtimeCal);
+//			}else{
+//				// Imported(申請承認)「実績内容」.就業時間帯コード = 画面上の就業時間帯
+//				/*overtimeCal = recordWorkInfoImport.getOvertimeCaculation();
+//				OvertimeInputCaculation overtimeInputCaculationShiftNight = new OvertimeInputCaculation(1, 11, recordWorkInfoImport.getShiftNightCaculation());
+//				OvertimeInputCaculation overtimeInputCaculationFlex = new OvertimeInputCaculation(1, 12, recordWorkInfoImport.getFlexCaculation());
+//				overtimeCal.add(overtimeInputCaculationShiftNight);
+//				overtimeCal.add(overtimeInputCaculationFlex);
+//				overtimeHours = printColor(overtimeHours,overtimeCal);*/
+//			}
+//		}else{
+//			// 出勤または退勤打刻なし
+//			for(CaculationTime caculationTime : overtimeHours){
+//				if(caculationTime.getApplicationTime()!= null && caculationTime.getApplicationTime() >= 0){
+//					caculationTime.setErrorCode(2);
+//				}
+//			}
+//		}
+//		return overtimeHours;
+//	}
 	/* 06-04-3_当日の場合 */
-	@Override
-	public List<CaculationTime> checkDuringTheDay(String companyID, String employeeID, String appDate,
-			ApprovalFunctionSetting approvalFunctionSetting, String siftCD, List<CaculationTime> overtimeHours,RecordWorkInfoImport recordWorkInfoImport,List<OvertimeInputCaculation> overtimeInputCaculations) {
-		
-		if(recordWorkInfoImport.getLeaveStampTimeFirst() == null){
-			// 退勤打刻なし
-			overtimeHours = printColor(overtimeHours, overtimeInputCaculations);
-		}else{
-			// 打刻あり
-			if(siftCD != null && !siftCD.equals(recordWorkInfoImport.getWorkTimeCode())){
-				overtimeHours = printColor(overtimeHours, overtimeInputCaculations);
-			}else{
-				List<OvertimeInputCaculation> cals = recordWorkInfoImport.getOvertimeCaculation();
-				OvertimeInputCaculation overtimeInputCaculationShiftNight = new OvertimeInputCaculation(1, 11, recordWorkInfoImport.getShiftNightCaculation());
-				OvertimeInputCaculation overtimeInputCaculationFlex = new OvertimeInputCaculation(1, 12, recordWorkInfoImport.getFlexCaculation());
-				cals.add(overtimeInputCaculationShiftNight);
-				cals.add(overtimeInputCaculationFlex);
-				overtimeHours = printColor(overtimeHours, cals);
-			}
-			
-		}
-		return overtimeHours;
-	}
+//	@Override
+//	public List<CaculationTime> checkDuringTheDay(String companyID, String employeeID, String appDate,
+//			ApprovalFunctionSetting approvalFunctionSetting, String siftCD, List<CaculationTime> overtimeHours,RecordWorkInfoImport recordWorkInfoImport,List<OvertimeInputCaculation> overtimeInputCaculations) {
+//		
+//		if(recordWorkInfoImport.getLeaveStampTimeFirst() == null){
+//			// 退勤打刻なし
+//			overtimeHours = printColor(overtimeHours, overtimeInputCaculations);
+//		}else{
+//			// 打刻あり
+//			if(siftCD != null && !siftCD.equals(recordWorkInfoImport.getWorkTimeCode())){
+//				overtimeHours = printColor(overtimeHours, overtimeInputCaculations);
+//			}else{
+//				/*List<OvertimeInputCaculation> cals = recordWorkInfoImport.getOvertimeCaculation();
+//				OvertimeInputCaculation overtimeInputCaculationShiftNight = new OvertimeInputCaculation(1, 11, recordWorkInfoImport.getShiftNightCaculation());
+//				OvertimeInputCaculation overtimeInputCaculationFlex = new OvertimeInputCaculation(1, 12, recordWorkInfoImport.getFlexCaculation());
+//				cals.add(overtimeInputCaculationShiftNight);
+//				cals.add(overtimeInputCaculationFlex);
+//				overtimeHours = printColor(overtimeHours, cals);*/
+//			}
+//			
+//		}
+//		return overtimeHours;
+//	}
 	
 	/**
 	 * @param overtimeInputs

@@ -7,11 +7,11 @@ package nts.uk.ctx.at.shared.app.command.outsideot.overtime.language;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeName;
-import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeNo;
-import nts.uk.ctx.at.shared.dom.outsideot.overtime.language.LanguageId;
-import nts.uk.ctx.at.shared.dom.outsideot.overtime.language.OvertimeNameLang;
-import nts.uk.ctx.at.shared.dom.outsideot.overtime.language.OvertimeNameLangGetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeName;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeNo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.language.LanguageId;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.language.OvertimeNameLang;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.language.OvertimeNameLangGetMemento;
 
 /**
  * The Class OvertimeNameLangSaveDto.

@@ -5,7 +5,7 @@ import nts.arc.time.GeneralDate;
 
 @Getter
 public class LeaveManagementDataCommand {
-	// ID
+	// 休出データID
 	private String leaveId;
 
 	// 社員ID
@@ -30,4 +30,7 @@ public class LeaveManagementDataCommand {
 	private Integer closureId;
 	
 	private int unknownDate;
+	
+	// 代休データID
+	private String comDayOffID;
 }

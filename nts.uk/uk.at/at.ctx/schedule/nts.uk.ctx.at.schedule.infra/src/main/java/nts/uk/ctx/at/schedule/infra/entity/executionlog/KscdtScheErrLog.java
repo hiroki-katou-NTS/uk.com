@@ -15,16 +15,18 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KscdtScheErrLog.
  */
+// Entity: 	スケジュール作成エラーログ
+
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCDT_SCHE_ERR_LOG")
-public class KscdtScheErrLog extends UkJpaEntity implements Serializable {
+@Table(name = "KSCDT_BATCH_ERR_LOG")
+public class KscdtScheErrLog extends ContractUkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -38,7 +40,10 @@ public class KscdtScheErrLog extends UkJpaEntity implements Serializable {
     @NotNull
     @Column(name = "ERR_CONTENT")
     private String errContent;
-
+    /** The cid. */
+    @NotNull
+    @Column(name = "CID")
+    private String cid;
     /**
      * Instantiates a new kscmt sch error log.
      */

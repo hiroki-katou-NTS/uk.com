@@ -10,9 +10,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.sys.gateway.app.find.login.dto.EmployeeLoginSettingDto;
-import nts.uk.ctx.sys.gateway.dom.login.EmployeeLoginSetting;
-import nts.uk.ctx.sys.gateway.dom.login.EmployeeLoginSettingRepository;
-import nts.uk.ctx.sys.gateway.dom.login.ManageDistinct;
+import nts.uk.ctx.sys.gateway.dom.loginold.EmployeeLoginSetting;
+import nts.uk.ctx.sys.gateway.dom.loginold.EmployeeLoginSettingRepository;
+import nts.uk.ctx.sys.gateway.dom.loginold.ManageDistinct;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.system.config.InstallationType;
 

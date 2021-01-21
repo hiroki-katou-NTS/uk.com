@@ -11,7 +11,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "CISMT_LANGUAGE")
+@Table(name = "CISCT_I18N_LANGUAGE")
 public class LanguageMaster {
 	
 	@Id

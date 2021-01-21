@@ -32,7 +32,7 @@ public class CollectApprovalRootPatternImpl implements CollectApprovalRootPatter
 	}
 
 	@Override
-	public ApprovalRootContentImport_New getgetApprovalRootPatternNew(String companyID, String employeeID,
+	public ApprovalRootContentImport_New getApprovalRootPatternNew(String companyID, String employeeID,
 			EmploymentRootAtr rootAtr, ApplicationType appType, GeneralDate appDate) {
 		// 1.社員の対象申請の承認ルートを取得する
 		ApprovalRootContentImport_New approvalRootContentImport = approvalRootStateAdapter.getApprovalRootContent(companyID, employeeID, appType.value, appDate, "", true);

@@ -113,6 +113,12 @@ public class JpaMonthlyPatternRepository extends JpaRepository implements Monthl
 
 	}
 
+	@Override
+	public boolean exists(String companyId, String monthlyPatternCode) {
+		Optional<KscmtMonthPattern> kscmtMonthPattern = this.queryProxy().find(new KscmtMonthPatternPK(companyId, monthlyPatternCode), KscmtMonthPattern.class);
+		return kscmtMonthPattern.isPresent();
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

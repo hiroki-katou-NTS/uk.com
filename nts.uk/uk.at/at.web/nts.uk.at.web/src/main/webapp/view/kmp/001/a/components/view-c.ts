@@ -2,8 +2,8 @@
 
 module nts.uk.at.view.kmp001.c {
 	const template = `
-		<div class="sidebar-content-header">
-			<span class="title" data-bind= "text: $i18n('KMP001_3')"></span>
+		<div id="functions-area">
+			<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmp/001/h/index.xhtml' },text: $i18n('KMP001_100')"></a>
 			<button class="proceed" data-bind= "text: $i18n('KMP001_5'), click: addStampCard"></button>
 		</div>
 		<div class="view-kmp">
@@ -56,7 +56,7 @@ module nts.uk.at.view.kmp001.c {
 					<div>
 						<table id="card-list" 
 							data-bind="ntsGridList: {
-								height: 300,
+								height: 310,
 								dataSource: items,
 								optionsValue: 'stampNumber',
 								columns: [
@@ -178,6 +178,11 @@ module nts.uk.at.view.kmp001.c {
 					if (c != '') {
 						vm.$ajax(KMP001C_API.GET_INFO_EMPLOYEE + ko.toJS(c))
 							.then((data: IEmployeeVIewC[]) => {
+								
+								if(moment(data.retiredDate).format(DATE_FORMAT) === "9999/12/31"){
+									data.retiredDate = null;
+								}
+								
 								vm.employee.update(ko.toJS(data));
 							})
 					}
@@ -205,9 +210,9 @@ module nts.uk.at.view.kmp001.c {
 					.then((data: IStampCardC[]) => {
 						// convert string to date format
 						_.each(data, (d) => {
-							d.stampDatetime = moment(d.stampDatetime).format('YYYY/MM/DD hh:mm')
+							d.stampDatetime = d.stampDatetime.replace(/T/, ' ').replace(/Z/, '');
 						});
-
+					
 						vm.items(data);
 
 						if (selectedIndex >= 0) {
@@ -252,7 +257,7 @@ module nts.uk.at.view.kmp001.c {
 
 				vm.$ajax(KMP001C_API.ADD_STAMP_CARD, command)
 					.then(() => vm.$dialog.info({ messageId: "Msg_15" }))
-					.then(() => vm.reloadData(0))
+					.then(() => vm.reloadData(newIndex))
 					.then(() => vm.employee.clear())
 					.then(() => vm.$blockui("clear"));
 			}

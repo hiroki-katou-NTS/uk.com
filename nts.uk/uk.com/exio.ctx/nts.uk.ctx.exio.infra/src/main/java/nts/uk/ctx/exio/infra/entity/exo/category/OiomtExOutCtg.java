@@ -27,7 +27,7 @@ public class OiomtExOutCtg extends JpaEntityOfDescriptionOfAvailabilityPermissio
 	 * カテゴリID
 	 */
 	@Basic(optional = false)
-	@Column(name = "CATEGORY_ID")
+	@Column(name = "CTG_ID")
 	public int categoryId;
 
 	/**
@@ -41,14 +41,14 @@ public class OiomtExOutCtg extends JpaEntityOfDescriptionOfAvailabilityPermissio
 	 * カテゴリ名
 	 */
 	@Basic(optional = false)
-	@Column(name = "CATEGORY_NAME")
+	@Column(name = "CTG_NAME")
 	public String categoryName;
 
 	/**
 	 * カテゴリ設定
 	 */
 	@Basic(optional = false)
-	@Column(name = "CATEGORY_SET")
+	@Column(name = "CTG_SET")
 	public int categorySet;
 
 	/**

@@ -7,23 +7,23 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.byperiod.AgreementTimeByPeriod;
-import nts.uk.ctx.at.record.dom.byperiod.AnyItemByPeriod;
-import nts.uk.ctx.at.record.dom.byperiod.AttendanceTimeOfAnyPeriod;
-import nts.uk.ctx.at.record.dom.byperiod.ExcessOutsideByPeriod;
-import nts.uk.ctx.at.record.dom.byperiod.MonthlyCalculationByPeriod;
-import nts.uk.ctx.at.record.dom.byperiod.anyaggrperiod.AnyAggrFrameCode;
-import nts.uk.ctx.at.record.dom.monthly.totalcount.TotalCountByPeriod;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VerticalTotalOfMonthly;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.OptionalAggrPeriod;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
+import nts.uk.ctx.at.shared.dom.scherec.byperiod.AgreementTimeByPeriod;
+import nts.uk.ctx.at.shared.dom.scherec.byperiod.AnyItemByPeriod;
+import nts.uk.ctx.at.shared.dom.scherec.byperiod.AttendanceTimeOfAnyPeriod;
+import nts.uk.ctx.at.shared.dom.scherec.byperiod.ExcessOutsideByPeriod;
+import nts.uk.ctx.at.shared.dom.scherec.byperiod.MonthlyCalculationByPeriod;
+import nts.uk.ctx.at.shared.dom.scherec.byperiod.anyaggrperiod.AnyAggrFrameCode;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrEmployeeSettings;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonthlyCalculatingDailys;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.totalcount.TotalCountByPeriod;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.VerticalTotalOfMonthly;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.shr.com.i18n.TextResource;
 
 /**

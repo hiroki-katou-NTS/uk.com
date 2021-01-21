@@ -11,15 +11,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Getter
 @Setter
-@Table(name = "CCGPT_TOPPAGE_SELF_SET")
-public class CcgptTopPageSelfSet extends UkJpaEntity implements Serializable{
+@Table(name = "SPTMT_TOPPAGE_SELF")
+public class CcgptTopPageSelfSet extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId

@@ -15,16 +15,16 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
- * 出力コード変換
+ * 外部出力出力コード変換
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_OUTPUT_CODE_CONVERT")
-public class OiomtOutputCodeConvert extends UkJpaEntity implements Serializable {
+@Table(name = "OIOMT_EX_OUT_CD_CONV")
+public class OiomtOutputCodeConvert extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -55,6 +55,6 @@ public class OiomtOutputCodeConvert extends UkJpaEntity implements Serializable 
 	}
 	
 	@OneToMany(targetEntity = OiomtCdConvertDetail.class, cascade = CascadeType.ALL, mappedBy = "oiomtOutputCodeConvert", orphanRemoval = true, fetch = FetchType.LAZY)
-	@JoinTable(name = "OIOMT_CD_CONVERT_DETAIL")												
+	@JoinTable(name = "OIOMT_EX_OUT_CD_CONV_DTL")												
 	public List<OiomtCdConvertDetail> listOiomtCdConvertDetail;
 }

@@ -11,16 +11,16 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.at.record.app.find.optitem.calculation.RoundingEnumDto;
-import nts.uk.ctx.at.record.dom.optitem.EmpConditionAtr;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemUsageAtr;
-import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
-import nts.uk.ctx.at.record.dom.optitem.calculation.AddSubOperator;
-import nts.uk.ctx.at.record.dom.optitem.calculation.CalculationAtr;
-import nts.uk.ctx.at.record.dom.optitem.calculation.MinusSegment;
-import nts.uk.ctx.at.record.dom.optitem.calculation.OperatorAtr;
-import nts.uk.ctx.at.record.dom.optitem.calculation.SettingItemOrder;
-import nts.uk.ctx.at.record.dom.optitem.calculation.SettingMethod;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.EmpConditionAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemUsageAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.PerformanceAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.AddSubOperator;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.CalculationAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.MinusSegment;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.OperatorAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.SettingItemOrder;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.SettingMethod;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 /**

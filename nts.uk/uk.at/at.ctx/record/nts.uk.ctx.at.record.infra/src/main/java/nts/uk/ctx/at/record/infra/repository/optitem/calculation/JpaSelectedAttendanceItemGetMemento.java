@@ -4,10 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.infra.repository.optitem.calculation;
 
-import nts.uk.ctx.at.record.dom.optitem.calculation.AddSubOperator;
-import nts.uk.ctx.at.record.dom.optitem.calculation.SelectedAttendanceItemGetMemento;
-import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtCalcItemSelection;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtAnyfItemSelect;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtCalcItemSelectionPK;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.AddSubOperator;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.SelectedAttendanceItemGetMemento;
 
 /**
  * The Class JpaSelectedAttendanceItemGetMemento.
@@ -15,14 +15,14 @@ import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtCalcItemSelect
 public class JpaSelectedAttendanceItemGetMemento implements SelectedAttendanceItemGetMemento{
 	
 	/** The entity. */
-	private KrcmtCalcItemSelection entity;
+	private KrcmtAnyfItemSelect entity;
 
 	/**
 	 * Instantiates a new jpa selected attendance item get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaSelectedAttendanceItemGetMemento(KrcmtCalcItemSelection entity) {
+	public JpaSelectedAttendanceItemGetMemento(KrcmtAnyfItemSelect entity) {
 		if(entity.getKrcmtCalcItemSelectionPK() == null){
 			entity.setKrcmtCalcItemSelectionPK(new KrcmtCalcItemSelectionPK());
 		}

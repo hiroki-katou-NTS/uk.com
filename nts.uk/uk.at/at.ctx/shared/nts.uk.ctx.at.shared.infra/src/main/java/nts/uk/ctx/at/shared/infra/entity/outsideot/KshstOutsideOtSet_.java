@@ -10,16 +10,16 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KshstOutsideOtSet_.
  */
-@StaticMetamodel(KshstOutsideOtSet.class)
+@StaticMetamodel(KshmtOutsideSet.class)
 public class KshstOutsideOtSet_ {
 
 	/** The cid. */
-	public static volatile SingularAttribute<KshstOutsideOtSet, String> cid;
+	public static volatile SingularAttribute<KshmtOutsideSet, String> cid;
 	
 	/** The note. */
-	public static volatile SingularAttribute<KshstOutsideOtSet, String> note;
+	public static volatile SingularAttribute<KshmtOutsideSet, String> note;
 	
 	/** The calculation method. */
-	public static volatile SingularAttribute<KshstOutsideOtSet, Integer> calculationMethod;
+	public static volatile SingularAttribute<KshmtOutsideSet, Integer> calculationMethod;
 
 }

@@ -18,12 +18,12 @@ import javax.persistence.Table;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPerformanceFormatName;
 import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.SheetCorrectedMonthly;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_AUT_MON_FORM_SHEET")
-public class KfnmtMonthlyActualResultPrm  extends UkJpaEntity implements Serializable{
+@Table(name = "KFNMT_MON_FORM_SHEET")
+public class KfnmtMonthlyActualResultPrm  extends ContractUkJpaEntity implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
@@ -40,7 +40,7 @@ public class KfnmtMonthlyActualResultPrm  extends UkJpaEntity implements Seriali
 	public KrcmtMonPfmCorrectionFormat monthlyactualresultpfm;
 	
 	@OneToMany(mappedBy="monthlyacresultpfm", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinTable(name = "KFNMT_AUT_MON_FORM_ITEM")
+	@JoinTable(name = "KFNMT_MON_FORM_ITEM")
 	public List<KfnmtDisplayTimeItemPfm> listKrcmtDisplayTimeItemPfm;
 	
 	

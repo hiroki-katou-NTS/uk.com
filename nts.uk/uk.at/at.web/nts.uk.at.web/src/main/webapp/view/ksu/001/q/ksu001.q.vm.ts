@@ -1,352 +1,279 @@
-module nts.uk.at.view.ksu001.q.viewmodel {
-    import setShared = nts.uk.ui.windows.setShared;
-    import getShared = nts.uk.ui.windows.getShared;
-    import getText = nts.uk.resource.getText;
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+module nts.uk.at.view.ksu001.q {
+	import blockUI = nts.uk.ui.block;
+	import getShared = nts.uk.ui.windows.getShared;
+	import setShared = nts.uk.ui.windows.setShared;
+	import InitialStartupScreenResultDto = service.model.InitialStartupScreenResultDto;
 
-    export class ScreenModel {
-        selectedTab: KnockoutObservable<string> = ko.observable('company');
-        contextMenu: Array<any>;
-        dataSourceCompany: KnockoutObservableArray<any> = ko.observableArray([null, null, null, null, null, null, null, null, null, null]);
-        dataSourceWorkplace: KnockoutObservableArray<any> = ko.observableArray([null, null, null, null, null, null, null, null, null, null]);
-        sourceCompany: KnockoutObservableArray<any> = ko.observableArray([]);
-        sourceWorkplace: KnockoutObservableArray<any> = ko.observableArray([]);
-        checked: KnockoutObservable<boolean> = ko.observable(false);
-        textName: KnockoutObservable<string> = ko.observable(null);
-        tooltip: KnockoutObservable<string> = ko.observable(null);
-        selectedLinkButtonCom: KnockoutObservable<number> = ko.observable(0);
-        selectedLinkButtonWkp: KnockoutObservable<number> = ko.observable(0);
-        listComPattern: KnockoutObservableArray<any> = ko.observableArray([]);
-        listWkpPattern: KnockoutObservableArray<any> = ko.observableArray([]);
-        flag: boolean = true;
-        indexLinkButtonCom: number = null;
-        indexLinkButtonWkp: number = null;
-        dataToStick: any = null;
-        selectedButtonTableCompany: KnockoutObservable<any> = ko.observable({});
-        selectedButtonTableWorkplace: KnockoutObservable<any> = ko.observable({});
-        indexBtnSelected: number = 0;
+	export module viewmodel {
+		export class ScreenModel {
+			organizationName: KnockoutObservable<string> = ko.observable('');
+			selectItemCode: KnockoutObservable<string> = ko.observable('');
+			externalBudgetItems: KnockoutObservableArray<string> = ko.observableArray([]);
+			externalBudgetModel: KnockoutObservable<ExternalBudgetModel>;
+			targetData: any = {};
+			budgetData: any = {};
+			listperiods: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
+			selectedPeriods: KnockoutObservable<string>;
+			labelQ32: KnockoutObservable<string> = ko.observable('');
+			columns: KnockoutObservableArray<any>;
+			EndStatus: string;
+			getDaysArray: any;
+			daylist: any;
+			arrayDate: any;
+			listBudgetDaily: any = {};
+			numbereditor: any = {};
+			yearmontheditor: any;
+			currencyeditor: any;
+			listperiodsTemp: any = [];
+			check: KnockoutObservable<boolean>;
+			check1: KnockoutObservable<boolean>;
+			check2: KnockoutObservable<boolean>;
+			check3: KnockoutObservable<boolean>;
+			constructor() {
+				var self = this;
+				self.selectedPeriods = ko.observable("");
+				self.externalBudgetModel = ko.observable(new ExternalBudgetModel());
+				let target = getShared("target");
+				let period = getShared("period");
+				self.targetData.unit = target.unit;
+				self.targetData.id = target.id;
+				self.targetData.endDate = period.endDate;
+				self.budgetData.unit = target.unit;
+				self.budgetData.id = target.id;
+				self.budgetData.startDate = period.startDate;
+				self.budgetData.endDate = period.endDate;
+				self.EndStatus = 'cancel';
+				self.check = ko.observable(false);
+				self.check1 = ko.observable(false);
+				self.check2 = ko.observable(false);
+				self.check3 = ko.observable(false);
+				self.selectItemCode.subscribe(function(codeEB) {
+					if (codeEB) {
+						self.budgetData.itemCode = codeEB;
+						self.listperiodsTemp = [];						
+						self.arrayDate.forEach((x) => {
+							self.listperiodsTemp.push(new ItemModel(x, ''));							
+						});		
+						let size = self.arrayDate.length ;
+						while (size < 10){
+							self.listperiodsTemp.push(new ItemModel('', ''));
+							size++;
+						}			
+						self.listperiods.removeAll();
+						blockUI.invisible();
+						self.loadFindBudgetDaily(self.budgetData).done(() => {		
+							nts.uk.ui.errors.clearAll();			
+							self.listperiods(self.listperiodsTemp);
+							var externalBudget = self.externalBudgetModel().externalBudgetItems().filter(x => { return x.code === codeEB })[0].attribute;
+							switch (externalBudget) {
+								case "時間":
+									self.labelQ32(nts.uk.resource.getText('KSU001_3707'));
+									self.check(true);
+									self.check1(false);
+									self.check2(false);
+									self.check3(false);
+									break;
+								case "金額":
+									self.labelQ32(nts.uk.resource.getText('KSU001_3708'));
+									self.check(false);
+									self.check1(true);
+									self.check2(false);
+									self.check3(false);
+									break;
+								case "人数":
+									self.labelQ32(nts.uk.resource.getText('KSU001_3709'));
+									self.check(false);
+									self.check1(false);
+									self.check2(true);
+									self.check3(false);
+									break;
+								case "数値":
+									self.labelQ32(nts.uk.resource.getText('KSU001_3710'));
+									self.check(false);
+									self.check1(false);
+									self.check2(false);
+									self.check3(true);
+									break;
+							};
+							
+							// $("table tbody tr td:nth-child(1)").css("background-color", "#D9D9D9");
+							$("table tbody tr td:nth-child(1):contains(土)").css("background-color", "#8bd8ff");
+							$("table tbody tr td:nth-child(1):contains(日)").css("background-color", "#fabf8f");
+							$("table tbody tr td:nth-child(1)").css("color", "#404040");
+							$("table tbody tr td:nth-child(1):contains(土)").css("color", "#0000ff");
+							$("table tbody tr td:nth-child(1):contains(日)").css("color", "#ff0000");
+						}).always(function(){
+							blockUI.clear();
+							nts.uk.ui.errors.clearAll();
+						});
+					}
+				});
 
-        tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel> = ko.observableArray([
-            { id: 'company', title: getText("Com_Company"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
-            { id: 'workplace', title: getText("Com_Workplace"), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
-        ]);
+				self.getDaysArray = function(start, end) {					
+					let arr = [];
+					// let datePlus = new Date(end);		
+					for (let dt = new Date(start); dt <= end; dt.setDate(dt.getDate() + 1)) {
+						arr.push(new Date(dt));
+					}					
+					return arr;
+				};
 
-        textButtonArrComPattern: KnockoutObservableArray<any> = ko.observableArray([
-            { name: ko.observable(getText("KSU001_1603", ['１'])), id: 0 },
-            { name: ko.observable(getText("KSU001_1603", ['２'])), id: 1 },
-            { name: ko.observable(getText("KSU001_1603", ['３'])), id: 2 },
-            { name: ko.observable(getText("KSU001_1603", ['４'])), id: 3 },
-            { name: ko.observable(getText("KSU001_1603", ['５'])), id: 4 },
-            { name: ko.observable(getText("KSU001_1603", ['６'])), id: 5 },
-            { name: ko.observable(getText("KSU001_1603", ['７'])), id: 6 },
-            { name: ko.observable(getText("KSU001_1603", ['８'])), id: 7 },
-            { name: ko.observable(getText("KSU001_1603", ['９'])), id: 8 },
-            { name: ko.observable(getText("KSU001_1603", ['１０'])), id: 9 },
-        ]);
+				self.daylist = self.getDaysArray(new Date(period.startDate), new Date(period.endDate));
+				self.arrayDate = self.daylist.map((v) => {
+					return moment(v).format("YYYY/MM/DD") + '  (' + moment(v).format('dd') + ')';
+				});
 
-        textButtonArrWkpPattern: KnockoutObservableArray<any> = ko.observableArray([
-            { name: ko.observable(getText("KSU001_1603", ['１'])), id: 0 },
-            { name: ko.observable(getText("KSU001_1603", ['２'])), id: 1 },
-            { name: ko.observable(getText("KSU001_1603", ['３'])), id: 2 },
-            { name: ko.observable(getText("KSU001_1603", ['４'])), id: 3 },
-            { name: ko.observable(getText("KSU001_1603", ['５'])), id: 4 },
-            { name: ko.observable(getText("KSU001_1603", ['６'])), id: 5 },
-            { name: ko.observable(getText("KSU001_1603", ['７'])), id: 6 },
-            { name: ko.observable(getText("KSU001_1603", ['８'])), id: 7 },
-            { name: ko.observable(getText("KSU001_1603", ['９'])), id: 8 },
-            { name: ko.observable(getText("KSU001_1603", ['１０'])), id: 9 },
-        ]);
+				self.numbereditor = {
+					option: new nts.uk.ui.option.NumberEditorOption({
+						grouplength: 3,
+						decimallength: 0
+					}),
+				}
+				self.yearmontheditor = {
+					option: ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption({
+						inputFormat: 'time'
+					})),
+				};
+				self.currencyeditor = {
+					option: new nts.uk.ui.option.CurrencyEditorOption({
+						grouplength: 3,
+						currencyposition:"right",	
+						currencyformat: "JPY"
+					}),
+				};
 
-        constructor() {
-            let self = this;
+			}
+			// External budget actual amount
+			private loadFindBudgetDaily(data: any): JQueryPromise<void> {
+				let self = this;
+				var dfd = $.Deferred();							
+				service.findBudgetDaily(data).done(function(items: any) {
+					if (items) {						
+						self.listBudgetDaily = items;
+						items.forEach(item => {
+							// self.listperiods.push(item);
+							self.listperiodsTemp.map((x) => {
+								if (x.date().slice(0, 10) == item.date) {
+									return x.value(item.value.toString());
+								}
+							})
+						});
+					}
 
-            self.contextMenu = [
-                { id: "openDialog", text: getText("KSU001_1705"), action: self.openDialogJB.bind(self) },
-                { id: "openPopup", text: getText("KSU001_1706"), action: self.openPopup.bind(self) },
-                { id: "delete", text: getText("KSU001_1707"), action: self.remove.bind(self) }
-            ];
+					dfd.resolve();
+				}).always(function(){
+					self.clearError();
+				});
+				return dfd.promise();
+			}
 
-            self.selectedTab.subscribe((newValue) => {
-                if (newValue === 'workplace' && self.flag) {
-                    self.initScreenQ();
-                    self.flag = false;
+			public startPage(): JQueryPromise<void> {
+				let self = this;
+				var dfd = $.Deferred();		
+				blockUI.invisible();		
+				service.findExtBudget(self.targetData).done(function(ExtBudget: any) {
+					if (ExtBudget.externalBudgetItems.length == 0) {
+						nts.uk.ui.dialog.error({ messageId: "Msg_1917" }).then(function(){
+							self.closeDialog();
+						});						
+					} else {
+						self.externalBudgetModel().updateData(ExtBudget);
+						self.organizationName(ExtBudget.orgName);
+						self.selectItemCode(self.externalBudgetModel().externalBudgetItems()[0].code);
+					}
+					blockUI.clear();
+					dfd.resolve();
+				});
+				blockUI.clear();
+				return dfd.promise();
+			}
+
+			public closeDialog(): void {
+				let self = this;
+				setShared('EndStatus', self.EndStatus);
+				nts.uk.ui.windows.close();
+			}
+
+			public register() {
+				let self = this;			
+				let command: any = {};
+				let requestBudget = {};
+				if(self.validateAll()){
+					return;
+				}	
+				command.unit = self.targetData.unit;
+				command.id = self.targetData.id;
+				command.itemCode = self.selectItemCode();
+				var dateValues = [];				
+				self.listperiods().forEach((x) => {
+					if(x.date() != ''){
+						dateValues.push({
+							date: x.date().slice(0, 10),
+							value: x.value()
+						});
+					}					
+				});
+				command.dateAndValues = dateValues;				
+				command.type = self.labelQ32();
+
+				requestBudget.id = command.id;
+				requestBudget.unit = command.unit;
+				requestBudget.itemCode = command.itemCode;
+				requestBudget.startDate = dateValues[0].date;
+				requestBudget.endDate = dateValues[dateValues.length -1].date;
+				service.register(command).done(() => {
+					blockUI.invisible();
+					nts.uk.ui.dialog.info({ messageId: "Msg_15" });	
+					self.loadFindBudgetDaily(requestBudget);
+					self.EndStatus = 'update';					
+					blockUI.clear();					
+				}).always (function() {
+					self.clearError();
+					blockUI.clear();
+				});
+			}
+
+			private validateAll(): boolean {
+				$('#extBudgetTime').ntsEditor('validate');
+				$('#extBudgetMoney').ntsEditor('validate');
+				$('#extBudgetNumberPerson').ntsEditor('validate');
+				$('#extBudgetNumericalVal').ntsEditor('validate');
+                if (nts.uk.ui.errors.hasError()) {                    
+                    return true;
                 }
-            });
-
-            self.selectedButtonTableCompany.subscribe(function() {
-                self.dataToStick = $("#test1").ntsButtonTable("getSelectedCells")[0] ? $("#test1").ntsButtonTable("getSelectedCells")[0].data.data : null;
-                let arrDataToStick: any[] = _.map(self.dataToStick, 'data');
-                $("#extable").exTable("stickData", arrDataToStick);
-                self.indexBtnSelected = self.selectedButtonTableCompany().column + self.selectedButtonTableCompany().row*10;
-            });
-
-            self.selectedButtonTableWorkplace.subscribe(function() {
-                self.dataToStick = $("#test2").ntsButtonTable("getSelectedCells")[0] ? $("#test2").ntsButtonTable("getSelectedCells")[0].data.data : null;
-                let arrDataToStick: any[] = _.map(self.dataToStick, 'data');
-                $("#extable").exTable("stickData", arrDataToStick);
-                self.indexBtnSelected = self.selectedButtonTableWorkplace().column + self.selectedButtonTableWorkplace().row*10;
-            });
-
-            $("#test1").bind("getdatabutton", function(evt, data) {
-                self.textName(data.text);
-                self.tooltip(data.tooltip);
-            });
-
-            $("#test2").bind("getdatabutton", function(evt, data) {
-                self.textName(data.text);
-                self.tooltip(data.tooltip);
-            });
-        }
-
-        /**
-         * get content of link button
-         */
-        initScreenQ(): void {
-            let self = this;
-            if (self.selectedTab() === 'company') {
-                self.handleInit(self.listComPattern(), self.textButtonArrComPattern, self.dataSourceCompany, ko.observable(0));
-            } else {
-                self.handleInit(self.listWkpPattern(), self.textButtonArrWkpPattern, self.dataSourceWorkplace, ko.observable(0));
+                return false;
             }
-        }
 
-        /**
-         * handle init
-         * change text of linkbutton
-         * set data for datasource
-         */
-        handleInit(listPattern: any, listTextButton: any, dataSource: any, index: any): any {
-            let self = this;
-            //set default for listTextButton and dataSource
-            listTextButton([
-                { name: ko.observable(getText("KSU001_1603", ['１'])), id: 0 },
-                { name: ko.observable(getText("KSU001_1603", ['２'])), id: 1 },
-                { name: ko.observable(getText("KSU001_1603", ['３'])), id: 2 },
-                { name: ko.observable(getText("KSU001_1603", ['４'])), id: 3 },
-                { name: ko.observable(getText("KSU001_1603", ['５'])), id: 4 },
-                { name: ko.observable(getText("KSU001_1603", ['６'])), id: 5 },
-                { name: ko.observable(getText("KSU001_1603", ['７'])), id: 6 },
-                { name: ko.observable(getText("KSU001_1603", ['８'])), id: 7 },
-                { name: ko.observable(getText("KSU001_1603", ['９'])), id: 8 },
-                { name: ko.observable(getText("KSU001_1603", ['１０'])), id: 9 },
-            ]);
-            dataSource([null, null, null, null, null, null, null, null, null, null]);
-
-            for (let i = 0; i < listPattern.length; i++) {
-                let source: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
-                //change text of linkbutton
-                listTextButton()[listPattern[i].groupNo - 1].name(nts.uk.text.padRight(listPattern[i].groupName, ' ', 6));
-                //set data for dataSource
-                _.each(listPattern[i].patternItem, (pattItem) => {
-                    let text = pattItem.patternName;
-                    let arrPairShortName = [], arrPairObject: any = [];
-                    _.forEach(pattItem.workPairSet, (wPSet) => {
-                        let workType = null, workTime = null, pairShortName = null;
-                        workType = _.find(__viewContext.viewModel.viewO.listWorkType(), { 'workTypeCode': wPSet.workTypeCode });
-                        let workTypeShortName = workType.abbreviationName;
-                        workTime = _.find(__viewContext.viewModel.viewO.listWorkTime(), { 'workTimeCode': wPSet.workTimeCode });
-                        let workTimeShortName = workTime ? workTime.abName : null;
-                        pairShortName = workTimeShortName ? '[' + workTypeShortName + '/' + workTimeShortName + ']' : '[' + workTypeShortName + ']';
-                        arrPairShortName.push(pairShortName);
-                        arrPairObject.push({
-                            index: wPSet.pairNo,
-                            data: {
-                                workTypeCode: workType.workTypeCode,
-                                workTypeName: workType.name,
-                                workTimeCode: workTime ? workTime.workTimeCode : null,
-                                workTimeName: workTime ? workTime.name : null,
-                                startTime: (workTime && workTime.timeNumberCnt == 1) ? workTime.startTime : '',
-                                endTime: (workTime && workTime.timeNumberCnt == 1) ? workTime.endTime : '',
-                                symbolName: null
-                            }
-                        });
-                    });
-                    let arrDataOfArrPairObject: any = [];
-                    _.each(arrPairObject, (data) => {
-                        arrDataOfArrPairObject.push(data.data);
-                    });
-                    //set symbol for arrPairObject
-                    //                    $.when(__viewContext.viewModel.viewA.setDataToDisplaySymbol(arrDataOfArrPairObject)).done(() => {
-                    __viewContext.viewModel.viewA.setDataToDisplaySymbol(arrDataOfArrPairObject)
-                    // set tooltip
-                    let arrTooltipClone = _.clone(arrPairShortName);
-                    for (let i = 7; i < arrTooltipClone.length; i += 7) {
-                        arrPairShortName.splice(i, 0, 'lb');
-                        i++;
-                    }
-                    let tooltip: string = arrPairShortName.join('→');
-                    tooltip = tooltip.replace(/→lb/g, '\n');
-
-                    //insert data to source
-                    source.splice(pattItem.patternNo - 1, 1, { text: text, tooltip: tooltip, data: arrPairObject });
-                    //                });
-                });
-                dataSource().splice(listPattern[i].groupNo - 1, 1, source);
+			private clearError(): void {
+                $('#extBudgetTime').ntsError('clear');
+                $('#extBudgetMoney').ntsError('clear');
+				$('#extBudgetNumberPerson').ntsError('clear');
+				$('#extBudgetNumericalVal').ntsError('clear');
+				$(".nts-input").ntsError("clear");
             }
-            
-            self.clickLinkButton(null, index);
-        }
+		}
 
-        /**
-         * Click to link button
-         */
-        clickLinkButton(element: any, index?: any): void {
-            let self = this,
-                source: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
+		export class ExternalBudgetModel {
+			orgName: KnockoutObservable<string>;
+			externalBudgetItems: KnockoutObservableArray<any>;
 
-            if (self.selectedTab() === 'company') {
-                self.indexLinkButtonCom = index();
-                // link button has color gray when clicked
-                _.each($('#part-1-1 a.hyperlink'), (a) => {
-                    $(a).removeClass('color-gray');
-                });
-                $($('#part-1-1 a.hyperlink')[self.indexLinkButtonCom]).addClass('color-gray');
-                self.selectedLinkButtonCom(self.indexLinkButtonCom);
-                //set sourceCompany
-                self.sourceCompany(self.dataSourceCompany()[self.indexLinkButtonCom] || source);
-            } else {
-                self.indexLinkButtonWkp = index();
-                // link button has color gray when clicked
-                _.each($('#part-1-2 a.hyperlink'), (a) => {
-                    $(a).removeClass('color-gray');
-                });
-                $($('#part-1-2 a.hyperlink')[self.indexLinkButtonWkp]).addClass('color-gray');
-                self.selectedLinkButtonWkp(self.indexLinkButtonWkp);
-                //set sourceWorkplace
-                self.sourceWorkplace(self.dataSourceWorkplace()[self.indexLinkButtonWkp] || source);
-            }
-        }
-
-        /**
-         * Open popup to change name button
-         */
-        openPopup(button): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
-            $("#test2").trigger("getdatabutton", { text: button[0].innerText });
-            $("#popup-area").css('visibility', 'visible');
-            let buttonWidth = button.outerWidth(true) - 30;
-            $("#popup-area").position({ "of": button, my: "left+" + buttonWidth + " top", at: "left+" + buttonWidth + " top" });
-            $("#test2").bind("namechanged", function(evt, data) {
-                $("#test2").unbind("namechanged");
-                if (!nts.uk.util.isNullOrUndefined(data)) {
-                    dfd.resolve(data);
-                } else {
-                    dfd.resolve(button.parent().data("cell-data"));
-                }
-                self.refreshDataSource();
-            });
-            return dfd.promise();
-        }
-
-        /**
-         * decision change name button
-         */
-        decision(): void {
-            let self = this;
-            $("#popup-area").css('visibility', 'hidden');
-            $("#test2").trigger("namechanged", { text: self.textName(), tooltip: self.tooltip() });
-        }
-
-        /**
-         * Close popup
-         */
-        closePopup(): void {
-            nts.uk.ui.errors.clearAll()
-            $("#popup-area").css('visibility', 'hidden');
-            $("#test2").trigger("namechanged", undefined);
-        }
-
-        /**
-         * Open dialog JA
-         */
-        openDialogJA(): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
-            setShared('dataForJB', {
-                selectedTab: self.selectedTab(),
-                workplaceName: __viewContext.viewModel.viewA.workPlaceNameDisplay(),
-                workplaceCode: __viewContext.viewModel.viewA.workplaceCode(), 
-                workplaceId: self.selectedTab() === 'company' ? null : __viewContext.viewModel.viewA.workplaceId,
-                listWorkType: __viewContext.viewModel.viewO.listWorkType(),
-                listWorkTime: __viewContext.viewModel.viewO.listWorkTime(),
-                selectedLinkButton: self.selectedTab() === 'company' ? self.selectedLinkButtonCom() : self.selectedLinkButtonWkp(),
-                // listCheckNeededOfWorkTime for JA to JA send to JB
-                listCheckNeededOfWorkTime: __viewContext.viewModel.viewA.listCheckNeededOfWorkTime()
-            });
-            nts.uk.ui.windows.sub.modal("/view/ksu/001/jb/index.xhtml").onClosed(() => {
-                let selectedLB: any = ko.observable(getShared("dataFromJB").selectedLinkButton);
-                if (self.selectedTab() == 'company') {
-                    $.when(__viewContext.viewModel.viewA.getDataComPattern()).done(() => {
-                        self.handleInit(self.listComPattern(), self.textButtonArrComPattern, self.dataSourceCompany, selectedLB);
-                    });
-                } else {
-                    $.when(__viewContext.viewModel.viewA.getDataWkpPattern()).done(() => {
-                        self.handleInit(self.listWkpPattern(), self.textButtonArrWkpPattern, self.dataSourceWorkplace, selectedLB);
-                    });
-                }
-
-                dfd.resolve(undefined);
-            });
-            return dfd.promise();
-        }
-
-        /**
-         * Open dialog JB
-         */
-        openDialogJB(evt, data): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
-            
-            self.textName(data ? data.text : null);
-            self.tooltip(data ? data.tooltip : null);
-            setShared("dataForJB", {
-                text: self.textName(),
-                tooltip: self.tooltip(),
-                data: data ? data.data : null,
-                textDecision: getText("KSU001_924"),
-                listCheckNeededOfWorkTime: __viewContext.viewModel.viewA.listCheckNeededOfWorkTime()
-            });
-            nts.uk.ui.windows.sub.modal("/view/ksu/001/jb/index.xhtml").onClosed(() => {
-                let data = getShared("dataFromJB");
-                if (data) {
-                    self.textName(data.text);
-                    self.tooltip(data.tooltip);
-                    let dataBasicSchedule = _.map(data.data, 'data');
-                    //set symbol for object
-                     $.when(__viewContext.viewModel.viewA.setDataToDisplaySymbol(dataBasicSchedule)).done(() => {
-                        dfd.resolve({ text: self.textName(), tooltip: self.tooltip(), data: data.data });
-                        self.refreshDataSource();
-                        // neu buttonTable do dang dc select, set lai data cho dataToStick 
-                        if(self.indexBtnSelected == $(evt).attr('data-idx')){
-                            $("#extable").exTable("stickData", dataBasicSchedule);
-                        }
-                     });
-                }
-            });
-            return dfd.promise();
-        }
-
-        /**
-         * remove button on table
-         */
-        remove(): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred();
-
-            setTimeout(function() {
-                dfd.resolve(undefined);
-                self.refreshDataSource();
-            }, 10);
-
-            return dfd.promise();
-        }
-
-        /**
-         * refresh dataSource
-         */
-        refreshDataSource(): void {
-            let self = this;
-            if (self.selectedTab() === 'company') {
-                self.dataSourceCompany()[self.indexLinkButtonCom] = self.sourceCompany();
-            } else {
-                self.dataSourceWorkplace()[self.indexLinkButtonWkp] = self.sourceWorkplace();
-            }
-        }
-    }
+			constructor() {
+				this.orgName = ko.observable('');
+				this.externalBudgetItems = ko.observableArray([]);
+			}
+			updateData(dto: InitialStartupScreenResultDto) {
+				this.orgName(dto.orgName);
+				this.externalBudgetItems(dto.externalBudgetItems);
+			}
+		}
+		export class ItemModel {
+			date: KnockoutObservable<string> = ko.observable('');
+			value: KnockoutObservable<string> = ko.observable('');
+			constructor(date: string, value: string) {
+				this.date(date);
+				this.value(value);
+			}
+		}
+	}
 }

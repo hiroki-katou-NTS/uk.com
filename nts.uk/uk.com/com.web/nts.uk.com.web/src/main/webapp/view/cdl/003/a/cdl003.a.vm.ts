@@ -60,14 +60,17 @@ module nts.uk.com.view.cdl003.a {
                 var dataList: UnitModel[] = $("#classification").getDataList();
                 if(self.isMultiple){
                     var selectedCodes: string[] = self.getSelectByMul(self.selectedMulClassification(), dataList);
+                    var selectedInfors: any[] = self.getInforByMul(self.selectedMulClassification(), dataList);
                     if(!selectedCodes || selectedCodes.length == 0){
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_641" });
                         return;
                     }
                     nts.uk.ui.windows.setShared('outputCDL003', selectedCodes);
+                    nts.uk.ui.windows.setShared('classificationInfoCDL003', selectedInfors);
                     nts.uk.ui.windows.close();    
                 } else {
                     var selectedCode: string = self.getSelectBySel(self.selectedSelClassification(), dataList);
+                    var selectedInfor: any = self.getInforBySel(self.selectedSelClassification(), dataList);
                     var isNoSelectRowSelected = $("#classification").isNoSelectRowSelected();
                     if(!selectedCode && !isNoSelectRowSelected){
                         // Check if selected No select Row.
@@ -75,6 +78,7 @@ module nts.uk.com.view.cdl003.a {
                         return;
                     }
                     nts.uk.ui.windows.setShared('outputCDL003', isNoSelectRowSelected ? null : selectedCode);
+                    nts.uk.ui.windows.setShared('classificationInfoCDL003', isNoSelectRowSelected ? null : selectedInfor);
                     nts.uk.ui.windows.close();    
                 }
                 
@@ -105,6 +109,35 @@ module nts.uk.com.view.cdl003.a {
 
                 return resSeleted;
             }
+            
+            /**
+             * get information
+             */
+            private getInforBySel(selected: string, selectedCodes: UnitModel[]): string {
+                let a = _.find(selectedCodes, x => {
+                    return x.code === selected
+                });
+                if (a) {
+                    return a;
+                }
+                return undefined;
+            }
+            
+            /**
+             * get information
+             */
+            private getInforByMul(selected: string[], selectedCodes: UnitModel[]): string[] {
+                var resSeleted: any[] = [];
+                for (var selectedCode of selected) {
+                    let infor = this.getInforBySel(selectedCode, selectedCodes);
+                    if (infor) {
+                        resSeleted.push(infor);
+                    }
+                }
+
+                return resSeleted;
+            }
+            
             /**
              * close windows
              */

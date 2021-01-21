@@ -21,13 +21,13 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthlyRepository;
-import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthlyRepository;
 import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonAnyItemValueMerge;
 import nts.uk.ctx.at.record.infra.entity.monthly.mergetable.KrcdtMonMergePk;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyAmountMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.AnyItemOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.AnyItemOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
@@ -845,7 +845,7 @@ public class JpaAnyItemOfMonthly extends JpaRepository implements AnyItemOfMonth
 		List<AnyItemOfMonthly> result = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds ->{
 			try (PreparedStatement stmt = this.connection().prepareStatement(
-						"SELECT * FROM KRCDT_MON_ANYITEMVALUE_MERGE op" 
+						"SELECT * FROM KRCDT_MON_TIME_ANYITEM op" 
 						+" WHERE op.YM IN (" + yearMonths.stream().map(s -> "?").collect(Collectors.joining(",")) + ")" 
 						+" AND op.SID IN (" + empIds.stream().map(s -> "?").collect(Collectors.joining(",")) + ")")) {
 

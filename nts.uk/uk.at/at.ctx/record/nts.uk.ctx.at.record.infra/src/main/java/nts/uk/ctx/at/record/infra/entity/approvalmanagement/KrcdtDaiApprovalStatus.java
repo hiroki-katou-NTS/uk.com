@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalStatusOfDailyPerfor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -20,8 +20,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_DAI_APPROVAL")
-public class KrcdtDaiApprovalStatus extends UkJpaEntity implements Serializable {
+@Table(name = "KRCDT_DAY_BOSS_CHECK")
+public class KrcdtDaiApprovalStatus extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

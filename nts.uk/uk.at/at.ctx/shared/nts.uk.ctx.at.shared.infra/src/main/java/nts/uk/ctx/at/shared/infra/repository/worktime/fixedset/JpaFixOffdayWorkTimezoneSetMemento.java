@@ -11,9 +11,9 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezoneSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHolTimeSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixHolTs;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHolTimeSetPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFix;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSetPK;
 
 /**
@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSetPK;
 public class JpaFixOffdayWorkTimezoneSetMemento implements FixOffdayWorkTimezoneSetMemento {
 	
 	/** The entity. */
-	private KshmtFixedWorkSet entity;
+	private KshmtWtFix entity;
 	
 	/** The company id. */
 	private String companyId;
@@ -38,7 +38,7 @@ public class JpaFixOffdayWorkTimezoneSetMemento implements FixOffdayWorkTimezone
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFixOffdayWorkTimezoneSetMemento(KshmtFixedWorkSet entity) {
+	public JpaFixOffdayWorkTimezoneSetMemento(KshmtWtFix entity) {
 		super();
 		this.entity = entity;
 		if (this.entity.getKshmtFixedWorkSetPK() == null) {
@@ -72,21 +72,21 @@ public class JpaFixOffdayWorkTimezoneSetMemento implements FixOffdayWorkTimezone
 		if (CollectionUtil.isEmpty(lstWorkTimezone) || CollectionUtil.isEmpty(this.entity.getLstKshmtFixedHolTimeSet())) {
 			this.entity.setLstKshmtFixedHolTimeSet(new ArrayList<>());
 		}
-		List<KshmtFixedHolTimeSet> lstEntity = this.entity.getLstKshmtFixedHolTimeSet();
+		List<KshmtWtFixHolTs> lstEntity = this.entity.getLstKshmtFixedHolTimeSet();
 		
-		List<KshmtFixedHolTimeSet> newListEntity = new ArrayList<>();
+		List<KshmtWtFixHolTs> newListEntity = new ArrayList<>();
 		
 		for (HDWorkTimeSheetSetting holDayTime : lstWorkTimezone) {
 			
 			// get entity existed
-			KshmtFixedHolTimeSet entity = lstEntity.stream().filter(item -> {
+			KshmtWtFixHolTs entity = lstEntity.stream().filter(item -> {
 				KshmtFixedHolTimeSetPK pk = item.getKshmtFixedHolTimeSetPK();
 						return pk.getCid().compareTo(companyId) == EQUAL
 								&& pk.getWorktimeCd().compareTo(workTimeCd) == EQUAL
 								&& pk.getWorktimeNo() == holDayTime.getWorkTimeNo();
 					})
 					.findFirst()
-					.orElse(new KshmtFixedHolTimeSet());
+					.orElse(new KshmtWtFixHolTs());
 			
 			// save to memento
 			holDayTime.saveToMemento(new JpaFixedHDWorkTimeSheetSetMemento(this.companyId, this.workTimeCd, entity));

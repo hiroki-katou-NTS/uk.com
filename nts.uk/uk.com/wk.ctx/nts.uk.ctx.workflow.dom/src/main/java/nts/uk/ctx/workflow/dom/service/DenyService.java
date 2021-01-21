@@ -10,15 +10,15 @@ import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 public interface DenyService {
 	
 	/**
-	 * 否認する
-	 * @param companyID 会社ID
+	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.ワークフロー.Export.就業.3.否認する(DenyService).3.否認する(DenyService)
 	 * @param rootStateID インスタンスID
 	 * @param employeeID 社員ID
+	 * @param memo 承認コメント
 	 * @return 否認を実行したかフラグ(true, false)
 				true：否認を実行した
 				false：否認を実行しなかった
 	 */
-	public Boolean doDeny(String companyID, String rootStateID, String employeeID, String memo, Integer rootType);
+	public Boolean doDeny(String rootStateID, String employeeID, String memo);
 	
 	/**
 	 * 1.否認できるかチェックする
