@@ -154,7 +154,7 @@ public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepo
 		KshmtShiftMater newData = KshmtShiftMater.toEntity(shiftMater);
 		oldData.name = newData.name;
 		oldData.color = newData.color;
-		oldData.color = newData.color;
+		oldData.colorMobile = newData.colorMobile;
 		oldData.remarks = newData.remarks;
 		oldData.workTypeCd = newData.workTypeCd;
 		oldData.workTimeCd = newData.workTimeCd;
