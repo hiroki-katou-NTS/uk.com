@@ -27,7 +27,7 @@
 						</div>
 						<com:ko-if bind="true">
 							<div class="row">
-								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF011_16')}</div>
+								<div data-bind="ntsFormLabel: {required: displayInforWhenStarting.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appLimitSetting.requiredAppReason}">#{i18n.getText('KAF011_16')}</div>
 								<div data-bind="ntsComboBox: {
 				                                        name: '#{i18n.getText('KAF011_16')}',
 				                                        options: reasonTypeItemLst,
@@ -42,7 +42,7 @@
 						</com:ko-if>
 						<com:ko-if bind="true">
 							<div class="row">
-								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF011_17')}</div>
+								<div data-bind="ntsFormLabel: {required: displayInforWhenStarting.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appLimitSetting.standardReasonRequired}">#{i18n.getText('KAF011_17')}</div>
 								<textarea style="height: 90px; width: 360px;" data-bind="ntsMultilineEditor: {
 											name:'#{i18n.getText('KAF011_17')}',
 											constraint: 'AppReason'
