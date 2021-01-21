@@ -7,10 +7,7 @@ import nts.uk.ctx.at.function.dom.arbitraryperiodsummarytable.OutputSettingOfArb
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -27,7 +24,7 @@ public class KfnmtRptWkAnpOutatd extends UkJpaEntity implements Serializable {
     /**
      * 設定ID -> 	任意期間集計表の出力設定.設定ID
      */
-    @EmbeddedId
+    @Id
     @Column(name = "LAYOUT_ID")
     public String layOutId;
 
