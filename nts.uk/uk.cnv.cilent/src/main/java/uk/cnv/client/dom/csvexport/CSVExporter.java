@@ -7,7 +7,10 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -15,13 +18,14 @@ import java.util.stream.Collectors;
 
 import lombok.val;
 import uk.cnv.client.LogManager;
+import uk.cnv.client.UkConvertProperty;
 import uk.cnv.client.dom.execute.CommandExecutor;
 import uk.cnv.client.dom.execute.CommandResult;
 import uk.cnv.client.infra.query.GetAllUkWorkTablesQueryRepositoryImpl;
 import uk.cnv.client.infra.repository.UkWorkTableDto;
 
 public class CSVExporter {
-	private static final String CSV_FOLDER = "csv";
+	private static final String CSV_DIR = "csvDirectory";
 	private static final int QUERY_MAX_LENGTH = 8191;
 
 	private GetAllUkWorkTablesQueryRepositoryImpl repo;
@@ -33,7 +37,8 @@ public class CSVExporter {
 	public CommandResult doWork() {
 		val executor = new CommandExecutor();
 
-		File csvFolder = new File(CSV_FOLDER);
+		Path csvDir = Paths.get(UkConvertProperty.getProperty(CSV_DIR));
+		File csvFolder = csvDir.toFile();
 		csvFolder.mkdir();
 
 		Map<String, String> queryList = null;
@@ -44,8 +49,11 @@ public class CSVExporter {
 			return new CommandResult(e);
 		}
 
+		List<String> errorList = new ArrayList<>();
 		for(String table: queryList.keySet()) {
-			String csvFile = CSV_FOLDER + "\\" + table + ".csv";
+			LogManager.out("---- " + table + " ----");
+
+			String csvFile = csvDir.resolve(table + ".csv").toString();
 			String query = queryList.get(table);
 
 			CommandResult result;
@@ -56,12 +64,18 @@ public class CSVExporter {
 				result = executor.bcpExecute(query, csvFile);
 			}
 
-			if(result.isError()) return result;
+			if(result.isError()) {
+				errorList.add(table);
+				continue;
+			}
 
 			if(query.length() > QUERY_MAX_LENGTH) {
 				convertZeroLengthString(csvFile);
 			}
+		}
 
+		if(errorList.size() > 0) {
+			LogManager.err(String.format("%d件中%d件でエラーがありました。", queryList.keySet().size(), errorList.size()));
 		}
 
 		return new CommandResult();
@@ -81,21 +95,17 @@ public class CSVExporter {
 
 		for(String tableName : tableMap.keySet()) {
 			List<String> columns = tableMap.get(tableName).stream()
-				.map(col -> "NULLIF("+ col.getColumnName() + ",SPACE(0))")
+				.map(col -> col.columnExpression())
 				.collect(Collectors.toList());
-			result.put(tableName, selectQuery(tableName, columns));
+			String query = selectQuery(tableName, columns);
+			result.put(tableName, query);
 		}
 
 		return result;
 	}
 
 	private String selectQuery(String table, List<String> columns) {
-		String query = "SELECT "
-				+ String.join(",", columns)
-				+ " FROM "
-				+ table;
-
-		return query;
+		return "SELECT " + String.join(",", columns) + " FROM " + table;
 	}
 
 	private void convertZeroLengthString(String csvFile) {

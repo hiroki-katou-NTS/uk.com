@@ -13,16 +13,17 @@ import nts.arc.layer.app.file.storage.StoredFileInfo;
 //import nts.uk.shr.infra.file.storage.UkFileStorage;
 import uk.cnv.client.dom.accountimport.AccountImportService;
 import uk.cnv.client.dom.csvexport.CSVExporter;
+import uk.cnv.client.dom.csvimport.CSVImporter;
 import uk.cnv.client.dom.execute.ConvertCodeExcecuter;
 import uk.cnv.client.dom.execute.CreateConvertDBService;
 import uk.cnv.client.dom.fileimport.FileImportService;
+import uk.cnv.client.dom.fileimport.FileUploader;
 import uk.cnv.client.dom.fileimport.JmDaicyoRepository;
 import uk.cnv.client.dom.fileimport.JmGenAddRepository;
 import uk.cnv.client.infra.entity.JinKaisyaM;
 import uk.cnv.client.infra.entity.JmDaicyo;
 import uk.cnv.client.infra.entity.JmGenAdd;
 import uk.cnv.client.infra.entity.JmKihon;
-import uk.cnv.client.infra.impls.FileUploader;
 import uk.cnv.client.infra.repository.JinKaisyaMRepositoryImpl;
 import uk.cnv.client.infra.repository.JmDaicyoRepositoryImpl;
 import uk.cnv.client.infra.repository.JmGenAddRepositoryImpl;
@@ -72,9 +73,12 @@ public class UkConverter {
 			return;
 		}
 
-		// CSVファイルの存在チェック
-
 		// CSVファイルのインポート処理呼び出し
+		val csvImporter = new CSVImporter();
+		if(!csvImporter.doWork()) {
+			LogManager.err("CSVのインポート時にエラーが発生しました。処理を中断します");
+			return;
+		}
 	}
 
 	private class FileImportServiceRequireImpl implements FileImportService.Require{
