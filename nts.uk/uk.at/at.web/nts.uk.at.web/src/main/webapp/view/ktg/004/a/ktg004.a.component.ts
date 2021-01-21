@@ -12,7 +12,7 @@ module nts.uk.ui.ktg004.a {
             <div class="header">
                 <div data-bind="ntsFormLabel: {text: name}"></div>
                 <!-- ko if: detailedWorkStatusSettings -->
-                    <button id= "setting" data-bind="click: setting" class="setting">
+                    <button id= "setting-kdp004" data-bind="click: setting" class="setting">
                         <i data-bind="ntsIcon: { no: 5 }"></i>
                     </button>
                 <!-- /ko -->
@@ -31,7 +31,7 @@ module nts.uk.ui.ktg004.a {
                                             </button>
                                         </span>
                                     <!-- /ko -->
-                                    <span class="data" data-bind="text: row.text"></span>
+                                    <span class="data" data-bind="i18n: row.text"></span>
                                 </div>
                             </td>
                         </tr>
@@ -62,7 +62,7 @@ module nts.uk.ui.ktg004.a {
 
         attendanceInfor = new AttendanceInfor();
         remainingNumberInfor = new RemainingNumberInfor();
-        detailedWorkStatusSettings = ko.observable(false);
+        detailedWorkStatusSettings = ko.observable(true);
         specialHolidaysRemainings: KnockoutObservableArray<SpecialHolidaysRemainings> = ko.observableArray([]);
 
 
@@ -95,7 +95,7 @@ module nts.uk.ui.ktg004.a {
             const topPageYearMonthEnum = ko.unwrap<number>(vm.selectedSwitch);
 
             vm.$blockui('grayout')
-                .then(() => vm.$ajax("at", KTG004_API.GET_DATA, { topPageYearMonthEnum }))
+                .then(() => vm.$ajax("at", KTG004_API.GET_DATA, { topPageYearMonthEnum: topPageYearMonthEnum }))
                 .then(function (data: ResponseData) {
                     const {
                         name,
@@ -107,10 +107,10 @@ module nts.uk.ui.ktg004.a {
 
                     vm.name(name || "");
                     vm.detailedWorkStatusSettings(detailedWorkStatusSettings);
-                    _
-                        .chain(itemsSetting)
+
+                    _.chain(itemsSetting)
                         .orderBy(['item'], ['asc'])
-                        .forEach(({ displayType, item }) => {
+                        .each(({ displayType, item }) => {
                             if (displayType) {
                                 switch (item) {
                                     case 21:
@@ -119,9 +119,40 @@ module nts.uk.ui.ktg004.a {
                                     case 22:
                                         vm.itemsDisplay.push({ name: 'KTG004_2', text: attendanceInfor.overTime })
                                         break;
+                                    case 23:
+                                        vm.itemsDisplay.push({ name: 'KTG004_3', text: attendanceInfor.flexCarryOverTime })
+                                        break;
+                                    case 24:
+                                        vm.itemsDisplay.push({ name: 'KTG004_5', text: attendanceInfor.nigthTime })
+                                        break;
+                                    case 25:
+                                        vm.itemsDisplay.push({ name: 'KTG004_6', text: attendanceInfor.holidayTime })
+                                        break;
+                                    case 26:
+                                        vm.itemsDisplay.push({ name: 'KTG004_7', text: attendanceInfor.late })
+                                        break;
+                                    case 27:
+                                        vm.itemsDisplay.push({ name: 'KTG004_9', text: ko.unwrap(vm.remainingNumberInfor.numberAccumulatedAnnualLeave) })
+                                        break;
+                                    case 28:
+                                        vm.itemsDisplay.push({ name: 'KTG004_10', text: ko.unwrap(vm.remainingNumberInfor.numberAccumulatedAnnualLeave) })
+                                        break;
+                                    case 29:
+                                        vm.itemsDisplay.push({ name: 'KTG004_11', text: ko.unwrap(vm.remainingNumberInfor.numberOfSubstituteHoliday) })
+                                        break;
+                                    case 30:
+                                        vm.itemsDisplay.push({ name: 'KTG004_12', text: ko.unwrap(vm.remainingNumberInfor.remainingHolidays) })
+                                        break;
+                                    case 31:
+                                        vm.itemsDisplay.push({ name: 'KTG004_13', text: ko.unwrap(vm.remainingNumberInfor.nursingRemainingNumberOfChildren) })
+                                        break;
+                                    case 32:
+                                        vm.itemsDisplay.push({ name: 'KTG004_14', text: ko.unwrap(vm.remainingNumberInfor.longTermCareRemainingNumber) })
+                                        break;
                                 }
                             }
-                        });
+                        })
+                        .value();
 
                     vm.itemsSetting(itemsSetting);
 
@@ -129,6 +160,8 @@ module nts.uk.ui.ktg004.a {
                     vm.remainingNumberInfor.update(remainingNumberInfor);
 
                     const tg = _.map(remainingNumberInfor.specialHolidaysRemainings, (c) => new SpecialHolidaysRemainings(c));
+
+                    console.log(ko.unwrap(vm.itemsDisplay));
 
                     vm.specialHolidaysRemainings(tg);
 

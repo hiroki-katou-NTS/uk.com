@@ -1,18 +1,27 @@
 @import url("base.css");
 
-.chung-dep-trai .col_line_1,.chung-dep-trai  .col_line_2 {
+.ktg-005 {
+	border-left: 1px solid #B1B1B1;
+    border-right: 1px solid #B1B1B1;
+    border-bottom: 1px solid #B1B1B1;
+    height: 320px;
+    width: 305px;
+    margin: 0 auto;
+}
+
+.ktg-005 .col_line_1,.ktg-005  .col_line_2 {
 	display: inline-block;
 }
 
-.chung-dep-trai .col_line_1 {
+.ktg-005 .col_line_1 {
 	width: 150px;
 }
 
-.chung-dep-trai #functions-area {
+.ktg-005 #functions-area {
 	padding-top: 0px;
 }
 
-.chung-dep-trai .button-group {
+.ktg-005 .button-group {
 	height: 29px;
 	width: 29px;
 	border: 0;
@@ -22,42 +31,43 @@
 	background-color: transparent;
 }
 
-.chung-dep-trai #functions-area {
+.ktg-005 #functions-area {
 	padding-left: 0px;
 }
 
-.chung-dep-trai .col_line_2 {
+.ktg-005 .col_line_2 {
 	float: right;
 	display: flex;
 }
 
-.chung-dep-trai #master-wrapper div#contents-area {
+.ktg-005 #master-wrapper div#contents-area {
 	padding: 0px;
 }
 
-.chung-dep-trai #top_title {
+.ktg-005 #top_title {
 	border-bottom: 1px solid #B1B1B1;
 	border-left: 5px solid #0096F2;
 	height: 45px;
 	display: flex;
+	margin-left: 2px;
 }
 
-.chung-dep-trai .div_line {
+.ktg-005 .div_line {
 	margin-top: 0px;
 	height: 40px;
 	vertical-align: middle;
 	line-height: 40px;
 }
 
-.chung-dep-trai .border {
+.ktg-005 .border {
 	border-bottom: solid thin #B1B1B1;
 }
 
-.chung-dep-trai #content {
+.ktg-005 #content {
 	overflow-y: auto;
 }
 
-.chung-dep-trai #contents-area {
+.ktg-005 #contents-area {
 	width: 305px;
 	margin: 0 auto;
 	border: 1px solid #B1B1B1;

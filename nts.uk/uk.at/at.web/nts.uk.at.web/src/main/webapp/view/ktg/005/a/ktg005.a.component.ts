@@ -7,7 +7,7 @@ module nts.uk.ui.ktg005.a {
     @component({
         name: 'ktg-005-a',
         template: `
-		<div>
+		<div class="ktg-005">
 			<div id="top_title">
 			<!-- A1_1 -->
 
@@ -46,7 +46,7 @@ module nts.uk.ui.ktg005.a {
 			</div>
 		</div>
 		`
-    })
+	})
     export class KTG005AComponent extends ko.ViewModel {
 
         executionAppResult: KnockoutObservable<IExecutionAppResult> = ko.observable({
@@ -75,7 +75,6 @@ module nts.uk.ui.ktg005.a {
         
         mounted() {
             const vm = this;
-            vm.$el.classList.add('chung-dep-trai')
         }
 
 		loadData() {
