@@ -329,52 +329,84 @@ export class KafS11AComponent extends KafS00ShrComponent {
                 vm.$updateValidator('leaveDate', { validate: true });
             }
             if (vm.dispComplementContent) {
-                vm.$updateValidator('complementWorkInfo.timeRange1', { validate: true });
+                if (vm.enableComplementTimeRange) {
+                    vm.$updateValidator('complementWorkInfo.timeRange1', { validate: true });
+                } else {
+                    vm.$updateValidator('complementWorkInfo.timeRange1', { validate: false });
+                }
             } else {
                 vm.$updateValidator('complementWorkInfo.timeRange1', { validate: false });
             }
             if (vm.dispComplementTimeRange2) {
-                vm.$updateValidator('complementWorkInfo.timeRange2', { validate: true });
+                if (vm.enableComplementTimeRange) {
+                    vm.$updateValidator('complementWorkInfo.timeRange2', { validate: true });
+                } else {
+                    vm.$updateValidator('complementWorkInfo.timeRange2', { validate: false });
+                }
             } else {
                 vm.$updateValidator('complementWorkInfo.timeRange2', { validate: false });
             }
             if (vm.dispLeaveTimeRange1) {
-                vm.$updateValidator('leaveWorkInfo.timeRange1', { validate: true });
+                if (vm.enableLeaveTimeRange) {
+                    vm.$updateValidator('leaveWorkInfo.timeRange1', { validate: true });
+                } else {
+                    vm.$updateValidator('leaveWorkInfo.timeRange1', { validate: false });
+                }
             } else {
                 vm.$updateValidator('leaveWorkInfo.timeRange1', { validate: false });
             }
             if (vm.dispLeaveTimeRange2) {
-                vm.$updateValidator('leaveWorkInfo.timeRange2', { validate: true });
+                if (vm.enableLeaveTimeRange) {
+                    vm.$updateValidator('leaveWorkInfo.timeRange2', { validate: true });
+                } else {
+                    vm.$updateValidator('leaveWorkInfo.timeRange2', { validate: false });
+                }
             } else {
                 vm.$updateValidator('leaveWorkInfo.timeRange2', { validate: false });
             }
         } else {
             if (vm.dispComplementContent) {
-                vm.$updateValidator('complementWorkInfo.timeRange1', { validate: true });
+                if (vm.enableComplementTimeRange) {
+                    vm.$updateValidator('complementWorkInfo.timeRange1', { validate: true });
+                } else {
+                    vm.$updateValidator('complementWorkInfo.timeRange1', { validate: false });
+                }
             } else {
                 vm.$updateValidator('complementWorkInfo.timeRange1', { validate: false });
             }
             if (vm.dispComplementTimeRange2) {
-                vm.$updateValidator('complementWorkInfo.timeRange2', { validate: true });
+                if (vm.enableComplementTimeRange) {
+                    vm.$updateValidator('complementWorkInfo.timeRange2', { validate: true });
+                } else {
+                    vm.$updateValidator('complementWorkInfo.timeRange2', { validate: false });
+                }
             } else {
                 vm.$updateValidator('complementWorkInfo.timeRange2', { validate: false });
             }
             if (vm.dispLeaveTimeRange1) {
-                vm.$updateValidator('leaveWorkInfo.timeRange1', { validate: true });
+                if (vm.enableLeaveTimeRange) {
+                    vm.$updateValidator('leaveWorkInfo.timeRange1', { validate: true });
+                } else {
+                    vm.$updateValidator('leaveWorkInfo.timeRange1', { validate: false });
+                }
             } else {
                 vm.$updateValidator('leaveWorkInfo.timeRange1', { validate: false });
             }
             if (vm.dispLeaveTimeRange2) {
-                vm.$updateValidator('leaveWorkInfo.timeRange2', { validate: true });
+                if (vm.enableLeaveTimeRange) {
+                    vm.$updateValidator('leaveWorkInfo.timeRange2', { validate: true });
+                } else {
+                    vm.$updateValidator('leaveWorkInfo.timeRange2', { validate: false });
+                }
             } else {
                 vm.$updateValidator('leaveWorkInfo.timeRange2', { validate: false });
             }
         }
     }
 
-    public getCDFormat(workTypeCD: string) {
-        if (workTypeCD) {
-            return workTypeCD;
+    public getCDFormat(code: string) {
+        if (code) {
+            return code;
         }
         
         return '';
@@ -833,6 +865,7 @@ export class KafS11AComponent extends KafS00ShrComponent {
                 } else {
                     vm.leaveWorkInfo.workTypeCD = result.selectedWorkType.workTypeCode; 
                 }
+                vm.updateValidate();
             }
         });
     }
@@ -876,6 +909,7 @@ export class KafS11AComponent extends KafS00ShrComponent {
     
                 return vm.$http.post('at', API.getWorkTimeByCDLst, { wkTimeCodes }).then((data: any) => {
                     vm.workTimeLstFullData = data.data;
+                    vm.updateValidate();
                     vm.$mask('hide');
                 });
             }

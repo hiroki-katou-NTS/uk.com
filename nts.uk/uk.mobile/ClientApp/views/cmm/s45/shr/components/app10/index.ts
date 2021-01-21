@@ -255,6 +255,14 @@ export class CmmS45ShrComponentsApp10Component extends Vue {
         return _.find(prePostResource, (o: any) => o.code == prePostAtr).text;
     }
 
+    public getCDFormat(code: string) {
+        if (code) {
+            return code;
+        }
+        
+        return '';
+    }
+
     public getWorkTypeName(workTypeCD: string, isRec: boolean) {
         const vm = this;
         if (!vm.params.appDetail) {
@@ -275,7 +283,7 @@ export class CmmS45ShrComponentsApp10Component extends Vue {
             return workType.name;
         }
 
-        return workTypeCD + ' ' + vm.$i18n('KAFS11_32');
+        return vm.getCDFormat(workTypeCD) + ' ' + vm.$i18n('KAFS11_32');
     }
 
     public getWorkTimeName(workTimeCD: string) {
@@ -289,7 +297,7 @@ export class CmmS45ShrComponentsApp10Component extends Vue {
             return workTime.workTimeDisplayName.workTimeName;
         }
 
-        return workTimeCD + ' ' + vm.$i18n('KAFS11_32');
+        return vm.getCDFormat(workTimeCD) + ' ' + vm.$i18n('KAFS11_32');
     }
 
     public getTimeRange(workingHours: Array<any>, workNo: number) {
