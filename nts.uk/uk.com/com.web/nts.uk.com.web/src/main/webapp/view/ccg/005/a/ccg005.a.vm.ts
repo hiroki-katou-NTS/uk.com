@@ -437,7 +437,14 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
     openScreenCCG005E() {
       const vm = this;
-      vm.$window.modal('/view/ccg/005/e/index.xhtml', {});
+      vm.$window.modal('/view/ccg/005/e/index.xhtml', {
+      //社員ID				
+      sid: "213",				
+      //ビジネスネーム		
+      businessName: "haha",			
+      //年月日		
+      goOutDate: moment.utc()						
+      });
     }
 
 
