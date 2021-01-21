@@ -47,7 +47,7 @@ module nts.uk.com.view.ccg020.a {
     <i class="img-ccg020" id="notice-msg" data-bind="ntsIcon: { no: 164, width: 20, height: 20 }, visible: isEmployee"></i>
     <i class="img-ccg020" id="new-notice-msg" data-bind="ntsIcon: { no: 165, width: 10, height: 10 }, visible: isDisplayNewNotice"></i>
   </div></div>
-  <div style="max-width: 700px; min-width: 350px;" class="ccg020-warning">
+  <div style="max-width: 575px; min-width: 350px;" class="ccg020-warning">
     <label class="ccg020-warning-label" style="white-space: pre-wrap; word-break: break-all;" data-bind="html: warningMsg()"></label>
   </div>`
   })
