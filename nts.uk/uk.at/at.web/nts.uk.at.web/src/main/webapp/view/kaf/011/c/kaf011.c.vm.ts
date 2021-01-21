@@ -1,6 +1,5 @@
 module nts.uk.at.view.kaf011.c.viewmodel {
 	import windows = nts.uk.ui.windows;
-	let dataTransfer = windows.getShared('KAF011C');
    	import ajax = nts.uk.request.ajax;
 	import block = nts.uk.ui.block;
 	import dialog = nts.uk.ui.dialog;
@@ -11,8 +10,9 @@ module nts.uk.at.view.kaf011.c.viewmodel {
 		reasonTypeItemLst: KnockoutObservableArray<any> = ko.observableArray([]);
 		appStandardReasonCD: KnockoutObservable<number> = ko.observable();
 		appReason: KnockoutObservable<string> = ko.observable("");
-		constructor(dataTransfer: any){
+		constructor(){
 			let self = this;
+			let dataTransfer = windows.getShared('KAF011C');
 			self.displayInforWhenStarting = dataTransfer;
 			let appReasonStandardLst: any = _.find(dataTransfer.appDispInfoStartup.appDispInfoNoDateOutput.appReasonStandardLst, {'applicationType':10});
 			self.appDate = ko.observable(dataTransfer.abs.application.appDate);
@@ -56,8 +56,7 @@ module nts.uk.at.view.kaf011.c.viewmodel {
 		}
 	}
 	
-	let __viewContext: any = window["__viewContext"] || {};
     __viewContext.ready(function() {
-        __viewContext.bind(new KAF011C(dataTransfer));
+    	__viewContext.bind(new KAF011C());
     });
 }
