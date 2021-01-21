@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.employee.pub.employee.EmpInfoExport;
@@ -11,6 +12,7 @@ import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.office.dom.favorite.adapter.EmployeeBasicImport;
 import nts.uk.ctx.office.dom.favorite.adapter.PersonalInformationAdapter;
 
+@Stateless
 public class PersonalInformationAdapterImpl implements PersonalInformationAdapter {
 
 	@Inject

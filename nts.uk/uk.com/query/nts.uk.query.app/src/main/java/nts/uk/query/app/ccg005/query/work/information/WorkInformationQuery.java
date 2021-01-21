@@ -3,6 +3,8 @@ package nts.uk.query.app.ccg005.query.work.information;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -23,6 +25,7 @@ import nts.uk.ctx.office.dom.dto.WorkTypeDto;
 /*
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.オフィス支援.在席照会.ステータス.勤務情報の取得.勤務情報の取得
  */
+@Stateless
 public class WorkInformationQuery {
 
 	@Inject
@@ -83,7 +86,7 @@ public class WorkInformationQuery {
 				
 			//日別実績の勤務情報がない場合：勤務予定.勤務情報.勤務情報.勤務種類コード　＝　「勤務種類」.コード
 			} else {
-				String workTypeCode = workSchedule.getWorkInfo().getRecordInfo().getWorkTypeCode().v();
+				String workTypeCode = workSchedule == null ? null : workSchedule.getWorkInfo().getRecordInfo().getWorkTypeCode().v();
 				WorkType workType = workTypeList.stream().filter(wt -> (wt.getWorkTypeCode().v()).equalsIgnoreCase(workTypeCode)).findFirst().orElse(null);
 				workTypeDto = EmployeeWorkInformationDto.workTypeToDto(workType);
 			}

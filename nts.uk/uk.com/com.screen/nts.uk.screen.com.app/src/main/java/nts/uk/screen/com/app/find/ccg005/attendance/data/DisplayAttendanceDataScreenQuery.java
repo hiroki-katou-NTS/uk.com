@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -19,12 +20,14 @@ import nts.uk.ctx.office.dom.favorite.FavoriteSpecifyRepository;
 import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
 import nts.uk.screen.com.app.find.ccg005.attendance.information.AttendanceInformationDto;
 import nts.uk.screen.com.app.find.ccg005.attendance.information.AttendanceInformationScreenQuery;
+import nts.uk.screen.com.app.find.ccg005.attendance.information.EmpIdParam;
 import nts.uk.screen.com.app.find.ccg005.favorite.information.FavoriteSpecifyDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /*
  * UKDesign.UniversalK.共通.CCG_メニュートップページ.CCG005_ミニ在席照会.A:ミニ在席照会.メニュー別OCD.表示初期の在席データ.表示初期の在席データ
  */
+@Stateless
 public class DisplayAttendanceDataScreenQuery {
 
 	@Inject
@@ -42,7 +45,9 @@ public class DisplayAttendanceDataScreenQuery {
 	@Inject
 	private RoleExportRepo roleExportRepo;
 
+	@Inject
 	private AttendanceInformationScreenQuery attendanceInfoScreenQuery;
+	
 	public DisplayAttendanceDataDto getDisplayAttendanceData() {
 		String loginSid = AppContexts.user().employeeId();
 		String loginCid = AppContexts.user().companyId();
@@ -62,11 +67,13 @@ public class DisplayAttendanceDataScreenQuery {
 				}).collect(Collectors.toList());
 		
 		// 3: 在席情報を取得する(社員ID, 年月日, するしない区分): List<在席情報DTO>
-		List<String> loginSidList = new ArrayList<>();
-		loginSidList.add(loginSid);
-		List<String> loginPidList = new ArrayList<>();
-		loginPidList.add(loginPid);
-		List<AttendanceInformationDto> attendanceInformationDtos = attendanceInfoScreenQuery.getAttendanceInformation(loginSidList, loginPidList, GeneralDate.today(), emojiUsage == 1);
+		EmpIdParam empId = EmpIdParam.builder()
+		.sid(loginSid)
+		.pid(loginPid)
+		.build();
+		List<EmpIdParam> empIds = new ArrayList<>();
+		empIds.add(empId);
+		List<AttendanceInformationDto> attendanceInformationDtos = attendanceInfoScreenQuery.getAttendanceInformation(empIds, GeneralDate.today(), emojiUsage == 1);
 		
 		// 4: <call>() [RQ228]個人ID（List）からビジネスネームを取得する
 		List<String> listLoginPids = new ArrayList<>();

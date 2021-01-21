@@ -1,15 +1,11 @@
 package nts.uk.ctx.office.dom.favorite.service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.assertj.core.util.Arrays;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
@@ -27,17 +23,17 @@ public class PersonalInfomationDomainServiceTest {
 	@Injectable
 	private Require require;
 
-	// Map<String, WorkplaceInforImport> empty
+	// Map<String, WorkplaceInforImport> not empty
 	@Test
 	public void getPersonalInfomationTest1() {
 		//given
 		//[R-1]
 		Map<String, String> employeesWorkplaceId = new HashMap<>();
-		employeesWorkplaceId.put("key", "value");
+		employeesWorkplaceId.put("sid", "wspId");
 		List<String> sIds = new ArrayList<>();
 		sIds.add("sid");
 		List<String> workSplaceId = new ArrayList<>();
-		sIds.add("value");
+		workSplaceId.add("wspId");
 		//[R-2]
 		WorkplaceInforImport info = new WorkplaceInforImport(
 				"workplaceId",
@@ -49,33 +45,41 @@ public class PersonalInfomationDomainServiceTest {
 				"workplaceExternalCode"
 				);
 		Map<String, WorkplaceInforImport> workplaceInfor = new HashMap<>();
-		workplaceInfor.put("key", info);
+		workplaceInfor.put("sid", info);
 		
 		//[R-3]
-		EmployeeJobHistImport emp = EmployeeJobHistImport.builder().build();
+		EmployeeJobHistImport emp = EmployeeJobHistImport.builder()
+				.employeeId("employeeId")
+				.jobTitleID("jobTitleID")
+				.jobTitleName("jobTitleName")
+				.sequenceCode("sequenceCode")
+				.startDate(GeneralDate.today())
+				.endDate(GeneralDate.today())
+				.jobTitleCode("jobTitleCode")
+				.build();
 		Map<String, EmployeeJobHistImport> positionBySidsAndBaseDate = new HashMap<>();
-		positionBySidsAndBaseDate.put("key", emp);
+		positionBySidsAndBaseDate.put("sid", emp);
 		
 		//[R-4]
-		SequenceMasterImport sequence = new SequenceMasterImport();
+		SequenceMasterImport sequence = new SequenceMasterImport("companyId", 0, "sequenceCode", "sequenceName");
 		List<SequenceMasterImport> rankOfPosition = new ArrayList<>();
 		rankOfPosition.add(sequence);
 		
 		//[R-5] 
 		EmployeeBasicImport empImport = new EmployeeBasicImport("sid", "pid", "name", "code");
 		Map<String, EmployeeBasicImport> personalInformation = new HashMap<>();
-		personalInformation.put("key", empImport);
+		personalInformation.put("sid", empImport);
 		new Expectations() {
 			{
-				require.getEmployeesWorkplaceId(sIds, (GeneralDate) any);
+				require.getEmployeesWorkplaceId(sIds, GeneralDate.today());
 				result = employeesWorkplaceId;
 			}
 			{
-				require.getWorkplaceInfor(workSplaceId, (GeneralDate) any);
+				require.getWorkplaceInfor(workSplaceId, GeneralDate.today());
 				result = workplaceInfor;
 			}
 			{
-				require.getPositionBySidsAndBaseDate(sIds, (GeneralDate) any);
+				require.getPositionBySidsAndBaseDate(sIds, GeneralDate.today());
 				result = positionBySidsAndBaseDate;
 			}
 			{
@@ -88,15 +92,86 @@ public class PersonalInfomationDomainServiceTest {
 			}
 		};
 		
-		//then
+		//when
 		val result = PersonalInfomationDomainService.getPersonalInfomation(require, sIds, GeneralDate.today());
 		
-		
+		//then
 		assertThat(result).isNotEmpty();
 	}
 
-	// Map<String, WorkplaceInforImport> not empty
+	// Map<String, WorkplaceInforImport> empty
+	@Test
 	public void getPersonalInfomationTest2() {
-	
+		//given
+		//[R-1]
+		Map<String, String> employeesWorkplaceId = new HashMap<>();
+		employeesWorkplaceId.put("sid2", "wspId2");
+		List<String> sIds = new ArrayList<>();
+		sIds.add("sid");
+		List<String> workSplaceId = new ArrayList<>();
+		workSplaceId.add("wspId2");
+		//[R-2]
+		WorkplaceInforImport info = new WorkplaceInforImport(
+				"workplaceId2",
+				"hierarchyCode2",
+				"workplaceCode2",
+				"workplaceName2",
+				"workplaceDisplayName2",
+				"workplaceGenericName2",
+				"workplaceExternalCode2"
+				);
+		Map<String, WorkplaceInforImport> workplaceInfor = new HashMap<>();
+		workplaceInfor.put("sid2", info);
+		
+		//[R-3]
+		EmployeeJobHistImport emp = EmployeeJobHistImport.builder()
+				.employeeId("employeeId2")
+				.jobTitleID("jobTitleID2")
+				.jobTitleName("jobTitleName2")
+				.sequenceCode("sequenceCode2")
+				.startDate(GeneralDate.today())
+				.endDate(GeneralDate.today())
+				.jobTitleCode("jobTitleCode2")
+				.build();
+		Map<String, EmployeeJobHistImport> positionBySidsAndBaseDate = new HashMap<>();
+		positionBySidsAndBaseDate.put("sid2", emp);
+		
+		//[R-4]
+		SequenceMasterImport sequence = new SequenceMasterImport("companyId2", 0, "sequenceCode2", "sequenceName2");
+		List<SequenceMasterImport> rankOfPosition = new ArrayList<>();
+		rankOfPosition.add(sequence);
+		
+		//[R-5] 
+		EmployeeBasicImport empImport = new EmployeeBasicImport("sid2", "pid2", "name2", "code2");
+		Map<String, EmployeeBasicImport> personalInformation = new HashMap<>();
+		personalInformation.put("sid2", empImport);
+		new Expectations() {
+			{
+				require.getEmployeesWorkplaceId(sIds, GeneralDate.today());
+				result = employeesWorkplaceId;
+			}
+			{
+				require.getWorkplaceInfor(workSplaceId, GeneralDate.today());
+				result = workplaceInfor;
+			}
+			{
+				require.getPositionBySidsAndBaseDate(sIds, GeneralDate.today());
+				result = positionBySidsAndBaseDate;
+			}
+			{
+				require.getRankOfPosition();
+				result = rankOfPosition;
+			}
+			{
+				require.getPersonalInformation(sIds);
+				result = personalInformation;
+			}
+		};
+		
+		//when
+		val result = PersonalInfomationDomainService.getPersonalInfomation(require, sIds, GeneralDate.today());
+		
+		//then
+		assertThat(result).isNotEmpty();
 	}
 }

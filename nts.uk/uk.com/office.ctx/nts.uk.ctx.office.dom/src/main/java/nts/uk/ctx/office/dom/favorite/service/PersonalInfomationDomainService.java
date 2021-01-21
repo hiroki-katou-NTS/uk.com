@@ -2,6 +2,7 @@ package nts.uk.ctx.office.dom.favorite.service;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -21,6 +22,8 @@ import nts.uk.ctx.office.dom.favorite.adapter.WorkplaceInforImport;
  */
 public class PersonalInfomationDomainService {
 
+	private PersonalInfomationDomainService() {}
+	
 	/**
 	 * [1] 個人情報を取得
 	 * 
@@ -47,9 +50,11 @@ public class PersonalInfomationDomainService {
 		Map<String, WorkplaceInforImport> workplaceInfor = require.getWorkplaceInfor(workSplaceId, baseDate);
 
 		// create $職場情報SIDMap ：Map<社員ID、職場情報>
-		Map<String, WorkplaceInforImport> workplaceInforSidMap = sids.stream()
-				.collect(Collectors.toMap((sid -> sid), (sid -> workplaceInfor.get(sid))));
-
+		Map<String, WorkplaceInforImport> workplaceInforSidMap = new HashMap<>();
+		sids.forEach(sid -> {
+			workplaceInforSidMap.put(sid, workplaceInfor.get(sid));
+		});
+		
 		// 個人情報を取得する
 		Map<String, EmployeeBasicImport> personalInformation = require.getPersonalInformation(sids);
 
@@ -79,17 +84,23 @@ public class PersonalInfomationDomainService {
 			Map<String, EmployeeBasicImport> personalInfo) {
 		// create ソート情報：｛社員ID、階層コード、Optional<並び順>、職位コード、社員コード｝
 		List<PersonalInfomationObj> sortInfomation = sIds.stream().map(v -> {
-			return PersonalInfomationObj.builder().sid(v).hierarchyCode(workplaceInfo.get(v).getHierarchyCode())
-					.order(getOrder(positionId.get(v).getSequenceCode(), positionOrder))
-					.positionCode(positionId.get(v).getSequenceCode())
-					.employeeCode(personalInfo.get(v).getEmployeeCode()).build();
+			return PersonalInfomationObj.builder()
+					.sid(v)
+					.hierarchyCode(workplaceInfo.get(v) != null ? workplaceInfo.get(v).getHierarchyCode() : null)
+					.order(getOrder(positionId.get(v) != null ? positionId.get(v).getSequenceCode() : null, positionOrder))
+					.positionCode(positionId.get(v) != null ? positionId.get(v).getSequenceCode() : null)
+					.employeeCode(personalInfo.get(v) != null ? personalInfo.get(v).getEmployeeCode() : null)
+					.build();
 		}).collect(Collectors.toList());
 
 		// ソート実行
 		Comparator<PersonalInfomationObj> compare = Comparator.comparing(PersonalInfomationObj::getOrderOptional)
 				.thenComparing(PersonalInfomationObj::getPositionCode)
 				.thenComparing(PersonalInfomationObj::getEmployeeCode);
-		if (!workplaceInfo.isEmpty()) {
+		List<WorkplaceInforImport> workplaceInfoList = workplaceInfo.values().stream()
+				.filter(item -> item != null)
+				.collect(Collectors.toList());
+		if (!workplaceInfoList.isEmpty()) {
 			compare = Comparator.comparing(PersonalInfomationObj::getHierarchyCode)
 					.thenComparing(PersonalInfomationObj::getOrderOptional)
 					.thenComparing(PersonalInfomationObj::getPositionCode)

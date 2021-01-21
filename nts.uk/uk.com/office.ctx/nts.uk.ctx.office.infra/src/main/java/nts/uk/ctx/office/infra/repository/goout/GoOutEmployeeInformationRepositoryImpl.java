@@ -22,7 +22,7 @@ public class GoOutEmployeeInformationRepositoryImpl extends JpaRepository
 		implements GoOutEmployeeInformationRepository {
 
 	// select by List Sids and Date
-	private static final String SELECT_BY_SIDS_AND_DATE = "SELECT m FROM GoOutEmployeeInformationEntity m WHERE m.pk.sid IN :sids AND m.pk.gouOutDate = :date";
+	private static final String SELECT_BY_SIDS_AND_DATE = "SELECT m FROM GoOutEmployeeInformationEntity m WHERE m.pk.sid IN :sids AND m.pk.goOutDate = :date";
 
 	private static GoOutEmployeeInformationEntity toEntity(GoOutEmployeeInformation domain) {
 		GoOutEmployeeInformationEntity entity = new GoOutEmployeeInformationEntity();

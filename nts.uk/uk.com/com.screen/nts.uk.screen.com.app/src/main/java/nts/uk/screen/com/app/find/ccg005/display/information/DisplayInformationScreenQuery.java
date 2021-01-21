@@ -3,6 +3,7 @@ package nts.uk.screen.com.app.find.ccg005.display.information;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -22,11 +23,13 @@ import nts.uk.ctx.office.dom.reference.auth.service.DefaultRequireImpl;
 import nts.uk.ctx.office.dom.reference.auth.service.DetermineEmpIdListDomainService;
 import nts.uk.screen.com.app.find.ccg005.attendance.information.AttendanceInformationDto;
 import nts.uk.screen.com.app.find.ccg005.attendance.information.AttendanceInformationScreenQuery;
+import nts.uk.screen.com.app.find.ccg005.attendance.information.EmpIdParam;
 import nts.uk.shr.com.context.AppContexts;
 
 /*
  * UKDesign.UniversalK.共通.CCG_メニュートップページ.CCG005_ミニ在席照会.A:ミニ在席照会.メニュー別OCD.選択した後の表示情報を取得
  */
+@Stateless
 public class DisplayInformationScreenQuery {
 
 	@Inject
@@ -56,6 +59,7 @@ public class DisplayInformationScreenQuery {
 	@Inject
 	private PersonalInformationAdapter personalInformationAdapter;
 	
+	@Inject
 	private AttendanceInformationScreenQuery attendanceScreenQuery;
 
 	public DisplayInformationDto getDisplayInfoAfterSelect(List<String> wkspIds, GeneralDate baseDate, boolean emojiUsage) {
@@ -79,10 +83,15 @@ public class DisplayInformationScreenQuery {
 				rankOfPositionAdapter,
 				personalInformationAdapter);
 		List<EmployeeBasicImport> listPersonalInfo = PersonalInfomationDomainService.getPersonalInfomation(rq, getDeterEmployeeIdList, baseDate);
-		List<String> pids = listPersonalInfo.stream().map(item -> item.getPersonalId()).collect(Collectors.toList());
+		List<EmpIdParam> empIds = listPersonalInfo.stream()
+				.map(item -> EmpIdParam.builder()
+						.sid(item.getEmployeeId())
+						.pid(item.getPersonalId())
+						.build())
+				.collect(Collectors.toList());
 		
 		// 4:在席情報を取得する(社員ID, 年月日, するしない区分): List<在席情報DTO>
-		List<AttendanceInformationDto> attendanceInformationDtos  = attendanceScreenQuery.getAttendanceInformation(getDeterEmployeeIdList, pids, baseDate, emojiUsage);
+		List<AttendanceInformationDto> attendanceInformationDtos  = attendanceScreenQuery.getAttendanceInformation(empIds, baseDate, emojiUsage);
 		
 		return DisplayInformationDto.builder()
 				.attendanceInformationDtos(attendanceInformationDtos)

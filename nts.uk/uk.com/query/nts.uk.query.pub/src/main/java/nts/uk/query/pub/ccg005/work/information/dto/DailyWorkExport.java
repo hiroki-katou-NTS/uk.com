@@ -8,7 +8,7 @@ import lombok.Data;
  */
 @Builder
 @Data
-public class DailyWorkDto {
+public class DailyWorkExport {
 	// 勤務区分
 	private Integer workTypeUnit;
 

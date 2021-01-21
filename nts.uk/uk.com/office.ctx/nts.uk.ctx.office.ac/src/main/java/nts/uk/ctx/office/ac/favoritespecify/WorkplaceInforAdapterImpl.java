@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -13,6 +14,7 @@ import nts.uk.ctx.office.dom.favorite.adapter.WorkplaceInforAdapter;
 import nts.uk.ctx.office.dom.favorite.adapter.WorkplaceInforImport;
 import nts.uk.shr.com.context.AppContexts;
 
+@Stateless
 public class WorkplaceInforAdapterImpl implements WorkplaceInforAdapter {
 
 	@Inject
