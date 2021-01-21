@@ -81,7 +81,7 @@ public class JpaGetKMK004WorkPlaceExportData extends JpaRepository implements Ge
 	     exportSQL.append("             IIF(KRCST_WKP_DEFOR_M_CAL_SET.INCLUDE_EXTRA_OT != 0, KRCST_WKP_DEFOR_M_CAL_SET.INCLUDE_HOLIDAY_OT, NULL) AS DEFOR_INCLUDE_HOLIDAY_OT   ");
 	     exportSQL.append("             FROM BSYMT_WKP_INFO   ");
 	     exportSQL.append("              LEFT JOIN KSHST_WKP_REG_LABOR_TIME ON BSYMT_WKP_INFO.CID = KSHST_WKP_REG_LABOR_TIME.CID   ");
-	     exportSQL.append("               AND BSYMT_WKP_INFO.WKP_ID = BSYMT_WKP_INFO.WKP_ID    ");
+	     exportSQL.append("               AND BSYMT_WKP_INFO.WKP_ID = KSHST_WKP_REG_LABOR_TIME.WKP_ID    ");
 	     exportSQL.append("              LEFT JOIN KRCST_WKP_DEFOR_M_CAL_SET ON BSYMT_WKP_INFO.CID = KRCST_WKP_DEFOR_M_CAL_SET.CID   ");
 	     exportSQL.append("               AND BSYMT_WKP_INFO.WKP_ID = KRCST_WKP_DEFOR_M_CAL_SET.WKP_ID   ");
 	     exportSQL.append("              LEFT JOIN KRCST_WKP_FLEX_M_CAL_SET ON BSYMT_WKP_INFO.CID = KRCST_WKP_FLEX_M_CAL_SET.CID   ");

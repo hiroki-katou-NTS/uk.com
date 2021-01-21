@@ -63,26 +63,15 @@ module nts.uk.at.view.kmk004.a {
 			nts.uk.ui.windows.sub.modal("../../../../../nts.uk.com.web/view/cdl/028/a/index.xhtml").onClosed(function() {
 				var result = nts.uk.ui.windows.getShared('CDL028_A_PARAMS');
 				if (result.status) {
-					vm.$blockui('grayout');
-					vm.$ajax('com', API.URL_PROGRAM_NAME + 'KMK004' + '/' + 'A').done(function(res) {
-						let domainType = "KMK004";
-						res = res.split(" ");
-						if (res.length > 1) {
-							res.shift();
-							domainType = domainType + res.join(" ");
-						}
 						let startDate = moment.utc(result.startDateFiscalYear, "YYYY/MM/DD");
 						let endDate = moment.utc(result.endDateFiscalYear, "YYYY/MM/DD");
-						nts.uk.request.exportFile('/masterlist/report/print', { domainId: "SetWorkingHoursAndDays", domainType: domainType, languageId: 'ja', reportType: 0, mode: 4, startDate: startDate, endDate: endDate }).done(function() {
+						vm.$blockui('grayout');
+						nts.uk.request.exportFile('/masterlist/report/print', { domainId: "SetWorkingHoursAndDays", domainType: "KMK004 法定労働時間の登録", languageId: 'ja', reportType: 0, mode: 4, startDate: startDate, endDate: endDate }).done(function() {
 						}).fail(function(error) {
 							vm.$dialog.error({ messageId: error.messageId });
 						}).always(function() {
 							vm.$blockui('clear')
 						});
-
-					}).always(function() {
-						vm.$blockui('clear')
-					});
 
 				}
 			});
