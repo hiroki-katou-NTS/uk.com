@@ -138,6 +138,13 @@ span.button {
     &.white {
         @extend %btn-default;
     }
+
+    &.transparent {
+        width: auto;
+        min-width: auto;
+        border-color: transparent;
+        background-color: transparent;
+    }
  
     &.red,
     &.danger {

@@ -1,14 +1,13 @@
 div#master-wrapper {
-	
 	div#master-content {
-		div[id^=functions-area] {
+		div[id^="functions-area"] {
 			padding: 5px 10px;
 			overflow: hidden;
 			position: relative;
 			white-space: nowrap;
 			box-sizing: border-box;
 
-			&>button.btn-error {
+			& > button.btn-error {
 				margin-left: 25px;
 				vertical-align: middle;
 			}
@@ -21,21 +20,21 @@ div#master-wrapper {
 				line-height: 30px;
 				position: relative;
 				overflow: hidden;
-				cursor: pointer; 
-				color: #2B2E44;
+				cursor: pointer;
+				color: #2b2e44;
 
 				&.navigator {
-					color: #30CC40;
+					color: #30cc40;
 					padding-left: 30px;
 
-					&>svg {
+					& > svg {
 						position: absolute;
 						top: 5px;
 						left: 0;
 					}
 				}
 
-				&+.button-group {
+				& + .button-group {
 					padding: 2px;
 					position: relative;
 					overflow: hidden;
@@ -48,7 +47,7 @@ div#master-wrapper {
 					}
 				}
 
-				&>button.btn-error {
+				& > button.btn-error {
 					margin-left: 25px;
 					vertical-align: middle;
 					margin-top: -4px;
@@ -58,57 +57,73 @@ div#master-wrapper {
 
 			.button-group {
 				&::after {
-					content: '';
+					content: "";
 					clear: both;
 				}
 
 				button {
-					min-width: 90px;
 					vertical-align: middle;
-				}
-			}
 
-			&>div.one-panel,
-			&>div.once-panel,
-			&>div.single-panel {
-				div[id^=functions-area] {
-					padding-left: 0;
-					padding-right: 0;
+					&:not(.functional) {
+						min-width: 90px;
+					}
 				}
 			}
 		}
 
-		div[id^=functions-area-bottom] {
+		& > div.one-panel,
+		& > div.once-panel,
+		& > div.single-panel {
+			div[id^="functions-area"] {
+				padding-left: 0;
+				padding-right: 0;
+			}
+		}
+
+		& > div.two-panel {
+			div[id^="functions-area"] {
+				margin-top: 20px !important;
+
+				.pg-name {
+					span {
+						font-size: 18px;
+						font-weight: 500;
+					}
+				}
+			}
+		}
+
+		div[id^="functions-area-bottom"] {
 			width: 100%;
 			padding: 10px 0;
 			white-space: nowrap;
-			background-color: #F1FDFB;
+			background-color: #f1fdfb;
 			box-sizing: border-box;
 			position: relative;
 			text-align: center;
-			
+
 			button {
 				vertical-align: middle;
 			}
 
-			&>button.btn-error {
+			& > button.btn-error {
 				position: absolute;
 				top: -13px;
 				left: 10px;
 			}
 		}
 
-		&>div[id^=functions-area] {
+		& > div[id^="functions-area"] {
 			border-bottom: solid 1px $frame_border_color;
 		}
 	}
-	
-	&.modal {			
-		&>div[id^=functions-area-bottom] {
+
+	&.modal {
+		& > div[id^="functions-area-bottom"] {
 			text-align: center;
 			border-top: solid 1px $frame_border_color;
 
-			&>button {
+			& > button {
 				vertical-align: middle;
 			}
 		}

@@ -191,7 +191,7 @@ module nts.ui.controls.buttons {
                         if (vm.$el.hasAttribute('disabled') || ko.unwrap(vm.params.disabled) || vm.$el.tagName !== 'BUTTON') {
                             return;
                         }
-                        
+
                         if (ko.isObservable(params.state)) {
                             const value = ko.unwrap(params.value);
 
@@ -399,6 +399,213 @@ module nts.ui.controls.buttons {
                 const vm = this;
 
                 vm.icon.dispose();
+            }
+        }
+    }
+
+    export module functional {
+        const COMPONENT_NAME = 'btn-functional';
+
+        interface FunctionalOptions {
+            items: string[] | KnockoutObservableArray<string>;
+            select: (selected: string) => void;
+        }
+
+        interface DropDownItemOption {
+            data: FunctionalOptions;
+            viewModel: any;
+        }
+
+        @handler({
+            bindingName: COMPONENT_NAME,
+            validatable: true,
+            virtual: false
+        })
+        export class FunctionalBindingHandler implements KnockoutBindingHandler {
+            init(element: HTMLElement, valueAccessor: () => FunctionalOptions, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: nts.uk.ui.vm.ViewModel, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } {
+                if (element.tagName !== 'BUTTON') {
+                    element.innerText = 'Please use binding with [button] element';
+                    return;
+                }
+
+                element.classList.add('functional');
+                element.classList.add('transparent');
+
+                const data = valueAccessor();
+                const show = ko.observable(false);
+
+                const dropdown = document.createElement('div');
+                dropdown.classList.add('functional-dropdown');
+
+                if (element.id) {
+                    dropdown.setAttribute('for', element.id);
+                }
+
+                document.body.appendChild(dropdown);
+
+                show.subscribe((s) => {
+                    if (s) {
+                        dropdown.classList.add('show');
+                    } else {
+                        dropdown.classList.remove('show');
+                    }
+                });
+
+                ko.applyBindingsToNode(dropdown, { component: { name: 'dropdown-content', params: { data, viewModel } } });
+
+                // render template
+                ko.applyBindingsToNode(element, { component: { name: COMPONENT_NAME, params: { show, dropdown } } });
+
+                $(element)
+                    .on('click', () => {
+                        show(true);
+
+                        const bound = element.getBoundingClientRect();
+
+                        dropdown.style.top = bound.bottom + 10 + 'px';
+                        dropdown.style.left = (bound.left + bound.width + 3 - dropdown.offsetWidth) + 'px';
+                    })
+                    .on('keydown', (evt: JQueryEventObject) => {
+                        if (evt.keyCode === 9) {
+                            show(false);
+                        } else {
+                            const selected = $(dropdown).find('li.selected');
+
+                            if (evt.keyCode === 38) {
+                                if (selected.length) {
+                                    const prev = selected.prev();
+
+                                    if (prev.length) {
+                                        prev.addClass('selected');
+                                        selected.removeClass('selected');
+                                    }
+                                } else {
+                                    $(dropdown).find('li').last().addClass('selected');
+                                }
+                            } else if (evt.keyCode === 40) {
+                                if (selected.length) {
+                                    const next = selected.next();
+
+                                    if (next.length) {
+                                        next.addClass('selected');
+                                        selected.removeClass('selected');
+                                    }
+                                } else {
+                                    $(dropdown).find('li').first().addClass('selected');
+                                }
+                            } else if (evt.keyCode === 13) {
+                                show(!show());
+
+                                if (show() === false) {
+                                    selected.trigger('click');
+                                }
+
+                                $(dropdown).find('li').removeClass('selected');
+
+                                evt.preventDefault();
+                            }
+                        }
+                    });
+
+                ko.utils.domData.set(element, '__DROPDOWN__', dropdown);
+
+                return { controlsDescendantBindings: true };
+            }
+        }
+
+        interface FunctionalParams {
+            show: KnockoutObservable<boolean>;
+            dropdown: HTMLElement;
+        }
+
+        @component({
+            name: COMPONENT_NAME,
+            template: `
+            <svg width="3" height="15" viewBox="0 0 3 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="3" height="3" fill="#30CC40" />
+                <rect y="6" width="3" height="3" fill="#30CC40" />
+                <rect y="12" width="3" height="3" fill="#30CC40" />
+            </svg>
+            `
+        })
+        export class FunctionalButtonViewModel extends ko.ViewModel {
+            constructor(private params: FunctionalParams) {
+                super();
+            }
+
+            mounted() {
+                const vm = this;
+                const { $el, params } = vm;
+                const { show } = params;
+
+                $(window)
+                    .on('dr.click', (__: JQueryEventObject, evt: JQueryEventObject) => {
+                        const tg = $(evt.target);
+
+                        if (tg.is($el) || tg.closest('button').is($el)) {
+                            show(true);
+                        } else {
+                            show(false);
+                        }
+                    })
+                    .on('click', (evt) => {
+                        $(window).trigger('dr.click', [evt]);
+                    });
+
+                $($el)
+                    .removeAttr('data-bind')
+                    .find('[data-bind]')
+                    .removeAttr('data-bind');
+            }
+
+            // hook for remove dropdown on body
+            destroyed() {
+                const vm = this;
+                const dropdown: HTMLElement = ko.utils.domData.get(vm.$el, '__DROPDOWN__');
+
+                if (dropdown) {
+                    dropdown.remove();
+                }
+
+                $(window).of('dr.click');
+            }
+        }
+
+        @component({
+            name: 'dropdown-content',
+            template:
+                `<div>
+                <ul data-bind="foreach: $component.items">
+                    <li data-bind="i18n: $data, click: function() { $component.select($data) }"></li>
+                </ul>
+            </div>`
+        })
+        export class DropdownContentViewModel extends ko.ViewModel {
+            items!: string[] | KnockoutObservableArray<string>;
+
+            constructor(private params: DropDownItemOption) {
+                super();
+
+                this.items = params.data ? (params.data.items || []) : [];
+            }
+
+            mounted() {
+                const vm = this;
+
+                vm.$el.removeAttribute('data-bind');
+
+                vm.$el.querySelectorAll('[data-bind]')
+                    .forEach((c) => c.removeAttribute('data-bind'))
+            }
+
+            select(key: string) {
+                const vm = this;
+                const { params } = vm;
+                const { data, viewModel } = params;
+
+                if (data && typeof data.select === 'function') {
+                    data.select.apply(viewModel, [key]);
+                }
             }
         }
     }

@@ -94,6 +94,12 @@ module nts.uk.ui {
                 const { kiban } = _viewModel;
                 const { systemName } = __viewContext.env;
 
+                // update title of name
+                kiban.systemName(systemName);
+
+                // update mode of view
+                kiban.mode(!util.isInFrame() ? 'view' : 'modal');
+
                 kiban.initErrorModel(dialogOptions);
 
                 const isEmpty = ko.computed(() => !kiban.errorDialogViewModel.occurs());
@@ -108,12 +114,6 @@ module nts.uk.ui {
                     ko.applyBindings(_viewModel, document.body);
 
                     viewModelApplied.fire(_viewModel);
-
-                    // update title of name
-                    kiban.systemName(systemName);
-
-                    // update mode of view
-                    kiban.mode(!util.isInFrame() ? 'view' : 'modal');
 
                     // update header
                     if (kiban.header() === null) {
