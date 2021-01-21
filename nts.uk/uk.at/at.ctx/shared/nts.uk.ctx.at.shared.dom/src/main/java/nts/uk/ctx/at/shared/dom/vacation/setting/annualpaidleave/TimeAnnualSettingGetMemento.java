@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 
+import java.util.Optional;
+
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
@@ -57,4 +59,5 @@ public interface TimeAnnualSettingGetMemento {
     TimeAnnualRoundProcesCla GetRoundProcessClassific();
     
     TimeAnnualLeaveTimeDay getTimeAnnualLeaveTimeDay();
+    
 }

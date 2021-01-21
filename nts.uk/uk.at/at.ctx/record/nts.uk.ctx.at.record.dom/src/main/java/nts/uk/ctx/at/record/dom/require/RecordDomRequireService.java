@@ -175,6 +175,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordValue;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.MonthlyAggregationRemainingNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.com.ComFlexMonthActCalSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.com.ComFlexMonthActCalSetRepo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.emp.EmpFlexMonthActCalSet;
@@ -304,6 +305,7 @@ import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYearRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTblRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerform;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerformRepository;
@@ -661,6 +663,8 @@ public class RecordDomRequireService {
 	protected ElapseYearRepository ElapseYearRepository;
 	@Inject
 	private SyCompanyRecordAdapter syCompanyRecordAdapter;
+	@Inject
+	private MonthlyAggregationRemainingNumber monthlyAggregationRemainingNumber;
 
 	public static interface Require extends RemainNumberTempRequireService.Require, GetAnnAndRsvRemNumWithinPeriod.RequireM2,
 		CalcAnnLeaAttendanceRate.RequireM3, GetClosurePeriod.RequireM1, GetClosureStartForEmployee.RequireM1,
@@ -763,11 +767,11 @@ public class RecordDomRequireService {
 				roleOfOpenPeriodRepo,
 				ElapseYearRepository, syCompanyRecordAdapter, outsideOTSettingCache, flowWorkSetMap, flexWorkSetMap, fixedWorkSetMap,
 				workTimeSetMap, weekRuleManagementCache, workTypeMap, closureMap,
-				snapshotAdapter, superHD60HConMedRepo);
+				snapshotAdapter, superHD60HConMedRepo, monthlyAggregationRemainingNumber);
 	}
 
 	public static class RequireImpl extends RemainNumberTempRequireService.RequireImp implements Require {
-		private Optional<WeekRuleManagement> weekRuleManagementCache = Optional.empty();;
+		private Optional<WeekRuleManagement> weekRuleManagementCache = Optional.empty();
 
 		public RequireImpl(ComSubstVacationRepository comSubstVacationRepo,
 				CompensLeaveComSetRepository compensLeaveComSetRepo, SpecialLeaveGrantRepository specialLeaveGrantRepo,
@@ -892,7 +896,7 @@ public class RecordDomRequireService {
 				Optional<WeekRuleManagement> weekRuleManagementCache,
 				HashMap<String, Optional<WorkType>>  workTypeMap,
 				HashMap<Integer, Optional<Closure>> closureMap,
-				DailySnapshotWorkAdapter snapshotAdapter, SuperHD60HConMedRepository superHD60HConMedRepo) {
+				DailySnapshotWorkAdapter snapshotAdapter, SuperHD60HConMedRepository superHD60HConMedRepo, MonthlyAggregationRemainingNumber monthlyAggregationRemainingNumber) {
 			
 			super(comSubstVacationRepo, compensLeaveComSetRepo, specialLeaveGrantRepo, empEmployeeAdapter,
 					grantDateTblRepo, elapseYearRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo, interimSpecialHolidayMngRepo,
@@ -1035,6 +1039,7 @@ public class RecordDomRequireService {
 			this.snapshotAdapter = snapshotAdapter;
 			this.superHD60HConMedRepo = superHD60HConMedRepo;
 			this.syCompanyRecordAdapter = syCompanyRecordAdapter;
+			this.monthlyAggregationRemainingNumber = monthlyAggregationRemainingNumber;
 		}
 
 		private SuperHD60HConMedRepository superHD60HConMedRepo;
@@ -1284,6 +1289,8 @@ public class RecordDomRequireService {
 		private IntegrationOfDailyGetter integrationOfDailyGetter;
 
 		private SyCompanyRecordAdapter syCompanyRecordAdapter;
+		
+		private MonthlyAggregationRemainingNumber monthlyAggregationRemainingNumber;
 
 		HashMap<String,Optional<PredetemineTimeSetting>> predetemineTimeSetting = new HashMap<String, Optional<PredetemineTimeSetting>>();
 		HashMap<String, Optional<RegularLaborTimeEmp>> regularLaborTimeEmpMap = new HashMap<String, Optional<RegularLaborTimeEmp>>();
@@ -2580,9 +2587,14 @@ public class RecordDomRequireService {
 
 		@Override
 		public AggregateMonthlyRecordValue aggregation(CacheCarrier cacheCarrier, DatePeriod period,
+				String companyId, String employeeId, YearMonth yearMonth, ClosureId closureId,   ClosureDate closureDate,
+				MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets, 
+				MonthlyCalculatingDailys monthlyCalculatingDailys,
 				InterimRemainMngMode interimRemainMngMode, boolean isCalcAttendanceRate) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+			// 自動生成されたメソッド・スタブ
+			return monthlyAggregationRemainingNumber.aggregation(cacheCarrier, period, companyId, employeeId, yearMonth,
+					closureId, closureDate, companySets, employeeSets, monthlyCalculatingDailys, interimRemainMngMode,
+					isCalcAttendanceRate);
 		}
 
 		@Override

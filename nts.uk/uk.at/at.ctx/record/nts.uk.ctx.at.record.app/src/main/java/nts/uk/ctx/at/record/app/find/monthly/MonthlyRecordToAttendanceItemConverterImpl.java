@@ -20,6 +20,7 @@ import nts.uk.ctx.at.record.app.find.monthly.root.RsvLeaRemNumEachMonthDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.SpecialHolidayRemainDataDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
+import nts.uk.ctx.at.record.app.find.monthly.root.dto.SpecialHolidayRemainDataDtoWrap;
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConverterCommonService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ConvertibleAttendanceItem;
@@ -361,7 +362,7 @@ public class MonthlyRecordToAttendanceItemConverterImpl  extends AttendanceItemC
 			processOnDomain(type, c -> RsvLeaRemNumEachMonthDto.from((RsvLeaRemNumEachMonth) c));
 			break;
 		case ItemConst.MONTHLY_SPECIAL_HOLIDAY_REMAIN_NAME:
-			processOnDomain(type, c -> ((List<SpecialHolidayRemainData>) c).stream().map(x -> SpecialHolidayRemainDataDto.from(x)).collect(Collectors.toList()));
+			processOnDomain(type, c -> SpecialHolidayRemainDataDtoWrap.from((List<SpecialHolidayRemainData>) c));
 			break;
 		case ItemConst.MONTHLY_OFF_REMAIN_NAME:
 			processOnDomain(type, c -> MonthlyDayoffRemainDataDto.from((MonthlyDayoffRemainData) c));

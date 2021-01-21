@@ -21,7 +21,6 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvR
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.ComplileInPeriodOfSpecialLeaveParam;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.InPeriodOfSpecialLeaveResultInfor;
-import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.SpecialLeaveManagementService;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
@@ -52,14 +51,13 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremain
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.service.RemainNumberCreateInformation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveRemainNoMinus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordValue;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.MonthlyAggregationRemainingNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordServiceProc.RequireM4;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordServiceProc.RequireM5;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordServiceProc.RequireM6;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordServiceProc.RequireM7;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordValue;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.MonthlyAggregationRemainingNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.export.pererror.CreatePerErrorsFromLeaveErrors;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrEmployeeSettings;
@@ -78,7 +76,6 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.D
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.MonthlyDayoffRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.RemainDataTimesMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveGrant;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveUndigestedNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainData;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
@@ -128,10 +125,22 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 	private RecordDomRequireService requireService;
 
 	public AggregateMonthlyRecordValue aggregation(CacheCarrier cacheCarrier, DatePeriod period,
+			String companyId, String employeeId, YearMonth yearMonth, ClosureId closureId,   ClosureDate closureDate,
+			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets, 
+			MonthlyCalculatingDailys monthlyCalculatingDailys,
 			InterimRemainMngMode interimRemainMngMode, boolean isCalcAttendanceRate) {
 
 		val require = requireService.createRequire();
 
+		this.companyId  = companyId;
+		this.employeeId = employeeId;
+		this.yearMonth = yearMonth;
+		this.closureId = closureId;
+		this.closureDate = closureDate;
+		this.companySets = companySets;
+		this.employeeSets = employeeSets;
+		this.monthlyCalculatingDailys = monthlyCalculatingDailys;
+		
 		this.aggregateResult = new AggregateMonthlyRecordValue();
 
 		ConcurrentStopwatches.start("12405:暫定データ作成：");
@@ -222,7 +231,7 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 		}
 
 		// 期間中の年休積休残数を取得
-		AggrResultOfAnnAndRsvLeave aggrResult = GetAnnAndRsvRemNumWithinPeriod.algorithm(null, cacheCarrier,
+		AggrResultOfAnnAndRsvLeave aggrResult = GetAnnAndRsvRemNumWithinPeriod.algorithm(requireService.createRequire(), cacheCarrier,
 				this.companyId, this.employeeId, period, interimRemainMngMode,
 				// period.end(), true, isCalcAttendanceRate,
 				period.end(), false, isCalcAttendanceRate, Optional.of(isOverWriteAnnual),
@@ -283,7 +292,7 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 			val remainingNumber = asOfPeriodEnd.getRemainingNumber();
 
 			//未消化数
-			ReserveLeaveUndigestedNumber undigestedNumber= new ReserveLeaveUndigestedNumber();
+			//ReserveLeaveUndigestedNumber undigestedNumber= new ReserveLeaveUndigestedNumber();
 
 			ReserveLeaveRemainingDayNumber undigested = asOfStartNextDayOfPeriodEnd.getRemainingNumber().getＲeserveLeaveUndigestedNumber().getUndigestedDays();
 			//Optional<LeaveUndigestTime> minutes = asOfStartNextDayOfPeriodEnd.getRemainingNumber().getAnnualLeaveUndigestNumber().get().getMinutes();
@@ -467,7 +476,7 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 			Integer specialLeaveCode = specialHoliday.getSpecialHolidayCode().v();
 
 			// 前回集計結果を確認する
-			Optional<InPeriodOfSpecialLeaveResultInfor> prevSpecialLeaveResult = Optional.empty();
+//			Optional<InPeriodOfSpecialLeaveResultInfor> prevSpecialLeaveResult = Optional.empty();
 //			if (this.prevSpecialLeaveResultMap.containsKey(specialLeaveCode)) {
 //				prevSpecialLeaveResult = Optional.of(this.prevSpecialLeaveResultMap.get(specialLeaveCode));
 //			}
@@ -486,19 +495,11 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 			InPeriodOfSpecialLeaveResultInfor aggrResult
 				= SpecialLeaveManagementService.complileInPeriodOfSpecialLeave(
 						require, cacheCarrier, param);
-//			InPeriodOfSpecialLeaveResultInfor aggrResult = new InPeriodOfSpecialLeaveResultInfor();
-
-			SpecialLeaveInfo asOfPeriodEnd = aggrResult.getAsOfPeriodEnd();
-			SpecialLeaveInfo asOfStartNextDayOfPeriodEnd=aggrResult.getAsOfStartNextDayOfPeriodEnd();
-
-			SpecialLeaveInfo inPeriod = aggrResult.getAsOfPeriodEnd();
 
 			// 特別休暇月別残数データを更新
-//			SpecialHolidayRemainData speLeaRemNum = SpecialHolidayRemainData.of(this.employeeId, this.yearMonth,
-//					this.closureId, this.closureDate, period, specialLeaveCode, new SpecialLeaveRemainNoMinus());
 			SpecialHolidayRemainData speLeaRemNum = aggrResult.createSpecialHolidayRemainData(
 					this.employeeId, this.yearMonth,
-					this.closureId, this.closureDate, period, specialLeaveCode, new SpecialLeaveRemainNoMinus());
+					this.closureId, this.closureDate, period, specialLeaveCode, aggrResult);
 
 			this.aggregateResult.getSpecialLeaveRemainList().add(speLeaRemNum);
 

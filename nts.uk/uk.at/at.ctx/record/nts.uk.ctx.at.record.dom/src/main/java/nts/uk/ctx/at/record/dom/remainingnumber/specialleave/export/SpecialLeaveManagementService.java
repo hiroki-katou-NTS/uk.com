@@ -75,7 +75,11 @@ public class SpecialLeaveManagementService {
 		InterimRemainMngMode interimRemainMngMode = InterimRemainMngMode.of(param.isMode());
 
 		List<InterimSpecialHolidayMng> overwriteInterim = new ArrayList<>();
-		param.getRemainData().stream().forEach(c-> overwriteInterim.add((InterimSpecialHolidayMng)c));
+		param.getRemainData().stream().forEach(c-> {
+			InterimSpecialHolidayMng mng = new InterimSpecialHolidayMng();
+			mng.setParentValue(c);
+			overwriteInterim.add(mng);
+		});
 
 		// 集計開始日時点の特休情報を作成
 		SpecialLeaveInfo specialLeaveInfo = createInfoAsOfPeriodStart(

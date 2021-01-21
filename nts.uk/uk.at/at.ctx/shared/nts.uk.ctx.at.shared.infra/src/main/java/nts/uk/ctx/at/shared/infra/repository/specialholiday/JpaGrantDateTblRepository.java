@@ -33,7 +33,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaGrantDateTblRepository extends JpaRepository implements GrantDateTblRepository {
 
 	private final static String SELECT_GD_BY_SPHDCD_QUERY
-		= "SELECT e.pk.companyId , SELECT e.pk.specialHolidayCode, SELECT e.pk.grantDateCd, e.grantName, e.isSpecified, e.fixedAssign, e.maxDay "
+		= "SELECT e.pk.companyId ,  e.pk.specialHolidayCode,  e.pk.grantDateCd, e.grantName, e.isSpecified, e.numberOfDays "
 			+ "FROM KshstGrantDateTbl e "
 			+ "WHERE e.pk.companyId = :companyId AND e.pk.specialHolidayCode = :specialHolidayCode "
 			+ "ORDER BY e.pk.grantDateCd ASC";
@@ -319,8 +319,7 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 		String grantDateCd = String.valueOf(c[2]);
 		String grantName = String.valueOf(c[3]);
 		boolean isSpecified = Integer.parseInt(String.valueOf(c[4])) == 1 ? true : false;
-		boolean fixedAssign = Integer.parseInt(String.valueOf(c[5])) == 1 ? true : false;
-		int numberOfDays = c[6] != null ? Integer.parseInt(String.valueOf(c[6])) : 0;
+		int numberOfDays = c[5] != null ? Integer.parseInt(String.valueOf(c[5])) : 0;
 
 		return GrantDateTbl.createFromJavaType(
 				companyId, specialHolidayCode, grantDateCd, grantName, isSpecified, numberOfDays);

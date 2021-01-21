@@ -16,14 +16,13 @@ import nts.uk.ctx.at.record.dom.adapter.company.AffCompanyHistImport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeRecordImport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.SClsHistImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.enums.UseAtr;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.GrantNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveAppSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ErrorFlg;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.GrantDaysInforByDates;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.enums.UseAtr;
 //import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
 //import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InforSpecialLeaveOfEmployeeSevice.RequireM2;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
@@ -40,6 +39,7 @@ import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.TypeTime;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.TimeLimitSpecification;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantNum;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 次回特休付与を計算
@@ -452,6 +452,7 @@ public class CalcNextSpecialLeaveGrantDate {
 			// 「List＜次回特別休暇付与＞」を空で作成
 			List<NextSpecialLeaveGrant> listNoData = new ArrayList<NextSpecialLeaveGrant>();
 			ｇrantDaysInforByDatesInfo.setNextSpecialLeaveGrant(listNoData);
+			ｇrantDaysInforByDatesInfo.setGrantDate(Optional.empty());
 			return ｇrantDaysInforByDatesInfo;
 		}
 
@@ -461,6 +462,8 @@ public class CalcNextSpecialLeaveGrantDate {
 		// パラメータ「付与日」←パラメータ「付与基準日」
 		GeneralDate grantDate = GeneralDate.localDate(grantDateOpt.get().localDate());
 
+		NextSpecialLeaveGrant nextSpecialLeaveGrant = new NextSpecialLeaveGrant();
+		
 		// ループ
 		while (true){
 
@@ -480,8 +483,7 @@ public class CalcNextSpecialLeaveGrantDate {
 
 				// 状態　＝　「利用可能」
 				if ( useCondition ){
-					NextSpecialLeaveGrant nextSpecialLeaveGrant = new NextSpecialLeaveGrant();
-
+					
 					// 特別休暇基本情報を取得
 					Optional<SpecialLeaveBasicInfo> specialLeaveBasicInfoOpt
 						= require.specialLeaveBasicInfo(employeeId, spLeaveCD, UseAtr.USE);
@@ -544,6 +546,7 @@ public class CalcNextSpecialLeaveGrantDate {
 			// 「期間．終了日」＜「付与日」
 			else if (period.get().end().before(grantDate)){
 				ｇrantDaysInforByDatesInfo.setNextSpecialLeaveGrant(nextSpecialLeaveGrantList);
+				ｇrantDaysInforByDatesInfo.setGrantDate(Optional.of(nextSpecialLeaveGrant.getGrantDate()));
 				return ｇrantDaysInforByDatesInfo;
 			}
 
@@ -1374,6 +1377,9 @@ public class CalcNextSpecialLeaveGrantDate {
 			int spLeaveCD,
 			GrantDaysInforByDates grantDaysInforByDates) {
 
+		if(!grantDaysInforByDates.getGrantDate().isPresent())
+			return new ArrayList<>();
+		
 		// 「特別休暇」を取得する
 		Optional<SpecialHoliday> specialHolidays = require.specialHoliday(companyId, spLeaveCD);
 		if ( specialHolidays.isPresent() ){

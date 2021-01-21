@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
@@ -25,11 +26,11 @@ public class KshmtHdspGrantPeriod extends UkJpaEntity implements Serializable{
 
 	/*期間開始日*/
 	@Column(name = "PERIOD_START")
-	public int periodStart;
+	public GeneralDate periodStart;
 
 	/* 期間終了日 */
 	@Column(name = "PERIOD_END")
-	public int periodEnd;
+	public GeneralDate periodEnd;
 
 
 	@Override

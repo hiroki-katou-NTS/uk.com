@@ -211,8 +211,8 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 //		int interval = c.getInt("INTERVAL") != null ? c.getInt("INTERVAL") : 0;
 		int grantedDays = c.getInt("GRANTED_DAYS") != null ? c.getInt("GRANTED_DAYS") : 0;
 		int timeMethod = c.getInt("TIME_CSL_METHOD") != null ? c.getInt("TIME_CSL_METHOD") : 0;
-		Integer startDate = c.getInt("PERIOD_START");
-		Integer endDate = c.getInt("PERIOD_END");
+		GeneralDate startDate = c.getGeneralDate("PERIOD_START");
+		GeneralDate endDate = c.getGeneralDate("PERIOD_END");
 		int deadlineMonths = c.getInt("DEADLINE_MONTHS") != null ? c.getInt("DEADLINE_MONTHS") : 0;
 		int deadlineYears = c.getInt("DEADLINE_YEARS") != null ? c.getInt("DEADLINE_YEARS") : 0;
 		int limitCarryoverDays = c.getInt("LIMIT_CARRYOVER_DAYS") != null ? c.getInt("LIMIT_CARRYOVER_DAYS") : 0;
@@ -242,13 +242,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		GrantTime grantTime = GrantTime.createFromJavaType(fixGrantDate, null);
 
 		/** 期間 */
-		DatePeriod period = new DatePeriod(GeneralDate.ymd(9999,1,1), GeneralDate.ymd(9999,12,31)); // 要確認 初期値
-
-		if (startDate != null && endDate != null) {
-			period = new DatePeriod(
-					GeneralDate.ymd(9999, (int)(Math.floor(startDate / 100)), (int)(Math.floor(startDate % 100))),
-					GeneralDate.ymd(9999, (int)(Math.floor(endDate / 100)), (int)(Math.floor(endDate % 100))));
-		}
+		DatePeriod period = new DatePeriod(startDate, endDate); // 要確認 初期値
 
 		/** 期間付与 */
 		PeriodGrantDate periodGrantDate =
@@ -262,7 +256,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 				)
 			);
 
-		AvailabilityPeriod availabilityPeriod = AvailabilityPeriod.createFromJavaType(startDate, endDate);
+		//AvailabilityPeriod availabilityPeriod = AvailabilityPeriod.createFromJavaType(startDate, endDate);
 		SpecialVacationDeadline expirationDate = SpecialVacationDeadline.createFromJavaType(deadlineMonths, deadlineYears);
 		GrantDeadline grantPeriodic = GrantDeadline.createFromJavaType(
 				companyId, specialHolidayCode, timeMethod, limitCarryoverDays,

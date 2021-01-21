@@ -607,7 +607,7 @@ public class SpecialLeaveInfo implements Cloneable {
 
 				// 実特休（特休（マイナスあり））に使用数を加算する
 				this.remainingNumber.getSpecialLeaveWithMinus().addUsedNumber(
-						SpecialLeaveUseNumber.of(interimSpecialHolidayMng.getUseDays().get().v(),interimSpecialHolidayMng.getUseTimes().get().v()),
+						SpecialLeaveUseNumber.of(interimSpecialHolidayMng.getUseDays().map(x -> x.v()).orElse(0.0),interimSpecialHolidayMng.getUseTimes().map(x -> x.v()).orElse(0)),
 						aggregatePeriodWork.isAfterGrant());
 
 				// 特休情報残数を更新
