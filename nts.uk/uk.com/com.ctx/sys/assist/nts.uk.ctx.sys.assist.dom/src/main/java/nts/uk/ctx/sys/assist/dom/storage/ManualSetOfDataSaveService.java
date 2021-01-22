@@ -25,6 +25,7 @@ import nts.arc.layer.infra.file.temp.ApplicationTemporaryFilesContainer;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.assist.dom.category.Category;
 import nts.uk.ctx.sys.assist.dom.category.CategoryRepository;
 import nts.uk.ctx.sys.assist.dom.category.StorageRangeSaved;
@@ -164,17 +165,18 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 //			}
 
 			// アルゴリズム「対象データの保存」を実行
-			resultState = saveTargetData(storeProcessingId, generatorContext, manualSetting, targetEmployees);
+			ErrorResultHolder result = 
+					saveTargetData(storeProcessingId, generatorContext, manualSetting, targetEmployees);
 
 			// 処理結果を判定
-			switch (resultState) {
+			switch (result.getResultState()) {
 			case NORMAL_END:
 				evaluateNormalEnd(storeProcessingId, generatorContext, manualSetting, targetEmployees.size(),
 						outCompressedFileName.toString());
 				break;
 
 			case ABNORMAL_END:
-				evaluateAbnormalEnd(storeProcessingId, targetEmployees.size());
+				evaluateAbnormalEndForException(result.getSid(), storeProcessingId, targetEmployees.size(), result.getException());
 				break;
 
 			case INTERRUPTION:
@@ -340,16 +342,16 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		return ResultState.NORMAL_END;
 	}
 
-	private ResultState saveTargetData(String storeProcessingId, FileGeneratorContext generatorContext,
+	private ErrorResultHolder saveTargetData(String storeProcessingId, FileGeneratorContext generatorContext,
 			ManualSetOfDataSave optManualSetting, List<TargetEmployees> targetEmployees) {
 		// アルゴリズム「対象データの保存」を実行
-		ResultState resultState;
+		ErrorResultHolder result = null;
 		List<String> targetEmployeesSid = targetEmployees.stream().map(c -> c.getSid()).collect(Collectors.toList());
 		// テーブル一覧の内容をテンポラリーフォルダにcsvファイルで書き出す
-		resultState = generalCsv(generatorContext, storeProcessingId, targetEmployeesSid);
+		result = generalCsv(generatorContext, storeProcessingId, targetEmployeesSid);
 
-		if (resultState != ResultState.NORMAL_END) {
-			return resultState;
+		if (result.getResultState() != ResultState.NORMAL_END) {
+			return result;
 		}
 
 //		// 「テーブル一覧」の調査保存の識別が「する」の場合、ドメインモデル「対象社員」のビジネスネームを全てNULLクリアする
@@ -362,19 +364,19 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 //		}
 
 		// 対象社員の内容をcsvファイルに暗号化して書き出す
-		resultState = generalEmployeesToCsv(generatorContext, targetEmployees);
+		result = generalEmployeesToCsv(generatorContext, targetEmployees);
 
-		if (resultState != ResultState.NORMAL_END) {
-			return resultState;
+		if (result.getResultState() != ResultState.NORMAL_END) {
+			return result;
 		}
 
-		return resultState;
+		return result;
 	}
 
-	private ResultState generalCsv(FileGeneratorContext generatorContext, String storeProcessingId,
+	private ErrorResultHolder generalCsv(FileGeneratorContext generatorContext, String storeProcessingId,
 			List<String> targetEmployeesSid) {
 		try {
-			ResultState resultState = ResultState.NORMAL_END;
+			ErrorResultHolder result = null;
 			List<String> headerCsv = this.getTextHeaderCsv1();
 			// Get data from Manual Setting table
 			Map<String, Object> rowCsv = new HashMap<>();
@@ -395,10 +397,10 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 					csv.writeALine(rowCsv);
 					i++;
 					// Add Table to CSV Auto
-					resultState = generalDataTableCsvAuto(generatorContext, storeProcessingId, tableList,
+					result = generalDataTableCsvAuto(generatorContext, storeProcessingId, tableList,
 							targetEmployeesSid, i);
-					if (resultState != ResultState.NORMAL_END) {
-						return resultState;
+					if (result.getResultState() != ResultState.NORMAL_END) {
+						return result;
 					}
 					// テーブル一覧で次の処理行のカテゴリが異なる場合
 					// ドメインモデル「データ保存動作管理」を更新する
@@ -406,7 +408,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 					if (!categoryIds.contains(categoryId)) {
 						categoryIds.add(categoryId);
 						if (!repoDataSto.increaseCategoryCount(storeProcessingId)) {
-							return ResultState.INTERRUPTION;
+							return new ErrorResultHolder(ResultState.INTERRUPTION);
 						}
 					}
 				}
@@ -418,10 +420,10 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 				}
 			}
 
-			return ResultState.NORMAL_END;
+			return new ErrorResultHolder(ResultState.NORMAL_END);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResultState.ABNORMAL_END;
+			return new ErrorResultHolder(targetEmployeesSid.get(0), e, ResultState.ABNORMAL_END);
 		}
 
 	}
@@ -548,7 +550,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		return rowCsv;
 	}
 
-	private ResultState generalEmployeesToCsv(FileGeneratorContext generatorContext,
+	private ErrorResultHolder generalEmployeesToCsv(FileGeneratorContext generatorContext,
 			List<TargetEmployees> targetEmployees) {
 		try {
 			List<String> headerCsv2 = this.getTextHeaderCsv2();
@@ -566,15 +568,15 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 
 			csv.destroy();
 
-			return ResultState.NORMAL_END;
+			return new ErrorResultHolder(ResultState.NORMAL_END);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResultState.ABNORMAL_END;
+			return new ErrorResultHolder(targetEmployees.get(0).getSid(), e, ResultState.ABNORMAL_END);
 		}
 
 	}
 
-	private ResultState generalDataTableCsvAuto(FileGeneratorContext generatorContext, String storeProcessingId,
+	private ErrorResultHolder generalDataTableCsvAuto(FileGeneratorContext generatorContext, String storeProcessingId,
 			TableList tableList, List<String> targetEmployeesSid, int index) {
 		try {
 			// ドメインモデル「データ保存動作管理」を取得し「中断終了」を判別
@@ -582,7 +584,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 
 			// Check interrupt
 			if (dataStorageMng.isPresent() && dataStorageMng.get().getDoNotInterrupt() == NotUseAtr.USE) {
-				return ResultState.INTERRUPTION;
+				return new ErrorResultHolder(ResultState.INTERRUPTION);
 			}
 
 			List<String> headerCsv3 = this.getTextHeaderCsv3(tableList.getTableEnglishName());
@@ -590,10 +592,10 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			// get data from table
 			getData(tableList, targetEmployeesSid, index, headerCsv3, generatorContext);
 
-			return ResultState.NORMAL_END;
+			return new ErrorResultHolder(ResultState.NORMAL_END);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResultState.ABNORMAL_END;
+			return new ErrorResultHolder(targetEmployeesSid.get(0), e, ResultState.ABNORMAL_END);
 		}
 	}
 
@@ -733,7 +735,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			String logContent = TextResource.localize("CMF003_626");
 			String errorEmployeeId = practitioner;
 			GeneralDate errorDate = GeneralDate.today();
-			String errorContent = e.getMessage();
+			String errorContent = e != null ? StringUtil.cutOffAsLengthHalf(e.getMessage(), 2000) : null;
 			String contractCd = AppContexts.user().contractCode();
 			ResultLogSaving resultLogSaving = ResultLogSaving.createFromJavatype(logNumber, contractCd,
 					storeProcessingId, cid, logTime, logContent, errorEmployeeId, errorDate, errorContent);
@@ -755,7 +757,6 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 	}
 
 	private ResultState evaluateAbnormalEnd(String storeProcessingId, int totalTargetEmployees) {
-
 		// ドメインモデル「データ保存動作管理」を更新する
 		repoDataSto.update(storeProcessingId, OperatingCondition.ABNORMAL_TERMINATION);
 
@@ -777,7 +778,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 				logNumber = result.getListResultLogSavings().get(sizeOfList - 1).getLogNumber() + 1;
 			}
 			GeneralDateTime logTime = GeneralDateTime.now();
-			String logContent = TextResource.localize("CMF003_626");
+			String logContent = TextResource.localize("CMF003_627");
 			String errorEmployeeId = "";
 			GeneralDate errorDate = null;
 			String errorContent = "";

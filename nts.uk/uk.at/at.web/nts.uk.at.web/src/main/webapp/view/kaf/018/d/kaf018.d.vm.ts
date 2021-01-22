@@ -96,7 +96,7 @@ module nts.uk.at.view.kaf018.d.viewmodel {
 						}
 					);	
 				}
-				
+
 			}
 			let empID = '',
 				empCD = '',

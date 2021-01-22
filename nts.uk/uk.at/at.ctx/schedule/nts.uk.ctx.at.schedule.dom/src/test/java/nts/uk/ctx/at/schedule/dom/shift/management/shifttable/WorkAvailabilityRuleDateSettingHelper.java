@@ -10,15 +10,19 @@ import nts.arc.time.calendar.DateInMonth;
 import nts.arc.time.calendar.OneMonth;
 import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.AssignmentMethod;
 import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailability;
+import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabilityByShiftMaster;
 import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabilityMemo;
 import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabilityOfOneDay;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ColorCodeChar6;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.Remarks;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterDisInfor;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterName;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 public class WorkAvailabilityRuleDateSettingHelper {
-	
-	@Injectable static WorkAvailability.Require require;
 	
 	public static WorkAvailabilityRuleDateSetting defaultCreate() {
 		return new WorkAvailabilityRuleDateSetting(
@@ -27,13 +31,27 @@ public class WorkAvailabilityRuleDateSettingHelper {
 				new HolidayAvailabilityMaxdays(6));
 	}
 	
+	/**
+	 * 
+	 * @param closureDate 締め日
+	 * @param deadline  勤務希望の締切日
+	 * @param maxHolidayDays 希望休日の上限
+	 * @return
+	 */
 	public static WorkAvailabilityRuleDateSetting createWithParam(int closureDate, int deadline, int maxHolidayDays) {
 		return new WorkAvailabilityRuleDateSetting(
 				new OneMonth(DateInMonth.of(closureDate)), 
 				DateInMonth.of(deadline), 
 				new HolidayAvailabilityMaxdays(maxHolidayDays));
 	}
-	
+
+	/**
+	 * 
+	 * @param require
+	 * @param expectingDate 希望日
+	 * @param assignmentMethod 勤務希望の指定方法
+	 * @return
+	 */
 	public static WorkAvailabilityOfOneDay createExpectation(
 			@Injectable WorkAvailability.Require require,
 			GeneralDate expectingDate, AssignmentMethod assignmentMethod) {
@@ -54,4 +72,32 @@ public class WorkAvailabilityRuleDateSettingHelper {
 				timeZoneList);
 	}
 	
+	/**
+	 * createExpectationByShiftMaster
+	 * @param expectingDate 希望日
+	 * @param shiftMaster シフトの勤務希望
+	 * @return
+	 */
+	public static WorkAvailabilityOfOneDay createExpectationByShiftMaster(GeneralDate expectingDate, WorkAvailabilityByShiftMaster shiftMaster) {
+		return new WorkAvailabilityOfOneDay("emp-id", expectingDate, new WorkAvailabilityMemo("memo"), shiftMaster);
+	}
+	
+	/**
+	 * createShiftMasterWithCodeName
+	 * @param shiftMasterCode シフトマスタコード
+	 * @param shiftMasterName シフトマスタ名称
+	 * @return
+	 */
+	public static ShiftMaster createShiftMasterWithCodeName(String shiftMasterCode, String shiftMasterName) {
+		return new ShiftMaster(
+				shiftMasterCode + "-sid", 
+    			new ShiftMasterCode(shiftMasterCode), 
+    			new ShiftMasterDisInfor(
+    					new ShiftMasterName(shiftMasterName), 
+    					new ColorCodeChar6("000000"), 
+    					new Remarks(shiftMasterCode + "-r")), 
+    			"001", 
+    			"001");
+		
+	}
 }

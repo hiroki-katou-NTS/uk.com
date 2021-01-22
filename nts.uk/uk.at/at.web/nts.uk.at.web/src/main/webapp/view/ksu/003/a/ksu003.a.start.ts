@@ -1,20 +1,16 @@
 module nts.uk.at.view.ksu003.a {
 	__viewContext.ready(function() {
-		nts.uk.ui.block.grayout();
 		nts.uk.characteristics.restore("USER_KSU003_INFOR").done(function(data : any) {
 			let screenModel = new viewmodel.ScreenModel(data);
 			screenModel.startPage().done(function() {
+				
 				__viewContext.bind(screenModel);
 				$(window).resize(function() {
 					screenModel.setPositionButonDownAndHeightGrid();
 				});
-				setTimeout(() => {
-					$('#period-setting').focus();
-				}, 0.5);
 			});
 			initEvent();
 			initEvent2();
-			nts.uk.ui.block.clear();
 		});
 	});
 	function initEvent(): void {

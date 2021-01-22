@@ -23,6 +23,7 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.approveregister.
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.approveregister.UnitOfApproverRepo;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.*;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
+import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxAverageTimeMulti;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
@@ -76,13 +77,15 @@ public class ApplyAppSpecialProvisionCommandHandler
     private AffWorkplaceAdapter affWorkplaceAdapter;
     @Inject
     private PersonEmpBasicInfoAdapter personEmpBasicInfoAdapter;
+    @Inject
+    private AgreementOperationSettingRepository agreementOperationSettingRepository;
 
     @Override
     protected List<ErrorResultDto> handle(CommandHandlerContext<List<ApplyAppSpecialProvisionCommand>> context) {
         String cid = AppContexts.user().companyId();
         OneMonthAppUpdateRequireImpl requireMonth = new OneMonthAppUpdateRequireImpl(cid, requireService.createRequire(),
                 specialProvisionsOfAgreementRepo, approver36AgrByCompanyRepo, unitOfApproverRepo,
-                syWorkplaceAdapter, approver36AgrByWorkplaceRepo, affWorkplaceAdapter);
+                syWorkplaceAdapter, approver36AgrByWorkplaceRepo, affWorkplaceAdapter,agreementOperationSettingRepository);
         AnnualAppUpdateRequireImpl requireAnual = new AnnualAppUpdateRequireImpl(requireService.createRequire(), specialProvisionsOfAgreementRepo);
         List<ApplyAppSpecialProvisionCommand> commands = context.getCommand();
         List<ErrorResultDto> errorResults = new ArrayList<>();
@@ -142,6 +145,7 @@ public class ApplyAppSpecialProvisionCommandHandler
         private SyWorkplaceAdapter syWorkplaceAdapter;
         private Approver36AgrByWorkplaceRepo approver36AgrByWorkplaceRepo;
         private AffWorkplaceAdapter affWorkplaceAdapter;
+        private AgreementOperationSettingRepository agreementOperationSettingRepository;
 
         @Override
         public Optional<SpecialProvisionsOfAgreement> getApp(String applicantId) {
@@ -268,6 +272,12 @@ public class ApplyAppSpecialProvisionCommandHandler
                 }
             };
         }
+
+        @Override
+        public Optional<AgreementOperationSetting> find() {
+            return agreementOperationSettingRepository.find(AppContexts.user().companyId());
+        }
+
     }
 
     @AllArgsConstructor

@@ -52,8 +52,14 @@ module nts.uk.at.view.kaf020.b {
 			}
 			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
             if (params && params.empLst) vm.empLst = params.empLst;
-            if (params && params.dateLst) vm.dateLst = params.dateLst;
-            if (params && params.baseDate) vm.baseDate = params.baseDate;
+            if (params && params.baseDate) {
+                vm.baseDate = params.baseDate;
+                let paramDate = moment(params.baseDate).format('YYYY/MM/DD');
+                vm.dateLst = [paramDate];
+                vm.application().appDate(paramDate);
+                vm.application().opAppStartDate(paramDate);
+                vm.application().opAppEndDate(paramDate);
+            }
             vm.$blockui("show");
             vm.loadData(vm.empLst, vm.dateLst, vm.appType()).then((loadFlag) => {
                 if (loadFlag) {
@@ -135,6 +141,8 @@ module nts.uk.at.view.kaf020.b {
         register() {
             const vm = this;
             let optionalItems = new Array();
+            let applicationDto = ko.toJS(vm.application());
+            applicationDto.employeeID = vm.application().employeeIDLst()[0];
             vm.dataFetch().applicationContents().forEach((item: OptionalItemApplicationContent) => {
                 optionalItems.push({
                     itemNo: item.optionalItemNo,
@@ -142,9 +150,9 @@ module nts.uk.at.view.kaf020.b {
                     amount: item.amount(),
                     time: item.time()
                 });
-            })
+            });
             let command = {
-                application: ko.toJS(vm.application()),
+                application: applicationDto,
                 appDispInfoStartup: vm.appDispInfoStartupOutput(),
                 optItemAppCommand: {
                     code: vm.code,
@@ -171,28 +179,19 @@ module nts.uk.at.view.kaf020.b {
                             // vm.dataFetch({applicationContents: ko.observableArray(contents), name: vm.dataFetch().name});
                         }
                     }).fail(err => {
-                        vm.$dialog.error(err);
-                        // vm.handleError(err);
+                        if (err && _.includes(["Msg_1692", "Msg_1693"], err.messageId) && err.parameterIds.length > 1) {
+                            let id = '#' + err.parameterIds[1];
+                            vm.$errors({
+                                [id]: err
+                            });
+                        } else {
+                            vm.$dialog.error(err);
+                        }
                     });
                 }
             });
         }
 
-        handleError(err: any) {
-            const vm = this;
-            let param;
-            if (err.message && err.messageId) {
-                param = {messageId: err.messageId, messageParams: err.parameterIds};
-            } else {
-
-                if (err.message) {
-                    param = {message: err.message, messageParams: err.parameterIds};
-                } else {
-                    param = {messageId: err.messageId, messageParams: err.parameterIds};
-                }
-            }
-            vm.$dialog.error(param);
-        }
     }
 
     interface OptionalItemData {

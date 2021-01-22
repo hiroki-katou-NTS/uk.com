@@ -560,6 +560,9 @@ public class WorkInformationTest {
 	}
 
 
+	/**
+	 * 勤務種類を取得できない
+	 */
 	@Test
 	public void getWorkInfoAndTimeZone_1() {
 		WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimeCode");
@@ -574,6 +577,9 @@ public class WorkInformationTest {
 		assertThat( workInformation.getWorkInfoAndTimeZone(require) ).isEmpty();
 	}
 
+	/**
+	 * 就業時間帯コードがない
+	 */
 	@Test
 	public void getWorkInfoAndTimeZone_2() {
 		WorkInformation workInformation = new WorkInformation("workTypeCode", null);
@@ -592,6 +598,9 @@ public class WorkInformationTest {
 		assertThat(result.get().getWorkType().getWorkTypeCode()).isEqualTo(workInformation.getWorkTypeCode());
 	}
 
+	/**
+	 * 就業時間帯を取得できない
+	 */
 	@Test
 	public void getWorkInfoAndTimeZone_3() {
 		WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimeCode");
@@ -607,6 +616,47 @@ public class WorkInformationTest {
 		};
 
 		assertThat( workInformation.getWorkInfoAndTimeZone(require) ).isEmpty();
+	}
+	
+	/**
+	 * 勤務種類は1日休日系
+	 */
+	@Test
+	public void getWorkInfoAndTimeZone_withoutPredetermineTimeZone(
+			@Injectable WorkType workType,
+			@Injectable WorkTimeSetting workTimeSetting,
+			@Injectable WorkSetting workSetting,
+			@Injectable PredetemineTimeSetting predetemineTimeSetting
+			) {
+		WorkInformation workInformation = new WorkInformation(
+				new WorkTypeCode("workTypeCode"), // 休暇
+				new WorkTimeCode("workTimeCode"));
+
+		new Expectations() {
+			{
+				require.getWorkType(anyString);
+				result = Optional.of(workType);
+				
+				require.getWorkTime( anyString );
+				result = Optional.of(workTimeSetting);
+				
+				workTimeSetting.getWorkSetting(require);
+				result = workSetting;
+				
+				workSetting.getPredetermineTimeSetting(require);
+				result = predetemineTimeSetting;
+				
+				workType.chechAttendanceDay();
+				result = AttendanceDayAttr.HOLIDAY;
+			}
+		};
+
+		Optional<WorkInfoAndTimeZone> result = workInformation.getWorkInfoAndTimeZone(require);
+		
+		assertThat( result.get().getWorkType() ).isEqualTo( workType );
+		assertThat( result.get().getWorkTime().get() ).isEqualTo( workTimeSetting );
+		assertThat( result.get().getTimeZones() ).isEmpty();
+		
 	}
 
 	@Test
@@ -702,6 +752,45 @@ public class WorkInformationTest {
 
 			// 就業時間帯を取得する
 			require.getWorkTime( anyString );
+		}};
+
+		// Execute
+		val result = instance.getChangeableWorkingTimezones(require);
+
+		// Assertion
+		assertThat( result ).isEmpty();
+
+	}
+	
+	/**
+	 * Target	: getChangeableWorkingTimezones
+	 * Pattern	: 出勤日区分 == 休日
+	 * Result	: Output -> List.empty
+	 */
+	@Test
+	public void getChangeableWorkingTimezones_checkAttendanceDay_holiday(
+			@Injectable WorkType workType, 
+			@Injectable WorkTimeSetting workTime, 
+			@Injectable WorkSetting workSetting) {
+
+		// 勤務情報
+		val instance = new WorkInformation( "WorkTypeCode", "WorkTimeCode" );
+
+		new Expectations() {{
+			// 勤務種類を取得する
+			require.getWorkType( anyString );
+			result = Optional.of(workType);
+
+			// 就業時間帯を取得する
+			require.getWorkTime( anyString );
+			result = Optional.of(workTime);
+			// 勤務設定を取得する
+			workTime.getWorkSetting( require );
+			result = workSetting;
+			
+			// 出勤日区分を取得する
+			workType.chechAttendanceDay();
+			result = AttendanceDayAttr.HOLIDAY;
 		}};
 
 		// Execute
@@ -1113,5 +1202,57 @@ public class WorkInformationTest {
 		assertThat( target.isSame(otherObject) ).isTrue();
 	}
 
+	/**
+	 * input: workStyle != 1日休日系
+	 * output: true
+	 */
+	@Test
+	public void isAttendanceRate_True() {
+		val workInfo = new WorkInformation("01", "01");
+		new Expectations(workInfo) {
+			{				
+				workInfo.getWorkStyle(require);
+				result = Optional.of(WorkStyle.ONE_DAY_WORK);
+			}
+		};
+		
+		assertThat(workInfo.isAttendanceRate(require)).isTrue();
 
+	}
+	
+	/**
+	 * input: workStyle = 1日休日系
+	 * output: false
+	 */
+	@Test
+	public void isAttendanceRate_False() {
+		val workInfo = new WorkInformation("01", "01");
+		new Expectations(workInfo) {
+			{
+				workInfo.getWorkStyle(require);
+				result = Optional.of(WorkStyle.ONE_DAY_REST);
+			}
+		};
+		
+		assertThat(workInfo.isAttendanceRate(require)).isFalse();
+
+	}
+	
+	/**
+	 * input: workStyle = empty
+	 * output: false
+	 */
+	@Test
+	public void isAttendanceRate_workStyle_Empty() {
+		val workInfo = new WorkInformation("01", "01");
+		new Expectations(workInfo) {
+			{
+				workInfo.getWorkStyle(require);
+			}
+		};
+		
+		assertThat(workInfo.isAttendanceRate(require)).isFalse();
+
+	}
+	
 }

@@ -5,6 +5,11 @@ import java.util.Optional;
 import lombok.Data;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
+/**
+ * @author anhnm
+ * 時間消化申請
+ *
+ */
 @Data
 public class TimeDigestApplication {
 
@@ -29,6 +34,7 @@ public class TimeDigestApplication {
             AttendanceTime timeSpecialVacation, 
             AttendanceTime timeAnualLeave, 
             Optional<Integer> specialVacationFrameNO) {
+        this.overtime60H = overtime60H;
         this.nursingTime = nursingTime;
         this.childTime = childTime;
         this.timeOff = timeOff;

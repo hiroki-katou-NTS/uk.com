@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.shared.dom;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +8,8 @@ import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import lombok.val;
+import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
@@ -51,6 +53,18 @@ public class WorkInfoAndTimeZoneTest {
 		assertThat(workInfoAndTimeZone.getWorkType()).isEqualTo(workType);
 		assertThat(workInfoAndTimeZone.getWorkTime().isPresent()).isFalse();
 		assertThat(workInfoAndTimeZone.getTimeZones().isEmpty()).isTrue();
+	}
+	
+	@Test
+	public void testCreateWithoutPredetermineTimeZone(
+			@Injectable WorkType workType,
+			@Injectable WorkTimeSetting workTime) {
+		
+		val result = WorkInfoAndTimeZone.createWithoutPredetermineTimeZone(workType, workTime);
+		
+		assertThat( result.getWorkType() ).isEqualTo( workType );
+		assertThat( result.getWorkTime().get() ).isEqualTo( workTime );
+		assertThat( result.getTimeZones() ).isEmpty();
 	}
 
 }
