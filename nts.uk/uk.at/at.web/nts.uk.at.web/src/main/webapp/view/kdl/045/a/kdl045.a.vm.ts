@@ -126,7 +126,6 @@ module nts.uk.at.view.kdl045.a {
             isDisableA5_21: KnockoutObservable<boolean> = ko.observable(true);
             isDisableA5_23: KnockoutObservable<boolean> = ko.observable(true);
             isDisableA5_26: KnockoutObservable<boolean> = ko.observable(true);
-            isDisableA5_27: KnockoutObservable<boolean> = ko.observable(true);
             isDisableA11_3: KnockoutObservable<boolean> = ko.observable(true);
             isDisableA13_1: KnockoutObservable<boolean> = ko.observable(true);
             isDisableA13_2: KnockoutObservable<boolean> = ko.observable(true);
@@ -152,13 +151,15 @@ module nts.uk.at.view.kdl045.a {
             workTimeForm : KnockoutObservable<number>;
             workStyle :KnockoutObservable<number> = ko.observable(null);
             
+            checkIsHoliday   : KnockoutObservable<boolean> = ko.observable(false); 
+            
             disableA10  : KnockoutObservable<boolean> = ko.observable(false);
             
             constructor() {
                 let self = this;
 
                 self.employee = ko.observable(getShared('dataShareTo045'));
-                self.canModified = self.employee().canModified == 1 ? true : false;
+                self.canModified = (self.employee().canModified == 1 && self.employee().employeeInfo.workInfoDto.isConfirmed == 0) ? true : false;
                 self.tabs = ko.observableArray([
                     { id: 'tab-1', title: getText('KDL045_6'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'tab-2', title: getText('KDL045_7'), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) }
@@ -181,6 +182,18 @@ module nts.uk.at.view.kdl045.a {
 				}
 				// do có trường hợp fixedWorkInforDto = null nên đang fix tạm - TQP
                 self.fixBreakTime(self.employee().employeeInfo.fixedWorkInforDto != null ? self.employee().employeeInfo.fixedWorkInforDto.fixBreakTime ==1 ? true:false : false);
+                if(self.fixBreakTime()){
+                    self.isEnableAllControl(true);
+                }else{
+                    self.isEnableAllControl(false);    
+                }
+                self.fixBreakTime.subscribe(value => {
+                    if(value){
+                        self.isEnableAllControl(true);
+                    }else{
+                        self.isEnableAllControl(false);    
+                    }
+                });
                 self.workTimeForm = self.employee().employeeInfo.fixedWorkInforDto != null ?  ko.observable(self.employee().employeeInfo.fixedWorkInforDto.workType) : ko.observable();
                 self.includingWorkType(_.includes(self.employee().scheCorrection, self.workTimeForm()));
                 //listData
@@ -205,7 +218,7 @@ module nts.uk.at.view.kdl045.a {
                     endTime: self.employee().employeeInfo.workScheduleDto != null && self.employee().employeeInfo.workScheduleDto.endTime2 != '' ? self.employee().employeeInfo.workScheduleDto.endTime2 : null});
                 self.isShowTimeRange2 = (self.employee().targetInfor == 1 ? true : false);
                 if(self.employee().employeeInfo.workScheduleDto == null || (self.employee().employeeInfo.workScheduleDto.startTime2 == 0 || self.employee().employeeInfo.workScheduleDto.endTime2 == 0)
-					|| (self.employee().employeeInfo.workScheduleDto.startTime2 == null || self.employee().employeeInfo.workScheduleDto.endTime2 == null)
+					|| (self.employee().employeeInfo.workScheduleDto.startTime2 == null || self.employee().employeeInfo.workScheduleDto.endTime2 == null) || self.workTimeForm() == 1
 					){
                     self.isEnableA5_9(false);
                 }
@@ -411,6 +424,11 @@ module nts.uk.at.view.kdl045.a {
                     self.displayByIncludingWorkType(value);
                 });
                 self.workStyle.subscribe(style =>{
+                    if(style != null && style !=0){
+                        self.checkIsHoliday(false);    
+                    }else{
+                        self.checkIsHoliday(true);
+                    }
                     self.displayByWorkStyle(style);
                 });
             }
@@ -485,8 +503,11 @@ module nts.uk.at.view.kdl045.a {
                 $.when(self.getInformationStartup()).done(function() {
                     self.displayInformationStartup();
                     if(self.workStyle() !=null && self.workStyle() !=0){
+                        self.checkIsHoliday(false);
                         self.workTime.valueHasMutated();
                         self.displayByIncludingWorkType(self.includingWorkType());
+                    }else{
+                        self.checkIsHoliday(true);
                     }
                     nts.uk.ui.block.clear();
                     dfd.resolve();
@@ -551,7 +572,8 @@ module nts.uk.at.view.kdl045.a {
                     self.isEnableA5_9(true); //enable A5_10,A5_11
                     //enable A5_19,A5_20
                     self.isEnableAllControl(true);
-                    if( (self.timeRange2Value().startTime == 0 && self.timeRange2Value().endTime == 0) || (self.timeRange2Value().startTime == "" && self.timeRange2Value().endTime == "")){
+                    if( (self.timeRange2Value().startTime == 0 && self.timeRange2Value().endTime == 0) || (self.timeRange2Value().startTime == "" && self.timeRange2Value().endTime == "") 
+                        || self.workTimeForm() == 1 ){
                         self.isEnableA5_9(false); //disenable A5_10,A5_11
                         let timeRange2ScreenModel = $("#a5-9").data("screenModel");
                             if (timeRange2ScreenModel) {
@@ -780,7 +802,7 @@ module nts.uk.at.view.kdl045.a {
                         self.isEnableA5_9(true);
                         self.isEnableAllControl(true);
                         if((self.timeRange2Value().startTime == 0 && self.timeRange2Value().endTime == 0)
-                            || (self.timeRange2Value().startTime == "" && self.timeRange2Value().endTime == "")){
+                            || (self.timeRange2Value().startTime == "" && self.timeRange2Value().endTime == "") || self.workTimeForm() == 1){
                             self.isEnableA5_9(false); //disenable A5_10,A5_11
                             let timeRange2ScreenModel = $("#a5-9").data("screenModel");
                             if (timeRange2ScreenModel) {
@@ -1042,41 +1064,41 @@ module nts.uk.at.view.kdl045.a {
                     }
                 }  
                 
-                if(self.checkDataSourceTime()){
-                    $('#kdl045').ntsError('set',{ messageId: 'Msg_1793' });
-                    $('#kdl045').focus();
-                }
+//                if(self.checkDataSourceTime()){
+//                    $('#kdl045').ntsError('set',{ messageId: 'Msg_1793' });
+//                    $('#kdl045').focus();
+//                }
                 
                 return checkError;
 
             }
             //kiểm tra xem các khoảng break time có thuộc khoảng tg của WorkNO hay k
-            private checkDataSourceTime():boolean{
-                let self = this;
-                //Trường hợp tồn tại workNo 1
-                if(self.isEnableA5_5() && (!self.isEnableA5_9() || !self.isShowTimeRange2)){
-                    for(let i = 0; i <self.dataSourceTime().length;i++){
-                        if(! (self.dataSourceTime()[i].range1().startTime >= self.timeRange1Value().startTime 
-                                && self.dataSourceTime()[i].range1().endTime <= self.timeRange1Value().endTime)){
-                            return true;
-                        }
-                    }
-                }
-                //Trường hợp tồn tại workNo 1 và 2
-                if(self.isEnableA5_5() && self.isEnableA5_9() && self.isShowTimeRange2){
-                    for(let i = 0; i <self.dataSourceTime().length;i++){
-                        if(!( (self.dataSourceTime()[i].range1().startTime >= self.timeRange1Value().startTime 
-                                && self.dataSourceTime()[i].range1().endTime <= self.timeRange1Value().endTime) ||
-                               (self.dataSourceTime()[i].range1().startTime >= self.timeRange2Value().startTime 
-                                    && self.dataSourceTime()[i].range1().endTime <= self.timeRange2Value().endTime)
-                             )){
-                            return true;
-                        }
-                    }
-                }
-                return false;
-                
-            }
+//            private checkDataSourceTime():boolean{
+//                let self = this;
+//                //Trường hợp tồn tại workNo 1
+//                if(self.isEnableA5_5() && (!self.isEnableA5_9() || !self.isShowTimeRange2)){
+//                    for(let i = 0; i <self.dataSourceTime().length;i++){
+//                        if(! (self.dataSourceTime()[i].range1().startTime >= self.timeRange1Value().startTime 
+//                                && self.dataSourceTime()[i].range1().endTime <= self.timeRange1Value().endTime)){
+//                            return true;
+//                        }
+//                    }
+//                }
+//                //Trường hợp tồn tại workNo 1 và 2
+//                if(self.isEnableA5_5() && self.isEnableA5_9() && self.isShowTimeRange2){
+//                    for(let i = 0; i <self.dataSourceTime().length;i++){
+//                        if(!( (self.dataSourceTime()[i].range1().startTime >= self.timeRange1Value().startTime 
+//                                && self.dataSourceTime()[i].range1().endTime <= self.timeRange1Value().endTime) ||
+//                               (self.dataSourceTime()[i].range1().startTime >= self.timeRange2Value().startTime 
+//                                    && self.dataSourceTime()[i].range1().endTime <= self.timeRange2Value().endTime)
+//                             )){
+//                            return true;
+//                        }
+//                    }
+//                }
+//                return false;
+//                
+//            }
 
             private showTimeByPeriod(startTime: number, endTime: number): string {
                 let start = (startTime != null || startTime <= 0) ?
