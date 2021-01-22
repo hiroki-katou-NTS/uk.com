@@ -54,7 +54,7 @@ public class AnnualWorkLedgerOutputSettingTest {
 
     /**
      * Test:
-     * - Getter: WorkStatusOutputSettings
+     * - Getter: AnnualWorkLedgerOutputSetting
      * - SettingClassificationCommon: FREE_SETTING
      */
     @Test
@@ -65,7 +65,7 @@ public class AnnualWorkLedgerOutputSettingTest {
 
     /**
      * Test:
-     * - Getter: WorkStatusOutputSettings
+     * - Getter: AnnualWorkLedgerOutputSetting
      * - SettingClassificationCommon: STANDARD_SELECTION
      */
     @Test
