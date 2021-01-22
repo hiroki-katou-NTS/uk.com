@@ -4,14 +4,15 @@ module nts.uk.at.view.kwr007.a {
   import common = nts.uk.at.view.kwr007.common;
   import ComponentOption = kcp.share.list.ComponentOption;
 
-  const KWR005_SAVE_DATA = 'WORK_SCHEDULE_STATUS_OUTPUT_CONDITIONS';
+  const KWR007_SAVE_DATA = 'WORK_SCHEDULE_STATUS_OUTPUT_CONDITIONS';
 
   const PATH = {
     exportExcelPDF: 'at/function/kwr/005/report/export',
     getSettingListWorkStatus: 'at/function/kwr/005/a/listworkledger',
     checkDailyAuthor: 'at/function/kwr/checkdailyauthor',
-    getPeriodListing: 'at/function/kwr/005/a/beginningmonth',
-    //getInit: 'at/screen/kwr/005/b/getinfor',    
+    //getPeriodListing: 'at/function/kwr/005/a/beginningmonth',
+    getPeriodList: 'at/record/kwr/007/a/arbitraryaggregatio/getlist',
+    getPermissions: 'at/function/kwr/007/a/getroleinfor',
   };
 
   @bean()
@@ -36,7 +37,7 @@ module nts.uk.at.view.kwr007.a {
 
     zeroDisplayClassification: KnockoutObservable<number> = ko.observable(0);
     pageBreakSpecification: KnockoutObservable<number> = ko.observable(0);
-    isWorker: KnockoutObservable<boolean> = ko.observable(true);
+    isEmploymentPerson: KnockoutObservable<boolean> = ko.observable(true);
     settingListItems1: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
     settingListItems2: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
 
@@ -65,6 +66,7 @@ module nts.uk.at.view.kwr007.a {
     periodDate: KnockoutObservable<any> = ko.observable(null);
 
     periodDateList: KnockoutObservableArray<PeriodItem> = ko.observableArray([]);
+    periodSelectedCode: KnockoutObservable<string> = ko.observable(null);
     workplaceHierarchyList: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
     workplaceHierarchyId: KnockoutObservable<number> = ko.observable(null);
 
@@ -79,9 +81,6 @@ module nts.uk.at.view.kwr007.a {
       super();
       const vm = this;
 
-
-      //パラメータ.就業担当者であるか = true || false
-      vm.isWorker(vm.$user.role.isInCharge.attendance);
       vm.getPeriodListing();
       vm.getItemSelection();
       vm.getSettingListItems();
@@ -92,7 +91,7 @@ module nts.uk.at.view.kwr007.a {
         vm.isEnableStdBtn(!nts.uk.util.isNullOrEmpty(vm.standardSelectedCode()));
         vm.isEnableFreeBtn(!nts.uk.util.isNullOrEmpty(vm.freeSelectedCode()));
         //focus
-        let focusId = value === 0 ? '#KWR005_105' : '#KWR005_106';
+        let focusId = value === 0 ? '#KWR007_105' : '#KWR007_106';
         $(focusId).focus();
         nts.uk.ui.errors.clearAll();
       });
@@ -328,31 +327,52 @@ module nts.uk.at.view.kwr007.a {
 
       //【社員】が選択されていません。
       if (nts.uk.util.isNullOrEmpty(vm.multiSelectedCode())) {
-        vm.$dialog.error({ messageId: 'Msg_1923' }).then(() => { });
+        vm.$dialog.error({ messageId: 'Msg_1890' }).then(() => { });
         hasError.error = true;
         hasError.focusId = 'kcp005';
         return hasError;
       }
-      //自由設定が選択されていません。 
-      if (vm.rdgSelectedId() === 1 && nts.uk.util.isNullOrEmpty(vm.freeSelectedCode())) {
-        vm.$dialog.error({ messageId: 'Msg_1924' }).then(() => { });
 
-        hasError.error = true;
-        hasError.focusId = 'KWR005_106';
-        //$('#' + hasError.focusId).ntsError('check');
-        return hasError;
-      }
       //定型選択が選択されていません。 
       if (vm.rdgSelectedId() === 0 && nts.uk.util.isNullOrEmpty(vm.standardSelectedCode())) {
-        vm.$dialog.error({ messageId: 'Msg_1925' }).then(() => { });
+        vm.$dialog.error({ messageId: 'Msg_1891' }).then(() => { });
         hasError.error = true;
-        hasError.focusId = 'KWR005_105';
-        //$('#' + hasError.focusId).ntsError('check');
+        hasError.focusId = 'A5_3_2';
+        return hasError;
+      }
+
+      //自由設定が選択されていません。 
+      if (vm.rdgSelectedId() === 1 && nts.uk.util.isNullOrEmpty(vm.freeSelectedCode())) {
+        vm.$dialog.error({ messageId: 'Msg_1892' }).then(() => { });
+        hasError.error = true;
+        hasError.focusId = 'A5_4_2';
+        return hasError;
+      }
+
+      //明細・合計出力設定
+      let isHasOutput: Boolean = true;
+      isHasOutput = _.some(vm.detailsOutputSettings(), (x) => x.checked() === true);
+      if( !isHasOutput ) {
+        vm.$dialog.error({ messageId: 'Msg_1894' }).then(() => { });
+        hasError.error = true;
+        hasError.focusId = 'A82_85';
+        return hasError;
+      }
+
+      //累計したい職場階層を指定
+      let isCheckedCumulative: Boolean = true; //Cumulative number of workplaces
+      isCheckedCumulative = vm.detailsOutputSettings()[3].checked();
+      let totalCumulative = _.filter(vm.specifyWorkplaceHierarchy(), (x) => x.checked() === true).length;
+
+      if( isCheckedCumulative && (totalCumulative === 0 || totalCumulative > 5 )) {
+        vm.$dialog.error({ messageId: 'Msg_1184' }).then(() => { });
+        hasError.error = true;
+        hasError.focusId = 'A8_5_1';
         return hasError;
       }
 
       return hasError;
-      //勤務状況表の対象ファイルを出力する | 対象データがありません
+
     }
 
     removeDuplicateItem(listItems: Array<any>): Array<any> {
@@ -400,7 +420,6 @@ module nts.uk.at.view.kwr007.a {
         }
 
         let params = {
-          //mode: mode, //ExcelPdf区分
           lstEmpIds: lstEmployeeIds, //社員リスト
           startMonth: _.toInteger(vm.periodDate().startDate), //対象年月,        
           endMonth: _.toInteger(vm.periodDate().endDate),
@@ -420,7 +439,6 @@ module nts.uk.at.view.kwr007.a {
           });
         }).always(() => vm.$blockui('hide'));
       });
-      //create an excel file and redirect to download
     }
 
     saveWorkScheduleOutputConditions(): JQueryPromise<void> {
@@ -429,15 +447,28 @@ module nts.uk.at.view.kwr007.a {
         companyId: string = vm.$user.companyId,
         employeeId: string = vm.$user.employeeId;
 
+      let detailsOutput: Array<any> = [];
+      _.forEach(vm.detailsOutputSettings(), (x: CheckBoxItem) => {
+        detailsOutput.push(x.toSave());
+      });
+
+      let levels: Array<any> = [];
+      _.forEach(vm.specifyWorkplaceHierarchy(), (x: CheckBoxItem) => {
+        levels.push(x.toSave());
+      });
+
       let data: WorkScheduleOutputConditions = {
-        itemSelection: vm.rdgSelectedId(), //項目選択
-        standardSelectedCode: vm.standardSelectedCode(), //定型選択
-        freeSelectedCode: vm.freeSelectedCode(), //自由設定
-        zeroDisplayClassification: vm.zeroDisplayClassification(), //自由の選択済みコード
-        pageBreakSpecification: vm.pageBreakSpecification() //改ページ指定
+        itemSelection: vm.rdgSelectedId(), //項目選択の選択肢
+        standardSelectedCode: vm.standardSelectedCode(), //定型選択リスト
+        freeSelectedCode: vm.freeSelectedCode(), //自由設定リスト
+        zeroDisplayClassification: vm.zeroDisplayClassification(), //ゼロ表示区分選択肢
+        pageBreakSpecification: vm.pageBreakSpecification(), //改ページの選択肢
+        workplaceHierarchyId: vm.workplaceHierarchyId(), //			職場階層リスト		
+        detailsOutputSettings: detailsOutput,//明細	+ 職場計 + /総合計 + 職場累計      	
+        levels: levels,//1階層 -> 9階層
       };
 
-      let storageKey: string = KWR005_SAVE_DATA + "_companyId_" + companyId + "_employeeId_" + employeeId;
+      let storageKey: string = KWR007_SAVE_DATA + "_companyId_" + companyId + "_employeeId_" + employeeId;
       vm.$window.storage(storageKey, data).then(() => {
         dfd.resolve();
       });
@@ -451,7 +482,7 @@ module nts.uk.at.view.kwr007.a {
         companyId: string = vm.$user.companyId,
         employeeId: string = vm.$user.employeeId;
 
-      let storageKey: string = KWR005_SAVE_DATA + "_companyId_" + companyId + "_employeeId_" + employeeId;
+      let storageKey: string = KWR007_SAVE_DATA + "_companyId_" + companyId + "_employeeId_" + employeeId;
 
       vm.$window.storage(storageKey).then((data: WorkScheduleOutputConditions) => {
 
@@ -465,6 +496,27 @@ module nts.uk.at.view.kwr007.a {
           vm.freeSelectedCode(!_.isNil(freeCode) ? data.freeSelectedCode : null); //自由設定
           vm.zeroDisplayClassification(data.zeroDisplayClassification); //自由の選択済みコード
           vm.pageBreakSpecification(data.pageBreakSpecification); //改ページ指定
+
+          let detailsOutput = data.detailsOutputSettings;
+          vm.specifyWorkplaceHierarchy()
+
+          if (!_.isNil(detailsOutput) && detailsOutput.length > 0) {
+            _.forEach(vm.detailsOutputSettings(), (x, index) => {
+              if (detailsOutput[index].code === x.code) {
+                vm.detailsOutputSettings()[index].checked(detailsOutput[index].checked);
+                if (x.code === 4) vm.isEnableSpecifyWP(detailsOutput[index].checked);
+              }
+            });
+          }
+
+          let workplaceHierarchy = data.levels; //Specify Workplace Hierarchy
+          if (!_.isNil(workplaceHierarchy) && workplaceHierarchy.length > 0) {
+            _.forEach(vm.specifyWorkplaceHierarchy(), (x, index) => {
+              if (workplaceHierarchy[index].code === x.code) {
+                vm.specifyWorkplaceHierarchy()[index].checked(workplaceHierarchy[index].checked);
+              }
+            });
+          }
         }
       }).always(() => { });
     }
@@ -472,25 +524,31 @@ module nts.uk.at.view.kwr007.a {
     getItemSelection() {
       const vm = this;
 
-      vm.itemSelection.push({ id: 0, name: vm.$i18n('KWR005_6') });
+      vm.itemSelection.push({ id: 0, name: vm.$i18n('KWR007_6') });
       vm.$ajax(PATH.checkDailyAuthor, { roleId: vm.$user.role.attendance }).done((permission) => {
         vm.isPermission51(permission);
-        vm.itemSelection.push({ id: 1, name: vm.$i18n('KWR005_7'), enable: permission });
+        vm.itemSelection.push({ id: 1, name: vm.$i18n('KWR007_7'), enable: permission });
       });
+
+      //就業担当者か								
+      vm.$ajax(PATH.getPermissions).done((permission) => {
+        if (permission) vm.isEmploymentPerson(permission.employeeCharge);
+      });
+
     }
 
     getPeriodListing() {
       const vm = this;
 
-      //------------------------------
-
-      vm.periodDateList.push(new PeriodItem('A01', '2020/09/02 ~ 2020/09/02'));
-      vm.periodDateList.push(new PeriodItem('A02', '2020/09/02 ~ 2020/09/02'));
-      vm.periodDateList.push(new PeriodItem('A03', '2020/09/02 ~ 2020/09/02'));
-      vm.periodDateList.push(new PeriodItem('A04', '2020/09/02 ~ 2020/09/02'));
-      vm.periodDateList.push(new PeriodItem('A05', '2020/09/02 ~ 2020/09/02'));
-      vm.periodDateList.push(new PeriodItem('A06', '2020/09/02 ~ 2020/09/02'));
-      vm.periodDateList.push(new PeriodItem('A07', '2020/09/02 ~ 2020/09/02'));
+      vm.$ajax(PATH.getPeriodList).done((data) => {
+        if (data && data.length > 0) {
+          _.forEach(data, (x) => {
+            let displayText = x.aggrFrameCode + ' ' + x.optionalAggrName + ' ' + x.startDate + ' ～ ' + x.endDate;
+            x.displayText = displayText;
+            vm.periodDateList.push(new PeriodItem(x));
+          })
+        }
+      });
 
       //#KWR007_17～#KWR007_25
       for (let i = 1; i <= 9; i++) {
@@ -508,56 +566,31 @@ module nts.uk.at.view.kwr007.a {
         vm.detailsOutputSettings.push(item);
 
         item.checked.subscribe((value: any) => {
-          vm.isEnableSpecifyWP(value && item.code === 4);
+          if (item.code === 4) {
+            vm.isEnableSpecifyWP(value);
+          }
         });
       }
       //累計したい職場階層を指定- #KWR007_32～#KWR007_41
       for (let i = 1; i <= 9; i++) {
         let textResource = 'KWR007_' + (31 + i).toString();
-        let item = new CheckBoxItem(i, vm.$i18n(textResource), false , textResource);
+        let item = new CheckBoxItem(i, vm.$i18n(textResource), false, textResource);
         vm.specifyWorkplaceHierarchy.push(item);
       }
-
-      /* let startDate = moment().toDate(),
-        endDate = moment(startDate).add(1, 'year').subtract(1, 'month').toDate();
-
-      vm.periodDate({
-        startDate: startDate,
-        endDate: endDate
-      });
-
-      const currentYear = moment().format('YYYY');
-
-      vm.$ajax(PATH.getPeriodListing)
-        .done((result) => {
-          if (result && _.isNumber(result.startMonth)) {
-            //システム日付の月　＜　期首月　
-            const startMonth = _.toInteger(result.startMonth);
-            if (startMonth > _.toInteger(moment().format('MM'))) {
-              endDate = moment(currentYear + '/' + startMonth + '/01').toDate();
-              startDate = moment(endDate).subtract(1, 'year').add(1, 'month').toDate();
-            } else { //システム日付の月　＞=　期首月　
-              startDate = moment(currentYear + '/' + startMonth + '/01').toDate();
-              endDate = moment(startDate).add(1, 'year').subtract(1, 'month').toDate();
-            }
-
-            vm.periodDate({
-              startDate: startDate,
-              endDate: endDate
-            });
-          }
-        })
-        .fail(() => { });
-    } */
     }
+  }
 
   //=================================================================
+
   export interface WorkScheduleOutputConditions {
     itemSelection?: number, //項目選択
     standardSelectedCode?: string, //定型選択
     freeSelectedCode?: string, //自由設定
     zeroDisplayClassification?: number, //自由の選択済みコード
     pageBreakSpecification?: number //改ページ指定
+    workplaceHierarchyId?: number, //			職場階層リスト		
+    detailsOutputSettings?: Array<any>,//明細	+ 職場計 + /総合計 + 職場累計      	
+    levels?: Array<any>,//1階層 -> 9階層
   }
 
   export class ItemModel {
@@ -572,11 +605,15 @@ module nts.uk.at.view.kwr007.a {
   }
 
   export class PeriodItem {
-    code: string;
-    period: string;
-    constructor(code: string, period: string) {
-      this.code = code;
-      this.period = period;
+    companyId: string;
+    aggrFrameCode: string;
+    optionalAggrName: string;
+    startDate: string;
+    endDate: string;
+    displayText: string;
+
+    constructor(init?: Partial<PeriodItem>) {
+      $.extend(this, init);
     }
   }
 
@@ -590,6 +627,10 @@ module nts.uk.at.view.kwr007.a {
       this.name = name;
       this.checked(checked);
       this.nameId = '#[' + nameId + ']';
+    }
+
+    toSave() {
+      return { code: this.code, checked: this.checked() };
     }
   }
 }

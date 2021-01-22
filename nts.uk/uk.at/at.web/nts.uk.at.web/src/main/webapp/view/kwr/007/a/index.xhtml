@@ -52,32 +52,17 @@
                     data-bind="ntsComboBox: {
                       name: $i18n('KWR007_4'),
                       options: periodDateList,
-                      optionsValue: 'code',
-                      visibleItemsCount: 5,
-                      value: standardSelectedCode,
-                      optionsText: 'period',
+                      optionsValue: 'aggrFrameCode',
+                      visibleItemsCount: 10,
+                      value: periodSelectedCode,
+                      optionsText: 'displayText',
                       editable: false,
                       enable: true,
                       required: true,
-                      selectFirstIfNull: true,
-                      columns: [
-                        { prop: 'code', length: 3 },
-                        { prop: 'period', length: 35 },
-                      ]}"
+                      selectFirstIfNull: true
+                    }"
                   ></div>
-                </div>
-                <div class="row">
-                  <!-- A2_3-->
-                  <div
-                    class="date-time-picker-label"
-                    data-bind="ntsFormLabel: {}, text:  $i18n('KWR007_42')"
-                  ></div>
-                  <!-- Current Time A2_4-->
-                  <div
-                    class="date-time-picker-label"
-                    data-bind="text: executionDateTime"
-                  ></div>
-                </div>
+                </div>               
               </div>
               <!-- A3 -->
               <div tabindex="4" id="kcp005" class="panel panel-frame"></div>
@@ -114,7 +99,7 @@
                       <!-- A5_3_2 - KWR007_6-->
                       <div
                         tabindex="6"
-                        id="KWR007_105"
+                        id="A5_3_2"
                         data-bind="ntsComboBox: {
                           name: $i18n('KWR007_6'),
                           options: settingListItems1,
@@ -134,7 +119,7 @@
                       <!-- A5_3_3-->
                       <button
                         tabindex="7"
-                        data-bind="enable: isEnableSelectedCode() &amp;&amp; isWorker, 
+                        data-bind="enable: isEnableSelectedCode() &amp;&amp; isEmploymentPerson, 
                                   click: showDialogScreenB, text: $i18n('KWR007_8')"
                       />
                     </div>
@@ -142,7 +127,7 @@
                       <!-- A5_4_2 - KWR007_7-->
                       <div
                         tabindex="8"
-                        id="KWR007_106"
+                        id="A5_4_2"
                         data-bind="ntsComboBox: {
                           name: $i18n('KWR007_7'),
                           options:  settingListItems2,
@@ -247,12 +232,12 @@
                   ></div>
                 </div>
                 <div class="row-right">
-                  <div class="check-list check-list-1" data-bind="foreach: detailsOutputSettings">
+                  <div tabindex="-1" id="A82_85" class="check-list check-list-1" data-bind="foreach: detailsOutputSettings">
                     <div tabindex="13" class="checkbox-item" data-bind="ntsCheckBox: { checked: checked, text: name, name: nameId }"></div>
                   </div>
                   <div class="check-list check-list-2 multiple-check panel panel-frame">
                     <div class="lable" data-bind="text: $i18n('KWR007_31')"></div>
-                    <div class="check-list-item" data-bind="foreach: specifyWorkplaceHierarchy">
+                    <div tabindex="-1" id="A8_5_1" class="check-list-item" data-bind="foreach: specifyWorkplaceHierarchy">
                       <div tabindex="17" class="checkbox-item" 
                       data-bind="ntsCheckBox: { checked: checked, enable: $parent.isEnableSpecifyWP, text: name,name: nameId }"></div>
                     </div>

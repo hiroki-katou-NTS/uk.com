@@ -27,7 +27,7 @@
   padding-left: 0 !important;
 }
 .kwr-007 .employees-list .date-time-picker .ui-igcombo-wrapper {
-  width: 270px;
+  width: 100%;
 }
 
 .kwr-007 .fixed-flex-layout-right {
@@ -39,7 +39,7 @@
 }
 .kwr-007 .panel .panel-row {
   display: flex;
-  margin-bottom: 25px;
+  margin-bottom: 14px;
 }
 
 .kwr-007 .panel .panel-row .row-left {
