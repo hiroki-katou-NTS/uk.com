@@ -1257,8 +1257,23 @@ module nts.uk.ui.components.fullcalendar {
                             header.append(_events);
                             header.append(__times);
 
-                            ko.applyBindingsToNode(__times, { component: { name: 'fc-times', params: timesSet } });
-                            ko.applyBindingsToNode(_events, { component: { name: 'fc-events', params: attendancesSet } });
+                            $.Deferred()
+                                .resolve(true)
+                                .then(() => {
+                                    ko.applyBindingsToNode(__times, { component: { name: 'fc-times', params: timesSet } });
+                                    ko.applyBindingsToNode(_events, { component: { name: 'fc-events', params: attendancesSet } });
+                                })
+                                .then(() => {
+                                    // update height
+                                    const fce = vm.calendar.el.getBoundingClientRect();
+
+                                    if (fce) {
+                                        const { top } = fce;
+                                        const { innerHeight } = window;
+
+                                        vm.calendar.setOption('height', `${innerHeight - top - 10}px`);
+                                    }
+                                });
                         }
                     }
                 },
@@ -1546,16 +1561,6 @@ module nts.uk.ui.components.fullcalendar {
             });
 
             vm.calendar.render();
-
-            // update height
-            const fce = vm.calendar.el.getBoundingClientRect();
-
-            if (fce) {
-                const { top } = fce;
-                const { innerHeight } = window;
-
-                vm.calendar.setOption('height', `${innerHeight - top - 10}px`);
-            }
 
             // change weekends 
             ko.computed({
@@ -2230,6 +2235,9 @@ module nts.uk.ui.components.fullcalendar {
                     },
                     disposeWhenNodeIsRemoved: $el
                 });
+
+                // fix display on ie
+                vm.$el.removeAttribute('style');
             }
         }
 
@@ -2268,6 +2276,9 @@ module nts.uk.ui.components.fullcalendar {
                     },
                     disposeWhenNodeIsRemoved: $el
                 });
+
+                // fix display on ie
+                vm.$el.removeAttribute('style');
             }
 
             formatTime(time: number) {
