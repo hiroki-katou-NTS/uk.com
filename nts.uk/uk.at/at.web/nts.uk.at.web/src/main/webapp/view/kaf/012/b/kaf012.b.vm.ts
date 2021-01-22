@@ -209,6 +209,10 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                     if(vm.leaveType() == LeaveType.COMBINATION && _.isFunction(vm.childCalcEvent)) {
                         vm.childCalcEvent();
                     }
+
+                    vm.$nextTick(() => {
+                        $("#updateKAF000").focus();
+                    });
                 }
             }).fail(err => {
                 vm.$dialog.error(err);

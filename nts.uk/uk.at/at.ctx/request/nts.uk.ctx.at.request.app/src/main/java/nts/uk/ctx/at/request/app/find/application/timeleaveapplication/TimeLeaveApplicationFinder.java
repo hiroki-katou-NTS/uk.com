@@ -284,65 +284,69 @@ public class TimeLeaveApplicationFinder {
                     break;
                 case FifteenMinute:
                     if (calculationResult.getTimeBeforeWork1() % 15 != 0)
-                        calculationResult.setTimeBeforeWork1(((calculationResult.getTimeBeforeWork1() / 15) + 1) * 15);
+                        calculationResult.setTimeBeforeWork1(roundUpTime(calculationResult.getTimeBeforeWork1(), 15));
                     if (calculationResult.getTimeAfterWork1() % 15 != 0)
-                        calculationResult.setTimeAfterWork1(((calculationResult.getTimeAfterWork1() / 15) + 1) * 15);
+                        calculationResult.setTimeAfterWork1(roundUpTime(calculationResult.getTimeAfterWork1(), 15));
                     if (calculationResult.getTimeBeforeWork2() % 15 != 0)
-                        calculationResult.setTimeBeforeWork2(((calculationResult.getTimeBeforeWork2() / 15) + 1) * 15);
+                        calculationResult.setTimeBeforeWork2(roundUpTime(calculationResult.getTimeBeforeWork2(), 15));
                     if (calculationResult.getTimeAfterWork2() % 15 != 0)
-                        calculationResult.setTimeAfterWork2(((calculationResult.getTimeAfterWork2() / 15) + 1) * 15);
+                        calculationResult.setTimeAfterWork2(roundUpTime(calculationResult.getTimeAfterWork2(), 15));
                     if (calculationResult.getPrivateOutingTime() % 15 != 0)
-                        calculationResult.setPrivateOutingTime(((calculationResult.getPrivateOutingTime() / 15) + 1) * 15);
+                        calculationResult.setPrivateOutingTime(roundUpTime(calculationResult.getPrivateOutingTime(), 15));
                     if (calculationResult.getUnionOutingTime() % 15 != 0)
-                        calculationResult.setUnionOutingTime(((calculationResult.getUnionOutingTime() / 15) + 1) * 15);
+                        calculationResult.setUnionOutingTime(roundUpTime(calculationResult.getUnionOutingTime(), 15));
                     break;
                 case ThirtyMinute:
                     if (calculationResult.getTimeBeforeWork1() % 30 != 0)
-                        calculationResult.setTimeBeforeWork1(((calculationResult.getTimeBeforeWork1() / 30) + 1) * 30);
+                        calculationResult.setTimeBeforeWork1(roundUpTime(calculationResult.getTimeBeforeWork1(), 30));
                     if (calculationResult.getTimeAfterWork1() % 30 != 0)
-                        calculationResult.setTimeAfterWork1(((calculationResult.getTimeAfterWork1() / 30) + 1) * 30);
+                        calculationResult.setTimeAfterWork1(roundUpTime(calculationResult.getTimeAfterWork1(), 30));
                     if (calculationResult.getTimeBeforeWork2() % 30 != 0)
-                        calculationResult.setTimeBeforeWork2(((calculationResult.getTimeBeforeWork2() / 30) + 1) * 30);
+                        calculationResult.setTimeBeforeWork2(roundUpTime(calculationResult.getTimeBeforeWork2(), 30));
                     if (calculationResult.getTimeAfterWork2() % 30 != 0)
-                        calculationResult.setTimeAfterWork2(((calculationResult.getTimeAfterWork2() / 30) + 1) * 30);
+                        calculationResult.setTimeAfterWork2(roundUpTime(calculationResult.getTimeAfterWork2(), 30));
                     if (calculationResult.getPrivateOutingTime() % 30 != 0)
-                        calculationResult.setPrivateOutingTime(((calculationResult.getPrivateOutingTime() / 30) + 1) * 30);
+                        calculationResult.setPrivateOutingTime(roundUpTime(calculationResult.getPrivateOutingTime(), 30));
                     if (calculationResult.getUnionOutingTime() % 30 != 0)
-                        calculationResult.setUnionOutingTime(((calculationResult.getUnionOutingTime() / 30) + 1) * 30);
+                        calculationResult.setUnionOutingTime(roundUpTime(calculationResult.getUnionOutingTime(), 30));
                     break;
                 case OneHour:
                     if (calculationResult.getTimeBeforeWork1() % 60 != 0)
-                        calculationResult.setTimeBeforeWork1(((calculationResult.getTimeBeforeWork1() / 60) + 1) * 60);
+                        calculationResult.setTimeBeforeWork1(roundUpTime(calculationResult.getTimeBeforeWork1(), 60));
                     if (calculationResult.getTimeAfterWork1() % 60 != 0)
-                        calculationResult.setTimeAfterWork1(((calculationResult.getTimeAfterWork1() / 60) + 1) * 60);
+                        calculationResult.setTimeAfterWork1(roundUpTime(calculationResult.getTimeAfterWork1(), 60));
                     if (calculationResult.getTimeBeforeWork2() % 60 != 0)
-                        calculationResult.setTimeBeforeWork2(((calculationResult.getTimeBeforeWork2() / 60) + 1) * 60);
+                        calculationResult.setTimeBeforeWork2(roundUpTime(calculationResult.getTimeBeforeWork2(), 60));
                     if (calculationResult.getTimeAfterWork2() % 60 != 0)
-                        calculationResult.setTimeAfterWork2(((calculationResult.getTimeAfterWork2() / 60) + 1) * 60);
+                        calculationResult.setTimeAfterWork2(roundUpTime(calculationResult.getTimeAfterWork2(), 60));
                     if (calculationResult.getPrivateOutingTime() % 60 != 0)
-                        calculationResult.setPrivateOutingTime(((calculationResult.getPrivateOutingTime() / 60) + 1) * 60);
+                        calculationResult.setPrivateOutingTime(roundUpTime(calculationResult.getPrivateOutingTime(), 60));
                     if (calculationResult.getUnionOutingTime() % 60 != 0)
-                        calculationResult.setUnionOutingTime(((calculationResult.getUnionOutingTime() / 60) + 1) * 60);
+                        calculationResult.setUnionOutingTime(roundUpTime(calculationResult.getUnionOutingTime(), 60));
                     break;
                 case TwoHour:
                     if (calculationResult.getTimeBeforeWork1() % 120 != 0)
-                        calculationResult.setTimeBeforeWork1(((calculationResult.getTimeBeforeWork1() / 120) + 1) * 120);
+                        calculationResult.setTimeBeforeWork1(roundUpTime(calculationResult.getTimeBeforeWork1(), 120));
                     if (calculationResult.getTimeAfterWork1() % 120 != 0)
-                        calculationResult.setTimeAfterWork1(((calculationResult.getTimeAfterWork1() / 120) + 1) * 120);
+                        calculationResult.setTimeAfterWork1(roundUpTime(calculationResult.getTimeAfterWork1(), 120));
                     if (calculationResult.getTimeBeforeWork2() % 120 != 0)
-                        calculationResult.setTimeBeforeWork2(((calculationResult.getTimeBeforeWork2() / 120) + 1) * 120);
+                        calculationResult.setTimeBeforeWork2(roundUpTime(calculationResult.getTimeBeforeWork2(), 120));
                     if (calculationResult.getTimeAfterWork2() % 120 != 0)
-                        calculationResult.setTimeAfterWork2(((calculationResult.getTimeAfterWork2() / 120) + 1) * 120);
+                        calculationResult.setTimeAfterWork2(roundUpTime(calculationResult.getTimeAfterWork2(), 120));
                     if (calculationResult.getPrivateOutingTime() % 120 != 0)
-                        calculationResult.setPrivateOutingTime(((calculationResult.getPrivateOutingTime() / 120) + 1) * 120);
+                        calculationResult.setPrivateOutingTime(roundUpTime(calculationResult.getPrivateOutingTime(), 120));
                     if (calculationResult.getUnionOutingTime() % 120 != 0)
-                        calculationResult.setUnionOutingTime(((calculationResult.getUnionOutingTime() / 120) + 1) * 120);
+                        calculationResult.setUnionOutingTime(roundUpTime(calculationResult.getUnionOutingTime(),120));
                     break;
                 default:
                     break;
             }
             return calculationResult;
         }
+    }
+
+    private Integer roundUpTime(Integer time, Integer unit) {
+        return ((time / unit) + 1) * unit;
     }
 
     /**

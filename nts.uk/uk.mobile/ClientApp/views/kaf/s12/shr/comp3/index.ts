@@ -6,9 +6,30 @@ import { AppTimeType, ReflectSetting, TimeLeaveManagement, TimeLeaveRemaining } 
     name: 'kafs12-apply-time',
     template: require('./index.vue'),
     components: {},
-    validations: {},
+    validations: {
+        params: {
+            substituteAppTime: {
+                constraint: 'AttendanceTime'
+            },
+            annualAppTime:  {
+                constraint: 'AttendanceTime'
+            },
+            childNursingAppTime: {
+                constraint: 'AttendanceTime'
+            },
+            nursingAppTime: {
+                constraint: 'AttendanceTime'
+            },
+            super60AppTime: {
+                constraint: 'AttendanceTime'
+            },
+            specialAppTime: {
+                constraint: 'AttendanceTime'
+            },
+        }
+    },
     constraints: [
-        'nts.uk.shr.com.time.AttendanceClock'
+        'nts.uk.ctx.at.shared.dom.common.time.AttendanceTime'
     ]
 })
 export class KafS12ApplyTimeComponent extends Vue {

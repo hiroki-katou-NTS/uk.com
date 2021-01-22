@@ -14,7 +14,8 @@
                     v-model="params.timeValue"
                     v-bind:name="params.name | i18n"
                     time-input-type="time-point"
-                    v-bind:show-title="true"/>
+                    v-bind:show-title="true"
+                    v-bind:show-constraint="false"/>
             <div class="kafs00p1">
                 <div class="position-absolute">
                     <kafs00subp1 v-bind:params="scheduledTime"/>

@@ -1,8 +1,9 @@
 <template>
-    <div class="card-body mb-n3 position-relative">
+    <div class="card-body mb-n3 position-relative outing-zone">
         <nts-time-range-input
                 v-model="params.timeZone"
-                v-bind:showTile="true"
+                v-bind:show-title="true"
+                v-bind:show-constraint="false"
                 time-input-type="time-point"
                 v-bind:name="'KAFS12_18' | i18n(params.workNo)"/>
         <div v-if="displaySwitch" class="card-body w-100 mt-n3">

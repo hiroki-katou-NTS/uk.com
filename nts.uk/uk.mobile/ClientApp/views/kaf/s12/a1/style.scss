@@ -8,13 +8,10 @@
         }
     }
 }
-.control-label-block{
-    border-left: none;
-}
 
-.kafs00p1{
-    .position-absolute{
-        top: 8px;
+.kafs00p1 {
+    .position-absolute {
+        top: 5px;
         right: 20px;
     }
 }
@@ -24,10 +21,17 @@
 }
 
 .position-relative {
-    .form-group {
-        .control-label {
-            color: #666666;
-            font-size: 0.9em;
-        }
+    .control-label {
+        border-left: none;
+        color: #666666;
+        font-size: 0.9em;
     }
 }
+
+//.outing-zone {
+//    .form-group {
+//        .control-label-block {
+//            display: none;
+//        }
+//    }
+//}

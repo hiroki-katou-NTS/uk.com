@@ -9,7 +9,13 @@ import { AppTimeType } from 'views/kaf/s12/shr';
     components: {
         'kafs00subp1': KafS00SubP1Component,
     },
-    validations: {},
+    validations: {
+        params: {
+            timeValue: {
+                constraint: 'AttendanceClock'
+            }
+        }
+    },
     constraints: [
         'nts.uk.shr.com.time.AttendanceClock'
     ]

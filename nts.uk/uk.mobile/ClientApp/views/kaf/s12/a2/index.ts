@@ -61,6 +61,13 @@ export class KafS12A2Component extends Vue {
                 vm.applyTimeData[i.appTimeType].specialAppTime = i.applyTime.specialAppTime;
             });
         }
+        vm.$watch('timeLeaveManagement', (newVal, oldVal) => {
+            if (!oldVal && newVal) {
+                if (newVal.timeSpecialLeaveMng.listSpecialFrame && newVal.timeSpecialLeaveMng.listSpecialFrame.length > 0) {
+                    vm.specialLeaveFrame = newVal.timeSpecialLeaveMng.listSpecialFrame[0].specialHdFrameNo;
+                }
+            }
+        });
     }
 
     get $appContext(): KafS12AComponent {

@@ -21,7 +21,8 @@
                     v-model="params.super60AppTime"
                     v-bind:name="'Com_ExsessHoliday' | i18n"
                     time-input-type="time-duration"
-                    v-bind:show-title="true">
+                    v-bind:show-title="true"
+                    v-bind:show-constraint="false">
             </nts-time-editor>
             <span class="numberOfHoursLeft position-absolute">{{'KAFS12_23' | i18n(super60HRemaining)}}</span>
         </div>
@@ -30,7 +31,8 @@
                     v-model="params.substituteAppTime"
                     v-bind:name="'KAFS12_24' | i18n"
                     time-input-type="time-duration"
-                    v-bind:show-title="true">
+                    v-bind:show-title="true"
+                    v-bind:show-constraint="false">
             </nts-time-editor>
             <span class="numberOfHoursLeft position-absolute">{{'KAFS12_23' | i18n(substituteRemaining)}}</span>
         </div>
@@ -39,7 +41,8 @@
                     v-model="params.annualAppTime"
                     v-bind:name="'KAFS12_25' | i18n"
                     time-input-type="time-duration"
-                    v-bind:show-title="true">
+                    v-bind:show-title="true"
+                    v-bind:show-constraint="false">
             </nts-time-editor>
             <span class="numberOfHoursLeft position-absolute">{{'KAFS12_23' | i18n(annualRemaining)}}</span>
         </div>
@@ -48,7 +51,8 @@
                     v-model="params.childNursingAppTime"
                     v-bind:name="'Com_ChildNurseHoliday' | i18n"
                     time-input-type="time-duration"
-                    v-bind:show-title="true">
+                    v-bind:show-title="true"
+                    v-bind:show-constraint="false">
             </nts-time-editor>
             <span class="numberOfHoursLeft position-absolute" v-if="displayChildNursingRemaining">{{'KAFS12_23' | i18n(childNursingRemaining)}}</span>
         </div>
@@ -57,7 +61,8 @@
                     v-model="params.nursingAppTime"
                     v-bind:name="'Com_CareHoliday' | i18n"
                     time-input-type="time-duration"
-                    v-bind:show-title="true">
+                    v-bind:show-title="true"
+                    v-bind:show-constraint="false">
             </nts-time-editor>
             <span class="numberOfHoursLeft position-absolute" v-if="displayNursingRemaining">{{'KAFS12_23' | i18n(nursingRemaining)}}</span>
         </div>
