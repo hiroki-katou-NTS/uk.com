@@ -86,19 +86,19 @@ public class CountWorkingTimeOfPerCtgServiceTest {
 		
 		Map<AttendanceTimesForAggregation, BigDecimal> value1 = result.get("sid_1");
 		assertThat(value1.entrySet())
-				.extracting(d -> d.getKey().getValue(), d -> d.getValue().intValue())
+				.extracting(d -> d.getKey().getValue(), d -> d.getValue())
 				.contains(
-						  tuple(0, 540)
-						, tuple(1, 540)
-						, tuple(2, 540));
+						  tuple(0, new BigDecimal(540))
+						, tuple(1, new BigDecimal(540))
+						, tuple(2, new BigDecimal(540)));
 		
 		Map<AttendanceTimesForAggregation, BigDecimal> value2 = result.get("sid_1");
 		assertThat(value2.entrySet())
-					.extracting(d -> d.getKey().getValue(), d -> d.getValue().intValue())
+					.extracting(d -> d.getKey().getValue(), d -> d.getValue())
 					.contains(
-						  tuple(0, 540)
-						, tuple(1, 540)
-						, tuple(2, 540));
+						  tuple(0, new BigDecimal(540))
+						, tuple(1, new BigDecimal(540))
+						, tuple(2, new BigDecimal(540)));
 		
 		Map<AttendanceTimesForAggregation, BigDecimal> value3 = result.get("sid_3");
 		assertThat(value3.entrySet()).isEmpty();
