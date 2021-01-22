@@ -37,14 +37,15 @@ module nts.uk.at.view.knr002.e {
                     $('#bak-grid2').igGridSelection('selectRow', 0);
                     $('#bak-grid1').igGridSelection('selectRow', 0);
                     vm.setLabelCorlor(value);
+                    vm.selectedCode(vm.initData().listEmpInfoTerminal[0].empInfoTerCode)
                     if (value == MODE.BACKUP) {
-                        vm.loadLocalSettings(vm.initData().listEmpInfoTerminal[0].empInfoTerCode);
+                        vm.loadLocalSettings(vm.selectedCode());
                         vm.instructions(getText("KNR002_254"));
                         setTimeout(() => {
                             $('#bak-grid1_container').focus();
                         }, 0);
                     } else {
-                        vm.loadBackupContent(vm.initData().listTimeRecordSetFormatBakEDto[0].empInfoTerCode);
+                        vm.loadBackupContent(vm.selectedCode());
                         vm.instructions(getText("KNR002_255"));
                         setTimeout(() => {
                             $('#bak-grid2_container').focus();
