@@ -28,10 +28,10 @@ module nts.uk.at.view.kmk004.b {
 					<div>
 						<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_229'"></div>
 						<!-- ko if: checkSeting -->
-							<button tabindex="5" data-bind="i18n: 'KMK004_239', click: openDialogF"></button>
+							<button tabindex="5" data-bind="i18n: 'KMK004_339', click: openDialogF"></button>
 						<!-- /ko -->
 						<!-- ko ifnot: checkSeting -->
-							<button tabindex="5" data-bind="i18n: 'KMK004_238', click: openDialogF"></button>
+							<button tabindex="5" data-bind="i18n: 'KMK004_338', click: openDialogF"></button>
 						<!-- /ko -->
 					</div>
 					<div class ="setting" data-bind="component: {
