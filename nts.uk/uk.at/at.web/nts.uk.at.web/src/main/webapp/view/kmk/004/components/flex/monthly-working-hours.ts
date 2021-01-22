@@ -126,11 +126,11 @@ class MonthlyWorkingHours extends ko.ViewModel {
 				of: ".show-popup1"
 			},
 			showOnStart: false,
-			dismissible: false
+			dismissible: true
 		});
 
 		$('.show-popup1').click(function() {
-			$(".popup-area1").ntsPopup("toggle");
+			$(".popup-area1").ntsPopup("show");
 		});
 	}
 
