@@ -145,6 +145,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         // share tooltip to ksu003 
         tooltipShare: Array<any> = [];
         scheduleModifyStartDate = null;
+        
+        // lưu nhưng cell bí disalble do không có worktime
+        listTimeDisable = [];
 
         constructor() {
             let self = this;
@@ -491,6 +494,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.setPositionButonToRightToLeft();
                 self.setTextResourceA173();
                 self.bindingEventClickFlower();
+                self.diseableCellsTime();
                 self.flag = false;
                 dfd.resolve();
             }).fail(function(error) {
@@ -1394,6 +1398,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 }
                             }
                         }
+                        
+                        // ver1.7
+                        if (_.isNil(cell.workTimeName) || cell.workTimeName == '' || cell.workHolidayCls == 0) {
+                            let obj = new TimeDisable(rowId, '_' + ymd);
+                            self.listTimeDisable.push(obj);
+                        }
 
                         // set Deco text color
                         // A10_color⑥ スケジュール明細の文字色  (Màu chữ của "Schedule detail")
@@ -1741,18 +1751,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                     let $grid = $('div.ex-body-detail');
                     self.updateAfterSaveData($grid[0]);
-                    
-                    let updatedCells = $("#extable").exTable("updatedCells");
-                    console.log(updatedCells);
 
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     nts.uk.ui.block.clear();
                 } else {
                     let $grid = $('div.ex-body-detail');
                     self.updateAfterSaveData($grid[0]);
-
-                    let updatedCells = $("#extable").exTable("updatedCells");
-                    console.log(updatedCells);
 
                     self.openKDL053(rs);
                 }
@@ -1764,12 +1768,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             return dfd.promise();
         }
         
-        // 8888   8470 Clear states 
+        // 8888   8470 Clear states , remove cells updated
         // update grid sau khi dang ky data
         updateAfterSaveData($grid: HTMLElement) {
             let self = this;
             nts.uk.ui.block.grayout();
-            
+            // Clear states
             $.data($grid, "copy-history", null);
             $.data($grid, "redo-stack", null);
             $.data($grid, "edit-history", null);
@@ -1777,6 +1781,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $.data($grid, "stick-history", null);
             $.data($grid, "stick-redo-stack", null);
             
+            // remove cells updated
             $('#extable').data('extable').modifications = null;
             
             self.enableBtnReg(false);
@@ -2565,8 +2570,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 fields: ["workTypeCode", "workTypeName", "workTimeCode", "workTimeName", "shiftName", "startTime", "endTime", "shiftCode"],
             };
 
-           $("#extable").exTable("updateTable", "detail", {}, detailContentUpdate);
-            
+            $("#extable").exTable("updateTable", "detail", {}, detailContentUpdate);
+
             self.setCoppyStyler();
         }
         
@@ -2628,6 +2633,19 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                     }
                 } else {
+                    
+                    // check xem cell được paste giá trị coppy có bị disable 2 cell starttime, endtime hay không
+                    // nều bị disable thì remove disable đi
+                    let checkDisable = _.find(self.listTimeDisable, function(cell: TimeDisable) { return cell.rowId == rowIdx && cell.columnId == key; });
+                    if (checkDisable) {
+                        self.enableCellStartEndTime(rowIdx, key);
+                    }
+                    
+                    // case coppy từ cell là ngày lễ, ngày nghỉ nên phải disable cell starttime, endtime đi.
+                    if (data.achievements == false && data.workHolidayCls == AttendanceHolidayAttr.HOLIDAY) {
+                        self.diseableCellStartEndTime(rowIdx, key);
+                    }
+                    
                     // set Deco text color
                     // A10_color⑥ スケジュール明細の文字色  (Màu chữ của "Schedule detail")
                     if (data.achievements == true) {
@@ -3021,6 +3039,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     self.updateExTableWhenChangeMode(self.selectedModeDisplayInBody(), updateMode);
                     self.editModeAct();
                     self.setUpdateMode();
+                    self.diseableCellsTime();
                     nts.uk.ui.block.clear();
                     
                 }).ifNo(() => {});
@@ -3176,6 +3195,35 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $("#coppy").addClass("A6_not_hover").removeClass("A6_hover btnControlUnSelected btnControlSelected");
             $("#input").addClass("A6_not_hover").removeClass("A6_not_hover btnControlUnSelected btnControlSelected");
         }
+        
+        // dis những cell mà không có worktime.
+        diseableCellsTime() {
+            let self = this;
+            _.forEach(self.listTimeDisable, function(obj: TimeDisable) {
+                $("#extable").exTable('disableCell', 'detail', obj.rowId + '', obj.columnId + '', '2');
+                $("#extable").exTable('disableCell', 'detail', obj.rowId + '', obj.columnId + '', '3');
+            });
+        }
+        
+        // dis những cell mà không có worktime.
+        diseableCellStartEndTime(rowIdx, key) {
+            let self = this;
+            $("#extable").exTable('disableCell', 'detail', rowIdx + '', key + '', '2');
+            $("#extable").exTable('disableCell', 'detail', rowIdx + '', key + '', '3');
+            // them cell vừa bị disable vào list
+            self.listTimeDisable.push(new TimeDisable(rowIdx, key));
+        }
+        
+        // dis những cell mà không có worktime.
+        enableCellStartEndTime(rowIdx, key) {
+            let self = this;
+            $("#extable").exTable('enableCell', 'detail', rowIdx + '', key + '', '2');
+            $("#extable").exTable('enableCell', 'detail', rowIdx + '', key + '', '3');
+            // remove cell vừa bị disable vào list
+            _.remove(self.listTimeDisable, function(cell: TimeDisable) {
+                return cell.rowId == rowIdx && cell.columnId == key;
+            });
+        }
 
         /**
          * paste data on cell
@@ -3246,11 +3294,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     // enable | disable cell startTime,endtime
                     if (userInfor.disPlayFormat == 'time') {
                         if (data.workHolidayCls == 0) {
-                            $("#extable").exTable('disableCell', 'detail', rowIdx + '', key + '', '2');
-                            $("#extable").exTable('disableCell', 'detail', rowIdx + '', key + '', '3');
+                            self.diseableCellStartEndTime(rowIdx, key );
                         } else {
-                            $("#extable").exTable('enableCell', 'detail', rowIdx + '', key + '', '2');
-                            $("#extable").exTable('enableCell', 'detail', rowIdx + '', key + '', '3');
+                            self.enableCellStartEndTime(rowIdx, key);
                         }
                     }
                     // truong hop chon workType = required va workTime = 選択なし 
@@ -4023,6 +4069,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         constructor(key: string, value: string) {
             this.key = key;
             this.value = value;
+        }
+    }
+    
+    class TimeDisable {
+        rowId: string;
+        columnId: string;
+        constructor(rowId: string, columnId: string) {
+            this.rowId    = rowId;
+            this.columnId = columnId;
         }
     }
 
