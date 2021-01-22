@@ -208,7 +208,7 @@ class ScreenHComponent extends ko.ViewModel {
 					vm.screenData().yearList(_.chain(data.yearList).map((item: any) => { return new YearItem(item); }).orderBy(['year'], ['desc']).value());
 					vm.screenData().serverYears(data.yearList);
 					vm.screenData().unSaveSetComs = [];
-
+					data.yearList.reverse();
 					if (vm.screenData().selectedYear() == data.yearList[0]) {
 						vm.screenData().selectedYear.valueHasMutated();
 					} else {
