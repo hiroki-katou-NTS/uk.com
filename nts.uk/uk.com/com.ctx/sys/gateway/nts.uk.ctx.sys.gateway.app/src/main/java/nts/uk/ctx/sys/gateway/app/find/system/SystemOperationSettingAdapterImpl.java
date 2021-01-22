@@ -73,8 +73,10 @@ public class SystemOperationSettingAdapterImpl implements SystemOperationSetting
 		if(com.isPresent()){
 			msgCom = com.get().getUsageStopMessage().v();
 		}
-		String msgFull = msgSys + "<br/><br/>" + msgCom;
-		
+		String msgFull = msgSys + msgCom;
+		if (!msgSys.isEmpty() && !msgCom.isEmpty()) {
+			msgFull = msgSys + "\n\n" + msgCom;
+		}
 		return SystemOperationSetting.setting(SystemStopType.COMPANY, SystemOperationMode.IN_PROGRESS, SystemStopMode.ADMIN_MODE, null, msgFull, true);
 	}
 
