@@ -60,14 +60,6 @@ public class UpdateSettingDetailCommandHandler extends CommandHandler<UpdateSett
             this.workStatusOutputSettingsRepository
                     .update(AppContexts.user().companyId(),settingId,outputSettings);
         }
-        @Override
-        public boolean checkTheStandard(String code) {
-            return workStatusOutputSettingsRepository.exist(new OutputItemSettingCode(code), AppContexts.user().companyId());
-        }
 
-        @Override
-        public boolean checkFreedom(String code, String employeeId) {
-            return workStatusOutputSettingsRepository.exist(new OutputItemSettingCode(code), AppContexts.user().companyId(), employeeId);
-        }
     }
 }

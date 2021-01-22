@@ -44,7 +44,7 @@ public class UpdateAnualWorkLedgerDomainService {
         });
     }
 
-    public interface Require extends AnnualWorkLedgerOutputSetting.Require {
+    public interface Require  {
         // [1]	出力設定の詳細を取得する
         Optional<AnnualWorkLedgerOutputSetting> getSetting(String settingId);
 
