@@ -85,12 +85,12 @@ export const constraint = {
     getTimeMinMax(primitive: IRule): string {
         switch (primitive.valueType) {
             default:
-            case 'Time':
                 return '#{not_found}';
             case 'Clock':
                 return `${TimeWithDay.toString(primitive.min as number)}～${TimeWithDay.toString(primitive.max as number)}`;
             case 'Duration':
                 return `${TimeDuration.toString(primitive.min as number)}～${TimeDuration.toString(primitive.max as number)}`;
+            case 'Time':
             case 'TimePoint':
                 return `${TimePoint.toString(primitive.min as number)}～${TimePoint.toString(primitive.max as number)}`;
         }
