@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.app.find.employeeinfo.medicalworkstyle;
+package nts.uk.ctx.at.shared.app.find.employeeworkway.medicalworkstyle;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

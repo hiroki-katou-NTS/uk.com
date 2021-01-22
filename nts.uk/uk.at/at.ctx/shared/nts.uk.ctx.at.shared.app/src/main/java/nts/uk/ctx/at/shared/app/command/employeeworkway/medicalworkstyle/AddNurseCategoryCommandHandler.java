@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.app.command.employeeinfo.medicalworkstyle;
+package nts.uk.ctx.at.shared.app.command.employeeworkway.medicalworkstyle;
 
 import java.util.Optional;
 

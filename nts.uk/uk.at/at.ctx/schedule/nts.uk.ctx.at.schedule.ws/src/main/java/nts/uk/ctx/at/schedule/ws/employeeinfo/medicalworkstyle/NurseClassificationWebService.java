@@ -10,15 +10,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.schedule.app.command.employeeinfo.medicalworkstyle.AddNurseCategoryCommandHandler;
-import nts.uk.ctx.at.schedule.app.command.employeeinfo.medicalworkstyle.DeleteNurseCategoryCommand;
-import nts.uk.ctx.at.schedule.app.command.employeeinfo.medicalworkstyle.DeleteNurseCategoryCommandHandler;
-import nts.uk.ctx.at.schedule.app.command.employeeinfo.medicalworkstyle.NurseCategoryCommand;
-import nts.uk.ctx.at.schedule.app.command.employeeinfo.medicalworkstyle.UpdateNurseCategoryCommandHandler;
-import nts.uk.ctx.at.schedule.app.find.employeeinfo.medicalworkstyle.NurseCategoryDto;
-import nts.uk.ctx.at.schedule.app.find.employeeinfo.medicalworkstyle.NurseCategoryQuery;
-import nts.uk.ctx.at.schedule.app.find.employeeinfo.medicalworkstyle.NurseDetailCategoryDto;
-import nts.uk.ctx.at.schedule.app.find.employeeinfo.medicalworkstyle.NurseDetailCategoryQuery;
+import nts.uk.ctx.at.shared.app.command.employeeworkway.medicalworkstyle.AddNurseCategoryCommandHandler;
+import nts.uk.ctx.at.shared.app.command.employeeworkway.medicalworkstyle.DeleteNurseCategoryCommand;
+import nts.uk.ctx.at.shared.app.command.employeeworkway.medicalworkstyle.DeleteNurseCategoryCommandHandler;
+import nts.uk.ctx.at.shared.app.command.employeeworkway.medicalworkstyle.NurseCategoryCommand;
+import nts.uk.ctx.at.shared.app.command.employeeworkway.medicalworkstyle.UpdateNurseCategoryCommandHandler;
+import nts.uk.ctx.at.shared.app.find.employeeworkway.medicalworkstyle.NurseCategoryDto;
+import nts.uk.ctx.at.shared.app.find.employeeworkway.medicalworkstyle.NurseCategoryQuery;
+import nts.uk.ctx.at.shared.app.find.employeeworkway.medicalworkstyle.NurseDetailCategoryDto;
+import nts.uk.ctx.at.shared.app.find.employeeworkway.medicalworkstyle.NurseDetailCategoryQuery;
 
 /**
  * @author ThanhNX
