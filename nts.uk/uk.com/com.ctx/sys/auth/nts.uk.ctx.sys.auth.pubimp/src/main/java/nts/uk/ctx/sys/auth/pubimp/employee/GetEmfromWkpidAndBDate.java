@@ -12,7 +12,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.assertj.core.util.Arrays;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryItemExport3;

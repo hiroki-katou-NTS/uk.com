@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.assertj.core.util.Arrays;
 
 import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
