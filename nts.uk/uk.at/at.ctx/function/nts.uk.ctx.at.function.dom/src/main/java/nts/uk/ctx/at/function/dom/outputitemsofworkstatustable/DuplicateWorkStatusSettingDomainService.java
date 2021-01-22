@@ -10,6 +10,7 @@ import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClas
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
+import java.util.Optional;
 
 /**
  * DomainService: 勤務状況の設定を複製する
@@ -23,7 +24,7 @@ public class DuplicateWorkStatusSettingDomainService {
         val employeeId = AppContexts.user().employeeId();
         // 1.出力設定の詳細を取得する(会社ID, GUID)
         val workStatusSetting = require.getWorkStatusOutputSettings(settingId);
-        if (workStatusSetting == null) {
+        if (!workStatusSetting.isPresent()) {
             // 2. [1.isEmpty]
             throw new BusinessException("Msg_1903");
         }
@@ -51,7 +52,7 @@ public class DuplicateWorkStatusSettingDomainService {
 
     public interface Require{
         //  [1]	出力設定の詳細を取得する
-        WorkStatusOutputSettings getWorkStatusOutputSettings(String settingId);
+        Optional<WorkStatusOutputSettings> getWorkStatusOutputSettings(String settingId);
 
         // [2] 指定のコードが既に定型選択に保存されているか
         boolean exist(String code);

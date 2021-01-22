@@ -18,6 +18,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Command: 勤務状況表の設定の詳細を更新する
@@ -46,8 +47,12 @@ public class UpdateSettingDetailCommandHandler extends CommandHandler<UpdateSett
     public class RequireImpl implements UpdateWorkStatusSettingDomainService.Require{
         private WorkStatusOutputSettingsRepository workStatusOutputSettingsRepository;
         @Override
-        public WorkStatusOutputSettings getWorkStatusOutputSettings( String settingId) {
-            return this.workStatusOutputSettingsRepository.getWorkStatusOutputSettings(AppContexts.user().companyId(),settingId);
+        public Optional<WorkStatusOutputSettings> getWorkStatusOutputSettings(String settingId) {
+            val rs =  this.workStatusOutputSettingsRepository.getWorkStatusOutputSettings(AppContexts.user().companyId(),settingId);
+            if (rs != null) {
+                return Optional.of(rs);
+            }
+            return Optional.empty();
         }
 
         @Override
