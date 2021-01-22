@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @RunWith(JMockit.class)
@@ -36,7 +37,7 @@ public class DuplicateWorkStatusSettingDomainServiceTest {
                 result = "employeeId";
 
                 require.getWorkStatusOutputSettings(settingId);
-                result = null;
+                result = Optional.empty();
             }
         };
 
@@ -65,7 +66,7 @@ public class DuplicateWorkStatusSettingDomainServiceTest {
                 result = "employeeId";
 
                 require.getWorkStatusOutputSettings(settingId);
-                result = domain;
+                result = Optional.of(domain);
 
                 require.exist(outputItemSettingCode.v());
                 result = true;
@@ -96,7 +97,7 @@ public class DuplicateWorkStatusSettingDomainServiceTest {
                 result = "employeeId";
 
                 require.getWorkStatusOutputSettings(settingId);
-                result = domain;
+                result = Optional.of(domain);
 
                 require.exist(outputItemSettingCode.v(), employeeId);
                 result = true;
@@ -131,7 +132,7 @@ public class DuplicateWorkStatusSettingDomainServiceTest {
                 IdentifierUtil.randomUniqueId();
                 result = iD;
                 require.getWorkStatusOutputSettings(settingId);
-                result = domain;
+                result = Optional.of(domain);
 
                 require.exist(outputItemSettingCode.v(), employeeId);
                 result = false;
@@ -168,13 +169,13 @@ public class DuplicateWorkStatusSettingDomainServiceTest {
                 result = iD;
 
                 require.getWorkStatusOutputSettings(settingId);
-                result = domain;
+                result = Optional.of(domain);
 
                 require.exist(outputItemSettingCode.v());
                 result = false;
 
                 require.getWorkStatusOutputSettings(settingId);
-                result = domain;
+                result = Optional.of(domain);
 
                 require.exist(outputItemSettingCode.v());
                 result = false;

@@ -19,6 +19,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import java.util.Optional;
 
 /**
  * Command: 勤務状況表の出力項目の詳細を複製する
@@ -45,8 +46,12 @@ public class DuplicateSettingDetailCommandHandler extends CommandHandler<Duplica
     public class RequireImpl implements DuplicateWorkStatusSettingDomainService.Require{
         private WorkStatusOutputSettingsRepository settingsRepository;
         @Override
-        public WorkStatusOutputSettings getWorkStatusOutputSettings(String settingId) {
-            return this.settingsRepository.getWorkStatusOutputSettings(AppContexts.user().companyId(),settingId);
+        public Optional<WorkStatusOutputSettings> getWorkStatusOutputSettings(String settingId) {
+            val rs =  this.settingsRepository.getWorkStatusOutputSettings(AppContexts.user().companyId(),settingId);
+            if (rs != null) {
+                return Optional.of(rs);
+            }
+            return Optional.empty();
         }
 
         @Override
