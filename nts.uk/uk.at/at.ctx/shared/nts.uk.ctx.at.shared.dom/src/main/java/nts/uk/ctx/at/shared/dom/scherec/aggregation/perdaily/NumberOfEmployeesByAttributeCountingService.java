@@ -9,7 +9,7 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
-import nts.uk.ctx.at.shared.dom.scherec.aggregation.AggregateValuesByType;
+import nts.uk.ctx.at.shared.dom.scherec.aggregation.AggregationByTypeService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 
 /**
@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
  * @author kumiko_otake
  */
 @Stateless
-public class CountEmployeesByAttribute {
+public class NumberOfEmployeesByAttributeCountingService {
 
 	/**
 	 * 集計する
@@ -42,7 +42,7 @@ public class CountEmployeesByAttribute {
 				.collect(Collectors.toList());
 
 		// 集計(カウント)
-		return AggregateValuesByType.count(attributes);
+		return AggregationByTypeService.count(attributes);
 
 	}
 

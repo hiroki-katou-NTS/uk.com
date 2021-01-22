@@ -18,7 +18,7 @@ import lombok.val;
  * Test for AggregateValuesByType
  * @author kumiko_otake
  */
-public class AggregateValuesByTypeTest {
+public class AggregationByTypeServiceTest {
 
 	/**
 	 * Target	: totalize(List<Map<T, BigDecimal>>)
@@ -35,7 +35,7 @@ public class AggregateValuesByTypeTest {
 		}
 
 		// Execute
-		val result = AggregateValuesByType.totalize( values );
+		val result = AggregationByTypeService.totalize( values );
 
 		// Assertion
 		assertThat( result.entrySet() )
@@ -66,7 +66,7 @@ public class AggregateValuesByTypeTest {
 		}
 
 		// Execute
-		val result = AggregateValuesByType.totalize( targets, values );
+		val result = AggregationByTypeService.totalize( targets, values );
 
 		// Assertion
 		assertThat( result ).containsOnlyKeys( targets );
@@ -92,7 +92,7 @@ public class AggregateValuesByTypeTest {
 				.map(Helper::getKeyString).collect(Collectors.toList());
 
 		// Execute
-		val result = AggregateValuesByType.count( values );
+		val result = AggregationByTypeService.count( values );
 
 		// Assertion
 		assertThat( result.entrySet() )

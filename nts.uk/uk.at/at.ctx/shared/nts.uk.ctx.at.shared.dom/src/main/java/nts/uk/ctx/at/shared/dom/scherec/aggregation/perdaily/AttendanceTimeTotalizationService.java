@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import lombok.val;
-import nts.uk.ctx.at.shared.dom.scherec.aggregation.AggregateValuesByType;
+import nts.uk.ctx.at.shared.dom.scherec.aggregation.AggregationByTypeService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 
 /**
@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.At
  * @author kumiko_otake
  */
 @Stateless
-public class TotalizeAttendanceTime {
+public class AttendanceTimeTotalizationService {
 
 	/**
 	 * 集計する
@@ -32,10 +32,10 @@ public class TotalizeAttendanceTime {
 
 		// 値を取得
 		val times = values.stream()
-						.map( e -> TotalizeAttendanceTime.getTargetTimes(targets, e) )
+						.map( e -> AttendanceTimeTotalizationService.getTargetTimes(targets, e) )
 						.collect(Collectors.toList());
 		// 集計(合計)
-		return AggregateValuesByType.totalize(times);
+		return AggregationByTypeService.totalize(times);
 
 	}
 

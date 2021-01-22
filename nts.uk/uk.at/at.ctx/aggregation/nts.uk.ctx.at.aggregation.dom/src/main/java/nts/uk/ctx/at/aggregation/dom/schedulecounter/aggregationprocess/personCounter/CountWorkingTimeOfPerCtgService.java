@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AttendanceTimesForAggregation;
-import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.TotalizeAttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AttendanceTimeTotalizationService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 /**
@@ -39,7 +39,7 @@ public class CountWorkingTimeOfPerCtgService {
 		
 		return dailWorksBySid.entrySet().stream()
 				.collect(Collectors.toMap(dailyWork -> dailyWork.getKey(), dailyWork -> {
-					return TotalizeAttendanceTime.totalize(attendanceUnits, dailyWork.getValue());
+					return AttendanceTimeTotalizationService.totalize(attendanceUnits, dailyWork.getValue());
 				}));
 	}
 

@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import lombok.val;
-import nts.uk.ctx.at.shared.dom.scherec.aggregation.AggregateValuesByType;
+import nts.uk.ctx.at.shared.dom.scherec.aggregation.AggregationByTypeService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 
 /**
@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.At
  * @author kumiko_otake
  */
 @Stateless
-public class TotalizeLaborCosts {
+public class LaborCostsTotalizationService {
 
 	/**
 	 * 金額を集計する
@@ -30,7 +30,7 @@ public class TotalizeLaborCosts {
 				List<AggregationUnitOfLaborCosts> targets
 			,	List<AttendanceTimeOfDailyAttendance> values
 	) {
-		return TotalizeLaborCosts.totalize(targets, values, AggregationUnitOfLaborCosts::getAmount);
+		return LaborCostsTotalizationService.totalize(targets, values, AggregationUnitOfLaborCosts::getAmount);
 	}
 
 
@@ -44,7 +44,7 @@ public class TotalizeLaborCosts {
 				List<AggregationUnitOfLaborCosts> targets
 			,	List<AttendanceTimeOfDailyAttendance> values
 	) {
-		return TotalizeLaborCosts.totalize(targets, values, AggregationUnitOfLaborCosts::getTime);
+		return LaborCostsTotalizationService.totalize(targets, values, AggregationUnitOfLaborCosts::getTime);
 	}
 
 
@@ -67,7 +67,7 @@ public class TotalizeLaborCosts {
 				.collect(Collectors.toList());
 
 		// 集計(合計)
-		return AggregateValuesByType.totalize(items);
+		return AggregationByTypeService.totalize(items);
 
 	}
 

@@ -15,7 +15,7 @@ import lombok.val;
  * @author kumiko_otake
  */
 @Stateless
-public class AggregateValuesByType {
+public class AggregationByTypeService {
 
 	/**
 	 * 合計する
@@ -50,7 +50,7 @@ public class AggregateValuesByType {
 					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 			} ).filter( m -> !m.isEmpty() )
 			.collect(Collectors.toList());
-		val results = AggregateValuesByType.totalize(filterdValues);
+		val results = AggregationByTypeService.totalize(filterdValues);
 
 		// 集計対象に対する合計値を返す
 		return targets.stream()
