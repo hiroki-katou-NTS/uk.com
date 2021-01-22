@@ -39,25 +39,25 @@ public class TimeLeaveManagement {
     public static TimeVacationManagementOutput setDtaOutput(TimeLeaveManagement dto) {
         return new TimeVacationManagementOutput(
             new SupHolidayManagement(
-                EnumAdaptor.valueOf(dto.super60HLeaveMng.getSuper60HLeaveUnit(), TimeDigestiveUnit.class),
-                dto.super60HLeaveMng.getSuper60HLeaveMngAtr()
+                    dto.super60HLeaveMng.getSuper60HLeaveUnit() == null ? null : EnumAdaptor.valueOf(dto.super60HLeaveMng.getSuper60HLeaveUnit(), TimeDigestiveUnit.class),
+                    dto.super60HLeaveMng.getSuper60HLeaveMngAtr()
             ),
             new ChildNursingManagement(
-                EnumAdaptor.valueOf(dto.nursingLeaveMng.getTimeCareLeaveUnit(), TimeDigestiveUnit.class),
-                dto.nursingLeaveMng.getTimeCareLeaveMngAtr(),
-                EnumAdaptor.valueOf(dto.nursingLeaveMng.getTimeChildCareLeaveUnit(), TimeDigestiveUnit.class),
-                dto.nursingLeaveMng.getTimeChildCareLeaveMngAtr()
+                    dto.nursingLeaveMng.getTimeCareLeaveUnit() == null ? null : EnumAdaptor.valueOf(dto.nursingLeaveMng.getTimeCareLeaveUnit(), TimeDigestiveUnit.class),
+                    dto.nursingLeaveMng.getTimeCareLeaveMngAtr(),
+                    dto.nursingLeaveMng.getTimeChildCareLeaveUnit() == null ? null : EnumAdaptor.valueOf(dto.nursingLeaveMng.getTimeChildCareLeaveUnit(), TimeDigestiveUnit.class),
+                    dto.nursingLeaveMng.getTimeChildCareLeaveMngAtr()
             ),
             new TimeAllowanceManagement(
-                EnumAdaptor.valueOf(dto.timeSubstituteLeaveMng.getTimeSubstituteLeaveUnit(), TimeDigestiveUnit.class),
-                dto.timeSubstituteLeaveMng.getTimeSubstituteLeaveMngAtr()
+                    dto.nursingLeaveMng.getTimeChildCareLeaveUnit() == null ? null : EnumAdaptor.valueOf(dto.timeSubstituteLeaveMng.getTimeSubstituteLeaveUnit(), TimeDigestiveUnit.class),
+                    dto.timeSubstituteLeaveMng.getTimeSubstituteLeaveMngAtr()
             ),
             new TimeAnnualLeaveManagement(
-                EnumAdaptor.valueOf(dto.timeAnnualLeaveMng.getTimeAnnualLeaveUnit(), TimeDigestiveUnit.class),
-                dto.timeAnnualLeaveMng.getTimeAnnualLeaveMngAtr()
+                    dto.timeAnnualLeaveMng.getTimeAnnualLeaveUnit() == null ? null : EnumAdaptor.valueOf(dto.timeAnnualLeaveMng.getTimeAnnualLeaveUnit(), TimeDigestiveUnit.class),
+                    dto.timeAnnualLeaveMng.getTimeAnnualLeaveMngAtr()
             ),
             new TimeSpecialLeaveManagement(
-                    EnumAdaptor.valueOf(dto.getTimeSpecialLeaveMng().getTimeSpecialLeaveUnit(), TimeDigestiveUnit.class),
+                    dto.getTimeSpecialLeaveMng().getTimeSpecialLeaveUnit() == null ? null : EnumAdaptor.valueOf(dto.getTimeSpecialLeaveMng().getTimeSpecialLeaveUnit(), TimeDigestiveUnit.class),
                     dto.getTimeSpecialLeaveMng().getTimeSpecialLeaveMngAtr(),
                     dto.getTimeSpecialLeaveMng().getListSpecialFrame().stream().map(i -> SpecialHolidayFrame.createFromJavaType(
                             AppContexts.user().companyId(),

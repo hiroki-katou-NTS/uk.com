@@ -231,7 +231,7 @@ public class TimeLeaveApplicationFinder {
         if (lstTimeZone.get(0).getEndTime() != null && achievementDetailDto.getAchievementEarly().getScheDepartureTime1() != null)
             leaveEarly1 = Math.abs(achievementDetailDto.getAchievementEarly().getScheDepartureTime1() - lstTimeZone.get(0).getEndTime());
         if (lstTimeZone.get(1).getStartTime() != null && achievementDetailDto.getAchievementEarly().getScheAttendanceTime2() != null)
-            lateTime2 = Math.abs(lstTimeZone.get(1).getStartTime() - achievementDetailDto.getOpWorkTime2());
+            lateTime2 = Math.abs(lstTimeZone.get(1).getStartTime() - achievementDetailDto.getAchievementEarly().getScheAttendanceTime2());
         if (lstTimeZone.get(1).getEndTime() != null && achievementDetailDto.getAchievementEarly().getScheDepartureTime2() != null)
             leaveEarly2 = Math.abs(achievementDetailDto.getAchievementEarly().getScheDepartureTime2() - lstTimeZone.get(1).getEndTime());
         for (OutingTimeZoneDto i : lstOutingTimeZone) {

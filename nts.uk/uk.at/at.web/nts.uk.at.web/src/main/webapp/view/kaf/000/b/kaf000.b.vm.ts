@@ -466,7 +466,6 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 			case 'Msg_1715':
 			case 'Msg_1521':
 			case 'Msg_1648':
-            case 'Msg_474':
             case 'Msg_430':
             case 'Msg_1687':
             case 'Msg_1409':

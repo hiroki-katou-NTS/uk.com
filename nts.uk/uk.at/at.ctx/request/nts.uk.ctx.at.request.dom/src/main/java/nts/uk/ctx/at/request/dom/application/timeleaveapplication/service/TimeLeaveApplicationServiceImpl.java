@@ -422,12 +422,12 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
         remainingTimeVacationCheck(companyId, timeLeaveType, timeLeaveApplication);
 
         //時間休暇の消化単位チェック
-        Optional<TimeDigestiveUnit> super60HDigestion = Optional.of(output.getTimeVacationManagement().getSupHolidayManagement().getSuper60HDigestion());
-        Optional<TimeDigestiveUnit> timeBaseRestingUnit = Optional.of(output.getTimeVacationManagement().getTimeAllowanceManagement().getTimeBaseRestingUnit());
-        Optional<TimeDigestiveUnit> timeAnnualLeaveUnit = Optional.of(output.getTimeVacationManagement().getTimeAnnualLeaveManagement().getTimeAnnualLeaveUnit());
-        Optional<TimeDigestiveUnit> timeChildNursing = Optional.of(output.getTimeVacationManagement().getChildNursingManagement().getTimeChildDigestiveUnit());
-        Optional<TimeDigestiveUnit> timeNursing = Optional.of(output.getTimeVacationManagement().getChildNursingManagement().getTimeDigestiveUnit());
-        Optional<TimeDigestiveUnit> pendingUnit = Optional.of(output.getTimeVacationManagement().getTimeSpecialLeaveMng().getTimeSpecialLeaveUnit());
+        Optional<TimeDigestiveUnit> super60HDigestion = Optional.ofNullable(output.getTimeVacationManagement().getSupHolidayManagement().getSuper60HDigestion());
+        Optional<TimeDigestiveUnit> timeBaseRestingUnit = Optional.ofNullable(output.getTimeVacationManagement().getTimeAllowanceManagement().getTimeBaseRestingUnit());
+        Optional<TimeDigestiveUnit> timeAnnualLeaveUnit = Optional.ofNullable(output.getTimeVacationManagement().getTimeAnnualLeaveManagement().getTimeAnnualLeaveUnit());
+        Optional<TimeDigestiveUnit> timeChildNursing = Optional.ofNullable(output.getTimeVacationManagement().getChildNursingManagement().getTimeChildDigestiveUnit());
+        Optional<TimeDigestiveUnit> timeNursing = Optional.ofNullable(output.getTimeVacationManagement().getChildNursingManagement().getTimeDigestiveUnit());
+        Optional<TimeDigestiveUnit> pendingUnit = Optional.ofNullable(output.getTimeVacationManagement().getTimeSpecialLeaveMng().getTimeSpecialLeaveUnit());
         timeLeaveApplication.getLeaveApplicationDetails().forEach(x -> {
             commonAlgorithm.vacationDigestionUnitCheck(x.getTimeDigestApplication(),
                 super60HDigestion,
