@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.infra.repository.employeeinfo.medicalworkstyle;
+package nts.uk.ctx.at.shared.infra.repository.employeeworkway.medicalworkstyle;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -8,14 +8,14 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.schedule.infra.entity.employeeinfo.medicalworkstyle.KscmtNurseLicense;
-import nts.uk.ctx.at.schedule.infra.entity.employeeinfo.medicalworkstyle.KscmtNurseLicensePK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.LicenseClassification;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassifiCode;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassifiName;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassification;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassificationRepository;
+import nts.uk.ctx.at.shared.infra.entity.employeeworkway.medicalworkstyle.KscmtNurseLicense;
+import nts.uk.ctx.at.shared.infra.entity.employeeworkway.medicalworkstyle.KscmtNurseLicensePK;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
 /**

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.infra.entity.employeeinfo.medicalworkstyle;
+package nts.uk.ctx.at.shared.infra.entity.employeeworkway.medicalworkstyle;
 
 import java.io.Serializable;
 

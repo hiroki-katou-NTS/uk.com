@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.infra.repository.employeeinfo.medicalworkstyle;
+package nts.uk.ctx.at.shared.infra.repository.employeeworkway.medicalworkstyle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,11 +9,11 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.infra.entity.employeeinfo.medicalworkstyle.KscmtMedicalWorkStyle;
-import nts.uk.ctx.at.schedule.infra.entity.employeeinfo.medicalworkstyle.KscmtMedicalWorkStylePk;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkFormHisItem;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkStyleHistory;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
+import nts.uk.ctx.at.shared.infra.entity.employeeworkway.medicalworkstyle.KscmtMedicalWorkStyle;
+import nts.uk.ctx.at.shared.infra.entity.employeeworkway.medicalworkstyle.KscmtMedicalWorkStylePk;
 
 /**
  * 
