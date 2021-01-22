@@ -269,7 +269,7 @@ module nts.uk.at.view.kmk004.l {
 			vm.initEmployeeList();
 
 			$('#com-ccg001').ntsGroupComponent(vm.ccg001ComponentOption).done(() => {
-
+				$("#ccg001-btn-search-drawer").focus();
 				vm.selectedCode.subscribe((newValue) => {
 					let selectedItem: UnitModel = _.find(vm.employeeList(), ['code', newValue]);
 					vm.currentItemName(selectedItem.code + " " + selectedItem.name);
