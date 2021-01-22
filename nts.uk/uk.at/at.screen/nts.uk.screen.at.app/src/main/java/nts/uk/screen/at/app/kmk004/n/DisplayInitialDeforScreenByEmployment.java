@@ -34,8 +34,10 @@ public class DisplayInitialDeforScreenByEmployment {
 		// 雇用コード ← 雇用リストの先頭の雇用コード
 		// 勤務区分 ← 1：変形労働
 
-		result.setSelectEmploymentDeforDto(
-				this.selectEmploymentDefor.selectEmploymentDefor(result.getEmploymentCds().get(0).employmentCode));
+		if (!result.getEmploymentCds().isEmpty()) {
+			result.setSelectEmploymentDeforDto(
+					this.selectEmploymentDefor.selectEmploymentDefor(result.getEmploymentCds().get(0).employmentCode));
+		}
 
 		return result;
 	}
