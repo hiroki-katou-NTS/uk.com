@@ -36,10 +36,10 @@ public class CreateWorkLedgerSettingDomainService {
         boolean checkResult = false;
         if (settingCategory == SettingClassificationCommon.STANDARD_SELECTION) {
             // 定型選択の重複をチェックする(コード, ログイン会社ID)
-            checkResult = WorkLedgerOutputItem.checkDuplicateStandardSelection(require, code);
+            checkResult = require.standardCheck( code);
         } else if (settingCategory == SettingClassificationCommon.FREE_SETTING) {
             // 自由設定の重複をチェックする(出力項目設定コード, 会社ID, 社員ID)
-            checkResult = WorkLedgerOutputItem.checkDuplicateFreeSettings(require, code, employeeId);
+            checkResult = require.freeCheck( code, employeeId);
         }
 
         if (checkResult) {
@@ -59,7 +59,18 @@ public class CreateWorkLedgerSettingDomainService {
         });
     }
 
-    public interface Require extends WorkLedgerOutputItem.Require {
+    public interface Require  {
+        /**
+         * [R-1]　定型をチェックする
+         * 勤務台帳の出力項目Repository. exist(コード、ログイン会社ID)
+         */
+        boolean standardCheck(OutputItemSettingCode code);
+
+        /**
+         * [R-2]  自由をチェックする
+         * 勤務台帳の出力項目Repository. exist(コード、ログイン会社ID、ログイン社員ID)
+         */
+        boolean freeCheck(OutputItemSettingCode code, String employeeId);
         /**
          * Call 勤務台帳の出力項目Repository#新規作成する
          */
