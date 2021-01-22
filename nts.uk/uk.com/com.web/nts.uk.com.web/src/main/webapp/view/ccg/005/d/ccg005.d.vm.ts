@@ -1,6 +1,10 @@
 /// <reference path='../../../../lib/nittsu/viewcontext.d.ts' />
 module nts.uk.at.view.ccg005.d.screenModel {
 
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
+    import modal = nts.uk.ui.windows.sub.modal;
+   import Output = nts.uk.com.view.cdl008.a.viewmodel.OutPut;
   const API = {
     getFavoriteInformation: "screen/com/ccg005/get-favorite-information",
     save: "ctx/office/favorite/save",
@@ -8,55 +12,66 @@ module nts.uk.at.view.ccg005.d.screenModel {
   };
   @bean()
   export class ViewModel extends ko.ViewModel {
+    
     //favorite
     favoriteList: KnockoutObservableArray<FavoriteSpecifyData> = ko.observableArray([]);
     favoriteName: KnockoutObservable<string> = ko.observable("");
     selectedFavoriteOrder: KnockoutObservable<number> = ko.observable();
     selectedFavorite: KnockoutObservable<FavoriteSpecifyData> = ko.observable();
-    //work place name
+
+    //work place
+    workPlaceIdList: KnockoutObservableArray<string> = ko.observableArray([]);
     choosenWkspNames: KnockoutObservableArray<string> = ko.observableArray([]);
     displayChoosenWkspName: KnockoutObservable<string> = ko.computed(() => {
       return this.choosenWkspNames().join('、');
     });
+
     //target select
-    roundingRules: KnockoutObservableArray<any>;
+    roundingRules: KnockoutObservableArray<any>= ko.observableArray([
+      { code: TargetSelection.WORKPLACE, name: this.$i18n("CCG005_14") },
+      { code: TargetSelection.AFFILIATION_WORKPLACE, name: this.$i18n("CCG005_16") }
+    ]);
     selectedRuleCode: KnockoutObservable<number> = ko.observable(TargetSelection.WORKPLACE);
     buttonSelectRequire: KnockoutObservable<boolean> = ko.computed(() => this.selectedRuleCode() === 1);
     displayChoosenWkspNameRequire: KnockoutObservable<boolean> = ko.computed(() => this.selectedRuleCode() === 0);
-    //grid column
-    columns: KnockoutObservableArray<any>;
-    //mode
-    mode: KnockoutObservable<number> = ko.observable();
-    created() {
-      const vm = this;
-      vm.callData();
-      vm.columns = ko.observableArray([
-        { headerText: "id", key: "order", width: 150, hidden: true },
-        { headerText: vm.$i18n("CCG005_11"), key: "favoriteName", width: 150 },
-      ]);
 
-      vm.roundingRules = ko.observableArray([
-        { code: TargetSelection.WORKPLACE, name: vm.$i18n("CCG005_14") },
-        { code: TargetSelection.AFFILIATION_WORKPLACE, name: vm.$i18n("CCG005_16") }
-      ]);
-    }
+    //grid column
+    columns: KnockoutObservableArray<any> = ko.observableArray([
+      { headerText: "id", key: "order", width: 150, hidden: true },
+      { headerText: this.$i18n("CCG005_11"), key: "favoriteName", width: 150 },
+    ]);
+
+    //mode
+    mode: KnockoutObservable<number> = ko.observable(Mode.UPDATE);
 
     mounted() {
       const vm = this;
-      if (vm.favoriteList()) {
-        vm.selectedFavoriteOrder(0);
-      }
-      vm.selectedFavoriteOrder.subscribe((order: number) => {
-        vm.$errors("clear");
-        vm.mode(Mode.UPDATE);
-        const currentFavor = _.find(vm.favoriteList(), (item => Number(item.order) === Number(order)));
-        if (currentFavor) {
-          vm.selectedFavorite(currentFavor);
-          vm.favoriteName(currentFavor.favoriteName);
-          vm.selectedRuleCode(currentFavor.targetSelection);
-          vm.choosenWkspNames(currentFavor.wkspNames);
+      vm.$blockui("grayout");
+      vm.$ajax(API.getFavoriteInformation).then((data: FavoriteSpecifyData[]) => {
+        vm.favoriteList(data);
+        if (data) {
+          const firstOrder = data[0].order;
+          vm.selectedFavoriteOrder(firstOrder);
+          vm.bindingData(firstOrder);
         }
-      });
+        vm.selectedFavoriteOrder.subscribe((order: number) => {
+          vm.bindingData(order);
+        });
+        vm.$blockui("clear");
+      })
+    }
+
+    private bindingData(order: number) {
+      const vm = this;
+      vm.$errors("clear");
+      const currentFavor = _.find(vm.favoriteList(), (item => Number(item.order) === Number(order)));
+      if (currentFavor) {
+        vm.selectedFavorite(currentFavor);
+        vm.favoriteName(currentFavor.favoriteName);
+        vm.selectedRuleCode(currentFavor.targetSelection);
+        vm.choosenWkspNames(currentFavor.wkspNames);
+        vm.workPlaceIdList(currentFavor.workplaceId);
+      }
     }
 
     private callData() {
@@ -84,10 +99,6 @@ module nts.uk.at.view.ccg005.d.screenModel {
       const vm = this;
       vm.$validate().then((valid: boolean) => {
         if (valid) {
-          //re set order for item
-          _.map(vm.favoriteList(), (item, index) => {
-            item.order = index;
-          });
           //new item
           if (vm.mode() === Mode.INSERT) {
             const favoriteSpecify = new FavoriteSpecifyData({
@@ -95,7 +106,7 @@ module nts.uk.at.view.ccg005.d.screenModel {
               creatorId: __viewContext.user.employeeId,
               inputDate: moment.utc().toISOString(),
               targetSelection: vm.selectedRuleCode(),
-              workplaceId: vm.selectedRuleCode() === TargetSelection.WORKPLACE ? vm.choosenWkspNames() : [],
+              workplaceId: vm.selectedRuleCode() === TargetSelection.WORKPLACE ? vm.workPlaceIdList() : [],
               order: vm.favoriteList()[vm.favoriteList().length - 1].order + 1,
               wkspNames: vm.choosenWkspNames()
             });
@@ -105,14 +116,18 @@ module nts.uk.at.view.ccg005.d.screenModel {
             vm.mode(Mode.UPDATE);
           } else {
             _.map(vm.favoriteList(), (item => {
-              if(item.order === Number(vm.selectedFavorite())) {
+              if (item.order === Number(vm.selectedFavoriteOrder())) {
                 item.favoriteName = vm.favoriteName();
                 item.targetSelection = vm.selectedRuleCode();
-                item.workplaceId = vm.selectedRuleCode() === TargetSelection.WORKPLACE ? vm.choosenWkspNames() : [];
+                item.workplaceId = vm.selectedRuleCode() === TargetSelection.WORKPLACE ? vm.workPlaceIdList() : [];
               }
             }));
           }
-          //Call API
+          //re set order for item
+          _.map(vm.favoriteList(), (item, index) => {
+            item.order = index;
+          });
+           //Call API
           vm.$blockui("grayout");
           vm.$ajax(API.save, vm.favoriteList()).then(() => {
             vm.callData();
@@ -127,7 +142,7 @@ module nts.uk.at.view.ccg005.d.screenModel {
       const vm = this;
       vm.$dialog.confirm({ messageId: "Msg_18" }).then((result) => {
         if (result === "yes") {
-          const currentFavor = _.find(vm.favoriteList(), (item => Number(item.order) === Number(vm.selectedFavorite())));
+          const currentFavor = _.find(vm.favoriteList(), (item => Number(item.order) === Number(vm.selectedFavoriteOrder())));
           if (currentFavor) {
             const favoriteSpecify = new FavoriteSpecifyDelCommand({
               creatorId: currentFavor.creatorId,
@@ -136,7 +151,7 @@ module nts.uk.at.view.ccg005.d.screenModel {
             vm.$blockui("grayout");
             vm.$ajax(API.delete, favoriteSpecify).then(() => {
               //set selected to 0 when delete
-              if(vm.favoriteList()) {
+              if (vm.favoriteList()) {
                 vm.selectedFavoriteOrder(0);
               }
               vm.callData();
@@ -147,6 +162,38 @@ module nts.uk.at.view.ccg005.d.screenModel {
         }
       });
     }
+  
+    openCDL008Dialog(): void {
+      const vm = this;
+      const inputCDL008: any = {
+        startMode: 0, // 起動モード : 職場 (WORKPLACE = 0)
+        isMultiple: true, //選択モード : 複数選択
+        showNoSelection: false, //未選択表示 : 非表示
+        selectedCodes: vm.workPlaceIdList(), //選択済項目 : 先頭
+        isShowBaseDate: true, //基準日表示区分 : 表示
+        baseDate: moment.utc().toISOString(), // 基準日 : システム日
+        selectedSystemType: 2, //システム区分 : 就業
+        isrestrictionOfReferenceRange: false // 参照範囲の絞込 : しない
+      };
+      setShared('inputCDL008', inputCDL008);
+      modal('/view/cdl/008/a/index.xhtml').onClosed(() => {
+        const isCancel = getShared('CDL008Cancel');
+        if (isCancel) {
+          return;
+        }
+        const selectedInfo: Output[] = getShared('workplaceInfor');
+        const listWorkPlaceId: string[] = [];
+        const listWorkPlaceName: string[] = [];
+        _.map(selectedInfo, ((item: Output) => {
+          listWorkPlaceId.push(item.code);
+          listWorkPlaceName.push(item.displayName);
+          
+        }))
+        vm.workPlaceIdList(listWorkPlaceId);
+        vm.choosenWkspNames(listWorkPlaceName);
+      });
+    }
+
   }
 
   enum TargetSelection {

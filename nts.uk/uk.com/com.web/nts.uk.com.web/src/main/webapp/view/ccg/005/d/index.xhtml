@@ -85,9 +85,9 @@
               enable: true }" />
             <div style="margin-top: 20px;">
               <!-- D5_3 -->
-              <button data-bind="i18n: 'CCG005_31', disable: buttonSelectRequire" />
+              <button data-bind="i18n: 'CCG005_31', disable: buttonSelectRequire, click: openCDL008Dialog" />
               <!-- D5_4 -->
-              <input data-bind="ntsTextEditor: {
+              <input class="limited-label" data-bind="ntsTextEditor: {
                 value: displayChoosenWkspName,
                 required: displayChoosenWkspNameRequire,
                 readonly: true,
