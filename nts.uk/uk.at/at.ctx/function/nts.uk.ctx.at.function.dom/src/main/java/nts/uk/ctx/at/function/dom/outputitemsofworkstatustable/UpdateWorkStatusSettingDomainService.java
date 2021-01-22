@@ -45,7 +45,7 @@ public class UpdateWorkStatusSettingDomainService {
 
         });
     }
-    public interface Require extends WorkStatusOutputSettings.Require {
+    public interface Require  {
 
         // [1]	出力設定の詳細を取得する
         Optional<WorkStatusOutputSettings> getWorkStatusOutputSettings(String settingId);
