@@ -67,7 +67,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                     <input class="time-input"
                                                             data-bind="ntsTimeEditor: {
                                                                             name: $parent.appTimeType < 4 ? $parent.appTimeTypeName : $vm.$i18n('KAF012_29'), 
-                                                                            constraint: 'AttendanceTime', 
+                                                                            constraint: 'AttendanceClock', 
                                                                             value: startTime, 
                                                                             inputFormat: 'time', 
                                                                             mode: 'time',
@@ -81,24 +81,24 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                     <input class="time-input"
                                                             data-bind="ntsTimeEditor: {
                                                                             name: $parent.appTimeType < 4 ? $parent.appTimeTypeName : $vm.$i18n('KAF012_29'), 
-                                                                            constraint: 'AttendanceTime', 
+                                                                            constraint: 'AttendanceClock', 
                                                                             value: startTime, 
                                                                             inputFormat: 'time', 
                                                                             mode: 'time',
                                                                             enable: !$parents[1].viewMode(),
                                                                             required: startTimeRequired
-                                                                        }"/>
+                                                                        }, attr: {id: 'startTime-' + workNo}"/>
                                                     <span class="label" data-bind="text: $vm.$i18n('KAF012_30')"/>
                                                     <input class="time-input"
                                                             data-bind="ntsTimeEditor: {
                                                                             name: $parent.appTimeType < 4 ? $parent.appTimeTypeName : $vm.$i18n('KAF012_31'), 
-                                                                            constraint: 'AttendanceTime', 
+                                                                            constraint: 'AttendanceClock', 
                                                                             value: endTime, 
                                                                             inputFormat: 'time', 
                                                                             mode: 'time',
                                                                             enable: !$parents[1].viewMode(),
                                                                             required: endTimeRequired
-                                                                        }"/>
+                                                                        }, attr: {id: 'endTime-' + workNo}"/>
                                                     <div style="width: 80px" data-bind="ntsComboBox: {
                                                                                 name: $vm.$i18n('KAF012_32'),
                                                                                 options: ko.observableArray([
@@ -182,7 +182,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                                 inputFormat: 'time', 
                                                                 mode: 'time',
                                                                 option: {defaultValue: '0:00'},
-                                                                enable: !$parents[1].viewMode() &amp;&amp; calculatedTime() > 0 &amp;&amp; (substituteAppTime() > 0 &#124;&#124; $parents[1].leaveType() == 6)
+                                                                enable: !$parents[1].viewMode() &amp;&amp; calculatedTime() > 0 &amp;&amp; (substituteAppTime() != 0 &#124;&#124; $parents[1].leaveType() == 6)
                                                             }"/>
                                     </div>
                                 </td>
@@ -198,7 +198,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                                 inputFormat: 'time', 
                                                                 mode: 'time',
                                                                 option: {defaultValue: '0:00'},
-                                                                enable: !$parents[1].viewMode() &amp;&amp; calculatedTime() > 0 &amp;&amp; (annualAppTime() > 0 &#124;&#124; $parents[1].leaveType() == 6)
+                                                                enable: !$parents[1].viewMode() &amp;&amp; ($parents[1].leaveType() != 6 &#124;&#124; calculatedTime() > 0)
                                                             }"/>
                                     </div>
                                 </td>
@@ -214,7 +214,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                                 inputFormat: 'time', 
                                                                 mode: 'time',
                                                                 option: {defaultValue: '0:00'},
-                                                                enable: !$parents[1].viewMode() &amp;&amp; calculatedTime() > 0 &amp;&amp; (childCareAppTime() > 0 &#124;&#124; $parents[1].leaveType() == 6)
+                                                                enable: !$parents[1].viewMode() &amp;&amp; ($parents[1].leaveType() != 6 &#124;&#124; calculatedTime() > 0)
                                                             }"/>
                                     </div>
                                 </td>
@@ -230,7 +230,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                                 inputFormat: 'time', 
                                                                 mode: 'time',
                                                                 option: {defaultValue: '0:00'},
-                                                                enable: !$parents[1].viewMode() &amp;&amp; calculatedTime() > 0 &amp;&amp; (careAppTime() > 0 &#124;&#124; $parents[1].leaveType() == 6)
+                                                                enable: !$parents[1].viewMode() &amp;&amp; ($parents[1].leaveType() != 6 &#124;&#124; calculatedTime() > 0)
                                                             }"/>
                                     </div>
                                 </td>
@@ -246,7 +246,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                                 inputFormat: 'time', 
                                                                 mode: 'time',
                                                                 option: {defaultValue: '0:00'},
-                                                                enable: !$parents[1].viewMode() &amp;&amp; calculatedTime() > 0 &amp;&amp; (super60AppTime() > 0 &#124;&#124; $parents[1].leaveType() == 6)
+                                                                enable: !$parents[1].viewMode() &amp;&amp; ($parents[1].leaveType() != 6 &#124;&#124; calculatedTime() > 0)
                                                             }"/>
                                     </div>
                                 </td>
@@ -262,7 +262,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                                 inputFormat: 'time', 
                                                                 mode: 'time',
                                                                 option: {defaultValue: '0:00'},
-                                                                enable: !$parents[1].viewMode() &amp;&amp; calculatedTime() > 0 &amp;&amp; (specialAppTime() > 0 &#124;&#124; $parents[1].leaveType() == 6)
+                                                                enable: !$parents[1].viewMode() &amp;&amp; ($parents[1].leaveType() != 6 &#124;&#124; calculatedTime() > 0)
                                                             }"/>
                                     </div>
                                 </td>
@@ -441,7 +441,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
 
         handleCalculate() {
             const vm = this;
-            vm.$validate(['#kaf000-a-component4 .nts-input', '#kaf012-share-component2 .nts-input']).then((valid: boolean) => {
+            vm.$validate(['#kaf000-a-component4 .nts-input', '#kaf012-input-table .nts-input']).then((valid: boolean) => {
                 if (valid) {
                     const command = {
                         timeLeaveType: vm.leaveType(),
@@ -708,6 +708,36 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
             this.endTimeRequired = ko.computed(() => {
                 if (this.appTimeType() < 4) return false;
                 return this.startTime() != null;
+            });
+            this.startTime.subscribe(value => {
+                if (this.appTimeType() >= 4) {
+                    if (value > 0 && this.endTime() > 0 && value > this.endTime()) {
+                        const control = $('#startTime-' + this.workNo);
+                        if (nts.uk.ui.errors.errorsViewModel().errors().filter(e => e.$control[0] == control[0]).length == 0) {
+                            control.ntsError('set', {
+                                messageId: "MsgB_21",
+                                messageParams: [getText('KAF012_27')]
+                            });
+                        }
+                    } else {
+                        $('#startTime-' + this.workNo).ntsError('clear');
+                    }
+                }
+            });
+            this.endTime.subscribe(value => {
+                if (this.appTimeType() >= 4) {
+                    if (value > 0 && this.startTime() > 0 && value < this.startTime()) {
+                        const control = $('#endTime-' + this.workNo);
+                        if (nts.uk.ui.errors.errorsViewModel().errors().filter(e => e.$control[0] == control[0]).length == 0) {
+                            control.ntsError('set', {
+                                messageId: "MsgB_21",
+                                messageParams: [getText('KAF012_27')]
+                            });
+                        }
+                    } else {
+                        $('#endTime-' + this.workNo).ntsError('clear');
+                    }
+                }
             });
         }
     }
