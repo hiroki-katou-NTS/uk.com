@@ -154,12 +154,12 @@ module nts.uk.at.view.kmk004.b {
 		init() {
 			const vm = this;
 
-			if (ko.unwrap(vm.tabSetting.deforWorkLegalOverTimeWork)) {
+			if (ko.unwrap(vm.tabSetting.deforWorkSurchargeWeekMonth)) {
 				vm.model.surcharge1('KMK004_244');
 			} else {
 				vm.model.surcharge1('KMK004_245');
 			}
-			if (ko.unwrap(vm.tabSetting.deforWorkSurchargeWeekMonth)) {
+			if (ko.unwrap(vm.tabSetting.deforWorkLegalOverTimeWork)) {
 				vm.model.surcharge2('KMK004_216');
 			} else {
 				vm.model.surcharge2('KMK004_217');
@@ -171,13 +171,13 @@ module nts.uk.at.view.kmk004.b {
 				vm.model.surcharge3('KMK004_219');
 			}
 
-			if (ko.unwrap(vm.tabSetting.outsidedeforWorkLegalOverTimeWork)) {
+			if (ko.unwrap(vm.tabSetting.outsideSurchargeWeekMonth)) {
 				vm.model.surchargeOvertime1('KMK004_250');
 			} else {
 				vm.model.surchargeOvertime1('KMK004_251');
 			}
 
-			if (ko.unwrap(vm.tabSetting.outsideSurchargeWeekMonth)) {
+			if (ko.unwrap(vm.tabSetting.outsidedeforWorkLegalOverTimeWork)) {
 				vm.model.surchargeOvertime2('KMK004_216');
 			} else {
 				vm.model.surchargeOvertime2('KMK004_217');

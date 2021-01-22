@@ -314,7 +314,6 @@ module nts.uk.at.view.kmk004.b {
 							}
 							vm.change.valueHasMutated();
 						})
-						.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
 						.then(() => {
 							vm.$errors('clear');
 						}).then(() => {
@@ -323,6 +322,7 @@ module nts.uk.at.view.kmk004.b {
 								$('.listbox').focus();
 							});
 						})
+						.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
 						.always(() => vm.$blockui("clear"));
 				})
 		}
