@@ -60,7 +60,7 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button tabindex="4" id="save-button" data-bind="click: save" class="proceed x-large">#{i18n.getText('KAF011_3')}</button>
+				<button tabindex="4" id="save-button" data-bind="click: save, enable: $root.errors.isEmpty" class="proceed x-large">#{i18n.getText('KAF011_3')}</button>
 				<button tabindex="5" id="close-button" data-bind="click: closeDialog">#{i18n.getText('KAF011_4')}</button>
 			</div>
 		</ui:define>
