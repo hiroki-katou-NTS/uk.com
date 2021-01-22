@@ -58,5 +58,6 @@ module nts.uk.at.view.kaf011.c.viewmodel {
 	
     __viewContext.ready(function() {
     	__viewContext.bind(new KAF011C());
+		$("#recAppDate").focus();
     });
 }

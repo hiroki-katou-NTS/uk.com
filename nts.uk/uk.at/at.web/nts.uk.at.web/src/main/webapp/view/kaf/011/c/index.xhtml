@@ -23,12 +23,12 @@
 						<div class="row">#{i18n.getText('KAF011_63')}</div>
 						<div class="row">
 							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF011_22')}</div>
-							<div id="recAppDate" data-bind="ntsDatePicker: {name: '#{i18n.getText('KAF011_22')}', value: appDate, dateFormat: 'YYYY/MM/DD', required: true }"></div>
+							<div tabindex="1" id="recAppDate" data-bind="ntsDatePicker: {name: '#{i18n.getText('KAF011_22')}', value: appDate, dateFormat: 'YYYY/MM/DD', required: true }"></div>
 						</div>
 						<com:ko-if bind="displayInforWhenStarting.appDispInfoStartup.appDispInfoNoDateOutput.displayStandardReason == 1">
 							<div class="row">
 								<div data-bind="ntsFormLabel: {required: displayInforWhenStarting.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appLimitSetting.standardReasonRequired}">#{i18n.getText('KAF011_16')}</div>
-								<div data-bind="ntsComboBox: {
+								<div tabindex="2" data-bind="ntsComboBox: {
 	                                        name: '#{i18n.getText('KAF011_16')}',
 	                                        options: reasonTypeItemLst,
 	                                        optionsValue: 'appStandardReasonCD',
@@ -43,7 +43,7 @@
 						<com:ko-if bind="displayInforWhenStarting.appDispInfoStartup.appDispInfoNoDateOutput.displayAppReason == 1">
 							<div class="row">
 								<div data-bind="ntsFormLabel: {required: displayInforWhenStarting.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appLimitSetting.requiredAppReason}">#{i18n.getText('KAF011_17')}</div>
-								<textarea id="appReason" style="height: 90px; width: 360px;" data-bind="ntsMultilineEditor: {
+								<textarea tabindex="3" id="appReason" style="height: 90px; width: 360px;" data-bind="ntsMultilineEditor: {
 											name:'#{i18n.getText('KAF011_17')}',
 											constraint: 'AppReason',
 											value: appReason,
