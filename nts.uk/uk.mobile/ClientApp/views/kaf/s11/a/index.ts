@@ -122,26 +122,32 @@ export class KafS11AComponent extends KafS00ShrComponent {
 
                 return vm.loadCommonSetting(AppType.COMPLEMENT_LEAVE_APPLICATION);
             }).then((data: any) => {
-                vm.updateKaf000_A_Params(vm.user);
-                vm.updateKaf000_C_Params(true);
-                let newMode = vm.mode == ScreenMode.NEW ? true : false,
-                    employeeID = vm.user.employeeId,
-                    dateLst = [],
-                    displayInforWhenStarting = null,
-                    appDispInfoStartupCmd = vm.appDispInfoStartupOutput,
-                    command = { newMode, employeeID, dateLst, displayInforWhenStarting, appDispInfoStartupCmd };
+                if (data) {
+                    vm.updateKaf000_A_Params(vm.user);
+                    vm.updateKaf000_C_Params(true);
+                    let newMode = vm.mode == ScreenMode.NEW ? true : false,
+                        employeeID = vm.user.employeeId,
+                        dateLst = [],
+                        displayInforWhenStarting = null,
+                        appDispInfoStartupCmd = vm.appDispInfoStartupOutput,
+                        command = { newMode, employeeID, dateLst, displayInforWhenStarting, appDispInfoStartupCmd };
 
-                return vm.$http.post('at', API.start, command);
+                    return vm.$http.post('at', API.start, command);
+                }
             }).then((data: any) => {
-                vm.initData(data.data);
-                let wkTimeCodes = [
-                    vm.complementWorkInfo.workTimeCD,
-                    vm.leaveWorkInfo.workTimeCD
-                ];
+                if (data) {
+                    vm.initData(data.data);
+                    let wkTimeCodes = [
+                        vm.complementWorkInfo.workTimeCD,
+                        vm.leaveWorkInfo.workTimeCD
+                    ];
 
-                return vm.$http.post('at', API.getWorkTimeByCDLst, { wkTimeCodes });
+                    return vm.$http.post('at', API.getWorkTimeByCDLst, { wkTimeCodes });
+                }
             }).then((data: any) => {
-                vm.workTimeLstFullData = data.data;
+                if (data) {
+                    vm.workTimeLstFullData = data.data;
+                }
             }).catch((error: any) => {
                 vm.handleErrorCustom(error).then((result) => {
                     if (result) {
