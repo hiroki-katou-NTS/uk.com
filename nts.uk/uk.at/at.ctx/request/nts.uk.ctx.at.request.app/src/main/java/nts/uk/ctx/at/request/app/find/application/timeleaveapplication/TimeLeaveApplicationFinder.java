@@ -226,14 +226,14 @@ public class TimeLeaveApplicationFinder {
 
         // TODO: fake output because time calculation not update yet
         int lateTime1 = 0, lateTime2 = 0, leaveEarly1 = 0, leaveEarly2 = 0, privateOutingTime = 0, unionOutingTime = 0;
-        if (lstTimeZone.get(0).getStartTime() != null && achievementDetailDto.getOpWorkTime() != null)
-            lateTime1 = Math.abs(lstTimeZone.get(0).getStartTime() - achievementDetailDto.getOpWorkTime());
-        if (lstTimeZone.get(0).getEndTime() != null && achievementDetailDto.getOpLeaveTime() != null)
-            leaveEarly1 = Math.abs(achievementDetailDto.getOpLeaveTime() - lstTimeZone.get(0).getEndTime());
-        if (lstTimeZone.get(1).getStartTime() != null && achievementDetailDto.getOpWorkTime2() != null)
+        if (lstTimeZone.get(0).getStartTime() != null && achievementDetailDto.getAchievementEarly().getScheAttendanceTime1() != null)
+            lateTime1 = Math.abs(lstTimeZone.get(0).getStartTime() - achievementDetailDto.getAchievementEarly().getScheAttendanceTime1());
+        if (lstTimeZone.get(0).getEndTime() != null && achievementDetailDto.getAchievementEarly().getScheDepartureTime1() != null)
+            leaveEarly1 = Math.abs(achievementDetailDto.getAchievementEarly().getScheDepartureTime1() - lstTimeZone.get(0).getEndTime());
+        if (lstTimeZone.get(1).getStartTime() != null && achievementDetailDto.getAchievementEarly().getScheAttendanceTime2() != null)
             lateTime2 = Math.abs(lstTimeZone.get(1).getStartTime() - achievementDetailDto.getOpWorkTime2());
-        if (lstTimeZone.get(1).getEndTime() != null && achievementDetailDto.getOpDepartureTime2() != null)
-            leaveEarly2 = Math.abs(achievementDetailDto.getOpDepartureTime2() - lstTimeZone.get(1).getEndTime());
+        if (lstTimeZone.get(1).getEndTime() != null && achievementDetailDto.getAchievementEarly().getScheDepartureTime2() != null)
+            leaveEarly2 = Math.abs(achievementDetailDto.getAchievementEarly().getScheDepartureTime2() - lstTimeZone.get(1).getEndTime());
         for (OutingTimeZoneDto i : lstOutingTimeZone) {
             if (i.getOutingAtr() == AppTimeType.PRIVATE.value) {
                 privateOutingTime = privateOutingTime + (i.getEndTime() - i.getStartTime());
