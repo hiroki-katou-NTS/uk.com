@@ -5,11 +5,12 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.function.app.command.arbitraryperiodsummarytable.*;
+import nts.uk.ctx.at.function.app.find.arbitraryperiodsummarytable.GetRoleArbitraryScheduleFinder;
 import nts.uk.ctx.at.function.app.query.arbitraryperiodsummarytable.GetOutputSettingDetailArbitraryQuery;
 import nts.uk.ctx.at.function.app.query.arbitraryperiodsummarytable.GetOutputSettingListArbitraryQuery;
 import nts.uk.ctx.at.function.app.query.arbitraryperiodsummarytable.OutputSettingArbitraryDto;
-import nts.uk.ctx.at.function.app.query.workledgeroutputitem.BeginMonthOfCompany;
 import nts.uk.ctx.at.function.app.query.workledgeroutputitem.GetBeginMonthOfCompanyQuery;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.scrA.RoleWhetherLoginPubImported;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
 import nts.uk.ctx.at.function.ws.outputworkstatustable.dto.SettingIdParams;
 import nts.uk.ctx.at.function.ws.outputworkstatustable.dto.SettingParams;
@@ -43,6 +44,8 @@ public class OutputSettingListArbitraryWebService extends WebService {
 
     @Inject
     private GetBeginMonthOfCompanyQuery getBeginMonthOfCompanyQuery;
+    @Inject
+    private GetRoleArbitraryScheduleFinder getRoleArbitraryScheduleFinder;
 
 
     @POST
@@ -51,10 +54,10 @@ public class OutputSettingListArbitraryWebService extends WebService {
         return arbitraryQuery.getListOutputSetting(EnumAdaptor.valueOf(params.getSetting(), SettingClassificationCommon.class));
     }
 
-    @Path("005/a/beginningmonth")
     @POST
-    public BeginMonthOfCompany getBeginMonthOfCompany() {
-        return getBeginMonthOfCompanyQuery.getBeginMonthOfCompany();
+    @Path("007/a/getroleinfor")
+    public RoleWhetherLoginPubImported getRoleInfor() {
+        return getRoleArbitraryScheduleFinder.getRoleInfor();
     }
 
     @POST
