@@ -72,7 +72,7 @@ public class ProcessExecutionServiceImpl implements ProcessExecutionService {
 		long epochSeconds = now.localDateTime().atZone(ZoneId.systemDefault()).toEpochSecond();
 		now = GeneralDateTime.ofEpochSecond(epochSeconds, ZoneOffset.ofHours(9));
 		// 取得できなかった場合
-		if (!oNextExecRepScheduleDateTime.isPresent() && !oNextExecEndScheduleDateTime.isPresent()) {
+		if (!oNextExecRepScheduleDateTime.isPresent()) {
 			// 次回実行日時（スケジュールID）を次回実行日時とする
 			nextExecDateTime = nextExecScheduleDateTime;
 		}
@@ -108,7 +108,8 @@ public class ProcessExecutionServiceImpl implements ProcessExecutionService {
 		TaskEndDate endDate = execTaskSet.getEndDate();
 		if (endDate.getEndDateCls().equals(EndDateClassification.DATE) && endDate.getEndDate().isPresent()) {
 			TaskEndTime endTime = execTaskSet.getEndTime();
-			if (endTime != null && endTime.getEndTimeCls().equals(EndTimeClassification.YES)) {
+			if (endTime != null && endTime.getEndTimeCls().equals(EndTimeClassification.YES)
+					&& endTime.getEndTime().isPresent()) {
 				// →「実行タスク設定.終了日.終了日」＋「実行タスク設定.終了時刻設定.終了時刻」＝終了日時
 				endDateTime = GeneralDateTime
 						.fromString(
@@ -125,7 +126,7 @@ public class ProcessExecutionServiceImpl implements ProcessExecutionService {
 		}
 
 		// 終了日時を過ぎている
-		if (endDateTime != null && nextExecDateTime.after(endDateTime)) {
+		if (endDateTime != null && endDateTime.before(nextExecDateTime)) {
 			// 次回実行日時をNULLとする
 			return null;
 		}
