@@ -15,7 +15,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Optional;
 
 /**
@@ -73,20 +72,18 @@ public class UpdateWorkLedgerSettingDomainServiceTest {
 		OutputItemSettingCode code = new OutputItemSettingCode("OutputItemSettingCode02");
 		OutputItemSettingName name = new OutputItemSettingName("OutputItemSettingName02");
 
-		new Expectations(AppContexts.class) {{
+		new Expectations() {{
 			require.getOutputSettingDetail("uid02");
-			result = Optional.of(new WorkLedgerOutputItem(
+			result = Optional.of(WorkLedgerOutputItem.create(
 					"uid02",
 					code,
-					null,
 					name,
-					SettingClassificationCommon.STANDARD_SELECTION,
-					"sid"
-					));
+					SettingClassificationCommon.STANDARD_SELECTION));
+		}};
+		new Expectations(AppContexts.class) {{
 			AppContexts.user().employeeId();
 			result = "employeeId03";
 		}};
-
 		val actual = UpdateWorkLedgerSettingDomainService.updateSetting(
 				require,
 				"uid02",
@@ -118,15 +115,14 @@ public class UpdateWorkLedgerSettingDomainServiceTest {
 		new Expectations(AppContexts.class) {{
 			AppContexts.user().employeeId();
 			result = "employeeId03";
+		}};
+		new Expectations() {{
 			require.getOutputSettingDetail("uid03");
-			result = Optional.of(new WorkLedgerOutputItem(
+			result = Optional.of(WorkLedgerOutputItem.create(
 					"uid02",
 					code,
-					null,
 					name,
-					SettingClassificationCommon.STANDARD_SELECTION,
-					"sid"
-			));
+					SettingClassificationCommon.STANDARD_SELECTION));
 		}};
 		val actual = UpdateWorkLedgerSettingDomainService.updateSetting(
 				require,

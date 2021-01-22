@@ -23,128 +23,133 @@ import java.util.Optional;
 @RunWith(JMockit.class)
 public class DuplicateWorkLedgerSettingDomainServiceTest {
     @Injectable
-    DuplicateWorkLedgerSettingDomainService.Require require;
+	DuplicateWorkLedgerSettingDomainService.Require require;
 
-    /**
-     * Test duplicateSetting method
-     * <p>
-     * Condition:
-     * input param: settingCategory == STANDARD_SELECTION
-     * require.getOutputItemDetail returns empty item
-     * Expect:
-     * BusinessException: "Msg_1928"
-     */
-    @Test
-    public void testDuplicateSetting_01() {
-        OutputItemSettingCode code = new OutputItemSettingCode("OutputItemSettingCode01");
-        OutputItemSettingName name = new OutputItemSettingName("OutputItemSettingName01");
+	/**
+	 * Test duplicateSetting method
+	 *
+	 * Condition:
+	 * 		input param: settingCategory == STANDARD_SELECTION
+	 * 		require.getOutputItemDetail returns empty item
+	 * Expect:
+	 * 		BusinessException: "Msg_1928"
+	 */
+	@Test
+    public void testDuplicateSetting_01(){
+ 		OutputItemSettingCode code = new OutputItemSettingCode("OutputItemSettingCode01");
+		OutputItemSettingName name = new OutputItemSettingName("OutputItemSettingName01");
 
-        new Expectations(AppContexts.class) {{
-            AppContexts.user().employeeId();
-            result = "employeeId01";
+		new Expectations(AppContexts.class) {{
+			AppContexts.user().employeeId();
+			result = "employeeId01";
+		}};
 
-            require.getOutputItemDetail("dupSrcId01");
-            result = Optional.empty();
-        }};
+		new Expectations() {{
+			require.getOutputItemDetail("dupSrcId01");
+			result = Optional.empty();
+		}};
 
-
-        NtsAssert.businessException("Msg_1928", () -> {
-            DuplicateWorkLedgerSettingDomainService.duplicateSetting(
-                    require,
-                    SettingClassificationCommon.STANDARD_SELECTION,
-                    "dupSrcId01",
-                    code,
-                    name
-            );
-        });
+		NtsAssert.businessException("Msg_1928", () -> {
+			DuplicateWorkLedgerSettingDomainService.duplicateSetting(
+					require,
+					SettingClassificationCommon.STANDARD_SELECTION,
+					"dupSrcId01",
+					code,
+					name
+			);
+		});
     }
 
-    /**
-     * Test duplicateSetting method
-     * <p>
-     * Condition:
-     * input param: settingCategory == STANDARD_SELECTION
-     * require.getOutputItemDetail returns non empty item
-     * WorkLedgerOutputItem.checkDuplicateStandardSelection returns TRUE
-     * Expect:
-     * BusinessException: "Msg_1927"
-     */
-    @Test
-    public void testDuplicateSetting_02() {
-        OutputItemSettingCode code = new OutputItemSettingCode("OutputItemSettingCode02");
-        OutputItemSettingName name = new OutputItemSettingName("OutputItemSettingName02");
-        val item =  new WorkLedgerOutputItem(
-                "uid02",
-                code,
-                Arrays.asList(new AttendanceItemToPrint(1, 1)),
-                name,
-                SettingClassificationCommon.STANDARD_SELECTION,
-                "sid"
-        );
-        new Expectations(AppContexts.class, WorkLedgerOutputItem.class) {{
-            AppContexts.user().employeeId();
-            result = "employeeId02";
-            require.getOutputItemDetail("dupSrcId02");
-            result = Optional.of(item);
-            WorkLedgerOutputItem.checkDuplicateStandardSelection(require, code);
-            result = true;
-        }};
+	/**
+	 * Test duplicateSetting method
+	 *
+	 * Condition:
+	 * 		input param: settingCategory == STANDARD_SELECTION
+	 * 		require.getOutputItemDetail returns non empty item
+	 * 		WorkLedgerOutputItem.checkDuplicateStandardSelection returns TRUE
+	 * Expect:
+	 * 		BusinessException: "Msg_1927"
+	 */
+	@Test
+	public void testDuplicateSetting_02(){
+		OutputItemSettingCode code = new OutputItemSettingCode("OutputItemSettingCode02");
+		OutputItemSettingName name = new OutputItemSettingName("OutputItemSettingName02");
 
-        NtsAssert.businessException("Msg_1927", () -> {
-            DuplicateWorkLedgerSettingDomainService.duplicateSetting(
-                    require,
-                    SettingClassificationCommon.STANDARD_SELECTION,
-                    "dupSrcId02",
-                    code,
-                    name
-            );
-        });
-    }
+		new Expectations(AppContexts.class) {{
+			AppContexts.user().employeeId();
+			result = "employeeId02";
+		}};
 
-    /**
-     * Test duplicateSetting method
-     * <p>
-     * Condition:
-     * input param: settingCategory == FREE_SETTING
-     * require.getOutputItemDetail returns non empty item
-     * WorkLedgerOutputItem.checkDuplicateFreeSettings returns TRUE
-     * Expect:
-     * BusinessException: "Msg_1927"
-     */
-    @Test
-    public void testDuplicateSetting_03() {
-        OutputItemSettingCode code = new OutputItemSettingCode("OutputItemSettingCode03");
-        OutputItemSettingName name = new OutputItemSettingName("OutputItemSettingName03");
-        val item =  new WorkLedgerOutputItem(
-                "uid02",
-                code,
-                Arrays.asList(new AttendanceItemToPrint(1, 1)),
-                name,
-                SettingClassificationCommon.STANDARD_SELECTION,
-                "sid"
-        );
-        new Expectations(AppContexts.class, WorkLedgerOutputItem.class) {{
-            AppContexts.user().employeeId();
-            result = "employeeId03";
-            require.getOutputItemDetail("dupSrcId03");
-            result = Optional.of(item);
-            WorkLedgerOutputItem.checkDuplicateFreeSettings(require, code, "employeeId03");
-            result = true;
-        }};
+		new Expectations() {{
+			require.getOutputItemDetail("dupSrcId02");
+			result = Optional.of(WorkLedgerOutputItem.create(
+					"dupSrcId02",
+					code,
+					name,
+					SettingClassificationCommon.STANDARD_SELECTION));
+		}};
+		new Expectations(WorkLedgerOutputItem.class) {{
+			WorkLedgerOutputItem.checkDuplicateStandardSelection(require, code);
+			result = true;
+		}};
 
-        NtsAssert.businessException("Msg_1927", () -> {
-            DuplicateWorkLedgerSettingDomainService.duplicateSetting(
-                    require,
-                    SettingClassificationCommon.FREE_SETTING,
-                    "dupSrcId03",
-                    code,
-                    name
-            );
-        });
-    }
+		NtsAssert.businessException("Msg_1927", () -> {
+			DuplicateWorkLedgerSettingDomainService.duplicateSetting(
+					require,
+					SettingClassificationCommon.STANDARD_SELECTION,
+					"dupSrcId02",
+					code,
+					name
+			);
+		});
+	}
 
+	/**
+	 * Test duplicateSetting method
+	 *
+	 * Condition:
+	 * 		input param: settingCategory == FREE_SETTING
+	 * 		require.getOutputItemDetail returns non empty item
+	 * 		WorkLedgerOutputItem.checkDuplicateFreeSettings returns TRUE
+	 * Expect:
+	 * 		BusinessException: "Msg_1927"
+	 */
+	@Test
+	public void testDuplicateSetting_03(){
+		OutputItemSettingCode code = new OutputItemSettingCode("OutputItemSettingCode03");
+		OutputItemSettingName name = new OutputItemSettingName("OutputItemSettingName03");
 
-    /**
+		new Expectations(AppContexts.class) {{
+			AppContexts.user().employeeId();
+			result = "employeeId03";
+		}};
+
+		new Expectations() {{
+			require.getOutputItemDetail("dupSrcId03");
+			result = Optional.of(WorkLedgerOutputItem.create(
+					"dupSrcId03",
+					code,
+					name,
+					SettingClassificationCommon.FREE_SETTING));
+		}};
+
+		new Expectations(WorkLedgerOutputItem.class) {{
+			WorkLedgerOutputItem.checkDuplicateFreeSettings(require, code, "employeeId03");
+			result = true;
+		}};
+
+		NtsAssert.businessException("Msg_1927", () -> {
+			DuplicateWorkLedgerSettingDomainService.duplicateSetting(
+					require,
+					SettingClassificationCommon.FREE_SETTING,
+					"dupSrcId03",
+					code,
+					name
+			);
+		});
+	}
+
+	/**
 	 * Test duplicateSetting method
 	 *
 	 * Condition:
@@ -158,23 +163,29 @@ public class DuplicateWorkLedgerSettingDomainServiceTest {
 	public void testDuplicateSetting_04(){
 		OutputItemSettingCode code = new OutputItemSettingCode("OutputItemSettingCode04");
 		OutputItemSettingName name = new OutputItemSettingName("OutputItemSettingName04");
-        val item =  new WorkLedgerOutputItem(
-                "uid02",
-                code,
-                Arrays.asList(new AttendanceItemToPrint(1, 1)),
-                name,
-                SettingClassificationCommon.STANDARD_SELECTION,
-                "sid"
-        );
-		new Expectations(AppContexts.class,WorkLedgerOutputItem.class,IdentifierUtil.class) {{
+
+		new Expectations(AppContexts.class) {{
 			AppContexts.user().employeeId();
 			result = "employeeId04";
-            require.getOutputItemDetail("dupSrcId04");
-            result = Optional.of(item);
-            WorkLedgerOutputItem.checkDuplicateStandardSelection(require, code);
-            result = false;
-            IdentifierUtil.randomUniqueId();
-            result = "uid04";
+		}};
+
+		new Expectations() {{
+			require.getOutputItemDetail("dupSrcId04");
+			result = Optional.of(WorkLedgerOutputItem.create(
+					"dupSrcId04",
+					code,
+					name,
+					SettingClassificationCommon.STANDARD_SELECTION));
+		}};
+
+		new Expectations(WorkLedgerOutputItem.class) {{
+			WorkLedgerOutputItem.checkDuplicateStandardSelection(require, code);
+			result = false;
+		}};
+
+		new Expectations(IdentifierUtil.class) {{
+			IdentifierUtil.randomUniqueId();
+			result = "uid04";
 		}};
 
 		val actual = DuplicateWorkLedgerSettingDomainService.duplicateSetting(
@@ -205,25 +216,30 @@ public class DuplicateWorkLedgerSettingDomainServiceTest {
 	public void testDuplicateSetting_05(){
 		OutputItemSettingCode code = new OutputItemSettingCode("OutputItemSettingCode05");
 		OutputItemSettingName name = new OutputItemSettingName("OutputItemSettingName05");
-        val item =  new WorkLedgerOutputItem(
-                "uid02",
-                code,
-                Arrays.asList(new AttendanceItemToPrint(1, 1)),
-                name,
-                SettingClassificationCommon.STANDARD_SELECTION,
-                "sid"
-        );
-		new Expectations(AppContexts.class,WorkLedgerOutputItem.class,IdentifierUtil.class) {{
+
+		new Expectations(AppContexts.class) {{
 			AppContexts.user().employeeId();
 			result = "employeeId05";
-            require.getOutputItemDetail("dupSrcId05");
-            result = Optional.of(item);
-            WorkLedgerOutputItem.checkDuplicateFreeSettings(require, code, "employeeId05");
-            result = false;
-            IdentifierUtil.randomUniqueId();
-            result = "uid05";
 		}};
 
+		new Expectations() {{
+			require.getOutputItemDetail("dupSrcId05");
+			result = Optional.of(WorkLedgerOutputItem.create(
+					"dupSrcId05",
+					code,
+					name,
+					SettingClassificationCommon.FREE_SETTING));
+		}};
+
+		new Expectations(WorkLedgerOutputItem.class) {{
+			WorkLedgerOutputItem.checkDuplicateFreeSettings(require, code, "employeeId05");
+			result = false;
+		}};
+
+		new Expectations(IdentifierUtil.class) {{
+			IdentifierUtil.randomUniqueId();
+			result = "uid05";
+		}};
 
 		val actual = DuplicateWorkLedgerSettingDomainService.duplicateSetting(
 				require,

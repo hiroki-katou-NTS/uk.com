@@ -29,75 +29,41 @@ public class WorkLedgerOutputItemTest {
     @Injectable
     WorkLedgerOutputItem.Require require;
 
-    /**
-     * Test:
-     * - method checkDuplicateStandardSelection: is true
-     */
     @Test
-    public void checkDuplicateStandardSelection_01() {
-        val code = new OutputItemSettingCode("OutputItemSettingCode01");
+    public void test_01(){
+		val code = new OutputItemSettingCode("OutputItemSettingCode01");
         new Expectations() {{
-            require.standardCheck(code);
-            result = true;
+        	require.standardCheck(code);
+        	result = true;
         }};
         val actual = WorkLedgerOutputItem.checkDuplicateStandardSelection(require, code);
-        assertThat(actual).isTrue();
+        assertThat(actual).isEqualTo(true);
     }
 
-    /**
-     * Test:
-     * - method checkDuplicateFreeSettings: is true
-     */
     @Test
-    public void checkDuplicateFreeSettings_02() {
-        val code = new OutputItemSettingCode("OutputItemSettingCode02");
+    public void test_02(){
+		val code = new OutputItemSettingCode("OutputItemSettingCode02");
 
         new Expectations() {{
-            require.freeCheck(code, "emp02");
-            result = true;
+        	require.freeCheck(code, "emp02");
+        	result = true;
         }};
         val actual = WorkLedgerOutputItem.checkDuplicateFreeSettings(require, code, "emp02");
-        assertThat(actual).isTrue();
+        assertThat(actual).isEqualTo(true);
     }
 
-    /**
-     * Test:
-     * - Getter: WorkStatusOutputSettings
-     * - SettingClassificationCommon: STANDARD_SELECTION
-     */
     @Test
-    public void testGetterOutputSettings_03() {
-        val code = new OutputItemSettingCode("OutputItemSettingCode03");
-        val name = new OutputItemSettingName("OutputItemSettingName03");
-        val outputSettings = new WorkLedgerOutputItem(
-                "id03",
-                code,
-                Arrays.asList(new AttendanceItemToPrint(1, 1)),
-                name,
-                SettingClassificationCommon.STANDARD_SELECTION,
-                "emp03"
-        );
-
-        NtsAssert.invokeGetters(outputSettings);
-    }
-
-    /**
-     * Test:
-     * - Getter: WorkStatusOutputSettings
-     * - SettingClassificationCommon: FREE_SETTING
-     */
-    @Test
-    public void testGetterOutputSettings_04() {
-        val code = new OutputItemSettingCode("OutputItemSettingCode03");
-        val name = new OutputItemSettingName("OutputItemSettingName03");
-        val outputSettings = new WorkLedgerOutputItem(
-                "id03",
-                code,
-                Arrays.asList(new AttendanceItemToPrint(1, 1)),
-                name,
-                SettingClassificationCommon.FREE_SETTING,
-                "emp03"
-        );
+    public void test_03(){
+		val code = new OutputItemSettingCode("OutputItemSettingCode03");
+		val name = new OutputItemSettingName("OutputItemSettingName03");
+		val outputSettings = new WorkLedgerOutputItem (
+				"id03",
+				code,
+				Arrays.asList(new AttendanceItemToPrint(1, 1)),
+				name,
+				SettingClassificationCommon.STANDARD_SELECTION,
+				"emp03"
+		);
 
         NtsAssert.invokeGetters(outputSettings);
     }
