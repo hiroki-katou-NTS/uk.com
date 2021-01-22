@@ -59,12 +59,12 @@ public class FavoriteSpecifyEntity extends UkJpaEntity
 	// column 順序
 	@NotNull
 	@Column(name = "DISP_ORDER")
-	private int order;
+	private Integer order;
 
 	// column 対象選択
 	@NotNull
 	@Column(name = "TGT_SELECT")
-	private int targetSelection;
+	private Integer targetSelection;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "favoriteSpecifyEntity", orphanRemoval = true, fetch = FetchType.LAZY)
 	public List<FavoriteSpecifyEntityDetail> listFavoriteSpecifyEntityDetail;
@@ -97,12 +97,6 @@ public class FavoriteSpecifyEntity extends UkJpaEntity
 	}
 
 	@Override
-	public void setTargetSelection(Integer targetSelection) {
-		this.targetSelection = targetSelection;
-	}
-
-	//TODO
-	@Override
 	public void setWorkplaceId(List<String> workplaceId) {
 		workplaceId.forEach(item -> {
 			FavoriteSpecifyEntityDetailPK pk = new FavoriteSpecifyEntityDetailPK(this.pk.getCreatorId(), this.pk.getInputDate(), item);
@@ -110,16 +104,6 @@ public class FavoriteSpecifyEntity extends UkJpaEntity
 			listFavoriteSpecifyEntityDetail.add(entity);
 		});
 
-	}
-
-	@Override
-	public void setOrder(Integer order) {
-		this.order = order;
-	}
-
-	@Override
-	public String getFavoriteName() {
-		return this.favoriteName;
 	}
 
 	@Override
@@ -133,11 +117,6 @@ public class FavoriteSpecifyEntity extends UkJpaEntity
 	}
 
 	@Override
-	public Integer getTargetSelection() {
-		return this.getTargetSelection();
-	}
-
-	@Override
 	public List<String> getWorkplaceId() {
 		if(targetSelection == TargetSelection.WORKPLACE.value) {
 			return listFavoriteSpecifyEntityDetail.stream()
@@ -147,10 +126,5 @@ public class FavoriteSpecifyEntity extends UkJpaEntity
 					.collect(Collectors.toList());
 		}
 		return Collections.emptyList();
-	}
-
-	@Override
-	public Integer getOrder() {
-		return this.getOrder();
 	}
 }

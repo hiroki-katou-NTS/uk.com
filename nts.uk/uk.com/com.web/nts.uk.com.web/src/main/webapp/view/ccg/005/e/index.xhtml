@@ -22,15 +22,9 @@
       </ui:define>
       <ui:define name="content">
         <div id="functions-area">
-          <button id="E1_1" class="proceed" tabindex="1" data-bind="click: save">
-            #{i18n.getText('CCG005_2')}
-          </button>
-          <button id="E1_2" class="danger" tabindex="2" data-bind="click: deleteConfirm">
-            #{i18n.getText('CCG005_9')}
-          </button>
-          <button id="E1_3" class="normal" tabindex="3" data-bind="click: closeDialog">
-            #{i18n.getText('CCG005_3')}
-          </button>
+          <button id="E1_1" class="proceed" tabindex="1" data-bind="i18n: 'CCG005_2', click: saveGoOut" />
+          <button id="E1_2" class="danger" tabindex="2" data-bind="i18n: 'CCG005_9', click: deleteGoOut" />
+          <button id="E1_3" class="normal" tabindex="3" data-bind="i18n: 'CCG005_3', click: closeDialog" />
         </div>
         <div id="content-area">
           <table id="ccg005-e-layout">
@@ -46,11 +40,11 @@
             </tr>
             <tr>
               <td id="center">
-                <label id="E4_1">#{i18n.getText('CCG005_18')}</label>
+                <label id="E4_1" data-bind="i18n: 'CCG005_18'"/>
               </td>
               <td></td>
               <td id="center">
-                <label id="E4_2">#{i18n.getText('CCG005_19')}</label>
+                <label id="E4_2" data-bind="i18n: 'CCG005_19'"/>
               </td>
               <td id="blank-space"></td>
             </tr>
@@ -71,7 +65,7 @@
                 />
               </td>
               <td>
-                <label id="E5_2">#{i18n.getText('CCG005_33')}</label>
+                <label id="E5_2" data-bind="i18n: 'CCG005_33'"/>
               </td>
               <td>
                 <input

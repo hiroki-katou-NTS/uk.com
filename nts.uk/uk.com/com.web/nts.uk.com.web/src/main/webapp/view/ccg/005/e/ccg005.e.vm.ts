@@ -65,7 +65,7 @@ module nts.uk.at.view.ccg005.e.screenModel {
       vm.$window.close();
     }
 
-    public deleteConfirm() {
+    public deleteGoOut() {
       const vm = this;
       vm.$dialog.confirm({ messageId: "Msg_18" }).then((result) => {
         if (result === "yes") {
@@ -75,35 +75,39 @@ module nts.uk.at.view.ccg005.e.screenModel {
           });
           vm.$blockui('grayout');
           vm.$ajax(API.delete, gouOutInfo)
-          .then(() => {
-            vm.$blockui('clear');
-            return vm.$dialog.info({ messageId: "Msg_16" });
-          })
-          .always(() => {
-            vm.$blockui('clear');
-          });
+            .then(() => {
+              vm.$blockui('clear');
+              return vm.$dialog.info({ messageId: "Msg_16" });
+            })
+            .always(() => {
+              vm.$blockui('clear');
+            });
         }
       });
     }
 
-    public save() {
+    public saveGoOut() {
       const vm = this;
-      const gouOutInfo = new GoOutEmployeeInformation({
-        goOutTime: vm.goOutTime(),
-        goOutReason: vm.goOutReason(),
-        gouOutDate: vm.goOutDate(),
-        comebackTime: vm.comebackTime(),
-        sid: vm.sid(),
+      vm.$validate().then((valid: boolean) => {
+        if (valid) {
+          const gouOutInfo = new GoOutEmployeeInformation({
+            goOutTime: vm.goOutTime(),
+            goOutReason: vm.goOutReason(),
+            gouOutDate: vm.goOutDate(),
+            comebackTime: vm.comebackTime(),
+            sid: vm.sid(),
+          });
+          vm.$blockui('grayout');
+          vm.$ajax(API.saveOrUpdate, gouOutInfo)
+            .then(() => {
+              vm.$blockui('clear');
+              vm.$dialog.info({ messageId: "Msg_15" });
+            })
+            .always(() => {
+              vm.$blockui('clear');
+            });
+        }
       });
-        vm.$blockui('grayout');
-        vm.$ajax(API.saveOrUpdate, gouOutInfo)
-        .then(() => {
-          vm.$blockui('clear');
-          vm.$dialog.info({ messageId: "Msg_15" });
-        })
-        .always(() => {
-          vm.$blockui('clear');
-        });
     }
   }
 

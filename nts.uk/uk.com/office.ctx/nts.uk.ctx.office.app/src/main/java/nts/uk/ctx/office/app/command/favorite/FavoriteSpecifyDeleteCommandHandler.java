@@ -4,10 +4,8 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.office.dom.favorite.FavoriteSpecify;
 import nts.uk.ctx.office.dom.favorite.FavoriteSpecifyRepository;
 
 /*
@@ -15,15 +13,15 @@ import nts.uk.ctx.office.dom.favorite.FavoriteSpecifyRepository;
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class FavoriteSpecifyDeleteCommandHandler extends CommandHandler<FavoriteSpecifyCommand> {
+public class FavoriteSpecifyDeleteCommandHandler extends CommandHandler<FavoriteSpecifyDelCommand> {
 
 	@Inject
 	private FavoriteSpecifyRepository favoriteSpecifyRepository;
 
 	@Override
-	protected void handle(CommandHandlerContext<FavoriteSpecifyCommand> context) {
-		FavoriteSpecifyCommand command = context.getCommand();
-		FavoriteSpecify domain = FavoriteSpecify.createFromMemento(command);
-		favoriteSpecifyRepository.delete(domain);
+	protected void handle(CommandHandlerContext<FavoriteSpecifyDelCommand> context) {
+		FavoriteSpecifyDelCommand command = context.getCommand();
+		favoriteSpecifyRepository.getBySidAndDate(command.getCreatorId(), command.getInputDate())
+			.ifPresent(domain -> favoriteSpecifyRepository.delete(domain));
 	}
 }

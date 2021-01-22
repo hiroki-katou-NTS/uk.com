@@ -39,13 +39,18 @@
   height: 60px;
 }
 .text {
-  margin-left: 10px;
+  margin-left: 20px;
 }
 .table-left {
   float: left;
-  margin-left: 10px;
+  margin-left: 20px;
 }
 .content-right {
   float: left;
   margin-left: 20px;
+}
+
+button#D1_4 {
+  float: right;
+  margin-right: 25px;
 }

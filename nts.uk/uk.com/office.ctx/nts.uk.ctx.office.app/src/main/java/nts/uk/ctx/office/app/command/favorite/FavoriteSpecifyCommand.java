@@ -28,5 +28,8 @@ public class FavoriteSpecifyCommand implements FavoriteSpecify.MementoGetter {
 
 	// 頺
 	private Integer order;
+	
+	//ignore this
+	private List<String> wkspNames;
 
 }

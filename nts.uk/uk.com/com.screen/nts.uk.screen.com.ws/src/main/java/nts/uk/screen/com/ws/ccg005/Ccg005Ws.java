@@ -1,6 +1,9 @@
 package nts.uk.screen.com.ws.ccg005;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -13,6 +16,8 @@ import nts.uk.screen.com.app.find.ccg005.attendance.information.AttendanceInform
 import nts.uk.screen.com.app.find.ccg005.attendance.information.AttendanceInformationScreenQuery;
 import nts.uk.screen.com.app.find.ccg005.display.information.DisplayInformationDto;
 import nts.uk.screen.com.app.find.ccg005.display.information.DisplayInformationScreenQuery;
+import nts.uk.screen.com.app.find.ccg005.favorite.information.FavoriteInformationScreenQuery;
+import nts.uk.screen.com.app.find.ccg005.favorite.information.FavoriteSpecifyDto;
 import nts.uk.screen.com.app.find.ccg005.goout.GoOutEmployeeInformationDto;
 import nts.uk.screen.com.app.find.ccg005.goout.GoOutInformationScreenQuery;
 import nts.uk.screen.com.app.find.ccg005.search.employee.SearchEmployeeDto;
@@ -40,6 +45,9 @@ public class Ccg005Ws {
 	
 	@Inject
 	private GoOutInformationScreenQuery goOutInfoSq;
+	
+	@Inject
+	private FavoriteInformationScreenQuery favoriteInfoSq;
 	
 	@POST
 	@Path("get-display-attendance-data")
@@ -84,5 +92,26 @@ public class Ccg005Ws {
 	 			params.getSid(),
 	 			params.getDate()
 	 			);
+	}
+	
+	@POST
+	@Path("get-favorite-information")
+	public List<FavoriteInformationData> getFavoriteInformation() {
+		Map<FavoriteSpecifyDto, List<String>> map = favoriteInfoSq.getFavoriteInformation();
+		List<FavoriteInformationData> returnList = new ArrayList<>();
+		map.forEach((key, value) -> {
+			FavoriteInformationData data = FavoriteInformationData.builder()
+					.favoriteName(key.getFavoriteName())
+					.creatorId(key.getCreatorId())
+					.inputDate(key.getInputDate())
+					.targetSelection(key.getTargetSelection())
+					.workplaceId(key.getWorkplaceId())
+					.order(key.getOrder())
+					.wkspNames(value)
+					.build();
+			returnList.add(data);
+		});
+		returnList.sort(Comparator.comparing(FavoriteInformationData::getOrder));
+		return returnList;
 	}
 }

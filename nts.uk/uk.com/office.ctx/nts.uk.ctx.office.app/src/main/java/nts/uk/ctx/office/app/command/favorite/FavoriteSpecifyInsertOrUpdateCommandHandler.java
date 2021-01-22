@@ -1,5 +1,8 @@
 package nts.uk.ctx.office.app.command.favorite;
 
+import java.util.List;
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -15,15 +18,22 @@ import nts.uk.ctx.office.dom.favorite.FavoriteSpecifyRepository;
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class FavoriteSpecifyInsertCommandHandler extends CommandHandler<FavoriteSpecifyCommand> {
+public class FavoriteSpecifyInsertOrUpdateCommandHandler extends CommandHandler<List<FavoriteSpecifyCommand>> {
 
 	@Inject
 	private FavoriteSpecifyRepository favoriteSpecifyRepository;
 
 	@Override
-	protected void handle(CommandHandlerContext<FavoriteSpecifyCommand> context) {
-		FavoriteSpecifyCommand command = context.getCommand();
-		FavoriteSpecify domain = FavoriteSpecify.createFromMemento(command);
-		favoriteSpecifyRepository.insert(domain);
+	protected void handle(CommandHandlerContext<List<FavoriteSpecifyCommand>> context) {
+		List<FavoriteSpecifyCommand> command = context.getCommand();
+		command.forEach(comd -> {
+			FavoriteSpecify domain = FavoriteSpecify.createFromMemento(comd);
+			Optional<FavoriteSpecify> checkDomain = favoriteSpecifyRepository.getBySidAndDate(domain.getCreatorId(), domain.getInputDate());
+			if(checkDomain.isPresent()) {
+				favoriteSpecifyRepository.update(domain);
+			} else {
+				favoriteSpecifyRepository.insert(domain);
+			}
+		});
 	}
 }

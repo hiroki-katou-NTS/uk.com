@@ -49,7 +49,7 @@ public class FavoriteSpecifyRepositoryImpl extends JpaRepository implements Favo
 	@Override
 	public void delete(FavoriteSpecify domain) {
 		FavoriteSpecifyEntity entity = FavoriteSpecifyRepositoryImpl.toEntity(domain);
-		this.commandProxy().remove(entity.getPk());
+		this.commandProxy().remove(FavoriteSpecifyEntity.class, entity.getPk());
 	}
 
 	@Override

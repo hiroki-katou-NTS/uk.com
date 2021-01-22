@@ -34,7 +34,7 @@ public class FavoriteSpecify extends AggregateRoot {
 	private List<String> workplaceId;
 
 	// 頺
-	private int order;
+	private Integer order;
 
 	public FavoriteSpecify() {}
 

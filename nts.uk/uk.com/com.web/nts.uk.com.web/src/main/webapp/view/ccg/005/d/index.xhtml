@@ -8,30 +8,30 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = { width: 490, height: 400 };</script>
+			<script>var dialogSize = { width: 530, height: 350 };</script>
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:ValidatorScript>
-				nts.uk.ctx.at.function.dom.attendancerecord.item.ItemName
+        nts.uk.ctx.at.function.dom.attendancerecord.item.ItemName
+        nts.uk.ctx.office.dom.favorite.FavoriteName
 			</com:ValidatorScript>
 			<com:stylefile path="ccg005.d.style.css" />
 			<com:scriptfile path="ccg005.d.vm.js" />
 		</ui:define>
 		<ui:define name="content">
+      <div id="functions-area" style="padding-bottom: 5px;">
+        <!-- D1_1 -->
+        <button id="D1_1" class="large" data-bind="i18n: 'CCG005_8', click: createNewFavorite" />
+        <!-- D1_2 -->
+        <button id="D1_2" class="large proceed" data-bind="i18n: 'CCG005_2', click: saveFavorite" />
+        <!-- D1_3 -->
+        <button id="D1_3" class="large danger" data-bind="i18n: 'CCG005_9', click: deleteFavorite" />
+        <!-- D1_4 -->
+        <button id="D1_4" class="large" data-bind="i18n: 'CCG005_3', click: onClickCancel" />
+      </div>
 			<div class="contents-area">
-        <div class="button-head">
-          <!-- D1_1 -->
-          <button id="D1_1" class="large" style="margin-left: 25px;">#{i18n.getText('CCG005_8')}</button>
-          <!-- D1_2 -->
-          <button id="D1_2" class="large proceed" style="margin-left: 40px;">#{i18n.getText('CCG005_2')}</button>
-          <!-- D1_3 -->
-          <button id="D1_3" class="large danger" style="margin-left: 120px;">#{i18n.getText('CCG005_9')}</button>
-          <!-- D1_4 -->
-          <button id="D1_4" class="large" data-bind="click: onClickCancel" style="float: right; margin-right: 25px;">#{i18n.getText('CCG005_3')}</button>
-        </div>
-        <hr></hr>
         <div class="text">
           <!-- D2_1 -->
-          <span style="font-size: unset;">#{i18n.getText('CCG005_10')}</span>
+          <span style="font-size: unset;" data-bind="i18n: 'CCG005_10'" />
         </div>
         <div style="margin-top: 15px;">
           <div class="table-left">
@@ -40,10 +40,10 @@
               <table id="grid-test-single"
                 data-bind="ntsGridList: {
                     height: 200,
-                    dataSource: items,
-                    primaryKey: 'code',
+                    dataSource: favoriteList,
+                    primaryKey: 'order',
                     columns: columns,
-                    value: selectSingle,
+                    value: selectedFavoriteOrder,
                     multiple: false
                   }"
                 class=""></table>
@@ -51,21 +51,29 @@
             <!-- D4 -->
             <div id="grid-up-down"
               data-bind="ntsUpDown: {
-                  targetSource: items,
-                  primaryKey: 'code',
+                  targetSource: favoriteList,
+                  primaryKey: 'order',
                   comId: '#grid-test-single',
                   type: 'grid'
                 }"
-              class=""></div>
+            />
           </div>
           <div class="content-right">
             <div>
               <!-- D5_1 -->
-              <input data-bind="ntsTextEditor: {
-                value: name,
-                option: option,
+              <input id="D5_1" data-bind="ntsTextEditor: {
+                name: '#[CCG005_11]',
+                constraint: 'FavoriteName',
+                value: favoriteName,
                 required: true,
-                enable: true}" />
+                enable: true,
+                 option: {
+                  textmode: 'text',
+                  placeholder: '#{i18n.getText('CCG005_12')}',
+                  width: '240px',
+                  textalign: 'left'
+                }
+              }" />
             </div>
             <!-- D5_2 -->
             <div class="cf" style="margin-top: 20px;" data-bind="ntsSwitchButton: {
@@ -74,16 +82,22 @@
               optionsValue: 'code',
               optionsText: 'name',
               value: selectedRuleCode,
-              enable: true }"></div>
+              enable: true }" />
             <div style="margin-top: 20px;">
               <!-- D5_3 -->
-              <button >#{i18n.getText('CCG005_31')}</button>
+              <button data-bind="i18n: 'CCG005_31', disable: buttonSelectRequire" />
               <!-- D5_4 -->
               <input data-bind="ntsTextEditor: {
-                value: name,
-                option: option1,
-                required: true,
-                readonly: true}" />
+                value: displayChoosenWkspName,
+                required: displayChoosenWkspNameRequire,
+                readonly: true,
+                name: '#[CCG005_17]',
+                option: {
+                  textmode: 'text',
+                  width: '190px',
+                  textalign: 'left'
+                }
+              }" />
             </div>
           </div>
         </div>
