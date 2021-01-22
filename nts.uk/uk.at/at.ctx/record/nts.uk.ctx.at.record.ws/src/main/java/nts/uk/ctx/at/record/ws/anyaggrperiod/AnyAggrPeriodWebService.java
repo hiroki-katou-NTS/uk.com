@@ -19,7 +19,7 @@ public class AnyAggrPeriodWebService extends WebService {
     AnyAggrPeriodQuery anyAggrPeriodQuery;
 
     @POST
-    @Path("getlisst")
+    @Path("getlist")
     public List<AggrPeriodDto> findAll() {
         return anyAggrPeriodQuery.findAll();
     }

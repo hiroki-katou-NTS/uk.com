@@ -9,7 +9,6 @@ import nts.uk.ctx.at.function.app.find.arbitraryperiodsummarytable.GetRoleArbitr
 import nts.uk.ctx.at.function.app.query.arbitraryperiodsummarytable.GetOutputSettingDetailArbitraryQuery;
 import nts.uk.ctx.at.function.app.query.arbitraryperiodsummarytable.GetOutputSettingListArbitraryQuery;
 import nts.uk.ctx.at.function.app.query.arbitraryperiodsummarytable.OutputSettingArbitraryDto;
-import nts.uk.ctx.at.function.app.query.workledgeroutputitem.GetBeginMonthOfCompanyQuery;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.scrA.RoleWhetherLoginPubImported;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
 import nts.uk.ctx.at.function.ws.outputworkstatustable.dto.SettingIdParams;
@@ -42,8 +41,6 @@ public class OutputSettingListArbitraryWebService extends WebService {
     @Inject
     private DeleteOutputSettingCommandHandler deleteCommandHandler;
 
-    @Inject
-    private GetBeginMonthOfCompanyQuery getBeginMonthOfCompanyQuery;
     @Inject
     private GetRoleArbitraryScheduleFinder getRoleArbitraryScheduleFinder;
 
