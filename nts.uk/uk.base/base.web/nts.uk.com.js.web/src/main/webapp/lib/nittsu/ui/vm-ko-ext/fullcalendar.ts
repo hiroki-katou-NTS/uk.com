@@ -1163,7 +1163,7 @@ module nts.uk.ui.components.fullcalendar {
             });
 
             vm.calendar = new FC.Calendar($fc, {
-                height: '500px',
+                height: '100px',
                 themeSystem: 'default',
                 selectMirror: true,
                 selectMinDistance: 4,
@@ -1275,6 +1275,7 @@ module nts.uk.ui.components.fullcalendar {
                                     ko.applyBindingsToNode(__times, { component: { name: 'fc-times', params: timesSet } });
                                     ko.applyBindingsToNode(_events, { component: { name: 'fc-events', params: attendancesSet } });
                                 })
+                                .then(() => vm.calendar.setOption('height', '100px'))
                                 .then(() => {
                                     // update height
                                     const fce = vm.calendar.el.getBoundingClientRect();
@@ -1569,7 +1570,20 @@ module nts.uk.ui.components.fullcalendar {
                                 });
                         }
                     }*/
-                }
+                },
+                windowResize: () => {
+                    // update height
+                    const fce = vm.calendar.el.getBoundingClientRect();
+
+                    if (fce) {
+                        const { top } = fce;
+                        const { innerHeight } = window;
+
+                        vm.calendar.setOption('height', `${innerHeight - top - 10}px`);
+                    }
+                },
+                windowResizeDelay: 100,
+                handleWindowResize: true
             });
 
             vm.calendar.render();
