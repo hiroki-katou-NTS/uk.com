@@ -219,7 +219,7 @@ module nts.uk.at.view.knr002.c {
 
                 let status: boolean = true;
 
-                if (vm.settingData.length == 0 || vm.totalRegisteredTer > 0) {
+                if (vm.settingData.length == 0 || vm.totalRegisteredTer == 1) {
                     status = false;
                 }
 

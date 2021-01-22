@@ -45,7 +45,6 @@ module knr002.d {
                         } else {
                             // get Shared from A
                             let empInfoTerList = getShared('KNR002_empInfoTerList');
-                            console.log("data: ", empInfoTerList);
                             let desCopyTempList = [];
                             if(empInfoTerList){
                                 let keyMap: any = {};
@@ -98,7 +97,7 @@ module knr002.d {
                         { headerText: getText('KNR002_108'), key: 'workLocationName', dataType: 'string', width: 200},
                     ],
                     features: [{
-                        name: 'Selection',
+                        //  name: 'Selection',
                         mode: 'row',
                         multipleSelection: true
                     }],

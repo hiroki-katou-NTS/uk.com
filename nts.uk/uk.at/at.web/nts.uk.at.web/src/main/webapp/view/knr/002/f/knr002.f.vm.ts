@@ -116,7 +116,7 @@ module knr002.f {
                         { headerText: getText('KNR002_241'), key: 'workLocationName', dataType: 'string', width: 200},
                     ],
                     features: [{
-                        name: 'Selection',
+                        //  name: 'Selection',
                         mode: 'row',
                         multipleSelection: true
                     }],
