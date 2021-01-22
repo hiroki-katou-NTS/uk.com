@@ -201,6 +201,8 @@ module nts.uk.at.view.kmk004.components {
 								return value.year == ko.unwrap(vm.yearDelete);
 							}))
 						}
+						//Fix bug Xóa bản ghi và ko hiển thị time --> ảnh hưởng đến bug xóa năm và hiện * ở năm dưới.
+						vm.selectedYear.valueHasMutated();
 					}
 				});
 		}
@@ -428,7 +430,7 @@ class WorkTimeL {
 	check: KnockoutObservable<boolean> = ko.observable(false);
 	yearMonth: KnockoutObservable<number | null> = ko.observable(null);
 	nameMonth: KnockoutObservable<string> = ko.observable('');
-	laborTime: KnockoutObservable<number> = ko.observable(null);
+	laborTime: KnockoutObservable<number | null> = ko.observable(null);
 
 	constructor(params?: IWorkTimeL & { parent: KnockoutObservableArray<WorkTimeL> }) {
 		const md = this;
