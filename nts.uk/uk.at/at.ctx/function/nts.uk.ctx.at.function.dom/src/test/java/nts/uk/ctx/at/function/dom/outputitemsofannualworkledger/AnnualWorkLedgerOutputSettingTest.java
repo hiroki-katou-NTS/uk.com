@@ -6,15 +6,8 @@ import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.FormOutputItemName;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItem;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailAttItem;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.util.Arrays;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -22,12 +15,14 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 public class AnnualWorkLedgerOutputSettingTest {
     @Injectable
     AnnualWorkLedgerOutputSetting.Require require;
-    private final OutputItemSettingCode code = new OutputItemSettingCode("ABC");
-    private final OutputItemSettingName name = new OutputItemSettingName("CBA");
-    private final String eplId = "employeeId";
 
+    /**
+     * Test:
+     * - method checkDuplicateStandardSelection: is true
+     */
     @Test
-    public void test_01() {
+    public void testCheckDuplicateStandardSelections_01() {
+        OutputItemSettingCode code = new OutputItemSettingCode("ABC");
 
         new Expectations() {
             {
@@ -36,11 +31,17 @@ public class AnnualWorkLedgerOutputSettingTest {
             }
         };
         val actual = AnnualWorkLedgerOutputSetting.checkDuplicateStandardSelection(require, code);
-        assertThat(actual).isEqualTo(true);
+        assertThat(actual).isTrue();
     }
 
+    /**
+     * Test:
+     * - method checkDuplicateFreeSettings: is true
+     */
     @Test
-    public void test_02() {
+    public void testCheckDuplicateFreeSettings_02() {
+        OutputItemSettingCode code = new OutputItemSettingCode("ABC");
+        String eplId = "employeeId";
         new Expectations() {
             {
                 require.checkFreedom(code, eplId);
@@ -48,56 +49,30 @@ public class AnnualWorkLedgerOutputSettingTest {
             }
         };
         val actual = AnnualWorkLedgerOutputSetting.checkDuplicateFreeSettings(require, code, eplId);
-        assertThat(actual).isEqualTo(true);
+        assertThat(actual).isTrue();
     }
 
+    /**
+     * Test:
+     * - Getter: WorkStatusOutputSettings
+     * - SettingClassificationCommon: FREE_SETTING
+     */
     @Test
-    public void test_03() {
-
-        val outputSettings = createDomain();
+    public void testGetterOutputSettings_03() {
+        val outputSettings = DumDataTest.dumFree();
         NtsAssert.invokeGetters(outputSettings);
     }
 
-    private AnnualWorkLedgerOutputSetting createDomain() {
-        String iD = "id";
-        return new AnnualWorkLedgerOutputSetting(
-                iD,
-                code,
-                name,
-                SettingClassificationCommon.FREE_SETTING,
-                Arrays.asList(
-                        new DailyOutputItemsAnnualWorkLedger(
-                                1,
-                                new OutputItemNameOfAnnualWorkLedger("name"),
-                                true,
-                                IndependentCalcClassic.ALONE,
-                                DailyMonthlyClassification.DAILY,
-                                CommonAttributesOfForms.NUMBER_OF_TIMES,
-                                Arrays.asList(new OutputItemDetailAttItem(
-                                        OperatorsCommonToForms.ADDITION,
-                                        1
-                                ))
-
-                        )
-
-                )
-                , eplId,
-                Arrays.asList(
-                        new OutputItem(
-                                1,
-                                new FormOutputItemName("name"),
-                                true,
-                                IndependentCalcClassic.ALONE,
-                                DailyMonthlyClassification.MONTHLY,
-                                CommonAttributesOfForms.NUMBER_OF_TIMES,
-                                Arrays.asList(new OutputItemDetailAttItem(
-                                        OperatorsCommonToForms.ADDITION,
-                                        1
-                                ))
-
-                        )
-
-                )
-        );
+    /**
+     * Test:
+     * - Getter: WorkStatusOutputSettings
+     * - SettingClassificationCommon: STANDARD_SELECTION
+     */
+    @Test
+    public void testGetterOutputSettings_04() {
+        val outputSettings = DumDataTest.dumStandard();
+        NtsAssert.invokeGetters(outputSettings);
     }
+
+
 }

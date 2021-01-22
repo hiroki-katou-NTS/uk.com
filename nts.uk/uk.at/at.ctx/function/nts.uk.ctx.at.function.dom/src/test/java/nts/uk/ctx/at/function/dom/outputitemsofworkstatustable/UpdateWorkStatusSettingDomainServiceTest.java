@@ -16,24 +16,22 @@ import org.junit.runner.RunWith;
 import java.util.List;
 
 @RunWith(JMockit.class)
-public class UpdateWorkStatusSettingDServiceTest {
+public class UpdateWorkStatusSettingDomainServiceTest {
     @Injectable
     UpdateWorkStatusSettingDomainService.Require require;
 
-    private final OutputItemSettingCode code = new OutputItemSettingCode("ABC");
-    private final OutputItemSettingName name = new OutputItemSettingName("CBA");
 
-    private final String iD = "iD";
-    private final String empId = "employeeId";
-
-    private final String settingId = "settingId";
-    private final SettingClassificationCommon settingCategory = SettingClassificationCommon.STANDARD_SELECTION;
-    private final List<OutputItem> outputItems = DumData.outputItems;
-    private final WorkStatusOutputSettings domain = DumData.dum(code,name,empId,iD,settingCategory);
-
+    /**
+     * Test: UpdateWorkStatusSettingDomainService
+     * Throw exception : Msg_1903
+     */
     @Test
-    public void test_01() {
-
+    public void testUpdateWorkStatusSettingFail_01() {
+        OutputItemSettingCode code = new OutputItemSettingCode("ABC");
+        OutputItemSettingName name = new OutputItemSettingName("CBA");
+        String settingId = "settingId";
+        SettingClassificationCommon settingCategory = SettingClassificationCommon.STANDARD_SELECTION;
+        List<OutputItem> outputItems = DumData.outputItems;
         new Expectations() {
             {
                 require.getWorkStatusOutputSettings(settingId);
@@ -46,40 +44,57 @@ public class UpdateWorkStatusSettingDServiceTest {
         });
     }
 
+    /**
+     * Test: UpdateWorkStatusSettingDomainService : update success
+     * SettingClassificationCommon.FREE_SETTING
+     */
     @Test
-    public void test_02() {
+    public void testUpdateWorkStatusSettingSuccess_02() {
+        OutputItemSettingCode code = new OutputItemSettingCode("ABC");
+        OutputItemSettingName name = new OutputItemSettingName("CBA");
+        String iD = "iD";
+        String empId = "employeeId";
+        String settingId = "settingId";
+        List<OutputItem> outputItems = DumData.outputItems;
         val settingCategory = SettingClassificationCommon.FREE_SETTING;
+        WorkStatusOutputSettings domain = DumData.dum(code, name, empId, iD, settingCategory);
         new Expectations(AppContexts.class) {
             {
                 AppContexts.user().employeeId();
                 result = empId;
-            }
-        };
-        new Expectations() {
-            {
+
                 require.getWorkStatusOutputSettings(settingId);
                 result = domain;
+
             }
         };
+
 
         NtsAssert.atomTask(() ->
                         UpdateWorkStatusSettingDomainService.updateSetting(require, settingId, code, name, settingCategory,
                                 outputItems),
 
-                any -> require.update(settingId,any.get()));
+                any -> require.update(settingId, any.get()));
     }
 
+    /**
+     * Test: UpdateWorkStatusSettingDomainService : update success
+     * SettingClassificationCommon.STANDARD_SELECTION
+     */
     @Test
-    public void test_03() {
-        val settingCategory = SettingClassificationCommon.STANDARD_SELECTION;
+    public void testUpdateWorkStatusSettingSuccess_03() {
+        OutputItemSettingCode code = new OutputItemSettingCode("ABC");
+        OutputItemSettingName name = new OutputItemSettingName("CBA");
+        String iD = "iD";
+        String empId = "employeeId";
+        String settingId = "settingId";
+        SettingClassificationCommon settingCategory = SettingClassificationCommon.STANDARD_SELECTION;
+        List<OutputItem> outputItems = DumData.outputItems;
+        WorkStatusOutputSettings domain = DumData.dum(code, name, empId, iD, settingCategory);
         new Expectations(AppContexts.class) {
             {
                 AppContexts.user().employeeId();
                 result = empId;
-            }
-        };
-        new Expectations() {
-            {
                 require.getWorkStatusOutputSettings(settingId);
                 result = domain;
             }
@@ -89,6 +104,6 @@ public class UpdateWorkStatusSettingDServiceTest {
                         UpdateWorkStatusSettingDomainService.updateSetting(require, settingId, code, name, settingCategory,
                                 outputItems),
 
-                any -> require.update(settingId,any.get()));
+                any -> require.update(settingId, any.get()));
     }
 }
