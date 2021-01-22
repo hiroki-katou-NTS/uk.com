@@ -7,7 +7,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.AllArgsConstructor;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -232,13 +231,6 @@ public class RemainNumberTempRequireService {
 	@Inject
 	protected SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter;
 	
-	private Optional<OutsideOTSetting> outsideOTSettingCache = Optional.empty();
-	private HashMap<String, Optional<FlowWorkSetting>>  flowWorkSetMap = new HashMap<String, Optional<FlowWorkSetting>>();
-	private HashMap<String, Optional<FlexWorkSetting>>  flexWorkSetMap = new HashMap<String, Optional<FlexWorkSetting>>();
-	private HashMap<String, Optional<FixedWorkSetting>>  fixedWorkSetMap = new HashMap<String, Optional<FixedWorkSetting>>();
-	private HashMap<String, Optional<WorkTimeSetting>>  workTimeSetMap = new HashMap<String, Optional<WorkTimeSetting>>();
-	private HashMap<String, Optional<WorkType>>  workTypeMap = new HashMap<String, Optional<WorkType>>();
-	private HashMap<Integer, Optional<Closure>> closureMap = new HashMap<Integer, Optional<Closure>>(); 
 	public static interface Require
 			extends InterimRemainOffPeriodCreateData.RequireM4, BreakDayOffMngInPeriodQuery.RequireM10,
 			AbsenceReruitmentMngInPeriodQuery.RequireM10,
@@ -266,11 +258,9 @@ public class RemainNumberTempRequireService {
 				yearHolidayRepo, usageUnitSettingRepo, regularLaborTimeComRepo, deforLaborTimeComRepo,
 				regularLaborTimeWkpRepo, deforLaborTimeWkpRepo, regularLaborTimeEmpRepo, 
 				deforLaborTimeEmpRepo, regularLaborTimeShaRepo, deforLaborTimeShaRepo, 
-				sharedAffWorkPlaceHisAdapter, outsideOTSettingCache, flowWorkSetMap, flexWorkSetMap,
-				fixedWorkSetMap, workTimeSetMap, workTypeMap, closureMap);
+				sharedAffWorkPlaceHisAdapter);
 	}
 
-	@AllArgsConstructor
 	public static class RequireImp implements Require {
 
 		protected ComSubstVacationRepository comSubstVacationRepo;
@@ -371,19 +361,20 @@ public class RemainNumberTempRequireService {
 
 		protected SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter;
 		
-		private Optional<OutsideOTSetting> outsideOTSettingCache;
+		private Optional<OutsideOTSetting> outsideOTSettingCache = Optional.empty();
 		
-		private HashMap<String, Optional<FlowWorkSetting>>  flowWorkSetMap;
+		private HashMap<String, Optional<FlowWorkSetting>>  flowWorkSetMap = new HashMap<>();
 		
-		private HashMap<String, Optional<FlexWorkSetting>>  flexWorkSetMap;
+		private HashMap<String, Optional<FlexWorkSetting>>  flexWorkSetMap = new HashMap<>();
 		
-		private HashMap<String, Optional<FixedWorkSetting>>  fixedWorkSetMap;
+		private HashMap<String, Optional<FixedWorkSetting>>  fixedWorkSetMap = new HashMap<>();
 		
-		private HashMap<String, Optional<WorkTimeSetting>>  workTimeSetMap;
+		private HashMap<String, Optional<WorkTimeSetting>>  workTimeSetMap = new HashMap<>();
 		
-		private HashMap<String, Optional<WorkType>>  workTypeMap;
+		private HashMap<String, Optional<WorkType>>  workTypeMap = new HashMap<>();
 		
-		private HashMap<Integer, Optional<Closure>> closureMap;
+		private HashMap<Integer, Optional<Closure>> closureMap = new HashMap<>();
+		
 		
 
 		@Override
@@ -727,6 +718,89 @@ public class RemainNumberTempRequireService {
 		@Override
 		public EmployeeImport employeeInfo(CacheCarrier cacheCarrier, String empId) {
 			return empEmployeeAdapter.findByEmpIdRequire(cacheCarrier, empId);
+		}
+
+		public RequireImp(ComSubstVacationRepository comSubstVacationRepo,
+				CompensLeaveComSetRepository compensLeaveComSetRepo, SpecialLeaveGrantRepository specialLeaveGrantRepo,
+				EmpEmployeeAdapter empEmployeeAdapter, GrantDateTblRepository grantDateTblRepo,
+				ElapseYearRepository elapseYearRepo, AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepo,
+				SpecialHolidayRepository specialHolidayRepo,
+				InterimSpecialHolidayMngRepository interimSpecialHolidayMngRepo,
+				SpecialLeaveBasicInfoRepository specialLeaveBasicInfoRepo,
+				InterimRecAbasMngRepository interimRecAbasMngRepo, EmpSubstVacationRepository empSubstVacationRepo,
+				InterimRemainRepository interimRemainRepo,
+				SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepo,
+				PayoutManagementDataRepository payoutManagementDataRepo,
+				InterimBreakDayOffMngRepository interimBreakDayOffMngRepo,
+				ComDayOffManaDataRepository comDayOffManaDataRepo, CompanyAdapter companyAdapter,
+				ShareEmploymentAdapter shareEmploymentAdapter, LeaveManaDataRepository leaveManaDataRepo,
+				WorkingConditionItemRepository workingConditionItemRepo,
+				WorkingConditionRepository workingConditionRepo, WorkTimeSettingRepository workTimeSettingRepo,
+				FixedWorkSettingRepository fixedWorkSettingRepo, FlowWorkSettingRepository flowWorkSettingRepo,
+				DiffTimeWorkSettingRepository diffTimeWorkSettingRepo, FlexWorkSettingRepository flexWorkSettingRepo,
+				PredetemineTimeSettingRepository predetemineTimeSettingRepo, ClosureRepository closureRepo,
+				ClosureEmploymentRepository closureEmploymentRepo, WorkTypeRepository workTypeRepo,
+				RemainCreateInforByApplicationData remainCreateInforByApplicationData,
+				CompensLeaveEmSetRepository compensLeaveEmSetRepo, EmploymentSettingRepository employmentSettingRepo,
+				RetentionYearlySettingRepository retentionYearlySettingRepo,
+				AnnualPaidLeaveSettingRepository annualPaidLeaveSettingRepo,
+				OutsideOTSettingRepository outsideOTSettingRepo, WorkdayoffFrameRepository workdayoffFrameRepo,
+				YearHolidayRepository yearHolidayRepo, UsageUnitSettingRepository usageUnitSettingRepo,
+				RegularLaborTimeComRepo regularLaborTimeComRepo, DeforLaborTimeComRepo deforLaborTimeComRepo,
+				RegularLaborTimeWkpRepo regularLaborTimeWkpRepo, DeforLaborTimeWkpRepo deforLaborTimeWkpRepo,
+				RegularLaborTimeEmpRepo regularLaborTimeEmpRepo, DeforLaborTimeEmpRepo deforLaborTimeEmpRepo,
+				RegularLaborTimeShaRepo regularLaborTimeShaRepo, DeforLaborTimeShaRepo deforLaborTimeShaRepo,
+				SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter) {
+			super();
+			this.comSubstVacationRepo = comSubstVacationRepo;
+			this.compensLeaveComSetRepo = compensLeaveComSetRepo;
+			this.specialLeaveGrantRepo = specialLeaveGrantRepo;
+			this.empEmployeeAdapter = empEmployeeAdapter;
+			this.grantDateTblRepo = grantDateTblRepo;
+			this.elapseYearRepo = elapseYearRepo;
+			this.annLeaEmpBasicInfoRepo = annLeaEmpBasicInfoRepo;
+			this.specialHolidayRepo = specialHolidayRepo;
+			this.interimSpecialHolidayMngRepo = interimSpecialHolidayMngRepo;
+			this.specialLeaveBasicInfoRepo = specialLeaveBasicInfoRepo;
+			this.interimRecAbasMngRepo = interimRecAbasMngRepo;
+			this.empSubstVacationRepo = empSubstVacationRepo;
+			this.interimRemainRepo = interimRemainRepo;
+			this.substitutionOfHDManaDataRepo = substitutionOfHDManaDataRepo;
+			this.payoutManagementDataRepo = payoutManagementDataRepo;
+			this.interimBreakDayOffMngRepo = interimBreakDayOffMngRepo;
+			this.comDayOffManaDataRepo = comDayOffManaDataRepo;
+			this.companyAdapter = companyAdapter;
+			this.shareEmploymentAdapter = shareEmploymentAdapter;
+			this.leaveManaDataRepo = leaveManaDataRepo;
+			this.workingConditionItemRepo = workingConditionItemRepo;
+			this.workingConditionRepo = workingConditionRepo;
+			this.workTimeSettingRepo = workTimeSettingRepo;
+			this.fixedWorkSettingRepo = fixedWorkSettingRepo;
+			this.flowWorkSettingRepo = flowWorkSettingRepo;
+			this.diffTimeWorkSettingRepo = diffTimeWorkSettingRepo;
+			this.flexWorkSettingRepo = flexWorkSettingRepo;
+			this.predetemineTimeSettingRepo = predetemineTimeSettingRepo;
+			this.closureRepo = closureRepo;
+			this.closureEmploymentRepo = closureEmploymentRepo;
+			this.workTypeRepo = workTypeRepo;
+			this.remainCreateInforByApplicationData = remainCreateInforByApplicationData;
+			this.compensLeaveEmSetRepo = compensLeaveEmSetRepo;
+			this.employmentSettingRepo = employmentSettingRepo;
+			this.retentionYearlySettingRepo = retentionYearlySettingRepo;
+			this.annualPaidLeaveSettingRepo = annualPaidLeaveSettingRepo;
+			this.outsideOTSettingRepo = outsideOTSettingRepo;
+			this.workdayoffFrameRepo = workdayoffFrameRepo;
+			this.yearHolidayRepo = yearHolidayRepo;
+			this.usageUnitSettingRepo = usageUnitSettingRepo;
+			this.regularLaborTimeComRepo = regularLaborTimeComRepo;
+			this.deforLaborTimeComRepo = deforLaborTimeComRepo;
+			this.regularLaborTimeWkpRepo = regularLaborTimeWkpRepo;
+			this.deforLaborTimeWkpRepo = deforLaborTimeWkpRepo;
+			this.regularLaborTimeEmpRepo = regularLaborTimeEmpRepo;
+			this.deforLaborTimeEmpRepo = deforLaborTimeEmpRepo;
+			this.regularLaborTimeShaRepo = regularLaborTimeShaRepo;
+			this.deforLaborTimeShaRepo = deforLaborTimeShaRepo;
+			this.sharedAffWorkPlaceHisAdapter = sharedAffWorkPlaceHisAdapter;
 		}
 	}
 

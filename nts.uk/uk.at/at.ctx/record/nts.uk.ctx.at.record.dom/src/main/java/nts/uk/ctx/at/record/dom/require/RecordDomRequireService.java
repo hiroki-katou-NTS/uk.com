@@ -305,7 +305,6 @@ import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYearRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTblRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerform;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerformRepository;
@@ -770,7 +769,7 @@ public class RecordDomRequireService {
 				snapshotAdapter, superHD60HConMedRepo, monthlyAggregationRemainingNumber);
 	}
 
-	public static class RequireImpl extends RemainNumberTempRequireService.RequireImp implements Require {
+	public class RequireImpl extends RemainNumberTempRequireService.RequireImp implements Require {
 		private Optional<WeekRuleManagement> weekRuleManagementCache = Optional.empty();
 
 		public RequireImpl(ComSubstVacationRepository comSubstVacationRepo,
@@ -911,8 +910,7 @@ public class RecordDomRequireService {
 					yearHolidayRepo, usageUnitSettingRepo, regularLaborTimeComRepo,
 					deforLaborTimeComRepo, regularLaborTimeWkpRepo, deforLaborTimeWkpRepo,
 					regularLaborTimeEmpRepo, deforLaborTimeEmpRepo, regularLaborTimeShaRepo,
-					deforLaborTimeShaRepo, sharedAffWorkPlaceHisAdapter, outsideOTSettingCache,flowWorkSetMap, flexWorkSetMap, fixedWorkSetMap,
-					workTimeSetMap, workTypeMap, closureMap);
+					deforLaborTimeShaRepo, sharedAffWorkPlaceHisAdapter);
 			
 			this.tmpResereLeaveMngRepo = tmpResereLeaveMngRepo;
 			this.sysEmploymentHisAdapter = sysEmploymentHisAdapter;

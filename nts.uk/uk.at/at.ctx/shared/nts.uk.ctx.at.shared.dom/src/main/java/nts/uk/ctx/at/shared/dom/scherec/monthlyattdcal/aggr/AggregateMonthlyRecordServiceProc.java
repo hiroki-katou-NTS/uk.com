@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -10,6 +11,7 @@ import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.enterprise.concurrent.ManagedExecutorService;
 
@@ -1616,7 +1618,11 @@ public class AggregateMonthlyRecordServiceProc {
 
 		// 月初の所属情報を取得
 		boolean isExistStartWorkInfo = false;
-		if (this.monthlyCalculatingDailys.getWorkInfoOfDailyMap().containsKey(datePeriod.start())) {
+		val workInfo = this.monthlyCalculatingDailys.getWorkInfoOfDailyMap().entrySet().stream().filter(
+				x -> x.getKey().afterOrEquals(datePeriod.start()) && x.getKey().beforeOrEquals(datePeriod.end()))
+				.collect(Collectors.toList()).stream().sorted((x, y) -> x.getKey().compareTo(y.getKey())).findFirst();
+		
+		if (workInfo.isPresent()) {
 			isExistStartWorkInfo = true;
 		}
 		val workInfoOfDailyList = monthlyCalculatingDailys.getAffiInfoOfDailyMap();
@@ -1628,7 +1634,10 @@ public class AggregateMonthlyRecordServiceProc {
 			}
 			return null;
 		}
-		val firstInfoOfDaily = workInfoOfDailyList.get(datePeriod.start());
+		val firstInfoOfDaily = workInfoOfDailyList.entrySet().stream().filter(
+				x -> x.getKey().afterOrEquals(datePeriod.start()) && x.getKey().beforeOrEquals(datePeriod.end()))
+				.collect(Collectors.toList()).stream().sorted((x, y) -> x.getKey().compareTo(y.getKey())).findFirst().map(x -> x.getValue()).orElse(null);
+		//val firstInfoOfDaily = workInfoOfDailyList.get(datePeriod.start());
 		if (firstInfoOfDaily == null) {
 			if (isExistStartWorkInfo) {
 				val errorInfo = new MonthlyAggregationErrorInfo("003",
