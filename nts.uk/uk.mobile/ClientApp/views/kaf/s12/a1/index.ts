@@ -73,6 +73,20 @@ export class KafS12A1Component extends Vue {
                     });
                 }
             });
+        } else {
+            vm.$watch('reflectSetting', (newVal: ReflectSetting, oldVal) => {
+                if (!oldVal && newVal) {
+                    if (newVal.destination.privateGoingOut == 1 && newVal.destination.unionGoingOut == 0) {
+                        vm.outingTimeZones.forEach((i) => {
+                            i.appTimeType = AppTimeType.PRIVATE;
+                        });
+                    } else if (newVal.destination.privateGoingOut == 0 && newVal.destination.unionGoingOut == 1) {
+                        vm.outingTimeZones.forEach((i) => {
+                            i.appTimeType = AppTimeType.UNION;
+                        });
+                    }
+                }
+            });
         }
     }
 
