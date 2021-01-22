@@ -2,12 +2,12 @@
 module nts.uk.at.view.kwr007.b {
 
   const PATH = {
-    getSettingListWorkStatus: 'at/function/kwr/005/a/listworkledger',
-    getSettingLitsWorkStatusDetails: 'at/function/kwr/005/b/detailworkledger',
-    deleteSettingItemDetails: 'at/function/kwr/005/b/delete',
-    createSettingItemDetails: 'at/function/kwr/005/b/create',
-    updateSettingItemDetails: 'at/function/kwr/005/b/update',
-    getFormInfo: 'at/screen/kwr/005/b/getinfor',
+    getSettingListWorkStatus: 'at/function/kwr/007/a/listoutputsetting',
+    getSettingLitsWorkStatusDetails: 'at/function/kwr/007/b/detailoutputsetting',
+    deleteSettingItemDetails: 'at/function/kwr/007/b/delete',
+    createSettingItemDetails: 'at/function/kwr/007/b/create',
+    updateSettingItemDetails: 'at/function/kwr/007/b/update',
+    getFormInfo: 'at/screen/kwr/007/b/getinfor',
   };
 
   @bean()
@@ -45,8 +45,8 @@ module nts.uk.at.view.kwr007.b {
       const vm = this;
 
       vm.columns = ko.observableArray([
-        { headerText: vm.$i18n('KWR005_107'), key: 'attendanceItemId', width: 80, formatter: _.escape },
-        { headerText: vm.$i18n('KWR005_108'), key: 'attendanceItemName', width: 180, formatter: _.escape, columnCssClass: 'limited-label' },
+        { headerText: vm.$i18n('KWR007_107'), key: 'attendanceItemId', width: 80, formatter: _.escape },
+        { headerText: vm.$i18n('KWR007_108'), key: 'attendanceItemName', width: 180, formatter: _.escape, columnCssClass: 'limited-label' },
       ]);
 
       vm.printAttributes();
@@ -94,7 +94,7 @@ module nts.uk.at.view.kwr007.b {
     newSetting() {
       const vm = this;
       vm.clearToNewSetting()
-      $('#KWR005_B52').focus();
+      $('#KWR007_B52').focus();
     }
 
     clearToNewSetting() {
@@ -127,7 +127,14 @@ module nts.uk.at.view.kwr007.b {
 
       //Msg_1943
       if (vm.currentCodeListSwap().length <= 0) {
-        vm.$dialog.error({ messageId: 'Msg_1943' }).then(() => {
+        vm.$dialog.error({ messageId: 'Msg_1947' }).then(() => {
+          $("#swapList-grid2").igGrid("container").focus();
+        });
+        return;
+      }
+
+      if (vm.currentCodeListSwap().length > 40) {
+        vm.$dialog.error({ messageId: 'Msg_1297', messageParams: [ vm.$i18n('KWR007_132') ] }).then(() => {
           $("#swapList-grid2").igGrid("container").focus();
         });
         return;
@@ -169,15 +176,14 @@ module nts.uk.at.view.kwr007.b {
         });
         vm.$blockui('hide');
       }).fail((error) => {
-        let ctrlFocus = error.messageId === 'Msg_1927' ? '#KWR005_B52' : '#btnB11';
+        let ctrlFocus = error.messageId === 'Msg_1893' ? '#KWR007_B52' : '#btnB11';
         vm.$dialog.error({ messageId: error.messageId }).then(() => {
           vm.$blockui('hide');
           $(ctrlFocus).focus();
-          if (error.messageId === 'Msg_1928') {
-            vm.loadSettingList({ standOrFree: vm.settingCategory(), code: null, msgId: 'Msg_1928' });
+          if (error.messageId === 'Msg_1914') {
+            vm.loadSettingList({ standOrFree: vm.settingCategory(), code: null, msgId: 'Msg_1914' });
           }
         });
-        //$(ctrlFocus).ntsError('set', { messageId: error.messageId });
       }).always(() => vm.$blockui('hide'));
 
     }
@@ -233,7 +239,7 @@ module nts.uk.at.view.kwr007.b {
         settingId: selectedObj.id //複製元の設定ID 
       }
 
-      vm.$window.modal('/view/kwr/005/c/index.xhtml', ko.toJS(params)).then((data: any) => {
+      vm.$window.modal('/view/kwr/007/c/index.xhtml', ko.toJS(params)).then((data: any) => {
         if (_.isNil(data)) {
           return;
         }
@@ -246,7 +252,7 @@ module nts.uk.at.view.kwr007.b {
 
       });
 
-      $('#KWR005_B53').focus();
+      $('#KWR007_B53').focus();
     }
 
     /**
@@ -338,7 +344,7 @@ module nts.uk.at.view.kwr007.b {
         }
       }
 
-      $('#KWR005_B53').focus();
+      $('#KWR007_B53').focus();
     }
 
     getWorkStatusTableOutput(): JQueryPromise<any> {
@@ -346,7 +352,8 @@ module nts.uk.at.view.kwr007.b {
       const deferred = $.Deferred<any>();
       vm.$blockui('grayout');
 
-      vm.$ajax(PATH.getFormInfo, { formNumberDisplay: 8 }).done((result) => {
+      //5：任意期間集計表
+      vm.$ajax(PATH.getFormInfo, { formNumberDisplay: 5 }).done((result) => {
 
         if (result && result.listMonthly) {
 
@@ -416,14 +423,14 @@ module nts.uk.at.view.kwr007.b {
           if (!_.isNil(params.msgId) && params.msgId === 'Msg_1928')
             $('#btnB11').focus();
           else
-            $('#KWR005_B53').focus();  
+            $('#KWR007_B53').focus();  
           
         } else {
           //create new the settings list
           vm.clearToNewSetting();
           if (!_.isNil(params.msgId) && params.msgId === 'Msg_1928')
             $('#btnB11').focus();
-          else $('#KWR005_B52').focus();
+          else $('#KWR007_B52').focus();
         }
         vm.$blockui('hide');
       });
@@ -449,7 +456,7 @@ module nts.uk.at.view.kwr007.b {
         vm.currentCodeList(newSelectedCode);
       } else {
         vm.newSetting(); //create new
-        //$('#KWR005_B52').focus();
+        //$('#KWR007_B52').focus();
       }
     }
 

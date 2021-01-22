@@ -3,7 +3,7 @@
 module nts.uk.at.view.kwr007.c {
 
   const PATHS = {
-    cloneSettingClassification: 'at/function/kwr/005/c/duplicate'
+    cloneSettingClassification: 'at/function/kwr/007/c/duplicate'
   };
 
   @bean()
@@ -46,7 +46,7 @@ module nts.uk.at.view.kwr007.c {
     mounted() {
       const vm = this;
 
-      $('#KWR005_C23').focus();
+      $('#KWR007_C23').focus();
     }
 
     proceed() {
@@ -81,8 +81,8 @@ module nts.uk.at.view.kwr007.c {
           });
         })
         .fail((error) => {
-          let ctrlId = (error.messageId === 'Msg_1927') ? '#KWR005_C23' : '#closeDialog';
-          vm.isDeleted(error.messageId === 'Msg_1928');
+          let ctrlId = (error.messageId === 'Msg_1893') ? '#KWR007_C23' : '#closeDialog';
+          vm.isDeleted(error.messageId === 'Msg_1914');
           vm.$dialog.error({ messageId: error.messageId }).then(() => {
             $(ctrlId).focus();
             vm.$blockui('hide');

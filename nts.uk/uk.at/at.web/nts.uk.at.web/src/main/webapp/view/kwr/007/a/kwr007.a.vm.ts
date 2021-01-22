@@ -8,7 +8,7 @@ module nts.uk.at.view.kwr007.a {
 
   const PATH = {
     exportExcelPDF: 'at/function/kwr/005/report/export',
-    getSettingListWorkStatus: 'at/function/kwr/005/a/listworkledger',
+    getSettingListWorkStatus: 'at/function/kwr/007/a/listoutputsetting',
     checkDailyAuthor: 'at/function/kwr/checkdailyauthor',
     //getPeriodListing: 'at/function/kwr/005/a/beginningmonth',
     getPeriodList: 'at/record/kwr/007/a/arbitraryaggregatio/getlist',
