@@ -204,9 +204,12 @@ module nts.uk.at.view.kmk004.b {
 					break;
 				case 'Com_Workplace':
 					if (ko.unwrap(vm.selectId) !== '') {
+						console.log(ko.unwrap(vm.selectId));
+						
 						vm.$blockui('invisible')
 							.then(() => vm.$ajax(API.GET_SETTING_WORKPLACE + "/" + ko.unwrap(vm.selectId)))
 							.then((data: ITabSetting) => {
+								console.log(data);
 								if (data) {
 									vm.tabSetting.create(data);
 									vm.init();

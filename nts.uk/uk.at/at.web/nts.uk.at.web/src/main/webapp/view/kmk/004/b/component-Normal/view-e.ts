@@ -39,10 +39,10 @@ module nts.uk.at.view.kmk004.b {
 				<div>
 					<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_229'"></div>
 					<!-- ko if: checkSeting -->
-						<button tabindex="5" data-bind="i18n: 'KMK004_243', click: openDialogF, enable: existEmployee"></button>
+						<button tabindex="5" data-bind="i18n: 'KMK004_343', click: openDialogF, enable: existEmployee"></button>
 					<!-- /ko -->
 					<!-- ko ifnot: checkSeting -->
-						<button tabindex="5" data-bind="i18n: 'KMK004_242', click: openDialogF, enable: existEmployee"></button>
+						<button tabindex="5" data-bind="i18n: 'KMK004_342', click: openDialogF, enable: existEmployee"></button>
 					<!-- /ko -->
 				</div>
 				<div class ="setting" data-bind="component: {
@@ -201,10 +201,6 @@ module nts.uk.at.view.kmk004.b {
 			// $(document).ready(function () {
 			// 	$('.listbox').focus();
 			// });
-
-			$(document).ready(function () {
-				$('#cpn-ccg001').focus();
-			});
 		}
 
 		add() {
@@ -297,6 +293,11 @@ module nts.uk.at.view.kmk004.b {
 
 			nts.uk.ui.dialog
 				.confirm({ messageId: "Msg_18" })
+				.ifCancel(() => {
+					$(document).ready(function () {
+						$('.listbox').focus();
+					});
+				})
 				.ifYes(() => {
 					vm.$blockui("invisible")
 						.then(() => vm.$ajax(API.DELETE_WORK_TIME, param))
@@ -333,7 +334,7 @@ module nts.uk.at.view.kmk004.b {
 				if (result) {
 					vm.years.push(new IYear(parseInt(result.year), true));
 					vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
-					vm.selectedYear(ko.unwrap(vm.years)[0].year);
+					vm.selectedYear(parseInt(result.year));
 					vm.selectedYear.valueHasMutated();
 				}
 			});

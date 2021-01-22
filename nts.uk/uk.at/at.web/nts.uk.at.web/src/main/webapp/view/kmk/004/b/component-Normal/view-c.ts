@@ -233,6 +233,11 @@ module nts.uk.at.view.kmk004.b {
 
 			nts.uk.ui.dialog
 				.confirm({ messageId: "Msg_18" })
+				.ifCancel(() => {
+					$(document).ready(function () {
+						$('.listbox').focus();
+					});
+				})
 				.ifYes(() => {
 					vm.$blockui("invisible")
 						.then(() => vm.$ajax(API.DELETE_WORK_TIME, param))
@@ -283,7 +288,7 @@ module nts.uk.at.view.kmk004.b {
 					if (result) {
 						vm.years.push(new IYear(parseInt(result.year), true));
 						vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
-						vm.selectedYear(ko.unwrap(vm.years)[0].year);
+						vm.selectedYear(parseInt(result.year));
 					}
 				})
 				.then(() => {

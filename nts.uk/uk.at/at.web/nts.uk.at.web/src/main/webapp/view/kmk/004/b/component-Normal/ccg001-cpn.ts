@@ -97,6 +97,9 @@ module nts.uk.at.view.kmk004.b {
 						}
 
 					}
+				})
+				.done(() => {
+					$("#ccg001-btn-search-drawer").focus();
 				});
 		}
 	}

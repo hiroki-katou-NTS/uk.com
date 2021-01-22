@@ -49,6 +49,8 @@ module nts.uk.at.view.kmk004.b {
             const vm = this;
             vm.$ajax(API.GET_WORKPLACE_ID)
                 .then((data: any) => {
+                    console.log(data);
+                    
                     let settings: UnitAlreadySettingModel[] = [];
                     _.forEach(data, ((value) => {
                         let s: UnitAlreadySettingModel = { workplaceId: value.workplaceId, isAlreadySetting: true };

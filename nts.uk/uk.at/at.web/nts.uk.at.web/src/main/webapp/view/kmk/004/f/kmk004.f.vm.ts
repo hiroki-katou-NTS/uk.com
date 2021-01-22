@@ -106,18 +106,18 @@ module nts.uk.at.view.kmk004.f {
             const vm = this;
             switch (ko.unwrap(vm.valueInsurrance)) {
                 case '0':
-                    vm.model.deforWorkLegalOverTimeWork(false);
+                    vm.model.deforWorkSurchargeWeekMonth(false);
                     break;
                 case '1':
-                    vm.model.deforWorkLegalOverTimeWork(true);
+                    vm.model.deforWorkSurchargeWeekMonth(true);
                     break
             }
             switch (ko.unwrap(vm.valueSurcharges)) {
                 case '0':
-                    vm.model.outsidedeforWorkLegalOverTimeWork(false);
+                    vm.model.outsideSurchargeWeekMonth(false);
                     break;
                 case '1':
-                    vm.model.outsidedeforWorkLegalOverTimeWork(true);
+                    vm.model.outsideSurchargeWeekMonth(true);
                     break
             }
 
@@ -205,16 +205,16 @@ module nts.uk.at.view.kmk004.f {
 
         init() {
             const vm = this;
-            vm.model.deforWorkLegalOverTimeWork.subscribe(() => {
-                if (ko.unwrap(vm.model.deforWorkLegalOverTimeWork)) {
+            vm.model.deforWorkSurchargeWeekMonth.subscribe(() => {
+                if (ko.unwrap(vm.model.deforWorkSurchargeWeekMonth)) {
                     vm.valueInsurrance('1');
                 } else {
                     vm.valueInsurrance('0');
                 }
             });
 
-            vm.model.outsidedeforWorkLegalOverTimeWork.subscribe(() => {
-                if (ko.unwrap(vm.model.outsidedeforWorkLegalOverTimeWork)) {
+            vm.model.outsideSurchargeWeekMonth.subscribe(() => {
+                if (ko.unwrap(vm.model.outsideSurchargeWeekMonth)) {
                     vm.valueSurcharges('1');
                 } else {
                     vm.valueSurcharges('0');
