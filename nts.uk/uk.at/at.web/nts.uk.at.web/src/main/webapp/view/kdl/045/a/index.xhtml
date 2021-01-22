@@ -153,7 +153,12 @@
 														<tr>
 															<td>
 																<!-- A5_4 -->
-																<div style="float: left;"> #{i18n.getText('KDL045_15')}</div> 
+																<com:ko-if bind="canModified == true ">
+																	<div style="float: left;"> #{i18n.getText('KDL045_15')}</div>
+																</com:ko-if> 
+																<com:ko-if bind="canModified == false &amp;&amp; checkIsHoliday() == false">
+																	<div style="float: left;"> #{i18n.getText('KDL045_15')}</div>
+																</com:ko-if> 
 															</td>
 															<td style="padding-left: 15px">
 																<com:ko-if bind="canModified == true">
@@ -182,12 +187,16 @@
 											<tr>
 												<td colspan="3" class ="table-left-td ">
 													<table>
-														
-															<tr>
-															<com:ko-if bind="isShowTimeRange2 == true">		
+														<tr>
+															<com:ko-if bind="isShowTimeRange2 == true ">		
 																<td>
-																	<!-- A5_8 --> 
-																	<div style="float: left;"> #{i18n.getText('KDL045_19')}</div>  
+																	<!-- A5_8 -->
+																	<com:ko-if bind="canModified == true"> 
+																		<div style="float: left;"> #{i18n.getText('KDL045_19')}</div>
+																	</com:ko-if>  
+																	<com:ko-if bind="canModified == false  &amp;&amp; checkIsHoliday() == false"> 
+																		<div style="float: left;"> #{i18n.getText('KDL045_19')}</div>
+																	</com:ko-if>
 																</td>
 																<td style="padding-left: 15px">
 																	<com:ko-if bind="canModified == true">
@@ -209,9 +218,8 @@
 																		<span style="padding-left: 28px;" data-bind="text: timeA10_2()"></span>　
 										                            </com:ko-if>
 																</td>
-																</com:ko-if>
-															</tr>
-														
+															</com:ko-if>
+														</tr>
 													</table>
 												</td>
 											</tr>
@@ -246,43 +254,39 @@
 												</td>
 											</tr>
 											<tr>
-												<com:ko-if bind="fixBreakTime() == true">
-													<td style="padding-left: 30px;padding-top: 10px;">
-														<!-- A5_19 ~ A5_25 -->
-														<com:ko-if bind="canModified == true">
-															<div id = "kdl045" data-bind="ntsFixTableCustomKdl045: {option: timeRange() }"></div>
-														</com:ko-if>
-														<com:ko-if bind="canModified == false">
-															<table id="single-list" data-bind="ntsGridList: {								
-																height: 215,
-																width : 220,
-																dataSource: listDataA11,
-																primaryKey: 'breakFrameNo',
-																columns: columnsA11,
-																features: [{name: 'Switch', optionsValue: 'breakFrameNo', optionsText: 'name'}],
-																multiple: false,
-																value: currentNo
-															}"></table>
-														</com:ko-if>
-													</td>
-												</com:ko-if>
+												<td style="padding-left: 30px;padding-top: 10px;">
+													<!-- A5_19 ~ A5_25 -->
+													<com:ko-if bind="canModified == true">
+														<div id = "kdl045" data-bind="ntsFixTableCustomKdl045: {option: timeRange() }"></div>
+													</com:ko-if>
+													<com:ko-if bind="canModified == false">
+														<table id="single-list" data-bind="ntsGridList: {								
+															height: 215,
+															width : 220,
+															dataSource: listDataA11,
+															primaryKey: 'breakFrameNo',
+															columns: columnsA11,
+															features: [{name: 'Switch', optionsValue: 'breakFrameNo', optionsText: 'name'}],
+															multiple: false,
+															value: currentNo
+														}"></table>
+													</com:ko-if>
+												</td>
 											</tr>
 											<tr>
-												<com:ko-if bind="fixBreakTime() == true">
-													<td style="padding-top: 10px ">
-														<!-- A5_26 -->
-														<div style= "width: 320px;"> #{i18n.getText('KDL045_34')}</div>
-													</td>
-												</com:ko-if>
+												<td style="padding-top: 10px ">
+													<!-- A5_26 -->
+													<div style= "width: 320px;"> #{i18n.getText('KDL045_34')}</div>
+												</td>
 											</tr>
-											<tr>
+											<!-- <tr>
 												<com:ko-if bind="fixBreakTime() == false">
 													<td id="displayA5_27">
-														<!-- A5_27 -->
+														A5_27
 														<div>#{i18n.getText('KDL045_67')}</div>
 													</td>
 												</com:ko-if>
-											</tr>
+											</tr> -->
 										</table>
 									</div>
 								</div>
