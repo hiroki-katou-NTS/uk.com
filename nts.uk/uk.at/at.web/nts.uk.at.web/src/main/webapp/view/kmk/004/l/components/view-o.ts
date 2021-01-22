@@ -332,7 +332,7 @@ module nts.uk.at.view.kmk004.l {
 							weekAvgTime: null
 						}
 					};
-					if (t.laborTime.legalLaborTime) {
+					if (t.laborTime.legalLaborTime != null) {
 						param.push(t);
 					}
 
@@ -347,8 +347,7 @@ module nts.uk.at.view.kmk004.l {
 							weekAvgTime: null
 						}
 					};
-
-					if (t.laborTime.legalLaborTime) {
+					if (t.laborTime.legalLaborTime != null) {
 						param.push(t);
 					}
 
