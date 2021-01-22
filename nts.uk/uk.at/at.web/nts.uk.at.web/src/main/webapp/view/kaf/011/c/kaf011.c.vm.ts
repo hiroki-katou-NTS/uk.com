@@ -30,26 +30,35 @@ module nts.uk.at.view.kaf011.c.viewmodel {
                 });
 			});
 		}
+		
+		triggerValidate(): boolean{
+			$('.nts-input').trigger("validate");
+			$('input').trigger("validate");
+			return !nts.uk.ui.errors.hasError();
+		}
+		
 		save(){
 			let self = this;
-			block.invisible();
-			if(self.displayInforWhenStarting.rec){
-				self.displayInforWhenStarting.rec.applicationInsert = self.displayInforWhenStarting.rec.applicationUpdate = self.displayInforWhenStarting.rec.application;	
+			if(self.triggerValidate()){
+				if(self.displayInforWhenStarting.rec){
+					self.displayInforWhenStarting.rec.applicationInsert = self.displayInforWhenStarting.rec.applicationUpdate = self.displayInforWhenStarting.rec.application;	
+				}
+				if(self.displayInforWhenStarting.abs){
+					self.displayInforWhenStarting.abs.applicationInsert = self.displayInforWhenStarting.abs.applicationUpdate = self.displayInforWhenStarting.abs.application;
+				}
+				block.invisible();
+				ajax('at/request/application/holidayshipment/saveChangeDateScreenC',{appDateNew: new Date(self.appDate()), displayInforWhenStarting: self.displayInforWhenStarting, appReason: self.appReason(), appStandardReasonCD: self.appStandardReasonCD()}).then((data: any) =>{
+					windows.setShared("KAF011C_RESLUT", {appID: data});
+					dialog.info({ messageId: "Msg_15"}).then(()=>{
+						self.closeDialog();
+					});
+				}).fail((fail: any) => {
+					dialog.error({ messageId: fail.messageId, messageParams: fail.parameterIds});
+				}).always(() => {
+	                block.clear();
+	            });
+				
 			}
-			if(self.displayInforWhenStarting.abs){
-				self.displayInforWhenStarting.abs.applicationInsert = self.displayInforWhenStarting.abs.applicationUpdate = self.displayInforWhenStarting.abs.application;
-			}
-			ajax('at/request/application/holidayshipment/saveChangeDateScreenC',{appDateNew: new Date(self.appDate()), displayInforWhenStarting: self.displayInforWhenStarting, appReason: self.appReason(), appStandardReasonCD: self.appStandardReasonCD()}).then((data: any) =>{
-				windows.setShared("KAF011C_RESLUT", {appID: data});
-				dialog.info({ messageId: "Msg_15"}).then(()=>{
-					self.closeDialog();
-				});
-			}).fail((fail: any) => {
-				dialog.error({ messageId: fail.messageId, messageParams: fail.parameterIds});
-			}).always(() => {
-                block.clear();
-            });
-			
 		}
 		closeDialog(){
 			windows.close();
@@ -58,5 +67,6 @@ module nts.uk.at.view.kaf011.c.viewmodel {
 	
     __viewContext.ready(function() {
     	__viewContext.bind(new KAF011C());
+		$("#recAppDate").focus();
     });
 }

@@ -3,6 +3,7 @@
 module nts.uk.at.view.kaf011.a.viewmodel {
 	
 	import Kaf000AViewModel = nts.uk.at.view.kaf000.a.viewmodel.Kaf000AViewModel;
+	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 	import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
 	import Application = nts.uk.at.view.kaf011.Application;
 	import RecruitmentApp = nts.uk.at.view.kaf011.RecruitmentApp;
@@ -62,6 +63,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 			vm.loadData(vm.params?vm.params.employeeIds:[], paramDate?[paramDate]:[], vm.appType()).then(() => {
 				vm.$blockui("grayout");
 				vm.$ajax('at/request/application/holidayshipment/startPageARefactor',{sIDs: [], appDate: [], appDispInfoStartup: vm.appDispInfoStartupOutput()}).then((data: any) =>{
+					CommonProcess.checkUsage(true, "#recAppDate", vm);
 					vm.displayInforWhenStarting(data);
 					vm.isSendMail(data.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.manualSendMailAtr == 1);
 					vm.remainDays(data.remainingHolidayInfor.remainDays + '日');
@@ -76,7 +78,6 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					vm.$blockui("hide"); 
 				}).fail((failData: any) => {
 					vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds }).then(() => { vm.$jump("com", "/view/ccg/008/a/index.xhtml"); });
-					
 				}).always(() => {
 					
 				});
@@ -104,6 +105,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					displayInforWhenStartingdto.rec = null;
 					displayInforWhenStartingdto.abs = null;
 					vm.$ajax('at/request/application/holidayshipment/changeRecDate',{workingDate: moment(value).format('YYYY/MM/DD'), holidayDate: holidayDate, displayInforWhenStarting: displayInforWhenStartingdto}).then((data: any) =>{
+						CommonProcess.checkUsage(true, "#recAppDate", vm);
 						vm.appDispInfoStartupOutput(data.appDispInfoStartup);
 						vm.displayInforWhenStarting(data);
 						if(data.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.recordDate == 1){
@@ -124,6 +126,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					displayInforWhenStartingdto.abs = null;
 					let workingDate = (vm.appCombinaSelected() != 2 && vm.recruitmentApp.application.appDate() && !$('#recAppDate').ntsError('hasError')) ? moment(vm.recruitmentApp.application.appDate()).format('YYYY/MM/DD'): null;
 					vm.$ajax('at/request/application/holidayshipment/changeAbsDate',{workingDate: workingDate, holidayDate: moment(value).format('YYYY/MM/DD'), displayInforWhenStarting: displayInforWhenStartingdto}).then((data: any) =>{
+						CommonProcess.checkUsage(true, "#absAppDate", vm);
 						vm.appDispInfoStartupOutput(data.appDispInfoStartup)
 						vm.displayInforWhenStarting(data);
 						if(data.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.recordDate == 1){
