@@ -40,7 +40,7 @@ public class OutputSettingListArbitraryWebService extends WebService {
 
     @Inject
     private DeleteOutputSettingCommandHandler deleteCommandHandler;
-    
+
     @Inject
     private GetRoleArbitraryScheduleFinder getRoleArbitraryScheduleFinder;
 
