@@ -63,17 +63,17 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 			vm.loadData(vm.params?vm.params.employeeIds:[], paramDate?[paramDate]:[], vm.appType()).then(() => {
 				vm.$blockui("grayout");
 				vm.$ajax('at/request/application/holidayshipment/startPageARefactor',{sIDs: [], appDate: [], appDispInfoStartup: vm.appDispInfoStartupOutput()}).then((data: any) =>{
-					CommonProcess.checkUsage(true, "#recAppDate", vm);
 					vm.displayInforWhenStarting(data);
 					vm.isSendMail(data.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.manualSendMailAtr == 1);
 					vm.remainDays(data.remainingHolidayInfor.remainDays + '日');
-					vm.appCombinaDipslay(data.substituteHdWorkAppSet.simultaneousApplyRequired == 1);
+					vm.appCombinaDipslay(data.substituteHdWorkAppSet.simultaneousApplyRequired == 0);
 					vm.recruitmentApp.bindingScreenA(data.applicationForWorkingDay, data);
 					vm.absenceLeaveApp.bindingScreenA(data.applicationForHoliday, data);
 					vm.comment.update(data.substituteHdWorkAppSet);
 					$('#isSendMail').css({'display': 'inline-block'});
 					$('#contents-area').css({'display': ''});
 					$('#functions-area').css({'opacity': ''});
+					CommonProcess.checkUsage(true, "#recAppDate", vm);
 					$("#recAppDate").focus();
 					vm.$blockui("hide"); 
 				}).fail((failData: any) => {
@@ -105,13 +105,13 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					displayInforWhenStartingdto.rec = null;
 					displayInforWhenStartingdto.abs = null;
 					vm.$ajax('at/request/application/holidayshipment/changeRecDate',{workingDate: moment(value).format('YYYY/MM/DD'), holidayDate: holidayDate, displayInforWhenStarting: displayInforWhenStartingdto}).then((data: any) =>{
-						CommonProcess.checkUsage(true, "#recAppDate", vm);
 						vm.appDispInfoStartupOutput(data.appDispInfoStartup);
 						vm.displayInforWhenStarting(data);
 						if(data.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.recordDate == 1){
 							vm.recruitmentApp.bindingScreenA(data.applicationForWorkingDay, data);					
 						}
 						vm.absenceLeaveApp.workInformation.workType(data.applicationForHoliday.workType);
+						CommonProcess.checkUsage(true, "#recAppDate", vm);
 					}).always(() => {
 						vm.$blockui("hide"); 
 					});
@@ -126,12 +126,12 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					displayInforWhenStartingdto.abs = null;
 					let workingDate = (vm.appCombinaSelected() != 2 && vm.recruitmentApp.application.appDate() && !$('#recAppDate').ntsError('hasError')) ? moment(vm.recruitmentApp.application.appDate()).format('YYYY/MM/DD'): null;
 					vm.$ajax('at/request/application/holidayshipment/changeAbsDate',{workingDate: workingDate, holidayDate: moment(value).format('YYYY/MM/DD'), displayInforWhenStarting: displayInforWhenStartingdto}).then((data: any) =>{
-						CommonProcess.checkUsage(true, "#absAppDate", vm);
 						vm.appDispInfoStartupOutput(data.appDispInfoStartup)
 						vm.displayInforWhenStarting(data);
 						if(data.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.recordDate == 1){
 							vm.absenceLeaveApp.bindingScreenA(data.applicationForHoliday, data);
 						}
+						CommonProcess.checkUsage(true, "#absAppDate", vm);
 					}).always(() => {
 						vm.$blockui("hide"); 
 					});
