@@ -9,12 +9,9 @@ import nts.uk.ctx.at.function.app.find.arbitraryperiodsummarytable.GetRoleArbitr
 import nts.uk.ctx.at.function.app.query.arbitraryperiodsummarytable.GetOutputSettingDetailArbitraryQuery;
 import nts.uk.ctx.at.function.app.query.arbitraryperiodsummarytable.GetOutputSettingListArbitraryQuery;
 import nts.uk.ctx.at.function.app.query.arbitraryperiodsummarytable.OutputSettingArbitraryDto;
-import nts.uk.ctx.at.function.app.query.outputworkstatustable.CheckDailyPerformAuthorQuery;
-import nts.uk.ctx.at.function.app.query.workledgeroutputitem.BeginMonthOfCompany;
 import nts.uk.ctx.at.function.app.query.workledgeroutputitem.GetBeginMonthOfCompanyQuery;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.scrA.RoleWhetherLoginPubImported;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
-import nts.uk.ctx.at.function.ws.outputworkstatustable.dto.RoleIdParams;
 import nts.uk.ctx.at.function.ws.outputworkstatustable.dto.SettingIdParams;
 import nts.uk.ctx.at.function.ws.outputworkstatustable.dto.SettingParams;
 
@@ -61,11 +58,6 @@ public class OutputSettingListArbitraryWebService extends WebService {
     @Path("007/a/getroleinfor")
     public RoleWhetherLoginPubImported getRoleInfor() {
         return getRoleArbitraryScheduleFinder.getRoleInfor();
-    }
-    @Path("005/a/beginningmonth")
-    @POST
-    public BeginMonthOfCompany getBeginMonthOfCompany() {
-        return getBeginMonthOfCompanyQuery.getBeginMonthOfCompany();
     }
 
     @POST
