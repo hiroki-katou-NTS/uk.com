@@ -10,6 +10,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * DomainService: 勤務状況の設定を更新する
@@ -25,7 +26,7 @@ public class UpdateWorkStatusSettingDomainService {
         // 1. get: ⓪ -勤務状況の出力設定
         val oldItem = require.getWorkStatusOutputSettings(settingId);
         // 2. ⓪．isEmpty
-        if (oldItem == null) {
+        if (!oldItem.isPresent()) {
             throw new BusinessException("Msg_1903");
         }
         val empId = AppContexts.user().employeeId();
@@ -47,7 +48,7 @@ public class UpdateWorkStatusSettingDomainService {
     public interface Require extends WorkStatusOutputSettings.Require {
 
         // [1]	出力設定の詳細を取得する
-        WorkStatusOutputSettings getWorkStatusOutputSettings(String settingId);
+        Optional<WorkStatusOutputSettings> getWorkStatusOutputSettings(String settingId);
 
         // [2]	定型選択を更新する
         void update(String settingId,WorkStatusOutputSettings outputSettings);

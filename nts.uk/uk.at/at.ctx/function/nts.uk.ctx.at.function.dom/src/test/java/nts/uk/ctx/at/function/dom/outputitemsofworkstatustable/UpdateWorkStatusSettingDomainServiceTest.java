@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
+import java.util.Optional;
 
 @RunWith(JMockit.class)
 public class UpdateWorkStatusSettingDomainServiceTest {
@@ -23,6 +24,31 @@ public class UpdateWorkStatusSettingDomainServiceTest {
 
     /**
      * Test: UpdateWorkStatusSettingDomainService
+     * SettingClassificationCommon.STANDARD_SELECTION
+     * Throw exception : Msg_1903
+     */
+    @Test
+    public void testUpdateWorkStatusSettingFail() {
+        OutputItemSettingCode code = new OutputItemSettingCode("ABC");
+        OutputItemSettingName name = new OutputItemSettingName("CBA");
+        String settingId = "id";
+        SettingClassificationCommon settingCategory = SettingClassificationCommon.STANDARD_SELECTION;
+        List<OutputItem> outputItems = DumData.outputItems;
+        new Expectations() {
+            {
+                require.getWorkStatusOutputSettings(settingId);
+                result = Optional.empty();
+            }
+        };
+        NtsAssert.businessException("Msg_1903", () -> {
+            UpdateWorkStatusSettingDomainService.updateSetting(require, settingId, code, name, settingCategory,
+                    outputItems);
+        });
+    }
+
+    /**
+     * Test: UpdateWorkStatusSettingDomainService
+     * SettingClassificationCommon.FREE_SETTING
      * Throw exception : Msg_1903
      */
     @Test
@@ -30,12 +56,12 @@ public class UpdateWorkStatusSettingDomainServiceTest {
         OutputItemSettingCode code = new OutputItemSettingCode("ABC");
         OutputItemSettingName name = new OutputItemSettingName("CBA");
         String settingId = "settingId";
-        SettingClassificationCommon settingCategory = SettingClassificationCommon.STANDARD_SELECTION;
+        SettingClassificationCommon settingCategory = SettingClassificationCommon.FREE_SETTING;
         List<OutputItem> outputItems = DumData.outputItems;
         new Expectations() {
             {
                 require.getWorkStatusOutputSettings(settingId);
-                result = null;
+                result = Optional.empty();
             }
         };
         NtsAssert.businessException("Msg_1903", () -> {
@@ -64,7 +90,7 @@ public class UpdateWorkStatusSettingDomainServiceTest {
                 result = empId;
 
                 require.getWorkStatusOutputSettings(settingId);
-                result = domain;
+                result = Optional.of(domain);
 
             }
         };
@@ -96,7 +122,7 @@ public class UpdateWorkStatusSettingDomainServiceTest {
                 AppContexts.user().employeeId();
                 result = empId;
                 require.getWorkStatusOutputSettings(settingId);
-                result = domain;
+                result = Optional.of(domain);
             }
         };
 
