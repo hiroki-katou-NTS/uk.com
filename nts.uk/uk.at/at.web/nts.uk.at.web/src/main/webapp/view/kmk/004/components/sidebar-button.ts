@@ -345,12 +345,11 @@ class SidebarButton extends ko.ViewModel {
 		if (vm.screenMode === 'Com_Company') {
 
 			vm.$ajax(API_G_URL.DELETE + selectedYear).done(() => {
-				vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
-					vm.screenData().setSelectedAfterRemove(selectedYear);
+				vm.screenData().setSelectedAfterRemove(selectedYear);
 					vm.screenData().deleteYear(selectedYear);
 					vm.screenData().clearUnSaveList(selectedYear);
 					vm.screenData().setFocus('load');
-				});
+				vm.$dialog.info({ messageId: "Msg_16" });
 			}).always(() => { vm.$blockui("clear"); });
 		}
 
@@ -358,13 +357,12 @@ class SidebarButton extends ko.ViewModel {
 			let cmd = { workplaceId: selectedId, year: selectedYear };
 
 			vm.$ajax(API_H_URL.DELETE, cmd).done((data) => {
-				vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
-					vm.screenData().setSelectedAfterRemove(selectedYear);
+				vm.screenData().setSelectedAfterRemove(selectedYear);
 					vm.screenData().deleteYear(selectedYear);
 					vm.screenData().clearUnSaveList(selectedYear);
 					vm.screenData().alreadySettingList(_.map(data, (item) => { return { workplaceId: item, isAlreadySetting: true } }));
 					vm.screenData().setFocus('load');
-				});
+				vm.$dialog.info({ messageId: "Msg_16" });
 			}).always(() => { vm.$blockui("clear"); });
 		}
 
@@ -372,13 +370,12 @@ class SidebarButton extends ko.ViewModel {
 			let cmd = { employmentCode: selectedId, year: selectedYear };
 
 			vm.$ajax(API_I_URL.DELETE, cmd).done((data) => {
-				vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
-					vm.screenData().setSelectedAfterRemove(selectedYear);
+				vm.screenData().setSelectedAfterRemove(selectedYear);
 					vm.screenData().deleteYear(selectedYear);
 					vm.screenData().clearUnSaveList(selectedYear);
 					vm.screenData().alreadySettingList(_.map(data, (item) => { return { code: item, isAlreadySetting: true } }));
 					vm.screenData().setFocus('load');
-				});
+				vm.$dialog.info({ messageId: "Msg_16" });
 			}).always(() => { vm.$blockui("clear"); });
 		}
 
@@ -389,8 +386,7 @@ class SidebarButton extends ko.ViewModel {
 			let cmd = { sId: selectedEmp.id, year: selectedYear };
 
 			vm.$ajax(API_J_URL.DELETE, cmd).done((data) => {
-				vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
-					vm.screenData().setSelectedAfterRemove(selectedYear);
+				vm.screenData().setSelectedAfterRemove(selectedYear);
 					vm.screenData().deleteYear(selectedYear);
 					vm.screenData().clearUnSaveList(selectedYear);
 					vm.screenData().alreadySettingList(
@@ -402,7 +398,7 @@ class SidebarButton extends ko.ViewModel {
 							return { code: emp.code, isAlreadySetting: true };
 						}));
 					vm.screenData().setFocus('load');
-				});
+				vm.$dialog.info({ messageId: "Msg_16" });
 			}).always(() => { vm.$blockui("clear"); });
 		}
 

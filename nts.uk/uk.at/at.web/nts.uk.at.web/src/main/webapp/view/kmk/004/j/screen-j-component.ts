@@ -224,14 +224,16 @@ class ScreenJComponent extends ko.ViewModel {
 					if (listEmployee.length) {
 						vm.screenData().selected(listEmployee[0].code);
 						$("#year-list").focus();
-						if(listEmployee.length>300){
+						if (listEmployee.length > 300) {
 							vm.initEmployeeList();
 						}
 					}
 				}
 			};
 
-		$('#com-ccg001').ntsGroupComponent(ccg001ComponentOption);
+		$('#com-ccg001').ntsGroupComponent(ccg001ComponentOption).done(() => {
+			$("#ccg001-btn-search-drawer").focus();
+		});
 	}
 
 	setAlreadySettingList() {
