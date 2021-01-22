@@ -73,6 +73,7 @@ module nts.uk.at.view.kwr007.a {
     specifyWorkplaceHierarchy: KnockoutObservableArray<CheckBoxItem> = ko.observableArray([]);
     specifyWPSelectedIds: KnockoutObservableArray<string> = ko.observableArray([]);
     isEnableSpecifyWP: KnockoutObservable<boolean> = ko.observable(false);
+    executionDateTime: KnockoutObservable<string> = ko.observable('2020/09/09 10:34:45');
 
     constructor(params: any) {
       super();
@@ -260,7 +261,7 @@ module nts.uk.at.view.kwr007.a {
         params.standOrFree = vm.rdgSelectedId();
       }
 
-      vm.$window.modal('/view/kwr/005/b/index.xhtml', ko.toJS(params)).then((data: any) => {
+      vm.$window.modal('/view/kwr/007/b/index.xhtml', ko.toJS(params)).then((data: any) => {
         if (data) {
           nts.uk.ui.errors.clearAll();
           vm.getSettingListWorkStatus(vm.rdgSelectedId(), data);
@@ -502,7 +503,8 @@ module nts.uk.at.view.kwr007.a {
 
       //明細・合計出力設定 - #KWR007_27～#KWR007_31
       for (let i = 1; i <= 4; i++) {
-        let item: CheckBoxItem = new CheckBoxItem(i, vm.$i18n('KWR007_' + (26 + i).toString()), false);
+        let textResource = 'KWR007_' + (26 + i).toString();
+        let item: CheckBoxItem = new CheckBoxItem(i, vm.$i18n(textResource), false, textResource);
         vm.detailsOutputSettings.push(item);
 
         item.checked.subscribe((value: any) => {
@@ -511,7 +513,8 @@ module nts.uk.at.view.kwr007.a {
       }
       //累計したい職場階層を指定- #KWR007_32～#KWR007_41
       for (let i = 1; i <= 9; i++) {
-        let item = new CheckBoxItem(i, vm.$i18n('KWR007_' + (31 + i).toString()), false);
+        let textResource = 'KWR007_' + (31 + i).toString();
+        let item = new CheckBoxItem(i, vm.$i18n(textResource), false , textResource);
         vm.specifyWorkplaceHierarchy.push(item);
       }
 
@@ -581,11 +584,12 @@ module nts.uk.at.view.kwr007.a {
     code: number;
     name: string;
     checked: KnockoutObservable<boolean> = ko.observable(false);
-
-    constructor(code?: number, name?: string, checked: boolean) {
+    nameId: string;
+    constructor(code?: number, name?: string, checked: boolean, nameId: string) {
       this.code = code;
       this.name = name;
       this.checked(checked);
+      this.nameId = '#[' + nameId + ']';
     }
   }
 }

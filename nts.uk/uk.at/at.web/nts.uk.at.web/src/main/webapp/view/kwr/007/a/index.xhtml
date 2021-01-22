@@ -75,7 +75,7 @@
                   <!-- Current Time A2_4-->
                   <div
                     class="date-time-picker-label"
-                    data-bind="text: ko.observable('2021/09/09 10:20:45')"
+                    data-bind="text: executionDateTime"
                   ></div>
                 </div>
               </div>
@@ -91,7 +91,7 @@
                   <!-- A5_1-->
                   <div
                     class="label"
-                    data-bind="ntsFormLabel: {}, text: $i18n('KWR007_4')"
+                    data-bind="ntsFormLabel: {}, text: $i18n('KWR007_5')"
                   ></div>
                 </div>
                 <div class="row-right">
@@ -105,18 +105,18 @@
                         optionsText: 'name',
                         value: rdgSelectedId,
                         enable: true,
-                        name: '#[KWR007_104]'
+                        name: '#[KWR007_5]'
                       }"
                     ></div>
                   </div>
                   <div class="text-box-button">
                     <div class="item item-1">
-                      <!-- A5_3_2 - KWR007_105-->
+                      <!-- A5_3_2 - KWR007_6-->
                       <div
                         tabindex="6"
                         id="KWR007_105"
                         data-bind="ntsComboBox: {
-                          name: $i18n('KWR007_105'),
+                          name: $i18n('KWR007_6'),
                           options: settingListItems1,
                           optionsValue: 'code',
                           visibleItemsCount: 5,
@@ -139,12 +139,12 @@
                       />
                     </div>
                     <div class="item item-2">
-                      <!-- A5_4_2 - KWR007_106-->
+                      <!-- A5_4_2 - KWR007_7-->
                       <div
                         tabindex="8"
                         id="KWR007_106"
                         data-bind="ntsComboBox: {
-                          name: $i18n('KWR007_106'),
+                          name: $i18n('KWR007_7'),
                           options:  settingListItems2,
                           optionsValue: 'code',
                           visibleItemsCount: 5,
@@ -224,7 +224,7 @@
                     tabindex="8"
                     id="KWR007_106"
                     data-bind="ntsComboBox: {
-                          name: $i18n('KWR007_106'),
+                          name: $i18n('KWR007_16'),
                           options:  workplaceHierarchyList,
                           optionsValue: 'code',
                           visibleItemsCount: 9,
@@ -248,13 +248,13 @@
                 </div>
                 <div class="row-right">
                   <div class="check-list check-list-1" data-bind="foreach: detailsOutputSettings">
-                    <div class="checkbox-item" data-bind="ntsCheckBox: { checked: checked, text: name }"></div>
+                    <div tabindex="13" class="checkbox-item" data-bind="ntsCheckBox: { checked: checked, text: name, name: nameId }"></div>
                   </div>
                   <div class="check-list check-list-2 multiple-check panel panel-frame">
                     <div class="lable" data-bind="text: $i18n('KWR007_31')"></div>
                     <div class="check-list-item" data-bind="foreach: specifyWorkplaceHierarchy">
-                      <div class="checkbox-item" data-bind="ntsCheckBox: { checked: checked, 
-                        enable: $parent.isEnableSpecifyWP, text: name }"></div>
+                      <div tabindex="17" class="checkbox-item" 
+                      data-bind="ntsCheckBox: { checked: checked, enable: $parent.isEnableSpecifyWP, text: name,name: nameId }"></div>
                     </div>
                     <div class="lable" data-bind="text: $i18n('KWR007_41')"></div>
                   </div>

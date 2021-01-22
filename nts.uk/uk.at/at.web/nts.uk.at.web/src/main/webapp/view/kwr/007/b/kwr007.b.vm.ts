@@ -87,7 +87,7 @@ module nts.uk.at.view.kwr007.b {
         $('.kwr-005b').addClass('ie');
         $('#multiList_displayContainer').height(300);
       }
-      //$("#swapList-grid1").igGrid("container").focus();
+      //$("#multiList").igGrid("container").focus();
     }
 
 
@@ -470,12 +470,12 @@ module nts.uk.at.view.kwr007.b {
     printAttributes() {
       const vm = this;
       const printAttributes = [
-        { code: -1, name: vm.$i18n('KWR005_114') }, //全件
-        { code: 4, name: vm.$i18n('KWR005_115') }, //時間
-        { code: 5, name: vm.$i18n('KWR005_116') }, //回数
-        { code: 6, name: vm.$i18n('KWR005_117') }, //日数
-        { code: 7, name: vm.$i18n('KWR005_118') }, //金額
-        { code: -2, name: vm.$i18n('KWR005_119') }, //その他
+        { code: -1, name: vm.$i18n('KWR007_117') }, //全件
+        { code:  4, name: vm.$i18n('KWR007_118') }, //時間
+        { code:  5, name: vm.$i18n('KWR007_119') }, //回数
+        { code:  6, name: vm.$i18n('KWR007_120') }, //日数
+        { code:  7, name: vm.$i18n('KWR007_121') }, //金額
+        { code: -2, name: vm.$i18n('KWR007_122') }, //その他
       ];
       vm.printProperties = ko.observableArray(printAttributes);
     }

@@ -39,21 +39,21 @@
               class="proceed"
               data-bind="text: $i18n('KWR007_103'), click: registerSetting, enable: $root.errors.isEmpty"
             />
-            <!-- B1_2 -->
+            <!-- B1_3 -->
             <button
               tabindex="3"
               id="btnB13"
               class="normal"
               data-bind="text: $i18n('KWR007_104'), click: showDialogC, enable: isEnableDuplicateButton"
             />
-            <!-- B1_2 -->
+            <!-- B1_4 -->
             <button
               tabindex="4"
               id="btnB14"
               class="danger"
               data-bind="text: $i18n('KWR007_105'), click: deleteSetting, enable: isEnableDeleteButton"
             />
-            <!-- B1_2 -->
+            <!-- B1_5 -->
             <button
               tabindex="5"
               id="btnB15"
@@ -61,12 +61,12 @@
               data-bind="text: $i18n('KWR007_106'), click: closeDialog"
             />
           </div>
-          <!-- A1_2-->
+          <!-- B2_1-->
           <div id="content-area">
             <div class="pull-left">
               <div
                 data-bind="ntsPanel:{direction: 'right', showIcon: true, visible: true}"
-              >
+              ><!-- B2_2, B2_3-->
                 <div
                   tabindex="6"
                   data-bind="ntsSearchBox: {
@@ -81,7 +81,7 @@
                 />
                 <table
                   id="multiList"
-                  tabindex="-1"
+                  tabindex="6"
                   data-bind="ntsGridList: {
                     height: 312,
                     options: settingListItems,
@@ -135,17 +135,17 @@
                 <div class="B6_1 swap-list-colum">
                   <div class="d-flex">
                     <div
-                      data-bind="ntsFormLabel: { required: false, text: $i18n('KWR007_112') }"
+                      data-bind="ntsFormLabel: { required: false, text: $i18n('KWR007_115') }"
                     ></div>
-                    <div data-bind="text: $i18n('KWR007_113')"></div>
+                    <div data-bind="text: $i18n('KWR007_116')"></div>
                     <div
                       id="B6_3"
                       tabindex="9"
                       data-bind="ntsComboBox: {
-                        name: 'KWR007_113',
+                        name: 'KWR007_116',
                         options: printProperties,
                         optionsValue: 'code',
-                        visibleItemsCount: 5,
+                        visibleItemsCount: 6,
                         value: printPropertyCode,
                         optionsText: 'name',
                         editable: false
@@ -176,7 +176,7 @@
                   searchMode: 'filter',
                   searchCriterion: ['attendanceItemId', 'attendanceItemName'],
                   draggable: false,
-                  itemsLimit: { right: 100 },   
+                  itemsLimit: { right: 40 },   
                   enableRowNumbering: false,              
                   multipleDrag: { left: true, right: false },
                   innerDrag: { left: false, right: true },
@@ -197,7 +197,7 @@
                 ></div>
                 <div
                   class="limit-items"
-                  data-bind="text: $i18n('KWR007_125')"
+                  data-bind="text: $i18n('KWR007_131')"
                 ></div>
               </div>
             </div>
