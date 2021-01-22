@@ -18,27 +18,23 @@ import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * The Class KfnctExecutionExternalAccept.
- * Entity 実行設定の外部受入項目
+ * The Class KfnmtExecutionExternalOutput.
+ * Entity 実行設定の外部出力項目
  */
 @Entity
-@Table(name="KFNCT_EXEC_EXT_ACCEPT")
+@Table(name="KFNMT_EXEC_EXT_OUTPUT")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class KfnctExecutionExternalAccept extends UkJpaEntity implements Serializable {
+public class KfnmtExecutionExternalOutput extends UkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/** The pk. */
 	@EmbeddedId
-	public KfnctExecutionExternalAcceptPk pk;
-	
-//	/** The exclus ver. */
-//	@Version
-//    @Column(name = "EXCLUS_VER")
-//    private int exclusVer;
+	public KfnmtExecutionExternalOutputPk pk;
+
     
     /** The Contract Code. */
     @Column(name = "CONTRACT_CD")

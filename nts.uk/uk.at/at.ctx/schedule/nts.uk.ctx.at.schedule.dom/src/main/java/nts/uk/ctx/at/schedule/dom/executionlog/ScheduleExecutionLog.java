@@ -40,6 +40,7 @@ public class ScheduleExecutionLog extends AggregateRoot {
 
 	/** The execution employee id. */
 	// 実行社員ID
+	@Setter
 	private String executionEmployeeId;
 
 	/** The period. */

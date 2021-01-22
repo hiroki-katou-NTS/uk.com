@@ -37,7 +37,7 @@
             data-bind="i18n: 'CMM049_67', click: closeDialog"
           ></button>
         </div>
-        <div>
+        <div id="content-area">
           <div id="A3" data-bind="ntsTabPanel: {dataSource: tabs, active: selectedTab}">
             <div id="A4" class="tab-content-1">
               <span data-bind="i18n: 'CMM049_29'"></span>
@@ -138,7 +138,7 @@
                       name: '#[CMM049_58]',
 											constraint: 'ContactName',
                       value: contactName1,
-                      required: otherContact1Display,
+                      required: otherContact1Required,
 											option: {
 												textmode: 'text',
 												placeholder: '#{i18n.getText('CMM049_58')}',
@@ -155,7 +155,7 @@
                       name: '#[CMM049_58]',
 											constraint: 'ContactName',
                       value: contactName2,
-                      required: otherContact2Display,
+                      required: otherContact2Required,
 											option: {
 												textmode: 'text',
 												placeholder: '#{i18n.getText('CMM049_58')}',
@@ -172,7 +172,7 @@
                       name: '#[CMM049_58]',
 											constraint: 'ContactName',
                       value: contactName3,
-                      required: otherContact3Display,
+                      required: otherContact3Required,
 											option: {
 												textmode: 'text',
 												placeholder: '#{i18n.getText('CMM049_58')}',
@@ -189,7 +189,7 @@
                       name: '#[CMM049_58]',
 											constraint: 'ContactName',
                       value: contactName4,
-                      required: otherContact4Display,
+                      required: otherContact4Required,
 											option: {
 												textmode: 'text',
 												placeholder: '#{i18n.getText('CMM049_58')}',
@@ -206,7 +206,7 @@
                       name: '#[CMM049_58]',
 											constraint: 'ContactName',
                       value: contactName5,
-                      required: otherContact5Display,
+                      required: otherContact5Required,
 											option: {
 												textmode: 'text',
 												placeholder: '#{i18n.getText('CMM049_58')}',
