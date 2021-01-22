@@ -40,12 +40,9 @@ public class CreateWorkLedgerSettingDomainServiceTest {
         OutputItemSettingCode code = new OutputItemSettingCode("OutputItemSettingCode01");
         OutputItemSettingName name = new OutputItemSettingName("OutputItemSettingName01");
 
-        new Expectations(AppContexts.class) {{
+        new Expectations(AppContexts.class, WorkLedgerOutputItem.class) {{
             AppContexts.user().employeeId();
             result = "employeeId01";
-        }};
-
-        new Expectations(WorkLedgerOutputItem.class) {{
             WorkLedgerOutputItem.checkDuplicateStandardSelection(require, code);
             result = true;
         }};
@@ -75,12 +72,9 @@ public class CreateWorkLedgerSettingDomainServiceTest {
         OutputItemSettingCode code = new OutputItemSettingCode("OutputItemSettingCode02");
         OutputItemSettingName name = new OutputItemSettingName("OutputItemSettingName02");
 
-        new Expectations(AppContexts.class) {{
+        new Expectations(AppContexts.class, WorkLedgerOutputItem.class) {{
             AppContexts.user().employeeId();
             result = "employeeId02";
-        }};
-
-        new Expectations(WorkLedgerOutputItem.class) {{
             WorkLedgerOutputItem.checkDuplicateFreeSettings(require, code, "employeeId02");
             result = true;
         }};
@@ -109,23 +103,15 @@ public class CreateWorkLedgerSettingDomainServiceTest {
     public void testCreateSetting_03() {
         OutputItemSettingCode code = new OutputItemSettingCode("OutputItemSettingCode03");
         OutputItemSettingName name = new OutputItemSettingName("OutputItemSettingName03");
-        val attendanceIdList = Arrays.asList(31, 32);
 
-        new Expectations(AppContexts.class) {{
+        new Expectations(AppContexts.class, IdentifierUtil.class, WorkLedgerOutputItem.class) {{
             AppContexts.user().employeeId();
             result = "employeeId03";
-        }};
-
-        new Expectations(IdentifierUtil.class) {{
             IdentifierUtil.randomUniqueId();
             result = "uid03";
-        }};
-
-        new Expectations(WorkLedgerOutputItem.class) {{
             WorkLedgerOutputItem.checkDuplicateStandardSelection(require, code);
             result = false;
         }};
-
         val actual = CreateWorkLedgerSettingDomainService.createSetting(
                 require,
                 code,
@@ -153,20 +139,12 @@ public class CreateWorkLedgerSettingDomainServiceTest {
     public void testCreateSetting_04() {
         OutputItemSettingCode code = new OutputItemSettingCode("OutputItemSettingCode04");
         OutputItemSettingName name = new OutputItemSettingName("OutputItemSettingName04");
-        val attendanceIdList = Arrays.asList(41, 42);
-        val rankingList = Arrays.asList(43, 44);
 
-        new Expectations(AppContexts.class) {{
+        new Expectations(AppContexts.class, IdentifierUtil.class, WorkLedgerOutputItem.class) {{
             AppContexts.user().employeeId();
             result = "employeeId04";
-        }};
-
-        new Expectations(IdentifierUtil.class) {{
             IdentifierUtil.randomUniqueId();
             result = "uid04";
-        }};
-
-        new Expectations(WorkLedgerOutputItem.class) {{
             WorkLedgerOutputItem.checkDuplicateFreeSettings(require, code, "employeeId04");
             result = false;
         }};
