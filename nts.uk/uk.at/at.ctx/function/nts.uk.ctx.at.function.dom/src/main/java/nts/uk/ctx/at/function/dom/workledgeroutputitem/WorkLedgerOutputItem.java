@@ -56,43 +56,6 @@ public class WorkLedgerOutputItem extends AggregateRoot {
         return require.freeCheck(code, employeeId);
     }
 
-	/**
-	 * create
-	 *
-	 * @param id 				GUID
-	 * @param code 				コード
-	 * @param name				名称
-	 * @param settingCategory	定型自由区分
-	 * @return 勤務台帳の出力項目
-	 */
-	public static WorkLedgerOutputItem create(
-			String id,
-			OutputItemSettingCode code,
-			OutputItemSettingName name,
-			SettingClassificationCommon settingCategory) {
-
-			return new WorkLedgerOutputItem(id, code, null, name, settingCategory, null);
-	}
-
-	/**
-	 * create
-	 *
-	 * @param id 				GUID
-	 * @param code 				コード
-	 * @param name				名称
-	 * @param settingCategory	定型自由区分
-	 * @param employeeId		社員ID
-	 * @return 勤務台帳の出力項目
-	 */
-	public static WorkLedgerOutputItem create(
-			String id,
-			String employeeId,
-			OutputItemSettingCode code,
-			OutputItemSettingName name,
-			SettingClassificationCommon settingCategory) {
-
-		return new WorkLedgerOutputItem(id, code, null, name, settingCategory, employeeId);
-	}
 
     public interface Require {
 		/**
