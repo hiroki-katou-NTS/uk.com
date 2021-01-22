@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KfnctExecutionExternalAcceptPk implements Serializable {
+public class KfnmtExecutionExternalAcceptPk implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

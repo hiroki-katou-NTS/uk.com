@@ -14,6 +14,7 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.assist.dom.storage.DataStorageMng;
 import nts.uk.ctx.sys.assist.dom.storage.DataStorageMngRepository;
 import nts.uk.ctx.sys.assist.dom.storage.DataStoragePatternSetting;
@@ -85,10 +86,12 @@ public class AutoStoragePreparationCommandHandler extends CommandHandlerWithResu
 			boolean disableMonth = monthlyReferYear == null || monthlyReferMonth == null;
 			String monthSaveStartDate = disableMonth ? null
 					: String.format("%d-%d", today.addYears(monthlyReferYear).year(), // システム日付（今年） ー データ保存のパターン設定.月次参照年
-							today.addMonths(monthlyReferMonth).month()); // （システム日付（今月） ー データ保存のパターン設定.月次参照月）
+							StringUtil.padLeft(String.valueOf(today.addMonths(monthlyReferMonth).month()), 2, '0')); // （システム日付（今月） ー データ保存のパターン設定.月次参照月）
 			// 月次保存終了年月
 			String monthSaveEndDate = disableMonth ? null
-					: String.format("%d-%d", today.year(), today.month()); // システム日付（年月）
+					: String.format("%d-%d", 
+							today.year(), 
+							StringUtil.padLeft(String.valueOf(today.month()), 2, '0')); // システム日付（年月）
 			// 年次開始年
 			Integer annualReferYear = this.getTargetYear(patternSetting.getAnnualReferYear());
 			boolean disableYear = annualReferYear == null;
