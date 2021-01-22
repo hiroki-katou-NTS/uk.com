@@ -306,7 +306,11 @@ module nts.uk.ui.components.fullcalendar {
         shift: KnockoutObservable<boolean>;
         mouse: KnockoutObservable<boolean>;
         delete: KnockoutObservable<boolean>;
+        target: KnockoutObservable<TargetElement>;
     };
+
+    type TargetElement = 'event' | 'date' | null;
+
     type J_EVENT = (evt: JQueryEventObject) => void;
     type GlobalEvent = { [key: string]: J_EVENT[]; };
 
@@ -413,7 +417,8 @@ module nts.uk.ui.components.fullcalendar {
         ctrl: ko.observable(false),
         shift: ko.observable(false),
         mouse: ko.observable(false),
-        delete: ko.observable(false)
+        delete: ko.observable(false),
+        target: ko.observable(null)
     });
 
     const defaultPopupData = (): PopupData => ({
@@ -850,7 +855,6 @@ module nts.uk.ui.components.fullcalendar {
                 // clear selections
                 _.each(vm.calendar.getEvents(), (e: EventApi) => {
                     if (e.borderColor === BLACK) {
-                        console.log(e);
                         e.setProp(GROUP_ID, '');
 
                         e.setProp(BORDER_COLOR, TRANSPARENT);
@@ -1089,11 +1093,17 @@ module nts.uk.ui.components.fullcalendar {
 
                 vm.selectedEvents = [];
             };
-            const removeNewEvent = (event: EventApi) => {
+            const removeNewEvent = (event: EventApi | null) => {
                 _.each(vm.calendar.getEvents(), (e: EventApi) => {
                     // remove new event (no save)
-                    if (!e.title && e.extendedProps.status === 'new' && e.id !== event.id) {
+                    if (!e.title && e.extendedProps.status === 'new' && (!event || e.id !== event.id)) {
                         e.remove();
+
+                        const ne = ko.unwrap($caches.new);
+
+                        if (ne && ne.id === e.id) {
+                            $caches.new(null);
+                        }
                     }
                 });
             }
@@ -1322,8 +1332,6 @@ module nts.uk.ui.components.fullcalendar {
                     });
 
                     arg.event.setProp(BORDER_COLOR, BLACK);
-
-                    popupPosition.event(null);
                 },
                 eventDrop: (arg: FullCalendar.EventDropArg) => {
                     const { event, relatedEvents } = arg;
@@ -1477,7 +1485,6 @@ module nts.uk.ui.components.fullcalendar {
                     }
                 },
                 eventDidMount: (args) => {
-                    // console.log('mounted');
                     /*const { el, event } = args;
                     const nEvent = ko.unwrap(newEvent);
                     const selected = ko.unwrap<string[]>(selectedEvents);
@@ -1705,7 +1712,12 @@ module nts.uk.ui.components.fullcalendar {
             });
 
             // register all global event
-            vm.initalEvents();
+            vm.initalEvents()
+                .registerEvent('mousemove', () => {
+                    if (ko.unwrap(dataEvent.target)) {
+                        removeNewEvent(null);
+                    }
+                });
 
             $el
                 .removeAttr('data-bind')
@@ -1753,123 +1765,125 @@ module nts.uk.ui.components.fullcalendar {
             const vm = this;
             const { $el, params, dataEvent, popupPosition } = vm;
 
-            $($el).on('mousewheel', (evt) => {
-                if (ko.unwrap(dataEvent.shift) === true) {
-                    evt.preventDefault();
-
+            $($el)
+                .on('mousewheel', (evt) => {
                     if (ko.unwrap(dataEvent.shift) === true) {
-                        const { deltaY } = evt.originalEvent as WheelEvent;
-                        const slotDuration = ko.unwrap(params.slotDuration);
+                        evt.preventDefault();
 
-                        if (ko.isObservable(params.slotDuration)) {
-                            const index = durations.indexOf(slotDuration);
+                        if (ko.unwrap(dataEvent.shift) === true) {
+                            const { deltaY } = evt.originalEvent as WheelEvent;
+                            const slotDuration = ko.unwrap(params.slotDuration);
 
-                            if (deltaY < 0) {
-                                params.slotDuration(durations[Math.max(index - 1, 0)]);
-                            } else {
-                                params.slotDuration(durations[Math.min(index + 1, durations.length - 1)]);
+                            if (ko.isObservable(params.slotDuration)) {
+                                const index = durations.indexOf(slotDuration);
+
+                                if (deltaY < 0) {
+                                    params.slotDuration(durations[Math.max(index - 1, 0)]);
+                                } else {
+                                    params.slotDuration(durations[Math.min(index + 1, durations.length - 1)]);
+                                }
                             }
                         }
                     }
-                }
-            });
+                });
 
-            vm.registerEvent('mouseup', () => dataEvent.mouse(false));
-            vm.registerEvent('mousedown', (evt) => {
-                const $tg = $(evt.target);
+            vm
+                .registerEvent('mouseup', () => {
+                    dataEvent.mouse(false);
+                    dataEvent.target(null);
+                })
+                .registerEvent('mousedown', (evt) => {
+                    const $tg = $(evt.target);
 
-                const iown = $tg.hasClass('.popup-owner-copy');
-                const cown = $tg.closest('.popup-owner-copy').length > 0;
-                const ipov = $tg.hasClass('.fc-popup-editor');
-                const cpov = $tg.closest('.fc-popup-editor').length > 0;
-                const ipkr = $tg.hasClass('.datepicker-container') && $tg.not('.datepicker-inline');
-                const cpkr = $tg.closest('.datepicker-container').length > 0 && $tg.closest('.datepicker-inline').length === 0;
+                    const iown = $tg.hasClass('.popup-owner-copy');
+                    const cown = $tg.closest('.popup-owner-copy').length > 0;
+                    const ipov = $tg.hasClass('.fc-popup-editor');
+                    const cpov = $tg.closest('.fc-popup-editor').length > 0;
+                    const ipkr = $tg.hasClass('.datepicker-container') && $tg.not('.datepicker-inline');
+                    const cpkr = $tg.closest('.datepicker-container').length > 0 && $tg.closest('.datepicker-inline').length === 0;
 
-                dataEvent.mouse(true);
+                    dataEvent.mouse(true);
 
-                // close popup if target isn't owner & poper.
-                if (!iown && !cown && !ipov && !cpov && !ipkr && !cpkr) {
-                    popupPosition.event(null);
-                    popupPosition.copyDay(null);
-                }
+                    const targ = $tg
+                        .closest('.fc-timegrid-event.fc-v-event.fc-event').length ? 'event' :
+                        ($tg.hasClass('fc-non-business') || $tg.hasClass('fc-timegrid-slot')) ? 'date' : null;
 
-                // clear selected event if click out of calendar
-                if ($(evt.target).closest('.fc-calendar .fc-scrollgrid>tbody').length === 0) {
-                    //newEvent(null);
-                    //selectedEvents([]);
-                }
-            });
+                    dataEvent.target(targ);
 
-            vm.registerEvent('mousemove', () => {
-                if (ko.unwrap(dataEvent.mouse)) {
-                    popupPosition.event(null);
-                    popupPosition.copyDay(null);
-                }
-            });
+                    // close popup if target isn't owner & poper.
+                    if (!iown && !cown && !ipov && !cpov && !ipkr && !cpkr) {
+                        popupPosition.event(null);
+                        popupPosition.copyDay(null);
+                    }
+                })
+                .registerEvent('mousemove', () => {
+                    if (ko.unwrap(dataEvent.mouse)) {
+                        popupPosition.event(null);
+                        popupPosition.copyDay(null);
+                    }
+                })
+                // store data keyCode
+                .registerEvent('keydown', (evt: JQueryEventObject) => {
+                    if (evt.keyCode === 16 || evt.shiftKey) {
+                        dataEvent.shift(true);
+                    }
 
-            // store data keyCode
-            vm.registerEvent('keydown', (evt: JQueryEventObject) => {
-                if (evt.keyCode === 16 || evt.shiftKey) {
-                    dataEvent.shift(true);
-                }
+                    if (evt.keyCode === 17 || evt.ctrlKey) {
+                        dataEvent.ctrl(true);
+                    }
 
-                if (evt.keyCode === 17 || evt.ctrlKey) {
-                    dataEvent.ctrl(true);
-                }
+                    if (evt.keyCode === 18 || evt.altKey) {
+                        dataEvent.alt(true);
+                    }
+                })
+                // remove data keyCode
+                .registerEvent('keyup', (evt: JQueryEventObject) => {
+                    if (evt.keyCode === 16 || evt.shiftKey) {
+                        dataEvent.shift(false);
+                    }
 
-                if (evt.keyCode === 18 || evt.altKey) {
-                    dataEvent.alt(true);
-                }
-            });
+                    if (evt.keyCode === 17 || evt.ctrlKey) {
+                        dataEvent.ctrl(false);
+                    }
 
-            // remove data keyCode
-            vm.registerEvent('keyup', (evt: JQueryEventObject) => {
-                if (evt.keyCode === 16 || evt.shiftKey) {
-                    dataEvent.shift(false);
-                }
+                    if (evt.keyCode === 18 || evt.altKey) {
+                        dataEvent.alt(false);
+                    }
 
-                if (evt.keyCode === 17 || evt.ctrlKey) {
-                    dataEvent.ctrl(false);
-                }
+                    if (evt.keyCode === 46 && !ko.unwrap(dataEvent.delete)) {
+                        if (vm.calendar) {
+                            const selecteds = _.filter(vm.calendar.getEvents(), (e: EventApi) => e.groupId === SELECTED);
 
-                if (evt.keyCode === 18 || evt.altKey) {
-                    dataEvent.alt(false);
-                }
+                            if (selecteds.length) {
+                                dataEvent.delete(true);
 
-                if (evt.keyCode === 46 && !ko.unwrap(dataEvent.delete)) {
-                    if (vm.calendar) {
-                        const selecteds = _.filter(vm.calendar.getEvents(), (e: EventApi) => e.groupId === SELECTED);
+                                vm.$dialog
+                                    .confirm({ messageId: 'DELETE_CONFIRM' })
+                                    .then((v: 'yes' | 'no') => {
+                                        if (v === 'yes') {
+                                            const starts = selecteds.map(({ start }) => formatDate(start));
 
-                        if (selecteds.length) {
-                            dataEvent.delete(true);
-
-                            vm.$dialog
-                                .confirm({ messageId: 'DELETE_CONFIRM' })
-                                .then((v: 'yes' | 'no') => {
-                                    if (v === 'yes') {
-                                        const starts = selecteds.map(({ start }) => formatDate(start));
-
-                                        if (ko.isObservable(vm.params.events)) {
-                                            vm.params.events.remove((e: EventRaw) => starts.indexOf(formatDate(e.start)) !== -1);
+                                            if (ko.isObservable(vm.params.events)) {
+                                                vm.params.events.remove((e: EventRaw) => starts.indexOf(formatDate(e.start)) !== -1);
+                                            }
                                         }
-                                    }
 
-                                    dataEvent.delete(false);
-                                });
+                                        dataEvent.delete(false);
+                                    });
+                            }
                         }
                     }
-                }
-            });
+                })
+                .registerEvent('resize', () => {
+                    popupPosition.event(null);
+                    popupPosition.copyDay(null);
+                })
+                .registerEvent('mousewheel', () => {
+                    popupPosition.event(null);
+                    popupPosition.copyDay(null);
+                });
 
-            vm.registerEvent('resize', () => {
-                popupPosition.event(null);
-                popupPosition.copyDay(null);
-            });
-
-            vm.registerEvent('mousewheel', () => {
-                popupPosition.event(null);
-                popupPosition.copyDay(null);
-            });
+            return vm;
         }
 
         private registerEvent(name: string, cb: (evt: JQueryEventObject) => void) {
@@ -1883,6 +1897,8 @@ module nts.uk.ui.components.fullcalendar {
             hook.push(cb);
 
             $(window).on(name, cb);
+
+            return vm;
         }
     }
 
