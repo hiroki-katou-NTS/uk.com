@@ -30,11 +30,13 @@ module nts.uk.at.view.kaf011.c.viewmodel {
                 });
 			});
 		}
+		
 		triggerValidate(): boolean{
 			$('.nts-input').trigger("validate");
 			$('input').trigger("validate");
 			return !nts.uk.ui.errors.hasError();
 		}
+		
 		save(){
 			let self = this;
 			if(self.triggerValidate()){
