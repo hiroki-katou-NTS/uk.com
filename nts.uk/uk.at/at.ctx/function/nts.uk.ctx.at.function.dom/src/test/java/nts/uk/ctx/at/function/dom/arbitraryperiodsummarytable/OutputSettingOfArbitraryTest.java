@@ -22,19 +22,27 @@ public class OutputSettingOfArbitraryTest {
     @Injectable
     OutputSettingOfArbitrary.Require require;
 
+    /**
+     * Test:
+     * - method checkDuplicateFreeSettings: is true
+     */
     @Test
-    public void test_01() {
+    public void testDuplicateFreeSettings_01() {
         val code = new OutputItemSettingCode("OutputItemSettingCode01");
         new Expectations() {{
             require.checkTheFixedForm(code);
             result = true;
         }};
         val actual = OutputSettingOfArbitrary.checkDuplicateBoilerplateSelection(require, code);
-        assertThat(actual).isEqualTo(true);
+        assertThat(actual).isTrue();
     }
 
+    /**
+     * Test:
+     * - method checkDuplicateFreeSettings: is true
+     */
     @Test
-    public void test_02() {
+    public void testDuplicateFreeSettings_02() {
         val code = new OutputItemSettingCode("OutputItemSettingCode02");
 
         new Expectations() {{
@@ -42,11 +50,16 @@ public class OutputSettingOfArbitraryTest {
             result = true;
         }};
         val actual = OutputSettingOfArbitrary.checkDuplicateFreeSettings(require, code, "emp02");
-        assertThat(actual).isEqualTo(true);
+        assertThat(actual).isTrue();
     }
 
+    /**
+     * Test:
+     * - Getter: OutputSettingOfArbitrary
+     * - SettingClassificationCommon: FREE_SETTING
+     */
     @Test
-    public void test_03() {
+    public void testGetterOutputSettings_03() {
         val code = new OutputItemSettingCode("OutputItemSettingCode03");
         val name = new OutputItemSettingName("OutputItemSettingName03");
         val outputSettings = new OutputSettingOfArbitrary(
@@ -56,7 +69,28 @@ public class OutputSettingOfArbitraryTest {
                 "emp03",
                 SettingClassificationCommon.STANDARD_SELECTION,
                 Arrays.asList(new AttendanceItemToPrint(1, 1))
-                );
+        );
+
+        NtsAssert.invokeGetters(outputSettings);
+    }
+
+    /**
+     * Test:
+     * - Getter: OutputSettingOfArbitrary
+     * - SettingClassificationCommon: FREE_SETTING
+     */
+    @Test
+    public void testGetterOutputSettings_04() {
+        val code = new OutputItemSettingCode("OutputItemSettingCode03");
+        val name = new OutputItemSettingName("OutputItemSettingName03");
+        val outputSettings = new OutputSettingOfArbitrary(
+                "id03",
+                code,
+                name,
+                "emp03",
+                SettingClassificationCommon.FREE_SETTING,
+                Arrays.asList(new AttendanceItemToPrint(1, 1))
+        );
 
         NtsAssert.invokeGetters(outputSettings);
     }

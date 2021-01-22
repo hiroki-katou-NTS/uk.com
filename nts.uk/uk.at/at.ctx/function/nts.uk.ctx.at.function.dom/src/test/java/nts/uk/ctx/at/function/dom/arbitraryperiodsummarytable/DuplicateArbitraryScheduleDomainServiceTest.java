@@ -21,10 +21,7 @@ import java.util.Optional;
 public class DuplicateArbitraryScheduleDomainServiceTest {
     @Injectable
     DuplicateArbitraryScheduleDomainService.Require require;
-    private static final OutputItemSettingCode code = new OutputItemSettingCode("code");
-    private static final OutputItemSettingName name = new OutputItemSettingName("name");
-    private static final SettingClassificationCommon freeSetting = SettingClassificationCommon.FREE_SETTING;
-    private static final SettingClassificationCommon standardSelection = SettingClassificationCommon.STANDARD_SELECTION;
+
 
     /**
      * Test DuplicateSchedule method
@@ -35,6 +32,9 @@ public class DuplicateArbitraryScheduleDomainServiceTest {
      */
     @Test
     public void testDuplicateSchedule_00() {
+        OutputItemSettingCode code = new OutputItemSettingCode("code");
+        OutputItemSettingName name = new OutputItemSettingName("name");
+
         new Expectations() {{
             require.getOutputSetting("dupSrcId02");
             result = Optional.empty();
@@ -42,13 +42,14 @@ public class DuplicateArbitraryScheduleDomainServiceTest {
         NtsAssert.businessException("Msg_1914", () -> {
             DuplicateArbitraryScheduleDomainService.duplicateSchedule(
                     require,
-                    freeSetting,
+                    SettingClassificationCommon.FREE_SETTING,
                     "dupSrcId02",
                     code,
                     name
             );
         });
     }
+
     /**
      * Test DuplicateSchedule method
      * Condition:
@@ -58,30 +59,30 @@ public class DuplicateArbitraryScheduleDomainServiceTest {
      */
     @Test
     public void testDuplicateSchedule_01() {
+        OutputItemSettingCode code = new OutputItemSettingCode("code");
+        OutputItemSettingName name = new OutputItemSettingName("name");
+
         new Expectations(AppContexts.class) {{
             AppContexts.user().employeeId();
             result = "employeeId";
-        }};
-
-        new Expectations() {{
             require.getOutputSetting("dupSrcId02");
             result = Optional.of(new OutputSettingOfArbitrary(
                     "uid",
                     code,
                     name,
                     "employeeId",
-                    freeSetting,
+                    SettingClassificationCommon.FREE_SETTING,
                     Arrays.asList(new AttendanceItemToPrint(1, 1))));
-        }};
-        new Expectations() {{
             require.freeCheck(code, "employeeId");
             result = true;
+
         }};
+
 
         NtsAssert.businessException("Msg_1893", () -> {
             DuplicateArbitraryScheduleDomainService.duplicateSchedule(
                     require,
-                    freeSetting,
+                    SettingClassificationCommon.FREE_SETTING,
                     "dupSrcId02",
                     code,
                     name
@@ -98,22 +99,19 @@ public class DuplicateArbitraryScheduleDomainServiceTest {
      */
     @Test
     public void testDuplicateSchedule_02() {
+        OutputItemSettingCode code = new OutputItemSettingCode("code");
+        OutputItemSettingName name = new OutputItemSettingName("name");
         new Expectations(AppContexts.class) {{
             AppContexts.user().employeeId();
             result = "employeeId02";
-        }};
-
-        new Expectations() {{
             require.getOutputSetting("dupSrcId02");
             result = Optional.of(new OutputSettingOfArbitrary(
                     "uid",
                     code,
                     name,
                     "employeeId03",
-                    standardSelection,
+                    SettingClassificationCommon.STANDARD_SELECTION,
                     Arrays.asList(new AttendanceItemToPrint(1, 1))));
-        }};
-        new Expectations() {{
             require.standardCheck(code);
             result = true;
         }};
@@ -121,7 +119,7 @@ public class DuplicateArbitraryScheduleDomainServiceTest {
         NtsAssert.businessException("Msg_1893", () -> {
             DuplicateArbitraryScheduleDomainService.duplicateSchedule(
                     require,
-                    standardSelection,
+                    SettingClassificationCommon.STANDARD_SELECTION,
                     "dupSrcId02",
                     code,
                     name
@@ -139,29 +137,25 @@ public class DuplicateArbitraryScheduleDomainServiceTest {
      */
     @Test
     public void testDuplicateSchedule_03() {
-        OutputItemSettingCode code = new OutputItemSettingCode("OutputItemSettingCode03");
-        OutputItemSettingName name = new OutputItemSettingName("OutputItemSettingName03");
+        OutputItemSettingCode code = new OutputItemSettingCode("code");
+        OutputItemSettingName name = new OutputItemSettingName("name");
 
         new Expectations(AppContexts.class) {{
             AppContexts.user().employeeId();
             result = "employeeId03";
-        }};
-
-        new Expectations() {{
             require.getOutputSetting("dupSrcId03");
             result = Optional.of(new OutputSettingOfArbitrary(
                     "uid",
                     code,
                     name,
                     "employeeId03",
-                    standardSelection,
+                    SettingClassificationCommon.FREE_SETTING,
                     Arrays.asList(new AttendanceItemToPrint(1, 1))));
-        }};
-
-        new Expectations() {{
             require.freeCheck(code, "employeeId03");
             result = true;
+
         }};
+
 
         NtsAssert.businessException("Msg_1893", () -> {
             DuplicateArbitraryScheduleDomainService.duplicateSchedule(
@@ -184,35 +178,30 @@ public class DuplicateArbitraryScheduleDomainServiceTest {
      */
     @Test
     public void testDuplicateSchedule_04() {
-        new Expectations(AppContexts.class) {{
+        OutputItemSettingCode code = new OutputItemSettingCode("code");
+        OutputItemSettingName name = new OutputItemSettingName("name");
+
+        new Expectations(AppContexts.class, IdentifierUtil.class) {{
             AppContexts.user().employeeId();
             result = "employeeId04";
-        }};
-
-        new Expectations() {{
             require.getOutputSetting("dupSrcId04");
             result = Optional.of(new OutputSettingOfArbitrary(
                     "uid",
                     code,
                     name,
                     "employeeId03",
-                    standardSelection,
+                    SettingClassificationCommon.STANDARD_SELECTION,
                     Arrays.asList(new AttendanceItemToPrint(1, 1))));
-        }};
-
-        new Expectations() {{
             require.standardCheck(code);
             result = false;
-        }};
-
-        new Expectations(IdentifierUtil.class) {{
             IdentifierUtil.randomUniqueId();
             result = "uid04";
         }};
 
+
         val actual = DuplicateArbitraryScheduleDomainService.duplicateSchedule(
                 require,
-                standardSelection,
+                SettingClassificationCommon.STANDARD_SELECTION,
                 "dupSrcId04",
                 code,
                 name
@@ -234,36 +223,29 @@ public class DuplicateArbitraryScheduleDomainServiceTest {
      */
     @Test
     public void testDuplicateSchedule_05() {
-
-        new Expectations(AppContexts.class) {{
+        OutputItemSettingCode code = new OutputItemSettingCode("code");
+        OutputItemSettingName name = new OutputItemSettingName("name");
+        new Expectations(AppContexts.class, IdentifierUtil.class) {{
             AppContexts.user().employeeId();
             result = "employeeId05";
-        }};
-
-        new Expectations() {{
             require.getOutputSetting("dupSrcId05");
             result = Optional.of(new OutputSettingOfArbitrary(
                     "uid",
                     code,
                     name,
                     "employeeId03",
-                    standardSelection,
+                    SettingClassificationCommon.FREE_SETTING,
                     Arrays.asList(new AttendanceItemToPrint(1, 1))));
-        }};
-
-        new Expectations() {{
             require.freeCheck(code, "employeeId05");
             result = false;
-        }};
-
-        new Expectations(IdentifierUtil.class) {{
             IdentifierUtil.randomUniqueId();
             result = "uid05";
         }};
 
+
         val actual = DuplicateArbitraryScheduleDomainService.duplicateSchedule(
                 require,
-                freeSetting,
+                SettingClassificationCommon.FREE_SETTING,
                 "dupSrcId05",
                 code,
                 name

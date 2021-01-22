@@ -21,10 +21,7 @@ public class UpdateArbitraryScheduleDomainServiceTest {
 
     @Injectable
     UpdateArbitraryScheduleDomainService.Require require;
-    public static final OutputItemSettingCode code = new OutputItemSettingCode("code");
-    public static final OutputItemSettingName name = new OutputItemSettingName("name");
-    public static final SettingClassificationCommon freeSetting = SettingClassificationCommon.FREE_SETTING;
-    public static final SettingClassificationCommon standardSelection = SettingClassificationCommon.STANDARD_SELECTION;
+
 
     /**
      * Test UpdateArbitraryScheduleDomainService.
@@ -38,6 +35,8 @@ public class UpdateArbitraryScheduleDomainServiceTest {
 
     @Test
     public void testUpdateSchedule_01() {
+        OutputItemSettingCode code = new OutputItemSettingCode("code");
+        OutputItemSettingName name = new OutputItemSettingName("name");
 
         new Expectations() {
             {
@@ -50,14 +49,24 @@ public class UpdateArbitraryScheduleDomainServiceTest {
                 "uid",
                 code,
                 name,
-                freeSetting,
+                SettingClassificationCommon.FREE_SETTING,
                 Arrays.asList(new AttendanceItemToPrint(1, 1)));
         NtsAssert.businessException("Msg_1914", runnable);
     }
 
+    /**
+     * Test UpdateArbitraryScheduleDomainService.
+     * Method: updateSchedule
+     * Condition:
+     * - Input: SettingClassificationCommon = SettingClassificationCommon.STANDARD_SELECTION
+     * - require.getOutputSettingDetail returns empty item
+     * Expect:
+     * BusinessException: "Msg_1914"
+     */
     @Test
     public void testUpdateSchedule_02() {
-
+        OutputItemSettingCode code = new OutputItemSettingCode("code");
+        OutputItemSettingName name = new OutputItemSettingName("name");
         new Expectations() {
             {
                 require.getOutputSetting("uid");
@@ -69,7 +78,7 @@ public class UpdateArbitraryScheduleDomainServiceTest {
                 "uid",
                 code,
                 name,
-                standardSelection,
+                SettingClassificationCommon.STANDARD_SELECTION,
                 Arrays.asList(new AttendanceItemToPrint(1, 1)));
         NtsAssert.businessException("Msg_1914", runnable);
     }
@@ -84,28 +93,29 @@ public class UpdateArbitraryScheduleDomainServiceTest {
      */
     @Test
     public void testUpdateSetting_03() {
+        OutputItemSettingCode code = new OutputItemSettingCode("code");
+        OutputItemSettingName name = new OutputItemSettingName("name");
 
-        new Expectations() {{
+        new Expectations(AppContexts.class) {{
             require.getOutputSetting("uid");
             result = Optional.of(new OutputSettingOfArbitrary(
                     "uid",
                     code,
                     name,
                     "employeeId03",
-                    standardSelection,
+                    SettingClassificationCommon.STANDARD_SELECTION,
                     Arrays.asList(new AttendanceItemToPrint(1, 1)))
             );
-        }};
-        new Expectations(AppContexts.class) {{
             AppContexts.user().employeeId();
             result = "employeeId03";
         }};
+
         val actual = UpdateArbitraryScheduleDomainService.updateSchedule(
                 require,
                 "uid",
                 code,
                 name,
-                standardSelection,
+                SettingClassificationCommon.STANDARD_SELECTION,
                 Arrays.asList(new AttendanceItemToPrint(1, 1)));
 
 
@@ -114,6 +124,7 @@ public class UpdateArbitraryScheduleDomainServiceTest {
                 any -> require.updateSchedule("uid", any.get())
         );
     }
+
     /**
      * Test updateSetting method
      * Condition:
@@ -124,28 +135,30 @@ public class UpdateArbitraryScheduleDomainServiceTest {
      */
     @Test
     public void testUpdateSetting_04() {
+        OutputItemSettingCode code = new OutputItemSettingCode("code");
+        OutputItemSettingName name = new OutputItemSettingName("name");
 
-        new Expectations() {{
+        new Expectations(AppContexts.class) {{
             require.getOutputSetting("uid");
             result = Optional.of(new OutputSettingOfArbitrary(
                     "uid",
                     code,
                     name,
                     "employeeId03",
-                    freeSetting,
+                    SettingClassificationCommon.FREE_SETTING,
                     Arrays.asList(new AttendanceItemToPrint(1, 1)))
             );
-        }};
-        new Expectations(AppContexts.class) {{
             AppContexts.user().employeeId();
             result = "employeeId03";
+
         }};
+
         val actual = UpdateArbitraryScheduleDomainService.updateSchedule(
                 require,
                 "uid",
                 code,
                 name,
-                freeSetting,
+                SettingClassificationCommon.FREE_SETTING,
                 Arrays.asList(new AttendanceItemToPrint(1, 1)));
 
 

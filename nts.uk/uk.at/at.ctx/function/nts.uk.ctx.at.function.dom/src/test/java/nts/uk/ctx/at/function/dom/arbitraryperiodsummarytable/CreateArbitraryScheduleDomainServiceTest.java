@@ -20,10 +20,6 @@ import java.util.Arrays;
 public class CreateArbitraryScheduleDomainServiceTest {
     @Injectable
     CreateArbitraryScheduleDomainService.Require require;
-    private static final OutputItemSettingCode code = new OutputItemSettingCode("code");
-    private static final OutputItemSettingName name = new OutputItemSettingName("name");
-    private static final SettingClassificationCommon freeSetting = SettingClassificationCommon.FREE_SETTING;
-    private static final SettingClassificationCommon standardSelection = SettingClassificationCommon.STANDARD_SELECTION;
 
     /**
      * Test createSchedule method
@@ -34,23 +30,22 @@ public class CreateArbitraryScheduleDomainServiceTest {
      */
     @Test
     public void testCreateSchedule_01() {
-
+        OutputItemSettingCode code = new OutputItemSettingCode("code");
+        OutputItemSettingName name = new OutputItemSettingName("name");
         new Expectations(AppContexts.class) {{
             AppContexts.user().employeeId();
             result = "employeeId01";
-        }};
-
-        new Expectations() {{
             require.standardCheck(code);
             result = true;
         }};
+
 
         NtsAssert.businessException("Msg_1893", () -> {
             CreateArbitraryScheduleDomainService.createSchedule(
                     require,
                     code,
                     name,
-                    standardSelection,
+                    SettingClassificationCommon.STANDARD_SELECTION,
                     Arrays.asList(new AttendanceItemToPrint(1, 1))
             );
         });
@@ -65,14 +60,12 @@ public class CreateArbitraryScheduleDomainServiceTest {
      */
     @Test
     public void testCreateSchedule_02() {
-
+        OutputItemSettingCode code = new OutputItemSettingCode("code");
+        OutputItemSettingName name = new OutputItemSettingName("name");
 
         new Expectations(AppContexts.class) {{
             AppContexts.user().employeeId();
             result = "employeeId02";
-        }};
-
-        new Expectations() {{
             require.freeCheck(code, "employeeId02");
             result = true;
         }};
@@ -82,7 +75,7 @@ public class CreateArbitraryScheduleDomainServiceTest {
                     require,
                     code,
                     name,
-                    freeSetting,
+                    SettingClassificationCommon.FREE_SETTING,
                     Arrays.asList(new AttendanceItemToPrint(1, 1))
             );
         });
@@ -97,18 +90,13 @@ public class CreateArbitraryScheduleDomainServiceTest {
      */
     @Test
     public void testCreateSchedule_03() {
-
-        new Expectations(AppContexts.class) {{
+        OutputItemSettingCode code = new OutputItemSettingCode("code");
+        OutputItemSettingName name = new OutputItemSettingName("name");
+        new Expectations(AppContexts.class, IdentifierUtil.class) {{
             AppContexts.user().employeeId();
             result = "employeeId03";
-        }};
-
-        new Expectations(IdentifierUtil.class) {{
             IdentifierUtil.randomUniqueId();
             result = "uid03";
-        }};
-
-        new Expectations() {{
             require.standardCheck(code);
             result = false;
         }};
@@ -117,7 +105,7 @@ public class CreateArbitraryScheduleDomainServiceTest {
                 require,
                 code,
                 name,
-                standardSelection,
+                SettingClassificationCommon.STANDARD_SELECTION,
                 Arrays.asList(new AttendanceItemToPrint(1, 1))
         );
 
@@ -136,18 +124,13 @@ public class CreateArbitraryScheduleDomainServiceTest {
      */
     @Test
     public void testCreateSetting_04() {
-
-        new Expectations(AppContexts.class) {{
+        OutputItemSettingCode code = new OutputItemSettingCode("code");
+        OutputItemSettingName name = new OutputItemSettingName("name");
+        new Expectations(AppContexts.class, IdentifierUtil.class) {{
             AppContexts.user().employeeId();
             result = "employeeId04";
-        }};
-
-        new Expectations(IdentifierUtil.class) {{
             IdentifierUtil.randomUniqueId();
             result = "uid04";
-        }};
-
-        new Expectations() {{
             require.freeCheck(code, "employeeId04");
             result = false;
         }};
@@ -156,7 +139,7 @@ public class CreateArbitraryScheduleDomainServiceTest {
                 require,
                 code,
                 name,
-                freeSetting,
+                SettingClassificationCommon.FREE_SETTING,
                 Arrays.asList(new AttendanceItemToPrint(1, 1))
         );
 
