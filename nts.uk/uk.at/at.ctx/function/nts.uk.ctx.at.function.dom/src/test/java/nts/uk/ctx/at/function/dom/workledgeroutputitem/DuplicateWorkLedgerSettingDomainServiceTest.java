@@ -88,8 +88,8 @@ public class DuplicateWorkLedgerSettingDomainServiceTest {
 					name,
 					SettingClassificationCommon.STANDARD_SELECTION));
 		}};
-		new Expectations(WorkLedgerOutputItem.class) {{
-			WorkLedgerOutputItem.checkDuplicateStandardSelection(require, code);
+		new Expectations() {{
+			require.standardCheck(code);
 			result = true;
 		}};
 
@@ -133,8 +133,8 @@ public class DuplicateWorkLedgerSettingDomainServiceTest {
 					SettingClassificationCommon.FREE_SETTING));
 		}};
 
-		new Expectations(WorkLedgerOutputItem.class) {{
-			WorkLedgerOutputItem.checkDuplicateFreeSettings(require, code, "employeeId03");
+		new Expectations() {{
+			require.freeCheck(code, "employeeId03");
 			result = true;
 		}};
 
@@ -178,8 +178,8 @@ public class DuplicateWorkLedgerSettingDomainServiceTest {
 					SettingClassificationCommon.STANDARD_SELECTION));
 		}};
 
-		new Expectations(WorkLedgerOutputItem.class) {{
-			WorkLedgerOutputItem.checkDuplicateStandardSelection(require, code);
+		new Expectations() {{
+			require.standardCheck(code);
 			result = false;
 		}};
 
@@ -231,8 +231,8 @@ public class DuplicateWorkLedgerSettingDomainServiceTest {
 					SettingClassificationCommon.FREE_SETTING));
 		}};
 
-		new Expectations(WorkLedgerOutputItem.class) {{
-			WorkLedgerOutputItem.checkDuplicateFreeSettings(require, code, "employeeId05");
+		new Expectations() {{
+			require.freeCheck(code, "employeeId05");
 			result = false;
 		}};
 
