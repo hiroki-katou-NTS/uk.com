@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.ws.employeeinfo.medicalworkstyle;
+package nts.uk.ctx.at.shared.ws.employeeworkway.medicalworkstyle;
 
 import java.util.List;
 
