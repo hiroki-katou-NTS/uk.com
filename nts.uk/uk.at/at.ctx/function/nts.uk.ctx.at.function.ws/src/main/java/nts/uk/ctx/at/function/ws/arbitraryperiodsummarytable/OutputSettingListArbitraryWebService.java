@@ -50,9 +50,6 @@ public class OutputSettingListArbitraryWebService extends WebService {
     @Inject
     private GetRoleArbitraryScheduleFinder getRoleArbitraryScheduleFinder;
 
-    @Inject
-    private CheckDailyPerformAuthorQuery checkDailyPerformAuthorQuery;
-
 
     @POST
     @Path("007/a/listoutputsetting")
