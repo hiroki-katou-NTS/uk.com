@@ -136,7 +136,6 @@ module nts.uk.at.view.kmk004.b {
 
 			vm.years
 				.subscribe(() => {
-					vm.$errors('clear');
 					if (ko.unwrap(vm.years).length > 0) {
 						vm.existYear(true);
 					} else {
