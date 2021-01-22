@@ -6,6 +6,7 @@ import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.function.dom.commonform.AttendanceItemToPrint;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
@@ -13,6 +14,7 @@ import nts.uk.shr.com.context.AppContexts;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 /**
@@ -74,21 +76,19 @@ public class DuplicateWorkLedgerSettingDomainServiceTest {
 	public void testDuplicateSetting_02(){
 		OutputItemSettingCode code = new OutputItemSettingCode("OutputItemSettingCode02");
 		OutputItemSettingName name = new OutputItemSettingName("OutputItemSettingName02");
-
+		val item = new WorkLedgerOutputItem(
+				"dupSrcId02",
+				code,
+				Arrays.asList(new AttendanceItemToPrint(1, 1)),
+				name,
+				SettingClassificationCommon.STANDARD_SELECTION,
+				"sid"
+		);
 		new Expectations(AppContexts.class) {{
 			AppContexts.user().employeeId();
 			result = "employeeId02";
-		}};
-
-		new Expectations() {{
 			require.getOutputItemDetail("dupSrcId02");
-			result = Optional.of(WorkLedgerOutputItem.create(
-					"dupSrcId02",
-					code,
-					name,
-					SettingClassificationCommon.STANDARD_SELECTION));
-		}};
-		new Expectations() {{
+			result = Optional.of(item);
 			require.standardCheck(code);
 			result = true;
 		}};
@@ -118,22 +118,19 @@ public class DuplicateWorkLedgerSettingDomainServiceTest {
 	public void testDuplicateSetting_03(){
 		OutputItemSettingCode code = new OutputItemSettingCode("OutputItemSettingCode03");
 		OutputItemSettingName name = new OutputItemSettingName("OutputItemSettingName03");
-
+		val item = new WorkLedgerOutputItem(
+				"dupSrcId03",
+				code,
+				Arrays.asList(new AttendanceItemToPrint(1, 1)),
+				name,
+				SettingClassificationCommon.FREE_SETTING,
+				"sid"
+		);
 		new Expectations(AppContexts.class) {{
 			AppContexts.user().employeeId();
 			result = "employeeId03";
-		}};
-
-		new Expectations() {{
 			require.getOutputItemDetail("dupSrcId03");
-			result = Optional.of(WorkLedgerOutputItem.create(
-					"dupSrcId03",
-					code,
-					name,
-					SettingClassificationCommon.FREE_SETTING));
-		}};
-
-		new Expectations() {{
+			result = Optional.of(item);
 			require.freeCheck(code, "employeeId03");
 			result = true;
 		}};
@@ -163,27 +160,21 @@ public class DuplicateWorkLedgerSettingDomainServiceTest {
 	public void testDuplicateSetting_04(){
 		OutputItemSettingCode code = new OutputItemSettingCode("OutputItemSettingCode04");
 		OutputItemSettingName name = new OutputItemSettingName("OutputItemSettingName04");
-
-		new Expectations(AppContexts.class) {{
+		val item = new WorkLedgerOutputItem(
+				"dupSrcId04",
+				code,
+				Arrays.asList(new AttendanceItemToPrint(1, 1)),
+				name,
+				SettingClassificationCommon.STANDARD_SELECTION,
+				"sid"
+		);
+		new Expectations(AppContexts.class,IdentifierUtil.class) {{
 			AppContexts.user().employeeId();
 			result = "employeeId04";
-		}};
-
-		new Expectations() {{
 			require.getOutputItemDetail("dupSrcId04");
-			result = Optional.of(WorkLedgerOutputItem.create(
-					"dupSrcId04",
-					code,
-					name,
-					SettingClassificationCommon.STANDARD_SELECTION));
-		}};
-
-		new Expectations() {{
+			result = Optional.of(item);
 			require.standardCheck(code);
 			result = false;
-		}};
-
-		new Expectations(IdentifierUtil.class) {{
 			IdentifierUtil.randomUniqueId();
 			result = "uid04";
 		}};
@@ -216,27 +207,20 @@ public class DuplicateWorkLedgerSettingDomainServiceTest {
 	public void testDuplicateSetting_05(){
 		OutputItemSettingCode code = new OutputItemSettingCode("OutputItemSettingCode05");
 		OutputItemSettingName name = new OutputItemSettingName("OutputItemSettingName05");
-
-		new Expectations(AppContexts.class) {{
+		val item = new WorkLedgerOutputItem(
+				"dupSrcId05",
+				code,
+				Arrays.asList(new AttendanceItemToPrint(1, 1)),
+				name,
+				SettingClassificationCommon.FREE_SETTING,
+				"sid"
+		);
+		new Expectations(AppContexts.class,IdentifierUtil.class) {{
 			AppContexts.user().employeeId();
 			result = "employeeId05";
-		}};
-
-		new Expectations() {{
 			require.getOutputItemDetail("dupSrcId05");
-			result = Optional.of(WorkLedgerOutputItem.create(
-					"dupSrcId05",
-					code,
-					name,
-					SettingClassificationCommon.FREE_SETTING));
-		}};
-
-		new Expectations() {{
+			result = Optional.of(item);
 			require.freeCheck(code, "employeeId05");
-			result = false;
-		}};
-
-		new Expectations(IdentifierUtil.class) {{
 			IdentifierUtil.randomUniqueId();
 			result = "uid05";
 		}};

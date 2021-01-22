@@ -81,7 +81,7 @@ public class CreateWorkLedgerSettingDomainServiceTest {
         }};
 
         new Expectations(WorkLedgerOutputItem.class) {{
-            require.freeCheck( code, "employeeId02");
+            require.freeCheck(code, "employeeId02");
             result = true;
         }};
 
@@ -109,7 +109,7 @@ public class CreateWorkLedgerSettingDomainServiceTest {
     public void testCreateSetting_03() {
         OutputItemSettingCode code = new OutputItemSettingCode("OutputItemSettingCode03");
         OutputItemSettingName name = new OutputItemSettingName("OutputItemSettingName03");
-        val attendanceIdList = Arrays.asList(31, 32);
+
 
         new Expectations(AppContexts.class) {{
             AppContexts.user().employeeId();
@@ -122,7 +122,7 @@ public class CreateWorkLedgerSettingDomainServiceTest {
         }};
 
         new Expectations(WorkLedgerOutputItem.class) {{
-            require.standardCheck( code);
+            require.standardCheck(code);
             result = false;
         }};
 
@@ -153,8 +153,7 @@ public class CreateWorkLedgerSettingDomainServiceTest {
     public void testCreateSetting_04() {
         OutputItemSettingCode code = new OutputItemSettingCode("OutputItemSettingCode04");
         OutputItemSettingName name = new OutputItemSettingName("OutputItemSettingName04");
-        val attendanceIdList = Arrays.asList(41, 42);
-        val rankingList = Arrays.asList(43, 44);
+
 
         new Expectations(AppContexts.class) {{
             AppContexts.user().employeeId();
@@ -167,7 +166,7 @@ public class CreateWorkLedgerSettingDomainServiceTest {
         }};
 
         new Expectations(WorkLedgerOutputItem.class) {{
-            require.freeCheck( code, "employeeId04");
+            require.freeCheck(code, "employeeId04");
             result = false;
         }};
 
