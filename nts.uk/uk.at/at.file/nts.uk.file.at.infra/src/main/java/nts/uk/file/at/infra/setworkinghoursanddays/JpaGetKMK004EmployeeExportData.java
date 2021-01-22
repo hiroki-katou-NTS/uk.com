@@ -148,7 +148,7 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 					// R10_4
 					((month - 1) % 12 + 1) + I18NText.getText("KMK004_401"),
 					// R10_5
-					KMK004PrintCommon.convertTime(normal.isPresent() ? normal.get().legalTime : 0),
+					KMK004PrintCommon.convertTime(normal.isPresent() ? normal.get().legalTime : null),
 					// R10_6
 					KMK004PrintCommon.convertTime(r.getInt("DAILY_TIME")),
 					// R10_7
@@ -174,11 +174,11 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 					// R10_15
 					((month - 1) % 12 + 1) + I18NText.getText("KMK004_401"),
 					// R10_16
-					KMK004PrintCommon.convertTime(flex.isPresent() ? flex.get().withinTime : 0),
+					KMK004PrintCommon.convertTime(flex.isPresent() ? flex.get().withinTime : null),
 					// R10_17
-					KMK004PrintCommon.convertTime(flex.isPresent() ? flex.get().legalTime : 0),
+					KMK004PrintCommon.convertTime(flex.isPresent() ? flex.get().legalTime : null),
 					// R10_18
-					KMK004PrintCommon.convertTime(flex.isPresent() ? flex.get().weekAvgTime : 0),
+					KMK004PrintCommon.convertTime(flex.isPresent() ? flex.get().weekAvgTime : null),
 					// R10_19
 					r.getInt("SETTLE_PERIOD_MON") == 2 ? "2ヶ月" : "3ヶ月",
 					// R10_20
@@ -198,7 +198,7 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 					// R10_27
 					((month - 1) % 12 + 1) + I18NText.getText("KMK004_401"),
 					// R10_28
-					KMK004PrintCommon.convertTime(defor.isPresent() ? defor.get().legalTime : 0),
+					KMK004PrintCommon.convertTime(defor.isPresent() ? defor.get().legalTime : null),
 					// R10_29
 					KMK004PrintCommon.convertTime(r.getInt("TRANS_DAILY_TIME")),
 					// R10_30
@@ -243,19 +243,19 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 			 // R10_4
 			 ((month - 1) % 12 + 2) + I18NText.getText("KMK004_401"),
 			 // R10_5
-			 KMK004PrintCommon.convertTime(normalN.isPresent() ? normalN.get().legalTime : 0),
+			 KMK004PrintCommon.convertTime(normalN.isPresent() ? normalN.get().legalTime : null),
 			 // R10_15
 			 ((month - 1) % 12 + 2) + I18NText.getText("KMK004_401"),
 			 // R10_16
-			 KMK004PrintCommon.convertTime(flexN.isPresent() ? flexN.get().withinTime : 0),
+			 KMK004PrintCommon.convertTime(flexN.isPresent() ? flexN.get().withinTime : null),
 			 // R10_17
-			 KMK004PrintCommon.convertTime(flexN.isPresent() ? flexN.get().legalTime : 0),
+			 KMK004PrintCommon.convertTime(flexN.isPresent() ? flexN.get().legalTime : null),
 			 // R10_18
-			 KMK004PrintCommon.convertTime(flexN.isPresent() ? flexN.get().weekAvgTime : 0),
+			 KMK004PrintCommon.convertTime(flexN.isPresent() ? flexN.get().weekAvgTime : null),
 			 // R10_27
 			 ((month - 1) % 12 + 2) + I18NText.getText("KMK004_401"),
 			 // R10_28
-			 KMK004PrintCommon.convertTime(deforN.isPresent() ? deforN.get().legalTime : 0)));
+			 KMK004PrintCommon.convertTime(deforN.isPresent() ? deforN.get().legalTime : null)));
 			
 			 // buil month remain
 			 for (int i = 1; i < 11; i++) {
@@ -284,7 +284,7 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 					// R10_4
 					(m) + I18NText.getText("KMK004_401"),
 					// R10_5
-					KMK004PrintCommon.convertTime(normalC.isPresent() ? normalC.get().legalTime : 0),
+					KMK004PrintCommon.convertTime(normalC.isPresent() ? normalC.get().legalTime : null),
 					// R10_6
 					null,
 					// R10_7
@@ -306,11 +306,11 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 					// R10_15
 					(m) + I18NText.getText("KMK004_401"),
 					// R10_16
-					KMK004PrintCommon.convertTime(flexC.isPresent() ? flexC.get().withinTime : 0),
+					KMK004PrintCommon.convertTime(flexC.isPresent() ? flexC.get().withinTime : null),
 					// R10_17
-					KMK004PrintCommon.convertTime(flexC.isPresent() ? flexC.get().legalTime : 0),
+					KMK004PrintCommon.convertTime(flexC.isPresent() ? flexC.get().legalTime : null),
 					// R10_18
-					KMK004PrintCommon.convertTime(flexC.isPresent() ? flexC.get().weekAvgTime : 0),
+					KMK004PrintCommon.convertTime(flexC.isPresent() ? flexC.get().weekAvgTime : null),
 					// R10_19
 					null,
 					// R10_20
@@ -330,7 +330,7 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 					// R10_27
 					(m) + I18NText.getText("KMK004_401"),
 					// R10_28
-					KMK004PrintCommon.convertTime(deforC.isPresent() ? deforC.get().legalTime : 0),
+					KMK004PrintCommon.convertTime(deforC.isPresent() ? deforC.get().legalTime : null),
 					// R10_29
 					null,
 					// R10_30
@@ -452,15 +452,15 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 		data.put(EmployeeColumn.KMK004_184, MasterCellData.builder().columnId(EmployeeColumn.KMK004_184).value(R10_2)
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
 		data.put(EmployeeColumn.KMK004_372, MasterCellData.builder().columnId(EmployeeColumn.KMK004_372).value(R10_3)
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(EmployeeColumn.KMK004_373, MasterCellData.builder().columnId(EmployeeColumn.KMK004_373).value(R10_4)
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(EmployeeColumn.KMK004_374, MasterCellData.builder().columnId(EmployeeColumn.KMK004_374).value(R10_5)
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(EmployeeColumn.KMK004_375, MasterCellData.builder().columnId(EmployeeColumn.KMK004_375).value(R10_6)
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(EmployeeColumn.KMK004_376, MasterCellData.builder().columnId(EmployeeColumn.KMK004_376).value(R10_7)
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(EmployeeColumn.KMK004_377, MasterCellData.builder().columnId(EmployeeColumn.KMK004_377).value(R10_8)
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
 		data.put(EmployeeColumn.KMK004_378, MasterCellData.builder().columnId(EmployeeColumn.KMK004_378).value(R10_9)
@@ -476,13 +476,13 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 		data.put(EmployeeColumn.KMK004_383, MasterCellData.builder().columnId(EmployeeColumn.KMK004_383).value(R10_14)
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
 		data.put(EmployeeColumn.KMK004_384, MasterCellData.builder().columnId(EmployeeColumn.KMK004_384).value(R10_15)
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(EmployeeColumn.KMK004_385, MasterCellData.builder().columnId(EmployeeColumn.KMK004_385).value(R10_16)
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(EmployeeColumn.KMK004_386, MasterCellData.builder().columnId(EmployeeColumn.KMK004_386).value(R10_17)
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(EmployeeColumn.KMK004_387, MasterCellData.builder().columnId(EmployeeColumn.KMK004_387).value(R10_18)
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(EmployeeColumn.KMK004_388, MasterCellData.builder().columnId(EmployeeColumn.KMK004_388).value(R10_19)
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
 		data.put(EmployeeColumn.KMK004_389, MasterCellData.builder().columnId(EmployeeColumn.KMK004_389).value(R10_20)
@@ -500,13 +500,13 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 		data.put(EmployeeColumn.KMK004_395, MasterCellData.builder().columnId(EmployeeColumn.KMK004_395).value(R10_26)
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
 		data.put(EmployeeColumn.KMK004_396, MasterCellData.builder().columnId(EmployeeColumn.KMK004_396).value(R10_27)
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(EmployeeColumn.KMK004_397, MasterCellData.builder().columnId(EmployeeColumn.KMK004_397).value(R10_28)
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(EmployeeColumn.KMK004_375_1, MasterCellData.builder().columnId(EmployeeColumn.KMK004_375_1).value(R10_29)
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(EmployeeColumn.KMK004_376_1, MasterCellData.builder().columnId(EmployeeColumn.KMK004_376_1).value(R10_30)
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(EmployeeColumn.KMK004_398, MasterCellData.builder().columnId(EmployeeColumn.KMK004_398).value(R10_31)
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
 		data.put(EmployeeColumn.KMK004_399, MasterCellData.builder().columnId(EmployeeColumn.KMK004_399).value(R10_32)
@@ -540,15 +540,15 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 		data.put(EmployeeColumn.KMK004_184, MasterCellData.builder().columnId(EmployeeColumn.KMK004_184).value(null)
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
 		data.put(EmployeeColumn.KMK004_372, MasterCellData.builder().columnId(EmployeeColumn.KMK004_372).value(null)
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(EmployeeColumn.KMK004_373, MasterCellData.builder().columnId(EmployeeColumn.KMK004_373).value(value4)
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(EmployeeColumn.KMK004_374, MasterCellData.builder().columnId(EmployeeColumn.KMK004_374).value(value5)
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(EmployeeColumn.KMK004_375, MasterCellData.builder().columnId(EmployeeColumn.KMK004_375).value(null)
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(EmployeeColumn.KMK004_376, MasterCellData.builder().columnId(EmployeeColumn.KMK004_376).value(null)
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(EmployeeColumn.KMK004_377, MasterCellData.builder().columnId(EmployeeColumn.KMK004_377).value(null)
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
 		data.put(EmployeeColumn.KMK004_378, MasterCellData.builder().columnId(EmployeeColumn.KMK004_378).value(null)
@@ -564,13 +564,13 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 		data.put(EmployeeColumn.KMK004_383, MasterCellData.builder().columnId(EmployeeColumn.KMK004_383).value(null)
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
 		data.put(EmployeeColumn.KMK004_384, MasterCellData.builder().columnId(EmployeeColumn.KMK004_384).value(value15)
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(EmployeeColumn.KMK004_385, MasterCellData.builder().columnId(EmployeeColumn.KMK004_385).value(value16)
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(EmployeeColumn.KMK004_386, MasterCellData.builder().columnId(EmployeeColumn.KMK004_386).value(value17)
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(EmployeeColumn.KMK004_387, MasterCellData.builder().columnId(EmployeeColumn.KMK004_387).value(value18)
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(EmployeeColumn.KMK004_388, MasterCellData.builder().columnId(EmployeeColumn.KMK004_388).value(null)
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
 		data.put(EmployeeColumn.KMK004_389, MasterCellData.builder().columnId(EmployeeColumn.KMK004_389).value(null)
@@ -588,13 +588,13 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 		data.put(EmployeeColumn.KMK004_395, MasterCellData.builder().columnId(EmployeeColumn.KMK004_395).value(null)
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
 		data.put(EmployeeColumn.KMK004_396, MasterCellData.builder().columnId(EmployeeColumn.KMK004_396).value(value27)
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(EmployeeColumn.KMK004_397, MasterCellData.builder().columnId(EmployeeColumn.KMK004_397).value(value28)
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(EmployeeColumn.KMK004_375_1, MasterCellData.builder().columnId(EmployeeColumn.KMK004_375_1).value(null)
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(EmployeeColumn.KMK004_376_1, MasterCellData.builder().columnId(EmployeeColumn.KMK004_376_1).value(null)
-				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
+				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT)).build());
 		data.put(EmployeeColumn.KMK004_398, MasterCellData.builder().columnId(EmployeeColumn.KMK004_398).value(null)
 				.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT)).build());
 		data.put(EmployeeColumn.KMK004_399, MasterCellData.builder().columnId(EmployeeColumn.KMK004_399).value(null)
