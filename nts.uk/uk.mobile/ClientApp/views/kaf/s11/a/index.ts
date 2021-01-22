@@ -248,7 +248,10 @@ export class KafS11AComponent extends KafS00ShrComponent {
             if (vm.displayInforWhenStarting.applicationForWorkingDay.workType) {
                 vm.complementWorkInfo.workTypeCD = vm.displayInforWhenStarting.applicationForWorkingDay.workType;
             } else {
-                vm.complementWorkInfo.workTypeCD = (_.head(vm.displayInforWhenStarting.applicationForWorkingDay.workTypeList) as any).workTypeCode;
+                let headWorkType: any = _.head(vm.displayInforWhenStarting.applicationForWorkingDay.workTypeList);
+                if (headWorkType) {
+                    vm.complementWorkInfo.workTypeCD = headWorkType.workTypeCode;
+                }
             }
             vm.complementWorkInfo.workTimeCD = vm.displayInforWhenStarting.applicationForWorkingDay.workTime;
             vm.complementWorkInfo.timeRange1 = {
@@ -288,7 +291,10 @@ export class KafS11AComponent extends KafS00ShrComponent {
             if (vm.displayInforWhenStarting.applicationForHoliday.workType) {
                 vm.leaveWorkInfo.workTypeCD = vm.displayInforWhenStarting.applicationForHoliday.workType;
             } else {
-                vm.leaveWorkInfo.workTypeCD = (_.head(vm.displayInforWhenStarting.applicationForHoliday.workTypeList) as any).workTypeCode;
+                let headWorkType: any = _.head(vm.displayInforWhenStarting.applicationForHoliday.workTypeList);
+                if (headWorkType) {
+                    vm.leaveWorkInfo.workTypeCD = headWorkType.workTypeCode;
+                }
             }
             vm.leaveWorkInfo.workTimeCD = vm.displayInforWhenStarting.applicationForHoliday.workTime;
             vm.leaveWorkInfo.timeRange1 = {
