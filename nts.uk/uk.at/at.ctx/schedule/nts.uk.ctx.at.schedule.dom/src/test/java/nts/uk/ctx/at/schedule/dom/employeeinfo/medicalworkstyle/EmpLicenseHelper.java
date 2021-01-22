@@ -5,6 +5,16 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkFormHisItem;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.FulltimeRemarks;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.LicenseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.MedicalCareWorkStyle;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.MedicalWorkFormInfor;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NightShiftRemarks;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassifiCode;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassifiName;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NursingWorkFormInfor;
 
 public class EmpLicenseHelper {
 	 public static List<EmpMedicalWorkFormHisItem> getLstEmpMedical() {

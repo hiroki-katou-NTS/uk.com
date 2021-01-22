@@ -15,8 +15,17 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.GetEmpLicenseClassificationService.Require;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpLicenseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkFormHisItem;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.GetEmpLicenseClassificationService;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.LicenseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.MedicalCareWorkStyle;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.MedicalWorkFormInfor;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassifiCode;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassifiName;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.GetEmpLicenseClassificationService.Require;
 
 @RunWith(JMockit.class)
 public class GetEmpLicenseClassificationServiceTest {

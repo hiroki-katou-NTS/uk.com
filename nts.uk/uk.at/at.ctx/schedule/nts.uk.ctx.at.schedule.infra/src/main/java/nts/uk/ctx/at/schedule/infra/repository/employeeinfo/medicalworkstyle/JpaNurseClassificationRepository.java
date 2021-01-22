@@ -8,14 +8,14 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.LicenseClassification;
-import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.NurseClassifiCode;
-import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.NurseClassifiName;
-import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.NurseClassification;
-import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.NurseClassificationRepository;
 import nts.uk.ctx.at.schedule.infra.entity.employeeinfo.medicalworkstyle.KscmtNurseLicense;
 import nts.uk.ctx.at.schedule.infra.entity.employeeinfo.medicalworkstyle.KscmtNurseLicensePK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.LicenseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassifiCode;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassifiName;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassificationRepository;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
 /**

@@ -3,7 +3,7 @@ package nts.uk.ctx.at.schedule.app.find.employeeinfo.medicalworkstyle;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.NurseClassificationRepository;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassificationRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

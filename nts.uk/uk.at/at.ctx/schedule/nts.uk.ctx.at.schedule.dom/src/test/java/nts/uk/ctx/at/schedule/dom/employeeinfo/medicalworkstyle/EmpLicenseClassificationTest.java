@@ -10,6 +10,8 @@ import org.junit.runner.RunWith;
 
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpLicenseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.LicenseClassification;
 
 @RunWith(JMockit.class)
 public class EmpLicenseClassificationTest {

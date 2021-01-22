@@ -3,6 +3,7 @@ package nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle;
 import org.junit.Test;
 
 import nts.arc.testing.assertion.NtsAssert;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkFormHisItem;
 
 /**
  *

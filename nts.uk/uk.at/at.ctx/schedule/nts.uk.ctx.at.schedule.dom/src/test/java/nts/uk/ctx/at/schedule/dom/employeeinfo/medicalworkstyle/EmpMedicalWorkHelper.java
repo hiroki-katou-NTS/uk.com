@@ -6,6 +6,13 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkFormHisItem;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.FulltimeRemarks;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.MedicalCareWorkStyle;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.MedicalWorkFormInfor;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NightShiftRemarks;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassifiCode;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NursingWorkFormInfor;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 public class EmpMedicalWorkHelper {

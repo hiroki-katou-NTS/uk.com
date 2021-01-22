@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle;
+package nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
