@@ -11,6 +11,7 @@ module nts.uk.at.view.kmk004.b {
         workTimes: KnockoutObservableArray<WorkTime>;
         yearDelete: KnockoutObservable<number | null>;
         startDate: KnockoutObservable<number>;
+        newYearQ?: KnockoutObservable<boolean>;
     }
 
     const API = {
@@ -108,6 +109,7 @@ module nts.uk.at.view.kmk004.b {
         public workTimeSaves: KnockoutObservableArray<WorkTimeSave> = ko.observableArray([]);
         public yearDelete: KnockoutObservable<number | null> = ko.observable(null);
         public startDate: KnockoutObservable<number> = ko.observable(2020);
+        public newYearQ: KnockoutObservable<boolean> = ko.observable(false);
 
         created(params: Params) {
             const vm = this;
@@ -119,6 +121,10 @@ module nts.uk.at.view.kmk004.b {
             vm.workTimes = params.workTimes;
             vm.yearDelete = params.yearDelete;
             vm.startDate = params.startDate;
+
+            if (params.newYearQ) {
+                vm.newYearQ = params.newYearQ;
+            }
 
             vm.initList();
 
@@ -166,7 +172,7 @@ module nts.uk.at.view.kmk004.b {
 
             vm.selectedYear
                 .subscribe(() => {
-                    if (ko.unwrap(ko.unwrap(vm.selectedYear) != null)){
+                    if (ko.unwrap(ko.unwrap(vm.selectedYear) != null)) {
                         vm.mode("New");
                         vm.reloadData();
                     }
@@ -288,17 +294,27 @@ module nts.uk.at.view.kmk004.b {
                                             const data1: IWorkTime[] = [];
                                             vm.startDate(data[0].yearMonth);
                                             data.map(m => {
+
+                                                var laborTime = 0;
+                                                var check = true;
+
+                                                if (!ko.unwrap(vm.newYearQ)) {
+                                                    laborTime = m.laborTime == -1 ? null : m.laborTime;
+                                                    check = m.laborTime == -1 ? false : true;
+                                                }
+
                                                 const s: IWorkTime = {
-                                                    check: m.laborTime == -1 ? false : true,
+                                                    check: check,
                                                     yearMonth: m.yearMonth,
-                                                    laborTime: m.laborTime == -1 ? null : m.laborTime
+                                                    laborTime: laborTime
                                                 };
+                                                
                                                 data1.push(s);
                                             });
-
                                             vm.workTimes(data1.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
                                         }
                                         vm.mode('Update');
+                                        vm.newYearQ(false);
                                     });
                             }
                         }

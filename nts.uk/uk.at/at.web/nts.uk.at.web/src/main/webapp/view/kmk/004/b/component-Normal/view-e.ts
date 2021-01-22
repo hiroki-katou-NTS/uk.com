@@ -80,7 +80,8 @@ module nts.uk.at.view.kmk004.b {
 							selectId: model.id,
 							workTimes: workTimes,
 							yearDelete: yearDelete,
-							startDate: startDate
+							startDate: startDate,
+							newYearQ: newYearQ
 						}
 					}"></div>
 				</div>
@@ -124,6 +125,7 @@ module nts.uk.at.view.kmk004.b {
 		public checkSeting: KnockoutObservable<boolean> = ko.observable(false);
 		public startDate: KnockoutObservable<number> = ko.observable(2020);
 		public isReload: KnockoutObservable<string> = ko.observable('');
+		public newYearQ: KnockoutObservable<boolean> = ko.observable(false);
 
 		created(params: Params) {
 			const vm = this;
@@ -334,8 +336,12 @@ module nts.uk.at.view.kmk004.b {
 				if (result) {
 					vm.years.push(new IYear(parseInt(result.year), true));
 					vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
-					vm.selectedYear(parseInt(result.year));
-					vm.selectedYear.valueHasMutated();
+					if (parseInt(result.year) == ko.unwrap(vm.selectedYear) as number){
+						vm.selectedYear.valueHasMutated();
+					} else {
+						vm.selectedYear(parseInt(result.year));
+					}
+					vm.newYearQ(true);
 				}
 			});
 		}
