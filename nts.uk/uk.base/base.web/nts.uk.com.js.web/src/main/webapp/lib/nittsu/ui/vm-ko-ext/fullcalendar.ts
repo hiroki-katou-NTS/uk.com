@@ -5,14 +5,18 @@ module nts.uk.ui.components.fullcalendar {
     const { version } = nts.uk.util.browser;
 
     type Calendar = FullCalendar.Calendar;
-    type EventApi = FullCalendar.EventApi;
+    type EventApi = Partial<FullCalendar.EventApi>;
     type EventContentArg = FullCalendar.EventContentArg;
     type CustomButtonInput = FullCalendar.CustomButtonInput;
+
+    type EventDropArg = FullCalendar.EventDropArg;
+    type EventDragStopArg = FullCalendar.EventDragStopArg;
+    type EventDragStartArg = FullCalendar.EventDragStartArg;
 
     type EventSlim = {
         start: Date;
         end: Date;
-    }
+    };
 
     type EventStatus = 'new' | 'delete' | 'normal';
 
@@ -651,8 +655,10 @@ module nts.uk.ui.components.fullcalendar {
             } = params;
             const $caches: {
                 new: KnockoutObservable<EventApi | null>;
+                drag: KnockoutObservable<EventApi | null>;
             } = {
-                new: ko.observable(null)
+                new: ko.observable(null),
+                drag: ko.observable(null)
             };
 
             const $el = $(vm.$el);
@@ -1098,12 +1104,6 @@ module nts.uk.ui.components.fullcalendar {
                     // remove new event (no save)
                     if (!e.title && e.extendedProps.status === 'new' && (!event || e.id !== event.id)) {
                         e.remove();
-
-                        const ne = ko.unwrap($caches.new);
-
-                        if (ne && ne.id === e.id) {
-                            $caches.new(null);
-                        }
                     }
                 });
             }
@@ -1313,9 +1313,22 @@ module nts.uk.ui.components.fullcalendar {
                         });
                     }
                 },
-                eventDragStart: (arg: FullCalendar.EventDragStartArg) => {
+                eventDragStart: (arg: EventDragStartArg) => {
+                    const { event } = arg;
+                    const {
+                        id,
+                        start,
+                        end,
+                        borderColor,
+                        groupId,
+                        extendedProps
+                    } = event;
+
                     // remove new event (with no data) & background event
                     removeNewEvent(arg.event);
+
+                    // cache drag event
+                    $caches.drag({ id, start, end, groupId, borderColor, extendedProps });
 
                     // copy event by drag
                     if (ko.unwrap<boolean>(dataEvent.shift)) {
@@ -1333,7 +1346,12 @@ module nts.uk.ui.components.fullcalendar {
 
                     arg.event.setProp(BORDER_COLOR, BLACK);
                 },
-                eventDrop: (arg: FullCalendar.EventDropArg) => {
+                eventDragStop: (arg: EventDragStopArg) => {
+
+                    // clear drag cache
+                    $caches.drag(null);
+                },
+                eventDrop: (arg: EventDropArg) => {
                     const { event, relatedEvents } = arg;
                     const { start, end, id, title, extendedProps, borderColor, groupId } = event;
                     const rels = relatedEvents.map(({ start, end }) => ({ start, end }));
@@ -1425,12 +1443,6 @@ module nts.uk.ui.components.fullcalendar {
                     _.forEach(vm.calendar.getEvents(), (e: EventApi) => {
                         if (e.id === event.id) {
                             e.remove();
-
-                            const c = ko.unwrap($caches.new);
-
-                            if (c && c.id === event.id) {
-                                $caches.new(null);
-                            }
                         }
                     });
 
@@ -1714,7 +1726,8 @@ module nts.uk.ui.components.fullcalendar {
             // register all global event
             vm.initalEvents()
                 .registerEvent('mousemove', () => {
-                    if (ko.unwrap(dataEvent.target)) {
+                    // clear new event when start select
+                    if (ko.unwrap(dataEvent.target) === 'date') {
                         removeNewEvent(null);
                     }
                 });
