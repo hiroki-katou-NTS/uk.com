@@ -1,11 +1,13 @@
 package nts.uk.ctx.at.request.ac.bs;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.SyEmployeeAdapter;
@@ -46,7 +48,7 @@ public class SyEmployeeAdapterImpl implements SyEmployeeAdapter{
 	}
 
 	@Override
-	public Map<String, String> getListEmpInfo(String companyID, GeneralDate referenceDate, List<String> workplaceID) {
+	public Map<String, List<String>> getListEmpInfo(String companyID, GeneralDate referenceDate, List<String> workplaceID) {
 		return employeePublisher.getListEmpInfo(companyID, referenceDate, workplaceID);
 	}
 
