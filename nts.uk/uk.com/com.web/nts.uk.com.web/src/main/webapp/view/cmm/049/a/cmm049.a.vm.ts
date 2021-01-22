@@ -100,6 +100,12 @@ module nts.uk.com.view.cmm049.a {
 
     public selectedEmailAddress: KnockoutObservable<number> = ko.observable(0);
 
+    //fix bug 112907
+    otherContact1Required: KnockoutObservable<boolean> = ko.observable(false);
+    otherContact2Required: KnockoutObservable<boolean> = ko.observable(false);
+    otherContact3Required: KnockoutObservable<boolean> = ko.observable(false);
+    otherContact4Required: KnockoutObservable<boolean> = ko.observable(false);
+    otherContact5Required: KnockoutObservable<boolean> = ko.observable(false);
     /**
      * Key: emailClassification, value: listfunctionId
      */
@@ -992,10 +998,23 @@ module nts.uk.com.view.cmm049.a {
      */
     public register() {
       const vm = this;
-
+      //fix bug #112907
+      vm.otherContact1Required(vm.otherContact1Display());
+      vm.otherContact2Required(vm.otherContact2Display());
+      vm.otherContact3Required(vm.otherContact3Display());
+      vm.otherContact4Required(vm.otherContact4Display());
+      vm.otherContact5Required(vm.otherContact5Display());
+      if (vm.profileSelectedId() === 2) {
+        vm.otherContact1Required(false);
+        vm.otherContact2Required(false);
+        vm.otherContact3Required(false);
+        vm.otherContact4Required(false);
+        vm.otherContact5Required(false);
+      }
+      //fix bug #112907 end
       // check error
       vm.$validate().then((valid: boolean) => {
-        if (valid) { 
+        if (valid) {
           vm.emailData[vm.selectedEmailClassification] = _.chain(vm.mailFunctionDataSource)
             .filter((item) => item.isChecked)
             .map((item) => item.functionId)

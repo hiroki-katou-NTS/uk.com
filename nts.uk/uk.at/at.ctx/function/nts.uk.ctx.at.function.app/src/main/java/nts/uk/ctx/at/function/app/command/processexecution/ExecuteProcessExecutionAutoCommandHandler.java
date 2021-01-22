@@ -38,6 +38,7 @@ import nts.uk.ctx.at.function.app.command.processexecution.approuteupdatedaily.O
 import nts.uk.ctx.at.function.app.command.processexecution.approuteupdatemonthly.AppRouteUpdateMonthlyService;
 import nts.uk.ctx.at.function.app.command.processexecution.approuteupdatemonthly.OutputAppRouteMonthly;
 import nts.uk.ctx.at.function.app.command.processexecution.createlogfileexecution.CreateLogFileExecution;
+import nts.uk.ctx.at.function.app.command.processexecution.createschedule.executionprocess.CalPeriodTransferAndWorktype;
 import nts.uk.ctx.at.function.dom.adapter.WorkplaceWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.appreflectmanager.AppReflectManagerAdapter;
 import nts.uk.ctx.at.function.dom.adapter.appreflectmanager.ProcessStateReflectImport;
@@ -99,6 +100,7 @@ import nts.uk.ctx.at.function.dom.processexecution.updateprocessautoexeclog.over
 import nts.uk.ctx.at.function.dom.processexecution.updateprocessautoexeclog.overallerrorprocess.OverallErrorProcess;
 import nts.uk.ctx.at.function.dom.processexecution.updateprocessexecsetting.changepersionlist.ChangePersionList;
 import nts.uk.ctx.at.function.dom.processexecution.updateprocessexecsetting.changepersionlist.ListLeaderOrNotEmp;
+import nts.uk.ctx.at.function.dom.processexecution.updateprocessexecsetting.changepersionlistforsche.ChangePersionListForSche;
 import nts.uk.ctx.at.function.dom.resultsperiod.optionalaggregationperiod.ExecuteAggrPeriodDomainAdapter;
 import nts.uk.ctx.at.function.dom.statement.EmployeeGeneralInfoAdapter;
 import nts.uk.ctx.at.function.dom.statement.dtoimport.EmployeeGeneralInfoImport;
@@ -140,8 +142,8 @@ import nts.uk.ctx.at.schedule.dom.executionlog.RecreateCondition;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContent;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.SpecifyCreation;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistItemImport;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHis;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeService;
 import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.ConditionEmployee;
@@ -157,8 +159,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
@@ -300,6 +300,12 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 
 	@Inject
 	private AutoExecutionPreparationAdapter autoExecutionPreparationAdapter;
+	@Inject
+	private ChangePersionListForSche changePersionListForSche;
+	@Inject
+	private BasicScheduleRepository basicScheduleRepository;
+	@Inject
+	private CalPeriodTransferAndWorktype calPeriodTransferAndWorktype;
 
 	@Override
 	public boolean keepsTrack() {
@@ -393,7 +399,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		// ドメインモデル「就業計算と集計実行ログ」を追加する
 		empCalAndSumExeLog = new EmpCalAndSumExeLog(execId, command.getCompanyId(),
 				new YearMonth(GeneralDate.today().year() * 100 + 1), ExecutedMenu.SELECT_AND_RUN, GeneralDateTime.now(),
-				null, AppContexts.user().employeeId(), 1, IdentifierUtil.randomUniqueId(),
+				null, "", 1, IdentifierUtil.randomUniqueId(),
 				CalAndAggClassification.AUTOMATIC_EXECUTION);
 		this.empCalSumRepo.add(empCalAndSumExeLog);
 		// }
@@ -885,7 +891,6 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		DataToAsyn dataToAsyn = new DataToAsyn();
 		String errorMessage = "";
 		boolean isException = false;
-		LoginUserContext loginContext = AppContexts.user();
 		// ドメインモデル「更新処理自動実行ログ」を更新する
 		this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, null);
 		String companyId = context.getCommand().getCompanyId();
@@ -916,7 +921,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 					.getCreateNewEmpSched() == NotUseAtr.USE;
 			// 期間の計算
 			DatePeriod calculateSchedulePeriod = this.calculateSchedulePeriod(procExec, procExecLog,
-					checkCreateEmployee);
+					checkCreateEmployee, companyId);
 
 			/*
 			 * 対象社員を取得
@@ -934,33 +939,36 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 			 * 作成対象の判定
 			 */
 			// 全員の場合
-//			if (procExec.getExecSetting().getPerScheduleCreation().getTarget()
-//                    .getCreationTarget().value == TargetClassification.ALL.value) {
-			// 対象社員を取得 -
+			if (procExec.getExecutionType().equals(ProcessExecType.NORMAL_EXECUTION)) {
+				// 対象社員を取得 -
 
-			ScheduleCreatorExecutionCommand scheduleCommand = getScheduleCreatorExecutionAllEmp(execId, procExec,
-					loginContext, calculateSchedulePeriod, listEmp, companyId, execItemCd);
+				ScheduleCreatorExecutionCommand scheduleCommand = getScheduleCreatorExecutionAllEmp(execId, procExec,
+						calculateSchedulePeriod, listEmp, companyId, execItemCd);
 
-			try {
+				try {
 
 //					AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctx = new AsyncCommandHandlerContext<>(scheduleCommand);
 //					this.scheduleExecution.handle(ctx);
 //					handle = this.scheduleExecution.handle(scheduleCommand);
-				CountDownLatch countDownLatch = new CountDownLatch(1);
-				AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false)
-						.threadName(this.getClass().getName()).build(() -> {
-							scheduleCommand.setCountDownLatch(countDownLatch);
-							scheduleCommand
-									.setIsReExecution(procExec.getExecutionType().equals(ProcessExecType.RE_CREATE));
-							scheduleCommand.setRecreateTransfer(procExec.getReExecCondition()
-									.getRecreateTransfer().equals(NotUseAtr.USE));
-							AsyncTaskInfo handle1 = this.scheduleExecution.handle(scheduleCommand);
-							dataToAsyn.setHandle(handle1);
-						});
-				try {
-					executorService.submit(task).get();
-					countDownLatch.await();
-					if (scheduleCommand.getIsExForKBT()) {
+					CountDownLatch countDownLatch = new CountDownLatch(1);
+					AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false)
+							.threadName(this.getClass().getName()).build(() -> {
+								scheduleCommand.setCountDownLatch(countDownLatch);
+								AsyncTaskInfo handle1 = this.scheduleExecution.handle(scheduleCommand);
+								dataToAsyn.setHandle(handle1);
+							});
+					try {
+						executorService.submit(task).get();
+						countDownLatch.await();
+						if (scheduleCommand.getIsExForKBT()) {
+							// 再実行の場合にExceptionが発生したかどうかを確認する。
+							if (procExec.getExecutionType() == ProcessExecType.RE_CREATE) {
+								checkStopExec = true;
+							}
+							isException = true;
+							errorMessage = "Msg_1339";
+						}
+					} catch (Exception ex) {
 						// 再実行の場合にExceptionが発生したかどうかを確認する。
 						if (procExec.getExecutionType() == ProcessExecType.RE_CREATE) {
 							checkStopExec = true;
@@ -968,7 +976,12 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 						isException = true;
 						errorMessage = "Msg_1339";
 					}
-				} catch (Exception ex) {
+					log.info("更新処理自動実行_個人スケジュール作成_END_" + context.getCommand().getExecItemCd() + "_"
+							+ GeneralDateTime.now());
+					if (checkStop(execId)) {
+						checkStopExec = true;
+					}
+				} catch (Exception e) {
 					// 再実行の場合にExceptionが発生したかどうかを確認する。
 					if (procExec.getExecutionType() == ProcessExecType.RE_CREATE) {
 						checkStopExec = true;
@@ -976,221 +989,92 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 					isException = true;
 					errorMessage = "Msg_1339";
 				}
-				log.info("更新処理自動実行_個人スケジュール作成_END_" + context.getCommand().getExecItemCd() + "_"
-						+ GeneralDateTime.now());
-				if (checkStop(execId)) {
-					checkStopExec = true;
-				}
-			} catch (Exception e) {
-				// 再実行の場合にExceptionが発生したかどうかを確認する。
-				if (procExec.getExecutionType() == ProcessExecType.RE_CREATE) {
-					checkStopExec = true;
-				}
-				isException = true;
-				errorMessage = "Msg_1339";
 			}
-//            }
-//            // 異動者・新入社員のみ作成の場合
-//            else {
-//                // DatePeriod period =
-//                // procExecLog.getEachProcPeriod().get().getScheduleCreationPeriod().get();
-//                // ・社員ID（異動者、勤務種別変更者、休職者・休業者）（List）
-//                List<String> reEmployeeList = new ArrayList<>();
-//                // 社員ID（新入社員）（List）
-//                List<String> newEmployeeList = new ArrayList<>();
-//                // 社員ID（休職者・休業者）（List）
-//                List<String> temporaryEmployeeList = new ArrayList<>();
-//                // 対象社員を絞り込み -> Đổi tên (異動者・勤務種別変更者リスト作成処理（スケジュール用）)
-//                // this.filterEmployeeList(procExec, empIds, reEmployeeList, newEmployeeList,
-//                // temporaryEmployeeList);
-//                changePersionListForSche.filterEmployeeList(procExec, listEmp, reEmployeeList, newEmployeeList,
-//                        temporaryEmployeeList);
-//                if (!CollectionUtil.isEmpty(reEmployeeList) && !CollectionUtil.isEmpty(newEmployeeList)) {
+			// 異動者・新入社員のみ作成の場合
+			else {
+				// DatePeriod period =
+				// procExecLog.getEachProcPeriod().get().getScheduleCreationPeriod().get();
+				// ・社員ID（異動者、勤務種別変更者、休職者・休業者）（List）
+				List<String> reEmployeeList = new ArrayList<>();
+				// 社員ID（新入社員）（List）
+				List<String> newEmployeeList = new ArrayList<>();
+				// 社員ID（休職者・休業者）（List）
+				List<String> temporaryEmployeeList = new ArrayList<>();
+				// 対象社員を絞り込み -> Đổi tên (異動者・勤務種別変更者リスト作成処理（スケジュール用）)
+				// this.filterEmployeeList(procExec, empIds, reEmployeeList, newEmployeeList,
+				// temporaryEmployeeList);
+				changePersionListForSche.filterEmployeeList(procExec, listEmp, reEmployeeList, newEmployeeList,
+						temporaryEmployeeList);
+				// 社員ID（異動者、勤務種別変更者）（List）のみ
+				if (!CollectionUtil.isEmpty(reEmployeeList) && !checkStopExec) {
+					// 異動者、勤務種別変更者、休職者・休業者の期間の計算
+					GeneralDate endDate = basicScheduleRepository.findMaxDateByListSid(reEmployeeList);
+
+					if (endDate != null) {
+						DatePeriod periodDate = this.getMinPeriodFromStartDate(companyId);
+						ScheduleCreatorExecutionCommand scheduleCreatorExecutionOneEmp = this
+								.getScheduleCreatorExecutionOneEmp(execId, procExec,
+										calculateSchedulePeriod, reEmployeeList, companyId, execItemCd);
+						scheduleCreatorExecutionOneEmp.getScheduleExecutionLog()
+								.setPeriod(new DatePeriod(periodDate.start(), endDate));
 //
-//                } else {
-//                    // 社員ID（新入社員）（List）のみ and 社員ID（新入社員以外）（List）
-//                    if (!CollectionUtil.isEmpty(newEmployeeList) && !CollectionUtil.isEmpty(temporaryEmployeeList)) {
-//                        try {
-//                            ScheduleCreatorExecutionCommand scheduleCreatorExecutionOneEmp2 = this
-//                                    .getScheduleCreatorExecutionOneEmp(execId, procExec, loginContext,
-//                                            calculateSchedulePeriod, newEmployeeList, companyId, execItemCd);
-//                            // AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctxNew = new
-//                            // AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand>(scheduleCreatorExecutionOneEmp);
-//                            // ctxNew.setTaskId(context.asAsync().getTaskId());
-////							AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctx = new AsyncCommandHandlerContext<>(scheduleCreatorExecutionOneEmp2);
-////							this.scheduleExecution.handle(ctx);
-//                            CountDownLatch countDownLatch = new CountDownLatch(1);
-//                            AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
-//                                    .build(() -> {
-//                                        scheduleCreatorExecutionOneEmp2.setCountDownLatch(countDownLatch);
-//										scheduleCreatorExecutionOneEmp2.setIsReExecution(procExec.getExecutionType().equals(ProcessExecType.RE_CREATE));
-//                                        scheduleCreatorExecutionOneEmp2.setRecreateTransfer(procExec
-//                                        		.getExecSetting()
-//                                         		.getReExecCondition()
-//                                         		.getRecreateTransfer()
-//                                         		.equals(NotUseAtr.USE));
-//                                        AsyncTaskInfo handle1 = this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp2);
-//                                        dataToAsyn.setHandle(handle1);
-//
-//                                    });
-//                            try {
-//                                executorService.submit(task).get();
-//                                countDownLatch.await();
-//                                if (scheduleCreatorExecutionOneEmp2.getIsExForKBT()) {
-//                                    // 再実行の場合にExceptionが発生したかどうかを確認する。
-//									if (procExec.getExecutionType() == ProcessExecType.RE_CREATE) {
-//                                        checkStopExec = true;
-//                                    }
-//                                    isException = true;
-//                                    errorMessage = "Msg_1339";
-//                                }
-//                            } catch (Exception ex) {
-//                                // 再実行の場合にExceptionが発生したかどうかを確認する。
-//								if (procExec.getExecutionType() == ProcessExecType.RE_CREATE) {
-//                                    checkStopExec = true;
-//                                }
-//                                isException = true;
-//                                errorMessage = "Msg_1339";
-//                            }
-//                            ScheduleCreatorExecutionCommand scheduleCreatorExecutionOneEmp3 = this
-//                                    .getScheduleCreatorExecutionOneEmp(execId, procExec, loginContext,
-//                                            calculateSchedulePeriod, temporaryEmployeeList, companyId, execItemCd);
-//                            if (checkStop(execId)) {
-//                                log.info("更新処理自動実行_個人スケジュール作成_END_" + context.getCommand().getExecItemCd() + "_"
-//                                        + GeneralDateTime.now());
-//                                checkStopExec = true;
-//                            }
-//                            if (!checkStopExec) {
-//
-////								AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctx2 = new AsyncCommandHandlerContext<>(scheduleCreatorExecutionOneEmp3);
-////								this.scheduleExecution.handle(ctx2);
-//                                CountDownLatch countDownLatch1 = new CountDownLatch(1);
-//                                AsyncTask task1 = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
-//                                        .build(() -> {
-//                                            scheduleCreatorExecutionOneEmp3.setCountDownLatch(countDownLatch1);
-//											scheduleCreatorExecutionOneEmp3.setIsReExecution(procExec.getExecutionType().equals(ProcessExecType.RE_CREATE));
-//                                            scheduleCreatorExecutionOneEmp3.setRecreateTransfer(procExec
-//                                            		.getExecSetting()
-//                                             		.getReExecCondition()
-//                                             		.getRecreateTransfer()
-//                                             		.equals(NotUseAtr.USE));
-//                                            AsyncTaskInfo handle1 = this.scheduleExecution.handle(scheduleCreatorExecutionOneEmp3);
-//                                            dataToAsyn.setHandle(handle1);
-//                                        });
-//                                try {
-//                                    executorService.submit(task1).get();
-//                                    countDownLatch1.await();
-//                                    if (scheduleCreatorExecutionOneEmp3.getIsExForKBT()) {
-//                                        // 再実行の場合にExceptionが発生したかどうかを確認する。
-//										if (procExec.getExecutionType() == ProcessExecType.RE_CREATE) {
-//                                            checkStopExec = true;
-//                                        }
-//                                        isException = true;
-//                                        errorMessage = "Msg_1339";
-//                                    }
-//                                } catch (Exception ex) {
-//                                    // 再実行の場合にExceptionが発生したかどうかを確認する。
-//									if (procExec.getExecutionType() == ProcessExecType.RE_CREATE) {
-//                                        checkStopExec = true;
-//                                    }
-//                                    isException = true;
-//                                    errorMessage = "Msg_1339";
-//                                }
-//                                log.info("更新処理自動実行_個人スケジュール作成_END_" + context.getCommand().getExecItemCd() + "_" + GeneralDateTime.now());
-//                                if (checkStop(execId)) {
-//                                    checkStopExec = true;
-//                                }
-//                                runSchedule = true;
-//                            }
-//                        } catch (Exception e) {
-//                            // 再実行の場合にExceptionが発生したかどうかを確認する。
-//							if (procExec.getExecutionType() == ProcessExecType.RE_CREATE) {
-//                                checkStopExec = true;
-//                            }
-//                            errorMessage = "Msg_1339";
-//                            isException = true;
-//                        }
-//
-//                    }
-//
-//                    // 社員ID（異動者、勤務種別変更者）（List）のみ
-//                    if (!CollectionUtil.isEmpty(reEmployeeList) && !checkStopExec) {
-//                        // 異動者、勤務種別変更者、休職者・休業者の期間の計算
-//                        GeneralDate endDate = basicScheduleRepository.findMaxDateByListSid(reEmployeeList);
-//
-//                        if (endDate != null) {
-//                            DatePeriod periodDate = this.getMinPeriodFromStartDate(companyId);
-//                            ScheduleCreatorExecutionCommand scheduleCreatorExecutionOneEmp1 = this
-//                                    .getScheduleCreatorExecutionOneEmp(execId, procExec, loginContext,
-//                                            calculateSchedulePeriod, reEmployeeList, companyId, execItemCd);
-//                            scheduleCreatorExecutionOneEmp1.getScheduleExecutionLog()
-//                                    .setPeriod(new DatePeriod(periodDate.start(), endDate));
-//
-//							boolean isTransfer = procExec.getExecSetting()
-//                            		.getReExecCondition()
-//                            		.getRecreateTransfer()
-//                            		.equals(NotUseAtr.USE);
-//							boolean isWorkType = procExec.getExecSetting()
-//									.getReExecCondition()
-//									.getRecreatePersonChangeWkt()
-//									.equals(NotUseAtr.USE);
-//
-//                            // 異動者・勤務種別変更者の作成対象期間の計算（個人別）
-//                            listApprovalPeriodByEmp = calPeriodTransferAndWorktype.calPeriodTransferAndWorktype(
-//                                    companyId, reEmployeeList,
-//                                    scheduleCreatorExecutionOneEmp1.getScheduleExecutionLog().getPeriod(), isTransfer,
-//                                    isWorkType);
-//                            try {
-//                                // AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctx = new
-//                                // AsyncCommandHandlerContext<>(scheduleCreatorExecutionOneEmp1);
-//                                // this.scheduleExecution.handle(ctx);
-//                                CountDownLatch countDownLatch = new CountDownLatch(1);
-//                                AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false)
-//                                        .threadName(this.getClass().getName()).build(() -> {
-//                                            scheduleCreatorExecutionOneEmp1.setCountDownLatch(countDownLatch);
-//                                            AsyncTaskInfo handle1 = this.scheduleExecution
-//                                                    .handle(scheduleCreatorExecutionOneEmp1);
-//                                            dataToAsyn.setHandle(handle1);
-//
-//                                        });
-//                                try {
-//                                    executorService.submit(task).get();
-//                                    countDownLatch.await();
-//                                    if (scheduleCreatorExecutionOneEmp1.getIsExForKBT()) {
-//                                        // 再実行の場合にExceptionが発生したかどうかを確認する。
-//										if (procExec.getExecutionType() == ProcessExecType.RE_CREATE) {
-//                                            checkStopExec = true;
-//                                        }
-//                                        isException = true;
-//                                        errorMessage = "Msg_1339";
-//                                    }
-//                                } catch (Exception ex) {
-//                                    // 再実行の場合にExceptionが発生したかどうかを確認する。
-//									if (procExec.getExecutionType() == ProcessExecType.RE_CREATE) {
-//                                        checkStopExec = true;
-//                                    }
-//
-//                                    isException = true;
-//                                    errorMessage = "Msg_1339";
-//                                }
-//                                log.info("更新処理自動実行_個人スケジュール作成_END_" + context.getCommand().getExecItemCd() + "_"
-//                                        + GeneralDateTime.now());
-//                                if (checkStop(execId)) {
-//                                    checkStopExec = true;
-//                                }
-//                                runSchedule = true;
-//                            } catch (Exception e) {
-//                                // 再実行の場合にExceptionが発生したかどうかを確認する。
-//								if (procExec.getExecutionType() == ProcessExecType.RE_CREATE) {
-//                                    checkStopExec = true;
-//                                }
-//                                errorMessage = "Msg_1339";
-//                                isException = true;
-//                            }
-//                        }
-//                    }
-//                }
-//            }
+						boolean isTransfer = procExec.getReExecCondition().getRecreateTransfer().equals(NotUseAtr.USE);
+						boolean isWorkType = procExec.getReExecCondition().getRecreatePersonChangeWkt()
+								.equals(NotUseAtr.USE);
+
+						// 異動者・勤務種別変更者の作成対象期間の計算（個人別）
+						listApprovalPeriodByEmp = calPeriodTransferAndWorktype.calPeriodTransferAndWorktype(companyId,
+								reEmployeeList, scheduleCreatorExecutionOneEmp.getScheduleExecutionLog().getPeriod(),
+								isTransfer, isWorkType);
+						try {
+							// AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctx = new
+							// AsyncCommandHandlerContext<>(scheduleCreatorExecutionOneEmp1);
+							// this.scheduleExecution.handle(ctx);
+							CountDownLatch countDownLatch = new CountDownLatch(1);
+							AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false)
+									.threadName(this.getClass().getName()).build(() -> {
+										scheduleCreatorExecutionOneEmp.setCountDownLatch(countDownLatch);
+										AsyncTaskInfo handle1 = this.scheduleExecution
+												.handle(scheduleCreatorExecutionOneEmp);
+										dataToAsyn.setHandle(handle1);
+
+									});
+							try {
+								executorService.submit(task).get();
+								countDownLatch.await();
+								if (scheduleCreatorExecutionOneEmp.getIsExForKBT()) {
+									// 再実行の場合にExceptionが発生したかどうかを確認する。
+									if (procExec.getExecutionType() == ProcessExecType.RE_CREATE) {
+										checkStopExec = true;
+									}
+									isException = true;
+									errorMessage = "Msg_1339";
+								}
+							} catch (Exception ex) {
+								// 再実行の場合にExceptionが発生したかどうかを確認する。
+								if (procExec.getExecutionType() == ProcessExecType.RE_CREATE) {
+									checkStopExec = true;
+								}
+
+								isException = true;
+								errorMessage = "Msg_1339";
+							}
+							log.info("更新処理自動実行_個人スケジュール作成_END_" + context.getCommand().getExecItemCd() + "_"
+									+ GeneralDateTime.now());
+							if (checkStop(execId)) {
+								checkStopExec = true;
+							}
+						} catch (Exception e) {
+							// 再実行の場合にExceptionが発生したかどうかを確認する。
+							if (procExec.getExecutionType() == ProcessExecType.RE_CREATE) {
+								checkStopExec = true;
+							}
+							errorMessage = "Msg_1339";
+							isException = true;
+						}
+					}
+				}
+			}
 		} catch (Exception e) {
 			errorMessage = "Msg_1552";
 			isException = true;
@@ -1319,134 +1203,33 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 	}
 
 	private ScheduleCreatorExecutionCommand getScheduleCreatorExecutionAllEmp(String execId,
-			UpdateProcessAutoExecution procExec, LoginUserContext loginContext, DatePeriod calculateSchedulePeriod,
+			UpdateProcessAutoExecution procExec, DatePeriod calculateSchedulePeriod,
 			List<String> empIds, String companyId, String execItemCd) {
 		ScheduleCreatorExecutionCommand scheduleCommand = new ScheduleCreatorExecutionCommand();
-		scheduleCommand.setConfirm(false);
 		scheduleCommand.setExecutionId(execId);
 		scheduleCommand.setAutomatic(true);
 		scheduleCommand.setEmployeeIds(empIds);
 		// 2-対象開始日 ＝ 「期間の計算」で作成した開始日とする
 		// companyId
-		scheduleCommand.setCompanyId(loginContext.companyId());
+		scheduleCommand.setCompanyId(companyId);
 		// 3-対象開始日 ＝ 「期間の計算」で作成した開始日とする
 		// 4-対象終了日 ＝ 「期間の計算」で作成した終了日とする
 		// calculateSchedulePeriod
-		ScheduleExecutionLog scheduleExecutionLog = new ScheduleExecutionLog();
-		scheduleExecutionLog.setPeriod(new DatePeriod(calculateSchedulePeriod.start(), calculateSchedulePeriod.end()));
-		scheduleExecutionLog.setCompanyId(new CompanyId(loginContext.companyId()));
-		scheduleExecutionLog.setExecutionId(execId);
-		// 【ドメインモデル「作成対象詳細設定」．異動者を再作成する = "する" or ドメインモデル「作成対象詳細設定」．勤務種別変更者を再作成 = "する"
-		// の場合】
-//		boolean recreateTransfer = procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting()
-//				.isRecreateTransfer();
-//		boolean recreateWorkType = procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting()
-//				.isRecreateWorkType();
+		ScheduleExecutionLog scheduleExecutionLog = ScheduleExecutionLog.creator(
+				companyId, execId, "", new DatePeriod(calculateSchedulePeriod.start(), calculateSchedulePeriod.end()),
+				ExecutionAtr.AUTOMATIC);
 		ScheduleCreateContent s = createContent(execId, companyId, execItemCd);
-		// ScheduleCreateContent s = new ScheduleCreateContent();
-		// ReCreateContent reCreateContent = new ReCreateContent();
-		// if (recreateTransfer || recreateWorkType) {
-		// 6-実施区分 → 再作成 とする
-		s.setImplementAtr(ImplementAtr.CREATE_WORK_SCHEDULE);
-		// 7-再作成区分 → 未確定データのみ とする
-
-		// reCreateContent.setReCreateAtr(ReCreateAtr.ONLY_UNCONFIRM);
-		// 8-処理実行区分 → もう一度作り直す とする
-		// reCreateContent.setProcessExecutionAtr(ProcessExecutionAtr.REBUILD);
-		// } else {
-		// #107055
 		// ・実施区分 → 通常作成
 		s.setImplementAtr(ImplementAtr.CREATE_NEW_ONLY);
-		// ・再作成区分 → 全件 とする
-		// reCreateContent.setReCreateAtr(ReCreateAtr.ALL_CASE);
-		// ・処理実行区分 → もう一度作り直す とする
-		// reCreateContent.setProcessExecutionAtr(ProcessExecutionAtr.REBUILD);
-		// }
-		// ・9-マスタ情報再設定 → falseとする
-		// ResetAtr r = new ResetAtr();
-		// r.setResetMasterInfo(false);
-		// 10-申し送り時間再設定 → falseとする
-		// r.setResetTimeAssignment(false);
-		// ・11-作成時に確定済みにする → falseとする
-		// s.setConfirm(false);
-		// ・12-作成方法区分 → 個人情報とする
-		// s.setCreateMethodAtr(CreateMethodAtr.PERSONAL_INFO);
-		// 13-コピー開始日 → nullとする
-
-		// 14-パターンコード → nullとする
-
-		// 15-休日反映方法 → nullとする
-
-		// 16-パターン開始日 → nullとする
-
-		// 17-法内休日利用区分 → nullとする
-
-		// 18-法内休日勤務種類 → nullとする
-
-		// 19-法外休日利用区分 → nullとする
-
-		// 20-法外休日勤務種類 → nullとする
-
-		// 21-祝日利用区分 → nullとする
-
-		// 22-祝日勤務種類 → nullとする
-
-		// 23-実行区分 ＝ 自動
-		// scheduleExecutionLog.setExeAtr(ExecutionAtr.AUTOMATIC);
-		// RebuildTargetDetailsAtr rebuildTargetDetailsAtr = new
-		// RebuildTargetDetailsAtr();
-		// if (recreateTransfer) {
-		// 24-異動者を再作成 → true
-		// rebuildTargetDetailsAtr.setRecreateConverter(true);
-
-		// } else {
-		// 異動者を再作成 → false
-		// rebuildTargetDetailsAtr.setRecreateConverter(false);
-		// }
-		// if (recreateWorkType) {
-		// 25-・勤務種別変更者を再作成 → true
-		// rebuildTargetDetailsAtr.setRecreateWorkTypeChange(true);
-		// } else {
-		// ・勤務種別変更者を再作成 → false
-		// rebuildTargetDetailsAtr.setRecreateWorkTypeChange(false);
-		// }
-		// 【ドメインモデル「作成対象詳細設定」．手修正を保護する = "する" 】
-		// boolean manualCorrection =
-		// procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting()
-		// .isManualCorrection();
-		// if (manualCorrection) {
-		// 26-・手修正を保護 → true
-		// rebuildTargetDetailsAtr.setProtectHandCorrection(true);
-		// } else {
-		// 手修正を保護 → false
-		// rebuildTargetDetailsAtr.setProtectHandCorrection(false);
-		// }
-
-		// 27-再作成対象区分 → 対象者のみ
-		// reCreateContent.setRebuildTargetAtr(RebuildTargetAtr.TARGET_ONLY);
-		// 28-休職休業者を再作成 → falseとする
-		// rebuildTargetDetailsAtr.setRecreateEmployeeOffWork(false);
-		// 29-・直行直帰者を再作成 → falseとする
-		// rebuildTargetDetailsAtr.setRecreateDirectBouncer(false);
-		// 30短時間勤務者を再作成 → falseとする
-		// rebuildTargetDetailsAtr.setRecreateShortTermEmployee(false);
-		// 31勤務開始・終了時刻を再設定 → falseとする
-		// r.setResetWorkingHours(false);
-		// 32休憩開始・終了時刻を再設定 → falseとする
-		// r.setResetStartEndTime(false);
-
-		// reCreateContent.setRebuildTargetDetailsAtr(rebuildTargetDetailsAtr);
-		// s.setReCreateContent(reCreateContent);
 		scheduleCommand.setScheduleExecutionLog(scheduleExecutionLog);
 		scheduleCommand.setContent(s);
 		return scheduleCommand;
 	}
 
 	private ScheduleCreatorExecutionCommand getScheduleCreatorExecutionOneEmp(String execId,
-			UpdateProcessAutoExecution procExec, LoginUserContext loginContext, DatePeriod calculateSchedulePeriod,
+			UpdateProcessAutoExecution procExec, DatePeriod calculateSchedulePeriod,
 			List<String> empIds, String cid, String execItemCd) {
 		ScheduleCreatorExecutionCommand scheduleCommand = new ScheduleCreatorExecutionCommand();
-		scheduleCommand.setConfirm(false);
 		scheduleCommand.setAutomatic(true);
 		scheduleCommand.setEmployeeIds(empIds);
 		// 1-実行ID ＝ 取得した実行ID
@@ -1454,120 +1237,18 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		scheduleCommand.setExecutionId(execId);
 		// 2-対象開始日 ＝ 「期間の計算」で作成した開始日とする
 		// companyId
-		scheduleCommand.setCompanyId(loginContext.companyId());
+		scheduleCommand.setCompanyId(cid);
 		// 3-対象開始日 ＝ 「期間の計算」で作成した開始日とする
 		// 4-対象終了日 ＝ 「期間の計算」で作成した終了日とする
 		// calculateSchedulePeriod
-		ScheduleExecutionLog scheduleExecutionLog = new ScheduleExecutionLog();
-		scheduleExecutionLog.setPeriod(new DatePeriod(calculateSchedulePeriod.start(), calculateSchedulePeriod.end()));
-		scheduleExecutionLog.setCompanyId(new CompanyId(loginContext.companyId()));
-		scheduleExecutionLog.setExecutionId(execId);
-		// 【ドメインモデル「作成対象詳細設定」．異動者を再作成する = "する" or ドメインモデル「作成対象詳細設定」．勤務種別変更者を再作成 = "する"
-		// の場合】
-//		boolean recreateTransfer = procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting()
-//				.isRecreateTransfer();
-//		boolean recreateWorkType = procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting()
-//				.isRecreateWorkType();
+		ScheduleExecutionLog scheduleExecutionLog = ScheduleExecutionLog.creator(
+				cid, execId, "", new DatePeriod(calculateSchedulePeriod.start(), calculateSchedulePeriod.end()),
+				ExecutionAtr.AUTOMATIC);
 		ScheduleCreateContent s = createContent(execId, cid, execItemCd);
-		// ScheduleCreateContent s = new ScheduleCreateContent();
-		// s.setExecutionId(execId);
-		// ReCreateContent reCreateContent = new ReCreateContent();
-		// if (recreateTransfer || recreateWorkType) {
-		// 6-実施区分 → 再作成 とする
+		// ・実施区分 → 再作成 とする
 		s.setImplementAtr(ImplementAtr.CREATE_WORK_SCHEDULE);
-		// 7-再作成区分 → 未確定データのみ とする
-
-		// reCreateContent.setReCreateAtr(ReCreateAtr.ONLY_UNCONFIRM);
-		// 8-処理実行区分 → もう一度作り直す とする
-		// reCreateContent.setProcessExecutionAtr(ProcessExecutionAtr.REBUILD);
-		// } else {
-		// #107055
-		// ・実施区分 → 通常作成
-		s.setImplementAtr(ImplementAtr.CREATE_NEW_ONLY);
-		// ・再作成区分 → 全件 とする
-		// reCreateContent.setReCreateAtr(ReCreateAtr.ALL_CASE);
-		// ・処理実行区分 → もう一度作り直す とする
-		// reCreateContent.setProcessExecutionAtr(ProcessExecutionAtr.REBUILD);
-		// }
-		// ・9-マスタ情報再設定 → falseとする
-		// ResetAtr r = new ResetAtr();
-		// r.setResetMasterInfo(false);
-		// 10-申し送り時間再設定 → falseとする
-		// r.setResetTimeAssignment(false);
-		// ・11-作成時に確定済みにする → falseとする
-		// s.setConfirm(false);
-		// ・12-作成方法区分 → 個人情報とする
-		// s.setCreateMethodAtr(CreateMethodAtr.PERSONAL_INFO);
-		// 13-コピー開始日 → nullとする
-
-		// 14-パターンコード → nullとする
-
-		// 15-休日反映方法 → nullとする
-
-		// 16-パターン開始日 → nullとする
-
-		// 17-法内休日利用区分 → nullとする
-
-		// 18-法内休日勤務種類 → nullとする
-
-		// 19-法外休日利用区分 → nullとする
-
-		// 20-法外休日勤務種類 → nullとする
-
-		// 21-祝日利用区分 → nullとする
-
-		// 22-祝日勤務種類 → nullとする
-
-		// 23-実行区分 ＝ 自動
-		// scheduleExecutionLog.setExeAtr(ExecutionAtr.AUTOMATIC);
-
-		// RebuildTargetDetailsAtr rebuildTargetDetailsAtr = new
-		// RebuildTargetDetailsAtr();
-		// if (recreateTransfer) {
-		// 24-異動者を再作成 → true
-		// rebuildTargetDetailsAtr.setRecreateConverter(true);
-
-		// } else {
-		// 異動者を再作成 → false
-		// rebuildTargetDetailsAtr.setRecreateConverter(false);
-		// }
-		// if (recreateWorkType) {
-		// 25-・勤務種別変更者を再作成 → true
-		// rebuildTargetDetailsAtr.setRecreateWorkTypeChange(true);
-		// } else {
-		// ・勤務種別変更者を再作成 → false
-		// rebuildTargetDetailsAtr.setRecreateWorkTypeChange(false);
-		// }
-		// 【ドメインモデル「作成対象詳細設定」．手修正を保護する = "する" 】
-		// boolean manualCorrection =
-		// procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting()
-		// .isManualCorrection();
-		// if (manualCorrection) {
-		// 26-・手修正を保護 → true
-		// rebuildTargetDetailsAtr.setProtectHandCorrection(true);
-		// } else {
-		// 手修正を保護 → false
-		// rebuildTargetDetailsAtr.setProtectHandCorrection(false);
-		// }
-
-		// 27-再作成対象区分 → 対象者のみ
-		// reCreateContent.setRebuildTargetAtr(RebuildTargetAtr.TARGET_ONLY);
-		// 28-休職休業者を再作成 → falseとする
-		// rebuildTargetDetailsAtr.setRecreateEmployeeOffWork(false);
-		// 29-・直行直帰者を再作成 → falseとする
-		// rebuildTargetDetailsAtr.setRecreateDirectBouncer(false);
-		// 30短時間勤務者を再作成 → falseとする
-		// rebuildTargetDetailsAtr.setRecreateShortTermEmployee(false);
-		// 31勤務開始・終了時刻を再設定 → falseとする
-		// r.setResetWorkingHours(false);
-		// 32休憩開始・終了時刻を再設定 → falseとする
-		// r.setResetStartEndTime(false);
-
-		// reCreateContent.setRebuildTargetDetailsAtr(rebuildTargetDetailsAtr);
-		// reCreateContent.setResetAtr(r);
-		// s.setReCreateContent(reCreateContent);
-		// scheduleCommand.setScheduleExecutionLog(scheduleExecutionLog);
 		scheduleCommand.setContent(s);
+		scheduleCommand.setScheduleExecutionLog(scheduleExecutionLog);
 		return scheduleCommand;
 	}
 
@@ -1996,7 +1677,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 	 * @return 期間
 	 */
 	private DatePeriod calculateSchedulePeriod(UpdateProcessAutoExecution procExec, ProcessExecutionLog procExecLog,
-			boolean checkCreateEmployee) {
+			boolean checkCreateEmployee, String cid) {
 
 		GeneralDate today = GeneralDate.today();
 		int targetMonth = procExec.getExecSetting().getPerScheduleCreation().getPerSchedulePeriod()
@@ -2071,7 +1752,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		if (checkCreateEmployee) {
 			// 全締めから一番早い期間.開始日を取得する
 			// 開始日を取得した開始日に置き換える
-			startDate = getMinPeriodFromStartDate(AppContexts.user().companyId()).start();
+			startDate = getMinPeriodFromStartDate(cid).start();
 		}
 
 		if (procExecLog.getEachProcPeriod() == null || procExecLog.getEachProcPeriod().isPresent()) {
@@ -3560,36 +3241,28 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 				.getProcessExecutionByCidAndExecCd(companyId, execItemCd);
 		if (procExecOpt.isPresent()) {
 			procExec = procExecOpt.get();
-			val checkReTarget = procExec.getExecutionType().value;
-			// ・再作成条件{
-			// ・対象者を限定する←{
-			// ドメインモデル「更新処理自動実行」.実行種別="通常実行" →false
-			// ドメインモデル「更新処理自動実行」.実行種別="再実行" →true
-			// }
-
-			if (checkReTarget == ProcessExecType.NORMAL_EXECUTION.value) {
-				val reTargetAtr = false;
-				val narrowing = new ConditionEmployee(false, false, false, false);
-				// ・確定済みも対象とする←false
-				// ・手修正・申請反映も対象とする←false
-				RecreateCondition recreateCondition = new RecreateCondition(reTargetAtr, false, false,
-						Optional.of(narrowing));
-				s.setRecreateCondition(Optional.of(recreateCondition));
-			} else if (checkReTarget == ProcessExecType.RE_CREATE.value) {
-				val reTargetAtr = true;
-				// ・対象者の条件{
-				// ・異動者←false
-				// ・休職休業者←false
-				// ・短時間勤務者←false
-				// ・労働条件変更者←false
-				// }
-				val narrowing = new ConditionEmployee(false, false, false, false);
-				// ・確定済みも対象とする←false
-				// ・手修正・申請反映も対象とする←false
-				RecreateCondition recreateCondition = new RecreateCondition(reTargetAtr, false, false,
-						Optional.of(narrowing));
-				s.setRecreateCondition(Optional.of(recreateCondition));
-			}
+            // 対象者を限定する←{
+            // 　ドメインモデル「更新処理自動実行」.実行種別="通常実行" →false
+            // 　　　　ドメインモデル「更新処理自動実行」.実行種別="再実行" →true
+        	// 　　}
+            boolean reTargetAtr = procExec.getExecutionType().equals(ProcessExecType.RE_CREATE);
+            // 確定済みも対象とする←false
+            boolean reOverwriteConfirmed = false;
+            // 手修正・申請反映も対象とする←false
+            boolean reOverwriteRevised = false;
+            // 異動者←ドメインモデル「更新処理自動実行」.再実行条件.異動者を再作成する
+            boolean transfer = procExec.getReExecCondition().getRecreateTransfer().equals(NotUseAtr.USE);
+            // 休職休業者←ドメインモデル「更新処理自動実行」.実行種別.休職者・休業者を再作成
+            boolean leaveOfAbsence = procExec.getReExecCondition().getRecreateLeave().equals(NotUseAtr.USE);
+            // 短時間勤務者←false
+            boolean shortWorkingHours = false;
+            // 労働条件変更者←false
+            boolean changedWorkingConditions = false;
+            ConditionEmployee conditionEmployee = new ConditionEmployee(transfer, leaveOfAbsence, 
+            		shortWorkingHours, changedWorkingConditions);
+            RecreateCondition recreateCondition = new RecreateCondition(reTargetAtr, reOverwriteConfirmed, 
+            		reOverwriteRevised, Optional.of(conditionEmployee));
+            s.setRecreateCondition(Optional.of(recreateCondition));
 		}
 		return s;
 	}
