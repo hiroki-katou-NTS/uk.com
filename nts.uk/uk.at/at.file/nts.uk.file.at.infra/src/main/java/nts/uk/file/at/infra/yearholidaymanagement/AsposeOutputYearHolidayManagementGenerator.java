@@ -847,7 +847,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		cells.get(DES_ROW, 0).setValue(TextResource.localize("KDR002_11"));
 		cells.get(DES_ROW, PRINT_DATE_COL).setValue(this.genDateText(query));
 		cells.get(DES_ROW, PRINT_EXT_CONDITION_COL).setValue(this.generateExtractionCondition(query));
-		cells.get(DES_ROW, PRINT_EXT_TEXT).setValue(TextResource.localize("KDR002_68"));
+		cells.get(DES_ROW, PRINT_EXT_TEXT).setValue(query.isDoubleTrack() ? TextResource.localize("KDR002_68") : "");
 		
 		cells.get(HEADER_ROW, 0).setValue(TextResource.localize("KDR002_12"));
 		cells.get(HEADER_ROW, 2).setValue(TextResource.localize("KDR002_13"));
@@ -990,6 +990,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		}
 		return result;
 	}
+	
 	
 	private String generateTimeText(AnnualHolidayGrantDetail detail) {
 		String hour = String.valueOf(detail.getUseDays() / 60);

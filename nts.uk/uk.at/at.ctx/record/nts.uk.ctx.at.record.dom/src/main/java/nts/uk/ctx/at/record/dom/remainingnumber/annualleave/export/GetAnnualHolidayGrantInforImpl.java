@@ -276,7 +276,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		}
 		AnnualLeaveRemainingHistory annRemainHisInfor = lstAnn.get(0);
 		DatePeriod datePeriodClosure = ClosureService.getClosurePeriod(require, annRemainHisInfor.getClosureId().value, annRemainHisInfor.getYearMonth());
-		return Optional.of(datePeriodClosure.start());
+		return Optional.ofNullable(datePeriodClosure.start());
 	}
 	
 	@Override
