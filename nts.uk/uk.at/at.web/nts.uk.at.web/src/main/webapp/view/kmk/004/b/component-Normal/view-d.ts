@@ -139,6 +139,13 @@ module nts.uk.at.view.kmk004.b {
 						vm.checkDelete(false);
 					}
 				});
+
+				vm.emloyment.code
+				.subscribe(() => {
+					$(document).ready(function () {
+						$('.listbox').focus();
+					});
+				});
 		}
 
 		mounted() {

@@ -149,6 +149,13 @@ module nts.uk.at.view.kmk004.b {
 				$('.listbox').focus();
 			});
 
+			vm.selectedId
+				.subscribe(() => {
+					$(document).ready(function () {
+						$('.listbox').focus();
+					});
+				});
+
 		}
 
 		add() {
