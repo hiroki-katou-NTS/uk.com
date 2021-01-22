@@ -269,7 +269,10 @@ module nts.uk.at.view.knr002.a {
                     ],
                     ntsControls: [
                         { name: 'Button7', text: getText("KNR002_50"), click: function(e: any) { vm.openKNR002BDialog(e) }, controlType: 'Button' },
-                        { name: 'Button8', text: getText("KNR002_51"), click: function(e: any) { vm.openKNR002CDialog(e) }, controlType: 'Button' },
+                        { name: 'Button8', text: getText("KNR002_51"), click: function(e: any) { 
+                            e.totalRegisteredTer = data.length;
+                            vm.openKNR002CDialog(e) 
+                        }, controlType: 'Button' },
                         { name: 'Button9', text: getText("KNR002_52"), click: function(e: any) { vm.openKNR002GDialog(e) }, controlType: 'Button' }
                     ],
                 });

@@ -18,6 +18,8 @@ module nts.uk.at.view.knr002.c {
             smallItemData: KnockoutObservableArray<RemoteSettingsDto> = ko.observableArray([]);
             rowData: KnockoutObservable<RemoteSettingsDto> = ko.observable();
 
+            totalRegisteredTer: any;
+
             // line 1
             empInfoTerCode: KnockoutObservable<string> = ko.observable();
             empInfoTerName: KnockoutObservable<string> = ko.observable();
@@ -217,6 +219,10 @@ module nts.uk.at.view.knr002.c {
 
                 let status: boolean = true;
 
+                if (vm.settingData.length == 0 || vm.totalRegisteredTer > 0) {
+                    status = false;
+                }
+
                 blockUI.invisible();
                 service.register(command)
                 .done((res: any) => {
@@ -242,6 +248,8 @@ module nts.uk.at.view.knr002.c {
                         .ifNo(() => {
                             nts.uk.ui.windows.close();
                         })
+                    } else {
+                        nts.uk.ui.windows.close();
                     }
                 });
             }
@@ -358,6 +366,7 @@ module nts.uk.at.view.knr002.c {
                 vm.empInfoTerCode(data.empInfoTerCode);
                 vm.empInfoTerName(data.empInfoTerName);
                 vm.displayFlag(data.displayFlag);
+                vm.totalRegisteredTer = data.totalRegisteredTer;
 
                 service.getAll(data.empInfoTerCode)
                 .done((res) => {

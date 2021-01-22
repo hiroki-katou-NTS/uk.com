@@ -92,3 +92,7 @@
 .ui-iggrid-tablebody {
 	white-space: nowrap;
 }
+
+..ui-iggrid-tablebody > tr > td {
+	padding: 0;
+}

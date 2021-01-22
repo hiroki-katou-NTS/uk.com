@@ -40,9 +40,15 @@ module nts.uk.at.view.knr002.e {
                     if (value == MODE.BACKUP) {
                         vm.loadLocalSettings(vm.initData().listEmpInfoTerminal[0].empInfoTerCode);
                         vm.instructions(getText("KNR002_254"));
+                        setTimeout(() => {
+                            $('#bak-grid1_container').focus();
+                        }, 0);
                     } else {
                         vm.loadBackupContent(vm.initData().listTimeRecordSetFormatBakEDto[0].empInfoTerCode);
                         vm.instructions(getText("KNR002_255"));
+                        setTimeout(() => {
+                            $('#bak-grid2_container').focus();
+                        }, 0);
                     }
                 }); 
             }
@@ -201,6 +207,10 @@ module nts.uk.at.view.knr002.e {
                 });
 
                 $('#bak-grid1').igGridSelection('selectRow', vm.selectedRow());
+
+                if (vm.selectedMode() == MODE.BACKUP) {
+                    $('#bak-grid1_container').focus();
+                }
             }
 
             private loadLocalSettings(code: string) {
@@ -298,7 +308,7 @@ module nts.uk.at.view.knr002.e {
                         vm.loadSettingGrid();
                         vm.loadBakGrid();
                         vm.loadInstalledTerminals(vm.selectedMode());
-                        $('#bak-grid1_container').focus();
+                        
                     }
                 })
                 .fail((res: any) => console.log(res))
