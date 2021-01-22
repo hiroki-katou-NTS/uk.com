@@ -6,8 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AttendanceTimesForAggregation;
+import javax.ejb.Stateless;
+
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AttendanceTimeTotalizationService;
+import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AttendanceTimesForAggregation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 /**
@@ -16,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.At
  * @author lan_lt
  *
  */
+@Stateless
 public class CountWorkingTimeOfPerCtgService {
 	
 	/**
@@ -23,23 +26,25 @@ public class CountWorkingTimeOfPerCtgService {
 	 * @param dailyWorks 日別勤怠リスト
 	 * @return
 	 */
-	public Map<String, Map<AttendanceTimesForAggregation, BigDecimal>> get(List<IntegrationOfDaily> dailyWorks) {
+	public static Map<String, Map<AttendanceTimesForAggregation, BigDecimal>> get(List<IntegrationOfDaily> dailyWorks) {
 		
 		List<AttendanceTimesForAggregation> attendanceUnits = Arrays.asList(AttendanceTimesForAggregation.WORKING_TOTAL
 				, AttendanceTimesForAggregation.WORKING_WITHIN
 				, AttendanceTimesForAggregation.WORKING_EXTRA);
 		
-		Map<String, List<AttendanceTimeOfDailyAttendance>> dailWorksBySid = dailyWorks.stream()
+		Map<String, List<AttendanceTimeOfDailyAttendance>> dailyWorksBySid= dailyWorks.stream()
 				.collect(
 						Collectors.groupingBy(dailyWork -> dailyWork.getEmployeeId(),
 								Collectors.collectingAndThen(Collectors.toList(), dailyWork -> dailyWork.stream()
 										.map(c -> c.getAttendanceTimeOfDailyPerformance())
 										.filter(c -> c.isPresent())
-										.map(c -> c.get()).collect(Collectors.toList()))));
+										.map(c -> c.get()).collect(Collectors.toList()))
+								)
+						);
 		
-		return dailWorksBySid.entrySet().stream()
-				.collect(Collectors.toMap(dailyWork -> dailyWork.getKey(), dailyWork -> {
-					return AttendanceTimeTotalizationService.totalize(attendanceUnits, dailyWork.getValue());
+		return dailyWorksBySid.entrySet().stream()
+				.collect(Collectors.toMap(Map.Entry::getKey, entry -> {
+					return AttendanceTimeTotalizationService.totalize(attendanceUnits, entry.getValue());
 				}));
 	}
 
