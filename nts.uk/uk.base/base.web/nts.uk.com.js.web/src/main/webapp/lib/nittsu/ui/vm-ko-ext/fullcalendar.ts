@@ -9,9 +9,21 @@ module nts.uk.ui.components.fullcalendar {
     type EventContentArg = FullCalendar.EventContentArg;
     type CustomButtonInput = FullCalendar.CustomButtonInput;
 
+    type EventClickArg = FullCalendar.EventClickArg;
     type EventDropArg = FullCalendar.EventDropArg;
     type EventDragStopArg = FullCalendar.EventDragStopArg;
     type EventDragStartArg = FullCalendar.EventDragStartArg;
+
+    type EventResizeStartArg = FullCalendar.EventResizeStartArg;
+    type EventResizeDoneArg = FullCalendar.EventResizeDoneArg;
+
+    type DateSelectArg = FullCalendar.DateSelectArg;
+    type EventRemoveArg = FullCalendar.EventRemoveArg;
+    type EventReceiveLeaveArg = FullCalendar.EventReceiveLeaveArg;
+    type DayHeaderContentArg = FullCalendar.DayHeaderContentArg;
+    type SlotLabelContentArg = FullCalendar.SlotLabelContentArg;
+
+    type JQueryEvent = JQueryEventObject & { originalEvent: WheelEvent & { wheelDelta: number; } };
 
     type EventSlim = {
         start: Date;
@@ -1177,9 +1189,9 @@ module nts.uk.ui.components.fullcalendar {
                     });
                 },
                 dropAccept: () => !!ko.unwrap(editable),
-                dayHeaderContent: (opts: FullCalendar.DayHeaderContentArg) => moment(opts.date).format('DD(ddd)'),
+                dayHeaderContent: (opts: DayHeaderContentArg) => moment(opts.date).format('DD(ddd)'),
                 selectAllow: (evt) => evt.start.getDate() === evt.end.getDate(),
-                slotLabelContent: (opts: FullCalendar.SlotLabelContentArg) => {
+                slotLabelContent: (opts: SlotLabelContentArg) => {
                     const { milliseconds } = opts.time;
 
                     const min = milliseconds / 60000;
@@ -1277,7 +1289,7 @@ module nts.uk.ui.components.fullcalendar {
                         }
                     }
                 },
-                eventClick: (args: FullCalendar.EventClickArg) => {
+                eventClick: (args: EventClickArg) => {
                     const { event } = args;
                     const shift = ko.unwrap<boolean>(dataEvent.shift);
                     /**
@@ -1389,7 +1401,7 @@ module nts.uk.ui.components.fullcalendar {
                             }));
                     }
                 },
-                eventResizeStart: (arg: FullCalendar.EventResizeStartArg) => {
+                eventResizeStart: (arg: EventResizeStartArg) => {
                     // remove new event (with no data) & background event
                     removeNewEvent(arg.event);
 
@@ -1407,7 +1419,7 @@ module nts.uk.ui.components.fullcalendar {
 
                     popupPosition.event(null);
                 },
-                eventResize: (arg: FullCalendar.EventResizeDoneArg) => {
+                eventResize: (arg: EventResizeDoneArg) => {
                     const { event } = arg;
                     const { start, end, title, extendedProps, id, borderColor, groupId } = event;
 
@@ -1429,7 +1441,7 @@ module nts.uk.ui.components.fullcalendar {
                             }));
                     }
                 },
-                select: (arg: FullCalendar.DateSelectArg) => {
+                select: (arg: DateSelectArg) => {
                     const { start, end } = arg;
 
                     // clean selection
@@ -1451,7 +1463,7 @@ module nts.uk.ui.components.fullcalendar {
                             }
                         }));
                 },
-                eventRemove: (args: FullCalendar.EventRemoveArg) => {
+                eventRemove: (args: EventRemoveArg) => {
                     const { event } = args;
 
                     // remove event from event sources
@@ -1468,7 +1480,7 @@ module nts.uk.ui.components.fullcalendar {
                         $caches.new(null);
                     }
                 },
-                eventReceive: (info: FullCalendar.EventReceiveLeaveArg) => {
+                eventReceive: (info: EventReceiveLeaveArg) => {
                     const { event } = info;
                     const {
                         title,
@@ -1781,25 +1793,23 @@ module nts.uk.ui.components.fullcalendar {
 
         private initalEvents() {
             const vm = this;
-            const { $el, params, dataEvent, popupPosition } = vm;
+            const { $el, params, calendar, dataEvent, popupPosition } = vm;
 
             $($el)
-                .on('mousewheel', (evt) => {
+                .on('mousewheel', (evt: JQueryEvent) => {
                     if (ko.unwrap(dataEvent.shift) === true) {
                         evt.preventDefault();
 
-                        if (ko.unwrap(dataEvent.shift) === true) {
-                            const { deltaY } = evt.originalEvent as WheelEvent;
-                            const slotDuration = ko.unwrap(params.slotDuration);
+                        const { deltaY, wheelDelta } = evt.originalEvent;
+                        const slotDuration = ko.unwrap(params.slotDuration);
 
-                            if (ko.isObservable(params.slotDuration)) {
-                                const index = durations.indexOf(slotDuration);
+                        if (!version.match(/IE/) && ['timeGridDay', 'timeGridWeek'].indexOf(calendar.view.type) !== -1 && ko.isObservable(params.slotDuration)) {
+                            const index = durations.indexOf(slotDuration);
 
-                                if (deltaY < 0) {
-                                    params.slotDuration(durations[Math.max(index - 1, 0)]);
-                                } else {
-                                    params.slotDuration(durations[Math.min(index + 1, durations.length - 1)]);
-                                }
+                            if ((wheelDelta || deltaY) < 0) {
+                                params.slotDuration(durations[Math.max(index - 1, 0)]);
+                            } else {
+                                params.slotDuration(durations[Math.min(index + 1, durations.length - 1)]);
                             }
                         }
                     }
@@ -1809,6 +1819,10 @@ module nts.uk.ui.components.fullcalendar {
                 .registerEvent('mouseup', () => {
                     dataEvent.mouse(false);
                     dataEvent.target(null);
+                })
+                .registerEvent('mousewheel', () => {
+                    popupPosition.event(null);
+                    popupPosition.copyDay(null);
                 })
                 .registerEvent('mousedown', (evt) => {
                     const $tg = $(evt.target);
@@ -1842,29 +1856,29 @@ module nts.uk.ui.components.fullcalendar {
                 })
                 // store data keyCode
                 .registerEvent('keydown', (evt: JQueryEventObject) => {
-                    if (evt.keyCode === 16 || evt.shiftKey) {
+                    if (evt.keyCode === 16 || evt.shiftKey || evt.which === 16) {
                         dataEvent.shift(true);
                     }
 
-                    if (evt.keyCode === 17 || evt.ctrlKey) {
+                    if (evt.keyCode === 17 || evt.ctrlKey || evt.which === 17) {
                         dataEvent.ctrl(true);
                     }
 
-                    if (evt.keyCode === 18 || evt.altKey) {
+                    if (evt.keyCode === 18 || evt.altKey || evt.which === 18) {
                         dataEvent.alt(true);
                     }
                 })
                 // remove data keyCode
                 .registerEvent('keyup', (evt: JQueryEventObject) => {
-                    if (evt.keyCode === 16 || evt.shiftKey) {
+                    if (evt.keyCode === 16 || evt.shiftKey || evt.which === 16) {
                         dataEvent.shift(false);
                     }
 
-                    if (evt.keyCode === 17 || evt.ctrlKey) {
+                    if (evt.keyCode === 17 || evt.ctrlKey || evt.which === 17) {
                         dataEvent.ctrl(false);
                     }
 
-                    if (evt.keyCode === 18 || evt.altKey) {
+                    if (evt.keyCode === 18 || evt.altKey || evt.which === 18) {
                         dataEvent.alt(false);
                     }
 
@@ -1893,10 +1907,6 @@ module nts.uk.ui.components.fullcalendar {
                     }
                 })
                 .registerEvent('resize', () => {
-                    popupPosition.event(null);
-                    popupPosition.copyDay(null);
-                })
-                .registerEvent('mousewheel', () => {
                     popupPosition.event(null);
                     popupPosition.copyDay(null);
                 });
