@@ -112,10 +112,10 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
                     if (vm.timeLeaveRemaining().annualTimeLeaveRemainingDays <= 0)
                         return nts.uk.time.format.byId("Time_Short_HM", vm.timeLeaveRemaining().annualTimeLeaveRemainingTime);
                     else if (vm.timeLeaveRemaining().annualTimeLeaveRemainingTime <= 0)
-                        return vm.$i18n("KAF12_49", [vm.timeLeaveRemaining().annualTimeLeaveRemainingDays.toString()]);
+                        return vm.$i18n("KAF012_49", [vm.timeLeaveRemaining().annualTimeLeaveRemainingDays.toString()]);
                     else
                         return vm.$i18n(
-                            "KAF12_50",
+                            "KAF012_50",
                             [
                                 vm.timeLeaveRemaining().annualTimeLeaveRemainingDays.toString(),
                                 nts.uk.time.format.byId("Time_Short_HM", vm.timeLeaveRemaining().annualTimeLeaveRemainingTime)
@@ -134,10 +134,10 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
                     if (vm.timeLeaveRemaining().childCareRemainingDays <= 0)
                         return nts.uk.time.format.byId("Time_Short_HM", vm.timeLeaveRemaining().childCareRemainingTime);
                     else if (vm.timeLeaveRemaining().childCareRemainingTime <= 0)
-                        return vm.$i18n("KAF12_49", [vm.timeLeaveRemaining().childCareRemainingDays.toString()]);
+                        return vm.$i18n("KAF012_49", [vm.timeLeaveRemaining().childCareRemainingDays.toString()]);
                     else
                         return vm.$i18n(
-                            "KAF12_50",
+                            "KAF012_50",
                             [
                                 vm.timeLeaveRemaining().childCareRemainingDays.toString(),
                                 nts.uk.time.format.byId("Time_Short_HM", vm.timeLeaveRemaining().childCareRemainingTime)
@@ -156,10 +156,10 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
                     if (vm.timeLeaveRemaining().careRemainingDays <= 0)
                         return nts.uk.time.format.byId("Time_Short_HM", vm.timeLeaveRemaining().careRemainingTime);
                     else if (vm.timeLeaveRemaining().careRemainingTime <= 0)
-                        return vm.$i18n("KAF12_49", [vm.timeLeaveRemaining().careRemainingDays.toString()]);
+                        return vm.$i18n("KAF012_49", [vm.timeLeaveRemaining().careRemainingDays.toString()]);
                     else
                         return vm.$i18n(
-                            "KAF12_50",
+                            "KAF012_50",
                             [
                                 vm.timeLeaveRemaining().careRemainingDays.toString(),
                                 nts.uk.time.format.byId("Time_Short_HM", vm.timeLeaveRemaining().careRemainingTime)
