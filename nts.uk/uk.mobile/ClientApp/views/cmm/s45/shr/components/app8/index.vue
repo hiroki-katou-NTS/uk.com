@@ -43,7 +43,7 @@
                             <span>{{'KAFS12_38' | i18n($dt.timedr(data.applyTime.super60AppTime))}}</span>
                         </div>
                         <div class="content-div" v-if="params.appDetail.reflectSetting.condition.substituteLeaveTime == 1 && params.appDetail.timeLeaveManagement.timeSubstituteLeaveMng.timeSubstituteLeaveMngAtr">
-                            <span>{{'KAFS12_39' | i18n((data.applyTime.substituteAppTime))}}</span>
+                            <span>{{'KAFS12_39' | i18n($dt.timedr(data.applyTime.substituteAppTime))}}</span>
                         </div>
                         <div class="content-div" v-if="params.appDetail.reflectSetting.condition.annualVacationTime == 1 && params.appDetail.timeLeaveManagement.timeAnnualLeaveMng.timeAnnualLeaveMngAtr">
                             <span>{{'KAFS12_40' | i18n($dt.timedr(data.applyTime.annualAppTime))}}</span>
