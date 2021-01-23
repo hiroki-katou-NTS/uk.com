@@ -179,9 +179,9 @@ export class KafS12ApplyTimeComponent extends Vue {
             if (self.timeLeaveRemaining.annualTimeLeaveRemainingDays <= 0) {
                 return self.$dt.timept(self.timeLeaveRemaining.annualTimeLeaveRemainingTime);
             } else if (self.timeLeaveRemaining.annualTimeLeaveRemainingTime <= 0) {
-                return self.$i18n('KAF12_49', self.timeLeaveRemaining.annualTimeLeaveRemainingDays.toString());
+                return self.$i18n('KAF012_49', self.timeLeaveRemaining.annualTimeLeaveRemainingDays.toString());
             } else {
-                return self.$i18n('KAF12_50', [
+                return self.$i18n('KAF012_50', [
                     self.timeLeaveRemaining.annualTimeLeaveRemainingDays.toString(),
                     self.$dt.timept(self.timeLeaveRemaining.annualTimeLeaveRemainingTime)
                 ]);
@@ -197,9 +197,9 @@ export class KafS12ApplyTimeComponent extends Vue {
             if (self.timeLeaveRemaining.childCareRemainingDays <= 0) {
                 return self.$dt.timept(self.timeLeaveRemaining.childCareRemainingTime);
             } else if (self.timeLeaveRemaining.childCareRemainingTime <= 0) {
-                return self.$i18n('KAF12_49', self.timeLeaveRemaining.childCareRemainingDays.toString());
+                return self.$i18n('KAF012_49', self.timeLeaveRemaining.childCareRemainingDays.toString());
             } else {
-                return self.$i18n('KAF12_50', [
+                return self.$i18n('KAF012_50', [
                     self.timeLeaveRemaining.childCareRemainingDays.toString(),
                     self.$dt.timept(self.timeLeaveRemaining.childCareRemainingTime)
                 ]);
@@ -215,9 +215,9 @@ export class KafS12ApplyTimeComponent extends Vue {
             if (self.timeLeaveRemaining.careRemainingDays <= 0) {
                 return self.$dt.timept(self.timeLeaveRemaining.careRemainingTime);
             } else if (self.timeLeaveRemaining.careRemainingTime <= 0) {
-                return self.$i18n('KAF12_49', self.timeLeaveRemaining.careRemainingDays.toString());
+                return self.$i18n('KAF012_49', self.timeLeaveRemaining.careRemainingDays.toString());
             } else {
-                return self.$i18n('KAF12_50', [
+                return self.$i18n('KAF012_50', [
                     self.timeLeaveRemaining.careRemainingDays.toString(),
                     self.$dt.timept(self.timeLeaveRemaining.careRemainingTime)
                 ]);
