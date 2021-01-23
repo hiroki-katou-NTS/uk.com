@@ -15,7 +15,12 @@ import { component, Prop } from '@app/core/component';
                     },
                     messageId: 'MsgB_30'
                 },
-                constraint: 'AttendanceClock'
+                start: {
+                    constraint: 'AttendanceClock'
+                },
+                end: {
+                    constraint: 'AttendanceClock'
+                }
             }
         }
     },

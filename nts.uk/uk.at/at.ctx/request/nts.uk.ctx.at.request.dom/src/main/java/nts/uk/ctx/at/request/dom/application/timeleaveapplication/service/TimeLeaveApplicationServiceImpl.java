@@ -13,6 +13,7 @@ import nts.uk.ctx.at.request.dom.adapter.record.remainingnumber.holidayover60h.G
 import nts.uk.ctx.at.request.dom.adapter.record.remainingnumber.specialholiday.GetSpecialRemainingWithinPeriodAdapter;
 import nts.uk.ctx.at.request.dom.adapter.record.remainingnumber.specialholiday.TotalResultOfSpecialLeaveImport;
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.AnnLeaveRemainNumberAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaReferenceDateImport;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
@@ -38,6 +39,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ComplileInPeriodOfSpecialLeaveParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInfor;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTblRepository;
@@ -525,13 +527,13 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
                 false,
                 timeLeaveApplication.getAppDate().getApplicationDate(),
                 new DatePeriod(
-                        timeLeaveApplication.getOpAppStartDate().isPresent() ? timeLeaveApplication.getOpAppStartDate().get().getApplicationDate() : null,
-                        timeLeaveApplication.getOpAppEndDate().isPresent() ? timeLeaveApplication.getOpAppEndDate().get().getApplicationDate() : null
+                        timeLeaveApplication.getOpAppStartDate().map(ApplicationDate::getApplicationDate).orElse(timeLeaveApplication.getAppDate().getApplicationDate()),
+                        timeLeaveApplication.getOpAppEndDate().map(ApplicationDate::getApplicationDate).orElse(timeLeaveApplication.getAppDate().getApplicationDate())
                 ),
                 true,
                 Collections.emptyList(),
                 Collections.emptyList(),
-                getAppData(timeLeaveApplication.getApplication()),
+                getAppData(timeLeaveApplication),
                 timeDigestAppType == TimeDigestAppType.USE_COMBINATION ? chkHoursOfSubHoliday : timeDigestAppType == TimeDigestAppType.TIME_OFF,
                 false,
                 timeDigestAppType == TimeDigestAppType.USE_COMBINATION ? chkHoursOfHoliday : timeDigestAppType == TimeDigestAppType.TIME_ANNUAL_LEAVE,
@@ -572,26 +574,36 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
         }
     }
 
-    private List<AppRemainCreateInfor> getAppData(Application application) {
-        List<AppRemainCreateInfor> apps = new ArrayList<>();
-        apps.add(
-            new AppRemainCreateInfor(
-                application.getEmployeeID(),
-                application.getAppID(),
-                application.getInputDate(),
-                application.getAppDate().getApplicationDate(),
-                EnumAdaptor.valueOf(application.getPrePostAtr().value, PrePostAtr.class),
-                EnumAdaptor.valueOf(application.getAppType().value, ApplicationType.class),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                Optional.empty(),
-                application.getOpAppStartDate().isPresent() ? Optional.of(application.getOpAppStartDate().get().getApplicationDate()) : Optional.empty(),
-                application.getOpAppEndDate().isPresent() ? Optional.of(application.getOpAppEndDate().get().getApplicationDate()) : Optional.empty(),
-                Collections.emptyList()
-            )
-        );
+    private List<AppRemainCreateInfor> getAppData(TimeLeaveApplication application) {
+        List<AppRemainCreateInfor> apps = application.getLeaveApplicationDetails().stream().map(detail -> {
+            List<GeneralDate> listAppDates = new ArrayList<>();
+            if (application.getOpAppStartDate().isPresent() && application.getOpAppEndDate().isPresent()) {
+                listAppDates.addAll(new DatePeriod(application.getOpAppStartDate().get().getApplicationDate(), application.getOpAppEndDate().get().getApplicationDate()).datesBetween());
+            } else {
+                listAppDates.add(application.getAppDate().getApplicationDate());
+            }
+            return new AppRemainCreateInfor(
+                    application.getEmployeeID(),
+                    application.getAppID(),
+                    application.getInputDate(),
+                    application.getAppDate().getApplicationDate(),
+                    EnumAdaptor.valueOf(application.getPrePostAtr().value, PrePostAtr.class),
+                    EnumAdaptor.valueOf(application.getAppType().value, ApplicationType.class),
+                    Optional.empty(),
+                    Optional.empty(),
+                    Optional.of(new VacationTimeInfor(
+                            detail.getTimeDigestApplication().getOvertime60H().v(),
+                            detail.getAppTimeType(),
+                            detail.getTimeDigestApplication().getTimeOff().v(),
+                            detail.getTimeDigestApplication().getTimeAnnualLeave().v()
+                    )),
+                    Optional.empty(),
+                    Optional.empty(),
+                    application.getOpAppStartDate().map(ApplicationDate::getApplicationDate),
+                    application.getOpAppEndDate().map(ApplicationDate::getApplicationDate),
+                    listAppDates
+            );
+        }).collect(Collectors.toList());
 
         return apps;
     }

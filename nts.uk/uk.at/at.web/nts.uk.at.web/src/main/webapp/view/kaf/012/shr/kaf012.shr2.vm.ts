@@ -182,7 +182,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                                                                 inputFormat: 'time', 
                                                                 mode: 'time',
                                                                 option: {defaultValue: '0:00'},
-                                                                enable: !$parents[1].viewMode() &amp;&amp; calculatedTime() > 0 &amp;&amp; (substituteAppTime() != 0 &#124;&#124; $parents[1].leaveType() == 6)
+                                                                enable: !$parents[1].viewMode() &amp;&amp; ($parents[1].leaveType() != 6 &#124;&#124; calculatedTime() > 0)
                                                             }"/>
                                     </div>
                                 </td>
