@@ -36,7 +36,8 @@ module nts.uk.at.view.kaf012.b.viewmodel {
                                                         timeLeaveManagement: timeLeaveManagement,
                                                         timeLeaveRemaining: timeLeaveRemaining,
                                                         leaveType: leaveType,
-                                                        application: application
+                                                        application: application,
+                                                        specialLeaveFrame: specialLeaveFrame
                                                     }}"/>
             <div class="table">
                 <div class="cell" style="min-width: 825px; padding-right: 10px;">

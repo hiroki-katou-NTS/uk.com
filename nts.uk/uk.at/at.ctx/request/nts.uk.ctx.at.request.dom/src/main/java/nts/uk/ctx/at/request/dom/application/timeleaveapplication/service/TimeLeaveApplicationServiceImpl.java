@@ -373,12 +373,14 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
      */
     @Override
     public TimeLeaveApplicationOutput getSpecialLeaveRemainingInfo(String companyId, Optional<Integer> specialFrameNo, TimeLeaveApplicationOutput timeLeaveAppOutput) {
+        timeLeaveAppOutput.getTimeVacationRemaining().getSpecialTimeFrames().clear();
         if (specialFrameNo.isPresent()) {
             // ドメインモデル「特別休暇」を取得する
-            List<SpecialHoliday> specialHolidayList = specialHolidayRepository.findByCompanyId(companyId);
+            List<SpecialHoliday> specialHolidayList = specialHolidayRepository.findByCompanyIdWithTargetItem(companyId);
             Optional<SpecialHoliday> specialHoliday = specialHolidayList.stream().filter(i -> i.getTargetItem().getFrameNo().contains(specialFrameNo.get())).findFirst();
-            if (!specialHoliday.isPresent())
+            if (!specialHoliday.isPresent()) {
                 return timeLeaveAppOutput;
+            }
 
             // [NO.273]期間中の特別休暇残数を取得
             TotalResultOfSpecialLeaveImport result = getSpecialRemainingWithinPeriodAdapter.algorithm(
@@ -393,9 +395,15 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
                     Optional.empty()
             );
 
-            timeLeaveAppOutput.getTimeVacationRemaining().getSpecialTimeFrames().add(
-                    new TimeSpecialVacationRemaining(10, 10, specialFrameNo.get())
-            );
+            if (result.getAtEndPeriodInfo() != null && result.getAtEndPeriodInfo().isPresent()) {
+                timeLeaveAppOutput.getTimeVacationRemaining().getSpecialTimeFrames().add(
+                        new TimeSpecialVacationRemaining(
+                                result.getAtEndPeriodInfo().get().getRemainingInfo().getSpecialLeaveWithMinus().getRemaining().getTotal().getDays(),
+                                result.getAtEndPeriodInfo().get().getRemainingInfo().getSpecialLeaveWithMinus().getRemaining().getTotal().getTime().orElse(0),
+                                specialFrameNo.get()
+                        )
+                );
+            }
         }
         return timeLeaveAppOutput;
     }

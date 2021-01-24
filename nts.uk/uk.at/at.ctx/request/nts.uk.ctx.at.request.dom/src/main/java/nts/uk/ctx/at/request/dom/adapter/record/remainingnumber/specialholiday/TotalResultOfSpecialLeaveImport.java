@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.request.dom.adapter.record.remainingnumber.specialholiday;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.gul.util.value.Finally;
 
 import java.util.List;
@@ -8,6 +11,9 @@ import java.util.Optional;
 /**
  * 特別休暇の集計結果
  */
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class TotalResultOfSpecialLeaveImport {
     // エラー情報
     private List<SpecialLeaveError> errorInfo;

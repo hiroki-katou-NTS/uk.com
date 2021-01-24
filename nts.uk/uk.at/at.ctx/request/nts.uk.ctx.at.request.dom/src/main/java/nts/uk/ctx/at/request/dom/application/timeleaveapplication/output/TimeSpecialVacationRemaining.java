@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class TimeSpecialVacationRemaining {
 
     // 特別休暇の残日数
-    private int dayOfSpecialLeave;
+    private double dayOfSpecialLeave;
 
     // 特別休暇の残時間
     private int timeOfSpecialLeave;

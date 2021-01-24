@@ -64,6 +64,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
         timeLeaveRemaining: KnockoutObservable<TimeLeaveRemaining>;
         leaveType: KnockoutObservable<number>;
         application: KnockoutObservable<any>;
+        specialLeaveFrame: KnockoutObservable<number>;
 
         display1: KnockoutObservable<boolean>;
         substituteRemaining: KnockoutObservable<string>;
@@ -90,6 +91,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
             vm.timeLeaveRemaining = params.timeLeaveRemaining;
             vm.leaveType = params.leaveType;
             vm.application = params.application;
+            vm.specialLeaveFrame = params.specialLeaveFrame;
             vm.display1 = ko.computed(() => {
                 return !!vm.timeLeaveManagement()
                     && vm.timeLeaveManagement().timeSubstituteLeaveMng.timeSubstituteLeaveMngAtr
@@ -189,9 +191,25 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
                             && vm.reflectSetting().condition.specialVacationTime == 1
                         )
                     )
-                    && (!vm.timeLeaveRemaining() || _.isEmpty(vm.timeLeaveRemaining().specialTimeFrames));
+                    && (vm.timeLeaveRemaining() && !_.isEmpty(vm.timeLeaveRemaining().specialTimeFrames));
             });
             vm.specialRemaining = ko.computed(() => {
+                if (vm.timeLeaveRemaining() && vm.timeLeaveRemaining().specialTimeFrames.length > 0) {
+                    const tmp = _.find(vm.timeLeaveRemaining().specialTimeFrames, i => i.specialFrameNo == vm.specialLeaveFrame());
+                    if (tmp) {
+                        if (tmp.dayOfSpecialLeave <= 0)
+                            return nts.uk.time.format.byId("Time_Short_HM", tmp.timeOfSpecialLeave);
+                        else if (tmp.timeOfSpecialLeave <= 0)
+                            return vm.$i18n("KAF012_49", [tmp.dayOfSpecialLeave.toString()]);
+                        else
+                            return vm.$i18n(
+                                "KAF012_50",
+                                [
+                                    tmp.dayOfSpecialLeave.toString(),
+                                    nts.uk.time.format.byId("Time_Short_HM", tmp.timeOfSpecialLeave)
+                                ]);
+                    }
+                }
                 return "0:00";
             });
             // $("#remaining-table").ntsFixedTable({});
@@ -282,7 +300,8 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
         timeLeaveManagement: KnockoutObservable<TimeLeaveManagement>,
         timeLeaveRemaining: KnockoutObservable<TimeLeaveRemaining>,
         leaveType: KnockoutObservable<number>,
-        application: KnockoutObservable<any>
+        application: KnockoutObservable<any>,
+        specialLeaveFrame: KnockoutObservable<number>
     }
 
     export interface ReflectSetting {

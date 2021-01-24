@@ -1,5 +1,6 @@
 import { Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
+import {TimePoint} from '@app/utils/time';
 
 @component({
     name: 'kafs12-outing',
@@ -9,24 +10,23 @@ import { component, Prop } from '@app/core/component';
         params: {
             timeZone: {
                 timeRange: true,
-                selectCheck: {
+                valueCheck: {
+                    test(value: any) {
+                        return (!value.start || (value.start >= 0 && value.start <= 1439))
+                            && (!value.end || (value.end >= 0 && value.end <= 1439));
+                    },
+                    messageId: ['MsgB_45', TimePoint.toString(0), TimePoint.toString(1439)]
+                },
+                requiredCheck: {
                     test(value: any) {
                         return (!!value.start && !!value.end) || (!value.start && !value.end);
                     },
-                    messageId: 'MsgB_30'
+                    messageId: ['MsgB_30']
                 },
-                start: {
-                    constraint: 'AttendanceClock'
-                },
-                end: {
-                    constraint: 'AttendanceClock'
-                }
             }
         }
     },
-    constraints: [
-        'nts.uk.shr.com.time.AttendanceClock'
-    ]
+    constraints: []
 })
 export class KafS12OutingComponent extends Vue {
     @Prop({ default: null })
