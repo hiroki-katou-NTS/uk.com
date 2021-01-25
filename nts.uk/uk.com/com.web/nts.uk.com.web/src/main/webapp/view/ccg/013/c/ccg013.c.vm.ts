@@ -133,7 +133,7 @@ module nts.uk.com.view.ccg013.c.viewmodel {
                         if (standardMenu) {
                             var order = self.newItems().length + 1;
                             var primaryKey = nts.uk.util.randomId();
-                            var data = new ItemModel(index + 1, primaryKey, standardMenu.code, standardMenu.targetItem, standardMenu.name, order, standardMenu.menu_cls, standardMenu.system, item.displayOrder);
+                            var data = new ItemModel(index + 1, primaryKey, standardMenu.code, standardMenu.targetItem, standardMenu.name, order, standardMenu.menu_cls, standardMenu.system, item.displayOrder, item.webMenuSetting);
                             newData.push(data);
                             self.tempItems.push(data);
                         }
@@ -200,9 +200,9 @@ module nts.uk.com.view.ccg013.c.viewmodel {
                 var index = 0;
                 _.forEach(data, function (item) {
                     var id = nts.uk.util.randomId();
-                    self.allItems.push(new ItemModel(idx + 1, id, item.code, item.targetItems, item.displayName, index, item.classification, item.system, item.displayOrder));
+                    self.allItems.push(new ItemModel(idx + 1, id, item.code, item.targetItems, item.displayName, index, item.classification, item.system, item.displayOrder, item.webMenuSetting));
                     if (item.system == self.selectedSystemCode()) {
-                        list001.push(new ItemModel(idx + 1, id, item.code, item.targetItems, item.displayName, index, item.classification, item.system, item.displayOrder));
+                        list001.push(new ItemModel(idx + 1, id, item.code, item.targetItems, item.displayName, index, item.classification, item.system, item.displayOrder, item.webMenuSetting));
                     }
                 });
                 var newData = _.orderBy(list001, ['system', 'displayOrder', 'code'], ['asc', 'asc', 'asc']);
@@ -235,30 +235,38 @@ module nts.uk.com.view.ccg013.c.viewmodel {
         }
 
         findBySystem(system: number): void {
-            var self = this;
-            var list001: Array<ItemModel> = [];
-            var index = 0;
-            _.forEach(self.allItems(), function (item: ItemModel, idx) {
-                if (self.selectedSystemCode() === 5) {
-                    if (item.menu_cls != Menu_Cls.TopPage) {
-                        var id = nts.uk.util.randomId();
-                        list001.push(new ItemModel(idx + 1, id, item.code, item.targetItem, item.name, index, item.menu_cls, item.system, item.displayOrder));
-                        index++;
-                    }
-                } else {
-                    if ((item.system == self.selectedSystemCode() && item.menu_cls != Menu_Cls.TopPage) || (item.system == 0 && item.menu_cls == Menu_Cls.TopPage)) {
-                        var id = nts.uk.util.randomId();
-                        list001.push(new ItemModel(idx + 1, id, item.code, item.targetItem, item.name, index, item.menu_cls, item.system, item.displayOrder));
-                        index++;
-                    }
-                }
-            });
-            var newData = _.orderBy(list001, ['system', 'displayOrder', 'code'], ['asc', 'asc', 'asc']);
-            var list002 = _.uniqBy(newData, 'targetItem');
-            _.forEach(list002, (x, index) => {
-                x.index = index + 1;
-            });
-            self.items(list002);
+            const self = this;
+            let list001: ItemModel[] = [];
+            const allItemsClone = _.orderBy(self.allItems(), ['system', 'displayOrder', 'code'], ['asc', 'asc', 'asc']);
+            const list002 = _.chain(allItemsClone)
+                .filter((item: any) =>
+                    item.system === System.COMMON &&
+                    item.menu_cls === Menu_Cls.TopPage &&
+                    item.webMenuSetting === WebMenuSetting.Display
+                )
+                .value();
+            if (self.selectedSystemCode() === System.ALL) {
+                list001 = _.chain(allItemsClone)
+                    .filter((item: ItemModel) =>
+                        item.menu_cls !== Menu_Cls.TopPage &&
+                        item.menu_cls !== Menu_Cls.OfficeHelper &&
+                        item.webMenuSetting === WebMenuSetting.Display
+                    )
+                    .map(item => new ItemModel(list001.length, nts.uk.util.randomId(), item.code, item.targetItem, item.name, list001.length, item.menu_cls, item.system, item.displayOrder, item.webMenuSetting))
+                    .value();
+            } else {
+                list001 = _.chain(allItemsClone)
+                    .filter((item: ItemModel) =>
+                        item.system === system &&
+                        item.menu_cls !== Menu_Cls.TopPage &&
+                        item.menu_cls !== Menu_Cls.OfficeHelper &&
+                        item.webMenuSetting === WebMenuSetting.Display
+                    )
+                    .map(item => new ItemModel(list001.length, nts.uk.util.randomId(), item.code, item.targetItem, item.name, list001.length, item.menu_cls, item.system, item.displayOrder, item.webMenuSetting))
+                    .value();
+            }
+            const listStandardMenu = _.uniqBy(_.concat(list001, list002), 'targetItem');
+            self.items(listStandardMenu);
         }
 
         /**
@@ -271,7 +279,7 @@ module nts.uk.com.view.ccg013.c.viewmodel {
                     var item = _.find(self.items(), function (c) { return c.primaryKey == selected; });
                     item.order = self.newItems().length + 1;
                     //item.primaryKey = nts.uk.util.randomId();
-                    self.newItems.push(new ItemModel(self.newItems().length + 1, nts.uk.util.randomId(), item.code, item.targetItem, item.name, item.order, item.menu_cls, item.system, item.displayOrder));
+                    self.newItems.push(new ItemModel(self.newItems().length + 1, nts.uk.util.randomId(), item.code, item.targetItem, item.name, item.order, item.menu_cls, item.system, item.displayOrder, item.webMenuSetting));
                 }
             });
             _.forEach(self.newItems(), (x, index) => {
@@ -341,10 +349,10 @@ module nts.uk.com.view.ccg013.c.viewmodel {
             nts.uk.ui.windows.close();
         }
 
-        // /**
-        //  * Click on button d1_26
-        //  * Close the popup
-        //  */
+        /**
+         * Click on button d1_26
+         * Close the popup
+         */
         closeDialog() {
             var self = this;
             nts.uk.ui.windows.close();
@@ -381,8 +389,9 @@ module nts.uk.com.view.ccg013.c.viewmodel {
         menu_cls: number;
         system: number;
         displayOrder: number;
+        webMenuSetting: number
 
-        constructor(index: number, id: string, code: string, targetItem: string, name: string, order: number, menu_cls: number, system: number, displayOrder: number) {
+        constructor(index: number, id: string, code: string, targetItem: string, name: string, order: number, menu_cls: number, system: number, displayOrder: number, webMenuSetting: number) {
             this.index = index;
             this.primaryKey = id;
             this.code = code;
@@ -392,6 +401,7 @@ module nts.uk.com.view.ccg013.c.viewmodel {
             this.menu_cls = menu_cls;
             this.system = system;
             this.displayOrder = displayOrder;
+            this.webMenuSetting = webMenuSetting;
         }
     }
 
@@ -405,16 +415,31 @@ module nts.uk.com.view.ccg013.c.viewmodel {
         }
     }
 
+    enum WebMenuSetting {
+        Notdisplay = 0,
+        Display = 1
+    }
+
+    enum System {
+        COMMON = 0,
+        TIME_SHEET = 1,
+        OFFICE_HELPER = 2,
+        KYUYOU = 3,
+        JINJIROU= 4,
+        ALL = 5
+    }
+
     enum Menu_Cls {
         Standard = 0,
-        OptionalItemApplication,
-        MobilePhone,
-        Tablet,
-        CodeName,
-        GroupCompanyMenu,
-        Customize,
-        OfficeHelper,
-        TopPage
+        OptionalItemApplication = 1,
+        MobilePhone = 2,
+        Tablet = 3,
+        CodeName = 4,
+        GroupCompanyMenu = 5,
+        Customize = 6,
+        OfficeHelper = 7,
+        TopPage = 8,
+        SmartPhone = 9
     }
 
     export class TitleMenu {

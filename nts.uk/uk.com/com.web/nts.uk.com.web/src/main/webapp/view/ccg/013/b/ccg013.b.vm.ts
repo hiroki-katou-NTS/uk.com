@@ -229,8 +229,6 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
                         item.webMenuSetting === WebMenuSetting.Display
                     )
                     .value();
-                
-                
             }
             const listStandardMenu = _.concat(list001, list002);
             self.listStandardMenu(listStandardMenu);
