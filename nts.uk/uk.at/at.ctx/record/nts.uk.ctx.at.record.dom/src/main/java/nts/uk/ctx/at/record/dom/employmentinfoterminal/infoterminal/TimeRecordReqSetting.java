@@ -165,7 +165,7 @@ public class TimeRecordReqSetting implements DomainAggregate {
 	// 	[1] 端末のリクエスト状態の判断
 	public boolean determiningReqStatusTerminal() {
 		if (this.remoteSetting == true || this.stampReceive == true || this.applicationReceive == true || this.overTimeHoliday == true || this.applicationReason == true
-			|| this.timeSetting == true || this.reboot == true || this.sendEmployeeId == true || this.sendWorkType == true || this.sendWorkTime == true || this.sendBentoMenu == true) {
+			|| this.timeSetting == true || this.reboot == true || this.sendEmployeeId == true || this.sendWorkType == true || this.sendWorkTime == true || this.sendBentoMenu == true || this.reservationReceive == true) {
 			return true;
 		}
 		return false;
