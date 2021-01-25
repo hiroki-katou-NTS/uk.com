@@ -376,8 +376,8 @@ module nts.uk.at.view.kwr007.a {
       let isCheckedCumulative: Boolean = true; //Cumulative number of workplaces
       isCheckedCumulative = vm.detailsOutputSettings()[3].checked();
       let totalCumulative = _.filter(vm.specifyWorkplaceHierarchy(), (x) => x.checked() === true).length;
-
-      if( isCheckedCumulative && (totalCumulative === 0 || totalCumulative > 5 )) {
+   
+      if( (isCheckedCumulative && totalCumulative === 0) || totalCumulative > 5 ) {
         vm.$dialog.error({ messageId: 'Msg_1184' }).then(() => { });
         hasError.error = true;
         hasError.focusId = 'A8_5_1';
@@ -439,16 +439,16 @@ module nts.uk.at.view.kwr007.a {
         let params = {
           lstEmpIds: lstEmployeeIds, //社員リスト
           aggregateList: vm.aggregateListCode(), //選択した集計枠コード & 期間(年月日)(From-To)        
+          standardFreeClassification: vm.rdgSelectedId(), //自由設定: A5_2_1   || 定型選択 : A5_2_2,             
           isZeroDisplay: vm.zeroDisplayClassification() ? true : false,//ゼロ表示区分選択肢          
-          code: vm.pageBreakSpecification() ? true : false, //改ページ指定選択肢,
-          standardFreeClassification: vm.rdgSelectedId(), //自由設定: A5_2_1   || 定型選択 : A5_2_2,
-          workplaceHierarchyId: vm.workplaceHierarchyId(),//改ページの選択肢          
+          code: vm.pageBreakSpecification() ? true : false, //改ページ指定選択肢,          
           settingId: findObj.id, //定型選択リスト || 自由設定リスト     
-          details: vm.detailsOutputSettings()[0].checked(), //明細
-          workplaceTotal: vm.detailsOutputSettings()[1].checked(),//職場計
-          total: vm.detailsOutputSettings()[2].checked(), //総合計
-          cumulativeNumWp: vm.detailsOutputSettings()[3].checked(),//職場累計
-          cumulativeWPHS: cumulativeSelectedList //職場階層累計設定
+          details: vm.detailsOutputSettings()[0].checked(), //明細チェック
+          workplaceTotal: vm.detailsOutputSettings()[1].checked(),//職場計チェック
+          total: vm.detailsOutputSettings()[2].checked(), //総合計チェック
+          cumulativeNumWp: vm.detailsOutputSettings()[3].checked(),//職場累計チェック
+          workplaceHierarchyId: vm.workplaceHierarchyId(),//改ページの選択肢      
+          cumulativeWPHS: cumulativeSelectedList //職場階層累計設定 : 1階層チェック -> 9階層チェック
         }
 
         nts.uk.request.exportFile(PATH.exportExcelPDF, params).done((response) => {
@@ -499,15 +499,14 @@ module nts.uk.at.view.kwr007.a {
 
     getWorkScheduleOutputConditions() {
       const vm = this,
-        //dfd = $.Deferred<void>(),
-        companyId: string = vm.$user.companyId,
-        employeeId: string = vm.$user.employeeId;
+      
+      companyId: string = vm.$user.companyId,
+      employeeId: string = vm.$user.employeeId;
 
       let storageKey: string = KWR007_SAVE_DATA + "_companyId_" + companyId + "_employeeId_" + employeeId;
 
       vm.$window.storage(storageKey).then((data: WorkScheduleOutputConditions) => {             
-        if (!_.isNil(data)) {
-          console.log(vm.settingListItems1());
+        if (!_.isNil(data)) {      
           let standardCode = _.filter(vm.settingListItems1(), (x) => x.code === data.standardSelectedCode);       
           let freeCode = _.filter(vm.settingListItems2(),(x) => x.code === data.freeSelectedCode);    
           let zeroDisplay = _.isEmpty(data.zeroDisplayClassification) ? 0 : data.zeroDisplayClassification;
