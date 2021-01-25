@@ -1,0 +1,26 @@
+.time-label {
+    display: inline-block;
+    width: 100px;
+    text-align: right;
+    padding-right: 5px;
+}
+
+.time-line {
+    padding: 10px 0;
+}
+
+.f-label {
+    margin-left: 10px;
+}
+
+#R2_2 {
+    padding-left: 50px;
+}
+
+#R2_6 {
+    padding-left: 80px;
+}
+
+.ntsRadioBox {
+    padding: 5px 0;
+}
