@@ -92,13 +92,17 @@ module nts.uk.at.view.ccg005.d.screenModel {
       vm.mode(Mode.INSERT);
       vm.favoriteName("");
       vm.choosenWkspNames([]);
+      vm.workPlaceIdList([]);
+      vm.selectedRuleCode(TargetSelection.WORKPLACE);
       $("#D5_1").focus();
     }
 
     public saveFavorite() {
       const vm = this;
-      if(!vm.displayChoosenWkspNameRequire()) {
+      if(vm.displayChoosenWkspNameRequire() && vm.workPlaceIdList().length === 0) {
         $('#D5_4').ntsError('set', {messageId:"Msg_2076"});
+      } else {
+        $('#D5_4').ntsError('clear');
       }
       vm.$validate().then((valid: boolean) => {
         if (valid) {
