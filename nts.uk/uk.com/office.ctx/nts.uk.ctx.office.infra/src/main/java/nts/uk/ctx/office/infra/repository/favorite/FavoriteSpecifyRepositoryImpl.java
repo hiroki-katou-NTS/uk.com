@@ -39,8 +39,7 @@ public class FavoriteSpecifyRepositoryImpl extends JpaRepository implements Favo
 
 	@Override
 	public void update(FavoriteSpecify domain) {
-		FavoriteSpecifyEntity entity = new FavoriteSpecifyEntity();
-		domain.setMemento(entity);
+		FavoriteSpecifyEntity entity = FavoriteSpecifyRepositoryImpl.toEntity(domain);
 		Optional<FavoriteSpecifyEntity> oldEntity = this.queryProxy().find(entity.getPk(), FavoriteSpecifyEntity.class);
 		oldEntity.ifPresent(updateEntity -> {
 			if(entity.getTargetSelection() == TargetSelection.WORKPLACE.value) {
