@@ -337,7 +337,7 @@ class ScreenJComponent extends ko.ViewModel {
 
 			selectedItem: EmployeeModel = _.find(datas, ['code', scd]);
 
-		vm.screenData().selectedName(selectedItem ? selectedItem.name : '')
+		vm.screenData().selectedName(selectedItem ? selectedItem.code + ' ' + selectedItem.name : '')
 
 	}
 

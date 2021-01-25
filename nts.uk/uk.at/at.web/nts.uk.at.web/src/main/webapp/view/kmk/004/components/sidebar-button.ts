@@ -43,6 +43,13 @@ class SidebarButton extends ko.ViewModel {
 		if (vm.screenMode == 'Com_Company') {
 
 			cmd = { workTimeSetComs: ko.toJS(vm.screenData().monthlyWorkTimeSetComs()) };
+			
+			if (vm.screenData().comFlexMonthActCalSet().withinTimeUsageAttr == false) {
+				_.forEach(cmd.workTimeSetComs, (item: IMonthlyWorkTimeSetCom) => {
+					item.laborTime.withinLaborTime = null;
+				});
+			}
+			
 			vm.$blockui('invisible');
 			vm.$ajax(API_G_URL.UPDATE, cmd).done(() => {
 				vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
@@ -158,6 +165,13 @@ class SidebarButton extends ko.ViewModel {
 
 		if (vm.screenMode == 'Com_Company') {
 			cmd = { workTimeSetComs: ko.toJS(vm.screenData().monthlyWorkTimeSetComs()) };
+			
+			if (vm.screenData().comFlexMonthActCalSet().withinTimeUsageAttr == false) {
+				_.forEach(cmd.workTimeSetComs, (item: IMonthlyWorkTimeSetCom) => {
+					item.laborTime.withinLaborTime = null;
+				});
+			}
+			
 			vm.$blockui('invisible');
 			vm.$ajax(API_G_URL.REGISTER, cmd).done(() => {
 				vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
@@ -346,9 +360,9 @@ class SidebarButton extends ko.ViewModel {
 
 			vm.$ajax(API_G_URL.DELETE + selectedYear).done(() => {
 				vm.screenData().setSelectedAfterRemove(selectedYear);
-					vm.screenData().deleteYear(selectedYear);
-					vm.screenData().clearUnSaveList(selectedYear);
-					vm.screenData().setFocus('load');
+				vm.screenData().deleteYear(selectedYear);
+				vm.screenData().clearUnSaveList(selectedYear);
+				vm.screenData().setFocus('load');
 				vm.$dialog.info({ messageId: "Msg_16" });
 			}).always(() => { vm.$blockui("clear"); });
 		}
@@ -358,10 +372,10 @@ class SidebarButton extends ko.ViewModel {
 
 			vm.$ajax(API_H_URL.DELETE, cmd).done((data) => {
 				vm.screenData().setSelectedAfterRemove(selectedYear);
-					vm.screenData().deleteYear(selectedYear);
-					vm.screenData().clearUnSaveList(selectedYear);
-					vm.screenData().alreadySettingList(_.map(data, (item) => { return { workplaceId: item, isAlreadySetting: true } }));
-					vm.screenData().setFocus('load');
+				vm.screenData().deleteYear(selectedYear);
+				vm.screenData().clearUnSaveList(selectedYear);
+				vm.screenData().alreadySettingList(_.map(data, (item) => { return { workplaceId: item, isAlreadySetting: true } }));
+				vm.screenData().setFocus('load');
 				vm.$dialog.info({ messageId: "Msg_16" });
 			}).always(() => { vm.$blockui("clear"); });
 		}
@@ -371,10 +385,10 @@ class SidebarButton extends ko.ViewModel {
 
 			vm.$ajax(API_I_URL.DELETE, cmd).done((data) => {
 				vm.screenData().setSelectedAfterRemove(selectedYear);
-					vm.screenData().deleteYear(selectedYear);
-					vm.screenData().clearUnSaveList(selectedYear);
-					vm.screenData().alreadySettingList(_.map(data, (item) => { return { code: item, isAlreadySetting: true } }));
-					vm.screenData().setFocus('load');
+				vm.screenData().deleteYear(selectedYear);
+				vm.screenData().clearUnSaveList(selectedYear);
+				vm.screenData().alreadySettingList(_.map(data, (item) => { return { code: item, isAlreadySetting: true } }));
+				vm.screenData().setFocus('load');
 				vm.$dialog.info({ messageId: "Msg_16" });
 			}).always(() => { vm.$blockui("clear"); });
 		}
@@ -387,17 +401,17 @@ class SidebarButton extends ko.ViewModel {
 
 			vm.$ajax(API_J_URL.DELETE, cmd).done((data) => {
 				vm.screenData().setSelectedAfterRemove(selectedYear);
-					vm.screenData().deleteYear(selectedYear);
-					vm.screenData().clearUnSaveList(selectedYear);
-					vm.screenData().alreadySettingList(
-						_.map(data, (selectedId) => {
-							let emp: any = _.find($('#employee-list').getDataList(), ['id', selectedId]);
-							if (!emp) {
-								return { code: null, isAlreadySetting: false };
-							}
-							return { code: emp.code, isAlreadySetting: true };
-						}));
-					vm.screenData().setFocus('load');
+				vm.screenData().deleteYear(selectedYear);
+				vm.screenData().clearUnSaveList(selectedYear);
+				vm.screenData().alreadySettingList(
+					_.map(data, (selectedId) => {
+						let emp: any = _.find($('#employee-list').getDataList(), ['id', selectedId]);
+						if (!emp) {
+							return { code: null, isAlreadySetting: false };
+						}
+						return { code: emp.code, isAlreadySetting: true };
+					}));
+				vm.screenData().setFocus('load');
 				vm.$dialog.info({ messageId: "Msg_16" });
 			}).always(() => { vm.$blockui("clear"); });
 		}
