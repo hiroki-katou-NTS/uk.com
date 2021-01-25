@@ -10,6 +10,8 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
@@ -17,6 +19,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDateTime;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /*
@@ -26,9 +30,9 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Data
 @Entity
-@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @Table(name = "OFIMT_FAVORITE_DETAIL")
 public class FavoriteSpecifyEntityDetail extends UkJpaEntity implements Serializable {
 	/**
@@ -50,15 +54,23 @@ public class FavoriteSpecifyEntityDetail extends UkJpaEntity implements Serializ
 	@EmbeddedId
 	private FavoriteSpecifyEntityDetailPK pk;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumns({ 
-		@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false),
-		@JoinColumn(name = "INPUT_DATE", referencedColumnName = "INPUT_DATE", insertable = false, updatable = false)
+	@ManyToOne
+	@PrimaryKeyJoinColumns({ 
+		@PrimaryKeyJoinColumn(name = "SID", referencedColumnName = "SID"),
+		@PrimaryKeyJoinColumn(name = "INPUT_DATE", referencedColumnName = "INPUT_DATE")
 		})
 	public FavoriteSpecifyEntity favoriteSpecifyEntity;
 
 	@Override
 	protected Object getKey() {
 		return this.pk;
+	}
+	
+	public void toEntity(String creatorId, GeneralDateTime inputDate, String targetSelection) {
+		this.pk = new FavoriteSpecifyEntityDetailPK();
+		this.pk.setCreatorId(creatorId);
+		this.pk.setInputDate(inputDate);
+		this.pk.setTargetSelection(targetSelection);
+		this.setContractCd(AppContexts.user().contractCode());
 	}
 }

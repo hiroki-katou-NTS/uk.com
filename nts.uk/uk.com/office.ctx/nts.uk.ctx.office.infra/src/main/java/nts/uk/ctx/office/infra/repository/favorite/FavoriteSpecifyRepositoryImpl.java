@@ -2,12 +2,16 @@ package nts.uk.ctx.office.infra.repository.favorite;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.office.dom.favorite.FavoriteSpecify;
 import nts.uk.ctx.office.dom.favorite.FavoriteSpecifyRepository;
+import nts.uk.ctx.office.dom.favorite.TargetSelection;
 import nts.uk.ctx.office.infra.entity.favorite.FavoriteSpecifyEntity;
+import nts.uk.ctx.office.infra.entity.favorite.FavoriteSpecifyEntityDetail;
 import nts.uk.ctx.office.infra.entity.favorite.FavoriteSpecifyEntityPK;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -38,6 +42,11 @@ public class FavoriteSpecifyRepositoryImpl extends JpaRepository implements Favo
 		FavoriteSpecifyEntity entity = FavoriteSpecifyRepositoryImpl.toEntity(domain);
 		Optional<FavoriteSpecifyEntity> oldEntity = this.queryProxy().find(entity.getPk(), FavoriteSpecifyEntity.class);
 		oldEntity.ifPresent(updateEntity -> {
+			if(entity.getTargetSelection() == TargetSelection.WORKPLACE.value) {
+				this.commandProxy().removeAll(FavoriteSpecifyEntityDetail.class, updateEntity
+						.getListFavoriteSpecifyEntityDetail().stream().map(x -> x.getPk()).collect(Collectors.toList()));
+				this.getEntityManager().flush();
+			}
 			updateEntity.setFavoriteName(entity.getFavoriteName());
 			updateEntity.setOrder(entity.getOrder());
 			updateEntity.setTargetSelection(entity.getTargetSelection());

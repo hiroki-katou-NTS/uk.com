@@ -10,6 +10,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.office.dom.favorite.FavoriteSpecify;
 import nts.uk.ctx.office.dom.favorite.FavoriteSpecifyRepository;
 
@@ -27,11 +28,13 @@ public class FavoriteSpecifyInsertOrUpdateCommandHandler extends CommandHandler<
 	protected void handle(CommandHandlerContext<List<FavoriteSpecifyCommand>> context) {
 		List<FavoriteSpecifyCommand> command = context.getCommand();
 		command.forEach(comd -> {
-			FavoriteSpecify domain = FavoriteSpecify.createFromMemento(comd);
-			Optional<FavoriteSpecify> checkDomain = favoriteSpecifyRepository.getBySidAndDate(domain.getCreatorId(), domain.getInputDate());
+			Optional<FavoriteSpecify> checkDomain = favoriteSpecifyRepository.getBySidAndDate(comd.getCreatorId(), comd.getInputDate());
 			if(checkDomain.isPresent()) {
+				FavoriteSpecify domain = FavoriteSpecify.createFromMemento(comd);
 				favoriteSpecifyRepository.update(domain);
 			} else {
+				comd.setInputDate(GeneralDateTime.now());
+				FavoriteSpecify domain = FavoriteSpecify.createFromMemento(comd);
 				favoriteSpecifyRepository.insert(domain);
 			}
 		});

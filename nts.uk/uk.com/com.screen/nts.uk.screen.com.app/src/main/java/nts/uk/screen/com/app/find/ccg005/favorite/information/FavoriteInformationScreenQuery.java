@@ -20,12 +20,15 @@ public class FavoriteInformationScreenQuery {
 
 	@Inject
 	private FavoriteSpecifyRepository repo;
+	
+	@Inject
+	private FavoriteInformationDomainService ds;
 
 	public Map<FavoriteSpecifyDto, List<String>> getFavoriteInformation() {
 		DefaultFavoriteInfoRequireImpl rq = new DefaultFavoriteInfoRequireImpl(repo);
 		String sid = AppContexts.user().employeeId();
 		Map<FavoriteSpecifyDto, List<String>> returnMap = new HashMap<>();
-		FavoriteInformationDomainService.get(rq, sid).forEach((key, value) -> {
+		ds.get(rq, sid).forEach((key, value) -> {
 			FavoriteSpecifyDto dto = FavoriteSpecifyDto.builder().build();
 			key.setMemento(dto);
 			returnMap.put(dto, value);

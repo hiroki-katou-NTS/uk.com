@@ -10,6 +10,7 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
@@ -19,7 +20,6 @@ import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.office.dom.favorite.FavoriteSpecify;
 import nts.uk.ctx.office.dom.favorite.TargetSelection;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /*
@@ -28,7 +28,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @Data
 @Entity
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = { "listFavoriteSpecifyEntityDetail" })
 @Table(name = "OFIMT_FAVORITE")
 public class FavoriteSpecifyEntity extends UkJpaEntity
 		implements FavoriteSpecify.MementoGetter, FavoriteSpecify.MementoSetter, Serializable {
@@ -66,7 +66,8 @@ public class FavoriteSpecifyEntity extends UkJpaEntity
 	@Column(name = "TGT_SELECT")
 	private Integer targetSelection;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "favoriteSpecifyEntity", orphanRemoval = true, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL,targetEntity = FavoriteSpecifyEntityDetail.class, mappedBy = "favoriteSpecifyEntity", orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinTable(name = "OFIMT_FAVORITE_DETAIL")
 	public List<FavoriteSpecifyEntityDetail> listFavoriteSpecifyEntityDetail;
 
 	@Override
@@ -98,12 +99,11 @@ public class FavoriteSpecifyEntity extends UkJpaEntity
 
 	@Override
 	public void setWorkplaceId(List<String> workplaceId) {
-		workplaceId.forEach(item -> {
-			FavoriteSpecifyEntityDetailPK pk = new FavoriteSpecifyEntityDetailPK(this.pk.getCreatorId(), this.pk.getInputDate(), item);
-			FavoriteSpecifyEntityDetail entity = new FavoriteSpecifyEntityDetail(0, AppContexts.user().contractCode(), pk, this);
-			listFavoriteSpecifyEntityDetail.add(entity);
-		});
-
+		this.listFavoriteSpecifyEntityDetail = workplaceId.stream().map(wid -> {
+			FavoriteSpecifyEntityDetail entity = new FavoriteSpecifyEntityDetail();
+			entity.toEntity(this.pk.getCreatorId(), this.pk.getInputDate(), wid);
+			return entity;
+		}).collect(Collectors.toList());
 	}
 
 	@Override
