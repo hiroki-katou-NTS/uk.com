@@ -112,6 +112,7 @@ module nts.uk.at.view.kmk004.components {
 		public workTimeSaves: KnockoutObservableArray<WorkTimeSaveL> = ko.observableArray([]);
 		public yearDelete: KnockoutObservable<number | null> = ko.observable(null);
 		public startYM: KnockoutObservable<number> = ko.observable(0);
+		public isNewYear: KnockoutObservable<boolean> = ko.observable(false);
 
 		created(params: Params) {
 			const vm = this;
@@ -123,6 +124,7 @@ module nts.uk.at.view.kmk004.components {
 			vm.type = params.type;
 			vm.yearDelete = params.yearDelete;
 			vm.startYM = params.startYM;
+			vm.isNewYear = params.isNewYear;
 
 			vm.initList();
 
@@ -175,10 +177,15 @@ module nts.uk.at.view.kmk004.components {
 
 			vm.selectedYear
 				.subscribe(() => {
-					if (ko.unwrap(ko.unwrap(vm.selectedYear) != null)) {
+					if (ko.unwrap(vm.selectedYear) != null) {
 						vm.mode("New")
 						vm.reloadData();
 					}
+					
+					if (vm.type == 'Com_Person') {
+						vm.isNewYear(false);
+					}
+					
 				});
 
 			vm.selectedId
@@ -201,8 +208,6 @@ module nts.uk.at.view.kmk004.components {
 								return value.year == ko.unwrap(vm.yearDelete);
 							}))
 						}
-						//Fix bug Xóa bản ghi và ko hiển thị time --> ảnh hưởng đến bug xóa năm và hiện * ở năm dưới.
-						vm.selectedYear.valueHasMutated();
 					}
 				});
 		}
@@ -330,6 +335,7 @@ module nts.uk.at.view.kmk004.components {
 											vm.workTimes(workTime.map(m => new WorkTimeL({ ...m, parent: vm.workTimes })));
 										} else {
 											vm.initList();
+											console.log('Whattttttt')
 										}
 										vm.mode('Update');
 									});
@@ -342,6 +348,7 @@ module nts.uk.at.view.kmk004.components {
 			} else {
 				vm.mode('New');
 				vm.initList();
+				console.log('Whereeeeeeeee')
 			}
 		}
 
@@ -363,15 +370,21 @@ module nts.uk.at.view.kmk004.components {
 							check = false;
 						}
 						data.map(m => {
-							const s: IWorkTimeL = { check: check, yearMonth: m.yearMonth, laborTime: null };
-							data1.push(s);
+							
+							if (ko.unwrap(vm.isNewYear)) {
+								check = true;
+							} 
+								const s: IWorkTimeL = { check: check, yearMonth: m.yearMonth, laborTime: null };
+								data1.push(s);
 						});
+						
 						vm.workTimes(data1.map(m => new WorkTimeL({ ...m, parent: vm.workTimes })));
 						vm.startYM(data1[0].yearMonth);
 						vm.mode('Update');
 						vm.total('');
 					}
 				});
+				
 		}
 
 		updateListSave() {

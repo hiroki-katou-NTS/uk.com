@@ -63,7 +63,8 @@ module nts.uk.at.view.kmk004.l {
 										type: type,
 										selectedId: selectedId,
 										years: years,
-										startYM: startYM
+										startYM: startYM,
+										isNewYear: isNewYear
 									}
 								}"></div>
 								
@@ -77,7 +78,8 @@ module nts.uk.at.view.kmk004.l {
 										type: type,
 										selectedId: selectedId,
 										yearDelete: yearDelete,
-										startYM: startYM
+										startYM: startYM,
+										isNewYear: isNewYear
 									}
 								}"></div>
 							</div>
@@ -143,6 +145,7 @@ module nts.uk.at.view.kmk004.l {
 		public yearDelete: KnockoutObservable<number | null> = ko.observable(null);
 		public checkDelete: KnockoutObservable<boolean> = ko.observable(false);
 		public startYM: KnockoutObservable<number> = ko.observable(0);
+		public isNewYear: KnockoutObservable<boolean> = ko.observable(false);
 		
 		constructor(private params: IParam) {
 			super();
@@ -400,10 +403,11 @@ module nts.uk.at.view.kmk004.l {
 							vm.years(ko.unwrap(vm.years));
 							if (ko.unwrap(vm.years).length > 0) {
 								vm.selectedYear(ko.unwrap(vm.years)[old_index].year);
+							} else {
+								vm.selectedYear.valueHasMutated();
 							}
 							vm.getEmployeeIds();
-						}).then(() => {vm.selectedYear.valueHasMutated();})
-						.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
+						}).then(() => vm.$dialog.info({ messageId: "Msg_16" }))
 						.then(() => {
 							$(document).ready(function() {
 								$('.listbox').focus();

@@ -11,6 +11,7 @@ module nts.uk.at.view.kmk004.components.transform {
 		selectedId?: KnockoutObservable<string>;
 		years: KnockoutObservableArray<IYear>;
 		startYM: KnockoutObservable<number>;
+		isNewYear: KnockoutObservable<boolean>;
 	}
 
 	const template = `
@@ -44,6 +45,7 @@ module nts.uk.at.view.kmk004.components.transform {
 		public selectedId: KnockoutObservable<string> = ko.observable('');
 		initBtnEnable: KnockoutObservable<boolean> = ko.observable(false);
 		public startYM: KnockoutObservable<number> = ko.observable(0);
+		public isNewYear: KnockoutObservable<boolean> = ko.observable(false);
 
 		created(params: Params) {
 			const vm = this;
@@ -52,6 +54,7 @@ module nts.uk.at.view.kmk004.components.transform {
 			vm.selectedId = params.selectedId;
 			vm.itemList = params.years;
 			vm.startYM = params.startYM;
+			vm.isNewYear = params.isNewYear;
 			
 			if (vm.type != 'Com_Person') {
 				vm.initBtnEnable(true);
@@ -248,6 +251,7 @@ module nts.uk.at.view.kmk004.components.transform {
 					vm.itemList(_.orderBy(ko.unwrap(vm.itemList), ['year'], ['desc']));
 					vm.selectedYear(year);
 					vm.selectedYear.valueHasMutated();
+					vm.isNewYear(true);
 				}
 			});
 		}
