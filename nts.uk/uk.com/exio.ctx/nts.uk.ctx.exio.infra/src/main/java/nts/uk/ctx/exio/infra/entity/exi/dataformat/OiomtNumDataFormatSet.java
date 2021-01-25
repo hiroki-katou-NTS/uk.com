@@ -106,7 +106,6 @@ public class OiomtNumDataFormatSet extends UkJpaEntity implements Serializable {
 
 	@OneToOne
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-			@JoinColumn(name = "SYSTEM_TYPE", referencedColumnName = "SYSTEM_TYPE", insertable = false, updatable = false),
 			@JoinColumn(name = "CONDITION_SET_CD", referencedColumnName = "CONDITION_SET_CD", insertable = false, updatable = false),
 			@JoinColumn(name = "ACCEPT_ITEM_NUM", referencedColumnName = "ACCEPT_ITEM_NUMBER", insertable = false, updatable = false) })
 	public OiomtStdAcceptItem acceptItem;
@@ -116,12 +115,12 @@ public class OiomtNumDataFormatSet extends UkJpaEntity implements Serializable {
 		return numDataFormatSetPk;
 	}
 
-	public OiomtNumDataFormatSet(String cid, int sysType, String conditionCode, int acceptItemNum, int fixedValue,
+	public OiomtNumDataFormatSet(String cid, String conditionCode, int acceptItemNum, int fixedValue,
 			int decimalDivision, int effectiveDigitLength, String cdConvertCd, String valueOfFixedValue,
 			Integer decimalDigitNum, Integer startDigit, Integer endDigit, Integer decimalPointCls,
 			Integer decimalFraction) {
 		super();
-		this.numDataFormatSetPk = new OiomtNumDataFormatSetPk(cid, sysType, conditionCode, acceptItemNum);
+		this.numDataFormatSetPk = new OiomtNumDataFormatSetPk(cid, conditionCode, acceptItemNum);
 		this.fixedValue = fixedValue;
 		this.decimalDivision = decimalDivision;
 		this.effectiveDigitLength = effectiveDigitLength;
@@ -135,7 +134,7 @@ public class OiomtNumDataFormatSet extends UkJpaEntity implements Serializable {
 	}
 
 	public static OiomtNumDataFormatSet fromDomain(StdAcceptItem item, NumDataFormatSet domain) {
-		return new OiomtNumDataFormatSet(item.getCid(), item.getSystemType().value, item.getConditionSetCd().v(),
+		return new OiomtNumDataFormatSet(item.getCid(), item.getConditionSetCd().v(),
 				item.getAcceptItemNumber(), domain.getFixedValue().value, domain.getDecimalDivision().value,
 				domain.getEffectiveDigitLength().value,
 				domain.getCdConvertCd().isPresent() ? domain.getCdConvertCd().get().v() : null,

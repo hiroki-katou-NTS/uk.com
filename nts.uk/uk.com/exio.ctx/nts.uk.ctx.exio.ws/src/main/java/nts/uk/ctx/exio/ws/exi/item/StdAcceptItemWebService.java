@@ -28,10 +28,9 @@ public class StdAcceptItemWebService extends WebService {
 	private RegisterReturnStdAcceptItemCommandHandler regReturnStdAcceptItemHandler;
 
 	@POST
-	@Path("getAllStdAcceptItem/{systemType}/{conditionSetCd}")
-	public List<StdAcceptItemDto> getAllStdAcceptItem(@PathParam("systemType") int systemType,
-			@PathParam("conditionSetCd") String conditionSetCd) {
-		return this.stdAcceptItem.getStdAcceptItems(systemType, conditionSetCd);
+	@Path("getAllStdAcceptItem/{conditionSetCd}")
+	public List<StdAcceptItemDto> getAllStdAcceptItem(@PathParam("conditionSetCd") String conditionSetCd) {
+		return this.stdAcceptItem.getStdAcceptItems(conditionSetCd);
 	}
 
 	@POST

@@ -428,7 +428,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
             let self = this,
                 dfd = $.Deferred();
             block.invisible();
-            service.getOneStdData(self.systemType.code, self.stdCondSetCd()).done((cond) => {
+            service.getOneStdData(self.stdCondSetCd()).done((cond) => {
                 if (cond) {
                     self.stdCondSet(new model.StandardAcceptanceConditionSetting(cond.systemType, 
                                                         cond.conditionSettingCode, 
@@ -454,7 +454,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                             } else {
                                 self.selectedCategory(self.listCategory()[0].categoryId);
                             }
-                            service.getAllData(self.systemType.code, self.stdCondSet().conditionSetCode()).done(function(data: Array<any>) {
+                            service.getAllData(self.stdCondSet().conditionSetCode()).done(function(data: Array<any>) {
                                 if (data && data.length) {//co du lieu dang ki
                                     self.loadCategoryItemData(self.stdCondSet().categoryId()).done(() => {
                                         let _rsList: Array<model.StandardAcceptItem> = _.map(data, rs => {

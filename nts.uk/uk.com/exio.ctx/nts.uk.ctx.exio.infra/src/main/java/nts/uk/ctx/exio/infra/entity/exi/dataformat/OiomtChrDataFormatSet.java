@@ -99,7 +99,6 @@ public class OiomtChrDataFormatSet extends UkJpaEntity implements Serializable {
 
 	@OneToOne
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-			@JoinColumn(name = "SYSTEM_TYPE", referencedColumnName = "SYSTEM_TYPE", insertable = false, updatable = false),
 			@JoinColumn(name = "CONDITION_SET_CD", referencedColumnName = "CONDITION_SET_CD", insertable = false, updatable = false),
 			@JoinColumn(name = "ACCEPT_ITEM_NUM", referencedColumnName = "ACCEPT_ITEM_NUMBER", insertable = false, updatable = false) })
 	public OiomtStdAcceptItem acceptItem;
@@ -109,11 +108,11 @@ public class OiomtChrDataFormatSet extends UkJpaEntity implements Serializable {
 		return chrDataFormatSetPk;
 	}
 
-	public OiomtChrDataFormatSet(String cid, int sysType, String conditionCode, int acceptItemNum, int cdEditing,
+	public OiomtChrDataFormatSet(String cid, String conditionCode, int acceptItemNum, int cdEditing,
 			int fixedValue, int effectiveDigitLength, String cdConvertCd, Integer cdEditMethod, Integer cdEditDigit,
 			String fixedVal, Integer startDigit, Integer endDigit) {
 		super();
-		this.chrDataFormatSetPk = new OiomtChrDataFormatSetPk(cid, sysType, conditionCode, acceptItemNum);
+		this.chrDataFormatSetPk = new OiomtChrDataFormatSetPk(cid, conditionCode, acceptItemNum);
 		this.cdEditing = cdEditing;
 		this.fixedValue = fixedValue;
 		this.effectiveDigitLength = effectiveDigitLength;
@@ -126,7 +125,7 @@ public class OiomtChrDataFormatSet extends UkJpaEntity implements Serializable {
 	}
 
 	public static OiomtChrDataFormatSet fromDomain(StdAcceptItem item, ChrDataFormatSet domain) {
-		return new OiomtChrDataFormatSet(item.getCid(), item.getSystemType().value, item.getConditionSetCd().v(),
+		return new OiomtChrDataFormatSet(item.getCid(), item.getConditionSetCd().v(),
 				item.getAcceptItemNumber(), domain.getCdEditing().value, domain.getFixedValue().value,
 				domain.getEffectiveDigitLength().value,
 				domain.getCdConvertCd().isPresent() ? domain.getCdConvertCd().get().v() : null,

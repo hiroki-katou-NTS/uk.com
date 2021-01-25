@@ -3,18 +3,18 @@ module nts.uk.com.view.cmf001.d.service {
     import format = nts.uk.text.format;
     
     var paths = {
-        getAllData: "exio/exi/item/getAllStdAcceptItem/{0}/{1}",
+        getAllData: "exio/exi/item/getAllStdAcceptItem/{0}",
         registerData: "exio/exi/item/register",
         registerDataAndReturn: "exio/exi/item/registerReturn",
         getAllCategory: "exio/exi/condset/getAllCategory",
         getCategoryItem: "exio/exi/condset/getCategoryItemData/{0}",
-        getOneStdSettingData: "exio/exi/condset/getOneStdCondSet/{0}/{1}",
+        getOneStdSettingData: "exio/exi/condset/getOneStdCondSet/{0}",
         getNumberOfLine: "exio/exi/csvimport/getNumberOfLine/{0}/{1}",
         getRecord: "exio/exi/csvimport/getRecord/{0}/{1}/{2}/{3}"
     }
 
-    export function getAllData(sysType: number, condCode: string): JQueryPromise<any> {
-        let _path = format(paths.getAllData, sysType, condCode);
+    export function getAllData(condCode: string): JQueryPromise<any> {
+        let _path = format(paths.getAllData, condCode);
         return ajax("com", _path);
     };
     
@@ -35,8 +35,8 @@ module nts.uk.com.view.cmf001.d.service {
         return ajax("com", _path);
     };
     
-    export function getOneStdData(sysType: number, code: string): JQueryPromise<any> {
-        let _path = format(paths.getOneStdSettingData, sysType, code);
+    export function getOneStdData(code: string): JQueryPromise<any> {
+        let _path = format(paths.getOneStdSettingData, code);
         return ajax("com", _path);
     };
     

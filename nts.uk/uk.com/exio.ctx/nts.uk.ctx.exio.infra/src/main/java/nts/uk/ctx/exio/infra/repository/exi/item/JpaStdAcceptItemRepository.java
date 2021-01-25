@@ -15,13 +15,16 @@ import nts.uk.ctx.exio.infra.entity.exi.item.OiomtStdAcceptItemPk;
 @Stateless
 public class JpaStdAcceptItemRepository extends JpaRepository implements StdAcceptItemRepository {
 
-	private static final String SELECT_ALL = "SELECT f FROM OiomtStdAcceptItem f WHERE f.stdAcceptItemPk.cid = :cid AND f.stdAcceptItemPk.systemType = :systemType AND f.stdAcceptItemPk.conditionSetCd = :conditionSetCd ORDER BY f.stdAcceptItemPk.acceptItemNumber";
+	private static final String SELECT_ALL = "SELECT f FROM OiomtStdAcceptItem f "
+			+ "WHERE f.stdAcceptItemPk.cid = :cid "
+			+ "AND f.stdAcceptItemPk.conditionSetCd = :conditionSetCd "
+			+ "ORDER BY f.stdAcceptItemPk.acceptItemNumber";
 
 	@Override
-	public Optional<StdAcceptItem> getStdAcceptItemById(String cid, int sysType, String conditionSetCd,
+	public Optional<StdAcceptItem> getStdAcceptItemById(String cid, String conditionSetCd,
 			int acceptItemNumber) {
 		Optional<OiomtStdAcceptItem> entity = this.queryProxy().find(
-				new OiomtStdAcceptItemPk(cid, sysType, conditionSetCd, acceptItemNumber), OiomtStdAcceptItem.class);
+				new OiomtStdAcceptItemPk(cid, conditionSetCd, acceptItemNumber), OiomtStdAcceptItem.class);
 		if (entity.isPresent()) {
 			return Optional.of(OiomtStdAcceptItem.toDomain(entity.get()));
 		} else {
@@ -31,14 +34,14 @@ public class JpaStdAcceptItemRepository extends JpaRepository implements StdAcce
 
 	@Override
 	public void add(StdAcceptItem domain) {
-		this.commandProxy().insert(OiomtStdAcceptItem.fromDomain(domain));
+		this.commandProxy().insert(OiomtStdAcceptItem.toEntity(domain));
 	}
 
 	@Override
 	public void update(StdAcceptItem domain) {
 		Optional<OiomtStdAcceptItem> entityOpt = this
 				.queryProxy().find(
-						new OiomtStdAcceptItemPk(domain.getCid(), domain.getSystemType().value,
+						new OiomtStdAcceptItemPk(domain.getCid(), 
 								domain.getConditionSetCd().v(), domain.getAcceptItemNumber()),
 						OiomtStdAcceptItem.class);
 		if (entityOpt.isPresent()) {
@@ -48,31 +51,32 @@ public class JpaStdAcceptItemRepository extends JpaRepository implements StdAcce
 	}
 
 	@Override
-	public void remove(String cid, int sysType, String conditionSetCd, int acceptItemNumber) {
+	public void remove(String cid, String conditionSetCd, int acceptItemNumber) {
 		this.commandProxy().remove(OiomtStdAcceptItem.class,
-				new OiomtStdAcceptItemPk(cid, sysType, conditionSetCd, acceptItemNumber));
+				new OiomtStdAcceptItemPk(cid, conditionSetCd, acceptItemNumber));
 	}
 
 	@Override
-	public void removeAll(String cid, int sysType, String conditionSetCd) {
+	public void removeAll(String cid, String conditionSetCd) {
 		List<OiomtStdAcceptItem> listEntity = this.queryProxy().query(SELECT_ALL, OiomtStdAcceptItem.class)
-				.setParameter("cid", cid).setParameter("systemType", sysType)
+				.setParameter("cid", cid)
 				.setParameter("conditionSetCd", conditionSetCd).getList();
 		this.commandProxy().removeAll(listEntity);
 		this.getEntityManager().flush();
 	}
 
 	@Override
-	public List<StdAcceptItem> getListStdAcceptItems(String cid, int systemType, String conditionSetCd) {
-		return this.queryProxy().query(SELECT_ALL, OiomtStdAcceptItem.class).setParameter("cid", cid)
-				.setParameter("systemType", systemType).setParameter("conditionSetCd", conditionSetCd)
+	public List<StdAcceptItem> getListStdAcceptItems(String cid,String conditionSetCd) {
+		return this.queryProxy().query(SELECT_ALL, OiomtStdAcceptItem.class)
+				.setParameter("cid", cid)
+				.setParameter("conditionSetCd", conditionSetCd)
 				.getList(c -> OiomtStdAcceptItem.toDomain(c));
 	}
 
 	@Override
 	public void addList(List<StdAcceptItem> listItem) {
 		this.commandProxy().insertAll(
-				listItem.stream().map(item -> OiomtStdAcceptItem.fromDomain(item)).collect(Collectors.toList()));
+				listItem.stream().map(item -> OiomtStdAcceptItem.toEntity(item)).collect(Collectors.toList()));
 	}
 
 }

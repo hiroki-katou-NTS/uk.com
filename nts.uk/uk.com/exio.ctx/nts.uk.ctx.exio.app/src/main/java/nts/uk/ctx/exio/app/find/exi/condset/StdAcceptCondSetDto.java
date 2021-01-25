@@ -14,7 +14,7 @@ public class StdAcceptCondSetDto {
 	/**
 	 * システム種類
 	 */
-	private int systemType;
+	private Integer systemType;
 
 	/**
 	 * 外部受入条件コード
@@ -62,7 +62,8 @@ public class StdAcceptCondSetDto {
 	private Integer deleteExistDataMethod;
 
 	public static StdAcceptCondSetDto fromDomain(StdAcceptCondSet domain) {
-		return new StdAcceptCondSetDto(domain.getSystemType().value, domain.getConditionSetCode().v(),
+		return new StdAcceptCondSetDto(domain.getSystemType().isPresent() ? domain.getSystemType().get().value : null,
+				domain.getConditionSetCode().v(),
 				domain.getConditionSetName().v(), domain.getDeleteExistData().value,
 				domain.getAcceptMode().isPresent() ? domain.getAcceptMode().get().value : null,
 				domain.getCategoryId().isPresent() ? domain.getCategoryId().get() : null,

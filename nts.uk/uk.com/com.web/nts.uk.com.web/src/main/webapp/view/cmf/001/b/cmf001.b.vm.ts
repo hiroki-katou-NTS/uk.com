@@ -40,8 +40,8 @@ module nts.uk.com.view.cmf001.b.viewmodel {
             self.selectedStandardImportSettingCode.subscribe((data) => {
                 if (data) {
                     block.invisible();
-                    let d1 = service.getOneStdData(self.systemType(), data);
-                    let d2 = service.getAllStdItemData(self.systemType(), data);
+                    let d1 = service.getOneStdData(data);
+                    let d2 = service.getAllStdItemData(data);
                     $.when( d1, d2 ).done(function ( result, rs ) {
                         if (result) {
                             let item = new model.StandardAcceptanceConditionSetting(
@@ -68,11 +68,11 @@ module nts.uk.com.view.cmf001.b.viewmodel {
                     }, 10);
                 }
             });
-            
-            self.systemType.subscribe((data) => {
+            self.getAllData();
+            /*self.systemType.subscribe((data) => {
                 nts.uk.ui.errors.clearAll();
                 self.getAllData();
-            });
+            });*/
         }
         
         private openCMF001d() {
@@ -152,7 +152,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
             block.invisible();
             self.listStandardImportSetting.removeAll();
 
-            service.getAllStdData(self.systemType()).done(function(data: Array<any>) {
+            service.getAllStdData().done(function(data: Array<any>) {
                 if (data && data.length) {
                     let _rsList: Array<model.StandardAcceptanceConditionSetting> = _.map(data, rs => {
                         return new model.StandardAcceptanceConditionSetting(rs.systemType, 
@@ -160,7 +160,6 @@ module nts.uk.com.view.cmf001.b.viewmodel {
                         rs.conditionSettingName,
                         rs.deleteExistData);
                     });
-//                    _rsList = _.sortBy(_rsList, ['code']);
                     if (code) {
                         if (code == self.selectedStandardImportSettingCode())
                             self.selectedStandardImportSettingCode.valueHasMutated();

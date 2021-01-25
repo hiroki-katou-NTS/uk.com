@@ -35,7 +35,6 @@ module nts.uk.com.view.cmf001.o.viewmodel {
 
         constructor() {
             var self = this;
-
             //起動する
             self.stepList = [
                 { content: '.step-1' },
@@ -196,8 +195,8 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                     self.listCondition(_rspList);
 
                     //取得した設定を「条件設定一覧」に表示する
-                    self.selectedConditionCd(self.listCondition()[0].conditionSettingCode());
-                    self.selectedConditionName(self.listCondition()[0].conditionSettingName());
+                    self.selectedConditionCd(self.listCondition()[0].conditionSetCode());
+                    self.selectedConditionName(self.listCondition()[0].conditionSetName());
                 }
                 //取得データが0件の場合      
                 else {
@@ -219,7 +218,7 @@ module nts.uk.com.view.cmf001.o.viewmodel {
             let self = this;
             block.invisible();
             //ドメインモデル「受入項目（定型）」を取得する      
-            service.getStdAcceptItem(self.selectedSysType(), self.selectedConditionCd()).done(function(data: Array<any>) {
+            service.getStdAcceptItem(self.selectedConditionCd()).done(function(data: Array<any>) {
                 self.listAccept.removeAll();
                 self.totalRecord(null);
                 if (data && data.length) {

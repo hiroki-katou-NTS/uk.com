@@ -1,13 +1,19 @@
 package nts.uk.ctx.exio.infra.entity.exi.condset;
 
+import java.io.Serializable;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NonNull;
-import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSet;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
-import javax.persistence.*;
-import java.io.Serializable;
 
 /**
  * 受入条件設定（定型）
@@ -16,8 +22,9 @@ import java.io.Serializable;
 @Entity
 @Table(name = "OIOMT_STD_ACCEPT_COND_SET")
 @EqualsAndHashCode(callSuper = true)
-public class OiomtStdAcceptCondSet extends UkJpaEntity
-		implements StdAcceptCondSet.MementoGetter, StdAcceptCondSet.MementoSetter, Serializable {
+@AllArgsConstructor
+@NoArgsConstructor
+public class OiomtStdAcceptCondSet extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -25,7 +32,12 @@ public class OiomtStdAcceptCondSet extends UkJpaEntity
 	 */
 	@EmbeddedId
 	private OiomtStdAcceptCondSetPk stdAcceptCondSetPk;
-
+	/**
+	 * システム種類
+	 */
+	@Basic(optional = true)
+	@Column(name = "SYSTEM_TYPE")
+	public Integer systemType;
 	/**
 	 * 外部受入カテゴリID
 	 */
@@ -97,140 +109,6 @@ public class OiomtStdAcceptCondSet extends UkJpaEntity
 	@Override
 	protected Object getKey() {
 		return this.stdAcceptCondSetPk;
-	}
-
-	/**
-	 * No args constructor.
-	 */
-	protected OiomtStdAcceptCondSet() {
-	}
-
-	/**
-	 * Creates new entity from domain and memento.
-	 *
-	 * @param domain the domain require <code>not null</code>
-	 */
-	public OiomtStdAcceptCondSet(@NonNull StdAcceptCondSet domain) {
-		domain.setMemento(this);
-	}
-
-	/**
-	 * Sets company id.
-	 *
-	 * @param companyId the company id
-	 */
-	@Override
-	public void setCompanyId(String companyId) {
-		if (this.stdAcceptCondSetPk == null) {
-			this.stdAcceptCondSetPk = new OiomtStdAcceptCondSetPk();
-		}
-		this.stdAcceptCondSetPk.cid = companyId;
-	}
-
-	/**
-	 * Sets condition set code.
-	 *
-	 * @param conditionSetCode the condition set code
-	 */
-	@Override
-	public void setConditionSetCode(String conditionSetCode) {
-		if (this.stdAcceptCondSetPk == null) {
-			this.stdAcceptCondSetPk = new OiomtStdAcceptCondSetPk();
-		}
-		this.stdAcceptCondSetPk.conditionSetCd = conditionSetCode;
-	}
-
-	/**
-	 * Sets csv data item line number.
-	 *
-	 * @param csvDataItemLineNumber the csv data item line number
-	 */
-	@Override
-	public void setCsvDataItemLineNumber(Integer csvDataItemLineNumber) {
-		this.csvDataLineNumber = csvDataItemLineNumber;
-	}
-
-	/**
-	 * Sets system type.
-	 *
-	 * @param systemType the system type
-	 */
-	@Override
-	public void setSystemType(int systemType) {
-		if (this.stdAcceptCondSetPk == null) {
-			this.stdAcceptCondSetPk = new OiomtStdAcceptCondSetPk();
-		}
-		this.stdAcceptCondSetPk.systemType = systemType;
-	}
-
-	/**
-	 * Sets delete exist data.
-	 *
-	 * @param deleteExistData the delete exist data
-	 */
-	@Override
-	public void setDeleteExistData(int deleteExistData) {
-		this.deleteExistData = deleteExistData;
-	}
-
-	/**
-	 * Sets delete exist data method.
-	 *
-	 * @param deleteExistDataMethod the delete exist data method
-	 */
-	@Override
-	public void setDeleteExistDataMethod(Integer deleteExistDataMethod) {
-		this.deleteExtDataMethod = deleteExistDataMethod;
-	}
-
-	/**
-	 * Gets company id.
-	 *
-	 * @return the company id
-	 */
-	@Override
-	public String getCompanyId() {
-		return this.stdAcceptCondSetPk.cid;
-	}
-
-	/**
-	 * Gets condition set code.
-	 *
-	 * @return the condition set code
-	 */
-	@Override
-	public String getConditionSetCode() {
-		return this.stdAcceptCondSetPk.conditionSetCd;
-	}
-
-	/**
-	 * Gets csv data item line number.
-	 *
-	 * @return the csv data item line number
-	 */
-	@Override
-	public Integer getCsvDataItemLineNumber() {
-		return this.csvDataLineNumber;
-	}
-
-	/**
-	 * Gets system type.
-	 *
-	 * @return the system type
-	 */
-	@Override
-	public int getSystemType() {
-		return this.stdAcceptCondSetPk.systemType;
-	}
-
-	/**
-	 * Gets delete exist data method.
-	 *
-	 * @return the delete exist data method
-	 */
-	@Override
-	public Integer getDeleteExistDataMethod() {
-		return this.deleteExtDataMethod;
 	}
 
 }

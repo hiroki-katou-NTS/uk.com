@@ -17,11 +17,18 @@ public interface StdAcceptCondSetRepository {
 	List<StdAcceptCondSet> findAllStdAcceptCondSetsByCompanyId(String companyId);
 
 	/**
-	 * Gets standard acceptance condition settings by system type.
+	 * Gets standard acceptance condition settings.
 	 *
 	 * @param cid     the company id
 	 * @param sysType the system type
 	 * @return the <code>StdAcceptCondSet</code> domain list
+	 */
+	List<StdAcceptCondSet> getAllStdAcceptCondSet(String cid);
+	/**
+	 * システム区分から受入条件設定（定型）を取得
+	 * @param cid
+	 * @param sysType
+	 * @return
 	 */
 	List<StdAcceptCondSet> getStdAcceptCondSetBySysType(String cid, int sysType);
 
@@ -33,7 +40,7 @@ public interface StdAcceptCondSetRepository {
 	 * @param conditionSetCd the condition set code
 	 * @return the optional of domain standard acceptance condition setting
 	 */
-	Optional<StdAcceptCondSet> getStdAcceptCondSetById(String cid, int sysType, String conditionSetCd);
+	Optional<StdAcceptCondSet> getById(String cid, String conditionSetCd);
 
 	/**
 	 * Add.
@@ -73,6 +80,8 @@ public interface StdAcceptCondSetRepository {
 	 * @param conditionSetCd the condition set code
 	 * @return the boolean
 	 */
-	boolean isSettingCodeExist(String cid, int sysType, String conditionSetCd);
+	boolean isSettingCodeExist(String cid, String conditionSetCd);
+	
+	
 
 }

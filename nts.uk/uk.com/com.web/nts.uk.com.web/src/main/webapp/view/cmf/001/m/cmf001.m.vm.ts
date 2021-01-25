@@ -51,7 +51,7 @@ module nts.uk.com.view.cmf001.m.viewmodel {
             
             if (!nts.uk.ui.errors.hasError()) {
                 block.invisible();
-                service.checkExistCode(self.systemType.code, self.newCondCode()).done((result) => {
+                service.checkExistCode(self.newCondCode()).done((result) => {
                     if(result && !self.checked()){
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_892", messageParams: [nts.uk.resource.getText("M2_7")] }).then(() => {
                             $("#M2_7").focus();  

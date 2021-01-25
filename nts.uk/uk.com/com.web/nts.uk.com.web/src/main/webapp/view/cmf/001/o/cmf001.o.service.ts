@@ -7,8 +7,8 @@ module nts.uk.com.view.cmf001.o {
         var paths = {
             getSystemType: "exio/exi/condset/getSysType",
             getConditionList: "exio/exi/condset/getStdAcceptCondSetBySysType/{0}",
-            getNumberOfLine: "exio/exi/csvimport/getNumberOfLine/{0}/{1}",
-            getAllStdAcceptItem: "exio/exi/item/getAllStdAcceptItem/{0}/{1}",
+            getNumberOfLine: "exio/exi/csvimport/getNumberOfLine/{0}/{1}",  //CsvDataImportService
+            getAllStdAcceptItem: "exio/exi/item/getAllStdAcceptItem/{0}",
             getCategoryItem: "exio/exi/condset/getCategoryItemData/{0}",
             getRecord: "exio/exi/csvimport/getCsvRecord"
         }
@@ -27,8 +27,8 @@ module nts.uk.com.view.cmf001.o {
             return ajax('com', _path);
         };
 
-        export function getStdAcceptItem(systemType: number, conditionSetCd: string): JQueryPromise<any> {
-            let _path = format(paths.getAllStdAcceptItem, systemType, conditionSetCd);
+        export function getStdAcceptItem(conditionSetCd: string): JQueryPromise<any> {
+            let _path = format(paths.getAllStdAcceptItem, conditionSetCd);
             return ajax('com', _path);
         };
 

@@ -65,7 +65,7 @@ public class SyncCsvCheckImportDataCommandHandler extends AsyncCommandHandler<Cs
 			setter.updateData(STATUS, command.getStateBehavior());
 			
 			try {
-				TimeUnit.SECONDS.sleep(1);
+				TimeUnit.MILLISECONDS.sleep(1);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 				throw new RuntimeException(e);

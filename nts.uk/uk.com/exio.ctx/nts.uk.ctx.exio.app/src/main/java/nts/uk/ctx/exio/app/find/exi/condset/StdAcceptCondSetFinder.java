@@ -54,16 +54,21 @@ public class StdAcceptCondSetFinder {
 		return result;
 	}
 
+	public List<StdAcceptCondSetDto> getAllStdAcceptCondSet() {
+		String companyId = AppContexts.user().companyId();
+		return stdConditionRepo.getAllStdAcceptCondSet(companyId).stream()
+				.map(item -> StdAcceptCondSetDto.fromDomain(item)).collect(Collectors.toList());
+	}
+	
 	public List<StdAcceptCondSetDto> getStdAcceptCondSetBySysType(int systemType) {
 		String companyId = AppContexts.user().companyId();
 		return stdConditionRepo.getStdAcceptCondSetBySysType(companyId, systemType).stream()
 				.map(item -> StdAcceptCondSetDto.fromDomain(item)).collect(Collectors.toList());
 	}
 
-	public StdAcceptCondSetDto getStdAccCondSet(int sysType, String conditionSetCd) {
+	public StdAcceptCondSetDto getStdAccCondSet(String conditionSetCd) {
 		String companyId = AppContexts.user().companyId();
-		Optional<StdAcceptCondSet> optDomain = stdConditionRepo.getStdAcceptCondSetById(companyId, sysType,
-				conditionSetCd);
+		Optional<StdAcceptCondSet> optDomain = stdConditionRepo.getById(companyId, conditionSetCd);
 		if (optDomain.isPresent())
 			return StdAcceptCondSetDto.fromDomain(optDomain.get());
 		else
@@ -71,9 +76,9 @@ public class StdAcceptCondSetFinder {
 
 	}
 
-	public boolean isCodeExist(int systemType, String conditionCode) {
+	public boolean isCodeExist(String conditionCode) {
 		String companyId = AppContexts.user().companyId();
-		return stdConditionRepo.isSettingCodeExist(companyId, systemType, conditionCode);
+		return stdConditionRepo.isSettingCodeExist(companyId, conditionCode);
 	}
 
 	/**

@@ -12,7 +12,10 @@ import javax.persistence.JoinColumns;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.exio.dom.exi.condset.AcScreenCondSet;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
@@ -24,6 +27,9 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 
 @NoArgsConstructor
+@AllArgsConstructor
+@Setter
+@Getter
 @Entity
 @Table(name = "OIOMT_AC_SCREEN_COND_SET")
 public class OiomtAcScreenCondSet extends UkJpaEntity implements Serializable {
@@ -114,7 +120,6 @@ public class OiomtAcScreenCondSet extends UkJpaEntity implements Serializable {
 
 	@OneToOne
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-			@JoinColumn(name = "SYSTEM_TYPE", referencedColumnName = "SYSTEM_TYPE", insertable = false, updatable = false),
 			@JoinColumn(name = "CONDITION_SET_CD", referencedColumnName = "CONDITION_SET_CD", insertable = false, updatable = false),
 			@JoinColumn(name = "ACCEPT_ITEM_NUM", referencedColumnName = "ACCEPT_ITEM_NUMBER", insertable = false, updatable = false) })
 	public OiomtStdAcceptItem acceptItem;
@@ -124,12 +129,12 @@ public class OiomtAcScreenCondSet extends UkJpaEntity implements Serializable {
 		return acScreenCondSetPk;
 	}
 
-	public OiomtAcScreenCondSet(String cid, int sysType, String conditionCode, int acceptItemNum,
+	public OiomtAcScreenCondSet(String cid, String conditionCode, int acceptItemNum,
 			Integer selCompareCond, Integer timeCondVal1, Integer timeCondVal2, Integer timeMoCondVal1,
 			Integer timeMoCondVal2, GeneralDate dateCondVal1, GeneralDate dateCondVal2, String charCondVal1,
 			String charCondVal2, BigDecimal numCondVal1, BigDecimal numCondVal2) {
 		super();
-		this.acScreenCondSetPk = new OiomtAcScreenCondSetPk(cid, sysType, conditionCode, acceptItemNum);
+		this.acScreenCondSetPk = new OiomtAcScreenCondSetPk(cid, conditionCode, acceptItemNum);
 		this.selCompareCond = selCompareCond;
 		this.timeCondVal2 = timeCondVal2;
 		this.timeCondVal1 = timeCondVal1;
@@ -144,7 +149,7 @@ public class OiomtAcScreenCondSet extends UkJpaEntity implements Serializable {
 	}
 
 	public static OiomtAcScreenCondSet fromDomain(StdAcceptItem item, AcScreenCondSet domain) {
-		return new OiomtAcScreenCondSet(item.getCid(), item.getSystemType().value, item.getConditionSetCd().v(),
+		return new OiomtAcScreenCondSet(item.getCid(), item.getConditionSetCd().v(),
 				item.getAcceptItemNumber(),
 				domain.getSelectComparisonCondition().isPresent() ? domain.getSelectComparisonCondition().get().value
 						: null,

@@ -28,34 +28,29 @@ public class StdAcceptItemServiceImpl implements StdAcceptItemService {
 	private StdAcceptCondSetRepository acceptCondRepo;
 
 	@Override
-	public void register(List<StdAcceptItem> listItem, StdAcceptCondSet conditionSetting) {
-		Optional<StdAcceptCondSet> currentDomain = this.acceptCondRepo.getStdAcceptCondSetById(conditionSetting.getCompanyId(),
-																							   conditionSetting.getSystemType().value,
-																							   conditionSetting.getConditionSetCode().v());
+	public void register(List<StdAcceptItem> listItem, StdAcceptCondSet domain) {
+		Optional<StdAcceptCondSet> currentDomain = this.acceptCondRepo.getById(domain.getCompanyId(),
+																				domain.getConditionSetCode().v());
 		if (currentDomain.isPresent()) {
-			StdAcceptCondSet updateDomain = currentDomain.get().updateDomain(conditionSetting);
-			this.acceptItemRepo.removeAll(conditionSetting.getCompanyId(),
-										  conditionSetting.getSystemType().value,
-										  conditionSetting.getConditionSetCode().v());
+			this.acceptItemRepo.removeAll(domain.getCompanyId(),
+					domain.getConditionSetCode().v());
 			this.acceptItemRepo.addList(listItem);
-			updateDomain.setCheckCompleted(NotUseAtr.NOT_USE);
-			this.acceptCondRepo.updateFromD(updateDomain);
+			domain.setCheckCompleted(NotUseAtr.NOT_USE);
+			this.acceptCondRepo.updateFromD(domain);
 		}
 	}
 
 	@Override
 	public void registerAndReturn(List<Pair<StdAcceptItem, String>> listItem, StdAcceptCondSet conditionSetting) {
-		Optional<StdAcceptCondSet> currentDomain = this.acceptCondRepo.getStdAcceptCondSetById(conditionSetting.getCompanyId(),
-																							   conditionSetting.getSystemType().value,
+		Optional<StdAcceptCondSet> currentDomain = this.acceptCondRepo.getById(conditionSetting.getCompanyId(),
 																							   conditionSetting.getConditionSetCode().v());
 		if (currentDomain.isPresent()) {
-			StdAcceptCondSet updateDomain = currentDomain.get().updateDomain(conditionSetting);
+			StdAcceptCondSet updateDomain = currentDomain.get();
 			this.acceptCondRepo.updateFromD(updateDomain);
 			this.acceptItemRepo.removeAll(conditionSetting.getCompanyId(),
-										  conditionSetting.getSystemType().value,
 										  conditionSetting.getConditionSetCode().v());
 			this.acceptItemRepo.addList(listItem.stream().map(Pair::getLeft).collect(Collectors.toList()));
-			inputCheck(listItem, updateDomain);
+			inputCheck(listItem, conditionSetting);
 		}
 	}
 

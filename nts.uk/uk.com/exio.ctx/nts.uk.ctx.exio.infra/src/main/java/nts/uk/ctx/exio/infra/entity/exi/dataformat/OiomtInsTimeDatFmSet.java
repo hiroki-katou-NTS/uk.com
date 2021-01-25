@@ -106,7 +106,6 @@ public class OiomtInsTimeDatFmSet extends UkJpaEntity implements Serializable {
 
 	@OneToOne
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-			@JoinColumn(name = "SYSTEM_TYPE", referencedColumnName = "SYSTEM_TYPE", insertable = false, updatable = false),
 			@JoinColumn(name = "CONDITION_SET_CD", referencedColumnName = "CONDITION_SET_CD", insertable = false, updatable = false),
 			@JoinColumn(name = "ACCEPT_ITEM_NUM", referencedColumnName = "ACCEPT_ITEM_NUMBER", insertable = false, updatable = false) })
 	public OiomtStdAcceptItem acceptItem;
@@ -116,11 +115,11 @@ public class OiomtInsTimeDatFmSet extends UkJpaEntity implements Serializable {
 		return insTimeDatFmSetPk;
 	}
 
-	public OiomtInsTimeDatFmSet(String cid, int sysType, String conditionCode, int acceptItemNum, int delimiterSet,
+	public OiomtInsTimeDatFmSet(String cid,  String conditionCode, int acceptItemNum, int delimiterSet,
 			int fixedValue, int hourMinSelect, int effectiveDigitLength, int roundProc, int decimalSelect,
 			String valueOfFixedValue, Integer startDigit, Integer endDigit, Integer roundProcCls) {
 		super();
-		this.insTimeDatFmSetPk = new OiomtInsTimeDatFmSetPk(cid, sysType, conditionCode, acceptItemNum);
+		this.insTimeDatFmSetPk = new OiomtInsTimeDatFmSetPk(cid, conditionCode, acceptItemNum);
 		this.delimiterSet = delimiterSet;
 		this.fixedValue = fixedValue;
 		this.hourMinSelect = hourMinSelect;
@@ -134,7 +133,7 @@ public class OiomtInsTimeDatFmSet extends UkJpaEntity implements Serializable {
 	}
 
 	public static OiomtInsTimeDatFmSet fromDomain(StdAcceptItem item, InsTimeDatFmSet domain) {
-		return new OiomtInsTimeDatFmSet(item.getCid(), item.getSystemType().value, item.getConditionSetCd().v(),
+		return new OiomtInsTimeDatFmSet(item.getCid(), item.getConditionSetCd().v(),
 				item.getAcceptItemNumber(), domain.getDelimiterSet().value, domain.getFixedValue().value,
 				domain.getHourMinSelect().value, domain.getEffectiveDigitLength().value, domain.getRoundProc().value,
 				domain.getDecimalSelect().value,

@@ -46,23 +46,28 @@ public class StdAcceptCondSetWebService extends WebService {
 	}
 
 	@POST
+	@Path("getAllStdAcceptCondSet")
+	public List<StdAcceptCondSetDto> getAllStdAcceptCondSet() {
+		return this.stdAcceptCondSetFind.getAllStdAcceptCondSet();
+	}
+	
+
+	@POST
 	@Path("getStdAcceptCondSetBySysType/{systemType}")
 	public List<StdAcceptCondSetDto> getStdAcceptCondSetBySysType(@PathParam("systemType") int systemType) {
 		return this.stdAcceptCondSetFind.getStdAcceptCondSetBySysType(systemType);
 	}
 
 	@POST
-	@Path("checkExistCode/{sysType}/{condCode}")
-	public boolean getConditionBySystemType(@PathParam("sysType") int systemType,
-			@PathParam("condCode") String conditionCode) {
-		return stdAcceptCondSetFind.isCodeExist(systemType, conditionCode);
+	@Path("checkExistCode/{condCode}")
+	public boolean getConditionBySystemType(@PathParam("condCode") String conditionCode) {
+		return stdAcceptCondSetFind.isCodeExist(conditionCode);
 	}
 
 	@POST
-	@Path("getOneStdCondSet/{sysType}/{condCode}")
-	public StdAcceptCondSetDto getConditionBySystemTypeAndCode(@PathParam("sysType") int systemType,
-			@PathParam("condCode") String conditionCode) {
-		return stdAcceptCondSetFind.getStdAccCondSet(systemType, conditionCode);
+	@Path("getOneStdCondSet/{condCode}")
+	public StdAcceptCondSetDto getConditionBySystemTypeAndCode(@PathParam("condCode") String conditionCode) {
+		return stdAcceptCondSetFind.getStdAccCondSet(conditionCode);
 	}
 
 	@POST

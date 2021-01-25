@@ -2,12 +2,13 @@ package nts.uk.ctx.exio.dom.exi.item;
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.arc.enums.EnumAdaptor;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.exio.dom.exi.condset.AcScreenCondSet;
 import nts.uk.ctx.exio.dom.exi.condset.AcceptanceConditionCode;
-import nts.uk.ctx.exio.dom.exi.condset.SystemType;
 import nts.uk.ctx.exio.dom.exi.dataformat.DataFormatSetting;
 import nts.uk.ctx.exio.dom.exi.dataformat.ItemType;
 
@@ -16,6 +17,9 @@ import nts.uk.ctx.exio.dom.exi.dataformat.ItemType;
  */
 
 @Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class StdAcceptItem extends AggregateRoot {
 
 	/**
@@ -32,11 +36,6 @@ public class StdAcceptItem extends AggregateRoot {
 	 * 受入項目番号
 	 */
 	private int acceptItemNumber;
-
-	/**
-	 * システム種類
-	 */
-	private SystemType systemType;
 	
 	/**
 	 * CSV項目番号
@@ -67,38 +66,5 @@ public class StdAcceptItem extends AggregateRoot {
 	 * データ形式設定
 	 */
 	private Optional<DataFormatSetting> dataFormatSetting;
-
-	
-	
-	public StdAcceptItem(String cid, int systemType, String conditionSetCd, int acceptItemNumber, int categoryItemNo,
-			Integer csvItemNumber, String csvItemName, int itemType, AcScreenCondSet acceptScreenConditionSetting, DataFormatSetting dataFormatSetting) {
-		super();
-		this.cid = cid;
-		this.systemType = EnumAdaptor.valueOf(systemType, SystemType.class);
-		this.conditionSetCd = new AcceptanceConditionCode(conditionSetCd);
-		this.categoryItemNo = categoryItemNo;
-		this.acceptItemNumber = acceptItemNumber;
-		this.csvItemNumber = Optional.ofNullable(csvItemNumber);
-		this.csvItemName = Optional.ofNullable(csvItemName);
-		this.itemType = EnumAdaptor.valueOf(itemType, ItemType.class);
-		this.acceptScreenConditionSetting = Optional.ofNullable(acceptScreenConditionSetting);
-		this.dataFormatSetting = Optional.ofNullable(dataFormatSetting);
-	}
-
-	public StdAcceptItem(String cid, AcceptanceConditionCode conditionSetCd, int acceptItemNumber,
-			SystemType systemType, Optional<Integer> csvItemNumber, Optional<String> csvItemName, ItemType itemType, int categoryItemNo,
-			Optional<AcScreenCondSet> acceptScreenConditionSetting, Optional<DataFormatSetting> dataFormatSetting) {
-		super();
-		this.cid = cid;
-		this.conditionSetCd = conditionSetCd;
-		this.acceptItemNumber = acceptItemNumber;
-		this.systemType = systemType;
-		this.csvItemNumber = csvItemNumber;
-		this.csvItemName = csvItemName;
-		this.itemType = itemType;
-		this.categoryItemNo = categoryItemNo;
-		this.acceptScreenConditionSetting = acceptScreenConditionSetting;
-		this.dataFormatSetting = dataFormatSetting;
-	}
 
 }

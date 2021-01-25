@@ -6,7 +6,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSet;
 import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.layer.app.command.CommandHandler;
@@ -24,9 +23,9 @@ public class RegisterReturnStdAcceptItemCommandHandler extends CommandHandler<Cm
 	protected void handle(CommandHandlerContext<Cmf001DCommand> context) {
 		Cmf001DCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		this.itemService.registerAndReturn(
-				command.getListItem().stream().map(item -> Pair.of(item.toDomain(companyId), item.getAcceptItemName()))
-											  .collect(Collectors.toList()),
-				StdAcceptCondSet.createFromMemento(companyId, command.getConditionSetting()));
+		this.itemService.registerAndReturn(command.getListItem().stream()
+				.map(item -> Pair.of(item.toDomain(companyId), item.getAcceptItemName()))
+				.collect(Collectors.toList()),
+			command.getConditionSetting().toDomain(companyId));
 	}
 }

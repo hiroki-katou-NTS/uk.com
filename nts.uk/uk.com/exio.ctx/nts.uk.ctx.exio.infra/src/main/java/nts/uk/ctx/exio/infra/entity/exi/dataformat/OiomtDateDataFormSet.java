@@ -56,7 +56,6 @@ public class OiomtDateDataFormSet extends UkJpaEntity implements Serializable {
 
 	@OneToOne
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-			@JoinColumn(name = "SYSTEM_TYPE", referencedColumnName = "SYSTEM_TYPE", insertable = false, updatable = false),
 			@JoinColumn(name = "CONDITION_SET_CD", referencedColumnName = "CONDITION_SET_CD", insertable = false, updatable = false),
 			@JoinColumn(name = "ACCEPT_ITEM_NUM", referencedColumnName = "ACCEPT_ITEM_NUMBER", insertable = false, updatable = false) })
 	public OiomtStdAcceptItem acceptItem;
@@ -66,17 +65,17 @@ public class OiomtDateDataFormSet extends UkJpaEntity implements Serializable {
 		return dateDataFormSetPk;
 	}
 
-	public OiomtDateDataFormSet(String cid, int sysType, String conditionCode, int acceptItemNum, int fixedValue,
+	public OiomtDateDataFormSet(String cid,String conditionCode, int acceptItemNum, int fixedValue,
 			int formatSelection, String valueOfFixedValue) {
 		super();
-		this.dateDataFormSetPk = new OiomtDateDataFormSetPk(cid, sysType, conditionCode, acceptItemNum);
+		this.dateDataFormSetPk = new OiomtDateDataFormSetPk(cid, conditionCode, acceptItemNum);
 		this.fixedValue = fixedValue;
 		this.valueOfFixedValue = valueOfFixedValue;
 		this.formatSelection = formatSelection;
 	}
 
 	public static OiomtDateDataFormSet fromDomain(StdAcceptItem item, DateDataFormSet domain) {
-		return new OiomtDateDataFormSet(item.getCid(), item.getSystemType().value, item.getConditionSetCd().v(),
+		return new OiomtDateDataFormSet(item.getCid(), item.getConditionSetCd().v(),
 				item.getAcceptItemNumber(), domain.getFixedValue().value, domain.getFormatSelection().value,
 				domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null);
 	}

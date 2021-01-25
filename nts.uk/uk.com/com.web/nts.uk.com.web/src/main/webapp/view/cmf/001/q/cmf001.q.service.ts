@@ -7,8 +7,8 @@ module nts.uk.com.view.cmf001.q {
         
         var paths = {
             executionImportCsvData: "exio/exi/csvimport/execution",
-            addErrorLog: "exio/exi/proccessLog/addErrorLog",
-            check: "exio/exi/csvimport/check",
+            addErrorLog: "exio/exi/proccessLog/addErrorLog", //ExiProccessLogWebService
+            check: "exio/exi/csvimport/check", //SyncCsvDataImportService
         }   
     
         /**
