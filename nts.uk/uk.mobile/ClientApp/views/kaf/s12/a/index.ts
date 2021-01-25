@@ -57,17 +57,15 @@ export class KafS12AComponent extends KafS00ShrComponent {
             vm.timeLeaveRemaining = vm.params.appDetail.timeLeaveRemaining;
             vm.timeLeaveManagement = vm.params.appDetail.timeLeaveManagement;
             vm.details = vm.params.appDetail.details;
+            vm.application = vm.createApplicationUpdate(vm.appDispInfoStartupOutput.appDetailScreenInfo);
+        } else {
+            vm.application = vm.createApplicationInsert(AppType.ANNUAL_HOLIDAY_APPLICATION);
         }
     }
     
     public mounted() {
         const vm = this;
         vm.$mask('show');
-        if (vm.newMode) {
-            vm.application = vm.createApplicationInsert(AppType.ANNUAL_HOLIDAY_APPLICATION);
-        } else {
-            vm.application = vm.createApplicationUpdate(vm.appDispInfoStartupOutput.appDetailScreenInfo);
-        }
         vm.$auth.user.then((user: any) => {
             vm.user = user;
         }).then(() => {
@@ -94,7 +92,7 @@ export class KafS12AComponent extends KafS00ShrComponent {
                 return true;
             }
         }).then((result: {data: ITimeLeaveAppDispInfo}) => {
-            if (result) {
+            if (result && vm.newMode) {
                 vm.reflectSetting = result.data.reflectSetting;
                 vm.timeLeaveRemaining = result.data.timeLeaveRemaining;
                 vm.timeLeaveManagement = result.data.timeLeaveManagement;
