@@ -1079,8 +1079,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         let cell: IWorkScheduleShiftInforDto = listWorkScheduleShiftByEmpSort[j];
                         let time = new Time(new Date(cell.date));
                         let date = moment(cell.date, 'YYYY/MM/DD');
+                        
+                        // check ngày có thể chỉnh sửa 日 < A画面パラメータ.修正可能開始日 の場合
+                        let canModifyStartDate = true;
                         if(moment(cell.date, 'YYYY/MM/DD') < moment(scheduleModifyStartDate, 'YYYY/MM/DD')){
-                            cell.isEdit = false;
+                            canModifyStartDate = false;
                         }
                         
                         let ymd = time.yearMonthDay;
@@ -1186,7 +1189,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         // điều kiện ※Aa2
                         if (cell.isActive == false) {}
                         
-                        if (cell.isEdit == false || cell.needToWork == false || cell.achievements == true || cell.supportCategory == 3) {
+                        if (canModifyStartDate == false || cell.needToWork == false || cell.achievements == true || cell.supportCategory == 3) {
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xseal", 0));
                             arrListCellLock.push({ rowId: rowId, columnId: '_' + ymd });
                         } else if (cell.confirmed == true) {
@@ -1202,8 +1205,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     objDetailContentDs['employeeId'] = emp.employeeId;
                     let listWorkScheduleInforByEmpSort = _.orderBy(listWorkScheduleInforByEmp, ['date'],['asc']);
                     _.each(listWorkScheduleInforByEmpSort, (cell: IWorkScheduleWorkInforDto) => {
-                        if(moment(cell.date, 'YYYY/MM/DD') < moment(scheduleModifyStartDate, 'YYYY/MM/DD')){
-                            cell.isEdit = false;
+                        
+                        // check ngày có thể chỉnh sửa 日 < A画面パラメータ.修正可能開始日 の場合
+                        let canModifyStartDate = true;
+                        if (moment(cell.date, 'YYYY/MM/DD') < moment(scheduleModifyStartDate, 'YYYY/MM/DD')) {
+                            canModifyStartDate = false;
                         }
                         let time = new Time(new Date(cell.date));
                         let ymd = time.yearMonthDay;
@@ -1292,7 +1298,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         // điều kiện ※Abc2
                         if (cell.isActive == false) {}
                         
-                        if (cell.isEdit == false || cell.needToWork == false || cell.achievements == true || cell.supportCategory == 3) {
+                        if (canModifyStartDate == false || cell.needToWork == false || cell.achievements == true || cell.supportCategory == 3) {
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xseal", 0));
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xseal", 1));
                             arrListCellLock.push({ rowId: rowId, columnId: '_' + ymd });
@@ -1310,8 +1316,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     let listWorkScheduleInforByEmpSort = _.orderBy(listWorkScheduleInforByEmp, ['date'],['asc']);
                     _.each(listWorkScheduleInforByEmpSort, (cell: IWorkScheduleWorkInforDto) => {
                         // set dataSource
-                        if(moment(cell.date, 'YYYY/MM/DD') < moment(scheduleModifyStartDate, 'YYYY/MM/DD')){
-                            cell.isEdit = false;
+                        
+                        // check ngày có thể chỉnh sửa 日 < A画面パラメータ.修正可能開始日 の場合
+                        let canModifyStartDate = true;
+                        if (moment(cell.date, 'YYYY/MM/DD') < moment(scheduleModifyStartDate, 'YYYY/MM/DD')) {
+                            canModifyStartDate = false;
                         }
                         let time = new Time(new Date(cell.date));
                         let ymd = time.yearMonthDay;
@@ -1455,7 +1464,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         // điều kiện ※Abc2
                         if (cell.isActive == false) {}
                         
-                        if (cell.isEdit == false || cell.needToWork == false || cell.achievements == true || cell.supportCategory == 3) {
+                        if (canModifyStartDate == false || cell.needToWork == false || cell.achievements == true || cell.supportCategory == 3) {
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xseal", 0));
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xseal", 1));
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xseal", 2));
@@ -1875,7 +1884,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             })
         }
 
-        // 8888   8470 Clear states , remove cells updated
+        // Clear states , remove cells updated
         // update grid sau khi dang ky data
         updateAfterSaveData($grid: HTMLElement) {
             let self = this;
