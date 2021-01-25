@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.office.dom.favorite.FavoriteSpecify;
@@ -17,10 +18,11 @@ import nts.uk.ctx.office.dom.favorite.RequireImpl;
  * 
  * お気に入り情報を取得する
  */
+@Stateless
 public class FavoriteInformationDomainService {
 	
 	@Inject
-	private static WorkplaceInforAdapter adapter;
+	private WorkplaceInforAdapter adapter;
 	
 	/**
 	 * 
@@ -30,7 +32,7 @@ public class FavoriteInformationDomainService {
 	 * @param require
 	 * @param sid
 	 */
-	public static Map<FavoriteSpecify, List<String>> get(FavoriteInformationRequire favoriteInforRequire, String sid) {
+	public Map<FavoriteSpecify, List<String>> get(FavoriteInformationRequire favoriteInforRequire, String sid) {
 		// $お気に入りList = require.お気に入りの指定を取得する(社員ID)	
 		List<FavoriteSpecify> listFavorite = favoriteInforRequire.getBySid(sid);
 		Map<FavoriteSpecify, List<String>> result = new HashMap<FavoriteSpecify, List<String>>();

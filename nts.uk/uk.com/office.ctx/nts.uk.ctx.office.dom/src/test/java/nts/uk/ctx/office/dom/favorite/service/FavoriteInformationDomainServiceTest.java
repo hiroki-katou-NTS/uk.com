@@ -55,8 +55,8 @@ public class FavoriteInformationDomainServiceTest {
 				result = resultMap;
 			}
 		};
-		
-		val res = FavoriteInformationDomainService.get(favoriteInfoRequire, "mock-sid");
+		FavoriteInformationDomainService ds = new FavoriteInformationDomainService();
+		val res = ds.get(favoriteInfoRequire, "mock-sid");
 		assertThat(res).isNotEmpty();
 		assertThat(res.get(favoriteSpecify)).isNotNull();
 	}

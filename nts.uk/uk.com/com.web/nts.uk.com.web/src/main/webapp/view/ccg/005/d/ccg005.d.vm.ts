@@ -185,7 +185,7 @@ module nts.uk.at.view.ccg005.d.screenModel {
         const listWorkPlaceId: string[] = [];
         const listWorkPlaceName: string[] = [];
         _.map(selectedInfo, ((item: Output) => {
-          listWorkPlaceId.push(item.code);
+          listWorkPlaceId.push(item.id);
           listWorkPlaceName.push(item.displayName);
           
         }))
