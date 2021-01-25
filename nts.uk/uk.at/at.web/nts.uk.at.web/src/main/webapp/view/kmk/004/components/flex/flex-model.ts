@@ -235,7 +235,7 @@ module nts.uk.at.kmk004.components.flex {
 				if ((startMonth + i) % 12 == 0) {
 					ym = (year * 100) + 12;
 				}
-				workTimes.push({ yearMonth: ym, laborTime: { checkbox: true, withinLaborTime: 0, legalLaborTime: 0, weekAvgTime: 0 } });
+				workTimes.push({ yearMonth: ym, laborTime: { checkbox: true, withinLaborTime: vm.getFlexPredWorkTime().reference == 1 ? null : 0, legalLaborTime: 0, weekAvgTime: 0 } });
 			}
 
 			vm.serverData = { year: year, data: workTimes };
