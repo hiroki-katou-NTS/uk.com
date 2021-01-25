@@ -58,6 +58,93 @@ public class CountingNoOfTotalTimesCtgOfScheServiceTest {
 	
 	@Injectable
 	private WorkInfoOfDailyAttendance.Require workInfoRequire;
+
+	/**
+	 *  社員別に集計する	
+	 * input: 社員リスト：「"sid_1", "sid_2", "sid_3"」, 回数集計：「1, 2, 3」
+	 * output:
+	 */
+	@Test
+	public void excuteTotalTimeByEachWorkTypeByEmployee() {
+		val targetToTimes = Arrays.asList(1, 2, 3);
+		val totalTimes = Arrays.asList(
+				Helper.createTotalTimes(1, UseAtr.NotUse)
+			, 	Helper.createTotalTimes(2, UseAtr.Use)
+				);
+		List<IntegrationOfDaily> dailyWorks = Arrays.asList(Helper.createDailyWorks("sid_1", GeneralDate.ymd(2021, 1, 1))
+			, Helper.createDailyWorks("sid_2", GeneralDate.ymd(2021, 1, 1))
+			, Helper.createDailyWorks("sid_1", GeneralDate.ymd(2021, 1, 2))
+			, Helper.createDailyWorks("sid_2", GeneralDate.ymd(2021, 1, 2))
+			, Helper.createDailyWorks("sid_1", GeneralDate.ymd(2021, 1, 3))
+			, Helper.createDailyWorks("sid_2", GeneralDate.ymd(2021, 1, 3))
+			, Helper.createDailyWorks("sid_3", GeneralDate.ymd(2021, 1, 3))
+		);
+	
+		new Expectations() {
+			{
+				require.getTotalTimesList(targetToTimes);
+				result = totalTimes;
+				
+			}
+		};
+		
+		new MockUp<TotalTimes>() {
+			@Mock
+			public TotalCount aggregateTotalCount(RequireM1 require, List<IntegrationOfDaily> dailyWorks,
+					AttendanceStatusList attendanceStates) {
+				return TotalCount.of(2, new AttendanceDaysMonth(new Double(2)), new AttendanceTimeMonth(10));
+			}
+		};
+		
+		Map<String, Map<Integer, BigDecimal>> result = CountingNoOfTotalTimesCtgOfScheService.countingNumberOfTotalTimeByEmployee(require, targetToTimes, dailyWorks);
+		assertThat(result).hasSize(3);
+		
+		assertThat(result.keySet()).containsExactlyInAnyOrderElementsOf(Arrays.asList("sid_1", "sid_2", "sid_3"));
+	}
+	
+	/**
+	 * 年月日別に集計する
+	 * input: 年月日リスト：「2021/01/01, 2021/01/02, 2021/01/03」, 回数集計：「1, 2, 3」
+	 */
+	@Test
+	public void countingNumberOfTotalTimeByDay() {
+		val targetToTimes = Arrays.asList(1, 2, 3);
+		val totalTimes = Arrays.asList(
+				Helper.createTotalTimes(1, UseAtr.NotUse)
+			, 	Helper.createTotalTimes(2, UseAtr.Use)
+				);
+		List<IntegrationOfDaily> dailyWorks = Arrays.asList(Helper.createDailyWorks("sid_1", GeneralDate.ymd(2021, 1, 1))
+			, Helper.createDailyWorks("sid_2", GeneralDate.ymd(2021, 1, 1))
+			, Helper.createDailyWorks("sid_1", GeneralDate.ymd(2021, 1, 2))
+			, Helper.createDailyWorks("sid_2", GeneralDate.ymd(2021, 1, 2))
+			, Helper.createDailyWorks("sid_1", GeneralDate.ymd(2021, 1, 3))
+			, Helper.createDailyWorks("sid_2", GeneralDate.ymd(2021, 1, 3))
+			, Helper.createDailyWorks("sid_3", GeneralDate.ymd(2021, 1, 3))
+		);
+	
+		new Expectations() {
+			{
+				require.getTotalTimesList(targetToTimes);
+				result = totalTimes;
+				
+			}
+		};
+		
+		new MockUp<TotalTimes>() {
+			@Mock
+			public TotalCount aggregateTotalCount(RequireM1 require, List<IntegrationOfDaily> dailyWorks,
+					AttendanceStatusList attendanceStates) {
+				return TotalCount.of(2, new AttendanceDaysMonth(new Double(2)), new AttendanceTimeMonth(10));
+			}
+		};
+		
+		Map<GeneralDate, Map<Integer, BigDecimal>> result = CountingNoOfTotalTimesCtgOfScheService.countingNumberOfTotalTimeByDay(require, targetToTimes, dailyWorks);
+		
+		assertThat(result).hasSize(3);
+		
+		assertThat(result.keySet()).containsExactlyInAnyOrderElementsOf(Arrays.asList(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 1, 2), GeneralDate.ymd(2021, 1, 3)));
+	}
+	
 	
 	/**
 	 * [prv-1] 種類別に回数集計を実行する: by sid
@@ -117,7 +204,7 @@ public class CountingNoOfTotalTimesCtgOfScheServiceTest {
 		assertThat(result).hasSize(2);
 		
 		assertThat(result.keySet())
-				.containsAll(Arrays.asList("sid_1", "sid_2"));
+				.containsExactlyInAnyOrderElementsOf(Arrays.asList("sid_1", "sid_2"));
 		
 		val value1 = result.get("sid_1");
 		assertThat(value1.entrySet())
@@ -186,7 +273,7 @@ public class CountingNoOfTotalTimesCtgOfScheServiceTest {
 		assertThat(result).hasSize(2);
 		
 		assertThat(result.keySet())
-				.containsAll(Arrays.asList(
+				.containsExactlyInAnyOrderElementsOf(Arrays.asList(
 							GeneralDate.ymd(2021, 1, 1)
 						,	GeneralDate.ymd(2021, 1, 2)));
 		
