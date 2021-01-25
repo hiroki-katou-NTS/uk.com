@@ -15,6 +15,7 @@ import {
     CmmS45ShrComponentsApp7Component,
     CmmS45ShrComponentsApp0Component,
     CmmS45ShrComponentsApp15Component,
+    CmmS45ShrComponentsApp8Component,
     Reason,
     CmmS45ShrComponentsApp10Component
 } from 'views/cmm/s45/shr/components';
@@ -38,6 +39,7 @@ import { CmmS45ShrComponentsApp1Component } from 'views/cmm/s45/shr/components/a
         'app4': CmmS45ComponentsApp4Component,
         'app5': CmmS45ComponentsApp5Component,
         'app7': CmmS45ShrComponentsApp7Component,
+        'app8': CmmS45ShrComponentsApp8Component,
         'app0': CmmS45ShrComponentsApp0Component,
         'app15': CmmS45ShrComponentsApp15Component,
         'app1': CmmS45ShrComponentsApp1Component,
