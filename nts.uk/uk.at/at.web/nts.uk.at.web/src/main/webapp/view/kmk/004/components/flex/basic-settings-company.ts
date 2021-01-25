@@ -212,11 +212,11 @@ class BasicSettingsCompany extends ko.ViewModel {
 
 	getReferenceText() {
 		const vm = this;
-		if (!vm.screenData().getFlexPredWorkTime()) {
+		if (!vm.screenData().comFlexMonthActCalSet()) {
 			return '';
 		}
 
-		return vm.$i18n.text(_.find(__viewContext.enums.ReferencePredTimeOfFlex, ['value', vm.screenData().getFlexPredWorkTime().reference]).name);
+		return vm.$i18n.text(vm.screenData().comFlexMonthActCalSet().withinTimeUsageAttr == true ? 'KMK004_288' : 'KMK004_289');
 	}
 
 	getIncludeOverTimeText() {

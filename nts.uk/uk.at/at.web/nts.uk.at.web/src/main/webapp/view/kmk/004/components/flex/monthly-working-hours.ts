@@ -149,11 +149,11 @@ class MonthlyWorkingHours extends ko.ViewModel {
 	showScheduled() {
 		const vm = this;
 
-		if (vm.screenData().getFlexPredWorkTime() == null) {
+		if (vm.screenData().comFlexMonthActCalSet() == null) {
 			return false;
-
 		}
-		return vm.screenData().getFlexPredWorkTime().reference == 0;
+		
+		return vm.screenData().comFlexMonthActCalSet().withinTimeUsageAttr;
 	}
 
 	openQDialog() {

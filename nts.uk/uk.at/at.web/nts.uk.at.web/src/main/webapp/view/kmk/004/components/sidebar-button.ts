@@ -44,7 +44,7 @@ class SidebarButton extends ko.ViewModel {
 
 			cmd = { workTimeSetComs: ko.toJS(vm.screenData().monthlyWorkTimeSetComs()) };
 			
-			if (vm.screenData().getFlexPredWorkTime().reference == 1) {
+			if (vm.screenData().comFlexMonthActCalSet().withinTimeUsageAttr == false) {
 				_.forEach(cmd.workTimeSetComs, (item: IMonthlyWorkTimeSetCom) => {
 					item.laborTime.withinLaborTime = null;
 				});
@@ -166,7 +166,7 @@ class SidebarButton extends ko.ViewModel {
 		if (vm.screenMode == 'Com_Company') {
 			cmd = { workTimeSetComs: ko.toJS(vm.screenData().monthlyWorkTimeSetComs()) };
 			
-			if (vm.screenData().getFlexPredWorkTime().reference == 1) {
+			if (vm.screenData().comFlexMonthActCalSet().withinTimeUsageAttr == false) {
 				_.forEach(cmd.workTimeSetComs, (item: IMonthlyWorkTimeSetCom) => {
 					item.laborTime.withinLaborTime = null;
 				});

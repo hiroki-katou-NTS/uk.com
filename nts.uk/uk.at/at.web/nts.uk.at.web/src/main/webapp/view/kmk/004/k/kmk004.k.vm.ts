@@ -140,6 +140,7 @@ module nts.uk.at.kmk004.k {
 			let REGISTER_URL,
 				cmd = ko.toJS(vm.screenData());
 			cmd.flexMonthActCalSet.legalAggrSet.aggregateSet = cmd.flexMonthActCalSet.legalAggrSet.aggregateSet == true ? 1 : 0;
+			cmd.flexMonthActCalSet.withinTimeUsageAttr = cmd.flexMonthActCalSet.withinTimeUsageAttr == true ? 1 : 0;
 
 			if (vm.screenMode == 'Com_Workplace') {
 				REGISTER_URL = API.REGISTER_WKP;
@@ -292,6 +293,8 @@ module nts.uk.at.kmk004.k {
 		/** フレックス時間の扱い */
 		flexTimeHandle: IFlexTimeHandle;
 
+		withinTimeUsageAttr: boolean;
+
 	}
 
 	interface IAggregateTimeSetting {
@@ -322,12 +325,16 @@ module nts.uk.at.kmk004.k {
 		/** フレックス時間の扱い */
 		flexTimeHandle: KnockoutObservable<FlexTimeHandle> = ko.observable(new FlexTimeHandle());
 
+		/** 所定労動時間使用区分 */
+		withinTimeUsageAttr: KnockoutObservable<number> = ko.observable(1);
+
 		update(param: IFlexMonthActCalSet) {
 			if (param) {
 				this.aggrMethod(param.aggrMethod);
 				this.insufficSet().update(param.insufficSet);
 				this.legalAggrSet().update(param.legalAggrSet);
 				this.flexTimeHandle().update(param.flexTimeHandle);
+				this.withinTimeUsageAttr(param.withinTimeUsageAttr == true ? 1 : 0);
 			}
 
 		}

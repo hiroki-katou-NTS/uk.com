@@ -21,6 +21,8 @@ module nts.uk.at.kmk004.components.flex {
 		flexTimeHandle: IFlexTimeHandle;
 		//法定内集計設定
 		legalAggrSet: IAggregateTimeSetting;
+		//所定労動時間使用区分
+		withinTimeUsageAttr:boolean;
 
 	}
 
@@ -60,7 +62,7 @@ module nts.uk.at.kmk004.components.flex {
 		//会社別フレックス勤務集計方法
 		comFlexMonthActCalSet: KnockoutObservable<IComFlexMonthActCalSet> = ko.observable();
 		//フレックス勤務所定労働時間取得
-		getFlexPredWorkTime: KnockoutObservable<IGetFlexPredWorkTime> = ko.observable({ reference: 0 });
+		getFlexPredWorkTime: KnockoutObservable<IGetFlexPredWorkTime> = ko.observable({ reference: 1 });
 		yearList: KnockoutObservableArray<YearItem> = ko.observableArray();
 		selectedYear: KnockoutObservable<number> = ko.observable();
 		monthlyWorkTimeSetComs: KnockoutObservableArray<MonthlyWorkTimeSetCom> = ko.observableArray();
@@ -235,7 +237,7 @@ module nts.uk.at.kmk004.components.flex {
 				if ((startMonth + i) % 12 == 0) {
 					ym = (year * 100) + 12;
 				}
-				workTimes.push({ yearMonth: ym, laborTime: { checkbox: true, withinLaborTime: vm.getFlexPredWorkTime().reference == 1 ? null : 0, legalLaborTime: 0, weekAvgTime: 0 } });
+				workTimes.push({ yearMonth: ym, laborTime: { checkbox: true, withinLaborTime: vm.comFlexMonthActCalSet().withinTimeUsageAttr == false ? null : 0, legalLaborTime: 0, weekAvgTime: 0 } });
 			}
 
 			vm.serverData = { year: year, data: workTimes };
