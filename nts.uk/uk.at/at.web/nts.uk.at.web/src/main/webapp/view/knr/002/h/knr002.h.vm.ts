@@ -95,6 +95,7 @@ module knr002.h {
                     returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                         self.searchByEmploymentType(data.listEmployee);
                         self.listEmployee(data.listEmployee);
+                        $('#swap-list-grid1 > tbody > tr:nth-child(1)').focus();
                     }
                 };
             }
@@ -184,6 +185,7 @@ module knr002.h {
                     employeeSearchs.push(employee);
                 }
                 self.employeeSearchedList(employeeSearchs);
+                $('#swap-list-grid1 > tbody > tr:nth-child(1)').focus();
             }
         }
 
