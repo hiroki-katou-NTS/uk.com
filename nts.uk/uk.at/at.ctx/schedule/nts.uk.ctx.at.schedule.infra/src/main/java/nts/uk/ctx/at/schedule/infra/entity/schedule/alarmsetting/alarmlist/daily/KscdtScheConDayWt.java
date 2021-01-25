@@ -8,6 +8,9 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+/**
+ * スケジュール日次のチェック条件（勤務種類）
+ */
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor

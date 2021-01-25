@@ -9,6 +9,9 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+/**
+ * スケジュール日次の固有抽出条件
+ */
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.schedule.alarmsetting.alarmlist.daily;
+package nts.uk.ctx.at.function.dom.alarm.alarmlist.schedaily;
 
 import org.eclipse.persistence.internal.xr.ValueObject;
 

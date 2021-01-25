@@ -2,6 +2,7 @@ package nts.uk.ctx.at.schedule.infra.entity.schedule.alarmsetting.alarmlist.dail
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.schedule.dom.schedule.alarmsetting.alarmlist.daily.ExtractionCondScheduleDay;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 import javax.persistence.Column;
@@ -9,6 +10,9 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+/**
+ * スケジュール日次の任意抽出条件
+ */
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -48,5 +52,9 @@ public class KscdtScheAnyCondDay extends ContractUkJpaEntity {
     @Override
     protected Object getKey() {
         return this.pk;
+    }
+
+    public ExtractionCondScheduleDay toDomain(){
+        return new ExtractionCondScheduleDay();
     }
 }
