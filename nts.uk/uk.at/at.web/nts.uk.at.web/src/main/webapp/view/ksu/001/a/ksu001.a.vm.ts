@@ -1011,7 +1011,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             __viewContext.viewModel.viewAB.listWorkType(listWorkType);
         }
         
-        // convert data lấy từ server để đẩy vào Grid
+        // convert data lấy từ server để đẩy vào Grid 8888
         private convertDataToGrid(data: IDataStartScreen, viewMode: string) {
             let self = this;
             let result = {};
@@ -1724,7 +1724,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
             });
         }
-        // 9999
+        // 9999 dangky
         saveData(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
 
@@ -1768,29 +1768,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             return dfd.promise();
         }
         
-        // 8888   8470 Clear states , remove cells updated
-        // update grid sau khi dang ky data
-        updateAfterSaveData($grid: HTMLElement) {
-            let self = this;
-            nts.uk.ui.block.grayout();
-            // Clear states
-            $.data($grid, "copy-history", null);
-            $.data($grid, "redo-stack", null);
-            $.data($grid, "edit-history", null);
-            $.data($grid, "edit-redo-stack", null);
-            $.data($grid, "stick-history", null);
-            $.data($grid, "stick-redo-stack", null);
-            
-            // remove cells updated
-            $('#extable').data('extable').modifications = null;
-            
-            self.enableBtnReg(false);
-            self.enableBtnUndo(false);
-            self.enableBtnRedo(false);
-
-            nts.uk.ui.block.clear();
-        }
-
         buidDataReg(viewMode, cellsGroup) {
             let self = this;
             let dataReg = [];
@@ -1836,15 +1813,21 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     if (cells.length > 0) {
                         let cell = cells[0];
                         let objWorkTime = __viewContext.viewModel.viewAB.objWorkTime;
+                        let objWorkType = _.filter(__viewContext.viewModel.viewAB.listWorkType(), function(o) { return o.workTypeCode == cell.value.workTypeCode; });
                         let sid = self.listSid()[cell.rowIndex];
                         let ymd = moment(cell.columnKey.slice(1)).format('YYYY/MM/DD');
-                        let workTypeCd = null, workTimeCd = null, startTime = null, endTime = null;
-                        if (!_.isNil(objWorkTime)) {
-                            startTime = objWorkTime.tzStart1;
+                        let workTypeCd = null, workTimeCd = null, startTime = null, endTime = null, isChangeTime = false;
+                        // check worktype là ngày lễ, ngày nghỉ thì starttime, endtime sẽ không set, isChangeTime = false
+                        if (objWorkType[0].workStyle == 0) { // HOLIDAY
+                            isChangeTime = false;
+                        } else {
+                            isChangeTime = true;
+                            if (!_.isNil(objWorkTime)) {
+                                startTime = objWorkTime.tzStart1;
+                                endTime = objWorkTime.tzEnd1;
+                            }
                         }
-                        if (!_.isNil(objWorkTime)) {
-                            endTime = objWorkTime.tzEnd1;
-                        }
+                        
                         let dataCell = {
                             sid: sid,
                             ymd: ymd,
@@ -1853,7 +1836,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             workTimeCd: cell.value.workTimeCode,
                             startTime: startTime,
                             endTime: endTime,
-                            isChangeTime: true
+                            isChangeTime: isChangeTime
                         }
                         dataReg.push(dataCell);
                     }
@@ -1890,6 +1873,29 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             return Object.keys(groups).map(function(group) {
                 return groups[group];
             })
+        }
+
+        // 8888   8470 Clear states , remove cells updated
+        // update grid sau khi dang ky data
+        updateAfterSaveData($grid: HTMLElement) {
+            let self = this;
+            nts.uk.ui.block.grayout();
+            // Clear states
+            $.data($grid, "copy-history", null);
+            $.data($grid, "redo-stack", null);
+            $.data($grid, "edit-history", null);
+            $.data($grid, "edit-redo-stack", null);
+            $.data($grid, "stick-history", null);
+            $.data($grid, "stick-redo-stack", null);
+
+            // remove cells updated
+            $('#extable').data('extable').modifications = null;
+
+            self.enableBtnReg(false);
+            self.enableBtnUndo(false);
+            self.enableBtnRedo(false);
+
+            nts.uk.ui.block.clear();
         }
 
         openKDL053(dataReg : any) {
