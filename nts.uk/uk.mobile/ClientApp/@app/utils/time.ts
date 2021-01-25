@@ -33,7 +33,7 @@ export class TimeWithDay {
         if (_.isEmpty(value)) {
             return undefined;
         }
-        
+
         let newMinutes = 0;
         switch (value.day) {
             case -1:
@@ -59,18 +59,18 @@ export class TimeWithDay {
         return TimeWithDay.from(value).value;
     }
 
-    public static toString(value: number): string {
-        return TimeWithDay.from(value).toString();
+    public static toString(value: number, format: 'h' | 'hh' = 'hh'): string {
+        return TimeWithDay.from(value).toString(format);
     }
 
     public static toObject(value: number) {
 
-        if ( value === null || value === undefined) {
+        if (value === null || value === undefined) {
             return null;
         }
 
         let timeWithDay = TimeWithDay.from(value);
-        
+
         return {
             day: timeWithDay.day,
             hour: timeWithDay.hour,
@@ -115,12 +115,12 @@ export class TimeWithDay {
         }
     }
 
-    public toString(): string {
+    public toString(format: 'h' | 'hh' = 'hh'): string {
         if (this.day === 0) {
-            return `${_.padStart(this.hour.toString(), 2, '0')}:${_.padStart(this.minute.toString(), 2, '0')}`;
+            return `${format === 'hh' ? _.padStart(this.hour.toString(), 2, '0') : this.hour.toString()}:${_.padStart(this.minute.toString(), 2, '0')}`;
         }
-        
-        return `${this.dayName} ${_.padStart(this.hour.toString(), 2, '0')}:${_.padStart(this.minute.toString(), 2, '0')}`;
+
+        return `${this.dayName} ${format === 'hh' ? _.padStart(this.hour.toString(), 2, '0') : this.hour.toString()}:${_.padStart(this.minute.toString(), 2, '0')}`;
     }
 
     public static leftpad(value: number | Number) {
@@ -215,17 +215,17 @@ export class TimeDuration {
         }
 
         let newMinutes = 0;
-        if ( value.positive) {
+        if (value.positive) {
             newMinutes = 60 * (value.h1 * 10 + value.h2) + (value.m1 * 10 + value.m2);
         } else {
             newMinutes = 0 - (60 * (value.h1 * 10 + value.h2) + (value.m1 * 10 + value.m2));
         }
-        
+
         return new TimeDuration(newMinutes);
     }
 
-    public static toString(value: number) {
-        return new TimeDuration(value).toString();
+    public static toString(value: number, format: 'h' | 'hh' = 'hh') {
+        return new TimeDuration(value).toString(format);
     }
 
     public toNumber(value?: string) {
@@ -245,8 +245,8 @@ export class TimeDuration {
         return this.value;
     }
 
-    public toString() {
-        return `${this.isNegative ? '-' : ''}${_.padStart(this.hour.toString(), 2, '0')}:${_.padStart(this.minute.toString(), 2, '0')}`;
+    public toString(format: 'h' | 'hh' = 'hh') {
+        return `${this.isNegative ? '-' : ''}${format === 'hh' ? _.padStart(this.hour.toString(), 2, '0') : this.hour.toString()}:${_.padStart(this.minute.toString(), 2, '0')}`;
     }
 
     public toLocalString() {
@@ -255,7 +255,7 @@ export class TimeDuration {
 
     public static toObject(value: number) {
 
-        if ( value === null || value === undefined) {
+        if (value === null || value === undefined) {
 
             return null;
         }
@@ -263,7 +263,7 @@ export class TimeDuration {
         let timeDuration = TimeDuration.from(value);
         let hour = timeDuration.hour;
         let minute = timeDuration.minute;
-        
+
         return {
             positive: !timeDuration.isNegative,
             h1: Math.floor(hour / 10),
@@ -308,26 +308,26 @@ export class TimePoint {
         }
 
         let newMinutes = 0;
-        if ( value.positive) {
+        if (value.positive) {
             newMinutes = 60 * (value.h1 * 10 + value.h2) + (value.m1 * 10 + value.m2);
         } else {
             newMinutes = -1440 + 60 * (value.h1 * 10 + value.h2) + (value.m1 * 10 + value.m2);
         }
-        
+
         return new TimePoint(newMinutes);
     }
 
-    public static toString(value: number) {
-        return new TimePoint(value).toString();
+    public static toString(value: number, format: 'h' | 'hh' = 'hh') {
+        return new TimePoint(value).toString(format);
     }
 
-    public toString() {
-        return `${this.isNegative ? '-' : ''}${_.padStart(this.hour.toString(), 2, '0')}:${_.padStart(this.minute.toString(), 2, '0')}`;
+    public toString(format: 'h' | 'hh' = 'hh') {
+        return `${this.isNegative ? '-' : ''}${format === 'hh' ? _.padStart(this.hour.toString(), 2, '0') : this.hour.toString()}:${_.padStart(this.minute.toString(), 2, '0')}`;
     }
 
     public static toObject(value: number) {
 
-        if ( value === null || value === undefined) {
+        if (value === null || value === undefined) {
 
             return null;
         }
@@ -335,7 +335,7 @@ export class TimePoint {
         let timePoint = TimePoint.from(value);
         let hour = timePoint.hour;
         let minute = timePoint.minute;
-        
+
         return {
             positive: !timePoint.isNegative,
             h1: Math.floor(hour / 10),
@@ -360,6 +360,4 @@ export class TimePoint {
     private get positiveValue() {
         return this.isNegative ? this.value + 1440 : this.value;
     }
-
-    
 }
