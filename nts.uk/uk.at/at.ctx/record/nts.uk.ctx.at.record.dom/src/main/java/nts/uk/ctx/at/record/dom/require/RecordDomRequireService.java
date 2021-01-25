@@ -736,7 +736,7 @@ public class RecordDomRequireService {
 	}
 	
 	public  class RequireImpl extends nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RequireImp implements Require {
-		private Optional<WeekRuleManagement> weekRuleManagementCache;
+		private Optional<WeekRuleManagement> weekRuleManagementCache = Optional.empty();
 		
 
 		public RequireImpl(ComSubstVacationRepository comSubstVacationRepo,
@@ -988,7 +988,6 @@ public class RecordDomRequireService {
 			this.integrationOfDailyGetter = integrationOfDailyGetter;
 			this.getProcessingDate = getProcessingDate;
 			this.roleOfOpenPeriodRepo = roleOfOpenPeriodRepo;
-			this.weekRuleManagementCache = weekRuleManagementCache;
 			this.snapshotAdapter = snapshotAdapter;
 			this.superHD60HConMedRepo = superHD60HConMedRepo;
 		}
