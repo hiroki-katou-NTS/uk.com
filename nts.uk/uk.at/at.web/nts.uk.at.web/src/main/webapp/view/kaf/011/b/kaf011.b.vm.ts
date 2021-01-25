@@ -9,7 +9,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 	import block = nts.uk.ui.block;
 	import ajax = nts.uk.request.ajax;
 	import dialog = nts.uk.ui.dialog;
-	import windows = nts.uk.ui.windows;
+	import DisplayInforWhenStarting = nts.uk.at.view.kaf011.DisplayInforWhenStarting;
 
     export class Kaf011BViewModel{
 
@@ -24,7 +24,7 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 		recruitmentApp = new RecruitmentApp(0, false);
 		absenceLeaveApp = new AbsenceLeaveApp(1, false);
 		comment = new Comment();
-		displayInforWhenStarting = ko.observable(null);
+		displayInforWhenStarting: KnockoutObservable<DisplayInforWhenStarting> = ko.observable(null);
 		remainDays = ko.observable('');
 		
         constructor(
@@ -71,9 +71,9 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 						vm.absenceLeaveApp.bindingScreenB(data.abs, data.applicationForHoliday.workTypeList, data);
 						vm.applicationCommon().update(data.abs.application);
 					}
-					vm.displayInforWhenStarting(data);
+					vm.displayInforWhenStarting(new DisplayInforWhenStarting(data));
 				}).fail((fail: any) => {
-					dialog.error({ messageId: fail.messageId});
+					dialog.error({ messageId: fail.messageId, messageParams: fail.parameterIds });
 				}).always(() => {
                     block.clear();
                 });
@@ -120,21 +120,12 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 						}); 
 					}
 				console.log(data);	
-				return ajax('at/request/application/holidayshipment/update', data).then(() =>{
+				return ajax('at/request/application/holidayshipment/update', data).done(() =>{
 					dialog.info({ messageId: "Msg_15" });
-				}).fail((fail:any) => {
-					dialog.error({ messageId: fail.messageId});
 				});
 	        }
 		}
 		
-    }
-
-    const API = {
-        initAppDetail: "at/request/application/initApp",
-        checkBeforeUpdateSample: "at/request/application/checkBeforeSample",
-        updateSample: "at/request/application/changeDataSample",
-		sendMailAfterUpdateSample: ""
     }
 
 }

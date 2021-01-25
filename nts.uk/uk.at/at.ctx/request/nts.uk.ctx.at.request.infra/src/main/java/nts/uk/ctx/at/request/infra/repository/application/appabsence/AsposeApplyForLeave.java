@@ -132,7 +132,7 @@ public class AsposeApplyForLeave {
             }
             
             // 時間年休
-            AttendanceTime timeAnualLeave = timeDegestion.get().getTimeAnualLeave();
+            AttendanceTime timeAnualLeave = timeDegestion.get().getTimeAnnualLeave();
             if (timeAnualLeave != null && timeAnualLeave.v() > 0) {
                 timeString += new StringBuilder(I18NText.getText("KAF006_29"))
                         .append(HALF_WIDTH_SPACE)
@@ -188,12 +188,12 @@ public class AsposeApplyForLeave {
                             .filter(workTime -> workTime.getWorktimeCode().equals(optWorktimeCode.get()))
                             .collect(Collectors.toList());
                     if (workTimeLstFilter.size() == 0) {
-                        workTimeString = optWorktimeCode.get().v() + HALF_WIDTH_SPACE + I18NText.getText("KAF006_94");
+                        workTimeString = optWorktimeCode.get().v() + HALF_WIDTH_SPACE + I18NText.getText("KAF006_93");
                     } else {
                         if (workTimeLstFilter.get(0).getWorkTimeDisplayName() == null 
                                 || workTimeLstFilter.get(0).getWorkTimeDisplayName().getWorkTimeName() == null 
                                 || workTimeLstFilter.get(0).getWorkTimeDisplayName().getWorkTimeName().v().equals(EMPTY)) {
-                            workTimeString = optWorktimeCode.get().v() + HALF_WIDTH_SPACE + I18NText.getText("KAF006_94");
+                            workTimeString = optWorktimeCode.get().v() + HALF_WIDTH_SPACE + I18NText.getText("KAF006_93");
                         } else {
                             workTimeString = workTimeLstFilter.get(0).getWorkTimeDisplayName().getWorkTimeName().v();
                         }
@@ -276,6 +276,12 @@ public class AsposeApplyForLeave {
                         
                         if (dateSpecHdRelationFilterLst.size() > 0) {
                             relationString = dateSpecHdRelationFilterLst.get(0).getRelationName();
+                        } else {
+                            relationString = new StringBuilder()
+                                    .append(relationshipCD.v())
+                                    .append(HALF_WIDTH_SPACE)
+                                    .append(I18NText.getText("KAF006_93"))
+                                    .toString();
                         }
                     }
                 }

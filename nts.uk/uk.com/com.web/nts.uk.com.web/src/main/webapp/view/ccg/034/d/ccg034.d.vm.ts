@@ -6,6 +6,7 @@ module nts.uk.com.view.ccg034.d {
   const API = {
     generateHtml: "sys/portal/createflowmenu/generateHtml",
     updateLayout: "sys/portal/createflowmenu/updateLayout",
+    getMenuList: "sys/portal/standardmenu/findByMenuAndWebMenu"
   };
 
   const KEY_DATA_PART_TYPE = 'data-part-type';
@@ -22,6 +23,7 @@ module nts.uk.com.view.ccg034.d {
   const CSS_CLASS_MENU_CREATION_ITEM_CONTAINER = 'menu-creation-item-container';
   const CSS_CLASS_MENU_CREATION_ITEM = 'menu-creation-item';
   const CSS_CLASS_MENU_CREATION_ITEM_COPY_PLACEHOLDER = 'menu-creation-item-copy-placeholder';
+  const CSS_CLASS_CCG034_HYPERLINK = 'ccg034-hyperlink';
   const CELL_SIZE = 40;
   const CREATION_LAYOUT_WIDTH = 1920;
   const CREATION_LAYOUT_HEIGHT = 1080;
@@ -132,6 +134,8 @@ module nts.uk.com.view.ccg034.d {
         vm.loadPartDomToLayout(vm.flowMenuData());
         vm.$blockui('clear');
       }
+      // Get standardMenu
+      vm.getStandardMenu();
       // Re-calculate resolution
       vm.calculateResolution();
       // Focus
@@ -1285,6 +1289,30 @@ module nts.uk.com.view.ccg034.d {
       vm.maxWidth(topWidth);
     }
 
+    /**
+     * Get standard menu list
+     */
+    private getStandardMenu() {
+      const vm = this;
+      vm.$ajax(API.getMenuList).then((data: any[]) => {
+        for (const partClientId in vm.mapPartData) {
+          const part: PartDataModel = vm.mapPartData[partClientId];
+          if (part.partType === MenuPartType.PART_MENU) {
+            const menuPart: PartDataMenuModel = part as PartDataMenuModel;
+            const chosenMenu: any = _.find(data, { 'code': menuPart.menuCode, 'system': menuPart.systemType, 'classification': menuPart.menuClassification });
+            if (chosenMenu) {
+              if (nts.uk.text.isNullOrEmpty(chosenMenu.queryString)) {
+                menuPart.menuUrl = `${chosenMenu.url}`;
+              } else {
+                menuPart.menuUrl = `${chosenMenu.url}?${chosenMenu.queryString}`;
+              }
+            }
+            vm.mapPartData[partClientId] = menuPart;
+          }
+        }
+      })
+    }
+
   }
 
   export class LayoutUtils {
@@ -1411,7 +1439,7 @@ module nts.uk.com.view.ccg034.d {
         $labelContent = $("<span>", { 'class': 'part-label-content' });
       }
       $labelContent
-        .text(partData.labelContent)
+        .html(partData.labelContent.replace("\n", "<br>"))
         .css({
           'font-size': partData.fontSize,
           'font-weight': partData.isBold ? 'bold' : 'normal',
@@ -1574,20 +1602,10 @@ module nts.uk.com.view.ccg034.d {
         $arrowContent = $("<img>", { 'class': 'part-arrow-content' });
       }
       $arrowContent.attr('src', partData.fileSrc);
-      // Set image scale by original ratio
-      const partRatio = partData.height / partData.width;
-      const imageRatio = 1;
-      if (partRatio > imageRatio) {
-        $arrowContent.css({
-          'width': '100%',
-          'height': 'auto',
-        });
-      } else {
-        $arrowContent.css({
-          'width': 'auto',
-          'height': '100%',
-        });
-      }
+      $arrowContent.css({
+        'width': '100%',
+        'height': '100%',
+      });
       $arrowContent.appendTo($part);
       return $partContainer;
     }
@@ -1720,8 +1738,9 @@ module nts.uk.com.view.ccg034.d {
       switch (partData.partType) {
         case MenuPartType.PART_MENU:
           const partDataMenuModel: PartDataMenuModel = (partData as PartDataMenuModel);
-          const $partMenuHTML: JQuery = $('<a>', { 'href': `${location.origin}${partDataMenuModel.menuUrl}`, 'target': '_blank' })
+          const $partMenuHTML: JQuery = $('<a>', { 'href': `${location.origin}${partDataMenuModel.menuUrl}`, 'target': '_top' })
             .text(partDataMenuModel.menuName)
+            .addClass(CSS_CLASS_CCG034_HYPERLINK)
             .css({
               'font-size': `${partDataMenuModel.fontSize}px`,
               'font-weight': partDataMenuModel.isBold ? 'bold' : 'normal',
@@ -1775,6 +1794,7 @@ module nts.uk.com.view.ccg034.d {
           const partDataLinkModel: PartDataLinkModel = (partData as PartDataLinkModel);
           const $partLinkHTML: JQuery = $('<a>', { 'href': partDataLinkModel.url, 'target': '_blank' })
             .text(partDataLinkModel.linkContent || partDataLinkModel.url)
+            .addClass(CSS_CLASS_CCG034_HYPERLINK)
             .css({
               'font-size': `${partDataLinkModel.fontSize}px`,
               'font-weight': partDataLinkModel.isBold ? 'bold' : 'normal',
@@ -1803,6 +1823,7 @@ module nts.uk.com.view.ccg034.d {
           const fileLink: string = `${location.origin}/nts.uk.com.web/webapi/shr/infra/file/storage/get/${partDataAttachmentModel.fileId}`;
           const $partAttachmentHTML: JQuery = $('<a>', { 'href': fileLink, 'target': '_blank' })
             .text(partDataAttachmentModel.linkContent || partDataAttachmentModel.fileName)
+            .addClass(CSS_CLASS_CCG034_HYPERLINK)
             .css({
               'font-size': `${partDataAttachmentModel.fontSize}px`,
               'font-weight': partDataAttachmentModel.isBold ? 'bold' : 'normal',
@@ -1855,8 +1876,8 @@ module nts.uk.com.view.ccg034.d {
           const partDataArrowModel: PartDataArrowModel = (partData as PartDataArrowModel);
           const $partArrowHTML: JQuery = $('<img>', { 'src': partDataArrowModel.fileSrc })
             .css({
-              'width': (partDataArrowModel.width > partDataArrowModel.height) ? 'auto' : '100%',
-              'height': (partDataArrowModel.width > partDataArrowModel.height) ? '100%' : 'auto',
+              'width': '100%',
+              'height': '100%',
             });
           $partHTML = $("<div>")
             .css({
@@ -2152,5 +2173,4 @@ module nts.uk.com.view.ccg034.d {
       $.extend(this, init);
     }
   }
-
 }

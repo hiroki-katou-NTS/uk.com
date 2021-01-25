@@ -8,7 +8,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainObject;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.shortworktime.SChildCareFrame;
 import nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistoryItem;
@@ -56,8 +55,8 @@ public class ShortTimeOfDailyAttd implements DomainObject{
 				//sWTimeSheets.remove(sWTimeSheetOpt.get());
 				// 時間帯を作成
 				ShortWorkingTimeSheet createNew = new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(childF.timeSlot),
-						ChildCareAttribute.decisionValue(shortWTHistItem.getChildCareAtr().value), childF.getStartTime(), childF.getEndTime(),
-						new AttendanceTime(0), new AttendanceTime(0));
+						ChildCareAttribute.decisionValue(shortWTHistItem.getChildCareAtr().value), childF.getStartTime(), childF.getEndTime()
+						);
 				sWTimeSheets.add(createNew);
 
 			}

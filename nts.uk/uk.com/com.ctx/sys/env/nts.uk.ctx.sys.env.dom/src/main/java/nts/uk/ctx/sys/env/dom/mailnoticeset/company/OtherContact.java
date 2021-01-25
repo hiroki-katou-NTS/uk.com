@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.env.dom.mailnoticeset.company;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -8,6 +9,7 @@ import lombok.Getter;
  */
 @Getter
 @Builder
+@AllArgsConstructor
 public class OtherContact {
 
 	/**

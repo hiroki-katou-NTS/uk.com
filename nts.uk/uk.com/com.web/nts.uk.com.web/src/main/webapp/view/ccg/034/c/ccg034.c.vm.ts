@@ -36,10 +36,6 @@ module nts.uk.com.view.ccg034.c {
 
         if (vm.isChecked()) {
           vm.$dialog.confirm({ messageId: 'Msg_64' }).then((result: 'no' | 'yes' | 'cancel') => {
-            if (result === 'no') {
-              vm.closeDialog();
-            }
-
             if (result === 'yes') {
               vm.$blockui("grayout");
               vm.performDuplicate()
@@ -56,7 +52,6 @@ module nts.uk.com.view.ccg034.c {
                 vm.$dialog.error({ messageId: "Msg_3" })
                   .then(() => {
                     vm.$blockui("clear");
-                    vm.closeDialog();
                   });
               } else {
                 vm.performDuplicate();

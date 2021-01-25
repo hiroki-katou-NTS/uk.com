@@ -122,8 +122,8 @@ module nts.uk.com.view.ccg013.c.viewmodel {
             if (titleMenuId) {
                 self.titleMenuId(titleMenuId);
             }
-
             $.when(self.findAllDisplay(), self.getSystemEnum()).done(function () {
+                var newData: any = [];
                 self.selectedSystemCode(5);
                 if (titleBar.treeMenus) {
                     _.forEach(titleBar.treeMenus, function (item: any, index: number) {
@@ -134,10 +134,11 @@ module nts.uk.com.view.ccg013.c.viewmodel {
                             var order = self.newItems().length + 1;
                             var primaryKey = nts.uk.util.randomId();
                             var data = new ItemModel(index + 1, primaryKey, standardMenu.code, standardMenu.targetItem, standardMenu.name, order, standardMenu.menu_cls, standardMenu.system);
-                            self.newItems.push(data);
+                            newData.push(data);
                             self.tempItems.push(data);
                         }
                     });
+                    self.newItems(_.orderBy(newData, ["newOrder"],["asc"]));
                 }
                 self.disableSwapButton();
                 dfd.resolve();
@@ -204,7 +205,8 @@ module nts.uk.com.view.ccg013.c.viewmodel {
                         list001.push(new ItemModel(idx + 1, id, item.code, item.targetItems, item.displayName, index, item.classification, item.system));
                     }
                 });
-                self.items(list001);
+                var newData = _.orderBy(list001, ["newOrder"],["asc"]);
+                self.items(newData);
                 dfd.resolve(data);
             }).fail(function (res) {
                 dfd.reject(res);
@@ -223,7 +225,7 @@ module nts.uk.com.view.ccg013.c.viewmodel {
                 _.forEach(editMenuBar.listSystem, function (item) {
                     self.systemList.push(new SystemModel(item.value, item.localizedName));
                 });
-                self.systemList(self.systemList());
+                self.systemList(self.systemList().filter(x => x.systemCode !== 2));
                 dfd.resolve();
             }).fail(function (error) {
                 dfd.reject();
@@ -251,11 +253,11 @@ module nts.uk.com.view.ccg013.c.viewmodel {
                     }
                 }
             });
-            var list002 = _.uniqBy(list001, 'targetItem');
+            var newData = _.orderBy(list001, ["newOrder"],["asc"]);
+            var list002 = _.uniqBy(newData, 'targetItem');
             _.forEach(list002, (x, index) => {
                 x.index = index + 1;
             });
-
             self.items(list002);
         }
 
@@ -275,7 +277,7 @@ module nts.uk.com.view.ccg013.c.viewmodel {
             _.forEach(self.newItems(), (x, index) => {
                 x.index = index + 1;
             });
-
+            self.newItems(_.orderBy(self.newItems(), ["newOrder"],["asc"]));
             self.currentCodeList([]);
             self.disableSwapButton();
         }
@@ -296,10 +298,10 @@ module nts.uk.com.view.ccg013.c.viewmodel {
                 item.order = self.newItems().length + 1;
                 self.newItems.push(item);
             });
+            self.newItems(_.orderBy(self.newItems(), ["newOrder"],["asc"]));
             _.forEach(self.newItems(), (x, index) => {
                 x.index = index + 1;
             });
-
             self.newCurrentCodeList([]);
             self.disableSwapButton();
         }
@@ -378,6 +380,7 @@ module nts.uk.com.view.ccg013.c.viewmodel {
         order: number;
         menu_cls: number;
         system: number;
+        newOrder: number;
 
         constructor(index: number, id: string, code: string, targetItem: string, name: string, order: number, menu_cls: number, system: number) {
             this.index = index;
@@ -388,6 +391,7 @@ module nts.uk.com.view.ccg013.c.viewmodel {
             this.order = order;
             this.menu_cls = menu_cls;
             this.system = system;
+            this.newOrder = system + order + Number(code);
         }
     }
 

@@ -10,14 +10,18 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.appabsence.AppAbsenceFinder;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoWithDateDto;
+import nts.uk.ctx.at.request.app.find.application.common.dto.ApprovalPhaseStateForAppDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.ChangeWorkTypeResultDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.DisplayInforWhenStarting;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServiceProcess;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.VacationCheckOutput;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.HolidayShipmentService;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.RecordDate;
 import nts.uk.ctx.at.shared.app.find.common.TimeZoneWithWorkNoDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.paymana.PayoutSubofHDManagementDto;
@@ -46,6 +50,9 @@ public class ChangeValueItemsOnHolidayShipment {
 	
 	@Inject
 	private AppAbsenceFinder appAbsenceFinder;
+	
+	@Inject
+	private HolidayShipmentService holidayShipmentService;
 	
 	/**
 	 * @name 振出日を変更する
@@ -176,5 +183,23 @@ public class ChangeValueItemsOnHolidayShipment {
 		//QA: http://192.168.50.4:3000/issues/113580 
 	}
 	
+	/**
+	 * @name 申請日の変更
+	 * @param companyId
+	 * @param newDate
+	 * @param displayInforWhenStarting 振休振出申請起動時の表示情報 
+	 * @return 振休振出申請起動時の表示情報
+	 */
+	public DisplayInforWhenStarting changeDateCScreen(GeneralDate newDate, DisplayInforWhenStarting displayInforWhenStarting) {
+		
+		String companyId = AppContexts.user().companyId();
+		Optional<GeneralDate> referDate = holidayShipmentService.detRefDate(displayInforWhenStarting.existRec()?Optional.of(displayInforWhenStarting.rec.application.toDomain().getAppDate().getApplicationDate()):Optional.empty(), Optional.of(newDate));
+		if(referDate.isPresent() && displayInforWhenStarting.appDispInfoStartup.getAppDispInfoNoDateOutput().getApplicationSetting().toDomain().getRecordDate() == RecordDate.APP_DATE) {
+			ApprovalRootContentImport_New approvalRootContentImport_New = commonAlgorithm.getApprovalRoot(companyId, displayInforWhenStarting.appDispInfoStartup.getAppDetailScreenInfo().getApplication().getEmployeeID(), EmploymentRootAtr.APPLICATION, ApplicationType.COMPLEMENT_LEAVE_APPLICATION, newDate);
+			displayInforWhenStarting.appDispInfoStartup.getAppDispInfoWithDateOutput().setOpListApprovalPhaseState(approvalRootContentImport_New.getApprovalRootState().getListApprovalPhaseState().stream().map(c->ApprovalPhaseStateForAppDto.fromApprovalPhaseStateImport(c)).collect(Collectors.toList()));
+			displayInforWhenStarting.appDispInfoStartup.getAppDispInfoWithDateOutput().setOpErrorFlag(approvalRootContentImport_New.getErrorFlag().value);
+		}
+		return displayInforWhenStarting;
+	}
 
 }
