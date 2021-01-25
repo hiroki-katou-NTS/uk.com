@@ -3,26 +3,14 @@
 }
 
 #contents-area {
-	display: flex;	
+	margin: 10px 25px 25px 25px;
 }
 
-.right-content > div {
-	display: flex;
-	align-items:  center;
+.label {
+	display: inline;
+	padding-right: 10px;
 }
 
-.right-content {
-	margin-top: 52px;
-}
-
-.right-content > div > * {
-	margin-right: 10px;
-}
-
-.right-content > div > .label {
-	width: auto;
-}
-
-.right-content > div:nth-child(3) {
-	padding-top:3px;
+.row {
+	padding: 5px 0;
 }
