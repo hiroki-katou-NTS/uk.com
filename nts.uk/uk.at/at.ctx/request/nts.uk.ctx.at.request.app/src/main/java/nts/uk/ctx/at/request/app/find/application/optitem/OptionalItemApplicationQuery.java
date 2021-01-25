@@ -117,6 +117,8 @@ public class OptionalItemApplicationQuery {
             /* kiểm tra bội của đơn vị, không phải là bội thì thông báo lỗi Msg_1693*/
             OptionalItem optionalItem = optionalItemMap.get(inputOptionalItem.getItemNo());
             CalcResultRange range = optionalItem.getCalcResultRange();
+            String itemName = optionalItemMap.get(inputOptionalItem.getItemNo()) != null ? optionalItemMap.get(inputOptionalItem.getItemNo()).getOptionalItemName().v() : "";
+            String itemNo = optionalItemMap.get(inputOptionalItem.getItemNo()) != null ? optionalItemMap.get(inputOptionalItem.getItemNo()).getOptionalItemNo().v().toString() : "";
             if (inputOptionalItem.getAmount() != null) {
                 Integer amountLower = null;
                 Integer amountUpper = null;
@@ -133,11 +135,10 @@ public class OptionalItemApplicationQuery {
                 }
                 if ((range.getLowerLimit().isSET() && amountLower != null && amountLower.compareTo(amount) > 0)
                         || (range.getUpperLimit().isSET() && amountUpper != null && amountUpper.compareTo(amount) < 0)) {
-                    throw new BusinessException("Msg_1692", "KAF020_22");
+                    throw new BusinessException("Msg_1692", "KAF020_22", itemNo);
                 }
                 if (unit.isPresent() && (amount % unit.get().intValue() != 0)) {
-                    String itemName = optionalItemMap.get(inputOptionalItem.getItemNo()) != null ? optionalItemMap.get(inputOptionalItem.getItemNo()).getOptionalItemName().v() : "";
-                    throw new BusinessException("Msg_1693", itemName);
+                    throw new BusinessException("Msg_1693", itemName, itemNo);
                 }
                 register = true;
             }
@@ -157,11 +158,10 @@ public class OptionalItemApplicationQuery {
                 }
                 if ((range.getLowerLimit().isSET() && numberLower != null && numberLower.compareTo(times) > 0)
                         || (range.getUpperLimit().isSET() && numberUpper != null && numberUpper.compareTo(times) < 0)) {
-                    throw new BusinessException("Msg_1692", "KAF020_22");
+                    throw new BusinessException("Msg_1692", "KAF020_22", itemNo);
                 }
                 if (unit.isPresent() && (times.doubleValue() % unit.get().doubleValue() != 0)) {
-                    String itemName = optionalItemMap.get(inputOptionalItem.getItemNo()) != null ? optionalItemMap.get(inputOptionalItem.getItemNo()).getOptionalItemName().v() : "";
-                    throw new BusinessException("Msg_1693", itemName);
+                    throw new BusinessException("Msg_1693", itemName, itemNo);
                 }
                 register = true;
             }
@@ -181,10 +181,9 @@ public class OptionalItemApplicationQuery {
                 }
                 if ((range.getLowerLimit().isSET() && timeLower != null && timeLower.compareTo(time) > 0)
                         || (range.getUpperLimit().isSET() && timeUpper != null && timeUpper.compareTo(time) < 0)) {
-                    throw new BusinessException("Msg_1692", "KAF020_22");
+                    throw new BusinessException("Msg_1692", "KAF020_22", itemNo);
                 }
                 if (unit.isPresent() && (time % unit.get().intValue() != 0)) {
-                    String itemName = optionalItemMap.get(inputOptionalItem.getItemNo()) != null ? optionalItemMap.get(inputOptionalItem.getItemNo()).getOptionalItemName().v() : "";
                     throw new BusinessException("Msg_1693", itemName);
                 }
                 register = true;

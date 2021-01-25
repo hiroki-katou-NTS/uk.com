@@ -3,6 +3,8 @@ package nts.uk.ctx.at.request.app.find.application.gobackdirectly;
 
 
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
@@ -24,10 +26,12 @@ public class WorkInformationDto {
 	}
 	public WorkInformation toDomain() {
 		WorkInformation workInformation = new WorkInformation(null, "");
-		if (workTime != null) {
+		if (!StringUtils.isEmpty(workTime)) {
 			workInformation.setWorkTimeCode(new WorkTimeCode(workTime));
 		}
-		workInformation.setWorkTypeCode(new WorkTypeCode(workType));
+		if (!StringUtils.isEmpty(workType)) {
+		    workInformation.setWorkTypeCode(new WorkTypeCode(workType));
+		}
 		return workInformation;
 	}
 }

@@ -89,8 +89,8 @@ public class RemainVacationInfo {
     // 代休残時間
     private Optional<Integer> subVacaHourRemain;
     
-    // 代休残時間
-    private Optional<Integer> subHdHourRemain;
+    // 積休残数
+    private Optional<Integer> remainingHours;
     
     // 60H超休残時間
     private Optional<Integer> over60HHourRemain;

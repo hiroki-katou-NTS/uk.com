@@ -6,7 +6,6 @@ import { Phase } from 'views/cmm/s45/shr/index';
 import { AppType, AppTypeName } from 'views/kaf/s00/shr';
 
 import {
-    CmmS45ComponentsApp1Component,
     CmmS45ComponentsApp2Component,
     CmmS45ComponentsApp3Component,
     CmmS45ComponentsApp4Component,
@@ -16,8 +15,12 @@ import {
     CmmS45ShrComponentsApp15Component,
     CmmS45ShrComponentsAppsampleComponent,
     CmmS45ShrComponentsApp0Component,
+    CmmS45ShrComponentsApp10Component,
+    CmmS45ShrComponentsApp6Component,
     Reason
 } from 'views/cmm/s45/shr/components';
+
+import { CmmS45ShrComponentsApp1Component } from 'views/cmm/s45/shr/components/app1/index';
 
 @component({
     name: 'cmms45c',
@@ -30,7 +33,6 @@ import {
         // khai báo virtual tag name
         'approved': ApprovedComponent,
         'appsample': CmmS45ShrComponentsAppsampleComponent,
-        'app1': CmmS45ComponentsApp1Component,
         'app2': CmmS45ComponentsApp2Component,
         'app3': CmmS45ComponentsApp3Component,
         'app4': CmmS45ComponentsApp4Component,
@@ -39,6 +41,9 @@ import {
         'app7': CmmS45ShrComponentsApp7Component,
         'app15': CmmS45ShrComponentsApp15Component,
         'app0': CmmS45ShrComponentsApp0Component,
+        'app1': CmmS45ShrComponentsApp1Component,
+        'app10': CmmS45ShrComponentsApp10Component,
+        'app6': CmmS45ShrComponentsApp6Component,
         'render': {
             template: `<div class="">{{params.id}} {{params.name}}</div>`,
             props: ['params']
@@ -207,6 +212,7 @@ export class CmmS45CComponent extends Vue {
         self.showApproval = false;
         self.appCount++;
         self.currentApp = self.listAppMeta[self.appCount];
+        self.reasons = null;
         self.isLoadingComplete = false;
         self.$mask('show');
         self.initData();
@@ -219,6 +225,7 @@ export class CmmS45CComponent extends Vue {
         self.showApproval = false;
         self.appCount--;
         self.currentApp = self.listAppMeta[self.appCount];
+        self.reasons = null;
         self.isLoadingComplete = false;
         self.$mask('show');
         self.initData();
@@ -365,6 +372,19 @@ export class CmmS45CComponent extends Vue {
                     self.$close(self.appTransferData);
                 } else {
                     self.$goto('kafs05', self.appTransferData);
+                }
+                break;
+            case 1: 
+                self.$goto('kafs06a', self.appTransferData); 
+                break;  
+            case 10: 
+                self.$goto('kafs11a', self.appTransferData); 
+                break;  
+            case 6: 
+                if (self.$router.currentRoute.name == 'kafs10') {
+                    self.$close(self.appTransferData);
+                } else {
+                    self.$goto('kafs10', self.appTransferData);
                 }
                 break;
             default:
