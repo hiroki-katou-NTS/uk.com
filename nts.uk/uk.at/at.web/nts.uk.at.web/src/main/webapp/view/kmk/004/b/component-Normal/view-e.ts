@@ -313,13 +313,13 @@ module nts.uk.at.view.kmk004.b {
 							vm.years(ko.unwrap(vm.years));
 							if (ko.unwrap(vm.years).length > 0) {
 								vm.selectedYear(ko.unwrap(vm.years)[old_index].year);
+							} else {
+								vm.change.valueHasMutated();
 							}
-							vm.change.valueHasMutated();
 						})
 						.then(() => {
 							vm.$errors('clear');
 						}).then(() => {
-							vm.selectedYear.valueHasMutated();
 							$(document).ready(function () {
 								$('.listbox').focus();
 							});
@@ -336,7 +336,7 @@ module nts.uk.at.view.kmk004.b {
 				if (result) {
 					vm.years.push(new IYear(parseInt(result.year), true));
 					vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
-					if (parseInt(result.year) == ko.unwrap(vm.selectedYear) as number){
+					if (parseInt(result.year) == ko.unwrap(vm.selectedYear) as number) {
 						vm.selectedYear.valueHasMutated();
 					} else {
 						vm.selectedYear(parseInt(result.year));

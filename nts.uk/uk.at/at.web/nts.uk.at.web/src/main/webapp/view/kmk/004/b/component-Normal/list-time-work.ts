@@ -308,7 +308,7 @@ module nts.uk.at.view.kmk004.b {
                                                     yearMonth: m.yearMonth,
                                                     laborTime: laborTime
                                                 };
-                                                
+
                                                 data1.push(s);
                                             });
                                             vm.workTimes(data1.map(m => new WorkTime({ ...m, parrent: vm.workTimes })));
