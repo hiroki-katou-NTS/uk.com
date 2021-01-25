@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.function.dom.outputitemsofworkstatustable;
 
-import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
@@ -32,7 +31,6 @@ public class CreateWorkStatusSettingDomainServiceTest {
         OutputItemSettingName name = new OutputItemSettingName("CBA");
         String empId = "employeeId";
         List<OutputItem> outputItems = DumData.outputItems;
-        val settingCategory = SettingClassificationCommon.STANDARD_SELECTION;
         new Expectations(AppContexts.class) {
             {
                 AppContexts.user().employeeId();
@@ -45,7 +43,7 @@ public class CreateWorkStatusSettingDomainServiceTest {
         };
 
         NtsAssert.businessException("Msg_1753", () -> {
-            CreateWorkStatusSettingDomainService.createSetting(require, code, name, settingCategory,
+            CreateWorkStatusSettingDomainService.createSetting(require, code, name, SettingClassificationCommon.STANDARD_SELECTION,
                     outputItems);
         });
     }

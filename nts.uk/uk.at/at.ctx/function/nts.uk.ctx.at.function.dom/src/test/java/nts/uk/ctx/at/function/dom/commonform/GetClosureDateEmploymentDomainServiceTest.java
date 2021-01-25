@@ -8,12 +8,14 @@ import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.workrule.closure.*;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -24,8 +26,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 public class GetClosureDateEmploymentDomainServiceTest {
     @Injectable
     private GetClosureDateEmploymentDomainService.Require require;
-
-    private final List<String> listSid = Arrays.asList("01","02","03");
 
     public static Closure createClosure() {
         return new Closure(new ClosureGetMemento() {
@@ -88,9 +88,15 @@ public class GetClosureDateEmploymentDomainServiceTest {
         });
     }
 
+    /**
+     * Test: GetClosureDateEmploymentDomainService
+     * require.getEmploymentInfor: return: list.size() = 1
+     * require.getClosureDataByEmployee : return !=null
+     */
     @Test
-    public void test_01() {
+    public void testClosureDateEmploymentFull_01() {
 
+        List<String> listSid = Arrays.asList("01","02","03");
         GeneralDate baseDate = GeneralDate.ymd(2020,10,10);
         DatePeriod datePeriod = new DatePeriod(GeneralDate.ymd(2020,10,1), GeneralDate.ymd(2020,10,30));
         BsEmploymentHistoryImport historyImport = new BsEmploymentHistoryImport("sid","code","name",datePeriod);
@@ -118,12 +124,14 @@ public class GetClosureDateEmploymentDomainServiceTest {
         assertThat(result.get(0).getClosure()).isEqualTo(closure);
     }
 
-
+    /**
+     * Test: GetClosureDateEmploymentDomainService
+     * require.getEmploymentInfor: return: list.size() = 0
+     */
     @Test
-    public void test_02() {
-
+    public void testEmploymentInforEmpty_02() {
+        List<String> listSid = Arrays.asList("01","02","03");
         GeneralDate baseDate = GeneralDate.ymd(2020,10,10);
-        DatePeriod datePeriod = new DatePeriod(GeneralDate.ymd(2020,10,1), GeneralDate.ymd(2020,10,30));
         Map<String, BsEmploymentHistoryImport> expectedList = new HashMap<>();
 
         new Expectations() {
@@ -136,10 +144,14 @@ public class GetClosureDateEmploymentDomainServiceTest {
         List<ClosureDateEmployment> result = GetClosureDateEmploymentDomainService.get(require,baseDate,listSid);
         assertThat(result.size()).isEqualTo(0);
     }
-
+    /**
+     * Test: GetClosureDateEmploymentDomainService
+     * require.getEmploymentInfor: return: list.size() > 0
+     * require.getClosureDataByEmployee : null
+     */
     @Test
-    public void test_03() {
-
+    public void testClosureDataByEmployeeNull_03() {
+        List<String> listSid = Arrays.asList("01","02","03");
         GeneralDate baseDate = GeneralDate.ymd(2020,10,10);
         DatePeriod datePeriod = new DatePeriod(GeneralDate.ymd(2020,10,1), GeneralDate.ymd(2020,10,30));
         BsEmploymentHistoryImport historyImport = new BsEmploymentHistoryImport("sid","code","name",datePeriod);
@@ -165,10 +177,14 @@ public class GetClosureDateEmploymentDomainServiceTest {
         assertThat(result.get(0).getClosure()).isEqualTo(null);
     }
 
-
+    /**
+     * Test: GetClosureDateEmploymentDomainService
+     * require.getEmploymentInfor: return: list.size() > 1
+     * require.getClosureDataByEmployee : return !=null
+     */
     @Test
-    public void test_04() {
-
+    public void testClosureDataByEmployeeFull_04() {
+        List<String> listSid = Arrays.asList("01","02","03");
         GeneralDate baseDate = GeneralDate.ymd(2020,10,10);
         DatePeriod datePeriod = new DatePeriod(GeneralDate.ymd(2020,10,1), GeneralDate.ymd(2020,10,30));
         BsEmploymentHistoryImport historyImport = new BsEmploymentHistoryImport("sid","code","name",datePeriod);

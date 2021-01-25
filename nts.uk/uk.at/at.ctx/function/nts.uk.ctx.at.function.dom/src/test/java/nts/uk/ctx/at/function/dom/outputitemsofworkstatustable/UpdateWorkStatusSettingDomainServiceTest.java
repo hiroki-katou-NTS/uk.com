@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.function.dom.outputitemsofworkstatustable;
 
 
-import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
@@ -32,7 +31,6 @@ public class UpdateWorkStatusSettingDomainServiceTest {
         OutputItemSettingCode code = new OutputItemSettingCode("ABC");
         OutputItemSettingName name = new OutputItemSettingName("CBA");
         String settingId = "id";
-        SettingClassificationCommon settingCategory = SettingClassificationCommon.STANDARD_SELECTION;
         List<OutputItem> outputItems = DumData.outputItems;
         new Expectations() {
             {
@@ -41,7 +39,7 @@ public class UpdateWorkStatusSettingDomainServiceTest {
             }
         };
         NtsAssert.businessException("Msg_1903", () -> {
-            UpdateWorkStatusSettingDomainService.updateSetting(require, settingId, code, name, settingCategory,
+            UpdateWorkStatusSettingDomainService.updateSetting(require, settingId, code, name, SettingClassificationCommon.STANDARD_SELECTION,
                     outputItems);
         });
     }
@@ -56,7 +54,6 @@ public class UpdateWorkStatusSettingDomainServiceTest {
         OutputItemSettingCode code = new OutputItemSettingCode("ABC");
         OutputItemSettingName name = new OutputItemSettingName("CBA");
         String settingId = "settingId";
-        SettingClassificationCommon settingCategory = SettingClassificationCommon.FREE_SETTING;
         List<OutputItem> outputItems = DumData.outputItems;
         new Expectations() {
             {
@@ -65,7 +62,7 @@ public class UpdateWorkStatusSettingDomainServiceTest {
             }
         };
         NtsAssert.businessException("Msg_1903", () -> {
-            UpdateWorkStatusSettingDomainService.updateSetting(require, settingId, code, name, settingCategory,
+            UpdateWorkStatusSettingDomainService.updateSetting(require, settingId, code, name, SettingClassificationCommon.FREE_SETTING,
                     outputItems);
         });
     }
@@ -82,8 +79,7 @@ public class UpdateWorkStatusSettingDomainServiceTest {
         String empId = "employeeId";
         String settingId = "settingId";
         List<OutputItem> outputItems = DumData.outputItems;
-        val settingCategory = SettingClassificationCommon.FREE_SETTING;
-        WorkStatusOutputSettings domain = DumData.dum(code, name, empId, iD, settingCategory);
+        WorkStatusOutputSettings domain = DumData.dum(code, name, empId, iD, SettingClassificationCommon.FREE_SETTING);
         new Expectations(AppContexts.class) {
             {
                 AppContexts.user().employeeId();
@@ -97,7 +93,7 @@ public class UpdateWorkStatusSettingDomainServiceTest {
 
 
         NtsAssert.atomTask(() ->
-                        UpdateWorkStatusSettingDomainService.updateSetting(require, settingId, code, name, settingCategory,
+                        UpdateWorkStatusSettingDomainService.updateSetting(require, settingId, code, name, SettingClassificationCommon.FREE_SETTING,
                                 outputItems),
 
                 any -> require.update(settingId, any.get()));
@@ -114,9 +110,8 @@ public class UpdateWorkStatusSettingDomainServiceTest {
         String iD = "iD";
         String empId = "employeeId";
         String settingId = "settingId";
-        SettingClassificationCommon settingCategory = SettingClassificationCommon.STANDARD_SELECTION;
         List<OutputItem> outputItems = DumData.outputItems;
-        WorkStatusOutputSettings domain = DumData.dum(code, name, empId, iD, settingCategory);
+        WorkStatusOutputSettings domain = DumData.dum(code, name, empId, iD, SettingClassificationCommon.STANDARD_SELECTION);
         new Expectations(AppContexts.class) {
             {
                 AppContexts.user().employeeId();
@@ -127,7 +122,7 @@ public class UpdateWorkStatusSettingDomainServiceTest {
         };
 
         NtsAssert.atomTask(() ->
-                        UpdateWorkStatusSettingDomainService.updateSetting(require, settingId, code, name, settingCategory,
+                        UpdateWorkStatusSettingDomainService.updateSetting(require, settingId, code, name, SettingClassificationCommon.STANDARD_SELECTION,
                                 outputItems),
 
                 any -> require.update(settingId, any.get()));
