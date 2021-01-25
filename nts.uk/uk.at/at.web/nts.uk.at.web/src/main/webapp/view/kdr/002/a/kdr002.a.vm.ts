@@ -231,8 +231,8 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                         startDateRange = moment(currentMonth).add(closureDay, 'day').subtract(1, 'month').format("YYYYMMDD");
                         endDateRange = moment(startDateRange).add(1, 'year').subtract(1, 'day').format("YYYYMMDD");
                     }
-
-                    self.printDate(closure.closureMonth);
+                    let closureMonthAfter: number = parseInt(moment(closure.closureMonth, "YYYYMM").subtract(1, 'month').format("YYYYMM"));
+                    self.printDate(closureMonthAfter);
                     //取得した「締め.当月」より期間へ移送
                     self.period({ startDate: startDateRange, endDate: endDateRange });
 
@@ -273,7 +273,8 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                 }
                 else {
                     //データなし
-                    self.printDate(closure.closureMonth);
+                    let closureMonthAfter: number = parseInt(moment(closure.closureMonth, "YYYYMM").subtract(1, 'month').format("YYYYMM"));
+                    self.printDate(closureMonthAfter);
                 }
             });
         }
