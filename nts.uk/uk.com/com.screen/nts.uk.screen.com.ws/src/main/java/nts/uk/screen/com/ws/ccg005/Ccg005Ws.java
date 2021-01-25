@@ -10,6 +10,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import nts.uk.screen.com.app.find.ccg005.PermissionSettingDto;
+import nts.uk.screen.com.app.find.ccg005.PermissionSettingsScreenQuery;
 import nts.uk.screen.com.app.find.ccg005.attendance.data.DisplayAttendanceDataDto;
 import nts.uk.screen.com.app.find.ccg005.attendance.data.DisplayAttendanceDataScreenQuery;
 import nts.uk.screen.com.app.find.ccg005.attendance.information.AttendanceInformationDto;
@@ -48,6 +50,9 @@ public class Ccg005Ws {
 	
 	@Inject
 	private FavoriteInformationScreenQuery favoriteInfoSq;
+	
+	@Inject 
+	private PermissionSettingsScreenQuery permissionSettingsSq;
 	
 	@POST
 	@Path("get-display-attendance-data")
@@ -113,5 +118,11 @@ public class Ccg005Ws {
 		});
 		returnList.sort(Comparator.comparing(FavoriteInformationData::getOrder));
 		return returnList;
+	}
+	
+	@POST
+	@Path("get-permission-settings")
+	public PermissionSettingDto getPermissionSetting() {
+		return this.permissionSettingsSq.getPermissionSetting();
 	}
 }
