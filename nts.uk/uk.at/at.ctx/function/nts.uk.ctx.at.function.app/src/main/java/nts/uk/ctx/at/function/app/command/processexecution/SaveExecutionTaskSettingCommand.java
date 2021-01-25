@@ -142,6 +142,9 @@ public class SaveExecutionTaskSettingCommand {
 	
 	/* 終了処理スケジュールID*/
 	private String endScheduleId;
+	
+	/* 1日の繰り返しスケジュールID */
+	private String repeatScheduleId;
 
 	public ExecutionTaskSetting toDomain() {
 		List<RepeatMonthDaysSelect> days = repeatMonthDateList.stream()
@@ -165,6 +168,7 @@ public class SaveExecutionTaskSettingCommand {
 				.oneDayRepInr(new OneDayRepeatInterval(
 						Optional.ofNullable(oneDayRepInterval).map(data -> EnumAdaptor.valueOf(data, OneDayRepeatIntervalDetail.class)),
 						EnumAdaptor.valueOf(oneDayRepCls, OneDayRepeatClassification.class)))
+				.repeatScheduleId(Optional.ofNullable(repeatScheduleId))
 				.scheduleId(scheduleId)
 				.startDate(startDate)
 				.startTime(new StartTime(startTime))

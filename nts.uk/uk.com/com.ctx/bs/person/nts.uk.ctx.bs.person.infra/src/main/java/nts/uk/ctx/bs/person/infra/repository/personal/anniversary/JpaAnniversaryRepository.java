@@ -24,7 +24,7 @@ public class JpaAnniversaryRepository extends JpaRepository implements Anniversa
     private static final String SELECT_BY_PERSONAL_ID = "SELECT a FROM BpsdtPsAnniversaryInfo a WHERE a.bpsdtPsAnniversaryInfoPK.personalId = :personalId";
 
     //select by anniversary
-    private static final String NATIVE_SELECT_BY_ANNIVERSARY = "SELECT * FROM BPSDT_PS_ANNIVERSARY_INFO as a"
+    private static final String NATIVE_SELECT_BY_ANNIVERSARY = "SELECT * FROM BPSMT_ANNIVERSARY as a"
             + " WHERE a.PID ='{:personId}'"
             + " AND CAST(CONCAT('{:todayYear}',a.ANNIVERSARY_DATE) as datetime2) >= CAST('{:anniversary}' as datetime2)"
             + " AND CAST(CONCAT('{:todayYear}',a.ANNIVERSARY_DATE) as datetime2) <= DATEADD(day,　a.NOTIFICATION_DAYS,　CAST('{:anniversary}' as datetime2))"
