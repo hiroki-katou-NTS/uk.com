@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
+
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -19,6 +21,7 @@ import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
  * @author lan_lt
  *
  */
+@Stateless
 public class CountingNoOfTotalTimesCtgOfScheService {
 	/**
 	 * 年月日別に集計する	
@@ -27,13 +30,13 @@ public class CountingNoOfTotalTimesCtgOfScheService {
 	 * @param dailyWorks 日別勤怠リスト
 	 * @return
 	 */
-	public Map<GeneralDate, Map<Integer, BigDecimal>> countingNumberOfTotalTimeByDay(Require require,
+	public static Map<GeneralDate, Map<Integer, BigDecimal>> countingNumberOfTotalTimeByDay(Require require,
 			
 			List<Integer> targetTotalTimes, List<IntegrationOfDaily> dailyWorks) {
 
 		Map<GeneralDate, List<IntegrationOfDaily>> dailyWorksEachDay = dailyWorks.stream().collect(Collectors.groupingBy(c -> c.getYmd()));
 
-		return excuteTotalTimeByEachWorkType(require, targetTotalTimes, dailyWorksEachDay);
+		return excuteTotalTimeByEachType(require, targetTotalTimes, dailyWorksEachDay);
 
 	}
 	
@@ -44,12 +47,12 @@ public class CountingNoOfTotalTimesCtgOfScheService {
 	 * @param dailyWorks 日別勤怠リスト
 	 * @return
 	 */
-	public Map<String, Map<Integer, BigDecimal>> countingNumberOfTotalTimeByEmployee(Require require,
+	public static Map<String, Map<Integer, BigDecimal>> countingNumberOfTotalTimeByEmployee(Require require,
 			List<Integer> targetTotalTimes, List<IntegrationOfDaily> dailyWorks){
 		
 		val dailyWorksEachEmployee = dailyWorks.stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));
 		
-		return excuteTotalTimeByEachWorkType(require, targetTotalTimes, dailyWorksEachEmployee);
+		return excuteTotalTimeByEachType(require, targetTotalTimes, dailyWorksEachEmployee);
 				
 	}
 	
@@ -61,36 +64,26 @@ public class CountingNoOfTotalTimesCtgOfScheService {
 	 * @param dailyWorks 日別勤怠リスト
 	 * @return
 	 */
-	private <T> Map<T, Map<Integer, BigDecimal>> excuteTotalTimeByEachWorkType(Require require
-			, List<Integer> targetTotalTimes
-			, Map<T, List<IntegrationOfDaily>> dailyWorks){
-		
-		//するしない区分 今、場所がちがうかな
-		List<TotalTimes> totalTimeList = require.getAllTotalTimes(targetTotalTimes).stream()
-				.filter(c -> c.getUseAtr() == UseAtr.Use )
-				.collect(Collectors.toList());
-		
-		Map<T, Map<Integer, BigDecimal>> result = dailyWorks.entrySet().stream().collect(Collectors.toMap(dailyWork-> dailyWork.getKey(), dailyWork ->{
-			
-			return totalTimeList.stream().collect(Collectors.toMap(totalTime -> totalTime.getTotalCountNo(), totalTime ->{
-				
-				return excuteTotalTimes(require, totalTime, dailyWork.getValue());
-				
-			}));
-			
+	private static <T> Map<T, Map<Integer, BigDecimal>> excuteTotalTimeByEachType(Require require,
+			List<Integer> targetTotalTimes, Map<T, List<IntegrationOfDaily>> dailyWorks) {
+
+		List<TotalTimes> totalTimeList = require.getTotalTimesList(targetTotalTimes).stream()
+				.filter(c -> c.getUseAtr() == UseAtr.Use).collect(Collectors.toList());
+
+		return dailyWorks.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> {
+			return totalTimeList.stream().collect(Collectors.toMap(TotalTimes::getTotalCountNo,
+					tt -> excuteTotalTimes(require, tt, entry.getValue())));
 		}));
-		
-		return result;
 	}
 
 	/**
 	 * 回数集計を実行する
 	 * @param require
 	 * @param totalTimes 回数集計
-	 * @param integrationOfDailyLst 日別勤怠リスト
+	 * @param dailyWorks 日別勤怠リスト
 	 * @return
 	 */
-	private BigDecimal excuteTotalTimes(Require require, TotalTimes totalTimes
+	private static BigDecimal excuteTotalTimes(Require require, TotalTimes totalTimes
 			
 			, List<IntegrationOfDaily>  dailyWorks) {
 		
@@ -98,7 +91,7 @@ public class CountingNoOfTotalTimesCtgOfScheService {
 		
 		TotalCount totalResult = totalTimes.aggregateTotalCount(require, dailyWorks, attendanceStatusList);
 		
-		return new BigDecimal(totalResult.getCount().v());
+		return BigDecimal.valueOf(totalResult.getCount().v());
 	}
 	
 	
@@ -109,7 +102,7 @@ public class CountingNoOfTotalTimesCtgOfScheService {
 		 * @param totalTimeNos List<回数集計NO>												
 		 * @return
 		 */
-		List<TotalTimes> getAllTotalTimes(List<Integer> totalTimeNos );
+		List<TotalTimes> getTotalTimesList(List<Integer> totalTimeNos );
 	}
 
 }
