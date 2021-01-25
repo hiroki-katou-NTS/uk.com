@@ -240,41 +240,45 @@ export class KafS12AComponent extends KafS00ShrComponent {
         params.appDisplayInfo.timeLeaveRemaining.remainingStart = new Date(params.appDisplayInfo.timeLeaveRemaining.remainingStart).toISOString();
         params.appDisplayInfo.timeLeaveRemaining.remainingEnd = new Date(params.appDisplayInfo.timeLeaveRemaining.remainingEnd).toISOString();
 
-        return vm.$http.post('at', API.calculateTime, params);
+        vm.$http.post('at', API.calculateTime, params).then((res: any) => {
+            if (res) {
+                vm.calculatedData = res.data;
+                // if (vm.details.length == 0) {
+                vm.createNewDetails(lateEarlyTimeZones.filter((i: LateEarlyTimeZone) => i.timeValue != null), outingTimeZones);
+                // }
+                vm.step = 'KAFS12_2';
+                vm.$nextTick(() => {
+                    window.scrollTo(0, 0);
+                });
+            }
+            vm.$mask('hide');
+        }).catch((error: any) => {
+            vm.$modal.error(error).then(() => {
+                vm.$mask('hide');
+            });
+        });
     }
     
     public handleNextToStepTwo(lateEarlyTimeZones: Array<LateEarlyTimeZone>, outingTimeZones: Array<OutingTimeZone>) {
         const vm = this;
         // check date => calculate => set details
         vm.$mask('show');
-        vm.handleChangeDate(vm.application.appDate).then((res: any) => {
-            if (res) {
-                vm.timeLeaveManagement = res.data.timeLeaveManagement;
-                vm.handleCalculateTime(lateEarlyTimeZones, outingTimeZones).then((res: any) => {
-                    if (res) {
-                        vm.calculatedData = res.data;
-                        // if (vm.details.length == 0) {
-                        vm.createNewDetails(lateEarlyTimeZones.filter((i: LateEarlyTimeZone) => i.timeValue != null), outingTimeZones);
-                        // }
-                        vm.step = 'KAFS12_2';
-                        vm.$nextTick(() => {
-                            window.scrollTo(0, 0);
-                        });
-                    }
+        if (vm.newMode) {
+            vm.handleChangeDate(vm.application.appDate).then((res: any) => {
+                if (res) {
+                    vm.timeLeaveManagement = res.data.timeLeaveManagement;
+                    vm.handleCalculateTime(lateEarlyTimeZones, outingTimeZones);
+                } else {
                     vm.$mask('hide');
-                }).catch((error: any) => {
-                    vm.$modal.error(error).then(() => {
-                        vm.$mask('hide');
-                    });
+                }
+            }).catch((error: any) => {
+                vm.$modal.error(error).then(() => {
+                    vm.$mask('hide');
                 });
-            } else {
-                vm.$mask('hide');
-            }
-        }).catch((error: any) => {
-            vm.$modal.error(error).then(() => {
-                vm.$mask('hide');
             });
-        });
+        } else {
+            vm.handleCalculateTime(lateEarlyTimeZones, outingTimeZones);
+        }
     }
 
     public handleNextToStepThree(applyTimeData: Array<any>, specialLeaveFrame: number) {
