@@ -153,7 +153,7 @@ public class AsposeWorkChange {
             }
             
             if(!appDisp.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles() 
-                    || !appDisp.getReflectWorkChangeApp().getWhetherReflectAttendance().equals(NotUseAtr.NOT_USE) 
+                    || appDisp.getReflectWorkChangeApp().getWhetherReflectAttendance().equals(NotUseAtr.NOT_USE) 
                     || valueD11.equals("")) {
                 cells.deleteRow(10);
                 deleteCnt++;
