@@ -235,7 +235,7 @@ module nts.uk.at.view.kmk004.l {
 				})
 		}
 		mounted() {
-			$(document).ready(function() {
+			$(document).ready(() => {
 				$('.listbox').focus();
 			});
 		}
@@ -264,7 +264,7 @@ module nts.uk.at.view.kmk004.l {
 					vm.getwkpIdList();
 				}).then(() => vm.$dialog.info({ messageId: "Msg_15" }))
 				.then(() => {
-					$(document).ready(function() {
+					$(document).ready(() => {
 						$('.listbox').focus();
 					})
 				}).always(() => {
@@ -285,7 +285,7 @@ module nts.uk.at.view.kmk004.l {
 				.ifYes(() => {
 					vm.$blockui("invisible")
 						.then(() => vm.$ajax(KMK004M_API.DELETE_WORK_TIME, ko.toJS({ year: vm.selectedYear(), workplaceId: vm.selectedIdParam() })))
-						.done(() => {
+						.then(() => {
 							vm.yearDelete(ko.unwrap(vm.selectedYear));
 						})
 						.then(() => {
@@ -295,20 +295,21 @@ module nts.uk.at.view.kmk004.l {
 							vm.years(ko.unwrap(vm.years));
 							if (ko.unwrap(vm.years).length > 0) {
 								vm.selectedYear(ko.unwrap(vm.years)[old_index].year);
+							} else {
+								vm.selectedYear.valueHasMutated();
 							}
 							vm.getwkpIdList();
 						})
-						.then(() => {vm.selectedYear.valueHasMutated();})
 						.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
 						.then(() => {
-							$(document).ready(function() {
+							$(document).ready(() => {
 								$('.listbox').focus();
 							});
 						}).then(() => {
 							vm.$errors('clear');
 						}).always(() => vm.$blockui("clear"));
-				}).ifNo(function() {
-                    $(document).ready(function() {
+				}).ifNo(() => {
+                    $(document).ready(() => {
 						$('.listbox').focus();
 					});
                 });
