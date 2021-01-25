@@ -72,7 +72,7 @@ module nts.uk.com.view.ccg013.c.viewmodel {
             self.getData = false;
 
             self.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("CCG013_49"), prop: 'index', key: 'index', width: 55, formatter: _.escape },
+                { headerText: nts.uk.resource.getText("CCG013_49"), prop: 'displayOrder', key: 'displayOrder', width: 55, formatter: _.escape },
                 { headerText: nts.uk.resource.getText("CCG013_49"), prop: 'code', key: 'code', width: 0, formatter: _.escape, hidden: true },
                 { headerText: nts.uk.resource.getText("CCG013_50"), prop: 'name', key: 'name', width: 167, formatter: _.escape },
                 { headerText: 'pk', prop: 'primaryKey', key: 'primaryKey', width: 0, hidden: true }
@@ -133,12 +133,12 @@ module nts.uk.com.view.ccg013.c.viewmodel {
                         if (standardMenu) {
                             var order = self.newItems().length + 1;
                             var primaryKey = nts.uk.util.randomId();
-                            var data = new ItemModel(index + 1, primaryKey, standardMenu.code, standardMenu.targetItem, standardMenu.name, order, standardMenu.menu_cls, standardMenu.system);
+                            var data = new ItemModel(index + 1, primaryKey, standardMenu.code, standardMenu.targetItem, standardMenu.name, order, standardMenu.menu_cls, standardMenu.system, item.displayOrder);
                             newData.push(data);
                             self.tempItems.push(data);
                         }
                     });
-                    self.newItems(_.orderBy(newData, ["newOrder"],["asc"]));
+                    self.newItems(_.orderBy(newData, ['system', 'displayOrder', 'code'], ['asc', 'asc', 'asc']));
                 }
                 self.disableSwapButton();
                 dfd.resolve();
@@ -200,12 +200,12 @@ module nts.uk.com.view.ccg013.c.viewmodel {
                 var index = 0;
                 _.forEach(data, function (item) {
                     var id = nts.uk.util.randomId();
-                    self.allItems.push(new ItemModel(idx + 1, id, item.code, item.targetItems, item.displayName, index, item.classification, item.system));
+                    self.allItems.push(new ItemModel(idx + 1, id, item.code, item.targetItems, item.displayName, index, item.classification, item.system, item.displayOrder));
                     if (item.system == self.selectedSystemCode()) {
-                        list001.push(new ItemModel(idx + 1, id, item.code, item.targetItems, item.displayName, index, item.classification, item.system));
+                        list001.push(new ItemModel(idx + 1, id, item.code, item.targetItems, item.displayName, index, item.classification, item.system, item.displayOrder));
                     }
                 });
-                var newData = _.orderBy(list001, ["newOrder"],["asc"]);
+                var newData = _.orderBy(list001, ['system', 'displayOrder', 'code'], ['asc', 'asc', 'asc']);
                 self.items(newData);
                 dfd.resolve(data);
             }).fail(function (res) {
@@ -242,18 +242,18 @@ module nts.uk.com.view.ccg013.c.viewmodel {
                 if (self.selectedSystemCode() === 5) {
                     if (item.menu_cls != Menu_Cls.TopPage) {
                         var id = nts.uk.util.randomId();
-                        list001.push(new ItemModel(idx + 1, id, item.code, item.targetItem, item.name, index, item.menu_cls, item.system));
+                        list001.push(new ItemModel(idx + 1, id, item.code, item.targetItem, item.name, index, item.menu_cls, item.system, item.displayOrder));
                         index++;
                     }
                 } else {
                     if ((item.system == self.selectedSystemCode() && item.menu_cls != Menu_Cls.TopPage) || (item.system == 0 && item.menu_cls == Menu_Cls.TopPage)) {
                         var id = nts.uk.util.randomId();
-                        list001.push(new ItemModel(idx + 1, id, item.code, item.targetItem, item.name, index, item.menu_cls, item.system));
+                        list001.push(new ItemModel(idx + 1, id, item.code, item.targetItem, item.name, index, item.menu_cls, item.system, item.displayOrder));
                         index++;
                     }
                 }
             });
-            var newData = _.orderBy(list001, ["newOrder"],["asc"]);
+            var newData = _.orderBy(list001, ['system', 'displayOrder', 'code'], ['asc', 'asc', 'asc']);
             var list002 = _.uniqBy(newData, 'targetItem');
             _.forEach(list002, (x, index) => {
                 x.index = index + 1;
@@ -271,13 +271,13 @@ module nts.uk.com.view.ccg013.c.viewmodel {
                     var item = _.find(self.items(), function (c) { return c.primaryKey == selected; });
                     item.order = self.newItems().length + 1;
                     //item.primaryKey = nts.uk.util.randomId();
-                    self.newItems.push(new ItemModel(self.newItems().length + 1, nts.uk.util.randomId(), item.code, item.targetItem, item.name, item.order, item.menu_cls, item.system));
+                    self.newItems.push(new ItemModel(self.newItems().length + 1, nts.uk.util.randomId(), item.code, item.targetItem, item.name, item.order, item.menu_cls, item.system, item.displayOrder));
                 }
             });
             _.forEach(self.newItems(), (x, index) => {
                 x.index = index + 1;
             });
-            self.newItems(_.orderBy(self.newItems(), ["newOrder"],["asc"]));
+            self.newItems(_.orderBy(self.newItems(), ['system', 'displayOrder', 'code'], ['asc', 'asc', 'asc']));
             self.currentCodeList([]);
             self.disableSwapButton();
         }
@@ -298,7 +298,7 @@ module nts.uk.com.view.ccg013.c.viewmodel {
                 item.order = self.newItems().length + 1;
                 self.newItems.push(item);
             });
-            self.newItems(_.orderBy(self.newItems(), ["newOrder"],["asc"]));
+            self.newItems(_.orderBy(self.newItems(), ['system', 'displayOrder', 'code'], ['asc', 'asc', 'asc']));
             _.forEach(self.newItems(), (x, index) => {
                 x.index = index + 1;
             });
@@ -380,9 +380,9 @@ module nts.uk.com.view.ccg013.c.viewmodel {
         order: number;
         menu_cls: number;
         system: number;
-        newOrder: number;
+        displayOrder: number;
 
-        constructor(index: number, id: string, code: string, targetItem: string, name: string, order: number, menu_cls: number, system: number) {
+        constructor(index: number, id: string, code: string, targetItem: string, name: string, order: number, menu_cls: number, system: number, displayOrder: number) {
             this.index = index;
             this.primaryKey = id;
             this.code = code;
@@ -391,7 +391,7 @@ module nts.uk.com.view.ccg013.c.viewmodel {
             this.order = order;
             this.menu_cls = menu_cls;
             this.system = system;
-            this.newOrder = system + order + Number(code);
+            this.displayOrder = displayOrder;
         }
     }
 
