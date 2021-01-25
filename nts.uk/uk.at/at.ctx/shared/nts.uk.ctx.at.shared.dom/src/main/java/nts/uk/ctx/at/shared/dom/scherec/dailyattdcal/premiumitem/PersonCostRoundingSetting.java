@@ -15,12 +15,14 @@ import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountUnit;
 @AllArgsConstructor
 public class PersonCostRoundingSetting {
 	
+	/** 単価＊割増率の丸め */
 	private UnitPriceRoundingSetting unitPrice;
 	
+	/** 単価＊時間の丸め */
 	private AmountRoundingSetting cost;
 	
 	/**
-	 * デフォルト値を返す
+	 * デフォルト値で作成する
 	 * @return 人件費丸め設定
 	 */
 	public static PersonCostRoundingSetting defaultValue() {

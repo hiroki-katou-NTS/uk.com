@@ -1953,7 +1953,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		//就業時間を計算
 		WorkHour workTime = this.calcWorkTime(
 				PremiumAtr.RegularWork, 
-				VacationClass.defaultValue(),
+				VacationClass.createAllZero(),
 				this.timeVacationAdditionRemainingTime.isPresent()?this.timeVacationAdditionRemainingTime.get():AttendanceTime.ZERO,
 				workType,
 				predetermineTimeSet,
@@ -2018,7 +2018,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		//所定内割増合計時間の計算
 		WorkHour workTime = this.calcWorkTime(
 				PremiumAtr.RegularWork, 
-				VacationClass.defaultValue(),
+				VacationClass.createAllZero(),
 				this.timeVacationAdditionRemainingTime.isPresent()?this.timeVacationAdditionRemainingTime.get():AttendanceTime.ZERO,
 				workType,
 				predetermineTimeSet,

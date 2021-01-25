@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.TimeSheetOfAttendanceEachOuenSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkContent;
@@ -105,7 +105,7 @@ public class KrcdtDayOuenTimeSheet extends UkJpaEntity implements Serializable {
 		return OuenWorkTimeSheetOfDaily.create(
 				pk.sid, pk.ymd, 
 				OuenWorkTimeSheetOfDailyAttendance.create(
-						new WorkFrameNo(pk.ouenNo), 
+						new SupportFrameNo(pk.ouenNo), 
 						WorkContent.create(
 								cid, 
 								WorkplaceOfWorkEachOuen.create(workplaceId, new WorkLocationCD(workLocationCode)), 

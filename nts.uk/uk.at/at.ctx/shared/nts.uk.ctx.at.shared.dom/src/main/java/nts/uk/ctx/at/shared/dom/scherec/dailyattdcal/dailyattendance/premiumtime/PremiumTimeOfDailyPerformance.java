@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -9,7 +8,6 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.PersonnelCostSettingImport;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PersonCostCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PriceUnit;
@@ -29,6 +27,10 @@ public class PremiumTimeOfDailyPerformance {
 	
 	private List<PremiumTime> premiumTimes;
 	
+	/**
+	 * 空で作成する
+	 * @return 日別実績の割増時間
+	 */
 	public static PremiumTimeOfDailyPerformance createEmpty() {
 		return new PremiumTimeOfDailyPerformance(Collections.emptyList());
 	}

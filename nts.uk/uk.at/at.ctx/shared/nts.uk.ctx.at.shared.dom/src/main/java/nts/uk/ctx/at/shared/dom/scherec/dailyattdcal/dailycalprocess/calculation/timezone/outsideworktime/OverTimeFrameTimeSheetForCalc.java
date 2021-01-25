@@ -362,7 +362,7 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 //				if(isOOtsukaMode) {
 					workTime = WithinStatutoryTimeOfDaily.calcActualWorkTime(
 							createdWithinWorkTimeSheet,
-							VacationClass.defaultValue(),
+							VacationClass.createAllZero(),
 							todayWorkType,
 							integrationOfDaily.getCalAttr().getLeaveEarlySetting(),
 							personDailySetting.getAddSetting(),

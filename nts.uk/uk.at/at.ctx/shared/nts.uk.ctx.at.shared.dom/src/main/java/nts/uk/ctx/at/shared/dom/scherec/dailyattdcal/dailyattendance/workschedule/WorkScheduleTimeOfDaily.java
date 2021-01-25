@@ -90,7 +90,7 @@ public class WorkScheduleTimeOfDaily {
 		//時刻から所定時間を計算
 		TotalWorkingTime totalWorkingTime = TotalWorkingTime.calcAllDailyRecord(
 				scheduleManageReGetClass,
-				VacationClass.defaultValue(),
+				VacationClass.createAllZero(),
 				schedulePerformance.getWorkType().get(),
 				Optional.of(WorkTimeDailyAtr.REGULAR_WORK),
 				Optional.empty(),

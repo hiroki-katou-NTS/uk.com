@@ -14,7 +14,6 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.DeductLeaveEarly;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.PersonnelCostSettingImport;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
@@ -255,6 +254,12 @@ public class ActualWorkingTimeOfDaily {
 		return PremiumTimeOfDailyPerformance.calcPremiumTime(personCostCalculation.get(), dailyRecordDto);
 	}
 	
+	/**
+	 * 割増時間を計算する（応援用）
+	 * @param personCostCalculation 人件費計算設定
+	 * @param dailyRecordDto 日別勤怠コンバーター
+	 * @return 日別勤怠の割増時間
+	 */
 	public static PremiumTimeOfDailyPerformance createPremiumTimeOfDailyPerformanceForSupport(Optional<PersonCostCalculation> personCostCalculation,
 				DailyRecordToAttendanceItemConverter dailyRecordDto) {
 		if(!personCostCalculation.isPresent()) {

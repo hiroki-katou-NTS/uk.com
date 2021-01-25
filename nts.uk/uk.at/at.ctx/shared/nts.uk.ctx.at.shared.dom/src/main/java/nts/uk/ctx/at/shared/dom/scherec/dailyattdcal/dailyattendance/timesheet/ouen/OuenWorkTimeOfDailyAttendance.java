@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 public class OuenWorkTimeOfDailyAttendance implements DomainObject {
 
 	/** 応援勤務枠No: 応援勤務枠No */
-	private WorkFrameNo workNo;
+	private SupportFrameNo workNo;
 	
 	/** 勤務時間: 時間帯別勤怠の時間 */
 	private OuenAttendanceTimeEachTimeSheet workTime;
@@ -38,7 +38,7 @@ public class OuenWorkTimeOfDailyAttendance implements DomainObject {
 	/** 単価: 単価 */
 	private PriceUnit priceUnit;
 
-	private OuenWorkTimeOfDailyAttendance(WorkFrameNo workNo, OuenAttendanceTimeEachTimeSheet workTime,
+	private OuenWorkTimeOfDailyAttendance(SupportFrameNo workNo, OuenAttendanceTimeEachTimeSheet workTime,
 			OuenMovementTimeEachTimeSheet moveTime, AttendanceAmountDaily amount, PriceUnit priceUnit) {
 		super();
 		this.workNo = workNo;
@@ -48,7 +48,7 @@ public class OuenWorkTimeOfDailyAttendance implements DomainObject {
 		this.priceUnit = priceUnit;
 	}
 	
-	public static OuenWorkTimeOfDailyAttendance create(WorkFrameNo workNo,
+	public static OuenWorkTimeOfDailyAttendance create(SupportFrameNo workNo,
 			OuenAttendanceTimeEachTimeSheet workTime,
 			OuenMovementTimeEachTimeSheet moveTime, AttendanceAmountDaily amount, PriceUnit priceUnit) {
 		

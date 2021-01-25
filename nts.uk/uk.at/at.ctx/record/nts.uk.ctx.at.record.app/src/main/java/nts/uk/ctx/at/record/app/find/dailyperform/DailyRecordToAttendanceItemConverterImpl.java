@@ -388,7 +388,6 @@ public class DailyRecordToAttendanceItemConverterImpl extends AttendanceItemConv
 		
 		OuenWorkTimeOfDaily daily = (OuenWorkTimeOfDaily) getDomain(ItemConst.DAILY_SUPPORT_TIME_NAME);
 		return daily.getOuenTime();
-		//return (List<OuenWorkTimeOfDailyAttendance>) getDomains(ItemConst.DAILY_SUPPORT_TIME_NAME);
 	}
 
 	@Override

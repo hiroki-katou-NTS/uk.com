@@ -18,7 +18,6 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.adapter.personnelcostsetting.PersonnelCostSettingAdapter;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.CalculationErrorCheckService;
@@ -83,8 +82,6 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	private WorkInformationRepository workInformationRepository;
 	
 	//割増計算用に追加
-	@Inject
-	private PersonnelCostSettingAdapter personnelCostSettingAdapter;
 	@Inject
 	private PersonCostCalculationRepository personCostCalculationRepository;
 	

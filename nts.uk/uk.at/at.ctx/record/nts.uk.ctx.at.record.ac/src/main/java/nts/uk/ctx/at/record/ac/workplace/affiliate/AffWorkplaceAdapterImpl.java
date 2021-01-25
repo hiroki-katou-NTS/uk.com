@@ -123,7 +123,7 @@ public class AffWorkplaceAdapterImpl implements AffWorkplaceAdapter {
 	
 	@Override
 	public List<String> getWorkplaceIdAndUpper(CacheCarrier cacheCarrier, String companyID, String workplaceID, GeneralDate date) {
-		//Require対応まち
+
 		return this.workplacePub.getWorkplaceIdAndUpper(companyID, date, workplaceID);
 	}
 

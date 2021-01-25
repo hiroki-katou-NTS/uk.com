@@ -8,7 +8,7 @@ import java.util.Optional;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PriceUnit;
 
@@ -17,24 +17,24 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PriceUnit;
  */
 public class IncentiveUnitPriceService {
 	
-	public static interface RequireM1 extends RequireM5 {
+	public static interface RequireAll extends RequireComWkpWlc {
 		Optional<IncentiveUnitPriceUsageSet> getUsageSet(String companyId);
 	}
 	
-	public static interface RequireM2 {
+	public static interface RequireCom {
 		Optional<IncentiveUnitPriceSetByCom> getCompanySet(String companyId);
 	}
 	
-	public static interface RequireM3 {
+	public static interface RequireWkp {
 		Optional<IncentiveUnitPriceSetByWkp> getWorkPlaceSet(String companyId, String workPlaceId);
 		List<String> getWorkplaceIdAndUpper(CacheCarrier cacheCarrier, String companyId, String workPlaceId, GeneralDate baseDate);
 	}
 	
-	public static interface RequireM4 {
+	public static interface RequireWlc {
 		Optional<IncentiveUnitPriceSetByWlc> getWorkLocationSet(String companyId, WorkLocationCD workLocationCd);
 	}
 	
-	public static interface RequireM5 extends RequireM2, RequireM3, RequireM4 {
+	public static interface RequireComWkpWlc extends RequireCom, RequireWkp, RequireWlc {
 		
 	}
 
@@ -47,14 +47,14 @@ public class IncentiveUnitPriceService {
 	 * @param ouenWorkTimeSheets
 	 * @return
 	 */
-	public static Map<WorkFrameNo, PriceUnit> getIncentiveUnitPrice(
-			RequireM1 require,
+	public static Map<SupportFrameNo, PriceUnit> getIncentiveUnitPrice(
+			RequireAll require,
 			CacheCarrier cacheCarrier,
 			GeneralDate baseDate,
 			String companyId,
 			List<OuenWorkTimeSheetOfDailyAttendance> ouenWorkTimeSheets) {
 		
-		Map<WorkFrameNo, PriceUnit> unitPrices = new HashMap<>();
+		Map<SupportFrameNo, PriceUnit> unitPrices = new HashMap<>();
 		
 		for(OuenWorkTimeSheetOfDailyAttendance timeSheet : ouenWorkTimeSheets) {
 			//作業別インセンティブ単価の設定を取得する
@@ -89,7 +89,7 @@ public class IncentiveUnitPriceService {
 	 * @return
 	 */
 	public static Optional<IncentiveUnitPriceSetCommon> getIncentiveUnitPriceSet(
-			RequireM5 require,
+			RequireComWkpWlc require,
 			CacheCarrier cacheCarrier,
 			GeneralDate baseDate,
 			String companyId,
@@ -117,7 +117,7 @@ public class IncentiveUnitPriceService {
 	 * @param companyId
 	 * @return
 	 */
-	private static Optional<IncentiveUnitPriceSetCommon> getFromCompany(RequireM2 require, String companyId) {
+	private static Optional<IncentiveUnitPriceSetCommon> getFromCompany(RequireCom require, String companyId) {
 		return require.getCompanySet(companyId).map(t -> t);
 	}
 	
@@ -130,7 +130,7 @@ public class IncentiveUnitPriceService {
 	 * @param baseDate
 	 * @return
 	 */
-	private static Optional<IncentiveUnitPriceSetCommon> getFromWorkPlace(RequireM3 require, CacheCarrier cacheCarrier,
+	private static Optional<IncentiveUnitPriceSetCommon> getFromWorkPlace(RequireWkp require, CacheCarrier cacheCarrier,
 			String companyId, String workPlaceId, GeneralDate baseDate) {
 		// 所属職場を含む上位階層の職場IDを取得
 		List<String> workPlaceIdList = require.getWorkplaceIdAndUpper(cacheCarrier, companyId, workPlaceId, baseDate);
@@ -148,7 +148,7 @@ public class IncentiveUnitPriceService {
 	 * @param workLocationCd
 	 * @return
 	 */
-	private static Optional<IncentiveUnitPriceSetCommon> getFromWorkLocation(RequireM4 require, String companyId, WorkLocationCD workLocationCd) {
+	private static Optional<IncentiveUnitPriceSetCommon> getFromWorkLocation(RequireWlc require, String companyId, WorkLocationCD workLocationCd) {
 		return require.getWorkLocationSet(companyId, workLocationCd).map(t -> t);
 	}
 }

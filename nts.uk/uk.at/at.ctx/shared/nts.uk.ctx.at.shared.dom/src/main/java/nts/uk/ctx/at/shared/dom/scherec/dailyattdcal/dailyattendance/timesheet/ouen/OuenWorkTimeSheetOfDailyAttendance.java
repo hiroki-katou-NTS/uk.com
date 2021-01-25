@@ -9,7 +9,7 @@ import nts.arc.layer.dom.objecttype.DomainObject;
 public class OuenWorkTimeSheetOfDailyAttendance implements DomainObject {
 
 	/** 応援勤務枠No: 応援勤務枠No */
-	private WorkFrameNo workNo;
+	private SupportFrameNo workNo;
 
 	/** 作業内容: 作業内容 */
 	private WorkContent workContent;
@@ -17,7 +17,7 @@ public class OuenWorkTimeSheetOfDailyAttendance implements DomainObject {
 	/** 時間帯: 時間帯別勤怠の時間帯 */
 	private TimeSheetOfAttendanceEachOuenSheet timeSheet;
 
-	private OuenWorkTimeSheetOfDailyAttendance(WorkFrameNo workNo, WorkContent workContent, 
+	private OuenWorkTimeSheetOfDailyAttendance(SupportFrameNo workNo, WorkContent workContent, 
 			TimeSheetOfAttendanceEachOuenSheet timeSheet) {
 		super();
 		this.workNo = workNo;
@@ -25,7 +25,7 @@ public class OuenWorkTimeSheetOfDailyAttendance implements DomainObject {
 		this.timeSheet = timeSheet;
 	}
 	
-	public static OuenWorkTimeSheetOfDailyAttendance create(WorkFrameNo workNo, WorkContent workContent, 
+	public static OuenWorkTimeSheetOfDailyAttendance create(SupportFrameNo workNo, WorkContent workContent, 
 			TimeSheetOfAttendanceEachOuenSheet timeSheet) {
 		
 		return new OuenWorkTimeSheetOfDailyAttendance(workNo, workContent, timeSheet);

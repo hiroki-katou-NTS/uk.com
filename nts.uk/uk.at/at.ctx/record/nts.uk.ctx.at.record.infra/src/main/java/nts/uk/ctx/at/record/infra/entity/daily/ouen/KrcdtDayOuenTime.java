@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PriceUnit;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.MedicalCareTimeEachTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenAttendanceTimeEachTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenMovementTimeEachTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.MedicalCareTimeEachTimeSheet.FullTimeNightShiftAttr;
@@ -231,7 +231,7 @@ public class KrcdtDayOuenTime extends UkJpaEntity implements Serializable {
 										new AttendanceTime(nightBreakTime), 
 										new AttendanceTime(nightDeductionTime)));
 		
-		return OuenWorkTimeOfDailyAttendance.create(new WorkFrameNo(pk.ouenNo), 
+		return OuenWorkTimeOfDailyAttendance.create(new SupportFrameNo(pk.ouenNo), 
 						OuenAttendanceTimeEachTimeSheet.create(
 								new AttendanceTime(totalTime), 
 								new AttendanceTime(breakTime), 

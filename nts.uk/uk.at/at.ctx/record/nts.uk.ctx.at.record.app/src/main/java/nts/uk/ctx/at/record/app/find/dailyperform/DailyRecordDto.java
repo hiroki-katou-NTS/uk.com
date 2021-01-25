@@ -185,10 +185,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 			dto.setTemporaryTime(domain.getTempTime().map(t -> TemporaryTimeOfDailyPerformanceDto.getDto(employeeId,ymd,t)));
 			dto.setPcLogInfo(domain.getPcLogOnInfo().map(pc -> PCLogOnInforOfDailyPerformDto.from(employeeId,ymd,pc)));
 			dto.setRemarks(RemarksOfDailyDto.getDto(employeeId,ymd,domain.getRemarks()));
-//			dto.setOuenWorkTime(OuenWorkTimeOfDailyDto.from(employeeId, ymd, domain.getOuenTime()));
-			dto.setOuenWorkTime(domain.getOuenTime().isEmpty() 
-					? Optional.empty() 
-					: Optional.of(OuenWorkTimeOfDailyDto.from(employeeId, ymd, domain.getOuenTime())));
+			dto.setOuenWorkTime(domain.getOuenTime().isEmpty() ? Optional.empty() : Optional.of(OuenWorkTimeOfDailyDto.from(employeeId, ymd, domain.getOuenTime())));
 			dto.setSnapshot(domain.getSnapshot().map(c -> SnapshotDto.from(employeeId, ymd, c)));
 			dto.exsistData();
 		}
@@ -222,10 +219,7 @@ public class DailyRecordDto extends AttendanceItemCommon {
 			dto.setTemporaryTime(domain.getTempTime().map(t -> TemporaryTimeOfDailyPerformanceDto.getDto(employeeId,ymd,t)));
 			dto.setPcLogInfo(domain.getPcLogOnInfo().map(pc -> PCLogOnInforOfDailyPerformDto.from(employeeId,ymd,pc)));
 			dto.setRemarks(RemarksOfDailyDto.getDto(employeeId,ymd,domain.getRemarks()));
-//			dto.setOuenWorkTime(OuenWorkTimeOfDailyDto.from(employeeId, ymd, domain.getOuenTime()));
-			dto.setOuenWorkTime(domain.getOuenTime().isEmpty()
-					? Optional.empty() 
-					: Optional.of(OuenWorkTimeOfDailyDto.from(employeeId, ymd, domain.getOuenTime())));
+			dto.setOuenWorkTime(domain.getOuenTime().isEmpty() ? Optional.empty() : Optional.of(OuenWorkTimeOfDailyDto.from(employeeId, ymd, domain.getOuenTime())));
 			dto.setSnapshot(domain.getSnapshot().map(c -> SnapshotDto.from(employeeId, ymd, c)));
 			dto.exsistData();
 		}
@@ -453,7 +447,6 @@ public class DailyRecordDto extends AttendanceItemCommon {
 				this.editStates.stream().map(editS -> editS.toDomain(employeeId, date)).collect(Collectors.toList()),
 				this.temporaryTime.map(tt -> tt.toDomain(employeeId, date)),
 				this.remarks == null ? new ArrayList<>() : this.remarks.toDomain(employeeId, date),
-//				this.ouenWorkTime == null ? new ArrayList<>() : this.ouenWorkTime.toDomain(employeeId, date).getOuenTime(),
 				this.ouenWorkTime.isPresent() ? this.ouenWorkTime.get().toDomain(employeeId, date).getOuenTime() : new ArrayList<>(),
 				new ArrayList<>(),
 				this.snapshot.map(c -> c.toDomain(employeeId, date))

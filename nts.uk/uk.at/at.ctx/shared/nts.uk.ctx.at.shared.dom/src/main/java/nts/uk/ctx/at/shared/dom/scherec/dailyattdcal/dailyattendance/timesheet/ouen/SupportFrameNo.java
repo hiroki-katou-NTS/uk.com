@@ -5,18 +5,18 @@ import nts.arc.primitive.constraint.IntegerRange;
 
 /** 応援勤務枠NO */
 @IntegerRange(min = 1, max = 20)
-public class WorkFrameNo extends IntegerPrimitiveValue<WorkFrameNo> {
+public class SupportFrameNo extends IntegerPrimitiveValue<SupportFrameNo> {
 	
 	/**
 	 * serialVersionUID
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public WorkFrameNo(Integer rawValue) {
+	public SupportFrameNo(Integer rawValue) {
 		super(rawValue);
 	}
 	
-	public static WorkFrameNo of(Integer value) {
-		return new WorkFrameNo(value);
+	public static SupportFrameNo of(Integer value) {
+		return new SupportFrameNo(value);
 	}
 }

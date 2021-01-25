@@ -37,7 +37,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.Time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.MedicalCareTimeEachTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenAttendanceTimeEachTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenMovementTimeEachTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.MedicalCareTimeEachTimeSheet.FullTimeNightShiftAttr;
@@ -124,7 +124,7 @@ public class OuenWorkTimeOfDailyRepoImpl extends JpaRepository implements OuenWo
 				new AttendanceTime(r.getInt("NIGHT_BREAK_TIME")), 
 				new AttendanceTime(r.getInt("NIGHT_DEDUCTION_TIME"))));
 		
-		return OuenWorkTimeOfDailyAttendance.create(new WorkFrameNo(r.getInt("SUP_NO")), 
+		return OuenWorkTimeOfDailyAttendance.create(new SupportFrameNo(r.getInt("SUP_NO")), 
 				OuenAttendanceTimeEachTimeSheet.create(
 						new AttendanceTime(r.getInt("TOTAL_TIME")), 
 						new AttendanceTime(r.getInt("BREAK_TIME")), 

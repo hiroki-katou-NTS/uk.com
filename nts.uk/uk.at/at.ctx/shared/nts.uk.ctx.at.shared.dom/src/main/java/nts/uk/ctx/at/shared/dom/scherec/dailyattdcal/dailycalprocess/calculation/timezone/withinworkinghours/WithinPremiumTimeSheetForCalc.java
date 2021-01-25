@@ -28,14 +28,6 @@ public class WithinPremiumTimeSheetForCalc extends ActualWorkingTimeSheet{
 		this.withinPremiumtimeSheet = timeSheet;
 	}
 	
-	public Optional<WithinPremiumTimeSheetForCalc> getDuplicates(TimeSpanForDailyCalc timeSpan) {
-		Optional<TimeSpanForDailyCalc> duplicates = this.timeSheet.getDuplicatedWith(timeSpan);
-		if(!duplicates.isPresent())
-			return Optional.empty();
-		
-		return Optional.of(new WithinPremiumTimeSheetForCalc(duplicates.get()));
-	}
-	
 	/**
 	 * 所定内時間帯を指定した時間帯に絞り込む
 	 * @param timeSpan 時間帯

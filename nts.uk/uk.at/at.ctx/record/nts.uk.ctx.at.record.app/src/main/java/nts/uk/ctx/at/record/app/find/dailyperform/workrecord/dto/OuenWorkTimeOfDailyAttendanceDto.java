@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenAttendanceTimeEachTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenMovementTimeEachTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PriceUnit;
@@ -48,7 +48,7 @@ public class OuenWorkTimeOfDailyAttendanceDto implements ItemConst, AttendanceIt
 	
 	public OuenWorkTimeOfDailyAttendance toDomain() {
 		return OuenWorkTimeOfDailyAttendance.create(
-				WorkFrameNo.of(this.no),
+				SupportFrameNo.of(this.no),
 				this.workTime == null ? OuenAttendanceTimeEachTimeSheet.createAllZero() : this.workTime.toDomain(),
 				this.moveTime == null ? OuenMovementTimeEachTimeSheet.createAllZero() : this.moveTime.toDomain(),
 				this.amount == null ? AttendanceAmountDaily.ZERO : new AttendanceAmountDaily(this.amount),
