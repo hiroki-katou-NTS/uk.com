@@ -335,7 +335,6 @@ module nts.uk.at.view.kmk004.components {
 											vm.workTimes(workTime.map(m => new WorkTimeL({ ...m, parent: vm.workTimes })));
 										} else {
 											vm.initList();
-											console.log('Whattttttt')
 										}
 										vm.mode('Update');
 									});
@@ -348,7 +347,6 @@ module nts.uk.at.view.kmk004.components {
 			} else {
 				vm.mode('New');
 				vm.initList();
-				console.log('Whereeeeeeeee')
 			}
 		}
 
