@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.AppHdWorkDispInfoCmd;
 import nts.uk.ctx.at.request.app.command.application.holidaywork.AppHolidayWorkInsertCmd;
+import nts.uk.ctx.at.request.app.command.application.holidaywork.AppHolidayWorkUpdateCmd;
 
 /**
  * Refactor5
@@ -39,5 +40,6 @@ public class ParamCheckBeforeRegisterMobile {
 	/**
 	 * 休日出勤申請
 	 */
-	private AppHolidayWorkInsertCmd appHolidayWork;
+	private AppHolidayWorkInsertCmd appHolidayWorkInsert;
+	private AppHolidayWorkUpdateCmd appHolidayWorkUpdate;
 }

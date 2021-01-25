@@ -9,14 +9,14 @@ module nts.uk.com.view.ccg008.a.Layout1ComponentViewModel {
           <span data-bind="if: $component.isShowUrlLayout1()">
             <iframe class="iframe_fix" id="preview-iframe1" data-bind="attr:{src: $component.urlIframe1}"></iframe>
           </span>
-          <com:ko-if bind="$component.isFlowmenu()">
+          <!-- ko if:  $component.isFlowmenu()-->
             <div data-bind="foreach: $component.lstHtml">
               <div data-bind="html: html" id="F1-frame" ></div>
             </div>
-          </com:ko-if>  
-          <com:ko-if bind="!$component.isFlowmenu()">
-          <iframe style="width: 100%" data-bind="attr: {src: $component.filePath}" id="F2-frame" ></iframe>
-          </com:ko-if>
+          <!-- /ko -->  
+          <!-- ko if: $component.isFlowmenuUp()-->
+            <iframe style="width: 100%" data-bind="attr: {src: $component.filePath}" id="F2-frame" ></iframe>
+          <!-- /ko -->  
         </div>
     `
   })
@@ -25,6 +25,7 @@ module nts.uk.com.view.ccg008.a.Layout1ComponentViewModel {
     lstHtml: KnockoutObservableArray<any> = ko.observableArray([]);
     isShowUrlLayout1: KnockoutObservable<boolean> = ko.observable(false);
     isFlowmenu: KnockoutObservable<boolean> = ko.observable(false);
+    isFlowmenuUp: KnockoutObservable<boolean> = ko.observable(false);
     filePath: KnockoutObservable<string> = ko.observable("");
 
     created(param: any) {
@@ -57,6 +58,7 @@ module nts.uk.com.view.ccg008.a.Layout1ComponentViewModel {
             }
           });
         } else {
+          vm.isFlowmenuUp(true);
           vm.filePath(ntsFile.liveViewUrl(layout1[0].fileId, 'index.htm'));
           const ifr = document.getElementById('F2-frame');
           const width = ifr.scrollWidth;
@@ -71,7 +73,7 @@ module nts.uk.com.view.ccg008.a.Layout1ComponentViewModel {
     mounted() {
       const ifr = document.getElementById('preview-iframe1');
       const ifrParent = $('.contents_layout');
-      const height = ifrParent.innerHeight();
+      const height = ifrParent.innerHeight() - 10;
       (ifr as any).height = `${height.toString()}px`;
     }
 

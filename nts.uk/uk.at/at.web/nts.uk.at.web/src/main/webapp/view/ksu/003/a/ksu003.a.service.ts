@@ -12,7 +12,8 @@ module nts.uk.at.view.ksu003.a {
 			getEmpWorkFixedWorkInfo: "screen/at/schedule/getEmpWorkFixedWorkInfo",
 			changeWorkType: "screen/at/schedule/changeWorkType",
 			checkWorkType: "screen/at/schedule/checkWorkType",
-            checkTimeIsIncorrect: "ctx/at/shared/workrule/workinghours/checkTimeIsIncorrect"
+            checkTimeIsIncorrect: "ctx/at/shared/workrule/workinghours/checkTimeIsIncorrect",
+        regWorkSchedule: "screen/at/schedule/registerKSU003",
 		};
 		
 		export function checkTimeIsIncorrect(command : any): JQueryPromise<any> {
@@ -62,10 +63,11 @@ module nts.uk.at.view.ksu003.a {
 		}
 		
 		export function checkWorkType(command: any): JQueryPromise<any> {
-			
 			return nts.uk.request.ajax(servicePath.checkWorkType, command);
 		}
-
-
+		
+		export function regWorkSchedule(command: any): JQueryPromise<any> {
+        	return nts.uk.request.ajax(servicePath.regWorkSchedule, command);
+   		}
 	}
 }

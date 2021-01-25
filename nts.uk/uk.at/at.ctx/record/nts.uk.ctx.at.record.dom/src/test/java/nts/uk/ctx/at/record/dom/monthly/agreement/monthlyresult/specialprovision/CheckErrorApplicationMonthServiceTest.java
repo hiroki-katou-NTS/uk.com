@@ -12,12 +12,15 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgreementExcessInfo;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.*;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.StartingMonthType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.OneYearTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.AgreementOneMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.AgreementOverMaxTimes;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Before;
@@ -518,4 +521,57 @@ public class CheckErrorApplicationMonthServiceTest {
                         tuple(ErrorClassification.ONE_MONTH_MAX_TIME, 20, Optional.empty(), Optional.empty()));
     }
 
+    /**
+     * チェックする TestCase 6
+     * 1: [R-1] getMaxAverageMulti return null
+     * 2: [R-2] timeYear return not null
+     * 3: [R-3] algorithm return null
+     * 4: [R-4] return not empty
+     */
+    @Test
+    public void check_6() {
+        ReasonsForAgreement reason = new ReasonsForAgreement("ReasonsForAgreement");
+        MonthlyAppContent monthlyAppContent = new MonthlyAppContent("applicant", new YearMonth(202009),
+                new AgreementOneMonthTime(1), Optional.of(new AgreementOneMonthTime(2)), reason);
+
+        // Mock up
+        val errCheckResult = new ImmutablePair<Boolean, AgreementOneMonthTime>(false, new AgreementOneMonthTime(0));
+        new MockUp<AgreementOneMonth>() {
+            @Mock
+            public Pair<Boolean, AgreementOneMonthTime> checkErrorTimeExceeded(AgreementOneMonthTime applicationTime) {
+                return errCheckResult;
+            }
+        };
+
+        new Expectations() {{
+            AgreementTimeOfYear limitTime = AgreementTimeOfYear.of(new AgreementOneYearTime(10), new OneYearTime());
+            AgreementTimeOfYear recordTime = AgreementTimeOfYear.of(new AgreementOneYearTime(20), new OneYearTime());
+            AgreementTimeYear agreementTimeYear = AgreementTimeYear.of(limitTime, recordTime, AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR);
+
+            val setting = new AgreementOperationSetting("cid", StartingMonthType.APRIL, new ClosureDate(12,false),true,true);
+            require.find();
+            result = Optional.of(setting);
+
+            val agreementTimes = new HashMap<YearMonth, AttendanceTimeMonth>();
+            agreementTimes.put(monthlyAppContent.getYm(), new AttendanceTimeMonth(monthlyAppContent.getErrTime().v()));
+            require.timeYear(monthlyAppContent.getApplicant(), GeneralDate.today(), new Year(monthlyAppContent.getYm().year()), agreementTimes);
+            result = agreementTimeYear;
+
+            require.algorithm(require, monthlyAppContent.getApplicant(), new Year(monthlyAppContent.getYm().year()));
+            result = null;
+        }};
+
+        List<ExcessErrorContent> data = CheckErrorApplicationMonthService.check(require, monthlyAppContent);
+
+        assertThat(data.size()).isEqualTo(1);
+        assertThat(data)
+                .extracting(
+                        d -> d.getErrorClassification(),
+                        d -> d.getMaximumTimeMonth(),
+                        d -> d.getMaximumTimeYear(),
+                        d -> d.getExceedUpperLimit())
+                .containsExactly(
+                        tuple(ErrorClassification.OVERTIME_LIMIT_ONE_YEAR ,Optional.empty(), Optional.of(new AgreementOneYearTime(0)), Optional.empty())
+                );
+    }
 }
