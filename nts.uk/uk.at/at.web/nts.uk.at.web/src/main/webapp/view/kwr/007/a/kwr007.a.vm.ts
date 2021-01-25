@@ -7,7 +7,7 @@ module nts.uk.at.view.kwr007.a {
   const KWR007_SAVE_DATA = 'WORK_SCHEDULE_STATUS_OUTPUT_CONDITIONS';
 
   const PATH = {
-    exportExcelPDF: 'at/function/kwr/005/report/export',
+    exportExcelPDF: 'at/function/kwr/007/report/export',
     getSettingListWorkStatus: 'at/function/kwr/007/a/listoutputsetting',
     checkDailyAuthor: 'at/function/kwr/checkdailyauthor',
     //getPeriodListing: 'at/function/kwr/005/a/beginningmonth',
@@ -66,7 +66,7 @@ module nts.uk.at.view.kwr007.a {
     periodDate: KnockoutObservable<any> = ko.observable(null);
 
     periodDateList: KnockoutObservableArray<PeriodItem> = ko.observableArray([]);
-    periodSelectedCode: KnockoutObservable<string> = ko.observable(null);
+    aggregateListCode: KnockoutObservable<string> = ko.observable(null);
     workplaceHierarchyList: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
     workplaceHierarchyId: KnockoutObservable<number> = ko.observable(null);
 
@@ -83,8 +83,11 @@ module nts.uk.at.view.kwr007.a {
 
       vm.getPeriodListing();
       vm.getItemSelection();
-      vm.getSettingListItems();
-      vm.getWorkScheduleOutputConditions();
+      $.when(
+        vm.getSettingListWorkStatus(0),
+        vm.getSettingListWorkStatus(1)).done(() => {
+          vm.getWorkScheduleOutputConditions();
+      });     
 
       vm.rdgSelectedId.subscribe((value) => {
         vm.isEnableSelectedCode(value === common.StandardOrFree.Standard);
@@ -123,9 +126,9 @@ module nts.uk.at.view.kwr007.a {
         showEmployeeSelection: true,
         showQuickSearchTab: true, //クイック検索
         showAdvancedSearchTab: true, //詳細検索
-        showBaseDate: true, //基準日利用
-        showClosure: true,
-        showAllClosure: false, //氏名の種類	-> ビジネスネーム（日本語）								
+        showBaseDate: false, //基準日利用
+        showClosure: false, //締め日利用
+        showAllClosure: false, //氏名の種類	-> ビジネスネーム（日本語） - 全締め表示
         showPeriod: false, //対象期間利用
         periodFormatYM: false,
 
@@ -150,7 +153,7 @@ module nts.uk.at.view.kwr007.a {
         /** Advanced search properties */
         showEmployment: true,// 雇用条件
         showDepartment: false, // 部門条件
-        showWorkplace: true,// 職場条件
+        showWorkplace: false,// 職場条件
         showClassification: true,// 分類条件
         showJobTitle: true,// 職位条件
         showWorktype: true,// 勤種条件
@@ -263,7 +266,9 @@ module nts.uk.at.view.kwr007.a {
       vm.$window.modal('/view/kwr/007/b/index.xhtml', ko.toJS(params)).then((data: any) => {
         if (data) {
           nts.uk.ui.errors.clearAll();
-          vm.getSettingListWorkStatus(vm.rdgSelectedId(), data);
+          vm.getSettingListWorkStatus(vm.rdgSelectedId(), data).done(() => {
+            
+          });
         }
         $('#btnExportExcel').focus();
       });
@@ -276,8 +281,9 @@ module nts.uk.at.view.kwr007.a {
      * 定型選択	: 0
      * 自由設定 : 1
      */
-    getSettingListWorkStatus(type: number, dataFromB?: any) {
+    getSettingListWorkStatus(type: number, dataFromB?: any) : JQueryPromise<any> {
       const vm = this;
+      const def = $.Deferred();
       let listWorkStatus: Array<ItemModel> = [];
 
       //定型選択		
@@ -302,14 +308,21 @@ module nts.uk.at.view.kwr007.a {
 
           $('#btnExportExcel').focus();
         }
+        def.resolve();
       });
+
+      return def.promise();
     }
 
-    getSettingListItems() {
+    /* getSettingListItems(): JQueryPromise<any> {
       const vm = this;
+      const def = $.Deferred();
       vm.getSettingListWorkStatus(0);
       vm.getSettingListWorkStatus(1);
-    }
+
+      def.resolve();
+      return def.promise();
+    } */
 
     checkErrorConditions() {
       const vm = this;
@@ -419,15 +432,23 @@ module nts.uk.at.view.kwr007.a {
           findObj = _.find(vm.settingListItems2(), (x) => x.code === vm.freeSelectedCode());
         }
 
+        let cumulativeSelectedList: Array<boolean> = [];
+        _.forEach(vm.specifyWorkplaceHierarchy(), (x) => {
+          cumulativeSelectedList.push(x.checked());
+        })
         let params = {
           lstEmpIds: lstEmployeeIds, //社員リスト
-          startMonth: _.toInteger(vm.periodDate().startDate), //対象年月,        
-          endMonth: _.toInteger(vm.periodDate().endDate),
-          isZeroDisplay: vm.zeroDisplayClassification() ? true : false,//ゼロ表示区分選択肢
+          aggregateList: vm.aggregateListCode(), //選択した集計枠コード & 期間(年月日)(From-To)        
+          isZeroDisplay: vm.zeroDisplayClassification() ? true : false,//ゼロ表示区分選択肢          
           code: vm.pageBreakSpecification() ? true : false, //改ページ指定選択肢,
-          standardFreeClassification: vm.rdgSelectedId(), //自由設定: A5_4_2   || 定型選択 : A5_3_2,
-          settingId: findObj.id, //ゼロ表示区分,
-          closureId: vm.closureId() //締め日
+          standardFreeClassification: vm.rdgSelectedId(), //自由設定: A5_2_1   || 定型選択 : A5_2_2,
+          workplaceHierarchyId: vm.workplaceHierarchyId(),//改ページの選択肢          
+          settingId: findObj.id, //定型選択リスト || 自由設定リスト     
+          details: vm.detailsOutputSettings()[0].checked(), //明細
+          workplaceTotal: vm.detailsOutputSettings()[1].checked(),//職場計
+          total: vm.detailsOutputSettings()[2].checked(), //総合計
+          cumulativeNumWp: vm.detailsOutputSettings()[3].checked(),//職場累計
+          cumulativeWPHS: cumulativeSelectedList //職場階層累計設定
         }
 
         nts.uk.request.exportFile(PATH.exportExcelPDF, params).done((response) => {
@@ -442,11 +463,11 @@ module nts.uk.at.view.kwr007.a {
     }
 
     saveWorkScheduleOutputConditions(): JQueryPromise<void> {
+      
       let vm = this,
         dfd = $.Deferred<void>(),
         companyId: string = vm.$user.companyId,
         employeeId: string = vm.$user.employeeId;
-
       let detailsOutput: Array<any> = [];
       _.forEach(vm.detailsOutputSettings(), (x: CheckBoxItem) => {
         detailsOutput.push(x.toSave());
@@ -484,11 +505,11 @@ module nts.uk.at.view.kwr007.a {
 
       let storageKey: string = KWR007_SAVE_DATA + "_companyId_" + companyId + "_employeeId_" + employeeId;
 
-      vm.$window.storage(storageKey).then((data: WorkScheduleOutputConditions) => {
-
+      vm.$window.storage(storageKey).then((data: WorkScheduleOutputConditions) => {             
         if (!_.isNil(data)) {
-          let standardCode = _.find(vm.settingListItems1(), ['code', data.standardSelectedCode]);
-          let freeCode = _.find(vm.settingListItems2(), ['code', data.freeSelectedCode]);
+          console.log(vm.settingListItems1());
+          let standardCode = _.filter(vm.settingListItems1(), (x) => x.code === data.standardSelectedCode);       
+          let freeCode = _.filter(vm.settingListItems2(),(x) => x.code === data.freeSelectedCode);    
           let zeroDisplay = _.isEmpty(data.zeroDisplayClassification) ? 0 : data.zeroDisplayClassification;
           let pageBreak = _.isEmpty(data.pageBreakSpecification) ? 0 : data.pageBreakSpecification;
           vm.rdgSelectedId(!vm.isPermission51() ? 0 : data.itemSelection); //項目選択
@@ -496,7 +517,7 @@ module nts.uk.at.view.kwr007.a {
           vm.freeSelectedCode(!_.isNil(freeCode) ? data.freeSelectedCode : null); //自由設定
           vm.zeroDisplayClassification(data.zeroDisplayClassification); //自由の選択済みコード
           vm.pageBreakSpecification(data.pageBreakSpecification); //改ページ指定
-
+          vm.workplaceHierarchyId(data.workplaceHierarchyId);
           let detailsOutput = data.detailsOutputSettings;
           vm.specifyWorkplaceHierarchy()
 
