@@ -55,6 +55,7 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
+import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
@@ -293,13 +294,13 @@ public class HolidayShipmentScreenAFinder {
 		PrescribedTimezoneSetting prescribedTimezoneSetting = appAbsenceFinder.initWorktimeCode(companyId, result.getWorkType(), result.getWorkTime());
 		if(prescribedTimezoneSetting != null) {
 			for (TimezoneUse time : prescribedTimezoneSetting.getLstTimezone()) {
-				if(time.getWorkNo() == 1) {
+				if(time.getWorkNo() == 1 && time.getUseAtr()==UseSetting.USE) {
 					//振出申請起動時の表示情報．開始時刻=取得した時間帯(使用区分付き)．開始 (DisplayInfo khi khởi động đơn xin làm bù. StartTime= TimeSheet with UseAtr. StartTime đã lấy)
 					result.setStartTime(time.getStart().v());
 					//振出申請起動時の表示情報．終了時刻=取得した時間帯(使用区分付き)．終了(DisplayInfo khi khởi động đơn xin làm bù. EndTime= TimeSheet withUseAtr. EndTime đã lấy)
 					result.setEndTime(time.getEnd().v());
 				}
-				if(time.getWorkNo() == 2) {
+				if(time.getWorkNo() == 2 && time.getUseAtr()==UseSetting.USE) {
 					//振出申請起動時の表示情報．開始時刻=取得した時間帯(使用区分付き)．開始 (DisplayInfo khi khởi động đơn xin làm bù. StartTime= TimeSheet with UseAtr. StartTime đã lấy)
 					result.setStartTime2(time.getStart().v());
 					//振出申請起動時の表示情報．終了時刻=取得した時間帯(使用区分付き)．終了(DisplayInfo khi khởi động đơn xin làm bù. EndTime= TimeSheet withUseAtr. EndTime đã lấy)
