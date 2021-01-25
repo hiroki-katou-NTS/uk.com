@@ -4,13 +4,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.excessoutside.ExcessOutSideWorkEachBreakdown;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.excessoutside.ExcessOutsideWork;
@@ -18,7 +21,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.excessoutside.Exc
 @Data
 /** 時間外超過 */
 @NoArgsConstructor
-public class ExcessOutsideWorkDto implements ItemConst {
+public class ExcessOutsideWorkDto implements ItemConst, AttendanceItemDataGate {
 
 	public final static List<Integer> LIST_FAKE_NO = Arrays.asList(11, 12, 13, 14, 15, 16, 17, 18, 19, 110, 
 																	21, 22, 23, 24, 25, 26, 27, 28, 29, 210, 
@@ -82,4 +85,29 @@ public class ExcessOutsideWorkDto implements ItemConst {
 		}
 		return result;
 	}
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		if (TIME.equals(path)) {
+			return Optional.of(ItemValue.builder().value(breakdown).valueType(ValueType.TIME));
+		}
+		return AttendanceItemDataGate.super.valueOf(path);
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		if (TIME.equals(path)) {
+			return PropType.VALUE;
+		}
+		return AttendanceItemDataGate.super.typeOf(path);
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		if (TIME.equals(path)) {
+			breakdown = value.valueOrDefault(0);
+		}
+	}
+
+	
 }

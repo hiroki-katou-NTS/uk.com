@@ -11,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
  */
 public interface GetAnnualLeaveUsedNumberFromRemDataPub {
 
+
 	/**
 	 * 付与残数データから使用数を消化する
 	 * @param employeeId 社員ID

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.CommonLeaveRemainingNumberDto;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveRemainingNumberInfo;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 
@@ -15,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 /** 年休残数情報 */
 @NoArgsConstructor
 @AllArgsConstructor
-public class AnnualLeaveRemainingNumberInfoDto implements ItemConst {
+public class AnnualLeaveRemainingNumberInfoDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 合計 */
 	@AttendanceItemLayout(jpPropertyName = TOTAL, layout = LAYOUT_A)

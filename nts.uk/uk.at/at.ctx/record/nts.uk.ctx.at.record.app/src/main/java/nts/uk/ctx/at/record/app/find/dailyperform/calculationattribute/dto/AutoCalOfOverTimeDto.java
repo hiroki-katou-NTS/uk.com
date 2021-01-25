@@ -1,8 +1,11 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.calculationattribute.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 
@@ -10,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 @AllArgsConstructor
 @NoArgsConstructor
 /** 残業時間の自動計算設定 */
-public class AutoCalOfOverTimeDto implements ItemConst {
+public class AutoCalOfOverTimeDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 早出残業時間: 自動計算設定 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = EARLY_SHIFT)
@@ -46,4 +49,64 @@ public class AutoCalOfOverTimeDto implements ItemConst {
 										legalMidnightOverTime == null ? null : legalMidnightOverTime.clone());
 	}
 	
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case EARLY_SHIFT:
+			return Optional.ofNullable(earlyOverTime);
+		case (EARLY_SHIFT + LATE_NIGHT):
+			return Optional.ofNullable(earlyMidnightOverTime);
+		case NORMAL:
+			return Optional.ofNullable(normalOverTime);
+		case (NORMAL + LATE_NIGHT):
+			return Optional.ofNullable(normalMidnightOverTime);
+		case LEGAL:
+			return Optional.ofNullable(legalOverTime);
+		case (LEGAL + LATE_NIGHT):
+			return Optional.ofNullable(legalMidnightOverTime);
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case EARLY_SHIFT:
+			earlyOverTime = (AutoCalculationSettingDto) value;
+			break;
+		case (EARLY_SHIFT + LATE_NIGHT):
+			earlyMidnightOverTime = (AutoCalculationSettingDto) value;
+			break;
+		case NORMAL:
+			normalOverTime =  (AutoCalculationSettingDto) value;
+			break;
+		case (NORMAL + LATE_NIGHT):
+			normalMidnightOverTime = (AutoCalculationSettingDto) value;
+			break;
+		case LEGAL:
+			legalOverTime =  (AutoCalculationSettingDto) value;
+			break;
+		case (LEGAL + LATE_NIGHT):
+			legalMidnightOverTime =  (AutoCalculationSettingDto) value;
+			break;
+		default:
+			break;
+		}
+	}
+	
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case EARLY_SHIFT:
+		case (EARLY_SHIFT + LATE_NIGHT):
+		case NORMAL:
+		case (NORMAL + LATE_NIGHT):
+		case LEGAL:
+		case (LEGAL + LATE_NIGHT):
+			return new AutoCalculationSettingDto();
+		default:
+			return null;
+		}
+	}
 }

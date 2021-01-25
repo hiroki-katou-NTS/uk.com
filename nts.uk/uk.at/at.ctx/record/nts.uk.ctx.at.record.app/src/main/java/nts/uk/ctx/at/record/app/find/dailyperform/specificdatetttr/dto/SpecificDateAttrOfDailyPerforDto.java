@@ -11,6 +11,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
@@ -25,6 +26,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.Spe
 @AttendanceItemRoot(rootName = ItemConst.DAILY_SPECIFIC_DATE_ATTR_NAME)
 public class SpecificDateAttrOfDailyPerforDto extends AttendanceItemCommon {
 
+	@Override
+	public String rootName() { return DAILY_SPECIFIC_DATE_ATTR_NAME; }
 	/***/
 	private static final long serialVersionUID = 1L;
 	
@@ -107,4 +110,48 @@ public class SpecificDateAttrOfDailyPerforDto extends AttendanceItemCommon {
 						date);
 		return domain.getSpecificDay();
 	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		if (ATTRIBUTE.equals(path)) {
+			return new SpecificDateAttrDto();
+		}
+		return null;
+	}
+
+	@Override
+	public int size(String path) {
+		return 10;
+	}
+
+	@Override
+	public boolean isRoot() { return true; }
+	
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+		if (ATTRIBUTE.equals(path)) {
+			return (List<T>) this.sepecificDateAttrs;
+		}
+		return super.gets(path);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		if (ATTRIBUTE.equals(path)) {
+			this.sepecificDateAttrs = (List<SpecificDateAttrDto>) value;
+		}
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		if (ATTRIBUTE.equals(path)) {
+			return PropType.IDX_LIST;
+		}
+		return super.typeOf(path);
+	}
+	
+	
 }

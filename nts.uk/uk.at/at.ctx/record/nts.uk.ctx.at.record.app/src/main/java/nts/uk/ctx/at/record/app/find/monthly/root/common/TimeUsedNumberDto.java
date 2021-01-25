@@ -7,9 +7,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveMaxRemainingTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedTime;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeavaRemainTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUseTimes;
@@ -22,7 +27,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Used
 @AllArgsConstructor
 /** 時間年休使用時間 */
 /** 年休上限残時間 */
-public class TimeUsedNumberDto implements ItemConst {
+public class TimeUsedNumberDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 使用回数 */
 	@AttendanceItemValue(type = ValueType.COUNT)
@@ -89,4 +94,53 @@ public class TimeUsedNumberDto implements ItemConst {
 		return new SpecialLeaveUseTimes(new SpecialLeavaRemainTime(usedTime));
 
 	}
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case COUNT:
+			return Optional.of(ItemValue.builder().value(usedTimes).valueType(ValueType.COUNT));
+		case TIME:
+			return Optional.of(ItemValue.builder().value(usedTime).valueType(ValueType.TIME));
+		case (GRANT + BEFORE):
+			return Optional.of(ItemValue.builder().value(usedTimeBeforeGrant).valueType(ValueType.TIME));
+		case (GRANT + AFTER):
+			return Optional.of(ItemValue.builder().value(usedTimeAfterGrant).valueType(ValueType.TIME));
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.valueOf(path);
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case COUNT:
+		case TIME:
+		case (GRANT + BEFORE):
+		case (GRANT + AFTER):
+			return PropType.VALUE;
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.typeOf(path);
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case COUNT:
+			usedTimes = value.valueOrDefault(0); break;
+		case TIME:
+			usedTime = value.valueOrDefault(0); break;
+		case (GRANT + BEFORE):
+			usedTimeBeforeGrant = value.valueOrDefault(0); break;
+		case (GRANT + AFTER):
+			usedTimeAfterGrant = value.valueOrDefault(null); break;
+		default:
+			break;
+		}
+	}
+
+	
 }

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.find.monthly.root;
 
+import java.util.List;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -8,15 +9,14 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
-import nts.uk.ctx.at.record.app.find.monthly.root.common.DatePeriodDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
-import nts.uk.ctx.at.record.app.find.monthly.root.dto.SpecialLeaveDto;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.record.app.find.monthly.root.dto.wrapper.SpecialHolidayRemainDto;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveGrantUseDay;
@@ -48,6 +48,7 @@ public class SpecialHolidayRemainDataDto extends MonthlyItemCommon {
 	private ClosureDateDto closureDate;
 
 	/** 締め期間: 期間 */
+<<<<<<< HEAD
 	@AttendanceItemLayout(jpPropertyName = PERIOD, layout = LAYOUT_A)
 	private DatePeriodDto datePeriod;
 
@@ -79,31 +80,37 @@ public class SpecialHolidayRemainDataDto extends MonthlyItemCommon {
 	@AttendanceItemValue(type = ValueType.DAYS)
 	private Double grantDays;
 
+=======
+	@AttendanceItemLayout(jpPropertyName = FAKED, layout = LAYOUT_A, 
+			listMaxLength = 20, indexField = DEFAULT_INDEX_FIELD_NAME)
+	private List<SpecialHolidayRemainDto> specialHoliday;
+	
+>>>>>>> pj/at/jp_dev/nabe_team/develop
 	@Override
 	public String employeeId() {
 		return employeeId;
 	}
+<<<<<<< HEAD
 
 	public static SpecialHolidayRemainDataDto from(SpecialHolidayRemainData domain){
+=======
+	
+	public static SpecialHolidayRemainDataDto from(List<SpecialHolidayRemainData> domain){
+>>>>>>> pj/at/jp_dev/nabe_team/develop
 		SpecialHolidayRemainDataDto dto = new SpecialHolidayRemainDataDto();
-		if (domain != null) {
-			dto.setEmployeeId(domain.getSid());
-			dto.setYm(domain.getYm());
-			dto.setClosureID(domain.getClosureId());
-			dto.setClosureDate(domain.getClosureDate() == null ? null : ClosureDateDto.from(domain.getClosureDate()));
-			dto.setDatePeriod(DatePeriodDto.from(domain.getClosurePeriod()));
-			dto.setClosureStatus(domain.getClosureStatus().value);
-			dto.setNo(domain.getSpecialHolidayCd());
-			dto.setActualSpecial(SpecialLeaveDto.from(domain.getActualSpecial()));
-			dto.setSpecialLeave(SpecialLeaveDto.from(domain.getSpecialLeave()));
-			dto.setGrantAtr(domain.isGrantAtr());
-			dto.setGrantDays(domain.getGrantDays().isPresent() ? domain.getGrantDays().get().v() : null);
+		if (domain != null && !domain.isEmpty()) {
+			dto.setEmployeeId(domain.get(0).getSid());
+			dto.setYm(domain.get(0).getYm());
+			dto.setClosureID(domain.get(0).getClosureId());
+			dto.setClosureDate(domain.get(0).getClosureDate() == null ? null : ClosureDateDto.from(domain.get(0).getClosureDate()));
+			dto.setSpecialHoliday(ConvertHelper.mapTo(domain, c -> SpecialHolidayRemainDto.from(c)));
 			dto.exsistData();
 		}
 		return dto;
 	}
 
 	@Override
+<<<<<<< HEAD
 	public SpecialHolidayRemainData toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate) {
 		// // ooooo要修正！！ Converter
 //		return new SpecialHolidayRemainData(
@@ -118,10 +125,78 @@ public class SpecialHolidayRemainDataDto extends MonthlyItemCommon {
 //				grantAtr,
 //				Optional.ofNullable(grantDays == null ? null : new SpecialLeaveGrantUseDay(grantDays)));
 		return null;
+=======
+	public List<SpecialHolidayRemainData> toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate) {
+		return ConvertHelper.mapTo(specialHoliday, c -> new SpecialHolidayRemainData(
+				employeeId,
+				ym,
+				closureID, 
+				c.getDatePeriod() == null ? null : c.getDatePeriod().toDomain(), 
+				c.getClosureStatus() == ClosureStatus.PROCESSED.value ? ClosureStatus.PROCESSED : ClosureStatus.UNTREATED,
+				closureDate == null ? null : closureDate.toDomain(),
+				c.getNo(), 
+				c.getActualSpecial() == null ? null : c.getActualSpecial().toActualDomain(), 
+				c.getSpecialLeave() == null ? null : c.getSpecialLeave().toDomain(),
+				c.isGrantAtr(),
+				Optional.ofNullable(c.getGrantDays() == null ? null : new SpecialLeaveGrantUseDay(c.getGrantDays()))));
+>>>>>>> pj/at/jp_dev/nabe_team/develop
 	}
 
 	@Override
 	public YearMonth yearMonth() {
 		return ym;
 	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		if (FAKED.equals(path)) {
+			return new SpecialHolidayRemainDto();
+		}
+		return super.newInstanceOf(path);
+	}
+
+	@Override
+	public int size(String path) {
+		if (FAKED.equals(path)) {
+			return 20;
+		}
+		return super.size(path);
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		if (FAKED.equals(path)) {
+			return PropType.IDX_LIST;
+		}
+		return super.typeOf(path);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+		if (FAKED.equals(path)) {
+			return (List<T>) specialHoliday;
+		}
+		return super.gets(path);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		if (FAKED.equals(path)) {
+			specialHoliday = (List<SpecialHolidayRemainDto>) value;
+		}
+	}
+
+	@Override
+	public boolean isRoot() {
+		return true;
+	}
+
+	@Override
+	public String rootName() {
+		return MONTHLY_SPECIAL_HOLIDAY_REMAIN_NAME;
+	}
+
+	
 }
