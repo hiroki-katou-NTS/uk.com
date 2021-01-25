@@ -97,6 +97,9 @@ module nts.uk.at.view.ccg005.d.screenModel {
 
     public saveFavorite() {
       const vm = this;
+      if(!vm.displayChoosenWkspNameRequire()) {
+        $('#D5_4').ntsError('set', {messageId:"Msg_2076"});
+      }
       vm.$validate().then((valid: boolean) => {
         if (valid) {
           //new item
