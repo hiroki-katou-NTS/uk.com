@@ -22,6 +22,7 @@ module nts.uk.ui.components.fullcalendar {
     type EventReceiveLeaveArg = FullCalendar.EventReceiveLeaveArg;
     type DayHeaderContentArg = FullCalendar.DayHeaderContentArg;
     type SlotLabelContentArg = FullCalendar.SlotLabelContentArg;
+    type DateRangeInput = FullCalendar.DateRangeInput;
 
     type JQueryEvent = JQueryEventObject & { originalEvent: WheelEvent & { wheelDelta: number; } };
 
@@ -384,6 +385,7 @@ module nts.uk.ui.components.fullcalendar {
         attendanceTimes: AttendanceTime[] | KnockoutObservableArray<AttendanceTime>;
         breakTime: BreakTime | KnockoutObservable<undefined | BreakTime>;
         businessHours: BussinessHour[] | KnockoutObservableArray<BussinessHour>;
+        validRange: DateRangeInput | KnockoutObservable<DateRangeInput>;
         event: {
             copyDay: (from: Date, to: Date) => void;
             datesSet: (start: Date, end: Date) => void;
@@ -541,6 +543,7 @@ module nts.uk.ui.components.fullcalendar {
                     attendanceTimes: ko.observableArray([]),
                     breakTime: ko.observable(null),
                     businessHours: ko.observableArray([]),
+                    validRange: ko.observable({}),
                     event: {
                         copyDay: (__: Date, ___: Date) => { },
                         datesSet: (__: Date, ___: Date) => { }
@@ -1365,7 +1368,7 @@ module nts.uk.ui.components.fullcalendar {
 
                     vm.selectedEvents = [];
 
-                    // clear all oll selection
+                    // clear all old selection
                     _.each(vm.calendar.getEvents(), (e: EventApi) => {
                         e.setProp(GROUP_ID, '');
 
@@ -1375,7 +1378,6 @@ module nts.uk.ui.components.fullcalendar {
                     arg.event.setProp(BORDER_COLOR, BLACK);
                 },
                 eventDragStop: (arg: EventDragStopArg) => {
-
                     // clear drag cache
                     $caches.drag(null);
                 },
@@ -1514,11 +1516,33 @@ module nts.uk.ui.components.fullcalendar {
                 datesSet: (dateInfo) => {
                     const current = moment().startOf('day');
                     const { start, end } = dateInfo;
+                    const isValidRange = () => {
+                        const validRange = ko.unwrap<DateRangeInput>(params.validRange);
+
+                        if (validRange) {
+                            const { start, end } = validRange;
+
+                            if (start && end) {
+                                return current.isBetween(start, end, 'date', '[)');
+                            }
+
+                            if (start) {
+                                return current.isSameOrAfter(start, 'date');
+                            }
+
+                            if (end) {
+                                return current.isSameOrBefore(end, 'date');
+                            }
+                        }
+
+                        return true;
+                    };
+
                     const $btn = $el.find('.fc-current-day-button');
 
                     datesSet({ start, end });
 
-                    if (!current.isBetween(start, end, 'date', '[)')) {
+                    if (!current.isBetween(start, end, 'date', '[)') && isValidRange()) {
                         $btn.removeAttr('disabled');
                     } else {
                         $btn.attr('disabled', 'disabled');
@@ -1750,6 +1774,16 @@ module nts.uk.ui.components.fullcalendar {
 
                         vm.$style(`.fc-timegrid-slot-lane-breaktime { background-color: ${backgroundColor || 'transparent'} }`);
                     }
+                },
+                disposeWhenNodeIsRemoved: vm.$el
+            });
+
+            // set validRange
+            ko.computed({
+                read: () => {
+                    const validRange = ko.unwrap<DateRangeInput>(params.validRange);
+
+                    vm.calendar.setOption('validRange', validRange);
                 },
                 disposeWhenNodeIsRemoved: vm.$el
             });

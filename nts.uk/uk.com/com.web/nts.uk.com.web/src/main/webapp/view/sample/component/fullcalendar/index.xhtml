@@ -1,9 +1,8 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
 <body>
 	<ui:composition template="/master/base.xhtml">
 		<ui:define name="htmlHead">
@@ -12,8 +11,8 @@
 			<com:scriptfile path="../../catalog/catalog.js" />
 
 			<com:stylefile set="FULLCALENDAR" />
-            <com:scriptfile set="FULLCALENDAR" />
-            
+			<com:scriptfile set="FULLCALENDAR" />
+
 			<com:scriptfile path="viewmodel.js" />
 			<style>
 				#contents-area>#content {
@@ -43,6 +42,7 @@
 						breakTime: $vm.breakTime,
 						businessHours: $vm.businessHours,
 						attendanceTimes: $vm.attendanceTimes,
+						validRange: $vm.validRange,
 						event: {
 							copyDay: $vm.copyDay,
 							datesSet: $vm.datesSet
@@ -53,8 +53,9 @@
 						}
 					"></div>
 				</div>
-            </div>
-        </ui:define>
-    </ui:composition>
+			</div>
+		</ui:define>
+	</ui:composition>
 </body>
+
 </html>
