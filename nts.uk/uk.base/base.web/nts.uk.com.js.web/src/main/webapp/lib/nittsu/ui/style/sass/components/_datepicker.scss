@@ -392,5 +392,8 @@ $brand-color: #39f;
 	.ntsRangeButton_Container {
 	    padding: 2px 2px 2px 2px;
     }
+  & > .ntsDatePickerButton {
+    height: 32px;
+  }
 }
 
