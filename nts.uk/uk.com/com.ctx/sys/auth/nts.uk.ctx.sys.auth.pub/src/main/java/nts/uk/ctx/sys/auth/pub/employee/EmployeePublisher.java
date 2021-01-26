@@ -26,7 +26,7 @@ public interface EmployeePublisher {
 	List<String> getListEmpID(String companyID , GeneralDate referenceDate);
 	
 	/** [RQ.653]職場リスト、基準日から就業確定できる社員を取得する **/
-	Map<String, String> getListEmpInfo(String companyID , GeneralDate referenceDate, List<String> workplaceID);
+	Map<String, List<String>> getListEmpInfo(String companyID , GeneralDate referenceDate, List<String> workplaceID);
 	
 	
 	public static interface RequireRQ653 {
