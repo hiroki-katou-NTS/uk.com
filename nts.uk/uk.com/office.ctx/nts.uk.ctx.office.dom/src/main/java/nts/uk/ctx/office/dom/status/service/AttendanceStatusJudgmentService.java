@@ -14,10 +14,13 @@ import nts.uk.ctx.office.dom.status.StatusClassfication;
 
 public class AttendanceStatusJudgmentService {
 
-	public static Optional<ActivityStatus> getActivityStatus(Required required, String sId,
+	public static AttendanceAccordActualData getActivityStatus(Required required, String sId,
 					GeneralDate baseDate,Optional<WorkInfoOfDailyPerformanceDto> workInfo,
 					Optional<TimeLeavingOfDailyPerformanceDto> timeLeave, 
 					Optional<WorkTypeDto>  workType) {
+		
+		//TODO dongnt
+		
 		Optional<GoOutEmployeeInformation> goOutInfo = required.getGoOutEmployeeInformation(sId, baseDate);	//	外出情報
 		Optional<ActivityStatus> status = required.getActivityStatus(sId, baseDate);	//	ステータス
 		Optional<Integer> attendanceTime = Optional.empty();	//	出勤時刻
@@ -49,138 +52,138 @@ public class AttendanceStatusJudgmentService {
 		
 		Integer timeNow = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
 		
-		if (!baseDate.equals(GeneralDate.today())) {
-			return Optional.empty();
-		}
-
-		if (goOutInfo.isPresent() && goOutInfo.get().getGoOutTime().v() <= timeNow 
-				&& goOutInfo.get().getComebackTime().v() >= timeNow 
-				&& !leaveTime.isPresent() || goOutInfo.isPresent()
-				&& goOutInfo.get().getGoOutTime().v() <= timeNow 
-				&& goOutInfo.get().getComebackTime().v() >= timeNow 
-				&& leaveTime.get() > timeNow) {
-			activityStatus.setActivity(StatusClassfication.GO_OUT);
-			return Optional.of(activityStatus);
-		}
+//		if (!baseDate.equals(GeneralDate.today())) {
+//			return AttendanceAccordActualData.builder().build();
+//		}
+//
+//		if (goOutInfo.isPresent() && goOutInfo.get().getGoOutTime().v() <= timeNow 
+//				&& goOutInfo.get().getComebackTime().v() >= timeNow 
+//				&& !leaveTime.isPresent() || goOutInfo.isPresent()
+//				&& goOutInfo.get().getGoOutTime().v() <= timeNow 
+//				&& goOutInfo.get().getComebackTime().v() >= timeNow 
+//				&& leaveTime.get() > timeNow) {
+//			activityStatus.setActivity(StatusClassfication.GO_OUT);
+//			return Optional.of(activityStatus);
+//		}
+//		
+//		if (!workDivision.isPresent() && !attendanceTime.isPresent() 
+//				&& status.isPresent() && !leaveTime.isPresent()) {
+//			activityStatus.setActivity(status.get().getActivity());
+//			return Optional.of(activityStatus);
+//		}
+//		
+//		if (!workDivision.isPresent() && !attendanceTime.isPresent() 
+//				&& !status.isPresent() && !leaveTime.isPresent()) {
+//			activityStatus.setActivity(StatusClassfication.NOT_PRESENT);
+//			return Optional.of(activityStatus);
+//		}
+//		
+//		if (workDivision.isPresent() && workDivision.get() == 1
+//				&& !attendanceTime.isPresent() && !leaveTime.isPresent()
+//				&& status.isPresent()) {
+//			activityStatus.setActivity(status.get().getActivity());
+//			return Optional.of(activityStatus);
+//		}
+//		
+//		if (workDivision.isPresent() && workDivision.get() == 1
+//				&& !attendanceTime.isPresent() && !leaveTime.isPresent()
+//				&& !status.isPresent()) {
+//			activityStatus.setActivity(StatusClassfication.HOLIDAY);
+//			return Optional.of(activityStatus);
+//		}
+//		
+//		if (workDivision.isPresent() && workDivision.get() == 1
+//				&& attendanceTime.isPresent() && leaveTime.isPresent() 
+//				&& leaveTime.get() <= timeNow) {
+//			activityStatus.setActivity(StatusClassfication.GO_HOME);
+//			return Optional.of(activityStatus);
+//		}
+//		
+//		if (workDivision.isPresent() && workDivision.get() == 1 
+//				&& attendanceTime.isPresent() && attendanceTime.get() <= timeNow) {
+//			activityStatus.setActivity(StatusClassfication.GO_HOME);
+//			return Optional.of(activityStatus);
+//		}
+//		
+//		if (workDivision.isPresent() && workDivision.get() == 1 
+//				&& !attendanceTime.isPresent() && leaveTime.isPresent() 
+//				&& leaveTime.get() <= timeNow) {
+//			activityStatus.setActivity(StatusClassfication.GO_HOME);
+//			return Optional.of(activityStatus);
+//		}
+//		
+//		if (workDivision.isPresent() && workDivision.get() == 1 
+//				&& !leaveTime.isPresent() && !status.isPresent()) {
+//			activityStatus.setActivity(StatusClassfication.HOLIDAY);
+//			return Optional.of(activityStatus);
+//		}
+//		
+//		if (workDivision.isPresent() && workDivision.get() == 1  
+//				&& status.isPresent() && attendanceTime.isPresent()) {
+//			activityStatus.setActivity(status.get().getActivity());
+//			return Optional.of(activityStatus);
+//		}
+//		
+//		if (workDivision.isPresent() && workDivision.get() == 1
+//				&& attendanceTime.isPresent() && leaveTime.isPresent()) {
+//			activityStatus.setActivity(StatusClassfication.PRESENT);
+//			return Optional.of(activityStatus);
+//		}
+//		
+//		if (workDivision.isPresent() && workDivision.get() == 0 
+//				&& !attendanceTime.isPresent() && !leaveTime.isPresent()
+//				&& status.isPresent()) {
+//			activityStatus.setActivity(status.get().getActivity());
+//			return Optional.of(activityStatus);
+//		}
+//		
+//		if (workDivision.isPresent() && workDivision.get() == 0 
+//				&& !attendanceTime.isPresent() && !leaveTime.isPresent()
+//				&& !status.isPresent()) {
+//			activityStatus.setActivity(StatusClassfication.NOT_PRESENT);
+//			return Optional.of(activityStatus);
+//		}
+//		
+//		if (workDivision.isPresent() && workDivision.get() == 0 
+//				&& leaveTime.isPresent() && leaveTime.get() <= timeNow) {
+//			activityStatus.setActivity(StatusClassfication.GO_HOME);
+//			return Optional.of(activityStatus);
+//		}
+//		
+//		if (workDivision.isPresent() && workDivision.get() == 0 
+//				&& attendanceTime.isPresent() && attendanceTime.get() <= timeNow
+//				&& goStraightAtr.isPresent() && goStraightAtr.get() == 1) {
+//			activityStatus.setActivity(StatusClassfication.GO_OUT);
+//			return Optional.of(activityStatus);
+//		}
+//				
+//		if (workDivision.isPresent() && workDivision.get() == 0 
+//				&& attendanceTime.isPresent() && attendanceTime.get() <= timeNow
+//				) {
+//			activityStatus.setActivity(StatusClassfication.NOT_PRESENT);
+//			return Optional.of(activityStatus);
+//		}
+//		
+//		if (workDivision.isPresent() && workDivision.get() == 0 
+//				&& status.isPresent()) {
+//			activityStatus.setActivity(status.get().getActivity());
+//			return Optional.of(activityStatus);
+//		}
+//		
+//		if (workDivision.isPresent() && workDivision.get() == 0 
+//				&& goStraightAtr.isPresent() && goStraightAtr.get() == 1 
+//				&& !status.isPresent() && attendanceTime.isPresent()) {
+//			activityStatus.setActivity(StatusClassfication.GO_OUT);
+//			return Optional.of(activityStatus);
+//		}
+//		
+//		
+//		if (workDivision.isPresent() && workDivision.get() == 0 && goStraightAtr.get() != 1 ) {
+//			activityStatus.setActivity(StatusClassfication.PRESENT);
+//			return Optional.of(activityStatus);
+//		}
 		
-		if (!workDivision.isPresent() && !attendanceTime.isPresent() 
-				&& status.isPresent() && !leaveTime.isPresent()) {
-			activityStatus.setActivity(status.get().getActivity());
-			return Optional.of(activityStatus);
-		}
-		
-		if (!workDivision.isPresent() && !attendanceTime.isPresent() 
-				&& !status.isPresent() && !leaveTime.isPresent()) {
-			activityStatus.setActivity(StatusClassfication.NOT_PRESENT);
-			return Optional.of(activityStatus);
-		}
-		
-		if (workDivision.isPresent() && workDivision.get() == 1
-				&& !attendanceTime.isPresent() && !leaveTime.isPresent()
-				&& status.isPresent()) {
-			activityStatus.setActivity(status.get().getActivity());
-			return Optional.of(activityStatus);
-		}
-		
-		if (workDivision.isPresent() && workDivision.get() == 1
-				&& !attendanceTime.isPresent() && !leaveTime.isPresent()
-				&& !status.isPresent()) {
-			activityStatus.setActivity(StatusClassfication.HOLIDAY);
-			return Optional.of(activityStatus);
-		}
-		
-		if (workDivision.isPresent() && workDivision.get() == 1
-				&& attendanceTime.isPresent() && leaveTime.isPresent() 
-				&& leaveTime.get() <= timeNow) {
-			activityStatus.setActivity(StatusClassfication.GO_HOME);
-			return Optional.of(activityStatus);
-		}
-		
-		if (workDivision.isPresent() && workDivision.get() == 1 
-				&& attendanceTime.isPresent() && attendanceTime.get() <= timeNow) {
-			activityStatus.setActivity(StatusClassfication.GO_HOME);
-			return Optional.of(activityStatus);
-		}
-		
-		if (workDivision.isPresent() && workDivision.get() == 1 
-				&& !attendanceTime.isPresent() && leaveTime.isPresent() 
-				&& leaveTime.get() <= timeNow) {
-			activityStatus.setActivity(StatusClassfication.GO_HOME);
-			return Optional.of(activityStatus);
-		}
-		
-		if (workDivision.isPresent() && workDivision.get() == 1 
-				&& !leaveTime.isPresent() && !status.isPresent()) {
-			activityStatus.setActivity(StatusClassfication.HOLIDAY);
-			return Optional.of(activityStatus);
-		}
-		
-		if (workDivision.isPresent() && workDivision.get() == 1  
-				&& status.isPresent() && attendanceTime.isPresent()) {
-			activityStatus.setActivity(status.get().getActivity());
-			return Optional.of(activityStatus);
-		}
-		
-		if (workDivision.isPresent() && workDivision.get() == 1
-				&& attendanceTime.isPresent() && leaveTime.isPresent()) {
-			activityStatus.setActivity(StatusClassfication.PRESENT);
-			return Optional.of(activityStatus);
-		}
-		
-		if (workDivision.isPresent() && workDivision.get() == 0 
-				&& !attendanceTime.isPresent() && !leaveTime.isPresent()
-				&& status.isPresent()) {
-			activityStatus.setActivity(status.get().getActivity());
-			return Optional.of(activityStatus);
-		}
-		
-		if (workDivision.isPresent() && workDivision.get() == 0 
-				&& !attendanceTime.isPresent() && !leaveTime.isPresent()
-				&& !status.isPresent()) {
-			activityStatus.setActivity(StatusClassfication.NOT_PRESENT);
-			return Optional.of(activityStatus);
-		}
-		
-		if (workDivision.isPresent() && workDivision.get() == 0 
-				&& leaveTime.isPresent() && leaveTime.get() <= timeNow) {
-			activityStatus.setActivity(StatusClassfication.GO_HOME);
-			return Optional.of(activityStatus);
-		}
-		
-		if (workDivision.isPresent() && workDivision.get() == 0 
-				&& attendanceTime.isPresent() && attendanceTime.get() <= timeNow
-				&& goStraightAtr.isPresent() && goStraightAtr.get() == 1) {
-			activityStatus.setActivity(StatusClassfication.GO_OUT);
-			return Optional.of(activityStatus);
-		}
-				
-		if (workDivision.isPresent() && workDivision.get() == 0 
-				&& attendanceTime.isPresent() && attendanceTime.get() <= timeNow
-				) {
-			activityStatus.setActivity(StatusClassfication.NOT_PRESENT);
-			return Optional.of(activityStatus);
-		}
-		
-		if (workDivision.isPresent() && workDivision.get() == 0 
-				&& status.isPresent()) {
-			activityStatus.setActivity(status.get().getActivity());
-			return Optional.of(activityStatus);
-		}
-		
-		if (workDivision.isPresent() && workDivision.get() == 0 
-				&& goStraightAtr.isPresent() && goStraightAtr.get() == 1 
-				&& !status.isPresent() && attendanceTime.isPresent()) {
-			activityStatus.setActivity(StatusClassfication.GO_OUT);
-			return Optional.of(activityStatus);
-		}
-		
-		
-		if (workDivision.isPresent() && workDivision.get() == 0 && goStraightAtr.get() != 1 ) {
-			activityStatus.setActivity(StatusClassfication.PRESENT);
-			return Optional.of(activityStatus);
-		}
-		
-		return Optional.empty();
+		return AttendanceAccordActualData.builder().build();
 	}
 	
 	public interface Required {

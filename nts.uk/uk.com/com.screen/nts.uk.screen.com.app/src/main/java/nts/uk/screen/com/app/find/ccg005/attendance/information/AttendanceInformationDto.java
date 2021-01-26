@@ -30,7 +30,7 @@ public class AttendanceInformationDto {
 	private UserAvatarDto avatarDto;
 	
 	//在席のステータス
-	private ActivityStatusDto activityStatusDto;
+	private Integer activityStatusDto;
 	
 	//社員のコメント情報
 	private EmployeeCommentInformationDto commentDto;
