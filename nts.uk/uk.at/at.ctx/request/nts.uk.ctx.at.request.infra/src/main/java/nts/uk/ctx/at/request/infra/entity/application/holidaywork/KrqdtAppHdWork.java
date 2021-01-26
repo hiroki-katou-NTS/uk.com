@@ -55,10 +55,10 @@ public class KrqdtAppHdWork extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected KrqdtAppHolidayWorkPK krqdtAppHolidayWorkPK;
-    
-    @Version
-	@Column(name="EXCLUS_VER")
-	public Long version;
+//    
+//    @Version
+//	@Column(name="EXCLUS_VER")
+//	public Long version;
     
     @Column(name = "WORK_TYPE_CD")
 	public String workTypeCode;

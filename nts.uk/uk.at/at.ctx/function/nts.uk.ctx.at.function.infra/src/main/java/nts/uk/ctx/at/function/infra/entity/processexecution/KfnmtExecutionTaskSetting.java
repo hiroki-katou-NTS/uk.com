@@ -188,6 +188,9 @@ public class KfnmtExecutionTaskSetting extends ContractUkJpaEntity implements Se
 	@Column(name = "END_SCHEDULE_ID")
 	public String endScheduleId;
 	
+	@Column(name = "REPEAT_SCHEDULE_ID")
+	public String repeatScheduleId;
+	
 	@OneToMany(mappedBy="execTaskSetting", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinTable(name = "KFNMT_REP_MONTH_DATE")
 	public List<KfnmtRepeatMonthDay> repeatMonthDateList;
@@ -263,7 +266,8 @@ public class KfnmtExecutionTaskSetting extends ContractUkJpaEntity implements Se
 										EnumAdaptor.valueOf(this.repeatContent, RepeatContentItem.class),
 										detailSetting,
 										startDate,
-										new StartTime(this.startTime),this.scheduleId,this.endScheduleId);
+										new StartTime(this.startTime),this.scheduleId,this.endScheduleId,
+										this.repeatScheduleId);
 	}
 	
 	/**
@@ -308,7 +312,8 @@ public class KfnmtExecutionTaskSetting extends ContractUkJpaEntity implements Se
 				domain.getDetailSetting().getMonthly().map(data -> data.getMonth().getNovember().value).orElse(null),
 				domain.getDetailSetting().getMonthly().map(data -> data.getMonth().getDecember().value).orElse(null),
 				domain.getScheduleId(),		
-				domain.getEndScheduleId().orElse(null),		
+				domain.getEndScheduleId().orElse(null),
+				domain.getRepeatScheduleId().orElse(null),
 				Collections.emptyList());
 	}
 }

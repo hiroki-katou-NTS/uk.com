@@ -9,6 +9,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
     import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
 	import PrintContentOfEachAppDto = nts.uk.at.view.kaf000.shr.viewmodel.PrintContentOfEachAppDto;
 	import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
+	import Kaf011BViewModel = nts.uk.at.view.kaf011.b.viewmodel.Kaf011BViewModel;
 
     @bean()
     class Kaf000BViewModel extends ko.ViewModel {
@@ -29,6 +30,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             opOptionalItemOutput: null,
 		};
         childParam: any = {};
+		kaf011BViewModel:KnockoutObservable<Kaf011BViewModel> = ko.observable(null);
 
 		displayGoback: KnockoutObservable<boolean> = ko.observable(false);
 		enableBack: KnockoutObservable<boolean> = ko.pureComputed(() => {
@@ -75,7 +77,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
         errorEmpty: KnockoutObservable<boolean> = ko.observable(true);
 
-        childUpdateEvent!: () => any;
+        childUpdateEvent: () => any;
 		childReloadEvent: () => any;
 
 		appNameList: any = null;
@@ -101,6 +103,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 eventUpdate: function(a: any) { vm.getChildUpdateEvent.apply(vm, [a]) },
 				eventReload: function(a: any) { vm.getChildReloadEvent.apply(vm, [a]) },
             }
+			
 			vm.$blockui("show");
 			vm.$ajax(API.getAppNameInAppList).then((data) => {
 				vm.appNameList = data;
@@ -121,6 +124,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 		        vm.application().opReversionReason(successData.appDetailScreenInfo.application.opReversionReason);
 		        vm.application().opStampRequestMode(successData.appDetailScreenInfo.application.opStampRequestMode);
                 vm.appDispInfoStartupOutput(successData);
+				vm.kaf011BViewModel(new Kaf011BViewModel(vm.childParam));
                 let viewContext: any = __viewContext,
                     loginID = viewContext.user.employeeId,
                     loginFlg = successData.appDetailScreenInfo.application.enteredPerson == loginID || successData.appDetailScreenInfo.application.employeeID == loginID,
@@ -462,6 +466,16 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 			case 'Msg_1715':
 			case 'Msg_1521':
 			case 'Msg_1648':
+            case 'Msg_430':
+            case 'Msg_1687':
+            case 'Msg_1409':
+            case 'Msg_511':
+            case 'Msg_476':
+            case 'Msg_477':
+            case 'Msg_478':
+            case 'Msg_1686':
+            case 'Msg_1706':
+            case 'Msg_1983':
 				vm.$dialog.error({ messageId: res.messageId, messageParams: res.parameterIds });
 				break;
             default:

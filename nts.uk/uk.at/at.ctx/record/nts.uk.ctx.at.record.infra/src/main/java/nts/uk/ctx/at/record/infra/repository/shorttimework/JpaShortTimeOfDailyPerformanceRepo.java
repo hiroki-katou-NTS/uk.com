@@ -46,7 +46,7 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 	private ShortWorkingTimeSheet shortWorkTime(KrcdtDaiShortWorkTime c) {
 		return new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(c.krcdtDaiShortWorkTimePK.shortWorkTimeFrameNo),
 				EnumAdaptor.valueOf(c.childCareAtr, ChildCareAttribute.class), new TimeWithDayAttr(c.startTime),
-				new TimeWithDayAttr(c.endTime), new AttendanceTime(c.deductionTime), new AttendanceTime(c.time));
+				new TimeWithDayAttr(c.endTime));
 	}
 
 	@Override
@@ -84,9 +84,7 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 	private KrcdtDaiShortWorkTime newEntities(String employeeId, GeneralDate ymd, ShortWorkingTimeSheet c) {
 		return new KrcdtDaiShortWorkTime(new KrcdtDaiShortWorkTimePK(employeeId, ymd, c.getShortWorkTimeFrameNo().v()),
 				c.getStartTime() == null ? 0 : c.getStartTime().valueAsMinutes(),
-				c.getEndTime() == null ? 0 : c.getEndTime().valueAsMinutes(), c.getChildCareAttr().value,
-				c.getShortTime() == null ? 0 : c.getShortTime().valueAsMinutes(),
-				c.getDeductionTime() == null ? 0 : c.getDeductionTime().valueAsMinutes());
+				c.getEndTime() == null ? 0 : c.getEndTime().valueAsMinutes(), c.getChildCareAttr().value);
 	}
 
 	private TypedQueryWrapper<KrcdtDaiShortWorkTime> findEntities(String employeeId, GeneralDate ymd) {
