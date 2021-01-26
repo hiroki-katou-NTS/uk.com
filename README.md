@@ -10,7 +10,7 @@
   - node-sass (for build scss on base project)
   - Git Desktop (recommend cause simple and easy for use).
   - Git SCM (recommend).
-  - Windows Terminal (recommend, Only on windows) alternal software.
+  - Windows Terminal (recommend, Only on windows) as alternal Command software.
  
 ## First install.
   - Download JDK at here[https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html] and install it.
