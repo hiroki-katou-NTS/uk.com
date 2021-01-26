@@ -71,7 +71,7 @@
             {{'KAFS11_26' | i18n}}
         </div>
         <div class="row pt-1 pb-1 border-0 header-div">
-            {{abs.application.appDate | i18n}} {{'KAFS11_34' | i18n}} {{'CMMS45_24' | i18n(prePost(abs.application.prePostAtr))}}
+            {{abs.application.appDate | i18n}} {{'KAFS11_35' | i18n}} {{'CMMS45_24' | i18n(prePost(abs.application.prePostAtr))}}
         </div>
         <div class="row pt-1 pb-1 border-0 header-div uk-text-dark-gray" style="font-size: 90%">
             {{'KAFS11_33' | i18n($dt(new Date(abs.application.inputDate), 'YY/MM/DD HH:mm'))}}
