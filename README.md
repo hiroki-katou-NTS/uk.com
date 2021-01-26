@@ -15,7 +15,7 @@
 ## First install.
   - Download JDK at here[https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html] and install it.
   - Download NodeJS at here[https://nodejs.org/en/download/] and install it.
-  - Copy of Eclipse Neon (request from Kiban team).
+  - Copy of Eclipse Neon (request to Kiban team).
   - Install typescript by command at Windows Terminal (after install NodeJS): `npm install -g typescript`.
   - Optional:
     + Install node-sass by command at Windows Terminal (after install NodeJS): `npm install -g node-sass`.
