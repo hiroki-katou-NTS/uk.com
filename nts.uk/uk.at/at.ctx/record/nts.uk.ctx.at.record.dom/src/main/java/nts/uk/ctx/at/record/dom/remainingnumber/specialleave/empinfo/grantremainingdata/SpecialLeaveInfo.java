@@ -159,14 +159,14 @@ public class SpecialLeaveInfo implements Cloneable {
 
 		// 期間終了日時点の特休情報を消化後に退避するかチェック
 		// 処理中の「特別休暇集計期間WORK．終了日の期間かどうか」=true
-		if (specialLeaveAggregatePeriodWork.isDayBeforePeriodEnd()){
+		if (specialLeaveAggregatePeriodWork.getEndDay().isPeriodEndAtr()){
 
 			// 「特別休暇の集計結果．特別休暇情報(期間終了日時点)」←処理中の「特別休暇情報」
 			aggrResult.setAsOfPeriodEnd(this.clone());
 		}
 
 		// 期間終了日翌日時点の期間かチェック
-		if (specialLeaveAggregatePeriodWork.isNextDayAfterPeriodEnd()){
+		if (specialLeaveAggregatePeriodWork.getEndDay().isNextPeriodEndAtr()){
 
 			// 「特別休暇の集計結果．特別休暇情報(期間終了日の翌日開始時点)」←処理中の「特別休暇情報」
 			aggrResult.setAsOfStartNextDayOfPeriodEnd(this.clone());
@@ -176,7 +176,7 @@ public class SpecialLeaveInfo implements Cloneable {
 
 		// 期間終了日翌日時点の期間かチェック
 		// 処理中の「特別休暇集計期間WORK．終了日の翌日の期間かどうか」= true
-		if (specialLeaveAggregatePeriodWork.isNextDayAfterPeriodEnd()){
+		if (specialLeaveAggregatePeriodWork.getEndDay().isNextPeriodEndAtr()){
 			// 何もしない
 		} else {
 			// 「特別休暇の集計結果．特別休暇エラー情報」に受け取った特別休暇エラーを全て追加
@@ -285,7 +285,7 @@ public class SpecialLeaveInfo implements Cloneable {
 		}
 
 		// 特別休暇情報残数を更新
-		this.updateRemainingNumber(aggregatePeriodWork.isAfterGrant());
+		this.updateRemainingNumber(aggregatePeriodWork.getGrantPeriodAtr().isAfterGrant());
 
 		// 特休情報を「特休の集計結果．特休情報（消滅）」に追加
 		if (!aggrResult.getLapsed().isPresent()){
@@ -414,7 +414,7 @@ public class SpecialLeaveInfo implements Cloneable {
 		}
 
 		// 特別休暇情報残数を更新
-		specialLeaveInfo.updateRemainingNumber(aggregatePeriodWork.isAfterGrant());
+		specialLeaveInfo.updateRemainingNumber(aggregatePeriodWork.getGrantPeriodAtr().isAfterGrant());
 
 		// 「特別休暇情報(付与時点)」に「特別休暇情報」を追加
 		if ( !aggrResult.getAsOfGrant().isPresent() ){
@@ -526,7 +526,7 @@ public class SpecialLeaveInfo implements Cloneable {
 			InPeriodOfSpecialLeaveResultInfor aggrResult){
 
 		// 集計期間の翌日を集計する時は、消化処理は行わない
-		if ( aggregatePeriodWork.isNextDayAfterPeriodEnd() ){
+		if ( aggregatePeriodWork.getEndDay().isNextPeriodEndAtr() ){
 			return aggrResult;
 		}
 
@@ -603,15 +603,15 @@ public class SpecialLeaveInfo implements Cloneable {
 				}
 
 				// 残数（現在）を消化後の状態にする
-				this.updateRemainingNumber(aggregatePeriodWork.isAfterGrant());
+				this.updateRemainingNumber(aggregatePeriodWork.getGrantPeriodAtr().isAfterGrant());
 
 				// 実特休（特休（マイナスあり））に使用数を加算する
 				this.remainingNumber.getSpecialLeaveWithMinus().addUsedNumber(
 						SpecialLeaveUseNumber.of(interimSpecialHolidayMng.getUseDays().get().v(),interimSpecialHolidayMng.getUseTimes().get().v()),
-						aggregatePeriodWork.isAfterGrant());
+						aggregatePeriodWork.getGrantPeriodAtr().isAfterGrant());
 
 				// 特休情報残数を更新
-				this.updateRemainingNumber(aggregatePeriodWork.isAfterGrant());
+				this.updateRemainingNumber(aggregatePeriodWork.getGrantPeriodAtr().isAfterGrant());
 
 			}
 		}
@@ -629,7 +629,7 @@ public class SpecialLeaveInfo implements Cloneable {
 			// 特休残数がマイナスかチェック
 			val withMinus = this.remainingNumber.getSpecialLeaveWithMinus();
 			if (withMinus.getRemainingNumberInfo().getRemainingNumber().isMinus()){
-				if (specialLeaveAggregatePeriodWork.isAfterGrant()){
+				if (specialLeaveAggregatePeriodWork.getGrantPeriodAtr().isAfterGrant()){
 					// 「特休不足エラー（付与後）」を追加
 					errors.add(SpecialLeaveError.AFTERGRANT);
 				}
