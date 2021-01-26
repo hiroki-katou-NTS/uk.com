@@ -10,7 +10,7 @@ module nts.uk.at.view.knr002.c {
         export class ScreenModel {
             // left-grid
             currentCode1: KnockoutObservable<any> = ko.observable();
-            currentCode2: KnockoutObservable<any> = ko.observable();
+            currentCode2: KnockoutObservable<any> = ko.observable().extend({ notify: 'always' });
             dataSource: KnockoutObservableArray<RemoteSettingsDto> = ko.observableArray([]);
             columns1: KnockoutObservableArray<any>;
             columns2: KnockoutObservableArray<any>;
@@ -69,7 +69,7 @@ module nts.uk.at.view.knr002.c {
                 
                 vm.currentCode1.subscribe((value) => {
                     vm.loadSmallGrid(value);
-                })
+                });
 
                 vm.ipUpdateValue = ko.computed(function() {
                     return `${vm.ipAddress1()}.${vm.ipAddress2()}.${vm.ipAddress3()}.${vm.ipAddress4()}`;
@@ -81,7 +81,7 @@ module nts.uk.at.view.knr002.c {
                     vm.rowData(rowData);
                     vm.setInputMode(rowData.inputType);
                     vm.bindDataByType(rowData);
-                })
+                });
 
                 vm.loadSettingGrid();
             }
@@ -123,7 +123,15 @@ module nts.uk.at.view.knr002.c {
                         break;
                     case INPUT_TYPE.IP:
                         $('#C8_5').focus();
+                        
                         if (rowData.updateValue.length == 0) {
+                            if (rowData.currentValue.length == 0) {
+                                vm.ipAddress1(null);
+                                vm.ipAddress2(null);
+                                vm.ipAddress3(null);
+                                vm.ipAddress4(null);
+                                break;
+                            }
                             let ipArr = rowData.currentValue.split('.');
                             vm.ipAddress1(parseInt(ipArr[0]));
                             vm.ipAddress2(parseInt(ipArr[1]));
