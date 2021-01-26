@@ -17,7 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.tuple;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * 基準日で社員の雇用と締め日を取得する
@@ -96,13 +97,13 @@ public class GetClosureDateEmploymentDomainServiceTest {
     @Test
     public void testClosureDateEmploymentFull_01() {
 
-        List<String> listSid = Arrays.asList("01","02","03");
-        GeneralDate baseDate = GeneralDate.ymd(2020,10,10);
-        DatePeriod datePeriod = new DatePeriod(GeneralDate.ymd(2020,10,1), GeneralDate.ymd(2020,10,30));
-        BsEmploymentHistoryImport historyImport = new BsEmploymentHistoryImport("sid","code","name",datePeriod);
+        List<String> listSid = Arrays.asList("01", "02", "03");
+        GeneralDate baseDate = GeneralDate.ymd(2020, 10, 10);
+        DatePeriod datePeriod = new DatePeriod(GeneralDate.ymd(2020, 10, 1), GeneralDate.ymd(2020, 10, 30));
+        BsEmploymentHistoryImport historyImport = new BsEmploymentHistoryImport("sid", "code", "name", datePeriod);
 
         Map<String, BsEmploymentHistoryImport> expectedList = new HashMap<>();
-        expectedList.put("01",historyImport);
+        expectedList.put("01", historyImport);
 
         Closure closure = createClosure();
 
@@ -116,12 +117,15 @@ public class GetClosureDateEmploymentDomainServiceTest {
             }
         };
 
-        List<ClosureDateEmployment> result = GetClosureDateEmploymentDomainService.get(require,baseDate,listSid);
-        assertThat(result.size()).isEqualTo(1);
-        assertThat(result.get(0).getEmployeeId()).isEqualTo("sid");
-        assertThat(result.get(0).getEmploymentCode()).isEqualTo("code");
-        assertThat(result.get(0).getEmploymentName()).isEqualTo("name");
-        assertThat(result.get(0).getClosure()).isEqualTo(closure);
+        List<ClosureDateEmployment> result = GetClosureDateEmploymentDomainService.get(require, baseDate, listSid);
+        assertThat(result)
+                .extracting(ClosureDateEmployment::getEmployeeId,
+                        ClosureDateEmployment::getEmploymentCode,
+                        ClosureDateEmployment::getEmploymentName,
+                        ClosureDateEmployment::getClosure)
+                .containsExactly(
+                        tuple("sid", "code", "name", closure)
+                );
     }
 
     /**
@@ -130,8 +134,8 @@ public class GetClosureDateEmploymentDomainServiceTest {
      */
     @Test
     public void testEmploymentInforEmpty_02() {
-        List<String> listSid = Arrays.asList("01","02","03");
-        GeneralDate baseDate = GeneralDate.ymd(2020,10,10);
+        List<String> listSid = Arrays.asList("01", "02", "03");
+        GeneralDate baseDate = GeneralDate.ymd(2020, 10, 10);
         Map<String, BsEmploymentHistoryImport> expectedList = new HashMap<>();
 
         new Expectations() {
@@ -141,9 +145,10 @@ public class GetClosureDateEmploymentDomainServiceTest {
             }
         };
 
-        List<ClosureDateEmployment> result = GetClosureDateEmploymentDomainService.get(require,baseDate,listSid);
+        List<ClosureDateEmployment> result = GetClosureDateEmploymentDomainService.get(require, baseDate, listSid);
         assertThat(result.size()).isEqualTo(0);
     }
+
     /**
      * Test: GetClosureDateEmploymentDomainService
      * require.getEmploymentInfor: return: list.size() > 0
@@ -151,13 +156,13 @@ public class GetClosureDateEmploymentDomainServiceTest {
      */
     @Test
     public void testClosureDataByEmployeeNull_03() {
-        List<String> listSid = Arrays.asList("01","02","03");
-        GeneralDate baseDate = GeneralDate.ymd(2020,10,10);
-        DatePeriod datePeriod = new DatePeriod(GeneralDate.ymd(2020,10,1), GeneralDate.ymd(2020,10,30));
-        BsEmploymentHistoryImport historyImport = new BsEmploymentHistoryImport("sid","code","name",datePeriod);
+        List<String> listSid = Arrays.asList("01", "02", "03");
+        GeneralDate baseDate = GeneralDate.ymd(2020, 10, 10);
+        DatePeriod datePeriod = new DatePeriod(GeneralDate.ymd(2020, 10, 1), GeneralDate.ymd(2020, 10, 30));
+        BsEmploymentHistoryImport historyImport = new BsEmploymentHistoryImport("sid", "code", "name", datePeriod);
 
         Map<String, BsEmploymentHistoryImport> expectedList = new HashMap<>();
-        expectedList.put("01",historyImport);
+        expectedList.put("01", historyImport);
 
         new Expectations() {
             {
@@ -169,12 +174,15 @@ public class GetClosureDateEmploymentDomainServiceTest {
             }
         };
 
-        List<ClosureDateEmployment> result = GetClosureDateEmploymentDomainService.get(require,baseDate,listSid);
-        assertThat(result.size()).isEqualTo(1);
-        assertThat(result.get(0).getEmployeeId()).isEqualTo("sid");
-        assertThat(result.get(0).getEmploymentCode()).isEqualTo("code");
-        assertThat(result.get(0).getEmploymentName()).isEqualTo("name");
-        assertThat(result.get(0).getClosure()).isEqualTo(null);
+        List<ClosureDateEmployment> result = GetClosureDateEmploymentDomainService.get(require, baseDate, listSid);
+        assertThat(result)
+                .extracting(ClosureDateEmployment::getEmployeeId,
+                        ClosureDateEmployment::getEmploymentCode,
+                        ClosureDateEmployment::getEmploymentName,
+                        ClosureDateEmployment::getClosure)
+                .containsExactly(
+                        tuple("sid", "code", "name", null)
+                );
     }
 
     /**
@@ -184,15 +192,15 @@ public class GetClosureDateEmploymentDomainServiceTest {
      */
     @Test
     public void testClosureDataByEmployeeFull_04() {
-        List<String> listSid = Arrays.asList("01","02","03");
-        GeneralDate baseDate = GeneralDate.ymd(2020,10,10);
-        DatePeriod datePeriod = new DatePeriod(GeneralDate.ymd(2020,10,1), GeneralDate.ymd(2020,10,30));
-        BsEmploymentHistoryImport historyImport = new BsEmploymentHistoryImport("sid","code","name",datePeriod);
-        BsEmploymentHistoryImport historyImport1 = new BsEmploymentHistoryImport("sid1","code","name",datePeriod);
+        List<String> listSid = Arrays.asList("01", "02", "03");
+        GeneralDate baseDate = GeneralDate.ymd(2020, 10, 10);
+        DatePeriod datePeriod = new DatePeriod(GeneralDate.ymd(2020, 10, 1), GeneralDate.ymd(2020, 10, 30));
+        BsEmploymentHistoryImport historyImport = new BsEmploymentHistoryImport("sid", "code", "name", datePeriod);
+        BsEmploymentHistoryImport historyImport1 = new BsEmploymentHistoryImport("sid1", "code", "name", datePeriod);
 
         Map<String, BsEmploymentHistoryImport> expectedList = new HashMap<>();
-        expectedList.put("01",historyImport);
-        expectedList.put("02",historyImport1);
+        expectedList.put("01", historyImport);
+        expectedList.put("02", historyImport1);
 
         Closure closure = createClosure();
 
@@ -208,17 +216,17 @@ public class GetClosureDateEmploymentDomainServiceTest {
             }
         };
 
-        List<ClosureDateEmployment> result = GetClosureDateEmploymentDomainService.get(require,baseDate,listSid);
-        assertThat(result.size()).isEqualTo(2);
-        assertThat(result.get(0).getEmployeeId()).isEqualTo("sid");
-        assertThat(result.get(0).getEmploymentCode()).isEqualTo("code");
-        assertThat(result.get(0).getEmploymentName()).isEqualTo("name");
-        assertThat(result.get(0).getClosure()).isEqualTo(closure);
+        List<ClosureDateEmployment> result = GetClosureDateEmploymentDomainService.get(require, baseDate, listSid);
+        assertThat(result)
+                .extracting(ClosureDateEmployment::getEmployeeId,
+                        ClosureDateEmployment::getEmploymentCode,
+                        ClosureDateEmployment::getEmploymentName,
+                        ClosureDateEmployment::getClosure)
+                .containsExactly(
+                        tuple("sid", "code", "name", closure),
+                        tuple("sid1", "code", "name", closure)
 
-        assertThat(result.get(1).getEmployeeId()).isEqualTo("sid1");
-        assertThat(result.get(1).getEmploymentCode()).isEqualTo("code");
-        assertThat(result.get(1).getEmploymentName()).isEqualTo("name");
-        assertThat(result.get(1).getClosure()).isEqualTo(closure);
+                );
     }
 
 }
