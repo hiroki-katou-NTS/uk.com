@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import lombok.val;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.AggregationByTypeService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
@@ -27,15 +26,14 @@ public class NumberOfEmployeesByAttributeCountingService {
 	 * @param values 勤務情報リスト
 	 * @return
 	 */
-	// TODO 総称型
-	public static Map<String, BigDecimal> count(
+	public static Map<AggregationKey<?>, BigDecimal> count(
 				Require require
 			,	AggregationUnitOfEmployeeAttribute unit
 			,	List<WorkInfoWithAffiliationInfo> values
 	) {
 
 		// 属性を取得する
-		val attributes = values.stream()
+		List<AggregationKey<?>> attributes = values.stream()
 				// TODO 出勤系かどうかの判定処理
 				.filter( e -> e.getWorkInfo().getWorkStyle(require).orElse( WorkStyle.ONE_DAY_REST ) != WorkStyle.ONE_DAY_REST )
 				.map( e -> unit.getAttribute( e.getAffiliationInfo() ) )

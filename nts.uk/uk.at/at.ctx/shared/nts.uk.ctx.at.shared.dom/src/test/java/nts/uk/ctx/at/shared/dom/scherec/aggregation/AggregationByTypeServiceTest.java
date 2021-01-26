@@ -15,7 +15,7 @@ import org.junit.Test;
 import lombok.val;
 
 /**
- * Test for AggregateValuesByType
+ * Test for AggregationByTypeService
  * @author kumiko_otake
  */
 public class AggregationByTypeServiceTest {
