@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.Query;
@@ -16,6 +17,8 @@ import nts.arc.i18n.I18NText;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
+import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
 import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagement;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshmtLegalTimeMEmp;
@@ -39,7 +42,7 @@ public class JpaGetKMK004EmploymentExportData extends JpaRepository implements G
 	private static final String GET_EXPORT_MONTH = "SELECT m.MONTH_STR FROM BCMMT_COMPANY m WHERE m.CID = ?cid";
 	
 	private static final String LEGAL_TIME_EMP = "SELECT s FROM KshmtLegalTimeMEmp s WHERE "
-			+ " s.pk.cid = :cid AND s.pk.ym >= :start AND s.pk.ym <= :end"
+			+ " s.pk.cid = :cid AND s.pk.ym IN :yms"
 			+ " ORDER BY s.pk.ym";	
 	
 	private static final String GET_EMPLOYMENT = "SELECT "
@@ -54,7 +57,7 @@ public class JpaGetKMK004EmploymentExportData extends JpaRepository implements G
 											+" KRCST_EMP_REG_M_CAL_SET.INCLUDE_EXTRA_OT, "
 											+" IIF (KRCST_EMP_REG_M_CAL_SET.INCLUDE_EXTRA_OT = 1, KRCST_EMP_REG_M_CAL_SET.INCLUDE_LEGAL_OT , NUll) AS INCLUDE_LEGAL_OT, "
 											+" IIF (KRCST_EMP_REG_M_CAL_SET.INCLUDE_EXTRA_OT = 1, KRCST_EMP_REG_M_CAL_SET.INCLUDE_HOLIDAY_OT , NUll) AS INCLUDE_HOLIDAY_OT, "
-											+ "KRCMT_CALC_M_SET_FLE_COM.REFERENCE_PRED_TIME, "
+											+ "KRCST_COM_FLEX_M_CAL_SET.WITHIN_TIME_USE, "
 											+" KRCST_EMP_FLEX_M_CAL_SET.AGGR_METHOD, "
 											+" KRCST_EMP_FLEX_M_CAL_SET.SETTLE_PERIOD_MON, "
 											+" KRCST_EMP_FLEX_M_CAL_SET.SETTLE_PERIOD, "
@@ -79,7 +82,7 @@ public class JpaGetKMK004EmploymentExportData extends JpaRepository implements G
 											+"            AND BSYMT_EMPLOYMENT.CODE = KSHST_EMP_REG_LABOR_TIME.EMP_CD  		" 
 											+" LEFT JOIN KSHST_EMP_TRANS_LAB_TIME ON BSYMT_EMPLOYMENT.CID = KSHST_EMP_TRANS_LAB_TIME.CID  " 
 											+"            AND BSYMT_EMPLOYMENT.CODE = KSHST_EMP_TRANS_LAB_TIME.EMP_CD  		" 
-											+" LEFT JOIN KRCMT_CALC_M_SET_FLE_COM ON BSYMT_EMPLOYMENT.CID = KRCMT_CALC_M_SET_FLE_COM.CID  "
+											+" LEFT JOIN KRCST_COM_FLEX_M_CAL_SET ON BSYMT_EMPLOYMENT.CID = KRCST_COM_FLEX_M_CAL_SET.CID  "
 											+" LEFT JOIN KRCST_EMP_DEFOR_M_CAL_SET ON BSYMT_EMPLOYMENT.CID = KRCST_EMP_DEFOR_M_CAL_SET.CID  "
 											+"            AND BSYMT_EMPLOYMENT.CODE = KRCST_EMP_DEFOR_M_CAL_SET.EMP_CD  		"
 											+" LEFT JOIN KRCST_EMP_FLEX_M_CAL_SET ON BSYMT_EMPLOYMENT.CID = KRCST_EMP_FLEX_M_CAL_SET.CID  "
@@ -95,14 +98,12 @@ public class JpaGetKMK004EmploymentExportData extends JpaRepository implements G
 		int month = this.month();
 		
 		int startYM = startDate * 100 + month;
-		int endYM = startDate * 100 + ((month + 11) / 12) * 100 + (month + 11) % 12;
-		
+		YearMonthPeriod ymPeriod = new YearMonthPeriod(YearMonth.of(startYM, month), YearMonth.of(startYM, month).nextYear().previousMonth());
 		String startOfWeek = getStartOfWeek(cid);
 
 		val legalTimes = this.queryProxy().query(LEGAL_TIME_EMP, KshmtLegalTimeMEmp.class)
 				.setParameter("cid", cid)
-				.setParameter("start",startYM)
-				.setParameter("end",endYM)
+				.setParameter("yms", ymPeriod.yearMonthsBetween().stream().map(x -> x.v().toString()).collect(Collectors.toList()))
 				.getList();
 			
 		try (PreparedStatement stmt = this.connection().prepareStatement(GET_EMPLOYMENT.toString())) {
@@ -143,7 +144,7 @@ public class JpaGetKMK004EmploymentExportData extends JpaRepository implements G
 	private List<MasterData> buildEmploymentRow(NtsResultRecord r, List<KshmtLegalTimeMEmp> legals, int startDate, int endDate, int month, String startOfWeek) {
 		List<MasterData> datas = new ArrayList<>();
 
-		Integer refPreTime = r.getInt("REFERENCE_PRED_TIME");
+		Integer refPreTime = r.getInt("WITHIN_TIME_USE");
 		
 		for (int y = startDate; y <= endDate; y++) {
 			String employmentCode = r.getString("CODE");

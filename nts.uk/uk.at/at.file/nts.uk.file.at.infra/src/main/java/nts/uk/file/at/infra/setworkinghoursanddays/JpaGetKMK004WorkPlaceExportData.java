@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.Query;
@@ -16,6 +17,8 @@ import nts.arc.i18n.I18NText;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
+import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
 import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagement;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshmtLegalTimeMWkp;
@@ -39,7 +42,7 @@ public class JpaGetKMK004WorkPlaceExportData extends JpaRepository implements Ge
 	private static final String GET_EXPORT_MONTH = "SELECT m.MONTH_STR FROM BCMMT_COMPANY m WHERE m.CID = ?cid";
 	
 	private static final String LEGAL_TIME_WKP = "SELECT s FROM KshmtLegalTimeMWkp s WHERE "
-			+ " s.pk.cid = :cid AND s.pk.ym >= :start AND s.pk.ym <= :end"
+			+ " s.pk.cid = :cid AND s.pk.ym IN :yms"
 			+ " ORDER BY s.pk.ym";
 	
 	
@@ -49,7 +52,7 @@ public class JpaGetKMK004WorkPlaceExportData extends JpaRepository implements Ge
 	     exportSQL.append("  SELECT * FROM ( ");
 	     exportSQL.append("             SELECT IIF(BSYMT_WKP_INFO.HIERARCHY_CD IS NOT NULL, BSYMT_WKP_INFO.HIERARCHY_CD, '999999999999999999999999999999') AS HIERARCHY_CD,  ");
 	     exportSQL.append("             ROW_NUMBER() OVER(PARTITION BY BSYMT_WKP_INFO.WKP_CD ORDER BY IIF(BSYMT_WKP_INFO.HIERARCHY_CD IS NOT NULL,0,1),BSYMT_WKP_INFO.HIERARCHY_CD ASC) AS rk2,  ");
-	     exportSQL.append("             KSHST_WKP_TRANS_LAB_TIME.WKP_ID, BSYMT_WKP_INFO.WKP_CD AS WKPCD,   ");
+	     exportSQL.append("             BSYMT_WKP_INFO.WKP_ID , BSYMT_WKP_INFO.WKP_CD AS WKPCD,   ");
 	     exportSQL.append("             BSYMT_WKP_INFO.WKP_NAME AS WKP_NAME,   ");
 	     exportSQL.append("             KSHST_WKP_REG_LABOR_TIME .DAILY_TIME,   ");
 	     exportSQL.append("             KSHST_WKP_REG_LABOR_TIME.WEEKLY_TIME,   ");
@@ -59,7 +62,7 @@ public class JpaGetKMK004WorkPlaceExportData extends JpaRepository implements Ge
 	     exportSQL.append("             KRCST_WKP_REG_M_CAL_SET.INCLUDE_EXTRA_OT,   ");
 	     exportSQL.append("             IIF (KRCST_WKP_REG_M_CAL_SET.INCLUDE_EXTRA_OT != 0, KRCST_WKP_REG_M_CAL_SET.INCLUDE_LEGAL_OT, NULL) AS INCLUDE_LEGAL_OT,   ");
 	     exportSQL.append("             IIF (KRCST_WKP_REG_M_CAL_SET.INCLUDE_EXTRA_OT != 0, KRCST_WKP_REG_M_CAL_SET.INCLUDE_HOLIDAY_OT, NULL) AS INCLUDE_HOLIDAY_OT,   ");
-	     exportSQL.append("             KRCMT_CALC_M_SET_FLE_COM.REFERENCE_PRED_TIME,   ");
+	     exportSQL.append("             KRCST_COM_FLEX_M_CAL_SET.WITHIN_TIME_USE,   ");
 	     exportSQL.append("             KRCST_WKP_FLEX_M_CAL_SET.AGGR_METHOD,   ");
 	     exportSQL.append("             KRCST_WKP_FLEX_M_CAL_SET.SETTLE_PERIOD_MON,   ");
 	     exportSQL.append("             KRCST_WKP_FLEX_M_CAL_SET.SETTLE_PERIOD,   ");
@@ -90,7 +93,7 @@ public class JpaGetKMK004WorkPlaceExportData extends JpaRepository implements Ge
 	     exportSQL.append("               AND BSYMT_WKP_INFO.WKP_ID = KRCST_WKP_REG_M_CAL_SET.WKPID   ");
 	     exportSQL.append("              LEFT JOIN (SELECT *, ROW_NUMBER() OVER ( PARTITION BY CID ORDER BY END_DATE DESC ) AS RN FROM BSYMT_WKP_CONFIG_2) AS BSYMT_WKP_CONFIG  ");
 	     exportSQL.append("             ON BSYMT_WKP_INFO.CID = BSYMT_WKP_CONFIG.CID AND BSYMT_WKP_CONFIG.RN = 1  ");
-	     exportSQL.append("              LEFT JOIN KRCMT_CALC_M_SET_FLE_COM ON BSYMT_WKP_INFO.CID = KRCMT_CALC_M_SET_FLE_COM.CID   ");
+	     exportSQL.append("              LEFT JOIN KRCST_COM_FLEX_M_CAL_SET ON BSYMT_WKP_INFO.CID = KRCST_COM_FLEX_M_CAL_SET.CID   ");
 	     exportSQL.append("              LEFT JOIN KSHST_WKP_TRANS_LAB_TIME ON BSYMT_WKP_INFO.CID = KSHST_WKP_TRANS_LAB_TIME.CID   ");
 	     exportSQL.append("              AND BSYMT_WKP_INFO.WKP_ID = KSHST_WKP_TRANS_LAB_TIME.WKP_ID   ");
 	     exportSQL.append("             WHERE BSYMT_WKP_INFO.CID = ?  ");
@@ -131,12 +134,11 @@ public class JpaGetKMK004WorkPlaceExportData extends JpaRepository implements Ge
 			int month = this.month();
 			
 			int startYM = startDate * 100 + month;
-			int endYM = startDate * 100 + ((month + 11) / 12) * 100 + (month + 11) % 12;
+			YearMonthPeriod ymPeriod = new YearMonthPeriod(YearMonth.of(startYM, month), YearMonth.of(startYM, month).nextYear().previousMonth());
 
 			val legalTimes = this.queryProxy().query(LEGAL_TIME_WKP, KshmtLegalTimeMWkp.class)
 				.setParameter("cid", cid)
-				.setParameter("start", startYM)
-				.setParameter("end", endYM)
+				.setParameter("yms", ymPeriod.yearMonthsBetween().stream().map(x -> x.v().toString()).collect(Collectors.toList()))
 				.getList();
 			
 			try (PreparedStatement stmt = this.connection().prepareStatement(GET_WORKPLACE.toString())) {
@@ -155,7 +157,7 @@ public class JpaGetKMK004WorkPlaceExportData extends JpaRepository implements Ge
 		private List<MasterData> buildWorkPlaceRow(NtsResultRecord r, List<KshmtLegalTimeMWkp> legals, int startDate, int endDate, int month, String startOfWeek) {
 			List<MasterData> datas = new ArrayList<>();
 
-			Integer refPreTime = r.getInt("REFERENCE_PRED_TIME");
+			Integer refPreTime = r.getInt("WITHIN_TIME_USE");
 			
 			for (int y = startDate; y <= endDate; y++) {
 				String wid = r.getString("WKP_ID");
