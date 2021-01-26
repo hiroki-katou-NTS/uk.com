@@ -43,7 +43,7 @@ public class TimeDigestApplicationDto {
                 domain.getChildTime() == null ? null : domain.getChildTime().v(), 
                 domain.getTimeOff() == null ? null : domain.getTimeOff().v(),
                 domain.getTimeSpecialVacation() == null ? null : domain.getTimeSpecialVacation().v(), 
-                domain.getTimeAnualLeave() == null ? null : domain.getTimeAnualLeave().v(), 
+                domain.getTimeAnnualLeave() == null ? null : domain.getTimeAnnualLeave().v(),
                 domain.getSpecialVacationFrameNO().isPresent() ? domain.getSpecialVacationFrameNO().get() : null);
         
     }
