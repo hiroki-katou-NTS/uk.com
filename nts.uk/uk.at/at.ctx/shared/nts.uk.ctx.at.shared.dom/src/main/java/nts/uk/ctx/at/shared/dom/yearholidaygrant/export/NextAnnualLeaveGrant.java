@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.YearDayNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AttendanceRate;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays;
@@ -24,7 +25,7 @@ public class NextAnnualLeaveGrant {
 	/** 付与年月日 */
 	private GeneralDate grantDate;
 	/** 付与日数 */
-	private GrantDays grantDays;
+	private Finally<GrantDays> grantDays;
 	/** 回数 */
 	private GrantNum times;
 	/** 期限日 */
@@ -43,14 +44,14 @@ public class NextAnnualLeaveGrant {
 	private Optional<YearDayNumber> workingDays;
 	/** 出勤率 */
 	private Optional<AttendanceRate> attendanceRate;
-	
+
 	/**
 	 * コンストラクタ
 	 */
 	public NextAnnualLeaveGrant(){
-		
+
 		this.grantDate = GeneralDate.today();
-		this.grantDays = new GrantDays(0.0);
+		this.grantDays = Finally.empty();
 		this.times = new GrantNum(0);
 		this.timeAnnualLeaveMaxDays = Optional.empty();
 		this.timeAnnualLeaveMaxTime = Optional.empty();

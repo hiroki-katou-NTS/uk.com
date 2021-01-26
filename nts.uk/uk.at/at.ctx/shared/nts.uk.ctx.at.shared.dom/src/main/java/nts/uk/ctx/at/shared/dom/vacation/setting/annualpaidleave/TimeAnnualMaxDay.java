@@ -10,7 +10,9 @@ import lombok.Builder;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
 /**
+ * 時間年休の上限日数
  * The Class YearVacationTimeMaxDay.
+ *
  */
 @Builder
 public class TimeAnnualMaxDay implements Serializable{

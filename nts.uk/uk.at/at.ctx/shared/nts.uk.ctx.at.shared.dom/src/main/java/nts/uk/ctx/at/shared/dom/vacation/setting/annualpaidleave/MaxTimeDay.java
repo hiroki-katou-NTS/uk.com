@@ -10,14 +10,15 @@ import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;
 
 /**
+ * 時間年休上限日数
  * The Class MaxTimeDay.
  */
 @IntegerRange(max = 99, min = 0)
 public class MaxTimeDay extends IntegerPrimitiveValue<MaxTimeDay> implements Serializable {
-    
+
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
-    
+
     /**
      * Instantiates a new max time day.
      *

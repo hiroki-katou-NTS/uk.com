@@ -6,8 +6,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
+import nts.gul.util.value.Finally;
 
 /**
  * 60H超休の集計結果
@@ -18,16 +17,16 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Used
 @Setter
 public class AggrResultOfHolidayOver60h {
 
-	/**
-	 * 使用回数
-	*/
-	private UsedTimes usedTimes;
+//	/**
+//	 * 使用回数
+//	*/
+//	private UsedTimes usedTimes;
 	/** 60H超休エラー情報 */
 	private List<HolidayOver60hError> holidayOver60hErrors;
 	/** 60H超休情報（期間終了日時点） */
-	private HolidayOver60hInfo asOfPeriodEnd;
+	private Finally<HolidayOver60hInfo> asOfPeriodEnd;
 	/** 60H超休情報（期間終了日の翌日開始時点） */
-	private HolidayOver60hInfo asOfStartNextDayOfPeriodEnd;
+	private Finally<HolidayOver60hInfo> asOfStartNextDayOfPeriodEnd;
 	/** 60H超休情報（消滅） */
 	private Optional<HolidayOver60hInfo> lapsed;
 
@@ -45,10 +44,10 @@ public class AggrResultOfHolidayOver60h {
 	 * コンストラクタ
 	 */
 	public AggrResultOfHolidayOver60h(){
-		this.usedTimes = new UsedTimes(0);
+		//this.usedTimes = new UsedTimes(0);
 		this.holidayOver60hErrors = new ArrayList<HolidayOver60hError>();
-		this.asOfPeriodEnd = new HolidayOver60hInfo();
-		this.asOfStartNextDayOfPeriodEnd = new HolidayOver60hInfo();
+		this.asOfPeriodEnd = Finally.empty();
+		this.asOfStartNextDayOfPeriodEnd = Finally.empty();
 		this.lapsed = Optional.empty();
 	}
 
@@ -61,14 +60,14 @@ public class AggrResultOfHolidayOver60h {
 	 * @return 60H超休の集計結果
 	 */
 	public static AggrResultOfHolidayOver60h of(
-			UsedTimes usedTimes,
-			HolidayOver60hInfo asOfPeriodEnd,
-			HolidayOver60hInfo asOfStartNextDayOfPeriodEnd,
+			//UsedTimes usedTimes,
+			Finally<HolidayOver60hInfo> asOfPeriodEnd,
+			Finally<HolidayOver60hInfo> asOfStartNextDayOfPeriodEnd,
 			Optional<HolidayOver60hInfo> lapsed,
 			List<HolidayOver60hError> holidayOver60hErrors){
 
 		AggrResultOfHolidayOver60h domain = new AggrResultOfHolidayOver60h();
-		domain.usedTimes = usedTimes;
+		//domain.usedTimes = usedTimes;
 		domain.holidayOver60hErrors = holidayOver60hErrors;
 		domain.asOfPeriodEnd = asOfPeriodEnd;
 		domain.asOfStartNextDayOfPeriodEnd = asOfStartNextDayOfPeriodEnd;

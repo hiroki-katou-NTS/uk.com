@@ -10,15 +10,16 @@ import nts.arc.primitive.HalfIntegerPrimitiveValue;
 import nts.arc.primitive.constraint.HalfIntegerRange;
 
 /**
+ * 年休付与日数
  * The Class YearVacationAge.
  */
 @HalfIntegerRange(min = 0, max = 99.5)
 public class AnnualLeaveGrantDay extends HalfIntegerPrimitiveValue<AnnualLeaveGrantDay> implements Serializable {
-    
+
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
-    
-    
+
+
     /**
      * Instantiates a new annual leave grant day.
      *

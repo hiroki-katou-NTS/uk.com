@@ -1,14 +1,12 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export;
 
-import java.util.Optional;
-
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.GrantPeriodAtr;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.NextDayAfterPeriodEndWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveLapsedWork;
-import nts.uk.ctx.at.shared.dom.specialholiday.export.NextSpecialLeaveGrant;
 
 /**
  * 処理単位分割日
@@ -19,38 +17,37 @@ import nts.uk.ctx.at.shared.dom.specialholiday.export.NextSpecialLeaveGrant;
 @Setter
 public class SpecialLeaveDividedDayEachProcess {
 
+	/** 終了日 */
+	private NextDayAfterPeriodEndWork 	endDay;
+	/** 消滅（消滅情報WORK） */
+	private SpecialLeaveLapsedWork lapsedWork;
 	/** 年月日 */
 	private GeneralDate ymd;
-	/** 消滅情報WORK */
-	private SpecialLeaveLapsedWork lapsedWork;
-	/** 付与情報WORK */
+	/** 付与（付与情報WORK） */
 	private SpecialLeaveGrantWork grantWork;
-	/** 次回年休付与 */
-	private Optional<NextSpecialLeaveGrant> nextSpecialLeaveGrant;
-	/** 終了日の期間かどうか */
-	private boolean dayBeforePeriodEnd;
-	/** 終了日の翌日の期間かどうか */
-	private boolean nextDayAfterPeriodEnd;
-	/** 付与後 */
-	private boolean afterGrant;
-//	/** 何回目の付与なのか */
-//	@Setter
-//	private int grantNumber = 0;
+	/** 付与前か付与後か */
+	private GrantPeriodAtr grantPeriodAtr;
 
+//	/** 次回年休付与 */
+//	private Optional<NextSpecialLeaveGrant> nextSpecialLeaveGrant;
 
 	/**
 	 * コンストラクタ
+	 * @param endDay 終了日
+	 * @param lapsedWork 消滅（消滅情報WORK）
 	 * @param ymd 年月日
+	 * @param grantWork 付与（付与情報WORK）
+	 * @param grantPeriodAtr 付与前か付与後か
+	 * @return  処理単位分割日
 	 */
 	public SpecialLeaveDividedDayEachProcess(GeneralDate ymd){
 
-		this.ymd = ymd;
+		this.endDay = new NextDayAfterPeriodEndWork();
 		this.lapsedWork = new SpecialLeaveLapsedWork();
+		this.ymd = ymd;
 		this.grantWork = new SpecialLeaveGrantWork();
-		this.nextSpecialLeaveGrant = Optional.empty();
-		this.dayBeforePeriodEnd = false;
-		this.nextDayAfterPeriodEnd = false;
-		this.afterGrant = false;
+//		this.nextSpecialLeaveGrant = Optional.empty();
+		this.grantPeriodAtr = new GrantPeriodAtr();
 	}
 
 //	/**
