@@ -947,7 +947,7 @@ export class KafS11AComponent extends KafS00ShrComponent {
         let actualContentDispList = vm.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst,
             param: any = {
                 employeeId: vm.user.employeeId,
-                period: { startDate: null, endDate: null },
+                period: { startDate: vm.complementDate, endDate: vm.complementDate },
                 targetSelectionAtr: 1,
                 actualContentDisplayList: actualContentDispList ? actualContentDispList : [],
                 managementData: vm.recHolidayMngLst,
@@ -972,7 +972,7 @@ export class KafS11AComponent extends KafS00ShrComponent {
         let actualContentDispList = vm.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst,
             param: any = {
                 employeeId: vm.user.employeeId,
-                period: { startDate: null, endDate: null },
+                period: { startDate: vm.leaveDate, endDate: vm.leaveDate },
                 targetSelectionAtr: 1,
                 actualContentDisplayList: actualContentDispList ? actualContentDispList : [],
                 managementData: vm.absHolidayMngLst,
@@ -997,7 +997,7 @@ export class KafS11AComponent extends KafS00ShrComponent {
         let actualContentDispList = vm.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst,
             param: any = {
                 employeeId: vm.user.employeeId,
-                period: { startDate: null, endDate: null },
+                period: { startDate: vm.leaveDate, endDate: vm.leaveDate },
                 targetSelectionAtr: 1,
                 actualContentDisplayList: actualContentDispList ? actualContentDispList : [],
                 managementData: vm.absWorkMngLst,
