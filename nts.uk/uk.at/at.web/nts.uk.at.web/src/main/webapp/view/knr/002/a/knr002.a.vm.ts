@@ -74,9 +74,8 @@ module nts.uk.at.view.knr002.a {
 
                 var dfd = $.Deferred<void>();
                 vm.loadData(vm.selectedFilter());
-                // setInterval(vm.refresh.bind(vm), 300000);
-                // for test
-                setInterval(vm.refresh.bind(vm), 15000);																	
+                setInterval(vm.refresh.bind(vm), 300000);
+                																	
                 dfd.resolve();											
                 return dfd.promise();											
             }
