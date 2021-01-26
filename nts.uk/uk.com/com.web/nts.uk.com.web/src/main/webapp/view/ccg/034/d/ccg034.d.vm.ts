@@ -1762,6 +1762,7 @@ module nts.uk.com.view.ccg034.d {
               'overflow': 'hidden',
               'text-overflow': 'ellipsis',
               'word-break': 'break-word',
+              '-ms-word-break': 'break-all',
             })
             .append($partMenuHTML);
           break;
@@ -1788,6 +1789,7 @@ module nts.uk.com.view.ccg034.d {
               'overflow': 'hidden',
               'text-overflow': 'ellipsis',
               'word-break': 'break-word',
+              '-ms-word-break': 'break-all',
               'background-color': partDataLabelModel.backgroundColor,
             })
             .append($partLabelHTML);
@@ -1817,6 +1819,7 @@ module nts.uk.com.view.ccg034.d {
               'overflow': 'hidden',
               'text-overflow': 'ellipsis',
               'word-break': 'break-word',
+              '-ms-word-break': 'break-all',
             })
             .append($partLinkHTML);
           break;
@@ -1846,6 +1849,7 @@ module nts.uk.com.view.ccg034.d {
               'overflow': 'hidden',
               'text-overflow': 'ellipsis',
               'word-break': 'break-word',
+              '-ms-word-break': 'break-all',
             })
             .append($partAttachmentHTML);
           break;
