@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.command.knr.knr002.c;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -18,9 +19,11 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ReqComStatus
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.ReqComStatusMonitoringRepository;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.NRRomVersion;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.SettingValue;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.TimeRecordSetFormatList;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.TimeRecordSetUpdate;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.TimeRecordSetUpdateList;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.VariableName;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.repo.TimeRecordSetFormatListRepository;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.repo.TimeRecordSetUpdateListRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.shr.com.context.AppContexts;
@@ -46,6 +49,10 @@ public class RegisterAndSubmitChangesCommandHandler extends CommandHandler<Regis
 	@Inject
 	private TimeRecordSetUpdateListRepository timeRecordSetUpdateListRepository;
 	
+	//	タイムレコード設定フォーマットリストRepository.get
+	@Inject
+	private TimeRecordSetFormatListRepository timeRecordSetFormatListRepository;
+	
 	@Override
 	protected void handle(CommandHandlerContext<RegisterAndSubmitChangesCommand> context) {
 		
@@ -57,6 +64,8 @@ public class RegisterAndSubmitChangesCommandHandler extends CommandHandler<Regis
 		List<ReqComStatusMonitoring> listReqComStatusMonitoring = reqComStatusMonitoringRepository.get(contractCode, listEmpInfoTerminalCodes, true);
 		
 		List<TimeRecordSetUpdateList> listTimeRecordSetUpdateList = timeRecordSetUpdateListRepository.get(contractCode, listEmpInfoTerminalCodes);
+		
+		List<TimeRecordSetFormatList> machineInfoLst = this.timeRecordSetFormatListRepository.get(contractCode, listEmpInfoTerminalCodes);
 		
 		// 2: リクエスト通信の状態監視＞0件
 		if (!listReqComStatusMonitoring.isEmpty()) {
@@ -70,13 +79,23 @@ public class RegisterAndSubmitChangesCommandHandler extends CommandHandler<Regis
 																.map(e -> new TimeRecordSetUpdate(new VariableName(e.getVariableName()), new SettingValue(e.getUpdateValue())))
 																.collect(Collectors.toList());
 		
-		List<TimeRecordSetUpdateList> listTimeRecordSetUpdateListForRegister = listEmpInfoTerminalCodes.stream()
-																					.map(e -> new TimeRecordSetUpdateList(e,
-																							new EmpInfoTerminalName(command.getEmpInfoTerName()),
-																							new NRRomVersion(command.getRomVersion()),
-																							ModelEmpInfoTer.valueOf(command.getModelEmpInfoTer()),
-																							listTimeRecordSetUpdate))
-																					.collect(Collectors.toList());
+		List<TimeRecordSetUpdateList> listTimeRecordSetUpdateListForRegister = 
+											listEmpInfoTerminalCodes.stream()
+											.map(e -> {
+												Optional<TimeRecordSetFormatList> machineInfo = machineInfoLst.stream().filter(x -> Integer.parseInt(x.getEmpInfoTerCode().v()) == Integer.parseInt(e.v())).findAny();
+												if(!machineInfo.isPresent()) {
+													//	do something
+													return new TimeRecordSetUpdateList(e, new EmpInfoTerminalName(""), new NRRomVersion(""),  ModelEmpInfoTer.valueOf(command.getModelEmpInfoTer()), listTimeRecordSetUpdate);
+												}
+												TimeRecordSetFormatList machineInfoVal = machineInfo.get();
+												TimeRecordSetUpdateList timeRecordSetUpdateList = new TimeRecordSetUpdateList(e,
+																															  machineInfoVal.getEmpInfoTerName(),
+																															  machineInfoVal.getRomVersion(),
+																															  machineInfoVal.getModelEmpInfoTer(),
+																															  listTimeRecordSetUpdate
+												);
+												return timeRecordSetUpdateList;	
+												}).collect(Collectors.toList());
 		
 		// 4: 登録する(require, 契約コード、就業情報端末コード、タイムレコード設定更新リスト)
 		registerTimeRecordSetUpdateListCommandHandler.handle(listTimeRecordSetUpdateListForRegister);
