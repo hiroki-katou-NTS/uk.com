@@ -91,34 +91,17 @@ public class CountNoOfPeopleCtgByAttributeService {
 			,	AggregationUnitOfEmployeeAttribute unit
 			,	List<IntegrationOfDaily> dailyWorks) {
 		
-		Map<GeneralDate, List<WorkInfoWithAffiliationInfo>> maps = dailyWorks.stream()
+		return dailyWorks.stream()
 				.collect(Collectors.groupingBy(IntegrationOfDaily::getYmd))
 				.entrySet().stream()
 				.collect(Collectors.toMap(Map.Entry::getKey, entry ->{
 					return entry.getValue().stream()
 							.map(c -> new WorkInfoWithAffiliationInfo(c.getAffiliationInfor(), c.getWorkInformation()))
 							.collect(Collectors.toList());
-				}));
-		
-		Map<GeneralDate, Map<AggregationKey<?>, BigDecimal>> result = maps.entrySet().stream()
+				})).entrySet().stream()
 				.collect(Collectors.toMap(Map.Entry::getKey, entry -> {
-					Map<AggregationKey<?>, BigDecimal> result1 = NumberOfEmployeesByAttributeCountingService.count(require, unit, entry.getValue());
-					return result1;
+					return NumberOfEmployeesByAttributeCountingService.count(require, unit, entry.getValue());
 				}));
-		
-		return result;
-		
-//		return dailyWorks.stream()
-//				.collect(Collectors.groupingBy(IntegrationOfDaily::getYmd))
-//				.entrySet().stream()
-//				.collect(Collectors.toMap(Map.Entry::getKey, entry ->{
-//					return entry.getValue().stream()
-//							.map(c -> new WorkInfoWithAffiliationInfo(c.getAffiliationInfor(), c.getWorkInformation()))
-//							.collect(Collectors.toList());
-//				})).entrySet().stream()
-//				.collect(Collectors.toMap(Map.Entry::getKey, entry -> {
-//					return NumberOfEmployeesByAttributeCountingService.count(require, unit, entry.getValue());
-//				}));
 	}
 	
 public static interface Require extends NumberOfEmployeesByAttributeCountingService.Require{
