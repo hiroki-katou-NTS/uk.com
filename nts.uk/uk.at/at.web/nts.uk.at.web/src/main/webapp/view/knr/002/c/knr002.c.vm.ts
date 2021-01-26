@@ -68,6 +68,7 @@ module nts.uk.at.view.knr002.c {
                 ]);
                 
                 vm.currentCode1.subscribe((value) => {
+                    console.time('C3_6')
                     vm.loadSmallGrid(value);
                 });
 
@@ -76,11 +77,13 @@ module nts.uk.at.view.knr002.c {
                 });
 
                 vm.currentCode2.subscribe((value) => {
+                    console.time('C4_4');
                     let rowData: RemoteSettingsDto = ko.toJS(vm.smallItemData).filter((item: RemoteSettingsDto) => item.smallClassification == value)[0]; 
                     vm.smallClassificationName(rowData.smallClassification);
                     vm.rowData(rowData);
                     vm.setInputMode(rowData.inputType);
                     vm.bindDataByType(rowData);
+                    console.timeEnd('C4_4');
                 });
 
                 vm.loadSettingGrid();
@@ -151,7 +154,6 @@ module nts.uk.at.view.knr002.c {
                         vm.currentValueList(inputRangeArr.map((item: any) => new BoxModel(item.charAt(0), item.substring(2, item.length -1))));
                         vm.selectedCurrentValue(rowData.currentValue);
                         vm.updateValueList(inputRangeArr.map((item: any) => new BoxModel(item.charAt(0), item.substring(2, item.length -1))));
-                        console.log(vm.updateValueList(), 'update value list');
                         if (rowData.updateValue.length == 0) {
                           vm.selectedUpdateValue(rowData.currentValue);  
                           break;
@@ -181,6 +183,7 @@ module nts.uk.at.view.knr002.c {
                 var vm = this;
                 
                 var dfd = $.Deferred<void>();
+                console.time('起動時');
                 let data : any = getShared('knr002-c');
                 vm.loadData(data);;
                 dfd.resolve();
@@ -214,8 +217,6 @@ module nts.uk.at.view.knr002.c {
                     let timeRecordSetUpdateDto = new TimeRecordSetUpdateDto(key, obj[key]);
                     listTimeRecordSetUpdateDto.push(timeRecordSetUpdateDto); 
                 }   
-                
-                console.log(vm.dataSource(), 'dataSource');
             
                 let command: any = {
                     empInfoTerCode: [vm.empInfoTerCode()],
@@ -243,7 +244,6 @@ module nts.uk.at.view.knr002.c {
                 .always(() => {
                     blockUI.clear();
                     if (status) {
-                        console.log(command, 'command: ') ;
                         nts.uk.ui.dialog.confirm({ messageId: "Msg_2028" })
                         .ifYes(() => {
                             command.displayName = vm.empInfoTerName();
@@ -269,7 +269,7 @@ module nts.uk.at.view.knr002.c {
 
             public addToSetting() {
                 const vm = this;
-                
+                console.time('C11_2');
                 if (vm.hasError()) {
                     return;
                 }
@@ -294,9 +294,7 @@ module nts.uk.at.view.knr002.c {
                     case INPUT_TYPE.SELECTION:
                         vm.checkExistBeforeAdd(vm.rowData().smallClassification);
                         let indexInputRange = _.findIndex(vm.updateValueList(), (item) => vm.selectedUpdateValue() ==  item.id);
-                        console.log(indexInputRange, 'index input range');
                         let newRow = new SettingValue(Math.random(), vm.rowData().majorClassification, vm.rowData().smallClassification, 'yes', '⦿' + vm.updateValueList()[indexInputRange].name, vm.rowData().variableName, vm.selectedUpdateValue());
-                        console.log(newRow, 'row');
                         vm.settingData.push(newRow);
                         break;
                     case INPUT_TYPE.CHECK:
@@ -313,22 +311,23 @@ module nts.uk.at.view.knr002.c {
                 vm.selectedRowIndex(-1)
                 $('#grid').igGridSelection('selectRow', vm.selectedRowIndex());
                 $("#grid").igGrid("dataSourceObject", vm.settingData).igGrid("dataBind");
+                console.timeEnd('C11_2');
             }
 
             public removeFromSetting() {
                 const vm = this;
-                console.log(vm.selectedRowIndex(), 'selectedRowIndex');
+                console.time('C11_3');
                 if (vm.selectedRowIndex() == -1) {
                     return;
                 }
                 vm.settingData.splice(vm.selectedRowIndex(), 1);
                 
                 $("#grid").igGrid("dataSourceObject", vm.settingData).igGrid("dataBind");  
-                console.log(vm.settingData, 'setting data');
                 if (vm.selectedRowIndex() == vm.settingData.length) {
                     vm.selectedRowIndex(vm.selectedRowIndex() - 1);
                 }
                 $('#grid').igGridSelection('selectRow', vm.selectedRowIndex());
+                console.time('C11_3');
             }
 
             private loadSettingGrid() {
@@ -370,6 +369,7 @@ module nts.uk.at.view.knr002.c {
                 const vm = this;
                 blockUI.invisible();
 
+                
                 // line 1
                 vm.empInfoTerCode(data.empInfoTerCode);
                 vm.empInfoTerName(data.empInfoTerName);
@@ -386,6 +386,7 @@ module nts.uk.at.view.knr002.c {
                             vm.currentCode1(vm.bigItemData()[0].majorClassification);
                         }
                     }     
+                    console.timeEnd('起動時');
                 })
                 .fail(res => console.log('fail roi'))
                 .always(() => blockUI.clear());
@@ -431,6 +432,8 @@ module nts.uk.at.view.knr002.c {
                     vm.smallItemData(vm.dataSource().filter((item) => item.majorClassification == majorName));
                     vm.currentCode2(vm.smallItemData()[0].smallClassification);
                 }
+
+                console.timeEnd('C3_6');
             }
 
             private setInputMode(inputType: number) {
