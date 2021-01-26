@@ -1,5 +1,11 @@
 package nts.uk.ctx.at.schedule.dom.schedule.task.taskpalette;
 
+/**
+ * 作業状態
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.勤務予定.作業.作業パレット.作業状態
+ * @author dan_pv
+ *
+ */
 public enum TaskStatus {
 	
 	/** 使用可能 */
