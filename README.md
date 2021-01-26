@@ -47,6 +47,7 @@
   - `./gradlew eclipse`: Initial Eclipse project for import to Eclipse IDE.
   - `./graldew initd`: Initial Default depends projects.
   - `./gradlew upver`: Update version of all sub projects in Universal K.
+  - `./gradlew tsc`: Build typescript (use `tscw` for build and continue watch & build).
   - `./gradlew test`: Runs the unit tests.
   - `./gradlew war`:  Generates a war archive with all the compiled classes, the web-app content and the libraries.
   - `./gradlew task`: List all task of project.
