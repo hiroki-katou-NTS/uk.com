@@ -60,11 +60,13 @@ public class GetListInfoOfEmpInfoTerminal {
 		
 		// 1: get*(契約コード)：　就業情報端末<List>
 		List<EmpInfoTerminal> listEmpInfo = empInfoTerminalRepository.get(contractCode);
-		
-		List<String> listEmpInfoCode = listEmpInfo.stream().map(e -> e.getEmpInfoTerCode().v()).collect(Collectors.toList());
+				
+		List<String> listWorkLocationCd = listEmpInfo.stream().filter(e -> e.getCreateStampInfo().getWorkLocationCd().isPresent())
+															  .map(e -> e.getCreateStampInfo().getWorkLocationCd().get().v())
+															  .collect(Collectors.toList());
 		
 		// 2: get*([ログイン変数の契約コード、端末情報.打刻情報の作成.勤務場所コード]<List>): 勤務場所名称
-		Map<String, String> mapWorkLocationCodeAndName = workLocationRepository.getNameByCode(companyId, listEmpInfoCode);
+		Map<String, String> mapWorkLocationCodeAndName = workLocationRepository.getNameByCode(companyId, listWorkLocationCd);
 		
 		// 3: 端末の現在状態の判断(require, 契約コード, 就業情報端末List): 端末の通信状態
 		TerminalComStatus terminalComStatus = JudgCurrentStatusEmpInfoTerminal.judgingTerminalCurrentState(requireJudImpl, contractCode, listEmpInfo);
