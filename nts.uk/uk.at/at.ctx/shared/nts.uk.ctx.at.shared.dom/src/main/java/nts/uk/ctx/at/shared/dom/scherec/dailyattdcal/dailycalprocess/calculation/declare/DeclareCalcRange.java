@@ -141,12 +141,14 @@ public class DeclareCalcRange {
 				new TimeWithDayAttr(rangeOfOneDay.getStart().valueAsMinutes()),
 				new TimeWithDayAttr(rangeOfOneDay.getEnd().valueAsMinutes()),
 				new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN));
+		// 休出かどうかの判断
+		domain.isHolidayWork = workType.isHolidayWork();
+		// add 2021.1.13 shuichi_ishida (Redmine#113854)
+		if (!itgOfDaily.getAttendanceLeave().isPresent()) return domain;
 		// 申告出退勤の作成
 		domain.attdLeave = DeclareAttdLeave.create(
 				itgOfWorkTime.getWorkTimeSetting(),
 				predTimeSet, itgOfDaily.getAttendanceLeave().get(), declareSet);
-		// 休出かどうかの判断
-		domain.isHolidayWork = workType.isHolidayWork();
 		// 申告用就業判断時間帯の取得
 		{
 			if (domain.isHolidayWork){
@@ -158,6 +160,7 @@ public class DeclareCalcRange {
 				domain.workTimezone = DeclareCalcRange.getWorkSheetForOvertime(calcRangeRecord);
 			}
 		}
+		if (!domain.workTimezone.isPresent()) return domain;
 		// 申告用出勤系範囲の取得
 		DeclareAttdRange attdRange = DeclareCalcRange.getAttendanceRange(
 				domain, declareSet, itgOfWorkTime, predTimeSet, companyCommonSetting);

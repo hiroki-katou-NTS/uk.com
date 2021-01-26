@@ -204,8 +204,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		boolean isManageAnnualLeave = false;
 
 		// ドメインモデル「年休設定」を取得する
-		AnnualPaidLeaveSetting annualLeaveSet
-			= require.annualPaidLeaveSetting(companyId);
+		AnnualPaidLeaveSetting annualLeaveSet = require.annualPaidLeaveSetting(companyId);
 
 		if (annualLeaveSet != null) isManageAnnualLeave = annualLeaveSet.isManaged();
 		if (!isManageAnnualLeave) return Optional.empty();

@@ -20,6 +20,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.print.CommonAppPrint
 import nts.uk.ctx.at.request.dom.application.common.service.print.PrintContentOfApp;
 import nts.uk.ctx.at.request.dom.application.common.service.print.PrintContentOfEachApp;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -74,6 +75,26 @@ public class ApplicationExportService extends ExportService<AppPrintQuery> {
 				}).findAny().map(x -> x.getAppName()).orElse(null);
 			break;
 		case OVER_TIME_APPLICATION:
+			List<ListOfAppTypesCmd> overtimeAppLst = appNameList.stream()
+					.filter(x -> x.getAppType()==ApplicationType.OVER_TIME_APPLICATION.value).collect(Collectors.toList());
+			applicationName = overtimeAppLst.stream()
+					.filter(x -> {
+						boolean condition1 = x.getAppType()==ApplicationType.OVER_TIME_APPLICATION.value;
+						boolean condition2 = false;
+						if(printContentOfApp.getOpDetailOutput().isPresent()) {
+							ApplicationTypeDisplay applicationTypeDisplay = null;
+							OvertimeAppAtr overtimeAppAtr = printContentOfApp.getOpDetailOutput().get().getAppOverTime().getOverTimeClf();
+							if(overtimeAppAtr==OvertimeAppAtr.EARLY_OVERTIME) {
+								applicationTypeDisplay = ApplicationTypeDisplay.EARLY_OVERTIME;
+							} else if(overtimeAppAtr==OvertimeAppAtr.NORMAL_OVERTIME) {
+								applicationTypeDisplay = ApplicationTypeDisplay.NORMAL_OVERTIME;
+							} else {
+								applicationTypeDisplay = ApplicationTypeDisplay.EARLY_NORMAL_OVERTIME;
+							}
+							condition2 = x.getOpApplicationTypeDisplay()==applicationTypeDisplay.value;
+						}
+						return condition1 && condition2;
+					}).findAny().map(x -> x.getAppName()).orElse(null);
 			break;
 		default:
 			applicationName = appNameList.stream().filter(x -> x.getAppType()==application.getAppType().value).findAny().map(x -> x.getAppName()).orElse(null);

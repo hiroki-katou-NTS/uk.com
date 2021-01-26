@@ -16,6 +16,7 @@ import nts.uk.ctx.at.record.app.find.monthly.root.dto.AgreementTimeOfMonthlyDto;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
@@ -39,7 +40,7 @@ public class AgreementTimeOfManagePeriodDto extends MonthlyItemCommon{
 	/** 社員ID */
 	private String employeeId;
 	/** 月度 */
-	private YearMonth yearMonth;
+	private Integer yearMonth;
 	
 	/** 36協定対象時間  */
 	@AttendanceItemLayout(jpPropertyName = AGREEMENT, layout = LAYOUT_A)
@@ -79,7 +80,7 @@ public class AgreementTimeOfManagePeriodDto extends MonthlyItemCommon{
 
 	@Override
 	public YearMonth yearMonth() {
-		return yearMonth;
+		return YearMonth.of(yearMonth);
 	}
 
 	@Override
@@ -100,7 +101,7 @@ public class AgreementTimeOfManagePeriodDto extends MonthlyItemCommon{
 			dto.setBreakdown(AgreementTimeBreakdownDto.from(domain.getBreakdown()));
 			dto.setAgreMax(AgreementTimeOfMonthlyDto.from(domain.getLegalMaxTime()));
 			dto.setState(domain.getStatus().value);
-			dto.setYearMonth(domain.getYm());
+			dto.setYearMonth(domain.getYm().v());
 			dto.exsistData();
 		}
 		return dto;

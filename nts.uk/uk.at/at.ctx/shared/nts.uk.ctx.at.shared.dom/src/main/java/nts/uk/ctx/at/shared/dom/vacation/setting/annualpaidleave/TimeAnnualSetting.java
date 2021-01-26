@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
  * 　時間年休管理設定
  * The Class TimeAnnualSetting.
  */
+/** 時間年休管理設定 **/
 @Getter
 public class TimeAnnualSetting extends DomainObject implements Serializable {
 
@@ -50,6 +51,9 @@ public class TimeAnnualSetting extends DomainObject implements Serializable {
     // 1日の時間
     private Optional<AnnualTimePerDay> annualTimePerDay;
 
+    // 時間年休一日の時間
+    private TimeAnnualLeaveTimeDay timeAnnualLeaveTimeDay; 
+    
     /**
      * Instantiates a new time vacation setting.
      *
@@ -59,8 +63,8 @@ public class TimeAnnualSetting extends DomainObject implements Serializable {
         this.timeManageType = memento.getTimeManageType();
         this.timeUnit = memento.getTimeUnit();
         this.maxYearDayLeave = memento.getMaxYearDayLeave();
-//        this.isEnoughTimeOneDay = memento.isEnoughTimeOneDay();
         this.roundProcessClassific = memento.GetRoundProcessClassific();
+        this.timeAnnualLeaveTimeDay = memento.getTimeAnnualLeaveTimeDay();
     }
 
     /**
@@ -72,7 +76,7 @@ public class TimeAnnualSetting extends DomainObject implements Serializable {
         memento.setTimeManageType(this.timeManageType);
         memento.setTimeUnit(this.timeUnit);
         memento.setMaxYearDayLeave(this.maxYearDayLeave);
-//        memento.setEnoughTimeOneDay(this.isEnoughTimeOneDay);
         memento.setRoundProcessClassific(this.roundProcessClassific);
+        memento.setTimeAnnualLeaveTimeDay(this.timeAnnualLeaveTimeDay);
     }
 }

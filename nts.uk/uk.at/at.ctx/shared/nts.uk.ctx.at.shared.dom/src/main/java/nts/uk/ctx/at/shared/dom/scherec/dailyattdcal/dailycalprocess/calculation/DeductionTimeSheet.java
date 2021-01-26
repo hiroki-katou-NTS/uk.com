@@ -59,7 +59,7 @@ public class DeductionTimeSheet {
 	// 計上用
 	private final List<TimeSheetOfDeductionItem> forRecordTimeZoneList;
 	//休憩
-	private final Optional<BreakTimeOfDailyAttd> breakTimeOfDailyList;
+	private final BreakTimeOfDailyAttd breakTimeOfDailyList;
 	//外出
 	private final Optional<OutingTimeOfDailyAttd> dailyGoOutSheet;
 	//短時間
@@ -230,8 +230,7 @@ public class DeductionTimeSheet {
 	}
 
 	private static List<TimeSheetOfDeductionItem> getBreakTimeDeductionForCalc(IntegrationOfDaily integrationOfDaily) {
-		return integrationOfDaily.getBreakTime().map(c -> c.changeAllTimeSheetToDeductionItem())
-														.orElseGet(() -> new ArrayList<>());
+		return integrationOfDaily.getBreakTime().changeAllTimeSheetToDeductionItem();
 	}
 
 	/** 休憩時間帯の取得 */
@@ -564,6 +563,9 @@ public class DeductionTimeSheet {
 			List<LateTimeSheet> lateTimeSheet,
 			CalculationRangeOfOneDay calcRange, boolean correctWithEndTime) {
 
+		if(todayWorkType.getAttendanceHolidayAttr().isHoliday())
+			return new ArrayList<>();
+		
 		// 固定休憩か流動休憩か確認する
 		if (integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeForm() == WorkTimeForm.FIXED
 				|| integrationOfWorkTime.getFlowWorkRestTimezone(todayWorkType).get().isFixRestTime()) {// 固定休憩の場合
@@ -594,6 +596,7 @@ public class DeductionTimeSheet {
 		/** ○計算範囲の取得 */
 		
 		/** △控除時間帯の取得 */
+		if (!dailyRecord.getAttendanceLeave().isPresent()) return Collections.emptyList();
 		val deductionTimeSheet = collectDeductionTimesForCorrect(deductionAtr, workType, workTime,
 				dailyRecord, oneDayOfRange, dailyRecord.getAttendanceLeave().get());
 		
@@ -679,6 +682,9 @@ public class DeductionTimeSheet {
 
 	private static nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork getTimeLeaveWork(
 			IntegrationOfDaily integrationOfDaily) {
+		if (!integrationOfDaily.getAttendanceLeave().isPresent()){
+			return new TimeLeavingWork(new WorkNo(1), null, null);
+		}
 		val timeLeaving = integrationOfDaily.getAttendanceLeave().get();
 		val timeLeave1 = timeLeaving.getAttendanceLeavingWork(1);
 		val timeLeave2 = timeLeaving.getAttendanceLeavingWork(2);

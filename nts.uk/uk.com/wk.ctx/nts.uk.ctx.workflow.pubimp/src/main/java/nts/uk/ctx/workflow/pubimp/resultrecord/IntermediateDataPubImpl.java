@@ -65,6 +65,7 @@ import nts.uk.ctx.workflow.pub.resultrecord.export.AppFrameInsExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppPhaseInsExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootInsContentExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootInsExport;
+import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootInsPeriodExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootSttMonthExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.ApprovalStatusExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.Request113Export;
@@ -669,7 +670,7 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 	}
 
 	@Override
-	public List<ApprovalRootStateExport> getAppRootInstanceByEmpPeriod(List<String> employeeIDLst, DatePeriod period, Integer rootType) {
+	public List<ApprovalRootStateExport> getAppRootInstanceDayByEmpPeriod(List<String> employeeIDLst, DatePeriod period, Integer rootType) {
 		String companyID = AppContexts.user().companyId();
 		List<ApprovalRootState> approvalRootStateLst = new ArrayList<>();
 		RecordRootType recordRootType = EnumAdaptor.valueOf(rootType, RecordRootType.class);
@@ -735,15 +736,23 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 	}
 
 	@Override
-	public ApprovalRootStateExport getAppRootInstanceMonthByEmpPeriod(String employeeID, DatePeriod period) {
-		String companyID = AppContexts.user().employeeId();
+	public ApprovalRootStateExport getAppRootInstanceMonthByEmpPeriod(String employeeID, DatePeriod period, YearMonth yearMonth, Integer closureID,
+			ClosureDate closureDate, GeneralDate baseDate) {
+		String companyID = AppContexts.user().companyId();
 		// ドメインモデル「就業実績確認状態」を取得する
-		AppRootConfirm appRootConfirm = appRootConfirmRepository.findByEmpPeriodMonth(companyID, employeeID, period).get();
+		Optional<AppRootConfirm> opAppRootConfirm = appRootConfirmRepository.findByEmpMonth(companyID, employeeID, yearMonth, closureID, closureDate, 
+				RecordRootType.CONFIRM_WORK_BY_MONTH);
+		if(!opAppRootConfirm.isPresent()) {
+			return null;
+		}
 		// ドメインモデル「中間データ」を取得する
-		AppRootInstance appRootInstance = appRootInstanceRepository.findByContainDate(companyID, employeeID, appRootConfirm.getRecordDate(), 
-				RecordRootType.CONFIRM_WORK_BY_MONTH).get();
+		Optional<AppRootInstance> opAppRootInstance = appRootInstanceRepository.findByContainDate(companyID, employeeID, opAppRootConfirm.get().getRecordDate(), 
+				RecordRootType.CONFIRM_WORK_BY_MONTH);
+		if(!opAppRootInstance.isPresent()) {
+			return null;
+		}
 		// 中間データから承認ルートインスタンスに変換する
-		ApprovalRootState approvalRootState = appRootInstanceService.convertFromAppRootInstance(appRootInstance, appRootConfirm);
+		ApprovalRootState approvalRootState = appRootInstanceService.convertFromAppRootInstance(opAppRootInstance.get(), opAppRootConfirm.get());
 		return new ApprovalRootStateExport(
 					approvalRootState.getRootStateID(),
 					approvalRootState.getRootType().value,
@@ -780,5 +789,30 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 											y.getAppDate());
 								}).collect(Collectors.toList()));
 					}).collect(Collectors.toList()));
+	}
+
+	@Override
+	public List<AppRootInsPeriodExport> getAppRootInstanceByEmpPeriod(List<String> employeeIDLst, DatePeriod period,
+			Integer rootType) {
+		return appRootInstanceService.getAppRootInstanceByEmpPeriod(employeeIDLst, period, EnumAdaptor.valueOf(rootType, RecordRootType.class))
+			.stream().map(x -> new AppRootInsPeriodExport(
+					x.getEmployeeID(), 
+					x.getAppRootInstanceLst().stream().map(y -> new AppRootInsExport(
+								y.getRootID(), 
+								y.getCompanyID(), 
+								y.getEmployeeID(), 
+								y.getDatePeriod(), 
+								y.getRootType().value, 
+								y.getListAppPhase().stream().map(z -> new AppPhaseInsExport(
+											z.getPhaseOrder(), 
+											z.getApprovalForm().value, 
+											z.getListAppFrame().stream().map(t -> new AppFrameInsExport(
+														t.getFrameOrder(), 
+														t.isConfirmAtr(), 
+														t.getListApprover())
+											).collect(Collectors.toList()))
+								).collect(Collectors.toList()))
+					).collect(Collectors.toList()))
+			).collect(Collectors.toList());
 	}
 }

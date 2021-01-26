@@ -23,9 +23,6 @@ public enum WorkCreateMethod {
     /** The description. */
     public String description;
 
-    /** The Constant values. */
-    private static final WorkCreateMethod[] values =  WorkCreateMethod.values();
-
     /**
      * Instantiates a new est comparison atr.
      *

@@ -27,8 +27,7 @@ public class CancelTimeZoneApplication {
 
 			if (data.getTimeZoneStampClassification() == TimeZoneStampClassificationShare.BREAK) {
 				// 処理中の打刻枠NOの休憩時間帯をクリアする
-				dailyApp.getBreakTime().ifPresent(x -> {
-					x.getBreakTimeSheets().stream()
+				dailyApp.getBreakTime().getBreakTimeSheets().stream()
 							.filter(y -> y.getBreakFrameNo().v() == data.getEngraveFrameNo().intValue())
 							.map(y -> {
 								y.setStartTime(null);
@@ -40,7 +39,6 @@ public class CancelTimeZoneApplication {
 								lstItemId.addAll(createItemId(data));
 								return y;
 							}).collect(Collectors.toList());
-				});
 			} else {
 				dailyApp.getShortTime().ifPresent(x -> {
 					// 処理中の打刻枠NOがキーとなる[短時間勤務時間帯]を削除する

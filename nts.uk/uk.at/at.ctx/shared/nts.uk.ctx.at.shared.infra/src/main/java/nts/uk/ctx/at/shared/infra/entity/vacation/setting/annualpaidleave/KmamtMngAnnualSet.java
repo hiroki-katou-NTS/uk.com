@@ -33,16 +33,7 @@ public class KmamtMngAnnualSet extends UkJpaEntity implements Serializable {
     @Basic(optional = false)
     @Column(name = "CID")
     private String cid;
-
-//    /** The half max grant day. */
-//    @Column(name = "HALF_MAX_GRANT_DAY")
-//    private Double halfMaxGrantDay;
-//
-//    /** The half max day year. */
-//    @Basic(optional = false)
-//    @Column(name = "HALF_MAX_DAY_YEAR")
-//    private Integer halfMaxDayYear;
-
+    
     /** The half manage atr. */
     @Column(name = "HALF_MANAGE_ATR")
     private Integer halfManageAtr;
@@ -92,7 +83,7 @@ public class KmamtMngAnnualSet extends UkJpaEntity implements Serializable {
 //    /** The Round Processing Classification. */
 //    @Column(name = "ROUND_PRO_CLA")
 //    private Integer roundProcessCla;
-
+    
     /**
      * Instantiates a new kmamt mng annual set.
      */
@@ -118,6 +109,7 @@ public class KmamtMngAnnualSet extends UkJpaEntity implements Serializable {
 //        this.cid = cid;
 //        this.halfMaxDayYear = halfMaxDayYear;
 //    }
+
 
     /* (non-Javadoc)
      * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()

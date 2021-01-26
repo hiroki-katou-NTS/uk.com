@@ -1,24 +1,17 @@
 package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 
-/**
- * 契約時間丸め
- * @author masaaki_jinno
- *
- */
+/** 契約時間丸め **/
 public enum ContractTimeRound {
 
-    /** Round up to 1 hour. */
-	RoundUpTo1Hour(1, "１時間に切り上げる", "１時間に切り上げる"),
-    
-    /** Not round. */
-    NotRound(2, "丸めない", "丸めない");
-
-	/** The value. */
-	public int value;
+	Round_up_to_1_hour(0, "１時間に切り上げる", "１時間に切り上げる"), 
 	
+	Do_not_round(1, "丸めない", "丸めない");
+
+	public int value;
+
 	/** The name id. */
 	public String nameId;
-	
+
 	/** The description. */
 	public String description;
 
@@ -32,6 +25,7 @@ public enum ContractTimeRound {
 	 * @param nameId the name id
 	 * @param description the description
 	 */
+
 	private ContractTimeRound(int value, String nameId, String description) {
 		this.value = value;
 		this.nameId = nameId;

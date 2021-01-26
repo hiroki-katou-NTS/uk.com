@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.shift.workcycle;
 
-import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
-
 import java.util.List;
 import java.util.Optional;
 

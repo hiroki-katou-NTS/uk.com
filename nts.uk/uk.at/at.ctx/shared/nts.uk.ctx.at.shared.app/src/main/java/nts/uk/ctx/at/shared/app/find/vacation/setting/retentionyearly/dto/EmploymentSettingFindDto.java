@@ -50,19 +50,6 @@ public class EmploymentSettingFindDto implements EmptYearlyRetentionSetMemento {
 		this.employmentCode = employmentCode;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.
-	 * EmptYearlyRetentionSetMemento#setUpperLimitSetting(nts.uk.ctx.at.shared.dom
-	 * .vacation.setting.retentionyearly.UpperLimitSetting)
-	 */
-	@Override
-	public void setUpperLimitSetting(UpperLimitSetting upperLimitSetting) {
-		this.upperLimitSetting = new UpperLimitSettingFindDto();
-		this.upperLimitSetting.setMaxDaysCumulation(upperLimitSetting.getMaxDaysCumulation().v());
-		this.upperLimitSetting
-				.setRetentionYearsAmount(upperLimitSetting.getRetentionYearsAmount().v());
-	}
 
 	/*
 	 * (non-Javadoc)

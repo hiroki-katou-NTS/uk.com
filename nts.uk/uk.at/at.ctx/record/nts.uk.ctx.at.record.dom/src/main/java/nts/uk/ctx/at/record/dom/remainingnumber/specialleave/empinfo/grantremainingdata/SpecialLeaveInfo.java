@@ -285,7 +285,7 @@ public class SpecialLeaveInfo implements Cloneable {
 		}
 
 		// 特別休暇情報残数を更新
-		this.updateRemainingNumber(aggregatePeriodWork.getGrantPeriodAtr().isAfterGrant());
+		this.updateRemainingNumber(aggregatePeriodWork.getGrantPeriodAtr() == GrantPeriodAtr.AFTER_GRANT);
 
 		// 特休情報を「特休の集計結果．特休情報（消滅）」に追加
 		if (!aggrResult.getLapsed().isPresent()){
@@ -414,7 +414,7 @@ public class SpecialLeaveInfo implements Cloneable {
 		}
 
 		// 特別休暇情報残数を更新
-		specialLeaveInfo.updateRemainingNumber(aggregatePeriodWork.getGrantPeriodAtr().isAfterGrant());
+		specialLeaveInfo.updateRemainingNumber(aggregatePeriodWork.getGrantPeriodAtr() == GrantPeriodAtr.AFTER_GRANT);
 
 		// 「特別休暇情報(付与時点)」に「特別休暇情報」を追加
 		if ( !aggrResult.getAsOfGrant().isPresent() ){
@@ -603,15 +603,15 @@ public class SpecialLeaveInfo implements Cloneable {
 				}
 
 				// 残数（現在）を消化後の状態にする
-				this.updateRemainingNumber(aggregatePeriodWork.getGrantPeriodAtr().isAfterGrant());
+				this.updateRemainingNumber(aggregatePeriodWork.getGrantPeriodAtr() == GrantPeriodAtr.AFTER_GRANT);
 
 				// 実特休（特休（マイナスあり））に使用数を加算する
 				this.remainingNumber.getSpecialLeaveWithMinus().addUsedNumber(
-						SpecialLeaveUseNumber.of(interimSpecialHolidayMng.getUseDays().get().v(),interimSpecialHolidayMng.getUseTimes().get().v()),
-						aggregatePeriodWork.getGrantPeriodAtr().isAfterGrant());
+						SpecialLeaveUseNumber.of(interimSpecialHolidayMng.getUseDays().map(x -> x.v()).orElse(0.0),interimSpecialHolidayMng.getUseTimes().map(x -> x.v()).orElse(0)),
+						aggregatePeriodWork.getGrantPeriodAtr() == GrantPeriodAtr.AFTER_GRANT);
 
 				// 特休情報残数を更新
-				this.updateRemainingNumber(aggregatePeriodWork.getGrantPeriodAtr().isAfterGrant());
+				this.updateRemainingNumber(aggregatePeriodWork.getGrantPeriodAtr() == GrantPeriodAtr.AFTER_GRANT);
 
 			}
 		}
@@ -629,7 +629,7 @@ public class SpecialLeaveInfo implements Cloneable {
 			// 特休残数がマイナスかチェック
 			val withMinus = this.remainingNumber.getSpecialLeaveWithMinus();
 			if (withMinus.getRemainingNumberInfo().getRemainingNumber().isMinus()){
-				if (specialLeaveAggregatePeriodWork.getGrantPeriodAtr().isAfterGrant()){
+				if (specialLeaveAggregatePeriodWork.getGrantPeriodAtr() == GrantPeriodAtr.AFTER_GRANT){
 					// 「特休不足エラー（付与後）」を追加
 					errors.add(SpecialLeaveError.AFTERGRANT);
 				}

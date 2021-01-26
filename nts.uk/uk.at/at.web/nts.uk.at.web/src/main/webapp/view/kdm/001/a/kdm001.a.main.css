@@ -80,10 +80,14 @@
 	z-index: 1;
 }
 
-.margin-bottom-15{
+.margin-bottom-15 {
 	margin-bottom: 15px;
 }
 
-.width-815{
+.width-815 {
 	width: 815px;
+}
+
+.residualNumber {
+	min-width: 120px;
 }

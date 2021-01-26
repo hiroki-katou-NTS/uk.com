@@ -32,6 +32,7 @@ module kaf001.a.viewmodel {
         isVisiableComplementLeaveApp  : KnockoutObservable<boolean>             = ko.observable(false);
         isVisiableStampApp            : KnockoutObservable<boolean>             = ko.observable(false);
         isVisiableStampAppOnlMode     : KnockoutObservable<boolean>             = ko.observable(false);
+        isVisiableOptionalItemApp     : KnockoutObservable<boolean>             = ko.observable(false);
         //app Name
         appNameDis: KnockoutObservable<ObjNameDis> = ko.observable(null);
         constructor() {
@@ -141,7 +142,7 @@ module kaf001.a.viewmodel {
             service.getAppDispName().done((res) => {
                 let obj: ObjNameDis = new ObjNameDis('', '', '',
                     '', '', '', '',
-                    '', '', '', '', '', '');
+                    '', '', '', '', '', '','');
                 if(res) {
                     _.each(res, function(app){
                         switch (app.programId) {
@@ -211,13 +212,19 @@ module kaf001.a.viewmodel {
                                 }
                                 break;
                             }
+                            case ApplicationScreenID.OPTIONAL_ITEM_APPLICATION : {
+                                self.isVisiableOptionalItemApp(true);
+                                obj.optionalItem = app.displayName;
+                            }
 
                         }
                     });
                 }
                 self.appNameDis(obj);
             }).fail((err) => {
-                dialog.alertError(err);
+                dialog.alertError(err).then(function () {
+                    nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");
+                });
             });
         }
 
@@ -315,6 +322,10 @@ module kaf001.a.viewmodel {
                         }
                         break;
                     }
+                    case ApplicationType.OPTIONAL_ITEM_APPLICATION: {
+                        vm.$jump("/view/kaf/020/a/index.xhtml", transfer);
+                        break;
+                    }
                 }
             }).fail((err) => {
 
@@ -342,6 +353,7 @@ module kaf001.a.viewmodel {
         LONG_BUSINESS_TRIP_APPLICATION          = 12,   /**連続出張申請*/
         BUSINESS_TRIP_APPLICATION_OFFICE_HELPER = 13,   /**出張申請オフィスヘルパー*/
         APPLICATION_36                          = 14,   /**３６協定時間申請*/
+        OPTIONAL_ITEM_APPLICATION               = 15,   /**任意項目申請*/
     }
 
     export enum ApplicationScreenID {
@@ -359,6 +371,7 @@ module kaf001.a.viewmodel {
         LONG_BUSINESS_TRIP_APPLICATION          = "",   /**連続出張申請*/
         BUSINESS_TRIP_APPLICATION_OFFICE_HELPER = "",   /**出張申請オフィスヘルパー*/
         APPLICATION_36                          = "KAF021",   /**３６協定時間申請*/
+        OPTIONAL_ITEM_APPLICATION               = "KAF020"     /**任意項目申請*/
     }
 
     //Interfaces
@@ -458,10 +471,11 @@ module kaf001.a.viewmodel {
         complt: string;//A2_10
         stamp: string;//A2_11
         stampOnline: string;
+        optionalItem: string;
         constructor(overTimeEarly: string, overTimeNormal: string, overTimeEarlyDepart: string,
                     absence: string, workChange: string,
                     businessTrip: string, goBack: string, holiday: string,
-                    annualHd: string, earlyLeaveCancel: string, complt: string, stamp: string, stampOnline: string) {
+                    annualHd: string, earlyLeaveCancel: string, complt: string, stamp: string, stampOnline: string, optionalItem: string) {
             this.overTimeEarly = overTimeEarly;
             this.overTimeNormal = overTimeNormal;
             this.overTimeEarlyDepart = overTimeEarlyDepart;
@@ -475,6 +489,7 @@ module kaf001.a.viewmodel {
             this.complt = complt;
             this.stamp = stamp;
             this.stampOnline = stampOnline;
+            this.optionalItem = optionalItem;
         }
     }
 }

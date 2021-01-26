@@ -34,21 +34,21 @@ public class DayTimeUsedNumberDto implements ItemConst, AttendanceItemDataGate {
 												TimeUsedNumberDto.from(domain.getUsedTime().orElse(null)));
 	}
 	
-	public AnnualLeaveUsedNumber toAnnual() {
-		return AnnualLeaveUsedNumber.of(
-								usedDays == null ? new AnnualLeaveUsedDays() : usedDays.toAnnual(), 
-								Optional.ofNullable(usedTime == null ? null : usedTime.toDomain()));
-	}
+//	public AnnualLeaveUsedNumber toAnnual() {
+//		return AnnualLeaveUsedNumber.of(
+//								usedDays == null ? new AnnualLeaveUsedDays() : usedDays.toAnnual(), 
+//								Optional.ofNullable(usedTime == null ? null : usedTime.toDomain()));
+//	}
 	
-	public SpecialLeaveUseNumber toSpecial(){
-		return new SpecialLeaveUseNumber(usedDays == null ? null : usedDays.toSpecial(),
-										Optional.ofNullable(usedTime == null ? null : usedTime.toSpecial()));
-	}
-	
-	public static DayTimeUsedNumberDto from(SpecialLeaveUseNumber domain){
-		return domain == null ? null : new DayTimeUsedNumberDto(DayUsedNumberDto.from(domain.getUseDays()), 
-																	TimeUsedNumberDto.from(domain.getUseTimes().orElse(null)));
-	}
+//	public SpecialLeaveUseNumber toSpecial(){
+//		return new SpecialLeaveUseNumber(usedDays == null ? null : usedDays.toSpecial(),
+//										Optional.ofNullable(usedTime == null ? null : usedTime.toSpecial()));
+//	}
+//	
+//	public static DayTimeUsedNumberDto from(SpecialLeaveUseNumber domain){
+//		return domain == null ? null : new DayTimeUsedNumberDto(DayUsedNumberDto.from(domain.getUseDays()), 
+//																	TimeUsedNumberDto.from(domain.getUseTimes().orElse(null)));
+//	}
 
 
 	@Override

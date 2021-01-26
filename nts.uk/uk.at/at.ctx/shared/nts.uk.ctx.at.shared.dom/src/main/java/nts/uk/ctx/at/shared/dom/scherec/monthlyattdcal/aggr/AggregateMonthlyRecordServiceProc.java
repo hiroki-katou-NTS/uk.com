@@ -3,17 +3,17 @@ package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
-import java.util.stream.Collectors;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.enterprise.concurrent.ManagedExecutorService;
-import javax.inject.Inject;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -32,7 +32,6 @@ import nts.uk.ctx.at.shared.dom.common.anyitem.AnyAmountMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
-import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
@@ -49,7 +48,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordServiceProc.RequireM8;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.AggregateAttendanceTimeValue;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
@@ -76,7 +74,6 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.totalcount.TotalC
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.VerticalTotalOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeekly;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.PerformanceAtr;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.CalcResultOfAnyItem;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
@@ -287,7 +284,8 @@ public class AggregateMonthlyRecordServiceProc {
 
 			// 残数処理
 			// こちらはDB書き込みをしているので非同期化できない
-			this.remainingProcess(require, cacheCarrier, monthPeriod, datePeriod, remainingProcAtr);
+			this.remainingProcess(require, cacheCarrier, monthPeriod, companyId, employeeId, yearMonth, closureId,   closureDate,
+					companySets, employeeSets, monthlyCalculatingDailys, datePeriod, remainingProcAtr);
 
 			// 非同期実行中の集計処理と待ち合わせ
 			try {
@@ -495,7 +493,10 @@ public class AggregateMonthlyRecordServiceProc {
 	 * @param datePeriod 期間（実行期間）
 	 * @param remainingProcAtr 残数処理フラグ
 	 */
-	private void remainingProcess(RequireM8 require, CacheCarrier cacheCarrier, DatePeriod monthPeriod,
+	private void remainingProcess(RequireM8 require,CacheCarrier cacheCarrier, DatePeriod period,
+			String companyId, String employeeId, YearMonth yearMonth, ClosureId closureId,   ClosureDate closureDate,
+			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets, 
+			MonthlyCalculatingDailys monthlyCalculatingDailys,
 			DatePeriod datePeriod, Boolean remainingProcAtr) {
 
 		ConcurrentStopwatches.start("12400:残数処理：");
@@ -521,7 +522,8 @@ public class AggregateMonthlyRecordServiceProc {
 		if (isCurrentMonth) {
 
 			// 残数処理
-			this.remainingProcess(require, cacheCarrier, monthPeriod, InterimRemainMngMode.MONTHLY, true);
+			this.remainingProcess(require, cacheCarrier, datePeriod, companyId, employeeId, yearMonth, closureId,
+					closureDate, companySets, employeeSets, monthlyCalculatingDailys,  InterimRemainMngMode.MONTHLY, true);
 		}
 
 		ConcurrentStopwatches.stop("12400:残数処理：");
@@ -1165,6 +1167,9 @@ public class AggregateMonthlyRecordServiceProc {
 	 */
 	private void remainingProcess(
 			RequireM8 require, CacheCarrier cacheCarrier, DatePeriod period,
+			String companyId, String employeeId, YearMonth yearMonth, ClosureId closureId,   ClosureDate closureDate,
+			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets, 
+			MonthlyCalculatingDailys monthlyCalculatingDailys,
 			InterimRemainMngMode interimRemainMngMode, boolean isCalcAttendanceRate) {
 
 //		ConcurrentStopwatches.start("12405:暫定データ作成：");
@@ -1178,14 +1183,24 @@ public class AggregateMonthlyRecordServiceProc {
 		// 振休
 		// 代休
 		// 特別休暇
-		val output = require.aggregation(cacheCarrier, period, interimRemainMngMode, isCalcAttendanceRate);
+		val output = require.aggregation(cacheCarrier, period, companyId, employeeId, yearMonth, closureId, closureDate,
+				companySets, employeeSets, monthlyCalculatingDailys, interimRemainMngMode, isCalcAttendanceRate);
 
 //		ConcurrentStopwatches.start("12410:年休積休：");
 
 		// 年休、積休
+		this.aggregateResult.getAnnLeaRemNumEachMonthList().addAll(output.getAnnLeaRemNumEachMonthList());
+		this.aggregateResult.getRsvLeaRemNumEachMonthList().addAll(output.getRsvLeaRemNumEachMonthList());
+		// 振休
+		this.aggregateResult.getAbsenceLeaveRemainList().addAll(output.getAbsenceLeaveRemainList());
+		// 代休
+		this.aggregateResult.getMonthlyDayoffRemainList().addAll(output.getMonthlyDayoffRemainList());
+		// 特別休暇
+		this.aggregateResult.getSpecialLeaveRemainList().addAll(output.getSpecialLeaveRemainList());
+		
+		// エラー一覧
+		this.aggregateResult.getPerErrors().addAll(output.getPerErrors());
 
-////		this.aggregateResult.getAnnLeaRemNumEachMonthList().add(output.annLeaRemNum);
-////		this.aggregateResult.getRsvLeaRemNumEachMonthList().add(output.rsvLeaRemNum);
 ////		this.aggregateResult.getPerErrors().addAll();
 //
 //		ConcurrentStopwatches.stop("12410:年休積休：");
@@ -1207,7 +1222,8 @@ public class AggregateMonthlyRecordServiceProc {
 //		this.specialLeaveRemain(require, cacheCarrier, period, interimRemainMngMode);
 //
 //		ConcurrentStopwatches.stop("12440:特別休暇：");
-
+		
+		
 	}
 
 	/**
@@ -1602,7 +1618,11 @@ public class AggregateMonthlyRecordServiceProc {
 
 		// 月初の所属情報を取得
 		boolean isExistStartWorkInfo = false;
-		if (this.monthlyCalculatingDailys.getWorkInfoOfDailyMap().containsKey(datePeriod.start())) {
+		val workInfo = this.monthlyCalculatingDailys.getWorkInfoOfDailyMap().entrySet().stream().filter(
+				x -> x.getKey().afterOrEquals(datePeriod.start()) && x.getKey().beforeOrEquals(datePeriod.end()))
+				.collect(Collectors.toList()).stream().sorted((x, y) -> x.getKey().compareTo(y.getKey())).findFirst();
+		
+		if (workInfo.isPresent()) {
 			isExistStartWorkInfo = true;
 		}
 		val workInfoOfDailyList = monthlyCalculatingDailys.getAffiInfoOfDailyMap();
@@ -1614,7 +1634,10 @@ public class AggregateMonthlyRecordServiceProc {
 			}
 			return null;
 		}
-		val firstInfoOfDaily = workInfoOfDailyList.get(datePeriod.start());
+		val firstInfoOfDaily = workInfoOfDailyList.entrySet().stream().filter(
+				x -> x.getKey().afterOrEquals(datePeriod.start()) && x.getKey().beforeOrEquals(datePeriod.end()))
+				.collect(Collectors.toList()).stream().sorted((x, y) -> x.getKey().compareTo(y.getKey())).findFirst().map(x -> x.getValue()).orElse(null);
+		//val firstInfoOfDaily = workInfoOfDailyList.get(datePeriod.start());
 		if (firstInfoOfDaily == null) {
 			if (isExistStartWorkInfo) {
 				val errorInfo = new MonthlyAggregationErrorInfo("003",
@@ -1720,6 +1743,9 @@ public class AggregateMonthlyRecordServiceProc {
 //		List<Closure> closure(String companyId);
 
 		AggregateMonthlyRecordValue aggregation(CacheCarrier cacheCarrier, DatePeriod period,
+				String companyId, String employeeId, YearMonth yearMonth, ClosureId closureId,   ClosureDate closureDate,
+				MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets, 
+				MonthlyCalculatingDailys monthlyCalculatingDailys,
 				InterimRemainMngMode interimRemainMngMode, boolean isCalcAttendanceRate);
 
 		/** 特別休暇基本情報 */

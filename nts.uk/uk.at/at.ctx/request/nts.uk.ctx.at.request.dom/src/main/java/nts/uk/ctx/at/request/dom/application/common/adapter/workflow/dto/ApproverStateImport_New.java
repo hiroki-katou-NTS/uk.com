@@ -38,4 +38,8 @@ public class ApproverStateImport_New {
 	private String representerEmail;
 	
 	private Integer approverInListOrder;
+	
+	public static ApproverStateImport_New createSimpleFromInstance(String approverID) {
+		return new ApproverStateImport_New(approverID, null, null, null, null, null, null, null, null, null, null, null, null);
+	}
 }

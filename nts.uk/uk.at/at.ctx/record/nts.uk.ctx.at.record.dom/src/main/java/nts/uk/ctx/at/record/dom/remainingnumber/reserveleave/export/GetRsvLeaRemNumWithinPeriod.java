@@ -402,8 +402,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 
 				// 積立年休付与WORKを作成　→　端数処理
 				GrantWork grantWork = GrantWork.of(annualLeaveInfo.getYmd(), new ReserveLeaveGrantDayNumber(grantDays));
-				grantWork.roundGrantDays(annualLeaveSet);
-
+				grantWork.roundGrantDays(annualLeaveSet , targetMaxSet);
 				// 積立年休付与WORKを返す
 				results.add(grantWork);
 			}
@@ -615,7 +614,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 	public static interface RequireM4 extends RequireM3, RequireM2, RequireM1, ReserveLeaveInfo.RequireM1,
 		nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriodProc.RequireM3 {
 
-		AnnualPaidLeaveSetting annualPaidLeaveSetting (String companyId);
+		//AnnualPaidLeaveSetting annualPaidLeaveSetting (String companyId);
 
 		List<ReserveLeaveGrantRemainingData> reserveLeaveGrantRemainingData(String employeeId, String cId);
 	}

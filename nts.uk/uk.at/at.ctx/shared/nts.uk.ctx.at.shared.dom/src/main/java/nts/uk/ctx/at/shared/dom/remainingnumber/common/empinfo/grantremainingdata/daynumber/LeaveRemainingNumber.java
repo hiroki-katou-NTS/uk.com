@@ -276,6 +276,9 @@ public class LeaveRemainingNumber {
 		// 1日の時間を取得
 		Optional<AnnualTimePerDay> annualTimePerDayOpt
 			= annualPaidLeave.getTimeSetting().getAnnualTimePerDay();
+		// 2021/1/21 watanabe repositoryに不具合があるので、いったん固定値を入れて実行します。
+		annualTimePerDayOpt = Optional.of(new AnnualTimePerDay(AnnualTimePerDayRefer.CompanyUniform,
+				new LaborContractTime(480), ContractTimeRound.Do_not_round));
 		if ( !annualTimePerDayOpt.isPresent() ){
 			return Optional.empty();
 		}
@@ -300,7 +303,7 @@ public class LeaveRemainingNumber {
 				// 丸め処理
 				if ( contractTime.isPresent()){
 					// 取得した契約時間を1時間単位で切り上げる
-					if ( annualTimePerDay.getContractTimeRound().equals(ContractTimeRound.RoundUpTo1Hour) ){
+					if ( annualTimePerDay.getContractTimeRound().equals(ContractTimeRound.Round_up_to_1_hour) ){
 							contractTime = Optional.of(contractTime.get().roundUp1Hour());
 					}
 				}

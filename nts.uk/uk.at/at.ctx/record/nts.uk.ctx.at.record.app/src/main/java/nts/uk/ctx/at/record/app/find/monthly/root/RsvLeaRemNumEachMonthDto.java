@@ -82,6 +82,8 @@ public class RsvLeaRemNumEachMonthDto extends MonthlyItemCommon {
 	private boolean grantAtr;
 
 	/** 未消化数 */
+	@AttendanceItemLayout(jpPropertyName = NOT_DIGESTION, layout = LAYOUT_G)
+	@AttendanceItemValue(type = ValueType.DAYS)
 	private double undigestedNumber;
 
 	@Override
@@ -152,6 +154,8 @@ public class RsvLeaRemNumEachMonthDto extends MonthlyItemCommon {
 			return Optional.of(ItemValue.builder().value(reserveLeaveGrant).valueType(ValueType.DAYS));
 		case (GRANT + ATTRIBUTE):
 			return Optional.of(ItemValue.builder().value(grantAtr).valueType(ValueType.FLAG));
+		case NOT_DIGESTION:
+			return Optional.of(ItemValue.builder().value(undigestedNumber).valueType(ValueType.DAYS));
 		default:
 			break;
 		}
@@ -193,7 +197,12 @@ public class RsvLeaRemNumEachMonthDto extends MonthlyItemCommon {
 		case CLOSURE_STATE:
 		case (GRANT + INFO):
 		case (GRANT + ATTRIBUTE):
+		case NOT_DIGESTION:
 			return PropType.VALUE;
+		case PERIOD:
+		case RETENTION:
+		case (REAL + RETENTION):
+			return PropType.OBJECT;
 		default:
 			break;
 		}
@@ -209,6 +218,8 @@ public class RsvLeaRemNumEachMonthDto extends MonthlyItemCommon {
 			(reserveLeaveGrant) = value.valueOrDefault(0d); break;
 		case (GRANT + ATTRIBUTE):
 			(grantAtr) = value.valueOrDefault(false); break;
+		case NOT_DIGESTION:
+			(undigestedNumber) = value.valueOrDefault(0d); break;
 		default:
 			break;
 		}

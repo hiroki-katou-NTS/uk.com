@@ -93,7 +93,7 @@ public class ReflectApplicationWorkRecord {
 
 		// 日別実績の修正からの計算 -- co xu ly tinh toan khac ko hay cua lich
 		List<IntegrationOfDaily> lstAfterCalc = require.calculateForSchedule(CalculateOption.asDefault(),
-				Arrays.asList(domainCorrect), Optional.empty(), reCalcAtr);
+				Arrays.asList(domainCorrect), Optional.empty(), ExecutionType.NORMAL_EXECUTION);
 		if (!lstAfterCalc.isEmpty()) {
 			dailyRecordApp.setDomain(lstAfterCalc.get(0));
 		}
