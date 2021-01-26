@@ -80,6 +80,7 @@ class ScreenGComponent extends ko.ViewModel {
 					vm.screenData().updateData(startData);
 					vm.screenData().initDumpData(data[0].yearMonth);
 					vm.screenData().setFocus('load');
+					vm.screenData().flexMonthActCalSet(startData.flexBasicSetting.comFlexMonthActCalSet);
 				}).always(() => { vm.$blockui('clear'); });
 			})
 			.always(() => vm.$blockui('clear'));

@@ -22,7 +22,7 @@ module nts.uk.at.kmk004.components.flex {
 		//法定内集計設定
 		legalAggrSet: IAggregateTimeSetting;
 		//所定労動時間使用区分
-		withinTimeUsageAttr:boolean;
+		withinTimeUsageAttr: boolean;
 
 	}
 
@@ -62,14 +62,13 @@ module nts.uk.at.kmk004.components.flex {
 		//会社別フレックス勤務集計方法
 		comFlexMonthActCalSet: KnockoutObservable<IComFlexMonthActCalSet> = ko.observable();
 		//フレックス勤務所定労働時間取得
-		getFlexPredWorkTime: KnockoutObservable<IGetFlexPredWorkTime> = ko.observable({ reference: 1 });
 		yearList: KnockoutObservableArray<YearItem> = ko.observableArray();
 		selectedYear: KnockoutObservable<number> = ko.observable();
 		monthlyWorkTimeSetComs: KnockoutObservableArray<MonthlyWorkTimeSetCom> = ko.observableArray();
 		serverData: SetCom;
 		serverYears: KnockoutObservableArray<Number> = ko.observableArray([]);
 		setting: KnockoutObservable<ScreenMonthlySetting> = ko.observable(new ScreenMonthlySetting());
-
+		flexMonthActCalSet: KnockoutObservable<IComFlexMonthActCalSet> = ko.observable();
 		selected: KnockoutObservable<any> = ko.observable();
 		selectedName: KnockoutObservable<string> = ko.observable();
 
@@ -81,8 +80,7 @@ module nts.uk.at.kmk004.components.flex {
 
 			if (param) {
 				this.yearList(_.chain(param.yearList).map((item) => { return new YearItem(item); }).orderBy(['year'], ['desc']).value());
-				this.comFlexMonthActCalSet(param.flexBasicSetting.flexMonthActCalSet);
-				this.getFlexPredWorkTime(param.flexBasicSetting.flexPredWorkTime);
+				this.comFlexMonthActCalSet(param.flexBasicSetting.comFlexMonthActCalSet);
 				this.alreadySettingList(param.alreadySettings);
 			}
 
@@ -251,8 +249,8 @@ module nts.uk.at.kmk004.components.flex {
 			this.yearList(_.chain(param.yearList).map((item) => { return new YearItem(item); }).orderBy(['year'], ['desc']).value());
 			this.serverYears(param.yearList);
 			this.selectedYear(param.yearList[0]);
-			this.comFlexMonthActCalSet(param.flexBasicSetting.flexMonthActCalSet);
-			this.getFlexPredWorkTime(param.flexBasicSetting.flexPredWorkTime);
+			this.comFlexMonthActCalSet(param.flexBasicSetting.comFlexMonthActCalSet);
+			this.flexMonthActCalSet(param.flexBasicSetting.flexMonthActCalSet)
 		}
 	}
 
@@ -380,9 +378,11 @@ module nts.uk.at.kmk004.components.flex {
 
 	export interface IDisplayFlexBasicSettingByCompanyDto {
 		//会社別フレックス勤務集計方法
-		flexMonthActCalSet: IComFlexMonthActCalSet
+		comFlexMonthActCalSet: IComFlexMonthActCalSet
 		//フレックス勤務所定労働時間取得
 		flexPredWorkTime: IGetFlexPredWorkTime;
+
+		flexMonthActCalSet: IComFlexMonthActCalSet
 	}
 	//会社別月単位労働時間 
 	export interface IMonthlyWorkTimeSetCom {

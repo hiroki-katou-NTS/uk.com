@@ -159,7 +159,7 @@ class ScreenJComponent extends ko.ViewModel {
 		vm.$blockui('invisible')
 			.then(() => vm.$ajax(API_J_URL.START_PAGE))
 			.done((data) => {
-				vm.screenData().getFlexPredWorkTime(data.flexBasicSetting.flexPredWorkTime);
+				vm.screenData().comFlexMonthActCalSet(data.flexBasicSetting.comFlexMonthActCalSet);
 				vm.screenData().setFocus('load');
 			})
 			.always(() => vm.$blockui('clear'));
@@ -318,7 +318,7 @@ class ScreenJComponent extends ko.ViewModel {
 						vm.screenData().selectedYear(data.yearList[0]);
 					}
 
-					vm.screenData().comFlexMonthActCalSet(data.flexBasicSetting.flexMonthActCalSet);
+					vm.screenData().flexMonthActCalSet(data.flexBasicSetting.flexMonthActCalSet);
 					vm.screenData().setFocus('load');
 				})
 				.always(() => vm.$blockui('clear'));

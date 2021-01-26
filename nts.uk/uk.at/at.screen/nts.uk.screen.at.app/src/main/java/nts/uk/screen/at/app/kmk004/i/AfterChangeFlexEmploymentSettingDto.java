@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.screen.at.app.kmk004.g.ComFlexMonthActCalSetDto;
 import nts.uk.screen.at.app.kmk004.g.GetFlexPredWorkTimeDto;
 
 /**
@@ -23,4 +24,6 @@ public class AfterChangeFlexEmploymentSettingDto {
 	GetFlexPredWorkTimeDto flexPredWorkTime;
 
 	List<String> alreadySettings;
+	
+	ComFlexMonthActCalSetDto comFlexMonthActCalSet;
 }

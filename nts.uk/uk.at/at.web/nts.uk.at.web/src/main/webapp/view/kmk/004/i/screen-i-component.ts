@@ -222,7 +222,7 @@ class ScreenIComponent extends ko.ViewModel {
 						vm.screenData().selectedYear(data.yearList[0]);
 					}
 
-					vm.screenData().comFlexMonthActCalSet(data.flexBasicSetting.flexMonthActCalSet);
+					vm.screenData().flexMonthActCalSet(data.flexBasicSetting.flexMonthActCalSet);
 					vm.screenData().setFocus('load');
 				})
 				.always(() => vm.$blockui('clear'));

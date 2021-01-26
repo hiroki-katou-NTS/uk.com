@@ -63,8 +63,8 @@ module nts.uk.at.kmk004.k {
 			vm.$blockui('invisible');
 			vm.$ajax(START_URL).done((data: IScreenData) => {
 
-				vm.screenData().updateData(data);
-				vm.notSetting(data.flexMonthActCalSet == null);
+				vm.screenData().updateData(vm, data);
+				vm.notSetting(vm.screenMode == 'Com_Company' ? data.comFlexMonthActCalSet == null : data.flexMonthActCalSet == null);
 				$('#settlePeriod').focus();
 			}).always(() => { vm.$blockui('clear'); });
 		}
@@ -236,8 +236,8 @@ module nts.uk.at.kmk004.k {
 		// 会社別フレックス勤務集計方法
 		flexMonthActCalSet: KnockoutObservable<FlexMonthActCalSet> = ko.observable(new FlexMonthActCalSet());
 
-		updateData(param: IScreenData) {
-			this.flexMonthActCalSet().update(param.flexMonthActCalSet);
+		updateData(vm: ViewModel, param: IScreenData) {
+			this.flexMonthActCalSet().update(vm.screenMode == 'Com_Company' ? param.comFlexMonthActCalSet : param.flexMonthActCalSet);
 			this.flexPredWorkTime().update(param.flexPredWorkTime);
 
 		}
@@ -272,6 +272,8 @@ module nts.uk.at.kmk004.k {
 		flexPredWorkTime: IGetFlexPredWorkTime;
 		// 会社別フレックス勤務集計方法
 		flexMonthActCalSet: IFlexMonthActCalSet;
+
+		comFlexMonthActCalSet: IFlexMonthActCalSet;
 
 	}
 

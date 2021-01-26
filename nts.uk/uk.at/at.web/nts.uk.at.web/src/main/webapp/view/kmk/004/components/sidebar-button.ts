@@ -38,18 +38,19 @@ class SidebarButton extends ko.ViewModel {
 
 	updateData() {
 		const vm = this;
-		let cmd;
+		let cmd,
+			workTimeSetComs = ko.toJS(vm.screenData().monthlyWorkTimeSetComs());
+
+		if (!vm.screenData().comFlexMonthActCalSet().withinTimeUsageAttr) {
+			_.forEach(workTimeSetComs, (item: IMonthlyWorkTimeSetCom) => {
+				item.laborTime.withinLaborTime = null;
+			});
+		}
 
 		if (vm.screenMode == 'Com_Company') {
 
-			cmd = { workTimeSetComs: ko.toJS(vm.screenData().monthlyWorkTimeSetComs()) };
-			
-			if (vm.screenData().comFlexMonthActCalSet().withinTimeUsageAttr == false) {
-				_.forEach(cmd.workTimeSetComs, (item: IMonthlyWorkTimeSetCom) => {
-					item.laborTime.withinLaborTime = null;
-				});
-			}
-			
+			cmd = { workTimeSetComs: workTimeSetComs };
+
 			vm.$blockui('invisible');
 			vm.$ajax(API_G_URL.UPDATE, cmd).done(() => {
 				vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
@@ -68,8 +69,7 @@ class SidebarButton extends ko.ViewModel {
 
 		if (vm.screenMode == 'Com_Workplace') {
 
-			let workTimeSetComs = ko.toJS(vm.screenData().monthlyWorkTimeSetComs()),
-				wkpId = vm.screenData().selected();
+			let wkpId = vm.screenData().selected();
 
 			_.forEach(workTimeSetComs, (timeSet) => {
 				timeSet.workplaceId = wkpId;
@@ -90,8 +90,7 @@ class SidebarButton extends ko.ViewModel {
 			});
 		}
 		if (vm.screenMode == 'Com_Employment') {
-			let workTimeSetComs = ko.toJS(vm.screenData().monthlyWorkTimeSetComs()),
-				empCd = vm.screenData().selected();
+			let empCd = vm.screenData().selected();
 
 			_.forEach(workTimeSetComs, (timeSet) => {
 				timeSet.employmentCode = empCd;
@@ -112,8 +111,7 @@ class SidebarButton extends ko.ViewModel {
 			});
 		}
 		if (vm.screenMode == 'Com_Person') {
-			let workTimeSetComs = ko.toJS(vm.screenData().monthlyWorkTimeSetComs()),
-				scd = vm.screenData().selected(),
+			let scd = vm.screenData().selected(),
 				selectedEmp: any = _.find(vm.getScreenDatas(), ['code', scd]);
 
 			_.forEach(workTimeSetComs, (timeSet) => {
@@ -161,19 +159,18 @@ class SidebarButton extends ko.ViewModel {
 	registerData() {
 		const vm = this;
 
-		let cmd;
+		let workTimeSetComs = ko.toJS(vm.screenData().monthlyWorkTimeSetComs());
+
+		if (!vm.screenData().comFlexMonthActCalSet().withinTimeUsageAttr) {
+			_.forEach(workTimeSetComs, (item: IMonthlyWorkTimeSetCom) => {
+				item.laborTime.withinLaborTime = null;
+			});
+		}
 
 		if (vm.screenMode == 'Com_Company') {
-			cmd = { workTimeSetComs: ko.toJS(vm.screenData().monthlyWorkTimeSetComs()) };
-			
-			if (vm.screenData().comFlexMonthActCalSet().withinTimeUsageAttr == false) {
-				_.forEach(cmd.workTimeSetComs, (item: IMonthlyWorkTimeSetCom) => {
-					item.laborTime.withinLaborTime = null;
-				});
-			}
 			
 			vm.$blockui('invisible');
-			vm.$ajax(API_G_URL.REGISTER, cmd).done(() => {
+			vm.$ajax(API_G_URL.REGISTER, { workTimeSetComs: workTimeSetComs }).done(() => {
 				vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
 					vm.screenData().serverYears.push(Number(vm.screenData().selectedYear()));
 					vm.screenData().clearUpdateYear(vm.screenData().selectedYear());
@@ -190,8 +187,7 @@ class SidebarButton extends ko.ViewModel {
 
 		if (vm.screenMode == 'Com_Workplace') {
 
-			let workTimeSetComs = ko.toJS(vm.screenData().monthlyWorkTimeSetComs()),
-				wkpId = vm.screenData().selected();
+			let wkpId = vm.screenData().selected();
 
 			_.forEach(workTimeSetComs, (timeSet) => {
 				timeSet.workplaceId = wkpId;
@@ -213,8 +209,7 @@ class SidebarButton extends ko.ViewModel {
 			});
 		}
 		if (vm.screenMode == 'Com_Employment') {
-			let workTimeSetComs = ko.toJS(vm.screenData().monthlyWorkTimeSetComs()),
-				empCd = vm.screenData().selected();
+			let empCd = vm.screenData().selected();
 
 			_.forEach(workTimeSetComs, (timeSet) => {
 				timeSet.employmentCode = empCd;
@@ -239,8 +234,7 @@ class SidebarButton extends ko.ViewModel {
 		}
 		if (vm.screenMode == 'Com_Person') {
 
-			let workTimeSetComs = ko.toJS(vm.screenData().monthlyWorkTimeSetComs()),
-				scd = vm.screenData().selected(),
+			let scd = vm.screenData().selected(),
 				selectedEmp: any = _.find(vm.getScreenDatas(), ['code', scd]);
 
 			_.forEach(workTimeSetComs, (timeSet) => {

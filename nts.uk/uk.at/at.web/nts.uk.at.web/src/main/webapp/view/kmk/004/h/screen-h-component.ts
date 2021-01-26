@@ -137,8 +137,6 @@ class ScreenHComponent extends ko.ViewModel {
 
 	startPage(selectedId: string) {
 		const vm = this;
-
-
 		vm.$blockui('invisible')
 			.then(() => vm.$ajax(API_H_URL.START_PAGE + selectedId))
 			.done((data) => {
@@ -215,8 +213,7 @@ class ScreenHComponent extends ko.ViewModel {
 						vm.screenData().selectedYear(data.yearList[0]);
 					}
 
-					vm.screenData().comFlexMonthActCalSet(data.flexBasicSetting.flexMonthActCalSet);
-					vm.screenData().getFlexPredWorkTime(data.flexBasicSetting.flexPredWorkTime);
+					vm.screenData().flexMonthActCalSet(data.flexBasicSetting.flexMonthActCalSet);
 					vm.screenData().setFocus('load');
 				})
 				.always(() => vm.$blockui('clear'));

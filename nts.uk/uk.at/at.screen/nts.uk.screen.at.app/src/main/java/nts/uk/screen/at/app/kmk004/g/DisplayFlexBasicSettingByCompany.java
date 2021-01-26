@@ -4,7 +4,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.com.ComFlexMonthActCalSetRepo;
-import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTimeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -16,8 +15,9 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class DisplayFlexBasicSettingByCompany {
 
-	@Inject
-	private GetFlexPredWorkTimeRepository getFlexRepo;
+	/*
+	 * @Inject private GetFlexPredWorkTimeRepository getFlexRepo;
+	 */
 
 	@Inject
 	private ComFlexMonthActCalSetRepo comFlexRepo;
@@ -29,15 +29,15 @@ public class DisplayFlexBasicSettingByCompany {
 
 		String comId = AppContexts.user().companyId();
 
-		// 1.get(ログイン会社ID)
-		this.getFlexRepo.find(comId).ifPresent(x -> {
-			result.setFlexPredWorkTime(GetFlexPredWorkTimeDto.fromDomain(x));
-		});
+		/*
+		 * // 1.get(ログイン会社ID) this.getFlexRepo.find(comId).ifPresent(x -> {
+		 * result.setFlexPredWorkTime(GetFlexPredWorkTimeDto.fromDomain(x)); });
+		 */
 
 		// 2.get(ログイン会社ID)
 
 		this.comFlexRepo.find(comId).ifPresent(x -> {
-			result.setFlexMonthActCalSet(ComFlexMonthActCalSetDto.fromDomain(x));
+			result.setComFlexMonthActCalSet(ComFlexMonthActCalSetDto.fromDomain(x));
 		});
 
 		return result;

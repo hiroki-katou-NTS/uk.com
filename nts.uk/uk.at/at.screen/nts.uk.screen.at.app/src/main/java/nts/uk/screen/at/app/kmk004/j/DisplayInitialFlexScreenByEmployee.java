@@ -3,8 +3,8 @@ package nts.uk.screen.at.app.kmk004.j;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTimeRepository;
-import nts.uk.screen.at.app.kmk004.g.GetFlexPredWorkTimeDto;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.com.ComFlexMonthActCalSetRepo;
+import nts.uk.screen.at.app.kmk004.g.ComFlexMonthActCalSetDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -16,18 +16,29 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class DisplayInitialFlexScreenByEmployee {
 
+	/*
+	 * @Inject private GetFlexPredWorkTimeRepository getFlexPredWorkTimeRepo;
+	 */
+	
 	@Inject
-	private GetFlexPredWorkTimeRepository getFlexPredWorkTimeRepo;
+	private ComFlexMonthActCalSetRepo comFlexRepo;
 
 	public DisplayInitialFlexScreenByEmployeeDto displayInitialFlexScreenByEmployee() {
 
 		DisplayInitialFlexScreenByEmployeeDto result = new DisplayInitialFlexScreenByEmployeeDto();
 		// 会社別フレックス勤務集計方法
 		// 1. ログイン会社ID
-		this.getFlexPredWorkTimeRepo.find(AppContexts.user().companyId()).ifPresent(x -> {
+		this.comFlexRepo.find(AppContexts.user().companyId()).ifPresent(x -> {
+			result.getFlexBasicSetting().setComFlexMonthActCalSet(ComFlexMonthActCalSetDto.fromDomain(x));
 
-			result.getFlexBasicSetting().setFlexPredWorkTime(GetFlexPredWorkTimeDto.fromDomain(x));
 		});
+		/*
+		 * this.getFlexPredWorkTimeRepo.find(AppContexts.user().companyId()).ifPresent(x
+		 * -> {
+		 * 
+		 * result.getFlexBasicSetting().setFlexPredWorkTime(GetFlexPredWorkTimeDto.
+		 * fromDomain(x)); });
+		 */
 
 		return result;
 	}

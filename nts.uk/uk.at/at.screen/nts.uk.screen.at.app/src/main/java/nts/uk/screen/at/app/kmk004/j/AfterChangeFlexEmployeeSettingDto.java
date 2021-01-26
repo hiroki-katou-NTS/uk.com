@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.screen.at.app.kmk004.g.ComFlexMonthActCalSetDto;
 
 /**
  * 
@@ -19,4 +20,6 @@ public class AfterChangeFlexEmployeeSettingDto {
 	private ShaFlexMonthActCalSetDto flexMonthActCalSet;
 
 	private List<String> alreadySettings;
+	
+	ComFlexMonthActCalSetDto comFlexMonthActCalSet;
 }

@@ -7,7 +7,7 @@ const template = `
 		<div data-bind="ntsFormLabel: {inline:true} , i18n: 'KMK004_229'"></div>
 		<button data-bind="enable:enableKButton() == true,click: openKDialog , i18n:getTextKButton()" ></button>
 	</div>
-	<div data-bind="visible:screenData().comFlexMonthActCalSet() != null" class="div_line" 
+	<div data-bind="visible:screenData().flexMonthActCalSet() != null" class="div_line" 
 		style="
 		width: auto;
 		border-radius: 15px;
@@ -93,15 +93,15 @@ class BasicSettingsCompany extends ko.ViewModel {
 		}
 
 		if (vm.screenMode == 'Com_Workplace') {
-			return vm.screenData().comFlexMonthActCalSet() == null ? 'KMK004_338' : 'KMK004_339';
+			return vm.screenData().flexMonthActCalSet() == null ? 'KMK004_338' : 'KMK004_339';
 		}
 
 		if (vm.screenMode == 'Com_Employment') {
-			return vm.screenData().comFlexMonthActCalSet() == null ? 'KMK004_340' : 'KMK004_341';
+			return vm.screenData().flexMonthActCalSet() == null ? 'KMK004_340' : 'KMK004_341';
 		}
 
 		if (vm.screenMode == 'Com_Person') {
-			return vm.screenData().comFlexMonthActCalSet() == null ? 'KMK004_342' : 'KMK004_343';
+			return vm.screenData().flexMonthActCalSet() == null ? 'KMK004_342' : 'KMK004_343';
 		}
 	}
 
@@ -143,9 +143,8 @@ class BasicSettingsCompany extends ko.ViewModel {
 		vm.$blockui('invisible');
 		vm.$ajax(url).done((setting: any) => {
 			vm.setAlreadySettingList(setting.alreadySettings);
-			vm.screenData().comFlexMonthActCalSet(setting.flexMonthActCalSet);
-			vm.screenData().getFlexPredWorkTime(setting.flexPredWorkTime);
-
+			vm.screenData().flexMonthActCalSet(vm.screenMode == 'Com_Company' ? setting.comFlexMonthActCalSet : setting.flexMonthActCalSet);
+			vm.screenData().comFlexMonthActCalSet(setting.comFlexMonthActCalSet);
 		}).always(() => { vm.$blockui('clear'); });
 
 	}
@@ -172,75 +171,75 @@ class BasicSettingsCompany extends ko.ViewModel {
 
 	getStartMonth() {
 		const vm = this;
-		if (!vm.screenData().comFlexMonthActCalSet()) {
+		if (!vm.screenData().flexMonthActCalSet()) {
 			return '';
 		}
-		return vm.screenData().comFlexMonthActCalSet().insufficSet.startMonth + '月';
+		return vm.screenData().flexMonthActCalSet().insufficSet.startMonth + '月';
 	}
 
 	getStartPeriod() {
 		const vm = this;
-		if (!vm.screenData().comFlexMonthActCalSet()) {
+		if (!vm.screenData().flexMonthActCalSet()) {
 			return '';
 		}
-		return vm.screenData().comFlexMonthActCalSet().insufficSet.period + 'ヵ月'
+		return vm.screenData().flexMonthActCalSet().insufficSet.period + 'ヵ月'
 	}
 
 	getSettlePeriodText() {
 		const vm = this;
-		if (!vm.screenData().comFlexMonthActCalSet()) {
+		if (!vm.screenData().flexMonthActCalSet()) {
 			return '';
 		}
-		return vm.$i18n.text(_.find(__viewContext.enums.SettlePeriod, ['value', vm.screenData().comFlexMonthActCalSet().insufficSet.settlePeriod]).name);
+		return vm.$i18n.text(_.find(__viewContext.enums.SettlePeriod, ['value', vm.screenData().flexMonthActCalSet().insufficSet.settlePeriod]).name);
 	}
 
 	getCarryforwardSetText() {
 		const vm = this;
-		if (!vm.screenData().comFlexMonthActCalSet()) {
+		if (!vm.screenData().flexMonthActCalSet()) {
 			return '';
 		}
-		return vm.$i18n.text(_.find(__viewContext.enums.CarryforwardSetInShortageFlex, ['value', vm.screenData().comFlexMonthActCalSet().insufficSet.carryforwardSet]).name);
+		return vm.$i18n.text(_.find(__viewContext.enums.CarryforwardSetInShortageFlex, ['value', vm.screenData().flexMonthActCalSet().insufficSet.carryforwardSet]).name);
 	}
 
 	getAggrMethodText() {
 		const vm = this;
-		if (!vm.screenData().comFlexMonthActCalSet()) {
+		if (!vm.screenData().flexMonthActCalSet()) {
 			return '';
 		}
-		return vm.$i18n.text(_.find(__viewContext.enums.FlexAggregateMethod, ['value', vm.screenData().comFlexMonthActCalSet().aggrMethod]).name);
+		return vm.$i18n.text(_.find(__viewContext.enums.FlexAggregateMethod, ['value', vm.screenData().flexMonthActCalSet().aggrMethod]).name);
 	}
 
 	getReferenceText() {
 		const vm = this;
-		if (!vm.screenData().comFlexMonthActCalSet()) {
+		if (!vm.screenData().flexMonthActCalSet()) {
 			return '';
 		}
 
-		return vm.$i18n.text(vm.screenData().comFlexMonthActCalSet().withinTimeUsageAttr == true ? 'KMK004_288' : 'KMK004_289');
+		return vm.$i18n.text(vm.screenData().flexMonthActCalSet().withinTimeUsageAttr == true ? 'KMK004_288' : 'KMK004_289');
 	}
 
 	getIncludeOverTimeText() {
 		const vm = this;
-		if (!vm.screenData().comFlexMonthActCalSet()) {
+		if (!vm.screenData().flexMonthActCalSet()) {
 			return '';
 		}
-		return vm.$i18n.text(vm.screenData().comFlexMonthActCalSet().flexTimeHandle.includeOverTime == true ? "KMK004_283" : "KMK004_260");
+		return vm.$i18n.text(vm.screenData().flexMonthActCalSet().flexTimeHandle.includeOverTime == true ? "KMK004_283" : "KMK004_260");
 	}
 
 	getIncludeIllegalHdwk() {
 		const vm = this;
-		if (!vm.screenData().comFlexMonthActCalSet()) {
+		if (!vm.screenData().flexMonthActCalSet()) {
 			return '';
 		}
-		return vm.$i18n.text(vm.screenData().comFlexMonthActCalSet().flexTimeHandle.includeIllegalHdwk == true ? "KMK004_284" : "KMK004_337");
+		return vm.$i18n.text(vm.screenData().flexMonthActCalSet().flexTimeHandle.includeIllegalHdwk == true ? "KMK004_284" : "KMK004_337");
 	}
 
 	getAggregateSetText() {
 		const vm = this;
-		if (!vm.screenData().comFlexMonthActCalSet()) {
+		if (!vm.screenData().flexMonthActCalSet()) {
 			return '';
 		}
-		return vm.$i18n.text(_.find(__viewContext.enums.AggregateSetting, ['value', vm.screenData().comFlexMonthActCalSet().legalAggrSet.aggregateSet]).name);
+		return vm.$i18n.text(_.find(__viewContext.enums.AggregateSetting, ['value', vm.screenData().flexMonthActCalSet().legalAggrSet.aggregateSet]).name);
 	}
 
 }
