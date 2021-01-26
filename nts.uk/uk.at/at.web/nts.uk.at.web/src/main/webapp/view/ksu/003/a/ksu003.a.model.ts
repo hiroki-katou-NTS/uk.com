@@ -470,7 +470,7 @@ module nts.uk.at.view.ksu003.a.model {
 		workTypeName: string;//勤務種類名称
 		startTimeRange2: TimeZoneDto; //日付開始時刻範囲時間帯2
 		endTimeRange2: TimeZoneDto;//日付終了時刻範囲時間帯2
-		fixBreakTime: number; //休憩時間帯を固定にする (0:false 1:true)
+		fixBreakTime: any; //休憩時間帯を固定にする (0:false 1:true)
 		workType: number;//勤務タイプ : WorkTimeForm
 		isHoliday: boolean;// 休日か : SetupType
 		isNeedWorkTime: string;// 就業時間帯が不要 : 
@@ -498,7 +498,7 @@ module nts.uk.at.view.ksu003.a.model {
 		workTypeName: string;//勤務種類名称
 		startTimeRange2: TimeZoneDto; //日付開始時刻範囲時間帯2
 		endTimeRange2: TimeZoneDto;//日付終了時刻範囲時間帯2
-		fixBreakTime: number; //休憩時間帯を固定にする (0:false 1:true)
+		fixBreakTime: any; //休憩時間帯を固定にする (0:false 1:true)
 		workType: number;//勤務タイプ : WorkTimeForm
 		isHoliday: boolean; // 休日か : SetupType
 		isNeedWorkTime: string; 
