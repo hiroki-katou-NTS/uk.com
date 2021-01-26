@@ -124,6 +124,8 @@ public interface WorkplacePub {
 
 	List<WorkPlaceHistExport> getWplByListSidAndPeriod(List<String> employeeIds, DatePeriod datePeriod);
 
+	Optional<SWkpHistExport> findBySidNew(String employeeId, GeneralDate baseDate);
+
 	Optional<SWkpHistExport> findBySidNew(String companyId, String employeeId, GeneralDate baseDate);
 
 	WkpByEmpExport getLstHistByEmpAndPeriod(String employeeID, GeneralDate startDate, GeneralDate endDate);

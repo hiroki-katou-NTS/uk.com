@@ -600,6 +600,12 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 	
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public Optional<SWkpHistExport> findBySidNew(String employeeId, GeneralDate baseDate) {
+		return this.findBySidNew(AppContexts.user().companyId(), employeeId, baseDate);
+	}
+
+	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<SWkpHistExport> findBySidNew(String companyId, String employeeId, GeneralDate baseDate) {
 		if(Strings.isBlank(companyId)) {
 			companyId = AppContexts.user().companyId();

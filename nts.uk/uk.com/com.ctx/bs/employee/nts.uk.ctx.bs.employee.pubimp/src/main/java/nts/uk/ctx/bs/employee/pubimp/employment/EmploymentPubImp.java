@@ -48,6 +48,7 @@ import nts.uk.ctx.bs.employee.pub.employment.SEmpHistExport;
 import nts.uk.ctx.bs.employee.pub.employment.ShEmploymentExport;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 import nts.uk.ctx.bs.person.dom.person.common.ConstantUtils;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 /**
@@ -91,6 +92,13 @@ public class EmploymentPubImp implements SyEmploymentPub {
 	 * @see nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub#findSEmpHistBySid(
 	 * java.lang.String, java.lang.String, nts.arc.time.GeneralDate)
 	 */
+	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public Optional<SEmpHistExport> findSEmpHistBySid(String employeeId, GeneralDate baseDate) {
+		val cacheCarrier = new CacheCarrier();
+		return findSEmpHistBySidRequire(cacheCarrier, AppContexts.user().companyId(), employeeId, baseDate);
+	}
+
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<SEmpHistExport> findSEmpHistBySid(String companyId, String employeeId, GeneralDate baseDate) {

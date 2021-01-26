@@ -56,6 +56,7 @@ public class User extends AggregateRoot {
 	// 紐付け先個人ID
 	/** The associated employee id. */
 	private Optional<String> associatedPersonID;
+	
 	@Getter
 	// パスワード状態
 	/** PasswordStatus **/
@@ -82,4 +83,14 @@ public class User extends AggregateRoot {
 		Verifier salt = PasswordHash.verifyThat(password, this.getUserID());
 		return salt.isEqualTo(this.getPassword().toString());
 	}
+	
+	/**
+	 * 有効期限をチェックする
+	 * @param GeneralDate
+	 * @return
+	 */
+	public boolean isAvailableAt(GeneralDate date) {
+		return this.expirationDate.after(date);
+	} 
+	
 }

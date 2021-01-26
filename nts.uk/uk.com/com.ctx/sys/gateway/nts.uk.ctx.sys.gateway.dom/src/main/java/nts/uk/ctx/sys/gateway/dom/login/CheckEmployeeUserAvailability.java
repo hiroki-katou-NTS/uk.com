@@ -2,6 +2,13 @@ package nts.uk.ctx.sys.gateway.dom.login;
 
 import java.util.Optional;
 
+import lombok.Value;
+import lombok.val;
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.sys.gateway.dom.outage.PlannedOutage;
+import nts.uk.ctx.sys.gateway.dom.outage.PlannedOutage.Status;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
 
 /**
@@ -9,31 +16,48 @@ import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
  */
 public class CheckEmployeeUserAvailability {
 
-	public static Result check(Require require, IdentifiedEmployeeInfo identified) {
+	public static void check(Require require, IdentifiedEmployeeInfo identified) {
 
 		String tenantCode = identified.getTenantCode();
-		String companyId = identified.getCompanyId();
 		String userId = identified.getUserId();
+		val employee = identified.getEmployee();
 		
-		
-		// アカウントロック
-		boolean isAccountLocked = require.getAccountLockPolicy(tenantCode)
-				.map(p -> p.isLocked(require, userId))
-				.orElse(false);
-		if (isAccountLocked) {
-			
+		// 社員が削除されていないかチェック
+		if(employee.isDeleted()) {
+			throw new BusinessException("Msg_176");
 		}
 		
-		return null;
+		// ユーザの有効期限が切れていないかチェック
+		if(identified.getUser().isAvailableAt(GeneralDate.today())) {
+			throw new BusinessException("Msg_316");
+		}
+		
+		// 社員の所属情報が存在しているかチェック
+		if(!employee.getSyaEmpHist().isPresent() 
+		|| !employee.getSyaJobHist().isPresent() 
+		|| !employee.getSyaWkpHist().isPresent()) {
+			throw new BusinessException("Msg_1420");
+		}
+		
+		// アカウントロック
+		require.getAccountLockPolicy(tenantCode)
+				.ifPresent(policy -> {
+					if (policy.isLocked(require, userId)) {
+						throw new BusinessException(new RawErrorMessage(policy.getLockOutMessage().v()));		
+					}
+				});
 	}
 	
-	public static class Result {
-		
-	}
+	
+	
+	
+	// ↓いらん
 	
 	public static interface Require extends 
 			AccountLockPolicy.RequireIsLocked {
 
 		Optional<AccountLockPolicy> getAccountLockPolicy(String tenantCode);
+		
+		boolean 
 	}
 }

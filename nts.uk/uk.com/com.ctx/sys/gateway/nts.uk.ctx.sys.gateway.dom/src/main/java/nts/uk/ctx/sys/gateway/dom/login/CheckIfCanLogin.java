@@ -1,12 +1,8 @@
 package nts.uk.ctx.sys.gateway.dom.login;
 
-import java.util.Optional;
-
 import lombok.val;
 import nts.uk.ctx.sys.gateway.dom.outage.CheckSystemAvailability;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
 import nts.uk.ctx.sys.shared.dom.company.CompanyInforImport;
-import nts.uk.ctx.sys.shared.dom.user.FindUser;
 
 /**
  * ログインできるかチェックする
@@ -25,11 +21,18 @@ public class CheckIfCanLogin {
 			
 		}
 		
-		// システム利用停止
+		// システムが利用できるかチェックする
 		val status = CheckSystemAvailability.isAvailable(require, tenantCode, companyId, userId);
 		if (!status.isAvailable()) {
 			
 		}
+		
+		// 社員がログインできるかチェックする
+//		val empStatus = CheckEmployeeUserAvailability.check(require, identified);
+//		if (empStatus) {
+//			
+//		}
+
 		
 		return null;
 	}
@@ -39,7 +42,8 @@ public class CheckIfCanLogin {
 	}
 	
 	public static interface Require extends
-			CheckSystemAvailability.Require {
+			CheckSystemAvailability.Require,
+			CheckEmployeeUserAvailability.Require{
 		
 		CompanyInforImport getCompanyInforImport(String companyId);
 		
