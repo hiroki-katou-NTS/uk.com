@@ -72,14 +72,27 @@ module nts.uk.com.view.ccg013.c.viewmodel {
             self.getData = false;
 
             self.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("CCG013_49"), prop: 'displayOrder', key: 'displayOrder', width: 55, formatter: _.escape },
+                {
+                    headerText: nts.uk.resource.getText("CCG013_49"),
+                    prop: 'displayOrder',
+                    key: 'displayOrder',
+                    width: 55,
+                    formatter: _.escape,
+                    template: '<div style="text-align: right">${displayOrder}</div>',
+                },
                 { headerText: nts.uk.resource.getText("CCG013_49"), prop: 'code', key: 'code', width: 0, formatter: _.escape, hidden: true },
                 { headerText: nts.uk.resource.getText("CCG013_50"), prop: 'name', key: 'name', width: 167, formatter: _.escape },
                 { headerText: 'pk', prop: 'primaryKey', key: 'primaryKey', width: 0, hidden: true }
             ]);
 
             self.newColumns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("CCG013_51"), prop: 'index', width: 55, formatter: _.escape },
+                {
+                    headerText: nts.uk.resource.getText("CCG013_51"),
+                    prop: 'displayOrder',
+                    width: 55,
+                    formatter: _.escape,
+                    template: '<div style="text-align: right">${displayOrder}</div>',
+                },
                 { headerText: nts.uk.resource.getText("CCG013_51"), prop: 'code', width: 0, formatter: _.escape, hidden: true },
                 { headerText: nts.uk.resource.getText("CCG013_52"), prop: 'targetItem', width: 160, formatter: _.escape },
                 { headerText: nts.uk.resource.getText("CCG013_53"), prop: 'name', width: 160, formatter: _.escape },
