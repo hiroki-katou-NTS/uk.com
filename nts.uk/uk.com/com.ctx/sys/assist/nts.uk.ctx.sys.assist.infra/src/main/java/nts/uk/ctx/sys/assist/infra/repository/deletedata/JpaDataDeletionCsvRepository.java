@@ -267,6 +267,10 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 				query.append(",");
 			}
 		}
+		// Remove ',' at the end if necessary
+		if (query.toString().trim().endsWith(",")) {
+			query.deleteCharAt(query.lastIndexOf(","));
+		}
 
 		// From
 		query.append(" FROM ").append(tableList.getTableEnglishName()).append(" t");

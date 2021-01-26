@@ -1105,7 +1105,18 @@ public class ProgramIdConsts {
 	public static final String KAF018G = "KAF018G";
 	public static final String KAF018H = "KAF018H";
 	public static final String KAF018I = "KAF018I";
-	
+
+	/**
+	 * KAF012
+	 */
+	public static final String KAF012A = "KAF012A";
+	public static final String KAF012B = "KAF012B";
+
+	/**
+	 * KAFS12
+	 */
+	public static final String KAFS12B = "KAFS12B";
+
 	/**
 	 * KFP001
 	 */
@@ -1495,4 +1506,5 @@ public class ProgramIdConsts {
 	 * KNR001
 	 */
 	public static final String KNR001A = "KNR001A";
+	public static final String CDL010A = "CDL010A";
 }

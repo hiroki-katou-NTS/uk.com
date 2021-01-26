@@ -118,12 +118,19 @@ module nts.uk.com.view.ccg015.e {
 
     public onClickSetting(itemType: String) {
       const vm = this;
+      const StandardWidgetTypeKTG004 = "0003";
+      const StandardWidgetTypeKTG005 = "0001";
+      const StandardWidgetTypeKTG001 = "0002";
       if (itemType === MenuPartType.PART_KTG_004) {
-         vm.$window.modal('at', '/view/ktg/004/b/index.xhtml')
+         vm.$window.modal('at', '/view/ktg/004/b/index.xhtml', StandardWidgetTypeKTG004)
+            .then((result: any) => {
+        });
+      } else if (itemType === MenuPartType.PART_KTG_005){
+        vm.$window.modal('at', '/view/ktg/005/b/index.xhtml', StandardWidgetTypeKTG005)
             .then((result: any) => {
         });
       } else {
-        vm.$window.modal('at', '/view/ktg/005/b/index.xhtml')
+        vm.$window.modal('at', '/view/ktg/001/b/index.xhtml', StandardWidgetTypeKTG001)
             .then((result: any) => {
         });
       }
@@ -318,7 +325,9 @@ module nts.uk.com.view.ccg015.e {
 
     constructor(init?: Partial<ItemModel>) {
       $.extend(this, init);
-      this.isShowSetting = (init.itemType === MenuPartType.PART_KTG_004 || init.itemType === MenuPartType.PART_KTG_005);
+      this.isShowSetting = (init.itemType === MenuPartType.PART_KTG_004 
+        || init.itemType === MenuPartType.PART_KTG_005 
+        || init.itemType === MenuPartType.PART_KTG_001);
     }
 
     public isComponent() {
