@@ -82,7 +82,6 @@ module knr002.b {
                 blockUI.invisible();
                 //getShared from A Screen
                 let data: any = getShared('knr002-b');
-                console.log(data, 'from A');
                 self.empInfoTerCode(data.empInfoTerCode);
                 self.empInfoTerName(data.empInfoTerName);
                 self.modelEmpInfoTer(data.displayModelEmpInfoTer);

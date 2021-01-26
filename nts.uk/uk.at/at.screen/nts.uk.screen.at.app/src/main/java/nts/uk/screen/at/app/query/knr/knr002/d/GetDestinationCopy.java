@@ -10,6 +10,8 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.EmpInfoTerminalRepository;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.TimeRecordSetFormatList;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.repo.TimeRecordSetFormatListRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocation;
 import nts.uk.ctx.at.record.dom.worklocation.WorkLocationRepository;
@@ -26,8 +28,12 @@ public class GetDestinationCopy {
 	//	就業情報端末Repository.[5] 端末コードの含まないリスト取得する 
 	@Inject
 	private EmpInfoTerminalRepository empInfoTerRepo;
+	//	打刻情報の作成
 	@Inject
 	private WorkLocationRepository workPlaceRepository;
+	//	タイムレコード設定フォーマットリストRepository.get
+	@Inject
+	private TimeRecordSetFormatListRepository timeRecordSetFormatListRepository;
 
 
 	
@@ -43,8 +49,15 @@ public class GetDestinationCopy {
 		if (empInfoTerList.isEmpty())
 			return null;
 		
+		List<TimeRecordSetFormatList> machineInfoLst = this.timeRecordSetFormatListRepository
+														   .get(contractCode, empInfoTerList.stream().map(e -> e.getEmpInfoTerCode()).collect(Collectors.toList()));
 		return empInfoTerList.stream().map(e -> {
 			GetDestinationCopyDto dto = new GetDestinationCopyDto();
+			Optional<TimeRecordSetFormatList> machineInfo = machineInfoLst.stream().filter(x -> Integer.parseInt(x.getEmpInfoTerCode().v()) == Integer.parseInt(e.getEmpInfoTerCode().v())).findAny();
+			if(!machineInfo.isPresent()) {
+				return null;
+			}
+			TimeRecordSetFormatList machineInfoVal = machineInfo.get();
 			String workLocationCD = e.getCreateStampInfo().getWorkLocationCd().isPresent()?
 									e.getCreateStampInfo().getWorkLocationCd().get().v() : "";
 			Optional<WorkLocation> workLocation = this.workPlaceRepository.findByCode(companyID, workLocationCD);
@@ -66,8 +79,10 @@ public class GetDestinationCopy {
 							   e.getCreateStampInfo().getOutPlaceConvert().getGoOutReason().get().value : null);
 			dto.setEntranceExit(e.getCreateStampInfo().getConvertEmbCate().getEntranceExit().value);
 			dto.setMemo(e.getEmpInfoTerMemo().isPresent()?
-						e.getEmpInfoTerMemo().get().v() : "");
+						e.getEmpInfoTerMemo().get().v() : "");		
+			dto.setTrName(machineInfoVal.getEmpInfoTerName().v());
+			dto.setRomVersion(machineInfoVal.getRomVersion().v());
 			return dto;
-		}).collect(Collectors.toList());
+		}).filter(t -> null != t).collect(Collectors.toList());
 	}
 }

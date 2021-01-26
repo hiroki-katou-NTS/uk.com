@@ -42,4 +42,8 @@ public class GetDestinationCopyDto {
 	private int entranceExit;
 	//	メモ
 	private String memo;
+	//	ROMバージョン
+	private String romVersion;
+	//	機種名
+	private String trName;
 }
