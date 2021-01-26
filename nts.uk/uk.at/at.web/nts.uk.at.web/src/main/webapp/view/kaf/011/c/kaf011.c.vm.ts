@@ -14,10 +14,10 @@ module nts.uk.at.view.kaf011.c.viewmodel {
 			let self = this;
 			let dataTransfer = windows.getShared('KAF011C');
 			self.displayInforWhenStarting = dataTransfer;
-			let appReasonStandardLst: any = _.find(dataTransfer.appDispInfoStartup.appDispInfoNoDateOutput.appReasonStandardLst, {'applicationType':10});
+			let reasonTypeItemLst: any = dataTransfer.appDispInfoStartup.appDispInfoNoDateOutput.reasonTypeItemLst;
 			self.appDate = ko.observable(dataTransfer.abs.application.appDate);
-			if(appReasonStandardLst){
-				self.reasonTypeItemLst(appReasonStandardLst.reasonTypeItemLst);	
+			if(reasonTypeItemLst){
+				self.reasonTypeItemLst(reasonTypeItemLst);	
 			}
 			self.appDate.subscribe((value:any) => {
 				block.invisible();
