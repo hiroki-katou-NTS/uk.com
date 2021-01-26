@@ -6,7 +6,8 @@ module nts.uk.com.view.ccg034.c {
   // URL API backend
   const API = {
     getFlowMenu: "sys/portal/createflowmenu/getFlowMenu/{0}",
-    duplicate: "sys/portal/createflowmenu/copy"
+    duplicate: "sys/portal/createflowmenu/copy",
+    copyFile: "sys/portal/createflowmenu/copyFile"
   };
 
   @bean()
@@ -76,7 +77,12 @@ module nts.uk.com.view.ccg034.c {
       newFlowMenu.flowMenuCode = vm.flowMenuCode();
       newFlowMenu.flowMenuName = vm.flowMenuName();
       vm.deleteUnknownData(newFlowMenu);
-      return vm.$ajax(API.duplicate, { flowMenuCode: vm.flowMenuCode(), createFlowMenu: newFlowMenu })
+      return vm.$ajax(`${API.copyFile}/${vm.flowMenu.flowMenuCode}`)
+        .then(value => {
+          newFlowMenu.fileAttachmentData = value.fileAttachmentData;
+          newFlowMenu.imageData = value.imageData;
+          vm.$ajax(API.duplicate, { flowMenuCode: vm.flowMenuCode(), createFlowMenu: newFlowMenu });
+        })
         .then(() => {
           vm.$dialog.info({ messageId: "Msg_15" })
             .then(() => vm.closeDialog(newFlowMenu));

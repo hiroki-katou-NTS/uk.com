@@ -12,6 +12,7 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.sys.portal.app.command.toppagepart.createflowmenu.CopyFileCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.toppagepart.createflowmenu.CopyFlowMenuCommand;
 import nts.uk.ctx.sys.portal.app.command.toppagepart.createflowmenu.CopyFlowMenuCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.toppagepart.createflowmenu.DeleteCreateFlowMenuCommandHandler;
@@ -53,6 +54,9 @@ public class CreateFlowMenuWebService extends WebService {
 	
 	@Inject
 	private CopyFlowMenuCommandHandler copyFlowMenuCommandHandler;
+	
+	@Inject
+	private CopyFileCommandHandler copyFileCommandHandler;
 	
 	@Inject
 	private FileExportService exportService;
@@ -121,6 +125,12 @@ public class CreateFlowMenuWebService extends WebService {
 	@Path("/extractListFileId")
 	public List<ExtractionResponseDto> extractListData(ParamListFileId param) throws IOException {
 		return this.exportService.extractByListFileId(param.getLstFileId());
+	}
+	
+	@POST
+	@Path("/copyFile/{flowMenuCode}")
+	public CreateFlowMenuDto copyFile(@PathParam("flowMenuCode") String flowMenuCode) {
+		return this.copyFileCommandHandler.handle(flowMenuCode);
 	}
 }
 
