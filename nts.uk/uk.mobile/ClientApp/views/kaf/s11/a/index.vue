@@ -33,7 +33,7 @@
         </div>
     </div>
     <!-- A17_1 -->
-    <div v-if="!$valid || !isValidateAll" class="card message-list error top-alert uk-text-danger topError">
+    <div v-if="!$valid || !isValidateAll" class="card bg-danger top-alert uk-text-danger topError">
         <button class="btn btn-link uk-text-danger">
             <i class="fa fa-exclamation-circle" aria-hidden="true" ></i>
             {{ 'KAFS11_3' | i18n }}
