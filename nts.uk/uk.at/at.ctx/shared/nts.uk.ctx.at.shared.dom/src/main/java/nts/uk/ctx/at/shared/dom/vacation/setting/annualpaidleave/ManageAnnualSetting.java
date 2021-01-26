@@ -21,9 +21,9 @@ public class ManageAnnualSetting extends DomainObject implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	/** The maximum day vacation. */
-    // 付与上限日数
-    private AnnualLeaveGrantDay maxGrantDay;
+//	/** The maximum day vacation. */
+//    // 付与上限日数
+//    private AnnualLeaveGrantDay maxGrantDay;
 
     /** The half day manage. */
     // 半日年休管理
@@ -37,12 +37,14 @@ public class ManageAnnualSetting extends DomainObject implements Serializable{
     // 残数設定
     private RemainingNumberSetting remainingNumberSetting;
 
-    /** The display setting. */
-    // 表示設定
-    private DisplaySetting displaySetting;
-
     //年間所定労働日数
     private YearLyOfNumberDays yearlyOfNumberDays;
+
+//    /** The display setting. */
+//    // 表示設定
+//    private DisplaySetting displaySetting;
+
+
 
     /**
      * Instantiates a new manage annual setting.
@@ -55,7 +57,6 @@ public class ManageAnnualSetting extends DomainObject implements Serializable{
         this.halfDayManage = memento.getHalfDayManage();
         this.isWorkDayCalculate = memento.getIsWorkDayCalculate();
         this.remainingNumberSetting = memento.getRemainingNumberSetting();
-        this.displaySetting = memento.getDisplaySetting();
         this.yearlyOfNumberDays = memento.getYearLyOfDays();
     }
 
@@ -65,11 +66,9 @@ public class ManageAnnualSetting extends DomainObject implements Serializable{
      * @param memento the memento
      */
     public void saveToMemento(ManageAnnualSettingSetMemento memento) {
-        memento.setMaxGrantDay(this.maxGrantDay);
         memento.setHalfDayManage(this.halfDayManage);
         memento.setWorkDayCalculate(this.isWorkDayCalculate);
         memento.setRemainingNumberSetting(this.remainingNumberSetting);
-        memento.setDisplaySetting(this.displaySetting);
         memento.setYearLyOfDays(this.yearlyOfNumberDays);
     }
 }

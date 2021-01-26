@@ -564,8 +564,7 @@ public class SpecialLeaveManagementService {
 				if ( dividedDayMap.containsKey(c.getGrantDate())){ // すでに追加されているとき
 					SpecialLeaveDividedDayEachProcess specialLeaveDividedDayEachProcess
 						= dividedDayMap.get(c.getGrantDate());
-					specialLeaveDividedDayEachProcess.setNextSpecialLeaveGrant(Optional.of(c));
-
+					specialLeaveDividedDayEachProcess.getEndDay().setNextPeriodEndAtr();
 				} else {
 					SpecialLeaveDividedDayEachProcess specialLeaveDividedDayEachProcess
 						= new SpecialLeaveDividedDayEachProcess(c.getGrantDate());
@@ -582,7 +581,7 @@ public class SpecialLeaveManagementService {
 		// 【条件】
 		// 終了日の期間かどうか=true
 		dividedDayMap.forEach((key, val)->{
-			if ( val.isDayBeforePeriodEnd() ){
+			if ( val.getEndDay().isPeriodEndAtr()){
 				specialLeaveGrantList1.add(val);
 			}
 		});
@@ -604,7 +603,7 @@ public class SpecialLeaveManagementService {
 			// リストの中で年月日が一番大きい処理単位分割日の終了日の期間かどうか = true
 			list.sort((a,b)->b.getYmd().compareTo(a.getYmd())); // 降順
 			if (0 < list.size()) {
-				list.get(0).setDayBeforePeriodEnd(true);
+				list.get(0).getEndDay().setPeriodEndAtr(true);
 			}
 		}
 
@@ -624,7 +623,7 @@ public class SpecialLeaveManagementService {
 
 		// 終了日の翌日の期間かどうか←true
 		specialLeaveGrantList1.forEach(c->{
-			c.setNextDayAfterPeriodEnd(true);
+			c.getEndDay().setNextPeriodEndAtr(true);
 		});
 
 
@@ -635,7 +634,7 @@ public class SpecialLeaveManagementService {
 		// 終了日の翌日の期間かどうか=true
 		val specialLeaveGrantList3 = new ArrayList<SpecialLeaveDividedDayEachProcess>();
 		dividedDayMap.forEach((key, val)->{
-			if ( val.isNextDayAfterPeriodEnd() ){
+			if ( val.getEndDay().isNextPeriodEndAtr() ){
 				specialLeaveGrantList3.add(val);
 			}
 		});
@@ -647,7 +646,7 @@ public class SpecialLeaveManagementService {
 		if ( specialLeaveGrantList3.isEmpty() ){
 			SpecialLeaveDividedDayEachProcess specialLeaveDividedDayEachProcess
 				= new SpecialLeaveDividedDayEachProcess(nextDayEnd);
-			specialLeaveDividedDayEachProcess.setNextDayAfterPeriodEnd(true);
+			specialLeaveDividedDayEachProcess.getEndDay().setNextPeriodEndAtr(true);
 			dividedDayMap.put(nextDayEnd, specialLeaveDividedDayEachProcess);
 		}
 
@@ -665,7 +664,7 @@ public class SpecialLeaveManagementService {
 		// 付与前か付与後か = 付与前
 		boolean afterGrant = false;
 		for(SpecialLeaveDividedDayEachProcess c: specialLeaveGrantList4){
-			if ( c.isAfterGrant() ){ // 付与フラグ
+			if ( c.getGrantPeriodAtr().isAfterGrant() ){ // 付与フラグ
 				afterGrant = true;
 			}
 			c.setAfterGrant(afterGrant);
@@ -715,11 +714,14 @@ public class SpecialLeaveManagementService {
 			SpecialLeaveAggregatePeriodWork specialLeaveAggregatePeriodWork
 				= SpecialLeaveAggregatePeriodWork.of(
 					new DatePeriod(preYmd, c.getYmd().addDays(-1)),
-					specialLeaveDividedDayEachProcess_pre.get().isDayBeforePeriodEnd(),
-					specialLeaveDividedDayEachProcess_pre.get().isNextDayAfterPeriodEnd(),
-					specialLeaveDividedDayEachProcess_pre.get().isAfterGrant(),
+//					specialLeaveDividedDayEachProcess_pre.get().isDayBeforePeriodEnd(),
+//					specialLeaveDividedDayEachProcess_pre.get().isNextDayAfterPeriodEnd(),
+//					specialLeaveDividedDayEachProcess_pre.get().isAfterGrant(),
+					specialLeaveDividedDayEachProcess_pre.get().getEndDay(),
 					specialLeaveDividedDayEachProcess_pre.get().getLapsedWork(),
-					specialLeaveDividedDayEachProcess_pre.get().getGrantWork());
+					specialLeaveDividedDayEachProcess_pre.get().getGrantWork(),
+					specialLeaveDividedDayEachProcess_pre.get().getGrantPeriodAtr());
+
 
 			aggregatePeriodWorks.add(specialLeaveAggregatePeriodWork);
 
@@ -738,20 +740,19 @@ public class SpecialLeaveManagementService {
 		SpecialLeaveAggregatePeriodWork specialLeaveAggregatePeriodWork
 		= SpecialLeaveAggregatePeriodWork.of(
 			new DatePeriod(preYmd, nextDayOfPeriodEnd),
-			specialLeaveDividedDayEachProcess_pre.get().isDayBeforePeriodEnd(),
-			specialLeaveDividedDayEachProcess_pre.get().isNextDayAfterPeriodEnd(),
-			specialLeaveDividedDayEachProcess_pre.get().isAfterGrant(),
+			specialLeaveDividedDayEachProcess_pre.get().getEndDay(),
 			specialLeaveDividedDayEachProcess_pre.get().getLapsedWork(),
-			specialLeaveDividedDayEachProcess_pre.get().getGrantWork());
+			specialLeaveDividedDayEachProcess_pre.get().getGrantWork(),
+			specialLeaveDividedDayEachProcess_pre.get().getGrantPeriodAtr());
 
 		aggregatePeriodWorks.add(specialLeaveAggregatePeriodWork);
 
 
 		for(SpecialLeaveAggregatePeriodWork work : aggregatePeriodWorks) {
 			if(work.getPeriod().contains(aggrPeriod.end()))
-				work.setDayBeforePeriodEnd(true);
+				work.getEndDay().setPeriodEndAtr(true);
 			if(work.getPeriod().contains(aggrPeriod.end().addDays(1)))
-				work.setNextDayAfterPeriodEnd(true);
+				work.getEndDay().setNextPeriodEndAtr(true);
 		}
 
 		return aggregatePeriodWorks;
