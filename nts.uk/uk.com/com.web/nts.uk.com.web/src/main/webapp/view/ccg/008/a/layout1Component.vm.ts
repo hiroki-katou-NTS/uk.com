@@ -9,18 +9,19 @@ module nts.uk.com.view.ccg008.a.Layout1ComponentViewModel {
           <span data-bind="if: $component.isShowUrlLayout1()">
             <iframe class="iframe_fix" id="preview-iframe1" data-bind="attr:{src: $component.urlIframe1}"></iframe>
           </span>
-          <!-- ko if:  $component.isFlowmenu()-->
+          <!-- ko if: $component.isFlowmenu() -->
             <div data-bind="foreach: $component.lstHtml">
               <div data-bind="html: html" id="F1-frame" ></div>
             </div>
           <!-- /ko -->  
-          <!-- ko if: $component.isFlowmenuUp()-->
+          <!-- ko if: $component.isFlowmenuUp() -->
             <iframe style="width: 100%" data-bind="attr: {src: $component.filePath}" id="F2-frame" ></iframe>
           <!-- /ko -->  
         </div>
     `
   })
   export class Layout1ComponentViewModel extends ko.ViewModel {
+
     urlIframe1: KnockoutObservable<string> = ko.observable("");
     lstHtml: KnockoutObservableArray<any> = ko.observableArray([]);
     isShowUrlLayout1: KnockoutObservable<boolean> = ko.observable(false);
@@ -33,7 +34,7 @@ module nts.uk.com.view.ccg008.a.Layout1ComponentViewModel {
       const data = param.item();
       const layout1 = param.item().layout1;
       if(layout1[0]) {
-        vm.isFlowmenu = layout1[0].isFlowmenu;
+        vm.isFlowmenu(layout1[0].isFlowmenu);
       }
       if (layout1) {
         if (data.urlLayout1) {

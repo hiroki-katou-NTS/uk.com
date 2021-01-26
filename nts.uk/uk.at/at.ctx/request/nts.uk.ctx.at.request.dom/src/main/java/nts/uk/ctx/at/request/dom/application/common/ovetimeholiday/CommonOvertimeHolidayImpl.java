@@ -1317,7 +1317,9 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 				workTimeCode.orElse(null),
 				timeZones,
 				breakTimes.stream().map(x -> x.getStartTime().v()).collect(Collectors.toList()),
-				breakTimes.stream().map(x -> x.getEndTime().v()).collect(Collectors.toList()));
+				breakTimes.stream().map(x -> x.getEndTime().v()).collect(Collectors.toList()),
+				Collections.emptyList(),
+				Collections.emptyList());
 		// 「申請時間」をセットして返す
 		
 		List<OvertimeApplicationSetting> overtimeApplicationSetting = new ArrayList<OvertimeApplicationSetting>();

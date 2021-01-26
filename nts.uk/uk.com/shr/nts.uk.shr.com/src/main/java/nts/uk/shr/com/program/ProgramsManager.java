@@ -2642,6 +2642,20 @@ public class ProgramsManager {
             "/view/kaf/018/i/index.xhtml");
 
     /**
+     * KAF012
+     */
+    public static final Program KAF012A = new Program(WebAppId.AT, ProgramIdConsts.KAF012A, null,
+            "/view/kaf/012/a/index.xhtml");
+    public static final Program KAF012B = new Program(WebAppId.AT, ProgramIdConsts.KAF012B, null,
+            "/view/kaf/012/b/index.xhtml");
+
+    /**
+     * KAF012
+     */
+    public static final Program KAFS12B = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS12B, null,
+            "/kaf/S12/b/index.xhtml");
+
+    /**
      * KDM002.
      */
     public static final Program KDM002A = new Program(WebAppId.AT, ProgramIdConsts.KDM002A, "KDM002_1",

@@ -2,7 +2,6 @@ package nts.uk.ctx.sys.env.dom.mailnoticeset.company;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 
 import java.util.List;
@@ -11,7 +10,6 @@ import java.util.List;
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.環境.メール通知設定.会社.会社.連絡先情報の設定
  */
 @Getter
-@Setter
 @Builder
 public class SettingContactInformation extends DomainObject {
 
