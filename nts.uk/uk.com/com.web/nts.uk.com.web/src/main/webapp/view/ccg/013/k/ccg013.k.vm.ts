@@ -25,7 +25,12 @@ module nts.uk.com.view.ccg013.k.viewmodel {
             self.columns = [
                 {headerText:'id', key: 'id', width: 20, hidden: true},
                 { headerText: nts.uk.resource.getText("CCG013_51"), key: 'code', width: 80, hidden: true },
-                { headerText: nts.uk.resource.getText("CCG013_51"), key: 'displayOrder', width: 80 },
+                { 
+                    headerText: nts.uk.resource.getText("CCG013_51"),
+                    key: 'displayOrder',
+                    width: 80,
+                    template: '<div style="text-align: right">${displayOrder}</div>',
+                },
                 { headerText: nts.uk.resource.getText("CCG013_52"), key: 'targetItems', width: 150 },
                 {
                     headerText: nts.uk.resource.getText("CCG013_53"), key: 'displayName', formatter: _.escape, width: 150
