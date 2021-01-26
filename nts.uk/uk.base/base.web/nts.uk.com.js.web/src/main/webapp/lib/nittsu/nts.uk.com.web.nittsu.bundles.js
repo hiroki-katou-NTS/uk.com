@@ -11,14 +11,14 @@ var nts;
                     get: function () {
                         return !this.landscapse;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "landscapse", {
                     get: function () {
                         return window.innerWidth > window.innerHeight;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "mobile", {
@@ -31,7 +31,7 @@ var nts;
                         })(navigator.userAgent || navigator.vendor || window.opera);
                         return check;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "tablet", {
@@ -44,7 +44,7 @@ var nts;
                         })(navigator.userAgent || navigator.vendor || window.opera);
                         return check;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "mp", {
@@ -54,7 +54,7 @@ var nts;
                     get: function () {
                         return this.mobile && this.portrait;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "ml", {
@@ -64,28 +64,28 @@ var nts;
                     get: function () {
                         return this.mobile && this.landscapse;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "ios", {
                     get: function () {
                         return /iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "width", {
                     get: function () {
                         return window.innerWidth;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "height", {
                     get: function () {
                         return window.innerHeight;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "version", {
@@ -108,7 +108,7 @@ var nts;
                         }
                         return M.join(' ');
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "private", {
@@ -177,7 +177,7 @@ var nts;
                         not();
                         return d.promise();
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 return browser;
@@ -1893,9 +1893,12 @@ var nts;
 })(nts || (nts = {}));
 /// <reference path="reference.ts"/>
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -7272,8 +7275,7 @@ var nts;
                         self.$container.tabIndex = -1;
                         $.data(self.$container, NAMESPACE, self);
                         var pTable = $.data(self.$container, NAMESPACE);
-                        pTable.owner = { headers: [], bodies: [],
-                            find: function (name, where) {
+                        pTable.owner = { headers: [], bodies: [], find: function (name, where) {
                                 var o = this;
                                 var elm = o[where].filter(function (e, i) { return e.classList.contains(name); });
                                 if (!elm || elm.length === 0)
@@ -17349,6 +17351,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 var nts;
 (function (nts) {
     var uk;
@@ -17401,7 +17410,7 @@ var nts;
                                         else {
                                             var exist = _.find(checkeds, function (c) { return _.isEqual(c, ko.toJS(value_1)); });
                                             if (!exist) {
-                                                accessor.checked(checkeds.concat([value_1]));
+                                                accessor.checked(__spreadArrays(checkeds, [value_1]));
                                             }
                                             else {
                                                 _.remove(checkeds, function (c) { return _.isEqual(c, ko.toJS(value_1)); });
@@ -21219,7 +21228,7 @@ var nts;
                         get: function () {
                             return this.model;
                         },
-                        enumerable: true,
+                        enumerable: false,
                         configurable: true
                     });
                     SwapHandler.prototype.handle = function (value) {
@@ -22660,7 +22669,7 @@ var nts;
                         get: function () {
                             return this.model;
                         },
-                        enumerable: true,
+                        enumerable: false,
                         configurable: true
                     });
                     SwapHandler.prototype.handle = function (parts, value) {
@@ -23325,13 +23334,16 @@ var nts;
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 /// <reference path="../../reference.ts"/>
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
 };
 var nts;
 (function (nts) {
@@ -23376,7 +23388,7 @@ var nts;
                                         read: function () {
                                             var ds = ko.toJS(accessor.dataSource);
                                             return ds.filter(function (d) { return d.visible !== false; })
-                                                .map(function (d) { return (__assign({}, d, { active: active,
+                                                .map(function (d) { return (__assign(__assign({}, d), { active: active,
                                                 tabindex: tabindex, dataBind: 'vertical-link' !== dir ? undefined : {
                                                     'btn-link': d.title,
                                                     icon: d.icon || 'CHECKBOX',
@@ -23715,8 +23727,7 @@ var nts;
                             $treegrid.addClass("row-limited");
                         }
                         if (isFilter) {
-                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100,
-                                dataFiltered: function (evt, ui) {
+                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100, dataFiltered: function (evt, ui) {
                                     var disabled = $treegrid.data("rowDisabled");
                                     if (!_.isEmpty(disabled)) {
                                         $treegrid.ntsTreeView("disableRows", disabled);
@@ -25120,7 +25131,7 @@ var nts;
                                     headPart.width = freeWrapperWidth + "px";
                                 }
                                 headPart.isHeader = true;
-                                var $headerWrapper = v.createWrapper("0px", left, headPart);
+                                var $headerWrapper = v.createWrapper(_sheeting ? gp.SHEET_HEIGHT + "px" : "0px", left, headPart);
                                 pTable.owner.headers.push($headerWrapper);
                                 $headerWrapper.classList.add(HEADER);
                                 //                    self.$container.appendChild($headerWrapper);
@@ -25138,7 +25149,7 @@ var nts;
                                     if ($fixedHeaderTbl)
                                         $fixedHeaderTbl.style.height = self.headerHeight;
                                     $tbl.style.height = self.headerHeight;
-                                    top = (parseFloat(self.headerHeight) + DISTANCE) + "px";
+                                    top = (parseFloat(self.headerHeight) + DISTANCE + (_sheeting ? gp.SHEET_HEIGHT : 0)) + "px";
                                     _mafollicle[_currentPage][_currentSheet] = {};
                                     _vessel().$hGroup = $tbl.querySelector("colgroup");
                                     _vessel().$hBody = $tbl.querySelector("tbody");
@@ -25210,7 +25221,7 @@ var nts;
                         _bodyWrappers = bodyWrappers;
                         var dWrapper = _hasFixed ? bodyWrappers[1] : bodyWrappers[0];
                         _vessel().$bBody = dWrapper.querySelector("tbody");
-                        top = parseFloat(self.height) + DISTANCE - scrollWidth - SUM_HEIGHT;
+                        top = parseFloat(self.height) + DISTANCE - scrollWidth - SUM_HEIGHT + (_sheeting ? gp.SHEET_HEIGHT : 0);
                         ti.calcTotal();
                         [self.fixedSummaries, self.summaries].filter(function (s) { return s && s.columns; }).forEach(function (sumPart, i) {
                             if (!sumPart.columns || sumPart.columns.length === 0)
@@ -27136,7 +27147,7 @@ var nts;
                             }
                             if (key === "rowNumber") {
                                 td.innerHTML = cData; //!_.isNil(numText) ? numText : rowIdx + 1;
-                                tdStyle += "; background-color: #CFF1A5; ";
+                                //tdStyle += "; background-color: #CFF1A5; ";
                                 td.style.cssText += tdStyle;
                                 td.classList.add(v_1.STT_CLS);
                                 return td;
@@ -27788,10 +27799,16 @@ var nts;
                             style["background-color"] = "#F3F3F3";
                             style["padding-right"] = "1px";
                         }
-                        else if (options.containerClass === gp.PAGING_CLS || options.containerClass === gp.SHEET_CLS) {
+                        else if (options.containerClass === gp.PAGING_CLS) {
                             style = wrapperStyles(top, left, options.width, undefined, options.height);
                             style["background-color"] = "#E9E9E9";
                             style["border"] = "1px solid #dddddd";
+                            style["color"] = "#333333";
+                        }
+                        else if (options.containerClass === gp.SHEET_CLS) {
+                            style = wrapperStyles(top, left, options.width, undefined, options.height);
+                            //                style["background-color"] = "#E9E9E9";
+                            style["border"] = "0px solid #dddddd";
                             style["color"] = "#333333";
                         }
                         else {
@@ -29407,7 +29424,7 @@ var nts;
                             }
                             if (sheetDiv) {
                                 sheetDiv.style.width = btmw + "px";
-                                sheetDiv.style.top = (parseFloat(sheetDiv.style.top) + vari_1) + "px";
+                                //                    sheetDiv.style.top = (parseFloat(sheetDiv.style.top) + vari) + "px";
                                 var sheetBtn = sheetDiv.querySelector(".mgrid-sheet-buttonlist");
                                 var scrollbar = sheetDiv.querySelector(".mgrid-sheet-scrollbar");
                                 if (sheetBtn.offsetHeight <= gp.SHEET_HEIGHT) {
@@ -29445,7 +29462,7 @@ var nts;
                         }
                         if (sheetDiv) {
                             sheetDiv.style.width = btmw + "px";
-                            sheetDiv.style.top = (parseFloat(sheetDiv.style.top) + vari) + "px";
+                            //                sheetDiv.style.top = (parseFloat(sheetDiv.style.top) + vari) + "px";
                         }
                         _bodyWrappers[0].style.height = height + "px";
                     }
@@ -32490,7 +32507,7 @@ var nts;
                     gp.PAGING_CLS = "mgrid-paging";
                     gp.SHEET_CLS = "mgrid-sheet";
                     gp.PAGE_HEIGHT = 44;
-                    gp.SHEET_HEIGHT = 30;
+                    gp.SHEET_HEIGHT = 45;
                     /**
                      * ImiPages.
                      */
@@ -32590,7 +32607,7 @@ var nts;
                     function imiSheets($container, top, width) {
                         if (!_sheeting)
                             return;
-                        gp.$sheetArea = v.createWrapper(top + ti.getScrollWidth() + SUM_HEIGHT + "px", 0, { width: parseFloat(width) + ti.getScrollWidth() + "px", height: gp.SHEET_HEIGHT + "px", containerClass: gp.SHEET_CLS });
+                        gp.$sheetArea = v.createWrapper("0px" /*top + ti.getScrollWidth() + SUM_HEIGHT + "px"*/, 0, { width: parseFloat(width) + ti.getScrollWidth() + "px", height: gp.SHEET_HEIGHT + "px", containerClass: gp.SHEET_CLS });
                         $container.appendChild(gp.$sheetArea);
                         var $scrollBar = document.createElement("ul");
                         $scrollBar.classList.add("mgrid-sheet-scrollbar");
@@ -32610,7 +32627,7 @@ var nts;
                         _.forEach(Object.keys(_mafollicle[SheetDef]), function (s) {
                             var $btn = document.createElement("li");
                             $btn.classList.add("mgrid-sheet-button");
-                            $btn.classList.add("ui-state-default");
+                            //                $btn.classList.add("ui-state-default");
                             $btn.textContent = _mafollicle[SheetDef][s].text;
                             if (s === _currentSheet)
                                 $btn.classList.add("ui-state-active");
@@ -33795,8 +33812,7 @@ var nts;
                                 var txt = td.querySelector(".mgrid-refer-text");
                                 if (!txt)
                                     return;
-                                var args = { value: $.data(td, v.DATA), rowId: data.rowId, rowValue: data.rowObj, itemList: data.controlDef.pattern[data.controlDef.list[data.rowId]],
-                                    relatedItemList: function (nama) {
+                                var args = { value: $.data(td, v.DATA), rowId: data.rowId, rowValue: data.rowObj, itemList: data.controlDef.pattern[data.controlDef.list[data.rowId]], relatedItemList: function (nama) {
                                         var ctrl = _mafollicle[SheetDef][_currentSheet].controlMap && _mafollicle[SheetDef][_currentSheet].controlMap[nama];
                                         if (ctrl && ctrl.pattern && ctrl.list) {
                                             return ctrl.pattern[ctrl.list[data.rowId]];
@@ -37134,7 +37150,7 @@ var nts;
                 Object.defineProperties($jump, {
                     self: {
                         value: function $to() {
-                            $jump.apply(null, Array.prototype.slice.apply(arguments, []).slice());
+                            $jump.apply(null, __spreadArrays(Array.prototype.slice.apply(arguments, [])));
                         }
                     },
                     blank: {
@@ -46581,8 +46597,7 @@ var nts;
                             $treegrid.addClass("row-limited");
                         }
                         if (isFilter) {
-                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100,
-                                dataFiltered: function (evt, ui) {
+                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100, dataFiltered: function (evt, ui) {
                                     var disabled = $treegrid.data("rowDisabled");
                                     if (!_.isEmpty(disabled)) {
                                         $treegrid.ntsTreeView("disableRows", disabled);
@@ -46977,7 +46992,8 @@ var nts;
                                             if ($tree.data("igTreeGrid") !== null) {
                                                 $tree.data("igTreeGridUpdating").deleteRow(rowId);
                                             }
-                                        }, initValue: value,
+                                        },
+                                        initValue: value,
                                         rowObj: rowObj,
                                         showHeaderCheckbox: col.showHeaderCheckbox,
                                         enable: isRowEnable,
