@@ -7,7 +7,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyresult.adapter.DailyWorkScheduleAdapter;
-import nts.uk.ctx.at.schedule.pub.schedule.workschedule.ccg005.WorkSchedulePub;
+import nts.uk.ctx.at.schedule.pub.schedule.workschedule.WorkSchedulePub;
 
 @Stateless
 public class DailyWorkScheduleAdapterImpl implements DailyWorkScheduleAdapter {
