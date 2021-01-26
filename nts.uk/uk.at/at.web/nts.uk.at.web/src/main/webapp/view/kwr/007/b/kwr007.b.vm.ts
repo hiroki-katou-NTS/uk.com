@@ -372,7 +372,6 @@ module nts.uk.at.view.kwr007.b {
 
           vm.keepListItemsSwap(listItemsSwap); //base
           vm.resetListItemsSwap();
-          //vm.listItemsSwap(_.cloneDeep(vm.keepListItemsSwap()));
         }
         vm.$blockui('hide');
         deferred.resolve();
