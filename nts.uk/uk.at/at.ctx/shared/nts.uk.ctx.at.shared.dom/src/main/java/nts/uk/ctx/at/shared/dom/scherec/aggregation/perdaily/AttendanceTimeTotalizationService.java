@@ -35,7 +35,7 @@ public class AttendanceTimeTotalizationService {
 						.map( e -> AttendanceTimeTotalizationService.getTargetTimes(targets, e) )
 						.collect(Collectors.toList());
 		// 集計(合計)
-		return AggregationByTypeService.totalize(times);
+		return AggregationByTypeService.totalize( targets, times );
 
 	}
 
