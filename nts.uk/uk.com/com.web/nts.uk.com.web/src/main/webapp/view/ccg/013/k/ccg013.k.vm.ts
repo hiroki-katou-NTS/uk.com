@@ -45,11 +45,17 @@ module nts.uk.com.view.ccg013.k.viewmodel {
             self.id(0);
             self.list([]);
             for (let i = 0; i < self.listStandardMenu().length; i++) {
+                if (self.listStandardMenu()[i].webMenuSetting !== WebMenuSetting.Display
+                    || self.listStandardMenu()[i].classification === Menu_Cls.TopPage
+                    || self.listStandardMenu()[i].classification === Menu_Cls.OfficeHelper
+                ) {
+                    continue;
+                }
                 if (value === 5) {
-                    self.list.push(new StandardMenu(i + 1, self.id(),self.listStandardMenu()[i].order, self.listStandardMenu()[i].code, self.listStandardMenu()[i].targetItems, self.listStandardMenu()[i].displayName, self.listStandardMenu()[i].system, self.listStandardMenu()[i].classification, self.listStandardMenu()[i].displayOrder));
+                    self.list.push(new StandardMenu(i + 1, self.id(),self.listStandardMenu()[i].order, self.listStandardMenu()[i].code, self.listStandardMenu()[i].targetItems, self.listStandardMenu()[i].displayName, self.listStandardMenu()[i].system, self.listStandardMenu()[i].classification, self.listStandardMenu()[i].displayOrder, self.listStandardMenu()[i].webMenuSetting));
                     self.id(self.id()+1);
                 } else if (self.listStandardMenu()[i].system == value){
-                    self.list.push(new StandardMenu(i + 1, self.id(),self.listStandardMenu()[i].order, self.listStandardMenu()[i].code, self.listStandardMenu()[i].targetItems, self.listStandardMenu()[i].displayName, self.listStandardMenu()[i].system, self.listStandardMenu()[i].classification, self.listStandardMenu()[i].displayOrder));
+                    self.list.push(new StandardMenu(i + 1, self.id(),self.listStandardMenu()[i].order, self.listStandardMenu()[i].code, self.listStandardMenu()[i].targetItems, self.listStandardMenu()[i].displayName, self.listStandardMenu()[i].system, self.listStandardMenu()[i].classification, self.listStandardMenu()[i].displayOrder, self.listStandardMenu()[i].webMenuSetting));
                     self.id(self.id()+1);
                 }
             }
@@ -82,7 +88,7 @@ module nts.uk.com.view.ccg013.k.viewmodel {
             service.getAllStandardMenu().done(function(listStandardMenu: Array<viewmodel.StandardMenu>) {
                 listStandardMenu = _.orderBy(listStandardMenu, ["code"], ["asc"]);
                 _.each(listStandardMenu, function(obj: viewmodel.StandardMenu, index) {
-                    self.listStandardMenu.push(new StandardMenu(index + 1, self.id(), obj.order, obj.code, obj.targetItems, obj.displayName, obj.system, obj.classification, obj.displayOrder));
+                    self.listStandardMenu.push(new StandardMenu(index + 1, self.id(), obj.order, obj.code, obj.targetItems, obj.displayName, obj.system, obj.classification, obj.displayOrder, obj.webMenuSetting));
                     self.id(self.id()+1);
                 });
                 
@@ -106,7 +112,7 @@ module nts.uk.com.view.ccg013.k.viewmodel {
                 _.forEach(editMenuBar.listSystem, function(item) {
                    newItemList.push(new ItemModel(item.value, item.localizedName));
                 });
-                self.itemList(newItemList.filter(x => x.code !== 2));
+                self.itemList(newItemList.filter(x => x.code !== System.OFFICE_HELPER));
                 dfd.resolve();
             }).fail(function(error) {
                 dfd.reject();
@@ -238,6 +244,33 @@ module nts.uk.com.view.ccg013.k.viewmodel {
         }
     }
 
+    enum Menu_Cls {
+        Standard = 0,
+        OptionalItemApplication = 1,
+        MobilePhone = 2,
+        Tablet = 3,
+        CodeName = 4,
+        GroupCompanyMenu = 5,
+        Customize = 6,
+        OfficeHelper = 7,
+        TopPage = 8,
+        SmartPhone = 9
+    }
+
+    enum WebMenuSetting {
+        Notdisplay = 0,
+        Display = 1
+    }
+
+    enum System {
+        COMMON = 0,
+        TIME_SHEET = 1,
+        OFFICE_HELPER = 2,
+        KYUYOU = 3,
+        JINJIROU= 4,
+        ALL = 5
+    }
+
     export class StandardMenu {
         index: number;
         id: number;
@@ -248,7 +281,8 @@ module nts.uk.com.view.ccg013.k.viewmodel {
         classification: number;
         order:number;
         displayOrder: number;
-        constructor(index: number, id: number, order: number, code: string, targetItems: string, displayName: string, system: number, classification: number, displayOrder: number) {
+        webMenuSetting: number
+        constructor(index: number, id: number, order: number, code: string, targetItems: string, displayName: string, system: number, classification: number, displayOrder: number, webMenuSetting: number) {
             this.index = index;
             this.id = id;
             this.order = order;
@@ -258,6 +292,7 @@ module nts.uk.com.view.ccg013.k.viewmodel {
             this.system = system;
             this.classification = classification;
             this.displayOrder = displayOrder;
+            this.webMenuSetting = webMenuSetting;
         }
     }
 }

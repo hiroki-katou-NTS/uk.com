@@ -225,7 +225,7 @@ module nts.uk.com.view.ccg013.c.viewmodel {
                 _.forEach(editMenuBar.listSystem, function (item) {
                     self.systemList.push(new SystemModel(item.value, item.localizedName));
                 });
-                self.systemList(self.systemList().filter(x => x.systemCode !== 2));
+                self.systemList(self.systemList().filter(x => x.systemCode !== System.OFFICE_HELPER));
                 dfd.resolve();
             }).fail(function (error) {
                 dfd.reject();
@@ -265,7 +265,7 @@ module nts.uk.com.view.ccg013.c.viewmodel {
                     .map(item => new ItemModel(list001.length, nts.uk.util.randomId(), item.code, item.targetItem, item.name, list001.length, item.menu_cls, item.system, item.displayOrder, item.webMenuSetting))
                     .value();
             }
-            const listStandardMenu = _.uniqBy(_.concat(list001, list002), 'targetItem');
+            const listStandardMenu = _.concat(list001, list002);
             self.items(listStandardMenu);
         }
 
