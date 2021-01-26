@@ -30,7 +30,8 @@ public class LaborCostsTotalizationService {
 				List<AggregationUnitOfLaborCosts> targets
 			,	List<AttendanceTimeOfDailyAttendance> values
 	) {
-		return LaborCostsTotalizationService.totalize(targets, values, AggregationUnitOfLaborCosts::getAmount);
+		return LaborCostsTotalizationService
+				.totalize(targets, values, AggregationUnitOfLaborCosts::getAmount);
 	}
 
 
@@ -44,7 +45,8 @@ public class LaborCostsTotalizationService {
 				List<AggregationUnitOfLaborCosts> targets
 			,	List<AttendanceTimeOfDailyAttendance> values
 	) {
-		return LaborCostsTotalizationService.totalize(targets, values, AggregationUnitOfLaborCosts::getTime);
+		return LaborCostsTotalizationService
+				.totalize(targets, values, AggregationUnitOfLaborCosts::getTime);
 	}
 
 
@@ -62,12 +64,12 @@ public class LaborCostsTotalizationService {
 	) {
 
 		// 値を取得する
-		val items = values.stream()
+		val times = values.stream()
 				.map( v -> targets.stream().collect(Collectors.toMap( t -> t, t -> getValue.apply( t, v ) )))
 				.collect(Collectors.toList());
 
 		// 集計(合計)
-		return AggregationByTypeService.totalize(items);
+		return AggregationByTypeService.totalize(targets, times);
 
 	}
 
