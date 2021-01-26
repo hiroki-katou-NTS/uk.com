@@ -18,8 +18,6 @@ public class CheckEmployeeUserAvailability {
 
 	public static void check(Require require, IdentifiedEmployeeInfo identified) {
 
-		String tenantCode = identified.getTenantCode();
-		String userId = identified.getUserId();
 		val employee = identified.getEmployee();
 		
 		// 社員が削除されていないかチェック
@@ -33,13 +31,15 @@ public class CheckEmployeeUserAvailability {
 		}
 		
 		// 社員の所属情報が存在しているかチェック
-		if(!employee.getSyaEmpHist().isPresent() 
-		|| !employee.getSyaJobHist().isPresent() 
-		|| !employee.getSyaWkpHist().isPresent()) {
-			throw new BusinessException("Msg_1420");
-		}
+//		if(!employee.getSyaEmpHist().isPresent() 
+//		|| !employee.getSyaJobHist().isPresent() 
+//		|| !employee.getSyaWkpHist().isPresent()) {
+//			throw new BusinessException("Msg_1420");
+//		}
 		
 		// アカウントロック
+		String tenantCode = identified.getTenantCode();
+		String userId = identified.getUserId();
 		require.getAccountLockPolicy(tenantCode)
 				.ifPresent(policy -> {
 					if (policy.isLocked(require, userId)) {
