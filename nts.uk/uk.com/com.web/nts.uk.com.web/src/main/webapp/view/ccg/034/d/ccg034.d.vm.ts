@@ -23,6 +23,7 @@ module nts.uk.com.view.ccg034.d {
   const CSS_CLASS_MENU_CREATION_ITEM_CONTAINER = 'menu-creation-item-container';
   const CSS_CLASS_MENU_CREATION_ITEM = 'menu-creation-item';
   const CSS_CLASS_MENU_CREATION_ITEM_COPY_PLACEHOLDER = 'menu-creation-item-copy-placeholder';
+  const CSS_CLASS_CCG034_HYPERLINK = 'ccg034-hyperlink';
   const CELL_SIZE = 40;
   const CREATION_LAYOUT_WIDTH = 1920;
   const CREATION_LAYOUT_HEIGHT = 1080;
@@ -1438,7 +1439,7 @@ module nts.uk.com.view.ccg034.d {
         $labelContent = $("<span>", { 'class': 'part-label-content' });
       }
       $labelContent
-        .text(partData.labelContent)
+        .html(partData.labelContent.replace("\n", "<br>"))
         .css({
           'font-size': partData.fontSize,
           'font-weight': partData.isBold ? 'bold' : 'normal',
@@ -1739,6 +1740,7 @@ module nts.uk.com.view.ccg034.d {
           const partDataMenuModel: PartDataMenuModel = (partData as PartDataMenuModel);
           const $partMenuHTML: JQuery = $('<a>', { 'href': `${location.origin}${partDataMenuModel.menuUrl}`, 'target': '_top' })
             .text(partDataMenuModel.menuName)
+            .addClass(CSS_CLASS_CCG034_HYPERLINK)
             .css({
               'font-size': `${partDataMenuModel.fontSize}px`,
               'font-weight': partDataMenuModel.isBold ? 'bold' : 'normal',
@@ -1792,6 +1794,7 @@ module nts.uk.com.view.ccg034.d {
           const partDataLinkModel: PartDataLinkModel = (partData as PartDataLinkModel);
           const $partLinkHTML: JQuery = $('<a>', { 'href': partDataLinkModel.url, 'target': '_blank' })
             .text(partDataLinkModel.linkContent || partDataLinkModel.url)
+            .addClass(CSS_CLASS_CCG034_HYPERLINK)
             .css({
               'font-size': `${partDataLinkModel.fontSize}px`,
               'font-weight': partDataLinkModel.isBold ? 'bold' : 'normal',
@@ -1820,6 +1823,7 @@ module nts.uk.com.view.ccg034.d {
           const fileLink: string = `${location.origin}/nts.uk.com.web/webapi/shr/infra/file/storage/get/${partDataAttachmentModel.fileId}`;
           const $partAttachmentHTML: JQuery = $('<a>', { 'href': fileLink, 'target': '_blank' })
             .text(partDataAttachmentModel.linkContent || partDataAttachmentModel.fileName)
+            .addClass(CSS_CLASS_CCG034_HYPERLINK)
             .css({
               'font-size': `${partDataAttachmentModel.fontSize}px`,
               'font-weight': partDataAttachmentModel.isBold ? 'bold' : 'normal',
