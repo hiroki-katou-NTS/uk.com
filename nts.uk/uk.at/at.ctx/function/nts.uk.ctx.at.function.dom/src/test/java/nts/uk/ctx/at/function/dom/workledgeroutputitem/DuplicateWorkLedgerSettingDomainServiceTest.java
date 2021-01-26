@@ -44,9 +44,6 @@ public class DuplicateWorkLedgerSettingDomainServiceTest {
 		new Expectations(AppContexts.class) {{
 			AppContexts.user().employeeId();
 			result = "employeeId01";
-		}};
-
-		new Expectations() {{
 			require.getOutputItemDetail("dupSrcId01");
 			result = Optional.empty();
 		}};
