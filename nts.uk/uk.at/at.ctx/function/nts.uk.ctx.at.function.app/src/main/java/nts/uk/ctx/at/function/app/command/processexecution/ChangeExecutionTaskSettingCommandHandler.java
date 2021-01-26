@@ -124,7 +124,7 @@ public class ChangeExecutionTaskSettingCommandHandler
 	}
 
 	private void unschedule(String scheduleId) {
-		this.scheduler.unscheduleOnCurrentCompany(SortingProcessScheduleJob.class, scheduleId);
+		this.scheduler.unscheduleOnCurrentCompany(scheduleId);
 	}
 
 	private void performRegister(ExecutionTaskSetting domain, SaveExecutionTaskSettingCommand command)

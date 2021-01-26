@@ -11,8 +11,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.task.schedule.ScheduledJobUserData;
 import nts.arc.task.schedule.cron.CronSchedule;
+import nts.arc.task.schedule.job.jobdata.ScheduledJobUserData;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.text.StringUtil;

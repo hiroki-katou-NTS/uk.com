@@ -52,7 +52,6 @@ public class JpaExecutionTaskLogRepository extends JpaRepository implements Exec
 		this.commandProxy()
 				.insertAll(taskLogList.stream()
 						.map(item -> KfnmtExecutionTaskLog.builder()
-								.contractCode(AppContexts.user().contractCode())
 								.kfnmtExecTaskLogPK(new KfnmtExecutionTaskLogPK(companyId, execItemCd, execId, item.getProcExecTask().value))
 								.status((item.getStatus() != null && item.getStatus().isPresent())
 										? item.getStatus().get().value
