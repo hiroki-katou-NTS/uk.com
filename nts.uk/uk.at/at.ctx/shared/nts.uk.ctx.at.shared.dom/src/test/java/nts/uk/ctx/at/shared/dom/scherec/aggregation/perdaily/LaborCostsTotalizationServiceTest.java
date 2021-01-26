@@ -22,11 +22,77 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.At
  */
 public class LaborCostsTotalizationServiceTest {
 
-	/*
-	 * [メモ] 以下のメソッドはコードレビューにて確認
-	 * ・金額を集計する - totalizeAmounts
-	 * ・時間を集計する - totalizeTimes
+	/**
+	 * Target	: totalizeAmounts
+	 * @param dlyAtd1 日別勤怠の勤怠時間(dummy)
+	 * @param dlyAtd2 日別勤怠の勤怠時間(dummy)
+	 * @param dlyAtd3 日別勤怠の勤怠時間(dummy)
 	 */
+	@Test
+	public void test_totalizeAmounts(
+			@Injectable AttendanceTimeOfDailyAttendance dlyAtd1
+		,	@Injectable AttendanceTimeOfDailyAttendance dlyAtd2
+		,	@Injectable AttendanceTimeOfDailyAttendance dlyAtd3
+	) {
+
+		// 集計単位リスト
+		val targets = Arrays.asList(AggregationUnitOfLaborCosts.values());
+
+		// Execute
+		val result = LaborCostsTotalizationService
+				.totalizeAmounts(targets, Arrays.asList( dlyAtd1, dlyAtd2, dlyAtd3 ));
+
+		// Assertion
+		assertThat( result ).containsOnlyKeys( targets );
+
+		result.entrySet()
+			.forEach( entry -> {
+				assertThat( entry.getValue() ).isEqualTo(
+						BigDecimal.ZERO
+						.add( entry.getKey().getAmount( dlyAtd1 ) )
+						.add( entry.getKey().getAmount( dlyAtd2 ) )
+						.add( entry.getKey().getAmount( dlyAtd3 ) )
+					);
+			} );
+
+	}
+
+
+	/**
+	 * Target	: totalizeTimes
+	 * @param dlyAtd1 日別勤怠の勤怠時間(dummy)
+	 * @param dlyAtd2 日別勤怠の勤怠時間(dummy)
+	 * @param dlyAtd3 日別勤怠の勤怠時間(dummy)
+	 */
+	@Test
+	public void test_totalizeTimes(
+			@Injectable AttendanceTimeOfDailyAttendance dlyAtd1
+		,	@Injectable AttendanceTimeOfDailyAttendance dlyAtd2
+		,	@Injectable AttendanceTimeOfDailyAttendance dlyAtd3
+	) {
+
+		// 集計単位リスト
+		val targets = Arrays.asList(AggregationUnitOfLaborCosts.values());
+
+		// Execute
+		val result = LaborCostsTotalizationService
+				.totalizeTimes(targets, Arrays.asList( dlyAtd1, dlyAtd2, dlyAtd3 ));
+
+		// Assertion
+		assertThat( result ).containsOnlyKeys( targets );
+
+		result.entrySet()
+			.forEach( entry -> {
+				assertThat( entry.getValue() ).isEqualTo(
+						BigDecimal.ZERO
+						.add( entry.getKey().getTime( dlyAtd1 ) )
+						.add( entry.getKey().getTime( dlyAtd2 ) )
+						.add( entry.getKey().getTime( dlyAtd3 ) )
+					);
+			} );
+
+	}
+
 
 	/*
 	 * Target	: [private] totalize
@@ -72,9 +138,9 @@ public class LaborCostsTotalizationServiceTest {
 	 */
 	@Test
 	public void test_private_totalize_valueIsNotEmpty(
-				@Injectable AttendanceTimeOfDailyAttendance dlyAtd1
-			,	@Injectable AttendanceTimeOfDailyAttendance dlyAtd2
-			,	@Injectable AttendanceTimeOfDailyAttendance dlyAtd3
+			@Injectable AttendanceTimeOfDailyAttendance dlyAtd1
+		,	@Injectable AttendanceTimeOfDailyAttendance dlyAtd2
+		,	@Injectable AttendanceTimeOfDailyAttendance dlyAtd3
 	) {
 
 		// 集計単位リスト
@@ -115,18 +181,16 @@ public class LaborCostsTotalizationServiceTest {
 		// Assertion
 		assertThat( result ).containsOnlyKeys( targets );
 
-		assertThat( result.get(AggregationUnitOfLaborCosts.EXTRA) )
-			.isEqualTo(BigDecimal.ZERO
-					.add(BigDecimal.valueOf( 1 * 0.25 ))
-					.add(BigDecimal.valueOf( 5 * 0.25 ))
-					.add(BigDecimal.valueOf( 2 * 0.25 ))
-				);
-		assertThat( result.get(AggregationUnitOfLaborCosts.TOTAL) )
-			.isEqualTo(BigDecimal.ZERO
-					.add(BigDecimal.valueOf( 1 * 1.5 ))
-					.add(BigDecimal.valueOf( 5 * 1.5 ))
-					.add(BigDecimal.valueOf( 2 * 1.5 ))
-				);
+		result.entrySet()
+			.forEach( entry -> {
+				val coefficient = coefficients.get( entry.getKey() );
+				assertThat( entry.getValue() ).isEqualTo(
+						BigDecimal.ZERO
+						.add( BigDecimal.valueOf( dummyValues.get( dlyAtd1 ) * coefficient ) )
+						.add( BigDecimal.valueOf( dummyValues.get( dlyAtd2 ) * coefficient ) )
+						.add( BigDecimal.valueOf( dummyValues.get( dlyAtd3 ) * coefficient ) )
+					);
+			} );
 
 	}
 

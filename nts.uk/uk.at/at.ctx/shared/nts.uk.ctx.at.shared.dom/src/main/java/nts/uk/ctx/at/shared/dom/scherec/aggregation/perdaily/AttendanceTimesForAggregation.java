@@ -66,12 +66,14 @@ public enum AttendanceTimesForAggregation {
 								.getWorkTime();							// 就業時間
 				break;
 			case WORKING_EXTRA:		// 時間外時間
-				time = dailyAttendance.getActualWorkingTimeOfDaily()	// 日別勤怠の勤務時間
-								.getPremiumTimeOfDailyPerformance()		// 日別勤怠の割増時間
-								.getPremiumTime(1).get().getPremitumTime();	// TODO 割増労働時間合計
+				// TODO 日別勤怠の金額系項目マージ待ち
+//				time = dailyAttendance.getActualWorkingTimeOfDaily()	// 日別勤怠の勤務時間
+//								.getPremiumTimeOfDailyPerformance()		// 日別勤怠の割増時間
+//								.getPremiumTime(1).get().getPremitumTime();	// TODO 割増労働時間合計
+				time = AttendanceTime.ZERO;
 				break;
 			case NIGHTSHIFT:		// 夜勤時間
-				// TODO 取得方法・取得項目
+				// TODO 日別勤怠の医療項目決定待ち
 				time = dailyAttendance.getMedicalCareTime()				// 日別勤怠の医療時間
 								.getWorkTime();							// 勤務時間
 				break;

@@ -12,31 +12,31 @@ import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 
 /**
- * Test for AttendanceTimesForAggregation
+ * Test for AggregationUnitOfLaborCosts
  * @author kumiko_otake
  */
-public class AttendanceTimesForAggregationTest {
+public class AggregationUnitOfLaborCostsTest {
 
 	@Test
 	public void testGetters() {
-		NtsAssert.invokeGetters(AttendanceTimesForAggregation.class);
+		NtsAssert.invokeGetters(AggregationUnitOfLaborCosts.class);
 	}
 
 
 	/**
-	 * Target	: getTime
+	 * Target	: getAmount
 	 * @param dailyAttendance 日別勤怠の勤怠時間(dummy)
 	 */
 	@Test
-	public void test_getTime_WORKING_TOTAL(@Injectable AttendanceTimeOfDailyAttendance dailyAttendance) {
+	public void test_getAmount_TOTAL(@Injectable AttendanceTimeOfDailyAttendance dailyAttendance) {
 
 		// Execute
-		val result = AttendanceTimesForAggregation.WORKING_TOTAL.getTime( dailyAttendance );
+		val result = AggregationUnitOfLaborCosts.TOTAL.getAmount( dailyAttendance );
 
 		// Assertion
 		assertThat( result ).isEqualTo(BigDecimal.ZERO
-					.add( AttendanceTimesForAggregation.WORKING_WITHIN.getTime( dailyAttendance ) )
-					.add( AttendanceTimesForAggregation.WORKING_EXTRA.getTime( dailyAttendance ) )
+					.add( AggregationUnitOfLaborCosts.WITHIN.getAmount( dailyAttendance ) )
+					.add( AggregationUnitOfLaborCosts.EXTRA.getAmount( dailyAttendance ) )
 				);
 
 	}
