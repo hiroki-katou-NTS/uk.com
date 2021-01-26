@@ -57,7 +57,7 @@ export class KafS12AComponent extends KafS00ShrComponent {
             vm.timeLeaveRemaining = vm.params.appDetail.timeLeaveRemaining;
             vm.timeLeaveManagement = vm.params.appDetail.timeLeaveManagement;
             vm.details = vm.params.appDetail.details;
-            vm.application = vm.createApplicationUpdate(vm.appDispInfoStartupOutput.appDetailScreenInfo);
+            vm.application = vm.appDispInfoStartupOutput.appDetailScreenInfo.application;
         } else {
             vm.application = vm.createApplicationInsert(AppType.ANNUAL_HOLIDAY_APPLICATION);
         }
@@ -284,7 +284,7 @@ export class KafS12AComponent extends KafS00ShrComponent {
     public handleNextToStepThree(applyTimeData: Array<any>, specialLeaveFrame: number) {
         const vm = this;
         vm.$mask('show');
-        vm.updateDetails(applyTimeData, specialLeaveFrame);
+        vm.updateDetails(applyTimeData, specialLeaveFrame, vm.timeLeaveManagement.timeSpecialLeaveMng.listSpecialFrame);
         const timeLeaveAppDisplayInfo = {
             appDispInfoStartupOutput: vm.appDispInfoStartupOutput,
             timeLeaveManagement: vm.timeLeaveManagement,
@@ -434,7 +434,7 @@ export class KafS12AComponent extends KafS00ShrComponent {
         }
     }
 
-    private updateDetails(applyTimeData: Array<any>, specialLeaveFrame: number) {
+    private updateDetails(applyTimeData: Array<any>, specialLeaveFrame: number, specialLeaveFrames: Array<any>) {
         const vm = this;
         vm.details.forEach((detail: TimeLeaveAppDetail) => {
             applyTimeData.forEach((data: any) => {
@@ -445,7 +445,12 @@ export class KafS12AComponent extends KafS00ShrComponent {
                     detail.applyTime.careAppTime = data.nursingAppTime;
                     detail.applyTime.super60AppTime = data.super60AppTime;
                     detail.applyTime.specialAppTime = data.specialAppTime;
-                    detail.applyTime.specialLeaveFrameNo = data.specialAppTime > 0 ? specialLeaveFrame : null;
+                    if (data.specialAppTime > 0) {
+                        const tmp = _.find(specialLeaveFrames, (i) => i.specialHdFrameNo == specialLeaveFrame);
+                        detail.applyTime.specialLeaveFrameNo = tmp ? specialLeaveFrame : null;
+                    } else {
+                        data.specialAppTime = null;
+                    }
                 }
             });
         });
