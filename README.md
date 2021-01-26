@@ -43,6 +43,7 @@
     + Redo Step 4 for other project: base, at, pr, hr.
     + Step 5:
       + Import step by step all project to Eclipse by gradle build tool.
+
 ## Some common gradle task:
   - `./gradlew eclipse`: Initial Eclipse project for import to Eclipse IDE.
   - `./graldew initd`: Initial Default depends projects.
@@ -51,3 +52,11 @@
   - `./gradlew test`: Runs the unit tests.
   - `./gradlew war`:  Generates a war archive with all the compiled classes, the web-app content and the libraries.
   - `./gradlew task`: List all task of project.
+  
+## Only for mobile project:
+  - First run:
+    - Type `npm install` for install all depends libs & framework (require internet connection).
+    - Type `npm run webpack:vendor` for build all vendor libs & framework.
+    - Type `npm run webpack` for build app.
+    - Type `npm run start:dev` for start server & continue watch & build app.
+   - Read more from README.MD of mobile project.
