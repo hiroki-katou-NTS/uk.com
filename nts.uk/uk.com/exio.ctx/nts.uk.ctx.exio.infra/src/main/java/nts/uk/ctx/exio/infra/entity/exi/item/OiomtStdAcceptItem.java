@@ -16,7 +16,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.exio.dom.exi.condset.AcScreenCondSet;
 import nts.uk.ctx.exio.dom.exi.condset.AcceptanceConditionCode;
 import nts.uk.ctx.exio.dom.exi.dataformat.ChrDataFormatSet;
 import nts.uk.ctx.exio.dom.exi.dataformat.DataFormatSetting;

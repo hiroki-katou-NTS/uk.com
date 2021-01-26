@@ -1,0 +1,68 @@
+package nts.uk.ctx.exio.infra.repository.exi.execlog;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+
+import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.exio.dom.exi.execlog.AcceptCsvErrorContent;
+import nts.uk.ctx.exio.dom.exi.execlog.AcceptCsvErrorContentRepository;
+import nts.uk.ctx.exio.infra.entity.exi.execlog.OiomtExAcpCsvError;
+import nts.uk.ctx.exio.infra.entity.exi.execlog.OiomtExAcpCsvErrorPk;
+
+@Stateless
+public class JpaAcceptCsvErrorContentRepository extends JpaRepository implements AcceptCsvErrorContentRepository {
+
+	private static final String SELECT_BY_ASYNTASKID = "SELECT c FROM OiomtExAcpCsvError "
+			+ " WHERE c.pk.cid = :cid "
+			+ " AND c.pk.asynTaskId = :asynTaskId";
+	@Override
+	public void add(List<AcceptCsvErrorContent> lstContent) {
+		this.commandProxy().insertAll(lstContent.stream().map(x-> toEntity(x)).collect(Collectors.toList()));
+	}
+
+	private OiomtExAcpCsvError toEntity(AcceptCsvErrorContent domain) {
+		OiomtExAcpCsvErrorPk pk = new OiomtExAcpCsvErrorPk(domain.getCid(),
+				domain.getAsynTaskId(),
+				domain.getLineNumber(),
+				domain.getItemNo());
+		OiomtExAcpCsvError entity = new OiomtExAcpCsvError(pk,
+				domain.getItemName(),
+				domain.getItemValue(),
+				domain.getErrorContent());
+		return entity;
+	}
+
+	@Override
+	public void delete(String cid, String asynTaskId) {
+		List<OiomtExAcpCsvError> lstResult = this.queryProxy().query(SELECT_BY_ASYNTASKID, OiomtExAcpCsvError.class)
+				.setParameter("cid", cid)
+				.setParameter("asynTaskId", asynTaskId)
+				.getList();
+		
+		this.commandProxy().removeAll(lstResult);
+	}
+
+	@Override
+	public List<AcceptCsvErrorContent> getByAsynTaskId(String cid, String asynTaskId) {
+		List<AcceptCsvErrorContent> lstResult = this.queryProxy().query(SELECT_BY_ASYNTASKID, OiomtExAcpCsvError.class)
+				.setParameter("cid", cid)
+				.setParameter("asynTaskId", asynTaskId)
+				.getList(x -> toDomain(x));
+		return lstResult;
+	}
+
+	private AcceptCsvErrorContent toDomain(OiomtExAcpCsvError entity)
+	{
+		AcceptCsvErrorContent result = new AcceptCsvErrorContent(entity.getPk().getCid(),
+				entity.getPk().getAsynTaskId(),
+				entity.getPk().getLineNumber(),
+				entity.getPk().getItemNo(),
+				entity.getItemName(),
+				entity.getItemValue(),
+				entity.getErrorContent());
+		return result;
+	}
+
+}

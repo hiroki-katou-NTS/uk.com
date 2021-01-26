@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.infra.entity.exi.category;
+package nts.uk.ctx.exio.infra.entity.exi.extcategory;
 
 import java.io.Serializable;
 
@@ -7,24 +7,28 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-/**
- * 外部受入カテゴリ: 主キー情報
- */
-@EqualsAndHashCode
+import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 @Embeddable
-public class OiomtExAcpCategoryPk implements Serializable {
+public class OiomtExAcpCategoryItemPk implements Serializable {/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
-
 	/**
-	 * カテゴリID
+	 * 外部受入カテゴリID
 	 */
 	@Basic(optional = false)
 	@Column(name = "CATEGORY_ID")
-	public String categoryId;
+	public int categoryId;
+
+	/**カテゴリ項目NO	 */
+	@Basic(optional = false)
+	@Column(name = "ITEM_NO")
+	public int itemNo;	
 
 }
