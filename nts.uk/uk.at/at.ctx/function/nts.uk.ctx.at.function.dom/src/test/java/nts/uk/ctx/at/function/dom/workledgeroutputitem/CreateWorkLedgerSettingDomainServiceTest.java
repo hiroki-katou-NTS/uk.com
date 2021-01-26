@@ -28,10 +28,9 @@ public class CreateWorkLedgerSettingDomainServiceTest {
 
     /**
      * Test createSetting method
-     * <p>
      * Condition:
      * input param: settingCategory == STANDARD_SELECTION
-     * WorkLedgerOutputItem.checkDuplicateStandardSelection returns TRUE
+     * require.standardCheck returns TRUE
      * Expect:
      * BusinessException: "Msg_1927"
      */
@@ -60,10 +59,9 @@ public class CreateWorkLedgerSettingDomainServiceTest {
 
     /**
      * Test createSetting method
-     * <p>
      * Condition:
      * input param: settingCategory == FREE_SETTING
-     * WorkLedgerOutputItem.checkDuplicateFreeSettings returns TRUE
+     * require.freeCheck returns TRUE
      * Expect:
      * BusinessException: "Msg_1927"
      */
@@ -95,7 +93,7 @@ public class CreateWorkLedgerSettingDomainServiceTest {
      * <p>
      * Condition:
      * input param: settingCategory == STANDARD_SELECTION
-     * WorkLedgerOutputItem.checkDuplicateStandardSelection returns FALSE
+     * require.standardCheck returns FALSE
      * Expect:
      * returns AtomTask with invocation to require.createWorkLedgerOutputSetting
      */
@@ -132,7 +130,7 @@ public class CreateWorkLedgerSettingDomainServiceTest {
      * <p>
      * Condition:
      * input param: settingCategory == FREE_SETTING
-     * WorkLedgerOutputItem.checkDuplicateFreeSettings returns FALSE
+     *  require.freeCheck returns FALSE
      * Expect:
      * returns AtomTask with invocation to require.createWorkLedgerOutputSetting
      */
