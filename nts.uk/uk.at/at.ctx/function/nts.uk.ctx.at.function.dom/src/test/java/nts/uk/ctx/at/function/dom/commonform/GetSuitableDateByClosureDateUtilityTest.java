@@ -16,55 +16,69 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @RunWith(JMockit.class)
 public class GetSuitableDateByClosureDateUtilityTest {
 
+    /**
+     * Test: GetSuitableDateByClosureDateUtilityTest.
+     * start().day() > closureDay
+     * end().day() < closureDay
+     */
     @Test
-    public void test_01() {
+    public void testGetSuitableDateByClosureDate_01() {
 
         DatePeriod datePeriod = new DatePeriod(GeneralDate.ymd(2020, 10, 10), GeneralDate.ymd(2020, 11, 4));
-        YearMonthPeriod actual = GetSuitableDateByClosureDateUtility.convertPeriod(datePeriod,5);
+        YearMonthPeriod actual = GetSuitableDateByClosureDateUtility.convertPeriod(datePeriod, 5);
 
-        YearMonth startYearMonth = YearMonth.of(2020, 11);
-        YearMonth endYearMonth = YearMonth.of(2020,11);
-        YearMonthPeriod expected = new YearMonthPeriod(startYearMonth, endYearMonth);
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual.start()).isEqualTo(YearMonth.of(2020, 11));
+        assertThat(actual.end()).isEqualTo(YearMonth.of(2020, 11));
 
     }
 
+    /**
+     * Test: GetSuitableDateByClosureDateUtilityTest.
+     * start().day() < closureDay
+     * end().day() > closureDay
+     */
     @Test
-    public void test_02() {
+    public void testGetSuitableDateByClosureDate_02() {
 
         DatePeriod datePeriod = new DatePeriod(GeneralDate.ymd(2020, 10, 1), GeneralDate.ymd(2020, 11, 30));
-        YearMonthPeriod actual = GetSuitableDateByClosureDateUtility.convertPeriod(datePeriod,10);
+        YearMonthPeriod actual = GetSuitableDateByClosureDateUtility.convertPeriod(datePeriod, 10);
 
-        YearMonth startYearMonth = YearMonth.of(2020, 10);
-        YearMonth endYearMonth = YearMonth.of(2020,12);
-        YearMonthPeriod expected = new YearMonthPeriod(startYearMonth, endYearMonth);
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual.start()).isEqualTo(YearMonth.of(2020, 10));
+        assertThat(actual.end()).isEqualTo(YearMonth.of(2020, 12));
 
     }
 
+    /**
+     * Test: GetSuitableDateByClosureDateUtilityTest.
+     * start().day() > closureDay
+     * end().day() > closureDay
+     */
     @Test
-    public void test_03() {
+    public void testGetSuitableDateByClosureDate_03() {
 
         DatePeriod datePeriod = new DatePeriod(GeneralDate.ymd(2020, 10, 30), GeneralDate.ymd(2020, 11, 30));
-        YearMonthPeriod actual = GetSuitableDateByClosureDateUtility.convertPeriod(datePeriod,10);
+        YearMonthPeriod actual = GetSuitableDateByClosureDateUtility.convertPeriod(datePeriod, 10);
 
-        YearMonth startYearMonth = YearMonth.of(2020, 11);
-        YearMonth endYearMonth = YearMonth.of(2020,12);
-        YearMonthPeriod expected = new YearMonthPeriod(startYearMonth, endYearMonth);
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual.start()).isEqualTo(YearMonth.of(2020, 11));
+        assertThat(actual.end()).isEqualTo(YearMonth.of(2020, 12));
+
 
     }
 
+    /**
+     * Test: GetSuitableDateByClosureDateUtilityTest.
+     * start().day() < closureDay
+     * end().day() < closureDay
+     */
     @Test
-    public void test_04() {
+    public void testGetSuitableDateByClosureDate_04() {
 
         DatePeriod datePeriod = new DatePeriod(GeneralDate.ymd(2020, 10, 10), GeneralDate.ymd(2020, 11, 10));
-        YearMonthPeriod actual = GetSuitableDateByClosureDateUtility.convertPeriod(datePeriod,20);
+        YearMonthPeriod actual = GetSuitableDateByClosureDateUtility.convertPeriod(datePeriod, 20);
 
-        YearMonth startYearMonth = YearMonth.of(2020, 10);
-        YearMonth endYearMonth = YearMonth.of(2020,11);
-        YearMonthPeriod expected = new YearMonthPeriod(startYearMonth, endYearMonth);
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual.start()).isEqualTo(YearMonth.of(2020, 10));
+        assertThat(actual.end()).isEqualTo(YearMonth.of(2020, 11));
+
 
     }
 
