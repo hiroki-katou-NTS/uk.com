@@ -99,6 +99,9 @@ module nts.uk.at.view.kaf018.i.viewmodel {
 							case 4:
 								vm.workConfirmation(temp);
 								break;
+							case 5:
+								vm.monthlyUnconfirmByPrincipal(temp);
+								break;
 						}
 					});
 				

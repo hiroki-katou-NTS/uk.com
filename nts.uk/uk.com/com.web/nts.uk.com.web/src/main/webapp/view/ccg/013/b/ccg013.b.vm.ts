@@ -38,7 +38,13 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             self.columns = ko.observableArray([
                 { headerText: '', prop: 'code', key: 'code', width: '0px', hidden: true },
                 { headerText: '', prop: 'uniqueCode', key: 'uniqueCode', width: '0px', hidden: true },
-                { headerText: nts.uk.resource.getText("CCG013_26"), prop: 'index', key: 'index', width: '60px' },
+                {
+                    headerText: nts.uk.resource.getText("CCG013_26"),
+                    prop: 'displayOrder',
+                    key: 'displayOrder',
+                    width: '60px',
+                    template: '<div style="text-align: right">${displayOrder}</div>',
+                },
                 { headerText: nts.uk.resource.getText("CCG013_27"), prop: 'displayName', key: 'displayName', width: '200px' }
             ]);
             self.selectedStandardMenuKey = ko.observable('');
@@ -70,8 +76,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
                 _.forEach(editMenuBar.listSystem, x => {
                     item1.push(x);
                 })
-
-                self.listSystemSelect(item1);
+                self.listSystemSelect(item1.filter(x => x.value !== System.OFFICE_HELPER));
                 _.forEach(editMenuBar.listStandardMenu, (item, index) => {
                     self.allPart.push(new MenuBarDto(
                         index,
@@ -197,28 +202,64 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
         }
 
         private changeSystem(value: number): void {
-            var self = this;
-            if (value === 5) {
-                var list001 = _.chain(self.allPart())
-                    .uniqBy("displayName")
-                    .forEach((item, index) => {
-                        item.index = index + 1;
-                    })
+            const self = this;
+            const newAllPart = _.orderBy(self.allPart(), ['system', 'displayOrder', 'code'], ['asc', 'asc', 'asc']);
+            let list001 = [];
+            const list002 = _.chain(newAllPart)
+                .filter(item =>
+                    item.system === System.COMMON &&
+                    item.classification === MenuClassification.TopPage &&
+                    item.webMenuSetting === WebMenuSetting.Display
+                )
+                .value();
+            if (value === System.ALL) {
+                list001 = _.chain(newAllPart)
+                    .filter(item =>
+                        item.classification !== MenuClassification.TopPage &&
+                        item.classification !== MenuClassification.OfficeHelper &&
+                        item.webMenuSetting === WebMenuSetting.Display
+                    )
                     .value();
-                self.listStandardMenu(list001);
             } else {
-                var standardMenus: any = _.chain(self.allPart())
-                    .filter((item: any) => {
-                        if (item.system == 0 && item.classification == 8) return true;
-                        if (item.system == value) return true;
-                    }).sortBy(['classification', 'code'])
-                    .forEach((item, index) => {
-                        item.index = index + 1;
-                    })
+                list001 = _.chain(newAllPart)
+                    .filter(item =>
+                        item.system === value &&
+                        item.classification !== MenuClassification.TopPage &&
+                        item.classification !== MenuClassification.OfficeHelper &&
+                        item.webMenuSetting === WebMenuSetting.Display
+                    )
                     .value();
-                self.listStandardMenu(standardMenus);
             }
+            const listStandardMenu = _.concat(list001, list002);
+            self.listStandardMenu(listStandardMenu);
         }
+    }
+
+    enum WebMenuSetting {
+        Notdisplay = 0,
+        Display = 1
+    }
+
+    enum MenuClassification {
+        Standard = 0,
+        OptionalItemApplication = 1,
+        MobilePhone = 2,
+        Tablet = 3,
+        CodeName = 4,
+        GroupCompanyMenu = 5,
+        Customize = 6,
+        OfficeHelper = 7,
+        TopPage = 8,
+        SmartPhone = 9
+    }
+
+    enum System {
+        COMMON = 0,
+        TIME_SHEET = 1,
+        OFFICE_HELPER = 2,
+        KYUYOU = 3,
+        JINJIROU= 4,
+        ALL = 5
     }
 
     interface IMenuBar {

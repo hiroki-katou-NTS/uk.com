@@ -8,7 +8,6 @@
 }
 
 .close {
-	float: right;
 	margin-right: 20px;
 }
 
@@ -157,7 +156,12 @@
 }
 
 #extable-ksu003 td, #extable-ksu003 td>* {
-	font-size: 10.5px;
+	font-size: 10.5px !important;
+}
+
+.ex-editor > input {
+	font-size: 10.5px !important;
+	text-align: center;
 }
 #extable-ksu003 > div.ex-body-leftmost > table > tbody > tr > td.xseal > button{
 	pointer-events:none;
@@ -243,7 +247,7 @@ html {
 	padding: 12px;
 	background-color: #F8EFD4 !important;
 	display: none;
-	z-index: 1010 !important;
+	z-index: 1999 !important;
 	width: 230px;
 }
 /** A3_4 */

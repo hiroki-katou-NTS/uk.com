@@ -239,26 +239,31 @@ module nts.fixedtablekdl045 {
             }); 
             
             self.isEnaleAddButton = ko.observable(false);
-            self.isEnaleRemoveButton = ko.computed(() => {
-                if(!self.isEnableAllControl()){
-                    return false;    
-                }
-                
-                if(self.itemList().length <= 0) {
-                    return false;
-                }
-                
-                let checked = _.filter(self.itemList(), (t) => {
-                    if(_.isNil(t.isChecked)){
+            self.isEnaleRemoveButton = ko.pureComputed({
+                read: function () {
+                    if(!self.isEnableAllControl()){
+                        return false;    
+                    }
+                    
+                    if(self.itemList().length <= 0) {
                         return false;
                     }
-                    return t.isChecked();
-                });
-                
-                if(checked.length > 0) {
-                    return true;
-                }
-                return false;
+                    
+                    let checked = _.filter(self.itemList(), (t) => {
+                        if(_.isNil(t.isChecked)){
+                            return false;
+                        }
+                        return t.isChecked();
+                    });
+                    
+                    if(checked.length > 0) {
+                        return true;
+                    }
+                    return false;
+                },
+                write: function (value) {
+                },
+                owner: self
             });
             
             self.tableStyle = {
@@ -442,6 +447,7 @@ module nts.fixedtablekdl045 {
                     row.isChecked(newValue);
                 }
             });
+            self.isEnaleRemoveButton(newValue);
         }
         
         /**
