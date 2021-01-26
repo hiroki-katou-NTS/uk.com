@@ -10,27 +10,29 @@ import java.util.List;
 @Getter
 public class ArbitraryPeriodSummaryTableFileQuery {
     //「１」ExcelPdf区分
-    private int mode;
+    private int mode; //v
 
     //「２」選択期間（選択した集計枠コード & 期間(年月日)(From-To)）
-    private String startDate;
 
-    private String endDate;
+    private String aggrFrameCode;//V
+    private String startDate;//v
+
+    private String endDate;//v
 
     //「３」社員リスト
-    private List<String> lstEmpIds;
+    private List<String> lstEmpIds;//v
 
     //「４」定型自由区分
-    private int settingClassification;
+    private int settingClassification;//v
 
     //「５」項目選択の設定ID
-    private String settingId;
+    private String settingId;//v
 
     //「６」ゼロ表示区分
-    private boolean isZeroDisplay;
+    private boolean isZeroDisplay;//v
 
     //「７」改ページ区分
-    private int pageBreakClassification;
+    private int pageBreakClassification;//v
 
     //「８」改ページ職場階層
     private int pageBreakWorkplaceHierarchy;
