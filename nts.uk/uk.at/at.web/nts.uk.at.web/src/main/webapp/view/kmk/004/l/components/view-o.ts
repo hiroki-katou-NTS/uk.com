@@ -362,24 +362,26 @@ module nts.uk.at.view.kmk004.l {
 					return;
 				}
 
-				vm.$ajax(KMK004O_API.REGISTER_WORK_TIME, ko.toJS({ workTimeSetShas: param })).done(() => {
-					_.remove(ko.unwrap(vm.years), ((value) => {
-						return value.year == ko.unwrap(vm.selectedYear) as number;
-					}));
-					vm.years.push(new IYear(ko.unwrap(vm.selectedYear) as number, false));
-					vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
-					vm.getEmployeeIds();
-				}).then(() => vm.$dialog.info({ messageId: "Msg_15" }))
-					.then(() => {
-						$(document).ready(() => {
-							$('.listbox').focus();
-						})
-					}).always(() => {
-						vm.$errors('clear');
-					}).then(() => {
-						vm.selectedYear.valueHasMutated();
-					});
-
+				vm.$ajax(KMK004O_API.DELETE_WORK_TIME, ko.toJS({ year: vm.selectedYear(), employeeId: vm.selectedId() }))
+						.done(() => {
+							vm.$ajax(KMK004O_API.REGISTER_WORK_TIME, ko.toJS({ workTimeSetShas: param })).done(() => {
+								_.remove(ko.unwrap(vm.years), ((value) => {
+									return value.year == ko.unwrap(vm.selectedYear) as number;
+								}));
+								vm.years.push(new IYear(ko.unwrap(vm.selectedYear) as number, false));
+								vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
+								vm.getEmployeeIds();
+							}).then(() => vm.$dialog.info({ messageId: "Msg_15" }))
+								.then(() => {
+									$(document).ready(() => {
+										$('.listbox').focus();
+									});
+								}).always(() => {
+									vm.$errors('clear');
+								}).then(() => {
+									vm.selectedYear.valueHasMutated();
+								});
+						});
 			});
 		}
 
@@ -458,6 +460,4 @@ module nts.uk.at.view.kmk004.l {
 		}
 
 	}
-
-
 }

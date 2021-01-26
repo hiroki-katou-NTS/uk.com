@@ -266,7 +266,7 @@ module nts.uk.at.view.kmk004.l {
 				.then(() => {
 					$(document).ready(() => {
 						$('.listbox').focus();
-					})
+					});
 				}).always(() => {
 					vm.$errors('clear');
 				}).then(() => {

@@ -14,6 +14,7 @@ module nts.uk.at.view.kmk004.components {
 		type: SIDEBAR_TYPE;
 		yearDelete: KnockoutObservable<number | null>;
 		startYM: KnockoutObservable<number>;
+		isNewYear: KnockoutObservable<boolean>;
 	}
 
 	const API = {
