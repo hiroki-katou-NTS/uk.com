@@ -189,6 +189,10 @@ module nts.uk.at.kal011.a {
                     vm.$dialog.error({ messageId: "Msg_719" });
                     return
                 }
+                if (!vm.alarmPatternCode()) {
+                    vm.$dialog.error({ messageId: "Msg_1167" });
+                    return
+                }
                 let conditionSelecteds = _.filter(vm.conditions(), (condition: CheckCondition) => condition.isChecked());
                 if (_.isEmpty(conditionSelecteds)) {
                     vm.$dialog.error({ messageId: "Msg_1168" });

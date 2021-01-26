@@ -1,6 +1,7 @@
 module nts.uk.at.kal011.c {
 
     import ExtractAlarm =  nts.uk.at.kal011.B.ExtractAlarmDto;
+    import info = nts.uk.ui.dialog.info;
 
     const PATH_API = {
         //TODO wrote api path
@@ -16,6 +17,7 @@ module nts.uk.at.kal011.c {
          */
         columns: Array<any>;
         workPlaceList: KnockoutObservableArray<WorkPlace> = ko.observableArray([]);
+        alarmExtractList: KnockoutObservableArray<WorkPlace> = ko.observableArray([]);
         processId: string;
         currentCode: string;
 
@@ -25,15 +27,17 @@ module nts.uk.at.kal011.c {
             _.extend(window, {vm});
             vm.$window.storage('KAL011CModalData').done((res) => {
                 if (res.data && res.data.length) {
-                     let lstItem = _.map(res.data, function (i: ExtractAlarm) {
+                    let lstItem = _.map(res.data, function (i: ExtractAlarm) {
                        // return new WorkPlace(i, false);
                         return new WorkPlace(i);
                     });
-                    vm.workPlaceList(lstItem);
+                    vm.alarmExtractList(lstItem);
+                    vm.workPlaceList(_.uniqBy(lstItem, i => i.workplaceID));
                     vm.currentCode = res.currentCode;
                     vm.startPage();
                 };
             });
+
 
 
         }
@@ -123,7 +127,7 @@ module nts.uk.at.kal011.c {
             const vm = this;
             vm.$blockui("invisible");
             let lstSelected = _.filter(vm.workPlaceList(), i => i.isSendTo === true);
-            let listValueExtractAlarmDto = ko.toJS(vm.workPlaceList());
+            let listValueExtractAlarmDto = ko.toJS(vm.alarmExtractList);
             let currentAlarmCode = vm.currentCode;
             let command = {
                 workplaceIds: _.uniq(_.map(lstSelected, function (i: any) {
@@ -133,10 +137,15 @@ module nts.uk.at.kal011.c {
                 currentAlarmCode
             };
             vm.$ajax(PATH_API.sendEmail, command).done((data) => {
-                vm.$dialog.info({messageId: "Msg_207"})
-                    .then(() => {
-                        vm.closeDialog();
-                    });
+                if (data.length > 0) {
+                    info({ message: data });
+                } else {
+                    vm.$dialog.info({messageId: "Msg_207"})
+                        .then(() => {
+                            vm.closeDialog();
+                        });
+                }
+
             }).fail(function (error) {
                 vm.$dialog.error({messageId: error.messageId});
             }).always(() => {
