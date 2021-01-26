@@ -28,10 +28,9 @@ public class CreateWorkLedgerSettingDomainServiceTest {
 
     /**
      * Test createSetting method
-     * <p>
      * Condition:
      * input param: settingCategory == STANDARD_SELECTION
-     * WorkLedgerOutputItem.checkDuplicateStandardSelection returns TRUE
+     * require.standardCheck returns TRUE
      * Expect:
      * BusinessException: "Msg_1927"
      */
@@ -43,9 +42,6 @@ public class CreateWorkLedgerSettingDomainServiceTest {
         new Expectations(AppContexts.class) {{
             AppContexts.user().employeeId();
             result = "employeeId01";
-        }};
-
-        new Expectations(WorkLedgerOutputItem.class) {{
             require.standardCheck(code);
             result = true;
         }};
@@ -63,10 +59,9 @@ public class CreateWorkLedgerSettingDomainServiceTest {
 
     /**
      * Test createSetting method
-     * <p>
      * Condition:
      * input param: settingCategory == FREE_SETTING
-     * WorkLedgerOutputItem.checkDuplicateFreeSettings returns TRUE
+     * require.freeCheck returns TRUE
      * Expect:
      * BusinessException: "Msg_1927"
      */
@@ -78,13 +73,10 @@ public class CreateWorkLedgerSettingDomainServiceTest {
         new Expectations(AppContexts.class) {{
             AppContexts.user().employeeId();
             result = "employeeId02";
-        }};
 
-        new Expectations(WorkLedgerOutputItem.class) {{
             require.freeCheck(code, "employeeId02");
             result = true;
         }};
-
         NtsAssert.businessException("Msg_1927", () -> {
             CreateWorkLedgerSettingDomainService.createSetting(
                     require,
@@ -101,7 +93,7 @@ public class CreateWorkLedgerSettingDomainServiceTest {
      * <p>
      * Condition:
      * input param: settingCategory == STANDARD_SELECTION
-     * WorkLedgerOutputItem.checkDuplicateStandardSelection returns FALSE
+     * require.standardCheck returns FALSE
      * Expect:
      * returns AtomTask with invocation to require.createWorkLedgerOutputSetting
      */
@@ -111,21 +103,14 @@ public class CreateWorkLedgerSettingDomainServiceTest {
         OutputItemSettingName name = new OutputItemSettingName("OutputItemSettingName03");
 
 
-        new Expectations(AppContexts.class) {{
+        new Expectations(AppContexts.class,IdentifierUtil.class) {{
             AppContexts.user().employeeId();
             result = "employeeId03";
-        }};
-
-        new Expectations(IdentifierUtil.class) {{
             IdentifierUtil.randomUniqueId();
             result = "uid03";
-        }};
-
-        new Expectations(WorkLedgerOutputItem.class) {{
             require.standardCheck(code);
             result = false;
         }};
-
         val actual = CreateWorkLedgerSettingDomainService.createSetting(
                 require,
                 code,
@@ -145,7 +130,7 @@ public class CreateWorkLedgerSettingDomainServiceTest {
      * <p>
      * Condition:
      * input param: settingCategory == FREE_SETTING
-     * WorkLedgerOutputItem.checkDuplicateFreeSettings returns FALSE
+     *  require.freeCheck returns FALSE
      * Expect:
      * returns AtomTask with invocation to require.createWorkLedgerOutputSetting
      */
@@ -155,17 +140,11 @@ public class CreateWorkLedgerSettingDomainServiceTest {
         OutputItemSettingName name = new OutputItemSettingName("OutputItemSettingName04");
 
 
-        new Expectations(AppContexts.class) {{
+        new Expectations(AppContexts.class,IdentifierUtil.class) {{
             AppContexts.user().employeeId();
             result = "employeeId04";
-        }};
-
-        new Expectations(IdentifierUtil.class) {{
             IdentifierUtil.randomUniqueId();
             result = "uid04";
-        }};
-
-        new Expectations(WorkLedgerOutputItem.class) {{
             require.freeCheck(code, "employeeId04");
             result = false;
         }};
