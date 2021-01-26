@@ -340,10 +340,11 @@ module nts.uk.at.view.kmk004.l {
 					}
 
 				} else if (ko.toJS(value.yearMonth().toString().substring(0, 4)) != firstItem) {
+
 					const t: IWorkTimeSetCom = {
 						empId: vm.selectedId(),
 						laborAttr: 1,
-						yearMonth: parseInt(ko.unwrap(vm.selectedYear) + 1 + value.yearMonth().toString().substring(4, 6)),
+						yearMonth: parseInt(parseInt(ko.unwrap(vm.selectedYear).toString()) + 1 + value.yearMonth().toString().substring(4, 6)),
 						laborTime: {
 							legalLaborTime: value.laborTime(),
 							withinLaborTime: null,
