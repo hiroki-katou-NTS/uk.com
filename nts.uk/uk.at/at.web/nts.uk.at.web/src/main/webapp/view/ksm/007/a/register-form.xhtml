@@ -12,13 +12,13 @@
       class="inputRequired"
       id="requiredCode"
       data-bind="ntsTextEditor: {	
-name: '#[KSM007_6]',
-constraint: 'WorkplaceGroupCode',
-value: registerForm().workplaceGroupCd,
-option: { width: '120px', textalign: 'left' },
-enable: registerForm().newMode,
-required: true}"
-    />
+        name: '#[KSM007_6]',
+        constraint: 'WorkplaceGroupCode',
+        value: registerForm().workplaceGroupCd,
+        option: { width: '120px', textalign: 'left' },
+        enable: registerForm().newMode,
+        required: true}"
+            />
   </div>
   <!-- A5 -->
   <div class="valign-center control-group">
@@ -31,21 +31,20 @@ required: true}"
       tabindex="6"
       id="requiredName"
       data-bind="ntsTextEditor: {	
-name: '#[KSM007_7]',
-value: registerForm().workplaceGroupName,
-constraint: 'WorkplaceGroupName',
-option: { width: '222px', textalign: 'left' },
-required: true}"
+        name: '#[KSM007_7]',
+        value: registerForm().workplaceGroupName,
+        constraint: 'WorkplaceGroupName',
+        option: { width: '222px', textalign: 'left' },
+        required: true}"
     />
   </div>
   <!-- A6 -->
   <div class="valign-center control-group">
-    <div
-      data-bind="ntsFormLabel: {required: true, enable: true}"
-    >
+    <div data-bind="ntsFormLabel: {required: true, enable: true}">
       #{i18n.getText('KSM007_10')}
     </div>
-    <div tabindex="7"
+    <div
+      tabindex="7"
       data-bind="ntsRadioBoxGroup: {
                 options: registerForm().workplaceGroupTypes,
                 optionsValue: 'value',
@@ -54,7 +53,20 @@ required: true}"
                 enable: registerForm().newMode }"
     ></div>
   </div>
-
+  <!-- A9 ver10 -->
+  <div class="valign-center control-group" data-bind="if: registerForm().selectedWkpType() !== 0">
+    <div class="table">
+      <div class="cell">
+        <button class="small" data-bind="click: openDialogScreenB">#{i18n.getText('KSM007_47')}</button>
+      </div>
+      <div class="cell" data-bind="text: '#{i18n.getText('KSM007_47')}'"></div>
+      <div class="cell">
+        <label data-bind="text: registerForm().startTime"></label>
+        <label>#{i18n.getText('KSM007_49')}</label>
+        <label data-bind="text: registerForm().endTime"></label>
+      </div>
+    </div>
+  </div>
   <!-- A7 -->
   <div class="valign-center control-group">
     <button class="small" tabindex="8" data-bind="click: openDialogCDL008">

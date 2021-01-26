@@ -1,0 +1,8 @@
+.ksm-007c .table:first-child {
+  margin-bottom: 10px;
+}
+
+.ksm-007c .table .cell-3 {
+  padding-left: 5px;
+  padding-right: 5px;
+}

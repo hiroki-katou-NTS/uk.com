@@ -3,7 +3,8 @@ class RegisterForm {
     workplaceGroupName: KnockoutObservable<string> = ko.observable('');
     workplaceGroupTypes: KnockoutObservableArray<string> = ko.observableArray([
         {value: 1, name: nts.uk.resource.getText('KSM007_9')},
-        {value: 2, name: nts.uk.resource.getText('KSM007_10')}
+        {value: 2, name: nts.uk.resource.getText('KSM007_10')},
+        {value: 0, name: nts.uk.resource.getText('KSM007_17')}
     ]);
     selectedWkpType: KnockoutObservable<number> = ko.observable(1);
     newMode: KnockoutObservable<any> = ko.observable(true);
@@ -15,6 +16,10 @@ class RegisterForm {
         { headerText: nts.uk.resource.getText('KSM007_15'), key: 'genericName', width: 890 }
     ]);
     selectedWorkplaces: KnockoutObservableArray<any> = ko.observableArray([]);
+    //ver 10
+    startTime: KnockoutObservable<string> = ko.observable('10:00');
+    endTime: KnockoutObservable<string> = ko.observable('18:00');
+
     constructor() {
         let self = this;
     }
@@ -33,8 +38,10 @@ class RegisterForm {
         let self = this;
         self.workplaceGroupCd(val.code);
         self.workplaceGroupName(val.name);
-        self.selectedWkpType(val.type);
+        self.selectedWkpType(val.type); // if 介護事業所 = 0 -> 0
         self.newMode(false);
+        //self.startTime(val.startTime); 
+        //self.endTime(val.endTime);
         nts.uk.ui.errors.clearAll();
     }
 
@@ -75,6 +82,8 @@ interface IWorkplaceGroup {
     code: string;
     name: string;
     type: number;
+    startTime: string;
+    endTime: string;
 }
 
 interface IWorkplaceRegisterCmd {

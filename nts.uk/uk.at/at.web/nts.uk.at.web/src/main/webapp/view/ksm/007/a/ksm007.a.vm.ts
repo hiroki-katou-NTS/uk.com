@@ -265,6 +265,13 @@ module nts.uk.at.view.ksm007.a {
                 $('#workplace-list').igGrid("option", "height", 289);
                 // $('#multi-list').igGrid("option", "height", 372);
             }
-		}
+        }
+        
+        public  openDialogScreenB() {            
+            setShared({});
+            modal('at', "/view/ksm/007/b/index.xhtml").onClosed(() => {                
+                let data = getShared('outputScreenB');                
+            });
+        }
     }
 }
