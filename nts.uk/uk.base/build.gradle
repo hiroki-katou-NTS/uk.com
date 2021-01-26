@@ -45,6 +45,12 @@ project (':base.web:nts.uk.com.js.web') {
 	task csc(type: Exec) {
 		workingDir 'src/main/webapp/lib/nittsu/ui/style'		
 		commandLine 'cmd', '/c', 'node-sass'
-		args 'sass/base.scss', 'stylesheets/base.css', '--output-style', 'compressed', '--source-comments', 'false', 'true'
+		args 'sass/base.scss', 'stylesheets/base.css', '--output-style', 'compressed', '--source-comments', 'false'
+	}
+	
+	task cscw(type: Exec) {
+		workingDir 'src/main/webapp/lib/nittsu/ui/style'		
+		commandLine 'cmd', '/c', 'node-sass'
+		args 'sass/base.scss', 'stylesheets/base.css', '--output-style', 'compressed', '--source-comments', 'false', '--watch'
 	}
 }
