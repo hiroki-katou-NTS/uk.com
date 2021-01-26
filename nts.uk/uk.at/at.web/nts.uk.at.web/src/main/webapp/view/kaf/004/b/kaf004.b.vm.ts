@@ -152,14 +152,37 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
                 .done((res: any) => {
                     this.fetchData(res);
                 }).fail((err: any) => {
-                    console.log()
                     vm.$dialog.error({ messageId: err.messageId });
+                    console.log()
                 }).always(() => vm.$blockui('hide'));
         }
 
         mounted() {
             const vm = this;
 
+            vm.lateOrEarlyInfo1().isCheck.subscribe((value) => {
+                if (value) {
+                    vm.lateOrEarlyInfo1().isActive(false);
+                }
+            });
+
+            vm.lateOrEarlyInfo2().isCheck.subscribe((value) => {
+                if (value) {
+                    vm.lateOrEarlyInfo2().isActive(false);
+                }
+            });
+
+            vm.lateOrEarlyInfo3().isCheck.subscribe((value) => {
+                if (value) {
+                    vm.lateOrEarlyInfo3().isActive(false);
+                }
+            });
+
+            vm.lateOrEarlyInfo4().isCheck.subscribe((value) => {
+                if (value) {
+                    vm.lateOrEarlyInfo4().isActive(false);
+                }
+            });
         }
 
         fetchData(params: any) {
@@ -558,29 +581,6 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
         // ※8
         public condition8(idItem: number) {
             const vm = this;
-
-            // // return ko.computed(() => {
-            // // 事前事後区分に「事後」を選択している場合　（事後モード）  (T/h select "xin sau"「事後」 trên 事前事後区分/Phân loại xin trước xin sau (Mode after/xin sau)
-            // if (ko.toJS(this.application().prePostAtr) === 1) {
-
-            //     // 起動したら、実績データがある場合 (Sau khi khởi động t/h có data thực tế)
-            //     switch (idItem) {
-            //         case IdItem.B6_7: {
-            //             return !(this.workManagement.workTime() == null || this.workManagement.workTime() === "");
-            //         } case IdItem.B6_13: {
-            //             return !(this.workManagement.leaveTime() == null || this.workManagement.leaveTime() === "");
-            //         } case IdItem.B6_19: {
-            //             return !(this.workManagement.workTime2() == null || this.workManagement.workTime2() === "");
-            //         } case IdItem.B6_25: {
-            //             return !(this.workManagement.leaveTime2() == null || this.workManagement.leaveTime2() === "");
-            //         } default: {
-            //             return true;
-            //         }
-            //     }
-            // }
-
-            // return false;
-            // });
 
             return ko.computed(() => {
                 if (ko.toJS(this.application().prePostAtr) === 1) {
