@@ -1439,10 +1439,11 @@ module nts.uk.com.view.ccg034.d {
         $labelContent = $("<span>", { 'class': 'part-label-content' });
       }
       $labelContent
-        .html(partData.labelContent.replace("\n", "<br>"))
+        .text(partData.labelContent)
         .css({
           'font-size': partData.fontSize,
           'font-weight': partData.isBold ? 'bold' : 'normal',
+          'white-space': 'pre-wrap',
         });
       $labelContent.appendTo($part);
       return $partContainer;
@@ -1772,6 +1773,7 @@ module nts.uk.com.view.ccg034.d {
               'font-size': `${partDataLabelModel.fontSize}px`,
               'font-weight': partDataLabelModel.isBold ? 'bold' : 'normal',
               'color': partDataLabelModel.textColor,
+              'white-space': 'pre-wrap',
             });
           $partHTML = $("<div>")
             .css({
