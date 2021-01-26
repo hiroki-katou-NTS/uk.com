@@ -449,6 +449,10 @@ module nts.uk.at.view.kmk004.l {
 							}
 						return { code: emp.code, isAlreadySetting: true } 
 					}));
+				}).then(() => {
+					$(document).ready(() => {
+						$('.listbox').focus();
+					});
 				}).always(() => { vm.$blockui("clear"); });
 			});
 		}

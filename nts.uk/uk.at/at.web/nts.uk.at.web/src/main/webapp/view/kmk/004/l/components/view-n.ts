@@ -357,6 +357,10 @@ module nts.uk.at.view.kmk004.l {
 			}).then(() => {
 				vm.$ajax(KMK004N_API.COPY_SETTING).done((data) => {
 					vm.alreadySettingList(_.map(data, (item: string) => { return { code: item, isAlreadySetting: true } }));
+				}).then(() => {
+					$(document).ready(() => {
+						$('.listbox').focus();
+					});
 				}).always(() => { vm.$blockui("clear"); });
 			});
 		}
