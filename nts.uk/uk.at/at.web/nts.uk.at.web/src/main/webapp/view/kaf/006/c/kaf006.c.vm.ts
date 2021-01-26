@@ -78,7 +78,7 @@ module nts.uk.at.view.kaf006.c.viewmodel {
                     if (startDate) {
                         holidayDates.push(nts.uk.time.formatDate(new Date(startDate), "yyyy-MM-dd"));
                     }
-                    if (endDate) {
+                    if (endDate && endDate !== startDate) {
                         holidayDates.push(nts.uk.time.formatDate(new Date(endDate), "yyyy-MM-dd"));
                     }
 
@@ -106,6 +106,7 @@ module nts.uk.at.view.kaf006.c.viewmodel {
                         .done((success) => {
                             if (success) {
                                 vm.appDispInfoStartupOutput(success.appDispInfoStartupOutput);
+                                vm.appAbsenceStartInfoOutput.appDispInfoStartupOutput = success.appDispInfoStartupOutput;
                                 return true;
                             }
                         }).then((data) => {
@@ -133,7 +134,7 @@ module nts.uk.at.view.kaf006.c.viewmodel {
                     if (startDate) {
                         holidayDates.push(nts.uk.time.formatDate(new Date(startDate), "yyyy-MM-dd"));
                     }
-                    if (endDate) {
+                    if (endDate && startDate !== endDate) {
                         holidayDates.push(nts.uk.time.formatDate(new Date(endDate), "yyyy-MM-dd"));
                     }
 
@@ -161,6 +162,7 @@ module nts.uk.at.view.kaf006.c.viewmodel {
                         .done((success) => {
                             if (success) {
                                 vm.appDispInfoStartupOutput(success.appDispInfoStartupOutput);
+                                vm.appAbsenceStartInfoOutput.appDispInfoStartupOutput = success.appDispInfoStartupOutput;
                                 return true;
                             }
                         }).then((data) => {
@@ -203,6 +205,7 @@ module nts.uk.at.view.kaf006.c.viewmodel {
                 let holidayAppDates: any[] = [];
     
                 let newApplication = _.clone(vm.application);
+                newApplication.appDate = vm.dispMultDate() ? moment(new Date(vm.dateRange().startDate)).format("YYYY/MM/DD") : moment(new Date(vm.appDate())).format("YYYY/MM/DD");
                 newApplication.opAppStartDate = vm.dispMultDate() ? moment(new Date(vm.dateRange().startDate)).format("YYYY/MM/DD") : moment(new Date(vm.appDate())).format("YYYY/MM/DD");
                 newApplication.opAppEndDate = vm.dispMultDate() ? moment(new Date(vm.dateRange().endDate)).format("YYYY/MM/DD") : moment(new Date(vm.appDate())).format("YYYY/MM/DD");
                 newApplication.opAppStandardReasonCD = vm.selectedReason();

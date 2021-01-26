@@ -729,6 +729,8 @@ export class CmmS45BComponent extends Vue {
                 return lstDisplay;
             case '9':
                 return lstDisplay;
+            case '10':
+                return lstDisplay;    
             case '15':
                 return lstDisplay;    
             default:

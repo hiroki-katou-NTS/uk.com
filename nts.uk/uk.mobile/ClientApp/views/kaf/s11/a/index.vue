@@ -65,7 +65,7 @@
             <span class="badge badge-warning" style="height: 30%">必須</span>
         </div>
         <div class="card-body">
-            <div style="width: 100%" id="prePostSelect">
+            <div style="width: 100%">
                 <nts-switchbox v-for="(option, optionIndex) in complementLeaveAtrResource" v-bind:key="optionIndex"
                     v-bind:disabled="!dispComplementLeaveAtr"
                     v-model="complementLeaveAtr"
@@ -102,7 +102,7 @@
                 </div>
                 <div>
                     <span class="uk-text-dark-gray ml-3" style="font-size: 90%">
-                        <span class="font-weight-bold mr-3">{{ complementWorkInfo.workTypeCD | i18n }}</span>
+                        <span class="font-weight-bold mr-3">{{ getCDFormat(complementWorkInfo.workTypeCD) | i18n }}</span>
                         <span>{{ getWorkTypeName(complementWorkInfo.workTypeCD, true) }}</span>
                     </span>       
                 </div>
@@ -113,7 +113,7 @@
                 </div>
                 <div>
                     <span class="uk-text-dark-gray ml-3" style="font-size: 90%">
-                        <span class="font-weight-bold mr-3">{{ complementWorkInfo.workTimeCD | i18n }}</span>
+                        <span class="font-weight-bold mr-3">{{ getCDFormat(complementWorkInfo.workTimeCD) | i18n }}</span>
                         <span>{{ getWorkTimeName(complementWorkInfo.workTimeCD) }}</span>
                     </span>    
                 </div>
@@ -166,7 +166,7 @@
                 </thead>
                 <tbody>
                     <tr v-for="(item, index) in recHolidayMngLst" v-bind:key="index">
-                        <td>{{$dt(new Date(item.outbreakDay), 'YYYY/MM/DD(dd)')}}</td>
+                        <td>{{$dt(new Date(item.outbreakDay), 'YY/MM/DD(dd)')}}</td>
                         <td>{{'KAFS11_31' | i18n(item.dayNumberUsed)}}</td>
                     </tr>
                 </tbody>
@@ -192,7 +192,7 @@
             </div>
         </div>
         <!-- A10 -->
-        <div class="card card-label">
+        <div class="card card-label" v-if="dispLeaveContent">
             <div class="card-header uk-bg-accordion" style="align-items: center" v-if="dispLeaveContent">
                 <v-label class="border-0 pl-0 my-n3">
                     {{leaveWorkInfoTitle | i18n}}
@@ -207,7 +207,7 @@
                 </div>
                 <div v-if="dispLeaveContent">
                     <span class="uk-text-dark-gray ml-3" style="font-size: 90%">
-                        <span class="font-weight-bold mr-3">{{ leaveWorkInfo.workTypeCD | i18n }}</span>
+                        <span class="font-weight-bold mr-3">{{ getCDFormat(leaveWorkInfo.workTypeCD) | i18n }}</span>
                         <span>{{ getWorkTypeName(leaveWorkInfo.workTypeCD, false) }}</span>
                     </span>       
                 </div>
@@ -218,7 +218,7 @@
                 </div>
                 <div v-if="dispLeaveWorkTime">
                     <span class="uk-text-dark-gray ml-3" style="font-size: 90%">
-                        <span class="font-weight-bold mr-3">{{ leaveWorkInfo.workTimeCD | i18n }}</span>
+                        <span class="font-weight-bold mr-3">{{ getCDFormat(leaveWorkInfo.workTimeCD) | i18n }}</span>
                         <span>{{ getWorkTimeName(leaveWorkInfo.workTimeCD) }}</span>
                     </span>    
                 </div>
@@ -271,7 +271,7 @@
                 </thead>
                 <tbody>
                     <tr v-for="(item, index) in absHolidayMngLst" v-bind:key="index">
-                        <td>{{$dt(new Date(item.outbreakDay), 'YYYY/MM/DD(dd)')}}</td>
+                        <td>{{$dt(new Date(item.outbreakDay), 'YY/MM/DD(dd)')}}</td>
                         <td>{{'KAFS11_31' | i18n(item.dayNumberUsed)}}</td>
                     </tr>
                 </tbody>
@@ -301,7 +301,7 @@
                 </thead>
                 <tbody>
                     <tr v-for="(item, index) in absWorkMngLst" v-bind:key="index">
-                        <td>{{$dt(new Date(item.outbreakDay), 'YYYY/MM/DD(dd)')}}</td>
+                        <td>{{$dt(new Date(item.outbreakDay), 'YY/MM/DD(dd)')}}</td>
                         <td>{{'KAFS11_31' | i18n(item.dayNumberUsed)}}</td>
                     </tr>
                 </tbody>
