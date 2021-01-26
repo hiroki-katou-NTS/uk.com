@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
@@ -35,6 +34,7 @@ import nts.uk.ctx.office.dom.dto.WorkTypeDto;
 import nts.uk.ctx.office.dom.goout.GoOutEmployeeInformation;
 import nts.uk.ctx.office.dom.goout.GoOutEmployeeInformationRepository;
 import nts.uk.ctx.office.dom.status.ActivityStatusRepository;
+import nts.uk.ctx.office.dom.status.adapter.AttendanceAdapter;
 import nts.uk.ctx.office.dom.status.service.AttendanceAccordActualData;
 import nts.uk.ctx.office.dom.status.service.AttendanceStatusJudgmentService;
 import nts.uk.ctx.office.dom.status.service.AttendanceStatusJudgmentServiceRequireImpl;
@@ -90,6 +90,9 @@ public class AttendanceInformationScreenQuery {
 
 	@Inject
 	private AvatarRepository avatarRepo;
+	
+	@Inject
+	private AttendanceAdapter attendanceAdapter;
 
 	private List<EmployeeEmojiState> emojiList = Collections.emptyList();
 
@@ -125,9 +128,9 @@ public class AttendanceInformationScreenQuery {
 		// 7 [基準日＝＝システム日] : 在席のステータスの判断(Require, 社員ID): 在席ステータス
 		AttendanceStatusJudgmentServiceRequireImpl rq = new AttendanceStatusJudgmentServiceRequireImpl(
 				goOutRepo,
-				statusRepo);
+				statusRepo,
+				attendanceAdapter);
 
-		
 		// 8: 申請情報を取得する(社員IDリスト, 期間, 反映状態リスト): Map<社員ID、List<申請>>
 		List<Integer> listReflecInfor = new ArrayList<>();
 		listReflecInfor.add(ReflectedState.REFLECTED.value);
@@ -199,12 +202,7 @@ public class AttendanceInformationScreenQuery {
 			// 7 [基準日＝＝システム日] : 在席のステータスの判断(Require, 社員ID): 在席ステータス
 			AttendanceAccordActualData activityStatus = null;
 			if (baseDate.equals(GeneralDate.today())) {
-				activityStatus = AttendanceStatusJudgmentService.getActivityStatus(
-						rq, empId.getSid(), baseDate, 
-						Optional.ofNullable(workInformation.getWorkPerformanceDto()),
-						Optional.ofNullable(workInformation.getTimeLeavingOfDailyPerformanceDto()),
-						Optional.ofNullable(workInformation.getWorkTypeDto())
-						);
+				activityStatus = AttendanceStatusJudgmentService.getActivityStatus(rq, empId.getSid());
 			}
 			
 			// 15: create()
