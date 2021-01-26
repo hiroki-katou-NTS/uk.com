@@ -168,11 +168,8 @@ public class TaskPaletteOrganizationTest {
 		
 		Map<Integer, TaskCode> tasks = new HashMap<>();
 		tasks.put(1, new TaskCode("code1"));
-		tasks.put(2, new TaskCode("code1"));
-		tasks.put(3, new TaskCode("code2"));
-		tasks.put(4, new TaskCode("code2"));
-		tasks.put(5, new TaskCode("code3"));
-		tasks.put(6, new TaskCode("code3"));
+		tasks.put(2, new TaskCode("code2"));
+		tasks.put(3, new TaskCode("code3"));
 		
 			
 		TaskPaletteOrganization target = TaskPaletteOrganization.create(
@@ -183,19 +180,45 @@ public class TaskPaletteOrganizationTest {
 							Optional.of(new TaskPaletteRemark("task-palette-remark"))), 
 					tasks);
 		
-		Task task2 = Helper.createTask("code2", "name2", "abName2");
-		Task task3 = Helper.createTask("code2", "name2", "abName2");
+		Task task2 = Helper.createTask("code2", "task-name2", "abName2");
+		Task task3 = Helper.createTask("code3", "task-name3", "task-abName3");
 		
-		new Expectations() {{
+		new Expectations(task2, task3) {{
 			
 			require.getTask( (TaskFrameNo) any , new TaskCode("code1"));
 			//result = empty;
 			
 			require.getTask( (TaskFrameNo) any , new TaskCode("code2"));
-			//result 
+			result = Optional.of(task2);
+			
+			require.getTask( (TaskFrameNo) any , new TaskCode("code3"));
+			result = Optional.of(task3);
+			
+			task2.isWithinExpirationDate( (GeneralDate) any );
+			result = false;
+			
+			task3.isWithinExpirationDate( (GeneralDate) any );
+			result = true;
 		}};
 		
-		target.getDisplayInfo(require, GeneralDate.today());
+		TaskPalette result = target.getDisplayInfo(require, GeneralDate.today());
+		
+		assertThat( result.getPage() ).isEqualTo( 1 );
+		assertThat( result.getName().v() ).isEqualTo( "task-palette-name");
+		assertThat( result.getRemark().get().v() ).isEqualTo( "task-palette-remark" );
+		assertThat( result.getTasks().entrySet() ).extracting( 
+				d -> d.getKey(),
+				d -> d.getValue().getTaskCode().v(),
+				d -> d.getValue().getTaskStatus(),
+				d -> d.getValue().getTaskName(),
+				d -> d.getValue().getTaskAbName()
+				)
+			.containsExactly(
+				tuple( 1, "code1", TaskStatus.NotYetRegistered, Optional.empty(), Optional.empty() ),
+				tuple( 2, "code2", TaskStatus.Expired, Optional.empty(), Optional.empty() ),
+				tuple( 3, "code3", TaskStatus.CanUse, Optional.of(new TaskName("task-name3")), Optional.of(new TaskAbName("task-abName3")) )
+				);
+		
 		
 	}
 	
