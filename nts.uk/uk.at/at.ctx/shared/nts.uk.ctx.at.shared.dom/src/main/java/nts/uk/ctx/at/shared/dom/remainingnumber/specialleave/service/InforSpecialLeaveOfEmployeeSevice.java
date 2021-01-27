@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
@@ -20,25 +19,15 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeRecordImport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.SClsHistImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveAppSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
-import nts.uk.ctx.at.shared.dom.specialholiday.export.NextSpecialLeaveGrant;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.AgeBaseYear;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.SpecialLeaveRestriction;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYear;
-import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYearMonthTbl;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDate;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTbl;
-import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantElapseYearMonth;
-import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantTime;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.TypeTime;
-import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.AvailabilityPeriod;
-import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.SpecialVacationDeadline;
-import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.TimeLimitSpecification;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantNum;
 import nts.uk.shr.com.time.calendar.MonthDay;
 
 public class InforSpecialLeaveOfEmployeeSevice {

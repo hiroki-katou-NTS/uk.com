@@ -66,4 +66,12 @@ public class RemNumShiftWork {
 		this.getRefLeaveGrantRemainingData().getDetails().setUsedNumber(userdNumber);
 
 	}
+	
+	/**
+	 * 休暇残数を全て消化する
+	 */
+	public void digestAll() {
+		// 休暇残数をすべて消化する
+		this.refLeaveGrantRemainingData.getDetails().digestAll();
+	}
 }

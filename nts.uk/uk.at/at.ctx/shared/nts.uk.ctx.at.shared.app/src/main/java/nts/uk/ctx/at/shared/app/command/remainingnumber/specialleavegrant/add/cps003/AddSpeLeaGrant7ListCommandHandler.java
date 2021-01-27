@@ -62,7 +62,6 @@ implements PeregAddListCommandHandler<AddSpecialLeaveGrant7Command>  {
 					c.getNumberDayRemain().doubleValue(),
 					c.getTimeRemain() != null ? c.getTimeRemain().intValue() : null,
 					0.0,
-					false,
 					7);
 			insertLst.add(domain);
 

@@ -14,7 +14,7 @@ import nts.arc.layer.dom.DomainObject;
 @Getter
 @Setter
 public class SpecialLeaveUseDays extends DomainObject {
-	
+
 	/**
 	 * 使用日数
 	 */
@@ -27,7 +27,7 @@ public class SpecialLeaveUseDays extends DomainObject {
 //	 * 使用日数付与後
 //	 */
 //	private Optional<SpecialLeaveRemainDay> afterUseGrantDays;
-	
+
 	/**
 	 * メンバ変数をクリア
 	 */
@@ -41,12 +41,12 @@ public class SpecialLeaveUseDays extends DomainObject {
 	 * コンストラクタ
 	 */
 	public SpecialLeaveUseDays(){
-		
+
 		this.useDays = new SpecialLeaveRemainDay(0.0);
 //		this.usedDaysBeforeGrant = new AnnualLeaveUsedDayNumber(0.0);
 //		this.usedDaysAfterGrant = Optional.empty();
 	}
-	
+
 	/**
 	 * ファクトリー
 	 * @param usedDays 使用日数
@@ -54,12 +54,12 @@ public class SpecialLeaveUseDays extends DomainObject {
 	 */
 	public static SpecialLeaveUseDays of(
 			SpecialLeaveRemainDay usedDays){
-		
+
 		SpecialLeaveUseDays domain = new SpecialLeaveUseDays();
 		domain.useDays = usedDays;
 		return domain;
 	}
-	
+
 	@Override
 	protected SpecialLeaveUseDays clone() {
 		SpecialLeaveUseDays cloned = new SpecialLeaveUseDays();
@@ -71,7 +71,7 @@ public class SpecialLeaveUseDays extends DomainObject {
 		}
 		return cloned;
 	}
-	
+
 	/**
 	 * 日数を使用日数に加算する
 	 * @param days 日数
@@ -79,7 +79,7 @@ public class SpecialLeaveUseDays extends DomainObject {
 	public void addUseDays(SpecialLeaveUseDays days){
 		this.useDays = new SpecialLeaveRemainDay(this.useDays.v() + days.getUseDays().v());
 	}
-	
+
 //	/**
 //	 * 日数を使用日数付与前に加算する
 //	 * @param days 日数
@@ -87,7 +87,7 @@ public class SpecialLeaveUseDays extends DomainObject {
 //	public void addUsedDaysBeforeGrant(double days){
 //		this.usedDaysBeforeGrant = new AnnualLeaveUsedDayNumber(this.usedDaysBeforeGrant.v() + days);
 //	}
-//	
+//
 //	/**
 //	 * 日数を使用日数付与後に加算する
 //	 * @param days 日数

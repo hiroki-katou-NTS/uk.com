@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import lombok.val;
@@ -16,15 +17,10 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.util.value.Finally;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CalcAnnLeaAttendanceRate;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CreateInterimAnnualMngData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.DividedDayEachProcess;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CalcAnnLeaAttendanceRate.RequireM1;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriodProc.RequireM2;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriodProc.RequireM3;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggregatePeriodWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.DividedDayEachProcess;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.ConfirmLeavePeriod;
@@ -34,7 +30,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveNumberInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveRemainingHistory;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.AggregatePeriodWork;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CalcAnnLeaAttendanceRate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CreateInterimAnnualMngData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
@@ -42,14 +40,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.YearDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrEmployeeSettings;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remain.AnnualLeaveGrantRemaining;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AttendanceRate;
@@ -60,6 +52,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureIdHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantNum;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
 
@@ -613,7 +606,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 
 			val nextDayOfDeadline = deadline.addDays(1);
 			dividedDayMap.putIfAbsent(nextDayOfDeadline, new DividedDayEachProcess(nextDayOfDeadline));
-			dividedDayMap.get(nextDayOfDeadline).setLapsedAtr(true);
+			dividedDayMap.get(nextDayOfDeadline).getLapsedWork().setLapsedAtr(true);
 		}
 
 		// 「次回年休付与リスト」をすべて「処理単位分割日リスト」に追加
@@ -623,13 +616,13 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			if (grantDate.after(nextDayOfPeriodEnd)) continue;
 
 			dividedDayMap.putIfAbsent(grantDate, new DividedDayEachProcess(grantDate));
-			dividedDayMap.get(grantDate).setGrantAtr(true);
-			dividedDayMap.get(grantDate).setNextAnnualLeaveGrant(Optional.of(nextAnnualLeaveGrant));
+			dividedDayMap.get(grantDate).getGrantWork().setGrantAtr(true);
+			//dividedDayMap.get(grantDate).setNextAnnualLeaveGrant(Optional.of(nextAnnualLeaveGrant));
 		}
 
 		// 期間終了日翌日の「処理単位分割日」を取得・追加　→　フラグ設定
 		dividedDayMap.putIfAbsent(nextDayOfPeriodEnd, new DividedDayEachProcess(nextDayOfPeriodEnd));
-		dividedDayMap.get(nextDayOfPeriodEnd).setNextDayAfterPeriodEnd(true);
+		dividedDayMap.get(nextDayOfPeriodEnd).getEndDay().setNextPeriodEndAtr(true);
 
 		// 「処理単位分割日」をソート
 		List<DividedDayEachProcess> dividedDayList = new ArrayList<>();
@@ -651,37 +644,45 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			if (index + 1 < dividedDayList.size()) nextDividedDay = dividedDayList.get(index + 1);
 
 			// 付与フラグをチェック
-			if (nowDividedDay.isGrantAtr()) isAfterGrant = true;
+			if (nowDividedDay.getGrantWork().isGrantAtr()) isAfterGrant = true;
 
 			// 年休集計期間WORKを作成し、Listに追加
 			GeneralDate workPeriodEnd = nextDayOfPeriodEnd;
 			if (nextDividedDay != null) workPeriodEnd = nextDividedDay.getYmd().addDays(-1);
-			AggregatePeriodWork nowWork = AggregatePeriodWork.of(
-					new DatePeriod(nowDividedDay.getYmd(), workPeriodEnd),
-					false,
-					nowDividedDay.isNextDayAfterPeriodEnd(),
-					nowDividedDay.isGrantAtr(),
-					isAfterGrant,
-					nowDividedDay.isLapsedAtr(),
-					nowDividedDay.getNextAnnualLeaveGrant());
+			
+//			AggregatePeriodWork nowWork = AggregatePeriodWork.of(
+//					new DatePeriod(nowDividedDay.getYmd(), workPeriodEnd),
+//					false,
+//					nowDividedDay.isNextDayAfterPeriodEnd(),
+//					nowDividedDay.isGrantAtr(),
+//					isAfterGrant,
+//					nowDividedDay.isLapsedAtr(),
+//					nowDividedDay.getNextAnnualLeaveGrant());
+			AggregatePeriodWork nowWork = new AggregatePeriodWork(new DatePeriod(nowDividedDay.getYmd(), workPeriodEnd), 
+					nowDividedDay.getLapsedWork(), 
+					nowDividedDay.getGrantWork(), 
+					nowDividedDay.getEndDay(),
+					nowDividedDay.getGrantPeriodAtr());
 			aggregatePeriodWorks.add(nowWork);
 		}
 
 		// 処理期間内で何回目の付与なのかを保持。（一回目の付与を判断したい）
-		int grantNumber = 1;
+		AtomicInteger grantNumber = new AtomicInteger(1);
 		for( AggregatePeriodWork nowWork : aggregatePeriodWorks){
-			if ( nowWork.isGrantAtr() ) // 付与のとき
+			if ( nowWork.getGrantWork().isGrantAtr() ) // 付与のとき
 			{
-				nowWork.setGrantNumber(grantNumber);
-				grantNumber++;
+				nowWork.getGrantWork().getSpecialLeaveGrant().ifPresent(x -> {
+					x.setTimes(new GrantNum(grantNumber.get()));
+				});
+				grantNumber.incrementAndGet();
 			}
 		}
 
 		for(AggregatePeriodWork work : aggregatePeriodWorks) {
 			if(work.getPeriod().contains(aggrPeriod.end()))
-				work.setDayBeforePeriodEnd(true);
+				work.getEndWork().setPeriodEndAtr(true);
 			if(work.getPeriod().contains(aggrPeriod.end().addDays(1)))
-				work.setNextDayAfterPeriodEnd(true);
+				work.getEndWork().setNextPeriodEndAtr(true);
 		}
 
 		return aggregatePeriodWorks;

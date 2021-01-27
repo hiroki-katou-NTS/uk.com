@@ -62,7 +62,6 @@ implements PeregAddListCommandHandler<AddSpecialLeaveGrant6Command> {
 					c.getNumberDayRemain().doubleValue(),
 					c.getTimeRemain() != null ? c.getTimeRemain().intValue() : null,
 					0.0,
-					false,
 					6);
 			insertLst.add(domain);
 

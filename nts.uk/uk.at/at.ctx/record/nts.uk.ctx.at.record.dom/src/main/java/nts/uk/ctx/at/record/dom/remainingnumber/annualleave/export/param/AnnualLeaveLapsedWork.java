@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata;
+package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SpecialLeaveLapsedWork {
+public class AnnualLeaveLapsedWork {
 
 	/** 期間の開始日に消滅するかどうか */
 	private boolean lapsedAtr;

@@ -61,12 +61,8 @@ public class SpecialLeaveManagementService {
 
 		require.specialHoliday(param.getCid(), param.getSpecialLeaveCode());
 
-		// 社員
-		EmployeeImport employee
-			= require.employeeInfo(cacheCarrier, param.getSid());
-
 		// 「休暇の集計期間から入社前、退職後を除く」を実行する
-		DatePeriod aggrPeriod = ConfirmLeavePeriod.sumPeriod(param.getComplileDate(), employee);
+		DatePeriod aggrPeriod = ConfirmLeavePeriod.sumPeriod(require, cacheCarrier, param.getComplileDate(), param.getSid());
 				if (aggrPeriod == null) return outputData;
 
 		// パラメータ月次モード・その他モード
@@ -1882,7 +1878,7 @@ public class SpecialLeaveManagementService {
 	}
 
 	public static interface RequireM5 extends RequireM1, RequireM2, RequireM3, RequireM4,
-		LeaveRemainingNumber.RequireM3,nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee.RequireM1
+		LeaveRemainingNumber.RequireM3,nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee.RequireM1, ConfirmLeavePeriod.Require
 		{
 
 		/** 特別休暇基本情報 */

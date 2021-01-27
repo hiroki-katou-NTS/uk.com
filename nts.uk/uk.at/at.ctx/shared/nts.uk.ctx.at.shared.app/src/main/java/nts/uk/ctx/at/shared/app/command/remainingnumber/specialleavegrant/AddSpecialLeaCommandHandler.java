@@ -67,7 +67,6 @@ public class AddSpecialLeaCommandHandler extends CommandHandler<SpecialLeaveRema
 				command.getNumberDayRemain().doubleValue(),
 				command.getTimeRemain(),
 				0.0,
-				false,
 				command.getSpecialLeaCode());
 
 		repo.add(data);

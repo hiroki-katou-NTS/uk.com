@@ -8,7 +8,7 @@ import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemaining;
 
 /**
- * 特休残数情報
+ * 特別休暇残数情報
  * @author masaaki_jinno
  *
  */

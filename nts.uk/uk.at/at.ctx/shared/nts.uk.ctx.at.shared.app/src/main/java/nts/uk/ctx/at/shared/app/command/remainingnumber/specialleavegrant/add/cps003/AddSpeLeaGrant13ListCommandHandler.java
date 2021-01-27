@@ -62,7 +62,6 @@ public class AddSpeLeaGrant13ListCommandHandler
 					c.getNumberDayRemain().doubleValue(),
 					c.getTimeRemain() != null ? c.getTimeRemain().intValue() : null,
 					0.0,
-					false,
 					13);
 			insertLst.add(domain);
 
