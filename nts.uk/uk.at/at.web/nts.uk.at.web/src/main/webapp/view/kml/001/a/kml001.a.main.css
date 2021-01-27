@@ -205,3 +205,7 @@ td.valign-right {
 	text-align: right;
 	padding-right: 5px;
 }
+
+td input.premiumInput {
+	margin-left: 5px;
+}

@@ -67,6 +67,11 @@ module nts.uk.at.view.kml001.a {
           self.getPersonalDetails(newValue);
         });
 
+        self.currentPersonCost().calculationSetting.subscribe((newValue) => {
+          nts.uk.ui.errors.clearAll();
+          if( newValue === 1) self.setPremiumTo100();
+        });
+
         self.getDefaultPremiumSetting();
       }
 
@@ -189,7 +194,7 @@ module nts.uk.at.view.kml001.a {
         let params: any = {
           startDate: startDate,
           historyID: self.currentPersonCost().historyID(),
-          unitPrice: self.currentPersonCost().unitPrice(),
+          unitPrice: self.currentPersonCost().calculationSetting() === 0 ? self.currentPersonCost().unitPrice() : null, //0 -> 4
           howToSetUnitPrice: self.currentPersonCost().calculationSetting(),
           workingHoursUnitPrice: self.currentPersonCost().workingHour(),
           memo: self.currentPersonCost().memo(),
@@ -669,6 +674,13 @@ module nts.uk.at.view.kml001.a {
               }
             });
           }
+        });
+      }
+
+      setPremiumTo100() {
+        const self = this;
+        _.forEach(self.currentPersonCost().premiumSets(), (item, index) => {
+          self.currentPersonCost().premiumSets()[index].rate(100);
         });
       }
     }
