@@ -105,6 +105,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 		/**
 		 * 時間休暇申請の印刷内容
 		 */
+		opPrintContentOfTimeLeave: any;
 		
 		/**
 		 * 打刻申請の印刷内容

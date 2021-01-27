@@ -10,8 +10,8 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.layer.app.file.storage.FileStorage;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.CreateFlowMenu;
+import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.CreateFlowMenuFileService;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.CreateFlowMenuRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -26,7 +26,7 @@ public class DeleteCreateFlowMenuCommandHandler extends CommandHandler<DeleteFlo
 	private CreateFlowMenuRepository createFlowMenuRepository;
 	
 	@Inject
-	private FileStorage fileStorage;
+	private CreateFlowMenuFileService createFlowMenuFileService;
 
 	@Override
 	protected void handle(CommandHandlerContext<DeleteFlowMenuCommand> context) {
@@ -42,6 +42,6 @@ public class DeleteCreateFlowMenuCommandHandler extends CommandHandler<DeleteFlo
 		// 3. not　フローメニュー作成　empty
 		this.createFlowMenuRepository.delete(optDomain.get());
 		// 4. 関連するファイルを削除する
-		optDomain.get().getFlowMenuLayout().ifPresent(layout -> this.fileStorage.delete(layout.getFileId()));
+		optDomain.get().getFlowMenuLayout().ifPresent(this.createFlowMenuFileService::deleteUploadedFiles);
 	}
 }

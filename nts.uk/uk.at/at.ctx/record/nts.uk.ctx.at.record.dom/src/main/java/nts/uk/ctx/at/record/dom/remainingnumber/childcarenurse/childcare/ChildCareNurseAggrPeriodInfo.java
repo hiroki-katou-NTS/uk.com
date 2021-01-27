@@ -33,7 +33,7 @@ public class ChildCareNurseAggrPeriodInfo {
 	 * ファクトリー
 	 * @param usedCount 子の看護介護休暇の時間休暇使用回数
 	 * @param usedDays 子の看護介護休暇の時間休暇使用日数
-	 * @param aggrPeriodUsedNumber集計期間の子の看護介護休暇使用数
+	 * @param aggrPeriodUsedNumber 集計期間の子の看護介護休暇使用数
 	 * @return 集計期間の子の看護介護休暇情報
 	 */
 	public static ChildCareNurseAggrPeriodInfo of(

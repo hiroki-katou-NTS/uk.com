@@ -59,6 +59,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAt
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
@@ -267,6 +268,9 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	
 	@Inject
 	private ApplicationRepository applicationRepository;
+	
+	@Inject
+	private CollectAchievement collectAchievement;
 	
 	private final String FORMAT_DATE = "yyyy/MM/dd";
 	
@@ -795,6 +799,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	 * @param workTimeCode
 	 * @return
 	 */
+	@Override
 	public PredetermineTimeSetForCalc initWorktimeCode(String companyID, String workTypeCode, String workTimeCode) {
 		Optional<WorkType> WkTypeOpt = workTypeRepository.findByPK(companyID, workTypeCode);
 		if (WkTypeOpt.isPresent()) {
@@ -2000,6 +2005,14 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
                 .setOpListApprovalPhaseState(Optional.of(approvalRootContentImport.getApprovalRootState().getListApprovalPhaseState()));
             appAbsenceStartInfoDto.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
                 .setOpErrorFlag(Optional.of(approvalRootContentImport.getErrorFlag()));
+            
+            List<ActualContentDisplay> actualContentDisplays = collectAchievement.getAchievementContents(
+                    companyID, 
+                    appAbsenceStartInfoDto.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(), 
+                    holidayDates, 
+                    appAbsenceStartInfoDto.getAppDispInfoStartupOutput().getAppDetailScreenInfo().get().getApplication().getAppType());
+            appAbsenceStartInfoDto.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
+                .setOpActualContentDisplayLst(Optional.of(actualContentDisplays));
             break;
         case NO_APPROVER:
             // →Msg_324
