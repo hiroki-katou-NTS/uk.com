@@ -13,6 +13,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.file.storage.FileStorage;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.CreateFlowMenu;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.CreateFlowMenuRepository;
+import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.FixedClassification;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -42,6 +43,15 @@ public class DeleteCreateFlowMenuCommandHandler extends CommandHandler<DeleteFlo
 		// 3. not　フローメニュー作成　empty
 		this.createFlowMenuRepository.delete(optDomain.get());
 		// 4. 関連するファイルを削除する
-		optDomain.get().getFlowMenuLayout().ifPresent(layout -> this.fileStorage.delete(layout.getFileId()));
+		optDomain.get().getFlowMenuLayout().ifPresent(layout -> {
+			layout.getFileAttachmentSettings().forEach(file -> this.fileStorage.delete(file.getFileId()));
+			layout.getImageSettings().forEach(image -> {
+				if (image.getIsFixed().equals(FixedClassification.RANDOM)
+						&& image.getFileId().isPresent()) {
+					this.fileStorage.delete(image.getFileId().get());
+				}
+			});
+			this.fileStorage.delete(layout.getFileId());
+		});
 	}
 }

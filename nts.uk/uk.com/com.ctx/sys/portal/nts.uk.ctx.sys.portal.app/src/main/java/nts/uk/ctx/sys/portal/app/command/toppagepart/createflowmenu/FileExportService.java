@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -16,7 +17,9 @@ import org.apache.commons.io.FileUtils;
 
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
+import nts.arc.layer.app.file.storage.StoredFileInfo;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.arc.layer.infra.file.storage.StoredFileInfoRepository;
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
 import nts.arc.layer.infra.file.temp.ApplicationTemporaryFileFactory;
 import nts.arc.layer.infra.file.temp.ApplicationTemporaryFilesContainer;
@@ -39,7 +42,10 @@ public class FileExportService extends ExportService<FileExportCommand> {
 	@Inject
 	private StoredFileStreamService fileStreamService;
 
-	private static final String DATA_STORE_PATH = ServerSystemProperties.fileStoragePath();
+	@Inject
+	private StoredFileInfoRepository storedFileInfoRepository;
+
+	public static final String DATA_STORE_PATH = ServerSystemProperties.fileStoragePath();
 
 	@Override
 	protected void handle(ExportServiceContext<FileExportCommand> context) {
@@ -63,11 +69,12 @@ public class FileExportService extends ExportService<FileExportCommand> {
 		if (!status.equals(ExtractStatus.SUCCESS)) {
 			return null;
 		}
-		
+
 		File file = destinationDirectory.toFile().listFiles()[0];
-		return new ExtractionResponseDto(FileUtils.readFileToString(file, StandardCharsets.UTF_8), file.getAbsolutePath());
+		return new ExtractionResponseDto(FileUtils.readFileToString(file, StandardCharsets.UTF_8),
+				file.getAbsolutePath());
 	}
-	
+
 	public List<ExtractionResponseDto> extractByListFileId(List<String> lstFileId) throws IOException {
 		List<ExtractionResponseDto> result = new ArrayList<>();
 		for (String fileId : lstFileId) {
@@ -78,12 +85,13 @@ public class FileExportService extends ExportService<FileExportCommand> {
 				return new ArrayList<>();
 			}
 			File file = destinationDirectory.toFile().listFiles()[0];
-			ExtractionResponseDto item =  new ExtractionResponseDto(FileUtils.readFileToString(file, StandardCharsets.UTF_8), file.getAbsolutePath());
+			ExtractionResponseDto item = new ExtractionResponseDto(
+					FileUtils.readFileToString(file, StandardCharsets.UTF_8), file.getAbsolutePath());
 			result.add(item);
 		}
 		return result;
 	}
-	
+
 	public ExtractionResponseDto extractFlowMenu(String fileId) throws IOException {
 		InputStream inputStream = this.fileStreamService.takeOutFromFileId(fileId);
 		Path destinationDirectory = Paths.get(DATA_STORE_PATH + "//packs" + "//" + fileId);
@@ -91,9 +99,30 @@ public class FileExportService extends ExportService<FileExportCommand> {
 		if (!status.equals(ExtractStatus.SUCCESS)) {
 			return null;
 		}
-		
+
 		File file = destinationDirectory.toFile().listFiles()[0];
-		return new ExtractionResponseDto(FileUtils.readFileToString(file, StandardCharsets.UTF_8), destinationDirectory.toString());
+		return new ExtractionResponseDto(FileUtils.readFileToString(file, StandardCharsets.UTF_8),
+				destinationDirectory.toString());
 	}
-	
+
+	public String copyFile(String fileId) throws IOException {
+		// Get original file information
+		Optional<StoredFileInfo> optFileInfo = this.storedFileInfoRepository.find(fileId);
+		if (optFileInfo.isPresent()) {
+			StoredFileInfo fileInfo = optFileInfo.get();
+			// Copy file info, change to new fileId
+			StoredFileInfo newFileInfo = StoredFileInfo.createNew(fileInfo.getOriginalName(), fileInfo.getFileType(),
+					fileInfo.getMimeType(), fileInfo.getOriginalSize());
+			String newFileId = newFileInfo.getId();
+			// Copy physical file
+			File file = Paths.get(DATA_STORE_PATH + "//" + fileId).toFile();
+			File newFile = new File(DATA_STORE_PATH + "//" + newFileId);
+			FileUtils.copyFile(file, newFile, true);
+			// Persist
+			this.storedFileInfoRepository.add(newFileInfo);
+			return newFileId;
+		}
+		return null;
+	}
+
 }

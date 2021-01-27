@@ -1750,6 +1750,7 @@ module nts.uk.com.view.ccg034.d {
               'cursor': 'pointer',
             });
           $partHTML = $("<div>")
+            .attr('style', '-ms-word-break: break-all')
             .css({
               'position': 'absolute',
               'top': `${partDataMenuModel.positionTop}px`,
@@ -1776,6 +1777,7 @@ module nts.uk.com.view.ccg034.d {
               'white-space': 'pre-wrap',
             });
           $partHTML = $("<div>")
+            .attr('style', '-ms-word-break: break-all')
             .css({
               'position': 'absolute',
               'top': `${partDataLabelModel.positionTop}px`,
@@ -1805,6 +1807,7 @@ module nts.uk.com.view.ccg034.d {
               'cursor': 'pointer',
             });
           $partHTML = $("<div>")
+            .attr('style', '-ms-word-break: break-all')
             .css({
               'position': 'absolute',
               'top': `${partDataLinkModel.positionTop}px`,
@@ -1834,6 +1837,7 @@ module nts.uk.com.view.ccg034.d {
               'cursor': 'pointer',
             });
           $partHTML = $("<div>")
+            .attr('style', '-ms-word-break: break-all')
             .css({
               'position': 'absolute',
               'top': `${partDataAttachmentModel.positionTop}px`,
