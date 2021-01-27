@@ -79,7 +79,7 @@ public class JpaTmpAnnualHolidayMngRepository extends JpaRepository implements T
 	@SneakyThrows
 	@Override
 	public List<TmpAnnualHolidayMng> getBySidPeriod(String sid, DatePeriod period) {
-		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_INTERIM_ANNUAL_MNG a"
+		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KSHDT_INTERIM_HDPAID a"
 				+ " WHERE a.SID = ? AND a.YMD >= ? and a.YMD <= ? ORDER BY a.YMD")) {
 			sql.setString(1, sid);
 			sql.setDate(2, Date.valueOf(period.start().localDate()));

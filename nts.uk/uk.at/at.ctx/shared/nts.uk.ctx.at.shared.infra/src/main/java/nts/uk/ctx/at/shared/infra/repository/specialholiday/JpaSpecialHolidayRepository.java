@@ -89,9 +89,9 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 			+ " ORDER BY sphd.SPHD_CD";
 
 	private final static String SELECT_SPHD_BY_LIST_CODE = "SELECT e.pk.companyId, e.pk.specialHolidayCode, e.specialHolidayName, e.autoGrant, e.memo FROM KshstSpecialHoliday e "
-			+ "WHERE sphd.pk.companyId = :companyId "
-			+ " AND sphd.pk.specialHolidayCode IN :specialHolidayCodes"
-			+ " ORDER BY sphd.pk.specialHolidayCode";
+			+ "WHERE e.pk.companyId = :companyId "
+			+ " AND e.pk.specialHolidayCode IN :specialHolidayCodes"
+			+ " ORDER BY e.pk.specialHolidayCode";
 
 	private final static String SELECT_SPHD_ABSENCE_BY_CODE = "SELECT a FROM KshstSphdAbsence a "
 			+ "WHERE a.pk.companyId = :companyID "
