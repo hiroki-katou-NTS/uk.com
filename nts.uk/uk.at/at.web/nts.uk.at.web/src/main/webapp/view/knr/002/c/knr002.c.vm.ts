@@ -412,12 +412,12 @@ module nts.uk.at.view.knr002.c {
 
                 $('#C6_5').ntsEditor("validate");
 
-                if (!vm.checkIpAddress(vm.ipAddress1()) && !vm.checkIpAddress(vm.ipAddress2()) && !vm.checkIpAddress(vm.ipAddress3()) && !vm.checkIpAddress(vm.ipAddress4())) {
-                    if ($('.nts-input').ntsError('hasError')) {
-                        return true;
-                    }
-                    return false;
-                }
+                // if (!vm.checkIpAddress(vm.ipAddress1()) && !vm.checkIpAddress(vm.ipAddress2()) && !vm.checkIpAddress(vm.ipAddress3()) && !vm.checkIpAddress(vm.ipAddress4())) {
+                //     if ($('.nts-input').ntsError('hasError')) {
+                //         return true;
+                //     }
+                //     return false;
+                // }
 
                 if (!vm.checkIpAddress(vm.ipAddress1()) || !vm.checkIpAddress(vm.ipAddress2()) || !vm.checkIpAddress(vm.ipAddress3()) || !vm.checkIpAddress(vm.ipAddress4())) {
                     nts.uk.ui.dialog.error({messageId: "Msg_2036"})
