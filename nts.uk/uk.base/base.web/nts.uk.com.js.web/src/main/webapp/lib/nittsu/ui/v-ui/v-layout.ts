@@ -92,7 +92,8 @@ module nts.uk.ui.layout {
                 element.id = 'master-content';
             }
 
-            const controlsDescendantBindings = $(element).find('div[id^=contents-area]:not(.contents-area)').length !== 0;
+            const controlsDescendantBindings = $(element)
+                .find('div[id^=functions-area]:not(.functions-area), div[id^=contents-area]:not(.contents-area)').length !== 0;
 
             $(element)
                 .find('div[id^=functions-area]')
