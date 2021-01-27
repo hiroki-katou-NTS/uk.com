@@ -20,7 +20,7 @@ module nts.uk.at.view.kmk004.l {
 		<div class="sidebar-content-header">
 		<div class="title" data-bind="i18n: 'Com_Person'"></div>
 		<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmk/004/a/index.xhtml' },i18n: 'KMK004_224'"></a>
-		<button class="proceed" data-bind="enable: existYear, click: register, i18n: 'KMK004_225'"></button>
+		<button class="proceed" data-bind="enable: checkAdd, click: register, i18n: 'KMK004_225'"></button>
 		<button data-bind="visible: true, enable: checkDelete, click: openViewR, i18n: 'KMK004_226'"></button>
 		<button class="danger" data-bind="enable: checkDelete, click: remove, i18n: 'KMK004_227'"></button>
 	</div>
@@ -146,7 +146,7 @@ module nts.uk.at.view.kmk004.l {
 		public checkDelete: KnockoutObservable<boolean> = ko.observable(false);
 		public startYM: KnockoutObservable<number> = ko.observable(0);
 		public isNewYear: KnockoutObservable<boolean> = ko.observable(false);
-		
+		public checkAdd: KnockoutObservable<boolean> = ko.observable(false);
 		constructor(private params: IParam) {
 			super();
 		}
@@ -225,6 +225,21 @@ module nts.uk.at.view.kmk004.l {
 					} else {
 						vm.existYear(false);
 						vm.checkDelete(false);
+					}
+				});
+
+			vm.workTimes
+				.subscribe(() => {
+					let check = false;
+					_.forEach(ko.unwrap(vm.workTimes), ((value) => {
+						if (ko.unwrap(value.check)) {
+							check = true;
+						}
+					}));
+					if (ko.unwrap(vm.existYear)) {
+						vm.checkAdd(check);
+					} else {
+						vm.checkAdd(false);
 					}
 				});
 
