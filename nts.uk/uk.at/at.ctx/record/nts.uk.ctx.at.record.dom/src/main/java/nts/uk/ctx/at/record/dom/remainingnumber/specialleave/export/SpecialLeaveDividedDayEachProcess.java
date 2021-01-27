@@ -47,7 +47,7 @@ public class SpecialLeaveDividedDayEachProcess {
 		this.ymd = ymd;
 		this.grantWork = new SpecialLeaveGrantWork();
 //		this.nextSpecialLeaveGrant = Optional.empty();
-		this.grantPeriodAtr = new GrantPeriodAtr();
+		this.grantPeriodAtr = GrantPeriodAtr.BEFORE_GRANT;
 	}
 
 //	/**

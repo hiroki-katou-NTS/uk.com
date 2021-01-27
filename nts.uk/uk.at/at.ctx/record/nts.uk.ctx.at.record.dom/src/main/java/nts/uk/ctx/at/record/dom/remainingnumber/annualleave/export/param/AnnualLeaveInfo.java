@@ -387,7 +387,7 @@ public class AnnualLeaveInfo implements Cloneable {
 		// 付与日数を確認する
 		double grantDays = 0.0;
 		if (aggregatePeriodWork.getAnnualLeaveGrant().isPresent()){
-			grantDays = aggregatePeriodWork.getAnnualLeaveGrant().get().getGrantDays().v().doubleValue();
+			grantDays = aggregatePeriodWork.getAnnualLeaveGrant().get().getGrantDays().get().v().doubleValue();
 		}
 
 		// 次回年休付与を確認する

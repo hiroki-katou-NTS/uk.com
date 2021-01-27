@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.monthly.vacation.holidayover60h.HolidayOver60h;
 import nts.uk.ctx.at.record.dom.remainingnumber.holidayover60h.export.param.AggrResultOfHolidayOver60h;
 import nts.uk.ctx.at.record.dom.remainingnumber.holidayover60h.export.param.HolidayOver60hGrantRemaining;
@@ -80,15 +81,15 @@ public class GetHolidayOver60hRemNumWithinPeriodImpl implements GetHolidayOver60
 		AggrResultOfHolidayOver60h result = new AggrResultOfHolidayOver60h();
 		
 		// 使用回数
-		result.setUsedTimes(new UsedTimes(3));
+		//result.setUsedTimes(new UsedTimes(3));
 		
 		//　期間終了日時点
 		HolidayOver60hInfo holidayOver60hInfo_1 = createHolidayOver60hInfo_1();
-		result.setAsOfPeriodEnd(holidayOver60hInfo_1);
+		result.setAsOfPeriodEnd(Finally.of(holidayOver60hInfo_1));
 		
 		//　期間終了日の翌日時点
 		HolidayOver60hInfo holidayOver60hInfo_2 = createHolidayOver60hInfo_2();
-		result.setAsOfStartNextDayOfPeriodEnd(holidayOver60hInfo_2);
+		result.setAsOfStartNextDayOfPeriodEnd(Finally.of(holidayOver60hInfo_2));
 		
 		//　消滅時点
 		HolidayOver60hInfo holidayOver60hInfo_3 = createHolidayOver60hInfo_3();

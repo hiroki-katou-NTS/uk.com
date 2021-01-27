@@ -15,6 +15,7 @@ import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CalcAnnLeaAttendanceRate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CreateInterimAnnualMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.DividedDayEachProcess;
@@ -303,8 +304,8 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 
 								if (grantHdTblOpt.isPresent()){
 									val grantHdTbl = grantHdTblOpt.get();
-									nextAnnualGrantList.setGrantDays(
-											grantHdTbl.getGrantDays());
+									nextAnnualGrantList.setGrantDays(Finally.of(
+											grantHdTbl.getGrantDays()));
 									nextAnnualGrantList.setHalfDayAnnualLeaveMaxTimes(
 											grantHdTbl.getLimitDayYear());
 									nextAnnualGrantList.setTimeAnnualLeaveMaxDays(
@@ -314,7 +315,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 							else {
 
 								// 次回年休付与．付与日数　←　0
-								nextAnnualGrantList.setGrantDays(new GrantDays(0.0));
+								nextAnnualGrantList.setGrantDays(Finally.of(new GrantDays(0.0)));
 							}
 						}
 					}

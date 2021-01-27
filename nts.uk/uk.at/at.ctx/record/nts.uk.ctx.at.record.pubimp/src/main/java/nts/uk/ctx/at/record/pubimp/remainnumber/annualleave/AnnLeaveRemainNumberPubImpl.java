@@ -149,7 +149,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 
 			if (annualLeaveGrant!= null && annualLeaveGrant.size() > 0){
 				result.setGrantDate(annualLeaveGrant.get(0).getGrantDate());
-				result.setGrantDays(annualLeaveGrant.get(0).getGrantDays().v());
+				result.setGrantDays(annualLeaveGrant.get(0).getGrantDays().get().v());
 			}
 			return result;
 		} catch (Exception e) {
@@ -611,7 +611,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 					cacheCarrier, companyId, employeeId, Optional.empty());
 			if (annualLeaveGrant!= null && annualLeaveGrant.size() > 0){
 				result.setGrantDate(annualLeaveGrant.get(0).getGrantDate());
-				result.setGrantDays(annualLeaveGrant.get(0).getGrantDays().v());
+				result.setGrantDays(annualLeaveGrant.get(0).getGrantDays().get().v());
 			}
 			return result;
 		} catch (Exception e) {

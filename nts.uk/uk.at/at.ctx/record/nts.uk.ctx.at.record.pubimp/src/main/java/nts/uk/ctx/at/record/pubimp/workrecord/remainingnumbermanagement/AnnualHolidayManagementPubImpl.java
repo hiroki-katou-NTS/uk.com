@@ -35,7 +35,7 @@ public class AnnualHolidayManagementPubImpl implements AnnualHolidayManagementPu
 	public List<NextAnnualLeaveGrantExport> acquireNextHolidayGrantDate(String companyId, String employeeId,
 			Optional<GeneralDate> referenceDate) {
 		return rAnnualHolidayManagement.acquireNextHolidayGrantDate(new CompanyId(companyId), new EmployeeId(employeeId), referenceDate).stream()
-				.map(x -> new NextAnnualLeaveGrantExport(x.getGrantDate(), x.getGrantDays(), x.getTimes(),
+				.map(x -> new NextAnnualLeaveGrantExport(x.getGrantDate(), x.getGrantDays().get(), x.getTimes(),
 						x.getTimeAnnualLeaveMaxDays(), x.getTimeAnnualLeaveMaxTime(),
 						x.getHalfDayAnnualLeaveMaxTimes()))
 				.collect(Collectors.toList());
