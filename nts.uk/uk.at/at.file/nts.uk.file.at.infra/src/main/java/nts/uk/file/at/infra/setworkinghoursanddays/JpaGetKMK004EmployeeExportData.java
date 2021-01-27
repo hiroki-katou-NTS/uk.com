@@ -87,14 +87,11 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 			+ " LEFT JOIN KRCST_SHA_REG_M_CAL_SET ON BSYMT_EMP_DTA_MNG_INFO.CID = KRCST_SHA_REG_M_CAL_SET.CID "
 			+ "           AND BSYMT_EMP_DTA_MNG_INFO.SID = KRCST_SHA_REG_M_CAL_SET.SID "
 			+ " LEFT JOIN BPSMT_PERSON ON BSYMT_EMP_DTA_MNG_INFO.PID = BPSMT_PERSON.PID "
+			+ " LEFT JOIN KRCST_COM_FLEX_M_CAL_SET ON  "
+			+ "	BSYMT_EMP_DTA_MNG_INFO.CID = KRCST_COM_FLEX_M_CAL_SET.CID "
 			+ " LEFT JOIN KRCMT_CALC_M_SET_FLE_COM ON  "
 			+ "	BSYMT_EMP_DTA_MNG_INFO.CID = KRCMT_CALC_M_SET_FLE_COM.CID "
-			+ " WHERE  KSHST_SHA_TRANS_LAB_TIME.CID = ? " 
-			+ " OR KRCST_SHA_DEFOR_M_CAL_SET.CID = ? " 
-			+ " OR KRCST_SHA_FLEX_M_CAL_SET.CID = ? " 
-			+ " OR KRCST_SHA_REG_M_CAL_SET.CID = ? " 
-			+ " OR KRCST_SHA_FLEX_M_CAL_SET.CID = ?"
-			+ " OR KSHST_SHA_TRANS_LAB_TIME.CID = ?"
+			+ " WHERE  BSYMT_EMP_DTA_MNG_INFO.CID = ? " 
 			+ " ORDER BY BSYMT_EMP_DTA_MNG_INFO.SCD ASC ";
 
 	@Override
@@ -117,11 +114,6 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 		
 		try (PreparedStatement stmt = this.connection().prepareStatement(GET_EMPLOYEE.toString())) {
 			stmt.setString(1, cid);
-			stmt.setString(2, cid);
-			stmt.setString(3, cid);
-			stmt.setString(4, cid);
-			stmt.setString(5, cid);
-			stmt.setString(6, cid);
 			NtsResultSet result = new NtsResultSet(stmt.executeQuery());
 			
 			result.forEach(i -> {
@@ -187,7 +179,7 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 					r.getInt("INCLUDE_EXTRA_AGGR") == null ? null : r.getInt("INCLUDE_EXTRA_OT") != 0 ? KMK004PrintCommon.getLegalType(r.getInt("INCLUDE_HOLIDAY_OT"))
 							: null,
 					// R10_14
-					refPreTime == null ? null : refPreTime != 0 ? KMK004PrintCommon.getFlexType(refPreTime) : null,
+					KMK004PrintCommon.getFlexType(refPreTime),
 					// R10_15
 					((month - 1) % 12 + 1) + I18NText.getText("KMK004_401"),
 					// R10_16
