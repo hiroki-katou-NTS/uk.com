@@ -235,11 +235,16 @@ module nts.uk.at.view.knr002.e {
                 const vm = this;
 
                 blockUI.invisible();
+                let selectedObject = _.find(vm.initData().listTimeRecordSetFormatBakEDto, (item) => { return item.empInfoTerCode == code; });
+                if (_.isNil(selectedObject)) {
+                    code = vm.initData().listTimeRecordSetFormatBakEDto[0].empInfoTerCode;
+                    vm.selectedName(vm.initData().listTimeRecordSetFormatBakEDto[0].empInfoTerName);
+                } else {
+                    vm.selectedName(selectedObject.empInfoTerName);
+                }
                 service.getBackupContent(code)
                 .done((res: Array<LocationSettingDto>) => {
                     if (res) {
-                        let selectedObject = _.find(vm.initData().listTimeRecordSetFormatBakEDto, (item) => { return item.empInfoTerCode == code; });
-                        vm.selectedName(selectedObject.empInfoTerName);
                         vm.settingContentGrid(res);
                         $("#detail-grid").igGrid("dataSourceObject", vm.settingContentGrid()).igGrid("dataBind");
                     }
