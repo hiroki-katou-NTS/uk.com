@@ -11,9 +11,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
-import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.RegularGrantDays;
 
 /**
  * 期限情報
@@ -25,12 +22,6 @@ import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.RegularGrantDays
 @Getter
 @Setter
 public class GrantDeadline extends DomainObject {
-
-	/** 会社ID */
-	private String companyId;
-
-	/** 特別休暇コード */
-	private SpecialHolidayCode specialHolidayCode;
 
 	/** 期限指定方法 */
 	private TimeLimitSpecification timeSpecifyMethod;
@@ -70,16 +61,12 @@ public class GrantDeadline extends DomainObject {
 	 * @return
 	 */
 	public static GrantDeadline createFromJavaType(
-			String companyId,
-			int specialHolidayCode,
 			int timeSpecifyMethod,
 			int year,
 			int month,
 			int limitCarryoverDays) {
 
 		return new GrantDeadline(
-				companyId,
-				new SpecialHolidayCode(specialHolidayCode),
 				EnumAdaptor.valueOf(timeSpecifyMethod, TimeLimitSpecification.class),
 				Optional.of(SpecialVacationDeadline.createFromJavaType(month, year)),
 				Optional.of(new LimitAccumulationDays(

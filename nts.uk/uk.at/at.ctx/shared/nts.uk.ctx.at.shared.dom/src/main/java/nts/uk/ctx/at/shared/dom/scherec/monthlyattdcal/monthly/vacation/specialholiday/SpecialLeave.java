@@ -2,15 +2,12 @@ package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.special
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemaining;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 
 /**
  * 特別休暇
@@ -28,12 +25,12 @@ public class SpecialLeave extends DomainObject implements Cloneable, Serializabl
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * 特別休暇使用情報
+	 * 使用数（特別休暇使用情報）
 	 */
 	private SpecialLeaveUsedInfo usedNumberInfo;
 
 	/**
-	 * 特別休暇残数情報
+	 * 残数（特別休暇残数情報）
 	 */
 	private SpecialLeaveRemainingNumberInfo remainingNumberInfo;
 
@@ -65,13 +62,8 @@ public class SpecialLeave extends DomainObject implements Cloneable, Serializabl
 	@Override
 	public SpecialLeave clone() {
 		SpecialLeave cloned = new SpecialLeave();
-//		try {
 			cloned.usedNumberInfo = this.usedNumberInfo.clone();
 			cloned.remainingNumberInfo = this.remainingNumberInfo.clone();
-//		}
-//		catch (Exception e){
-//			throw new RuntimeException("SpecialLeave clone error.");
-//		}
 		return cloned;
 	}
 
