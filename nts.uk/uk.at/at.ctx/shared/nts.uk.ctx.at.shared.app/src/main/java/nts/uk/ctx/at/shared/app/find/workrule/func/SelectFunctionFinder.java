@@ -66,19 +66,21 @@ public class SelectFunctionFinder {
 			dto.setUseAggDeformedSetting(optAggSetting.get().getUseDeformedLabor().value);
 		}
 
-		// ドメインモデル「臨時勤務利用管理」を取得する
-		Optional<TemporaryWorkUseManage> optTempWorkUse = tempWorkRepo.findByCid(companyId);
+		dto.setOptionLicenseCustomize(AppContexts.optionLicense().customize().ootsuka());
 
-		if (optTempWorkUse.isPresent()) {
-			dto.setUseTempWorkUse(optTempWorkUse.get().getUseClassification().value);
-		}
-
-		// ドメインモデル「複数回勤務管理」を取得する
-		Optional<WorkManagementMultiple> optWorkMultiple = workMultipleRepo.findByCode(companyId);
-
-		if (optWorkMultiple.isPresent()) {
-			dto.setUseWorkManagementMultiple(optWorkMultiple.get().getUseATR().value);
-		}
+//		// ドメインモデル「臨時勤務利用管理」を取得する
+//		Optional<TemporaryWorkUseManage> optTempWorkUse = tempWorkRepo.findByCid(companyId);
+//
+//		if (optTempWorkUse.isPresent()) {
+//			dto.setUseTempWorkUse(optTempWorkUse.get().getUseClassification().value);
+//		}
+//
+//		// ドメインモデル「複数回勤務管理」を取得する
+//		Optional<WorkManagementMultiple> optWorkMultiple = workMultipleRepo.findByCode(companyId);
+//
+//		if (optWorkMultiple.isPresent()) {
+//			dto.setUseWorkManagementMultiple(optWorkMultiple.get().getUseATR().value);
+//		}
 
 		return dto;
 	}

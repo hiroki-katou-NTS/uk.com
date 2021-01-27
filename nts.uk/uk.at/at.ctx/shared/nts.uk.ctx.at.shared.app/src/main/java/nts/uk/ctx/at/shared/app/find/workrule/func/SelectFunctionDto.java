@@ -14,4 +14,6 @@ public class SelectFunctionDto {
 	private int useTempWorkUse;
 	/** フレックス勤務の設定 */
 	private int flexWorkManagement;
+
+	private boolean optionLicenseCustomize;
 }
