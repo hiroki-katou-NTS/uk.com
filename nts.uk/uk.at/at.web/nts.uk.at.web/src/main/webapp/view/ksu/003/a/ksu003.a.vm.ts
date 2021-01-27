@@ -2304,10 +2304,14 @@ module nts.uk.at.view.ksu003.a.viewmodel {
                 if(rs.hasError == false){
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
 							self.enableSave(false);
+							let $grid = $('div.ex-body-detail');
+							self.updateAfterSaveData($grid[0]).done(() => {
+								block.clear();
+							});
 						});
-                    block.clear();
                 } else {
                     self.openKDL053(rs);
+					block.clear();
                 }
             }).fail(function(error : any) {
                 block.clear();
@@ -2315,6 +2319,22 @@ module nts.uk.at.view.ksu003.a.viewmodel {
                 dfd.reject();
             });
             return dfd.promise();
+        }
+
+		updateAfterSaveData($grid: HTMLElement)  : JQueryPromise<any>{
+			let self = this, dfd = $.Deferred();
+            // Clear states
+            $.data($grid, "copy-history", null);
+            $.data($grid, "redo-stack", null);
+            $.data($grid, "edit-history", null);
+            $.data($grid, "edit-redo-stack", null);
+            $.data($grid, "stick-history", null);
+            $.data($grid, "stick-redo-stack", null);
+
+            // remove cells updated
+            $('#extable-ksu003').data('extable').modifications = null;
+			dfd.resolve();
+			 return dfd.promise();
         }
 
 
@@ -4270,7 +4290,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					let lstBrkTime = self.dataScreen045A().workScheduleDto.listBreakTimeZoneDto, totalBrkTime = "",
 						lstBreak: any = lstBrkTime, totalTimebr: any = null;
 					lstBrkTime.forEach((x: any) => {
-						totalTimebr += x.endTime - x.startTime;
+						totalTimebr += x.end - x.start;
 					})
 
 					totalBrkTime = totalTimebr != null ? formatById("Clock_Short_HM", totalTimebr) : ""
