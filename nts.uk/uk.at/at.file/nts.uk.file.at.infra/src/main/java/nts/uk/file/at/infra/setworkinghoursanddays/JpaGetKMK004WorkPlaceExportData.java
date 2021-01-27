@@ -97,6 +97,14 @@ public class JpaGetKMK004WorkPlaceExportData extends JpaRepository implements Ge
 	     exportSQL.append("              LEFT JOIN KSHST_WKP_TRANS_LAB_TIME ON BSYMT_WKP_INFO.CID = KSHST_WKP_TRANS_LAB_TIME.CID   ");
 	     exportSQL.append("              AND BSYMT_WKP_INFO.WKP_ID = KSHST_WKP_TRANS_LAB_TIME.WKP_ID   ");
 	     exportSQL.append("             WHERE BSYMT_WKP_INFO.CID = ?  ");
+	     exportSQL.append("             AND (");
+	     exportSQL.append("             BSYMT_WKP_INFO.WKP_ID IN  (SELECT WKP_ID FROM KSHST_WKP_REG_LABOR_TIME WHERE CID = BSYMT_WKP_INFO.CID) ");
+	     exportSQL.append("             OR BSYMT_WKP_INFO.WKP_ID IN  (SELECT WKP_ID FROM KRCST_WKP_DEFOR_M_CAL_SET WHERE CID = BSYMT_WKP_INFO.CID) ");
+	     exportSQL.append("             OR BSYMT_WKP_INFO.WKP_ID IN  (SELECT WKP_ID FROM KRCST_WKP_FLEX_M_CAL_SET WHERE CID = BSYMT_WKP_INFO.CID) ");
+	     exportSQL.append("            	OR BSYMT_WKP_INFO.WKP_ID IN  (SELECT WKPID FROM KRCST_WKP_REG_M_CAL_SET WHERE CID = BSYMT_WKP_INFO.CID) ");
+	     exportSQL.append("            	OR BSYMT_WKP_INFO.WKP_ID IN  (SELECT WKP_ID FROM KSHST_WKP_TRANS_LAB_TIME WHERE CID = BSYMT_WKP_INFO.CID) ");
+	     exportSQL.append("             OR BSYMT_WKP_INFO.WKP_ID IN  (SELECT WKP_ID FROM KSRMT_LEGAL_TIME_M_WKP WHERE CID = BSYMT_WKP_INFO.CID) ");
+	     exportSQL.append("             )");
 	     exportSQL.append("            ) TBL  ");
 	     exportSQL.append("             ORDER BY TBL.HIERARCHY_CD ASC");
 
@@ -133,8 +141,7 @@ public class JpaGetKMK004WorkPlaceExportData extends JpaRepository implements Ge
 			
 			int month = this.month();
 			
-			int startYM = startDate * 100 + month;
-			YearMonthPeriod ymPeriod = new YearMonthPeriod(YearMonth.of(startYM, month), YearMonth.of(startYM, month).nextYear().previousMonth());
+			YearMonthPeriod ymPeriod = new YearMonthPeriod(YearMonth.of(startDate, month), YearMonth.of(startDate, month).nextYear().previousMonth());
 
 			val legalTimes = this.queryProxy().query(LEGAL_TIME_WKP, KshmtLegalTimeMWkp.class)
 				.setParameter("cid", cid)

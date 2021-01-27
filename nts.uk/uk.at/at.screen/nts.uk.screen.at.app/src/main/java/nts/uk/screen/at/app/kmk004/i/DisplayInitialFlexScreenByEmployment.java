@@ -5,11 +5,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTimeRepository;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
-import nts.uk.screen.at.app.kmk004.g.GetFlexPredWorkTimeDto;
 import nts.uk.screen.at.app.query.kmk004.common.EmploymentList;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -20,8 +17,9 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class DisplayInitialFlexScreenByEmployment {
 
-	@Inject
-	private GetFlexPredWorkTimeRepository getFlexPredWorkTimeRepo;
+	/*
+	 * @Inject private GetFlexPredWorkTimeRepository getFlexPredWorkTimeRepo;
+	 */
 
 	@Inject
 	private EmploymentList employmentList;
@@ -32,13 +30,12 @@ public class DisplayInitialFlexScreenByEmployment {
 	public DisplayInitialFlexScreenByEmploymentDto displayInitialFlexScreenByEmployment(String empCd) {
 
 		DisplayInitialFlexScreenByEmploymentDto result = new DisplayInitialFlexScreenByEmploymentDto();
-		String comId = AppContexts.user().companyId();
 
 		// 1.会社別フレックス勤務集計方法
 
-		this.getFlexPredWorkTimeRepo.find(comId).ifPresent(x -> {
+		/*this.getFlexPredWorkTimeRepo.find(comId).ifPresent(x -> {
 			result.getFlexBasicSetting().setFlexPredWorkTime(GetFlexPredWorkTimeDto.fromDomain(x));
-		});
+		});*/
 
 		// 職場リストを表示する
 		// input： 勤務区分 ← 2：フレックス勤務
@@ -52,7 +49,7 @@ public class DisplayInitialFlexScreenByEmployment {
 		SelectEmploymentFlexDto selectDto = this.selectEmploymentFlex
 				.selectEmploymentFlex(empCd);
 
-		result.getFlexBasicSetting().setFlexMonthActCalSet(selectDto.getFlexBasicSetting().getFlexMonthActCalSet());
+		result.setFlexBasicSetting(selectDto.getFlexBasicSetting());
 
 		result.setYearList(selectDto.getYearList());
 
