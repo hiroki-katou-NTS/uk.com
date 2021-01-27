@@ -12,6 +12,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
@@ -236,14 +238,16 @@ public class HolidayShipmentMobileWS extends WebService {
 	public HdShipmentMBTimeZoneDto getTimeZoneValue(HdShipmentMBTimeZoneParam command) {
 		String companyID = AppContexts.user().companyId();
 		List<TimeZoneWithWorkNoDto> timeZoneLst = new ArrayList<>();
-		// 勤務時間初期値の取得
-		PredetermineTimeSetForCalc predetermineTimeSetForCalc = absenceServiceProcess.initWorktimeCode(
-				companyID, 
-				command.getWorkTypeNew().getWorkTypeCode(), 
-				command.getWorkTimeCD());
-		for(TimezoneUse timezoneUse : predetermineTimeSetForCalc.getTimezones()) {
-			if(timezoneUse.isUsed()) {
-				timeZoneLst.add(new TimeZoneWithWorkNoDto(timezoneUse.getWorkNo(), new TimeZone_NewDto(timezoneUse.getStart().v(), timezoneUse.getEnd().v())));
+		if(Strings.isNotBlank(command.getWorkTimeCD())) {
+			// 勤務時間初期値の取得
+			PredetermineTimeSetForCalc predetermineTimeSetForCalc = absenceServiceProcess.initWorktimeCode(
+					companyID, 
+					command.getWorkTypeNew().getWorkTypeCode(), 
+					command.getWorkTimeCD());
+			for(TimezoneUse timezoneUse : predetermineTimeSetForCalc.getTimezones()) {
+				if(timezoneUse.isUsed()) {
+					timeZoneLst.add(new TimeZoneWithWorkNoDto(timezoneUse.getWorkNo(), new TimeZone_NewDto(timezoneUse.getStart().v(), timezoneUse.getEnd().v())));
+				}
 			}
 		}
 		VacationCheckOutput vacationCheckOutput = null;

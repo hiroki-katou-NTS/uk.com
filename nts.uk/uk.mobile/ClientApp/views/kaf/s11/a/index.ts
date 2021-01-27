@@ -785,8 +785,20 @@ export class KafS11AComponent extends KafS00ShrComponent {
     // ※12-1, ※12-2
     get dispComplementLinkContent() {
         const vm = this;
+        let onlyAbs = false;
+        if (vm.mode == ScreenMode.NEW) {
+            // ※3-3
+            if (vm.complementLeaveAtr == ComplementLeaveAtr.LEAVE) {
+                onlyAbs = true;
+            }    
+        } else {
+            // ※4-3
+            if (!vm.displayInforWhenStarting.rec) {
+                onlyAbs = true;
+            }
+        }
 
-        return vm.dispLeaveContent && vm.cdtHdMngLeaveDailyType();
+        return onlyAbs && vm.cdtHdMngLeaveDailyType();
     }
 
     // ※A13
