@@ -1018,7 +1018,7 @@ public class ScheduleCreatorExecutionTransaction {
 					.getCreationMethod().value == CreationMethod.PERSONAL_INFO.value) {
 				// 「労働条件。予定作成方法。 基本作成方法」を確認する
 				Optional<WorkCondItemDto> itemDto = masterCache.getListWorkingConItem().stream()
-						.filter(x -> x.getDatePeriod().contains(dateInPeriod)).findFirst();
+						.filter(x -> x.getEmployeeId().equals(creator.getEmployeeId())).findFirst();
 				// call 営業日カレンダーで勤務予定作成する, 月間パターンで勤務予定を作成する, 個人曜日別で勤務予定作成する
 				prepareWorkOutput = this.getPersonalInfo(itemDto, command, dateInPeriod, masterCache, creator);
 			}

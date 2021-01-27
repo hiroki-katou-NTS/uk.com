@@ -34,6 +34,8 @@ module nts.uk.com.view.ccg034.h {
       { code: VerticalAlign.CENTER, name: getText('CCG034_115') },
       { code: VerticalAlign.BOTTOM, name: getText('CCG034_116') }
     ];
+    // Check new component
+    isNewMode: boolean = true;
 
     created(params: any) {
       const vm = this;
@@ -53,6 +55,7 @@ module nts.uk.com.view.ccg034.h {
       vm.fileSize(vm.partData.fileSize);
 
       if (vm.fileId()) {
+        vm.isNewMode = false;
         nts.uk.request.ajax("/shr/infra/file/storage/infor/" + vm.fileId())
           .done((res: any) => {
           $("#H2_2 .filenamelabel").text(res.originalName);
@@ -67,6 +70,7 @@ module nts.uk.com.view.ccg034.h {
 
     public uploadFinished(data: any) {
       const vm = this;
+      vm.removeFile();
       vm.fileId(data.id);
       vm.fileSize(Math.round(Number(data.originalSize) / 1024));
       if (!vm.fileName()) {
@@ -79,6 +83,7 @@ module nts.uk.com.view.ccg034.h {
      */
     public closeDialog() {
       const vm = this;
+      vm.removeFile();
       vm.$window.close();
     }
 
@@ -112,6 +117,16 @@ module nts.uk.com.view.ccg034.h {
           });
         }
       });
+    }
+
+    /**
+     * 変更前のファイルは削除
+     */
+    private removeFile() {
+      const vm = this;
+      if (vm.fileId() && vm.isNewMode) {
+        (nts.uk.request as any).file.remove(vm.fileId());
+      }
     }
   }
 

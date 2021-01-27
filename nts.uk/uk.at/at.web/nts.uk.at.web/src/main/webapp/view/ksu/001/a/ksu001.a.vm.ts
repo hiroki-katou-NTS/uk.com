@@ -1159,7 +1159,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                         
                         // điều kiện ※Aa1
-                        if (cell.isEdit == false) {
+                        if (canModifyStartDate == false || cell.isEdit == false) {
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 0));
                             listCellNotEditBg.push(new CellColor('_' + ymd, rowId, "xseal", 0));
                             listCellNotEditColor.push(new CellColor('_' + ymd, rowId, "color-schedule-performance", 0));
@@ -1172,6 +1172,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             arrListCellLock.push({ rowId: rowId, columnId: '_' + ymd });
                         } else if (cell.confirmed == true) {
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xdet", 0));
+                        }
+                        
+                        if (cell.confirmed == true) {
+                            arrListCellLock.push({ rowId: rowId, columnId: '_' + ymd });
                         }
                         
                     };
@@ -1269,7 +1273,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                         
                         // điều kiện ※Abc1 dieu kien edit
-                        if (cell.isEdit == false) {
+                        if (canModifyStartDate == false || cell.isEdit == false) {
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 0));
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 1));
                         }
@@ -1283,6 +1287,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         } else if (cell.confirmed == true) {
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xdet", 0));
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xdet", 1));
+                        }
+                        
+                        if (cell.confirmed == true) {
+                            arrListCellLock.push({ rowId: rowId, columnId: '_' + ymd });
                         }
                     });
                     detailContentDs.push(objDetailContentDs);
@@ -1420,7 +1428,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         
                          // điều kiện ※Abc1
                          // dieu kien ※Ac
-                        if (cell.isEdit == false) {
+                        if (canModifyStartDate == false || cell.isEdit == false) {
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 0));
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 1));
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 2));
@@ -1441,6 +1449,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xdet", 1));
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xdet", 2));
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xdet", 3));
+                        }
+                        
+                        if (cell.confirmed == true) {
+                            arrListCellLock.push({ rowId: rowId, columnId: '_' + ymd });
                         }
                     });
                     detailContentDs.push(objDetailContentDs);
@@ -2868,6 +2880,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     if (!_.isNil(obj)) {
                         return;
                     }
+                    
                     let workType = self.dataCell.objWorkType;
                     let workTime = self.dataCell.objWorkTime;
                     // truong hop chon workType = required va workTime = 選択なし 

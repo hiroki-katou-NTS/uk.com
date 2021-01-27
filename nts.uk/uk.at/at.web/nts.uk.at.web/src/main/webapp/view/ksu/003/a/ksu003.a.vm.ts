@@ -2292,7 +2292,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			return dfd.promise();
 		}
 		
-		saveData() : JQueryPromise<any> {
+		saveData(type : any) : JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             block.grayout();
             let updatedCells = $("#extable-ksu003").exTable("updatedCells");
@@ -2302,19 +2302,48 @@ module nts.uk.at.view.ksu003.a.viewmodel {
             service.regWorkSchedule(dataReg).done((rs : any) => {
                 console.log(rs);
                 if(rs.hasError == false){
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+					if(type != 1){
+						 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
 							self.enableSave(false);
+							let $grid = $('div.ex-body-detail');
+							self.updateAfterSaveData($grid[0]).done(() => {
+								block.clear();
+							});
 						});
-                    block.clear();
+					} else {
+						self.enableSave(false);
+							let $grid = $('div.ex-body-detail');
+							self.updateAfterSaveData($grid[0]).done(() => {
+								block.clear();
+							});
+					}
                 } else {
                     self.openKDL053(rs);
+					block.clear();
                 }
             }).fail(function(error : any) {
                 block.clear();
                 alertError(error);
                 dfd.reject();
             });
+			dfd.resolve();
             return dfd.promise();
+        }
+
+		updateAfterSaveData($grid: HTMLElement)  : JQueryPromise<any>{
+			let self = this, dfd = $.Deferred();
+            // Clear states
+            $.data($grid, "copy-history", null);
+            $.data($grid, "redo-stack", null);
+            $.data($grid, "edit-history", null);
+            $.data($grid, "edit-redo-stack", null);
+            $.data($grid, "stick-history", null);
+            $.data($grid, "stick-redo-stack", null);
+
+            // remove cells updated
+            $('#extable-ksu003').data('extable').modifications = null;
+			dfd.resolve();
+			 return dfd.promise();
         }
 
 
@@ -3926,7 +3955,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			let checkSort = $("#extable-ksu003").exTable('updatedCells');
 			if (checkSort.length > 0) {
 				dialog.confirm({ messageId: "Msg_447" }).ifYes(() => {
-					self.nextDayImpl();
+					self.saveData(1).done(()=> {
+						self.nextDayImpl();
+					});
 				}).ifNo(() => { self.nextDayImpl(); });
 			} else {
 				self.nextDayImpl();
@@ -3958,7 +3989,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				checkSort = $("#extable-ksu003").exTable('updatedCells');
 			if (checkSort.length > 0) {
 				dialog.confirm({ messageId: "Msg_447" }).ifYes(() => {
-					self.nextAllDayImpl(i, nextDay);
+					self.saveData(1).done(()=> {
+						self.nextAllDayImpl(i, nextDay);
+					})
 				}).ifNo(() => { self.nextAllDayImpl(i, nextDay); });
 			} else {
 				self.nextAllDayImpl(i, nextDay);
@@ -3993,7 +4026,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			let checkSort = $("#extable-ksu003").exTable('updatedCells');
 			if (checkSort.length > 0) {
 				dialog.confirm({ messageId: "Msg_447" }).ifYes(() => {
-					self.prevDayImpl();
+					self.saveData(1).done(()=> {
+						self.prevDayImpl();
+					})
 				}).ifNo(() => { self.prevDayImpl(); });
 			} else {
 				self.prevDayImpl();
@@ -4024,7 +4059,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			let checkSort = $("#extable-ksu003").exTable('updatedCells');
 			if (checkSort.length > 0) {
 				dialog.confirm({ messageId: "Msg_447" }).ifYes(() => {
-					self.prevAllDayImpl(i, prvDay);
+					self.saveData(1).done(()=> {
+						self.prevAllDayImpl(i, prvDay);
+					})
 				}).ifNo(() => { self.prevAllDayImpl(i, prvDay) });
 			} else {
 				self.prevAllDayImpl(i, prvDay);
@@ -4270,7 +4307,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					let lstBrkTime = self.dataScreen045A().workScheduleDto.listBreakTimeZoneDto, totalBrkTime = "",
 						lstBreak: any = lstBrkTime, totalTimebr: any = null;
 					lstBrkTime.forEach((x: any) => {
-						totalTimebr += x.endTime - x.startTime;
+						totalTimebr += x.end - x.start;
 					})
 
 					totalBrkTime = totalTimebr != null ? formatById("Clock_Short_HM", totalTimebr) : ""
@@ -4470,8 +4507,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			if (checkOpen.length < 1 && checkOpen2.length < 1) {
 				nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(() => {
 					let dataShareKdl003 = getShared('childData');
-					self.check045003 = false;
 					if (!_.isNil(dataShareKdl003)) {
+						self.check045003 = false;
 						self.enableSave(true);
 						let param = [{
 							workTypeCode: dataShareKdl003.selectedWorkTypeCode,

@@ -22,7 +22,7 @@ module nts.uk.com.view.ccg015.f {
       vm.$blockui('grayout');
       vm.$ajax(`/toppage/getDisplayTopPage/${vm.topPageCd()}`)
         .then((result: any) =>{
-          vm.layoutDisplayType(params.selectedId);
+          vm.layoutDisplayType(result.layoutDisplayType);
           vm.getToppage(result);
         })
         .always(() => vm.$blockui('clear'));

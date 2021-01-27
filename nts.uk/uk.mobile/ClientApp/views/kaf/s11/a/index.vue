@@ -119,7 +119,7 @@
                 </div>
                 <div class="mt-2 mb-2">
                     <div class="uk-text-dark-gray ml-3">
-                        <div v-html="getWorkTimeLabel(complementWorkInfo.workTimeCD)"></div>
+                        <div v-html="getWorkTimeLabel(complementWorkInfo.workTimeCD, true)"></div>
                     </div>    
                 </div>
             </div>
@@ -224,7 +224,7 @@
                 </div>
                 <div class="mt-2 mb-2" v-if="dispLeaveWorkTime">
                     <div class="uk-text-dark-gray ml-3">
-                        <div v-html="getWorkTimeLabel(leaveWorkInfo.workTimeCD)"></div>
+                        <div v-html="getWorkTimeLabel(leaveWorkInfo.workTimeCD, false)"></div>
                     </div>    
                 </div>
             </div>
