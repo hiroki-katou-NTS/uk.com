@@ -29,7 +29,35 @@ public class DuplicateWorkLedgerSettingDomainServiceTest {
 
 	/**
 	 * Test duplicateSetting method
-	 *
+	 * Condition:
+	 * 		input param: settingCategory == FREE_SETTING
+	 * 		require.getOutputItemDetail returns empty item
+	 * Expect:
+	 * 		BusinessException: "Msg_1928"
+	 */
+	@Test
+    public void testDuplicateSetting(){
+ 		OutputItemSettingCode code = new OutputItemSettingCode("OutputItemSettingCode01");
+		OutputItemSettingName name = new OutputItemSettingName("OutputItemSettingName01");
+
+		new Expectations(AppContexts.class) {{
+			AppContexts.user().employeeId();
+			result = "employeeId";
+			require.getOutputItemDetail("dupSrcId01");
+			result = Optional.empty();
+		}};
+
+		NtsAssert.businessException("Msg_1928", () -> {
+			DuplicateWorkLedgerSettingDomainService.duplicateSetting(
+					require,
+					SettingClassificationCommon.FREE_SETTING,
+					"dupSrcId01",
+					code,
+					name
+			);
+		});
+    }/**
+	 * Test duplicateSetting method
 	 * Condition:
 	 * 		input param: settingCategory == STANDARD_SELECTION
 	 * 		require.getOutputItemDetail returns empty item
@@ -43,7 +71,7 @@ public class DuplicateWorkLedgerSettingDomainServiceTest {
 
 		new Expectations(AppContexts.class) {{
 			AppContexts.user().employeeId();
-			result = "employeeId01";
+			result = "employeeId00";
 			require.getOutputItemDetail("dupSrcId01");
 			result = Optional.empty();
 		}};
@@ -65,7 +93,7 @@ public class DuplicateWorkLedgerSettingDomainServiceTest {
 	 * Condition:
 	 * 		input param: settingCategory == STANDARD_SELECTION
 	 * 		require.getOutputItemDetail returns non empty item
-	 * 		WorkLedgerOutputItem.checkDuplicateStandardSelection returns TRUE
+	 * 		require.standardCheck TRUE
 	 * Expect:
 	 * 		BusinessException: "Msg_1927"
 	 */
@@ -107,7 +135,7 @@ public class DuplicateWorkLedgerSettingDomainServiceTest {
 	 * Condition:
 	 * 		input param: settingCategory == FREE_SETTING
 	 * 		require.getOutputItemDetail returns non empty item
-	 * 		WorkLedgerOutputItem.checkDuplicateFreeSettings returns TRUE
+	 * 		require.freeCheck TRUE
 	 * Expect:
 	 * 		BusinessException: "Msg_1927"
 	 */
@@ -149,7 +177,7 @@ public class DuplicateWorkLedgerSettingDomainServiceTest {
 	 * Condition:
 	 * 		input param: settingCategory == STANDARD_SELECTION
 	 * 		require.getOutputItemDetail returns non empty item
-	 * 		WorkLedgerOutputItem.checkDuplicateStandardSelection returns FALSE
+	 * 		require.standardCheck FALSE
 	 * Expect:
 	 * 		returns AtomTask with invocation to require.duplicateWorkLedgerOutputItem
 	 */
@@ -196,7 +224,7 @@ public class DuplicateWorkLedgerSettingDomainServiceTest {
 	 * Condition:
 	 * 		input param: settingCategory == FREE_SETTING
 	 * 		require.getOutputItemDetail returns non empty item
-	 * 		WorkLedgerOutputItem.checkDuplicateFreeSettings returns FALSE
+	 * 		require.freeCheck  FALSE
 	 * Expect:
 	 * 		returns AtomTask with invocation to require.duplicateWorkLedgerOutputItem
 	 */
@@ -218,6 +246,7 @@ public class DuplicateWorkLedgerSettingDomainServiceTest {
 			require.getOutputItemDetail("dupSrcId05");
 			result = Optional.of(item);
 			require.freeCheck(code, "employeeId05");
+			result = false;
 			IdentifierUtil.randomUniqueId();
 			result = "uid05";
 		}};
