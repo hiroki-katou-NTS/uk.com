@@ -1601,7 +1601,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
             workingHours.push(timeZoneWithWorkNoDto);
 
         }
-        if (self.c10 && _.isNumber(_.get(self.workHours2, 'start')) && _.get(self.workHours2, 'end') && self.c11) {
+        if (self.c10 && _.isNumber(_.get(self.workHours2, 'start')) && _.isNumber(_.get(self.workHours2, 'end')) && self.c11) {
             let timeZoneWithWorkNoDto = {} as TimeZoneWithWorkNoDto;
             timeZoneWithWorkNoDto.workNo = 2;
             timeZoneWithWorkNoDto.timeZone = {

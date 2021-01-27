@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.ovetimeholiday;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -697,7 +698,9 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 				workTimeCode.orElse(null),
 				timeZones,
 				breakTimes.stream().map(x -> x.getStart().v()).collect(Collectors.toList()),
-				breakTimes.stream().map(x -> x.getEnd().v()).collect(Collectors.toList()));
+				breakTimes.stream().map(x -> x.getEnd().v()).collect(Collectors.toList()),
+				Collections.emptyList(),
+				Collections.emptyList());
 		// 「申請時間」をセットして返す
 		
 		List<OvertimeApplicationSetting> overtimeApplicationSetting = new ArrayList<OvertimeApplicationSetting>();

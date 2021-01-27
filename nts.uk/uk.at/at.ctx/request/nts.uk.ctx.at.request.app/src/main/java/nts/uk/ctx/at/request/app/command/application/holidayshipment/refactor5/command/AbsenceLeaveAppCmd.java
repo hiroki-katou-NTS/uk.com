@@ -59,6 +59,16 @@ public class AbsenceLeaveAppCmd extends RecruitmentAppCmd{
 				applicationUpdate.toDomain(applicationDto));
 	}
 	
+	public AbsenceLeaveApp toDomainAbs() {
+	    return new AbsenceLeaveApp(
+                this.workingHours.stream().map(c-> c.toDomain()).collect(Collectors.toList()), 
+                workInformation.toDomain(), 
+                NotUseAtr.valueOf(this.workChangeUse?1:0), 
+                StringUtils.isEmpty(this.changeSourceHoliday) ? Optional.empty() : Optional.of(GeneralDate.fromString(this.changeSourceHoliday, "yyyy/MM/dd")), 
+                TypeApplicationHolidays.Abs, 
+                application.toDomain());
+	}
+	
 	public static AbsenceLeaveAppCmd fromDomain(AbsenceLeaveApp domain) {
 		return new AbsenceLeaveAppCmd(
 				ApplicationDto.fromDomain(domain),
