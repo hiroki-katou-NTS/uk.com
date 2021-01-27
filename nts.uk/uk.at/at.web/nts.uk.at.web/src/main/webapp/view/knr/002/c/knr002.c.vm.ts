@@ -442,7 +442,8 @@ module nts.uk.at.view.knr002.c {
                 const vm = this;
 
                 if (vm.dataSource()) {
-                    vm.smallItemData(vm.dataSource().filter((item) => item.majorClassification == majorName));
+                    let smallData = vm.dataSource().filter((item) => item.majorClassification == majorName).sort((item1: any, item2: any) => { return item1.smallNo - item2.smallNo; });
+                    vm.smallItemData(smallData);
                     vm.currentCode2(vm.smallItemData()[0].smallClassification);
                 }
 
