@@ -274,7 +274,7 @@ module nts.uk.ui.at.kcp013.shared {
                         if ([SHOW_MODE.DEFFERED, SHOW_MODE.BOTTLE].indexOf(showMode) > -1) {
                             items.push({
                                 id: 'deferred',
-                                code: '',
+                                code: ' ',
                                 name: vm.$i18n('KCP013_6'),
                                 remark: '',
                                 tzEnd1: 0,

@@ -1297,7 +1297,7 @@ public class AppContentServiceImpl implements AppContentService {
 			// 振休申請.変更元の振休日=empty(Đơn xin nghỉ bù. ngày nghỉ bù của nguồn thay đổi)
 			if(absenceLeaveApp.getChangeSourceHoliday().isPresent()) {
 				// 申請内容　＋＝"　"＋「値」(Nội dung đơn xin ＋＝"　"＋「value」)
-				result += " " + I18NText.getText("CMM045_304", absenceLeaveApp.getChangeSourceHoliday().get().toString("YYYY/MM/DD"));
+				result += " " + I18NText.getText("CMM045_304", absenceLeaveApp.getChangeSourceHoliday().get().toString("yyyy/MM/dd"));
 			}
 		} else {
 			if(absenceLeaveApp!=null) {
@@ -1311,7 +1311,7 @@ public class AppContentServiceImpl implements AppContentService {
 				// 振休申請.変更元の振休日=empty(đơn xin nghỉ bù. Ngày nghỉ bù của nguồn thay đổi)
 				if(absenceLeaveApp.getChangeSourceHoliday().isPresent()) {
 					// 申請内容　＋＝"　"＋「値」(Nội dung đơn xin ＋＝"　"＋「value」)
-					result += " " + I18NText.getText("CMM045_304", absenceLeaveApp.getChangeSourceHoliday().get().toString("YYYY/MM/DD"));
+					result += " " + I18NText.getText("CMM045_304", absenceLeaveApp.getChangeSourceHoliday().get().toString("yyyy/MM/dd"));
 				}
 			} if(recruitmentApp != null) {
 				// 申請内容　＝　#CMM045_262　+　”　”　+　振出申請データ．勤務種類名称
