@@ -183,11 +183,7 @@ public class KclmtCompensLeaveCom extends ContractUkJpaEntity implements Seriali
     			ManageDistinct.valueOf(this.linkMngAtr));
     }
 
-//    /** The Kctmt digest time com. */
-//    @OneToOne(optional = true, cascade = CascadeType.ALL, fetch=FetchType.LAZY)
-//    @PrimaryKeyJoinColumn
-//    private KctmtDigestTimeCom KctmtDigestTimeCom;
-//    
+   
 //    /** The list occurrence. */
 //    @JoinColumns(@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true))
 //    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.LAZY)

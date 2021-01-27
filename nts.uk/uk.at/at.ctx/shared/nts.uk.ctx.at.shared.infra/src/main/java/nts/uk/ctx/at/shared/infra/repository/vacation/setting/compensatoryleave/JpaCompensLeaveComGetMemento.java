@@ -74,8 +74,6 @@ public class JpaCompensLeaveComGetMemento implements CompensatoryLeaveComGetMeme
      */
     @Override
     public CompensatoryDigestiveTimeUnit getCompensatoryDigestiveTimeUnit() {
-//        return new CompensatoryDigestiveTimeUnit(
-//                new JpaCompensDigestiveTimeUnitGetMemento(this.entity.getKctmtDigestTimeCom()));
     	return null;
     }
 

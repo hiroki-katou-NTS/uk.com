@@ -76,16 +76,6 @@ public class JpaCompensLeaveComSetMemento implements CompensatoryLeaveComSetMeme
      */
     @Override
     public void setCompensatoryDigestiveTimeUnit(CompensatoryDigestiveTimeUnit compensatoryDigestiveTimeUnit) {
-//        KctmtDigestTimeCom entityDigestTime = this.entity.getKctmtDigestTimeCom();
-//        if (entityDigestTime == null) {
-//            entityDigestTime = new KctmtDigestTimeCom();
-//        }
-//        JpaCompensDigestiveTimeUnitSetMemento memento = new JpaCompensDigestiveTimeUnitSetMemento(entityDigestTime);
-//        compensatoryDigestiveTimeUnit.saveToMemento(memento);
-//        
-//        entityDigestTime.setCid(this.entity.getCid());
-//        
-//        this.entity.setKctmtDigestTimeCom(entityDigestTime);
     }
 
     /*
