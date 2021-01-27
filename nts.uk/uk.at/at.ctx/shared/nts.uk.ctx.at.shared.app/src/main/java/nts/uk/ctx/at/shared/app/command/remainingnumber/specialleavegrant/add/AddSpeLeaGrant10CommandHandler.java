@@ -53,7 +53,6 @@ public class AddSpeLeaGrant10CommandHandler
 				command.getNumberDayRemain().doubleValue(),
 				command.getTimeRemain() != null ? command.getTimeRemain().intValue() : null,
 				0.0,
-				false,
 				10);
 
 

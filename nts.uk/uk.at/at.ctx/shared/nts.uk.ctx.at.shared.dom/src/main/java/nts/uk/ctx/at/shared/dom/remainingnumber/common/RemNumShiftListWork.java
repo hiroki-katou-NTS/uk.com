@@ -21,7 +21,7 @@ public class RemNumShiftListWork {
 	/**
 	 * 休暇残数シフトのリスト
 	 */
-	private Optional<List<RemNumShiftWork>> remNumShiftWorkListOpt;
+	private List<RemNumShiftWork> remNumShiftWorkListOpt;
 
 	/**
 	 * 消化できなかった休暇使用数
@@ -29,7 +29,7 @@ public class RemNumShiftListWork {
 	private LeaveUsedNumber unusedNumber;
 
 	public RemNumShiftListWork() {
-		remNumShiftWorkListOpt = Optional.empty();
+		remNumShiftWorkListOpt = new ArrayList<RemNumShiftWork>();
 		unusedNumber = new LeaveUsedNumber();
 	}
 
@@ -40,9 +40,9 @@ public class RemNumShiftListWork {
 	public void AddLeaveGrantRemainingData(
 			LeaveGrantRemainingData leaveGrantRemainingData){
 
-		if ( !remNumShiftWorkListOpt.isPresent() ){ // リストが存在しないとき
+		if (remNumShiftWorkListOpt.isEmpty()){ // リストが存在しないとき
 			// 作成
-			remNumShiftWorkListOpt = Optional.of(new ArrayList<RemNumShiftWork>());
+			remNumShiftWorkListOpt = new ArrayList<RemNumShiftWork>();
 		}
 
 		// 休暇残数シフトのオブジェクトを作成
@@ -50,7 +50,7 @@ public class RemNumShiftListWork {
 			= new RemNumShiftWork(leaveGrantRemainingData);
 
 		// リストへ追加
-		remNumShiftWorkListOpt.get().add(remNumShiftWork);
+		remNumShiftWorkListOpt.add(remNumShiftWork);
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class RemNumShiftListWork {
 	 * @return
 	 */
 	public Optional<LeaveRemainingNumber> GetTotalRemNum(){
-		if ( !remNumShiftWorkListOpt.isPresent() ){ // リストが存在しないとき
+		if (remNumShiftWorkListOpt.isEmpty()){ // リストが存在しないとき
 			return Optional.empty();
 		}
 
@@ -66,7 +66,7 @@ public class RemNumShiftListWork {
 		LeaveRemainingNumber totalLeaveRemainingNumber
 			= new LeaveRemainingNumber();
 
-		List<RemNumShiftWork> list = remNumShiftWorkListOpt.get();
+		List<RemNumShiftWork> list = remNumShiftWorkListOpt;
 
 		for(RemNumShiftWork aRemNumShiftWork : list){
 			if ( aRemNumShiftWork.getLeaveRemainingNumber().isPresent() ){
@@ -147,11 +147,13 @@ public class RemNumShiftListWork {
 					require, leaveUsedNumber, companyId, employeeId, baseDate);
 
 		// 休暇残数をすべて消化する
-		digestAll();
+		this.remNumShiftWorkListOpt.forEach(x -> {
+			x.digestAll();
+		});
 
 		// リスト最後の「休暇残数シフトWORK」の残数へ、休暇残数合計の内容をセットする
-		int size = remNumShiftWorkListOpt.get().size();
-		RemNumShiftWork remNumShiftWorkLast = remNumShiftWorkListOpt.get().get(size-1);
+		int size = remNumShiftWorkListOpt.size();
+		RemNumShiftWork remNumShiftWorkLast = remNumShiftWorkListOpt.get(size-1);
 		if ( remNumShiftWorkLast.getRefLeaveGrantRemainingData() != null ){
 			remNumShiftWorkLast.getRefLeaveGrantRemainingData().getDetails().setRemainingNumber(
 					leaveRemainingNumberOpt.get());
@@ -159,25 +161,5 @@ public class RemNumShiftListWork {
 		}
 	}
 
-	/**
-	 * 休暇残数をすべて消化する
-	 */
-	public void digestAll(){
-		if ( !remNumShiftWorkListOpt.isPresent() ){
-			return;
-		}
-
-		for( RemNumShiftWork remNumShiftWork: remNumShiftWorkListOpt.get()){
-			LeaveGrantRemainingData leaveGrantRemainingData
-				= remNumShiftWork.getRefLeaveGrantRemainingData();
-
-			if ( leaveGrantRemainingData == null ){
-				continue;
-			}
-
-			// 休暇残数をすべて消化する
-			leaveGrantRemainingData.getDetails().digestAll();
-		}
-	}
 
 }

@@ -1,12 +1,14 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber;
 
 import nts.arc.primitive.TimeDurationPrimitiveValue;
+import nts.arc.primitive.constraint.TimeRange;
 
 /**
  * 休暇未消化時間  
  * @author masaaki_jinno
  *
  */
+@TimeRange(min = "-999:59", max="999:59")
 public class LeaveUndigestTime extends TimeDurationPrimitiveValue<LeaveUndigestTime>{
 
 	private static final long serialVersionUID = 1689575162579361974L;

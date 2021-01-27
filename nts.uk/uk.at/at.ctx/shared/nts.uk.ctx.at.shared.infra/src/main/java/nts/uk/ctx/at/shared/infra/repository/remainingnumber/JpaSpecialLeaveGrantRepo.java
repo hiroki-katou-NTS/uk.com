@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.shared.infra.repository.remainingnumber;
 
-import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -8,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -22,13 +20,13 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.KrcmtSpecialLeaveReam;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  *特別休暇 付与残数データ
@@ -68,7 +66,6 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 						x.numberDayRemain,
 						x.timeRemain,
 						0.0,
-						false,
 						x.specialLeaCode);
 
 			list.add(specialLeaveGrantRemainingData);
@@ -141,7 +138,6 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 				record.getBigDecimal("NUMBER_DAYS_REMAIN") == null ? 0.0 : record.getBigDecimal("NUMBER_DAYS_REMAIN").doubleValue(),
 				record.getInt("TIME_REMAIN"),
 				0.0,
-				false,
 				record.getInt("SPECIAL_LEAVE_CD"));
 
 	}
@@ -278,7 +274,6 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 						x.numberDayRemain,
 						x.timeRemain,
 						0.0,
-						false,
 						x.specialLeaCode);
 
 			list.add(specialLeaveGrantRemainingData);
@@ -420,7 +415,6 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 						x.numberDayRemain,
 						x.timeRemain,
 						0.0,
-						false,
 						x.specialLeaCode);
 
 			list.add(specialLeaveGrantRemainingData);
@@ -498,7 +492,6 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 						x.numberDayRemain,
 						x.timeRemain,
 						0.0,
-						false,
 						x.specialLeaCode);
 
 			list.add(specialLeaveGrantRemainingData);

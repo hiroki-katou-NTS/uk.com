@@ -93,7 +93,7 @@ public class SpecialLeaveInfo implements Cloneable {
 	}
 
 	public List<SpecialLeaveGrantRemaining> getGrantRemainingNumberList(){
-		return this.grantRemainingList.stream().map(c -> SpecialLeaveGrantRemaining.of(c))
+		return this.grantRemainingList.stream().map(c -> SpecialLeaveGrantRemaining.of(c, false))
 				.collect(Collectors.toList());
 	}
 
@@ -258,7 +258,7 @@ public class SpecialLeaveInfo implements Cloneable {
 			}
 
 			// 特休不足ダミーフラグがtrueなら、消滅処理しない
-			if (grantRemainingNumber.isDummyAtr() == true) continue;
+			//if (grantRemainingNumber.isDummyAtr() == true) continue;
 
 			// 処理中の付与残数データを期限切れにする
 			grantRemainingNumber.setExpirationStatus(LeaveExpirationStatus.EXPIRED);
@@ -328,7 +328,7 @@ public class SpecialLeaveInfo implements Cloneable {
 			deadline = aggregatePeriodWork.getGrantWork().getSpecialLeaveGrant().get().getDeadLine();
 
 			// 「特別休暇付与残数データ」を作成
-			val newRemainData = new SpecialLeaveGrantRemaining(
+			val newRemainData = SpecialLeaveGrantRemaining.of(
 					SpecialLeaveGrantRemainingData.createFromJavaType(
 					"",
 					companyId,
@@ -340,7 +340,7 @@ public class SpecialLeaveInfo implements Cloneable {
 					aggregatePeriodWork.getGrantWork().getSpecialLeaveGrant().get().getGrantDays().v(), // 付与日数
 					aggregatePeriodWork.getGrantWork().getSpecialLeaveGrant().get().getTimes().v(),
 					0.0, 0,
-					0.0, 0.0, 0, 0.0, false, specialLeaveCode));
+					0.0, 0.0, 0, 0.0, specialLeaveCode), false);
 			newRemainData.setDummyAtr(false);
 
 			// 作成した「特休付与残数データ」を付与残数データリストに追加
