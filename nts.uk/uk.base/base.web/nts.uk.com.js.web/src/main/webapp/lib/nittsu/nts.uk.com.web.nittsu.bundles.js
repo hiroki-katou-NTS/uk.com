@@ -3096,8 +3096,8 @@ var nts;
                     }
                     duration_1.create = create;
                     function createText(duration) {
-                        var isNegative = duration.isNegative, asHoursInt = duration.asHoursInt, minutePart = duration.minutePart;
-                        return ("" + (isNegative ? '-' : '') + asHoursInt + ":" + _.padStart("" + minutePart, 2, '0')).replace(/^\-{1,}/g, '-');
+                        var isNegative = duration.isNegative, asHoursInt = duration.asHoursInt, minutePartText = duration.minutePartText;
+                        return ("" + (isNegative ? '-' : '') + asHoursInt + ":" + minutePartText).replace(/^\-{1,}/g, '-');
                     }
                 })(duration = minutesBased.duration || (minutesBased.duration = {}));
             })(minutesBased = time.minutesBased || (time.minutesBased = {}));
@@ -3533,8 +3533,8 @@ var nts;
                     }
                     duration_2.create = create;
                     function createText(duration) {
-                        var isNegative = duration.isNegative, asHoursInt = duration.asHoursInt, asMinutes = duration.asMinutes, asSeconds = duration.asSeconds;
-                        return ("" + (isNegative ? '-' : '') + asHoursInt + ":" + _.padStart("" + asMinutes, 2, '0') + ":" + _.padStart("" + asSeconds, 2, '0')).replace(/^\-{1,}/g, '-');
+                        var isNegative = duration.isNegative, asHoursInt = duration.asHoursInt, minutePartText = duration.minutePartText, secondPartText = duration.secondPartText;
+                        return ("" + (isNegative ? '-' : '') + asHoursInt + ":" + minutePartText + ":" + secondPartText).replace(/^\-{1,}/g, '-');
                     }
                 })(duration = secondsBased.duration || (secondsBased.duration = {}));
             })(secondsBased = time.secondsBased || (time.secondsBased = {}));
@@ -48070,272 +48070,547 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_27) {
+        (function (ui) {
             var koExtentions;
             (function (koExtentions) {
-                /**
-                 * Dialog binding handler
-                 */
-                var NtsDateRangePickerBindingHandler = /** @class */ (function () {
-                    function NtsDateRangePickerBindingHandler() {
-                    }
-                    /**
-                     * Init. sssss
-                     */
-                    NtsDateRangePickerBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor(), $container = $(element), construct = new DateRangeHelper($container), value = ko.unwrap(data.value);
-                        construct.bindInit(data, allBindingsAccessor, viewModel, bindingContext);
-                        $container.data("construct", construct);
-                        return { 'controlsDescendantBindings': true };
-                    };
-                    /**
-                     * Update
-                     */
-                    NtsDateRangePickerBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor(), $container = $(element), enable = data.enable === undefined ? true : ko.unwrap(data.enable), required = ko.unwrap(data.required), construct = $container.data("construct"), value = ko.unwrap(data.value);
-                        if (!nts.uk.util.isNullOrUndefined(value)) {
-                            construct.startValue(nts.uk.util.isNullOrUndefined(value.startDate) ? "" : value.startDate);
-                            construct.endValue(nts.uk.util.isNullOrUndefined(value.endDate) ? "" : value.endDate);
-                        }
-                        ko.bindingHandlers["ntsDatePicker"].update(construct.$start[0], function () {
-                            return construct.createStartBinding(data);
-                        }, allBindingsAccessor, viewModel, bindingContext);
-                        ko.bindingHandlers["ntsDatePicker"].update(construct.$end[0], function () {
-                            return construct.createEndBinding(data);
-                        }, allBindingsAccessor, viewModel, bindingContext);
-                        if (enable === false) {
-                            $container.find(".ntsDateRange_Component").removeAttr("tabindex");
-                        }
-                        else {
-                            $container.find(".ntsDateRange_Component").attr("tabindex", $container.data("tabindex"));
-                        }
-                        $container.find(".ntsDateRangeButton").prop("disabled", !enable);
-                        var $datePickerArea = $container.find(".ntsDateRange_Container");
-                        $datePickerArea.data("required", required);
-                    };
-                    return NtsDateRangePickerBindingHandler;
-                }());
-                ko.bindingHandlers['ntsDateRangePicker'] = new NtsDateRangePickerBindingHandler();
-                var DateRangeHelper = /** @class */ (function () {
-                    function DateRangeHelper($element) {
-                        this.$container = $element;
-                    }
-                    DateRangeHelper.prototype.bindInit = function (parentBinding, allBindingsAccessor, viewModel, bindingContext) {
-                        var self = this;
-                        self.value = parentBinding.value;
-                        self.startValue = ko.observable(nts.uk.util.isNullOrUndefined(self.value().startDate) ? "" : self.value().startDate);
-                        self.endValue = ko.observable(nts.uk.util.isNullOrUndefined(self.value().endDate) ? "" : self.value().endDate);
-                        self.startValue.subscribe(function (v) {
-                            var oldValue = self.value();
-                            oldValue.startDate = v;
-                            self.validateProcess(v, oldValue);
-                            self.value(oldValue);
-                        });
-                        self.endValue.subscribe(function (v) {
-                            var oldValue = self.value();
-                            oldValue.endDate = v;
-                            self.validateProcess(v, oldValue);
-                            self.value(oldValue);
-                        });
-                        self.bindControl(parentBinding, allBindingsAccessor, viewModel, bindingContext);
-                    };
-                    DateRangeHelper.prototype.bindControl = function (data, allBindingsAccessor, viewModel, bindingContext) {
-                        var self = this, dateType = ko.unwrap(data.type), maxRange = ko.unwrap(data.maxRange), rangeName = ko.unwrap(data.name), startName = ko.unwrap(data.startName), endName = ko.unwrap(data.endName), showNextPrevious = data.showNextPrevious === undefined ? false : ko.unwrap(data.showNextPrevious), jumpUnit = data.jumpUnit === undefined ? "month" : ko.unwrap(data.jumpUnit), id = nts.uk.util.randomId(), required = ko.unwrap(data.required), tabIndex = nts.uk.util.isNullOrEmpty(self.$container.attr("tabindex")) ? "0" : self.$container.attr("tabindex");
-                        self.maxRange = maxRange;
-                        self.$container.data("tabindex", tabIndex);
-                        self.$container.removeAttr("tabindex");
-                        self.$container.append("<div class='ntsDateRange_Container' id='" + id + "' />");
-                        self.$datePickerArea = self.$container.find(".ntsDateRange_Container");
-                        self.$datePickerArea.append("<div class='ntsDateRangeComponent ntsControl ntsDateRange'>" +
-                            "<div class='ntsDateRangeComponent ntsStartDate ntsControl nts-datepicker-wrapper'/><div class='ntsDateRangeComponent ntsRangeLabel'><label>～</label></div>" +
-                            "<div class='ntsDateRangeComponent ntsEndDate ntsControl nts-datepicker-wrapper' /></div>");
-                        self.$datePickerArea.data("required", required);
-                        if (dateType === 'year') {
-                            self.dateFormat = 'YYYY';
-                        }
-                        else if (dateType === 'yearmonth') {
-                            self.dateFormat = 'YYYY/MM';
-                        }
-                        else {
-                            self.dateFormat = 'YYYY/MM/DD';
-                        }
-                        var ISOFormat = uk.text.getISOFormat(self.dateFormat);
-                        ISOFormat = ISOFormat.replace(/d/g, "").trim();
-                        if (showNextPrevious === true) {
-                            self.bindJump(jumpUnit);
-                        }
-                        var $startDateArea = self.$datePickerArea.find(".ntsStartDate");
-                        var $endDateArea = self.$datePickerArea.find(".ntsEndDate");
-                        $startDateArea.append("<div id='" + id + "-startInput'  class='ntsDatepicker nts-input ntsStartDatePicker ntsDateRangeComponent ntsDateRange_Component' />");
-                        $endDateArea.append("<div id='" + id + "-endInput' class='ntsDatepicker nts-input ntsEndDatePicker ntsDateRangeComponent ntsDateRange_Component' />");
-                        self.$start = $startDateArea.find(".ntsStartDatePicker");
-                        self.$end = $endDateArea.find(".ntsEndDatePicker");
-                        var $input = self.$container.find(".nts-input");
-                        // Init Datepicker
-                        //            $input.datepicker({
-                        //                language: 'ja-JP',
-                        //                format: ISOFormat,
-                        //                autoHide: true,
-                        //                weekStart: 0
-                        //            });
-                        self.rangeName = nts.uk.util.isNullOrUndefined(rangeName) ? "期間入力フォーム" : nts.uk.resource.getControlName(rangeName);
-                        self.startName = nts.uk.util.isNullOrUndefined(startName) ? self.rangeName + "開始" : nts.uk.resource.getControlName(startName);
-                        self.endName = nts.uk.util.isNullOrUndefined(endName) ? self.rangeName + "終了" : nts.uk.resource.getControlName(endName);
-                        self.getMessage = nts.uk.resource.getMessage;
-                        ko.bindingHandlers["ntsDatePicker"].init(self.$start[0], function () {
-                            return self.createStartBinding(data);
-                        }, allBindingsAccessor, viewModel, bindingContext);
-                        ko.bindingHandlers["ntsDatePicker"].init(self.$end[0], function () {
-                            return self.createEndBinding(data);
-                        }, allBindingsAccessor, viewModel, bindingContext);
-                        self.$ntsDateRange = self.$container.find(".ntsRangeLabel");
-                        $input.on('validate', (function (e) {
-                            var $target = $(e.target);
-                            var newText = $target.val();
-                            var oldValue = self.value();
-                            //                $target.ntsError('clear');
-                            //                self.$ntsDateRange.ntsError("clear");
-                            if (!$target.ntsError('hasError')) {
-                                self.$ntsDateRange.ntsError("clear");
-                                self.validateProcess(newText, oldValue);
+                var date;
+                (function (date) {
+                    var range;
+                    (function (range) {
+                        var YM_FORMAT = 'YYYY/MM';
+                        var DATE_FORMAT = 'YYYY/MM/DD';
+                        var COMPONENT_NAME = 'nts-date-range-picker';
+                        var NtsDateRangePickerBindingHandler = /** @class */ (function () {
+                            function NtsDateRangePickerBindingHandler() {
                             }
-                        }));
-                        self.$container.find(".ntsDateRange_Component").attr("tabindex", tabIndex);
-                    };
-                    DateRangeHelper.prototype.bindJump = function (jumpUnit) {
-                        var self = this;
-                        self.$datePickerArea.append("<div class= 'ntsDateRangeComponent ntsDateNextButton_Container ntsRangeButton_Container'>" +
-                            "<button class = 'ntsDateNextButton ntsButton ntsDateRangeButton ntsDateRange_Component auto-height'/></div>");
-                        self.$datePickerArea.prepend("<div class='ntsDateRangeComponent ntsDatePreviousButton_Container ntsRangeButton_Container'>" +
-                            "<button class = 'ntsDatePrevButton ntsButton ntsDateRangeButton ntsDateRange_Component auto-height'/></div>");
-                        var $nextButton = self.$container.find(".ntsDateNextButton").text("▶").css("margin-left", "3px");
-                        var $prevButton = self.$container.find(".ntsDatePrevButton").text("◀").css("margin-right", "3px");
-                        $nextButton.click(function (evt, ui) {
-                            self.jump(true, jumpUnit);
-                        });
-                        $prevButton.click(function (evt, ui) {
-                            self.jump(false, jumpUnit);
-                        });
-                    };
-                    DateRangeHelper.prototype.jump = function (isNext, jumpUnit) {
-                        var self = this, $startDate = self.$container.find(".ntsStartDatePicker"), $endDate = self.$container.find(".ntsEndDatePicker"), oldValue = self.value(), currentStart = $startDate.val(), currentEnd = $endDate.val();
-                        if (!nts.uk.util.isNullOrEmpty(currentStart)) {
-                            var startDate = moment(currentStart, self.dateFormat);
-                            if (startDate.isValid()) {
-                                if (jumpUnit === "year") {
-                                    startDate.year(startDate.year() + (isNext ? 1 : -1));
-                                }
-                                else {
-                                    var isEndOfMonth = startDate.daysInMonth() === startDate.date();
-                                    startDate.month(startDate.month() + (isNext ? 1 : -1));
-                                    if (isEndOfMonth) {
-                                        startDate.endOf("month");
+                            NtsDateRangePickerBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                                var accessor = valueAccessor();
+                                var name = COMPONENT_NAME;
+                                var tabindex = Math.max(0, element.tabIndex);
+                                var params = __assign({ tabindex: tabindex }, accessor);
+                                // show or hide next & preview buttons
+                                ko.computed({
+                                    read: function () {
+                                        var hideBtn = ko.unwrap(accessor.showNextPrevious) === false;
+                                        if (!hideBtn) {
+                                            element.classList.add('has-btn');
+                                        }
+                                        else {
+                                            element.classList.remove('has-btn');
+                                        }
+                                    },
+                                    disposeWhenNodeIsRemoved: element
+                                });
+                                ko.applyBindingsToNode(element, { component: { name: name, params: params } }, bindingContext);
+                                // add inline display as control
+                                element
+                                    .classList
+                                    .add('nts-daterange-picker');
+                                // disable container focusable
+                                element.removeAttribute('tabindex');
+                                // notify binding
+                                return { controlsDescendantBindings: true };
+                            };
+                            NtsDateRangePickerBindingHandler = __decorate([
+                                handler({
+                                    bindingName: 'ntsDateRangePicker',
+                                    validatable: true,
+                                    virtual: false
+                                })
+                            ], NtsDateRangePickerBindingHandler);
+                            return NtsDateRangePickerBindingHandler;
+                        }());
+                        range.NtsDateRangePickerBindingHandler = NtsDateRangePickerBindingHandler;
+                        var NtsDateRangePickerViewModel = /** @class */ (function (_super) {
+                            __extends(NtsDateRangePickerViewModel, _super);
+                            function NtsDateRangePickerViewModel(params) {
+                                var _this = _super.call(this) || this;
+                                _this.params = params;
+                                _this.model = {
+                                    start: ko.observable(null).extend({ deferred: true }),
+                                    end: ko.observable(null).extend({ deferred: true })
+                                };
+                                _this.dateType = ko.computed({
+                                    read: function () {
+                                        return ko.unwrap(params.type) === 'yearmonth' ? 'yearmonth' : 'date';
                                     }
-                                }
-                                oldValue.startDate = startDate.format(self.dateFormat);
-                            }
-                        }
-                        if (!nts.uk.util.isNullOrEmpty(currentEnd)) {
-                            var endDate = moment(currentEnd, self.dateFormat);
-                            if (endDate.isValid()) {
-                                if (jumpUnit === "year") {
-                                    endDate.year(endDate.year() + (isNext ? 1 : -1));
-                                }
-                                else {
-                                    var isEndOfMonth = endDate.daysInMonth() === endDate.date();
-                                    endDate.month(endDate.month() + (isNext ? 1 : -1));
-                                    if (isEndOfMonth) {
-                                        endDate.endOf("month");
+                                });
+                                _this.enable = ko.computed({
+                                    read: function () {
+                                        return ko.unwrap(params.enable) !== false;
                                     }
+                                });
+                                _this.name = {
+                                    start: ko.computed({
+                                        read: function () {
+                                            var name = ko.unwrap(params.name);
+                                            var startName = ko.unwrap(params.startName);
+                                            return startName || (name || '期間入力フォーム') + "\u958B\u59CB";
+                                        }
+                                    }),
+                                    end: ko.computed({
+                                        read: function () {
+                                            var name = ko.unwrap(params.name);
+                                            var endName = ko.unwrap(params.endName);
+                                            return endName || (name || '期間入力フォーム') + "\u7D42\u4E86";
+                                        }
+                                    })
+                                };
+                                _this.required = {
+                                    start: ko.computed({
+                                        read: function () {
+                                            return ko.unwrap(params.required) === true;
+                                        }
+                                    }),
+                                    end: ko.computed({
+                                        read: function () {
+                                            return ko.unwrap(params.required) === true;
+                                        }
+                                    })
+                                };
+                                _this.tabindex = ko.computed({
+                                    read: function () {
+                                        var enabled = ko.unwrap(params.enable) !== false;
+                                        var tabindex = ko.unwrap(params.tabindex);
+                                        return enabled ? tabindex : null;
+                                    }
+                                });
+                                _this.model.start
+                                    .subscribe(function (start) {
+                                    var end = ko.unwrap(_this.model.end);
+                                    var format = ko.unwrap(_this.dateType) === 'yearmonth' ? YM_FORMAT : DATE_FORMAT;
+                                    var value = {
+                                        start: start ? moment(start, DATE_FORMAT).format(format) : '',
+                                        end: end ? moment(end, DATE_FORMAT).format(format) : ''
+                                    };
+                                    if (!_.isEqual(value, ko.unwrap(params.value))) {
+                                        params.value(value);
+                                    }
+                                });
+                                _this.model.end
+                                    .subscribe(function (end) {
+                                    var start = ko.unwrap(_this.model.start);
+                                    var format = ko.unwrap(_this.dateType) === 'yearmonth' ? YM_FORMAT : DATE_FORMAT;
+                                    var value = {
+                                        start: start ? moment(start, DATE_FORMAT).format(format) : '',
+                                        end: end ? moment(end, DATE_FORMAT).format(format) : ''
+                                    };
+                                    if (!_.isEqual(value, ko.unwrap(params.value))) {
+                                        params.value(value);
+                                    }
+                                });
+                                return _this;
+                            }
+                            NtsDateRangePickerViewModel.prototype.created = function () {
+                            };
+                            NtsDateRangePickerViewModel.prototype.mounted = function () {
+                                var vm = this;
+                                var model = vm.model, params = vm.params, dateType = vm.dateType;
+                                var updateWay = function (v) {
+                                    if (v) {
+                                        var start = v.start, end = v.end;
+                                        var format_3 = ko.unwrap(dateType) === 'yearmonth' ? YM_FORMAT : DATE_FORMAT;
+                                        if (!start) {
+                                            model.start('');
+                                        }
+                                        else {
+                                            var value = moment(start, DATE_FORMAT).format(format_3);
+                                            if (value !== ko.unwrap(model.start)) {
+                                                model.start(value);
+                                            }
+                                        }
+                                        if (!end) {
+                                            model.end('');
+                                        }
+                                        else {
+                                            var value = moment(end, DATE_FORMAT).format(format_3);
+                                            if (value !== ko.unwrap(model.end)) {
+                                                model.end(value);
+                                            }
+                                        }
+                                    }
+                                };
+                                if (ko.isObservable(params.value)) {
+                                    params.value.subscribe(updateWay);
                                 }
-                                oldValue.endDate = endDate.format(self.dateFormat);
-                            }
-                        }
-                        self.value(oldValue);
-                    };
-                    DateRangeHelper.prototype.validateProcess = function (newText, oldValue) {
-                        var self = this;
-                        if (self.$start.find("input").ntsError("hasError") || self.$end.find("input").ntsError("hasError")) {
-                            return;
-                        }
-                        self.$ntsDateRange.ntsError("clear");
-                        var startDate = moment(oldValue.startDate, self.dateFormat);
-                        var endDate = moment(oldValue.endDate, self.dateFormat);
-                        if (endDate.isBefore(startDate)) {
-                            self.$ntsDateRange.ntsError('set', self.getMessage("MsgB_21", [self.rangeName]), "MsgB_21");
-                        }
-                        else if (self.isFullDateFormat() && self.maxRange === "oneMonth") {
-                            var maxDate = startDate.add(31, "days");
-                            if (endDate.isSameOrAfter(maxDate)) {
-                                self.$ntsDateRange.ntsError('set', self.getMessage("MsgB_22", [self.rangeName]), "MsgB_22");
-                            }
-                        }
-                        else if (self.maxRange === "oneYear") {
-                            var maxDate = _.cloneDeep(startDate);
-                            if (self.isFullDateFormat()) {
-                                var currentDate = startDate.date();
-                                var isEndMonth = currentDate === startDate.endOf("months").date();
-                                var isStartMonth = currentDate === 1;
-                                maxDate = maxDate.date(1).add(1, 'year');
-                                if (isStartMonth) {
-                                    maxDate = maxDate.month(maxDate.month() - 1).endOf("months");
+                                updateWay(ko.toJS(params.value));
+                                $(vm.$el)
+                                    .removeAttr('data-bind')
+                                    .find('[data-bind]')
+                                    .removeAttr('data-bind');
+                            };
+                            NtsDateRangePickerViewModel.prototype.destroyed = function () {
+                                var vm = this;
+                                // for release memory purpose
+                                // dispose all computed at here
+                                vm.enable.dispose();
+                                vm.tabindex.dispose();
+                                vm.dateType.dispose();
+                                vm.required.start.dispose();
+                                vm.required.end.dispose();
+                            };
+                            NtsDateRangePickerViewModel.prototype.reduce = function () {
+                                var vm = this;
+                                var model = vm.model, params = vm.params;
+                                var start = ko.unwrap(model.start);
+                                var end = ko.unwrap(model.end);
+                                var ju = ko.unwrap(params.jumpUnit) || 'month';
+                                if (start) {
+                                    var reduceStart = moment(start, DATE_FORMAT).subtract(1, ju).startOf('day').format(DATE_FORMAT);
+                                    model.start(reduceStart);
                                 }
-                                else if (isEndMonth) {
-                                    maxDate = maxDate.endOf("months").add(-1, "days");
+                                if (end) {
+                                    var reduceEnd = moment(end, DATE_FORMAT).subtract(1, ju).startOf('day').format(DATE_FORMAT);
+                                    model.end(reduceEnd);
                                 }
-                                else {
-                                    maxDate = maxDate.date(currentDate - 1);
+                            };
+                            NtsDateRangePickerViewModel.prototype.increase = function () {
+                                var vm = this;
+                                var model = vm.model, params = vm.params;
+                                var start = ko.unwrap(model.start);
+                                var end = ko.unwrap(model.end);
+                                var ju = ko.unwrap(params.jumpUnit) || 'month';
+                                if (start) {
+                                    var increaseStart = moment(start, DATE_FORMAT).add(1, ju).startOf('day').format(DATE_FORMAT);
+                                    model.start(increaseStart);
                                 }
-                            }
-                            else if (self.isYearMonthFormat()) {
-                                maxDate = maxDate.add(1, 'year').add(-1, "months");
-                            }
-                            else {
-                                maxDate = maxDate.add(1, 'year');
-                            }
-                            if (endDate.isAfter(maxDate)) {
-                                self.$ntsDateRange.ntsError('set', self.getMessage("MsgB_23", [self.rangeName]), "MsgB_23");
-                            }
-                        }
-                    };
-                    DateRangeHelper.prototype.isFullDateFormat = function () {
-                        return this.dateFormat === 'YYYY/MM/DD';
-                    };
-                    DateRangeHelper.prototype.isYearMonthFormat = function () {
-                        return this.dateFormat === 'YYYY/MM';
-                    };
-                    DateRangeHelper.prototype.createStartBinding = function (parentBinding, name, format) {
-                        var self = this;
-                        return { required: parentBinding.required,
-                            name: self.startName,
-                            value: self.startValue,
-                            dateFormat: self.dateFormat,
-                            valueFormat: self.dateFormat,
-                            'type': parentBinding.type,
-                            enable: parentBinding.enable,
-                            disabled: parentBinding.disabled,
-                            pickOnly: parentBinding.pickOnly
-                        };
-                    };
-                    DateRangeHelper.prototype.createEndBinding = function (parentBinding, name) {
-                        var self = this;
-                        return { required: parentBinding.required,
-                            name: self.endName,
-                            value: self.endValue,
-                            dateFormat: self.dateFormat,
-                            valueFormat: self.dateFormat,
-                            'type': parentBinding.type,
-                            enable: parentBinding.enable,
-                            disabled: parentBinding.disabled,
-                            pickOnly: parentBinding.pickOnly
-                        };
-                    };
-                    return DateRangeHelper;
-                }());
-            })(koExtentions = ui_27.koExtentions || (ui_27.koExtentions = {}));
+                                if (end) {
+                                    var increaseEnd = moment(end, DATE_FORMAT).add(1, ju).startOf('day').format(DATE_FORMAT);
+                                    model.end(increaseEnd);
+                                }
+                            };
+                            NtsDateRangePickerViewModel = __decorate([
+                                component({
+                                    name: 'nts-date-range-picker',
+                                    template: "\n                <button data-bind=\"\n                    attr: {\n                        tabindex: $component.tabindex\n                    },\n                    i18n: '\u25C0',\n                    enable: $component.enable,\n                    click: $component.reduce,\n                    timeClick: -1\"></button>\n                <div data-bind=\"\n                    attr: { \n                        tabindex: $component.tabindex\n                    },\n                    ntsDatePicker: {\n                        enable: $component.enable,\n                        name: $component.name.start,\n                        value: $component.model.start,\n                        dateType: $component.dateType,\n                        dateFormat: $component.dateType,\n                        required: $component.required.start\n                    }\"></div>\n                <span data-bind=\"i18n: '\uFF5E'\"></span>\n                <div data-bind=\"\n                    attr: { \n                        tabindex: $component.tabindex\n                    },\n                    ntsDatePicker: {\n                        enable: $component.enable,\n                        name: $component.name.end,\n                        value: $component.model.end,\n                        dateType: $component.dateType,\n                        dateFormat: $component.dateType,\n                        required: $component.required.end\n                    }\"></div>\n                <button data-bind=\"\n                    attr: {\n                        tabindex: $component.tabindex\n                    },\n                    i18n: '\u25B6',\n                    enable: $component.enable,\n                    click: $component.increase,\n                    timeClick: -1\"></button>\n            "
+                                })
+                            ], NtsDateRangePickerViewModel);
+                            return NtsDateRangePickerViewModel;
+                        }(ko.ViewModel));
+                        range.NtsDateRangePickerViewModel = NtsDateRangePickerViewModel;
+                    })(range = date.range || (date.range = {}));
+                })(date = koExtentions.date || (koExtentions.date = {}));
+            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/*
+    class NtsDateRangePickerBindingHandler implements KnockoutBindingHandler {
+        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean } {
+            let data = valueAccessor(),
+                $container = $(element),
+                construct: DateRangeHelper = new DateRangeHelper($container),
+                value = ko.unwrap(data.value);
+
+            construct.bindInit(data, allBindingsAccessor, viewModel, bindingContext);
+
+            $container.data("construct", construct);
+
+            return { controlsDescendantBindings: true };
+        }
+        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
+            let data = valueAccessor(),
+                $container = $(element),
+                enable = data.enable === undefined ? true : ko.unwrap(data.enable),
+                required = ko.unwrap(data.required),
+                construct: DateRangeHelper = $container.data("construct"),
+                value = ko.unwrap(data.value);
+
+            if (!nts.uk.util.isNullOrUndefined(value)) {
+                construct.startValue(nts.uk.util.isNullOrUndefined(value.startDate) ? "" : value.startDate);
+                construct.endValue(nts.uk.util.isNullOrUndefined(value.endDate) ? "" : value.endDate);
+            }
+
+            ko.bindingHandlers["ntsDatePicker"].update(construct.$start[0], function () {
+                return construct.createStartBinding(data);
+            }, allBindingsAccessor, viewModel, bindingContext);
+
+            ko.bindingHandlers["ntsDatePicker"].update(construct.$end[0], function () {
+                return construct.createEndBinding(data);
+            }, allBindingsAccessor, viewModel, bindingContext);
+
+            if (enable === false) {
+                $container.find(".ntsDateRange_Component").removeAttr("tabindex");
+            } else {
+                $container.find(".ntsDateRange_Component").attr("tabindex", $container.data("tabindex"));
+            }
+            $container.find(".ntsDateRangeButton").prop("disabled", !enable);
+            let $datePickerArea = $container.find(".ntsDateRange_Container");
+            $datePickerArea.data("required", required);
+        }
+    }
+
+    ko.bindingHandlers['ntsDateRangePicker'] = new NtsDateRangePickerBindingHandler();
+
+    class DateRangeHelper {
+        $container: JQuery;
+        startValue: KnockoutObservable<string>;
+        endValue: KnockoutObservable<string>;
+        value: KnockoutObservable<any>;
+        getMessage: any;
+        $datePickerArea: JQuery;
+        dateFormat: string;
+        startName: string;
+        endName: string;
+        rangeName: string;
+        maxRange: string;
+        $ntsDateRange: JQuery;
+        $start: JQuery;
+        $end: JQuery;
+
+        constructor($element: JQuery) {
+            this.$container = $element;
+        }
+
+        public bindInit(parentBinding: any, allBindingsAccessor, viewModel, bindingContext) {
+            let self = this;
+            self.value = parentBinding.value;
+            self.startValue = ko.observable(nts.uk.util.isNullOrUndefined(self.value().startDate) ? "" : self.value().startDate);
+            self.endValue = ko.observable(nts.uk.util.isNullOrUndefined(self.value().endDate) ? "" : self.value().endDate);
+
+            self.startValue.subscribe((v) => {
+                let oldValue = self.value();
+
+                oldValue.startDate = v;
+
+                self.validateProcess(v, oldValue);
+                self.value(oldValue);
+            });
+
+            self.endValue.subscribe((v) => {
+                let oldValue = self.value();
+
+                oldValue.endDate = v;
+
+                self.validateProcess(v, oldValue);
+                self.value(oldValue);
+            });
+
+            self.bindControl(parentBinding, allBindingsAccessor, viewModel, bindingContext);
+        }
+
+        private bindControl(data: any, allBindingsAccessor, viewModel, bindingContext) {
+            let self = this, dateType = ko.unwrap(data.type), maxRange = ko.unwrap(data.maxRange), rangeName = ko.unwrap(data.name),
+                startName = ko.unwrap(data.startName), endName = ko.unwrap(data.endName),
+                showNextPrevious = data.showNextPrevious === undefined ? false : ko.unwrap(data.showNextPrevious),
+                jumpUnit = data.jumpUnit === undefined ? "month" : ko.unwrap(data.jumpUnit),
+                id = nts.uk.util.randomId(), required = ko.unwrap(data.required),
+                tabIndex = nts.uk.util.isNullOrEmpty(self.$container.attr("tabindex")) ? "0" : self.$container.attr("tabindex");
+
+            self.maxRange = maxRange;
+            self.$container.data("tabindex", tabIndex);
+            self.$container.removeAttr("tabindex");
+
+            self.$container.append("<div class='ntsDateRange_Container' id='" + id + "' />");
+
+            self.$datePickerArea = self.$container.find(".ntsDateRange_Container");
+
+            self.$datePickerArea.append("<div class='ntsDateRangeComponent ntsControl ntsDateRange'>" +
+                "<div class='ntsDateRangeComponent ntsStartDate ntsControl nts-datepicker-wrapper'/><div class='ntsDateRangeComponent ntsRangeLabel'><label>～</label></div>" +
+                "<div class='ntsDateRangeComponent ntsEndDate ntsControl nts-datepicker-wrapper' /></div>");
+
+            self.$datePickerArea.data("required", required);
+
+            if (dateType === 'year') {
+                self.dateFormat = 'YYYY';
+            } else if (dateType === 'yearmonth') {
+                self.dateFormat = 'YYYY/MM';
+            } else {
+                self.dateFormat = 'YYYY/MM/DD';
+            }
+            var ISOFormat = text.getISOFormat(self.dateFormat);
+            ISOFormat = ISOFormat.replace(/d/g, "").trim();
+
+            if (showNextPrevious === true) {
+                self.bindJump(jumpUnit);
+            }
+
+            let $startDateArea = self.$datePickerArea.find(".ntsStartDate");
+            let $endDateArea = self.$datePickerArea.find(".ntsEndDate");
+
+            $startDateArea.append("<div id='" + id + "-startInput'  class='ntsDatepicker nts-input ntsStartDatePicker ntsDateRangeComponent ntsDateRange_Component' />");
+            $endDateArea.append("<div id='" + id + "-endInput' class='ntsDatepicker nts-input ntsEndDatePicker ntsDateRangeComponent ntsDateRange_Component' />");
+            self.$start = $startDateArea.find(".ntsStartDatePicker");
+            self.$end = $endDateArea.find(".ntsEndDatePicker");
+            let $input = self.$container.find(".nts-input");
+            // Init Datepicker
+            //            $input.datepicker({
+            //                language: 'ja-JP',
+            //                format: ISOFormat,
+            //                autoHide: true,
+            //                weekStart: 0
+            //            });
+
+            self.rangeName = nts.uk.util.isNullOrUndefined(rangeName) ? "期間入力フォーム" : nts.uk.resource.getControlName(rangeName);
+            self.startName = nts.uk.util.isNullOrUndefined(startName) ? self.rangeName + "開始" : nts.uk.resource.getControlName(startName);
+            self.endName = nts.uk.util.isNullOrUndefined(endName) ? self.rangeName + "終了" : nts.uk.resource.getControlName(endName);
+            self.getMessage = nts.uk.resource.getMessage;
+
+            ko.bindingHandlers["ntsDatePicker"].init(self.$start[0], function () {
+                return self.createStartBinding(data);
+            }, allBindingsAccessor, viewModel, bindingContext);
+            ko.bindingHandlers["ntsDatePicker"].init(self.$end[0], function () {
+                return self.createEndBinding(data);
+            }, allBindingsAccessor, viewModel, bindingContext);
+
+            self.$ntsDateRange = self.$container.find(".ntsRangeLabel");
+
+            $input.on('validate', (function (e: Event) {
+                let $target = $(e.target);
+                var newText = $target.val();
+                let oldValue = self.value();
+
+                //                $target.ntsError('clear');
+                //                self.$ntsDateRange.ntsError("clear");
+                if (!$target.ntsError('hasError')) {
+                    self.$ntsDateRange.ntsError("clear");
+                    self.validateProcess(newText, oldValue);
+                }
+            }));
+
+            self.$container.find(".ntsDateRange_Component").attr("tabindex", tabIndex);
+        }
+
+        private bindJump(jumpUnit: string) {
+            let self = this;
+            self.$datePickerArea.append("<div class= 'ntsDateRangeComponent ntsDateNextButton_Container ntsRangeButton_Container'>" +
+                "<button class = 'ntsDateNextButton ntsButton ntsDateRangeButton ntsDateRange_Component auto-height'/></div>");
+            self.$datePickerArea.prepend("<div class='ntsDateRangeComponent ntsDatePreviousButton_Container ntsRangeButton_Container'>" +
+                "<button class = 'ntsDatePrevButton ntsButton ntsDateRangeButton ntsDateRange_Component auto-height'/></div>");
+
+            let $nextButton = self.$container.find(".ntsDateNextButton").text("▶").css("margin-left", "3px");
+            let $prevButton = self.$container.find(".ntsDatePrevButton").text("◀").css("margin-right", "3px");
+
+            $nextButton.click(function (evt, ui) {
+                self.jump(true, jumpUnit);
+            });
+
+            $prevButton.click(function (evt, ui) {
+                self.jump(false, jumpUnit);
+            });
+        }
+
+        private jump(isNext: boolean, jumpUnit: string) {
+            let self = this, $startDate = self.$container.find(".ntsStartDatePicker"),
+                $endDate = self.$container.find(".ntsEndDatePicker"), oldValue = self.value(),
+                currentStart = $startDate.val(),
+                currentEnd = $endDate.val();
+
+            if (!nts.uk.util.isNullOrEmpty(currentStart)) {
+                let startDate = moment(currentStart, self.dateFormat);
+                if (startDate.isValid()) {
+                    if (jumpUnit === "year") {
+                        startDate.year(startDate.year() + (isNext ? 1 : -1));
+                    } else {
+                        let isEndOfMonth = startDate.daysInMonth() === startDate.date();
+                        startDate.month(startDate.month() + (isNext ? 1 : -1));
+                        if (isEndOfMonth) {
+                            startDate.endOf("month");
+                        }
+                    }
+                    oldValue.startDate = startDate.format(self.dateFormat);
+                }
+            }
+
+            if (!nts.uk.util.isNullOrEmpty(currentEnd)) {
+                let endDate = moment(currentEnd, self.dateFormat);
+                if (endDate.isValid()) {
+                    if (jumpUnit === "year") {
+                        endDate.year(endDate.year() + (isNext ? 1 : -1));
+                    } else {
+                        let isEndOfMonth = endDate.daysInMonth() === endDate.date();
+                        endDate.month(endDate.month() + (isNext ? 1 : -1));
+                        if (isEndOfMonth) {
+                            endDate.endOf("month");
+                        }
+                    }
+                    oldValue.endDate = endDate.format(self.dateFormat);
+                }
+            }
+            self.value(oldValue);
+        }
+
+        private validateProcess(newText: string, oldValue: any) {
+            let self = this;
+            if (self.$start.find("input").ntsError("hasError") || self.$end.find("input").ntsError("hasError")) {
+                return;
+            }
+            self.$ntsDateRange.ntsError("clear");
+
+            let startDate = moment(oldValue.startDate, self.dateFormat);
+            let endDate = moment(oldValue.endDate, self.dateFormat);
+            if (endDate.isBefore(startDate)) {
+                self.$ntsDateRange.ntsError('set', self.getMessage("MsgB_21", [self.rangeName]), "MsgB_21");
+            } else if (self.isFullDateFormat() && self.maxRange === "oneMonth") {
+                let maxDate = startDate.add(31, "days");
+                if (endDate.isSameOrAfter(maxDate)) {
+                    self.$ntsDateRange.ntsError('set', self.getMessage("MsgB_22", [self.rangeName]), "MsgB_22");
+                }
+            } else if (self.maxRange === "oneYear") {
+                let maxDate = _.cloneDeep(startDate);
+                if (self.isFullDateFormat()) {
+                    let currentDate = startDate.date();
+                    let isEndMonth = currentDate === startDate.endOf("months").date();
+                    let isStartMonth = currentDate === 1;
+                    maxDate = maxDate.date(1).add(1, 'year');
+                    if (isStartMonth) {
+                        maxDate = maxDate.month(maxDate.month() - 1).endOf("months");
+                    } else if (isEndMonth) {
+                        maxDate = maxDate.endOf("months").add(-1, "days");
+                    } else {
+                        maxDate = maxDate.date(currentDate - 1);
+                    }
+                } else if (self.isYearMonthFormat()) {
+                    maxDate = maxDate.add(1, 'year').add(-1, "months");
+                } else {
+                    maxDate = maxDate.add(1, 'year');
+                }
+                if (endDate.isAfter(maxDate)) {
+                    self.$ntsDateRange.ntsError('set', self.getMessage("MsgB_23", [self.rangeName]), "MsgB_23");
+                }
+            }
+        }
+
+        private isFullDateFormat(): boolean {
+
+            return this.dateFormat === 'YYYY/MM/DD';
+        }
+
+        private isYearMonthFormat(): boolean {
+
+            return this.dateFormat === 'YYYY/MM';
+        }
+
+        public createStartBinding(parentBinding: any, name, format: string): any {
+            let self = this;
+            return {
+                required: parentBinding.required,
+                name: self.startName,
+                value: self.startValue,
+                dateFormat: self.dateFormat,
+                valueFormat: self.dateFormat,
+                'type': parentBinding.type,
+                enable: parentBinding.enable,
+                disabled: parentBinding.disabled,
+                pickOnly: parentBinding.pickOnly
+            };
+        }
+
+        public createEndBinding(parentBinding: any, name: string): any {
+            let self = this;
+            return {
+                required: parentBinding.required,
+                name: self.endName,
+                value: self.endValue,
+                dateFormat: self.dateFormat,
+                valueFormat: self.dateFormat,
+                'type': parentBinding.type,
+                enable: parentBinding.enable,
+                disabled: parentBinding.disabled,
+                pickOnly: parentBinding.pickOnly
+            };
+        }
+    }*/
 /// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
@@ -48853,7 +49128,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_28) {
+        (function (ui_27) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -48943,7 +49218,7 @@ var nts;
                     return NtsFunctionPanelBindingHandler;
                 }());
                 ko.bindingHandlers['ntsFunctionPanel'] = new NtsFunctionPanelBindingHandler();
-            })(koExtentions = ui_28.koExtentions || (ui_28.koExtentions = {}));
+            })(koExtentions = ui_27.koExtentions || (ui_27.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -49133,7 +49408,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_29) {
+        (function (ui_28) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -49209,7 +49484,7 @@ var nts;
                         var $checkboxHolder = $("<div>", { "class": "checkbox-holder image-editor-component" });
                         var $editContainer = this.$root.find(".edit-action-container");
                         $editContainer.append($checkboxHolder);
-                        this.$checkbox = $("<div>", { "class": "comfirm-checkbox style-button", text: ui_29.toBeResource.selectViewArea });
+                        this.$checkbox = $("<div>", { "class": "comfirm-checkbox style-button", text: ui_28.toBeResource.selectViewArea });
                         var $comment = $("<div>", { "class": "crop-description cf" });
                         $checkboxHolder.append(this.$checkbox);
                         $checkboxHolder.append($comment);
@@ -49217,8 +49492,8 @@ var nts;
                         var $cropText = $("<div>", { "class": "crop-description-text inline-container" });
                         var $mousePointerIcon = $("<div>", { "class": "mouse-icon inline-container" });
                         var $mouseText = $("<div>", { "class": "mouse-description-text inline-container" });
-                        $("<label>", { "class": "info-label", "text": ui_29.toBeResource.showInsideAreaToMain }).appendTo($cropText);
-                        $("<label>", { "class": "info-label", "text": ui_29.toBeResource.dragAndDropToChangeArea }).appendTo($mouseText);
+                        $("<label>", { "class": "info-label", "text": ui_28.toBeResource.showInsideAreaToMain }).appendTo($cropText);
+                        $("<label>", { "class": "info-label", "text": ui_28.toBeResource.dragAndDropToChangeArea }).appendTo($mouseText);
                         $comment.append($cropAreaIcon).append($cropText).append($mousePointerIcon).append($mouseText);
                         var checkboxId = nts.uk.util.randomId();
                         ko.bindingHandlers["ntsCheckBox"].init(this.$checkbox[0], function () {
@@ -49251,7 +49526,7 @@ var nts;
                     };
                     ImageEditorConstructSite.prototype.buildUploadAction = function () {
                         var self = this;
-                        self.$uploadBtn.text(ui_29.toBeResource.refer).click(function (evt) {
+                        self.$uploadBtn.text(ui_28.toBeResource.refer).click(function (evt) {
                             self.$inputFile.click();
                         });
                     };
@@ -49399,7 +49674,7 @@ var nts;
                     };
                     ImageEditorConstructSite.prototype.destroyImg = function (query) {
                         var self = this;
-                        nts.uk.ui.dialog.alert(ui_29.toBeResource.invalidImageData).then(function () {
+                        nts.uk.ui.dialog.alert(ui_28.toBeResource.invalidImageData).then(function () {
                             //self.$root.data("img-status", self.buildImgStatus("load fail", 3));
                             self.changeStatus(ImageStatus.FAIL);
                             self.backupData(null, "", "", 0);
@@ -49559,7 +49834,7 @@ var nts;
                     ImageStatus[ImageStatus["LOADED"] = 3] = "LOADED";
                 })(ImageStatus || (ImageStatus = {}));
                 ko.bindingHandlers['ntsImageEditor'] = new NtsImageEditorBindingHandler();
-            })(koExtentions = ui_29.koExtentions || (ui_29.koExtentions = {}));
+            })(koExtentions = ui_28.koExtentions || (ui_28.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -50151,7 +50426,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_30) {
+        (function (ui_29) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -50381,7 +50656,7 @@ var nts;
                     return NtsTreeDragAndDropBindingHandler;
                 }());
                 ko.bindingHandlers['ntsTreeDragAndDrop'] = new NtsTreeDragAndDropBindingHandler();
-            })(koExtentions = ui_30.koExtentions || (ui_30.koExtentions = {}));
+            })(koExtentions = ui_29.koExtentions || (ui_29.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
