@@ -69,25 +69,6 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
 
         List<String> lstEmployeeId = new ArrayList<>();
 
-        //管理者を取得する。 TODO: QA 37555
-        command.getWorkplaceIds().forEach(x -> {
-            List<WkpManagerImport> wkpManagerImports = wkpManagerAdapter.findByPeriodAndBaseDate(x, GeneralDate.today());
-            lstEmployeeId.addAll(wkpManagerImports.stream().map(WkpManagerImport::getEmployeeId).collect(Collectors.toList()));
-        });
-
-        //アルゴリズム「メール送信処理」を実行する
-//        return sendEmailService.alarmSendEmail(
-//                companyId,
-//                executeDate,
-//                Collections.emptyList(),
-//                lstEmployeeId,
-//                command.listValueExtractAlarmDto,
-//                mailSettingsParamDto,
-//                command.getCurrentAlarmCode(),
-//                useAuthentication,
-//                mailSetting,
-//                mailSettingAdmins,
-//                Optional.empty());
         return workplaceSendEmailService.alarmWorkplacesendEmail(
                 command.getWorkplaceIds(),
                 command.listValueExtractAlarmDto,
