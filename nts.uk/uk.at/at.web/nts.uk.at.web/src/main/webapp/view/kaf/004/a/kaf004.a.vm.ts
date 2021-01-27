@@ -710,20 +710,22 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
         private afterRegister(params?: any) {
             const vm = this;
 
-            if (ko.toJS(vm.application().prePostAtr) === 1) {
-                if (ko.toJS(vm.lateOrEarlyInfo1().isCheck)) {
-                    vm.workManagement.workTime(null);
-                }
-                if (ko.toJS(vm.lateOrEarlyInfo2().isCheck)) {
-                    vm.workManagement.leaveTime(null);
-                }
-                if (ko.toJS(vm.lateOrEarlyInfo3().isCheck)) {
-                    vm.workManagement.workTime2(null);
-                }
-                if (ko.toJS(vm.lateOrEarlyInfo4().isCheck)) {
-                    vm.workManagement.leaveTime2(null);
-                }
-            }
+            // let workManage = _.clone(vm.workManagement);
+
+            // if (ko.toJS(vm.application().prePostAtr) === 1) {
+            //     if (ko.toJS(vm.lateOrEarlyInfo1().isCheck)) {
+            //         workManage.workTime(null);
+            //     }
+            //     if (ko.toJS(vm.lateOrEarlyInfo2().isCheck)) {
+            //         workManage.leaveTime(null);
+            //     }
+            //     if (ko.toJS(vm.lateOrEarlyInfo3().isCheck)) {
+            //         workManage.workTime2(null);
+            //     }
+            //     if (ko.toJS(vm.lateOrEarlyInfo4().isCheck)) {
+            //         vm.workManagement.leaveTime2(null);
+            //     }
+            // }
 
             vm.arrivedLateLeaveEarlyInfo().earlyInfos = [];
             if(vm.cancalAppDispSet) {
