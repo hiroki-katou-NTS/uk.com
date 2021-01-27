@@ -33,6 +33,9 @@ import nts.uk.ctx.sys.portal.dom.webmenu.ColorCode;
 import nts.uk.ctx.sys.portal.dom.webmenu.MenuCode;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * フローメニュー作成 DTO
+ */
 @Data
 public class CreateFlowMenuDto implements CreateFlowMenu.MementoSetter, CreateFlowMenu.MementoGetter {
 
