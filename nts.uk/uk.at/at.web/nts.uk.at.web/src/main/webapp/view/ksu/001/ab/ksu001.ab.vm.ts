@@ -164,7 +164,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                 } else if (objWorkType[0].workTimeSetting != 2 && self.dataCell.objWorkTime.code == ' ') {
                     if (objWorkType[0].workStyle == 0) {
                         // HOLIDAY
-                        $("#extable").exTable("stickFields", ["workTypeName", "workTimeName", "startTime", "endTime"]);
+                        $("#extable").exTable("stickFields", ["workTypeName", "startTime", "endTime"]);
                         // 貼り付けのパターン3
                         $("#extable").exTable("stickData", {
                             workTypeCode: objWorkType[0].workTypeCode,
