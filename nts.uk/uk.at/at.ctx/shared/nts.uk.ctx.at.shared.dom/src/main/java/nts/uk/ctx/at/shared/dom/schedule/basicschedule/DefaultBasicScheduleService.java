@@ -67,51 +67,28 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 
 			WorkTypeClassification workTypeClass = dailyWork.getOneDay();
 
-			if (WorkTypeClassification.AnnualHoliday == workTypeClass
-					|| WorkTypeClassification.YearlyReserved == workTypeClass
-					|| WorkTypeClassification.SubstituteHoliday == workTypeClass
-					|| WorkTypeClassification.Absence == workTypeClass
-					|| WorkTypeClassification.SpecialHoliday == workTypeClass
-					|| WorkTypeClassification.TimeDigestVacation == workTypeClass) {
+			SetupType setupType = this.judgmentProcessWorktypeCls(workTypeClass);
 
-				return this.checkRequiredOfInputType(workTypeClass);
-			}
-
-			if (WorkTypeClassification.Attendance == workTypeClass
-					|| WorkTypeClassification.HolidayWork == workTypeClass
-					|| WorkTypeClassification.Shooting == workTypeClass) {
-				return SetupType.REQUIRED;
-			}
-
-			if (WorkTypeClassification.AnnualHoliday == workTypeClass
-					|| WorkTypeClassification.YearlyReserved == workTypeClass
-					|| WorkTypeClassification.SpecialHoliday == workTypeClass
-					|| WorkTypeClassification.TimeDigestVacation == workTypeClass
-					|| WorkTypeClassification.ContinuousWork == workTypeClass
-					|| WorkTypeClassification.Closure == workTypeClass
-					|| WorkTypeClassification.LeaveOfAbsence == workTypeClass) {
-				return SetupType.OPTIONAL;
-			}
-
-			if (WorkTypeClassification.Holiday == workTypeClass || WorkTypeClassification.Absence == workTypeClass
-					|| WorkTypeClassification.Pause == workTypeClass) {
-				return SetupType.NOT_REQUIRED;
-			}
+			return setupType;
 		}
 
 		// Half day
 		if (WorkTypeUnit.MonringAndAfternoon == workTypeUnit) {
-			WorkStyle workStyle = this.checkWorkDay(workTypeCode);
-			if (WorkStyle.ONE_DAY_REST == workStyle) {
 
-				SetupType morningWorkStyle = this.checkRequiredOfInputType(dailyWork.getMorning());
-				SetupType afternoonWorkStyle = this.checkRequiredOfInputType(dailyWork.getAfternoon());
+			WorkTypeClassification workTypeClassMorning = dailyWork.getMorning();
 
-				return this.checkRequired(morningWorkStyle, afternoonWorkStyle);
-			} else {
-				return SetupType.REQUIRED;
-			}
+			WorkTypeClassification workTypeClassAfternoon = dailyWork.getAfternoon();
+
+			SetupType setupTypeMorning = this.judgmentProcessWorktypeCls(workTypeClassMorning);
+
+			SetupType setupTypeAfternoon = this.judgmentProcessWorktypeCls(workTypeClassAfternoon);
+
+			SetupType setupType = this.checkRequired(setupTypeMorning, setupTypeAfternoon);
+
+			return setupType;
+
 		}
+
 		throw new RuntimeException("NOT FOUND SETUP TYPE");
 	}
 	
@@ -538,6 +515,39 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 	public List<WorkType> getAllWorkTypeNotAbolished(String companyId) {
 		List<WorkType> data = workTypeRepo.getAllWorkTypeNotAbolished(companyId);
 		return data;
+	}
+	
+	/**
+	 * 必須任意不要区分の判断処理
+	 * @param workTypeClass
+	 * @return
+	 */
+	public SetupType judgmentProcessWorktypeCls(WorkTypeClassification workTypeClass) {
+
+		if (WorkTypeClassification.Attendance == workTypeClass 
+				|| WorkTypeClassification.HolidayWork == workTypeClass
+				|| WorkTypeClassification.Shooting == workTypeClass) {
+			return SetupType.REQUIRED;
+		}
+
+		if (WorkTypeClassification.AnnualHoliday == workTypeClass
+				|| WorkTypeClassification.YearlyReserved == workTypeClass
+				|| WorkTypeClassification.SpecialHoliday == workTypeClass
+				|| WorkTypeClassification.TimeDigestVacation == workTypeClass
+				|| WorkTypeClassification.ContinuousWork == workTypeClass
+				|| WorkTypeClassification.Closure == workTypeClass
+				|| WorkTypeClassification.LeaveOfAbsence == workTypeClass
+				|| WorkTypeClassification.SubstituteHoliday == workTypeClass) {
+			return SetupType.OPTIONAL;
+		}
+
+		if (WorkTypeClassification.Holiday == workTypeClass 
+				|| WorkTypeClassification.Absence == workTypeClass
+				|| WorkTypeClassification.Pause == workTypeClass) {
+			return SetupType.NOT_REQUIRED;
+		}
+		
+		throw new RuntimeException("NOT FOUND SETUP TYPE");
 	}
 
 }
