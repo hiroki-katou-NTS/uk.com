@@ -198,7 +198,7 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 			// 年休
 			if (dailyInterimRemainMng.getAnnualHolidayData().isPresent()) {
 				val data = dailyInterimRemainMng.getAnnualHolidayData().get();
-				tmpAnnualLeaveMngs.add(TmpAnnualLeaveMngWork.of(master, data));
+				tmpAnnualLeaveMngs.add(TmpAnnualLeaveMngWork.of(data));
 			}
 
 			// 積立年休

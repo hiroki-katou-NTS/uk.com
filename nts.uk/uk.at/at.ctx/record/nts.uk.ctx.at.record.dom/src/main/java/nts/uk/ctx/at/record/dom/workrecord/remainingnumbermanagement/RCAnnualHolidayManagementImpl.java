@@ -191,7 +191,7 @@ public class RCAnnualHolidayManagementImpl implements RCAnnualHolidayManagement 
 		// 次回年休付与時点出勤率を返す
 		result = new AttendRateAtNextHoliday(
 				nextAnnualLeaveGrant.getGrantDate(),
-				nextAnnualLeaveGrant.getGrantDays(),
+				nextAnnualLeaveGrant.getGrantDays().get(),
 				new AttendanceRate(attendanceRate),
 				new AttendanceDaysMonth(attendanceDays),
 				new AttendanceDaysMonth(predeterminedDays),

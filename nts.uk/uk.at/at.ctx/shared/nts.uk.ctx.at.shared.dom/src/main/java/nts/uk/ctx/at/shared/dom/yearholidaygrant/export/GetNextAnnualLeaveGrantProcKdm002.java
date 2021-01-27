@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTbl;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
@@ -98,7 +99,7 @@ public class GetNextAnnualLeaveGrantProcKdm002 {
 				if (!grantHdTblOpt.isPresent())
 					continue;
 				val grantHdTbl = grantHdTblOpt.get();
-				nextAnnualLeaveGrant.setGrantDays(grantHdTbl.getGrantDays());
+				nextAnnualLeaveGrant.setGrantDays(Finally.of(grantHdTbl.getGrantDays()));
 				nextAnnualLeaveGrant.setHalfDayAnnualLeaveMaxTimes(grantHdTbl.getLimitDayYear());
 				nextAnnualLeaveGrant.setTimeAnnualLeaveMaxDays(grantHdTbl.getLimitTimeHd());
 			}

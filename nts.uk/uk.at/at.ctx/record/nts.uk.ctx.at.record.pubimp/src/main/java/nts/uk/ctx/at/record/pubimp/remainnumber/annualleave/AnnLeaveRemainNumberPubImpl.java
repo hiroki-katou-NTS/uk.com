@@ -39,6 +39,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoDomService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.CalcNextAnnualLeaveGrantDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.valueobject.AnnLeaRemNumValueObject;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMngRepository;
@@ -118,16 +119,11 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 			if (!aggrResult.isPresent())
 				return null;
 			result.setUsedDays(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
-					.getUsedNumberInfo().getUsedNumber().getUsedDays().getUsedDayNumber());
+					.getUsedNumberInfo().getUsedNumber().getUsedDays().orElse(new AnnualLeaveUsedDayNumber(0d)));
 
 			result.setUsedMinutes(
 					aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumberInfo()
-							.getUsedNumber().getUsedTime()
-							.isPresent()
-									? Optional.of(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber()
-											.getAnnualLeaveWithMinus().getUsedNumberInfo().getUsedNumber().getUsedTime().get().getUsedTime()
-											.v())
-									: Optional.empty());
+							.getUsedNumber().getUsedTime().map(c -> c.valueAsMinutes()));
 
 			result.setRemainDays(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
 					.getRemainingNumberInfo().getRemainingNumber().getTotalRemainingDays());
@@ -149,7 +145,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 
 			if (annualLeaveGrant!= null && annualLeaveGrant.size() > 0){
 				result.setGrantDate(annualLeaveGrant.get(0).getGrantDate());
-				result.setGrantDays(annualLeaveGrant.get(0).getGrantDays().v());
+				result.setGrantDays(annualLeaveGrant.get(0).getGrantDays().get().v());
 			}
 			return result;
 		} catch (Exception e) {
@@ -409,12 +405,9 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 			if (!tmpAnnualLeaveMngOpt.isPresent()) continue;
 			val tmpAnnualLeaveMng = tmpAnnualLeaveMngOpt.get();
 
-			Double usedDays = 0.00;
-			if(tmpAnnualLeaveMng.getUseDays() != null){
-				usedDays = tmpAnnualLeaveMng.getUseDays().v();
-			}
+			Double usedDays = tmpAnnualLeaveMng.getUseNumber().getUsedDays().map(c -> c.v()).orElse(0d);
 			// đối ứng bug #109638: thêm hiển thị workType cho KDL020
-			String workTypeCD = tmpAnnualLeaveMng.getWorkTypeCode();
+			String workTypeCD = tmpAnnualLeaveMng.getWorkTypeCode().v();
 			Integer usedMinutes = 0;
 			AnnualLeaveManageInforExport annualLeaveManageInforExport = new AnnualLeaveManageInforExport(
 					interimRemain.getYmd(),
@@ -580,17 +573,12 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 				return null;
 			}
 			result.setUsedDays(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
-					.getUsedNumberInfo().getUsedNumber().getUsedDays().getUsedDayNumber());
+					.getUsedNumberInfo().getUsedNumber().getUsedDays().orElse(new AnnualLeaveUsedDayNumber(0d)));
 
 			result.setUsedMinutes(
 					aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
 							.getUsedNumberInfo().getUsedNumber()
-							.getUsedTime()
-							.isPresent()
-									? Optional.of(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber()
-											.getAnnualLeaveWithMinus().getUsedNumberInfo().getUsedNumber().getUsedTime().get().getUsedTime()
-											.v())
-									: Optional.empty());
+							.getUsedTime().map(c -> c.valueAsMinutes()));
 
 			result.setRemainDays(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
 					.getRemainingNumberInfo().getRemainingNumber().getTotalRemainingDays());
@@ -611,7 +599,7 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 					cacheCarrier, companyId, employeeId, Optional.empty());
 			if (annualLeaveGrant!= null && annualLeaveGrant.size() > 0){
 				result.setGrantDate(annualLeaveGrant.get(0).getGrantDate());
-				result.setGrantDays(annualLeaveGrant.get(0).getGrantDays().v());
+				result.setGrantDays(annualLeaveGrant.get(0).getGrantDays().get().v());
 			}
 			return result;
 		} catch (Exception e) {

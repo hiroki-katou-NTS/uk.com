@@ -106,7 +106,7 @@ public class RealAnnualLeave implements Cloneable {
 	public void addUsedNumber(double days, boolean afterGrantAtr){
 
 		// 使用数．使用日数．使用日数に加算
-		this.usedNumber.getUsedDays().addUsedDays(days);
+		this.usedNumber.addDays(days);
 
 	}
 }

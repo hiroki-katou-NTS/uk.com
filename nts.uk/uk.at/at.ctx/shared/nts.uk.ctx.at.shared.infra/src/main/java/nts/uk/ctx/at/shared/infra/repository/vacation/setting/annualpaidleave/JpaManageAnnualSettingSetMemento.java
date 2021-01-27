@@ -42,20 +42,6 @@ public class JpaManageAnnualSettingSetMemento implements ManageAnnualSettingSetM
      * (non-Javadoc)
      *
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
-     * ManageAnnualSettingSetMemento#setMaxGrantDay(nts.uk.ctx.at.shared.dom.
-     * vacation.setting.annualpaidleave.AnnualLeaveGrantDay)
-     */
-//    @Override
-//    public void setMaxGrantDay(AnnualLeaveGrantDay maxGrantDay) {
-//        if (maxGrantDay != null) {
-////            this.entity.setHalfMaxGrantDay(maxGrantDay.v());
-//        }
-//    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
      * ManageAnnualSettingSetMemento#setHalfDayManage(nts.uk.ctx.at.shared.dom.
      * vacation.setting.annualpaidleave.HalfDayManage)
      */
@@ -64,7 +50,7 @@ public class JpaManageAnnualSettingSetMemento implements ManageAnnualSettingSetM
         this.entity.setHalfManageAtr(halfDayManage.manageType.value);
         this.entity.setHalfMaxReference(halfDayManage.reference.value);
         this.entity.setHalfMaxUniformComp(halfDayManage.maxNumberUniformCompany.v());
-//        this.entity.setRoundProcessCla(halfDayManage.roundProcesCla.value);
+        this.entity.setHalfRoundProc(halfDayManage.roundProcesCla.value);
     }
 
     /*
@@ -92,8 +78,6 @@ public class JpaManageAnnualSettingSetMemento implements ManageAnnualSettingSetM
 
 	@Override
 	public void setYearLyOfDays(YearLyOfNumberDays yearLyOfNumberDays) {
-//		 if (yearLyOfNumberDays != null) {
-//			 this.entity.setYearlyOfDays(yearLyOfNumberDays.v());
-//		 }
+		this.entity.setScheduleWorkingDays(yearLyOfNumberDays.v());
 	}
 }

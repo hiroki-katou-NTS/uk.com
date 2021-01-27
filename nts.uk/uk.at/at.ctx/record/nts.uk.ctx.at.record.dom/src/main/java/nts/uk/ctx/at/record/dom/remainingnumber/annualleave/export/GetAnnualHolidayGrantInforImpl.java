@@ -26,6 +26,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveTimeRemainHistRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveTimeRemainingHistory;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveGrantNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CreateInterimAnnualMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
@@ -102,9 +103,9 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 			TmpAnnualHolidayMng annData = remainMng.getAnnualHolidayData().get();
 			InterimRemain remainData = remainMng.getRecAbsData()
 					.stream()
-					.filter(x -> x.getRemainManaID().equals(annData.getAnnualId()))
+					.filter(x -> x.getRemainManaID().equals(annData.getRemainManaID()))
 					.collect(Collectors.toList()).get(0);
-			TmpAnnualLeaveMngWork tmpAnnual = TmpAnnualLeaveMngWork.of(remainData, annData);
+			TmpAnnualLeaveMngWork tmpAnnual = TmpAnnualLeaveMngWork.of(annData);
 			lstTmpAnnual.add(tmpAnnual);
 		}
 
@@ -218,7 +219,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 			//暫定年休管理データを取得 締め開始日 <= 対象日 < INPUT．期間．終了日
 			List<TmpAnnualHolidayMng> lstTmpAnnual = annualRepository.getBySidPeriod(sid, new DatePeriod(startDate, datePeriod.end()));
 			for (TmpAnnualHolidayMng x : lstTmpAnnual) {
-				Optional<InterimRemain> interimInfor = interimRepo.getById(x.getAnnualId());
+				Optional<InterimRemain> interimInfor = interimRepo.getById(x.getRemainManaID());
 				if(interimInfor.isPresent()) {
 					DailyInterimRemainMngData remainMng = new DailyInterimRemainMngData();
 					remainMng.setRecAbsData(Arrays.asList(interimInfor.get()));
@@ -257,27 +258,26 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 			}
 		}
 		for (DailyInterimRemainMngData x : lstFlex) {
-			if(!x.getAnnualHolidayData().isPresent()
-					|| x.getAnnualHolidayData().get().getUseDays().v() <= 0) {
+			double usedDays = x.getAnnualHolidayData().get().getUseNumber().getUsedDays().map(c -> c.v()).orElse(0d);
+			if(usedDays <= 0) {
 				continue;
 			}
 			TmpAnnualHolidayMng annualInterim = x.getAnnualHolidayData().get();
-			double useDays = annualInterim.getUseDays().v();
-			if(useDays <= 1.0) {
+			if(usedDays <= 1.0) {
 				lstOutputData.add(new DailyInterimRemainMngDataAndFlg(x, true));
 				continue;
 			}
-			for(double i = 0; useDays - i > 0; i++) {
+			for(double i = 0; usedDays - i > 0; i++) {
 				DailyInterimRemainMngData flexTmp = new DailyInterimRemainMngData();
 				flexTmp.setRecAbsData(x.getRecAbsData());
-				TmpAnnualHolidayMng annualInterimTmp = new TmpAnnualHolidayMng();
-				annualInterimTmp.setAnnualId(annualInterim.getAnnualId());
+				TmpAnnualHolidayMng annualInterimTmp = new TmpAnnualHolidayMng(annualInterim.getRemainManaID(), 
+						annualInterim.getSID(), annualInterim.getYmd(), annualInterim.getCreatorAtr());
+//				annualInterimTmp.setAnnualId(annualInterim.getAnnualId());
 				annualInterimTmp.setWorkTypeCode(annualInterim.getWorkTypeCode());
-				if(useDays - i >= 1) {
-					annualInterimTmp.setUseDays(new UseDay(1.0));
-				} else {
-					annualInterimTmp.setUseDays(new UseDay(0.5));
-				}
+				
+				val usedNumber = nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedNumber.of(
+						Optional.of(new AnnualLeaveUsedDayNumber(usedDays - i >= 1 ? 1.0 : 0.5)), Optional.empty());
+				annualInterimTmp.setUseNumber(usedNumber);
 				flexTmp.setAnnualHolidayData(Optional.of(annualInterimTmp));
 
 				lstOutputData.add(new DailyInterimRemainMngDataAndFlg(flexTmp, true));

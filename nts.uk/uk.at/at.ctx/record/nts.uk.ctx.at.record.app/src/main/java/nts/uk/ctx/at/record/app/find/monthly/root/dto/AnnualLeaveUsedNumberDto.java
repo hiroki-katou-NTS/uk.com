@@ -9,7 +9,6 @@ import nts.uk.ctx.at.record.app.find.monthly.root.common.TimeUsedNumberDto;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedDays;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedNumber;
 
 @Data
@@ -28,13 +27,13 @@ public class AnnualLeaveUsedNumberDto implements ItemConst, AttendanceItemDataGa
 
 	public static AnnualLeaveUsedNumberDto from(AnnualLeaveUsedNumber domain) {
 		return domain == null ? null : new AnnualLeaveUsedNumberDto(
-												AnnualLeaveUsedDaysDto.from(domain.getUsedDays()),
+												AnnualLeaveUsedDaysDto.from(domain.getUsedDays().orElse(null)),
 												TimeUsedNumberDto.from(domain.getUsedTime().orElse(null)));
 	}
 	
 	public AnnualLeaveUsedNumber toDomain() {
 		return AnnualLeaveUsedNumber.of(
-								usedDays == null ? new AnnualLeaveUsedDays() : usedDays.toDomain(), 
+								Optional.ofNullable(usedDays == null ? null : usedDays.toDomain()), 
 								Optional.ofNullable(usedTime == null ? null : usedTime.toDomain()));
 	}
 	

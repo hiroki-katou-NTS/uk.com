@@ -134,8 +134,7 @@ public class InterimBreakDayoffServiceImpl implements InterimBreakDayoffService 
 						employeeId,
 						targetWorkInfo.getYmd(),
 						CreateAtr.RECORD,
-						RemainType.SUBHOLIDAY,
-						RemainAtr.SINGLE);
+						RemainType.SUBHOLIDAY);
 				InterimDayOffMng dayoffMng = new InterimDayOffMng(
 						dayoffGuid,
 						new RequiredTime(0),
@@ -202,8 +201,7 @@ public class InterimBreakDayoffServiceImpl implements InterimBreakDayoffService 
 							employeeId,
 							targetWorkInfo.getYmd(),
 							CreateAtr.RECORD,
-							RemainType.BREAK,
-							RemainAtr.SINGLE);
+							RemainType.BREAK);
 					InterimBreakMng breakMng = new InterimBreakMng(
 							breakGuid,
 							new AttendanceTime(designatedTime.getOneDayTime().v()),

@@ -18,8 +18,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeave
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPriority;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ContractTimeRound;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.DayTimeAnnualLeave;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.DisplayDivision;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.DisplaySetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.HalfDayManage;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ManageAnnualSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ManageAnnualSettingGetMemento;
@@ -269,14 +267,14 @@ public class AnnualPaidLeaveSaveCommand {
          * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
          * ManageAnnualSettingGetMemento#getDisplaySetting()
          */
-        @Override
-        public DisplaySetting getDisplaySetting() {
-            DisplaySetting display = DisplaySetting.builder()
-                    .nextGrantDayDisplay(DisplayDivision.valueOf(this.command.nextGrantDayDisplay))
-                    .remainingNumberDisplay(DisplayDivision.valueOf(this.command.remainingNumberDisplay))
-                    .build();
-            return display;
-        }
+//        @Override
+//        public DisplaySetting getDisplaySetting() {
+//            DisplaySetting display = DisplaySetting.builder()
+//                    .nextGrantDayDisplay(DisplayDivision.valueOf(this.command.nextGrantDayDisplay))
+//                    .remainingNumberDisplay(DisplayDivision.valueOf(this.command.remainingNumberDisplay))
+//                    .build();
+//            return display;
+//        }
 
 		@Override
 		public YearLyOfNumberDays getYearLyOfDays() {
