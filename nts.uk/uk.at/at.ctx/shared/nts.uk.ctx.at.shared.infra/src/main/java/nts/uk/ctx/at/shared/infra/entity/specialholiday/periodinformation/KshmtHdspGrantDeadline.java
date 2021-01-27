@@ -54,9 +54,9 @@ public class KshmtHdspGrantDeadline extends UkJpaEntity implements Serializable 
 	 * @param domain
 	 * @return
 	 */
-	public static KshmtHdspGrantDeadline toEntity(GrantDeadline domain) {
+	public static KshmtHdspGrantDeadline toEntity(String cid, int specialHolCode, GrantDeadline domain) {
 		return new KshmtHdspGrantDeadline(
-				new KshmtHdspGrantDeadlinePK(domain.getCompanyId(), domain.getSpecialHolidayCode().v()),
+				new KshmtHdspGrantDeadlinePK(cid, specialHolCode),
 				domain.getTimeSpecifyMethod().value,
 				domain.getExpirationDate().isPresent() ? domain.getExpirationDate().get().getYears().v() : null,
 				domain.getExpirationDate().isPresent() ? domain.getExpirationDate().get().getMonths().v() : null,

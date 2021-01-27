@@ -50,8 +50,7 @@ public class FixGrantDate {
 
 		return new FixGrantDate(
 				RegularGrantDays.createFromJavaType(grantDays),
-				GrantDeadline.createFromJavaType(
-						companyId, specialHolidayCode, timeSpecifyMethod,
+				GrantDeadline.createFromJavaType(timeSpecifyMethod,
 						expirationDate.year(), expirationDate.month(), limitCarryoverDays),
 				Optional.of(new MonthDay(grantMonth, grantDay))
 			);

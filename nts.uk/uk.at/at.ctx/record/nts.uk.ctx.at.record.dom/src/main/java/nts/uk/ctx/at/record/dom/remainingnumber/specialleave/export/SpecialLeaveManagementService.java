@@ -1096,7 +1096,7 @@ public class SpecialLeaveManagementService {
 						.filter(x -> x.getSID().equals(interimRemain.getSID()))
 						.filter(x -> x.getYmd().equals(interimRemain.getYmd()))
 						.filter(x -> x.getRemainType().equals(interimRemain.getRemainType()))
-						.filter(x -> x.getRemainAtr().equals(interimRemain.getRemainAtr()))
+//						.filter(x -> x.getRemainAtr().equals(interimRemain.getRemainAtr()))
 						.collect(Collectors.toList());
 
 				if ( !speMngReplace.isEmpty() ){ //重複したものは上書きする

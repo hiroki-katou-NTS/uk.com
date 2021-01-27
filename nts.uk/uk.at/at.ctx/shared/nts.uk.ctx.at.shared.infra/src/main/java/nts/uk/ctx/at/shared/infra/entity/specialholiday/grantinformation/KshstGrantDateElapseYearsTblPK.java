@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.Column;
+import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateCode;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateName;
@@ -18,6 +20,8 @@ import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantedDays;
  * @author masaaki_jinno
  */
 @AllArgsConstructor
+@Embeddable
+@NoArgsConstructor
 public class KshstGrantDateElapseYearsTblPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 

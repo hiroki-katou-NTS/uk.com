@@ -250,7 +250,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		//AvailabilityPeriod availabilityPeriod = AvailabilityPeriod.createFromJavaType(startDate, endDate);
 		SpecialVacationDeadline expirationDate = SpecialVacationDeadline.createFromJavaType(deadlineMonths, deadlineYears);
 		GrantDeadline grantPeriodic = GrantDeadline.createFromJavaType(
-				companyId, specialHolidayCode, timeMethod, limitCarryoverDays,
+				timeMethod, limitCarryoverDays,
 				expirationDate.getMonths().v(), expirationDate.getYears().v());
 
 		GrantRegular grantRegular = GrantRegular.of(

@@ -109,8 +109,6 @@ public class SpecialHolidayCommand {
 		}
 
 		return GrantDeadline.createFromJavaType(
-				companyId,
-				this.specialHolidayCode,
 				this.periodicCommand.getTimeSpecifyMethod(),
 				//new AvailabilityPeriod(this.periodicCommand.getAvailabilityPeriod().getStartDateValue(), this.periodicCommand.getAvailabilityPeriod().getEndDateValue()),
 				//this.toDomainSpecialVacationDeadline(),
