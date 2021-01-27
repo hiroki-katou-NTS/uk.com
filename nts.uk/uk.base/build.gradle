@@ -35,11 +35,13 @@ project (':base.web:nts.uk.com.js.web') {
 	task tsc(type: Exec) {
 		commandLine 'cmd', '/c', 'tsc'
 		args '--sourceMap', '--declaration'
+		ignoreExitValue true
 	}
 	
 	task tscw(type: Exec) {
 		commandLine 'cmd', '/c', 'tsc'
 		args '--watch', '--sourceMap', '--declaration'
+		ignoreExitValue true
 	}
 	
 	task csc(type: Exec) {

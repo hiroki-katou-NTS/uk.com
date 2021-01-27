@@ -670,9 +670,12 @@ project (':hr.web:nts.uk.hr.web') {
 	
 	task tsc(type: Exec) {
 		commandLine 'cmd', '/c', 'tsc'
+		ignoreExitValue true
 	}
 	
 	task tscw(type: Exec) {
 		commandLine 'cmd', '/c', 'tsc'
+		args '--watch'
+		ignoreExitValue true
 	}
 }
