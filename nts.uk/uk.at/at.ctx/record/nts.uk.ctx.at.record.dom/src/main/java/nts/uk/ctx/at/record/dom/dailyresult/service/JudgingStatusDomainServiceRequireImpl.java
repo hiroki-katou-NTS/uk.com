@@ -34,7 +34,7 @@ public class JudgingStatusDomainServiceRequireImpl implements JudgingStatusDomai
 	}
 
 	@Override
-	public Optional<String> getDailyWorkSchedule(String sid, GeneralDate baseDate) {
+	public Optional<String> getDailyWorkScheduleWorkTypeCode(String sid, GeneralDate baseDate) {
 		return dailyWorkScheduleAdapter.getWorkTypeCode(sid, baseDate);
 	}
 
