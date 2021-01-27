@@ -29,7 +29,7 @@
 						></div>
 						<div class="cell valign-center">
 							<div id="startDate"
-								data-bind="ntsDatePicker: { name: '#[KSM007_38]', value: startDate, required: true }"
+								data-bind="ntsDatePicker: { name: '#[KSM007_38]', value: startFromDate, required: true, startDate: beginStartDate }"
 							></div>
 						</div>
 						<div class="cell valign-center cell-3" data-bind="text: $i18n('KSM007_39')"></div>
@@ -41,7 +41,7 @@
             tabindex="2"
             id="btnProceed"
             class="x-large proceed"
-            data-bind="click: saveData, text: $i18n('KSM007_41')"
+            data-bind="click: saveData, text: $i18n('KSM007_41'), enable: $root.errors.isEmpty"
           />
           <button
             tabindex="3"

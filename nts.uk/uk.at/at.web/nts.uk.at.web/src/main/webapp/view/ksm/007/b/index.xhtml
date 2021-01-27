@@ -11,7 +11,7 @@
       <ui:define name="htmlHead">      
 				<com:scriptfile set="IGNITE" />
 				<script>
-          var dialogSize = { width: 720, height: 550 };
+          var dialogSize = { width: 720, height: 500 };
         </script>
         <com:stylefile path="ksm007.b.main.css" />
         <com:scriptfile path="ksm007.b.vm.js" />
@@ -22,7 +22,7 @@
           <button
             tabindex="1"
             class="proceed"
-            data-bind="text: $vm.$i18n('KSM007_21'), click: saveData"
+            data-bind="text: $vm.$i18n('KSM007_21'), click: saveData, enable: $root.errors.isEmpty"
           />
           <button tabindex="2" data-bind="text: $vm.$i18n('KSM007_22'), click: closeDialog" />
         </div>
@@ -34,7 +34,7 @@
                 <div class="cell" data-bind="text: workplaceGroupName"></div>
               </div>
               <div
-                data-bind="ntsPanel:{ width: '250px', direction: 'right', showIcon: false, visible: true}"
+                data-bind="ntsPanel:{ width: '250px', height: '278px', direction: 'right', showIcon: false, visible: true}"
               >
                 <div class="buttons">
                   <button
@@ -45,7 +45,7 @@
                   <button
                     tabindex="5"
                     class="normal"
-                    data-bind="text: $i18n('KSM007_26'), click: openDialogScreenD"
+                    data-bind="text: $i18n('KSM007_26'), click: openDialogScreenD, enable: isLastItem"
                   />
                 </div>
                 <table
@@ -56,10 +56,11 @@
 										dataSource: historyListItems,
 										primaryKey: 'startDate',
 										columns: ko.observableArray([
-											{ headerText: 'コード', key: 'display' }
+                      { headerText: 'コード', key: 'startDate', hidden: true },
+                      { headerText: 'コード', key: 'display' }
 										]),
 										multiple: false,
-										value: historyCurrentItems
+										value: historyCurrentItem
 									}"
                 ></table>
               </div>
@@ -70,7 +71,7 @@
                   class="cell valign-center"
                   data-bind="ntsFormLabel: { required: true}, text: $i18n('KSM007_27')"
                 ></div>
-                <div class="cell valign-center" data-bind="text: '2021/01/29'"></div>
+                <div class="cell valign-center" data-bind="text: startDate"></div>
               </div>
               <div class="table table-row">
                 <div
@@ -102,23 +103,25 @@
                 <div class="cell time-editor">
                   <div class="table">
                     <div class="cell valign-center">
-                      <input
+                      <input id="nightShiftHours1"
                         data-bind="ntsTimeEditor: {
 													value: nightShiftHours1, 
 													inputFormat: 'time', 
 													mode: 'time',
-													name: '#[KSM007_32]'
+                          name: '#[KSM007_32]',
+                          required: true
 												}"
                       />
                     </div>
                     <div class="cell valign-center" data-bind="text:$i18n('KSM007_33')"></div>
                     <div class="cell valign-center">
-                      <input
+                      <input id="nightShiftHours2"
                         data-bind="ntsTimeEditor: {
 													value: nightShiftHours2, 
 													inputFormat: 'time', 
 													mode: 'time',
-													name: '#[KSM007_34]'
+                          name: '#[KSM007_34]',
+                          required: true
 												}"
                       />
                     </div>

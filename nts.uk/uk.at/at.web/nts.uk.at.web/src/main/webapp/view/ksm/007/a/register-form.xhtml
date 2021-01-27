@@ -18,7 +18,7 @@
         option: { width: '120px', textalign: 'left' },
         enable: registerForm().newMode,
         required: true}"
-            />
+    />
   </div>
   <!-- A5 -->
   <div class="valign-center control-group">
@@ -39,7 +39,10 @@
     />
   </div>
   <!-- A6 -->
-  <div class="valign-center control-group">
+  <div
+    class="valign-center control-group"
+    data-bind="if: registerForm().workplaceGroupTypes().length &gt; 0"
+  >
     <div data-bind="ntsFormLabel: {required: true, enable: true}">
       #{i18n.getText('KSM007_10')}
     </div>
@@ -54,16 +57,32 @@
     ></div>
   </div>
   <!-- A9 ver10 -->
-  <div class="valign-center control-group" data-bind="if: registerForm().selectedWkpType() !== 0">
+  <div
+    class="valign-center control-group"
+    data-bind="if: registerForm().workplaceGroupTypes().length &gt; 0"
+  >
     <div class="table">
       <div class="cell">
-        <button class="small" data-bind="click: openDialogScreenB">#{i18n.getText('KSM007_47')}</button>
-      </div>
-      <div class="cell" data-bind="text: '#{i18n.getText('KSM007_47')}'"></div>
-      <div class="cell">
-        <label data-bind="text: registerForm().startTime"></label>
-        <label>#{i18n.getText('KSM007_49')}</label>
-        <label data-bind="text: registerForm().endTime"></label>
+        <button
+          class="small"
+          data-bind="click: openDialogScreenB, 
+          enable: registerForm().selectedWkpType() !== 0"
+        >
+          #{i18n.getText('KSM007_47')}
+        </button>
+      </div>      
+      <div class="cell" data-bind="if: registerForm().selectedWkpType() !== 0">
+        <div class="table">
+          <div
+            class="cell"
+            data-bind="text: '#{i18n.getText('KSM007_47')}'"
+          ></div>
+          <div class="cell">
+            <label data-bind="text: registerForm().startTime"></label>
+            <label>#{i18n.getText('KSM007_49')}</label>
+            <label data-bind="text: registerForm().endTime"></label>
+          </div>
+        </div>
       </div>
     </div>
   </div>

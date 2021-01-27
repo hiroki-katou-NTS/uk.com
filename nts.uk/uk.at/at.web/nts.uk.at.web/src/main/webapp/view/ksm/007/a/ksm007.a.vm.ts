@@ -13,7 +13,9 @@ module nts.uk.at.view.ksm007.a {
         currentNames: KnockoutObservable<any> = ko.observable([]);
         workplaceGroupList: KnockoutObservable<any> = ko.observable([]);
         registerForm: RegisterForm = ko.observable(new RegisterForm());
+
         constructor() {
+            
             let self = this;
             self.options = {
                 itemList: self.workplaceGroupList,
@@ -268,7 +270,16 @@ module nts.uk.at.view.ksm007.a {
         }
         
         public  openDialogScreenB() {            
-            setShared({});
+            const self = this;            
+            let selectedWkpType: number = 0;
+            if( self.registerForm().workplaceGroupTypes().length > 0) 
+            selectedWkpType = self.registerForm().selectedWkpType();
+            nts.uk.ui.windows.setShared('inputScreenB' , { 
+                wpGroupId: self.currentIds(),
+                typeGroup: selectedWkpType,
+                wpGroupCode: self.registerForm().workplaceGroupCd(),
+                wpGroupName: self.registerForm().workplaceGroupName(),
+             });
             modal('at', "/view/ksm/007/b/index.xhtml").onClosed(() => {                
                 let data = getShared('outputScreenB');                
             });
