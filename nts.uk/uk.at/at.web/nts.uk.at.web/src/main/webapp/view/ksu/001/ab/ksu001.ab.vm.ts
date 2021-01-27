@@ -100,9 +100,9 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
 
                 let itemSelected;
                 if(wkpTimeCd === 'none'){
-                    itemSelected = _.find(ds, f => f.code === '');
+                    itemSelected = _.find(ds, f => f.id === 'none');
                 }else if(wkpTimeCd === 'deferred'){
-                    itemSelected = _.find(ds, f => f.code === ' ');
+                    itemSelected = _.find(ds, f => f.id === 'deferred');
                 }else{
                     itemSelected = _.find(ds, f => f.code === wkpTimeCd);
                 }
@@ -174,7 +174,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         achievements: false,
                         workHolidayCls: objWorkType[0].workStyle
                     });
-                    self.isRedColor = true;
+                    self.isRedColor = false;
                 } else if (objWorkType[0].workTimeSetting != 2 && objWorkType[0].workStyle == 0) { // HOLIDAY
                     $("#extable").exTable("stickFields", ["workTypeName", "workTimeName", "startTime", "endTime"]);
                     // 貼り付けのパターン3
@@ -250,7 +250,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         achievements: false,
                         workHolidayCls: objWorkType[0].workStyle
                     });
-                    self.isRedColor = true;
+                    self.isRedColor = false;
                 } else {
                     $("#extable").exTable("stickFields", ["workTypeName", "workTimeName"]);
                     $("#extable").exTable("stickData", {
