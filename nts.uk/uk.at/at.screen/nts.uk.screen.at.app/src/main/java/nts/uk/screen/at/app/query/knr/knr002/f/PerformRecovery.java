@@ -11,7 +11,9 @@ import nts.uk.ctx.at.record.app.command.knr.knr002.f.TimeRecordSettingUpdateRegi
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.NRLMachineInfo;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.TimeRecordSetFormat;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.TimeRecordSetFormatList;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.repo.TimeRecordSetFormatBakRepository;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.repo.TimeRecordSetFormatListRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -30,7 +32,9 @@ public class PerformRecovery {
 	//	タイムレコード設定更新に登録するCommandHandler.handle
 	@Inject
 	TimeRecordSettingUpdateRegisterCommandHandler timeRecordSettingUpdateRegisterCommandHandler;
-
+	//	タイムレコード設定フォーマットリストRepository.get
+	@Inject
+	private TimeRecordSetFormatListRepository timeRecordSetFormatListRepository;
 	/**
 	 * @param empInfoTerCode
 	 * @param terminalCodeList
@@ -48,9 +52,14 @@ public class PerformRecovery {
 													   		(contractCode,
 													   		new EmpInfoTerminalCode(empInfoTerCode));
 		//	2. 登録する(契約コード、復旧先就業情報端末コード<List>、タイムレコード設定フォーマット<List>)
-		List<NRLMachineInfo> nrlMachineInfoList = this.timeRecordSetFormatBakRepository.get(contractCode).stream()
+		List<TimeRecordSetFormatList> machineInfoLst = this.timeRecordSetFormatListRepository
+				   .get(contractCode, terminalCodeList.stream().map(e -> new EmpInfoTerminalCode(e)).collect(Collectors.toList()));
+		List<NRLMachineInfo> nrlMachineInfoList = machineInfoLst.stream()
 													  .map(e -> 
-														  new NRLMachineInfo(e.getEmpInfoTerCode(), e.getEmpInfoTerName(), e.getRomVersion(), e.getModelEmpInfoTer())
+														  new NRLMachineInfo(e.getEmpInfoTerCode(),
+																  e.getEmpInfoTerName(),
+																  e.getRomVersion(),
+																  e.getModelEmpInfoTer())
 													  ).collect(Collectors.toList());
 		this.timeRecordSettingUpdateRegisterCommandHandler
 			.handle(new TimeRecordSettingUpdateRegisterCommand(
