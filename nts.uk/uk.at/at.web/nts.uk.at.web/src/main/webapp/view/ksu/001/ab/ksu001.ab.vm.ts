@@ -169,8 +169,8 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         $("#extable").exTable("stickData", {
                             workTypeCode: objWorkType[0].workTypeCode,
                             workTypeName: objWorkType[0].abbName,
-                            workTimeCode: (objWorkTime != null) ? (objWorkTime.code) : null,
-                            workTimeName: (objWorkTime != null && objWorkTime.code != '') ? (objWorkTime.nameAb) : null,
+                            workTimeCode: null,
+                            workTimeName: null,
                             startTime: '',
                             endTime: '',
                             achievements: false,
