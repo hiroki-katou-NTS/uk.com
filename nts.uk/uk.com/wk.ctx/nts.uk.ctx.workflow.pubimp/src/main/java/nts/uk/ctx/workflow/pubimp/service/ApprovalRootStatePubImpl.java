@@ -659,42 +659,6 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 		return false;
 	}
 	@Override
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public boolean checkDataApproveed(GeneralDate startDate, GeneralDate endDate, String approverID, Integer rootType,
-			String companyID ) {
-	/*	List<ApprovalRootState> approvalRootStates = new ArrayList<>();
-		if(rootType == null){
-			// xử lí 承認者と期間から承認ルートインスタンスを取得する（ルート種類指定なし）
-			 approvalRootStates = this.approvalRootStateRepository
-					.findEmployeeAppByApprovalRecordDateAndNoRootType(companyID, startDate, endDate, approverID);
-			 
-		}else{
-			// 承認者と期間から承認ルートインスタンスを取得する
-			 approvalRootStates = this.approvalRootStateRepository
-					.findByApprover(companyID, startDate, endDate, approverID, rootType);
-		}
-		if(CollectionUtil.isEmpty(approvalRootStates)){
-			return false;
-		}
-		boolean result = false;
-		for(ApprovalRootState approval : approvalRootStates){
-			ApproverPersonExportNew approverPersonExport = this.judgmentTargetPersonCanApprove(companyID,approval.getRootStateID(),approverID, rootType);
-			if(approverPersonExport.getAuthorFlag() && 
-					approverPersonExport.getApprovalAtr().equals(ApprovalBehaviorAtrExport.UNAPPROVED) && 
-					!approverPersonExport.getExpirationAgentFlag() &&
-					(approverPersonExport.getApprovalPhaseAtr()==ApprovalBehaviorAtrExport.UNAPPROVED || approverPersonExport.getApprovalPhaseAtr()==ApprovalBehaviorAtrExport.REMAND)){
-				result = true;
-				break;
-			}else{
-				result = false;
-			}
-		}*/
-		//Phan code comment là xử lý cũ của RQ 190 - Update theo bug http://192.168.50.4:3000/issues/108043
-		
-		boolean result = approvalRootStateRepository.resultKTG002(startDate, endDate, approverID, rootType, companyID); 
-		return result;
-	}
-	@Override
 	// RequestList229
 	public List<ApproveRootStatusForEmpExport> getApprovalByListEmplAndDate(GeneralDate startDate, GeneralDate endDate,
 			List<String> employeeIDs, String companyID, Integer rootType) {
