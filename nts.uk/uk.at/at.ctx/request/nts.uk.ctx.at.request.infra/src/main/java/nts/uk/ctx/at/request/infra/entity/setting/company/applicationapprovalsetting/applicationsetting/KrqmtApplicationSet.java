@@ -1,9 +1,6 @@
 package nts.uk.ctx.at.request.infra.entity.setting.company.applicationapprovalsetting.applicationsetting;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSetting;
@@ -37,6 +34,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Table(name = "KRQMT_APPLICATION")
 @Getter
+@Setter
 public class KrqmtApplicationSet extends ContractUkJpaEntity {
 
     @Id
@@ -84,13 +82,13 @@ public class KrqmtApplicationSet extends ContractUkJpaEntity {
     private int timeNightReflectAtr;
 
     @OneToMany(mappedBy = "applicationSetting", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<KrqmtAppMclose> appDeadlineSetings = new ArrayList<>();
+    private List<KrqmtAppMclose> appDeadlineSetings;
 
     @OneToMany(mappedBy = "applicationSetting", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<KrqmtRepresentApp> appProxySettings = new ArrayList<>();
+    private List<KrqmtRepresentApp> appProxySettings;
 
     @OneToMany(mappedBy = "applicationSetting", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<KrqmtAppType> appTypeSettings = new ArrayList<>();
+    private List<KrqmtAppType> appTypeSettings;
 
     @Override
     protected Object getKey() {

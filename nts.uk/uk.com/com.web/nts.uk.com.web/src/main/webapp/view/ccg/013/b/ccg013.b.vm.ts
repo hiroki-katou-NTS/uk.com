@@ -17,7 +17,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
         allPart: KnockoutObservableArray<any>;
         listStandardMenu: KnockoutObservableArray<any>;
         columns: KnockoutObservableArray<any>;
-        selectedStandardMenuKey: KnockoutObservable<string>;
+        selectedStandardMenuKey: KnockoutObservable<any>;
         textOption: KnockoutObservable<nts.uk.ui.option.TextEditorOption>;
 
         constructor() {
@@ -36,9 +36,16 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             self.allPart = ko.observableArray([]);
             self.listStandardMenu = ko.observableArray([]);
             self.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("CCG013_26"), prop: 'code', key: 'code', width: '60px' },
-                { headerText: nts.uk.resource.getText("CCG013_27"), prop: 'displayName', key: 'displayName', width: '200px' },
-                { headerText: '', prop: 'uniqueCode', key: 'uniqueCode', width: '0px', display: 'none' }
+                { headerText: '', prop: 'code', key: 'code', width: '0px', hidden: true },
+                { headerText: '', prop: 'uniqueCode', key: 'uniqueCode', width: '0px', hidden: true },
+                {
+                    headerText: nts.uk.resource.getText("CCG013_26"),
+                    prop: 'displayOrder',
+                    key: 'displayOrder',
+                    width: '60px',
+                    template: '<div style="text-align: right">${displayOrder}</div>',
+                },
+                { headerText: nts.uk.resource.getText("CCG013_27"), prop: 'displayName', key: 'displayName', width: '200px' }
             ]);
             self.selectedStandardMenuKey = ko.observable('');
             //Follow SystemSelect
@@ -64,9 +71,15 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             /** Get EditMenuBar*/
             service.getEditMenuBar().done(function(editMenuBar: service.EditMenuBarDto) {
                 self.itemRadioAtcClass(editMenuBar.listSelectedAtr);
-                self.listSystemSelect(editMenuBar.listSystem);
-                _.forEach(editMenuBar.listStandardMenu, (item) => {
+                const item1: any[] = [];
+                item1.push(new EnumConstant(5, nts.uk.resource.getText("CCG013_137"), nts.uk.resource.getText("CCG013_137")));
+                _.forEach(editMenuBar.listSystem, x => {
+                    item1.push(x);
+                })
+                self.listSystemSelect(item1.filter(x => x.value !== System.OFFICE_HELPER));
+                _.forEach(editMenuBar.listStandardMenu, (item, index) => {
                     self.allPart.push(new MenuBarDto(
+                        index,
                         item.afterLoginDisplay,
                         item.classification,
                         item.code,
@@ -81,13 +94,41 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
                         item.webMenuSetting
                     ));
                 });
-                self.selectedCodeSystemSelect(0);
+                self.selectedCodeSystemSelect(5);
                 self.selectedRadioAtcClass(editMenuBar.listSelectedAtr[0].value);
                 dfd.resolve();
             }).fail(function(error) {
                 dfd.reject();
                 alert(error.message);
+            }).always(() => {
+                $('#B1_3').focus();
             });
+
+            $('.content-search')
+            .on('click', '.search-btn', () => {
+                const $grid = $('#multi-list');
+
+                // Lay danh sach cac item duoc bind vao grid
+                const items = $grid.igGrid('option', 'dataSource');
+
+                // neu co item
+                if (items && items.length) {
+                    // lay ra item dau tien
+                    const [first] = items;
+
+                    // neu ton tai item dau tien
+                    if (first) {
+                        // lay ra khoa chinh
+                        const { uniqueCode } = first;
+
+                        if (uniqueCode) {
+                            // gan khoa chinh vao danh sach selected
+                            self.selectedStandardMenuKey(uniqueCode);
+                        }
+                    }
+                }
+            });
+
             return dfd.promise();
         }
 
@@ -125,7 +166,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
                         letterColor: self.letterColor(),
                         backgroundColor: self.backgroundColor(),
                         selectedRadioAtcClass: self.selectedRadioAtcClass(),
-                        system: self.selectedCodeSystemSelect(),
+                        system: _.find(self.listStandardMenu(), { uniqueCode: self.selectedStandardMenuKey() }).system,
                         menuCls: menuCls,
                     });
                     windows.setShared("CCG013B_MenuBar", menuBar);
@@ -142,7 +183,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
                     letterColor: self.letterColor(),
                     backgroundColor: self.backgroundColor(),
                     selectedRadioAtcClass: self.selectedRadioAtcClass(),
-                    system: self.selectedCodeSystemSelect(),
+                    system: 0,
                     menuCls: menuCls,
                 });
                 windows.setShared("CCG013B_MenuBar", menuBar);
@@ -160,15 +201,65 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
                 self.selectedStandardMenuKey(null);
         }
 
-        private changeSystem(value): void {
-            var self = this;
-            var standardMenus: any = _.chain(self.allPart())
-                .filter((item: any) => {
-                    if (item.system == 0 && item.classification == 8) return true;
-                    if (item.system == value) return true;
-                }).sortBy(['classification', 'code']).value();
-            self.listStandardMenu(standardMenus);
+        private changeSystem(value: number): void {
+            const self = this;
+            const newAllPart = _.orderBy(self.allPart(), ['system', 'displayOrder', 'code'], ['asc', 'asc', 'asc']);
+            let list001 = [];
+            const list002 = _.chain(newAllPart)
+                .filter(item =>
+                    item.system === System.COMMON &&
+                    item.classification === MenuClassification.TopPage &&
+                    item.webMenuSetting === WebMenuSetting.Display
+                )
+                .value();
+            if (value === System.ALL) {
+                list001 = _.chain(newAllPart)
+                    .filter(item =>
+                        item.classification !== MenuClassification.TopPage &&
+                        item.classification !== MenuClassification.OfficeHelper &&
+                        item.webMenuSetting === WebMenuSetting.Display
+                    )
+                    .value();
+            } else {
+                list001 = _.chain(newAllPart)
+                    .filter(item =>
+                        item.system === value &&
+                        item.classification !== MenuClassification.TopPage &&
+                        item.classification !== MenuClassification.OfficeHelper &&
+                        item.webMenuSetting === WebMenuSetting.Display
+                    )
+                    .value();
+            }
+            const listStandardMenu = _.concat(list001, list002);
+            self.listStandardMenu(listStandardMenu);
         }
+    }
+
+    enum WebMenuSetting {
+        Notdisplay = 0,
+        Display = 1
+    }
+
+    enum MenuClassification {
+        Standard = 0,
+        OptionalItemApplication = 1,
+        MobilePhone = 2,
+        Tablet = 3,
+        CodeName = 4,
+        GroupCompanyMenu = 5,
+        Customize = 6,
+        OfficeHelper = 7,
+        TopPage = 8,
+        SmartPhone = 9
+    }
+
+    enum System {
+        COMMON = 0,
+        TIME_SHEET = 1,
+        OFFICE_HELPER = 2,
+        KYUYOU = 3,
+        JINJIROU= 4,
+        ALL = 5
     }
 
     interface IMenuBar {
@@ -204,6 +295,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
     }
 
     class MenuBarDto {
+        index: number;
         afterLoginDisplay: number;
         classification: number;
         code: string;
@@ -218,7 +310,8 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
         webMenuSetting: number;
         uniqueCode: string;
 
-        constructor(afterLoginDisplay: number, classification: number, code: string, companyId: string, displayName: string, displayOrder: number, logSettingDisplay: number, menuAtr: number, system: number, targetItems: string, url: string, webMenuSetting: number) {
+        constructor(index: number, afterLoginDisplay: number, classification: number, code: string, companyId: string, displayName: string, displayOrder: number, logSettingDisplay: number, menuAtr: number, system: number, targetItems: string, url: string, webMenuSetting: number) {
+            this.index = index;
             this.afterLoginDisplay = afterLoginDisplay;
             this.classification = classification;
             this.code = code;
@@ -231,7 +324,18 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             this.targetItems = targetItems;
             this.url = url;
             this.webMenuSetting = webMenuSetting;
-            this.uniqueCode = nts.uk.text.format("{0}{1}{2}", code, system, classification);;
+            this.uniqueCode = nts.uk.util.randomId();
+        }
+    }
+
+    export class EnumConstant {
+        value: number;
+        fieldName: string;
+        localizedName: string;
+        constructor(value: number, fieldName: string, localizedName: string) {
+            this.value = value;
+            this.fieldName = fieldName;
+            this.localizedName = localizedName;
         }
     }
 }

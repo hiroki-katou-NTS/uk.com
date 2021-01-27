@@ -9,13 +9,20 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AppRootInsPeriodImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverApproveImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverApprovedImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverPersonImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverRemandImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.EmpPerformMonthParamAt;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Request533Import;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 public interface ApprovalRootStateAdapter {
 	/**
@@ -167,5 +174,59 @@ public interface ApprovalRootStateAdapter {
      * @return
      */
     public Map<String,List<ApprovalPhaseStateImport_New>> getApprovalPhaseByID(List<String> appIDLst);
+    
+    /**
+     * Request 533
+     * @param empPerformMonthParamLst
+     * @return
+     */
+    public Request533Import getAppRootStatusByEmpsMonth(List<EmpPerformMonthParamAt> empPerformMonthParamLst);
+    
+    /**
+	 * RequestList 672
+	 * @param employeeIDLst
+	 * @param period
+	 * @param rootType
+	 * @return
+	 */
+	public List<ApprovalRootStateImport_New> getAppRootInstanceDayByEmpPeriod(List<String> employeeIDLst, DatePeriod period, Integer rootType);
+	
+	/**
+	 * RequestList 673
+	 * @param employeeID
+	 * @param period
+	 * @return
+	 */
+	public ApprovalRootStateImport_New getAppRootInstanceMonthByEmpPeriod(String employeeID, DatePeriod period, YearMonth yearMonth, Integer closureID,
+			ClosureDate closureDate, GeneralDate baseDate);
+	
+	/**
+	 * RequestList 115
+	 * @param employeeIDLst
+	 * @param dateLst
+	 * @param rootType
+	 * @return
+	 */
+	public List<ApproverApproveImport> getApproverByDateLst(List<String> employeeIDLst, List<GeneralDate> dateLst, Integer rootType); 
+	
+	/**
+	 * RequestList 538
+	 * @param employeeID
+	 * @param closureID
+	 * @param yearMonth
+	 * @param closureDate
+	 * @param date
+	 * @return
+	 */
+	public ApproverApproveImport getApproverByPeriodMonth(String employeeID, Integer closureID, YearMonth yearMonth, ClosureDate closureDate, GeneralDate date); 
+	
+	/**
+	 * RequestList 709
+	 * @param employeeIDLst
+	 * @param period
+	 * @param rootType
+	 * @return
+	 */
+	public List<AppRootInsPeriodImport> getAppRootInstanceByEmpPeriod(List<String> employeeIDLst, DatePeriod period, Integer rootType);
     
 }

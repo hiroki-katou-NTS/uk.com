@@ -22,37 +22,35 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.daily.Month;
 @NoArgsConstructor
 public class EndDate extends DomainObject {
 
-	/**終了日の指定方法*/
+	/** 終了日の指定方法 */
 	private EndSpecify endSpecify;
-	
-	/**Closing Date*/
-	// 締め日指定
+
+	/** 締め日指定の月数 */
 	private Optional<Month> endMonth = Optional.empty();
-	
-	/**Specify number of days*/
-	// 日数指定
-	private Optional<Days> endDays = Optional.empty();
+
+	/** 日数指定の日 */
+	private Optional<Days> endDays = Optional.empty(); // Number of days specified
 
 	public EndDate(int endSpecify) {
 		this.endSpecify = EnumAdaptor.valueOf(endSpecify, EndSpecify.class);
 	}
-	
+
 	public void setEndDay(PreviousClassification monthPrevious, int day, boolean makeToDay) {
 		this.endDays = Optional.of(new Days(monthPrevious, day, makeToDay));
 	}
-	
+
 	public void setEndMonth(PreviousClassification monthPrevious, int month, boolean currentMonth) {
 		this.endMonth = Optional.of(new Month(monthPrevious, month, currentMonth));
 	}
-	
+
     @Override
     public void validate() {
     	CompositeObjectValidationService.validate(this);
-    	if (endSpecify == EndSpecify.MONTH && !endMonth.isPresent()) {
-    		throw new RuntimeException("Empty month roi con di");
+    	if (this.endSpecify == EndSpecify.MONTH && !this.endMonth.isPresent()) {
+    		throw new RuntimeException("End month is required!");
     	}
-    	if (endSpecify == EndSpecify.DAYS && !endDays.isPresent()) {
-    		throw new RuntimeException("Empty day roi con di");
+    	if (this.endSpecify == EndSpecify.DAYS && !this.endDays.isPresent()) {
+    		throw new RuntimeException("End days are required!");
     	}
     }
 }

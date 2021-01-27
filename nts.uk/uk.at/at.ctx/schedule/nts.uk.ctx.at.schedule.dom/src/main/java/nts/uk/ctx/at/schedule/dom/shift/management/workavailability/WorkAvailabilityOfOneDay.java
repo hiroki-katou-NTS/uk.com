@@ -50,6 +50,7 @@ public class WorkAvailabilityOfOneDay implements DomainAggregate{
 	 * @return
 	 */
 	public static WorkAvailabilityOfOneDay create(
+			WorkAvailability.Require require,
 			String employeeId,
 			GeneralDate availabilityDate,
 			WorkAvailabilityMemo memo,
@@ -62,7 +63,7 @@ public class WorkAvailabilityOfOneDay implements DomainAggregate{
 		switch (assignmentMethod) {
 		
 			case SHIFT:
-				workAvailability = WorkAvailabilityByShiftMaster.create(shiftMasterCodeList); break;
+				workAvailability = WorkAvailabilityByShiftMaster.create(require, shiftMasterCodeList); break;
 				
 			case TIME_ZONE:
 				workAvailability = WorkAvailabilityByTimeZone.create(timeZoneList); break;
@@ -79,8 +80,8 @@ public class WorkAvailabilityOfOneDay implements DomainAggregate{
 	 * 
 	 * @return 出した勤務希望が休日の種類かどうか
 	 */
-	public boolean isHolidayAvailability() {
-		return this.workAvailability.isHolidayAvailability();
+	public boolean isHolidayAvailability(Require require) {
+		return this.workAvailability.isHolidayAvailability(require);
 	}
 	
 	/**

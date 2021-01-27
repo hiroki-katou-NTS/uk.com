@@ -1,14 +1,17 @@
 package nts.uk.screen.at.app.ksu003.sortemployee;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.schedule.dom.adapter.classification.SyClassificationAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.jobtitle.PositionImport;
 import nts.uk.ctx.at.schedule.dom.adapter.jobtitle.SyJobTitleAdapter;
@@ -16,16 +19,16 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.EmpClassifiImport;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.EmployeePosition;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortSetting;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort.SortSettingRepository;
-import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.EmpMedicalWorkFormHisItem;
-import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
-import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.NurseClassification;
-import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.NurseClassificationRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.EmployeeRank;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.EmployeeRankRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankPriority;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeam;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeamRepository;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkFormHisItem;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassificationRepository;
 import nts.uk.shr.com.context.AppContexts;
 /**
  * 社員を並び替える
@@ -56,8 +59,7 @@ public class SortEmployeesSc {
 	public List<String> sortEmployee(SortEmployeeParam param){
 		
 		GeneralDate ymd = GeneralDate.fromString(param.getYmd(), "yyyy/MM/dd");
-		List<String> lstEmpId = param.getLstEmpId();
-		List<String> lstSortEmployee = new ArrayList<>();
+		List<EmpIdCodeDto> lstEmpId = param.getLstEmpId();
 		
 		// 1 .並び順に基づいて社員を並び替える(Require, 年月日, List<社員ID>)
 		RequireSortEmpImpl empImpl = new RequireSortEmpImpl(belongScheduleTeamRepo, employeeRankRepo, 
@@ -67,12 +69,16 @@ public class SortEmployeesSc {
 		Optional<SortSetting> sortSetting = sortSettingRepo.get(AppContexts.user().companyId());
 		// if $並び替え設定.empty---return 社員IDリスト
 		if (!sortSetting.isPresent()) {
-			return lstEmpId;
+			return lstEmpId.stream().map(x-> x.empId).collect(Collectors.toList());
 		}
+		lstEmpId.sort( Comparator.comparing(EmpIdCodeDto :: getCode));
+		List<String> sids2 = lstEmpId.stream().map(m -> m.empId).collect(Collectors.toList());
 		
-		lstSortEmployee = sortSetting.get().sort(empImpl, ymd, lstEmpId);	
+		List<String> lstSortEmployee = sortSetting.get().sort(empImpl, ymd, sids2);	
 		
-		return lstSortEmployee;
+		lstEmpId.sort(Comparator.comparing(v-> lstSortEmployee.indexOf(v.empId)));
+		
+		return lstEmpId.stream().map(x-> x.empId).collect(Collectors.toList());
 	}
 	
 	@AllArgsConstructor

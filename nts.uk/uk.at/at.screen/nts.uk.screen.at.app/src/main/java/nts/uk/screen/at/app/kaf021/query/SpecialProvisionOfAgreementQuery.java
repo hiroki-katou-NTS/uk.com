@@ -2,8 +2,6 @@ package nts.uk.screen.at.app.kaf021.query;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.error.BusinessException;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -18,12 +16,12 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementTime;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementTimeOfMngPeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.*;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
+import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.*;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
-import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
 import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
 import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
 import nts.uk.query.model.employee.EmployeeInformation;
@@ -78,33 +76,34 @@ public class SpecialProvisionOfAgreementQuery {
         AgreementOperationSetting setting = getSetting(cid);
 
         // <call>(会社ID):List＜締めID, 現在の締め期間＞
-        CurrentClosurePeriod closurePeriod = getClosure(cid);
+        List<CurrentClosurePeriod> closurePeriods = closurePeriodForAllQuery.get(cid);
 
-        return new StartupInfo(new AgreementOperationSettingDto(setting), closurePeriod.getProcessingYm().v());
+        return new StartupInfo(new AgreementOperationSettingDto(setting), closurePeriods.stream().map(x ->
+                new CurrentClosurePeriodDto(x.getClosureId(), x.getProcessingYm().v())).collect(Collectors.toList()));
     }
 
     /**
      * UKDesign.UniversalK.就業.KAF_申請.KAF021_36協定特別条項の適用申請.A：36協定特別条項の適用申請（対象者選択）.メニュー別OCD
      * 抽出した社員情報を一覧表示する（当月の申請種類）
      */
-    public List<EmployeeAgreementTimeDto> getEmloyeeInfoForCurrentMonth(List<EmployeeBasicInfoDto> employees) {
-        return getAgreementTime(employees, 0, false);
+    public List<EmployeeAgreementTimeDto> getEmloyeeInfoForCurrentMonth(List<EmployeeBasicInfoDto> employees, int currentYm) {
+        return getAgreementTime(employees, 0, false, YearMonth.of(currentYm));
     }
 
     /**
      * UKDesign.UniversalK.就業.KAF_申請.KAF021_36協定特別条項の適用申請.A：36協定特別条項の適用申請（対象者選択）.メニュー別OCD
      * 抽出した社員情報を一覧表示する（翌月の申請種類）
      */
-    public List<EmployeeAgreementTimeDto> getEmloyeeInfoForNextMonth(List<EmployeeBasicInfoDto> employees) {
-        return getAgreementTime(employees, 1, false);
+    public List<EmployeeAgreementTimeDto> getEmloyeeInfoForNextMonth(List<EmployeeBasicInfoDto> employees, int currentYm) {
+        return getAgreementTime(employees, 1, false, YearMonth.of(currentYm));
     }
 
     /**
      * UKDesign.UniversalK.就業.KAF_申請.KAF021_36協定特別条項の適用申請.A：36協定特別条項の適用申請（対象者選択）.メニュー別OCD
      * 抽出した社員情報を一覧表示する（年間の申請種類）
      */
-    public List<EmployeeAgreementTimeDto> getEmloyeeInfoForYear(List<EmployeeBasicInfoDto> employees) {
-        return getAgreementTime(employees, 0, true);
+    public List<EmployeeAgreementTimeDto> getEmloyeeInfoForYear(List<EmployeeBasicInfoDto> employees, int currentYm) {
+        return getAgreementTime(employees, 0, true, YearMonth.of(currentYm));
     }
 
     /**
@@ -330,32 +329,23 @@ public class SpecialProvisionOfAgreementQuery {
         return result;
     }
 
-    private List<EmployeeAgreementTimeDto> getAgreementTime(List<EmployeeBasicInfoDto> employees, int monthAdd, boolean isYearMode) {
+    private List<EmployeeAgreementTimeDto> getAgreementTime(List<EmployeeBasicInfoDto> employees, int monthAdd, boolean isYearMode, YearMonth currentYm) {
         if (CollectionUtil.isEmpty(employees)) return new ArrayList<>();
         String cid = AppContexts.user().companyId();
-        String sid = employees.get(0).getEmployeeId();
         GeneralDate baseDate = GeneralDate.today();
         val require = requireService.createRequire();
-        val cacheCarrier = new CacheCarrier();
         List<String> employeeIds = employees.stream().map(EmployeeBasicInfoDto::getEmployeeId).distinct()
                 .collect(Collectors.toList());
 
         // get(会社ID):36協定運用設定
         AgreementOperationSetting setting = getSetting(cid);
 
-        // 社員に対応する処理締めを取得する
-        Closure closureInfo = ClosureService.getClosureDataByEmployee(require, cacheCarrier, sid, baseDate);
-
-        // 年月を指定して、36協定期間の年月を取得する
-        if (closureInfo == null) {
-            throw new RuntimeException("Closure is null!");
-        }
-        YearMonth currentYm = closureInfo.getClosureMonth().getProcessingYm().addMonths(monthAdd);
-        YearMonth startY = setting.getYearMonthOfAgreementPeriod(currentYm);
+        YearMonth ym = currentYm.addMonths(monthAdd);
+        YearMonth startY = setting.getYearMonthOfAgreementPeriod(ym);
         YearMonth startYm = YearMonth.of(startY.year(), setting.getStartingMonth().getMonth());
         YearMonth endYm = startYm.addMonths(11);
-        YearMonthPeriod yearMonthPeriodBefore = new YearMonthPeriod(startYm, currentYm.addMonths(-1));
-        YearMonthPeriod yearMonthPeriodAfter = new YearMonthPeriod(currentYm, endYm);
+        YearMonthPeriod yearMonthPeriodBefore = new YearMonthPeriod(startYm, ym.addMonths(-1));
+        YearMonthPeriod yearMonthPeriodAfter = new YearMonthPeriod(ym, endYm);
         Map<String, Map<YearMonth, AgreementTimeOfManagePeriod>> agreementTimeAll = new HashMap<>();
         for (String employeeId : employeeIds) {
             agreementTimeAll.put(employeeId, new HashMap<>());
@@ -390,9 +380,17 @@ public class SpecialProvisionOfAgreementQuery {
         // [No.458]年間超過回数の取得
         Map<String, Integer> monthsExceededAll = getExcessTimesYearAdapter.algorithm(employeeIds, fiscalYear);
 
+        Map<String, BasicAgreementSetting> basicSettingAll = new HashMap<>();
         Map<String, AgreementTimeYear> agreementTimeYearAll = new HashMap<>();
         Map<String, AgreMaxAverageTimeMulti> agreMaxAverageTimeMultiAll = new HashMap<>();
         this.parallel.forEach(employees, employee -> {
+            // 年度指定して36協定基本設定を取得する
+            BasicAgreementSetting basicSetting = AgreementDomainService.getBasicSet(requireService.createRequire(), cid,
+                    employee.getEmployeeId(), GeneralDate.today(), fiscalYear);
+            if (basicSetting != null) {
+                basicSettingAll.put(employee.getEmployeeId(), basicSetting);
+            }
+
             Map<YearMonth, AgreementTimeOfManagePeriod> timeAll = agreementTimeAll.get(employee.getEmployeeId());
 
             // 36協定上限複数月平均時間と年間時間の取得(年度指定)
@@ -401,26 +399,28 @@ public class SpecialProvisionOfAgreementQuery {
             agreementTimeYearOpt.ifPresent(agreementTimeYear -> agreementTimeYearAll.put(employee.getEmployeeId(),
                     agreementTimeYear));
 
-            Map<YearMonth, AttendanceTimeMonth> times = timeAll.entrySet().stream()
-                    .filter(x -> x.getValue().getYm().greaterThanOrEqualTo(currentYm.addMonths(-5))
-                            && x.getValue().getYm().lessThanOrEqualTo(currentYm))
-                    .collect(Collectors.toMap(Map.Entry::getKey, x -> x.getValue().getAgreementTime().getAgreementTime()));
-            AgreMaxAverageTimeMulti agreMaxAverageTimeMulti = AggregateAgreementTimeByYM.aggregate(require,
-                    employee.getEmployeeId(), baseDate, currentYm, times);
-            if (agreMaxAverageTimeMulti != null) {
-                agreMaxAverageTimeMultiAll.put(employee.getEmployeeId(), agreMaxAverageTimeMulti);
+            if (!isYearMode) {
+                Map<YearMonth, AttendanceTimeMonth> times = timeAll.entrySet().stream()
+                        .filter(x -> x.getValue().getYm().greaterThanOrEqualTo(ym.addMonths(-5))
+                                && x.getValue().getYm().lessThanOrEqualTo(ym))
+                        .collect(Collectors.toMap(Map.Entry::getKey, x -> x.getValue().getAgreementTime().getAgreementTime()));
+                AgreMaxAverageTimeMulti agreMaxAverageTimeMulti = AggregateAgreementTimeByYM.aggregate(require,
+                        employee.getEmployeeId(), baseDate, ym, times);
+                if (agreMaxAverageTimeMulti != null) {
+                    agreMaxAverageTimeMultiAll.put(employee.getEmployeeId(), agreMaxAverageTimeMulti);
+                }
             }
         });
 
         List<EmployeeAgreementTimeDto> empAgreementTimes = mappingEmployee(employees, startYm, endYm, agreementTimeAll,
-                agreementTimeYearAll, agreMaxAverageTimeMultiAll, monthsExceededAll);
+                basicSettingAll, agreementTimeYearAll, agreMaxAverageTimeMultiAll, monthsExceededAll);
 
         this.parallel.forEach(empAgreementTimes, emp -> {
             Optional<SpecialProvisionsOfAgreement> specialAgreementOpt;
             if (isYearMode) {
                 specialAgreementOpt = specialProvisionsOfAgreementRepo.getByYear(emp.getEmployeeId(), fiscalYear);
             } else {
-                specialAgreementOpt = specialProvisionsOfAgreementRepo.getByYearMonth(emp.getEmployeeId(), currentYm);
+                specialAgreementOpt = specialProvisionsOfAgreementRepo.getByYearMonth(emp.getEmployeeId(), ym);
             }
 
             if (specialAgreementOpt.isPresent()) {
@@ -436,6 +436,7 @@ public class SpecialProvisionOfAgreementQuery {
     private List<EmployeeAgreementTimeDto> mappingEmployee(List<EmployeeBasicInfoDto> employees,
                                                            YearMonth startYm, YearMonth endYm,
                                                            Map<String, Map<YearMonth, AgreementTimeOfManagePeriod>> agreementTimeAll,
+                                                           Map<String, BasicAgreementSetting> basicSettingAll,
                                                            Map<String, AgreementTimeYear> agreementTimeYearAll,
                                                            Map<String, AgreMaxAverageTimeMulti> agreMaxAverageTimeMultiAll,
                                                            Map<String, Integer> monthsExceededAll) {
@@ -459,7 +460,7 @@ public class SpecialProvisionOfAgreementQuery {
             mappingPeriodMonth(result, yearMonthPeriod, agrTimePeriods);
 
             // fill data AgreementTimeOutput
-            mappingYearAndMonthAverage(result, startYm.year(), agreementTimeYearAll, agreMaxAverageTimeMultiAll);
+            mappingYearAndMonthAverage(result, startYm.year(), basicSettingAll, agreementTimeYearAll, agreMaxAverageTimeMultiAll);
 
             // fill data monthsExceeded
             result.setExceededNumber(monthsExceededAll.getOrDefault(result.getEmployeeId(), 0));
@@ -524,6 +525,7 @@ public class SpecialProvisionOfAgreementQuery {
 
     private void mappingYearAndMonthAverage(EmployeeAgreementTimeDto result,
                                             int year,
+                                            Map<String, BasicAgreementSetting> basicSettingAll,
                                             Map<String, AgreementTimeYear> agreementTimeYearAll,
                                             Map<String, AgreMaxAverageTimeMulti> agreMaxAverageTimeMultiAll) {
         // init
@@ -538,7 +540,8 @@ public class SpecialProvisionOfAgreementQuery {
             // fill year
             if (agreementTimeYearAll.containsKey(result.getEmployeeId())) {
                 AgreementTimeYear agreementTimeYear = agreementTimeYearAll.get(result.getEmployeeId());
-                result.setYear(new AgreementTimeYearDto(year, agreementTimeYear));
+                BasicAgreementSetting basicSetting = basicSettingAll.get(result.getEmployeeId());
+                result.setYear(new AgreementTimeYearDto(year, agreementTimeYear, basicSetting.getOneYear()));
             }
             // fill average range month
             if (agreMaxAverageTimeMultiAll.containsKey(result.getEmployeeId())) {
@@ -573,12 +576,6 @@ public class SpecialProvisionOfAgreementQuery {
         Optional<AgreementOperationSetting> settingOpt = agreementOperationSettingRepo.find(cid);
         if (!settingOpt.isPresent()) throw new RuntimeException("AgreementOperationSetting is null!");
         return settingOpt.get();
-    }
-
-    private CurrentClosurePeriod getClosure(String cid) {
-        List<CurrentClosurePeriod> closurePeriods = closurePeriodForAllQuery.get(cid);
-        if (CollectionUtil.isEmpty(closurePeriods)) throw new RuntimeException("CurrentClosurePeriod is null!");
-        return closurePeriods.get(0);
     }
 
     private DatePeriod getRangeDate(String cid) {

@@ -2,10 +2,11 @@ module nts.uk.at.view.kaf020.shr.viewmodel {
     @component({
         name: 'kaf020-share',
         template: `<!--B2_3-->
-            <div class="label m1" data-bind="text: name"></div>
+            <div id="kaf020-component">
+             <div class="label m1" data-bind="text: name"></div>
             <!--B2_4-->
             <div id="ruredLine"></div>
-            <table id="fixed-table">
+            <table id="kaf020-fixed-table">
                 <colgroup>
                     <col width="200px"/>
                     <col width="150px"/>
@@ -33,17 +34,36 @@ module nts.uk.at.view.kaf020.shr.viewmodel {
                         <!--time-->
                         <div data-bind="if: optionalItemAtr == 0">
                             <input class="input" tabindex="0"
-                                   data-bind="ntsTimeEditor: {name: '#[KAF020_22]', constraint: 'AnyItemTime', value: time, inputFormat: 'time', mode: 'time', enable: $parent.enableEdit() }"/>
+                                   data-bind="ntsTimeEditor: {
+                                            name: '#[KAF020_22]',
+                                            constraint: 'AnyItemTime',
+                                            value: time,
+                                            inputFormat: 'time',
+                                            mode: 'time',
+                                            enable: $parent.enableEdit() 
+                                        }, attr: {id: optionalItemNo}"/>
                         </div>
                         <!--number-->
                         <div data-bind="if: optionalItemAtr == 1">
                             <input class="input" tabindex="0"
-                                   data-bind="ntsNumberEditor: {name: '#[KAF020_22]', value: times, constraint: 'AnyItemTimes', option: {grouplength: 3, decimallength: 2}, enable: $parent.enableEdit() }"/>
+                                   data-bind="ntsNumberEditor: {
+                                            name: '#[KAF020_22]',
+                                            value: times,
+                                            constraint: 'AnyItemTimes',
+                                            option: {grouplength: 3, decimallength: 2},
+                                            enable: $parent.enableEdit() 
+                                       }, attr: {id: optionalItemNo}"/>
                         </div>
                         <!--amount-->
                         <div data-bind="if: optionalItemAtr == 2">
                             <input class="input" tabindex="0"
-                                   data-bind="ntsNumberEditor: {name: '#[KAF020_22]', value: amount, constraint: 'AnyItemAmount', option: {grouplength: 3}, enable: $parent.enableEdit() }"/>
+                                   data-bind="ntsNumberEditor: {
+                                            name: '#[KAF020_22]',
+                                            value: amount,
+                                            constraint: 'AnyItemAmount',
+                                            option: {grouplength: 3},
+                                            enable: $parent.enableEdit() 
+                                       }, attr: {id: optionalItemNo}"/>
                         </div>
                     </td>
                     <td style="vertical-align: top">
@@ -98,7 +118,9 @@ module nts.uk.at.view.kaf020.shr.viewmodel {
                     </td>
                 </tr>
                 </tbody>
-            </table>`,
+            </table>
+            </div>
+           `,
     })
 
     class Kaf020ShareViewModel extends ko.ViewModel {
@@ -119,7 +141,7 @@ module nts.uk.at.view.kaf020.shr.viewmodel {
                     value.appDispInfoStartupOutput().appDetailScreenInfo.outputMode == 1 ? vm.enableEdit(true) : vm.enableEdit(false);
                 }
             });
-            $('#fixed-table').ntsFixedTable({width: 740});
+            $('#kaf020-fixed-table').ntsFixedTable({width: 740});
         }
     }
 

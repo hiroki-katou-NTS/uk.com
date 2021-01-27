@@ -122,8 +122,8 @@ module nts.uk.at.view.kaf020.c.viewmodel {
                                 unit: optionalItem.unit,
                                 inputUnitOfTimeItem: controlOfAttendanceItem ? controlOfAttendanceItem.inputUnitOfTimeItem : null,
                                 description: optionalItem.description,
-                                timeUpper: optionalItem.calcResultRange.timeUpper != null ? nts.uk.time.format.byId("Clock_Short_HM", optionalItem.calcResultRange.timeUpper) : null,
-                                timeLower: optionalItem.calcResultRange.timeLower != null ? nts.uk.time.format.byId("Clock_Short_HM", optionalItem.calcResultRange.timeLower) : null,
+                                timeUpper: optionalItem.calcResultRange.timeUpper != null ? nts.uk.time.format.byId("Time_Short_HM", optionalItem.calcResultRange.timeUpper) : null,
+                                timeLower: optionalItem.calcResultRange.timeLower != null ? nts.uk.time.format.byId("Time_Short_HM", optionalItem.calcResultRange.timeLower) : null,
                                 amountLower: optionalItem.calcResultRange.amountLower,
                                 amountUpper: optionalItem.calcResultRange.amountUpper,
                                 numberLower: optionalItem.calcResultRange.numberLower,
@@ -200,6 +200,12 @@ module nts.uk.at.view.kaf020.c.viewmodel {
                     }
                 }).fail(err => {
                     if (err && err.messageId) {
+                        if (err && _.includes(["Msg_1692", "Msg_1693"], err.messageId) && err.parameterIds.length > 1) {
+                            let id = '#' + err.parameterIds[1];
+                            vm.$errors({
+                                [id]: err
+                            });
+                        }
                         if (err.messageId == "Msg_236" || err.messageId == "Msg_324" || err.messageId == "Msg_237" || err.messageId == "Msg_238") {
                             vm.$dialog.error(err);
                         }

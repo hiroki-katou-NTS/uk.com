@@ -179,7 +179,6 @@ export class KAFS08A1Component extends KafS00ShrComponent {
 
         let validAll: boolean = true;
 
-        vm.$mask('show');
         for (let child of vm.$children) {
             child.$validate();
             if (!child.$valid) {
@@ -369,7 +368,6 @@ export class KAFS08A1Component extends KafS00ShrComponent {
         };
         // if mode edit
         if (!vm.mode) {
-            paramb.newModeContent = null;
             paramb.detailModeContent = {
                 prePostAtr: vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.prePostAtr,
                 startDate: vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.opAppStartDate,

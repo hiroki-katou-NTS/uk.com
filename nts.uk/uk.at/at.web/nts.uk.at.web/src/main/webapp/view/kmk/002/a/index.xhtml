@@ -175,8 +175,8 @@
                               <tr>
                                  <td></td>
                                  <td></td>
-                                 <td class="text-center">日別範</td>
-                                 <td class="text-center">月別範</td>
+                                 <td class="text-center">#{i18n.getText('KMK002_115')}</td>
+                                 <td class="text-center">#{i18n.getText('KMK002_116')}</td>
                               </tr>
                               <tr>
                                  <!-- Calculation ResultRange -->
@@ -199,11 +199,12 @@
                                                       name: '#[KMK002_26]',
                                                       value: calcResultRange.numberUpperDay,
                                                       constraint: 'AnyItemTimes',
+                                                      required: isUpperRequiredDay,
                                                       option: {
                                                       grouplength: 3,
-                                                      decimallength: 1
+                                                      decimallength: 2
                                                       },
-                                                      enable: usageAtr() === 1 &amp;&amp; calcResultRange.upperCheck() &amp;&amp; $parents[1].langJP() &amp;&amp; performanceAtr() === 1}" />
+                                                      enable: enableUpperDay() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
                                        <!-- A3_26 -->
                                        <com:ko tag="if" bind="isAmountSelected()">
@@ -212,10 +213,11 @@
                                                       name: '#[KMK002_26]',
                                                       value: calcResultRange.amountUpperDay,
                                                       constraint: 'AnyItemAmount',
+                                                      required: isUpperRequiredDay,
                                                       option: {
                                                       grouplength: 3
                                                       },
-                                                      enable: usageAtr() === 1 &amp;&amp; calcResultRange.upperCheck() &amp;&amp; $parents[1].langJP() &amp;&amp; performanceAtr() === 1}" />
+                                                      enable: enableUpperDay() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
                                        <!-- A3_28 -->
                                        <com:ko tag="if" bind="isTimeSelected()">
@@ -224,9 +226,10 @@
                                                       name: '#[KMK002_26]',
                                                       value: calcResultRange.timeUpperDay,
                                                       constraint: 'AnyItemTime',
+                                                      required: isUpperRequiredDay,
                                                       inputFormat: 'time',
                                                       mode: 'time',
-                                                      enable: usageAtr() === 1 &amp;&amp; calcResultRange.upperCheck() &amp;&amp; $parents[1].langJP() &amp;&amp; performanceAtr() === 1}" />
+                                                      enable: enableUpperDay() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
                                     </div>
                                  </td>
@@ -239,11 +242,12 @@
                                                       name: '#[KMK002_26]',
                                                       value: calcResultRange.numberUpperMonth,
                                                       constraint: 'AnyTimesMonth',
+                                                      required: isUpperRequiredMonth,
                                                       option: {
                                                       grouplength: 3,
-                                                      decimallength: 1
+                                                      decimallength: 2
                                                       },
-                                                      enable: usageAtr() === 1 &amp;&amp; calcResultRange.upperCheck() &amp;&amp; $parents[1].langJP()}" />
+                                                      enable: enableUpperMonth() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
                                        <!-- A3_32 -->
                                        <com:ko tag="if" bind="isAmountSelected()">
@@ -252,10 +256,11 @@
                                                       name: '#[KMK002_26]',
                                                       value: calcResultRange.amountUpperMonth,
                                                       constraint: 'AnyAmountMonth',
+                                                      required: isUpperRequiredMonth,
                                                       option: {
                                                       grouplength: 3
                                                       },
-                                                      enable: usageAtr() === 1 &amp;&amp; calcResultRange.upperCheck() &amp;&amp; $parents[1].langJP()}" />
+                                                      enable: enableUpperMonth() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
                                        <!-- A3_34 -->
                                        <com:ko tag="if" bind="isTimeSelected()">
@@ -264,9 +269,10 @@
                                                       name: '#[KMK002_26]',
                                                       value: calcResultRange.timeUpperMonth,
                                                       constraint: 'AnyTimeMonth',
+                                                      required: isUpperRequiredMonth,
                                                       inputFormat: 'time',
                                                       mode: 'time',
-                                                      enable: usageAtr() === 1 &amp;&amp; calcResultRange.upperCheck() &amp;&amp; $parents[1].langJP()}" />
+                                                      enable: enableUpperMonth() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
                                     </div>
                                  </td>
@@ -290,11 +296,12 @@
                                                          name: '#[KMK002_27]',
                                                          value: calcResultRange.numberLowerDay,
                                                          constraint: 'AnyItemTimes',
+                                                         required: isLowerRequiredDay,
                                                          option: {
                                                          grouplength: 3,
-                                                         decimallength: 1
+                                                         decimallength: 2
                                                          },
-                                                         enable: usageAtr() === 1 &amp;&amp; calcResultRange.lowerCheck() &amp;&amp; $parents[1].langJP() &amp;&amp; performanceAtr() === 1}" />
+                                                         enable: enableLowerDay() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
                                        <!-- A3_27 -->
                                        <com:ko tag="if" bind="isTimeSelected()">
@@ -303,9 +310,10 @@
                                                          name: '#[KMK002_27]',
                                                          value: calcResultRange.timeLowerDay,
                                                          constraint: 'AnyItemTime',
+                                                         required: isLowerRequiredDay,
                                                          inputFormat: 'time',
                                                          mode: 'time',
-                                                         enable: usageAtr() === 1 &amp;&amp; calcResultRange.lowerCheck() &amp;&amp; $parents[1].langJP() &amp;&amp; performanceAtr() === 1}" />
+                                                         enable: enableLowerDay() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
                                        <!-- A3_29 -->
                                        <com:ko tag="if" bind="isAmountSelected()">
@@ -314,10 +322,11 @@
                                                          name: '#[KMK002_27]',
                                                          value: calcResultRange.amountLowerDay,
                                                          constraint: 'AnyItemAmount',
+                                                         required: isLowerRequiredDay,
                                                          option: {
                                                          grouplength: 3
                                                          },
-                                                         enable: usageAtr() === 1 &amp;&amp; calcResultRange.lowerCheck() &amp;&amp; $parents[1].langJP() &amp;&amp; performanceAtr() === 1}" />
+                                                         enable: enableLowerDay() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
                                     </div>
                                  </td>
@@ -330,11 +339,12 @@
                                                          name: '#[KMK002_27]',
                                                          value: calcResultRange.numberLowerMonth,
                                                          constraint: 'AnyTimesMonth',
+                                                         required: isLowerRequiredMonth,
                                                          option: {
                                                          grouplength: 3,
-                                                         decimallength: 1
+                                                         decimallength: 2
                                                          },
-                                                         enable: usageAtr() === 1 &amp;&amp; calcResultRange.lowerCheck() &amp;&amp; $parents[1].langJP()}" />
+                                                         enable: enableLowerMonth() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
                                        <!-- A3_33 -->
                                        <com:ko tag="if" bind="isTimeSelected()">
@@ -343,9 +353,10 @@
                                                          name: '#[KMK002_27]',
                                                          value: calcResultRange.timeLowerMonth,
                                                          constraint: 'AnyTimeMonth',
+                                                         required: isLowerRequiredMonth,
                                                          inputFormat: 'time',
                                                          mode: 'time',
-                                                         enable: usageAtr() === 1 &amp;&amp; calcResultRange.lowerCheck() &amp;&amp; $parents[1].langJP()}" />
+                                                         enable: enableLowerMonth() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
                                        <!-- A3_35 -->
                                        <com:ko tag="if" bind="isAmountSelected()">
@@ -354,10 +365,11 @@
                                                          name: '#[KMK002_27]',
                                                          value: calcResultRange.amountLowerMonth,
                                                          constraint: 'AnyAmountMonth',
+                                                         required: isLowerRequiredMonth,
                                                          option: {
                                                          grouplength: 3
                                                          },
-                                                         enable: usageAtr() === 1 &amp;&amp; calcResultRange.lowerCheck() &amp;&amp; $parents[1].langJP()}" />
+                                                         enable: enableLowerMonth() &amp;&amp; $parents[1].langJP()}" />
                                        </com:ko>
                                     </div>
                                  </td>
@@ -367,7 +379,7 @@
                         <div class="cell" style="padding-left: 10px;">
                            <div>
                               <div class="cell col-1">
-                                 <div data-bind="ntsFormLabel: {required: true, constraint: 'DescritionOptionalItem'}">
+                                 <div data-bind="ntsFormLabel: {required: false, constraint: 'DescritionOptionalItem'}">
                                     #{i18n.getText('KMK002_105')}</div>
                               </div>
                               <div class="cell" style="vertical-align: bottom;">
@@ -375,7 +387,7 @@
                                                    value: description,
                                                    constraint: 'DescritionOptionalItem',
                                                    name: '#[KMK002_106]',
-                                                   required: true,
+                                                   required: false,
                                                    enable: usageAtr() === 1 &amp;&amp; $parents[1].langJP(),
                                                    option: {
                                                       width: '300'

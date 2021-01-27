@@ -141,6 +141,7 @@ public class WorkType extends AggregateRoot implements Cloneable, Serializable{
 		this.dailyWork = dailyWork;
 		this.deprecate = deprecate;
 		this.calculateMethod = calculateMethod;
+		this.workTypeSetList = new ArrayList<>();
 	}
 	
 	public WorkType(WorkTypeCode workTypeCode, WorkTypeSymbolicName symbolicName, WorkTypeName name,
@@ -152,6 +153,7 @@ public class WorkType extends AggregateRoot implements Cloneable, Serializable{
 		this.abbreviationName = abbreviationName;
 		this.memo = memo;
 		this.dailyWork = dailyWork;
+		this.workTypeSetList = new ArrayList<>();
 	}
 
 	/**
@@ -534,5 +536,20 @@ public class WorkType extends AggregateRoot implements Cloneable, Serializable{
 
 	public void setWorkTypeCode(WorkTypeCode workTypeCode) {
 		this.workTypeCode = workTypeCode;
+	}
+
+	public void setDailyWork(DailyWork dailyWork) {
+		this.dailyWork = dailyWork;
+	}
+	
+	/**
+	 * 休出かどうかの判断
+	 * @return true=休出,false=休出ではない
+	 */
+	public boolean isHolidayWork(){
+		if (this.isOneDay()){
+			if (this.dailyWork.getOneDay() == WorkTypeClassification.HolidayWork) return true;
+		}
+		return false;
 	}
 }

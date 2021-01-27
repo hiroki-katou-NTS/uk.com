@@ -9,7 +9,6 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateDailyRecordServiceCenterNew;
 import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;
@@ -45,21 +44,21 @@ public class CorrectWorkSchedule {
 		//勤務予定から日別勤怠（Work）に変換する
 		//(tạo 1 biến class IntegrationOfDaily , biến nào k có thì để empty) (TKT-TQP)
 		
-		// để tạm để ko bị oẳng vì xử lý của Thanh đẹp zai
-		CalAttrOfDailyAttd calAttrOfDailyAttd = CalAttrOfDailyAttd.defaultData();
+		CalAttrOfDailyAttd calAttrOfDailyAttd = CalAttrOfDailyAttd.createAllCalculate();
 		IntegrationOfDaily integrationOfDaily = new IntegrationOfDaily(employeeId, targetDate, workSchedule.getWorkInfo(), calAttrOfDailyAttd, workSchedule.getAffInfo(), 
 				Optional.empty(), new ArrayList<>(), Optional.empty(), workSchedule.getLstBreakTime(), workSchedule.getOptAttendanceTime(), 
 				workSchedule.getOptTimeLeaving(), workSchedule.getOptSortTimeWork(), Optional.empty(), Optional.empty(), 
-				Optional.empty(), workSchedule.getLstEditState(), Optional.empty(), new ArrayList<>());
+				Optional.empty(), workSchedule.getLstEditState(), Optional.empty(), new ArrayList<>(), Optional.empty());
 		//勤怠ルールの補正処理 
 		
-		ChangeDailyAttendance changeAtt = new ChangeDailyAttendance(true, false, false, false);
+		ChangeDailyAttendance changeAtt = new ChangeDailyAttendance(true, false, false, false, true);
 		integrationOfDaily = rule.process(integrationOfDaily, changeAtt);
+		
 		//勤務予定情報を計算する
 		integrationOfDaily = this.calcWorkScheduleInfo(integrationOfDaily, employeeId, targetDate).get(0);
 		
 		WorkSchedule workSchedules = new WorkSchedule(integrationOfDaily.getEmployeeId(),
-				integrationOfDaily.getYmd(), ConfirmedATR.UNSETTLED, integrationOfDaily.getWorkInformation(),
+				integrationOfDaily.getYmd(), workSchedule.getConfirmedATR(), integrationOfDaily.getWorkInformation(),
 				integrationOfDaily.getAffiliationInfor(), integrationOfDaily.getBreakTime(),
 				integrationOfDaily.getEditState(), integrationOfDaily.getAttendanceLeave(),
 				integrationOfDaily.getAttendanceTimeOfDailyPerformance(), integrationOfDaily.getShortTime());

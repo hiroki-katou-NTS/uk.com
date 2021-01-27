@@ -27,6 +27,12 @@ public class BreakTimeKdl045Dto {
 	 * 休憩時間帯
 	 */
 	private List<TimeSpanForCalcDto> timeZoneList;
+	
+	/**
+	 * 　Optional<出勤休日区分>
+	 * return Enum : WorkStyle
+	 */
+	private Integer workStyle;
 
 	public BreakTimeKdl045Dto(boolean fixBreakTime, List<TimeSpanForCalcDto> timeZoneList) {
 		super();

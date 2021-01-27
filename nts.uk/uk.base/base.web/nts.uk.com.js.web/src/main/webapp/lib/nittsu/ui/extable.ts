@@ -960,7 +960,7 @@ module nts.uk.ui.exTable {
                         td.appendChild(icon);
                     } else if (!column.control) {
                         tdStyle += " text-overflow: ellipsis; -ms-text-overflow: ellipsis;";
-                        td.innerText = data;
+                        td.innerText = _.isNil(data) ? "" : data;
                     }
                     controls.check(td, column, data, helper.call(column.handler, rData, rowIdx, key));
 //                    cellHandler.rClick(td, column, helper.call(column.rightClick, rData, rowIdx, key));
@@ -1588,11 +1588,13 @@ module nts.uk.ui.exTable {
                             }
                         }
                         
-                        if (fieldArr) {
-                            fields = [ fieldArr[i] ];
-                        }
+                        // Compare each inner separately to color
+//                        if (fieldArr) {
+//                            fields = [ fieldArr[i] ];
+//                        }
+                        
                         let cellObj = new selection.Cell(rowIdx, columnKey, valueObj, i);
-                        let mTouch = trace(origDs, $c, cellObj, fields, x.manipulatorId, x.manipulatorKey);
+                        let mTouch = trace(origDs, $c, cellObj, fieldArr, x.manipulatorId, x.manipulatorKey);
 //                        if (innerIdx === - 1 || _.isNil(innerIdx)) {
                             if ((!touched || (touched && !touched.dirty)) && mTouch && mTouch.dirty) { 
                                 touched = mTouch;
@@ -1677,7 +1679,12 @@ module nts.uk.ui.exTable {
                     $.data($cell, "hide", value);
                     $cell.innerHTML = "";
                 } else {
-                    $cell.textContent = value;
+                    let $controlIn;
+                    if (($controlIn = $cell.querySelector("a")) || ($controlIn = $cell.querySelector("button"))) {
+                        $controlIn.innerText = value;
+                    } else {
+                        $cell.textContent = value;
+                    }
                 }
                 
                 let cellObj = new selection.Cell(rowIdx, columnKey, valueObj, -1);
@@ -1761,11 +1768,12 @@ module nts.uk.ui.exTable {
                                         validation.validate($exTable, $grid, $c, rowIdx, key, i, d);
                                     }
                                     
-                                    if (fieldArr) {
-                                        fields = [ fieldArr[i] ];
-                                    }
+                                    // Compare each inner separately to color
+//                                    if (fieldArr) {
+//                                        fields = [ fieldArr[i] ];
+//                                    }
                                     cellObj = new selection.Cell(rowIdx, key, data[key], i);
-                                    let mTouch = trace(origDs, $c, cellObj, fields, x.manipulatorId, x.manipulatorKey);
+                                    let mTouch = trace(origDs, $c, cellObj, fieldArr, x.manipulatorId, x.manipulatorKey);
                                     if ((!touched || (touched && !touched.dirty)) && mTouch && mTouch.dirty) { 
                                         touched = mTouch;
                                     }
@@ -2404,7 +2412,7 @@ module nts.uk.ui.exTable {
                             errPopup.innerHTML = errMsg;
                             let offset = selector.offset($cell);
                             let bodyRowHeight = parseFloat($.data($exTable, NAMESPACE).bodyRowHeight);
-                            let offsetHeight = !_.isNil($cell.style.height) ? parseFloat($cell.style.height)
+                            let offsetHeight = !_.isNil($cell.style.height) && $cell.style.height !== "" ? parseFloat($cell.style.height)
                                 : (isNaN(bodyRowHeight) ? 50 : bodyRowHeight);
                             errPopup.style.top = `${offset.top + offsetHeight + 2}px`;
                             errPopup.style.left = `${offset.left}px`;
@@ -2418,13 +2426,22 @@ module nts.uk.ui.exTable {
                 update.edit($exTable, $cell, options.containerClass);
             });
             
-            $cell.addXEventListener(events.KEY_UP, function() {
+            $cell.addXEventListener(events.KEY_DOWN, function(evt: any) {
                 let $exTable = helper.closest($cell, "." + NAMESPACE)
                 let $grid = helper.getTable($exTable, options.containerClass);
                 let inputSelecting = $.data($grid, internal.INPUT_SELECTING);
                 if (!inputSelecting) return;
-                if (event.keyCode === $.ui.keyCode.ENTER) {
-                    let cell = helper.nextCellOf($grid, new selection.Cell(inputSelecting.rowIdx, inputSelecting.columnKey, null, inputSelecting.innerIdx));
+                let moveDir = "prevCellOf";
+                if (event.keyCode === $.ui.keyCode.ENTER || event.keyCode === $.ui.keyCode.TAB
+                    || event.keyCode === $.ui.keyCode.RIGHT || event.keyCode === $.ui.keyCode.LEFT) {
+                    if ($cell.querySelector(`.${update.EDITOR_CLS}`) && event.keyCode !== $.ui.keyCode.ENTER) return;
+                    event.preventDefault();
+                    let cell;
+                    if (event.keyCode !== $.ui.keyCode.LEFT && !event.shiftKey) {
+                        moveDir = "nextCellOf";
+                    }
+                    
+                    cell = helper[moveDir]($grid, new selection.Cell(inputSelecting.rowIdx, inputSelecting.columnKey, null, inputSelecting.innerIdx));
                     selection.clearInnerCell($grid, inputSelecting.rowIdx, inputSelecting.columnKey, inputSelecting.innerIdx);
                     $.data($grid, internal.INPUT_SELECTING, null);
                     internal.getGem($grid).rollTo(cell);
@@ -2439,6 +2456,18 @@ module nts.uk.ui.exTable {
                         
                         $.data($grid, internal.INPUT_SELECTING, { rowIdx: cell.rowIndex, columnKey: cell.columnKey, innerIdx: cell.innerIdx });
                     });  
+                } else if (selector.is(evt.target, `.${selection.CELL_SELECTED_CLS}`)) {
+                    let cellTxt = $cell.innerText;
+                    if (evt.keyCode === 113) {
+                        update.edit($exTable, $cell, options.containerClass);
+                        let $input = $cell.querySelector("input");
+                        if ($input) {
+                            $input.value = cellTxt;
+                        }
+                    } else if (helper.isAlphaNumeric(evt) || helper.isMinusSymbol(evt) 
+                        || (helper.isSemicolon(evt) && evt.shiftKey)) {
+                        update.edit($exTable, $cell, options.containerClass);
+                    }
                 }
             });
         }
@@ -2675,8 +2704,8 @@ module nts.uk.ui.exTable {
          */
         function editing($exTable: HTMLElement, $editor: HTMLElement, land: any) {
             let $input = $editor.querySelector("input");
-            $input.removeXEventListener(events.KEY_UP);
-            $input.addXEventListener(events.KEY_UP, function(evt: any) {
+            $input.removeXEventListener(events.KEY_DOWN);
+            $input.addXEventListener(events.KEY_DOWN, function(evt: any) {
                 let value = $input.value;
                 if (evt.keyCode === $.ui.keyCode.ENTER) {
                     let $grid;
@@ -2758,14 +2787,16 @@ module nts.uk.ui.exTable {
                             }
                         });
                     }
-                } else {
-                    let editor = $.data($exTable, EDITOR);
-                    if (util.isNullOrUndefined(editor)) return;
-                    editor.value = value;
-                    let $grid = !editor.land ? helper.getMainTable($exTable) : helper.getTable($exTable, editor.land);
-                    validation.validate($grid, helper.closest(editor.$editor, "." + EDIT_CELL_CLS), 
-                                editor.rowIdx, editor.columnKey, editor.innerIdx, editor.value);
                 }
+            });
+            
+            $input.addXEventListener(events.KEY_UP, function(evt) {
+                let editor = $.data($exTable, EDITOR);
+                if (util.isNullOrUndefined(editor)) return;
+                editor.value = $input.value;
+                let $grid = !editor.land ? helper.getMainTable($exTable) : helper.getTable($exTable, editor.land);
+                validation.validate($grid, helper.closest(editor.$editor, "." + EDIT_CELL_CLS), 
+                            editor.rowIdx, editor.columnKey, editor.innerIdx, editor.value);
             });
         }
         
@@ -2985,8 +3016,8 @@ module nts.uk.ui.exTable {
             let currentVal = rowData[ui.columnKey],
                 origVal = gen._origDs[ui.rowIndex][ui.columnKey];
             if (innerIdx === -1) {
-                if (origVal !== ui.value && !_.isNil(origVal) && origVal !== ""
-                    && !_.isNil(ui.value) && ui.value !== "") {
+                if (origVal !== ui.value && ((!_.isNil(origVal) && origVal !== "")
+                    || (!_.isNil(ui.value) && ui.value !== ""))) {
                     oldVal = _.cloneDeep(currentVal);
                     if (exTable[f].primaryKey === ui.columnKey) {
                         if (exTable.leftmostContent) {
@@ -3002,7 +3033,9 @@ module nts.uk.ui.exTable {
                         exTable[f].dataSource[ui.rowIndex][ui.columnKey] = ui.value;
                     }
                     return { updateTarget: updateTarget, value: oldVal };
-                } 
+                }
+                
+                exTable[f].dataSource[ui.rowIndex][ui.columnKey] = ui.value;
                 return null;
             }
             
@@ -3081,15 +3114,17 @@ module nts.uk.ui.exTable {
 //                }
             } else {
                 gen.dataSource[rowIdx][columnKey] = value;
+                let detail = new selection.Cell(rowIdx, columnKey, value, -1);
+                if (selector.is($grid, `.${BODY_PRF + LEFTMOST}`)) {
+                    detail.land = BODY_PRF + LEFTMOST;
+                } else if (selector.is($grid, `.${BODY_PRF + MIDDLE}`)) {
+                    detail.land = BODY_PRF + MIDDLE;
+                }
+                
                 if (!helper.isEqual(origDs[rowIdx][columnKey], value)) {
-                    let detail = new selection.Cell(rowIdx, columnKey, value, -1);
-                    if (selector.is($grid, `.${BODY_PRF + LEFTMOST}`)) {
-                        detail.land = BODY_PRF + LEFTMOST;
-                    } else if (selector.is($grid, `.${BODY_PRF + MIDDLE}`)) {
-                        detail.land = BODY_PRF + MIDDLE;
-                    }
-                    
-                    events.trigger($table, events.CELL_UPDATED, detail);
+                    events.trigger($table, events.CELL_UPDATED, detail);    
+                } else {
+                    events.trigger($table, events.CELL_RETAINED, detail);
                 }
             }
             
@@ -4219,7 +4254,7 @@ module nts.uk.ui.exTable {
                 });
                 
                 if (_.isFunction(sticker.validate)) {
-                    let validate = sticker.validate(rowIdx, key, data);
+                    let validate = sticker.validate(rowIdx, coord.columnKey, data);
                     if (_.has(validate, "done")) {
                         validate.done(result => {
                             if (result === true) {
@@ -4290,7 +4325,7 @@ module nts.uk.ui.exTable {
                 let isValid, message;
                 if (vtor.required && (_.isUndefined(value) || _.isEmpty(value))) {
                     isValid = false;
-                    message = uk.resource.getMessage('MsgB_1', [ "時間" ]);
+                    message = uk.resource.getMessage('MsgB_1', [ vtor.columnText || "時間" ]);
                 } else if (!_.isUndefined(value) && !_.isEmpty(value)) {
                     if (vtor.actValid === internal.TIME) {
                         isValid = isTimeClock(value);
@@ -4312,6 +4347,12 @@ module nts.uk.ui.exTable {
                         isValid = isNumber(value, vtor.max, vtor.min);
                         message = "MESSAGE_DEFINE_NEED";
                         formatValue = (_.isUndefined(value) || _.isEmpty(value)) ? "" : Number(value);
+                    } else if (vtor.actValid === internal.TEXT) {
+                        let stringValidator = new nts.uk.ui.validation.StringValidator(vtor.columnText, vtor.primitiveValue, {});
+                        let res = stringValidator.validate(value);
+                        isValid = res.isValid;
+                        formatValue = res.parsedValue;
+                        message = res.errorMessage;
                     } else {
                         isValid = true;
                         formatValue = value;
@@ -4375,7 +4416,7 @@ module nts.uk.ui.exTable {
          */
         export function mandate($grid: HTMLElement, columnKey: any, innerIdx: any) {
             let visibleColumns = helper.getVisibleColumnsOn($grid);
-            let actValid, dataType, max, min, required;
+            let actValid, dataType, max, min, required, columnText, primitiveValue;
             _.forEach(visibleColumns, function(col: any) {
                 if (col.key === columnKey) {
                     if (!col.dataType) return false;
@@ -4392,18 +4433,24 @@ module nts.uk.ui.exTable {
                         required = constraints.required ? constraints.required : col.required;
                         return false;
                     }
+                    
                     max = col.max;
                     min = col.min;
                     required = col.required;
+                    columnText = col.headerText;
+                    primitiveValue = col.primitiveValue;
                     return false; 
                 }
             });
+            
             if (actValid)
                 return {
                     actValid: actValid,
                     max: max,
                     min: min,
-                    required: required
+                    required: required,
+                    columnText: columnText,
+                    primitiveValue: primitiveValue
                 };
         }
         
@@ -6126,7 +6173,7 @@ module nts.uk.ui.exTable {
                     _.forEach(wrappers, function($depend: HTMLElement, i: number) {
                         if (i === index || !$depend) return;
                         let mainSyncing = $.data($main, SCROLL_SYNCING);
-                        if (!mainSyncing) {
+                        if (!mainSyncing && $depend.scrollLeft !== $main.scrollLeft) {
                             $.data($depend, SCROLL_SYNCING, true);
                             $depend.scrollLeft = $main.scrollLeft;
                         }
@@ -6145,7 +6192,7 @@ module nts.uk.ui.exTable {
                         _.forEach(wrappers, function($depend: HTMLElement, i: number) {
                             if (i === index) return;
                             let mainSyncing = $.data($main, VERT_SCROLL_SYNCING);
-                            if (!mainSyncing) {
+                            if (!mainSyncing && $depend.scrollTop !== $main.scrollTop) {
                                 $.data($depend, VERT_SCROLL_SYNCING, true);
                                 $depend.scrollTop = $main.scrollTop;
                             }
@@ -7092,6 +7139,12 @@ module nts.uk.ui.exTable {
                 case "unlockCell":
                     unlockCell(self, params[0], params[1]);
                     break;
+                case "disableCell":
+                    disableCell(self, params[0], params[1], params[2], params[3]);
+                    break;
+                case "enableCell":
+                    enableCell(self, params[0], params[1], params[2], params[3]);
+                    break;
                 case "popupValue":
                     returnPopupValue(self, params[0]);
                     break;
@@ -7973,6 +8026,104 @@ module nts.uk.ui.exTable {
         }
         
         /**
+         * Disable cell.
+         */
+        function disableCell($container: JQuery, name: string, rowId: any, columnKey: any, innerIdx: any) {
+            let $table;
+            switch (name) {
+                case "middle":
+                    $table = $container.find(`.${BODY_PRF + MIDDLE}`)[0];
+                    break;
+                case "detail":
+                    $table = $container.find(`.${BODY_PRF + DETAIL}`)[0];
+                    break;
+                default:
+                    return;
+            }
+            
+            let ds = helper.getDataSource($table);
+            let pk = helper.getPrimaryKey($table);
+            let i = -1;
+            _.forEach(ds, function(r, j) {
+                if (r[pk] === rowId) {
+                    i = j;
+                    return false;
+                }
+            });
+            
+            if (i === -1) return;
+            let disables = $.data($table, internal.DISABLE);
+            let found = -1;
+            if (disables && disables[i] && disables[i].length > 0) { 
+                _.forEach(disables[i], function(c, j) {
+                    if (c.columnKey === columnKey) {
+                        found = j;
+                        return false;
+                    }
+                });
+            }
+            
+            let $cell = selection.cellAt($table, i, columnKey);
+            if (_.isNil($cell)) return;
+            if (found === -1) {
+                if (!disables) {
+                    disables = {};
+                    disables[i] = [{ columnKey: columnKey, innerIdx: innerIdx, value: ds[i][columnKey] }];
+                    $.data($table, internal.DISABLE, disables);
+                } else if (disables && !disables[i]) {
+                    disables[i] = [{ columnKey: columnKey, innerIdx: innerIdx, value: ds[i][columnKey] }];
+                } else disables[i].push({ columnKey: columnKey, innerIdx: innerIdx, value: ds[i][columnKey] });
+                helper.markCellWith(style.SEAL_CLS, $cell, innerIdx);
+            }
+        }
+        
+        /**
+         * Enable cell.
+         */
+        function enableCell($container: JQuery, name: string, rowId: any, columnKey: any, innerIdx: any) {
+            let $table;
+            switch (name) {
+                case "middle":
+                    $table = $container.find(`.${BODY_PRF + MIDDLE}`)[0];
+                    break;
+                case "detail":
+                    $table = $container.find(`.${BODY_PRF + DETAIL}`)[0];
+                    break;
+                default: 
+                    return;
+            }
+            
+            let ds = helper.getDataSource($table);
+            let pk = helper.getPrimaryKey($table);
+            let i = -1;
+            _.forEach(ds, function(r, j) {
+                if (r[pk] === rowId) {
+                    i = j;
+                    return false;
+                }
+            });
+            
+            if (i === -1) return;
+            let disables = $.data($table, internal.DISABLE);
+            let found = -1;
+            if (disables && disables[i] && disables[i].length > 0) {
+                _.forEach(disables[i], function(c, j) {
+                    if (c.columnKey === columnKey) {
+                        found = j;
+                        return false;
+                    }
+                });
+            }
+            
+            if (found > -1) {
+                let $cell = selection.cellAt($table, i, columnKey);
+                disables[i].splice(found, 1);
+                if (disables[i].length === 0) delete disables[i];
+                helper.stripCellWith(style.SEAL_CLS, $cell, innerIdx);
+            }
+        }
+        
+        /**
          * Return popup value.
          */
         function returnPopupValue($container: JQuery, value: any) {
@@ -8249,6 +8400,7 @@ module nts.uk.ui.exTable {
         export let CANON: string = "x-canon";
         export let STICKER: string = "x-sticker";
         export let DET: string = "x-det";
+        export let DISABLE: string = "x-disable";
         export let PAINTER: string = "painter";
         export let CELLS_STYLE: string = "body-cells-style";
         export let D_CELLS_STYLE: string = "d-body-cells-style";
@@ -8765,6 +8917,28 @@ module nts.uk.ui.exTable {
         }
         
         /**
+         * Is alphanumeric.
+         */
+        export function isAlphaNumeric(evt: any) {
+            return (evt.keyCode >= 48 && evt.keyCode <= 90) 
+                    || (evt.keyCode >= 96 && evt.keyCode <= 105);
+        }
+         
+        /**
+         * Is minus symbol.
+         */
+        export function isMinusSymbol(evt: any) {
+            return evt.keyCode === 189 || evt.keyCode === 109;
+        }
+        
+        /**
+         * Is semicolon.
+         */
+        export function isSemicolon(evt: any) {
+            return evt.keyCode === 186;
+        }
+        
+        /**
          * Is Html.
          */
         export function isHtml(str: any) {
@@ -9007,6 +9181,82 @@ module nts.uk.ui.exTable {
             }
             
             return new selection.Cell(rowIndex, key, undefined, innerIdx);
+        }
+        
+        /**
+         * Prev key.
+         */
+        export function prevKeyOf(columnIndex: number, visibleColumns: any) {
+            if (columnIndex == 0) return;
+            return visibleColumns[columnIndex - 1].key;
+        }
+        
+        /**
+         * Prev cell.
+         */
+        export function prevCellOf($grid: HTMLElement, cell: any) {
+            let key, rowIndex, innerIdx;
+            let gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
+            if (!gen) return;
+            let visibleColumns = gen.painter.visibleColumns;
+            let innerTypes = []; 
+            _(gen.painter.options.columns).forEach(c => {
+                if (c.dataType) {
+                    innerTypes = c.dataType.split('/');
+                    return false;
+                }
+            });
+            
+            let firstTextIndex = _.findIndex(innerTypes, t => t !== controls.LABEL.toLowerCase());
+            let prevInnerIdx = idx => {
+                if (idx === firstTextIndex || idx === -1) return;
+                for (let i = idx - 1; i >= 0; i--) {
+                    if (innerTypes[i] !== controls.LABEL.toLowerCase()) {
+                        return i;
+                    }
+                }
+            };
+            
+            innerIdx = prevInnerIdx(cell.innerIdx);
+            if (!_.isNil(innerIdx)) {
+                return new selection.Cell(cell.rowIndex, cell.columnKey, null, innerIdx); 
+            }
+            
+            key = prevKeyOf(indexOf(cell.columnKey, visibleColumns), visibleColumns);
+            if (key) {
+                if (innerTypes.length === 1) {
+                    innerIdx = -1;
+                } else {
+                    innerIdx = _.findLastIndex(innerTypes, t => t !== controls.LABEL.toLowerCase());
+                }
+                
+                return new selection.Cell(cell.rowIndex, key, null, innerIdx); 
+            }
+            
+            key = visibleColumns[visibleColumns.length - 1].key;
+            if (cell.rowIndex === 0) {
+                if (cell.innerIdx === -1) {
+                    rowIndex = gen.dataSource.length - 1;
+                    innerIdx = -1;
+                } else if (!_.isNil(innerIdx = prevInnerIdx(cell.innerIdx))) {
+                    rowIndex = Number(cell.rowIndex);
+                } else {
+                    rowIndex = gen.dataSource.length - 1;
+                    innerIdx = _.findLastIndex(innerTypes, t => t !== controls.LABEL.toLowerCase()); 
+                }
+            } else {
+                if (cell.innerIdx === -1) {
+                    rowIndex = Number(cell.rowIndex) - 1;
+                    innerIdx = -1;
+                } else if (!_.isNil(innerIdx = prevInnerIdx(cell.innerIdx))) {
+                    rowIndex = Number(cell.rowIndex);
+                } else {
+                    rowIndex = Number(cell.rowIndex) - 1;
+                    innerIdx = _.findLastIndex(innerTypes, t => t !== controls.LABEL.toLowerCase());
+                }
+            }
+            
+            return new selection.Cell(rowIndex, key, null, innerIdx);
         }
         
         /**
@@ -9756,7 +10006,7 @@ module nts.uk.ui.exTable {
             
             $cell.addXEventListener(events.MOUSE_ENTER + ".celloverflow", function(evt: any) {
                 let $target = $(evt.target);
-                
+                if ($target.find(`.${update.EDITOR_CLS}`).length > 0) return; 
                 if (!displayFullText($target)) {
                     let $link = $target.find("a"); 
                     if ($link.length > 0) {

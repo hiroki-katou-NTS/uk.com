@@ -62,15 +62,17 @@ public class ChildNursingLeaveFinder {
 				.nursingCategory(childNursingLeave.getNursingCategory().value)
 				.startMonthDay(childNursingLeave.getStartMonthDay() !=null ? childNursingLeave.getStartMonthDay() : null)
 				.nursingNumberLeaveDay(childNursingLeave.getMaxPersonSetting().getNursingNumberLeaveDay().v())
-				.nursingNumberPerson(childNursingLeave.getMaxPersonSetting().getNursingNumberPerson().v())
+				.nursingNumberPerson(childNursingLeave.getMaxPersonSetting().getNursingNumberLeaveDay2().v())
 				.specialHolidayFrame(childNursingLeave.getSpecialHolidayFrame().orElse(0))
 				.absenceWork(childNursingLeave.getWorkAbsence().orElse(0))
 				.build();
 		//	/取得したデータを返す。
+		// fix open dialog KDL051
+		String nextStartMonthDay = childNursingLeave.getNextStartMonthDay(baseDate) == null ? "" : childNursingLeave.getNextStartMonthDay(baseDate).toString();
 		return ManagementClassificationByEmployeeDto.builder()
 		.lstEmp(lstEmpRs)
 		.nursingLeaveSt(childNursingLeaveDt)
-		.nextStartMonthDay(childNursingLeave.getNextStartMonthDay(baseDate).toString())
+		.nextStartMonthDay(nextStartMonthDay)
 		.build();
 	}
 	
@@ -105,18 +107,18 @@ public class ChildNursingLeaveFinder {
 				.nursingCategory(NursingCategory.Nursing.value)
 				.startMonthDay(nursingLeave.getStartMonthDay())
 				.nursingNumberLeaveDay(nursingLeave.getMaxPersonSetting().getNursingNumberLeaveDay().v())
-				.nursingNumberPerson(nursingLeave.getMaxPersonSetting().getNursingNumberPerson().v())
+				.nursingNumberPerson(nursingLeave.getMaxPersonSetting().getNursingNumberLeaveDay2().v())
 				.specialHolidayFrame(nursingLeave.getSpecialHolidayFrame().orElse(0))
 				.absenceWork(nursingLeave.getWorkAbsence().orElse(0))
 				.build();
 		// アルゴリズム「次回起算日を求める」を呼び出す。
-		String nextStartDate = nursingLeave.getNextStartMonthDay(baseDate).toString();
+		GeneralDate nextStartDate = nursingLeave.getNextStartMonthDay(baseDate);
 		
 		// 取得したデータを返す。
 		ManagementClassificationLstEmployeeDto resultDto =  ManagementClassificationLstEmployeeDto.builder()
 				.managementClassification(data)
 				.lstEmployee(lstEmpRs)
-				.nextStartDate(nextStartDate)
+				.nextStartDate(nextStartDate == null ? null : nextStartDate.toString())
 				.build();
 					
 		return resultDto;

@@ -16,8 +16,8 @@ public class BreakTimeOfDailyPerformanceCommandAddHandler extends CommandFacade<
 	@Override
 	protected void handle(CommandHandlerContext<BreakTimeOfDailyPerformanceCommand> context) {
 		BreakTimeOfDailyPerformanceCommand command = context.getCommand();
-		if (!command.getData().isEmpty()) {
-			repo.insert(command.toDomain());
+		if (!command.getData().getTimeZone().getBreakTimeSheets().isEmpty()) {
+			repo.insert(command.getData());
 		}
 	}
 

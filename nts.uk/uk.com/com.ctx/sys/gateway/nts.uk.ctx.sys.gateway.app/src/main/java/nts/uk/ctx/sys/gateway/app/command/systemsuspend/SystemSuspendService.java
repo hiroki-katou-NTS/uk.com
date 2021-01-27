@@ -27,4 +27,13 @@ public interface SystemSuspendService {
 	 * @return
 	 */
 	public SystemSuspendOutput confirmSystemSuspend_BefLog(String contractCD, String companyCD, int loginMethod, String programID, String screenID);
+	
+	/**
+	 * Check usage stop.
+	 *
+	 * @param contractCD the contract CD
+	 * @param companyCD the company CD
+	 * @return the usage stop output
+	 */
+	public UsageStopOutput checkUsageStop(String contractCD, String companyCD);
 }

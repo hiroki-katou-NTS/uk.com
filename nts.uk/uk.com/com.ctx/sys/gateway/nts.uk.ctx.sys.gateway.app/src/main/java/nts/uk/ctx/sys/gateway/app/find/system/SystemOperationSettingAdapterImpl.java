@@ -59,25 +59,25 @@ public class SystemOperationSettingAdapterImpl implements SystemOperationSetting
 		Optional<StopByCompany> com = stopByComRepo.findByCdStt(contractCd, companyCd, SystemStatusType.IN_PROGRESS.value);
 		//レコードが取得できたか判別
 		if(!sys.isPresent() && !com.isPresent()){//どちらもレコードが取得できない場合
+			//変数（停止予告メッセージ）をクリアする
 			//state = 0 (RUNNING or STOP ),  msg = null
-			return SystemOperationSetting.setting(SystemStopType.COMPANY, SystemOperationMode.RUNNING, SystemStopMode.ADMIN_MODE, null, null);
+			return SystemOperationSetting.setting(SystemStopType.COMPANY, SystemOperationMode.RUNNING, SystemStopMode.ADMIN_MODE, null, null, false);
 		}
 		//1件または2件のレコードが取得できた場合
 		//取得した「停止予告メッセージ」を編集する
 		String msgSys = "";
 		String msgCom = "";
 		if(sys.isPresent()){
-			msgSys = sys.get().getUsageStopMessage().v() + "　　　　　";
+			msgSys = sys.get().getUsageStopMessage().v();
 		}
 		if(com.isPresent()){
-			msgCom = com.get().getUsageStopMessage().v() + "　　　　　";
+			msgCom = com.get().getUsageStopMessage().v();
 		}
 		String msgFull = msgSys + msgCom;
-		//文字列に「改行」が含まれる場合は「改行」を外して代わりに「＿」（全角スペース）に置き換える。
-		msgFull = msgFull.replaceAll("\\r\\n", "　").replaceAll("\\r", "　").replaceAll("\\n", "　")
-				.replaceAll("\\\\r\\\\n", "　").replaceAll("\\\\n", "　").replaceAll("\\\\r", "　");
-		
-		return SystemOperationSetting.setting(SystemStopType.COMPANY, SystemOperationMode.IN_PROGRESS, SystemStopMode.ADMIN_MODE, null, msgFull);
+		if (!msgSys.isEmpty() && !msgCom.isEmpty()) {
+			msgFull = msgSys + "\n\n" + msgCom;
+		}
+		return SystemOperationSetting.setting(SystemStopType.COMPANY, SystemOperationMode.IN_PROGRESS, SystemStopMode.ADMIN_MODE, null, msgFull, true);
 	}
 
 	@Override

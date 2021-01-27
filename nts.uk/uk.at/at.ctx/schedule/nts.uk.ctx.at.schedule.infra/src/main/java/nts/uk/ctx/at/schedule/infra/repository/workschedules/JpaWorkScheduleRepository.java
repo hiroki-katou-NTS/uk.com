@@ -1,11 +1,15 @@
 package nts.uk.ctx.at.schedule.infra.repository.workschedules;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -38,6 +42,23 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 
 	private static final String SELECT_CHECK_UPDATE = "SELECT count (c) FROM KscdtSchBasicInfo c WHERE c.pk.sid = :employeeID AND c.pk.ymd = :ymd";
 
+	private static final String WHERE_PK = "WHERE a.pk.sid = :sid AND a.pk.ymd >= :ymdStart AND a.pk.ymd <= :ymdEnd";
+	
+	private static final String DELETE_BY_LIST_DATE = "WHERE a.pk.sid = :sid AND a.pk.ymd IN :ymds";
+
+	private static final List<String> DELETE_TABLES = Arrays.asList(
+			"DELETE FROM KscdtSchTime a ",
+			"DELETE FROM KscdtSchOvertimeWork a ",
+			"DELETE FROM KscdtSchHolidayWork a ",
+			"DELETE FROM KscdtSchBonusPay a ",
+			"DELETE FROM KscdtSchPremium a ",
+			"DELETE FROM KscdtSchShortTime a ",
+			"DELETE FROM KscdtSchBasicInfo a ",
+			"DELETE FROM KscdtSchEditState a ",
+			"DELETE FROM KscdtSchAtdLvwTime a ",
+			"DELETE FROM KscdtSchShortTimeTs a ",
+			"DELETE FROM KscdtSchBreakTs a ");
+
 	@Override
 	public Optional<WorkSchedule> get(String employeeID, GeneralDate ymd) {
 		Optional<WorkSchedule> workSchedule = this.queryProxy().query(SELECT_BY_KEY, KscdtSchBasicInfo.class)
@@ -67,6 +88,11 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 	public void insert(WorkSchedule workSchedule) {
 		String cID = AppContexts.user().companyId();
 		this.commandProxy().insert(this.toEntity(workSchedule, cID));
+	}
+	
+	@Override
+	public void insertAll(String cID, List<WorkSchedule> workSchedules) {
+		this.commandProxy().insertAll(workSchedules.stream().map(s -> this.toEntity(s, cID)).collect(Collectors.toList()));
 	}
 
 	public KscdtSchBasicInfo toEntity(WorkSchedule workSchedule, String cID) {
@@ -169,7 +195,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				if (!oldData.get().kscdtSchTime.bonusPays.isEmpty()) {
 					for (KscdtSchBonusPay y : newData.kscdtSchTime.bonusPays) {
 						oldData.get().kscdtSchTime.bonusPays.forEach(x -> {
-							if (y.pK.frameNo == x.pK.frameNo && y.pK.bonuspayType == x.pK.bonuspayType) {
+							if (y.pk.frameNo == x.pk.frameNo && y.pk.bonuspayType == x.pk.bonuspayType) {
 								x.cid = y.cid;
 								x.premiumTime = y.premiumTime;
 								x.premiumTimeWithIn = y.premiumTimeWithIn;
@@ -220,6 +246,15 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 
 			// List<KscdtSchAtdLvwTime> atdLvwTimes;
 			if (!oldData.get().atdLvwTimes.isEmpty()) {
+				String delete = "delete from KscdtSchAtdLvwTime o " + " where o.pk.sid = :sid "
+						+ " and o.pk.ymd = :ymd " + " and o.pk.workNo = :workNo";
+				if(newData.atdLvwTimes.isEmpty() || newData.wktmCd == null) {
+					oldData.get().atdLvwTimes.forEach(x -> {
+						this.getEntityManager().createQuery(delete).setParameter("sid", x.pk.sid)
+						.setParameter("ymd", x.pk.ymd)
+						.setParameter("workNo", x.pk.workNo).executeUpdate();
+					});
+				}
 				for (KscdtSchAtdLvwTime y : newData.atdLvwTimes) {
 					oldData.get().atdLvwTimes.forEach(x -> {
 						// Update data
@@ -237,15 +272,14 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 						}
 						// Delete work no 2 when new data just have work no 1
 						if(workSchedule.getOptTimeLeaving().get().getTimeLeavingWorks().size() < 2 && x.pk.workNo == 2) {
-							String delete = "delete from KscdtSchAtdLvwTime o " + " where o.pk.sid = :sid "
-									+ " and o.pk.ymd = :ymd " + " and o.pk.workNo = :workNo";
+							
 							this.getEntityManager().createQuery(delete).setParameter("sid", x.pk.sid)
 									.setParameter("ymd", x.pk.ymd)
 									.setParameter("workNo", x.pk.workNo).executeUpdate();
 						}
 					});
 				}
-			} else {
+			} else if(!newData.atdLvwTimes.isEmpty() || newData.wktmCd != null){
 				// If old data is empty
 				for (KscdtSchAtdLvwTime y : newData.atdLvwTimes) {
 							TimeLeavingWork leavingWork = workSchedule.getOptTimeLeaving().get()
@@ -302,17 +336,35 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				}
 			}
 		}
-			// List<KscdtSchBreakTs> breakTs;
 			if (!oldData.get().breakTs.isEmpty()) {
-				for (KscdtSchBreakTs y : newData.breakTs) {
-					oldData.get().breakTs.stream().forEach(x -> {
-						if (y.pk.frameNo == x.pk.frameNo) {
-							x.cid = y.cid;
-							x.breakTsStart = y.breakTsStart;
-							x.breakTsEnd = y.breakTsEnd;
-						}
-					});
+				oldData.get().breakTs.sort(Comparator.comparing(KscdtSchBreakTs::getBreakTsStart));
+				newData.breakTs.sort(Comparator.comparing(KscdtSchBreakTs::getBreakTsStart));
+				int sizeOld = oldData.get().breakTs.size();
+				int sizeNew = newData.breakTs.size();
+
+				if (sizeOld > sizeNew) {
+					// remove
+					for (int i = 0; i < sizeNew; i++) {
+						oldData.get().breakTs.get(i).cid = newData.breakTs.get(i).cid;
+						oldData.get().breakTs.get(i).breakTsStart = newData.breakTs.get(i).breakTsStart;
+						oldData.get().breakTs.get(i).breakTsEnd = newData.breakTs.get(i).breakTsEnd;
+					}
+					for (int i = sizeOld - 1; i >= sizeNew; i--) {
+						oldData.get().breakTs.remove(i);
+					}
+
+				} else {
+					for (int i = 0; i < sizeOld; i++) {
+						oldData.get().breakTs.get(i).cid = newData.breakTs.get(i).cid;
+						oldData.get().breakTs.get(i).breakTsStart = newData.breakTs.get(i).breakTsStart;
+						oldData.get().breakTs.get(i).breakTsEnd = newData.breakTs.get(i).breakTsEnd;
+					}
+					for (int i = sizeOld; i < sizeNew; i++) {
+						oldData.get().breakTs.add(newData.breakTs.get(i));
+					}
 				}
+			} else {
+				oldData.get().breakTs = newData.breakTs;
 			}
 			this.commandProxy().update(oldData.get());
 
@@ -328,13 +380,28 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			this.commandProxy().remove(KscdtSchBasicInfo.class, pk);
 		}
 	}
+	
+	@Override
+	public void deleteListDate(String sid, List<GeneralDate> ymds) {
+		if(ymds.isEmpty())
+			return;
+		for (val deleteTable : DELETE_TABLES){	
+		this.getEntityManager().createQuery(deleteTable + DELETE_BY_LIST_DATE)
+		.setParameter("sid", sid)
+		.setParameter("ymds",ymds)
+		.executeUpdate();
+		}
+	}
 
 	@Override
 	public void delete(String sid, DatePeriod datePeriod) {
-		String delete = "delete from KscdtSchShortTimeTs o " + " where o.pk.sid = :sid "
-				+ " and o.pk.ymd >= :ymdStart " + " and o.pk.ymd <= :ymdEnd ";
-		this.getEntityManager().createQuery(delete).setParameter("sid", sid)
-				.setParameter("ymdStart",datePeriod.start()).setParameter("ymdEnd", datePeriod.end()).executeUpdate();
+		for (val deleteTable : DELETE_TABLES){
+			this.getEntityManager().createQuery(deleteTable + WHERE_PK)
+					.setParameter("sid", sid)
+					.setParameter("ymdStart",datePeriod.start())
+					.setParameter("ymdEnd", datePeriod.end())
+					.executeUpdate();
+		}
 	}
 
 	@Override

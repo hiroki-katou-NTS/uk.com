@@ -1,12 +1,16 @@
 package nts.uk.ctx.at.schedule.dom.shift.management.workavailability;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Value;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainValue;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
@@ -30,16 +34,28 @@ public class WorkAvailabilityByShiftMaster implements WorkAvailability, DomainVa
 
 	/**
 	 * 作る
+	 * @param require
 	 * @param workableShiftCodeList 社員の勤務希望シフトリスト
 	 * @return
 	 */
-	public static WorkAvailabilityByShiftMaster create(List<ShiftMasterCode> workableShiftCodeList) {
+	public static WorkAvailabilityByShiftMaster create(Require require, List<ShiftMasterCode> workableShiftCodeList) {
 
 		if (workableShiftCodeList.isEmpty()) {
 			throw new RuntimeException("workable shift code list is empty!");
 		}
+		
+		if(!workableShiftCodeList.stream().allMatch(s -> require.shiftMasterIsExist(s))) {
+			throw new BusinessException("Msg_1705");
+		}
 
 		return new WorkAvailabilityByShiftMaster(workableShiftCodeList);
+	}
+
+	@Override
+	public boolean isHolidayAvailability(WorkAvailability.Require require) {
+		List<ShiftMaster> shiftList = require.getShiftMaster(this.workableShiftCodeList);
+		return shiftList.stream()
+				.anyMatch(c -> !c.isAttendanceRate(require));
 	}
 
 	@Override
@@ -65,12 +81,19 @@ public class WorkAvailabilityByShiftMaster implements WorkAvailability, DomainVa
 
 	@Override
 	public WorkAvailabilityDisplayInfo getDisplayInformation(WorkAvailability.Require require) {
-		List<String> shiftMasterNameList = require.getShiftMaster(this.workableShiftCodeList)
-												.stream().map(shiftmaster -> shiftmaster.getDisplayInfor().getName().v())
-												.collect(Collectors.toList());
+		
+		Map<ShiftMasterCode, Optional<String>> shiftList = this.workableShiftCodeList.stream().collect(Collectors.toMap(c -> c, c -> {
+			List<ShiftMaster> shiftMasterList = require.getShiftMaster(Arrays.asList(c));
+			
+			if(CollectionUtil.isEmpty(shiftMasterList)) 
+				return Optional.empty();
+			
+			return Optional.ofNullable(shiftMasterList.get(0).getDisplayInfor().getName().v());
+			
+		}));
 		
 		AssignmentMethod asignmentMethod = this.getAssignmentMethod();
-		return new WorkAvailabilityDisplayInfo(asignmentMethod, shiftMasterNameList, Collections.emptyList());
+		return new WorkAvailabilityDisplayInfo(asignmentMethod, shiftList, Collections.emptyList());
 	}
 	
 	public static interface Require {
@@ -81,6 +104,8 @@ public class WorkAvailabilityByShiftMaster implements WorkAvailability, DomainVa
 		// シフトマスタを取得する
 		List<ShiftMaster> getShiftMaster(List<ShiftMasterCode> shiftMasterCodeList);
 		
+		//シフトマスタが存在するか
+		boolean shiftMasterIsExist(ShiftMasterCode shiftMasterCode);
+		
 	}
-	
 }
