@@ -120,6 +120,24 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                 return self.isExtraction();
             });
 
+            self.closureId.subscribe((value) => {
+                if (value === 0 ) {
+                    let tempDate: any;
+                     service.findAllClosure().done((closures) => {
+                        tempDate = _.minBy(closures, (o: any) => {
+                            return o.month;
+                        })
+                    }).always(() => {
+                        let startDateRange = moment(tempDate.month, "YYYYMM").subtract(1, 'month').format("YYYYMMDD");
+                        let endDateRange = moment(startDateRange).add(1, 'year').subtract(1, 'day').format("YYYYMMDD");
+                        let monthDate = moment(tempDate.month, "YYYYMM").subtract(1, 'month').format("YYYYMM");
+                        self.printDate(parseInt(monthDate));
+                        self.period({ startDate: startDateRange, endDate: endDateRange });
+                    });    
+                    
+                }
+            });
+            
 
             //_____CCG001________
             self.ccgcomponent = {
@@ -173,6 +191,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         */
         public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
             let self = this;
+
             self.employeeList([]);
             let employeeSearchs: UnitModel[] = [];
             self.selectedEmployeeCode([]);
