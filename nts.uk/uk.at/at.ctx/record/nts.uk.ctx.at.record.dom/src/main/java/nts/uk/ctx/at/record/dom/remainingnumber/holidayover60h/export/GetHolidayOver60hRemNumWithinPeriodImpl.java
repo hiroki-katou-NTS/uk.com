@@ -81,7 +81,7 @@ public class GetHolidayOver60hRemNumWithinPeriodImpl implements GetHolidayOver60
 		AggrResultOfHolidayOver60h result = new AggrResultOfHolidayOver60h();
 		
 		// 使用回数
-		//result.setUsedTimes(new UsedTimes(3));
+//		result.setUsedTimes(new UsedTimes(3));
 		
 		//　期間終了日時点
 		HolidayOver60hInfo holidayOver60hInfo_1 = createHolidayOver60hInfo_1();

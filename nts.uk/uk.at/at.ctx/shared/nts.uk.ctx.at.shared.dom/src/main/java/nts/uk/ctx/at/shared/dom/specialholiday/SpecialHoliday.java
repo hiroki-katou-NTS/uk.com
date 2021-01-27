@@ -23,7 +23,6 @@ import nts.uk.shr.com.primitive.Memo;
  *
  */
 @AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
 public class SpecialHoliday extends AggregateRoot {
@@ -49,8 +48,8 @@ public class SpecialHoliday extends AggregateRoot {
 	/**自動付与区分 */
 	public NotUseAtr autoGrant;
 
-//	/** 連続で取得する */
-//	public NotUseAtr continuousAcquisition;
+	/** 連続で取得する */
+	public NotUseAtr continuousAcquisition;
 
 	/** メモ */
 	private Memo memo;
@@ -68,6 +67,10 @@ public class SpecialHoliday extends AggregateRoot {
 		this.specialHolidayName = specialHolidayName;
 		this.autoGrant = autoGrant;
 		this.memo = memo;
+		this.grantRegular = new GrantRegular();
+		this.specialLeaveRestriction = new SpecialLeaveRestriction();
+		this.targetItem = new TargetItem();
+		this.continuousAcquisition = NotUseAtr.NOT_USE;
 	}
 
 	public SpecialHoliday(String companyId, SpecialHolidayCode specialHolidayCode,
@@ -79,7 +82,10 @@ public class SpecialHoliday extends AggregateRoot {
 		this.specialHolidayName = specialHolidayName;
 		this.grantRegular = grantRegular;
 		this.specialLeaveRestriction = specialLeaveRestriction;
+		this.targetItem = new TargetItem();
 		this.memo = memo;
+		this.continuousAcquisition = NotUseAtr.NOT_USE;
+		this.autoGrant = NotUseAtr.NOT_USE;
 	}
 
 //	public static SpecialHoliday createFromJavaType(String companyId, int specialHolidayCode, String specialHolidayName,
@@ -114,7 +120,8 @@ public class SpecialHoliday extends AggregateRoot {
 			SpecialLeaveRestriction specialLeaveRestriction,
 			TargetItem targetItem,
 			int autoGrant,
-			String memo) {
+			String memo,
+			NotUseAtr continuousAcquisition) {
 		return new SpecialHoliday(companyId,
 				new SpecialHolidayCode(specialHolidayCode),
 				new SpecialHolidayName(specialHolidayName),
@@ -122,12 +129,6 @@ public class SpecialHoliday extends AggregateRoot {
 				specialLeaveRestriction,
 				targetItem,
 				EnumAdaptor.valueOf(autoGrant, NotUseAtr.class),
-				new Memo(memo));
+				continuousAcquisition, new Memo(memo));
 	}
-
-	public TargetItem getTargetItem() {
-		return targetItem != null ? targetItem : new TargetItem(Collections.emptyList(), Collections.emptyList());
-	}
-
-
 }

@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.TimeOfRemain;
 
 /**
- * 特休残明細
+ * 特別休暇残明細
  */
 @Getter
 @Setter

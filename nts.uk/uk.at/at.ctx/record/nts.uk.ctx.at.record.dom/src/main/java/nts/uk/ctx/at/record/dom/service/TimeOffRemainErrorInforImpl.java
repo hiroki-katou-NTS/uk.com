@@ -102,7 +102,7 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 				&& optDaily.get().getAnnualHolidayData().isPresent()) {
 			TmpAnnualHolidayMng flexAnnual = optDaily.get().getAnnualHolidayData().get();
 			List<InterimRemain> lstAnnualMng = optDaily.get().getRecAbsData().stream()
-					.filter(x -> x.getRemainManaID().equals(flexAnnual.getAnnualId()))
+					.filter(x -> x.getRemainManaID().equals(flexAnnual.getRemainManaID()))
 					.collect(Collectors.toList());
 			if(!lstAnnualMng.isEmpty()) {
 				annualMng.add(lstAnnualMng.get(0));
@@ -137,9 +137,9 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 		List<TmpAnnualLeaveMngWork> mngWork = new ArrayList<>();
 		mngWork = annualHolidayData.stream()
 				.map(o -> {
-					InterimRemain annualInterim = annualMng.stream().filter(a -> a.getRemainManaID() == o.getAnnualId())
-							.collect(Collectors.toList()).get(0);
-					return TmpAnnualLeaveMngWork.of(annualInterim, o);
+//					InterimRemain annualInterim = annualMng.stream().filter(a -> a.getRemainManaID() == o.getAnnualId())
+//							.collect(Collectors.toList()).get(0);
+					return TmpAnnualLeaveMngWork.of(o);
 				}).collect(Collectors.toList());
 		List<TmpReserveLeaveMngWork> lstReserve = resereLeaveData.stream()
 				.map(l -> {

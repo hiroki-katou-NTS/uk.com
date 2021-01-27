@@ -4,6 +4,7 @@ import nts.arc.primitive.PrimitiveValue;
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
+/** 特別休暇名称  */
 @StringMaxLength(20)
 public class SpecialHolidayName extends StringPrimitiveValue<PrimitiveValue<String>> {
 	/** serialVersionUID */

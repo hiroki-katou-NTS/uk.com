@@ -7,6 +7,8 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import nts.gul.serialize.binary.SerializableWithOptional;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
 
 /**
  * 年休使用数
@@ -22,17 +24,17 @@ public class AnnualLeaveUsedNumber implements Cloneable, SerializableWithOptiona
 	private static final long serialVersionUID = 1L;
 	
 	/** 使用日数 */
-	private AnnualLeaveUsedDays usedDays;
+	private Optional<AnnualLeaveUsedDayNumber> usedDays;
 	
 	/** 使用時間 */
-	private Optional<AnnualLeaveUsedTime> usedTime;
+	private Optional<UsedMinutes> usedTime;
 	
 	/**
 	 * コンストラクタ
 	 */
 	public AnnualLeaveUsedNumber(){
 		
-		this.usedDays = new AnnualLeaveUsedDays();
+		this.usedDays = Optional.empty();
 		this.usedTime = Optional.empty();
 	}
 
@@ -43,8 +45,8 @@ public class AnnualLeaveUsedNumber implements Cloneable, SerializableWithOptiona
 	 * @return 年休使用数
 	 */
 	public static AnnualLeaveUsedNumber of(
-			AnnualLeaveUsedDays usedDays,
-			Optional<AnnualLeaveUsedTime> usedTime){
+			Optional<AnnualLeaveUsedDayNumber> usedDays,
+			Optional<UsedMinutes> usedTime){
 		
 		AnnualLeaveUsedNumber domain = new AnnualLeaveUsedNumber();
 		domain.usedDays = usedDays;
@@ -56,10 +58,8 @@ public class AnnualLeaveUsedNumber implements Cloneable, SerializableWithOptiona
 	public AnnualLeaveUsedNumber clone() {
 		AnnualLeaveUsedNumber cloned = new AnnualLeaveUsedNumber();
 		try {
-			cloned.usedDays = this.usedDays.clone();
-			if (this.usedTime.isPresent()){
-				cloned.usedTime = Optional.of(this.usedTime.get().clone());
-			}
+			cloned.usedDays = this.usedDays.map(c -> new AnnualLeaveUsedDayNumber(c.v()));
+			cloned.usedTime = this.usedTime.map(c -> new UsedMinutes(c.v()));
 		}
 		catch (Exception e){
 			throw new RuntimeException("AnnualLeaveUsedNumber clone error.");
@@ -70,12 +70,15 @@ public class AnnualLeaveUsedNumber implements Cloneable, SerializableWithOptiona
 	/**
 	 * 日数を使用日数に加算する
 	 */
-	public void addUsedNumber(AnnualLeaveUsedNumber usedNumber){
-		this.usedDays.addUsedDays(usedNumber.getUsedDays().getUsedDayNumber().v());
-		if (this.usedTime.isPresent()){
-			this.usedTime.get().getUsedTime().addMinutes(
-					usedNumber.getUsedTime().get().getUsedTime().v());
-		}
+	public void addUsedNumber(AnnualLeaveUsedNumber usedNumber) {
+		addDays(usedNumber.getUsedDays().map(x -> x.v()).orElse(0d));
+		
+		this.usedTime = this.usedTime.map(c -> 
+							c.addMinutes(usedNumber.getUsedTime().map(x -> x.v()).orElse(0)));
+	}
+	
+	public void addDays(double days) {
+		this.usedDays = this.usedDays.map(c -> new AnnualLeaveUsedDayNumber(c.v() + days));
 	}
 	
 	private void writeObject(ObjectOutputStream stream){		

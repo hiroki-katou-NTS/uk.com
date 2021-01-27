@@ -23,6 +23,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
+import nts.uk.ctx.at.shared.dom.specialholiday.TargetItem;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.AgeRange;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.AgeStandard;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.SpecialLeaveRestriction;
@@ -55,6 +56,7 @@ import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshmtHd
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshmtHdspGrantPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.periodinformation.KshmtHdspGrantDeadline;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.periodinformation.KshmtHdspGrantDeadlinePK;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.calendar.MonthDay;
 
 /**
@@ -71,7 +73,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 
 	private final static String SELECT_SPHD_BY_CODE_QUERY = "SELECT sphd.CID, sphd.SPHD_CD, sphd.SPHD_NAME, sphd.SPHD_AUTO_GRANT, sphd.MEMO,"
 //			+ " sphd.GRANT_TIMING, gra.GRANT_MD, gra.GRANTED_DAYS,"
-			+ " sphd.GRANT_TIMING, sphd.GRANT_DATE, gra.GRANTED_DAYS,"
+			+ " sphd.CONTINUOUS_ACQUISITION, sphd.GRANT_TIMING, sphd.GRANT_DATE, gra.GRANTED_DAYS,"
 			+ " pe.TIME_CSL_METHOD, gpe.PERIOD_START, gpe.PERIOD_END, pe.DEADLINE_MONTHS, pe.DEADLINE_YEARS, pe.LIMIT_CARRYOVER_DAYS,"
 			+ " re.RESTRICTION_CLS, re.AGE_LIMIT, re.GENDER_REST, re.REST_EMP, re.AGE_CRITERIA_CLS, re.AGE_BASE_DATE, re.AGE_LOWER_LIMIT, re.AGE_HIGHER_LIMIT, re.GENDER"
 			+ " FROM KSHST_SPECIAL_HOLIDAY sphd"
@@ -86,20 +88,8 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 			+ " WHERE sphd.CID = ? AND sphd.SPHD_CD = ?"
 			+ " ORDER BY sphd.SPHD_CD";
 
-	private final static String SELECT_SPHD_BY_LIST_CODE = "SELECT sphd.pk.companyId, sphd.pk.specialHolidayCode, sphd.specialHolidayName, sphd.autoGrant, sphd.memo,"
-			+ " sphd.grantTiming, gra.grantMd, gra.grantedDays,"
-			+ " pe.timeMethod, gpe.periodStart, gpe.periodEnd, pe.deadlineMonths, pe.deadlineYears, pe.limitCarryoverDays,"
-			+ " re.restrictionCls, re.ageLimit, re.genderRest, re.restEmp, re.ageCriteriaCls, re.ageBaseDate, re.ageLowerLimit, re.ageHigherLimit, re.gender"
-			+ " FROM KshstSpecialHoliday sphd"
-			+ " LEFT JOIN KshmtHdspGrant gra"
-			+ " ON sphd.pk.companyId = gra.pk.companyId AND sphd.pk.specialHolidayCode = gra.pk.specialHolidayCode"
-			+ " LEFT JOIN KshmtHdspGrantDeadline pe"
-			+ " ON sphd.pk.companyId = pe.pk.companyId AND sphd.pk.specialHolidayCode = pe.pk.specialHolidayCode"
-			+ " LEFT JOIN KshstSpecialLeaveRestriction re"
-			+ " ON sphd.pk.companyId = re.pk.companyId AND sphd.pk.specialHolidayCode = re.pk.specialHolidayCode"
-			+ " LEFT JOIN KshmtHdspGrantPeriod gpe"
-			+ " ON sphd.pk.companyId = gpe.pk.companyId AND sphd.pk.specialHolidayCode = gpe.pk.specialHolidayCode"
-			+ " WHERE sphd.pk.companyId = :companyId "
+	private final static String SELECT_SPHD_BY_LIST_CODE = "SELECT e.pk.companyId, e.pk.specialHolidayCode, e.specialHolidayName, e.autoGrant, e.memo FROM KshstSpecialHoliday e "
+			+ "WHERE sphd.pk.companyId = :companyId "
 			+ " AND sphd.pk.specialHolidayCode IN :specialHolidayCodes"
 			+ " ORDER BY sphd.pk.specialHolidayCode";
 
@@ -229,6 +219,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		int ageLowerLimit = c.getInt("AGE_LOWER_LIMIT") != null ? c.getInt("AGE_LOWER_LIMIT") : 0;
 		int ageHigherLimit = c.getInt("AGE_HIGHER_LIMIT") != null ? c.getInt("AGE_HIGHER_LIMIT") : 0;
 		int gender = c.getInt("GENDER") != null ? c.getInt("GENDER") : 1;
+		int continuousAcquisition = c.getInt("CONTINUOUS_ACQUISITION");
 
 		FixGrantDate fixGrantDate = FixGrantDate.createFromJavaType(
 				companyId,
@@ -239,7 +230,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 				GeneralDate.max(), // 要修正　expirationDate
 				1, // 要修正　grantMonth
 				1); // 要修正　grantDay
-		GrantTime grantTime = GrantTime.createFromJavaType(fixGrantDate, null);
+//		GrantTime grantTime = GrantTime.createFromJavaType(fixGrantDate, null);
 
 		/** 期間 */
 		DatePeriod period = new DatePeriod(startDate, endDate); // 要確認 初期値
@@ -276,7 +267,8 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 
 		return SpecialHoliday.of(
 				companyId, specialHolidayCode, specialHolidayName, grantRegular,
-				specialLeaveRestriction, null, autoGrant, memo);
+				specialLeaveRestriction, new TargetItem(), autoGrant, memo,
+				continuousAcquisition == 0 ? NotUseAtr.NOT_USE : NotUseAtr.USE);
 	}
 
 	private SpecialHoliday createSphdDomainFromEntity(Object[] c) {
@@ -748,7 +740,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
-	public List<SpecialHoliday> findByListCode(String companyId, List<Integer> specialHolidayCodes) {
+	public List<SpecialHoliday> findSimpleByListCode(String companyId, List<Integer> specialHolidayCodes) {
 		if(specialHolidayCodes.isEmpty())
 			return Collections.emptyList();
 		List<SpecialHoliday> resultList = new ArrayList<>();
@@ -790,7 +782,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
-	public List<SpecialHoliday> findByCompanyIdNoMaster(String companyId, List<Integer> specialHolidayCodes) {
+	public List<SpecialHoliday> findSimpleByCompanyIdNoMaster(String companyId, List<Integer> specialHolidayCodes) {
 		if(specialHolidayCodes.isEmpty()) return Collections.emptyList();
 		List<SpecialHoliday> resultList = new ArrayList<>();
 		CollectionUtil.split(specialHolidayCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {

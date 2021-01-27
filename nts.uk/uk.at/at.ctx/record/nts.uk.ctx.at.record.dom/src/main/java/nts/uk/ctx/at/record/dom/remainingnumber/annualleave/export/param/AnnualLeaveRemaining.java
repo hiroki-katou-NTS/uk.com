@@ -4,19 +4,18 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUndigestNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remain.AnnualLeaveGrantRemaining;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeave;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveMaxRemainingTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveRemainingDetail;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedNumber;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.HalfDayAnnualLeave;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingDayNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUndigestNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
 
 /**
  * 年休情報残数
@@ -172,7 +171,7 @@ public class AnnualLeaveRemaining implements Cloneable {
 		// パラメータ「特別休暇残数．合計残日数」と「特別休暇残数．合計残時間」をチェック
 		
 		// 合計残日数<0　or 合計残時間 < 0
-		double remainDays = annualLeaveUsedNumber.getUsedDays().getUsedDayNumber().v();
+		double remainDays = annualLeaveUsedNumber.getUsedDays().map(c -> c.v()).orElse(0d);
 		int remainTimes = 0;
 		if ( annualLeaveRemainingNumber.getTotalRemainingTime().isPresent() ){
 			remainTimes = annualLeaveRemainingNumber.getTotalRemainingTime().get().v();
@@ -182,13 +181,13 @@ public class AnnualLeaveRemaining implements Cloneable {
 			
 			// 特別休暇．使用数からマイナス分を引く
 			if ( remainDays < 0 ){
-				double useDays = annualLeaveUsedNumber.getUsedDays().getUsedDayNumber().v() + remainDays;
-				annualLeaveUsedNumber.getUsedDays().setUsedDayNumber(new AnnualLeaveUsedDayNumber(useDays));
+				double useDays = annualLeaveUsedNumber.getUsedDays().map(c -> c.v()).orElse(0d) + remainDays;
+				annualLeaveUsedNumber.setUsedDays(Optional.of(new AnnualLeaveUsedDayNumber(useDays)));
 			}
 			if ( remainTimes < 0 ){
 				if ( annualLeaveUsedNumber.getUsedTime().isPresent() ){
-					int useTimes = annualLeaveUsedNumber.getUsedTime().get().getUsedTime().v() + remainTimes;
-					annualLeaveUsedNumber.setUsedTime(Optional.of(AnnualLeaveUsedTime.of(new UsedMinutes(useTimes))));
+					int useTimes = annualLeaveUsedNumber.getUsedTime().get().v() + remainTimes;
+					annualLeaveUsedNumber.setUsedTime(Optional.of(new UsedMinutes(useTimes)));
 				}
 			}
 			

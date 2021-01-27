@@ -191,7 +191,7 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 //		String companyId = e.pk.companyId;
 //		int specialHolidayCode = e.pk.specialHolidayCode;
 //		String grantDateCd = e.pk.grantDateCd;
-		int grantCnt = e.grantCnt;
+		int grantCnt = e.pk.grantCnt;
 		int grantDays = e.grantDays;
 
 		return GrantElapseYearMonth.createFromJavaType(grantCnt, grantDays);
@@ -223,11 +223,10 @@ public class JpaGrantDateTblRepository extends JpaRepository implements GrantDat
 			String grantDateCode,
 			GrantElapseYearMonth domain) {
 
-		KshstGrantDateElapseYearsTblPK pk
-			= new KshstGrantDateElapseYearsTblPK(companyId, specialHolidayCode, grantDateCode);
+		KshstGrantDateElapseYearsTblPK pk = new KshstGrantDateElapseYearsTblPK(companyId, 
+				specialHolidayCode, grantDateCode, domain.getElapseNo());
 
-		return new KshstGrantDateElapseYearsTbl(
-				pk, domain.getElapseNo(), domain.getGrantedDays().v());
+		return new KshstGrantDateElapseYearsTbl(pk, domain.getGrantedDays().v());
 	}
 
 	/**

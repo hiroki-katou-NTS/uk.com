@@ -39,6 +39,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoDomService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.CalcNextAnnualLeaveGrantDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.valueobject.AnnLeaRemNumValueObject;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMngRepository;
@@ -118,16 +119,11 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 			if (!aggrResult.isPresent())
 				return null;
 			result.setUsedDays(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
-					.getUsedNumberInfo().getUsedNumber().getUsedDays().getUsedDayNumber());
+					.getUsedNumberInfo().getUsedNumber().getUsedDays().orElse(new AnnualLeaveUsedDayNumber(0d)));
 
 			result.setUsedMinutes(
 					aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumberInfo()
-							.getUsedNumber().getUsedTime()
-							.isPresent()
-									? Optional.of(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber()
-											.getAnnualLeaveWithMinus().getUsedNumberInfo().getUsedNumber().getUsedTime().get().getUsedTime()
-											.v())
-									: Optional.empty());
+							.getUsedNumber().getUsedTime().map(c -> c.valueAsMinutes()));
 
 			result.setRemainDays(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
 					.getRemainingNumberInfo().getRemainingNumber().getTotalRemainingDays());
@@ -400,21 +396,19 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 			}
 		}
 		// 「暫定年休管理データ」を取得
-		val interimRemains = this.interimRemainRepo.getRemainBySidPriod(
-				employeeID, new DatePeriod(startDate.get(), employee.getRetiredDate()), RemainType.ANNUAL);
+//		val interimRemains = this.interimRemainRepo.getRemainBySidPriod(
+//				employeeID, new DatePeriod(startDate.get(), employee.getRetiredDate()), RemainType.ANNUAL);
+		val interimRemains = this.tmpAnnualLeaveMngRepo.getBySidPeriod(employeeID, new DatePeriod(startDate.get(), employee.getRetiredDate()));
 		interimRemains.sort((a, b) -> a.getYmd().compareTo(b.getYmd()));
 		// add 年休管理情報(仮)
 		for (val interimRemain : interimRemains){
-			val tmpAnnualLeaveMngOpt = this.tmpAnnualLeaveMngRepo.getById(interimRemain.getRemainManaID());
-			if (!tmpAnnualLeaveMngOpt.isPresent()) continue;
-			val tmpAnnualLeaveMng = tmpAnnualLeaveMngOpt.get();
+//			val tmpAnnualLeaveMngOpt = this.tmpAnnualLeaveMngRepo.getById(interimRemain.getRemainManaID());
+//			if (!tmpAnnualLeaveMngOpt.isPresent()) continue;
+//			val tmpAnnualLeaveMng = tmpAnnualLeaveMngOpt.get();
 
-			Double usedDays = 0.00;
-			if(tmpAnnualLeaveMng.getUseDays() != null){
-				usedDays = tmpAnnualLeaveMng.getUseDays().v();
-			}
+			Double usedDays = interimRemain.getUseNumber().getUsedDays().map(c -> c.v()).orElse(0d);
 			// đối ứng bug #109638: thêm hiển thị workType cho KDL020
-			String workTypeCD = tmpAnnualLeaveMng.getWorkTypeCode();
+			String workTypeCD = interimRemain.getWorkTypeCode().v();
 			Integer usedMinutes = 0;
 			AnnualLeaveManageInforExport annualLeaveManageInforExport = new AnnualLeaveManageInforExport(
 					interimRemain.getYmd(),
@@ -580,17 +574,12 @@ public class AnnLeaveRemainNumberPubImpl implements AnnLeaveRemainNumberPub {
 				return null;
 			}
 			result.setUsedDays(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
-					.getUsedNumberInfo().getUsedNumber().getUsedDays().getUsedDayNumber());
+					.getUsedNumberInfo().getUsedNumber().getUsedDays().orElse(new AnnualLeaveUsedDayNumber(0d)));
 
 			result.setUsedMinutes(
 					aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
 							.getUsedNumberInfo().getUsedNumber()
-							.getUsedTime()
-							.isPresent()
-									? Optional.of(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber()
-											.getAnnualLeaveWithMinus().getUsedNumberInfo().getUsedNumber().getUsedTime().get().getUsedTime()
-											.v())
-									: Optional.empty());
+							.getUsedTime().map(c -> c.valueAsMinutes()));
 
 			result.setRemainDays(aggrResult.get().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
 					.getRemainingNumberInfo().getRemainingNumber().getTotalRemainingDays());

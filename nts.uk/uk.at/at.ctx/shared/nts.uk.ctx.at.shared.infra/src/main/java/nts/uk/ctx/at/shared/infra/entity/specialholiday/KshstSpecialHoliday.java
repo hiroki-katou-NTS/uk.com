@@ -37,11 +37,11 @@ public class KshstSpecialHoliday extends UkJpaEntity implements Serializable {
 
 	/* 連続で取得する */
 	@Column(name = "CONTINUOUS_ACQUISITION")
-	public int continuousAcquisition;
+	public Integer continuousAcquisition;
 
 	/* 付与基準日 */
 	@Column(name = "GRANT_DATE")
-	public int grantDate;
+	public Integer grantDate;
 
 	/* メモ */
 	@Column(name = "MEMO")
