@@ -433,10 +433,10 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 				Optional<ErrorAlarmWorkRecord> errAlarmWk = listError.stream().filter(x -> x.getErrorAlarmCheckID()
 						.equals(alarmCon.getErrorAlarmCheckID())).findFirst();
 				
-				// 勤務種類をチェックする
-				WorkCheckResult checkResult = alarmCon.getWorkTypeCondition().checkWorkType(new WorkInfoOfDailyPerformance(integra.getEmployeeId(), integra.getYmd(), integra.getWorkInformation()), 
-																Optional.ofNullable(SnapShot.of(integra.getWorkInformation().getRecordInfo(), new AttendanceTime(0))));
-				
+				// 勤務種類をチェックする Todo Hop.NT
+//				WorkCheckResult checkResult = alarmCon.getWorkTypeCondition().checkWorkType(new WorkInfoOfDailyPerformance(integra.getEmployeeId(), integra.getYmd(), integra.getWorkInformation()),
+//																Optional.ofNullable(SnapShot.of(integra.getWorkInformation().getRecordInfo(), new AttendanceTime(0))));
+				WorkCheckResult checkResult = alarmCon.getWorkTypeCondition().checkWorkType();
 				if(checkResult != WorkCheckResult.ERROR) {
 					
 					// 勤怠項目をチェックする
