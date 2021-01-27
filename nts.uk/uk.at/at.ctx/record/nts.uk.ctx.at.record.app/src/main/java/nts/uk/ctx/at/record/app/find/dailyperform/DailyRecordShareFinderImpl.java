@@ -15,7 +15,8 @@ public class DailyRecordShareFinderImpl implements DailyRecordShareFinder {
 
 	@Override
 	public IntegrationOfDaily find(String employeeId, GeneralDate date) {
-		return finder.find(employeeId, date).toDomain(employeeId, date);
+		DailyRecordDto dto = finder.find(employeeId, date);
+		return dto == null ? null : dto.toDomain(employeeId, date);
 	}
 
 }
