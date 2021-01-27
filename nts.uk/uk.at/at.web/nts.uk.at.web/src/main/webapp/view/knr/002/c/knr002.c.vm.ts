@@ -311,6 +311,10 @@ module nts.uk.at.view.knr002.c {
                 vm.selectedRowIndex(-1)
                 $('#grid').igGridSelection('selectRow', vm.selectedRowIndex());
                 $("#grid").igGrid("dataSourceObject", vm.settingData).igGrid("dataBind");
+                if (vm.settingData.length > 17) {
+                    $("#grid").igGrid("option", "width", "534px");
+                    $("#grid").igGrid("option", "width", "535px");
+                }
                 console.timeEnd('C11_2');
             }
 
