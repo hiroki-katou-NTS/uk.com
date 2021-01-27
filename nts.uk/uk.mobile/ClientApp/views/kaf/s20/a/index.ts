@@ -30,8 +30,8 @@ export class KafS20AComponent extends Vue {
     public response: IRes = null;
     public _params: any = null;
     
-    @Prop({default : () => {}})
-    public readonly params!: IParams;
+    @Prop()
+    public readonly params: IParams;
 
     public beforeCreate() {
         const vm = this;
