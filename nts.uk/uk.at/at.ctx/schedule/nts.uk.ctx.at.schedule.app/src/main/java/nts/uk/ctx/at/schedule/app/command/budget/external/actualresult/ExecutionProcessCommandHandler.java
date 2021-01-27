@@ -13,7 +13,6 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +39,6 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExternalBudgetDailyDto;
 import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExternalBudgetErrorDto;
 import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExternalBudgetLogDto;
-import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExternalBudgetTimeDto;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScWorkplaceAdapter;
 import nts.uk.ctx.at.schedule.dom.budget.external.BudgetAtr;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudget;
@@ -59,8 +57,6 @@ import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.ExternalBudge
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.service.ExtBudgetFileCheckService;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.service.FileUtil;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.timeunit.ExtBudgetTime;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.timeunit.ExternalBudgetTimeZone;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.timeunit.ExternalBudgetTimeZoneRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
@@ -81,10 +77,6 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
     /** The ext budget daily repo. */
     @Inject
     private ExternalBudgetDailyRepository extBudgetDailyRepo;
-    
-    /** The ext budget time repo. */
-    @Inject
-    private ExternalBudgetTimeZoneRepository extBudgetTimeRepo;
     
     /** The ext budget log repo. */
     @Inject
@@ -326,7 +318,7 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
                 this.addExtBudgetDaily(importProcess, result);
                 break;
             case BYTIMEZONE:
-                this.addExtBudgetTime(importProcess, result);
+                // this.addExtBudgetTime(importProcess, result); // extBudgetTime have been deleted
                 break;
             default:
                 throw new RuntimeException("Not unit atr suitable.");
@@ -405,90 +397,6 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
         // check has override?
         if (importProcess.extractCondition.getIsOverride()) {
             this.extBudgetDailyRepo.update(domain);
-            return;
-        }
-        // insert table ERROR with message id: Msg_167
-        ExternalBudgetErrorDto extBudgetErrorDto = ExternalBudgetErrorDto.builder()
-                .executionId(importProcess.executeId)
-                .lineNo(importProcess.startLine)
-                .columnNo(DEFAULT_VALUE)
-                .errorContent(this.getMessageById("Msg_167"))
-                .build();
-        this.extBudgetErrorRepo.add(extBudgetErrorDto.toDomain());
-        
-        // marker finish line.
-        importProcess.stopLine = true;
-    }
-    
-    /**
-     * Adds the ext budget time.
-     *
-     * @param importProcess the import process
-     * @param result the result
-     */
-    private void addExtBudgetTime(ImportProcess importProcess, List<String> result) {
-        Map<Integer, Long> mapValue = new HashMap<>();
-        
-        // get list value
-        List<String> lstValue = result.subList(INDEX_BEGIN_COL_VALUE, result.size());
-        
-        // convert value 0 -> 47
-        for (int i=0; i<lstValue.size(); i++) {
-            String rawValue = lstValue.get(i);
-            Long value = this.parseActualValue(rawValue);
-            mapValue.put(i, value);
-        }
-        // create time dto
-        ExternalBudgetTimeDto dto = ExternalBudgetTimeDto.builder()
-                .budgetAtr(importProcess.externalBudget.getBudgetAtr())
-                .workplaceId(importProcess.workplaceId)
-                .extBudgetCode(importProcess.extractCondition.getExternalBudgetCode())
-                .actualDate(importProcess.actualDate)
-                .mapValue(mapValue)
-                .build();
-        switch (importProcess.externalBudget.getBudgetAtr()) {
-            case TIME:
-                ExternalBudgetTimeZone<ExtBudgetTime> domainTime = dto.toDomain();
-                this.saveDataTime(importProcess, domainTime);
-                break;
-            case PEOPLE:
-                ExternalBudgetTimeZone<ExtBudgetNumberPerson> domainPeople = dto.toDomain();
-                this.saveDataTime(importProcess, domainPeople);
-                break;
-            case MONEY:
-                ExternalBudgetTimeZone<ExtBudgetMoney> domainMoney = dto.toDomain();
-                this.saveDataTime(importProcess, domainMoney);
-                break;
-            case NUMERICAL:
-                ExternalBudgetTimeZone<ExtBudgetNumericalVal> domainNumerical = dto.toDomain();
-                this.saveDataTime(importProcess, domainNumerical);
-                break;
-            case PRICE:
-                ExternalBudgetTimeZone<ExtBudgetUnitPrice> domainPrice = dto.toDomain();
-                this.saveDataTime(importProcess, domainPrice);
-                break;
-            default:
-                throw new RuntimeException("Not budget atr suitable.");
-        }
-    }
-    
-    /**
-     * Save data time.
-     *
-     * @param <T> the generic type
-     * @param importProcess the import process
-     * @param domain the domain
-     */
-    private <T> void saveDataTime(ImportProcess importProcess, ExternalBudgetTimeZone<T> domain) {
-        // check existed ?
-        if (!this.extBudgetTimeRepo.isExisted(domain.getWorkplaceId(), GeneralDate.legacyDate(domain.getActualDate()),
-                domain.getExtBudgetCode().v())) {
-            this.extBudgetTimeRepo.add(domain);
-            return;
-        }
-        // check has override
-        if (importProcess.extractCondition.getIsOverride()) {
-            this.extBudgetTimeRepo.update(domain);
             return;
         }
         // insert table ERROR with message id: Msg_167
