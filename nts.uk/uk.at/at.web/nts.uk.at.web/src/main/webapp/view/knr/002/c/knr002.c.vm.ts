@@ -274,6 +274,8 @@ module nts.uk.at.view.knr002.c {
                     return;
                 }
 
+                let checkLength = vm.settingData.length;
+
                 switch(vm.inputMode()) {
                     case INPUT_TYPE.LETTER:
                     case INPUT_TYPE.TIME:  
@@ -311,7 +313,7 @@ module nts.uk.at.view.knr002.c {
                 vm.selectedRowIndex(-1)
                 $('#grid').igGridSelection('selectRow', vm.selectedRowIndex());
                 $("#grid").igGrid("dataSourceObject", vm.settingData).igGrid("dataBind");
-                if (vm.settingData.length > 17) {
+                if (checkLength = 17) {
                     $("#grid").igGrid("option", "width", "534px");
                     $("#grid").igGrid("option", "width", "535px");
                 }
@@ -324,6 +326,9 @@ module nts.uk.at.view.knr002.c {
                 if (vm.selectedRowIndex() == -1) {
                     return;
                 }
+
+                let checkLength = vm.settingData.length;
+
                 vm.settingData.splice(vm.selectedRowIndex(), 1);
                 
                 $("#grid").igGrid("dataSourceObject", vm.settingData).igGrid("dataBind");  
@@ -331,6 +336,10 @@ module nts.uk.at.view.knr002.c {
                     vm.selectedRowIndex(vm.selectedRowIndex() - 1);
                 }
                 $('#grid').igGridSelection('selectRow', vm.selectedRowIndex());
+                if (checkLength = 18) {
+                    $("#grid").igGrid("option", "width", "534px");
+                    $("#grid").igGrid("option", "width", "535px");
+                }
                 console.time('C11_3');
             }
 
@@ -339,7 +348,7 @@ module nts.uk.at.view.knr002.c {
 
                 $("#grid").ntsGrid({
                     width: '535px', 
-                    height: '412px',
+                    height: '415px',
                     dataSource: vm.settingData,
                     primaryKey: 'id',
                     virtualization: true,
