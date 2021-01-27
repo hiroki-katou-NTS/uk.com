@@ -77,9 +77,6 @@ public class KshmtHdnursingLeave extends ContractUkJpaEntity implements Serializ
     @Column(name = "ABSENCE_FRAME_NO")
     private Integer absenceFrameNo;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "knlmtNursingLeaveSet", orphanRemoval = true)
-    private List<KnlmtNursingWorkType> listWorkType;
-
     /**
      * Instantiates a new kmfmt nursing leave set.
      */
