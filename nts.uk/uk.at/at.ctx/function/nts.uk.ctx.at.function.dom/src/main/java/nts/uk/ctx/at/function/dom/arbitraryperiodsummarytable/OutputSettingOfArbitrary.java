@@ -43,7 +43,7 @@ public class OutputSettingOfArbitrary extends AggregateRoot {
      * @param require @Require
      * @param code    コード
      */
-    static boolean checkDuplicateBoilerplateSelection(Require require, OutputItemSettingCode code) {
+    public static boolean checkDuplicateBoilerplateSelection(Require require, OutputItemSettingCode code) {
         return require.checkTheFixedForm(code);
     }
 
@@ -54,7 +54,7 @@ public class OutputSettingOfArbitrary extends AggregateRoot {
      * @param code       コード
      * @param employeeId 社員ID
      */
-    static boolean checkDuplicateFreeSettings(Require require, OutputItemSettingCode code, String employeeId) {
+    public static boolean checkDuplicateFreeSettings(Require require, OutputItemSettingCode code, String employeeId) {
         return require.freeDomCheck(code, employeeId);
     }
 
