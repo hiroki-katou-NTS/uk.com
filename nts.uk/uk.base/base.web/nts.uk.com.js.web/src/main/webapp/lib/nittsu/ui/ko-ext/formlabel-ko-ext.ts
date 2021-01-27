@@ -15,8 +15,9 @@ module nts.uk.ui.koExtentions {
             bindingName: 'ntsFormLabel'
         })
         export class NtsFormLabelBindingHandler implements KnockoutBindingHandler {
-            init(element: HTMLElement, valueAccessor: () => Accessor, _allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean } {
+            init(element: HTMLElement, valueAccessor: () => Accessor, allBindingsAccessor: KnockoutAllBindingsAccessor, _viewModel: any, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean } {
                 const params = valueAccessor();
+                const $text = allBindingsAccessor.get('text');
                 const $html = element.innerHTML;
 
                 element.classList.add('form-label');
@@ -43,7 +44,7 @@ module nts.uk.ui.koExtentions {
 
                 const html = ko.computed({
                     read: () => {
-                        const text = ko.unwrap(params.text);
+                        const text = ko.unwrap(params.text) || ko.unwrap($text);
 
                         if (text) {
                             return _.escape(text);
@@ -91,7 +92,7 @@ module nts.uk.ui.koExtentions {
 
                 element.removeAttribute('data-bind');
 
-                return { controlsDescendantBindings: true };
+                return { controlsDescendantBindings: false };
             }
             update() {
                 
