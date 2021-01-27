@@ -20663,8 +20663,9 @@ var nts;
                     var NtsFormLabelBindingHandler = /** @class */ (function () {
                         function NtsFormLabelBindingHandler() {
                         }
-                        NtsFormLabelBindingHandler.prototype.init = function (element, valueAccessor, _allBindingsAccessor, _viewModel, bindingContext) {
+                        NtsFormLabelBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, _viewModel, bindingContext) {
                             var params = valueAccessor();
+                            var $text = allBindingsAccessor.get('text');
                             var $html = element.innerHTML;
                             element.classList.add('form-label');
                             ko.computed({
@@ -20688,7 +20689,7 @@ var nts;
                             });
                             var html = ko.computed({
                                 read: function () {
-                                    var text = ko.unwrap(params.text);
+                                    var text = ko.unwrap(params.text) || ko.unwrap($text);
                                     if (text) {
                                         return _.escape(text);
                                     }
@@ -20727,7 +20728,7 @@ var nts;
                             });
                             ko.applyBindingsToNode(element, { component: { name: 'nts-form-label', params: { html: html, constraint: constraint } } }, bindingContext);
                             element.removeAttribute('data-bind');
-                            return { controlsDescendantBindings: true };
+                            return { controlsDescendantBindings: false };
                         };
                         NtsFormLabelBindingHandler.prototype.update = function () {
                         };
