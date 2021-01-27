@@ -22,9 +22,13 @@ import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.P
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.PreUpdateErrorCheck;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.SaveHolidayShipmentCommandHandlerRef5;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.UpdateHolidayShipmentCommandHandlerRef5;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.command.HdShipmentMBTimeZoneParam;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.HolidayShipmentScreenAFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.DisplayInforWhenStarting;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.HdShipmentMBTimeZoneDto;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
+import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServiceProcess;
+import nts.uk.ctx.at.request.dom.application.appabsence.service.output.VacationCheckOutput;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
@@ -33,7 +37,11 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Process
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
+import nts.uk.ctx.at.shared.app.find.common.TimeZoneWithWorkNoDto;
+import nts.uk.ctx.at.shared.app.find.worktime.predset.dto.TimeZone_NewDto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.shr.com.context.AppContexts;
 
 @Path("at/request/application/holidayshipment/mobile")
@@ -60,6 +68,9 @@ public class HolidayShipmentMobileWS extends WebService {
 	
 	@Inject
 	private UpdateHolidayShipmentCommandHandlerRef5 updateHolidayShipmentCommandHandlerRef5;
+	
+	@Inject
+	private AbsenceServiceProcess absenceServiceProcess;
 	
 	@POST
 	@Path("start")
@@ -218,5 +229,32 @@ public class HolidayShipmentMobileWS extends WebService {
 			}
 		}
 		return processResult;
+	}
+	
+	@POST
+	@Path("getTimeZoneValue")
+	public HdShipmentMBTimeZoneDto getTimeZoneValue(HdShipmentMBTimeZoneParam command) {
+		String companyID = AppContexts.user().companyId();
+		List<TimeZoneWithWorkNoDto> timeZoneLst = new ArrayList<>();
+		// 勤務時間初期値の取得
+		PredetermineTimeSetForCalc predetermineTimeSetForCalc = absenceServiceProcess.initWorktimeCode(
+				companyID, 
+				command.getWorkTypeNew().getWorkTypeCode(), 
+				command.getWorkTimeCD());
+		for(TimezoneUse timezoneUse : predetermineTimeSetForCalc.getTimezones()) {
+			if(timezoneUse.isUsed()) {
+				timeZoneLst.add(new TimeZoneWithWorkNoDto(timezoneUse.getWorkNo(), new TimeZone_NewDto(timezoneUse.getStart().v(), timezoneUse.getEnd().v())));
+			}
+		}
+		VacationCheckOutput vacationCheckOutput = null;
+		if(command.isChangeWorkType()) {
+			// 休暇紐付管理をチェックする
+			vacationCheckOutput = absenceServiceProcess.checkVacationTyingManage(
+					command.getWorkTypeOld() != null ? command.getWorkTypeOld().toDomain(): null, 
+					command.getWorkTypeNew().toDomain(), 
+					command.getLeaveComDayOffMana().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+					command.getPayoutSubofHDManagements().stream().map(x -> x.toDomain()).collect(Collectors.toList()));
+		}
+		return new HdShipmentMBTimeZoneDto(timeZoneLst, vacationCheckOutput);
 	}
 }
