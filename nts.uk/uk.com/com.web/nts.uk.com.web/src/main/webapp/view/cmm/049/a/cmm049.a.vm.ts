@@ -12,13 +12,13 @@ module nts.uk.com.view.cmm049.a {
     public selectedTab: KnockoutObservable<string>;
 
     public profileCheckList: KnockoutObservableArray<CheckboxModel> = ko.observableArray([]);
-    public profileSelectedId: KnockoutObservable<number> = ko.observable(1);
+    public profileSelectedId: KnockoutObservable<number> = ko.observable(2); //#114200
 
     public passwordCheckList: KnockoutObservableArray<CheckboxModel> = ko.observableArray([]);
-    public passwordSelectedId: KnockoutObservable<number> = ko.observable(1);
+    public passwordSelectedId: KnockoutObservable<number> = ko.observable(2); //#114200
 
     public noticeCheckList: KnockoutObservableArray<CheckboxModel> = ko.observableArray([]);
-    public noticeSelectedId: KnockoutObservable<number> = ko.observable(1);
+    public noticeSelectedId: KnockoutObservable<number> = ko.observable(2); //#114200
 
     public speechCheckList: KnockoutObservableArray<CheckboxModel> = ko.observableArray([]);
     public speechSelectedId: KnockoutObservable<number> = ko.observable(2); //#113760
