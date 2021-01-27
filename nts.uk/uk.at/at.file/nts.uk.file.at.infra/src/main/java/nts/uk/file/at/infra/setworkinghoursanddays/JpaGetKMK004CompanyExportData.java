@@ -52,7 +52,7 @@ public class JpaGetKMK004CompanyExportData extends JpaRepository implements GetK
 					+" KRCST_COM_REG_M_CAL_SET.INCLUDE_EXTRA_OT, "
 					+" IIF (KRCST_COM_REG_M_CAL_SET.INCLUDE_EXTRA_OT = 1, KRCST_COM_REG_M_CAL_SET.INCLUDE_LEGAL_OT , NUll) AS INCLUDE_LEGAL_OT, "
 					+" IIF (KRCST_COM_REG_M_CAL_SET.INCLUDE_EXTRA_OT = 1, KRCST_COM_REG_M_CAL_SET.INCLUDE_HOLIDAY_OT , NUll) AS INCLUDE_HOLIDAY_OT, "
-					+" KRCMT_CALC_M_SET_FLE_COM.REFERENCE_PRED_TIME, "
+					+" KRCST_COM_FLEX_M_CAL_SET.WITHIN_TIME_USE , "
 					+" KRCST_COM_FLEX_M_CAL_SET.AGGR_METHOD, "
 					+" IIF (KRCST_COM_FLEX_M_CAL_SET.AGGR_METHOD = 0, KRCST_COM_FLEX_M_CAL_SET.INCLUDE_OT, NULL) AS INCLUDE_OT, "
 					+" KRCST_COM_FLEX_M_CAL_SET.INCLUDE_HDWK, "
@@ -77,7 +77,6 @@ public class JpaGetKMK004CompanyExportData extends JpaRepository implements GetK
 					+" 		INNER JOIN KRCST_COM_REG_M_CAL_SET ON KRCST_COM_DEFOR_M_CAL_SET.CID = KRCST_COM_REG_M_CAL_SET.CID "
 					+" 		INNER JOIN KSHST_COM_TRANS_LAB_TIME ON KRCST_COM_DEFOR_M_CAL_SET.CID = KSHST_COM_TRANS_LAB_TIME.CID "
 					+" 		INNER JOIN KSHST_COM_REG_LABOR_TIME ON KRCST_COM_DEFOR_M_CAL_SET.CID = KSHST_COM_REG_LABOR_TIME.CID "
-					+" 		LEFT JOIN KRCMT_CALC_M_SET_FLE_COM ON KRCST_COM_DEFOR_M_CAL_SET.CID = KRCMT_CALC_M_SET_FLE_COM.CID "
 					+" WHERE KRCST_COM_DEFOR_M_CAL_SET.CID = ? ";
 
 	@Override
@@ -134,7 +133,7 @@ public class JpaGetKMK004CompanyExportData extends JpaRepository implements GetK
 	private List<MasterData> buildCompanyRow(NtsResultRecord r, List<KshmtLegalTimeMCom> legals, int startDate, int endDate, int month, String startOfWeek) {
 		List<MasterData> datas = new ArrayList<>();
 
-		Integer refPreTime = r.getInt("REFERENCE_PRED_TIME");
+		Integer refPreTime = r.getInt("WITHIN_TIME_USE");
 		for (int y = startDate; y <= endDate; y++) {
 			int ym = y *100 + month;
 			

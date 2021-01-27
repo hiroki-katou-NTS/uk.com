@@ -43,8 +43,10 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 
 	private static final String GET_EMPLOYEE = " SELECT " + " ROW_NUMBER() OVER( "
 			+ " 	PARTITION BY BSYMT_EMP_DTA_MNG_INFO.SCD "
-			+ " 	ORDER BY BSYMT_EMP_DTA_MNG_INFO.SCD ASC) AS ROW_NUMBER, " + " BSYMT_EMP_DTA_MNG_INFO.SID, "
-			+ " BSYMT_EMP_DTA_MNG_INFO.SCD, " + " BPSMT_PERSON.BUSINESS_NAME, "
+			+ " 	ORDER BY BSYMT_EMP_DTA_MNG_INFO.SCD ASC) AS ROW_NUMBER, " 
+			+ " BSYMT_EMP_DTA_MNG_INFO.SID, "
+			+ " BSYMT_EMP_DTA_MNG_INFO.SCD, " 
+			+ " BPSMT_PERSON.BUSINESS_NAME, "
 			+ " KSHST_SHA_REG_LABOR_TIME.DAILY_TIME, " 
 			+ " KSHST_SHA_REG_LABOR_TIME.WEEKLY_TIME, "
 			+ " KRCST_SHA_REG_M_CAL_SET.INCLUDE_EXTRA_AGGR, "
@@ -73,25 +75,26 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 			+ " KRCST_SHA_DEFOR_M_CAL_SET.INCLUDE_EXTRA_OT AS DEFOR_INCLUDE_EXTRA_OT, "
 			+ " IIF(KRCST_SHA_DEFOR_M_CAL_SET.INCLUDE_EXTRA_OT = 1, KRCST_SHA_DEFOR_M_CAL_SET.INCLUDE_LEGAL_OT, NULl) AS DEFOR_INCLUDE_LEGAL_OT, "
 			+ " IIF(KRCST_SHA_DEFOR_M_CAL_SET.INCLUDE_EXTRA_OT = 1, KRCST_SHA_DEFOR_M_CAL_SET.INCLUDE_HOLIDAY_OT, NULl) AS DEFOR_INCLUDE_HOLIDAY_OT "
-			+ " FROM KSHST_SHA_TRANS_LAB_TIME " 
-			+ " INNER JOIN KSHST_SHA_REG_LABOR_TIME ON  "
-			+ " 	KSHST_SHA_TRANS_LAB_TIME.CID = KSHST_SHA_REG_LABOR_TIME.CID "
-			+ " 	AND KSHST_SHA_TRANS_LAB_TIME.SID = KSHST_SHA_REG_LABOR_TIME.SID "
-			+ " INNER JOIN KRCST_SHA_DEFOR_M_CAL_SET ON "
-			+ " 	KSHST_SHA_TRANS_LAB_TIME.CID = KRCST_SHA_DEFOR_M_CAL_SET.CID "
-			+ " 	AND KSHST_SHA_TRANS_LAB_TIME.SID = KRCST_SHA_DEFOR_M_CAL_SET.SID "
-			+ " INNER JOIN KRCST_SHA_FLEX_M_CAL_SET ON  "
-			+ " 	KSHST_SHA_TRANS_LAB_TIME.CID = KRCST_SHA_FLEX_M_CAL_SET.CID "
-			+ " 	AND KSHST_SHA_TRANS_LAB_TIME.SID = KRCST_SHA_FLEX_M_CAL_SET.SID "
-			+ " INNER JOIN KRCST_SHA_REG_M_CAL_SET ON  "
-			+ " 	KSHST_SHA_TRANS_LAB_TIME.CID = KRCST_SHA_REG_M_CAL_SET.CID "
-			+ " 	AND KSHST_SHA_TRANS_LAB_TIME.SID = KRCST_SHA_REG_M_CAL_SET.SID "
-			+ " INNER JOIN BSYMT_EMP_DTA_MNG_INFO ON " 
-			+ " 	KSHST_SHA_TRANS_LAB_TIME.CID = BSYMT_EMP_DTA_MNG_INFO.CID "
-			+ " 	AND KSHST_SHA_TRANS_LAB_TIME.SID = BSYMT_EMP_DTA_MNG_INFO.SID " + " INNER JOIN BPSMT_PERSON ON "
-			+ " 	BSYMT_EMP_DTA_MNG_INFO.PID = BPSMT_PERSON.PID " + " LEFT JOIN KRCMT_CALC_M_SET_FLE_COM ON  "
-			+ "	KSHST_SHA_TRANS_LAB_TIME.CID = KRCMT_CALC_M_SET_FLE_COM.CID "
+			+ " FROM BSYMT_EMP_DTA_MNG_INFO"
+			+ " LEFT JOIN KSHST_SHA_TRANS_LAB_TIME ON BSYMT_EMP_DTA_MNG_INFO.CID = KSHST_SHA_TRANS_LAB_TIME.CID "
+			+ "           AND BSYMT_EMP_DTA_MNG_INFO.SID = KSHST_SHA_TRANS_LAB_TIME.SID "
+			+ " LEFT JOIN KSHST_SHA_REG_LABOR_TIME ON BSYMT_EMP_DTA_MNG_INFO.CID = KSHST_SHA_REG_LABOR_TIME.CID "
+			+ "           AND BSYMT_EMP_DTA_MNG_INFO.SID = KSHST_SHA_REG_LABOR_TIME.SID "
+			+ " LEFT JOIN KRCST_SHA_DEFOR_M_CAL_SET ON BSYMT_EMP_DTA_MNG_INFO.CID = KRCST_SHA_DEFOR_M_CAL_SET.CID "
+			+ "           AND BSYMT_EMP_DTA_MNG_INFO.SID = KRCST_SHA_DEFOR_M_CAL_SET.SID "
+			+ " LEFT JOIN KRCST_SHA_FLEX_M_CAL_SET ON BSYMT_EMP_DTA_MNG_INFO.CID = KRCST_SHA_FLEX_M_CAL_SET.CID "
+			+ "           AND BSYMT_EMP_DTA_MNG_INFO.SID = KRCST_SHA_FLEX_M_CAL_SET.SID "
+			+ " LEFT JOIN KRCST_SHA_REG_M_CAL_SET ON BSYMT_EMP_DTA_MNG_INFO.CID = KRCST_SHA_REG_M_CAL_SET.CID "
+			+ "           AND BSYMT_EMP_DTA_MNG_INFO.SID = KRCST_SHA_REG_M_CAL_SET.SID "
+			+ " LEFT JOIN BPSMT_PERSON ON BSYMT_EMP_DTA_MNG_INFO.PID = BPSMT_PERSON.PID "
+			+ " LEFT JOIN KRCMT_CALC_M_SET_FLE_COM ON  "
+			+ "	BSYMT_EMP_DTA_MNG_INFO.CID = KRCMT_CALC_M_SET_FLE_COM.CID "
 			+ " WHERE  KSHST_SHA_TRANS_LAB_TIME.CID = ? " 
+			+ " OR KRCST_SHA_DEFOR_M_CAL_SET.CID = ? " 
+			+ " OR KRCST_SHA_FLEX_M_CAL_SET.CID = ? " 
+			+ " OR KRCST_SHA_REG_M_CAL_SET.CID = ? " 
+			+ " OR KRCST_SHA_FLEX_M_CAL_SET.CID = ?"
+			+ " OR KSHST_SHA_TRANS_LAB_TIME.CID = ?"
 			+ " ORDER BY BSYMT_EMP_DTA_MNG_INFO.SCD ASC ";
 
 	@Override
@@ -99,22 +102,36 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 		String cid = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
 
-		String startOfWeek = getStartOfWeek(cid);
-		val legalTimes = this.queryProxy().query(LEGAL_TIME_SYA, KshmtLegalTimeMSya.class).setParameter("cid", cid)
-				.setParameter("start", startDate * 100 + 1).setParameter("end", endDate * 100 + 12).getList();
+		int month = this.month();
 
+		int startYM = startDate * 100 + month;
+		int endYM = startDate * 100 + ((month + 11) / 12) * 100 + (month + 11) % 12;
+
+		String startOfWeek = getStartOfWeek(cid);
+
+		val legalTimes = this.queryProxy().query(LEGAL_TIME_SYA, KshmtLegalTimeMSya.class)
+				.setParameter("cid", cid)
+				.setParameter("start",startYM)
+				.setParameter("end",endYM)
+				.getList();
+		
 		try (PreparedStatement stmt = this.connection().prepareStatement(GET_EMPLOYEE.toString())) {
-			// stmt.setInt(1, startDate);
-			// stmt.setInt(2, endDate);
 			stmt.setString(1, cid);
+			stmt.setString(2, cid);
+			stmt.setString(3, cid);
+			stmt.setString(4, cid);
+			stmt.setString(5, cid);
+			stmt.setString(6, cid);
 			NtsResultSet result = new NtsResultSet(stmt.executeQuery());
-			int month = this.month();
+			
 			result.forEach(i -> {
 				datas.addAll(buildEmployeeRow(i, legalTimes, startDate, endDate, month, startOfWeek));
 			});
 		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 		return datas;
 	}
 
@@ -140,9 +157,9 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 
 			datas.add(buildEmployeeARow(
 					// R10_1
-					r.getInt("ROW_NUMBER") == 1 ? r.getString("SCD") : null,
+					r.getInt("ROW_NUMBER") == null ? null : r.getInt("ROW_NUMBER") == 1 ? r.getString("SCD") : null,
 					// R10_2
-					r.getInt("ROW_NUMBER") == 1 ? r.getString("BUSINESS_NAME") : null,
+					r.getInt("ROW_NUMBER") == null ? null : r.getInt("ROW_NUMBER") == 1 ? r.getString("BUSINESS_NAME") : null,
 					// R10_3
 					String.valueOf(y),
 					// R10_4
@@ -156,21 +173,21 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 					// R10_8
 					KMK004PrintCommon.getExtraType(r.getInt("INCLUDE_EXTRA_AGGR")),
 					// R10_9
-					r.getInt("INCLUDE_EXTRA_AGGR") != 0 ? KMK004PrintCommon.getLegalType(r.getInt("INCLUDE_LEGAL_AGGR"))
+					r.getInt("INCLUDE_EXTRA_AGGR") == null ? null : r.getInt("INCLUDE_EXTRA_AGGR") != 0 ? KMK004PrintCommon.getLegalType(r.getInt("INCLUDE_LEGAL_AGGR"))
 							: null,
 					// R10_10
-					r.getInt("INCLUDE_EXTRA_AGGR") != 0
+					r.getInt("INCLUDE_EXTRA_AGGR") == null ? null : r.getInt("INCLUDE_EXTRA_AGGR") != 0
 							? KMK004PrintCommon.getLegalType(r.getInt("INCLUDE_HOLIDAY_AGGR")) : null,
 					// R10_11
 					KMK004PrintCommon.getExtraType(r.getInt("INCLUDE_EXTRA_OT")),
 					// R10_12
-					r.getInt("INCLUDE_EXTRA_OT") != 0 ? KMK004PrintCommon.getLegalType(r.getInt("INCLUDE_LEGAL_OT"))
+					r.getInt("INCLUDE_EXTRA_AGGR") == null ? null : r.getInt("INCLUDE_EXTRA_OT") != 0 ? KMK004PrintCommon.getLegalType(r.getInt("INCLUDE_LEGAL_OT"))
 							: null,
 					// R10_13
-					r.getInt("INCLUDE_EXTRA_OT") != 0 ? KMK004PrintCommon.getLegalType(r.getInt("INCLUDE_HOLIDAY_OT"))
+					r.getInt("INCLUDE_EXTRA_AGGR") == null ? null : r.getInt("INCLUDE_EXTRA_OT") != 0 ? KMK004PrintCommon.getLegalType(r.getInt("INCLUDE_HOLIDAY_OT"))
 							: null,
 					// R10_14
-					refPreTime != 0 ? KMK004PrintCommon.getFlexType(refPreTime) : null,
+					refPreTime == null ? null : refPreTime != 0 ? KMK004PrintCommon.getFlexType(refPreTime) : null,
 					// R10_15
 					((month - 1) % 12 + 1) + I18NText.getText("KMK004_401"),
 					// R10_16
@@ -180,17 +197,17 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 					// R10_18
 					KMK004PrintCommon.convertTime(flex.isPresent() ? flex.get().weekAvgTime : null),
 					// R10_19
-					r.getInt("SETTLE_PERIOD_MON") == 2 ? "2ヶ月" : "3ヶ月",
+					r.getInt("SETTLE_PERIOD_MON") == null ? null : r.getInt("SETTLE_PERIOD_MON") == 2 ? "2ヶ月" : "3ヶ月",
 					// R10_20
 					KMK004PrintCommon.getSettle(r.getInt("SETTLE_PERIOD")),
 					// R10_21
-					r.getInt("START_MONTH").toString() + "月",
+					r.getInt("START_MONTH") == null ? null : r.getInt("START_MONTH").toString() + "月",
 					// R10_22
 					KMK004PrintCommon.getShortageTime(r.getInt("INSUFFIC_SET")),
 					// R10_23
-					KMK004PrintCommon.getAggTypeEmployee(r.getInt("AGGR_METHOD")),
+					KMK004PrintCommon.getAggTypeEmployee(r.getInt("AGGR_METHOD") == null ? 3 : r.getInt("AGGR_METHOD")),
 					// R10_24
-					r.getInt("AGGR_METHOD") == 0 ? KMK004PrintCommon.getInclude(r.getInt("INCLUDE_OT")) : null,
+					r.getInt("AGGR_METHOD") == null ? null : r.getInt("AGGR_METHOD") == 0 ? KMK004PrintCommon.getInclude(r.getInt("INCLUDE_OT")) : null,
 					// R10_25
 					KMK004PrintCommon.getInclude(r.getInt("INCLUDE_HDWK")),
 					// R10_26
@@ -204,26 +221,26 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 					// R10_30
 					KMK004PrintCommon.convertTime(r.getInt("TRANS_WEEKLY_TIME")),
 					// R10_31
-					r.getInt("STR_MONTH") + I18NText.getText("KMK004_402"),
+					r.getInt("STR_MONTH") == null ? null : r.getInt("STR_MONTH") + I18NText.getText("KMK004_402"),
 					// R10_32
-					r.getInt("PERIOD") + I18NText.getText("KMK004_403"),
+					r.getInt("PERIOD") == null ? null : r.getInt("PERIOD") + I18NText.getText("KMK004_403"),
 					// R10_33
-					r.getInt("REPEAT_ATR") == 1 ? "○" : "-",
+					r.getInt("REPEAT_ATR") == null ? null : r.getInt("REPEAT_ATR") == 1 ? "○" : "-",
 					// R10_34
 					KMK004PrintCommon.getWeeklySurcharge(r.getInt("DEFOR_INCLUDE_EXTRA_AGGR")),
 					// R10_35
-					r.getInt("DEFOR_INCLUDE_EXTRA_AGGR") != 0
+					r.getInt("DEFOR_INCLUDE_EXTRA_AGGR") == null ? null : r.getInt("DEFOR_INCLUDE_EXTRA_AGGR") != 0
 							? KMK004PrintCommon.getLegalType(r.getInt("DEFOR_INCLUDE_LEGAL_AGGR")) : null,
 					// R10_36
-					r.getInt("DEFOR_INCLUDE_EXTRA_AGGR") != 0
+					r.getInt("DEFOR_INCLUDE_EXTRA_AGGR") == null ? null : r.getInt("DEFOR_INCLUDE_EXTRA_AGGR") != 0
 							? KMK004PrintCommon.getLegalType(r.getInt("DEFOR_INCLUDE_HOLIDAY_AGGR")) : null,
 					// R10_37
 					KMK004PrintCommon.getWeeklySurcharge(r.getInt("DEFOR_INCLUDE_EXTRA_OT")),
 					// R10_38
-					r.getInt("DEFOR_INCLUDE_EXTRA_OT") != 0
+					r.getInt("DEFOR_INCLUDE_EXTRA_OT") == null ? null : r.getInt("DEFOR_INCLUDE_EXTRA_OT") != 0
 							? KMK004PrintCommon.getLegalType(r.getInt("DEFOR_INCLUDE_LEGAL_OT")) : null,
 					// R10_39
-					r.getInt("DEFOR_INCLUDE_EXTRA_OT") != 0
+					r.getInt("DEFOR_INCLUDE_EXTRA_OT") == null ? null : r.getInt("DEFOR_INCLUDE_EXTRA_OT") != 0
 							? KMK004PrintCommon.getLegalType(r.getInt("DEFOR_INCLUDE_HOLIDAY_OT")) : null));
 
 			int nextYm = y * 100 + month + 1;
