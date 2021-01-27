@@ -45,7 +45,7 @@ module nts.uk.com.view.ccg034.i {
       vm.fileSize(vm.partData.uploadedFileSize ? vm.partData.uploadedFileSize : 0);
       vm.imageType(vm.partData.isFixed);
 
-      if (vm.imageType() === 1) {
+      if (vm.imageType() === 1 && vm.fileId()) {
         nts.uk.request.ajax("/shr/infra/file/storage/infor/" + vm.fileId()).then((res: any) => vm.uploadFinished(res));
       }
       if (vm.fileId() || vm.imageSrc()) {
