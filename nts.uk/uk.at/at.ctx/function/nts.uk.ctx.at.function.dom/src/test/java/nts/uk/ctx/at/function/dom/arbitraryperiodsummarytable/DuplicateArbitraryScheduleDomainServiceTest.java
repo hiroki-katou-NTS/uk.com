@@ -26,12 +26,37 @@ public class DuplicateArbitraryScheduleDomainServiceTest {
     /**
      * Test DuplicateSchedule method
      * Condition:
-     * input param: settingCategory == FREE_SETTING
+     * input param: settingCategory == STANDARD_SELECTION
      * Expect:
-     * BusinessException: "Msg_1893"
+     * BusinessException: "Msg_1914"
      */
     @Test
-    public void testDuplicateSchedule_00() {
+    public void testDuplicateSchedule() {
+        OutputItemSettingCode code = new OutputItemSettingCode("code");
+        OutputItemSettingName name = new OutputItemSettingName("name");
+
+        new Expectations() {{
+            require.getOutputSetting("dupSrcId02");
+            result = Optional.empty();
+        }};
+        NtsAssert.businessException("Msg_1914", () -> {
+            DuplicateArbitraryScheduleDomainService.duplicateSchedule(
+                    require,
+                    SettingClassificationCommon.STANDARD_SELECTION,
+                    "dupSrcId02",
+                    code,
+                    name
+            );
+        });
+    } /**
+     * Test DuplicateSchedule method
+     * Condition:
+     * input param: settingCategory == FREE_SETTING
+     * Expect:
+     * BusinessException: "Msg_1914"
+     */
+    @Test
+    public void testDuplicateSchedule_01() {
         OutputItemSettingCode code = new OutputItemSettingCode("code");
         OutputItemSettingName name = new OutputItemSettingName("name");
 
@@ -58,7 +83,7 @@ public class DuplicateArbitraryScheduleDomainServiceTest {
      * BusinessException: "Msg_1893"
      */
     @Test
-    public void testDuplicateSchedule_01() {
+    public void testDuplicateSchedule_02() {
         OutputItemSettingCode code = new OutputItemSettingCode("code");
         OutputItemSettingName name = new OutputItemSettingName("name");
 
@@ -98,7 +123,7 @@ public class DuplicateArbitraryScheduleDomainServiceTest {
      * BusinessException: "Msg_1893"
      */
     @Test
-    public void testDuplicateSchedule_02() {
+    public void testDuplicateSchedule_03() {
         OutputItemSettingCode code = new OutputItemSettingCode("code");
         OutputItemSettingName name = new OutputItemSettingName("name");
         new Expectations(AppContexts.class) {{
@@ -130,49 +155,9 @@ public class DuplicateArbitraryScheduleDomainServiceTest {
     /**
      * Test DuplicateSchedule method
      * Condition:
-     * input param: settingCategory == FREE_SETTING
-     * require.getOutputSetting returns non empty item
-     * Expect:
-     * BusinessException: "Msg_1893"
-     */
-    @Test
-    public void testDuplicateSchedule_03() {
-        OutputItemSettingCode code = new OutputItemSettingCode("code");
-        OutputItemSettingName name = new OutputItemSettingName("name");
-
-        new Expectations(AppContexts.class) {{
-            AppContexts.user().employeeId();
-            result = "employeeId03";
-            require.getOutputSetting("dupSrcId03");
-            result = Optional.of(new OutputSettingOfArbitrary(
-                    "uid",
-                    code,
-                    name,
-                    "employeeId03",
-                    SettingClassificationCommon.FREE_SETTING,
-                    Arrays.asList(new AttendanceItemToPrint(1, 1))));
-            require.freeCheck(code, "employeeId03");
-            result = true;
-
-        }};
-
-
-        NtsAssert.businessException("Msg_1893", () -> {
-            DuplicateArbitraryScheduleDomainService.duplicateSchedule(
-                    require,
-                    SettingClassificationCommon.FREE_SETTING,
-                    "dupSrcId03",
-                    code,
-                    name
-            );
-        });
-    }
-
-    /**
-     * Test DuplicateSchedule method
-     * Condition:
      * input param: settingCategory == STANDARD_SELECTION
      * require.getOutputSetting returns non empty item
+     * require.standardCheck : false
      * Expect:
      * returns AtomTask with invocation to require.duplicateArbitrarySchedule
      */
@@ -218,6 +203,7 @@ public class DuplicateArbitraryScheduleDomainServiceTest {
      * Condition:
      * input param: settingCategory == FREE_SETTING
      * require.getOutputSetting returns non empty item
+     * require.freeCheck: false
      * Expect:
      * returns AtomTask with invocation to require.duplicateArbitrarySchedule
      */
