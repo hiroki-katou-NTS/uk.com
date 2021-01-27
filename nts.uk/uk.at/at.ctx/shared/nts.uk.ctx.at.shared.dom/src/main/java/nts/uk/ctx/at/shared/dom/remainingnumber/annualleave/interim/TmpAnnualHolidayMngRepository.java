@@ -1,17 +1,11 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim;
 
 import java.util.List;
-import java.util.Optional;
 
 import nts.arc.time.calendar.period.DatePeriod;
 
 public interface TmpAnnualHolidayMngRepository {
-	/**
-	 * 検索　By　ID
-	 * @param mngId
-	 * @return
-	 */
-	public Optional<TmpAnnualHolidayMng> getById(String mngId);
+
 	/**
 	 * 削除
 	 * @param mngId

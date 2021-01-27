@@ -33,4 +33,7 @@ public class KshstGrantDateElapseYearsTblPK implements Serializable {
 	@Column(name = "GD_TBL_CD")
 	public String grantDateCd;
 
+	/* 付与回数 */
+	@Column(name = "GRANT_CNT")
+	public int grantCnt;
 }

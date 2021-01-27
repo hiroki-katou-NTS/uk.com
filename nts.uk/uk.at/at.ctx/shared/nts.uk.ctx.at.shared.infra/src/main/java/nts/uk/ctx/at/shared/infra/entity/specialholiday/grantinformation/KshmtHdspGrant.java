@@ -29,11 +29,11 @@ public class KshmtHdspGrant extends UkJpaEntity implements Serializable {
 
 	/* 付与月日 */
 	@Column(name = "GRANT_MD")
-	public int grantMd;
+	public Integer grantMd;
 
 	/* 付与日数 */
 	@Column(name = "GRANTED_DAYS")
-	public Integer grantedDays;
+	public int grantedDays;
 
 	@Override
 	protected Object getKey() {
@@ -41,7 +41,7 @@ public class KshmtHdspGrant extends UkJpaEntity implements Serializable {
 	}
 
 	public KshmtHdspGrant(
-			KshmtHdspGrantPK pk, int grantMd, int grantedDays) {
+			KshmtHdspGrantPK pk, Integer grantMd, int grantedDays) {
 		this.pk = pk;
 		this.grantMd = grantMd;
 		this.grantedDays = grantedDays;
@@ -59,7 +59,7 @@ public class KshmtHdspGrant extends UkJpaEntity implements Serializable {
 			FixGrantDate domain){
 
 		// 付与月日
-		int grantMd = 0;
+		Integer grantMd = null;
 		if ( domain.getGrantMonthDay().isPresent() ) {
 			grantMd = domain.getGrantMonthDay().get().getMonth()*100
 					+ domain.getGrantMonthDay().get().getDay();

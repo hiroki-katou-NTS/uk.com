@@ -684,41 +684,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 				work.setNextDayAfterPeriodEnd(true);
 		}
 
-
 		return aggregatePeriodWorks;
-
-//		// 終了日の翌日で期間を区切る  ----------------------------
-////		GeneralDate nextEndDate = aggrPeriod.end().addDays(1);
-//
-//		// 終了日の処理単位分割日を取得
-//		val specialLeaveGrantList1 = new ArrayList<AnnualLeaveDividedDayEachProcess>();
-//		// 【条件】
-//		// 終了日の期間かどうか=true
-//		dividedDayMap.forEach((key, val)->{
-//			if ( val.getDayBeforePeriodEnd().equals(true) ){
-//				specialLeaveGrantList1.add(val);
-//			}
-//		});
-//
-//		// 終了日の期間かどうか　←true
-//		if (specialLeaveGrantList1.isEmpty()){ // 件数=０
-//			ArrayList<SpecialLeaveDividedDayEachProcess> list
-//				= new ArrayList<SpecialLeaveDividedDayEachProcess>();
-//			dividedDayMap.forEach((key, val)->{
-//				// 【条件】 年月日！＝パラメータ「終了日」の翌日
-//				if ( !val.getYmd().equals(nextDayOfPeriodEnd) ){
-//					list.add(val);
-//				}
-//			});
-//
-//			// リストの中で年月日が一番大きい処理単位分割日の終了日の期間かどうか = true
-//			list.sort((a,b)->b.getYmd().compareTo(a.getYmd())) // 降順
-//				.foreach(c->{
-//					c.setDayBeforePeriodEnd(true);
-//					break;
-//				});
-//		}
-
 	}
 
 	/**
@@ -738,39 +704,15 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		// 「モード」をチェック
 		if (mode == InterimRemainMngMode.MONTHLY){
 			// 月次モード
-
-			// 月別実績用の暫定残数管理データを作成する
-//			val dailyInterimRemainMngDataMap = interimRemOffMonth.monthInterimRemainData(
-//					companyId, employeeId, aggrPeriod);
-
-			// 受け取った「日別暫定管理データ」を年休のみに絞り込む
-//			for (val dailyInterimRemainMngData : dailyInterimRemainMngDataMap.values()){
-//				if (!dailyInterimRemainMngData.getAnnualHolidayData().isPresent()) continue;
-//				if (dailyInterimRemainMngData.getRecAbsData().size() <= 0) continue;
-//				val master = dailyInterimRemainMngData.getRecAbsData().get(0);
-//				val data = dailyInterimRemainMngData.getAnnualHolidayData().get();
-//				results.add(TmpAnnualLeaveMngWork.of(master, data));
-//			}
 		}
 		if (mode == InterimRemainMngMode.OTHER){
 			// その他モード
 
 			// 「暫定年休管理データ」を取得する
-			val interimRemains = require.interimRemains(employeeId, aggrPeriod, RemainType.ANNUAL);
+			val interimRemains = require.tmpAnnualHolidayMng(employeeId, aggrPeriod);
 			for (val master : interimRemains){
-				val tmpAnnualLeaveMngOpt = require.tmpAnnualHolidayMng(master.getRemainManaID());
-				if (!tmpAnnualLeaveMngOpt.isPresent()) continue;
-				val data = tmpAnnualLeaveMngOpt.get();
-				results.add(TmpAnnualLeaveMngWork.of(data));
+				results.add(TmpAnnualLeaveMngWork.of(master));
 			}
-
-//			//テスト用
-//			results.add(TmpAnnualLeaveMngWork.of("",
-//			GeneralDate.ymd(2020, 10, 20),
-//			"060",
-//			new UseDay(1.0),
-//			CreateAtr.RECORD,
-//			RemainAtr.SINGLE));
 
 			// 年休フレックス補填分を暫定年休データに反映する
 			{
@@ -940,9 +882,9 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 
 	public static interface RequireM2 {
 
-		List<InterimRemain> interimRemains(String employeeId, DatePeriod dateData, RemainType remainType);
+//		List<InterimRemain> interimRemains(String employeeId, DatePeriod dateData, RemainType remainType);
 
-		Optional<TmpAnnualHolidayMng> tmpAnnualHolidayMng(String mngId);
+		List<TmpAnnualHolidayMng> tmpAnnualHolidayMng(String sid, DatePeriod dateData);
 
 		List<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, DatePeriod period);
 	}

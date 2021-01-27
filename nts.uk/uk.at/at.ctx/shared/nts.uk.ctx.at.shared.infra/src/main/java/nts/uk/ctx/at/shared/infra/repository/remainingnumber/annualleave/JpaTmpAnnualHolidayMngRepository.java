@@ -32,18 +32,6 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaTmpAnnualHolidayMngRepository extends JpaRepository implements TmpAnnualHolidayMngRepository{
-	
-//	@Inject
-//	private InterimRemainRepository interRemain;
-	
-	@Override
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public Optional<TmpAnnualHolidayMng> getById(String mngId) {
-		
-		return this.queryProxy().query("SELECT a FROM KrcdtInterimHdpaid a WHERE a.remainMngId = :id", KrcdtInterimHdpaid.class)
-					.setParameter("id", mngId)
-					.getSingle(x -> toDomain(x));
-	}
 
 	private TmpAnnualHolidayMng toDomain(KrcdtInterimHdpaid x) {
 		return toDomain(x.remainMngId, x.pk.sid, x.pk.ymd, x.creatorAtr, x.pk.timeDigestiveAtr,

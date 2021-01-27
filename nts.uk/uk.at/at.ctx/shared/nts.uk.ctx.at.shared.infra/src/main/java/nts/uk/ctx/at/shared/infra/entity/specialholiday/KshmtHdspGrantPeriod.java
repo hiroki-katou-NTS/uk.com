@@ -22,7 +22,7 @@ public class KshmtHdspGrantPeriod extends UkJpaEntity implements Serializable{
 
 	/* 付与日数 */
 	@Column(name = "GRANTED_DAYS")
-	public String grantDays;
+	public int grantDays;
 
 	/*期間開始日*/
 	@Column(name = "PERIOD_START")
