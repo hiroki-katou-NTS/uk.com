@@ -25,7 +25,6 @@ import uk.cnv.client.infra.query.GetAllUkWorkTablesQueryRepositoryImpl;
 import uk.cnv.client.infra.repository.UkWorkTableDto;
 
 public class CSVExporter {
-	private static final String CSV_DIR = "csvDirectory";
 	private static final int QUERY_MAX_LENGTH = 8191;
 
 	private GetAllUkWorkTablesQueryRepositoryImpl repo;
@@ -37,7 +36,7 @@ public class CSVExporter {
 	public CommandResult doWork() {
 		val executor = new CommandExecutor();
 
-		Path csvDir = Paths.get(UkConvertProperty.getProperty(CSV_DIR));
+		Path csvDir = Paths.get(UkConvertProperty.getProperty(UkConvertProperty.CSV_DIR));
 		File csvFolder = csvDir.toFile();
 		csvFolder.mkdir();
 

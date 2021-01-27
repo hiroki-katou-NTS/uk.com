@@ -7,23 +7,16 @@ import uk.cnv.client.LogManager;
 import uk.cnv.client.UkConvertProperty;
 
 public class CommandExecutor {
-	private static final String UKDB_HOST = "UkDbServerHost";
-	private static final String UKDB_USER = "UkDbUser";
-	private static final String UKDB_PASS = "UkDbPassword";
-	private static final String UKDB_DBNAME = "UkDbName";
-	//private static final String LOG_FILE_PATH = "logfilePath";
 	public String host;
 	public String user;
 	public String password;
 	public String dbName;
-	//public String logfile;
 
 	public CommandExecutor() {
-		this.host = UkConvertProperty.getProperty(UKDB_HOST);
-		this.user = UkConvertProperty.getProperty(UKDB_USER);
-		this.password = UkConvertProperty.getProperty(UKDB_PASS);
-		this.dbName = UkConvertProperty.getProperty(UKDB_DBNAME);
-	//	this.logfile = UkConvertProperty.getProperty(LOG_FILE_PATH);
+		this.host = UkConvertProperty.getProperty(UkConvertProperty.UKDB_HOST);
+		this.user = UkConvertProperty.getProperty(UkConvertProperty.UKDB_USER);
+		this.password = UkConvertProperty.getProperty(UkConvertProperty.UKDB_PASS);
+		this.dbName = UkConvertProperty.getProperty(UkConvertProperty.UKDB_DBNAME);
 	}
 
 	public CommandResult sqlFileExecuteNoDbName(String fileName) {

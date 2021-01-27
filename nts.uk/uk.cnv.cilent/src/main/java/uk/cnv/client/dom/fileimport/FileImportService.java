@@ -134,7 +134,7 @@ public class FileImportService {
 			LogManager.err(e);
 		}
 
-		String pathString = UkConvertProperty.getProperty("ErpWwwrootPath")
+		String pathString = UkConvertProperty.getProperty(UkConvertProperty.ERP_WWWROOT_PATH)
 				+ "\\"
 				+ uri.getPath().replaceAll("^/[^/]+/", "");
 		Path path = Paths.get(pathString);

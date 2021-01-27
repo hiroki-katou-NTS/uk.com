@@ -49,9 +49,7 @@ public class FileUploader{
 
 	private StoredFileInfo callUploadApi(Path pathToSource, String stereotype, String fileType) throws JsonParseException, JsonMappingException, IOException {
 
-		//loginUk();
-
-		String serverUrl = UkConvertProperty.getProperty("UkApServerUrl");
+		String serverUrl = UkConvertProperty.getProperty(UkConvertProperty.UK_AP_SERVER_URL);
 		URL url = new URL(serverUrl + "nts.uk.com.web/webapi/ntscommons/arc/filegate/upload");
 
 		ObjectMapper mapper = new ObjectMapper();
@@ -71,119 +69,6 @@ public class FileUploader{
 				Long.parseLong((String) map.get("originalSize"))
 			);
 	}
-
-//	private String loginUk() throws IOException {
-//		String serverUrl = UkConvertProperty.getProperty("UkApServerUrl");
-//		URL url = null;
-//
-//		// パスワード認証ログインUri
-//		try {
-//			url = new URL(serverUrl + "nts.uk.com.web/webapi/ctx/sys/gateway/login/password");
-//		} catch (MalformedURLException e) {
-//			LogManager.err(e);
-//		}
-//
-//		String companyCode = UkConvertProperty.getProperty("UkCompanyCode");
-//		String contractCode = UkConvertProperty.getProperty("UkContractCode");
-//		String contractPassword = UkConvertProperty.getProperty("UkContractPassword");
-//		String employeeCode = UkConvertProperty.getProperty("UkEmployeeCode");
-//		String password = UkConvertProperty.getProperty("UkPassword");
-//
-//        final String postJson = "{"
-//				+ "\"companyCode\":\"" + companyCode +  "\","
-//				+ "\"contractCode\":\"" + contractCode +  "\","
-//				+ "\"contractPassword\":\"" + contractPassword +  "\","
-//				+ "\"employeeCode\":\"" + employeeCode +  "\","
-//				+ "\"password\":\"" + password +  "\""
-//				+ "}";
-//
-//        final Map<String, String> httpHeaders = new LinkedHashMap<String, String>();
-//        httpHeaders.put("Content-Type", "application/json");
-//        final String resultStr = doPost(url, "UTF-8", httpHeaders, postJson);
-//
-//		return resultStr;
-//	}
-//
-//    private String doPost(URL url, String encoding, Map<String, String> headers, String jsonString) throws IOException {
-//
-//        final int TIMEOUT_MILLIS = 0;// タイムアウトミリ秒：0は無限
-//
-//        final StringBuffer sb = new StringBuffer("");
-//
-//        HttpURLConnection httpConn = null;
-//        BufferedReader br = null;
-//        InputStream is = null;
-//        InputStreamReader isr = null;
-//
-//        try {
-//            httpConn = (HttpURLConnection) url.openConnection();
-//            httpConn.setConnectTimeout(TIMEOUT_MILLIS);// 接続にかかる時間
-//            httpConn.setReadTimeout(TIMEOUT_MILLIS);// データの読み込みにかかる時間
-//            httpConn.setRequestMethod("POST");// HTTPメソッド
-//            httpConn.setUseCaches(false);// キャッシュ利用
-//            httpConn.setDoOutput(true);// リクエストのボディの送信を許可(GETのときはfalse,POSTのときはtrueにする)
-//            httpConn.setDoInput(true);// レスポンスのボディの受信を許可
-//
-//            if (headers != null) {
-//                for (String key : headers.keySet()) {
-//                    httpConn.setRequestProperty(key, headers.get(key));// HTTPヘッダをセット
-//                }
-//            }
-//
-//            final OutputStream os = httpConn.getOutputStream();
-//            final boolean autoFlash = true;
-//            final PrintStream ps = new PrintStream(os, autoFlash, encoding);
-//            ps.print(jsonString);
-//            ps.close();
-//
-//            final int responseCode = httpConn.getResponseCode();
-//
-//            String _responseEncoding = httpConn.getContentEncoding();
-//            if (_responseEncoding == null) {
-//                _responseEncoding = "UTF-8";
-//            }
-//
-//            if (responseCode == HttpURLConnection.HTTP_OK) {
-//                is = httpConn.getInputStream();
-//                isr = new InputStreamReader(is, _responseEncoding);
-//                br = new BufferedReader(isr);
-//                String line = null;
-//                while ((line = br.readLine()) != null) {
-//                    sb.append(line);
-//                }
-//            } else {
-//                // ステータスがHTTP_OK(200)以外の場合
-//                throw new IOException("responseCode is " + responseCode);
-//            }
-//
-//        } catch (IOException e) {
-//            throw e;
-//        } finally {
-//            // Java1.6 Compliant
-//            if (br != null) {
-//                try {
-//                    br.close();
-//                } catch (IOException e) {
-//                }
-//            }
-//            if (isr != null) {
-//                try {
-//                    isr.close();
-//                } catch (IOException e) {
-//                }
-//            }
-//            if (is != null) {
-//                try {
-//                    is.close();
-//                } catch (IOException e) {
-//                }
-//            }
-//            if (httpConn != null) {
-//                httpConn.disconnect();
-//            }
-//        }
-//        return sb.toString();
-//    }
 
     private String upload(String filepath, URL url, String stereotype) throws IOException {
 

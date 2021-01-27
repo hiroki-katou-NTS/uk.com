@@ -8,10 +8,9 @@ import java.util.Arrays;
 
 public class LogManager {
 
-	private static final String LOG_FILE_PATH = "logfilePath";
 	private static final String logfile;
 	static {
-		logfile = UkConvertProperty.getProperty(LOG_FILE_PATH);
+		logfile = UkConvertProperty.getProperty(UkConvertProperty.LOG_FILE_PATH);
 	}
 
 	public static void out(String str) {
@@ -26,7 +25,6 @@ public class LogManager {
 
 	public static void err(Exception e) {
 		System.err.println(e.getMessage());
-		LogManager.err(e);
 		outputLog(e.getMessage());
 		Arrays.stream(e.getStackTrace())
 			.forEach(st -> outputLog(st.toString()));

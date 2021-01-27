@@ -22,24 +22,26 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import lombok.AllArgsConstructor;
 import uk.cnv.client.LogManager;
 import uk.cnv.client.UkConvertProperty;
 
-@AllArgsConstructor
 public class CSVImporter {
+
 	private static final String CSV_ENCODE = "Shift_JIS";
-	private static final String CSV_DIR = "csvDirectory";
     private static final String EOL = "\r\n";
     private static final String TEMPDIR_PROPERTY = "java.io.tmpdir";
-    private static final String TEMPDIR = "temporaryDirectory";
+    private static final String ZIP_NAME = "csv.zip";
 
     private String constractCode;
+
+	public CSVImporter() {
+    	this.constractCode = UkConvertProperty.getProperty(UkConvertProperty.UK_CONTRACT_CODE);
+	}
 
 	public boolean doWork() {
 		LogManager.out("CSVインポート -- 処理開始 --");
 
-		String csvDir = UkConvertProperty.getProperty(CSV_DIR);
+		String csvDir = UkConvertProperty.getProperty(UkConvertProperty.CSV_DIR);
 		File csvFolder = new File(csvDir);
 		List<String> fileList = Arrays.stream(csvFolder.listFiles())
 			.map(f -> f.getName())
@@ -48,12 +50,12 @@ public class CSVImporter {
 		Path zipFilePath = csvToZip();
 
 		try {
-			String serverUrl = UkConvertProperty.getProperty("UkApServerUrl");
-			URL url = new URL(serverUrl + "nts.uk.cnv.web/webapi/ctx/cld/operate/tenant/csvimport");
+			String serverUrl = UkConvertProperty.getProperty(UkConvertProperty.UK_AP_SERVER_URL);
+			URL url = new URL(serverUrl + "nts.uk.cloud.web/webapi/ctx/cld/operate/tenant/csvimport");
 			csvImport(zipFilePath.toAbsolutePath().toString(), fileList, url);
 		}
 		catch (Exception e){
-			System.out.println("\r\n");
+			System.out.println(EOL);
 			LogManager.err(e);
 			return false;
 		}
@@ -64,8 +66,8 @@ public class CSVImporter {
 
 
     private Path csvToZip() {
-		String tempDir = UkConvertProperty.getProperty(TEMPDIR);
-		String csvDir = UkConvertProperty.getProperty(CSV_DIR);
+		String tempDir = UkConvertProperty.getProperty(UkConvertProperty.TEMP_DIR);
+		String csvDir = UkConvertProperty.getProperty(UkConvertProperty.CSV_DIR);
     	System.setProperty(TEMPDIR_PROPERTY, tempDir);
 
 		// 文字コード
@@ -73,7 +75,7 @@ public class CSVImporter {
 		// 入力ファイル
 		Path csvFolder = Paths.get(csvDir);
 		// 出力ファイル
-    	Path zipFile = Paths.get(tempDir, "csv.zip");
+    	Path zipFile = Paths.get(tempDir, ZIP_NAME);
 
         try(
                 FileOutputStream fos = new FileOutputStream(zipFile.toString());
@@ -116,7 +118,7 @@ public class CSVImporter {
     		try (OutputStream out = httpConn.getOutputStream()) {
     			File file = new File(zipFilepath);
 
-    			// filename
+    			// contractCode
     			StringBuilder sb = new StringBuilder();
     			sb.append("--");
     			sb.append(boundary);
@@ -125,13 +127,13 @@ public class CSVImporter {
     			sb.append("name=\"contractCode\"" + EOL+ EOL);
     			sb.append(constractCode + EOL);
 
-    			// filename
+    			// filenamelist
     			sb.append("--");
     			sb.append(boundary);
     			sb.append(EOL);
     			sb.append("Content-Disposition: form-data; ");
     			sb.append("name=\"filenamelist\"" + EOL+ EOL);
-    			sb.append(String.join(",", fileList));
+    			sb.append(String.join(","+ EOL, fileList) + EOL);
 
     			// userfile
 				sb.append("--");
@@ -155,7 +157,7 @@ public class CSVImporter {
     			out.flush();
     			out.close();
 
-    			httpConn.getResponseCode();
+    			status = httpConn.getResponseCode();
 
     			switch(status) {
     				case 200:

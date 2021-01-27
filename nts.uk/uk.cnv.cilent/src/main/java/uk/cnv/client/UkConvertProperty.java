@@ -7,6 +7,29 @@ import java.nio.file.Paths;
 import java.util.Properties;
 
 public class UkConvertProperty {
+	public static final String ERP_DBCONN_STR = "ErpDbConnString";
+	public static final String UK_DBCONN_STR = "UkDbConnString";
+	public static final String UKCNV_DBCONN_STR = "UkCnvDbConnString";
+
+	public static final String UKDB_HOST = "UkDbServerHost";
+	public static final String UKDB_USER = "UkDbUser";
+	public static final String UKDB_PASS = "UkDbPassword";
+	public static final String UKDB_DBNAME = "UkDbName";
+
+	public static final String ERP_WWWROOT_PATH = "ErpWwwrootPath";
+	public static final String UK_AP_SERVER_URL = "UkApServerUrl";
+
+    public static final String UK_CONTRACT_CODE = "UkContractCode";
+
+	public static final String CONVERT_CODE_FILE = "convertCodeFile";
+
+	public static final String CREATE_CONVERT_DB_SCRIPT = "createConvertDbScript";
+	public static final String CREATE_UKDB_SCRIPT = "createUkDbScript";
+
+    public static final String LOG_FILE_PATH = "logfilePath";
+	public static final String CSV_DIR = "csvDirectory";
+	public static final String TEMP_DIR = "temporaryDirectory";
+
 
 	private static final String INIT_FILE_PATH = "common.properties";
 	private static final Properties properties;

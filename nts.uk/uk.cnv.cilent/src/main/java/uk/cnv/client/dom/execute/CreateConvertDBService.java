@@ -5,12 +5,10 @@ import uk.cnv.client.LogManager;
 import uk.cnv.client.UkConvertProperty;
 
 public class CreateConvertDBService {
-	private static final String CREATE_CONVERT_DB_SCRIPT = "createConvertDbScript";
-	private static final String CREATE_UKDB_SCRIPT = "createUkDbScript";
 
 	public CommandResult doWork() {
-		String createConvertDbScript = UkConvertProperty.getProperty(CREATE_CONVERT_DB_SCRIPT);
-		String createUkDbScript = UkConvertProperty.getProperty(CREATE_UKDB_SCRIPT);
+		String createConvertDbScript = UkConvertProperty.getProperty(UkConvertProperty.CREATE_CONVERT_DB_SCRIPT);
+		String createUkDbScript = UkConvertProperty.getProperty(UkConvertProperty.CREATE_UKDB_SCRIPT);
 		val executor = new CommandExecutor();
 
 		LogManager.out("移行作業用DB作成　開始");
