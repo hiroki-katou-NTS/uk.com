@@ -87,15 +87,15 @@ module nts.uk.com.view.ccg034.h {
      */
     public updatePartDataAndCloseDialog() {
       const vm = this;
-      vm.$validate("#H2_2").then((hasUpload: boolean) => {
-        if (hasUpload || vm.fileId()) {
+      vm.$validate("#H1_2", "#H2_2").then((validUpload: boolean) => {
+        if (validUpload || vm.fileId()) {
           vm.$validate().then((valid: boolean) => {
             if (valid) {
               if (vm.fileSize() / 1024 <= MAX_FILE_SIZE_MB) {
                  // Update part data
                 vm.partData.alignHorizontal = vm.horizontalAlign();
                 vm.partData.alignVertical = vm.verticalAlign();
-                vm.partData.linkContent = vm.fileName();
+                vm.partData.linkContent = vm.fileName().trim() || vm.uploadedFileName();
                 vm.partData.fontSize = Number(vm.fontSize());
                 vm.partData.isBold = vm.isBold();
                 vm.partData.fileId = vm.fileId();
