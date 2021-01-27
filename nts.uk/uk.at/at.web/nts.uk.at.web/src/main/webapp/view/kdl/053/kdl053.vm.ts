@@ -104,6 +104,15 @@ module nts.uk.at.view.kdl053 {
                             name : 'Paging',
                             type: "local",
                             pageSize : 10
+                        },
+                        {
+                            name : 'Resizing',
+                            columnSettings: [
+                                { columnKey: "employeeCdName", allowResizing: true },
+                                { columnKey: "dateCss", allowResizing: true },
+                                { columnKey: "errName", allowResizing: true },
+                                { columnKey: "errorMessage", allowResizing: true }
+                            ],
                         }
                     ]
                 });
