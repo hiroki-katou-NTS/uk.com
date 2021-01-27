@@ -1,7 +1,7 @@
 /**
  * 3:23:22 PM Nov 9, 2017
  */
-package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem;
+package nts.uk.ctx.at.shared.dom.alarmList.extractionResult.attendanceitem;
 
 import java.util.List;
 import java.util.function.Function;

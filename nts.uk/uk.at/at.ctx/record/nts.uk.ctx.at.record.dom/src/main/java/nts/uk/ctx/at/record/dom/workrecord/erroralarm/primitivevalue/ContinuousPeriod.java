@@ -5,6 +5,7 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.primitivevalue.CheckedAmountValue;
 
 /**
  * @author hungnm

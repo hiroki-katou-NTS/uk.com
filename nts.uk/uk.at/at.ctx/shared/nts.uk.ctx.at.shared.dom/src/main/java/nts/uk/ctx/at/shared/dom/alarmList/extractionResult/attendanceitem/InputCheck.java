@@ -1,8 +1,8 @@
-package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem;
+package nts.uk.ctx.at.shared.dom.alarmList.extractionResult.attendanceitem;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.InputCheckCondition;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.enums.InputCheckCondition;
 
 /**
  * 

@@ -1,7 +1,7 @@
 /**
  * 11:16:56 AM Nov 9, 2017
  */
-package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem;
+package nts.uk.ctx.at.shared.dom.alarmList.extractionResult.attendanceitem;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
