@@ -1196,6 +1196,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xdet", 0));
                         }
                         
+                        if (cell.confirmed == true) {
+                            arrListCellLock.push({ rowId: rowId, columnId: '_' + ymd });
+                        }
+                        
                     };
                     detailContentDs.push(objDetailContentDs);
                     self.arrListCellLock = arrListCellLock;
@@ -1305,6 +1309,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         } else if (cell.confirmed == true) {
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xdet", 0));
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xdet", 1));
+                        }
+                        
+                        if (cell.confirmed == true) {
+                            arrListCellLock.push({ rowId: rowId, columnId: '_' + ymd });
                         }
                     });
                     detailContentDs.push(objDetailContentDs);
@@ -1475,6 +1483,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xdet", 1));
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xdet", 2));
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xdet", 3));
+                        }
+                        
+                        if (cell.confirmed == true) {
+                            arrListCellLock.push({ rowId: rowId, columnId: '_' + ymd });
                         }
                     });
                     detailContentDs.push(objDetailContentDs);
