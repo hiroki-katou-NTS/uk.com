@@ -40,7 +40,7 @@ public class ExtractRecoveryTargetTerminalDto {
 	//	メモ
 	private String memo;
 	//	機種名
-	private String modelName;
+	private String trName;
 	//	ROMバージョン
 	private String romVersion;
 	//	機種区分
