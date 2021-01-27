@@ -4,22 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.compensatoryleave;
 
-import java.sql.PreparedStatement;
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
 import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtAcquisitionCom;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtCompensLeaveCom;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KctmtDigestTimeCom;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KocmtOccurrenceSet;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KocmtOccurrenceSetPK;
 
 /**
  * The Class JpaCompensLeaveComSetRepository.

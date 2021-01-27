@@ -182,12 +182,7 @@ public class KclmtCompensLeaveCom extends ContractUkJpaEntity implements Seriali
     			compensatoryDigestiveTimeUnit, 
     			ManageDistinct.valueOf(this.linkMngAtr));
     }
-//    
-//    /** The Kclmt acquisition com. */
-//    @OneToOne(optional = true, cascade = CascadeType.ALL, fetch=FetchType.LAZY)
-//    @PrimaryKeyJoinColumn
-//    public KclmtAcquisitionCom KclmtAcquisitionCom;
-//    
+
 //    /** The Kctmt digest time com. */
 //    @OneToOne(optional = true, cascade = CascadeType.ALL, fetch=FetchType.LAZY)
 //    @PrimaryKeyJoinColumn
