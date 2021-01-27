@@ -51576,8 +51576,7 @@ var nts;
                         if (!element.id) {
                             element.id = 'master-content';
                         }
-                        var controlsDescendantBindings = $(element)
-                            .find('div[id^=functions-area]:not(.functions-area), div[id^=contents-area]:not(.contents-area)').length !== 0;
+                        ko.applyBindingsToDescendants(bindingContext, element);
                         $(element)
                             .find('div[id^=functions-area]')
                             .each(function (__, e) {
@@ -51595,11 +51594,10 @@ var nts;
                             .find('div[id^=contents-area]')
                             .each(function (__, e) {
                             if (!e.classList.contains('contents-area')) {
-                                var oldBinding = e.getAttribute('data-bind') || "";
                                 ko.applyBindingsToNode(e, { 'ui-contents': 0 }, bindingContext);
                             }
                         });
-                        return { controlsDescendantBindings: controlsDescendantBindings };
+                        return { controlsDescendantBindings: true };
                     };
                     MasterUIBindingHandler = __decorate([
                         handler({
@@ -51692,7 +51690,7 @@ var nts;
                         element.classList.add('contents-area');
                         element.removeAttribute('data-bind');
                         element.style.height = "calc(100vh - " + (element.getBoundingClientRect().top + (valueAccessor() || ($(element).parent().hasClass('master-content') ? 0 : 20))) + "px)";
-                        return { controlsDescendantBindings: false };
+                        return { controlsDescendantBindings: true };
                     };
                     MasterUIContentBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var root = bindingContext.$root;
