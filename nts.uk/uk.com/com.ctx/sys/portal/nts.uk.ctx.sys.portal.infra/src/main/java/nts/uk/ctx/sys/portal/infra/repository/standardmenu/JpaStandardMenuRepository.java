@@ -87,7 +87,7 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 			+ "WHERE s.ccgmtStandardMenuPK.companyId = :companyId "
 			+ "AND s.ccgmtStandardMenuPK.system = :system "
 			+ "AND s.ccgmtStandardMenuPK.classification = :classification "
-			+ "AND s.ccgmtStandardMenuPK.code = :code ";
+			+ "AND s.queryString = :queryString";
 
 	public CcgstStandardMenu insertToEntity(StandardMenu domain) {
 		 CcgstStandardMenuPK ccgstStandardMenuPK = new CcgstStandardMenuPK(domain.getCompanyId(), domain.getCode().v(), domain.getSystem().value, domain.getClassification().value);
@@ -446,11 +446,12 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 	@Override
 	public Optional<StandardMenu> findByCIDSystemMenuClassificationCode(String cid, int system, int classification,
 			String code) {
+		String queryString = "toppagecode=" + code;
 		return this.queryProxy().query(FIND_BY_CID_SYSTEM__MENUCLASSIFICATION_CODE, CcgstStandardMenu.class)
 				.setParameter("companyId", cid)
 				.setParameter("system", system)
 				.setParameter("classification", classification)
-				.setParameter("code", code)
+				.setParameter("queryString", queryString)
 				.getSingle(x-> toDomain(x));
 	}
 }
