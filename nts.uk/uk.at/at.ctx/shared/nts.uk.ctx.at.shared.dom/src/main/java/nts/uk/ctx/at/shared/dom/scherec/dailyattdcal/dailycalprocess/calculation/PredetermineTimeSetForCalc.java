@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetermineTime;
@@ -232,6 +233,16 @@ public class PredetermineTimeSetForCalc implements Cloneable{
 			throw new RuntimeException("unknown attr:" + attr);
 		}
 		
+	}
+	
+	/**
+	 * 勤務NOに一致する所定時間帯を取得する
+	 * （出勤休日区分は参照しない為、午前休午後休の時間帯補正をしません）
+	 * @param workNo 勤務NO
+	 * @return 所定時間帯
+	 */
+	public Optional<TimezoneUse> getTimeSheet(WorkNo workNo) {
+		return this.timeSheets.stream().filter(t -> t.getWorkNo() == workNo.v()).findFirst();
 	}
 	
 	/**
