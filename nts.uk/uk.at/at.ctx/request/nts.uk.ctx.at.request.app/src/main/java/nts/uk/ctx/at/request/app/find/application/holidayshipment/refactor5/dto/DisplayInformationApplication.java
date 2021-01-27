@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -43,14 +44,14 @@ public class DisplayInformationApplication {
 	public DisplayInformationApplicationRoot toDomain() {
 	    return new DisplayInformationApplicationRoot(
 	            workTypeList.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
-	            leaveComDayOffMana.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+	            leaveComDayOffMana == null ? Collections.emptyList() : leaveComDayOffMana.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
 	            workType == null ? Optional.empty() : Optional.of(workType), 
 	            workTime == null ? Optional.empty() : Optional.of(workTime), 
 	            startTime == null ? Optional.empty() : Optional.of(startTime), 
 	            endTime == null ? Optional.empty() : Optional.of(endTime), 
 	            startTime2 == null ? Optional.empty() : Optional.of(startTime2), 
 	            endTime2 == null ? Optional.empty() : Optional.of(endTime2), 
-	            payoutSubofHDManagements.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
+	            payoutSubofHDManagements == null ? Collections.emptyList() : payoutSubofHDManagements.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
 	}
 }
 

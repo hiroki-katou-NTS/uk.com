@@ -93,7 +93,7 @@ public class PreUpdateErrorCheck {
 					 abs.get().getPrePostAtr(), 
 					 displayInforWhenStarting.appDispInfoStartup.getAppDetailScreenInfo().getApplication().getVersion(), 
 					 abs.get().getWorkInformation().getWorkTypeCode().v(), 
-					 abs.get().getWorkInformation().getWorkTimeCode().v(), 
+					 abs.get().getWorkInformation().getWorkTimeCode() == null ? null : abs.get().getWorkInformation().getWorkTimeCode().v(), 
 					 displayInforWhenStarting.appDispInfoStartup.toDomain());
 		 }
 		

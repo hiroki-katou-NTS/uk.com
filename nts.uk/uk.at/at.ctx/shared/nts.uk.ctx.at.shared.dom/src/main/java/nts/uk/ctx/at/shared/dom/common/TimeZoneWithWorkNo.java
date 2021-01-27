@@ -24,7 +24,7 @@ public class TimeZoneWithWorkNo {
 	 */
 	private TimeZone timeZone;
 
-	public TimeZoneWithWorkNo(int workNo, int startTime, int endTime) {
+	public TimeZoneWithWorkNo(int workNo, Integer startTime, Integer endTime) {
 		this.workNo = new WorkNo(workNo);
 		this.timeZone = new TimeZone(startTime, endTime);
 	}

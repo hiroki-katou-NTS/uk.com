@@ -178,9 +178,9 @@ public class HolidayShipmentMobileWS extends WebService {
 				appDispInfoStartup.getAppDispInfoWithDateOutput().getBaseDate(),
 				appDispInfoStartup.getAppDispInfoNoDateOutput().isMailServerSet(),
 				appDispInfoStartup.getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().get(),
-				CollectionUtil.isEmpty(command.getRecHolidayMngLst()) ? Collections.emptyList() : command.getRecHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()),
-				CollectionUtil.isEmpty(command.getAbsHolidayMngLst()) ? Collections.emptyList() : command.getAbsHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()),
-				CollectionUtil.isEmpty(command.getAbsWorkMngLst()) ? Collections.emptyList() : command.getAbsWorkMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()),
+				CollectionUtil.isEmpty(command.getRecHolidayMngLst()) ? new ArrayList<>() : command.getRecHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()),
+				CollectionUtil.isEmpty(command.getAbsHolidayMngLst()) ? new ArrayList<>() : command.getAbsHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()),
+				CollectionUtil.isEmpty(command.getAbsWorkMngLst()) ? new ArrayList<>() : command.getAbsWorkMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()),
 				EnumAdaptor.valueOf(displayInforWhenStarting.holidayManage, ManageDistinct.class),
 				appDispInfoStartup.getAppDispInfoNoDateOutput().getApplicationSetting());
 			if(abs.isPresent()) {
@@ -203,12 +203,12 @@ public class HolidayShipmentMobileWS extends WebService {
 					companyID,
 					rec, 
 					abs, 
-					CollectionUtil.isEmpty(command.getRecOldHolidayMngLst()) ? Collections.emptyList() : command.getRecHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
-					CollectionUtil.isEmpty(command.getRecHolidayMngLst()) ? Collections.emptyList() : command.getRecHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
-					CollectionUtil.isEmpty(command.getAbsOldHolidayMngLst()) ? Collections.emptyList() : command.getAbsHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
-					CollectionUtil.isEmpty(command.getAbsOldWorkMngLst()) ? Collections.emptyList() : command.getAbsWorkMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
-					CollectionUtil.isEmpty(command.getAbsHolidayMngLst()) ? Collections.emptyList() : command.getAbsHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
-					CollectionUtil.isEmpty(command.getAbsWorkMngLst()) ? Collections.emptyList() : command.getAbsWorkMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+					CollectionUtil.isEmpty(command.getRecOldHolidayMngLst()) ? new ArrayList<>() : command.getRecOldHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+					CollectionUtil.isEmpty(command.getRecHolidayMngLst()) ? new ArrayList<>() : command.getRecHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+					CollectionUtil.isEmpty(command.getAbsOldHolidayMngLst()) ? new ArrayList<>() : command.getAbsOldHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+					CollectionUtil.isEmpty(command.getAbsOldWorkMngLst()) ? new ArrayList<>() : command.getAbsOldWorkMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+					CollectionUtil.isEmpty(command.getAbsHolidayMngLst()) ? new ArrayList<>() : command.getAbsHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+					CollectionUtil.isEmpty(command.getAbsWorkMngLst()) ? new ArrayList<>() : command.getAbsWorkMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
 					appDispInfoStartup);
 			if(abs.isPresent()) {
 				processResult.setAppID(abs.get().getAppID());
