@@ -304,12 +304,9 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 
 								if (grantHdTblOpt.isPresent()){
 									val grantHdTbl = grantHdTblOpt.get();
-									nextAnnualGrantList.setGrantDays(
-											Finally.of(grantHdTbl.getGrantDays()));
-									nextAnnualGrantList.setHalfDayAnnualLeaveMaxTimes(
-											grantHdTbl.getLimitDayYear());
-									nextAnnualGrantList.setTimeAnnualLeaveMaxDays(
-											grantHdTbl.getLimitTimeHd());
+									nextAnnualGrantList.setGrantDays(Finally.of(grantHdTbl.getGrantDays()));
+									nextAnnualGrantList.setHalfDayAnnualLeaveMaxTimes(grantHdTbl.getLimitDayYear());
+									nextAnnualGrantList.setTimeAnnualLeaveMaxDays(grantHdTbl.getLimitTimeHd());
 								}
 							}
 							else {

@@ -30,7 +30,7 @@ public class AggrResultOfHolidayOver60hExport{
 	/**
 	 * 使用回数
 	*/
-	private UsedTimes usedTimes;
+	//private UsedTimes usedTimes;
 
 	/**
 	 * 60H超休エラー情報
@@ -57,7 +57,7 @@ public class AggrResultOfHolidayOver60hExport{
 	 * コンストラクタ
 	 */
 	public AggrResultOfHolidayOver60hExport(){
-		this.usedTimes = new UsedTimes(0);
+		//this.usedTimes = new UsedTimes(0);
 		this.holidayOver60hErrors = new ArrayList<Integer>();
 		this.asOfPeriodEnd = new HolidayOver60hInfoExport();
 		this.asOfStartNextDayOfPeriodEnd = new HolidayOver60hInfoExport();
@@ -80,7 +80,7 @@ public class AggrResultOfHolidayOver60hExport{
 			List<Integer> holidayOver60hErrors){
 
 		AggrResultOfHolidayOver60hExport domain = new AggrResultOfHolidayOver60hExport();
-		domain.usedTimes = usedTimes;
+		//domain.usedTimes = usedTimes;
 		domain.holidayOver60hErrors = holidayOver60hErrors;
 		domain.asOfPeriodEnd = asOfPeriodEnd;
 		domain.asOfStartNextDayOfPeriodEnd = asOfStartNextDayOfPeriodEnd;
@@ -99,7 +99,7 @@ public class AggrResultOfHolidayOver60hExport{
 		AggrResultOfHolidayOver60hExport export = new AggrResultOfHolidayOver60hExport();
 
 		// 使用回数
-		export.usedTimes = new UsedTimes(0);
+		//export.usedTimes = new UsedTimes(aggrResultOfHolidayOver60h.getUsedTimes().v());
 
 		// 60H超休エラー情報
 		ArrayList<Integer> errorList = new ArrayList<Integer>();
@@ -133,7 +133,7 @@ public class AggrResultOfHolidayOver60hExport{
 		AggrResultOfHolidayOver60h domain = new AggrResultOfHolidayOver60h();
 
 		// 使用回数
-//		domain.setUsedTimes(new UsedTimes(0));
+		//domain.setUsedTimes(new UsedTimes(aggrResultOfHolidayOver60hExport.getUsedTimes().v()));
 
 		// 60H超休エラー情報
 		ArrayList<HolidayOver60hError> errorList = new ArrayList<HolidayOver60hError>();
@@ -143,12 +143,12 @@ public class AggrResultOfHolidayOver60hExport{
 		domain.setHolidayOver60hErrors(errorList);
 
 		// 60H超休情報（期間終了日時点）
-		domain.setAsOfPeriodEnd(
-			Finally.of(HolidayOver60hInfoExport.toDomain(aggrResultOfHolidayOver60hExport.getAsOfPeriodEnd())));
+		domain.setAsOfPeriodEnd(Finally.of(
+			HolidayOver60hInfoExport.toDomain(aggrResultOfHolidayOver60hExport.getAsOfPeriodEnd())));
 
 		// 60H超休情報（期間終了日の翌日開始時点）
-		domain.setAsOfStartNextDayOfPeriodEnd(
-			Finally.of(HolidayOver60hInfoExport.toDomain(aggrResultOfHolidayOver60hExport.getAsOfStartNextDayOfPeriodEnd())));
+		domain.setAsOfStartNextDayOfPeriodEnd(Finally.of(
+			HolidayOver60hInfoExport.toDomain(aggrResultOfHolidayOver60hExport.getAsOfStartNextDayOfPeriodEnd())));
 
 		// 60H超休情報（消滅）
 		domain.setLapsed(
