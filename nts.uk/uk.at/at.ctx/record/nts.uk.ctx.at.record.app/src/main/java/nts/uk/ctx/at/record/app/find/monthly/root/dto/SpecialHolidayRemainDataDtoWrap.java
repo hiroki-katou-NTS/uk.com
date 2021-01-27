@@ -77,7 +77,7 @@ public class SpecialHolidayRemainDataDtoWrap extends MonthlyItemCommon {
 	@Override
 	public AttendanceItemDataGate newInstanceOf(String path) {
 		if (FAKED.equals(path)) {
-			return new SpecialHolidayRemainDataDtoWrap();
+			return new SpecialHolidayRemainDataDto();
 		}
 		return super.newInstanceOf(path);
 	}

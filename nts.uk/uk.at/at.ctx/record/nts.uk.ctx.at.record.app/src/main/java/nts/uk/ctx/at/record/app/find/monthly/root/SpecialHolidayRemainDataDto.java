@@ -123,14 +123,6 @@ public class SpecialHolidayRemainDataDto extends MonthlyItemCommon {
 	}
 
 	@Override
-	public int size(String path) {
-		if (FAKED.equals(path)) {
-			return 20;
-		}
-		return super.size(path);
-	}
-
-	@Override
 	public AttendanceItemDataGate newInstanceOf(String path) {
 		if ((REAL + SPECIAL_HOLIDAY).equals(path) || SPECIAL_HOLIDAY.equals(path)) {
 			return new SpecialLeaveDto();
@@ -204,16 +196,6 @@ public class SpecialHolidayRemainDataDto extends MonthlyItemCommon {
 		default:
 			return super.typeOf(path);
 		}
-	}
-
-	@Override
-	public boolean isRoot() {
-		return true;
-	}
-
-	@Override
-	public String rootName() {
-		return MONTHLY_SPECIAL_HOLIDAY_REMAIN_NAME;
 	}
 
 	@Override
