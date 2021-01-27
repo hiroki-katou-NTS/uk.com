@@ -47,15 +47,15 @@ public class ElapseYear extends AggregateRoot {
 			String companyId, 
 			int specialHolidayCode, 
 			boolean fixedAssign, 
-			int years, int months ) {
+			Integer years, Integer months ) {
 		
 		return new ElapseYear(
 				companyId, 
 				new SpecialHolidayCode(specialHolidayCode), 
 				new ArrayList<ElapseYearMonthTbl>(),
 				fixedAssign, 
-				Optional.of(GrantCycleAfterTbl.createFromJavaType(years, months))
-				);
+				years == null && months == null ? Optional.empty() 
+						: Optional.of(GrantCycleAfterTbl.createFromJavaType(years, months)));
 	}
 	
 }

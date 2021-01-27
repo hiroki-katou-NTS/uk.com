@@ -34,56 +34,34 @@ public class KmamtMngAnnualSet extends UkJpaEntity implements Serializable {
     @Column(name = "CID")
     private String cid;
     
-    /** The half manage atr. */
+    /** 管理区分 */
     @Column(name = "HALF_MANAGE_ATR")
     private Integer halfManageAtr;
 
-    /** The half max reference. */
+    /** 参照先 */
     @Column(name = "HALF_MAX_REFERENCE")
     private Integer halfMaxReference;
 
-    /** The half max uniform comp. */
+    /** 会社一律上限回数 */
     @Column(name = "HALF_MAX_UNIFORM_COMP")
     private Integer halfMaxUniformComp;
 
-    /** The is work day cal. */
+    /**年休を出勤日数として加算する */
     @Column(name = "IS_WORK_DAY_CAL")
     private Integer isWorkDayCal;
 
-    /** The retention year. */
+    /** 保持年数 */
     @Column(name = "RETENTION_YEAR")
     private Integer retentionYear;
 
-    /** The retention year. */
+    /** 端数処理区分 */
     @Column(name = "HALF_ROUND_PROC")
     private Integer halfRoundProc;
 
-    /** The retention year. */
+    /** 年間所定労働日数 */
     @Column(name = "SCHEDULD_WORKING_DAYS")
     private Double scheduleWorkingDays;
 
-
-
-//    /** The remaining max day. */
-//    @Column(name = "REMAINING_MAX_DAY")
-//    private Double remainingMaxDay;
-
-//    /** The next grant day disp atr. */
-//    @Column(name = "NEXT_GRANT_DAY_DISP_ATR")
-//    private Integer nextGrantDayDispAtr;
-
-//    /** The remaining num disp atr. */
-//    @Column(name = "REMAINING_NUM_DISP_ATR")
-//    private Integer remainingNumDispAtr;
-
-//    /** The yearly of day. */
-//    @Column(name = "YEARLY_OF_DAYS")
-//    private Double yearlyOfDays;
-
-//    /** The Round Processing Classification. */
-//    @Column(name = "ROUND_PRO_CLA")
-//    private Integer roundProcessCla;
-    
     /**
      * Instantiates a new kmamt mng annual set.
      */
@@ -98,17 +76,6 @@ public class KmamtMngAnnualSet extends UkJpaEntity implements Serializable {
     public KmamtMngAnnualSet(String cid) {
         this.cid = cid;
     }
-
-    /**
-     * Instantiates a new kmamt mng annual set.
-     *
-     * @param cid the cid
-     * @param halfMaxDayYear the half max day year
-     */
-//    public KmamtMngAnnualSet(String cid, Integer halfMaxDayYear) {
-//        this.cid = cid;
-//        this.halfMaxDayYear = halfMaxDayYear;
-//    }
 
 
     /* (non-Javadoc)

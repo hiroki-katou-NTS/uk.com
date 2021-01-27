@@ -31,11 +31,11 @@ public class KshstElapseYears extends UkJpaEntity implements Serializable {
 	
 	/* テーブル以降の付与周期　経過年数.年数 */
 	@Column(name = "CYCLE_YEARS")
-	public int cycleYears;
+	public Integer cycleYears;
 	
 	/* テーブル以降の付与周期　経過年数.月数 */
 	@Column(name = "CYCLE_MONTHS")
-	public int cycleMonths;
+	public Integer cycleMonths;
 	
 	@Override
 	protected Object getKey() {
@@ -49,7 +49,7 @@ public class KshstElapseYears extends UkJpaEntity implements Serializable {
 	 * @param years テーブル以降の付与周期　経過年数.年数
 	 * @param months テーブル以降の付与周期　経過年数.月数
 	 */
-	public KshstElapseYears(KshstElapseYearsPK pk, int fixedAssign, int years, int months) {		
+	public KshstElapseYears(KshstElapseYearsPK pk, int fixedAssign, Integer years, Integer months) {		
 		this.pk = pk;
 		this.fixedAssign = fixedAssign;
 		this.cycleYears = years;

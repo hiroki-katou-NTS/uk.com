@@ -147,14 +147,9 @@ public class HolidayRemainMergeAdapterImpl implements HolidayRemainMergeAdapter{
 		List<AnnLeaveUsageStatusOfThisMonthImported> result363 = lst363.stream().map(c ->
 			new AnnLeaveUsageStatusOfThisMonthImported(c.getYearMonth(),
 					c.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
-							.getUsedNumberInfo().getUsedNumber().getUsedDays().getUsedDayNumber().v(),
+							.getUsedNumberInfo().getUsedNumber().getUsedDays().map(x -> x.v()).orElse(0d),
 					c.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
-							.getUsedNumberInfo().getUsedNumber().getUsedTime().isPresent()
-									? Optional.of(c.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
-											.getRemainingNumber().getAnnualLeaveWithMinus()
-											.getUsedNumberInfo().getUsedNumber()
-											.getUsedTime().get().getUsedTime().v())
-									: Optional.empty(),
+							.getUsedNumberInfo().getUsedNumber().getUsedTime().map(x -> x.valueAsMinutes()),
 					c.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
 							.getRemainingNumberInfo().getRemainingNumber().getTotalRemainingDays().v(),
 					c.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()

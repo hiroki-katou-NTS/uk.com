@@ -13,7 +13,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedDays;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveUsedNumber;
 
 @Data
@@ -37,8 +36,8 @@ public class DayUsedNumberDto implements ItemConst, AttendanceItemDataGate {
 	@AttendanceItemLayout(jpPropertyName = GRANT + AFTER, layout = LAYOUT_C)
 	private Double usedDaysAfterGrant;
 
-	public static DayUsedNumberDto from(AnnualLeaveUsedDays domain) {
-		return domain == null ? null : new DayUsedNumberDto(domain.getUsedDayNumber().v(), 0.0, 0.0);
+	public static DayUsedNumberDto from(AnnualLeaveUsedDayNumber domain) {
+		return domain == null ? null : new DayUsedNumberDto(domain.v(), 0.0, 0.0);
 	}
 
 	public ReserveLeaveUsedNumber toDomain(){
@@ -55,8 +54,8 @@ public class DayUsedNumberDto implements ItemConst, AttendanceItemDataGate {
 									domain.getUsedDaysAfterGrant().isPresent() ? domain.getUsedDaysAfterGrant().get().v() : null);
 	}
 	
-	public AnnualLeaveUsedDays toAnnual() {
-		return AnnualLeaveUsedDays.of(new AnnualLeaveUsedDayNumber(usedDays));
+	public AnnualLeaveUsedDayNumber toAnnual() {
+		return new AnnualLeaveUsedDayNumber(usedDays);
 	}
 	
 	@Override

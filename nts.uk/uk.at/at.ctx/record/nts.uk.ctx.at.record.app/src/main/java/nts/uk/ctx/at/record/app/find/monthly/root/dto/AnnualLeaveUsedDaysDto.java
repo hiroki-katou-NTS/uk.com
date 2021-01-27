@@ -6,14 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate.PropType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedDays;
 
 @Data
 /** 年休使用日数 */
@@ -36,13 +34,13 @@ public class AnnualLeaveUsedDaysDto implements ItemConst, AttendanceItemDataGate
 	@AttendanceItemLayout(jpPropertyName = GRANT + AFTER, layout = LAYOUT_C)
 	private Double usedDaysAfterGrant;
 
-	public static AnnualLeaveUsedDaysDto from(AnnualLeaveUsedDays domain) {
+	public static AnnualLeaveUsedDaysDto from(AnnualLeaveUsedDayNumber domain) {
 		/** NULL POINT*/
-		return domain == null ? null : new AnnualLeaveUsedDaysDto(domain.getUsedDayNumber().v(), 0, null);
+		return domain == null ? null : new AnnualLeaveUsedDaysDto(domain.v(), 0, null);
 	}
 	
-	public AnnualLeaveUsedDays toDomain() {
-		return AnnualLeaveUsedDays.of(new AnnualLeaveUsedDayNumber(usedDays));
+	public AnnualLeaveUsedDayNumber toDomain() {
+		return new AnnualLeaveUsedDayNumber(usedDays);
 	}
 	
 	@Override

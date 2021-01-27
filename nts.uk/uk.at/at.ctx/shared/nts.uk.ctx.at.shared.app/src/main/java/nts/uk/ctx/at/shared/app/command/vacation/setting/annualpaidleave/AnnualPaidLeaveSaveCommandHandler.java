@@ -190,10 +190,10 @@ public class AnnualPaidLeaveSaveCommandHandler extends CommandHandler<AnnualPaid
             command.setNumberYearRetain(setttingDB.getManageAnnualSetting().getRemainingNumberSetting()
                     .retentionYear.v());
             command.setAnnualPriority(setttingDB.getAcquisitionSetting().annualPriority.value);
-            command.setRemainingNumberDisplay(setttingDB.getManageAnnualSetting().getDisplaySetting()
-                    .remainingNumberDisplay.value);
-            command.setNextGrantDayDisplay(setttingDB.getManageAnnualSetting().getDisplaySetting()
-                    .nextGrantDayDisplay.value);
+//            command.setRemainingNumberDisplay(setttingDB.getManageAnnualSetting().getDisplaySetting()
+//                    .remainingNumberDisplay.value);
+//            command.setNextGrantDayDisplay(setttingDB.getManageAnnualSetting().getDisplaySetting()
+//                    .nextGrantDayDisplay.value);
             command.setNumberYearRetain(setttingDB.getManageAnnualSetting().getRemainingNumberSetting()
                     .retentionYear.v());
             command.setAnnualPriority(setttingDB.getAcquisitionSetting().annualPriority.value);

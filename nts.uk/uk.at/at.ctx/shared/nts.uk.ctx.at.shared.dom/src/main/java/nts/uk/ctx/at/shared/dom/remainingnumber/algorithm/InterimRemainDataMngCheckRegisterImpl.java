@@ -96,7 +96,7 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 				if (data.getRecAbsData().isEmpty()) {
 					String mngId = IdentifierUtil.randomUniqueId();
 					InterimRemain furikyu = new InterimRemain(mngId, inputParam.getSid(), x.getAppDate(),
-							CreateAtr.APPBEFORE, RemainType.PAUSE, RemainAtr.SINGLE);
+							CreateAtr.APPBEFORE, RemainType.PAUSE);
 					InterimAbsMng furikyuSinsei = new InterimAbsMng(mngId, new RequiredDay(0.0), new UnOffsetDay(0.0));
 					data.getRecAbsData().add(furikyu);
 					data.setInterimAbsData(Optional.of(furikyuSinsei));
@@ -174,9 +174,9 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 		List<TmpAnnualLeaveMngWork> mngWork = new ArrayList<>();
 		if (inputParam.isChkAnnual()) {
 			mngWork = annualHolidayData.stream().map(o -> {
-				InterimRemain annualInterim = annualMng.stream().filter(a -> a.getRemainManaID() == o.getAnnualId())
-						.collect(Collectors.toList()).get(0);
-				return TmpAnnualLeaveMngWork.of(annualInterim, o);
+//				InterimRemain annualInterim = annualMng.stream().filter(a -> a.getRemainManaID() == o.getAnnualId())
+//						.collect(Collectors.toList()).get(0);
+				return TmpAnnualLeaveMngWork.of(o);
 			}).collect(Collectors.toList());
 			List<AnnualLeaveErrorSharedImport> lstError = annualService.annualLeaveErrors(inputParam.getCid(),
 					inputParam.getSid(), inputParam.getDatePeriod(), inputParam.isMode(), inputParam.getBaseDate(),
@@ -258,7 +258,7 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 			y.getAnnualHolidayData().ifPresent(z -> {
 				annualHolidayData.add(z);
 				List<InterimRemain> lstTmp = y.getRecAbsData().stream()
-						.filter(w -> w.getRemainManaID().equals(z.getAnnualId())).collect(Collectors.toList());
+						.filter(w -> w.getRemainManaID().equals(z.getRemainManaID())).collect(Collectors.toList());
 				for (InterimRemain mngData : lstTmp) {
 					annualMng.add(mngData);
 				}

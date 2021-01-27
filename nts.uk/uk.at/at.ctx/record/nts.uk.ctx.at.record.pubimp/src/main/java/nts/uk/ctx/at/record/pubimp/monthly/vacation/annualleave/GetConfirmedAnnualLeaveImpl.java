@@ -61,10 +61,10 @@ public class GetConfirmedAnnualLeaveImpl implements GetConfirmedAnnualLeave {
 			val remNumber = annualLeave.getRemainingNumberInfo().getRemainingNumber();
 			
 			AnnualLeaveUsedDayNumber usedDays =
-					new AnnualLeaveUsedDayNumber(usedNumber.getUsedDays().getUsedDayNumber().v());
+					new AnnualLeaveUsedDayNumber(usedNumber.getUsedDays().map(c -> c.v()).orElse(0d));
 			UsedMinutes usedTime = null;
 			if (usedNumber.getUsedTime().isPresent()){
-				usedTime = new UsedMinutes(usedNumber.getUsedTime().get().getUsedTime().v());
+				usedTime = new UsedMinutes(usedNumber.getUsedTime().get().valueAsMinutes());
 			}
 			AnnualLeaveRemainingDayNumber remainingDays =
 					new AnnualLeaveRemainingDayNumber(remNumber.getTotalRemainingDays().v());
@@ -142,10 +142,10 @@ public class GetConfirmedAnnualLeaveImpl implements GetConfirmedAnnualLeave {
 				val remNumber = annualLeave.getRemainingNumberInfo().getRemainingNumber();
 				
 				AnnualLeaveUsedDayNumber usedDays =
-						new AnnualLeaveUsedDayNumber(usedNumber.getUsedDays().getUsedDayNumber().v());
+						new AnnualLeaveUsedDayNumber(usedNumber.getUsedDays().map(c -> c.v()).orElse(0d));
 				UsedMinutes usedTime = null;
 				if (usedNumber.getUsedTime().isPresent()){
-					usedTime = new UsedMinutes(usedNumber.getUsedTime().get().getUsedTime().v());
+					usedTime = new UsedMinutes(usedNumber.getUsedTime().get().valueAsMinutes());
 				}
 				AnnualLeaveRemainingDayNumber remainingDays =
 						new AnnualLeaveRemainingDayNumber(remNumber.getTotalRemainingDays().v());

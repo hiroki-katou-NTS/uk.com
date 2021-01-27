@@ -52,7 +52,7 @@ public class RemainAnnualLeaveCalculation {
 			// 年休
 			if (interimRemainMng.getAnnualHolidayData().isPresent()){
 				val data = interimRemainMng.getAnnualHolidayData().get();
-				tmpAnnualLeaveMngs.add(TmpAnnualLeaveMngWork.of(master, data));
+				tmpAnnualLeaveMngs.add(TmpAnnualLeaveMngWork.of(data));
 				isOverWriteAnnual = true;
 			}
 			

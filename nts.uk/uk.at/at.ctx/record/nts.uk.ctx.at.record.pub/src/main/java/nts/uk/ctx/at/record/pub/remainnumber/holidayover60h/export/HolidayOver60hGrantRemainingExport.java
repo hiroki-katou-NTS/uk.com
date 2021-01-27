@@ -1,15 +1,9 @@
 package nts.uk.ctx.at.record.pub.remainnumber.holidayover60h.export;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.remainingnumber.holidayover60h.export.param.HolidayOver60hGrantRemaining;
-import nts.uk.ctx.at.record.dom.remainingnumber.holidayover60h.export.param.HolidayOver60hInfo;
-import nts.uk.ctx.at.record.dom.remainingnumber.holidayover60h.export.param.HolidayOver60hRemainingNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveNumberInfo;
@@ -86,6 +80,7 @@ public class HolidayOver60hGrantRemainingExport{
 		export.expirationStatus = holidayOver60hGrantRemaining.getExpirationStatus();
 		export.registerType = holidayOver60hGrantRemaining.getRegisterType();
 		export.details = holidayOver60hGrantRemaining.getDetails().clone();
+		export.dummyAtr = holidayOver60hGrantRemaining.isDummyAtr();
 
 		return export;
 	}
@@ -108,6 +103,7 @@ public class HolidayOver60hGrantRemainingExport{
 		domain.setExpirationStatus(holidayOver60hGrantRemainingExport.getExpirationStatus());
 		domain.setRegisterType(holidayOver60hGrantRemainingExport.getRegisterType());
 		domain.setDetails(holidayOver60hGrantRemainingExport.getDetails());
+		domain.setDummyAtr(holidayOver60hGrantRemainingExport.dummyAtr);
 
 		return domain;
 	}

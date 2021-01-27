@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareNurseManagement;
@@ -53,10 +52,6 @@ public class KrcdtInterimChildCare  extends UkJpaEntity implements Serializable 
 	@Column(name = "CREATOR_ATR")
 	public int createAtr;
 
-	/**	残数分類 */
-	@Column(name = "REMAIN_ATR")
-	public int remainAtr;
-
 	/** 使用日数 */
 	@Column(name = "USED_DAYS")
 	public Double usedDays;
@@ -80,7 +75,6 @@ public class KrcdtInterimChildCare  extends UkJpaEntity implements Serializable 
 	public TempChildCareManagement toDomain() {
 		return TempChildCareManagement.of(remainMngID, sID, ymd,
 					EnumAdaptor.valueOf(createAtr, CreateAtr.class),
-					EnumAdaptor.valueOf(remainAtr, RemainAtr.class),
 					ChildCareNurseUsedNumber.of(
 								new DayNumberOfUse(usedDays),
 								Optional.ofNullable(usedTime == null ? null : new TimeOfUse(usedTime))),
@@ -116,7 +110,6 @@ public class KrcdtInterimChildCare  extends UkJpaEntity implements Serializable 
 		this.sID = domain.getSID();
 		this.ymd = domain.getYmd();
 		this.createAtr  = domain.getCreatorAtr().value;
-		this.remainAtr = domain.getRemainAtr().value;
 		this.usedDays = domain.getUsedNumber().getUsedDay().v();
 		this.usedTime = domain.getUsedNumber().getUsedTimes().map(c -> c.v()).orElse(null);
 		this.timeDigestiveAtr = domain.getAppTimeType().map(c -> c.isHourlyTimeType() ? 1 : 0).orElse(null);

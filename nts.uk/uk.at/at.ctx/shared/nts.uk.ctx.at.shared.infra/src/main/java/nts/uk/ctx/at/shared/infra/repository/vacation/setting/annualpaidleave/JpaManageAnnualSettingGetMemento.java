@@ -95,21 +95,6 @@ public class JpaManageAnnualSettingGetMemento implements ManageAnnualSettingGetM
 
     /*
      * (non-Javadoc)
-     *
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
-     * ManageAnnualSettingGetMemento#getDisplaySetting()
-     */
-    @Override
-    public DisplaySetting getDisplaySetting() {
-        DisplaySetting display = DisplaySetting.builder()
-//                .nextGrantDayDisplay(DisplayDivision.valueOf(this.entity.getNextGrantDayDispAtr()))
-//                .remainingNumberDisplay(DisplayDivision.valueOf(this.entity.getRemainingNumDispAtr()))
-                .build();
-        return display;
-    }
-
-    /*
-     * (non-Javadoc)
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
      * ManageAnnualSettingGetMemento#getYearLyOfDays()
      */

@@ -51,14 +51,9 @@ public class AnnLeaveRemainingFinder implements AnnLeaveRemainingAdapter {
 
 			return new AnnLeaveUsageStatusOfThisMonthImported(item.getYearMonth(),
 					item.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
-							.getUsedNumberInfo().getUsedNumber().getUsedDays().getUsedDayNumber().v(),
+							.getUsedNumberInfo().getUsedNumber().getUsedDays().map(c -> c.v()).orElse(0d),
 					item.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
-							.getUsedNumberInfo().getUsedNumber().getUsedTime().isPresent()
-									? Optional.of(item.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
-											.getRemainingNumber().getAnnualLeaveWithMinus()
-											.getUsedNumberInfo().getUsedNumber()
-											.getUsedTime().get().getUsedTime().v())
-									: Optional.empty(),
+							.getUsedNumberInfo().getUsedNumber().getUsedTime().map(c -> c.valueAsMinutes()),
 					item.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
 							.getRemainingNumberInfo().getRemainingNumber().getTotalRemainingDays().v(),
 					item.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()

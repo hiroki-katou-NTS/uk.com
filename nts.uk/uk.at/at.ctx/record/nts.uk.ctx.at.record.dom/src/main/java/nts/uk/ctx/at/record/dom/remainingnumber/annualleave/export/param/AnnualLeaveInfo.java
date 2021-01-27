@@ -30,9 +30,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.AnnualLeaveError;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remain.AnnualLeaveGrantRemaining;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveGrant;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedDays;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedNumber;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AttendanceRate;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPriority;
@@ -386,8 +384,9 @@ public class AnnualLeaveInfo implements Cloneable {
 
 		// 付与日数を確認する
 		double grantDays = 0.0;
-		if (aggregatePeriodWork.getAnnualLeaveGrant().isPresent()){
-			grantDays = aggregatePeriodWork.getAnnualLeaveGrant().get().getGrantDays().v().doubleValue();
+		if (aggregatePeriodWork.getAnnualLeaveGrant().isPresent() &&
+				aggregatePeriodWork.getAnnualLeaveGrant().get().getGrantDays().isPresent()){
+			grantDays = aggregatePeriodWork.getAnnualLeaveGrant().get().getGrantDays().get().v().doubleValue();
 		}
 
 		// 次回年休付与を確認する
@@ -513,10 +512,8 @@ public class AnnualLeaveInfo implements Cloneable {
 
 
 				//使用数に加算する
-				AnnualLeaveUsedDays days = new AnnualLeaveUsedDays();
-				days.addUsedDays(leaveUsedNumber.getDays().v());
-				Optional<AnnualLeaveUsedTime>times =
-						Optional.of(AnnualLeaveUsedTime.of(new UsedMinutes(leaveUsedNumber.getMinutesOrZero().valueAsMinutes())));
+				Optional<AnnualLeaveUsedDayNumber> days = Optional.of(new AnnualLeaveUsedDayNumber(leaveUsedNumber.getDays().v()));
+				Optional<UsedMinutes>times = Optional.of(new UsedMinutes(leaveUsedNumber.getMinutesOrZero().valueAsMinutes()));
 
 				AnnualLeaveUsedNumber addNumber = AnnualLeaveUsedNumber.of(days,times);
 				usedNumber.addUsedNumber(addNumber);

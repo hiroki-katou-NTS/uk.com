@@ -1867,8 +1867,8 @@ public class RecordDomRequireService {
 //		}
 
 		@Override
-		public Optional<TmpAnnualHolidayMng> tmpAnnualHolidayMng(String mngId) {
-			return tmpAnnualHolidayMngRepo.getById(mngId);
+		public List<TmpAnnualHolidayMng> tmpAnnualHolidayMng(String sid, DatePeriod dateData) {
+			return tmpAnnualHolidayMngRepo.getBySidPeriod(sid, dateData);
 		}
 
 //		@Override
