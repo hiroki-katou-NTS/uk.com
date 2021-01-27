@@ -80,22 +80,23 @@ public class RegisterAndSubmitChangesCommandHandler extends CommandHandler<Regis
 																.collect(Collectors.toList());
 		
 		List<TimeRecordSetUpdateList> listTimeRecordSetUpdateListForRegister = 
-											listEmpInfoTerminalCodes.stream()
-											.map(e -> {
-												Optional<TimeRecordSetFormatList> machineInfo = machineInfoLst.stream().filter(x -> Integer.parseInt(x.getEmpInfoTerCode().v()) == Integer.parseInt(e.v())).findAny();
-												if(!machineInfo.isPresent()) {
-													//	do something
-													return new TimeRecordSetUpdateList(e, new EmpInfoTerminalName(""), new NRRomVersion(""),  ModelEmpInfoTer.valueOf(command.getModelEmpInfoTer()), listTimeRecordSetUpdate);
-												}
-												TimeRecordSetFormatList machineInfoVal = machineInfo.get();
-												TimeRecordSetUpdateList timeRecordSetUpdateList = new TimeRecordSetUpdateList(e,
-																															  machineInfoVal.getEmpInfoTerName(),
-																															  machineInfoVal.getRomVersion(),
-																															  machineInfoVal.getModelEmpInfoTer(),
-																															  listTimeRecordSetUpdate
-												);
-												return timeRecordSetUpdateList;	
-												}).collect(Collectors.toList());
+										listEmpInfoTerminalCodes.stream()
+										.map(e -> {
+											Optional<TimeRecordSetFormatList> machineInfo = machineInfoLst.stream().filter(x -> Integer.parseInt(x.getEmpInfoTerCode().v()) == Integer.parseInt(e.v())).findAny();
+											if(!machineInfo.isPresent()) {
+												//	do something
+												return new TimeRecordSetUpdateList(e, new EmpInfoTerminalName(""), new NRRomVersion(""),  ModelEmpInfoTer.valueOf(command.getModelEmpInfoTer()), listTimeRecordSetUpdate);
+											}
+											TimeRecordSetFormatList machineInfoVal = machineInfo.get();
+											TimeRecordSetUpdateList timeRecordSetUpdateList = 
+																		new TimeRecordSetUpdateList(e,
+																		  machineInfoVal.getEmpInfoTerName(),
+																		  machineInfoVal.getRomVersion(),
+																		  machineInfoVal.getModelEmpInfoTer(),
+																		  listTimeRecordSetUpdate
+																			);
+											return timeRecordSetUpdateList;	
+											}).collect(Collectors.toList());
 		
 		// 4: 登録する(require, 契約コード、就業情報端末コード、タイムレコード設定更新リスト)
 		registerTimeRecordSetUpdateListCommandHandler.handle(listTimeRecordSetUpdateListForRegister);
