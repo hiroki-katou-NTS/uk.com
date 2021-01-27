@@ -92,6 +92,8 @@ module nts.uk.ui.layout {
                 element.id = 'master-content';
             }
 
+            const controlsDescendantBindings = $(element).find('div[id^=contents-area]:not(.contents-area)').length !== 0;
+
             $(element)
                 .find('div[id^=functions-area]')
                 .each((__: number, e: HTMLElement) => {
@@ -118,7 +120,7 @@ module nts.uk.ui.layout {
                     }
                 });
 
-            return { controlsDescendantBindings: false };
+            return { controlsDescendantBindings };
         }
     }
 
@@ -217,7 +219,7 @@ module nts.uk.ui.layout {
             if (!element.id) {
                 element.id = 'contents-area';
             }
-            
+
             element.classList.add('contents-area');
             element.removeAttribute('data-bind');
 
