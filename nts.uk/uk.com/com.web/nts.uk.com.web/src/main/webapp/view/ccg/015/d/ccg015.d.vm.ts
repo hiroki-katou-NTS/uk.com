@@ -117,11 +117,11 @@ module nts.uk.com.view.ccg015.d {
       return vm.$ajax('/toppage/changeFlowMenu', data)
         .then((result: any) => {
           if (result && layoutType === LayoutType.FLOW_MENU) {
-            vm.listFlowMenu(result);
+            vm.listFlowMenu(_.orderBy(result,['flowCode'],['asc']));
             vm.flowMenuSelectedCode(vm.listFlowMenu()[0].flowCode);
           } else if (result && layoutType === LayoutType.FLOW_MENU_UPLOAD) {
-            vm.listTopPagePart(result);
             if(result.length > 0){
+              vm.listTopPagePart(_.orderBy(result,['flowCode'],['asc']));
               vm.toppageSelectedCode(vm.listTopPagePart()[0].flowCode);
             }
           } else {
