@@ -54,7 +54,7 @@ div.nts-column{
   text-align: center !important;
 }
 #search-div .inputTime {
-	width: 65px;
+	width: 70px;
 }
 /* .label{
 	margin-left: 10px;
@@ -65,7 +65,7 @@ div.nts-column{
 }
 
 .table .cell.cell-right {
-	width: 63%;
+	width: 62%;
 	text-align: right;
 }
 .search-by-code .cell:last-child {

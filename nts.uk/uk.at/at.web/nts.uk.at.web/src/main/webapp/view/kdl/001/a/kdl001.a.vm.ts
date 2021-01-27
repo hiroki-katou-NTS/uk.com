@@ -5,7 +5,7 @@ module nts.uk.at.view.kdl001.a {
             multiSelectMode: KnockoutObservable<boolean>;
             isSelection: KnockoutObservable<boolean> = ko.observable(false);
             workingHoursItemLists: KnockoutObservableArray<WorkTimeSet>; //all
-            selectableWorkingHours: KnockoutObservableArray<WorkTimeSet> = ko.observableArray(false);; //custom
+            selectableWorkingHours: KnockoutObservableArray<WorkTimeSet> = ko.observableArray([]); //custom
             selectAbleItemList: KnockoutObservableArray<WorkTimeSet>;
             selectAbleCodeList: KnockoutObservableArray<string>;
             selectedCodeList: KnockoutObservableArray<string>;
@@ -26,9 +26,9 @@ module nts.uk.at.view.kdl001.a {
             isEnableCheckStatus: KnockoutObservable<boolean> = ko.observable(false);
             isAllCheckShow: KnockoutObservable<boolean> = ko.observable(false);
             isCheckAllStatus: KnockoutObservable<boolean> = ko.observable(false);
-            selectAbleCodeListBk: KnockoutObservableArray<string> = ko.observable(false);
-            selectedCodeListBk: KnockoutObservableArray<string> = ko.observable(false);
-            selectedCodeBk: KnockoutObservable<string> = ko.observable(false);
+            selectAbleCodeListBk: KnockoutObservableArray<string> = ko.observableArray([]);
+            selectedCodeListBk: KnockoutObservableArray<string> =  ko.observableArray([]);
+            selectedCodeBk: KnockoutObservable<string> = ko.observable(null);
 
             constructor() {
                 var self = this;
@@ -148,7 +148,7 @@ module nts.uk.at.view.kdl001.a {
                 //let isCheckAllStatus = self.selectAbleCodeList().length > 0 ? false : data.allCheckStatus;
 
                 self.isCheckAllStatus(data.allCheckStatus);
-                self.isAllCheckShow(data.allCheckStatus);
+                self.isAllCheckShow(data.allCheckStatus === null ? false : data.allCheckStatus);
 
                 self.workingHoursItemLists.removeAll();
                 self.workingHoursItemLists.push(new WorkTimeSet());
