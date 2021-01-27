@@ -437,6 +437,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				block.clear();
 				dfd.resolve();
 				block.clear();
+				$("#extable-ksu003").exTable("scrollBack", 0, { h: Math.floor(self.initDispStart * 42 - self.dispStart * 3.5) });
 			});
 			return dfd.promise();
 		}
@@ -1174,7 +1175,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		public sortEmpByTime(employeeInfo: Array<model.DisplayWorkInfoByDateDto>) {
 			let dataSort = _.map(employeeInfo, (x: model.DisplayWorkInfoByDateDto) => ({
 				empId: x.empId,
-				startTime: (x.workScheduleDto != null && (x.workScheduleDto.startTime1 != null)) ? x.workScheduleDto.startTime1 : null
+				startTime: (x.workScheduleDto != null && (x.workScheduleDto.startTime1 != null && x.workScheduleDto.startTime1 != 0)) ? x.workScheduleDto.startTime1 : null
 			}))
 
 			return dataSort;
@@ -1253,9 +1254,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 				let startTime1 = "", startTime2 = "", endTime1 = "", endTime2 = "";
 				if (schedule.workScheduleDto != null) {
-					startTime1 = schedule.workScheduleDto.startTime1 != null ? formatById("Clock_Short_HM", schedule.workScheduleDto.startTime1) : "",
+					startTime1 = schedule.workScheduleDto.startTime1 != null && schedule.workScheduleDto.startTime1 != 0 ? formatById("Clock_Short_HM", schedule.workScheduleDto.startTime1) : "",
 						startTime2 = schedule.workScheduleDto.startTime2 != null ? formatById("Clock_Short_HM", schedule.workScheduleDto.startTime2) : "",
-						endTime1 = schedule.workScheduleDto.endTime1 != null ? formatById("Clock_Short_HM", schedule.workScheduleDto.endTime1) : "",
+						endTime1 = schedule.workScheduleDto.endTime1 != null && schedule.workScheduleDto.endTime1 != 0  ? formatById("Clock_Short_HM", schedule.workScheduleDto.endTime1) : "",
 						endTime2 = schedule.workScheduleDto.endTime2 != null ? formatById("Clock_Short_HM", schedule.workScheduleDto.endTime2) : "";
 				}
 				let workTypeName = "", workTimeName = "";
@@ -1530,13 +1531,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 		public initExtableData(type ?: string) : JQueryPromise<any> {
 			let self = this, dfd = $.Deferred();
-			//setTimeout(() => {
 
 				if (!_.isEmpty(self.leftDs))
-					self.initExtableChart(self.dataOfGantChart, self.leftDs, self.midDataGC, self.disableDs);
-				$("#extable-ksu003").exTable("scrollBack", 0, { h: Math.floor(self.initDispStart * 42 - self.dispStart * 3.5) });
-				dfd.resolve();
-			//}, 200)
+					
+					self.initExtableChart(self.dataOfGantChart, self.leftDs, self.midDataGC, self.disableDs).done(()=>{
+						dfd.resolve();
+				});
+				
 		return dfd.promise();
 		}
 
@@ -1575,8 +1576,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		}
 
 		// Khởi tạo EXTABLE-GANTCHART
-		initExtableChart(timeGantChart: Array<ITimeGantChart>, leftDs: any, midData: any, disableDs: any, type ?: any): void {
-			let self = this;
+		initExtableChart(timeGantChart: Array<ITimeGantChart>, leftDs: any, midData: any, disableDs: any, type ?: any) : JQueryPromise<any> {
+			
+			let self = this, dfd = $.Deferred();
 			let displayRange = self.timeRange, totalBreakTime = "";
 
 			let middleContentDeco: any = [], leftContentDeco: any = [], detailContentDeco: any = [];
@@ -2062,7 +2064,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			ruler = extable.getChartRuler();
 			self.addTypeOfChart(ruler);
 
-			let lstBreakTime: any = [], lstTimeChart: any = [], totalTimeBrk = 0, dfd = $.Deferred();;
+			let lstBreakTime: any = [], lstTimeChart: any = [], totalTimeBrk = 0;
 			// (5' ~ 3.5 pixel ~ 12 khoảng trong 60', 10' ~ 7 ~ 6, 15' ~ 10.5 ~ 4, 30' ~ 21 ~ 2, 60' ~ 42 ~ 1)	
 			// unitToPx = khoảng pixel theo số phút 
 			// start theo pixel = unitToPx * start * (khoảng-pixel/ phút)
@@ -2284,6 +2286,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 			// set height grid theo localStorage đã lưu
 			self.setPositionButonDownAndHeightGrid();
+			dfd.resolve();
+			return dfd.promise();
 		}
 		
 		saveData() : JQueryPromise<any> {
