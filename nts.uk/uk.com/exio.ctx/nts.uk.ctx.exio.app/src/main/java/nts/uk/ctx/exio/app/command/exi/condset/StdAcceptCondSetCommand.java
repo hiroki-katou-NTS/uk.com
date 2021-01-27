@@ -57,7 +57,7 @@ public class StdAcceptCondSetCommand {
 	/**
 	 * 外部受入カテゴリID
 	 */
-	private String categoryId;
+	private Integer categoryId;
 
 	/**
 	 * CSVデータの項目名行

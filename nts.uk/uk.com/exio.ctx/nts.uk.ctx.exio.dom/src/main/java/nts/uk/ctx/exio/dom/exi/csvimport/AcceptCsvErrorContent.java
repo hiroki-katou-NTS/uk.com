@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.exi.execlog;
+package nts.uk.ctx.exio.dom.exi.csvimport;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

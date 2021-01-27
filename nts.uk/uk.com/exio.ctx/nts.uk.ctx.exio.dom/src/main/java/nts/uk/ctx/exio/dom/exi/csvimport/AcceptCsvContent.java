@@ -1,10 +1,12 @@
-package nts.uk.ctx.exio.dom.exi.execlog;
+package nts.uk.ctx.exio.dom.exi.csvimport;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.exio.dom.exi.condset.AcceptMode;
+import nts.uk.ctx.exio.dom.exi.condset.DeleteExistDataMethod;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -34,12 +36,12 @@ public class AcceptCsvContent {
 	/**
 	 * 削除条件
 	 */
-	private DeleteCondFlg deleteCondFlg;
+	private DeleteExistDataMethod deleteCondFlg;
 
 	/**
 	 * 受入モード
 	 */
-	private CsvAcceptMode acceptMode;
+	private AcceptMode acceptMode;
 	
 	/**
 	 * 処理日時

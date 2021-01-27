@@ -43,7 +43,7 @@ public class OiomtStdAcceptCondSet extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "CATEGORY_ID")
-	private String categoryId;
+	private Integer categoryId;
 
 	/**
 	 * CSVデータの項目名行

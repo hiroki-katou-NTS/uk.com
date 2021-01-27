@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.infra.repository.exi.execlog;
+package nts.uk.ctx.exio.infra.repository.exi.csvimport;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -6,10 +6,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.exio.dom.exi.execlog.AcceptCsvErrorContent;
-import nts.uk.ctx.exio.dom.exi.execlog.AcceptCsvErrorContentRepository;
-import nts.uk.ctx.exio.infra.entity.exi.execlog.OiomtExAcpCsvError;
-import nts.uk.ctx.exio.infra.entity.exi.execlog.OiomtExAcpCsvErrorPk;
+import nts.uk.ctx.exio.dom.exi.csvimport.AcceptCsvErrorContent;
+import nts.uk.ctx.exio.dom.exi.csvimport.AcceptCsvErrorContentRepository;
+import nts.uk.ctx.exio.infra.entity.exi.csvimport.OiomtExAcpCsvError;
+import nts.uk.ctx.exio.infra.entity.exi.csvimport.OiomtExAcpCsvErrorPk;
 
 @Stateless
 public class JpaAcceptCsvErrorContentRepository extends JpaRepository implements AcceptCsvErrorContentRepository {

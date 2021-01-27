@@ -25,7 +25,7 @@ public class ExternalAcceptCategory extends AggregateRoot {
 	/**
 	 * 就業システム区分
 	 */
-	private NotUseAtr emplSysFlg;
+	private NotUseAtr atSysFlg;
 	/**
 	 * 人事システム区分
 	 */

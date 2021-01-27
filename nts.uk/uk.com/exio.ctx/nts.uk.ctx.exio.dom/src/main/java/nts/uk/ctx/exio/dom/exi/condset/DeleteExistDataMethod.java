@@ -7,9 +7,9 @@ package nts.uk.ctx.exio.dom.exi.condset;
  */
 
 public enum DeleteExistDataMethod {
-
+	/**受け入れる会社のデータを全て削除してから受入	 */
 	DELETE_ALL(1, "Enum_DeleteExistDataMethod_DELETE_ALL"),
-
+	/**対象データのみ削除してから受入	 */
 	DELETE_TARGET(2, "Enum_DeleteExistDataMethod_DELETE_TARGET");
 
 	/** The value. */

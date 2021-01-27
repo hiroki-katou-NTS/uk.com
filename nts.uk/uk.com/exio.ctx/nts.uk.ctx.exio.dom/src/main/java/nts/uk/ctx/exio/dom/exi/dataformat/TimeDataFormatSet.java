@@ -1,8 +1,11 @@
 package nts.uk.ctx.exio.dom.exi.dataformat;
 
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import lombok.Getter;
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -88,5 +91,53 @@ public class TimeDataFormatSet extends DataFormatSetting {
 			this.roundProcCls = Optional.empty();
 		else
 			this.roundProcCls = Optional.of(EnumAdaptor.valueOf(roundProcCls, TimeRounding.class));
+	}
+
+	/**
+	 * 時刻型編集
+	 * @param timeValue
+	 * @return
+	 */
+	public Integer editTimeValue(String timeValue) {
+		Integer result = null;
+		//固定値使用する/しないを判別
+		if(this.fixedValue == NotUseAtr.NOT_USE) {
+			//有効桁長あり/なしを判別
+			if(this.effectiveDigitLength == NotUseAtr.USE) {
+				//「値」から有効桁を切り出し「編集値」とする
+				timeValue = timeValue.substring(this.startDigit.get().v(), this.endDigit.get().v());
+				try {
+					//数値のみまたは数値と区切り文字:「.」 or 「：」
+					Pattern pattern = Pattern.compile("-?\\d+(\\:\\d+)?\\-?\\d+(\\.\\d+)?");
+					Matcher matcher = pattern.matcher(timeValue);  
+					boolean matchFound = matcher.matches(); 
+					if(!matchFound) {
+						return result;
+					}
+					/*//区切り文字設定を判別する
+					if(this.delimiterSet == DelimiterSetting.NO_DELIMITER) {
+					    Pattern patternInt = Pattern.compile("[^0-9]");
+					    Matcher matcherInt = patternInt.matcher("3012");
+					    boolean matchFoundInt = matcherInt.matches();
+					    if(matchFoundInt) {
+					    	return result;
+					    }
+					} else (this.delimiterSet == DelimiterSetting.CUT_BY_COLON){
+						
+					}*/
+					
+					//60進数/10進数を判別する
+					if(this.decimalSelect == DecimalSelection.DECIMAL) {
+						//区切り文字を判別する
+						
+					}
+					
+				} catch (Exception e) {
+					return result;
+				}
+			}
+		}
+		
+		return result;
 	}
 }

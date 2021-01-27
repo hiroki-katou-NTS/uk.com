@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.infra.entity.exi.execlog;
+package nts.uk.ctx.exio.infra.entity.exi.csvimport;
 
 import java.io.Serializable;
 
@@ -10,13 +10,17 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
 @AllArgsConstructor
 @EqualsAndHashCode
 @NoArgsConstructor
-@Data
 @Embeddable
-public class OiomtExAcpCsvContentPk implements Serializable {
+@Data
+public class OiomtExAcpCsvErrorPk implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	/**
 	 * 会社ID
 	 */
@@ -44,11 +48,4 @@ public class OiomtExAcpCsvContentPk implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "ITEM_NO")
 	public int itemNo;
-	
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
 }

@@ -46,7 +46,7 @@ public class OiomtExAcpCategory extends UkJpaEntity implements Serializable {
 	/**就業システム区分	 */
 	@Basic(optional = false)
 	@Column(name = "EMPL_SYS_FLG")
-	public int emplSysFlg;
+	public int atSysFlg;
 	
 	/**人事システム区分	 */
 	@Basic(optional = false)

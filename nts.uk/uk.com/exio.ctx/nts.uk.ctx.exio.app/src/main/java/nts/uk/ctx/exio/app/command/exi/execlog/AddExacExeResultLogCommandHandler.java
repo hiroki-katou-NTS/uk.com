@@ -30,7 +30,22 @@ public class AddExacExeResultLogCommandHandler extends CommandHandlerWithResult<
 		//
 		String userID = AppContexts.user().userId();
 		
-        repository.add(ExacExeResultLog.createFromJavaType(0L, companyId, addCommand.getConditionSetCd(), appID, userID, userID, addCommand.getProcessStartDatetime(), addCommand.getStandardAtr(), addCommand.getExecuteForm(), addCommand.getTargetCount(), addCommand.getErrorCount(), addCommand.getFileName(), addCommand.getSystemType(), addCommand.getResultStatus(), addCommand.getProcessEndDatetime(), addCommand.getProcessAtr()));
+        repository.add(ExacExeResultLog.createFromJavaType(0L,
+        		companyId,
+        		addCommand.getConditionSetCd(),
+        		appID,
+        		userID,
+        		userID,
+        		addCommand.getProcessStartDatetime(),
+        		addCommand.getStandardAtr(),
+        		addCommand.getExecuteForm(),
+        		addCommand.getTargetCount(),
+        		addCommand.getErrorCount(), 
+        		addCommand.getFileName(), 
+        		addCommand.getSystemType(), 
+        		addCommand.getResultStatus(), 
+        		addCommand.getProcessEndDatetime(), 
+        		addCommand.getProcessAtr()));
         
         return appID;
     }

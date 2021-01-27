@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.infra.entity.exi.execlog;
+package nts.uk.ctx.exio.infra.entity.exi.csvimport;
 
 import java.io.Serializable;
 

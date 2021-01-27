@@ -1,16 +1,16 @@
-package nts.uk.ctx.exio.infra.repository.exi.execlog;
+package nts.uk.ctx.exio.infra.repository.exi.csvimport;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.exio.dom.exi.execlog.AcceptCsvContent;
-import nts.uk.ctx.exio.dom.exi.execlog.AcceptCsvContentRepository;
-import nts.uk.ctx.exio.dom.exi.execlog.CsvAcceptMode;
-import nts.uk.ctx.exio.dom.exi.execlog.DeleteCondFlg;
-import nts.uk.ctx.exio.infra.entity.exi.execlog.OiomtExAcpCsvContent;
-import nts.uk.ctx.exio.infra.entity.exi.execlog.OiomtExAcpCsvContentPk;
+import nts.uk.ctx.exio.dom.exi.condset.AcceptMode;
+import nts.uk.ctx.exio.dom.exi.condset.DeleteExistDataMethod;
+import nts.uk.ctx.exio.dom.exi.csvimport.AcceptCsvContent;
+import nts.uk.ctx.exio.dom.exi.csvimport.AcceptCsvContentRepository;
+import nts.uk.ctx.exio.infra.entity.exi.csvimport.OiomtExAcpCsvContent;
+import nts.uk.ctx.exio.infra.entity.exi.csvimport.OiomtExAcpCsvContentPk;
 
 public class JpaAcceptCsvContentRepository extends JpaRepository implements AcceptCsvContentRepository {
 	private static final String SELECT_BY_ASYNTASKID = "SELECT c FROM OiomtExAcpCsvContent c "
@@ -60,8 +60,8 @@ public class JpaAcceptCsvContentRepository extends JpaRepository implements Acce
 				x.getPk().getAsynTaskId(),
 				x.getPk().getLineNumber(),
 				x.getPk().getItemNo(),
-				EnumAdaptor.valueOf(x.getDeleteCondFlg(), DeleteCondFlg.class),
-				EnumAdaptor.valueOf(x.getAcceptMode(), CsvAcceptMode.class),
+				EnumAdaptor.valueOf(x.getDeleteCondFlg(), DeleteExistDataMethod.class),
+				EnumAdaptor.valueOf(x.getAcceptMode(), AcceptMode.class),
 				x.getProcessDate(),
 				x.getTableName(),
 				x.getColumnName(),

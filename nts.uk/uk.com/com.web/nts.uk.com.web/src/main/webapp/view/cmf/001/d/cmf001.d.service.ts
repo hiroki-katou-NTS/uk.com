@@ -30,7 +30,7 @@ module nts.uk.com.view.cmf001.d.service {
         return ajax("com", paths.getAllCategory);
     }
     
-    export function getCategoryItem(categoryId: string): JQueryPromise<any> {
+    export function getCategoryItem(categoryId: any): JQueryPromise<any> {
         let _path = format(paths.getCategoryItem, categoryId);
         return ajax("com", _path);
     };

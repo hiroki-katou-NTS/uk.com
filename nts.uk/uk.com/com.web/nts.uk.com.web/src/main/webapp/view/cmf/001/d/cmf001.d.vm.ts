@@ -548,7 +548,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
             return dfd.promise();
         }
 
-        private loadCategoryItemData(categoryId: string): JQueryPromise<any> {
+        private loadCategoryItemData(categoryId: any): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
             service.getCategoryItem(categoryId).done((rs: Array<any>) => {

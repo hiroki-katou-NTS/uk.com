@@ -41,7 +41,7 @@ public class StdAcceptCondSet extends AggregateRoot {
 	/**
 	 * カテゴリID
 	 */
-	private Optional<String> categoryId;
+	private Optional<Integer> categoryId;
 	/**
 	 * 既存データの削除
 	 */
