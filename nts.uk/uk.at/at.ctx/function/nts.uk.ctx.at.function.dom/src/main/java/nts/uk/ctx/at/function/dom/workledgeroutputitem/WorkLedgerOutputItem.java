@@ -42,7 +42,7 @@ public class WorkLedgerOutputItem extends AggregateRoot {
 	 * @param require 	@Require
 	 * @param code 		コード
 	 */
-    static boolean checkDuplicateStandardSelection(Require require, OutputItemSettingCode code) {
+    public static boolean checkDuplicateStandardSelection(Require require, OutputItemSettingCode code) {
         return require.standardCheck(code);
     }
 
@@ -52,7 +52,7 @@ public class WorkLedgerOutputItem extends AggregateRoot {
 	 * @param code 			コード
 	 * @param employeeId	社員ID
 	 */
-    static boolean checkDuplicateFreeSettings(Require require, OutputItemSettingCode code, String employeeId) {
+    public static boolean checkDuplicateFreeSettings(Require require, OutputItemSettingCode code, String employeeId) {
         return require.freeCheck(code, employeeId);
     }
 
