@@ -251,13 +251,14 @@ module nts.uk.at.view.kmk004.b {
 							vm.years(ko.unwrap(vm.years));
 							if (ko.unwrap(vm.years).length > 0) {
 								vm.selectedYear(ko.unwrap(vm.years)[old_index].year);
+							} else {
+								vm.selectedYear.valueHasMutated();
 							}
 						})
 						.then(() => {
 							vm.$errors('clear');
 						}).then(() => {
 							vm.change.valueHasMutated();
-							vm.selectedYear.valueHasMutated();
 							$(document).ready(function () {
 								$('.listbox').focus();
 							});
