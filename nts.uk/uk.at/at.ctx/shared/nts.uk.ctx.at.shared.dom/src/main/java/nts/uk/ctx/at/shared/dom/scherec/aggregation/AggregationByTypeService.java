@@ -61,14 +61,35 @@ public class AggregationByTypeService {
 
 	/**
 	 * カウントする
-	 * @param values 値リスト
+	 * @param attributes 属性リスト
 	 * @return 種類ごとのカウント結果
 	 */
-	public static <T> Map<T, BigDecimal> count(List<T> values) {
+	public static <T> Map<T, BigDecimal> count(List<T> attributes) {
 
-		return values.stream()
+		return attributes.stream()
 				.collect(Collectors.groupingBy( e -> e, Collectors.counting() )).entrySet().stream()
 				.collect(Collectors.toMap( Map.Entry::getKey, e -> BigDecimal.valueOf( e.getValue() ) ));
 
 	}
+
+	/**
+	 * カウントする
+	 * @param targets 集計対象リスト
+	 * @param attributes 属性リスト
+	 * @return 種類ごとのカウント結果
+	 */
+	public static <T> Map<T, BigDecimal> count(List<T> targets, List<T> attributes) {
+
+		// カウント対象のみカウントする
+		val filteredAttributes = attributes.stream()
+				.filter( e -> targets.contains( e ) )
+				.collect(Collectors.toList());
+		val results = AggregationByTypeService.count(filteredAttributes);
+
+		// 全属性に対するカウント値を返す
+		return targets.stream()
+				.collect(Collectors.toMap( e -> e , e -> results.getOrDefault( e , BigDecimal.ZERO ) ));
+
+	}
+
 }

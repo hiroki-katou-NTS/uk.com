@@ -31,15 +31,15 @@ public enum AggregationUnitOfEmployeeAttribute {
 	 * @param affInfo 所属情報
 	 * @return 社員属性
 	 */
-	public AggregationKey<?> getAttribute(AffiliationInforOfDailyAttd affInfo) {
+	public String getAttribute(AffiliationInforOfDailyAttd affInfo) {
 
 		switch( this ) {
 			case EMPLOYMENT:		// 雇用：雇用コード
-				return new AggregationKey<>( affInfo.getEmploymentCode() );
+				return affInfo.getEmploymentCode().v();
 			case CLASSIFICATION:	// 分類：分類コード
-				return new AggregationKey<>( affInfo.getClsCode() );
+				return affInfo.getClsCode().v();
 			case JOB_TITLE:			// 職位：職位ID
-				return new AggregationKey<>( affInfo.getJobTitleID() );
+				return affInfo.getJobTitleID();
 			default:
 				throw new RuntimeException("Value is out of range.");
 		}
