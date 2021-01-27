@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.file.storage.FileStorage;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartName;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.CreateFlowMenu;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.CreateFlowMenuRepository;
@@ -24,6 +25,9 @@ public class UpdateCreateFlowMenuCommandHandler extends CommandHandler<UpdateFlo
 
 	@Inject
 	private CreateFlowMenuRepository createFlowMenuRepository;
+	
+	@Inject
+	private FileStorage fileStorage;
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdateFlowMenuCommand> context) {
@@ -35,6 +39,7 @@ public class UpdateCreateFlowMenuCommandHandler extends CommandHandler<UpdateFlo
 		//3. not　フローメニュー作成　empty
 		if (optCreateFlowMenu.isPresent()) {
 			CreateFlowMenu domain = optCreateFlowMenu.get();
+			domain.getFlowMenuLayout().ifPresent(layout -> this.fileStorage.delete(layout.getFileId()));
 			domain.setFlowMenuName(new TopPagePartName(command.getFlowMenuName()));
 			
 			//4. persist
