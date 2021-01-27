@@ -8,11 +8,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 
 import lombok.val;
 import mockit.Injectable;
+import mockit.Mock;
+import mockit.MockUp;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 
@@ -35,23 +38,50 @@ public class LaborCostsTotalizationServiceTest {
 		,	@Injectable AttendanceTimeOfDailyAttendance dlyAtd3
 	) {
 
+		// Exceptations
+		// 値対応リスト
+		val dummyValueMap = new HashMap<AttendanceTimeOfDailyAttendance, Double>() {{
+			put( dlyAtd1, 30000.4 );
+			put( dlyAtd2, 2185.0 );
+			put( dlyAtd3, 52163.9 );
+		}};
+		// 係数
+		val coefficients = new HashMap<AggregationUnitOfLaborCosts, Double>() {{
+			put( AggregationUnitOfLaborCosts.WITHIN, 1.25 );
+			put( AggregationUnitOfLaborCosts.EXTRA, 3.3);
+			put( AggregationUnitOfLaborCosts.TOTAL, 16.0 );
+		}};
+
+		// Mock: 値取得処理
+		new MockUp<AggregationUnitOfLaborCosts>() {
+			@Mock
+			public BigDecimal getAmount(AttendanceTimeOfDailyAttendance dlyAtd) {
+				// ダミー値×係数
+				return BigDecimal.valueOf( dummyValueMap.get(dlyAtd) * coefficients.get( this.getMockInstance() ) );
+			}
+		};
+
+
 		// 集計単位リスト
 		val targets = Arrays.asList(AggregationUnitOfLaborCosts.values());
+		// 値リスト
+		val values = dummyValueMap.keySet().stream().collect(Collectors.toList());
 
 		// Execute
-		val result = LaborCostsTotalizationService
-				.totalizeAmounts(targets, Arrays.asList( dlyAtd1, dlyAtd2, dlyAtd3 ));
+		val result = LaborCostsTotalizationService.totalizeAmounts( targets, values );
+
 
 		// Assertion
 		assertThat( result ).containsOnlyKeys( targets );
 
 		result.entrySet()
 			.forEach( entry -> {
+				val coefficient = coefficients.get( entry.getKey() );
 				assertThat( entry.getValue() ).isEqualTo(
 						BigDecimal.ZERO
-						.add( entry.getKey().getAmount( dlyAtd1 ) )
-						.add( entry.getKey().getAmount( dlyAtd2 ) )
-						.add( entry.getKey().getAmount( dlyAtd3 ) )
+						.add( BigDecimal.valueOf( dummyValueMap.get( dlyAtd1 ) * coefficient ) )
+						.add( BigDecimal.valueOf( dummyValueMap.get( dlyAtd2 ) * coefficient ) )
+						.add( BigDecimal.valueOf( dummyValueMap.get( dlyAtd3 ) * coefficient ) )
 					);
 			} );
 
@@ -71,23 +101,50 @@ public class LaborCostsTotalizationServiceTest {
 		,	@Injectable AttendanceTimeOfDailyAttendance dlyAtd3
 	) {
 
+		// Exceptations
+		// 値対応リスト
+		val dummyValueMap = new HashMap<AttendanceTimeOfDailyAttendance, Integer>() {{
+			put( dlyAtd1, 24 );
+			put( dlyAtd2, 16 );
+			put( dlyAtd3, 3 );
+		}};
+		// 係数
+		val coefficients = new HashMap<AggregationUnitOfLaborCosts, Double>() {{
+			put( AggregationUnitOfLaborCosts.WITHIN, 1.25 );
+			put( AggregationUnitOfLaborCosts.EXTRA, 3.3);
+			put( AggregationUnitOfLaborCosts.TOTAL, 16.0 );
+		}};
+
+		// Mock: 値取得処理
+		new MockUp<AggregationUnitOfLaborCosts>() {
+			@Mock
+			public BigDecimal getTime(AttendanceTimeOfDailyAttendance dlyAtd) {
+				// ダミー値×係数
+				return BigDecimal.valueOf( dummyValueMap.get(dlyAtd) * coefficients.get( this.getMockInstance() ) );
+			}
+		};
+
+
 		// 集計単位リスト
 		val targets = Arrays.asList(AggregationUnitOfLaborCosts.values());
+		// 値リスト
+		val values = dummyValueMap.keySet().stream().collect(Collectors.toList());
 
 		// Execute
-		val result = LaborCostsTotalizationService
-				.totalizeTimes(targets, Arrays.asList( dlyAtd1, dlyAtd2, dlyAtd3 ));
+		val result = LaborCostsTotalizationService.totalizeTimes( targets, values );
+
 
 		// Assertion
 		assertThat( result ).containsOnlyKeys( targets );
 
 		result.entrySet()
 			.forEach( entry -> {
+				val coefficient = coefficients.get( entry.getKey() );
 				assertThat( entry.getValue() ).isEqualTo(
 						BigDecimal.ZERO
-						.add( entry.getKey().getTime( dlyAtd1 ) )
-						.add( entry.getKey().getTime( dlyAtd2 ) )
-						.add( entry.getKey().getTime( dlyAtd3 ) )
+						.add( BigDecimal.valueOf( dummyValueMap.get( dlyAtd1 ) * coefficient ) )
+						.add( BigDecimal.valueOf( dummyValueMap.get( dlyAtd2 ) * coefficient ) )
+						.add( BigDecimal.valueOf( dummyValueMap.get( dlyAtd3 ) * coefficient ) )
 					);
 			} );
 
@@ -122,6 +179,7 @@ public class LaborCostsTotalizationServiceTest {
 						,	getValueFunction
 				);
 
+
 		// Assertion
 		assertThat( result ).containsOnlyKeys( targets );
 		assertThat( result.values() ).containsOnly( BigDecimal.ZERO );
@@ -143,13 +201,9 @@ public class LaborCostsTotalizationServiceTest {
 		,	@Injectable AttendanceTimeOfDailyAttendance dlyAtd3
 	) {
 
-		// 集計単位リスト
-		val targets = Arrays.asList(
-						AggregationUnitOfLaborCosts.TOTAL	// 合計
-					,	AggregationUnitOfLaborCosts.EXTRA	// 時間外時間
-				);
-		// 値リスト
-		val dummyValues = new HashMap<AttendanceTimeOfDailyAttendance, Integer>() {{
+		// Exceptations
+		// 値対応リスト
+		val dummyValueMap = new HashMap<AttendanceTimeOfDailyAttendance, Integer>() {{
 			put( dlyAtd1, 1 );
 			put( dlyAtd2, 5 );
 			put( dlyAtd3, 2 );
@@ -160,23 +214,32 @@ public class LaborCostsTotalizationServiceTest {
 			put( AggregationUnitOfLaborCosts.EXTRA, 0.25);
 			put( AggregationUnitOfLaborCosts.TOTAL, 1.5 );
 		}};
-		// 値取得処理定義
+
+		// Mock: 値取得処理定義
 		val getValueFunction = new BiFunction<AggregationUnitOfLaborCosts, AttendanceTimeOfDailyAttendance, BigDecimal>() {
 			@Override
 			public BigDecimal apply( AggregationUnitOfLaborCosts unit, AttendanceTimeOfDailyAttendance dlyAtd ) {
-				// 値×係数
-				return BigDecimal.valueOf( dummyValues.get(dlyAtd) * coefficients.get(unit) );
+				// ダミー値×係数
+				return BigDecimal.valueOf( dummyValueMap.get(dlyAtd) * coefficients.get(unit) );
 			}
 		};
+
+
+		// 集計単位リスト
+		val targets = Arrays.asList(
+						AggregationUnitOfLaborCosts.TOTAL	// 合計
+					,	AggregationUnitOfLaborCosts.EXTRA	// 時間外時間
+				);
+		// 値リスト
+		val values = dummyValueMap.keySet().stream().collect(Collectors.toList());
 
 		// Execute
 		Map<AggregationUnitOfLaborCosts, BigDecimal> result = NtsAssert.Invoke.privateMethod(
 						new LaborCostsTotalizationService()
 					,	"totalize"
-						,	targets
-						,	Arrays.asList( dlyAtd1, dlyAtd2, dlyAtd3 )
-						,	getValueFunction
+					,	targets, values, getValueFunction
 				);
+
 
 		// Assertion
 		assertThat( result ).containsOnlyKeys( targets );
@@ -186,9 +249,9 @@ public class LaborCostsTotalizationServiceTest {
 				val coefficient = coefficients.get( entry.getKey() );
 				assertThat( entry.getValue() ).isEqualTo(
 						BigDecimal.ZERO
-						.add( BigDecimal.valueOf( dummyValues.get( dlyAtd1 ) * coefficient ) )
-						.add( BigDecimal.valueOf( dummyValues.get( dlyAtd2 ) * coefficient ) )
-						.add( BigDecimal.valueOf( dummyValues.get( dlyAtd3 ) * coefficient ) )
+						.add( BigDecimal.valueOf( dummyValueMap.get( dlyAtd1 ) * coefficient ) )
+						.add( BigDecimal.valueOf( dummyValueMap.get( dlyAtd2 ) * coefficient ) )
+						.add( BigDecimal.valueOf( dummyValueMap.get( dlyAtd3 ) * coefficient ) )
 					);
 			} );
 
