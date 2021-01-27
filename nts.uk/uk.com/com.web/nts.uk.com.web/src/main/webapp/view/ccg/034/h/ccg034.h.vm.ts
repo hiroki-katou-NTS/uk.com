@@ -56,13 +56,13 @@ module nts.uk.com.view.ccg034.h {
 
       if (vm.fileId()) {
         vm.isNewMode = false;
-        nts.uk.request.ajax("/shr/infra/file/storage/infor/" + vm.fileId())
-          .done((res: any) => {
-          $("#H2_2 .filenamelabel").text(res.originalName);
-          vm.fileSize(Math.round(Number(res.originalSize) / 1024));
-         }).fail(() => {
-          vm.$dialog.error({ messageId: 'Msg_70', messageParams: [ String(MAX_FILE_SIZE_MB) ] });
-         });
+        vm.$ajax("/shr/infra/file/storage/infor/" + vm.fileId())
+          .then((res: any) => {
+            $("#H2_2 .filenamelabel").text(res.originalName);
+            vm.fileSize(Math.round(Number(res.originalSize) / 1024));
+          }).fail(() => {
+            vm.$dialog.error({ messageId: 'Msg_70', messageParams: [String(MAX_FILE_SIZE_MB)] });
+          });
       }
       $("#H1_2").focus();
     }
@@ -87,9 +87,9 @@ module nts.uk.com.view.ccg034.h {
       vm.$window.close();
     }
 
-     /**
-     * Update part data and close dialog
-     */
+    /**
+    * Update part data and close dialog
+    */
     public updatePartDataAndCloseDialog() {
       const vm = this;
       vm.$validate("#H1_2", "#H2_2").then((validUpload: boolean) => {
@@ -97,10 +97,10 @@ module nts.uk.com.view.ccg034.h {
           vm.$validate().then((valid: boolean) => {
             if (valid) {
               if (vm.fileSize() / 1024 <= MAX_FILE_SIZE_MB) {
-                 // Update part data
+                // Update part data
                 vm.partData.alignHorizontal = vm.horizontalAlign();
                 vm.partData.alignVertical = vm.verticalAlign();
-                vm.partData.linkContent = vm.fileName().trim() || vm.uploadedFileName();
+                vm.partData.linkContent = vm.fileName().trim();
                 vm.partData.fontSize = Number(vm.fontSize());
                 vm.partData.isBold = vm.isBold();
                 vm.partData.fileId = vm.fileId();
@@ -111,7 +111,7 @@ module nts.uk.com.view.ccg034.h {
                 // Return data
                 vm.$window.close(vm.partData);
               } else {
-                vm.$dialog.error({ messageId: 'Msg_70', messageParams: [ String(MAX_FILE_SIZE_MB) ] });
+                vm.$dialog.error({ messageId: 'Msg_70', messageParams: [String(MAX_FILE_SIZE_MB)] });
               }
             }
           });

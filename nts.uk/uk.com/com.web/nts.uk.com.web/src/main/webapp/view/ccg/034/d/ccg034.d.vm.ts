@@ -172,8 +172,12 @@ module nts.uk.com.view.ccg034.d {
       // FileAttachmentSettingDto
       for (const partDataDto of flowData.fileAttachmentData) {
         const newPartData = vm.createPartDataFromDtoFileAttachment(partDataDto);
-        // Set part data to layout
-        $partDOMs.push(vm.createDOMFromData(newPartData));
+        vm.$ajax("/shr/infra/file/storage/infor/" + newPartData.fileId)
+          .then(res => {
+            newPartData.fileName = res.originalName;
+            // Set part data to layout
+            $partDOMs.push(vm.createDOMFromData(newPartData));
+          })
       }
       // ImageSettingDto
       for (const partDataDto of flowData.imageData) {
@@ -1530,6 +1534,7 @@ module nts.uk.com.view.ccg034.d {
      */
     static renderPartDOMAttachment($partContainer: JQuery, partData: PartDataAttachmentModel): JQuery {
       const vm = this;
+      
       $partContainer
         // Set PartData attr
         .outerWidth(partData.width)
@@ -1554,7 +1559,7 @@ module nts.uk.com.view.ccg034.d {
         $fileContent = $("<span>", { 'class': 'part-file-content' });
       }
       $fileContent
-        .text(partData.linkContent)
+        .text(partData.linkContent || partData.fileName)
         .css({
           'font-size': partData.fontSize,
           'font-weight': partData.isBold ? 'bold' : 'normal',
@@ -1893,7 +1898,9 @@ module nts.uk.com.view.ccg034.d {
           const $partImageHTML: JQuery = $('<img>', {
             'src': partDataImageModel.isFixed === 0
               ? partDataImageModel.fileName
-              : (nts.uk.request as any).liveView(partDataImageModel.fileId)
+              : partDataImageModel.fileId
+              ? (nts.uk.request as any).liveView(partDataImageModel.fileId)
+              : null
           })
             .css({
               'width': (partDataImageModel.width > partDataImageModel.height) ? 'auto' : '100%',
@@ -2062,9 +2069,9 @@ module nts.uk.com.view.ccg034.d {
 
   export class PartDataImageModel extends PartDataModel {
     // Default data
-    fileId: string = '';
-    fileName: string = '';
-    uploadedFileName: string = '';
+    fileId: string = null;
+    fileName: string = null;
+    uploadedFileName: string = null;
     uploadedFileSize = 0;
     isFixed = 0;
     ratio = 1;

@@ -16,17 +16,17 @@ module nts.uk.com.view.ccg034.i {
       { code: 1, name: getText('CCG034_123') }
     ];
     imageType: KnockoutObservable<number> = ko.observable(0);
-    imageSrc: KnockoutObservable<string> = ko.observable('');
+    imageSrc: KnockoutObservable<string> = ko.observable(null);
     imageList: ItemModel[] = [];
     // Upload file
-    uploadedFileName: KnockoutObservable<string> = ko.observable('');
+    uploadedFileName: KnockoutObservable<string> = ko.observable(null);
     fileSize: KnockoutObservable<number> = ko.observable(0);
     displayFileSize: KnockoutObservable<string> = ko.computed(() => {
       const vm = this;
       return nts.uk.text.format(getText("CCG034_125"), vm.fileSize()) + "KB";
     });
-    fileId: KnockoutObservable<string> = ko.observable('');
-    uploadSrc: KnockoutObservable<string> = ko.observable('');
+    fileId: KnockoutObservable<string> = ko.observable(null);
+    uploadSrc: KnockoutObservable<string> = ko.observable(null);
     // Check new component
     isNewMode: boolean = true;
 
@@ -46,7 +46,7 @@ module nts.uk.com.view.ccg034.i {
       vm.imageType(vm.partData.isFixed);
 
       if (vm.imageType() === 1 && vm.fileId()) {
-        nts.uk.request.ajax("/shr/infra/file/storage/infor/" + vm.fileId()).then((res: any) => vm.uploadFinished(res));
+        vm.$ajax("/shr/infra/file/storage/infor/" + vm.fileId()).then((res: any) => vm.uploadFinished(res));
       }
       if (vm.fileId() || vm.imageSrc()) {
         vm.isNewMode = false;
@@ -131,7 +131,7 @@ module nts.uk.com.view.ccg034.i {
               vm.partData.fileId = vm.fileId();
               vm.partData.uploadedFileName = vm.uploadedFileName();
               vm.partData.uploadedFileSize = vm.fileSize();
-              image.src = vm.fileId() ? (nts.uk.request as any).liveView(vm.fileId()) : '';
+              image.src = vm.fileId() ? (nts.uk.request as any).liveView(vm.fileId()) : null;
             } else {
               vm.$dialog.error({ messageId: 'Msg_70', messageParams: [String(MAX_FILE_SIZE_MB)] });
             }
