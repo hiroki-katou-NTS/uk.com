@@ -149,7 +149,6 @@ module nts.uk.at.view.kmk004.components {
 
 					if (ko.unwrap(vm.years).length > 0) {
 						if (ko.unwrap(vm.mode) === 'Update') {
-							if (ko.unwrap(vm.years)[index]) {
 								if (!ko.unwrap(vm.years)[index].isNew) {
 									_.remove(ko.unwrap(vm.years), ((value) => {
 										return value.year == ko.unwrap(vm.selectedYear);
@@ -157,8 +156,6 @@ module nts.uk.at.view.kmk004.components {
 									vm.years.push(new IYear(ko.unwrap(vm.selectedYear), true));
 									vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
 								}
-							}
-							
 						}
 					}
 					vm.updateListSave();
@@ -192,7 +189,6 @@ module nts.uk.at.view.kmk004.components {
 			vm.selectedId
 				.subscribe(() => {
 					vm.workTimeSaves([]);
-					vm.selectedYear.valueHasMutated();
 				});
 
 			vm.years
@@ -221,6 +217,7 @@ module nts.uk.at.view.kmk004.components {
 			const shaInput = { sId: vm.selectedId(), workType: DEFOR_TYPE, year: vm.selectedYear() };
 
 			const exist = _.find(ko.unwrap(vm.years), (emp: IYear) => emp.year as number == ko.unwrap(vm.selectedYear) as number);
+			
 			if (exist) {
 				switch (vm.type) {
 					case 'Com_Company':
