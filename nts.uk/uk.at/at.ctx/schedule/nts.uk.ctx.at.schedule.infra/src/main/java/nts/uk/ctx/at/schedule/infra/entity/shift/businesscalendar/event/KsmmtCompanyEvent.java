@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSMMT_COMPANY_EVENT")
+@Table(name = "KSCMT_EVENT_CMP")
 public class KsmmtCompanyEvent extends UkJpaEntity implements Serializable{
 
 	/**

@@ -42,12 +42,21 @@ module nts.uk.at.view.kdl049.a.test.viewmodel {
         
         openKDL049() {
             let self = this;
+            
+                let data = {
+                workplaceId:$('#tree-grid').getRowSelected()[0].id,
+                baseDate: moment().toISOString()
+            }
+            nts.uk.request.ajax("com", "bs/employee/workplace/info/findDetail", data).done((wkp) => {
+                self.workplaceName(_.isNil(wkp) ? null : wkp.wkpDisplayName);
+                
+            });
+                
             if (self.selectedWorkplaceId() != undefined) {
                 let result = _.find(self.wplDatas(), function(n) { 
                         return n.id == self.selectedWorkplaceId(); 
                 });
-                self.selectedWorkplaceId(result.id);
-                self.workplaceName(result.name);
+                self.selectedWorkplaceId(data.workplaceId);
             }
             let param = {
                 dateSelected: moment(self.dateSelected()).format('YYYY/MM/DD'), 
