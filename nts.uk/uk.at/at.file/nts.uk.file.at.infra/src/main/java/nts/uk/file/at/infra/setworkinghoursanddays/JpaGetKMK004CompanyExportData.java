@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.Query;
@@ -39,7 +40,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 public class JpaGetKMK004CompanyExportData extends JpaRepository implements GetKMK004CompanyExportRepository {
 
 	private static final String LEGAL_TIME_COM = "SELECT s FROM KshmtLegalTimeMCom s WHERE "
-			+ " s.pk.cid = :cid AND s.pk.ym >= :start AND s.pk.ym <= :end" + " ORDER BY s.pk.ym";
+			+ " s.pk.cid = :cid AND s.pk.ym IN :yms" + " ORDER BY s.pk.ym";
 	
 	private static final String GET_EXPORT_MONTH = "SELECT m.MONTH_STR FROM BCMMT_COMPANY m WHERE m.CID = ?cid";
 	
@@ -92,7 +93,7 @@ public class JpaGetKMK004CompanyExportData extends JpaRepository implements GetK
 		
 		
 		val legalTimes = this.queryProxy().query(LEGAL_TIME_COM, KshmtLegalTimeMCom.class).setParameter("cid", cid)
-				.setParameter("start", ymPeriod.start().v()).setParameter("end", ymPeriod.end().v()).getList();
+				.setParameter("yms", ymPeriod.yearMonthsBetween().stream().map(x -> x.v().toString()).collect(Collectors.toList())).getList();
 
 		try (PreparedStatement stmt = this.connection().prepareStatement(GET_EXPORT_EXCEL.toString())) {
 //			stmt.setInt(1, startDate);

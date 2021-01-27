@@ -90,14 +90,6 @@ public class JpaGetKMK004EmploymentExportData extends JpaRepository implements G
 											+" LEFT JOIN KRCST_EMP_REG_M_CAL_SET ON BSYMT_EMPLOYMENT.CID = KRCST_EMP_REG_M_CAL_SET.CID  "
 											+"            AND BSYMT_EMPLOYMENT.CODE = KRCST_EMP_REG_M_CAL_SET.EMP_CD"
 											+" WHERE BSYMT_EMPLOYMENT.CID = ? "
-											+ "AND ("
-											+ "BSYMT_EMPLOYMENT.CODE IN (SELECT EMP_CD FROM KRCST_EMP_FLEX_M_CAL_SET WHERE CID = BSYMT_EMPLOYMENT.CID)"
-											+ "OR BSYMT_EMPLOYMENT.CODE IN (SELECT EMP_CD FROM KRCST_EMP_DEFOR_M_CAL_SET WHERE CID = BSYMT_EMPLOYMENT.CID)"
-											+ "OR BSYMT_EMPLOYMENT.CODE IN (SELECT EMP_CD FROM KRCST_EMP_REG_M_CAL_SET WHERE CID = BSYMT_EMPLOYMENT.CID)"
-											+ "OR BSYMT_EMPLOYMENT.CODE IN (SELECT EMP_CD FROM KSRMT_LEGAL_TIME_M_EMP WHERE CID = BSYMT_EMPLOYMENT.CID)"
-											+ "OR BSYMT_EMPLOYMENT.CODE IN (SELECT EMP_CD FROM KSHST_EMP_REG_LABOR_TIME WHERE CID = BSYMT_EMPLOYMENT.CID)"
-											+ "OR BSYMT_EMPLOYMENT.CODE IN (SELECT EMP_CD FROM KSHST_EMP_TRANS_LAB_TIME WHERE CID = BSYMT_EMPLOYMENT.CID)"
-											+ ")"
 											+" ORDER BY IIF(BSYMT_EMPLOYMENT.NAME IS NOT NULL,0,1), BSYMT_EMPLOYMENT.CODE ";
 	@Override
 	public List<MasterData> getEmploymentExportData(int startDate, int endDate) {
@@ -105,7 +97,7 @@ public class JpaGetKMK004EmploymentExportData extends JpaRepository implements G
 		List<MasterData> datas = new ArrayList<>();
 		int month = this.month();
 		
-		YearMonthPeriod ymPeriod = new YearMonthPeriod(YearMonth.of(startDate, month), YearMonth.of(startDate, month).nextYear().previousMonth());
+		YearMonthPeriod ymPeriod = new YearMonthPeriod(YearMonth.of(startDate, month), YearMonth.of(endDate, month).nextYear().previousMonth());
 		String startOfWeek = getStartOfWeek(cid);
 
 		val legalTimes = this.queryProxy().query(LEGAL_TIME_EMP, KshmtLegalTimeMEmp.class)
