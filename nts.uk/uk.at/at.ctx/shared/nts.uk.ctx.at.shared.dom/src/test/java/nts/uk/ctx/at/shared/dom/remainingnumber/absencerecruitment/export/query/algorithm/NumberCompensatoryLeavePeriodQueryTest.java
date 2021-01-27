@@ -150,14 +150,14 @@ public class NumberCompensatoryLeavePeriodQueryTest {
 
 		List<InterimRemain> interimMng = Arrays.asList(
 				new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e132", SID, GeneralDate.ymd(2019, 11, 4),
-						CreateAtr.SCHEDULE, RemainType.PAUSE, RemainAtr.SINGLE),
+						CreateAtr.SCHEDULE, RemainType.PAUSE),
 
 				new InterimRemain("adda6a46-2cbe-48c8-85f8-c04ca554e333", SID, GeneralDate.ymd(2019, 11, 5),
-						CreateAtr.RECORD, RemainType.PICKINGUP, RemainAtr.SINGLE),
+						CreateAtr.RECORD, RemainType.PICKINGUP),
 				new InterimRemain("62d542c3-4b79-4bf3-bd39-7e7f06711c34", SID, GeneralDate.ymd(2019, 11, 14),
-						CreateAtr.RECORD, RemainType.PICKINGUP, RemainAtr.SINGLE),
+						CreateAtr.RECORD, RemainType.PICKINGUP),
 				new InterimRemain("077a8929-3df0-4fd6-859e-29e615a921ee", SID, GeneralDate.ymd(2019, 11, 15),
-						CreateAtr.RECORD, RemainType.PICKINGUP, RemainAtr.SINGLE));
+						CreateAtr.RECORD, RemainType.PICKINGUP));
 
 		new Expectations() {
 			{

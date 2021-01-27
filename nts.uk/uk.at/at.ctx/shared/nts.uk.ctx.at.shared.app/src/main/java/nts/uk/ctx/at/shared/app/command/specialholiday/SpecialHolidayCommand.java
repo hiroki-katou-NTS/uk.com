@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantTime;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.AvailabilityPeriod;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantDeadline;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.SpecialVacationDeadline;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.calendar.MonthDay;
 
 @Value
@@ -55,7 +56,8 @@ public class SpecialHolidayCommand {
 				this.toDomainSpecLeaveRest(companyId),
 				this.toDomainTargetItem(companyId),
 				this.autoGrant,
-				this.memo);
+				this.memo,
+				NotUseAtr.NOT_USE);
 	}
 
 	private TargetItem toDomainTargetItem(String companyId2) {

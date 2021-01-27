@@ -281,11 +281,11 @@ public class TestAnnualLeave {
 
 						if ( usedNumberBeforeGrant != null ){
 							// 使用日数
-							result_usedDaysBeforeGrant = usedNumberBeforeGrant.getUsedDays().getUsedDayNumber().v();
+							result_usedDaysBeforeGrant = usedNumberBeforeGrant.getUsedDays().map(c -> c.v()).orElse(0d);
 
 							// 使用時間
 							if ( usedNumberBeforeGrant.getUsedTime().isPresent() ){
-								result_usedTimeBeforeGrant = usedNumberBeforeGrant.getUsedTime().get().getUsedTime().v();
+								result_usedTimeBeforeGrant = usedNumberBeforeGrant.getUsedTime().get().v();
 							}
 						}
 
@@ -294,11 +294,11 @@ public class TestAnnualLeave {
 
 						if ( usedNumberTotal != null ){
 							// 使用日数
-							result_usedDaysTotal = usedNumberTotal.getUsedDays().getUsedDayNumber().v();
+							result_usedDaysTotal = usedNumberTotal.getUsedDays().map(c -> c.v()).orElse(0d);
 
 							// 使用時間
 							if ( usedNumberTotal.getUsedTime().isPresent() ){
-								result_usedTimeTotal = usedNumberTotal.getUsedTime().get().getUsedTime().v();
+								result_usedTimeTotal = usedNumberTotal.getUsedTime().get().v();
 							}
 						}
 
@@ -307,11 +307,11 @@ public class TestAnnualLeave {
 							AnnualLeaveUsedNumber usedNumberAfterGrant = usedInfo.getUsedNumberAfterGrantOpt().get();
 
 							// 使用日数
-							result_usedDaysAfterGrant = usedNumberAfterGrant.getUsedDays().getUsedDayNumber().v();
+							result_usedDaysAfterGrant = usedNumberAfterGrant.getUsedDays().map(c -> c.v()).orElse(0d);
 
 							// 使用時間
 							if ( usedNumberAfterGrant.getUsedTime().isPresent() ){
-								result_usedTimeAfterGrant = usedNumberAfterGrant.getUsedTime().get().getUsedTime().v();
+								result_usedTimeAfterGrant = usedNumberAfterGrant.getUsedTime().get().v();
 							}
 						}
 					}
@@ -465,11 +465,11 @@ public class TestAnnualLeave {
 
 						if ( usedNumberBeforeGrant != null ){
 							// 使用日数
-							result_usedDaysBeforeGrant = usedNumberBeforeGrant.getUsedDays().getUsedDayNumber().v();
+							result_usedDaysBeforeGrant = usedNumberBeforeGrant.getUsedDays().map(c -> c.v()).orElse(0d);
 
 							// 使用時間
 							if ( usedNumberBeforeGrant.getUsedTime().isPresent() ){
-								result_usedTimeBeforeGrant = usedNumberBeforeGrant.getUsedTime().get().getUsedTime().v();
+								result_usedTimeBeforeGrant = usedNumberBeforeGrant.getUsedTime().get().v();
 							}
 						}
 
@@ -478,11 +478,11 @@ public class TestAnnualLeave {
 
 						if ( usedNumberTotal != null ){
 							// 使用日数
-							result_usedDaysTotal = usedNumberTotal.getUsedDays().getUsedDayNumber().v();
+							result_usedDaysTotal = usedNumberTotal.getUsedDays().map(c -> c.v()).orElse(0d);
 
 							// 使用時間
 							if ( usedNumberTotal.getUsedTime().isPresent() ){
-								result_usedTimeTotal = usedNumberTotal.getUsedTime().get().getUsedTime().v();
+								result_usedTimeTotal = usedNumberTotal.getUsedTime().get().v();
 							}
 						}
 
@@ -491,11 +491,11 @@ public class TestAnnualLeave {
 							AnnualLeaveUsedNumber usedNumberAfterGrant = usedInfo.getUsedNumberAfterGrantOpt().get();
 
 							// 使用日数
-							result_usedDaysAfterGrant = usedNumberAfterGrant.getUsedDays().getUsedDayNumber().v();
+							result_usedDaysAfterGrant = usedNumberAfterGrant.getUsedDays().map(c -> c.v()).orElse(0d);
 
 							// 使用時間
 							if ( usedNumberAfterGrant.getUsedTime().isPresent() ){
-								result_usedTimeAfterGrant = usedNumberAfterGrant.getUsedTime().get().getUsedTime().v();
+								result_usedTimeAfterGrant = usedNumberAfterGrant.getUsedTime().get().v();
 							}
 						}
 					}
