@@ -47,14 +47,14 @@ public class PersonCostCalculationExportImpl implements MasterListData {
 
                 data.put("計算設定", getTextResRatePrice(personCostCalculationSettingDto.getHowToSetUnitPrice())); //A-6-8
 
-                data.put("計算用単価", !Objects.isNull(personCostCalculationSettingDto.getUnitPrice()) == true ?
+                data.put("計算用単価", !Objects.isNull(personCostCalculationSettingDto.getUnitPrice()) ?
                         getTextResource(personCostCalculationSettingDto.getUnitPrice()) : "");// A-6-3
 
-                data.put("単価の丸め", !Objects.isNull(personCostCalculationSettingDto.getPersonCostRoundingSetting()) == true ?
+                data.put("単価の丸め", !Objects.isNull(personCostCalculationSettingDto.getPersonCostRoundingSetting()) ?
                         getTextUnitPriceRounding(personCostCalculationSettingDto.getPersonCostRoundingSetting().getUnitPriceRounding()) : "");// A-6-9
-                data.put("金額の丸め単位", !Objects.isNull(personCostCalculationSettingDto.getPersonCostRoundingSetting()) == true ?
+                data.put("金額の丸め単位", !Objects.isNull(personCostCalculationSettingDto.getPersonCostRoundingSetting()) ?
                         getTextResUnit(personCostCalculationSettingDto.getPersonCostRoundingSetting().getUnit()) : "");//A-6-10
-                data.put("金額の丸め", !Objects.isNull(personCostCalculationSettingDto.getPersonCostRoundingSetting()) == true ?
+                data.put("金額の丸め", !Objects.isNull(personCostCalculationSettingDto.getPersonCostRoundingSetting()) ?
                         getTextRounding(personCostCalculationSettingDto.getPersonCostRoundingSetting().getRounding()) : "");// A-6-10
 
                 data.put("備考", personCostCalculationSettingDto.getRemarks());
@@ -79,7 +79,7 @@ public class PersonCostCalculationExportImpl implements MasterListData {
                                 //data.put("他言語名称",nameEnglish);
                                 data.put("名称", premiumSetDto.getName());
                                 data.put("割増率", premiumSetDto.getRate() + TextResource.localize("KML001_60"));
-                                data.put("単価", premiumSetDto.getUnitPrice());
+                                data.put("単価", getTextResource(premiumSetDto.getUnitPrice()));
                                 //
                                 List<AttendanceNamePriniumDto> rs = premiumSetDto.getAttendanceItems();
                                 rs.sort((AttendanceNamePriniumDto o1, AttendanceNamePriniumDto o2) -> o1.getAttendanceItemDisplayNumber() - o2.getAttendanceItemDisplayNumber());

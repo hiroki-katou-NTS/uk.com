@@ -37,7 +37,10 @@ public class RegisterLaborCalculationSettingCommandHandler extends CommandHandle
         val roundingSetting = new PersonCostRoundingSetting(roundingOfPremium, amountRoundingSetting);
         val cid = AppContexts.user().companyId();
 
-        val unitPrice = EnumAdaptor.valueOf(command.getUnitPrice(), UnitPrice.class);
+        val unitPrice = command.getUnitPrice();
+
+        Optional<UnitPrice> optUnitPrice = unitPrice != null ? Optional.of(EnumAdaptor.valueOf(unitPrice, UnitPrice.class))
+                : Optional.empty();
         val premiumSettings = new ArrayList<PremiumSetting>();
         if (command.getPremiumSets() != null && !command.getPremiumSets().isEmpty()) {
             premiumSettings.addAll(command.getPremiumSets().stream().map(e -> new PremiumSetting(
@@ -49,13 +52,13 @@ public class RegisterLaborCalculationSettingCommandHandler extends CommandHandle
                     e.getAttendanceItems()
             )).collect(Collectors.toList()));
         }
-        val domain = new PersonCostCalculation(
+        PersonCostCalculation domain = new PersonCostCalculation(
                 roundingSetting,
                 cid,
                 new Remarks(command.getMemo()),
                 premiumSettings
                 ,
-                Optional.of(unitPrice),
+                optUnitPrice,
                 EnumAdaptor.valueOf(command.getHowToSetUnitPrice(), HowToSetUnitPrice.class),
                 new WorkingHoursUnitPrice(command.getWorkingHoursUnitPrice()),
                 null
