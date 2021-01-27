@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype;
+package nts.uk.ctx.at.shared.dom.alarmList.extractionResult.worktype;
 
 //import static mockit.Deencapsulation.*;
 //import static org.hamcrest.CoreMatchers.*;

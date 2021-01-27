@@ -1,7 +1,7 @@
 /**
  * 10:23:42 AM Nov 3, 2017
  */
-package nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums;
+package nts.uk.ctx.at.shared.dom.alarmList.extractionResult.enums;
 
 import lombok.AllArgsConstructor;
 

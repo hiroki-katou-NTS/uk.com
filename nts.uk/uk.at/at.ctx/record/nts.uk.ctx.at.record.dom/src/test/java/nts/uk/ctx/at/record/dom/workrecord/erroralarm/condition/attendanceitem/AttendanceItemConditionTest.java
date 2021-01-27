@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkCheckResult;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.enums.WorkCheckResult;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.LogicalOperator;
