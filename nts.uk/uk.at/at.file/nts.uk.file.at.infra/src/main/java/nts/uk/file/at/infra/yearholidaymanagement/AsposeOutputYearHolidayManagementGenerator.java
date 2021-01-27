@@ -829,6 +829,8 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 			Style style = new Style();
 			style.copy(cells.get(currentRow, i).getStyle());
 			style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+			style.setForegroundColor(Color.fromArgb(155,194,230));
+			style.setPattern(BackgroundType.SOLID);
 			Font font = style.getFont();
 			font.setDoubleSize(NORMAL_FONT_SIZE);
 			font.setName(FONT_NAME );
