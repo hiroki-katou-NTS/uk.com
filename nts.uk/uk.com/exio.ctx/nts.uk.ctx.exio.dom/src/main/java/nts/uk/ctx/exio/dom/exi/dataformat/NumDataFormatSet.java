@@ -7,6 +7,7 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.exio.dom.exi.codeconvert.CodeConvertCode;
+import nts.uk.ctx.exio.dom.exi.condset.AcceptanceConditionValue;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -38,7 +39,7 @@ public class NumDataFormatSet extends DataFormatSetting {
 	/**
 	 * 固定値の値
 	 */
-	private Optional<NumDataFixedValue> valueOfFixedValue;
+	private Optional<AcceptanceConditionValue> valueOfFixedValue;
 
 	/**
 	 * 少数桁数
@@ -66,14 +67,14 @@ public class NumDataFormatSet extends DataFormatSetting {
 	private Optional<DecimalFraction> decimalFraction;
 
 	public NumDataFormatSet(int itemType, int fixedValue, int decimalDivision, int effectiveDigitLength,
-			String cdConvertCd, Double valueOfFixedValue, Integer decimalDigitNum, Integer startDigit, Integer endDigit,
+			String cdConvertCd, BigDecimal valueOfFixedValue, Integer decimalDigitNum, Integer startDigit, Integer endDigit,
 			Integer decimalPointCls, Integer decimalFraction) {
 		super(itemType);
 		this.fixedValue = EnumAdaptor.valueOf(fixedValue, NotUseAtr.class);
 		this.decimalDivision = EnumAdaptor.valueOf(decimalDivision, DecimalDivision.class);
 		this.effectiveDigitLength = EnumAdaptor.valueOf(effectiveDigitLength, NotUseAtr.class);
 		this.cdConvertCd = Optional.ofNullable(cdConvertCd == null ? null : new CodeConvertCode(cdConvertCd));
-		this.valueOfFixedValue = Optional.ofNullable(valueOfFixedValue == null ? null : new NumDataFixedValue(valueOfFixedValue));
+		this.valueOfFixedValue = Optional.ofNullable(valueOfFixedValue == null ? null : new AcceptanceConditionValue(valueOfFixedValue));
 		this.decimalDigitNum = Optional.ofNullable(decimalDigitNum == null ? null : new DecimalDigitNumber(decimalDigitNum));
 		this.startDigit = Optional.ofNullable(startDigit == null ? null : new AcceptedDigit(startDigit));
 		this.endDigit = Optional.ofNullable(endDigit == null ? null : new AcceptedDigit(endDigit));
@@ -85,7 +86,7 @@ public class NumDataFormatSet extends DataFormatSetting {
 		Double result = null;
 		//固定値使用する/しないを判別
 		if(this.fixedValue == NotUseAtr.USE) {
-			return this.valueOfFixedValue.get().v();
+			return this.valueOfFixedValue.get().v().doubleValue();
 		}
 		//有効桁長あり/なしを判別
 		if(this.effectiveDigitLength == NotUseAtr.USE) {
@@ -108,7 +109,20 @@ public class NumDataFormatSet extends DataFormatSetting {
 				result = result * 10 * this.decimalDigitNum.get().v();
 			} 
 		} else {
-			
+			//処理を判別する
+			switch (this.decimalFraction.get()) {
+			case TRUNCATION:
+				result = Math.floor(result);
+				break;
+			case ROUND_UP:
+				result = Math.ceil(result);
+				break;
+			case DOWN_4_UP_5:
+				result = Double.valueOf(Math.round(result));
+				break;
+			default:
+				break;
+			}
 		}
 		
 		return result;

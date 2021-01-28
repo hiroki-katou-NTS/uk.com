@@ -68,11 +68,15 @@ public class StdAcceptItem extends AggregateRoot {
 	 * データ形式設定
 	 */
 	private Optional<DataFormatSetting> dataFormatSetting;
-	
-	public boolean checkCondition(String itemValue) {
-		boolean result = true;
-		
-		val toItemValue = itemValue;
+	/**
+	 * 受入項目チェック＆編集
+	 * @param itemValue
+	 * @return
+	 */
+	public AcceptItemEditValueDto checkCondition(String itemValue) {
+		boolean resultCheck = true;
+		Object toItemValue = itemValue;
+		AcceptItemEditValueDto result = new AcceptItemEditValueDto(toItemValue, resultCheck, "");
 		
 		switch (this.itemType) {
 		case CHARACTER:
@@ -86,6 +90,13 @@ public class StdAcceptItem extends AggregateRoot {
 			break;
 		case TIME:
 			TimeDataFormatSet timeFormatSet = (TimeDataFormatSet) this.getDataFormatSetting().get();
+			toItemValue =  timeFormatSet.editTimeValue(itemValue);
+			if(toItemValue == null) {
+				result.setEditError("Msg_1021");
+				result.setResultCheck(false);
+				result.setEditValue(itemValue);
+				return result;
+			}
 			
 			break;
 			default:

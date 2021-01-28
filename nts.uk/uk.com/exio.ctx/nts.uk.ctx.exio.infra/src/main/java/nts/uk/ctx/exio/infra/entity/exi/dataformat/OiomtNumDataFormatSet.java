@@ -1,6 +1,7 @@
 package nts.uk.ctx.exio.infra.entity.exi.dataformat;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -67,7 +68,7 @@ public class OiomtNumDataFormatSet extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "VALUE_OF_FIXED_VALUE")
-	public Double valueOfFixedValue;
+	public BigDecimal valueOfFixedValue;
 
 	/**
 	 * 少数桁数
@@ -116,7 +117,7 @@ public class OiomtNumDataFormatSet extends UkJpaEntity implements Serializable {
 	}
 
 	public OiomtNumDataFormatSet(String cid, String conditionCode, int acceptItemNum, int fixedValue,
-			int decimalDivision, int effectiveDigitLength, String cdConvertCd, Double valueOfFixedValue,
+			int decimalDivision, int effectiveDigitLength, String cdConvertCd, BigDecimal valueOfFixedValue,
 			Integer decimalDigitNum, Integer startDigit, Integer endDigit, Integer decimalPointCls,
 			Integer decimalFraction) {
 		super();
