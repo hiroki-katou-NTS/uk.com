@@ -51599,7 +51599,7 @@ var nts;
                         $(element)
                             .find('div[id^=functions-area]')
                             .each(function (__, e) {
-                            if (!e.classList.contains('functions-area')) {
+                            if (!ko.dataFor(e)) {
                                 ko.applyBindingsToNode(e, {
                                     'ui-function-bar': e.id.match(/bottom$/) ? 'bottom' : 'top',
                                     title: e.getAttribute('data-title') || true,
@@ -51612,7 +51612,7 @@ var nts;
                         $(element)
                             .find('div[id^=contents-area]')
                             .each(function (__, e) {
-                            if (!e.classList.contains('contents-area')) {
+                            if (!ko.dataFor(e)) {
                                 ko.applyBindingsToNode(e, { 'ui-contents': 0 }, bindingContext);
                             }
                         });
@@ -51682,7 +51682,9 @@ var nts;
                             if (!element.id) {
                                 element.id = "functions-area-bottom";
                             }
-                            ko.applyBindingsToNode(element, null, bindingContext);
+                            if (!ko.dataFor(element)) {
+                                ko.applyBindingsToDescendants(bindingContext, element);
+                            }
                             // button error in function bar
                             ko.applyBindingsToNode($('<button>').prependTo(element).get(0), { 'c-error': '' }, bindingContext);
                         }
