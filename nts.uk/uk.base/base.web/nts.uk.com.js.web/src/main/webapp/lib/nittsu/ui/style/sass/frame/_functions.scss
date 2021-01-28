@@ -93,6 +93,12 @@ div#master-wrapper {
 			}
 		}
 
+		& > div[id^="functions-area"] {
+			&:not(:last-child) {
+				border-bottom: solid 1px $frame_border_color;
+			}
+		}
+
 		div[id^="functions-area-bottom"] {
 			width: 100%;
 			padding: 10px 0;
@@ -111,10 +117,6 @@ div#master-wrapper {
 				top: -13px;
 				left: 10px;
 			}
-		}
-
-		& > div[id^="functions-area"] {
-			border-bottom: solid 1px $frame_border_color;
 		}
 	}
 
