@@ -4412,18 +4412,15 @@ var nts;
                             $('body>div:first-child').removeClass('view');
                         }
                     });
+                    vm.errorDialogViewModel = new ui.errors.ErrorsViewModel();
                 }
                 KibanViewModel.prototype.initErrorModel = function (dialogOptions) {
                     var vm = this;
-                    vm.errorDialogViewModel = new ui.errors.ErrorsViewModel(dialogOptions);
+                    vm.errorDialogViewModel.initErrorModel(dialogOptions);
                 };
                 return KibanViewModel;
             }());
-            ui._viewModel = {
-                kiban: new KibanViewModel(),
-                content: null,
-                errors: null
-            };
+            ui._viewModel = null; //{ kiban: null, content: null, errors: null };
             var init;
             (function (init) {
                 var _start;
@@ -4433,7 +4430,7 @@ var nts;
                         .map(function (v) { return JSON.parse(v); }),
                     ready: function (callback) { return _start = callback; },
                     bind: function (content, dialogOptions) {
-                        var kiban = ui._viewModel.kiban;
+                        var kiban = new KibanViewModel();
                         var systemName = __viewContext.env.systemName;
                         // update title of name
                         kiban.systemName(systemName);
@@ -4442,7 +4439,7 @@ var nts;
                         kiban.initErrorModel(dialogOptions);
                         var isEmpty = ko.computed(function () { return !kiban.errorDialogViewModel.occurs(); });
                         // mock ready function
-                        _.extend(ui._viewModel, { content: content, errors: { isEmpty: isEmpty } });
+                        _.extend(nts.uk.ui, { _viewModel: { kiban: kiban, content: content, errors: { isEmpty: isEmpty } } });
                         $(function () {
                             ui.viewModelBuilt.fire(ui._viewModel);
                             // bind viewmodel to document body
@@ -5242,43 +5239,67 @@ var nts;
             (function (errors_1) {
                 var ErrorsViewModel = /** @class */ (function () {
                     function ErrorsViewModel(dialogOptions) {
-                        var _this = this;
-                        this.title = ui.toBeResource.errorList;
-                        this.errors = ko.observableArray([]);
-                        this.errors.extend({ rateLimit: 1 });
+                        this.title = '';
+                        this.errors = ko.observableArray([]).extend({ readLimit: 1 });
                         this.gridErrors = ko.observableArray([]);
-                        this.displayErrors = !uk.util.isNullOrUndefined(dialogOptions) && dialogOptions.forGrid ? this.gridErrors : this.errors;
-                        this.option = ko.observable(ko.mapping.fromJS(new ui.option.ErrorDialogOption(dialogOptions)));
-                        this.occurs = ko.computed(function () { return _this.errors().length !== 0 || _this.gridErrors().length !== 0; });
+                        this.forGrid = ko.observable(false);
+                        this.option = ko.observable(ko.mapping.fromJS(new ui.option.ErrorDialogOption()));
                         this.allResolved = $.Callbacks();
                         this.allCellsResolved = $.Callbacks();
-                        this.option().show.extend({ notify: "always" });
-                        this.errors.subscribe(function () {
-                            if (_this.errors().length === 0) {
-                                _this.allResolved.fire();
+                        var vme = this;
+                        vme.title = ui.toBeResource.errorList;
+                        vme.displayErrors = ko.computed({
+                            read: function () {
+                                var forGrid = ko.unwrap(vme.forGrid);
+                                if (!forGrid) {
+                                    return ko.unwrap(vme.errors);
+                                }
+                                return ko.unwrap(vme.gridErrors);
                             }
                         });
-                        this.allResolved.add(function () {
-                            _this.hide();
+                        vme.initErrorModel(dialogOptions);
+                        vme.occurs = ko.computed({
+                            read: function () {
+                                var errors = ko.unwrap(vme.errors);
+                                var gridErrors = ko.unwrap(vme.gridErrors);
+                                return (errors.length || gridErrors.length) !== 0;
+                            }
+                        });
+                        vme.option().show.extend({ notify: "always" });
+                        vme.errors
+                            .subscribe(function (errors) {
+                            if (errors.length === 0) {
+                                vme.allResolved.fire();
+                            }
                         });
                         // Grid
-                        this.gridErrors.subscribe(function () {
-                            if (_this.gridErrors().length === 0) {
-                                _this.allCellsResolved.fire();
+                        vme.gridErrors
+                            .subscribe(function (gridErrors) {
+                            if (gridErrors.length === 0) {
+                                vme.allCellsResolved.fire();
                             }
                         });
-                        this.allCellsResolved.add(function () {
-                            _this.hide();
-                        });
+                        vme.allResolved.add(function () { return vme.hide(); });
+                        vme.allCellsResolved.add(function () { return vme.hide(); });
                     }
+                    ErrorsViewModel.prototype.initErrorModel = function (dialogOptions) {
+                        var vme = this;
+                        vme.forGrid(_.get(dialogOptions, 'forGrid', false));
+                        vme.option(ko.mapping.fromJS(new ui.option.ErrorDialogOption(dialogOptions)));
+                    };
                     ErrorsViewModel.prototype.closeButtonClicked = function () {
-                        this.option().show(false);
+                        var vme = this;
+                        vme.hide();
                     };
                     ErrorsViewModel.prototype.open = function () {
-                        this.option().show(true);
+                        var vme = this;
+                        var show = ko.unwrap(vme.option).show;
+                        show(true);
                     };
                     ErrorsViewModel.prototype.hide = function () {
-                        this.option().show(false);
+                        var vme = this;
+                        var show = ko.unwrap(vme.option).show;
+                        show(hide);
                     };
                     ErrorsViewModel.prototype.addError = function (error) {
                         var _this = this;
@@ -5322,15 +5343,21 @@ var nts;
                         }, 100);
                     };
                     ErrorsViewModel.prototype.hasError = function () {
-                        return this.errors().length > 0;
+                        var vme = this;
+                        var errors = vme.errors;
+                        return ko.unwrap(errors).length > 0;
                     };
                     ErrorsViewModel.prototype.clearError = function () {
-                        $(".error").children().each(function (index, element) {
-                            if ($(element).data("hasError"))
+                        var vme = this;
+                        $(".error")
+                            .children()
+                            .each(function (__, element) {
+                            if ($(element).data("hasError")) {
                                 $(element).data("hasError", false);
+                            }
                         });
                         $(".error").removeClass('error');
-                        this.errors.removeAll();
+                        vme.errors([]);
                     };
                     ErrorsViewModel.prototype.removeErrorByElement = function ($element) {
                         this.errors.remove(function (error) {
@@ -5450,7 +5477,7 @@ var nts;
                  *  Public API
                 **/
                 function errorsViewModel() {
-                    return nts.uk.ui._viewModel.kiban.errorDialogViewModel || new ErrorsViewModel();
+                    return _.get(nts.uk.ui._viewModel, 'kiban.errorDialogViewModel', new ErrorsViewModel());
                 }
                 errors_1.errorsViewModel = errorsViewModel;
                 function show() {
@@ -5472,8 +5499,9 @@ var nts;
                 }
                 errors_1.hasError = hasError;
                 function clearAll() {
-                    if (nts.uk.ui._viewModel !== undefined)
+                    if (nts.uk.ui._viewModel !== undefined) {
                         errorsViewModel().clearError();
+                    }
                 }
                 errors_1.clearAll = clearAll;
                 function removeByElement($control) {
@@ -6754,20 +6782,36 @@ var nts;
         (function (ui_2) {
             var option;
             (function (option_1) {
+                var ErrorHeader = nts.uk.ui.errors.ErrorHeader;
+                var defaultHeaders = function () {
+                    var errorContent = ui_2.toBeResource.errorContent, errorCode = ui_2.toBeResource.errorCode;
+                    return [
+                        new ErrorHeader("messageText", errorContent, "auto", true),
+                        new ErrorHeader("errorCode", errorCode, 150, true)
+                    ];
+                };
+                var dialogTabHeaders = function () {
+                    var tab = ui_2.toBeResource.tab, errorPoint = ui_2.toBeResource.errorPoint, errorDetail = ui_2.toBeResource.errorDetail;
+                    return [
+                        new ErrorHeader("tab", tab, 90, true),
+                        new ErrorHeader("location", errorPoint, 115, true),
+                        new ErrorHeader("message", errorDetail, 250, true)
+                    ];
+                };
                 var DialogOption = /** @class */ (function () {
                     function DialogOption() {
+                        this.modal = true;
                         this.show = false;
+                        this.buttons = [];
                     }
                     return DialogOption;
                 }());
-                option_1.DialogOption = DialogOption;
                 var ConfirmDialogOption = /** @class */ (function (_super) {
                     __extends(ConfirmDialogOption, _super);
                     function ConfirmDialogOption(option) {
                         var _this = _super.call(this) || this;
                         // Default value
-                        _this.modal = (option && option.modal !== undefined) ? option.modal : true;
-                        _this.buttons = [];
+                        _this.modal = _.get(option, 'modal', true);
                         // Add OK Button
                         _this.buttons.push({
                             text: "OK",
@@ -6788,12 +6832,12 @@ var nts;
                     __extends(DelDialogOption, _super);
                     function DelDialogOption(option) {
                         var _this = _super.call(this) || this;
+                        var yes = ui_2.toBeResource.yes, no = ui_2.toBeResource.no;
                         // Default value
-                        _this.modal = (option && option.modal !== undefined) ? option.modal : true;
-                        _this.buttons = [];
+                        _this.modal = _.get(option, 'modal', true);
                         // Add OK Button
                         _this.buttons.push({
-                            text: ui_2.toBeResource.yes,
+                            text: yes,
                             "class": "yes ",
                             size: "large",
                             color: "danger",
@@ -6804,7 +6848,7 @@ var nts;
                         });
                         // Add Cancel Button
                         _this.buttons.push({
-                            text: ui_2.toBeResource.no,
+                            text: no,
                             "class": "no ",
                             size: "large",
                             color: "",
@@ -6822,12 +6866,12 @@ var nts;
                     __extends(OKDialogOption, _super);
                     function OKDialogOption(option) {
                         var _this = _super.call(this) || this;
+                        var yes = ui_2.toBeResource.yes, no = ui_2.toBeResource.no;
                         // Default value
-                        _this.modal = (option && option.modal !== undefined) ? option.modal : true;
-                        _this.buttons = [];
+                        _this.modal = _.get(option, 'modal', true);
                         // Add OK Button
                         _this.buttons.push({
-                            text: ui_2.toBeResource.yes,
+                            text: yes,
                             "class": "yes ",
                             size: "large",
                             color: "proceed",
@@ -6838,7 +6882,7 @@ var nts;
                         });
                         // Add Cancel Button
                         _this.buttons.push({
-                            text: ui_2.toBeResource.no,
+                            text: no,
                             "class": "no ",
                             size: "large",
                             color: "",
@@ -6856,19 +6900,16 @@ var nts;
                     __extends(ErrorDialogOption, _super);
                     function ErrorDialogOption(option) {
                         var _this = _super.call(this) || this;
+                        var close = ui_2.toBeResource.close;
+                        _this.modal = _.get(option, 'modal', false);
                         // Default value
-                        _this.headers = (option && option.headers) ? option.headers : [
-                            new nts.uk.ui.errors.ErrorHeader("messageText", ui_2.toBeResource.errorContent, "auto", true),
-                            new nts.uk.ui.errors.ErrorHeader("errorCode", ui_2.toBeResource.errorCode, 150, true)
-                        ];
-                        _this.modal = (option && option.modal !== undefined) ? option.modal : false;
-                        _this.displayrows = (option && option.displayrows) ? option.displayrows : 10;
+                        _this.headers = _.get(option, 'headers', defaultHeaders());
+                        _this.displayrows = _.get(option, 'displayrows', 10);
                         //this.maxrows = (option && option.maxrows) ? option.maxrows : 1000;
-                        _this.autoclose = (option && option.autoclose !== undefined) ? option.autoclose : true;
-                        _this.buttons = [];
+                        _this.autoclose = _.get(option, 'autoclose', true);
                         // Add Close Button
                         _this.buttons.push({
-                            text: ui_2.toBeResource.close,
+                            text: close,
                             "class": "yes ",
                             size: "large",
                             color: "",
@@ -6886,20 +6927,16 @@ var nts;
                     __extends(ErrorDialogWithTabOption, _super);
                     function ErrorDialogWithTabOption(option) {
                         var _this = _super.call(this) || this;
+                        var close = ui_2.toBeResource.close;
+                        _this.modal = _.get(option, 'modal', false);
                         // Default value
-                        _this.headers = (option && option.headers) ? option.headers : [
-                            new ui_2.errors.ErrorHeader("tab", ui_2.toBeResource.tab, 90, true),
-                            new ui_2.errors.ErrorHeader("location", ui_2.toBeResource.errorPoint, 115, true),
-                            new ui_2.errors.ErrorHeader("message", ui_2.toBeResource.errorDetail, 250, true)
-                        ];
-                        _this.modal = (option && option.modal !== undefined) ? option.modal : false;
-                        _this.displayrows = (option && option.displayrows) ? option.displayrows : 10;
+                        _this.headers = _.get(option, 'headers', dialogTabHeaders());
+                        _this.displayrows = _.get(option, 'displayrows', 10);
                         //this.maxrows = (option && option.maxrows) ? option.maxrows : 1000;
-                        _this.autoclose = (option && option.autoclose !== undefined) ? option.autoclose : true;
-                        _this.buttons = [];
+                        _this.autoclose = _.get(option, 'autoclose', true);
                         // Add Close Button
                         _this.buttons.push({
-                            text: ui_2.toBeResource.close,
+                            text: close,
                             "class": "yes ",
                             size: "large",
                             color: "",
@@ -6913,14 +6950,6 @@ var nts;
                     return ErrorDialogWithTabOption;
                 }(ErrorDialogOption));
                 option_1.ErrorDialogWithTabOption = ErrorDialogWithTabOption;
-                var DialogButton = /** @class */ (function () {
-                    function DialogButton() {
-                    }
-                    DialogButton.prototype.click = function (viewmodel, ui) { };
-                    ;
-                    return DialogButton;
-                }());
-                option_1.DialogButton = DialogButton;
             })(option = ui_2.option || (ui_2.option = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -36869,25 +36898,57 @@ function bean(dialogOption) {
                     $created.apply($viewModel, [$params]);
                 }
                 __viewContext.bind($viewModel, dialogOption);
-                $(function () {
-                    // hook to mounted function
-                    $viewModel.$nextTick(function () {
-                        var $mounted = $viewModel['mounted'];
-                        var kvm = nts.uk.ui._viewModel.kiban;
-                        _.extend($viewModel, { $el: document.querySelector('#master-wrapper') });
-                        if (kvm) {
-                            ko.computed({
-                                read: function () {
-                                    $viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
-                                },
-                                owner: $viewModel,
-                                disposeWhenNodeIsRemoved: $viewModel.$el
-                            });
-                        }
-                        if ($mounted && _.isFunction($mounted)) {
-                            $mounted.apply($viewModel, []);
-                        }
-                    });
+                var $window = $viewModel.$window;
+                var kvm = nts.uk.ui._viewModel.kiban;
+                kvm.title
+                    .subscribe(function (title) {
+                    var old = ko.unwrap($window.title);
+                    if (title !== old) {
+                        $window.title(title);
+                    }
+                    else {
+                        $window.title.valueHasMutated();
+                    }
+                });
+                kvm.systemName.valueHasMutated();
+                kvm.mode
+                    .subscribe(function (mode) {
+                    var old = ko.unwrap($window.mode);
+                    if (mode !== old) {
+                        $window.mode(mode);
+                    }
+                    else {
+                        $window.mode.valueHasMutated();
+                    }
+                });
+                kvm.mode.valueHasMutated();
+                kvm.header
+                    .subscribe(function (header) {
+                    var old = ko.unwrap($window.header);
+                    if (header !== old) {
+                        $window.header(header);
+                    }
+                    else {
+                        $window.header.valueHasMutated();
+                    }
+                });
+                kvm.header.valueHasMutated();
+                // hook to mounted function
+                $viewModel.$nextTick(function () {
+                    var $mounted = $viewModel['mounted'];
+                    _.extend($viewModel, { $el: document.querySelector('#master-wrapper') });
+                    if (kvm) {
+                        ko.computed({
+                            read: function () {
+                                $viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
+                            },
+                            owner: $viewModel,
+                            disposeWhenNodeIsRemoved: $viewModel.$el
+                        });
+                    }
+                    if ($mounted && _.isFunction($mounted)) {
+                        $mounted.apply($viewModel, []);
+                    }
                 });
             });
         });
@@ -36911,6 +36972,41 @@ function component(options) {
                             if ($created && _.isFunction($created)) {
                                 $created.apply($viewModel, [$params]);
                             }
+                            var $window = $viewModel.$window;
+                            var kvm = nts.uk.ui._viewModel.kiban;
+                            kvm.title
+                                .subscribe(function (title) {
+                                var old = ko.unwrap($window.title);
+                                if (title !== old) {
+                                    $window.title(title);
+                                }
+                                else {
+                                    $window.title.valueHasMutated();
+                                }
+                            });
+                            kvm.systemName.valueHasMutated();
+                            kvm.mode
+                                .subscribe(function (mode) {
+                                var old = ko.unwrap($window.mode);
+                                if (mode !== old) {
+                                    $window.mode(mode);
+                                }
+                                else {
+                                    $window.mode.valueHasMutated();
+                                }
+                            });
+                            kvm.mode.valueHasMutated();
+                            kvm.header
+                                .subscribe(function (header) {
+                                var old = ko.unwrap($window.header);
+                                if (header !== old) {
+                                    $window.header(header);
+                                }
+                                else {
+                                    $window.header.valueHasMutated();
+                                }
+                            });
+                            kvm.header.valueHasMutated();
                             // hook to mounted function
                             $viewModel.$nextTick(function () {
                                 var $mounted = $viewModel['mounted'];
@@ -37189,13 +37285,13 @@ var nts;
                 });
                 BaseViewModel.prototype.$window = Object.defineProperties({}, {
                     mode: {
-                        value: nts.uk.ui._viewModel.kiban.mode
+                        value: ko.observable('') // nts.uk.ui._viewModel.kiban.mode
                     },
                     title: {
-                        value: nts.uk.ui._viewModel.kiban.title
+                        value: ko.observable('') //nts.uk.ui._viewModel.kiban.title
                     },
                     header: {
-                        value: nts.uk.ui._viewModel.kiban.header
+                        value: ko.observable('') //nts.uk.ui._viewModel.kiban.header
                     },
                     size: {
                         value: $size
@@ -51599,22 +51695,18 @@ var nts;
                         $(element)
                             .find('div[id^=functions-area]')
                             .each(function (__, e) {
-                            if (!ko.dataFor(e)) {
-                                ko.applyBindingsToNode(e, {
-                                    'ui-function-bar': e.id.match(/bottom$/) ? 'bottom' : 'top',
-                                    title: e.getAttribute('data-title') || true,
-                                    back: e.getAttribute('data-url')
-                                }, bindingContext);
-                                e.removeAttribute('data-url');
-                                e.removeAttribute('data-title');
-                            }
+                            ko.applyBindingsToNode(e, {
+                                'ui-function-bar': e.id.match(/bottom$/) ? 'bottom' : 'top',
+                                title: e.getAttribute('data-title') || true,
+                                back: e.getAttribute('data-url')
+                            }, bindingContext);
+                            e.removeAttribute('data-url');
+                            e.removeAttribute('data-title');
                         });
                         $(element)
                             .find('div[id^=contents-area]')
                             .each(function (__, e) {
-                            if (!ko.dataFor(e)) {
-                                ko.applyBindingsToNode(e, { 'ui-contents': 0 }, bindingContext);
-                            }
+                            ko.applyBindingsToNode(e, { 'ui-contents': 0 }, bindingContext);
                         });
                         return { controlsDescendantBindings: true };
                     };
@@ -51689,7 +51781,7 @@ var nts;
                             ko.applyBindingsToNode($('<button>').prependTo(element).get(0), { 'c-error': '' }, bindingContext);
                         }
                         element.removeAttribute('data-bind');
-                        return { controlsDescendantBindings: true };
+                        return { controlsDescendantBindings: false };
                     };
                     MasterUIFunctionalBindingHandler = __decorate([
                         handler({
@@ -51711,7 +51803,7 @@ var nts;
                         element.classList.add('contents-area');
                         element.removeAttribute('data-bind');
                         element.style.height = "calc(100vh - " + (element.getBoundingClientRect().top + (valueAccessor() || ($(element).parent().hasClass('master-content') ? 0 : 20))) + "px)";
-                        return { controlsDescendantBindings: true };
+                        return { controlsDescendantBindings: false };
                     };
                     MasterUIContentBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var root = bindingContext.$root;
