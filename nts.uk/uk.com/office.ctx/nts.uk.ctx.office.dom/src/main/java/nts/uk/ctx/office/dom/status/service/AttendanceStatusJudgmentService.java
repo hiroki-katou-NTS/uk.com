@@ -8,6 +8,10 @@ import nts.uk.ctx.office.dom.status.ActivityStatus;
 import nts.uk.ctx.office.dom.status.StatusClassfication;
 import nts.uk.ctx.office.dom.status.adapter.AttendanceStateImport;
 
+/**
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.オフィス支援.在席照会.ステータス.在席のステータスの判断.在席のステータスの判断
+ *
+ */
 public class AttendanceStatusJudgmentService {
 
 	private AttendanceStatusJudgmentService() {}

@@ -7,7 +7,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
 	FavoriteInformationDomainServiceTest.class,
-	EmployeeListFromWpDomainServiceTest.class
+	EmployeeListFromWpDomainServiceTest.class,
+	PersonalInfomationDomainServiceTest.class
 })
 public class FavoriteSerciveTestSuite {
 

@@ -91,83 +91,90 @@ public class JudgingStatusDomainService {
 		}
 		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
 		
+		// case 1
 		if (leaveTime.isPresent() && leaveTime.get() <= now) {
-			// case 1
 			return AttendanceAccordActualData.builder()
 					.attendanceState(StatusClassfication.GO_HOME)
 					.workingNow(workingNow.map(m -> m.booleanValue()).orElse(false))
 					.build();
-		} else if (leaveTime.isPresent()) {
-			if (attendanceTime.isPresent() && attendanceTime.get() >= now) {
-				if (directDivision.isPresent() && directDivision.get().booleanValue()) {
-					// case 2
-					return AttendanceAccordActualData.builder()
-							.attendanceState(StatusClassfication.GO_OUT)
-							.workingNow(workingNow.map(m -> m.booleanValue()).orElse(false))
-							.build();
-				} else {
-					// case 3
-					return AttendanceAccordActualData.builder()
-							.attendanceState(StatusClassfication.PRESENT)
-							.workingNow(workingNow.map(m -> m.booleanValue()).orElse(false))
-							.build();
-				}
-			} else if (attendanceTime.isPresent()) {
-				// case 4
-				return AttendanceAccordActualData.builder()
-						.attendanceState(StatusClassfication.NOT_PRESENT)
-						.workingNow(workingNow.map(m -> m.booleanValue()).orElse(false))
-						.build();
-			} else {
-				// case 5
-				return AttendanceAccordActualData.builder()
-						.attendanceState(StatusClassfication.NOT_PRESENT)
-						.workingNow(workingNow.map(m -> m.booleanValue()).orElse(false))
-						.build();
-			}
-		} else {
-			if (attendanceTime.isPresent() && attendanceTime.get() >= now) {
-				if (directDivision.isPresent() && directDivision.get().booleanValue()) {
-					// case 6
-					return AttendanceAccordActualData.builder()
-							.attendanceState(StatusClassfication.GO_OUT)
-							.workingNow(workingNow.map(m -> m.booleanValue()).orElse(false))
-							.build();
-				} else {
-					// case 7
-					return AttendanceAccordActualData.builder()
-							.attendanceState(StatusClassfication.PRESENT)
-							.workingNow(workingNow.map(m -> m.booleanValue()).orElse(false))
-							.build();
-				}
-			} else if (attendanceTime.isPresent()) {
-				// case 8
-				return AttendanceAccordActualData.builder()
-						.attendanceState(StatusClassfication.NOT_PRESENT)
-						.workingNow(workingNow.map(m -> m.booleanValue()).orElse(false))
-						.build();
-			} else {
-				if (!workDivision.isPresent()) {
-					// case 9
-					return AttendanceAccordActualData.builder()
-							.attendanceState(StatusClassfication.NOT_PRESENT)
-							.workingNow(workingNow.map(m -> m.booleanValue()).orElse(false))
-							.build();
-				} else if (workDivision.get() == WORK) {
-					// case 10
-					return AttendanceAccordActualData.builder()
-							.attendanceState(StatusClassfication.NOT_PRESENT)
-							.workingNow(workingNow.map(m -> m.booleanValue()).orElse(false))
-							.build();
-				} else {
-					// case 11
-					return AttendanceAccordActualData.builder()
-							.attendanceState(StatusClassfication.HOLIDAY)
-							.workingNow(workingNow.map(m -> m.booleanValue()).orElse(false))
-							.build();
-				}
-			}
 		}
+		
+		if (leaveTime.isPresent()) {
+			if (attendanceTime.isPresent() && attendanceTime.get() >= now) {
+				// case 2
+				if (directDivision.isPresent() && directDivision.get().booleanValue()) {
+					return AttendanceAccordActualData.builder()
+							.attendanceState(StatusClassfication.GO_OUT)
+							.workingNow(workingNow.map(m -> m.booleanValue()).orElse(false))
+							.build();
+				}
+				
+				// case 3
+				return AttendanceAccordActualData.builder()
+						.attendanceState(StatusClassfication.PRESENT)
+						.workingNow(workingNow.map(m -> m.booleanValue()).orElse(false))
+						.build();
+			}
+			
+			// case 4
+			if (attendanceTime.isPresent()) {
+				return AttendanceAccordActualData.builder()
+						.attendanceState(StatusClassfication.NOT_PRESENT)
+						.workingNow(workingNow.map(m -> m.booleanValue()).orElse(false))
+						.build();
+			}
+			
+			// case 5
+			return AttendanceAccordActualData.builder()
+					.attendanceState(StatusClassfication.NOT_PRESENT)
+					.workingNow(workingNow.map(m -> m.booleanValue()).orElse(false))
+					.build();
+		}
+		
+		if (attendanceTime.isPresent() && attendanceTime.get() >= now) {
+			// case 6
+			if (directDivision.isPresent() && directDivision.get().booleanValue()) {
+				return AttendanceAccordActualData.builder()
+						.attendanceState(StatusClassfication.GO_OUT)
+						.workingNow(workingNow.map(m -> m.booleanValue()).orElse(false))
+						.build();
+			}
+			// case 7
+			return AttendanceAccordActualData.builder()
+					.attendanceState(StatusClassfication.PRESENT)
+					.workingNow(workingNow.map(m -> m.booleanValue()).orElse(false))
+					.build();
+		}
+		
+		// case 8
+		if (attendanceTime.isPresent()) {
+			return AttendanceAccordActualData.builder()
+					.attendanceState(StatusClassfication.NOT_PRESENT)
+					.workingNow(workingNow.map(m -> m.booleanValue()).orElse(false))
+					.build();
+		} 
+		
+		// case 9
+		if (!workDivision.isPresent()) {
+			return AttendanceAccordActualData.builder()
+					.attendanceState(StatusClassfication.NOT_PRESENT)
+					.workingNow(workingNow.map(m -> m.booleanValue()).orElse(false))
+					.build();
+		}
+		
+		// case 10
+		if (workDivision.get() == WORK) {
+			return AttendanceAccordActualData.builder()
+					.attendanceState(StatusClassfication.NOT_PRESENT)
+					.workingNow(workingNow.map(m -> m.booleanValue()).orElse(false))
+					.build();
+		}
+		
+		// case 11
+		return AttendanceAccordActualData.builder()
+				.attendanceState(StatusClassfication.HOLIDAY)
+				.workingNow(workingNow.map(m -> m.booleanValue()).orElse(false))
+				.build();
 	}
 
 	private static boolean judgePresenceStatus(DailyWork daily) {
