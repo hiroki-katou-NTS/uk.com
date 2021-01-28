@@ -1,19 +1,23 @@
-.panel.panel-frame {
-	width: 470px;
-}
+/*.panel.panel-frame {*/
+	/*width: 470px;*/
+/*}*/
 
-#unit-combo-box {
-	min-width: 0 !important;
+.unit-combo-box {
+	/*min-width: 0 !important;*/
 	width: 90px !important;
 }
 
-#rounding-combo-box {
-	min-width: 0 !important;
+.rounding-combo-box {
+	/*min-width: 0 !important;*/
 	width: 170px !important;
 }
 
+.nts-fixed-table {
+	padding-left: 20px;
+}
+
 .nts-fixed-table .nts-fixed-body-container {
-    height: 360px;
+    max-height: calc(100vh - 250px);
     max-width: 600px !important;
 }
 
