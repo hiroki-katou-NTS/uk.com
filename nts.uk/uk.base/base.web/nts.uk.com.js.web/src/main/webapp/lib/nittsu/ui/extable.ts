@@ -8056,7 +8056,7 @@ module nts.uk.ui.exTable {
             let found = -1;
             if (disables && disables[i] && disables[i].length > 0) { 
                 _.forEach(disables[i], function(c, j) {
-                    if (c.columnKey === columnKey) {
+                    if (c.columnKey === columnKey && c.innerIdx === innerIdx) {
                         found = j;
                         return false;
                     }
@@ -8108,7 +8108,7 @@ module nts.uk.ui.exTable {
             let found = -1;
             if (disables && disables[i] && disables[i].length > 0) {
                 _.forEach(disables[i], function(c, j) {
-                    if (c.columnKey === columnKey) {
+                    if (c.columnKey === columnKey && c.innerIdx === innerIdx) {
                         found = j;
                         return false;
                     }
