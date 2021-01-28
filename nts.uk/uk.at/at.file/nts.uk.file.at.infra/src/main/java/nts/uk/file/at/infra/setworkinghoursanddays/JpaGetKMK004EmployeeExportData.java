@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.Query;
@@ -16,6 +17,8 @@ import nts.arc.i18n.I18NText;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
+import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
 import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagement;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshmtLegalTimeMSya;
@@ -39,7 +42,8 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 	private static final String GET_EXPORT_MONTH = "SELECT m.MONTH_STR FROM BCMMT_COMPANY m WHERE m.CID = ?cid";
 
 	private static final String LEGAL_TIME_SYA = "SELECT s FROM KshmtLegalTimeMSya s WHERE "
-			+ " s.pk.cid = :cid AND s.pk.ym >= :start AND s.pk.ym <= :end" + " ORDER BY s.pk.ym";
+			+ " s.pk.cid = :cid AND s.pk.ym IN :yms"
+			+ " ORDER BY s.pk.ym";
 
 	private static final String GET_EMPLOYEE = " SELECT " + " ROW_NUMBER() OVER( "
 			+ " 	PARTITION BY BSYMT_EMP_DTA_MNG_INFO.SCD "
@@ -101,17 +105,21 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 
 		int month = this.month();
 
-		int startYM = startDate * 100 + month;
-		int endYM = startDate * 100 + ((month + 11) / 12) * 100 + (month + 11) % 12;
+		// int startYM = startDate * 100 + month;
+		// int endYM = startDate * 100 + ((month + 11) / 12) * 100 + (month +
+		// 11) % 12;
 
+		YearMonthPeriod ymPeriod = new YearMonthPeriod(YearMonth.of(startDate, month),
+				YearMonth.of(endDate, month).nextYear().previousMonth());
 		String startOfWeek = getStartOfWeek(cid);
 
 		val legalTimes = this.queryProxy().query(LEGAL_TIME_SYA, KshmtLegalTimeMSya.class)
 				.setParameter("cid", cid)
-				.setParameter("start",startYM)
-				.setParameter("end",endYM)
+				.setParameter("yms",
+						ymPeriod.yearMonthsBetween().stream().map(x -> x.v().toString()).collect(Collectors.toList()))
+				// .setParameter("end",endYM)
 				.getList();
-		
+
 		try (PreparedStatement stmt = this.connection().prepareStatement(GET_EMPLOYEE.toString())) {
 			stmt.setString(1, cid);
 			NtsResultSet result = new NtsResultSet(stmt.executeQuery());
@@ -266,23 +274,20 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 			 // R10_28
 			 KMK004PrintCommon.convertTime(deforN.isPresent() ? deforN.get().legalTime : null)));
 			
-			 // buil month remain
+			 
 			 for (int i = 1; i < 11; i++) {
-			 int m = (month + i) % 12 + 1;
-			 int currentYm = y *100 + m;
-			 val normalC = legals.stream()
-			 .filter(l -> l.pk.ym == currentYm && l.pk.sid.equals(sid) &&
-			 l.pk.type == LaborWorkTypeAttr.REGULAR_LABOR.value)
-			 .findFirst();
-			 val deforC = legals.stream()
-			 .filter(l -> l.pk.ym == currentYm && l.pk.sid.equals(sid) &&
-			 l.pk.type == LaborWorkTypeAttr.DEFOR_LABOR.value)
-			 .findFirst();
-			 val flexC = legals.stream()
-			 .filter(l -> l.pk.ym == currentYm && l.pk.sid.equals(sid) &&
-			 l.pk.type == LaborWorkTypeAttr.FLEX.value)
-			 .findFirst();
-			 datas.add(buildEmployeeARow(
+				int m = (month + i) % 12 + 1;
+				int currentYm = y * 100 + ((month + i) / 12) * 100 + m;
+				val normalC = legals.stream()
+						.filter(l -> l.pk.ym == currentYm && l.pk.sid.equals(sid) && l.pk.type == LaborWorkTypeAttr.REGULAR_LABOR.value)
+						.findFirst();
+				val deforC = legals.stream()
+						.filter(l -> l.pk.ym == currentYm && l.pk.sid.equals(sid) && l.pk.type == LaborWorkTypeAttr.DEFOR_LABOR.value)
+						.findFirst();
+				val flexC = legals.stream()
+						.filter(l -> l.pk.ym == currentYm && l.pk.sid.equals(sid) && l.pk.type == LaborWorkTypeAttr.FLEX.value)
+						.findFirst();
+				datas.add(buildEmployeeARow(
 					 
 					// R10_1
 					null,
