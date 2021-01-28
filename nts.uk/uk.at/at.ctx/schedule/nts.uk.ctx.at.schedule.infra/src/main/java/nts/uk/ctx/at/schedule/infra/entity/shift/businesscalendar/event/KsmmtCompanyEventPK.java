@@ -32,7 +32,7 @@ public class KsmmtCompanyEventPK implements Serializable{
 	public String companyId;
 
 	@Basic(optional = false)
-	@Column(name = "YMD_K")
+	@Column(name = "YMD")
 	public GeneralDate date;
 
 }

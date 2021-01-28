@@ -28,12 +28,13 @@ module nts.uk.at.view.kdl053.test {
                         {id: 8,sid: '47cd3836-8dd3-4352-ab81-50eb4074e5fc',scd:'000002',empName:'新規　ログ', date:'2020/12/13', attendanceItemId: 201, errorMessage: '開始時刻と終了時刻が逆転してします。' },
                         {id: 9,sid: '1d7a260a-864d-4577-8e1d-4814c04c540f',scd:'000012', empName:'承認者　課長', date:'2020/12/08', attendanceItemId: 205, errorMessage: '開始時刻と終了時刻が逆転してします。' },
                         {id: 10,sid: '1d7a260a-864d-4577-8e1d-4814c04c540f',scd:'000012', empName:'承認者　課長', date:'2020/12/09', attendanceItemId: 537, errorMessage: '開始時刻と終了時刻が逆転してします。' },
-                        {id: 11,sid: '1d7a260a-864d-4577-8e1d-4814c04c540f',scd:'000012', empName:'承認者　課長', date:'2020/12/13', attendanceItemId: 537, errorMessage: '開始時刻と終了時刻が逆転してします。'}
+						{id: 11,sid: '1d7a260a-864d-4577-8e1d-4814c04c540f',scd:'000012', empName:'承認者　課長', date:'2020/12/13', attendanceItemId: 537, errorMessage: '開始時刻と終了時刻が逆転してします。'},
+						{id: 12,sid: 'b4496e4d-2c79-4611-85c1-e251a72c8ce8', scd:'000001', empName:'天海　春香', date:'2020/12/07', attendanceItemId: 165, errorMessage: '開始時刻と終了時刻が逆転してします。' }
 					]);
-			employeeIds: KnockoutObservableArray<string> = ko.observableArray([
-				'1d7a260a-864d-4577-8e1d-4814c04c540f', 'b4496e4d-2c79-4611-85c1-e251a72c8ce8',
+			employeeIdList = ko.observable(
+				'1d7a260a-864d-4577-8e1d-4814c04c540f,' +  'b4496e4d-2c79-4611-85c1-e251a72c8ce8,' +
 				'47cd3836-8dd3-4352-ab81-50eb4074e5fc'
-			]);			
+			);			
 			
 			constructor() {
 				var self = this;
@@ -71,9 +72,11 @@ module nts.uk.at.view.kdl053.test {
 				let self = this;
 				let request: any = {};				
 				let errorRegistrationList: any = [];
+				let employeeIds: any = [];
 				
-				request.isRegistered = self.selectedId();
-				request.employeeIds = self.employeeIds();
+				request.isRegistered = self.selectedId();				
+				employeeIds =  _.split(self.employeeIdList(), ','),
+				request.employeeIds = employeeIds;
 				
 				_.each(self.currentCodeList(), id =>{
 					errorRegistrationList.push(self.errorRegistrations()[id]);

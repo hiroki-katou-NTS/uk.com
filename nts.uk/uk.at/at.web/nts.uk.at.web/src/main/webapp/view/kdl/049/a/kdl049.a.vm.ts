@@ -36,11 +36,6 @@ module nts.uk.at.view.kdl049.a.viewmodel {
                 }
             // self.targetWorkplace("dea95de1-a462-4028-ad3a-d68b8f180412");
             let dfd = $.Deferred();
-            if (self.targetWorkplace() != null) {
-                $('head').append("<script>var dialogSize = { width: 350, height: 320 };<\/script>");
-            } else {
-                $('head').append("<script>var dialogSize = { width: 350, height: 250 };<\/script>");
-            }
             let param = {
                 //                workplaceID : "dea95de1-a462-4028-ad3a-d68b8f180412",
                 //                targetDate : "2020-11-07T00:00:00.000Z"
@@ -48,7 +43,7 @@ module nts.uk.at.view.kdl049.a.viewmodel {
                 targetDate: data.dateSelected
             }
             service.startUp(param).done(function(result) {
-                self.targetDate(moment(data.dateSelected, "YYYY/MM/DD").format("YYYY/MM/DD"));
+                self.targetDate(data.dateSelected);
                 self.comEventName(result.optComEvent.name);
                 self.wplEventName(result.optWorkplaceEvent.name);
                 console.log(result);

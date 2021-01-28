@@ -470,7 +470,7 @@ module nts.uk.at.view.kcp006.a {
                 $("#" + currentCalendar + " .td-container img").off();
                 $("#" + currentCalendar + " .td-container img").on('click', function(event) {
                     event.stopPropagation();
-                    nts.uk.ui.windows.setShared('KDL049', { dateSelected: moment($(this).attr("data-date"), "YYYY/MM/DD").utc().toISOString(),
+                    nts.uk.ui.windows.setShared('KDL049', { dateSelected: $(this).attr("data-date").split("-").join("/"),
                      workplace: {
                          workPlaceID : workplaceId,
                          targetOrgWorkplaceName: workplaceName
