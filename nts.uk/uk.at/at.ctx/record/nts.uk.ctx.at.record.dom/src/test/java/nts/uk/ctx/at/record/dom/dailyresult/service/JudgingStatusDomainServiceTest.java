@@ -115,6 +115,7 @@ public class JudgingStatusDomainServiceTest {
 	 * case 1
 	 * 
 	 * $退勤時刻 = 日時＃今()
+	 * $勤務が出勤ですか　＝　Empty
 	 */
 	@Test
 	public void JudgingStatusTest1_1() {
@@ -146,21 +147,42 @@ public class JudgingStatusDomainServiceTest {
 	 * case 1
 	 * 
 	 * $退勤時刻 < 日時＃今()
+	 * $勤務が出勤ですか　＝　Not Empty
 	 */
 	@Test
 	public void JudgingStatusTest1_2() {
 		// given
 		String sid = "sid";
+		String code = "001";
 		GeneralDate baseDate = GeneralDate.today();
 		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+		
+		//[R-1]
+		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Not_use);
 
 		// [R-2]
 		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(0, now - 1000, 1);
-
+		
+		//[R-4]
+		Optional<WorkType> r4Result = this.getR4Result(
+				WorkTypeUnit.OneDay, 
+				WorkTypeClassification.Closure, 
+				WorkTypeClassification.Closure, 
+				WorkTypeClassification.Closure
+				);
+				
 		new Expectations() {
+			{
+				require.getDailyActualWorkInfo(sid, baseDate);
+				result = r1Result;
+			}
 			{
 				require.getDailyAttendanceAndDeparture(sid, baseDate);
 				result = r2Result;
+			}
+			{
+				require.getWorkType(code);
+				result = r4Result;
 			}
 		};
 
@@ -176,7 +198,10 @@ public class JudgingStatusDomainServiceTest {
 	/**
 	 * case 2
 	 * 
+	 * $退勤時刻 ＞　日時＃今()
 	 * $出勤時刻 = 日時＃今()
+	 * $直行区分 == する
+	 * $勤務が出勤ですか　＝　Empty
 	 */
 	@Test
 	public void JudgingStatusTest2_1() {
@@ -210,14 +235,70 @@ public class JudgingStatusDomainServiceTest {
 		// then
 		assertThat(result).isEqualTo(expected);
 	}
+	
+	/**
+	 * case 2
+	 * 
+	 * $退勤時刻 ＞　日時＃今()
+	 * $出勤時刻 = 日時＃今()
+	 * $直行区分 == する
+	 * $勤務が出勤ですか　＝　Not Empty
+	 */
+	@Test
+	public void JudgingStatusTest2_2() {
+		// given
+		String sid = "sid";
+		String code = "001";
+		GeneralDate baseDate = GeneralDate.today();
+		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+
+		// [R-1]
+		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Use);
+
+		// [R-2]
+		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(now, now + 1000, 1);
+		
+		//[R-4]
+		Optional<WorkType> r4Result = this.getR4Result(
+				WorkTypeUnit.OneDay, 
+				WorkTypeClassification.Closure, 
+				WorkTypeClassification.Closure, 
+				WorkTypeClassification.Closure
+				);
+
+		new Expectations() {
+			{
+				require.getDailyActualWorkInfo(sid, baseDate);
+				result = r1Result;
+			}
+			{
+				require.getDailyAttendanceAndDeparture(sid, baseDate);
+				result = r2Result;
+			}
+			{
+				require.getWorkType(code);
+				result = r4Result;
+			}
+		};
+
+		// when
+		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		val expected = AttendanceAccordActualData.builder().attendanceState(StatusClassfication.GO_OUT)
+				.workingNow(false).build();
+
+		// then
+		assertThat(result).isEqualTo(expected);
+	}
 
 	/**
 	 * case 2
 	 * 
-	 * $出勤時刻 > 日時＃今()
+	 * $退勤時刻 ＞　日時＃今()
+	 * $出勤時刻 ＞ 日時＃今()
+	 * $直行区分 == する
 	 */
 	@Test
-	public void JudgingStatusTest2_2() {
+	public void JudgingStatusTest2_3() {
 		// given
 		String sid = "sid";
 		GeneralDate baseDate = GeneralDate.today();
@@ -250,9 +331,45 @@ public class JudgingStatusDomainServiceTest {
 	}
 
 	/**
+	 * case 2
+	 * 
+	 * $退勤時刻 ＞　日時＃今()
+	 * $出勤時刻 ＞ 日時＃今()
+	 * $直行区分 == Empty
+	 */
+	@Test
+	public void JudgingStatusTest2_4() {
+		// given
+		String sid = "sid";
+		GeneralDate baseDate = GeneralDate.today();
+		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+
+		// [R-2]
+		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(now + 1000, now + 1000, 1);
+
+		new Expectations() {
+			{
+				require.getDailyAttendanceAndDeparture(sid, baseDate);
+				result = r2Result;
+			}
+		};
+
+		// when
+		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		val expected = AttendanceAccordActualData.builder().attendanceState(StatusClassfication.GO_OUT)
+				.workingNow(false).build();
+
+		// then
+		assertThat(result).isNotEqualTo(expected);
+	}
+
+	
+	/**
 	 * case 3
 	 * 
 	 * $出勤時刻 = 日時＃今()
+	 * $直行区分 == しない
+	 * $勤務が出勤ですか　＝　Empty
 	 */
 	@Test
 	public void JudgingStatusTest3_1() {
@@ -290,7 +407,61 @@ public class JudgingStatusDomainServiceTest {
 	/**
 	 * case 3
 	 * 
+	 * $出勤時刻 = 日時＃今()
+	 * $直行区分 == しない
+	 * $勤務が出勤ですか　＝ Not　Empty
+	 */
+	@Test
+	public void JudgingStatusTest3_3() {
+		// given
+		String sid = "sid";
+		String code = "001";
+		GeneralDate baseDate = GeneralDate.today();
+		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+
+		// [R-1]
+		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Not_use);
+
+		// [R-2]
+		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(now, now + 1000, 1);
+
+		//[R-4]
+		Optional<WorkType> r4Result = this.getR4Result(
+				WorkTypeUnit.OneDay, 
+				WorkTypeClassification.Closure, 
+				WorkTypeClassification.Closure, 
+				WorkTypeClassification.Closure
+				);
+		
+		new Expectations() {
+			{
+				require.getDailyActualWorkInfo(sid, baseDate);
+				result = r1Result;
+			}
+			{
+				require.getDailyAttendanceAndDeparture(sid, baseDate);
+				result = r2Result;
+			}
+			{
+				require.getWorkType(code);
+				result = r4Result;
+			}
+		};
+
+		// when
+		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		val expected = AttendanceAccordActualData.builder().attendanceState(StatusClassfication.PRESENT)
+				.workingNow(false).build();
+
+		// then
+		assertThat(result).isEqualTo(expected);
+	}
+
+	/**
+	 * case 3
+	 * 
 	 * $出勤時刻 > 日時＃今()
+	 * $直行区分 == しない
 	 */
 	@Test
 	public void JudgingStatusTest3_2() {
@@ -327,9 +498,11 @@ public class JudgingStatusDomainServiceTest {
 
 	/**
 	 * case 4
+	 * 
+	 * $勤務が出勤ですか　＝　Empty
 	 */
 	@Test
-	public void JudgingStatusTest4() {
+	public void JudgingStatusTest4_1() {
 		// given
 		String sid = "sid";
 		GeneralDate baseDate = GeneralDate.today();
@@ -355,10 +528,63 @@ public class JudgingStatusDomainServiceTest {
 	}
 
 	/**
-	 * case 5
+	 * case 4
+	 * 
+	 * $勤務が出勤ですか　＝ Not　Empty
 	 */
 	@Test
-	public void JudgingStatusTest5() {
+	public void JudgingStatusTest4_2() {
+		// given
+		String sid = "sid";
+		String code = "001";
+		GeneralDate baseDate = GeneralDate.today();
+		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+
+		//[R-1]
+		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Not_use);
+		
+		// [R-2]
+		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(now - 1000, now + 1000, 1);
+
+		//[R-4]
+		Optional<WorkType> r4Result = this.getR4Result(
+				WorkTypeUnit.OneDay, 
+				WorkTypeClassification.Closure, 
+				WorkTypeClassification.Closure, 
+				WorkTypeClassification.Closure
+				);
+		
+		new Expectations() {
+			{
+				require.getDailyActualWorkInfo(sid, baseDate);
+				result = r1Result;
+			}
+			{
+				require.getDailyAttendanceAndDeparture(sid, baseDate);
+				result = r2Result;
+			}
+			{
+				require.getWorkType(code);
+				result = r4Result;
+			}
+		};
+
+		// when
+		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		val expected = AttendanceAccordActualData.builder().attendanceState(StatusClassfication.NOT_PRESENT)
+				.workingNow(false).build();
+
+		// then
+		assertThat(result).isEqualTo(expected);
+	}
+
+	/**
+	 * case 5
+	 * 
+	 * $勤務が出勤ですか　＝　Empty
+	 */
+	@Test
+	public void JudgingStatusTest5_1() {
 		// given
 		String sid = "sid";
 		GeneralDate baseDate = GeneralDate.today();
@@ -383,11 +609,64 @@ public class JudgingStatusDomainServiceTest {
 		assertThat(result).isEqualTo(expected);
 	}
 	
+	/**
+	 * case 5
+	 * 
+	 * $勤務が出勤ですか　＝ Not　Empty
+	 */
+	@Test
+	public void JudgingStatusTest5_2() {
+		// given
+		String sid = "sid";
+		String code = "001";
+		GeneralDate baseDate = GeneralDate.today();
+		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
 
+		//[R-1]
+		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Not_use);
+		
+		// [R-2]
+		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(null, now + 1000, 1);
+
+		//[R-4]
+		Optional<WorkType> r4Result = this.getR4Result(
+				WorkTypeUnit.OneDay, 
+				WorkTypeClassification.Closure, 
+				WorkTypeClassification.Closure, 
+				WorkTypeClassification.Closure
+				);
+		
+		new Expectations() {
+			{
+				require.getDailyActualWorkInfo(sid, baseDate);
+				result = r1Result;
+			}
+			{
+				require.getDailyAttendanceAndDeparture(sid, baseDate);
+				result = r2Result;
+			}
+			{
+				require.getWorkType(code);
+				result = r4Result;
+			}
+		};
+
+		// when
+		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		val expected = AttendanceAccordActualData.builder().attendanceState(StatusClassfication.NOT_PRESENT)
+				.workingNow(false).build();
+
+		// then
+		assertThat(result).isEqualTo(expected);
+	}
+	
+	
 	/**
 	 * case 6
 	 * 
 	 * $出勤時刻 = 日時＃今()
+	 * $直行区分 == する
+	 * $勤務が出勤ですか　＝　Empty
 	 */
 	@Test
 	public void JudgingStatusTest6_1() {
@@ -425,10 +704,65 @@ public class JudgingStatusDomainServiceTest {
 	/**
 	 * case 6
 	 * 
-	 * $出勤時刻 > 日時＃今()
+	 * $出勤時刻 = 日時＃今()
+	 * $直行区分 == する
+	 * $勤務が出勤ですか　＝ Not　Empty
 	 */
 	@Test
 	public void JudgingStatusTest6_2() {
+		// given
+		String sid = "sid";
+		String code = "001";
+		GeneralDate baseDate = GeneralDate.today();
+		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+
+		// [R-1]
+		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Use);
+
+		// [R-2]
+		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(now, null, 1);
+
+		//[R-4]
+		Optional<WorkType> r4Result = this.getR4Result(
+				WorkTypeUnit.OneDay, 
+				WorkTypeClassification.Closure, 
+				WorkTypeClassification.Closure, 
+				WorkTypeClassification.Closure
+				);
+		
+		new Expectations() {
+			{
+				require.getDailyActualWorkInfo(sid, baseDate);
+				result = r1Result;
+			}
+			{
+				require.getDailyAttendanceAndDeparture(sid, baseDate);
+				result = r2Result;
+			}
+			{
+				require.getWorkType(code);
+				result = r4Result;
+			}
+		};
+
+		// when
+		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		val expected = AttendanceAccordActualData.builder().attendanceState(StatusClassfication.GO_OUT)
+				.workingNow(false).build();
+
+		// then
+		assertThat(result).isEqualTo(expected);
+	}
+
+	
+	/**
+	 * case 6
+	 * 
+	 * $出勤時刻 > 日時＃今()
+	 * $直行区分 == する
+	 */
+	@Test
+	public void JudgingStatusTest6_3() {
 		// given
 		String sid = "sid";
 		GeneralDate baseDate = GeneralDate.today();
@@ -461,9 +795,42 @@ public class JudgingStatusDomainServiceTest {
 	}
 
 	/**
+	 * case 6
+	 * 
+	 * $出勤時刻 > 日時＃今()
+	 * $直行区分 == Empty
+	 */
+	@Test
+	public void JudgingStatusTest6_4() {
+		// given
+		String sid = "sid";
+		GeneralDate baseDate = GeneralDate.today();
+		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+
+		// [R-2]
+		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(now + 1000, null, 1);
+
+		new Expectations() {
+			{
+				require.getDailyAttendanceAndDeparture(sid, baseDate);
+				result = r2Result;
+			}
+		};
+
+		// when
+		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		val expected = AttendanceAccordActualData.builder().attendanceState(StatusClassfication.GO_OUT)
+				.workingNow(false).build();
+
+		// then
+		assertThat(result).isNotEqualTo(expected);
+	}
+
+	/**
 	 * case 7
 	 * 
 	 * $出勤時刻 = 日時＃今()
+	 * $勤務が出勤ですか　＝　Empty
 	 */
 	@Test
 	public void JudgingStatusTest7_1() {
@@ -486,6 +853,58 @@ public class JudgingStatusDomainServiceTest {
 			{
 				require.getDailyAttendanceAndDeparture(sid, baseDate);
 				result = r2Result;
+			}
+		};
+
+		// when
+		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		val expected = AttendanceAccordActualData.builder().attendanceState(StatusClassfication.PRESENT)
+				.workingNow(false).build();
+
+		// then
+		assertThat(result).isEqualTo(expected);
+	}
+	
+	/**
+	 * case 7
+	 * 
+	 * $出勤時刻 = 日時＃今()
+	 * $勤務が出勤ですか　＝ Not　Empty
+	 */
+	@Test
+	public void JudgingStatusTest7_3() {
+		// given
+		String sid = "sid";
+		String code = "001";
+		GeneralDate baseDate = GeneralDate.today();
+		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+
+		// [R-1]
+		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Not_use);
+
+		// [R-2]
+		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(now, null, 1);
+
+		//[R-4]
+		Optional<WorkType> r4Result = this.getR4Result(
+				WorkTypeUnit.OneDay, 
+				WorkTypeClassification.Closure, 
+				WorkTypeClassification.Closure, 
+				WorkTypeClassification.Closure
+				);
+		
+		new Expectations() {
+			{
+				require.getDailyActualWorkInfo(sid, baseDate);
+				result = r1Result;
+			}
+			{
+				require.getDailyAttendanceAndDeparture(sid, baseDate);
+				result = r2Result;
+			}
+			{
+				require.getWorkType(code);
+				result = r4Result;
 			}
 		};
 
@@ -538,9 +957,11 @@ public class JudgingStatusDomainServiceTest {
 
 	/**
 	 * case 8
+	 * 
+	 * $勤務が出勤ですか　＝　Empty
 	 */
 	@Test
-	public void JudgingStatusTest8() {
+	public void JudgingStatusTest8_1() {
 		// given
 		String sid = "sid";
 		GeneralDate baseDate = GeneralDate.today();
@@ -566,10 +987,64 @@ public class JudgingStatusDomainServiceTest {
 	}
 
 	/**
-	 * case 9
+	 * case 8
+	 * 
+	 * $勤務が出勤ですか　＝ Not　Empty
 	 */
 	@Test
-	public void JudgingStatusTest9() {
+	public void JudgingStatusTest8_2() {
+		// given
+		String sid = "sid";
+		String code = "001";
+		GeneralDate baseDate = GeneralDate.today();
+		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+
+		//[R-1]
+		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Not_use);
+		
+		// [R-2]
+		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(now - 1000, null, 1);
+
+		//[R-4]
+		Optional<WorkType> r4Result = this.getR4Result(
+				WorkTypeUnit.OneDay, 
+				WorkTypeClassification.Closure, 
+				WorkTypeClassification.Closure, 
+				WorkTypeClassification.Closure
+				);
+		
+		new Expectations() {
+			{
+				require.getDailyActualWorkInfo(sid, baseDate);
+				result = r1Result;
+			}
+			{
+				require.getDailyAttendanceAndDeparture(sid, baseDate);
+				result = r2Result;
+			}
+			{
+				require.getWorkType(code);
+				result = r4Result;
+			}
+		};
+
+		// when
+		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		val expected = AttendanceAccordActualData.builder().attendanceState(StatusClassfication.NOT_PRESENT)
+				.workingNow(false).build();
+
+		// then
+		assertThat(result).isEqualTo(expected);
+	}
+
+	
+	/**
+	 * case 9
+	 * 
+	 * $勤務が出勤ですか　＝　Empty
+	 */
+	@Test
+	public void JudgingStatusTest9_1() {
 		// given
 		String sid = "sid";
 		GeneralDate baseDate = GeneralDate.today();
@@ -594,6 +1069,55 @@ public class JudgingStatusDomainServiceTest {
 		assertThat(result).isEqualTo(expected);
 	}
 
+	/**
+	 * case 9
+	 * 
+	 * $勤務が出勤ですか　＝ Not　Empty
+	 */
+	@Test
+	public void JudgingStatusTest9_2() {
+		// given
+		String sid = "sid";
+		GeneralDate baseDate = GeneralDate.today();
+		String code = "001";
+		
+		//[R-1]
+		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Not_use);
+		
+		//[R-4]
+		Optional<WorkType> r4Result = this.getR4Result(
+				WorkTypeUnit.OneDay, 
+				WorkTypeClassification.Closure, 
+				WorkTypeClassification.Closure, 
+				WorkTypeClassification.Closure
+				);
+		
+		new Expectations() {
+			{
+				require.getDailyActualWorkInfo(sid, baseDate);
+				result = r1Result;
+			}
+			{
+				require.getDailyAttendanceAndDeparture(sid, baseDate);
+			}
+			{
+				require.getWorkType(code);
+				result = r4Result;
+			}
+		};
+
+		// when
+		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		val expected = AttendanceAccordActualData.builder()
+				.attendanceState(StatusClassfication.NOT_PRESENT)
+				.workingNow(false)
+				.build();
+
+		// then
+		assertThat(result).isEqualTo(expected);
+	}
+
+	
 	/**
 	 * case 10
 	 * 

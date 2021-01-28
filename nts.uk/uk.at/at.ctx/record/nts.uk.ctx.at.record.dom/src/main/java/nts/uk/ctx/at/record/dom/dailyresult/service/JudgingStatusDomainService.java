@@ -52,7 +52,8 @@ public class JudgingStatusDomainService {
 
 		// 日別勤務予定を取得する
 		if (dailyActualWorkInfo.isPresent()) {
-			workTypeCode = Optional.ofNullable(dailyActualWorkInfo.get().getWorkInformation().getRecordInfo().getWorkTypeCode().v());
+			workTypeCode = Optional
+					.ofNullable(dailyActualWorkInfo.get().getWorkInformation().getRecordInfo().getWorkTypeCode().v());
 		} else {
 			workTypeCode = rq.getDailyWorkScheduleWorkTypeCode(sid, baseDate);
 		}
@@ -70,36 +71,33 @@ public class JudgingStatusDomainService {
 		if (dailyAttendanceAndDeparture.isPresent()) {
 			Optional<TimeLeavingWork> time = dailyAttendanceAndDeparture.get().getAttendance().getTimeLeavingWorks()
 					.stream().filter(fil -> fil.getWorkNo().v() == 1).findFirst();
-			
-			//$出勤時刻
-			time.ifPresent(item -> item.getAttendanceStamp()
-					.ifPresent(i -> i.getStamp()
-							.ifPresent(it -> it.getTimeDay().getTimeWithDay()
-									.ifPresent(m -> attendanceTime = Optional.ofNullable(m.v())))));
-			//$退勤時刻
-			time.ifPresent(item -> item.getLeaveStamp()
-					.ifPresent(i -> i.getStamp()
-							.ifPresent(it -> it.getTimeDay().getTimeWithDay()
-									.ifPresent(m -> leaveTime = Optional.ofNullable(m.v())))));
-			
-			//$勤務区分
+
+			// $出勤時刻
+			time.ifPresent(item -> item.getAttendanceStamp().ifPresent(i -> i.getStamp().ifPresent(it -> it.getTimeDay()
+					.getTimeWithDay().ifPresent(m -> attendanceTime = Optional.ofNullable(m.v())))));
+			// $退勤時刻
+			time.ifPresent(item -> item.getLeaveStamp().ifPresent(i -> i.getStamp().ifPresent(
+					it -> it.getTimeDay().getTimeWithDay().ifPresent(m -> leaveTime = Optional.ofNullable(m.v())))));
+
+			// $勤務区分
 			workingNow.ifPresent(bool -> {
 				workDivision = bool ? Optional.ofNullable(WORK) : Optional.ofNullable(NOT_WORK);
 			});
-			
-			//$直行区分
+
+			// $直行区分
 			dailyActualWorkInfo.ifPresent(consumer -> {
 				directDivision = Optional.ofNullable(consumer.getWorkInformation().getGoStraightAtr().value == 1);
 			});
 		}
 		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+		
 		if (leaveTime.isPresent() && leaveTime.get() <= now) {
 			// case 1
 			return AttendanceAccordActualData.builder()
 					.attendanceState(StatusClassfication.GO_HOME)
 					.workingNow(workingNow.map(m -> m.booleanValue()).orElse(false))
 					.build();
-		} else if (leaveTime.isPresent() && leaveTime.get() > now) {
+		} else if (leaveTime.isPresent()) {
 			if (attendanceTime.isPresent() && attendanceTime.get() >= now) {
 				if (directDivision.isPresent() && directDivision.get().booleanValue()) {
 					// case 2
@@ -114,7 +112,7 @@ public class JudgingStatusDomainService {
 							.workingNow(workingNow.map(m -> m.booleanValue()).orElse(false))
 							.build();
 				}
-			} else if (attendanceTime.isPresent() && attendanceTime.get() < now) {
+			} else if (attendanceTime.isPresent()) {
 				// case 4
 				return AttendanceAccordActualData.builder()
 						.attendanceState(StatusClassfication.NOT_PRESENT)
@@ -142,7 +140,7 @@ public class JudgingStatusDomainService {
 							.workingNow(workingNow.map(m -> m.booleanValue()).orElse(false))
 							.build();
 				}
-			} else if (attendanceTime.isPresent() && attendanceTime.get() < now) {
+			} else if (attendanceTime.isPresent()) {
 				// case 8
 				return AttendanceAccordActualData.builder()
 						.attendanceState(StatusClassfication.NOT_PRESENT)
