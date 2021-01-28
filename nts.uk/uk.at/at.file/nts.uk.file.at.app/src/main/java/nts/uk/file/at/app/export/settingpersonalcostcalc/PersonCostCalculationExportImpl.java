@@ -43,22 +43,12 @@ public class PersonCostCalculationExportImpl implements MasterListData {
                 //PersonCostCalculationSettingDto personCostCalculationSetting	= personCostCalculationSettingFinder.findByHistoryID(personCostCalculationSettingDto.getHistoryID());
                 List<PremiumSettingAndNameDto> personCostCalculationSetting = personCostCalculationSettingDto.getPremiumSettingList();
                 val check = personCostCalculationSettingDto.getUnitPrice();
-                if(check == null){
-                    val name = TextResource.localize("KML001_83");
-                    personCostCalculationSetting.add(new PremiumSettingAndNameDto(
-                            0,
-                            name,
-                            100,
-                            1,
-                            personCostCalculationSettingDto.getWorkingHoursUnitPrice(),
-                            Collections.EMPTY_LIST
-                    ));
-                }
+
                 data = putEntryMasterDatas();
                 data.put("有効開始日", personCostCalculationSettingDto.getStartDate() != null ? personCostCalculationSettingDto.getStartDate().toString() : "");
                 data.put("終了日", personCostCalculationSettingDto.getEndDate() != null ? personCostCalculationSettingDto.getEndDate().toString() : "");
-                System.out.println("abcbcbc1111111111111111 :"+personCostCalculationSettingDto.getHowToSetUnitPrice());
-                System.out.println("abcbcbc2222222222222222 :"+getTextResRatePrice(personCostCalculationSettingDto.getHowToSetUnitPrice()));
+                System.out.println("abcbcbc1111111111111111 :" + personCostCalculationSettingDto.getHowToSetUnitPrice());
+                System.out.println("abcbcbc2222222222222222 :" + getTextResRatePrice(personCostCalculationSettingDto.getHowToSetUnitPrice()));
                 data.put("計算設定", getTextResRatePrice(personCostCalculationSettingDto.getHowToSetUnitPrice())); //A-6-8
 
                 data.put("計算用単価", !Objects.isNull(personCostCalculationSettingDto.getUnitPrice()) ?
@@ -70,9 +60,7 @@ public class PersonCostCalculationExportImpl implements MasterListData {
                         getTextResUnit(personCostCalculationSettingDto.getPersonCostRoundingSetting().getUnit()) : "");//A-6-10
                 data.put("金額の丸め", !Objects.isNull(personCostCalculationSettingDto.getPersonCostRoundingSetting()) ?
                         getTextRounding(personCostCalculationSettingDto.getPersonCostRoundingSetting().getRounding()) : "");// A-6-10
-
                 data.put("備考", personCostCalculationSettingDto.getRemarks());
-
 
                 boolean checkshow = true;
                 if (personCostCalculationSetting != null) {
@@ -80,7 +68,14 @@ public class PersonCostCalculationExportImpl implements MasterListData {
                     List<PremiumItemDto> listPremiumItemLanguage = personCostCalculationSettingFinder.findWorkTypeLanguage(languageId);
                     premiumSets.sort((PremiumSettingAndNameDto o1, PremiumSettingAndNameDto o2) -> o1.getID() - o2.getID());
                     if (!CollectionUtil.isEmpty(premiumSets)) {
-                        for (PremiumSettingAndNameDto premiumSetDto : premiumSets) {
+                        for (int j = 0; j < premiumSets.size(); j++) {
+                            val premiumSetDto = premiumSets.get(0);
+                            if (j == 1 && check == null) {
+                                data.put("名称", TextResource.localize("KML001_83"));
+                                data.put("割増率", TextResource.localize("KML001_84"));
+                                data.put("単価", getTextResource(personCostCalculationSettingDto.getWorkingHoursUnitPrice()));
+                                data.put("人件費計算用時間", "");
+                            }
                             if (premiumSetDto.getUseAtr() == 1) {
                                 String nameEnglish = "";
                                 for (PremiumItemDto premiumItemDto : listPremiumItemLanguage) {
@@ -89,7 +84,6 @@ public class PersonCostCalculationExportImpl implements MasterListData {
                                         break;
                                     }
                                 }
-
                                 //data.put("他言語名称",nameEnglish);
                                 data.put("名称", premiumSetDto.getName());
                                 data.put("割増率", premiumSetDto.getRate() + TextResource.localize("KML001_60"));
@@ -134,7 +128,9 @@ public class PersonCostCalculationExportImpl implements MasterListData {
                                 rowData.get("人件費計算用時間").setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
                                 datas.add(masterData);
                             }
+
                         }
+
                     }
                 }
 
