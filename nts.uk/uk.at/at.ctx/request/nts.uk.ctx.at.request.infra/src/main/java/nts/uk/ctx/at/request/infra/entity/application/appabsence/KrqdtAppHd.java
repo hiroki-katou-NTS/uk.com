@@ -2,7 +2,6 @@ package nts.uk.ctx.at.request.infra.entity.application.appabsence;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -201,8 +200,8 @@ public class KrqdtAppHd extends ContractUkJpaEntity implements Serializable {
                     reflectFreeTimeApp.getTimeDegestion().get().getTimeOff().v() : null);
             entity.setHourOfHdsp(reflectFreeTimeApp.getTimeDegestion().get().getTimeSpecialVacation() != null ? 
                     reflectFreeTimeApp.getTimeDegestion().get().getTimeSpecialVacation().v() : null);
-            entity.setHourOfHdPaid(reflectFreeTimeApp.getTimeDegestion().get().getTimeAnualLeave() != null ? 
-                    reflectFreeTimeApp.getTimeDegestion().get().getTimeAnualLeave().v() : null);
+            entity.setHourOfHdPaid(reflectFreeTimeApp.getTimeDegestion().get().getTimeAnnualLeave() != null ?
+                    reflectFreeTimeApp.getTimeDegestion().get().getTimeAnnualLeave().v() : null);
             
             if (reflectFreeTimeApp.getTimeDegestion().get().getSpecialVacationFrameNO().isPresent()) {
                 entity.setFrameNoOfHdsp(reflectFreeTimeApp.getTimeDegestion().get().getSpecialVacationFrameNO().isPresent() ? 

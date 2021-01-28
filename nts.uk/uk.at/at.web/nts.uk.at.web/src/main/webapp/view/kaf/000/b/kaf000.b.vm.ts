@@ -77,7 +77,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
         errorEmpty: KnockoutObservable<boolean> = ko.observable(true);
 
-        childUpdateEvent!: () => any;
+        childUpdateEvent: () => any;
 		childReloadEvent: () => any;
 
 		appNameList: any = null;
@@ -124,7 +124,11 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 		        vm.application().opReversionReason(successData.appDetailScreenInfo.application.opReversionReason);
 		        vm.application().opStampRequestMode(successData.appDetailScreenInfo.application.opStampRequestMode);
                 vm.appDispInfoStartupOutput(successData);
-				vm.kaf011BViewModel(new Kaf011BViewModel(vm.childParam));
+				if(vm.childParam.appType() == AppType.COMPLEMENT_LEAVE_APPLICATION){
+					vm.kaf011BViewModel(new Kaf011BViewModel(vm.childParam));
+				}else{
+					vm.kaf011BViewModel(null);
+				}
                 let viewContext: any = __viewContext,
                     loginID = viewContext.user.employeeId,
                     loginFlg = successData.appDetailScreenInfo.application.enteredPerson == loginID || successData.appDetailScreenInfo.application.employeeID == loginID,
@@ -466,6 +470,16 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 			case 'Msg_1715':
 			case 'Msg_1521':
 			case 'Msg_1648':
+            case 'Msg_430':
+            case 'Msg_1687':
+            case 'Msg_1409':
+            case 'Msg_511':
+            case 'Msg_476':
+            case 'Msg_477':
+            case 'Msg_478':
+            case 'Msg_1686':
+            case 'Msg_1706':
+            case 'Msg_1983':
 				vm.$dialog.error({ messageId: res.messageId, messageParams: res.parameterIds });
 				break;
             default:

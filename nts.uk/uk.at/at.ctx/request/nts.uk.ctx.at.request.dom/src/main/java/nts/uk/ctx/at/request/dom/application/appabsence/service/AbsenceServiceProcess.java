@@ -32,6 +32,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManageme
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 public interface AbsenceServiceProcess {
@@ -476,4 +477,13 @@ public interface AbsenceServiceProcess {
      * @param appAbsenceStartInfoDto
      */
     public ProcessResult registerHolidayDates(String companyID, ApplyForLeave newApplyForLeave, ApplyForLeave originApplyForLeave, List<GeneralDate> holidayDates, AppAbsenceStartInfoOutput appAbsenceStartInfoDto);
+    
+    /**
+     * UKDesign.UniversalK.就業.KAF_申請.KAF011_振休振出申請.振休振出申請共通アルゴリズム.勤務種類・就業時間帯関連.勤務時間初期値の取得.勤務時間初期値の取得
+     * @param companyID
+     * @param workTypeCode
+     * @param workTimeCode
+     * @return
+     */
+    public PredetermineTimeSetForCalc initWorktimeCode(String companyID, String workTypeCode, String workTimeCode);
 }

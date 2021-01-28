@@ -283,7 +283,18 @@ export interface IOpActualContentDisplayLst {
         opWorkTime2: number | null;
         opLeaveTime: number | null;
         opDepartureTime2: number | null;
+        stampRecordOutput: {
+            outingTime: IOutingTime[];
+        }
     }
+}
+
+export interface IOutingTime {
+    frameNo: number;
+    opEndTime: number | null;
+    opGoOutReasonAtr: number;
+    opStartTime: number | null;
+    opWorkLocationCD: null
 }
 
 export interface IData {

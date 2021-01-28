@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuKey;
@@ -405,19 +406,27 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 	@Override
 	public Optional<StandardMenu> getMenuDisplayNameHasQuery(String companyId, String programId, String queryString,
 			String screenId) {
-		return this.queryProxy().query(GET_NAME_HAS_QUERY, CcgstStandardMenu.class)
+		List<StandardMenu> standardMenuLst = this.queryProxy().query(GET_NAME_HAS_QUERY, CcgstStandardMenu.class)
 				.setParameter("companyId", companyId)
 				.setParameter("programId", programId)
 				.setParameter("queryString", queryString)
-				.setParameter("screenID", screenId).getSingle(x-> toDomain(x));
+				.setParameter("screenID", screenId).getList(x-> toDomain(x));
+		if(CollectionUtil.isEmpty(standardMenuLst)) {
+			return Optional.empty();
+		}
+		return Optional.of(standardMenuLst.get(0));
 	}
 
 	@Override
 	public Optional<StandardMenu> getMenuDisplayNameNoQuery(String companyId, String programId, String screenId) {
-		return this.queryProxy().query(GET_NAME_NO_QUERY, CcgstStandardMenu.class)
+		List<StandardMenu> standardMenuLst = this.queryProxy().query(GET_NAME_NO_QUERY, CcgstStandardMenu.class)
 				.setParameter("companyId", companyId)
 				.setParameter("programId", programId)
-				.setParameter("screenID", screenId).getSingle(x-> toDomain(x));
+				.setParameter("screenID", screenId).getList(x-> toDomain(x));
+		if(CollectionUtil.isEmpty(standardMenuLst)) {
+			return Optional.empty();
+		}
+		return Optional.of(standardMenuLst.get(0));
 	}
 
 	@Override
