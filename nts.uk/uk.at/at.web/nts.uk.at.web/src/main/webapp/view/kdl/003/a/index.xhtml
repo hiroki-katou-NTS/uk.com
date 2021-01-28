@@ -20,6 +20,7 @@
 			<com:stylefile path="kdl003.a.style.css" />
 			<com:ValidatorScript>
 				nts.uk.shr.com.time.TimeWithDayAttr
+				nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeName
 			</com:ValidatorScript>
 		</ui:define>
 
@@ -65,21 +66,31 @@
 									<div class="table">
 										<div class="cell valign-center">
 											<input id="inputStartTime" tabindex="5" style="margin-right:  10px;"
-												data-bind="ntsTimeWithDayEditor: {name: '#[KDL003_12]', constraint:'TimeWithDayAttr', value: startTime, enable: true, 
+												data-bind="ntsTimeWithDayEditor: {name: '#[KDL003_12]', 
+													constraint:'TimeWithDayAttr', 
+													option: { timeWithDay: true },
+													value: startTime, enable: true, 
 													readonly: false, required: false, option: { width: '70px', timeWithDay: true}}" />
 											<span>#{i18n.getText('KDL003_13')}</span> 
 											<input id="inputEndTime" tabindex="6"
-												data-bind="ntsTimeWithDayEditor: {name: '#[KDL003_15]', constraint:'TimeWithDayAttr', value: endTime, enable: true, 
+												data-bind="ntsTimeWithDayEditor: {name: '#[KDL003_15]', 
+												constraint:'TimeWithDayAttr', 
+												option: { timeWithDay: true },
+												value: endTime, enable: true, 
 												readonly: false, required: false, option: { width: '70px', timeWithDay: true}}" />
 											<button tabindex="7" class="caret-bottom"
 												data-bind="click: searchByTime">#{i18n.getText('KDL003_16')}</button>
 										</div>
 										<div class="cell valign-center">
-											<input id="A4_20" tabindex="8"  data-bind="ntsTextEditor: { value: searchCode, name: '#[KMK002_2]',								
-											option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-												placeholder: '#{i18n.getText('KMK002_4')}',	
+											<input id="A4_20" tabindex="8"  
+											data-bind="ntsTextEditor: { 
+												value: searchCode, 
+												name: '#[KMK002_2]',								
+												constraint: 'WorkTimeName',
+												option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+												placeholder: '#{i18n.getText('KMK002_4')}',													
 												textmode: 'text',								
-											}))}" />
+												}))}" />
 											<button tabindex="9" class="caret-bottom"
 												data-bind="click: searchByCodeName">#{i18n.getText('KDL003_16')}</button>												
 										</div>
@@ -111,7 +122,7 @@
 			</div>
 			<div id="functions-area-bottom">
 				<button class="x-large proceed" tabindex="15"
-					data-bind="click: submit">#{i18n.getText('KDL003_22')}</button>
+					data-bind="click: submit, enable: $root.errors.isEmpty">#{i18n.getText('KDL003_22')}</button>
 				<button tabindex="16" data-bind="click: closeDialog">#{i18n.getText('KDL003_23')}</button>
 			</div>
 		</ui:define>

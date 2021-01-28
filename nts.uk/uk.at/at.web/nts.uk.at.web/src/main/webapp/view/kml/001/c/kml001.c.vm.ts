@@ -77,7 +77,7 @@ module nts.uk.at.view.kml001.c {
 
         let personCostRoundingSetting: any = {
           unitPriceRounding: self.copyDataFlag() ? self.currentPersonCost().roundingUnitPrice : vmbase.UnitPriceRounding.ROUND_UP,//単価の丸め
-          unit: self.copyDataFlag() ? self.currentPersonCost().unit : vmbase.AmountUnit.ONE_HUNDRED_YEN, //金額の丸め
+          unit: self.copyDataFlag() ? self.currentPersonCost().unit : vmbase.AmountUnit.ONE_YEN, //金額の丸め
           rounding: self.copyDataFlag() ? self.currentPersonCost().inUnits : vmbase.InUnits.TRUNCATION //単位で
         };
 

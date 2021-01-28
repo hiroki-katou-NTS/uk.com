@@ -357,6 +357,7 @@ module nts.uk.at.view.kml001.shr {
     // 端数処理位置
     export enum AmountUnit {
 
+      NONE = 0,//default
       /** The one yen. */
       // 1円
       ONE_YEN = 1,//Enum_AmountUnit_oneYen

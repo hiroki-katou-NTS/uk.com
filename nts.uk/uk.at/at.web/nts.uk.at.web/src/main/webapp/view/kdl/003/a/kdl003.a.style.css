@@ -86,3 +86,7 @@ table.bottom_tbl td {
 #search-div .check-all-cases span {
 	margin: 0;
 }
+
+#search-div div.table {
+	width: 100%;
+}

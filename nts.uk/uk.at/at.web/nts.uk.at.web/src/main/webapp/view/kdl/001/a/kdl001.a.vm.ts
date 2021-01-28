@@ -27,7 +27,7 @@ module nts.uk.at.view.kdl001.a {
             isAllCheckShow: KnockoutObservable<boolean> = ko.observable(false);
             isCheckAllStatus: KnockoutObservable<boolean> = ko.observable(false);
             selectAbleCodeListBk: KnockoutObservableArray<string> = ko.observableArray([]);
-            selectedCodeListBk: KnockoutObservableArray<string> =  ko.observableArray([]);
+            selectedCodeListBk: KnockoutObservableArray<string> = ko.observableArray([]);
             selectedCodeBk: KnockoutObservable<string> = ko.observable(null);
 
             constructor() {
@@ -146,9 +146,9 @@ module nts.uk.at.view.kdl001.a {
                 let self = this,
                     selectAbleItemList: Array<WorkTimeSet> = [];
                 //let isCheckAllStatus = self.selectAbleCodeList().length > 0 ? false : data.allCheckStatus;
-
-                self.isCheckAllStatus(data.allCheckStatus);
-                self.isAllCheckShow(data.allCheckStatus === null ? false : data.allCheckStatus);
+                let isChecked = _.isNil(data.allCheckStatus) ? true : data.allCheckStatus;
+                self.isCheckAllStatus(isChecked);
+                self.isAllCheckShow(isChecked);
 
                 self.workingHoursItemLists.removeAll();
                 self.workingHoursItemLists.push(new WorkTimeSet());
@@ -299,7 +299,7 @@ module nts.uk.at.view.kdl001.a {
                 });
 
                 self.selectAbleItemList.removeAll();
-                self.selectAbleItemList(self.addShowNone(afterFilterSelectAbleItemList));                
+                self.selectAbleItemList(self.addShowNone(afterFilterSelectAbleItemList));
                 self.resetConditionSelected();
                 $("#day-list-tbl").igGrid("container").focus();
                 //self.selectAbleItemList(self.selectAbleItemList().concat(_.map(afterFilterSelectAbleItemList, item => { return new WorkTimeSet(item) })));
@@ -333,8 +333,8 @@ module nts.uk.at.view.kdl001.a {
                     });
                 }
 
-                self.selectAbleItemList.removeAll();                ;
-                self.selectAbleItemList(self.addShowNone(afterFilterSelectAbleItemList));                
+                self.selectAbleItemList.removeAll();;
+                self.selectAbleItemList(self.addShowNone(afterFilterSelectAbleItemList));
                 self.resetConditionSelected();
 
                 $("#day-list-tbl").igGrid("container").focus();

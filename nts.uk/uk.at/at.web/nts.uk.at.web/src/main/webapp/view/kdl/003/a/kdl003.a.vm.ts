@@ -226,8 +226,9 @@ module nts.uk.at.view.kdl003.a {
                     .done((data: any) => {
 
                         self.getHeaderWorkTime(data.useATR === 1);
-                        self.isAllCheckStatus(data.allCheckStatus !== 1);
-                        self.isCheckStatus(data.allCheckStatus);
+                        let isCheckStatus = _.isNil(data.allCheckStatus) ? true : data.allCheckStatus;                        
+                        self.isAllCheckStatus(isCheckStatus); //data.allCheckStatus !== 1
+                        self.isCheckStatus(isCheckStatus);
 
                         let listWorkTime: Array<WorkTimeSet> = [];
                         if (!nts.uk.util.isNullOrEmpty(code)) {
