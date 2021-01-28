@@ -5,16 +5,16 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeavaRemainTime;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeave;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveRemainDay;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveRemainingDetail;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveRemainingNumber;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUseNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemaining;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.grantnumber.SpecialLeaveUndigestNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.DayNumberOfRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.TimeOfRemain;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeavaRemainTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeave;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveRemainingDetail;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveRemainingNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUseDays;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUseNumber;
 
 /**
  * 特休情報残数
@@ -150,7 +150,7 @@ public class SpecialLeaveRemaining implements Cloneable {
 		// パラメータ「特別休暇残数．合計残日数」と「特別休暇残数．合計残時間」をチェック
 		
 		// 合計残日数<0　or 合計残時間 < 0
-		double remainDays = specialLeaveUseNumber.getUseDays().getUseDays().v();
+		double remainDays = specialLeaveUseNumber.getUseDays().map(x -> x.v()).orElse(0.0);
 		int remainTimes = 0;
 		if ( specialLeaveRemainingNumber.getTimeOfRemain().isPresent() ){
 			remainTimes = specialLeaveRemainingNumber.getTimeOfRemain().get().v();
@@ -160,8 +160,8 @@ public class SpecialLeaveRemaining implements Cloneable {
 			
 			// 特別休暇．使用数からマイナス分を引く
 			if ( remainDays < 0 ){
-				double useDays = specialLeaveUseNumber.getUseDays().getUseDays().v() + remainDays;
-				specialLeaveUseNumber.getUseDays().setUseDays(new SpecialLeaveRemainDay(useDays));
+				double useDays = specialLeaveUseNumber.getUseDays().map(x -> x.v()).orElse(0.0) + remainDays;
+				specialLeaveUseNumber.setUseDays(Optional.of(new SpecialLeaveUseDays(useDays)));
 			}
 			if ( remainTimes < 0 ){
 				if ( specialLeaveUseNumber.getUseTimes().isPresent() ){

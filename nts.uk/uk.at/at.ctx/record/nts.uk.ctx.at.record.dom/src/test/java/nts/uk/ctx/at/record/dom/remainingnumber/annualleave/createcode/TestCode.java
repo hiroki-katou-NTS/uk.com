@@ -63,14 +63,14 @@ public class TestCode {
 		c.getSpecialHolidayCd();
 
 		/** 特別休暇月別残数データ.実特別休暇.特別休暇使用情報.合計.使用日数.使用日数 */
-		c.getActualSpecial().getUsedNumberInfo().getUsedNumber().getUseDays().getUseDays();
+		c.getActualSpecial().getUsedNumberInfo().getUsedNumber().getUseDays();
 		if (c.getActualSpecial().getUsedNumberInfo().getUsedNumber().getUseTimes().isPresent()){
 			/** 特別休暇月別残数データ.実特別休暇.特別休暇使用情報.合計.使用時間.private UseNumber useNumber; */
 			c.getActualSpecial().getUsedNumberInfo().getUsedNumber().getUseTimes().get().getUseTimes();
 		}
 
 		/** 特別休暇月別残数データ.実特別休暇.特別休暇使用情報.付与前.使用日数.使用日数 */
-		c.getActualSpecial().getUsedNumberInfo().getUsedNumberBeforeGrant().getUseDays().getUseDays();
+		c.getActualSpecial().getUsedNumberInfo().getUsedNumberBeforeGrant().getUseDays();
 		if (c.getActualSpecial().getUsedNumberInfo().getUsedNumberBeforeGrant().getUseTimes().isPresent()){
 			/** 特別休暇月別残数データ.実特別休暇.特別休暇使用情報.付与前.使用時間.private UseNumber useNumber; */
 			c.getActualSpecial().getUsedNumberInfo().getUsedNumberBeforeGrant().getUseTimes().get().getUseTimes();
@@ -82,7 +82,7 @@ public class TestCode {
 		c.getActualSpecial().getUsedNumberInfo().getSpecialLeaveUsedDayTimes();
 		if (c.getActualSpecial().getUsedNumberInfo().getUsedNumberAfterGrantOpt().isPresent()){
 			/** 特別休暇月別残数データ.実特別休暇.特別休暇使用情報.付与後.使用日数.使用日数 */
-			c.getActualSpecial().getUsedNumberInfo().getUsedNumberAfterGrantOpt().get().getUseDays().getUseDays();
+			c.getActualSpecial().getUsedNumberInfo().getUsedNumberAfterGrantOpt().get().getUseDays();
 			if (c.getActualSpecial().getUsedNumberInfo().getUsedNumberAfterGrantOpt().get().getUseTimes().isPresent()){
 				/** 特別休暇月別残数データ.実特別休暇.特別休暇使用情報.付与後.使用時間.private UseNumber useNumber; */
 				c.getActualSpecial().getUsedNumberInfo().getUsedNumberAfterGrantOpt().get().getUseTimes().get().getUseTimes();
@@ -130,14 +130,14 @@ public class TestCode {
 		}
 
 		/** 特別休暇月別残数データ.特別休暇.特別休暇使用情報.合計.使用日数.使用日数 */
-		c.getSpecialLeave().getUsedNumberInfo().getUsedNumber().getUseDays().getUseDays();
+		c.getSpecialLeave().getUsedNumberInfo().getUsedNumber().getUseDays();
 		if (c.getSpecialLeave().getUsedNumberInfo().getUsedNumber().getUseTimes().isPresent()){
 			/** 特別休暇月別残数データ.特別休暇.特別休暇使用情報.合計.使用時間.private UseNumber useNumber; */
 			c.getSpecialLeave().getUsedNumberInfo().getUsedNumber().getUseTimes().get().getUseTimes();
 		}
 
 		/** 特別休暇月別残数データ.特別休暇.特別休暇使用情報.付与前.使用日数.使用日数 */
-		c.getSpecialLeave().getUsedNumberInfo().getUsedNumberBeforeGrant().getUseDays().getUseDays();
+		c.getSpecialLeave().getUsedNumberInfo().getUsedNumberBeforeGrant().getUseDays();
 		if (c.getSpecialLeave().getUsedNumberInfo().getUsedNumberBeforeGrant().getUseTimes().isPresent()){
 			/** 特別休暇月別残数データ.特別休暇.特別休暇使用情報.付与前.使用時間.private UseNumber useNumber; */
 			c.getSpecialLeave().getUsedNumberInfo().getUsedNumberBeforeGrant().getUseTimes().get().getUseTimes();
@@ -149,7 +149,7 @@ public class TestCode {
 		c.getSpecialLeave().getUsedNumberInfo().getSpecialLeaveUsedDayTimes();
 		if (c.getSpecialLeave().getUsedNumberInfo().getUsedNumberAfterGrantOpt().isPresent()){
 			/** 特別休暇月別残数データ.特別休暇.特別休暇使用情報.付与後.使用日数.使用日数 */
-			c.getSpecialLeave().getUsedNumberInfo().getUsedNumberAfterGrantOpt().get().getUseDays().getUseDays();
+			c.getSpecialLeave().getUsedNumberInfo().getUsedNumberAfterGrantOpt().get().getUseDays();
 			if (c.getSpecialLeave().getUsedNumberInfo().getUsedNumberAfterGrantOpt().get().getUseTimes().isPresent()){
 				/** 特別休暇月別残数データ.特別休暇.特別休暇使用情報.付与後.使用時間.private UseNumber useNumber; */
 				c.getSpecialLeave().getUsedNumberInfo().getUsedNumberAfterGrantOpt().get().getUseTimes().get().getUseTimes();
