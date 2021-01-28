@@ -1,13 +1,11 @@
 package nts.uk.ctx.office.dom.status;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Builder;
+import lombok.Data;
 import nts.arc.time.GeneralDate;
 
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
+@Builder
 public class ActivityStatusDto implements ActivityStatus.MementoSetter, ActivityStatus.MementoGetter {
 	// ステータス分類
 	private Integer activity;

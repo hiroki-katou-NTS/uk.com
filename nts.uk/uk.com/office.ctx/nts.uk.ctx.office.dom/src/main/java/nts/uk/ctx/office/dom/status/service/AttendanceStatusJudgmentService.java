@@ -10,6 +10,8 @@ import nts.uk.ctx.office.dom.status.adapter.AttendanceStateImport;
 
 public class AttendanceStatusJudgmentService {
 
+	private AttendanceStatusJudgmentService() {}
+
 	public static AttendanceAccordActualData getActivityStatus(Required rq, String sid) {
 		
 		Optional<GoOutEmployeeInformation> goout = rq.getGoOutEmployeeInformation(sid, GeneralDate.today());
@@ -21,23 +23,27 @@ public class AttendanceStatusJudgmentService {
 		// ステータス分類を判断する
 		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
 		if (goout.isPresent() && goout.get().getGoOutTime().lessThanOrEqualTo(now) && goout.get().getComebackTime().greaterThanOrEqualTo(now)) {
+			//case 1
 			return AttendanceAccordActualData.builder()
 					.attendanceState(StatusClassfication.GO_OUT)
 					.workingNow(attendanceState.isWorkingNow())
 					.build();
 		} else {
 			if (attendanceState.getAttendanceState() == StatusClassfication.GO_HOME) {
+				//case 2
 				return AttendanceAccordActualData.builder()
 						.attendanceState(attendanceState.getAttendanceState())
 						.workingNow(attendanceState.isWorkingNow())
 						.build();
 			} else {
 				if (status.isPresent()) {
+					//case 3
 					return AttendanceAccordActualData.builder()
 							.attendanceState(status.get().getActivity())
 							.workingNow(attendanceState.isWorkingNow())
 							.build();
 				} else {
+					//case 4
 					return AttendanceAccordActualData.builder()
 							.attendanceState(attendanceState.getAttendanceState())
 							.workingNow(attendanceState.isWorkingNow())

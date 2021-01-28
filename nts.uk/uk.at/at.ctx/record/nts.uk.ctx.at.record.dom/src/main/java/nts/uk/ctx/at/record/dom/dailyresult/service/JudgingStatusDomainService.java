@@ -12,12 +12,13 @@ import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.日別実績.実績データから在席状態を判断する.実績データから在席状態を判断する
  */
 public class JudgingStatusDomainService {
+	
+	private JudgingStatusDomainService() {}
 	
 	//$出勤時刻
 	private static Optional<Integer> attendanceTime = Optional.empty();
@@ -51,8 +52,7 @@ public class JudgingStatusDomainService {
 
 		// 日別勤務予定を取得する
 		if (dailyActualWorkInfo.isPresent()) {
-			workTypeCode = Optional
-					.ofNullable(dailyActualWorkInfo.get().getWorkInformation().getRecordInfo().getWorkTypeCode().v());
+			workTypeCode = Optional.ofNullable(dailyActualWorkInfo.get().getWorkInformation().getRecordInfo().getWorkTypeCode().v());
 		} else {
 			workTypeCode = rq.getDailyWorkScheduleWorkTypeCode(sid, baseDate);
 		}
@@ -60,8 +60,7 @@ public class JudgingStatusDomainService {
 		// 勤務種類を取得する
 		Optional<Boolean> workingNow = Optional.empty();
 		if (workTypeCode.isPresent()) {
-			String loginCid = AppContexts.user().companyId();
-			Optional<WorkType> workType = rq.getWorkType(loginCid, workTypeCode.get());
+			Optional<WorkType> workType = rq.getWorkType(workTypeCode.get());
 			if (workType.isPresent()) {
 				workingNow = Optional.ofNullable(judgePresenceStatus(workType.get().getDailyWork()));
 			}
@@ -180,16 +179,31 @@ public class JudgingStatusDomainService {
 		notIn.add(WorkTypeClassification.HolidayWork);
 		notIn.add(WorkTypeClassification.Shooting);
 		notIn.add(WorkTypeClassification.ContinuousWork);
+		
 		// 1日場合、「出勤、休日出勤、振出、連続勤務」 → 出勤 || その他 → 休み
-		if (daily.getWorkTypeUnit() == WorkTypeUnit.OneDay && !notIn.contains(daily.getOneDay())) {
+		if (daily.getWorkTypeUnit() == WorkTypeUnit.OneDay && !notIn.stream().anyMatch(item -> item == daily.getOneDay())) {
 			return false;
 		}
 		// 午前と午後の場合、午前が休み AND 午後が休み → 休み || その他 → 出勤
-		if (daily.getWorkTypeUnit() == WorkTypeUnit.MonringAndAfternoon && !notIn.contains(daily.getMorning())
-				&& !notIn.contains(daily.getAfternoon())) {
+		if (daily.getWorkTypeUnit() == WorkTypeUnit.MonringAndAfternoon && !notIn.stream().anyMatch(item -> item == daily.getMorning())
+				&& !notIn.stream().anyMatch(item -> item == daily.getAfternoon())) {
 			return false;
 		}
 		return true;
+	}
+	
+	public static void clearStaticVariable() {
+		// $出勤時刻
+		attendanceTime = Optional.empty();
+
+		// $退勤時刻
+		leaveTime = Optional.empty();
+
+		// $勤務区分
+		workDivision = Optional.empty();
+
+		// $直行区分
+		directDivision = Optional.empty();
 	}
 
 	public interface Require {
@@ -232,6 +246,6 @@ public class JudgingStatusDomainService {
 		 * @param loginCid ログイン会社ID
 		 * @param code     コード
 		 */
-		public Optional<WorkType> getWorkType(String loginCid, String code);
+		public Optional<WorkType> getWorkType(String code);
 	}
 }

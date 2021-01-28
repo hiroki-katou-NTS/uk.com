@@ -11,17 +11,20 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @AllArgsConstructor
 public class JudgingStatusDomainServiceRequireImpl implements JudgingStatusDomainService.Require {
 
-	private WorkInformationRepository workInformationRepository;
+	private final String loginCid = AppContexts.user().companyId();
+	
+	private final WorkInformationRepository workInformationRepository;
 
-	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyPerformanceRepository;
+	private final TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyPerformanceRepository;
 
-	private DailyWorkScheduleAdapter dailyWorkScheduleAdapter;
+	private final DailyWorkScheduleAdapter dailyWorkScheduleAdapter;
 
-	private WorkTypeRepository workTypeRepository;
+	private final WorkTypeRepository workTypeRepository;
 
 	@Override
 	public Optional<WorkInfoOfDailyPerformance> getDailyActualWorkInfo(String sid, GeneralDate baseDate) {
@@ -39,7 +42,7 @@ public class JudgingStatusDomainServiceRequireImpl implements JudgingStatusDomai
 	}
 
 	@Override
-	public Optional<WorkType> getWorkType(String loginCid, String code) {
+	public Optional<WorkType> getWorkType(String code) {
 		return workTypeRepository.findByPK(loginCid, code);
 	}
 }
