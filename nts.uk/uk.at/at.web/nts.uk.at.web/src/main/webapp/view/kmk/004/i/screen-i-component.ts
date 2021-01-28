@@ -174,7 +174,7 @@ class ScreenIComponent extends ko.ViewModel {
 				isDisplayClosureSelection: true,
 				isDialog: false,
 				isShowNoSelectRow: false,
-				isDisplayFullClosureOption: true,
+				isDisplayFullClosureOption: false,
 				closureSelectionType: ko.observable(null),
 				selectedClosureId: vm.selectedClosureId,
 				alreadySettingList: vm.screenData().alreadySettingList,

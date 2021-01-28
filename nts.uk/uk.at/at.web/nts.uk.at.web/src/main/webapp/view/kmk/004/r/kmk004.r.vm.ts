@@ -89,6 +89,8 @@ module nts.uk.at.kmk004.r {
 
 			if (vm.param.screenMode === 'Com_Workplace') {
 				vm.initWorkPlace();
+
+
 			}
 
 			if (vm.param.screenMode === 'Com_Employment') {
@@ -97,6 +99,7 @@ module nts.uk.at.kmk004.r {
 
 			if (vm.param.screenMode === 'Com_Person') {
 				vm.initEmployee();
+
 			}
 		}
 
@@ -128,12 +131,11 @@ module nts.uk.at.kmk004.r {
 				systemType: 2
 			};
 			let windowSize = nts.uk.ui.windows.getSelf();
-			windowSize.$dialog.dialog("option", "width", 530);
-			windowSize.$dialog.dialog("option", "height", 570);
-			$(window).resize(function() {
+
+			windowSize.$dialog.dialog("option", { width: 530, height: 570 });
+			$(window).on("resize", function() {
 				let windowSize = nts.uk.ui.windows.getSelf();
-				windowSize.$dialog.dialog("option", "width", 530);
-				windowSize.$dialog.dialog("option", "height", 570);
+				_.defer(() => { windowSize.$dialog.dialog("option", { width: 530, height: 570 }); });
 			});
 			$('#work-place-list').ntsTreeComponent(wpOption).done(() => {
 				$('#work-place-list  .ntsSearchBox').focus();
@@ -176,14 +178,12 @@ module nts.uk.at.kmk004.r {
 
 			$('#employee-list').ntsListComponent(employeeOption);
 			let windowSize = nts.uk.ui.windows.getSelf();
-			windowSize.$dialog.dialog("option", "width", 430);
-			windowSize.$dialog.dialog("option", "height", 530);
+
+			windowSize.$dialog.dialog("option", { width: 430, height: 530 });
 			$(window).resize(function() {
 				let windowSize = nts.uk.ui.windows.getSelf();
-				windowSize.$dialog.dialog("option", "width", 430);
-				windowSize.$dialog.dialog("option", "height", 530);
+				_.defer(() => { windowSize.$dialog.dialog("option", { width: 430, height: 530 }); });
 			});
-
 		}
 	}
 
