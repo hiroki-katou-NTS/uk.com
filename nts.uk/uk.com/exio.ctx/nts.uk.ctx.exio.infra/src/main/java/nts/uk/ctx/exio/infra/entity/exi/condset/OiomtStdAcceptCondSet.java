@@ -92,7 +92,7 @@ public class OiomtStdAcceptCondSet extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "CHECK_COMPLETED")
-	private Integer checkCompleted;
+	private int checkCompleted;
 
 	/**
 	 * 既存データの削除方法
