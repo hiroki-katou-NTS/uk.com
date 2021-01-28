@@ -12,5 +12,5 @@ public class RegistrationErrorListDto {
 	private String employeeCdName;
 	private String date;
 	private String errName;
-	private String errMsg;	
+	private String errorMessage;	
 }
