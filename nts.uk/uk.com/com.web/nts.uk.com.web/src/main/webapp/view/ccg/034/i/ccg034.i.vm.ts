@@ -27,6 +27,8 @@ module nts.uk.com.view.ccg034.i {
     });
     fileId: KnockoutObservable<string> = ko.observable('');
     uploadSrc: KnockoutObservable<string> = ko.observable('');
+    // Check new component
+    isNewMode: boolean = true;
 
     created(params: any) {
       const vm = this;
@@ -46,12 +48,16 @@ module nts.uk.com.view.ccg034.i {
       if (vm.imageType() === 1) {
         nts.uk.request.ajax("/shr/infra/file/storage/infor/" + vm.fileId()).then((res: any) => vm.uploadFinished(res));
       }
+      if (vm.fileId() || vm.imageSrc()) {
+        vm.isNewMode = false;
+      }
       vm.createPopUp();
       $("#I2").focus();
     }
 
     uploadFinished(data: any) {
       const vm = this;
+      vm.removeFile();
       vm.fileId(data.id);
       vm.fileSize(Math.round(Number(data.originalSize) / 1024));
       const container = $("#I2_2_2");
@@ -104,6 +110,7 @@ module nts.uk.com.view.ccg034.i {
     */
     public closeDialog() {
       const vm = this;
+      vm.removeFile();
       vm.$window.close();
     }
 
@@ -136,6 +143,16 @@ module nts.uk.com.view.ccg034.i {
           vm.$window.close(vm.partData);
         }
       });
+    }
+
+    /**
+     * 変更前のファイルは削除
+     */
+    private removeFile() {
+      const vm = this;
+      if (vm.fileId() && vm.isNewMode) {
+        (nts.uk.request as any).file.remove(vm.fileId());
+      }
     }
   }
 

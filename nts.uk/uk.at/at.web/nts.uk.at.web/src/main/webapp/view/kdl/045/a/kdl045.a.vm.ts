@@ -971,8 +971,8 @@ module nts.uk.at.view.kdl045.a {
                         let listBreakTimeZoneDto = [];
                         for(let i =0;i<self.dataSourceTime().length;i++){
                             let temp = {
-                                startTime : self.dataSourceTime()[i].range1().startTime,
-                                endTime  : self.dataSourceTime()[i].range1().endTime,
+                                start : self.dataSourceTime()[i].range1().startTime,
+                                end  : self.dataSourceTime()[i].range1().endTime,
                                 breakFrameNo : i+1     
                             }
                             listBreakTimeZoneDto.push(temp);
