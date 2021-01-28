@@ -68,25 +68,27 @@ function bean(dialogOption?: JQueryUI.DialogOptions): any {
 				$window.header
 					.subscribe((header: boolean) => kvm.header(header));
 
-				// hook to mounted function
-				$viewModel.$nextTick(() => {
-					const $mounted = $viewModel['mounted'];
+				$(() => {
+					// hook to mounted function
+					$viewModel.$nextTick(() => {
+						const $mounted = $viewModel['mounted'];
 
-					_.extend($viewModel, { $el: document.querySelector('#master-wrapper') });
+						_.extend($viewModel, { $el: document.querySelector('#master-wrapper') });
 
-					if (kvm) {
-						ko.computed({
-							read: () => {
-								$viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
-							},
-							owner: $viewModel,
-							disposeWhenNodeIsRemoved: $viewModel.$el
-						});
-					}
+						if (kvm) {
+							ko.computed({
+								read: () => {
+									$viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
+								},
+								owner: $viewModel,
+								disposeWhenNodeIsRemoved: $viewModel.$el
+							});
+						}
 
-					if ($mounted && _.isFunction($mounted)) {
-						$mounted.apply($viewModel, []);
-					}
+						if ($mounted && _.isFunction($mounted)) {
+							$mounted.apply($viewModel, []);
+						}
+					});
 				});
 			});
 		});
