@@ -1,11 +1,42 @@
 /// <reference path="../reference.ts"/>
 
 module nts.uk.ui.option {
+    import ErrorHeader = nts.uk.ui.errors.ErrorHeader;
 
-    export abstract class DialogOption {
-        modal: boolean;
+    const defaultHeaders = () => {
+        const { errorContent, errorCode } = toBeResource;
+
+        return [
+            new ErrorHeader("messageText", errorContent, "auto", true),
+            new ErrorHeader("errorCode", errorCode, 150, true)
+        ];
+    };
+
+    const dialogTabHeaders = () => {
+        const { tab, errorPoint, errorDetail } = toBeResource;
+
+        return [
+            new ErrorHeader("tab", tab, 90, true),
+            new ErrorHeader("location", errorPoint, 115, true),
+            new ErrorHeader("message", errorDetail, 250, true)
+        ];
+    };
+
+    export type ButtonSize = "x-large" | "large" | "medium" | "small";
+    export type ButtonColor = "" | "danger" | "proceed";
+
+    interface DialogButton {
+        text: string;
+        "class": string;
+        size: ButtonSize;
+        color: ButtonColor;
+        click: (viewmodel: any, ui: any) => void;
+    }
+
+    abstract class DialogOption {
+        modal: boolean = true;
         show: boolean = false;
-        buttons: DialogButton[];
+        buttons: DialogButton[] = [];
     }
 
     // Normal Dialog
@@ -13,19 +44,29 @@ module nts.uk.ui.option {
         modal?: boolean
     }
 
+    // Error Dialog
+    export interface IErrorDialogOption {
+        headers?: ErrorHeader[],
+        modal?: boolean,
+        displayrows?: number,
+        //maxrows?: number,
+        autoclose?: boolean
+    }
+
     export class ConfirmDialogOption extends DialogOption {
         constructor(option?: IDialogOption) {
             super();
+
             // Default value
-            this.modal = (option && option.modal !== undefined) ? option.modal : true;
-            this.buttons = [];
+            this.modal = _.get<boolean>(option, 'modal', true);
+
             // Add OK Button
             this.buttons.push({
                 text: "OK",
                 "class": "yes",
                 size: "large",
                 color: "proceed",
-                click: function(viewmodel, ui): void {
+                click: function (viewmodel, ui): void {
                     viewmodel.okButtonClicked();
                     $(ui).dialog("close");
                 }
@@ -36,27 +77,31 @@ module nts.uk.ui.option {
     export class DelDialogOption extends DialogOption {
         constructor(option?: IDialogOption) {
             super();
+
+            const { yes, no } = toBeResource;
+
             // Default value
-            this.modal = (option && option.modal !== undefined) ? option.modal : true;
-            this.buttons = [];
+            this.modal = _.get<boolean>(option, 'modal', true);
+
             // Add OK Button
             this.buttons.push({
-                text: toBeResource.yes,
+                text: yes,
                 "class": "yes ",
                 size: "large",
                 color: "danger",
-                click: function(viewmodel, ui) {
+                click: function (viewmodel, ui) {
                     viewmodel.okButtonClicked();
                     ui.dialog("close");
                 }
             });
+
             // Add Cancel Button
             this.buttons.push({
-                text: toBeResource.no,
+                text: no,
                 "class": "no ",
                 size: "large",
                 color: "",
-                click: function(viewmodel, ui) {
+                click: function (viewmodel, ui) {
                     viewmodel.cancelButtonClicked();
                     ui.dialog("close");
                 }
@@ -67,27 +112,31 @@ module nts.uk.ui.option {
     export class OKDialogOption extends DialogOption {
         constructor(option?: IDialogOption) {
             super();
+
+            const { yes, no } = toBeResource;
+
             // Default value
-            this.modal = (option && option.modal !== undefined) ? option.modal : true;
-            this.buttons = [];
+            this.modal = _.get<boolean>(option, 'modal', true);
+
             // Add OK Button
             this.buttons.push({
-                text: toBeResource.yes,
+                text: yes,
                 "class": "yes ",
                 size: "large",
                 color: "proceed",
-                click: function(viewmodel, ui) {
+                click: function (viewmodel, ui) {
                     viewmodel.okButtonClicked();
                     ui.dialog("close");
                 }
             });
+
             // Add Cancel Button
             this.buttons.push({
-                text: toBeResource.no,
+                text: no,
                 "class": "no ",
                 size: "large",
                 color: "",
-                click: function(viewmodel, ui) {
+                click: function (viewmodel, ui) {
                     viewmodel.cancelButtonClicked();
                     ui.dialog("close");
                 }
@@ -95,44 +144,34 @@ module nts.uk.ui.option {
         }
     }
 
-    // Error Dialog
-    export interface IErrorDialogOption {
-        headers?: errors.ErrorHeader[],
-        modal?: boolean,
-        displayrows?: number,
-        //maxrows?: number,
-        autoclose?: boolean
-    }
-
     export class ErrorDialogOption extends DialogOption {
-        headers: errors.ErrorHeader[];
+        headers: ErrorHeader[];
         displayrows: number;
         //maxrows: number;
         autoclose: boolean;
 
         constructor(option?: IErrorDialogOption) {
             super();
+
+            const { close } = toBeResource;
+
+            this.modal = _.get<boolean>(option, 'modal', false);
+
             // Default value
-            this.headers = (option && option.headers) ? option.headers : [
-                
-                 new nts.uk.ui.errors.ErrorHeader("messageText", toBeResource.errorContent, "auto", true),
-                new nts.uk.ui.errors.ErrorHeader("errorCode", toBeResource.errorCode, 150, true)
+            this.headers = _.get<ErrorHeader[]>(option, 'headers', defaultHeaders());
 
+            this.displayrows = _.get<number>(option, 'displayrows', 10);
 
-            ];
-            this.modal = (option && option.modal !== undefined) ? option.modal : false;
-            this.displayrows = (option && option.displayrows) ? option.displayrows : 10;
             //this.maxrows = (option && option.maxrows) ? option.maxrows : 1000;
-            this.autoclose = (option && option.autoclose !== undefined) ? option.autoclose : true;
+            this.autoclose = _.get<boolean>(option, 'autoclose', true);
 
-            this.buttons = [];
             // Add Close Button
             this.buttons.push({
-                text: toBeResource.close,
+                text: close,
                 "class": "yes ",
                 size: "large",
                 color: "",
-                click: function(viewmodel, ui) {
+                click: function (viewmodel, ui) {
                     viewmodel.closeButtonClicked();
                     ui.dialog("close");
                 }
@@ -141,44 +180,32 @@ module nts.uk.ui.option {
     }
 
     export class ErrorDialogWithTabOption extends ErrorDialogOption {
-
         constructor(option?: IErrorDialogOption) {
             super();
-            // Default value
-            this.headers = (option && option.headers) ? option.headers : [
-                new errors.ErrorHeader("tab", toBeResource.tab, 90, true),
-                new errors.ErrorHeader("location", toBeResource.errorPoint, 115, true),
-                new errors.ErrorHeader("message", toBeResource.errorDetail, 250, true)
-            ];
-            this.modal = (option && option.modal !== undefined) ? option.modal : false;
-            this.displayrows = (option && option.displayrows) ? option.displayrows : 10;
-            //this.maxrows = (option && option.maxrows) ? option.maxrows : 1000;
-            this.autoclose = (option && option.autoclose !== undefined) ? option.autoclose : true;
 
-            this.buttons = [];
+            const { close } = toBeResource;
+
+            this.modal = _.get<boolean>(option, 'modal', false);
+
+            // Default value
+            this.headers = _.get<ErrorHeader[]>(option, 'headers', dialogTabHeaders());
+
+            this.displayrows = _.get<number>(option, 'displayrows', 10);
+
+            //this.maxrows = (option && option.maxrows) ? option.maxrows : 1000;
+            this.autoclose = _.get<boolean>(option, 'autoclose', true);
+
             // Add Close Button
             this.buttons.push({
-                text: toBeResource.close,
+                text: close,
                 "class": "yes ",
                 size: "large",
                 color: "",
-                click: function(viewmodel, ui) {
+                click: function (viewmodel, ui) {
                     viewmodel.closeButtonClicked();
                     ui.dialog("close");
                 }
             });
         }
     }
-
-    export type ButtonSize = "x-large" | "large" | "medium" | "small";
-    export type ButtonColor = "" | "danger" | "proceed";
-
-    export class DialogButton {
-        text: string;
-        "class": string;
-        size: ButtonSize;
-        color: ButtonColor;
-        click(viewmodel, ui): void { };
-    }
-
 }

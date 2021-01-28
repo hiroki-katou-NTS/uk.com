@@ -97,25 +97,21 @@ module nts.uk.ui.layout {
             $(element)
                 .find('div[id^=functions-area]')
                 .each((__: number, e: HTMLElement) => {
-                    if (!ko.dataFor(e)) {
-                        ko.applyBindingsToNode(e,
-                            {
-                                'ui-function-bar': e.id.match(/bottom$/) ? 'bottom' : 'top',
-                                title: e.getAttribute('data-title') || true,
-                                back: e.getAttribute('data-url')
-                            }, bindingContext);
+                    ko.applyBindingsToNode(e,
+                        {
+                            'ui-function-bar': e.id.match(/bottom$/) ? 'bottom' : 'top',
+                            title: e.getAttribute('data-title') || true,
+                            back: e.getAttribute('data-url')
+                        }, bindingContext);
 
-                        e.removeAttribute('data-url');
-                        e.removeAttribute('data-title');
-                    }
+                    e.removeAttribute('data-url');
+                    e.removeAttribute('data-title');
                 });
 
             $(element)
                 .find('div[id^=contents-area]')
                 .each((__: number, e: HTMLElement) => {
-                    if (!ko.dataFor(e)) {
-                        ko.applyBindingsToNode(e, { 'ui-contents': 0 }, bindingContext);
-                    }
+                    ko.applyBindingsToNode(e, { 'ui-contents': 0 }, bindingContext);
                 });
 
             return { controlsDescendantBindings: true };
@@ -204,7 +200,7 @@ module nts.uk.ui.layout {
 
             element.removeAttribute('data-bind');
 
-            return { controlsDescendantBindings: true };
+            return { controlsDescendantBindings: false };
         }
     }
 
@@ -225,7 +221,7 @@ module nts.uk.ui.layout {
 
             element.style.height = `calc(100vh - ${element.getBoundingClientRect().top + (valueAccessor() || ($(element).parent().hasClass('master-content') ? 0 : 20))}px)`;
 
-            return { controlsDescendantBindings: true };
+            return { controlsDescendantBindings: false };
         }
         update(element: HTMLElement, valueAccessor: () => number, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: nts.uk.ui.vm.ViewModel, bindingContext: KnockoutBindingContext) {
             const root: nts.uk.ui.RootViewModel = bindingContext.$root;

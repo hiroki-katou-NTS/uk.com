@@ -67,20 +67,18 @@ module nts.uk.ui {
                         $('body>div:first-child').removeClass('view');
                     }
                 });
+
+            vm.errorDialogViewModel = new errors.ErrorsViewModel();
         }
 
         public initErrorModel(dialogOptions?: any) {
             const vm = this;
 
-            vm.errorDialogViewModel = new errors.ErrorsViewModel(dialogOptions);
+            vm.errorDialogViewModel.initErrorModel(dialogOptions);
         }
     }
 
-    export const _viewModel: RootViewModel = {
-        kiban: new KibanViewModel(),
-        content: null,
-        errors: null
-    };
+    export const _viewModel: RootViewModel | null = null; //{ kiban: null, content: null, errors: null };
 
     export module init {
         let _start: () => void;
@@ -91,7 +89,7 @@ module nts.uk.ui {
                 .map(v => JSON.parse(v)),
             ready: (callback: () => void) => _start = callback,
             bind: function (content: any, dialogOptions?: any) {
-                const { kiban } = _viewModel;
+                const kiban = new KibanViewModel();
                 const { systemName } = __viewContext.env;
 
                 // update title of name
@@ -105,7 +103,7 @@ module nts.uk.ui {
                 const isEmpty = ko.computed(() => !kiban.errorDialogViewModel.occurs());
 
                 // mock ready function
-                _.extend(_viewModel, { content, errors: { isEmpty } });
+                _.extend(nts.uk.ui, { _viewModel: { kiban, content, errors: { isEmpty } } });
 
                 $(() => {
                     viewModelBuilt.fire(_viewModel);
