@@ -80,6 +80,7 @@
 
 .contents_left {
   width: 437px;
+  display: block;
 }
 
 .fix_width_text_area {
@@ -114,6 +115,7 @@
 .contents_right {
   height: 445px;
   width: 600px;
+  float: left;
   overflow: auto;
   margin-top: -35px;
 }
