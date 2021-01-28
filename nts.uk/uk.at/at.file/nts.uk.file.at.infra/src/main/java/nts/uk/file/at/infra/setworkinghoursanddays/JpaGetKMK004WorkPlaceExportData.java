@@ -17,6 +17,7 @@ import nts.arc.i18n.I18NText;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
@@ -96,7 +97,11 @@ public class JpaGetKMK004WorkPlaceExportData extends JpaRepository implements Ge
 	     exportSQL.append("              LEFT JOIN KRCST_COM_FLEX_M_CAL_SET ON BSYMT_WKP_INFO.CID = KRCST_COM_FLEX_M_CAL_SET.CID   ");
 	     exportSQL.append("              LEFT JOIN KSHST_WKP_TRANS_LAB_TIME ON BSYMT_WKP_INFO.CID = KSHST_WKP_TRANS_LAB_TIME.CID   ");
 	     exportSQL.append("              AND BSYMT_WKP_INFO.WKP_ID = KSHST_WKP_TRANS_LAB_TIME.WKP_ID   ");
+	     exportSQL.append("              INNER JOIN BSYMT_WKP_CONFIG_2 ON BSYMT_WKP_INFO.CID = BSYMT_WKP_CONFIG_2.CID   ");
+	     exportSQL.append("               AND BSYMT_WKP_INFO.WKP_HIST_ID = BSYMT_WKP_CONFIG_2.WKP_HIST_ID    ");
 	     exportSQL.append("             WHERE BSYMT_WKP_INFO.CID = ?  ");
+	     exportSQL.append("             AND BSYMT_WKP_CONFIG_2.START_DATE <= ?  ");
+	     exportSQL.append("             AND BSYMT_WKP_CONFIG_2.END_DATE >= ?  ");
 	     exportSQL.append("            ) TBL  ");
 	     exportSQL.append("             ORDER BY TBL.HIERARCHY_CD ASC");
 
@@ -141,7 +146,11 @@ public class JpaGetKMK004WorkPlaceExportData extends JpaRepository implements Ge
 				.getList();
 			
 			try (PreparedStatement stmt = this.connection().prepareStatement(GET_WORKPLACE.toString())) {
+				String systemDate = GeneralDate.ymd(startDate, GeneralDate.today().month(), GeneralDate.today().day()).toString("yyyy/MM/dd");
+				
 				stmt.setString(1, cid);
+				stmt.setString(2, systemDate);
+				stmt.setString(3, systemDate);
 				NtsResultSet result = new NtsResultSet(stmt.executeQuery());
 				result.forEach(i -> {
 					datas.addAll(buildWorkPlaceRow(i, legalTimes, startDate, endDate, month, startOfWeek));
