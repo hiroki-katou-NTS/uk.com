@@ -138,13 +138,13 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
                 AmountUnit.valueOf(converAmountRounding(kscmtPerCostCalc.getCostUnit())),
                 AmountRounding.valueOf(kscmtPerCostCalc.costRounding)
         );
-
+        val utr = kscmtPerCostCalc.getUnitPriceAtr();
         return new PersonCostCalculation(
                 new PersonCostRoundingSetting(roundingOfPremium, amountRoundingSetting),
                 kscmtPerCostCalc.getPk().companyID,
                 new Remarks(kscmtPerCostCalc.getMemo()),
                 premiumSetting,
-                Optional.of(EnumAdaptor.valueOf(kscmtPerCostCalc.getUnitPriceAtr(), UnitPrice.class)),
+                utr!=null?Optional.of(EnumAdaptor.valueOf(utr, UnitPrice.class)):Optional.empty(),
                 EnumAdaptor.valueOf(kscmtPerCostCalc.getUnitPriceSettingMethod(), HowToSetUnitPrice.class),
                 new WorkingHoursUnitPrice(kscmtPerCostCalc.getWorkingHoursUnitPriceAtr()),
                 kscmtPerCostCalc.getPk().histID
@@ -183,13 +183,13 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
                     EnumAdaptor.valueOf(e.getUnitPrice(), UnitPrice.class), listEntityAtt(e.getPk().companyID, e.getPk().histID, e.getPk().premiumNo))
             ).collect(Collectors.toList());
         }
-
+        val utr = kscmtPerCostCalc.getUnitPriceAtr();
         return new PersonCostCalculation(
                 new PersonCostRoundingSetting(roundingOfPremium, amountRoundingSetting),
                 kscmtPerCostCalc.getPk().companyID,
                 new Remarks(kscmtPerCostCalc.getMemo()),
                 premiumSettings,
-                Optional.of(EnumAdaptor.valueOf(kscmtPerCostCalc.getUnitPriceAtr(), UnitPrice.class)),
+                utr !=null ?Optional.of(EnumAdaptor.valueOf(utr, UnitPrice.class)):Optional.empty(),
                 EnumAdaptor.valueOf(kscmtPerCostCalc.getUnitPriceSettingMethod(), HowToSetUnitPrice.class),
                 new WorkingHoursUnitPrice(kscmtPerCostCalc.getWorkingHoursUnitPriceAtr()),
                 kscmtPerCostCalc.getPk().histID
@@ -306,12 +306,13 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
                     AmountUnit.valueOf(converAmountRounding(entity.getCostUnit())),
                     AmountRounding.valueOf(entity.costRounding)
             );
+            val utr = entity.getUnitPriceAtr();
             val per = new PersonCostCalculation(
                     new PersonCostRoundingSetting(roundingOfPremium, amountRoundingSetting),
                     entity.getPk().companyID,
                     new Remarks(entity.getMemo()),
                     premiumSettings,
-                    Optional.of(EnumAdaptor.valueOf(entity.getUnitPriceAtr(), UnitPrice.class)),
+                    utr != null?Optional.of(EnumAdaptor.valueOf(utr, UnitPrice.class)):Optional.empty(),
                     EnumAdaptor.valueOf(entity.getUnitPriceSettingMethod(), HowToSetUnitPrice.class),
                     new WorkingHoursUnitPrice(entity.getWorkingHoursUnitPriceAtr()),
                     entity.getPk().histID
