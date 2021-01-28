@@ -41,41 +41,42 @@ public class CountLaborCostTimeCtgService {
 				Require require
 			,	TargetOrgIdenInfor targetOrg
 			,	Map<AggregationUnitOfLaborCosts, LaborCostAndTime> targetLaborCost
-			,	List<IntegrationOfDaily> dailyWorks
-			){
+			,	List<IntegrationOfDaily> dailyWorks){
 		
 		val dailyWorksByDate= dailyWorks.stream()
 				.collect(Collectors.groupingBy(IntegrationOfDaily::getYmd))
 				.entrySet().stream()
 				.collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream()
-								.map(c -> c.getAttendanceTimeOfDailyPerformance())
-								.filter(c -> c.isPresent())
-								.map(c -> c.get())
+								.map(i -> i.getAttendanceTimeOfDailyPerformance())
+								.filter(i -> i.isPresent())
+								.map(i -> i.get())
 								.collect(Collectors.toList())
 								)
 						);	
+		
 		val lCostItemTypeLst = Arrays.asList(
 					LaborCostItemTypeOfWkpCounter.AMOUNT
 				,	LaborCostItemTypeOfWkpCounter.TIME);
 		
-		
 		val resultCount = lCostItemTypeLst.stream()
-			.map(c -> countLaborCost(targetLaborCost, c, dailyWorksByDate) )
-			.flatMap(c -> c.entrySet().stream())
-			.collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue(), (c1, c2) -> {
-				c1.putAll(c2);
-				return c1;
-			}));
+				.map(c -> countLaborCost(targetLaborCost, c, dailyWorksByDate) )
+				.flatMap(c -> c.entrySet().stream())
+				.collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue(), (map1, map2) -> {
+					map1.putAll(map2);
+					return map1;
+				}));
+		
 		val targetDays = dailyWorksByDate.keySet().stream()
 				.sorted((d1, d2) -> d1.compareTo(d2))
 				.collect(Collectors.toList());
-		val budgetsByDate = getBudget(require, targetOrg, targetLaborCost, targetDays);
 		
-		return targetDays.stream().collect(Collectors.toMap(c -> c, c -> {
-			val resultByDate = resultCount.get(c);
-			if (budgetsByDate.containsKey(c)) {
+		val budgetsByDate = getBudget(require, targetOrg, targetLaborCost, targetDays);
+
+		return targetDays.stream().collect(Collectors.toMap(d -> d, d -> {
+			val resultByDate = resultCount.get(d);
+			if (budgetsByDate.containsKey(d)) {
 				resultByDate.put(new AggregationLaborCostUnitOfWkpCounter(AggregationUnitOfLaborCosts.TOTAL,
-						LaborCostItemTypeOfWkpCounter.BUDGET), budgetsByDate.get(c));
+						LaborCostItemTypeOfWkpCounter.BUDGET), budgetsByDate.get(d));
 			}
 			return resultByDate;
 		}));
@@ -118,6 +119,7 @@ public class CountLaborCostTimeCtgService {
 			,	LaborCostItemTypeOfWkpCounter itemType
 			,	List<AttendanceTimeOfDailyAttendance> dailyAttendance) {
 		val result = new HashMap<AggregationUnitOfLaborCosts, BigDecimal>();
+		
 		switch(itemType) {
 		case AMOUNT:
 			result.putAll(LaborCostsTotalizationService.totalizeAmounts(targets, dailyAttendance));
@@ -143,6 +145,7 @@ public class CountLaborCostTimeCtgService {
 	 */
 	private static Map<GeneralDate, BigDecimal> getBudget(Require require, TargetOrgIdenInfor targetOrg,
 			Map<AggregationUnitOfLaborCosts, LaborCostAndTime> targetLaborCostAndTime, List<GeneralDate> targetDays) {
+		
 		if (targetLaborCostAndTime.values().stream().allMatch(
 				c -> (!c.getBudget().isPresent() || c.getBudget().get() == NotUseAtr.NOT_USE))) {
 			return Collections.emptyMap();

@@ -156,25 +156,12 @@ public class CountWorkingTimeOfPerCtgServiceTest {
 		
 		public static IntegrationOfDaily createDailyWorks(String sid, Optional<AttendanceTimeOfDailyAttendance> attendance) {
 			return new IntegrationOfDaily(
-					sid,
-					GeneralDate.today(),
-					workInformation, 
-					calAttr,
-					affiliationInfor,
-					pcLogOnInfo,
-					employeeError,
-					outingTime,
-					breakTime,
-					attendance,
-					attendanceLeave, 
-					shortTime,
-					specDateAttr,
-					attendanceLeavingGate,
-					anyItemValue,
-					editState, 
-					tempTime,
-					remarks,
-					snapshot);
+					sid, GeneralDate.today(), workInformation, 
+					calAttr, affiliationInfor, pcLogOnInfo,
+					employeeError, outingTime, breakTime,
+					attendance, attendanceLeave, shortTime,
+					specDateAttr, attendanceLeavingGate, anyItemValue,
+					editState, tempTime, remarks, snapshot);
 		}
 	}
 }

@@ -11,7 +11,6 @@ import javax.ejb.Stateless;
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AttendanceTimeTotalizationService;
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AttendanceTimesForAggregation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 /**
  * 個人計の労働時間カテゴリを集計する
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.予実集計.スケジュール集計.集計処理.個人計.個人計の労働時間カテゴリを集計する
@@ -28,21 +27,22 @@ public class CountWorkingTimeOfPerCtgService {
 	 */
 	public static Map<String, Map<AttendanceTimesForAggregation, BigDecimal>> get(List<IntegrationOfDaily> dailyWorks) {
 		
-		List<AttendanceTimesForAggregation> attendanceUnits = Arrays.asList(AttendanceTimesForAggregation.WORKING_TOTAL
-				, AttendanceTimesForAggregation.WORKING_WITHIN
-				, AttendanceTimesForAggregation.WORKING_EXTRA);
+		List<AttendanceTimesForAggregation> attendanceUnits = Arrays.asList(
+					AttendanceTimesForAggregation.WORKING_TOTAL
+				,	AttendanceTimesForAggregation.WORKING_WITHIN
+				,	AttendanceTimesForAggregation.WORKING_EXTRA);
 		
-		Map<String, List<AttendanceTimeOfDailyAttendance>> dailyWorksBySid= dailyWorks.stream()
-				.collect(
-						Collectors.groupingBy(dailyWork -> dailyWork.getEmployeeId(),
-								Collectors.collectingAndThen(Collectors.toList(), dailyWork -> dailyWork.stream()
-										.map(c -> c.getAttendanceTimeOfDailyPerformance())
-										.filter(c -> c.isPresent())
-										.map(c -> c.get()).collect(Collectors.toList()))
-								)
-						);
-		
-		return dailyWorksBySid.entrySet().stream()
+		return dailyWorks.stream()
+				.collect(Collectors.groupingBy(IntegrationOfDaily::getEmployeeId))
+				.entrySet().stream()
+				.collect(Collectors.toMap(Map.Entry::getKey, entry -> {
+					return entry.getValue().stream()
+							.map(c -> c.getAttendanceTimeOfDailyPerformance())
+							.filter(c -> c.isPresent())
+							.map(c -> c.get())
+							.collect(Collectors.toList());
+				}))
+				.entrySet().stream()
 				.collect(Collectors.toMap(Map.Entry::getKey, entry -> {
 					return AttendanceTimeTotalizationService.totalize(attendanceUnits, entry.getValue());
 				}));
