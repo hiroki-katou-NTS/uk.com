@@ -54,6 +54,7 @@
 #right-layout {
 	display: inline-block;
 	margin-left: 30px;
+	max-width: 800px;
 }
 
 #flex-title {
@@ -74,7 +75,7 @@
 }
 
 #year-list_grid col:first-child {
-	width: 20px !important;
+	width: 0px !important;
 	text-align: center;
 }
 
@@ -88,4 +89,8 @@
 
 #year-list_grid_container {
 	width: 120px !important;
+}
+#year-list_grid col:nth-child(2) {
+	width: 90px !important;
+	text-align: center;
 }
