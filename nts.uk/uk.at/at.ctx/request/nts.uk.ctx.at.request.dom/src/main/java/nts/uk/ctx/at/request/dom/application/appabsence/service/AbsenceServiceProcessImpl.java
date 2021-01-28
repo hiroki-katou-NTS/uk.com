@@ -799,6 +799,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	 * @param workTimeCode
 	 * @return
 	 */
+	@Override
 	public PredetermineTimeSetForCalc initWorktimeCode(String companyID, String workTypeCode, String workTimeCode) {
 		Optional<WorkType> WkTypeOpt = workTypeRepository.findByPK(companyID, workTypeCode);
 		if (WkTypeOpt.isPresent()) {
