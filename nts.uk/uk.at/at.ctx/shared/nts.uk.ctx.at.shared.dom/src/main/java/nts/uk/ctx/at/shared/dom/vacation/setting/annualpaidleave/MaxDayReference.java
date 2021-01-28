@@ -5,7 +5,7 @@
 package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 
 /**
- * The Enum MaxDayReference.
+ * 上限参照先
  */
 public enum MaxDayReference {
     

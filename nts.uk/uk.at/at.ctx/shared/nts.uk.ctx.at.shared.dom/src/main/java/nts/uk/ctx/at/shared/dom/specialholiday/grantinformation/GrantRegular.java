@@ -68,22 +68,24 @@ public class GrantRegular extends DomainObject {
 		return c;
 	}
 
-	public Optional<Integer> getLimitAccumulationDays() {
+	/** 「付与日数一覧」の件数をチェックする */
+	public int getLimitAccumulationDays() {
+		
 		if(this.typeTime==TypeTime.REFER_GRANT_DATE_TBL) {
-			if(!this.getGrantPeriodic().isPresent())return Optional.empty();
-			if(!this.getGrantPeriodic().get().getLimitAccumulationDays().isPresent())return Optional.empty();
-			if(!this.getGrantPeriodic().get().getLimitAccumulationDays().get().getLimitCarryoverDays().isPresent())return Optional.empty();
-
-			return Optional.of(this.getGrantPeriodic().get().getLimitAccumulationDays().get().getLimitCarryoverDays().get().v());
+			
+			return this.getGrantPeriodic().flatMap(c -> c.getLimitAccumulationDays())
+						.flatMap(c -> c.getLimitCarryoverDays())
+						.map(c -> c.v()).orElse(0);
 		}
+		
 		if(this.typeTime==TypeTime.GRANT_SPECIFY_DATE) {
-			if(!this.getFixGrantDate().isPresent())return Optional.empty();
-			if(!this.getFixGrantDate().get().getGrantPeriodic().getLimitAccumulationDays().isPresent())return Optional.empty();
-			if(!this.getFixGrantDate().get().getGrantPeriodic().getLimitAccumulationDays().get().getLimitCarryoverDays().isPresent())return Optional.empty();
-
-			return Optional.of(this.getFixGrantDate().get().getGrantPeriodic().getLimitAccumulationDays().get().getLimitCarryoverDays().get().v());
+			
+			return this.getFixGrantDate().flatMap(c -> c.getGrantPeriodic().getLimitAccumulationDays())
+						.flatMap(c -> c.getLimitCarryoverDays())
+						.map(c -> c.v()).orElse(0);
 		}
-		return Optional.empty();
+		
+		return 0;
 	}
 
 

@@ -1,16 +1,14 @@
 package nts.uk.ctx.at.shared.dom.specialholiday.grantinformation;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantDeadline;
+import nts.uk.shr.com.time.calendar.MonthDay;
 
 /**
  * 指定日付与

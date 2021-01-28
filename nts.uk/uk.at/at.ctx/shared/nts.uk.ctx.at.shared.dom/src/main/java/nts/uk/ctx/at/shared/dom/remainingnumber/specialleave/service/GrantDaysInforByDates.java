@@ -11,6 +11,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.specialholiday.export.NextSpecialLeaveGrant;
 
 
+/** 次回特別休暇付与Work */
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
