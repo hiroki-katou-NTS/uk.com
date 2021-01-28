@@ -2007,15 +2007,16 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				if (y == self.dispStartHours) {
 					detailColumns.push({ key: "empId", width: "0px", headerText: "ABC", visible: false });
 				} else {
-					detailColumns.push({ key: (y - 1).toString(), width: width });
+					detailColumns.push({ key: (y - 1).toString() + "_", width: width });
 				}
 			}
+			
 			// Phần detail
 			detailHeaderDs = [{ empId: "" }];
 			let detailHeaders = {};
 			for (let y = self.dispStartHours; y <= (displayRange + self.dispStartHours); y++) {
-				detailHeaderDs[0][y] = y.toString();
-				detailHeaders[y] = "";
+				detailHeaderDs[0][y + "_"] = y.toString();
+				detailHeaders[y + "_"] = "";
 			}
 
 			detailHeader = {
