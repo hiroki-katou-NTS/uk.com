@@ -438,9 +438,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				block.clear();
 				dfd.resolve();
 				block.clear();
-				$("#extable-ksu003").exTable("scrollBack", 0, { h: Math.floor(self.initDispStart * 42 - self.dispStart * 3.5) });
 				self.showHide();
 			});
+			$("#extable-ksu003").exTable("scrollBack", 0, { h: Math.floor(self.initDispStart * 42 - self.dispStart * 3.5) });
 			return dfd.promise();
 		}
 
@@ -1202,7 +1202,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				characteristics.save(self.KEY, self.localStore());
 				self.destroyAndCreateGrid(self.lstEmpId, 1);
 			} else {
-				service.sortEmployee(param)
+				
+				self.lstEmpId = _.flatMap(self.dataFromA().listEmp, c => [{ empId: c.id, name: c.name, code: c.code }]);
+				self.localStore().lstEmpIdSort = self.lstEmpId;
+						characteristics.save(self.KEY, self.localStore());
+						self.destroyAndCreateGrid(self.lstEmpId, 1);
+				/*service.sortEmployee(param)
 					.done((data: Array<model.DisplayWorkInfoByDateDto>) => {
 						self.lstEmpId = self.lstEmpId.sort(function(a: any, b: any) {
 							return _.findIndex(data, x => { return x == a.empId }) - _.findIndex(data, x => { return x == b.empId });
@@ -1213,10 +1218,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					}).fail(function(error) {
 						errorDialog({ messageId: error.messageId });
 					}).always(function() {
-					});
+					});*/
 			}
 			self.localStore().startTimeSort = value;
 			characteristics.save(self.KEY, self.localStore());
+			block.clear();
 		}
 
 		// Tạo data để truyền vào ExTable
@@ -1967,11 +1973,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 					{
 						headerText: getText('KSU003_31'), group: [
-							{ headerText: "", key: "totalTime", width: "39px", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
+							{ headerText: "", key: "totalTime", width: "39px", dataType: "duration", primitiveValue: "TimeWithDayAttr"}]
 					},
 					{
 						headerText: getText('KSU003_32'), group: [
-							{ headerText: "", key: "breaktime", width: "39px", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
+							{ headerText: "", key: "breaktime", width: "39px", dataType: "duration", primitiveValue: "TimeWithDayAttr"}]
 					}
 				];
 			}
