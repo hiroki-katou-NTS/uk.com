@@ -148,7 +148,6 @@ module nts.uk.at.view.kmk004.components.transform {
 
 								if (!!_years.length) {
 									const exist = _years[selectedIndex];
-									debugger;
 									selectedYear(exist.year);
 								} else {
 									selectedYear(null);
