@@ -28,10 +28,10 @@ import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQue
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQueryR;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
-import nts.uk.ctx.at.shared.dom.alarmList.periodcond.ErrorAlarmConditionRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmConditionRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
-import nts.uk.ctx.at.shared.dom.alarmList.periodcond.AlCheckTargetCondition;
-import nts.uk.ctx.at.shared.dom.alarmList.periodcond.ErrorAlarmCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.AlCheckTargetCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ResultCheckWith;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkRecordExtraConRepository;
 import nts.uk.ctx.at.shared.dom.alarmList.worktype.PlanActualWorkType;

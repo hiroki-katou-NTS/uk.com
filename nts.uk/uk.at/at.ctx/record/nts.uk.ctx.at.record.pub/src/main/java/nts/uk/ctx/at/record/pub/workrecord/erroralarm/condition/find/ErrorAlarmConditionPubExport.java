@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.alarmList.periodcond.ErrorAlarmCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.ctx.at.shared.dom.alarmList.attendanceitem.ErAlAttendanceItemCondition;
 import nts.uk.ctx.at.shared.dom.alarmList.attendanceitem.ErAlConditionsAttendanceItem;
 import nts.uk.ctx.at.shared.dom.alarmList.worktime.PlanActualWorkTime;

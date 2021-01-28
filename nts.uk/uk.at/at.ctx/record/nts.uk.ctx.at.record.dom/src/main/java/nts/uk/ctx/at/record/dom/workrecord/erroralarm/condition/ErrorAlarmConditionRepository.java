@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.alarmList.periodcond;
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition;
 
 import java.util.List;
 import java.util.Optional;

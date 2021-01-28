@@ -28,7 +28,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.*;
-import nts.uk.ctx.at.shared.dom.alarmList.periodcond.ErrorAlarmCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.ctx.at.shared.dom.alarmList.attendanceitem.ErAlAttendanceItemCondition;
 import nts.uk.ctx.at.shared.dom.alarmList.worktime.PlanActualWorkTime;
 import nts.uk.ctx.at.shared.dom.alarmList.worktime.SingleWorkTime;

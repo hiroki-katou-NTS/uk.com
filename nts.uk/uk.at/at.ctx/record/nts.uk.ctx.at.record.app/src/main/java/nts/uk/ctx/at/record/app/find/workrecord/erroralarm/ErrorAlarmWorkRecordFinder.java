@@ -11,7 +11,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
-import nts.uk.ctx.at.shared.dom.alarmList.periodcond.ErrorAlarmCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

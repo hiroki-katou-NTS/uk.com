@@ -8,10 +8,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.alarmList.periodcond.ErrorAlarmConditionRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmConditionRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
-import nts.uk.ctx.at.shared.dom.alarmList.periodcond.ErrorAlarmCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 //import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkRecordExtraConRepository;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.ErrorAlarmWorkRecordPub;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.ErrorAlarmWorkRecordPubExport;

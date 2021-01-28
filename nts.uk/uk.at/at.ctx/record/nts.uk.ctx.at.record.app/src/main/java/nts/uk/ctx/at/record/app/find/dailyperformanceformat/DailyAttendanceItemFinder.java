@@ -19,7 +19,7 @@ import nts.uk.ctx.at.record.app.find.workrecord.erroralarm.ErrorAlarmWorkRecordD
 //import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
-import nts.uk.ctx.at.shared.dom.alarmList.periodcond.ErrorAlarmCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto.SimpleWorkTimeSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
