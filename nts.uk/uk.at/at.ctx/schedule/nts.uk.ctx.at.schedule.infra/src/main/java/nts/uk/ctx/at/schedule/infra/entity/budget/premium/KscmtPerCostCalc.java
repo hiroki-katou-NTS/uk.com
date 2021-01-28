@@ -52,7 +52,7 @@ public class KscmtPerCostCalc extends UkJpaEntity implements Serializable {
 
     @Override
     protected Object getKey() {
-        return null;
+        return pk;
     }
 
     public static KscmtPerCostCalc toEntity(PersonCostCalculation domain, String histId) {
