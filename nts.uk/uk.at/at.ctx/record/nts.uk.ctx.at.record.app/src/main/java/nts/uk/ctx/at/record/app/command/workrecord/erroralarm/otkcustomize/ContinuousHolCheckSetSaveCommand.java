@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.primitivevalue.DisplayMessage;
+import nts.uk.ctx.at.shared.dom.alarmList.primitivevalue.DisplayMessage;
 
 @AllArgsConstructor
 @NoArgsConstructor

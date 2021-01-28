@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.periodcond.ErrorAlarmCondition;
+import nts.uk.ctx.at.shared.dom.alarmList.periodcond.ErrorAlarmCondition;
 
 /**
  * @author hungnm

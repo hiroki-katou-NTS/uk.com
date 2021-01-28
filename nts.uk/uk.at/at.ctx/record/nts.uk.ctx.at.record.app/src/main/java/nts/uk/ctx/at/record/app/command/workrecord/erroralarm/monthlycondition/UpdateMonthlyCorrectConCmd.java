@@ -9,17 +9,17 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.record.app.find.workrecord.erroralarm.condition.ErAlAtdItemConditionDto;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.attendanceitem.ErAlAttendanceItemCondition;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.enums.ConditionAtr;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.enums.ConditionType;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.enums.ErrorAlarmConditionType;
+import nts.uk.ctx.at.shared.dom.alarmList.attendanceitem.ErAlAttendanceItemCondition;
+import nts.uk.ctx.at.shared.dom.alarmList.enums.ConditionAtr;
+import nts.uk.ctx.at.shared.dom.alarmList.enums.ConditionType;
+import nts.uk.ctx.at.shared.dom.alarmList.enums.ErrorAlarmConditionType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycondition.MonthlyCorrectExtractCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycondition.TimeItemCheckMonthly;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.primitivevalue.AttendanceItemId;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.primitivevalue.CheckedAmountValue;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.primitivevalue.CheckedTimeDuration;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.primitivevalue.CheckedTimesValue;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.primitivevalue.CheckedTimesValueDay;
+import nts.uk.ctx.at.shared.dom.alarmList.primitivevalue.AttendanceItemId;
+import nts.uk.ctx.at.shared.dom.alarmList.primitivevalue.CheckedAmountValue;
+import nts.uk.ctx.at.shared.dom.alarmList.primitivevalue.CheckedTimeDuration;
+import nts.uk.ctx.at.shared.dom.alarmList.primitivevalue.CheckedTimesValue;
+import nts.uk.ctx.at.shared.dom.alarmList.primitivevalue.CheckedTimesValueDay;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
