@@ -1,7 +1,7 @@
 /**
  * 10:08:35 AM Nov 2, 2017
  */
-package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition;
+package nts.uk.ctx.at.shared.dom.alarmList.extractionResult.periodcond;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,11 +15,13 @@ import javax.management.RuntimeErrorException;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.attendanceitem.AttendanceItemCondition;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.attendanceitem.CompareRange;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.attendanceitem.ErAlAttendanceItemCondition;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.attendanceitem.ErAlConditionsAttendanceItem;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.enums.TypeCheckWorkRecord;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.primitivevalue.ContinuousPeriod;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.primitivevalue.DisplayMessage;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.worktime.PlanActualWorkTime;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.worktime.SingleWorkTime;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.worktime.WorkTimeCondition;
@@ -28,10 +30,8 @@ import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.worktype.PlanActualWo
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.worktype.SingleWorkType;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.worktype.WorkTypeCondition;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.enums.FilterByCompare;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.TypeCheckWorkRecord;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ContinuousPeriod;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
@@ -292,15 +292,15 @@ public class ErrorAlarmCondition extends AggregateRoot {
 		this.continuousPeriod = new ContinuousPeriod(continuousPeriod);
 	}
 	
-	public boolean checkWith(WorkInfoOfDailyPerformance workInfo, Optional<SnapShot> snapshot,
-			Function<List<Integer>, List<Double>> getValueFromItemIds){
+	public boolean checkWith(WorkInfoOfDailyAttendance workInfo, Optional<SnapShot> snapshot,
+							 Function<List<Integer>, List<Double>> getValueFromItemIds){
 		/** 勤務種類をチェックする */
 		// TODO: uncomment
 		// if (condition.getWorkTypeCondition().isUse() &&
 		// !condition.getWorkTypeCondition().checkWorkType(workInfo)) {
 		WorkCheckResult workTypeCheck = WorkCheckResult.NOT_CHECK;
 		if (this.workTypeCondition != null) {
-			workTypeCheck = this.workTypeCondition.checkWorkType(workInfo.getWorkInformation(), snapshot);
+			workTypeCheck = this.workTypeCondition.checkWorkType(workInfo, snapshot);
 		}
 		/** 就業時間帯をチェックする */
 		// TODO: uncomment
@@ -308,7 +308,7 @@ public class ErrorAlarmCondition extends AggregateRoot {
 		// !condition.getWorkTimeCondition().checkWorkTime(workInfo)) {
 		WorkCheckResult workTimeCheck = WorkCheckResult.NOT_CHECK;
 		if (this.workTimeCondition != null) {
-			workTimeCheck = this.workTimeCondition.checkWorkTime(workInfo.getWorkInformation(), snapshot);
+			workTimeCheck = this.workTimeCondition.checkWorkTime(workInfo, snapshot);
 		}
 		/** 勤怠項目をチェックする */
 		WorkCheckResult atdCheck = WorkCheckResult.NOT_CHECK;

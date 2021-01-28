@@ -1,7 +1,7 @@
 /**
  * 10:24:32 AM Jan 19, 2018
  */
-package nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue;
+package nts.uk.ctx.at.shared.dom.alarmList.extractionResult.primitivevalue;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;

@@ -11,7 +11,7 @@ import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.TargetSelectionRange;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.TargetServiceType;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.TypeCheckWorkRecord;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.enums.TypeCheckWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.TypeCheckWorkRecordMultipleMonth;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.primitivevalue.LogicalOperator;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.primitivevalue.RangeCompareType;
