@@ -2,9 +2,7 @@ package nts.uk.ctx.at.schedule.infra.entity.budget.premium;
 
 
 import lombok.*;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculation;
-import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.Column;
@@ -19,12 +17,12 @@ import java.io.Serializable;
 @Table(name = "KMLMT_COST_CALC_SET")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KscmtPerCostCalc extends UkJpaEntity implements Serializable {
+public class KmlmtPersonCostCalculation extends UkJpaEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @EmbeddedId
-    public KscmtPerCostCalcPk pk;
+    public KmlmpPersonCostCalculationPK pk;
 
     //人件費計算設定.単価
     @Column(name = "UNITPRICE_ATR")
@@ -52,14 +50,14 @@ public class KscmtPerCostCalc extends UkJpaEntity implements Serializable {
 
     @Override
     protected Object getKey() {
-        return null;
+        return pk;
     }
 
-    public static KscmtPerCostCalc toEntity(PersonCostCalculation domain, String histId) {
+    public static KmlmtPersonCostCalculation toEntity(PersonCostCalculation domain, String histId) {
         val unitPrice = domain.getUnitPrice();
 
-        return new KscmtPerCostCalc(
-                new KscmtPerCostCalcPk(domain.getCompanyID(), histId),
+        return new KmlmtPersonCostCalculation(
+                new KmlmpPersonCostCalculationPK(domain.getCompanyID(), histId),
                 unitPrice.isPresent() ? unitPrice.get().value : null,
                 domain.getRemark().v(),
                 domain.getRoundingSetting().getRoundingOfPremium().getPriceRounding().value,
