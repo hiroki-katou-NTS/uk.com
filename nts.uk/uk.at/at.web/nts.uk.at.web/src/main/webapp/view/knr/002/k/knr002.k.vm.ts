@@ -51,7 +51,7 @@ module knr002.k {
                             if(selectedListTemp.length > 0){
                                 self.selectedList(selectedListTemp);
                             } else if (self.bentoMenu().length > 0){
-                                self.selectedList.push(self.bentoMenu()[0].frameNumber);
+                               // self.selectedList.push(self.bentoMenu()[0].frameNumber);
                             }
                         }
                     });
