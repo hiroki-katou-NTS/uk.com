@@ -161,9 +161,10 @@ module nts.uk.ui.header {
 
             ko.computed({
                 read: () => {
+                    const mode = ko.unwrap(vm.$window.mode);
                     const show = ko.unwrap(vm.$window.header);
 
-                    if (show === true) {
+                    if (mode === 'view' && show === true) {
                         vm.$el.classList.remove('hidden');
 
                         nts.uk.sessionStorage

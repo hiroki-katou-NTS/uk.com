@@ -33,6 +33,9 @@ function bean(dialogOption?: JQueryUI.DialogOptions): any {
 
 				kvm.systemName.valueHasMutated();
 
+				$window.title
+					.subscribe((title: string) => kvm.title(title));
+
 				kvm.mode
 					.subscribe((mode: string) => {
 						const old = ko.unwrap($window.mode)
@@ -46,6 +49,9 @@ function bean(dialogOption?: JQueryUI.DialogOptions): any {
 
 				kvm.mode.valueHasMutated();
 
+				$window.mode
+					.subscribe((mode: 'view' | 'modal') => kvm.mode(mode));
+
 				kvm.header
 					.subscribe((header: boolean) => {
 						const old = ko.unwrap($window.header)
@@ -58,6 +64,9 @@ function bean(dialogOption?: JQueryUI.DialogOptions): any {
 					});
 
 				kvm.header.valueHasMutated();
+
+				$window.header
+					.subscribe((header: boolean) => kvm.header(header));
 
 				// hook to mounted function
 				$viewModel.$nextTick(() => {
@@ -502,13 +511,13 @@ module nts.uk.ui.viewmodel {
 
 	BaseViewModel.prototype.$window = Object.defineProperties({}, {
 		mode: {
-			value: ko.observable('') // nts.uk.ui._viewModel.kiban.mode
+			value: ko.observable('view') // nts.uk.ui._viewModel.kiban.mode
 		},
 		title: {
 			value: ko.observable('') //nts.uk.ui._viewModel.kiban.title
 		},
 		header: {
-			value: ko.observable('') //nts.uk.ui._viewModel.kiban.header
+			value: ko.observable(null).extend({ rateLimit: 100 }) //nts.uk.ui._viewModel.kiban.header
 		},
 		size: {
 			value: $size

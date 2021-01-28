@@ -41,7 +41,7 @@ module nts.uk.ui {
         size: KnockoutObservable<WindowSize> = ko.observable({ width: window.innerWidth, height: window.innerHeight });
 
         // show or hide header
-        header: KnockoutObservable<boolean | null> = ko.observable(null);
+        header: KnockoutObservable<boolean | null> = ko.observable(null).extend({ rateLimit: 100 });
 
         // show or hide notification
         notification: KnockoutObservable<string> = ko.observable('');
