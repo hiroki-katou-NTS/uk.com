@@ -1606,7 +1606,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 					if (checkColor.startTime2 != 0){
 						
-						if(self.dataScreen003A().employeeInfo[i].workScheduleDto.startTime2 != null && self.dataScreen003A().employeeInfo[i].workScheduleDto.startTime2 != 0){
+						if(self.dataScreen003A().employeeInfo[i].workScheduleDto != null && self.dataScreen003A().employeeInfo[i].workScheduleDto.startTime2 != null && self.dataScreen003A().employeeInfo[i].workScheduleDto.startTime2 != 0){
 							middleContentDeco.push(new CellColor("startTime2", self.lstEmpId[i].empId,
 							dataMid.color.workingInfoColor === "#eccefb" ? "#eccefb" : dataMid.color.startTime2Color));
 						}else {
@@ -1619,7 +1619,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					}
 						
 					if (checkColor.endTime2 != 0){
-						if(self.dataScreen003A().employeeInfo[i].workScheduleDto.endTime2 != null && self.dataScreen003A().employeeInfo[i].workScheduleDto.endTime2 != 0){
+						if(self.dataScreen003A().employeeInfo[i].workScheduleDto != null && self.dataScreen003A().employeeInfo[i].workScheduleDto.endTime2 != null && self.dataScreen003A().employeeInfo[i].workScheduleDto.endTime2 != 0){
 							middleContentDeco.push(new CellColor("endTime2", self.lstEmpId[i].empId,
 							dataMid.color.workingInfoColor === "#eccefb" ? "#eccefb" : dataMid.color.endTime2Color));
 						}else {
