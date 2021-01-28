@@ -9,6 +9,8 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeave;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveRemainingNumberInfo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUsedInfo;
 
 /**
  * @author thanh_nx
@@ -39,7 +41,8 @@ public class SpecialLeaveDto implements ItemConst, AttendanceItemDataGate {
 	}
 
 	public SpecialLeave toDomain() {
-		return new SpecialLeave(usedNumberInfo.toDomain(), remainingNumberInfo.toDomain());
+		return new SpecialLeave(usedNumberInfo == null ? new SpecialLeaveUsedInfo() : usedNumberInfo.toDomain(), 
+								remainingNumberInfo == null ? new SpecialLeaveRemainingNumberInfo() : remainingNumberInfo.toDomain());
 	}
 
 	@Override
@@ -56,9 +59,9 @@ public class SpecialLeaveDto implements ItemConst, AttendanceItemDataGate {
 	public Optional<AttendanceItemDataGate> get(String path) {
 
 		if (USAGE.equals(path)) {
-			return Optional.of(this.usedNumberInfo);
+			return Optional.ofNullable(this.usedNumberInfo);
 		} else if (REMAIN.equals(path)) {
-			return Optional.of(this.remainingNumberInfo);
+			return Optional.ofNullable(this.remainingNumberInfo);
 		}
 		return Optional.empty();
 	}

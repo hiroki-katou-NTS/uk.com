@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveRemainingNumberInfo;
 
 /**
@@ -31,18 +32,20 @@ public class SpecialLeaveRemainingNumberInfoDto implements ItemConst, Attendance
 
 	/** 付与後 */
 	@AttendanceItemLayout(jpPropertyName = GRANT + AFTER, layout = LAYOUT_C)
-	private Optional<SpecialLeaveRemainingNumberDto> remainingNumberAfterGrantOpt;
+	private SpecialLeaveRemainingNumberDto remainingNumberAfterGrantOpt;
 
 	public static SpecialLeaveRemainingNumberInfoDto from(SpecialLeaveRemainingNumberInfo domain) {
 
 		return new SpecialLeaveRemainingNumberInfoDto(SpecialLeaveRemainingNumberDto.from(domain.getRemainingNumber()),
-				SpecialLeaveRemainingNumberDto.from(domain.getRemainingNumberBeforeGrant()),
-				domain.getRemainingNumberAfterGrantOpt().map(x -> SpecialLeaveRemainingNumberDto.from(x)));
+														SpecialLeaveRemainingNumberDto.from(domain.getRemainingNumberBeforeGrant()),
+														SpecialLeaveRemainingNumberDto.from(domain.getRemainingNumberAfterGrantOpt().orElse(null)));
 	}
 
 	public SpecialLeaveRemainingNumberInfo toDomain() {
-		return new SpecialLeaveRemainingNumberInfo(remainingNumber.toDomain(), remainingNumberBeforeGrant.toDomain(),
-				remainingNumberAfterGrantOpt.map(x -> x.toDomain()));
+		return new SpecialLeaveRemainingNumberInfo(
+				remainingNumber == null ? new SpecialLeaveRemainingNumber() : remainingNumber.toDomain(), 
+				remainingNumberBeforeGrant == null ? new SpecialLeaveRemainingNumber() : remainingNumberBeforeGrant.toDomain(),
+				Optional.ofNullable(remainingNumberAfterGrantOpt == null ? null : remainingNumberAfterGrantOpt.toDomain()));
 	}
 
 	@Override
@@ -63,13 +66,13 @@ public class SpecialLeaveRemainingNumberInfoDto implements ItemConst, Attendance
 
 		switch (path) {
 		case TOTAL:
-			return Optional.of(this.remainingNumber);
+			return Optional.ofNullable(this.remainingNumber);
 
 		case GRANT + BEFORE:
-			return Optional.of(this.remainingNumberBeforeGrant);
+			return Optional.ofNullable(this.remainingNumberBeforeGrant);
 
 		case GRANT + AFTER:
-			return this.remainingNumberAfterGrantOpt.map(x -> (SpecialLeaveRemainingNumberDto) x);
+			return Optional.ofNullable(this.remainingNumberAfterGrantOpt);
 
 		default:
 			return Optional.empty();
@@ -87,8 +90,7 @@ public class SpecialLeaveRemainingNumberInfoDto implements ItemConst, Attendance
 			this.remainingNumberBeforeGrant = (SpecialLeaveRemainingNumberDto) value;
 			break;
 		case GRANT + AFTER:
-			this.remainingNumberAfterGrantOpt = Optional
-					.ofNullable(value == null ? null : (SpecialLeaveRemainingNumberDto) value);
+			this.remainingNumberAfterGrantOpt = (SpecialLeaveRemainingNumberDto) value;
 			break;
 		}
 

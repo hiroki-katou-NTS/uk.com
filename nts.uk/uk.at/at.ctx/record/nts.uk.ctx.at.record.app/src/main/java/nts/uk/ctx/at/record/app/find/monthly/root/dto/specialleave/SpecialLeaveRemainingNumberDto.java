@@ -36,24 +36,31 @@ public class SpecialLeaveRemainingNumberDto implements ItemConst, AttendanceItem
 	/** 合計残時間 */
 	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_B)
 	@AttendanceItemValue(type = ValueType.TIME)
-	public Optional<Integer> timeOfRemain;
+	public Integer timeOfRemain;
 
 	/** 明細 */
 	private List<SpecialLeaveRemainingDetailDto> details;
 
 	public static SpecialLeaveRemainingNumberDto from(SpecialLeaveRemainingNumber dom) {
+		if (dom == null) {
+			return null;
+		}
 
-		return new SpecialLeaveRemainingNumberDto(dom.getDayNumberOfRemain().v(), dom.getTimeOfRemain().map(x -> x.v()),
+		return new SpecialLeaveRemainingNumberDto(
+				dom.getDayNumberOfRemain().v(), 
+				dom.getTimeOfRemain().map(x -> x.v()).orElse(null),
 				dom.getDetails().stream().map(x -> new SpecialLeaveRemainingDetailDto(x.getGrantDate(), x.getDays().v(),
-						x.getTime().map(y -> y.v()))).collect(Collectors.toList()));
+																						x.getTime().map(y -> y.v()).orElse(null)))
+										.collect(Collectors.toList()));
 
 	}
 
 	public SpecialLeaveRemainingNumber toDomain() {
 		return new SpecialLeaveRemainingNumber(new DayNumberOfRemain(dayNumberOfRemain),
-				timeOfRemain.map(x -> new TimeOfRemain(x)),
+				Optional.ofNullable(timeOfRemain == null ? null : new TimeOfRemain(timeOfRemain)),
 				details.stream().map(x -> SpecialLeaveRemainingDetail.of(x.getGrantDate(),
-						new DayNumberOfRemain(x.getDays()), x.getTime().map(y -> new TimeOfRemain(y))))
+																		new DayNumberOfRemain(x.getDays()), 
+																		Optional.ofNullable(x.getTime() == null ? null : new TimeOfRemain(x.getTime()))))
 						.collect(Collectors.toList()));
 	}
 
@@ -76,7 +83,7 @@ public class SpecialLeaveRemainingNumberDto implements ItemConst, AttendanceItem
 			dayNumberOfRemain = value.valueOrDefault(0);
 			break;
 		case TIME:
-			timeOfRemain = Optional.ofNullable(value == null ? null : value.value());
+			timeOfRemain = value.valueOrDefault(null);
 			break;
 		default:
 			break;

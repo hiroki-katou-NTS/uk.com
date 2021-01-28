@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.app.find.monthly.root.dto.specialleave;
 
-import java.util.Optional;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,6 +21,6 @@ public class SpecialLeaveRemainingDetailDto implements ItemConst, AttendanceItem
 	/** 日数 */
 	private double days;
 	/** 時間 */
-	private Optional<Integer> time;
+	private Integer time;
 
 }

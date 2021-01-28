@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUseNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUsedInfo;
 
 /**
@@ -42,7 +43,7 @@ public class SpecialLeaveUsedInfoDto implements ItemConst, AttendanceItemDataGat
 
 	/** 付与後 */
 	@AttendanceItemLayout(jpPropertyName = GRANT + AFTER, layout = LAYOUT_C)
-	private Optional<SpecialLeaveUseNumberDto> usedNumberAfterGrantOpt;
+	private SpecialLeaveUseNumberDto usedNumberAfterGrantOpt;
 
 	public static SpecialLeaveUsedInfoDto from(SpecialLeaveUsedInfo usedNumberInfo) {
 		return new SpecialLeaveUsedInfoDto(SpecialLeaveUseNumberDto.from(usedNumberInfo.getUsedNumber()),
@@ -50,13 +51,15 @@ public class SpecialLeaveUsedInfoDto implements ItemConst, AttendanceItemDataGat
 				usedNumberInfo.getSpecialLeaveUsedTimes() == null ? 0 : usedNumberInfo.getSpecialLeaveUsedTimes().v(),
 				usedNumberInfo.getSpecialLeaveUsedDayTimes() == null ? 0
 						: usedNumberInfo.getSpecialLeaveUsedDayTimes().v(),
-				usedNumberInfo.getUsedNumberAfterGrantOpt().map(x -> SpecialLeaveUseNumberDto.from(x)));
+				usedNumberInfo.getUsedNumberAfterGrantOpt().map(x -> SpecialLeaveUseNumberDto.from(x)).orElse(null));
 	}
 
 	public SpecialLeaveUsedInfo toDomain() {
-		return new SpecialLeaveUsedInfo(usedNumber.toDomain(), usedNumberBeforeGrant.toDomain(),
+		return new SpecialLeaveUsedInfo(
+				usedNumber == null ? new SpecialLeaveUseNumber() : usedNumber.toDomain(), 
+				usedNumberBeforeGrant == null ? new SpecialLeaveUseNumber() : usedNumberBeforeGrant.toDomain(),
 				new UsedTimes(specialLeaveUsedTimes), new UsedTimes(specialLeaveUsedDayTimes),
-				usedNumberAfterGrantOpt.map(x -> x.toDomain()));
+				Optional.ofNullable(usedNumberAfterGrantOpt == null ? null : usedNumberAfterGrantOpt.toDomain()));
 	}
 
 	@Override
@@ -79,13 +82,13 @@ public class SpecialLeaveUsedInfoDto implements ItemConst, AttendanceItemDataGat
 
 		switch (path) {
 		case TOTAL:
-			return Optional.of(this.usedNumber);
+			return Optional.ofNullable(this.usedNumber);
 
 		case GRANT + BEFORE:
-			return Optional.of(this.usedNumberBeforeGrant);
+			return Optional.ofNullable(this.usedNumberBeforeGrant);
 
 		case GRANT + AFTER:
-			return this.usedNumberAfterGrantOpt.map(x -> (SpecialLeaveUseNumberDto) x);
+			return Optional.ofNullable(this.usedNumberAfterGrantOpt);
 
 		default:
 			return Optional.empty();
@@ -105,7 +108,7 @@ public class SpecialLeaveUsedInfoDto implements ItemConst, AttendanceItemDataGat
 			break;
 
 		case GRANT + AFTER:
-			this.usedNumberAfterGrantOpt = Optional.ofNullable(value == null ? null : (SpecialLeaveUseNumberDto) value);
+			this.usedNumberAfterGrantOpt = (SpecialLeaveUseNumberDto) value;
 			break;
 		}
 
