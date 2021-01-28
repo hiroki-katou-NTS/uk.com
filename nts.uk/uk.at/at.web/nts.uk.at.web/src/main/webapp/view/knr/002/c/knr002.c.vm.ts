@@ -77,6 +77,7 @@ module nts.uk.at.view.knr002.c {
                 });
 
                 vm.currentCode2.subscribe((value) => {
+                    vm.clearError();
                     console.time('C4_4');
                     let rowData: RemoteSettingsDto = ko.toJS(vm.smallItemData).filter((item: RemoteSettingsDto) => item.smallClassification == value)[0]; 
                     vm.smallClassificationName(rowData.smallClassification);
@@ -97,6 +98,7 @@ module nts.uk.at.view.knr002.c {
                 
                 switch(vm.inputMode()) {
                     case INPUT_TYPE.LETTER:
+                        
                         $('#C6_5').focus();
                         let inputRange = rowData.inputRange.split(':');
                         vm.fromLetter(inputRange[0]);
@@ -161,6 +163,7 @@ module nts.uk.at.view.knr002.c {
                         vm.selectedUpdateValue(rowData.updateValue);  
                         break;
                     case INPUT_TYPE.CHECK:
+                        
                         let inputRangeArrCheck = rowData.inputRange.split('/');
                         vm.currentValueList(inputRangeArrCheck.map((item: any, index: number) => new BoxModel(item.charAt(0), item.substring(2, item.length -1), rowData.currentValue.indexOf(item.charAt(0)) !== -1 ? true : false)));
                         if (rowData.updateValue.length == 0) {
@@ -274,11 +277,12 @@ module nts.uk.at.view.knr002.c {
                     return;
                 }
 
-                let checkLength = vm.settingData.length;
-
                 switch(vm.inputMode()) {
                     case INPUT_TYPE.LETTER:
                     case INPUT_TYPE.TIME:  
+                        if (!(vm.updateValue().length > 0)) {
+                            break;
+                        }
                         vm.checkExistBeforeAdd(vm.rowData().smallClassification);
                         let item = new SettingValue(Math.random(), vm.rowData().majorClassification, vm.rowData().smallClassification, vm.updateValue(), vm.rowData().inputRange, vm.rowData().variableName);
                         vm.settingData.push(item);     
@@ -289,6 +293,12 @@ module nts.uk.at.view.knr002.c {
                         vm.settingData.push(item6);     
                         break;    
                     case INPUT_TYPE.IP:
+                        if (!vm.checkIpAddress(vm.ipAddress1()) || !vm.checkIpAddress(vm.ipAddress2()) || !vm.checkIpAddress(vm.ipAddress3()) || !vm.checkIpAddress(vm.ipAddress4())) {
+                            nts.uk.ui.dialog.error({messageId: "Msg_2036"}).then(()=>{
+                                return;
+                            });
+                            break;
+                        }
                         vm.checkExistBeforeAdd(vm.rowData().smallClassification);
                         let item2 = new SettingValue(Math.random(), vm.rowData().majorClassification, vm.rowData().smallClassification, vm.ipUpdateValue(), '', vm.rowData().variableName);
                         vm.settingData.push(item2);     
@@ -412,17 +422,9 @@ module nts.uk.at.view.knr002.c {
 
                 $('#C6_5').ntsEditor("validate");
 
-                // if (!vm.checkIpAddress(vm.ipAddress1()) && !vm.checkIpAddress(vm.ipAddress2()) && !vm.checkIpAddress(vm.ipAddress3()) && !vm.checkIpAddress(vm.ipAddress4())) {
-                //     if ($('.nts-input').ntsError('hasError')) {
-                //         return true;
-                //     }
-                //     return false;
+                // if (vm.inputMode() == INPUT_TYPE.IP) {
+                    
                 // }
-
-                if (!vm.checkIpAddress(vm.ipAddress1()) || !vm.checkIpAddress(vm.ipAddress2()) || !vm.checkIpAddress(vm.ipAddress3()) || !vm.checkIpAddress(vm.ipAddress4())) {
-                    nts.uk.ui.dialog.error({messageId: "Msg_2036"})
-                    return true;
-                }
 
                 return false;
             }
