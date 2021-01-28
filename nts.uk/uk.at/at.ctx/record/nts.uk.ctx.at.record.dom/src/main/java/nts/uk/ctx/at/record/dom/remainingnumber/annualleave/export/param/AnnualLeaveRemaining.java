@@ -43,7 +43,7 @@ public class AnnualLeaveRemaining implements Cloneable {
 	 * コンストラクタ
 	 */
 	public AnnualLeaveRemaining(){
-		
+
 		this.annualLeaveNoMinus = new AnnualLeave();
 		this.annualLeaveWithMinus = new AnnualLeave();
 		this.halfDayAnnualLeaveNoMinus = Optional.empty();
@@ -52,7 +52,7 @@ public class AnnualLeaveRemaining implements Cloneable {
 		this.timeAnnualLeaveWithMinus = Optional.empty();
 		this.annualLeaveUndigestNumber = Optional.empty();
 	}
-	
+
 	/**
 	 * ファクトリー
 	 * @param annualLeaveNoMinus 年休（マイナスなし）
@@ -71,7 +71,7 @@ public class AnnualLeaveRemaining implements Cloneable {
 			Optional<AnnualLeaveMaxRemainingTime> timeAnnualLeaveNoMinus,
 			Optional<AnnualLeaveMaxRemainingTime> timeAnnualLeaveWithMinus,
 			Optional<AnnualLeaveUndigestNumber> annualLeaveUndigestNumber){
-		
+
 		AnnualLeaveRemaining domain = new AnnualLeaveRemaining();
 		domain.annualLeaveNoMinus = annualLeaveNoMinus;
 		domain.halfDayAnnualLeaveNoMinus = halfDayAnnualLeaveNoMinus;
@@ -81,7 +81,7 @@ public class AnnualLeaveRemaining implements Cloneable {
 		domain.annualLeaveUndigestNumber = annualLeaveUndigestNumber;
 		return domain;
 	}
-	
+
 	@Override
 	public AnnualLeaveRemaining clone() {
 		AnnualLeaveRemaining cloned = new AnnualLeaveRemaining();
@@ -109,7 +109,7 @@ public class AnnualLeaveRemaining implements Cloneable {
 		}
 		return cloned;
 	}
-	
+
 	/**
 	 * 年休付与情報を更新
 	 * @param remainingDataList 年休付与残数データリスト
@@ -117,37 +117,37 @@ public class AnnualLeaveRemaining implements Cloneable {
 	 */
 	public void updateRemainingNumber(
 			List<AnnualLeaveGrantRemaining> remainingDataList, boolean afterGrantAtr){
-		
+
 		// 年休付与残数データから年休（マイナスあり）を作成
 		this.annualLeaveWithMinus.createRemainingNumberFromGrantRemaining(remainingDataList, afterGrantAtr);
-		
+
 		// 年休（マイナスなし）を年休（マイナスあり）で上書き　＆　年休からマイナスを削除
 		this.annualLeaveNoMinus = updateRemainingNumberNoMinus(this.annualLeaveWithMinus);
-		
+
 	}
-	
+
 	/**
-	 * 特別休暇付与残数データから特別休暇の特別休暇残数を作成
-	 * @param annualLeaveWithMinus 特休（マイナスあり）
+	 * 年休付与残数データから年休の年休残数を作成
+	 * @param annualLeaveWithMinus 年休（マイナスあり）
 	 */
 	private AnnualLeave updateRemainingNumberNoMinus(AnnualLeave annualLeaveWithMinus){
-		
-		// 特休（マイナスなし）を特休（マイナスあり）で上書き
+
+		// 年休（マイナスなし）を年休（マイナスあり）で上書き
 		AnnualLeave annualLeaveNoMinus = annualLeaveWithMinus.clone();
-		
-		// 特休からマイナスを削除
-		// 「特別休暇．残数」「特別休暇．残数付与前」「特別休暇．残数付与後」をそれぞれ処理
-		
+
+		// 年休からマイナスを削除
+		// 「年休．残数」「年休．残数付与前」「年休．残数付与後」をそれぞれ処理
+
 		// 残数
 		updateRemainingNumberWithMinusToNoMinus(
 				annualLeaveNoMinus.getRemainingNumberInfo().getRemainingNumber(),
 				annualLeaveNoMinus.getUsedNumberInfo().getUsedNumber());
-		
+
 		// 残数付与前
 		updateRemainingNumberWithMinusToNoMinus(
 				annualLeaveNoMinus.getRemainingNumberInfo().getRemainingNumberBeforeGrant(),
 				annualLeaveNoMinus.getUsedNumberInfo().getUsedNumberBeforeGrant());
-		
+
 		// 残数付与後
 		if ( annualLeaveNoMinus.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().isPresent()
 				&& annualLeaveNoMinus.getUsedNumberInfo().getUsedNumberAfterGrantOpt().isPresent() ){
@@ -155,31 +155,31 @@ public class AnnualLeaveRemaining implements Cloneable {
 				annualLeaveNoMinus.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().get(),
 				annualLeaveNoMinus.getUsedNumberInfo().getUsedNumberAfterGrantOpt().get());
 		}
-		
+
 		return annualLeaveNoMinus;
 	}
-	
+
 	/**
-	 * 特休（マイナスあり）を特休（マイナスなし）に変換
-	 * @param annualLeaveRemainingNumber　特別休暇残数
-	 * @param AnnualLeaveUseNumber　特別休暇使用数
+	 * 年休（マイナスあり）を年休（マイナスなし）に変換
+	 * @param annualLeaveRemainingNumber　年休残数
+	 * @param AnnualLeaveUseNumber　年休使用数
 	 */
 	private void updateRemainingNumberWithMinusToNoMinus(
 			AnnualLeaveRemainingNumber annualLeaveRemainingNumber,
 			AnnualLeaveUsedNumber annualLeaveUsedNumber){
-			
-		// パラメータ「特別休暇残数．合計残日数」と「特別休暇残数．合計残時間」をチェック
-		
+
+		// パラメータ「年休残数．合計残日数」と「年休残数．合計残時間」をチェック
+
 		// 合計残日数<0　or 合計残時間 < 0
 		double remainDays = annualLeaveUsedNumber.getUsedDays().map(c -> c.v()).orElse(0d);
 		int remainTimes = 0;
 		if ( annualLeaveRemainingNumber.getTotalRemainingTime().isPresent() ){
 			remainTimes = annualLeaveRemainingNumber.getTotalRemainingTime().get().v();
 		}
-		
+
 		if ( remainDays < 0 || remainTimes < 0 ){
-			
-			// 特別休暇．使用数からマイナス分を引く
+
+			// 年休．使用数からマイナス分を引く
 			if ( remainDays < 0 ){
 				double useDays = annualLeaveUsedNumber.getUsedDays().map(c -> c.v()).orElse(0d) + remainDays;
 				annualLeaveUsedNumber.setUsedDays(Optional.of(new AnnualLeaveUsedDayNumber(useDays)));
@@ -190,23 +190,23 @@ public class AnnualLeaveRemaining implements Cloneable {
 					annualLeaveUsedNumber.setUsedTime(Optional.of(new UsedMinutes(useTimes)));
 				}
 			}
-			
-			// 特別休暇残数．明細を取得
+
+			// 年休残数．明細を取得
 			List<AnnualLeaveRemainingDetail> detailList
 				= annualLeaveRemainingNumber.getDetails();
-			
-			// 取得した特別休暇残明細でループ
+
+			// 取得した年休残明細でループ
 			detailList.forEach(c->{
-				// 特別休暇残明細．日数←0
+				// 年休残明細．日数←0
 				c.setDays(new AnnualLeaveRemainingDayNumber(0.0));
-				// 特別休暇残明細.時間 ← 0
+				// 年休残明細.時間 ← 0
 				c.setTime(Optional.of(new AnnualLeaveRemainingTime(0)));
 			});
-			
-			// 特別休暇．残数．合計残日数←0
+
+			// 年休．残数．合計残日数←0
 			annualLeaveRemainingNumber.setTotalRemainingDays(new AnnualLeaveRemainingDayNumber(0.0));
-			
-			// 特別休暇．残数．合計残時間←0
+
+			// 年休．残数．合計残時間←0
 			annualLeaveRemainingNumber.setTotalRemainingTime(Optional.of(new AnnualLeaveRemainingTime(0)));
 		}
 	}

@@ -1,55 +1,44 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedTime;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedDayNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUseDays;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUseTimes;
 
 @Getter
 @Setter
 // 特別休暇使用数
-public class SpecialLeaveUsedNumber extends LeaveUsedNumber{
+public class SpecialLeaveUsedNumber{
 
-//	/**
-//	 * 日数
-//	 */
-//	public DayNumberOfUse dayNumberOfUse;
-//	
-//	/**
-//	 * 時間
-//	 */
-//	public Optional<TimeOfUse> timeOfUse;
-//	
-//	/**
-//	 * 積み崩し日数
-//	 */
-//	public Optional<DayNumberOfUse> useSavingDays;
-//	
-//	/**
-//	 * 上限超過消滅日数
-//	 */
-//	public Optional<SpecialLeaveOverNumber> specialLeaveOverLimitNumber;
+	/**
+	 * 使用日数
+	 */
+	private SpecialLeaveUseDays useDays;
 
+	/**
+	 * 使用時間
+	 */
+	private Optional<SpecialLeaveUseTimes> useTimes;
+	
+	/**
+	 * 積み崩し日数
+	 */
+	private Optional<SpecialLeaveUseDays> useSavingDay;
+	
+	
+	/**
+	 * 積み崩し日数
+	 */
+	private Optional<SpecialLeaveOverNumber> specialLeaveOverLimitNumber;
+	
 
-	public SpecialLeaveUsedNumber(double days, Integer minutes, Double stowageDays) {
-		this.days = new LeaveUsedDayNumber(days);
-		this.minutes = minutes != null ? Optional.of(new AnnualLeaveUsedTime(minutes)) : Optional.empty();
-		this.stowageDays = stowageDays != null ? Optional.of(new AnnualLeaveUsedDayNumber(stowageDays))
-				: Optional.empty();
-	}
-
-	public static SpecialLeaveUsedNumber createFromJavaType(
-			double days, Integer minutes, Double stowageDays) {
-		return new SpecialLeaveUsedNumber(days, minutes, stowageDays);
+	public SpecialLeaveUsedNumber() {
+		useDays = new SpecialLeaveUseDays(0.0);
+		useTimes = Optional.empty();
+		this.useSavingDay = Optional.empty();
+		this.specialLeaveOverLimitNumber = Optional.empty();
 	}
 
 }

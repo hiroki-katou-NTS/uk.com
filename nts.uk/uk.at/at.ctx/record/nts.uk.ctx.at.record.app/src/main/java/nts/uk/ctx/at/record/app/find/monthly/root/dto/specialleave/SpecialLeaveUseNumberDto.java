@@ -40,13 +40,13 @@ public class SpecialLeaveUseNumberDto implements ItemConst, AttendanceItemDataGa
 	private SpecialLeaveUseTimesDto useTimes;
 
 	public static SpecialLeaveUseNumberDto from(SpecialLeaveUseNumber usedNumberInfo) {
-		return new SpecialLeaveUseNumberDto(new SpecialLeaveUseDaysDto(usedNumberInfo.getUseDays().getUseDays().v()),
+		return new SpecialLeaveUseNumberDto(usedNumberInfo.getUseDays().map(x -> new SpecialLeaveUseDaysDto(x.v())).orElse(null),
 								usedNumberInfo.getUseTimes().map(x -> new SpecialLeaveUseTimesDto(x.getUseTimes().v())).orElse(null));
 	}
 
 	public SpecialLeaveUseNumber toDomain() {
 		return new SpecialLeaveUseNumber(
-				useDays == null ? new SpecialLeaveUseDays() : new SpecialLeaveUseDays(new SpecialLeaveRemainDay(useDays.getUseDays())),
+				useDays == null ? Optional.of(new SpecialLeaveUseDays(0.0)) : Optional.of(new SpecialLeaveUseDays((useDays.getUseDays()))),
 				Optional.ofNullable(useTimes == null ? null : new SpecialLeaveUseTimes(new SpecialLeavaRemainTime(useTimes.getUseTimes()))));
 	}
 

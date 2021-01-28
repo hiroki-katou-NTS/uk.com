@@ -4,13 +4,12 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.gul.serialize.binary.SerializableWithOptional;
 
 /**
- * 特別休暇使用数
+ * 特別休暇使用
  * @author do_dt
  *
  */
@@ -27,7 +26,7 @@ public class SpecialLeaveUseNumber extends DomainObject implements Cloneable, Se
 	/**
 	 * 使用日数
 	 */
-	private SpecialLeaveUseDays useDays;
+	private Optional<SpecialLeaveUseDays> useDays;
 
 	/**
 	 * 使用時間
@@ -35,7 +34,7 @@ public class SpecialLeaveUseNumber extends DomainObject implements Cloneable, Se
 	private Optional<SpecialLeaveUseTimes> useTimes;
 
 	public SpecialLeaveUseNumber() {
-		useDays = new SpecialLeaveUseDays();
+		useDays = Optional.empty();
 		useTimes = Optional.empty();
 	}
 
@@ -46,7 +45,7 @@ public class SpecialLeaveUseNumber extends DomainObject implements Cloneable, Se
 	 */
 	public SpecialLeaveUseNumber(
 			SpecialLeaveUseDays useDays, SpecialLeaveUseTimes useTimes) {
-		this(useDays, Optional.ofNullable(useTimes));
+		this(Optional.ofNullable(useDays), Optional.ofNullable(useTimes));
 	}
 
 	/**
@@ -54,7 +53,7 @@ public class SpecialLeaveUseNumber extends DomainObject implements Cloneable, Se
 	 * @param useTimes
 	 */
 	static public SpecialLeaveUseNumber of(
-			double useDays_in, Integer useTimes_in) {
+			Double useDays_in, Integer useTimes_in) {
 
 		Optional<SpecialLeaveUseTimes> useTimes = Optional.empty();
 
@@ -64,7 +63,7 @@ public class SpecialLeaveUseNumber extends DomainObject implements Cloneable, Se
 
 		SpecialLeaveUseNumber specialLeaveUseNumber
 			= new SpecialLeaveUseNumber(
-					SpecialLeaveUseDays.of(new SpecialLeaveRemainDay(useDays_in)),
+					useDays_in == null ? Optional.empty() : Optional.of(new SpecialLeaveUseDays(useDays_in)),
 					useTimes);
 
 		return specialLeaveUseNumber;
@@ -92,7 +91,7 @@ public class SpecialLeaveUseNumber extends DomainObject implements Cloneable, Se
 	 * @return 年休使用数
 	 */
 	public static SpecialLeaveUseNumber of(
-			SpecialLeaveUseDays usedDays,
+			Optional<SpecialLeaveUseDays> usedDays,
 			Optional<SpecialLeaveUseTimes> usedTime){
 
 		SpecialLeaveUseNumber domain = new SpecialLeaveUseNumber();
@@ -105,7 +104,7 @@ public class SpecialLeaveUseNumber extends DomainObject implements Cloneable, Se
 	public SpecialLeaveUseNumber clone() {
 		SpecialLeaveUseNumber cloned = new SpecialLeaveUseNumber();
 
-		cloned.useDays = this.useDays.clone();
+		cloned.useDays = this.useDays.map(x -> new SpecialLeaveUseDays(x.v()));
 		if (this.useTimes.isPresent()){
 			cloned.useTimes = Optional.of(this.useTimes.get().clone());
 		}
@@ -117,7 +116,9 @@ public class SpecialLeaveUseNumber extends DomainObject implements Cloneable, Se
 	 */
 	public void addUsedNumber(SpecialLeaveUseNumber usedNumber){
 
-		this.useDays.addUseDays(usedNumber.getUseDays());
+		this.useDays = this.useDays.isPresent()
+				? Optional.of(new SpecialLeaveUseDays(this.useDays.get().v() + usedNumber.getUseDays().map(x -> x.v()).orElse(0.0)))
+				: Optional.of(new SpecialLeaveUseDays(usedNumber.getUseDays().map(x -> x.v()).orElse(0.0)));
 
 		if ( usedNumber.getUseTimes().isPresent()){
 			if (this.useTimes.isPresent()){

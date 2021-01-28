@@ -15,7 +15,7 @@ public class NextDayAfterPeriodEndWork {
 	private boolean  nextPeriodEndAtr;
 
 	/**
-	 * コンストラクタ　AnnualLeaveRemainingNumber
+	 * コンストラクタ
 	 */
 	public NextDayAfterPeriodEndWork(){
 		this.periodEndAtr = false;
