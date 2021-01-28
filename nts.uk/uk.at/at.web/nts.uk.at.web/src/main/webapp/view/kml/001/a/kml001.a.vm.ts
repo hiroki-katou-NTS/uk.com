@@ -71,7 +71,7 @@ module nts.uk.at.view.kml001.a {
           nts.uk.ui.errors.clearAll();
           if( newValue === 1) self.setPremiumTo100();
         });
-
+        
         self.getDefaultPremiumSetting();
       }
 

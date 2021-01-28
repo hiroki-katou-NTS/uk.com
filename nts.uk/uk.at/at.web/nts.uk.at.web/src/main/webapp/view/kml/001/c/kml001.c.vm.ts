@@ -104,7 +104,10 @@ module nts.uk.at.view.kml001.c {
           });          
         })
         .fail((error) => {
-          self.$blockui('hide');
+          self.$dialog.error({ messageId: error.messageId}).then( () => {   
+            $('#startDateInput').focus();
+            self.$blockui('hide');
+          });
         });
       }
     }
