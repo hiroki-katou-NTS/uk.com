@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @Table(name = "KMLST_PREMIUM_SET")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KmlspPremiumSet extends UkJpaEntity implements Serializable {
+public class KmlstPremiumSet extends UkJpaEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -41,9 +41,9 @@ public class KmlspPremiumSet extends UkJpaEntity implements Serializable {
         return pk;
     }
 
-    public static List<KmlspPremiumSet> toEntity(PersonCostCalculation domain, String histId) {
+    public static List<KmlstPremiumSet> toEntity(PersonCostCalculation domain, String histId) {
         return domain.getPremiumSettings().stream().map(e ->
-                new KmlspPremiumSet(
+                new KmlstPremiumSet(
                         new KmlspPremiumSetPK(domain.getCompanyID(), histId, e.getID().value),
                         e.getRate().v(),
                         e.getUnitPrice().value

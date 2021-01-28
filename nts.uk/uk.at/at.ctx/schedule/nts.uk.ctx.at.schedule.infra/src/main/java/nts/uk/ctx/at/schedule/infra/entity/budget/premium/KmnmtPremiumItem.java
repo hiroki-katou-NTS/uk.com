@@ -36,7 +36,7 @@ public class KmnmtPremiumItem extends UkJpaEntity {
 //		@PrimaryKeyJoinColumn(name="CID",referencedColumnName="CID"),
 //		@PrimaryKeyJoinColumn(name="PREMIUM_NO",referencedColumnName="PREMIUM_NO")
 //    })
-//	public KmlspPremiumSet kmlstPremiumSet;
+//	public KmlstPremiumSet kmlstPremiumSet;
 
 	@Override
 	protected Object getKey() {
