@@ -19,20 +19,20 @@ import java.util.stream.Collectors;
 @Setter
 @Entity
 @Table(name = "KMLDT_PREMIUM_ATTENDANCE")
-public class KscmtPerCostPremium extends UkJpaEntity {
+public class KmldtPremiumAttendance extends UkJpaEntity {
     @EmbeddedId
-    public KscmtPerCostPremiumPk kscmtPerCostPremiumPk;
+    public KmldtPremiumAttendancePk kmldtPremiumAttendancePk;
     @Override
     protected Object getKey() {
-        return kscmtPerCostPremiumPk;
+        return kmldtPremiumAttendancePk;
     }
 
-    public static List<KscmtPerCostPremium> toEntity(List<PremiumSetting> premiumSettings, String histId) {
-        List<KscmtPerCostPremium> rs = new ArrayList<>();
+    public static List<KmldtPremiumAttendance> toEntity(List<PremiumSetting> premiumSettings, String histId) {
+        List<KmldtPremiumAttendance> rs = new ArrayList<>();
         premiumSettings.forEach(
                 e -> {
-                    rs.addAll(e.getAttendanceItems().stream().map(i -> new KscmtPerCostPremium(
-                            new KscmtPerCostPremiumPk(
+                    rs.addAll(e.getAttendanceItems().stream().map(i -> new KmldtPremiumAttendance(
+                            new KmldtPremiumAttendancePk(
                                     e.getCompanyID(),
                                     histId,
                                     e.getID().value,

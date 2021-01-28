@@ -11,7 +11,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
-public class KscmtPerCostCalcPk implements Serializable {
+public class KmlmtCostCalcSetPk implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Column(name = "CID")
