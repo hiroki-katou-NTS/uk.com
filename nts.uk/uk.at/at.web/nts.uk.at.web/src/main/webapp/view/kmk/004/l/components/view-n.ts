@@ -165,7 +165,7 @@ module nts.uk.at.view.kmk004.l {
 				alreadySettingList: vm.alreadySettingList,
 				maxRows: 12,
 				isDisplayClosureSelection: true,
-				isDisplayFullClosureOption: true,
+				isDisplayFullClosureOption: false,
 				closureSelectionType: ko.observable(null),
 				selectedClosureId: vm.selectedClosureId,
 			};
