@@ -87,7 +87,12 @@ module nts.uk.com.view.ccg008.a.Layout1ComponentViewModel {
 
     mounted() {
       const ifr = document.getElementById('preview-iframe1');
-      const ifrParent = $('.contents_layout');
+      let ifrParent: any;
+      if($('.contents_layout_ccg015')[0]) {
+        ifrParent = $('.contents_layout_ccg015');
+      } else {
+        ifrParent = $('.contents_layout');
+      }
       const height = ifrParent.innerHeight() - 10;
       (ifr as any).height = `${height.toString()}px`;
     }
