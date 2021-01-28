@@ -11,14 +11,4 @@ module nts.uk.com.view.ccg034.share.model {
     static CENTER = 1;
     static BOTTOM = 2;
   }
-
-  export function copyFile(fileId: string): string {
-    const newFileId = nts.uk.util.randomId();
-    nts.uk.request.ajax("/shr/infra/file/storage/infor/" + fileId)
-      .done((fileInfo: any) => {
-        fileInfo.id = newFileId;
-        nts.uk.request.ajax("/ntscommons/arc/filegate/upload", fileInfo);
-      });
-    return newFileId;
-  }
 }
