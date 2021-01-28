@@ -205,7 +205,7 @@ module nts.uk.at.view.kmk004.l {
 					vm.getEmployeeIds();
 					if (employees.length) {
 						vm.selectedCode(employees[0].code);
-						$('.listbox').focus();
+						$('#list-box').focus();
 						if (employees.length > 300) {
 							vm.initEmployeeList();
 						}
@@ -309,7 +309,7 @@ module nts.uk.at.view.kmk004.l {
 					vm.initBtnEnable(true);
 
 					vm.getBtnContent();
-					$('.listbox').focus();
+					$('#list-box').focus();
 				});
 			});
 		}
@@ -402,7 +402,7 @@ module nts.uk.at.view.kmk004.l {
 							}).then(() => vm.$dialog.info({ messageId: "Msg_15" }))
 								.then(() => {
 									$(document).ready(() => {
-										$('.listbox').focus();
+										$('#list-box').focus();
 									});
 								}).always(() => {
 									vm.$errors('clear');
@@ -439,14 +439,14 @@ module nts.uk.at.view.kmk004.l {
 						.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
 						.then(() => {
 							$(document).ready(() => {
-								$('.listbox').focus();
+								$('#list-box').focus();
 							});
 						}).then(() => {
 							vm.$errors('clear');
 						}).always(() => vm.$blockui("clear"));
 				}).ifNo(() => {
                     $(document).ready(() => {
-						$('.listbox').focus();
+						$('#list-box').focus();
 					});
                 });
 		}
@@ -480,7 +480,7 @@ module nts.uk.at.view.kmk004.l {
 					}));
 				}).then(() => {
 					$(document).ready(() => {
-						$('.listbox').focus();
+						$('#list-box').focus();
 					});
 				}).always(() => { vm.$blockui("clear"); });
 			});

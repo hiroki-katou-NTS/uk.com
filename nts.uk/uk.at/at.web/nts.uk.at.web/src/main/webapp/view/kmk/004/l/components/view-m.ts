@@ -214,7 +214,7 @@ module nts.uk.at.view.kmk004.l {
 					vm.params.titleName = vm.selectedItemText();
 					vm.selectedIdParam(data);
 					vm.getBtnContent();
-					$('.listbox').focus();
+					$('#list-box').focus();
 				});
 
 				vm.selectedId.valueHasMutated();
@@ -245,7 +245,7 @@ module nts.uk.at.view.kmk004.l {
 		}
 		mounted() {
 			$(document).ready(() => {
-				$('.listbox').focus();
+				$('#list-box').focus();
 			});
 		}
 
@@ -274,7 +274,7 @@ module nts.uk.at.view.kmk004.l {
 				}).then(() => vm.$dialog.info({ messageId: "Msg_15" }))
 					.then(() => {
 						$(document).ready(() => {
-							$('.listbox').focus();
+							$('#list-box').focus();
 						});
 					}).always(() => {
 						vm.$errors('clear');
@@ -312,14 +312,14 @@ module nts.uk.at.view.kmk004.l {
 						.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
 						.then(() => {
 							$(document).ready(() => {
-								$('.listbox').focus();
+								$('#list-box').focus();
 							});
 						}).then(() => {
 							vm.$errors('clear');
 						}).always(() => vm.$blockui("clear"));
 				}).ifNo(() => {
                     $(document).ready(() => {
-						$('.listbox').focus();
+						$('#list-box').focus();
 					});
                 });
 		}
@@ -346,7 +346,7 @@ module nts.uk.at.view.kmk004.l {
 					vm.alreadySettingList(_.map(data, (item: string) => { return { workplaceId: item, isAlreadySetting: true } }));
 				}).then(() => {
 					$(document).ready(() => {
-						$('.listbox').focus();
+						$('#list-box').focus();
 					});
 				}).always(() => { vm.$blockui("clear"); });
 			});

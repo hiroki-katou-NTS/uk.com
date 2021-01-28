@@ -224,7 +224,7 @@ module nts.uk.at.view.kmk004.l {
 				vm.selectedId(newValue);
 				
 				vm.getBtnContent();
-				$('.listbox').focus();
+				$('#list-box').focus();
 			});
 
 			$('#empt-list-setting').ntsListComponent(vm.listComponentOption).done(() => {
@@ -278,7 +278,7 @@ module nts.uk.at.view.kmk004.l {
 				}).then(() => vm.$dialog.info({ messageId: "Msg_15" }))
 					.then(() => {
 						$(document).ready(() => {
-							$('.listbox').focus();
+							$('#list-box').focus();
 						})
 					}).always(() => {
 						vm.$errors('clear');
@@ -317,14 +317,14 @@ module nts.uk.at.view.kmk004.l {
 						.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
 						.then(() => {
 							$(document).ready(() => {
-								$('.listbox').focus();
+								$('#list-box').focus();
 							});
 						}).then(() => {
 							vm.$errors('clear');
 						}).always(() => vm.$blockui("clear"));
 				}).ifNo(() => {
                     $(document).ready(() => {
-						$('.listbox').focus();
+						$('#list-box').focus();
 					});
                 });
 		}
@@ -370,7 +370,7 @@ module nts.uk.at.view.kmk004.l {
 					vm.alreadySettingList(_.map(data, (item: string) => { return { code: item, isAlreadySetting: true } }));
 				}).then(() => {
 					$(document).ready(() => {
-						$('.listbox').focus();
+						$('#list-box').focus();
 					});
 				}).always(() => { vm.$blockui("clear"); });
 			});
