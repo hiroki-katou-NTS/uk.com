@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.YearDayNumber;
 
+/**
+ * 年休付与条件情報
+ */
 @Getter
 @Setter
 public class AnnualLeaveConditionInfo implements Serializable{

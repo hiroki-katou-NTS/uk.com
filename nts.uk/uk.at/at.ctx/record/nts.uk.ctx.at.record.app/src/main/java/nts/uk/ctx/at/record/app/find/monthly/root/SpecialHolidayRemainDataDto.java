@@ -22,7 +22,9 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainData;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeave;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveGrantUseDay;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUnDigestion;
 
 @Data
 @NoArgsConstructor
@@ -112,22 +114,15 @@ public class SpecialHolidayRemainDataDto extends MonthlyItemCommon {
 		return new SpecialHolidayRemainData(employeeId, ym, closureID,
 				closureDate == null ? null : closureDate.toDomain(), datePeriod == null ? null : datePeriod.toDomain(),
 				closureStatus == ClosureStatus.PROCESSED.value ? ClosureStatus.PROCESSED : ClosureStatus.UNTREATED, no,
-				actualSpecial.toDomain(), specialLeave.toDomain(),
+				actualSpecial == null ? new SpecialLeave() : actualSpecial.toDomain(), 
+				specialLeave == null ? new SpecialLeave() : specialLeave.toDomain(),
 				Optional.ofNullable(grantDays == null ? null : new SpecialLeaveGrantUseDay(grantDays)), grantAtr,
-				unDigestionData.toDomain());
+				unDigestionData == null ? new SpecialLeaveUnDigestion() : unDigestionData.toDomain());
 	}
 
 	@Override
 	public YearMonth yearMonth() {
 		return ym;
-	}
-
-	@Override
-	public int size(String path) {
-		if (FAKED.equals(path)) {
-			return 20;
-		}
-		return super.size(path);
 	}
 
 	@Override
@@ -144,11 +139,11 @@ public class SpecialHolidayRemainDataDto extends MonthlyItemCommon {
 	public Optional<AttendanceItemDataGate> get(String path) {
 
 		if ((REAL + SPECIAL_HOLIDAY).equals(path)) {
-			return Optional.of(this.actualSpecial);
+			return Optional.ofNullable(this.actualSpecial);
 		} else if (SPECIAL_HOLIDAY.equals(path)) {
-			return Optional.of(this.specialLeave);
+			return Optional.ofNullable(this.specialLeave);
 		} else if (NOT_DIGESTION.equals(path)) {
-			return Optional.of(this.unDigestionData);
+			return Optional.ofNullable(this.unDigestionData);
 		}
 		return super.get(path);
 	}
@@ -204,16 +199,6 @@ public class SpecialHolidayRemainDataDto extends MonthlyItemCommon {
 		default:
 			return super.typeOf(path);
 		}
-	}
-
-	@Override
-	public boolean isRoot() {
-		return true;
-	}
-
-	@Override
-	public String rootName() {
-		return MONTHLY_SPECIAL_HOLIDAY_REMAIN_NAME;
 	}
 
 	@Override

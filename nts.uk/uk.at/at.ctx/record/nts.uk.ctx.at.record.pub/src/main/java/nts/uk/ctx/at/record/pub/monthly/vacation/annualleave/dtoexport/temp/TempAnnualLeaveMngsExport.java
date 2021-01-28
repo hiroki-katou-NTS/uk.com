@@ -24,8 +24,6 @@ public class TempAnnualLeaveMngsExport {
 	private CreateAtrExport creatorAtr;
 	/** 残数種類 */
 	private RemainTypeExport remainType;
-	/** 残数分類 */
-	private RemainAtrExport remainAtr;
 	/** 勤務種類 */
 	private String workTypeCode;
 	/** 年休使用数 */

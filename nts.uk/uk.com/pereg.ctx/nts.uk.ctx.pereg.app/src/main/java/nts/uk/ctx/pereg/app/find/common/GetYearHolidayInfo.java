@@ -106,9 +106,9 @@ public class GetYearHolidayInfo {
 				AppContexts.user().companyId(), baseDate, entryDate, annLea.getGrantDate(), annLea.getGrantTable(),
 				contractTime);
 
-		if (nextAnnualLeave.isPresent()) {
+		if (nextAnnualLeave.isPresent() && nextAnnualLeave.get().getGrantDays().isPresent()) {
 			result = new YearHolidayInfoResult(nextAnnualLeave.get().getGrantDate(),
-					nextAnnualLeave.get().getGrantDays().v(),
+					nextAnnualLeave.get().getGrantDays().get().v(),
 					nextAnnualLeave.get().getTimeAnnualLeaveMaxTime().map(i -> i.v()));
 		}
 		return result;
@@ -185,10 +185,10 @@ public class GetYearHolidayInfo {
 					AppContexts.user().companyId(), baseDate, entryDate, c.getGrantDate(), c.getGrantTable(),
 					contractTime);
 
-			if (nextAnnualLeave.isPresent()) {
+			if (nextAnnualLeave.isPresent() && nextAnnualLeave.get().getGrantDays().isPresent()) {
 				result.put(c.getSid(),
 						NextTimeEventDto.fromDomain(new YearHolidayInfoResult(nextAnnualLeave.get().getGrantDate(),
-								nextAnnualLeave.get().getGrantDays().v(),
+								nextAnnualLeave.get().getGrantDays().get().v(),
 								nextAnnualLeave.get().getTimeAnnualLeaveMaxTime().map(i -> i.v())))
 						);
 				return;

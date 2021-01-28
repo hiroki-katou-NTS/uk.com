@@ -1,28 +1,20 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemaining;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveNumberInfo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveNumberInfo;
 
 @Getter
 //@NoArgsConstructor
 //@AllArgsConstructor
 // 特休付与残数
-public class SpecialLeaveGrantRemainingData extends LeaveGrantRemaining {
+public class SpecialLeaveGrantRemainingData extends LeaveGrantRemainingData {
 
 	/**
 	 * 特別休暇コード
@@ -45,7 +37,6 @@ public class SpecialLeaveGrantRemainingData extends LeaveGrantRemaining {
 			double remainDays,
 			Integer remainMinutes,
 			double usedPercent,
-			boolean dummyAtr,
 			int specialLeaveCode) {
 
 //		boolean check = validate(grantDate, deadline, grantDays, grantMinutes, numberOverdays,
@@ -63,7 +54,6 @@ public class SpecialLeaveGrantRemainingData extends LeaveGrantRemaining {
 					grantDays, grantMinutes, usedDays, usedMinutes,
 					stowageDays, remainDays, remainMinutes, usedPercent);
 
-			domain.dummyAtr = dummyAtr;
 			domain.specialLeaveCode = specialLeaveCode;
 
 			return domain;
@@ -119,7 +109,7 @@ public class SpecialLeaveGrantRemainingData extends LeaveGrantRemaining {
 	}
 
 
-	public static SpecialLeaveGrantRemainingData of(LeaveGrantRemaining remain, int code) {
+	public static SpecialLeaveGrantRemainingData of(LeaveGrantRemainingData remain, int code) {
 		SpecialLeaveGrantRemainingData domain = new SpecialLeaveGrantRemainingData();
 
 		domain.leaveID = remain.getLeaveID();
@@ -131,7 +121,6 @@ public class SpecialLeaveGrantRemainingData extends LeaveGrantRemaining {
 		domain.registerType = remain.getRegisterType();
 		domain.details = remain.getDetails().clone();
 
-		domain.dummyAtr = remain.isDummyAtr();
 		domain.specialLeaveCode = code;
 
 		return domain;

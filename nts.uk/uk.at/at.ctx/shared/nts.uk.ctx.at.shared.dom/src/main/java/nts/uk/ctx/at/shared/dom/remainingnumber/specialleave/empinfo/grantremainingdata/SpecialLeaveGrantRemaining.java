@@ -2,10 +2,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremai
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemaining;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 
 /**
  * 特休付与残数
@@ -14,9 +11,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
 @Getter
 public class SpecialLeaveGrantRemaining extends SpecialLeaveGrantRemainingData {
 
-//	/** 特休不足ダミーフラグ */
-//	@Setter
-//	private boolean dummyAtr = false;
+	/** 特休不足ダミーフラグ */
+	@Setter
+	private boolean dummyAtr = false;
 
 	public SpecialLeaveGrantRemaining(LeaveGrantRemaining parent){
 
@@ -28,6 +25,7 @@ public class SpecialLeaveGrantRemaining extends SpecialLeaveGrantRemainingData {
 		this.expirationStatus = parent.getExpirationStatus();
 		this.registerType = parent.getRegisterType();
 		this.details = parent.getDetails();
+		this.dummyAtr = parent.isDummyAtr();
 
 	}
 
@@ -35,7 +33,7 @@ public class SpecialLeaveGrantRemaining extends SpecialLeaveGrantRemainingData {
 	private SpecialLeaveGrantRemaining() {}
 
 
-	public static SpecialLeaveGrantRemaining of(SpecialLeaveGrantRemainingData data) {
+	public static SpecialLeaveGrantRemaining of(SpecialLeaveGrantRemainingData data, boolean dummyAtr) {
 
 		SpecialLeaveGrantRemaining domain = new SpecialLeaveGrantRemaining();
 
@@ -47,6 +45,7 @@ public class SpecialLeaveGrantRemaining extends SpecialLeaveGrantRemainingData {
 		domain.expirationStatus = data.getExpirationStatus();
 		domain.registerType = data.getRegisterType();
 		domain.details = data.getDetails();
+		domain.dummyAtr = dummyAtr;
 
 		return domain;
 	}

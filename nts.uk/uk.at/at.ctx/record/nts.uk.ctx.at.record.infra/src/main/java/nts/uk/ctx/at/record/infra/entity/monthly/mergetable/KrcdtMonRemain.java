@@ -2176,14 +2176,14 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		if (domain == null) return result;
 
 		/** 特別休暇月別残数データ.特別休暇.特別休暇使用情報.合計.使用日数.使用日数 */
-		result.useDays = domain.getSpecialLeave().getUsedNumberInfo().getUsedNumber().getUseDays().getUseDays().v();
+		result.useDays = domain.getSpecialLeave().getUsedNumberInfo().getUsedNumber().getUseDays().map(x -> x.v()).orElse(0.0);
 		if (domain.getSpecialLeave().getUsedNumberInfo().getUsedNumber().getUseTimes().isPresent()){
 			/** 特別休暇月別残数データ.特別休暇.特別休暇使用情報.合計.使用時間.使用時間 */
 			result.useMinutes = domain.getSpecialLeave().getUsedNumberInfo().getUsedNumber().getUseTimes().get().getUseTimes().v();
 		}
 
 		/** 特別休暇月別残数データ.特別休暇.特別休暇使用情報.付与前.使用日数.使用日数 */
-		result.beforeUseDays = domain.getSpecialLeave().getUsedNumberInfo().getUsedNumberBeforeGrant().getUseDays().getUseDays().v();
+		result.beforeUseDays = domain.getSpecialLeave().getUsedNumberInfo().getUsedNumberBeforeGrant().getUseDays().map(x -> x.v()).orElse(0.0);
 		if (domain.getSpecialLeave().getUsedNumberInfo().getUsedNumberBeforeGrant().getUseTimes().isPresent()){
 			/** 特別休暇月別残数データ.特別休暇.特別休暇使用情報.付与前.使用時間.使用時間 */
 			result.beforeUseMinutes = domain.getSpecialLeave().getUsedNumberInfo().getUsedNumberBeforeGrant().getUseTimes().get().getUseTimes().v();
@@ -2196,7 +2196,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 
 		if (domain.getSpecialLeave().getUsedNumberInfo().getUsedNumberAfterGrantOpt().isPresent()){
 			/** 特別休暇月別残数データ.特別休暇.特別休暇使用情報.付与後.使用日数.使用日数 */
-			result.afterUseDays = domain.getSpecialLeave().getUsedNumberInfo().getUsedNumberAfterGrantOpt().get().getUseDays().getUseDays().v();
+			result.afterUseDays = domain.getSpecialLeave().getUsedNumberInfo().getUsedNumberAfterGrantOpt().get().getUseDays().map(x -> x.v()).orElse(0.0);
 			if (domain.getSpecialLeave().getUsedNumberInfo().getUsedNumberAfterGrantOpt().get().getUseTimes().isPresent()){
 				/** 特別休暇月別残数データ.特別休暇.特別休暇使用情報.付与後.使用時間.使用時間 */
 				result.afterUseMinutes = domain.getSpecialLeave().getUsedNumberInfo().getUsedNumberAfterGrantOpt().get().getUseTimes().get().getUseTimes().v();
@@ -2204,14 +2204,14 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 		}
 
 		/** 特別休暇月別残数データ.実特別休暇.特別休暇使用情報.合計.使用日数.使用日数 */
-		result.factUseDays = domain.getActualSpecial().getUsedNumberInfo().getUsedNumber().getUseDays().getUseDays().v();
+		result.factUseDays = domain.getActualSpecial().getUsedNumberInfo().getUsedNumber().getUseDays().map(x -> x.v()).orElse(0.0);
 		if (domain.getActualSpecial().getUsedNumberInfo().getUsedNumber().getUseTimes().isPresent()){
 			/** 特別休暇月別残数データ.実特別休暇.特別休暇使用情報.合計.使用時間.使用時間 */
 			result.factUseMinutes = domain.getActualSpecial().getUsedNumberInfo().getUsedNumber().getUseTimes().get().getUseTimes().v();
 		}
 
 		/** 特別休暇月別残数データ.実特別休暇.特別休暇使用情報.付与前.使用日数.使用日数 */
-		result.beforeFactUseDays = domain.getActualSpecial().getUsedNumberInfo().getUsedNumberBeforeGrant().getUseDays().getUseDays().v();
+		result.beforeFactUseDays = domain.getActualSpecial().getUsedNumberInfo().getUsedNumberBeforeGrant().getUseDays().map(x -> x.v()).orElse(0.0);
 		if (domain.getActualSpecial().getUsedNumberInfo().getUsedNumberBeforeGrant().getUseTimes().isPresent()){
 			/** 特別休暇月別残数データ.実特別休暇.特別休暇使用情報.付与前.使用時間.使用時間 */
 			result.beforeFactUseMinutes = domain.getActualSpecial().getUsedNumberInfo().getUsedNumberBeforeGrant().getUseTimes().get().getUseTimes().v();
@@ -2224,7 +2224,7 @@ public class KrcdtMonRemain extends UkJpaEntity implements Serializable {
 
 		if (domain.getActualSpecial().getUsedNumberInfo().getUsedNumberAfterGrantOpt().isPresent()){
 			/** 特別休暇月別残数データ.実特別休暇.特別休暇使用情報.付与後.使用日数.使用日数 */
-			result.afterFactUseDays = domain.getActualSpecial().getUsedNumberInfo().getUsedNumberAfterGrantOpt().get().getUseDays().getUseDays().v();
+			result.afterFactUseDays = domain.getActualSpecial().getUsedNumberInfo().getUsedNumberAfterGrantOpt().get().getUseDays().map(x -> x.v()).orElse(0.0);
 			if (domain.getActualSpecial().getUsedNumberInfo().getUsedNumberAfterGrantOpt().get().getUseTimes().isPresent()){
 				/** 特別休暇月別残数データ.実特別休暇.特別休暇使用情報.付与後.使用時間.使用時間 */
 				result.afterFactUseMinutes = domain.getActualSpecial().getUsedNumberInfo().getUsedNumberAfterGrantOpt().get().getUseTimes().get().getUseTimes().v();

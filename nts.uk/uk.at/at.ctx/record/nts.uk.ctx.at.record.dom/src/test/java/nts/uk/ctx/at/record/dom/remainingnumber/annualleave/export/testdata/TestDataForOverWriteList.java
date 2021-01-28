@@ -1,21 +1,19 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.testdata;
 
-import java.util.List;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.HashMap;
-import lombok.val;
+import java.util.List;
+import java.util.Map;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.gul.serialize.binary.ObjectBinaryFile;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 
 /**
  * 上書き用の暫定年休管理データ
@@ -269,11 +267,8 @@ public class TestDataForOverWriteList {
 			UseDay useDays = new UseDay(1.0);
 			/** 作成元区分 */
 			CreateAtr creatorAtr = CreateAtr.RECORD; // 実績
-			/** 残数分類 */
-			RemainAtr remainAtr = RemainAtr.SINGLE; // 単一
 			
-			TmpAnnualLeaveMngWork t = TmpAnnualLeaveMngWork.of(
-					manageId, ymd, workTypeCode, useDays, creatorAtr, remainAtr);
+			TmpAnnualLeaveMngWork t = TmpAnnualLeaveMngWork.of(manageId, ymd, workTypeCode, useDays, creatorAtr);
 			
 			list.add(t); // リストへ追加
 			

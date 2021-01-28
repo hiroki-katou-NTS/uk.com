@@ -70,11 +70,11 @@ public class AnnualLeaveUsedInfoDto implements ItemConst, AttendanceItemDataGate
 	public Optional<AttendanceItemDataGate> get(String path) {
 
 		if ((GRANT + BEFORE).equals(path)) {
-			return Optional.of(this.usedNumberBeforeGrant);
+			return Optional.ofNullable(this.usedNumberBeforeGrant);
 		} else if ((GRANT + AFTER).equals(path)) {
-			return Optional.of(this.usedNumberAfterGrantOpt);
+			return Optional.ofNullable(this.usedNumberAfterGrantOpt);
 		} else if (TOTAL.equals(path)) {
-			return Optional.of(this.usedNumber);
+			return Optional.ofNullable(this.usedNumber);
 		}
 		return Optional.empty();
 	}

@@ -7,7 +7,6 @@ import java.util.Map;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMerge;
@@ -144,14 +143,14 @@ public class SpecialHolidayRemainDataSeviceImpl implements SpecialHolidayRemainD
 					dataOut.setSpecialHolidayCd(remainData.getSpecialHolidayCd());
 
 					/** 特別休暇月別残数データ.特別休暇.特別休暇使用情報.合計.使用日数.使用日数 */
-					dataOut.setUseDays(remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumber().getUseDays().getUseDays().v());
+					dataOut.setUseDays(remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumber().getUseDays().map(x -> x.v()).orElse(0.0));
 
 					/** 特別休暇月別残数データ.特別休暇.特別休暇使用情報.付与前.使用日数.使用日数 */
-					dataOut.setBeforeUseDays(remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumberBeforeGrant().getUseDays().getUseDays().v());
+					dataOut.setBeforeUseDays(remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumberBeforeGrant().getUseDays().map(x -> x.v()).orElse(0.0));
 
 					/** 特別休暇月別残数データ.特別休暇.特別休暇使用情報.付与後.使用日数.使用日数 */
 					dataOut.setAfterUseDays(remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumberAfterGrantOpt().isPresent() ?
-							remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumberAfterGrantOpt().get().getUseDays().getUseDays().v() : 0);
+							remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumberAfterGrantOpt().get().getUseDays().map(x -> x.v()).orElse(0.0) : 0);
 
 					/** 特別休暇月別残数データ.特別休暇.特別休暇使用情報.合計.使用時間.使用時間 */
 					dataOut.setUseTimes(0);
@@ -184,7 +183,7 @@ public class SpecialHolidayRemainDataSeviceImpl implements SpecialHolidayRemainD
 //					c.getSpecialLeave().getUsedNumberInfo().getSpecialLeaveUsedDayTimes();
 
 					/** 特別休暇月別残数データ.実特別休暇.特別休暇使用情報.合計.使用日数.使用日数 */
-					dataOut.setFactUseDays(remainData.getActualSpecial().getUsedNumberInfo().getUsedNumber().getUseDays().getUseDays().v());
+					dataOut.setFactUseDays(remainData.getActualSpecial().getUsedNumberInfo().getUsedNumber().getUseDays().map(x -> x.v()).orElse(0.0));
 
 					/** 特別休暇月別残数データ.特別休暇.特別休暇残数情報.合計.合計残日数 */
 					dataOut.setRemainDays(remainData.getSpecialLeave().getRemainingNumberInfo().getRemainingNumber().getDayNumberOfRemain().v());
@@ -253,9 +252,9 @@ public class SpecialHolidayRemainDataSeviceImpl implements SpecialHolidayRemainD
 					SpecialHolidayRemainDataOutput tmp = lstTmp.get(0);
 					lstOutData.remove(tmp);
 
-					tmp.setUseDays(tmp.getUseDays() + remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumber().getUseDays().getUseDays().v());
-					tmp.setBeforeUseDays(tmp.getBeforeUseDays() + remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumberBeforeGrant().getUseDays().getUseDays().v());
-					tmp.setAfterUseDays(tmp.getAfterUseDays() + (remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumberAfterGrantOpt().isPresent() ? remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumberAfterGrantOpt().get().getUseDays().getUseDays().v() : 0));
+					tmp.setUseDays(tmp.getUseDays() + remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumber().getUseDays().map(x -> x.v()).orElse(0.0));
+					tmp.setBeforeUseDays(tmp.getBeforeUseDays() + remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumberBeforeGrant().getUseDays().map(x -> x.v()).orElse(0.0));
+					tmp.setAfterUseDays(tmp.getAfterUseDays() + (remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumberAfterGrantOpt().isPresent() ? remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumberAfterGrantOpt().get().getUseDays().map(x -> x.v()).orElse(0.0) : 0));
 					if (remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumber().getUseTimes().isPresent()){
 						tmp.setUseTimes(tmp.getUseTimes() + remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumber().getUseTimes().get().getUseTimes().v());
 						tmp.setBeforeUseTimes(tmp.getBeforeUseTimes() + remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumberBeforeGrant().getUseTimes().get().getUseTimes().v());
@@ -275,7 +274,7 @@ public class SpecialHolidayRemainDataSeviceImpl implements SpecialHolidayRemainD
 						tmp.setFactUseNumber(tmp.getFactUseNumber());
 					}
 
-					tmp.setFactUseDays(tmp.getFactUseDays() + remainData.getActualSpecial().getUsedNumberInfo().getUsedNumber().getUseDays().getUseDays().v());
+					tmp.setFactUseDays(tmp.getFactUseDays() + remainData.getActualSpecial().getUsedNumberInfo().getUsedNumber().getUseDays().map(x -> x.v()).orElse(0.0));
 					tmp.setRemainDays(tmp.getRemainDays() + remainData.getActualSpecial().getRemainingNumberInfo().getRemainingNumber().getDayNumberOfRemain().v());
 					tmp.setRemainTimes(tmp.getRemainTimes() + (remainData.getActualSpecial().getRemainingNumberInfo().getRemainingNumber().getTimeOfRemain().isPresent() ?
 							remainData.getActualSpecial().getRemainingNumberInfo().getRemainingNumber().getTimeOfRemain().get().v() : 0));
@@ -348,14 +347,14 @@ public class SpecialHolidayRemainDataSeviceImpl implements SpecialHolidayRemainD
 					dataOut.setSpecialHolidayCd(remainData.getSpecialHolidayCd());
 
 					/** 特別休暇月別残数データ.特別休暇.特別休暇使用情報.合計.使用日数.使用日数 */
-					dataOut.setUseDays(remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumber().getUseDays().getUseDays().v());
+					dataOut.setUseDays(remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumber().getUseDays().map(x -> x.v()).orElse(0.0));
 
 					/** 特別休暇月別残数データ.特別休暇.特別休暇使用情報.付与前.使用日数.使用日数 */
-					dataOut.setBeforeUseDays(remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumberBeforeGrant().getUseDays().getUseDays().v());
+					dataOut.setBeforeUseDays(remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumberBeforeGrant().getUseDays().map(x -> x.v()).orElse(0.0));
 
 					/** 特別休暇月別残数データ.特別休暇.特別休暇使用情報.付与後.使用日数.使用日数 */
 					dataOut.setAfterUseDays(remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumberAfterGrantOpt().isPresent() ?
-							remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumberAfterGrantOpt().get().getUseDays().getUseDays().v() : 0);
+							remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumberAfterGrantOpt().get().getUseDays().map(x -> x.v()).orElse(0.0) : 0);
 
 					/** 特別休暇月別残数データ.特別休暇.特別休暇使用情報.合計.使用時間.使用時間 */
 					dataOut.setUseTimes(0);
@@ -388,7 +387,7 @@ public class SpecialHolidayRemainDataSeviceImpl implements SpecialHolidayRemainD
 //					c.getSpecialLeave().getUsedNumberInfo().getSpecialLeaveUsedDayTimes();
 
 					/** 特別休暇月別残数データ.実特別休暇.特別休暇使用情報.合計.使用日数.使用日数 */
-					dataOut.setFactUseDays(remainData.getActualSpecial().getUsedNumberInfo().getUsedNumber().getUseDays().getUseDays().v());
+					dataOut.setFactUseDays(remainData.getActualSpecial().getUsedNumberInfo().getUsedNumber().getUseDays().map(x -> x.v()).orElse(0.0));
 
 					/** 特別休暇月別残数データ.特別休暇.特別休暇残数情報.合計.合計残日数 */
 					dataOut.setRemainDays(remainData.getSpecialLeave().getRemainingNumberInfo().getRemainingNumber().getDayNumberOfRemain().v());
@@ -457,9 +456,9 @@ public class SpecialHolidayRemainDataSeviceImpl implements SpecialHolidayRemainD
 					SpecialHolidayRemainDataOutput tmp = lstTmp.get(0);
 					lstOutData.remove(tmp);
 
-					tmp.setUseDays(tmp.getUseDays() + remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumber().getUseDays().getUseDays().v());
-					tmp.setBeforeUseDays(tmp.getBeforeUseDays() + remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumberBeforeGrant().getUseDays().getUseDays().v());
-					tmp.setAfterUseDays(tmp.getAfterUseDays() + (remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumberAfterGrantOpt().isPresent() ? remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumberAfterGrantOpt().get().getUseDays().getUseDays().v() : 0));
+					tmp.setUseDays(tmp.getUseDays() + remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumber().getUseDays().map(x -> x.v()).orElse(0.0));
+					tmp.setBeforeUseDays(tmp.getBeforeUseDays() + remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumberBeforeGrant().getUseDays().map(x -> x.v()).orElse(0.0));
+					tmp.setAfterUseDays(tmp.getAfterUseDays() + (remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumberAfterGrantOpt().isPresent() ? remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumberAfterGrantOpt().get().getUseDays().map(x -> x.v()).orElse(0.0) : 0));
 					if (remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumber().getUseTimes().isPresent()){
 						tmp.setUseTimes(tmp.getUseTimes() + remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumber().getUseTimes().get().getUseTimes().v());
 						tmp.setBeforeUseTimes(tmp.getBeforeUseTimes() + remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumberBeforeGrant().getUseTimes().get().getUseTimes().v());
@@ -479,7 +478,7 @@ public class SpecialHolidayRemainDataSeviceImpl implements SpecialHolidayRemainD
 						tmp.setFactUseNumber(tmp.getFactUseNumber());
 					}
 
-					tmp.setFactUseDays(tmp.getFactUseDays() + remainData.getActualSpecial().getUsedNumberInfo().getUsedNumber().getUseDays().getUseDays().v());
+					tmp.setFactUseDays(tmp.getFactUseDays() + remainData.getActualSpecial().getUsedNumberInfo().getUsedNumber().getUseDays().map(x -> x.v()).orElse(0.0));
 					tmp.setRemainDays(tmp.getRemainDays() + remainData.getActualSpecial().getRemainingNumberInfo().getRemainingNumber().getDayNumberOfRemain().v());
 					tmp.setRemainTimes(tmp.getRemainTimes() + (remainData.getActualSpecial().getRemainingNumberInfo().getRemainingNumber().getTimeOfRemain().isPresent() ?
 							remainData.getActualSpecial().getRemainingNumberInfo().getRemainingNumber().getTimeOfRemain().get().v() : 0));
@@ -551,14 +550,14 @@ public class SpecialHolidayRemainDataSeviceImpl implements SpecialHolidayRemainD
 					dataOut.setSpecialHolidayCd(remainData.getSpecialHolidayCd());
 
 					/** 特別休暇月別残数データ.特別休暇.特別休暇使用情報.合計.使用日数.使用日数 */
-					dataOut.setUseDays(remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumber().getUseDays().getUseDays().v());
+					dataOut.setUseDays(remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumber().getUseDays().map(x -> x.v()).orElse(0.0));
 
 					/** 特別休暇月別残数データ.特別休暇.特別休暇使用情報.付与前.使用日数.使用日数 */
-					dataOut.setBeforeUseDays(remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumberBeforeGrant().getUseDays().getUseDays().v());
+					dataOut.setBeforeUseDays(remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumberBeforeGrant().getUseDays().map(x -> x.v()).orElse(0.0));
 
 					/** 特別休暇月別残数データ.特別休暇.特別休暇使用情報.付与後.使用日数.使用日数 */
 					dataOut.setAfterUseDays(remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumberAfterGrantOpt().isPresent() ?
-							remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumberAfterGrantOpt().get().getUseDays().getUseDays().v() : 0);
+							remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumberAfterGrantOpt().get().getUseDays().map(x -> x.v()).orElse(0.0) : 0);
 
 					/** 特別休暇月別残数データ.特別休暇.特別休暇使用情報.合計.使用時間.使用時間 */
 					dataOut.setUseTimes(0);
@@ -591,7 +590,7 @@ public class SpecialHolidayRemainDataSeviceImpl implements SpecialHolidayRemainD
 //					c.getSpecialLeave().getUsedNumberInfo().getSpecialLeaveUsedDayTimes();
 
 					/** 特別休暇月別残数データ.実特別休暇.特別休暇使用情報.合計.使用日数.使用日数 */
-					dataOut.setFactUseDays(remainData.getActualSpecial().getUsedNumberInfo().getUsedNumber().getUseDays().getUseDays().v());
+					dataOut.setFactUseDays(remainData.getActualSpecial().getUsedNumberInfo().getUsedNumber().getUseDays().map(x -> x.v()).orElse(0.0));
 
 					/** 特別休暇月別残数データ.特別休暇.特別休暇残数情報.合計.合計残日数 */
 					dataOut.setRemainDays(remainData.getSpecialLeave().getRemainingNumberInfo().getRemainingNumber().getDayNumberOfRemain().v());
@@ -660,9 +659,9 @@ public class SpecialHolidayRemainDataSeviceImpl implements SpecialHolidayRemainD
 					SpecialHolidayRemainDataOutput tmp = lstTmp.get(0);
 					lstOutData.remove(tmp);
 
-					tmp.setUseDays(tmp.getUseDays() + remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumber().getUseDays().getUseDays().v());
-					tmp.setBeforeUseDays(tmp.getBeforeUseDays() + remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumberBeforeGrant().getUseDays().getUseDays().v());
-					tmp.setAfterUseDays(tmp.getAfterUseDays() + (remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumberAfterGrantOpt().isPresent() ? remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumberAfterGrantOpt().get().getUseDays().getUseDays().v() : 0));
+					tmp.setUseDays(tmp.getUseDays() + remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumber().getUseDays().map(x -> x.v()).orElse(0.0));
+					tmp.setBeforeUseDays(tmp.getBeforeUseDays() + remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumberBeforeGrant().getUseDays().map(x -> x.v()).orElse(0.0));
+					tmp.setAfterUseDays(tmp.getAfterUseDays() + (remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumberAfterGrantOpt().isPresent() ? remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumberAfterGrantOpt().get().getUseDays().map(x -> x.v()).orElse(0.0) : 0));
 					if (remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumber().getUseTimes().isPresent()){
 						tmp.setUseTimes(tmp.getUseTimes() + remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumber().getUseTimes().get().getUseTimes().v());
 						tmp.setBeforeUseTimes(tmp.getBeforeUseTimes() + remainData.getSpecialLeave().getUsedNumberInfo().getUsedNumberBeforeGrant().getUseTimes().get().getUseTimes().v());
@@ -682,7 +681,7 @@ public class SpecialHolidayRemainDataSeviceImpl implements SpecialHolidayRemainD
 						tmp.setFactUseNumber(tmp.getFactUseNumber());
 					}
 
-					tmp.setFactUseDays(tmp.getFactUseDays() + remainData.getActualSpecial().getUsedNumberInfo().getUsedNumber().getUseDays().getUseDays().v());
+					tmp.setFactUseDays(tmp.getFactUseDays() + remainData.getActualSpecial().getUsedNumberInfo().getUsedNumber().getUseDays().map(x -> x.v()).orElse(0.0));
 					tmp.setRemainDays(tmp.getRemainDays() + remainData.getActualSpecial().getRemainingNumberInfo().getRemainingNumber().getDayNumberOfRemain().v());
 					tmp.setRemainTimes(tmp.getRemainTimes() + (remainData.getActualSpecial().getRemainingNumberInfo().getRemainingNumber().getTimeOfRemain().isPresent() ?
 							remainData.getActualSpecial().getRemainingNumberInfo().getRemainingNumber().getTimeOfRemain().get().v() : 0));

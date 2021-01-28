@@ -38,6 +38,7 @@ public class SpecialLeaveAggregatePeriodWork {
 
 	public SpecialLeaveAggregatePeriodWork(DatePeriod period) {
 		this.period = period;
+		this.endDay = new NextDayAfterPeriodEndWork();
 		this.lapsedWork = new SpecialLeaveLapsedWork();
 		this.grantWork = new SpecialLeaveGrantWork();
 		this.grantPeriodAtr = GrantPeriodAtr.BEFORE_GRANT;

@@ -86,7 +86,7 @@ public class ComplileInPeriodOfSpecialLeaveFinder implements ComplileInPeriodOfS
 
 		double use_before =  specialLeave.getAsOfPeriodEnd()
 				.getRemainingNumber().getSpecialLeaveWithMinus().getUsedNumberInfo()
-				.getUsedNumberBeforeGrant().getUseDays().getUseDays().v();
+				.getUsedNumberBeforeGrant().getUseDays().map(x -> x.v()).orElse(0.0);
 
 		double remain_before =  specialLeave.getAsOfPeriodEnd()
 				.getRemainingNumber().getSpecialLeaveWithMinus().getRemainingNumberInfo()
@@ -103,7 +103,7 @@ public class ComplileInPeriodOfSpecialLeaveFinder implements ComplileInPeriodOfS
 //				.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().get().getDayNumberOfRemain().v();
 			use_after = specialLeave.getAsOfPeriodEnd()
 					.getRemainingNumber().getSpecialLeaveWithMinus().getUsedNumberInfo()
-					.getUsedNumberAfterGrantOpt().get().getUseDays().getUseDays().v();
+					.getUsedNumberAfterGrantOpt().get().getUseDays().map(x -> x.v()).orElse(0.0);
 			remain_after = specialLeave.getAsOfPeriodEnd()
 					.getRemainingNumber().getSpecialLeaveWithMinus().getRemainingNumberInfo()
 					.getRemainingNumberAfterGrantOpt().get().getDayNumberOfRemain().v();

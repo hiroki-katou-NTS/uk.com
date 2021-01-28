@@ -3,8 +3,6 @@ package nts.uk.ctx.at.record.dom.remainingnumber.holidayover60h.export.param;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.empinfo.grantremainingdata.HolidayOver60hGrantRemainingData;
 
 /**
@@ -17,7 +15,10 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.empinfo.grantrema
 @NoArgsConstructor
 public class HolidayOver60hGrantRemaining extends HolidayOver60hGrantRemainingData{
 
-	public HolidayOver60hGrantRemaining(HolidayOver60hGrantRemainingData parent){
+	/** 60H超休不足ダミーフラグ*/
+	protected boolean dummyAtr = false;
+	
+	public HolidayOver60hGrantRemaining(HolidayOver60hGrantRemainingData parent,  boolean dummyAtr){
 
 		this.leaveID = parent.getLeaveID();
 		this.cid = parent.getCid();
@@ -27,7 +28,7 @@ public class HolidayOver60hGrantRemaining extends HolidayOver60hGrantRemainingDa
 		this.expirationStatus = parent.getExpirationStatus();
 		this.registerType = parent.getRegisterType();
 		this.details = parent.getDetails();
-		this.dummyAtr = parent.isDummyAtr();
+		this.dummyAtr = dummyAtr;
 	}
 }
 

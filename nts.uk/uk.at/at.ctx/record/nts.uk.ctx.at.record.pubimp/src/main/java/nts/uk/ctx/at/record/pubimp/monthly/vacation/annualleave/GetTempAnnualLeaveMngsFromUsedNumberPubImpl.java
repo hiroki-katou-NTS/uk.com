@@ -42,7 +42,7 @@ public class GetTempAnnualLeaveMngsFromUsedNumberPubImpl implements GetTempAnnua
 		return new TempAnnualLeaveMngsExport(domain.getRemainManaID(), domain.getSID(), domain.getYmd(),
 				EnumAdaptor.valueOf(domain.getCreatorAtr().value, CreateAtrExport.class),
 				EnumAdaptor.valueOf(domain.getRemainType().value, RemainTypeExport.class),
-				EnumAdaptor.valueOf(domain.getRemainAtr().value, RemainAtrExport.class), domain.getWorkTypeCode().v(),
+				domain.getWorkTypeCode().v(),
 				new LeaveUsedNumberExport(domain.getUsedNumber().getDays().v(),
 						domain.getUsedNumber().getMinutes().map(x -> x.v()),
 						domain.getUsedNumber().getStowageDays().map(x -> x.v()),

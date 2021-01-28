@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
@@ -23,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialh
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class SpecialLeaveUseNumberDto implements ItemConst, AttendanceItemDataGate {
 
 	/**
@@ -35,31 +37,17 @@ public class SpecialLeaveUseNumberDto implements ItemConst, AttendanceItemDataGa
 	 * 使用時間
 	 */
 	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_B)
-	private Optional<SpecialLeaveUseTimesDto> useTimes;
-
-	public SpecialLeaveUseNumberDto() {
-		useDays = new SpecialLeaveUseDaysDto();
-		useTimes = Optional.empty();
-	}
-
-	/**
-	 * コンストラクタ
-	 * 
-	 * @param useDays
-	 * @param useTimes
-	 */
-	public SpecialLeaveUseNumberDto(SpecialLeaveUseDaysDto useDays, SpecialLeaveUseTimesDto useTimes) {
-		this(useDays, Optional.ofNullable(useTimes));
-	}
+	private SpecialLeaveUseTimesDto useTimes;
 
 	public static SpecialLeaveUseNumberDto from(SpecialLeaveUseNumber usedNumberInfo) {
-		return new SpecialLeaveUseNumberDto(new SpecialLeaveUseDaysDto(usedNumberInfo.getUseDays().getUseDays().v()),
-				usedNumberInfo.getUseTimes().map(x -> new SpecialLeaveUseTimesDto(x.getUseTimes().v())));
+		return new SpecialLeaveUseNumberDto(usedNumberInfo.getUseDays().map(x -> new SpecialLeaveUseDaysDto(x.v())).orElse(null),
+								usedNumberInfo.getUseTimes().map(x -> new SpecialLeaveUseTimesDto(x.getUseTimes().v())).orElse(null));
 	}
 
 	public SpecialLeaveUseNumber toDomain() {
-		return new SpecialLeaveUseNumber(new SpecialLeaveUseDays(new SpecialLeaveRemainDay(useDays.getUseDays())),
-				useTimes.map(x -> new SpecialLeaveUseTimes(new SpecialLeavaRemainTime(x.getUseTimes()))));
+		return new SpecialLeaveUseNumber(
+				useDays == null ? Optional.of(new SpecialLeaveUseDays(0.0)) : Optional.of(new SpecialLeaveUseDays((useDays.getUseDays()))),
+				Optional.ofNullable(useTimes == null ? null : new SpecialLeaveUseTimes(new SpecialLeavaRemainTime(useTimes.getUseTimes()))));
 	}
 
 	@Override
@@ -82,9 +70,9 @@ public class SpecialLeaveUseNumberDto implements ItemConst, AttendanceItemDataGa
 
 		switch (path) {
 		case DAYS:
-			return Optional.of(this.useDays);
+			return Optional.ofNullable(this.useDays);
 		case TIME:
-			return this.useTimes.map(x -> (SpecialLeaveUseTimesDto) x);
+			return Optional.ofNullable(this.useTimes);
 
 		default:
 			return Optional.empty();
@@ -99,7 +87,7 @@ public class SpecialLeaveUseNumberDto implements ItemConst, AttendanceItemDataGa
 			this.useDays = (SpecialLeaveUseDaysDto) value;
 			break;
 		case TIME:
-			this.useTimes = Optional.ofNullable(value == null ? null : (SpecialLeaveUseTimesDto) value);
+			this.useTimes = (SpecialLeaveUseTimesDto) value;
 			break;
 		}
 

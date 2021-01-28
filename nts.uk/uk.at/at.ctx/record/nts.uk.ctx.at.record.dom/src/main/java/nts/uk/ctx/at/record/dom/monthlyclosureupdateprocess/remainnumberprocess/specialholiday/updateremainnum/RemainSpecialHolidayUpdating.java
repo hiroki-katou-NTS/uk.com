@@ -101,7 +101,6 @@ public class RemainSpecialHolidayUpdating {
 					remainDays,
 					remainMinutes,
 					info.getUsedPercent().v().doubleValue(),
-					detail.isDummyAtr(),
 					specialLeaveCode);
 
 			if (existDataMap.containsKey(detail.getGrantDate())){

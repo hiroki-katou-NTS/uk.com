@@ -55,7 +55,6 @@ public class AddSpeLeaGrant8CommandHandler
 				command.getNumberDayRemain().doubleValue(),
 				command.getTimeRemain() != null ? command.getTimeRemain().intValue() : null,
 				0.0,
-				false,
 				8);
 
 		return new PeregAddCommandResult(addSpeLeaveGrantCommandHandler.addHandler(domain));

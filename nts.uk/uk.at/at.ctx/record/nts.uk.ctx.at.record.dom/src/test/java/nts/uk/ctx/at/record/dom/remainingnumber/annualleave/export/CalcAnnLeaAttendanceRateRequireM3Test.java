@@ -193,23 +193,7 @@ public class CalcAnnLeaAttendanceRateRequireM3Test implements GetAnnLeaRemNumWit
 	}
 
 	@Override
-	public List<InterimRemain> interimRemains(String employeeId, DatePeriod datePeriod, RemainType remainType) {
-//		return interimRemainRepo.getRemainBySidPriod(employeeId, dateData, remainType);
-		List<InterimRemain> list
-			= (List<InterimRemain>)binaryData.get(InterimRemain.class.toString());
-		List<InterimRemain> listFilter
-			= list.stream()
-				.filter(c -> c.getSID().equals(employeeId))
-				.filter(c -> c.getYmd().afterOrEquals(datePeriod.start()))
-				.filter(c -> c.getYmd().beforeOrEquals(datePeriod.end()))
-				.filter(c -> c.getRemainType().equals(remainType))
-				.collect(Collectors.toList());
-
-		return listFilter;
-	}
-
-	@Override
-	public Optional<TmpAnnualHolidayMng> tmpAnnualHolidayMng(String mngId) {
+	public List<TmpAnnualHolidayMng> tmpAnnualHolidayMng(String sid, DatePeriod dateData) {
 //		List<TmpAnnualHolidayMng> list
 //			= (List<TmpAnnualHolidayMng>)binaryData.get(TmpAnnualHolidayMng.class.toString());
 //		List<TmpAnnualHolidayMng> listFilter

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.common;
 
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
@@ -15,7 +16,10 @@ public class ConfirmLeavePeriod {
 	 * @param employee 社員
 	 * @return 集計期間　（null=失敗）
 	 */
-	public static DatePeriod sumPeriod(DatePeriod target, EmployeeImport employee){
+	public static DatePeriod sumPeriod(Require require, CacheCarrier cacheCarrier, DatePeriod target, String employeeId){
+		
+		//Imported(就業)「社員」を取得する
+		EmployeeImport employee = require.employeeInfo(cacheCarrier, employeeId);
 		
 		if (target == null) return null;
 		if (employee == null) return null;
@@ -45,5 +49,10 @@ public class ConfirmLeavePeriod {
 		}
 
 		return overlap;
+	}
+	
+	public static interface Require {
+		
+		EmployeeImport employeeInfo(CacheCarrier cacheCarrier, String empId);
 	}
 }
