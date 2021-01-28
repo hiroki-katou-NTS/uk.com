@@ -22,12 +22,12 @@ import java.util.stream.Collectors;
 @Table(name = "KMLST_PREMIUM_SET")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KmlstPremiumSet extends UkJpaEntity implements Serializable {
+public class KmlspPremiumSet extends UkJpaEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @EmbeddedId
-    public KmlstPremiumSetPk pk;
+    public KmlspPremiumSetPK pk;
     // 割増設定-割増率
     @Column(name = "PREMIUM_RATE")
     public int premiumRate;
@@ -41,10 +41,10 @@ public class KmlstPremiumSet extends UkJpaEntity implements Serializable {
         return pk;
     }
 
-    public static List<KmlstPremiumSet> toEntity(PersonCostCalculation domain, String histId) {
+    public static List<KmlspPremiumSet> toEntity(PersonCostCalculation domain, String histId) {
         return domain.getPremiumSettings().stream().map(e ->
-                new KmlstPremiumSet(
-                        new KmlstPremiumSetPk(domain.getCompanyID(), histId, e.getID().value),
+                new KmlspPremiumSet(
+                        new KmlspPremiumSetPK(domain.getCompanyID(), histId, e.getID().value),
                         e.getRate().v(),
                         e.getUnitPrice().value
                 )

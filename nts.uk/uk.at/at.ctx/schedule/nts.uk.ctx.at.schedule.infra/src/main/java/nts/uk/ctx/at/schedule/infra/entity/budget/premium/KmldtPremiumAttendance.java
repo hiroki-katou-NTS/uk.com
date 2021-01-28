@@ -21,10 +21,10 @@ import java.util.stream.Collectors;
 @Table(name = "KMLDT_PREMIUM_ATTENDANCE")
 public class KmldtPremiumAttendance extends UkJpaEntity {
     @EmbeddedId
-    public KmldtPremiumAttendancePk kmldtPremiumAttendancePk;
+    public KmldpPremiumAttendancePK kmldpPremiumAttendancePK;
     @Override
     protected Object getKey() {
-        return kmldtPremiumAttendancePk;
+        return kmldpPremiumAttendancePK;
     }
 
     public static List<KmldtPremiumAttendance> toEntity(List<PremiumSetting> premiumSettings, String histId) {
@@ -32,7 +32,7 @@ public class KmldtPremiumAttendance extends UkJpaEntity {
         premiumSettings.forEach(
                 e -> {
                     rs.addAll(e.getAttendanceItems().stream().map(i -> new KmldtPremiumAttendance(
-                            new KmldtPremiumAttendancePk(
+                            new KmldpPremiumAttendancePK(
                                     e.getCompanyID(),
                                     histId,
                                     e.getID().value,

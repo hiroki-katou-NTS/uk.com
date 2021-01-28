@@ -37,27 +37,27 @@ import java.util.stream.Collectors;
 @Stateless
 public class JpaPersonCostCalculationRepository extends JpaRepository implements PersonCostCalculationRepository {
 
-    private static final String SEL_BY_CID = "SELECT a FROM KmlmtCostCalcSet a WHERE a.pk.companyID = :companyID ";
+    private static final String SEL_BY_CID = "SELECT a FROM KmlmtPersonCostCalculation a WHERE a.pk.companyID = :companyID ";
     private static final String SEL_BY_CID_HIST = "SELECT a FROM KscmtPerCostCalcHist a WHERE a.pk.companyID = :companyID " +
             "ORDER BY a.startDate ASC";
     private static final String SEL_BY_HIST_ = "SELECT a FROM KscmtPerCostCalcHist a WHERE a.pk.companyID = :companyID " +
             "AND a.pk.histID IN :historyIDs";
-    private static final String SEL_ITEM_BY_HID = "SELECT a FROM KmlmtCostCalcSet a WHERE a.pk.companyID = :companyID " +
+    private static final String SEL_ITEM_BY_HID = "SELECT a FROM KmlmtPersonCostCalculation a WHERE a.pk.companyID = :companyID " +
             "AND a.pk.histID = :historyID";
     private static final String SEL_PREMIIUM = "SELECT a FROM KmldtPremiumAttendance a " +
-            " WHERE a.kmldtPremiumAttendancePk.companyID = :cid " +
-            " AND a.kmldtPremiumAttendancePk.historyID = :historyID " +
-            " AND a.kmldtPremiumAttendancePk.displayNumber IN :displayNumbers";
-    private static final String SEL_PREMI_RATE = "SELECT a FROM KmlstPremiumSet a " +
+            " WHERE a.kmldpPremiumAttendancePK.companyID = :cid " +
+            " AND a.kmldpPremiumAttendancePK.historyID = :historyID " +
+            " AND a.kmldpPremiumAttendancePK.displayNumber IN :displayNumbers";
+    private static final String SEL_PREMI_RATE = "SELECT a FROM KmlspPremiumSet a " +
             " WHERE a.pk.companyID = :cid " +
             " AND a.pk.histID  =  :histIDs " +
             " AND a.pk.premiumNo  IN  :listItemNos ";
     private static final String SEL_PER_COST = "SELECT a FROM KmldtPremiumAttendance a " +
-            " WHERE a.kmldtPremiumAttendancePk.companyID = :cid " +
-            " AND a.kmldtPremiumAttendancePk.historyID = :historyID " +
-            " AND a.kmldtPremiumAttendancePk.displayNumber = :displayNumber ";
+            " WHERE a.kmldpPremiumAttendancePK.companyID = :cid " +
+            " AND a.kmldpPremiumAttendancePK.historyID = :historyID " +
+            " AND a.kmldpPremiumAttendancePK.displayNumber = :displayNumber ";
 
-    private static final String SEL_PER_COST_IN_LIST = "SELECT a FROM KmlstPremiumSet a " +
+    private static final String SEL_PER_COST_IN_LIST = "SELECT a FROM KmlspPremiumSet a " +
             " WHERE a.pk.companyID = :cid " +
             " AND a.pk.histID  IN  :histIDs ";
 
@@ -65,10 +65,10 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
             " WHERE a.pk.companyID = :cid " +
             " AND a.pk.histID = :histID ";
 
-    private static final String SEL_PER_BY_CID_AND_HISTID = "SELECT a FROM KmlmtCostCalcSet a " +
+    private static final String SEL_PER_BY_CID_AND_HISTID = "SELECT a FROM KmlmtPersonCostCalculation a " +
             " WHERE a.pk.companyID = :cid " +
             " AND a.pk.histID = :histID ";
-    private static final String SEL_PER_RATE_BY_CID_AND_HISTID = "SELECT a FROM KmlstPremiumSet a " +
+    private static final String SEL_PER_RATE_BY_CID_AND_HISTID = "SELECT a FROM KmlspPremiumSet a " +
             " WHERE a.pk.companyID = :cid " +
             " AND a.pk.histID = :histID ";
 
@@ -84,11 +84,11 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
     @Override
     public List<PersonCostCalculation> findByCompanyID(String companyID) {
         List<PersonCostCalculation> rs = new ArrayList<>();
-        val listEntity = this.queryProxy().query(SEL_BY_CID, KmlmtCostCalcSet.class).setParameter("companyID", companyID)
+        val listEntity = this.queryProxy().query(SEL_BY_CID, KmlmtPersonCostCalculation.class).setParameter("companyID", companyID)
                 .getList();
         val listHistId = listEntity.stream().map(e -> e.getPk().histID).collect(Collectors.toList());
         val listRate = getPersonCostByListHistId(companyID, listHistId);
-        for (KmlmtCostCalcSet item : listEntity) {
+        for (KmlmtPersonCostCalculation item : listEntity) {
             val listPremiumSetting = listRate.stream().filter(x -> x.getHistoryID().equals(item.pk.histID)).collect(Collectors.toList());
             val sub = toSimpleDomain(item, listPremiumSetting);
             rs.add(sub);
@@ -99,19 +99,19 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     @Override
     public Optional<PersonCostCalculation> findItemByHistoryID(String companyID, String historyID) {
-        return this.queryProxy().query(SEL_ITEM_BY_HID, KmlmtCostCalcSet.class).setParameter("companyID", companyID).setParameter("historyID", historyID)
+        return this.queryProxy().query(SEL_ITEM_BY_HID, KmlmtPersonCostCalculation.class).setParameter("companyID", companyID).setParameter("historyID", historyID)
                 .getSingle().map(x -> toDomainPersonCostCalculation(x));
     }
 
 
     @Override
     public void delete(String companyId, String historyId) {
-        this.commandProxy().remove(KmlmtCostCalcSet.class, new KmlmtCostCalcSetPk(companyId, historyId));
+        this.commandProxy().remove(KmlmtPersonCostCalculation.class, new KmlmpPersonCostCalculationPK(companyId, historyId));
         this.commandProxy().remove(KscmtPerCostCalcHist.class, new KscmtPerCostCalcHistPk(companyId, historyId));
-        String queryRate = "SELECT a FROM KmlstPremiumSet a " +
+        String queryRate = "SELECT a FROM KmlspPremiumSet a " +
                 " WHERE a.pk.companyID = :cid " +
                 " AND a.pk.histID = :histID ";
-        List<KmlstPremiumSet> listEntityRate = this.queryProxy().query(queryRate, KmlstPremiumSet.class)
+        List<KmlspPremiumSet> listEntityRate = this.queryProxy().query(queryRate, KmlspPremiumSet.class)
                 .setParameter("cid", companyId)
                 .setParameter("histID", historyId)
                 .getList();
@@ -119,8 +119,8 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
             this.commandProxy().removeAll(listEntityRate);
         }
         String queryPremiumAttendance = "SELECT a FROM KmldtPremiumAttendance a " +
-                " WHERE a.kmldtPremiumAttendancePk.companyID = :cid " +
-                " AND a.kmldtPremiumAttendancePk.historyID = :histID ";
+                " WHERE a.kmldpPremiumAttendancePK.companyID = :cid " +
+                " AND a.kmldpPremiumAttendancePK.historyID = :histID ";
         List<KmldtPremiumAttendance> listEntityPremiumAttendance = this.queryProxy().query(queryPremiumAttendance, KmldtPremiumAttendance.class)
                 .setParameter("cid", companyId)
                 .setParameter("histID", historyId)
@@ -131,23 +131,23 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 
     }
 
-    private PersonCostCalculation toSimpleDomain(KmlmtCostCalcSet kmlmtCostCalcSet, List<PremiumSetting> premiumSetting) {
+    private PersonCostCalculation toSimpleDomain(KmlmtPersonCostCalculation kmlmtPersonCostCalculation, List<PremiumSetting> premiumSetting) {
 
-        val roundingOfPremium = new UnitPriceRoundingSetting(EnumAdaptor.valueOf(kmlmtCostCalcSet.unitPriceRounding, UnitPriceRounding.class));
+        val roundingOfPremium = new UnitPriceRoundingSetting(EnumAdaptor.valueOf(kmlmtPersonCostCalculation.unitPriceRounding, UnitPriceRounding.class));
         val amountRoundingSetting = new AmountRoundingSetting(
-                AmountUnit.valueOf(converAmountRounding(kmlmtCostCalcSet.getCostUnit())),
-                AmountRounding.valueOf(kmlmtCostCalcSet.costRounding)
+                AmountUnit.valueOf(converAmountRounding(kmlmtPersonCostCalculation.getCostUnit())),
+                AmountRounding.valueOf(kmlmtPersonCostCalculation.costRounding)
         );
-        val utr = kmlmtCostCalcSet.getUnitPriceAtr();
+        val utr = kmlmtPersonCostCalculation.getUnitPriceAtr();
         return new PersonCostCalculation(
                 new PersonCostRoundingSetting(roundingOfPremium, amountRoundingSetting),
-                kmlmtCostCalcSet.getPk().companyID,
-                new Remarks(kmlmtCostCalcSet.getMemo()),
+                kmlmtPersonCostCalculation.getPk().companyID,
+                new Remarks(kmlmtPersonCostCalculation.getMemo()),
                 premiumSetting,
                 utr!=null?Optional.of(EnumAdaptor.valueOf(utr, UnitPrice.class)):Optional.empty(),
-                EnumAdaptor.valueOf(kmlmtCostCalcSet.getUnitPriceSettingMethod(), HowToSetUnitPrice.class),
-                new WorkingHoursUnitPrice(kmlmtCostCalcSet.getWorkingHoursUnitPriceAtr()),
-                kmlmtCostCalcSet.getPk().histID
+                EnumAdaptor.valueOf(kmlmtPersonCostCalculation.getUnitPriceSettingMethod(), HowToSetUnitPrice.class),
+                new WorkingHoursUnitPrice(kmlmtPersonCostCalculation.getWorkingHoursUnitPriceAtr()),
+                kmlmtPersonCostCalculation.getPk().histID
         );
 
     }
@@ -157,18 +157,18 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
      *
      * @return PersonCostCalculation Domain Object
      */
-    private PersonCostCalculation toDomainPersonCostCalculation(KmlmtCostCalcSet kmlmtCostCalcSet) {
-        val roundingOfPremium = new UnitPriceRoundingSetting(EnumAdaptor.valueOf(kmlmtCostCalcSet.unitPriceRounding, UnitPriceRounding.class));
+    private PersonCostCalculation toDomainPersonCostCalculation(KmlmtPersonCostCalculation kmlmtPersonCostCalculation) {
+        val roundingOfPremium = new UnitPriceRoundingSetting(EnumAdaptor.valueOf(kmlmtPersonCostCalculation.unitPriceRounding, UnitPriceRounding.class));
         val amountRoundingSetting = new AmountRoundingSetting(
-                AmountUnit.valueOf(converAmountRounding(kmlmtCostCalcSet.getCostUnit())),
-                AmountRounding.valueOf(kmlmtCostCalcSet.costRounding)
+                AmountUnit.valueOf(converAmountRounding(kmlmtPersonCostCalculation.getCostUnit())),
+                AmountRounding.valueOf(kmlmtPersonCostCalculation.costRounding)
         );
-        val cid = kmlmtCostCalcSet.pk.companyID;
-        val histID = kmlmtCostCalcSet.pk.histID;
-        String queryRate = "SELECT a FROM KmlstPremiumSet a " +
+        val cid = kmlmtPersonCostCalculation.pk.companyID;
+        val histID = kmlmtPersonCostCalculation.pk.histID;
+        String queryRate = "SELECT a FROM KmlspPremiumSet a " +
                 " WHERE a.pk.companyID = :cid " +
                 " AND a.pk.histID = :histID ";
-        List<KmlstPremiumSet> listEntityRate = this.queryProxy().query(queryRate, KmlstPremiumSet.class)
+        List<KmlspPremiumSet> listEntityRate = this.queryProxy().query(queryRate, KmlspPremiumSet.class)
                 .setParameter("cid", cid)
                 .setParameter("histID", histID)
                 .getList();
@@ -183,16 +183,16 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
                     EnumAdaptor.valueOf(e.getUnitPrice(), UnitPrice.class), listEntityAtt(e.getPk().companyID, e.getPk().histID, e.getPk().premiumNo))
             ).collect(Collectors.toList());
         }
-        val utr = kmlmtCostCalcSet.getUnitPriceAtr();
+        val utr = kmlmtPersonCostCalculation.getUnitPriceAtr();
         return new PersonCostCalculation(
                 new PersonCostRoundingSetting(roundingOfPremium, amountRoundingSetting),
-                kmlmtCostCalcSet.getPk().companyID,
-                new Remarks(kmlmtCostCalcSet.getMemo()),
+                kmlmtPersonCostCalculation.getPk().companyID,
+                new Remarks(kmlmtPersonCostCalculation.getMemo()),
                 premiumSettings,
                 utr !=null ?Optional.of(EnumAdaptor.valueOf(utr, UnitPrice.class)):Optional.empty(),
-                EnumAdaptor.valueOf(kmlmtCostCalcSet.getUnitPriceSettingMethod(), HowToSetUnitPrice.class),
-                new WorkingHoursUnitPrice(kmlmtCostCalcSet.getWorkingHoursUnitPriceAtr()),
-                kmlmtCostCalcSet.getPk().histID
+                EnumAdaptor.valueOf(kmlmtPersonCostCalculation.getUnitPriceSettingMethod(), HowToSetUnitPrice.class),
+                new WorkingHoursUnitPrice(kmlmtPersonCostCalculation.getWorkingHoursUnitPriceAtr()),
+                kmlmtPersonCostCalculation.getPk().histID
         );
     }
 
@@ -201,15 +201,15 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
      *
      * @return PremiumSetting Domain Object
      */
-    private PremiumSetting toDomainPremiumSetting(KmlstPremiumSet kmlstPremiumSet) {
+    private PremiumSetting toDomainPremiumSetting(KmlspPremiumSet kmlspPremiumSet) {
         return new PremiumSetting(
-                kmlstPremiumSet.getPk().companyID,
-                kmlstPremiumSet.getPk().histID,
-                ExtraTimeItemNo.valueOf(kmlstPremiumSet.getPk().premiumNo),
-                new PremiumRate(kmlstPremiumSet.getPremiumRate()),
-                EnumAdaptor.valueOf(kmlstPremiumSet.getUnitPrice(), UnitPrice.class),
-                listEntityAtt(kmlstPremiumSet.getPk().companyID, kmlstPremiumSet.getPk().histID,
-                        kmlstPremiumSet.getPk().premiumNo));
+                kmlspPremiumSet.getPk().companyID,
+                kmlspPremiumSet.getPk().histID,
+                ExtraTimeItemNo.valueOf(kmlspPremiumSet.getPk().premiumNo),
+                new PremiumRate(kmlspPremiumSet.getPremiumRate()),
+                EnumAdaptor.valueOf(kmlspPremiumSet.getUnitPrice(), UnitPrice.class),
+                listEntityAtt(kmlspPremiumSet.getPk().companyID, kmlspPremiumSet.getPk().histID,
+                        kmlspPremiumSet.getPk().premiumNo));
     }
 
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -273,7 +273,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
     @Override
     public Optional<PersonCostCalAndDateDto> getPersonCost(String cid, String histID) {
         val rs = new PersonCostCalAndDateDto();
-        List<KmlstPremiumSet> listEntityRate = this.queryProxy().query(SEL_PER_RATE_BY_CID_AND_HISTID, KmlstPremiumSet.class)
+        List<KmlspPremiumSet> listEntityRate = this.queryProxy().query(SEL_PER_RATE_BY_CID_AND_HISTID, KmlspPremiumSet.class)
                 .setParameter("cid", cid)
                 .setParameter("histID", histID)
                 .getList();
@@ -289,7 +289,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
             ).collect(Collectors.toList());
         }
 
-        Optional<KmlmtCostCalcSet> listEntityPerCostCal = this.queryProxy().query(SEL_PER_BY_CID_AND_HISTID, KmlmtCostCalcSet.class)
+        Optional<KmlmtPersonCostCalculation> listEntityPerCostCal = this.queryProxy().query(SEL_PER_BY_CID_AND_HISTID, KmlmtPersonCostCalculation.class)
                 .setParameter("cid", cid)
                 .setParameter("histID", histID)
                 .getSingle();
@@ -343,8 +343,8 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
     @Override
     public void createHistPersonCl(PersonCostCalculation domain, GeneralDate startDate, GeneralDate endDate, String histId) {
 
-        val entityPerCostCal = KmlmtCostCalcSet.toEntity(domain, histId);
-        val listEntityRate = KmlstPremiumSet.toEntity(domain, histId);
+        val entityPerCostCal = KmlmtPersonCostCalculation.toEntity(domain, histId);
+        val listEntityRate = KmlspPremiumSet.toEntity(domain, histId);
         val listAtt = KmldtPremiumAttendance.toEntity(domain.getPremiumSettings(), histId);
         val listHist = KscmtPerCostCalcHist.toEntity(startDate, endDate, histId, domain.getCompanyID());
         this.commandProxy().insertAll(listAtt);
@@ -372,8 +372,8 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
         if (!domain.getPremiumSettings().isEmpty()) {
             updatePerCostPremiRate(domain, histId);
             updateKmldtPremiumAttendance(domain, histId);
-            val entityPer = this.queryProxy().find(new KmlmtCostCalcSetPk(domain.getCompanyID(), domain.getHistoryID()), KmlmtCostCalcSet.class);
-            val entity = KmlmtCostCalcSet.toEntity(domain, domain.getHistoryID());
+            val entityPer = this.queryProxy().find(new KmlmpPersonCostCalculationPK(domain.getCompanyID(), domain.getHistoryID()), KmlmtPersonCostCalculation.class);
+            val entity = KmlmtPersonCostCalculation.toEntity(domain, domain.getHistoryID());
             if (entityPer.isPresent()) {
 
                 this.commandProxy().update(entity);
@@ -404,9 +404,9 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 
     @Override
     public List<PremiumSetting> getPersonCostByListHistId(String cid, List<String> histId) {
-        List<KmlstPremiumSet> listEntityRate = new ArrayList<>();
+        List<KmlspPremiumSet> listEntityRate = new ArrayList<>();
         CollectionUtil.split(histId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
-            listEntityRate.addAll(this.queryProxy().query(SEL_PER_COST_IN_LIST, KmlstPremiumSet.class)
+            listEntityRate.addAll(this.queryProxy().query(SEL_PER_COST_IN_LIST, KmlspPremiumSet.class)
                     .setParameter("cid", cid)
                     .setParameter("histIDs", splitData)
                     .getList());
@@ -428,13 +428,13 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
     public HistAnPerCost getHistAnPerCost(String companyID) {
         val result = new HistAnPerCost();
         List<PersonCostCalculation> rs = new ArrayList<>();
-        val listEntity = this.queryProxy().query(SEL_BY_CID, KmlmtCostCalcSet.class).setParameter("companyID", companyID)
+        val listEntity = this.queryProxy().query(SEL_BY_CID, KmlmtPersonCostCalculation.class).setParameter("companyID", companyID)
                 .getList();
         val listEntityHist = this.queryProxy().query(SEL_BY_CID_HIST, KscmtPerCostCalcHist.class).setParameter("companyID", companyID)
                 .getList();
         val listHistId = listEntity.stream().map(e -> e.getPk().histID).collect(Collectors.toList());
         val listRate = getPersonCostByListHistId(companyID, listHistId);
-        for (KmlmtCostCalcSet item : listEntity) {
+        for (KmlmtPersonCostCalculation item : listEntity) {
             val listPremiumSetting = listRate.stream().filter(x -> x.getHistoryID().equals(item.pk.histID)).collect(Collectors.toList());
             if (listPremiumSetting.isEmpty()) continue;
             val sub = toSimpleDomain(item, listPremiumSetting);
@@ -457,14 +457,14 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
                 .setParameter("cid", cid)
                 .setParameter("historyID", historyID)
                 .setParameter("displayNumber", displayNumber)
-                .getList(e -> e.kmldtPremiumAttendancePk.attendanceID);
+                .getList(e -> e.kmldpPremiumAttendancePK.attendanceID);
     }
 
     private void updatePerCostPremiRate(PersonCostCalculation domain, String histId) {
         val listItemNos = domain.getPremiumSettings().stream().map(e -> e.getID().value).collect(Collectors.toList());
-        List<KmlstPremiumSet> listEntityRate = new ArrayList<>();
+        List<KmlspPremiumSet> listEntityRate = new ArrayList<>();
         CollectionUtil.split(listItemNos, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
-            listEntityRate.addAll(this.queryProxy().query(SEL_PREMI_RATE, KmlstPremiumSet.class)
+            listEntityRate.addAll(this.queryProxy().query(SEL_PREMI_RATE, KmlspPremiumSet.class)
                     .setParameter("cid", domain.getCompanyID())
                     .setParameter("histIDs", histId)
                     .setParameter("listItemNos", splitData)
@@ -474,7 +474,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
             this.commandProxy().removeAll(listEntityRate);
             this.getEntityManager().flush();
         }
-        this.commandProxy().insertAll(KmlstPremiumSet.toEntity(domain, histId));
+        this.commandProxy().insertAll(KmlspPremiumSet.toEntity(domain, histId));
     }
 
     private void updateKmldtPremiumAttendance(PersonCostCalculation domain, String histId) {

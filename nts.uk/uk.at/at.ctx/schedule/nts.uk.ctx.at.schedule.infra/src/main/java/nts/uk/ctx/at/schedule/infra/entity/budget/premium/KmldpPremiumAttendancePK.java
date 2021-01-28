@@ -15,7 +15,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class KmldtPremiumAttendancePk implements Serializable {
+public class KmldpPremiumAttendancePK implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Column(name="CID")

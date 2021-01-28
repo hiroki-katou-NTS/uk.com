@@ -17,12 +17,12 @@ import java.io.Serializable;
 @Table(name = "KMLMT_COST_CALC_SET")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KmlmtCostCalcSet extends UkJpaEntity implements Serializable {
+public class KmlmtPersonCostCalculation extends UkJpaEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @EmbeddedId
-    public KmlmtCostCalcSetPk pk;
+    public KmlmpPersonCostCalculationPK pk;
 
     //人件費計算設定.単価
     @Column(name = "UNITPRICE_ATR")
@@ -53,11 +53,11 @@ public class KmlmtCostCalcSet extends UkJpaEntity implements Serializable {
         return pk;
     }
 
-    public static KmlmtCostCalcSet toEntity(PersonCostCalculation domain, String histId) {
+    public static KmlmtPersonCostCalculation toEntity(PersonCostCalculation domain, String histId) {
         val unitPrice = domain.getUnitPrice();
 
-        return new KmlmtCostCalcSet(
-                new KmlmtCostCalcSetPk(domain.getCompanyID(), histId),
+        return new KmlmtPersonCostCalculation(
+                new KmlmpPersonCostCalculationPK(domain.getCompanyID(), histId),
                 unitPrice.isPresent() ? unitPrice.get().value : null,
                 domain.getRemark().v(),
                 domain.getRoundingSetting().getRoundingOfPremium().getPriceRounding().value,
