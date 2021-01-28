@@ -43,11 +43,16 @@ public class ExtractRecoveryTargetTerminal {
 		if (empInfoTerList.isEmpty())
 			return null;
 		//	2. get*(契約コード、コード（List）): <機種名、ROMバージョン、機種区分>(List)
+		List<TimeRecordSetFormatList> machineInfoLst = this.timeRecordSetFormatListRepository
+				   .get(contractCode, empInfoTerList.stream().map(e -> e.getEmpInfoTerCode()).collect(Collectors.toList()));
 		
 		return empInfoTerList.stream().map(e -> {
 			ExtractRecoveryTargetTerminalDto dto = new ExtractRecoveryTargetTerminalDto();
-			Optional<TimeRecordSetFormatList> timeRecordSetFormatList = this.timeRecordSetFormatListRepository.findSetFormat(e.getEmpInfoTerCode(), contractCode);
-			
+			Optional<TimeRecordSetFormatList> machineInfo = machineInfoLst.stream().filter(x -> Integer.parseInt(x.getEmpInfoTerCode().v()) == Integer.parseInt(e.getEmpInfoTerCode().v())).findAny();
+			if(!machineInfo.isPresent()) {
+				return null;
+			}
+			TimeRecordSetFormatList machineInfoVal = machineInfo.get();
 			dto.setWorkLocationCode(e.getCreateStampInfo().getWorkLocationCd().isPresent()?
 									e.getCreateStampInfo().getWorkLocationCd().get().v() : "");
 			dto.setEmpInfoTerCode(e.getEmpInfoTerCode().v());
@@ -66,14 +71,11 @@ public class ExtractRecoveryTargetTerminal {
 			dto.setEntranceExit(e.getCreateStampInfo().getConvertEmbCate().getEntranceExit().value);
 			dto.setMemo(e.getEmpInfoTerMemo().isPresent()?
 						e.getEmpInfoTerMemo().get().v() : "");
-			if(!timeRecordSetFormatList.isPresent())
-				return dto;
-			TimeRecordSetFormatList timeRecordSetFormatListVal = timeRecordSetFormatList.get();
-			dto.setModelClassification(timeRecordSetFormatListVal.getModelEmpInfoTer().value);
-			dto.setModelName(ModelEmpInfoTer.valueOf(dto.getModelEmpInfoTer()).toString());
-			dto.setRomVersion(timeRecordSetFormatListVal.getRomVersion().v());
+			dto.setModelClassification(machineInfoVal.getModelEmpInfoTer().value);
+			dto.setTrName(machineInfoVal.getEmpInfoTerName().v());
+			dto.setRomVersion(machineInfoVal.getRomVersion().v());
 			return dto;
-		}).collect(Collectors.toList());
+		}).filter(t -> null!= t).collect(Collectors.toList());
 	}
 
 }
