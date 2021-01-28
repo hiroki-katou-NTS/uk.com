@@ -227,7 +227,7 @@ module nts.uk.at.view.kdl003.a {
 
                         self.getHeaderWorkTime(data.useATR === 1);
                         let isCheckStatus = _.isNil(data.allCheckStatus) ? true : data.allCheckStatus;                        
-                        self.isAllCheckStatus(isCheckStatus); //data.allCheckStatus !== 1
+                        self.isAllCheckStatus(!isCheckStatus); //data.allCheckStatus !== 1
                         self.isCheckStatus(isCheckStatus);
 
                         let listWorkTime: Array<WorkTimeSet> = [];
@@ -598,7 +598,7 @@ module nts.uk.at.view.kdl003.a {
                 self.startTime(null);
                 self.endTimeOption(1);
                 self.endTime(null);
-
+                self.searchCode(null);
                 // Clear errors.
                 $('#inputEndTime').ntsError('clear');
                 $('#inputStartTime').ntsError('clear');

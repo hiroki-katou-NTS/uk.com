@@ -11,6 +11,7 @@ module nts.uk.at.view.kml001.c {
       textKML001_47: KnockoutObservable<string>;
       latestHistory: KnockoutObservable<any> = ko.observable(null);
       currentPersonCost: KnockoutObservable<any> = ko.observable(null);
+      defaultPremiumSettings: KnockoutObservableArray<any> = ko.observableArray([]);
 
       constructor() {
         super();
@@ -21,7 +22,8 @@ module nts.uk.at.view.kml001.c {
         self.newStartDate = ko.observable(null);
         self.beginStartDate = ko.observable(vmbase.ProcessHandler.getOneDayAfter(self.lastStartDate()));        
         self.size = ko.observable(self.latestHistory().size);        
-        self.textKML001_47 = ko.observable(nts.uk.resource.getText('KML001_47', [self.lastStartDate()]));            
+        self.textKML001_47 = ko.observable(nts.uk.resource.getText('KML001_47', [self.lastStartDate()]));     
+        self.getOneDefaultPremiumSetting();       
       }
 
       /**
@@ -58,6 +60,7 @@ module nts.uk.at.view.kml001.c {
         
         self.currentPersonCost(self.latestHistory().personalCost);
         let premiumSettingList: Array<any> = [];
+        
         _.forEach(self.currentPersonCost().premiumSets, (item) => {
 
           let attendanceItems = [];
@@ -90,7 +93,7 @@ module nts.uk.at.view.kml001.c {
           workingHoursUnitPrice: self.copyDataFlag() ? self.currentPersonCost().workingHour : vmbase.UnitPrice.Price_1, //計算用単価
           memo: self.copyDataFlag() ? self.currentPersonCost().memo : null, //備考
           personCostRoundingSetting: personCostRoundingSetting,
-          premiumSets: self.copyDataFlag() ? premiumSettingList : []
+          premiumSets: self.copyDataFlag() ? premiumSettingList : self.defaultPremiumSettings()
         };
 
         self.$blockui('show');
@@ -104,7 +107,34 @@ module nts.uk.at.view.kml001.c {
           });          
         })
         .fail((error) => {
-          self.$blockui('hide');
+          self.$dialog.error({ messageId: error.messageId}).then( () => {   
+            $('#startDateInput').focus();
+            self.$blockui('hide');
+          });
+        });
+      }
+
+      getOneDefaultPremiumSetting() {
+        const self = this;
+        var premiumItemSelect = servicebase.premiumItemSelect();
+        $.when(premiumItemSelect).done((data) => {
+          let premiumItemSelectData: any = _.orderBy(data, ['displayNumber'], ['asc']);
+          if (premiumItemSelectData.length > 0) {
+            let found = false;
+            _.forEach(premiumItemSelectData, (item) => {
+              if (item.useAtr && !found) {
+                found = true;
+                self.defaultPremiumSettings.push({
+                  iD: item.displayNumber,
+                  name: item.name,
+                  rate: 100,
+                  unitPrice: 0,
+                  useAtr: item.useAtr,
+                  attendanceItems: []
+                });
+              }
+            });
+          }
         });
       }
     }
