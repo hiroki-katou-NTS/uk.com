@@ -1,5 +1,6 @@
 package nts.uk.file.at.app.export.settingpersonalcostcalc;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.app.find.budget.premium.PersonCostCalculationFinder;
@@ -41,10 +42,23 @@ public class PersonCostCalculationExportImpl implements MasterListData {
             for (PersonCostCalDto personCostCalculationSettingDto : listPersonCostCalculationSetting) {
                 //PersonCostCalculationSettingDto personCostCalculationSetting	= personCostCalculationSettingFinder.findByHistoryID(personCostCalculationSettingDto.getHistoryID());
                 List<PremiumSettingAndNameDto> personCostCalculationSetting = personCostCalculationSettingDto.getPremiumSettingList();
+                val check = personCostCalculationSettingDto.getUnitPrice();
+                if(check == null){
+                    val name = TextResource.localize("KML001_83");
+                    personCostCalculationSetting.add(new PremiumSettingAndNameDto(
+                            0,
+                            name,
+                            100,
+                            1,
+                            personCostCalculationSettingDto.getWorkingHoursUnitPrice(),
+                            Collections.EMPTY_LIST
+                    ));
+                }
                 data = putEntryMasterDatas();
                 data.put("有効開始日", personCostCalculationSettingDto.getStartDate() != null ? personCostCalculationSettingDto.getStartDate().toString() : "");
                 data.put("終了日", personCostCalculationSettingDto.getEndDate() != null ? personCostCalculationSettingDto.getEndDate().toString() : "");
-
+                System.out.println("abcbcbc1111111111111111 :"+personCostCalculationSettingDto.getHowToSetUnitPrice());
+                System.out.println("abcbcbc2222222222222222 :"+getTextResRatePrice(personCostCalculationSettingDto.getHowToSetUnitPrice()));
                 data.put("計算設定", getTextResRatePrice(personCostCalculationSettingDto.getHowToSetUnitPrice())); //A-6-8
 
                 data.put("計算用単価", !Objects.isNull(personCostCalculationSettingDto.getUnitPrice()) ?
