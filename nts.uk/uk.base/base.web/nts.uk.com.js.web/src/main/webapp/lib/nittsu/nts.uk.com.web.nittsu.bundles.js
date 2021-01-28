@@ -4391,7 +4391,7 @@ var nts;
                     // subscriber windows size
                     this.size = ko.observable({ width: window.innerWidth, height: window.innerHeight });
                     // show or hide header
-                    this.header = ko.observable(null);
+                    this.header = ko.observable(null).extend({ rateLimit: 100 });
                     // show or hide notification
                     this.notification = ko.observable('');
                     var vm = this;
@@ -36911,6 +36911,8 @@ function bean(dialogOption) {
                     }
                 });
                 kvm.systemName.valueHasMutated();
+                $window.title
+                    .subscribe(function (title) { return kvm.title(title); });
                 kvm.mode
                     .subscribe(function (mode) {
                     var old = ko.unwrap($window.mode);
@@ -36922,6 +36924,8 @@ function bean(dialogOption) {
                     }
                 });
                 kvm.mode.valueHasMutated();
+                $window.mode
+                    .subscribe(function (mode) { return kvm.mode(mode); });
                 kvm.header
                     .subscribe(function (header) {
                     var old = ko.unwrap($window.header);
@@ -36933,6 +36937,8 @@ function bean(dialogOption) {
                     }
                 });
                 kvm.header.valueHasMutated();
+                $window.header
+                    .subscribe(function (header) { return kvm.header(header); });
                 // hook to mounted function
                 $viewModel.$nextTick(function () {
                     var $mounted = $viewModel['mounted'];
@@ -37285,13 +37291,13 @@ var nts;
                 });
                 BaseViewModel.prototype.$window = Object.defineProperties({}, {
                     mode: {
-                        value: ko.observable('') // nts.uk.ui._viewModel.kiban.mode
+                        value: ko.observable('view') // nts.uk.ui._viewModel.kiban.mode
                     },
                     title: {
                         value: ko.observable('') //nts.uk.ui._viewModel.kiban.title
                     },
                     header: {
-                        value: ko.observable('') //nts.uk.ui._viewModel.kiban.header
+                        value: ko.observable(null).extend({ rateLimit: 100 }) //nts.uk.ui._viewModel.kiban.header
                     },
                     size: {
                         value: $size
@@ -50760,8 +50766,9 @@ var nts;
                         vm.loadData();
                         ko.computed({
                             read: function () {
+                                var mode = ko.unwrap(vm.$window.mode);
                                 var show = ko.unwrap(vm.$window.header);
-                                if (show === true) {
+                                if (mode === 'view' && show === true) {
                                     vm.$el.classList.remove('hidden');
                                     nts.uk.sessionStorage
                                         .getItem(MENU_SET)
