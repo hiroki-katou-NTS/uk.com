@@ -147,6 +147,7 @@ module nts.uk.at.view.kmk004.l {
 		public startYM: KnockoutObservable<number> = ko.observable(0);
 		public isNewYear: KnockoutObservable<boolean> = ko.observable(false);
 		public checkAdd: KnockoutObservable<boolean> = ko.observable(false);
+
 		constructor(private params: IParam) {
 			super();
 		}
@@ -218,14 +219,23 @@ module nts.uk.at.view.kmk004.l {
 
 			vm.params = { isLoadData: vm.isLoadData, sidebarType: "Com_Person", wkpId: ko.observable(''), empCode: ko.observable(''), empId: ko.observable(''), titleName: '', deforLaborTimeComDto: null, settingDto: null };
 			vm.years
-				.subscribe(() => {
-					if (ko.unwrap(vm.years).length > 0) {
+				.subscribe((years: IYear[]) => {
+					const [first] = years;
+
+					if (first) {
+						if (ko.unwrap(vm.selectedYear) == null) {
+							vm.selectedYear(first.year);
+						}
+
 						vm.existYear(true);
 						vm.checkDelete(true);
 					} else {
+						vm.selectedYear(null);
+
 						vm.existYear(false);
 						vm.checkDelete(false);
 					}
+
 				});
 
 			vm.workTimes
@@ -244,8 +254,10 @@ module nts.uk.at.view.kmk004.l {
 				});
 
 			vm.selectedYear
-				.subscribe(() => {
-					const exist = _.find(ko.unwrap(vm.years), (m: IYear) => m.year as number == ko.unwrap(vm.selectedYear) as number);
+				.subscribe((val: number | null) => {
+					const _years = ko.unwrap(vm.years);
+
+					const exist = _.find(_years, ({ year }) => year == val);
 
 					if (exist) {
 						if (ko.unwrap(vm.existYear)) {
@@ -394,8 +406,6 @@ module nts.uk.at.view.kmk004.l {
 									});
 								}).always(() => {
 									vm.$errors('clear');
-								}).then(() => {
-									vm.selectedYear.valueHasMutated();
 								});
 						});
 			});
@@ -421,9 +431,11 @@ module nts.uk.at.view.kmk004.l {
 							vm.years(ko.unwrap(vm.years));
 							if (ko.unwrap(vm.years).length > 0) {
 								vm.selectedYear(ko.unwrap(vm.years)[old_index].year);
+							} else {
+								vm.selectedYear.valueHasMutated();
 							}
 							vm.getEmployeeIds();
-						}).then(() => {vm.selectedYear.valueHasMutated();})
+						})
 						.then(() => vm.$dialog.info({ messageId: "Msg_16" }))
 						.then(() => {
 							$(document).ready(() => {
