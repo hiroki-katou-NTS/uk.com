@@ -30,7 +30,7 @@ public class NumDataFormatSetCommand {
 	/**
 	 * 固定値の値
 	 */
-	private String valueOfFixedValue;
+	private Double valueOfFixedValue;
 
 	/**
 	 * 少数桁数

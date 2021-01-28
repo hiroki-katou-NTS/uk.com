@@ -45,7 +45,7 @@ public class InsTimeDatFmSet extends DataFormatSetting {
 	/**
 	 * 固定値の値
 	 */
-	private Optional<DataSettingFixedValue> valueOfFixedValue;
+	private Optional<TimeDataValueOffFixdValue> valueOfFixedValue;
 
 	/**
 	 * 有効桁数開始桁
@@ -63,7 +63,7 @@ public class InsTimeDatFmSet extends DataFormatSetting {
 	private Optional<TimeRounding> roundProcCls;
 
 	public InsTimeDatFmSet(int itemType, int delimiterSet, int fixedValue, int hourMinSelect, int effectiveDigitLength,
-			int roundProc, int decimalSelect, String valueOfFixedValue, Integer startDigit, Integer endDigit,
+			int roundProc, int decimalSelect, Integer valueOfFixedValue, Integer startDigit, Integer endDigit,
 			Integer roundProcCls) {
 		super(itemType);
 		this.delimiterSet = EnumAdaptor.valueOf(delimiterSet, DelimiterSetting.class);
@@ -72,21 +72,9 @@ public class InsTimeDatFmSet extends DataFormatSetting {
 		this.hourMinSelect = EnumAdaptor.valueOf(hourMinSelect, HourlySegment.class);
 		this.roundProc = EnumAdaptor.valueOf(roundProc, NotUseAtr.class);
 		this.decimalSelect = EnumAdaptor.valueOf(decimalSelect, DecimalSelection.class);
-		if (valueOfFixedValue == null)
-			this.valueOfFixedValue = Optional.empty();
-		else
-			this.valueOfFixedValue = Optional.of(new DataSettingFixedValue(valueOfFixedValue));
-		if (startDigit == null)
-			this.startDigit = Optional.empty();
-		else
-			this.startDigit = Optional.of(new AcceptedDigit(startDigit));
-		if (endDigit == null)
-			this.endDigit = Optional.empty();
-		else
-			this.endDigit = Optional.of(new AcceptedDigit(endDigit));
-		if (roundProcCls == null)
-			this.roundProcCls = Optional.empty();
-		else
-			this.roundProcCls = Optional.of(EnumAdaptor.valueOf(roundProcCls, TimeRounding.class));
+		this.valueOfFixedValue = Optional.ofNullable(valueOfFixedValue == null ? null : new TimeDataValueOffFixdValue(valueOfFixedValue));
+		this.startDigit = Optional.ofNullable(startDigit == null ? null : new AcceptedDigit(startDigit));
+		this.endDigit =  Optional.ofNullable(endDigit == null ? null : new AcceptedDigit(endDigit));
+		this.roundProcCls = Optional.ofNullable(roundProcCls == null ? null : EnumAdaptor.valueOf(roundProcCls, TimeRounding.class));
 	}
 }

@@ -6,11 +6,17 @@ package nts.uk.ctx.exio.dom.exi.dataformat;
  *
  */
 public enum TimeRounding {	
-	//1分未満切り捨て
+	/**
+	 * 1分未満切り捨て
+	 */
 	DOWN_LESS_1_MINUTE(1, "Enum_TimeRounding_DOWN_LESS_1_MINUTE"), 
-	//1分未満切り上げ
+	/**
+	 * 1分未満切り上げ
+	 */
 	LESS_1_MINUTE(2, "Enum_TimeRounding_LESS_1_MINUTE"), 
-	//1分未満四捨五入（小数点第1位迄）
+	/**
+	 * 1分未満四捨五入（小数点第1位迄）
+	 */
 	OFF_TO_LESS_1_MINUTE(3, "Enum_TimeRounding_OFF_TO_LESS_1_MINUTE");
 
 	/** The value. */

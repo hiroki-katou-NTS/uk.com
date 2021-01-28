@@ -12,6 +12,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.exio.dom.exi.dataformat.DateDataFormSet;
 import nts.uk.ctx.exio.dom.exi.dataformat.ItemType;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
@@ -45,7 +46,7 @@ public class OiomtDateDataFormSet extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "VALUE_OF_FIXED_VALUE")
-	public String valueOfFixedValue;
+	public GeneralDate valueOfFixedValue;
 
 	/**
 	 * 形式選択
@@ -66,7 +67,7 @@ public class OiomtDateDataFormSet extends UkJpaEntity implements Serializable {
 	}
 
 	public OiomtDateDataFormSet(String cid,String conditionCode, int acceptItemNum, int fixedValue,
-			int formatSelection, String valueOfFixedValue) {
+			int formatSelection, GeneralDate valueOfFixedValue) {
 		super();
 		this.dateDataFormSetPk = new OiomtDateDataFormSetPk(cid, conditionCode, acceptItemNum);
 		this.fixedValue = fixedValue;
@@ -77,7 +78,7 @@ public class OiomtDateDataFormSet extends UkJpaEntity implements Serializable {
 	public static OiomtDateDataFormSet fromDomain(StdAcceptItem item, DateDataFormSet domain) {
 		return new OiomtDateDataFormSet(item.getCid(), item.getConditionSetCd().v(),
 				item.getAcceptItemNumber(), domain.getFixedValue().value, domain.getFormatSelection().value,
-				domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null);
+				domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get() : null);
 	}
 
 	public DateDataFormSet toDomain() {

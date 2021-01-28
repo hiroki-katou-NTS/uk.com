@@ -6,7 +6,13 @@ package nts.uk.ctx.exio.dom.exi.dataformat;
  *
  */
 public enum DecimalDivision {
-	DECIMAL(1, "小数あり"), 
+	/**
+	 * 1:小数あり
+	 */
+	DECIMAL(1, "小数あり"),
+	/**
+	 * 小数なし
+	 */
 	NO_DECIMAL(0, "小数なし");
 
 	/** The value. */

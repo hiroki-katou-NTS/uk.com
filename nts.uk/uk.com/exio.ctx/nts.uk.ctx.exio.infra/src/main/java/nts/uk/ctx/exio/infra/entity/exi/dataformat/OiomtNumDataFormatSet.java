@@ -67,7 +67,7 @@ public class OiomtNumDataFormatSet extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "VALUE_OF_FIXED_VALUE")
-	public String valueOfFixedValue;
+	public Double valueOfFixedValue;
 
 	/**
 	 * 少数桁数
@@ -116,7 +116,7 @@ public class OiomtNumDataFormatSet extends UkJpaEntity implements Serializable {
 	}
 
 	public OiomtNumDataFormatSet(String cid, String conditionCode, int acceptItemNum, int fixedValue,
-			int decimalDivision, int effectiveDigitLength, String cdConvertCd, String valueOfFixedValue,
+			int decimalDivision, int effectiveDigitLength, String cdConvertCd, Double valueOfFixedValue,
 			Integer decimalDigitNum, Integer startDigit, Integer endDigit, Integer decimalPointCls,
 			Integer decimalFraction) {
 		super();

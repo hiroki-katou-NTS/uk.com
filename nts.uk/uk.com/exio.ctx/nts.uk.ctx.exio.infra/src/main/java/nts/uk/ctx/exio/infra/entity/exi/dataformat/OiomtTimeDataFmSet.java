@@ -81,7 +81,7 @@ public class OiomtTimeDataFmSet extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "VALUE_OF_FIXED_VALUE")
-	public String valueOfFixedValue;
+	public Integer valueOfFixedValue;
 
 	/**
 	 * 有効桁数開始桁
@@ -117,7 +117,7 @@ public class OiomtTimeDataFmSet extends UkJpaEntity implements Serializable {
 
 	public OiomtTimeDataFmSet(String cid, String conditionCode, int acceptItemNum, int delimiterSet,
 			int fixedValue, int hourMinSelect, int effectiveDigitLength, int roundProc, int decimalSelect,
-			String valueOfFixedValue, Integer startDigit, Integer endDigit, Integer roundProcCls) {
+			Integer valueOfFixedValue, Integer startDigit, Integer endDigit, Integer roundProcCls) {
 		super();
 		this.timeDatFmSetPk = new OiomtTimeDataFmSetPk(cid, conditionCode, acceptItemNum);
 		this.delimiterSet = delimiterSet;
