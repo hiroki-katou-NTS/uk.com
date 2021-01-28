@@ -151,8 +151,7 @@ public class OiomtAcScreenCondSet extends UkJpaEntity implements Serializable {
 	public static OiomtAcScreenCondSet fromDomain(StdAcceptItem item, AcScreenCondSet domain) {
 		return new OiomtAcScreenCondSet(item.getCid(), item.getConditionSetCd().v(),
 				item.getAcceptItemNumber(),
-				domain.getSelectComparisonCondition().isPresent() ? domain.getSelectComparisonCondition().get().value
-						: null,
+				domain.getSelectComparisonCondition().value,
 				domain.getTimeConditionValue1().isPresent() ? domain.getTimeConditionValue1().get().v() : null,
 				domain.getTimeConditionValue2().isPresent() ? domain.getTimeConditionValue2().get().v() : null,
 				domain.getTimeMomentConditionValue1().isPresent() ? domain.getTimeMomentConditionValue1().get().v()
