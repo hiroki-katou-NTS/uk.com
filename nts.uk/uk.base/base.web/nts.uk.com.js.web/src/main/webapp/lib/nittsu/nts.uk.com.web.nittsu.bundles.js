@@ -36939,22 +36939,24 @@ function bean(dialogOption) {
                 kvm.header.valueHasMutated();
                 $window.header
                     .subscribe(function (header) { return kvm.header(header); });
-                // hook to mounted function
-                $viewModel.$nextTick(function () {
-                    var $mounted = $viewModel['mounted'];
-                    _.extend($viewModel, { $el: document.querySelector('#master-wrapper') });
-                    if (kvm) {
-                        ko.computed({
-                            read: function () {
-                                $viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
-                            },
-                            owner: $viewModel,
-                            disposeWhenNodeIsRemoved: $viewModel.$el
-                        });
-                    }
-                    if ($mounted && _.isFunction($mounted)) {
-                        $mounted.apply($viewModel, []);
-                    }
+                $(function () {
+                    // hook to mounted function
+                    $viewModel.$nextTick(function () {
+                        var $mounted = $viewModel['mounted'];
+                        _.extend($viewModel, { $el: document.querySelector('#master-wrapper') });
+                        if (kvm) {
+                            ko.computed({
+                                read: function () {
+                                    $viewModel.$validate.valid(!kvm.errorDialogViewModel.errors().length);
+                                },
+                                owner: $viewModel,
+                                disposeWhenNodeIsRemoved: $viewModel.$el
+                            });
+                        }
+                        if ($mounted && _.isFunction($mounted)) {
+                            $mounted.apply($viewModel, []);
+                        }
+                    });
                 });
             });
         });
