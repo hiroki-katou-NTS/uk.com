@@ -56,6 +56,10 @@ module nts.uk.com.view.ccg008.a.Layout1ComponentViewModel {
             vm.lstHtml(mappedList);
             if (!_.isEmpty(res)) {
               vm.renderHTML(res[0].htmlContent);
+              // ddaay la voi void()
+              if($('.contents_layout_ccg015')[0]) {
+                $(window.frames['frameF1'].contentDocument).find('a').attr('href', 'javascript: void()').removeAttr('target');
+              }
             }
           });
         } else {
@@ -63,17 +67,32 @@ module nts.uk.com.view.ccg008.a.Layout1ComponentViewModel {
           vm.filePath(ntsFile.liveViewUrl(layout1[0].fileId, 'index.htm'));
           const ifr = document.getElementById('F2-frame');
           const width = ifr.scrollWidth;
-          const ifrParent = $('.contents_layout');
-          const height = ifrParent.innerHeight();
-          (ifr as any).width = `${width.toString()}px`;
-          (ifr as any).height = `${height.toString()}px`;
+          if($('.contents_layout_ccg015')[0]) {
+            const ifrParent = $('.contents_layout_ccg015');
+            const height = ifrParent.innerHeight();
+            (ifr as any).width = `${width.toString()}px`;
+            (ifr as any).height = `${height.toString()}px`;
+            setTimeout(function(){    
+               $(window.frames['F2-frame'].contentDocument).find('a').attr('onclick', null).off("click");
+            }, 2000);
+          } else {
+            const ifrParent = $('.contents_layout');
+            const height = ifrParent.innerHeight();
+            (ifr as any).width = `${width.toString()}px`;
+            (ifr as any).height = `${height.toString()}px`;
+          }
         }
       }
     }
 
     mounted() {
       const ifr = document.getElementById('preview-iframe1');
-      const ifrParent = $('.contents_layout');
+      let ifrParent: any;
+      if($('.contents_layout_ccg015')[0]) {
+        ifrParent = $('.contents_layout_ccg015');
+      } else {
+        ifrParent = $('.contents_layout');
+      }
       const height = ifrParent.innerHeight() - 10;
       (ifr as any).height = `${height.toString()}px`;
     }
