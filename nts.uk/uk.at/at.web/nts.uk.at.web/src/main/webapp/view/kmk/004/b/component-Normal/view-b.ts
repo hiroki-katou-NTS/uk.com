@@ -123,7 +123,7 @@ module nts.uk.at.view.kmk004.b {
 			const vm = this;
 
 			$(document).ready(function () {
-				$('.listbox').focus();
+				$('#list-box').focus();
 			});
 		}
 
@@ -164,7 +164,7 @@ module nts.uk.at.view.kmk004.b {
 				.always(() => {
 					vm.$blockui('clear');
 					$(document).ready(function () {
-						$('.listbox').focus();
+						$('#list-box').focus();
 					});
 				});
 		}
@@ -179,7 +179,7 @@ module nts.uk.at.view.kmk004.b {
 				.confirm({ messageId: "Msg_18" })
 				.ifCancel(() => {
 					$(document).ready(function () {
-						$('.listbox').focus();
+						$('#list-box').focus();
 					});
 				})
 				.ifYes(() => {
@@ -205,7 +205,7 @@ module nts.uk.at.view.kmk004.b {
 						.then(() => {
 							vm.selectedYear.valueHasMutated();
 							$(document).ready(function () {
-								$('.listbox').focus();
+								$('#list-box').focus();
 							});
 						})
 						.always(() => vm.$blockui("clear"));
