@@ -77,7 +77,8 @@ module nts.uk.at.view.knr002.c {
                 });
 
                 vm.currentCode2.subscribe((value) => {
-                    vm.clearError();
+                    // vm.clearError();
+                    nts.uk.ui.errors.clearAll();
                     console.time('C4_4');
                     let rowData: RemoteSettingsDto = ko.toJS(vm.smallItemData).filter((item: RemoteSettingsDto) => item.smallClassification == value)[0]; 
                     vm.smallClassificationName(rowData.smallClassification);
@@ -198,9 +199,15 @@ module nts.uk.at.view.knr002.c {
 
                 $('#single-list_container').focus();
 
-                if (vm.hasError()) {
+                // if (vm.hasError()) {
+                //     return;
+                // }
+                if (vm.validateErr()) {
                     return;
                 }
+                    
+              
+                
 
                 let obj: any = {};
                 vm.settingData.forEach((item: SettingValue) => {
@@ -273,9 +280,10 @@ module nts.uk.at.view.knr002.c {
             public addToSetting() {
                 const vm = this;
                 console.time('C11_2');
-                if (vm.hasError()) {
-                    return;
-                }
+                if (nts.uk.ui.errors.hasError()) { return; };
+                // nts.uk.ui.errors.clearAll();
+
+                let checkLength = vm.settingData.length;
 
                 switch(vm.inputMode()) {
                     case INPUT_TYPE.LETTER:
@@ -288,6 +296,9 @@ module nts.uk.at.view.knr002.c {
                         vm.settingData.push(item);     
                         break;
                     case INPUT_TYPE.LETTER2:  
+                        if (!(vm.updateValue().length > 0)) {
+                            break;
+                        }
                         vm.checkExistBeforeAdd(vm.rowData().smallClassification);
                         let item6 = new SettingValue(Math.random(), vm.rowData().majorClassification, vm.rowData().smallClassification, vm.updateValue(), '', vm.rowData().variableName);
                         vm.settingData.push(item6);     
@@ -415,23 +426,28 @@ module nts.uk.at.view.knr002.c {
                 .always(() => blockUI.clear());
             } 
 
-            private hasError() {
+            private validateErr() {
                 const vm = this;
 
-                vm.clearError();
+                nts.uk.ui.errors.clearAll();
 
-                $('#C6_5').ntsEditor("validate");
-
-                // if (vm.inputMode() == INPUT_TYPE.IP) {
-                    
-                // }
+                switch(vm.inputMode()) {
+                    case INPUT_TYPE.LETTER:
+                    case INPUT_TYPE.LETTER2: 
+                        $('#C6_5').ntsError("check");
+                        return true;
+                    case INPUT_TYPE.TIME:  
+                        $('#C7_7').ntsError("check");
+                        return true;   
+                    case INPUT_TYPE.IP:
+                        $('#C8_5').ntsError("check");
+                        $('#C8_6').ntsError("check");
+                        $('#C8_7').ntsError("check");
+                        $('#C8_8').ntsError("check");
+                        return true;       
+                }
 
                 return false;
-            }
-
-            private clearError() {
-                $('#C6_5').ntsError('clear');
-                nts.uk.ui.errors.clearAll();
             }
 
             private checkIpAddress(ipAddress: number): boolean {
