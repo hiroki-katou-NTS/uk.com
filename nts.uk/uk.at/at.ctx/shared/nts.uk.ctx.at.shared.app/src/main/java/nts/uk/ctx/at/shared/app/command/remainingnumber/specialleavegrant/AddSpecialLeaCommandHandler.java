@@ -69,7 +69,7 @@ public class AddSpecialLeaCommandHandler extends CommandHandler<SpecialLeaveRema
 				0.0,
 				command.getSpecialLeaCode());
 
-		repo.add(data);
+		repo.add(AppContexts.user().companyId(), data);
 	}
 
 }

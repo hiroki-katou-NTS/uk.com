@@ -74,9 +74,9 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 	}
 
 	@Override
-	public void add(SpecialLeaveGrantRemainingData data) {
+	public void add(String cid, SpecialLeaveGrantRemainingData data) {
 		if (data != null)
-			this.commandProxy().insert(toEntity(data));
+			this.commandProxy().insert(toEntity(cid, data));
 	}
 
 	@Override
@@ -144,7 +144,6 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 
 	private void updateDetail(KrcmtSpecialLeaveReam entity, SpecialLeaveGrantRemainingData data) {
 		entity.employeeId = data.getEmployeeId();
-		entity.cId = data.getCid();
 		entity.specialLeaCode = data.getSpecialLeaveCode();
 
 		entity.grantDate = data.getGrantDate();
@@ -191,9 +190,9 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 	 * @param domain
 	 * @return
 	 */
-	private KrcmtSpecialLeaveReam toEntity(SpecialLeaveGrantRemainingData data) {
+	private KrcmtSpecialLeaveReam toEntity(String cid, SpecialLeaveGrantRemainingData data) {
 		KrcmtSpecialLeaveReam entity = new KrcmtSpecialLeaveReam();
-		entity.cId = data.getCid();
+		entity.cId = cid;
 		entity.specialLeaID = data.getLeaveID();
 		entity.employeeId = data.getEmployeeId();
 		entity.specialLeaCode = data.getSpecialLeaveCode();
@@ -507,7 +506,7 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 	}
 
 	@Override
-	public void addAll(List<SpecialLeaveGrantRemainingData> domains) {
+	public void addAll(String cid, List<SpecialLeaveGrantRemainingData> domains) {
 		String INS_SQL = "INSERT INTO KRCMT_SPEC_LEAVE_REMAIN (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
 				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG,"
 				+ " SPECIAL_LEAVE_ID, CID, SID, SPECIAL_LEAVE_CD, GRANT_DATE, DEADLINE_DATE,"
@@ -539,7 +538,7 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
 
 			sql = sql.replace("SPECIAL_LEAVE_ID_VAL", "'" +  c.getLeaveID() + "'");
-			sql = sql.replace("CID_VAL", "'" + c.getCid() + "'");
+			sql = sql.replace("CID_VAL", "'" + cid + "'");
 			sql = sql.replace("SID_VAL", "'" + c.getEmployeeId() + "'");
 			sql = sql.replace("SPECIAL_LEAVE_CD_VAL", ""+ c.getSpecialLeaveCode() + "");
 

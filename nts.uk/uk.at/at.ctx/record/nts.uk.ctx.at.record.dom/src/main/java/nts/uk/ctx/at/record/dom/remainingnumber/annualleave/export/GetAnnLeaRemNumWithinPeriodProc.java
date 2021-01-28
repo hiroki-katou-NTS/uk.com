@@ -809,8 +809,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 
 			// 合計した「年休使用数」「年休残数」から年休付与残数を作成
 			val newRemainData = new AnnualLeaveGrantRemaining(AnnualLeaveGrantRemainingData.createFromJavaType(
-					"",
-					companyId, employeeId, dummyDateOpt.get(), dummyDateOpt.get(),
+					"",employeeId, dummyDateOpt.get(), dummyDateOpt.get(),
 					LeaveExpirationStatus.AVAILABLE.value, GrantRemainRegisterType.MONTH_CLOSE.value,
 					0.0, null,
 					useDays, useTime, null,

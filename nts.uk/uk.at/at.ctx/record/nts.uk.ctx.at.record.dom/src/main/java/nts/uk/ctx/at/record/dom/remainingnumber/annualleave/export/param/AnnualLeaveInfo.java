@@ -150,7 +150,6 @@ public class AnnualLeaveInfo implements Cloneable {
 				AnnualLeaveGrantRemaining newRemainData = new AnnualLeaveGrantRemaining(
 						AnnualLeaveGrantRemainingData.createFromJavaType(
 								grantRemainingNumber.getLeaveID(),
-								grantRemainingNumber.getCid(),
 								grantRemainingNumber.getEmployeeId(),
 								grantRemainingNumber.getGrantDate(),
 								grantRemainingNumber.getDeadline(),
@@ -411,8 +410,7 @@ public class AnnualLeaveInfo implements Cloneable {
 
 		// 「年休付与残数データ」を作成する
 		val newRemainData = new AnnualLeaveGrantRemaining(AnnualLeaveGrantRemainingData.createFromJavaType(
-				"",
-				companyId, employeeId, grantDate, deadline,
+				"", employeeId, grantDate, deadline,
 				LeaveExpirationStatus.AVAILABLE.value, GrantRemainRegisterType.MONTH_CLOSE.value,
 				grantDays, null,
 				0.0, null, null,
@@ -537,8 +535,7 @@ public class AnnualLeaveInfo implements Cloneable {
 					// 「年休付与残数データ」を作成する
 					val dummyRemainData = new AnnualLeaveGrantRemaining(
 							AnnualLeaveGrantRemainingData.createFromJavaType(
-							"",
-							companyId, employeeId, tempAnnualLeaveMng.getYmd(), tempAnnualLeaveMng.getYmd(),
+							"", employeeId, tempAnnualLeaveMng.getYmd(), tempAnnualLeaveMng.getYmd(),
 							LeaveExpirationStatus.AVAILABLE.value, GrantRemainRegisterType.MONTH_CLOSE.value,
 							0.0, null,
 							0.0, null, null,

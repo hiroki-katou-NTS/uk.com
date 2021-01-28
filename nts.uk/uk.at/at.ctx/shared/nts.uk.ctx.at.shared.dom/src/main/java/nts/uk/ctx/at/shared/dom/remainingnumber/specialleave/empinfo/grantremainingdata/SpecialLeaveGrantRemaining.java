@@ -18,7 +18,6 @@ public class SpecialLeaveGrantRemaining extends SpecialLeaveGrantRemainingData {
 	public SpecialLeaveGrantRemaining(LeaveGrantRemaining parent){
 
 		this.leaveID = parent.getLeaveID();
-		this.cid = parent.getCid();
 		this.employeeId = parent.getEmployeeId();
 		this.grantDate = parent.getGrantDate();
 		this.deadline = parent.getDeadline();
@@ -38,7 +37,6 @@ public class SpecialLeaveGrantRemaining extends SpecialLeaveGrantRemainingData {
 		SpecialLeaveGrantRemaining domain = new SpecialLeaveGrantRemaining();
 
 		domain.leaveID = data.getLeaveID();
-		domain.cid = data.getCid();
 		domain.employeeId = data.getEmployeeId();
 		domain.grantDate = data.getGrantDate();
 		domain.deadline = data.getDeadline();

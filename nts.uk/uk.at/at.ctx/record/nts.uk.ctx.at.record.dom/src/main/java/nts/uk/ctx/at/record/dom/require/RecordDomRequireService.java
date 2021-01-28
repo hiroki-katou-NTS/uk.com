@@ -354,6 +354,7 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.CalcNextAnnLeaGrantInfo;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.GetNextAnnualLeaveGrantProcKdm002;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 @Stateless
@@ -1893,7 +1894,7 @@ public class RecordDomRequireService {
 
 		@Override
 		public void addAnnualLeaveGrantRemainingData(AnnualLeaveGrantRemainingData data) {
-			annLeaGrantRemDataRepo.add(data);
+			annLeaGrantRemDataRepo.add(AppContexts.user().companyId(), data);
 		}
 
 		@Override
@@ -2126,7 +2127,7 @@ public class RecordDomRequireService {
 
 		@Override
 		public void addSpecialLeaveGrantRemainingData(SpecialLeaveGrantRemainingData data) {
-			specialLeaveGrantRepo.add(data);
+			specialLeaveGrantRepo.add(AppContexts.user().companyId(), data);
 		}
 
 		@Override

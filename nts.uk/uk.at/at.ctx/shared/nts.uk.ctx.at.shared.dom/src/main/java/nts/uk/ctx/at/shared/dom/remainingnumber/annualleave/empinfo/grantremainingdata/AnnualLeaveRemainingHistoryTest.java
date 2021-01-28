@@ -110,7 +110,6 @@ public class AnnualLeaveRemainingHistoryTest extends AggregateRoot implements Se
 
 	public AnnualLeaveRemainingHistoryTest(AnnualLeaveGrantRemainingData data, YearMonth yearMonth, ClosureId clousureId,
 			ClosureDate closureDate) {
-		this.cid = data.getCid();
 		this.employeeId = data.getEmployeeId();
 		this.yearMonth = yearMonth;
 		this.closureId = clousureId;

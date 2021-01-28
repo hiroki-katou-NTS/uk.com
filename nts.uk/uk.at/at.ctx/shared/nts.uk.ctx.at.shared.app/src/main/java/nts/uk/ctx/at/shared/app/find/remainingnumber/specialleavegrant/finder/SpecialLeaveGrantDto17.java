@@ -70,9 +70,9 @@ public class SpecialLeaveGrantDto17 extends PeregDomainDto {
 	@PeregItem("IS00733")
 	private Integer timeRemain;
 
-	public static SpecialLeaveGrantDto17 createFromDomain(SpecialLeaveGrantRemainingData domain) {
+	public static SpecialLeaveGrantDto17 createFromDomain(String cid, SpecialLeaveGrantRemainingData domain) {
 		SpecialLeaveGrantDto17 dto = new SpecialLeaveGrantDto17();
-		dto.cid = domain.getCid();
+		dto.cid = cid;
 		dto.sid = domain.getEmployeeId();
 		dto.specialLeaCode = domain.getSpecialLeaveCode();
 		dto.grantDate = domain.getGrantDate();

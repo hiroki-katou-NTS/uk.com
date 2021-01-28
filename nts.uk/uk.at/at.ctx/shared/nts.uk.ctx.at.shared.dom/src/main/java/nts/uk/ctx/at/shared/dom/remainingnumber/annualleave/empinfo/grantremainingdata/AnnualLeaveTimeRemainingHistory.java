@@ -81,8 +81,8 @@ public class AnnualLeaveTimeRemainingHistory extends AggregateRoot {
 		}
 	}
 
-	public AnnualLeaveTimeRemainingHistory(AnnualLeaveGrantRemainingData data, GeneralDate grantProcessDate) {
-		this.cid = data.getCid();
+	public AnnualLeaveTimeRemainingHistory(String cid, AnnualLeaveGrantRemainingData data, GeneralDate grantProcessDate) {
+		this.cid = cid;
 		this.employeeId = data.getEmployeeId();
 		this.grantProcessDate = grantProcessDate;
 		this.grantDate = data.getGrantDate();

@@ -34,6 +34,7 @@ import nts.uk.ctx.at.shared.app.find.remainingnumber.specialleavegrant.finder.Sp
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantCode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.find.PeregQuery;
 import nts.uk.shr.pereg.app.find.PeregQueryByListEmp;
 import nts.uk.shr.pereg.app.find.dto.GridPeregDomainBySidDto;
@@ -48,7 +49,7 @@ public class SpecialLeaveGrantFinder {
 
 	public List<SpecialLeaveGrantDto> getListData(String employeeId, int specialCode) {
 		List<SpecialLeaveGrantRemainingData> datalist = repo.getAll(employeeId, specialCode);
-		return datalist.stream().map(domain -> SpecialLeaveGrantDto.createFromDomain(domain))
+		return datalist.stream().map(domain -> SpecialLeaveGrantDto.createFromDomain(AppContexts.user().companyId(), domain))
 				.collect(Collectors.toList());
 	}
 
@@ -63,26 +64,27 @@ public class SpecialLeaveGrantFinder {
 
 	public List<SpecialLeaveGrantDto> getListDataByCheckState(String employeeId, int specialCode, Boolean checkState) {
 		List<SpecialLeaveGrantRemainingData> datalist = repo.getAll(employeeId, specialCode);
-		return datalist.stream().map(domain -> SpecialLeaveGrantDto.createFromDomain(domain))
+		return datalist.stream().map(domain -> SpecialLeaveGrantDto.createFromDomain(AppContexts.user().companyId(), domain))
 				.collect(Collectors.toList());
 	}
 
 	public PeregDomainDto getSingleData(PeregQuery query, int specialLeaveCD) {
 
+		String cid = AppContexts.user().companyId();
 		List<SpecialLeaveGrantRemainingData> data = repo.getAll(query.getEmployeeId(), specialLeaveCD);
 
 		switch (EnumAdaptor.valueOf(specialLeaveCD, SpecialLeaveGrantCode.class)) {
 		case CS00039:
 			SpecialLeaveGrantDto1 dto1 = new SpecialLeaveGrantDto1();
 			if (!data.isEmpty()) {
-				dto1 = SpecialLeaveGrantDto1.createFromDomain(data.get(0));
+				dto1 = SpecialLeaveGrantDto1.createFromDomain(cid, data.get(0));
 			}
 			return dto1;
 		case CS00040:
 
 			SpecialLeaveGrantDto2 dto2 = new SpecialLeaveGrantDto2();
 			if (!data.isEmpty()) {
-				dto2 = SpecialLeaveGrantDto2.createFromDomain(data.get(0));
+				dto2 = SpecialLeaveGrantDto2.createFromDomain(cid, data.get(0));
 			}
 			return dto2;
 
@@ -90,7 +92,7 @@ public class SpecialLeaveGrantFinder {
 
 			SpecialLeaveGrantDto3 dto3 = new SpecialLeaveGrantDto3();
 			if (!data.isEmpty()) {
-				dto3 = SpecialLeaveGrantDto3.createFromDomain(data.get(0));
+				dto3 = SpecialLeaveGrantDto3.createFromDomain(cid, data.get(0));
 			}
 			return dto3;
 
@@ -98,7 +100,7 @@ public class SpecialLeaveGrantFinder {
 
 			SpecialLeaveGrantDto4 dto4 = new SpecialLeaveGrantDto4();
 			if (!data.isEmpty()) {
-				dto4 = SpecialLeaveGrantDto4.createFromDomain(data.get(0));
+				dto4 = SpecialLeaveGrantDto4.createFromDomain(cid, data.get(0));
 			}
 			return dto4;
 
@@ -106,7 +108,7 @@ public class SpecialLeaveGrantFinder {
 
 			SpecialLeaveGrantDto5 dto5 = new SpecialLeaveGrantDto5();
 			if (!data.isEmpty()) {
-				dto5 = SpecialLeaveGrantDto5.createFromDomain(data.get(0));
+				dto5 = SpecialLeaveGrantDto5.createFromDomain(cid, data.get(0));
 			}
 			return dto5;
 
@@ -114,7 +116,7 @@ public class SpecialLeaveGrantFinder {
 
 			SpecialLeaveGrantDto6 dto6 = new SpecialLeaveGrantDto6();
 			if (!data.isEmpty()) {
-				dto6 = SpecialLeaveGrantDto6.createFromDomain(data.get(0));
+				dto6 = SpecialLeaveGrantDto6.createFromDomain(cid, data.get(0));
 			}
 			return dto6;
 
@@ -122,7 +124,7 @@ public class SpecialLeaveGrantFinder {
 
 			SpecialLeaveGrantDto7 dto7 = new SpecialLeaveGrantDto7();
 			if (!data.isEmpty()) {
-				dto7 = SpecialLeaveGrantDto7.createFromDomain(data.get(0));
+				dto7 = SpecialLeaveGrantDto7.createFromDomain(cid, data.get(0));
 			}
 			return dto7;
 
@@ -130,7 +132,7 @@ public class SpecialLeaveGrantFinder {
 
 			SpecialLeaveGrantDto8 dto8 = new SpecialLeaveGrantDto8();
 			if (!data.isEmpty()) {
-				dto8 = SpecialLeaveGrantDto8.createFromDomain(data.get(0));
+				dto8 = SpecialLeaveGrantDto8.createFromDomain(cid, data.get(0));
 			}
 			return dto8;
 
@@ -138,7 +140,7 @@ public class SpecialLeaveGrantFinder {
 
 			SpecialLeaveGrantDto9 dto9 = new SpecialLeaveGrantDto9();
 			if (!data.isEmpty()) {
-				dto9 = SpecialLeaveGrantDto9.createFromDomain(data.get(0));
+				dto9 = SpecialLeaveGrantDto9.createFromDomain(cid, data.get(0));
 			}
 			return dto9;
 
@@ -146,7 +148,7 @@ public class SpecialLeaveGrantFinder {
 
 			SpecialLeaveGrantDto10 dto10 = new SpecialLeaveGrantDto10();
 			if (!data.isEmpty()) {
-				dto10 = SpecialLeaveGrantDto10.createFromDomain(data.get(0));
+				dto10 = SpecialLeaveGrantDto10.createFromDomain(cid, data.get(0));
 			}
 			return dto10;
 
@@ -154,21 +156,21 @@ public class SpecialLeaveGrantFinder {
 
 			SpecialLeaveGrantDto11 dto11 = new SpecialLeaveGrantDto11();
 			if (!data.isEmpty()) {
-				dto11 = SpecialLeaveGrantDto11.createFromDomain(data.get(0));
+				dto11 = SpecialLeaveGrantDto11.createFromDomain(cid, data.get(0));
 			}
 			return dto11;
 		case CS00060:
 
 			SpecialLeaveGrantDto12 dto12 = new SpecialLeaveGrantDto12();
 			if (!data.isEmpty()) {
-				dto12 = SpecialLeaveGrantDto12.createFromDomain(data.get(0));
+				dto12 = SpecialLeaveGrantDto12.createFromDomain(cid, data.get(0));
 			}
 			return dto12;
 		case CS00061:
 
 			SpecialLeaveGrantDto13 dto13 = new SpecialLeaveGrantDto13();
 			if (!data.isEmpty()) {
-				dto13 = SpecialLeaveGrantDto13.createFromDomain(data.get(0));
+				dto13 = SpecialLeaveGrantDto13.createFromDomain(cid, data.get(0));
 			}
 			return dto13;
 
@@ -176,7 +178,7 @@ public class SpecialLeaveGrantFinder {
 
 			SpecialLeaveGrantDto14 dto14 = new SpecialLeaveGrantDto14();
 			if (!data.isEmpty()) {
-				dto14 = SpecialLeaveGrantDto14.createFromDomain(data.get(0));
+				dto14 = SpecialLeaveGrantDto14.createFromDomain(cid, data.get(0));
 			}
 			return dto14;
 
@@ -184,7 +186,7 @@ public class SpecialLeaveGrantFinder {
 
 			SpecialLeaveGrantDto15 dto15 = new SpecialLeaveGrantDto15();
 			if (!data.isEmpty()) {
-				dto15 = SpecialLeaveGrantDto15.createFromDomain(data.get(0));
+				dto15 = SpecialLeaveGrantDto15.createFromDomain(cid, data.get(0));
 			}
 			return dto15;
 
@@ -192,7 +194,7 @@ public class SpecialLeaveGrantFinder {
 
 			SpecialLeaveGrantDto16 dto16 = new SpecialLeaveGrantDto16();
 			if (!data.isEmpty()) {
-				dto16 = SpecialLeaveGrantDto16.createFromDomain(data.get(0));
+				dto16 = SpecialLeaveGrantDto16.createFromDomain(cid, data.get(0));
 			}
 			return dto16;
 
@@ -200,7 +202,7 @@ public class SpecialLeaveGrantFinder {
 
 			SpecialLeaveGrantDto17 dto17 = new SpecialLeaveGrantDto17();
 			if (!data.isEmpty()) {
-				dto17 = SpecialLeaveGrantDto17.createFromDomain(data.get(0));
+				dto17 = SpecialLeaveGrantDto17.createFromDomain(cid, data.get(0));
 			}
 			return dto17;
 
@@ -208,7 +210,7 @@ public class SpecialLeaveGrantFinder {
 
 			SpecialLeaveGrantDto18 dto18 = new SpecialLeaveGrantDto18();
 			if (!data.isEmpty()) {
-				dto18 = SpecialLeaveGrantDto18.createFromDomain(data.get(0));
+				dto18 = SpecialLeaveGrantDto18.createFromDomain(cid, data.get(0));
 			}
 			return dto18;
 
@@ -216,7 +218,7 @@ public class SpecialLeaveGrantFinder {
 
 			SpecialLeaveGrantDto19 dto19 = new SpecialLeaveGrantDto19();
 			if (!data.isEmpty()) {
-				dto19 = SpecialLeaveGrantDto19.createFromDomain(data.get(0));
+				dto19 = SpecialLeaveGrantDto19.createFromDomain(cid, data.get(0));
 			}
 			return dto19;
 
@@ -224,7 +226,7 @@ public class SpecialLeaveGrantFinder {
 
 			SpecialLeaveGrantDto20 dto20 = new SpecialLeaveGrantDto20();
 			if (!data.isEmpty()) {
-				dto20 = SpecialLeaveGrantDto20.createFromDomain(data.get(0));
+				dto20 = SpecialLeaveGrantDto20.createFromDomain(cid, data.get(0));
 			}
 			return dto20;
 
@@ -233,6 +235,7 @@ public class SpecialLeaveGrantFinder {
 		}
 	}
 	public List<GridPeregDomainDto> getAllData(PeregQueryByListEmp query, int specialLeaveCD) {
+		String cid = AppContexts.user().companyId();
 		List<String> sids = query.getEmpInfos().stream().map( c ->c.getEmployeeId()).collect(Collectors.toList());
 		List<GridPeregDomainDto> result = new ArrayList<>();
 		query.getEmpInfos().stream().forEach(c ->{
@@ -245,7 +248,7 @@ public class SpecialLeaveGrantFinder {
 				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
 				if(remainingDataLst != null){
 					if (!remainingDataLst.isEmpty()) {
-						c.setPeregDomainDto(SpecialLeaveGrantDto1.createFromDomain(remainingDataLst.get(0)));
+						c.setPeregDomainDto(SpecialLeaveGrantDto1.createFromDomain(cid, remainingDataLst.get(0)));
 					}
 				}
 			});
@@ -255,7 +258,7 @@ public class SpecialLeaveGrantFinder {
 				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
 				if(remainingDataLst != null){
 					if (!remainingDataLst.isEmpty()) {
-						c.setPeregDomainDto(SpecialLeaveGrantDto2.createFromDomain(remainingDataLst.get(0)));
+						c.setPeregDomainDto(SpecialLeaveGrantDto2.createFromDomain(cid, remainingDataLst.get(0)));
 					}
 				}
 			});
@@ -265,7 +268,7 @@ public class SpecialLeaveGrantFinder {
 				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
 				if(remainingDataLst != null){
 					if (!remainingDataLst.isEmpty()) {
-						c.setPeregDomainDto(SpecialLeaveGrantDto3.createFromDomain(remainingDataLst.get(0)));
+						c.setPeregDomainDto(SpecialLeaveGrantDto3.createFromDomain(cid, remainingDataLst.get(0)));
 					}
 				}
 			});
@@ -275,7 +278,7 @@ public class SpecialLeaveGrantFinder {
 				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
 				if(remainingDataLst != null){
 					if (!remainingDataLst.isEmpty()) {
-						c.setPeregDomainDto(SpecialLeaveGrantDto4.createFromDomain(remainingDataLst.get(0)));
+						c.setPeregDomainDto(SpecialLeaveGrantDto4.createFromDomain(cid, remainingDataLst.get(0)));
 					}
 				}
 			});
@@ -285,7 +288,7 @@ public class SpecialLeaveGrantFinder {
 				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
 				if(remainingDataLst != null){
 					if (!remainingDataLst.isEmpty()) {
-						c.setPeregDomainDto(SpecialLeaveGrantDto5.createFromDomain(remainingDataLst.get(0)));
+						c.setPeregDomainDto(SpecialLeaveGrantDto5.createFromDomain(cid, remainingDataLst.get(0)));
 					}
 				}
 			});
@@ -295,7 +298,7 @@ public class SpecialLeaveGrantFinder {
 				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
 				if(remainingDataLst != null){
 					if (!remainingDataLst.isEmpty()) {
-						c.setPeregDomainDto(SpecialLeaveGrantDto6.createFromDomain(remainingDataLst.get(0)));
+						c.setPeregDomainDto(SpecialLeaveGrantDto6.createFromDomain(cid, remainingDataLst.get(0)));
 					}
 				}
 			});
@@ -305,7 +308,7 @@ public class SpecialLeaveGrantFinder {
 				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
 				if(remainingDataLst != null){
 					if (!remainingDataLst.isEmpty()) {
-						c.setPeregDomainDto(SpecialLeaveGrantDto7.createFromDomain(remainingDataLst.get(0)));
+						c.setPeregDomainDto(SpecialLeaveGrantDto7.createFromDomain(cid, remainingDataLst.get(0)));
 					}
 				}
 			});
@@ -315,7 +318,7 @@ public class SpecialLeaveGrantFinder {
 				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
 				if(remainingDataLst != null){
 					if (!remainingDataLst.isEmpty()) {
-						c.setPeregDomainDto(SpecialLeaveGrantDto8.createFromDomain(remainingDataLst.get(0)));
+						c.setPeregDomainDto(SpecialLeaveGrantDto8.createFromDomain(cid, remainingDataLst.get(0)));
 					}
 				}
 			});
@@ -325,7 +328,7 @@ public class SpecialLeaveGrantFinder {
 				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
 				if(remainingDataLst != null){
 					if (!remainingDataLst.isEmpty()) {
-						c.setPeregDomainDto(SpecialLeaveGrantDto9.createFromDomain(remainingDataLst.get(0)));
+						c.setPeregDomainDto(SpecialLeaveGrantDto9.createFromDomain(cid, remainingDataLst.get(0)));
 					}
 				}
 			});
@@ -335,7 +338,7 @@ public class SpecialLeaveGrantFinder {
 				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
 				if(remainingDataLst != null){
 					if (!remainingDataLst.isEmpty()) {
-						c.setPeregDomainDto(SpecialLeaveGrantDto10.createFromDomain(remainingDataLst.get(0)));
+						c.setPeregDomainDto(SpecialLeaveGrantDto10.createFromDomain(cid, remainingDataLst.get(0)));
 					}
 				}
 			});
@@ -345,7 +348,7 @@ public class SpecialLeaveGrantFinder {
 				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
 				if(remainingDataLst != null){
 					if (!remainingDataLst.isEmpty()) {
-						c.setPeregDomainDto(SpecialLeaveGrantDto11.createFromDomain(remainingDataLst.get(0)));
+						c.setPeregDomainDto(SpecialLeaveGrantDto11.createFromDomain(cid, remainingDataLst.get(0)));
 					}
 				}
 			});
@@ -355,7 +358,7 @@ public class SpecialLeaveGrantFinder {
 				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
 				if(remainingDataLst != null){
 					if (!remainingDataLst.isEmpty()) {
-						c.setPeregDomainDto(SpecialLeaveGrantDto12.createFromDomain(remainingDataLst.get(0)));
+						c.setPeregDomainDto(SpecialLeaveGrantDto12.createFromDomain(cid, remainingDataLst.get(0)));
 					}
 				}
 			});
@@ -365,7 +368,7 @@ public class SpecialLeaveGrantFinder {
 				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
 				if(remainingDataLst != null){
 					if (!remainingDataLst.isEmpty()) {
-						c.setPeregDomainDto(SpecialLeaveGrantDto13.createFromDomain(remainingDataLst.get(0)));
+						c.setPeregDomainDto(SpecialLeaveGrantDto13.createFromDomain(cid, remainingDataLst.get(0)));
 					}
 				}
 			});
@@ -375,7 +378,7 @@ public class SpecialLeaveGrantFinder {
 				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
 				if(remainingDataLst != null){
 					if (!remainingDataLst.isEmpty()) {
-						c.setPeregDomainDto(SpecialLeaveGrantDto14.createFromDomain(remainingDataLst.get(0)));
+						c.setPeregDomainDto(SpecialLeaveGrantDto14.createFromDomain(cid, remainingDataLst.get(0)));
 					}
 				}
 			});
@@ -385,7 +388,7 @@ public class SpecialLeaveGrantFinder {
 				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
 				if(remainingDataLst != null){
 					if (!remainingDataLst.isEmpty()) {
-						c.setPeregDomainDto(SpecialLeaveGrantDto15.createFromDomain(remainingDataLst.get(0)));
+						c.setPeregDomainDto(SpecialLeaveGrantDto15.createFromDomain(cid, remainingDataLst.get(0)));
 					}
 				}
 			});
@@ -395,7 +398,7 @@ public class SpecialLeaveGrantFinder {
 				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
 				if(remainingDataLst != null){
 					if (!remainingDataLst.isEmpty()) {
-						c.setPeregDomainDto(SpecialLeaveGrantDto16.createFromDomain(remainingDataLst.get(0)));
+						c.setPeregDomainDto(SpecialLeaveGrantDto16.createFromDomain(cid, remainingDataLst.get(0)));
 					}
 				}
 			});
@@ -405,7 +408,7 @@ public class SpecialLeaveGrantFinder {
 				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
 				if(remainingDataLst != null){
 					if (!remainingDataLst.isEmpty()) {
-						c.setPeregDomainDto(SpecialLeaveGrantDto17.createFromDomain(remainingDataLst.get(0)));
+						c.setPeregDomainDto(SpecialLeaveGrantDto17.createFromDomain(cid, remainingDataLst.get(0)));
 					}
 				}
 			});
@@ -415,7 +418,7 @@ public class SpecialLeaveGrantFinder {
 				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
 				if(remainingDataLst != null){
 					if (!remainingDataLst.isEmpty()) {
-						c.setPeregDomainDto(SpecialLeaveGrantDto18.createFromDomain(remainingDataLst.get(0)));
+						c.setPeregDomainDto(SpecialLeaveGrantDto18.createFromDomain(cid, remainingDataLst.get(0)));
 					}
 				}
 			});
@@ -425,7 +428,7 @@ public class SpecialLeaveGrantFinder {
 				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
 				if(remainingDataLst != null){
 					if (!remainingDataLst.isEmpty()) {
-						c.setPeregDomainDto(SpecialLeaveGrantDto19.createFromDomain(remainingDataLst.get(0)));
+						c.setPeregDomainDto(SpecialLeaveGrantDto19.createFromDomain(cid, remainingDataLst.get(0)));
 					}
 				}
 			});
@@ -435,7 +438,7 @@ public class SpecialLeaveGrantFinder {
 				List<SpecialLeaveGrantRemainingData> remainingDataLst = data.get(c.getEmployeeId());
 				if(remainingDataLst != null){
 					if (!remainingDataLst.isEmpty()) {
-						c.setPeregDomainDto(SpecialLeaveGrantDto20.createFromDomain(remainingDataLst.get(0)));
+						c.setPeregDomainDto(SpecialLeaveGrantDto20.createFromDomain(cid, remainingDataLst.get(0)));
 					}
 				}
 			});

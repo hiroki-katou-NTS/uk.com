@@ -27,12 +27,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 @AllArgsConstructor
 public class LeaveGrantRemainingData extends AggregateRoot {
 
+	//ID
 	protected String leaveID;
-
-	/**
-	 * 会社ID
-	 */
-	protected String cid;
 
 	/**
 	 * 社員ID
@@ -83,7 +79,6 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 
 			LeaveGrantRemainingData domain = new LeaveGrantRemainingData();
 			domain.leaveID = annLeavID;
-			domain.cid = cID;
 			domain.employeeId = employeeId;
 			domain.grantDate = grantDate;
 			domain.deadline = deadline;
@@ -124,7 +119,6 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 			LeaveNumberInfo details) {
 
 		LeaveGrantRemainingData domain = new LeaveGrantRemainingData();
-		domain.cid = cid;
 		domain.employeeId = employeeId;
 		domain.grantDate = grantDate;
 		domain.deadline = deadline;
@@ -181,7 +175,6 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 			val dummyRemainData = new LeaveGrantRemaining();
 
 			dummyRemainData.setLeaveID("");
-			dummyRemainData.setCid("");
 			// 社員ID←パラメータ「社員ID」
 			dummyRemainData.setEmployeeId(employeeId);
 

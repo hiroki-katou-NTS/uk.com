@@ -73,7 +73,6 @@ public class HolidayOver60hGrantRemainingExport{
 		HolidayOver60hGrantRemainingExport export = new HolidayOver60hGrantRemainingExport();
 
 		export.leaveID = holidayOver60hGrantRemaining.getLeaveID();
-		export.cid = holidayOver60hGrantRemaining.getCid();
 		export.employeeId = holidayOver60hGrantRemaining.getEmployeeId();
 		export.grantDate = holidayOver60hGrantRemaining.getGrantDate();
 		export.deadline = holidayOver60hGrantRemaining.getDeadline();
@@ -96,7 +95,6 @@ public class HolidayOver60hGrantRemainingExport{
 		HolidayOver60hGrantRemaining domain = new HolidayOver60hGrantRemaining();
 
 		domain.setLeaveID(holidayOver60hGrantRemainingExport.getLeaveID());
-		domain.setCid(holidayOver60hGrantRemainingExport.getCid());
 		domain.setEmployeeId(holidayOver60hGrantRemainingExport.getEmployeeId());
 		domain.setGrantDate(holidayOver60hGrantRemainingExport.getGrantDate());
 		domain.setDeadline(holidayOver60hGrantRemainingExport.getDeadline());

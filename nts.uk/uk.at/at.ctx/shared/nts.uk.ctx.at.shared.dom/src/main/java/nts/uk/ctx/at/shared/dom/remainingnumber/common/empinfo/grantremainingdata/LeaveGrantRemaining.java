@@ -44,7 +44,6 @@ public class LeaveGrantRemaining extends LeaveGrantRemainingData {
 
 		LeaveGrantRemaining domain = new LeaveGrantRemaining();
 			domain.leaveID = leavID;
-			domain.cid = cID;
 			domain.employeeId = employeeId;
 			domain.grantDate = grantDate;
 			domain.deadline = deadline;
@@ -71,7 +70,6 @@ public class LeaveGrantRemaining extends LeaveGrantRemainingData {
 
 		LeaveGrantRemaining domain = new LeaveGrantRemaining();
 		domain.leaveID = data.getLeaveID();
-		domain.cid = data.getCid();
 		domain.employeeId = data.getEmployeeId();
 		domain.grantDate = data.getGrantDate();
 		domain.deadline = data.getDeadline();

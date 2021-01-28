@@ -30,7 +30,7 @@ public class AnnualLeaveProcess {
 	 * @param interimRemainMngMap 暫定管理データリスト
 	 * @param attTimeMonthly 月別実績の勤怠時間
 	 */
-	public static AtomTask annualHolidayProcess(RequireM1 require, CacheCarrier cacheCarrier,
+	public static AtomTask annualHolidayProcess(RequireM1 require, CacheCarrier cacheCarrier, String cid, 
 			AggrPeriodEachActualClosure period, String empId,
 			Map<GeneralDate, DailyInterimRemainMngData> interimRemainMngMap, AttendanceTimeOfMonthly attTimeMonthly) {
 		
@@ -45,7 +45,7 @@ public class AnnualLeaveProcess {
 		
 		// 年休残数更新
 		if (output.getAnnualLeave().isPresent())
-			atomTask.add(RemainAnnualLeaveUpdating.updateRemainAnnualLeave(require, output.getAnnualLeave().get(), period, empId));
+			atomTask.add(RemainAnnualLeaveUpdating.updateRemainAnnualLeave(require, cid, output.getAnnualLeave().get(), period, empId));
 		
 //		// Fix bug 109524
 //		atomTask.add(AtomTask.of(() -> require.deleteTmpAnnualHolidayMng(mngId)));

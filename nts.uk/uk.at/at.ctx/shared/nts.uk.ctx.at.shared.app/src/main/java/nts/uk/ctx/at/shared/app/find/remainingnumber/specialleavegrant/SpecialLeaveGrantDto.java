@@ -30,10 +30,10 @@ public class SpecialLeaveGrantDto{
 	private double numberDayRemain;
 	private int timeRemain;
 
-	public static SpecialLeaveGrantDto createFromDomain(SpecialLeaveGrantRemainingData domain) {
+	public static SpecialLeaveGrantDto createFromDomain(String cid, SpecialLeaveGrantRemainingData domain) {
 		SpecialLeaveGrantDto dto = new SpecialLeaveGrantDto();
 		dto.specialid = domain.getLeaveID();
-		dto.cid = domain.getCid();
+		dto.cid = cid;
 		dto.sid = domain.getEmployeeId();
 		dto.specialLeaCode = domain.getSpecialLeaveCode();
 		dto.grantDate = domain.getGrantDate();

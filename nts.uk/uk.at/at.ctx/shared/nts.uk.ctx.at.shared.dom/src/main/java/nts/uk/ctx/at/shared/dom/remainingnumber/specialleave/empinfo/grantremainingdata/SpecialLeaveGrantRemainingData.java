@@ -44,7 +44,6 @@ public class SpecialLeaveGrantRemainingData extends LeaveGrantRemainingData {
 //		if (check) {
 			SpecialLeaveGrantRemainingData domain = new SpecialLeaveGrantRemainingData();
 			domain.leaveID = leavID;
-			domain.cid = cID;
 			domain.employeeId = employeeId;
 			domain.grantDate = grantDate;
 			domain.deadline = deadline;
@@ -113,7 +112,6 @@ public class SpecialLeaveGrantRemainingData extends LeaveGrantRemainingData {
 		SpecialLeaveGrantRemainingData domain = new SpecialLeaveGrantRemainingData();
 
 		domain.leaveID = remain.getLeaveID();
-		domain.cid = remain.getCid();
 		domain.employeeId = remain.getEmployeeId();
 		domain.grantDate = remain.getGrantDate();
 		domain.deadline = remain.getDeadline();

@@ -101,9 +101,9 @@ public class AnnualLeaveRemainingHistory extends AggregateRoot implements Serial
 		
 	}
 
-	public AnnualLeaveRemainingHistory(AnnualLeaveGrantRemainingData data, YearMonth yearMonth, ClosureId clousureId,
+	public AnnualLeaveRemainingHistory(String cid, AnnualLeaveGrantRemainingData data, YearMonth yearMonth, ClosureId clousureId,
 			ClosureDate closureDate) {
-		this.cid = data.getCid();
+		this.cid = cid;
 		this.employeeId = data.getEmployeeId();
 		this.yearMonth = yearMonth;
 		this.closureId = clousureId;
