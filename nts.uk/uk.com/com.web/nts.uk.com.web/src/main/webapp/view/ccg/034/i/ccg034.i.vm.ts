@@ -23,12 +23,13 @@ module nts.uk.com.view.ccg034.i {
     fileSize: KnockoutObservable<number> = ko.observable(0);
     displayFileSize: KnockoutObservable<string> = ko.computed(() => {
       const vm = this;
+      if (vm.fileSize() >= 1024) {
+        return nts.uk.text.format(getText("CCG034_125"), vm.fileSize() / 1024) + "MB";
+      }
       return nts.uk.text.format(getText("CCG034_125"), vm.fileSize()) + "KB";
     });
     fileId: KnockoutObservable<string> = ko.observable(null);
     uploadSrc: KnockoutObservable<string> = ko.observable(null);
-    // Check new component
-    isNewMode: boolean = true;
 
     created(params: any) {
       const vm = this;
@@ -37,6 +38,14 @@ module nts.uk.com.view.ccg034.i {
 
     mounted() {
       const vm = this;
+      vm.imageType.subscribe(value => {
+        if (value === 1 && vm.fileId()) {
+          vm.$ajax("/shr/infra/file/storage/infor/" + vm.fileId()).then((res: any) => {
+            vm.fileSize(Math.round(Number(res.originalSize) / 1024));
+            vm.updatePreview();
+          });
+        }
+      });
       // Binding part data
       vm.fileId(vm.partData.fileId);
       vm.imageSrc(vm.partData.fileName);
@@ -45,21 +54,22 @@ module nts.uk.com.view.ccg034.i {
       vm.fileSize(vm.partData.uploadedFileSize ? vm.partData.uploadedFileSize : 0);
       vm.imageType(vm.partData.isFixed);
 
-      if (vm.imageType() === 1 && vm.fileId()) {
-        vm.$ajax("/shr/infra/file/storage/infor/" + vm.fileId()).then((res: any) => vm.uploadFinished(res));
-      }
-      if (vm.fileId() || vm.imageSrc()) {
-        vm.isNewMode = false;
-      }
       vm.createPopUp();
       $("#I2").focus();
     }
 
     uploadFinished(data: any) {
       const vm = this;
-      vm.removeFile();
+      if (vm.fileId() !== vm.partData.originalFileId) {
+        (nts.uk.request as any).file.remove(vm.fileId());
+      }
       vm.fileId(data.id);
       vm.fileSize(Math.round(Number(data.originalSize) / 1024));
+      vm.updatePreview();
+    }
+
+    private updatePreview() {
+      const vm = this;
       const container = $("#I2_2_2");
       container.html("");
       container.append($("<img class='pic-preview'/>").attr("src", (nts.uk.request as any).liveView(vm.fileId())));
@@ -110,7 +120,9 @@ module nts.uk.com.view.ccg034.i {
     */
     public closeDialog() {
       const vm = this;
-      vm.removeFile();
+      if (vm.fileId() !== vm.partData.originalFileId) {
+        (nts.uk.request as any).file.remove(vm.fileId());
+      }
       vm.$window.close();
     }
 
@@ -143,16 +155,6 @@ module nts.uk.com.view.ccg034.i {
           vm.$window.close(vm.partData);
         }
       });
-    }
-
-    /**
-     * 変更前のファイルは削除
-     */
-    private removeFile() {
-      const vm = this;
-      if (vm.fileId() && vm.isNewMode) {
-        (nts.uk.request as any).file.remove(vm.fileId());
-      }
     }
   }
 

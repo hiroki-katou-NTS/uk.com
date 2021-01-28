@@ -2,13 +2,12 @@
 
 module nts.uk.com.view.ccg034.d {
 
-  import copyFile = nts.uk.com.view.ccg034.share.model.copyFile;
-
   // URL API backend
   const API = {
     generateHtml: "sys/portal/createflowmenu/generateHtml",
     updateLayout: "sys/portal/createflowmenu/updateLayout",
-    getMenuList: "sys/portal/standardmenu/findByMenuAndWebMenu"
+    getMenuList: "sys/portal/standardmenu/findByMenuAndWebMenu",
+    copyFile: "sys/portal/createflowmenu/copyFile/{0}"
   };
 
   const KEY_DATA_PART_TYPE = 'data-part-type';
@@ -816,6 +815,7 @@ module nts.uk.com.view.ccg034.d {
         linkContent: dto.linkContent,
         fontSize: dto.fontSize,
         isBold: dto.bold === 1,
+        originalFileId: dto.fileId
       });
       // Set part data to map
       vm.mapPartData[vm.partClientId] = newPartData;
@@ -845,6 +845,7 @@ module nts.uk.com.view.ccg034.d {
         uploadedFileSize: null,
         isFixed: dto.isFixed,
         ratio: dto.ratio,
+        originalFileId: dto.fileId
       });
       // Set part data to map
       vm.mapPartData[vm.partClientId] = newPartData;
@@ -895,11 +896,21 @@ module nts.uk.com.view.ccg034.d {
           break;
         case MenuPartType.PART_ATTACHMENT:
           newPartData = new PartDataAttachmentModel(originPartData);
-          (newPartData as PartDataAttachmentModel).fileId = copyFile((originPartData as PartDataAttachmentModel).fileId);
+          vm.$ajax(nts.uk.text.format(API.copyFile, (originPartData as PartDataAttachmentModel).fileId))
+            .then(res => {
+              (newPartData as PartDataAttachmentModel).fileId = res.fileId;
+              (newPartData as PartDataAttachmentModel).originalFileId = res.fileId;
+            });
           break;
         case MenuPartType.PART_IMAGE:
           newPartData = new PartDataImageModel(originPartData);
-          (newPartData as PartDataImageModel).fileId = copyFile((originPartData as PartDataImageModel).fileId);
+          if ((originPartData as PartDataImageModel).isFixed === 1 && (originPartData as PartDataImageModel).fileId) {
+            vm.$ajax(nts.uk.text.format(API.copyFile, (originPartData as PartDataImageModel).fileId))
+              .then(res => {
+                (newPartData as PartDataImageModel).fileId = res.fileId;
+                (newPartData as PartDataImageModel).originalFileId = res.fileId;
+              });
+            }
           break;
         case MenuPartType.PART_ARROW:
           newPartData = new PartDataArrowModel(originPartData);
@@ -976,6 +987,16 @@ module nts.uk.com.view.ccg034.d {
           vm.$window.modal('/view/ccg/034/h/index.xhtml', selectedPartData)
             .then((result: PartDataModel) => {
               if (result) {
+                const partAttachment = (result as PartDataAttachmentModel);
+                // Only prepare for delete if has changes
+                if (!_.find(vm.modifiedPartList.added, partClientId) && partAttachment.fileId !== partAttachment.originalFileId) {
+                  vm.modifiedPartList.added.push(partClientId);
+                }
+                if (!_.find(vm.modifiedPartList.deleted, ['clientId', partClientId]) && partAttachment.fileId !== partAttachment.originalFileId) {
+                  const tempPart = _.cloneDeep(partAttachment);
+                  tempPart.fileId = tempPart.originalFileId;
+                  vm.modifiedPartList.deleted.push(tempPart);
+                }
                 // Update part data
                 vm.mapPartData[partClientId] = result;
                 // Update part DOM
@@ -990,6 +1011,18 @@ module nts.uk.com.view.ccg034.d {
           vm.$window.modal('/view/ccg/034/i/index.xhtml', selectedPartData)
             .then((result: PartDataModel) => {
               if (result) {
+                const partImage = (result as PartDataImageModel);
+                if (partImage.isFixed === 1 && partImage.fileId) {
+                  // Only prepare for delete if has changes
+                  if (!_.find(vm.modifiedPartList.added, partClientId) && partImage.fileId !== partImage.originalFileId) {
+                    vm.modifiedPartList.added.push(partClientId);
+                  }
+                  if (!_.find(vm.modifiedPartList.deleted, ['clientId', partClientId]) && partImage.fileId !== partImage.originalFileId) {
+                    const tempPart = _.cloneDeep(partImage);
+                    tempPart.fileId = tempPart.originalFileId;
+                    vm.modifiedPartList.deleted.push(tempPart);
+                  }
+                }
                 // Update part data
                 vm.mapPartData[partClientId] = result;
                 // Update part DOM
@@ -1087,6 +1120,11 @@ module nts.uk.com.view.ccg034.d {
     private removePart($part: JQuery) {
       const vm = this;
       const partClientId = Number($part.attr(KEY_DATA_ITEM_CLIENT_ID));
+      _.forEach(vm.modifiedPartList.added, clientId => {
+        if (clientId === partClientId) {
+          vm.removeFile(vm.mapPartData[partClientId]);
+        }
+      });
       vm.modifiedPartList.deleted.push(vm.mapPartData[partClientId]);
       delete vm.mapPartData[partClientId];
       vm.$listPart = _.filter(vm.$listPart, ($item) => Number($item.attr(KEY_DATA_ITEM_CLIENT_ID)) !== partClientId);
@@ -1260,6 +1298,7 @@ module nts.uk.com.view.ccg034.d {
         .then(() => {
           vm.$blockui('clear');
           vm.modifiedPartList = new ModifiedPartList();
+          vm.updateOriginalFileId();
           vm.$dialog.info({ messageId: 'Msg_15' });
         })
         .fail((err) => vm.$dialog.error({ messageId: err.messageId }))
@@ -1341,13 +1380,32 @@ module nts.uk.com.view.ccg034.d {
         switch (partData.partType) {
           case MenuPartType.PART_ATTACHMENT:
             const attachmentPartData = partData as PartDataAttachmentModel;
-            (nts.uk.request as any).file.remove(attachmentPartData.fileId);
+            if (attachmentPartData.fileId) {
+              (nts.uk.request as any).file.remove(attachmentPartData.fileId);
+            }
             break;
           case MenuPartType.PART_IMAGE:
             const imagePartData = partData as PartDataImageModel;
-            if (imagePartData.isFixed === 1) {
+            if (imagePartData.isFixed === 1 && imagePartData.fileId) {
               (nts.uk.request as any).file.remove(imagePartData.fileId);
             }
+            break;
+        }
+      }
+    }
+
+    private updateOriginalFileId() {
+      const vm = this;
+      for (const partClientId in vm.mapPartData) {
+        const part: PartDataModel = vm.mapPartData[partClientId];
+        switch (part.partType) {
+          case MenuPartType.PART_ATTACHMENT:
+            const attachmentPartData = part as PartDataAttachmentModel;
+            attachmentPartData.originalFileId = attachmentPartData.fileId;
+            break;
+          case MenuPartType.PART_IMAGE:
+            const imagePartData = part as PartDataImageModel;
+            imagePartData.originalFileId = imagePartData.fileId;
             break;
         }
       }
@@ -1534,7 +1592,7 @@ module nts.uk.com.view.ccg034.d {
      */
     static renderPartDOMAttachment($partContainer: JQuery, partData: PartDataAttachmentModel): JQuery {
       const vm = this;
-      
+
       $partContainer
         // Set PartData attr
         .outerWidth(partData.width)
@@ -1899,8 +1957,8 @@ module nts.uk.com.view.ccg034.d {
             'src': partDataImageModel.isFixed === 0
               ? partDataImageModel.fileName
               : partDataImageModel.fileId
-              ? (nts.uk.request as any).liveView(partDataImageModel.fileId)
-              : null
+                ? (nts.uk.request as any).liveView(partDataImageModel.fileId)
+                : null
           })
             .css({
               'width': (partDataImageModel.width > partDataImageModel.height) ? 'auto' : '100%',
@@ -2060,6 +2118,7 @@ module nts.uk.com.view.ccg034.d {
     fileLink: string = null;
     fontSize = 11;
     isBold: boolean = true;
+    originalFileId: string = null;
 
     constructor(init?: Partial<PartDataAttachmentModel>) {
       super(init);
@@ -2075,6 +2134,7 @@ module nts.uk.com.view.ccg034.d {
     uploadedFileSize = 0;
     isFixed = 0;
     ratio = 1;
+    originalFileId: string = null;
 
     constructor(init?: Partial<PartDataImageModel>) {
       super(init);

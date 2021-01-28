@@ -34,8 +34,7 @@ module nts.uk.com.view.ccg034.h {
       { code: VerticalAlign.CENTER, name: getText('CCG034_115') },
       { code: VerticalAlign.BOTTOM, name: getText('CCG034_116') }
     ];
-    // Check new component
-    isNewMode: boolean = true;
+    isNewMode = true;
 
     created(params: any) {
       const vm = this;
@@ -67,10 +66,14 @@ module nts.uk.com.view.ccg034.h {
       $("#H1_2").focus();
     }
 
-
     public uploadFinished(data: any) {
       const vm = this;
-      vm.removeFile();
+      if (!vm.partData.originalFileId) {
+        vm.partData.originalFileId = data.id;
+      }
+      if (vm.fileId() !== vm.partData.originalFileId) {
+        (nts.uk.request as any).file.remove(vm.fileId());
+      }
       vm.fileId(data.id);
       vm.fileSize(Math.round(Number(data.originalSize) / 1024));
       if (!vm.fileName()) {
@@ -83,7 +86,9 @@ module nts.uk.com.view.ccg034.h {
      */
     public closeDialog() {
       const vm = this;
-      vm.removeFile();
+      if (vm.fileId() !== vm.partData.originalFileId) {
+        (nts.uk.request as any).file.remove(vm.fileId());
+      }
       vm.$window.close();
     }
 
@@ -107,7 +112,6 @@ module nts.uk.com.view.ccg034.h {
                 vm.partData.fileName = vm.uploadedFileName();
                 vm.partData.fileSize = vm.fileSize();
                 vm.partData.fileLink = (nts.uk.request as any).liveView(vm.fileId());
-
                 // Return data
                 vm.$window.close(vm.partData);
               } else {
@@ -117,16 +121,6 @@ module nts.uk.com.view.ccg034.h {
           });
         }
       });
-    }
-
-    /**
-     * 変更前のファイルは削除
-     */
-    private removeFile() {
-      const vm = this;
-      if (vm.fileId() && vm.isNewMode) {
-        (nts.uk.request as any).file.remove(vm.fileId());
-      }
     }
   }
 
