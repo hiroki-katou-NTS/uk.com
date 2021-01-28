@@ -39,13 +39,6 @@ public class ActivityStatusRepositoryImpl extends JpaRepository implements Activ
 	}
 
 	@Override
-	public void delete(ActivityStatus domain) {
-		ActivityStatusEntity entity = new ActivityStatusEntity();
-		domain.setMemento(entity);
-		this.commandProxy().remove(entity);
-	}
-
-	@Override
 	public List<ActivityStatus> getByListSidAndDate(List<String> sids, GeneralDate date) {
 		return this.queryProxy().query(SELECT_BY_DATE_AND_IDS, ActivityStatusEntity.class)
 				.setParameter("listId", sids)

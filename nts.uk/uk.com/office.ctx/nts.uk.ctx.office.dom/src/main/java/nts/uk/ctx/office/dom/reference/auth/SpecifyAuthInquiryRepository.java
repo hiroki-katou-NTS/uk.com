@@ -22,14 +22,7 @@ public interface SpecifyAuthInquiryRepository {
 	public void update(SpecifyAuthInquiry domain);
 
 	/**
-	 * [3] delete(在席照会で参照できる権限の指定)
-	 * 
-	 * @param domain 在席照会で参照できる権限の指定
-	 */
-	public void delete(SpecifyAuthInquiry domain);
-
-	/**
-	 * [4]取得する
+	 * [3]取得する
 	 * 
 	 * @param cid    会社ID
 	 * @param roleId ロールID
@@ -38,7 +31,7 @@ public interface SpecifyAuthInquiryRepository {
 	public Optional<SpecifyAuthInquiry> getByCidAndRoleId(String cid, String roleId);
 
 	/**
-	 * [5]取得する
+	 * [4]取得する
 	 * 
 	 * @param cid 会社ID
 	 * @return List<SpecifyAuthInquiry> List<在席照会で参照できる権限の指定>
