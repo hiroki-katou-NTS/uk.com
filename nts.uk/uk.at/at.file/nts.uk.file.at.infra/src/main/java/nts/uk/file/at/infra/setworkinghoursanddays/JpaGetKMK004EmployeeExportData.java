@@ -59,7 +59,7 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 			+ " KRCST_SHA_REG_M_CAL_SET.INCLUDE_EXTRA_OT, "
 			+ " IIF(KRCST_SHA_REG_M_CAL_SET.INCLUDE_EXTRA_OT = 1, KRCST_SHA_REG_M_CAL_SET.INCLUDE_LEGAL_OT, NULL) AS INCLUDE_LEGAL_OT, "
 			+ " IIF(KRCST_SHA_REG_M_CAL_SET.INCLUDE_EXTRA_OT = 1, KRCST_SHA_REG_M_CAL_SET.INCLUDE_HOLIDAY_OT, NULL) AS INCLUDE_HOLIDAY_OT, "
-			+ " KRCMT_CALC_M_SET_FLE_COM.REFERENCE_PRED_TIME, " 
+			+ " KRCST_COM_FLEX_M_CAL_SET.WITHIN_TIME_USE, " 
 			+ " KRCST_SHA_FLEX_M_CAL_SET.AGGR_METHOD, "
 			+ " KRCST_SHA_FLEX_M_CAL_SET.SETTLE_PERIOD_MON, "
 			+ " KRCST_SHA_FLEX_M_CAL_SET.SETTLE_PERIOD, "
@@ -140,7 +140,7 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 			int endDate, int month, String startOfWeek) {
 		List<MasterData> datas = new ArrayList<>();
 
-		Integer refPreTime = r.getInt("REFERENCE_PRED_TIME");
+		Integer refPreTime = r.getInt("WITHIN_TIME_USE");
 
 		for (int y = startDate; y <= endDate; y++) {
 			String sid = r.getString("SID");
