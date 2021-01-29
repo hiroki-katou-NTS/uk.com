@@ -143,7 +143,7 @@ public class WorkLedgerOutputItemService extends ExportService<WorkLedgerOutputI
 
 
         RequireImpl require = new RequireImpl(monthlyItemService, actualMultipleMonthAdapter, shareEmploymentAdapter, closureRepository,
-                closureEmploymentRepository, affComHistAdapter,monthlyAttItemCanAggregateRepo,monthlyAttendanceItemRepository);
+                closureEmploymentRepository, affComHistAdapter, monthlyAttItemCanAggregateRepo, monthlyAttendanceItemRepository);
         List<WorkLedgerDisplayContent> listData = CreateWorkLedgerDisplayContentQuery.createWorkLedgerDisplayContent(require, datePeriod, employeeInfoList, workLedgerDetail, placeInfoList);
         Comparator<WorkLedgerDisplayContent> compare = Comparator
                 .comparing(WorkLedgerDisplayContent::getWorkplaceCode)
@@ -199,7 +199,7 @@ public class WorkLedgerOutputItemService extends ExportService<WorkLedgerOutputI
 
         @Override
         public List<MonthlyAttendanceItem> findByAttendanceItemId(String companyId, List<Integer> attendanceItemIds) {
-            return monthlyAttendanceItemRepository.findByAttendanceItemId(companyId,attendanceItemIds);
+            return monthlyAttendanceItemRepository.findByAttendanceItemId(companyId, attendanceItemIds);
         }
 
         public Map<String, BsEmploymentHistoryImport> getEmploymentInfor(List<String> listSid, GeneralDate baseDate) {
@@ -207,10 +207,11 @@ public class WorkLedgerOutputItemService extends ExportService<WorkLedgerOutputI
         }
 
         @Override
-        public Closure getClosureDataByEmployee(String employeeId, GeneralDate baseDate) {
-            return ClosureService.getClosureDataByEmployee(
+        public Optional<Closure> getClosureDataByEmployee(String employeeId, GeneralDate baseDate) {
+            val cls = ClosureService.getClosureDataByEmployee(
                     ClosureService.createRequireM3(closureRepository, closureEmploymentRepository, shareEmploymentAdapter),
                     new CacheCarrier(), employeeId, baseDate);
+            return cls != null ? Optional.of(cls) : Optional.empty();
         }
     }
 

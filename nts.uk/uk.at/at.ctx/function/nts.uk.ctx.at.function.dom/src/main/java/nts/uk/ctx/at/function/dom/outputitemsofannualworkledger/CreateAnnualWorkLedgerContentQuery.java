@@ -79,19 +79,20 @@ public class CreateAnnualWorkLedgerContentQuery {
             if (lstClosureDateEmployment.size() == 0) return;
             val closureDateEmployment = lstClosureDateEmployment.getOrDefault(emp.getEmployeeId(), null);
             if (closureDateEmployment == null) return;
-            val closure = closureDateEmployment.getClosure();
-            if (closure != null && closure.getClosureHistories().size() > 0) {
-                val closureHistory = closure.getClosureHistories().get(0);
-                val closureDay = closureHistory.getClosureDate().getClosureDay().v();
-                if (!monthlyOutputItems.isEmpty()) {
-                    lstMonthlyData = getMonthlyData(require, emp, monthlyOutputItems, closureDay);
+            val closureOptional = closureDateEmployment.getClosure();
+            if (closureOptional.isPresent()) {
+                val closure = closureOptional.get();
+                if (closure.getClosureHistories() != null && closure.getClosureHistories().size() > 0) {
+                    val closureHistory = closure.getClosureHistories().get(0);
+                    val closureDay = closureHistory.getClosureDate().getClosureDay().v();
+                    if (!monthlyOutputItems.isEmpty()) {
+                        lstMonthlyData = getMonthlyData(require, emp, monthlyOutputItems, closureDay);
+                    }
+                    closureDate = closureHistory.getClosureName().v();
+                    employmentCode = closureDateEmployment.getEmploymentCode();
+                    employmentName = closureDateEmployment.getEmploymentName();
                 }
-                closureDate = closureHistory.getClosureName().v();
-                employmentCode = closureDateEmployment.getEmploymentCode();
-                employmentName = closureDateEmployment.getEmploymentName();
-
             }
-
             AnnualWorkLedgerContent model = new AnnualWorkLedgerContent(
                     dailyData,
                     lstMonthlyData,
@@ -173,7 +174,7 @@ public class CreateAnnualWorkLedgerContentQuery {
                         alwayNull = false;
                         actualValue = actualValue + ((d.getOperator() == OperatorsCommonToForms.ADDITION ? 1 : -1) * Double.parseDouble(sub.getValue()));
                     }
-                    itemValue.add(new DailyValue( alwayNull? null:actualValue, character.toString(), key));
+                    itemValue.add(new DailyValue(alwayNull ? null : actualValue, character.toString(), key));
                 }
 
             });
@@ -254,7 +255,7 @@ public class CreateAnnualWorkLedgerContentQuery {
             val rawValue = subItem.getValue();
             if (monthlyItem.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ||
                     monthlyItem.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS ||
-                    monthlyItem.getItemDetailAttributes()== CommonAttributesOfForms.OTHER_CHARACTERS ||
+                    monthlyItem.getItemDetailAttributes() == CommonAttributesOfForms.OTHER_CHARACTERS ||
                     monthlyItem.getItemDetailAttributes() == CommonAttributesOfForms.OTHER_CHARACTER_NUMBER) {
                 character.append(rawValue);
             } else {
@@ -278,6 +279,7 @@ public class CreateAnnualWorkLedgerContentQuery {
                 List<String> employeeIds, YearMonthPeriod period, List<Integer> itemIds);
 
     }
+
     public static <T> Predicate<T> distinctByKey(
             Function<? super T, ?> keyExtractor) {
 
