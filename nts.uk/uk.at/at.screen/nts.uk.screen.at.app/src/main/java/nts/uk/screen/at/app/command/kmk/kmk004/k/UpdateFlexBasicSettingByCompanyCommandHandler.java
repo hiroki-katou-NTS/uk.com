@@ -18,8 +18,9 @@ import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkT
 public class UpdateFlexBasicSettingByCompanyCommandHandler
 		extends CommandHandler<UpdateFlexBasicSettingByCompanyCommand> {
 
-	@Inject
-	private GetFlexPredWorkTimeRepository getFlexPredWorkTimeRepo;
+	/*
+	 * @Inject private GetFlexPredWorkTimeRepository getFlexPredWorkTimeRepo;
+	 */
 
 	@Inject
 	private ComFlexMonthActCalSetRepo comFlexMonthActCalSetRepo;
@@ -29,7 +30,10 @@ public class UpdateFlexBasicSettingByCompanyCommandHandler
 
 		UpdateFlexBasicSettingByCompanyCommand cmd = context.getCommand();
 		// 会社別フレックス勤務集計方法を登録・更新する
-		this.getFlexPredWorkTimeRepo.persistAndUpdate(cmd.getFlexPredWorkTime().toDomain());
+		/*
+		 * this.getFlexPredWorkTimeRepo.persistAndUpdate(cmd.getFlexPredWorkTime().
+		 * toDomain());
+		 */
 		// 会社別フレックス勤務集計方法を更新する
 
 		this.comFlexMonthActCalSetRepo.update(cmd.getFlexMonthActCalSet().toDomain());
