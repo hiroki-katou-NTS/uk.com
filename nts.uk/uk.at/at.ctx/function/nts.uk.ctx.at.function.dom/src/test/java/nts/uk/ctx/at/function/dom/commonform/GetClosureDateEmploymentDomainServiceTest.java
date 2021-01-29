@@ -12,10 +12,7 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -105,7 +102,7 @@ public class GetClosureDateEmploymentDomainServiceTest {
         Map<String, BsEmploymentHistoryImport> expectedList = new HashMap<>();
         expectedList.put("01", historyImport);
 
-        Closure closure = createClosure();
+        Optional<Closure> closure = Optional.of(createClosure());
 
         new Expectations() {
             {
@@ -170,7 +167,7 @@ public class GetClosureDateEmploymentDomainServiceTest {
                 result = expectedList;
 
                 require.getClosureDataByEmployee("sid", baseDate);
-                result = null;
+                result = Optional.empty();
             }
         };
 
@@ -181,7 +178,7 @@ public class GetClosureDateEmploymentDomainServiceTest {
                         ClosureDateEmployment::getEmploymentName,
                         ClosureDateEmployment::getClosure)
                 .containsExactly(
-                        tuple("sid", "code", "name", null)
+                        tuple("sid", "code", "name", Optional.empty())
                 );
     }
 
@@ -202,7 +199,7 @@ public class GetClosureDateEmploymentDomainServiceTest {
         expectedList.put("01", historyImport);
         expectedList.put("02", historyImport1);
 
-        Closure closure = createClosure();
+        Optional<Closure> closure = Optional.of(createClosure());
 
         new Expectations() {
             {

@@ -3,6 +3,8 @@ package nts.uk.ctx.at.function.dom.commonform;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 
+import java.util.Optional;
+
 /**
  * 社員雇用と締め日
  */
@@ -18,9 +20,9 @@ public class ClosureDateEmployment {
     private String employmentName;
 
     // 締め
-    private Closure closure;
+    private Optional<Closure> closure;
 
-    public ClosureDateEmployment(String employeeId, String employmentCode, String employmentName, Closure closure) {
+    public ClosureDateEmployment(String employeeId, String employmentCode, String employmentName, Optional<Closure>  closure) {
         this.employeeId = employeeId;
         this.employmentCode = employmentCode;
         this.employmentName = employmentName;
