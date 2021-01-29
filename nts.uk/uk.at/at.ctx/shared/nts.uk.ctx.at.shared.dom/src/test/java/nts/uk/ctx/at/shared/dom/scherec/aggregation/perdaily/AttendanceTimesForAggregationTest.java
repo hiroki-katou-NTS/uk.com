@@ -3,13 +3,15 @@ package nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily;
 import static org.assertj.core.api.Assertions.*;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.Test;
 
 import lombok.val;
-import mockit.Injectable;
 import nts.arc.testing.assertion.NtsAssert;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 
 /**
  * Test for AttendanceTimesForAggregation
@@ -25,20 +27,40 @@ public class AttendanceTimesForAggregationTest {
 
 	/**
 	 * Target	: getTime
-	 * @param dailyAttendance 日別勤怠の勤怠時間(dummy)
 	 */
 	@Test
-	public void test_getTime_WORKING_TOTAL(@Injectable AttendanceTimeOfDailyAttendance dailyAttendance) {
+	public void test_getTime() {
 
-		// Execute
-		val result = AttendanceTimesForAggregation.WORKING_TOTAL.getTime( dailyAttendance );
+		// 期待値
+		val expected = new HashMap<AttendanceTimesForAggregation, Integer>() {{
+			put( AttendanceTimesForAggregation.WORKING_WITHIN,	450 );
+			put( AttendanceTimesForAggregation.WORKING_EXTRA,	131 );
+			put( AttendanceTimesForAggregation.WORKING_TOTAL
+					, get(AttendanceTimesForAggregation.WORKING_WITHIN) + get(AttendanceTimesForAggregation.WORKING_EXTRA) );
 
-		// Assertion
-		assertThat( result ).isEqualTo(BigDecimal.ZERO
-					.add( AttendanceTimesForAggregation.WORKING_WITHIN.getTime( dailyAttendance ) )
-					.add( AttendanceTimesForAggregation.WORKING_EXTRA.getTime( dailyAttendance ) )
+//			put( AttendanceTimesForAggregation.NIGHTSHIFT, 		960 );	// TODO 日別勤怠の医療項目決定待ち
+		}}.entrySet().stream()
+		.collect(Collectors.toMap(Map.Entry::getKey, e -> BigDecimal.valueOf( e.getValue() ) ));
+
+
+		// 日別勤怠の勤怠時間
+		val dailyAttendance = AttendanceTimeOfDailyAttendanceHelper.createWithTime(
+						expected.get(AttendanceTimesForAggregation.WORKING_WITHIN).intValue()
+					,	expected.get(AttendanceTimesForAggregation.WORKING_EXTRA).intValue()
 				);
 
-	}
+		// Execute
+		val result = Stream.of( AttendanceTimesForAggregation.values() )
+				.filter( e -> e != AttendanceTimesForAggregation.NIGHTSHIFT )	// TODO 日別勤怠の医療項目決定待ち
+				.collect(Collectors.toMap( e -> e , e -> e.getTime( dailyAttendance ) ));
 
+
+		// assertion
+		assertThat( result ).hasSameSizeAs( expected );
+		result.entrySet().stream()
+			.forEach( entry -> {
+				assertThat( entry.getValue() ).isEqualTo( expected.get( entry.getKey() ) );
+			} );
+
+	}
 }
