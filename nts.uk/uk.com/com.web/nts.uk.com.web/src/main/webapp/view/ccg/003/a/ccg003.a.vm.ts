@@ -188,6 +188,9 @@ module nts.uk.com.view.ccg003.a {
       overflow: hidden;
       text-overflow: ellipsis;
     }
+    .datepicker-container {
+      z-index: 999999999 !important;
+    }
   </style>`
   })
   @bean()
