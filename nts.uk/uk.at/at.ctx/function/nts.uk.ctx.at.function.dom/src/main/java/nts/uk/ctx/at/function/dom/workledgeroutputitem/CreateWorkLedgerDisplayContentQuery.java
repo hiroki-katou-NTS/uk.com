@@ -194,7 +194,7 @@ public class CreateWorkLedgerDisplayContentQuery {
         List<MonthlyAttendanceItem> findByAttendanceItemId(String companyId, List<Integer> attendanceItemIds);
     }
 
-    private static CommonAttributesOfForms convertMonthlyToAttForms(Integer typeOfAttendanceItem) {
+    public static CommonAttributesOfForms convertMonthlyToAttForms(Integer typeOfAttendanceItem) {
         //・時間　→　時間
         if (typeOfAttendanceItem.equals(MonthlyAttendanceItemAtr.TIME.value)) {
             return CommonAttributesOfForms.TIME;
