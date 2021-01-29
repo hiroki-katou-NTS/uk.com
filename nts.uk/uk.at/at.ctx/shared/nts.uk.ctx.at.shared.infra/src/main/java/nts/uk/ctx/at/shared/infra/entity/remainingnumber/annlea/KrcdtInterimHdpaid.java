@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMng;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -15,7 +16,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @Entity
 @Table(name = "KSHDT_INTERIM_HDPAID")
-public class KrcdtInterimHdpaid extends UkJpaEntity{
+public class KrcdtInterimHdpaid extends ContractUkJpaEntity{
 	/**
 	 * 暫定年休管理データID
 	 */
@@ -43,13 +44,13 @@ public class KrcdtInterimHdpaid extends UkJpaEntity{
 	/**
 	 * 使用日数
 	 */
-	@Column(name = "USE_DAYS")
+	@Column(name = "USED_DAYS")
 	public Double useDays;
 	
 	/**
 	 * 使用時間	
 	 */
-	@Column(name = "USE_TIME")
+	@Column(name = "USED_TIME")
 	public Integer useTime;
 
 	@Override

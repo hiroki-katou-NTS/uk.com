@@ -318,8 +318,10 @@ TempRemainCreateEachData {
 		//	subSetting = employmentHolidaySetting.getAbsSetting().get().getSetting();
 			
 		} else {
-			ComSubstVacation companyHolidaySetting = inforData.getCompanyHolidaySetting().getAbsSetting().get();
-			subSetting = companyHolidaySetting.getSetting();
+			Optional<ComSubstVacation> companyHolidaySettingOpt = inforData.getCompanyHolidaySetting().getAbsSetting();
+			if(companyHolidaySettingOpt.isPresent()) {
+				subSetting = companyHolidaySettingOpt.get().getSetting();
+			}
 		}
 		if (subSetting == null) {
 			return GeneralDate.max();

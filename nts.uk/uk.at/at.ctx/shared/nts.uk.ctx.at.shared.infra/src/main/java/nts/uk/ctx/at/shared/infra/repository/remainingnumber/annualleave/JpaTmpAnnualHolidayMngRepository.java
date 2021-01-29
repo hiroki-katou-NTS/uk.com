@@ -72,7 +72,7 @@ public class JpaTmpAnnualHolidayMngRepository extends JpaRepository implements T
 			KrcdtInterimHdpaid entity = new KrcdtInterimHdpaid();
 			entity.pk = pk;
 			entity.update(dataMng);
-			this.getEntityManager().persist(entity);
+			this.commandProxy().insert(entity);
 		}
 		this.getEntityManager().flush();
 	}
@@ -92,7 +92,7 @@ public class JpaTmpAnnualHolidayMngRepository extends JpaRepository implements T
 	private TmpAnnualHolidayMng toDomain(NtsResultRecord x) {
 		return toDomain(x.getString("REMAIN_MNG_ID"), x.getString("SID"), x.getGeneralDate("YMD"), 
 						x.getInt("CREATOR_ATR"), x.getInt("TIME_DIGESTIVE_ATR"), x.getInt("TIME_HD_TYPE"), 
-						x.getString("WORKTYPE_CODE"), x.getDouble("USE_DAYS"), x.getInt("USE_TIME"));
+						x.getString("WORKTYPE_CODE"), x.getDouble("USED_DAYS"), x.getInt("USED_TIME"));
 	}
 
 	@Override
