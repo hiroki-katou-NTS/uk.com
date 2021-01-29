@@ -25,6 +25,10 @@ public class PersonCostCalculationExportImpl implements MasterListData {
     @Inject
     private PersonCostCalculationFinder personCostCalculationSettingFinder;
 
+    private final int RATE = 100;
+    private final int ATR = 1;
+    private final int ID = 0;
+
     @Override
     public List<MasterData> getMasterDatas(MasterListExportQuery query) {
         List<MasterData> datas = new ArrayList<>();
@@ -56,10 +60,10 @@ public class PersonCostCalculationExportImpl implements MasterListData {
                     List<PremiumSettingAndNameDto> premiumSets = new ArrayList<>();
                     if (Objects.isNull(unitPrice)) {
                         premiumSets.add(new PremiumSettingAndNameDto(
-                                0,
+                                ID,
                                 TextResource.localize("KML001_83"),
-                                Integer.parseInt(TextResource.localize("KML001_84")),
-                                1,
+                                RATE,
+                                ATR,
                                 personCostCalculationSettingDto.getWorkingHoursUnitPrice(),
                                 Collections.emptyList()
                         ));
@@ -68,7 +72,8 @@ public class PersonCostCalculationExportImpl implements MasterListData {
                     List<PremiumItemDto> listPremiumItemLanguage = personCostCalculationSettingFinder.findWorkTypeLanguage(languageId);
                     premiumSets.sort(Comparator.comparingInt(PremiumSettingAndNameDto::getID));
                     if (!CollectionUtil.isEmpty(premiumSets)) {
-                        for (val premiumSetDto : premiumSets) {
+                        for (int j = 0; j < premiumSets.size(); j++) {
+                            val premiumSetDto = premiumSets.get(j);
                             if (premiumSetDto.getUseAtr() == 1) {
                                 String nameEnglish = "";
                                 for (PremiumItemDto premiumItemDto : listPremiumItemLanguage) {
@@ -79,7 +84,11 @@ public class PersonCostCalculationExportImpl implements MasterListData {
                                 }
                                 //data.put("他言語名称",nameEnglish);
                                 data.put("名称", premiumSetDto.getName());
-                                data.put("割増率", premiumSetDto.getRate() + TextResource.localize("KML001_60"));
+                                if (j == 0 && Objects.isNull(unitPrice)) {
+                                    data.put("割増率", TextResource.localize("KML001_84"));
+                                } else {
+                                    data.put("割増率", premiumSetDto.getRate() + TextResource.localize("KML001_60"));
+                                }
                                 data.put("単価", getTextResource(premiumSetDto.getUnitPrice()));
                                 List<AttendanceNamePriniumDto> rs = premiumSetDto.getAttendanceItems();
                                 rs.sort(Comparator.comparingInt(AttendanceNamePriniumDto::getAttendanceItemDisplayNumber));
@@ -120,6 +129,7 @@ public class PersonCostCalculationExportImpl implements MasterListData {
                                 checkShow = false;
                             }
                         }
+
                     }
                 }
             }
