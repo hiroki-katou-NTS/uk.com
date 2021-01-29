@@ -197,15 +197,10 @@ module nts.uk.at.view.knr002.c {
 
                 $('#single-list_container').focus();
 
-                // if (vm.hasError()) {
-                //     return;
-                // }
-                if (vm.validateErr()) {
+                if (nts.uk.ui.errors.hasError()) {
+                    vm.validateErr();
                     return;
                 }
-                    
-              
-                
 
                 let obj: any = {};
                 vm.settingData.forEach((item: SettingValue) => {
@@ -433,24 +428,20 @@ module nts.uk.at.view.knr002.c {
                     case INPUT_TYPE.LETTER:
                     case INPUT_TYPE.LETTER2: 
                         $('#C6_5').ntsError("check");
-                        return true;
+                        break;
                     case INPUT_TYPE.TIME:  
                         $('#C7_7').ntsError("check");
-                        return true;   
+                        break; 
                     case INPUT_TYPE.IP:
                         $('#C8_5').ntsError("check");
                         $('#C8_6').ntsError("check");
                         $('#C8_7').ntsError("check");
                         $('#C8_8').ntsError("check");
-                        return true;       
+                        if (!vm.checkIpAddress(vm.ipAddress1()) || !vm.checkIpAddress(vm.ipAddress2()) || !vm.checkIpAddress(vm.ipAddress3()) || !vm.checkIpAddress(vm.ipAddress4())) {
+                            nts.uk.ui.dialog.error({messageId: "Msg_2036"})
+                        }
+                        break;     
                 }
-
-                if (!vm.checkIpAddress(vm.ipAddress1()) || !vm.checkIpAddress(vm.ipAddress2()) || !vm.checkIpAddress(vm.ipAddress3()) || !vm.checkIpAddress(vm.ipAddress4())) {
-                    nts.uk.ui.dialog.error({messageId: "Msg_2036"})
-                    return true;
-                }
-
-                return false;
             }
 
             private checkIpAddress(ipAddress: number): boolean {
