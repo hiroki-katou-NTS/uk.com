@@ -77,8 +77,8 @@ public class ShortTimeOfDailyPerformance extends AggregateRoot {
 				sWTimeSheets.remove(sWTimeSheetOpt.get());
 				// 時間帯を作成
 				ShortWorkingTimeSheet createNew = new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(childF.timeSlot),
-						sWTimeSheetOpt.get().getChildCareAttr(), childF.getStartTime(), childF.getEndTime(),
-						new AttendanceTime(0), new AttendanceTime(0));
+						sWTimeSheetOpt.get().getChildCareAttr(), childF.getStartTime(), childF.getEndTime()
+						);
 				sWTimeSheets.add(createNew);
 
 			}

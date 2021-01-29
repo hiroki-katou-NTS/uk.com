@@ -431,7 +431,8 @@ module nts.uk.com.view.cmf001.d.viewmodel {
             service.getOneStdData(self.systemType.code, self.stdCondSetCd()).done((cond) => {
                 if (cond) {
                     self.stdCondSet(new model.StandardAcceptanceConditionSetting(cond.systemType, 
-                                                        cond.conditionSetCode, cond.conditionSetName, 
+                                                        cond.conditionSettingCode, 
+                                                        cond.conditionSettingName, 
                                                         cond.deleteExistData, cond.acceptMode, 
                                                         cond.csvDataItemLineNumber == null ? 1 : cond.csvDataItemLineNumber, 
                                                         cond.csvDataStartLine == null ? 2 : cond.csvDataStartLine, 

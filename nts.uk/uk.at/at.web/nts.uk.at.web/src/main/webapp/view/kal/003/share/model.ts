@@ -6,36 +6,36 @@ module nts.uk.at.view.kal003.share.model {
 
     export function getListCategory(): Array<ItemModel> {
         return [
-            //            new ItemModel(0, getText('Enum_AlarmCategory_SCHEDULE_DAILY')),
-            //            new ItemModel(1, getText('Enum_AlarmCategory_SCHEDULE_WEEKLY')),
-            new ItemModel(2, getText('Enum_AlarmCategory_SCHEDULE_4WEEK')),
-            //            new ItemModel(3, getText('Enum_AlarmCategory_SCHEDULE_MONTHLY')),
-            //            new ItemModel(4, getText('Enum_AlarmCategory_SCHEDULE_YEAR')),
-            new ItemModel(5, getText('Enum_AlarmCategory_DAILY')),
-            //            new ItemModel(6, getText('Enum_AlarmCategory_WEEKLY')),
-            new ItemModel(7, getText('Enum_AlarmCategory_MONTHLY')),
-            new ItemModel(8, getText('Enum_AlarmCategory_APPLICATION_APPROVAL')),
-            new ItemModel(9, getText('Enum_AlarmCategory_MULTIPLE_MONTH')),
-            //            new ItemModel(10, getText('Enum_AlarmCategory_ANY_PERIOD')),
-            new ItemModel(11, getText('Enum_AlarmCategory_ATTENDANCE_RATE_FOR_HOLIDAY')),
-            new ItemModel(12, getText('Enum_AlarmCategory_AGREEMENT')),
-            //            new ItemModel(13, getText('Enum_AlarmCategory_MAN_HOUR_CHECK'))
-            new ItemModel(14, getText('Enum_AlarmCategory_MASTER_CHECK'))
+            //            new ItemModel(0, nts.uk.resource.getText("KAL010_1000")), //スケジュール日次
+            //            new ItemModel(1, nts.uk.resource.getText("KAL010_1500")), //スケジュール週次
+            new ItemModel(2, nts.uk.resource.getText("KAL010_200")), //スケジュール４週
+            //            new ItemModel(3, nts.uk.resource.getText("KAL010_1100")), //スケジュール月次
+            //            new ItemModel(4, nts.uk.resource.getText("KAL010_1200")),//スケジュール年間
+            new ItemModel(5, nts.uk.resource.getText("KAL010_1")), //日次
+            //            new ItemModel(6, nts.uk.resource.getText("KAL010_1300")), //週次
+            new ItemModel(7, nts.uk.resource.getText("KAL010_100")), //月次
+            new ItemModel(8, nts.uk.resource.getText("KAL010_500")), //申請承認
+            new ItemModel(9, nts.uk.resource.getText("KAL010_250")), //複数月
+            //            new ItemModel(10, nts.uk.resource.getText("KAL010_607")), //任意期間
+            new ItemModel(11, nts.uk.resource.getText("KAL010_400")), //年休
+            new ItemModel(12, nts.uk.resource.getText("KAL010_117")), //３６協定
+            //            new ItemModel(13, nts.uk.resource.getText("KAL010_1400")) //工数チェック
+            new ItemModel(14, nts.uk.resource.getText("KAL010_550")) //マスタチェック
         ];
     }
-
+    //日次の抽出するデータの条件
     export function getConditionToExtractDaily(): Array<ItemModel> {
         return [
-            new model.ItemModel(0, getText('Enum_ConExtractedDaily_ALL')),
-            new model.ItemModel(1, getText('Enum_ConExtractedDaily_CONFIRMED_DATA')),
-            new model.ItemModel(2, getText('Enum_ConExtractedDaily_UNCONFIRMER_DATA'))
+            new model.ItemModel(0, nts.uk.resource.getText("KAL003_328")),
+            new model.ItemModel(1, nts.uk.resource.getText("KAL003_329")),
+            new model.ItemModel(2, nts.uk.resource.getText("KAL003_330"))
         ];
     }
-
+    //4週4休チェック条件
     export function getSchedule4WeekAlarmCheckCondition(): Array<ItemModel> {
         return [
-            new model.ItemModel(0, '実績のみで4週4休をチェックする'),
-            new model.ItemModel(1, 'スケジュールと実績で4週4休をチェックする')
+            new model.ItemModel(0, nts.uk.resource.getText("KAL010_217")),
+            new model.ItemModel(1, nts.uk.resource.getText("KAL010_218"))
         ];
     }
 

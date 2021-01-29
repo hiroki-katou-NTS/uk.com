@@ -116,6 +116,19 @@ module nts.uk.com.view.ccg015.e {
       LayoutUtils.enableMenu(itemType);
     }
 
+    public onClickSetting(itemType: String) {
+      const vm = this;
+      if (itemType === MenuPartType.PART_KTG_004) {
+         vm.$window.modal('at', '/view/ktg/004/b/index.xhtml')
+            .then((result: any) => {
+        });
+      } else {
+        vm.$window.modal('at', '/view/ktg/005/b/index.xhtml')
+            .then((result: any) => {
+        });
+      }
+    }
+
     close() {
       const vm = this;
       vm.$window.close();
