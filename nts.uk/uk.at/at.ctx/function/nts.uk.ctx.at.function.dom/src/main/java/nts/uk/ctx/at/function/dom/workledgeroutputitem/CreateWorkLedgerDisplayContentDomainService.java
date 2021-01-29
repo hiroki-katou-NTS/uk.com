@@ -96,18 +96,22 @@ public class CreateWorkLedgerDisplayContentDomainService {
                 } else return;
             } else return;
             List<MonthlyRecordValueImport> listAttendances = new ArrayList<>();
-            val closureDay = closureDayMap.get(e.getEmployeeId()).getClosure().getClosureHistories()
-                    .get(0).getClosureDate().getClosureDay().v();
-            for (val date : e.getListPeriod()) {
-                //5    ⑤ Cal 月別実績取得の為に年月日から適切な年月に変換する
-                val yearMonthPeriod = GetSuitableDateByClosureDateUtility.convertPeriod(date, closureDay);
-                //5.1  ⑥ Call [No.495]勤怠項目IDを指定して月別実績の値を取得（複数レコードは合算）
-                Map<String, List<MonthlyRecordValueImport>> actualMultipleMonths = null;
-                actualMultipleMonths = require.getActualMultipleMonth(Collections.singletonList(e.getEmployeeId()),
-                        yearMonthPeriod, listAttIds);
 
-                if (actualMultipleMonths == null || actualMultipleMonths.get(e.getEmployeeId()) == null) continue;
-                listAttendances.addAll(actualMultipleMonths.get(e.getEmployeeId()));
+            val closureDayOpt = closureDayMap.get(e.getEmployeeId()).getClosure();
+            if (closureDayOpt.isPresent()) {
+                val closureDay = closureDayOpt.get().getClosureHistories()
+                        .get(0).getClosureDate().getClosureDay().v();
+                for (val date : e.getListPeriod()) {
+                    //5    ⑤ Cal 月別実績取得の為に年月日から適切な年月に変換する
+                    val yearMonthPeriod = GetSuitableDateByClosureDateUtility.convertPeriod(date, closureDay);
+                    //5.1  ⑥ Call [No.495]勤怠項目IDを指定して月別実績の値を取得（複数レコードは合算）
+                    Map<String, List<MonthlyRecordValueImport>> actualMultipleMonths;
+                    actualMultipleMonths = require.getActualMultipleMonth(Collections.singletonList(e.getEmployeeId()),
+                            yearMonthPeriod, listAttIds);
+
+                    if (actualMultipleMonths == null || actualMultipleMonths.get(e.getEmployeeId()) == null) continue;
+                    listAttendances.addAll(actualMultipleMonths.get(e.getEmployeeId()));
+                }
             }
             Map<YearMonth, Map<Integer, ItemValue>> allValue = listAttendances.stream()
                     .collect(Collectors.toMap(MonthlyRecordValueImport::getYearMonth,

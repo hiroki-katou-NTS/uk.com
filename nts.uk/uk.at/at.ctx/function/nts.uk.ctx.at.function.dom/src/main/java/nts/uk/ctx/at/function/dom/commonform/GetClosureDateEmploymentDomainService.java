@@ -11,6 +11,7 @@ import javax.ejb.Stateless;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -20,9 +21,10 @@ import java.util.stream.Collectors;
 public class GetClosureDateEmploymentDomainService {
     /**
      * [1] 取得する
+     *
      * @param require
      * @param baseDate 基準日：年月日
-     * @param listSid List<社員ID>：社員ID
+     * @param listSid  List<社員ID>：社員ID
      * @return
      */
     public static List<ClosureDateEmployment> get(Require require, GeneralDate baseDate, List<String> listSid) {
@@ -32,10 +34,11 @@ public class GetClosureDateEmploymentDomainService {
 
         return lstEmploymentInfo.values().stream().map(i -> {
             // Call 社員に対応する処理締めを取得する
-            val closure = require.getClosureDataByEmployee(i.getEmployeeId(), baseDate);
+            val closureOptional = require.getClosureDataByEmployee(i.getEmployeeId(), baseDate);
 
             // ※締め．締め変更履歴 がリストの場合は基準日がある履歴のみ残して、他の履歴を無視する
-            if (closure != null) {
+            if (closureOptional.isPresent()) {
+                val closure = closureOptional.get();
                 val closureHistories = new ArrayList<ClosureHistory>();
                 closureHistories.add(closure.getHistoryByBaseDate(baseDate));
                 closure.setClosureHistories(closureHistories);
@@ -45,7 +48,7 @@ public class GetClosureDateEmploymentDomainService {
                     i.getEmployeeId(),
                     i.getEmploymentCode(),
                     i.getEmploymentName(),
-                    closure
+                    closureOptional
             );
         }).collect(Collectors.toList());
     }
@@ -69,6 +72,6 @@ public class GetClosureDateEmploymentDomainService {
          * @param baseDate
          * @return
          */
-        Closure getClosureDataByEmployee(String employeeId, GeneralDate baseDate);
+        Optional<Closure> getClosureDataByEmployee(String employeeId, GeneralDate baseDate);
     }
 }

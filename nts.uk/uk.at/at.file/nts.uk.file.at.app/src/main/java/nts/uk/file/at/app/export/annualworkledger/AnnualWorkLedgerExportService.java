@@ -192,12 +192,12 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
         }
 
         @Override
-        public Closure getClosureDataByEmployee(String employeeId, GeneralDate baseDate) {
+        public Optional<Closure> getClosureDataByEmployee(String employeeId, GeneralDate baseDate) {
             Closure closure = ClosureService.getClosureDataByEmployee(
                     ClosureService.createRequireM3(closureRepository, closureEmploymentRepository, shareEmploymentAdapter),
                     new CacheCarrier(), employeeId, baseDate);
 
-            return closure;
+            return closure!=null?Optional.of(closure):Optional.empty();
         }
     }
 
