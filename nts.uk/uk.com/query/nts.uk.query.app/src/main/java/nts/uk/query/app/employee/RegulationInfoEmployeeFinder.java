@@ -619,7 +619,7 @@ public class RegulationInfoEmployeeFinder {
 		if(removeEmployeesDoNotManageSchedules) {
 			List<WorkingConditionItem> workingConditionItem = workingConditionItemService.getEmployeesIdListByPeriod(narrowedSids, new DatePeriod(baseDate, baseDate));
 			narrowedSids = narrowedSids.stream().filter(c->{
-				return workingConditionItem.stream().filter(d -> d.getEmployeeId().equals(c) && d.getScheduleManagementAtr() == ManageAtr.NOTUSE).findAny().isPresent();
+				return !workingConditionItem.stream().filter(d -> d.getEmployeeId().equals(c) && d.getScheduleManagementAtr() == ManageAtr.NOTUSE).findAny().isPresent();
 			}).collect(Collectors.toList());
 		}
 		return narrowedSids;
