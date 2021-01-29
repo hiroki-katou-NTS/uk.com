@@ -9,7 +9,7 @@
             {{rec.application.appDate | i18n}} {{'KAFS11_34' | i18n}} {{'CMMS45_24' | i18n(prePost(rec.application.prePostAtr))}}
         </div>
         <div class="row pt-1 pb-1 border-0 header-div uk-text-dark-gray" style="font-size: 90%">
-            {{'KAFS11_33' | i18n(rec.application.inputDate)}}
+            {{'KAFS11_33' | i18n($dt(new Date(rec.application.inputDate), 'YY/MM/DD HH:mm'))}}
         </div>
     </div>
     <!-- B2 -->
@@ -59,9 +59,9 @@
             <div class="col-8">{{'KAFS11_20' | i18n}}</div>
             <div class="col-3">{{'KAFS11_21' | i18n}}</div>
         </div>
-        <div v-for="(item, index) in params.appDetail.applicationForWorkingDay.leaveComDayOffMana" v-bind:key="index" 
+        <div v-for="(item, index) in recLeaveComDayOffMana" v-bind:key="index" 
             class="row pt-1 pb-1 border-bottom header-div">
-            <div class="col-8">{{$dt(new Date(item.outbreakDay), 'YYYY/MM/DD(dd)')}}</div>
+            <div class="col-8">{{$dt(new Date(item.outbreakDay), 'YY/MM/DD(dd)')}}</div>
             <div class="col-3">{{'KAFS11_31' | i18n(item.dayNumberUsed)}}</div>
         </div>
     </div>
@@ -71,10 +71,10 @@
             {{'KAFS11_26' | i18n}}
         </div>
         <div class="row pt-1 pb-1 border-0 header-div">
-            {{abs.application.appDate | i18n}} {{'KAFS11_34' | i18n}} {{'CMMS45_24' | i18n(prePost(abs.application.prePostAtr))}}
+            {{abs.application.appDate | i18n}} {{'KAFS11_35' | i18n}} {{'CMMS45_24' | i18n(prePost(abs.application.prePostAtr))}}
         </div>
         <div class="row pt-1 pb-1 border-0 header-div uk-text-dark-gray" style="font-size: 90%">
-            {{'KAFS11_33' | i18n(abs.application.inputDate)}}
+            {{'KAFS11_33' | i18n($dt(new Date(abs.application.inputDate), 'YY/MM/DD HH:mm'))}}
         </div>
     </div>
     <!-- B6 -->
@@ -124,9 +124,9 @@
             <div class="col-8">{{'KAFS11_20' | i18n}}</div>
             <div class="col-3">{{'KAFS11_21' | i18n}}</div>
         </div>
-        <div v-for="(item, index) in params.appDetail.applicationForHoliday.leaveComDayOffMana" v-bind:key="index" 
+        <div v-for="(item, index) in absLeaveComDayOffMana" v-bind:key="index" 
             class="row pt-1 pb-1 border-bottom header-div">
-            <div class="col-8">{{$dt(new Date(item.outbreakDay), 'YYYY/MM/DD(dd)')}}</div>
+            <div class="col-8">{{$dt(new Date(item.outbreakDay), 'YY/MM/DD(dd)')}}</div>
             <div class="col-3">{{'KAFS11_31' | i18n(item.dayNumberUsed)}}</div>
         </div>
     </div>
@@ -139,9 +139,9 @@
             <div class="col-8">{{'KAFS11_24' | i18n}}</div>
             <div class="col-3">{{'KAFS11_21' | i18n}}</div>
         </div>
-        <div v-for="(item, index) in params.appDetail.applicationForHoliday.payoutSubofHDManagements" v-bind:key="index" 
+        <div v-for="(item, index) in absPayoutSubofHDManagements" v-bind:key="index" 
             class="row pt-1 pb-1 border-bottom header-div">
-            <div class="col-8">{{$dt(new Date(item.outbreakDay), 'YYYY/MM/DD(dd)')}}</div>
+            <div class="col-8">{{$dt(new Date(item.outbreakDay), 'YY/MM/DD(dd)')}}</div>
             <div class="col-3">{{'KAFS11_31' | i18n(item.dayNumberUsed)}}</div>
         </div>
     </div>

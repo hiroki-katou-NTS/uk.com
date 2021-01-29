@@ -128,10 +128,10 @@ public class UserInformationSettingScreenQuery {
 			userInformationUseMethodDto.setCompanyId(loginCid);
 			userInformationUseMethodDto.setEmailDestinationFunctionDtos(emailDestinationFunctionDtos);
 			userInformationUseMethodDto.setSettingContactInformationDto(settingContactInformation);
-			userInformationUseMethodDto.setUseOfLanguage(1);
-			userInformationUseMethodDto.setUseOfNotice(1);
-			userInformationUseMethodDto.setUseOfPassword(1);
-			userInformationUseMethodDto.setUseOfProfile(1);
+			userInformationUseMethodDto.setUseOfLanguage(0); //#114200
+			userInformationUseMethodDto.setUseOfNotice(0); //#114200
+			userInformationUseMethodDto.setUseOfPassword(0); //#114200
+			userInformationUseMethodDto.setUseOfProfile(0); //#114200
 		}
 		userInformationUseMethod.ifPresent(method -> method.setMemento(userInformationUseMethodDto));
 		

@@ -5,6 +5,7 @@
 package nts.uk.ctx.sys.env.dom.mailnoticeset.adapter;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.PersonContactImport;
 
@@ -27,5 +28,12 @@ public interface PersonContactAdapter {
 	 * @param person the person
 	 */
 	void register(PersonContactImport person);
+	
+	/**
+	 * 取得する
+	 * @param personId
+	 * @return the person contact
+	 */
+	Optional<PersonContactImport> getPersonalContact(String personId);
 
 }

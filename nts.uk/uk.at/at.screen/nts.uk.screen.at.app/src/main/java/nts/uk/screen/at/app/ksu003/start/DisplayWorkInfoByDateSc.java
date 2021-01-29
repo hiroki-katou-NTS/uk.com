@@ -52,6 +52,7 @@ import nts.uk.screen.at.app.ksu003.start.dto.EmployeeWorkScheduleDto;
 import nts.uk.screen.at.app.ksu003.start.dto.FixedWorkInforDto;
 import nts.uk.screen.at.app.ksu003.start.dto.FixedWorkInformationDto;
 import nts.uk.screen.at.app.ksu003.start.dto.TimeOfDayDto;
+import nts.uk.screen.at.app.ksu003.start.dto.TimeShortDto;
 import nts.uk.screen.at.app.ksu003.start.dto.TimeVacationAndTypeDto;
 import nts.uk.screen.at.app.ksu003.start.dto.TimeVacationDto;
 import nts.uk.screen.at.app.ksu003.start.dto.TimeZoneDto;
@@ -110,7 +111,7 @@ public class DisplayWorkInfoByDateSc {
 			EmployeeWorkScheduleDto workScheduleDto = null; // 社員勤務予定
 			DisplayWorkInfoByDateDto infoByDateDto = null;
 			List<TimeVacationAndTypeDto> typeDto = new ArrayList<>();
-			List<TimeZoneDto> shortTime  = new ArrayList<>();
+			List<TimeShortDto> shortTime  = new ArrayList<>();
 			
 			List<WorkInfoOfDailyAttendance> workInfoOfDailyAttendances = new ArrayList<>();
 			List<WorkInformation> lstWorkInformation = new ArrayList<>();// 勤務情報
@@ -168,8 +169,7 @@ public class DisplayWorkInfoByDateSc {
 				}
 				
 				shortTime = value.get().getOptSortTimeWork().get().getShortWorkingTimeSheets().
-						stream().map(x-> new TimeZoneDto(new TimeOfDayDto(x.getStartTime().getDayDivision().value, x.getStartTime().v()), 
-								new TimeOfDayDto(x.getEndTime().getDayDivision().value, x.getEndTime().v()))).collect(Collectors.toList());
+						stream().map(x-> new TimeShortDto(x.getStartTime().v(), x.getEndTime().v(), x.getChildCareAttr().value, x.getShortWorkTimeFrameNo().v())).collect(Collectors.toList());
 				
 				workInfoDto = new EmployeeWorkInfoDto(
 						// 応援か

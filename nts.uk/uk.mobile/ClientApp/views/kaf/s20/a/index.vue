@@ -16,7 +16,7 @@
     @backToStep1="handleBackToStep1"
     v-bind:settingItems="settingItems"
     v-bind:mode="mode"
-    v-bind:params="params"
+    v-bind:params="_params"
     />
     <kaf-s20-c
     v-if="step == 'KAFS20_12'"
