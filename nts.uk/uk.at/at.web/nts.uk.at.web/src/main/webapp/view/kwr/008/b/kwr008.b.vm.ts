@@ -24,10 +24,9 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         ]);
 
         //B2_2
-        listStandardImportSetting: KnockoutObservableArray<SetOutputSettingCode> = ko.observableArray([]);
-        selectedCode: KnockoutObservable<string> = ko.observable('');
-        currentSetOutputSettingCode: KnockoutObservable<SetOutputSettingCode>
-        = ko.observable(new SetOutputSettingCode(null));
+        listStandardImportSetting: KnockoutObservableArray<SetOutputItemOfAnnualWorkSchDto> = ko.observableArray([]);
+        selectedLayoutId: KnockoutObservable<string> = ko.observable('');
+        currentSetOutputSettingCode: KnockoutObservable<SetOutputItemOfAnnualWorkSchDto> = ko.observable(new SetOutputItemOfAnnualWorkSchDto(null));
 
         //B5_3
         itemRadio: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -35,15 +34,17 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         rule36CalculationName: string;
 
         //B4
-        outputItem: KnockoutObservableArray<any> = ko.observableArray([]);
+        outputItem: KnockoutObservableArray<ItemsOutputToBookTable> = ko.observableArray([]);
 
         isCheckedAll: KnockoutObservable<boolean> = ko.observable(false);
 
-        selectedPrintForm: KnockoutObservable<number> = ko.observable(0);
+        selectedPrintForm: KnockoutObservable<number> = ko.observable(null);
         
         rule36CalculationAverageName: string;
         
         contentSelectionOutput: KnockoutObservableArray<ItemEnum> = ko.observableArray([]);
+
+        attendanceItem: share.model.AttendanceItemDto[] = [];
 
         constructor() {
             let self = this;
@@ -55,77 +56,22 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             ]);
             self.rule36CalculationName = getText('KWR008_71');
             self.rule36CalculationAverageName = getText('KWR008_70');
-            for (var i = 1; i <= 10; i++) {
-                self.outputItem.push(new OutputItemData(i,
+            for (var i = 1; i <= 11; i++) {
+                self.outputItem.push(new ItemsOutputToBookTable(
+                    i,
                     null,
                     false,
                     '',
                     0,
-                    '',
-                    (i == 1)||(i == 2) //set is 36協定時間 if it's fist OutputItem
                 ));
             }
             //event select change
-            self.selectedCode.subscribe((code) => {
+            self.selectedLayoutId.subscribe((settingId) => {
                 _.defer(() => { errors.clearAll() });
                 errors.clearAll();
                 block.invisible();
-                if (code) {
-                    service.getListItemOutput(code).done(r => {
-                        let dataSorted = [];
-                        if (r && r.length > 0) {
-                            dataSorted = _.sortBy(r, ['sortBy']);
-                            //check exist item 36協定時間
-                            var item36AgreementTime = _.find(dataSorted, (item) => { return item.item36AgreementTime; });
-                            if (!item36AgreementTime) {
-                                dataSorted.unshift({ item36AgreementTime: true });
-                            }
-
-                            for (var i = 0; i < dataSorted.length; i++) {
-                                if (i >= self.outputItem().length) {
-                                    self.outputItem.push(new OutputItemData(i + 1,
-                                        dataSorted[i].cd,
-                                        dataSorted[i].useClass,
-                                        dataSorted[i].headingName,
-                                        dataSorted[i].valOutFormat,
-                                        '',
-                                        dataSorted[i].item36AgreementTime));
-                                } else {
-                                    self.outputItem()[i].updateData(i + 1,
-                                        dataSorted[i].cd,
-                                        dataSorted[i].useClass,
-                                        dataSorted[i].headingName,
-                                        dataSorted[i].valOutFormat,
-                                        '',
-                                        dataSorted[i].item36AgreementTime,
-                                        null);
-                                }
-                                if (!dataSorted[i].item36AgreementTime) {
-                                    let addItems = _.filter(dataSorted[i].listOperationSetting, (x) => { return x.operation === 1; }).map((item) => { return item.attendanceItemId; });
-                                    let subItems = _.filter(dataSorted[i].listOperationSetting, (x) => { return x.operation === 0; }).map((item) => { return item.attendanceItemId; });
-                                    let resultData = {
-                                        lstAddItems: addItems,
-                                        lstSubItems: subItems
-                                    };
-                                    self.buildOutputItem(resultData, self.outputItem()[i]);
-                                }
-                            }
-                        }
-                        for (var i = dataSorted.length; i < self.outputItem().length; i++) {
-                            self.outputItem()[i].updateData(i + 1,
-                                null,
-                                false,
-                                '',
-                                0,
-                                '',
-                                i == 0?true:(i==1?true:false), //set is 36協定時間 if it's fist OutputItem
-                                null);
-                        }
-                    }).always(function() {
-                        self.updateMode(code);
-                        errors.clearAll();
-                        block.clear();
-                    });
+                if (settingId) {
+                    // TODO
                 } else {
                     block.clear();
                     self.registerMode();
@@ -136,13 +82,9 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 if (data == 0) {
                     self.outputItem()[0].useClass(false);
                     self.outputItem()[1].useClass(false);
-                } else if (data == 1 && self.selectedCode()) {
-                    service.getListItemOutput(self.selectedCode()).done(r => {
-                        if(r){
-                            self.outputItem()[0].useClass(_.find(r, ['cd', '01']).useClass);
-                            self.outputItem()[1].useClass(_.find(r, ['cd', '02']).useClass);       
-                        }
-                    });
+                } else if (data == 1) {
+                    self.outputItem()[0].useClass(true);
+                    self.outputItem()[1].useClass(true);
                 }
             });
 
@@ -176,18 +118,16 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             block.invisible();
             //fill data B2_2
             let KWR008BParam = nts.uk.ui.windows.getShared("KWR008_B_Param");
+            let selectionType = share.model.SelectionClassification.STANDARD;
+            if (KWR008BParam) {
+                self.selectedPrintForm(KWR008BParam.printFormat);
+                selectionType = KWR008BParam.selectionType;
+            }
 
-            let sv1 = service.getValueOutputFormat();
-            let sv2 = service.getOutItemSettingCode();
-            
-            var widgets = []; 
-            var listWidgets = __viewContext.enums.TotalAverageDisplay;
-            listWidgets.forEach(function(Widgets) {
-                widgets.push(new ItemEnum(Widgets.value.toString(), Widgets.name))
-            });
-            self.contentSelectionOutput(widgets);
-            
-            $.when(sv1, sv2).done((data1, data2) => {
+            $.when(service.getValueOutputFormat()
+                 , service.findAllBySettingType(selectionType, this.selectedPrintForm())
+                 , self.getAtdItemsByDisplayFormat(self.selectedPrintForm()))
+            .done((data1: Array<model.EnumConstantDto>, data2: Array<model.SetOutputItemOfAnnualWorkSchDto>) => {
                 // get list value output format
                 let listValOutFormat = [];
                 for (let i of data1) {
@@ -197,24 +137,37 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
                 var dataSorted = _.sortBy(data2, ['cd']);
                 for (let i = 0, count = data2.length; i < count; i++) {
-                    self.listStandardImportSetting.push(new SetOutputSettingCode(dataSorted[i]));
+                    self.listStandardImportSetting.push(new SetOutputItemOfAnnualWorkSchDto(dataSorted[i]));
                 }
             }).always(function() {
                 dfd.resolve(self);
                 //get parameter from B
                 
                 if (KWR008BParam && KWR008BParam.selectedCd) {
-                    self.selectedCode(KWR008BParam.selectedCd);
+                    self.selectedLayoutId(KWR008BParam.selectedCd);
                     self.updateMode(KWR008BParam.selectedCd);
                 } else { //case no param
                     self.checkListItemOutput();
                 }
                 block.clear();
             });
+
+            if (KWR008BParam.printFormat === 1) {
+                self.listStandardImportSetting.push(new SetOutputItemOfAnnualWorkSchDto({
+                    cd: '02',
+                    name: 'Fake data 36'
+                }));
+            } else {
+                self.listStandardImportSetting.push(new SetOutputItemOfAnnualWorkSchDto({
+                    cd: '01',
+                    name: 'Fake data'
+                }));
+            }
+            
             return dfd.promise();
         }
 
-        checkEnable36(data) {
+        checkEnable36(data: ItemsOutputToBookTable) {
             let self = this;
             if ((data.sortBy() == 1 || data.sortBy() == 2) && self.selectedPrintForm() == 0)
                 return false;
@@ -227,146 +180,40 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 return (+a.cd() === +b.cd()) ? 0 : (+a.cd() < +b.cd()) ? -1 : 1;
             });
         }
-        //Open dialog KDW007
-        openKDW007(sortBy) {
-            let self = this;
-            block.invisible();
-            let index = _.findIndex(self.outputItem(), (x) => { return x.sortBy() === sortBy(); });
-            if (index == -1) {
-                block.clear();
-                return;
-            }
 
-            self.getListItemByAtr(+self.outputItem()[index].valOutFormat()).done((lstItem) => {
-                let lstItemCode = lstItem.map((item) => { return item.attendanceItemId; });
-                let lstAddItems = _.filter(self.outputItem()[index].listOperationSetting(), (item) => {
-                    return item.operation();
-                }).map((item) => { return item.attendanceItemId(); });
-                let lstSubItems = _.filter(self.outputItem()[index].listOperationSetting(), (item) => {
-                    return !item.operation();
-                }).map((item) => { return item.attendanceItemId(); });
-                let param = {
-                    attr: ATTR.MONTHLY,
-                    lstAllItems: lstItemCode,
-                    lstAddItems: lstAddItems,
-                    lstSubItems: lstSubItems
-                };
-                nts.uk.ui.windows.setShared("KDW007Params", param);
-                nts.uk.ui.windows.sub.modal("at", "/view/kdw/007/c/index.xhtml").onClosed(() => {
-                    let resultData = nts.uk.ui.windows.getShared("KDW007CResults");
-                    if (!resultData) {
-                        block.clear();
-                        return;
-                    }
-                    self.buildOutputItem(resultData, self.outputItem()[index]).done(() => {
-                    }).always(function() {
-                        block.clear();
-                    });
-                });
-            });
-        }
-
-        buildOutputItemByOper(lstItems: Array<any>, outputItem, isAdd: boolean): JQueryPromise {
+        buildOutputItemByOper(lstItems: Array<any>, outputItem: SetOutputItemOfAnnualWorkSchDto, isAdd: boolean) {
             let self = this;
-            let dfd = $.Deferred<any>();
             let operationName = "";
-            if (lstItems && lstItems.length > 0) {
-                service.getMonthlyAttendanceItemByCodes(lstItems).done((items) => {
-                    _.forEach(items, (item) => {
-                        if (isAdd) {
-                            outputItem.listOperationSetting.push(new OperationCondition(item.attendanceItemId, 1, item.attendanceItemName));
-                            if (operationName) {
-                                operationName = operationName + " + " + item.attendanceItemName;
-                            } else {
-                                operationName = item.attendanceItemName;
-                            }
-                        } else {
-                            outputItem.listOperationSetting.push(new OperationCondition(item.attendanceItemId, 0, item.attendanceItemName));
-                            if (operationName) {
-                                operationName = operationName + " - " + item.attendanceItemName;
-                            } else {
-                                operationName = item.attendanceItemName;
-                            }
-                        }
-                    });
-                }).always(function() {
-                    dfd.resolve(operationName);
-                });
-            } else {
-                dfd.resolve(operationName);
-            }
-            return dfd.promise();
-        }
+            // TODO
+            // if (calculationItem.itemsForAdd()) {
+            //     _.forEach(calculationItem.itemsForAdd(), (addItem) => {
+            //         const attendanceItems: model.AttendanceItemDto[] = self.attendanceItem.filter((item) => item.attendanceItemId === addItem);
+            //         const targetItem = attendanceItems.length > 0 ? attendanceItems[0] : null;
+            //         if (targetItem) {
+            //             if (operationName) {
+            //                 operationName = operationName + " + " + targetItem.attendanceItemName;
+            //             } else {
+            //                 operationName = targetItem.attendanceItemName;
+            //             }
+            //         }
+            //     });
+            // }
 
-        //re-build output item from Kdw007 result
-        buildOutputItem(resultData, outputItem): JQueryPromise {
-            let self = this;
-            let dfd = $.Deferred<any>();
-            let operationName = "";
+            // if (calculationItem.itemsForSubtract()) {
+            //     _.forEach(calculationItem.itemsForSubtract(), (addItem) => {
+            //         const attendanceItems: model.AttendanceItemDto[] = self.attendanceItem.filter((item) => item.attendanceItemId === addItem);
+            //         const targetItem = attendanceItems.length > 0 ? attendanceItems[0] : null;
+            //         if (targetItem) {
+            //             if (operationName) {
+            //                 operationName = operationName + " - " + targetItem.attendanceItemName;
+            //             } else {
+            //                 operationName = targetItem.attendanceItemName;
+            //             }
+            //         }
+            //     });
+            // }
 
-            outputItem.listOperationSetting.removeAll();
-            //add
-            self.buildOutputItemByOper(resultData.lstAddItems, outputItem, true).done((name) => {
-                operationName = name;
-            }).always(function() {
-                //sub
-                self.buildOutputItemByOper(resultData.lstSubItems, outputItem, false).done((name) => {
-                    if (name) {
-                        if (operationName) {
-                            operationName = operationName + " - " + name;
-                        } else {
-                            operationName = " - " + name;
-                        }
-                    }
-                }).always(function() {
-                    outputItem.outputTargetItem(operationName);
-                    dfd.resolve();
-                });
-            });
-            return dfd.promise();
-        }
-
-        // get data for kdw007
-        getListItemByAtr(valOutFormat) {
-            let self = this;
-            let dfd = $.Deferred<any>();
-            if (valOutFormat === 1) {
-                //With type 回数 - Times
-                service.getMonthlyAttendanceItemByAtr(MonthlyAttendanceItemAtr.NUMBER).done((lstAtdItem) => {
-                    service.getOptItemByAtr(MonthlyAttendanceItemAtr.NUMBER).done((lstOptItem) => {
-                        for (let i = 0; i < lstOptItem.length; i++) {
-                            lstAtdItem.push(lstOptItem[i]);
-                        }
-                        dfd.resolve(lstAtdItem);
-                    });
-                });
-            } else if (valOutFormat === 0) {
-                //With type 時間 - Time
-                service.getMonthlyAttendanceItemByAtr(MonthlyAttendanceItemAtr.TIME).done((lstAtdItem) => {
-                    service.getOptItemByAtr(MonthlyAttendanceItemAtr.TIME).done((lstOptItem) => {
-                        for (let i = 0; i < lstOptItem.length; i++) {
-                            lstAtdItem.push(lstOptItem[i]);
-                        }
-                        dfd.resolve(lstAtdItem);
-                    });
-                });
-            } else if (valOutFormat === 2) {
-                //With type 日数
-                service.getMonthlyAttendanceItemByAtr(MonthlyAttendanceItemAtr.DAYS).done((lstAtdItem) => {
-                    dfd.resolve(lstAtdItem);
-                });
-            } else if (valOutFormat === 3) {
-                //With type 金額 - AmountMoney
-                service.getMonthlyAttendanceItemByAtr(MonthlyAttendanceItemAtr.AMOUNT).done((lstAtdItem) => {
-                    service.getOptItemByAtr(MonthlyAttendanceItemAtr.AMOUNT).done((lstOptItem) => {
-                        for (let i = 0; i < lstOptItem.length; i++) {
-                            lstAtdItem.push(lstOptItem[i]);
-                        }
-                        dfd.resolve(lstAtdItem);
-                    });
-                });
-            }
-            return dfd.promise();
+            return operationName;
         }
 
         //check list output when start page
@@ -376,9 +223,9 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             if (self.listStandardImportSetting().length == 0) {
                 self.registerMode();
             } else {
-                if (!self.selectedCode()) {
-                    self.selectedCode(self.listStandardImportSetting()[0].cd());
-                    self.updateMode(self.listStandardImportSetting()[0].cd());
+                if (!self.selectedLayoutId()) {
+                    self.selectedLayoutId(self.listStandardImportSetting()[0].layoutId);
+                    self.updateMode(self.listStandardImportSetting()[0].layoutId);
                 }
             }
         }
@@ -386,31 +233,6 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         updateMode(code: string) {
             let self = this;
 
-            for (var i = self.outputItem().length; i < 10; i++) {
-                self.outputItem.push(new OutputItemData(i + 1,
-                    null,
-                    false,
-                    '',
-                    0,
-                    '',
-                    i == 0?true:(i==1?true:false) //set is 36協定時間 if it's fist OutputItem
-                ));
-            }
-            self.outputItem()[0].outputTargetItem(self.rule36CalculationName);
-            self.outputItem()[1].outputTargetItem(self.rule36CalculationAverageName);
-            if (code) {
-                let selectedIndex = _.findIndex(self.listStandardImportSetting(), (obj) => { return obj.cd() == code; });
-
-                self.isNewMode(false);
-                if (selectedIndex > -1) {
-                    self.currentSetOutputSettingCode(self.listStandardImportSetting()[selectedIndex]);
-                    self.selectedPrintForm(self.currentSetOutputSettingCode().printForm());
-                    $('#B3_3').focus();
-                } else {
-                    $('#B3_2').focus();
-                    self.selectedCode('');
-                }
-            }
 
         }
 
@@ -419,21 +241,13 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             let self = this;
 
             self.isNewMode(true);
-            self.currentSetOutputSettingCode(new SetOutputSettingCode(null));
-            self.selectedPrintForm(0);
-            self.selectedCode('');
+            self.currentSetOutputSettingCode(new SetOutputItemOfAnnualWorkSchDto(null));
+            // self.selectedPrintForm(0);
+            self.selectedLayoutId('');
             for (var i = 0; i < self.outputItem().length; i++) {
-                self.outputItem()[i].updateData(i + 1,
-                    null,
-                    false,
-                    (i == 0) ? self.rule36CalculationName : ((i == 1) ? self.rule36CalculationAverageName:''),
-                    0,
-                    '',
-                    i == 0?true:(i==1?true:false), //set is 36協定時間 if it's fist OutputItem
-                    null);
+                // TODO
             }
-            self.outputItem()[0].outputTargetItem(self.rule36CalculationName);
-            self.outputItem()[1].outputTargetItem(self.rule36CalculationAverageName);
+
             $("#B3_2").focus();
         }
 
@@ -472,38 +286,29 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             //insert item 36
             if (itemOutByName[0].listOperationSetting().length == 0) {
                 itemOutByName[0].listOperationSetting.push(
-                    new OperationCondition(
-                        202, //attendanceItemId
-                        1, // operation
+                    new CalculationFormulaOfItem(
+                        202,    //attendanceItemId
+                        1,      // operation
                         getText('KWR008_71')
                     )
                 );
             }
             if (itemOutByName[1].listOperationSetting().length == 0) {
                 itemOutByName[1].listOperationSetting.push(
-                    new OperationCondition(
-                        202, //attendanceItemId
-                        1, // operation
+                    new CalculationFormulaOfItem(
+                        202,    //attendanceItemId
+                        1,      // operation
                         getText('KWR008_70')
                     )
                 );
             }
-            if(self.selectedPrintForm()==0){
-                self.currentSetOutputSettingCode().outNumExceedTime36Agr(false);
-            }
             self.currentSetOutputSettingCode().printForm(self.selectedPrintForm());
             self.currentSetOutputSettingCode().buildListItemOutput(ko.toJS(itemOutByName));
-            let data: model.OutputSettingCodeDto = ko.toJS(self.currentSetOutputSettingCode);
+            let data: model.SetOutputItemOfAnnualWorkSchDto = ko.toJS(self.currentSetOutputSettingCode);
 
             if (self.isNewMode()) { //register
                 service.registerOutputItemSetting(data).done(() => {
-                    self.currentSetOutputSettingCode().displayCode = self.currentSetOutputSettingCode().cd();
-                    self.currentSetOutputSettingCode().displayName = self.currentSetOutputSettingCode().name();
-                    self.listStandardImportSetting.push(self.currentSetOutputSettingCode());
-                    self.listStandardImportSetting_Sort();
-                    info({ messageId: 'Msg_15' }).then(() => {
-                        self.selectedCode(self.currentSetOutputSettingCode().cd());
-                    });
+                   
                 }).fail(err => {
                     alertError({ messageId: err.messageId });
                 }).always(function() {
@@ -511,18 +316,9 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 });
             } else { //update
                 service.updateOutputItemSetting(data).done(() => {
-                    let selectedIndex = _.findIndex(self.listStandardImportSetting(), (obj) => { return obj.cd() == self.selectedCode(); });
-                    if (selectedIndex > -1) {
-                        if (self.currentSetOutputSettingCode().displayName == self.currentSetOutputSettingCode().name()) {
-                            self.currentSetOutputSettingCode().displayName = self.currentSetOutputSettingCode().displayName + " ";
-                            self.listStandardImportSetting.replace(self.listStandardImportSetting()[selectedIndex], self.currentSetOutputSettingCode());
-                        }
-                        self.currentSetOutputSettingCode().displayName = self.currentSetOutputSettingCode().name();
-                        self.listStandardImportSetting.replace(self.listStandardImportSetting()[selectedIndex], self.currentSetOutputSettingCode());
-                    }
+                    
                     info({ messageId: 'Msg_15' }).then(() => {
-                        self.selectedCode('');
-                        self.selectedCode(data.cd);
+                        self.selectedLayoutId(data.layoutId);
                         $('#B3_3').focus();
                     });
                 }).fail(err => {
@@ -533,30 +329,30 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             }
         }
 
-        isValidate(itemOut) {
-            let itemOutUseClass: any = _.filter(itemOut, v => { return v.useClass(); });
+        isValidate(itemOut: ItemsOutputToBookTable[]) {
+            let itemOutUseClass: any = _.filter(itemOut, (v: ItemsOutputToBookTable) => { return v.useClass(); });
             return itemOutUseClass.length > 0;
         }
 
         //do delete
         doDelete() {
-            var self = this;
+            const vm = this;
             confirm({ messageId: 'Msg_18' }).ifYes(() => {
 
-                let selectedIndex = _.findIndex(self.listStandardImportSetting(), (obj) => { return obj.cd() == self.selectedCode(); });
+                let selectedIndex = _.findIndex(vm.listStandardImportSetting(), (obj) => { return obj.layoutId == vm.selectedLayoutId(); });
 
-                let data = ko.toJS(self.listStandardImportSetting()[selectedIndex]);
-                self.listStandardImportSetting.remove(item => { return item.cd() == data.cd; });
+                let data = ko.toJS(vm.listStandardImportSetting()[selectedIndex]);
+                vm.listStandardImportSetting.remove((item: any) => { return item.settingId() == data.settingId; });
                 // send request remove item
                 service.deleteOutputItemSetting(data).done(() => {
                     info({ messageId: 'Msg_16' }).then(() => {
-                        if (self.listStandardImportSetting().length == 0) {
-                            self.selectedCode('');
+                        if (vm.listStandardImportSetting().length == 0) {
+                            vm.selectedLayoutId('');
                         } else {
-                            if (selectedIndex >= self.listStandardImportSetting().length) {
-                                self.selectedCode(self.listStandardImportSetting()[self.listStandardImportSetting().length - 1].cd());
+                            if (selectedIndex >= vm.listStandardImportSetting().length) {
+                                vm.selectedLayoutId(vm.listStandardImportSetting()[vm.listStandardImportSetting().length - 1].layoutId);
                             } else {
-                                self.selectedCode(self.listStandardImportSetting()[selectedIndex].cd());
+                                vm.selectedLayoutId(vm.listStandardImportSetting()[selectedIndex].layoutId);
                             }
                         }
                     });
@@ -568,14 +364,85 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         //cancel register
         doCancel() {
             let self = this;
-            setShared("KWR008_B_Result", { selectedCd: self.selectedCode() });
+            setShared("KWR008_B_Result", { selectedCd: self.selectedLayoutId() });
             nts.uk.ui.windows.close();
+        }
+
+        openCopyDialogC() {
+            const self = this;
+            const param = {
+                selectCode: self.currentSetOutputSettingCode().cd(),
+                selectName: self.currentSetOutputSettingCode().name()
+            };
+            nts.uk.ui.windows.setShared("KWR008CParam", param);
+            nts.uk.ui.windows.sub.modal("at", "/view/kwr/008/c/index.xhtml").onClosed(() => {
+               // TODO
+            });
+        }
+
+        private getAtdItemsByDisplayFormat(displayFormat: number) {
+            const self = this;
+            const dfd = $.Deferred();
+            service.getAtdItemsByDisplayFormat(displayFormat).done((result) => {
+                self.attendanceItem = result;
+                dfd.resolve();
+            });
+            return dfd.promise();
+        }
+
+        openKDL048Dialog(dataNode: ItemsOutputToBookTable) {
+            const vm = this;
+            let attendanceItemTransfer: share.model.AttendanceItemShare = new share.model.AttendanceItemShare();
+            // タイトル行.出力項目コード = B3_2
+            attendanceItemTransfer.titleLine.layoutCode = vm.currentSetOutputSettingCode().cd();
+            // タイトル行.出力項目名 = B3_3
+            attendanceItemTransfer.titleLine.layoutName = vm.currentSetOutputSettingCode().name();
+            attendanceItemTransfer.titleLine.displayFlag = true;
+            
+            // 項目名行.名称 = B4_14
+            attendanceItemTransfer.itemNameLine.name = dataNode.headingName();
+            // 属性.選択済み = B4_16
+            attendanceItemTransfer.attribute.selected = Number(dataNode.valOutFormat());
+            attendanceItemTransfer.itemNameLine.displayFlag = true;
+            attendanceItemTransfer.itemNameLine.displayInputCategory = 2;
+            attendanceItemTransfer.columnIndex = 0;
+            attendanceItemTransfer.exportAtr = 0;
+            attendanceItemTransfer.attribute.attributeList = _.map(vm.valOutFormat(), (item) => new model.AttendaceType(item.code, item.name));
+
+            let selectedLst: any[] = [];
+            if (!!dataNode.calculationExpression()) {
+                // TODO filter lst add and substract
+                // selectedLst = _.map(dataNode.outputTargetItem().itemsForAdd(), (item) => new share.model.SelectedTimeItem({
+                //     itemId: item.toString(),
+                //     operator: '+'
+                // }));
+                // selectedLst.push(_.map(dataNode.outputTargetItem().itemsForSubtract(), (item) => new share.model.SelectedTimeItem({
+                //     itemId: item.toString(),
+                //     operator: '-'
+                // })));
+            }
+            attendanceItemTransfer.selectedTimeList = selectedLst;
+            let atdCanUsed = _.map(vm.attendanceItem, (mapItem: share.model.AttendanceItemDto) => new share.model.AtdItemKDL048Model({
+                                    id: mapItem.attendanceItemId,
+                                    name: mapItem.attendanceItemName,
+                                    attendanceAtr: mapItem.attendanceAtr,
+                                    indicatesNumber: mapItem.displayNumbers
+                                }));
+            attendanceItemTransfer.diligenceProjectList = atdCanUsed;
+            setShared('attendanceItem', attendanceItemTransfer, true);
+
+            nts.uk.ui.windows.sub.modal("at", "/view/kdl/048/index.xhtml").onClosed(() => {
+                // TODO
+             });
         }
     }
 
-    export class OperationCondition {
+    export class CalculationFormulaOfItem {
+        /** 勤怠項目. */
         attendanceItemId: KnockoutObservable<number> = ko.observable(null);
+        /** オペレーション. */
         operation: KnockoutObservable<number> = ko.observable(0); //0: '-'; 1: '+'
+        /** Attendance name */
         name: KnockoutObservable<string> = ko.observable('');
         constructor(attendanceItemId: number, operation: number, name: string) {
             let self = this;
@@ -584,52 +451,64 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             self.name(name || '');
         }
     }
-    export class OutputItemData {
+
+    export class ItemsOutputToBookTable {
+        /** 並び順. */
         sortBy: KnockoutObservable<number> = ko.observable(1);
-        cd: KnockoutObservable<string> = ko.observable('');
+        /** コード. */
+        itemOutCd: KnockoutObservable<string> = ko.observable('');
+        /** 使用区分 */
         useClass: KnockoutObservable<boolean> = ko.observable(false);
+        /** 見出し名称. */
         headingName: KnockoutObservable<string> = ko.observable('');
+        /** 値の出力形式 */
         valOutFormat: KnockoutObservable<number> = ko.observable(0);
-        outputTargetItem: KnockoutObservable<string> = ko.observable('');
-        item36AgreementTime: KnockoutObservable<boolean> = ko.observable(false);
-        listOperationSetting: KnockoutObservableArray<OperationCondition> = ko.observableArray([]);
-        constructor(sortBy: number, cd: string, useClass: boolean, headingName: string, valOutFormat: number, outputTargetItem: string, item36AgreementTime: boolean) {
+        /** 出力対象項目 */
+        listOperationSetting: KnockoutObservableArray<CalculationFormulaOfItem> = ko.observableArray([]);
+        /**  */
+        calculationExpression: KnockoutObservable<string> = ko.observable('');
+        constructor(sortBy: number
+                  , itemOutCd: string
+                  , useClass: boolean
+                  , headingName: string
+                  , valOutFormat: number) {
             let self = this;
             self.valOutFormat.subscribe((data) => {
-                self.buildListOperationSetting([]);
+                self.buildOutputTargetItem([]);
                 if (self.sortBy() > 1) {
-                    self.outputTargetItem('');
+                    self.calculationExpression('');
                 }
             });
             self.sortBy(sortBy || 1);
-            self.cd(cd);
-            self.useClass(useClass || false);
-            self.headingName(headingName || '');
+            self.headingName(headingName);
+            self.useClass(useClass);
+            self.itemOutCd(itemOutCd || '');
             self.valOutFormat(valOutFormat || 0);
-            self.outputTargetItem(outputTargetItem || '');
-            self.item36AgreementTime(item36AgreementTime || false);
         }
 
-        updateData(sortBy: number, cd: string, useClass: boolean, headingName: string, valOutFormat: number, outputTargetItem: string, item36AgreementTime: boolean, listOperationSetting: KnockoutObservableArray<OperationCondition>) {
+        updateData(sortBy: number
+                 , itemOutCd: string
+                 , useClass: boolean
+                 , headingName: string
+                 , valOutFormat: number
+                 , listOperationSetting: CalculationFormulaOfItem[]) {
             let self = this;
             self.sortBy(sortBy || 1);
-            self.cd(cd);
+            self.itemOutCd(itemOutCd || '');
             self.useClass(useClass || false);
             self.headingName(headingName || '');
             self.valOutFormat(valOutFormat || 0);
-            self.outputTargetItem(outputTargetItem || '');
-            self.item36AgreementTime(item36AgreementTime || false);
             self.listOperationSetting(listOperationSetting ? listOperationSetting : []);
         }
 
-        buildListOperationSetting(listOperation: Array<any>) {
+        buildOutputTargetItem(listOperationSetting: any[]) {
             let self = this;
-            if (listOperation && listOperation.length > 0) {
-                for (var i = 0; i < listOperation.length; i++) {
-                    self.listOperationSetting.push(new OperationCondition(
-                        listOperation[i].attendanceItemId,
-                        listOperation[i].operation,
-                        listOperation[i].name));
+            if (listOperationSetting && listOperationSetting.length > 0) {
+                for (var i = 0; i < listOperationSetting.length; i++) {
+                    self.listOperationSetting.push(new CalculationFormulaOfItem(
+                        listOperationSetting[i].attendanceItemId,
+                        listOperationSetting[i].operation,
+                        listOperationSetting[i].name));
                 }
             } else {
                 self.listOperationSetting([]);
@@ -637,55 +516,59 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         }
     }
 
-    export class SetOutputSettingCode {
+    export class SetOutputItemOfAnnualWorkSchDto {
+        layoutId: string;
+        settingType: number;
         cd: KnockoutObservable<string> = ko.observable('');
         displayCode: string;
         name: KnockoutObservable<string> = ko.observable('');
         displayName: string;
         outNumExceedTime36Agr: KnockoutObservable<boolean> = ko.observable(false);
         monthsInTotalDisplay: KnockoutObservable<number> = ko.observable(0);
-        listItemOutput: KnockoutObservableArray<OutputItemData> = ko.observableArray([]);
+        listItemsOutput: KnockoutObservableArray<ItemsOutputToBookTable> = ko.observableArray([]);
         printForm: KnockoutObservable<number> = ko.observable(0);
         
         totalAverageDisplay: KnockoutObservable<string> = ko.observable('1');
         multiMonthDisplay: KnockoutObservable<boolean> = ko.observable(false);
-        
-        constructor(param) {
+
+        constructor(param: any) {
             let self = this;
-            self.cd(param ? param.cd || '' : '');
-            self.displayCode = self.cd();
-            self.name(param ? param.name || '' : '');
-            self.displayName = self.name();
-            self.outNumExceedTime36Agr(param ? param.outNumExceedTime36Agr || false : false);
-            self.monthsInTotalDisplay(param ? param.monthsInTotalDisplay || 1 : 1);
-            self.printForm(param ? param.printForm || 0 : 0);
-            self.printForm.subscribe(data => {
-                self.printForm(data);
-            });     
-            self.totalAverageDisplay(param ? param.totalAverageDisplay || '1' : '1');
-            self.multiMonthDisplay(param ? param.multiMonthDisplay : false);
+            if (param) {
+                self.layoutId = param.layoutId || '';
+                self.settingType = param.settingType || 0;
+                self.cd(param.cd || '');
+                self.displayCode = self.cd();
+                self.name(param.name || '');
+                self.displayName = self.name();
+                self.outNumExceedTime36Agr(param.outNumExceedTime36Agr || false);
+                self.monthsInTotalDisplay(param.monthsInTotalDisplay || false);
+                self.printForm(param.printForm || 0);
+                self.printForm.subscribe(data => {
+                    self.printForm(data);
+                });
+                self.totalAverageDisplay(param ? param.totalAverageDisplay || '1' : '1');
+                self.multiMonthDisplay(param ? param.multiMonthDisplay : false);
+            }
         }
 
         buildListItemOutput(listItemOutput: Array<any>) {
             let self = this;
             if (listItemOutput && listItemOutput.length > 0) {
-                self.listItemOutput([]);
+                self.listItemsOutput([]);
                 for (var i = 0; i < listItemOutput.length; i++) {
-                    var outputItemData = new OutputItemData(
+                    var outputItemData = new ItemsOutputToBookTable(
                         i + 1,
                         listItemOutput[i].cd,
                         listItemOutput[i].useClass,
                         listItemOutput[i].headingName,
-                        listItemOutput[i].valOutFormat,
-                        listItemOutput[i].outputTargetItem,
-                        listItemOutput[i].item36AgreementTime);
-                    if (listItemOutput[i].listOperationSetting) {
-                        outputItemData.buildListOperationSetting(listItemOutput[i].listOperationSetting);
+                        listItemOutput[i].valOutFormat);
+                    if (listItemOutput[i].outputTargetItem) {
+                        outputItemData.buildOutputTargetItem(listItemOutput[i].outputTargetItem);
                     }
-                    self.listItemOutput.push(outputItemData);
+                    self.listItemsOutput.push(outputItemData);
                 }
             } else {
-                self.listItemOutput([]);
+                self.listItemsOutput([]);
             }
         }
     }

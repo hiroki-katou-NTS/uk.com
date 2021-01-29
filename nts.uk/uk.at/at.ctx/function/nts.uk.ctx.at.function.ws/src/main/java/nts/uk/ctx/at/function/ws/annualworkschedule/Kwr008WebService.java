@@ -12,23 +12,21 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.function.app.command.annualworkschedule.AddSetOutItemsWoScCommandHandler;
-import nts.uk.ctx.at.function.app.command.annualworkschedule.RemoveSetOutItemsWoScCommandHandler;
 import nts.uk.ctx.at.function.app.command.annualworkschedule.SetOutItemsWoScCommand;
-import nts.uk.ctx.at.function.app.command.annualworkschedule.UpdateSetOutItemsWoScCommandHandler;
 import nts.uk.ctx.at.function.app.export.annualworkschedule.AnnualWorkScheduleExportQuery;
 import nts.uk.ctx.at.function.app.export.annualworkschedule.AnnualWorkScheduleExportService;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.ItemOutTblBookDto;
-import nts.uk.ctx.at.function.app.find.annualworkschedule.ItemOutTblBookFinder;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.PeriodDto;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.PeriodFinder;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.RoleWhetherLoginDto;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.RoleWhetherLoginFinder;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.SetOutItemsWoScDto;
-import nts.uk.ctx.at.function.app.find.annualworkschedule.SetOutItemsWoScFinder;
+import nts.uk.ctx.at.function.app.find.annualworkschedule.SetOutputItemOfAnnualWorkSchDto;
+import nts.uk.ctx.at.function.app.find.annualworkschedule.SettingOutputItemOfAnnualWorkScheduleFinder;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.OutputAgreementTime;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.PageBreakIndicator;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.ValueOuputFormat;
+import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemDto;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 /**
@@ -41,26 +39,8 @@ public class Kwr008WebService extends WebService {
 	@Inject
 	private I18NResourcesForUK i18n;
 
-	// @Inject
-	// private PermissionOfEmploymentFinder permissionOfEmploymentFinder;
-
 	@Inject
 	private PeriodFinder periodFinder;
-
-	@Inject
-	private SetOutItemsWoScFinder outputItemSetting; 
-	
-	@Inject
-	private RemoveSetOutItemsWoScCommandHandler rmOutputItemSetting;
-	
-	@Inject
-	private AddSetOutItemsWoScCommandHandler addOutputItemSetting;
-	
-	@Inject
-	private UpdateSetOutItemsWoScCommandHandler updateOutputItemSetting;
-	
-	@Inject
-	private ItemOutTblBookFinder listItemOut;
 
 	@Inject
 	private AnnualWorkScheduleExportService serive;
@@ -68,10 +48,12 @@ public class Kwr008WebService extends WebService {
 	@Inject
 	private RoleWhetherLoginFinder roleWhetherLoginFinder;
 
+	@Inject
+	private SettingOutputItemOfAnnualWorkScheduleFinder settingFinder;
+
 	@POST
 	@Path("getCurrentLoginerRole")
 	public RoleWhetherLoginDto getCurrentLoginerRole() {
-		//return this.permissionOfEmploymentFinder.getPermissionOfEmploymentForm();
 		return roleWhetherLoginFinder.getCurrentLoginerRole();
 	}
 
@@ -124,7 +106,8 @@ public class Kwr008WebService extends WebService {
 	@POST
 	@Path("get/outputitemsetting")
 	public List<SetOutItemsWoScDto> getOutputItemSetting(){
-		return outputItemSetting.getAllSetOutItemsWoSc();
+//		return outputItemSetting.getAllSetOutItemsWoSc();
+		return null;
 	}
 
 	@POST
@@ -139,19 +122,19 @@ public class Kwr008WebService extends WebService {
 	@POST
 	@Path("delete/outputitemsetting")
 	public void deleteOutputItemSetting(SetOutItemsWoScCommand command){
-		this.rmOutputItemSetting.handle(command);
+//		this.rmOutputItemSetting.handle(command);
 	}
 	
 	@POST
 	@Path("add/outputitemsetting")
 	public void addOutputItemSetting(SetOutItemsWoScCommand command){
-		this.addOutputItemSetting.handle(command);
+//		this.addOutputItemSetting.handle(command);
 	}
 	
 	@POST
 	@Path("update/outputitemsetting")
 	public void updateOutputItemSetting(SetOutItemsWoScCommand command){
-		this.updateOutputItemSetting.handle(command);
+//		this.updateOutputItemSetting.handle(command);
 	}
 	
 	/**
@@ -160,12 +143,32 @@ public class Kwr008WebService extends WebService {
 	@POST
 	@Path("get/listItemOutput/{setOutCd}")
 	public List<ItemOutTblBookDto> listItemOuput(@PathParam("setOutCd") String setOutCd){
-		return this.listItemOut.getItemOutTblBookBySetOutCd(setOutCd);
+//		return this.listItemOut.getItemOutTblBookBySetOutCd(setOutCd);
+		return null;
 	}
 	
 	@POST
-	@Path("checkAverage/{setOutCd}")
-	public Boolean checkAverage(@PathParam("setOutCd") String setOutCd){
-		return outputItemSetting.checkAverage(setOutCd);
+	@Path("checkAverage/{layoutId}")
+	public Boolean checkAverage(@PathParam("layoutId") String layoutId) {
+		return this.settingFinder.checkAverage(layoutId);
+	}
+	
+	@POST
+	@Path("/findAll/{settingType}/{printForm}")
+	public List<SetOutputItemOfAnnualWorkSchDto> findAll(@PathParam("settingType") int settingType
+													   , @PathParam("printForm") int printForm) {
+		return this.settingFinder.getAllAnnualSetting(settingType, printForm);
+	}
+	
+	@POST
+	@Path("/findByLayoutId/{settingId}")
+	public SetOutputItemOfAnnualWorkSchDto findByLayoutId(@PathParam("layoutId") String layoutId) {
+		return this.settingFinder.findByLayoutId(layoutId);
+	}
+	
+	@POST
+	@Path("/getAtdItemsByDisplayFormat/{displayFormat}")
+	public List<AttendanceItemDto> getAtdItemsByDisplayFormat(@PathParam("displayFormat") int displayFormat) {
+		return this.settingFinder.getAtdItemsByType(displayFormat);
 	}
 }

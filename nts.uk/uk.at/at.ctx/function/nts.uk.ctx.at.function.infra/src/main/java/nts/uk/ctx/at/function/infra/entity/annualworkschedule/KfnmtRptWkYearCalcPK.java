@@ -11,42 +11,30 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
-* 項目の算出式: 主キー情報
-*/
+ * KFNMT_RPT_WK_YEAR_CALC id
+ * 
+ * @author LienPTK
+ */
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class KfnrtCalcFormulaItemPk implements Serializable
-{
+public class KfnmtRptWkYearCalcPK implements Serializable {
+	
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-	
-	/**
-	* 会社ID
-	*/
+
+	/** 項目設定ID */
 	@Basic(optional = false)
-	@Column(name = "CID")
-	public String cid;
-	
-	/**
-	* コード
-	*/
-	@Basic(optional = false)
-	@Column(name = "SET_OUT_CD")
-	public String setOutCd;
-	
-	/**
-	* コード
-	*/
+	@Column(name = "LAYOUT_ID")
+	public String layoutId;
+
+	/** コード(非表示) */
 	@Basic(optional = false)
 	@Column(name = "ITEM_OUT_CD")
 	public String itemOutCd;
 	
-	/**
-	* 勤怠項目ID
-	*/
-	@Basic(optional = false)
+	/** 日次の勤怠項目．勤怠項目ID */
 	@Column(name = "ATTENDANCE_ITEM_ID")
-	public int attendanceItemId;
-	
+	public int attandanceItemId;
 }

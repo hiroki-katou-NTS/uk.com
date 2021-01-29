@@ -7,7 +7,8 @@ module nts.uk.at.view.kwr008.a.service{
         checkAverage : "at/function/annualworkschedule/checkAverage/",
         getPageBreakSelection : "at/function/annualworkschedule/get/enum/pagebreak",
         getOutputItemSetting : "at/function/annualworkschedule/get/outputitemsetting",
-        getCurrentLoginerRole: "at/function/annualworkschedule/getCurrentLoginerRole"
+        getCurrentLoginerRole: "at/function/annualworkschedule/getCurrentLoginerRole",
+        findAllBySettingType: "at/function/annualworkschedule/findAll/"
     }
 
     export function getCurrentLoginerRole() : JQueryPromise<any> {
@@ -30,7 +31,11 @@ module nts.uk.at.view.kwr008.a.service{
         return nts.uk.request.ajax(paths.getCurentMonth);
     }
     
-    export function checkAverage(code: any): JQueryPromise<any>{
-        return nts.uk.request.ajax(paths.checkAverage + code);
+    export function checkAverage(settingId: any): JQueryPromise<any>{
+        return nts.uk.request.ajax(paths.checkAverage + settingId);
+    }
+
+    export function findAllBySettingType(settingType: number, printForm: number): JQueryPromise<Array<share.SetOutputItemOfAnnualWorkSchDto>> {
+        return nts.uk.request.ajax(paths.findAllBySettingType + settingType + '/' + printForm);
     }
 }

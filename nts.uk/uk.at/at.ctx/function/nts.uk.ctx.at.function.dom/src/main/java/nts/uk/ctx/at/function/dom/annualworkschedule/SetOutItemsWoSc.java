@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.AnnualWorkSheetPrintingForm;
@@ -16,6 +17,7 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.OutItemsWoSc
 * 年間勤務表（36チェックリスト）の出力項目設定
 */
 @Getter
+@NoArgsConstructor
 public class SetOutItemsWoSc extends AggregateRoot {
 	/**
 	* 会社ID

@@ -1507,4 +1507,7 @@ public class ProgramIdConsts {
 	 */
 	public static final String KNR001A = "KNR001A";
 	public static final String CDL010A = "CDL010A";
+
+	/** KWR008C */
+	public static final String KWR008C = "KWR008C";
 }

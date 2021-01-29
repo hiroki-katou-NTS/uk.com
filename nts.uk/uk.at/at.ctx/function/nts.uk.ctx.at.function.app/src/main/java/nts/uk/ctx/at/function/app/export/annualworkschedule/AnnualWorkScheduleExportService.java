@@ -65,7 +65,6 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.export.ExportData;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.ExportItem;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.HeaderData;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.PrintFormat;
-import nts.uk.ctx.at.function.dom.annualworkschedule.repository.SetOutItemsWoScRepository;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.record.dom.workrecord.export.WorkRecordExport;
@@ -91,10 +90,6 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 	private AnnualWorkScheduleGenerator generator;
 	@Inject
 	private AgreementOperationSettingAdapter agreementOperationSettingAdapter;
-
-	// move JpaAnnualWorkScheduleRepository class to here
-	@Inject
-	private SetOutItemsWoScRepository setOutItemsWoScRepository;
 	@Inject
 	private MonthlyAttendanceItemAdapter monthlyAttendanceItemAdapter;
 	@Inject
@@ -231,7 +226,8 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		ExportData exportData = new ExportData();
 		YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(nts.arc.time.YearMonth.of(startYm.getYear(), startYm.getMonthValue()), nts.arc.time.YearMonth.of(endYm.getYear(), endYm.getMonthValue()));
 		// ドメインモデル「年間勤務表（36チェックリスト）の出力項目設定」を取得する
-		SetOutItemsWoSc setOutItemsWoSc = setOutItemsWoScRepository.getSetOutItemsWoScById(cid, setItemsOutputCd).get();
+//		SetOutItemsWoSc setOutItemsWoSc = setOutItemsWoScRepository.getSetOutItemsWoScById(cid, setItemsOutputCd).get();
+		SetOutItemsWoSc setOutItemsWoSc = new SetOutItemsWoSc();
 		// 帳表出力前チェックをする
 		this.checkBeforOutput(startYm, endYm, employees, setOutItemsWoSc, printFormat);
 		// ユーザ固有情報「年間勤務表（36チェックリスト）」を更新する -> client

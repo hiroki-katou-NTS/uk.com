@@ -11,35 +11,25 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
-* 帳表に出力する項目: 主キー情報
-*/
+ * 帳表に出力する項目: 主キー情報
+ * 
+ * @author LienPTK
+ */
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class KfnrtItemOutTblBookPk implements Serializable
-{
+public class KfnmtRptWkYearItemPK implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
-	/**
-	* 会社ID
-	*/
+
+	/** 項目設定ID */
 	@Basic(optional = false)
-	@Column(name = "CID")
-	public String cid;
-	
-	/**
-	* コード
-	*/
+	@Column(name = "LAYOUT_ID")
+	public String layoutId;
+
+	/** コード(非表示) */
 	@Basic(optional = false)
-	@Column(name = "SET_OUT_CD")
-	public String setOutCd;
-	
-	/**
-	* コード
-	*/
-	@Basic(optional = false)
-	@Column(name = "CD")
-	public String cd;
-	
+	@Column(name = "ITEM_OUT_CD")
+	public String itemOutCd;
+
 }
