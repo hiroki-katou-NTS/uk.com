@@ -17,8 +17,5 @@ public class DisplayFlexBasicSettingByEmploymentDto {
 	// 雇用を選択する
 	EmpFlexMonthActCalSetDto flexMonthActCalSet;
 	
-	// 会社別フレックス勤務集計方法
-	GetFlexPredWorkTimeDto flexPredWorkTime;
-	
 	ComFlexMonthActCalSetDto comFlexMonthActCalSet;
 }
