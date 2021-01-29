@@ -211,7 +211,7 @@ public class RegulationInfoEmployeeFinder {
 
 		// filter by closure id
 		sIds = this.filterByClosure(query, sIds);
-		List<String> sIdsAfterFilter = this.removeEmp(sIds, query.getReferenceDate(), query.isEmployeesDoNotManageSchedules());
+		List<String> sIdsAfterFilter = query.getSystemType() == CCG001SystemType.EMPLOYMENT.value ? this.removeEmp(sIds, query.getReferenceDate(), query.isEmployeesDoNotManageSchedules()) : sIds ;
 		return getEmployeeInfo(sIdsAfterFilter, query.getReferenceDate());
 	}
 
@@ -226,7 +226,7 @@ public class RegulationInfoEmployeeFinder {
 
 		// filter by closure id
 		sIds = this.filterByClosure(query, sIds);
-		List<String> sIdsAfterFilter = this.removeEmp(sIds, query.getReferenceDate(), query.isEmployeesDoNotManageSchedules());
+		List<String> sIdsAfterFilter = query.getSystemType() == CCG001SystemType.EMPLOYMENT.value ? this.removeEmp(sIds, query.getReferenceDate(), query.isEmployeesDoNotManageSchedules()) : sIds ;
 		return getEmployeeInfo(sIdsAfterFilter, query.getReferenceDate());
 	}
 
@@ -241,7 +241,7 @@ public class RegulationInfoEmployeeFinder {
 
 		// filter by closure id
 		sIds = this.filterByClosure(query, sIds);
-		List<String> sIdsAfterFilter = this.removeEmp(sIds, query.getReferenceDate(), query.isEmployeesDoNotManageSchedules());
+		List<String> sIdsAfterFilter = query.getSystemType() == CCG001SystemType.EMPLOYMENT.value ? this.removeEmp(sIds, query.getReferenceDate(), query.isEmployeesDoNotManageSchedules()) : sIds ;
 		return getEmployeeInfo(sIdsAfterFilter, query.getReferenceDate());
 	}
 
@@ -256,7 +256,7 @@ public class RegulationInfoEmployeeFinder {
 
 		// filter by closure id
 		sIds = this.filterByClosure(query, sIds);
-		List<String> sIdsAfterFilter = this.removeEmp(sIds, query.getReferenceDate(), query.isEmployeesDoNotManageSchedules());
+		List<String> sIdsAfterFilter = query.getSystemType() == CCG001SystemType.EMPLOYMENT.value ? this.removeEmp(sIds, query.getReferenceDate(), query.isEmployeesDoNotManageSchedules()) : sIds ;
 		return getEmployeeInfo(sIdsAfterFilter, query.getReferenceDate());
 	}
 
