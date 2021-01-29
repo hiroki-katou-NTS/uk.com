@@ -40,8 +40,7 @@ public class SpecifyAuthInquiryRepositoryImpl extends JpaRepository implements S
 		this.insert(domain);
 	}
 
-	@Override
-	public void delete(SpecifyAuthInquiry domain) {
+	private void delete(SpecifyAuthInquiry domain) {
 		List<SpecifyAuthInquiryEntity> entities = this.toEntity(domain);
 		List<SpecifyAuthInquiryEntityPK> primaryKeys = entities.stream()
 				.map(mapper -> mapper.getPk())

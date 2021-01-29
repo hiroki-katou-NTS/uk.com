@@ -48,6 +48,9 @@ public class EmployeeWorkInformationDto {
 	private List<EmployeeDailyPerErrorDto> employeeDailyPerErrorDtos;
 	
 	public static DailyWorkDto dailyWorkToDto (DailyWork domain) {
+		if(domain == null) {
+			return DailyWorkDto.builder().build();
+		}
 		return DailyWorkDto.builder()
 				.workTypeUnit(domain.getWorkTypeUnit().value)
 				.oneDay(domain.getOneDay().value)

@@ -23,7 +23,9 @@ public class PersonalInfomationDomainServiceTest {
 	@Injectable
 	private Require require;
 
-	// Map<String, WorkplaceInforImport> not empty
+	/**
+	 * 職場情報 not empty
+	 */
 	@Test
 	public void getPersonalInfomationTest1() {
 		//given
@@ -99,7 +101,9 @@ public class PersonalInfomationDomainServiceTest {
 		assertThat(result).isNotEmpty();
 	}
 
-	// Map<String, WorkplaceInforImport> empty
+	/**
+	 * 職場情報 empty
+	 */
 	@Test
 	public void getPersonalInfomationTest2() {
 		//given

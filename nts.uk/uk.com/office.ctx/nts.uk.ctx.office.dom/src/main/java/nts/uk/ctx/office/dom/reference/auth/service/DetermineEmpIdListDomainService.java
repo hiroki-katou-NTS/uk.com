@@ -12,6 +12,7 @@ import nts.uk.ctx.office.dom.reference.auth.SpecifyAuthInquiry;
 
 /*
  * Domain service 社員IDリストから参照できるか判断する
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.オフィス支援.在席照会.参照権限.社員IDリストから参照できるか判断する
  */
 public class DetermineEmpIdListDomainService {
 

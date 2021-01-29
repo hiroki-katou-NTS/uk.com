@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
@@ -19,40 +18,35 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanc
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.bs.person.dom.person.personal.avatar.AvatarRepository;
 import nts.uk.ctx.bs.person.dom.person.personal.avatar.UserAvatar;
 import nts.uk.ctx.health.dom.emoji.employee.EmployeeEmojiState;
 import nts.uk.ctx.health.dom.emoji.employee.EmployeeEmojiStateRepository;
-import nts.uk.ctx.office.dom.dto.DailyWorkDto;
 import nts.uk.ctx.office.dom.dto.EmployeeDailyPerErrorDto;
-import nts.uk.ctx.office.dom.dto.TimeLeavingOfDailyPerformanceDto;
-import nts.uk.ctx.office.dom.dto.WorkInfoOfDailyPerformanceDto;
 import nts.uk.ctx.office.dom.dto.WorkTypeDto;
 import nts.uk.ctx.office.dom.goout.GoOutEmployeeInformation;
 import nts.uk.ctx.office.dom.goout.GoOutEmployeeInformationRepository;
-import nts.uk.ctx.office.dom.status.ActivityStatus;
 import nts.uk.ctx.office.dom.status.ActivityStatusRepository;
+import nts.uk.ctx.office.dom.status.adapter.AttendanceAdapter;
+import nts.uk.ctx.office.dom.status.service.AttendanceAccordActualData;
 import nts.uk.ctx.office.dom.status.service.AttendanceStatusJudgmentService;
 import nts.uk.ctx.office.dom.status.service.AttendanceStatusJudgmentServiceRequireImpl;
 import nts.uk.query.pub.ccg005.comment.CommentQueryExport;
 import nts.uk.query.pub.ccg005.comment.CommentQueryPub;
-import nts.uk.query.pub.ccg005.work.information.dto.EmployeeDailyPerErrorExport;
-import nts.uk.query.pub.ccg005.work.information.dto.TimeLeavingOfDailyPerformanceExport;
-import nts.uk.query.pub.ccg005.work.information.dto.WorkInfoOfDailyPerformanceExport;
-import nts.uk.query.pub.ccg005.work.information.dto.WorkTypeExport;
-import nts.uk.query.pub.ccg005.work.information.EmployeeWorkInformationExport;
 import nts.uk.screen.com.app.find.ccg005.attendance.information.dto.ApplicationDto;
 import nts.uk.screen.com.app.find.ccg005.attendance.information.dto.AttendanceDetailDto;
 import nts.uk.screen.com.app.find.ccg005.attendance.information.dto.EmployeeCommentInformationDto;
 import nts.uk.screen.com.app.find.ccg005.attendance.information.dto.EmployeeEmojiStateDto;
 import nts.uk.screen.com.app.find.ccg005.attendance.information.dto.UserAvatarDto;
 import nts.uk.screen.com.app.find.ccg005.goout.GoOutEmployeeInformationDto;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
 /*
@@ -80,6 +74,9 @@ public class AttendanceInformationScreenQuery {
 	private ApplicationRepository appRepo;
 
 	@Inject
+	private AppOverTimeRepository appOverTimeRepo;
+	
+	@Inject
 	private CommentQueryPub commentQueryQub;
 
 	@Inject
@@ -93,6 +90,9 @@ public class AttendanceInformationScreenQuery {
 
 	@Inject
 	private AvatarRepository avatarRepo;
+	
+	@Inject
+	private AttendanceAdapter attendanceAdapter;
 
 	private List<EmployeeEmojiState> emojiList = Collections.emptyList();
 
@@ -121,18 +121,17 @@ public class AttendanceInformationScreenQuery {
 		allSids.removeAll(subSids); //except「日別実績の勤務情報.社員ID」
 		List<WorkSchedule> workScheduleList = workScheduleRepo.getList(allSids, datePeriod);
 		
-		////////////////
+		// 5: get(ログイン会社ID): List<勤務種類>
+		String loginCid = AppContexts.user().companyId();
+		List<WorkType> workTypeList = workTypeRepo.findByCompanyId(loginCid);
 		
-		// 1: 出退勤・申請情報を取得( 社員ID, 年月日): List<出退勤・申請情報>
-		
-//		List<EmployeeWorkInformationTeporary> workInfoList = workInfoQueryPub.getWorkInformationQuery(sids, baseDate);
-
-		// 2: 在席のステータスの判断(Require, 社員ID, 年月日, 日別実績の勤務情報, 日別実績の出退勤, 勤務種類):
+		// 7 [基準日＝＝システム日] : 在席のステータスの判断(Require, 社員ID): 在席ステータス
 		AttendanceStatusJudgmentServiceRequireImpl rq = new AttendanceStatusJudgmentServiceRequireImpl(
 				goOutRepo,
-				statusRepo);
+				statusRepo,
+				attendanceAdapter);
 
-		// 3: 申請情報を取得する(社員IDリスト, 期間, 反映状態リスト): Map<社員ID、List<申請>>
+		// 8: 申請情報を取得する(社員IDリスト, 期間, 反映状態リスト): Map<社員ID、List<申請>>
 		List<Integer> listReflecInfor = new ArrayList<>();
 		listReflecInfor.add(ReflectedState.REFLECTED.value);
 		listReflecInfor.add(ReflectedState.REMAND.value);
@@ -140,24 +139,33 @@ public class AttendanceInformationScreenQuery {
 		Map<String, List<Application>> mapListApplication = appRepo.getMapListApplicationNew(sids,
 				new DatePeriod(baseDate, baseDate), listReflecInfor);
 
-		// 4: コメントを取得する(社員ID, 年月日): Map<社員ID、社員のコメント情報>
+		// 9: コメントを取得する(社員ID, 年月日): Map<社員ID、社員のコメント情報>
 		Map<String, CommentQueryExport> commentData = commentQueryQub.getComment(sids, baseDate);
 
-		// 5: get(社員IDリスト、年月日): List<社員の外出情報>
+		// 10: get(社員IDリスト、年月日): List<社員の外出情報>
 		List<GoOutEmployeeInformation> goOutList = goOutRepo.getByListSidAndDate(sids, baseDate);
 
-		// 6: [感情状態を利用する＝する]: get(社員IDリスト、年月日): List<社員の感情状態>
+		// 11: [感情状態を利用する＝する]: get(社員IDリスト、年月日): List<社員の感情状態>
 		if (emojiUsage) {
 			emojiList = emojiRepo.getByListSidAndDate(sids, baseDate);
 		}
 
-		// 7: get(個人IDリスト): List<個人の顔写真>
+		// 12: get(個人IDリスト): List<個人の顔写真>
 		List<String> pids = empIds.stream().map(empId -> empId.getPid()).collect(Collectors.toList());
 		List<UserAvatar> avatarList = avatarRepo.getAvatarByPersonalIds(pids);
-
-		// 8: create()
+		
 		return empIds.stream().map(empId -> {
-			// 5: create()
+			
+			// 13:  get(申請IDリスト): List<残業申請>
+			List<Application> applications = mapListApplication.get(empId.getSid());
+			List <String> appIds = applications.stream().map(item -> item.getAppID()).collect(Collectors.toList());
+			List<AppOverTime> listAppOverTime = appOverTimeRepo.getByListAppId(loginCid, appIds);
+			
+			// 14: create()
+			List<ApplicationDto> applicationDtos = applications.stream().map(item -> ApplicationDto.toDto(item, listAppOverTime))
+					.collect(Collectors.toList());
+			
+			// 6: create() - start
 			String sid = empId.getSid();
 			WorkInfoOfDailyPerformance workInfo = workInfoList.stream().filter(wi -> wi.getEmployeeId().equalsIgnoreCase(sid)).findFirst().orElse(null);
 			WorkSchedule workSchedule = workScheduleList.stream().filter(ws -> ws.getEmployeeID().equalsIgnoreCase(sid)).findFirst().orElse(null);
@@ -171,14 +179,14 @@ public class AttendanceInformationScreenQuery {
 			//条件：日別実績の勤務情報.勤務情報.勤務種類コード　＝　「勤務種類」.コード
 			if(workInfo != null) {
 				String workTypeCode = workInfo.getWorkInformation().getRecordInfo().getWorkTypeCode().v();
-//				WorkType workType = workTypeList.stream().filter(wt -> (wt.getWorkTypeCode().v()).equalsIgnoreCase(workTypeCode)).findFirst().orElse(null);
-//				workTypeDto = EmployeeWorkInformationDto.workTypeToDto(workType);
+				WorkType workType = workTypeList.stream().filter(wt -> (wt.getWorkTypeCode().v()).equalsIgnoreCase(workTypeCode)).findFirst().orElse(null);
+				workTypeDto = EmployeeWorkInformationDto.workTypeToDto(workType);
 				
 			//日別実績の勤務情報がない場合：勤務予定.勤務情報.勤務情報.勤務種類コード　＝　「勤務種類」.コード
 			} else {
 				String workTypeCode = workSchedule == null ? null : workSchedule.getWorkInfo().getRecordInfo().getWorkTypeCode().v();
-//				WorkType workType = workTypeList.stream().filter(wt -> (wt.getWorkTypeCode().v()).equalsIgnoreCase(workTypeCode)).findFirst().orElse(null);
-//				workTypeDto = EmployeeWorkInformationDto.workTypeToDto(workType);
+				WorkType workType = workTypeList.stream().filter(wt -> (wt.getWorkTypeCode().v()).equalsIgnoreCase(workTypeCode)).findFirst().orElse(null);
+				workTypeDto = EmployeeWorkInformationDto.workTypeToDto(workType);
 			}
 			
 			EmployeeWorkInformationDto workInformation = EmployeeWorkInformationDto.builder()
@@ -189,134 +197,115 @@ public class AttendanceInformationScreenQuery {
 					.workPerformanceDto(EmployeeWorkInformationDto.workInfoOfDailyPerformanceToDto(workInfo))
 					.employeeDailyPerErrorDtos(employeeDailyErrors)
 					.build();
+			// 6: create() - end
 			
-			//////////
-			// ApplicationDto
-			List<Application> applications = mapListApplication.get(empId.getSid());
-			List<ApplicationDto> applicationDtos = applications.stream().map(item -> ApplicationDto.toDto(item))
-					.collect(Collectors.toList());
+			// 7 [基準日＝＝システム日] : 在席のステータスの判断(Require, 社員ID): 在席ステータス
+			AttendanceAccordActualData activityStatus = null;
+			if (baseDate.equals(GeneralDate.today())) {
+				activityStatus = AttendanceStatusJudgmentService.getActivityStatus(rq, empId.getSid());
+			}
+			
+			// 15: create()
+			// １．勤務区分
+			Integer workDivision = null;
+			if(activityStatus != null) {
+				if (activityStatus.isWorkingNow()) {
+					workDivision = WorkDivision.WORK.value;
+				} else {
+					workDivision = WorkDivision.HOLIDAY.value;
+				}
+			}
+			
+			// 2.勤務色
+			Integer workColor = DisplayColor.ACHIEVEMENT.value;
+			if (baseDate.after(GeneralDate.today())) {
+				workColor = DisplayColor.SCHEDULED.value;
+			}
 
-			// AttendanceDetailDto
-//			Optional<EmployeeWorkInformationExport> workInformation = workInfoList.stream()
-//					.filter(wi -> wi.getSid().equalsIgnoreCase(empId.getSid())).findFirst();
-			AttendanceDetailDto attendanceDetailDto = AttendanceDetailDto.builder().build();
-			ActivityStatusDto activityStatusDto = ActivityStatusDto.builder().build();
-//			workInformation.ifPresent(workInfo -> {
-//				// １．勤務区分
-//				Integer workDivision = null;
-//				List<Integer> notIn = new ArrayList<>();
-//				notIn.add(WorkTypeClassification.Attendance.value);
-//				notIn.add(WorkTypeClassification.HolidayWork.value);
-//				notIn.add(WorkTypeClassification.Shooting.value);
-//				notIn.add(WorkTypeClassification.ContinuousWork.value);
-//
-//				if (workInfo.getWorkTypeDto() == null) {
-//					workDivision = null;
-//				} else if (workInfo.getWorkTypeDto().getDailyWork().getOneDay() != null
-//						&& !notIn.contains(workInfo.getWorkTypeDto().getDailyWork().getOneDay())) {
-//					workDivision = WorkDivision.HOLIDAY.value;
-//				} else {
-//					workDivision = WorkDivision.WORK.value;
-//				}
-//
-//				// 2.勤務色
-//				Integer workColor = DisplayColor.ACHIEVEMENT.value;
-//				if (baseDate.after(GeneralDate.today())) {
-//					workColor = DisplayColor.SCHEDULED.value;
-//				}
-//
-//				// ３．勤務名
-//				String workName = "";
-//				if (workDivision == null) {
-//					workName = "";
-//				} else if (workDivision == WorkDivision.HOLIDAY.value) {
-//					workName = TextResource.localize("CCG005_24");
-//				} else {
-//					workName = workInfo.getWorkTypeDto().getDisplayName();
-//				}
-//
-//				// 4. 開始時刻 AND 開始の色
-//				String checkInTime;
-//				Integer checkInColor;
-//				Integer actualAttendance = workInfo.getTimeLeavingOfDailyPerformanceDto().getAttendanceTime() != null
-//						? workInfo.getTimeLeavingOfDailyPerformanceDto().getAttendanceTime()
-//						: null;
-//				boolean actualStraight = workInfo.getWorkPerformanceDto().getGoStraightAtr() != null
-//						? workInfo.getWorkPerformanceDto().getGoStraightAtr() == 1
-//						: false;
-//				Integer futureAttendance = workInfo.getWorkScheduleDto().getAttendanceTime() != null
-//						? workInfo.getWorkScheduleDto().getAttendanceTime()
-//						: null;
-//				boolean futureStraight = workInfo.getWorkScheduleDto().getGoStraightAtr() != null
-//						? workInfo.getWorkScheduleDto().getGoStraightAtr() == 1
-//						: false;
-//
-//				if (actualAttendance != null) {
-//					checkInTime = actualStraight ? TextResource.localize("CCG005_25") + actualAttendance
-//							: String.valueOf(actualAttendance);
-//					checkInColor = DisplayColor.ACHIEVEMENT.value;
-//				} else {
-//					checkInTime = futureStraight ? TextResource.localize("CCG005_25") + futureAttendance
-//							: String.valueOf(futureAttendance);
-//					checkInColor = DisplayColor.SCHEDULED.value;
-//				}
-//
-//				// ５．終了時刻 AND 終了の色
-//				String checkOutTime;
-//				Integer checkOutColor;
-//				Integer actualLeave = workInfo.getTimeLeavingOfDailyPerformanceDto().getLeaveTime() != null
-//						? workInfo.getTimeLeavingOfDailyPerformanceDto().getLeaveTime()
-//						: null;
-//				boolean actualLeaveStraight = workInfo.getWorkPerformanceDto().getBackStraightAtr() != null
-//						? workInfo.getWorkPerformanceDto().getBackStraightAtr() == 1
-//						: false;
-//				Integer futureLeave = workInfo.getWorkScheduleDto().getLeaveTime() != null
-//						? workInfo.getWorkScheduleDto().getLeaveTime()
-//						: null;
-//				boolean futureLeaveStraight = workInfo.getWorkScheduleDto().getBackStraightAtr() != null
-//						? workInfo.getWorkScheduleDto().getBackStraightAtr() == 1
-//						: false;
-//
-//				if (actualLeave != null) {
-//					checkOutTime = actualLeaveStraight ? TextResource.localize("CCG005_25") + actualLeave
-//							: String.valueOf(actualLeave);
-//					checkOutColor = DisplayColor.ACHIEVEMENT.value;
-//				} else {
-//					checkOutTime = futureLeaveStraight ? TextResource.localize("CCG005_25") + futureLeave
-//							: String.valueOf(futureLeave);
-//					checkOutColor = DisplayColor.SCHEDULED.value;
-//				}
-//
-//				// ６．アラーム色
-//				List<EmployeeDailyPerErrorExport> list007 = workInfo.getEmployeeDailyPerErrorDtos().stream()
-//						.filter(i -> i.getErrorAlarmWorkRecordCode().equalsIgnoreCase("007")).collect(Collectors.toList());
-//				List<EmployeeDailyPerErrorExport> list008 = workInfo.getEmployeeDailyPerErrorDtos().stream()
-//						.filter(i -> i.getErrorAlarmWorkRecordCode().equalsIgnoreCase("008")).collect(Collectors.toList());
-//				if (workInfo.getEmployeeDailyPerErrorDtos().size() > 0 && list007.size() > 0) {
-//					checkInColor = DisplayColor.ALARM.value;
-//				}
-//				if (workInfo.getEmployeeDailyPerErrorDtos().size() > 0 && list008.size() > 0) {
-//					checkOutColor = DisplayColor.ALARM.value;
-//				}
-//				attendanceDetailDto.setWorkColor(workColor);
-//				attendanceDetailDto.setWorkColor(workColor);
-//				attendanceDetailDto.setWorkName(workName);
-//				attendanceDetailDto.setCheckOutColor(checkOutColor);
-//				attendanceDetailDto.setCheckOutTime(checkOutTime);
-//				attendanceDetailDto.setCheckInColor(checkInColor);
-//				attendanceDetailDto.setCheckInTime(checkInTime);
-//				attendanceDetailDto.setWorkDivision(workDivision);
-//				
-//				// 2: 在席のステータスの判断(Require, 社員ID, 年月日, 日別実績の勤務情報, 日別実績の出退勤, 勤務種類):
-//				Optional<ActivityStatus> activityStatus = AttendanceStatusJudgmentService.getActivityStatus(
-//						rq, empId.getSid(), baseDate, 
-//						this.getWorkInfoOfDailyPerformanceDto(workInfo.getWorkPerformanceDto()),
-//						this.getTimeLeavingOfDailyPerformanceDto(workInfo.getTimeLeavingOfDailyPerformanceDto()),
-//						this.getWorkTypeDto(workInfo.getWorkTypeDto())
-//						);
-//				activityStatus.ifPresent(domain -> domain.setMemento(activityStatusDto));
-//			});
+			// ３．勤務名
+			String workName = "";
+			if (workDivision == null) {
+				workName = "";
+			} else if (workDivision == WorkDivision.HOLIDAY.value) {
+				workName = TextResource.localize("CCG005_24");
+			} else {
+				workName = workInformation.getWorkTypeDto().getDisplayName();
+			}
+
+			// 4. 開始時刻 AND 開始の色
+			String checkInTime;
+			Integer checkInColor;
+			Integer actualAttendance = workInformation.getTimeLeavingOfDailyPerformanceDto().getAttendanceTime() != null
+					? workInformation.getTimeLeavingOfDailyPerformanceDto().getAttendanceTime()
+					: null;
+			boolean actualStraight = workInformation.getWorkPerformanceDto().getGoStraightAtr() != null
+					? workInformation.getWorkPerformanceDto().getGoStraightAtr() == 1
+					: false;
+			Integer futureAttendance = workInformation.getWorkScheduleDto().getAttendanceTime() != null
+					? workInformation.getWorkScheduleDto().getAttendanceTime()
+					: null;
+			boolean futureStraight = workInformation.getWorkScheduleDto().getGoStraightAtr() != null
+					? workInformation.getWorkScheduleDto().getGoStraightAtr() == 1
+					: false;
+
+			if (actualAttendance != null) {
+				checkInTime = actualStraight ? TextResource.localize("CCG005_25") + actualAttendance
+						: String.valueOf(actualAttendance);
+				checkInColor = DisplayColor.ACHIEVEMENT.value;
+			} else {
+				checkInTime = futureStraight ? TextResource.localize("CCG005_25") + futureAttendance
+						: String.valueOf(futureAttendance);
+				checkInColor = DisplayColor.SCHEDULED.value;
+			}
+
+			// ５．終了時刻 AND 終了の色
+			String checkOutTime;
+			Integer checkOutColor;
+			Integer actualLeave = workInformation.getTimeLeavingOfDailyPerformanceDto().getLeaveTime() != null
+					? workInformation.getTimeLeavingOfDailyPerformanceDto().getLeaveTime()
+					: null;
+			boolean actualLeaveStraight = workInformation.getWorkPerformanceDto().getBackStraightAtr() != null
+					? workInformation.getWorkPerformanceDto().getBackStraightAtr() == 1
+					: false;
+			Integer futureLeave = workInformation.getWorkScheduleDto().getLeaveTime() != null
+					? workInformation.getWorkScheduleDto().getLeaveTime()
+					: null;
+			boolean futureLeaveStraight = workInformation.getWorkScheduleDto().getBackStraightAtr() != null
+					? workInformation.getWorkScheduleDto().getBackStraightAtr() == 1
+					: false;
+
+			if (actualLeave != null) {
+				checkOutTime = actualLeaveStraight ? TextResource.localize("CCG005_25") + actualLeave
+						: String.valueOf(actualLeave);
+				checkOutColor = DisplayColor.ACHIEVEMENT.value;
+			} else {
+				checkOutTime = futureLeaveStraight ? TextResource.localize("CCG005_25") + futureLeave
+						: String.valueOf(futureLeave);
+				checkOutColor = DisplayColor.SCHEDULED.value;
+			}
+
+			// ６．アラーム色
+			List<EmployeeDailyPerErrorDto> list007 = workInformation.getEmployeeDailyPerErrorDtos().stream()
+					.filter(i -> i.getErrorAlarmWorkRecordCode().equalsIgnoreCase("S007")).collect(Collectors.toList());
+			List<EmployeeDailyPerErrorDto> list008 = workInformation.getEmployeeDailyPerErrorDtos().stream()
+					.filter(i -> i.getErrorAlarmWorkRecordCode().equalsIgnoreCase("S008")).collect(Collectors.toList());
+			if (workInformation.getEmployeeDailyPerErrorDtos().size() > 0 && list007.size() > 0) {
+				checkInColor = DisplayColor.ALARM.value;
+			}
+			if (workInformation.getEmployeeDailyPerErrorDtos().size() > 0 && list008.size() > 0) {
+				checkOutColor = DisplayColor.ALARM.value;
+			}
 			
+			AttendanceDetailDto attendanceDetailDto = AttendanceDetailDto.builder()
+			.workColor(workColor)
+			.workName(workName)
+			.checkOutColor(checkOutColor)
+			.checkOutTime(checkOutTime)
+			.checkInColor(checkInColor)
+			.checkInTime(checkInTime)
+			.workDivision(workDivision)
+			.build();
+				
 			// UserAvatarDto
 			UserAvatarDto avatarDto = UserAvatarDto.builder().build();
 			avatarList.stream().filter(ava -> ava.getPersonalId() == empId.getPid()).findAny()
@@ -338,13 +327,13 @@ public class AttendanceInformationScreenQuery {
 					.findAny();
 			EmployeeEmojiStateDto emojiDto = EmployeeEmojiStateDto.builder().build();
 			emojiDomain.ifPresent(consumer -> consumer.setMemento(emojiDto));
-
+			
 			return AttendanceInformationDto.builder()
 					.applicationDtos(applicationDtos)
 					.sid(empId.getSid())
 					.attendanceDetailDto(attendanceDetailDto)
 					.avatarDto(avatarDto)
-					.activityStatusDto(activityStatusDto)
+					.activityStatusDto(activityStatus == null ? null : activityStatus.getAttendanceState().value)
 					.commentDto(commentDto)
 					.goOutDto(goOutDto)
 					.emojiDto(emojiDto)
@@ -352,37 +341,6 @@ public class AttendanceInformationScreenQuery {
 		}).collect(Collectors.toList());
 	}
 	
-	private Optional<WorkInfoOfDailyPerformanceDto> getWorkInfoOfDailyPerformanceDto(WorkInfoOfDailyPerformanceExport pubExport) {
-		return Optional.ofNullable(WorkInfoOfDailyPerformanceDto.builder()
-				.sid(pubExport.getSid())
-				.ymd(pubExport.getYmd())
-				.goStraightAtr(pubExport.getGoStraightAtr())
-				.backStraightAtr(pubExport.getBackStraightAtr())
-				.build());
-	}
-
-	private Optional<TimeLeavingOfDailyPerformanceDto> getTimeLeavingOfDailyPerformanceDto(TimeLeavingOfDailyPerformanceExport pubExport) {
-		return Optional.ofNullable(TimeLeavingOfDailyPerformanceDto.builder()
-				.ymd(pubExport.getYmd())
-				.sid(pubExport.getSid())
-				.attendanceTime(pubExport.getAttendanceTime())
-				.leaveTime(pubExport.getLeaveTime())
-				.build());
-	}
-
-	private Optional<WorkTypeDto> getWorkTypeDto(WorkTypeExport pubExport) {
-		return Optional.ofNullable(WorkTypeDto.builder()
-				.dailyWork(DailyWorkDto.builder()
-						.workTypeUnit(pubExport.getDailyWork().getWorkTypeUnit())
-						.oneDay(pubExport.getDailyWork().getOneDay())
-						.morning(pubExport.getDailyWork().getMorning())
-						.afternoon(pubExport.getDailyWork().getAfternoon())
-						.build())
-				.code(pubExport.getCode())
-				.displayName(pubExport.getDisplayName())
-				.build());
-	}
-
 	// 勤務区分
 	private enum WorkDivision {
 		// 出勤

@@ -1,14 +1,12 @@
 package nts.uk.ctx.office.dom.status;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Builder;
+import lombok.Data;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.office.dom.goout.GoOutEmployeeInformation;
 
-@Getter
-@Setter
-@NoArgsConstructor
+@Builder
+@Data
 public class GoOutEmployeeInformationDto implements GoOutEmployeeInformation.MementoSetter, GoOutEmployeeInformation.MementoGetter {
 	// 外出時刻
 		private Integer goOutTime;

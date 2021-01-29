@@ -24,13 +24,6 @@ public interface ActivityStatusRepository {
 	public void update(ActivityStatus domain);
 
 	/**
-	 * [3] delete(在席のステータス)
-	 * 
-	 * @param domain 在席のステータス
-	 */
-	public void delete(ActivityStatus domain);
-
-	/**
 	 * [4]取得する
 	 * 
 	 * @param sids List<社員ID>
