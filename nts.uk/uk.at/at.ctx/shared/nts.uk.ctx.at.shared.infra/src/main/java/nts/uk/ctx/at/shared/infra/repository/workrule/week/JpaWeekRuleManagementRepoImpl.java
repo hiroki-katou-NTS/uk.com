@@ -30,7 +30,7 @@ public class JpaWeekRuleManagementRepoImpl extends JpaRepository implements Week
 		
 		this.queryProxy().find(domain.getCid(), KsrmtWeekRuleMng.class)
 			.ifPresent(w -> {
-				w.startOfWeek = domain.getWeekStart().value;
+				w.startOfWeek = domain.getDayOfWeek().value;
 				
 				this.commandProxy().update(w);
 			});

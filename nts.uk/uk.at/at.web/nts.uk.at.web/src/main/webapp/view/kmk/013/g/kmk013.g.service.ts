@@ -59,12 +59,18 @@ module nts.uk.at.view.kmk013.g {
             return nts.uk.request.ajax(paths.regFlexWorkSet, obj);
         }
 
-        export function regTmpWorkMng(obj: any): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.regTmpWorkMng, obj);
+        export function regTmpWorkMng(use: boolean, obj: any): JQueryPromise<any> {
+            if (use)
+                return nts.uk.request.ajax(paths.regTmpWorkMng, obj);
+            else {
+                const dfd = $.Deferred<any>();
+                dfd.resolve();
+                return dfd.promise();
+            }
         }
 
         export function regMidnightTimeMng(obj: any): JQueryPromise<any> {
-            var dfd = $.Deferred<any>();
+            const dfd = $.Deferred<any>();
             loadMidnightTime().done(data => {
                 if (data)
                     nts.uk.request.ajax(paths.updateMidnightTime, obj).done(() => {
@@ -88,8 +94,14 @@ module nts.uk.at.view.kmk013.g {
             return nts.uk.request.ajax(paths.regWeekManage, obj);
         }
 
-        export function regGoOutManage(obj: any): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.regGoOutManage, obj);
+        export function regGoOutManage(use: boolean, obj: any): JQueryPromise<any> {
+            if (use)
+                return nts.uk.request.ajax(paths.regGoOutManage, obj);
+            else {
+                const dfd = $.Deferred<any>();
+                dfd.resolve();
+                return dfd.promise();
+            }
         }
 
         export function regEntranceExit(obj: any): JQueryPromise<any> {

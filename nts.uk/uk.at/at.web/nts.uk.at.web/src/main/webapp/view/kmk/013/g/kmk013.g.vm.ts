@@ -133,6 +133,30 @@ module nts.uk.at.view.kmk013.g {
                             $('#midnightstart').ntsError('clear');
                         }
                     });
+                    self.tempWorkSet.subscribe(value => {
+                        if (value == 0) {
+                            $('#tempmaxuse').ntsError('clear');
+                            $('#temptime').ntsError('clear');
+                        } else {
+                            $('#tempmaxuse').trigger('validate');
+                            $('#temptime').trigger('validate');
+                        }
+                    });
+                    self.goOutUsage.subscribe(value => {
+                        if (value == 0) {
+                            $('#gooutmaxuse').ntsError('clear');
+                        } else {
+                            if (!nts.uk.ntsNumber.isNumber(self.goOutMaxUsage()))
+                                $('#gooutmaxuse').ntsError('set', {messageId:"MsgB_1", messageParams: [nts.uk.resource.getText('KMK013_291')]});
+                        }
+                    });
+                    self.goOutMaxUsage.subscribe(value => {
+                        if (self.goOutUsage() == 1 && !nts.uk.ntsNumber.isNumber(value)) {
+                            $('#gooutmaxuse').ntsError('set', {messageId:"MsgB_1", messageParams: [nts.uk.resource.getText('KMK013_291')]});
+                        } else {
+                            $('#gooutmaxuse').ntsError('clear');
+                        }
+                    });
                 });
                 return dfd.promise();
             }
@@ -140,6 +164,8 @@ module nts.uk.at.view.kmk013.g {
             saveData(): void {
                 const self = this;
                 $('.nts-input').trigger('validate');
+                if (self.goOutUsage() == 1 && !nts.uk.ntsNumber.isNumber(self.goOutMaxUsage()))
+                    $('#gooutmaxuse').ntsError('set', {messageId:"MsgB_1", messageParams: [nts.uk.resource.getText('KMK013_291')]});
                 if (nts.uk.ui.errors.hasError()) {
                     return;
                 }
@@ -151,10 +177,10 @@ module nts.uk.at.view.kmk013.g {
                     service.regFlexWorkSet({managingFlexWork: self.flexSetting()}),
                     service.regTempWork({useClassification: self.tempWorkSet()}),
                     service.regWorkMulti({useAtr: self.multipleWorkSet()}),
-                    service.regTmpWorkMng({maxUsage: self.tempMaxUsage(), timeTreatTemporarySame: self.timeTreatTemporarySame()}),
+                    service.regTmpWorkMng(self.tempWorkSet() == 1, {maxUsage: self.tempMaxUsage(), timeTreatTemporarySame: self.timeTreatTemporarySame()}),
                     service.regMidnightTimeMng({start: self.midNightStartTime(), end: self.midNightEndTime()}),
                     service.regWeekManage({dayOfWeek: self.startOfWeek()}),
-                    service.regGoOutManage({maxUsage: self.goOutMaxUsage(), initValueReasonGoOut: self.initValueReasonGoOut()}),
+                    service.regGoOutManage(self.goOutUsage() == 1, {maxUsage: self.goOutMaxUsage(), initValueReasonGoOut: self.initValueReasonGoOut()}),
                     service.regEntranceExit({useClassification1: self.entranceExitUse()})
                 ).done(() => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
