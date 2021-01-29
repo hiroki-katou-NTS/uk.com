@@ -13,12 +13,12 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetCom;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetEmp;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetRepo;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetSha;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetWkp;
-import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshmtLegalTimeMCom;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshmtLegalTimeMComPK;
@@ -568,5 +568,18 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 				.getList(c -> MonthlyWorkTimeSetCom.of(cid, laborAttr, new YearMonth(c.pk.ym), c.domain()));
 	}
 
-	
+	@Override
+	public void removeEmployeeByYearMonth(String cid, String sid, int laborAttr, int yearMonth) {
+
+		this.queryProxy().query("SELECT x FROM KshmtLegalTimeMSya x "
+				+ "WHERE x.pk.cid = :cid  "
+				+ "AND x.pk.ym = :ym "
+				+ "AND x.pk.sid = :sid "
+				+ "AND x.pk.type = :laborAttr", KshmtLegalTimeMSya.class)
+					.setParameter("cid", cid)
+					.setParameter("sid", sid)
+					.setParameter("ym", yearMonth)
+					.setParameter("laborAttr", laborAttr)
+					.getList().forEach(c -> commandProxy().remove(c));
+	}
 }

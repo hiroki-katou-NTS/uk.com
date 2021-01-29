@@ -97,7 +97,8 @@ module nts.uk.at.view.kmk004.b {
 	const API = {
 		ADD_WORK_TIME: 'screen/at/kmk004/viewd/sha/monthlyWorkTime/add',
 		DELETE_WORK_TIME: 'screen/at/kmk004/viewd/sha/monthlyWorkTime/delete',
-		GET_EMPLOYEEIDS: 'screen/at/kmk004/viewe/sha/getEmployeeId'
+		GET_EMPLOYEEIDS: 'screen/at/kmk004/viewe/sha/getEmployeeId',
+		DELETE_BY_YM: 'screen/at/kmk004/viewd/sha/monthlyWorkTime/deleteByYearMonth'
 	};
 
 	@component({
@@ -216,6 +217,12 @@ module nts.uk.at.view.kmk004.b {
 			}));
 			const input = { sid: ko.unwrap(vm.model.id), yearMonth: yearMonth, laborTime: times };
 
+			const yearMonthDelete = _.map(ko.unwrap(vm.workTimes), ((value) => {
+				if (!ko.unwrap(value.check)) {
+					return ko.unwrap(value.yearMonth);
+				}
+			}));
+
 			vm.$blockui('invisible')
 				.then(() => {
 					vm.validate()
@@ -230,7 +237,17 @@ module nts.uk.at.view.kmk004.b {
 										}));
 										vm.years.push(new IYear(ko.unwrap(vm.selectedYear) as number, false));
 										vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
-									}).then(() => {
+									})
+									.then(() => {
+										_.forEach(yearMonthDelete, ((value) => {
+											if (value) {
+												const input = { empId: ko.unwrap(vm.model.id), laborAttr: 0, yearMonth: value };
+												
+												vm.$ajax(API.DELETE_BY_YM, input);
+											}
+										}));
+									})
+									.then(() => {
 										vm.selectedYear.valueHasMutated();
 										vm.change.valueHasMutated();
 									})

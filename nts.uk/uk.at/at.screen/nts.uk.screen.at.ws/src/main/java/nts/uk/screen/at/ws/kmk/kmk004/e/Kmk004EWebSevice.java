@@ -14,6 +14,8 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
 import nts.uk.screen.at.app.command.kmk.kmk004.MonthlyLaborTimeCommand;
 import nts.uk.screen.at.app.command.kmk.kmk004.common.monthlyworktimesetcom.YearMonthPeriodCommand;
+import nts.uk.screen.at.app.command.kmk.kmk004.common.monthlyworktimesetsha.DeleteMonthlyWorkTimeSetShaByYearMonthCommand;
+import nts.uk.screen.at.app.command.kmk.kmk004.common.monthlyworktimesetsha.DeleteMonthlyWorkTimeSetShaByYearMonthCommandHandler;
 import nts.uk.screen.at.app.command.kmk.kmk004.common.monthlyworktimesetsha.DeleteMonthlyWorkTimeSetShaCommand;
 import nts.uk.screen.at.app.command.kmk.kmk004.common.monthlyworktimesetsha.DeleteMonthlyWorkTimeSetShaCommandHandler;
 import nts.uk.screen.at.app.command.kmk.kmk004.common.monthlyworktimesetsha.MonthlyWorkTimeSetShaCommand;
@@ -55,6 +57,9 @@ public class Kmk004EWebSevice extends WebService {
 	
 	@Inject
 	private DeleteMonthlyWorkTimeSetShaCommandHandler deleteWorkTime;
+	
+	@Inject
+	private DeleteMonthlyWorkTimeSetShaByYearMonthCommandHandler deletebyYearMonth;
 	
 	
 	@POST
@@ -115,9 +120,15 @@ public class Kmk004EWebSevice extends WebService {
 	
 	@POST
 	@Path("viewd/sha/monthlyWorkTime/delete")
-	public void addWorkTimes(InputDeleteWorkTimeViewE input) {
+	public void deleteWorkTimes(InputDeleteWorkTimeViewE input) {
 		DeleteMonthlyWorkTimeSetShaCommand command = new DeleteMonthlyWorkTimeSetShaCommand(input.sid, 0,
 				new YearMonthPeriodCommand(input.startMonth, input.endMonth));
 		this.deleteWorkTime.handle(command);
+	}
+	
+	@POST
+	@Path("viewd/sha/monthlyWorkTime/deleteByYearMonth")
+	public void deleteWorkTimesByYearMonth(DeleteMonthlyWorkTimeSetShaByYearMonthCommand command) {
+		this.deletebyYearMonth.handle(command);
 	}
 }
