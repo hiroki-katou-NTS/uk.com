@@ -10,14 +10,14 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * プライマリキー：フレックス勤務所定労働時間取得
+ * プライマリキー：会社別フレックス勤務集計方法
  * @author shuichu_ishida
  */
 @Embeddable
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class KshstFlxGetPrwkTimePK implements Serializable {
+public class KrcmtCalcMSetFleComPK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

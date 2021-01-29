@@ -1,32 +1,62 @@
-@CHARSET "UTF-8";
-
-#combo-box {
-	margin-left: 20px;
+.view-f {
+    padding: 10px;
+    height: 442px;
 }
 
-.padding-bottom {
-	padding-bottom: 5px;
+.view-f .title {
+    font-size: 21px;
 }
-.switch-btn-set {
-	padding-left: 20px;
-	padding-top: 5px;
-	padding-bottom: 1px;
+
+.view-f .node {
+    text-align: right;
+    color: #0000ff;
+    height: 20px;
 }
-#table-container {
-	padding-top: 20px;
-	padding-left: 20px;
+
+.view-f .lable-input {
+    width: 50px;
+    text-align: center;
 }
-.padding-left-35 {
-	padding-left: 35px;
+
+.view-f .cf {
+    max-width: 299px;
 }
-.description-label {
-	padding-bottom: 5px;
-	padding-left: 20px;
+
+.view-f .cf div {
+    margin-top: 10px;
 }
-.switch-alone {
-	padding-left: 40px;
-	padding-bottom: 10px;
+
+.view-f .cf .content-change {
+    margin-left: 20px;
 }
-button.nts-switch-button {
-	min-width: 100px;
+
+.view-f .cf .list-check-box {
+    width: 200px;
+    margin-left: 30px;
+}
+
+.view-f .cf .list-check-box div {
+   margin-top: 0px;
+}
+
+.list-buttom {
+    margin-top: 11px;
+}
+
+.list-buttom .button1 {
+    margin-left: 160px;
+}
+
+.list-buttom .button3 {
+    margin-left: 20px;
+}
+
+#func-notifier-errors.shown {
+	top: 40px !important;
+    left: 20px !important;
+    position: fixed;
+    text-align: center;
+    width: 100px;
+    height: 24px;
+    z-index: 999999;
 }
