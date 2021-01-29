@@ -108,10 +108,11 @@ module nts.uk.at.view.kml001.c {
           });          
         })
         .fail((error) => {
-          self.$dialog.error({ messageId: error.messageId}).then( () => {   
-            $('#startDateInput').focus();
+          //self.$dialog.error({ messageId: error.messageId}).then( () => {   
+            //$('#startDateInput').focus();
+            $('#startDateInput').ntsError('set', {messageId: error.messageId});
             self.$blockui('hide');
-          });
+          //});
         });
 
       }
