@@ -20,6 +20,7 @@ module nts.uk.at.view.knr002.e {
             settingContentGrid: KnockoutObservableArray<LocationSettingDto> = ko.observableArray([]);
             instructions: KnockoutObservable<string> = ko.observable();
             loadTime: number = 0;
+            bakGridData: KnockoutObservableArray<TimeRecordSetFormatBakEDto> = ko.observableArray([]);
     
             constructor() {
                 const vm = this;   
@@ -62,6 +63,7 @@ module nts.uk.at.view.knr002.e {
                 $('.panel.ntsPanel').css('background-color', '#FFEBFF');
             }
 
+            // vm.initData().listTimeRecordSetFormatBakEDto
 
             private loadBakGrid() {
                 const vm = this;
@@ -69,7 +71,7 @@ module nts.uk.at.view.knr002.e {
                 $('#bak-grid2').ntsGrid({
                     width: '455px', 
                     height: '140px',
-                    dataSource: vm.initData().listTimeRecordSetFormatBakEDto,
+                    dataSource: vm.bakGridData(),
                     primaryKey: 'empInfoTerCode',
                     virtualization: true,
                     virtualizationMode: 'continuous',
@@ -95,7 +97,7 @@ module nts.uk.at.view.knr002.e {
                                 $('#bak-grid1').igGridSelection('selectRow', vm.selectedRow());
                                 vm.selectedCode(ui.row.id);
                                 vm.loadBackupContent(vm.selectedCode());
-                                vm.selectedName(vm.initData().listTimeRecordSetFormatBakEDto[vm.selectedRow()].empInfoTerName);
+                                vm.selectedName(vm.bakGridData()[vm.selectedRow()].empInfoTerName);
                                 $('#bak-grid2_container').focus();
                             }
                         }
@@ -235,10 +237,10 @@ module nts.uk.at.view.knr002.e {
                 const vm = this;
 
                 blockUI.invisible();
-                let selectedObject = _.find(vm.initData().listTimeRecordSetFormatBakEDto, (item) => { return item.empInfoTerCode == code; });
+                let selectedObject = _.find(vm.bakGridData(), (item) => { return item.empInfoTerCode == code; });
                 if (_.isNil(selectedObject)) {
-                    code = vm.initData().listTimeRecordSetFormatBakEDto[0].empInfoTerCode;
-                    vm.selectedName(vm.initData().listTimeRecordSetFormatBakEDto[0].empInfoTerName);
+                    code = vm.bakGridData()[0].empInfoTerCode;
+                    vm.selectedName(vm.bakGridData()[0].empInfoTerName);
                 } else {
                     vm.selectedName(selectedObject.empInfoTerName);
                 }
@@ -270,7 +272,7 @@ module nts.uk.at.view.knr002.e {
             public restoreHandle() {
                 const vm = this;
 
-                let shareData = vm.initData().listTimeRecordSetFormatBakEDto[vm.selectedRow()];
+                let shareData = vm.bakGridData()[vm.selectedRow()];
                 setShared('KNR002E_share', shareData);
                 modal('/view/knr/002/f/index.xhtml', { title: 'F_Screen', }).onClosed(() => {
                     let isCancel = getShared('KNR002E_cancel');
@@ -299,9 +301,26 @@ module nts.uk.at.view.knr002.e {
                     if (res) {
                         
                         vm.setDisplayModelEmpInfoTerminal(res.listEmpInfoTerminal);
-                        vm.setDisplayModelEmpInfoTerminal(res.listTimeRecordSetFormatBakEDto);
-                
                         vm.initData(res);
+
+                        
+                        
+                        //mark
+                        let bakData = vm.initData().listEmpInfoTerminal.map((item: EmpInfoTerminalEDto) => 
+                            { 
+                                let index = _.findIndex(vm.initData().listTimeRecordSetFormatBakEDto, (row: any) => row.empInfoTerCode == item.empInfoTerCode);
+
+                                if (index !== -1) {
+                                    return new TimeRecordSetFormatBakEDto(vm.initData().listTimeRecordSetFormatBakEDto[index].backupDate, item.empInfoTerCode, item.empInfoTerName, item.displayModelEmpInfoTer);
+                                }
+                                return new TimeRecordSetFormatBakEDto('', item.empInfoTerCode, item.empInfoTerName, item.displayModelEmpInfoTer);
+                            }
+                        );
+
+                        vm.bakGridData(bakData);
+
+                        console.log(vm.bakGridData(), 'backup data');
+
                         if (loadTime == 0) {
                             vm.selectedCode(vm.initData().listEmpInfoTerminal[0].empInfoTerCode);
                             loadTime++;
@@ -383,12 +402,19 @@ module nts.uk.at.view.knr002.e {
             displayModelEmpInfoTer: string;
         }
 
-        export interface TimeRecordSetFormatBakEDto {
+        class TimeRecordSetFormatBakEDto {
             backupDate: string;
             empInfoTerCode: string;
             empInfoTerName: string;
-            modelEmpInfoTer: number;
             displayModelEmpInfoTer: string;
+
+            constructor(backupDate: string, empInfoTerCode: string, empInfoTerName: string, displayModelEmpInfoTer: string) {
+                const vm = this; 
+                vm.backupDate = backupDate;
+                vm.empInfoTerCode = empInfoTerCode;
+                vm.empInfoTerName = empInfoTerName;
+                vm.displayModelEmpInfoTer = displayModelEmpInfoTer;
+            }
         }
 
         export interface FlagByCode {

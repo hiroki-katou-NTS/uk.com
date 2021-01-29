@@ -278,10 +278,17 @@ module nts.uk.at.view.knr002.c {
             public addToSetting() {
                 const vm = this;
                 console.time('C11_2');
-                if (nts.uk.ui.errors.hasError()) { return; };
-                // nts.uk.ui.errors.clearAll();
+                if (nts.uk.ui.errors.hasError()) { 
+                    setTimeout(() => {
+                        if ($(window.parent.document).find(".ui-widget-overlay").length === 1) {
+                            $("#func-notifier-errors").trigger("click");
+                        }
+                    }, 1);
 
-                let checkLength = vm.settingData.length;
+                    return; 
+                }
+                vm.validateErr();
+                
 
                 let checkLength = vm.settingData.length;
 
