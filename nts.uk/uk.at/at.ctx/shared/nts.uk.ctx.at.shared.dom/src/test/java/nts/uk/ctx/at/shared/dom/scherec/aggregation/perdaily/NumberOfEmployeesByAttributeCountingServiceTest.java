@@ -17,7 +17,6 @@ import mockit.Mock;
 import mockit.MockUp;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
@@ -46,13 +45,8 @@ public class NumberOfEmployeesByAttributeCountingServiceTest {
 		// Mock: 日別勤怠の勤務情報
 		new MockUp<WorkInfoOfDailyAttendance>() {
 			@Mock
-			public Optional<WorkStyle> getWorkStyle(Require require) {
-				if ( this.getMockInstance().getRecordInfo() == Helper.WorkInfo.WORKING ) {
-					return Optional.of( WorkStyle.ONE_DAY_WORK );
-				} else if ( this.getMockInstance().getRecordInfo() == Helper.WorkInfo.HOLIDAY ) {
-					return Optional.of( WorkStyle.ONE_DAY_REST );
-				}
-				return Optional.empty();
+			public boolean isAttendanceRate(Require require) {
+				return ( this.getMockInstance().getRecordInfo() == Helper.WorkInfo.WORKING );
 			}
 		};
 
