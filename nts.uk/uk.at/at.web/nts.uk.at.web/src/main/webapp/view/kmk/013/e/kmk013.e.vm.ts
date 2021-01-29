@@ -22,34 +22,35 @@ module nts.uk.at.view.kmk013.e {
                     new ItemModel(6, nts.uk.resource.getText("Enum_RoundingTime_30Min")),
                     new ItemModel(7, nts.uk.resource.getText("Enum_RoundingTime_60Min"))
                 ]);
+
+                $("#fixed-table").ntsFixedTable({ width: 560 });
             }
 
             startPage(): JQueryPromise<any> {
-                var self = this;
-                var dfd = $.Deferred();
-                $("#fixed-table").ntsFixedTable({ width: 560 });
-                self.initData().done(() => dfd.resolve());
-                return dfd.promise();
-            }
-
-            initData(): JQueryPromise<void> {
-                let self = this;
-                let dfd = $.Deferred<void>();
+                const self = this;
+                const dfd = $.Deferred();
+                blockUI.invisible();
                 service.findByCompanyId().done(data => {
                     if (!_.isEmpty(data)) {
                         service.getPossibleItem(_.map(data.itemRoundingSet, (i: any) => i.timeItemId)).done(attendanceItems => {
                             _.forEach(attendanceItems, (element) => {
                                 let obj: any = _.find(data.itemRoundingSet, ['timeItemId', element.attendanceItemId]);
                                 let ur = new UnitRouding(element.attendanceItemId, element.attendanceItemName, obj.unit, obj.rounding);
-                                // ur.initRoundingOption(ur.unit(), self);
                                 self.listData.push(ur);
                             });
-                            $('.unit-combo-box')[0].focus();
                             dfd.resolve();
+                        }).fail(error => {
+                            dfd.reject();
+                            nts.uk.ui.dialog.alert(error);
                         });
                     } else {
                         dfd.resolve();
                     }
+                }).fail(error => {
+                    dfd.reject();
+                    nts.uk.ui.dialog.alert(error);
+                }).always(() => {
+                    blockUI.clear();
                 });
                 return dfd.promise();
             }
