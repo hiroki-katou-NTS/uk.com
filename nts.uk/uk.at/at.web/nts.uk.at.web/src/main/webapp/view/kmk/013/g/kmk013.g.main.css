@@ -1,9 +1,11 @@
-#form-lb {
-	margin: 10px 0px 0px 20px;
+.form-label {
+	margin-left: 20px;
 }
 
 .child-lb {
 	margin: 0px 20px 0px 40px;
+	display: inline-block;
+	min-width: 168px;
 }
 
 .td-content {
