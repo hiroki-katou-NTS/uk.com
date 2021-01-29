@@ -192,7 +192,7 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 					// R10_15
 					((month - 1) % 12 + 1) + I18NText.getText("KMK004_401"),
 					// R10_16
-					KMK004PrintCommon.convertTime(flex.isPresent() ? flex.get().withinTime : null),
+					KMK004PrintCommon.convertTime(refPreTime == 0?null:flex.isPresent() ? flex.get().withinTime : null),
 					// R10_17
 					KMK004PrintCommon.convertTime(flex.isPresent() ? flex.get().legalTime : null),
 					// R10_18
@@ -265,7 +265,7 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 			 // R10_15
 			 ((month - 1) % 12 + 2) + I18NText.getText("KMK004_401"),
 			 // R10_16
-			 KMK004PrintCommon.convertTime(flexN.isPresent() ? flexN.get().withinTime : null),
+			 KMK004PrintCommon.convertTime(refPreTime == 0?null:flexN.isPresent() ? flexN.get().withinTime : null),
 			 // R10_17
 			 KMK004PrintCommon.convertTime(flexN.isPresent() ? flexN.get().legalTime : null),
 			 // R10_18
@@ -321,7 +321,7 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 					// R10_15
 					(m) + I18NText.getText("KMK004_401"),
 					// R10_16
-					KMK004PrintCommon.convertTime(flexC.isPresent() ? flexC.get().withinTime : null),
+					KMK004PrintCommon.convertTime(refPreTime == 0?null:flexC.isPresent() ? flexC.get().withinTime : null),
 					// R10_17
 					KMK004PrintCommon.convertTime(flexC.isPresent() ? flexC.get().legalTime : null),
 					// R10_18
