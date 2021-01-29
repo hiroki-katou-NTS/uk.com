@@ -158,6 +158,7 @@ module nts.uk.at.view.kmk004.components {
 										}));
 										vm.years.push(new IYear(ko.unwrap(vm.selectedYear), true));
 										vm.years(_.orderBy(ko.unwrap(vm.years), ['year'], ['desc']));
+										ko.unwrap(vm.years)[index].isNew = false;
 									}
 								}
 							
