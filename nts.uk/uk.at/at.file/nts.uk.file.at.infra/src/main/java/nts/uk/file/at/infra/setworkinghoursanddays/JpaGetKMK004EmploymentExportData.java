@@ -193,17 +193,17 @@ public class JpaGetKMK004EmploymentExportData extends JpaRepository implements G
 					//R12_15
 					((month - 1) % 12 + 1) + I18NText.getText("KMK004_401"),
 					//R12_16 
-					refPreTime == null? null :KMK004PrintCommon.convertTime(flex.isPresent() ? flex.get().withinTime : null),
+					KMK004PrintCommon.convertTime(refPreTime == 0? null : flex.isPresent() ? flex.get().withinTime : null),
 					//R12_17
 					KMK004PrintCommon.convertTime(flex.isPresent() ? flex.get().legalTime : null),
 					//R10_18
 					KMK004PrintCommon.convertTime(flex.isPresent() ? flex.get().weekAvgTime : null),
 					//R12_19
-					r.getInt("SETTLE_PERIOD_MON")== null?null: r.getInt("SETTLE_PERIOD_MON") == 2 ? "2ヶ月" : "3ヶ月",
+					KMK004PrintCommon.getSettle(r.getInt("SETTLE_PERIOD")) ,
 					//R12_20
-					KMK004PrintCommon.getSettle(r.getInt("SETTLE_PERIOD")),
-					//R12_21
 					r.getInt("FLEX_START_MONTH")== null ? null: r.getInt("FLEX_START_MONTH").toString() + "月",
+					//R12_21
+					r.getInt("SETTLE_PERIOD_MON")== null?null: r.getInt("SETTLE_PERIOD_MON") == 2 ? "2ヶ月" : "3ヶ月",
 					//R12_22
 					KMK004PrintCommon.getShortageTime(r.getInt("INSUFFIC_SET")), 
 					//R12_23
@@ -285,7 +285,7 @@ public class JpaGetKMK004EmploymentExportData extends JpaRepository implements G
 					//R12_15
 					((month - 1) % 12 + 2) + I18NText.getText("KMK004_401"),
 					//R12_16 
-					refPreTime == null? null :KMK004PrintCommon.convertTime(flexN.isPresent() ? flexN.get().withinTime : null),
+					KMK004PrintCommon.convertTime(refPreTime == 0? null :flexN.isPresent() ? flexN.get().withinTime : null),
 					//R12_17
 					KMK004PrintCommon.convertTime(flexN.isPresent() ? flexN.get().legalTime : null),
 					//R10_18
@@ -379,7 +379,7 @@ public class JpaGetKMK004EmploymentExportData extends JpaRepository implements G
 						//R12_15
 						(m) + I18NText.getText("KMK004_401"),
 						//R12_16 
-						refPreTime == null? null :KMK004PrintCommon.convertTime(flexC.isPresent() ? flexC.get().withinTime : null),
+						KMK004PrintCommon.convertTime(refPreTime == 0? null :flexC.isPresent() ? flexC.get().withinTime : null),
 						//R12_17
 						KMK004PrintCommon.convertTime(flexC.isPresent() ? flexC.get().legalTime : null),
 						//R10_18

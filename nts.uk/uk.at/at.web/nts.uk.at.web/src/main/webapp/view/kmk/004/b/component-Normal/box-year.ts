@@ -49,7 +49,9 @@ module nts.uk.at.view.kmk004.b {
         created(params: Params) {
             const vm = this;
             vm.selectedYear = params.selectedYear;
-            vm.selectId = params.selectId;
+            if (params.selectId){
+                vm.selectId = params.selectId;
+            }
             vm.type = params.type;
             vm.itemList = params.years;
 

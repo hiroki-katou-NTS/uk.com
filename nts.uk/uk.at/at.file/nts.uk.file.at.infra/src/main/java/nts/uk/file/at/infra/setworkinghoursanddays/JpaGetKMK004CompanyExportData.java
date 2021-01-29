@@ -184,11 +184,11 @@ public class JpaGetKMK004CompanyExportData extends JpaRepository implements GetK
 					//R8_18
 					KMK004PrintCommon.convertTime(flex.isPresent() ?flex.get().weekAvgTime : null),
 					//R8_19
-					r.getInt("SETTLE_PERIOD_MON") == 2 ? "2ヶ月" : "3ヶ月",
-					//R8_20
 					KMK004PrintCommon.getSettle(r.getInt("SETTLE_PERIOD")),
-					//R8_21
+					//R8_20
 					r.getInt("FLEX_START_MONTH").toString() + "月",
+					//R8_21
+					r.getInt("SETTLE_PERIOD_MON") == 2 ? "2ヶ月" : "3ヶ月",
 					//R8_22
 					KMK004PrintCommon.getShortageTime(r.getInt("INSUFFIC_SET")),
 					//R8_23
