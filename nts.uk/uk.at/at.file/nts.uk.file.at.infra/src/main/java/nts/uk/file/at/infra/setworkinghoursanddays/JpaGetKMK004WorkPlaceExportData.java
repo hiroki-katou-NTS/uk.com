@@ -220,11 +220,11 @@ public class JpaGetKMK004WorkPlaceExportData extends JpaRepository implements Ge
 						//R10_18
 						KMK004PrintCommon.convertTime(flex.isPresent() ? flex.get().weekAvgTime : null),
 						//R12_19
-						r.getInt("SETTLE_PERIOD_MON")== null?null: r.getInt("SETTLE_PERIOD_MON") == 2 ? "2ヶ月" : "3ヶ月",
-						//R12_20
 						KMK004PrintCommon.getSettle(r.getInt("SETTLE_PERIOD")),
-						//R12_21
+						//R12_20
 						r.getInt("FLEX_START_MONTH")== null ? null: r.getInt("FLEX_START_MONTH").toString() + "月",
+						//R12_21
+						r.getInt("SETTLE_PERIOD_MON")== null?null: r.getInt("SETTLE_PERIOD_MON") == 2 ? "2ヶ月" : "3ヶ月",
 						//R12_22
 						KMK004PrintCommon.getShortageTime(r.getInt("INSUFFIC_SET")), 
 						//R12_23
