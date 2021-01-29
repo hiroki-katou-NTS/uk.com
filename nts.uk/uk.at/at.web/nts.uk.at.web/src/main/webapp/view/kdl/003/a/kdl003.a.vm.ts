@@ -232,10 +232,10 @@ module nts.uk.at.view.kdl003.a {
 
                         let listWorkTime: Array<WorkTimeSet> = [];
                         if (!nts.uk.util.isNullOrEmpty(code)) {
-                            listWorkTime = data.availableWorkingHours.length > 0 ? data.availableWorkingHours : data.allWorkHours;
+                            listWorkTime = data.availableWorkingHours; //data.availableWorkingHours.length > 0 ? data.availableWorkingHours : data.allWorkHours;
                         } else if (!nts.uk.util.isNullOrEmpty(self.callerParameter.workPlaceId)
                             && !nts.uk.util.isNullOrEmpty(self.callerParameter.baseDate)) {
-                            listWorkTime = data.workingHoursByWorkplace.length > 0 ? data.workingHoursByWorkplace : data.allWorkHours;
+                            listWorkTime = data.workingHoursByWorkplace; //data.workingHoursByWorkplace.length > 0 ? data.workingHoursByWorkplace : data.allWorkHours;
                         } else {
                             listWorkTime = data.allWorkHours;
                         }

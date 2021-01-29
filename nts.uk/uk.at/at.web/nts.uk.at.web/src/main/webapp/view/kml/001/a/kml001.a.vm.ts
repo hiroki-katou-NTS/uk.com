@@ -70,7 +70,10 @@ module nts.uk.at.view.kml001.a {
 
         self.currentPersonCost().calculationSetting.subscribe((newValue) => {
           nts.uk.ui.errors.clearAll();
-          if (newValue === 1) self.setPremiumTo100();
+          if (newValue === 1) 
+            self.setPremiumTo100();
+          else
+            self.currentPersonCost().unitPrice.valueHasMutated();
         });
 
         self.getDefaultPremiumSetting();

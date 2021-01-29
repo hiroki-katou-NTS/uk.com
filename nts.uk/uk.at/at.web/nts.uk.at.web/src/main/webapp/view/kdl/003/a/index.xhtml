@@ -65,7 +65,10 @@
 								<div id="search-div" class="control-group valign-center">
 									<div class="table">
 										<div class="cell valign-center">
-											<input id="inputStartTime" tabindex="5" style="margin-right:  10px;"
+											<div class="text-vcener" data-bind="ntsFormLabel: {}, text: '#{i18n.getText('KDL003_46')}'"></div>
+										</div>
+										<div class="cell valign-center">
+											<input id="inputStartTime" tabindex="5"
 												data-bind="ntsTimeWithDayEditor: {name: '#[KDL003_12]', 
 													constraint:'TimeWithDayAttr', 
 													option: { timeWithDay: true },
