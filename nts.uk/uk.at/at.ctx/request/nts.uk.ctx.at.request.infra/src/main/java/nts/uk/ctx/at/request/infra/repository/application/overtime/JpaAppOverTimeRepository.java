@@ -13,6 +13,7 @@ import javax.ejb.Stateless;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.time.GeneralDate;
@@ -71,7 +72,7 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 	
 	public static final String SELECT_ALL_BY_JPA = "SELECT a FROM KrqdtAppOverTime as a WHERE a.krqdtAppOvertimePK.cid = :cid and a.krqdtAppOvertimePK.appId = :appId";
 	
-	public static final String SELECT_ALL_BY_APP_IDs = "SELECT a FROM KrqdtAppOverTime as a WHERE a.krqdtAppOvertimePK.cid = :cid and a.krqdtAppOvertimePK.appId IN :appIds";
+	public static final String SELECT_ALL_BY_APP_IDs = "SELECT a FROM KrqdtAppOverTime a WHERE a.krqdtAppOvertimePK.cid = :cid and a.krqdtAppOvertimePK.appId IN :appIds";
 	
 	@Override
 	public Optional<AppOverTime> find(String companyId, String appId) {
@@ -736,10 +737,14 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 	
 	@Override
 	public List<AppOverTime> getByListAppId(String companyId, List<String> appIds) {
-		return this.queryProxy()
-				   .query(SELECT_ALL_BY_APP_IDs, KrqdtAppOverTime.class)
-				   .setParameter("cid", companyId)
-				   .setParameter("appIds", appIds)
-				   .getList(x -> x.toDomain());
+		List<AppOverTime> returnList = new ArrayList<>();
+		CollectionUtil.split(appIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			returnList.addAll(this.queryProxy()
+					   .query(SELECT_ALL_BY_APP_IDs, KrqdtAppOverTime.class)
+					   .setParameter("cid", companyId)
+					   .setParameter("appIds", subList)
+					   .getList(x -> x.toDomain()));
+		});
+		return returnList;
 	}
 }
