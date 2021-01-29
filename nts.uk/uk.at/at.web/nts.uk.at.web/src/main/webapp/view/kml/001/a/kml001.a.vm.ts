@@ -20,6 +20,7 @@ module nts.uk.at.view.kml001.a {
       unitPriceOpt: KnockoutObservableArray<any> = ko.observableArray([]);
       selectedHistory: KnockoutObservable<vmbase.GridPersonCostCalculation> = ko.observable(null);
       defaultPremiumSettings: KnockoutObservableArray<any> = ko.observableArray([]);
+      latestPersonalData: KnockoutObservable<any> = ko.observable(null);
 
       constructor() {
         super();
@@ -69,9 +70,9 @@ module nts.uk.at.view.kml001.a {
 
         self.currentPersonCost().calculationSetting.subscribe((newValue) => {
           nts.uk.ui.errors.clearAll();
-          if( newValue === 1) self.setPremiumTo100();
+          if (newValue === 1) self.setPremiumTo100();
         });
-        
+
         self.getDefaultPremiumSetting();
       }
 
@@ -312,10 +313,9 @@ module nts.uk.at.view.kml001.a {
         const self = this;
 
         const latestHistory = _.head(self.gridPersonCostList());
-
         const params = {
           latestHistory: latestHistory,
-          personalCost: self.currentPersonCost(),
+          //personalCost: self.latestPersonalData(),
           size: _.size(self.gridPersonCostList()),
           isLastItem: self.isLastItem()
         };
@@ -510,7 +510,7 @@ module nts.uk.at.view.kml001.a {
               self.currentGridPersonCost.valueHasMutated();
             } else
               self.currentGridPersonCost(tempHistory);
-              
+
             self.isLastItem(true);
           }
         }
@@ -552,6 +552,11 @@ module nts.uk.at.view.kml001.a {
         }
       }
 
+      /**
+       * Gets the personal details
+       * @param data 
+       * @returns any 
+       */
       getPersonalCostCalculatorDetails(data: any): JQueryPromise<any> {
         const self = this;
         const dfd = $.Deferred<any>();
@@ -627,6 +632,9 @@ module nts.uk.at.view.kml001.a {
         return dfd.promise();
       }
 
+      /**
+       * Gets the company premium list
+       */
       getCompanyPremiumList() {
         const self = this;
 
@@ -647,6 +655,10 @@ module nts.uk.at.view.kml001.a {
         });
       }
 
+      /**
+       * Creates the view attendance items default
+       * @param [length] 
+       */
       createViewAttendanceItemsDefault(length: number = 10) {
         const self = this;
         //self.viewAttendanceItems.removeAll();
@@ -655,6 +667,9 @@ module nts.uk.at.view.kml001.a {
         });
       }
 
+      /**
+       * Get the default premium setting
+       */
       getDefaultPremiumSetting() {
         const self = this;
         var premiumItemSelect = servicebase.premiumItemSelect();
@@ -677,6 +692,9 @@ module nts.uk.at.view.kml001.a {
         });
       }
 
+      /**
+       * Set the rate to 100 for case 単価を設定する
+      */
       setPremiumTo100() {
         const self = this;
         _.forEach(self.currentPersonCost().premiumSets(), (item, index) => {

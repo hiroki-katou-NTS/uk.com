@@ -12,18 +12,21 @@ module nts.uk.at.view.kml001.c {
       latestHistory: KnockoutObservable<any> = ko.observable(null);
       currentPersonCost: KnockoutObservable<any> = ko.observable(null);
       defaultPremiumSettings: KnockoutObservableArray<any> = ko.observableArray([]);
+      latestPersonalData: KnockoutObservable<any> = ko.observable(null);
 
       constructor() {
         super();
         const self = this;
         self.latestHistory(nts.uk.ui.windows.getShared('PERSONAL_HISTORY'));     
+        console.log(self.latestHistory());
         self.copyDataFlag = ko.observable(true);
         self.lastStartDate = ko.observable(self.latestHistory().latestHistory.startDate);        
         self.newStartDate = ko.observable(null);
         self.beginStartDate = ko.observable(vmbase.ProcessHandler.getOneDayAfter(self.lastStartDate()));        
         self.size = ko.observable(self.latestHistory().size);        
         self.textKML001_47 = ko.observable(nts.uk.resource.getText('KML001_47', [self.lastStartDate()]));     
-        self.getOneDefaultPremiumSetting();       
+        self.getOneDefaultPremiumSetting();        
+        self.getLatestPersonal(self.latestHistory());
       }
 
       /**
@@ -58,46 +61,44 @@ module nts.uk.at.view.kml001.c {
 
         if(nts.uk.ui.errors.hasError()) return;
         
-        self.currentPersonCost(self.latestHistory().personalCost);
+        self.currentPersonCost(self.latestPersonalData());
         let premiumSettingList: Array<any> = [];
         
         _.forEach(self.currentPersonCost().premiumSets, (item) => {
-
-          let attendanceItems = [];
-          _.forEach(item.attendanceItems, (x) => {
-            attendanceItems.push(x.shortAttendanceID);
-          });
-
           premiumSettingList.push({
-            iD: item.displayNumber,
+            iD: item.id,
             name: item.name,
             rate: item.rate,
             unitPrice: item.unitPrice,
             useAtr: item.useAtr,
-            attendanceItems: attendanceItems
+            attendanceItems: item.attendanceItems
           });
         });
 
-        let personCostRoundingSetting: any = {
-          unitPriceRounding: self.copyDataFlag() ? self.currentPersonCost().roundingUnitPrice : vmbase.UnitPriceRounding.ROUND_UP,//単価の丸め
-          unit: self.copyDataFlag() ? self.currentPersonCost().unit : vmbase.AmountUnit.ONE_YEN, //金額の丸め
-          rounding: self.copyDataFlag() ? self.currentPersonCost().inUnits : vmbase.InUnits.TRUNCATION //単位で
-        };
-
+        let personCostRoundingSetting: any = null;
+        if( self.copyDataFlag() ) {
+          personCostRoundingSetting = self.currentPersonCost().personCostRoundingSetting;
+        } else {
+          personCostRoundingSetting = {
+            unitPriceRounding: vmbase.UnitPriceRounding.ROUND_UP,
+            unit: vmbase.AmountUnit.ONE_YEN,
+            rounding: vmbase.InUnits.TRUNCATION
+          }
+        }
+      
         let startDate = moment.utc(self.newStartDate(), 'YYYY-MM-DD').toISOString(); 
         let params: any = {
           startDate: startDate,
           historyID: null,
           unitPrice: self.copyDataFlag() ? self.currentPersonCost().unitPrice : vmbase.UnitPrice.Price_1, //計算用単価
-          howToSetUnitPrice: self.copyDataFlag() ? self.currentPersonCost().calculationSetting : vmbase.CalculationSetting.Premium_Rate,//割増金額の計算設定
-          workingHoursUnitPrice: self.copyDataFlag() ? self.currentPersonCost().workingHour : vmbase.UnitPrice.Price_1, //計算用単価
+          howToSetUnitPrice: self.copyDataFlag() ? self.currentPersonCost().howToSetUnitPrice : vmbase.CalculationSetting.Premium_Rate,//割増金額の計算設定
+          workingHoursUnitPrice: self.copyDataFlag() ? self.currentPersonCost().workingHoursUnitPrice : vmbase.UnitPrice.Price_1, //計算用単価
           memo: self.copyDataFlag() ? self.currentPersonCost().memo : null, //備考
           personCostRoundingSetting: personCostRoundingSetting,
           premiumSets: self.copyDataFlag() ? premiumSettingList : self.defaultPremiumSettings()
         };
-
+        
         self.$blockui('show');
-
         servicebase.personCostCalculationInsert(params)
         .done(() => {
           self.$dialog.info({ messageId: 'Msg_15'}).then( () => {            
@@ -112,6 +113,7 @@ module nts.uk.at.view.kml001.c {
             self.$blockui('hide');
           });
         });
+
       }
 
       getOneDefaultPremiumSetting() {
@@ -136,6 +138,17 @@ module nts.uk.at.view.kml001.c {
             });
           }
         });
+      }
+
+      getLatestPersonal() {
+        const self = this;        
+        let historyId = !_.isNil(self.latestHistory().latestHistory.historyId) 
+                            ? self.latestHistory().latestHistory.historyId 
+                            : '';
+        console.log(historyId);
+        servicebase.findByHistoryID({ historyID: historyId }).done((data) => {
+          self.latestPersonalData(data);
+        }).fail(res => { return null });
       }
     }
   }
