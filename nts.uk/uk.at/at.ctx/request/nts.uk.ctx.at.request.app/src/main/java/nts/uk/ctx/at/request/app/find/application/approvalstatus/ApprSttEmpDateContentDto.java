@@ -25,11 +25,14 @@ public class ApprSttEmpDateContentDto {
 	
 	private List<PhaseApproverStt> phaseApproverSttLst;
 	
+	private Integer opAppTypeDisplay;
+	
 	public static ApprSttEmpDateContentDto fromDomain(ApprSttEmpDateContent apprSttEmpDateContent) {
 		return new ApprSttEmpDateContentDto(
 				ApplicationDto.fromDomain(apprSttEmpDateContent.getApplication()), 
 				apprSttEmpDateContent.getContent(), 
 				apprSttEmpDateContent.getReflectedState().value, 
-				apprSttEmpDateContent.getPhaseApproverSttLst());
+				apprSttEmpDateContent.getPhaseApproverSttLst(),
+				apprSttEmpDateContent.getOpAppTypeDisplay().map(x -> x.value).orElse(null));
 	}
 }
