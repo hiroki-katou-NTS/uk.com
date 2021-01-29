@@ -29,4 +29,9 @@ public class MonthlyOutputLine {
 
 	// 属性
 	private CommonAttributesOfForms attribute;
+
+
+	private Integer primitiveValue;
+
+	private int code;
 }

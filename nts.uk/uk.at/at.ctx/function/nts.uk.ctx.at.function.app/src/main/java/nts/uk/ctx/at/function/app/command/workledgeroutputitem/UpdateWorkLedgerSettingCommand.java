@@ -12,6 +12,7 @@ import java.util.List;
 @Setter
 public class UpdateWorkLedgerSettingCommand {
     private String id;
+    private String code;
     private String name;
     private int settingCategory;
     List<AttendanceItemToPrint> outputItemList;

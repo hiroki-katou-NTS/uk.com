@@ -22,6 +22,9 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.inject.Inject;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -29,10 +32,7 @@ import java.util.stream.Collectors;
  *
  * @author khai.dh
  */
-public class CreateWorkLedgerDisplayContentDomainService {
-    @Inject
-    private GetAggregableMonthlyAttendanceItemAdapter getAggblMonthlyAtddItemAdapter;
-
+public class CreateWorkLedgerDisplayContentQuery {
     /**
      * 勤務台帳の表示内容を作成する
      *
@@ -50,17 +50,23 @@ public class CreateWorkLedgerDisplayContentDomainService {
             WorkLedgerOutputItem workLedgerOutputItem,
             List<WorkPlaceInfo> workPlaceInfo) {
 
-        val listSid = employeeInfoList.parallelStream().map(EmployeeInfor::getEmployeeId).collect(Collectors.toList());
+        val listSid = employeeInfoList.stream().map(EmployeeInfor::getEmployeeId).distinct().collect(Collectors.toList());
         // ① = call() [RQ 588]  社員の指定期間中の所属期間を取得する
         val listEmployeeStatus = require.getAffiliateEmpListDuringPeriod(datePeriod, listSid);
         val cid = AppContexts.user().companyId();
-        val mapSids = employeeInfoList.parallelStream().collect(Collectors.toMap(EmployeeInfor::getEmployeeId, e -> e));
+        val mapSids = employeeInfoList.stream()
+                .filter(distinctByKey(EmployeeInfor::getEmployeeId))
+                .collect(Collectors.toMap(EmployeeInfor::getEmployeeId, e -> e));
 
-        val mapWrps = workPlaceInfo.parallelStream().collect(Collectors.toMap(WorkPlaceInfo::getWorkPlaceId, e -> e));
+        val mapWrps = workPlaceInfo.stream()
+                .filter(distinctByKey(WorkPlaceInfo::getWorkPlaceId))
+                .collect(Collectors.toMap(WorkPlaceInfo::getWorkPlaceId, e -> e));
         val baseDate = datePeriod.end();
         // ② = call() 基準日で社員の雇用と締め日を取得する
         val closureDateEmploymentList = GetClosureDateEmploymentDomainService.get(require, baseDate, listSid);
-        val closureDayMap = closureDateEmploymentList.stream().collect(Collectors.toMap(ClosureDateEmployment::getEmployeeId, e -> e));
+        val closureDayMap = closureDateEmploymentList.stream()
+                .filter(distinctByKey(ClosureDateEmployment::getEmployeeId))
+                .collect(Collectors.toMap(ClosureDateEmployment::getEmployeeId, e -> e));
         val monthlyOutputItems = workLedgerOutputItem != null ? workLedgerOutputItem.getOutputItemList() : null;
 
         if (monthlyOutputItems == null || monthlyOutputItems.isEmpty()) {
@@ -69,15 +75,16 @@ public class CreateWorkLedgerDisplayContentDomainService {
         // ③ 取得する(会社ID)
         val attIds = require.getAggregableMonthlyAttId(cid);
 
-        val listAttIds = monthlyOutputItems.parallelStream().map(AttendanceItemToPrint::getAttendanceId)
+        val listAttIds = monthlyOutputItems.stream().map(AttendanceItemToPrint::getAttendanceId)
                 .distinct().collect(Collectors.toCollection(ArrayList::new));
 
         // 4 月次の勤怠項目を取得する
         val attendanceItemList = require.findByAttendanceItemId(cid, listAttIds)
-                .stream()
+                .stream().filter(distinctByKey(MonthlyAttendanceItem::getAttendanceItemId))
                 .collect(Collectors.toMap(MonthlyAttendanceItem::getAttendanceItemId, q -> q));
         // ④.1 Call 会社の月次項目を取得する
         val attName = require.getMonthlyItems(cid, Optional.empty(), listAttIds, null).stream()
+                .filter(distinctByKey(AttItemName::getAttendanceItemId))
                 .collect(Collectors.toMap(AttItemName::getAttendanceItemId, q -> q));
         List<WorkLedgerDisplayContent> rs = new ArrayList<>();
         if (attName.isEmpty()) {
@@ -115,7 +122,7 @@ public class CreateWorkLedgerDisplayContentDomainService {
             }
             Map<YearMonth, Map<Integer, ItemValue>> allValue = listAttendances.stream()
                     .collect(Collectors.toMap(MonthlyRecordValueImport::getYearMonth,
-                            k -> k.getItemValues().stream()
+                            k -> k.getItemValues().stream().filter(distinctByKey(ItemValue::getItemId))
                                     .collect(Collectors.toMap(ItemValue::getItemId, l -> l))));
             val iemOneLine = new ArrayList<MonthlyOutputLine>();
             for (val att : monthlyOutputItems) {
@@ -128,11 +135,14 @@ public class CreateWorkLedgerDisplayContentDomainService {
                     if (attribute == null) continue;
                     allValue.forEach((key, values) -> {
                         val valueSub = values.getOrDefault(att.getAttendanceId(), null);
-                        boolean isCharacter = attribute == CommonAttributesOfForms.WORK_TYPE || attribute == CommonAttributesOfForms.WORKING_HOURS;
+                        boolean isCharacter = attribute == CommonAttributesOfForms.WORK_TYPE
+                                || attribute == CommonAttributesOfForms.WORKING_HOURS ||
+                                attribute == CommonAttributesOfForms.OTHER_CHARACTERS ||
+                                attribute == CommonAttributesOfForms.OTHER_CHARACTER_NUMBER;
                         if (valueSub != null) {
                             monthlyValues.add(new MonthlyValue(
                                     valueSub.itemId(),
-                                    !isCharacter ? valueSub.value() : null,
+                                    !isCharacter ? valueSub.doubleOrDefault() : null,
                                     key,
                                     isCharacter ? valueSub.stringOrDefault() : null
                             ));
@@ -146,7 +156,10 @@ public class CreateWorkLedgerDisplayContentDomainService {
                                     value.getAttendanceItemName(),
                                     att.getRanking(),
                                     total,
-                                    attribute));
+                                    attribute,
+                                    attributeMonthly.getPrimitiveValue().isPresent() ? attributeMonthly.getPrimitiveValue().get().value : null,
+                                    attributeMonthly.getDisplayNumber()
+                            ));
                 }
 
             }
@@ -222,6 +235,13 @@ public class CreateWorkLedgerDisplayContentDomainService {
 
     private static boolean checkAttId(List<Integer> attIds, int attId) {
         return attIds.stream().anyMatch(e -> e == attId);
+    }
+
+    public static <T> Predicate<T> distinctByKey(
+            Function<? super T, ?> keyExtractor) {
+
+        Map<Object, Boolean> seen = new ConcurrentHashMap<>();
+        return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
 
 }

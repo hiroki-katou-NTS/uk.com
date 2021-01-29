@@ -51,6 +51,7 @@ public class UpdateWorkLedgerSettingDomainServiceTest {
 					require,
 					"uid01",
 					name,
+					code,
 					SettingClassificationCommon.STANDARD_SELECTION,
 					Arrays.asList(new AttendanceItemToPrint(1, 1))
 			);
@@ -70,23 +71,27 @@ public class UpdateWorkLedgerSettingDomainServiceTest {
 	public void testUpdateSetting_02(){
 		OutputItemSettingCode code = new OutputItemSettingCode("OutputItemSettingCode02");
 		OutputItemSettingName name = new OutputItemSettingName("OutputItemSettingName02");
+		val item = new WorkLedgerOutputItem(
+				"uid02",
+				code,
+				Arrays.asList(new AttendanceItemToPrint(1, 1)),
+				name,
+				SettingClassificationCommon.STANDARD_SELECTION,
+				"sid"
+		);
 
-		new Expectations() {{
-			require.getOutputSettingDetail("uid02");
-			result = Optional.of(WorkLedgerOutputItem.create(
-					"uid02",
-					code,
-					name,
-					SettingClassificationCommon.STANDARD_SELECTION));
-		}};
 		new Expectations(AppContexts.class) {{
+			require.getOutputSettingDetail("uid02");
+			result = Optional.of(item);
 			AppContexts.user().employeeId();
 			result = "employeeId03";
 		}};
+
 		val actual = UpdateWorkLedgerSettingDomainService.updateSetting(
 				require,
 				"uid02",
 				name,
+				code,
 				SettingClassificationCommon.STANDARD_SELECTION,
 				Arrays.asList(new AttendanceItemToPrint(1, 1))
 		);
@@ -109,23 +114,25 @@ public class UpdateWorkLedgerSettingDomainServiceTest {
 	public void testUpdateSetting_03(){
 		OutputItemSettingCode code = new OutputItemSettingCode("OutputItemSettingCode03");
 		OutputItemSettingName name = new OutputItemSettingName("OutputItemSettingName03");
-
+		val item = new WorkLedgerOutputItem(
+				"uid03",
+				code,
+				Arrays.asList(new AttendanceItemToPrint(1, 1)),
+				name,
+				SettingClassificationCommon.FREE_SETTING,
+				"sid"
+		);
 		new Expectations(AppContexts.class) {{
 			AppContexts.user().employeeId();
 			result = "employeeId03";
-		}};
-		new Expectations() {{
 			require.getOutputSettingDetail("uid03");
-			result = Optional.of(WorkLedgerOutputItem.create(
-					"uid02",
-					code,
-					name,
-					SettingClassificationCommon.STANDARD_SELECTION));
+			result = Optional.of(item);
 		}};
 		val actual = UpdateWorkLedgerSettingDomainService.updateSetting(
 				require,
 				"uid03",
 				name,
+				code,
 				SettingClassificationCommon.FREE_SETTING,
 				Arrays.asList(new AttendanceItemToPrint(1, 1))
 		);

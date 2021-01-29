@@ -56,10 +56,10 @@ public class DuplicateWorkLedgerSettingCommandHandler extends CommandHandler<Dup
         }
 
         @Override
-        public void duplicateWorkLedgerOutputItem(String employeeId, String dupSrcId, String dupDestId,
+        public void duplicateWorkLedgerOutputItem(String dupSrcId, String dupDestId,
                                                   OutputItemSettingCode dupCode, OutputItemSettingName dupName) {
 
-            workLedgerOutputItemRepo.duplicateConfigDetails(AppContexts.user().companyId(), employeeId, dupSrcId,
+            workLedgerOutputItemRepo.duplicateConfigDetails(AppContexts.user().companyId(), dupSrcId,
                     dupDestId, dupCode, dupName);
 
         }

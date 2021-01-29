@@ -4,6 +4,7 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.at.function.dom.commonform.AttendanceItemToPrint;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
 import nts.uk.shr.com.context.AppContexts;
@@ -32,6 +33,7 @@ public class UpdateWorkLedgerSettingDomainService {
             Require require,
             String id,
             OutputItemSettingName name,
+            OutputItemSettingCode code,
             SettingClassificationCommon settingCategory,
             List<AttendanceItemToPrint> outputItemList) {
 
@@ -41,7 +43,6 @@ public class UpdateWorkLedgerSettingDomainService {
             throw new BusinessException("Msg_1928");
         }
         val employeeId = AppContexts.user().employeeId();
-        val code = outputSetting.get().getCode();
         val workLedgerOutputItem = new WorkLedgerOutputItem(
                 id,
                 code,

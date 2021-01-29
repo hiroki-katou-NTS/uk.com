@@ -30,8 +30,8 @@ public class WorkLedgerOutputItemFileQuery {
     private boolean isZeroDisplay;
 
     //「７」改ページ指定選択肢
-    private boolean pageBreak;
 
+    private boolean code;
     // 締め日
     private int closureId;
 

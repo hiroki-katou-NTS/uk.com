@@ -93,7 +93,12 @@ module nts.uk.at.view.kwr005.b {
 
     newSetting() {
       const vm = this;
+      vm.clearToNewSetting()
+      $('#KWR005_B52').focus();
+    }
 
+    clearToNewSetting() {
+      const vm = this;
       nts.uk.ui.errors.clearAll();
       vm.currentCodeList(null);
       vm.currentCodeListSwap.removeAll();
@@ -105,7 +110,6 @@ module nts.uk.at.view.kwr005.b {
       vm.isEnableAttendanceCode(true);
       vm.createDefaultSettingDetails();
       vm.isNewMode(true);
-      $('#KWR005_B52').focus();
     }
 
     clearSelection() {
@@ -170,7 +174,7 @@ module nts.uk.at.view.kwr005.b {
           vm.$blockui('hide');
           $(ctrlFocus).focus();
           if (error.messageId === 'Msg_1928') {
-            vm.loadSettingList({ standOrFree: vm.settingCategory(), code: null });
+            vm.loadSettingList({ standOrFree: vm.settingCategory(), code: null, msgId: 'Msg_1928' });
           }
         });
         //$(ctrlFocus).ntsError('set', { messageId: error.messageId });
@@ -409,10 +413,17 @@ module nts.uk.at.view.kwr005.b {
 
           vm.currentCodeList(code);
           vm.isNewMode(false);
-
+          if (!_.isNil(params.msgId) && params.msgId === 'Msg_1928')
+            $('#btnB11').focus();
+          else
+            $('#KWR005_B53').focus();  
+          
         } else {
           //create new the settings list
-          vm.newSetting();
+          vm.clearToNewSetting();
+          if (!_.isNil(params.msgId) && params.msgId === 'Msg_1928')
+            $('#btnB11').focus();
+          else $('#KWR005_B52').focus();
         }
         vm.$blockui('hide');
       });
@@ -438,6 +449,7 @@ module nts.uk.at.view.kwr005.b {
         vm.currentCodeList(newSelectedCode);
       } else {
         vm.newSetting(); //create new
+        //$('#KWR005_B52').focus();
       }
     }
 

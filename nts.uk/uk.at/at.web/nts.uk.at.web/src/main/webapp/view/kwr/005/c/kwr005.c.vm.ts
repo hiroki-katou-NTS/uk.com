@@ -75,8 +75,10 @@ module nts.uk.at.view.kwr005.c {
       vm.isDeleted(false);
       vm.$ajax(PATHS.cloneSettingClassification, vm.params())
         .done((response) => {
-          vm.$blockui('hide');
-          vm.$window.close({ code: vm.newCode(), name: vm.newName() });
+          vm.$dialog.error({ messageId: 'Msg_15' }).then(() => {
+            vm.$blockui('hide');
+            vm.$window.close({ code: vm.newCode(), name: vm.newName() });
+          });
         })
         .fail((error) => {
           let ctrlId = (error.messageId === 'Msg_1927') ? '#KWR005_C23' : '#closeDialog';
