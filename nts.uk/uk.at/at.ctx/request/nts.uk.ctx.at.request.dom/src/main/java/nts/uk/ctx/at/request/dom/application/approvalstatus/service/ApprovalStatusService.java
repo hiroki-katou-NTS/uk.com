@@ -339,7 +339,7 @@ public interface ApprovalStatusService {
 	 * @param employmentCDLst
 	 * @return
 	 */
-	public Map<String, String> getMailCountWorkConfirm(DatePeriod period, ClosureId closureId, YearMonth yearMonth, 
+	public Map<String, List<String>> getMailCountWorkConfirm(DatePeriod period, ClosureId closureId, YearMonth yearMonth, 
 			String companyID, List<String> wkpIDLst, List<String> employmentCDLst);
 	
 	/**

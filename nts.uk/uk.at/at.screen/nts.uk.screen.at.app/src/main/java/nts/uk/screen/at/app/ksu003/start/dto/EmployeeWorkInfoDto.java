@@ -39,11 +39,11 @@ public class EmployeeWorkInfoDto {
 	//シフト名称
 	private String shiftName;
 	//List<育児介護短時間帯>
-	private List<TimeZoneDto> shortTime;
+	private List<TimeShortDto> shortTime;
 	public EmployeeWorkInfoDto(int isCheering, int isConfirmed, int bounceAtr, int directAtr,
 			int isNeedWorkSchedule, String employeeId, String date, TimeZonesDto timeZonesDto,
 			String wkpNameSupport, List<TimeVacationAndTypeDto> listTimeVacationAndType, String shiftCode,
-			String shiftName, List<TimeZoneDto> shortTime) {
+			String shiftName, List<TimeShortDto> shortTime) {
 		super();
 		this.isCheering = isCheering;
 		this.isConfirmed = isConfirmed;

@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.workrule.ErrorStatusWorkInfo;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
@@ -85,30 +86,30 @@ public class GetEmpWorkFixedWorkInfoSc {
 				workTimeSettingService, basicScheduleService, fixedWorkSet, flowWorkSet, flexWorkSet, predetemineTimeSet);
 		
 		// 3 .勤務情報のエラー状態 <> 正常
-		int errorStatusWorkInfo = workInformation.checkErrorCondition(require).value;
+		ErrorStatusWorkInfo errorStatusWorkInfo = workInformation.checkErrorCondition(require);
 		String messErr = "";
 		switch (errorStatusWorkInfo) {
-		case 2:
+		case WORKTIME_ARE_REQUIRE_NOT_SET:
 			messErr = "Msg_29";
 			break;
 		
-		case 3:
+		case WORKTIME_ARE_SET_WHEN_UNNECESSARY:
 			messErr = "Msg_434";
 			break;
 		
-		case 5:
+		case WORKTIME_WAS_DELETE:
 			messErr = "Msg_591";
 			break;
 			
-		case 7:
+		case WORKTIME_HAS_BEEN_ABOLISHED:
 			messErr = "Msg_591";
 			break;
 			
-		case 4:
+		case WORKTYPE_WAS_DELETE:
 			messErr = "Msg_590";
 			break;
 			
-		case 6:
+		case WORKTYPE_WAS_ABOLISHED:
 			messErr = "Msg_590";
 			break;	
 
@@ -116,7 +117,7 @@ public class GetEmpWorkFixedWorkInfoSc {
 			break;
 		}
 		
-		if(errorStatusWorkInfo != 1) {
+		if(errorStatusWorkInfo != ErrorStatusWorkInfo.NORMAL) {
 			throw new BusinessException(messErr);
 		}
 		

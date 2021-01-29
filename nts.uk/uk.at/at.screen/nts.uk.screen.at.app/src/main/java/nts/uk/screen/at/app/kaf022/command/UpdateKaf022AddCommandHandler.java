@@ -111,7 +111,7 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 		List<DisplayReason> reasonDisplaySettings = kaf022.getReasonDisplaySettings().stream().map(r -> r.toDomain(companyId)).collect(Collectors.toList());
 
 		// 登録の前チェック処理
-		checkBeforeRegister(companyId, applicationSetting.getAppLimitSetting().isStandardReasonRequired(), reasonDisplaySettings);
+		checkBeforeRegister(companyId, reasonDisplaySettings);
 
 		// 登録処理
 		applicationSettingRepo.save(applicationSetting, reasonDisplaySettings, kaf022.getNightOvertimeReflectAtr());
@@ -160,31 +160,28 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 	/**
 	 * 定型理由必須のチェック
 	 * @param companyId
-	 * @param standardReasonRequired
 	 * @param reasonDisplaySettings
 	 */
-	private void checkBeforeRegister(String companyId, boolean standardReasonRequired, List<DisplayReason> reasonDisplaySettings) {
-		if (standardReasonRequired) {
-			List<DisplayReason> checkTargets = reasonDisplaySettings.stream().filter(i -> i.getDisplayFixedReason() == DisplayAtr.DISPLAY).collect(Collectors.toList());
-			if (checkTargets.size() > 0) {
-				for (DisplayReason target : checkTargets) {
-					if (target.getAppType() == ApplicationType.ABSENCE_APPLICATION) {
-						Optional<AppReasonStandard> optionalAppReasonStandard =  appReasonStandardRepo.findByHolidayAppType(companyId, target.getOpHolidayAppType().get());
-						if (!optionalAppReasonStandard.isPresent()
-								|| CollectionUtil.isEmpty(optionalAppReasonStandard.get().getReasonTypeItemLst())) {
-							BusinessException exception = new BusinessException("Msg_1751", target.getOpHolidayAppType().get().name);
-							exception.setSuppliment("appType", target.getAppType().value);
-							exception.setSuppliment("holidayAppType", target.getHolidayAppType());
-							throw exception;
-						}
-					} else {
-						Optional<AppReasonStandard> optionalAppReasonStandard =  appReasonStandardRepo.findByAppType(companyId, target.getAppType());
-						if (!optionalAppReasonStandard.isPresent()
-								|| CollectionUtil.isEmpty(optionalAppReasonStandard.get().getReasonTypeItemLst())) {
-							BusinessException exception = new BusinessException("Msg_1751", target.getAppType().name);
-							exception.setSuppliment("appType", target.getAppType().value);
-							throw exception;
-						}
+	private void checkBeforeRegister(String companyId, List<DisplayReason> reasonDisplaySettings) {
+		List<DisplayReason> checkTargets = reasonDisplaySettings.stream().filter(i -> i.getDisplayFixedReason() == DisplayAtr.DISPLAY).collect(Collectors.toList());
+		if (checkTargets.size() > 0) {
+			for (DisplayReason target : checkTargets) {
+				if (target.getAppType() == ApplicationType.ABSENCE_APPLICATION) {
+					Optional<AppReasonStandard> optionalAppReasonStandard =  appReasonStandardRepo.findByHolidayAppType(companyId, target.getOpHolidayAppType().get());
+					if (!optionalAppReasonStandard.isPresent()
+							|| CollectionUtil.isEmpty(optionalAppReasonStandard.get().getReasonTypeItemLst())) {
+						BusinessException exception = new BusinessException("Msg_1751", target.getOpHolidayAppType().get().name);
+						exception.setSuppliment("appType", target.getAppType().value);
+						exception.setSuppliment("holidayAppType", target.getHolidayAppType());
+						throw exception;
+					}
+				} else {
+					Optional<AppReasonStandard> optionalAppReasonStandard =  appReasonStandardRepo.findByAppType(companyId, target.getAppType());
+					if (!optionalAppReasonStandard.isPresent()
+							|| CollectionUtil.isEmpty(optionalAppReasonStandard.get().getReasonTypeItemLst())) {
+						BusinessException exception = new BusinessException("Msg_1751", target.getAppType().name);
+						exception.setSuppliment("appType", target.getAppType().value);
+						throw exception;
 					}
 				}
 			}

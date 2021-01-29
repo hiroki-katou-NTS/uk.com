@@ -287,7 +287,6 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 				if(phase1.countRemainApprover) {
 					this.phase1 += vm.$i18n('KAF018_531', [phase1.countRemainApprover]);
 				}
-				
 			} else {
 				this.approvalStatus += " ";
 			}

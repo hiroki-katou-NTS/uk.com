@@ -21,10 +21,10 @@ public class ShortWorkingTimeSheetExport {
 	/** 終了: 時刻(日区分付き) */
 	private int endTime;
 	
-	/** 控除時間: 勤怠時間 */
-	private int deductionTime;
-	
-	/** 時間: 勤怠時間 */
-	private int shortTime;
+//	/** 控除時間: 勤怠時間 */
+//	private int deductionTime;
+//	
+//	/** 時間: 勤怠時間 */
+//	private int shortTime;
 
 }

@@ -4858,6 +4858,8 @@ div .ex-area-line.x-stay {
   text-overflow: ellipsis;
   display: block;
   margin-left: 5px;
+  user-select: none;
+  -ms-user-select: none;
 }
 
 /*****************************

@@ -56,10 +56,27 @@ module nts.uk.com.view.ccg015.d {
               vm.contentFlowMenu(true);
               vm.contentTopPagePart(false);
               vm.contentUrl(false);
+              const flowMenuChoose = _.findIndex(vm.listFlowMenu(), (item: FlowMenuItem) => { return item.flowCode === vm.flowMenuSelectedCode() });
+              const fileIdChoose: string = vm.listFlowMenu()[flowMenuChoose].fileId;
+              vm.$blockui('grayout');
+              vm.$ajax('sys/portal/createflowmenu/extract/' + fileIdChoose).then((item: any) => {
+              if (!_.isEmpty(item)) {
+                vm.renderHTML(item.htmlContent, 'frame1');
+                $(window.frames['frameF1'].contentDocument).find('a').attr('href', 'javascript: void()').removeAttr('target');
+              }
+        }).always(() => vm.$blockui('clear'));
             } else if (value === LayoutType.FLOW_MENU_UPLOAD) {
               vm.contentFlowMenu(false);
               vm.contentTopPagePart(true);
               vm.contentUrl(false);
+              const topPagePartChoose = _.findIndex(vm.listTopPagePart(), (item: TopPagePartItem) => { return item.flowCode ===  vm.toppageSelectedCode()});
+              const fileIdChoose: string = vm.listTopPagePart()[topPagePartChoose].fileId;
+              vm.fileID(fileIdChoose);
+              vm.filePath(ntsFile.liveViewUrl(fileIdChoose, 'index.htm'));
+              setTimeout(function(){    
+                $(window.frames['frameF2'].contentDocument).find('a').attr('onclick', null).off("click");
+             }, 2000);
+              
             } else {
               vm.contentFlowMenu(false);
               vm.contentTopPagePart(false);
@@ -77,6 +94,7 @@ module nts.uk.com.view.ccg015.d {
         vm.$ajax('sys/portal/createflowmenu/extract/' + fileIdChoose).then((item: any) => {
           if (!_.isEmpty(item)) {
             vm.renderHTML(item.htmlContent, 'frame1');
+            $(window.frames['frameF1'].contentDocument).find('a').attr('href', 'javascript: void()').removeAttr('target');
           }
         }).always(() => vm.$blockui('clear'));
       })
@@ -87,6 +105,9 @@ module nts.uk.com.view.ccg015.d {
         const fileIdChoose: string = vm.listTopPagePart()[topPagePartChoose].fileId;
         vm.fileID(fileIdChoose);
         vm.filePath(ntsFile.liveViewUrl(fileIdChoose, 'index.htm'));
+        setTimeout(function(){    
+          $(window.frames['frameF2'].contentDocument).find('a').attr('onclick', null).off("click");
+       }, 2000);
       })
     }
 
@@ -105,11 +126,11 @@ module nts.uk.com.view.ccg015.d {
       return vm.$ajax('/toppage/changeFlowMenu', data)
         .then((result: any) => {
           if (result && layoutType === LayoutType.FLOW_MENU) {
-            vm.listFlowMenu(result);
+            vm.listFlowMenu(_.orderBy(result,['flowCode'],['asc']));
             vm.flowMenuSelectedCode(vm.listFlowMenu()[0].flowCode);
           } else if (result && layoutType === LayoutType.FLOW_MENU_UPLOAD) {
-            vm.listTopPagePart(result);
             if(result.length > 0){
+              vm.listTopPagePart(_.orderBy(result,['flowCode'],['asc']));
               vm.toppageSelectedCode(vm.listTopPagePart()[0].flowCode);
             }
           } else {
@@ -141,7 +162,9 @@ module nts.uk.com.view.ccg015.d {
               const topPagePartChoose = _.findIndex(vm.listTopPagePart(), (item: TopPagePartItem) => { return item.flowCode === result.flowMenuCd });
               vm.toppageSelectedCode(vm.listTopPagePart()[topPagePartChoose].flowCode);
             }
-            vm.url(result.url);
+            if(result.url && result.url !== '') {
+              vm.url(result.url);
+            }
             vm.urlIframe3(result.url);
           } else {
             vm.isNewMode(true);
@@ -178,6 +201,8 @@ module nts.uk.com.view.ccg015.d {
 
     checkSaveLayout() {
       const vm = this;
+      console.log();
+      
       if (vm.layoutType() === LayoutType.EXTERNAL_URL) {
         vm.$errors('clear');
         vm.$validate()
@@ -193,6 +218,15 @@ module nts.uk.com.view.ccg015.d {
 
     saveLayout() {
       const vm = this;
+      if(vm.layoutType() !== LayoutType.FLOW_MENU){
+        vm.flowMenuSelectedCode('');
+      }
+      if(vm.layoutType() !== LayoutType.FLOW_MENU_UPLOAD) {
+        vm.toppageSelectedCode('');
+      }
+      if(vm.layoutType() !== LayoutType.EXTERNAL_URL) {
+        vm.url('');
+      }
       const data: any = {
         widgetSettings: null,
         topPageCode: vm.topPageCode(),
@@ -201,7 +235,7 @@ module nts.uk.com.view.ccg015.d {
         cid: null,
         flowMenuCd: vm.flowMenuSelectedCode(),
         flowMenuUpCd: vm.toppageSelectedCode(),
-        url: vm.urlIframe3()
+        url: vm.url()
       };
       vm.$blockui("grayout");
       vm.$ajax('/toppage/saveLayoutFlowMenu', data)
