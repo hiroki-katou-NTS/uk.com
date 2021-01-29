@@ -37,7 +37,6 @@ module nts.uk.at.view.kmk004.b {
 					name: 'box-year',
 					params:{
 						selectedYear: selectedYear,
-						param: selectId,
 						type: type,
 						years: years
 					}
@@ -88,16 +87,10 @@ module nts.uk.at.view.kmk004.b {
 
 		created() {
 			const vm = this;
+		}
 
-			vm.years
-				.subscribe(() => {
-					if (ko.unwrap(vm.years).length > 0) {
-						vm.existYear(true);
-					} else {
-						vm.existYear(false);
-						vm.checkDelete(false);
-					}
-				});
+		mounted() {
+			const vm = this;
 
 			vm.selectedYear
 				.subscribe(() => {
@@ -117,10 +110,16 @@ module nts.uk.at.view.kmk004.b {
 						vm.checkDelete(false);
 					}
 				});
-		}
 
-		mounted() {
-			const vm = this;
+			vm.years
+				.subscribe(() => {
+					if (ko.unwrap(vm.years).length > 0) {
+						vm.existYear(true);
+					} else {
+						vm.existYear(false);
+						vm.checkDelete(false);
+					}
+				});
 
 			$(document).ready(function () {
 				$('#list-box').focus();

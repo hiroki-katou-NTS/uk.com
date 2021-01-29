@@ -126,7 +126,9 @@ module nts.uk.at.view.kmk004.b {
                 vm.newYearQ = params.newYearQ;
             }
 
-            vm.initList();
+            if (vm.type != "Com_Company"){
+                vm.initList();
+            }
 
             vm.workTimes.subscribe((wts) => {
                 const total: number = wts.reduce((p, c) => p += Number(c.laborTime()), 0);
