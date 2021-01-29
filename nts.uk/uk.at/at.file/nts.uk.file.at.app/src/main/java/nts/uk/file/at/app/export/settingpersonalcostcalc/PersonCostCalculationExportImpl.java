@@ -218,10 +218,10 @@ public class PersonCostCalculationExportImpl implements MasterListData {
         String value = "";
         switch (att) {
             case 0:
-                value = TextResource.localize("SET_PREMIUM_RATE");
+                value = TextResource.localize("KML001_73");
                 break;
             case 1:
-                value = TextResource.localize("SET_UNIT_PRICE");
+                value = TextResource.localize("KML001_74");
                 break;
             default:
                 break;
