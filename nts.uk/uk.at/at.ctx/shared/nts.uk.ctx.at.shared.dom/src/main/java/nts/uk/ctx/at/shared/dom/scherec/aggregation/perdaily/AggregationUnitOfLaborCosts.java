@@ -53,20 +53,17 @@ public enum AggregationUnitOfLaborCosts {
 		}
 
 		AttendanceAmountDaily amount = null;
-		amount = new AttendanceAmountDaily( 0 );	// TODO 日別勤怠の金額系項目マージ待ち
 		switch( this ) {
 			case WITHIN:	// 就業時間
-				// TODO 日別勤怠の金額系項目マージ待ち
-//				amount = dailyAttendance.getActualWorkingTimeOfDaily()	// 日別勤怠の勤務時間
-//						.getTotalWorkingTime()					// 日別勤怠の総労働時間
-//						.getWithinStatutoryTimeOfDaily()		// 日別勤怠の所定内時間
-//						.getWorkTime();							// TODO 就業時間金額
+				amount = dailyAttendance.getActualWorkingTimeOfDaily()	// 日別勤怠の勤務時間
+								.getTotalWorkingTime()					// 日別勤怠の総労働時間
+								.getWithinStatutoryTimeOfDaily()		// 日別勤怠の所定内時間
+								.getWithinWorkTimeAmount();				// 就業時間金額
 				break;
 			case EXTRA:		// 時間外時間
-				// TODO 日別勤怠の金額系項目マージ待ち
-//				amount = dailyAttendance.getActualWorkingTimeOfDaily()	// 日別勤怠の勤務時間
-//						.getPremiumTimeOfDailyPerformance()				// 日別勤怠の割増時間
-//						.getPremiumTime(1).get().getPremiumAmount();	// TODO 割増金額合計
+				amount = dailyAttendance.getActualWorkingTimeOfDaily()	// 日別勤怠の勤務時間
+								.getPremiumTimeOfDailyPerformance()		// 日別勤怠の割増時間
+								.getTotalAmount();						// 割増金額合計
 				break;
 			default:
 				throw new RuntimeException("Value is out of range.");
