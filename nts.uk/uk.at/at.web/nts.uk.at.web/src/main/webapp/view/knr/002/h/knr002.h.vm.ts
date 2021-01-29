@@ -128,10 +128,11 @@ module knr002.h {
                         self.employeesList(data);
                         let employeesListTemp = [];
                         for(let item of data){
-                            let employee = new ExportEmployeeSearchDto(item.employeeId, item.employeeCode, item.businessName, item.workplaceName);
+                            let workplaceName = item.workplaceName? item.workplaceName: "";
+                            let employee = new ExportEmployeeSearchDto(item.employeeId, item.employeeCode, item.businessName, workplaceName);
                             employeesListTemp.push(employee);
                         }
-                        self.employeesListVal(employeesListTemp);
+                        self.employeesListVal(_.sortBy(employeesListTemp, e => e.employeeCode));
                     }
                     dfd.resolve();
                 });
@@ -176,11 +177,12 @@ module knr002.h {
                 self.employeeSearchedList([]);
                 let employeeSearchs: ExportEmployeeSearchDto [] = [];
                 for (let employeeSearch of dataList) {
+                    let affiliationNameSearch = employeeSearch.affiliationName ? employeeSearch.affiliationName : "";
                     let employee: ExportEmployeeSearchDto  = {
                         employeeId: employeeSearch.employeeId,
                         employeeCode: employeeSearch.employeeCode,
                         employeeName: employeeSearch.employeeName,
-                        affiliationName: employeeSearch.affiliationName
+                        affiliationName: affiliationNameSearch
                     };
                     employeeSearchs.push(employee);
                 }
