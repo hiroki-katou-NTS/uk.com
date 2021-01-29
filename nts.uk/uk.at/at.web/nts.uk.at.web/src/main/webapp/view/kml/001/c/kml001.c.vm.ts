@@ -122,11 +122,9 @@ module nts.uk.at.view.kml001.c {
         var premiumItemSelect = servicebase.premiumItemSelect();
         $.when(premiumItemSelect).done((data) => {
           let premiumItemSelectData: any = _.orderBy(data, ['displayNumber'], ['asc']);
-          if (premiumItemSelectData.length > 0) {
-            let found = false;
+          if (premiumItemSelectData.length > 0) {          
             _.forEach(premiumItemSelectData, (item) => {
-              if (item.useAtr && !found) {
-                found = true;
+              if (item.useAtr) {               
                 self.defaultPremiumSettings.push({
                   iD: item.displayNumber,
                   name: item.name,
