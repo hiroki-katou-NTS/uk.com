@@ -132,7 +132,8 @@ module knr002.h {
                             let employee = new ExportEmployeeSearchDto(item.employeeId, item.employeeCode, item.businessName, workplaceName);
                             employeesListTemp.push(employee);
                         }
-                        self.employeesListVal(_.sortBy(employeesListTemp, e => e.employeeCode));
+                        //  self.employeesListVal(_.sortBy(employeesListTemp, e => e.employeeCode));
+                        self.employeesListVal(employeesListTemp);
                     }
                     dfd.resolve();
                 });
