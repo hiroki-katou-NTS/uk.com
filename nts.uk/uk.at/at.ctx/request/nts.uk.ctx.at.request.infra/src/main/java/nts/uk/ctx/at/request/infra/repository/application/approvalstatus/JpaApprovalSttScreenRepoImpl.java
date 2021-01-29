@@ -50,7 +50,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"        AND              SKR.START_DATE <= @endDate " +
 				"        AND SDKJ.DEL_STATUS_ATR = '0' " +
 				") SKBSYINIO " +
-				"LEFT JOIN  ( " +
+				"INNER JOIN  ( " +
 				"        SELECT KRK.SID,KRK.EMP_CD,KR.START_DATE,KR.END_DATE " +
 				"        FROM BSYMT_EMPLOYMENT_HIST KR " +
 				"        INNER JOIN BSYMT_EMPLOYMENT_HIS_ITEM KRK " +
@@ -110,7 +110,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                            AND              SKR.START_DATE <= @endDate " +
 				"                            AND SDKJ.DEL_STATUS_ATR = '0' " +
 				"                    ) SKBSYINIO " +
-				"                    LEFT JOIN  ( " +
+				"                    INNER JOIN  ( " +
 				"                            SELECT KRK.SID,KRK.EMP_CD,KR.START_DATE,KR.END_DATE " +
 				"                            FROM BSYMT_EMPLOYMENT_HIST KR " +
 				"                            INNER JOIN BSYMT_EMPLOYMENT_HIS_ITEM KRK " +
@@ -183,7 +183,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                             AND              SKR.START_DATE <= @endDate " +
 				"                             AND SDKJ.DEL_STATUS_ATR = '0' " +
 				"                     ) SKBSYINIO " +
-				"                     LEFT JOIN  ( " +
+				"                     INNER JOIN  ( " +
 				"                             SELECT KRK.SID,KRK.EMP_CD,KR.START_DATE,KR.END_DATE " +
 				"                             FROM BSYMT_EMPLOYMENT_HIST KR " +
 				"                             INNER JOIN BSYMT_EMPLOYMENT_HIS_ITEM KRK " +
@@ -298,7 +298,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                          AND              SKR.START_DATE <= @endDate " +
 				"                                          AND SDKJ.DEL_STATUS_ATR = '0' " +
 				"                                   ) SKBSYINIO " +
-				"                                   LEFT JOIN  ( " +
+				"                                   INNER JOIN  ( " +
 				"                                          SELECT KRK.SID,KRK.EMP_CD,KR.START_DATE,KR.END_DATE " +
 				"                                          FROM BSYMT_EMPLOYMENT_HIST KR " +
 				"                                          INNER JOIN BSYMT_EMPLOYMENT_HIS_ITEM KRK " +
@@ -374,7 +374,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                           AND              SKR.START_DATE <= @endDate " +
 				"                                           AND              SDKJ.DEL_STATUS_ATR = '0' " +
 				"                                   ) SKBSYINIO " +
-				"                                   LEFT JOIN  ( " +
+				"                                   INNER JOIN  ( " +
 				"                                           SELECT         KRK.SID,KRK.EMP_CD " +
 				"                                           FROM           BSYMT_EMPLOYMENT_HIST KR " +
 				"                                           INNER JOIN     BSYMT_EMPLOYMENT_HIS_ITEM KRK " +
@@ -478,7 +478,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                      AND              SKR.START_DATE <= @endDate " +
 				"                                      AND              SDKJ.DEL_STATUS_ATR = '0' " +
 				"                                      ) SKBSYINIO " +
-				"                            LEFT JOIN  ( " +
+				"                            INNER JOIN  ( " +
 				"                                                SELECT         KRK.SID,KRK.EMP_CD " +
 				"                                                FROM           BSYMT_EMPLOYMENT_HIST KR " +
 				"                                                INNER JOIN     BSYMT_EMPLOYMENT_HIS_ITEM KRK " +
@@ -570,7 +570,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"        AND              SKR.START_DATE <= @endDate " +
 				"        AND SDKJ.DEL_STATUS_ATR = '0' " +
 				") SKBSYINIO " +
-				"LEFT JOIN  ( " +
+				"INNER JOIN  ( " +
 				"        SELECT KRK.SID,KRK.EMP_CD,KR.START_DATE,KR.END_DATE " +
 				"        FROM BSYMT_EMPLOYMENT_HIST KR " +
 				"        INNER JOIN BSYMT_EMPLOYMENT_HIS_ITEM KRK " +
@@ -630,7 +630,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                        AND              SKR.START_DATE <= @endDate " +
 				"                                        AND SDKJ.DEL_STATUS_ATR = '0' " +
 				"                            ) SKBSYINIO " +
-				"                    LEFT JOIN  ( " +
+				"                    INNER JOIN  ( " +
 				"                                        SELECT KRK.SID,KRK.EMP_CD,KR.START_DATE,KR.END_DATE " +
 				"                                        FROM BSYMT_EMPLOYMENT_HIST KR " +
 				"                                        INNER JOIN BSYMT_EMPLOYMENT_HIS_ITEM KRK " +
@@ -701,7 +701,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                AND              SKR.START_DATE <= @endDate " +
 				"                                AND SDKJ.DEL_STATUS_ATR = '0' " +
 				"                        ) SKBSYINIO " +
-				"                    LEFT JOIN  ( " +
+				"                    INNER JOIN  ( " +
 				"                            SELECT KRK.SID,KRK.EMP_CD,KR.START_DATE,KR.END_DATE " +
 				"                            FROM BSYMT_EMPLOYMENT_HIST KR " +
 				"                            INNER JOIN BSYMT_EMPLOYMENT_HIS_ITEM KRK " +
@@ -811,7 +811,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                    AND              SKR.START_DATE <= @endDate " +
 				"                                    AND              SDKJ.DEL_STATUS_ATR = '0' " +
 				"                            ) SKBSYINIO " +
-				"                    LEFT JOIN  ( " +
+				"                    INNER JOIN  ( " +
 				"                                            SELECT         KRK.SID,KRK.EMP_CD " +
 				"                                            FROM           BSYMT_EMPLOYMENT_HIST KR " +
 				"                                            INNER JOIN     BSYMT_EMPLOYMENT_HIS_ITEM KRK " +
@@ -875,7 +875,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                AND              SKR.START_DATE <= @endDate " +
 				"                                AND              SDKJ.DEL_STATUS_ATR = '0' " +
 				"                        ) SKBSYINIO " +
-				"                        LEFT JOIN  ( " +
+				"                        INNER JOIN  ( " +
 				"                                SELECT         KRK.SID,KRK.EMP_CD " +
 				"                                FROM           BSYMT_EMPLOYMENT_HIST KR " +
 				"                                INNER JOIN     BSYMT_EMPLOYMENT_HIS_ITEM KRK " +
@@ -974,7 +974,7 @@ public class JpaApprovalSttScreenRepoImpl extends JpaRepository implements Appro
 				"                                   AND              SKR.START_DATE <= @endDate " +
 				"                                   AND SDKJ.DEL_STATUS_ATR = '0' " +
 				"                             ) SKBSYINIO " +
-				"                   LEFT JOIN  ( " +
+				"                   INNER JOIN  ( " +
 				"                                         SELECT KRK.SID,KRK.EMP_CD,KR.START_DATE,KR.END_DATE " +
 				"                                         FROM BSYMT_EMPLOYMENT_HIST KR " +
 				"                                         INNER JOIN BSYMT_EMPLOYMENT_HIS_ITEM KRK " +

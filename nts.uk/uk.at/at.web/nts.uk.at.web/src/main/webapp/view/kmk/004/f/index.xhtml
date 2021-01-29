@@ -1,163 +1,114 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
 <body>
-	<ui:composition template="../../../../master/dialog.xhtml">
-		<ui:define name="htmlHead">
-			<script>
-				var dialogSize = {
-					width : 380,
-					height : 580
-				};
-			</script>
-			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="style.css" />
-			<!-- <com:scriptfile path="kmk004.f.service.js" /> -->
-			<com:scriptfile path="kmk004.f.vm.js" />
-			<com:scriptfile path="kmk004.f.start.js" />
-		</ui:define>
-		<ui:define name="content">
-			<div id="contents-area cf">
-				<div id="table-container">
-				<table>
-					<tr>
-						<td class="padding-bottom"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_53')}</div></td>
-						<td class="padding-bottom"><div id="combo-box" tabindex="1" data-bind="ntsComboBox: {
-							width: '150px',
-							name:'#[KMK004_54]',
-							options: startWeekList,
-							optionsValue: 'code',
-							visibleItemsCount: 5,
-							value: startWeek,
-							optionsText: 'name',
-							editable: false,
-							enable: true,
-							required: true,
-							columns: [
-								{ prop: 'name', length: 6 },
-							]}"></div></td>
-					</tr>
-					<tr><td colspan="2" class="padding-bottom">
-						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK004_55')}</div>
-					</td></tr>
-					
-					<!-- F2_2 -->
-					<tr><td colspan="2" class="description-label">
-						<div class="label">#{i18n.getText('KMK004_56')}</div>
-					</td></tr>
-					
-					<!-- F2_3 -->
-					<tr><td colspan="2" class="switch-alone">
-						<div tabindex="2" class="cf" data-bind="ntsSwitchButton: {
-							name: '#[KMK004_57]',
-							options: includeExtraAggrOpt,
-							optionsValue: 'code',
-							optionsText: 'name',
-							value: isIncludeExtraAggr,
-							required: true,
-							enable: true }"></div>
-					</td></tr>
-					
-					<!-- F2_6 -->
-					<tr><td colspan="2" class="description-label">
-						<div class="label">#{i18n.getText('KMK004_60')}</div>
-					</td></tr>
-					
-					<!-- F2-7, F2_8 -->
-					<tr>
-						<td class="padding-left-35"><div class="label">#{i18n.getText('KMK004_61')}</div></td>
-						<td class="switch-btn-set">
-							<div tabindex="3" class="cf" data-bind="ntsSwitchButton: {
-							name: '#[KMK004_62]',
-							options: includeAggrOpt,
-							optionsValue: 'code',
-							optionsText: 'name',
-							value: isIncludeLegalAggr,
-							required: true,
-							enable: isEnableExtraSelection }"></div>
-						</td>
-					</tr>
-					
-					<!-- F2_11, F2_12 -->
-					<tr>
-						<td class="padding-left-35"><div class="label">#{i18n.getText('KMK004_65')}</div></td>
-						<td class="switch-btn-set">
-							<div tabindex="4" class="cf" data-bind="ntsSwitchButton: {
-							name: '#[KMK004_66]',
-							options: includeAggrOpt,
-							optionsValue: 'code',
-							optionsText: 'name',
-							value: isIncludeHolidayAggr,
-							required: true,
-							enable: isEnableExtraSelection }"></div>
-						</td>
-					</tr>
-					
-					<!-- Clone from F2_2 -->
-					<!-- F2_15 -->
-					<tr><td colspan="2" class="description-label" style="padding-top: 23px">
-						<div class="label">#{i18n.getText('KMK004_67')}</div>
-					</td></tr>
-					
-					<!-- F2_16 -->
-					<tr><td colspan="2" class="switch-alone">
-						<div tabindex="5" class="cf" data-bind="ntsSwitchButton: {
-							name: '#[KMK004_68]',
-							options: includeExtraAggrOpt,
-							optionsValue: 'code',
-							optionsText: 'name',
-							value: isIncludeExtraExcessOutside,
-							required: true,
-							enable: true }"></div>
-					</td></tr>
-					
-					<!-- F2_19 -->
-					<tr><td colspan="2" class="description-label">
-						<div class="label">#{i18n.getText('KMK004_69')}</div>
-					</td></tr>
-					
-					<!-- F2-20, F2_21 -->
-					<tr>
-						<td class="padding-left-35"><div class="label">#{i18n.getText('KMK004_61')}</div></td>
-						<td class="switch-btn-set">
-							<div tabindex="6" class="cf" data-bind="ntsSwitchButton: {
-							name: '#[KMK004_62]',
-							options: includeAggrOpt,
-							optionsValue: 'code',
-							optionsText: 'name',
-							value: isIncludeLegalExcessOutside,
-							required: true,
-							enable: isEnableExtraExcessOutside }"></div>
-						</td>
-					</tr>
-					
-					<!-- F2_24, F2_25 -->
-					<tr>
-						<td class="padding-left-35"><div class="label">#{i18n.getText('KMK004_65')}</div></td>
-						<td class="switch-btn-set">
-							<div tabindex="7" class="cf" data-bind="ntsSwitchButton: {
-							name: '#[KMK004_66]',
-							options: includeAggrOpt,
-							optionsValue: 'code',
-							optionsText: 'name',
-							value: isIncludeHolidayExcessOutside,
-							required: true,
-							enable: isEnableExtraExcessOutside }"></div>
-						</td>
-					</tr>
-					
-					
-				</table>
-				</div>
-			</div>
-			<div id="functions-area-bottom">
-				<button tabindex="8" class="x-large proceed" data-bind="click: decideData">#{i18n.getText('KMK004_36')}</button>
-				<button tabindex="9" data-bind="click: cancel">#{i18n.getText('KMK004_37')}</button>
-			</div>
-		</ui:define>
-	</ui:composition>
+    <ui:composition template="/master/dialog.xhtml">
+        <ui:define name="htmlHead">
+
+            <com:scriptfile set="IGNITE" />
+
+            <com:ValidatorScript>
+                nts.uk.ctx.at.shared.dom.common.DailyTime
+                nts.uk.ctx.at.shared.dom.common.WeeklyTime
+            </com:ValidatorScript>
+
+            <script>var dialogSize = { width: 450, height: 610 };</script>
+            <com:stylefile path="./style.css" />
+            <com:scriptfile path="./kmk004.f.vm.js" />
+
+        </ui:define>
+        <ui:define name="content">
+            <div id="contents-area">
+                <div class="view-f">
+                    <label class="title" data-bind="i18n: $vm.nameSynthetic"></label>
+                    <hr>
+                    </hr>
+                    <div data-bind="if: attendance">
+                        <com:ko-if bind="!checkWorkPlace()">
+                            <div class="node" data-bind="i18n: 'KMK004_344'"></div>
+                        </com:ko-if>
+                        <com:ko-if bind="!checkEmployment()">
+                            <div class="node" data-bind="i18n: 'KMK004_345'"></div>
+                        </com:ko-if>
+                        <com:ko-if bind="!checkEmployee()">
+                            <div class="node" data-bind="i18n: 'KMK004_346'"></div>
+                        </com:ko-if>
+                    </div>
+                    <div class="cf">
+                        <div style="margin-top: 0px;"
+                            data-bind="ntsFormLabel: { inline: true, required: true}, i18n: 'KMK004_239'"></div>
+                        <div class="content-change">
+                            <label data-bind="i18n: 'KMK004_240'"></label>
+                            <input tabindex="1" class="lable-input input-forcus" data-bind="ntsTimeEditor: {value: model.daily, 
+                                inputFormat: 'time',
+                                name: '#[KMK004_240]',
+                                mode: 'time',
+                                required: true, 
+                                option: {
+                                    width: '60px',
+                                    textalign: 'center'}, 
+                                constraint: 'DailyTime'}" />
+                            <label data-bind="i18n: 'KMK004_241'"></label>
+                            <input tabindex="2" class="lable-input" data-bind="ntsTimeEditor: {value: model.weekly, 
+                                inputFormat: 'time',
+                                name:'#[KMK004_241]',
+                                mode: 'time',
+                                required: true, 
+                                option: {
+                                    width: '60px',
+                                    textalign: 'center'},
+                                constraint: 'WeeklyTime'}" />
+                        </div>
+                        <div data-bind="ntsFormLabel: { inline: true }, i18n: 'KMK004_242'"></div>
+                        <div tabindex="3" class="content-change" data-bind="ntsSwitchButton: {
+                            options: $vm.swInsurrance,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: valueInsurrance
+                            }">
+                        </div>
+                        <div class="list-check-box">
+                            <div tabindex="4" data-bind="ntsCheckBox: { checked: model.deforWorkLegalOverTimeWork,
+                                     enable: valueInsurrance() == 1}">
+                                     #{i18n.getText('KMK004_246')}
+                            </div>
+                            <div tabindex="5" data-bind="ntsCheckBox: { checked: model.deforWorkLegalHoliday, 
+                                    enable: valueInsurrance() == 1}">
+                                    #{i18n.getText('KMK004_247')}
+                                </div>
+                        </div>
+                        <div data-bind="ntsFormLabel: { inline: true}, i18n: 'KMK004_248'"></div>
+                        <div tabindex="6" class="content-change" data-bind="ntsSwitchButton: {
+                            options: swInsurrance,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: valueSurcharges}">
+                        </div>
+                        <div class="list-check-box">
+                            <div tabindex="7" data-bind="ntsCheckBox: { checked: model.outsidedeforWorkLegalOverTimeWork, 
+                                    enable: valueSurcharges() == 1}">
+                                    #{i18n.getText('KMK004_252')}
+                            </div>
+                            <div tabindex="8" data-bind="ntsCheckBox: { checked: model.outsidedeforWorkLegalHoliday, 
+                                    enable: valueSurcharges() == 1}">
+                                    #{i18n.getText('KMK004_253')}
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="functions-area-bottom">
+                <button tabindex="9" class="proceed large button1" data-bind="i18n: 'KMK004_234', click: add"></button>
+                <button tabindex="10" data-bind="i18n: 'KMK004_235', click: closeDialog"></button>
+                <com:ko-if bind="!checkCompany()">
+                    <button tabindex="11" class="danger button3"
+                        data-bind="i18n: 'KMK004_236', click: remote, enable: !attendance()"></button>
+                </com:ko-if>
+            </div>
+        </ui:define>
+    </ui:composition>
 </body>
+
 </html>
