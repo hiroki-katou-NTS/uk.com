@@ -104,6 +104,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		checkEnableSave : boolean = true;
 		checkEnableWork : boolean = true;
 		checkEnableTime : boolean = true;
+		checkCalcSum : boolean = true;
 		constructor(data: any) {
 			let self = this;
 			// get data from sc A
@@ -149,9 +150,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				self.selectedDisplayPeriod(data.displayFormat);
 				self.checked(data.startTimeSort);
 				self.checkedName(data.showWplName);
-				self.lstEmpId = self.lstEmpId.sort(function(a: any, b: any) {
+/*				self.lstEmpId = self.lstEmpId.sort(function(a: any, b: any) {
 					return _.findIndex(data.lstEmpIdSort, (x: any) => { return x.empId == a.empId }) - _.findIndex(data.lstEmpIdSort, (x: any) => { return x.empId == b.empId });
-				})
+				})*/
 
 				localStorage.removeItem(nts.uk.request.location.siteRoot.rawUrl + "nts.uk.at.web/view/ksu/003/a/index.xhtml/extable-ksu003/areawidths");
 			};
@@ -2017,7 +2018,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			let width = "42px", detailColumns = [], detailHeaderDs = [], detailContent = {}, detailHeader = {};
 
 			// A8_2 TQP
-			
+			detailColumns.push({ key: "empId", width: "0px", headerText: "ABC", visible: false });
 			// Phần detail
 			detailHeaderDs = [{ empId: "" }];
 			let detailHeaders = {};
@@ -3754,9 +3755,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				start2 = start2 <= self.dispStart * 5 ? self.dispStart * 5 : start2;
 
 			if (start2 != 0 && end2 != 0)
-				totalTimeWork = ((end2 - (end2 % 5)) - (start2 - (start2 % 5))) + ((end1 - (end1 % 5)) - (start1 - (start1 % 5)));
+				totalTimeWork = ((end2) - (start2)) + ((end1) - (start1));
 			else if (end1 != 0 && (start2 == 0 || end2 == 0))
-				totalTimeWork = ((end1 - (end1 % 5)) - (start1 - (start1 % 5)));
+				totalTimeWork = ((end1) - (start1));
 			totalTimeWork = totalTimeWork - totalTimeAll;
 
 			let totalTimeWorks = totalTimeWork != 0 ? formatById("Clock_Short_HM", totalTimeWork) : "";
