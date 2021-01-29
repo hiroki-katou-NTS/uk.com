@@ -76,9 +76,9 @@ public class KMK004PrintCommon {
 	public static String getFlexType(Integer value){
 		if(value== null) return null;
     	switch (value){
-    	case 0:
-    		return TextResource.localize("KMK004_408");
     	case 1:
+    		return TextResource.localize("KMK004_408");
+    	case 0:
     		return TextResource.localize("KMK004_409");
     	default: 
     		return null;
