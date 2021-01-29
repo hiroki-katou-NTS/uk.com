@@ -13,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceInfor;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.aggregate.MonthlyAttItemCanAggregateRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.service.CompanyMonthlyItemService;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -20,7 +21,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -71,9 +76,40 @@ public class CreateDetailOfArbitraryScheduleQuery {
         val nameAttendanceItems = companyMonthlyItemService.getMonthlyItems(cid, roleId, listAttId, null);
         //6. ④: <call> 月次の勤怠項目を取得する
         List<MonthlyAttendanceItem> monthlyAttendanceItemList = this.monthlyAttendanceItemRepository.findByAttendanceItemId(cid, listAttId);
+        List<AttendanceItemDisplayContents> contentsList = new ArrayList<>();
+
+        Map<Integer, Integer> mapAttendanceItemToPrint =
+                ofArbitrary.getOutputItemList().stream().filter(distinctByKey(AttendanceItemToPrint::getAttendanceId))
+                        .collect(Collectors.toMap(AttendanceItemToPrint::getAttendanceId, AttendanceItemToPrint::getRanking));
+        //7.
+        monthlyAttendanceItemList.forEach(
+                e -> {
+                    Optional<AttItemName> attendance = nameAttendanceItems.stream()
+                            .filter(attd -> attd.getAttendanceItemId() == e.getAttendanceItemId())
+                            .findFirst();
+                    attendance.ifPresent(attItemName -> contentsList.add(new AttendanceItemDisplayContents(
+                            e.getPrimitiveValue(),
+                            e.getAttendanceItemId(),
+                            attItemName.getAttendanceItemName(),
+                            e.getMonthlyAttendanceAtr(),
+                            mapAttendanceItemToPrint.getOrDefault(e.getAttendanceItemId(), null)
+                    )));
+
+
+
+
+
+                });
 
 
         return null;
 
+    }
+
+    public static <T> Predicate<T> distinctByKey(
+            Function<? super T, ?> keyExtractor) {
+
+        Map<Object, Boolean> seen = new ConcurrentHashMap<>();
+        return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
 }
