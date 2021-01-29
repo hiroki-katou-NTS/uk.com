@@ -302,7 +302,7 @@ module nts.uk.com.view.ccg003.a {
       vm.$ajax('com', API.getContentOfDestinationNotification, param)
         .then((response: DestinationNotification) => {
           if (response) {
-            _.map(response.anniversaryNotices, item => item.anniversaryNotice.displayDate = vm.convertTitleAnniversaries(item));
+            _.map(response.anniversaryNotices, item => item.anniversaryNotice.anniversaryTitle = vm.convertTitleAnniversaries(item.anniversaryNotice));
             vm.anniversaries(response.anniversaryNotices);
             const msgNotices = vm.listMsgNotice(response.msgNotices);
             vm.msgNotices(msgNotices);
