@@ -198,11 +198,11 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 					// R10_18
 					KMK004PrintCommon.convertTime(flex.isPresent() ? flex.get().weekAvgTime : null),
 					// R10_19
-					r.getInt("SETTLE_PERIOD_MON") == null ? null : r.getInt("SETTLE_PERIOD_MON") == 2 ? "2ヶ月" : "3ヶ月",
-					// R10_20
 					KMK004PrintCommon.getSettle(r.getInt("SETTLE_PERIOD")),
-					// R10_21
+					// R10_20
 					r.getInt("START_MONTH") == null ? null : r.getInt("START_MONTH").toString() + "月",
+					// R10_21
+					r.getInt("SETTLE_PERIOD_MON") == null ? null : r.getInt("SETTLE_PERIOD_MON") == 2 ? "2ヶ月" : "3ヶ月",
 					// R10_22
 					KMK004PrintCommon.getShortageTime(r.getInt("INSUFFIC_SET")),
 					// R10_23
