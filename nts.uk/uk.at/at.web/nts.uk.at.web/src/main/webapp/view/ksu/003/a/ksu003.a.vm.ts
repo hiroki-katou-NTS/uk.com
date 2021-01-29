@@ -89,6 +89,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		sumBreaks: any = [];
 
 		checkDragDrog: boolean = false; // phân biệt resize = false vs drop = true
+		checkDragDrogAgain: boolean = false; // phân biệt resize = false vs drop = true khi tạo chart
 		bindTypeTime: any = [];
 		holidayShort: any = [];
 		checkMes: number = 0;
@@ -105,6 +106,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		checkEnableWork : boolean = true;
 		checkEnableTime : boolean = true;
 		checkCalcSum : boolean = true;
+		checkOpenDialog : boolean = true;
 		constructor(data: any) {
 			let self = this;
 			// get data from sc A
@@ -290,7 +292,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							let totalTime = self.calcAllTime(dataFixed[0], lstTime, timeRangeLimit);
 							if (self.checkDragDrog != true) {
 								totalBrkTime = self.calcAllBrk(lstTime);
-								totalBrkTime = totalBrkTime != null ? formatById("Clock_Short_HM", totalBrkTime * 5) : "";
+								totalBrkTime = totalBrkTime != null ? formatById("Clock_Short_HM", Math.round(totalBrkTime * 5)) : "";
 
 								$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", totalBrkTime == totalBrkTime + "" ? totalBrkTime : totalBrkTime + "");
 								if (!self.checkClearTime == false) {
@@ -307,7 +309,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									$("#extable-ksu003").exTable("cellValue", "middle", empId, "totalTime", totalTime != null ? totalTime : "");
 								}
 							} else {
+								if(self.checkDragDrogAgain == false)
 								$("#extable-ksu003").exTable("cellValue", "middle", empId, "breaktime", self.sumBreaks[index].sumBrk + " ");
+								
+								self.checkDragDrogAgain == false;
 							}
 
 						});
@@ -566,7 +571,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					let totalTime = self.calcAllTime(dataFixed[0], lstTime, timeRangeLimit);
 
 					totalBrkTime = self.calcAllBrk(lstTime);
-					totalBrkTime = totalBrkTime != null ? formatById("Clock_Short_HM", totalBrkTime * 5) : "";
+					totalBrkTime = totalBrkTime != null ? formatById("Clock_Short_HM", Math.round(totalBrkTime * 5)) : "";
 
 					let schedule: model.EmployeeWorkScheduleDto = dataFixed[0].workScheduleDto,
 						fixed: model.FixedWorkInforDto = dataFixed[0].fixedWorkInforDto,
@@ -714,7 +719,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			lstTime = self.calcChartTypeTime(dataFixed, dataFixed.fixedWorkInforDto.overtimeHours, timeRangeLimit, lstTime, "OT", index);
 			let totalTime = self.calcAllTime(dataFixed, lstTime, timeRangeLimit);
 			totalBrkTime = self.calcAllBrk(lstTime);
-			totalBrkTime = totalBrkTime != null ? formatById("Clock_Short_HM", totalBrkTime * 5) : "";
+			totalBrkTime = totalBrkTime != null ? formatById("Clock_Short_HM", Math.round(totalBrkTime * 5)) : "";
 
 			if (totalBrkTime === (totalBrkTime + " "))
 				totalBrkTime = totalBrkTime.trim();
@@ -1058,6 +1063,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			
 			service.getEmpWorkFixedWorkInfo(targetOrgDto)
 				.done((data: model.DisplayWorkInfoByDateDto) => {
+					self.checkOpenDialog = true;
 					$(".xcell").removeClass("x-error");
 					if (self.checkNeedTime === "NOT_REQUIRED") $("#extable-ksu003").exTable("cellValue", "middle", empId, "worktimeName", getText('KSU003_55'));
 					self.dataScreen003A().employeeInfo[indexEmp].fixedWorkInforDto = data.fixedWorkInforDto;
@@ -1091,6 +1097,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							lineNo: index
 						}
 					}]);
+					
+					if(error.messageId != "Msg_591" && error.messageId != "Msg_590"){
+						self.checkOpenDialog = false;
+					}
 
 					if ((columnKey == "worktimeCode" || (error.messageId != "Msg_434" && columnKey == "worktypeCode")) && self.checkMes != 10) {
 						self.checkMes = 0;
@@ -1991,6 +2001,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					}
 				];
 			}
+			
+			let width = "42px", detailColumns = [], detailHeaderDs = [], detailContent = {}, detailHeader = {};
+
+			// A8_2 TQP
+			detailColumns = [{ key: "empId", width: "0px", headerText: "ABC", visible: false }];
 
 			middleHeader = {
 				columns: middleColumns,
@@ -2015,15 +2030,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
         }]
 			};
 
-			let width = "42px", detailColumns = [], detailHeaderDs = [], detailContent = {}, detailHeader = {};
-
-			// A8_2 TQP
-			detailColumns.push({ key: "empId", width: "0px", headerText: "ABC", visible: false });
 			// Phần detail
 			detailHeaderDs = [{ empId: "" }];
-			let detailHeaders = {};
-			for (let y = self.dispStartHours; y < (displayRange + self.dispStartHours); y++) {
-				detailColumns.push({ key: (y).toString() + "_", width: width });
+			let detailHeaders = {}, startHours = self.dispStartHours, range = displayRange + self.dispStartHours, index = 1;
+			for (let y = startHours; y < range; y++) {
+				//detailColumns.push({ key: (y).toString() + "_", width: width });
+				detailColumns[index++] = { key: (y).toString() + "_", width: width };
 				detailHeaderDs[0][y + "_"] = y.toString();
 				detailHeaders[y + "_"] = "";
 			}
@@ -2110,7 +2122,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			}).LeftmostHeader(leftmostHeader).LeftmostContent(leftmostContent)
 				.MiddleHeader(middleHeader).MiddleContent(middleContent)
 				.DetailHeader(detailHeader).DetailContent(detailContent);
-				if(detailContent)
+			
 			extable.create();
 			ruler = extable.getChartRuler();
 			
@@ -3182,6 +3194,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						startMinute = duration.create(param[0] * 5 + self.dispStart * 5).text;
 						endMinute = duration.create(param[1] * 5 + self.dispStart * 5).text;
 						self.checkDragDrog = true;
+						self.checkDragDrogAgain = true;
 						let index = lineNo, lstGcShow = _.filter(self.lstAllChildShow, (x: any) => { return x.index === parseInt(index) });
 						if (_.includes(id, 'lgc')) {
 							self.checkChartHide(lstGcShow, index, param, "lgc");
@@ -3596,7 +3609,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			lstTime = self.calcChartTypeTime(dataFixed, dataFixed.fixedWorkInforDto.overtimeHours, timeRangeLimit, lstTime, "OT", index);
 			let totalTime = self.calcAllTime(dataFixed, lstTime, timeRangeLimit);
 			totalBrkTime = self.calcAllBrk(lstTime);
-			totalBrkTime = totalBrkTime != null ? formatById("Clock_Short_HM", totalBrkTime * 5) : "";
+			totalBrkTime = totalBrkTime != null ? formatById("Clock_Short_HM", Math.round(totalBrkTime * 5)) : "";
 
 			if (totalBrkTime === (totalBrkTime + " "))
 				totalBrkTime = totalBrkTime.trim();
@@ -4305,6 +4318,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		// open dialog kdl045
 		public openKdl045Dialog(empId: string) {
 			let self = this, lineNo = _.findIndex(self.lstEmpId, (x) => { return x.empId === empId; });
+			
+			//if(self.checkOpenDialog == false) return;
+			
 			let cssWorkType: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (lineNo + 2).toString() + ")" + " > td:nth-child(1)",
 						cssWorkTypeName: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (lineNo + 2).toString() + ")" + " > td:nth-child(2)",
 						cssWorkTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (lineNo + 2).toString() + ")" + " > td:nth-child(3)",
@@ -4501,6 +4517,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 		public openKdl003Dialog(workTypeCode: string, workTimeCode: string, empId: string, type: string) {
 			let self = this;
+			//if(self.checkOpenDialog == false) return;
 			block.grayout();
 			let lineNo = _.findIndex(self.dataScreen003A().employeeInfo, (x) => { return x.empId === empId; });
 			let workTimeName = $("#extable-ksu003").exTable('dataSource', 'middle').body[lineNo].worktimeName;
@@ -4710,6 +4727,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 		/** A1_4 - Close modal */
 		public closeDialog(): void {
+			let self = this;
+			//if(self.checkOpenDialog == false) return;
 			nts.uk.ui.windows.close();
 		}
 
