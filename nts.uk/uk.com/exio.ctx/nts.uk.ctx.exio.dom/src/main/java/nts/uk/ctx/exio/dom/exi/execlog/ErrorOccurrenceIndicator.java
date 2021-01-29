@@ -6,10 +6,25 @@ package nts.uk.ctx.exio.dom.exi.execlog;
  *
  */
 public enum ErrorOccurrenceIndicator {
-	EDIT(1, "編集エラー"), 
-	ACCEPTANCE_CONDITION(2, "受入条件エラー"), 
+	/**
+	 * 1: 編集エラー
+	 */
+	EDIT(1, "編集エラー"),
+	/**
+	 * 2: 受入条件エラー
+	 */
+	ACCEPTANCE_CONDITION(2, "受入条件エラー"),
+	/**
+	 * 3: コード変換エラー
+	 */
 	CODE_CONVERSION(3, "コード変換エラー"),
+	/**
+	 * 4: 値チェックエラ
+	 */
 	VALUE_CHECK(4, "値チェックエラ"),
+	/**
+	 * 5: 登録・更新時エラー
+	 */
 	REGIST_UPDATE(5, "登録・更新時エラー");
 
 	/** The value. */
