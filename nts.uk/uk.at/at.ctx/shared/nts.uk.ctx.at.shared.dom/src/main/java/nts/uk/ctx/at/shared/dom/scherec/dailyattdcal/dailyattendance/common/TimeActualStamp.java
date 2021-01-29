@@ -4,11 +4,11 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.OvertimeDeclaration;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -36,7 +36,7 @@ public class TimeActualStamp {
 	
 	//時間休暇時間帯
 	@Setter
-	private Optional<TimeZone> timeVacation = Optional.empty();
+	private Optional<TimeSpanForCalc> timeVacation = Optional.empty();
 	
 	/**
 	 * 打刻時間を指定時間分経過させた勤怠打刻を返す
@@ -155,7 +155,7 @@ public class TimeActualStamp {
 		return false;
 	}
 	public TimeActualStamp(WorkStamp actualStamp,WorkStamp stamp, Integer numberOfReflectionStamp,
-			OvertimeDeclaration overtimeDeclaration, TimeZone timeVacation) {
+			OvertimeDeclaration overtimeDeclaration, TimeSpanForCalc timeVacation) {
 		super();
 		this.actualStamp =  Optional.ofNullable(actualStamp);
 		this.stamp = Optional.ofNullable(stamp);
@@ -163,6 +163,8 @@ public class TimeActualStamp {
 		this.overtimeDeclaration = Optional.ofNullable(overtimeDeclaration);
 		this.timeVacation = Optional.ofNullable(timeVacation);
 	}
+	
+	
 	
 	/**
 	 * @param actualStamp 実打刻
@@ -172,7 +174,7 @@ public class TimeActualStamp {
 	 * @param timeVacation 時間休暇時間帯
 	 */
 	public TimeActualStamp(Optional<WorkStamp> actualStamp, Optional<WorkStamp> stamp, Integer numberOfReflectionStamp,
-			Optional<OvertimeDeclaration> overtimeDeclaration, Optional<TimeZone> timeVacation) {
+			Optional<OvertimeDeclaration> overtimeDeclaration, Optional<TimeSpanForCalc> timeVacation) {
 		super();
 		this.actualStamp = actualStamp;
 		this.stamp = stamp;

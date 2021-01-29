@@ -35,9 +35,9 @@ public class StandardMenuScreenQuery {
 			WebMenuSetting.Display.value).stream()
 				.map(StandardMenuDto::fromDomain)
 				.sorted(Comparator
-						.comparing(StandardMenuDto::getCode)
+						.comparing(StandardMenuDto::getSystem)
 						.thenComparing(StandardMenuDto::getDisplayOrder)
-						.thenComparing(StandardMenuDto::getSystem))
+						.thenComparing(StandardMenuDto::getCode))
 				.collect(Collectors.toList());
 	}
 }

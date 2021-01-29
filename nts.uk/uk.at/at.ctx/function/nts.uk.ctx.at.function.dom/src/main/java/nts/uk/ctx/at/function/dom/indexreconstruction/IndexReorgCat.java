@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.function.dom.indexreconstruction;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.function.dom.processexecution.IndexReconstructionCategoryNO;
 
@@ -9,6 +11,7 @@ import nts.uk.ctx.at.function.dom.processexecution.IndexReconstructionCategoryNO
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.更新処理自動実行.インデックス再構成.インデックス再構成カテゴリ
  */
 @Getter
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class IndexReorgCat extends AggregateRoot {
 
 	/**
@@ -20,12 +23,6 @@ public class IndexReorgCat extends AggregateRoot {
 	 * カテゴリ名
 	 **/
 	private CategoryName categoryName;
-
-	/**
-	 * No args constructor.
-	 */
-	private IndexReorgCat() {
-	}
 
 	/**
 	 * Creates domain from memento.

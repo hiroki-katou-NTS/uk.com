@@ -8,7 +8,6 @@ import mockit.Injectable;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.DayOfWeek;
 import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.AssignmentMethod;
-import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailability;
 import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabilityMemo;
 import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabilityOfOneDay;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -27,7 +26,7 @@ public class WorkAvailabilityRuleWeekSettingHelper {
 	}
 	
 	public static WorkAvailabilityOfOneDay createExpectation(
-			@Injectable WorkAvailability.Require require,
+			@Injectable WorkAvailabilityOfOneDay.Require require,
 			GeneralDate expectingDate, AssignmentMethod assignmentMethod) {
 		
 		List<ShiftMasterCode> shiftMasterCodeList = assignmentMethod == AssignmentMethod.SHIFT ? 

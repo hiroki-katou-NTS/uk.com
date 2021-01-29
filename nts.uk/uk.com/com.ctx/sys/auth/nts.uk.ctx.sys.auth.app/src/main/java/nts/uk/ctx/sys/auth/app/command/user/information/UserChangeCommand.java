@@ -13,4 +13,10 @@ public class UserChangeCommand {
      * ユーザを変更する
      */
     private UserDto userChange;
+    
+    //fix bug #113902
+    private Boolean useOfPassword;
+
+    //fix bug #113902
+    private Boolean useOfLanguage;
 }

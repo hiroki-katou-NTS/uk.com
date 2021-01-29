@@ -1,12 +1,13 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.com.view.ccg034.c {
-  import getText = nts.uk.resource.getText;
 
   // URL API backend
   const API = {
     getFlowMenu: "sys/portal/createflowmenu/getFlowMenu/{0}",
-    duplicate: "sys/portal/createflowmenu/copy"
+    duplicate: "sys/portal/createflowmenu/copy",
+    copyFile: "sys/portal/createflowmenu/copyFile",
+    generateHtml: "sys/portal/createflowmenu/generateHtml",
   };
 
   @bean()
@@ -36,10 +37,6 @@ module nts.uk.com.view.ccg034.c {
 
         if (vm.isChecked()) {
           vm.$dialog.confirm({ messageId: 'Msg_64' }).then((result: 'no' | 'yes' | 'cancel') => {
-            if (result === 'no') {
-              vm.closeDialog();
-            }
-
             if (result === 'yes') {
               vm.$blockui("grayout");
               vm.performDuplicate()
@@ -56,7 +53,6 @@ module nts.uk.com.view.ccg034.c {
                 vm.$dialog.error({ messageId: "Msg_3" })
                   .then(() => {
                     vm.$blockui("clear");
-                    vm.closeDialog();
                   });
               } else {
                 vm.performDuplicate();
@@ -76,16 +72,29 @@ module nts.uk.com.view.ccg034.c {
 
     private performDuplicate(): JQueryPromise<any> {
       const vm = this;
-      let newFlowMenu: FlowMenuModel = new FlowMenuModel();
-      newFlowMenu = _.cloneDeep(vm.flowMenu);
-      newFlowMenu.flowMenuCode = vm.flowMenuCode();
-      newFlowMenu.flowMenuName = vm.flowMenuName();
-      vm.deleteUnknownData(newFlowMenu);
-      return vm.$ajax(API.duplicate, { flowMenuCode: vm.flowMenuCode(), createFlowMenu: newFlowMenu })
-        .then(() => {
-          vm.$dialog.info({ messageId: "Msg_15" })
-            .then(() => vm.closeDialog(newFlowMenu));
+      let newFlowMenu: FlowMenuModel = null;
+      // Try copy all the uploaded files and update the layout file
+      return vm.$ajax(API.copyFile, { flowMenuCode: vm.flowMenu.flowMenuCode, newFlowMenuCode: vm.flowMenuCode(), flowMenuName: vm.flowMenuName() })
+        .then(result => {
+          vm.deleteUnknownData(result.createFlowMenuDto);
+          newFlowMenu = result.createFlowMenuDto;
+          return vm.$ajax(API.generateHtml, { flowMenuCode: vm.flowMenuCode(), htmlContent: result.htmlContent });
         })
+        // Generate a new layout file
+        .then(res => nts.uk.deferred.repeat(conf => conf
+          .task(() => (nts.uk.request as any).asyncTask.getInfo(res.taskId)
+            .done((taskResult: any) => {
+              if (taskResult.succeeded) {
+                newFlowMenu.fileId = res.taskId;
+                return vm.$ajax(API.duplicate, { flowMenuCode: vm.flowMenuCode(), createFlowMenu: newFlowMenu });
+              }
+            }))
+          .while(infor => infor.pending || infor.running)
+          .pause(1000))
+        )
+        // Perform save the copied flow menu
+        .then(() => vm.$dialog.info({ messageId: "Msg_15" }))
+        .then(() => vm.closeDialog(newFlowMenu))
         .fail(err => vm.$dialog.error({ messageId: err.messageId }));
     }
 
@@ -94,6 +103,10 @@ module nts.uk.com.view.ccg034.c {
       return vm.$ajax(nts.uk.text.format(API.getFlowMenu, vm.flowMenuCode()));
     }
 
+    /**
+     * Delete duplicate data due to Jackson
+     * @param flowMenu 
+     */
     private deleteUnknownData(flowMenu: any) {
       delete flowMenu.arrowSettings;
       delete flowMenu.fileAttachmentSettings;

@@ -36,7 +36,9 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
+import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave_Old;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppCompltLeaveSync;
 import nts.uk.ctx.at.request.dom.application.applist.service.CheckExitSync;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppCompltLeaveFull;
@@ -1244,19 +1246,22 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	 */
 	private String getApprovalSttDetailVacation(Application_New app) {
 		String relaName = "";
-//		Optional<AppAbsence> absence = repoAbsence.getAbsenceById(app.getCompanyID(), app.getAppID());
-//		if (!absence.isPresent())
-//			return "";
-//		AppForSpecLeave_Old appForSpec = absence.get().getAppForSpecLeave();
-//		String relaCode = appForSpec == null ? ""
-//				: appForSpec.getRelationshipCD() == null ? "" : appForSpec.getRelationshipCD().v();
-//		// 休暇申請以外の場合
-//		if (!app.isAppAbsence()) {
-//			return "";
-//		}
-//		// imported(就業.Shared)「続柄」を取得する
-//		relaName = relaCode.equals("") ? ""
-//				: repoRelationship.findByCode(app.getCompanyID(), relaCode).get().getRelationshipName().v();
+		Optional<AppAbsence> absence = repoAbsence.getAbsenceById(app.getCompanyID(), app.getAppID());
+		if (!absence.isPresent())
+			return "";
+		// KAF006: -PhuongDV domain fix pending-
+		//AppForSpecLeave_Old appForSpec = absence.get().getAppForSpecLeave();
+		AppForSpecLeave_Old appForSpec = null;
+		// -PhuongDV-
+		String relaCode = appForSpec == null ? ""
+				: appForSpec.getRelationshipCD() == null ? "" : appForSpec.getRelationshipCD().v();
+		// 休暇申請以外の場合
+		if (!app.isAppAbsence()) {
+			return "";
+		}
+		// imported(就業.Shared)「続柄」を取得する
+		relaName = relaCode.equals("") ? ""
+				: repoRelationship.findByCode(app.getCompanyID(), relaCode).get().getRelationshipName().v();
 		return relaName;
 	}
 
@@ -1871,7 +1876,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			break;
 		case WORK_CONFIRMATION:
 			// アルゴリズム「メール送信_対象再取得_就業確定」を実行
-			Map<String, String> mapWorkConfirm = this.getMailCountWorkConfirm(
+			Map<String, List<String>> mapWorkConfirm = this.getMailCountWorkConfirm(
 					period, 
 					closureId, 
 					processingYm, 
@@ -1889,7 +1894,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			mapWorkConfirm.entrySet().stream().collect(Collectors.groupingBy(obj -> obj.getKey())).entrySet().stream().forEach(x -> {
 				wkpEmpMailWorkLstQuery.stream().filter(y -> y.getWkpID().equals(x.getKey())).findAny().ifPresent(z -> {
 					z.setCountEmp(x.getValue().size());
-					z.setEmpMailLst(x.getValue().stream().map(t -> new ApprSttEmpMailOutput(t.getValue(), "", "")).collect(Collectors.toList()));
+					z.setEmpMailLst(x.getValue().stream().map(t -> new ApprSttEmpMailOutput(t.getValue().isEmpty() ? "" : t.getValue().get(0), "", "")).collect(Collectors.toList()));
 				});
 			});
 			wkpEmpMailLst = wkpEmpMailWorkLstQuery;
@@ -1956,7 +1961,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	}
 
 	@Override
-	public Map<String, String> getMailCountWorkConfirm(DatePeriod period, ClosureId closureId, YearMonth yearMonth, 
+	public Map<String, List<String>> getMailCountWorkConfirm(DatePeriod period, ClosureId closureId, YearMonth yearMonth, 
 			String companyID, List<String> wkpIDLst, List<String> employmentCDLst) {
 		// クエリモデル「対象職場で締めの確定がなされていない職場を取得する」を実行する
 		List<String> wkpIDLstQuery = approvalSttScreenRepository.getMailCountWorkConfirm(
@@ -1971,7 +1976,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			return Collections.emptyMap();
 		}
 		// 職場の管理者を求める　　　　　　　　　　　リクエストリストNo.653
-		Map<String, String> infoMap = syEmployeeAdapter.getListEmpInfo(companyID, GeneralDate.today(), wkpIDLstQuery);
+		Map<String, List<String>> infoMap = syEmployeeAdapter.getListEmpInfo(companyID, GeneralDate.today(), wkpIDLstQuery);
 		return infoMap;
 	}
 	
@@ -2005,7 +2010,6 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 					empIDLst.stream().map(x -> new ApprSttEmpMailOutput(x, "", "")).collect(Collectors.toList())));
 		}
 		return result;
-		
 	}
 	
 	@Override
@@ -2516,9 +2520,15 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	@Override
 	public List<EmployeeEmailImport> getEmploymentConfirmInfo(String wkpID) {
 		String companyID = AppContexts.user().companyId();
-		// 職場管理者を取得する　　　　　　　　　リクエストリストNo.653
-		Map<String, String> infoMap = syEmployeeAdapter.getListEmpInfo(companyID, GeneralDate.today(), Arrays.asList(wkpID));
+		// 職場管理者を取得する リクエストリストNo.653
+		Map<String, List<String>> infoMap = syEmployeeAdapter.getListEmpInfo(companyID, GeneralDate.today(), Arrays.asList(wkpID));
+
+		List<String> sids = new ArrayList<>();
+		for (Map.Entry<String, List<String>> entry : infoMap.entrySet()) {
+			sids.addAll(entry.getValue());
+		}
+
 		// imported（就業）「個人社員基本情報」を取得する
-		return employeeRequestAdapter.getApprovalStatusEmpMailAddr(infoMap.values().stream().collect(Collectors.toList()));
+		return employeeRequestAdapter.getApprovalStatusEmpMailAddr(sids);
 	}
 }
