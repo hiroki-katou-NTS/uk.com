@@ -17407,14 +17407,25 @@ var nts;
                             var $element = $(element);
                             var accessor = valueAccessor();
                             var innerText = $element.text();
-                            $element.text('');
+                            $element
+                                .text('')
+                                .addClass('checkbox-wrapper nts-input');
                             var hasFocus = accessor.hasFocus || allBindingsAccessor.get('hasFocus');
                             var $label = element.tagName === 'LABEL' ? element : $('<label>').prependTo(element).get(0);
                             var text = ko.computed({
                                 read: function () {
                                     var option = ko.unwrap(accessor.value);
                                     var optionText = ko.unwrap(accessor.text) || ko.unwrap(accessor.optionText);
-                                    return _.get(option, optionText, optionText) || innerText;
+                                    var text = (_.get(option, optionText, optionText) || innerText).trim();
+                                    if (!text) {
+                                        element.classList.remove('with-text');
+                                        element.classList.add('without-text');
+                                    }
+                                    else {
+                                        element.classList.remove('without-text');
+                                        element.classList.add('with-text');
+                                    }
+                                    return text;
                                 },
                                 disposeWhenNodeIsRemoved: element
                             });
@@ -17461,7 +17472,6 @@ var nts;
                             $element
                                 .attr('tabindex', -1)
                                 .removeAttr('data-bind')
-                                .addClass('checkbox-wrapper nts-input')
                                 .on('validate', function () {
                                 if (ko.unwrap(accessor.required) === true && ko.unwrap(accessor.enable) !== false) {
                                     var checked = ko.unwrap(accessor.checked);
@@ -21787,13 +21797,23 @@ var nts;
                         NtsRadioBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                             var $element = $(element);
                             var accessor = valueAccessor();
+                            var innerText = $(element).text();
                             var hasFocus = accessor.hasFocus || allBindingsAccessor.get('hasFocus');
                             var $label = element.tagName === 'LABEL' ? element : $('<label>').appendTo(element).get(0);
                             var text = ko.computed({
                                 read: function () {
                                     var option = ko.unwrap(accessor.option);
                                     var optionText = ko.unwrap(accessor.optionText);
-                                    return _.get(option, optionText, optionText);
+                                    var text = (_.get(option, optionText, optionText) || innerText).trim();
+                                    if (!text) {
+                                        element.classList.remove('with-text');
+                                        element.classList.add('without-text');
+                                    }
+                                    else {
+                                        element.classList.remove('without-text');
+                                        element.classList.add('with-text');
+                                    }
+                                    return text;
                                 },
                                 disposeWhenNodeIsRemoved: element
                             });
