@@ -380,7 +380,7 @@ public class WorkTimeSettingFinder {
         // 全件の就業時間帯: AllWorkHours
         List<WorkTimeDto> allWorkHours = new ArrayList<>(getWorkTimeDtos(listWorkTime, workTimeSetItems));
 
-        if (!codes.isEmpty()) {
+        if (codes != null && !codes.isEmpty()) {
             // 選択可能な就業時間帯＝上記取得した全件のList＜就業時間帯の設定＞からパラメータ「選択可能な就業時間帯コード」と一致する「就業時間帯の設定」
             List<WorkTimeSetting> workTimeItems = this.workTimeSettingRepository.findByCodes(companyID, codes);
             List<PredetemineTimeSetting> workTimeSetItem = this.predetemineTimeSettingRepository
