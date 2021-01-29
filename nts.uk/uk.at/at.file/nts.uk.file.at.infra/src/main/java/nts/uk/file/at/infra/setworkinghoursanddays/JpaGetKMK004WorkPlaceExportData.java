@@ -102,6 +102,8 @@ public class JpaGetKMK004WorkPlaceExportData extends JpaRepository implements Ge
 	     exportSQL.append("             WHERE BSYMT_WKP_INFO.CID = ?  ");
 	     exportSQL.append("             AND BSYMT_WKP_CONFIG_2.START_DATE <= ?  ");
 	     exportSQL.append("             AND BSYMT_WKP_CONFIG_2.END_DATE >= ?  ");
+	     exportSQL.append("             AND BSYMT_WKP_INFO.DELETE_FLAG = 0  ");
+	     
 	     exportSQL.append("            ) TBL  ");
 	     exportSQL.append("             ORDER BY TBL.HIERARCHY_CD ASC");
 

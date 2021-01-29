@@ -96,6 +96,7 @@ public class JpaGetKMK004EmployeeExportData extends JpaRepository implements Get
 			+ " LEFT JOIN KRCMT_CALC_M_SET_FLE_COM ON  "
 			+ "	BSYMT_EMP_DTA_MNG_INFO.CID = KRCMT_CALC_M_SET_FLE_COM.CID "
 			+ " WHERE  BSYMT_EMP_DTA_MNG_INFO.CID = ? " 
+			+ " AND  BSYMT_EMP_DTA_MNG_INFO.DEL_STATUS_ATR = 0 " 
 			+ " ORDER BY BSYMT_EMP_DTA_MNG_INFO.SCD ASC ";
 
 	@Override
