@@ -76,9 +76,9 @@ public class DisplayAttendanceDataScreenQuery {
 		List<AttendanceInformationDto> attendanceInformationDtos = attendanceInfoScreenQuery.getAttendanceInformation(empIds, GeneralDate.today(), emojiUsage == 1);
 		
 		// 4: <call>() [RQ228]個人ID（List）からビジネスネームを取得する
-		List<String> listLoginPids = new ArrayList<>();
-		listLoginPids.add(loginPid);
-		String bussinessName = syEmployeeFnAdapter.getByListSid(listLoginPids).stream().findAny()
+		List<String> listLoginSids = new ArrayList<>();
+		listLoginSids.add(loginSid);
+		String bussinessName = syEmployeeFnAdapter.getByListSid(listLoginSids).stream().findFirst()
 				.map(v -> v.getBussinessName()).orElse(null);
 
 		// 5: <call>() [No.50]ログイン者が担当者か判断する
