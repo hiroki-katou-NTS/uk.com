@@ -22,8 +22,9 @@ public class DisplayFlexBasicSettingByWorkPlace {
 	@Inject
 	private WkpFlexMonthActCalSetRepo wkpFlexMonthActCalSetRepo;
 
-	@Inject
-	private GetFlexPredWorkTimeRepository getFlexPredWorkTimeRepository;
+	/*
+	 * @Inject private GetFlexPredWorkTimeRepository getFlexPredWorkTimeRepository;
+	 */
 	
 	@Inject
 	private ComFlexMonthActCalSetRepo comFlexRepo;
@@ -40,10 +41,11 @@ public class DisplayFlexBasicSettingByWorkPlace {
 		});
 
 		// 2. get(ログイン会社ID,職場ID)
-		this.getFlexPredWorkTimeRepository.find(companyId).ifPresent(x -> {
-
-			result.setFlexPredWorkTime(GetFlexPredWorkTimeDto.fromDomain(x));
-		});
+		/*
+		 * this.getFlexPredWorkTimeRepository.find(companyId).ifPresent(x -> {
+		 * 
+		 * result.setFlexPredWorkTime(GetFlexPredWorkTimeDto.fromDomain(x)); });
+		 */
 		
 		this.comFlexRepo.find(companyId).ifPresent(x -> {
 			result.setComFlexMonthActCalSet(ComFlexMonthActCalSetDto.fromDomain(x));

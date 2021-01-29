@@ -20,9 +20,6 @@ public class AfterChangeFlexEmploymentSettingDto {
 	// 雇用を選択する
 	EmpFlexMonthActCalSetDto flexMonthActCalSet;
 
-	// 会社別フレックス勤務集計方法
-	GetFlexPredWorkTimeDto flexPredWorkTime;
-
 	List<String> alreadySettings;
 	
 	ComFlexMonthActCalSetDto comFlexMonthActCalSet;
