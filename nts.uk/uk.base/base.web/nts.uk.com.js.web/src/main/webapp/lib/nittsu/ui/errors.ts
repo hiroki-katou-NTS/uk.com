@@ -32,11 +32,11 @@ module nts.uk.ui.errors {
         occurs!: KnockoutComputed<boolean>;
         displayErrors: KnockoutComputed<ErrorListItem[] | GridCellError[]>;
 
-        errors: KnockoutObservableArray<ErrorListItem> = ko.observableArray([]).extend({ readLimit: 1 });
-        gridErrors: KnockoutObservableArray<GridCellError> = ko.observableArray([]);
+        errors: KnockoutObservableArray<ErrorListItem> = ko.observableArray([]).extend({ rateLimit: 100 });
+        gridErrors: KnockoutObservableArray<GridCellError> = ko.observableArray([]).extend({ rateLimit: 100 });
 
-        forGrid: KnockoutObservable<boolean> = ko.observable(false);
-        option: KnockoutObservable<any> = ko.observable(ko.mapping.fromJS(new option.ErrorDialogOption()));
+        forGrid: KnockoutObservable<boolean> = ko.observable(false).extend({ rateLimit: 100 });
+        option: KnockoutObservable<any> = ko.observable(ko.mapping.fromJS(new option.ErrorDialogOption())).extend({ rateLimit: 100 });
 
         allResolved: JQueryCallback = $.Callbacks();
         allCellsResolved: JQueryCallback = $.Callbacks();

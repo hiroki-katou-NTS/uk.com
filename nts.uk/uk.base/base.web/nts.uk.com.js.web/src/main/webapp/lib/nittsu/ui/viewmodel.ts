@@ -50,7 +50,7 @@ function bean(dialogOption?: JQueryUI.DialogOptions): any {
 				kvm.mode.valueHasMutated();
 
 				$window.mode
-					.subscribe((mode: 'view' | 'modal') => kvm.mode(mode));
+					.subscribe((mode: 'view' | 'modal') => kvm.mode.valueHasMutated());
 
 				kvm.header
 					.subscribe((header: boolean) => {
@@ -133,6 +133,9 @@ function component(options: { name: string; template: string; }): any {
 
 								kvm.systemName.valueHasMutated();
 
+								$window.title
+									.subscribe((title: string) => kvm.title(title));
+
 								kvm.mode
 									.subscribe((mode: string) => {
 										const old = ko.unwrap($window.mode)
@@ -146,6 +149,9 @@ function component(options: { name: string; template: string; }): any {
 
 								kvm.mode.valueHasMutated();
 
+								$window.mode
+									.subscribe((mode: 'view' | 'modal') => kvm.mode.valueHasMutated());
+
 								kvm.header
 									.subscribe((header: boolean) => {
 										const old = ko.unwrap($window.header)
@@ -158,6 +164,9 @@ function component(options: { name: string; template: string; }): any {
 									});
 
 								kvm.header.valueHasMutated();
+
+								$window.header
+									.subscribe((header: boolean) => kvm.header(header));
 
 								// hook to mounted function
 								$viewModel.$nextTick(() => {

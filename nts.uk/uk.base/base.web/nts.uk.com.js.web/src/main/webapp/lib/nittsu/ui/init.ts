@@ -28,23 +28,23 @@ module nts.uk.ui {
         // deprecate
         title!: KnockoutComputed<string>;
 
-        systemName: KnockoutObservable<string> = ko.observable("");
-        programName: KnockoutObservable<string> = ko.observable("");
+        systemName: KnockoutObservable<string> = ko.observable("").extend({ rateLimit: 500 });
+        programName: KnockoutObservable<string> = ko.observable("").extend({ rateLimit: 500 });
 
         // error model
         errorDialogViewModel!: errors.ErrorsViewModel;
 
         // set page as view or modal
-        mode: KnockoutObservable<'view' | 'modal'> = ko.observable(undefined);
+        mode: KnockoutObservable<'view' | 'modal'> = ko.observable(undefined).extend({ rateLimit: 500 });
 
         // subscriber windows size
-        size: KnockoutObservable<WindowSize> = ko.observable({ width: window.innerWidth, height: window.innerHeight });
+        size: KnockoutObservable<WindowSize> = ko.observable({ width: window.innerWidth, height: window.innerHeight }).extend({ rateLimit: 500 });
 
         // show or hide header
-        header: KnockoutObservable<boolean | null> = ko.observable(null).extend({ rateLimit: 100 });
+        header: KnockoutObservable<boolean | null> = ko.observable(null).extend({ rateLimit: 500 });
 
         // show or hide notification
-        notification: KnockoutObservable<string> = ko.observable('');
+        notification: KnockoutObservable<string> = ko.observable('').extend({ rateLimit: 500 });
 
         constructor() {
             const vm = this;
@@ -54,6 +54,9 @@ module nts.uk.ui {
                     document.title = ko.unwrap(vm.systemName);
 
                     return document.title;
+                },
+                write: (value: string) => {
+                    vm.systemName(value);
                 }
             });
 

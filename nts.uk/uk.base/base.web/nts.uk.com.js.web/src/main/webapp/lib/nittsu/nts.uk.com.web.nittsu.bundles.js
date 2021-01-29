@@ -4384,21 +4384,24 @@ var nts;
             // Kiban ViewModel
             var KibanViewModel = /** @class */ (function () {
                 function KibanViewModel() {
-                    this.systemName = ko.observable("");
-                    this.programName = ko.observable("");
+                    this.systemName = ko.observable("").extend({ rateLimit: 500 });
+                    this.programName = ko.observable("").extend({ rateLimit: 500 });
                     // set page as view or modal
-                    this.mode = ko.observable(undefined);
+                    this.mode = ko.observable(undefined).extend({ rateLimit: 500 });
                     // subscriber windows size
-                    this.size = ko.observable({ width: window.innerWidth, height: window.innerHeight });
+                    this.size = ko.observable({ width: window.innerWidth, height: window.innerHeight }).extend({ rateLimit: 500 });
                     // show or hide header
-                    this.header = ko.observable(null).extend({ rateLimit: 100 });
+                    this.header = ko.observable(null).extend({ rateLimit: 500 });
                     // show or hide notification
-                    this.notification = ko.observable('');
+                    this.notification = ko.observable('').extend({ rateLimit: 500 });
                     var vm = this;
                     vm.title = ko.computed({
                         read: function () {
                             document.title = ko.unwrap(vm.systemName);
                             return document.title;
+                        },
+                        write: function (value) {
+                            vm.systemName(value);
                         }
                     });
                     vm.mode
@@ -5240,10 +5243,10 @@ var nts;
                 var ErrorsViewModel = /** @class */ (function () {
                     function ErrorsViewModel(dialogOptions) {
                         this.title = '';
-                        this.errors = ko.observableArray([]).extend({ readLimit: 1 });
-                        this.gridErrors = ko.observableArray([]);
-                        this.forGrid = ko.observable(false);
-                        this.option = ko.observable(ko.mapping.fromJS(new ui.option.ErrorDialogOption()));
+                        this.errors = ko.observableArray([]).extend({ rateLimit: 100 });
+                        this.gridErrors = ko.observableArray([]).extend({ rateLimit: 100 });
+                        this.forGrid = ko.observable(false).extend({ rateLimit: 100 });
+                        this.option = ko.observable(ko.mapping.fromJS(new ui.option.ErrorDialogOption())).extend({ rateLimit: 100 });
                         this.allResolved = $.Callbacks();
                         this.allCellsResolved = $.Callbacks();
                         var vme = this;
@@ -36925,7 +36928,7 @@ function bean(dialogOption) {
                 });
                 kvm.mode.valueHasMutated();
                 $window.mode
-                    .subscribe(function (mode) { return kvm.mode(mode); });
+                    .subscribe(function (mode) { return kvm.mode.valueHasMutated(); });
                 kvm.header
                     .subscribe(function (header) {
                     var old = ko.unwrap($window.header);
@@ -36993,6 +36996,8 @@ function component(options) {
                                 }
                             });
                             kvm.systemName.valueHasMutated();
+                            $window.title
+                                .subscribe(function (title) { return kvm.title(title); });
                             kvm.mode
                                 .subscribe(function (mode) {
                                 var old = ko.unwrap($window.mode);
@@ -37004,6 +37009,8 @@ function component(options) {
                                 }
                             });
                             kvm.mode.valueHasMutated();
+                            $window.mode
+                                .subscribe(function (mode) { return kvm.mode.valueHasMutated(); });
                             kvm.header
                                 .subscribe(function (header) {
                                 var old = ko.unwrap($window.header);
@@ -37015,6 +37022,8 @@ function component(options) {
                                 }
                             });
                             kvm.header.valueHasMutated();
+                            $window.header
+                                .subscribe(function (header) { return kvm.header(header); });
                             // hook to mounted function
                             $viewModel.$nextTick(function () {
                                 var $mounted = $viewModel['mounted'];
