@@ -290,6 +290,9 @@ module nts.uk.at.view.knr002.c {
                 switch(vm.inputMode()) {
                     case INPUT_TYPE.LETTER:
                     case INPUT_TYPE.TIME:  
+                        if (!(vm.updateValue().length > 0)) {
+                            break;
+                        }
                         vm.checkExistBeforeAdd(vm.rowData().smallClassification);
                         let item = new SettingValue(Math.random(), vm.rowData().majorClassification, vm.rowData().smallClassification, vm.updateValue(), vm.rowData().inputRange, vm.rowData().variableName);
                         vm.settingData.push(item);     
@@ -303,6 +306,9 @@ module nts.uk.at.view.knr002.c {
                         vm.settingData.push(item6);     
                         break;    
                     case INPUT_TYPE.IP:
+                        if (!vm.checkIpAddress(vm.ipAddress1()) || !vm.checkIpAddress(vm.ipAddress2()) || !vm.checkIpAddress(vm.ipAddress3()) || !vm.checkIpAddress(vm.ipAddress4())) {
+                            break;
+                        }
                         vm.checkExistBeforeAdd(vm.rowData().smallClassification);
                         let item2 = new SettingValue(Math.random(), vm.rowData().majorClassification, vm.rowData().smallClassification, vm.ipUpdateValue(), '', vm.rowData().variableName);
                         vm.settingData.push(item2);     

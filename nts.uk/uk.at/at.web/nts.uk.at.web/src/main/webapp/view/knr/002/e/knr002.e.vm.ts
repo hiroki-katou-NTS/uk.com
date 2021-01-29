@@ -273,6 +273,11 @@ module nts.uk.at.view.knr002.e {
                 const vm = this;
 
                 let shareData = vm.bakGridData()[vm.selectedRow()];
+                console.log(shareData, 'shareData');
+                if (shareData.backupDate.length === 0) {
+                    nts.uk.ui.dialog.error({ messageId: 'Msg_2022' });
+                    return;
+                }
                 setShared('KNR002E_share', shareData);
                 modal('/view/knr/002/f/index.xhtml', { title: 'F_Screen', }).onClosed(() => {
                     let isCancel = getShared('KNR002E_cancel');
@@ -303,23 +308,18 @@ module nts.uk.at.view.knr002.e {
                         vm.setDisplayModelEmpInfoTerminal(res.listEmpInfoTerminal);
                         vm.initData(res);
 
-                        
-                        
-                        //mark
                         let bakData = vm.initData().listEmpInfoTerminal.map((item: EmpInfoTerminalEDto) => 
                             { 
                                 let index = _.findIndex(vm.initData().listTimeRecordSetFormatBakEDto, (row: any) => row.empInfoTerCode == item.empInfoTerCode);
 
                                 if (index !== -1) {
-                                    return new TimeRecordSetFormatBakEDto(vm.initData().listTimeRecordSetFormatBakEDto[index].backupDate, item.empInfoTerCode, item.empInfoTerName, item.displayModelEmpInfoTer);
+                                    return new TimeRecordSetFormatBakEDto(vm.initData().listTimeRecordSetFormatBakEDto[index].backupDate, item.empInfoTerCode, item.empInfoTerName, item.modelEmpInfoTer, item.displayModelEmpInfoTer);
                                 }
-                                return new TimeRecordSetFormatBakEDto('', item.empInfoTerCode, item.empInfoTerName, item.displayModelEmpInfoTer);
+                                return new TimeRecordSetFormatBakEDto('', item.empInfoTerCode, item.empInfoTerName, item.modelEmpInfoTer, item.displayModelEmpInfoTer);
                             }
                         );
 
                         vm.bakGridData(bakData);
-
-                        console.log(vm.bakGridData(), 'backup data');
 
                         if (loadTime == 0) {
                             vm.selectedCode(vm.initData().listEmpInfoTerminal[0].empInfoTerCode);
@@ -330,6 +330,7 @@ module nts.uk.at.view.knr002.e {
                         } else {
                             vm.loadBackupContent(vm.selectedCode());
                         }
+
                         vm.loadSettingGrid();
                         vm.loadBakGrid();
                         vm.loadInstalledTerminals(vm.selectedMode());
@@ -406,13 +407,15 @@ module nts.uk.at.view.knr002.e {
             backupDate: string;
             empInfoTerCode: string;
             empInfoTerName: string;
+            modelEmpInfoTer: number;
             displayModelEmpInfoTer: string;
 
-            constructor(backupDate: string, empInfoTerCode: string, empInfoTerName: string, displayModelEmpInfoTer: string) {
+            constructor(backupDate: string, empInfoTerCode: string, empInfoTerName: string, modelEmpInfoTer: number, displayModelEmpInfoTer: string) {
                 const vm = this; 
                 vm.backupDate = backupDate;
                 vm.empInfoTerCode = empInfoTerCode;
                 vm.empInfoTerName = empInfoTerName;
+                vm.modelEmpInfoTer = modelEmpInfoTer;
                 vm.displayModelEmpInfoTer = displayModelEmpInfoTer;
             }
         }

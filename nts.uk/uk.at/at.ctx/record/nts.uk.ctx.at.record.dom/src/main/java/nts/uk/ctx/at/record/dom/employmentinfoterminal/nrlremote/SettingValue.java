@@ -8,7 +8,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  *
  *         設定値
  */
-@StringMaxLength(50)
+@StringMaxLength(40)
 public class SettingValue extends StringPrimitiveValue<SettingValue> {
 
 	private static final long serialVersionUID = 1L;
