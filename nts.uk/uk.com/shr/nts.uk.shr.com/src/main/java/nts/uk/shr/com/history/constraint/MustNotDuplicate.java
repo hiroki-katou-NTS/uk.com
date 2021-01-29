@@ -46,8 +46,6 @@ public class MustNotDuplicate<H extends HistoryItem<S, D>, S extends GeneralPeri
 
 	private static boolean isDuplicated(RangeDuplication duplication) {
 		switch (duplication) {
-		case ADJACENT_AFTER_BASE:
-		case ADJACENT_BEFORE_BASE:
 		case BASE_AFTER_COMPARED:
 		case BASE_BEFORE_COMPARED:
 			return false;
