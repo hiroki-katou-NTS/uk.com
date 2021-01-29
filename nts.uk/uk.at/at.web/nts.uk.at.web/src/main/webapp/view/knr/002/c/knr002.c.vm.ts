@@ -68,7 +68,6 @@ module nts.uk.at.view.knr002.c {
                 ]);
                 
                 vm.currentCode1.subscribe((value) => {
-                    console.time('C3_6')
                     vm.loadSmallGrid(value);
                 });
 
@@ -79,13 +78,11 @@ module nts.uk.at.view.knr002.c {
                 vm.currentCode2.subscribe((value) => {
                     // vm.clearError();
                     nts.uk.ui.errors.clearAll();
-                    console.time('C4_4');
                     let rowData: RemoteSettingsDto = ko.toJS(vm.smallItemData).filter((item: RemoteSettingsDto) => item.smallClassification == value)[0]; 
                     vm.smallClassificationName(rowData.smallClassification);
                     vm.rowData(rowData);
                     vm.setInputMode(rowData.inputType);
                     vm.bindDataByType(rowData);
-                    console.timeEnd('C4_4');
                 });
 
                 vm.loadSettingGrid();
@@ -152,6 +149,10 @@ module nts.uk.at.view.knr002.c {
                         break;
                     case INPUT_TYPE.SELECTION:
                         $('.radio-right').focus();
+                        vm.selectedUpdateValue(null);
+                        vm.updateValueList([]);
+                        console.log(vm.selectedUpdateValue(), 'selected update value');
+                        console.log(rowData, 'row data');
                         let inputRangeArr = rowData.inputRange.split('/');
                         vm.currentValueList(inputRangeArr.map((item: any) => new BoxModel(item.charAt(0), item.substring(2, item.length -1))));
                         vm.selectedCurrentValue(rowData.currentValue);
@@ -185,7 +186,6 @@ module nts.uk.at.view.knr002.c {
                 var vm = this;
                 
                 var dfd = $.Deferred<void>();
-                console.time('起動時');
                 let data : any = getShared('knr002-c');
                 vm.loadData(data);;
                 dfd.resolve();
@@ -196,10 +196,14 @@ module nts.uk.at.view.knr002.c {
                 const vm = this;
 
                 $('#single-list_container').focus();
+                if (nts.uk.ui.errors.hasError()) { 
+                    setTimeout(() => {
+                        if ($(window.parent.document).find(".ui-widget-overlay").length === 1) {
+                            $("#func-notifier-errors").trigger("click");
+                        }
+                    }, 1);
 
-                if (nts.uk.ui.errors.hasError()) {
-                    vm.validateErr();
-                    return;
+                    return; 
                 }
 
                 let obj: any = {};
@@ -272,7 +276,6 @@ module nts.uk.at.view.knr002.c {
 
             public addToSetting() {
                 const vm = this;
-                console.time('C11_2');
                 if (nts.uk.ui.errors.hasError()) { 
                     setTimeout(() => {
                         if ($(window.parent.document).find(".ui-widget-overlay").length === 1) {
@@ -337,12 +340,10 @@ module nts.uk.at.view.knr002.c {
                     $("#grid").igGrid("option", "width", "534px");
                     $("#grid").igGrid("option", "width", "535px");
                 }
-                console.timeEnd('C11_2');
             }
 
             public removeFromSetting() {
                 const vm = this;
-                console.time('C11_3');
                 if (vm.selectedRowIndex() == -1) {
                     return;
                 }
@@ -360,7 +361,6 @@ module nts.uk.at.view.knr002.c {
                     $("#grid").igGrid("option", "width", "534px");
                     $("#grid").igGrid("option", "width", "535px");
                 }
-                console.time('C11_3');
             }
 
             private loadSettingGrid() {
@@ -395,7 +395,15 @@ module nts.uk.at.view.knr002.c {
             }
 
             public closeDialog() {
-                nts.uk.ui.windows.close();
+                $('#single-list_container').focus();
+
+                setTimeout(() => {
+                    nts.uk.ui.errors.clearAll();
+                    $(window.parent.document).find(".ui-dialog-buttonset button").trigger("click");
+                    nts.uk.ui.windows.close();
+                }, 1)
+                
+                
             }
 
             private loadData(data: any) {
@@ -419,7 +427,6 @@ module nts.uk.at.view.knr002.c {
                             vm.currentCode1(vm.bigItemData()[0].majorClassification);
                         }
                     }     
-                    console.timeEnd('起動時');
                 })
                 .fail(res => console.log('fail roi'))
                 .always(() => blockUI.clear());
@@ -465,7 +472,6 @@ module nts.uk.at.view.knr002.c {
                     vm.currentCode2(vm.smallItemData()[0].smallClassification);
                 }
 
-                console.timeEnd('C3_6');
             }
 
             private setInputMode(inputType: number) {
