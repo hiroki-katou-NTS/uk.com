@@ -43,28 +43,18 @@ public enum AggregationUnitOfLaborCosts {
 	 * @return 金額
 	 */
 	public BigDecimal getAmount(AttendanceTimeOfDailyAttendance dailyAttendance) {
-		return getAmount( this, dailyAttendance );
-	}
-
-	/**
-	 * 対象に応じた金額を取得する
-	 * @param target 取得対象
-	 * @param dailyAttendance 日別勤怠の勤怠時間
-	 * @return 金額
-	 */
-	private static BigDecimal getAmount(AggregationUnitOfLaborCosts target, AttendanceTimeOfDailyAttendance dailyAttendance) {
 
 		// 総労働時間
-		if ( target == TOTAL ) {
+		if ( this == TOTAL ) {
 			// 就業時間＋時間外時間
 			return Stream.of( WITHIN, EXTRA )
-							.map( e -> getAmount( e, dailyAttendance ) )
+							.map( e -> e.getAmount( dailyAttendance ) )
 							.reduce( BigDecimal.ZERO, BigDecimal::add );
 		}
 
 		AttendanceAmountDaily amount = null;
 		amount = new AttendanceAmountDaily( 0 );	// TODO 日別勤怠の金額系項目マージ待ち
-		switch( target ) {
+		switch( this ) {
 			case WITHIN:	// 就業時間
 				// TODO 日別勤怠の金額系項目マージ待ち
 //				amount = dailyAttendance.getActualWorkingTimeOfDaily()	// 日別勤怠の勤務時間
