@@ -593,12 +593,12 @@ module nts.uk.at.view.kdl003.a {
                 nts.uk.ui.block.invisible();
                 var self = this;
 
-                // Reset search conditions
-                self.startTimeOption(1);
-                self.startTime(null);
-                self.endTimeOption(1);
+                // Reset search conditions                
+                self.startTime(null);                                
                 self.endTime(null);
                 self.searchCode(null);
+                self.startTimeOption(1);
+                self.endTimeOption(1);
                 // Clear errors.
                 $('#inputEndTime').ntsError('clear');
                 $('#inputStartTime').ntsError('clear');
