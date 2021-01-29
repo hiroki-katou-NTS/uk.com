@@ -1,7 +1,6 @@
 /// <reference path='../../../../lib/nittsu/viewcontext.d.ts' />
 module nts.uk.at.view.ccg005.a.screenModel {
   import object = nts.uk.at.view.ccg005.a.object;
-  import liveView = nts.uk.request.liveView;
 
   const API = {
     getDisplayAttendanceData: 'screen/com/ccg005/get-display-attendance-data',
@@ -10,7 +9,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
   @component({
     name: 'ccg005-component',
-    template: `<div style="display: flex; position: relative; overflow-x: hidden; overflow-y: auto; height: 460px" id="ccg005-watching">
+    template: `<div style="display: flex; position: relative; overflow-x: hidden; overflow-y: auto; height: 450px" id="ccg005-watching">
     <div id="ccg005-content">
       <div style="margin: 10px;">
         <div class="grade-header-top">
@@ -539,7 +538,9 @@ module nts.uk.at.view.ccg005.a.screenModel {
           - $('.grade-body-top').height()
           - $('.grade-bottom').height()
           - 40;
-        vm.perPage(_.floor(subHeight/50));
+        if (subHeight >= 53) {
+          vm.perPage(_.floor(subHeight/53));
+        }
         $('.grade-body-bottom').height(subHeight);
       });
     }
