@@ -26,6 +26,7 @@ module nts.uk.ui.koExtentions {
             init(element: HTMLElement, valueAccessor: () => RadioBoxAccessor, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
                 const $element = $(element);
                 const accessor = valueAccessor();
+                const innerText = $(element).text();
 
                 const hasFocus = accessor.hasFocus || allBindingsAccessor.get('hasFocus');
 
@@ -36,7 +37,17 @@ module nts.uk.ui.koExtentions {
                         const option = ko.unwrap(accessor.option);
                         const optionText = ko.unwrap(accessor.optionText);
 
-                        return _.get(option, optionText, optionText);
+                        const text = (_.get(option, optionText, optionText) || innerText).trim();
+
+                        if (!text) {
+                            element.classList.remove('with-text');
+                            element.classList.add('without-text');
+                        } else {
+                            element.classList.remove('without-text');
+                            element.classList.add('with-text');
+                        }
+
+                        return text;
                     },
                     disposeWhenNodeIsRemoved: element
                 });
@@ -283,7 +294,7 @@ module nts.uk.ui.koExtentions {
 
                 return { controlsDescendantBindings: true };
             }
-            update() {}
+            update() { }
         }
     }
 }

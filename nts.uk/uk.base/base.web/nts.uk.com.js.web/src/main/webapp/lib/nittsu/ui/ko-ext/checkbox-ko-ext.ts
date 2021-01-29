@@ -30,7 +30,9 @@ module nts.uk.ui.koExtentions {
                 const accessor = valueAccessor();
                 const innerText = $element.text();
 
-                $element.text('');
+                $element
+                    .text('')
+                    .addClass('checkbox-wrapper nts-input');
 
                 const hasFocus = accessor.hasFocus || allBindingsAccessor.get('hasFocus');
 
@@ -41,7 +43,17 @@ module nts.uk.ui.koExtentions {
                         const option = ko.unwrap(accessor.value);
                         const optionText = ko.unwrap(accessor.text) || ko.unwrap(accessor.optionText);
 
-                        return _.get(option, optionText, optionText) || innerText;
+                        const text = (_.get(option, optionText, optionText) || innerText).trim();
+
+                        if (!text) {
+                            element.classList.remove('with-text');
+                            element.classList.add('without-text');
+                        } else {
+                            element.classList.remove('without-text');
+                            element.classList.add('with-text');
+                        }
+
+                        return text;
                     },
                     disposeWhenNodeIsRemoved: element
                 });
@@ -94,7 +106,6 @@ module nts.uk.ui.koExtentions {
                 $element
                     .attr('tabindex', -1)
                     .removeAttr('data-bind')
-                    .addClass('checkbox-wrapper nts-input')
                     .on('validate', () => {
                         if (ko.unwrap(accessor.required) === true && ko.unwrap(accessor.enable) !== false) {
                             const checked = ko.unwrap(accessor.checked);
@@ -167,7 +178,7 @@ module nts.uk.ui.koExtentions {
                                 $input.attr('checked', 'checked');
                             }
 
-                            $input.prop('checked', !!ko.toJS(checked));                            
+                            $input.prop('checked', !!ko.toJS(checked));
                         }
                     }
                 } else {
@@ -340,7 +351,7 @@ module nts.uk.ui.koExtentions {
 
                 return { controlsDescendantBindings: true };
             }
-            update() {}
+            update() { }
         }
     }
 }
