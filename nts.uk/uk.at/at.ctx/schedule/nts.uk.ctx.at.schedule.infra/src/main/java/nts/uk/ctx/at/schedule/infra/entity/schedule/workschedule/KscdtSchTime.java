@@ -288,11 +288,21 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 		List<HolidayWorkFrameTimeSheet> holidayWorkFrameTimeSheet = workTimeOfDaily.getHolidayWorkFrameTimeSheet();
 		List<HolidayWorkFrameTime> holidayWorkFrameTime = workTimeOfDaily.getHolidayWorkFrameTime();
 		List<KscdtSchHolidayWork> kscdtSchHolidayWork = new ArrayList<>();
-		for (HolidayWorkFrameTimeSheet x : holidayWorkFrameTimeSheet) {
-			KscdtSchHolidayWork work = holidayWorkFrameTime.stream()
-					.map(y -> KscdtSchHolidayWork.toEntity(x, y, sID, yMD, cID)).findFirst().get();
-			kscdtSchHolidayWork.add(work);
+		
+		if(holidayWorkFrameTimeSheet.size() != holidayWorkFrameTime.size()) {
+			for (HolidayWorkFrameTime x : holidayWorkFrameTime) {
+				KscdtSchHolidayWork work = holidayWorkFrameTimeSheet.stream()
+						.map(y -> KscdtSchHolidayWork.toEntity(x, y, sID, yMD, cID)).findFirst().get();
+				kscdtSchHolidayWork.add(work);
+			}
+		} else {
+			for (HolidayWorkFrameTimeSheet x : holidayWorkFrameTimeSheet) {
+				KscdtSchHolidayWork work = holidayWorkFrameTime.stream()
+						.map(y -> KscdtSchHolidayWork.toEntity2(x, y, sID, yMD, cID)).findFirst().get();
+				kscdtSchHolidayWork.add(work);
+			}
 		}
+		
 
 		// create KscdtSchBonusPay
 		// 勤務予定．勤怠時間．勤務時間．総労働時間．加給時間．割増時間
