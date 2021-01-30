@@ -3140,6 +3140,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			return rangeBreak;
 		}
 
+		// tạo tại chart
 		addChartWithType045(empId: string, type: any, id: any, timeChart: any, lineNo: any, parent?: any,
 			limitStartMin?: any, limitStartMax?: any, limitEndMin?: any, limitEndMax?: any, zIndex?: any) {
 			let self = this, timeEnd = self.convertTimePixel(self.timeRange === 24 ? "24:00" : "48:00");
@@ -3187,8 +3188,14 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							return;
 						};
 						if (self.checkDisByDate == false || self.dataScreen003A().employeeInfo[lineNo].workInfoDto.isConfirmed == 1) return;
-						$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime1", formatById("Clock_Short_HM", (b) * 5));
+						
+						if (_.includes(id, 'lgc')) {
+							$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime1", formatById("Clock_Short_HM", (b) * 5));
 							$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime1", formatById("Clock_Short_HM", (e) * 5));
+						} else {
+							$("#extable-ksu003").exTable("cellValue", "middle", empId, "startTime2", formatById("Clock_Short_HM", (b) * 5));
+							$("#extable-ksu003").exTable("cellValue", "middle", empId, "endTime2", formatById("Clock_Short_HM", (e) * 5));	
+						}
 							
 						let param = {0 : b, 1 : e}, startMinute = 0, endMinute = 0;
 						startMinute = duration.create(param[0] * 5 + self.dispStart * 5).text;
