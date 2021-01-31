@@ -9,6 +9,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 public class DetailOfArbitrarySchedule {
+    List<AttendanceItemDisplayContents> contentsList;
     List<AttendanceDetailDisplayContents> detailDisplayContents;
 
     List<WorkplaceTotalDisplayContent> totalDisplayContents;

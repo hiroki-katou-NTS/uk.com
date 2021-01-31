@@ -5,10 +5,11 @@ import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.function.app.query.arbitraryperiodsummarytable.CreateDetailOfArbitraryScheduleQuery;
+import nts.uk.ctx.at.function.app.query.arbitraryperiodsummarytable.DetailOfArbitrarySchedule;
 import nts.uk.ctx.at.function.app.query.arbitraryperiodsummarytable.GetOutputSettingDetailArbitraryQuery;
 import nts.uk.ctx.at.function.dom.arbitraryperiodsummarytable.OutputSettingOfArbitrary;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.EmployeeInfor;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.WorkPlaceInfo;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
@@ -42,7 +43,8 @@ public class ArbitraryPeriodSummaryTableService extends ExportService<ArbitraryP
     private WorkplaceConfigInfoAdapter workplaceConfigInfoAdapter;
     @Inject
     private GetOutputSettingDetailArbitraryQuery getOutputSettingDetailArbitraryQuery;
-
+    @Inject
+    private CreateDetailOfArbitraryScheduleQuery detailOfArbitraryScheduleQuery;
     private static final String DATE_FORMAT = "yyyy/MM/dd";
 
     @Inject
@@ -91,6 +93,22 @@ public class ArbitraryPeriodSummaryTableService extends ExportService<ArbitraryP
 
         OutputSettingOfArbitrary ofArbitrary = getOutputSettingDetailArbitraryQuery.getDetail(settingId);
 
-        periodSummaryTableGenerator.generate(generatorContext, null);
+        DetailOfArbitrarySchedule rs = detailOfArbitraryScheduleQuery.getContentOfArbitrarySchedule(datePeriod,
+                query.getAggrFrameCode(),
+                employeeInfoList,
+                lstWorkplaceInfo,
+                ofArbitrary,
+                query.isDetail(),
+                query.isWorkplaceTotal(),
+                query.isTotal(),
+                query.isCumulativeWorkplace(),
+                query.getWorkplacePrintTargetList());
+        ArbitraryPeriodSummaryDto data = new ArbitraryPeriodSummaryDto(
+                rs,
+                ofArbitrary,
+                datePeriod,
+                companyInfo
+        );
+        periodSummaryTableGenerator.generate(generatorContext, data);
     }
 }

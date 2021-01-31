@@ -41,7 +41,7 @@ public class CreateDetailOfArbitraryScheduleQuery {
     @Inject
     private MonthlyAttendanceItemRepository monthlyAttendanceItemRepository;
 
-    public DetailOfArbitrarySchedule getDetail(DatePeriod period,
+    public DetailOfArbitrarySchedule getContentOfArbitrarySchedule(DatePeriod period,
                                                String aggrFrameCode,
                                                List<EmployeeInfor> employeeBasicInfoImportList,
                                                List<WorkplaceInfor> workplaceInforList,
@@ -203,6 +203,7 @@ public class CreateDetailOfArbitraryScheduleQuery {
         }
 
         return new DetailOfArbitrarySchedule(
+                contentsList,
                 detailDisplayContents,
                 totalDisplayContents,
                 totalAll,
