@@ -70,12 +70,25 @@ public class ArbitraryPeriodSummaryTableService extends ExportService<ArbitraryP
         // 社員ID（List）と基準日から所属職場IDを取得
         List<AffAtWorkplaceImport> lstAffAtWorkplaceImport = affWorkplaceAdapter
                 .findBySIdAndBaseDate(sids, endDate);
+
+        List<EmployeeInfor> employeeInfoList = new ArrayList<>();
+        lstEmployeeInfo.forEach(e -> {
+            val wpl = lstAffAtWorkplaceImport.stream().filter(i -> i.getEmployeeId().equals(e.getSid())).findFirst();
+            employeeInfoList.add(new EmployeeInfor(
+                    e.getSid(),
+                    e.getEmployeeCode(),
+                    e.getEmployeeName(),
+                    wpl.isPresent() ? wpl.get().getWorkplaceId() : null
+            ));
+        });
+
         List<String> listWorkplaceId = lstAffAtWorkplaceImport.stream()
                 .map(AffAtWorkplaceImport::getWorkplaceId).collect(Collectors.toList());
 
         // 3.1 Call [No.560]職場IDから職場の情報をすべて取得する
         // ④
         List<WorkplaceInfor> lstWorkplaceInfo = workplaceConfigInfoAdapter.getWorkplaceInforByWkpIds(companyId, listWorkplaceId, endDate);
+
         OutputSettingOfArbitrary ofArbitrary = getOutputSettingDetailArbitraryQuery.getDetail(settingId);
 
         periodSummaryTableGenerator.generate(generatorContext, null);
