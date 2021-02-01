@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KSCMT_EVENT_WKP")
-public class KsmmtWorkplaceEvent extends UkJpaEntity implements Serializable {
+public class KsmmtWorkplaceEvent extends ContractUkJpaEntity implements Serializable {
 
 	/**
 	 * serialVersionUID
