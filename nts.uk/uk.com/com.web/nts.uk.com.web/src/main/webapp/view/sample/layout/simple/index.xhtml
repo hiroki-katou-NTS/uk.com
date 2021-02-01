@@ -23,7 +23,8 @@
 					<button class="red" data-bind="click: $vm.click">Danger</button>
 				</div>
 				<div id="contents-area">
-					<pre data-bind="text: ko.toJSON($vm.text, null, 4)"></pre>
+					<div data-bind="markdown: 'document.md'"></div>
+					<!--<pre data-bind="text: ko.toJSON($vm.text, null, 4)"></pre>
 					<input type="text" data-bind="value: $vm.text" />
 					<div data-bind="text: ko.toJSON($vm.state, null, 4)"></div>
 					<div style="height: 4000px; padding: 25px;">
@@ -84,7 +85,7 @@
 						<hr />
 						<h1>Document</h1>
 						<div data-bind="markdown: 'document.md'"></div>
-					</div>
+					</div>-->
 				</div>
 			</div>
 		</ui:define>
