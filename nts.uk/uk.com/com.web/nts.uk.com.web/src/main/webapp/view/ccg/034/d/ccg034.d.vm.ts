@@ -100,6 +100,7 @@ module nts.uk.com.view.ccg034.d {
         .mouseenter(() => vm.isMouseInsideLayout(true))
         .mouseleave(() => vm.isMouseInsideLayout(false))
         .mousedown((event) => {
+          $(".part-setting").filter((index, e) => $(e).css('display') === ('block')).removeAttr("style");
           // If layout in copy mode and mouse cursor is stay inside layout
           if (vm.isCopying() && vm.isMouseInsideLayout()) {
             // Stop copy mode
@@ -229,6 +230,7 @@ module nts.uk.com.view.ccg034.d {
     private createDOMFromData(partData: PartDataModel): JQuery {
       const vm = this;
       let $newPartTemplate = null;
+      let isInside = false;
       switch (partData.partType) {
         case MenuPartType.PART_MENU:
           $newPartTemplate = $("<div>", { "class": CSS_CLASS_MENU_CREATION_ITEM_CONTAINER }).append($('<div>', { 'class': `${CSS_CLASS_MENU_CREATION_ITEM} part-menu` }));
@@ -252,17 +254,22 @@ module nts.uk.com.view.ccg034.d {
           $newPartTemplate = $("<div>", { "class": CSS_CLASS_MENU_CREATION_ITEM_CONTAINER }).append($('<div>', { 'class': `${CSS_CLASS_MENU_CREATION_ITEM} part-menu` }));
           break;
       }
-      const $newPart: JQuery = LayoutUtils.renderPartDOM($newPartTemplate, partData);
+      const $newPart: JQuery = LayoutUtils.renderPartDOM($newPartTemplate, partData)
+        .hover(
+          handlerIn => LayoutUtils.onPartHover($newPart, true),
+          handlerOut => LayoutUtils.onPartHover($newPart, false))
+        .on("mousedown", event => LayoutUtils.onPartClickSetting($newPart, isInside));
       // Render div setting
-      let isInside = false;
       const $partSetting: JQuery = $("<div>", { "class": 'part-setting' })
         .hover(
           (handlerIn) => isInside = true,
-          (handlerOut) => {
-            isInside = false;
-            console.log(isInside);
-          })
+          (handlerOut) => isInside = false)
         .on("click", event => {
+          event.stopPropagation();
+          // Ignore when clicked inside the popup option
+          if (event.target.classList.contains("part-setting-popup-option")) {
+            isInside = false;
+          }
           LayoutUtils.onPartClickSetting($newPart, isInside);
         });
       const $partSettingPopup: JQuery = $("<div>", { "class": 'part-setting-popup' })
@@ -281,10 +288,7 @@ module nts.uk.com.view.ccg034.d {
           .on('click', (event) => {
             LayoutUtils.onPartClickSetting($newPart, false);
             vm.removePart($newPart);
-          }))
-        .hover(
-          (handlerIn) => isInside = true,
-          (handlerOut) => isInside = false);
+          }));
       $partSettingPopup.appendTo($partSetting);
       $partSetting.appendTo($newPart);
       // Check and remove overlap part (both DOM element and data by calling JQuery.remove())
@@ -1435,12 +1439,28 @@ module nts.uk.com.view.ccg034.d {
      * @param partClientId
      */
     static onPartClickSetting($part: JQuery, visible: boolean) {
+      const $partSetting: JQuery = $part.find('.part-setting');
       const $partSettingPopup: JQuery = $part.find('.part-setting-popup');
       if ($partSettingPopup) {
         if (visible) {
           $partSettingPopup.css('display', 'block');
+          $partSetting.css('display', 'block');
         } else {
           $partSettingPopup.css('display', 'none');
+        }
+      }
+    }
+
+    static onPartHover($part: JQuery, isHoverIn: boolean) {
+      const $partSetting: JQuery = $part.find('.part-setting');
+      const $partSettingPopup: JQuery = $part.find('.part-setting-popup');
+      if ($partSettingPopup.css("display") !== "none") {
+        $partSetting.css('style');
+      } else {
+        if (isHoverIn) {
+          $partSetting.css('display', 'block');
+        } else {
+          $partSetting.css('display', 'none');
         }
       }
     }
