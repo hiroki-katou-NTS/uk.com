@@ -59,6 +59,14 @@ public class RecruitmentAppCmd {
 				applicationUpdate.toDomain(applicationDto));
 	}
 	
+	public RecruitmentApp toDomain() {
+	    return new RecruitmentApp(
+                workInformation.toDomain(), 
+                this.workingHours.stream().map(c-> c.toDomain()).collect(Collectors.toList()), 
+                TypeApplicationHolidays.Rec, 
+                application.toDomain());
+	}
+	
 	public static RecruitmentAppCmd fromDomain(RecruitmentApp domain) {
 		return new RecruitmentAppCmd(
 				ApplicationDto.fromDomain(domain),

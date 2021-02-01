@@ -99,5 +99,15 @@ public enum AmountUnit {
 		default: throw new RuntimeException("invalid value: " + this);
 		}
 	}
+
+	public int asAmountEnum() {
+		switch (this) {
+			case ONE_YEN: return 0;
+			case TEN_YEN: return 1;
+			case ONE_HUNDRED_YEN: return 2;
+			case ONE_THOUSAND_YEN: return 3;
+			default: throw new RuntimeException("invalid value: " + this);
+		}
+	}
 	
 }

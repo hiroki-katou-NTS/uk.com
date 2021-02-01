@@ -24,11 +24,10 @@ export const min = function (value: number | Date, min: number | Date, rule: IRu
                     return ['MsgB_39', `${rule.min}`, `${rule.mantissaMaxLength}`];
                 }
             case 'Date':
-                return ['FND_E_DATE_MIN', constr];
-            case 'Time':
-                    return ['FND_E_TIME_MIN', constr];
+                return ['MsgB_45', `${rule.min}`, `${rule.max}`];
             case 'Clock':
                 return ['MsgB_45', TimeWithDay.toString(rule.min as number), TimeWithDay.toString(rule.max as number)];
+            case 'Time':
             case 'TimePoint':
                 return ['MsgB_45', TimePoint.toString(rule.min as number), TimePoint.toString(rule.max as number)];
             case 'Duration':

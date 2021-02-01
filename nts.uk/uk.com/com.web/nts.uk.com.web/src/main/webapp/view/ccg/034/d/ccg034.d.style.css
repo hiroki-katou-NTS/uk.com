@@ -95,21 +95,25 @@
   overflow: hidden;
   text-overflow: ellipsis;
   word-break: break-word;
+  -ms-word-break: break-all;
 }
 #menu-creation-layout .menu-creation-item.part-label {
   overflow: hidden;
   text-overflow: ellipsis;
   word-break: break-word;
+  -ms-word-break: break-all;
 }
 #menu-creation-layout .menu-creation-item.part-link {
   overflow: hidden;
   text-overflow: ellipsis;
   word-break: break-word;
+  -ms-word-break: break-all;
 }
 #menu-creation-layout .menu-creation-item.part-attachment {
   overflow: hidden;
   text-overflow: ellipsis;
   word-break: break-word;
+  -ms-word-break: break-all;
 }
 #menu-creation-layout .menu-creation-item.part-image {
   overflow: hidden;

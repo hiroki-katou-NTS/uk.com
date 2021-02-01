@@ -34,6 +34,8 @@ module nts.uk.com.view.ccg015.d {
       const vm = this;
       vm.params = params;
       vm.topPageCode(params.topPageModel.topPageCode);
+      vm.getFlowmenuUpload();
+      vm.getFlowmenu();
       vm.itemList([
         new ItemModel(LayoutType.FLOW_MENU, vm.$i18n('Enum_LayoutType_FLOW_MENU')),
         new ItemModel(LayoutType.FLOW_MENU_UPLOAD, vm.$i18n('Enum_LayoutType_FLOW_MENU_UPLOAD')),
@@ -62,8 +64,9 @@ module nts.uk.com.view.ccg015.d {
               vm.$ajax('sys/portal/createflowmenu/extract/' + fileIdChoose).then((item: any) => {
               if (!_.isEmpty(item)) {
                 vm.renderHTML(item.htmlContent, 'frame1');
+                $(window.frames['frameF1'].contentDocument).find('a').attr('href', 'javascript: void()').removeAttr('target');
               }
-        }).always(() => vm.$blockui('clear'));
+              }).always(() => vm.$blockui('clear'));
             } else if (value === LayoutType.FLOW_MENU_UPLOAD) {
               vm.contentFlowMenu(false);
               vm.contentTopPagePart(true);
@@ -72,6 +75,10 @@ module nts.uk.com.view.ccg015.d {
               const fileIdChoose: string = vm.listTopPagePart()[topPagePartChoose].fileId;
               vm.fileID(fileIdChoose);
               vm.filePath(ntsFile.liveViewUrl(fileIdChoose, 'index.htm'));
+              setTimeout(function(){    
+                $(window.frames['frameF2'].contentDocument).find('a').attr('onclick', null).off("click");
+             }, 2000);
+              
             } else {
               vm.contentFlowMenu(false);
               vm.contentTopPagePart(false);
@@ -89,6 +96,7 @@ module nts.uk.com.view.ccg015.d {
         vm.$ajax('sys/portal/createflowmenu/extract/' + fileIdChoose).then((item: any) => {
           if (!_.isEmpty(item)) {
             vm.renderHTML(item.htmlContent, 'frame1');
+            $(window.frames['frameF1'].contentDocument).find('a').attr('href', 'javascript: void()').removeAttr('target');
           }
         }).always(() => vm.$blockui('clear'));
       })
@@ -99,13 +107,16 @@ module nts.uk.com.view.ccg015.d {
         const fileIdChoose: string = vm.listTopPagePart()[topPagePartChoose].fileId;
         vm.fileID(fileIdChoose);
         vm.filePath(ntsFile.liveViewUrl(fileIdChoose, 'index.htm'));
+        setTimeout(function(){    
+          $(window.frames['frameF2'].contentDocument).find('a').attr('onclick', null).off("click");
+       }, 2000);
       })
     }
 
     mounted() {
       const vm = this;
-      vm.checkDataLayout(vm.params);
       $('#D2_2').focus();
+      vm.checkDataLayout(vm.params)
     }
 
     private changeLayout(layoutType: number): JQueryPromise<any> {
@@ -117,16 +128,48 @@ module nts.uk.com.view.ccg015.d {
       return vm.$ajax('/toppage/changeFlowMenu', data)
         .then((result: any) => {
           if (result && layoutType === LayoutType.FLOW_MENU) {
-            vm.listFlowMenu(result);
-            vm.flowMenuSelectedCode(vm.listFlowMenu()[0].flowCode);
+            vm.listFlowMenu(_.orderBy(result,['flowCode'],['asc']));
+            if(vm.flowMenuSelectedCode() === ''){
+             vm.flowMenuSelectedCode(vm.listFlowMenu()[0].flowCode);
+            }
           } else if (result && layoutType === LayoutType.FLOW_MENU_UPLOAD) {
-            vm.listTopPagePart(result);
             if(result.length > 0){
-              vm.toppageSelectedCode(vm.listTopPagePart()[0].flowCode);
+              vm.listTopPagePart(_.orderBy(result,['flowCode'],['asc']));
+              if(vm.toppageSelectedCode() === ''){
+                vm.toppageSelectedCode(vm.listTopPagePart()[0].flowCode);
+              }
             }
           } else {
             // Do nothing
           }
+        });
+    }
+
+    private getFlowmenuUpload() {
+      const vm = this;
+      const data = {
+        topPageCd: vm.topPageCode(),
+        layoutType: 1,
+      };
+      return vm.$ajax('/toppage/changeFlowMenu', data)
+        .then((result: any) => {
+          if (result) {
+              vm.listTopPagePart(_.orderBy(result,['flowCode'],['asc']));
+            }
+        });
+    }
+
+    private getFlowmenu() {
+      const vm = this;
+      const data = {
+        topPageCd: vm.topPageCode(),
+        layoutType: 0,
+      };
+      return vm.$ajax('/toppage/changeFlowMenu', data)
+        .then((result: any) => {
+          if (result) {
+              vm.listFlowMenu(_.orderBy(result,['flowCode'],['asc']));
+            }
         });
     }
 
@@ -150,10 +193,12 @@ module nts.uk.com.view.ccg015.d {
               vm.flowMenuSelectedCode(vm.listFlowMenu()[flowMenuChoose].flowCode);
             }
             if (result.flowMenuUpCd && vm.layoutType() === 1) {
-              const topPagePartChoose = _.findIndex(vm.listTopPagePart(), (item: TopPagePartItem) => { return item.flowCode === result.flowMenuCd });
+              const topPagePartChoose = _.findIndex(vm.listTopPagePart(), (item: TopPagePartItem) => { return item.flowCode === result.flowMenuUpCd });
               vm.toppageSelectedCode(vm.listTopPagePart()[topPagePartChoose].flowCode);
             }
-            vm.url(result.url);
+            if(result.url && result.url !== '') {
+              vm.url(result.url);
+            }
             vm.urlIframe3(result.url);
           } else {
             vm.isNewMode(true);
@@ -190,6 +235,8 @@ module nts.uk.com.view.ccg015.d {
 
     checkSaveLayout() {
       const vm = this;
+      console.log();
+      
       if (vm.layoutType() === LayoutType.EXTERNAL_URL) {
         vm.$errors('clear');
         vm.$validate()
@@ -205,6 +252,15 @@ module nts.uk.com.view.ccg015.d {
 
     saveLayout() {
       const vm = this;
+      if(vm.layoutType() !== LayoutType.FLOW_MENU){
+        vm.flowMenuSelectedCode('');
+      }
+      if(vm.layoutType() !== LayoutType.FLOW_MENU_UPLOAD) {
+        vm.toppageSelectedCode('');
+      }
+      if(vm.layoutType() !== LayoutType.EXTERNAL_URL) {
+        vm.url('');
+      }
       const data: any = {
         widgetSettings: null,
         topPageCode: vm.topPageCode(),
@@ -213,7 +269,7 @@ module nts.uk.com.view.ccg015.d {
         cid: null,
         flowMenuCd: vm.flowMenuSelectedCode(),
         flowMenuUpCd: vm.toppageSelectedCode(),
-        url: vm.urlIframe3()
+        url: vm.url()
       };
       vm.$blockui("grayout");
       vm.$ajax('/toppage/saveLayoutFlowMenu', data)

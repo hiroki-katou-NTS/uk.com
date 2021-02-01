@@ -144,7 +144,7 @@ public class DeclareCalcRange {
 		// 申告出退勤の作成
 		domain.attdLeave = DeclareAttdLeave.create(
 				itgOfWorkTime.getWorkTimeSetting(),
-				predTimeSet, itgOfDaily.getAttendanceLeave().get(), declareSet);
+				predTimeSet, itgOfDaily.getAttendanceLeave().orElse(null), declareSet);
 		// 休出かどうかの判断
 		domain.isHolidayWork = workType.isHolidayWork();
 		// 申告用就業判断時間帯の取得
