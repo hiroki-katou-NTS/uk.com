@@ -23,4 +23,5 @@ public class KshmtWorkTimeWorkplacePK {
 
 	@Column(name="WORKTIME_CD")
 	public String workTimeID;
+
 }
