@@ -19,18 +19,12 @@ div#master-wrapper {
 		overflow: hidden !important;
 	}
 
-	.fixed-flex-layout {
-		display: flex;
+	.bg-white {
+		background-color: #fff !important;
+	}
 
-		> .fixed-flex-layout-left {
-			margin-right: 30px;
-
-			/* specify width each screens */
-		}
-
-		> .fixed-flex-layout-right {
-			flex: 1;
-		}
+	.bg-transparent {
+		background-color: transparent !important;
 	}
 
 	div#master-content {
@@ -68,14 +62,12 @@ div#master-wrapper {
 			div[id^="contents-area"] {
 				margin-top: 20px;
 				margin-bottom: 20px;
-				background-color: #fff;
 			}
 
 			& > div.left-panel {
 				float: left;
 				box-sizing: border-box;
 				overflow: hidden;
-				background-color: #fff;
 				padding-left: 32px;
 				padding-right: 16px;
 			}
@@ -107,7 +99,6 @@ div#master-wrapper {
 				overflow: hidden;
 				padding-left: 16px;
 				padding-right: 32px;
-				background-color: #fff;
 
 				& > div[id^="contents-area"] {
 					margin-top: 20px;
@@ -134,5 +125,20 @@ div#master-wrapper {
 
 	&.modal {
 		background-color: #fff;
+	}
+
+	// deprecate layout
+	.fixed-flex-layout {
+		display: flex;
+
+		> .fixed-flex-layout-left {
+			margin-right: 30px;
+
+			/* specify width each screens */
+		}
+
+		> .fixed-flex-layout-right {
+			flex: 1;
+		}
 	}
 }
