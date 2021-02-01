@@ -32,7 +32,10 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
         val listOldPersonCostCal = personCostCalculationRepository.getPersonCost(companyId, historyId);
 
         if (!listOldHistPersonCostCal.isPresent() || !listOldPersonCostCal.isPresent()) {
-            throw new BusinessException("");
+            throw new RuntimeException(" CAN NOT FIND DATA " +
+                    "IN  KSCMT_PER_COST_CALC_HIST" +
+                    " WITH HIST_ID = " + historyId +
+                    "COMPANYID = " + companyId);
         }
         // Get item delete
         Optional<DateHistoryItem> optionalHisItem = listOldHistPersonCostCal.get().getHistoryItems().stream()
@@ -66,9 +69,10 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
         Optional<DateHistoryItem> optionalHisItem = listHist.items().stream()
                 .filter(x -> x.identifier().equals(historyId)).findFirst();
         if (!optionalHisItem.isPresent()) {
-
-            throw new BusinessException("");
-
+            throw new RuntimeException(" CAN NOT FIND DATA " +
+                    "IN  KSCMT_PER_COST_CALC_HIST" +
+                    " WITH HIST_ID = " + historyId +
+                    "COMPANYID = " + companyId);
         }
         val listUpdate = new ArrayList<DateHistoryItem>();
         DateHistoryItem itemOld = optionalHisItem.get();
