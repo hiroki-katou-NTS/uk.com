@@ -83,21 +83,24 @@
               optionsText: 'name',
               value: selectedRuleCode,
               enable: true }" />
-            <div style="margin-top: 20px;">
-              <!-- D5_3 -->
-              <button data-bind="i18n: 'CCG005_31', disable: buttonSelectRequire, click: openCDL008Dialog" />
-              <!-- D5_4 -->
-              <input class="limited-label" id="D5_4" data-bind="ntsTextEditor: {
-                value: displayChoosenWkspName,
-                readonly: true,
-                name: '#[CCG005_17]',
-                option: {
-                  textmode: 'text',
-                  width: '190px',
-                  textalign: 'left'
-                }
-              }" />
-            </div>
+              <com:ko-if bind="buttonSelectWkspDisable()">
+                <div style="margin-top: 20px;">
+                  <!-- D5_3 -->
+                  <button data-bind="i18n: 'CCG005_31', click: openCDL008Dialog" />
+                  <!-- D5_4 -->
+                  <input class="limited-label" id="D5_4" data-bind="ntsTextEditor: {
+                              value: displayChoosenWkspName,
+                              readonly: true,
+                              name: '#[CCG005_17]',
+                              option: {
+                                textmode: 'text',
+                                width: '190px',
+                                textalign: 'left'
+                              }
+                            }" />
+              
+                </div>
+              </com:ko-if>
           </div>
         </div>
 			</div>

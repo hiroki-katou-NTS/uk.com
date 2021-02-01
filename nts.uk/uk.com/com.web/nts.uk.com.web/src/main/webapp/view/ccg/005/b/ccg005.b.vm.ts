@@ -24,6 +24,9 @@ module nts.uk.at.view.ccg005.b.screenModel {
       .then((data:any) => {
         vm.lstRole(data.role);
         const lstdata = data.jobTitle.map(x => {
+          if(data.specifyAuthInquiry.includes(x.jobTitleCode)){
+            return {flag: true, jobTitleName: x.jobTitleName, jobTitleCode: x.jobTitleCode}
+          }
           return {flag: false, jobTitleName: x.jobTitleName, jobTitleCode: x.jobTitleCode}
         })
         vm.lstJobTitle(lstdata);
@@ -62,7 +65,7 @@ module nts.uk.at.view.ccg005.b.screenModel {
               enable: true,
             }
           ]
-        });
+        }); 
       });
 
       
@@ -75,6 +78,20 @@ module nts.uk.at.view.ccg005.b.screenModel {
 
     onClickCancel() {
       this.$window.close();
+    }
+    
+    onClickSave() {
+      const vm = this;
+      const cId = __viewContext.user.companyId;
+      const listId = vm.lstJobTitle().filter(x => x.flag === true)
+      let data: any = {
+        cId: cId,
+        role: vm.selectedValue(),
+        listId: listId
+      }
+      this.$window.close({
+        data
+      });
     }
   }
 }

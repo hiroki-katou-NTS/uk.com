@@ -10,7 +10,7 @@ import nts.uk.ctx.office.dom.favorite.FavoriteSpecify;
  * お気に入りの指定 Command
  */
 @Data
-public class FavoriteSpecifyCommand implements FavoriteSpecify.MementoGetter {
+public class FavoriteSpecifyCommand implements FavoriteSpecify.MementoGetter, FavoriteSpecify.MementoSetter {
 	// お気に入り名
 	private String favoriteName;
 

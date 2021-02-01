@@ -14,6 +14,8 @@ public interface FavoriteSpecifyRepository {
 	 * @param domain お気に入りの指定
 	 */
 	public void insert(FavoriteSpecify domain);
+	
+	public void insertAll(List<FavoriteSpecify> domains);
 
 	/**
 	 * [2] update(お気に入りの指定)
@@ -21,6 +23,8 @@ public interface FavoriteSpecifyRepository {
 	 * @param domain お気に入りの指定
 	 */
 	public void update(FavoriteSpecify domain);
+	
+	public void updateAll(List<FavoriteSpecify> domains);
 
 	/**
 	 * [3] delete(お気に入りの指定)
