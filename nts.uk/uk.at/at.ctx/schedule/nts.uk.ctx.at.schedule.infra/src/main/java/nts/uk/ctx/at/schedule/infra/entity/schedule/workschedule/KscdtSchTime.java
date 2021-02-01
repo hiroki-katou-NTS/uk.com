@@ -290,16 +290,20 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 		List<KscdtSchHolidayWork> kscdtSchHolidayWork = new ArrayList<>();
 		
 		if(holidayWorkFrameTimeSheet.size() != holidayWorkFrameTime.size()) {
-			for (HolidayWorkFrameTime x : holidayWorkFrameTime) {
-				KscdtSchHolidayWork work = holidayWorkFrameTimeSheet.stream()
-						.map(y -> KscdtSchHolidayWork.toEntity(x, y, sID, yMD, cID)).findFirst().get();
-				kscdtSchHolidayWork.add(work);
+			if(holidayWorkFrameTime.size() > 0 && holidayWorkFrameTimeSheet.size() > 0) {
+				for (HolidayWorkFrameTime x : holidayWorkFrameTime) {
+					KscdtSchHolidayWork work = holidayWorkFrameTimeSheet.stream()
+							.map(y -> KscdtSchHolidayWork.toEntity(x, y, sID, yMD, cID)).findFirst().get();
+					kscdtSchHolidayWork.add(work);
+				}
 			}
 		} else {
+			if(holidayWorkFrameTime.size() > 0 && holidayWorkFrameTimeSheet.size() > 0) {
 			for (HolidayWorkFrameTimeSheet x : holidayWorkFrameTimeSheet) {
 				KscdtSchHolidayWork work = holidayWorkFrameTime.stream()
 						.map(y -> KscdtSchHolidayWork.toEntity2(x, y, sID, yMD, cID)).findFirst().get();
 				kscdtSchHolidayWork.add(work);
+			}
 			}
 		}
 		
