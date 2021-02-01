@@ -1936,31 +1936,18 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 _.forEach(cellsGroup, function(cells) {
                     if (cells.length > 0) {
                         let cell = cells[0];
-                        let objWorkTime = __viewContext.viewModel.viewAB.objWorkTime;
                         let objWorkType = _.filter(__viewContext.viewModel.viewAB.listWorkType(), function(o) { return o.workTypeCode == cell.value.workTypeCode; });
                         let sid = self.listSid()[cell.rowIndex];
                         let ymd = moment(cell.columnKey.slice(1)).format('YYYY/MM/DD');
-                        let workTypeCd = null, workTimeCd = null, startTime = null, endTime = null, isChangeTime = false;
-                        // check worktype là ngày lễ, ngày nghỉ thì starttime, endtime sẽ không set, isChangeTime = false
-                        if (objWorkType[0].workStyle == 0) { // HOLIDAY
-                            isChangeTime = false;
-                        } else {
-                            isChangeTime = true;
-                            if (!_.isNil(objWorkTime)) {
-                                startTime = objWorkTime.tzStart1;
-                                endTime = objWorkTime.tzEnd1;
-                            }
-                        }
-                        
                         let dataCell = {
                             sid: sid,
                             ymd: ymd,
                             viewMode: viewMode,
                             workTypeCd: cell.value.workTypeCode,
                             workTimeCd: cell.value.workTimeCode,
-                            startTime: startTime,
-                            endTime: endTime,
-                            isChangeTime: isChangeTime
+                            startTime: null,
+                            endTime: null,
+                            isChangeTime: false
                         }
                         dataReg.push(dataCell);
                     }
