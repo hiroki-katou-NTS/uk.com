@@ -1216,12 +1216,18 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				self.lstEmpId = self.lstEmpId.sort(function(a: any, b: any) {
 					return _.findIndex(dataSort, x => { return x.empId == a.empId }) - _.findIndex(dataSort, x => { return x.empId == b.empId });
 				});
+				self.dataScreen003A().employeeInfo = self.dataScreen003A().employeeInfo.sort(function(a: any, b: any) {
+					return _.findIndex(self.lstEmpId, x => { return x.empId == a.empId }) - _.findIndex(self.lstEmpId, x => { return x.empId == b.empId });
+				});	
 				self.localStore().lstEmpIdSort = self.lstEmpId;
 				characteristics.save(self.KEY, self.localStore());
 				self.destroyAndCreateGrid(self.lstEmpId, 1);
 			} else {
 				
 				self.lstEmpId = _.flatMap(self.dataFromA().listEmp, c => [{ empId: c.id, name: c.name, code: c.code }]);
+				self.dataScreen003A().employeeInfo = self.dataScreen003A().employeeInfo.sort(function(a: any, b: any) {
+					return _.findIndex(self.lstEmpId, x => { return x.empId == a.empId }) - _.findIndex(self.lstEmpId, x => { return x.empId == b.empId });
+				});		
 				self.localStore().lstEmpIdSort = self.lstEmpId;
 						characteristics.save(self.KEY, self.localStore());
 						self.destroyAndCreateGrid(self.lstEmpId, 1);
@@ -1680,7 +1686,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				} else {
 					let isNeedWorkSchedule = self.dataScreen003A().employeeInfo[i].workInfoDto.isNeedWorkSchedule,
 						canModified = self.dataScreen003A().canModified, // 修正可能
-						isConfirmed = self.dataScreen003A().employeeInfo[i].workInfoDto.isConfirmed; // 確定済みか
+						isConfirmed = self.dataScreen003A().employeeInfo[i].workInfoDto.isConfirmed,
+						lstType = self.dataScreen003A().scheCorrection; // 確定済みか
 					// set ẩn hiện A6, A7, A8
 					
 					if (self.dataScreen003A().employeeInfo[i].workScheduleDto == null || (self.dataScreen003A().employeeInfo[i].workScheduleDto != null &&
@@ -1807,6 +1814,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 						}
 					}
+					
+					let fix = _.filter(lstType, (x: any) => { return x === 0 }),
+						flex = _.filter(lstType, (x: any) => { return x === 1 }),
+						flow = _.filter(lstType, (x: any) => { return x === 2 });
+						
 
 					if (self.checkDisByDate == false) {
 						middleContentDeco.push(new CellColor("worktypeCode", self.lstEmpId[i].empId, "xseal"));
@@ -1820,6 +1832,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						middleContentDeco.push(new CellColor("totalTime", self.lstEmpId[i].empId, "xseal"));
 						middleContentDeco.push(new CellColor("breaktime", self.lstEmpId[i].empId, "xseal"));
 					}
+					
+					
 
 					//self.checkDisByDate = true;
 					if (isConfirmed == 1) {
