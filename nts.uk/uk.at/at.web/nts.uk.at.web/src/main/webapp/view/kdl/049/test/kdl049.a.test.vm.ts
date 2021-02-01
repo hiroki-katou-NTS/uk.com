@@ -44,14 +44,17 @@ module nts.uk.at.view.kdl049.a.test.viewmodel {
             let self = this;
             
                 let data = {
-                workplaceId:$('#tree-grid').getRowSelected()[0].id,
+                workplaceId: $('#tree-grid').getRowSelected().length == 0 ? null : $('#tree-grid').getRowSelected()[0].id,
                 baseDate: moment().toISOString()
             }
-            nts.uk.request.ajax("com", "bs/employee/workplace/info/findDetail", data).done((wkp) => {
-                self.workplaceName(_.isNil(wkp) ? null : wkp.wkpDisplayName);
-                
-            });
-                
+          
+                setTimeout(function() {
+                    nts.uk.request.ajax("com", "bs/employee/workplace/info/findDetail", data).done((wkp) => {
+
+                        self.workplaceName(_.isNil(wkp) ? null : wkp.wkpDisplayName);
+
+                    });
+                }, 2000);
             if (self.selectedWorkplaceId() != undefined) {
                 let result = _.find(self.wplDatas(), function(n) { 
                         return n.id == self.selectedWorkplaceId(); 
