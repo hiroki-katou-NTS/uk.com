@@ -70,7 +70,7 @@ module nts.uk.at.view.kml001.a {
 
         self.currentPersonCost().calculationSetting.subscribe((newValue) => {
           nts.uk.ui.errors.clearAll();
-          if (newValue === 1) 
+          if (newValue === 1)
             self.setPremiumTo100();
           else
             self.currentPersonCost().unitPrice.valueHasMutated();
@@ -100,7 +100,7 @@ module nts.uk.at.view.kml001.a {
               self.isInsert(false);
             } else self.$blockui('hide');
 
-            let height__: number = 464;//$(window).width() > 1366 ? 464 : 224;
+            let height__: number = 464;
             $("#premium-set-tbl").ntsFixedTable({ height: height__ });
 
             dfd.resolve();
@@ -211,11 +211,10 @@ module nts.uk.at.view.kml001.a {
           .done(() => {
             self.$dialog.info({ messageId: "Msg_15" }).then(() => {
               self.$blockui('hide');
-              //self.reloadHistoryList();
             });
           })
           .fail((error) => {
-            self.$dialog.info({ messageId: error.messageId }).then(() => {
+            self.$dialog.error({ messageId: error.messageId }).then(() => {
               self.$blockui('hide');
             });
           });
@@ -567,11 +566,12 @@ module nts.uk.at.view.kml001.a {
 
           let premiumSets: Array<vmbase.PremiumSettingInterface> = [];
           let premiumSetting: vmbase.PremiumSettingInterface = {};
-          self.createViewAttendanceItemsDefault(data.premiumSets.length);
+          
+          self.createViewAttendanceItemsDefault(self.defaultPremiumSettings().length);
+          
           if (data.premiumSets.length > 0) {
 
             data.premiumSets = _.orderBy(data.premiumSets, 'id', 'asc');
-
             data.premiumSets.forEach((item, index) => {
               let attendanceNames: Array<vmbase.AttendanceItem> = [];
 
@@ -592,6 +592,27 @@ module nts.uk.at.view.kml001.a {
               premiumSetting.attendanceItems = attendanceNames;
               premiumSets.push(premiumSetting);
             });
+            //console.log(self.defaultPremiumSettings());
+            if (data.premiumSets.length < self.defaultPremiumSettings().length) {
+              _.forEach(self.defaultPremiumSettings(), (item) => {
+                let hasItem = _.some(premiumSets, (x: any) => x.displayNumber === item.displayNumber);                
+                if (!hasItem) {    
+                  premiumSetting = {};            
+                  premiumSetting.companyID = '';
+                  premiumSetting.historyID = '';
+                  premiumSetting.displayNumber = item.displayNumber;
+                  premiumSetting.rate = item.rate;
+                  premiumSetting.name = item.name;
+                  premiumSetting.unitPrice = item.unitPrice;
+                  premiumSetting.useAtr = item.useAtr;
+                  premiumSetting.attendanceItems = [];
+                  premiumSets.push(premiumSetting);
+                }
+              });
+            }
+            //re-order
+            premiumSets = _.orderBy(premiumSets, 'displayNumber', 'asc');
+
           } else {
             _.forEach(self.defaultPremiumSettings(), (item) => {
               premiumSetting = {};
@@ -604,7 +625,6 @@ module nts.uk.at.view.kml001.a {
               premiumSetting.useAtr = item.useAtr;
               premiumSetting.attendanceItems = [];
               premiumSets.push(premiumSetting);
-
             });
           }
 
