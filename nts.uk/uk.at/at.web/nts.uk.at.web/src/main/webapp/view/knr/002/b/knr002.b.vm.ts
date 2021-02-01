@@ -30,9 +30,12 @@ module knr002.b {
                 let hours = self.fillZero(`${today.getHours()}`);
                 let minutes = self.fillZero(`${today.getMinutes()}`);
                 let seconds = self.fillZero(`${today.getSeconds()}`);
-                
-
-                let sSystemDateTime = `${year}/${month}/${self.fillZero(`${date - 1}`)} ${hours}:${minutes}:${seconds}`;
+                if(date == 1){
+                    today.setDate(today.getDate() - 1);
+                    var yDate =  today.getDate();
+                    var yMonth = self.fillZero(`${today.getMonth() + 1}`);
+                }     
+                let sSystemDateTime = date > 1 ? `${year}/${month}/${self.fillZero(`${date - 1}`)} ${hours}:${minutes}:${seconds}` : `${year}/${yMonth}/${self.fillZero(`${yDate}`)} ${hours}:${minutes}:${seconds}`;
                 let eSystemDateTime = `${year}/${month}/${self.fillZero(`${date}`)} ${hours}:${minutes}:${seconds}`;
                 self.sTime =  ko.observable(sSystemDateTime);
                 self.eTime =  ko.observable(eSystemDateTime);
