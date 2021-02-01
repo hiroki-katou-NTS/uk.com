@@ -4,7 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.workrecord.monthcal.workplace;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -20,6 +22,9 @@ import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.workplace.KrcstWkpF
 @Stateless
 public class JpaWkpFlexMonthActCalSetRepository extends JpaRepository implements WkpFlexMonthActCalSetRepo {
 
+	private static final String SELECT_BY_CID = "SELECT c FROM KrcstWkpFlexMCalSet c"
+			+ " WHERE c.krcstWkpFlexMCalSetPK.cid = :cid";
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -101,5 +106,15 @@ public class JpaWkpFlexMonthActCalSetRepository extends JpaRepository implements
 										e.aggregateTimeSetting(), 
 										e.flexTimeHandle(), 
 										e.getKrcstWkpFlexMCalSetPK().getWkpId());
+	}
+
+	@Override
+	public List<WkpFlexMonthActCalSet> findByCid(String cid) {
+		List<KrcstWkpFlexMCalSet> entitys = this.queryProxy().query(SELECT_BY_CID, KrcstWkpFlexMCalSet.class)
+				.setParameter("cid", cid).getList();
+		
+		return entitys.stream().map(m -> {
+			return toDomain(m);
+		}).collect(Collectors.toList());
 	}
 }

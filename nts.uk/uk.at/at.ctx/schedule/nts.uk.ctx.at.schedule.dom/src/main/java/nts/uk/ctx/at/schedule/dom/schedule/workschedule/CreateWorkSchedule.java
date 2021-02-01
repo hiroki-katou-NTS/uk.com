@@ -76,11 +76,6 @@ public class CreateWorkSchedule {
 		
 		WorkSchedule correctedResult = require.correctWorkSchedule(workSchedule);
 		
-		// TODO		
-		// if $補正処理結果.エラーメッセージID.isPresent()												
-		//		return 勤務予定の登録処理結果#エラーありで作る (社員ID, 年月日, $補正処理結果.エラーメッセージID)
-
-		
 		AtomTask atomTask = AtomTask.of( () -> {
 			if ( isNewRegister ) {
 				require.insertWorkSchedule(correctedResult);

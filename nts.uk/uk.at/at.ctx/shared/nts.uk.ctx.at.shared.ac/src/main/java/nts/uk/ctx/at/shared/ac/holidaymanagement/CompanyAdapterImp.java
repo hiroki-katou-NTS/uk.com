@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.AddInforImport;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyDto;
@@ -99,5 +100,11 @@ public class CompanyAdapterImp implements CompanyAdapter {
 				.companyName(companyEx.getCompanyName())
 				.isAbolition(companyEx.getIsAbolition())
 				.build();
+	}
+	
+	// 年度の期間を取得
+	@Override
+	public YearMonthPeriod get(String cid, int year) {
+		return this.companyPub.getyearMonth(cid, year);
 	}
 }

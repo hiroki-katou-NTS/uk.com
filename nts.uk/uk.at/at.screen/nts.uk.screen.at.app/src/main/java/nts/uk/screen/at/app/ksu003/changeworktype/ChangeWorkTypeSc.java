@@ -76,7 +76,7 @@ public class ChangeWorkTypeSc {
 		// 3 .get(会社ID、勤務種類コード):勤務種類
 		Optional<WorkType> workType = workTypeRepo.findByPK(companyId, information.getWorkTypeCode());
 		if(workStyle.isPresent() && workType.isPresent()) {
-			workTypeDto = new ChangeWorkTypeDto(workStyle.get().value != 0 ? false : true, workType.get().getName().v());
+			workTypeDto = new ChangeWorkTypeDto(workStyle.get().value != 0 ? false : true, workType.get().getAbbreviationName().v());
 		}
 		
 		return workTypeDto;

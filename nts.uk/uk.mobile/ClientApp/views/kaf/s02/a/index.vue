@@ -140,7 +140,9 @@
         </div>
       </div>
     </div>
+    <div>
 
+    </div>
     <!-- A5 -->
     <div v-if="condition7 || (!mode && breakLst.length > 0)">
       <div class="card card-label">

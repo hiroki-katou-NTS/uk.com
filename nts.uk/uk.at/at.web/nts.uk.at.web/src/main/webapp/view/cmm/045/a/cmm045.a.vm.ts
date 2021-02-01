@@ -65,23 +65,23 @@ module cmm045.a.viewmodel {
 
         constructor() {
             let self = this;
-            $(".popup-panel").ntsPopup({
+            $(".popup-panel-cmm045").ntsPopup({
                 position: {
-                    my: "left top",
-                    at: "left bottom",
+                    my: "left bottom",
+                    at: "right top",
                     of: ".hyperlink"
                 },
                 showOnStart: false,
                 dismissible: false
             });
 
-            $("a.hyperlink").click(() => {$(".popup-panel").ntsPopup("toggle");});
+            $("a.hyperlink").click(() => {$(".popup-panel-cmm045").ntsPopup("toggle");});
             $(window).on("mousedown.popup", function(e) {
-                let control = $(".popup-panel");
+                let control = $(".popup-panel-cmm045");
                 if (!$(e.target).is(control)
                     && control.has(e.target).length === 0
                     && !$(e.target).is($(".hyperlink"))) {
-                    $(".popup-panel").ntsPopup("hide");
+                    $(".popup-panel-cmm045").ntsPopup("hide");
                 }
             });
 
@@ -228,7 +228,7 @@ module cmm045.a.viewmodel {
 							$('.nts-fixed-body-table').width(_.sum(_.values(obj.width)));
 	                    } else {
 	                        if($('.nts-fixed-header-container').width()-812 < 70) {
-								$('col.appContent').width(70);	
+								$('col.appContent').width(70);
 							} else {
 								$('col.appContent').width($('.nts-fixed-header-container').width()-812);
 							}
@@ -244,7 +244,7 @@ module cmm045.a.viewmodel {
 							leftValue = 0;
 						for(let i = 0; i < headerSize; i++) {
 							leftValue += $('.nts-fixed-header-wrapper .ui-widget-header')[i].offsetWidth;
-							$('.resize-handle')[i].style.left = leftValue + 'px';		
+							$('.resize-handle')[i].style.left = leftValue + 'px';
 						}
 	                });
 	            } else {
@@ -285,7 +285,7 @@ module cmm045.a.viewmodel {
 							$('.nts-fixed-body-table').width(_.sum(_.values(obj.width)));
 	                    } else {
 	                        if($('.nts-fixed-header-container').width()-775 < 70) {
-								$('col.appContent').width(70);	
+								$('col.appContent').width(70);
 							} else {
 								$('col.appContent').width($('.nts-fixed-header-container').width()-775);
 							}
@@ -301,7 +301,7 @@ module cmm045.a.viewmodel {
 							leftValue = 0;
 						for(let i = 0; i < headerSize; i++) {
 							leftValue += $('.nts-fixed-header-wrapper .ui-widget-header')[i].offsetWidth;
-							$('.resize-handle')[i].style.left = leftValue + 'px';		
+							$('.resize-handle')[i].style.left = leftValue + 'px';
 						}
 	                });
 				}
@@ -437,14 +437,14 @@ module cmm045.a.viewmodel {
             }
 			if (!self.appListExtractConditionDto.preOutput && !self.appListExtractConditionDto.postOutput) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_1722" }).then(() => {
-                    $(".popup-panel").ntsPopup("toggle");
+                    $(".popup-panel-cmm045").ntsPopup("toggle");
                 });
                 return false;
 			}
 			let selectAppTypeLst = _.filter(self.appListExtractConditionDto.opListOfAppTypes, o => o.choice);
 			if (_.isEmpty(selectAppTypeLst)) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_1723" }).then(() => {
-                    $(".popup-panel").ntsPopup("toggle");
+                    $(".popup-panel-cmm045").ntsPopup("toggle");
                 });
                 return false;
 			}
@@ -1070,7 +1070,13 @@ module cmm045.a.viewmodel {
                             date = self.appDateRangeColor(moment(item.opAppStartDate).format("M/D(ddd)"), moment(item.opAppEndDate).format("M/D(ddd)"));
                             $td.html(date);
                         } else {
-                            $td.html(self.appDateColor(date, "", ""));
+							let linkAppDate = null;
+							if(item.appType==10) {
+								if(item.opComplementLeaveApp.complementLeaveFlg==1) {
+									linkAppDate = moment(item.opComplementLeaveApp.linkAppDate).format("M/D(ddd)");
+								}	
+							}
+                            $td.html(self.appDateColor(date, "", "", linkAppDate));
                         }
                         if(item.appType === 10) {
 
@@ -1135,15 +1141,32 @@ module cmm045.a.viewmodel {
 				return _.escape(item[key]).replace(/\n/g, '<br/>');
             }
             if(key=='inputDate') {
-                var cl = "";
-                var time = moment(item[key]).format("M/D(ddd) H:mm");
+                let cl = "";
+                let time = moment(item[key]).format("M/D(ddd) H:mm");
+				let isSyncApp = false;
+				if(item.appType==10) {
+					if(item.opComplementLeaveApp.complementLeaveFlg==1) {
+						isSyncApp = true;	
+					}
+				}
                 // var time = nts.uk.time.formatDate(new Date(item[key]), "m/dD hh:mm");
 
                 if(_.includes(time, ''))
-                return self.inputDateColor(time, cl);
+                return self.inputDateColor(time, cl, isSyncApp);
             }
 			if(key=='reflectionStatus') {
-				return _.escape(getText(item[key]));
+				let statusStr = _.escape(getText(item[key]));
+				let isSyncApp = false;
+				if(item.appType==10) {
+					if(item.opComplementLeaveApp.complementLeaveFlg==1) {
+						isSyncApp = true;	
+					}
+				}
+				if(isSyncApp) {
+					return '<div>' + statusStr + '</div><div style="margin-top: 5px;">' + statusStr + '</div>';
+				} else {
+					return '<div>' + statusStr + '</div>';
+				}
 			}
 			return _.escape(item[key]);
 		}
@@ -1771,29 +1794,53 @@ module cmm045.a.viewmodel {
             return inputDate;
         }
         //ver41
-        inputDateColor(input: string, classApp: string): string{
-            let inputDate = '<div class = "' + classApp + '" >' + input + '</div>';
+        inputDateColor(input: string, classApp: string, isSyncApp: boolean): string{
+            let inputDate = '<div class = "' + classApp + '" >' + '<div>' + input + '</div>';
+			if(isSyncApp) {
+				inputDate += '<div style="margin-top: 5px;">' + input + '</div>';
+			}
+			inputDate += '</div>';
             //fill color text input date
             let a = input.split("(")[1];
             let colorIn = a.substring(0,1);
             if (colorIn == '土') {//土
-                inputDate = '<div class = "saturdayCell ' + classApp + '" >' + input + '</div>';
+                inputDate = '<div class = "saturdayCell ' + classApp + '" >' + '<div>' + input + '</div>';
+				if(isSyncApp) {
+					inputDate += '<div style="margin-top: 5px;">' + input + '</div>';
+				}
+				inputDate += '</div>';
             }
             if (colorIn == '日') {//日
-                inputDate = '<div class = "sundayCell ' + classApp + '" >' + input + '</div>';
+                inputDate = '<div class = "sundayCell ' + classApp + '" >' + '<div>' + input + '</div>';
+				if(isSyncApp) {
+					inputDate += '<div style="margin-top: 5px;">' + input + '</div>';
+				}
+				inputDate += '</div>';
             }
             return inputDate;
         }
-        appDateColor(date: string, classApp: string, priod: string): string{
-            let appDate = '<div class = "' + classApp + '" >' + date + priod + '</div>';;
+        appDateColor(date: string, classApp: string, priod: string, linkAppDate: string): string{
+            let appDate = '<div class = "' + classApp + '" >' + '<div>' + date + priod + '</div>';
+			if(linkAppDate) {
+				appDate += '<div style="margin-top: 5px;">' + linkAppDate + priod + '</div>';
+			}
+			appDate += '</div>';
             //color text appDate
             let a = date.split("(")[1];
             let color = a.substring(0,1);
             if (color == '土') {//土
-                appDate = '<div class = "saturdayCell  ' + classApp + '" >' + date + priod +'</div>';
+                appDate = '<div class = "saturdayCell  ' + classApp + '" >' + '<div>' + date + priod + '</div>';
+				if(linkAppDate) {
+					appDate += '<div style="margin-top: 5px;">' + linkAppDate + priod + '</div>';
+				}
+				appDate += '</div>';
             }
             if (color == '日') {//日
-                appDate = '<div class = "sundayCell  ' + classApp + '" >' + date + priod + '</div>';
+                appDate = '<div class = "sundayCell  ' + classApp + '" >' + '<div>' + date + priod + '</div>';
+				if(linkAppDate) {
+					appDate += '<div style="margin-top: 5px;">' + linkAppDate + priod + '</div>';
+				}
+				appDate += '</div>';
             }
             return appDate;
         }
@@ -2362,9 +2409,16 @@ module cmm045.a.viewmodel {
 							return;
 						}
 					}
-					if(item.appType == 10 && item.appIdSub != null){
-	                    listOfApplicationCmds.push({ appId: item.appID, version: item.version });
-	                    listOfApplicationCmds.push({ appId: item.appIdSub, version: item.version });
+					if(item.appType == 10){
+						if(item.opComplementLeaveApp.complementLeaveFlg==1) {
+							let linkItem = _.clone(item);
+							linkItem.appID = item.opComplementLeaveApp.linkAppID;
+							linkItem.appDate = item.opComplementLeaveApp.linkAppDate;
+							linkItem.opAppStartDate = item.opComplementLeaveApp.linkAppDate;
+							linkItem.opAppEndDate = item.opComplementLeaveApp.linkAppDate;
+							listOfApplicationCmds.push(item);
+	                    	listOfApplicationCmds.push(linkItem);	
+						}
 	                }else{
 	                    listOfApplicationCmds.push(item);
 	                }

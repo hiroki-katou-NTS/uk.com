@@ -90,6 +90,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 		/**
 		 * 休暇申請の印刷内容
 		 */
+        opPrintContentApplyForLeave: any;
         
          /**
          * 休日出勤の印刷内容
@@ -104,6 +105,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 		/**
 		 * 時間休暇申請の印刷内容
 		 */
+		opPrintContentOfTimeLeave: any;
 		
 		/**
 		 * 打刻申請の印刷内容
@@ -128,6 +130,11 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 		opDetailOutput: any;
 
         opOptionalItemOutput: any;
+
+        /**
+         * 振休振出申請の印刷内容
+         */
+        optHolidayShipment: any;
 	}
 	
 	export interface AppInitParam {
