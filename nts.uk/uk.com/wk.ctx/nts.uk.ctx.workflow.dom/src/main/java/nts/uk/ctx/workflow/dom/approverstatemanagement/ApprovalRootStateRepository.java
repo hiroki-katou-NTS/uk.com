@@ -123,8 +123,6 @@ public interface ApprovalRootStateRepository {
 	public List<String> resultKTG002Mobile(GeneralDate startDate, GeneralDate endDate, String approverID,
 			Integer rootType, String companyID);
 
-	public boolean resultKTG002(GeneralDate startDate, GeneralDate endDate, String approverID, Integer rootType,
-			String companyID);
 	
 	/**
 	 * refactor 4

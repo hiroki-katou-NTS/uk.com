@@ -817,57 +817,6 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	}
 
 	@Override
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public boolean resultKTG002(GeneralDate startDate, GeneralDate endDate, String approverID, Integer rootType,
-			String companyID) {
-		String loginSID = AppContexts.user().employeeId();
-		GeneralDate baseDate = GeneralDate.today();
-		String SELECT = "SELECT COUNT (*) FROM ( "
-				+ "SELECT APS.ROOT_STATE_ID AS ROOT_STATE_ID,APS.PHASE_ORDER AS PHASE_ORDER "
-				+ "FROM WWFDT_APP_INST_APPROVER APS " + "INNER JOIN " + "WWFDT_APP_INST_FRAME AF "
-				+ "ON APS.ROOT_STATE_ID = AF.ROOT_STATE_ID " + "AND APS.PHASE_ORDER = AF.PHASE_ORDER "
-				+ "AND APS.FRAME_ORDER = AF.FRAME_ORDER " + "WHERE APS.CID = ? " + "AND APS.APPROVER_CHILD_ID = ? "
-				+ "AND AF.APP_FRAME_ATR = '0' " + "AND APS.APPROVAL_RECORD_DATE >= ? "
-				+ "AND APS.APPROVAL_RECORD_DATE <= ? " + "UNION ALL "
-				+ "SELECT APS.ROOT_STATE_ID AS ROOT_STATE_ID,APS.PHASE_ORDER AS PHASE_ORDER "
-				+ "FROM WWFDT_APP_INST_APPROVER APS " + "INNER JOIN WWFDT_APP_INST_FRAME AF "
-				+ "ON APS.ROOT_STATE_ID = AF.ROOT_STATE_ID " + "AND APS.PHASE_ORDER = AF.PHASE_ORDER "
-				+ "AND APS.FRAME_ORDER = AF.FRAME_ORDER " + "INNER JOIN WWFMT_AGENT AG "
-				+ "ON APS.APPROVER_CHILD_ID = AG.SID " + "WHERE APS.CID = ? " + "AND AF.APP_FRAME_ATR = '0' "
-				+ "AND APS.APPROVAL_RECORD_DATE >= ? " + "AND APS.APPROVAL_RECORD_DATE <= ? "
-				+ "AND AG.START_DATE <= ? " + "AND AG.END_DATE >= ? " + "AND AG.AGENT_APP_TYPE1 = '0' "
-				+ "AND AG.AGENT_SID1 = ? ) " + "AS SYONIN " + "INNER JOIN ( "
-				+ "SELECT AP.ROOT_STATE_ID AS ROOT_STATE_ID, MIN(PHASE_ORDER) AS NOW_PHASE_ORDER "
-				+ "FROM WWFDT_APP_INST_PHASE AP " + "WHERE AP.APP_PHASE_ATR IN ('0','3') "
-				+ "GROUP BY AP.ROOT_STATE_ID )" + "AS NOWFAS " + "ON SYONIN.ROOT_STATE_ID = NOWFAS.ROOT_STATE_ID "
-				+ "AND SYONIN.PHASE_ORDER = NOWFAS.NOW_PHASE_ORDER ";
-		try (PreparedStatement stmt = this.connection().prepareStatement(SELECT)) {
-			stmt.setString(1, companyID);
-			stmt.setString(2, loginSID);
-			stmt.setDate(3, Date.valueOf(startDate.localDate()));
-			stmt.setDate(4, Date.valueOf(endDate.localDate()));
-			stmt.setString(5, companyID);
-			stmt.setDate(6, Date.valueOf(startDate.localDate()));
-			stmt.setDate(7, Date.valueOf(endDate.localDate()));
-			stmt.setDate(8, Date.valueOf(baseDate.localDate()));
-			stmt.setDate(9, Date.valueOf(baseDate.localDate()));
-			stmt.setString(10, loginSID);
-			ResultSet result = stmt.executeQuery();
-			while (result.next()) {
-				if (result.getInt(1) > 0) {
-					// co data
-					return true;
-				}
-			}
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-		return false;
-
-	}
-
-	@Override
 	public void insertApp(ApprovalRootState approvalRootState) {
 		this.commandProxy().insert(WwfdtAppInstRoute.fromDomain(approvalRootState));
 		this.getEntityManager().flush();
