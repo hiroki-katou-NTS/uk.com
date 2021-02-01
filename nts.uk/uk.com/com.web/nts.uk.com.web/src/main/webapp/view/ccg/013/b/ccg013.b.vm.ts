@@ -203,22 +203,19 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
 
         private changeSystem(value: number): void {
             const self = this;
-            const newAllPart = _.orderBy(self.allPart(), ['system', 'displayOrder', 'code'], ['asc', 'asc', 'asc'])
-                .filter(item => item.menuAtr === MenuAtr.Menu);
+            const newAllPart = _.orderBy(self.allPart(), ['system', 'displayOrder', 'code'], ['asc', 'asc', 'asc']);
             let list001 = [];
             const list002 = _.chain(newAllPart)
                 .filter(item =>
                     item.system === System.COMMON &&
-                    item.classification === MenuClassification.TopPage &&
-                    item.webMenuSetting === WebMenuSetting.Display
+                    item.classification === MenuClassification.TopPage
                 )
                 .value();
             if (value === System.ALL) {
                 list001 = _.chain(newAllPart)
                     .filter(item =>
                         item.classification !== MenuClassification.TopPage &&
-                        item.classification !== MenuClassification.OfficeHelper &&
-                        item.webMenuSetting === WebMenuSetting.Display
+                        item.classification !== MenuClassification.OfficeHelper
                     )
                     .value();
             } else {
@@ -226,8 +223,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
                     .filter(item =>
                         item.system === value &&
                         item.classification !== MenuClassification.TopPage &&
-                        item.classification !== MenuClassification.OfficeHelper &&
-                        item.webMenuSetting === WebMenuSetting.Display
+                        item.classification !== MenuClassification.OfficeHelper
                     )
                     .value();
             }
