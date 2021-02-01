@@ -103,6 +103,7 @@ public class WorkTimeSettingInfoFinder {
 	public WorkTimeSettingInfoDto find(String workTimeCode) {
 
 		String companyId = AppContexts.user().companyId();
+		boolean modeOtsuka = AppContexts.optionLicense().customize().ootsuka();
 
 		WorkTimeSettingDto workTimeSettingDto = new WorkTimeSettingDto();
 		WorkTimeDisplayModeDto displayModeDto = new WorkTimeDisplayModeDto();
@@ -167,7 +168,7 @@ public class WorkTimeSettingInfoFinder {
 
 		return new WorkTimeSettingInfoDto(predetemineTimeSettingDto, workTimeSettingDto, displayModeDto,
 				flexWorkSettingDto, fixedWorkSettingDto, flowWorkSettingDto, diffTimeWorkSettingDto,
-				manageEntryExitDto);
+				manageEntryExitDto, modeOtsuka);
 	}
 
 	/**

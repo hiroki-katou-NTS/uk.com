@@ -34,6 +34,9 @@ public class WorkTimeSettingInfoDto extends WorkTimeCommonDto {
 
 	/** The diff time work setting. */
 	private DiffTimeWorkSettingDto diffTimeWorkSetting;
+	
+	/** 大塚モード */
+	private boolean modeOtsuka;
 
 	/**
 	 * @param flexWorkSetting
@@ -44,12 +47,13 @@ public class WorkTimeSettingInfoDto extends WorkTimeCommonDto {
 	public WorkTimeSettingInfoDto(PredetemineTimeSettingDto predseting, WorkTimeSettingDto worktimeSetting,
 			WorkTimeDisplayModeDto displayMode, FlexWorkSettingDto flexWorkSetting,
 			FixedWorkSettingDto fixedWorkSetting, FlWorkSettingDto flowWorkSetting,
-			DiffTimeWorkSettingDto diffTimeWorkSetting, ManageEntryExitDto manageEntryExit) {
+			DiffTimeWorkSettingDto diffTimeWorkSetting, ManageEntryExitDto manageEntryExit, boolean modeOtsuka) {
 		super(predseting, worktimeSetting, displayMode, manageEntryExit);
 		this.flexWorkSetting = flexWorkSetting;
 		this.fixedWorkSetting = fixedWorkSetting;
 		this.flowWorkSetting = flowWorkSetting;
 		this.diffTimeWorkSetting = diffTimeWorkSetting;
+		this.modeOtsuka = modeOtsuka;
 	}
 
 	/**
