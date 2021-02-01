@@ -29,7 +29,7 @@ module a8 {
         // Screen data model
         model: MainSettingModel;
         settingEnum: WorkTimeSettingEnumDto;
-        
+
         // UI component
         workTimeTabs: KnockoutObservableArray<any>;
         workTimeSelectedTab: KnockoutObservable<string>;
@@ -51,8 +51,7 @@ module a8 {
         pubHolWorkTimePublicApproTimeSetting: TimeRoundingSetting;
         
         listRoundingBreakTimezone: KnockoutObservableArray<any>;
-        
-        
+
         screenMode: any;
         
         // Simple mode - Data (nothing)      
@@ -63,6 +62,11 @@ module a8 {
         constructor(isNewMode: KnockoutObservable<boolean>, screenMode: any, model: MainSettingModel, settingEnum: WorkTimeSettingEnumDto) {
             let _self = this;
             _self.isNewMode = isNewMode;
+
+            // _self.isFluidWork = ko.computed(() => {
+            //    return _self.workTimeMethod() != 2;
+            // },_self);
+
             _self.isNewMode.subscribe((v) => {
                 // Set default value for switch button
                 if (v) {
