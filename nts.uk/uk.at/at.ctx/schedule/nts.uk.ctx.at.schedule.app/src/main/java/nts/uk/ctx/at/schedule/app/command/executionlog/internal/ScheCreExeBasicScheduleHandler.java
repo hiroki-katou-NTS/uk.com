@@ -203,7 +203,7 @@ public class ScheCreExeBasicScheduleHandler {
 						masterCache));
 
 		// update is confirm
-		commandSave.setConfirmedAtr(this.getConfirmedAtr(command.getConfirm(), ConfirmedAtr.UNSETTLED).value);
+		commandSave.setConfirmedAtr(this.getConfirmedAtr(command.getContent().getConfirm(), ConfirmedAtr.UNSETTLED).value);
 
         // 勤務予定時間
 		List<Integer> startClock = new ArrayList<>();

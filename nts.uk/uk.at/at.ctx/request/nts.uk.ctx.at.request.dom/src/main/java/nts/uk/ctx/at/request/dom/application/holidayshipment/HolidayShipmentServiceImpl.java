@@ -24,11 +24,11 @@ public class HolidayShipmentServiceImpl implements HolidayShipmentService {
 			}
 		} else {
 
-			if (!recDate.isPresent()) {
+			if (recDate.isPresent()) {
 				// INPUT.振出日＝設定なし
 				resultDate = recDate;
 			}
-			if (!absDate.isPresent()) {
+			if (absDate.isPresent()) {
 				// INPUT.振休日＝設定なし
 				resultDate = absDate;
 			}

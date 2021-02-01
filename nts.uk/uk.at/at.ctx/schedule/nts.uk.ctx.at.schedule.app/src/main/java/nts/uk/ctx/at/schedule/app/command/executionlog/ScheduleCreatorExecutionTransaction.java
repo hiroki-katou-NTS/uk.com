@@ -330,25 +330,30 @@ public class ScheduleCreatorExecutionTransaction {
 			OutputCreateSchedule result = this.createScheduleBasedPersonWithMultiThread(command, scheduleCreator,
 					scheduleExecutionLog, context, period, masterCache, listBasicSchedule, registrationListDateSchedule,
 					carrier);
-
+			List<GeneralDate> dates = result.listWorkSchedule.stream().map(x -> x.getYmd()).collect(Collectors.toList());
 			// 勤務予定を登録する
-			this.deleteSchedule(scheduleCreator.getEmployeeId(), period);
+			//this.deleteSchedule(scheduleCreator.getEmployeeId(), period);
+			workScheduleRepository.deleteListDate(scheduleCreator.getEmployeeId(), dates);
 			this.workScheduleRepository.insertAll(companyId, result.getListWorkSchedule());
 			
 			// Outputの勤務種類一覧を繰り返す
 			this.managedParallelWithContext.forEach(ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL),
 					result.getListWorkSchedule(), ws -> {
 						// 暫定データの登録
-						this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, ws.getEmployeeID(),
-								Arrays.asList(ws.getYmd()));
+						if (ws != null) {
+							this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, ws.getEmployeeID(),
+									Arrays.asList(ws.getYmd()));
+						}
 					});
 
 			// エラー一覧を繰り返す
 			this.managedParallelWithContext.forEach(ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL),
 					result.getListError(), error -> {
 						// エラーを登録する
-						error.setExecutionId(command.getExecutionId());
-						this.scheduleErrorLogRepository.addByTransaction(error);
+						if (error != null) {
+							error.setExecutionId(command.getExecutionId());
+							this.scheduleErrorLogRepository.addByTransaction(error);
+						}
 					});
 
 			// }
