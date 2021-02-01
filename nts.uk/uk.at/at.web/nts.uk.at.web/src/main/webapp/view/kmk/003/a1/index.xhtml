@@ -110,7 +110,7 @@
 			readonly: false,
 			immediate: false}"
 		/>
-		<com:ko tag="if" bind="isDetailMode">
+		<com:ko tag="if" bind="isDetailAndNotFlexOrFlow">
 		<div tabindex ="32" data-bind="ntsCheckBox: { enable: true, checked: predseting.predetermine }">#{i18n.getText('KMK003_38')}</div>
 		</com:ko>
 	</div>

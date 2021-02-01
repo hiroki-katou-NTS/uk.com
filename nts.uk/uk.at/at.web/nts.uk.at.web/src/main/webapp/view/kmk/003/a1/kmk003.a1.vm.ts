@@ -26,7 +26,10 @@ module a1 {
         isDetailMode: KnockoutObservable<boolean>;
         isTimezoneTwoEnabled: KnockoutObservable<boolean>;
         isFlexMode: KnockoutObservable<boolean>;
+        isFlowMode: KnockoutObservable<boolean>
         useHalfDay: KnockoutObservable<boolean>;
+        //A7_17 condition
+        isDetailAndNotFlexOrFlow: any;
 
         mainSettingModel: MainSettingModel;
         predseting: PredetemineTimeSettingModel;
@@ -137,9 +140,15 @@ module a1 {
             self.timeZoneModelTwo = self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo;
             self.coreTimeSettingModel = self.mainSettingModel.flexWorkSetting.coreTimeSetting;
             self.isFlexMode = self.mainSettingModel.workTimeSetting.isFlex;
+            self.isFlowMode = self.mainSettingModel.workTimeSetting.isFlow;
             self.isDiffTimeMode = self.mainSettingModel.workTimeSetting.isDiffTime;
             self.settingEnum = settingEnum;
             self.useHalfDay = data.useHalfDay;
+
+            //A7_17 display condition
+            self.isDetailAndNotFlexOrFlow = ko.computed(function (){
+                return self.isDetailMode() && !self.isFlowMode() && !self.isFlexMode();
+            }, this);
                                                    
             // Subscribe event update dialog J interlock for A7_4, A7_6, A7_12, A7_13, A7_14
             self.predseting.startDateClock.subscribe(() => { self.mainSettingModel.updateStampValue(); self.mainSettingModel.updateInterlockDialogJ(); });
