@@ -19,12 +19,13 @@ public class RoundingSetOfMonthlyDto {
     private List<RoundingMonthDto> itemRoundingSet;
 
     public RoundingSetOfMonthlyDto(RoundingSetOfMonthly domain) {
-        if (domain.getTimeRoundingOfExcessOutsideTime().isPresent()) {
-            this.timeRoundingOfExcessOutsideTime = new TimeRoundingOfExcessOutsideTimeDto(
-                    domain.getTimeRoundingOfExcessOutsideTime().get().getRoundingUnit().value,
-                    domain.getTimeRoundingOfExcessOutsideTime().get().getRoundingProcess().value
-            );
-        }
+        // Q&A #39234 Remove 時間外超過の時間丸め
+//        if (domain.getTimeRoundingOfExcessOutsideTime().isPresent()) {
+//            this.timeRoundingOfExcessOutsideTime = new TimeRoundingOfExcessOutsideTimeDto(
+//                    domain.getTimeRoundingOfExcessOutsideTime().get().getRoundingUnit().value,
+//                    domain.getTimeRoundingOfExcessOutsideTime().get().getRoundingProcess().value
+//            );
+//        }
         this.itemRoundingSet = domain.getItemRoundingSet().values().stream().map(i -> new RoundingMonthDto(
                 i.getAttendanceItemId(),
                 i.getRoundingSet().getRoundingTime().value,
