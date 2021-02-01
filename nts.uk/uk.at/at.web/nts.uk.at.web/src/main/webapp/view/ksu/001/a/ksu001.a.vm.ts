@@ -12,6 +12,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
     import openDialog = nts.uk.ui.windows.sub.modal;
     import getText = nts.uk.resource.getText;
     import util = nts.uk.util;
+    import bundledErrors = nts.uk.ui.dialog.bundledErrors;
 
     /**
      * load screen O->Q->A
@@ -926,18 +927,67 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     if (startTimeCal >= endTimeCal) {
                         nts.uk.ui.dialog.alertError({ messageId: 'Msg_54' });
                     }
-
+                    
+                    nts.uk.ui.block.grayout();
                     let param = {
-                        workTypeCode: '',
-                        workTimeCode: '',
-                        startTime: nts.uk.time.minutesBased.duration.parseString(strTime).toValue(),
-                        endTime:   nts.uk.time.minutesBased.duration.parseString(endTime).toValue(),
+                        workType: dataCell.originalEvent.detail.value.workTypeCode,
+                        workTime: dataCell.originalEvent.detail.value.workTimeCode,
+                        workTime1: {
+                            startTime: {
+                                time: startTimeCal,
+                                dayDivision: 0
+                            },
+                            endTime: {
+                                time: endTimeCal,
+                                dayDivision: 0
+                            }
+                        },
+                        workTime2: null
                     }
                     
-//                    self.inputDataValidate(param).done(() => {
-//                        self.checkExitCellUpdated();
-//                    });
-                    
+                    // call alg : <<Query>> 時刻が不正かチェックする 6666
+                    service.checkTimeIsIncorrect(param).done((result) => {
+                        console.log(result);
+                        let errors = [];
+                        for (let i = 0; i < result.length; i++) {
+                            if (!result[i].check) {
+                                if (result[i].timeSpan == null) {
+                                    errors.push({
+                                        message: nts.uk.resource.getMessage('Msg_439', getText('KDL045_12')),
+                                        messageId: "Msg_439",
+                                        supplements: {}
+                                    });
+                                } else {
+                                    if (result[i].timeSpan.startTime == result[i].timeSpan.endTime) {
+                                        errors.push({
+                                            message: nts.uk.resource.getMessage('Msg_2058', [result[i].nameError, formatById("Clock_Short_HM", result[i].timeSpan.startTime)]),
+                                            messageId: "Msg_2058",
+                                            supplements: {}
+                                        });
+                                    } else {
+                                        errors.push({
+                                            message: nts.uk.resource.getMessage('Msg_1772', [result[i].nameError, formatById("Clock_Short_HM", result[i].timeSpan.startTime), formatById("Clock_Short_HM", result[i].timeSpan.endTime)]),
+                                            messageId: "Msg_1772",
+                                            supplements: {}
+                                        });
+                                    }
+                                }
+                            }
+                        }
+
+                        if (errors.length > 0) {
+                            let errorsInfo = _.uniqBy(errors, x => { return x.message });
+                            bundledErrors({ errors: errorsInfo }).then(() => {
+                                nts.uk.ui.block.clear();
+                            });
+                        } else {
+                            nts.uk.ui.block.clear();
+                        }
+                    }).fail(function(error) {
+                        nts.uk.ui.block.clear();
+                        nts.uk.ui.dialog.alertError(error);
+                        dfd.reject();
+                    });
                     self.checkExitCellUpdated();
                 } else {
                     self.checkExitCellUpdated();
@@ -1886,31 +1936,18 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 _.forEach(cellsGroup, function(cells) {
                     if (cells.length > 0) {
                         let cell = cells[0];
-                        let objWorkTime = __viewContext.viewModel.viewAB.objWorkTime;
                         let objWorkType = _.filter(__viewContext.viewModel.viewAB.listWorkType(), function(o) { return o.workTypeCode == cell.value.workTypeCode; });
                         let sid = self.listSid()[cell.rowIndex];
                         let ymd = moment(cell.columnKey.slice(1)).format('YYYY/MM/DD');
-                        let workTypeCd = null, workTimeCd = null, startTime = null, endTime = null, isChangeTime = false;
-                        // check worktype là ngày lễ, ngày nghỉ thì starttime, endtime sẽ không set, isChangeTime = false
-                        if (objWorkType[0].workStyle == 0) { // HOLIDAY
-                            isChangeTime = false;
-                        } else {
-                            isChangeTime = true;
-                            if (!_.isNil(objWorkTime)) {
-                                startTime = objWorkTime.tzStart1;
-                                endTime = objWorkTime.tzEnd1;
-                            }
-                        }
-                        
                         let dataCell = {
                             sid: sid,
                             ymd: ymd,
                             viewMode: viewMode,
                             workTypeCd: cell.value.workTypeCode,
                             workTimeCd: cell.value.workTimeCode,
-                            startTime: startTime,
-                            endTime: endTime,
-                            isChangeTime: isChangeTime
+                            startTime: null,
+                            endTime: null,
+                            isChangeTime: false
                         }
                         dataReg.push(dataCell);
                     }
@@ -3417,11 +3454,42 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         } else {
                             resolve = true;
                         }
-                    } else {
-                        resolve = true;
-                    }
+                    } else if ((userInfor.disPlayFormat == 'time') && (data.workHolidayCls == 1 || data.workHolidayCls == 2)) {
+                        // 午前出勤系 MORNING(1, "午前出勤系") 
+                        // 午後出勤系 AFTERNOON(2, "午後 
+                        if (userInfor.disPlayFormat == 'time') {
+                            nts.uk.ui.block.grayout();
+                            let param = {
+                                worktypeCode: data.workTypeCode,
+                                worktimeCode: data.workTimeCode
+                            }
+                            service.checkCorrectHalfday(param).done((rs) => {
+                                // set lai starttime, endtime cua object stick
+                                $("#extable").exTable("stickFields", ["workTypeName", "workTimeName", "startTime", "endTime"]);
 
-                    if (resolve == true) {
+                                let startTime = rs.startTime == null ? '' : formatById("Clock_Short_HM", rs.startTime);
+                                let endTime = rs.endTime == null ? '' : formatById("Clock_Short_HM", rs.endTime);
+                                console.log('startTime: ' + startTime + ';  ' + 'endTime: ' + endTime );
+                                $("#extable").exTable("stickData", {
+                                    workTypeCode: data.workTypeCode,
+                                    workTypeName: data.workTypeName,
+                                    workTimeCode: data.workTimeCode,
+                                    workTimeName: data.workTimeName,
+                                    startTime: startTime,
+                                    endTime: endTime,
+                                    achievements: data.achievements,
+                                    workHolidayCls: data.workHolidayCls
+                                });
+                                __viewContext.viewModel.viewAB.isRedColor = false;
+                                self.enableCellStartEndTime(rowIdx, key);
+                                dfd.resolve(true);
+                                nts.uk.ui.block.clear();
+                            }).fail(function() {
+                                nts.uk.ui.block.clear();
+                                dfd.reject();
+                            });
+                        }
+                    } else {
                         // enable | disable cell startTime,endtime
                         if (userInfor.disPlayFormat == 'time') {
                             if (data.workHolidayCls == 0) {
@@ -3433,6 +3501,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                         dfd.resolve(true);
                     }
+
                 } else if (userInfor.disPlayFormat == 'shift') {
                     // truong hop listPage empty thi khong can validate
                     if ((__viewContext.viewModel.viewAC.selectedpalletUnit()) == 1 && (__viewContext.viewModel.viewAC.listPageComIsEmpty == true)) {
