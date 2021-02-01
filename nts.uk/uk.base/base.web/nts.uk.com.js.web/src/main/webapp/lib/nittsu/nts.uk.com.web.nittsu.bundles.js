@@ -49925,6 +49925,7 @@ var nts;
             var bindings;
             (function (bindings) {
                 var P_URL = 'https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js';
+                var M_URL = 'https://cdnjs.cloudflare.com/ajax/libs/markdown-it/12.0.4/markdown-it.min.js';
                 var PrettyPrintBindingHandler = /** @class */ (function () {
                     function PrettyPrintBindingHandler() {
                     }
@@ -49963,6 +49964,7 @@ var nts;
                             element.innerHTML = prettyPrintOne(_.escape(html), lang, false);
                             element.classList.add('prettyprint');
                         });
+                        element.removeAttribute('data-bind');
                         return { controlsDescendantBindings: true };
                     };
                     PrettyPrintBindingHandler = __decorate([
@@ -49973,6 +49975,69 @@ var nts;
                     return PrettyPrintBindingHandler;
                 }());
                 bindings.PrettyPrintBindingHandler = PrettyPrintBindingHandler;
+                var MarkdownBindingHandler = /** @class */ (function () {
+                    function MarkdownBindingHandler() {
+                    }
+                    MarkdownBindingHandler.prototype.init = function (element, valueAccessor, allValueAccessor) {
+                        var contents = valueAccessor() || element.innerHTML;
+                        $.Deferred()
+                            .resolve()
+                            .then(function () {
+                            var PR = _.get(window, 'PR');
+                            if (!PR) {
+                                var st = $('<style>', {
+                                    type: 'text/css',
+                                    rel: 'stylesheet',
+                                    html: "\n                            .prettyprint {\n                                box-sizing: border-box;\n                                background: #f5f5f5;\n                                max-width: 100%;\n                                padding: 5px !important;\n                                margin: 10px 0;\n                                border: none !important;\n                                overflow: auto;\n                                border-radius: 5px;\n                            }\n                            .prettyprint,\n                            .prettyprint * {\n                                font-family: Consolas;\n                            }".trim().replace(/\s{1,}/g, ' ')
+                                });
+                                st.appendTo(document.head);
+                                return $.getScript(P_URL);
+                            }
+                            return PR;
+                        })
+                            .then(function () {
+                            var markdownit = _.get(window, 'markdownit');
+                            if (!markdownit) {
+                                return $.getScript(M_URL);
+                            }
+                            return markdownit;
+                        })
+                            .then(function () {
+                            var prettyPrintOne = PR.prettyPrintOne;
+                            return markdownit({
+                                highlight: function (str, lng) {
+                                    return prettyPrintOne(_.escape(str), lng, false);
+                                }
+                            });
+                        })
+                            .then(function (md) {
+                            if (!contents.match(/\.md$/)) {
+                                return md.render(contents);
+                            }
+                            else {
+                                return $.get(contents).then(function (ctx) { return md.render(ctx); });
+                            }
+                        })
+                            .then(function (html) {
+                            element.innerHTML = html;
+                            element.classList.add('markdown-content');
+                            element
+                                .querySelectorAll('pre')
+                                .forEach(function (e) { return e.classList.add('prettyprint'); });
+                        });
+                        element.removeAttribute('data-bind');
+                        return { controlsDescendantBindings: true };
+                    };
+                    MarkdownBindingHandler = __decorate([
+                        handler({
+                            bindingName: 'markdown',
+                            validatable: true,
+                            virtual: false
+                        })
+                    ], MarkdownBindingHandler);
+                    return MarkdownBindingHandler;
+                }());
+                bindings.MarkdownBindingHandler = MarkdownBindingHandler;
             })(bindings = ui.bindings || (ui.bindings = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -50815,6 +50880,7 @@ var nts;
                                     vm
                                         .$ajax('com', '/sys/portal/webmenu/companies')
                                         .then(function (data) { return vm.companies(data); });
+                                    vm.$nextTick(function () { return $(window).trigger('wd.resize'); });
                                 }
                                 else {
                                     vm.$el.classList.add('hidden');
@@ -51840,15 +51906,14 @@ var nts;
                         }
                         element.classList.add('contents-area');
                         element.removeAttribute('data-bind');
-                        element.style.height = "calc(100vh - " + (element.getBoundingClientRect().top + (valueAccessor() || ($(element).parent().hasClass('master-content') ? 0 : 20))) + "px)";
+                        // element.style.height = `calc(100vh - ${element.getBoundingClientRect().top + (valueAccessor() || ($(element).parent().hasClass('master-content') ? 0 : 20))}px)`;
                         return { controlsDescendantBindings: false };
                     };
                     MasterUIContentBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var root = bindingContext.$root;
-                        var header = ko.unwrap(root.kiban.header);
                         var size = ko.unwrap(root.kiban.size);
                         $.Deferred()
-                            .resolve({ size: size, header: header })
+                            .resolve({ size: size })
                             .then(function () {
                             element.classList.add('padding-0');
                             element.classList.add('overflow-hidden');

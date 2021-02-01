@@ -936,6 +936,7 @@ declare module nts.uk.ui.errors {
         columnKey: string;
         message: string;
     }
+
     class ErrorsViewModel {
         title: string;
         errors: KnockoutObservableArray<ErrorListItem>;
@@ -963,6 +964,7 @@ declare module nts.uk.ui.errors {
         stashMemento(): ErrorViewModelMemento;
         restoreFrom(memento: ErrorViewModelMemento): void;
     }
+    
     class ErrorViewModelMemento {
         errors: ErrorListItem[];
         gridErrors: GridCellError[];
