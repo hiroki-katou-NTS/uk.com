@@ -115,10 +115,10 @@ public class FavoriteSpecifyRepositoryImpl extends JpaRepository implements Favo
 				.collect(Collectors.toList());
 
 		//remove favorite detail
-//		this.commandProxy().removeAll(FavoriteSpecifyEntityDetail.class, listDelDetail.stream().map(x -> x.getPk()).collect(Collectors.toList()));
+//		this.commandProxy().removeAll(listDelDetail);
 //		this.getEntityManager().flush();
 		// update all
-		this.commandProxy().updateAll(updateEntities);
+		this.commandProxy().updateAllWithCharPrimaryKey(updateEntities);
 	}
 
 	@Override

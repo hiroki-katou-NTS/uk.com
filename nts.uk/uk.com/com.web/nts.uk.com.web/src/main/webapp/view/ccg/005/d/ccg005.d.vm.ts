@@ -91,6 +91,7 @@ module nts.uk.at.view.ccg005.d.screenModel {
     public createNewFavorite() {
       const vm = this;
       vm.mode(Mode.INSERT);
+      vm.selectedFavoriteOrder(-1);
       vm.favoriteName("");
       vm.choosenWkspNames([]);
       vm.workPlaceIdList([]);
