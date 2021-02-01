@@ -1,17 +1,21 @@
 /// <reference path='../../../../lib/nittsu/viewcontext.d.ts' />
 module nts.uk.at.view.ccg005.a.screenModel {
   import object = nts.uk.at.view.ccg005.a.object;
+  import setShared = nts.uk.ui.windows.setShared;
 
   const API = {
     getDisplayAttendanceData: 'screen/com/ccg005/get-display-attendance-data',
+    getDisplayInfoAfterSelect: 'screen/com/ccg005/get-information-after-select',
+    saveFavorite: 'ctx/office/favorite/save',
+    registerComment: 'ctx/office/comment/register'
   };
   const ID_AVATAR_CHANGE = 'ccg005-avatar-change';
 
   @component({
     name: 'ccg005-component',
-    template: `<div style="display: flex; position: relative; overflow-x: hidden; overflow-y: auto; height: 450px" id="ccg005-watching">
+    template: `<div style="display: flex; position: relative; overflow-x: hidden; overflow-y: auto; height: 460px" id="ccg005-watching">
     <div id="ccg005-content">
-      <div style="margin: 10px;">
+      <div style="margin: 0 10px;">
         <div class="grade-header-top">
           <!-- A0 -->
           <span data-bind="i18n: 'CCG005_1'" class="ccg005-bold"></span>
@@ -31,16 +35,24 @@ module nts.uk.at.view.ccg005.a.screenModel {
               <td style="padding-left: 5px; width: 370px;">
                 <!-- A1_2 -->
                 <span class="ccg005-bold" data-bind="text: $component.businessName()"></span>
-                <div class="ccg005-flex">
+                <div class="ccg005-flex none-enter-icon">
                   <!-- A1_3 -->
-                  <i data-bind="ntsIcon: {no: $component.emoji(), width: 20, height: 20}"></i>
+                  <i data-bind="ntsIcon: {no: $component.emoji(), width: 20, height: 30}"></i>
                   <!-- A1_4 -->
-                  <span data-bind="text: $component.goOutReason()"></span>
+                  <input style="border: none !important; padding-right: 25px" data-bind="ntsTextEditor: {
+                    enterkey: $component.registerComment,
+                    value: $component.goOutReason,
+                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+                      textmode: 'text',
+                      width: '280px',
+                      placeholder: $component.$i18n('CCG005_35')
+                    }))
+                  }"/>
                 </div>
               </td>
               <td>
                 <!-- A1_7 -->
-                <i class="ccg005-status-img" data-bind="ntsIcon: {no: 196, width: 20, height: 20}"></i>
+                <i class="ccg005-status-img-A1_7" data-bind="ntsIcon: {no: $component.activityStatusIcon(), width: 20, height: 20}"></i>
               </td>
             </tr>
           </table>
@@ -49,7 +61,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
           <!-- A2_3 -->
           <div data-bind="ntsDatePicker: {
             name: '#[CCG005_36]',
-            value: date,
+            value: selectedDate,
             dateFormat: 'YYYY/MM/DD',
             fiscalMonthsMode: true,
             showJumpButtons: true
@@ -62,15 +74,15 @@ module nts.uk.at.view.ccg005.a.screenModel {
             <!-- A3_1 -->
             <div data-bind="ntsComboBox: {
               width: '120px',
-              options: itemList,
+              options: favoriteSpecifyData,
               editable: true,
               visibleItemsCount: 5,
-              value: selectedCode,
-              optionsValue: 'code',
-              optionsText: 'name',
+              value: favoriteInputDate,
+              optionsValue: 'inputDate',
+              optionsText: 'favoriteName',
               required: true,
               columns: [
-                { prop: 'name' }
+                { prop: 'favoriteName' }
               ]}"></div>
           </div>
         </div>
@@ -96,17 +108,18 @@ module nts.uk.at.view.ccg005.a.screenModel {
           <table style="width: 100%; border-collapse: separate; border-spacing: 0 5px">
             
 
+
             <tr style="background-color: yellow; height: 50px;">
               <td style="padding-right: 5px; width: 30px; background-color: white;">
                 <!-- A4_1 -->
-                <img style="border-radius: 50%; border: 1px groove;" width="30px" height="30px" src="${__viewContext.rootPath}/view/ccg/005/resource/AVERAGE.png"/>
+                <img style="border-radius: 50%; border: 1px groove;" width="30px" height="30px" src="${__viewContext.rootPath}/view/ccg/005/a/header.png"/>
               </td>
               <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset">
                 <!-- A4_8 -->
                 <div>text 1</div>
                 <!-- A4_5 -->
                 <div>
-                  <i data-bind="ntsIcon: {no: $component.emoji(), width: 20, height: 20}"></i>
+                  <i data-bind="ntsIcon: {no: $component.emoji(), width: 20, height: 15}"></i>
                 </div>
               </td>
               <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
@@ -132,155 +145,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
                 <div>急に用事があるの</div>
               </td>
             </tr>
-
-            <tr style="background-color: yellow; height: 50px;">
-              <td style="padding-right: 5px; width: 30px; background-color: white;">
-                <!-- A4_1 -->
-                <img style="border-radius: 50%; border: 1px groove;" width="30px" height="30px" src="${__viewContext.rootPath}/view/ccg/005/resource/AVERAGE.png"/>
-              </td>
-              <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset">
-                <!-- A4_8 -->
-                <div>text 1</div>
-                <!-- A4_5 -->
-                <div>
-                  <i data-bind="ntsIcon: {no: $component.emoji(), width: 20, height: 20}"></i>
-                </div>
-              </td>
-              <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
-                <div>
-                  <!-- A4_2 -->
-                  <span>text 2</span>
-                  <!-- A4_4 -->
-                  <i data-bind="ntsIcon: {no: 190, width: 13, height: 13}"></i>
-                </div>
-                <!-- A4_3 -->
-                <div>texxt 1</div>
-              </td>
-              <td class="ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
-                <!-- A4_7 -->
-                <span class="ccg005-flex">
-                  <i class="ccg005-status-img" data-bind="ntsIcon: {no: 191, width: 20, height: 20}"></i>
-                </span>
-              </td>
-              <td class="ccg005-pl-5 ccg005-border-groove ccg005-left-unset">
-                <!-- A4_6 time -->
-                <div>10:25 - 15:45</div>
-                <!-- A4_6 text -->
-                <div>急に用事があるの</div>
-              </td>
-            </tr>
-
-            <tr style="background-color: yellow; height: 50px;">
-              <td style="padding-right: 5px; width: 30px; background-color: white;">
-                <!-- A4_1 -->
-                <img style="border-radius: 50%; border: 1px groove;" width="30px" height="30px" src="${__viewContext.rootPath}/view/ccg/005/resource/AVERAGE.png"/>
-              </td>
-              <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset">
-                <!-- A4_8 -->
-                <div>text 1</div>
-                <!-- A4_5 -->
-                <div>
-                  <i data-bind="ntsIcon: {no: $component.emoji(), width: 20, height: 20}"></i>
-                </div>
-              </td>
-              <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
-                <div>
-                  <!-- A4_2 -->
-                  <span>text 2</span>
-                  <!-- A4_4 -->
-                  <i data-bind="ntsIcon: {no: 190, width: 13, height: 13}"></i>
-                </div>
-                <!-- A4_3 -->
-                <div>texxt 1</div>
-              </td>
-              <td class="ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
-                <!-- A4_7 -->
-                <span class="ccg005-flex">
-                  <i class="ccg005-status-img" data-bind="ntsIcon: {no: 191, width: 20, height: 20}"></i>
-                </span>
-              </td>
-              <td class="ccg005-pl-5 ccg005-border-groove ccg005-left-unset">
-                <!-- A4_6 time -->
-                <div>10:25 - 15:45</div>
-                <!-- A4_6 text -->
-                <div>急に用事があるの</div>
-              </td>
-            </tr>
-
-            <tr style="background-color: yellow; height: 50px;">
-              <td style="padding-right: 5px; width: 30px; background-color: white;">
-                <!-- A4_1 -->
-                <img style="border-radius: 50%; border: 1px groove;" width="30px" height="30px" src="${__viewContext.rootPath}/view/ccg/005/resource/AVERAGE.png"/>
-              </td>
-              <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset">
-                <!-- A4_8 -->
-                <div>text 1</div>
-                <!-- A4_5 -->
-                <div>
-                  <i data-bind="ntsIcon: {no: $component.emoji(), width: 20, height: 20}"></i>
-                </div>
-              </td>
-              <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
-                <div>
-                  <!-- A4_2 -->
-                  <span>text 2</span>
-                  <!-- A4_4 -->
-                  <i data-bind="ntsIcon: {no: 190, width: 13, height: 13}"></i>
-                </div>
-                <!-- A4_3 -->
-                <div>texxt 1</div>
-              </td>
-              <td class="ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
-                <!-- A4_7 -->
-                <span class="ccg005-flex">
-                  <i class="ccg005-status-img" data-bind="ntsIcon: {no: 191, width: 20, height: 20}"></i>
-                </span>
-              </td>
-              <td class="ccg005-pl-5 ccg005-border-groove ccg005-left-unset">
-                <!-- A4_6 time -->
-                <div>10:25 - 15:45</div>
-                <!-- A4_6 text -->
-                <div>急に用事があるの</div>
-              </td>
-            </tr>
-
-            <tr style="background-color: yellow; height: 50px;">
-              <td style="padding-right: 5px; width: 30px; background-color: white;">
-                <!-- A4_1 -->
-                <img style="border-radius: 50%; border: 1px groove;" width="30px" height="30px" src="${__viewContext.rootPath}/view/ccg/005/resource/AVERAGE.png"/>
-              </td>
-              <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset">
-                <!-- A4_8 -->
-                <div>text 1</div>
-                <!-- A4_5 -->
-                <div>
-                  <i data-bind="ntsIcon: {no: $component.emoji(), width: 20, height: 20}"></i>
-                </div>
-              </td>
-              <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
-                <div>
-                  <!-- A4_2 -->
-                  <span>text 2</span>
-                  <!-- A4_4 -->
-                  <i data-bind="ntsIcon: {no: 190, width: 13, height: 13}"></i>
-                </div>
-                <!-- A4_3 -->
-                <div>texxt 1</div>
-              </td>
-              <td class="ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
-                <!-- A4_7 -->
-                <span class="ccg005-flex">
-                  <i class="ccg005-status-img" data-bind="ntsIcon: {no: 191, width: 20, height: 20}"></i>
-                </span>
-              </td>
-              <td class="ccg005-pl-5 ccg005-border-groove ccg005-left-unset">
-                <!-- A4_6 time -->
-                <div>10:25 - 15:45</div>
-                <!-- A4_6 text -->
-                <div>急に用事があるの</div>
-              </td>
-            </tr>
-
 
 
           </table>
@@ -314,7 +178,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       </div>
 
       <!-- A3_2 Popup -->
-      <div id="ccg005-star-popup" style="width: 120px;">
+      <div id="ccg005-star-popup" style="width: 212px;">
         <!-- A3_2.1 -->
         <table>
           <tr>
@@ -327,11 +191,11 @@ module nts.uk.at.view.ccg005.a.screenModel {
               <!-- A3_2.2 -->
               <input data-bind="ntsTextEditor: {
                 value: searchValue,
-                enterkey: submit,
+                enterkey: $component.registerComment,
                 option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                   textmode: 'text',
-                  width: '100px',
-                  placeholder: $component.placeholder()
+                  width: '190px',
+                  placeholder: $component.$i18n('CCG005_45')
                 }))
               }"></input>
             </td>
@@ -351,7 +215,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         <table>
           <tr data-bind="click: $component.openScreenCCG005E">
             <td>
-              <i data-bind="ntsIcon: {no: 78, width: 15, height: 25}"></i>
+              <i data-bind="visible: $component.visibleNotPresent(), ntsIcon: {no: 78, width: 15, height: 25}"></i>
             </td>
             <!-- A1_7.1 -->
             <td>
@@ -361,7 +225,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
           </tr>
           <tr data-bind="click: $component.openScreenCCG005E">
             <td>
-              <i data-bind="ntsIcon: {no: 78, width: 15, height: 25}"></i>
+              <i data-bind="visible: $component.visiblePresent(), ntsIcon: {no: 78, width: 15, height: 25}"></i>
             </td>
             <!-- A1_7.2 -->
             <td>
@@ -371,7 +235,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
           </tr>
           <tr data-bind="click: $component.openScreenCCG005E">
             <td>
-              <i data-bind="ntsIcon: {no: 78, width: 15, height: 25}"></i>
+              <i data-bind="visible: $component.visibleGoOut(), ntsIcon: {no: 78, width: 15, height: 25}"></i>
             </td>
             <!-- A1_7.3 -->
             <td>
@@ -381,7 +245,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
           </tr>
           <tr data-bind="click: $component.openScreenCCG005E">
             <td>
-              <i data-bind="ntsIcon: {no: 78, width: 15, height: 25}"></i>
+              <i data-bind="visible: $component.visibleGoHome(), ntsIcon: {no: 78, width: 15, height: 25}"></i>
             </td>
             <!-- A1_7.4 -->
             <td>
@@ -391,7 +255,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
           </tr>
           <tr data-bind="click: $component.openScreenCCG005E">
             <td>
-              <i data-bind="ntsIcon: {no: 78, width: 15, height: 25}"></i>
+              <i data-bind="visible: $component.visibleHoliday(), ntsIcon: {no: 78, width: 15, height: 25}"></i>
             </td>
             <!-- A1_7.5 -->
             <td>
@@ -469,13 +333,16 @@ module nts.uk.at.view.ccg005.a.screenModel {
       color: blue;
       border: 1px solid #333688;
       border-radius: 50%;
-      width: 30px;
-      height: 30px;
+      width: 40px;
+      height: 40px;
+    }
+    .none-enter-icon >>> .enterkey {
+      background: none;
     }
   </style>`
   })
   export class ViewModel extends ko.ViewModel {
-    date: KnockoutObservable<string> = ko.observable('20000101');
+    selectedDate: KnockoutObservable<string> = ko.observable('');
     legendOptions: any = {
       items: [
         { cssClass: { className: 'bg-white-ccg005', colorPropertyName: 'background-color' }, labelText: this.$i18n('CCG005_26') },  // A2_1.1
@@ -489,16 +356,10 @@ module nts.uk.at.view.ccg005.a.screenModel {
       { code: '2', name: this.$i18n('CCG005_38') }
     ]);
     contentSelected: KnockoutObservable<any> = ko.observable(1);
-    selectedCode: KnockoutObservable<string> = ko.observable('1');
+    favoriteInputDate: KnockoutObservable<any> = ko.observable('');
     searchValue: KnockoutObservable<string> = ko.observable('');
     label3_2: KnockoutObservable<string> = ko.observable('label3_2');
-    itemList: KnockoutObservableArray<ItemModel> = ko.observableArray([
-      new ItemModel('1', '基本給'),
-      new ItemModel('2', '役職手当'),
-      new ItemModel('3', '基本給な')
-    ]);
 
-    placeholder: KnockoutObservable<string> = ko.observable(this.$i18n('CCG005_45'));
     height: KnockoutObservable<number> = ko.observable(465);
     // Pagination
     currentPage: KnockoutObservable<number> = ko.observable(1);
@@ -512,9 +373,25 @@ module nts.uk.at.view.ccg005.a.screenModel {
     endPage: KnockoutComputed<number> = ko.computed(() => this.startPage() + this.totalRow() - 1);
     paginationText: KnockoutComputed<string> = ko.computed(() => `${this.startPage()}-${this.endPage()}/${this.totalElement()}`);
     // End pagination
+  
+    activityStatus: KnockoutObservable<number> = ko.observable(0);
+    activatedStatus: KnockoutObservable<number> = ko.observable(0);
+    activityStatusIcon: KnockoutComputed<number> = ko.computed(() => this.initActivityStatus(this.activityStatus()));
+    businessName: KnockoutObservable<string> = ko.observable('');
+    emoji: KnockoutObservable<number> = ko.observable(187);
+    goOutReason: KnockoutObservable<string> = ko.observable('');
+    avatarPath: KnockoutObservable<string> = ko.observable('');
+    visibleNotPresent: KnockoutComputed<boolean> = ko.computed(() => this.activatedStatus() === StatusClassfication.NOT_PRESENT);
+    visiblePresent: KnockoutComputed<boolean> = ko.computed(() => this.activatedStatus() === StatusClassfication.PRESENT);
+    visibleGoOut: KnockoutComputed<boolean> = ko.computed(() => this.activatedStatus() === StatusClassfication.GO_OUT);
+    visibleGoHome: KnockoutComputed<boolean> = ko.computed(() => this.activatedStatus() === StatusClassfication.GO_HOME);
+    visibleHoliday: KnockoutComputed<boolean> = ko.computed(() => this.activatedStatus() === StatusClassfication.HOLIDAY);
+    favoriteSpecifyData: KnockoutObservableArray<any> = ko.observableArray([]);
+    emojiUsage: KnockoutObservable<boolean> = ko.observable(false)
 
     created() {
       const vm = this;
+      vm.selectedDate(moment.utc().format('YYYYMMDD'));
       vm.toStartScreen();
     }
 
@@ -526,10 +403,36 @@ module nts.uk.at.view.ccg005.a.screenModel {
       vm.initResizeable(vm);
       vm.initPopupArea();
       vm.initPopupStatus();
+      vm.initChangeFavorite();
       vm.perPage.subscribe(() => vm.currentPage(1));
     }
 
-    initResizeable(vm: any) {
+    /**
+     * お気に入りを選択する時
+     */
+    private initChangeFavorite() {
+      const vm = this;
+      vm.favoriteInputDate.subscribe(() => {
+        const selectedFavorite = _.find(vm.favoriteSpecifyData(), item => item.inputDate === vm.favoriteInputDate());
+        const param: DisplayInfoAfterSelectParam = new DisplayInfoAfterSelectParam({
+          baseDate: vm.selectedDate(),
+          emojiUsage: vm.emojiUsage(),
+          wkspIds: selectedFavorite ? selectedFavorite.workplaceId : []
+        });
+        vm.$ajax('com', API.getDisplayInfoAfterSelect, param).then((res: object.DisplayInformationDto) => {
+          // TODO
+        })
+      });
+    }
+
+    /**
+     * 職場を選択する時
+     */
+    private initChooseWorkplace() {
+
+    }
+
+    private initResizeable(vm: any) {
       $(window).on('ccg005.resize', () => {
         const subHeight = $('#ccg005-content').height()
           - $('.grade-header-top').height()
@@ -552,7 +455,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       $('#ccg005-star-popup').ntsPopup({
         position: {
             my: 'left top',
-            at: 'right top',
+            at: 'left-100 bottom',
             of: $('#ccg005-star-img')
         },
         showOnStart: false,
@@ -565,28 +468,31 @@ module nts.uk.at.view.ccg005.a.screenModel {
      * Popup A1_7 & A4_7
      */
     private initPopupStatus() {
-      _.forEach($('.ccg005-status-img'), element => {
-        $('#ccg005-status-popup').ntsPopup({
-          position: {
-              my: 'left top',
-              at: 'right top',
-              of: element
-          },
-          showOnStart: false,
-          dismissible: true
-        });
+      const vm = this;
+      $('#ccg005-status-popup').ntsPopup({
+        position: { my: 'left top', at: 'right top', of: $('.ccg005-status-img-A1_7') },
+        showOnStart: false,
+        dismissible: true
+      });
+      _.forEach($('.ccg005-status-img'), (element, index) => {
         $(element).click(() => {
           $('#ccg005-status-popup').ntsPopup({
-            position: {
-                my: 'left top',
-                at: 'right top',
-                of: $(element)
-            },
+            position: { my: 'left top', at: 'right top', of: $(element) },
             showOnStart: false,
             dismissible: true
           });
+          // vm.activatedStatus();
           $('#ccg005-status-popup').ntsPopup('toggle');
         });
+      });
+      $('.ccg005-status-img-A1_7').click(() => {
+        vm.activatedStatus(vm.activityStatus());
+        $('#ccg005-status-popup').ntsPopup({
+          position: { my: 'left top', at: 'right top', of: $('.ccg005-status-img-A1_7') },
+          showOnStart: false,
+          dismissible: true
+        });
+        $('#ccg005-status-popup').ntsPopup('toggle');
       });
     }
 
@@ -628,12 +534,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
       });
     }
 
-    activityStatus: KnockoutObservable<ActivityStatus> = ko.observable(new ActivityStatus());
-    businessName: KnockoutObservable<string> = ko.observable('');
-    emoji: KnockoutObservable<number> = ko.observable(187);
-    goOutReason: KnockoutObservable<string> = ko.observable('');
-    avatarPath: KnockoutObservable<string> = ko.observable('');
-
     private toStartScreen() {
       const vm = this;
       const loginSid = __viewContext.user.employeeId;
@@ -641,6 +541,8 @@ module nts.uk.at.view.ccg005.a.screenModel {
       vm.$ajax('com', API.getDisplayAttendanceData).then((response: object.DisplayAttendanceDataDto) => {
         // A1_2 表示初期の在席データDTO.自分のビジネスネーム
         vm.businessName(response.bussinessName);
+        vm.favoriteSpecifyData(response.favoriteSpecifyDto);
+        vm.emojiUsage(!!response.emojiUsage);
         if (response && response.attendanceInformationDtos) {
           // 条件：在席情報DTO.社員ID＝ログイン社員ID
           const atdInfo = _.find(response.attendanceInformationDtos, item => item.sid === loginSid);
@@ -658,85 +560,187 @@ module nts.uk.at.view.ccg005.a.screenModel {
             $(`#${ID_AVATAR_CHANGE}`).ready(() => {
               $(`#${ID_AVATAR_CHANGE}`).append(
                 `<div id='CCG005_no_avatar'>
-                  <p style="text-align: center; margin: 0 auto; font-size: 12px">
+                  <p style="text-align: center; margin: 0 auto; font-size: 15px">
                     ${vm.businessName().replace(/\s/g, '').substring(0, 2)}
                   </p>
                 </div>`
               );
             });
           }
-          if (atdInfo.activityStatusDto) {
-            // 表示初期の在席データDTO.在席情報DTO.在席のステータス
-            vm.activityStatus(new ActivityStatus({
-              activity: atdInfo.activityStatusDto.activity,
-              date: atdInfo.activityStatusDto.date,
-              sid: atdInfo.activityStatusDto.sid
-            }));
-          }
+          // 表示初期の在席データDTO.在席情報DTO.在席のステータス
+          vm.activityStatus(atdInfo.activityStatusDto);
           // A1_3
           if (atdInfo.emojiDto) {
             // 表示初期の在席データDTO.在席情報DTO.社員の外出情報.感情種類
-            vm.initEmojiType(atdInfo.emojiDto.emojiType);
+            vm.emoji(vm.initEmojiType(atdInfo.emojiDto.emojiType));
           }
           // A1_4
           if (atdInfo.goOutDto) {
             vm.goOutReason(atdInfo.goOutDto.goOutReason);
           }
+
+          if (_.isEmpty(vm.favoriteSpecifyData())) {
+            vm.createdDefaultFavorite();
+          }
         }
       }).always(() => vm.$blockui('clear'));
     }
 
-    initEmojiType(emojiType: number) {
-      const vm = this;
+    private initEmojiType(emojiType: number): number {
       switch(emojiType) {
-        case EmojiType.WEARY:
-          vm.emoji(189);
-          break;
-        case EmojiType.SAD:
-          vm.emoji(188);
-          break;
-        case EmojiType.AVERAGE:
-          vm.emoji(187);
-          break;
-        case EmojiType.GOOD:
-          vm.emoji(186);
-          break;
-        case EmojiType.HAPPY:
-          vm.emoji(185);
-          break;
+        case EmojiType.WEARY: return Emoji.WEARY;
+        case EmojiType.SAD: return Emoji.SAD;
+        case EmojiType.AVERAGE: return Emoji.AVERAGE;
+        case EmojiType.GOOD: return Emoji.GOOD;
+        case EmojiType.HAPPY: return Emoji.HAPPY;
+        default: return Emoji.AVERAGE;
       }
     }
 
-    initActivityStatus(activity: number) {
+    private initActivityStatus(status: number): number {
+      switch(status) {
+        case StatusClassfication.NOT_PRESENT: return StatusClassficationIcon.NOT_PRESENT;
+        case StatusClassfication.PRESENT: return StatusClassficationIcon.PRESENT;
+        case StatusClassfication.GO_OUT: return StatusClassficationIcon.GO_OUT;
+        case StatusClassfication.GO_HOME: return StatusClassficationIcon.GO_HOME;
+        case StatusClassfication.HOLIDAY: return StatusClassficationIcon.HOLIDAY;
+        default: return StatusClassficationIcon.NOT_PRESENT;
+      }
+    }
+
+    private createdDefaultFavorite() {
+      const vm = this;
+      const inputDate = moment.utc().toISOString();
+      const favoriteSpecify = new FavoriteSpecifyData({
+        favoriteName: vm.$i18n('CCG005_27'),
+        creatorId: __viewContext.user.employeeId,
+        inputDate: inputDate,
+        targetSelection: 1,
+        workplaceId: [],
+        order: 0,
+        wkspNames: []
+      });
+      vm.favoriteSpecifyData([favoriteSpecify]);
+      vm.favoriteInputDate(inputDate);
+      vm.$blockui('grayout');
+      vm.$ajax(API.saveFavorite, [favoriteSpecify])
+        .always(() => vm.$blockui('clear'));
+    }
+
+    /**
+     * コメントを登録する
+     */
+    registerComment() {
+      const vm = this;
+      const command = {
+        comment: vm.goOutReason(),
+        date: moment.utc().toISOString(),
+        sid: __viewContext.user.employeeId
+      };
+      vm.$blockui('grayout');
+      vm.$ajax('com', API.registerComment, command).always(() => vm.$blockui('clear'));
+    }
+
+    /**
+     * 顔写真をクリックする（CDL010を起動する）
+     */
+    onClickAvatar() {
+
+    }
+
+    /**
+     * A3_2.1をクリックする（お気に入りダイアログを起動する）
+     */
+    openFavoriteDialog() {
+
+    }
+
+    /**
+     * A1_7.3をクリックする　OR　外出アイコンをクリックする（外出入力ダイアログを起動する）
+     */
+    startOutingDialog() {
+
+    }
+
+    /**
+     * A3_2.3職場選択ボタンをクリックする　（職場：CDL008へ）
+     */
+    openCDL008() {
+      const vm = this;
+      const inputCDL008: any = {
+        startMode: object.StartMode.WORKPLACE,
+        isMultiple: true,
+        showNoSelection: false,
+        selectedCodes: vm.workPlaceIdList(),
+        isShowBaseDate: true,
+        baseDate: moment.utc().toISOString(),
+        selectedSystemType: object.SystemType.EMPLOYMENT,
+        isrestrictionOfReferenceRange: false
+      };
+      setShared('inputCDL008', inputCDL008);
+    }
+
+    /**
+     * 在席のステータスを登録する
+     */
+    registerAttendanceStatus() {
 
     }
   }
 
-  class ItemModel {
-    code: string;
-    name: string;
-
-    constructor(code: string, name: string) {
-        this.code = code;
-        this.name = name;
-    }
+  enum EmojiType {
+    WEARY = 0, // どんより: アイコン#189
+    SAD = 1, // ゆううつ: アイコン#188
+    AVERAGE = 2, // 普通: アイコン#187
+    GOOD = 3, // ぼちぼち: アイコン#186
+    HAPPY = 4 // いい感じ: アイコン#185
   }
 
-  class ActivityStatus {
-    activity: number;
-    date: any;
-    sid: string;
+  enum Emoji {
+    WEARY = 189, // どんより: アイコン#189
+    SAD = 188, // ゆううつ: アイコン#188
+    AVERAGE = 187, // 普通: アイコン#187
+    GOOD = 186, // ぼちぼち: アイコン#186
+    HAPPY = 185 // いい感じ: アイコン#185
+  }
 
-    constructor(init?: ActivityStatus) {
+  enum StatusClassfication {
+    NOT_PRESENT = 0, // 未出社: アイコン#196
+    PRESENT = 1, // 在席: アイコン#195
+    GO_OUT = 2, // 外出: アイコン#191
+    GO_HOME = 3, // 帰宅: アイコン#196
+    HOLIDAY = 4 // 休み: アイコン#197
+  }
+
+  enum StatusClassficationIcon {
+    NOT_PRESENT = 196, // 未出社: アイコン#196
+    PRESENT = 195, // 在席: アイコン#195
+    GO_OUT = 191, // 外出: アイコン#191
+    GO_HOME = 196, // 帰宅: アイコン#196
+    HOLIDAY = 197 // 休み: アイコン#197
+  }
+
+  class FavoriteSpecifyData {
+    favoriteName: string;
+    creatorId: string;
+    inputDate: string;
+    targetSelection: number;
+    workplaceId: string[];
+    order: number;
+    wkspNames: string[];
+
+    constructor(init?: Partial<FavoriteSpecifyData>) {
       $.extend(this, init);
     }
   }
-  
-  enum EmojiType {
-    WEARY = 0, // どんより
-    SAD = 1, // ゆううつ
-    AVERAGE = 2, // 普通
-    GOOD = 3, // ぼちぼち
-    HAPPY = 4 // いい感じ
+
+  class DisplayInfoAfterSelectParam {
+    wkspIds: string[];
+    baseDate: any;
+    emojiUsage: boolean;
+
+    constructor(init?: DisplayInfoAfterSelectParam) {
+      $.extend(this, init);
+    }
   }
 }

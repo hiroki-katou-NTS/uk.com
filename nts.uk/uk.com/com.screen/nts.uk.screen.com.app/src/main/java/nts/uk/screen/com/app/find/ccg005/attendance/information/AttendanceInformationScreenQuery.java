@@ -313,8 +313,12 @@ public class AttendanceInformationScreenQuery {
 			
 			// commentDto
 			CommentQueryExport commentExp = commentData.get(empId.getSid());
-			EmployeeCommentInformationDto commentDto = EmployeeCommentInformationDto.builder()
-					.comment(commentExp.getComment()).date(commentExp.getDate()).sid(commentExp.getSid()).build();
+			EmployeeCommentInformationDto commentDto = EmployeeCommentInformationDto.builder().build();
+			if(commentExp != null) {
+				commentDto.setComment(commentExp.getComment());
+				commentDto.setDate(commentExp.getDate());
+				commentDto.setSid(commentExp.getSid());
+			}
 
 			// goOutDto
 			Optional<GoOutEmployeeInformation> goOutDomain = goOutList.stream().filter(goOut -> goOut.getSid() == empId.getSid())

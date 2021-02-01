@@ -22,7 +22,7 @@ module nts.uk.at.view.ccg005.a.object {
     sid: string;                                            //社員ID
     attendanceDetailDto: any;                               //詳細出退勤
     avatarDto: UserAvatarDto;                               //個人の顔写真
-    activityStatusDto: ActivityStatusDto;                   //在席のステータス
+    activityStatusDto: number;                              //在席のステータス
     commentDto: any;                                        //社員のコメント情報
     goOutDto: GoOutEmployeeInformationDto;                  //社員の外出情報
     emojiDto: EmployeeEmojiStateDto;                        //社員の感情状態
@@ -38,12 +38,6 @@ module nts.uk.at.view.ccg005.a.object {
     fileId: string;                                         //顔写真ファイルID
   }
 
-  export interface ActivityStatusDto {
-    activity: number;                                       //ステータス分類
-    date: any;                                              //年月日
-    sid: string;                                            //社員ID
-  }
-
   export interface GoOutEmployeeInformationDto {
     goOutTime: number;                                      //外出時刻
     goOutReason: string;                                    //外出理由
@@ -56,5 +50,62 @@ module nts.uk.at.view.ccg005.a.object {
     date: any;                                              //年月日
     emojiType: number;                                      //感情種類
     sid: string;                                            //社員ID
+  }
+
+  export interface DisplayInformationDto {
+    attendanceInformationDtos: AttendanceInformationDto[],  //在席情報DTO（List）
+    listPersonalInfo: EmployeeBasicImport[]                 //個人基本情報（List）
+  }
+
+  export interface EmployeeBasicImport {
+    employeeId: string,                                     //社員ID
+    personalId: string,                                     //個人ID
+    BusinessName: string,                                   //ビジネスネーム
+    employeeCode: string                                    //社員コード
+  }
+
+  export enum StartMode {
+    WORKPLACE = 0,
+    DEPARTMENT = 1
+  }
+
+  export enum SystemType {
+    PERSONAL_INFORMATION = 1,
+    EMPLOYMENT = 2,
+    SALARY = 3,
+    HUMAN_RESOURCES = 4,
+    ADMINISTRATOR = 5
+  }
+
+  export enum EmojiType {
+    WEARY = 0, // どんより: アイコン#189
+    SAD = 1, // ゆううつ: アイコン#188
+    AVERAGE = 2, // 普通: アイコン#187
+    GOOD = 3, // ぼちぼち: アイコン#186
+    HAPPY = 4 // いい感じ: アイコン#185
+  }
+
+  export enum Emoji {
+    WEARY = 189, // どんより: アイコン#189
+    SAD = 188, // ゆううつ: アイコン#188
+    AVERAGE = 187, // 普通: アイコン#187
+    GOOD = 186, // ぼちぼち: アイコン#186
+    HAPPY = 185 // いい感じ: アイコン#185
+  }
+
+  export enum StatusClassfication {
+    NOT_PRESENT = 0, // 未出社: アイコン#196
+    PRESENT = 1, // 在席: アイコン#195
+    GO_OUT = 2, // 外出: アイコン#191
+    GO_HOME = 3, // 帰宅: アイコン#196
+    HOLIDAY = 4 // 休み: アイコン#197
+  }
+
+  export enum StatusClassficationIcon {
+    NOT_PRESENT = 196, // 未出社: アイコン#196
+    PRESENT = 195, // 在席: アイコン#195
+    GO_OUT = 191, // 外出: アイコン#191
+    GO_HOME = 196, // 帰宅: アイコン#196
+    HOLIDAY = 197 // 休み: アイコン#197
   }
 }
