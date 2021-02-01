@@ -181,7 +181,7 @@ public class GetApplicationReflectionResultPubImpl implements GetApplicationRefl
 		}
 
 		@Override
-		public IntegrationOfDaily findDaily(String employeeId, GeneralDate date) {
+		public Optional<IntegrationOfDaily> findDaily(String employeeId, GeneralDate date) {
 			return dailyRecordShareFinder.find(employeeId, date);
 		}
 
