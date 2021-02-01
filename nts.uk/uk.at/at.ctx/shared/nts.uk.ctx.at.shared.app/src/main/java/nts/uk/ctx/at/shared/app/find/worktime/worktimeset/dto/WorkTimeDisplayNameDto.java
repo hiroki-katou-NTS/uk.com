@@ -16,5 +16,5 @@ public class WorkTimeDisplayNameDto {
 	public String workTimeAbName;
 	
 	/** The work time symbol. */
-	public String workTimeSymbol;
+//	public String workTimeSymbol;
 }

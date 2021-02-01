@@ -47,7 +47,7 @@ public interface WorkTimeSettingGetMemento {
 	 *
 	 * @return the color code
 	 */
-	public ColorCode getColorCode();
+//	public ColorCode getColorCode();
 
 	/**
 	 * Gets the work time display name.
