@@ -68,7 +68,7 @@ public class TotalTime {
 		// 就業時間を丸める
 		attendanceItemId = AttendanceItemOfMonthly.WORK_TIME.value;
 		this.workTime =
-				roundingSet.excessOutsideRound(attendanceItemId, totalTimeBeforeRound.getWorkTime());
+				roundingSet.itemRound(attendanceItemId, totalTimeBeforeRound.getWorkTime());
 		
 		// 残業時間を丸める
 		for (val overTimeBeforeRound : totalTimeBeforeRound.getOverTime().values()){
@@ -81,14 +81,14 @@ public class TotalTime {
 			this.overTime.putIfAbsent(overTimeFrameNo, OverTimeFrameTotalTime.of(
 					overTimeFrameNo,
 					new TimeMonthWithCalculation(
-							roundingSet.excessOutsideRound(
+							roundingSet.itemRound(
 									overTimeItemId, overTimeBeforeRound.getOverTime().getTime()),
-							roundingSet.excessOutsideRound(
+							roundingSet.itemRound(
 									calcOverTimeItemId, overTimeBeforeRound.getOverTime().getCalcTime())),
 					new TimeMonthWithCalculation(
-							roundingSet.excessOutsideRound(
+							roundingSet.itemRound(
 									transTimeItemId, overTimeBeforeRound.getTransferOverTime().getTime()),
-							roundingSet.excessOutsideRound(
+							roundingSet.itemRound(
 									calcTransTimeItemId, overTimeBeforeRound.getTransferOverTime().getCalcTime()))
 					));
 		}
@@ -104,14 +104,14 @@ public class TotalTime {
 			this.holidayWorkTime.putIfAbsent(holidayWorkFrameNo, HolidayWorkFrameTotalTime.of(
 					holidayWorkFrameNo,
 					new TimeMonthWithCalculation(
-							roundingSet.excessOutsideRound(
+							roundingSet.itemRound(
 									holidayWorkTimeItemId, holidayWorkTimeBeforeRound.getHolidayWorkTime().getTime()),
-							roundingSet.excessOutsideRound(
+							roundingSet.itemRound(
 									calcHolidayWorkTimeItemId, holidayWorkTimeBeforeRound.getHolidayWorkTime().getCalcTime())),
 					new TimeMonthWithCalculation(
-							roundingSet.excessOutsideRound(
+							roundingSet.itemRound(
 									transTimeItemId, holidayWorkTimeBeforeRound.getTransferTime().getTime()),
-							roundingSet.excessOutsideRound(
+							roundingSet.itemRound(
 									calcTransTimeItemId, holidayWorkTimeBeforeRound.getTransferTime().getCalcTime()))
 					));
 		}
@@ -119,22 +119,22 @@ public class TotalTime {
 		// フレックス超過時間を丸める
 		attendanceItemId = AttendanceItemOfMonthly.FLEX_EXCESS_TIME.value;
 		this.flexExcessTime =
-				roundingSet.excessOutsideRound(attendanceItemId, totalTimeBeforeRound.getFlexExcessTime());
+				roundingSet.itemRound(attendanceItemId, totalTimeBeforeRound.getFlexExcessTime());
 		
 		// 所定内割増時間を丸める
 		attendanceItemId = AttendanceItemOfMonthly.WITHIN_PRESCRIBED_PREMIUM_TIME.value;
 		this.withinPrescribedPremiumTime =
-				roundingSet.excessOutsideRound(attendanceItemId, totalTimeBeforeRound.getWithinPrescribedPremiumTime());
+				roundingSet.itemRound(attendanceItemId, totalTimeBeforeRound.getWithinPrescribedPremiumTime());
 		
 		// 週割増合計時間を丸める
 		attendanceItemId = AttendanceItemOfMonthly.WEEKLY_TOTAL_PREMIUM_TIME.value;
 		this.weeklyTotalPremiumTime =
-				roundingSet.excessOutsideRound(attendanceItemId, totalTimeBeforeRound.getWeeklyTotalPremiumTime());
+				roundingSet.itemRound(attendanceItemId, totalTimeBeforeRound.getWeeklyTotalPremiumTime());
 		
 		// 月割増合計時間を丸める
 		attendanceItemId = AttendanceItemOfMonthly.MONTHLY_TOTAL_PREMIUM_TIME.value;
 		this.monthlyTotalPremiumTime =
-				roundingSet.excessOutsideRound(attendanceItemId, totalTimeBeforeRound.getMonthlyTotalPremiumTime());
+				roundingSet.itemRound(attendanceItemId, totalTimeBeforeRound.getMonthlyTotalPremiumTime());
 	}
 	
 	/**

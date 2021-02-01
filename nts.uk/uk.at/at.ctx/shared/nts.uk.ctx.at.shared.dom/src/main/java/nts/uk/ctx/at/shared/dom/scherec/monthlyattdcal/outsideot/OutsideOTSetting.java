@@ -17,6 +17,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleopenperiod.RoleOfOpenPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleopenperiod.RoleOfOpenPeriodEnum;
@@ -62,7 +63,7 @@ public class OutsideOTSetting extends AggregateRoot implements Serializable{
 
 	//TODO QA 39234
 	/** 丸め */
-	private Optional<TimeRoundingOfExcessOutsideTime> timeRoundingOfExcessOutsideTime = Optional.empty();
+	private Optional<TimeRoundingOfExcessOutsideTime> timeRoundingOfExcessOutsideTime;
 	
 	/**
 	 * Instantiates a new overtime setting.
@@ -75,6 +76,7 @@ public class OutsideOTSetting extends AggregateRoot implements Serializable{
 		this.breakdownItems = breakdownItems;
 		this.calculationMethod = calculationMethod;
 		this.overtimes = overtimes;
+		this.timeRoundingOfExcessOutsideTime = Optional.empty();
 		
 		// validate domain
 		if(CollectionUtil.isEmpty(this.breakdownItems)){
@@ -304,6 +306,30 @@ public class OutsideOTSetting extends AggregateRoot implements Serializable{
 		default:
 			return new ArrayList<>();
 		}
+	}
+
+	/**
+	 * 時間外超過丸め
+	 * @param attendanceItemId 勤怠項目ID
+	 * @param attendanceTimeMonth 勤怠月間時間　（丸め前）
+	 * @return 勤怠月間時間　（丸め後）
+	 */
+	public AttendanceTimeMonth excessOutsideRound(int attendanceItemId, AttendanceTimeMonth attendanceTimeMonth){
+
+		int minutes = attendanceTimeMonth.v();
+
+		val excessOutsideRoundSet = this.timeRoundingOfExcessOutsideTime.get();
+		switch (excessOutsideRoundSet.getRoundingProcess()) {
+			case ROUNDING_DOWN:
+				minutes = excessOutsideRoundSet.getRoundingUnit().round(minutes, Unit.Direction.TO_BACK);
+				break;
+			case ROUNDING_UP:
+				minutes = excessOutsideRoundSet.getRoundingUnit().round(minutes, Unit.Direction.TO_FORWARD);
+				break;
+			case FOLLOW_ELEMENTS:
+				return new AttendanceTimeMonth(minutes);
+		}
+		return new AttendanceTimeMonth(minutes);
 	}
 	
 	public static interface RequireM2 {
