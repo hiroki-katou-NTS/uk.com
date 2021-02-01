@@ -123,6 +123,9 @@ public class RegulationInfoEmpQueryDto implements Serializable {
 	 *  */
 	private Integer systemType;
 
+	/** スケジュール管理しない社員を取り除く */
+	private boolean employeesDoNotManageSchedules;
+	
 	/**
 	 * To query model.
 	 *
