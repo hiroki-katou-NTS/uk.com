@@ -183,6 +183,8 @@ module nts.uk.ui.header {
                         vm
                             .$ajax('com', '/sys/portal/webmenu/companies')
                             .then((data) => vm.companies(data));
+
+                        vm.$nextTick(() => $(window).trigger('wd.resize'))
                     } else {
                         vm.$el.classList.add('hidden');
                     }

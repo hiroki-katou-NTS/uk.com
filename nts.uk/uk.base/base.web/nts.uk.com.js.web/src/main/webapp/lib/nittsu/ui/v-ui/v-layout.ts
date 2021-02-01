@@ -219,17 +219,16 @@ module nts.uk.ui.layout {
             element.classList.add('contents-area');
             element.removeAttribute('data-bind');
 
-            element.style.height = `calc(100vh - ${element.getBoundingClientRect().top + (valueAccessor() || ($(element).parent().hasClass('master-content') ? 0 : 20))}px)`;
+            // element.style.height = `calc(100vh - ${element.getBoundingClientRect().top + (valueAccessor() || ($(element).parent().hasClass('master-content') ? 0 : 20))}px)`;
 
             return { controlsDescendantBindings: false };
         }
         update(element: HTMLElement, valueAccessor: () => number, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: nts.uk.ui.vm.ViewModel, bindingContext: KnockoutBindingContext) {
             const root: nts.uk.ui.RootViewModel = bindingContext.$root;
-            const header = ko.unwrap<boolean>(root.kiban.header);
             const size = ko.unwrap<nts.uk.ui.WindowSize>(root.kiban.size);
 
             $.Deferred()
-                .resolve({ size, header })
+                .resolve({ size })
                 .then(() => {
                     element.classList.add('padding-0');
                     element.classList.add('overflow-hidden');
