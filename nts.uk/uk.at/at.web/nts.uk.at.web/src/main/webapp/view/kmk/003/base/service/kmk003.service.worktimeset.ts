@@ -18,7 +18,6 @@ module nts.uk.at.view.kmk003.a {
                 export interface WorkTimeDisplayNameDto {
                     workTimeName: string;
                     workTimeAbName: string;
-                    workTimeSymbol: string;
                 }
 
                 export interface WorkTimeSettingDto {

@@ -336,8 +336,13 @@ module nts.uk.at.view.kmk003.a {
 
                     self.selectedWorkTimeCode.valueHasMutated();
                     
-                    dfd.resolve();                }).fail(() => {                    dfd.reject();                });
-                return dfd.promise();            }
+                    dfd.resolve();
+                }).fail(() => {
+                    dfd.reject();
+                });
+
+                return dfd.promise();
+            }
             
             /**
              * insert/update name and abbreviationName to WorkTimeLanguage
@@ -798,7 +803,6 @@ module nts.uk.at.view.kmk003.a {
                 
                 self.mainSettingModel.workTimeSetting.workTimeDisplayName.workTimeName('');
                 self.mainSettingModel.workTimeSetting.workTimeDisplayName.workTimeAbName('');
-                self.mainSettingModel.workTimeSetting.workTimeDisplayName.workTimeSymbol('');
                 self.mainSettingModel.workTimeSetting.memo('');
                 self.mainSettingModel.workTimeSetting.note('');
                 //clear isAbolish

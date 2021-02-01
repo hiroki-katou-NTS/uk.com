@@ -32,7 +32,7 @@ module nts.uk.at.view.kmk003.a {
                     rangeTimeDay: number;
                     workTimeCode: string;
                     predTime: PredetermineTimeDto;
-                    nightShift: number;
+
                     prescribedTimezoneSetting: PrescribedTimezoneSettingDto;
                     startDateClock: number;
                     predetermine: boolean;
