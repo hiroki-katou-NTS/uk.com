@@ -203,7 +203,8 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
 
         private changeSystem(value: number): void {
             const self = this;
-            const newAllPart = _.orderBy(self.allPart(), ['system', 'displayOrder', 'code'], ['asc', 'asc', 'asc']);
+            const newAllPart = _.orderBy(self.allPart(), ['system', 'displayOrder', 'code'], ['asc', 'asc', 'asc'])
+                .filter(item => item.menuAtr === MenuAtr.Menu);
             let list001 = [];
             const list002 = _.chain(newAllPart)
                 .filter(item =>
@@ -233,6 +234,11 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             const listStandardMenu = _.concat(list001, list002);
             self.listStandardMenu(listStandardMenu);
         }
+    }
+
+    enum MenuAtr {
+        Menu = 0,
+        SeparatorLine = 1
     }
 
     enum WebMenuSetting {
