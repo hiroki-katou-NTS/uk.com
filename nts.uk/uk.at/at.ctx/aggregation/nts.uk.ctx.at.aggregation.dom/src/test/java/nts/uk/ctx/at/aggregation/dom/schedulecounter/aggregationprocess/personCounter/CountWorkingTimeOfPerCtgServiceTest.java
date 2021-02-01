@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.tuple;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -19,6 +20,7 @@ import mockit.MockUp;
 import mockit.Mocked;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AttendanceTimeTotalizationService;
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AttendanceTimesForAggregation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
@@ -65,16 +67,85 @@ public class CountWorkingTimeOfPerCtgServiceTest {
 	 */
 	@Test
 	public void countWorkingTimeOfPer(@Mocked AttendanceTimeOfDailyAttendance attendance_1
-			, @Mocked AttendanceTimeOfDailyAttendance attendance_2){
+			,	@Mocked AttendanceTimeOfDailyAttendance attendance_2
+			,	@Mocked AttendanceTimeOfDailyAttendance attendance_3){
 		
-		val dailyWorks = Arrays.asList(IntegrationOfDailyHelper.createDailyWorks("sid_1", Optional.of(attendance_1))
-				, IntegrationOfDailyHelper.createDailyWorks("sid_2", Optional.of(attendance_2))
-				, IntegrationOfDailyHelper.createDailyWorks("sid_3", Optional.empty()));
+		val dailyWorks = Arrays.asList(
+					IntegrationOfDailyHelper.createDailyWorks("sid_1", GeneralDate.ymd(2021, 1, 26), Optional.of(attendance_1))
+				,	IntegrationOfDailyHelper.createDailyWorks("sid_2", GeneralDate.ymd(2021, 1, 26), Optional.of(attendance_1))
+				,	IntegrationOfDailyHelper.createDailyWorks("sid_1", GeneralDate.ymd(2021, 1, 27), Optional.of(attendance_2))
+				,	IntegrationOfDailyHelper.createDailyWorks("sid_2", GeneralDate.ymd(2021, 1, 27), Optional.of(attendance_2))
+				,	IntegrationOfDailyHelper.createDailyWorks("sid_1", GeneralDate.ymd(2021, 1, 28), Optional.of(attendance_3))
+				,	IntegrationOfDailyHelper.createDailyWorks("sid_2", GeneralDate.ymd(2021, 1, 28), Optional.of(attendance_3))
+				,	IntegrationOfDailyHelper.createDailyWorks("sid_3", GeneralDate.ymd(2021, 1, 28), Optional.empty()));
 		
 		new MockUp<AttendanceTimesForAggregation>() {
 			@Mock
-			private BigDecimal getTime(AttendanceTimesForAggregation target, AttendanceTimeOfDailyAttendance dailyAttendance) {
-				return new BigDecimal(540);
+			private BigDecimal getTime(AttendanceTimesForAggregation target,
+					AttendanceTimeOfDailyAttendance dailyAttendance) {
+				if (target == AttendanceTimesForAggregation.WORKING_WITHIN)
+					return BigDecimal.valueOf(160);
+				if (target == AttendanceTimesForAggregation.WORKING_EXTRA)
+					return BigDecimal.valueOf(40);
+				return BigDecimal.valueOf(200);
+			}
+		};
+		
+		// within 1 , workng total 0, extra 2
+		val result = CountWorkingTimeOfPerCtgService.get(dailyWorks);
+		
+		assertThat(result).hasSize(3);
+		
+		assertThat(result.keySet()).containsAll(Arrays.asList("sid_1", "sid_2", "sid_3"));
+		
+		Map<AttendanceTimesForAggregation, BigDecimal> value1 = result.get("sid_1");
+		assertThat(value1.entrySet())
+				.extracting(d -> d.getKey().getValue(), d -> d.getValue())
+				.contains(
+						  tuple(0, BigDecimal.valueOf(600))
+						, tuple(1, BigDecimal.valueOf(480))
+						, tuple(2, BigDecimal.valueOf(120)));
+		
+		Map<AttendanceTimesForAggregation, BigDecimal> value2 = result.get("sid_1");
+		assertThat(value2.entrySet())
+					.extracting(d -> d.getKey().getValue(), d -> d.getValue())
+					.contains(
+						  tuple(0, BigDecimal.valueOf(600))
+						, tuple(1, BigDecimal.valueOf(480))
+						, tuple(2, BigDecimal.valueOf(120)));
+		
+		Map<AttendanceTimesForAggregation, BigDecimal> value3 = result.get("sid_3");
+		assertThat(value3.entrySet()).isEmpty();
+	}
+	
+	@Test
+	public void test_countWorkingTimeOfPer(@Mocked AttendanceTimeOfDailyAttendance attendance_1
+			,	@Mocked AttendanceTimeOfDailyAttendance attendance_2
+			,	@Mocked AttendanceTimeOfDailyAttendance attendance_3){
+		
+		val dailyWorks = Arrays.asList(
+					IntegrationOfDailyHelper.createDailyWorks("sid_1", GeneralDate.ymd(2021, 1, 26), Optional.of(attendance_1))
+				,	IntegrationOfDailyHelper.createDailyWorks("sid_1", GeneralDate.ymd(2021, 1, 27), Optional.of(attendance_2))
+				,	IntegrationOfDailyHelper.createDailyWorks("sid_1", GeneralDate.ymd(2021, 1, 28), Optional.of(attendance_3))
+				,	IntegrationOfDailyHelper.createDailyWorks("sid_2", GeneralDate.ymd(2021, 1, 27), Optional.of(attendance_2))
+				,	IntegrationOfDailyHelper.createDailyWorks("sid_2", GeneralDate.ymd(2021, 1, 26), Optional.of(attendance_1))
+				,	IntegrationOfDailyHelper.createDailyWorks("sid_2", GeneralDate.ymd(2021, 1, 28), Optional.of(attendance_3))
+				,	IntegrationOfDailyHelper.createDailyWorks("sid_3", GeneralDate.ymd(2021, 1, 28), Optional.empty()));
+		
+		Map<AttendanceTimesForAggregation, BigDecimal> total = new HashMap<AttendanceTimesForAggregation, BigDecimal>() {
+			private static final long serialVersionUID = 1L;
+			{
+				put(AttendanceTimesForAggregation.WORKING_TOTAL, BigDecimal.valueOf(500));
+				put(AttendanceTimesForAggregation.WORKING_WITHIN, BigDecimal.valueOf(300));
+				put(AttendanceTimesForAggregation.WORKING_EXTRA, BigDecimal.valueOf(200));
+			}
+		};
+		
+		new MockUp<AttendanceTimeTotalizationService>() {
+			@Mock
+			public Map<AttendanceTimesForAggregation, BigDecimal> totalize(
+					List<AttendanceTimesForAggregation> targets, List<AttendanceTimeOfDailyAttendance> values) {
+				return values.isEmpty()? Collections.emptyMap(): total;
 			}
 		};
 		
@@ -88,21 +159,21 @@ public class CountWorkingTimeOfPerCtgServiceTest {
 		assertThat(value1.entrySet())
 				.extracting(d -> d.getKey().getValue(), d -> d.getValue())
 				.contains(
-						  tuple(0, new BigDecimal(540))
-						, tuple(1, new BigDecimal(540))
-						, tuple(2, new BigDecimal(540)));
+						  tuple(0, BigDecimal.valueOf(500))
+						, tuple(1, BigDecimal.valueOf(300))
+						, tuple(2, BigDecimal.valueOf(200)));
 		
-		Map<AttendanceTimesForAggregation, BigDecimal> value2 = result.get("sid_1");
+		Map<AttendanceTimesForAggregation, BigDecimal> value2 = result.get("sid_2");
 		assertThat(value2.entrySet())
 					.extracting(d -> d.getKey().getValue(), d -> d.getValue())
 					.contains(
-						  tuple(0, new BigDecimal(540))
-						, tuple(1, new BigDecimal(540))
-						, tuple(2, new BigDecimal(540)));
+						  tuple(0, BigDecimal.valueOf(500))
+						, tuple(1, BigDecimal.valueOf(300))
+						, tuple(2, BigDecimal.valueOf(200)));
 		
 		Map<AttendanceTimesForAggregation, BigDecimal> value3 = result.get("sid_3");
 		assertThat(value3.entrySet()).isEmpty();
-	
+		
 	}
 	
 	public static class IntegrationOfDailyHelper {
@@ -154,9 +225,9 @@ public class CountWorkingTimeOfPerCtgServiceTest {
 		@Mocked
 		static Optional<SnapShot> snapshot;
 		
-		public static IntegrationOfDaily createDailyWorks(String sid, Optional<AttendanceTimeOfDailyAttendance> attendance) {
+		public static IntegrationOfDaily createDailyWorks(String sid, GeneralDate date, Optional<AttendanceTimeOfDailyAttendance> attendance) {
 			return new IntegrationOfDaily(
-					sid, GeneralDate.today(), workInformation, 
+					sid, date, workInformation, 
 					calAttr, affiliationInfor, pcLogOnInfo,
 					employeeError, outingTime, breakTime,
 					attendance, attendanceLeave, shortTime,

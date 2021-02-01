@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.gul.util.OptionalUtil;
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AttendanceTimeTotalizationService;
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AttendanceTimesForAggregation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -38,14 +39,13 @@ public class CountWorkingTimeOfPerCtgService {
 				.collect(Collectors.toMap(Map.Entry::getKey, entry -> {
 					return entry.getValue().stream()
 							.map(c -> c.getAttendanceTimeOfDailyPerformance())
-							.filter(c -> c.isPresent())
-							.map(c -> c.get())
+							.flatMap(OptionalUtil::stream)
 							.collect(Collectors.toList());
 				}))
 				.entrySet().stream()
-				.collect(Collectors.toMap(Map.Entry::getKey, entry -> {
-					return AttendanceTimeTotalizationService.totalize(attendanceUnits, entry.getValue());
-				}));
+				.collect(Collectors.toMap(
+						Map.Entry::getKey //key
+					,	entry -> AttendanceTimeTotalizationService.totalize(attendanceUnits, entry.getValue()))); //value
 	}
 
 }
