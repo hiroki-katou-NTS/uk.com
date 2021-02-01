@@ -3803,9 +3803,9 @@ module nts.uk.ui.exTable {
                 } else if (evt.ctrlKey && helper.isCutKey(evt)) {
 //                    self.cut();   
                 } else if (evt.ctrlKey && helper.isUndoKey(evt)) {
-                    self.undo();
+//                    self.undo();
                 } else if (evt.ctrlKey && helper.isRedoKey(evt)) {
-                    self.redo();
+//                    self.redo();
                 }
             }
             
@@ -3936,20 +3936,20 @@ module nts.uk.ui.exTable {
                 cbData = helper.getCellData(cbData);
                 let validate = $.data(self.$grid, internal.PASTE_VALIDATE);
                 if (_.isFunction(validate)) {
-                    let result = validate([ cbData ]);
-                    if (_.has(result, "done")) {
-                        result.done(res => {
-                            if (res === true) {
-                                let selectedCells = selection.getSelectedCells(this.$grid);
-                                let txId = util.randomId();
-                                _.forEach(selectedCells, function(cell: any, index: number) {
+                    let selectedCells = selection.getSelectedCells(this.$grid);
+                    let txId = util.randomId();
+                    _.forEach(selectedCells, function(cell: any, index: number) {
+                        let result = validate(cell.rowIndex, cell.columnKey, [ cbData ]);
+                        if (_.has(result, "done")) {
+                            result.done(res => {
+                                if (res === true) {
                                     update.gridCellOw(self.$grid, cell.rowIndex, cell.columnKey, -1, cbData, txId);
-                                });
-                            } else if (_.isFunction(res)) {
-                                res();
-                            }
-                        });
-                    }
+                                } else if (_.isFunction(res)) {
+                                    res();
+                                }
+                            });
+                        }
+                    });
                     
                     return;
                 }
@@ -4050,7 +4050,7 @@ module nts.uk.ui.exTable {
             /**
              * Undo.
              */
-            undo() {
+            undo(action?: any) {
                 let self = this;
                 let histories = $.data(self.$grid, internal.COPY_HISTORY);
                 if (!histories || histories.length === 0) return;
@@ -4089,6 +4089,10 @@ module nts.uk.ui.exTable {
                     currentItem.value = data[item.columnKey];
                     currentItems.push(currentItem);
                     update.gridCell(self.$grid, item.rowIndex, item.columnKey, -1, item.value, true);
+                    if (_.isFunction(action)) {
+                        action(item.rowIndex, item.columnKey, item.value);
+                    }
+                    
                     internal.removeChange(self.$grid, item);
                 });
                 
@@ -4104,13 +4108,16 @@ module nts.uk.ui.exTable {
             /**
              * Redo.
              */
-            redo() {
+            redo(action?: any) {
                 let self = this,
                     redoStack = $.data(self.$grid, internal.REDO_STACK);
                 if (!redoStack || redoStack.length === 0) return;
                 let tx = redoStack.pop();
                 _.forEach(tx.items, function(item: any) {
                     update.gridCellOw(self.$grid, item.rowIndex, item.columnKey, -1, item.value, tx.txId);
+                    if (_.isFunction(action)) {
+                        action(item.rowIndex, item.columnKey, item.value);
+                    }
                 });
             }
             
@@ -7101,16 +7108,16 @@ module nts.uk.ui.exTable {
                     setStickStyler(self, params[0]);
                     break;
                 case "stickUndo":
-                    undoStick(self);
+                    undoStick(self, params[0]);
                     break;
                 case "stickRedo":
-                    redoStick(self);
+                    redoStick(self, params[0]);
                     break;
                 case "copyUndo":
-                    undoCopy(self);
+                    undoCopy(self, params[0]);
                     break;
                 case "copyRedo":
-                    redoCopy(self);
+                    redoCopy(self, params[0]);
                     break;
                 case "editUndo":
                     undoEdit(self);
@@ -7792,7 +7799,7 @@ module nts.uk.ui.exTable {
         /**
          * Undo stick.
          */
-        function undoStick($container: JQuery) {
+        function undoStick($container: JQuery, action: any) {
             let exTable = $container.data(NAMESPACE);
             if (!exTable || exTable.updateMode !== STICK) return;
             let $grid = $container.find("." + BODY_PRF + DETAIL);
@@ -7815,6 +7822,10 @@ module nts.uk.ui.exTable {
                 }
                 
                 update.gridCell($grid[0], i.rowIndex, i.columnKey, innerIdx, i.value, true);
+                if (_.isFunction(action)) {
+                    action(i.rowIndex, i.columnKey, innerIdx, i.value);
+                }
+                
                 internal.removeChange($grid[0], i);
             });
             
@@ -7829,7 +7840,7 @@ module nts.uk.ui.exTable {
         /**
          * Redo stick.
          */
-        function redoStick($container: JQuery) {
+        function redoStick($container: JQuery, action: any) {
             let exTable = $container.data(NAMESPACE);
             if (!exTable || exTable.updateMode !== STICK) return;
             let $grid = $container.find(`.${BODY_PRF + DETAIL}`);
@@ -7841,6 +7852,9 @@ module nts.uk.ui.exTable {
             if (items.length == 1) {
                 let item = items[0];
                 update.stickGridCellOw($grid[0], item.rowIndex, item.columnKey, item.innerIdx, item.value, sticker.styleMaker, item.stickFields);
+                if (_.isFunction(action)) {
+                    action(item.rowIndex, item.columnKey, item.innerIdx, item.value);
+                }
             } else {
                 let data = {};
                 _.forEach(items, item => {
@@ -7854,25 +7868,25 @@ module nts.uk.ui.exTable {
         /**
          * Undo copy.
          */
-        function undoCopy($container: JQuery) {
+        function undoCopy($container: JQuery, action: any) {
             let exTable = $container.data(NAMESPACE);
             if (!exTable || exTable.updateMode !== COPY_PASTE) return;
             let $grid = $container.find(`.${BODY_PRF + DETAIL}`);
             let printer = $grid.data(internal.PRINTER_INST);
             if (!printer) return;
-            printer.undo();
+            printer.undo(action);
         }
         
         /**
          * Redo copy.
          */
-        function redoCopy($container: JQuery) {
+        function redoCopy($container: JQuery, action: any) {
             let exTable = $container.data(NAMESPACE);
             if (!exTable || exTable.updateMode !== COPY_PASTE) return;
             let $grid = $container.find(`.${BODY_PRF + DETAIL}`);
             let printer = $grid.data(internal.PRINTER_INST);
             if (!printer) return;
-            printer.redo();
+            printer.redo(action);
         }
         
         /**
