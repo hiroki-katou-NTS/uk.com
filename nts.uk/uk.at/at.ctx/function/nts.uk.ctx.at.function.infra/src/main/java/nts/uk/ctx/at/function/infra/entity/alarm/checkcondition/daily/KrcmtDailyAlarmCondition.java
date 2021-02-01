@@ -56,9 +56,6 @@ public class KrcmtDailyAlarmCondition extends ContractUkJpaEntity implements Ser
 	@OneToMany(mappedBy = "dailyAlarmCondition", cascade = CascadeType.ALL, orphanRemoval = true)
 	public List<KrcmtDailyErrorCode> listErrorAlarmCode;
 
-//	@OneToMany(mappedBy = "dailyAlarmCondition", cascade = CascadeType.ALL, orphanRemoval = true)
-//	public List<KrcmtDailyFixExtra> listFixedExtractConditionWorkRecord;
-
 	@OneToMany(mappedBy = "dailyAlarmCondition", cascade = CascadeType.ALL, orphanRemoval = true)
 	public List<KrcmtDailyWkRecord> listExtractConditionWorkRecord;
 
@@ -87,7 +84,6 @@ public class KrcmtDailyAlarmCondition extends ContractUkJpaEntity implements Ser
 		return new KrcmtDailyAlarmCondition(domain.getDailyAlarmConID(), companyId, code.v(), category.value,
 				domain.getConExtractedDaily().value, domain.isAddApplication() ? 1 : 0,
 				KrcmtDailyErrorCode.toEntity(domain.getDailyAlarmConID(), domain.getErrorAlarmCode()),
-//				KrcmtDailyFixExtra.toEntity(domain.getDailyAlarmConID(), domain.getErrorAlarmCode()),
 				KrcmtDailyWkRecord.toEntity(domain.getDailyAlarmConID(), domain.getExtractConditionWorkRecord()));
 	}
 

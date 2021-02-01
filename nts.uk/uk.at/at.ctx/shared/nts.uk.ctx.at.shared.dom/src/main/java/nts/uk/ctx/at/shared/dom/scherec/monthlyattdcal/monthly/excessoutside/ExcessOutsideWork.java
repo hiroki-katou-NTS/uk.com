@@ -37,21 +37,6 @@ public class ExcessOutsideWork implements Serializable{
 	}
 	
 	/**
-	 * for using table KRCDT_MON_MERGE
-	 * ファクトリー
-	 * @param breakdownNo 内訳NO
-	 * @param excessNo 超過NO
-	 * @param excessTime 超過時間
-	 * @return 時間外超過
-	 */
-	public static ExcessOutsideWork of( AttendanceTimeMonth excessTime){
-		
-		ExcessOutsideWork domain = new ExcessOutsideWork();
-		domain.excessTime = excessTime;
-		return domain;
-	}
-	
-	/**
 	 * ファクトリー
 	 * @param breakdownNo 内訳NO
 	 * @param excessNo 超過NO
