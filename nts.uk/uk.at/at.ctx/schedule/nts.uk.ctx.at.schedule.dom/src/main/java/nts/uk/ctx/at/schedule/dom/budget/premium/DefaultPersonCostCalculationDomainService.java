@@ -41,8 +41,10 @@ public class DefaultPersonCostCalculationDomainService implements PersonCostCalc
         Optional<DateHistoryItem> optionalHisItem = listOldHistPersonCostCal.get().getHistoryItems().stream()
                 .filter(x -> x.identifier().equals(historyId)).findFirst();
         if (!optionalHisItem.isPresent()) {
-
-            throw new BusinessException("");
+            throw new RuntimeException(" CAN NOT FIND DATA " +
+                    "IN  KSCMT_PER_COST_CALC_HIST" +
+                    " WITH HIST_ID = " + historyId +
+                    "COMPANYID = " + companyId);
         }
         // Remove history in list
         listOldHistPersonCostCal.get().remove(optionalHisItem.get());
