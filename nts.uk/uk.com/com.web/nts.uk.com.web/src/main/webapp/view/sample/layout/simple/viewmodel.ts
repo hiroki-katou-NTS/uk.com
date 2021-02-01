@@ -26,5 +26,15 @@ module nts.uk.ui.sample.layout.simple {
 
             _.extend(window, { vm });
         }
+
+        contents: string = contents;
     }
+
+    const contents = `
+# h1 content
+__code__ js
+const wd = window;
+const vm = new ko.ViewModel();
+__code__
+    `.replace(/__code__/g, '```');
 }

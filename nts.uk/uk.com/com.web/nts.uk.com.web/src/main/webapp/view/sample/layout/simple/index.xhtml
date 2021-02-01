@@ -9,7 +9,7 @@
 			<script type="text/javascript">
 				__viewContext.noHeader = false;
 			</script>
-			
+
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="viewmodel.js" />
 		</ui:define>
@@ -71,7 +71,7 @@
 							icon: $vm.icon,
 							size: 21,
 							state: $vm.state2" class="top"></button>
-
+						<div data-bind="markdown: 'buttons.md'"></div>
 						<br />
 						<br />
 						<button data-bind="btn-link: $vm.text, icon: 'LIST_PLUS', size: 34"></button>
@@ -81,22 +81,9 @@
 						<br />
 						<br />
 						<button data-bind="btn-link: $vm.text, icon: 'LIST_PLUS', size: 34" class="large icon"></button>
-						<br />
-						<br />
-						<div data-bind="ntsCheckBox: { checked: ko.observable(false) }">Enable</div>
-						<br />
-						<br />
-						<div data-bind="ntsMultiCheckBox: {
-							options: [
-								{id: 1, name: 'box 1' },
-								{id: 2, name: 'box 2' },
-								{id: 3, name: 'box 3' }
-							],
-							optionsValue: 'id',
-							optionsText: 'name',
-							value: ko.observableArray([1, 2]),
-							enable: true
-						}"></div>
+						<hr />
+						<h1>Document</h1>
+						<div data-bind="markdown: 'document.md'"></div>
 					</div>
 				</div>
 			</div>
