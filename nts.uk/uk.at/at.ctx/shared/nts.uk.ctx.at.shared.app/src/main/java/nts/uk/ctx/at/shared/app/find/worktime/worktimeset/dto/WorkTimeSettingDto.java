@@ -31,7 +31,7 @@ public class WorkTimeSettingDto implements WorkTimeSettingSetMemento {
 	public Boolean isAbolish;
 
 	/** The color code. */
-	public String colorCode;
+//	public String colorCode;
 
 	/** The work time display name. */
 	public WorkTimeDisplayNameDto workTimeDisplayName;
@@ -100,10 +100,10 @@ public class WorkTimeSettingDto implements WorkTimeSettingSetMemento {
 	 * nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingSetMemento#
 	 * setColorCode(nts.uk.ctx.at.shared.dom.common.color.ColorCode)
 	 */
-	@Override
-	public void setColorCode(ColorCode colorCode) {
-		this.colorCode = colorCode.v();
-	}
+//	@Override
+//	public void setColorCode(ColorCode colorCode) {
+//		this.colorCode = colorCode.v();
+//	}
 
 	/*
 	 * (non-Javadoc)
@@ -117,8 +117,7 @@ public class WorkTimeSettingDto implements WorkTimeSettingSetMemento {
 	public void setWorkTimeDisplayName(WorkTimeDisplayName workTimeDisplayName) {
 		this.workTimeDisplayName = WorkTimeDisplayNameDto.builder()
 				.workTimeName(workTimeDisplayName.getWorkTimeName().v())
-				.workTimeAbName(workTimeDisplayName.getWorkTimeAbName().v())
-				.workTimeSymbol(workTimeDisplayName.getWorkTimeSymbol().v()).build();
+				.workTimeAbName(workTimeDisplayName.getWorkTimeAbName().v()).build();
 	}
 
 	/*

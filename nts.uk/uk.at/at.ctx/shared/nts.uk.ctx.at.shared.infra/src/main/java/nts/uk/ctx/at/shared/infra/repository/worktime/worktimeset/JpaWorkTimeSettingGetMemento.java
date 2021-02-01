@@ -93,10 +93,10 @@ public class JpaWorkTimeSettingGetMemento implements WorkTimeSettingGetMemento {
 	 * nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingGetMemento#
 	 * getColorCode()
 	 */
-	@Override
-	public ColorCode getColorCode() {
-		return new ColorCode(this.entity.getColor());
-	}
+//	@Override
+//	public ColorCode getColorCode() {
+//		return new ColorCode(this.entity.getColor());
+//	}
 
 	/*
 	 * (non-Javadoc)
@@ -108,8 +108,7 @@ public class JpaWorkTimeSettingGetMemento implements WorkTimeSettingGetMemento {
 	@Override
 	public WorkTimeDisplayName getWorkTimeDisplayName() {
 		return WorkTimeDisplayName.builder().workTimeName(new WorkTimeName(this.entity.getName()))
-				.workTimeAbName(new WorkTimeAbName(this.entity.getAbname()))
-				.workTimeSymbol(new WorkTimeSymbol(this.entity.getSymbol())).build();
+				.workTimeAbName(new WorkTimeAbName(this.entity.getAbname())).build();
 	}
 
 	/*

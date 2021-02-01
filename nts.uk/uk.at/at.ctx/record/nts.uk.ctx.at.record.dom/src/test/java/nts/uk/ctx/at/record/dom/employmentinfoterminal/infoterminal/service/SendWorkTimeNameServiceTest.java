@@ -96,23 +96,19 @@ public class SendWorkTimeNameServiceTest {
 
 				require.findByCodes(anyString, (List<String>) any);
 				result = Arrays.asList(
-						new WorkTimeSetting("1", new WorkTimeCode("A"), null, null, null,
-								new WorkTimeDisplayName(new WorkTimeName("AAA"), new WorkTimeAbName("BBB"),
-										new WorkTimeSymbol("BBB")),
+						new WorkTimeSetting("1", new WorkTimeCode("A"), null, null,
+								new WorkTimeDisplayName(new WorkTimeName("AAA"), new WorkTimeAbName("BBB")),
 								null, null),
 
-						new WorkTimeSetting("1", new WorkTimeCode("B"), null, null, null,
-								new WorkTimeDisplayName(new WorkTimeName("AAA"), new WorkTimeAbName("BBB"),
-										new WorkTimeSymbol("BBB")),
+						new WorkTimeSetting("1", new WorkTimeCode("B"), null, null,
+								new WorkTimeDisplayName(new WorkTimeName("AAA"), new WorkTimeAbName("BBB")),
 								null, null),
 
-						new WorkTimeSetting("1", new WorkTimeCode("C"), null, null, null,
-								new WorkTimeDisplayName(new WorkTimeName("AAA"), new WorkTimeAbName("BBB"),
-										new WorkTimeSymbol("BBB")),
+						new WorkTimeSetting("1", new WorkTimeCode("C"), null, null,
+								new WorkTimeDisplayName(new WorkTimeName("AAA"), new WorkTimeAbName("BBB")),
 								null, null),
-						new WorkTimeSetting("1", new WorkTimeCode("D"), null, null, null,
-								new WorkTimeDisplayName(new WorkTimeName("AAA"), new WorkTimeAbName("BBB"),
-										new WorkTimeSymbol("BBB")),
+						new WorkTimeSetting("1", new WorkTimeCode("D"), null, null,
+								new WorkTimeDisplayName(new WorkTimeName("AAA"), new WorkTimeAbName("BBB")),
 								null, null));
 
 				require.findByCodeList(anyString, (List<String>) any);

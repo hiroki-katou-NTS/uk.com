@@ -38,9 +38,9 @@ public class WorkInfoTimeZoneTempo {
 		WorkTimeDivisionDto divisionDto = new WorkTimeDivisionDto(zone.getWorkTime().get().getWorkTimeDivision().getWorkTimeDailyAtr().value,
 				zone.getWorkTime().get().getWorkTimeDivision().getWorkTimeMethodSet().value);
 		WorkTimeDisplayNameDto displayNameDto = new WorkTimeDisplayNameDto(zone.getWorkTime().get().getWorkTimeDisplayName().getWorkTimeName().v(),
-				zone.getWorkTime().get().getWorkTimeDisplayName().getWorkTimeAbName().v(), zone.getWorkTime().get().getWorkTimeDisplayName().getWorkTimeSymbol().v());
+				zone.getWorkTime().get().getWorkTimeDisplayName().getWorkTimeAbName().v());
 		workTimeDto = new WorkTimeSettingsDto(zone.getWorkTime().get().getCompanyId(), zone.getWorkTime().get().getWorktimeCode().v(), divisionDto,
-				zone.getWorkTime().get().getAbolishAtr().value, zone.getWorkTime().get().getColorCode().v(), displayNameDto,
+				zone.getWorkTime().get().getAbolishAtr().value, displayNameDto,
 				zone.getWorkTime().get().getMemo().v(), zone.getWorkTime().get().getNote().v());
 		}
 

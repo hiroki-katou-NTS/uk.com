@@ -47,7 +47,7 @@ public interface WorkTimeSettingSetMemento {
      *
      * @param colorCode the new color code
      */
-    public void setColorCode(ColorCode colorCode);
+//    public void setColorCode(ColorCode colorCode);
 
     /**
      * Sets the work time display name.
