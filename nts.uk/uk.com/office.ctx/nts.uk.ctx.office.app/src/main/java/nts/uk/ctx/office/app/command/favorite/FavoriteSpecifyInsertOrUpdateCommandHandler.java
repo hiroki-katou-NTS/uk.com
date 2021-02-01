@@ -1,16 +1,13 @@
 package nts.uk.ctx.office.app.command.favorite;
 
 import java.util.List;
-import java.util.Optional;
-
+import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.office.dom.favorite.FavoriteSpecify;
 import nts.uk.ctx.office.dom.favorite.FavoriteSpecifyRepository;
 
@@ -27,16 +24,7 @@ public class FavoriteSpecifyInsertOrUpdateCommandHandler extends CommandHandler<
 	@Override
 	protected void handle(CommandHandlerContext<List<FavoriteSpecifyCommand>> context) {
 		List<FavoriteSpecifyCommand> command = context.getCommand();
-		command.forEach(comd -> {
-			Optional<FavoriteSpecify> checkDomain = favoriteSpecifyRepository.getBySidAndDate(comd.getCreatorId(), comd.getInputDate());
-			if(checkDomain.isPresent()) {
-				FavoriteSpecify domain = FavoriteSpecify.createFromMemento(comd);
-				favoriteSpecifyRepository.update(domain);
-			} else {
-				comd.setInputDate(GeneralDateTime.now());
-				FavoriteSpecify domain = FavoriteSpecify.createFromMemento(comd);
-				favoriteSpecifyRepository.insert(domain);
-			}
-		});
+		List<FavoriteSpecify> listDomain = command.stream().map(item -> FavoriteSpecify.createFromMemento(item)).collect(Collectors.toList());
+		favoriteSpecifyRepository.updateAll(listDomain);
 	}
 }

@@ -1,5 +1,6 @@
 package nts.uk.ctx.office.infra.repository.favorite;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,7 +10,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.office.dom.favorite.FavoriteSpecify;
 import nts.uk.ctx.office.dom.favorite.FavoriteSpecifyRepository;
-import nts.uk.ctx.office.dom.favorite.TargetSelection;
 import nts.uk.ctx.office.infra.entity.favorite.FavoriteSpecifyEntity;
 import nts.uk.ctx.office.infra.entity.favorite.FavoriteSpecifyEntityDetail;
 import nts.uk.ctx.office.infra.entity.favorite.FavoriteSpecifyEntityPK;
@@ -23,11 +23,20 @@ public class FavoriteSpecifyRepositoryImpl extends JpaRepository implements Favo
 
 	// select by Sid
 	private static final String SELECT_BY_SID = "SELECT m FROM FavoriteSpecifyEntity m WHERE m.pk.creatorId = :sid";
+	
+	//get list by key
+	private static final String SELECT_BY_KEY = "SELECT m FROM FavoriteSpecifyEntity m "
+			+ " WHERE m.pk.creatorId IN :creatorIds"
+			+ " AND m.pk.inputDate IN :inputDates";
 
 	private static FavoriteSpecifyEntity toEntity(FavoriteSpecify domain) {
 		FavoriteSpecifyEntity entity = new FavoriteSpecifyEntity();
 		domain.setMemento(entity);
 		return entity;
+	}
+	
+	private boolean filterEntity(FavoriteSpecifyEntityPK e1, FavoriteSpecifyEntityPK e2) {
+		return (e1.getCreatorId().equals(e2.getCreatorId()) && e1.getInputDate().equals(e2.getInputDate()));
 	}
 
 	@Override
@@ -38,21 +47,78 @@ public class FavoriteSpecifyRepositoryImpl extends JpaRepository implements Favo
 	}
 
 	@Override
-	public void update(FavoriteSpecify domain) {
-		FavoriteSpecifyEntity entity = FavoriteSpecifyRepositoryImpl.toEntity(domain);
-		Optional<FavoriteSpecifyEntity> oldEntity = this.queryProxy().find(entity.getPk(), FavoriteSpecifyEntity.class);
-		oldEntity.ifPresent(updateEntity -> {
-			if(entity.getTargetSelection() == TargetSelection.WORKPLACE.value) {
-				this.commandProxy().removeAll(FavoriteSpecifyEntityDetail.class, updateEntity
-						.getListFavoriteSpecifyEntityDetail().stream().map(x -> x.getPk()).collect(Collectors.toList()));
-				this.getEntityManager().flush();
+	public void insertAll(List<FavoriteSpecify> domains) {
+		List<FavoriteSpecifyEntity> entities = domains.stream().map(domain -> {
+			FavoriteSpecifyEntity entity = FavoriteSpecifyRepositoryImpl.toEntity(domain);
+			entity.setContractCd(AppContexts.user().contractCode());
+			return entity;
+		}).collect(Collectors.toList());
+		this.commandProxy().insertAll(entities);
+	}
+	
+	@Override
+	public void update(FavoriteSpecify domain) {}
+	
+	@Override
+	public void updateAll(List<FavoriteSpecify> domains) {
+		List<String> creatorIds = new ArrayList<>();
+		List<GeneralDateTime> inputDates = new ArrayList<>();
+		List<FavoriteSpecifyEntityDetail> listDelDetail = new ArrayList<>();
+		
+		//all of entity from client
+		List<FavoriteSpecifyEntity> entities = domains.stream().map(domain -> {
+			FavoriteSpecifyEntity entity = FavoriteSpecifyRepositoryImpl.toEntity(domain);
+			creatorIds.add(entity.getPk().getCreatorId());
+			inputDates.add(entity.getPk().getInputDate());
+			return entity;
+		})
+		.collect(Collectors.toList());
+		
+		//get all old entity from database
+		List<FavoriteSpecifyEntity> oldEntities = this.queryProxy()
+				.query(SELECT_BY_KEY, FavoriteSpecifyEntity.class)
+				.setParameter("creatorIds", creatorIds)
+				.setParameter("inputDates", inputDates)
+				.getList();
+		
+		//create list entity that new (exist in entity from client but don't exist in database)
+		List<FavoriteSpecifyEntity> newEntities = new ArrayList<>();
+		entities.forEach(allEntity -> {
+			Optional<FavoriteSpecifyEntity> entity = oldEntities.stream()
+					.filter(e -> this.filterEntity(e.getPk(), allEntity.getPk()))
+					.findFirst();
+			if(!entity.isPresent()) {
+				newEntities.add(allEntity);
 			}
-			updateEntity.setFavoriteName(entity.getFavoriteName());
-			updateEntity.setOrder(entity.getOrder());
-			updateEntity.setTargetSelection(entity.getTargetSelection());
-			updateEntity.setListFavoriteSpecifyEntityDetail(entity.getListFavoriteSpecifyEntityDetail());
-			this.commandProxy().update(updateEntity);
 		});
+		// insert all new entity
+		List<FavoriteSpecify> newDomains = newEntities.stream().map(FavoriteSpecify::createFromMemento).collect(Collectors.toList());
+		this.insertAll(newDomains);
+		
+		//create list entity that need to update (exist in entity from client and exist in database)
+		List<FavoriteSpecifyEntity> updateEntities = oldEntities.stream()
+				.map(oldEntity -> {
+					Optional<FavoriteSpecifyEntity> entity = entities.stream()
+							.filter(e -> this.filterEntity(e.getPk(), oldEntity.getPk()))
+							.findFirst();
+					if(entity.isPresent()){
+						this.commandProxy().removeAll(oldEntity.getListFavoriteSpecifyEntityDetail());
+						this.getEntityManager().flush();
+//						listDelDetail.addAll(oldEntity.getListFavoriteSpecifyEntityDetail());
+						oldEntity.setFavoriteName(entity.get().getFavoriteName());
+						oldEntity.setOrder(entity.get().getOrder());
+						oldEntity.setTargetSelection(entity.get().getTargetSelection());
+						oldEntity.setListFavoriteSpecifyEntityDetail(entity.get().getListFavoriteSpecifyEntityDetail());
+					}
+					return oldEntity;
+				})
+				.collect(Collectors.toList());
+
+		//remove favorite detail
+//		this.commandProxy().removeAll(FavoriteSpecifyEntityDetail.class, listDelDetail.stream().map(x -> x.getPk()).collect(Collectors.toList()));
+//		this.getEntityManager().flush();
+		// update all
+		this.commandProxy().updateAll(updateEntities);
 	}
 
 	@Override

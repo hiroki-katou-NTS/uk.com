@@ -1,10 +1,10 @@
 /// <reference path='../../../../lib/nittsu/viewcontext.d.ts' />
 module nts.uk.at.view.ccg005.d.screenModel {
 
-    import setShared = nts.uk.ui.windows.setShared;
-    import getShared = nts.uk.ui.windows.getShared;
-    import modal = nts.uk.ui.windows.sub.modal;
-   import Output = nts.uk.com.view.cdl008.a.viewmodel.OutPut;
+  import setShared = nts.uk.ui.windows.setShared;
+  import getShared = nts.uk.ui.windows.getShared;
+  import modal = nts.uk.ui.windows.sub.modal;
+  import Output = nts.uk.com.view.cdl008.a.viewmodel.OutPut;
   const API = {
     getFavoriteInformation: "screen/com/ccg005/get-favorite-information",
     save: "ctx/office/favorite/save",
@@ -12,7 +12,7 @@ module nts.uk.at.view.ccg005.d.screenModel {
   };
   @bean()
   export class ViewModel extends ko.ViewModel {
-    
+
     //favorite
     favoriteList: KnockoutObservableArray<FavoriteSpecifyData> = ko.observableArray([]);
     favoriteName: KnockoutObservable<string> = ko.observable("");
@@ -27,13 +27,12 @@ module nts.uk.at.view.ccg005.d.screenModel {
     });
 
     //target select
-    roundingRules: KnockoutObservableArray<any>= ko.observableArray([
+    roundingRules: KnockoutObservableArray<any> = ko.observableArray([
       { code: TargetSelection.WORKPLACE, name: this.$i18n("CCG005_14") },
       { code: TargetSelection.AFFILIATION_WORKPLACE, name: this.$i18n("CCG005_16") }
     ]);
     selectedRuleCode: KnockoutObservable<number> = ko.observable(TargetSelection.WORKPLACE);
-    buttonSelectRequire: KnockoutObservable<boolean> = ko.computed(() => this.selectedRuleCode() === 1);
-    displayChoosenWkspNameRequire: KnockoutObservable<boolean> = ko.computed(() => this.selectedRuleCode() === 0);
+    buttonSelectWkspDisable: KnockoutObservable<boolean> = ko.computed(() => this.selectedRuleCode() === 0);
 
     //grid column
     columns: KnockoutObservableArray<any> = ko.observableArray([
@@ -59,6 +58,7 @@ module nts.uk.at.view.ccg005.d.screenModel {
         });
         vm.$blockui("clear");
       })
+      .always(() => vm.$blockui("clear"));
     }
 
     private bindingData(order: number) {
@@ -81,6 +81,7 @@ module nts.uk.at.view.ccg005.d.screenModel {
         vm.favoriteList(data);
         vm.$blockui("clear");
       })
+      .always(() => vm.$blockui("clear"));
     }
 
     public onClickCancel() {
@@ -99,11 +100,13 @@ module nts.uk.at.view.ccg005.d.screenModel {
 
     public saveFavorite() {
       const vm = this;
-      if(vm.displayChoosenWkspNameRequire() && vm.workPlaceIdList().length === 0) {
-        $('#D5_4').ntsError('set', {messageId:"Msg_2076"});
+      //set error for workplace display name if null
+      if (vm.buttonSelectWkspDisable() && vm.workPlaceIdList().length === 0) {
+        $('#D5_4').ntsError('set', { messageId: "Msg_2076" });
       } else {
         $('#D5_4').ntsError('clear');
       }
+      
       vm.$validate().then((valid: boolean) => {
         if (valid) {
           //new item
@@ -114,7 +117,7 @@ module nts.uk.at.view.ccg005.d.screenModel {
               inputDate: moment.utc().toISOString(),
               targetSelection: vm.selectedRuleCode(),
               workplaceId: vm.selectedRuleCode() === TargetSelection.WORKPLACE ? vm.workPlaceIdList() : [],
-              order: vm.favoriteList()[vm.favoriteList().length - 1].order + 1,
+              order: vm.getNewOrder(),
               wkspNames: vm.choosenWkspNames()
             });
             vm.favoriteList.push(favoriteSpecify);
@@ -134,15 +137,24 @@ module nts.uk.at.view.ccg005.d.screenModel {
           _.map(vm.favoriteList(), (item, index) => {
             item.order = index;
           });
-           //Call API
+          //Call API
           vm.$blockui("grayout");
           vm.$ajax(API.save, vm.favoriteList()).then(() => {
             vm.callData();
             vm.$blockui("clear");
             return vm.$dialog.info({ messageId: "Msg_15" });
-          });
+          })
+          .always(() => vm.$blockui("clear"));
         }
       });
+    }
+
+    private getNewOrder() {
+      const vm = this;
+      if (vm.favoriteList().length === 0) {
+        return 0;
+      }
+      return (vm.favoriteList()[vm.favoriteList().length - 1].order + 1);
     }
 
     public deleteFavorite() {
@@ -164,12 +176,13 @@ module nts.uk.at.view.ccg005.d.screenModel {
               vm.callData();
               vm.$blockui("clear");
               return vm.$dialog.info({ messageId: "Msg_16" });
-            });
+            })
+            .always(() => vm.$blockui("clear"));
           }
         }
       });
     }
-  
+
     openCDL008Dialog(): void {
       const vm = this;
       const inputCDL008: any = {
@@ -194,10 +207,13 @@ module nts.uk.at.view.ccg005.d.screenModel {
         _.map(selectedInfo, ((item: Output) => {
           listWorkPlaceId.push(item.id);
           listWorkPlaceName.push(item.displayName);
-          
+
         }))
         vm.workPlaceIdList(listWorkPlaceId);
         vm.choosenWkspNames(listWorkPlaceName);
+        if(listWorkPlaceId.length > 0) {
+          $('#D5_4').ntsError('clear');
+        }
       });
     }
 
