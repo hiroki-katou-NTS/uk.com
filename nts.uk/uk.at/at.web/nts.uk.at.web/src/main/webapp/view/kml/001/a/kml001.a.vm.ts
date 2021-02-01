@@ -240,6 +240,9 @@ module nts.uk.at.view.kml001.a {
 
         var self = this;
         let oldPremiumSets = self.clonePersonCostCalculation(self.currentPersonCost()).premiumSets();
+
+        self.getDefaultPremiumSetting();
+
         nts.uk.ui.windows.setShared('isInsert', self.isInsert());
         nts.uk.ui.windows.sub.modal("/view/kml/001/b/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function () {
           nts.uk.ui.block.invisible();
@@ -533,16 +536,15 @@ module nts.uk.at.view.kml001.a {
           let findHistory = _.find(self.gridPersonCostList(), (x) => x.dateRange === value);
           self.selectedHistory(findHistory);
           servicebase.findByHistoryID({ historyID: findHistory.historyId }).done((data) => {
-            if (data) {
-              self.getPersonalCostCalculatorDetails(data).done(() => {
-                if (ko.unwrap(self.viewAttendanceItems()).length) {
-                  self.$blockui('hide');
-                }
-              }).fail(() => { self.$blockui('hide'); });
-            } else {
-              self.$blockui('hide');
-            }
-
+            //if (data) {
+            self.getPersonalCostCalculatorDetails(data).done(() => {
+              if (ko.unwrap(self.viewAttendanceItems()).length) {
+                self.$blockui('hide');
+              }
+            }).fail(() => { self.$blockui('hide'); });
+            //} else {
+            self.$blockui('hide');
+            //}
           }).fail(res => { console.log(res); });
 
           self.isInsert(false);
@@ -566,38 +568,42 @@ module nts.uk.at.view.kml001.a {
 
           let premiumSets: Array<vmbase.PremiumSettingInterface> = [];
           let premiumSetting: vmbase.PremiumSettingInterface = {};
-          
+
           self.createViewAttendanceItemsDefault(self.defaultPremiumSettings().length);
-          
+
           if (data.premiumSets.length > 0) {
 
             data.premiumSets = _.orderBy(data.premiumSets, 'id', 'asc');
+            
+            let viewIndex:number = 0;
+
             data.premiumSets.forEach((item, index) => {
               let attendanceNames: Array<vmbase.AttendanceItem> = [];
+              if( item.useAtr === 1) {
+                _.forEach(item.attendanceNames, (item) => {
+                  attendanceNames.push(new vmbase.AttendanceItem(item.attendanceItemId, item.attendanceItemName));
+                });
+                
+                //self.createViewAttendanceItems(attendanceNames, viewIndex++);
 
-              _.forEach(item.attendanceNames, (item) => {
-                attendanceNames.push(new vmbase.AttendanceItem(item.attendanceItemId, item.attendanceItemName));
-              });
-
-              self.createViewAttendanceItems(attendanceNames, index);
-
-              premiumSetting = {};
-              premiumSetting.companyID = data.companyID;
-              premiumSetting.historyID = data.historyID;
-              premiumSetting.displayNumber = item.id;
-              premiumSetting.rate = item.rate;
-              premiumSetting.name = item.name;
-              premiumSetting.unitPrice = item.unitPrice;
-              premiumSetting.useAtr = item.useAtr;
-              premiumSetting.attendanceItems = attendanceNames;
-              premiumSets.push(premiumSetting);
+                premiumSetting = {};
+                premiumSetting.companyID = data.companyID;
+                premiumSetting.historyID = data.historyID;
+                premiumSetting.displayNumber = item.id;
+                premiumSetting.rate = item.rate;
+                premiumSetting.name = item.name;
+                premiumSetting.unitPrice = item.unitPrice;
+                premiumSetting.useAtr = item.useAtr;
+                premiumSetting.attendanceItems = attendanceNames;
+                premiumSets.push(premiumSetting);
+              }
             });
-            //console.log(self.defaultPremiumSettings());
-            if (data.premiumSets.length < self.defaultPremiumSettings().length) {
+         
+            if (premiumSets.length < self.defaultPremiumSettings().length) {
               _.forEach(self.defaultPremiumSettings(), (item) => {
-                let hasItem = _.some(premiumSets, (x: any) => x.displayNumber === item.displayNumber);                
-                if (!hasItem) {    
-                  premiumSetting = {};            
+                let hasItem = _.some(premiumSets, (x: any) => x.displayNumber === item.displayNumber);
+                if (!hasItem) {
+                  premiumSetting = {};
                   premiumSetting.companyID = '';
                   premiumSetting.historyID = '';
                   premiumSetting.displayNumber = item.displayNumber;
@@ -610,22 +616,15 @@ module nts.uk.at.view.kml001.a {
                 }
               });
             }
+
             //re-order
             premiumSets = _.orderBy(premiumSets, 'displayNumber', 'asc');
+            _.forEach(premiumSets, (x, index) => {
+              self.createViewAttendanceItems(x.attendanceItems, index);
+            });
 
           } else {
-            _.forEach(self.defaultPremiumSettings(), (item) => {
-              premiumSetting = {};
-              premiumSetting.companyID = data.companyID;
-              premiumSetting.historyID = data.historyID;
-              premiumSetting.displayNumber = item.displayNumber;
-              premiumSetting.rate = item.rate;
-              premiumSetting.name = item.name;
-              premiumSetting.unitPrice = item.unitPrice;
-              premiumSetting.useAtr = item.useAtr;
-              premiumSetting.attendanceItems = [];
-              premiumSets.push(premiumSetting);
-            });
+            premiumSets = self.createPremiumDefault(data.companyID, data.historyID);           
           }
 
           premiumSets = _.orderBy(premiumSets, 'displayNumber', 'asc');
@@ -649,7 +648,33 @@ module nts.uk.at.view.kml001.a {
 
           dfd.resolve();
         } else {
-          dfd.reject();
+
+          let tempPerson: vmbase.PersonCostCalculationInterface = {};
+          let findItem = _.find(self.gridPersonCostList(), (x: any) => x.dateRange === self.currentGridPersonCost());
+
+          if (_.isNil(findItem)) dfd.reject();
+
+          tempPerson.companyID = findItem.companyId;
+          tempPerson.historyID = findItem.historyId;
+          tempPerson.startDate = findItem.startDate;
+          tempPerson.endDate = findItem.endDate;
+          tempPerson.unitPrice = null;
+          tempPerson.memo = null;
+          tempPerson.premiumSets = self.createPremiumDefault(findItem.companyId, findItem.historyId);
+          tempPerson.calculationSetting = 0;
+          tempPerson.roundingUnitPrice = 0;
+          tempPerson.unit = 0;
+          tempPerson.inUnits = 0;
+          tempPerson.workingHour = 0;
+          tempPerson.personCostRoundingSetting = {
+            unitPriceRounding: vmbase.UnitPriceRounding.ROUND_UP,
+            unit: vmbase.AmountUnit.ONE_YEN,
+            rounding: vmbase.InUnits.TRUNCATION
+          };
+
+          self.currentPersonCost().updateData(tempPerson);
+
+          dfd.resolve();
         }
 
         return dfd.promise();
@@ -723,6 +748,28 @@ module nts.uk.at.view.kml001.a {
         _.forEach(self.currentPersonCost().premiumSets(), (item, index) => {
           self.currentPersonCost().premiumSets()[index].rate(100);
         });
+      }
+
+      createPremiumDefault(companyId: string, historyId: string) {
+        const self = this;
+        let premiumSets: Array<vmbase.PremiumSettingInterface> = [];
+        let premiumSetting: vmbase.PremiumSettingInterface = {};
+
+        _.forEach(self.defaultPremiumSettings(), (item, index) => {          
+          self.createViewAttendanceItems([], index);
+          premiumSetting = {};
+          premiumSetting.companyID = companyId;
+          premiumSetting.historyID = historyId;
+          premiumSetting.displayNumber = item.displayNumber;
+          premiumSetting.rate = item.rate;
+          premiumSetting.name = item.name;
+          premiumSetting.unitPrice = item.unitPrice;
+          premiumSetting.useAtr = item.useAtr;
+          premiumSetting.attendanceItems = [];
+          premiumSets.push(premiumSetting);
+        });
+
+        return premiumSets;
       }
     }
   }
