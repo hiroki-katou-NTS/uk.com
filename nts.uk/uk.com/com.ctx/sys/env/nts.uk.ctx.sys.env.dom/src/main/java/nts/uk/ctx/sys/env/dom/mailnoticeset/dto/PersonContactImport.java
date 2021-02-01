@@ -4,6 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.sys.env.dom.mailnoticeset.dto;
 
+import java.util.List;
+import java.util.Optional;
+
 import lombok.Getter;
 
 /**
@@ -20,14 +23,40 @@ public class PersonContactImport {
 	// メールアドレス
 	/** The mail address. */
 	private String mailAddress;
+	
+	// メールアドレスが在席照会に表示するか
+	private Optional<Boolean> isMailAddressDisplay;
 
 	// 携帯メールアドレス
 	/** The mobile mail address. */
 	private String mobileMailAddress;
+	
+    // 携帯メールアドレスが在席照会に表示するか
+    private Optional<Boolean> isMobileEmailAddressDisplay;
 
 	// 携帯電話番号
 	/** The cell phone no. */
 	private String cellPhoneNo;
+	
+	// 携帯電話番号が在席照会に表示するか
+	private Optional<Boolean> isPhoneNumberDisplay;
+	
+	// 緊急連絡先１
+	/** The emergency number 1. */
+	private String emergencyNumber1;
+	
+	// 緊急連絡先１が在席照会に表示するか
+	private Optional<Boolean> isEmergencyContact1Display;
+	
+	// 緊急連絡先２
+	/** The emergency number 2. */
+	private String emergencyNumber2;
+	
+	// 緊急連絡先２が在席照会に表示するか
+	private Optional<Boolean> isEmergencyContact2Display;
+	
+	// 他の連絡先
+	private List<OtherContactDTO> otherContacts;
 
 	/**
 	 * Instantiates a new person contact import.
@@ -41,11 +70,30 @@ public class PersonContactImport {
 	 * @param cellPhoneNo
 	 *            the cell phone no
 	 */
-	public PersonContactImport(String personId, String mailAddress, String mobileMailAddress, String cellPhoneNo) {
+	public PersonContactImport(String personId,
+			String mailAddress,
+			String mobileMailAddress,
+			String cellPhoneNo,
+			String emergencyNumber1,
+			String emergencyNumber2,
+			Optional<Boolean> isMailAddressDisplay,
+			Optional<Boolean> isMobileEmailAddressDisplay,
+			Optional<Boolean> isPhoneNumberDisplay,
+			Optional<Boolean> isEmergencyContact1Display,
+			Optional<Boolean> isEmergencyContact2Display,
+			List<OtherContactDTO> otherContacts) {
 		this.personId = personId;
 		this.mailAddress = mailAddress;
 		this.mobileMailAddress = mobileMailAddress;
 		this.cellPhoneNo = cellPhoneNo;
+		this.emergencyNumber1 = emergencyNumber1;
+		this.emergencyNumber2 = emergencyNumber2;
+		this.isMailAddressDisplay = isMailAddressDisplay;
+		this.isMobileEmailAddressDisplay = isMobileEmailAddressDisplay;
+		this.isPhoneNumberDisplay = isPhoneNumberDisplay;
+		this.isEmergencyContact1Display = isEmergencyContact1Display;
+		this.isEmergencyContact2Display = isEmergencyContact2Display;
+		this.otherContacts = otherContacts;
 	}
 
 	/**

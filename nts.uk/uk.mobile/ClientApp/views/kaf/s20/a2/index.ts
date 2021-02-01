@@ -50,14 +50,12 @@ export class KafS20A2Component extends KafS00ShrComponent {
     public application!: IApplication;
     public optionalItemApplication: OptionalItemApplication[] = [];
     public isValidateAll: boolean = true;
+    public mode: boolean = true;
 
     @Prop({ default: () => [] })
     public readonly settingItems!: IOptionalItemAppSet;
 
-    @Prop({ default: () => true })
-    public readonly mode!: boolean;
-
-    @Prop({ default: {} })
+    @Prop({default : () => {}})
     public readonly params!: IParams;
 
     @Watch('appDispInfoStartupOutput', { deep: true, immediate: true })
@@ -188,8 +186,9 @@ export class KafS20A2Component extends KafS00ShrComponent {
         Object.assign(window, { vm });
 
         //mode edit
-        if (vm.params.appDetail != null) {
+        if (vm.params) {
             vm.optionalItemApplication = [];
+            vm.mode = false;
             const { params } = vm;
             const { appDetail } = params;
             const { application } = appDetail;
@@ -206,8 +205,8 @@ export class KafS20A2Component extends KafS00ShrComponent {
                 });
 
                 const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit, description, dispOrder } = optionalItem;
-                const { lowerCheck, upperCheck,amountLower,amountUpper,numberLower,numberUpper,timeLower,timeUpper } = calcResultRange;
-        
+                const { lowerCheck, upperCheck, amountLower, amountUpper, numberLower, numberUpper, timeLower, timeUpper } = calcResultRange;
+
                 const { amount, times, time } = item;
 
                 vm.optionalItemApplication.push({
@@ -238,7 +237,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
         }).then(() => {
             return vm.loadCommonSetting(OPTIONAL_ITEM_APPLICATION);
         }).then((loadData: any) => {
-            if (loadData) {
+            if (loadData && vm.mode) {
                 vm.$mask('show');
                 let settingNoItems = vm.settingItems.settingItems.map((settingNoItem) => {
 
@@ -275,28 +274,26 @@ export class KafS20A2Component extends KafS00ShrComponent {
                             const { dailyNumberRange } = numberRange;
                             const { dailyTimeRange } = timeRange;
 
-                            if (vm.mode) {
-                                vm.optionalItemApplication.push({
-                                    lowerCheck,
-                                    upperCheck,
-                                    amountLower: dailyAmountRange.lowerLimit,
-                                    amountUpper: dailyAmountRange.upperLimit,
-                                    numberLower: dailyNumberRange.lowerLimit,
-                                    numberUpper: dailyNumberRange.upperLimit,
-                                    timeLower: dailyTimeRange.lowerLimit,
-                                    timeUpper: dailyTimeRange.upperLimit,
-                                    amount: null,
-                                    number: null,
-                                    time: null,
-                                    inputUnitOfTimeItem: controlAttendance ? controlAttendance.inputUnitOfTimeItem : null,
-                                    optionalItemAtr,
-                                    optionalItemName,
-                                    optionalItemNo,
-                                    unit,
-                                    description,
-                                    dispOrder: null
-                                });
-                            }
+                            vm.optionalItemApplication.push({
+                                lowerCheck,
+                                upperCheck,
+                                amountLower: dailyAmountRange.lowerLimit,
+                                amountUpper: dailyAmountRange.upperLimit,
+                                numberLower: dailyNumberRange.lowerLimit,
+                                numberUpper: dailyNumberRange.upperLimit,
+                                timeLower: dailyTimeRange.lowerLimit,
+                                timeUpper: dailyTimeRange.upperLimit,
+                                amount: null,
+                                number: null,
+                                time: null,
+                                inputUnitOfTimeItem: controlAttendance ? controlAttendance.inputUnitOfTimeItem : null,
+                                optionalItemAtr,
+                                optionalItemName,
+                                optionalItemNo,
+                                unit,
+                                description,
+                                dispOrder: null
+                            });
                         });
 
                         vm.$updateValidator();

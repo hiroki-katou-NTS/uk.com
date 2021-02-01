@@ -16,7 +16,7 @@ module nts.uk.com.view.ccg003.a {
 
   @component({
     name: 'ccg003-component',
-    template: `<div class="contents">
+    template: `<div>
     <!-- A0 お知らせ表示 -->
     <div id="A0-CCG003" class="panel panel-frame panel-ccg003">
       <div class="ccg003-top-content">
@@ -73,7 +73,6 @@ module nts.uk.com.view.ccg003.a {
               <!-- A5_2 記念日内容 -->
               <div>
                 <span style="white-space: pre-wrap;" data-bind="text: anniversaryNotice.notificationMessage"></span>
-                <span class="ccg003-block-5" data-bind="text: $component.$i18n('CCG003_16', [anniversaryNotice.displayDate])"></span>
               </div>
             </div>
           </div>
@@ -189,6 +188,9 @@ module nts.uk.com.view.ccg003.a {
       overflow: hidden;
       text-overflow: ellipsis;
     }
+    .datepicker-container {
+      z-index: 999999999 !important;
+    }
   </style>`
   })
   @bean()
@@ -220,6 +222,8 @@ module nts.uk.com.view.ccg003.a {
       vm.$ajax('com', API.getEmployeeNotification)
         .then((response: EmployeeNotification) => {
           if (response) {
+            vm.systemDate(moment.utc(response.systemDate).locale('ja').format('YYYY/M/D(dd)'));
+            _.map(response.anniversaryNotices, item => item.anniversaryNotice.anniversaryTitle = vm.convertTitleAnniversaries(item.anniversaryNotice));
             vm.anniversaries(response.anniversaryNotices);
             const msgNotices = vm.listMsgNotice(response.msgNotices);
             vm.msgNotices(msgNotices);
@@ -227,7 +231,6 @@ module nts.uk.com.view.ccg003.a {
               vm.role(response.role);
               vm.roleFlag(response.role.employeeReferenceRange !== 3);
             }
-            vm.systemDate(moment.utc(response.systemDate).locale('ja').format('YYYY/M/D(dd)'));
           }
         })
         .fail(error => vm.$dialog.error(error))
@@ -299,6 +302,7 @@ module nts.uk.com.view.ccg003.a {
       vm.$ajax('com', API.getContentOfDestinationNotification, param)
         .then((response: DestinationNotification) => {
           if (response) {
+            _.map(response.anniversaryNotices, item => item.anniversaryNotice.anniversaryTitle = vm.convertTitleAnniversaries(item.anniversaryNotice));
             vm.anniversaries(response.anniversaryNotices);
             const msgNotices = vm.listMsgNotice(response.msgNotices);
             vm.msgNotices(msgNotices);
@@ -396,6 +400,40 @@ module nts.uk.com.view.ccg003.a {
       const vm = this;
       vm.$window.modal('com', '/view/ccg/003/b/index.xhtml', vm.role())
         .then(() => vm.onClickFilter());
+    }
+
+    /**
+     * 記念日のタイトル部分の表示について ver5
+     */
+    convertTitleAnniversaries(param: AnniversaryNoticeImport): string {
+      if (!param) {
+        return '';
+      }
+      const vm = this;
+      let displayDate = '';
+      const startDate = moment.utc(vm.dateValue().startDate, 'YYYY/MM/DD');
+      const endDate = moment.utc(vm.dateValue().endDate, 'YYYY/MM/DD');
+      const systemDate = moment.utc(vm.systemDate(), 'YYYY/MM/DD');
+      let anniversaryDate = moment.utc(`${startDate.year()}-${param.displayDate}`, 'YYYY-MM-DD');
+      if (startDate.isSame(systemDate) && endDate.isSame(systemDate)) {
+        if (startDate.isSameOrBefore(anniversaryDate)) {
+          displayDate = anniversaryDate.locale('ja').format('M/D(dd)');
+        } else {
+          displayDate =  anniversaryDate.add(1, 'y') .locale('ja').format('M/D(dd)');
+        }
+      }
+      // 条件：期間開始日、終了日がどちらかまたは共に「システム日」ではない場合
+      // 1	期間開始日.年月日　≦　期間開始日.年＋個人の記念日.月日　≦　期間終了日.年月日
+      if (startDate.isSameOrBefore(anniversaryDate) && anniversaryDate.isSameOrBefore(endDate)) {
+        displayDate =  anniversaryDate.locale('ja').format('M/D(dd)');
+      }
+      // 2	期間開始日.年月日　≦　期間終了日.年＋個人の記念日.月日　≦　期間終了日.年月日
+      anniversaryDate = moment.utc(`${endDate.year}-${param.displayDate}`, 'YYYY-MM-DD');
+      if (startDate.isBefore(anniversaryDate) && anniversaryDate.isBefore(endDate)) {
+        displayDate = anniversaryDate.locale('ja').format('M/D(dd)');
+      }
+
+      return `${displayDate} ${param.anniversaryTitle}`;
     }
 
     closeWindow(): void {

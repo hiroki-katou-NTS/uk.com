@@ -31,7 +31,11 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.URL;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.VerticalPosition;
 import nts.uk.ctx.sys.portal.dom.webmenu.ColorCode;
 import nts.uk.ctx.sys.portal.dom.webmenu.MenuCode;
+import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * フローメニュー作成 DTO
+ */
 @Data
 public class CreateFlowMenuDto implements CreateFlowMenu.MementoSetter, CreateFlowMenu.MementoGetter {
 
@@ -282,5 +286,11 @@ public class CreateFlowMenuDto implements CreateFlowMenu.MementoSetter, CreateFl
 								new HorizontalAndVerticalSize(dto.getWidth())))
 						.url(new URL(dto.getUrl())).build())
 				.collect(Collectors.toList());
+	}
+	
+	public static CreateFlowMenuDto fromDomain(CreateFlowMenu domain) {
+		CreateFlowMenuDto dto = new CreateFlowMenuDto();
+		domain.setMemento(dto, AppContexts.user().contractCode());
+		return dto;
 	}
 }

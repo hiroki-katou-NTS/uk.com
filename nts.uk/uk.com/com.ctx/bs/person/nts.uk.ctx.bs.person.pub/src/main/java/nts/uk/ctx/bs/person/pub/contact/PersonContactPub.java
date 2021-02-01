@@ -22,4 +22,11 @@ public interface PersonContactPub {
 	 */
 	void register(String personId, String cellPhoneNumber, String mailAdress, String mobileMailAdress);
 	
+	/**
+	 * 取得する
+	 * @param personId
+	 * @return the person contact object
+	 */
+	PersonContactObject getPersonalContact(String personId);
+	
 }

@@ -111,4 +111,15 @@ public class EmployeeContactPubImpl implements EmployeeContactPub {
 				.isEmergencyContact2Display(p.getIsEmergencyContact2Display().map(m -> m.booleanValue()).orElse(false))
 				.build();
 	}
+	
+	@Override
+	public EmployeeContactObject get(String employeeId) {
+		Optional<EmployeeContact> employeeContactOpt = this.empContactRepo.getByEmployeeId(employeeId);
+		EmployeeContactObject employeeContactObject = null;
+		if (employeeContactOpt.isPresent()) {
+			employeeContactObject = this.convert(employeeContactOpt.get());
+		}
+		return employeeContactObject;
+	}
+
 }

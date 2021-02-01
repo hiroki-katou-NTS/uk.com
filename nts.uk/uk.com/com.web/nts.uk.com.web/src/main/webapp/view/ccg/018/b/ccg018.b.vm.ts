@@ -212,7 +212,7 @@ module ccg018.b.viewmodel {
             employeeId: self.selectedItem().employeeId,
             switchingDate: self.selectedSwitchDate(),
             topMenuCode: self.selectedItemAsTopPage() ? self.selectedItemAsTopPage() : '',
-            loginMenuCode: (self.selectedItemAfterLogin().length === 6 ? self.selectedItemAfterLogin().slice(0, 4) : self.selectedItemAsTopPage()),
+            loginMenuCode: (self.selectedItemAfterLogin().length === 6 ? self.selectedItemAfterLogin().slice(0, 4) : ''),
             system: self.selectedItemAfterLogin().slice(-2, -1),
             menuClassification: self.selectedItemAfterLogin().slice(-1)
           };

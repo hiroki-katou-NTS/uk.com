@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.common.service.print;
 
+import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.service.DetailOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.service.DisplayInfoOverTime;
 import nts.uk.ctx.at.request.dom.application.optional.OptionalItemPrintContent;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplicationDetail;
 
 /**
  * refactor 4
@@ -42,6 +44,7 @@ public class PrintContentOfEachApp {
 	/**
 	 * 時間休暇申請の印刷内容
 	 */
+	private Optional<List<TimeLeaveApplicationDetail>> opPrintContentOfTimeLeave;
 
 	/**
 	 * 打刻申請の印刷内容
