@@ -928,7 +928,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         nts.uk.ui.dialog.alertError({ messageId: 'Msg_54' });
                     }
                     
-                    nts.uk.ui.block.grayout();
+                    //nts.uk.ui.block.grayout();
                     let param = {
                         workType: dataCell.originalEvent.detail.value.workTypeCode,
                         workTime: dataCell.originalEvent.detail.value.workTimeCode,
@@ -946,7 +946,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     }
                     
                     // call alg : <<Query>> 時刻が不正かチェックする 6666
-                    service.checkTimeIsIncorrect(param).done((result) => {
+                    /*service.checkTimeIsIncorrect(param).done((result) => {
                         console.log(result);
                         let errors = [];
                         for (let i = 0; i < result.length; i++) {
@@ -987,7 +987,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         nts.uk.ui.block.clear();
                         nts.uk.ui.dialog.alertError(error);
                         dfd.reject();
-                    });
+                    });*/
                     self.checkExitCellUpdated();
                 } else {
                     self.checkExitCellUpdated();
