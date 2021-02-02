@@ -24,16 +24,18 @@ public class DisplayCommentQuery {
 		// 1. get(社員IDリスト、年月日): Map<社員ID、社員のコメント情報>
 		Map<String, EmployeeCommentInformationDto> returnMap = new HashMap<>();
 		Map<String, EmployeeCommentInformation> map = repo.getByListSidAndDate(sids, date);
+		sids.forEach(sid -> {
+			
+		});
 		List<String> noCommentSids = sids;
 		// remove employee id that have comment
 		map.forEach((key, value) -> {
 			if (noCommentSids.contains(key)) {
 				noCommentSids.remove(key);
-			} else {
-				EmployeeCommentInformationDto dto = new EmployeeCommentInformationDto();
-				value.setMemento(dto);
-				returnMap.put(key, dto);
 			}
+			EmployeeCommentInformationDto dto = new EmployeeCommentInformationDto();
+			value.setMemento(dto);
+			returnMap.put(key, dto);
 		});
 
 		// get newest comment

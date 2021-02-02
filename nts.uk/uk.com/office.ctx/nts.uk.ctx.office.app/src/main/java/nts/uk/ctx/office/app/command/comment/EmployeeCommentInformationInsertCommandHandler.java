@@ -1,5 +1,7 @@
 package nts.uk.ctx.office.app.command.comment;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -24,6 +26,11 @@ public class EmployeeCommentInformationInsertCommandHandler extends CommandHandl
 	protected void handle(CommandHandlerContext<EmployeeCommentInformationCommand> context) {
 		EmployeeCommentInformationCommand command = context.getCommand();
 		EmployeeCommentInformation domain = EmployeeCommentInformation.createFromMemento(command);
+		Optional<EmployeeCommentInformation> employeeCommentInformation = employeeCommentInformationRepository.getBySidAndDate(domain.getSid(), domain.getDate());
+		if (employeeCommentInformation.isPresent()) {
+			employeeCommentInformationRepository.update(domain);
+			return;
+		}
 		employeeCommentInformationRepository.insert(domain);
 	}
 
