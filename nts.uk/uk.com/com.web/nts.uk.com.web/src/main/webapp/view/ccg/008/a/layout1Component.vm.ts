@@ -80,6 +80,7 @@ module nts.uk.com.view.ccg008.a.Layout1ComponentViewModel {
               vm.$nextTick(() => {
                 _.each((document.getElementById("F2-frame") as any ).contentDocument.getElementsByTagName("a"), link => {
                   link.removeAttribute('onclick');
+                  link.removeAttribute('href')
                 })
               });
             });
