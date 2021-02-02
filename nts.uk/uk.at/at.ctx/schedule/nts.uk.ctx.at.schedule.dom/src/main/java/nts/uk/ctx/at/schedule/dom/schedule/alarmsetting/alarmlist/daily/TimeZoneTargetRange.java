@@ -3,16 +3,14 @@ package nts.uk.ctx.at.schedule.dom.schedule.alarmsetting.alarmlist.daily;
 import lombok.AllArgsConstructor;
 
 /**
- * チェック対象の範囲
+ * 時間帯チェック対象の範囲
  */
 @AllArgsConstructor
-public enum RangeToCheck {
-    // 全て
-    ALL(0),
+public enum TimeZoneTargetRange {
     // 選択
-    CHOICE (1),
+    CHOICE (0),
     // 選択以外
-    OTHER(2);
+    OTHER(1);
 
     public final int value;
 }

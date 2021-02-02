@@ -2,16 +2,23 @@ package nts.uk.ctx.at.schedule.infra.entity.schedule.alarmsetting.alarmlist.dail
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.schedule.dom.schedule.alarmsetting.alarmlist.daily.ExtractionCondScheduleDay;
+import lombok.val;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.schedule.dom.schedule.alarmsetting.alarmlist.daily.*;
+import nts.uk.ctx.at.shared.app.find.worktime.predset.dto.TimezoneDto;
+import nts.uk.ctx.at.shared.dom.alarmList.primitivevalue.ContinuousPeriod;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
- * スケジュール日次の任意抽出条件
+ * スケジュール日次の任意抽出条件 Entity
  */
 @Entity
 @NoArgsConstructor
@@ -39,22 +46,41 @@ public class KscdtScheAnyCondDay extends ContractUkJpaEntity {
 
     /* 連続期間 */
     @Column(name = "CONTINUOUS_PERIOD")
-    public int conPeriod;
+    public Integer conPeriod;
 
     /* 時間のチェック項目 */
     @Column(name = "TIME_CHECK_ITEM")
-    public int timeCheckItem;
+    public Integer timeCheckItem;
 
     /* 対象とする就業時間帯 */
     @Column(name = "WORKTIME_COND_ATR")
-    public int wrkTimeCondAtr;
+    public Integer wrkTimeCondAtr;
 
     @Override
     protected Object getKey() {
         return this.pk;
     }
 
-    public ExtractionCondScheduleDay toDomain(){
-        return new ExtractionCondScheduleDay();
+    public ExtractionCondScheduleDay toDomain(List<KscdtScheConDayWt> wrkType, List<KscdtScheConDayWtime> wtime){
+
+        // KrcstErAlCompareSingle
+        // KrcstErAlCompareRange
+        // 連続勤務種類の抽出条件
+        CondContinuousWrkType wType = new CondContinuousWrkType(wrkType.stream().map(i->i.pk.wrkTypeCd).collect(Collectors.toList()), new ContinuousPeriod(conPeriod));
+        // 連続時間帯の抽出条件
+        CondContinuousTimeZone timeZone = new CondContinuousTimeZone(EnumAdaptor.valueOf(wrkTimeCondAtr, TimeZoneTargetRange.class),wrkType.stream().map(i->i.pk.wrkTypeCd).collect(Collectors.toList()),wtime.stream().map(i->i.pk.wrkTimeCd).collect(Collectors.toList()), new ContinuousPeriod(conPeriod));
+
+        // 連続時間のチェック条件
+        CondContinuousTime continousTime = new CondContinuousTime();
+
+
+
+        // 時間のチェック条件
+        CondTime condTime = new CondTime();
+
+
+        val result = new ExtractionCondScheduleDay(pk.checkId,null,null,pk.sortBy,useAtr,new NameAlarmExtractCond(condName), EnumAdaptor.valueOf(wrkTypeCondAtr, RangeToCheck.class), Optional.ofNullable(null));
+
+        return result;
     }
 }

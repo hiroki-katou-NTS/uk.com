@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.schedule.dom.schedule.alarmsetting.alarmlist.daily;
 
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.alarmList.attendanceitem.CheckedCondition;
 
 import java.util.List;
 
@@ -8,9 +8,8 @@ import java.util.List;
  * 時間のチェック条件
  */
 public class CondTime implements  ScheduleCheckCond{
-    // 連続時間のチェック条件
-    // CheckCond
-
+    //チェック条件
+    CheckedCondition checkedCondition;
     // チェック種類
     private CheckTimeType checkTimeType;
 
